@@ -18,14 +18,11 @@ namespace Engine
 
         public static Option<T> FirstOrNone<T>(this IEnumerable<T> it)
         {
-            try
+            foreach (var item in it)
             {
-                return it.First().ToSome();
+                return item.ToSome();
             }
-            catch (Exception)
-            {
-                return Option<T>.None;
-            }   
+            return Option<T>.None;
         }
     }
 }
