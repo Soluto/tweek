@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api.cs" />
     <Compile Include="ConfigurationValues\ConfigurationValue.cs" />
     <Compile Include="Fixed\Delegates.cs" />
     <Compile Include="Path\ConfigurationPath.cs" />
