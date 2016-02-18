@@ -11,14 +11,14 @@ using LanguageExt;
 
 namespace Engine
 {
-    interface IEngine
+    public interface IEngine
     {
         Dictionary<ConfigurationPath, ConfigurationValue> Calculate(
             ConfigurationPath path,
             Set<Identity> identities);
     }
 
-    class Engine : IEngine
+    public class Engine : IEngine
     {
         private readonly ContextRetrieverByIdentity _contextRetriever;
         private readonly FixedConfigurationRetriever _fixedConfiguration;

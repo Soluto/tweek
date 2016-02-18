@@ -19,15 +19,15 @@ namespace Engine
 
     internal static class _
     {
-        public static Calculate CalculateImpl = (pathQuery,
+        internal static CalculateRules calculateRules = (list, context) => new ConfigurationValue();
+
+        internal static Calculate CalculateImpl = (pathQuery,
             traversal, 
             identities,
             contextRetriever, 
             fixedConfiguration, 
             rules) =>
         {
-            if (contextRetriever == null) throw new ArgumentNullException("contextRetriever");
-            CalculateRules calculateRules = (list, context) => new ConfigurationValue();
             var paths = traversal(pathQuery);
             var calculatedContext = ContextHelpers.GetContextRetrieverByType(identities, contextRetriever);
 
