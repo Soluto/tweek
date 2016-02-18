@@ -67,7 +67,7 @@
     <Compile Include="Context\Delegates.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="Identities\Identity.cs" />
-    <Compile Include="Path\Delegates.cs" />
+    <Compile Include="Keys\Delegates.cs" />
     <Compile Include="Rules\Delegates.cs" />
     <Compile Include="Rules\Entities\Rule.cs" />
     <Compile Include="Rules\Matcher\Delegates.cs" />
@@ -76,9 +76,7 @@
     <Compile Include="Utils\OptionIEnumrableHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Keys\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
