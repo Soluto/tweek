@@ -1,4 +1,11 @@
 namespace Engine
 {
-    public struct ConfigurationValue {}
+    public struct ConfigurationValue
+    {
+        public ConfigurationValue(string s)
+        {
+            
+        }
+
+    }
 }

@@ -8,6 +8,6 @@ using Engine.Context;
 namespace Engine.Rules.ValueDistribution
 {
     public delegate ValueDistributor MatcherValueDistributor(string valueDistribution);
-    public delegate ConfigurationValue ValueDistributor(IdentityContext context);
+    public delegate ConfigurationValue ValueDistributor(params object[] units);
 
 }

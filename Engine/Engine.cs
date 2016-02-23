@@ -1,49 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Engine.Context;
 using Engine.Fixed;
 using Engine.Keys;
 using Engine.Rules;
 using LanguageExt;
+using LanguageExt.SomeHelp;
 
 namespace Engine
 {
-    public delegate Dictionary<ConfigurationPath, ConfigurationValue> Calculate(
+    internal delegate Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(
         ConfigurationPath path,
         PathTraversal traversal,
-        Set<Identity> identities,
+        HashSet<Identity> identities,
         ContextRetrieverByIdentity contextRetriever,
-        FixedConfigurationRetriever fixedConfiguration,
         RulesRetriever rules);
+
 
     internal static class _
     {
-        internal static CalculateRules calculateRules = (list, context) => new ConfigurationValue();
+        internal static CalculateRules calculateRules = async (list, context) => new ConfigurationValue();
 
-        internal static Calculate CalculateImpl = (pathQuery,
+        internal static Calculate CalculateImpl = async (pathQuery,
             traversal, 
             identities,
             contextRetriever, 
-            fixedConfiguration, 
             rules) =>
         {
+         
             var paths = traversal(pathQuery);
             var calculatedContext = ContextHelpers.GetContextRetrieverByType(identities, contextRetriever);
 
-            return paths.Select(configPath =>
+            return (await Task.WhenAll(paths.Select(async configPath =>
             {
-                return identities.Scan(Option<ConfigurationValue>.None,
-                    (acc, identity) => acc.IfNone(() => fixedConfiguration(identity, configPath)))
-                    .TakeWhile(x => x.IsNone)
-                    .Last()
-                    .IfNone(() => calculateRules(rules(configPath), calculatedContext))
-                    .Select(value => new {configPath, value});
-            }).SkipEmpty()
-                .ToDictionary(x => x.configPath, x => x.value);
-        };
-    }
-   
+                var fixedResult = Option<ConfigurationValue>.None;
+                foreach (var identity in identities)
+                {
+                    fixedResult =  await ContextHelpers.GetFixedConfigurationContext(contextRetriever(identity))(configPath);
+                    if (fixedResult.IsSome) break;
+                }
 
-    
+                fixedResult = (await fixedResult.IfNoneAsync(() => calculateRules(rules(configPath), calculatedContext)));
+                
+                return fixedResult.Select(value => new {configPath, value});
+
+            })))
+            .SkipEmpty()
+            .ToDictionary(x => x.configPath, x => x.value);
+        };
+    } 
 }

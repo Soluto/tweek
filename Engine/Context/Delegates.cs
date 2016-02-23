@@ -7,7 +7,8 @@ using LanguageExt;
 
 namespace Engine.Context
 {
-    public delegate IdentityContext ContextRetrieverByIdentity(Identity identity);
-    public delegate IdentityContext ContextRetrieverByIdentityType(string identityType);
-    public delegate Task<Option<string>> IdentityContext(string key);
+    public delegate GetContextValue ContextRetrieverByIdentity(Identity identity);
+    public delegate GetContextValue ContextRetrieverByIdentityType(string identityType);
+    public delegate Task<Option<string>> GetContextValue(string key);
+    public delegate Task<Option<ConfigurationValue>> GetContextFixedConfigurationValue(ConfigurationPath path);
 }
