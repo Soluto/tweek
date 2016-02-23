@@ -1,25 +1,42 @@
-﻿module Matcher.Tests
+﻿module Matcher.Tests.Main
 
 // https://github.com/fsharp/FsCheck/blob/master/Docs/Documentation.md
 // https://github.com/fsharp/FsUnit
 // https://code.google.com/p/unquote/
 
 open FsUnit
-open FsCheck
-open NUnit.Framework
+open Xunit
+open FsCheck.Xunit;
 open Swensen.Unquote
 open Engine.Match.DSL.MatchDSL
 open FSharp.Data;
+open Microsoft.FSharp.Reflection;
 
-[<Test>]
-let ``FsUnit test 1``() =
-    let scheme = JsonValue.Parse("""{"$or": {"Age": {"$and": {"$gt" : 20, "$lt" : 23 }} , "Weight": {"$lt":80}} }""")
-    //let scheme = JsonValue.Parse("""{"Age": {"$and": {"$gt" : 20, "$lt" : 23 }}}""")
-    let context (x) = 
-        match x with 
-        |"Age"-> Option.Some("25")
-        |"Weight"-> Option.Some("70")
-        | _ -> Option.None
-                                
-    Match(scheme, context, (&&) ) |> should equal true;
+let validator jsonString = Match (JsonValue.Parse jsonString)
+let createContext seq = fun name -> seq |> Seq.tryFind (fun (k,v)->k = name) |> Option.map (fun (k,v)->v)
+let context = createContext;
 
+
+[<Fact>]
+let ``Use multipe-comparisons, "and" is implict``() =
+    let validate = validator """{"Age": {"$le":30, "$ge":25} }"""
+    validate (context [("Age", "30");])  |> should equal true;
+    validate (context [("Age", "26");])  |> should equal true;
+    validate (context [("Age", "31");])  |> should equal false;
+    validate (context [("Age", "24");])  |> should equal false;
+
+[<Fact>]
+let ``Use comparisons on multipe fields, "and" is implict``() =
+    let validate = validator """{"Age": 20, "Weight": 40 }"""
+    validate (context [("Age", "20");("Weight","40");])  |> should equal true;
+    validate (context [("Age", "20");("Weight","39");])  |> should equal false;
+    validate (context [("Age", "19");("Weight","40");])  |> should equal false;
+
+
+[<Fact>]
+let ``Use logical operater at root``() =
+    let validate = validator """{"$or": {"Age": {"$gt" : 20, "$lt" : 23 } , "Weight": {"$lt":80}} }""";
+    validate (context [("Age", "25");("Weight", "70")]) |> should equal true;
+    validate (context [("Age", "25");("Weight", "80")]) |> should equal false;
+    validate (context [("Age", "22");("Weight", "70")]) |> should equal true;
+    validate (context [("Age", "22");("Weight", "80")]) |> should equal true;
