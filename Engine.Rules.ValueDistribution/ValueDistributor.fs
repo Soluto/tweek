@@ -11,11 +11,12 @@ module ValueDistribution =
         let index  = (hash % (bigint choices.Length)) |> int
         choices.[index]
 
+    let scanWithFirstItem fold seq = seq |> Seq.skip 1 |> Seq.scan fold (Seq.head seq)
+
     let private weightedCalc (hash) (weighted:(string*int)[]) = 
         let selectedItem = hash % (bigint (weighted |> Seq.fold (fun acc (_, w)->  acc + w) 0) ) |> int
         weighted
-        |> Seq.skip 1
-        |> Seq.scan (fun (p,a) (x,n) -> (x, a+n)) (Seq.head weighted)
+        |> scanWithFirstItem (fun (p,a) (x,n) -> (x, a+n))
         |> Seq.skipWhile (fun (_, range)-> printf "%i" selectedItem ;selectedItem > range )  
         |> Seq.map (fun (x, _) -> x )
         |> Seq.head
