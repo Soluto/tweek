@@ -7,13 +7,6 @@ open System
 
 module ValueDistribution = 
 
-    let private (|Value | Uniform | Weighted|) str = 
-        match str with
-        | "uniform" -> Uniform
-        | "weighted" -> Weighted
-        | "value" -> Value
-        | s ->  raise (Exception("expected operator, found:"+s))
-
     let private uniformCalc (hash) (choices:string[]) = 
         let index  = (hash % (bigint choices.Length)) |> int
         choices.[index]
@@ -30,10 +23,10 @@ module ValueDistribution =
         let sha1 = new SHA1CryptoServiceProvider(); 
         let hash = bigint (sha1.ComputeHash (Encoding.UTF8.GetBytes input)).[0..15]
         match json.GetProperty("type").AsString()  with
-        | Weighted -> weightedCalc hash ( json.GetProperty("args").Properties() |> Array.map (fun (k,v)-> (k, v.AsInteger())) )
-        | Uniform ->  uniformCalc hash (json.GetProperty("args").AsArray() |> Array.map (fun x-> x.AsString()))
-        | Value -> json.GetProperty("args").AsString()
-        | _ -> "not supported"
+        | "weighted" -> weightedCalc hash ( json.GetProperty("args").Properties() |> Array.map (fun (k,v)-> (k, v.AsInteger())) )
+        | "uniform" ->  uniformCalc hash (json.GetProperty("args").AsArray() |> Array.map (fun x-> x.AsString()))
+        | "value" -> json.GetProperty("args").AsString()
+        | s -> raise (Exception("expected operator, found:"+s))
         
     let CalculateValue (schema:string) ([<ParamArray>] hash : Object[]) = 
         calc (schema |> JsonValue.Parse) (hash |> Seq.map string |>  String.concat ".");
