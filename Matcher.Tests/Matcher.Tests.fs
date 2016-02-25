@@ -32,6 +32,14 @@ let ``Use comparisons on multipe fields, "and" is implict``() =
     validate (context [("Age", "20");("Weight","39");])  |> should equal false;
     validate (context [("Age", "19");("Weight","40");])  |> should equal false;
 
+    
+[<Fact>]
+let ``Use not ``() =
+    let addNot schema = """{"$not":{"Age": {"$lt":21}}}"""
+    let validate = validator """{"$not":{"Age": {"$lt":21}}}"""
+    validate (context [("Age", "22");])  |> should equal true;
+    
+
 
 [<Fact>]
 let ``Use logical operater at root``() =

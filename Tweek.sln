@@ -16,6 +16,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{791961
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Engine.Rules.ValueDistribution", "Engine.Rules.ValueDistribution\Engine.Rules.ValueDistribution.fsproj", "{43AD9D3D-188D-4767-BCA6-35D280EA7D4A}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Engine.Rules.ValueDistribution.Tests", "Engine.Rules.ValueDistribution.Tests\Engine.Rules.ValueDistribution.Tests.fsproj", "{89722FEC-D776-4AEE-A24D-31357B5CC28F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +42,14 @@ Global
 		{F71ED63E-6B21-43C3-A5B2-041112D62611}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F71ED63E-6B21-43C3-A5B2-041112D62611}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F71ED63E-6B21-43C3-A5B2-041112D62611}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43AD9D3D-188D-4767-BCA6-35D280EA7D4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43AD9D3D-188D-4767-BCA6-35D280EA7D4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43AD9D3D-188D-4767-BCA6-35D280EA7D4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43AD9D3D-188D-4767-BCA6-35D280EA7D4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89722FEC-D776-4AEE-A24D-31357B5CC28F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89722FEC-D776-4AEE-A24D-31357B5CC28F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89722FEC-D776-4AEE-A24D-31357B5CC28F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89722FEC-D776-4AEE-A24D-31357B5CC28F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

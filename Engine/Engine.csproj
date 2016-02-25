@@ -69,7 +69,6 @@
   <ItemGroup>
     <Compile Include="Api.cs" />
     <Compile Include="ConfigurationValues\ConfigurationValue.cs" />
-    <Compile Include="Fixed\Delegates.cs" />
     <Compile Include="Path\ConfigurationPath.cs" />
     <Compile Include="Context\ContextHelpers.cs" />
     <Compile Include="Context\Delegates.cs" />

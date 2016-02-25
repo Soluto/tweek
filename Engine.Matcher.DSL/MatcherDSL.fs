@@ -12,30 +12,31 @@ module MatchDSL =
 
     let private reducePredicate op seq = if Seq.isEmpty(seq) then true else seq |> Seq.reduce(op)               
 
-    type LogicalOp = And | Or
+    type LogicalOp = And | Or | Not
 
-    type CompareOp = Equal | GreaterThan | LesserThan | GreaterEqual | LesserEqual
+    type CompareOp = Equal | GreaterThan | LessThan | GreaterEqual | LessEqual
         
     type Op = 
         | CompareOp of CompareOp
         | LogicalOp of LogicalOp
 
     let parseOp op : Op = match op with
+        |"$not" -> Op.LogicalOp(LogicalOp.Not)
         |"$or" -> Op.LogicalOp(LogicalOp.Or)
         |"$and" -> Op.LogicalOp(LogicalOp.And)
         |"$ge" -> Op.CompareOp(CompareOp.GreaterEqual)
         |"$eq" -> Op.CompareOp(CompareOp.Equal)
         |"$gt" -> Op.CompareOp(CompareOp.GreaterThan)
-        |"$le" -> Op.CompareOp(CompareOp.LesserEqual)
-        |"$lt" -> Op.CompareOp(CompareOp.LesserThan)
+        |"$le" -> Op.CompareOp(CompareOp.LessEqual)
+        |"$lt" -> Op.CompareOp(CompareOp.LessThan)
         | s -> raise (ParseError("expected operator, found:"+s))
 
     let evaluateComparisonOp = function 
                     | CompareOp.Equal -> (fun a b -> a = b)
                     | CompareOp.GreaterThan -> (fun a b -> a > b)
-                    | CompareOp.LesserThan -> (fun a b -> a < b)
+                    | CompareOp.LessThan -> (fun a b -> a < b)
                     | CompareOp.GreaterEqual -> (fun a b -> a >= b)
-                    | CompareOp.LesserEqual -> (fun a b -> a <= b)
+                    | CompareOp.LessEqual -> (fun a b -> a <= b)
 
     let evaluateComparison (op: CompareOp) (jsonValue:JsonValue) (stringValue:string) : bool =
         match jsonValue with
@@ -52,7 +53,7 @@ module MatchDSL =
                 | x -> seq([(Op.CompareOp(CompareOp.Equal), x)])
 
     let rec validateProperty (op:Op) (schema:JsonValue) (b:string) =
-        let validateProperties schema logicalOp = schema |>
+        let validateLogicalOp schema logicalOp = schema |>
                                                   extractProperties |> 
                                                   Seq.map (fun (op,value)-> validateProperty op value b) |>
                                                   reducePredicate logicalOp
@@ -60,8 +61,9 @@ module MatchDSL =
             | Op.CompareOp compareOp -> evaluateComparison compareOp schema b
             | Op.LogicalOp binaryOp-> 
                 match binaryOp with
-                | LogicalOp.And -> (&&) |> validateProperties schema
-                | LogicalOp.Or  -> (||) |> validateProperties schema 
+                | LogicalOp.And -> (&&) |> validateLogicalOp schema
+                | LogicalOp.Or  -> (||) |> validateLogicalOp schema 
+                | LogicalOp.Not  -> not (validateProperty (Op.LogicalOp(LogicalOp.And)) schema b)
 
     let rec private MatchWithOp (op) (schema: JsonValue) (context: Context) : bool =
         (schema.Properties() 
@@ -77,10 +79,9 @@ module MatchDSL =
                             match logicalOp with
                             | LogicalOp.And -> MatchWithOp (&&) schema context 
                             | LogicalOp.Or -> MatchWithOp (||) schema context 
+                            | LogicalOp.Not -> not (MatchWithOp (&&) schema context)
                         | _ -> raise (ParseError("non logical op was used in the wrong place"))
             ) |> reducePredicate op )
 
     let rec Match (schema: JsonValue) (context: Context) : bool =
         MatchWithOp (&&) schema context 
-
-    

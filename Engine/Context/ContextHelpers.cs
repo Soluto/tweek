@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Engine.Context;
 using LanguageExt;
 
@@ -7,18 +9,31 @@ namespace Engine
 {
     public static class ContextHelpers
     {
-        public static ContextRetrieverByIdentityType GetContextRetrieverByType(HashSet<Identity> identities, ContextRetrieverByIdentity retrieverById)
+        internal static GetLoadedContextByIdentityType GetContextRetrieverByType(GetLoadedContextByIdentity getLoadedContexts, HashSet<Identity> identities)
         {
-            return type => identities
-                .Where(x => x.Type == type)
-                .FirstOrNone()
-                .Match(x=>retrieverById(x), ()=>async key=>Option<string>.None);
+            return (string type) =>
+            {
+                return getLoadedContexts(identities.Single(x => x.Type == type));
+            };
         }
 
-        public static GetContextFixedConfigurationValue GetFixedConfigurationContext(GetContextValue getContextValue)
+        internal static async Task<GetLoadedContextByIdentity> LoadContexts(HashSet<Identity> identities, GetContextByIdentity byId)
         {
-            return async (path) =>
-                (await getContextValue(path.ToString())).Select(x => new ConfigurationValue(x));
+            var contexts = await Task.WhenAll(identities.Select(async x => new {Identity=x, Context = await byId(x) }));
+            return (Identity identity) =>
+            {
+                return contexts
+                    .Where(x => x.Identity == identity)
+                    .Select(x => x.Context)
+                    .SingleOrDefault() ?? ((key)=>Option<String>.None);
+
+            };
+        }
+
+        internal static GetContextFixedConfigurationValue GetFixedConfigurationContext(GetContextValue getContextValue)
+        {
+            return (path) =>
+                (getContextValue(path.ToString())).Select(x => new ConfigurationValue(x));
 
         }
     }

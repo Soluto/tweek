@@ -8,5 +8,5 @@ using Engine.Context;
 namespace Engine.Rules.Matcher
 {
     public delegate Matcher MatcherParser(string matcher);
-    public delegate Task<bool> Matcher(ContextRetrieverByIdentityType context);
+    public delegate Task<bool> Matcher(GetLoadedContextByIdentityType getLoadedContext);
 }

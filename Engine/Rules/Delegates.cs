@@ -8,6 +8,6 @@ using LanguageExt;
 
 namespace Engine.Rules
 {
-    public delegate Task<Option<ConfigurationValue>> CalculateRules(List<Rule> rules, ContextRetrieverByIdentityType context);
+    public delegate Option<ConfigurationValue> CalculateRules(List<Rule> rules, GetLoadedContextByIdentityType getLoadedContext);
     public delegate List<Rule> RulesRetriever(ConfigurationPath path);
 }

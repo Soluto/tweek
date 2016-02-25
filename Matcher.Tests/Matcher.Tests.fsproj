@@ -113,7 +113,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Matcher.Tests.fs" />
-    <None Include="Script.fsx" />
     <None Include="packages.config" />
     <None Include="App.config" />
     <Compile Include="CompareOps.Tests.fs" />

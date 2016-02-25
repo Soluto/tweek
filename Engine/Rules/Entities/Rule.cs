@@ -9,16 +9,16 @@ namespace Engine
 {
     public interface IRule
     {
-        Task<Option<ConfigurationValue>> GetValue( ContextRetrieverByIdentityType retrieverByIdentityType);
+        Task<Option<ConfigurationValue>> GetValue( GetLoadedContextByIdentityType byIdentityType);
     }
 
     public class Rule : IRule
     {
         private Matcher Matcher;
         private ConfigurationValue Value;
-        public async Task<Option<ConfigurationValue>> GetValue(ContextRetrieverByIdentityType retrieverByIdentityType)
+        public async Task<Option<ConfigurationValue>> GetValue(GetLoadedContextByIdentityType byIdentityType)
         {
-            return (await Matcher(retrieverByIdentityType)) ? Value : Option<ConfigurationValue>.None;
+            return (await Matcher(byIdentityType)) ? Value : Option<ConfigurationValue>.None;
         }
     }
 
@@ -30,9 +30,9 @@ namespace Engine
         private ValueDistributor ValueDistubtor;
         private ConfigurationValue Value;
 
-        public async Task<Option<ConfigurationValue>> GetValue(ContextRetrieverByIdentityType retrieverByIdentityType)
+        public async Task<Option<ConfigurationValue>> GetValue(GetLoadedContextByIdentityType byIdentityType)
         {
-            return (await Matcher(retrieverByIdentityType)) ? 
+            return (await Matcher(byIdentityType)) ? 
                 ValueDistubtor(ExperimentId, CalculateByIdentity)
                 : Option<ConfigurationValue>.None;
         }

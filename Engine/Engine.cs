@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Engine.Context;
-using Engine.Fixed;
 using Engine.Keys;
 using Engine.Rules;
 using LanguageExt;
@@ -15,13 +14,13 @@ namespace Engine
         ConfigurationPath path,
         PathTraversal traversal,
         HashSet<Identity> identities,
-        ContextRetrieverByIdentity contextRetriever,
+        GetContextByIdentity getContext,
         RulesRetriever rules);
 
 
     internal static class _
     {
-        internal static CalculateRules calculateRules = async (list, context) => new ConfigurationValue();
+        internal static CalculateRules calculateRules = (list, context) => new ConfigurationValue();
 
         internal static Calculate CalculateImpl = async (pathQuery,
             traversal, 
@@ -31,22 +30,22 @@ namespace Engine
         {
          
             var paths = traversal(pathQuery);
-            var calculatedContext = ContextHelpers.GetContextRetrieverByType(identities, contextRetriever);
+            var contexts = await ContextHelpers.LoadContexts(identities, contextRetriever);
+            var calculatedContext = ContextHelpers.GetContextRetrieverByType(contexts, identities);
 
-            return (await Task.WhenAll(paths.Select(async configPath =>
+            return paths.Select(configPath =>
             {
                 var fixedResult = Option<ConfigurationValue>.None;
                 foreach (var identity in identities)
                 {
-                    fixedResult =  await ContextHelpers.GetFixedConfigurationContext(contextRetriever(identity))(configPath);
+                    fixedResult = ContextHelpers.GetFixedConfigurationContext(contexts(identity))(configPath);
                     if (fixedResult.IsSome) break;
                 }
 
-                fixedResult = (await fixedResult.IfNoneAsync(() => calculateRules(rules(configPath), calculatedContext)));
+                fixedResult =  fixedResult.IfNone(() => calculateRules(rules(configPath), calculatedContext));
                 
                 return fixedResult.Select(value => new {configPath, value});
-
-            })))
+            })
             .SkipEmpty()
             .ToDictionary(x => x.configPath, x => x.value);
         };
