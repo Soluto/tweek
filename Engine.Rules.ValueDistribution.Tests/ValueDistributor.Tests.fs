@@ -22,14 +22,12 @@ let generatedCalculatedScheme weights = weights |> Array.mapi (fun a b -> (a,b) 
 
 let assertCalculated (weights:float[]) (numberOfUsers:int) (samplingError:float) (calcFunction:obj[]->string)  = 
             let sumWeights = weights |> Array.sum
-            let values = [|1..numberOfUsers|] 
+            [|1..numberOfUsers|] 
                         |> Seq.map (fun x-> calcFunction([|x|]))
                         |> Seq.countBy id
                         |> Seq.sortBy fst 
                         |> Seq.zip weights
-                        |> Seq.toArray;
-                        
-            values |> Seq.map (fun (expectedWeight, (_,actualWeight) )->  
+                        |> Seq.map (fun (expectedWeight, (_,actualWeight) )->  
                         ( ((float actualWeight)/(float numberOfUsers)), (expectedWeight/sumWeights) )) 
                         |> Seq.iter (fun (expected, actual ) ->
                         expected |> should (equalWithin samplingError) actual)
@@ -71,8 +69,8 @@ let ``run many tests and verify similar values``()=
                           Gen.elements([1..10]);
                           Gen.elements([1..10]);
                           ]) |> Arb.fromGen
-    let totalUsers = 10000
-    let samplingError = 0.02
+    let totalUsers = 1000
+    let samplingError = 0.05
     Prop.forAll gen (fun test -> 
                         let weights = test |> Seq.map float |> Seq.toArray
                         let calculatorWeighted = generatedCalculatedScheme weights
