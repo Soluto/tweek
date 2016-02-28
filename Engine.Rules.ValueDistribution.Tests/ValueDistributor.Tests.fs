@@ -13,6 +13,7 @@ open Microsoft.FSharp.Reflection;
 open Engine.Rules.ValueDistribution;
 open Newtonsoft.Json
 open FsCheck
+open System
 
 let generatedCalculatedScheme weights = weights |> Array.mapi (fun a b -> (a,b) )
                                                 |> dict 
@@ -22,7 +23,9 @@ let generatedCalculatedScheme weights = weights |> Array.mapi (fun a b -> (a,b) 
 
 let assertCalculated (weights:float[]) (numberOfUsers:int) (samplingError:float) (calcFunction:obj[]->string)  = 
             let sumWeights = weights |> Array.sum
+            let rnd = new Random();
             [|1..numberOfUsers|] 
+                        |> Seq.map (fun _-> rnd.Next(10000,100000))
                         |> Seq.map (fun x-> calcFunction([|x|]))
                         |> Seq.countBy id
                         |> Seq.sortBy fst 
@@ -69,8 +72,9 @@ let ``run many tests and verify similar values``()=
                           Gen.elements([1..10]);
                           Gen.elements([1..10]);
                           ]) |> Arb.fromGen
+
     let totalUsers = 1000
-    let samplingError = 0.05
+    let samplingError = 0.06
     Prop.forAll gen (fun test -> 
                         let weights = test |> Seq.map float |> Seq.toArray
                         let calculatorWeighted = generatedCalculatedScheme weights
