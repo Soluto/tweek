@@ -18,7 +18,7 @@ module ValueDistribution =
 
         weighted
         |> scanWithFirstItem (fun (p,a) (x,n) -> (x, a+n))
-        |> Seq.skipWhile (fun (_, range)-> selectedItem > range )  
+        |> Seq.skipWhile (fun (_, range)-> selectedItem >= range )  
         |> Seq.map fst
         |> Seq.head
 
