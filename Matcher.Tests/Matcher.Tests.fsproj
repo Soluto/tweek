@@ -112,11 +112,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common.fs" />
     <Compile Include="Matcher.Tests.fs" />
+    <Compile Include="CompareOps.Tests.fs" />
     <None Include="packages.config" />
     <None Include="App.config" />
-    <Compile Include="CompareOps.Tests.fs" />
-    <Compile Include="Common.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine.Matcher.DSL\Engine.Matcher.DSL.fsproj">
