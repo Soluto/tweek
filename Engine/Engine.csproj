@@ -69,12 +69,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api.cs" />
+    <Compile Include="Context\ContextCreation.cs" />
     <Compile Include="Context\ContextHelpers.cs" />
     <Compile Include="Drivers\Context\IContextDriver.cs" />
     <Compile Include="Drivers\Keys\IKeysDriver.cs" />
-    <Compile Include="Engine.cs" />
     <Compile Include="Keys\Delegates.cs" />
     <Compile Include="Drivers\Rules\IRulesDriver.cs" />
+    <Compile Include="Rules\Creation\RuleData.cs" />
     <Compile Include="Rules\Creation\RulesRetrieverCreator.cs" />
     <Compile Include="Rules\Delegates.cs" />
     <Compile Include="Rules\MultiVariantRule.cs" />

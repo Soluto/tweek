@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Engine.Core.DataTypes;
 using Engine.Core.Utils;
 using LanguageExt;
 
@@ -19,7 +20,7 @@ namespace Engine.Core.Context
 
         internal static Option<FullKey> SplitFullKey(string s)
         {
-            var fragments = s.Split(':');
+            var fragments = s.Split('.');
             return fragments.Length == 2
                 ? new FullKey(fragments[0], fragments[1])
                 : Option<FullKey>.None;

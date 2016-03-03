@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Engine.Context;
 using Engine.Core;
+using Engine.Core.DataTypes;
 using Engine.Core.Utils;
 using Engine.Keys;
 using Engine.Rules;
@@ -40,8 +41,9 @@ namespace Engine
             var contexts = await ContextHelpers.LoadContexts(identities, _getContext);
             var pathsWithRules = paths.Select(path => new { Path = path, Rules = _rules(path) }).ToList();
 
-            return pathsWithRules.Select(x => EngineCore.CalculateKey(identities, contexts, x.Path, x.Rules)
-                .Select(value => new { path = x.Path, value }))
+            return pathsWithRules.Select(x =>
+                    EngineCore.CalculateKey(identities, contexts, x.Path, x.Rules).Select(value => new { path = x.Path.ToRelative(pathQuery), value })
+                 )
                 .SkipEmpty()
                 .ToDictionary(x => x.path, x => x.value);
         }

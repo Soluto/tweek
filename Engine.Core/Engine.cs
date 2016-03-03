@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Engine.Core.Context;
+using Engine.Core.DataTypes;
 using Engine.Core.Rules;
 using LanguageExt;
 using Engine.Core.Utils;
@@ -21,13 +22,13 @@ namespace Engine.Core
                     .FirstOrNone();
         }
 
-
         public static Option<ConfigurationValue> CalculateKey(HashSet<Identity> identities,
             GetLoadedContextByIdentity loadedContext,
             ConfigurationPath path,
             List<IRule> rules)
         {
             var contextRetrieverByType = ContextHelpers.GetContextRetrieverByType(loadedContext, identities);
+
             var flattenContext = ContextHelpers.FlattenLoadedContext(contextRetrieverByType);
 
             GetContextValue recCalculateKeyContext = (key) =>
@@ -36,7 +37,7 @@ namespace Engine.Core
                 return CalculateKey(identities, loadedContext, new ConfigurationPath(key.Split('_')[1]), rules).Map(x => x.ToString());
             };
 
-            var fullContext = new[] { flattenContext, recCalculateKeyContext }.Reduce(ContextHelpers.Merge);
+            var fullContext = ContextHelpers.Merge(flattenContext, recCalculateKeyContext);
 
             var fixedResult = Option<ConfigurationValue>.None;
             foreach (var identityType in identities.Select(x => x.Type))
@@ -44,7 +45,6 @@ namespace Engine.Core
                 fixedResult = ContextHelpers.GetFixedConfigurationContext(contextRetrieverByType(identityType))(path);
                 if (fixedResult.IsSome) break;
             }
-            
 
             var result = fixedResult.IfNone(() => CalculateRule(rules, fullContext));
 

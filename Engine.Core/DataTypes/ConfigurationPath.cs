@@ -1,8 +1,7 @@
 using System;
-using System.IO;
 using System.Linq;
 
-namespace Engine
+namespace Engine.Core.DataTypes
 {
     public struct ConfigurationPath:
         IEquatable<ConfigurationPath>, IComparable<ConfigurationPath>,
@@ -107,13 +106,30 @@ namespace Engine
             return !p1.Equals(p2);
         }
 
-        public ConfigurationPath ToRelative(ConfigurationPath root)
+        public ConfigurationPath ToRelative(ConfigurationPath query)
         {
-            if (root == "" || root == FullScan) return this;
+            //broken, need to add support for nested relative path a/b/_/d/  with a/b/c/d/e should return e
+            if (query == "" || query == FullScan) return this;
 
-            if (!_path.StartsWith(root)) throw new Exception("path not under root");
+            if (!_path.StartsWith(query)) throw new Exception("path not under root");
+
+            return From(_fragments.Skip(query._fragments.Length).ToArray());
+        }
+
+        public static bool Match(ConfigurationPath path, ConfigurationPath query)
+        {
+            if (query == FullScan) return true;
+            if (query._fragments.Length == 1)
+            {
+                if (query.IsScan) return true;
+                if (path._fragments.Length == 1) return query.Name == path.Name;
+            }
+            if (path._fragments.Length > 1)
+            {
+                return Match(From(path._fragments.Skip(1).ToArray()), From(query._fragments.Skip(1).ToArray()));
+            }
+            return false;
             
-            return From(_fragments.Skip(root._fragments.Length).ToArray());
         }
     }
 }

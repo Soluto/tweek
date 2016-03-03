@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Engine.Drivers.Keys
 {
-    interface IKeysDriver
+    public interface IKeysDriver
     {
         event Action OnPathChanges;
         Task<List<string>> GetPaths();

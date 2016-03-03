@@ -1,36 +1,34 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Engine.Context;
 using Engine.Core.Context;
+using Engine.Core.DataTypes;
 using Engine.Core.Rules;
-using Engine.Rules.Matcher;
 using Engine.Rules.ValueDistribution;
 using LanguageExt;
-using LanguageExt.SomeHelp;
 
-namespace Engine
+namespace Engine.Rules
 {
     public class MultiVariantRule : IRule
     {
         public string ExperimentId;
-        public Matcher Matcher;
+        public Matcher.Matcher Matcher;
 
-        public SortedList<DateTime, ValueDistributor> ValueDistubtors;
+        public SortedList<DateTime, ValueDistributor> ValueDistributors;
         public string OwnerType;
 
         public Option<ConfigurationValue> GetValue(GetContextValue fullContext)
         {
-            return fullContext(OwnerType + ":@CreationDate")
+            return fullContext(OwnerType + ".@CreationDate")
                 .Map(DateTime.Parse)
                 .Bind((creationDate) =>
                 {
-                    return (Matcher(fullContext))
-                        ? ValueDistubtors.First(x => x.Key <= creationDate)
-                            .Value(ExperimentId, fullContext(OwnerType + ":@@id"))
-                            .ToSome()
-                        : Option<ConfigurationValue>.None;
+                    if ( Matcher(fullContext) )
+                    {
+                        var valueDistributor = ValueDistributors.Reverse().First(x => x.Key <= creationDate).Value;
+                        return valueDistributor(ExperimentId, fullContext(OwnerType + ".@@id"));
+                    }
+                    return Option<ConfigurationValue>.None; 
                 });
 
 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
+using Engine.Core.DataTypes;
 using Engine.Core.Rules;
 using Engine.Drivers.Rules;
 using Engine.Rules.Matcher;
@@ -12,23 +13,6 @@ using Engine.Rules.ValueDistribution;
 
 namespace Engine.Rules.Creation
 {
-    public class RuleData
-    {
-        public string Key;
-        public int Order;
-        public string Type;
-        public string MatcherSchema;
-        public string SingleVairant_Value;
-        public Dictionary<DateTime, string> MultiVariant_ValueDistributionSchema;
-        public string MultiVariant_OwnerType;
-        public string MultiVariant_ExperimentId;
-    }
-
-    public enum RulesUpdate
-    {
-        Default
-    }
-
     static class RuleDataParsing
     {
         internal static IRule ParseRule(RuleData data,
@@ -36,9 +20,10 @@ namespace Engine.Rules.Creation
             ValueDistributorParser valueDistributorParser)
         {
             var matcher = matcherParser(data.MatcherSchema);
+
             if (data.Type == "SingleVariant")
             {
-                return new SingleVariantRule()
+                return new SingleVariantRule
                 {
                     Matcher = matcher,
                     Value = new ConfigurationValue(data.SingleVairant_Value)
@@ -51,12 +36,12 @@ namespace Engine.Rules.Creation
                 var valueDistributors = new SortedList<DateTime, ValueDistributor>(
                     data.MultiVariant_ValueDistributionSchema.ToDictionary(x=>x.Key, x=>valueDistributorParser(x.Value)));
 
-                return new MultiVariantRule()
+                return new MultiVariantRule
                 {
                     OwnerType = data.MultiVariant_OwnerType,
                     ExperimentId = data.MultiVariant_ExperimentId,
                     Matcher = matcher,
-                    ValueDistubtors = valueDistributors
+                    ValueDistributors = valueDistributors
                 };
             }
             throw new Exception("no parser for rule type");
@@ -66,22 +51,42 @@ namespace Engine.Rules.Creation
 
     public static class RulesRetrieverCreator
     {
+        private struct Indexed<T>
+        {
+            private readonly T _value;
+            private readonly int _index;
+            public Indexed(T value, int index)
+            {
+                _value = value;
+                _index = index ;
+            }
+            public T Value { get { return _value; }}
+            public int Index { get { return _index; } }
+        }
+
+        private static Indexed<T> IndexWith<T>(this T value, int index)
+        {
+            return new Indexed<T>(value, index);
+        }
+
+        private static async Task<ILookup<string, Indexed<IRule>>> LoadRules(IRulesDriver driver)
+        {
+            return (await driver.GetRules())
+                        .OrderBy(x => x.Key)
+                        .ThenBy(x => x.Order)
+                        .ToLookup(x => x.Key, x => RuleDataParsing.ParseRule(x,
+                                Matcher.Creation.Parser,
+                                ValueDistribution.Creation.Parser).IndexWith(x.Order));
+
+        }
         public static async Task<RulesRepository> Create(IRulesDriver driver)
         {
-           
-
-            var allRules = (await driver.GetRules())
-                                  .OrderBy(x=>x.Key)
-                                  .ThenBy(x=>x.Order)
-                                  .Select(x=> new {x.Key,Rule = 
-                                      RuleDataParsing.ParseRule(x, 
-                                      Matcher.Creation.Parser,
-                                      ValueDistribution.Creation.Parser)});
+            var allRules = await LoadRules(driver);
             
-            return (ConfigurationPath key) =>
-            {
-                return allRules.Where(x => x.Key == key).Select(x=>x.Rule).ToList();
-            };
+            return (ConfigurationPath key) => allRules[key]
+                                             .OrderBy(x=>x.Index)
+                                             .Select(x=>x.Value)
+                                             .ToList();
         }
     }
 }

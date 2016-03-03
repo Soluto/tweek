@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Engine.Context;
+using Engine.Core.DataTypes;
 
 namespace Engine.Rules.ValueDistribution
 {
