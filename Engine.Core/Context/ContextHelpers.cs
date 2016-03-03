@@ -50,7 +50,7 @@ namespace Engine.Core.Context
         {
             return (fullKey) =>
                 SplitFullKey(fullKey)
-                    .Bind(fk => getContextValue(fk.IdentityType + ":@fixed_" + fk.Key))
+                    .Bind(fk => getContextValue(fk.IdentityType + ".@fixed_" + fk.Key))
                     .Select(x => new ConfigurationValue(x));
         }
 
