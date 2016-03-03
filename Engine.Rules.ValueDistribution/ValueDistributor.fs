@@ -35,5 +35,26 @@ module ValueDistribution =
                                     (fun(x)-> [|("true",x |> floatToWeighted);("false", (1.0 - x)|>floatToWeighted)|])) 
         | s -> raise (Exception("expected operator, found:"+s))
         
+    let compile (schema:string) =
+        let json = schema |> JsonValue.Parse
+        let fn = match json.GetProperty("type").AsString() with
+        | "uniform" ->  let args = (json.GetProperty("args").AsArray() |> Array.map (fun x-> x.AsString()));
+                        (fun hash -> uniformCalc hash args)
+        | "weighted" ->  let args = json.GetProperty("args").Properties() |> Array.map (fun (k,v)-> (k, v.AsInteger()));
+                         (fun hash -> weightedCalc hash args)
+        | "bernoulliTrial" -> let args = json.GetProperty("args").AsFloat() |> (fun(x)-> [|("true",x |> floatToWeighted);("false", (1.0 - x)|>floatToWeighted)|]);
+                              (fun hash -> weightedCalc hash args)
+        | s -> raise (Exception("expected operator, found:"+s));
+        let sha1 = new SHA1CryptoServiceProvider(); 
+
+        (fun (units : Object[])-> 
+            let input = units |> Seq.map string |>  String.concat "."
+            let hash = BitConverter.ToUInt64(((sha1.ComputeHash (Encoding.UTF8.GetBytes input)).[0..15]), 0)
+            fn(hash))
+
     let CalculateValue (schema:string) ([<ParamArray>] units : Object[]) = 
-        calc (schema |> JsonValue.Parse) (units |> Seq.map string |>  String.concat ".");
+        units |> (schema |> compile)
+
+    let compile_ext (schema:string) : (Func<Object[], string>) =
+        new Func<Object[], string>(compile schema)
+

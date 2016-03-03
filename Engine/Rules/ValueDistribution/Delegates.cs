@@ -16,7 +16,8 @@ namespace Engine.Rules.ValueDistribution
     {
         public static ValueDistributor Parser(string schema)
         {
-            return (units) => new ConfigurationValue(ValueDistribution.CalculateValue(schema, units));
+            var valueDistributor = ValueDistribution.compile_ext(schema);
+            return (units) => new ConfigurationValue(valueDistributor(units));
         }
     }
 }

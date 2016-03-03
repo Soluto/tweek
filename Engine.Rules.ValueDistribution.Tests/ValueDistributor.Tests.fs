@@ -19,7 +19,7 @@ let generatedCalculatedScheme weights = weights |> Array.mapi (fun a b -> (a,b) 
                                                 |> dict 
                                                 |> JsonConvert.SerializeObject 
                                                 |> sprintf """{"type": "weighted","args": %s }""" 
-                                                |> ValueDistribution.CalculateValue
+                                                |> ValueDistribution.compile
 
 let assertCalculated (weights:float[]) (numberOfUsers:int) (samplingError:float) (calcFunction:obj[]->string)  = 
             let sumWeights = weights |> Array.sum
@@ -37,12 +37,12 @@ let assertCalculated (weights:float[]) (numberOfUsers:int) (samplingError:float)
 
 [<Fact>]
 let ``Use uniform distrubtion with single value``() =
-    let calculator = ValueDistribution.CalculateValue """{"type": "uniform", "args": ["abc"] }""" 
+    let calculator = ValueDistribution.compile """{"type": "uniform", "args": ["abc"] }""" 
     calculator [|"userName", 5|]  |> should equal "abc";
     
 [<Fact>]
 let ``Use weighted distrubtion with single value``() =
-    let calculator = ValueDistribution.CalculateValue """{"type": "weighted","args": {"5": 1} }""" 
+    let calculator = ValueDistribution.compile """{"type": "weighted","args": {"5": 1} }""" 
     calculator [|"userName", 5|]  |> should equal "5";
 
 [<Property>]
@@ -52,8 +52,8 @@ let ``Use Bernoulli distribution should equal weighted``() =
         let q = 1.0-p;
         let weightedInput = (sprintf """{"type": "weighted","args": {"true": %d, "false": %d} }""" (p*100.0 |> int ) (q*100.0 |> int))
         let bernoulliInput = (sprintf """{"type": "bernoulliTrial","args": %.2f }""" p)
-        let calculatorWeighted = ValueDistribution.CalculateValue weightedInput
-        let calculatorBernoulli = ValueDistribution.CalculateValue bernoulliInput
+        let calculatorWeighted = ValueDistribution.compile weightedInput
+        let calculatorBernoulli = ValueDistribution.compile bernoulliInput
         let getValue x = match x with | "true" -> 1 | "false" -> 0 
         let numTests = 1000;
         [|1..numTests|]
