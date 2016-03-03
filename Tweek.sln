@@ -20,6 +20,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Engine.Rules.ValueDistribut
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Engine.Rules.ValueDistribution.Tests", "Engine.Rules.ValueDistribution.Tests\Engine.Rules.ValueDistribution.Tests.fsproj", "{89722FEC-D776-4AEE-A24D-31357B5CC28F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Core", "Engine.Core\Engine.Core.csproj", "{5F466DE0-F2CF-4786-86B3-701C07C16849}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{89722FEC-D776-4AEE-A24D-31357B5CC28F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89722FEC-D776-4AEE-A24D-31357B5CC28F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89722FEC-D776-4AEE-A24D-31357B5CC28F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F466DE0-F2CF-4786-86B3-701C07C16849}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F466DE0-F2CF-4786-86B3-701C07C16849}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F466DE0-F2CF-4786-86B3-701C07C16849}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F466DE0-F2CF-4786-86B3-701C07C16849}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

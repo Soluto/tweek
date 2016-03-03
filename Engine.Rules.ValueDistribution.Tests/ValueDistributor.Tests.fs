@@ -46,10 +46,21 @@ let ``Use weighted distrubtion with single value``() =
     calculator [|"userName", 5|]  |> should equal "5";
 
 [<Property>]
-let ``Use coin distrubtion should equal weighted``(userId:int) =
-    let calculatorWeighted = ValueDistribution.CalculateValue """{"type": "weighted","args": {"true": 40, "false": 60} }""" 
-    let calculatorCoin = ValueDistribution.CalculateValue """{"type": "coin","args": 0.4 }""" 
-    calculatorWeighted [|userId|]  |> should equal (calculatorCoin [|userId|]);
+let ``Use Bernoulli distribution should equal weighted``() =
+    let generator = Gen.elements([0.01..0.99]) |> Arb.fromGen
+    Prop.forAll generator (fun p -> 
+        let q = 1.0-p;
+        let weightedInput = (sprintf """{"type": "weighted","args": {"true": %d, "false": %d} }""" (p*100.0 |> int ) (q*100.0 |> int))
+        let bernoulliInput = (sprintf """{"type": "bernoulliTrial","args": %.2f }""" p)
+        let calculatorWeighted = ValueDistribution.CalculateValue weightedInput
+        let calculatorBernoulli = ValueDistribution.CalculateValue bernoulliInput
+        let getValue x = match x with | "true" -> 1 | "false" -> 0 
+        let numTests = 1000;
+        [|1..numTests|]
+            |> Seq.map (fun x -> (calculatorWeighted [|x|], calculatorBernoulli [|x|]))
+            |> Seq.fold (fun (accWeighted, accBernoulli) (nextWeighted, nextBernoulli) -> (accWeighted + (getValue nextWeighted), accBernoulli + (getValue nextBernoulli))) (0, 0)
+            |> fun (weightedResult, bernoulliResult) -> weightedResult |> should (equalWithin (numTests/20)) bernoulliResult
+    )
 
 [<Fact>]
 let ``run single tests and verify similar values``()=
@@ -58,13 +69,6 @@ let ``run single tests and verify similar values``()=
     let totalUsers = 100000
     let samplingError = 0.01
     assertCalculated weights totalUsers samplingError calculatorWeighted
-
-
-let rand = Gen.sequence ([Gen.elements([1..10]);
-                          Gen.elements([1..10]);
-                          Gen.elements([1..10]);
-                          ]) |> Arb.fromGen
-
 
 [<Property>]
 let ``run many tests and verify similar values``()=

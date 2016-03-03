@@ -7,7 +7,15 @@ using Engine.Context;
 
 namespace Engine.Rules.ValueDistribution
 {
-    public delegate ValueDistributor MatcherValueDistributor(string valueDistribution);
+    public delegate ValueDistributor ValueDistributorParser(string valueDistribution);
+
     public delegate ConfigurationValue ValueDistributor(params object[] units);
 
+    public static class Creation
+    {
+        public static ValueDistributor Parser(string schema)
+        {
+            return (units) => new ConfigurationValue(ValueDistribution.CalculateValue(schema, units));
+        }
+    }
 }

@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Engine.Context;
+using Engine.Core;
+using Engine.Core.Context;
+using Engine.Core.Rules;
+using Engine.Core.Utils;
 using Engine.Keys;
 using Engine.Rules;
 using LanguageExt;
 using LanguageExt.SomeHelp;
+using ContextHelpers = Engine.Context.ContextHelpers;
 
 namespace Engine
 {
@@ -15,13 +21,11 @@ namespace Engine
         PathTraversal traversal,
         HashSet<Identity> identities,
         GetContextByIdentity getContext,
-        RulesRetriever rules);
+        RulesRepository rules);
 
 
     internal static class _
     {
-        internal static CalculateRules calculateRules = (list, context) => new ConfigurationValue();
-
         internal static Calculate CalculateImpl = async (pathQuery,
             traversal, 
             identities,
@@ -31,23 +35,12 @@ namespace Engine
          
             var paths = traversal(pathQuery);
             var contexts = await ContextHelpers.LoadContexts(identities, contextRetriever);
-            var calculatedContext = ContextHelpers.GetContextRetrieverByType(contexts, identities);
+            var pathsWithRules =  paths.Select(path => new {Path = path, Rules=rules(path)}).ToList();
 
-            return paths.Select(configPath =>
-            {
-                var fixedResult = Option<ConfigurationValue>.None;
-                foreach (var identity in identities)
-                {
-                    fixedResult = ContextHelpers.GetFixedConfigurationContext(contexts(identity))(configPath);
-                    if (fixedResult.IsSome) break;
-                }
-
-                fixedResult =  fixedResult.IfNone(() => calculateRules(rules(configPath), calculatedContext));
-                
-                return fixedResult.Select(value => new {configPath, value});
-            })
+            return pathsWithRules.Select(x => EngineCore.CalculateKey(identities, contexts, x.Path, x.Rules)
+                .Select(value => new { path= x.Path, value }))
             .SkipEmpty()
-            .ToDictionary(x => x.configPath, x => x.value);
+            .ToDictionary(x => x.path, x => x.value);
         };
     } 
 }

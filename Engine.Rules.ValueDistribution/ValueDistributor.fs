@@ -30,7 +30,7 @@ module ValueDistribution =
         match json.GetProperty("type").AsString()  with
         | "uniform" ->  uniformCalc hash (json.GetProperty("args").AsArray() |> Array.map (fun x-> x.AsString()))
         | "weighted" -> weightedCalc hash ( json.GetProperty("args").Properties() |> Array.map (fun (k,v)-> (k, v.AsInteger())) )
-        | "coin" -> weightedCalc hash (
+        | "bernoulliTrial" -> weightedCalc hash (
                                     json.GetProperty("args").AsFloat() |>
                                     (fun(x)-> [|("true",x |> floatToWeighted);("false", (1.0 - x)|>floatToWeighted)|])) 
         | s -> raise (Exception("expected operator, found:"+s))

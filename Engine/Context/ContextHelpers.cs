@@ -2,39 +2,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Engine.Context;
+using Engine.Core.Context;
 using LanguageExt;
+using LanguageExt.SomeHelp;
 
-namespace Engine
+namespace Engine.Context
 {
+    public delegate Task<GetContextValue> GetContextByIdentity(Identity identity);
+
     public static class ContextHelpers
     {
-        internal static GetLoadedContextByIdentityType GetContextRetrieverByType(GetLoadedContextByIdentity getLoadedContexts, HashSet<Identity> identities)
-        {
-            return (string type) =>
-            {
-                return getLoadedContexts(identities.Single(x => x.Type == type));
-            };
-        }
-
+        
         internal static async Task<GetLoadedContextByIdentity> LoadContexts(HashSet<Identity> identities, GetContextByIdentity byId)
         {
-            var contexts = await Task.WhenAll(identities.Select(async x => new {Identity=x, Context = await byId(x) }));
+            var contexts = await Task.WhenAll(identities.Select(async (Identity identity) => new { Identity = identity, Context = await byId(identity) }));
             return (Identity identity) =>
             {
                 return contexts
                     .Where(x => x.Identity == identity)
                     .Select(x => x.Context)
-                    .SingleOrDefault() ?? ((key)=>Option<String>.None);
-
+                    .SingleOrDefault() ?? ((key) => Option<String>.None);
             };
         }
 
-        internal static GetContextFixedConfigurationValue GetFixedConfigurationContext(GetContextValue getContextValue)
+        public static GetContextValue Create(IDictionary<string, string> data)
         {
-            return (path) =>
-                (getContextValue(path.ToString())).Select(x => new ConfigurationValue(x));
-
+            return (key) => data.ContainsKey(key) ? data[key].ToSome() : Option<string>.None;
         }
+
     }
 }

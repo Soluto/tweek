@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using LanguageExt;
 using LanguageExt.SomeHelp;
 
-namespace Engine
+namespace Engine.Core.Utils
 {
     public static class OptionHelpers
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using LanguageExt;
 using LanguageExt.SomeHelp;
 
-namespace Engine
+namespace Engine.Core.Utils
 {
     public static class OptionIEnumrableHelpers
     {

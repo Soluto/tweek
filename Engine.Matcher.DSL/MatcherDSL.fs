@@ -7,6 +7,9 @@ module MatchDSL =
     exception ParseError of string
 
     type Context = string-> Option<string>
+    type ContextDelegate = delegate of string-> string
+
+    let nullProtect x = match x with |null -> None |_-> Some x;
 
     let (|Property|Operator|) (input:string) = if input.[0] = '$' then Operator else Property
 
@@ -20,7 +23,7 @@ module MatchDSL =
         | CompareOp of CompareOp
         | LogicalOp of LogicalOp
 
-    let parseOp op : Op = match op with
+    let private parseOp op : Op = match op with
         |"$not" -> Op.LogicalOp(LogicalOp.Not)
         |"$or" -> Op.LogicalOp(LogicalOp.Or)
         |"$and" -> Op.LogicalOp(LogicalOp.And)
@@ -31,14 +34,14 @@ module MatchDSL =
         |"$lt" -> Op.CompareOp(CompareOp.LessThan)
         | s -> raise (ParseError("expected operator, found:"+s))
 
-    let evaluateComparisonOp = function 
+    let private evaluateComparisonOp = function 
                     | CompareOp.Equal -> (fun a b -> a = b)
                     | CompareOp.GreaterThan -> (fun a b -> a > b)
                     | CompareOp.LessThan -> (fun a b -> a < b)
                     | CompareOp.GreaterEqual -> (fun a b -> a >= b)
                     | CompareOp.LessEqual -> (fun a b -> a <= b)
 
-    let evaluateComparison (op: CompareOp) (jsonValue:JsonValue) (stringValue:string) : bool =
+    let private evaluateComparison (op: CompareOp) (jsonValue:JsonValue) (stringValue:string) : bool =
         match jsonValue with
             | JsonValue.String x->  evaluateComparisonOp op stringValue x
             | JsonValue.Number x->  evaluateComparisonOp op (stringValue.AsDecimal()) x
@@ -47,7 +50,7 @@ module MatchDSL =
             | JsonValue.Null -> false
             | _ -> false        
 
-    let extractProperties (schema:JsonValue) =
+    let private extractProperties (schema:JsonValue) =
             match schema with
                 | JsonValue.Record x -> x |> Seq.map (fun (opString, valueToCompare) -> ((parseOp opString), valueToCompare))
                 | x -> seq([(Op.CompareOp(CompareOp.Equal), x)])
@@ -83,5 +86,13 @@ module MatchDSL =
                         | _ -> raise (ParseError("non logical op was used in the wrong place"))
             ) |> reducePredicate op )
 
-    let rec Match (schema: JsonValue) (context: Context) : bool =
+    let Match (schema: JsonValue) (context: Context) : bool =
         MatchWithOp (&&) schema context 
+
+    let Match_ext (schema: string) (context: ContextDelegate) : bool =
+        Match (JsonValue.Parse(schema)) 
+               (context.Invoke >> nullProtect)
+
+    
+
+    

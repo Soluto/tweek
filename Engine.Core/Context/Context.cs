@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using LanguageExt;
 
-namespace Engine.Context
+namespace Engine.Core.Context
 {
-    public delegate Task<GetContextValue> GetContextByIdentity(Identity identity);
     public delegate Option<string> GetContextValue(string key);
 
     //utils

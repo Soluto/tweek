@@ -4,37 +4,46 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Engine.Context;
+using Engine.Core;
+using Engine.Core.Utils;
 using Engine.Keys;
 using Engine.Rules;
 using LanguageExt;
 
 namespace Engine
 {
-    public interface IEngine
+    public interface ITweek
     {
         Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(
-            ConfigurationPath path,
+            ConfigurationPath pathQuery,
             HashSet<Identity> identities);
     }
 
-    public class Engine : IEngine
+    public class Tweek : ITweek
     {
         private readonly GetContextByIdentity _getContext;
-        private readonly RulesRetriever _rules;
+        private readonly RulesRepository _rules;
         private readonly PathTraversal _pathTraversal;
 
-        public Engine(GetContextByIdentity getContext,
+        public Tweek(GetContextByIdentity getContext,
             PathTraversal pathTraversal,
-            RulesRetriever rules)
+            RulesRepository rules)
         {
             _getContext = getContext;
             _rules = rules;
             _pathTraversal = pathTraversal;
         }
 
-        public Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(ConfigurationPath path, HashSet<Identity> identities)
+        public async Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(ConfigurationPath pathQuery, HashSet<Identity> identities)
         {
-            return _.CalculateImpl(path, _pathTraversal, identities, _getContext, _rules);
+            var paths = _pathTraversal(pathQuery);
+            var contexts = await ContextHelpers.LoadContexts(identities, _getContext);
+            var pathsWithRules = paths.Select(path => new { Path = path, Rules = _rules(path) }).ToList();
+
+            return pathsWithRules.Select(x => EngineCore.CalculateKey(identities, contexts, x.Path, x.Rules)
+                .Select(value => new { path = x.Path, value }))
+                .SkipEmpty()
+                .ToDictionary(x => x.path, x => x.value);
         }
     }
 }
