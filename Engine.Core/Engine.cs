@@ -11,6 +11,8 @@ using Engine.Core.Utils;
 
 namespace Engine.Core
 {
+    public delegate List<IRule> RulesRepository(ConfigurationPath path);
+
     public static class EngineCore
     {
         internal static Option<ConfigurationValue> CalculateRule(
@@ -25,7 +27,7 @@ namespace Engine.Core
         public static Option<ConfigurationValue> CalculateKey(HashSet<Identity> identities,
             GetLoadedContextByIdentity loadedContext,
             ConfigurationPath path,
-            List<IRule> rules)
+            RulesRepository rules)
         {
             var contextRetrieverByType = ContextHelpers.GetContextRetrieverByType(loadedContext, identities);
 
@@ -42,11 +44,11 @@ namespace Engine.Core
             var fixedResult = Option<ConfigurationValue>.None;
             foreach (var identityType in identities.Select(x => x.Type))
             {
-                fixedResult = ContextHelpers.GetFixedConfigurationContext(contextRetrieverByType(identityType))(path);
+                fixedResult = ContextHelpers.GetFixedConfigurationContext(fullContext, identityType)(path);
                 if (fixedResult.IsSome) break;
             }
 
-            var result = fixedResult.IfNone(() => CalculateRule(rules, fullContext));
+            var result = fixedResult.IfNone(() => CalculateRule(rules(path), fullContext));
 
             return result;
         }

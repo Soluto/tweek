@@ -13,5 +13,4 @@ using LanguageExt;
 namespace Engine.Rules
 {
     public delegate Option<ConfigurationValue> CalculateRules(List<IRule> rules, GetLoadedContextByIdentityType getLoadedContext);
-    public delegate List<IRule> RulesRepository(ConfigurationPath path);
 }

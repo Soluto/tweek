@@ -42,7 +42,7 @@ namespace Engine
             var pathsWithRules = paths.Select(path => new { Path = path, Rules = _rules(path) }).ToList();
 
             return pathsWithRules.Select(x =>
-                    EngineCore.CalculateKey(identities, contexts, x.Path, x.Rules).Select(value => new { path = x.Path.ToRelative(pathQuery), value })
+                    EngineCore.CalculateKey(identities, contexts, x.Path, _rules).Select(value => new { path = x.Path.ToRelative(pathQuery), value })
                  )
                 .SkipEmpty()
                 .ToDictionary(x => x.path, x => x.value);

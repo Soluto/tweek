@@ -46,11 +46,10 @@ namespace Engine.Core.Context
                 SplitFullKey(fullKey).Bind(fk => getLoadedContext(fk.IdentityType)(fk.Key));
         }
 
-        internal static GetContextFixedConfigurationValue GetFixedConfigurationContext(GetContextValue getContextValue)
+        internal static GetContextFixedConfigurationValue GetFixedConfigurationContext(GetContextValue getContextValue, string identityType)
         {
-            return (fullKey) =>
-                SplitFullKey(fullKey)
-                    .Bind(fk => getContextValue(fk.IdentityType + ".@fixed_" + fk.Key))
+            return (path) =>
+                getContextValue(identityType + ".@fixed_" + path)
                     .Select(x => new ConfigurationValue(x));
         }
 
