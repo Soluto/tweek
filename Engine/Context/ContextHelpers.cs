@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Engine.Core.Context;
 using Engine.Core.DataTypes;
 using LanguageExt;
-using LanguageExt.SomeHelp;
 
 namespace Engine.Context
 {
@@ -16,14 +15,14 @@ namespace Engine.Context
 
         internal static async Task<GetLoadedContextByIdentity> LoadContexts(HashSet<Identity> identities, GetContextByIdentity byId)
         {
-            var contexts = await Task.WhenAll(identities.Select(async (Identity identity) => new { Identity = identity, Context = await byId(identity) }));
+            var contexts = await Task.WhenAll(identities.Select(async identity => new { Identity = identity, Context = await byId(identity) }));
             
             return (Identity identity) =>
             {
                 return contexts
                     .Where(x => x.Identity.Equals(identity))
                     .Select(x => x.Context)
-                    .SingleOrDefault() ?? ((key) => Option<String>.None);
+                    .SingleOrDefault() ?? (key => Option<String>.None);
             };
         }
 

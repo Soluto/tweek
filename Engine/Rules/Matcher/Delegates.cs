@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Engine.Context;
-using Engine.Core.Context;
+﻿using Engine.Core.Context;
 using Engine.Match.DSL;
 
 namespace Engine.Rules.Matcher
@@ -16,9 +10,9 @@ namespace Engine.Rules.Matcher
     {
         public static Matcher Parser(string schema)
         {
-            return (context) =>
+            return context =>
             {
-                return MatchDSL.Match_ext(schema, (key) => context(key).Match(x => x, () => null));
+                return MatchDSL.Match_ext(schema, key => context(key).Match(x => x, () => null));
             };
         }    
     }

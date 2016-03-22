@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Engine.Core.Context;
 using Engine.Core.DataTypes;
 using Engine.Core.Rules;
@@ -33,7 +30,7 @@ namespace Engine.Core
 
             var flattenContext = ContextHelpers.FlattenLoadedContext(contextRetrieverByType);
 
-            GetContextValue recCalculateKeyContext = (key) =>
+            GetContextValue recCalculateKeyContext = key =>
             {
                 if (!key.StartsWith("@@key")) return Option<string>.None;
                 return CalculateKey(identities, loadedContext, new ConfigurationPath(key.Split('_')[1]), rules).Map(x => x.ToString());

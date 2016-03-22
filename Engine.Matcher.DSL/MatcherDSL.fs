@@ -43,9 +43,9 @@ module MatchDSL =
 
     let private evaluateComparison (op: CompareOp) (jsonValue:JsonValue) (stringValue:string) : bool =
         match jsonValue with
-            | JsonValue.String x->  evaluateComparisonOp op stringValue x
-            | JsonValue.Number x->  evaluateComparisonOp op (stringValue.AsDecimal()) x
-            | JsonValue.Boolean x-> evaluateComparisonOp op (stringValue.AsBoolean()) x
+            | JsonValue.String x ->  evaluateComparisonOp op stringValue x
+            | JsonValue.Number x ->  evaluateComparisonOp op (stringValue.AsDecimal()) x
+            | JsonValue.Boolean x -> evaluateComparisonOp op (stringValue.AsBoolean()) x
             | JsonValue.Float x ->  evaluateComparisonOp op (stringValue.AsFloat()) x
             | JsonValue.Null -> false
             | _ -> false        

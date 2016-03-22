@@ -55,6 +55,12 @@ namespace Engine.Core.DataTypes
             get { return Name == "_"; }
         }
 
+        public override bool Equals(object obj)
+        {
+            var otherPath = obj as ConfigurationPath?;
+            if (otherPath == null) return false;
+            return Equals(otherPath);
+        }
 
         public bool Equals(ConfigurationPath other)
         {

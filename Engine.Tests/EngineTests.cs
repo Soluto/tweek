@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Engine.Context;
 using Engine.Core;
-using Engine.Core.Context;
 using Engine.Core.DataTypes;
 using Engine.Core.Rules;
 using Engine.Keys;
@@ -22,7 +20,7 @@ namespace Engine.Tests
         {
             var context = ContextByIdentityCreation.Convert(new Dictionary<string,string>(){{"AgentVersion", "10"}});
             GetContextByIdentity contextByIdentity = async (identity) => context;
-            PathTraversal traversal = path => new HashSet<ConfigurationPath>() {"abc/somepath"};
+            PathTraversal traversal = path => new HashSet<ConfigurationPath> {"abc/somepath"};
             RulesRepository rulesRepository = path => new List<IRule>()
             {
                 new SingleVariantRule()

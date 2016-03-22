@@ -12,7 +12,7 @@ namespace Engine.Rules
 
         public Option<ConfigurationValue> GetValue(GetContextValue fullContext)
         {
-            return (Matcher(fullContext)) ? Value : Option<ConfigurationValue>.None;
+            return Matcher(fullContext) ? Value : Option<ConfigurationValue>.None;
         }
     }
 }

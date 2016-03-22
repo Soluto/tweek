@@ -76,14 +76,12 @@ namespace Engine.Core.Tests
                 .With("path/to/key", FakeRule.Create(ctx => ctx("device.PartnerBrand") == "ABC" ? new ConfigurationValue("SomeValue") : Option<ConfigurationValue>.None));
 
             var value = EngineCore.CalculateKey(new HashSet<Identity> { identity }, context, "path/to/key", rulesRepo).Map(x => x.Value);
-
             Assert.AreEqual("SomeValue", value);
 
             rulesRepo = rulesRepo
                 .With("path/to/other/key", FakeRule.Create(ctx => ctx("device.OtherProp") == "DEF" ? new ConfigurationValue("SomeValue") : Option<ConfigurationValue>.None));
 
             value = EngineCore.CalculateKey(new HashSet<Identity> { identity }, context, "path/to/other/key", rulesRepo).Map(x => x.Value);
-
             Assert.IsTrue(value.IsNone);
 
             rulesRepo = rulesRepo

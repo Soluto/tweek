@@ -21,7 +21,7 @@ namespace Engine.Rules
         {
             return fullContext(OwnerType + ".@CreationDate")
                 .Map(DateTime.Parse)
-                .Bind((creationDate) =>
+                .Bind(creationDate =>
                 {
                     if ( Matcher(fullContext) )
                     {

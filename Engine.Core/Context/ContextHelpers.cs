@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Engine.Core.DataTypes;
 using Engine.Core.Utils;
 using LanguageExt;
@@ -28,12 +26,12 @@ namespace Engine.Core.Context
 
         internal static GetContextValue ContextValueForId(string id)
         {
-            return (key) => key == "@@id" ? id : Option<string>.None;
+            return key => key == "@@id" ? id : Option<string>.None;
         }
 
         internal static GetLoadedContextByIdentityType GetContextRetrieverByType(GetLoadedContextByIdentity getLoadedContexts, HashSet<Identity> identities)
         {
-            return (type) =>
+            return type =>
             {
                 var identity = identities.Single(x => x.Type == type);
                 return Merge(getLoadedContexts(identity), ContextValueForId(identity.Id));
@@ -42,20 +40,20 @@ namespace Engine.Core.Context
 
         internal static GetContextValue FlattenLoadedContext(GetLoadedContextByIdentityType getLoadedContext)
         {
-            return (fullKey) =>
+            return fullKey =>
                 SplitFullKey(fullKey).Bind(fk => getLoadedContext(fk.IdentityType)(fk.Key));
         }
 
         internal static GetContextFixedConfigurationValue GetFixedConfigurationContext(GetContextValue getContextValue, string identityType)
         {
-            return (path) =>
+            return path =>
                 getContextValue(identityType + ".@fixed_" + path)
                     .Select(x => new ConfigurationValue(x));
         }
 
         internal static GetContextValue Merge(GetContextValue a, GetContextValue b)
         {
-            return (key) => a(key).IfNone(() => b(key));
+            return key => a(key).IfNone(() => b(key));
         }
     }
 }
