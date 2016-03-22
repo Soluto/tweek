@@ -1,4 +1,4 @@
-namespace Engine.Core.DataTypes
+namespace Engine.DataTypes
 {
     public struct ConfigurationValue
     {

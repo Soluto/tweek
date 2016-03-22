@@ -1,6 +1,6 @@
 using System;
 
-namespace Engine.Core.DataTypes
+namespace Engine.DataTypes
 {
     public class Identity: Tuple<string, string>
     {

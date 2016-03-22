@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Engine.Core.Context;
-using Engine.Core.DataTypes;
+using Engine.DataTypes;
 using LanguageExt;
 using NUnit.Framework;
 

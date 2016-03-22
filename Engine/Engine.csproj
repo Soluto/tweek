@@ -71,11 +71,7 @@
     <Compile Include="Api.cs" />
     <Compile Include="Context\ContextCreation.cs" />
     <Compile Include="Context\ContextHelpers.cs" />
-    <Compile Include="Drivers\Context\IContextDriver.cs" />
-    <Compile Include="Drivers\Keys\IKeysDriver.cs" />
     <Compile Include="Keys\Delegates.cs" />
-    <Compile Include="Drivers\Rules\IRulesDriver.cs" />
-    <Compile Include="Rules\Creation\RuleData.cs" />
     <Compile Include="Rules\Creation\RulesRetrieverCreator.cs" />
     <Compile Include="Rules\Delegates.cs" />
     <Compile Include="Rules\MultiVariantRule.cs" />
@@ -88,6 +84,14 @@
     <ProjectReference Include="..\Engine.Core\Engine.Core.csproj">
       <Project>{5f466de0-f2cf-4786-86b3-701c07c16849}</Project>
       <Name>Engine.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine.DataTypes\Engine.DataTypes.csproj">
+      <Project>{f3953018-7813-4eab-8116-670848de8bb1}</Project>
+      <Name>Engine.DataTypes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine.Drivers\Engine.Drivers.csproj">
+      <Project>{8569dd6d-27d1-40a1-8161-e12157e845f3}</Project>
+      <Name>Engine.Drivers</Name>
     </ProjectReference>
     <ProjectReference Include="..\Engine.Matcher.DSL\Engine.Matcher.DSL.fsproj">
       <Project>{71903c50-6c0e-443e-914a-bf9d4d9cc964}</Project>

@@ -24,6 +24,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Core", "Engine.Core\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Core.Tests", "Engine.Core.Tests\Engine.Core.Tests.csproj", "{34FB0339-F015-4589-9C08-D63382601CE9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Drivers", "Drivers", "{598101A0-7DD1-4E0C-8AB6-B2DA931713B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Drivers", "Engine.Drivers\Engine.Drivers.csproj", "{8569DD6D-27D1-40A1-8161-E12157E845F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.DataTypes", "Engine.DataTypes\Engine.DataTypes.csproj", "{F3953018-7813-4EAB-8116-670848DE8BB1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +68,14 @@ Global
 		{34FB0339-F015-4589-9C08-D63382601CE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34FB0339-F015-4589-9C08-D63382601CE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34FB0339-F015-4589-9C08-D63382601CE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8569DD6D-27D1-40A1-8161-E12157E845F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8569DD6D-27D1-40A1-8161-E12157E845F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8569DD6D-27D1-40A1-8161-E12157E845F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8569DD6D-27D1-40A1-8161-E12157E845F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3953018-7813-4EAB-8116-670848DE8BB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3953018-7813-4EAB-8116-670848DE8BB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3953018-7813-4EAB-8116-670848DE8BB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3953018-7813-4EAB-8116-670848DE8BB1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

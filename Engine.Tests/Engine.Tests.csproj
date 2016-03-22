@@ -76,6 +76,10 @@
       <Project>{5f466de0-f2cf-4786-86b3-701c07c16849}</Project>
       <Name>Engine.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Engine.DataTypes\Engine.DataTypes.csproj">
+      <Project>{F3953018-7813-4EAB-8116-670848DE8BB1}</Project>
+      <Name>Engine.DataTypes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Engine\Engine.csproj">
       <Project>{88200f63-8699-4b6e-8969-4c45827ad0c3}</Project>
       <Name>Engine</Name>

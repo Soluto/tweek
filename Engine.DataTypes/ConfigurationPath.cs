@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Engine.Core.DataTypes
+namespace Engine.DataTypes
 {
     public struct ConfigurationPath:
         IEquatable<ConfigurationPath>, IComparable<ConfigurationPath>,

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Engine.Core.DataTypes;
+using Engine.DataTypes;
 using Engine.Drivers.Keys;
 
 namespace Engine.Keys

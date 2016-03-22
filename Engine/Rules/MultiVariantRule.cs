@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Engine.Core.Context;
-using Engine.Core.DataTypes;
 using Engine.Core.Rules;
+using Engine.DataTypes;
 using Engine.Rules.ValueDistribution;
 using LanguageExt;
 

@@ -1,4 +1,4 @@
-﻿using Engine.Core.DataTypes;
+﻿using Engine.DataTypes;
 
 namespace Engine.Rules.ValueDistribution
 {
