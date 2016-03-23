@@ -46,7 +46,7 @@ namespace Engine.Core.Tests
         public void FixedValueInContext()
         {
             var identity = new Identity("device", "1");
-            var context = CreateContext(identity, new Tuple<string, string>("@fixed_path/to/key", "SomeValue"));
+            var context = CreateContext(identity, new Tuple<string, string>("@fixed:path/to/key", "SomeValue"));
             var rulesRepo = RulesRepositoryHelpers.Empty();
 
             var value = EngineCore.CalculateKey(new HashSet<Identity> { identity }, context, "path/to/key", rulesRepo).Map(x => x.Value);
@@ -60,7 +60,7 @@ namespace Engine.Core.Tests
             var identity = new Identity("device", "1");
             var context = CreateContext(identity);
             var rulesRepo = RulesRepositoryHelpers.With("path/to/key2", FakeRule.Create(ctx => new ConfigurationValue("SomeValue")))
-                                                  .With("path/to/key", FakeRule.Create(ctx => ctx("@@key_path/to/key2").Map(x=>new ConfigurationValue(x))));
+                                                  .With("path/to/key", FakeRule.Create(ctx => ctx("@@key:path/to/key2").Map(x=>new ConfigurationValue(x))));
 
             var value = EngineCore.CalculateKey(new HashSet<Identity> { identity }, context, "path/to/key", rulesRepo).Map(x => x.Value);
 

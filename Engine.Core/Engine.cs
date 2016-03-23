@@ -33,7 +33,7 @@ namespace Engine.Core
             GetContextValue recCalculateKeyContext = key =>
             {
                 if (!key.StartsWith("@@key")) return Option<string>.None;
-                return CalculateKey(identities, loadedContext, new ConfigurationPath(key.Split('_')[1]), rules).Map(x => x.ToString());
+                return CalculateKey(identities, loadedContext, new ConfigurationPath(key.Split(':')[1]), rules).Map(x => x.ToString());
             };
 
             var fullContext = ContextHelpers.Merge(flattenContext, recCalculateKeyContext);

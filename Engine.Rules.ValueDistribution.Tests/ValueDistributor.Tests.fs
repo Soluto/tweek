@@ -84,4 +84,3 @@ let ``run many tests and verify similar values``()=
                         let calculatorWeighted = generatedCalculatedScheme weights
                         assertCalculated weights totalUsers samplingError calculatorWeighted
     )
-                          

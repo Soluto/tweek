@@ -47,7 +47,7 @@ namespace Engine.Core.Context
         internal static GetContextFixedConfigurationValue GetFixedConfigurationContext(GetContextValue getContextValue, string identityType)
         {
             return path =>
-                getContextValue(identityType + ".@fixed_" + path)
+                getContextValue(identityType + ".@fixed:" + path)
                     .Select(x => new ConfigurationValue(x));
         }
 
