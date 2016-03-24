@@ -12,6 +12,7 @@ namespace Engine.Core.Context
         internal class FullKey : Tuple<string, string>
         {
             public FullKey(string identityType, string key) : base(identityType, key) { }
+
             public string IdentityType { get { return Item1; } }
             public string Key { get { return Item2; } }
         }

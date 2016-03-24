@@ -5,13 +5,13 @@ namespace Engine.Rules.Creation
 {
     public class RuleData
     {
-        public string Key;
-        public int Order;
-        public string Type;
-        public string MatcherSchema;
-        public string SingleVairant_Value;
-        public Dictionary<DateTime, string> MultiVariant_ValueDistributionSchema;
-        public string MultiVariant_OwnerType;
-        public string MultiVariant_ExperimentId;
+        public string Id { get; set; }
+        public string Key { get; set; }
+        public int Order { get; set; }
+        public string Type { get; set; }
+        public string MatcherSchema { get; set; }
+        public string SingleVariant_Value { get; set; }
+        public Dictionary<DateTimeOffset, string> MultiVariant_ValueDistributionSchema { get; set; }
+        public string MultiVariant_OwnerType { get; set; }
     }
 }

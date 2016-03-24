@@ -8,7 +8,7 @@ namespace Engine.Keys
 {
     public delegate HashSet<ConfigurationPath> PathTraversal(ConfigurationPath path);
 
-    public static class Creation
+    public static class PathTraversalCreation
     {
         private static async Task<HashSet<ConfigurationPath>> GetPaths(IKeysDriver driver)
         {

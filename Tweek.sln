@@ -30,6 +30,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Drivers", "Engine.Dr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.DataTypes", "Engine.DataTypes\Engine.DataTypes.csproj", "{F3953018-7813-4EAB-8116-670848DE8BB1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Drivers.Cassandra", "Drivers\Engine.Drivers.Cassandra\Engine.Drivers.Cassandra.csproj", "{6A83D39C-267F-4C88-9DF9-E1CBCCB42F96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Drivers.Tests", "Engine.Drivers.Tests\Engine.Drivers.Tests.csproj", "{C4AD3167-1391-45FB-B314-9AE05B4618B1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,8 +80,19 @@ Global
 		{F3953018-7813-4EAB-8116-670848DE8BB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3953018-7813-4EAB-8116-670848DE8BB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3953018-7813-4EAB-8116-670848DE8BB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A83D39C-267F-4C88-9DF9-E1CBCCB42F96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A83D39C-267F-4C88-9DF9-E1CBCCB42F96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A83D39C-267F-4C88-9DF9-E1CBCCB42F96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A83D39C-267F-4C88-9DF9-E1CBCCB42F96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4AD3167-1391-45FB-B314-9AE05B4618B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4AD3167-1391-45FB-B314-9AE05B4618B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4AD3167-1391-45FB-B314-9AE05B4618B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4AD3167-1391-45FB-B314-9AE05B4618B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6A83D39C-267F-4C88-9DF9-E1CBCCB42F96} = {598101A0-7DD1-4E0C-8AB6-B2DA931713B6}
 	EndGlobalSection
 EndGlobal

@@ -14,7 +14,7 @@ namespace Engine.Rules
         public string ExperimentId;
         public Matcher.Matcher Matcher;
 
-        public SortedList<DateTime, ValueDistributor> ValueDistributors;
+        public SortedList<DateTimeOffset, ValueDistributor> ValueDistributors;
         public string OwnerType;
 
         public Option<ConfigurationValue> GetValue(GetContextValue fullContext)

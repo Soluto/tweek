@@ -117,9 +117,9 @@ namespace Engine.DataTypes
             //broken, need to add support for nested relative path a/b/_/d/  with a/b/c/d/e should return e
             if (query == "" || query == FullScan) return this;
 
-            if (!_path.StartsWith(query)) throw new Exception("path not under root");
+            if (!query.IsScan || !_path.StartsWith(query.Prefix)) throw new Exception("path not under root");
 
-            return From(_fragments.Skip(query._fragments.Length).ToArray());
+            return From(_fragments.Skip(query._fragments.Length - (query.IsScan ? 1 : 0)).ToArray());
         }
 
         public static bool Match(ConfigurationPath path, ConfigurationPath query)

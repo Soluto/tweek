@@ -18,26 +18,26 @@ namespace Engine.Rules.Creation
             ValueDistributorParser valueDistributorParser)
         {
             var matcher = matcherParser(data.MatcherSchema);
-
+            
             if (data.Type == "SingleVariant")
             {
                 return new SingleVariantRule
                 {
                     Matcher = matcher,
-                    Value = new ConfigurationValue(data.SingleVairant_Value)
+                    Value = new ConfigurationValue(data.SingleVariant_Value)
                 };
             }
 
             if (data.Type == "MultiVariant")
             {
                 
-                var valueDistributors = new SortedList<DateTime, ValueDistributor>(
+                var valueDistributors = new SortedList<DateTimeOffset, ValueDistributor>(
                     data.MultiVariant_ValueDistributionSchema.ToDictionary(x=>x.Key, x=>valueDistributorParser(x.Value)));
 
                 return new MultiVariantRule
                 {
                     OwnerType = data.MultiVariant_OwnerType,
-                    ExperimentId = data.MultiVariant_ExperimentId,
+                    ExperimentId = data.Id,
                     Matcher = matcher,
                     ValueDistributors = valueDistributors
                 };
