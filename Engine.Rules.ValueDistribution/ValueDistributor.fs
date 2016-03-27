@@ -17,7 +17,7 @@ module ValueDistribution =
         let selectedItem = hash % (weighted |> Seq.sumBy snd |> uint64) |> int
 
         weighted
-        |> scanWithFirstItem (fun (p,a) (x,n) -> (x, a+n))
+        |> scanWithFirstItem (fun (_,acc_weight) (next_val,weight) -> (next_val, acc_weight+weight))
         |> Seq.skipWhile (fun (_, range)-> selectedItem >= range )  
         |> Seq.map fst
         |> Seq.head

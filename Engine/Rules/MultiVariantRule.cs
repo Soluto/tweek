@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Engine.Core.Context;
 using Engine.Core.Rules;
+using Engine.Core.Utils;
 using Engine.DataTypes;
 using Engine.Rules.ValueDistribution;
 using LanguageExt;
@@ -25,8 +26,10 @@ namespace Engine.Rules
                 {
                     if ( Matcher(fullContext) )
                     {
-                        var valueDistributor = ValueDistributors.Reverse().First(x => x.Key <= creationDate).Value;
-                        return valueDistributor(ExperimentId, fullContext(OwnerType + ".@@id"));
+                        return ValueDistributors.Reverse()
+                            .Where(x => x.Key <= creationDate)
+                            .FirstOrNone()
+                            .Map(valueDistributor=> valueDistributor.Value(ExperimentId, fullContext(OwnerType + ".@@id")));
                     }
                     return Option<ConfigurationValue>.None; 
                 });

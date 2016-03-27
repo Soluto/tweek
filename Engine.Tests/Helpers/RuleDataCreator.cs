@@ -18,7 +18,7 @@ namespace Engine.Tests.Helpers
 
         public static RuleData CreateMultiVariantRule(string key, string matcher, Dictionary<DateTimeOffset, string> valueDistrubtions, string ownerType, string ruleId = null)
         {
-            return new RuleData() { Id = ruleId ?? Guid.NewGuid().ToString(), Order = Order, Key = key, MatcherSchema = matcher, MultiVariant_ValueDistributionSchema = valueDistrubtions, MultiVariant_OwnerType = ownerType, Type = "MultiVariant"};
+            return new RuleData() { Id = ruleId ?? Guid.NewGuid().ToString(), Order = Order, Key = key, MatcherSchema = matcher, MultiVariant_ValueDistributionSchema = valueDistrubtions, MultiVariant_OwnerType = ownerType, Type = "MultiVariant" };
         }
     }
 }
