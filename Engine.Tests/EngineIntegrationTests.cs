@@ -211,15 +211,14 @@ namespace Engine.Tests
 
             paths = new[] { "abc/somepath" };
             rules = new[] { RuleDataCreator.CreateMultiVariantRule("abc/somepath", matcher: "{}",
-                valueDistrubtions: new Dictionary<DateTimeOffset, string>  {{DateTimeOffset.Parse("06/06/06"),
-                                                                                JsonConvert.SerializeObject(new 
+                valueDistrubtions: new Dictionary<DateTimeOffset, string>  
+                {{DateTimeOffset.Parse("06/06/06"),JsonConvert.SerializeObject(new 
             {
                 type = "bernoulliTrial",
                 args= 1 
             })
             },
-            {DateTimeOffset.Parse("08/08/08"),
-                                                                                JsonConvert.SerializeObject(new 
+            {DateTimeOffset.Parse("08/08/08"), JsonConvert.SerializeObject(new 
             {
                 type = "bernoulliTrial",
                 args= 0 
