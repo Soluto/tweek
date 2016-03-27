@@ -30,7 +30,7 @@ namespace Engine.Tests
         public void Setup()
         {
             var cluster = Cluster.Builder()
-                .WithQueryOptions(new QueryOptions().SetConsistencyLevel(ConsistencyLevel.One))
+                .WithQueryOptions(new QueryOptions().SetConsistencyLevel(ConsistencyLevel.All))
                 .AddContactPoints("dc0vm1tqwdso6zqj26c.eastus.cloudapp.azure.com",
                     "dc0vm0tqwdso6zqj26c.eastus.cloudapp.azure.com")
                 .Build();
@@ -267,6 +267,39 @@ namespace Engine.Tests
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "3") });
                 Assert.AreEqual("FixedValue", val["somepath"].Value);
                 
+            });
+        }
+
+        [Test]
+        public async Task CalculateWithRecursiveMatcher()
+        {
+            contexts = ContextCreator.Merge(
+                            ContextCreator.Create("device", "1", new[] { "SomeDeviceProp", "5" }),
+                            ContextCreator.Create("device", "2", new[] { "@fixed:abc/dep_path2", "true" }, new[] { "SomeDeviceProp", "5" })
+                            );
+
+            paths = new[] { "abc/somepath", "abc/dep_path1", "abc/dep_path2" };
+            rules = new[] { RuleDataCreator.CreateSingleVariantRule("abc/dep_path1", matcher: JsonConvert.SerializeObject(new Dictionary<string,object>()
+            {
+                {"device.SomeDeviceProp", 5}
+            }), value: "true"), 
+            RuleDataCreator.CreateSingleVariantRule("abc/somepath", matcher: JsonConvert.SerializeObject(new Dictionary<string,object>()
+            {
+                {"@@key:abc/dep_path1", true},
+                {"@@key:abc/dep_path2", true}
+            }), value: "true")};
+
+            await Run(async tweek =>
+            {
+                var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
+                Assert.AreEqual(1, val.Count);
+                Assert.AreEqual("true", val["dep_path1"].Value);
+
+                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "2") });
+                Assert.AreEqual(3, val.Count);
+                Assert.AreEqual("true", val["dep_path1"].Value);
+                Assert.AreEqual("true", val["dep_path2"].Value);
+                Assert.AreEqual("true", val["somepath"].Value);
             });
         }
 
