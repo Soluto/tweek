@@ -115,9 +115,7 @@ namespace Engine.DataTypes
         public ConfigurationPath ToRelative(ConfigurationPath query)
         {
             //broken, need to add support for nested relative path a/b/_/d/  with a/b/c/d/e should return e
-            if (query == "" || query == FullScan) return this;
-
-            if (!query.IsScan || !_path.StartsWith(query.Prefix)) throw new Exception("path not under root");
+            if (!Match(this, query)) throw new Exception(this + " not match query:" + query);
 
             return From(_fragments.Skip(query._fragments.Length - (query.IsScan ? 1 : 0)).ToArray());
         }
@@ -132,6 +130,7 @@ namespace Engine.DataTypes
             }
             if (path._fragments.Length > 1)
             {
+                if (query._fragments[0] != FullScan && path._fragments[0] != query._fragments[0]) return false;
                 return Match(From(path._fragments.Skip(1).ToArray()), From(query._fragments.Skip(1).ToArray()));
             }
             return false;

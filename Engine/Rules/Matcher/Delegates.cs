@@ -12,7 +12,7 @@ namespace Engine.Rules.Matcher
         {
             return context =>
             {
-                return MatchDSL.Match_ext(schema, key => context(key).Match(x => x, () => null));
+                return MatchDSL.Match_ext(schema, key => context(key).IfNoneUnsafe((string)null));
             };
         }    
     }

@@ -4,11 +4,15 @@ using System.Linq;
 using Engine.Core.Utils;
 using Engine.DataTypes;
 using LanguageExt;
+using LanguageExt.Trans.Linq;
+using LanguageExt.Trans;
 
 namespace Engine.Core.Context
 {
     public class ContextHelpers
     {
+        public static GetContextValue EmptyContext = key=> Option<string>.None;
+
         internal class FullKey : Tuple<string, string>
         {
             public FullKey(string identityType, string key) : base(identityType, key) { }
@@ -34,8 +38,12 @@ namespace Engine.Core.Context
         {
             return type =>
             {
-                var identity = identities.Single(x => x.Type == type);
-                return Merge(getLoadedContexts(identity), ContextValueForId(identity.Id));
+                return
+                    identities.Where(x => x.Type == type)
+                        .SingleOrNone()
+                        .Map(identity => Merge(getLoadedContexts(identity), ContextValueForId(identity.Id)))
+                        .IfNone(EmptyContext);
+
             };
         }
 

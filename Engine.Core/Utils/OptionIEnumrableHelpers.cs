@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using LanguageExt;
 using LanguageExt.SomeHelp;
 
@@ -16,11 +18,28 @@ namespace Engine.Core.Utils
 
         public static Option<T> FirstOrNone<T>(this IEnumerable<T> it)
         {
-            foreach (var item in it)
+            try
             {
-                return item.ToSome();
+                return it.First(x => x != null).ToSome();
             }
-            return Option<T>.None;
+            catch (InvalidOperationException ex)
+            {
+                if (ex.Message == "Sequence contains no matching element") return Option<T>.None;
+                throw;
+            }
+        }
+
+        public static Option<T> SingleOrNone<T>(this IEnumerable<T> it)
+        {
+            try
+            {
+                return it.Single(x=>x!=null);
+            }
+            catch (InvalidOperationException ex)
+            {
+                if (ex.Message == "Sequence contains no matching element") return Option<T>.None;
+                throw;
+            }
         }
     }
 }

@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine", "Engine\Engine.csproj", "{88200F63-8699-4B6E-8969-4C45827AD0C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Tests", "Engine.Tests\Engine.Tests.csproj", "{C0774CBE-9A35-4CE4-A181-6808064BB8E6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.IntegrationTests", "Engine.Tests\Engine.IntegrationTests.csproj", "{C0774CBE-9A35-4CE4-A181-6808064BB8E6}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Engine.Matcher.DSL", "Engine.Matcher.DSL\Engine.Matcher.DSL.fsproj", "{71903C50-6C0E-443E-914A-BF9D4D9CC964}"
 EndProject
