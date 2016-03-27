@@ -1,18 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cassandra;
-using Engine.Core;
-using Engine.Core.Rules;
 using Engine.DataTypes;
-using Engine.Rules;
-using Engine.Tests;
+using Engine.Drivers.Context;
+using Engine.Rules.Creation;
 using Engine.Tests.Helpers;
 using Engine.Tests.TestDrivers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace Engine.Tests
 {
@@ -20,6 +17,13 @@ namespace Engine.Tests
     public class EngineIntegrationTests
     {
         private ISession _cassandraSession;
+        private ITestDriver driver;
+        private Dictionary<Identity,Dictionary<string,string>> contexts;
+        private RuleData[] rules;
+        private string[] paths;
+
+        private readonly HashSet<Identity> NoIdentities = new HashSet<Identity>();
+        private readonly Dictionary<Identity, Dictionary<string, string>> EmptyContexts = new Dictionary<Identity, Dictionary<string, string>>();
 
         [TestFixtureSetUp]
         public void Setup()
@@ -31,26 +35,31 @@ namespace Engine.Tests
                 .Build();
 
             _cassandraSession = cluster.Connect("tweek");
+            driver = new CassandraTestDriver(_cassandraSession);
         }
 
-        public ITestDriver GetTestDriver()
+        private async Task Run(Func<ITweek, Task> test)
         {
-            return new CassandraTestDriver(_cassandraSession);
+            var scope = driver.SetTestEnviornment(contexts, paths, rules);
+            await scope.Run(test);
         }
 
         [Test]
         public async Task CalculateSingleValue()
         {
-            var driver = GetTestDriver();
-            var context =  ContextCreator.Create("device", "1");
-            var paths = new[] {"abc/somepath"};
-            var rules = new[]{RuleDataCreator.CreateSingleVariantRule("abc/somepath", matcher: "{}", value: "SomeValue")};
-            var scope = driver.SetTestEnviornment(context, paths, rules);
-            await scope.Run(async tweek =>
+            contexts = EmptyContexts;
+            paths = new[] {"abc/somepath"};
+            rules = new[] {RuleDataCreator.CreateSingleVariantRule("abc/somepath", matcher: "{}", value: "SomeValue")};
+
+            await Run(async tweek =>
             {
-                var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
+                var val = await tweek.Calculate("_", NoIdentities);
+                Assert.AreEqual(val["abc/somepath"].Value, "SomeValue");
+
+                val = await tweek.Calculate("abc/_", NoIdentities);
                 Assert.AreEqual(val["somepath"].Value, "SomeValue");
-                val = await tweek.Calculate("abc/somepath", new HashSet<Identity> { new Identity("device", "1") });
+
+                val = await tweek.Calculate("abc/somepath", NoIdentities);
                 Assert.AreEqual(val[""].Value, "SomeValue");
             });
         }
@@ -58,14 +67,13 @@ namespace Engine.Tests
         [Test]
         public async Task CalculateMultipleValues()
         {
-            var driver = GetTestDriver();
-            var context = ContextCreator.Create("device", "1");
-            var paths = new[] { "abc/somepath", "abc/otherpath", "abc/nested/somepath", "def/somepath" };
-            var rules = paths.Select(x=>RuleDataCreator.CreateSingleVariantRule(x, matcher: "{}", value: "SomeValue")).ToArray();
-            var scope = driver.SetTestEnviornment(context, paths, rules);
-            await scope.Run(async tweek =>
+            contexts = EmptyContexts;
+            paths = new[] { "abc/somepath", "abc/otherpath", "abc/nested/somepath", "def/somepath" };
+            rules = paths.Select(x=>RuleDataCreator.CreateSingleVariantRule(x, matcher: "{}", value: "SomeValue")).ToArray();
+
+            await Run(async tweek =>
             {
-                var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
+                var val = await tweek.Calculate("abc/_", NoIdentities);
                 Assert.AreEqual(val.Count, 3);
                 Assert.AreEqual(val["somepath"].Value, "SomeValue");
                 Assert.AreEqual(val["otherpath"].Value, "SomeValue");
@@ -76,23 +84,25 @@ namespace Engine.Tests
         [Test]
         public async Task CalculateFilterByMatcher()
         {
-            var driver = GetTestDriver();
-            var context = ContextCreator.Merge(ContextCreator.Create("device", "1"), 
-                                               ContextCreator.Create("device", "2", new[] { "SomeDeviceProp", "5" }));
-            var paths = new[] { "abc/somepath" };
-            var rules = new[] { RuleDataCreator.CreateSingleVariantRule("abc/somepath", matcher: JsonConvert.SerializeObject(new Dictionary<string,object>()
+            contexts = ContextCreator.Merge(ContextCreator.Create("device", "1"), 
+                                            ContextCreator.Create("device", "2", new[] { "SomeDeviceProp", "10" }),
+                                            ContextCreator.Create("device", "3", new[] { "SomeDeviceProp", "5" }));
+
+            paths = new[] { "abc/somepath" };
+            rules = new[] { RuleDataCreator.CreateSingleVariantRule("abc/somepath", matcher: JsonConvert.SerializeObject(new Dictionary<string,object>()
             {
                 {"device.SomeDeviceProp", 5}
             }), value: "SomeValue") };
 
-
-            var scope = driver.SetTestEnviornment(context, paths, rules);
-            await scope.Run(async tweek =>
+            await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
                 Assert.AreEqual(0, val.Count);
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "2") });
+                Assert.AreEqual(0, val.Count);
+
+                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "3") });
                 Assert.AreEqual(val["somepath"].Value, "SomeValue");
             });
         }
@@ -100,28 +110,52 @@ namespace Engine.Tests
         [Test]
         public async Task CalculateFilterByMatcherWithMultiIdentities()
         {
-            var driver = GetTestDriver();
-            var context = ContextCreator.Merge(
+            contexts = ContextCreator.Merge(
                                                ContextCreator.Create("user", "1", new[] { "SomeUserProp", "10" }),
                                                ContextCreator.Create("device", "1", new[] { "SomeDeviceProp", "5" }));
-            var paths = new[] { "abc/somepath" };
-            var rules = new[] { RuleDataCreator.CreateSingleVariantRule("abc/somepath", matcher: JsonConvert.SerializeObject(new Dictionary<string,object>()
+            paths = new[] { "abc/somepath" };
+            rules = new[] { RuleDataCreator.CreateSingleVariantRule("abc/somepath", matcher: JsonConvert.SerializeObject(new Dictionary<string,object>()
             {
                 {"user.SomeUserProp", 10},
                 {"device.SomeDeviceProp", 5}
             }), value: "SomeValue") };
 
-            var scope = driver.SetTestEnviornment(context, paths, rules);
-            await scope.Run(async tweek =>
+            await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
                 Assert.AreEqual(0, val.Count);
                 
+                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("user", "1") });
+                Assert.AreEqual(0, val.Count);
+
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1"), new Identity("user", "1") });
                 Assert.AreEqual(val["somepath"].Value, "SomeValue");
+            });
+        }
+
+        [Test]
+        public async Task CalculateWithMultiVariant()
+        {
+            contexts = ContextCreator.Merge(
+                                               ContextCreator.Create("user", "1", new[] { "SomeUserProp", "10" }),
+                                               ContextCreator.Create("device", "1", new[] { "SomeDeviceProp", "5" }));
+            paths = new[] { "abc/somepath" };
+            rules = new[] { RuleDataCreator.CreateSingleVariantRule("abc/somepath", matcher: JsonConvert.SerializeObject(new Dictionary<string,object>()
+            {
+                {"user.SomeUserProp", 10},
+                {"device.SomeDeviceProp", 5}
+            }), value: "SomeValue") };
+
+            await Run(async tweek =>
+            {
+                var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
+                Assert.AreEqual(0, val.Count);
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("user", "1") });
                 Assert.AreEqual(0, val.Count);
+
+                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1"), new Identity("user", "1") });
+                Assert.AreEqual(val["somepath"].Value, "SomeValue");
             });
         }
     }

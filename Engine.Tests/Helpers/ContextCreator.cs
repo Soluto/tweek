@@ -14,9 +14,9 @@ namespace Engine.Tests.Helpers
         }
 
         public static Dictionary<Identity, Dictionary<string, string>> Merge(
-            Dictionary<Identity, Dictionary<string, string>> l, Dictionary<Identity, Dictionary<string, string>> r)
+            params Dictionary<Identity, Dictionary<string, string>>[] contexts)
         {
-            return l.Concat(r).ToDictionary(x => x.Key, x => x.Value);
+            return contexts.AsEnumerable().Aggregate((a,b)=>a.Concat(b).ToDictionary(x => x.Key, x => x.Value));
         }
     }
 }
