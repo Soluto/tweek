@@ -27,7 +27,6 @@ namespace Engine.Rules.Creation
                     Value = new ConfigurationValue(data.SingleVariant_Value)
                 };
             }
-
             if (data.Type == "MultiVariant")
             {
                 
