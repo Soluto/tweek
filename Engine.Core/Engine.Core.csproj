@@ -31,7 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LanguageExt.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LanguageExt.Core.1.7.30\lib\net46\LanguageExt.Core.dll</HintPath>
+      <HintPath>..\packages\LanguageExt.Core.1.7.32\lib\net46\LanguageExt.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -63,7 +63,9 @@
     <Compile Include="Context\ContextHelpers.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rules\FallbackRule.cs" />
     <Compile Include="Rules\IRule.cs" />
+    <Compile Include="Rules\IRuleParser.cs" />
     <Compile Include="Utils\OptionHelpers.cs" />
     <Compile Include="Utils\OptionIEnumrableHelpers.cs" />
   </ItemGroup>

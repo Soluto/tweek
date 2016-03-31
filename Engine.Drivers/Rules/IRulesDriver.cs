@@ -1,13 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Engine.Rules.Creation;
 
 namespace Engine.Drivers.Rules
 {
+    public class RuleDefinition
+    {
+        public string Format { get; set; }
+        public string Payload { get; set; }
+    }
+
     public interface IRulesDriver
     {
         event Action OnRulesChange;
-        Task<List<RuleData>> GetRules();
+        Task<Dictionary<string, RuleDefinition>> GetAllRules();
     }
 }

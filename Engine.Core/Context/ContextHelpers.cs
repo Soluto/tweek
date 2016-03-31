@@ -11,7 +11,7 @@ namespace Engine.Core.Context
 {
     public class ContextHelpers
     {
-        public static GetContextValue EmptyContext = key=> Option<string>.None;
+        
 
         internal class FullKey : Tuple<string, string>
         {
@@ -29,24 +29,6 @@ namespace Engine.Core.Context
                 : Option<FullKey>.None;
         }
 
-        internal static GetContextValue ContextValueForId(string id)
-        {
-            return key => key == "@@id" ? id : Option<string>.None;
-        }
-
-        internal static GetLoadedContextByIdentityType GetContextRetrieverByType(GetLoadedContextByIdentity getLoadedContexts, HashSet<Identity> identities)
-        {
-            return type =>
-            {
-                return
-                    identities.Where(x => x.Type == type)
-                        .SingleOrNone()
-                        .Map(identity => Merge(getLoadedContexts(identity), ContextValueForId(identity.Id)))
-                        .IfNone(EmptyContext);
-
-            };
-        }
-
         internal static GetContextValue FlattenLoadedContext(GetLoadedContextByIdentityType getLoadedContext)
         {
             return fullKey =>
@@ -60,7 +42,7 @@ namespace Engine.Core.Context
                     .Select(x => new ConfigurationValue(x));
         }
 
-        internal static GetContextValue Merge(GetContextValue a, GetContextValue b)
+        public static GetContextValue Merge(GetContextValue a, GetContextValue b)
         {
             return key => a(key).IfNone(() => b(key));
         }

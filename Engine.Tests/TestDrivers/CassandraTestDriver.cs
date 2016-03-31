@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,8 +7,8 @@ using Cassandra.Data.Linq;
 using Engine.DataTypes;
 using Engine.Drivers.Cassandra;
 using Engine.Drivers.Context;
-using Engine.Drivers.Keys;
 using Engine.Drivers.Rules;
+using Engine.Drivers.Rules.Git;
 using Engine.Rules.Creation;
 
 namespace Engine.Tests.TestDrivers
@@ -19,14 +20,10 @@ namespace Engine.Tests.TestDrivers
         {
             _session = session;
             var cassandraDriver = new CassandraDriver(_session);
-            Keys = cassandraDriver;
             Context = cassandraDriver;
-            Rules = cassandraDriver;
         }
         
-        public IKeysDriver Keys { get; private set; }
-        public IContextDriver Context { get; private set; }
-        public IRulesDriver Rules { get; private set; }
+        public IContextDriver Context { get; }
         
         private async Task InsertContextRows(Dictionary<Identity, Dictionary<string, string>> contexts)
         {
@@ -39,18 +36,13 @@ namespace Engine.Tests.TestDrivers
             await Task.WhenAll(data.Select(async (row)=> await contextTable.Insert(row).ExecuteAsync()));
         }
 
-        private async Task InsertPathRows(string[] keys)
-        {
-            var table = new Table<CassandraDriver.PathRow>(_session, CassandraDriver.MappingConfiguration);
-            table.CreateIfNotExists();
-            await Task.WhenAll(keys.Select(async (path) => await table.Insert(new CassandraDriver.PathRow() { path = path }).ExecuteAsync()));
-        }
 
-        private async Task InsertRuleData(RuleData[] rules)
+        private async Task InsertRuleData(GitDriver driver, Dictionary<string, RuleDefinition> rules)
         {
-            var table = new Table<RuleData>(_session, CassandraDriver.MappingConfiguration);
-            table.CreateIfNotExists();
-            await Task.WhenAll(rules.Select(async (row) => await table.Insert(row).ExecuteAsync()));
+            await
+                Task.WhenAll(
+                    rules.Select(
+                        x => driver.CommitRuleset(x.Key, x.Value, "tweek-integration-tests", "tweek@soluto.com", DateTimeOffset.UtcNow)));
         }
 
         private async Task DropTable(string tableName)
@@ -58,9 +50,10 @@ namespace Engine.Tests.TestDrivers
             await _session.ExecuteAsync(new SimpleStatement(string.Format("DROP TABLE IF EXISTS tweek.{0}", tableName)));
         }
 
-        public TestScope SetTestEnviornment(Dictionary<Identity, Dictionary<string, string>> contexts, string[] keys, RuleData[] rules)
+        public TestScope SetTestEnviornment(Dictionary<Identity, Dictionary<string, string>> contexts, string[] keys, Dictionary<string, RuleDefinition> rules)
         {
-            return new TestScope(driver:this, init:  () =>  Task.WhenAll(InsertContextRows(contexts), InsertRuleData(rules), InsertPathRows(keys)), 
+            var gitDriver = new GitDriver();
+            return new TestScope(rules:gitDriver, context:Context, init:  () =>  Task.WhenAll(InsertContextRows(contexts), InsertRuleData(gitDriver, rules)), 
                 dispose: ()=> Task.WhenAll(DropTable("contexts"),DropTable("paths"), DropTable("rules")));
             ;
         }

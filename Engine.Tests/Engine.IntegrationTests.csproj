@@ -37,7 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Cassandra, Version=3.0.0.0, Culture=neutral, PublicKeyToken=10b231fbfc8c4b4d, processorArchitecture=MSIL">
-      <HintPath>..\packages\CassandraCSharpDriver.3.0.3\lib\net40\Cassandra.dll</HintPath>
+      <HintPath>..\packages\CassandraCSharpDriver.3.0.4\lib\net40\Cassandra.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="FsCheck, Version=2.2.4.0, Culture=neutral, processorArchitecture=MSIL">
@@ -57,7 +57,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="LanguageExt.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LanguageExt.Core.1.7.30\lib\net46\LanguageExt.Core.dll</HintPath>
+      <HintPath>..\packages\LanguageExt.Core.1.7.32\lib\net46\LanguageExt.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="LZ4, Version=1.0.10.93, Culture=neutral, PublicKeyToken=62e1b5ec1eec9bdd, processorArchitecture=MSIL">
@@ -109,7 +109,6 @@
     <Compile Include="EngineIntegrationTests.cs" />
     <Compile Include="TestDrivers\ITestDriver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Helpers\RuleDataCreator.cs" />
     <Compile Include="TestDrivers\TestScope.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -125,13 +124,25 @@
       <Project>{F3953018-7813-4EAB-8116-670848DE8BB1}</Project>
       <Name>Engine.DataTypes</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Engine.Drivers.Rules.Git\Engine.Drivers.Rules.Git.csproj">
+      <Project>{CAE4A92C-1271-4AFA-B333-ECBD2F026BD8}</Project>
+      <Name>Engine.Drivers.Rules.Git</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Engine.Drivers\Engine.Drivers.csproj">
       <Project>{8569DD6D-27D1-40A1-8161-E12157E845F3}</Project>
       <Name>Engine.Drivers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Engine.Management.Drivers\Engine.Management.Drivers.csproj">
+      <Project>{7FC49A33-6B72-4251-ABE0-ECACED5B71BD}</Project>
+      <Name>Engine.Management.Drivers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Engine\Engine.csproj">
       <Project>{88200f63-8699-4b6e-8969-4c45827ad0c3}</Project>
       <Name>Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tweek.JPad\Tweek.JPad.csproj">
+      <Project>{D20F24EB-860A-4DC0-A849-28627E342B89}</Project>
+      <Name>Tweek.JPad</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

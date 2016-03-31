@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Engine.Core.Context;
+using Engine.Core.Utils;
 using Engine.DataTypes;
 using LanguageExt;
+using static LanguageExt.Prelude;
 
 namespace Engine.Context
 {
@@ -12,17 +14,39 @@ namespace Engine.Context
 
     public static class ContextHelpers
     {
+        public static readonly GetContextValue EmptyContext = key => Option<string>.None;
+        public static readonly GetLoadedContextByIdentityType EmptyContextByIdentityType =  identity => key => Option<string>.None;
 
-        internal static async Task<GetLoadedContextByIdentity> LoadContexts(HashSet<Identity> identities, GetContextByIdentity byId)
+        public static GetLoadedContextByIdentityType Fallback(params GetLoadedContextByIdentityType[] list)
         {
-            var contexts = await Task.WhenAll(identities.Select(async identity => new { Identity = identity, Context = await byId(identity) }));
-            
-            return (Identity identity) =>
+            return list.Reduce((l,r)=> identityType => key => l(identityType)(key).IfNone(()=>r(identityType)(key)));
+        }
+
+        internal static GetContextValue ContextValueForId(string id)
+        {
+            return key => key == "@@id" ? id : Option<string>.None;
+        }
+
+        internal static GetLoadedContextByIdentityType GetContextRetrieverByType(GetLoadedContextByIdentity getLoadedContexts, HashSet<Identity> identities)
+        {
+            return type =>
             {
-                return contexts
-                    .Where(x => x.Identity.Equals(identity))
-                    .Select(x => x.Context)
-                    .SingleOrDefault() ?? (key => Option<String>.None);
+                return
+                    identities.Where(x => x.Type == type)
+                        .SingleOrNone()
+                        .Map(identity => Core.Context.ContextHelpers.Merge(getLoadedContexts(identity), ContextValueForId(identity.Id)))
+                        .IfNone(EmptyContext);
+            };
+        }
+
+        internal static  GetLoadedContextByIdentity LoadContexts(Dictionary<Identity, Dictionary<string,string>> loadContextData)
+        {   
+            return (Identity identity) => (key)=>
+            {
+                return ((IReadOnlyDictionary<Identity,Dictionary<string,string>>)loadContextData)
+                    .TryGetValue(identity)
+                    .Bind(x => ((IReadOnlyDictionary<string,string>)x).TryGetValue(key));
+                
             };
         }
 
