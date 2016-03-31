@@ -5,15 +5,14 @@ using Engine.Core.Context;
 using Engine.Core.Rules;
 using Engine.Core.Utils;
 using Engine.DataTypes;
-using Engine.Rules.ValueDistribution;
 using LanguageExt;
 
-namespace Engine.Rules
+namespace Tweek.JPad.Rules
 {
     public class MultiVariantRule : IRule
     {
         public string ExperimentId;
-        public Matcher.Matcher Matcher;
+        public Matcher Matcher;
 
         public SortedList<DateTimeOffset, ValueDistributor> ValueDistributors;
         public string OwnerType;

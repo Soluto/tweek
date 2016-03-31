@@ -40,9 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context\IContextDriver.cs" />
-    <Compile Include="Keys\IKeysDriver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RuleData.cs" />
     <Compile Include="Rules\IRulesDriver.cs" />
   </ItemGroup>
   <ItemGroup>

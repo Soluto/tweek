@@ -5,12 +5,15 @@ using System.Threading.Tasks;
 using Cassandra;
 using Engine.DataTypes;
 using Engine.Drivers.Context;
+using Engine.Drivers.Rules;
 using Engine.Rules.Creation;
 using Engine.Tests.Helpers;
 using Engine.Tests.TestDrivers;
 using FsCheck;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using Tweek.JPad.Generator;
+using MatcherData = System.Collections.Generic.Dictionary<string, object>;
 
 namespace Engine.Tests
 {
@@ -20,7 +23,7 @@ namespace Engine.Tests
         private ISession _cassandraSession;
         private ITestDriver driver;
         private Dictionary<Identity,Dictionary<string,string>> contexts;
-        private RuleData[] rules;
+        private Dictionary<string, RuleDefinition> rules;
         private string[] paths;
 
         private readonly HashSet<Identity> NoIdentities = new HashSet<Identity>();
@@ -50,7 +53,10 @@ namespace Engine.Tests
         {
             contexts = EmptyContexts;
             paths = new[] {"abc/somepath"};
-            rules = new[] {RuleDataCreator.CreateSingleVariantRule("abc/somepath", matcher: "{}", value: "SomeValue")};
+            rules = new Dictionary<string, RuleDefinition>
+            {
+                ["abc/somepath"] = JPadGenerator.New().AddSingleVariantRule(matcher: "{}", value: "SomeValue").Generate()
+            };
 
             await Run(async tweek =>
             {
@@ -70,7 +76,8 @@ namespace Engine.Tests
         {
             contexts = EmptyContexts;
             paths = new[] { "abc/somepath", "abc/otherpath", "abc/nested/somepath", "def/somepath" };
-            rules = paths.Select(x=>RuleDataCreator.CreateSingleVariantRule(x, matcher: "{}", value: "SomeValue")).ToArray();
+            rules = paths.ToDictionary(x => x,
+                x => JPadGenerator.New().AddSingleVariantRule(matcher: "{}", value: "SomeValue").Generate());
 
             await Run(async tweek =>
             {
@@ -90,10 +97,13 @@ namespace Engine.Tests
                                             ContextCreator.Create("device", "3", new[] { "SomeDeviceProp", "5" }));
 
             paths = new[] { "abc/somepath" };
-            rules = new[] { RuleDataCreator.CreateSingleVariantRule("abc/somepath", matcher: JsonConvert.SerializeObject(new Dictionary<string,object>()
+            rules = new Dictionary<string, RuleDefinition>
             {
-                {"device.SomeDeviceProp", 5}
-            }), value: "SomeValue") };
+                ["abc/somepath"] = JPadGenerator.New().AddSingleVariantRule(matcher: JsonConvert.SerializeObject(new MatcherData
+                        {
+                            ["device.SomeDeviceProp"]= 5
+                        }), value: "SomeValue").Generate()
+            };
 
             await Run(async tweek =>
             {
@@ -115,11 +125,14 @@ namespace Engine.Tests
                                                ContextCreator.Create("user", "1", new[] { "SomeUserProp", "10" }),
                                                ContextCreator.Create("device", "1", new[] { "SomeDeviceProp", "5" }));
             paths = new[] { "abc/somepath" };
-            rules = new[] { RuleDataCreator.CreateSingleVariantRule("abc/somepath", matcher: JsonConvert.SerializeObject(new Dictionary<string,object>()
+            rules = new Dictionary<string, RuleDefinition>
             {
-                {"user.SomeUserProp", 10},
-                {"device.SomeDeviceProp", 5}
-            }), value: "SomeValue") };
+                ["abc/somepath"] = JPadGenerator.New().AddSingleVariantRule(matcher: JsonConvert.SerializeObject(new MatcherData
+                {
+                    ["device.SomeDeviceProp"] = 5,
+                    ["user.SomeUserProp"] = 10
+                }), value: "SomeValue").Generate()
+            };
 
             await Run(async tweek =>
             {
@@ -139,11 +152,12 @@ namespace Engine.Tests
         {
             contexts = ContextCreator.Create("device", "1");
             paths = new[] { "abc/somepath" };
-            rules = new[] { 
-                            RuleDataCreator.CreateSingleVariantRule("abc/otherpath", matcher: "{}", value: "BadValue"),
-                            RuleDataCreator.CreateSingleVariantRule("abc/somepath", matcher: "{}", value: "SomeValue"),
-                            RuleDataCreator.CreateSingleVariantRule("abc/somepath", matcher: "{}", value: "BadValue")
-                          };
+            rules = new Dictionary<string, RuleDefinition>
+            {
+                ["abc/otherpath"] = JPadGenerator.New().AddSingleVariantRule(matcher: "{}", value: "BadValue").Generate(),
+                ["abc/somepath"] = JPadGenerator.New().AddSingleVariantRule(matcher: "{}", value: "SomeValue")
+                                                      .AddSingleVariantRule(matcher: "{}", value: "BadValue").Generate(),
+            };
 
             await Run(async tweek =>
             {
@@ -157,13 +171,19 @@ namespace Engine.Tests
         {
             contexts = ContextCreator.Create("device", "1", new[] { "SomeDeviceProp", "5" });
             paths = new[] { "abc/somepath" };
-            rules = new[] { RuleDataCreator.CreateSingleVariantRule("abc/somepath", matcher: JsonConvert.SerializeObject(new Dictionary<string,object>()
+
+            rules = new Dictionary<string, RuleDefinition>
             {
-                {"device.SomeDeviceProp", 10}
-            }), value: "BadValue"), RuleDataCreator.CreateSingleVariantRule("abc/somepath", matcher: JsonConvert.SerializeObject(new Dictionary<string,object>()
-            {
-                {"device.SomeDeviceProp", 5}
-            }), value: "SomeValue")};
+                ["abc/somepath"] = JPadGenerator.New().AddSingleVariantRule(matcher: JsonConvert.SerializeObject(new MatcherData()
+                {
+                    { "device.SomeDeviceProp", 10}
+                }), value: "BadValue")
+                .AddSingleVariantRule(matcher: JsonConvert.SerializeObject(new Dictionary<string, object>()
+                {
+                    {"device.SomeDeviceProp", 5}
+                }), value: "SomeValue").Generate(),
+            };
+
 
             await Run(async tweek =>
             {
@@ -177,15 +197,25 @@ namespace Engine.Tests
         {
             contexts = ContextCreator.Create("device", "1", new[] { "SomeDeviceProp", "5"}, new []{"@CreationDate", "10/10/10" });
             paths = new[] { "abc/somepath" };
-            rules = new[] { RuleDataCreator.CreateMultiVariantRule("abc/somepath", matcher: JsonConvert.SerializeObject(new Dictionary<string,object>()
+            rules = new Dictionary<string, RuleDefinition>()
             {
-                {"device.SomeDeviceProp", 5}
-            }), valueDistrubtions: new Dictionary<DateTimeOffset, string>  {{DateTimeOffset.Parse("08/08/08"), JsonConvert.SerializeObject(new 
-            {
-                type = "bernoulliTrial",
-                args= 0.5 
-            })
-            }}, ownerType:"device")};
+                ["abc/somepath"] =
+                    JPadGenerator.New()
+                        .AddMultiVariantRule(matcher: JsonConvert.SerializeObject(new Dictionary<string, object>()
+                        {
+                            {"device.SomeDeviceProp", 5}
+                        }), valueDistrubtions: new Dictionary<DateTimeOffset, string>
+                        {
+                            {
+                                DateTimeOffset.Parse("08/08/08"), JsonConvert.SerializeObject(new
+                                {
+                                    type = "bernoulliTrial",
+                                    args = 0.5
+                                })
+                            }
+                        }, ownerType: "device").Generate()
+            };
+
 
             await Run(async tweek =>
             {
@@ -210,21 +240,23 @@ namespace Engine.Tests
                        ContextCreator.Create("user", "4", new[] { "@CreationDate", "09/09/09" }));
 
             paths = new[] { "abc/somepath" };
-            rules = new[] { RuleDataCreator.CreateMultiVariantRule("abc/somepath", matcher: "{}",
-                valueDistrubtions: new Dictionary<DateTimeOffset, string>  
-                {{DateTimeOffset.Parse("06/06/06"),JsonConvert.SerializeObject(new 
+            rules = new Dictionary<string, RuleDefinition>()
             {
-                type = "bernoulliTrial",
-                args= 1 
-            })
-            },
-            {DateTimeOffset.Parse("08/08/08"), JsonConvert.SerializeObject(new 
-            {
-                type = "bernoulliTrial",
-                args= 0 
-            })
-            }},
-            ownerType:"device")};
+                ["abc/somepath"] = JPadGenerator.New().AddMultiVariantRule(matcher: "{}",
+                    valueDistrubtions: new Dictionary<DateTimeOffset, string>
+                    {
+                        [DateTimeOffset.Parse("06/06/06")] = JsonConvert.SerializeObject(new
+                        {
+                            type = "bernoulliTrial",
+                            args = 1
+                        }),
+                        [DateTimeOffset.Parse("08/08/08")] = JsonConvert.SerializeObject(new
+                        {
+                            type = "bernoulliTrial",
+                            args = 0
+                        })
+                    }, ownerType: "device").Generate()
+            };
 
             await Run(async tweek =>
             {
@@ -250,10 +282,13 @@ namespace Engine.Tests
                                             ContextCreator.Create("device", "3", new[] { "SomeDeviceProp", "5" }, new[] { "@fixed:abc/somepath", "FixedValue" }));
 
             paths = new[] { "abc/somepath" };
-            rules = new[] { RuleDataCreator.CreateSingleVariantRule("abc/somepath", matcher: JsonConvert.SerializeObject(new Dictionary<string,object>()
+            rules = new Dictionary<string, RuleDefinition>()
+            {
+                ["abc/somepath"] = JPadGenerator.New().AddSingleVariantRule(matcher: JsonConvert.SerializeObject(new Dictionary<string, object>()
             {
                 {"device.SomeDeviceProp", 5}
-            }), value: "RuleBasedValue")};
+            }), value: "RuleBasedValue").Generate()
+            };
 
 
             await Run(async tweek =>
@@ -279,15 +314,20 @@ namespace Engine.Tests
                             );
 
             paths = new[] { "abc/somepath", "abc/dep_path1", "abc/dep_path2" };
-            rules = new[] { RuleDataCreator.CreateSingleVariantRule("abc/dep_path1", matcher: JsonConvert.SerializeObject(new Dictionary<string,object>()
+
+            rules = new Dictionary<string, RuleDefinition>()
+            {
+                ["abc/dep_path1"] = JPadGenerator.New().AddSingleVariantRule(matcher: JsonConvert.SerializeObject(new Dictionary<string, object>()
             {
                 {"device.SomeDeviceProp", 5}
-            }), value: "true"), 
-            RuleDataCreator.CreateSingleVariantRule("abc/somepath", matcher: JsonConvert.SerializeObject(new Dictionary<string,object>()
+            }), value: "true").Generate(),
+                ["abc/somepath"] = JPadGenerator.New().AddSingleVariantRule(matcher: JsonConvert.SerializeObject(new Dictionary<string, object>()
             {
                 {"@@key:abc/dep_path1", true},
                 {"@@key:abc/dep_path2", true}
-            }), value: "true")};
+            }),
+                value: "true").Generate()
+            };
 
             await Run(async tweek =>
             {

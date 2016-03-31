@@ -12,10 +12,10 @@ namespace Engine.Core.Tests
     public class EngineCoreTests
     {
 
-        public static GetLoadedContextByIdentity CreateContext(Identity identity, params Tuple<string, string>[] tuples)
+        public static GetLoadedContextByIdentityType CreateContext(Identity identity, params Tuple<string, string>[] tuples)
         {
             var data = tuples.ToDictionary(x => x.Item1, x => x.Item2);
-            return fnIdentity => key => fnIdentity.Equals(identity) && data.ContainsKey(key) ? data[key] : Option<string>.None;
+            return fnIdentityType => key => fnIdentityType.Equals(identity.Type) && data.ContainsKey(key) ? data[key] : Option<string>.None;
         }
 
         [Test]
@@ -72,6 +72,7 @@ namespace Engine.Core.Tests
         {
             var identity = new Identity("device", "1");
             var context = CreateContext(identity, new Tuple<string, string>("PartnerBrand", "ABC"));
+
             var rulesRepo = RulesRepositoryHelpers
                 .With("path/to/key", FakeRule.Create(ctx => ctx("device.PartnerBrand") == "ABC" ? new ConfigurationValue("SomeValue") : Option<ConfigurationValue>.None));
 

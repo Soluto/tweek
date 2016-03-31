@@ -5,6 +5,7 @@ using Engine.Core.Context;
 using Engine.Core.Rules;
 using Engine.DataTypes;
 using LanguageExt;
+using static LanguageExt.Prelude;
 
 namespace Engine.Core.Tests
 {
@@ -30,24 +31,31 @@ namespace Engine.Core.Tests
 
     public static class RulesRepositoryHelpers
     {
-        public static RulesRepository Empty()
+        private static Option<T> GetOneOrMerge<T>(Option<T> l, Option<T> r, Func<T, T, T> merge)
         {
-            return fnPath => new List<IRule>();
+            return match(l, 
+                Some: (lvalue) => match(r, Some: (rvalue) => merge(lvalue, rvalue), None: ()=>lvalue),
+                None: ()=>r);
         }
 
-        public static RulesRepository With(string path, params IRule[] rules)
+        public static RulesRepository Empty()
         {
-            return fnPath => path == fnPath ? rules.ToList() : new List<IRule>();
+            return fnPath => None;
+        }
+
+        public static RulesRepository With(string path, IRule rule)
+        {
+            return fnPath => path == fnPath ? Some (rule) : None;
         }
 
         public static RulesRepository Merge(RulesRepository l, RulesRepository r)
         {
-            return fnPath  => l(fnPath).Concat(r(fnPath)).ToList();
+            return fnPath => GetOneOrMerge(l(fnPath), r(fnPath), FallbackRule.New);
         }
 
-        public static RulesRepository With(this RulesRepository target, string path, params IRule[] rules)
+        public static RulesRepository With(this RulesRepository target, string path, IRule rule)
         {
-            return Merge(target, With(path, rules));
+            return Merge(target, With(path, rule));
         }
     }
     

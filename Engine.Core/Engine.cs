@@ -8,27 +8,24 @@ using Engine.DataTypes;
 
 namespace Engine.Core
 {
-    public delegate List<IRule> RulesRepository(ConfigurationPath path);
+    public delegate Option<IRule> RulesRepository(ConfigurationPath path);
 
     public static class EngineCore
     {
         internal static Option<ConfigurationValue> CalculateRule(
-            List<IRule> rules,
+            IRule rule,
             GetContextValue contextByIdentityType)
         {
-            return rules.Map(rule => rule.GetValue(contextByIdentityType))
-                    .SkipEmpty()
-                    .FirstOrNone();
+            return rule.GetValue(contextByIdentityType);
         }
 
         public static Option<ConfigurationValue> CalculateKey(HashSet<Identity> identities,
-            GetLoadedContextByIdentity loadedContext,
+            GetLoadedContextByIdentityType loadedContext,
             ConfigurationPath path,
             RulesRepository rules)
         {
-            var contextRetrieverByType = ContextHelpers.GetContextRetrieverByType(loadedContext, identities);
 
-            var flattenContext = ContextHelpers.FlattenLoadedContext(contextRetrieverByType);
+            var flattenContext = ContextHelpers.FlattenLoadedContext(loadedContext);
 
             GetContextValue recCalculateKeyContext = key =>
             {
@@ -45,7 +42,7 @@ namespace Engine.Core
                 if (fixedResult.IsSome) break;
             }
 
-            var result = fixedResult.IfNone(() => CalculateRule(rules(path), fullContext));
+            var result = fixedResult.IfNone(() => rules(path).Bind(rule=>CalculateRule(rule, fullContext)));
 
             return result;
         }

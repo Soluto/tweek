@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LanguageExt.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LanguageExt.Core.1.7.30\lib\net46\LanguageExt.Core.dll</HintPath>
+      <HintPath>..\packages\LanguageExt.Core.1.7.32\lib\net46\LanguageExt.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -71,13 +71,8 @@
     <Compile Include="Api.cs" />
     <Compile Include="Context\ContextCreation.cs" />
     <Compile Include="Context\ContextHelpers.cs" />
-    <Compile Include="Keys\Delegates.cs" />
-    <Compile Include="Rules\Creation\RulesRetrieverCreator.cs" />
-    <Compile Include="Rules\Delegates.cs" />
-    <Compile Include="Rules\MultiVariantRule.cs" />
-    <Compile Include="Rules\SingleVariantRule.cs" />
-    <Compile Include="Rules\Matcher\Delegates.cs" />
-    <Compile Include="Rules\ValueDistribution\Delegates.cs" />
+    <Compile Include="FallbackRule.cs" />
+    <Compile Include="Rules\Creation\RulesLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -100,6 +95,10 @@
     <ProjectReference Include="..\Engine.Rules.ValueDistribution\Engine.Rules.ValueDistribution.fsproj">
       <Project>{43ad9d3d-188d-4767-bca6-35d280ea7d4a}</Project>
       <Name>Engine.Rules.ValueDistribution</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tweek.JPad\Tweek.JPad.csproj">
+      <Project>{D20F24EB-860A-4DC0-A849-28627E342B89}</Project>
+      <Name>Tweek.JPad</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
