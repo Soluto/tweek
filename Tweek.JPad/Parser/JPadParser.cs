@@ -12,6 +12,7 @@ using Engine.Rules;
 using Engine.Rules.Creation;
 using Engine.Rules.ValueDistribution;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Tweek.JPad.Rules;
 
 namespace Tweek.JPad
@@ -22,41 +23,41 @@ namespace Tweek.JPad
     public class JPadParser : IRuleParser
     {
         
-        ValueDistributor ParseValueDistrubtor(string schema)
+        ValueDistributor ParseValueDistrubtor(JToken schema)
         {
-            var valueDistributor = ValueDistribution.compile_ext(schema);
+            var valueDistributor = ValueDistribution.compile_ext(schema.ToString());
             return units => new ConfigurationValue(valueDistributor(units));
         }
 
-        Matcher ParseMatcher(string schema)
+        Matcher ParseMatcher(JToken schema)
         {
             return context =>
             {
-                return MatchDSL.Match_ext(schema, key => context(key).IfNoneUnsafe((string)null));
+                return MatchDSL.Match_ext(schema.ToString(), key => context(key).IfNoneUnsafe((string)null));
             };
         }
 
         private IRule ParseRule(RuleData data)
         {
-            var matcher = ParseMatcher(data.MatcherSchema);
+            var matcher = ParseMatcher(data.Matcher);
 
             if (data.Type == "SingleVariant")
             {
                 return new SingleVariantRule
                 {
                     Matcher = matcher,
-                    Value = new ConfigurationValue(data.SingleVariant_Value)
+                    Value = new ConfigurationValue(data.Value)
                 };
             }
             if (data.Type == "MultiVariant")
             {
 
                 var valueDistributors = new SortedList<DateTimeOffset, ValueDistributor>(
-                    data.MultiVariant_ValueDistributionSchema.ToDictionary(x => x.Key, x => ParseValueDistrubtor(x.Value)));
+                    data.ValueDistribution.ToDictionary(x => x.Key, x => ParseValueDistrubtor(x.Value)));
 
                 return new MultiVariantRule
                 {
-                    OwnerType = data.MultiVariant_OwnerType,
+                    OwnerType = data.OwnerType,
                     ExperimentId = data.Id,
                     Matcher = matcher,
                     ValueDistributors = valueDistributors

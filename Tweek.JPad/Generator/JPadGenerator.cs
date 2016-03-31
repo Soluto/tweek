@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Engine.Drivers.Rules;
 using Engine.Rules.Creation;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Tweek.JPad.Generator
 {
@@ -24,8 +25,8 @@ namespace Tweek.JPad.Generator
             => AddRule(new RuleData()
                 {
                     Id = ruleId ?? Guid.NewGuid().ToString(),
-                    MatcherSchema = matcher,
-                    SingleVariant_Value = value,
+                    Matcher = JToken.Parse(matcher),
+                    Value = value,
                     Type = "SingleVariant"
                 });
 
@@ -33,14 +34,14 @@ namespace Tweek.JPad.Generator
             => AddRule(new RuleData()
             {
                 Id = ruleId ?? Guid.NewGuid().ToString(),
-                MatcherSchema = matcher,
-                MultiVariant_ValueDistributionSchema = valueDistrubtions,
-                MultiVariant_OwnerType = ownerType,
+                Matcher = matcher,
+                ValueDistribution = valueDistrubtions.ToDictionary(x=>x.Key, x=>JToken.Parse(x.Value)),
+                OwnerType = ownerType,
                 Type = "MultiVariant"
             });
         
         private JPadGenerator AddRule(RuleData rule) => new JPadGenerator(_rules.Concat(new [] {rule}).ToArray());        
 
-        public RuleDefinition Generate() => new RuleDefinition() { Format = "jpad", Payload = JsonConvert.SerializeObject(_rules) };
+        public RuleDefinition Generate() => new RuleDefinition() { Format = "jpad", Payload = JsonConvert.SerializeObject(_rules, Formatting.Indented, new JsonSerializerSettings() {NullValueHandling = NullValueHandling.Ignore}) };
     }
 }

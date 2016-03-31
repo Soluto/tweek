@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace Engine.Rules.Creation
 {
@@ -7,9 +8,9 @@ namespace Engine.Rules.Creation
     {
         public string Id { get; set; }
         public string Type { get; set; }
-        public string MatcherSchema { get; set; }
-        public string SingleVariant_Value { get; set; }
-        public Dictionary<DateTimeOffset, string> MultiVariant_ValueDistributionSchema { get; set; }
-        public string MultiVariant_OwnerType { get; set; }
+        public JToken Matcher { get; set; }
+        public string Value { get; set; }
+        public Dictionary<DateTimeOffset, JToken> ValueDistribution { get; set; }
+        public string OwnerType { get; set; }
     }
 }
