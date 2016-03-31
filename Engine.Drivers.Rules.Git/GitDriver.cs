@@ -29,9 +29,9 @@ namespace Engine.Drivers.Rules.Git
         private int IsConnected = 1;
         private static SemaphoreSlim _writeLock = new SemaphoreSlim(1);
         
-        public GitDriver(string repoUrl = null, string localUri = null)
+        public GitDriver(string localUri, string repoUrl = null)
         {
-            _localUri = localUri ?? Path.Combine(Environment.CurrentDirectory, "tweek-rules-" + Guid.NewGuid());
+            _localUri = localUri;
             _repo = Observable.FromAsync(async () =>
                 await Task.Run(() =>
                 {

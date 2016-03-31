@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -23,7 +24,9 @@ namespace Tweek.ApiService
         public Tuple<IContextDriver, IRulesDriver> GetDrivers()
         {
             var driver = GetCassandraDriver();
-            return new Tuple<IContextDriver, IRulesDriver>(driver, new GitDriver("http://tweek-gogs-1.816587ba.cont.dockerapp.io/tweek/tweek-rules.git"));
+            return new Tuple<IContextDriver, IRulesDriver>(driver, new GitDriver(
+                Path.Combine(Environment.CurrentDirectory, "tweek-rules" + Guid.NewGuid()),
+                "http://tweek-gogs-1.816587ba.cont.dockerapp.io/tweek/tweek-rules.git"));
         } 
 
         private CassandraDriver GetCassandraDriver()
