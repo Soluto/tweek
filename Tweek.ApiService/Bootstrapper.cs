@@ -25,8 +25,14 @@ namespace Tweek.ApiService
         {
             var driver = GetCassandraDriver();
             return new Tuple<IContextDriver, IRulesDriver>(driver, new GitDriver(
-                Path.Combine(Environment.CurrentDirectory, "tweek-rules" + Guid.NewGuid()),
-                "http://tweek-gogs-1.816587ba.cont.dockerapp.io/tweek/tweek-rules.git"));
+                Path.Combine(System.Web.HttpRuntime.AppDomainAppPath, "tweek-rules" + Guid.NewGuid()),
+                new RemoteRepoSettings()
+                {
+                    url = "http://tweek-gogs-1.816587ba.cont.dockerapp.io/tweek/tweek-rules.git",
+                    Email = "tweek@soluto.com",
+                    UserName = "tweek",
+                    Password = "***REMOVED***"
+                }));
         } 
 
         private CassandraDriver GetCassandraDriver()
