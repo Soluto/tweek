@@ -19,36 +19,79 @@ using LibGit2Sharp;
 
 namespace Engine.Drivers.Rules.Git
 {
-    
+    public class RemoteRepoSettings
+    {
+        public string UserName;
+        public string Email;
+        public string Password;
+        public string url;
+    }
+
     public class GitDriver : IRulesDriver, IDisposable, IRulesAuthroingDriver
     {
         private readonly string _localUri;
+        private readonly RemoteRepoSettings _remoteRepoSettings;
         private readonly IConnectableObservable<Repository> _repo;
-        //private readonly IConnectableObservable<Dictionary<string, RuleDefinition>> _rulesData;
         private IDisposable Sub = Disposable.Empty;
         private int IsConnected = 1;
         private static SemaphoreSlim _writeLock = new SemaphoreSlim(1);
+        private Subject<Unit> _commitSubject =new Subject<Unit>();
         
-        public GitDriver(string localUri, string repoUrl = null)
+        public GitDriver(string localUri, RemoteRepoSettings remoteRepoSettings = null)
         {
             _localUri = localUri;
+            _remoteRepoSettings = remoteRepoSettings;
             _repo = Observable.FromAsync(async () =>
                 await Task.Run(() =>
                 {
                     if (Directory.Exists(_localUri)) Directory.Delete(_localUri, true);
-                    if (repoUrl == null)
+                    if (_remoteRepoSettings == null)
                     {
                         Repository.Init(_localUri);
                     }
                     else
                     {
-                        Repository.Clone(repoUrl, _localUri);
+                        Repository.Clone(_remoteRepoSettings.url, _localUri);
                     }
                     var repo = new Repository(_localUri);
                     Sub = new CompositeDisposable(Sub, Disposable.Create(()=>repo.Dispose()));
                     return repo;
                 })
             ).PublishLast();
+            Sub = new CompositeDisposable(Sub, _commitSubject
+                .Throttle(TimeSpan.FromMilliseconds(2000))
+                .SelectMany(async _ =>
+                {
+                    
+                    var repo = await _repo;
+                    try
+                    {
+                        await _writeLock.WaitAsync();
+                        await Task.Run(() =>
+                        {
+                            if (repo.Network.Remotes.Any(x => x.Name == "origin"))
+                            {
+                                repo.Network.Push(repo.Network.Remotes["origin"], @"refs/heads/master", new PushOptions()
+                                {
+                                    CredentialsProvider =
+                                        (url, fromUrl, types) =>
+                                            new UsernamePasswordCredentials
+                                            {
+                                                Username = _remoteRepoSettings.UserName,
+                                                Password = _remoteRepoSettings.Password
+                                            }
+                                });
+                            }
+                        });
+                    }
+                    finally
+                    {
+                        _writeLock.Release();
+                    }
+                    
+                    
+                    return Unit.Default;
+                }).Subscribe());
         }
 
         private IObservable<string> ScanFileTree(string root)
@@ -110,24 +153,19 @@ namespace Engine.Drivers.Rules.Git
             {
                 File.Delete(file);
             }
-            using (var writer = new StreamWriter(File.OpenWrite(file)))
+            if (ruleDefinition.Payload != "[]")
             {
-                await writer.WriteAsync(ruleDefinition.Payload);
+                using (var writer = new StreamWriter(File.OpenWrite(file)))
+                {
+                    await writer.WriteAsync(ruleDefinition.Payload);
+                }
             }
             repo.Stage(file);
             var author = new Signature(new LibGit2Sharp.Identity(authorName, authorEmail), creationTime);
-            var commiter = new Signature(new LibGit2Sharp.Identity("tweek", "tweek@soluto.com"), creationTime);
+            var commiter = new Signature(new LibGit2Sharp.Identity(_remoteRepoSettings.UserName, _remoteRepoSettings.Email), creationTime);
             repo.Commit("updated:" + path, author, commiter, new CommitOptions() {});
-            if (repo.Network.Remotes.Any(x => x.Name == "origin"))
-            {
-                repo.Network.Push(repo.Network.Remotes["origin"], @"refs/heads/master", new PushOptions()
-                {
-                    CredentialsProvider =
-                        (url, fromUrl, types) =>
-                            new UsernamePasswordCredentials {Username = "tweek", Password = "po09!@QW"}
-                });
-            }
-            Console.WriteLine("pushed");
+            _commitSubject.OnNext(Unit.Default);
+
         }
 
         public async Task CommitRuleset(ConfigurationPath path,   RuleDefinition ruleDefinition, string authorName, string authorEmail, DateTimeOffset creationTime)
@@ -145,7 +183,9 @@ namespace Engine.Drivers.Rules.Git
         
         public void Dispose()
         {
+            _writeLock.Wait();
             Sub.Dispose();
+            _writeLock.Release();
         }
     }
 }
