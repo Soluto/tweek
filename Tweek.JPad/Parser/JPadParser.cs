@@ -31,10 +31,9 @@ namespace Tweek.JPad
 
         Matcher ParseMatcher(JToken schema)
         {
-            return context =>
-            {
-                return MatchDSL.Match_ext(schema.ToString(), key => context(key).IfNoneUnsafe((string)null));
-            };
+            var matcher = MatchDSL.Match_ext_compile(schema.ToString());
+
+            return (context) => matcher(key => context(key).IfNoneUnsafe((string) null));
         }
 
         private IRule ParseRule(RuleData data)
@@ -74,7 +73,7 @@ namespace Tweek.JPad
         public IRule Parse(string text)
         {
             var rules = JsonConvert.DeserializeObject<List<RuleData>>(text);
-            return rules.Select(ParseRule).Reduce(FallBack);
+            return rules.Select(ParseRule).Aggregate(FallBack);
 
         }
     }
