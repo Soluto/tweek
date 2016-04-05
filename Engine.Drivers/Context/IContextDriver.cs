@@ -4,8 +4,7 @@ using Engine.DataTypes;
 
 namespace Engine.Drivers.Context
 {
-    public interface IContextDriver
+    public interface IContextDriver : IContextReader, IContextWriter
     {
-        Task<Dictionary<string,string>> GetContext(Identity identity);
     }
 }

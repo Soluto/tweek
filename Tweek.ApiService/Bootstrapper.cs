@@ -54,6 +54,7 @@ namespace Tweek.ApiService
                                            drivers.Item2)).Result;
 
             container.Register<ITweek>((ctx, no) => tweek);
+            container.Register<IContextDriver>((ctx, no) => drivers.Item1);
             base.ApplicationStartup(container, pipelines);
         }
     }

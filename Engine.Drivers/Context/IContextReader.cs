@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Engine.DataTypes;
 
-namespace Engine.Drivers.Cassandra
+namespace Engine.Drivers.Context
 {
-    interface IContextWriterDriver
+    public interface IContextReader
     {
-        Task WriteValue(Identity identity, string key, string value);
+        Task<Dictionary<string, string>> GetContext(Identity identity);
+
     }
 }

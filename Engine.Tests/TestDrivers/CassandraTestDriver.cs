@@ -17,18 +17,20 @@ namespace Engine.Tests.TestDrivers
     public class CassandraTestDriver : ITestDriver
     {
         private readonly ISession _session;
+        private readonly CassandraDriver _cassandraDriver;
+
         public CassandraTestDriver(ISession session)
         {
             _session = session;
-            var cassandraDriver = new CassandraDriver(_session);
-            Context = cassandraDriver;
+            _cassandraDriver = new CassandraDriver(_session, "tweek-integration-tests");
+            Context = _cassandraDriver;
         }
         
         public IContextDriver Context { get; }
         
         private async Task InsertContextRows(Dictionary<Identity, Dictionary<string, string>> contexts)
         {
-            var contextTable = new Table<CassandraDriver.ContextRow>(_session, CassandraDriver.MappingConfiguration);
+            var contextTable = new Table<CassandraDriver.ContextRow>(_session, _cassandraDriver.MappingConfiguration);
             contextTable.CreateIfNotExists();
             var data = contexts.SelectMany(
                 identity =>
@@ -48,14 +50,14 @@ namespace Engine.Tests.TestDrivers
 
         private async Task DropTable(string tableName)
         {
-            await _session.ExecuteAsync(new SimpleStatement(string.Format("DROP TABLE IF EXISTS tweek.{0}", tableName)));
+            await _session.ExecuteAsync(new SimpleStatement(string.Format("DROP TABLE IF EXISTS tweek-intengration-tests.{0}", tableName)));
         }
 
         public TestScope SetTestEnviornment(Dictionary<Identity, Dictionary<string, string>> contexts, string[] keys, Dictionary<string, RuleDefinition> rules)
         {
             var gitDriver = new GitDriver(Path.Combine(Environment.CurrentDirectory, "tweek-rules-tests" + Guid.NewGuid()));
             return new TestScope(rules:gitDriver, context:Context, init:  () =>  Task.WhenAll(InsertContextRows(contexts), InsertRuleData(gitDriver, rules)), 
-                dispose: ()=> Task.WhenAll(DropTable("contexts"),DropTable("paths"), DropTable("rules")));
+                dispose: ()=> Task.WhenAll(DropTable("contexts")));
             ;
         }
     }

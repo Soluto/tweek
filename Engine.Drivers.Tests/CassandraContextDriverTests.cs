@@ -16,6 +16,7 @@ namespace Engine.Drivers.Tests
     public class CassandraContextDriverTests
     {
         private ISession _session;
+        private CassandraDriver _driver;
 
         [OneTimeSetUp]
         public async Task CreateSession()
@@ -28,7 +29,8 @@ namespace Engine.Drivers.Tests
                 .Build();
 
             //Create connections to the nodes using a keyspace
-            _session = cluster.Connect("tweek");
+            _session = cluster.Connect("tweek-integration-tests");
+            _driver = new CassandraDriver(_session, "tweek-integration-tests");
         }
 
         [Test]
@@ -40,8 +42,7 @@ namespace Engine.Drivers.Tests
 
             await InsertContextRow(identity, key, value);
 
-            IContextDriver driver = new CassandraDriver(_session);
-            var result = await driver.GetContext(identity);
+            var result = await _driver.GetContext(identity);
             Assert.AreEqual(result[key], value);
         }
 
@@ -49,18 +50,18 @@ namespace Engine.Drivers.Tests
         public async Task GetContext_TwoContexts_ReturnsDictionaryCorrectDictionary()
         {
             var identity = new Identity("device", Guid.NewGuid().ToString());
+            
             await InsertContextRow(new Identity("device", Guid.NewGuid().ToString()), "some key", "some value");
             await InsertContextRow(identity, "some key", "expected value");
 
-            IContextDriver driver = new CassandraDriver(_session);
-            var result = await driver.GetContext(identity);
+            var result = await _driver.GetContext(identity);
             Assert.AreEqual(result.Count, 1);
             Assert.AreEqual(result["some key"], "expected value");
         }
         
         private async Task InsertContextRow(Identity identity, string key, string value)
         {
-            var contextTable = new Table<CassandraDriver.ContextRow>(_session, CassandraDriver.MappingConfiguration);
+            var contextTable = new Table<CassandraDriver.ContextRow>(_session, _driver.MappingConfiguration);
             contextTable.CreateIfNotExists();
             await contextTable.Insert(new CassandraDriver.ContextRow()
             {
