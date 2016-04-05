@@ -38,7 +38,7 @@ namespace Engine.Tests
                     "dc0vm0tqwdso6zqj26c.eastus.cloudapp.azure.com")
                 .Build();
 
-            _cassandraSession = cluster.Connect("tweek");
+            _cassandraSession = cluster.Connect("tweekintegrationtests");
             driver = new CassandraTestDriver(_cassandraSession);
         }
 

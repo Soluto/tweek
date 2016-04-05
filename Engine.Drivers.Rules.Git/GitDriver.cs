@@ -162,7 +162,7 @@ namespace Engine.Drivers.Rules.Git
             }
             repo.Stage(file);
             var author = new Signature(new LibGit2Sharp.Identity(authorName, authorEmail), creationTime);
-            var commiter = new Signature(new LibGit2Sharp.Identity(_remoteRepoSettings.UserName, _remoteRepoSettings.Email), creationTime);
+            var commiter = (_remoteRepoSettings == null) ? author : new Signature(new LibGit2Sharp.Identity(_remoteRepoSettings.UserName, _remoteRepoSettings.Email), creationTime);
             repo.Commit("updated:" + path, author, commiter, new CommitOptions() {});
             _commitSubject.OnNext(Unit.Default);
 
