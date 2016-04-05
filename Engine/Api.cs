@@ -63,7 +63,9 @@ namespace Engine
             var contexts =  ContextHelpers.Fallback(externalContext, loadedContexts);
             var pathsWithRules = paths.Select(path => new { Path = path, Rules = allRules.TryGetValue(path) }).ToList();
 
-            return pathsWithRules.Select(x =>
+            return pathsWithRules
+                .AsParallel()
+                .Select(x =>
                     EngineCore.CalculateKey(identities, contexts, x.Path, p=>allRules.TryGetValue(p)).Select(value => new { path = x.Path.ToRelative(pathQuery), value })
                  )
                 .SkipEmpty()
