@@ -40,6 +40,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context\IContextDriver.cs" />
+    <Compile Include="Context\IContextReader.cs" />
+    <Compile Include="Context\IContextWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rules\IRulesDriver.cs" />
   </ItemGroup>
