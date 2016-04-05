@@ -22,7 +22,7 @@ namespace Engine.Tests.TestDrivers
         public CassandraTestDriver(ISession session)
         {
             _session = session;
-            _cassandraDriver = new CassandraDriver(_session, "tweek-integration-tests");
+            _cassandraDriver = new CassandraDriver(_session, "tweekintegrationtests");
             Context = _cassandraDriver;
         }
         
@@ -45,12 +45,12 @@ namespace Engine.Tests.TestDrivers
             await
                 Task.WhenAll(
                     rules.Select(
-                        x => driver.CommitRuleset(x.Key, x.Value, "tweek-integration-tests", "tweek@soluto.com", DateTimeOffset.UtcNow)));
+                        x => driver.CommitRuleset(x.Key, x.Value, "tweekintegrationtests", "tweek@soluto.com", DateTimeOffset.UtcNow)));
         }
 
         private async Task DropTable(string tableName)
         {
-            await _session.ExecuteAsync(new SimpleStatement(string.Format("DROP TABLE IF EXISTS tweek-intengration-tests.{0}", tableName)));
+            await _session.ExecuteAsync(new SimpleStatement(string.Format("DROP TABLE IF EXISTS tweekintegrationtests.{0}", tableName)));
         }
 
         public TestScope SetTestEnviornment(Dictionary<Identity, Dictionary<string, string>> contexts, string[] keys, Dictionary<string, RuleDefinition> rules)

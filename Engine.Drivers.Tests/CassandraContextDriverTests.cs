@@ -29,8 +29,8 @@ namespace Engine.Drivers.Tests
                 .Build();
 
             //Create connections to the nodes using a keyspace
-            _session = cluster.Connect("tweek-integration-tests");
-            _driver = new CassandraDriver(_session, "tweek-integration-tests");
+            _session = cluster.Connect("tweekintegrationtests");
+            _driver = new CassandraDriver(_session, "tweekintegrationtests");
         }
 
         [Test]
