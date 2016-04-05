@@ -2,27 +2,32 @@
 using Engine.Core.Utils;
 using Engine.DataTypes;
 using LanguageExt;
+using static LanguageExt.Prelude;
 
 namespace Engine.Core.Rules
 {
     public class FallbackRule:IRule
     {
-        private readonly IRule _l;
-        private readonly IRule _r;
-        public static IRule New(IRule l , IRule r)
+        private readonly IRule[] _rules;
+
+        public static FallbackRule New(IRule l, IRule r)
         {
             return new FallbackRule(l, r);
         }
 
-        public FallbackRule(IRule l, IRule r)
+        public FallbackRule(params IRule[] rules)
         {
-            _l = l;
-            _r = r;
+            _rules = rules;
         }
 
         public Option<ConfigurationValue> GetValue(GetContextValue fullContext)
         {
-            return _l.GetValue(fullContext).IfNone(() => _r.GetValue(fullContext));
+            foreach  (var rule in _rules)
+            {
+                var contextValue = rule.GetValue(fullContext);
+                if (contextValue.IsSome) return contextValue;
+            }
+            return None;
         }
     }
 }
