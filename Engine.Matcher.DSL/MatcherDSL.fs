@@ -12,7 +12,7 @@ module MatchDSL =
 
     let nullProtect x = match x with |null -> None |_-> Some x;
 
-    let (|Property|Operator|) (input:string) = if input.[0] = '$' then Operator else Property
+    let (|KeyProperty|Operator|) (input:string) = if input.[0] = '$' then Operator else KeyProperty
 
     let private reducePredicate op seq = if Seq.isEmpty(seq) then true else seq |> Seq.reduce(op)               
 
@@ -31,15 +31,11 @@ module MatchDSL =
     type Property = string
     
     type Expression = 
-            | PropertyExprssion of Property * Expression
+            | Property of Property * Expression
             | Not of Expression
-            | BinaryExpression of LogicalOp * Expression * Expression
-            | CompareExpression of CompareOp * Value
+            | Binary of LogicalOp * Expression * Expression
+            | Compare of CompareOp * Value
             | Empty
-            
-    type ContextOrValue = 
-            | Context of Context
-            | Value of Option<String>
 
     let private parseOp op : Op = match op with
         |"$not" -> Op.LogicalOp(LogicalOp.Not)
@@ -72,26 +68,29 @@ module MatchDSL =
         match schema with 
         | JsonValue.Record record -> record |> 
             Seq.map (fun (key,innerSchema)-> match key with 
-                |Property-> Expression.PropertyExprssion(key, innerSchema |> parsePropertySchema LogicalOp.And)
+                |KeyProperty-> Expression.Property(key, innerSchema |> parsePropertySchema LogicalOp.And)
                 |Op-> match parseOp(key) with
-                    | Op.CompareOp compareOp -> Expression.CompareExpression (compareOp, innerSchema)
+                    | Op.CompareOp compareOp -> Expression.Compare (compareOp, innerSchema)
                     | Op.LogicalOp binaryOp-> match binaryOp with
                         | LogicalOp.And -> innerSchema |> parsePropertySchema LogicalOp.And
                         | LogicalOp.Or  -> innerSchema |> parsePropertySchema LogicalOp.Or
                         | LogicalOp.Not  -> Expression.Not(innerSchema |> parsePropertySchema LogicalOp.And)
-            ) |> reduceOrElse (fun acc exp-> Expression.BinaryExpression(logicalOp, acc, exp)) Expression.Empty
-        | x -> Expression.CompareExpression(CompareOp.Equal, x)
+            ) |> reduceOrElse (fun acc exp-> Expression.Binary(logicalOp, acc, exp)) Expression.Empty
+        | x -> Expression.Compare(CompareOp.Equal, x)
 
-    let rec private CompileExpression (exp: Expression) : (ContextOrValue) -> bool =
+    let rec private CompileExpression (prefix:string) (exp: Expression)  : (Context) -> bool =
         match exp with
-            | PropertyExprssion (prop, innerexp) -> (fun context -> match context with
-                | ContextOrValue.Context c -> CompileExpression innerexp (ContextOrValue.Value (prop|>c)))
-            | Not (innerexp) ->  CompileExpression innerexp >> not
-            | BinaryExpression (op, l, r) -> match op with
-                |LogicalOp.And -> (fun context -> (CompileExpression l context) && (CompileExpression r context))
-                |LogicalOp.Or ->  (fun context ->(CompileExpression l context) || (CompileExpression r context))
-            | CompareExpression (op, op_value) ->  (fun (context: ContextOrValue) -> match context with
-                | ContextOrValue.Value actualValueOptional -> match actualValueOptional with
+            | Property (prop, innerexp) -> CompileExpression (prefix + prop) innerexp 
+            | Not (innerexp) ->  CompileExpression prefix innerexp >> not
+            | Binary (op, l, r) -> 
+                let lExp = CompileExpression prefix l;
+                let rExp = CompileExpression prefix r;
+                let bOp = (fun op c-> op (lExp c) (rExp c))
+                match op with
+                |LogicalOp.And -> (&&) |> bOp
+                |LogicalOp.Or ->  (||) |> bOp
+            | Compare (op, op_value) ->  (fun (context: Context) ->  
+                match context(prefix) with
                     |Some actualValue -> evaluateComparison op op_value actualValue
                     |None-> false)
             | Empty -> (fun context->true)
@@ -100,11 +99,11 @@ module MatchDSL =
 
     let Match_ext_compile (schema: string) : (Func<ContextDelegate, bool>) =
         let json = (JsonValue.Parse(schema))
-        let matcher = json|> parseJsonSchema |> CompileExpression;
-        new Func<ContextDelegate, bool>(fun c-> matcher (ContextOrValue.Context(c.Invoke >> nullProtect)) )
+        let matcher = json|> parseJsonSchema |> CompileExpression "";
+        new Func<ContextDelegate, bool>(fun c-> matcher (c.Invoke >> nullProtect))
 
     let Match (schema: JsonValue) (context: Context) : bool =
-        ContextOrValue.Context(context) |> ( schema |> parseJsonSchema |> CompileExpression)
+        context |> ( schema |> parseJsonSchema |> CompileExpression "")
     
     let Match_ext (schema: string) (context: ContextDelegate) : bool =
         Match (JsonValue.Parse(schema)) 
