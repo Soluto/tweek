@@ -50,7 +50,7 @@ namespace Engine.Core.Tests
 
         public static RulesRepository Merge(RulesRepository l, RulesRepository r)
         {
-            return fnPath => GetOneOrMerge(l(fnPath), r(fnPath), FallbackRule.New);
+            return fnPath => GetOneOrMerge(l(fnPath), r(fnPath), (lRule,rRule)=> new RuleSet(new [] { lRule, rRule}));
         }
 
         public static RulesRepository With(this RulesRepository target, string path, IRule rule)

@@ -1,4 +1,5 @@
-﻿using Engine.Core.Context;
+﻿using System.Collections.Generic;
+using Engine.Core.Context;
 using Engine.Core.Utils;
 using Engine.DataTypes;
 using LanguageExt;
@@ -6,16 +7,11 @@ using static LanguageExt.Prelude;
 
 namespace Engine.Core.Rules
 {
-    public class FallbackRule:IRule
+    public class RuleSet:IRule
     {
         private readonly IRule[] _rules;
-
-        public static FallbackRule New(IRule l, IRule r)
-        {
-            return new FallbackRule(l, r);
-        }
-
-        public FallbackRule(params IRule[] rules)
+        
+        public RuleSet(params IRule[] rules)
         {
             _rules = rules;
         }
