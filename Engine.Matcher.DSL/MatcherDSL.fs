@@ -78,17 +78,19 @@ module MatchDSL =
             ) |> reduceOrElse (fun acc exp-> Expression.Binary(logicalOp, acc, exp)) Expression.Empty
         | x -> Expression.Compare(CompareOp.Equal, x)
 
+    let getPropName prefix prop = if prefix = "" then prop else (prefix + "." + prop)
+
     let rec private CompileExpression (prefix:string) (exp: Expression)  : (Context) -> bool =
         match exp with
-            | Property (prop, innerexp) -> CompileExpression (prefix + prop) innerexp 
+            | Property (prop, innerexp) -> CompileExpression (getPropName prefix prop) innerexp 
             | Not (innerexp) ->  CompileExpression prefix innerexp >> not
             | Binary (op, l, r) -> 
                 let lExp = CompileExpression prefix l;
                 let rExp = CompileExpression prefix r;
                 let bOp = (fun op c-> op (lExp c) (rExp c))
                 match op with
-                |LogicalOp.And -> (&&) |> bOp
-                |LogicalOp.Or ->  (||) |> bOp
+                |LogicalOp.And -> fun c-> (lExp c) && (rExp c)
+                |LogicalOp.Or -> fun c->  (lExp c) || (rExp c)
             | Compare (op, op_value) ->  (fun (context: Context) ->  
                 match context(prefix) with
                     |Some actualValue -> evaluateComparison op op_value actualValue

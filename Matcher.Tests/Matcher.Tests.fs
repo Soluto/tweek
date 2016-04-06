@@ -44,3 +44,8 @@ let ``Use logical operater at root``() =
     validate (context [("Age", "25");("Weight", "80")]) |> should equal false;
     validate (context [("Age", "22");("Weight", "70")]) |> should equal true;
     validate (context [("Age", "22");("Weight", "80")]) |> should equal true;
+
+[<Fact>]
+let ``"nested" context``() =
+    let validate = validator """{"Person": {"Age": 25 }}""";
+    validate (context [("Person.Age", "25")]) |> should equal true;
