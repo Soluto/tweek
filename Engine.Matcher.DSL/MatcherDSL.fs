@@ -68,7 +68,7 @@ module MatchDSL =
             | JsonValue.Null -> false
             | _ -> false        
 
-    let rec parsePropertySchema (logicalOp : LogicalOp) (schema:JsonValue)  : Expression = 
+    let rec private parsePropertySchema (logicalOp : LogicalOp) (schema:JsonValue)  : Expression = 
         match schema with 
         | JsonValue.Record record -> record |> 
             Seq.map (fun (key,innerSchema)-> match key with 
@@ -82,7 +82,7 @@ module MatchDSL =
             ) |> reduceOrElse (fun acc exp-> Expression.BinaryExpression(logicalOp, acc, exp)) Expression.Empty
         | x -> Expression.CompareExpression(CompareOp.Equal, x)
 
-    let rec CompileExpression (exp: Expression) : (ContextOrValue) -> bool =
+    let rec private CompileExpression (exp: Expression) : (ContextOrValue) -> bool =
         match exp with
             | PropertyExprssion (prop, innerexp) -> (fun context -> match context with
                 | ContextOrValue.Context c -> CompileExpression innerexp (ContextOrValue.Value (prop|>c)))
