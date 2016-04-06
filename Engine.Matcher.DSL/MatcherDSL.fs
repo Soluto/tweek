@@ -82,22 +82,6 @@ module MatchDSL =
             ) |> reduceOrElse (fun acc exp-> Expression.BinaryExpression(logicalOp, acc, exp)) Expression.Empty
         | x -> Expression.CompareExpression(CompareOp.Equal, x)
 
-    (*
-    let rec MatchExpression (exp: Expression) (context: ContextOrValue) : bool =
-        match exp with
-            | PropertyExprssion (prop, innerexp) -> match context with
-                | ContextOrValue.Context c -> MatchExpression innerexp (ContextOrValue.Value (prop|>c))
-            | Not (innerexp) -> not (MatchExpression innerexp context)
-            | BinaryExpression (op, l, r) -> match op with
-                |LogicalOp.And -> (MatchExpression l context) && (MatchExpression r context)
-                |LogicalOp.Or ->  (MatchExpression l context) || (MatchExpression r context)
-            | CompareExpression (op, op_value) -> match context with
-                | ContextOrValue.Value actualValueOptional -> match actualValueOptional with
-                    |Some actualValue -> evaluateComparison op op_value actualValue
-                    |None-> false 
-            | Empty -> true
-    *)
-
     let rec CompileExpression (exp: Expression) : (ContextOrValue) -> bool =
         match exp with
             | PropertyExprssion (prop, innerexp) -> (fun context -> match context with
