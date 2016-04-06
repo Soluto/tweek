@@ -63,7 +63,7 @@
     <Compile Include="Context\ContextHelpers.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rules\FallbackRule.cs" />
+    <Compile Include="Rules\RuleSet.cs" />
     <Compile Include="Rules\IRule.cs" />
     <Compile Include="Rules\IRuleParser.cs" />
     <Compile Include="Utils\OptionHelpers.cs" />

@@ -65,15 +65,12 @@ namespace Tweek.JPad
             throw new Exception("no parser for rule type");
         }
 
-        private IRule FallBack(IRule l, IRule r)
-        {
-            return new FallbackRule(l, r);
-        }
+        
 
         public IRule Parse(string text)
         {
             var rules = JsonConvert.DeserializeObject<List<RuleData>>(text);
-            return rules.Select(ParseRule).Aggregate(FallBack);
+            return new RuleSet(rules.Select(ParseRule).ToArray());
 
         }
     }
