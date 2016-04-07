@@ -23,19 +23,19 @@ namespace Tweek.ApiService
 
     public class TreeBuilder
     {
-        private readonly Dictionary<string, object> _dictionary;
+        private readonly SortedDictionary<string, object> _dictionary;
 
         public TreeBuilder()
         {
-            _dictionary = new Dictionary<string, object>();
+            _dictionary = new SortedDictionary<string,object>();
         }
 
-        private Dictionary<string, object> GetOrCreateContainer(IEnumerable<string> indexes)
+        private SortedDictionary<string, object> GetOrCreateContainer(IEnumerable<string> indexes)
         {
             return indexes.Aggregate(_dictionary, (a, b) =>
             {
-                if (!a.ContainsKey(b)) a[b] = new Dictionary<string, object>();
-                return a[b] as Dictionary<string, object>;
+                if (!a.ContainsKey(b)) a[b] = new SortedDictionary<string, object>();
+                return a[b] as SortedDictionary<string, object>;
             });
         }
 
