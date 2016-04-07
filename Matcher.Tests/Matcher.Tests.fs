@@ -8,10 +8,11 @@ open FsUnit
 open Xunit
 open FsCheck.Xunit;
 open Swensen.Unquote
-open Engine.Match.DSL.MatchDSL
 open FSharp.Data;
 open Microsoft.FSharp.Reflection;
 open Matcher.Tests.Common;
+open Engine.Match.DSL.MatchDSL;
+open System;
 
 [<Fact>]
 let ``Use multipe-comparisons, "and" is implict``() =
@@ -28,15 +29,12 @@ let ``Use comparisons on multipe fields, "and" is implict``() =
     validate (context [("Age", "20");("Weight","39");])  |> should equal false;
     validate (context [("Age", "19");("Weight","40");])  |> should equal false;
 
-    
 [<Fact>]
 let ``Use not ``() =
     let addNot schema = """{"$not":{"Age": {"$lt":21}}}"""
     let validate = validator """{"$not":{"Age": {"$lt":21}}}"""
     validate (context [("Age", "22");])  |> should equal true;
     
-
-
 [<Fact>]
 let ``Use logical operater at root``() =
     let validate = validator """{"$or": {"Age": {"$gt" : 20, "$lt" : 23 } , "Weight": {"$lt":80}} }""";
@@ -49,3 +47,15 @@ let ``Use logical operater at root``() =
 let ``"nested" context``() =
     let validate = validator """{"Person": {"Age": 25 }}""";
     validate (context [("Person.Age", "25")]) |> should equal true;
+
+[<Fact>]
+let ``use custom comparer``() =
+    let comparers = dict([("version", new ComparerDelegate(fun x -> Version.Parse(x) :> IComparable))]);
+    let validate =  Compile """{"AgentVersion": {"$comparer": "version", "$gt": "1.5.1", "$le": "1.15.2" }}""" {Comparers=comparers}
+    validate (context [("AgentVersion", "1.15.1" )]) |> should equal true;
+
+[<Fact>]
+let ``use custom comparer with broken mismatched target value should fail in compile time``() =
+    let comparers = dict([("version", new ComparerDelegate(fun x -> Version.Parse(x) :> IComparable))]);
+    (fun () ->(Compile """{"AgentVersion": {"$comparer": "version", "$gt": "debug-1.5.1", "$le": "1.15.2" }}""" {Comparers=comparers}) |> ignore) |> should throw typeof<ParseError>
+
