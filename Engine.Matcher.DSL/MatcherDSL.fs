@@ -71,7 +71,6 @@ module MatchDSL =
             )
         target.CompareTo << fn;
     
-    //evaluateComparisonOp op (comparer stringValue x) 0
     let private evaluateComparison (comparer) (op: CompareOp) (jsonValue:ComparisonValue) : (string->bool) =
         match jsonValue with
             | JsonValue.String x -> (comparer x) >> (fun intValue-> evaluateComparisonOp op  intValue 0)
