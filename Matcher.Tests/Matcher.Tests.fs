@@ -51,13 +51,13 @@ let ``"nested" context``() =
 [<Fact>]
 let ``use custom comparer``() =
     let comparers = dict([("version", new ComparerDelegate(fun x -> Version.Parse(x) :> IComparable))]);
-    let validate =  Compile """{"AgentVersion": {"$comparer": "version", "$gt": "1.5.1", "$le": "1.15.2" }}""" {Comparers=comparers}
+    let validate =  Compile """{"AgentVersion": {"$compare": "version", "$gt": "1.5.1", "$le": "1.15.2" }}""" {Comparers=comparers}
     validate (context [("AgentVersion", "1.15.1" )]) |> should equal true;
 
 [<Fact>]
 let ``use custom comparer with broken mismatched target value should fail in compile time``() =
     let comparers = dict([("version", new ComparerDelegate(fun x -> Version.Parse(x) :> IComparable))]);
-    (fun () ->(Compile """{"AgentVersion": {"$comparer": "version", "$gt": "debug-1.5.1", "$le": "1.15.2" }}""" {Comparers=comparers}) |> ignore) |> should throw typeof<ParseError>
+    (fun () ->(Compile """{"AgentVersion": {"$compare": "version", "$gt": "debug-1.5.1", "$le": "1.15.2" }}""" {Comparers=comparers}) |> ignore) |> should throw typeof<ParseError>
 
 [<Fact>]
 let ``exist/not exist prop support -> expressed with null``() =

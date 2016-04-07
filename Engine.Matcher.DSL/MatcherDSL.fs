@@ -84,7 +84,7 @@ module MatchDSL =
     let rec private parsePropertySchema (logicalOp : LogicalOp) (schema:JsonValue)  : Expression = 
         match schema with 
         | JsonValue.Record record -> 
-            let converterType = record |> Seq.tryFind (fst >> (=) "$comparer")
+            let converterType = record |> Seq.tryFind (fst >> (=) "$compare")
             let filter = (match converterType with |None -> id |Some x -> Seq.filter ((<>) x) )
             let props = record |> 
                 filter |>
