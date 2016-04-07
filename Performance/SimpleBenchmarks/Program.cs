@@ -11,6 +11,8 @@ using Engine.Core.Context;
 using Engine.DataTypes;
 using Engine.Drivers.Cassandra;
 using Engine.Drivers.Rules.Git;
+using Engine.Match.DSL;
+using Tweek.JPad;
 using static LanguageExt.Prelude;
 
 namespace SimpleBenchmarks
@@ -41,13 +43,14 @@ namespace SimpleBenchmarks
                 });
 
             ITweek tweek = Task.Run(async () => await Engine.Tweek.Create(
-                contextDriver, gitDriver)).Result;
+                contextDriver, gitDriver, new JPadParser(
+                        new Dictionary<string, MatchDSL.ComparerDelegate>
+                        {
+                            ["version"] =Version.Parse
+                        }
+                    ))).Result;
             var query = ConfigurationPath.New("_");
             
-            var dic = new Dictionary<string, string>()
-            {
-
-            };
             GetLoadedContextByIdentityType ext_context =
                 (identityType) =>
                     (key) => (identityType == "device" && key == "@CreationDate") ? Some("06/06/16") : None;
