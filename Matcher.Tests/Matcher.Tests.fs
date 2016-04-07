@@ -59,3 +59,14 @@ let ``use custom comparer with broken mismatched target value should fail in com
     let comparers = dict([("version", new ComparerDelegate(fun x -> Version.Parse(x) :> IComparable))]);
     (fun () ->(Compile """{"AgentVersion": {"$comparer": "version", "$gt": "debug-1.5.1", "$le": "1.15.2" }}""" {Comparers=comparers}) |> ignore) |> should throw typeof<ParseError>
 
+[<Fact>]
+let ``exist/not exist prop support -> expressed with null``() =
+    let validate = validator """{"Person": {"Age": null }}""";
+    validate (context [("Person.Age", "20" )]) |> should equal false;
+    validate (context [("abc", "30")]) |> should equal true;
+    validate (context []) |> should equal true;
+    let validateWithNot = validator """{"Person": {"Age": {"$not": null} }}""";
+    validateWithNot (context [("Person.Age", "20" )]) |> should equal true;
+    validateWithNot (context [("abc", "30")]) |> should equal false;
+    validateWithNot (context []) |> should equal false;
+
