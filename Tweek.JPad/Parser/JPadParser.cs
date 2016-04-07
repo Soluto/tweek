@@ -22,7 +22,11 @@ namespace Tweek.JPad
 
     public class JPadParser : IRuleParser
     {
-        
+        private readonly Dictionary<string, MatchDSL.ComparerDelegate> _comparers;
+        public JPadParser(Dictionary<string, MatchDSL.ComparerDelegate>  comparers = null )
+        {
+            _comparers = comparers ?? new Dictionary<string, MatchDSL.ComparerDelegate>();
+        }
         ValueDistributor ParseValueDistrubtor(JToken schema)
         {
             var valueDistributor = ValueDistribution.compile_ext(schema.ToString());
@@ -31,7 +35,8 @@ namespace Tweek.JPad
 
         Matcher ParseMatcher(JToken schema)
         {
-            var matcher = MatchDSL.Match_ext_compile(schema.ToString());
+            var matcher = MatchDSL.Compile_Ext(schema.ToString(),
+                new MatchDSL.ParserSettings( comparers: _comparers));
 
             return (context) => matcher(key => context(key).IfNoneUnsafe((string) null));
         }
@@ -65,8 +70,7 @@ namespace Tweek.JPad
             throw new Exception("no parser for rule type");
         }
 
-        
-
+ 
         public IRule Parse(string text)
         {
             var rules = JsonConvert.DeserializeObject<List<RuleData>>(text);

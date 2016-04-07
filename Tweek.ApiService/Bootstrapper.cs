@@ -11,9 +11,11 @@ using Engine.Drivers.Cassandra;
 using Engine.Drivers.Context;
 using Engine.Drivers.Rules;
 using Engine.Drivers.Rules.Git;
+using Engine.Match.DSL;
 using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.TinyIoc;
+using Tweek.JPad;
 
 namespace Tweek.ApiService
 {
@@ -51,7 +53,10 @@ namespace Tweek.ApiService
         {
             var drivers = GetDrivers();
             ITweek tweek = Task.Run(async()=> await Engine.Tweek.Create(drivers.Item1,
-                                           drivers.Item2)).Result;
+                                           drivers.Item2, new JPadParser(
+                                           comparers: new Dictionary<string,MatchDSL.ComparerDelegate>() {
+                                               ["version"] = Version.Parse
+                                           }))).Result;
 
             container.Register<ITweek>((ctx, no) => tweek);
             container.Register<IContextDriver>((ctx, no) => drivers.Item1);

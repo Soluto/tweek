@@ -48,6 +48,10 @@
       <HintPath>..\packages\CassandraCSharpDriver.3.0.4\lib\net40\Cassandra.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Engine.Match.DSL, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Bin\Engine.Match.DSL.dll</HintPath>
+    </Reference>
     <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\FSharp.Core.4.0.0.1\lib\net40\FSharp.Core.dll</HintPath>
@@ -179,6 +183,10 @@
     <ProjectReference Include="..\Engine\Engine.csproj">
       <Project>{88200f63-8699-4b6e-8969-4c45827ad0c3}</Project>
       <Name>Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tweek.JPad\Tweek.JPad.csproj">
+      <Project>{D20F24EB-860A-4DC0-A849-28627E342B89}</Project>
+      <Name>Tweek.JPad</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
