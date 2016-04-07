@@ -67,7 +67,7 @@ module MatchDSL =
             try
                 fn(l)
             with
-                | ex -> ParseError ("failure in parser") |> raise
+                | ex -> ParseError ("failure in parser value:" + l) |> raise
             )
         target.CompareTo << fn;
     
