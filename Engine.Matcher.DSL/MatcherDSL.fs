@@ -71,13 +71,14 @@ module MatchDSL =
             )
         target.CompareTo << fn;
     
-    let private evaluateComparison (comparer) (op: CompareOp) (jsonValue:ComparisonValue) : (string->bool) =
+    let private evaluateComparison (comparer) (op: CompareOp) (jsonValue:ComparisonValue) : (Option<string>->bool) =
+        let noneGuard fn = function |Some x-> fn x|None -> false
         match jsonValue with
-            | JsonValue.String x -> (comparer x) >> (fun intValue-> evaluateComparisonOp op  intValue 0)
-            | JsonValue.Number x -> evaluateComparisonOp op x << decimal
-            | JsonValue.Boolean x -> evaluateComparisonOp op x << bool.Parse 
-            | JsonValue.Float x ->  evaluateComparisonOp op x << float
-            | JsonValue.Null -> (fun _->false)
+            | JsonValue.String x -> (comparer x) >> (fun intValue-> evaluateComparisonOp op  intValue 0) |> noneGuard
+            | JsonValue.Number x -> evaluateComparisonOp op x << decimal |> noneGuard
+            | JsonValue.Boolean x -> evaluateComparisonOp op x << bool.Parse |> noneGuard
+            | JsonValue.Float x -> evaluateComparisonOp op x << float |> noneGuard
+            | JsonValue.Null -> (fun x->x.IsNone) 
             | _ -> (fun _->false)
 
     let rec private parsePropertySchema (logicalOp : LogicalOp) (schema:JsonValue)  : Expression = 
@@ -119,10 +120,7 @@ module MatchDSL =
                     |LogicalOp.Or -> fun c->  (lExp c) || (rExp c)
                 | Compare (op, op_value) ->  
                     let comparison = evaluateComparison comparer op op_value;
-                    (fun (context: Context) ->  
-                    match context(prefix) with
-                        |Some actualValue -> comparison actualValue
-                        |None-> false)
+                    (fun (context: Context) -> prefix |> context |> comparison)
                 | SwitchComparer (newComparer, innerexp) -> match getComparer(newComparer) with
                     | Some inst_comparer -> innerexp|> CompileExpression prefix (createComparer(inst_comparer.Invoke))
                     | None -> ParseError ("missing comparer - " + newComparer) |> raise
