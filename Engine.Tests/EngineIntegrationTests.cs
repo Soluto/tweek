@@ -20,14 +20,14 @@ namespace Engine.Tests
     [TestFixture]
     public class EngineIntegrationTests
     {
-        private ISession _cassandraSession;
-        private ITestDriver driver;
-        private Dictionary<Identity,Dictionary<string,string>> contexts;
-        private Dictionary<string, RuleDefinition> rules;
-        private string[] paths;
+        ISession _cassandraSession;
+        ITestDriver driver;
+        Dictionary<Identity, Dictionary<string, string>> contexts;
+        Dictionary<string, RuleDefinition> rules;
+        string[] paths;
 
-        private readonly HashSet<Identity> NoIdentities = new HashSet<Identity>();
-        private readonly Dictionary<Identity, Dictionary<string, string>> EmptyContexts = new Dictionary<Identity, Dictionary<string, string>>();
+        readonly HashSet<Identity> NoIdentities = new HashSet<Identity>();
+        readonly Dictionary<Identity, Dictionary<string, string>> EmptyContexts = new Dictionary<Identity, Dictionary<string, string>>();
 
         [TestFixtureSetUp]
         public void Setup()
@@ -42,7 +42,7 @@ namespace Engine.Tests
             driver = new CassandraTestDriver(_cassandraSession);
         }
 
-        private async Task Run(Func<ITweek, Task> test)
+        async Task Run(Func<ITweek, Task> test)
         {
             var scope = driver.SetTestEnviornment(contexts, paths, rules);
             await scope.Run(test);

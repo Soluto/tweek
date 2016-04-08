@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 using Engine.DataTypes;
 using Engine.Management.Drivers;
 using LibGit2Sharp;
-
+using LibGit2Sharp.Handlers;
 
 namespace Engine.Drivers.Rules.Git
 {
@@ -25,6 +25,13 @@ namespace Engine.Drivers.Rules.Git
         public string Email;
         public string Password;
         public string url;
+
+        public CredentialsHandler CredentialsProvider => (url, fromUrl, types) =>
+                                            new UsernamePasswordCredentials
+                                            {
+                                                Username = UserName,
+                                                Password = Password
+                                            };
     }
 
     public class GitDriver : IRulesDriver, IDisposable, IRulesAuthroingDriver
@@ -51,7 +58,10 @@ namespace Engine.Drivers.Rules.Git
                     }
                     else
                     {
-                        Repository.Clone(_remoteRepoSettings.url, _localUri);
+                        Repository.Clone(_remoteRepoSettings.url, _localUri, new CloneOptions()
+                        {
+                            CredentialsProvider = _remoteRepoSettings.CredentialsProvider
+                        });
                     }
                     var repo = new Repository(_localUri);
                     Sub = new CompositeDisposable(Sub, Disposable.Create(()=>repo.Dispose()));
@@ -73,13 +83,7 @@ namespace Engine.Drivers.Rules.Git
                             {
                                 repo.Network.Push(repo.Network.Remotes["origin"], @"refs/heads/master", new PushOptions()
                                 {
-                                    CredentialsProvider =
-                                        (url, fromUrl, types) =>
-                                            new UsernamePasswordCredentials
-                                            {
-                                                Username = _remoteRepoSettings.UserName,
-                                                Password = _remoteRepoSettings.Password
-                                            }
+                                    CredentialsProvider = _remoteRepoSettings.CredentialsProvider
                                 });
                             }
                         });
