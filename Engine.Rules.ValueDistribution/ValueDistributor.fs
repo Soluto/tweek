@@ -31,8 +31,8 @@ module ValueDistribution =
                         uniformCalc args
         | "weighted" ->  let args = json.GetProperty("args").Properties() |> Array.map (fun (k,v)-> (k, v.AsInteger()));
                          weightedCalc args
-        | "bernoulliTrial" -> let args = json.GetProperty("args").AsFloat() |> (fun(x)-> [|("true",x |> floatToWeighted);("false", (1.0 - x)|>floatToWeighted)|]);
-                              weightedCalc args
+        | "bernoulliTrial" -> let percentage = json.GetProperty("args").AsFloat() |>floatToWeighted
+                              weightedCalc [|("true", percentage);("false", (100 - percentage))|];
         | s -> raise (Exception("expected operator, found:"+s));
         let sha1 = new SHA1CryptoServiceProvider(); 
 
