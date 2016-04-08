@@ -23,12 +23,15 @@ module MatchDSL =
 
     type LogicalOp = And | Or | Not
 
-    type CompareOp = Equal | GreaterThan | LessThan | GreaterEqual | LessEqual | NotEqual
-        
+    type ArrayOp = In
+
+    type CompareOp = Equal | GreaterThan | LessThan | GreaterEqual | LessEqual | NotEqual 
+    
     type Op = 
         | CompareOp of CompareOp
         | LogicalOp of LogicalOp
-    
+        | ArrayOp of ArrayOp
+        
     type ComparisonValue = JsonValue
 
     type PropertyName = string
@@ -38,6 +41,7 @@ module MatchDSL =
             | Not of Expression
             | Binary of LogicalOp * Expression * Expression
             | Compare of CompareOp * ComparisonValue
+            | ArrayTest of ArrayOp * ComparisonValue
             | SwitchComparer of string * Expression
             | Empty
 
@@ -51,6 +55,7 @@ module MatchDSL =
         |"$le" -> Op.CompareOp(CompareOp.LessEqual)
         |"$lt" -> Op.CompareOp(CompareOp.LessThan)
         |"$ne" -> Op.CompareOp(CompareOp.NotEqual)
+        |"$in" -> Op.ArrayOp(ArrayOp.In)
         | s -> raise (ParseError("expected operator, found:"+s))
 
     let private evaluateComparisonOp = function 
@@ -81,6 +86,16 @@ module MatchDSL =
             | JsonValue.Null -> (fun x->x.IsNone) 
             | _ -> (fun _->false)
 
+    let swap fn a b = fn b a;
+
+    let private evaluateArrayTest (comparer) (op: ArrayOp) (jsonValue:ComparisonValue) : (Option<string>->bool) =
+        match jsonValue with
+            | JsonValue.Array arr -> match op with
+                | ArrayOp.In ->  
+                let compareItem = evaluateComparison comparer CompareOp.Equal
+                (fun contextValue -> arr |> Array.exists (fun item-> compareItem item contextValue ))
+            | _ -> (fun _->false)
+
     let rec private parsePropertySchema (logicalOp : LogicalOp) (schema:JsonValue)  : Expression = 
         match schema with 
         | JsonValue.Record record -> 
@@ -92,6 +107,7 @@ module MatchDSL =
                     |KeyProperty-> Expression.Property(key, innerSchema |> parsePropertySchema LogicalOp.And)
                     |Op-> match parseOp(key) with
                         | Op.CompareOp compareOp -> Expression.Compare (compareOp, innerSchema)
+                        | Op.ArrayOp arrayOp -> Expression.ArrayTest (arrayOp, innerSchema)
                         | Op.LogicalOp binaryOp-> match binaryOp with
                             | LogicalOp.And -> innerSchema |> parsePropertySchema LogicalOp.And
                             | LogicalOp.Or  -> innerSchema |> parsePropertySchema LogicalOp.Or
@@ -104,7 +120,6 @@ module MatchDSL =
 
     let getPropName prefix prop = if prefix = "" then prop else (prefix + "." + prop)
 
-    
     let private compile_internal (comparers:System.Collections.Generic.IDictionary<string,ComparerDelegate>) exp  = 
         let getComparer s = if comparers.ContainsKey(s) then Some comparers.[s] else None;
         let rec CompileExpression (prefix:string) comparer (exp: Expression)  : (Context) -> bool =
@@ -118,9 +133,10 @@ module MatchDSL =
                     match op with
                     |LogicalOp.And -> fun c-> (lExp c) && (rExp c)
                     |LogicalOp.Or -> fun c->  (lExp c) || (rExp c)
+                | ArrayTest (op, op_value) ->  
+                    (|>) prefix >> evaluateArrayTest comparer op op_value  
                 | Compare (op, op_value) ->  
-                    let comparison = evaluateComparison comparer op op_value;
-                    (fun (context: Context) -> prefix |> context |> comparison)
+                    (|>) prefix >> evaluateComparison comparer op op_value
                 | SwitchComparer (newComparer, innerexp) -> match getComparer(newComparer) with
                     | Some inst_comparer -> innerexp|> CompileExpression prefix (createComparer(inst_comparer.Invoke))
                     | None -> ParseError ("missing comparer - " + newComparer) |> raise
