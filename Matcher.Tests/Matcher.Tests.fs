@@ -70,3 +70,11 @@ let ``exist/not exist prop support -> expressed with null``() =
     validateWithNot (context [("abc", "30")]) |> should equal false;
     validateWithNot (context []) |> should equal false;
 
+
+[<Fact>]
+let ``in operator support ``() =
+    let validate = validator """{"Person": {"Age": {"$in" :[10,20,30]}}}""";
+    validate (context [("Person.Age", "20" )]) |> should equal true;
+    validate (context [("Person.Age", "21" )]) |> should equal false;
+    validate (context [("Person.Age", "100" )]) |> should equal false;
+    validate (context [("Person.Age", "10" )]) |> should equal true;
