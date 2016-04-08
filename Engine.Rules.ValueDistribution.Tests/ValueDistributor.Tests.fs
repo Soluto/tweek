@@ -1,4 +1,4 @@
-﻿module Matcher.Tests.Main
+﻿module ValueDistributor.Tests.Main
 
 // https://github.com/fsharp/FsCheck/blob/master/Docs/Documentation.md
 // https://github.com/fsharp/FsUnit
@@ -84,3 +84,23 @@ let ``run many tests and verify similar values``()=
                         let calculatorWeighted = generatedCalculatedScheme weights
                         assertCalculated weights totalUsers samplingError calculatorWeighted
     )
+
+[<Fact>]
+let ``FF rollout is possible with Bernoulli ``()=
+    let rnd = new Random();
+    let users = [|1..100|] |> Array.map (fun _-> rnd.Next (10000,100000));
+    let getCalculator = (sprintf """{"type": "bernoulliTrial","args": %f }""") >> ValueDistribution.compile
+
+    [|1..20|] |> Array.map ((*) 5)
+              |> Array.map (fun i-> 
+                    let calc = getCalculator ((float i)/100.0)
+                    users |> Array.filter (fun x-> calc [|x|] = "true")
+              )
+              |> Array.pairwise
+              |> Array.iter (fun (prev,next) ->
+                         prev
+                         |> Array.forall (fun x-> next |> Array.contains x)
+                         |> should equal true)
+
+
+    
