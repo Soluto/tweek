@@ -16,6 +16,10 @@ using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.TinyIoc;
 using Tweek.JPad;
+using Tweek.Drivers.CouchbaseDriver;
+using Couchbase.Configuration.Client;
+using Couchbase;
+using Newtonsoft.Json;
 
 namespace Tweek.ApiService
 {
@@ -25,7 +29,7 @@ namespace Tweek.ApiService
 
         public Tuple<IContextDriver, IRulesDriver> GetDrivers()
         {
-            var driver = GetCassandraDriver();
+            var driver = GetCouchbaseDriver();
             return new Tuple<IContextDriver, IRulesDriver>(driver, new GitDriver(
                 Path.Combine(System.Web.HttpRuntime.AppDomainAppPath, "tweek-rules" + Guid.NewGuid()),
                 new RemoteRepoSettings()
@@ -39,7 +43,7 @@ namespace Tweek.ApiService
 
         private CassandraDriver GetCassandraDriver()
         {
-            var cluster = Cluster.Builder()
+            var cluster = Cassandra.Cluster.Builder()
                 .WithQueryOptions(new QueryOptions().SetConsistencyLevel(ConsistencyLevel.All))
                 .AddContactPoints("dc0vm1tqwdso6zqj26c.eastus.cloudapp.azure.com",
                     "dc0vm0tqwdso6zqj26c.eastus.cloudapp.azure.com")
@@ -47,6 +51,33 @@ namespace Tweek.ApiService
 
             var session = cluster.Connect("tweek");
             return new CassandraDriver(session);
+        }
+
+        CouchBaseDriver GetCouchbaseDriver()
+        {
+            var bucketName = "tweek";
+            var cluster = new Couchbase.Cluster(new ClientConfiguration
+            {
+                Servers = new List<Uri> { new Uri("http://couchbase-07cc5a45.b5501720.svc.dockerapp.io:8091/pools") },
+                BucketConfigs = new Dictionary<string, BucketConfiguration>
+                {
+                    [bucketName] = new BucketConfiguration
+                    {
+                        BucketName = bucketName,
+                        Password = "po09!@QW"
+                    }
+                },
+                Serializer = () => new Couchbase.Core.Serialization.DefaultSerializer(
+                   new JsonSerializerSettings()
+                   {
+                       ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver()
+                   },
+                   new JsonSerializerSettings()
+                   {
+                       ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver()
+                   })
+            });
+            return new CouchBaseDriver(cluster, bucketName);
         }
 
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)

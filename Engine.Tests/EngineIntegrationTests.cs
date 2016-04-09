@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Cassandra;
+//using Cassandra;
+using Couchbase;
 using Engine.DataTypes;
 using Engine.Drivers.Context;
 using Engine.Drivers.Rules;
@@ -14,13 +15,13 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using Tweek.JPad.Generator;
 using MatcherData = System.Collections.Generic.Dictionary<string, object>;
+using Couchbase.Configuration.Client;
 
 namespace Engine.Tests
 {
     [TestFixture]
     public class EngineIntegrationTests
     {
-        ISession _cassandraSession;
         ITestDriver driver;
         Dictionary<Identity, Dictionary<string, string>> contexts;
         Dictionary<string, RuleDefinition> rules;
@@ -29,17 +30,51 @@ namespace Engine.Tests
         readonly HashSet<Identity> NoIdentities = new HashSet<Identity>();
         readonly Dictionary<Identity, Dictionary<string, string>> EmptyContexts = new Dictionary<Identity, Dictionary<string, string>>();
 
-        [TestFixtureSetUp]
-        public void Setup()
+        
+        void SetCassandraDriver()
         {
-            var cluster = Cluster.Builder()
-                .WithQueryOptions(new QueryOptions().SetConsistencyLevel(ConsistencyLevel.All))
+            var cluster = Cassandra.Cluster.Builder()
+                .WithQueryOptions(new Cassandra.QueryOptions().SetConsistencyLevel(Cassandra.ConsistencyLevel.All))
                 .AddContactPoints("dc0vm1tqwdso6zqj26c.eastus.cloudapp.azure.com",
                     "dc0vm0tqwdso6zqj26c.eastus.cloudapp.azure.com")
                 .Build();
 
-            _cassandraSession = cluster.Connect("tweekintegrationtests");
-            driver = new CassandraTestDriver(_cassandraSession);
+            var cassandraSession = cluster.Connect("tweekintegrationtests");
+            driver = new CassandraTestDriver(cassandraSession);
+        }
+
+        void SetCouchBaseDriver()
+        {
+            var bucketName = "tweek-tests";
+            var cluster = new Cluster(new ClientConfiguration
+            {
+                Servers = new List<Uri> { new Uri("http://couchbase-07cc5a45.b5501720.svc.dockerapp.io:8091/pools") },
+                BucketConfigs = new Dictionary<string, BucketConfiguration>
+                {
+                    [bucketName] = new BucketConfiguration
+                    {
+                        BucketName = bucketName,
+                        Password = "po09!@QW"
+                    }
+                },
+                Serializer = () => new Couchbase.Core.Serialization.DefaultSerializer(
+                   new JsonSerializerSettings()
+                   {
+                       ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver()
+                   },
+                   new JsonSerializerSettings()
+                   {
+                       ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver()
+                   })
+            });
+
+            driver = new CouchbaseTestDriver(cluster, bucketName);
+        }
+
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            SetCouchBaseDriver();
         }
 
         async Task Run(Func<ITweek, Task> test)
