@@ -36,7 +36,7 @@ namespace SimpleBenchmarks
                 Path.Combine(Environment.CurrentDirectory, "tweek-rules" + Guid.NewGuid()),
                 new RemoteRepoSettings()
                 {
-                    url = "http://tweek-gogs-1.816587ba.cont.dockerapp.io/tweek/tweek-rules.git",
+                    url = "http://tweek-gogs.07965c2a.svc.dockerapp.io/tweek/tweek-rules.git",
                     Email = "tweek@soluto.com",
                     UserName = "tweek",
                     Password = "***REMOVED***"
