@@ -48,36 +48,33 @@ namespace Tweek.Drivers.CouchbaseDriver
                 var contextWithCreationDate  = context.ContainsKey("@CreationDate") ? context : context
                     .Concat(new[] { new KeyValuePair<string, string>("@CreationDate", DateTimeOffset.UtcNow.ToString()) })
                     .ToDictionary(x => x.Key, x => x.Value);
-                
-                var result = await bucket.UpsertAsync(new Document<Dictionary<string,string>>
-                    {
-                        
-                        Id = key,
-                        Content = contextWithCreationDate
-                });
+
+                var result = await bucket.UpsertAsync(key, contextWithCreationDate);
             }
             else
             {
-                    await context.Aggregate(
-                    bucket.MutateIn<dynamic>(key),
-                    (doc, item) => doc.Upsert(item.Key, item.Value)).ExecuteAsync();
+                //problem with concurrency.
+                var oldContext = await GetContext(identity);
+                await bucket.ReplaceAsync(key,
+                    context.Keys.Concat(oldContext.Keys)
+                    .Distinct()
+                    .ToDictionary(x => x, x => context.ContainsKey(x) ? context[x] : oldContext[x]));
+                
             }
         }
 
         public async Task<Dictionary<string, string>> GetContext(Identity identity)
         {
             var key = GetKey(identity);
-            using (var bucket = _cluster.OpenBucket(_bucketName))
+            var bucket = GetOrOpenBucket();
+            var document = await bucket.GetDocumentAsync<Dictionary<string,string>>(key);
+            if (document.Status == Couchbase.IO.ResponseStatus.KeyNotFound)
             {
-                var document = await bucket.GetDocumentAsync<Dictionary<string,string>>(key);
-                if (document.Status == Couchbase.IO.ResponseStatus.KeyNotFound)
-                {
-                    return new Dictionary<string, string>();
-                }
-                if (!document.Success)
-                    throw (document.Exception ?? new Exception(document.Message));
-                return document.Content;
+                return new Dictionary<string, string>();
             }
+            if (!document.Success)
+                throw (document.Exception ?? new Exception(document.Message));
+            return document.Content;
         }
 
         public async Task RemoveIdentityContext(Identity identity)

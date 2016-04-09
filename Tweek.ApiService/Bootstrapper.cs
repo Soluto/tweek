@@ -64,10 +64,13 @@ namespace Tweek.ApiService
                     [bucketName] = new BucketConfiguration
                     {
                         BucketName = bucketName,
-                        Password = "***REMOVED***"
+                        Password = "***REMOVED***",
+                        UseEnhancedDurability = true
                     }
+                    
                 },
                 Serializer = () => new Couchbase.Core.Serialization.DefaultSerializer(
+                   
                    new JsonSerializerSettings()
                    {
                        ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver()
