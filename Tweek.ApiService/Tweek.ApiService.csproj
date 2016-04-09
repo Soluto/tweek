@@ -48,6 +48,18 @@
       <HintPath>..\packages\CassandraCSharpDriver.3.0.4\lib\net40\Cassandra.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Common.Logging, Version=3.3.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.3.3.1\lib\net40\Common.Logging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Common.Logging.Core, Version=3.3.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.Core.3.3.1\lib\net40\Common.Logging.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Couchbase.NetClient, Version=2.2.7.0, Culture=neutral, PublicKeyToken=05e9c6b5a9ec94c2, processorArchitecture=MSIL">
+      <HintPath>..\packages\CouchbaseNetClient.2.2.7\lib\net45\Couchbase.NetClient.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Engine.Match.DSL, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Bin\Engine.Match.DSL.dll</HintPath>
@@ -159,6 +171,10 @@
     <ProjectReference Include="..\Drivers\Engine.Drivers.Cassandra\Engine.Drivers.Cassandra.csproj">
       <Project>{6a83d39c-267f-4c88-9df9-e1cbccb42f96}</Project>
       <Name>Engine.Drivers.Cassandra</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Drivers\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj">
+      <Project>{590593d3-6ec9-4bd1-86ef-02960d69798a}</Project>
+      <Name>Tweek.Drivers.Couchbase</Name>
     </ProjectReference>
     <ProjectReference Include="..\Engine.Core\Engine.Core.csproj">
       <Project>{5f466de0-f2cf-4786-86b3-701c07c16849}</Project>
