@@ -49,16 +49,14 @@ namespace Tweek.Drivers.CouchbaseDriver
                     .Concat(new[] { new KeyValuePair<string, string>("@CreationDate", DateTimeOffset.UtcNow.ToString()) })
                     .ToDictionary(x => x.Key, x => x.Value);
 
-                var result = await bucket.UpsertAsync(key, contextWithCreationDate);
+                await bucket.UpsertAsync(key, contextWithCreationDate);
             }
             else
             {
-                //problem with concurrency.
-                var oldContext = await GetContext(identity);
-                await bucket.ReplaceAsync(key,
-                    context.Keys.Concat(oldContext.Keys)
-                    .Distinct()
-                    .ToDictionary(x => x, x => context.ContainsKey(x) ? context[x] : oldContext[x]));
+
+                await bucket.QueryAsync<dynamic>(
+                    $"UPSERT INTO {key} (KEY, VALUE) VALUES({JsonConvert.SerializeObject(context)}) Returning *;");
+                ;
                 
             }
         }
