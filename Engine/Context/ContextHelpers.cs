@@ -14,8 +14,8 @@ namespace Engine.Context
 
     public static class ContextHelpers
     {
-        public static readonly GetContextValue EmptyContext = key => Option<string>.None;
-        public static readonly GetLoadedContextByIdentityType EmptyContextByIdentityType =  identity => key => Option<string>.None;
+        public static readonly GetContextValue EmptyContext = key => None;
+        public static readonly GetLoadedContextByIdentityType EmptyContextByIdentityType =  identity => key => None;
 
         public static GetLoadedContextByIdentityType Fallback(params GetLoadedContextByIdentityType[] list)
         {

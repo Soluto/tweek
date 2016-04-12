@@ -21,7 +21,8 @@ module MatchDSL =
 
     let private reduceOrElse reduceFun alt seq = if not (Seq.isEmpty(seq)) then seq|> Seq.reduce reduceFun else alt
 
-    type LogicalOp = And | Or | Not
+    type ConjuctionOp = And | Or 
+    type UnaryOp = Not
 
     type ArrayOp = In
 
@@ -29,8 +30,9 @@ module MatchDSL =
     
     type Op = 
         | CompareOp of CompareOp
-        | LogicalOp of LogicalOp
+        | ConjuctionOp of ConjuctionOp
         | ArrayOp of ArrayOp
+        | Not
         
     type ComparisonValue = JsonValue
 
@@ -39,16 +41,16 @@ module MatchDSL =
     type Expression = 
             | Property of PropertyName * Expression
             | Not of Expression
-            | Binary of LogicalOp * Expression * Expression
+            | Binary of ConjuctionOp * Expression * Expression
             | Compare of CompareOp * ComparisonValue
             | ArrayTest of ArrayOp * ComparisonValue
             | SwitchComparer of string * Expression
             | Empty
 
     let private parseOp op : Op = match op with
-        |"$not" -> Op.LogicalOp(LogicalOp.Not)
-        |"$or" -> Op.LogicalOp(LogicalOp.Or)
-        |"$and" -> Op.LogicalOp(LogicalOp.And)
+        |"$not" -> Op.Not
+        |"$or" -> Op.ConjuctionOp(ConjuctionOp.Or)
+        |"$and" -> Op.ConjuctionOp(ConjuctionOp.And)
         |"$ge" -> Op.CompareOp(CompareOp.GreaterEqual)
         |"$eq" -> Op.CompareOp(CompareOp.Equal)
         |"$gt" -> Op.CompareOp(CompareOp.GreaterThan)
@@ -67,6 +69,7 @@ module MatchDSL =
                     | CompareOp.NotEqual -> (fun b a -> a <> b)
 
     type private comparer = (string)->(string)->int
+
     let private createComparer (fn:(string-> IComparable)) l = 
         let target = (
             try
@@ -77,16 +80,14 @@ module MatchDSL =
         target.CompareTo << fn;
     
     let private evaluateComparison (comparer) (op: CompareOp) (jsonValue:ComparisonValue) : (Option<string>->bool) =
-        let noneGuard fn = function |Some x-> fn x|None -> false
+        let onNoneReturnFalse fn = function |Some x-> fn x|None -> false
         match jsonValue with
-            | JsonValue.String x -> (comparer x) >> (fun intValue-> evaluateComparisonOp op  intValue 0) |> noneGuard
-            | JsonValue.Number x -> evaluateComparisonOp op x << decimal |> noneGuard
-            | JsonValue.Boolean x -> evaluateComparisonOp op x << bool.Parse |> noneGuard
-            | JsonValue.Float x -> evaluateComparisonOp op x << float |> noneGuard
+            | JsonValue.String x -> (comparer x) >> (fun intValue-> evaluateComparisonOp op  intValue 0) |> onNoneReturnFalse
+            | JsonValue.Number x ->  decimal >> evaluateComparisonOp op x |> onNoneReturnFalse
+            | JsonValue.Boolean x -> bool.Parse >> evaluateComparisonOp op x|> onNoneReturnFalse
+            | JsonValue.Float x -> float >> evaluateComparisonOp op x |> onNoneReturnFalse
             | JsonValue.Null -> (fun x->x.IsNone) 
             | _ -> (fun _->false)
-
-    let swap fn a b = fn b a;
 
     let private evaluateArrayTest (comparer) (op: ArrayOp) (jsonValue:ComparisonValue) : (Option<string>->bool) =
         match jsonValue with
@@ -96,7 +97,7 @@ module MatchDSL =
                 (fun contextValue -> arr |> Array.exists (fun item-> compareItem item contextValue ))
             | _ -> (fun _->false)
 
-    let rec private parsePropertySchema (logicalOp : LogicalOp) (schema:JsonValue)  : Expression = 
+    let rec private parsePropertySchema (conjuctionOp : ConjuctionOp) (schema:JsonValue)  : Expression = 
         match schema with 
         | JsonValue.Record record -> 
             let converterType = record |> Seq.tryFind (fst >> (=) "$compare")
@@ -104,15 +105,15 @@ module MatchDSL =
             let props = record |> 
                 filter |>
                 Seq.map (fun (key,innerSchema)-> match key with 
-                    |KeyProperty-> Expression.Property(key, innerSchema |> parsePropertySchema LogicalOp.And)
+                    |KeyProperty-> Expression.Property(key, innerSchema |> parsePropertySchema ConjuctionOp.And)
                     |Op-> match parseOp(key) with
                         | Op.CompareOp compareOp -> Expression.Compare (compareOp, innerSchema)
                         | Op.ArrayOp arrayOp -> Expression.ArrayTest (arrayOp, innerSchema)
-                        | Op.LogicalOp binaryOp-> match binaryOp with
-                            | LogicalOp.And -> innerSchema |> parsePropertySchema LogicalOp.And
-                            | LogicalOp.Or  -> innerSchema |> parsePropertySchema LogicalOp.Or
-                            | LogicalOp.Not  -> Expression.Not(innerSchema |> parsePropertySchema LogicalOp.And)
-                ) |> reduceOrElse (fun acc exp-> Expression.Binary(logicalOp, acc, exp)) Expression.Empty
+                        | Op.ConjuctionOp binaryOp-> match binaryOp with
+                            | ConjuctionOp.And -> innerSchema |> parsePropertySchema ConjuctionOp.And
+                            | ConjuctionOp.Or  -> innerSchema |> parsePropertySchema ConjuctionOp.Or
+                        | Op.Not  -> Expression.Not(innerSchema |> parsePropertySchema ConjuctionOp.And)
+                ) |> reduceOrElse (fun acc exp-> Expression.Binary(conjuctionOp, acc, exp)) Expression.Empty
             match converterType with 
                 |Some (_, convertType) -> Expression.SwitchComparer( convertType.AsString(), props)
                 |None -> props
@@ -129,10 +130,9 @@ module MatchDSL =
                 | Binary (op, l, r) -> 
                     let lExp = CompileExpression prefix comparer l;
                     let rExp = CompileExpression prefix comparer r;
-                    let bOp = (fun op c-> op (lExp c) (rExp c))
                     match op with
-                    |LogicalOp.And -> fun c-> (lExp c) && (rExp c)
-                    |LogicalOp.Or -> fun c->  (lExp c) || (rExp c)
+                    |ConjuctionOp.And -> fun c-> (lExp c) && (rExp c)
+                    |ConjuctionOp.Or -> fun c->  (lExp c) || (rExp c)
                 | ArrayTest (op, op_value) ->  
                     (|>) prefix >> evaluateArrayTest comparer op op_value  
                 | Compare (op, op_value) ->  
@@ -145,7 +145,7 @@ module MatchDSL =
         let defaultComparer (l:string) (r:string) = l.CompareTo r
         CompileExpression "" defaultComparer exp
 
-    let parseJsonSchema (schema:JsonValue) = parsePropertySchema LogicalOp.And schema
+    let parseJsonSchema (schema:JsonValue) = parsePropertySchema ConjuctionOp.And schema
 
     let Compile (schema: string) (settings: ParserSettings) =
         ( schema |> JsonValue.Parse |> parseJsonSchema |> (compile_internal settings.Comparers))
