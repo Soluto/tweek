@@ -55,7 +55,7 @@ namespace Tweek.ApiService
 
         CouchBaseDriver GetCouchbaseDriver()
         {
-            var bucketName = "tweek";
+            var bucketName = "tweek-context";
             var cluster = new Couchbase.Cluster(new ClientConfiguration
             {
                 Servers = new List<Uri> { new Uri("http://tweek-db-couchbase.023209ac.svc.dockerapp.io:8091/") },
