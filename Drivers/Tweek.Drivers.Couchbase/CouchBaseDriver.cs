@@ -49,7 +49,12 @@ namespace Tweek.Drivers.CouchbaseDriver
                     .Concat(new[] { new KeyValuePair<string, string>("@CreationDate", DateTimeOffset.UtcNow.ToString()) })
                     .ToDictionary(x => x.Key, x => x.Value);
 
-                await bucket.UpsertAsync(key, contextWithCreationDate);
+                var result = await bucket.UpsertAsync(key, contextWithCreationDate);
+                if (!result.Success)
+                {
+                    throw (result.Exception ?? new Exception(result.Message));
+                }
+
             }
             else
             {
