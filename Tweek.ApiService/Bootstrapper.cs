@@ -58,7 +58,7 @@ namespace Tweek.ApiService
             var bucketName = "tweek";
             var cluster = new Couchbase.Cluster(new ClientConfiguration
             {
-                Servers = new List<Uri> { new Uri("http://couchbase-07cc5a45.b5501720.svc.dockerapp.io:8091/pools") },
+                Servers = new List<Uri> { new Uri("http://tweek-db-couchbase.023209ac.svc.dockerapp.io:8091/") },
                 BucketConfigs = new Dictionary<string, BucketConfiguration>
                 {
                     [bucketName] = new BucketConfiguration
