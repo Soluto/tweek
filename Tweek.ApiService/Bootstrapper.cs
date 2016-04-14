@@ -34,7 +34,7 @@ namespace Tweek.ApiService
                 Path.Combine(System.Web.HttpRuntime.AppDomainAppPath, "tweek-rules" + Guid.NewGuid()),
                 new RemoteRepoSettings()
                 {
-                    url = "http://tweek-gogs.07965c2a.svc.dockerapp.io/tweek/tweek-rules.git",
+                    url = "http://gogs-80b6a277.29d5ffeb.svc.dockerapp.io/tweek/tweek-rules",
                     Email = "tweek@soluto.com",
                     UserName = "tweek",
                     Password = "po09!@QW"
