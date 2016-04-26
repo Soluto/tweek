@@ -1,22 +1,24 @@
 import '../modules/styles.css'
 import React from 'react'
 import { Route, IndexRoute, Redirect } from 'react-router'
-import { ServerRoute } from 'react-project'
-import hello from './api/hello'
+import { lazy } from 'react-project'
 import App from './components/App'
 import Home from './components/Home'
+import KeysPage from './pages/keys/KeysPage';
+import KeyPage from './pages/keys/KeyPage';
 import NoMatch from './components/NoMatch'
-import Dragon from './components/Dragon'
 
-export default (
+
+export default serverRoutes=>(
   <Route>
     <Route path="/" component={App}>
       <IndexRoute component={Home}/>
-      <Route path="dragon" component={Dragon}/>
+      <Route path="keys" component={KeysPage} >
+          <IndexRoute component={KeyPage} />
+          <Route path="*" component={KeyPage}/>
+      </Route>
     </Route>
-    <ServerRoute path="/api">
-      <ServerRoute path=":hello" get={hello}/>
-    </ServerRoute>
+    {serverRoutes}
     <Redirect from="/not-dragon" to="/dragon"/>
     <Route path="*" status={404} component={NoMatch}/>
   </Route>
