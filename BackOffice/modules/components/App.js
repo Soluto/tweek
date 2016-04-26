@@ -12,7 +12,6 @@ export default React.createClass({
             <Title render="Tweek"/>
             <IndexLink to="/"><img src={logo} /></IndexLink>  
             <ul className={styles.Menu} >
-            <li><Link to="/rules">Rules</Link></li>
             <li><Link to="/keys">keys</Link></li>
             </ul>
         </div>

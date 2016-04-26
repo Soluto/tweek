@@ -1,0 +1,51 @@
+.Rule{
+    display:flex;
+}
+
+.Matcher .MatcherProperty > div{
+    margin: 0 4px;
+}
+
+.Matcher .MatcherProperty{
+    display:flex;
+}
+
+.Predicate{
+    display:flex;
+}
+
+.OpSelector{
+    width:50px;
+}
+.OpSelector :global(.Select-arrow-zone){
+    display: none;
+}
+
+.OpSelector :global(.Select-menu-outer){
+    max-height:300px;
+}
+.OpSelector :global(.Select-menu-outer) :global(.Select-menu){
+    max-height:298px;
+    background-color: #ffffff;
+}
+
+.PropertySelector{
+    width:200px;
+}
+
+.JPadViewer li{
+    list-style: none;
+}
+
+.JPadViewer{
+    padding: 0;
+    margin: 0;
+}
+
+
+.JPadViewer :global(.Select-control){
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #007aff;
+    border-radius: 0px;
+}
