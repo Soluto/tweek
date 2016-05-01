@@ -8,7 +8,6 @@ const shims = `
   window.Promise || document.write('<script src="/Promise.js"><\\/script>');
   window.fetch || document.write('<script src="/fetch.js"><\\/script>');
 `
-console.log("test1");
 
 const Document = React.createClass({
 

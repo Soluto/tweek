@@ -1,5 +1,9 @@
 .Rule{
     display:flex;
+    padding: 10px;
+    box-shadow: #666666 1px 1px 4px;
+    border-radius: 2px;
+    margin: 10px 0;
 }
 
 .Matcher .MatcherProperty > div{
@@ -48,4 +52,23 @@
     border: none;
     border-bottom: 1px solid #007aff;
     border-radius: 0px;
+}
+
+.JPadViewer input[type=text]{
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #007aff;
+    border-radius: 0px;
+}
+
+.Panel{
+   margin: 4px;
+}
+.Panel:before{
+    font-size: 12px;
+    content: attr(data-label);
+}
+
+.Matcher:empty:before{
+    content: "Match all";
 }

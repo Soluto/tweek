@@ -4,7 +4,7 @@ import {connect} from "react-redux"
 import getKey from "./actions/getKey"
 import KeyMetaEditor from "./components/KeyMetaEditor"
 import KeyRulesEditor from "./components/KeyRulesEditor"    
-
+import {KeyPage as KeyPageStyle} from "./styles.css";
 
 export default connect( (state, {params} ) => ({...state, configKey:params.splat}) ) (class KeyPage extends Component
 {
@@ -18,8 +18,8 @@ export default connect( (state, {params} ) => ({...state, configKey:params.splat
     
     render(){
         return (
-            <div>
-            SelectedKey:{this.props.configKey}
+            <div className={KeyPageStyle}>
+            <h3>{this.props.configKey}</h3>
             <div>{this.props.selectedKey ?
                 <div>
                     <KeyMetaEditor meta={this.props.selectedKey.meta} />  

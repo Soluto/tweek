@@ -5,9 +5,12 @@ import {Rule as RuleStyle,
         Predicate as PredicateStyle,
         OpSelector as OpSelectorStyle,
         MatcherProperty as MatcherPropertyStyle,
+        Panel as PanelStyle,
         JPadViewer as JPadViewerStyle,
         PropertySelector as PropertySelectorStyle} from "./RulesEditor.css";
-       
+
+import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
+
 import Select from 'react-select';
 if (typeof(window) === "object"){
     require("react-select/dist/react-select.min.css");
@@ -43,13 +46,6 @@ let MatcherOp = ({selectedOp})=>
     
     </Select>)
 
-let PropertyPredicate = ({op, value})=>(
-       <div className={PredicateStyle} >
-        <MatcherOp selectedOp={op} />
-        <input defaultValue={value} />
-       </div>
-    )
-    
 let renderMatcherPredicate = (predicate)=>{
     predicate = (typeof(predicate) !== "object") ? {"$eq": predicate} : predicate;
     
@@ -57,7 +53,9 @@ let renderMatcherPredicate = (predicate)=>{
                 .filter(([key, _]) => key[0] === "$")
                 .filter(([op, _]) => op !== "$compare")
                 .map(([op, value])=> 
-                     (typeof(value) !== "object") ? <PropertyPredicate op={op} value={value} /> : renderMatcherPredicate(value)
+                     (typeof(value) !== "object") ? 
+                     [<MatcherOp selectedOp={op} />, <input type="text" defaultValue={value} />]
+                      : renderMatcherPredicate(value)
                 )
 }
 
@@ -74,10 +72,44 @@ let renderMatcher = matcher =>{
     return (<div className={MatcherStyle}>{props.map(x=> (<Property property={x[0]} predicate={x[1]} />))}</div>)
 }
 
+let SingleVariantValue = ({value})=>(
+    (<div><textarea defaultValue={value} /></div>)
+)
+
+let renderValueDistrubtion = (values)=>{
+    if (values.type=="weighted")
+        return (<div>
+        {
+            R.toPairs(values.args).map(([value, weight])=> (<div>{`${value}:${weight}`}</div>))
+        }
+        </div>)
+    return "";
+}
+
+let MultiVariantValue = ({valueDistrubtion})=>(
+    (<div>
+    {R.toPairs(valueDistrubtion).map(([date, values])=>(
+        (<div>
+        <div>{date}</div>
+        {renderValueDistrubtion(values)}
+        </div>)    
+    ))}
+    </div>)
+    
+)
+
+let renderRuleValue = (rule)=>{
+    if (rule.Type === "SingleVariant")
+        return (<SingleVariantValue value ={rule.Value} />)
+    if (rule.Type === "MultiVariant")
+        return (<MultiVariantValue valueDistrubtion={rule.ValueDistribution} />)
+    return "";
+}
+
 let JPadRule = ({rule})=>{
     return (<div className={RuleStyle}>
-       {renderMatcher(rule.Matcher)}
-       {rule.Value || ""}
+       <div className={PanelStyle} data-label="Conditions">{renderMatcher(rule.Matcher)}</div>
+       <div className={PanelStyle} data-label="Values">{renderRuleValue(rule)}</div>
     </div>)
 }
 
@@ -92,9 +124,19 @@ let JPadViewer = ({source})=>{
 
 export default ({ruleDef})=>(
     <div>
-     <JPadViewer source={ruleDef.source} />
-    <code>
-    {ruleDef.source}
-    </code>
+    <Tabs selectedIndex={0}>
+        <TabList>
+            <Tab>Rule</Tab>
+            <Tab>Source</Tab>
+        </TabList>
+         <TabPanel>
+          <JPadViewer source={ruleDef.source} />
+        </TabPanel>
+        <TabPanel>
+          <pre>
+            {JSON.stringify(JSON.parse(ruleDef.source), null, 4)}
+            </pre>
+        </TabPanel>
+    </Tabs>
     </div>
 )
