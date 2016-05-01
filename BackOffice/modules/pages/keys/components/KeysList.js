@@ -1,5 +1,8 @@
 import React from "react";
-import { Link } from 'react-router'
+import { Link } from 'react-router';
+import {KeyList as KeyListStyle} from "../styles.css";
+
+
 var leaf = Symbol();
 var getName = (path)=> path.split("/").slice(-1)[0]
 
@@ -22,5 +25,5 @@ export default ({keys})=>{
          .forEach(fragments =>
              fragments.reduce((node, frag)=> node[frag] = node[frag] || {}, tree)[leaf] = true
          );  
-    return renderTree(tree, "");
+    return (<div className={KeyListStyle}>{renderTree(tree, "")}</div>);
 }

@@ -1,4 +1,16 @@
 .KeyPages{
-    display: flex;
-    
+    display: flex;   
+}
+.KeyPage{
+    flex-grow: 1;
+}
+.KeyList{
+}
+
+.KeyList ul{
+    padding:0 0 0 10px;
+    margin: 0;
+}
+.KeyList ul li{
+    list-style: none;
 }
