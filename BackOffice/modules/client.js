@@ -4,6 +4,7 @@ import { Router, browserHistory } from 'react-router'
 import routes from '../modules/routes'
 import { Provider } from 'react-redux'
 import configureStore from './store/configureStore';
+window.Pref = require('react-addons-perf');
 
 var store = configureStore(window.STORE_INITIAL_STATE);
 
