@@ -4,6 +4,7 @@ import {getKeys} from "./actions/getKeys"
 import {connect} from "react-redux" 
 import KeysList from "./components/KeysList";
 import {KeyPages as KeyPagesStyle} from "./styles.css";
+import createFragment from 'react-addons-create-fragment';
 
 export default connect( state => state)(class KeysPage extends Component
 {
@@ -20,8 +21,10 @@ export default connect( state => state)(class KeysPage extends Component
     render(){
         return (
             <div className={KeyPagesStyle}>
-            <KeysList keys={this.props.keys}></KeysList>
-            {this.props.children}
+            {createFragment({
+                KeysList: <KeysList keys={this.props.keys}></KeysList>,
+                Page: this.props.children
+            })}
             </div>
         )
     }

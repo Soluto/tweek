@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions';
 
 export default handleActions({
-    KEYS_UPDATED: (state, action) => action.payload,
+    REPLACE_SUGGESTIONS: (state, action) => action.payload,
 }, [])

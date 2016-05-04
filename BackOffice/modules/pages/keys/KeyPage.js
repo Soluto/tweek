@@ -12,18 +12,23 @@ export default connect( (state, {params} ) => ({...state, configKey:params.splat
         super(props);
     }
     
+    componentDidMount(){
+        this.props.dispatch(getKey(this.props.configKey));
+    }
+    
     componentWillReceiveProps({configKey}){
-        if (configKey != this.props.configKey) this.props.dispatch(getKey(configKey));
+        if (configKey != this.props.configKey || !this.props.selectedKey ) this.props.dispatch(getKey(configKey));
     }
     
     render(){
+        var {dispatch, configKey, selectedKey} = this.props;
         return (
-            <div className={KeyPageStyle}>
-            <h3>{this.props.configKey}</h3>
-            <div>{this.props.selectedKey ?
+            <div key={configKey} className={KeyPageStyle}>
+            <h3>{configKey}</h3>
+            <div>{selectedKey ?
                 <div>
-                    <KeyMetaEditor meta={this.props.selectedKey.meta} />  
-                    <KeyRulesEditor ruleDef={this.props.selectedKey.ruleDef} />
+                    <KeyMetaEditor meta={selectedKey.meta} />  
+                    <KeyRulesEditor ruleDef={selectedKey.ruleDef} updateRule={x=>dispatch({type:"KEY_RULEDEF_UPDATED", payload:{...x} })} />
                 </div> :
                  <div>loading...</div>
                 }</div> 
