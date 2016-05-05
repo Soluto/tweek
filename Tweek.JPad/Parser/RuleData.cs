@@ -10,7 +10,7 @@ namespace Engine.Rules.Creation
         public string Type { get; set; }
         public JToken Matcher { get; set; }
         public string Value { get; set; }
-        public Dictionary<DateTimeOffset, JToken> ValueDistribution { get; set; }
+        public JToken ValueDistribution { get; set; }
         public string OwnerType { get; set; }
     }
 }

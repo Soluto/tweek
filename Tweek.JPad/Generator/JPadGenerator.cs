@@ -39,6 +39,16 @@ namespace Tweek.JPad.Generator
                 OwnerType = ownerType,
                 Type = "MultiVariant"
             });
+        public JPadGenerator AddMultiVariantRule(string matcher, string valueDistrubtions, string ownerType, string ruleId = null)
+            => AddRule(new
+            {
+                Id = ruleId ?? Guid.NewGuid().ToString(),
+                Matcher = JToken.Parse(matcher),
+                ValueDistribution = JToken.Parse(valueDistrubtions),
+                OwnerType = ownerType,
+                Type = "MultiVariant"
+            });
+
         
         private JPadGenerator AddRule(object rule) => new JPadGenerator(_rules.Concat(new [] {rule}).ToArray());        
 
