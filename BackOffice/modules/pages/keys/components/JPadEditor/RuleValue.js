@@ -5,24 +5,6 @@ let SingleVariantValue = ({value, onUpdate})=>(
     (<div><textarea defaultValue={value} onChange={e=>onUpdate(e.target.value) } /></div>)
 )
 
-let ValueDistrubtion = ({values, mutate})=>{
-    if (values.type==="weighted")
-        return (<div>
-        {
-            R.toPairs(values.args).map(([value, weight])=> (<div>{`${value}:${weight}`}</div>))
-        }
-        </div>)
-    if (values.type === "bernoulliTrial"){
-        return (<div>
-        <input type="range" min="0" max="100" 
-        onChange={e=>mutate.in("args").updateValue(parseFloat("0." + e.target.value))} 
-        defaultValue={Math.round(values.args*100)} />
-        <span>{Math.round(values.args*100) + "%"}</span>
-        </div>)
-    }
-    return null;
-}
-
 let MultiVariantValue = ({valueDistrubtion:{type, args}, mutate})=>{
      if (type==="weighted")
         return (<div>
@@ -33,7 +15,7 @@ let MultiVariantValue = ({valueDistrubtion:{type, args}, mutate})=>{
     if (type === "bernoulliTrial"){
         return (<div>
         <input type="range" min="0" max="100" 
-        onChange={e=>mutate.in("args").updateValue(parseFloat("0." + e.target.value))} 
+        onChange={e=>mutate.in("args").updateValue(parseInt(e.target.value) * 0.01)} 
         defaultValue={Math.round(args*100)} />
         <span>{Math.round(args*100) + "%"}</span>
         </div>)
