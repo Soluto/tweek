@@ -20,8 +20,8 @@ const Document = React.createClass({
   },
 
   render() {
-    const { styles, scripts, content, title } = this.props
-
+    const { styles, scripts, content, title, initialState } = this.props
+    var storeScript = `window.STORE_INITIAL_STATE = ${JSON.stringify(initialState)}`;
     return (
       <html>
         <head>
@@ -32,6 +32,7 @@ const Document = React.createClass({
         </head>
         <body>
           <div id="app" dangerouslySetInnerHTML={{ __html: content }}/>
+          <script dangerouslySetInnerHTML={{__html: storeScript}} /> 
           <script dangerouslySetInnerHTML={{ __html: shims }}/>
           {scripts}
         </body>
