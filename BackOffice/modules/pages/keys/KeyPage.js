@@ -28,7 +28,7 @@ export default connect( (state, {params} ) => ({...state, configKey:params.splat
             <div>{selectedKey ?
                 <div>
                     <KeyMetaEditor meta={selectedKey.meta} />  
-                    <KeyRulesEditor ruleDef={selectedKey.ruleDef} updateRule={x=>dispatch({type:"KEY_RULEDEF_UPDATED", payload:{...x} })} />
+                    <KeyRulesEditor ruleDef={selectedKey.ruleDef} updateRule={x=>dispatch({type:"KEY_RULEDEF_UPDATED", payload:x })} />
                 </div> :
                  <div>loading...</div>
                 }</div> 

@@ -5,7 +5,7 @@ let modify=(fieldInfo, ...modifiers)=>modifiers.reduce((field, m)=>m(field),(fie
 let newType = (baseType, ...modifiers) => modify({type:baseType}, ...modifiers);
 let createAddPropModifer = (propName)=> R.curry((payload, fieldInfo)=>({...fieldInfo, [propName]: payload }));
 let [allowedValues,  description  , compare  , validate  ,  defaultValue] = 
-    ["allowdValues", "description", "compare", "validate", "defaultValue"].map(createAddPropModifer);
+    ["allowedValues", "description", "compare", "validate", "defaultValue"].map(createAddPropModifer);
 
 
 //types

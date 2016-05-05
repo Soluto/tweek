@@ -18,7 +18,7 @@ const Document = React.createClass({
     title: string,
     initialState: object
   },
-
+  
   render() {
     const { styles, scripts, content, title, initialState } = this.props
     var storeScript = `window.STORE_INITIAL_STATE = ${JSON.stringify(initialState)}`;
@@ -27,6 +27,7 @@ const Document = React.createClass({
         <head>
           <meta charSet="utf-8"/>
           <link rel="shortcut icon" href={favicon}/>
+          <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css' />
           <title>{title}</title>
           {styles}
         </head>

@@ -1,6 +1,4 @@
 import React, {Component} from "react";
-import R from "ramda";
-import {shouldUpdate} from "recompose";
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import JPadEditor from './JPadEditor/JPadEditor';
 import Mutator from '../../../utils/mutator';

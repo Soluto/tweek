@@ -1,13 +1,11 @@
 import '../modules/styles.css'
 import React from 'react'
 import { Route, IndexRoute, Redirect } from 'react-router'
-import { lazy } from 'react-project'
 import App from './components/App'
 import Home from './components/Home'
 import KeysPage from './pages/keys/KeysPage';
 import KeyPage from './pages/keys/KeyPage';
 import NoMatch from './components/NoMatch'
-
 
 export default serverRoutes=>(
   <Route>
@@ -19,7 +17,6 @@ export default serverRoutes=>(
       </Route>
     </Route>
     {serverRoutes}
-    <Redirect from="/not-dragon" to="/dragon"/>
     <Route path="*" status={404} component={NoMatch}/>
   </Route>
 )

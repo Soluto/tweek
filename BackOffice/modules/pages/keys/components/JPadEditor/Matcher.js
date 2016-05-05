@@ -4,9 +4,12 @@ import Select from 'react-select';
 if (typeof(window) === "object"){
     require("react-select/dist/react-select.min.css");
 }
+import {TextField, Checkbox} from 'material-ui';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+
 import {Matcher as MatcherStyle, 
         Predicate as PredicateStyle,
-        OpSelector as OpSelectorStyle,
         MatcherProperty as MatcherPropertyStyle,
         PropertySelector as PropertySelectorStyle} from "./JPadEditor.css";
         
@@ -15,33 +18,34 @@ let editorMetaService = new EditorMetaService();
 editorMetaService.init();
 
 const ops  = {"$eq": "=", "$ge": ">=", "$gt":">", "$lt": "<", "$le":"<=", "$ne":"!="};
- 
-let MatcherOp = ({selectedOp, onUpdate})=>
+ //onUpdate(value)}
+ let MatcherOp = ({selectedOp, onUpdate})=>
     (
-        <Select 
-    className={OpSelectorStyle}
-    autosize={false}
-    clearable={false}  
-    value= {selectedOp}
-    options={Object.keys(ops).map(op=>({ value: op, label: ops[op] }))}
-    onChange={({value})=>onUpdate(value)}
-     >
-    
-    </Select>)
+        <SelectField style={{width:50}} onChange={(_,__,value)=> onUpdate(value)} value={selectedOp} >
+            {Object.keys(ops).map(op=>  (<MenuItem value={op} primaryText={ops[op] } />))}
+        </SelectField>
+        )
     
 let PropertyValue = ({mutate, meta, value})=>{
     if (meta.type === "string"){
-        return (<input onChange={e=> mutate.updateValue(e.target.value)}  type="text" value={value} />);
+        if (meta.allowedValues){
+            return (<SelectField onChange={(_,__,v)=> mutate.updateValue(v)} value={value} >
+            {meta.allowedValues.map(x=>  (<MenuItem value={x} primaryText={x} />))}
+            </SelectField>);
+        }
+        else{
+            return (<TextField onChange={(_,v)=> mutate.updateValue(v)} value={value} />);    
+        }
     }
     if (meta.type === "bool"){
-        return (<input type="checkbox" onChange={e=> mutate.updateValue(e.target.checked)}  checked={value} />);
+        return (<Checkbox onCheck={(_,v)=>mutate.updateValue(v)}  defaultChecked={value} />);
     }
     return null;
 }
     
 let renderMatcherPredicate = ({predicate, mutate, property})=>{
     let meta = editorMetaService.getFieldMeta(property);
-    if (typeof(predicate) !== "object") return [<MatcherOp onUpdate={v=>{
+    if (typeof(predicate) !== "object") return [meta.type === "bool" ? null : <MatcherOp onUpdate={v=>{
         if (v!=="$eq"){
             mutate.updateValue({
                 [v]: mutate.getValue(),
