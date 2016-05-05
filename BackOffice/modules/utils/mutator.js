@@ -10,8 +10,7 @@ export default class Mutator{
     in = (innerPath)=> new Mutator(this._sourceTree, this._callback, [...this.path, innerPath]);
     
     getValue = ()=>{
-            var [innerPath, key] = R.splitAt(-1,this.path);
-            return R.reduce((acc,x)=>acc[x], this._sourceTree, innerPath)[key];
+            return R.reduce((acc,x)=>acc[x], this._sourceTree, this.path)
         };
         
     updateValue = newValue =>{

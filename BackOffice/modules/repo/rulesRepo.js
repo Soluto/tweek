@@ -7,7 +7,6 @@ var rimrafAsync = promisify(rimraf);
 var globAsync = promisify(glob);
 
 export function init({url, username, password}){
-    console.log("start cloning");
     var repoTask = rimrafAsync("./rulesRepo").then(()=>
     Git.Clone("http://tweek-gogs.07965c2a.svc.dockerapp.io/tweek/tweek-rules.git", "./rulesRepo", {
         fetchOpts: {

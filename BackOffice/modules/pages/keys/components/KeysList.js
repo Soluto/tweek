@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from 'react-router';
 import {KeyList as KeyListStyle} from "../styles.css";
 import {pure} from "recompose";
+import {List, ListItem} from 'material-ui/List';
 
 var leaf = Symbol();
 var getName = (path)=> path.split("/").slice(-1)[0]
@@ -24,6 +25,7 @@ export default pure(({keys})=>{
     keys.map(x=>x.split("/"))
          .forEach(fragments =>
              fragments.reduce((node, frag)=> node[frag] = node[frag] || {}, tree)[leaf] = true
-         );  
+         );
+         
     return (<div className={KeyListStyle}>{renderTree(tree, "")}</div>);
 })

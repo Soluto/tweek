@@ -1,5 +1,6 @@
 async function downloadKey(key){
   var {ruleDef} = await (await fetch(`/api/keys/${key}`)).json();
+  
   return {"type": "KEY_DOWNLOADED", "payload":
     {
       key,
