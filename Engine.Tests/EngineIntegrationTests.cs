@@ -239,19 +239,13 @@ namespace Engine.Tests
                         .AddMultiVariantRule(matcher: JsonConvert.SerializeObject(new Dictionary<string, object>()
                         {
                             {"device.SomeDeviceProp", 5}
-                        }), valueDistrubtions: new Dictionary<DateTimeOffset, string>
-                        {
-                            {
-                                DateTimeOffset.Parse("08/08/08"), JsonConvert.SerializeObject(new
+                        }), valueDistrubtions: JsonConvert.SerializeObject(new
                                 {
                                     type = "bernoulliTrial",
                                     args = 0.5
-                                })
-                            }
-                        }, ownerType: "device").Generate()
+                                }), ownerType: "device").Generate()
             };
-
-
+            
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { });

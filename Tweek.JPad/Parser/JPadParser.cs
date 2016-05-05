@@ -56,8 +56,18 @@ namespace Tweek.JPad
             if (data.Type == "MultiVariant")
             {
 
-                var valueDistributors = new SortedList<DateTimeOffset, ValueDistributor>(
-                    data.ValueDistribution.ToDictionary(x => x.Key, x => ParseValueDistrubtor(x.Value)));
+                var valueDistributors =
+                    (data.ValueDistribution["type"] != null)
+                        ? new SortedList<DateTimeOffset, ValueDistributor>(new Dictionary
+                            <DateTimeOffset, ValueDistributor>
+                        {
+                            [new DateTime(1970, 1, 1, 0, 0, 0, 0)] = ParseValueDistrubtor(data.ValueDistribution)
+                        })
+                        : new SortedList<DateTimeOffset, ValueDistributor>(
+                            data.ValueDistribution.ToObject<JObject>()
+                                .Properties()
+                                .ToDictionary(x => DateTimeOffset.Parse(x.Name), x => ParseValueDistrubtor(x.Value))
+                            );
 
                 return new MultiVariantRule
                 {
