@@ -166,6 +166,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="TreeResult.cs" />
     <Compile Include="ContextUpdateModule.cs" />
+    <Compile Include="ValidationModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Drivers\Engine.Drivers.Cassandra\Engine.Drivers.Cassandra.csproj">

@@ -7,6 +7,7 @@ using System.Web;
 using Cassandra;
 using Engine;
 using Engine.Context;
+using Engine.Core.Rules;
 using Engine.Drivers.Cassandra;
 using Engine.Drivers.Context;
 using Engine.Drivers.Rules;
@@ -83,17 +84,25 @@ namespace Tweek.ApiService
             return new CouchBaseDriver(cluster, bucketName);
         }
 
+        IRuleParser GetRulesParser()
+        {
+            return new JPadParser(
+                comparers: new Dictionary<string, MatchDSL.ComparerDelegate>()
+                {
+                    ["version"] = Version.Parse
+                });
+        }
+
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
             var drivers = GetDrivers();
+            var parser = GetRulesParser();
             ITweek tweek = Task.Run(async()=> await Engine.Tweek.Create(drivers.Item1,
-                                           drivers.Item2, new JPadParser(
-                                           comparers: new Dictionary<string,MatchDSL.ComparerDelegate>() {
-                                               ["version"] = Version.Parse
-                                           }))).Result;
+                                           drivers.Item2, parser)).Result;
 
             container.Register<ITweek>((ctx, no) => tweek);
             container.Register<IContextDriver>((ctx, no) => drivers.Item1);
+            container.Register<IRuleParser>((ctx, no) => parser);
             base.ApplicationStartup(container, pipelines);
         }
     }
