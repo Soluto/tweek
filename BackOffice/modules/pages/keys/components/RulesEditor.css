@@ -1,0 +1,74 @@
+.Rule{
+    display:flex;
+    padding: 10px;
+    box-shadow: #666666 1px 1px 4px;
+    border-radius: 2px;
+    margin: 10px 0;
+}
+
+.Matcher .MatcherProperty > div{
+    margin: 0 4px;
+}
+
+.Matcher .MatcherProperty{
+    display:flex;
+}
+
+.Predicate{
+    display:flex;
+}
+
+.OpSelector{
+    width:50px;
+}
+.OpSelector :global(.Select-arrow-zone){
+    display: none;
+}
+
+.OpSelector :global(.Select-menu-outer){
+    max-height:300px;
+}
+.OpSelector :global(.Select-menu-outer) :global(.Select-menu){
+    max-height:298px;
+    background-color: #ffffff;
+}
+
+.PropertySelector{
+    width:200px;
+}
+
+.JPadViewer li{
+    list-style: none;
+}
+
+.JPadViewer{
+    padding: 0;
+    margin: 0;
+}
+
+
+.JPadViewer :global(.Select-control){
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #007aff;
+    border-radius: 0px;
+}
+
+.JPadViewer input[type=text]{
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #007aff;
+    border-radius: 0px;
+}
+
+.Panel{
+   margin: 4px;
+}
+.Panel:before{
+    font-size: 12px;
+    content: attr(data-label);
+}
+
+.Matcher:empty:before{
+    content: "Match all";
+}
