@@ -9,6 +9,11 @@ import {Rule as RuleStyle,
         Panel as PanelStyle,
         JPadViewer as JPadViewerStyle,
         PropertySelector as PropertySelectorStyle} from "./RulesEditor.css";
+        
+import AutoSuggestService from "../../../services/AutoSuggestService";
+
+let autoSuggestService = new AutoSuggestService(); 
+autoSuggestService.init();
 
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 
@@ -33,8 +38,8 @@ let MatcherOp = ({selectedOp, onUpdate})=>
     </Select>)
 
 
-let SingleVariantValue = ({value, onupdate})=>(
-    (<div><textarea defaultValue={value} onChange={e=>onupdate(e.target.value) } /></div>)
+let SingleVariantValue = ({value, onUpdate})=>(
+    (<div><textarea defaultValue={value} onChange={e=>onUpdate(e.target.value) } /></div>)
 )
 
 let ValueDistrubtion = ({values, mutate})=>{
@@ -69,13 +74,13 @@ let MultiVariantValue = ({valueDistrubtion, mutate})=>(
 
 let RuleValue = ({rule, mutate})=>{
     if (rule.Type === "SingleVariant")
-        return (<SingleVariantValue onupdate={mutate.in("Value").updateValue} value={rule.Value} />)
+        return (<SingleVariantValue onUpdate={mutate.in("Value").updateValue} value={rule.Value} />)
     if (rule.Type === "MultiVariant")
         return (<MultiVariantValue mutate={mutate.in("ValueDistribution")} valueDistrubtion={rule.ValueDistribution} />)
     return null;
 }
 
-let renderMatcherPredicate = ({predicate, mutate})=>{
+let renderMatcherPredicate = ({predicate, mutate, property})=>{
     if (typeof(predicate) !== "object") return [<MatcherOp onUpdate={v=>{
         if (v!=="$eq"){
             mutate.updateValue({
@@ -103,18 +108,36 @@ let renderMatcherPredicate = ({predicate, mutate})=>{
                 )
 }
 
-let Property = ({property, predicate, mutate})=> 
+let Property = ({property, predicate, mutate, suggestedValues=[]})=> 
         (<div className={MatcherPropertyStyle}>
-           <Select clearable={false} className={PropertySelectorStyle} value={property} options={[{ value: property, label: R.last(property.split(".")) }]}>
+           <Select clearable={false} onChange={x=>
+                    mutate
+                        .updateKey(x.value)
+                        .updateValue(x.meta.defaultValue === undefined ? "": x.meta.defaultValue)
+                    }
+                   className={PropertySelectorStyle} 
+                   value={property} 
+                   options={R.uniqBy(x=>x.value)([...suggestedValues, { value: property, label: R.last(property.split(".")) }])}>
              <option value={property}>{property}</option>
            </Select>
-            {renderMatcherPredicate({predicate, mutate:mutate.in(property)})}
+            {renderMatcherPredicate({predicate, mutate})}
         </div>) 
 
 let Matcher = ({matcher, mutate}) =>{
     var [ops, props] = R.pipe(R.toPairs, R.partition(x=>x[0][0] === "$"))(matcher);
+    let IgnoreActivePropsPropsPredicate = R.compose(R.not,R.contains(R.__, R.map(R.head, props)));
+    let filterActiveProps = (currentProp)=> R.filter( R.pipe(R.prop("value"),
+                                 R.either(R.equals(currentProp),IgnoreActivePropsPropsPredicate
+                            )));
+
     return (<div className={MatcherStyle}>{
-        props.map(([property, predicate], i)=> (<Property key={i} {...{mutate,property,predicate}} />))
+        props.map(([property, predicate], i)=> (<Property 
+        suggestedValues={
+                        filterActiveProps(property)(
+                        autoSuggestService.getSuggestions({type:"MatcherProperty", query:{input:""}})
+                        )
+                        }
+        key={i} {...{mutate:mutate.in(property),property,predicate}} />))
     }</div>)
 }
 
@@ -137,32 +160,41 @@ let JPadViewer = ({source, mutate})=>{
     </ul>)
 }
 
-let createMutator = (sourceTree, callback, path=[])=>{
-    return {
-        in(innerPath){return createMutator(sourceTree, callback, [...path, innerPath])},
-        getValue(){
-            var [innerPath, key] = R.splitAt(-1,path);
-            return R.reduce((acc,x)=>acc[x], sourceTree, innerPath)[key];
-        },
-        updateValue(newValue){
-            console.log(`updating value:${path}`);
-            var clonedTree = R.clone(sourceTree);
-            var [innerPath, key] = R.splitAt(-1,path);
-            R.reduce((acc,x)=>acc[x], clonedTree, innerPath)[key] = newValue;
-            callback(clonedTree);
-        },
-        updateKey(newKey){
-            console.log(`updating key:${path}`);
-            var clonedTree = R.clone(sourceTree);
-            var [innerPath, key] = R.splitAt(-1,path);
-            var root = R.reduce((acc,x)=>acc[x], clonedTree, innerPath);
-            root[newKey] = root[key];
-            delete root[key];
-            callback(clonedTree);
-        },
-        path
+class Mutator{
+    constructor(sourceTree, callback, path=[]){
+        this._sourceTree = sourceTree;
+        this._callback = callback;
+        this.path = path;
     }
+    
+    in = (innerPath)=> new Mutator(this._sourceTree, this._callback, [...this.path, innerPath]);
+    
+    getValue = ()=>{
+            var [innerPath, key] = R.splitAt(-1,this.path);
+            return R.reduce((acc,x)=>acc[x], this.sourceTree, innerPath)[key];
+        };
+        
+    updateValue = (newValue) =>{
+            console.log(`updating value:${this.path} to ${newValue}`);
+            var clonedTree = R.clone(this._sourceTree);
+            var [innerPath, [key]] = R.splitAt(-1,this.path);
+            R.reduce((acc,x)=>acc[x], clonedTree, innerPath)[key] = newValue;
+            console.log(clonedTree);
+            this._callback(clonedTree);
+            return new Mutator(clonedTree, this._callback, this.path);
+        }
+     updateKey = (newKey) =>{
+            console.log(`updating key:${this.path} to ${newKey}`);
+            var [innerPath, [container, key]] = R.splitAt(-2,this.path);
+            if (newKey === key) return this;
+            var clonedTree = R.clone(this._sourceTree);
+            var root = R.reduce((acc,x)=>acc[x], clonedTree, innerPath);
+            root[container] = R.fromPairs(R.toPairs(root[container]).map(([k,v])=>[k === key ? newKey : k, v]));
+            this._callback(clonedTree);
+            return new Mutator(clonedTree, this._callback, [...innerPath, container, newKey]);
+        }
 }
+
 
 export default ({ruleDef, updateRule})=>(
     <div>
@@ -173,7 +205,7 @@ export default ({ruleDef, updateRule})=>(
         </TabList>
          <TabPanel>
           <JPadViewer source={ruleDef.source} 
-          mutate={createMutator(JSON.parse(ruleDef.source),
+          mutate={new Mutator(JSON.parse(ruleDef.source),
                  (sourceTree)=>updateRule({...ruleDef, source: JSON.stringify(sourceTree) }) )} />
         </TabPanel>
         <TabPanel>
