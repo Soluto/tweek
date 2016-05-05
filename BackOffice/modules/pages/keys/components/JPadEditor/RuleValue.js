@@ -23,17 +23,23 @@ let ValueDistrubtion = ({values, mutate})=>{
     return null;
 }
 
-let MultiVariantValue = ({valueDistrubtion, mutate})=>(
-    (<div>
-    {R.toPairs(valueDistrubtion).map(([date, values], i)=>(
-        (<div key={i}>
-        <div>{date}</div>
-        <ValueDistrubtion values={values} mutate={mutate.in(date)} />
-        </div>)    
-    ))}
-    </div>)
-    
-)
+let MultiVariantValue = ({valueDistrubtion:{type, args}, mutate})=>{
+     if (type==="weighted")
+        return (<div>
+        {
+            R.toPairs(args).map(([value, weight])=> (<div>{`${value}:${weight}`}</div>))
+        }
+        </div>)
+    if (type === "bernoulliTrial"){
+        return (<div>
+        <input type="range" min="0" max="100" 
+        onChange={e=>mutate.in("args").updateValue(parseFloat("0." + e.target.value))} 
+        defaultValue={Math.round(args*100)} />
+        <span>{Math.round(args*100) + "%"}</span>
+        </div>)
+    }
+    return null;
+}
 
 export default ({rule, mutate})=>{
     if (rule.Type === "SingleVariant")

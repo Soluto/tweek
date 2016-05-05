@@ -27,7 +27,7 @@ const types = {
     }
 }
 
-export default class AutoSuggestService{
+export default class EditorMetaService{
     
     _meta = {};
     
@@ -40,7 +40,7 @@ export default class AutoSuggestService{
                "device":{
                     "PartnerBrandId": defaultValue("AsurionFriends")
                                       (description("The name of the partner")
-                                      (types.string)),
+                                      (types.String)),
                     "DeviceOsType": types.Enum("Android","IOs"),
                     "AgentOsVersion": types.Version,
                     "AgentVersion": defaultValue("1.0.0.0")(types.Version),
@@ -49,6 +49,15 @@ export default class AutoSuggestService{
                 }
             }
         } 
+    }
+    
+    getFieldMeta(field){
+        var [identity, property] = field.split(".");
+        return this.meta.fields[identity][property];
+    }
+    
+    getKeyMeta(key){
+        
     }
     
     getSuggestions({type, query}){

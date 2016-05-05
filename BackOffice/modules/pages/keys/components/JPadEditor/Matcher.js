@@ -10,10 +10,9 @@ import {Matcher as MatcherStyle,
         MatcherProperty as MatcherPropertyStyle,
         PropertySelector as PropertySelectorStyle} from "./JPadEditor.css";
         
-import AutoSuggestService from "../../../../services/AutoSuggestService";
-let autoSuggestService = new AutoSuggestService(); 
-autoSuggestService.init();
-
+import EditorMetaService from "../../../../services/EditorMetaService";
+let editorMetaService = new EditorMetaService(); 
+editorMetaService.init();
 
 const ops  = {"$eq": "=", "$ge": ">=", "$gt":">", "$lt": "<", "$le":"<=", "$ne":"!="};
  
@@ -30,15 +29,26 @@ let MatcherOp = ({selectedOp, onUpdate})=>
     
     </Select>)
     
+let PropertyValue = ({mutate, meta, value})=>{
+    if (meta.type === "string"){
+        return (<input onChange={e=> mutate.updateValue(e.target.value)}  type="text" value={value} />);
+    }
+    if (meta.type === "bool"){
+        return (<input type="checkbox" onChange={e=> mutate.updateValue(e.target.checked)}  checked={value} />);
+    }
+    return null;
+}
+    
 let renderMatcherPredicate = ({predicate, mutate, property})=>{
+    let meta = editorMetaService.getFieldMeta(property);
     if (typeof(predicate) !== "object") return [<MatcherOp onUpdate={v=>{
         if (v!=="$eq"){
             mutate.updateValue({
-                [v]: mutate.getValue()
-            })
+                [v]: mutate.getValue(),
+                ...(meta.compare ? {$compare: meta.compare} : {})
+            });
         } 
-    }} selectedOp={"$eq"} />, 
-    <input onChange={e=> mutate.updateValue(e.target.value)}  type="text" value={predicate} />];
+    }} selectedOp={"$eq"} />,  <PropertyValue {...{meta, mutate, value:predicate}} />]
     
     return R.toPairs(predicate)
                 .filter(([key, _]) => key[0] === "$")
@@ -53,8 +63,8 @@ let renderMatcherPredicate = ({predicate, mutate, property})=>{
                             mutate.in(op).updateKey(v);
                         }
                      }} selectedOp={op} />, 
-                     <input type="text" onChange={e=> mutate.in(op).updateValue(e.target.value)} defaultValue={value} />]
-                      : renderMatcherPredicate({predicate:value, mutate:mutate.in(op)})
+                     <PropertyValue {...{mutate:mutate.in(op), meta, value}}  />]
+                      : renderMatcherPredicate({predicate:value, mutate:mutate.in(op), property})
                 )
 }
 
@@ -70,7 +80,7 @@ let Property = ({property, predicate, mutate, suggestedValues=[]})=>
                    options={R.uniqBy(x=>x.value)([...suggestedValues, { value: property, label: R.last(property.split(".")) }])}>
              <option value={property}>{property}</option>
            </Select>
-            {renderMatcherPredicate({predicate, mutate})}
+            {renderMatcherPredicate({predicate, mutate, property})}
         </div>) 
 
 export default ({matcher, mutate}) =>{
@@ -84,7 +94,7 @@ export default ({matcher, mutate}) =>{
         props.map(([property, predicate], i)=> (<Property 
         suggestedValues={
                         filterActiveProps(property)(
-                        autoSuggestService.getSuggestions({type:"MatcherProperty", query:{input:""}})
+                        editorMetaService.getSuggestions({type:"MatcherProperty", query:{input:""}})
                         )
                         }
         key={i} {...{mutate:mutate.in(property),property,predicate}} />))
