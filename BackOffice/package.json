@@ -62,6 +62,7 @@
     "react-addons-perf": "15.0.2",
     "react-autosuggest": "3.7.3",
     "react-dom": "15.0.1",
+    "react-input-enhancements": "0.4.10",
     "react-project": "0.0.30",
     "react-redux": "4.4.5",
     "react-router": "2.0.0",

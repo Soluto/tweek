@@ -7,6 +7,7 @@ if (typeof(window) === "object"){
 import {TextField, Checkbox} from 'material-ui';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import {Dropdown, AutoSize, Combobox} from 'react-input-enhancements';
 
 import {Matcher as MatcherStyle, 
         Predicate as PredicateStyle,
@@ -21,31 +22,40 @@ const ops  = {"$eq": "=", "$ge": ">=", "$gt":">", "$lt": "<", "$le":"<=", "$ne":
  //onUpdate(value)}
  let MatcherOp = ({selectedOp, onUpdate})=>
     (
-        <SelectField style={{width:50}} onChange={(_,__,value)=> onUpdate(value)} value={selectedOp} >
-            {Object.keys(ops).map(op=>  (<MenuItem value={op} primaryText={ops[op] } />))}
-        </SelectField>
+        <Combobox className="OpDropdown" value={selectedOp}
+         autosize autocomplete defaultWidth={50} onValueChange={(v,_)=> onUpdate(v)} 
+        options={R.keys(ops).map(op=>({value:op,label:ops[op]}))} >
+          {({...inputProps, onChange}, { textValue }) =>
+                        (<input type="text" {...inputProps}  />)
+                    }  
+        </Combobox>
         )
     
 let PropertyValue = ({mutate, meta, value})=>{
     if (meta.type === "string"){
         if (meta.allowedValues){
-            return (<SelectField onChange={(_,__,v)=> mutate.updateValue(v)} value={value} >
-            {meta.allowedValues.map(x=>  (<MenuItem value={x} primaryText={x} />))}
-            </SelectField>);
+            return (
+                <Combobox onValueChange={(v,t)=> mutate.updateValue(v)} value={value}
+                    options={meta.allowedValues}>
+                    {({...inputProps, onChange}, { textValue }) =>
+                        (<input type="text" key={mutate.path}  {...inputProps} />)
+                    }
+                    </Combobox>
+                );
         }
         else{
-            return (<TextField onChange={(_,v)=> mutate.updateValue(v)} value={value} />);    
+            return (<input type="text" key={mutate.path} onChange={(e)=> mutate.updateValue(e.target.value)} value={value} />);    
         }
     }
     if (meta.type === "bool"){
-        return (<Checkbox onCheck={(_,v)=>mutate.updateValue(v)}  defaultChecked={value} />);
+        return (<Checkbox key={mutate.path} onCheck={(_,v)=>mutate.updateValue(v)}  defaultChecked={value} />);
     }
     return null;
 }
     
 let renderMatcherPredicate = ({predicate, mutate, property})=>{
     let meta = editorMetaService.getFieldMeta(property);
-    if (typeof(predicate) !== "object") return [meta.type === "bool" ? null : <MatcherOp onUpdate={v=>{
+    if (typeof(predicate) !== "object") return [(meta.type === "bool" || meta.type === "empty") ? null : <MatcherOp onUpdate={v=>{
         if (v!=="$eq"){
             mutate.updateValue({
                 [v]: mutate.getValue(),
@@ -74,16 +84,20 @@ let renderMatcherPredicate = ({predicate, mutate, property})=>{
 
 let Property = ({property, predicate, mutate, suggestedValues=[]})=> 
         (<div className={MatcherPropertyStyle}>
-           <Select clearable={false} onChange={x=>
-                    mutate
-                        .updateKey(x.value)
-                        .updateValue(x.meta.defaultValue === undefined ? "": x.meta.defaultValue)
+           <div style={{color:"red", fontSize:"24px", lineHeight:"34px", cursor:"pointer"}} onClick={_=>mutate.delete()}>x</div>
+           <Combobox autocomplete onValueChange={(x)=>{
+                   mutate
+                        .updateKey(x)
+                        .updateValue( (suggestedValues.find(s=>s.value===x).meta.defaultValue || ""))
                     }
+                   }
                    className={PropertySelectorStyle} 
                    value={property} 
                    options={R.uniqBy(x=>x.value)([...suggestedValues, { value: property, label: R.last(property.split(".")) }])}>
-             <option value={property}>{property}</option>
-           </Select>
+             {({...inputProps, onChange}, { textValue }) =>
+                        (<input type="text" key={mutate.path}  {...inputProps} />)
+                    }
+           </Combobox>
             {renderMatcherPredicate({predicate, mutate, property})}
         </div>) 
 
@@ -102,5 +116,7 @@ export default ({matcher, mutate}) =>{
                         )
                         }
         key={i} {...{mutate:mutate.in(property),property,predicate}} />))
-    }</div>)
+    }
+    <div style={{color:"blue", fontSize:"24px", lineHeight:"34px", cursor:"pointer"}} onClick={_=>mutate.insert("", "")}>+</div>
+    </div>)
 }

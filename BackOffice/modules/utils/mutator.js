@@ -40,4 +40,12 @@ export default class Mutator{
          this._callback(clonedTree);
          return new Mutator(clonedTree, this._callback, innerPath);
         }
+        
+      insert =  (key, value) =>{
+         console.log(`inserting key:${this.path} ${key}:${value}`);
+         var clonedTree = R.clone(this._sourceTree);
+         R.reduce((acc,x)=>acc[x], clonedTree, this.path)[key] = value;
+         this._callback(clonedTree);
+         return new Mutator(clonedTree, this._callback, this.path);
+        }
 }

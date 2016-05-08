@@ -22,6 +22,9 @@ const types = {
     get Number(){
         return newType("number");
     },
+    get Empty(){
+        return newType("empty");
+    },
     get Version(){
         return newType("string", compare("version"), validate( /[0-9.]/));
     }
@@ -41,7 +44,7 @@ export default class EditorMetaService{
                     "PartnerBrandId": defaultValue("AsurionFriends")
                                       (description("The name of the partner")
                                       (types.String)),
-                    "DeviceOsType": types.Enum("Android","IOs"),
+                    "DeviceOsType": defaultValue("Android")(types.Enum("Android","IOs")),
                     "AgentOsVersion": types.Version,
                     "AgentVersion": defaultValue("1.0.0.0")(types.Version),
                     "DeviceOsVersion": types.Version,
@@ -52,6 +55,7 @@ export default class EditorMetaService{
     }
     
     getFieldMeta(field){
+        if (field==="") return types.Empty;
         var [identity, property] = field.split(".");
         return this.meta.fields[identity][property];
     }
