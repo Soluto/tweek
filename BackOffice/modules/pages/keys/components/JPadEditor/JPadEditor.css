@@ -58,6 +58,10 @@
     border: none;
     border-bottom: 1px solid #007aff;
     border-radius: 0px;
+    padding-top: 14px;
+    font-size: 14px;
+    padding-bottom: 5px;
+    padding-left: 6px;
 }
 
 .Panel{
@@ -70,4 +74,9 @@
 
 .Matcher:empty:before{
     content: "Match all";
+}
+
+.Editor :global(.OpDropdown) :global(.popup--jss-0-5){
+    max-width:80px;
+    min-width:80px;
 }
