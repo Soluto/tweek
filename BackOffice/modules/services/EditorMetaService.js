@@ -4,8 +4,8 @@ import R from "ramda"
 let modify=(fieldInfo, ...modifiers)=>modifiers.reduce((field, m)=>m(field),(fieldInfo));
 let newType = (baseType, ...modifiers) => modify({type:baseType}, ...modifiers);
 let createAddPropModifer = (propName)=> R.curry((payload, fieldInfo)=>({...fieldInfo, [propName]: payload }));
-let [allowedValues,  description  , compare  , validate  ,  defaultValue] = 
-    ["allowedValues", "description", "compare", "validate", "defaultValue"].map(createAddPropModifer);
+let [allowedValues,  description  , compare  , validate  ,  defaultValue, typeAlias] = 
+    ["allowedValues", "description", "compare", "validate", "defaultValue", "typeAlias"].map(createAddPropModifer);
 
 
 //types
@@ -14,7 +14,7 @@ const types = {
         return newType("string");
     },
     Enum(...values){
-        return newType("string", allowedValues(values));
+        return newType("string", typeAlias("enum"), allowedValues(values));
     },
     get Bool(){
         return newType("bool");
@@ -26,7 +26,7 @@ const types = {
         return newType("empty");
     },
     get Version(){
-        return newType("string", compare("version"), validate( /[0-9.]/));
+        return newType("string", typeAlias("version"),compare("version"), validate( /[0-9.]/));
     }
 }
 

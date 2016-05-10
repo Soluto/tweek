@@ -1,16 +1,10 @@
 import React, {Component} from "react";
 import R from "ramda";
-import Select from 'react-select';
-if (typeof(window) === "object"){
-    require("react-select/dist/react-select.min.css");
-}
-import {TextField, Checkbox} from 'material-ui';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import {Dropdown, AutoSize, Combobox} from 'react-input-enhancements';
+import {Checkbox} from 'material-ui';
+import Autosuggest from 'react-autosuggest';
+import {withState} from "recompose"
 
 import {Matcher as MatcherStyle, 
-        Predicate as PredicateStyle,
         MatcherProperty as MatcherPropertyStyle,
         PropertySelector as PropertySelectorStyle} from "./JPadEditor.css";
         
@@ -18,37 +12,81 @@ import EditorMetaService from "../../../../services/EditorMetaService";
 let editorMetaService = new EditorMetaService(); 
 editorMetaService.init();
 
+let defaultSuggestRenderer = (s)=>(<span>{s.label}</span>)
 const ops  = {"$eq": "=", "$ge": ">=", "$gt":">", "$lt": "<", "$le":"<=", "$ne":"!="};
- //onUpdate(value)}
- let MatcherOp = ({selectedOp, onUpdate})=>
-    (
-        <Combobox className="OpDropdown" value={selectedOp}
-         autosize autocomplete defaultWidth={50} onValueChange={(v,_)=> onUpdate(v)} 
-        options={R.keys(ops).map(op=>({value:op,label:ops[op]}))} >
-          {({...inputProps, onChange}, { textValue }) =>
-                        (<input type="text" {...inputProps}  />)
-                    }  
-        </Combobox>
-        )
+
+        
+let ClosedComboBox = withState("tempValue", "updateTempValue", null)(({
+    tempValue, 
+    updateTempValue, 
+    inputProps:{value, onChange, onBlur, ...otherInputProps},
+    suggestions,
+    onSuggestionSelected,
+    ...autosuggestProps})=>
+        {
+            let getSuggestionValue = x=>x.label;
+            let getSuggestionByValue = val => suggestions.find(s=> getSuggestionValue(s) == val );
+            tempValue = tempValue === null ? value : tempValue;
+            onSuggestionSelected = onSuggestionSelected || ((e, { suggestion, suggestionValue, sectionIndex, method })=> {
+                onChange(suggestion);
+            });
+            
+            return (<Autosuggest  className="OpDropdown"
+            inputProps={{...otherInputProps,onChange:
+                (e, {newValue})=>{
+                updateTempValue(newValue);
+                var suggestion = getSuggestionByValue(newValue);
+                if (suggestion) {onChange(suggestion)};
+            },
+            onBlur:(e)=>{
+                var newValue = e.target.value;
+                var newSuggestion = getSuggestionByValue(newValue) || getSuggestionByValue(value); 
+                updateTempValue(getSuggestionValue(newSuggestion));
+                onChange(newSuggestion);
+            },value: tempValue
+            }}
+            onSuggestionSelected={onSuggestionSelected}
+            
+            {...{
+                getSuggestionValue,
+                suggestions,
+                ...autosuggestProps
+            }}
+             
+            />
+            )
+        });
+        
+
+let MatcherOp = ({selectedOp, onUpdate})=>
+        (<div className="MatcherOp">
+            <ClosedComboBox className="OpDropdown"
+         inputProps={{onChange:
+             ({value})=>{
+             onUpdate(value);
+         }, value:ops[selectedOp] }}
+         renderSuggestion={defaultSuggestRenderer} 
+         suggestions={R.keys(ops).map(op=>({value:op,label:ops[op]}))} />
+         </div>
+        );
     
 let PropertyValue = ({mutate, meta, value})=>{
     if (meta.type === "string"){
         if (meta.allowedValues){
             return (
-                <Combobox onValueChange={(v,t)=> mutate.updateValue(v)} value={value}
-                    options={meta.allowedValues}>
-                    {({...inputProps, onChange}, { textValue }) =>
-                        (<input type="text" key={mutate.path}  {...inputProps} />)
-                    }
-                    </Combobox>
-                );
+                <ClosedComboBox  
+                inputProps={{onChange:(e, {newValue})=>mutate.updateValue(newValue), value}}
+                renderSuggestion={x=>(<span>{x}</span>)}
+                getSuggestionValue={x=>x} 
+                suggestions={meta.allowedValues} />
+            )
         }
         else{
-            return (<input type="text" key={mutate.path} onChange={(e)=> mutate.updateValue(e.target.value)} value={value} />);    
+            return (<input type="text"  onChange={(e)=> mutate.updateValue(e.target.value)} value={value} />);    
         }
     }
     if (meta.type === "bool"){
-        return (<Checkbox key={mutate.path} onCheck={(_,v)=>mutate.updateValue(v)}  defaultChecked={value} />);
+        return (<Checkbox onCheck={(_,v)=>mutate.updateValue(v)}  defaultChecked={value} />);
     }
     return null;
 }
@@ -64,7 +102,7 @@ let renderMatcherPredicate = ({predicate, mutate, property})=>{
         } 
     }} selectedOp={"$eq"} />,  <PropertyValue {...{meta, mutate, value:predicate}} />]
     
-    return R.toPairs(predicate)
+    return R.flatten(R.toPairs(predicate)
                 .filter(([key, _]) => key[0] === "$")
                 .filter(([op, _]) => op !== "$compare")
                 .map(([op, value])=> 
@@ -79,25 +117,30 @@ let renderMatcherPredicate = ({predicate, mutate, property})=>{
                      }} selectedOp={op} />, 
                      <PropertyValue {...{mutate:mutate.in(op), meta, value}}  />]
                       : renderMatcherPredicate({predicate:value, mutate:mutate.in(op), property})
-                )
+    ));
+}
+
+let PropertySuggestion = ({suggestion})=>{
+    var [identity, prop] = suggestion.value.split(".");
+    var type = suggestion.meta && (suggestion.meta.typeAlias || suggestion.meta.type);
+    return (<div>
+                <span>{prop}</span><span style={{marginLeft:12, fontSize:12, color:"#00FF00"}}>({type})</span>
+                <div style={{fontSize:14, color:"#AAAAAA"}}>{identity}</div>
+            </div>)
 }
 
 let Property = ({property, predicate, mutate, suggestedValues=[]})=> 
         (<div className={MatcherPropertyStyle}>
            <div style={{color:"red", fontSize:"24px", lineHeight:"34px", cursor:"pointer"}} onClick={_=>mutate.delete()}>x</div>
-           <Combobox autocomplete onValueChange={(x)=>{
-                   mutate
-                        .updateKey(x)
-                        .updateValue( (suggestedValues.find(s=>s.value===x).meta.defaultValue || ""))
-                    }
-                   }
-                   className={PropertySelectorStyle} 
-                   value={property} 
-                   options={R.uniqBy(x=>x.value)([...suggestedValues, { value: property, label: R.last(property.split(".")) }])}>
-             {({...inputProps, onChange}, { textValue }) =>
-                        (<input type="text" key={mutate.path}  {...inputProps} />)
-                    }
-           </Combobox>
+             <ClosedComboBox  
+                inputProps={{value:property.split(".")[1], onChange:(suggestion)=>
+                     mutate
+                        .updateKey(suggestion.value)
+                        .updateValue((suggestion.meta && suggestion.meta.defaultValue) || "")
+                }}
+                renderSuggestion={ suggestion => (<PropertySuggestion suggestion={suggestion} />)}
+                
+                suggestions={R.uniqBy(x=>x.value)([...suggestedValues, { value: property, label: R.last(property.split(".")) }])} />
             {renderMatcherPredicate({predicate, mutate, property})}
         </div>) 
 

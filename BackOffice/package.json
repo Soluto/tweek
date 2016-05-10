@@ -67,7 +67,6 @@
     "react-redux": "4.4.5",
     "react-router": "2.0.0",
     "react-router-redux": "4.0.2",
-    "react-select": "1.0.0-beta12",
     "react-tabs": "0.5.3",
     "react-tap-event-plugin": "1.0.0",
     "react-title-component": "1.0.1",
