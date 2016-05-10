@@ -1,9 +1,9 @@
-import React, {Component} from "react";
-import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
-import JPadEditor from './JPadEditor/JPadEditor';
-import Mutator from '../../../utils/mutator';
+import React from 'react'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import JPadEditor from './JPadEditor/JPadEditor'
+import Mutator from '../../../utils/mutator'
 
-export default ({ruleDef, updateRule})=>(
+export default ({ ruleDef, updateRule })=>(
     <div>
     <Tabs selectedIndex={0}>
         <TabList>
@@ -13,7 +13,7 @@ export default ({ruleDef, updateRule})=>(
          <TabPanel>
           <JPadEditor source={ruleDef.source} 
           mutate={new Mutator(JSON.parse(ruleDef.source),
-                 (sourceTree)=>updateRule({...ruleDef, source: JSON.stringify(sourceTree) }) )} />
+                 (sourceTree)=>updateRule({ ...ruleDef, source: JSON.stringify(sourceTree) }) )} />
         </TabPanel>
         <TabPanel>
           <pre>
