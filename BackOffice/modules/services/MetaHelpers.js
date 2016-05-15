@@ -5,9 +5,13 @@ let modify=(fieldInfo, ...modifiers)=>modifiers.reduce((field, m)=>m(field),(fie
 let newType = (baseType, ...modifiers) => modify({ type:baseType }, ...modifiers)
 let createAddPropModifer = (propName)=> R.curry((payload, fieldInfo)=>({ ...fieldInfo, [propName]: payload }))
 
-export const [ allowedValues,  description  , compare  , validate  ,  defaultValue, typeAlias ] = 
-    [ 'allowedValues', 'description', 'compare', 'validate', 'defaultValue', 'typeAlias' ].map(createAddPropModifer)
+export const [   description  , compare  , validate  ,  defaultValue, typeAlias ] = 
+    [ 'description', 'compare', 'validate', 'defaultValue', 'typeAlias' ].map(createAddPropModifer)
 
+let allowedValues = (values)=> (typeInfo)=>({
+  ...typeInfo,
+  allowedValues: values.map(x=>typeof(x) === 'object' ? x : { label:x, value: x })
+})
 
 //types
 export const types = {
@@ -18,7 +22,7 @@ export const types = {
     return newType('string', typeAlias('enum'), allowedValues(values))
   },
   get Bool() {
-    return newType('bool')
+    return newType('bool', defaultValue('false'), allowedValues([ { label:'true', value: true },{ label:'false', value:false } ]))
   },
   get Number() {
     return newType('number')

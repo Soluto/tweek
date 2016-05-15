@@ -15,11 +15,11 @@ export default class EditorMetaService {
             'PartnerBrandId': defaultValue('AsurionFriends')
                                       (description('The name of the partner')
                                       (types.String)),
-            'DeviceOsType': defaultValue('Android')(types.Enum('Android','IOs')),
+            'DeviceOsType': defaultValue('Android')(types.Enum('Android','Ios')),
             'AgentOsVersion': types.Version,
             'AgentVersion': defaultValue('1.0.0.0')(types.Version),
             'DeviceOsVersion': types.Version,
-            'IsInGroup': defaultValue(false)(types.Bool),
+            'IsInGroup': defaultValue(false)(types.Bool)
           }
         }
       } 

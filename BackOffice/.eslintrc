@@ -1,5 +1,11 @@
 {
   "extends": "rackt",
+  "parserOptions": {
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
   "globals": {
     "__DEV__": true
   },
