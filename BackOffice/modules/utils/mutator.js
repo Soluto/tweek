@@ -9,15 +9,14 @@ export default class Mutator {
     
     in = (innerPath)=> new Mutator(this._sourceTree, this._callback, [ ...this.path, innerPath ]);
     
-    getValue = ()=>{
-      return R.reduce((acc,x)=>acc[x], this._sourceTree, this.path)
-    };
+    getValue = ()=> R.reduce((acc,x)=>acc[x], this._sourceTree, this.path);
         
     updateValue = newValue =>{
       console.log(`updating value:${this.path} to ${newValue}`)
       let clonedTree = R.clone(this._sourceTree)
       let [ innerPath, [ key ] ] = R.splitAt(-1,this.path)
-      R.reduce((acc,x)=>acc[x], clonedTree, innerPath)[key] = newValue
+      let container = R.reduce((acc,x)=>acc[x], clonedTree, innerPath);
+      container[key] = newValue
       this._callback(clonedTree)
       return new Mutator(clonedTree, this._callback, this.path)
     }

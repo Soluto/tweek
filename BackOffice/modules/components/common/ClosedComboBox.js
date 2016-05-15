@@ -24,15 +24,13 @@ export default withState('tempValue', 'updateTempValue', null)(({
             inputProps={{ ...otherInputProps,onChange:
                 (e, { newValue })=>{
                   updateTempValue(newValue)
-                  let suggestion = getSuggestionByValue(newValue)
-                  if (suggestion) {onChange(suggestion)}
                 },
             onBlur:(e)=>{
               let newValue = e.target.value
               let newSuggestion = getSuggestionByValue(newValue) || getSuggestionByValue(value)
               if (!newSuggestion) return 
               updateTempValue(getSuggestionValue(newSuggestion))
-              onChange(newSuggestion)
+              if (newValue !== value) onChange(newSuggestion)
             },value: tempValue
             }}
             shouldRenderSuggestions={_=>true}
