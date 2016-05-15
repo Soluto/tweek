@@ -36,19 +36,23 @@ let PropertyValue = ({ mutate, meta, value })=>{
     }
   }
   if (meta.type === 'bool') {
-    return (<Checkbox onCheck={(_,v)=>mutate.updateValue(v)}  checked={value} />)
+    return (<ClosedComboBox 
+                inputProps={{ onChange:({ value })=>mutate.updateValue(value), value: value ? 'is true' : 'is false' }} 
+                suggestions={[ { label:'is true', value:true }, { label: 'is false', value:false } ]} />
+                )
   }
   return null
 }
+
     
 let renderMatcherPredicate = ({ predicate, mutate, property })=>{
   let meta = editorMetaService.getFieldMeta(property)
   if (typeof(predicate) !== 'object') return [ (meta.type === 'bool' || meta.type === 'empty') ? null : <MatcherOp onUpdate={v=>{
     if (v!=='$eq') {
       mutate.updateValue({
-          [v]: mutate.getValue(),
-          ...(meta.compare ? { $compare: meta.compare } : {})
-        })
+        [v]: mutate.getValue(),
+        ...(meta.compare ? { $compare: meta.compare } : {})
+      })
     } 
   }} selectedOp={"$eq"} />,  <PropertyValue {...{ meta, mutate, value:predicate }} /> ]
     
