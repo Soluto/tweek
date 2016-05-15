@@ -22,9 +22,7 @@ export default withState('tempValue', 'updateTempValue', null)(({
             
   return (<Autosuggest  className="OpDropdown"
             inputProps={{ ...otherInputProps,onChange:
-                (e, { newValue })=>{
-                  updateTempValue(newValue)
-                },
+                (e, { newValue })=> updateTempValue(newValue),
             onBlur:(e)=>{
               let newValue = e.target.value
               let newSuggestion = getSuggestionByValue(newValue) || getSuggestionByValue(value)
