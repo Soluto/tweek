@@ -201,6 +201,10 @@
       <Project>{88200f63-8699-4b6e-8969-4c45827ad0c3}</Project>
       <Name>Engine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Tweek.Drivers.Blob\Tweek.Drivers.Blob.csproj">
+      <Project>{94574c86-8fe9-4282-bac4-e2fc62afda06}</Project>
+      <Name>Tweek.Drivers.Blob</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Tweek.JPad\Tweek.JPad.csproj">
       <Project>{D20F24EB-860A-4DC0-A849-28627E342B89}</Project>
       <Name>Tweek.JPad</Name>

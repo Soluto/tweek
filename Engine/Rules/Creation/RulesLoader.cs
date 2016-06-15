@@ -14,14 +14,8 @@ namespace Engine.Rules.Creation
     {      
         public static async Task<Func<IReadOnlyDictionary<string, IRule>>> Factory(IRulesDriver driver, IRuleParser parser)
         {
-            return Factory(await Create(driver, parser), driver, parser);
-        }
-
-        public static Func<IReadOnlyDictionary<string, IRule>> Factory(IReadOnlyDictionary<string, IRule> instance, IRulesDriver driver, IRuleParser parser)
-        {
-            var scopedInstance = instance;
-            driver.OnRulesChange += ()=>Task.Run(() => Create(driver, parser)).ContinueWith(x => scopedInstance = x.Result);
-            return () => scopedInstance;
+            var instance = await Create(driver, parser);
+            return () => instance;
         }
 
         public static async Task<IReadOnlyDictionary<string,IRule>> Create(IRulesDriver driver, IRuleParser parser)
