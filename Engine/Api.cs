@@ -78,8 +78,7 @@ namespace Engine
         public static async Task<ITweek> Create(IContextDriver contextDriver, IRulesDriver rulesDriver, IRuleParser parser = null)
         {
             var rulesLoader = await RulesLoader.Factory(rulesDriver, parser ?? new JPadParser());
-            return new TweekRunner(contextDriver,
-                rulesLoader);
+            return new TweekRunner(contextDriver, rulesLoader);
         }
     }
 }

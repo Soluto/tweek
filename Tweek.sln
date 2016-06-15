@@ -58,6 +58,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleBenchmarks", "Perform
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.Drivers.Couchbase", "Drivers\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj", "{590593D3-6EC9-4BD1-86EF-02960D69798A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.Drivers.Blob", "Tweek.Drivers.Blob\Tweek.Drivers.Blob.csproj", "{94574C86-8FE9-4282-BAC4-E2FC62AFDA06}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -140,6 +142,10 @@ Global
 		{590593D3-6EC9-4BD1-86EF-02960D69798A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{590593D3-6EC9-4BD1-86EF-02960D69798A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{590593D3-6EC9-4BD1-86EF-02960D69798A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94574C86-8FE9-4282-BAC4-E2FC62AFDA06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94574C86-8FE9-4282-BAC4-E2FC62AFDA06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94574C86-8FE9-4282-BAC4-E2FC62AFDA06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94574C86-8FE9-4282-BAC4-E2FC62AFDA06}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -156,5 +162,6 @@ Global
 		{CF97CC73-E1AC-4CF3-9839-612298C314D3} = {E150B209-65FB-472E-ADCE-E5567D6A6D1E}
 		{7DBBABD4-53D4-4782-909E-53CC6876CBC0} = {CACAD098-D265-4C1B-AF6D-F75B8F89E26D}
 		{590593D3-6EC9-4BD1-86EF-02960D69798A} = {598101A0-7DD1-4E0C-8AB6-B2DA931713B6}
+		{94574C86-8FE9-4282-BAC4-E2FC62AFDA06} = {598101A0-7DD1-4E0C-8AB6-B2DA931713B6}
 	EndGlobalSection
 EndGlobal
