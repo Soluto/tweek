@@ -30,6 +30,18 @@ export default class Mutator {
        this._callback(clonedTree)
        return new Mutator(clonedTree, this._callback, [ ...innerPath, container, newKey ])
      }
+     
+     replaceKeys = (key1, key2)=>{
+       console.log(`replacing key:${key1} with ${key2} on ${this.path}`)
+       let clonedTree = R.clone(this._sourceTree)
+       let treeContainer = R.reduce((acc,x)=>acc[x], this._sourceTree, this.path);
+       let clonedContainer = R.reduce((acc,x)=>acc[x], clonedTree, this.path);
+       clonedContainer[key1] = treeContainer[key2]
+       clonedContainer[key2] = treeContainer[key1]
+       this._callback(clonedTree)
+       return new Mutator(clonedTree, this._callback, this.path)
+     }
+     
      delete =  () =>{
        console.log(`deleting key:${this.path}`)
        let [ innerPath, [ key ] ] = R.splitAt(-1,this.path)
