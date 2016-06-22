@@ -23,7 +23,10 @@ using Tweek.JPad;
 using Tweek.Drivers.CouchbaseDriver;
 using Couchbase.Configuration.Client;
 using Couchbase;
+using Logging.Core;
+using Logging.NLog;
 using Newtonsoft.Json;
+using Soluto.Common.Configuration;
 using Tweek.Drivers.Blob;
 
 namespace Tweek.ApiService
@@ -84,8 +87,11 @@ namespace Tweek.ApiService
 
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
+            InitLogging();
+
             var contextDriver = GetCouchbaseDriver();
-            var rulesDriver = new BlobRulesDriver("http://localhost:3000/ruleset/latest");
+            //var rulesDriver = new BlobRulesDriver("http://localhost:3000/ruleset/latest");
+            var rulesDriver = new BlobRulesDriver("https://tweek-management.azurewebsites.net/ruleset/latest");
 
             var parser = GetRulesParser();
             var subject = new BehaviorSubject<ITweek>(CreateEngine(contextDriver, rulesDriver, parser).Result);
@@ -94,16 +100,29 @@ namespace Tweek.ApiService
             container.Register<IContextDriver>((ctx, no) => contextDriver);
             container.Register<IRuleParser>((ctx, no) => parser);
 
-            Observable.Interval(TimeSpan.FromSeconds(10))
+            Observable.Interval(TimeSpan.FromSeconds(60 * 60))
                 .SelectMany(_ => CreateEngine(contextDriver, rulesDriver, parser))
                 .Catch((Exception exception) =>
                 {
+                    Log.Error("Failed to create engine with updated ruleset", exception, new Dictionary<string, object> { { "RoleName", "TweekApi" } });
                     return Observable.Empty<ITweek>();
                 })
                 .Repeat()
                 .Subscribe(subject);
 
             base.ApplicationStartup(container, pipelines);
+        }
+
+        private static void InitLogging()
+        {
+            var configSource = new CompositeConfiguration(new LocalConfigFile());
+            var result = configSource.Retrieve<string>("RaygunClientId").Result;
+            var nLogLogger = new NLogLogger();
+            if (!string.IsNullOrEmpty(result))
+            {
+                nLogLogger = nLogLogger.WithRaygun(result);
+            }
+            Log.Init(nLogLogger);
         }
 
         private static Task<ITweek> CreateEngine(CouchBaseDriver contextDriver, BlobRulesDriver rulesDriver, IRuleParser parser)
