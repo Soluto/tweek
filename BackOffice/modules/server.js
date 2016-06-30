@@ -14,16 +14,16 @@ const repo = require('./repo/rulesRepo')
 
 function getApp(req, res, requestCallback) {
   requestCallback(null, {
-    routes: routes(serverRoutes),
+    routes: routes(serverRoutes({ repo })),
     render(routerProps, renderCallback) {
       const store = configureStore({});
-      repo.getAllFiles().then(keys => store.dispatch({ type: 'KEYS_UPDATED', payload: keys }))
+      repo.getAllRules().then(keys => store.dispatch({ type: 'KEYS_UPDATED', payload: keys }))
       .then(() =>
         renderCallback(null, {
           renderDocument: (props) => <Document {...props} initialState={store.getState()} />,
           renderApp: (props) =>
             <MuiThemeProvider muiTheme={getMuiTheme({ userAgent: req.headers['user-agent'] })}>
-              <Provider store={store}><RouterContext {...props} /></Provider>
+              <Provider store={store}><RouterContext {...props} repo={repo} /></Provider>
             </MuiThemeProvider>,
         })
       );

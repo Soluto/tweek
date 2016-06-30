@@ -11,7 +11,7 @@
   "scripts": {
     "start": "if-env NODE_ENV=production && npm run react-project:start:prod || npm run react-project:start:dev",
     "test": "karma start",
-    "react-project:start:dev": "node --debug ./node_modules/react-project/bin/react-project.js start",
+    "react-project:start:dev": "node ./node_modules/react-project/bin/react-project.js start",
     "react-project:start:prod": "rm -rf .build && react-project build && node .build/server.js"
   },
   "author": "",
@@ -33,6 +33,7 @@
     "css-loader": "0.23.1",
     "dotenv": "2.0.0",
     "eslint": "^2.10.2",
+    "eslint-config-rackt": "1.1.1",
     "eslint-find-rules": "^1.9.2",
     "eslint-plugin-import": "^1.8.0",
     "eslint-plugin-jsx-a11y": "^1.2.2",
