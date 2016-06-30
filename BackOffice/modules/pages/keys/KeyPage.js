@@ -10,28 +10,28 @@ import { KeyPage as KeyPageStyle } from './styles.css';
 export default connect((state, { params }) => ({ ...state, configKey: params.splat }))(
     class KeyPage extends Component {
 
-    static propTypes = { dispatch: React.PropTypes.func,
+      static propTypes = { dispatch: React.PropTypes.func,
                          configKey: React.PropTypes.string,
                          selectedKey: React.PropTypes.object,
                         }
 
-    constructor(props) {
-      super(props);
-    }
-
-    componentDidMount() {
-      this.props.dispatch(getKey(this.props.configKey));
-    }
-
-    componentWillReceiveProps({ configKey }) {
-      if (configKey !== this.props.configKey || !this.props.selectedKey){
-        this.props.dispatch(getKey(configKey));
+      constructor(props) {
+        super(props);
       }
-    }
 
-    render() {
-      const { dispatch, configKey, selectedKey } = this.props;
-      return (
+      componentDidMount() {
+        this.props.dispatch(getKey(this.props.configKey));
+      }
+
+      componentWillReceiveProps({ configKey }) {
+        if (configKey !== this.props.configKey || !this.props.selectedKey) {
+          this.props.dispatch(getKey(configKey));
+        }
+      }
+
+      render() {
+        const { dispatch, configKey, selectedKey } = this.props;
+        return (
             <div key={configKey} className={KeyPageStyle}>
             <h3>{configKey}</h3>
             <div>{selectedKey ?
@@ -45,5 +45,5 @@ export default connect((state, { params }) => ({ ...state, configKey: params.spl
             </div>
 
         );
-    }
+      }
 });
