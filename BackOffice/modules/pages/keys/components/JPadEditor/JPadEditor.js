@@ -10,8 +10,12 @@ export default ({ source, mutate })=>{
   let rules = JSON.parse(source)
   return isBrowser ? (<Paper className={EditorStyle}>
         {rules.map( (rule, i)=>(<ListItem disabled={true} key={rule.Id}>
-            {i > 0 ? <button onClick={()=>mutate.replaceKeys(i, i-1)}>Up</button> : null}
-            {i < rules.length-1 ? <button onClick={()=>mutate.replaceKeys(i, i+1)}>Down</button> : null}
+            <div style={{ position:'absolute',
+                        top: 30,
+                        right: 20 }} >
+            {i > 0 ? <button onClick={()=>mutate.replaceKeys(i, i-1)}>&#8593;</button> : null}
+            {i < rules.length-1 ? <button onClick={()=>mutate.replaceKeys(i, i+1)}>&#8595;</button> : null}
+            </div>
             <Rule mutate={mutate.in(i)} rule={rule} /></ListItem>))}
     </Paper>) : (<div>Loading rule...</div>)
 }

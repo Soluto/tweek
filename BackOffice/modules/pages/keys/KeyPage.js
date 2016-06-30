@@ -27,7 +27,8 @@ export default connect( (state, { params } ) => ({ ...state, configKey:params.sp
             <h3>{configKey}</h3>
             <div>{selectedKey ?
                 <div>
-                    <KeyMetaEditor meta={selectedKey.meta} />  
+                    <KeyMetaEditor meta={selectedKey.meta} />
+                    <button onclick={()=>dispatch({ type: 'SAVE_KEY', payload: selectedKey }) }>Save</button>   
                     <KeyRulesEditor ruleDef={selectedKey.ruleDef} updateRule={x=>dispatch({ type:'KEY_RULEDEF_UPDATED', payload:x })} />
                 </div> :
                  <div>loading...</div>

@@ -1,5 +1,5 @@
 {
-  "extends": "rackt",
+  "extends": "defaults/configurations/airbnb/es6-react",
   "parserOptions": {
         "sourceType": "module",
         "ecmaFeatures": {
