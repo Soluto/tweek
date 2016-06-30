@@ -36,6 +36,12 @@ function sync(fn) {
   };
 }
 
+async function isSynced(repo) {
+  const remoteCommit = (await repo.getBranchCommit('remotes/origin/master'));
+  const localCommit = (await repo.getBranchCommit('master'));
+  return remoteCommit.id().equal(localCommit.id());
+}
+
 export function init(repoSettings = { url: 'http://tweek-gogs.07965c2a.svc.dockerapp.io/tweek/tweek-rules.git',
                                      username: 'tweek', password: '***REMOVED***' }) {
   const repoInit = clone(repoSettings);
@@ -45,8 +51,19 @@ export function init(repoSettings = { url: 'http://tweek-gogs.07965c2a.svc.docke
       return rules;
     },
     updateRule: sync(async function(path, payload) {
+      const { username, password } = repoSettings;
       console.log('start updating');
       const repo = await repoInit;
+      await repo.fetchAll({
+        callbacks: {
+          credentials: () => Git.Cred.userpassPlaintextNew(username, password),
+        } });
+      await repo.mergeBranches('master', 'origin/master');
+      if (!(await isSynced(repo))) {
+        console.log('invalid repo state');
+        throw new Error('invalid repo state');
+      }
+
       await fs.writeFile(`${rulesDir}/${path}`, payload);
       const committer = Git.Signature.now('tweek-backoffice', 'tweek-backoffice@tweek');
       const author = Git.Signature.now('myuser', 'myuser@soluto.com');
@@ -56,7 +73,7 @@ export function init(repoSettings = { url: 'http://tweek-gogs.07965c2a.svc.docke
           committer,
           `update rule:${path}`
         );
-      const { username, password } = repoSettings;
+
       try {
         const remote = await repo.getRemote('origin');
         const code = await remote.push(['refs/heads/master:refs/heads/master'],
@@ -66,15 +83,13 @@ export function init(repoSettings = { url: 'http://tweek-gogs.07965c2a.svc.docke
             },
           });
 
-        const remoteCommit = (await repo.getBranchCommit('remotes/origin/master'));
-        const localCommit = (await repo.getBranchCommit('master'));
-        if (remoteCommit.id()[0] !== localCommit.id()[0]) {
+        if (!(await isSynced(repo))) {
           console.log('push failed, attempting to reset');
-          await Git.Reset.reset(repo, remoteCommit, 2);
+          const remoteCommit = (await repo.getBranchCommit('remotes/origin/master'));
+          await Git.Reset.reset(repo, remoteCommit, 3);
           console.log('reset worked');
           throw new Error('fail to push changes');
         }
-
         console.log(`push completed:${code}`);
       } catch (ex) {
         console.error(ex);
