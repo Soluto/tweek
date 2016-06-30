@@ -24,16 +24,16 @@ async function clone({ url, username, password }) {
   return repo;
 }
 
-function sync(fn){
-   var lock = Promise.resolve();
-   return function(){
-     var args = arguments;
-     var context = this;
-     return lock.then(()=> {
-       lock = fn.apply(context, args)
-       return lock;
-     });
-   }
+function sync(fn) {
+  let lock = Promise.resolve();
+  return function () {
+    const args = arguments;
+    const context = this;
+    return lock.then(() => {
+      lock = fn.apply(context, args);
+      return lock;
+    });
+  };
 }
 
 export function init(repoSettings = { url: 'http://tweek-gogs.07965c2a.svc.dockerapp.io/tweek/tweek-rules.git',
@@ -45,10 +45,9 @@ export function init(repoSettings = { url: 'http://tweek-gogs.07965c2a.svc.docke
       return rules;
     },
     updateRule: sync(async function(path, payload) {
+      console.log('start updating');
       const repo = await repoInit;
-      console.log('writing file');
       await fs.writeFile(`${rulesDir}/${path}`, payload);
-      console.log('finish writing file');
       const committer = Git.Signature.now('tweek-backoffice', 'tweek-backoffice@tweek');
       const author = Git.Signature.now('myuser', 'myuser@soluto.com');
       await repo.createCommitOnHead(
@@ -57,18 +56,26 @@ export function init(repoSettings = { url: 'http://tweek-gogs.07965c2a.svc.docke
           committer,
           `update rule:${path}`
         );
-      console.log('created commit');
       const { username, password } = repoSettings;
-      // const remote = await Git.Remote.create(repo, 'origin', url);
       try {
         const remote = await repo.getRemote('origin');
-        await remote.push(['refs/heads/master:refs/heads/master'],
+        const code = await remote.push(['refs/heads/master:refs/heads/master'],
           {
             callbacks: {
               credentials: () => Git.Cred.userpassPlaintextNew(username, password),
             },
           });
-        console.log('push completed');
+
+        const remoteCommit = (await repo.getBranchCommit('remotes/origin/master'));
+        const localCommit = (await repo.getBranchCommit('master'));
+        if (remoteCommit.id()[0] !== localCommit.id()[0]) {
+          console.log('push failed, attempting to reset');
+          await Git.Reset.reset(repo, remoteCommit, 1);
+          console.log('reset worked');
+          throw new Error('fail to push changes');
+        }
+
+        console.log(`push completed:${code}`);
       } catch (ex) {
         console.error(ex);
       }
