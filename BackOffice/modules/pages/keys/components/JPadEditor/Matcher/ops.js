@@ -10,6 +10,7 @@ export const getSupportedOps = (meta)=>{
   return comparisonOps
 }
 
+
 export const MatcherOp = ({ selectedOp, onUpdate, supportedOps })=>
 (<div className="MatcherOp">
             <ClosedComboBox className="OpDropdown"

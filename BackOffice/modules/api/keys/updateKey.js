@@ -5,5 +5,6 @@ import path from 'path'
 export default function (req, res, _, { params, location, route }) {
   let keyPath = params.splat
   console.log(req.body)
-  res.send(200)
+  
+  res.send(req.body)
 }
