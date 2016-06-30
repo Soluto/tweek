@@ -70,7 +70,7 @@ export function init(repoSettings = { url: 'http://tweek-gogs.07965c2a.svc.docke
         const localCommit = (await repo.getBranchCommit('master'));
         if (remoteCommit.id()[0] !== localCommit.id()[0]) {
           console.log('push failed, attempting to reset');
-          await Git.Reset.reset(repo, remoteCommit, 1);
+          await Git.Reset.reset(repo, remoteCommit, 2);
           console.log('reset worked');
           throw new Error('fail to push changes');
         }
