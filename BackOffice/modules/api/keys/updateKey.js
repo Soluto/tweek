@@ -5,5 +5,5 @@ import path from 'path';
 export default async function (req, res, { repo }, { params, location, route }) {
   const keyPath = params.splat;
   await repo.updateRule(keyPath, req.body.ruleDef.source);
-  res.send("OK");
+  res.send('OK');
 }

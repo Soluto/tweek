@@ -24,7 +24,7 @@ async function clone({ url, username, password }) {
   return repo;
 }
 
-function sync(fn) {
+function synchronized(fn) {
   let lock = Promise.resolve();
   return function () {
     const args = arguments;
@@ -32,6 +32,8 @@ function sync(fn) {
     return lock.then(() => {
       lock = fn.apply(context, args);
       return lock;
+    }).catch(() => {
+      lock = Promise.resolve();
     });
   };
 }
@@ -50,10 +52,13 @@ export function init(repoSettings = { url: 'http://tweek-gogs.07965c2a.svc.docke
       const rules = await globAsync('**/*.*', { cwd: rulesDir });
       return rules;
     },
-    updateRule: sync(async function(path, payload) {
+    async getRule(path) {
+      return (await fs.readFile(`${rulesDir}/${path}`)).toString();
+    },
+    updateRule: synchronized(async function(path, payload) {
       const { username, password } = repoSettings;
-      console.log('start updating');
       const repo = await repoInit;
+      console.log('start updating');
       await repo.fetchAll({
         callbacks: {
           credentials: () => Git.Cred.userpassPlaintextNew(username, password),
@@ -63,18 +68,17 @@ export function init(repoSettings = { url: 'http://tweek-gogs.07965c2a.svc.docke
         console.log('invalid repo state');
         throw new Error('invalid repo state');
       }
-
-      await fs.writeFile(`${rulesDir}/${path}`, payload);
-      const committer = Git.Signature.now('tweek-backoffice', 'tweek-backoffice@tweek');
-      const author = Git.Signature.now('myuser', 'myuser@soluto.com');
-      await repo.createCommitOnHead(
-          [`rules/${path}`],
-          author,
-          committer,
-          `update rule:${path}`
-        );
-
       try {
+        await fs.writeFile(`${rulesDir}/${path}`, payload);
+        const committer = Git.Signature.now('tweek-backoffice', 'tweek-backoffice@tweek');
+        const author = Git.Signature.now('myuser', 'myuser@soluto.com');
+        await repo.createCommitOnHead(
+            [`rules/${path}`],
+            author,
+            committer,
+            `update rule:${path}`
+          );
+
         const remote = await repo.getRemote('origin');
         const code = await remote.push(['refs/heads/master:refs/heads/master'],
           {

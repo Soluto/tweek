@@ -20,7 +20,10 @@ export default connect((state, { params }) => ({ ...state, configKey: params.spl
       }
 
       componentDidMount() {
-        this.props.dispatch(getKey(this.props.configKey));
+        const { dispatch, configKey } = this.props;
+        if (configKey) {
+          dispatch(getKey(configKey));
+        }
       }
 
       componentWillReceiveProps({ configKey }) {
