@@ -1,5 +1,5 @@
-import React from 'react'
+import React from 'react';
 
-export default ({ meta })=>(
+export default ({ meta }) => (
     <div></div>
-    )
+    );

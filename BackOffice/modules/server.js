@@ -6,8 +6,6 @@ import routes from '../modules/routes';
 import configureStore from './store/configureStore';
 import { Provider } from 'react-redux';
 import serverRoutes from './serverRoutes';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 const repo = require('./repo/rulesRepo')
            .init({ url: 'http://tweek-gogs.07965c2a.svc.dockerapp.io/tweek/tweek-rules', username: 'tweek', password: 'po09!@QW' });
@@ -22,9 +20,7 @@ function getApp(req, res, requestCallback) {
         renderCallback(null, {
           renderDocument: (props) => <Document {...props} initialState={store.getState()} />,
           renderApp: (props) =>
-            <MuiThemeProvider muiTheme={getMuiTheme({ userAgent: req.headers['user-agent'] })}>
-              <Provider store={store}><RouterContext {...props} repo={repo} /></Provider>
-            </MuiThemeProvider>,
+              <Provider store={store}><RouterContext {...props} repo={repo} /></Provider>,
         })
       );
     },
