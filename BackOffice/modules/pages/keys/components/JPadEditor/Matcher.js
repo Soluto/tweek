@@ -5,6 +5,8 @@ import { Matcher as MatcherStyle,
 import EditorMetaService from '../../../../services/EditorMetaService';
 import PropertyName from './matcher/PropertyName';
 import PropertyPredicate from './matcher/PropertyPredicate';
+import { shouldUpdate } from 'recompose';
+
 const editorMetaService = new EditorMetaService();
 editorMetaService.init();
 
@@ -15,7 +17,11 @@ const Property = ({ property, predicate, mutate, suggestedValues = [] }) =>
              <PropertyPredicate {...{ predicate, mutate, property }} />
         </div>);
 
-export default ({ matcher, mutate }) => {
+const hasChanged = shouldUpdate((props, nextProps) =>
+  !R.equals(props.matcher, nextProps.matcher) ||
+  !R.equals(props.mutate.path, nextProps.mutate.path));
+
+export default hasChanged(({ matcher, mutate }) => {
   const [ops, props] = R.pipe(R.toPairs, R.partition(([prop]) => prop[0] === '$'))(matcher);
   const IgnoreActivePropsPropsPredicate = R.compose(R.not, R.contains(R.__, R.map(R.head, props)));
 
@@ -35,4 +41,4 @@ export default ({ matcher, mutate }) => {
     }
     <div style={{ color: 'blue', fontSize: '24px', lineHeight: '34px', cursor: 'pointer' }} onClick={() => mutate.insert('', '')}>+</div>
     </div>);
-};
+});

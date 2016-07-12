@@ -3,7 +3,23 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import JPadEditor from './JPadEditor/JPadEditor';
 import Mutator from '../../../utils/mutator';
 
-export default ({ ruleDef, updateRule }) => (
+
+const MutatorFor = (propName) => (Comp) =>
+class extends React.Component {
+  constructor() {
+    super();
+    this.state = {};
+  }
+  componentWillMount() {
+    this.state.mutator = Mutator.stateless(() => this.props[propName], this.props.onMutation);
+  }
+  render() {
+    return <Comp mutate={this.state.mutator} {...this.props} />;
+  }
+};
+
+const RulesEditor = ({ ruleDef, mutate }) =>
+(
     <div>
     <Tabs selectedIndex={0}>
         <TabList>
@@ -12,8 +28,7 @@ export default ({ ruleDef, updateRule }) => (
         </TabList>
          <TabPanel>
           <JPadEditor source={ruleDef.source}
-            mutate={new Mutator(JSON.parse(ruleDef.source),
-                 (sourceTree) => updateRule({ ...ruleDef, source: JSON.stringify(sourceTree, null, 4) }))}
+            mutate={mutate}
           />
         </TabPanel>
         <TabPanel>
@@ -24,3 +39,5 @@ export default ({ ruleDef, updateRule }) => (
     </Tabs>
     </div>
 );
+
+export default MutatorFor('sourceTree')(RulesEditor);
