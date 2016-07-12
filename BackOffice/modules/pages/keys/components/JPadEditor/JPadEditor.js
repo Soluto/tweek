@@ -7,7 +7,7 @@ export default ({ source, mutate }) => {
   if (!source) return (<div/>);
   const rules = JSON.parse(source);
   return isBrowser ? (<div className={EditorStyle}>
-        {rules.map((rule, i) => (<div disabled key={rule.Id}>
+        {rules.map((rule, i) => (<div style={{ position: 'relative' }} disabled key={rule.Id}>
             <div style={{ position: 'absolute',
                         top: 30,
                         right: 20 }} >

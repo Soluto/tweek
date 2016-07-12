@@ -15,12 +15,12 @@ let getPropertyDisplayName = prop => prop === '' ? prop : prop.split('.')[1];
 
 export default ({ mutate, property, suggestedValues }) => (<ClosedComboBox
   inputProps={{
-                  value: getPropertyDisplayName(property),
-                  onChange: (selectedOption) =>
-                     mutate
-                        .updateKey(selectedOption.value)
-                        .updateValue((selectedOption.meta && selectedOption.meta.defaultValue) || ''),
-                }}
+    value: getPropertyDisplayName(property),
+    onChange: (selectedOption) =>
+                     mutate.apply(m =>
+                        m.updateKey(selectedOption.value)
+                         .updateValue((selectedOption.meta && selectedOption.meta.defaultValue) || '')),
+  }}
   renderSuggestion={ suggestion => (<PropertySuggestion suggestion={suggestion} />)}
 
   suggestions={R.uniqBy(x => x.value)([...suggestedValues])}

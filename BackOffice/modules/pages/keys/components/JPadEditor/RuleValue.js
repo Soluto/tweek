@@ -13,9 +13,9 @@ const LegendStyle = {
   Label: { display: 'inline-block' },
 };
 
-let CustomSlider = withState('hoverItem', 'setHoverItem', -1)(({ variants, hoverItem, setHoverItem, onUpdate }) => {
+let CustomSlider = withState('hoverItem', 'setHoverItem', -1)(({ variants, hoverItem, setHoverItem, onUpdate, displayLegend = true }) => {
   const chance = new Chance();
-  const colors = ['red', 'green', 'blue', 'yellow'];// chance.unique(chance.color, Object.keys(variants).length, { format: 'hex' });
+  const colors = ['red', 'green', 'blue', 'yellow'];
   const items = R.zip(colors, R.toPairs(variants)).map(([color, [value, weight]]) => ({
     value, weight, color,
   }));
@@ -24,9 +24,9 @@ let CustomSlider = withState('hoverItem', 'setHoverItem', -1)(({ variants, hover
     omMouseMove: () => setHoverItem(index),
   });
   const tipElementPrefix = `t${chance.guid()}`;
-  const mutator = new Mutator(variants, onUpdate);
-
+  const mutator = Mutator.stateless(() => variants, onUpdate);
   return (<div onMouseLeave={() => setHoverItem(-1)} style={{ display: 'flex' }}>
+    {displayLegend ?
     <div style={LegendStyle.Bar}>
     {items.map(({ color, value, weight, tipId = `t${chance.guid()}` }, i) =>
       <div {...tooltipHandlers(i)} style={LegendStyle.Item}>
@@ -34,7 +34,7 @@ let CustomSlider = withState('hoverItem', 'setHoverItem', -1)(({ variants, hover
         <input style={{ ...LegendStyle.Label, width: 150 }} onChange={e => mutator.in(value).updateKey(e.target.value)} value={value} />
         <input style={{ ...LegendStyle.Label, width: 70 }} onChange={e => mutator.in(value).updateValue(parseFloat(e.target.value) || weight) } value={weight} />
       </div>)}
-    </div>
+    </div> : null}
     <div style={{ alignSelf: 'center', padding: 10, display: 'flex' }}>
       {items.map(({ color, weight, value }, i) =>
       (<div style={{ display: 'flex', alignItems: 'center' }} >
@@ -65,17 +65,31 @@ let MultiVariantValue = ({ valueDistrubtion: { type, args }, mutate }) => {
   if (type === 'weighted')
     return (<div>
         {
-            <CustomSlider variants={args} onUpdate={mutate.in('args').updateValue} />
+            <CustomSlider variants={args} onUpdate={mutate.in('args').updateValue } />
             // R.toPairs(args).map(([value, weight]) => (<div>{`${value}:${weight}`}</div>))
         }
         </div>);
   if (type === 'bernoulliTrial') {
-    return <div>not implemented</div>; /* ((<div>
-        <Slider value={args}
-          onChange={(_, v) => mutate.in('args').updateValue(v)}
-        />
-        <span>{Math.round(args * 100) + '%'}</span>
-        </div>);*/
+    return (<div>
+    <CustomSlider displayLegend={false}
+      variants={{ true: 1000 * parseFloat(args) / 10, false: 100 - (1000 * parseFloat(args) / 10) }}
+      onUpdate={x => mutate.in('args').updateValue(x.true / 100)}
+
+    />
+    <button onClick={() => mutate.apply(m =>
+      m.up()
+      .in('Value').updateValue('true').up()
+      .in('Type').updateValue('SingleVariant').up()
+      .in('ValueDistribution').delete()
+    )}>Set to true</button>
+    <button onClick={() => mutate.apply(m =>
+      m.up()
+      .in('Value').updateValue('true').up()
+      .in('Type').updateValue('SingleVariant').up()
+      .in('ValueDistribution').delete()
+    )}>Set to false</button>
+    </div>
+    );
   }
   return null;
 };
