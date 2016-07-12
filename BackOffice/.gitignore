@@ -1,4 +1,4 @@
 .build
 .env
 lib
-rulesRepo
+rulesRepo/
