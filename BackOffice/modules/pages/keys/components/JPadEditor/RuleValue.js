@@ -41,9 +41,14 @@ let CustomSlider = withState('hoverItem', 'setHoverItem', -1)(({ variants, hover
           <div {...tooltipHandlers(i)} id={`${tipElementPrefix}${i}`} style={{ height: 30, backgroundColor: color, width: parseFloat(weight) * 2 }} />
           {i < (items.length - 1) ?
           <DraggableCore onDrag={(_, data) =>
-            mutator.in(items[i + 1].value).updateValue(items[i + 1].weight - data.deltaX * 0.5)
+            {
+            if (items[i + 1].weight - (data.deltaX * 0.5) < 0) return;
+            if (items[i].weight + (data.deltaX * 0.5) < 0) return;
+            mutator.apply(m => m.in(items[i + 1].value).updateValue(items[i + 1].weight - data.deltaX * 0.5)
             .up()
-            .in(value).updateValue(weight + data.deltaX * 0.5)} axis="x"
+            .in(value).updateValue(weight + data.deltaX * 0.5));
+          }
+        } axis="x"
           >
           <div style={{ backgroundColor: 'black', cursor: 'col-resize', width: 5, height: 40 }} />
           </DraggableCore>
