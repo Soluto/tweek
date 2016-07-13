@@ -45,7 +45,7 @@ async function isSynced(repo) {
   return remoteCommit.id().equal(localCommit.id());
 }
 
-export function init(repoSettings = { url: 'http://tweek-gogs.07965c2a.svc.dockerapp.io/tweek/tweek-rules.git',
+export function init(repoSettings = { url: 'http://tweek-gogs.c8940f48.svc.dockerapp.io/tweek/tweek-rules.git',
                                      username: 'tweek', password: '***REMOVED***' }) {
   const repoInit = clone(repoSettings);
   return {
