@@ -56,11 +56,11 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Control.AsyncSeq">
-      <HintPath>..\packages\FSharp.Control.AsyncSeq.2.0.3\lib\net45\FSharp.Control.AsyncSeq.dll</HintPath>
+      <HintPath>..\packages\FSharp.Control.AsyncSeq.2.0.8\lib\net45\FSharp.Control.AsyncSeq.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="FSharp.Data">
-      <HintPath>..\packages\FSharp.Data.2.2.5\lib\net40\FSharp.Data.dll</HintPath>
+      <HintPath>..\packages\FSharp.Data.2.3.1\lib\net40\FSharp.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
