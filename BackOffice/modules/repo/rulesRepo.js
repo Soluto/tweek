@@ -12,6 +12,7 @@ const repoPath = 'rulesRepo';
 const rulesDir = `${process.cwd()}/${repoPath}/rules`;
 
 async function clone({ url, username, password }) {
+  console.log("start cloning")
   await rimrafAsync(`./${repoPath}`);
   const repo = await Git.Clone(url, `./${repoPath}`, {
     fetchOpts: {
