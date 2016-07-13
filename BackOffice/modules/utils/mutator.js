@@ -44,7 +44,7 @@ class Mutator {
 
   setPath = (path) => new Mutator(this.target, path);
 
-  in = (innerPath) => this.setPath([...this.path, innerPath]);
+  in = (innerPath) => this.setPath([...this.path, innerPath.toString()]);
 
   up = () => this.setPath(R.splitAt(-1, this.path)[0]);
 
@@ -75,7 +75,11 @@ class Mutator {
   delete = () => {
     const [innerPath, [key]] = R.splitAt(-1, this.path);
     const container = R.reduce((acc, x) => acc[x], this.target, innerPath);
-    delete container[key];
+    if (R.isArrayLike(container)) {
+      container::Array.prototype.splice(parseInt(key), 1);
+    }else{
+      delete container[key];
+    }
     return new Mutator(this.target, innerPath);
   }
 
