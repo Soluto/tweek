@@ -41,7 +41,7 @@ export default connect((state, { params }) => ({ ...state, configKey: params.spl
                 <div>
                     <KeyMetaEditor meta={selectedKey.meta} />
                     <button onClick={() => dispatch(saveKey(configKey))}>Save</button>
-                    <KeyRulesEditor ruleDef={selectedKey.ruleDef} sourceTree={JSON.parse(selectedKey.ruleDef.source)} onMutation={x => dispatch({ type: 'KEY_RULEDEF_UPDATED', payload: { source: JSON.stringify(x) } })} />
+                    <KeyRulesEditor ruleDef={selectedKey.ruleDef} sourceTree={JSON.parse(selectedKey.ruleDef.source)} onMutation={x => dispatch({ type: 'KEY_RULEDEF_UPDATED', payload: { source: JSON.stringify(x, null, 4) } })} />
                 </div> :
                  <div>loading...</div>
                 }</div>
