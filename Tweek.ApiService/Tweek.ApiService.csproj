@@ -234,6 +234,14 @@
       <Project>{7FC49A33-6B72-4251-ABE0-ECACED5B71BD}</Project>
       <Name>Engine.Management.Drivers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Engine.Matcher.DSL\Engine.Matcher.DSL.fsproj">
+      <Project>{71903c50-6c0e-443e-914a-bf9d4d9cc964}</Project>
+      <Name>Engine.Matcher.DSL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine.Rules.ValueDistribution\Engine.Rules.ValueDistribution.fsproj">
+      <Project>{43ad9d3d-188d-4767-bca6-35d280ea7d4a}</Project>
+      <Name>Engine.Rules.ValueDistribution</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Engine\Engine.csproj">
       <Project>{88200f63-8699-4b6e-8969-4c45827ad0c3}</Project>
       <Name>Engine</Name>
