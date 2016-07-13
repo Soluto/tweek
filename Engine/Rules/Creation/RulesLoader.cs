@@ -21,7 +21,7 @@ namespace Engine.Rules.Creation
         public static async Task<IReadOnlyDictionary<string,IRule>> Create(IRulesDriver driver, IRuleParser parser)
         {
             IReadOnlyDictionary<string, IRule> allRules = (await driver.GetAllRules())
-                .ToDictionary(x=>x.Key, x=> parser.Parse(x.Value.Payload));
+                .ToDictionary(x=>x.Key.ToLower(), x=> parser.Parse(x.Value.Payload));
 
             return allRules;
         }
