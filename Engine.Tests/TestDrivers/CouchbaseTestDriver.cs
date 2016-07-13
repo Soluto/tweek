@@ -55,7 +55,7 @@ namespace Engine.Tests.TestDrivers
 
         public TestScope SetTestEnviornment(Dictionary<Identity, Dictionary<string, string>> contexts, string[] keys, Dictionary<string, RuleDefinition> rules)
         {
-            var gitDriver = new GitDriver(Path.Combine(Environment.CurrentDirectory, "tweek-rules-tests" + Guid.NewGuid()));
+            var gitDriver = new GitDriver(Path.Combine(Path.GetTempPath(), "tweek-rules-tests" + Guid.NewGuid()));
 
             return new TestScope(rules: gitDriver, context: Context, 
                 init: () => Task.WhenAll(InsertContextRows(contexts), InsertRuleData(gitDriver, rules)),
