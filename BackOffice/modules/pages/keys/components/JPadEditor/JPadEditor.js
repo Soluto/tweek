@@ -13,6 +13,7 @@ export default ({ source, mutate }) => {
                         right: 20 }} >
             {i > 0 ? <button onClick={() => mutate.replaceKeys(i, i - 1)}>&#8593;</button> : null}
             {i < rules.length - 1 ? <button onClick={() => mutate.replaceKeys(i, i + 1)}>&#8595;</button> : null}
+            <button onClick={() => mutate.in(i).delete()}>X</button>
             </div>
             <Rule mutate={mutate.in(i)} rule={rule} /></div>))}
     </div>) : (<div>Loading rule...</div>);
