@@ -13,6 +13,7 @@ using NUnit.Framework;
 namespace Engine.Drivers.Tests
 {
     [TestFixture]
+    [NUnit.Framework.Ignore("no cassandra db for tests")]
     public class CassandraContextDriverTests
     {
         private ISession _session;

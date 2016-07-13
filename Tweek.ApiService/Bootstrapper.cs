@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
-using Cassandra;
 using Couchbase.Configuration.Client;
 using Couchbase.Core.Serialization;
 using Engine;
 using Engine.Core.Rules;
-using Engine.Drivers.Cassandra;
 using Engine.Drivers.Context;
 using Engine.Match.DSL;
 using Nancy;
@@ -25,17 +23,6 @@ namespace Tweek.ApiService
 
     public class Bootstrapper : DefaultNancyBootstrapper
     {
-        private CassandraDriver GetCassandraDriver()
-        {
-            var cluster = Cluster.Builder()
-                .WithQueryOptions(new QueryOptions().SetConsistencyLevel(ConsistencyLevel.All))
-                .AddContactPoints("dc0vm1tqwdso6zqj26c.eastus.cloudapp.azure.com",
-                    "dc0vm0tqwdso6zqj26c.eastus.cloudapp.azure.com")
-                .Build();
-
-            var session = cluster.Connect("tweek");
-            return new CassandraDriver(session);
-        }
 
         CouchBaseDriver GetCouchbaseDriver()
         {
