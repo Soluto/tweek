@@ -27,7 +27,7 @@ const RulesEditor = ({ ruleDef, mutate }) =>
             <Tab>Source</Tab>
         </TabList>
          <TabPanel>
-          <JPadEditor source={ruleDef.source}
+          <JPadEditor cases={mutate.target}
             mutate={mutate}
           />
         </TabPanel>

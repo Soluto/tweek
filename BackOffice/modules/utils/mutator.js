@@ -31,6 +31,8 @@ class StatelessMutator {
   get delete() {return this._liftMutation(m => m.delete);}
 
   get insert() {return this._liftMutation(m => m.insert);}
+
+  get prepend() {return this._liftMutation(m => m.prepend);}
 }
 
 class Mutator {
@@ -66,10 +68,16 @@ class Mutator {
     return new Mutator(this.target, [...innerPath, newKey]);
   }
 
+  prepend = (value) => {
+    const container = R.reduce((acc, x) => acc[x], this.target, this.path);
+    container.unshift(value);
+    return new Mutator(this.target, this.path);
+  }
+
   replaceKeys = (key1, key2) => {
     const treeContainer = R.reduce((acc, x) => acc[x], this.target, this.path);
     [treeContainer[key1], treeContainer[key2]] = [treeContainer[key2], treeContainer[key1]];
-    return new Mutator(treeContainer, this.path);
+    return new Mutator(this.target, this.path);
   }
 
   delete = () => {
