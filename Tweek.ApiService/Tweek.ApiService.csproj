@@ -137,26 +137,6 @@
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Soluto.Common, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Soluto.Common.0.4.1\lib\net45\Soluto.Common.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Soluto.Logging, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Soluto.Logging.1.6.1\lib\net45\Soluto.Logging.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Soluto.Logging.NLog, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Soluto.Logging.NLog.2.0.0\lib\net45\Soluto.Logging.NLog.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Soluto.Monitoring, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Soluto.Monitoring.4.0.3\lib\net45\Soluto.Monitoring.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Soluto.Monitoring.StatsdClient, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Soluto.Monitoring.StatsdClient.0.0.12\lib\net45\Soluto.Monitoring.StatsdClient.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="StackExchange.Redis, Version=1.0.316.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\StackExchange.Redis.1.0.488\lib\net45\StackExchange.Redis.dll</HintPath>
       <Private>True</Private>
