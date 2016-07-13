@@ -3,7 +3,7 @@ solution: Tweek.sln
 
 install:
   - nuget restore Tweek.sln
-  - nuget install xunit.runners -Version 2.1.0 -OutputDirectory testrunner
+  - nuget install xunit.runner.console -Version 2.1.0 -OutputDirectory testrunner
 script:
   - xbuild /p:Configuration=Release Tweek.sln
   - mono ./testrunner/xunit.runners.2.1.0/tools/xunit.console.exe ./Matcher.Tests/bin/Release/Matcher.Tests.dll
