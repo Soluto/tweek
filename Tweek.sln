@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine", "Engine\Engine.csproj", "{88200F63-8699-4B6E-8969-4C45827AD0C3}"
 EndProject
@@ -35,6 +35,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Drivers.Tests", "Engine.Drivers.Tests\Engine.Drivers.Tests.csproj", "{C4AD3167-1391-45FB-B314-9AE05B4618B1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.ApiService", "Tweek.ApiService\Tweek.ApiService.csproj", "{BB2E0DC8-8ACB-4A4F-9D22-257F33859EBE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{43AD9D3D-188D-4767-BCA6-35D280EA7D4A} = {43AD9D3D-188D-4767-BCA6-35D280EA7D4A}
+		{71903C50-6C0E-443E-914A-BF9D4D9CC964} = {71903C50-6C0E-443E-914A-BF9D4D9CC964}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{21F63D0A-8C90-4829-A3A2-83AD683AC5A7}"
 EndProject
