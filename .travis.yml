@@ -1,2 +1,10 @@
 language: csharp
 solution: Tweek.sln
+
+install:
+  - nuget restore tweek.sln
+  - nuget install xunit.runners -Version 2.1.0 -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=Release tweek.sln
+  - mono ./testrunner/xunit.runners.2.1.0/tools/xunit.console.exe ./Matcher.Tests/bin/Release/Matcher.Tests.dll
+  - mono ./testrunner/xunit.runners.2.1.0/tools/xunit.console.exe ./Engine.Rules.ValueDistribution.Tests/bin/Release/Engine.Rules.ValueDistribution.Tests.dll
