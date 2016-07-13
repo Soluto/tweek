@@ -23,10 +23,7 @@ using Tweek.JPad;
 using Tweek.Drivers.CouchbaseDriver;
 using Couchbase.Configuration.Client;
 using Couchbase;
-using Logging.Core;
-using Logging.NLog;
 using Newtonsoft.Json;
-using Soluto.Common.Configuration;
 using Tweek.Drivers.Blob;
 
 namespace Tweek.ApiService
@@ -51,7 +48,7 @@ namespace Tweek.ApiService
             var bucketName = "tweek-context";
             var cluster = new Couchbase.Cluster(new ClientConfiguration
             {
-                Servers = new List<Uri> { new Uri("http://tweek-db-couchbase.023209ac.svc.dockerapp.io:8091/") },
+                Servers = new List<Uri> { new Uri("http://tweek-db-east-1.17d25bc0.cont.dockerapp.io:8091/") },
                 BucketConfigs = new Dictionary<string, BucketConfiguration>
                 {
                     [bucketName] = new BucketConfiguration
@@ -87,7 +84,7 @@ namespace Tweek.ApiService
 
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
-            InitLogging();
+            //InitLogging();
 
             var contextDriver = GetCouchbaseDriver();
             //var rulesDriver = new BlobRulesDriver("http://localhost:3000/ruleset/latest");
@@ -104,7 +101,7 @@ namespace Tweek.ApiService
                 .SelectMany(_ => CreateEngine(contextDriver, rulesDriver, parser))
                 .Catch((Exception exception) =>
                 {
-                    Log.Error("Failed to create engine with updated ruleset", exception, new Dictionary<string, object> { { "RoleName", "TweekApi" } });
+                    //Log.Error("Failed to create engine with updated ruleset", exception, new Dictionary<string, object> { { "RoleName", "TweekApi" } });
                     return Observable.Empty<ITweek>();
                 })
                 .Repeat()
@@ -113,6 +110,7 @@ namespace Tweek.ApiService
             base.ApplicationStartup(container, pipelines);
         }
 
+        /*
         private static void InitLogging()
         {
             var configSource = new CompositeConfiguration(new LocalConfigFile());
@@ -123,7 +121,7 @@ namespace Tweek.ApiService
                 nLogLogger = nLogLogger.WithRaygun(result);
             }
             Log.Init(nLogLogger);
-        }
+        }*/
 
         private static Task<ITweek> CreateEngine(CouchBaseDriver contextDriver, BlobRulesDriver rulesDriver, IRuleParser parser)
         {
