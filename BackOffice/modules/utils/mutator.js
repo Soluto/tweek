@@ -17,6 +17,8 @@ class StatelessMutator {
   }
 
   get path() { return this.getMutator().path;}
+  get target() { return this.getMutator().target;}
+  get getValue() { return this.getMutator().getValue;}
 
   _liftMutation = (mutationFactory) => this::((...params) => this.apply((mutator) => mutationFactory(mutator)(...params)))
 
@@ -26,7 +28,7 @@ class StatelessMutator {
 
   get replaceKeys() {return this._liftMutation(m => m.replaceKeys);}
 
-  get delete() {return this._liftMutation(m => m.replaceKeys);}
+  get delete() {return this._liftMutation(m => m.delete);}
 
   get insert() {return this._liftMutation(m => m.insert);}
 }
@@ -37,6 +39,8 @@ class Mutator {
     this.target = target;
     this.path = path;
   }
+
+  getValue = () => R.reduce((acc, x) => acc[x], this.target, this.path);
 
   setPath = (path) => new Mutator(this.target, path);
 
