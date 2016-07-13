@@ -1,30 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
-using System.Web;
 using Cassandra;
+using Couchbase.Configuration.Client;
+using Couchbase.Core.Serialization;
 using Engine;
-using Engine.Context;
 using Engine.Core.Rules;
 using Engine.Drivers.Cassandra;
 using Engine.Drivers.Context;
-using Engine.Drivers.Rules;
-using Engine.Drivers.Rules.Git;
 using Engine.Match.DSL;
 using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.TinyIoc;
-using Tweek.JPad;
-using Tweek.Drivers.CouchbaseDriver;
-using Couchbase.Configuration.Client;
-using Couchbase;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Tweek.Drivers.Blob;
+using Tweek.Drivers.CouchbaseDriver;
+using Tweek.JPad;
 
 namespace Tweek.ApiService
 {
@@ -33,7 +27,7 @@ namespace Tweek.ApiService
     {
         private CassandraDriver GetCassandraDriver()
         {
-            var cluster = Cassandra.Cluster.Builder()
+            var cluster = Cluster.Builder()
                 .WithQueryOptions(new QueryOptions().SetConsistencyLevel(ConsistencyLevel.All))
                 .AddContactPoints("dc0vm1tqwdso6zqj26c.eastus.cloudapp.azure.com",
                     "dc0vm0tqwdso6zqj26c.eastus.cloudapp.azure.com")
@@ -59,15 +53,15 @@ namespace Tweek.ApiService
                     }
                     
                 },
-                Serializer = () => new Couchbase.Core.Serialization.DefaultSerializer(
+                Serializer = () => new DefaultSerializer(
                    
                    new JsonSerializerSettings()
                    {
-                       ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver()
+                       ContractResolver = new DefaultContractResolver()
                    },
                    new JsonSerializerSettings()
                    {
-                       ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver()
+                       ContractResolver = new DefaultContractResolver()
                    })
             });
             return new CouchBaseDriver(cluster, bucketName);

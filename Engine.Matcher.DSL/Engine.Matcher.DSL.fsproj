@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Engine.Match.DSL</RootNamespace>
     <AssemblyName>Engine.Match.DSL</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
     <Name>Engine.Matcher.DSL</Name>
     <TargetFrameworkProfile />
