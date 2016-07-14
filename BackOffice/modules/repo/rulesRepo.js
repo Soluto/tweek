@@ -12,6 +12,7 @@ const repoPath = 'rulesRepo';
 const rulesDir = `${process.cwd()}/${repoPath}/rules`;
 
 async function clone({ url, username, password }) {
+  console.log("start cloning")
   await rimrafAsync(`./${repoPath}`);
   const repo = await Git.Clone(url, `./${repoPath}`, {
     fetchOpts: {
@@ -44,7 +45,7 @@ async function isSynced(repo) {
   return remoteCommit.id().equal(localCommit.id());
 }
 
-export function init(repoSettings = { url: 'http://tweek-gogs.07965c2a.svc.dockerapp.io/tweek/tweek-rules.git',
+export function init(repoSettings = { url: 'http://tweek-gogs.c8940f48.svc.dockerapp.io/tweek/tweek-rules.git',
                                      username: 'tweek', password: 'po09!@QW' }) {
   const repoInit = clone(repoSettings);
   return {

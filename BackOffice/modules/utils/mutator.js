@@ -17,6 +17,8 @@ class StatelessMutator {
   }
 
   get path() { return this.getMutator().path;}
+  get target() { return this.getMutator().target;}
+  get getValue() { return this.getMutator().getValue;}
 
   _liftMutation = (mutationFactory) => this::((...params) => this.apply((mutator) => mutationFactory(mutator)(...params)))
 
@@ -26,9 +28,11 @@ class StatelessMutator {
 
   get replaceKeys() {return this._liftMutation(m => m.replaceKeys);}
 
-  get delete() {return this._liftMutation(m => m.replaceKeys);}
+  get delete() {return this._liftMutation(m => m.delete);}
 
   get insert() {return this._liftMutation(m => m.insert);}
+
+  get prepend() {return this._liftMutation(m => m.prepend);}
 }
 
 class Mutator {
@@ -38,9 +42,11 @@ class Mutator {
     this.path = path;
   }
 
+  getValue = () => R.reduce((acc, x) => acc[x], this.target, this.path);
+
   setPath = (path) => new Mutator(this.target, path);
 
-  in = (innerPath) => this.setPath([...this.path, innerPath]);
+  in = (innerPath) => this.setPath([...this.path, innerPath.toString()]);
 
   up = () => this.setPath(R.splitAt(-1, this.path)[0]);
 
@@ -62,16 +68,26 @@ class Mutator {
     return new Mutator(this.target, [...innerPath, newKey]);
   }
 
+  prepend = (value) => {
+    const container = R.reduce((acc, x) => acc[x], this.target, this.path);
+    container.unshift(value);
+    return new Mutator(this.target, this.path);
+  }
+
   replaceKeys = (key1, key2) => {
     const treeContainer = R.reduce((acc, x) => acc[x], this.target, this.path);
     [treeContainer[key1], treeContainer[key2]] = [treeContainer[key2], treeContainer[key1]];
-    return new Mutator(treeContainer, this.path);
+    return new Mutator(this.target, this.path);
   }
 
   delete = () => {
     const [innerPath, [key]] = R.splitAt(-1, this.path);
     const container = R.reduce((acc, x) => acc[x], this.target, innerPath);
-    delete container[key];
+    if (R.isArrayLike(container)) {
+      container::Array.prototype.splice(parseInt(key), 1);
+    }else{
+      delete container[key];
+    }
     return new Mutator(this.target, innerPath);
   }
 

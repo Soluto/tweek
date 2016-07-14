@@ -35,6 +35,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Drivers.Tests", "Engine.Drivers.Tests\Engine.Drivers.Tests.csproj", "{C4AD3167-1391-45FB-B314-9AE05B4618B1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.ApiService", "Tweek.ApiService\Tweek.ApiService.csproj", "{BB2E0DC8-8ACB-4A4F-9D22-257F33859EBE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{43AD9D3D-188D-4767-BCA6-35D280EA7D4A} = {43AD9D3D-188D-4767-BCA6-35D280EA7D4A}
+		{71903C50-6C0E-443E-914A-BF9D4D9CC964} = {71903C50-6C0E-443E-914A-BF9D4D9CC964}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{21F63D0A-8C90-4829-A3A2-83AD683AC5A7}"
 EndProject
@@ -59,6 +63,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.Drivers.Couchbase", "Drivers\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj", "{590593D3-6EC9-4BD1-86EF-02960D69798A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.Drivers.Blob", "Tweek.Drivers.Blob\Tweek.Drivers.Blob.csproj", "{94574C86-8FE9-4282-BAC4-E2FC62AFDA06}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E4A52DC8-2814-4510-9E59-40778011EF5B}"
+	ProjectSection(SolutionItems) = preProject
+		.travis.yml = .travis.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

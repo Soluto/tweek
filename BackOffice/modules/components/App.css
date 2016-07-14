@@ -1,31 +1,35 @@
-.Menu li {
+.Menu li
+{
     vertical-align: top;
     padding: 20px 20px;
     display: inline-block;
+    
 }
-
-.Menu {
+.Menu{
     padding: 0;
     margin: 0;
 }
-
-.Menu li a:visited, .Menu li a:hover, .Menu li a:link {
+.Menu li a:visited,.Menu li a:hover, .Menu li a:link{
     color: #007aff;
     text-decoration: none;
-    font-size: 20px;
+    font-size:20px;
     font-family: Calibri;
 }
 
-.App {
-    padding: 0;
+.App img{
+    margin: 0 30px 0 10px;  
 }
 
-.App img {
-    margin: 6px 0 0 6px;
+.App{
+    padding-top:60px; 
 }
 
-.TopBar {
-    display: flex;
+.TopBar{
+    top:0;
+    left:0;
+    right: 0;
+    display:flex;
+    position: fixed;
+    background-color: #f0f0f0;
     align-items: center;
-    background-color: rgb(34, 34, 34);
 }
