@@ -141,10 +141,6 @@
       <Project>{F3953018-7813-4EAB-8116-670848DE8BB1}</Project>
       <Name>Engine.DataTypes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Engine.Drivers.Rules.Git\Engine.Drivers.Rules.Git.csproj">
-      <Project>{CAE4A92C-1271-4AFA-B333-ECBD2F026BD8}</Project>
-      <Name>Engine.Drivers.Rules.Git</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Engine.Drivers\Engine.Drivers.csproj">
       <Project>{8569DD6D-27D1-40A1-8161-E12157E845F3}</Project>
       <Name>Engine.Drivers</Name>
