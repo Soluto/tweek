@@ -1,21 +1,18 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reactive;
-using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Engine.DataTypes;
 using Engine.Management.Drivers;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
+using Identity = LibGit2Sharp.Identity;
 
 namespace Engine.Drivers.Rules.Git
 {
@@ -165,8 +162,8 @@ namespace Engine.Drivers.Rules.Git
                 }
             }
             repo.Stage(file);
-            var author = new Signature(new LibGit2Sharp.Identity(authorName, authorEmail), creationTime);
-            var commiter = (_remoteRepoSettings == null) ? author : new Signature(new LibGit2Sharp.Identity(_remoteRepoSettings.UserName, _remoteRepoSettings.Email), creationTime);
+            var author = new Signature(new Identity(authorName, authorEmail), creationTime);
+            var commiter = (_remoteRepoSettings == null) ? author : new Signature(new Identity(_remoteRepoSettings.UserName, _remoteRepoSettings.Email), creationTime);
             repo.Commit("updated:" + path, author, commiter, new CommitOptions() {});
             _commitSubject.OnNext(Unit.Default);
 
