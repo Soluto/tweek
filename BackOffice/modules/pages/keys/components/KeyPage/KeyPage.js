@@ -73,7 +73,7 @@ export default connect((state, { params }) => ({ ...state, configKey: params.spl
 
               <KeyRulesEditor ruleDef={selectedKey.ruleDef}
                 sourceTree={JSON.parse(selectedKey.ruleDef.source) }
-                onMutation={x => dispatch({ type: 'KEY_RULEDEF_UPDATED', payload: { source: JSON.stringify(x) } }) } />
+                onMutation={x => dispatch({ type: 'KEY_RULEDEF_UPDATED', payload: { source: JSON.stringify(x, null, 4) } }) } />
 
             </div> :
             <div>loading...</div>
