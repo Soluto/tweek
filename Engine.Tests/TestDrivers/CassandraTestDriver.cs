@@ -9,7 +9,6 @@ using Engine.DataTypes;
 using Engine.Drivers.Cassandra;
 using Engine.Drivers.Context;
 using Engine.Drivers.Rules;
-using Engine.Drivers.Rules.Git;
 using Engine.Rules.Creation;
 
 namespace Engine.Tests.TestDrivers
@@ -39,14 +38,7 @@ namespace Engine.Tests.TestDrivers
             await Task.WhenAll(data.Select(async (row)=> await contextTable.Insert(row).ExecuteAsync()));
         }
 
-
-        private async Task InsertRuleData(GitDriver driver, Dictionary<string, RuleDefinition> rules)
-        {
-            await
-                Task.WhenAll(
-                    rules.Select(
-                        x => driver.CommitRuleset(x.Key, x.Value, "tweekintegrationtests", "tweek@soluto.com", DateTimeOffset.UtcNow)));
-        }
+        
 
         private async Task DropTable(string tableName)
         {
@@ -55,8 +47,7 @@ namespace Engine.Tests.TestDrivers
 
         public TestScope SetTestEnviornment(Dictionary<Identity, Dictionary<string, string>> contexts, string[] keys, Dictionary<string, RuleDefinition> rules)
         {
-            var gitDriver = new GitDriver(Path.Combine(Environment.CurrentDirectory, "tweek-rules-tests" + Guid.NewGuid()));
-            return new TestScope(rules:gitDriver, context:Context, init:  () =>  Task.WhenAll(InsertContextRows(contexts), InsertRuleData(gitDriver, rules)), 
+            return new TestScope(rules:new InMemoryTestDriver(rules), context:Context, init:  () =>  InsertContextRows(contexts), 
                 dispose: ()=> Task.WhenAll(DropTable("contexts")));
             ;
         }
