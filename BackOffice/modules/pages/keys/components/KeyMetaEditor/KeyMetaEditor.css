@@ -1,0 +1,37 @@
+.meta-data-tag {
+  display: inline-block;
+  background-color: #eeeeee;
+  border-radius: 32px;
+  padding: 6px;
+  margin-right: 5px;
+  user-select: text;
+  color: #747474;
+}
+.meta-data-tag:last-child {
+  margin-right: 0;
+}
+.meta-data-tag .meta-data-tag-closing-button {
+  background-color: #bdbdbd;
+  color: #eeeeee;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  padding-left: 4px;
+  font-size: 12px;
+  float: right;
+  margin: 3px;
+  box-sizing: border-box;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+}
+.meta-data-tag .meta-data-tag-closing-button:hover {
+  cursor: pointer;
+  background-color: #a7a7a7;
+}
+.meta-data-tag .meta-data-tag-closing-button:active {
+  background-color: #7f7f7f;
+}
+.meta-data-tag .meta-data-tag-name {
+  float: left;
+  padding-top: 1px;
+}

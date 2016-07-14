@@ -1,9 +1,9 @@
 import React from 'react';
 import { Component } from 'react';
-import { getKeys } from './actions/getKeys';
+import { getKeys } from '../../actions/getKeys';
 import { connect } from 'react-redux';
-import KeysList from './components/KeysList';
-import { KeyPages as KeyPagesStyle } from './styles.css';
+import KeysList from '../KeysList/KeysList';
+import { KeyPages as KeyPagesStyle } from './KeysPage.css';
 import createFragment from 'react-addons-create-fragment';
 
 export default connect(state => state)(class KeysPage extends Component

@@ -1,0 +1,37 @@
+.meta-data-tag {
+  display: inline-block;
+  background-color: rgb(238, 238, 238);
+  border-radius: 32px;
+  padding: 6px;
+  margin-right: 5px;
+  user-select: text;
+  color: #747474;
+  &:last-child {
+    margin-right: 0;
+  }
+  .meta-data-tag-closing-button {
+    background-color: rgb(189, 189, 189);
+    color: rgb(238, 238, 238);
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    padding-left: 4px;
+    font-size: 12px;
+    float: right;
+    margin: 3px;
+    box-sizing: border-box;
+    user-select: none;
+    transition: all .2s ease-in-out;
+    &:hover {
+      cursor: pointer;
+      background-color: rgb(167, 167, 167);
+    }
+    &:active {
+      background-color: rgb(127, 127, 127);
+    }
+  }
+  .meta-data-tag-name {
+    float: left;
+    padding-top: 1px;
+  }
+}

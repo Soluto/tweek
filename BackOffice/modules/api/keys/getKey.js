@@ -9,8 +9,10 @@ export default function (req, res, { repo }, { params, location, route }) {
       ruleDef: {
         type: path.extname(keyPath).substring(1),
         source: (await repo.getRule(keyPath)).toString(),
-      }, meta:{
-        
-      }
+      }, meta: {
+        description: 'abc',
+        displayName: 'hello',
+        tags: ['abc', 'def'],
+      },
     };}()).then(res.json.bind(res), console.error.bind(console));
 }

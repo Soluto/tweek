@@ -1,10 +1,10 @@
 async function downloadKey(key) {
-  const { ruleDef } = await (await fetch(`/api/keys/${key}`)).json();
+  const { ruleDef, meta } = await (await fetch(`/api/keys/${key}`)).json();
 
   return { type: 'KEY_DOWNLOADED', payload:
   {
     key,
-    meta: {},
+    meta,
     ruleDef,
   } };
 }

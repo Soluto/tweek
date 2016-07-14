@@ -1,0 +1,22 @@
+.metro-button {
+  vertical-align: top;
+  background-color: rgba(0, 122, 204, 0.7);
+  height: 28px;
+  border: 0;
+  padding: 0 5px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+}
+.metro-button:hover {
+  background-color: #007acc;
+  cursor: pointer;
+}
+.metro-button:active {
+  background-color: #0098ff;
+}
