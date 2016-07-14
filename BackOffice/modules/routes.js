@@ -1,10 +1,10 @@
-import '../modules/styles.css';
+import './styles/styles.css';
 import React from 'react';
 import { Route, IndexRoute, Redirect } from 'react-router';
 import App from './components/App';
 import Home from './components/Home';
-import KeysPage from './pages/keys/KeysPage';
-import KeyPage from './pages/keys/KeyPage';
+import KeysPage from './pages/keys/components/KeysPage/KeysPage';
+import KeyPage from './pages/keys/components/KeyPage/KeyPage';
 import NoMatch from './components/NoMatch';
 
 export default serverRoutes => (

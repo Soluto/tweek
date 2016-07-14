@@ -1,0 +1,34 @@
+@import (reference) "./accents.less";
+
+.user-select(@user-select: none) {
+  -moz-user-select: @user-select;
+  -ms-user-select: @user-select;
+  -webkit-user-select: @user-select;
+  user-select: @user-select;
+}
+
+.transitioned(@duration :.2s) {
+  transition: all @duration ease-in-out;
+}
+
+.metro-button {
+  vertical-align: top;
+  background-color: @accent-color2;
+  height: 28px;
+  border: 0;
+  padding: 0 5px;
+  color: @accent-foreground;
+  outline: 0;
+  padding-bottom: 2px;
+  .user-select(none);
+  .transitioned();
+  &:hover {
+    background-color: @accent-color1;
+    cursor: pointer;
+  }
+  &:active {
+    background-color: @accent-active;
+  }
+}
+
+.metro-textbox {}

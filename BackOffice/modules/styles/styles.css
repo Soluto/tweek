@@ -1,5 +1,8 @@
+* {
+  padding: 0;
+  margin: 0;
+}
 body {
-  background: #f0f0f0;
   font-family: sans-serif;
   font-weight: 200;
 }

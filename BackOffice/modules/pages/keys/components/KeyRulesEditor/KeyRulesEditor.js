@@ -1,7 +1,7 @@
 import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import JPadEditor from './JPadEditor/JPadEditor';
-import Mutator from '../../../utils/mutator';
+import JPadEditor from '../JPadEditor/JPadEditor';
+import Mutator from '../../../../utils/mutator';
 
 
 const MutatorFor = (propName) => (Comp) =>

@@ -9,11 +9,11 @@ export default React.createClass({
     return (
       <div className={styles.App}>
         <div className={styles.TopBar}>
-            <Title render="Tweek"/>
-            <IndexLink to="/"><img src={logo} /></IndexLink>
-            <ul className={styles.Menu} >
+          <Title render="Tweek"/>
+          <IndexLink to="/"><img src={logo} /></IndexLink>
+          <ul className={styles.Menu} >
             <li><Link to="/keys">keys</Link></li>
-            </ul>
+          </ul>
         </div>
         {this.props.children}
       </div>
