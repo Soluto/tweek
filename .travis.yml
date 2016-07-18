@@ -1,11 +1,6 @@
-language: csharp
-solution: Tweek.sln
+language: node_js
 install:
-  - nuget restore Tweek.sln
-  - nuget install xunit.runner.console -Version 2.1.0 -OutputDirectory testrunner
+  - cd backoffice
+  - npm i
 script:
-  - xbuild /p:Configuration=Release Tweek.sln
-  - mono ./testrunner/xunit.runner.console.2.1.0/tools/xunit.console.exe ./Engine.Rules.ValueDistribution.Tests/bin/Release/Engine.Rules.ValueDistribution.Tests.dll -parallel none
-  - mono ./testrunner/xunit.runner.console.2.1.0/tools/xunit.console.exe ./Matcher.Tests/bin/Release/Matcher.Tests.dll -parallel none
-  - mono ./testrunner/xunit.runner.console.2.1.0/tools/xunit.console.exe ./Engine.Tests/bin/Release/Engine.IntegrationTests.dll -parallel none
- 
+  - npm run test 
