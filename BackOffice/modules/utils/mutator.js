@@ -13,7 +13,6 @@ class StatelessMutator {
   apply = (mutation) => {
     const mutated = mutation(this.getMutator());
     this.onMutation(mutated.target);
-    return new StatelessMutator(() => this.getMutator().setPath(mutated.path), this.onMutation);
   }
 
   get path() { return this.getMutator().path;}
@@ -41,6 +40,8 @@ class Mutator {
     this.target = target;
     this.path = path;
   }
+
+  static stateless = (getTarget, onMutation) => new StatelessMutator(() => new Mutator(R.clone(getTarget())), onMutation);
 
   getValue = () => R.reduce((acc, x) => acc[x], this.target, this.path);
 
@@ -75,8 +76,8 @@ class Mutator {
   }
 
   replaceKeys = (key1, key2) => {
-    const treeContainer = R.reduce((acc, x) => acc[x], this.target, this.path);
-    [treeContainer[key1], treeContainer[key2]] = [treeContainer[key2], treeContainer[key1]];
+    const container = R.reduce((acc, x) => acc[x], this.target, this.path);
+    [container[key1], container[key2]] = [container[key2], container[key1]];
     return new Mutator(this.target, this.path);
   }
 
@@ -88,7 +89,7 @@ class Mutator {
     }else{
       delete container[key];
     }
-    return new Mutator(this.target, innerPath);
+    return new Mutator(this.target, R.slice(-1));
   }
 
   insert = (key, value) => {
@@ -97,7 +98,6 @@ class Mutator {
   }
 }
 
-Mutator.stateless = (getTarget, onMutation) =>
-  new StatelessMutator(() => new Mutator(R.clone(getTarget())), onMutation);
+
 
 export default Mutator;
