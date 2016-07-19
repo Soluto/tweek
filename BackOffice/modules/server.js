@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 import serverRoutes from './serverRoutes';
 
 const repo = require('./repo/rulesRepo')
-           .init({ url: 'http://tweek-gogs.07965c2a.svc.dockerapp.io/tweek/tweek-rules', username: 'tweek', password: '***REMOVED***' });
+           .init({ url: 'http://tweek-gogs.07965c2a.svc.dockerapp.io/tweek/tweek-rules', username: 'tweek', password: '***REMOVED***', localPath: `${process.cwd()}/rulesRepo` });
 
 function getApp(req, res, requestCallback) {
   requestCallback(null, {

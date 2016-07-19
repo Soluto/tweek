@@ -10,25 +10,30 @@
   },
   "scripts": {
     "start": "if-env NODE_ENV=production && npm run react-project:start:prod || npm run react-project:start:dev",
-    "test": "npm run test:unit",
+    "test": "npm run test:unit && npm run test:integration",
     "test:unit": "jest",
     "test:watch": "jest --watch",
+    "test:integration": "mocha --compilers js:babel-register ./integration-tests/**/*.js",
     "react-project:start:dev": "node ./node_modules/react-project/bin/react-project.js start",
     "react-project:start:prod": "rm -rf .build && react-project build && node .build/server.js"
   },
   "author": "",
-  "jest":{
+  "jest": {
     "preprocessorIgnorePatterns": [
       "/node_modules/"
     ],
-    "unmockedModulePathPatterns":["/node_modules/react",
+    "coverageDirectory": "./coverage-unit/",
+    "collectCoverage": true,
+    "unmockedModulePathPatterns": [
+      "/node_modules/react",
       "node_modules/react-dom",
       "node_modules/react-addons-test-utils",
       "node_modules/recompose",
       "node_modules/ramda",
       "babel-runtime",
-      "spec/.*"],
-    "testDirectoryName":"spec"
+      "spec/.*"
+    ],
+    "testDirectoryName": "spec"
   },
   "license": "ISC",
   "dependencies": {
@@ -112,7 +117,9 @@
     "babel-plugin-transform-runtime": "6.7.5",
     "babel-polyfill": "6.9.1",
     "babel-preset-stage-0": "6.5.0",
+    "babel-register": "6.9.0",
     "babel-runtime": "6.6.1",
+    "chai": "3.5.0",
     "eslint": "2.13.1",
     "eslint-config-airbnb": "9.0.1",
     "eslint-config-defaults": "9.0.0",
