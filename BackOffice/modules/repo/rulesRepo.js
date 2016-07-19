@@ -8,13 +8,11 @@ fn.call(context, ...args.concat([(err, res) => !!(err) ? reject(err) : resolve(r
 
 const rimrafAsync = promisify(rimraf);
 const globAsync = promisify(glob);
-const repoPath = 'rulesRepo';
-const rulesDir = `${process.cwd()}/${repoPath}/rules`;
 
-async function clone({ url, username, password }) {
-  console.log("start cloning")
-  await rimrafAsync(`./${repoPath}`);
-  const repo = await Git.Clone(url, `./${repoPath}`, {
+async function clone({ url, username, password, localPath }) {
+  console.log('start cloning');
+  await rimrafAsync(localPath);
+  const repo = await Git.Clone(url, localPath, {
     fetchOpts: {
       callbacks: {
         credentials: () => Git.Cred.userpassPlaintextNew(username, password),
@@ -45,15 +43,17 @@ async function isSynced(repo) {
   return remoteCommit.id().equal(localCommit.id());
 }
 
-export function init(repoSettings = { url: 'http://tweek-gogs.c8940f48.svc.dockerapp.io/tweek/tweek-rules.git',
-                                     username: 'tweek', password: 'po09!@QW' }) {
+export function init(repoSettings) {
+  const rulesDir = `${repoSettings.localPath}/rules`;
   const repoInit = clone(repoSettings);
   return {
     async getAllRules() {
+      await repoInit;
       const rules = await globAsync('**/*.*', { cwd: rulesDir });
       return rules;
     },
     async getRule(path) {
+      await repoInit;
       return (await fs.readFile(`${rulesDir}/${path}`)).toString();
     },
     updateRule: synchronized(async function(path, payload) {

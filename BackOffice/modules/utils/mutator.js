@@ -89,7 +89,7 @@ class Mutator {
     }else{
       delete container[key];
     }
-    return new Mutator(this.target, R.slice(-1));
+    return new Mutator(this.target, R.slice(0, -1, this.path));
   }
 
   insert = (key, value) => {
