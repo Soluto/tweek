@@ -107,11 +107,6 @@ describe('mutator tests', () => {
       mutator.in('someProp').prepend(1);
       expect(target.someProp).toEqual([1, 2, 3, 4]);
     }));
-    it('should work on arrays', newMutator((target, mutator) => {
-      target.myArray = [5, 10, 15];
-      mutator.in('myArray').replaceKeys(0, '2');
-      expect(target.myArray).toEqual([15, 10, 5]);
-    }));
   });
 
   describe('replace keys', () => {
