@@ -1,10 +1,17 @@
 language: node_js
 node_js:
   - "4.3.2"
+
+addons:
+  code_climate:
+    repo_token: e671493e18dd04b83fb2513dda65e7f7b7b1c48860b5f1e5b3284d7d4e9af9c7
+
 before_install:
   - npm install npm -g
 install:
   - cd ./BackOffice
   - npm i
 script:
-  - npm run test 
+  - npm run test
+  - npm run coverage:upload:code-climate
+  
