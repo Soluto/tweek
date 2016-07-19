@@ -14,6 +14,7 @@
     "test:unit": "jest",
     "test:watch": "jest --watch",
     "test:integration": "mocha --compilers js:babel-register ./integration-tests/**/*.js",
+    "coverage:upload:code-climate": "codeclimate-test-reporter < ./coverage-unit/lcov.info",
     "react-project:start:dev": "node ./node_modules/react-project/bin/react-project.js start",
     "react-project:start:prod": "rm -rf .build && react-project build && node .build/server.js"
   },
@@ -120,6 +121,7 @@
     "babel-register": "6.9.0",
     "babel-runtime": "6.6.1",
     "chai": "3.5.0",
+    "codeclimate-test-reporter": "0.3.3",
     "eslint": "2.13.1",
     "eslint-config-airbnb": "9.0.1",
     "eslint-config-defaults": "9.0.0",
