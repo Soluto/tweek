@@ -1,12 +1,12 @@
 import React from 'react';
 import { Component } from 'react';
-import { getKeys } from '../../actions/getKeys';
+import * as actions from '../../ducks/keys';
 import { connect } from 'react-redux';
 import KeysList from '../KeysList/KeysList';
 import { KeyPages as KeyPagesStyle } from './KeysPage.css';
 import createFragment from 'react-addons-create-fragment';
 
-export default connect(state => state)(class KeysPage extends Component
+export default connect(state => state, { ...actions })(class KeysPage extends Component
 {
   constructor(props) {
     super(props);
@@ -14,7 +14,7 @@ export default connect(state => state)(class KeysPage extends Component
 
   componentDidMount() {
     if (!this.props.keys) {
-      this.props.dispatch(getKeys());
+      this.props.getKeys([]);
     }
   }
 
