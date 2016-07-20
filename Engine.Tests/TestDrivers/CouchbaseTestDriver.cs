@@ -8,12 +8,25 @@ using Engine.Drivers.Context;
 using Engine.Drivers.Rules;
 using Couchbase;
 using Tweek.Drivers.CouchbaseDriver;
-using Engine.Drivers.Rules.Git;
 using System.IO;
 using Couchbase.Core;
 
 namespace Engine.Tests.TestDrivers
 {
+    class InMemoryTestDriver : IRulesDriver
+    {
+        private Dictionary<string, RuleDefinition> rules;
+
+        public InMemoryTestDriver(Dictionary<string, RuleDefinition> rules)
+        {
+            this.rules = rules;
+        }
+        public async Task<Dictionary<string, RuleDefinition>> GetAllRules()
+        {
+            return rules;
+        }
+    }
+
     class CouchbaseTestDriver : ITestDriver
     {
         readonly Cluster _cluster;
@@ -28,13 +41,14 @@ namespace Engine.Tests.TestDrivers
             _driver = new CouchBaseDriver(cluster, bucket);
         }
 
+        /*
         async Task InsertRuleData(GitDriver driver, Dictionary<string, RuleDefinition> rules)
         {
             await
                 Task.WhenAll(
                     rules.Select(
                         x => driver.CommitRuleset(x.Key, x.Value, "tweekintegrationtests", "tweek@soluto.com", DateTimeOffset.UtcNow)));
-        }
+        }*/
 
 
         async Task InsertContextRows(Dictionary<Identity, Dictionary<string, string>> contexts)
@@ -55,10 +69,8 @@ namespace Engine.Tests.TestDrivers
 
         public TestScope SetTestEnviornment(Dictionary<Identity, Dictionary<string, string>> contexts, string[] keys, Dictionary<string, RuleDefinition> rules)
         {
-            var gitDriver = new GitDriver(Path.Combine(Environment.CurrentDirectory, "tweek-rules-tests" + Guid.NewGuid()));
-
-            return new TestScope(rules: gitDriver, context: Context, 
-                init: () => Task.WhenAll(InsertContextRows(contexts), InsertRuleData(gitDriver, rules)),
+            return new TestScope(rules: new InMemoryTestDriver(rules), context: Context, 
+                init: () => InsertContextRows(contexts),
                 dispose: Flush);
         }
     }
