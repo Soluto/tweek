@@ -35,7 +35,7 @@ export default connect((state, { params }) => ({ ...state, configKey: params.spl
     }
 
     onSelectedKeyMetaChanged(newMeta) {
-
+      console.log(newMeta);
     }
 
     render() {
@@ -49,8 +49,7 @@ export default connect((state, { params }) => ({ ...state, configKey: params.spl
             <div className={style['key-name']}>{configKey}</div>
 
             <button className={style['save-button']}
-              onClick={() => dispatch(saveKey(configKey)) }
-            >
+              onClick={() => dispatch(saveKey(configKey))} >
               Save changes
             </button>
           </div >
@@ -62,8 +61,7 @@ export default connect((state, { params }) => ({ ...state, configKey: params.spl
             <div>
               <KeyMetaEditor meta={selectedKey.meta}
                 onMetaChangedCallback={this:: this.onSelectedKeyMetaChanged}
-                className={style['key-meta-container']}
-              />
+                className={style['key-meta-container']} />
 
               <div className={style['horizontal-separator']} >
               </div >
@@ -71,8 +69,7 @@ export default connect((state, { params }) => ({ ...state, configKey: params.spl
               <KeyRulesEditor ruleDef={selectedKey.ruleDef}
                 sourceTree={JSON.parse(selectedKey.ruleDef.source) }
                 onMutation={x => dispatch({ type: 'KEY_RULEDEF_UPDATED', payload: { source: JSON.stringify(x, null, 4) } }) }
-                className={style['key-rules-editor']}
-              />
+                className={style['key-rules-editor']} />
             </div>
             :
             <div>loading...</div>
