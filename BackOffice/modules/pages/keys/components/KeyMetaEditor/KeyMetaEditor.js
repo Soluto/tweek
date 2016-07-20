@@ -59,7 +59,7 @@ class KeyMetaEditor extends Component {
         </div>
 
         <div>
-          <span className={style['meta-data-input-title']}>description name: </span>
+          <span className={style['meta-data-input-title']}>description: </span>
           <input type="text"
             className={style['meta-data-input']}
             onChange={ (e) => this.onDescriptionChanged(e.target.value) }
