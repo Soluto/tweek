@@ -36,7 +36,7 @@
     .metro-textbox;
 }
 
-.Editor:global(.react-autosuggest__suggestions-container) {
+.Editor :global(.react-autosuggest__suggestions-container) {
     top: 30px;
 }
 
@@ -53,7 +53,7 @@
     content: "Match all";
 }
 
-.Editor:global(.OpDropdown):global(.popup--jss-0-5) {
+.Editor :global(.OpDropdown) :global(.popup--jss-0-5) {
     max-width: 80px;
     min-width: 80px;
 }
@@ -64,20 +64,21 @@
 
 :global(.react-autosuggest__input) {
     .metro-textbox;
+
 }
 
 :global(.react-autosuggest__input):focus {
     outline: none;
 }
 
-:global(.react-autosuggest__container--open):global(.react-autosuggest__input) {
+:global(.react-autosuggest__container--open) :global(.react-autosuggest__input) {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
 }
 
 :global(.react-autosuggest__suggestions-container) {
     position: absolute;
-    top: 51px;
+    top: 31px;
     width: 200px;
     margin: 0;
     padding: 0;
@@ -106,10 +107,10 @@
     padding-left: 10px;
 }
 
-.MatcherProperty:global(.MatcherOp):global(.react-autosuggest__input) {
+.MatcherProperty :global(.MatcherOp) :global(.react-autosuggest__input) {
     width: 30px;
 }
 
-.MatcherProperty:global(.MatcherOp):global(.react-autosuggest__suggestions-container) {
+.MatcherProperty :global(.MatcherOp) :global(.react-autosuggest__suggestions-container) {
     width: 60px;
 }
