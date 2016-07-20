@@ -1,62 +1,103 @@
-import R from 'ramda'
+import R from 'ramda';
 
-export default class Mutator {
-    constructor(sourceTree, callback, path=[]) {
-      this._sourceTree = sourceTree
-      this._callback = callback
-      this.path = path
-    }
-    
-    in = (innerPath)=> new Mutator(this._sourceTree, this._callback, [ ...this.path, innerPath ]);
-    
-    getValue = ()=> R.reduce((acc,x)=>acc[x], this._sourceTree, this.path);
-        
-    updateValue = newValue =>{
-      console.log(`updating value:${this.path} to ${newValue}`)
-      let clonedTree = R.clone(this._sourceTree)
-      let [ innerPath, [ key ] ] = R.splitAt(-1,this.path)
-      let container = R.reduce((acc,x)=>acc[x], clonedTree, innerPath);
-      container[key] = newValue
-      this._callback(clonedTree)
-      return new Mutator(clonedTree, this._callback, this.path)
-    }
-     updateKey = newKey =>{
-       console.log(`updating key:${this.path} to ${newKey}`)
-       let [ innerPath, [ container, key ] ] = R.splitAt(-2,this.path)
-       if (newKey === key) return this
-       let clonedTree = R.clone(this._sourceTree)
-       let root = R.reduce((acc,x)=>acc[x], clonedTree, innerPath)
-       root[container] = R.fromPairs(R.toPairs(root[container]).map(([ k,v ])=>[ k === key ? newKey : k, v ]))
-       this._callback(clonedTree)
-       return new Mutator(clonedTree, this._callback, [ ...innerPath, container, newKey ])
-     }
-     
-     replaceKeys = (key1, key2)=>{
-       console.log(`replacing key:${key1} with ${key2} on ${this.path}`)
-       let clonedTree = R.clone(this._sourceTree)
-       let treeContainer = R.reduce((acc,x)=>acc[x], this._sourceTree, this.path);
-       let clonedContainer = R.reduce((acc,x)=>acc[x], clonedTree, this.path);
-       clonedContainer[key1] = treeContainer[key2]
-       clonedContainer[key2] = treeContainer[key1]
-       this._callback(clonedTree)
-       return new Mutator(clonedTree, this._callback, this.path)
-     }
-     
-     delete =  () =>{
-       console.log(`deleting key:${this.path}`)
-       let [ innerPath, [ key ] ] = R.splitAt(-1,this.path)
-       let clonedTree = R.clone(this._sourceTree)
-       let container = R.reduce((acc,x)=>acc[x], clonedTree, innerPath)
-       delete container[key]
-       this._callback(clonedTree)
-       return new Mutator(clonedTree, this._callback, innerPath)
-     }
-        
-      insert =  (key, value) =>{
-        console.log(`inserting key:${this.path} ${key}:${value}`)
-        let clonedTree = R.clone(this._sourceTree)
-        R.reduce((acc,x)=>acc[x], clonedTree, this.path)[key] = value
-        this._callback(clonedTree)
-        return new Mutator(clonedTree, this._callback, this.path)
-      }
+class StatelessMutator {
+  constructor(getMutator, onMutation) {
+    this.getMutator = getMutator;
+    this.onMutation = onMutation;
+  }
+
+  in = (innerPath) => new StatelessMutator(() => this.getMutator().in(innerPath), this.onMutation);
+
+  up = () => new StatelessMutator(() => this.getMutator().up(), this.onMutation);
+
+  apply = (mutation) => {
+    const mutated = mutation(this.getMutator());
+    this.onMutation(mutated.target);
+  }
+
+  get path() { return this.getMutator().path;}
+  get target() { return this.getMutator().target;}
+  get getValue() { return this.getMutator().getValue;}
+
+  _liftMutation = (mutationFactory) => this::((...params) => this.apply((mutator) => mutationFactory(mutator)(...params)))
+
+  get updateValue() {return this._liftMutation(m => m.updateValue);}
+
+  get updateKey() {return this._liftMutation(m => m.updateKey);}
+
+  get replaceKeys() {return this._liftMutation(m => m.replaceKeys);}
+
+  get delete() {return this._liftMutation(m => m.delete);}
+
+  get insert() {return this._liftMutation(m => m.insert);}
+
+  get prepend() {return this._liftMutation(m => m.prepend);}
 }
+
+class Mutator {
+
+  constructor(target, path = []) {
+    this.target = target;
+    this.path = path;
+  }
+
+  static stateless = (getTarget, onMutation) => new StatelessMutator(() => new Mutator(R.clone(getTarget())), onMutation);
+
+  getValue = () => R.reduce((acc, x) => acc[x], this.target, this.path);
+
+  setPath = (path) => new Mutator(this.target, path);
+
+  in = (innerPath) => this.setPath([...this.path, innerPath.toString()]);
+
+  up = () => this.setPath(R.splitAt(-1, this.path)[0]);
+
+  updateValue = newValue => {
+    const [innerPath, [key]] = R.splitAt(-1, this.path);
+    const container = R.reduce((acc, x) => acc[x], this.target, innerPath);
+    container[key] = newValue;
+    return new Mutator(this.target, this.path);
+  }
+  updateKey = newKey => {
+    const [innerPath, [key]] = R.splitAt(-1, this.path);
+    if (newKey === key) return this;
+    const container = R.reduce((acc, x) => acc[x], this.target, innerPath);
+    const newProps = R.toPairs(container).map(([k, v]) => [k === key ? newKey : k, v]);
+
+    for (const k of Object.keys(container)) {delete container[k];}
+    for (const [k, v] of newProps) {container[k] = v;}
+
+    return new Mutator(this.target, [...innerPath, newKey]);
+  }
+
+  prepend = (value) => {
+    const container = R.reduce((acc, x) => acc[x], this.target, this.path);
+    container.unshift(value);
+    return new Mutator(this.target, this.path);
+  }
+
+  replaceKeys = (key1, key2) => {
+    const container = R.reduce((acc, x) => acc[x], this.target, this.path);
+    [container[key1], container[key2]] = [container[key2], container[key1]];
+    return new Mutator(this.target, this.path);
+  }
+
+  delete = () => {
+    const [innerPath, [key]] = R.splitAt(-1, this.path);
+    const container = R.reduce((acc, x) => acc[x], this.target, innerPath);
+    if (R.isArrayLike(container)) {
+      container::Array.prototype.splice(parseInt(key), 1);
+    }else{
+      delete container[key];
+    }
+    return new Mutator(this.target, R.slice(0, -1, this.path));
+  }
+
+  insert = (key, value) => {
+    R.reduce((acc, x) => acc[x], this.target, this.path)[key] = value;
+    return new Mutator(this.target, this.path);
+  }
+}
+
+
+
+export default Mutator;

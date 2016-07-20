@@ -1,17 +1,25 @@
-import React from 'react'
-import Rule from './Rule'
-import Paper from 'material-ui/Paper'
-import { ListItem } from 'material-ui/List'
-import { Editor as EditorStyle } from './JPadEditor.css'
-let isBrowser = typeof(window) === 'object'
+import React from 'react';
+import Rule from './Rule';
+import { Editor as EditorStyle } from './JPadEditor.css';
+import Chance from 'chance';
+const isBrowser = typeof(window) === 'object';
+const chance = new Chance();
 
-export default ({ source, mutate })=>{
-  if (!source) return (<div/>)
-  let rules = JSON.parse(source)
-  return isBrowser ? (<Paper className={EditorStyle}>
-        {rules.map( (rule, i)=>(<ListItem disabled={true} key={rule.Id}>
-            {i > 0 ? <button onClick={()=>mutate.replaceKeys(i, i-1)}>Up</button> : null}
-            {i < rules.length-1 ? <button onClick={()=>mutate.replaceKeys(i, i+1)}>Down</button> : null}
-            <Rule mutate={mutate.in(i)} rule={rule} /></ListItem>))}
-    </Paper>) : (<div>Loading rule...</div>)
-}
+export default ({ cases, mutate }) => {
+  if (!cases) return (<div/>);
+  return isBrowser ? (<div className={EditorStyle}>
+        <button onClick={() =>
+            mutate.prepend({ Id: chance.guid(), Matcher: {}, Value: '', Type: 'SingleVariant' })
+        } >Add Case</button>
+        {cases.map((rule, i) => (<div style={{ position: 'relative' }} disabled key={rule.Id}>
+            <div style={{ position: 'absolute',
+                        top: 30,
+                        right: 20 }} >
+            {i > 0 ? <button onClick={() => mutate.replaceKeys(i, i - 1)}>&#8593;</button> : null}
+            {i < cases.length - 1 ? <button onClick={() => mutate.replaceKeys(i, i + 1)}>&#8595;</button> : null}
+            <button onClick={() => mutate.in(i).delete()}>X</button>
+            </div>
+            <Rule key={rule.Id} mutate={mutate.in(i)} rule={rule} /></div>))}
+    </div>
+    ) : (<div>Loading rule...</div>);
+};

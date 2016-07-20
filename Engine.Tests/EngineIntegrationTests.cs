@@ -2,48 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-//using Cassandra;
 using Couchbase;
 using Engine.DataTypes;
-using Engine.Drivers.Context;
 using Engine.Drivers.Rules;
-using Engine.Rules.Creation;
 using Engine.Tests.Helpers;
 using Engine.Tests.TestDrivers;
-using FsCheck;
 using Newtonsoft.Json;
-using NUnit.Framework;
+using Xunit;
 using Tweek.JPad.Generator;
 using MatcherData = System.Collections.Generic.Dictionary<string, object>;
 using Couchbase.Configuration.Client;
 
 namespace Engine.Tests
 {
-    [TestFixture]
-    public class EngineIntegrationTests
+    public class CouchBaseFixture
     {
-        ITestDriver driver;
-        Dictionary<Identity, Dictionary<string, string>> contexts;
-        Dictionary<string, RuleDefinition> rules;
-        string[] paths;
-
-        readonly HashSet<Identity> NoIdentities = new HashSet<Identity>();
-        readonly Dictionary<Identity, Dictionary<string, string>> EmptyContexts = new Dictionary<Identity, Dictionary<string, string>>();
-
-        
-        void SetCassandraDriver()
-        {
-            var cluster = Cassandra.Cluster.Builder()
-                .WithQueryOptions(new Cassandra.QueryOptions().SetConsistencyLevel(Cassandra.ConsistencyLevel.All))
-                .AddContactPoints("dc0vm1tqwdso6zqj26c.eastus.cloudapp.azure.com",
-                    "dc0vm0tqwdso6zqj26c.eastus.cloudapp.azure.com")
-                .Build();
-
-            var cassandraSession = cluster.Connect("tweekintegrationtests");
-            driver = new CassandraTestDriver(cassandraSession);
-        }
-
-        void SetCouchBaseDriver()
+        public ITestDriver Driver { get; set; }
+        public CouchBaseFixture()
         {
             var bucketName = "tweek-tests";
             var cluster = new Cluster(new ClientConfiguration
@@ -68,14 +43,42 @@ namespace Engine.Tests
                    })
             });
 
-            driver = new CouchbaseTestDriver(cluster, bucketName);
+            Driver = new CouchbaseTestDriver(cluster, bucketName);
+        }
+    }
+
+    public class EngineIntegrationTests : IClassFixture<CouchBaseFixture>
+    {
+        ITestDriver driver;
+        Dictionary<Identity, Dictionary<string, string>> contexts;
+        Dictionary<string, RuleDefinition> rules;
+        string[] paths;
+
+        readonly HashSet<Identity> NoIdentities = new HashSet<Identity>();
+        readonly Dictionary<Identity, Dictionary<string, string>> EmptyContexts = new Dictionary<Identity, Dictionary<string, string>>();
+
+        public EngineIntegrationTests(CouchBaseFixture fixture)
+        {
+            driver = fixture.Driver;
+        }
+        /*
+        void SetCassandraDriver()
+        {
+            var cluster = Cassandra.Cluster.Builder()
+                .WithQueryOptions(new Cassandra.QueryOptions().SetConsistencyLevel(Cassandra.ConsistencyLevel.All))
+                .AddContactPoints("dc0vm1tqwdso6zqj26c.eastus.cloudapp.azure.com",
+                    "dc0vm0tqwdso6zqj26c.eastus.cloudapp.azure.com")
+                .Build();
+
+            var cassandraSession = cluster.Connect("tweekintegrationtests");
+            driver = new CassandraTestDriver(cassandraSession);
         }
 
-        [TestFixtureSetUp]
-        public void Setup()
+        void SetCouchBaseDriver()
         {
-            SetCouchBaseDriver();
-        }
+            
+        }*/
+        
 
         async Task Run(Func<ITweek, Task> test)
         {
@@ -83,7 +86,7 @@ namespace Engine.Tests
             await scope.Run(test);
         }
 
-        [Test]
+        [Fact]
         public async Task CalculateSingleValue()
         {
             contexts = EmptyContexts;
@@ -96,17 +99,17 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("_", NoIdentities);
-                Assert.AreEqual("SomeValue", val["abc/somepath"].Value);
+                Assert.Equal("SomeValue", val["abc/somepath"].Value);
 
                 val = await tweek.Calculate("abc/_", NoIdentities);
-                Assert.AreEqual( "SomeValue", val["somepath"].Value);
+                Assert.Equal( "SomeValue", val["somepath"].Value);
 
                 val = await tweek.Calculate("abc/somepath", NoIdentities);
-                Assert.AreEqual( "SomeValue", val[""].Value);
+                Assert.Equal( "SomeValue", val[""].Value);
             });
         }
 
-        [Test]
+        [Fact]
         public async Task CalculateMultipleValues()
         {
             contexts = EmptyContexts;
@@ -117,14 +120,14 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", NoIdentities);
-                Assert.AreEqual(3, val.Count);
-                Assert.AreEqual("SomeValue",val["somepath"].Value);
-                Assert.AreEqual("SomeValue",val["otherpath"].Value);
-                Assert.AreEqual("SomeValue",val["nested/somepath"].Value);
+                Assert.Equal(3, val.Count);
+                Assert.Equal("SomeValue",val["somepath"].Value);
+                Assert.Equal("SomeValue",val["otherpath"].Value);
+                Assert.Equal("SomeValue",val["nested/somepath"].Value);
             });
         }
 
-        [Test]
+        [Fact]
         public async Task CalculateFilterByMatcher()
         {
             contexts = ContextCreator.Merge(ContextCreator.Create("device", "1"), 
@@ -143,17 +146,17 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
-                Assert.AreEqual(0, val.Count);
+                Assert.Equal(0, val.Count);
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "2") });
-                Assert.AreEqual(0, val.Count);
+                Assert.Equal(0, val.Count);
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "3") });
-                Assert.AreEqual("SomeValue", val["somepath"].Value);
+                Assert.Equal("SomeValue", val["somepath"].Value);
             });
         }
 
-        [Test]
+        [Fact]
         public async Task CalculateFilterByMatcherWithMultiIdentities()
         {
             contexts = ContextCreator.Merge(
@@ -172,17 +175,17 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
-                Assert.AreEqual(0, val.Count);
+                Assert.Equal(0, val.Count);
                 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("user", "1") });
-                Assert.AreEqual(0, val.Count);
+                Assert.Equal(0, val.Count);
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1"), new Identity("user", "1") });
-                Assert.AreEqual("SomeValue", val["somepath"].Value);
+                Assert.Equal("SomeValue", val["somepath"].Value);
             });
         }
 
-        [Test] 
+        [Fact]
         public async Task MultipleRules()
         {
             contexts = ContextCreator.Create("device", "1");
@@ -197,11 +200,11 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
-                Assert.AreEqual( "SomeValue", val["somepath"].Value);
+                Assert.Equal( "SomeValue", val["somepath"].Value);
             });
         }
 
-        [Test]
+        [Fact]
         public async Task MultipleRulesWithFallback()
         {
             contexts = ContextCreator.Create("device", "1", new[] { "SomeDeviceProp", "5" });
@@ -223,11 +226,11 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
-                Assert.AreEqual("SomeValue", val["somepath"].Value);
+                Assert.Equal("SomeValue", val["somepath"].Value);
             });
         }
 
-        [Test]
+        [Fact]
         public async Task CalculateWithMultiVariant()
         {
             contexts = ContextCreator.Create("device", "1", new[] { "SomeDeviceProp", "5"}, new []{"@CreationDate", "10/10/10" });
@@ -249,17 +252,17 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { });
-                Assert.AreEqual(0, val.Count);
+                Assert.Equal(0, val.Count);
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1")});
-                Assert.IsTrue(val["somepath"].Value == "true" || val["somepath"].Value == "false");
+                Assert.True(val["somepath"].Value == "true" || val["somepath"].Value == "false");
                 await Task.WhenAll(Enumerable.Range(0, 10).Select(async x =>
                 {
-                    Assert.AreEqual((await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }))["somepath"].Value, val["somepath"].Value);
+                    Assert.Equal((await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }))["somepath"].Value, val["somepath"].Value);
                 }));
             });
         }
 
-        [Test]
+        [Fact]
         public async Task MultiVariantWithMultipleValueDistrubtion()
         {
             contexts = ContextCreator.Merge(
@@ -290,20 +293,20 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
-                Assert.AreEqual(0, val.Count);
+                Assert.Equal(0, val.Count);
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "2") });
-                Assert.AreEqual("true", val["somepath"].Value);
+                Assert.Equal("true", val["somepath"].Value);
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "3") });
-                Assert.AreEqual("false", val["somepath"].Value);
+                Assert.Equal("false", val["somepath"].Value);
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("user", "4") });
-                Assert.AreEqual(0, val.Count);
+                Assert.Equal(0, val.Count);
             });
         }
 
-        [Test]
+        [Fact]
         public async Task CalculateWithFixedValue()
         {
             contexts = ContextCreator.Merge(ContextCreator.Create("device", "1", new[] { "@fixed:abc/somepath", "FixedValue" }),
@@ -323,18 +326,18 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
-                Assert.AreEqual("FixedValue", val["somepath"].Value);
+                Assert.Equal("FixedValue", val["somepath"].Value);
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "2") });
-                Assert.AreEqual("RuleBasedValue", val["somepath"].Value);
+                Assert.Equal("RuleBasedValue", val["somepath"].Value);
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "3") });
-                Assert.AreEqual("FixedValue", val["somepath"].Value);
+                Assert.Equal("FixedValue", val["somepath"].Value);
                 
             });
         }
 
-        [Test]
+        [Fact]
         public async Task CalculateWithRecursiveMatcher()
         {
             contexts = ContextCreator.Merge(
@@ -361,14 +364,14 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
-                Assert.AreEqual(1, val.Count);
-                Assert.AreEqual("true", val["dep_path1"].Value);
+                Assert.Equal(1, val.Count);
+                Assert.Equal("true", val["dep_path1"].Value);
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "2") });
-                Assert.AreEqual(3, val.Count);
-                Assert.AreEqual("true", val["dep_path1"].Value);
-                Assert.AreEqual("true", val["dep_path2"].Value);
-                Assert.AreEqual("true", val["somepath"].Value);
+                Assert.Equal(3, val.Count);
+                Assert.Equal("true", val["dep_path1"].Value);
+                Assert.Equal("true", val["dep_path2"].Value);
+                Assert.Equal("true", val["somepath"].Value);
             });
         }
 

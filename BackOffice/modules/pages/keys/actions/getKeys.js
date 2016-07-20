@@ -1,3 +1,3 @@
-export default async function(){
-    return {"type": "KEYS_UPDATED", "payload":[] };
-} 
+export default async function() {
+  return { type: 'KEYS_UPDATED', payload: [] };
+}

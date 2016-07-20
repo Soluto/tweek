@@ -37,10 +37,12 @@
     border: none;
     border-bottom: 1px solid #007aff;
     border-radius: 0px;
-    padding-top: 14px;
     font-size: 14px;
-    padding-bottom: 5px;
-    padding-left: 6px;
+    padding: 2px 6px 2px 0;
+}
+
+.Editor :global(.react-autosuggest__suggestions-container){
+    top:30px;
 }
 
 .Panel{

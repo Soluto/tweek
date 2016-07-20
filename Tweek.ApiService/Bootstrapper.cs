@@ -1,58 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
-using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
-using System.Web;
-using Cassandra;
+using Couchbase.Configuration.Client;
+using Couchbase.Core.Serialization;
 using Engine;
-using Engine.Context;
 using Engine.Core.Rules;
-using Engine.Drivers.Cassandra;
 using Engine.Drivers.Context;
-using Engine.Drivers.Rules;
-using Engine.Drivers.Rules.Git;
 using Engine.Match.DSL;
 using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.TinyIoc;
-using Tweek.JPad;
-using Tweek.Drivers.CouchbaseDriver;
-using Couchbase.Configuration.Client;
-using Couchbase;
-using Logging.Core;
-using Logging.NLog;
 using Newtonsoft.Json;
-using Soluto.Common.Configuration;
+using Newtonsoft.Json.Serialization;
 using Tweek.Drivers.Blob;
+using Tweek.Drivers.CouchbaseDriver;
+using Tweek.JPad;
 
 namespace Tweek.ApiService
 {
 
     public class Bootstrapper : DefaultNancyBootstrapper
     {
-        private CassandraDriver GetCassandraDriver()
-        {
-            var cluster = Cassandra.Cluster.Builder()
-                .WithQueryOptions(new QueryOptions().SetConsistencyLevel(ConsistencyLevel.All))
-                .AddContactPoints("dc0vm1tqwdso6zqj26c.eastus.cloudapp.azure.com",
-                    "dc0vm0tqwdso6zqj26c.eastus.cloudapp.azure.com")
-                .Build();
-
-            var session = cluster.Connect("tweek");
-            return new CassandraDriver(session);
-        }
 
         CouchBaseDriver GetCouchbaseDriver()
         {
             var bucketName = "tweek-context";
             var cluster = new Couchbase.Cluster(new ClientConfiguration
             {
-                Servers = new List<Uri> { new Uri("http://tweek-db-couchbase.023209ac.svc.dockerapp.io:8091/") },
+                Servers = new List<Uri> { new Uri("http://tweek-db-east-1.17d25bc0.cont.dockerapp.io:8091/") },
                 BucketConfigs = new Dictionary<string, BucketConfiguration>
                 {
                     [bucketName] = new BucketConfiguration
@@ -63,15 +41,15 @@ namespace Tweek.ApiService
                     }
                     
                 },
-                Serializer = () => new Couchbase.Core.Serialization.DefaultSerializer(
+                Serializer = () => new DefaultSerializer(
                    
                    new JsonSerializerSettings()
                    {
-                       ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver()
+                       ContractResolver = new DefaultContractResolver()
                    },
                    new JsonSerializerSettings()
                    {
-                       ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver()
+                       ContractResolver = new DefaultContractResolver()
                    })
             });
             return new CouchBaseDriver(cluster, bucketName);
@@ -88,7 +66,7 @@ namespace Tweek.ApiService
 
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
-            InitLogging();
+            //InitLogging();
 
             var contextDriver = GetCouchbaseDriver();
             var rulesDriver = GetRulesDriver();
@@ -104,7 +82,7 @@ namespace Tweek.ApiService
                 .SelectMany(_ => CreateEngine(contextDriver, rulesDriver, parser))
                 .Catch((Exception exception) =>
                 {
-                    Log.Error("Failed to create engine with updated ruleset", exception, new Dictionary<string, object> { { "RoleName", "TweekApi" } });
+                    //Log.Error("Failed to create engine with updated ruleset", exception, new Dictionary<string, object> { { "RoleName", "TweekApi" } });
                     return Observable.Empty<ITweek>();
                 })
                 .Repeat()
@@ -121,6 +99,7 @@ namespace Tweek.ApiService
             return rulesDriver;
         }
 
+        /*
         private static void InitLogging()
         {
             var configSource = new CompositeConfiguration(new LocalConfigFile());
@@ -131,7 +110,7 @@ namespace Tweek.ApiService
                 nLogLogger = nLogLogger.WithRaygun(result);
             }
             Log.Init(nLogLogger);
-        }
+        }*/
 
         private static Task<ITweek> CreateEngine(CouchBaseDriver contextDriver, BlobRulesDriver rulesDriver, IRuleParser parser)
         {
