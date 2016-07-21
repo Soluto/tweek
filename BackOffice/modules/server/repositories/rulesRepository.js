@@ -43,9 +43,9 @@ async function isSynced(repo) {
   return remoteCommit.id().equal(localCommit.id());
 }
 
-export function init(repoSettings) {
-  const rulesDir = `${repoSettings.localPath}/rules`;
-  const repoInit = clone(repoSettings);
+export function init(repositorySettings) {
+  const rulesDir = `${repositorySettings.localPath}/rules`;
+  const repoInit = clone(repositorySettings);
   return {
     async getAllRules() {
       await repoInit;
@@ -57,7 +57,7 @@ export function init(repoSettings) {
       return (await fs.readFile(`${rulesDir}/${path}`)).toString();
     },
     updateRule: synchronized(async function(path, payload) {
-      const { username, password } = repoSettings;
+      const { username, password } = repositorySettings;
       const repo = await repoInit;
       console.log('start updating');
       await repo.fetchAll({

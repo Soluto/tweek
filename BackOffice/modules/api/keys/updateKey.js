@@ -2,8 +2,9 @@ import promisify from 'promisify-node';
 let fs = promisify('fs');
 import path from 'path';
 
-export default async function (req, res, { repo }, { params, location, route }) {
+export default async function (req, res, { metaRepository, rulesRepository }, { params, location, route }) {
   const keyPath = params.splat;
-  await repo.updateRule(keyPath, req.body.ruleDef.source);
+  await rulesRepository.updateRule(keyPath, req.body.ruleDef.source);
+  await metaRepository.updateKeyMeta(keyPath, req.body.meta);
   res.send('OK');
 }

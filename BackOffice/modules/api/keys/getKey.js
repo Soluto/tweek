@@ -2,17 +2,15 @@ import promisify from 'promisify-node';
 const fs = promisify('fs');
 import path from 'path';
 
-export default function (req, res, { repo }, { params, location, route }) {
+export default function (req, res, { rulesRepository, metaRepository }, { params, location, route }) {
   const keyPath = params.splat;
+  console.log(metaRepository);
   (async function() {
     return {
       ruleDef: {
         type: path.extname(keyPath).substring(1),
-        source: (await repo.getRule(keyPath)).toString(),
-      }, meta: {
-        description: 'abc',
-        displayName: 'hello',
-        tags: ['abc', 'def'],
+        source: (await rulesRepository.getRule(keyPath)).toString(),
       },
+      meta: await metaRepository.getKeyMeta(keyPath),
     };}()).then(res.json.bind(res), console.error.bind(console));
 }
