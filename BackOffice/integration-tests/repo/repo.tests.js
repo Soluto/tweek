@@ -1,6 +1,6 @@
 /* global jest, beforeEach, afterEach, describe, it, expect */
 
-import { init } from '../../modules/repo/rulesRepo';
+import { init } from '../../modules/repositories/rulesRepository';
 import { expect } from 'chai';
 import { Repository, Remote, Signature, Clone } from 'nodegit';
 import os from 'os';

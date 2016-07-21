@@ -1,6 +1,5 @@
 @import (reference) "../../../../styles/core/core.less";
 .key-viewer-container {
-  flex-grow: 1;
   padding: 10px;
   .horizontal-separator {
     width: 100%;
@@ -10,6 +9,8 @@
     clear: both;
   }
   .key-header {
+    position: relative;
+    width: 100%;
     .key-name {
       float: left;
       font-size: 30px;
@@ -19,6 +20,13 @@
       width: 100px;
       float: right;
     }
+  }
+  .key-rules-editor {
+    position: absolute;
+    top: 160px;
+    bottom: 0;
+    left: 0;
+    right: 0;
   }
   .key-meta-container {
     clear: both;
