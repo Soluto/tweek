@@ -16,13 +16,18 @@
     "test:integration": "mocha --compilers js:babel-register ./integration-tests/**/*.js",
     "coverage:upload:code-climate": "codeclimate-test-reporter < ./coverage-unit/lcov.info",
     "react-project:start:dev": "node ./node_modules/react-project/bin/react-project.js start",
-    "react-project:start:prod": "rm -rf .build && react-project build && node .build/server.js"
+    "react-project:start:prod": "rm -rf .build && react-project build && node .build/server.js",
+    "build-prod": "rm -rf .build && react-project build"
   },
   "author": "",
   "jest": {
+    "scriptPreprocessor": "./node_modules/jest-css-modules",
     "preprocessorIgnorePatterns": [
       "/node_modules/"
     ],
+    "moduleNameMapper": {
+      "^.*css$": "empty/object"
+    },
     "coverageDirectory": "./coverage-unit/",
     "collectCoverage": true,
     "unmockedModulePathPatterns": [
@@ -122,15 +127,18 @@
     "babel-runtime": "6.6.1",
     "chai": "3.5.0",
     "codeclimate-test-reporter": "0.3.3",
+    "empty": "0.10.1",
+    "enzyme": "2.4.1",
     "eslint": "2.13.1",
     "eslint-config-airbnb": "9.0.1",
     "eslint-config-defaults": "9.0.0",
-    "eslint-find-rules": "^1.9.2",
+    "eslint-find-rules": "1.9.2",
     "eslint-plugin-import": "1.9.2",
     "eslint-plugin-jsx-a11y": "1.5.3",
     "eslint-plugin-react": "5.2.2",
     "estraverse-fb": "1.3.1",
     "jest-cli": "13.2.3",
+    "jest-css-modules": "1.0.2",
     "less": "2.7.1",
     "less-loader": "2.2.3"
   }
