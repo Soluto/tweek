@@ -12,9 +12,9 @@ namespace Tweek.Drivers.Blob
 {
     public class BlobRulesDriver : IRulesDriver
     {
-        private readonly string _url;
+        private readonly Uri _url;
 
-        public BlobRulesDriver(string url)
+        public BlobRulesDriver(Uri url)
         {
             _url = url;
         }

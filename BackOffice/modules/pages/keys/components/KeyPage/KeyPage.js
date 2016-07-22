@@ -1,14 +1,12 @@
 import React from 'react';
 import { Component } from 'react';
 import { connect } from 'react-redux';
-import getKey from '../../actions/getKey';
-import saveKey from '../../actions/saveKey';
 import KeyMetaEditor from '../KeyMetaEditor/KeyMetaEditor';
 import KeyRulesEditor from '../KeyRulesEditor/KeyRulesEditor';
+import * as actions from '../../ducks/selectedKey';
 import style from './KeyPage.css';
 
-export default connect((state, { params }) => ({ ...state, configKey: params.splat })
-)(
+export default connect((state, { params }) => ({ ...state, configKey: params.splat }), { ...actions })(
   class KeyPage extends Component {
 
     static propTypes = {
@@ -22,62 +20,61 @@ export default connect((state, { params }) => ({ ...state, configKey: params.spl
     }
 
     componentDidMount() {
-      const { dispatch, configKey } = this.props;
+      const { downloadKey, configKey } = this.props;
       if (configKey) {
-        dispatch(getKey(configKey));
+        downloadKey(configKey);
       }
     }
 
     componentWillReceiveProps({ configKey }) {
       if (configKey !== this.props.configKey || !this.props.selectedKey) {
-        this.props.dispatch(getKey(configKey));
+        this.props.downloadKey(configKey);
       }
     }
 
-    onSelectedKeyMetaChanged({ type, payload}) {
-      // alert(type + payload);
-      // return;
-      // switch (type) {
-      //   case actions.removeTags: {
-
-      //   } break;
-      //   case actions.addTags: {
-
-      //   } break;
-      //   case actions.changeDescription: {
-
-      //   } break;
-      //   case actions.changeDisplayName: {
-
-      //   } break;
-      // }
-      // alert(changes);
+    onSelectedKeyMetaChanged(newMeta) {
+      this.props.updateKeyMetaDef(newMeta);
     }
 
     render() {
       const { dispatch, configKey, selectedKey } = this.props;
       return (
         <div key={configKey}
-          className={style['KeyPage']}>
-          <h3>{configKey}</h3>
-          <div>{selectedKey ?
+          className={style['key-viewer-container']}
+        >
+
+          <div className={style['key-header']}>
+            <div className={style['key-name']}>{configKey}</div>
+
+            <button className={style['save-button']}
+              onClick={() => this.props.saveKey(configKey)}
+            >
+              Save changes
+            </button>
+          </div >
+
+          <div className={style['horizontal-separator']} >
+          </div >
+
+          {selectedKey ?
             <div>
-
               <KeyMetaEditor meta={selectedKey.meta}
-                onMetaChangedCallback={this::this.onSelectedKeyMetaChanged} />
+                onMetaChangedCallback={this:: this.onSelectedKeyMetaChanged}
+                className={style['key-meta-container']}
+              />
 
-              <button className={style['save-button']}
-                onClick={() => dispatch(saveKey(configKey)) }>
-                Save changes
-              </button>
+              <div className={style['horizontal-separator']} >
+              </div >
 
               <KeyRulesEditor ruleDef={selectedKey.ruleDef}
                 sourceTree={JSON.parse(selectedKey.ruleDef.source) }
-                onMutation={x => dispatch({ type: 'KEY_RULEDEF_UPDATED', payload: { source: JSON.stringify(x, null, 4) } }) } />
-
-            </div> :
+                onMutation={x => this.props.updateKeyRuleDef({ source: JSON.stringify(x, null, 4) }) }
+                className={style['key-rules-editor']}
+              />
+            </div>
+            :
             <div>loading...</div>
-          }</div>
+          }
         </div >
 
       );

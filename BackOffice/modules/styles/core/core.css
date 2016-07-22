@@ -20,3 +20,17 @@
 .metro-button:active {
   background-color: #0098ff;
 }
+.metro-textbox {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 7px;
+  background-color: transparent;
+  border-bottom: 2px solid rgba(0, 122, 204, 0.7);
+  outline: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}

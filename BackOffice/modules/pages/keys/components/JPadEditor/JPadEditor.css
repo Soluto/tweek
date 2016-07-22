@@ -1,95 +1,87 @@
-.Rule{
-    display:flex;
-    padding: 10px;
-    box-shadow: #666666 1px 1px 4px;
-    border-radius: 2px;
-    margin: 10px 0;
+.Rule {
+  display: flex;
+  padding: 10px;
+  box-shadow: #666666 1px 1px 4px;
+  border-radius: 2px;
+  margin: 10px 0;
 }
-
-.Matcher .MatcherProperty div{
-    margin: 0 4px;
+.Matcher .MatcherProperty div {
+  margin: 0 4px;
 }
-
-.Matcher .MatcherProperty{
-    display:flex;
+.Matcher .MatcherProperty {
+  display: flex;
 }
-
-.Predicate{
-    display:flex;
+.Predicate {
+  display: flex;
 }
-
-.PropertySelector{
-    width:200px;
+.PropertySelector {
+  width: 200px;
 }
-
-.Editor li{
-    list-style: none;
+.Editor li {
+  list-style: none;
 }
-
-.Editor{
-    padding: 0;
-    margin: 0;
+.Editor {
+  padding: 0;
+  margin: 0;
 }
-
-
-.Editor input[type=text]{
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid #007aff;
-    border-radius: 0px;
-    font-size: 14px;
-    padding: 2px 6px 2px 0;
+.Editor input[type=text] {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 7px;
+  background-color: transparent;
+  border-bottom: 2px solid rgba(0, 122, 204, 0.7);
+  outline: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
-
-.Editor :global(.react-autosuggest__suggestions-container){
-    top:30px;
+.Editor :global(.react-autosuggest__suggestions-container) {
+  top: 30px;
 }
-
-.Panel{
-   margin: 4px;
+.Panel {
+  margin: 4px;
 }
-.Panel:before{
-    font-size: 12px;
-    content: attr(data-label);
+.Panel:before {
+  font-size: 12px;
+  content: attr(data-label);
 }
-
-.Matcher:empty:before{
-    content: "Match all";
+.Matcher:empty:before {
+  content: "Match all";
 }
-
-.Editor :global(.OpDropdown) :global(.popup--jss-0-5){
-    max-width:80px;
-    min-width:80px;
+.Editor :global(.OpDropdown) :global(.popup--jss-0-5) {
+  max-width: 80px;
+  min-width: 80px;
 }
-
-
 :global(.react-autosuggest__container) {
   position: relative;
 }
-
 :global(.react-autosuggest__input) {
-  width: 160px;
-  height: 30px;
-  padding: 10px 20px;
-  font-family: Helvetica, sans-serif;
-  font-weight: 300;
-  font-size: 16px;
-  border: 1px solid #aaa;
-  border-radius: 4px;
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 7px;
+  background-color: transparent;
+  border-bottom: 2px solid rgba(0, 122, 204, 0.7);
+  outline: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
-
 :global(.react-autosuggest__input):focus {
   outline: none;
 }
-
 :global(.react-autosuggest__container--open) :global(.react-autosuggest__input) {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
-
 :global(.react-autosuggest__suggestions-container) {
   position: absolute;
-  top: 51px;
+  top: 31px;
   width: 200px;
   margin: 0;
   padding: 0;
@@ -103,25 +95,20 @@
   border-bottom-right-radius: 4px;
   z-index: 2;
 }
-
 :global(.react-autosuggest__suggestion) {
   cursor: pointer;
   padding: 10px 20px;
 }
-
 :global(.react-autosuggest__suggestion--focused) {
   background-color: #ddd;
 }
-
 :global(.no-suggestions) {
   margin-top: 10px;
   padding-left: 10px;
 }
-
 .MatcherProperty :global(.MatcherOp) :global(.react-autosuggest__input) {
-    width:30px;
+  width: 30px;
 }
-
 .MatcherProperty :global(.MatcherOp) :global(.react-autosuggest__suggestions-container) {
-    width:60px;
+  width: 60px;
 }
