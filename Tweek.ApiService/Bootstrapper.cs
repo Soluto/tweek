@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
@@ -68,8 +69,7 @@ namespace Tweek.ApiService
             //InitLogging();
 
             var contextDriver = GetCouchbaseDriver();
-            //var rulesDriver = new BlobRulesDriver("http://localhost:3000/ruleset/latest");
-            var rulesDriver = new BlobRulesDriver("https://tweek-management.azurewebsites.net/ruleset/latest");
+            var rulesDriver = GetRulesDriver();
 
             var parser = GetRulesParser();
             var subject = new BehaviorSubject<ITweek>(CreateEngine(contextDriver, rulesDriver, parser).Result);
@@ -89,6 +89,14 @@ namespace Tweek.ApiService
                 .Subscribe(subject);
 
             base.ApplicationStartup(container, pipelines);
+        }
+
+        private static BlobRulesDriver GetRulesDriver()
+        {
+            var managementBaseUrl = new Uri(ConfigurationManager.AppSettings["Tweek.Management.BaseUrl"]);
+            var managementUrl = new Uri(managementBaseUrl, "ruleset/latest");
+            var rulesDriver = new BlobRulesDriver(managementUrl);
+            return rulesDriver;
         }
 
         /*

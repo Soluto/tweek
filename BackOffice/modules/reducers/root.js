@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
-import keysReducer from '../pages/keys/reducers/keys';
-import selectedKeyReducer from '../pages/keys/reducers/selectedKey';
+import keysReducer from '../pages/keys/ducks/keys';
+import selectedKeyReducer from '../pages/keys/ducks/selectedKey';
 
 export default (combineReducers(
   {
