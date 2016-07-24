@@ -6,6 +6,7 @@ import routes from '../modules/routes';
 import configureStore from './store/configureStore';
 import { Provider } from 'react-redux';
 import serverRoutes from './serverRoutes';
+import { getKeys } from '../modules/pages/keys/ducks/keys';
 
 const repo = require('./repo/rulesRepo')
            .init({ url: 'http://tweek-gogs.07965c2a.svc.dockerapp.io/tweek/tweek-rules', username: 'tweek', password: 'po09!@QW', localPath: `${process.cwd()}/rulesRepo` });
@@ -15,7 +16,7 @@ function getApp(req, res, requestCallback) {
     routes: routes(serverRoutes({ repo })),
     render(routerProps, renderCallback) {
       const store = configureStore({});
-      repo.getAllRules().then(keys => store.dispatch({ type: 'KEYS_UPDATED', payload: keys }))
+      repo.getAllRules().then(keys => store.dispatch(getKeys(keys)))
       .then(() =>
         renderCallback(null, {
           renderDocument: (props) => <Document {...props} initialState={store.getState()} />,

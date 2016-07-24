@@ -1,4 +1,19 @@
-.save-button {
+.key-viewer-container {
+  flex-grow: 1;
+  padding: 10px;
+}
+.key-viewer-container .horizontal-separator {
+  width: 100%;
+  height: 1px;
+  background-color: lightgray;
+  margin: 10px 0;
+  clear: both;
+}
+.key-viewer-container .key-header .key-name {
+  float: left;
+  font-size: 30px;
+}
+.key-viewer-container .key-header .save-button {
   vertical-align: top;
   background-color: rgba(0, 122, 204, 0.7);
   height: 28px;
@@ -12,11 +27,16 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
+  width: 100px;
+  float: right;
 }
-.save-button:hover {
+.key-viewer-container .key-header .save-button:hover {
   background-color: #007acc;
   cursor: pointer;
 }
-.save-button:active {
+.key-viewer-container .key-header .save-button:active {
   background-color: #0098ff;
+}
+.key-viewer-container .key-meta-container {
+  clear: both;
 }

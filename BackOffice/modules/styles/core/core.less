@@ -1,5 +1,4 @@
 @import (reference) "./accents.less";
-
 .user-select(@user-select: none) {
   -moz-user-select: @user-select;
   -ms-user-select: @user-select;
@@ -31,4 +30,14 @@
   }
 }
 
-.metro-textbox {}
+.metro-textbox {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 7px;
+  background-color: transparent;
+  border-bottom: 2px solid @accent-color2;
+  outline: none;
+  .user-select(none);
+}
