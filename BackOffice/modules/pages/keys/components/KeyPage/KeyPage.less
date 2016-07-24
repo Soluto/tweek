@@ -1,5 +1,26 @@
 @import (reference) "../../../../styles/core/core.less";
-
-.save-button {
-  .metro-button;
+.key-viewer-container {
+  flex-grow: 1;
+  padding: 10px;
+  .horizontal-separator {
+    width: 100%;
+    height: 1px;
+    background-color: lightgray;
+    margin: 10px 0;
+    clear: both;
+  }
+  .key-header {
+    .key-name {
+      float: left;
+      font-size: 30px;
+    }
+    .save-button {
+      .metro-button;
+      width: 100px;
+      float: right;
+    }
+  }
+  .key-meta-container {
+    clear: both;
+  }
 }

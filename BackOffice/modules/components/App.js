@@ -1,7 +1,7 @@
 import React from 'react';
 import { IndexLink, Link } from 'react-router';
 import Title from 'react-title-component';
-import styles from './app.css';
+import styles from './App.css';
 import logo from './logo.png';
 
 export default React.createClass({
