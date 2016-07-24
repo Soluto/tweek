@@ -12,6 +12,7 @@ namespace Engine.Drivers.Rules
 
     public interface IRulesDriver
     {
+        event Action OnRulesChange;
         Task<Dictionary<string, RuleDefinition>> GetAllRules();
     }
 }
