@@ -7,8 +7,6 @@ import configureStore from './store/configureStore';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
-window.Pref = require('react-addons-perf');
-
 let store = configureStore(window.STORE_INITIAL_STATE);
 
 import { syncHistoryWithStore } from 'react-router-redux';
