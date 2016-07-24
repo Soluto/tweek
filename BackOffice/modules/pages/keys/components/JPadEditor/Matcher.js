@@ -3,8 +3,8 @@ import R from 'ramda';
 import { Matcher as MatcherStyle,
         MatcherProperty as MatcherPropertyStyle } from './JPadEditor.css';
 import EditorMetaService from '../../../../services/EditorMetaService';
-import PropertyName from './matcher/PropertyName';
-import PropertyPredicate from './matcher/PropertyPredicate';
+import PropertyName from './Matcher/PropertyName';
+import PropertyPredicate from './Matcher/PropertyPredicate';
 import { shouldUpdate } from 'recompose';
 
 const editorMetaService = new EditorMetaService();
