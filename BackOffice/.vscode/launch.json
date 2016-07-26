@@ -7,7 +7,9 @@
 			"request": "launch",
 			"program": "${workspaceRoot}/./node_modules/react-project/bin/react-project.js",
 			"stopOnEntry": false,
-			"args": ["start"],
+			"args": [
+				"start"
+			],
 			"cwd": "${workspaceRoot}",
 			"preLaunchTask": null,
 			"runtimeExecutable": null,
@@ -15,7 +17,8 @@
 				"--nolazy"
 			],
 			"env": {
-				"NODE_ENV": "development"
+				"NODE_ENV": "development",
+				"AUTO_RELOAD": "refresh"
 			},
 			"externalConsole": false,
 			"sourceMaps": false,

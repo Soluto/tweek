@@ -1,6 +1,24 @@
-.KeyPages {
+.keys-page-container {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  bottom: 0;
+  right: 0;
   display: flex;
 }
-.KeyPage {
-  flex-grow: 1;
+.keys-page-container .keys-list {
+  position: relative;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow-y: scroll;
+}
+.keys-page-container .key-page {
+  position: relative;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
 }

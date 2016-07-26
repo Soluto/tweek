@@ -41,40 +41,49 @@ export default connect((state, { params }) => ({ ...state, configKey: params.spl
       return (
         <div key={configKey}
           className={style['key-viewer-container']}
-        >
+          >
 
           <div className={style['key-header']}>
             <div className={style['key-name']}>{configKey}</div>
 
             <button className={style['save-button']}
-              onClick={() => this.props.saveKey(configKey)}
-            >
+              onClick={() => this.props.saveKey(configKey) }
+              >
               Save changes
             </button>
-          </div >
 
-          <div className={style['horizontal-separator']} >
+            <div className={style['horizontal-separator']} >
+            </div >
+
+            {selectedKey ?
+              <div>
+
+                <KeyMetaEditor meta={selectedKey.meta}
+                  onMetaChangedCallback={this:: this.onSelectedKeyMetaChanged}
+                className={style['key-meta-container']}
+                />
+
+                <div className={style['horizontal-separator']} >
+                </div >
+
+              </div>
+              :
+              <div>loading...</div>
+            }
+
           </div >
 
           {selectedKey ?
-            <div>
-              <KeyMetaEditor meta={selectedKey.meta}
-                onMetaChangedCallback={this:: this.onSelectedKeyMetaChanged}
-                className={style['key-meta-container']}
-              />
-
-              <div className={style['horizontal-separator']} >
-              </div >
 
               <KeyRulesEditor ruleDef={selectedKey.ruleDef}
                 sourceTree={JSON.parse(selectedKey.ruleDef.source) }
                 onMutation={x => this.props.updateKeyRuleDef({ source: JSON.stringify(x, null, 4) }) }
                 className={style['key-rules-editor']}
-              />
-            </div>
-            :
-            <div>loading...</div>
+                />
+
+            : null
           }
+
         </div >
 
       );

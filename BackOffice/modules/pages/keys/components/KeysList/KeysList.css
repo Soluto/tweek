@@ -1,13 +1,18 @@
-.KeyList {
+.key-list-container {
   background-color: #f7f7f7;
   padding: 5px;
   max-width: 500px;
+  position: relative;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
-.KeyList ul {
+.key-list-container ul {
   padding: 0 0 0 10px;
   margin: 0;
 }
-.KeyList ul li {
+.key-list-container ul li {
   list-style: none;
   max-width: 500px;
   overflow: hidden;

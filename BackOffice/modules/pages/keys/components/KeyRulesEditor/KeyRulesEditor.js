@@ -4,6 +4,7 @@ import JPadEditor from '../JPadEditor/JPadEditor';
 import Mutator from '../../../../utils/mutator';
 import wrapComponentWithClass from '../../../../utils/wrapComponentWithClass';
 import { compose } from 'recompose';
+import style from './KeyRulesEditor.css';
 
 const MutatorFor = (propName) => (Comp) =>
   class extends React.Component {
@@ -21,18 +22,18 @@ const MutatorFor = (propName) => (Comp) =>
 
 const KeyRulesEditor = ({ ruleDef, mutate }) =>
   (
-    <div>
+    <div className={style['key-rules-editor-container']}>
       <Tabs selectedIndex={0}>
         <TabList>
           <Tab>Rule</Tab>
           <Tab>Source</Tab>
         </TabList>
-        <TabPanel>
+        <TabPanel className={style['tab-content']}>
           <JPadEditor cases={mutate.target}
             mutate={mutate}
-          />
+            />
         </TabPanel>
-        <TabPanel>
+        <TabPanel className={style['tab-content']}>
           <pre>
             {JSON.stringify(JSON.parse(ruleDef.source), null, 4) }
           </pre>
