@@ -36,6 +36,8 @@
       "node_modules/react-addons-test-utils",
       "node_modules/recompose",
       "node_modules/ramda",
+      "node_modules/chai",
+      "node_modules/chai-as-promise",
       "babel-runtime",
       "spec/.*"
     ],

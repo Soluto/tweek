@@ -11,26 +11,7 @@ describe('MetaRepository', () => {
   let metaRepo = new MetaRepository(gitMock);
 
   describe('getRuleMeta', async () => {
-    it('should be able to get rule meta: call git repo with correct rule name and return correct meta', async () => {
-      // Arrange
-      const metaFileContentMock = 'some meta';
-      const requestedRuleName = 'some rule name';
-
-      const expectedFileName =
-        `${MetaRepository.META_REPOSITORY_DIRECTORY_NAME}/${requestedRuleName}${MetaRepository.META_REPOSITORY_FILE_EXTENSION_NAME}`;
-
-      gitMock.readFile = jest.fn(async () => metaFileContentMock);
-
-      // Act
-      let result = await metaRepo.getRuleMeta(requestedRuleName);
-
-      // Assert
-      expect(result).to.eql(metaFileContentMock);
-      expect(gitMock.readFile.mock.calls.length).to.eql(1);
-      expect(gitMock.readFile.mock.calls[0][0]).to.eql(expectedFileName);
-    });
-
-    it('should return an object after parsing a json file', async () => {
+    it('should be able to get rule meta: call git repo with correct rule name and return correct meta after parsing a json file', async () => {
       // Arrange
       const metaMock = {
         displayName: 'some displayName',
@@ -40,13 +21,20 @@ describe('MetaRepository', () => {
 
       const stringMetaMock = JSON.stringify(metaMock);
 
-      gitMock.readFile = async () => stringMetaMock;
+      const requestedRuleName = 'some rule name';
+
+      const expectedFileName =
+        `${MetaRepository.META_REPOSITORY_DIRECTORY_NAME}/${requestedRuleName}${MetaRepository.META_REPOSITORY_FILE_EXTENSION_NAME}`;
+
+      gitMock.readFile = jest.fn(async () => stringMetaMock);
 
       // Act
-      let result = await metaRepo.getRuleMeta();
+      let result = await metaRepo.getRuleMeta(requestedRuleName);
 
       // Assert
       expect(result).to.eql(metaMock);
+      expect(gitMock.readFile.mock.calls.length).to.eql(1);
+      expect(gitMock.readFile.mock.calls[0][0]).to.eql(expectedFileName);
     });
 
     it('should fail: git repo readFile rejected', async () => {
