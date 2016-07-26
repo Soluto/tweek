@@ -7,7 +7,7 @@ function synchronizedFunction(fn) {
 
     return lock.then(
       () => {
-        lock = fn.apply(context, args);
+        lock = context::fn(...args);
         return lock;
       }).catch(
       () => {
