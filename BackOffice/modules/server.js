@@ -7,12 +7,19 @@ import configureStore from './store/configureStore';
 import { Provider } from 'react-redux';
 import serverRoutes from './serverRoutes';
 import { getKeys } from '../modules/pages/keys/ducks/keys';
+import GitRepository from './server/repositories/GitRepository';
+import MetaRepository from './server/repositories/MetaRepository';
+import RulesRepository from './server/repositories/RulesRepository';
 
-const rulesRepository = require('./server/repositories/rulesRepository')
-  .init({ url: 'http://tweek-gogs.07965c2a.svc.dockerapp.io/tweek/tweek-rules', username: 'tweek', password: '***REMOVED***', localPath: `${process.cwd()}/rulesRepository` });
+const gitRepo = GitRepository.init({
+  url: 'http://tweek-gogs.07965c2a.svc.dockerapp.io/tweek/tweek-rules',
+  username: 'tweek',
+  password: '***REMOVED***',
+  localPath: `${process.cwd()}/rulesRepository`,
+});
 
-const metaRepository = require('./server/repositories/metaRepository')
-  .init();
+const rulesRepository = new RulesRepository(gitRepo);
+const metaRepository = new MetaRepository(gitRepo);
 
 function getApp(req, res, requestCallback) {
   requestCallback(null, {

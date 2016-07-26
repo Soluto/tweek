@@ -11,6 +11,6 @@ export default function (req, res, { rulesRepository, metaRepository }, { params
         type: path.extname(keyPath).substring(1),
         source: (await rulesRepository.getRule(keyPath)).toString(),
       },
-      meta: await metaRepository.getKeyMeta(keyPath),
+      meta: await metaRepository.getRuleMeta(keyPath),
     };}()).then(res.json.bind(res), console.error.bind(console));
 }

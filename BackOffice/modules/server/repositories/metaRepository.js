@@ -1,23 +1,23 @@
-function getMockMeta(keyPath) {
-  return {
-    description: keyPath + ' description',
-    displayName: 'some displayName',
-    tags: ['pita', 'abc', '1132'],
-  };
+class MetaRepository {
+
+  static META_REPOSITORY_DIRECTORY_NAME = 'meta'
+  static META_REPOSITORY_FILE_EXTENSION_NAME = '.json';
+
+  constructor(gitRepo) {
+    this._gitRepo = gitRepo;
+  }
+
+  async getRuleMeta(ruleName) {
+    return await this._gitRepo.readFile(this._buildMetaJsonFilePath(ruleName));
+  }
+
+  updateRuleMeta(ruleName, payload, author) {
+    return this._gitRepo.updateFile(this._buildMetaJsonFilePath(ruleName), payload, author);
+  }
+
+  _buildMetaJsonFilePath(ruleName) {
+    return `${MetaRepository.META_REPOSITORY_DIRECTORY_NAME}/${ruleName}${MetaRepository.META_REPOSITORY_FILE_EXTENSION_NAME}`;
+  }
 }
 
-let metaStore = {
-};
-
-export function init(settings) {
-  return {
-    async getKeyMeta(keyPath) {
-      var storedMeta = metaStore[keyPath];
-
-      return storedMeta ? storedMeta : getMockMeta(keyPath);
-    },
-    updateKeyMeta(keyPath, newMeta) {
-      metaStore[keyPath] = newMeta;
-    },
-  };
-}
+export default MetaRepository;
