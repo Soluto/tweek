@@ -3,13 +3,13 @@ import { Component } from 'react';
 import * as actions from '../../ducks/keys';
 import { connect } from 'react-redux';
 import KeysList from '../KeysList/KeysList';
-import { KeyPages as KeyPagesStyle } from './KeysPage.css';
+import style from './KeysPage.css';
 import createFragment from 'react-addons-create-fragment';
 
-export default connect(state => state, { ...actions })(class KeysPage extends Component
-{
+export default connect(state => state, { ...actions })(class KeysPage extends Component {
   constructor(props) {
     super(props);
+    console.log(props);
   }
 
   componentDidMount() {
@@ -20,12 +20,16 @@ export default connect(state => state, { ...actions })(class KeysPage extends Co
 
   render() {
     return (
-            <div className={KeyPagesStyle}>
-            {createFragment({
-              KeysList: <KeysList keys={this.props.keys}></KeysList>,
-              Page: this.props.children,
-            })}
-            </div>
-        );
+      <div className={style['keys-page-container']}>
+        {createFragment({
+          KeysList: <div className={style['keys-list']}>
+            <KeysList keys={this.props.keys}></KeysList>
+          </div>,
+          Page: <div className={style['key-page']}>
+            {this.props.children}
+          </div>,
+        }) }
+      </div>
+    );
   }
 });

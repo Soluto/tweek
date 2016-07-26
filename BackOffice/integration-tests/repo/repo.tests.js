@@ -1,6 +1,6 @@
 /* global jest, beforeEach, afterEach, describe, it, expect */
 
-import { init } from '../../modules/repo/rulesRepo';
+import { init } from '../../modules/server/repositories/GitRepository';
 import { expect } from 'chai';
 import { Repository, Remote, Signature, Clone } from 'nodegit';
 import os from 'os';
@@ -10,6 +10,7 @@ const fs = require('fs');
 const promisify = (fn, context) => (...args) => new Promise((resolve, reject) =>
 fn.call(context, ...args.concat([(err, res) => !!(err) ? reject(err) : resolve(res)])));
 const rimrafAsync = promisify(rimraf);
+
 const createRandomDirectorySync = (prefix = '') => {
   const chance = new Chance();
   const path = `${os.tmpdir()}/p${prefix}-${chance.guid()}`;
