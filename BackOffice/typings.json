@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "chai": "registry:npm/chai#3.5.0+20160415060238"
+  },
+  "globalDependencies": {
+    "jest": "registry:dt/jest#0.9.0+20160706021812"
   }
 }
