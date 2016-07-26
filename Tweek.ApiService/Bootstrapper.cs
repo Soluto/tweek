@@ -72,21 +72,12 @@ namespace Tweek.ApiService
             var rulesDriver = GetRulesDriver();
 
             var parser = GetRulesParser();
-            var subject = new BehaviorSubject<ITweek>(CreateEngine(contextDriver, rulesDriver, parser).Result);
 
-            container.Register<ITweek>((ctx, no) => subject.FirstAsync().Wait());
+            var tweek = Task.Run(async () => await Engine.Tweek.Create(contextDriver, rulesDriver, parser)).Result;
+
+            container.Register<ITweek>((ctx, no) => tweek);
             container.Register<IContextDriver>((ctx, no) => contextDriver);
             container.Register<IRuleParser>((ctx, no) => parser);
-
-            Observable.Interval(TimeSpan.FromSeconds(60 * 60))
-                .SelectMany(_ => CreateEngine(contextDriver, rulesDriver, parser))
-                .Catch((Exception exception) =>
-                {
-                    //Log.Error("Failed to create engine with updated ruleset", exception, new Dictionary<string, object> { { "RoleName", "TweekApi" } });
-                    return Observable.Empty<ITweek>();
-                })
-                .Repeat()
-                .Subscribe(subject);
 
             base.ApplicationStartup(container, pipelines);
         }
