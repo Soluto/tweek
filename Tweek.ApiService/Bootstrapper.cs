@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
+using System.Net;
 using System.Threading.Tasks;
 using Couchbase.Configuration.Client;
 using Couchbase.Core.Serialization;
@@ -14,6 +13,7 @@ using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.TinyIoc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using Tweek.Drivers.Blob;
 using Tweek.Drivers.CouchbaseDriver;
@@ -24,19 +24,23 @@ namespace Tweek.ApiService
 
     public class Bootstrapper : DefaultNancyBootstrapper
     {
+        private dynamic _settings;
 
-        CouchBaseDriver GetCouchbaseDriver()
+        private CouchBaseDriver GetCouchbaseDriver()
         {
-            var bucketName = "tweek-context";
+            var bucketName = _settings.couchbase.bucketName.ToString();
+            var password = _settings.couchbase.password.ToString();
+            var url = _settings.couchbase.url.ToString();
+
             var cluster = new Couchbase.Cluster(new ClientConfiguration
             {
-                Servers = new List<Uri> { new Uri("http://tweek-db-east-1.17d25bc0.cont.dockerapp.io:8091/") },
+                Servers = new List<Uri> { new Uri(url) },
                 BucketConfigs = new Dictionary<string, BucketConfiguration>
                 {
                     [bucketName] = new BucketConfiguration
                     {
                         BucketName = bucketName,
-                        Password = "***REMOVED***",
+                        Password = password,
                         UseEnhancedDurability = true
                     }
                     
@@ -66,6 +70,7 @@ namespace Tweek.ApiService
 
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
+            _settings = GetSettings().Result;
             //InitLogging();
 
             var contextDriver = GetCouchbaseDriver();
@@ -82,12 +87,21 @@ namespace Tweek.ApiService
             base.ApplicationStartup(container, pipelines);
         }
 
-        private static BlobRulesDriver GetRulesDriver()
+        private static async Task<JObject> GetSettings()
         {
             var managementBaseUrl = new Uri(ConfigurationManager.AppSettings["Tweek.Management.BaseUrl"]);
-            var managementUrl = new Uri(managementBaseUrl, "ruleset/latest");
-            var rulesDriver = new BlobRulesDriver(managementUrl);
-            return rulesDriver;
+            var managementUrl = new Uri(managementBaseUrl, "settings");
+
+            using (var client = new WebClient())
+            {
+                var json = await client.DownloadStringTaskAsync(managementUrl);
+                return JsonConvert.DeserializeObject<dynamic>(json);
+            }
+        }
+
+        private BlobRulesDriver GetRulesDriver()
+        {
+            return new BlobRulesDriver(_settings.rulesBlobUrl.ToString());
         }
 
         /*
