@@ -1,7 +1,7 @@
 import Git from 'nodegit';
 import rimraf from 'rimraf';
 import glob from 'glob';
-import synchronizedFunction from '../../utils/synchronizedFunction';
+import synchronized from '../../utils/synchronizedFunction';
 const fs = require('promisify-node')('fs');
 
 const promisify = (fn, context) => (...args) => new Promise((resolve, reject) =>
@@ -33,7 +33,7 @@ class GitRepository {
     this._repoPromise = this._cloneAsync();
   }
 
-  async getFileNames(folderName) {
+  async getFileNames(folderName = '') {
     await this._repoPromise;
 
     return await globAsync('**/*.*', {
@@ -47,9 +47,8 @@ class GitRepository {
     return (await fs.readFile(`${this._localPath}/${fileName}`)).toString();
   }
 
-  updateFile = synchronizedFunction(async function (fileName,
-    payload, { name = 'unknown', email = 'unknown@soluto.com' }) {
-    const repo = this._repoPromise;
+  updateFile = synchronized(async function (fileName, payload, { name = 'unknown', email = 'unknown@soluto.com' }) {
+    const repo = await this._repoPromise;
     console.log('start updating');
 
     await repo.fetchAll(this._defaultGitOperationSettings);
