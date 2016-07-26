@@ -101,7 +101,7 @@ namespace Tweek.ApiService
 
         private BlobRulesDriver GetRulesDriver()
         {
-            return new BlobRulesDriver(_settings.rulesBlobUrl.ToString());
+            return new BlobRulesDriver(new Uri(_settings.rulesBlobUrl.ToString()));
         }
 
         /*
