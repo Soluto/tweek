@@ -15,6 +15,9 @@ using Nancy.TinyIoc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 using Tweek.Drivers.Blob;
 using Tweek.Drivers.CouchbaseDriver;
 using Tweek.JPad;
@@ -70,8 +73,9 @@ namespace Tweek.ApiService
 
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
+            InitLogging();
+
             _settings = GetSettings().Result;
-            //InitLogging();
 
             var contextDriver = GetCouchbaseDriver();
             var rulesDriver = GetRulesDriver();
@@ -101,21 +105,26 @@ namespace Tweek.ApiService
 
         private BlobRulesDriver GetRulesDriver()
         {
-            return new BlobRulesDriver(_settings.rulesBlobUrl.ToString());
+            return new BlobRulesDriver(new Uri(_settings.rulesBlobUrl.ToString()));
         }
 
-        /*
         private static void InitLogging()
         {
-            var configSource = new CompositeConfiguration(new LocalConfigFile());
-            var result = configSource.Retrieve<string>("RaygunClientId").Result;
-            var nLogLogger = new NLogLogger();
-            if (!string.IsNullOrEmpty(result))
+            var configuration = new LoggingConfiguration();
+
+            var fileTarget = new FileTarget
             {
-                nLogLogger = nLogLogger.WithRaygun(result);
-            }
-            Log.Init(nLogLogger);
-        }*/
+                FileName = "${basedir}/tweek-"+ DateTime.UtcNow.ToString("yyyyMMdd") + ".log",
+                Layout = @"${date:format=HH\:mm\:ss} | ${message}"
+            };
+
+            configuration.AddTarget("file", fileTarget);
+
+            var rule = new LoggingRule("*", LogLevel.Debug, fileTarget);
+            configuration.LoggingRules.Add(rule);
+
+            LogManager.Configuration = configuration;
+        }
 
         private static Task<ITweek> CreateEngine(CouchBaseDriver contextDriver, BlobRulesDriver rulesDriver, IRuleParser parser)
         {
