@@ -51,7 +51,13 @@ describe('MetaRepository', () => {
   describe('updateRuleMeta', async () => {
     it('should be able to update rule meta: call git repo with correct parameters', async () => {
       // Arrange
-      const metaPayload = 'some meta';
+      const metaMock = {
+        displayName: 'some displayName',
+        description: 'some description',
+        tags: ['tag1', 'tag2'],
+      };
+
+      const metaPayload = JSON.stringify(metaMock);
       const requestedRuleName = 'some rule name';
 
       const expectedFileName =
@@ -68,7 +74,7 @@ describe('MetaRepository', () => {
       gitMock.updateFile = jest.fn(() => Promise.resolve(''));
 
       // Act
-      await metaRepo.updateRuleMeta(requestedRuleName, metaPayload, expectedAuthor);
+      await metaRepo.updateRuleMeta(requestedRuleName, metaMock, expectedAuthor);
 
       // Assert
       expect(gitMock.updateFile.mock.calls.length).to.eql(1);
