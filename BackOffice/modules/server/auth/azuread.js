@@ -11,7 +11,7 @@ module.exports = function (server, config) {
     responseType: 'code',
     responseMode: 'query',
     scope: ['profile'],
-    callbackURL: 'http://localhost:8080/auth/openid/callback',
+    callbackURL: config.get('AZUREAD_CALLBACK_URL'),
   },
     function (token, done) {
       return done(null, { name: token.sub }, token);
