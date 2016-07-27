@@ -28,7 +28,7 @@ class KeyMetaEditor extends Component {
 
   onTagDeleted(deletedTagIndex) {
     const { onMetaChangedCallback, meta } = this.props;
-    const newMeta = { ...meta, tags: R.remove(deletedTagIndex - 1, 1, meta.tags) };
+    const newMeta = { ...meta, tags: R.remove(deletedTagIndex, 1, meta.tags) };
     onMetaChangedCallback(newMeta);
   }
 
