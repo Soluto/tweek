@@ -11,16 +11,18 @@ const rimrafAsync = promisify(rimraf);
 const globAsync = promisify(glob);
 
 class GitRepository {
+
+  static TWEEK_BACKOFFICE_USER = 'tweek-backoffice';
+  static TWEEK_BACKOFFICE_MAIL = 'tweek-backoffice@tweek';
+
   constructor(settings) {
     this._username = settings.username;
     this._password = settings.password;
     this._url = settings.url;
     this._localPath = settings.localPath;
 
-    this.TWEEK_BACKOFFICE_USER = 'tweek-backoffice';
-    this.TWEEK_BACKOFFICR_MAIL = 'tweek-backoffice@tweek';
-
-    this._tweekCommiterSignature = Git.Signature.now(this.TWEEK_BACKOFFICE_USER, this.TWEEK_BACKOFFICR_MAIL);
+    this._tweekCommiterSignature =
+      Git.Signature.now(GitRepository.TWEEK_BACKOFFICE_USER, GitRepository.TWEEK_BACKOFFICE_MAIL);
   }
 
   static init(settings) {
@@ -47,7 +49,7 @@ class GitRepository {
     return (await fs.readFile(`${this._localPath}/${fileName}`)).toString();
   }
 
-  updateFile = synchronized(async function (fileName, payload, { name = 'unknown', email = 'unknown@soluto.com' }) {
+  updateFile = synchronized(async function (fileName, payload, { name, email }) {
     const repo = await this._repoPromise;
     console.log('start updating');
 
