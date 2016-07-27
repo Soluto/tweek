@@ -12,7 +12,8 @@ class MetaRepository {
   }
 
   updateRuleMeta(ruleName, payload, author) {
-    return this._gitRepo.updateFile(this._buildMetaJsonFilePath(ruleName), payload, author);
+    console.log('update rule meta', ruleName, payload, author);
+    return this._gitRepo.updateFile(this._buildMetaJsonFilePath(ruleName), JSON.stringify(payload), author);
   }
 
   _buildMetaJsonFilePath(ruleName) {
