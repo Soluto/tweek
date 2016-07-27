@@ -4,7 +4,7 @@ const KEY_RULEDEF_UPDATED = 'KEY_RULEDEF_UPDATED';
 const KEY_RULE_META_UPDATED = 'KEY_RULE_META_UPDATED';
 
 export async function downloadKey(key) {
-  const { ruleDef, meta } = await (await fetch(`/api/keys/${key}`)).json();
+  const { ruleDef, meta } = await (await fetch(`/api/keys/${key}`, { credentials: 'same-origin' })).json();
   return { type: KEY_DOWNLOADED, payload:
   {
     key,
@@ -34,6 +34,7 @@ export function saveKey(key) {
   return async function (dispatch, getState) {
     const { selectedKey: keyData } = getState();
     await fetch(`/api/keys/${key}`, {
+      credentials: 'same-origin',
       method: 'put',
       ...withJSONdata(keyData),
     });

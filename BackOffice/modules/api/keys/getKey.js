@@ -1,10 +1,10 @@
 import promisify from 'promisify-node';
 const fs = promisify('fs');
 import path from 'path';
+import passport from 'passport';
 
 export default function (req, res, { rulesRepository, metaRepository }, { params, location, route }) {
   const keyPath = params.splat;
-  console.log(metaRepository);
   (async function() {
     return {
       ruleDef: {
