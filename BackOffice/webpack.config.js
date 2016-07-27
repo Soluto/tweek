@@ -7,6 +7,12 @@ const nodeModulesLoader = { ...cssLoader,
 };
 
 cssLoader.exclude = /node_modules/;
-ClientConfig.module.loaders.push(nodeModulesLoader);
+ClientConfig.module.loaders.push({ test: /.ts$/,
+    exclude: 'node_modules',
+    loader: 'babel!ts-loader' });
+
+ServerConfig.module.loaders.push({ test: /.ts$/,
+    exclude: 'node_modules',
+    loader: 'ts-loader' });
 
 export { ClientConfig, ServerConfig };

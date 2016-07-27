@@ -1,5 +1,5 @@
 .build
 .env
 lib
-rulesRepo/
+rulesRepository/
 coverage-unit/

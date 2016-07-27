@@ -1,6 +1,6 @@
 /* global jest, beforeEach, afterEach, describe, it, expect */
 
-import { init } from '../../modules/repo/rulesRepo';
+import GitRepository from '../../../modules/server/repositories/GitRepository';
 import { expect } from 'chai';
 import { Repository, Remote, Signature, Clone } from 'nodegit';
 import os from 'os';
@@ -10,6 +10,7 @@ const fs = require('fs');
 const promisify = (fn, context) => (...args) => new Promise((resolve, reject) =>
 fn.call(context, ...args.concat([(err, res) => !!(err) ? reject(err) : resolve(res)])));
 const rimrafAsync = promisify(rimraf);
+
 const createRandomDirectorySync = (prefix = '') => {
   const chance = new Chance();
   const path = `${os.tmpdir()}/p${prefix}-${chance.guid()}`;
@@ -17,7 +18,7 @@ const createRandomDirectorySync = (prefix = '') => {
   return path;
 };
 
-describe('clone test', () => {
+describe('GitRepository', () => {
   let remoteFolder;
   let testFolder;
   async function checkRemoteRepository(asyncFnTest) {
@@ -56,24 +57,24 @@ describe('clone test', () => {
 
   it('should be able to read rules list', async function() {
     this.timeout(15000);
-    const repo = init({ url: remoteFolder, localPath: testFolder });
-    const rules = await repo.getAllRules();
+    const repo = GitRepository.init({ url: remoteFolder, localPath: testFolder });
+    const rules = await repo.getFileNames();
     expect(rules.length).to.equal(1);
   });
 
   it('should be able to read rule data', async function() {
     this.timeout(15000);
-    const repo = init({ url: remoteFolder, localPath: testFolder });
-    const rule = await repo.getRule('path/to/someRule.jpad');
+    const repo = GitRepository.init({ url: remoteFolder, localPath: testFolder });
+    const rule = await repo.readFile('rules/path/to/someRule.jpad');
     expect(rule).to.equals('[]');
   });
 
   it('should be able to update rule data', async function() {
     this.timeout(15000);
-    const repo = init({ url: remoteFolder, localPath: testFolder });
-    const rule = await repo.getRule('path/to/someRule.jpad');
+    const repo = GitRepository.init({ url: remoteFolder, localPath: testFolder });
+    const rule = await repo.readFile('rules/path/to/someRule.jpad');
     expect(rule).to.equals('[]');
-    await repo.updateRule('path/to/someRule.jpad', '[{}]');
+    await repo.updateFile('rules/path/to/someRule.jpad', '[{}]', { name: 'test', email: 'test@soluto.com' });
     await checkRemoteRepository(async path => {
       expect(fs.readFileSync(`${path}/rules/path/to/someRule.jpad`, { encoding: 'utf-8' })).to.equal('[{}]');
     });

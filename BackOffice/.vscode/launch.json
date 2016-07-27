@@ -7,7 +7,30 @@
 			"request": "launch",
 			"program": "${workspaceRoot}/./node_modules/react-project/bin/react-project.js",
 			"stopOnEntry": false,
-			"args": ["start"],
+			"args": [
+				"start"
+			],
+			"cwd": "${workspaceRoot}",
+			"preLaunchTask": null,
+			"runtimeExecutable": null,
+			"runtimeArgs": [
+				"--nolazy"
+			],
+			"env": {
+				"NODE_ENV": "development",
+				"AUTO_RELOAD": "refresh"
+			},
+			"externalConsole": false,
+			"sourceMaps": false,
+			"outDir": null
+		},
+		{
+			"name": "Unit tests",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceRoot}/./node_modules/jest-cli/bin/jest.js",
+			"stopOnEntry": false,
+			"args": ["--runInBand"],
 			"cwd": "${workspaceRoot}",
 			"preLaunchTask": null,
 			"runtimeExecutable": null,
@@ -18,7 +41,27 @@
 				"NODE_ENV": "development"
 			},
 			"externalConsole": false,
-			"sourceMaps": false,
+			"sourceMaps": true,
+			"outDir": null
+		},
+		{
+			"name": "Intergration tests",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceRoot}/./node_modules/mocha/bin/_mocha",
+			"stopOnEntry": false,
+			"args": ["--require","source-map-support/register", "--compilers","js:babel-register","./integration-tests/**/*.js"],
+			"cwd": "${workspaceRoot}",
+			"preLaunchTask": null,
+			"runtimeExecutable": null,
+			"runtimeArgs": [
+				"--nolazy"
+			],
+			"env": {
+				"NODE_ENV": "development"
+			},
+			"externalConsole": false,
+			"sourceMaps": true,
 			"outDir": null
 		},
 		{

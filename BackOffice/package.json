@@ -36,6 +36,8 @@
       "node_modules/react-addons-test-utils",
       "node_modules/recompose",
       "node_modules/ramda",
+      "node_modules/chai",
+      "node_modules/chai-as-promise",
       "babel-runtime",
       "spec/.*"
     ],
@@ -118,6 +120,7 @@
     "webpack-dev-server": "1.14.1"
   },
   "devDependencies": {
+    "awesome-typescript-loader": "2.1.0",
     "babel-jest": "13.2.2",
     "babel-plugin-transform-async-to-generator": "6.7.4",
     "babel-plugin-transform-runtime": "6.7.5",
@@ -141,6 +144,7 @@
     "jest-css-modules": "1.0.2",
     "less": "2.7.1",
     "less-loader": "2.2.3",
-    "react-tag-input": "4.0.0"
+    "react-tag-input": "4.0.0",
+    "ts-loader": "0.8.2"
   }
 }

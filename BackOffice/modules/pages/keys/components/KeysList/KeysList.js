@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router';
-import { KeyList as KeyListStyle } from './KeysList.css';
+import style from './KeysList.css';
 import { pure } from 'recompose';
+import wrapComponentWithClass from '../../../../utils/wrapComponentWithClass';
 
 let leaf = Symbol();
 let getName = (path) => path.split('/').slice(-1)[0];
@@ -9,22 +10,20 @@ let getName = (path) => path.split('/').slice(-1)[0];
 function renderTree(tree, currentPath) {
   return tree === leaf ?
     (<Link to={`/keys${currentPath}`}>{getName(currentPath) }</Link>) : (
-      <div>
+      <div className={style['key-list-container']}>
         {getName(currentPath) }
         <ul>
-          {Object.keys(tree)
-            .map(key => (
-              <li key={key}>
-                {renderTree(tree[key], `${currentPath}/${key}`) }
-              </li>
-            )) }
+          {Object.keys(tree).map(key => (
+            <li key={key}>
+              {renderTree(tree[key], `${currentPath}/${key}`) }
+            </li>
+          )) }
         </ul>
       </div>
     );
 }
 
-
-export default pure(({ keys }) => {
+export default wrapComponentWithClass(pure(({ keys }) => {
   let tree = {};
   keys.map(x => x.split('/'))
     .forEach(fragments => {
@@ -32,5 +31,5 @@ export default pure(({ keys }) => {
       fragments.reduce((node, frag) => node[frag] = node[frag] || {}, tree)[last] = leaf;
     });
 
-  return (<div className={KeyListStyle}>{renderTree(tree, '') }</div>);
-});
+  return renderTree(tree, '');
+}));
