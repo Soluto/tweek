@@ -10,11 +10,19 @@ import { getKeys } from '../modules/pages/keys/ducks/keys';
 import GitRepository from './server/repositories/GitRepository';
 import MetaRepository from './server/repositories/MetaRepository';
 import RulesRepository from './server/repositories/RulesRepository';
+import session from 'express-session';
+const passport = require('passport');
+const nconf = require('nconf');
 
+nconf.argv()
+   .env()
+   .file({ file: `${process.cwd()}/tweek_config.json` });
+
+console.log(nconf.get('GIT_URL'));
 const gitRepo = GitRepository.init({
-  url: 'http://tweek-gogs.07965c2a.svc.dockerapp.io/tweek/tweek-rules',
-  username: 'tweek',
-  password: 'po09!@QW',
+  url: nconf.get('GIT_URL'),
+  username: nconf.get('GIT_USER'),
+  password: nconf.get('GIT_PASSWORD'),
   localPath: `${process.cwd()}/rulesRepository`,
 });
 
@@ -38,5 +46,25 @@ function getApp(req, res, requestCallback) {
   });
 }
 
-createServer(getApp).start();
+const server = createServer(getApp);
+server.use(session({ secret: 'some-secret' }));
+const azureADAuthProvider = require('./server/auth/azuread');
+if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true') {
+  server.use(passport.initialize());
+  server.use(passport.session());
+
+  const authProviders = [azureADAuthProvider(server, nconf)];
+  server.use('/login', function (req, res) {
+    res.send(authProviders.map(x => `<a href="${x.url}">login with ${x.name}</a>`).join(''));
+  });
+
+  server.use('*', function (req, res, next) {
+    if (req.isAuthenticated() || req.path.startsWith('auth')) {
+      return next();
+    }
+    return res.redirect('/login');
+  });
+}
+
+server.start();
 
