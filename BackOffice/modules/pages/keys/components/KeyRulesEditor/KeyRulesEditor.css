@@ -1,6 +1,6 @@
 .key-rules-editor-container .tab-content {
   position: absolute;
-  overflow-y: scroll;
+  overflow-y: auto;
   top: 35px;
   left: 0;
   right: 0;

@@ -10,7 +10,7 @@ let getName = (path) => path.split('/').slice(-1)[0];
 function renderTree(tree, currentPath) {
   return tree === leaf ?
     (<Link to={`/keys${currentPath}`}>{getName(currentPath) }</Link>) : (
-      <div className={style['key-list-container']}>
+      <div className={style['tree-level']}>
         {getName(currentPath) }
         <ul>
           {Object.keys(tree).map(key => (
