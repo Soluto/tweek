@@ -9,7 +9,6 @@ import createFragment from 'react-addons-create-fragment';
 export default connect(state => state, { ...actions })(class KeysPage extends Component {
   constructor(props) {
     super(props);
-    console.log(props);
   }
 
   componentDidMount() {
