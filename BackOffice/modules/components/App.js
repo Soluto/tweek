@@ -7,11 +7,11 @@ import logo from './logo.png';
 export default React.createClass({
   render() {
     return (
-      <div className={styles.App}>
-        <div className={styles.TopBar}>
+      <div className={styles.app}>
+        <div className={styles.header}>
           <Title render="Tweek"/>
           <IndexLink to="/"><img src={logo} /></IndexLink>
-          <ul className={styles.Menu} >
+          <ul className={styles.menu} >
             <li><Link to="/keys">keys</Link></li>
           </ul>
         </div>

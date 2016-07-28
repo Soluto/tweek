@@ -4,7 +4,7 @@ import path from 'path';
 
 export default function (req, res, { rulesRepository, metaRepository }, { params, location, route }) {
   const keyPath = params.splat;
-  console.log(metaRepository);
+  
   (async function() {
     return {
       ruleDef: {
