@@ -4,5 +4,4 @@
     "editor.tabSize": 2,
     "workbench.editor.enablePreview": false,
     "workbench.editor.enablePreviewFromQuickOpen": false,
-    "files.autoSave": "onFocusChange"
 }

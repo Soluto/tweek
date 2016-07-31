@@ -61,12 +61,19 @@ export default connect((state, { params }) => ({ ...state, configKey: params.spl
       this._onSelectedKeyMetaChanged(newMeta);
     }
 
+<<<<<<< HEAD
+                <KeyMetaEditor meta={selectedKey.local.meta}
+                  onMetaChangedCallback={this:: this.onSelectedKeyMetaChanged}
+                className={style['key-meta-container']}
+                />
+=======
     get tags() {
       return R.map(_ => ({
         id: _,
         text: _,
       }), this.props.selectedKey.meta.tags);
     }
+>>>>>>> b251cf4b17822677d1dbaa3e8800493f591022ea
 
     _onSelectedKeyMetaChanged(newMeta) {
       this.props.updateKeyMetaDef(newMeta);
@@ -85,13 +92,19 @@ export default connect((state, { params }) => ({ ...state, configKey: params.spl
 
           <div className={style['key-header']}>
 
-                <KeyMetaEditor meta={selectedKey.meta}
+<<<<<<< HEAD
+              <KeyRulesEditor ruleDef={selectedKey.local.ruleDef}
+                sourceTree={JSON.parse(selectedKey.local.ruleDef.source) }
+                onMutation={x => this.props.updateKeyRuleDef({ source: JSON.stringify(x, null, 4) }) }
+                className={style['key-rules-editor']}
+=======
             {this.state.isDisplayNameInEditMode ?
               <input type="text"
                 className={style['display-name-input']}
                 onChange={ (e) => this.onDisplayNameChanged(e.target.value) }
                 value = { selectedKey.meta.displayName }
                 onBlur={() => { this.setState({ isDisplayNameInEditMode: false }); } }
+>>>>>>> b251cf4b17822677d1dbaa3e8800493f591022ea
                 />
               :
               <div className={style['display-name']}
@@ -131,8 +144,8 @@ export default connect((state, { params }) => ({ ...state, configKey: params.spl
 
           </div>
 
-              <KeyRulesEditor ruleDef={selectedKey.local.ruleDef}
-                sourceTree={JSON.parse(selectedKey.local.ruleDef.source) }
+          <KeyRulesEditor ruleDef={selectedKey.ruleDef}
+            sourceTree={JSON.parse(selectedKey.ruleDef.source) }
             onMutation={x => this.props.updateKeyRuleDef({ source: JSON.stringify(x, null, 4) }) }
             className={style['key-rules-editor']}
             />

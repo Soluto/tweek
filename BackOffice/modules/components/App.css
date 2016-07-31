@@ -1,35 +1,33 @@
-.Menu li
-{
-    vertical-align: top;
-    padding: 20px 20px;
-    display: inline-block;
-    
+.app {
+  padding-top: 60px;
 }
-.Menu{
-    padding: 0;
-    margin: 0;
+.app .menu {
+  padding: 0;
+  margin: 0;
 }
-.Menu li a:visited,.Menu li a:hover, .Menu li a:link{
-    color: #007aff;
-    text-decoration: none;
-    font-size:20px;
-    font-family: Calibri;
+.app .menu li {
+  vertical-align: top;
+  padding: 20px 20px;
+  display: inline-block;
 }
-
-.App img{
-    margin: 0 30px 0 10px;  
+.app .menu li a:visited,
+.app .menu li a:hover,
+.app .menu li a:link {
+  color: #007aff;
+  text-decoration: none;
+  font-size: 20px;
+  font-family: Calibri;
 }
-
-.App{
-    padding-top:60px; 
+.app .header {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 65px;
+  display: flex;
+  position: fixed;
+  background-color: #252525;
+  align-items: center;
 }
-
-.TopBar{
-    top:0;
-    left:0;
-    right: 0;
-    display:flex;
-    position: fixed;
-    background-color: #f0f0f0;
-    align-items: center;
+.app .header img {
+  margin: 0 30px 0 10px;
 }
