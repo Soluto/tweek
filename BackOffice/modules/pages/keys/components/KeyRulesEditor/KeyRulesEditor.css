@@ -1,8 +1,12 @@
+.key-rules-editor-container {
+  display: flex;
+  flex-grow: 1;
+}
+.key-rules-editor-container .tab-container {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+}
 .key-rules-editor-container .tab-content {
-  position: relative;
   overflow-y: auto;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
 }

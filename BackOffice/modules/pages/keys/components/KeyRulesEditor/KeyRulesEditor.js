@@ -23,7 +23,8 @@ const MutatorFor = (propName) => (Comp) =>
 const KeyRulesEditor = ({ ruleDef, mutate }) =>
   (
     <div className={style['key-rules-editor-container']}>
-      <Tabs selectedIndex={0}>
+      <Tabs className={style['tab-container']}
+        selectedIndex={0}>
         <TabList>
           <Tab>Rule</Tab>
           <Tab>Source</Tab>

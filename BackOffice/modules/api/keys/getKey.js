@@ -2,7 +2,7 @@ import promisify from 'promisify-node';
 const fs = promisify('fs');
 import path from 'path';
 
-export default function (req, res, { rulesRepository, metaRepository }, { params, location, route }) {
+export default function (req, res, { rulesRepository, metaRepository }, { params }) {
   const keyPath = params.splat;
   
   (async function() {
@@ -12,5 +12,5 @@ export default function (req, res, { rulesRepository, metaRepository }, { params
         source: (await rulesRepository.getRule(keyPath)).toString(),
       },
       meta: await metaRepository.getRuleMeta(keyPath),
-    };}()).then(res.json.bind(res), console.error.bind(console));
+    };}()).then((x)=> res.json(x), console.error.bind(console));
 }

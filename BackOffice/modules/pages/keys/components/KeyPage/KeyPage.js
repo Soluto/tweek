@@ -1,13 +1,16 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import KeyRulesEditor from '../KeyRulesEditor/KeyRulesEditor';
-import * as actions from '../../ducks/selectedKey';
+import * as keysActions from '../../ducks/selectedKey';
+import * as tagActions from '../../ducks/tags';
 import style from './KeyPage.css';
 import { WithContext as ReactTags } from 'react-tag-input';
 import R from 'ramda';
+import TextareaAutosize from 'react-autosize-textarea';
 
-export default connect((state, { params }) => ({ ...state, configKey: params.splat }), { ...actions })(
+export default connect((state, { params }) => ({ ...state, configKey: params.splat }), { ...keysActions, ...tagActions })(
   class KeyPage extends Component {
 
     static propTypes = {
@@ -19,17 +22,16 @@ export default connect((state, { params }) => ({ ...state, configKey: params.spl
     constructor(props) {
       super(props);
 
-      this.tagsSuggestions = ['android', 'ios', 'client', 'backend', 'language', 'resource', 'text', 'layout', 'color', 'carrier', 'boolean'];
-
       this.state = {
         isDisplayNameInEditMode: false,
       };
     }
 
     componentDidMount() {
-      const { downloadKey, configKey } = this.props;
+      const { downloadKey, configKey, downloadTags } = this.props;
       if (configKey) {
         downloadKey(configKey);
+        downloadTags();
       }
     }
 
@@ -68,6 +70,10 @@ export default connect((state, { params }) => ({ ...state, configKey: params.spl
       }), this.props.selectedKey.meta.tags);
     }
 
+    get tagsSuggestions() {
+      return this.props.tags ? this.props.tags.map(tag => tag.name) : [];
+    }
+
     _onSelectedKeyMetaChanged(newMeta) {
       this.props.updateKeyMetaDef(newMeta);
     }
@@ -85,32 +91,40 @@ export default connect((state, { params }) => ({ ...state, configKey: params.spl
 
           <div className={style['key-header']}>
 
-            {this.state.isDisplayNameInEditMode ?
-              <input type="text"
-                className={style['display-name-input']}
-                onChange={ (e) => this.onDisplayNameChanged(e.target.value) }
-                value = { selectedKey.meta.displayName }
-                onBlur={() => { this.setState({ isDisplayNameInEditMode: false }); } }
-                />
-              :
-              <div className={style['display-name']}
-                onClick={() => { this.setState({ isDisplayNameInEditMode: true }); } }
-                >
-                {selectedKey.meta.displayName}
-              </div>
-            }
 
-            <div className={style['full-key-path']}>
-              <label className={style['full-kay-path-title']}>Full path: </label>
-              <label>{configKey}</label>
+            <div className={style['display-name-wrapper']}>
+              {this.state.isDisplayNameInEditMode ?
+
+                <form onSubmit={ (e) => { this.setState({ isDisplayNameInEditMode: false }); e.preventDefault(); } }>
+                  <input type="text"
+                    ref={(input) => input && input.focus() }
+                    className={style['display-name-input']}
+                    onChange={ (e) => this.onDisplayNameChanged(e.target.value) }
+                    value = { selectedKey.meta.displayName }
+                    onBlur={() => { this.setState({ isDisplayNameInEditMode: false }); } }
+                    />
+                </form>
+                :
+                <div className={style['display-name']}
+                  onClick={() => {
+                    this.setState({ isDisplayNameInEditMode: true });
+                  } }
+                  >
+                  {selectedKey.meta.displayName}
+                </div>
+              }
             </div>
 
-            <input type="text"
-              className={style['meta-data-input']}
+            <div className={style['full-key-path-wrapper']}>
+              <label>Full path: </label>
+              <label className={style['actual-path']}>{configKey}</label>
+            </div>
+
+            <TextareaAutosize
               onChange={ (e) => this.onDescriptionChanged(e.target.value) }
-              value = { selectedKey.meta.description }
+              value={ selectedKey.meta.description }
               placeholder="Description"
-              />
+              className={style['description-input']}/>
 
             <ReactTags tags={ this.tags }
               handleDelete={ this:: this.onTagDeleted }
