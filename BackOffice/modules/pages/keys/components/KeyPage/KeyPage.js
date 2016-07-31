@@ -58,7 +58,7 @@ export default connect((state, { params }) => ({ ...state, configKey: params.spl
             {selectedKey ?
               <div>
 
-                <KeyMetaEditor meta={selectedKey.meta}
+                <KeyMetaEditor meta={selectedKey.local.meta}
                   onMetaChangedCallback={this:: this.onSelectedKeyMetaChanged}
                 className={style['key-meta-container']}
                 />
@@ -75,8 +75,8 @@ export default connect((state, { params }) => ({ ...state, configKey: params.spl
 
           {selectedKey ?
 
-              <KeyRulesEditor ruleDef={selectedKey.ruleDef}
-                sourceTree={JSON.parse(selectedKey.ruleDef.source) }
+              <KeyRulesEditor ruleDef={selectedKey.local.ruleDef}
+                sourceTree={JSON.parse(selectedKey.local.ruleDef.source) }
                 onMutation={x => this.props.updateKeyRuleDef({ source: JSON.stringify(x, null, 4) }) }
                 className={style['key-rules-editor']}
                 />
