@@ -11,7 +11,14 @@
       right: 0;
       top: 0;
       margin: 10px;
-    }
+      z-index: 2;
+      &:hover{
+        cursor: default;
+      }
+      &[data-state-is-saving=true], &[data-state-is-saving=true]:disabled{
+        background-color: green;
+      }
+  }
   .key-header {
     position: relative;
     clear: both;
