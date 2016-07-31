@@ -32,7 +32,7 @@ function withJSONdata(data) {
 }
 export function saveKey(key) {
   return async function (dispatch, getState) {
-    const { selectedKey: keyData } = getState();
+    const { selectedKey: { local: keyData } } = getState();
     await fetch(`/api/keys/${key}`, {
       credentials: 'same-origin',
       method: 'put',
@@ -43,13 +43,22 @@ export function saveKey(key) {
 
 
 export default handleActions({
-  [KEY_DOWNLOADED]: (state, action) => action.payload,
+  [KEY_DOWNLOADED]: (state, action) => ({
+    local: action.payload,
+    remote: action.payload,
+  }),
   [KEY_RULEDEF_UPDATED]: (state, { payload }) => ({
     ...state,
-    ruleDef: payload,
+    local: {
+      ...state.local,
+      ruleDef: payload,
+    },
   }),
   [KEY_RULE_META_UPDATED]: (state, { payload }) => ({
     ...state,
-    meta: payload,
+    local: {
+      ...state.local,
+      meta: payload,
+    },
   }),
 }, null);
