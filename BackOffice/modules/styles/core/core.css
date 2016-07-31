@@ -20,6 +20,14 @@
 .metro-button:active {
   background-color: #0098ff;
 }
+.metro-button:disabled {
+  background-color: gray;
+}
+.metro-button:disabled:hover,
+.metro-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
 .metro-textbox {
   display: inline-block;
   border: 0;

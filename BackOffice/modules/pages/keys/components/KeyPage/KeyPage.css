@@ -23,6 +23,7 @@
   right: 0;
   top: 0;
   margin: 10px;
+  z-index: 2;
 }
 .key-viewer-container .save-button:hover {
   background-color: #007acc;
@@ -30,6 +31,21 @@
 }
 .key-viewer-container .save-button:active {
   background-color: #0098ff;
+}
+.key-viewer-container .save-button:disabled {
+  background-color: gray;
+}
+.key-viewer-container .save-button:disabled:hover,
+.key-viewer-container .save-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.key-viewer-container .save-button:hover {
+  cursor: default;
+}
+.key-viewer-container .save-button[data-state-is-saving=true],
+.key-viewer-container .save-button[data-state-is-saving=true]:disabled {
+  background-color: green;
 }
 .key-viewer-container .key-header {
   position: relative;
