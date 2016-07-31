@@ -74,90 +74,72 @@ export default connect((state, { params }) => ({ ...state, configKey: params.spl
 
     render() {
       const { dispatch, configKey, selectedKey } = this.props;
-      return (
-
+      return selectedKey ? (
         <div className={style['key-viewer-container']}>
-          {selectedKey ?
 
-            <div>
+          <button className={style['save-button']}
+            onClick={() => this.props.saveKey(configKey) }
+            >
+            Save changes
+          </button>
 
-              <div className={style['key-header']}>
+          <div className={style['key-header']}>
 
-                <button className={style['save-button']}
-                  onClick={() => this.props.saveKey(configKey) }
-                  >
-                  Save changes
-                </button>
-
-                <div>
-
-                  <div>
-
-                    {this.state.isDisplayNameInEditMode ?
-                      <input type="text"
-                        className={style['display-name-input']}
-                        onChange={ (e) => this.onDisplayNameChanged(e.target.value) }
-                        value = { selectedKey.meta.displayName }
-                        onBlur={() => { this.setState({ isDisplayNameInEditMode: false }); } }
-                        />
-                      :
-                      <div className={style['display-name']}
-                        onClick={() => { this.setState({ isDisplayNameInEditMode: true }); } }
-                        >
-                        {selectedKey.meta.displayName}
-                      </div>
-                    }
-
-                  </div>
-
-                  <input type="text"
-                    className={style['meta-data-input']}
-                    onChange={ (e) => this.onDescriptionChanged(e.target.value) }
-                    value = { selectedKey.meta.description }
-                    placeholder="Description"
-                    />
-
-                  <ReactTags tags={ this.tags }
-                    handleDelete={ this:: this.onTagDeleted }
-                  handleAddition={ this:: this.onTagAdded }
-                  suggestions={this.tagsSuggestions }
-                  placeholder="New tag"
-                  minQueryLength={ 1 }
-                  allowDeleteFromEmptyInput={ false }
-                  classNames={{
-                    tags: style['tags-container'],
-                    tagInput: style['tag-input'],
-                    tag: style['tag'],
-                    remove: style['tag-delete-button'],
-                    suggestions: style['tags-suggestion'],
-                  } }
-                  />
-
-
-                  <div className={style['full-key-path']}>
-                    <label className={style['full-kay-path-title']}>Full path: </label>
-                    <label>{configKey}</label>
-                  </div>
-
-                </div>
-
-              </div>
-
-              <KeyRulesEditor ruleDef={selectedKey.ruleDef}
-                sourceTree={JSON.parse(selectedKey.ruleDef.source) }
-                onMutation={x => this.props.updateKeyRuleDef({ source: JSON.stringify(x, null, 4) }) }
-                className={style['key-rules-editor']}
+            {this.state.isDisplayNameInEditMode ?
+              <input type="text"
+                className={style['display-name-input']}
+                onChange={ (e) => this.onDisplayNameChanged(e.target.value) }
+                value = { selectedKey.meta.displayName }
+                onBlur={() => { this.setState({ isDisplayNameInEditMode: false }); } }
                 />
+              :
+              <div className={style['display-name']}
+                onClick={() => { this.setState({ isDisplayNameInEditMode: true }); } }
+                >
+                {selectedKey.meta.displayName}
+              </div>
+            }
 
+            <div className={style['full-key-path']}>
+              <label className={style['full-kay-path-title']}>Full path: </label>
+              <label>{configKey}</label>
             </div>
 
-            :
-            <div>
-              loading
-            </div>
-          }
+            <input type="text"
+              className={style['meta-data-input']}
+              onChange={ (e) => this.onDescriptionChanged(e.target.value) }
+              value = { selectedKey.meta.description }
+              placeholder="Description"
+              />
+
+            <ReactTags tags={ this.tags }
+              handleDelete={ this:: this.onTagDeleted }
+            handleAddition={ this:: this.onTagAdded }
+            suggestions={this.tagsSuggestions }
+            placeholder="New tag"
+            minQueryLength={ 1 }
+            allowDeleteFromEmptyInput={ false }
+            classNames={{
+              tags: style['tags-container'],
+              tagInput: style['tag-input'],
+              tag: style['tag'],
+              remove: style['tag-delete-button'],
+              suggestions: style['tags-suggestion'],
+            } }
+            />
+
+          </div>
+
+          <KeyRulesEditor ruleDef={selectedKey.ruleDef}
+            sourceTree={JSON.parse(selectedKey.ruleDef.source) }
+            onMutation={x => this.props.updateKeyRuleDef({ source: JSON.stringify(x, null, 4) }) }
+            className={style['key-rules-editor']}
+            />
 
         </div>
-      );
+      ) :
+        <div>
+          loading
+        </div>;
     }
   });
