@@ -1,7 +1,10 @@
 import { handleActions } from 'redux-actions';
+import R from 'ramda';
 const KEY_DOWNLOADED = 'KEY_DOWNLOADED';
 const KEY_RULEDEF_UPDATED = 'KEY_RULEDEF_UPDATED';
 const KEY_RULE_META_UPDATED = 'KEY_RULE_META_UPDATED';
+const KEY_SAVED = 'KEY_SAVED';
+const KEY_SAVING = 'KEY_SAVING';
 
 export async function downloadKey(key) {
   const { ruleDef, meta } = await (await fetch(`/api/keys/${key}`, { credentials: 'same-origin' })).json();
@@ -32,24 +35,44 @@ function withJSONdata(data) {
 }
 export function saveKey(key) {
   return async function (dispatch, getState) {
-    const { selectedKey: keyData } = getState();
+    const { selectedKey: { local: keyData } } = getState();
+    dispatch({ type: KEY_SAVING });
     await fetch(`/api/keys/${key}`, {
       credentials: 'same-origin',
       method: 'put',
       ...withJSONdata(keyData),
     });
+    dispatch({ type: KEY_SAVED });
   };
 }
 
 
 export default handleActions({
-  [KEY_DOWNLOADED]: (state, action) => action.payload,
+  [KEY_DOWNLOADED]: (state, action) => ({
+    local: R.clone(action.payload),
+    remote: R.clone(action.payload),
+  }),
   [KEY_RULEDEF_UPDATED]: (state, { payload }) => ({
     ...state,
-    ruleDef: payload,
+    local: {
+      ...state.local,
+      ruleDef: { ...state.local.ruleDef, ...payload },
+    },
   }),
   [KEY_RULE_META_UPDATED]: (state, { payload }) => ({
     ...state,
-    meta: payload,
+    local: {
+      ...state.local,
+      meta: payload,
+    },
+  }),
+  [KEY_SAVED]: (state) => ({
+    ...state,
+    remote: R.clone(state.local),
+    isSaving: false,
+  }),
+  [KEY_SAVING]: (state) => ({
+    ...state,
+    isSaving: true,
   }),
 }, null);
