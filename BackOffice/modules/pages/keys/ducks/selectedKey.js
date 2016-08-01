@@ -48,9 +48,10 @@ export function saveKey(key) {
 
 
 export default handleActions({
-  [KEY_DOWNLOADED]: (state, action) => ({
-    local: R.clone(action.payload),
-    remote: R.clone(action.payload),
+  [KEY_DOWNLOADED]: (state, { payload: { key, ...props } }) => ({
+    key,
+    local: R.clone(props),
+    remote: R.clone(props),
   }),
   [KEY_RULEDEF_UPDATED]: (state, { payload }) => ({
     ...state,

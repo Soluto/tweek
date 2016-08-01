@@ -1,13 +1,11 @@
 import Git from 'nodegit';
-import rimraf from 'rimraf';
 import glob from 'glob';
 import synchronized from '../../utils/synchronizedFunction';
-const fs = require('promisify-node')('fs');
+const fs = require('promisify-node')('fs-extra');
 
 const promisify = (fn, context) => (...args) => new Promise((resolve, reject) =>
   fn.call(context, ...args.concat([(err, res) => !!(err) ? reject(err) : resolve(res)])));
 
-const rimrafAsync = promisify(rimraf);
 const globAsync = promisify(glob);
 
 class GitRepository {
@@ -63,6 +61,7 @@ class GitRepository {
     }
 
     try {
+      await fs.ensureFile(`${this._localPath}/${fileName}`);
       await fs.writeFile(`${this._localPath}/${fileName}`, payload);
 
       const author = Git.Signature.now(name, email);
@@ -113,7 +112,7 @@ class GitRepository {
 
   async _cloneAsync() {
     console.log('start cloning', this._localPath);
-    await rimrafAsync(this._localPath);
+    await fs.remove(this._localPath);
 
     const repo = await Git.Clone(this._url, this._localPath, {
       fetchOpts: this._defaultGitOperationSettings,
