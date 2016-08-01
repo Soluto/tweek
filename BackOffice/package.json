@@ -73,6 +73,7 @@
     "express-session": "1.14.0",
     "extract-text-webpack-plugin": "1.0.1",
     "file-loader": "0.8.5",
+    "fs-extra": "0.30.0",
     "glob": "7.0.3",
     "helmet": "1.1.0",
     "hpp": "0.2.0",

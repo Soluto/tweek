@@ -28,10 +28,10 @@ export default connect((state, { params }) => ({ selectedKey: state.selectedKey,
     }
 
     componentDidMount() {
-      const { downloadKey, configKey } = this.props;
-      if (configKey) {
-        downloadKey(configKey);
-      }
+      const { downloadKey, configKey, selectedKey } = this.props;
+      if (!configKey) return;
+      if (selectedKey && selectedKey.key === configKey) return;
+      downloadKey(configKey);
     }
 
     componentWillReceiveProps({ configKey }) {

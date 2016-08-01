@@ -79,5 +79,14 @@ describe('GitRepository', () => {
       expect(fs.readFileSync(`${path}/rules/path/to/someRule.jpad`, { encoding: 'utf-8' })).to.equal('[{}]');
     });
   });
+
+  it('should be able to add file when path contains non-existing folder', async function() {
+    this.timeout(15000);
+    const repo = GitRepository.init({ url: remoteFolder, localPath: testFolder });
+    await repo.updateFile('rules/path2/someRule.jpad', '[{}]', { name: 'test', email: 'test@soluto.com' });
+    await checkRemoteRepository(async path => {
+      expect(fs.readFileSync(`${path}/rules/path2/someRule.jpad`, { encoding: 'utf-8' })).to.equal('[{}]');
+    });
+  });
 });
 
