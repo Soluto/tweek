@@ -23,6 +23,7 @@
   right: 0;
   top: 0;
   margin: 10px;
+  z-index: 2;
 }
 .key-viewer-container .save-button:hover {
   background-color: #007acc;
@@ -31,9 +32,27 @@
 .key-viewer-container .save-button:active {
   background-color: #0098ff;
 }
+.key-viewer-container .save-button:disabled {
+  background-color: gray;
+}
+.key-viewer-container .save-button:disabled:hover,
+.key-viewer-container .save-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.key-viewer-container .save-button:hover {
+  cursor: default;
+}
+.key-viewer-container .save-button[data-state-is-saving=true],
+.key-viewer-container .save-button[data-state-is-saving=true]:disabled {
+  background-color: green;
+}
 .key-viewer-container .key-header {
   position: relative;
   clear: both;
+}
+.key-viewer-container .key-header .display-name {
+  font-size: 20px;
 }
 .key-viewer-container .key-header .meta-data-input {
   display: inline-block;
@@ -116,9 +135,7 @@
   font-size: 18px;
 }
 .key-viewer-container .key-header .tags-container {
-  margin-top: 5px;
   position: relative;
-  padding: 5px;
   padding-top: 0;
 }
 .key-viewer-container .key-header .tags-container .tag {
@@ -190,4 +207,5 @@
 .key-viewer-container .key-rules-editor {
   display: flex;
   flex-grow: 1;
+  margin-top: 7px;
 }

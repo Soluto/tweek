@@ -25,12 +25,21 @@
   padding-bottom: 2px;
   .user-select(none);
   .transitioned();
+
   &:hover {
     background-color: @accent-color1;
     cursor: pointer;
   }
   &:active {
     background-color: @accent-active;
+  }
+  
+  &:disabled{
+    background-color:gray;
+    &:hover, &:active{
+      cursor: default;
+      background-color:gray;
+    }
   }
 }
 

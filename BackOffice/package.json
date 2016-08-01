@@ -60,6 +60,7 @@
     "chance": "1.0.3",
     "compression": "1.6.1",
     "css-loader": "0.23.1",
+    "deep-diff": "0.3.4",
     "dotenv": "2.0.0",
     "eslint": "^2.10.2",
     "eslint-config-rackt": "1.1.1",

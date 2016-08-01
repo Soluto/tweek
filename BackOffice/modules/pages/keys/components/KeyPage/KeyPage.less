@@ -11,10 +11,20 @@
     right: 0;
     top: 0;
     margin: 10px;
+    z-index: 2;
+    &:hover {
+      cursor: default;
+    }
+    &[data-state-is-saving=true], &[data-state-is-saving=true]:disabled {
+      background-color: green;
+    }
   }
   .key-header {
     position: relative;
     clear: both;
+    .display-name {
+      font-size: 20px;
+    }
     .meta-data-input {
       .metro-textbox;
       width: 100%;
@@ -54,9 +64,7 @@
       font-size: 18px;
     }
     .tags-container {
-      margin-top: 5px;
       position: relative;
-      padding: 5px;
       padding-top: 0;
       .tag {
         border: 1px solid #ddd;
@@ -115,5 +123,6 @@
   .key-rules-editor {
     display: flex;
     flex-grow: 1;
+    margin-top: 7px; 
   }
 }
