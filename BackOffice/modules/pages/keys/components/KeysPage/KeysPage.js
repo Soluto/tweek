@@ -11,12 +11,12 @@ import R from 'ramda';
 import { inputKeyboardHandlers } from '../../../../utils/input';
 
 const getKeyPrefix = (path) => R.slice(0, -1, path.split('/')).join('/');
-const getSugesstions = R.pipe(R.map(getKeyPrefix), R.uniq());
+const getSugesstions = R.pipe(R.map(getKeyPrefix), R.uniq(), R.filter(x => x !== ''));
 
 
 const Add = compose(mapProps(({ keylist, ...props }) => ({ ...props, suggestions: getSugesstions(keylist).sort() })), withState('value', 'setValue', ''), withState('isAdding', 'setIsAdding', false))(({ onKeyAdded, suggestions, isAdding, value, setValue, setIsAdding }) => {
-  if (!isAdding) return <button onClick={() => setIsAdding(true)}>Add key</button>;
-  return (<Autosuggest suggestions={suggestions.filter(s => s.includes(value))}
+  if (!isAdding) return <button className={style['add-button']} onClick={() => setIsAdding(true)}>Add key</button>;
+  return (<Autosuggest suggestions={suggestions}
     getSuggestionValue={(x) => x}
     renderSuggestion={x => <span>{x}</span>}
     inputProps={{ value, ...inputKeyboardHandlers({ submit: (newValue) => {
