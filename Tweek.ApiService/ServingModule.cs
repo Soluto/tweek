@@ -7,6 +7,7 @@ using Engine.Core.Context;
 using Engine.Core.Utils;
 using Engine.DataTypes;
 using Nancy;
+using LanguageExt;
 
 namespace Tweek.ApiService
 {

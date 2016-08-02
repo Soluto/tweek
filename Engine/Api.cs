@@ -12,6 +12,8 @@ using Engine.Core.Context;
 using Engine.Core.Rules;
 using Tweek.JPad;
 using ContextHelpers = Engine.Context.ContextHelpers;
+using LanguageExt;
+using JPad;
 
 namespace Engine
 {
@@ -75,9 +77,9 @@ namespace Engine
 
     public static class Tweek
     {
-        public static async Task<ITweek> Create(IContextDriver contextDriver, IRulesDriver rulesDriver, IRuleParser parser = null)
+        public static async Task<ITweek> Create(IContextDriver contextDriver, IRulesDriver rulesDriver, IRuleParser parser)
         {
-            var rulesLoader = await RulesLoader.Factory(rulesDriver, parser ?? new JPadParser());
+            var rulesLoader = await RulesLoader.Factory(rulesDriver, parser);
             return new TweekRunner(contextDriver, rulesLoader);
         }
     }

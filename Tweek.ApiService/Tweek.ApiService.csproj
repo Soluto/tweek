@@ -54,16 +54,12 @@
       <HintPath>..\packages\CouchbaseNetClient.2.3.3\lib\net45\Couchbase.NetClient.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Engine.Match.DSL, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Bin\Engine.Match.DSL.dll</HintPath>
-    </Reference>
     <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\FSharp.Core.4.0.0.1\lib\net40\FSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="LanguageExt.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LanguageExt.Core.1.7.38\lib\net46\LanguageExt.Core.dll</HintPath>
+      <HintPath>..\packages\LanguageExt.Core.1.9.1\lib\net45\LanguageExt.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
@@ -99,20 +95,20 @@
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.WebRequest" />
-    <Reference Include="System.Reactive.Core, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll</HintPath>
+    <Reference Include="System.Reactive.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Core.3.0.0\lib\net45\System.Reactive.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Reactive.Interfaces, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Rx-Interfaces.2.2.5\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+    <Reference Include="System.Reactive.Interfaces, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Interfaces.3.0.0\lib\net45\System.Reactive.Interfaces.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Reactive.Linq, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Rx-Linq.2.2.5\lib\net45\System.Reactive.Linq.dll</HintPath>
+    <Reference Include="System.Reactive.Linq, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Linq.3.0.0\lib\net45\System.Reactive.Linq.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Reactive.PlatformServices, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Rx-PlatformServices.2.2.5\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
+    <Reference Include="System.Reactive.PlatformServices, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.PlatformServices.3.0.0\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.DynamicData" />
@@ -179,25 +175,21 @@
       <Project>{7FC49A33-6B72-4251-ABE0-ECACED5B71BD}</Project>
       <Name>Engine.Management.Drivers</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Engine.Matcher.DSL\Engine.Matcher.DSL.fsproj">
-      <Project>{71903c50-6c0e-443e-914a-bf9d4d9cc964}</Project>
-      <Name>Engine.Matcher.DSL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Engine.Rules.ValueDistribution\Engine.Rules.ValueDistribution.fsproj">
-      <Project>{43ad9d3d-188d-4767-bca6-35d280ea7d4a}</Project>
-      <Name>Engine.Rules.ValueDistribution</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Engine\Engine.csproj">
       <Project>{88200f63-8699-4b6e-8969-4c45827ad0c3}</Project>
       <Name>Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JPad\Tweek.JPad\Tweek.JPad.fsproj">
+      <Project>{2f526cff-086d-4607-b8f1-18c16b9a48d5}</Project>
+      <Name>Tweek.JPad</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tweek.Drivers.Blob\Tweek.Drivers.Blob.csproj">
       <Project>{94574c86-8fe9-4282-bac4-e2fc62afda06}</Project>
       <Name>Tweek.Drivers.Blob</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tweek.JPad\Tweek.JPad.csproj">
-      <Project>{D20F24EB-860A-4DC0-A849-28627E342B89}</Project>
-      <Name>Tweek.JPad</Name>
+    <ProjectReference Include="..\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj">
+      <Project>{d20f24eb-860a-4dc0-a849-28627e342b89}</Project>
+      <Name>Tweek.JPad.Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
