@@ -4,32 +4,24 @@
   display: flex;
   flex-grow: 1;
   flex-direction: column;
-    .save-button {
-      .metro-button;
-      position: absolute;
-      width: 100px;
-      right: 0;
-      top: 0;
-      margin: 10px;
-      z-index: 2;
-      &:hover{
-        cursor: default;
-      }
-      &[data-state-is-saving=true], &[data-state-is-saving=true]:disabled{
-        background-color: green;
-      }
+  .save-button {
+    .metro-button;
+    position: absolute;
+    width: 100px;
+    right: 0;
+    top: 0;
+    margin: 10px;
+    z-index: 2;
+    &:hover {
+      cursor: default;
+    }
+    &[data-state-is-saving=true], &[data-state-is-saving=true]:disabled {
+      background-color: green;
+    }
   }
   .key-header {
     position: relative;
     clear: both;
-    .full-key-path {
-      color: darkgray;
-      font-style: italic;
-      font-size: 13px;
-      .full-kay-path-title {
-        font-style: normal;
-      }
-    }
     .display-name {
       font-size: 20px;
     }
@@ -38,15 +30,41 @@
       width: 100%;
       box-sizing: border-box;
     }
-    .display-name-input {
+    .display-name-wrapper {
+      min-height: 34px;
+      border: 1px solid transparent;
+      @display-name-font-size: 23px;
+      .display-name {
+        font-size: @display-name-font-size;
+        margin-left: 4px;
+      }
+      .display-name-input {
+        .meta-data-input;
+        font-size: @display-name-font-size;
+      }
+    }
+    .full-key-path-wrapper {
+      color: darkgray;
+      font-size: 13px;
+      margin-left: 5px;
+      .user-select(none);
+      .actual-path {
+        font-style: italic;
+        .user-select(text);
+        &:hover {
+          cursor: text;
+        }
+      }
+    }
+    .description-input {
       .meta-data-input;
-      .display-name;
+      margin-top: 8px;
+      resize: none;
+      font-family: calibri;
+      font-size: 18px;
     }
     .tags-container {
-      margin-top: 5px;
       position: relative;
-      border: 1px solid lightgray;
-      padding: 5px;
       padding-top: 0;
       .tag {
         border: 1px solid #ddd;
@@ -71,6 +89,7 @@
       }
       .tags-suggestion {
         position: absolute;
+        z-index: 1;
         ul {
           list-style-type: none;
           box-shadow: .05em .01em .5em rgba(0, 0, 0, .2);
@@ -102,7 +121,8 @@
     }
   }
   .key-rules-editor {
+    display: flex;
     flex-grow: 1;
-    overflow-y: auto;
+    margin-top: 7px; 
   }
 }

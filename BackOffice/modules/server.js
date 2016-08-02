@@ -10,6 +10,7 @@ import { getKeys } from '../modules/pages/keys/ducks/keys';
 import GitRepository from './server/repositories/GitRepository';
 import MetaRepository from './server/repositories/MetaRepository';
 import RulesRepository from './server/repositories/RulesRepository';
+import TagsRepository from './server/repositories/TagsRepository';
 import session from 'express-session';
 const passport = require('passport');
 const nconf = require('nconf');
@@ -28,10 +29,11 @@ const gitRepo = GitRepository.init({
 
 const rulesRepository = new RulesRepository(gitRepo);
 const metaRepository = new MetaRepository(gitRepo);
+const tagsRepository = new TagsRepository(gitRepo);
 
 function getApp(req, res, requestCallback) {
   requestCallback(null, {
-    routes: routes(serverRoutes({ rulesRepository, metaRepository })),
+    routes: routes(serverRoutes({ rulesRepository, metaRepository, tagsRepository })),
     render(routerProps, renderCallback) {
       const store = configureStore({});
       rulesRepository.getAllRules().then(keys => store.dispatch(getKeys(keys)))
@@ -39,7 +41,7 @@ function getApp(req, res, requestCallback) {
           renderCallback(null, {
             renderDocument: (props) => <Document {...props} initialState={store.getState() } />,
             renderApp: (props) =>
-              <Provider store={store}><RouterContext {...props} metaRepository={metaRepository} rulesRepository={rulesRepository} /></Provider>,
+              <Provider store={store}><RouterContext {...props} /></Provider>,
           })
         );
     },

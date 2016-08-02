@@ -1,3 +1,6 @@
+* {
+  box-sizing: border-box;
+}
 .metro-button {
   vertical-align: top;
   background-color: rgba(0, 122, 204, 0.7);
@@ -32,8 +35,8 @@
   display: inline-block;
   border: 0;
   border-style: none;
-  height: 28px;
-  padding: 0 7px;
+  min-height: 28px;
+  padding: 0 4px;
   background-color: transparent;
   border-bottom: 2px solid rgba(0, 122, 204, 0.7);
   outline: none;

@@ -1,17 +1,8 @@
-﻿namespace Engine.Match.DSL
+﻿namespace Tweek.JPad
 open FSharp.Data;
-open FSharp.Control;
 open System;
-open Microsoft.FSharp.Quotations;
 
-module MatchDSL = 
-    
-    exception ParseError of string
-
-    type Context = string-> Option<string>
-    type ContextDelegate = delegate of string-> string
-    type ComparerDelegate = delegate of string-> IComparable
-    type ParserSettings = {Comparers: System.Collections.Generic.IDictionary<string,ComparerDelegate>}
+module Matcher = 
 
     let nullProtect x = match x with |null -> None |_-> Some x;
 
@@ -147,9 +138,6 @@ module MatchDSL =
 
     let parseJsonSchema (schema:JsonValue) = parsePropertySchema ConjuctionOp.And schema
 
-    let Compile (schema: string) (settings: ParserSettings) =
-        ( schema |> JsonValue.Parse |> parseJsonSchema |> (compile_internal settings.Comparers))
+    let Compile (settings: ParserSettings) (schema: JsonValue) =
+        ( schema |> parseJsonSchema |> (compile_internal settings.Comparers))
 
-    let Compile_Ext (schema: string) (settings: ParserSettings) : (Func<ContextDelegate, bool>) =
-        let matcher = Compile schema settings;
-        new Func<ContextDelegate, bool>(fun c-> matcher (c.Invoke >> nullProtect))

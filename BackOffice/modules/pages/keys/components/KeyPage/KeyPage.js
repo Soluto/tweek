@@ -1,14 +1,19 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import KeyRulesEditor from '../KeyRulesEditor/KeyRulesEditor';
-import * as actions from '../../ducks/selectedKey';
+import * as keysActions from '../../ducks/selectedKey';
+import * as tagActions from '../../ducks/tags';
 import style from './KeyPage.css';
 import { diff } from 'deep-diff';
 import { WithContext as ReactTags } from 'react-tag-input';
 import R from 'ramda';
+import TextareaAutosize from 'react-autosize-textarea';
 
-export default connect((state, { params }) => ({ selectedKey: state.selectedKey, tags: state.tags, configKey: params.splat }), { ...actions })(
+export default connect((state, { params }) => (
+  { selectedKey: state.selectedKey, tags: state.tags, configKey: params.splat }),
+  { ...keysActions, ...tagActions })(
   class KeyPage extends Component {
 
     static propTypes = {
@@ -20,18 +25,17 @@ export default connect((state, { params }) => ({ selectedKey: state.selectedKey,
     constructor(props) {
       super(props);
 
-      this.tagsSuggestions = ['android', 'ios', 'client', 'backend', 'language', 'resource', 'text', 'layout', 'color', 'carrier', 'boolean'];
-
       this.state = {
         isDisplayNameInEditMode: false,
       };
     }
 
     componentDidMount() {
-      const { downloadKey, configKey, selectedKey } = this.props;
+      const { downloadKey, configKey, selectedKey, downloadTags } = this.props;
       if (!configKey) return;
       if (selectedKey && selectedKey.key === configKey) return;
       downloadKey(configKey);
+      downloadTags();
     }
 
     componentWillReceiveProps({ configKey }) {
@@ -64,9 +68,13 @@ export default connect((state, { params }) => ({ selectedKey: state.selectedKey,
 
     get tags() {
       return R.map(_ => ({
-        id: _,
-        text: _,
-      }), this.props.selectedKey.local.meta.tags);
+    id: _,
+    text: _,
+  }), this.props.selectedKey.local.meta.tags);
+    }
+
+    get tagsSuggestions() {
+      return this.props.tags ? this.props.tags.map(tag => tag.name) : [];
     }
 
     _onSelectedKeyMetaChanged(newMeta) {
@@ -78,13 +86,13 @@ export default connect((state, { params }) => ({ selectedKey: state.selectedKey,
       const changes = diff(local, remote);
       const hasChanges = (changes || []).length > 0;
       return (<button disabled={!hasChanges || isSaving }
-        data-state-has-changes={hasChanges}
-        data-state-is-saving={isSaving}
-        className={style['save-button']}
-        onClick={() => this.props.saveKey(this.props.configKey) }
-      >
-            {isSaving ? 'Saving...' : 'Save changes'}
-          </button>);
+    data-state-has-changes={hasChanges}
+    data-state-is-saving={isSaving}
+    className={style['save-button']}
+    onClick={() => this.props.saveKey(this.props.configKey) }
+  >
+    {isSaving ? 'Saving...' : 'Save changes'}
+  </button>);
     }
 
     render() {
@@ -93,58 +101,67 @@ export default connect((state, { params }) => ({ selectedKey: state.selectedKey,
       const { meta, ruleDef } = selectedKey.local;
 
       return (<div className={style['key-viewer-container']}>
-          {this.renderSaveButton()}
-          <div className={style['key-header']}>
-            {this.state.isDisplayNameInEditMode ?
-              <input type="text"
-                className={style['display-name-input']}
-                onChange={ (e) => this.onDisplayNameChanged(e.target.value) }
-                value = { meta.displayName }
-                onBlur={() => { this.setState({ isDisplayNameInEditMode: false }); } }
-              />
-              :
-              <div className={style['display-name']}
-                onClick={() => { this.setState({ isDisplayNameInEditMode: true }); } }
-              >
-                {meta.displayName}
-              </div>
-            }
+    {this.renderSaveButton() }
+    <div className={style['key-header']}>
 
-            <div className={style['full-key-path']}>
-              <label className={style['full-kay-path-title']}>Full path: </label>
-              <label>{configKey}</label>
-            </div>
+      <div className={style['display-name-wrapper']}>
+        {this.state.isDisplayNameInEditMode ?
 
+          <form onSubmit={ (e) => { this.setState({ isDisplayNameInEditMode: false }); e.preventDefault(); } }>
             <input type="text"
-              className={style['meta-data-input']}
-              onChange={ (e) => this.onDescriptionChanged(e.target.value) }
-              value = { meta.description }
-              placeholder="Description"
+              ref={(input) => input && input.focus() }
+              className={style['display-name-input']}
+              onChange={ (e) => this.onDisplayNameChanged(e.target.value) }
+              value = { meta.displayName }
+              onBlur={() => { this.setState({ isDisplayNameInEditMode: false }); } }
             />
-
-            <ReactTags tags={ this.tags }
-              handleDelete={ this:: this.onTagDeleted }
-              handleAddition={ this:: this.onTagAdded }
-              suggestions={this.tagsSuggestions }
-              placeholder="New tag"
-              minQueryLength={ 1 }
-              allowDeleteFromEmptyInput={ false }
-              classNames={{
-                tags: style['tags-container'],
-                tagInput: style['tag-input'],
-                tag: style['tag'],
-                remove: style['tag-delete-button'],
-                suggestions: style['tags-suggestion'],
-              } }
-            />
-
+          </form>
+          :
+          <div className={style['display-name']}
+            onClick={() => {
+              this.setState({ isDisplayNameInEditMode: true });
+            } }
+          >
+            {meta.displayName}
           </div>
+        }
+      </div>
 
-              <KeyRulesEditor ruleDef={ruleDef}
-                sourceTree={JSON.parse(ruleDef.source) }
-                onMutation={x => this.props.updateKeyRuleDef({ source: JSON.stringify(x, null, 4) }) }
-                className={style['key-rules-editor']}
-              />
-        </div>);
+      <div className={style['full-key-path-wrapper']}>
+        <label>Full path: </label>
+        <label className={style['actual-path']}>{configKey}</label>
+      </div>
+
+      <TextareaAutosize
+        onChange={ (e) => this.onDescriptionChanged(e.target.value) }
+        value = { meta.description }
+        placeholder="Description"
+        className={style['description-input']}
+      />
+
+      <ReactTags tags={ this.tags }
+        handleDelete={ this:: this.onTagDeleted }
+        handleAddition={ this:: this.onTagAdded }
+        suggestions={this.tagsSuggestions }
+        placeholder="New tag"
+        minQueryLength={ 1 }
+        allowDeleteFromEmptyInput={ false }
+        classNames={{
+          tags: style['tags-container'],
+          tagInput: style['tag-input'],
+          tag: style['tag'],
+          remove: style['tag-delete-button'],
+          suggestions: style['tags-suggestion'],
+        } }
+      />
+
+    </div>
+
+    <KeyRulesEditor ruleDef={ruleDef}
+      sourceTree={JSON.parse(ruleDef.source) }
+      onMutation={x => this.props.updateKeyRuleDef({ source: JSON.stringify(x, null, 4) }) }
+      className={style['key-rules-editor']}
+    />
+  </div>);
     }
   });

@@ -10,9 +10,12 @@ open FsCheck.Xunit;
 open Swensen.Unquote
 open FSharp.Data;
 open Microsoft.FSharp.Reflection;
-open Matcher.Tests.Common;
-open Engine.Match.DSL.MatchDSL;
+open Tweek.JPad;
 open System;
+
+let validator jsonString = Matcher.Compile {Comparers=dict(Seq.empty)} (jsonString|>JsonValue.Parse)
+let createContext seq = fun name -> seq |> Seq.tryFind (fun (k,v)->k = name) |> Option.map (fun (k,v)->v)
+let context = createContext;
 
 [<Fact>]
 let ``Use multipe-comparisons, "and" is implict``() =
@@ -51,13 +54,15 @@ let ``"nested" context``() =
 [<Fact>]
 let ``use custom comparer``() =
     let comparers = dict([("version", new ComparerDelegate(fun x -> Version.Parse(x) :> IComparable))]);
-    let validate =  Compile """{"AgentVersion": {"$compare": "version", "$gt": "1.5.1", "$le": "1.15.2" }}""" {Comparers=comparers}
+    let matcher = """{"AgentVersion": {"$compare": "version", "$gt": "1.5.1", "$le": "1.15.2" }}""" |> JsonValue.Parse;
+    let validate =  Matcher.Compile {Comparers=comparers} matcher;
     validate (context [("AgentVersion", "1.15.1" )]) |> should equal true;
 
 [<Fact>]
 let ``use custom comparer with broken mismatched target value should fail in compile time``() =
     let comparers = dict([("version", new ComparerDelegate(fun x -> Version.Parse(x) :> IComparable))]);
-    (fun () ->(Compile """{"AgentVersion": {"$compare": "version", "$gt": "debug-1.5.1", "$le": "1.15.2" }}""" {Comparers=comparers}) |> ignore) |> should throw typeof<ParseError>
+    let matcher = """{"AgentVersion": {"$compare": "version", "$gt": "debug-1.5.1", "$le": "1.15.2" }}""" |> JsonValue.Parse;
+    (fun () ->(Matcher.Compile {Comparers=comparers}) matcher |> ignore) |> should throw typeof<ParseError>
 
 [<Fact>]
 let ``exist/not exist prop support -> expressed with null``() =
@@ -78,3 +83,48 @@ let ``in operator support ``() =
     validate (context [("Person.Age", "21" )]) |> should equal false;
     validate (context [("Person.Age", "100" )]) |> should equal false;
     validate (context [("Person.Age", "10" )]) |> should equal true;
+
+
+[<Fact>]
+let ``Use Equal``() =
+    let validate = validator """{"Age": {"$eq": 30 }}"""
+    validate (context [("Age", "31");])  |> should equal false
+    validate (context [("Age", "30");])  |> should equal true
+    validate (context [("Age", "29");])  |> should equal false
+
+[<Fact>]
+let ``Use greaterEqual``() =
+    let validate = validator """{"Age": {"$ge": 30 }}"""
+    validate (context [("Age", "31");])  |> should equal true
+    validate (context [("Age", "30");])  |> should equal true
+    validate (context [("Age", "29");])  |> should equal false
+
+[<Fact>]
+let ``Use lessEqual``() =
+    let validate = validator """{"Age": {"$le": 30 }}"""
+    validate (context [("Age", "31");])  |> should equal false
+    validate (context [("Age", "30");])  |> should equal true
+    validate (context [("Age", "29");])  |> should equal true
+
+[<Fact>]
+let ``Use lessThanOp``() =
+    let validate = validator """{"Age": {"$lt": 30 }}"""
+    validate (context [("Age", "31");])  |> should equal false
+    validate (context [("Age", "30");])  |> should equal false
+    validate (context [("Age", "29");])  |> should equal true
+
+[<Fact>]
+let ``Use greaterThenOp``() =
+    let validate = validator """{"Age": {"$gt": 30 }}"""
+    validate (context [("Age", "31");])  |> should equal true
+    validate (context [("Age", "30");])  |> should equal false
+    validate (context [("Age", "29");])  |> should equal false
+
+[<Fact>]
+let ``Use implict Equal``() =
+    let validate = validator """{"Age": 30 }"""
+    let explictValidate = validator """{"Age": {"$eq": 30 } }"""
+    let compareValidators ctx = (validate ctx) |> should equal (explictValidate ctx)
+    compareValidators (context [("Age", "31");]) 
+    compareValidators (context [("Age", "30");]) 
+    compareValidators (context [("Age", "29");]) 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Cassandra;
 using Engine;
@@ -11,9 +10,9 @@ using Engine.Core.Context;
 using Engine.DataTypes;
 using Engine.Drivers.Cassandra;
 using Engine.Drivers.Rules.Git;
-using Engine.Match.DSL;
-using Tweek.JPad;
 using static LanguageExt.Prelude;
+using Tweek.JPad.Utils;
+using Tweek.JPad;
 
 namespace SimpleBenchmarks
 {
@@ -43,12 +42,12 @@ namespace SimpleBenchmarks
                 });
 
             ITweek tweek = Task.Run(async () => await Engine.Tweek.Create(
-                contextDriver, gitDriver, new JPadParser(
-                        new Dictionary<string, MatchDSL.ComparerDelegate>
+                contextDriver, gitDriver, JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
+                        new Dictionary<string, ComparerDelegate>
                         {
                             ["version"] =Version.Parse
                         }
-                    ))).Result;
+                    ))))).Result;
             var query = ConfigurationPath.New("_");
             
             GetLoadedContextByIdentityType ext_context =
