@@ -12,7 +12,7 @@
 .property-value-wrapper {
   display: inline-block;
 }
-.property-value-wrapper input {
+.property-value-wrapper .value-input {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -25,7 +25,7 @@
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
 }
-.property-value-wrapper input:focus {
+.property-value-wrapper .value-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.7);
 }
 :global(.react-autosuggest__suggestions-container) {

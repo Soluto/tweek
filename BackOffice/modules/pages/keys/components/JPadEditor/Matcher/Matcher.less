@@ -2,11 +2,14 @@
 .Matcher {
     .conditions-wrapper {
         display: flex;
+        padding-left: 3px;
+        height: 30px;
         .delete-condition-button {
             .gray-circle-button;
             width: 13px;
             height: 13px;
-            margin-top: 10px;
+            margin-top: 7px;
+            margin-right: 4px;
             font-size: 10px;
             padding-bottom: 3px;
             padding-left: 4px;
@@ -15,9 +18,15 @@
     }
     .add-condition-button {
         .circle-button;
-        margin-top: 5px;
-        margin-left: 1px;
+        margin-top: 8px;
         box-sizing: border-box;
+        transform-origin: 50%;
+        &.big {
+            width: 35px;
+            height: 35px;
+            margin-left: 5px;
+            margin-top: 10px;
+        }
     }
 }
 

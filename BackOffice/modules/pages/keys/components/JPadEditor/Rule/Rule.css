@@ -9,6 +9,7 @@
 }
 .rule-container .conditions {
   border-right: 1px solid lightgray;
+  padding-right: 5px;
 }
 .rule-container .conditions .matcher-wrapper {
   padding: 5px;

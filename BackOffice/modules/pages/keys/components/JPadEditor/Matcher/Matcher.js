@@ -5,6 +5,7 @@ import EditorMetaService from '../../../../../services/EditorMetaService';
 import PropertyName from './Properties/PropertyName';
 import PropertyPredicate from './Properties/PropertyPredicate';
 import { shouldUpdate } from 'recompose';
+import classNames from 'classnames';
 
 const editorMetaService = new EditorMetaService();
 editorMetaService.init();
@@ -40,7 +41,7 @@ export default hasChanged(({ matcher, mutate }) => {
           );
         })
       }
-      <button className={style['add-condition-button']}
+      <button className={classNames(style['add-condition-button'], { [style['big']]: props.length === 0 }) }
         onClick={() => mutate.insert('', '') }
         title="Add condition">+</button>
     </div>);

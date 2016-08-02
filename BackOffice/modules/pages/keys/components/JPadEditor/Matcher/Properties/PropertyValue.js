@@ -12,7 +12,7 @@ export default ({ onUpdate, meta, value }) => {
           suggestions={meta.allowedValues}
         />
         :
-        <input type="text" onChange={(e) => onUpdate(e.target.value) } value={value} />
+        <input className={style['value-input']} type="text" onChange={(e) => onUpdate(e.target.value) } value={value} />
       }
     </div>
   );
