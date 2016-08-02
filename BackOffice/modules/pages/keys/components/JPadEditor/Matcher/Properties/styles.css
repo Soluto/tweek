@@ -2,22 +2,8 @@
   display: inline-block;
 }
 .MatcherOp input {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  width: auto;
-  padding: 0 4px;
-  background-color: transparent;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.4);
-  outline: none;
-  transition: all 0.2s ease-in-out;
-  box-sizing: border-box;
   max-width: 30px;
   min-width: 30px;
-}
-.MatcherOp input:focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.7);
 }
 .MatcherOp :global(.react-autosuggest__suggestions-container) {
   max-width: 60px;
@@ -36,8 +22,8 @@
   background-color: transparent;
   border-bottom: 1px solid rgba(0, 122, 204, 0.4);
   outline: none;
-  transition: all 0.2s ease-in-out;
   box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
 }
 .property-value-wrapper input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.7);
@@ -58,8 +44,8 @@
   background-color: transparent;
   border-bottom: 1px solid rgba(0, 122, 204, 0.4);
   outline: none;
-  transition: all 0.2s ease-in-out;
   box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
 }
 :global(.react-autosuggest__input):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.7);

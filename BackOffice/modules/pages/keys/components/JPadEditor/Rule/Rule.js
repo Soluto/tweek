@@ -14,7 +14,7 @@ const comp = ({ rule, mutate }) => {
     <div className={style['rule-container']}>
       <div className={style['conditions']}>
         <label className={style['case-partial-title']}>Conditions</label>
-        <Matcher matcher={rule.Matcher} mutate={mutate.in('Matcher') } />
+        <div className={style['matcher-wrapper']}><Matcher matcher={rule.Matcher} mutate={mutate.in('Matcher') } /></div>
       </div>
       <div className={style['values']} >
         <label className={style['case-partial-title']}>Values</label>

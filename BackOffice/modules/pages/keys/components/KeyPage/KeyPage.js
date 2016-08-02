@@ -68,9 +68,9 @@ export default connect((state, { params }) => (
 
     get tags() {
       return R.map(_ => ({
-    id: _,
-    text: _,
-  }), this.props.selectedKey.local.meta.tags);
+        id: _,
+        text: _,
+      }), this.props.selectedKey.local.meta.tags);
     }
 
     get tagsSuggestions() {
@@ -86,11 +86,11 @@ export default connect((state, { params }) => (
       const changes = diff(local, remote);
       const hasChanges = (changes || []).length > 0;
       return (<button disabled={!hasChanges || isSaving }
-    data-state-has-changes={hasChanges}
-    data-state-is-saving={isSaving}
-    className={style['save-button']}
-    onClick={() => this.props.saveKey(this.props.configKey) }
-  >
+        data-state-has-changes={hasChanges}
+        data-state-is-saving={isSaving}
+        className={style['save-button']}
+        onClick={() => this.props.saveKey(this.props.configKey) }
+      >
     {isSaving ? 'Saving...' : 'Save changes'}
   </button>);
     }

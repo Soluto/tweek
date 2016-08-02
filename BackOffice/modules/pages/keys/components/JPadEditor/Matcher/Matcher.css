@@ -1,10 +1,7 @@
-.Matcher .MatcherProperty {
+.Matcher .conditions-wrapper {
   display: flex;
 }
-.Matcher .MatcherProperty div {
-  margin: 0 4px;
-}
-.Matcher .MatcherProperty .delete-condition-button {
+.Matcher .conditions-wrapper .delete-condition-button {
   vertical-align: top;
   background-color: rgba(0, 122, 204, 0.7);
   height: 28px;
@@ -31,25 +28,25 @@
   padding-left: 4px;
   box-sizing: border-box;
 }
-.Matcher .MatcherProperty .delete-condition-button:hover {
+.Matcher .conditions-wrapper .delete-condition-button:hover {
   background-color: #007acc;
   cursor: pointer;
 }
-.Matcher .MatcherProperty .delete-condition-button:active {
+.Matcher .conditions-wrapper .delete-condition-button:active {
   background-color: #0098ff;
 }
-.Matcher .MatcherProperty .delete-condition-button:disabled {
+.Matcher .conditions-wrapper .delete-condition-button:disabled {
   background-color: gray;
 }
-.Matcher .MatcherProperty .delete-condition-button:disabled:hover,
-.Matcher .MatcherProperty .delete-condition-button:disabled:active {
+.Matcher .conditions-wrapper .delete-condition-button:disabled:hover,
+.Matcher .conditions-wrapper .delete-condition-button:disabled:active {
   cursor: default;
   background-color: gray;
 }
-.Matcher .MatcherProperty .delete-condition-button:hover {
+.Matcher .conditions-wrapper .delete-condition-button:hover {
   background-color: #9c9c9c;
 }
-.Matcher .MatcherProperty .delete-condition-button:active {
+.Matcher .conditions-wrapper .delete-condition-button:active {
   background-color: #7b7b7b;
 }
 .Matcher .add-condition-button {
@@ -70,6 +67,7 @@
   border-radius: 50%;
   width: 20px;
   height: 20px;
+  margin-top: 5px;
   margin-left: 1px;
   box-sizing: border-box;
 }
