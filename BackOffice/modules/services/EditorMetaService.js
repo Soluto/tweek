@@ -14,7 +14,6 @@ export default class EditorMetaService {
         device: {
           PartnerBrandId: defaultValue('AsurionFriends')(description('The name of the partner')(types.String)),
           DeviceOsType: defaultValue('Android')(types.Enum('Android', 'Ios')),
-          AgentOsVersion: types.Version,
           SubscriptionType: types.Enum('Evaluation', 'Free', 'Insurance', 'InsuranceAndSupport', 'HomeSupport', 'DefaultFree'),
           AgentVersion: defaultValue('1.0.0.0')(types.Version),
           DeviceOsVersion: types.Version,
