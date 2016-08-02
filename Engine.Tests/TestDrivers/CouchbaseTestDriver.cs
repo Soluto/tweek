@@ -10,6 +10,7 @@ using Couchbase;
 using Tweek.Drivers.CouchbaseDriver;
 using System.IO;
 using Couchbase.Core;
+using LanguageExt;
 
 namespace Engine.Tests.TestDrivers
 {

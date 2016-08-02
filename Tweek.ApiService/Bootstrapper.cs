@@ -8,7 +8,6 @@ using Couchbase.Core.Serialization;
 using Engine;
 using Engine.Core.Rules;
 using Engine.Drivers.Context;
-using Engine.Match.DSL;
 using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.TinyIoc;
@@ -21,6 +20,7 @@ using NLog.Targets;
 using Tweek.Drivers.Blob;
 using Tweek.Drivers.CouchbaseDriver;
 using Tweek.JPad;
+using Tweek.JPad.Utils;
 
 namespace Tweek.ApiService
 {
@@ -64,11 +64,11 @@ namespace Tweek.ApiService
 
         IRuleParser GetRulesParser()
         {
-            return new JPadParser(
-                comparers: new Dictionary<string, MatchDSL.ComparerDelegate>()
+            return JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
+                comparers: new Dictionary<string, ComparerDelegate>()
                 {
                     ["version"] = Version.Parse
-                });
+                })));
         }
 
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
