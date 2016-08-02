@@ -10,7 +10,7 @@ const editorMetaService = new EditorMetaService();
 editorMetaService.init();
 
 const Property = ({ property, predicate, mutate, suggestedValues = []}) =>
-  (<div className={style['MatcherProperty']}>
+  (<div className={style['conditions-wrapper']}>
     <div className={style['delete-condition-button']} onClick={mutate.delete}>x</div>
     <PropertyName {...{ property, mutate, suggestedValues }} />
     <PropertyPredicate {...{ predicate, mutate, property }} />

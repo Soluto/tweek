@@ -4,7 +4,12 @@ import Title from 'react-title-component';
 import styles from './App.css';
 import logo from './logo.png';
 import { Tabs } from 'react-tabs';
+import { Observable } from 'rxjs/Rx';
+import { setObservableConfig } from 'recompose';
 
+setObservableConfig({
+  fromESObservable: Observable.from,
+});
 Tabs.setUseDefaultStyles(false);
 
 export default React.createClass({

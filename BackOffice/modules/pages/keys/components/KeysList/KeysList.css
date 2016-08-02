@@ -1,22 +1,43 @@
-.key-link-wrapper .key-link {
+.keys-list-container .filter-input {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  width: auto;
+  padding: 0 4px;
+  background-color: transparent;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.4);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+}
+.keys-list-container .filter-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.7);
+}
+.keys-list-container .key-link-wrapper .key-link {
   color: black;
   padding-top: 5px;
   padding-left: 10px;
   display: block;
   height: 25px;
+  text-decoration: none;
   transition: all 0.2s ease-in-out;
 }
-.key-link-wrapper .key-link:hover {
-  background-color: #f1f1f1;
+.keys-list-container .key-link-wrapper .key-link:hover {
+  background-color: #e8e8e8;
   cursor: pointer;
 }
-.key-link-wrapper .key-link:active {
-  background-color: #e2e2e2;
+.keys-list-container .key-link-wrapper .key-link:active {
+  background-color: #d1d1d1;
 }
-.key-folder {
+.keys-list-container .key-link-wrapper .key-link.selected {
+  background-color: #b9b9b9;
+}
+.keys-list-container .key-folder {
   max-width: 500px;
 }
-.key-folder .key-folder-name {
+.keys-list-container .key-folder .key-folder-name {
   display: block;
   height: 30px;
   padding-left: 5px;
@@ -26,7 +47,7 @@
   border-bottom: 1px solid lightgray;
   background-color: #f1f1f1;
 }
-.key-folder ul li {
+.keys-list-container .key-folder ul li {
   list-style: none;
   overflow: hidden;
   white-space: nowrap;

@@ -1,39 +1,48 @@
 @import (reference) "../../../../styles/core/core.less";
-.key-link-wrapper {
-  .key-link {
-    color: black;
-    padding-top: 5px;
-    padding-left: 10px;
-    display: block;
-    height: 25px;
-    .transitioned();
-    &:hover {
+.keys-list-container {
+  .filter-input {
+    .metro-textbox;
+    width: 100%;
+  }
+  .key-link-wrapper {
+    .key-link {
+      color: black;
+      padding-top: 5px;
+      padding-left: 10px;
+      display: block;
+      height: 25px;
+      text-decoration: none;
+      .transitioned();
+      &:hover {
+        background-color: #e8e8e8;
+        cursor: pointer;
+      }
+      &:active {
+        background-color: #d1d1d1;
+      }
+      &.selected {
+        background-color: #b9b9b9;
+      }
+    }
+  }
+  .key-folder {
+    max-width: 500px;
+    .key-folder-name {
+      display: block;
+      height: 30px;
+      padding-left: 5px;
+      padding-top: 13px;
+      color: gray;
+      color: @accent-color3;
+      border-bottom: 1px solid lightgray;
       background-color: #f1f1f1;
-      cursor: pointer;
     }
-    &:active {
-      background-color: #e2e2e2;
-    }
-  }
-}
-
-.key-folder {
-  max-width: 500px;
-  .key-folder-name {
-    display: block;
-    height: 30px;
-    padding-left: 5px;
-    padding-top: 13px;
-    color: gray;
-    color: @accent-color3;
-    border-bottom: 1px solid lightgray;
-    background-color: #f1f1f1;
-  }
-  ul {
-    li {
-      list-style: none;
-      overflow: hidden;
-      white-space: nowrap;
+    ul {
+      li {
+        list-style: none;
+        overflow: hidden;
+        white-space: nowrap;
+      }
     }
   }
 }
