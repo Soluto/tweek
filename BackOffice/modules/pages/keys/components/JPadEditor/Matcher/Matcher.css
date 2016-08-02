@@ -1,0 +1,93 @@
+.Matcher .MatcherProperty {
+  display: flex;
+}
+.Matcher .MatcherProperty div {
+  margin: 0 4px;
+}
+.Matcher .MatcherProperty .delete-condition-button {
+  vertical-align: top;
+  background-color: rgba(0, 122, 204, 0.7);
+  height: 28px;
+  border: 0;
+  padding: 0 5px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  padding: 0;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  background-color: #bcbcbc;
+  width: 13px;
+  height: 13px;
+  margin-top: 10px;
+  font-size: 10px;
+  padding-bottom: 3px;
+  padding-left: 4px;
+  box-sizing: border-box;
+}
+.Matcher .MatcherProperty .delete-condition-button:hover {
+  background-color: #007acc;
+  cursor: pointer;
+}
+.Matcher .MatcherProperty .delete-condition-button:active {
+  background-color: #0098ff;
+}
+.Matcher .MatcherProperty .delete-condition-button:disabled {
+  background-color: gray;
+}
+.Matcher .MatcherProperty .delete-condition-button:disabled:hover,
+.Matcher .MatcherProperty .delete-condition-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.Matcher .MatcherProperty .delete-condition-button:hover {
+  background-color: #9c9c9c;
+}
+.Matcher .MatcherProperty .delete-condition-button:active {
+  background-color: #7b7b7b;
+}
+.Matcher .add-condition-button {
+  vertical-align: top;
+  background-color: rgba(0, 122, 204, 0.7);
+  height: 28px;
+  border: 0;
+  padding: 0 5px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  padding: 0;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  margin-left: 1px;
+  box-sizing: border-box;
+}
+.Matcher .add-condition-button:hover {
+  background-color: #007acc;
+  cursor: pointer;
+}
+.Matcher .add-condition-button:active {
+  background-color: #0098ff;
+}
+.Matcher .add-condition-button:disabled {
+  background-color: gray;
+}
+.Matcher .add-condition-button:disabled:hover,
+.Matcher .add-condition-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.Matcher:empty:before {
+  content: "Match all";
+}

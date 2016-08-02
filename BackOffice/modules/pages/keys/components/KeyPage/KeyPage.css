@@ -58,17 +58,18 @@
   display: inline-block;
   border: 0;
   border-style: none;
-  min-height: 28px;
+  height: 28px;
+  width: auto;
   padding: 0 4px;
   background-color: transparent;
-  border-bottom: 2px solid rgba(0, 122, 204, 0.7);
+  border-bottom: 1px solid rgba(0, 122, 204, 0.4);
   outline: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
+  transition: all 0.2s ease-in-out;
   width: 100%;
   box-sizing: border-box;
+}
+.key-viewer-container .key-header .meta-data-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.7);
 }
 .key-viewer-container .key-header .display-name-wrapper {
   min-height: 34px;
@@ -82,18 +83,19 @@
   display: inline-block;
   border: 0;
   border-style: none;
-  min-height: 28px;
+  height: 28px;
+  width: auto;
   padding: 0 4px;
   background-color: transparent;
-  border-bottom: 2px solid rgba(0, 122, 204, 0.7);
+  border-bottom: 1px solid rgba(0, 122, 204, 0.4);
   outline: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
+  transition: all 0.2s ease-in-out;
   width: 100%;
   box-sizing: border-box;
   font-size: 23px;
+}
+.key-viewer-container .key-header .display-name-wrapper .display-name-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.7);
 }
 .key-viewer-container .key-header .full-key-path-wrapper {
   color: darkgray;
@@ -118,21 +120,22 @@
   display: inline-block;
   border: 0;
   border-style: none;
-  min-height: 28px;
+  height: 28px;
+  width: auto;
   padding: 0 4px;
   background-color: transparent;
-  border-bottom: 2px solid rgba(0, 122, 204, 0.7);
+  border-bottom: 1px solid rgba(0, 122, 204, 0.4);
   outline: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
+  transition: all 0.2s ease-in-out;
   width: 100%;
   box-sizing: border-box;
   margin-top: 8px;
   resize: none;
   font-family: calibri;
   font-size: 18px;
+}
+.key-viewer-container .key-header .description-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.7);
 }
 .key-viewer-container .key-header .tags-container {
   position: relative;
@@ -148,9 +151,20 @@
   border-radius: 2px;
 }
 .key-viewer-container .key-header .tags-container .tag .tag-delete-button {
+  display: block;
+  float: right;
+  margin-top: 1px;
   color: #aaa;
-  margin-left: 5px;
+  margin-left: 6px;
+  padding-left: 1px;
+  padding-bottom: 4px;
+  width: 9px;
+  height: 9px;
+  transition: all 0.2s ease-in-out;
+}
+.key-viewer-container .key-header .tags-container .tag .tag-delete-button:hover {
   cursor: pointer;
+  color: #939393;
 }
 .key-viewer-container .key-header .tags-container .tag-input {
   display: inline-block;
@@ -168,9 +182,21 @@
 }
 .key-viewer-container .key-header .tags-container .tag-input input .tag-delete-button,
 .key-viewer-container .key-header .tags-container .tag-input input:focus .tag-delete-button {
+  display: block;
+  float: right;
+  margin-top: 1px;
   color: #aaa;
-  margin-left: 5px;
+  margin-left: 6px;
+  padding-left: 1px;
+  padding-bottom: 4px;
+  width: 9px;
+  height: 9px;
+  transition: all 0.2s ease-in-out;
+}
+.key-viewer-container .key-header .tags-container .tag-input input .tag-delete-button:hover,
+.key-viewer-container .key-header .tags-container .tag-input input:focus .tag-delete-button:hover {
   cursor: pointer;
+  color: #939393;
 }
 .key-viewer-container .key-header .tags-container .tags-suggestion {
   position: absolute;
@@ -208,4 +234,5 @@
   display: flex;
   flex-grow: 1;
   margin-top: 7px;
+  border-top: 1px solid lightgray;
 }
