@@ -9,4 +9,35 @@
 }
 .key-rules-editor-container .tab-content {
   overflow-y: auto;
+  flex-grow: 1;
+}
+:global(.ReactTabs__TabList) {
+  border-bottom: 1px solid #007acc;
+}
+:global(.ReactTabs__TabList) :global(.ReactTabs__Tab) {
+  display: inline-block;
+  border-bottom: 5px solid transparent;
+  padding: 7px 14px;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+}
+:global(.ReactTabs__TabList) :global(.ReactTabs__Tab):hover {
+  border-bottom: 5px solid rgba(0, 122, 204, 0.2);
+  cursor: pointer;
+}
+:global(.ReactTabs__TabList) :global(.ReactTabs__Tab):active {
+  border-bottom: 5px solid rgba(0, 122, 204, 0.5);
+}
+:global(.ReactTabs__TabList) :global(.ReactTabs__Tab--selected) {
+  border-bottom: 5px solid #007acc;
+}
+:global(.ReactTabs__TabList) :global(.ReactTabs__Tab--selected):hover {
+  border-bottom: 5px solid #007acc;
+  cursor: default;
+}
+:global(.ReactTabs__TabList) :global(.ReactTabs__Tab--selected):active {
+  border-bottom: 5px solid #007acc;
+}
+:global(.ReactTabs__TabPanel) {
+  margin-top: 5px;
 }

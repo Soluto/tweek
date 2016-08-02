@@ -1,19 +1,33 @@
-.tree-level {
-  background-color: #f7f7f7;
-  padding: 0 0 0 5px;
+.key-link-wrapper .key-link {
+  color: black;
+  padding-top: 5px;
+  padding-left: 10px;
+  display: block;
+  height: 25px;
+  transition: all 0.2s ease-in-out;
+}
+.key-link-wrapper .key-link:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+.key-link-wrapper .key-link:active {
+  background-color: #e2e2e2;
+}
+.key-folder {
   max-width: 500px;
-  position: relative;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
 }
-.tree-level ul {
-  margin: 0;
+.key-folder .key-folder-name {
+  display: block;
+  height: 30px;
+  padding-left: 5px;
+  padding-top: 13px;
+  color: gray;
+  color: rgba(0, 122, 204, 0.5);
+  border-bottom: 1px solid lightgray;
+  background-color: #f1f1f1;
 }
-.tree-level ul li {
+.key-folder ul li {
   list-style: none;
-  max-width: 500px;
   overflow: hidden;
   white-space: nowrap;
 }

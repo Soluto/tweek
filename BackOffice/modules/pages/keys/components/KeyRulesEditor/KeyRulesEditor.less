@@ -1,3 +1,5 @@
+@import (reference) "../../../../styles/core/accents.less";
+@import (reference) "../../../../styles/core/core.less";
 .key-rules-editor-container {
   display: flex;
   flex-grow: 1;
@@ -8,5 +10,39 @@
   }
   .tab-content {
     overflow-y: auto;
+    flex-grow: 1;
   }
+}
+
+:global(.ReactTabs__TabList) {
+  border-bottom: 1px solid @accent-color1;
+  @tab-item-border-bottom-height: 5px;
+  :global(.ReactTabs__Tab) {
+    display: inline-block;
+    border-bottom: @tab-item-border-bottom-height solid transparent;
+    padding: 7px 14px;
+    outline: none;
+    .transitioned();
+    &:hover {
+      border-bottom: @tab-item-border-bottom-height solid @accent-color5;
+      cursor: pointer;
+    }
+    &:active {
+      border-bottom: @tab-item-border-bottom-height solid @accent-color3;
+    }
+  }
+  :global(.ReactTabs__Tab--selected) {
+    border-bottom: @tab-item-border-bottom-height solid @accent-color1;
+    &:hover {
+      border-bottom: @tab-item-border-bottom-height solid @accent-color1;
+      cursor: default;
+    }
+    &:active {
+      border-bottom: @tab-item-border-bottom-height solid @accent-color1;
+    }
+  }
+}
+
+:global(.ReactTabs__TabPanel) {
+  margin-top: 5px;
 }
