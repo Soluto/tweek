@@ -25,7 +25,6 @@
   padding-bottom: 2px;
   .user-select(none);
   .transitioned();
-
   &:hover {
     background-color: @accent-color1;
     cursor: pointer;
@@ -33,12 +32,11 @@
   &:active {
     background-color: @accent-active;
   }
-  
-  &:disabled{
-    background-color:gray;
-    &:hover, &:active{
+  &:disabled {
+    background-color: gray;
+    &:hover, &:active {
       cursor: default;
-      background-color:gray;
+      background-color: gray;
     }
   }
 }
@@ -47,10 +45,45 @@
   display: inline-block;
   border: 0;
   border-style: none;
-  min-height: 28px;
+  height: 28px;
+  width: auto;
   padding: 0 4px;
   background-color: transparent;
-  border-bottom: 2px solid @accent-color2;
+  border-bottom: 1px solid @accent-color4;
   outline: none;
-  .user-select(none);
+  box-sizing: border-box;
+  .transitioned();
+  &:focus {
+    border-bottom: 2px solid @accent-color2;
+  }
+}
+
+.circle-button {
+  .metro-button;
+  padding: 0;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+}
+
+.gray-circle-button {
+  .circle-button;
+  background-color: rgb(188, 188, 188);
+  &:hover {
+    background-color: rgb(156, 156, 156);
+  }
+  &:active {
+    background-color: rgb(123, 123, 123);
+  }
+}
+
+.red-circle-button {
+  .circle-button;
+  background-color: rgb(238, 131, 131);
+  &:hover {
+    background-color: rgb(226, 108, 108);
+  }
+  &:active {
+    background-color: rgb(227, 79, 79);
+  }
 }

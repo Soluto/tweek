@@ -1,0 +1,51 @@
+.rule-value-container .values-input {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  min-height: 28px;
+  width: auto;
+  padding: 0 4px;
+  background-color: transparent;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.4);
+  outline: none;
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 8px;
+  resize: none;
+  font-family: calibri;
+  font-size: 18px;
+}
+.rule-value-container .values-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.7);
+}
+.rule-value-container .add-variant-button {
+  vertical-align: top;
+  background-color: rgba(0, 122, 204, 0.7);
+  height: 28px;
+  border: 0;
+  padding: 0 5px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+}
+.rule-value-container .add-variant-button:hover {
+  background-color: #007acc;
+  cursor: pointer;
+}
+.rule-value-container .add-variant-button:active {
+  background-color: #0098ff;
+}
+.rule-value-container .add-variant-button:disabled {
+  background-color: gray;
+}
+.rule-value-container .add-variant-button:disabled:hover,
+.rule-value-container .add-variant-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}

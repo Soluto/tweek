@@ -1,17 +1,37 @@
-.tree-level {
-  background-color: rgb(247, 247, 247);
-  padding: 0 0 0 5px;
+@import (reference) "../../../../styles/core/core.less";
+.key-link-wrapper {
+  .key-link {
+    color: black;
+    padding-top: 5px;
+    padding-left: 10px;
+    display: block;
+    height: 25px;
+    .transitioned();
+    &:hover {
+      background-color: #f1f1f1;
+      cursor: pointer;
+    }
+    &:active {
+      background-color: #e2e2e2;
+    }
+  }
+}
+
+.key-folder {
   max-width: 500px;
-  position: relative;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
+  .key-folder-name {
+    display: block;
+    height: 30px;
+    padding-left: 5px;
+    padding-top: 13px;
+    color: gray;
+    color: @accent-color3;
+    border-bottom: 1px solid lightgray;
+    background-color: #f1f1f1;
+  }
   ul {
-    margin: 0;
     li {
       list-style: none;
-      max-width: 500px;
       overflow: hidden;
       white-space: nowrap;
     }
