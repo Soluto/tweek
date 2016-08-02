@@ -1,4 +1,4 @@
-﻿namespace Engine.Rules.ValueDistribution
+﻿namespace Tweek.JPad
 open FSharp;
 open FSharp.Data;
 open System.Security.Cryptography;
@@ -24,14 +24,13 @@ module ValueDistribution =
 
     let floatToWeighted = (*) 100.0 >> int
 
-    let compile (schema:string) =
-        let json = schema |> JsonValue.Parse
-        let fn = match json.GetProperty("type").AsString() with
-        | "uniform" ->  let args = (json.GetProperty("args").AsArray() |> Array.map (fun x-> x.AsString()));
+    let compile (schema:JsonValue) =
+        let fn = match schema.GetProperty("type").AsString() with
+        | "uniform" ->  let args = (schema.GetProperty("args").AsArray() |> Array.map (fun x-> x.AsString()));
                         uniformCalc args
-        | "weighted" ->  let args = json.GetProperty("args").Properties() |> Array.map (fun (k,v)-> (k, v.AsInteger()));
+        | "weighted" ->  let args = schema.GetProperty("args").Properties() |> Array.map (fun (k,v)-> (k, v.AsInteger()));
                          weightedCalc args
-        | "bernoulliTrial" -> let percentage = json.GetProperty("args").AsFloat() |>floatToWeighted
+        | "bernoulliTrial" -> let percentage = schema.GetProperty("args").AsFloat() |>floatToWeighted
                               weightedCalc [|("true", percentage);("false", (100 - percentage))|];
         | s -> raise (Exception("expected operator, found:"+s));
         let sha1 = new SHA1CryptoServiceProvider(); 
@@ -41,8 +40,4 @@ module ValueDistribution =
             let hash = BitConverter.ToUInt64(((sha1.ComputeHash (Encoding.UTF8.GetBytes input)).[0..15]), 0)
             fn(hash))
 
-    let CalculateValue (schema:string) ([<ParamArray>] units : Object[]) = 
-        units |> (schema |> compile)
 
-    let compile_ext (schema:string) : (Func<Object[], string>) =
-        new Func<Object[], string>(compile schema)
