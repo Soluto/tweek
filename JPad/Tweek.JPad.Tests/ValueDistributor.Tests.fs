@@ -10,8 +10,8 @@ open FsCheck.Xunit;
 open Swensen.Unquote
 open FSharp.Data;
 open Microsoft.FSharp.Reflection;
-open Engine.Rules.ValueDistribution;
 open Newtonsoft.Json
+open Tweek.JPad
 open FsCheck
 open System
 
@@ -19,6 +19,7 @@ let generatedCalculatedScheme weights = weights |> Array.mapi (fun a b -> (a,b) 
                                                 |> dict 
                                                 |> JsonConvert.SerializeObject 
                                                 |> sprintf """{"type": "weighted","args": %s }""" 
+                                                |> JsonValue.Parse
                                                 |> ValueDistribution.compile
 
 let assertCalculated (weights:float[]) (numberOfUsers:int) (samplingError:float) (calcFunction:obj[]->string)  = 
@@ -37,12 +38,12 @@ let assertCalculated (weights:float[]) (numberOfUsers:int) (samplingError:float)
 
 [<Fact>]
 let ``Use uniform distrubtion with single value``() =
-    let calculator = ValueDistribution.compile """{"type": "uniform", "args": ["abc"] }""" 
+    let calculator = """{"type": "uniform", "args": ["abc"] }""" |> JsonValue.Parse |> ValueDistribution.compile
     calculator [|"userName", 5|]  |> should equal "abc";
     
 [<Fact>]
 let ``Use weighted distrubtion with single value``() =
-    let calculator = ValueDistribution.compile """{"type": "weighted","args": {"5": 1} }""" 
+    let calculator = """{"type": "weighted","args": {"5": 1} }""" |> JsonValue.Parse |> ValueDistribution.compile
     calculator [|"userName", 5|]  |> should equal "5";
 
 [<Property>]
@@ -52,8 +53,8 @@ let ``Use Bernoulli distribution should equal weighted``() =
         let q = 1.0-p;
         let weightedInput = (sprintf """{"type": "weighted","args": {"true": %d, "false": %d} }""" (p*100.0 |> int ) (q*100.0 |> int))
         let bernoulliInput = (sprintf """{"type": "bernoulliTrial","args": %.2f }""" p)
-        let calculatorWeighted = ValueDistribution.compile weightedInput
-        let calculatorBernoulli = ValueDistribution.compile bernoulliInput
+        let calculatorWeighted = weightedInput |> JsonValue.Parse |> ValueDistribution.compile
+        let calculatorBernoulli = bernoulliInput |> JsonValue.Parse |> ValueDistribution.compile
         let getValue x = match x with | "true" -> 1 | "false" -> 0 
         let numTests = 1000;
         [|1..numTests|]
@@ -89,7 +90,7 @@ let ``run many tests and verify similar values``()=
 let ``FF rollout is possible with Bernoulli ``()=
     let rnd = new Random();
     let users = [|1..100|] |> Array.map (fun _-> rnd.Next (10000,100000));
-    let getCalculator = (sprintf """{"type": "bernoulliTrial","args": %f }""") >> ValueDistribution.compile
+    let getCalculator = (sprintf """{"type": "bernoulliTrial","args": %f }""") >> JsonValue.Parse >> ValueDistribution.compile
 
     [|1..20|] |> Array.map ((*) 5)
               |> Array.map (fun i-> 
