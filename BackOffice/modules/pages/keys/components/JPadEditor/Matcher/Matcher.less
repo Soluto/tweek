@@ -1,0 +1,28 @@
+@import (reference) "../../../../../styles/core/core.less";
+.Matcher {
+    .MatcherProperty {
+        display: flex;
+        div {
+            margin: 0 4px;
+        }
+        .delete-condition-button {
+            .gray-circle-button;
+            width: 13px;
+            height: 13px;
+            margin-top: 10px;
+            font-size: 10px;
+            padding-bottom: 3px;
+            padding-left: 4px;
+            box-sizing: border-box;
+        }
+    }
+    .add-condition-button {
+        .circle-button;
+        margin-left: 1px;
+        box-sizing: border-box;
+    }
+}
+
+.Matcher:empty:before {
+    content: "Match all";
+}

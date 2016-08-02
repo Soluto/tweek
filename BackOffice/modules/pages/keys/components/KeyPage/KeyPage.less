@@ -75,9 +75,20 @@
         margin: 5px 5px 0 0;
         border-radius: 2px;
         .tag-delete-button {
+          display: block;
+          float: right;
+          margin-top: 1px;
           color: #aaa;
-          margin-left: 5px;
-          cursor: pointer;
+          margin-left: 6px;
+          padding-left: 1px;
+          padding-bottom: 4px;
+          width: 9px;
+          height: 9px;
+          .transitioned();
+          &:hover {
+            cursor: pointer;
+            color: #939393;
+          }
         }
       }
       .tag-input {
@@ -123,6 +134,7 @@
   .key-rules-editor {
     display: flex;
     flex-grow: 1;
-    margin-top: 7px; 
+    margin-top: 7px;
+    border-top: 1px solid lightgray;
   }
 }
