@@ -2,7 +2,7 @@
   display: inline-block;
   border: 0;
   border-style: none;
-  min-height: 28px;
+  height: 28px;
   width: auto;
   padding: 0 4px;
   background-color: transparent;
@@ -46,6 +46,36 @@
 }
 .rule-value-container .add-variant-button:disabled:hover,
 .rule-value-container .add-variant-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.rule-value-container .to-feature-flag-button {
+  vertical-align: top;
+  background-color: rgba(0, 122, 204, 0.7);
+  height: 28px;
+  border: 0;
+  padding: 0 5px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+}
+.rule-value-container .to-feature-flag-button:hover {
+  background-color: #007acc;
+  cursor: pointer;
+}
+.rule-value-container .to-feature-flag-button:active {
+  background-color: #0098ff;
+}
+.rule-value-container .to-feature-flag-button:disabled {
+  background-color: gray;
+}
+.rule-value-container .to-feature-flag-button:disabled:hover,
+.rule-value-container .to-feature-flag-button:disabled:active {
   cursor: default;
   background-color: gray;
 }

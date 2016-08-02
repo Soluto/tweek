@@ -1,5 +1,7 @@
 .Matcher .conditions-wrapper {
   display: flex;
+  padding-left: 3px;
+  height: 30px;
 }
 .Matcher .conditions-wrapper .delete-condition-button {
   vertical-align: top;
@@ -22,7 +24,8 @@
   background-color: #bcbcbc;
   width: 13px;
   height: 13px;
-  margin-top: 10px;
+  margin-top: 7px;
+  margin-right: 4px;
   font-size: 10px;
   padding-bottom: 3px;
   padding-left: 4px;
@@ -67,9 +70,9 @@
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  margin-top: 5px;
-  margin-left: 1px;
+  margin-top: 8px;
   box-sizing: border-box;
+  transform-origin: 50%;
 }
 .Matcher .add-condition-button:hover {
   background-color: #007acc;
@@ -85,6 +88,12 @@
 .Matcher .add-condition-button:disabled:active {
   cursor: default;
   background-color: gray;
+}
+.Matcher .add-condition-button.big {
+  width: 35px;
+  height: 35px;
+  margin-left: 5px;
+  margin-top: 10px;
 }
 .Matcher:empty:before {
   content: "Match all";

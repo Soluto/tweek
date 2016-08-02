@@ -25,7 +25,7 @@
   transition: all 0.2s ease-in-out;
 }
 .keys-list-container .key-link-wrapper .key-link:hover {
-  background-color: #e8e8e8;
+  background-color: #e2e2e2;
   cursor: pointer;
 }
 .keys-list-container .key-link-wrapper .key-link:active {

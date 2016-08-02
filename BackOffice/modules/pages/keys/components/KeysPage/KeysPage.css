@@ -13,6 +13,7 @@
   bottom: 0;
   right: 0;
   overflow-y: scroll;
+  width: 600px;
 }
 .keys-page-container .key-page {
   position: relative;
