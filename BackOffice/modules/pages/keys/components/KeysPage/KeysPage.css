@@ -38,6 +38,7 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
+  width: 100%;
 }
 .keys-page-container .add-button:hover {
   background-color: #007acc;
@@ -53,4 +54,7 @@
 .keys-page-container .add-button:disabled:active {
   cursor: default;
   background-color: gray;
+}
+.keys-page-container .add-key-input-wrapper input {
+  width: 100%;
 }

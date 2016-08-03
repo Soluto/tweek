@@ -15,20 +15,24 @@ const getSugesstions = R.pipe(R.map(getKeyPrefix), R.uniq(), R.filter(x => x !==
 
 const Add = compose(mapProps(({ keylist, ...props }) => ({ ...props, suggestions: getSugesstions(keylist).sort() })), withState('value', 'setValue', ''), withState('isAdding', 'setIsAdding', false))(({ onKeyAdded, suggestions, isAdding, value, setValue, setIsAdding }) => {
   if (!isAdding) return <button className={style['add-button']} onClick={() => setIsAdding(true) }>Add key</button>;
-  return (<Autosuggest suggestions={suggestions}
-    getSuggestionValue={(x) => x}
-    renderSuggestion={x => <span>{x}</span>}
-    inputProps={{
-      value, ...inputKeyboardHandlers({ submit: (newValue) => {
-        setIsAdding(false);
-        onKeyAdded(newValue);
-        setValue('');
-      }, cancel: () => {
+  return (
+    <div className={style['add-key-input-wrapper']}>
+      <Autosuggest suggestions={suggestions}
+        getSuggestionValue={(x) => x}
+        renderSuggestion={x => <span>{x}</span>}
+        inputProps={{
+          value, ...inputKeyboardHandlers({ submit: (newValue) => {
+            setIsAdding(false);
+            onKeyAdded(newValue);
+            setValue('');
+          }, cancel: () => {
         setIsAdding(false);
         setValue('');
       } }), onChange: (_, { newValue }) => setValue(newValue),
-    }}
-  />);
+        }}
+      />
+    </div>
+  );
 });
 
 export default connect(state => state, { ...actions })(class KeysPage extends Component {
@@ -44,7 +48,6 @@ export default connect(state => state, { ...actions })(class KeysPage extends Co
 
   render() {
     const { keys, addKey, children } = this.props;
-    // <FilterTree keys={keys} />
     return (
       <div className={style['keys-page-container']}>
         {createFragment({
