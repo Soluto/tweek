@@ -14,7 +14,7 @@ const isValueType = (value) => R.isArrayLike(value) || typeof (value) !== 'objec
 let EmptyPredicate = () => null;
 
 let BinaryPredicate = ({ onValueUpdate, onOpUpdate, op, meta, value }) => (
-  <div>
+  <div style={{ display: 'flex' }}>
     <Operator onUpdate={onOpUpdate} supportedOperators={getSupportedOperators(meta) } selectedOp={op} />
     <PropertyValue {...{ meta, value, onUpdate: onValueUpdate, op }} />
   </div>);
@@ -29,8 +29,8 @@ let ShortPredicate = ({ meta, mutate, value }) => {
         [selectedOp]: meta.multipleValues && selectedOp === '$in' ? [] : mutate.getValue(),
         ...(meta.compare ? { $compare: meta.compare } : {}),
       });
-}} op = "$eq" {...{ value, meta } }
-/>);
+    }} op = "$eq" {...{ value, meta } }
+  />);
 };
 
 let ComplexPredicate = ({ predicate, mutate, property, meta }) => {
@@ -46,7 +46,7 @@ let ComplexPredicate = ({ predicate, mutate, property, meta }) => {
               else mutate.in(op).updateKey(selectedOp);
             } }
             onValueUpdate={mutate.in(op).updateValue} {...{ value, op, meta }}
-            />
+          />
           : <PropertyPredicate predicate={value} mutate={mutate.in(op) } property={property} />)
     )
   }</div>);
