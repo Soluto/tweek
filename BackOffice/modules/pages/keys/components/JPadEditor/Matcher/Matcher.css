@@ -1,9 +1,9 @@
-.Matcher .conditions-wrapper {
+.matcher .conditions-wrapper {
   display: flex;
   padding-left: 3px;
   height: 30px;
 }
-.Matcher .conditions-wrapper .delete-condition-button {
+.matcher .conditions-wrapper .delete-condition-button {
   vertical-align: top;
   background-color: rgba(0, 122, 204, 0.7);
   height: 28px;
@@ -31,28 +31,28 @@
   padding-left: 4px;
   box-sizing: border-box;
 }
-.Matcher .conditions-wrapper .delete-condition-button:hover {
+.matcher .conditions-wrapper .delete-condition-button:hover {
   background-color: #007acc;
   cursor: pointer;
 }
-.Matcher .conditions-wrapper .delete-condition-button:active {
+.matcher .conditions-wrapper .delete-condition-button:active {
   background-color: #0098ff;
 }
-.Matcher .conditions-wrapper .delete-condition-button:disabled {
+.matcher .conditions-wrapper .delete-condition-button:disabled {
   background-color: gray;
 }
-.Matcher .conditions-wrapper .delete-condition-button:disabled:hover,
-.Matcher .conditions-wrapper .delete-condition-button:disabled:active {
+.matcher .conditions-wrapper .delete-condition-button:disabled:hover,
+.matcher .conditions-wrapper .delete-condition-button:disabled:active {
   cursor: default;
   background-color: gray;
 }
-.Matcher .conditions-wrapper .delete-condition-button:hover {
+.matcher .conditions-wrapper .delete-condition-button:hover {
   background-color: #9c9c9c;
 }
-.Matcher .conditions-wrapper .delete-condition-button:active {
+.matcher .conditions-wrapper .delete-condition-button:active {
   background-color: #7b7b7b;
 }
-.Matcher .add-condition-button {
+.matcher .add-condition-button {
   vertical-align: top;
   background-color: rgba(0, 122, 204, 0.7);
   height: 28px;
@@ -74,27 +74,27 @@
   box-sizing: border-box;
   transform-origin: 50%;
 }
-.Matcher .add-condition-button:hover {
+.matcher .add-condition-button:hover {
   background-color: #007acc;
   cursor: pointer;
 }
-.Matcher .add-condition-button:active {
+.matcher .add-condition-button:active {
   background-color: #0098ff;
 }
-.Matcher .add-condition-button:disabled {
+.matcher .add-condition-button:disabled {
   background-color: gray;
 }
-.Matcher .add-condition-button:disabled:hover,
-.Matcher .add-condition-button:disabled:active {
+.matcher .add-condition-button:disabled:hover,
+.matcher .add-condition-button:disabled:active {
   cursor: default;
   background-color: gray;
 }
-.Matcher .add-condition-button.big {
+.matcher .add-condition-button.big {
   width: 35px;
   height: 35px;
   margin-left: 5px;
   margin-top: 10px;
 }
-.Matcher:empty:before {
+.matcher:empty:before {
   content: "Match all";
 }

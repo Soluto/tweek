@@ -56,7 +56,6 @@ function keysToTree(keys) {
 }
 
 export default wrapComponentWithClass(componentFromStream(prop$ => {
-  console.log('mounting component');
   const keyList$ = prop$.map(x => x.keys).distinctUntilChanged();
 
   const { handler: setFilter, stream: filter$ } = createEventHandler();
@@ -66,7 +65,6 @@ export default wrapComponentWithClass(componentFromStream(prop$ => {
     .map(([filter, keys]) => keys.filter(key => key.includes(filter)));
 
   return filteredKeys$
-    .do(x => console.log('rendering'))
     .map(keysToTree)
     .map(filteredTree =>
       <div className={style['keys-list-container']}>
