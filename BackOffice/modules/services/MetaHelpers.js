@@ -5,12 +5,12 @@ let modify = (fieldInfo, ...modifiers) => modifiers.reduce((field, m) => m(field
 let newType = (baseType, ...modifiers) => modify({ type: baseType }, ...modifiers);
 let createAddPropModifer = (propName) => R.curry((payload, fieldInfo) => ({ ...fieldInfo, [propName]: payload }));
 
-export const [description, compare, validate, defaultValue, typeAlias] =
-    ['description', 'compare', 'validate', 'defaultValue', 'typeAlias'].map(createAddPropModifer);
+export const [description, compare, validate, defaultValue, typeAlias, multipleValues] =
+  ['description', 'compare', 'validate', 'defaultValue', 'typeAlias', 'multipleValues'].map(createAddPropModifer);
 
 let allowedValues = (values) => (typeInfo) => ({
   ...typeInfo,
-  allowedValues: values.map(x => typeof(x) === 'object' ? x : { label: x, value: x }),
+  allowedValues: values.map(x => typeof (x) === 'object' ? x : { label: x, value: x }),
 });
 
 // types

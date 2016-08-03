@@ -8,6 +8,7 @@
   margin-bottom: 5px;
 }
 .rule-container .conditions {
+  width: 70%;
   border-right: 1px solid lightgray;
   padding-right: 5px;
 }
@@ -16,5 +17,5 @@
 }
 .rule-container .values {
   margin-left: 10px;
-  flex-grow: 1;
+  width: 300px;
 }

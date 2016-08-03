@@ -1,5 +1,5 @@
 @import (reference) "../../../../../styles/core/core.less";
-.Matcher {
+.matcher {
     .conditions-wrapper {
         display: flex;
         padding-left: 3px;
@@ -14,6 +14,10 @@
             padding-bottom: 3px;
             padding-left: 4px;
             box-sizing: border-box;
+        }
+        .property-name {
+        }
+        .property-predicate {
         }
     }
     .add-condition-button {
@@ -30,6 +34,6 @@
     }
 }
 
-.Matcher:empty:before {
+.matcher:empty:before {
     content: "Match all";
 }
