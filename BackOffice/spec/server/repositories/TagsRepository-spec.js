@@ -21,11 +21,7 @@ describe('TagsRepository', () => {
 
     it('should be able to get all tags: call git repo with correct file name and return correct tags', async () => {
       // Arrange
-      const tagsMock = [{
-        name: 'tag1',
-      }, {
-          name: 'tag2',
-        }];
+      const tagsMock = [{ name: 'tag1' }, { name: 'tag2' }];
 
       const stringTagsMock = JSON.stringify(tagsMock);
 
@@ -42,19 +38,9 @@ describe('TagsRepository', () => {
 
     it('should be able to save new tags: call git repo with new tags file content', async () => {
       // Arrange
-      const exsitingTagsMock = [{
-        name: 'tag1',
-      }, {
-          name: 'tag2',
-        }];
+      const exsitingTagsMock = [{ name: 'tag1' }, { name: 'tag2' }];
 
-      const newTagsMock = [{
-        name: 'tag3',
-      }, {
-          name: 'tag4',
-        }, {
-          name: 'tag1',
-        }];
+      const newTagsMock = [{ name: 'tag3' }, { name: 'tag4' }, { name: 'tag1' }];
 
       gitMock.readFile = jest.fn(async () => JSON.stringify(exsitingTagsMock));
       gitMock.updateFile = jest.fn(async () => { });
