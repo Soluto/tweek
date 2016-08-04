@@ -14,6 +14,7 @@ export default ({ rulesRepository, metaRepository, tagsRepository }) => (
         get={getKey}
         rulesRepository={rulesRepository}
         metaRepository={metaRepository}
+        tagsRepository={tagsRepository}
         put={putKey}
       />
     </ServerRoute>

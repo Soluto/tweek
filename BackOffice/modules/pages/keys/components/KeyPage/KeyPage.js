@@ -39,8 +39,10 @@ export default connect((state, { params }) => (
     }
 
     componentWillReceiveProps({ configKey }) {
-      if (configKey !== this.props.configKey || !this.props.selectedKey) {
-        this.props.downloadKey(configKey);
+      const { downloadKey, selectedKey, downloadTags } = this.props;
+      if (configKey !== this.props.configKey || !selectedKey) {
+        downloadKey(configKey);
+        downloadTags();
       }
     }
 
