@@ -34,6 +34,7 @@ namespace Tweek.Drivers.CouchbaseDriver
             if (_bucket == null || !_cluster.IsOpen(_bucketName))
             {
                 _bucket = _cluster.OpenBucket(_bucketName);
+
             }
             return _bucket;
         }
