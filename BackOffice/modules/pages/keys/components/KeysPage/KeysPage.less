@@ -1,5 +1,4 @@
 @import (reference) "../../../../styles/core/core.less";
-
 .keys-page-container {
   position: absolute;
   top: 65px;
@@ -14,6 +13,7 @@
     bottom: 0;
     right: 0;
     overflow-y: scroll;
+    width: 600px;
   }
   .key-page {
     position: relative;
@@ -26,5 +26,11 @@
   }
   .add-button {
     .metro-button;
+    width: 100%;
+  }
+  .add-key-input-wrapper {
+    input {
+      width: 100%;
+    }
   }
 }

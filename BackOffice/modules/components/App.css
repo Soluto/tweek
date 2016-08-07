@@ -2,8 +2,7 @@
   padding-top: 60px;
 }
 .app .menu {
-  padding: 0;
-  margin: 0;
+  margin-left: 20px;
 }
 .app .menu li {
   vertical-align: top;
@@ -13,21 +12,22 @@
 .app .menu li a:visited,
 .app .menu li a:hover,
 .app .menu li a:link {
-  color: #007aff;
+  color: #007acc;
   text-decoration: none;
-  font-size: 20px;
-  font-family: Calibri;
+  font-size: 17px;
 }
 .app .header {
   top: 0;
   left: 0;
   right: 0;
-  height: 65px;
+  height: 64px;
   display: flex;
   position: fixed;
-  background-color: #252525;
+  background-color: #fff;
+  border-bottom: 1px solid lightgray;
   align-items: center;
 }
-.app .header img {
-  margin: 0 30px 0 10px;
+.app .header .logo {
+  margin: 5px 0 0 10px;
+  width: 150px;
 }

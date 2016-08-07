@@ -1,32 +1,18 @@
-.MatcherOp {
+.matcher-op {
   display: inline-block;
 }
-.MatcherOp input {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  width: auto;
-  padding: 0 4px;
-  background-color: transparent;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.4);
-  outline: none;
-  transition: all 0.2s ease-in-out;
-  box-sizing: border-box;
+.matcher-op input {
   max-width: 30px;
   min-width: 30px;
 }
-.MatcherOp input:focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.7);
-}
-.MatcherOp :global(.react-autosuggest__suggestions-container) {
+.matcher-op :global(.react-autosuggest__suggestions-container) {
   max-width: 60px;
   min-width: 60px;
 }
 .property-value-wrapper {
   display: inline-block;
 }
-.property-value-wrapper input {
+.property-value-wrapper .value-input {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -36,10 +22,10 @@
   background-color: transparent;
   border-bottom: 1px solid rgba(0, 122, 204, 0.4);
   outline: none;
-  transition: all 0.2s ease-in-out;
   box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
 }
-.property-value-wrapper input:focus {
+.property-value-wrapper .value-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.7);
 }
 :global(.react-autosuggest__suggestions-container) {
@@ -58,8 +44,8 @@
   background-color: transparent;
   border-bottom: 1px solid rgba(0, 122, 204, 0.4);
   outline: none;
-  transition: all 0.2s ease-in-out;
   box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
 }
 :global(.react-autosuggest__input):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.7);
@@ -97,4 +83,62 @@
 :global(.no-suggestions) {
   margin-top: 10px;
   padding-left: 10px;
+}
+.tags-container {
+  padding-top: 4px;
+  display: inline-block;
+  max-width: 500px;
+  overflow-y: auto;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+}
+.tags-container .tag-base {
+  font-size: 12px;
+  display: inline-block;
+  color: black;
+  height: 20px;
+  box-sizing: border-box;
+}
+.tags-container .tag {
+  font-size: 12px;
+  display: inline-block;
+  color: black;
+  height: 20px;
+  box-sizing: border-box;
+  float: left;
+  padding: 3px 3px 0 3px;
+}
+.tags-container .tag .tag-delete-button {
+  display: block;
+  float: right;
+  margin-top: 1px;
+  margin-left: 6px;
+  padding-left: 1px;
+  padding-bottom: 4px;
+  width: 9px;
+  height: 9px;
+  color: #8c8c8c;
+  transition: all 0.2s ease-in-out;
+}
+.tags-container .tag .tag-delete-button:hover {
+  cursor: pointer;
+  color: #636363;
+}
+.tags-container .tag .tag-delete-button:after {
+  content: ';';
+}
+.tags-container .tag-input {
+  display: inline-block;
+}
+.tags-container .tag-input input,
+.tags-container .tag-input input:focus {
+  font-size: 12px;
+  display: inline-block;
+  color: black;
+  height: 20px;
+  box-sizing: border-box;
+  float: right;
+  width: 65px;
+  border: none;
+  outline: none;
+  padding-left: 3px;
 }

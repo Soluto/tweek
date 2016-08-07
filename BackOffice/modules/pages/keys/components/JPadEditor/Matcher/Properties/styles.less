@@ -1,9 +1,7 @@
 @import (reference) "../../../../../../styles/core/core.less";
-.MatcherOp {
+.matcher-op {
   display: inline-block;
   input {
-    .metro-textbox;
-    box-sizing: border-box;
     max-width: 30px;
     min-width: 30px;
   }
@@ -15,9 +13,8 @@
 
 .property-value-wrapper {
   display: inline-block;
-  input {
+  .value-input {
     .metro-textbox;
-    box-sizing: border-box;
   }
 }
 
@@ -31,7 +28,6 @@
 
 :global(.react-autosuggest__input) {
   .metro-textbox;
-  box-sizing: border-box;
 }
 
 :global(.react-autosuggest__input):focus {
@@ -72,4 +68,56 @@
 :global(.no-suggestions) {
   margin-top: 10px;
   padding-left: 10px;
+}
+
+.wrapping-bracet {}
+
+.tags-container {
+  padding-top: 4px;
+  display: inline-block;
+  max-width: 500px;
+  overflow-y: auto;
+  border-bottom: 1px solid @accent-color3;
+  .tag-base {
+    font-size: 12px;
+    display: inline-block;
+    color: black;
+    height: 20px;
+    box-sizing: border-box;
+  }
+  .tag {
+    .tag-base;
+    float: left;
+    padding: 3px 3px 0 3px;
+    .tag-delete-button {
+      display: block;
+      float: right;
+      margin-top: 1px;
+      margin-left: 6px;
+      padding-left: 1px;
+      padding-bottom: 4px;
+      width: 9px;
+      height: 9px;
+      color: #8c8c8c;
+      .transitioned();
+      &:hover {
+        cursor: pointer;
+        color: #636363;
+      }
+      &:after {
+        content: ';';
+      }
+    }
+  }
+  .tag-input {
+    display: inline-block;
+    input, input:focus {
+      .tag-base;
+      float: right;
+      width: 65px;
+      border: none;
+      outline: none;
+      padding-left: 3px;
+    }
+  }
 }

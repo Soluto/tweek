@@ -1,19 +1,30 @@
 import React from 'react';
 import { Link } from 'react-router';
 import style from './KeysList.css';
-import { pure } from 'recompose';
 import wrapComponentWithClass from '../../../../utils/wrapComponentWithClass';
+import { componentFromStream, createEventHandler } from 'recompose';
+import { Observable } from 'rxjs/Rx';
+import { connect } from 'react-redux';
+import { compose, pure, mapProps } from 'recompose';
+import classNames from 'classnames';
 
 let leaf = Symbol();
 let getName = (path) => path.split('/').slice(-1)[0];
 
+const TreeKeyItem = compose(
+  connect(state => ({ selectedKey: state.selectedKey && state.selectedKey.key })),
+  mapProps(({ selectedKey, path, ...props }) => ({ isActive: selectedKey === path, path, ...props })),
+  pure)(({ isActive, path, pad }) =>
+  <Link className={classNames(style['key-link'], { [style['selected']]: isActive }) }
+    style={{ paddingLeft: pad }}
+    to={`/keys/${path}`}
+  >{getName(path) }
+  </Link>);
+
 function renderTree(tree, currentPath, pad) {
   return tree === leaf ?
     (<div className={style['key-link-wrapper']}>
-      <Link className={style['key-link']}
-        style={{ paddingLeft: pad }}
-        to={`/keys${currentPath}`}>{getName(currentPath) }
-      </Link>
+      <TreeKeyItem path={currentPath} pad={pad} />
     </div>)
     :
     (
@@ -25,7 +36,7 @@ function renderTree(tree, currentPath, pad) {
         <ul>
           {Object.keys(tree).map(key => (
             <li key={key}>
-              {renderTree(tree[key], `${currentPath}/${key}`, pad + 10) }
+              {renderTree(tree[key], currentPath === '' ? `${key}` : `${currentPath}/${key}`, pad + 10) }
             </li>
           )) }
         </ul>
@@ -34,13 +45,32 @@ function renderTree(tree, currentPath, pad) {
     );
 }
 
-export default wrapComponentWithClass(pure(({ keys }) => {
+function keysToTree(keys) {
   let tree = {};
   keys.map(x => x.split('/'))
     .forEach(fragments => {
-      let last = fragments.pop();
+      const last = fragments.pop();
       fragments.reduce((node, frag) => node[frag] = node[frag] || {}, tree)[last] = leaf;
     });
+  return tree;
+}
 
-  return renderTree(tree, '', 0);
+export default wrapComponentWithClass(componentFromStream(prop$ => {
+  const keyList$ = prop$.map(x => x.keys).distinctUntilChanged();
+
+  const { handler: setFilter, stream: filter$ } = createEventHandler();
+  const textFilter$ = filter$.debounceTime(300).startWith('');
+
+  const filteredKeys$ = Observable.combineLatest(textFilter$, keyList$)
+    .map(([filter, keys]) => keys.filter(key => key.includes(filter)));
+
+  return filteredKeys$
+    .map(keysToTree)
+    .map(filteredTree =>
+      <div className={style['keys-list-container']}>
+        <input type="text" className={style['filter-input']} placeholder="filter"
+          onKeyUp={ (e) => setFilter(e.target.value) }
+        />
+        {renderTree(filteredTree, '', 0) }
+      </div>);
 }));

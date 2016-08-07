@@ -1,5 +1,5 @@
 import R from 'ramda';
-import { types, defaultValue, description } from './MetaHelpers';
+import { types, defaultValue, description, multipleValues } from './MetaHelpers';
 
 export default class EditorMetaService {
 
@@ -12,9 +12,9 @@ export default class EditorMetaService {
       },
       fields: {
         device: {
+          "@@id": multipleValues(true)(description('device id')(types.String)),
           PartnerBrandId: defaultValue('AsurionFriends')(description('The name of the partner')(types.String)),
           DeviceOsType: defaultValue('Android')(types.Enum('Android', 'Ios')),
-          AgentOsVersion: types.Version,
           SubscriptionType: types.Enum('Evaluation', 'Free', 'Insurance', 'InsuranceAndSupport', 'HomeSupport', 'DefaultFree'),
           AgentVersion: defaultValue('1.0.0.0')(types.Version),
           DeviceOsVersion: types.Version,
