@@ -9,6 +9,7 @@ using Engine;
 using Engine.Core.Context;
 using Engine.DataTypes;
 using Engine.Drivers.Cassandra;
+using Engine.Drivers.Context;
 using Engine.Drivers.Rules.Git;
 using static LanguageExt.Prelude;
 using Tweek.JPad.Utils;
@@ -16,33 +17,35 @@ using Tweek.JPad;
 
 namespace SimpleBenchmarks
 {
+    class RamContextDriver : IContextDriver
+    {
+        public async Task<Dictionary<string, string>> GetContext(Identity identity)
+        {
+            return new Dictionary<string, string>();
+        }
+
+        public async Task AppendContext(Identity identity, Dictionary<string, string> context)
+        {
+        }
+    }
     class Program
     {
         static void Main(string[] args)
         {
 
-            var cluster = Cluster.Builder()
-                .WithQueryOptions(new QueryOptions().SetConsistencyLevel(ConsistencyLevel.All))
-                .AddContactPoints("dc0vm1tqwdso6zqj26c.eastus.cloudapp.azure.com",
-                    "dc0vm0tqwdso6zqj26c.eastus.cloudapp.azure.com")
-                .Build();
-
-            var session = cluster.Connect("tweek");
-
-            var contextDriver = new CassandraDriver(session);
 
             var gitDriver = new GitDriver(
                 Path.Combine(Environment.CurrentDirectory, "tweek-rules" + Guid.NewGuid()),
                 new RemoteRepoSettings()
                 {
-                    url = "http://gogs-80b6a277.29d5ffeb.svc.dockerapp.io/tweek/tweek-rules",
+                    url = "http://tweek-gogs.07965c2a.svc.dockerapp.io/tweek/tweek-rules",
                     Email = "tweek@soluto.com",
                     UserName = "tweek",
                     Password = "***REMOVED***"
                 });
 
             ITweek tweek = Task.Run(async () => await Engine.Tweek.Create(
-                contextDriver, gitDriver, JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
+                new RamContextDriver(), gitDriver, JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
                         new Dictionary<string, ComparerDelegate>
                         {
                             ["version"] =Version.Parse
@@ -64,6 +67,7 @@ namespace SimpleBenchmarks
                     return sw.ElapsedMilliseconds;
                 }).Average());
             Console.ReadLine();
+            
 
         }
     }
