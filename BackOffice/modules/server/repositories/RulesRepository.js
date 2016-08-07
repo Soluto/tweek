@@ -13,7 +13,8 @@ class RulesRepository {
   }
 
   async getRule(ruleName) {
-    return await this._gitRepo.readFile(this._buildRuleJpadFilePath(ruleName));
+    const ruleFile = await this._gitRepo.readFile(this._buildRuleJpadFilePath(ruleName));
+    return ruleFile;
   }
 
   async updateRule(ruleName, payload, author) {

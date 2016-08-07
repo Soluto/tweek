@@ -1,3 +1,14 @@
+.loading-message {
+  position: absolute;
+  width: 200px;
+  height: 100px;
+  top: 50%;
+  left: 50%;
+  margin-top: -50px;
+  margin-left: -100px;
+  font-size: 28px;
+  color: rgba(0, 122, 204, 0.5);
+}
 .key-viewer-container {
   padding: 10px;
   display: flex;
@@ -97,26 +108,37 @@
 .key-viewer-container .key-header .display-name-wrapper .display-name-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.7);
 }
-.key-viewer-container .key-header .full-key-path-wrapper {
+.key-viewer-container .key-header .rule-sub-text {
   color: darkgray;
   font-size: 13px;
   margin-left: 5px;
+  margin-bottom: 4px;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
   user-select: none;
 }
-.key-viewer-container .key-header .full-key-path-wrapper .actual-path {
+.key-viewer-container .key-header .rule-sub-text a .actual-sub-text {
+  text-decoration: underline;
+}
+.key-viewer-container .key-header .rule-sub-text a .actual-sub-text:hover {
+  cursor: pointer;
+}
+.key-viewer-container .key-header .rule-sub-text a:visited {
+  color: darkgray;
+}
+.key-viewer-container .key-header .rule-sub-text .actual-sub-text {
   font-style: italic;
   -moz-user-select: text;
   -ms-user-select: text;
   -webkit-user-select: text;
   user-select: text;
 }
-.key-viewer-container .key-header .full-key-path-wrapper .actual-path:hover {
+.key-viewer-container .key-header .rule-sub-text .actual-sub-text:hover {
   cursor: text;
 }
 .key-viewer-container .key-header .description-input {
+  margin-top: 5px;
   display: inline-block;
   border: 0;
   border-style: none;
@@ -129,7 +151,6 @@
   transition: all 0.2s ease-in-out;
   width: 100%;
   box-sizing: border-box;
-  margin-top: 8px;
   resize: none;
   font-family: calibri;
   font-size: 18px;
