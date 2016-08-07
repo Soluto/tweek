@@ -9,7 +9,7 @@ const parseNumericInput = (inputValue) => inputValue === '' ? 0 : parseInt(input
 let SingleVariantValue = ({ value, mutate }) => (
   (<div className={style['rule-value-container']}>
 
-    <TextareaAutosize
+    <textarea
       onChange={e => mutate.updateValue(e.target.value) }
       value = { value }
       placeholder="Enter values here"
@@ -17,7 +17,8 @@ let SingleVariantValue = ({ value, mutate }) => (
       />
 
     {(value === 'true' || value === 'false') ?
-      <button onClick={() => mutate.apply(m =>
+      <button className={style['to-feature-flag-button']}
+      onClick={() => mutate.apply(m =>
         m.delete()
           .in('Type').updateValue('MultiVariant').up()
           .insert('ValueDistribution', {
