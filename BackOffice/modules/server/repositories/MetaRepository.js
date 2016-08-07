@@ -8,7 +8,8 @@ class MetaRepository {
   }
 
   async getRuleMeta(ruleName) {
-    return JSON.parse(await this._gitRepo.readFile(this._buildMetaJsonFilePath(ruleName)));
+    const ruleMeta = await this._gitRepo.readFile(this._buildMetaJsonFilePath(ruleName));
+    return JSON.parse(ruleMeta.fileContent);
   }
 
   updateRuleMeta(ruleName, payload, author) {

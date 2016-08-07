@@ -48,61 +48,61 @@ export default connect((state, { params }) => (
 
     onDisplayNameChanged(newDisplayName) {
       const newMeta = { ...this.props.selectedKey.local.meta, displayName: newDisplayName };
-      this._onSelectedKeyMetaChanged(newMeta);
+this._onSelectedKeyMetaChanged(newMeta);
     }
 
-    onDescriptionChanged(newDescription) {
-      const newMeta = { ...this.props.selectedKey.local.meta, description: newDescription };
-      this._onSelectedKeyMetaChanged(newMeta);
-    }
+onDescriptionChanged(newDescription) {
+  const newMeta = { ...this.props.selectedKey.local.meta, description: newDescription };
+  this._onSelectedKeyMetaChanged(newMeta);
+}
 
-    onTagDeleted(deletedTagIndex) {
-      const meta = this.props.selectedKey.local.meta;
-      const newMeta = { ...meta, tags: R.remove(deletedTagIndex, 1, meta.tags) };
-      this._onSelectedKeyMetaChanged(newMeta);
-    }
+onTagDeleted(deletedTagIndex) {
+  const meta = this.props.selectedKey.local.meta;
+  const newMeta = { ...meta, tags: R.remove(deletedTagIndex, 1, meta.tags) };
+  this._onSelectedKeyMetaChanged(newMeta);
+}
 
-    onTagAdded(newTagText) {
-      const meta = this.props.selectedKey.local.meta;
-      const newMeta = { ...meta, tags: [...meta.tags, newTagText] };
-      this._onSelectedKeyMetaChanged(newMeta);
-    }
+onTagAdded(newTagText) {
+  const meta = this.props.selectedKey.local.meta;
+  const newMeta = { ...meta, tags: [...meta.tags, newTagText] };
+  this._onSelectedKeyMetaChanged(newMeta);
+}
 
-    get tags() {
-      return R.map(_ => ({
-        id: _,
-        text: _,
-      }), this.props.selectedKey.local.meta.tags);
-    }
+get tags() {
+  return R.map(_ => ({
+    id: _,
+    text: _,
+  }), this.props.selectedKey.local.meta.tags);
+}
 
-    get tagsSuggestions() {
-      return this.props.tags ? this.props.tags.map(tag => tag.name) : [];
-    }
+get tagsSuggestions() {
+  return this.props.tags ? this.props.tags.map(tag => tag.name) : [];
+}
 
-    _onSelectedKeyMetaChanged(newMeta) {
-      this.props.updateKeyMetaDef(newMeta);
-    }
+_onSelectedKeyMetaChanged(newMeta) {
+  this.props.updateKeyMetaDef(newMeta);
+}
 
-    renderSaveButton() {
-      let { local, remote, isSaving } = this.props.selectedKey;
-      const changes = diff(local, remote);
-      const hasChanges = (changes || []).length > 0;
-      return (<button disabled={!hasChanges || isSaving }
-        data-state-has-changes={hasChanges}
-        data-state-is-saving={isSaving}
-        className={style['save-button']}
-        onClick={() => this.props.saveKey(this.props.configKey) }
-      >
+renderSaveButton() {
+  let { local, remote, isSaving } = this.props.selectedKey;
+  const changes = diff(local, remote);
+  const hasChanges = (changes || []).length > 0;
+  return (<button disabled={!hasChanges || isSaving }
+    data-state-has-changes={hasChanges}
+    data-state-is-saving={isSaving}
+    className={style['save-button']}
+    onClick={() => this.props.saveKey(this.props.configKey) }
+    >
     {isSaving ? 'Saving...' : 'Save changes'}
   </button>);
-    }
+}
 
-    render() {
-      const { dispatch, configKey, selectedKey } = this.props;
-      if (!selectedKey) return <div>loading</div>;
-      const { meta, ruleDef } = selectedKey.local;
+render() {
+  const { dispatch, configKey, selectedKey } = this.props;
+  if (!selectedKey) return <div className={style['loading-message']}>loading</div>;
+  const { meta, ruleDef } = selectedKey.local;
 
-      return (<div className={style['key-viewer-container']}>
+  return (<div className={style['key-viewer-container']}>
     {this.renderSaveButton() }
     <div className={style['key-header']}>
 
@@ -116,22 +116,31 @@ export default connect((state, { params }) => (
               onChange={ (e) => this.onDisplayNameChanged(e.target.value) }
               value = { meta.displayName }
               onBlur={() => { this.setState({ isDisplayNameInEditMode: false }); } }
-            />
+              />
           </form>
           :
           <div className={style['display-name']}
             onClick={() => {
               this.setState({ isDisplayNameInEditMode: true });
             } }
-          >
+            >
             {meta.displayName}
           </div>
         }
       </div>
 
-      <div className={style['full-key-path-wrapper']}>
+      <div className={style['rule-sub-text']}>
         <label>Full path: </label>
-        <label className={style['actual-path']}>{configKey}</label>
+        <label className={style['actual-sub-text']}>{configKey}</label>
+      </div>
+
+      <div className={style['rule-sub-text']} >
+        <label>Last modify: </label>
+        <a href={ruleDef.lastModifyCompareUrl}
+          target="_blank"
+          title="Compare with previous version">
+          <label className={style['actual-sub-text']}>{ruleDef.lastModifyDate}, by {ruleDef.modifierUser}</label>
+        </a>
       </div>
 
       <TextareaAutosize
@@ -139,22 +148,22 @@ export default connect((state, { params }) => (
         value = { meta.description }
         placeholder="Description"
         className={style['description-input']}
-      />
+        />
 
       <ReactTags tags={ this.tags }
         handleDelete={ this:: this.onTagDeleted }
-        handleAddition={ this:: this.onTagAdded }
-        suggestions={this.tagsSuggestions }
-        placeholder="New tag"
-        minQueryLength={ 1 }
-        allowDeleteFromEmptyInput={ false }
-        classNames={{
-          tags: style['tags-container'],
-          tagInput: style['tag-input'],
-          tag: style['tag'],
-          remove: style['tag-delete-button'],
-          suggestions: style['tags-suggestion'],
-        } }
+      handleAddition={ this:: this.onTagAdded }
+      suggestions={this.tagsSuggestions }
+      placeholder="New tag"
+      minQueryLength={ 1 }
+      allowDeleteFromEmptyInput={ false }
+      classNames={{
+        tags: style['tags-container'],
+        tagInput: style['tag-input'],
+        tag: style['tag'],
+        remove: style['tag-delete-button'],
+        suggestions: style['tags-suggestion'],
+      } }
       />
 
     </div>
@@ -163,7 +172,7 @@ export default connect((state, { params }) => (
       sourceTree={JSON.parse(ruleDef.source) }
       onMutation={x => this.props.updateKeyRuleDef({ source: JSON.stringify(x, null, 4) }) }
       className={style['key-rules-editor']}
-    />
-  </div>);
-    }
+      />
+  </div >);
+}
   });

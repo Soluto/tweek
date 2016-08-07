@@ -163,3 +163,14 @@
 .red-circle-button:active {
   background-color: #e34f4f;
 }
+.centered-message {
+  position: absolute;
+  width: 200px;
+  height: 100px;
+  top: 50%;
+  left: 50%;
+  margin-top: -50px;
+  margin-left: -100px;
+  font-size: 28px;
+  color: rgba(0, 122, 204, 0.5);
+}
