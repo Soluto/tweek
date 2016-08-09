@@ -1,5 +1,5 @@
 import React from 'react';
-import ClosedComboBox from '../../../../../../components/common/ClosedComboBox';
+import ClosedComboBox from '../../../../../../components/common/ClosedComboBox/ClosedComboBox';
 import style from './styles.css';
 import { WithContext as ReactTags } from 'react-tag-input';
 import R from 'ramda';

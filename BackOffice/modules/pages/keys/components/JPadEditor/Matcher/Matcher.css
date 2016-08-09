@@ -5,7 +5,7 @@
 }
 .matcher .conditions-wrapper .delete-condition-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.7);
+  background-color: rgba(0, 122, 204, 0.8);
   height: 28px;
   border: 0;
   padding: 0 5px;
@@ -21,15 +21,15 @@
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  background-color: #bcbcbc;
+  padding-bottom: 1px;
+  box-sizing: border-box;
   width: 13px;
   height: 13px;
-  margin-top: 7px;
-  margin-right: 4px;
   font-size: 10px;
   padding-bottom: 3px;
-  padding-left: 4px;
-  box-sizing: border-box;
+  background-color: #bcbcbc;
+  margin-top: 7px;
+  margin-right: 4px;
 }
 .matcher .conditions-wrapper .delete-condition-button:hover {
   background-color: #007acc;
@@ -54,7 +54,7 @@
 }
 .matcher .add-condition-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.7);
+  background-color: rgba(0, 122, 204, 0.8);
   height: 28px;
   border: 0;
   padding: 0 5px;
@@ -70,9 +70,9 @@
   border-radius: 50%;
   width: 20px;
   height: 20px;
+  padding-bottom: 1px;
   margin-top: 8px;
   box-sizing: border-box;
-  transform-origin: 50%;
 }
 .matcher .add-condition-button:hover {
   background-color: #007acc;
@@ -95,6 +95,9 @@
   margin-left: 5px;
   margin-top: 10px;
 }
-.matcher:empty:before {
-  content: "Match all";
+.matcher .match-all-message {
+  display: inline-block;
+  margin: 15px;
+  margin-left: 30px;
+  color: gray;
 }
