@@ -68,7 +68,7 @@ export default wrapComponentWithClass(componentFromStream(prop$ => {
     .map(keysToTree)
     .map(filteredTree =>
       <div className={style['keys-list-container']}>
-        <input type="text" className={style['filter-input']} placeholder="filter"
+        <input type="text" className={style['filter-input']} placeholder="Search..."
           onKeyUp={ (e) => setFilter(e.target.value) }
         />
         {renderTree(filteredTree, '', 0) }

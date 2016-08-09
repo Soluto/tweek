@@ -6,8 +6,7 @@ import EditorMetaService from '../../../../../../services/EditorMetaService';
 import { Operator, getSupportedOperators } from './Operator';
 import PropertyValue from './PropertyValue';
 
-let editorMetaService = new EditorMetaService();
-editorMetaService.init();
+let editorMetaService = EditorMetaService.instance;
 
 const isValueType = (value) => R.isArrayLike(value) || typeof (value) !== 'object';
 

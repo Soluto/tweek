@@ -7,12 +7,11 @@ import PropertyPredicate from './Properties/PropertyPredicate';
 import { shouldUpdate } from 'recompose';
 import classNames from 'classnames';
 
-const editorMetaService = new EditorMetaService();
-editorMetaService.init();
+const editorMetaService = EditorMetaService.instance;
 
-const Property = ({ property, predicate, mutate, suggestedValues = [] }) =>
+const Property = ({ property, predicate, mutate, suggestedValues = []}) =>
   (<div className={style['conditions-wrapper']}>
-    <div className={style['delete-condition-button']} onClick={mutate.delete}>x</div>
+    <button className={style['delete-condition-button']} onClick={mutate.delete} title="Remove condition">x</button>
     <PropertyName {...{ property, mutate, suggestedValues }} />
     <PropertyPredicate {...{ predicate, mutate, property }} />
   </div>);
@@ -37,13 +36,17 @@ export default hasChanged(({ matcher, mutate }) => {
           return (
             <Property mutate={mutate.in(property) } key={i}
               {...{ suggestedValues, property, predicate }}
-            />
+              />
           );
         })
       }
       <button className={classNames(style['add-condition-button'], { [style['big']]: props.length === 0 }) }
         onClick={() => mutate.insert('', '') }
         title="Add condition"
-      >+</button>
+        >+</button>
+      {(props.length === 0) ?
+        <div className={style['match-all-message']}>Match all</div>
+        : null
+      }
     </div>);
 });

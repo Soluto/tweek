@@ -1,6 +1,6 @@
 import React from 'react';
 import R from 'ramda';
-import ClosedComboBox from '../../../../../../components/common/ClosedComboBox';
+import ClosedComboBox from '../../../../../../components/common/ClosedComboBox/ClosedComboBox';
 
 let PropertySuggestion = ({ suggestion }) => {
   const [identity, prop] = suggestion.value.split('.');

@@ -1,6 +1,6 @@
 import R from 'ramda';
 import React from 'react';
-import ClosedComboBox from '../../../../../../components/common/ClosedComboBox';
+import ClosedComboBox from '../../../../../../components/common/ClosedComboBox/ClosedComboBox';
 import style from './styles.css';
 
 let equalityOps = { '$eq': '=', '$ne': '!=' };

@@ -5,26 +5,15 @@
         padding-left: 3px;
         height: 30px;
         .delete-condition-button {
-            .gray-circle-button;
-            width: 13px;
-            height: 13px;
+            .gray-circle-button(true);
             margin-top: 7px;
             margin-right: 4px;
-            font-size: 10px;
-            padding-bottom: 3px;
-            padding-left: 4px;
-            box-sizing: border-box;
-        }
-        .property-name {
-        }
-        .property-predicate {
         }
     }
     .add-condition-button {
         .circle-button;
         margin-top: 8px;
         box-sizing: border-box;
-        transform-origin: 50%;
         &.big {
             width: 35px;
             height: 35px;
@@ -32,8 +21,10 @@
             margin-top: 10px;
         }
     }
-}
-
-.matcher:empty:before {
-    content: "Match all";
+    .match-all-message {
+        display: inline-block;
+        margin: 15px;
+        margin-left: 30px;
+        color: gray;
+    }
 }
