@@ -3,3 +3,5 @@
 lib
 rulesRepository/
 coverage-unit/
+node_modules/
+typings/

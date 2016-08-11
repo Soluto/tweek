@@ -3,16 +3,27 @@ import { types, defaultValue, description, multipleValues } from './MetaHelpers'
 
 export default class EditorMetaService {
 
+  static _instance;
+  static get instance() {
+    if(!EditorMetaService._instance) {
+      EditorMetaService._instance = new EditorMetaService();
+      EditorMetaService._instance.init();
+    }
+
+    return EditorMetaService._instance;
+  }
+
   _meta = {};
 
-  async init() {
+  init() {
     this.meta = {
       identities: {
         device: {},
+        technician: {},
       },
       fields: {
         device: {
-          "@@id": multipleValues(true)(description('device id')(types.String)),
+          '@@id': multipleValues(true)(description('device id')(types.String)),
           PartnerBrandId: defaultValue('AsurionFriends')(description('The name of the partner')(types.String)),
           DeviceOsType: defaultValue('Android')(types.Enum('Android', 'Ios')),
           SubscriptionType: types.Enum('Evaluation', 'Free', 'Insurance', 'InsuranceAndSupport', 'HomeSupport', 'DefaultFree'),
@@ -32,6 +43,10 @@ export default class EditorMetaService {
 
   getKeyMeta(key) {
 
+  }
+
+  getIdentities() {
+    return Object.keys(this.meta.identities);
   }
 
   getSuggestions({ type, query }) {

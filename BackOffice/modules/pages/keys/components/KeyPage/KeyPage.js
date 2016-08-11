@@ -10,6 +10,24 @@ import { diff } from 'deep-diff';
 import { WithContext as ReactTags } from 'react-tag-input';
 import R from 'ramda';
 import TextareaAutosize from 'react-autosize-textarea';
+import moment from 'moment';
+
+const KeyModificationDetails = ({ modifyCompareUrl, modifyDate, modifyUser }) => {
+  const modifyDateFromNow = moment(modifyDate).fromNow();
+
+  return (
+    <div className={style['rule-sub-text']} >
+      <label>Last modify: </label>
+      <a href={modifyCompareUrl}
+        target="_blank"
+        title="Compare with previous version"
+      >
+        <label className={style['actual-sub-text']}>{modifyDateFromNow}, by {modifyUser}</label>
+      </a>
+    </div>
+  );
+};
+
 
 export default connect((state, { params }) => (
   { selectedKey: state.selectedKey, tags: state.tags, configKey: params.splat }),
@@ -52,57 +70,57 @@ export default connect((state, { params }) => (
     }
 
     onDescriptionChanged(newDescription) {
-      const newMeta = { ...this.props.selectedKey.local.meta, description: newDescription };
-      this._onSelectedKeyMetaChanged(newMeta);
-    }
+  const newMeta = { ...this.props.selectedKey.local.meta, description: newDescription };
+  this._onSelectedKeyMetaChanged(newMeta);
+}
 
     onTagDeleted(deletedTagIndex) {
-      const meta = this.props.selectedKey.local.meta;
-      const newMeta = { ...meta, tags: R.remove(deletedTagIndex, 1, meta.tags) };
-      this._onSelectedKeyMetaChanged(newMeta);
-    }
+  const meta = this.props.selectedKey.local.meta;
+  const newMeta = { ...meta, tags: R.remove(deletedTagIndex, 1, meta.tags) };
+  this._onSelectedKeyMetaChanged(newMeta);
+}
 
     onTagAdded(newTagText) {
-      const meta = this.props.selectedKey.local.meta;
-      const newMeta = { ...meta, tags: [...meta.tags, newTagText] };
-      this._onSelectedKeyMetaChanged(newMeta);
-    }
+  const meta = this.props.selectedKey.local.meta;
+  const newMeta = { ...meta, tags: [...meta.tags, newTagText] };
+  this._onSelectedKeyMetaChanged(newMeta);
+}
 
     get tags() {
-      return R.map(_ => ({
-        id: _,
-        text: _,
-      }), this.props.selectedKey.local.meta.tags);
-    }
+  return R.map(_ => ({
+    id: _,
+    text: _,
+  }), this.props.selectedKey.local.meta.tags);
+}
 
     get tagsSuggestions() {
-      return this.props.tags ? this.props.tags.map(tag => tag.name) : [];
-    }
+  return this.props.tags ? this.props.tags.map(tag => tag.name) : [];
+}
 
     _onSelectedKeyMetaChanged(newMeta) {
-      this.props.updateKeyMetaDef(newMeta);
-    }
+  this.props.updateKeyMetaDef(newMeta);
+}
 
     renderSaveButton() {
-      let { local, remote, isSaving } = this.props.selectedKey;
-      const changes = diff(local, remote);
-      const hasChanges = (changes || []).length > 0;
-      return (<button disabled={!hasChanges || isSaving }
-        data-state-has-changes={hasChanges}
-        data-state-is-saving={isSaving}
-        className={style['save-button']}
-        onClick={() => this.props.saveKey(this.props.configKey) }
-      >
+  let { local, remote, isSaving } = this.props.selectedKey;
+  const changes = diff(local, remote);
+  const hasChanges = (changes || []).length > 0;
+  return (<button disabled={!hasChanges || isSaving }
+    data-state-has-changes={hasChanges}
+    data-state-is-saving={isSaving}
+    className={style['save-button']}
+    onClick={() => this.props.saveKey(this.props.configKey) }
+  >
     {isSaving ? 'Saving...' : 'Save changes'}
   </button>);
-    }
+}
 
     render() {
-      const { dispatch, configKey, selectedKey } = this.props;
-      if (!selectedKey) return <div>loading</div>;
-      const { meta, ruleDef } = selectedKey.local;
+  const { dispatch, configKey, selectedKey } = this.props;
+  if (!selectedKey) return <div className={style['loading-message']}>loading</div>;
+  const { meta, ruleDef } = selectedKey.local;
 
-      return (<div className={style['key-viewer-container']}>
+  return (<div className={style['key-viewer-container']}>
     {this.renderSaveButton() }
     <div className={style['key-header']}>
 
@@ -129,10 +147,15 @@ export default connect((state, { params }) => (
         }
       </div>
 
-      <div className={style['full-key-path-wrapper']}>
+
+      <div className={style['rule-sub-text']}>
         <label>Full path: </label>
-        <label className={style['actual-path']}>{configKey}</label>
+        <label className={style['actual-sub-text']}>{configKey}</label>
       </div>
+
+      {ruleDef.modificationData ?
+        <KeyModificationDetails {...ruleDef.modificationData} />
+        : null}
 
       <TextareaAutosize
         onChange={ (e) => this.onDescriptionChanged(e.target.value) }
@@ -149,12 +172,12 @@ export default connect((state, { params }) => (
         minQueryLength={ 1 }
         allowDeleteFromEmptyInput={ false }
         classNames={{
-          tags: style['tags-container'],
-          tagInput: style['tag-input'],
-          tag: style['tag'],
-          remove: style['tag-delete-button'],
-          suggestions: style['tags-suggestion'],
-        } }
+        tags: style['tags-container'],
+        tagInput: style['tag-input'],
+        tag: style['tag'],
+        remove: style['tag-delete-button'],
+        suggestions: style['tags-suggestion'],
+      } }
       />
 
     </div>
@@ -164,6 +187,6 @@ export default connect((state, { params }) => (
       onMutation={x => this.props.updateKeyRuleDef({ source: JSON.stringify(x, null, 4) }) }
       className={style['key-rules-editor']}
     />
-  </div>);
-    }
+  </div >);
+}
   });

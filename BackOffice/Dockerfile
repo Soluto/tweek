@@ -2,7 +2,7 @@ FROM node:4.3.2
 
 ADD package.json /tmp/package.json
 RUN npm install npm -g
-RUN cd /tmp && npm install --silent --progress=false
+RUN cd /tmp && npm install
 RUN mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/
 WORKDIR /opt/app
 ADD . /opt/app

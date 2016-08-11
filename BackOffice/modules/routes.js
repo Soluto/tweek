@@ -6,14 +6,17 @@ import Home from './components/Home';
 import KeysPage from './pages/keys/components/KeysPage/KeysPage';
 import KeyPage from './pages/keys/components/KeyPage/KeyPage';
 import NoMatch from './components/NoMatch';
+import style from './styles/styles.css';
 
 export default serverRoutes => (
   <Route>
     <Route path="/" component={App}>
       <IndexRoute component={Home}/>
       <Route path="keys" component={KeysPage} >
-          <IndexRoute component={() => (<div>Select key...</div>)} />
-          <Route path="*" component={KeyPage}/>
+        <IndexRoute component={() => (
+          <div className={style['select-key-message']}>Select key...</div>)
+        } />
+        <Route path="*" component={KeyPage}/>
       </Route>
     </Route>
     {serverRoutes}

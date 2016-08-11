@@ -1,3 +1,8 @@
+.keys-list-container {
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+}
 .keys-list-container .filter-input {
   display: inline-block;
   border: 0;
@@ -6,49 +11,67 @@
   width: auto;
   padding: 0 4px;
   background-color: transparent;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.4);
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
   width: 100%;
+  min-height: 36px;
 }
 .keys-list-container .filter-input:focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.7);
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
 .keys-list-container .key-link-wrapper .key-link {
-  color: black;
+  color: #6d6d6d;
+  font-size: 12px;
   padding-top: 5px;
   padding-left: 10px;
   display: block;
   height: 25px;
   text-decoration: none;
+  background-color: transparent;
   transition: all 0.2s ease-in-out;
 }
 .keys-list-container .key-link-wrapper .key-link:hover {
-  background-color: #e2e2e2;
+  background-color: #d6d6d6;
   cursor: pointer;
 }
 .keys-list-container .key-link-wrapper .key-link:active {
-  background-color: #d1d1d1;
+  background-color: #bfbfbf;
 }
 .keys-list-container .key-link-wrapper .key-link.selected {
-  background-color: #b9b9b9;
+  background-color: darkgray;
 }
 .keys-list-container .key-folder {
-  max-width: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-width: 400px;
+  min-width: 400px;
 }
 .keys-list-container .key-folder .key-folder-name {
+  font-size: 14px;
   display: block;
   height: 30px;
   padding-left: 5px;
   padding-top: 13px;
-  color: gray;
-  color: rgba(0, 122, 204, 0.5);
-  border-bottom: 1px solid lightgray;
-  background-color: #f1f1f1;
+  color: #6e7b84;
+  border-bottom: 1px solid #d8d8d8;
+  background-color: #f2f2f2;
+  transition: all 0.2s ease-in-out;
 }
-.keys-list-container .key-folder ul li {
-  list-style: none;
-  overflow: hidden;
-  white-space: nowrap;
+.keys-list-container .key-folder .key-folder-name:hover {
+  padding-left: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.4);
+}
+.keys-list-container .key-folder .key-folder-name:active {
+  border-bottom: 1px solid rgba(0, 122, 204, 0.8);
+}
+.keys-list-container .key-folder .key-folder-icon {
+  width: 16px;
+  margin-right: 5px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
