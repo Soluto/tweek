@@ -22,6 +22,7 @@
   color: white;
   outline: 0;
   padding-bottom: 2px;
+  border-radius: 14px;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
@@ -120,9 +121,6 @@
 .custom-slider-container .legend-precent-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.custom-slider-container .precent-symbol {
-  font-size: 12px;
-}
 .custom-slider-container .add-legend-button {
   vertical-align: top;
   background-color: rgba(0, 122, 204, 0.8);
@@ -132,6 +130,7 @@
   color: white;
   outline: 0;
   padding-bottom: 2px;
+  border-radius: 14px;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
