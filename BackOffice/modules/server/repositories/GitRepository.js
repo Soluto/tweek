@@ -47,15 +47,15 @@ class GitRepository {
     await this._repoPromise;
     const fileContent = (await fs.readFile(`${this._localPath}/${fileName}`)).toString();
 
-    const modificationData = await this._getFileLastModifiedDate(fileName);
+    const {modifyDate, modifyUser, commitSha} = await this._getFileLastModifiedDate(fileName);
 
-    const modifyCompareUrl = modificationData.commitSha ?
-      this._getRepositoryUrl(`commit/${modificationData.commitSha}`) :
-      this._getRepositoryUrl(`commits/master/search?q=${fileName}`);
+    const modifyCompareUrl = commitSha ?
+      this._getRepositoryUrl(`commit/${commitSha}`) :
+      this._getRepositoryUrl(`commits/master/${fileName}`);
 
     const fileModificationData = {
-      modifyUser: modificationData.lastModifyUser,
-      modifyDate: modificationData.lastModifyDate,
+      modifyUser,
+      modifyDate,
       modifyCompareUrl,
     };
 
@@ -143,8 +143,8 @@ class GitRepository {
   async _getFileLastModifiedDate(fileName) {
     const repo = await this._repoPromise;
 
-    let lastModifyDate = GitRepository.UNKNOWN_MODIFY_VALUE;
-    let lastModifyUser = GitRepository.UNKNOWN_MODIFY_VALUE;
+    let modifyDate = GitRepository.UNKNOWN_MODIFY_VALUE;
+    let modifyUser = GitRepository.UNKNOWN_MODIFY_VALUE;
     let commitSha = null;
 
     try {
@@ -155,19 +155,19 @@ class GitRepository {
       const lastCommits = await walker.fileHistoryWalk(fileName, 100);
       const lastCommit = lastCommits[0].commit;
 
-      lastModifyDate = lastCommit.date();
-      lastModifyUser = lastCommit.author().name();
+      modifyDate = lastCommit.date();
+      modifyUser = lastCommit.author().name();
       commitSha = lastCommit.sha();
     }
     catch (exp) {
       console.log('failed read modification data', exp);
-    } finally {
-      return {
-        lastModifyDate,
-        lastModifyUser,
-        commitSha,
-      };
     }
+
+    return {
+      modifyDate,
+      modifyUser,
+      commitSha,
+    };
   }
 
   _getRepositoryUrl(suffix) {
