@@ -60,7 +60,7 @@ namespace Tweek.Drivers.CouchbaseDriver
             else
             {
 
-                string query = $"UPDATE {key} {string.Join(" ", context.Select(x => $"SET {x.Key} = \"{x.Value}\"")) }";
+                string query = $"UPDATE `{_bucketName}` USE KEYS \"{key}\" SET {String.Join(", ",context.Select(x=>$"{x.Key} = \"{x.Value}\""))}";
                 var result = await bucket.QueryAsync<dynamic>(query);
                 if (!result.Success)
                 {
