@@ -1,7 +1,6 @@
 import Git from 'nodegit';
 import glob from 'glob';
 import synchronized from '../../utils/synchronizedFunction';
-import moment from 'moment';
 
 const fs = require('promisify-node')('fs-extra');
 
@@ -15,7 +14,6 @@ class GitRepository {
   static TWEEK_BACKOFFICE_USER = 'tweek-backoffice';
   static TWEEK_BACKOFFICE_MAIL = 'tweek-backoffice@tweek';
   static UNKNOWN_MODIFY_VALUE = 'uknown';
-  static MODIFY_DATE_FORMAT = 'DD/MM/YYYY HH:mm';
 
   constructor(settings) {
     this._username = settings.username;
@@ -51,15 +49,19 @@ class GitRepository {
 
     const modificationData = await this._getFileLastModifiedDate(fileName);
 
-    const lastModifyCompareUrl = modificationData.commitSha ?
+    const modifyCompareUrl = modificationData.commitSha ?
       this._getRepositoryUrl(`commit/${modificationData.commitSha}`) :
       this._getRepositoryUrl(`commits/master/search?q=${fileName}`);
 
+    const fileModificationData = {
+      modifyUser: modificationData.lastModifyUser,
+      modifyDate: modificationData.lastModifyDate,
+      modifyCompareUrl,
+    };
+
     return {
       fileContent,
-      lastModifyDate: modificationData.lastModifyDate,
-      modifierUser: modificationData.modifierUser,
-      lastModifyCompareUrl,
+      fileModificationData,
     };
   }
 
@@ -142,8 +144,8 @@ class GitRepository {
     const repo = await this._repoPromise;
 
     let lastModifyDate = GitRepository.UNKNOWN_MODIFY_VALUE;
-    let modifierUser = GitRepository.UNKNOWN_MODIFY_VALUE;
-    let commitSha = '';
+    let lastModifyUser = GitRepository.UNKNOWN_MODIFY_VALUE;
+    let commitSha = null;
 
     try {
       const firstCommitOnMaster = await repo.getMasterCommit();
@@ -152,10 +154,9 @@ class GitRepository {
 
       const lastCommits = await walker.fileHistoryWalk(fileName, 100);
       const lastCommit = lastCommits[0].commit;
-      const parsedDate = moment(lastCommit.date());
 
-      lastModifyDate = parsedDate.format(GitRepository.MODIFY_DATE_FORMAT);
-      modifierUser = lastCommit.author().name();
+      lastModifyDate = lastCommit.date();
+      lastModifyUser = lastCommit.author().name();
       commitSha = lastCommit.sha();
     }
     catch (exp) {
@@ -163,7 +164,7 @@ class GitRepository {
     } finally {
       return {
         lastModifyDate,
-        modifierUser,
+        lastModifyUser,
         commitSha,
       };
     }

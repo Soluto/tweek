@@ -22,14 +22,14 @@ const Add = compose(mapProps(({ keylist, ...props }) => ({ ...props, suggestions
         renderSuggestion={x => <span>{x}</span>}
         inputProps={{
           value, ...inputKeyboardHandlers({ submit: (newValue) => {
-            setIsAdding(false);
-            onKeyAdded(newValue);
-            setValue('');
-          }, cancel: () => {
         setIsAdding(false);
-        setValue('');
+      onKeyAdded(newValue);
+      setValue('');
+      }, cancel: () => {
+        setIsAdding(false);
+      setValue('');
       } }), onChange: (_, { newValue }) => setValue(newValue),
-        }}
+      }}
       />
     </div>
   );
@@ -51,9 +51,10 @@ export default connect(state => state, { ...actions })(class KeysPage extends Co
     return (
       <div className={style['keys-page-container']}>
         {createFragment({
-          KeysList: <div className={style['keys-list']}>
-            <Add keylist={keys} onKeyAdded={addKey} />
-            <KeysList keys={keys} />
+          KeysList:
+          <div className={style['keys-list']}>
+            <KeysList className={style['keys-list-wrapper']} keys={keys} />
+            <div className={style['add-button-wrapper']}><Add keylist={keys} onKeyAdded={addKey} /></div>
           </div>,
           Page: <div className={style['key-page']}>
             {children}
