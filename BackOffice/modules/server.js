@@ -20,6 +20,7 @@ nconf.argv()
    .file({ file: `${process.cwd()}/tweek_config.json` });
 
 console.log(nconf.get('GIT_URL'));
+
 const gitRepo = GitRepository.init({
   url: nconf.get('GIT_URL'),
   username: nconf.get('GIT_USER'),

@@ -7,13 +7,15 @@
   display: flex;
 }
 .keys-page-container .keys-list {
-  position: relative;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  overflow-y: scroll;
-  width: 600px;
+  display: flex;
+  flex-basis: 400px;
+  flex-direction: column;
+  background-color: #e2e2e2;
+}
+.keys-page-container .keys-list .keys-list-wrapper {
+  display: flex;
+  flex-grow: 1;
+  border-bottom: 1px solid gray;
 }
 .keys-page-container .key-page {
   position: relative;
@@ -22,36 +24,44 @@
   left: 0;
   bottom: 0;
   right: 0;
-  width: 100%;
+  flex-grow: 1;
 }
-.keys-page-container .add-button {
+.keys-page-container .add-button-wrapper {
+  min-height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.keys-page-container .add-button-wrapper .add-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.7);
+  background-color: rgba(0, 122, 204, 0.8);
   height: 28px;
   border: 0;
   padding: 0 5px;
   color: white;
   outline: 0;
   padding-bottom: 2px;
+  border-radius: 14px;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
-  width: 100%;
+  height: 34px;
+  width: 200px;
 }
-.keys-page-container .add-button:hover {
+.keys-page-container .add-button-wrapper .add-button:hover {
   background-color: #007acc;
   cursor: pointer;
 }
-.keys-page-container .add-button:active {
+.keys-page-container .add-button-wrapper .add-button:active {
   background-color: #0098ff;
 }
-.keys-page-container .add-button:disabled {
+.keys-page-container .add-button-wrapper .add-button:disabled {
   background-color: gray;
 }
-.keys-page-container .add-button:disabled:hover,
-.keys-page-container .add-button:disabled:active {
+.keys-page-container .add-button-wrapper .add-button:disabled:hover,
+.keys-page-container .add-button-wrapper .add-button:disabled:active {
   cursor: default;
   background-color: gray;
 }

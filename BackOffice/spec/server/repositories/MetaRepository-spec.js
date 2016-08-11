@@ -1,13 +1,15 @@
 /* global jest, beforeEach, describe, it, expect */
 jest.unmock('../../../modules/server/repositories/MetaRepository');
+jest.unmock('../../../spec-mocks/server/repositories/GitRepositoryMock');
 
 import MetaRepository from '../../../modules/server/repositories/MetaRepository';
+import GitRepositoryMock from '../../../spec-mocks/server/repositories/GitRepositoryMock';
 const chai = require('chai');
 chai.use(require('chai-as-promised'));
 const { expect, assert } = chai;
 
 describe('MetaRepository', () => {
-  let gitMock = {};
+  let gitMock = new GitRepositoryMock();
   let metaRepo = new MetaRepository(gitMock);
 
   describe('getRuleMeta', async () => {
@@ -26,7 +28,7 @@ describe('MetaRepository', () => {
       const expectedFileName =
         `${MetaRepository.META_REPOSITORY_DIRECTORY_NAME}/${requestedRuleName}${MetaRepository.META_REPOSITORY_FILE_EXTENSION_NAME}`;
 
-      gitMock.readFile = jest.fn(async () => stringMetaMock);
+      gitMock.setReadFileMock(stringMetaMock, '');
 
       // Act
       let result = await metaRepo.getRuleMeta(requestedRuleName);
@@ -41,7 +43,7 @@ describe('MetaRepository', () => {
       // Arrange
       let expectedException = 'pita exception';
 
-      gitMock.readFile = async () => Promise.reject(expectedException);
+      gitMock.setRejectedReadFileMock(expectedException);
 
       // Act & Assert
       await expect(metaRepo.getRuleMeta()).to.eventually.be.rejectedWith(expectedException);
@@ -71,7 +73,7 @@ describe('MetaRepository', () => {
         email,
       };
 
-      gitMock.updateFile = jest.fn(() => Promise.resolve(''));
+      gitMock.setUpdateFile(true, '');
 
       // Act
       await metaRepo.updateRuleMeta(requestedRuleName, metaMock, expectedAuthor);
@@ -87,9 +89,7 @@ describe('MetaRepository', () => {
       // Arrange
       let expectedException = 'some exception';
 
-      gitMock.updateFile = async () => {
-        return Promise.reject(expectedException);
-      };
+      gitMock.setUpdateFile(false, expectedException);
 
       // Act & Assert
       await expect(metaRepo.updateRuleMeta()).to.eventually.be.rejectedWith(expectedException);

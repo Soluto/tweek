@@ -18,7 +18,7 @@
 			],
 			"env": {
 				"NODE_ENV": "development",
-				"AUTO_RELOAD": "refresh"
+				"AUTO_RELOAD": "hot"
 			},
 			"externalConsole": false,
 			"sourceMaps": false,

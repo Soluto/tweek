@@ -1,89 +1,118 @@
-@import (reference) "./accents.less";
-* {
-  box-sizing: border-box;
-}
-
-.user-select(@user-select: none) {
-  -moz-user-select: @user-select;
-  -ms-user-select: @user-select;
-  -webkit-user-select: @user-select;
-  user-select: @user-select;
-}
-
-.transitioned(@duration :.2s) {
-  transition: all @duration ease-in-out;
-}
-
-.metro-button {
-  vertical-align: top;
-  background-color: @accent-color2;
-  height: 28px;
-  border: 0;
-  padding: 0 5px;
-  color: @accent-foreground;
-  outline: 0;
-  padding-bottom: 2px;
-  .user-select(none);
-  .transitioned();
-  &:hover {
-    background-color: @accent-color1;
-    cursor: pointer;
+  @import (reference) "./accents.less";
+  * {
+    box-sizing: border-box;
   }
-  &:active {
-    background-color: @accent-active;
+  
+  .user-select(@user-select: none) {
+    -moz-user-select: @user-select;
+    -ms-user-select: @user-select;
+    -webkit-user-select: @user-select;
+    user-select: @user-select;
   }
-  &:disabled {
-    background-color: gray;
-    &:hover, &:active {
-      cursor: default;
+  
+  .transitioned(@duration :.2s) {
+    transition: all @duration ease-in-out;
+  }
+  
+  .metro-button {
+    vertical-align: top;
+    background-color: @accent-color2;
+    height: 28px;
+    border: 0;
+    padding: 0 5px;
+    color: @accent-foreground;
+    outline: 0;
+    padding-bottom: 2px;
+    border-radius: 14px;
+    .user-select(none);
+    .transitioned();
+    &:hover {
+      background-color: @accent-color1;
+      cursor: pointer;
+    }
+    &:active {
+      background-color: @accent-active;
+    }
+    &:disabled {
       background-color: gray;
+      &:hover, &:active {
+        cursor: default;
+        background-color: gray;
+      }
     }
   }
-}
-
-.metro-textbox {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  width: auto;
-  padding: 0 4px;
-  background-color: transparent;
-  border-bottom: 1px solid @accent-color4;
-  outline: none;
-  box-sizing: border-box;
-  .transitioned();
-  &:focus {
-    border-bottom: 2px solid @accent-color2;
+  
+  .metro-textbox(@small: false) when not (@small) {
+    display: inline-block;
+    border: 0;
+    border-style: none;
+    height: 28px;
+    width: auto;
+    padding: 0 4px;
+    background-color: transparent;
+    border-bottom: 1px solid @accent-color4;
+    outline: none;
+    box-sizing: border-box;
+    .transitioned();
+    &:focus {
+      border-bottom: 2px solid @accent-color2;
+    }
   }
-}
-
-.circle-button {
-  .metro-button;
-  padding: 0;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-}
-
-.gray-circle-button {
-  .circle-button;
-  background-color: rgb(188, 188, 188);
-  &:hover {
-    background-color: rgb(156, 156, 156);
+  
+  .metro-textbox(@small: false) when (@small) {
+    .metro-textbox;
+    height: 16px;
+    font-size: 12px;
   }
-  &:active {
-    background-color: rgb(123, 123, 123);
+  
+  .circle-button(@small: false) when not (@small) {
+    .metro-button;
+    padding: 0;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    padding-bottom: 1px;
+    box-sizing: border-box;
   }
-}
-
-.red-circle-button {
-  .circle-button;
-  background-color: rgb(238, 131, 131);
-  &:hover {
-    background-color: rgb(226, 108, 108);
+  
+  .circle-button(@small: false) when(@small) {
+    .circle-button(false);
+    width: 13px;
+    height: 13px;
+    font-size: 10px;
+    padding-bottom: 3px;
   }
-  &:active {
-    background-color: rgb(227, 79, 79);
+  
+  .gray-circle-button(@small: false) {
+    .circle-button(@small);
+    background-color: rgb(188, 188, 188);
+    &:hover {
+      background-color: rgb(156, 156, 156);
+    }
+    &:active {
+      background-color: rgb(123, 123, 123);
+    }
   }
-}
+  
+  .red-circle-button(@small: false) {
+    .circle-button(@small);
+    background-color: rgb(238, 131, 131);
+    &:hover {
+      background-color: rgb(226, 108, 108);
+    }
+    &:active {
+      background-color: rgb(227, 79, 79);
+    }
+  }
+  
+  .centered-message {
+    position: absolute;
+    width: 200px;
+    height: 100px;
+    top: 50%;
+    left: 50%;
+    margin-top: -50px;
+    margin-left: -100px;
+    font-size: 28px;
+    color: @accent-color3;
+  }

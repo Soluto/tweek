@@ -65,6 +65,8 @@
   border-radius: 50%;
   width: 20px;
   height: 20px;
+  padding-bottom: 1px;
+  box-sizing: border-box;
   background-color: #bcbcbc;
   margin-right: 3px;
   font-size: 10px;
@@ -85,6 +87,15 @@
 .case-container .conditions-container .case-control-wrapper .case-order-button:disabled:active {
   cursor: default;
   background-color: gray;
+}
+.case-container .conditions-container .case-control-wrapper .case-order-button .small {
+  width: 13px;
+  height: 13px;
+  margin-top: 7px;
+  margin-right: 4px;
+  font-size: 10px;
+  padding-bottom: 3px;
+  padding-left: 4px;
 }
 .case-container .conditions-container .case-control-wrapper .case-order-button:hover {
   background-color: #9c9c9c;
@@ -110,8 +121,9 @@
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  background-color: #ee8383;
   padding-bottom: 1px;
+  box-sizing: border-box;
+  background-color: #ee8383;
 }
 .case-container .conditions-container .case-control-wrapper .delete-case-button:hover {
   background-color: #007acc;
@@ -127,6 +139,15 @@
 .case-container .conditions-container .case-control-wrapper .delete-case-button:disabled:active {
   cursor: default;
   background-color: gray;
+}
+.case-container .conditions-container .case-control-wrapper .delete-case-button .small {
+  width: 13px;
+  height: 13px;
+  margin-top: 7px;
+  margin-right: 4px;
+  font-size: 10px;
+  padding-bottom: 3px;
+  padding-left: 4px;
 }
 .case-container .conditions-container .case-control-wrapper .delete-case-button:hover {
   background-color: #e26c6c;

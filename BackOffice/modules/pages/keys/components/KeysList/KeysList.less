@@ -1,48 +1,66 @@
 @import (reference) "../../../../styles/core/core.less";
 .keys-list-container {
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
   .filter-input {
     .metro-textbox;
     width: 100%;
+    min-height: 36px;
   }
   .key-link-wrapper {
     .key-link {
-      color: black;
+      color: #6d6d6d;
+      font-size: 12px;
       padding-top: 5px;
       padding-left: 10px;
       display: block;
       height: 25px;
       text-decoration: none;
+      background-color: transparent;
       .transitioned();
       &:hover {
-        background-color: #e2e2e2;
+        background-color: #d6d6d6;
         cursor: pointer;
       }
       &:active {
-        background-color: #d1d1d1;
+        background-color: #bfbfbf;
       }
       &.selected {
-        background-color: #b9b9b9;
+        background-color: darkgray;
       }
     }
   }
   .key-folder {
-    max-width: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-width: 400px;
+    min-width: 400px;
     .key-folder-name {
+      font-size: 14px;
       display: block;
       height: 30px;
       padding-left: 5px;
       padding-top: 13px;
-      color: gray;
-      color: @accent-color3;
-      border-bottom: 1px solid lightgray;
-      background-color: #f1f1f1;
-    }
-    ul {
-      li {
-        list-style: none;
-        overflow: hidden;
-        white-space: nowrap;
+      color: #6e7b84;
+      border-bottom: 1px solid #d8d8d8;
+      background-color: #f2f2f2;
+      .transitioned();
+      &:hover {
+        padding-left: 10px;
+        cursor: pointer;
+        border-bottom: 1px solid @accent-color5;
+      }
+      &:active {
+        border-bottom: 1px solid @accent-color2;
       }
     }
+    .key-folder-icon {
+      width: 16px;
+      margin-right: 5px;
+      .user-select(none);
+    }
+    .folder-items {}
+    .sub-tree {}
   }
 }

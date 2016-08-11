@@ -1,4 +1,8 @@
 @import (reference) "../../../../styles/core/core.less";
+.loading-message {
+  .centered-message;
+}
+
 .key-viewer-container {
   padding: 10px;
   display: flex;
@@ -43,12 +47,25 @@
         font-size: @display-name-font-size;
       }
     }
-    .full-key-path-wrapper {
+    .rule-sub-text {
       color: darkgray;
       font-size: 13px;
       margin-left: 5px;
+      margin-bottom: 4px;
       .user-select(none);
-      .actual-path {
+      a {
+        color: darkgray;
+        .actual-sub-text {
+          text-decoration: underline;
+          &:hover {
+            cursor: pointer;
+          }
+        }
+        &:visited {
+          color: darkgray;
+        }
+      }
+      .actual-sub-text {
         font-style: italic;
         .user-select(text);
         &:hover {
@@ -57,8 +74,8 @@
       }
     }
     .description-input {
+      margin-top: 5px;
       .meta-data-input;
-      margin-top: 8px;
       resize: none;
       font-family: calibri;
       font-size: 18px;

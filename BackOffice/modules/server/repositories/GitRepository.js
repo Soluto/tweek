@@ -1,6 +1,7 @@
 import Git from 'nodegit';
 import glob from 'glob';
 import synchronized from '../../utils/synchronizedFunction';
+
 const fs = require('promisify-node')('fs-extra');
 
 const promisify = (fn, context) => (...args) => new Promise((resolve, reject) =>
@@ -12,6 +13,7 @@ class GitRepository {
 
   static TWEEK_BACKOFFICE_USER = 'tweek-backoffice';
   static TWEEK_BACKOFFICE_MAIL = 'tweek-backoffice@tweek';
+  static UNKNOWN_MODIFY_VALUE = 'uknown';
 
   constructor(settings) {
     this._username = settings.username;
@@ -43,8 +45,24 @@ class GitRepository {
 
   async readFile(fileName) {
     await this._repoPromise;
+    const fileContent = (await fs.readFile(`${this._localPath}/${fileName}`)).toString();
 
-    return (await fs.readFile(`${this._localPath}/${fileName}`)).toString();
+    const {modifyDate, modifyUser, commitSha} = await this._getFileLastModifiedDate(fileName);
+
+    const modifyCompareUrl = commitSha ?
+      this._getRepositoryUrl(`commit/${commitSha}`) :
+      this._getRepositoryUrl(`commits/master/${fileName}`);
+
+    const fileModificationData = {
+      modifyUser,
+      modifyDate,
+      modifyCompareUrl,
+    };
+
+    return {
+      fileContent,
+      fileModificationData,
+    };
   }
 
   updateFile = synchronized(async function (fileName, payload, { name, email }) {
@@ -120,6 +138,40 @@ class GitRepository {
 
     console.log('clone success');
     return repo;
+  }
+
+  async _getFileLastModifiedDate(fileName) {
+    const repo = await this._repoPromise;
+
+    let modifyDate = GitRepository.UNKNOWN_MODIFY_VALUE;
+    let modifyUser = GitRepository.UNKNOWN_MODIFY_VALUE;
+    let commitSha = null;
+
+    try {
+      const firstCommitOnMaster = await repo.getMasterCommit();
+      const walker = repo.createRevWalk();
+      walker.push(firstCommitOnMaster.sha());
+
+      const lastCommits = await walker.fileHistoryWalk(fileName, 100);
+      const lastCommit = lastCommits[0].commit;
+
+      modifyDate = lastCommit.date();
+      modifyUser = lastCommit.author().name();
+      commitSha = lastCommit.sha();
+    }
+    catch (exp) {
+      console.log('failed read modification data', exp);
+    }
+
+    return {
+      modifyDate,
+      modifyUser,
+      commitSha,
+    };
+  }
+
+  _getRepositoryUrl(suffix) {
+    return `${this._url}/${suffix}`;
   }
 }
 

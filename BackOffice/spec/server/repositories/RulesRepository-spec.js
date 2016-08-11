@@ -1,18 +1,21 @@
 /* global jest, beforeEach, describe, it */
 jest.unmock('../../../modules/server/repositories/RulesRepository');
+jest.unmock('../../../spec-mocks/server/repositories/GitRepositoryMock');
+
 import RulesRepository from '../../../modules/server/repositories/RulesRepository';
+import GitRepositoryMock from '../../../spec-mocks/server/repositories/GitRepositoryMock';
 const chai = require('chai');
 chai.use(require('chai-as-promised'));
 const { expect, assert } = chai;
 
 describe('RulesRepository', () => {
-  let gitMock = {};
+  let gitMock = new GitRepositoryMock();
   let rulesRepo = new RulesRepository(gitMock);
 
   describe('getAllRules', async () => {
     it('should be able to get all rules from git repo: call git repo with correct folder name, remove jpad suffix and return correct items', async () => {
       // Arrange
-      gitMock.getFileNames = jest.fn(async () => ['rules/abc.jpad', 'rules/def.jpad', 'rules/nested/key.jpad', 'abcd/def.jpad']);
+      gitMock.setGetFileNames(true, ['rules/abc.jpad', 'rules/def.jpad', 'rules/nested/key.jpad', 'abcd/def.jpad']);
 
       const expectedRules = ['rules/abc', 'rules/def', 'rules/nested/key', 'abcd/def'];
 
@@ -29,7 +32,7 @@ describe('RulesRepository', () => {
       // Arrange
       const expectedException = 'some exception';
 
-      gitMock.getFileNames = () => Promise.reject(expectedException);
+      gitMock.setGetFileNames(false, expectedException);
 
       // Act
       try {
@@ -50,13 +53,18 @@ describe('RulesRepository', () => {
       const expectedFileName =
         `${RulesRepository.RULES_REPOSITORY_DIRECTORY_NAME}/${requestedRuleName}${RulesRepository.RULES_REPOSITORY_FILE_EXTENSION_NAME}`;
 
-      gitMock.readFile = jest.fn(async () => jpadFileContentMock);
+      const expectedLastModifyCompareUrl = 'some sha link';
+
+      const expectedModifyDate = new Date();
+      gitMock.setReadFileMock(jpadFileContentMock, expectedModifyDate, expectedLastModifyCompareUrl);
 
       // Act
       let result = await rulesRepo.getRule(requestedRuleName);
 
       // Assert
-      expect(result).to.eql(jpadFileContentMock);
+      expect(result.fileContent).to.eql(jpadFileContentMock);
+      expect(result.lastModifyDate).to.eql(expectedModifyDate);
+      expect(result.lastModifyCompareUrl).to.eql(expectedLastModifyCompareUrl);
       expect(gitMock.readFile.mock.calls.length).to.eql(1);
       expect(gitMock.readFile.mock.calls[0][0]).to.eql(expectedFileName);
     });
@@ -65,7 +73,7 @@ describe('RulesRepository', () => {
       // Arrange
       let expectedException = 'some exception';
 
-      gitMock.readFile = () => Promise.reject(expectedException);
+      gitMock.setRejectedReadFileMock(expectedException);
 
       // Act & Assert
       await expect(rulesRepo.getRule()).to.eventually.be.rejectedWith(expectedException);
@@ -89,7 +97,7 @@ describe('RulesRepository', () => {
         email,
       };
 
-      gitMock.updateFile = jest.fn(() => Promise.resolve(''));
+      gitMock.setUpdateFile(true, '');
 
       // Act
       await rulesRepo.updateRule(requestedRuleName, rulePayload, expectedAuthor);
@@ -105,7 +113,7 @@ describe('RulesRepository', () => {
       // Arrange
       const expectedException = 'some exception';
 
-      gitMock.updateFile = async () => Promise.reject(expectedException);
+      gitMock.setUpdateFile(false, expectedException);
 
       // Act & Assert
       await expect(rulesRepo.updateRule()).to.eventually.be.rejectedWith(expectedException);

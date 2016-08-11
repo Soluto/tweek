@@ -1,7 +1,10 @@
 /* global jest, beforeEach, describe, it, expect */
 jest.unmock('../../../modules/server/repositories/TagsRepository');
+jest.unmock('../../../spec-mocks/server/repositories/GitRepositoryMock');
 
 import TagsRepository from '../../../modules/server/repositories/TagsRepository';
+import GitRepositoryMock from '../../../spec-mocks/server/repositories/GitRepositoryMock';
+console.log(GitRepositoryMock);
 import R from 'ramda';
 
 const chai = require('chai');
@@ -9,7 +12,7 @@ chai.use(require('chai-as-promised'));
 const { expect, assert } = chai;
 
 describe('TagsRepository', () => {
-  let gitMock = {};
+  let gitMock = new GitRepositoryMock();
   let tagsRepo = new TagsRepository(gitMock);
 
   describe('getTags', async () => {
@@ -25,7 +28,7 @@ describe('TagsRepository', () => {
 
       const stringTagsMock = JSON.stringify(tagsMock);
 
-      gitMock.readFile = jest.fn(async () => stringTagsMock);
+      gitMock.setReadFileMock(stringTagsMock, '');
 
       // Act
       let result = await tagsRepo.getTags();
@@ -42,8 +45,8 @@ describe('TagsRepository', () => {
 
       const newTagsMock = [{ name: 'tag3' }, { name: 'tag4' }, { name: 'tag1' }];
 
-      gitMock.readFile = jest.fn(async () => JSON.stringify(exsitingTagsMock));
-      gitMock.updateFile = jest.fn(async () => { });
+      gitMock.setReadFileMock(JSON.stringify(exsitingTagsMock), '');
+      gitMock.setUpdateFile(true, '');
 
       const expectedUpdateTagsFileContent = JSON.stringify(R.uniqBy(x => x.name, [...exsitingTagsMock, ...newTagsMock]));
 
@@ -61,7 +64,7 @@ describe('TagsRepository', () => {
       // Arrange
       let expectedException = 'pita exception';
 
-      gitMock.readFile = async () => Promise.reject(expectedException);
+      gitMock.setRejectedReadFileMock(expectedException);
 
       // Act & Assert
       await expect(tagsRepo.getTags()).to.eventually.be.rejectedWith(expectedException);
