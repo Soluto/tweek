@@ -12,6 +12,23 @@ import R from 'ramda';
 import TextareaAutosize from 'react-autosize-textarea';
 import moment from 'moment';
 
+const KeyModificationDetails = ({ modifyCompareUrl, modifyDate, modifyUser }) => {
+  const modifyDateFromNow = moment(modifyDate).fromNow();
+
+  return (
+    <div className={style['rule-sub-text']} >
+      <label>Last modify: </label>
+      <a href={modifyCompareUrl}
+        target="_blank"
+        title="Compare with previous version"
+      >
+        <label className={style['actual-sub-text']}>{modifyDateFromNow}, by {modifyUser}</label>
+      </a>
+    </div>
+  );
+};
+
+
 export default connect((state, { params }) => (
   { selectedKey: state.selectedKey, tags: state.tags, configKey: params.splat }),
   { ...keysActions, ...tagActions })(
@@ -49,42 +66,42 @@ export default connect((state, { params }) => (
 
     onDisplayNameChanged(newDisplayName) {
       const newMeta = { ...this.props.selectedKey.local.meta, displayName: newDisplayName };
-this._onSelectedKeyMetaChanged(newMeta);
+      this._onSelectedKeyMetaChanged(newMeta);
     }
 
-onDescriptionChanged(newDescription) {
+    onDescriptionChanged(newDescription) {
   const newMeta = { ...this.props.selectedKey.local.meta, description: newDescription };
   this._onSelectedKeyMetaChanged(newMeta);
 }
 
-onTagDeleted(deletedTagIndex) {
+    onTagDeleted(deletedTagIndex) {
   const meta = this.props.selectedKey.local.meta;
   const newMeta = { ...meta, tags: R.remove(deletedTagIndex, 1, meta.tags) };
   this._onSelectedKeyMetaChanged(newMeta);
 }
 
-onTagAdded(newTagText) {
+    onTagAdded(newTagText) {
   const meta = this.props.selectedKey.local.meta;
   const newMeta = { ...meta, tags: [...meta.tags, newTagText] };
   this._onSelectedKeyMetaChanged(newMeta);
 }
 
-get tags() {
+    get tags() {
   return R.map(_ => ({
     id: _,
     text: _,
   }), this.props.selectedKey.local.meta.tags);
 }
 
-get tagsSuggestions() {
+    get tagsSuggestions() {
   return this.props.tags ? this.props.tags.map(tag => tag.name) : [];
 }
 
-_onSelectedKeyMetaChanged(newMeta) {
+    _onSelectedKeyMetaChanged(newMeta) {
   this.props.updateKeyMetaDef(newMeta);
 }
 
-renderSaveButton() {
+    renderSaveButton() {
   let { local, remote, isSaving } = this.props.selectedKey;
   const changes = diff(local, remote);
   const hasChanges = (changes || []).length > 0;
@@ -93,18 +110,15 @@ renderSaveButton() {
     data-state-is-saving={isSaving}
     className={style['save-button']}
     onClick={() => this.props.saveKey(this.props.configKey) }
-    >
+  >
     {isSaving ? 'Saving...' : 'Save changes'}
   </button>);
 }
 
-render() {
+    render() {
   const { dispatch, configKey, selectedKey } = this.props;
   if (!selectedKey) return <div className={style['loading-message']}>loading</div>;
   const { meta, ruleDef } = selectedKey.local;
-
-  const modifyDate = ruleDef.modificationData.modifyDate;
-  const modifyDateFromNow = moment(modifyDate).fromNow();
 
   return (<div className={style['key-viewer-container']}>
     {this.renderSaveButton() }
@@ -120,48 +134,44 @@ render() {
               onChange={ (e) => this.onDisplayNameChanged(e.target.value) }
               value = { meta.displayName }
               onBlur={() => { this.setState({ isDisplayNameInEditMode: false }); } }
-              />
+            />
           </form>
           :
           <div className={style['display-name']}
             onClick={() => {
               this.setState({ isDisplayNameInEditMode: true });
             } }
-            >
+          >
             {meta.displayName}
           </div>
         }
       </div>
+
 
       <div className={style['rule-sub-text']}>
         <label>Full path: </label>
         <label className={style['actual-sub-text']}>{configKey}</label>
       </div>
 
-      <div className={style['rule-sub-text']} >
-        <label>Last modify: </label>
-        <a href={ruleDef.modificationData.modifyCompareUrl}
-          target="_blank"
-          title="Compare with previous version">
-          <label className={style['actual-sub-text']}>{modifyDateFromNow}, by {ruleDef.modificationData.modifyUser}</label>
-        </a>
-      </div>
+      {ruleDef.modificationData ?
+        <KeyModificationDetails {...ruleDef.modificationData} />
+        : null}
 
       <TextareaAutosize
         onChange={ (e) => this.onDescriptionChanged(e.target.value) }
         value = { meta.description }
         placeholder="Description"
         className={style['description-input']}
-        />
+      />
 
       <ReactTags tags={ this.tags }
         handleDelete={ this:: this.onTagDeleted }
-      handleAddition={ this:: this.onTagAdded }
-      suggestions={this.tagsSuggestions }
-      placeholder="New tag"
-      minQueryLength={ 1 }
-      allowDeleteFromEmptyInput={ false }
-      classNames={{
+        handleAddition={ this:: this.onTagAdded }
+        suggestions={this.tagsSuggestions }
+        placeholder="New tag"
+        minQueryLength={ 1 }
+        allowDeleteFromEmptyInput={ false }
+        classNames={{
         tags: style['tags-container'],
         tagInput: style['tag-input'],
         tag: style['tag'],
@@ -176,7 +186,7 @@ render() {
       sourceTree={JSON.parse(ruleDef.source) }
       onMutation={x => this.props.updateKeyRuleDef({ source: JSON.stringify(x, null, 4) }) }
       className={style['key-rules-editor']}
-      />
+    />
   </div >);
 }
   });
