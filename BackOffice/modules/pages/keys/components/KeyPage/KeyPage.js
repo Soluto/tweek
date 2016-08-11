@@ -10,6 +10,7 @@ import { diff } from 'deep-diff';
 import { WithContext as ReactTags } from 'react-tag-input';
 import R from 'ramda';
 import TextareaAutosize from 'react-autosize-textarea';
+import moment from 'moment';
 
 export default connect((state, { params }) => (
   { selectedKey: state.selectedKey, tags: state.tags, configKey: params.splat }),
@@ -102,6 +103,9 @@ render() {
   if (!selectedKey) return <div className={style['loading-message']}>loading</div>;
   const { meta, ruleDef } = selectedKey.local;
 
+  const modifyDate = ruleDef.modificationData.modifyDate;
+  const modifyDateFromNow = moment(modifyDate).fromNow();
+
   return (<div className={style['key-viewer-container']}>
     {this.renderSaveButton() }
     <div className={style['key-header']}>
@@ -136,10 +140,10 @@ render() {
 
       <div className={style['rule-sub-text']} >
         <label>Last modify: </label>
-        <a href={ruleDef.lastModifyCompareUrl}
+        <a href={ruleDef.modificationData.modifyCompareUrl}
           target="_blank"
           title="Compare with previous version">
-          <label className={style['actual-sub-text']}>{ruleDef.lastModifyDate}, by {ruleDef.modifierUser}</label>
+          <label className={style['actual-sub-text']}>{modifyDateFromNow}, by {ruleDef.modificationData.modifyUser}</label>
         </a>
       </div>
 

@@ -12,9 +12,7 @@ export default function (req, res, { rulesRepository, metaRepository }, { params
       ruleDef: {
         type: path.extname(keyPath).substring(1),
         source: ruleData.fileContent,
-        lastModifyDate: ruleData.lastModifyDate,
-        modifierUser: ruleData.modifierUser,
-        lastModifyCompareUrl: ruleData.lastModifyCompareUrl,
+        modificationData: ruleData.fileModificationData,
       },
       meta: await metaRepository.getRuleMeta(keyPath),
     };
