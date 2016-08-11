@@ -3,7 +3,10 @@
   flex-direction: column;
   background-color: transparent;
 }
-.keys-list-container .filter-input {
+.keys-list-container .search-input-wrapper {
+  padding: 18px;
+}
+.keys-list-container .search-input-wrapper .search-input {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -18,7 +21,7 @@
   width: 100%;
   min-height: 36px;
 }
-.keys-list-container .filter-input:focus {
+.keys-list-container .search-input-wrapper .search-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
 .keys-list-container .key-link-wrapper .key-link {

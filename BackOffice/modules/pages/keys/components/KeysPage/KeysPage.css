@@ -15,7 +15,6 @@
 .keys-page-container .keys-list .keys-list-wrapper {
   display: flex;
   flex-grow: 1;
-  border-bottom: 1px solid gray;
 }
 .keys-page-container .key-page {
   position: relative;
@@ -31,6 +30,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #cbcbcb;
 }
 .keys-page-container .add-button-wrapper .add-button {
   vertical-align: top;
