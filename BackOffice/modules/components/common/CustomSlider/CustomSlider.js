@@ -39,7 +39,7 @@ export default ({ data, onUpdate, sliderColors, displaySliderDragger = true, dis
                   mutator.in(value).updateValue(newValue);
                 } }
                   value={weight}
-                /><label className={style['precent-symbol']}>%</label>
+                />
               </div>
             ) }
           </div>

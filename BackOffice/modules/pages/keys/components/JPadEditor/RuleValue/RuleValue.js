@@ -111,7 +111,7 @@ const MultiVariantValue = ({ valueDistrubtion: { type, args }, mutate, identitie
               mutate.apply(m => m.up()
                 .in('Value').updateValue(newValue).up()
                 .in('Type').updateValue('SingleVariant').up()
-                .in('ValueDistribution').delete().up()
+                .in('ValueDistribution').delete()
                 .in('OwnerType').delete());
             } else {
               mutate.in('args').updateValue(variants);
