@@ -24,15 +24,21 @@
 .keys-list-container .search-input-wrapper .search-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.keys-list-container .key-link-wrapper {
+  display: flex;
+  flex-grow: 1;
+}
 .keys-list-container .key-link-wrapper .key-link {
   color: #6d6d6d;
-  font-size: 12px;
-  padding-top: 5px;
+  font-size: 14px;
+  padding-top: 6px;
   padding-left: 10px;
   display: block;
   height: 25px;
   text-decoration: none;
   background-color: transparent;
+  display: flex;
+  flex-grow: 1;
   transition: all 0.2s ease-in-out;
 }
 .keys-list-container .key-link-wrapper .key-link:hover {
@@ -52,8 +58,9 @@
   min-width: 400px;
 }
 .keys-list-container .key-folder .key-folder-name {
-  font-size: 14px;
-  display: block;
+  font-size: 16px;
+  display: flex;
+  flex-grow: 1;
   height: 30px;
   padding-left: 5px;
   padding-top: 13px;
@@ -63,18 +70,40 @@
   transition: all 0.2s ease-in-out;
 }
 .keys-list-container .key-folder .key-folder-name:hover {
-  padding-left: 10px;
   cursor: pointer;
   border-bottom: 1px solid rgba(0, 122, 204, 0.4);
 }
 .keys-list-container .key-folder .key-folder-name:active {
   border-bottom: 1px solid rgba(0, 122, 204, 0.8);
 }
+.keys-list-container .key-folder .number-of-folder-keys {
+  font-size: 11px;
+  display: flex;
+  margin-left: 5px;
+  margin-top: 5px;
+  opacity: .7;
+}
+.keys-list-container .key-folder .number-of-folder-keys:hover {
+  cursor: pointer;
+}
 .keys-list-container .key-folder .key-folder-icon {
   width: 16px;
   margin-right: 5px;
+  margin-bottom: 10px;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
   user-select: none;
+  display: inline-block;
+}
+.keys-list-container .key-folder .key-folder-icon:hover {
+  cursor: pointer;
+}
+.keys-list-container .key-folder .folder-items {
+  display: flex;
+  flex-grow: 1;
+}
+.keys-list-container .key-folder .sub-tree {
+  display: flex;
+  flex-grow: 1;
 }
