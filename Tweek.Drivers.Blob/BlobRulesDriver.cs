@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Engine.Drivers.Rules;
 using Newtonsoft.Json;
@@ -32,8 +30,6 @@ namespace Tweek.Drivers.Blob
                     }
                 })
                 .DistinctUntilChanged()
-                .Select(Regex.Unescape)
-                .Select(x => x.Trim('"'))
                 .Select(JsonConvert.DeserializeObject<Dictionary<string, RuleDefinition>>)
                 .Do(x => OnRulesChange?.Invoke())
                 .Catch((Exception exception) =>
