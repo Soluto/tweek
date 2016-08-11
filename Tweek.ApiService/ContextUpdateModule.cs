@@ -33,6 +33,7 @@ namespace Tweek.ApiService
                 }
                 
                 await driver.AppendContext(identity, data);
+                
                 return 200;
             };
         }
