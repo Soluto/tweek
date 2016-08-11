@@ -28,6 +28,7 @@ const Document = React.createClass({
           <meta charSet="utf-8"/>
           <link rel="shortcut icon" href={favicon}/>
           <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,500" rel="stylesheet" type="text/css" />
+          <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
           <title>{title}</title>
           {styles}
         </head>

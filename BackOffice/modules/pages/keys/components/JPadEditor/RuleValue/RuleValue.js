@@ -84,7 +84,7 @@ const BernoulliTrial = ({ onUpdate, ratio }) => (
 );
 
 const IdetitySelection = ({ identities, mutate }) => {
-  const bomboBoxIdentities = identities.map(x => ({ label: x, value: x }));
+  const comboBoxIdentities = identities.map(x => ({ label: x, value: x }));
 
   return (
     <div>
@@ -92,7 +92,7 @@ const IdetitySelection = ({ identities, mutate }) => {
       <div className={style['identity-selection-combobox-wrapper']}>
         <ClosedComboBox
           inputProps={{ onChange: ({ value }) => { mutate.in('OwnerType').updateValue(value); }, value: identities[0] }}
-          suggestions={bomboBoxIdentities}
+          suggestions={comboBoxIdentities}
         />
       </div>
     </div>

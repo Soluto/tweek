@@ -14,6 +14,17 @@ import closedFolderIconSrc from './resources/Folder-icon-closed.svg';
 let leaf = Symbol();
 let getName = (path) => path.split('/').slice(-1)[0];
 
+const getNumberOfTreeNodeKeys = (tree) => {
+  if ((typeof tree) === 'symbol') return 1;
+
+  let result = 0;
+  Object.keys(tree).forEach(_ => {
+    result += getNumberOfTreeNodeKeys(tree[_]);
+  });
+
+  return result;
+}
+
 const TreeKeyItem = compose(
   connect(state => ({ selectedKey: state.selectedKey && state.selectedKey.key })),
   mapProps(({ selectedKey, path, ...props }) => ({ isActive: selectedKey === path, path, ...props })),
@@ -21,24 +32,25 @@ pure)(({ isActive, path, pad }) =>
   <Link className={classNames(style['key-link'], { [style['selected']]: isActive }) }
     style={{ paddingLeft: pad }}
     to={`/keys/${path}`}
-  >{getName(path) }
+    >{getName(path) }
   </Link>
 );
 
 const TreeFolder = withState('isCollapsed', 'setIsCollapsed', true)(({ currentPath, tree, pad, isCollapsed, setIsCollapsed }) => {
   return (<div className={style['key-folder']}>
     {getName(currentPath) ? (
-      <label className={style['key-folder-name']}
-        style={{ paddingLeft: pad }}
-        onClick={() => {
-          setIsCollapsed(!isCollapsed);
-        } }
-      >
-        {isCollapsed ? 
-          <img className={style['key-folder-icon']} src={closedFolderIconSrc}/> : 
+      <div style={{ paddingLeft: pad }} className={style['key-folder-name']}
+        onClick={
+          () => {
+            setIsCollapsed(!isCollapsed);
+          } }>
+        {isCollapsed ?
+          <img className={style['key-folder-icon']} src={closedFolderIconSrc}/> :
           <img className={style['key-folder-icon']} src={openedFolderIconSrc}/>}
-          {currentPath}
-      </label>)
+        {currentPath}
+        <label className={style['number-of-folder-keys']}>({getNumberOfTreeNodeKeys(tree) }) </label>
+      </div>
+    )
       :
       null}
 
@@ -91,9 +103,11 @@ export default wrapComponentWithClass(componentFromStream(prop$ => {
     .map(keysToTree)
     .map(filteredTree =>
       <div className={style['keys-list-container']}>
-        <input type="text" className={style['filter-input']} placeholder="Search..."
-          onKeyUp={ (e) => setFilter(e.target.value) }
-        />
+        <div className={style['search-input-wrapper']}>
+          <input type="text" className={style['search-input']} placeholder="Search..."
+            onKeyUp={ (e) => setFilter(e.target.value) }
+            />
+        </div>
         {renderTree(filteredTree, '', 0) }
       </div>);
 }));
