@@ -59,10 +59,14 @@ namespace Tweek.Drivers.CouchbaseDriver
             }
             else
             {
-                await bucket.QueryAsync<dynamic>(
-                    $"UPSERT INTO {key} (KEY, VALUE) VALUES({JsonConvert.SerializeObject(context)}) Returning *;");
-                ;
-                
+
+                string query = $"UPDATE {key} {string.Join(" ", context.Select(x => $"SET {x.Key} = \"{x.Value}\"")) }";
+                var result = await bucket.QueryAsync<dynamic>(query);
+                if (!result.Success)
+                {
+                    throw new Exception(query, result.Exception);
+                }
+
             }
         }
 
