@@ -5,7 +5,7 @@ export default class EditorMetaService {
 
   static _instance;
   static get instance() {
-    if(!EditorMetaService._instance) {
+    if (!EditorMetaService._instance) {
       EditorMetaService._instance = new EditorMetaService();
       EditorMetaService._instance.init();
     }
@@ -28,8 +28,30 @@ export default class EditorMetaService {
           DeviceOsType: defaultValue('Android')(types.Enum('Android', 'Ios')),
           SubscriptionType: types.Enum('Evaluation', 'Free', 'Insurance', 'InsuranceAndSupport', 'HomeSupport', 'DefaultFree'),
           AgentVersion: defaultValue('1.0.0.0')(types.Version),
+          DeviceVendor: types.String,
+          CountryCode: types.String,
+          DeviceModel: types.String,
+          InstallationSource: types.String,
           DeviceOsVersion: types.Version,
           IsInGroup: defaultValue(false)(types.Bool),
+          DeviceType: types.Enum('Unknown',
+            'Desktop',
+            'Laptop',
+            'Tablet',
+            'Mobile',
+            'WinServer',
+            'Car',
+            'Television',
+            'PrinterFax',
+            'Bike',
+            'ChildItem',
+            'KitchenAppliance',
+            'CleaningAppliance',
+            'VideoGamingDevice',
+            'HomeTheaterDevice',
+            'Computer',
+            'Other'
+          ),
         },
       },
     };
@@ -38,7 +60,14 @@ export default class EditorMetaService {
   getFieldMeta(field) {
     if (field === '') return types.Empty;
     const [identity, property] = field.split('.');
-    return this.meta.fields[identity][property];
+
+    const fieldMeta = this.meta.fields[identity][property];
+    if (!fieldMeta) {
+      console.log('unsupported property name', property);
+      return types.String;
+    }
+
+    return fieldMeta;
   }
 
   getKeyMeta(key) {
@@ -52,7 +81,7 @@ export default class EditorMetaService {
   getSuggestions({ type, query }) {
     if (type === 'MatcherProperty') {
       return R.reduce(R.concat, [])(R.keys(this.meta.identities).map(identity => R.toPairs(this.meta.fields[identity]).map(([field, meta]) => ({ label: `${field}`, value: `${identity}.${field}`, meta })))
-            );
+      );
     }
     else {
       return [];
