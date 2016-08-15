@@ -79,6 +79,7 @@ namespace Tweek.ApiService
 
             var contextDriver = GetCouchbaseDriver();
             var rulesDriver = GetRulesDriver();
+            StaticConfiguration.DisableErrorTraces = false;
 
             var parser = GetRulesParser();
 
