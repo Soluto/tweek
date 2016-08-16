@@ -44,12 +44,11 @@
   background-color: transparent;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
+  box-sizing: border-box;
   transition: all 0.2s ease-in-out;
   width: 100%;
-  box-sizing: border-box;
-  margin-top: 8px;
+  margin-top: 6px;
   resize: none;
-  font-size: 18px;
 }
 .rule-value-container .values-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);

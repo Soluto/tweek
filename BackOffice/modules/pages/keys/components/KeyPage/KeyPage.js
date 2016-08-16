@@ -170,7 +170,7 @@ render() {
           <TextareaAutosize
             onChange={ (e) => this.onDescriptionChanged(e.target.value) }
             value = { meta.description }
-            placeholder="Description"
+            placeholder="Write key description"
             className={style['description-input']}
             />
 

@@ -36,7 +36,7 @@
 .case-container .conditions-container {
   margin-top: 15px;
   position: relative;
-  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 9px -10px rgba(0, 0, 0, 0.2);
   border: 1px solid lightgray;
   margin-bottom: 16px;
 }
