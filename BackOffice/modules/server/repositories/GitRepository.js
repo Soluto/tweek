@@ -47,7 +47,7 @@ class GitRepository {
     await this._repoPromise;
     const fileContent = (await fs.readFile(`${this._localPath}/${fileName}`)).toString();
 
-    const {modifyDate, modifyUser, commitSha} = await this._getFileLastModifiedDate(fileName);
+    const { modifyDate, modifyUser, commitSha } = await this._getFileLastModifiedDate(fileName);
 
     const modifyCompareUrl = commitSha ?
       this._getRepositoryUrl(`commit/${commitSha}`) :
@@ -109,6 +109,10 @@ class GitRepository {
       console.error(ex);
     }
   })
+
+  deleteFile = synchronized(async function (fileName, { name, email }) {
+    return '';
+  });
 
   get _defaultGitOperationSettings() {
     return {

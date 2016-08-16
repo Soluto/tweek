@@ -4,22 +4,22 @@
 }
 
 .key-viewer-container {
-  padding: 10px;
+  padding: 16px;
   display: flex;
   flex-grow: 1;
   flex-direction: column;
   .key-action-buttons-wrapper {
-    display: flex;
-    flex-direction: row-reverse;
-    padding: 5px;
-    .save-button {
+    text-align: right;
+    direction: rtl;
+    .save-changes-button {
       .metro-button;
-      &:hover {
-        cursor: default;
-      }
       &[data-state-is-saving=true], &[data-state-is-saving=true]:disabled {
         background-color: green;
       }
+    }
+    .delete-key-button {
+      .metro-button;
+      margin-right: 10px;
     }
   }
   .key-header {
@@ -27,12 +27,13 @@
     background-color: white;
     border-radius: 5px;
     border: 1px solid lightgray;
-    margin-top: 10px;
+    margin-top: 16px;
     clear: both;
     padding: 20px;
-    max-height: 200px;
+    min-height: 165px;
     overflow-y: auto;
     overflow-x: hidden;
+    box-sizing: border-box;
     .modification-data {
       position: absolute;
       top: 10px;
@@ -78,9 +79,7 @@
           color: gray;
         }
       }
-      .actual-sub-text {
-        font-style: italic;
-      }
+      .actual-sub-text {}
     }
     .key-description-and-tags-wrapper {
       display: flex;
@@ -91,6 +90,7 @@
         font-size: 14px;
         color: gray;
         min-width: 400px;
+        min-height: 40px;
         border: 1px solid lightgray;
         border-radius: 5px;
         outline: none;
@@ -99,11 +99,6 @@
       .tags-wrapper {
         display: flex;
         flex-direction: column;
-        .tags-title {
-          color: gray;
-          display: block;
-          font-size: 14px;
-        }
         position: relative;
         display: flex;
         flex-grow: 1;
@@ -112,7 +107,14 @@
         padding-left: 20px;
         margin-left: 20px;
         .tags-container {
-          margin-top: 6px;
+          &:before {
+            content: 'Tags';
+            color: gray;
+            float: left;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-top: 10px;
+          }
           .tag {
             border: 1px solid #ddd;
             background-color: #eeeeee;

@@ -21,6 +21,10 @@ class RulesRepository {
     await this._gitRepo.updateFile(this._buildRuleJpadFilePath(ruleName), payload, author);
   }
 
+  deleteKey(keyPath, author) {
+    return this._gitRepo.deleteFile(this._buildRuleJpadFilePath(keyPath), author);
+  }
+
   _buildRuleJpadFilePath(ruleName) {
     return `${RulesRepository.RULES_REPOSITORY_DIRECTORY_NAME}/${ruleName}${RulesRepository.RULES_REPOSITORY_FILE_EXTENSION_NAME}`;
   }

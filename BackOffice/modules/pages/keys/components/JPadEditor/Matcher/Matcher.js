@@ -40,7 +40,7 @@ export default hasChanged(({ matcher, mutate }) => {
           );
         })
       }
-      <button className={classNames(style['add-condition-button'], { [style['big']]: props.length === 0 }) }
+      <button className={style['add-condition-button']}
         onClick={() => mutate.insert('', '') }
         title="Add condition"
         >+</button>

@@ -10,17 +10,16 @@
   color: rgba(0, 122, 204, 0.6);
 }
 .key-viewer-container {
-  padding: 10px;
+  padding: 16px;
   display: flex;
   flex-grow: 1;
   flex-direction: column;
 }
 .key-viewer-container .key-action-buttons-wrapper {
-  display: flex;
-  flex-direction: row-reverse;
-  padding: 5px;
+  text-align: right;
+  direction: rtl;
 }
-.key-viewer-container .key-action-buttons-wrapper .save-button {
+.key-viewer-container .key-action-buttons-wrapper .save-changes-button {
   vertical-align: top;
   background-color: rgba(0, 122, 204, 0.8);
   height: 28px;
@@ -36,39 +35,69 @@
   user-select: none;
   transition: all 0.2s ease-in-out;
 }
-.key-viewer-container .key-action-buttons-wrapper .save-button:hover {
+.key-viewer-container .key-action-buttons-wrapper .save-changes-button:hover {
   background-color: #007acc;
   cursor: pointer;
 }
-.key-viewer-container .key-action-buttons-wrapper .save-button:active {
+.key-viewer-container .key-action-buttons-wrapper .save-changes-button:active {
   background-color: #0098ff;
 }
-.key-viewer-container .key-action-buttons-wrapper .save-button:disabled {
+.key-viewer-container .key-action-buttons-wrapper .save-changes-button:disabled {
   background-color: gray;
 }
-.key-viewer-container .key-action-buttons-wrapper .save-button:disabled:hover,
-.key-viewer-container .key-action-buttons-wrapper .save-button:disabled:active {
+.key-viewer-container .key-action-buttons-wrapper .save-changes-button:disabled:hover,
+.key-viewer-container .key-action-buttons-wrapper .save-changes-button:disabled:active {
   cursor: default;
   background-color: gray;
 }
-.key-viewer-container .key-action-buttons-wrapper .save-button:hover {
-  cursor: default;
-}
-.key-viewer-container .key-action-buttons-wrapper .save-button[data-state-is-saving=true],
-.key-viewer-container .key-action-buttons-wrapper .save-button[data-state-is-saving=true]:disabled {
+.key-viewer-container .key-action-buttons-wrapper .save-changes-button[data-state-is-saving=true],
+.key-viewer-container .key-action-buttons-wrapper .save-changes-button[data-state-is-saving=true]:disabled {
   background-color: green;
+}
+.key-viewer-container .key-action-buttons-wrapper .delete-key-button {
+  vertical-align: top;
+  background-color: rgba(0, 122, 204, 0.8);
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  margin-right: 10px;
+}
+.key-viewer-container .key-action-buttons-wrapper .delete-key-button:hover {
+  background-color: #007acc;
+  cursor: pointer;
+}
+.key-viewer-container .key-action-buttons-wrapper .delete-key-button:active {
+  background-color: #0098ff;
+}
+.key-viewer-container .key-action-buttons-wrapper .delete-key-button:disabled {
+  background-color: gray;
+}
+.key-viewer-container .key-action-buttons-wrapper .delete-key-button:disabled:hover,
+.key-viewer-container .key-action-buttons-wrapper .delete-key-button:disabled:active {
+  cursor: default;
+  background-color: gray;
 }
 .key-viewer-container .key-header {
   position: relative;
   background-color: white;
   border-radius: 5px;
   border: 1px solid lightgray;
-  margin-top: 10px;
+  margin-top: 16px;
   clear: both;
   padding: 20px;
-  max-height: 200px;
+  min-height: 165px;
   overflow-y: auto;
   overflow-x: hidden;
+  box-sizing: border-box;
 }
 .key-viewer-container .key-header .modification-data {
   position: absolute;
@@ -145,9 +174,6 @@
 .key-viewer-container .key-header .rule-sub-text a:visited {
   color: gray;
 }
-.key-viewer-container .key-header .rule-sub-text .actual-sub-text {
-  font-style: italic;
-}
 .key-viewer-container .key-header .key-description-and-tags-wrapper {
   display: flex;
   flex-direction: row;
@@ -158,6 +184,7 @@
   font-size: 14px;
   color: gray;
   min-width: 400px;
+  min-height: 40px;
   border: 1px solid lightgray;
   border-radius: 5px;
   outline: none;
@@ -173,13 +200,13 @@
   padding-left: 20px;
   margin-left: 20px;
 }
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-title {
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container:before {
+  content: 'Tags';
   color: gray;
-  display: block;
+  float: left;
   font-size: 14px;
-}
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container {
-  margin-top: 6px;
+  margin-right: 10px;
+  margin-top: 10px;
 }
 .key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag {
   border: 1px solid #ddd;

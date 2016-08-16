@@ -91,15 +91,9 @@
   cursor: default;
   background-color: gray;
 }
-.matcher .add-condition-button.big {
-  width: 35px;
-  height: 35px;
-  margin-left: 5px;
-  margin-top: 10px;
-}
 .matcher .match-all-message {
   display: inline-block;
-  margin: 15px;
+  margin: 10px;
   margin-left: 30px;
   color: gray;
 }

@@ -35,7 +35,6 @@
   background-color: gray;
 }
 .rule-value-container .values-input {
-  display: inline-block;
   border: 0;
   border-style: none;
   height: 28px;
@@ -46,9 +45,9 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 100%;
   margin-top: 6px;
   resize: none;
+  display: inline-block;
 }
 .rule-value-container .values-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -73,6 +72,7 @@
   padding: 0 10px;
   margin-top: 7px;
   opacity: .7;
+  margin: 10px;
 }
 .rule-value-container .add-variant-button:hover {
   background-color: #007acc;
