@@ -65,7 +65,7 @@
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  padding-bottom: 1px;
+  padding-bottom: 3px;
   box-sizing: border-box;
   background-color: #bcbcbc;
   font-size: 10px;
@@ -112,7 +112,7 @@
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  padding-bottom: 1px;
+  padding-bottom: 3px;
   box-sizing: border-box;
   background-color: #bcbcbc;
 }

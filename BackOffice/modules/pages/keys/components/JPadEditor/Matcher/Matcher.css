@@ -8,10 +8,11 @@
   background-color: rgba(0, 122, 204, 0.8);
   height: 28px;
   border: 0;
-  padding: 0 5px;
+  padding: 0 20px;
   color: white;
   outline: 0;
   padding-bottom: 2px;
+  border-radius: 14px;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
@@ -21,12 +22,12 @@
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  padding-bottom: 1px;
+  padding-bottom: 3px;
   box-sizing: border-box;
   width: 13px;
   height: 13px;
   font-size: 10px;
-  padding-bottom: 3px;
+  padding-bottom: 4px;
   background-color: #bcbcbc;
   margin-top: 7px;
   margin-right: 4px;
@@ -57,10 +58,11 @@
   background-color: rgba(0, 122, 204, 0.8);
   height: 28px;
   border: 0;
-  padding: 0 5px;
+  padding: 0 20px;
   color: white;
   outline: 0;
   padding-bottom: 2px;
+  border-radius: 14px;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
@@ -70,7 +72,7 @@
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  padding-bottom: 1px;
+  padding-bottom: 3px;
   margin-top: 8px;
   box-sizing: border-box;
 }
