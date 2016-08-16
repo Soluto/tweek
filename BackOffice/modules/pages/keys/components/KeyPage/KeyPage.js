@@ -23,7 +23,7 @@ const KeyModificationDetails = wrapComponentWithClass(({ modifyCompareUrl, modif
     <div className={style['rule-sub-text']} >
       <a href={modifyCompareUrl}
         target="_blank"
-      >
+        >
         <label>Last modify: </label>
         <label className={style['actual-sub-text']} title={ formatedModifyDate }>{modifyDateFromNow}, by {modifyUser}</label>
       </a>
@@ -69,42 +69,42 @@ export default connect((state, { params }) => (
 
     onDisplayNameChanged(newDisplayName) {
       const newMeta = { ...this.props.selectedKey.local.meta, displayName: newDisplayName };
-      this._onSelectedKeyMetaChanged(newMeta);
+this._onSelectedKeyMetaChanged(newMeta);
     }
 
-    onDescriptionChanged(newDescription) {
+onDescriptionChanged(newDescription) {
   const newMeta = { ...this.props.selectedKey.local.meta, description: newDescription };
   this._onSelectedKeyMetaChanged(newMeta);
 }
 
-    onTagDeleted(deletedTagIndex) {
+onTagDeleted(deletedTagIndex) {
   const meta = this.props.selectedKey.local.meta;
   const newMeta = { ...meta, tags: R.remove(deletedTagIndex, 1, meta.tags) };
   this._onSelectedKeyMetaChanged(newMeta);
 }
 
-    onTagAdded(newTagText) {
+onTagAdded(newTagText) {
   const meta = this.props.selectedKey.local.meta;
   const newMeta = { ...meta, tags: [...meta.tags, newTagText] };
   this._onSelectedKeyMetaChanged(newMeta);
 }
 
-    get tags() {
+get tags() {
   return R.map(_ => ({
     id: _,
     text: _,
   }), this.props.selectedKey.local.meta.tags);
 }
 
-    get tagsSuggestions() {
+get tagsSuggestions() {
   return this.props.tags ? this.props.tags.map(tag => tag.name) : [];
 }
 
-    _onSelectedKeyMetaChanged(newMeta) {
+_onSelectedKeyMetaChanged(newMeta) {
   this.props.updateKeyMetaDef(newMeta);
 }
 
-    renderKeyActionButtons() {
+renderKeyActionButtons() {
   let { local, remote, isSaving } = this.props.selectedKey;
   const changes = diff(local, remote);
   const hasChanges = (changes || []).length > 0;
@@ -113,16 +113,21 @@ export default connect((state, { params }) => (
       <button disabled={!hasChanges || isSaving }
         data-state-has-changes={hasChanges}
         data-state-is-saving={isSaving}
-        className={style['save-button']}
+        className={style['save-changes-button']}
         onClick={() => this.props.saveKey(this.props.configKey) }
-      >
+        >
         {isSaving ? 'Saving...' : 'Save changes'}
+      </button>
+      <button className={style['delete-key-button']}
+        onClick={() => this.props.deleteKey(this.props.configKey) }
+        >
+        Delete key
       </button>
     </div>
   );
 }
 
-    render() {
+render() {
   const { dispatch, configKey, selectedKey } = this.props;
   if (!selectedKey) return <div className={style['loading-message']}>loading</div>;
   const { meta, ruleDef } = selectedKey.local;
@@ -146,14 +151,14 @@ export default connect((state, { params }) => (
                 onChange={ (e) => this.onDisplayNameChanged(e.target.value) }
                 value = { meta.displayName }
                 onBlur={() => { this.setState({ isDisplayNameInEditMode: false }); } }
-              />
+                />
             </form>
             :
             <div className={style['display-name']}
               onClick={() => {
                 this.setState({ isDisplayNameInEditMode: true });
               } }
-            >
+              >
               {meta.displayName}
             </div>
           }
@@ -171,20 +176,18 @@ export default connect((state, { params }) => (
             value = { meta.description }
             placeholder="Write key description"
             className={style['description-input']}
-          />
+            />
 
           <div className={style['tags-wrapper']}>
 
-            <label className={style['tags-title']}>Tags</label>
-
             <ReactTags tags={ this.tags }
               handleDelete={ this:: this.onTagDeleted }
-              handleAddition={ this:: this.onTagAdded }
-              suggestions={this.tagsSuggestions }
-              placeholder="New tag"
-              minQueryLength={ 1 }
-              allowDeleteFromEmptyInput
-              classNames={{
+            handleAddition={ this:: this.onTagAdded }
+            suggestions={this.tagsSuggestions }
+            placeholder="New tag"
+            minQueryLength={ 1 }
+            allowDeleteFromEmptyInput
+            classNames={{
               tags: style['tags-container'],
               tagInput: style['tag-input'],
               tag: style['tag'],
@@ -203,7 +206,7 @@ export default connect((state, { params }) => (
         sourceTree={JSON.parse(ruleDef.source) }
         onMutation={x => this.props.updateKeyRuleDef({ source: JSON.stringify(x, null, 4) }) }
         className={style['key-rules-editor']}
-      />
+        />
 
     </div >
   );
