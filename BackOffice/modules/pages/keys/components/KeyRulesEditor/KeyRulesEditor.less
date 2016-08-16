@@ -7,24 +7,36 @@
     display: flex;
     flex-grow: 1;
     flex-direction: column;
+    .rule-def-json {
+      font-size: 13px;
+    }
   }
   .tab-content {
     overflow-y: auto;
     flex-grow: 1;
+    border: 1px solid lightgray;
+    padding: 25px;
   }
 }
 
 :global(.ReactTabs__TabList) {
-  border-bottom: 1px solid @accent-color1;
-  @tab-item-border-bottom-height: 5px;
+  @tab-item-border-bottom-height: 3px;
   :global(.ReactTabs__Tab) {
     display: inline-block;
-    border-bottom: @tab-item-border-bottom-height solid transparent;
-    padding: 7px 14px;
+    border-width: 1px 1px @tab-item-border-bottom-height 1px;
+    border-right: 0;
+    border-color: lightgray;
+    border-style: solid;
+    border-radius: 2px 2px 0 0;
+    padding: 7px 25px;
     outline: none;
+    background-color: #ececec;
     .transitioned();
+    &:last-child {
+      border-right: 1px solid lightgray;
+    }
     &:hover {
-      border-bottom: @tab-item-border-bottom-height solid @accent-color5;
+      border-bottom: @tab-item-border-bottom-height solid @accent-color6;
       cursor: pointer;
     }
     &:active {
@@ -32,17 +44,18 @@
     }
   }
   :global(.ReactTabs__Tab--selected) {
-    border-bottom: @tab-item-border-bottom-height solid @accent-color1;
+    border-bottom: @tab-item-border-bottom-height solid @accent-color4;
+    background-color: white;
     &:hover {
-      border-bottom: @tab-item-border-bottom-height solid @accent-color1;
+      border-bottom: @tab-item-border-bottom-height solid @accent-color4;
       cursor: default;
     }
     &:active {
-      border-bottom: @tab-item-border-bottom-height solid @accent-color1;
+      border-bottom: @tab-item-border-bottom-height solid @accent-color4;
     }
   }
 }
 
 :global(.ReactTabs__TabPanel) {
-  margin-top: 5px;
+  padding: 5px;
 }

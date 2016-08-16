@@ -7,37 +7,48 @@
   flex-grow: 1;
   flex-direction: column;
 }
+.key-rules-editor-container .tab-container .rule-def-json {
+  font-size: 13px;
+}
 .key-rules-editor-container .tab-content {
   overflow-y: auto;
   flex-grow: 1;
-}
-:global(.ReactTabs__TabList) {
-  border-bottom: 1px solid #007acc;
+  border: 1px solid lightgray;
+  padding: 25px;
 }
 :global(.ReactTabs__TabList) :global(.ReactTabs__Tab) {
   display: inline-block;
-  border-bottom: 5px solid transparent;
-  padding: 7px 14px;
+  border-width: 1px 1px 3px 1px;
+  border-right: 0;
+  border-color: lightgray;
+  border-style: solid;
+  border-radius: 2px 2px 0 0;
+  padding: 7px 25px;
   outline: none;
+  background-color: #ececec;
   transition: all 0.2s ease-in-out;
 }
+:global(.ReactTabs__TabList) :global(.ReactTabs__Tab):last-child {
+  border-right: 1px solid lightgray;
+}
 :global(.ReactTabs__TabList) :global(.ReactTabs__Tab):hover {
-  border-bottom: 5px solid rgba(0, 122, 204, 0.2);
+  border-bottom: 3px solid rgba(0, 122, 204, 0.2);
   cursor: pointer;
 }
 :global(.ReactTabs__TabList) :global(.ReactTabs__Tab):active {
-  border-bottom: 5px solid rgba(0, 122, 204, 0.5);
+  border-bottom: 3px solid rgba(0, 122, 204, 0.6);
 }
 :global(.ReactTabs__TabList) :global(.ReactTabs__Tab--selected) {
-  border-bottom: 5px solid #007acc;
+  border-bottom: 3px solid rgba(0, 122, 204, 0.5);
+  background-color: white;
 }
 :global(.ReactTabs__TabList) :global(.ReactTabs__Tab--selected):hover {
-  border-bottom: 5px solid #007acc;
+  border-bottom: 3px solid rgba(0, 122, 204, 0.5);
   cursor: default;
 }
 :global(.ReactTabs__TabList) :global(.ReactTabs__Tab--selected):active {
-  border-bottom: 5px solid #007acc;
+  border-bottom: 3px solid rgba(0, 122, 204, 0.5);
 }
 :global(.ReactTabs__TabPanel) {
-  margin-top: 5px;
+  padding: 5px;
 }

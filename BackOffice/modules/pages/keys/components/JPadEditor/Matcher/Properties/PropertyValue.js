@@ -9,7 +9,7 @@ const ClosedComboBoxPropertyValue = ({ onUpdate, allowedValues, value }) =>
     <ClosedComboBox
       inputProps={{ onChange: ({ value }) => onUpdate(value), value }}
       suggestions={allowedValues}
-    />
+      />
   </div>);
 
 const TagsPropertyValue = ({ onUpdate, value }) => {
@@ -19,7 +19,7 @@ const TagsPropertyValue = ({ onUpdate, value }) => {
   const handleDelete = (valueIndex) => onUpdate(R.remove(valueIndex, 1, value));
 
   return (<div>
-    <label classNames={style['wrapping-bracet']}>[</label><ReactTags tags={ indexedTags }
+    <label className={style['wrapping-bracet']}>[</label><ReactTags tags={ indexedTags }
       handleAddition={handleAddtion}
       handleDelete={handleDelete}
       placeholder="add value"
@@ -31,7 +31,7 @@ const TagsPropertyValue = ({ onUpdate, value }) => {
         remove: style['tag-delete-button'],
         suggestions: style['tags-suggestion'],
       } }
-    /><label classNames={style['wrapping-bracet']}>]</label>
+      /><label className={style['wrapping-bracet']}>]</label>
   </div>);
 };
 
