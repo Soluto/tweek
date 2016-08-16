@@ -13,6 +13,11 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
+  font-size: 12px;
+  height: 20px;
+  border-radius: 7px;
+  padding: 0 10px;
+  margin-top: 7px;
   opacity: .7;
 }
 .rule-value-button:hover {
@@ -65,6 +70,11 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
+  font-size: 12px;
+  height: 20px;
+  border-radius: 7px;
+  padding: 0 10px;
+  margin-top: 7px;
   opacity: .7;
 }
 .rule-value-container .add-variant-button:hover {
@@ -97,6 +107,11 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
+  font-size: 12px;
+  height: 20px;
+  border-radius: 7px;
+  padding: 0 10px;
+  margin-top: 7px;
   opacity: .7;
 }
 .rule-value-container .to-feature-flag-button:hover {
@@ -171,6 +186,11 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
+  font-size: 12px;
+  height: 20px;
+  border-radius: 7px;
+  padding: 0 10px;
+  margin-top: 7px;
   opacity: .7;
   display: inline-block;
   margin-left: 25px;
@@ -205,6 +225,11 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
+  font-size: 12px;
+  height: 20px;
+  border-radius: 7px;
+  padding: 0 10px;
+  margin-top: 7px;
   opacity: .7;
   display: inline-block;
   margin-left: 25px;
@@ -239,6 +264,11 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
+  font-size: 12px;
+  height: 20px;
+  border-radius: 7px;
+  padding: 0 10px;
+  margin-top: 7px;
   opacity: .7;
   display: inline-block;
   margin-left: 25px;

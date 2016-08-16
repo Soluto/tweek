@@ -14,7 +14,7 @@
     transition: all @duration ease-in-out;
   }
   
-  .metro-button {
+  .metro-button(@small: false) when not (@small) {
     vertical-align: top;
     background-color: @accent-color2;
     height: 28px;
@@ -40,6 +40,14 @@
         background-color: gray;
       }
     }
+  }
+  
+  .metro-button(@small: false) when (@small) {
+    .metro-button;
+    font-size: 12px;
+    height: 20px;
+    border-radius: 7px;
+    padding: 0 10px;
   }
   
   .metro-textbox(@small: false) when not (@small) {
