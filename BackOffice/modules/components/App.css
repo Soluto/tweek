@@ -23,11 +23,11 @@
   height: 64px;
   display: flex;
   position: fixed;
-  background-color: #fff;
+  background-color: #f0f0f0;
   border-bottom: 1px solid lightgray;
   align-items: center;
 }
 .app .header .logo {
   margin: 5px 0 0 10px;
-  width: 150px;
+  width: 130px;
 }

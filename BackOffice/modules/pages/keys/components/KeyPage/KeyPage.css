@@ -20,20 +20,21 @@
   background-color: rgba(0, 122, 204, 0.8);
   height: 28px;
   border: 0;
-  padding: 0 5px;
+  padding: 0 20px;
   color: white;
   outline: 0;
   padding-bottom: 2px;
+  border-radius: 14px;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
   position: absolute;
-  width: 100px;
+  width: auto;
   right: 0;
   top: 0;
-  margin: 10px;
+  margin: 20px;
   z-index: 2;
 }
 .key-viewer-container .save-button:hover {
@@ -155,7 +156,6 @@
   width: 100%;
   box-sizing: border-box;
   resize: none;
-  font-family: calibri;
   font-size: 18px;
 }
 .key-viewer-container .key-header .description-input:focus {
@@ -258,5 +258,4 @@
   display: flex;
   flex-grow: 1;
   margin-top: 7px;
-  border-top: 1px solid lightgray;
 }

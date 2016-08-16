@@ -35,7 +35,7 @@ const KeyRulesEditor = ({ ruleDef, mutate }) =>
             />
         </TabPanel>
         <TabPanel className={style['tab-content']}>
-          <pre>
+          <pre className={style['rule-def-json']}>
             {JSON.stringify(JSON.parse(ruleDef.source), null, 4) }
           </pre>
         </TabPanel>

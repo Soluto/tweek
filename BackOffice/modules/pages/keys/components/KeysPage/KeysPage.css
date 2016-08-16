@@ -11,6 +11,7 @@
   flex-basis: 400px;
   flex-direction: column;
   background-color: #e2e2e2;
+  border-right: 2px solid #e2e2e2;
 }
 .keys-page-container .keys-list .keys-list-wrapper {
   display: flex;

@@ -4,19 +4,19 @@
 }
 .case-container .add-case-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.7);
+  background-color: rgba(0, 122, 204, 0.8);
   height: 28px;
   border: 0;
-  padding: 0 5px;
+  padding: 0 20px;
   color: white;
   outline: 0;
   padding-bottom: 2px;
+  border-radius: 14px;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
-  padding: 0 10px;
 }
 .case-container .add-case-button:hover {
   background-color: #007acc;
@@ -34,12 +34,10 @@
   background-color: gray;
 }
 .case-container .conditions-container {
-  margin-top: 6px;
+  margin-top: 15px;
   position: relative;
-  border-bottom: 1px solid lightgray;
-  box-shadow: 8px 4px 16px rgba(0, 0, 0, 0.25);
-  border-top: 1px solid lightgray;
-  border-left: 1px solid lightgray;
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.1);
+  border: 1px solid lightgray;
   margin-bottom: 16px;
 }
 .case-container .conditions-container .case-control-wrapper {
@@ -48,14 +46,16 @@
   right: 20px;
 }
 .case-container .conditions-container .case-control-wrapper .case-order-button {
+  margin-right: 3px;
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.7);
+  background-color: rgba(0, 122, 204, 0.8);
   height: 28px;
   border: 0;
-  padding: 0 5px;
+  padding: 0 20px;
   color: white;
   outline: 0;
   padding-bottom: 2px;
+  border-radius: 14px;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
@@ -68,7 +68,6 @@
   padding-bottom: 1px;
   box-sizing: border-box;
   background-color: #bcbcbc;
-  margin-right: 3px;
   font-size: 10px;
   font-family: Arial;
   opacity: .7;
@@ -88,15 +87,6 @@
   cursor: default;
   background-color: gray;
 }
-.case-container .conditions-container .case-control-wrapper .case-order-button .small {
-  width: 13px;
-  height: 13px;
-  margin-top: 7px;
-  margin-right: 4px;
-  font-size: 10px;
-  padding-bottom: 3px;
-  padding-left: 4px;
-}
 .case-container .conditions-container .case-control-wrapper .case-order-button:hover {
   background-color: #9c9c9c;
 }
@@ -105,13 +95,14 @@
 }
 .case-container .conditions-container .case-control-wrapper .delete-case-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.7);
+  background-color: rgba(0, 122, 204, 0.8);
   height: 28px;
   border: 0;
-  padding: 0 5px;
+  padding: 0 20px;
   color: white;
   outline: 0;
   padding-bottom: 2px;
+  border-radius: 14px;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
@@ -123,7 +114,7 @@
   height: 20px;
   padding-bottom: 1px;
   box-sizing: border-box;
-  background-color: #ee8383;
+  background-color: #bcbcbc;
 }
 .case-container .conditions-container .case-control-wrapper .delete-case-button:hover {
   background-color: #007acc;
@@ -140,18 +131,9 @@
   cursor: default;
   background-color: gray;
 }
-.case-container .conditions-container .case-control-wrapper .delete-case-button .small {
-  width: 13px;
-  height: 13px;
-  margin-top: 7px;
-  margin-right: 4px;
-  font-size: 10px;
-  padding-bottom: 3px;
-  padding-left: 4px;
-}
 .case-container .conditions-container .case-control-wrapper .delete-case-button:hover {
-  background-color: #e26c6c;
+  background-color: #9c9c9c;
 }
 .case-container .conditions-container .case-control-wrapper .delete-case-button:active {
-  background-color: #e34f4f;
+  background-color: #7b7b7b;
 }

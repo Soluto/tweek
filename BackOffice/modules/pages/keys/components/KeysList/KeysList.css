@@ -4,6 +4,7 @@
   background-color: transparent;
 }
 .keys-list-container .search-input-wrapper {
+  background-color: white;
   padding: 18px;
 }
 .keys-list-container .search-input-wrapper .search-input {
