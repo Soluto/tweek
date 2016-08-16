@@ -5,6 +5,7 @@
   bottom: 0;
   right: 0;
   display: flex;
+  background-color: #eee;
 }
 .keys-page-container .keys-list {
   display: flex;
@@ -38,7 +39,7 @@
   background-color: rgba(0, 122, 204, 0.8);
   height: 28px;
   border: 0;
-  padding: 0 5px;
+  padding: 0 20px;
   color: white;
   outline: 0;
   padding-bottom: 2px;

@@ -7,6 +7,29 @@
     display: flex;
     flex-grow: 1;
     flex-direction: column;
+    .tab-header {
+      display: inline-block;
+      .tab-icon {
+        float: left;
+      }
+      .rule-definition-tab-icon {
+        .tab-icon;
+        margin-top: 1px;
+        width: 14px;
+      }
+      .rule-source-tab-icon {
+        .tab-icon;
+        width: 22px;
+        margin-top: 5px;
+      }
+      .tab-title {
+        font-size: 14px;
+        margin-left: 10px;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
     .rule-def-json {
       font-size: 13px;
     }
@@ -16,6 +39,7 @@
     flex-grow: 1;
     border: 1px solid lightgray;
     padding: 25px;
+    background-color: white;
   }
 }
 
@@ -28,9 +52,12 @@
     border-color: lightgray;
     border-style: solid;
     border-radius: 2px 2px 0 0;
-    padding: 7px 25px;
+    padding: 10px 30px;
     outline: none;
     background-color: #ececec;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     .transitioned();
     &:last-child {
       border-right: 1px solid lightgray;
@@ -57,5 +84,5 @@
 }
 
 :global(.ReactTabs__TabPanel) {
-  padding: 5px;
+  // padding: 5px;
 }
