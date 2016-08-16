@@ -8,24 +8,36 @@
   display: flex;
   flex-grow: 1;
   flex-direction: column;
-  .save-button {
-    .metro-button;
-    position: absolute;
-    width: auto;
-    right: 0;
-    top: 0;
-    margin: 20px;
-    z-index: 2;
-    &:hover {
-      cursor: default;
-    }
-    &[data-state-is-saving=true], &[data-state-is-saving=true]:disabled {
-      background-color: green;
+  .key-action-buttons-wrapper {
+    display: flex;
+    flex-direction: row-reverse;
+    padding: 5px;
+    .save-button {
+      .metro-button;
+      &:hover {
+        cursor: default;
+      }
+      &[data-state-is-saving=true], &[data-state-is-saving=true]:disabled {
+        background-color: green;
+      }
     }
   }
   .key-header {
     position: relative;
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid lightgray;
+    margin-top: 10px;
     clear: both;
+    padding: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    .modification-data {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
     .display-name {
       font-size: 20px;
     }
@@ -73,74 +85,97 @@
         }
       }
     }
-    .description-input {
-      margin-top: 5px;
-      .meta-data-input;
-      resize: none;
-      font-size: 18px;
-    }
-    .tags-container {
-      position: relative;
-      padding-top: 0;
-      .tag {
-        border: 1px solid #ddd;
-        background-color: #eeeeee;
-        font-size: 12px;
-        display: inline-block;
-        padding: 5px;
-        margin: 5px 5px 0 0;
-        border-radius: 2px;
-        .tag-delete-button {
+    .key-description-and-tags-wrapper {
+      display: flex;
+      flex-direction: row;
+      margin-top: 10px;
+      .description-input {
+        resize: none;
+        font-size: 14px;
+        color: gray;
+        min-width: 400px;
+        border: 1px solid lightgray;
+        border-radius: 5px;
+        outline: none;
+        padding: 10px;
+      }
+      .tags-wrapper {
+        display: flex;
+        flex-direction: column;
+        .tags-title {
+          color: lightgray;
           display: block;
-          float: right;
-          margin-top: 1px;
-          color: #aaa;
-          margin-left: 6px;
-          padding-left: 1px;
-          padding-bottom: 4px;
-          width: 9px;
-          height: 9px;
-          .transitioned();
-          &:hover {
-            cursor: pointer;
-            color: #939393;
+        }
+        position: relative;
+        display: flex;
+        flex-grow: 1;
+        padding-top: 0;
+        border-left: 1px solid lightgray;
+        padding-left: 20px;
+        margin-left: 20px;
+        .tags-container {
+          margin-top: 5px;
+          .tag {
+            border: 1px solid #ddd;
+            background-color: #eeeeee;
+            font-size: 12px;
+            display: inline-block;
+            padding: 5px;
+            margin: 5px 5px 0 0;
+            border-radius: 2px;
+            .tag-delete-button {
+              display: block;
+              float: right;
+              margin-top: 1px;
+              color: #aaa;
+              margin-left: 6px;
+              padding-left: 1px;
+              padding-bottom: 4px;
+              width: 9px;
+              height: 9px;
+              .transitioned();
+              &:hover {
+                cursor: pointer;
+                color: #939393;
+              }
+            }
           }
-        }
-      }
-      .tag-input {
-        display: inline-block;
-        input, input:focus {
-          .tag;
-          outline: none;
-        }
-      }
-      .tags-suggestion {
-        position: absolute;
-        z-index: 1;
-        ul {
-          list-style-type: none;
-          box-shadow: .05em .01em .5em rgba(0, 0, 0, .2);
-          background: white;
-          width: 200px;
-          li {
-            border-bottom: 1px solid #ddd;
-            padding: 5px 10px;
-            margin: 0;
-            .transitioned();
-            mark {
-              text-decoration: underline;
-              background: none;
-              font-weight: 600;
+          .tag-input {
+            display: inline-block;
+            input, input:focus {
+              .tag;
+              outline: none;
             }
-            &:hover {
-              cursor: pointer;
-              background-color: #eeeeee;
-            }
-            &:active, &:global(.active):active {
-              background-color: #d9d9d9;
-            }
-            &:global(.active) {
-              background-color: #eeeeee;
+          }
+          .tags-suggestion {
+            position: absolute;
+            z-index: 1;
+            ul {
+              list-style-type: none;
+              box-shadow: .05em .01em .5em rgba(0, 0, 0, .2);
+              background: white;
+              width: 200px;
+              li {
+                border-bottom: 1px solid #ddd;
+                padding: 5px 10px;
+                margin: 0;
+                .transitioned();
+                mark {
+                  text-decoration: underline;
+                  background: none;
+                  font-weight: 600;
+                }
+                &:hover {
+                  cursor: pointer;
+                  background-color: #eeeeee;
+                }
+                &:active, &:global(.active):active {
+                  background-color: #d9d9d9;
+                }
+                &:global(.active) {
+                  background-color: #eeeeee;
+                }
+              }
             }
           }
         }
