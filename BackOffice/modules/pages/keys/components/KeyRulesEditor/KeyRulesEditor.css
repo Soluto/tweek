@@ -9,20 +9,23 @@
   flex-direction: column;
 }
 .key-rules-editor-container .tab-container .tab-header {
+  color: #515c66;
   display: inline-block;
 }
 .key-rules-editor-container .tab-container .tab-header .tab-icon {
   float: left;
+  font-family: 'tweekIcons';
 }
 .key-rules-editor-container .tab-container .tab-header .rule-definition-tab-icon {
   float: left;
-  margin-top: 1px;
-  width: 14px;
+  font-family: 'tweekIcons';
+  margin-top: 2px;
+  font-size: 17px;
 }
 .key-rules-editor-container .tab-container .tab-header .rule-source-tab-icon {
   float: left;
-  width: 22px;
-  margin-top: 5px;
+  font-family: 'tweekIcons';
+  font-size: 20px;
 }
 .key-rules-editor-container .tab-container .tab-header .tab-title {
   font-size: 14px;
@@ -40,6 +43,10 @@
   border: 1px solid lightgray;
   padding: 20px 25px;
   background-color: white;
+}
+:global(.ReactTabs__TabList) {
+  display: flex;
+  flex-basis: 110px;
 }
 :global(.ReactTabs__TabList) :global(.ReactTabs__Tab) {
   display: inline-block;

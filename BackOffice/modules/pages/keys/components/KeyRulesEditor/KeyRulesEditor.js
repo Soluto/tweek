@@ -5,8 +5,6 @@ import Mutator from '../../../../utils/mutator';
 import wrapComponentWithClass from '../../../../utils/wrapComponentWithClass';
 import { compose } from 'recompose';
 import style from './KeyRulesEditor.css';
-import ruleDefinitionIconSrc from './resources/ruleDefinition.svg';
-import ruleSourceIconSrc from './resources/ruleSource.svg';
 
 const MutatorFor = (propName) => (Comp) =>
   class extends React.Component {
@@ -26,21 +24,22 @@ const KeyRulesEditor = ({ ruleDef, mutate }) =>
   (
     <div className={style['key-rules-editor-container']}>
       <Tabs className={style['tab-container']}
-        selectedIndex={0}>
+        selectedIndex={0}
+      >
         <TabList>
           <Tab className={style['tab-header']}>
-            <img className={style['rule-definition-tab-icon']} src={ruleDefinitionIconSrc}/>
+            <label className={style['rule-definition-tab-icon']}>&#xE904; </label>
             <label className={style['tab-title']}>Rule</label>
           </Tab>
           <Tab className={style['tab-header']}>
-            <img className={style['rule-source-tab-icon']} src={ruleSourceIconSrc}/>
+            <label className={style['rule-source-tab-icon']}>&#xE901; </label>
             <label className={style['tab-title']}>Source</label>
           </Tab>
         </TabList>
         <TabPanel className={style['tab-content']}>
           <JPadEditor cases={mutate.target}
             mutate={mutate}
-            />
+          />
         </TabPanel>
         <TabPanel className={style['tab-content']}>
           <pre className={style['rule-def-json']}>

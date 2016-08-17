@@ -9,19 +9,20 @@
     flex-grow: 1;
     flex-direction: column;
     .tab-header {
+      color: #515c66;
       display: inline-block;
       .tab-icon {
         float: left;
+        font-family: 'tweekIcons';
       }
       .rule-definition-tab-icon {
         .tab-icon;
-        margin-top: 1px;
-        width: 14px;
+        margin-top: 2px;
+        font-size: 17px;
       }
       .rule-source-tab-icon {
         .tab-icon;
-        width: 22px;
-        margin-top: 5px;
+        font-size: 20px;
       }
       .tab-title {
         font-size: 14px;
@@ -46,6 +47,8 @@
 
 :global(.ReactTabs__TabList) {
   @tab-item-border-bottom-height: 3px;
+  display: flex;
+  flex-basis: 110px;
   :global(.ReactTabs__Tab) {
     display: inline-block;
     border-width: 1px 1px @tab-item-border-bottom-height 1px;
