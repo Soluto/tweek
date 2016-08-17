@@ -46,7 +46,7 @@ namespace Tweek.Drivers.CouchbaseDriver
 
             if (await bucket.ExistsAsync(keyIdentity))
             {
-                string query = $"UPDATE `{_bucketName}` USE KEYS \"{keyIdentity}\" UNSET `{key}`";
+                string query = $"UPDATE `{_bucketName}` USE KEYS \"{keyIdentity}\" UNSET `{key.ToLower()}`";
                 var result = await bucket.QueryAsync<dynamic>(query);
                 if (!result.Success)
                 {
