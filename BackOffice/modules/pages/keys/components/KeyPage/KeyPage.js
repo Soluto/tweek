@@ -63,7 +63,6 @@ export default connect((state, { params }) => (
       const { downloadKey, selectedKey, downloadTags } = this.props;
       if (configKey !== this.props.configKey || !selectedKey) {
         downloadKey(configKey);
-        downloadTags();
       }
     }
 
@@ -105,12 +104,12 @@ _onSelectedKeyMetaChanged(newMeta) {
 }
 
 renderKeyActionButtons() {
-  let { local, remote, isSaving } = this.props.selectedKey;
+  let { local, remote, isSaving, isDeleting } = this.props.selectedKey;
   const changes = diff(local, remote);
   const hasChanges = (changes || []).length > 0;
   return (
     <div className={style['key-action-buttons-wrapper']}>
-      <button disabled={!hasChanges || isSaving }
+      <button disabled={!hasChanges || isSaving || isDeleting }
         data-state-has-changes={hasChanges}
         data-state-is-saving={isSaving}
         className={style['save-changes-button']}
@@ -118,10 +117,12 @@ renderKeyActionButtons() {
         >
         {isSaving ? 'Saving...' : 'Save changes'}
       </button>
-      <button className={style['delete-key-button']}
+      <button disabled={isSaving || isDeleting }
+        data-state-is-deleting={isDeleting}
+        className={style['delete-key-button']}
         onClick={() => this.props.deleteKey(this.props.configKey) }
         >
-        Delete key
+        {isDeleting ? 'Deleting...' : 'Delete key'}
       </button>
     </div>
   );

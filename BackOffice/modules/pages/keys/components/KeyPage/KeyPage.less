@@ -22,6 +22,9 @@
     .delete-key-button {
       .metro-button;
       margin-right: 10px;
+      &[data-state-is-deleting=true], &[data-state-is-deleting=true]:disabled {
+        background-color: green;
+      }
     }
   }
   .key-header {

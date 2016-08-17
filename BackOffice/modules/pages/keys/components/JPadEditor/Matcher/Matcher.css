@@ -35,7 +35,7 @@
   margin-right: 4px;
 }
 .matcher .conditions-wrapper .delete-condition-button:hover {
-  background-color: #007acc;
+  background-color: #00AEEF;
   cursor: pointer;
 }
 .matcher .conditions-wrapper .delete-condition-button:active {
@@ -85,7 +85,7 @@
   box-sizing: border-box;
 }
 .matcher .add-condition-button:hover {
-  background-color: #007acc;
+  background-color: #00AEEF;
   cursor: pointer;
 }
 .matcher .add-condition-button:active {
@@ -103,7 +103,7 @@
   font-family: 'tweekIcons';
   content: '\E905';
 }
-.matcher .match-all-message {
+.matcher .default-value-message {
   display: inline-block;
   margin: 10px;
   margin-left: 30px;

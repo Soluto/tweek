@@ -20,7 +20,7 @@ const comp = ({ rule, mutate }) => {
         <Matcher matcher={rule.Matcher} mutate={mutate.in('Matcher') } />
       </div>
       <div className={style['values']} >
-        <label className={style['case-partial-title']}>Values</label>
+        <label className={style['case-partial-title']}>{rule.Type === 'SingleVariant' ? 'Value' : 'Values'}</label>
         <RuleValue {...{ rule, mutate }} />
       </div >
     </div >
