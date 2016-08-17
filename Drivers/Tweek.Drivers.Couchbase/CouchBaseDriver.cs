@@ -1,6 +1,7 @@
 ﻿using Engine.Drivers.Context;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -69,6 +70,8 @@ namespace Tweek.Drivers.CouchbaseDriver
                 var result = await bucket.UpsertAsync(key, contextWithCreationDate);
                 if (!result.Success)
                 {
+                    Trace.TraceError(result.Message);
+                    Trace.TraceError(result.Exception.ToString() ?? "");
                     throw (result.Exception ?? new Exception(result.Message));
                 }
 
