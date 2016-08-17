@@ -61,24 +61,6 @@ namespace Engine.Tests
         {
             driver = fixture.Driver;
         }
-        /*
-        void SetCassandraDriver()
-        {
-            var cluster = Cassandra.Cluster.Builder()
-                .WithQueryOptions(new Cassandra.QueryOptions().SetConsistencyLevel(Cassandra.ConsistencyLevel.All))
-                .AddContactPoints("dc0vm1tqwdso6zqj26c.eastus.cloudapp.azure.com",
-                    "dc0vm0tqwdso6zqj26c.eastus.cloudapp.azure.com")
-                .Build();
-
-            var cassandraSession = cluster.Connect("tweekintegrationtests");
-            driver = new CassandraTestDriver(cassandraSession);
-        }
-
-        void SetCouchBaseDriver()
-        {
-            
-        }*/
-        
 
         async Task Run(Func<ITweek, Task> test)
         {

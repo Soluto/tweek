@@ -17,15 +17,11 @@ using Tweek.JPad;
 
 namespace SimpleBenchmarks
 {
-    class RamContextDriver : IContextDriver
+    class RamContextDriver : IContextReader
     {
         public async Task<Dictionary<string, string>> GetContext(Identity identity)
         {
             return new Dictionary<string, string>();
-        }
-
-        public async Task AppendContext(Identity identity, Dictionary<string, string> context)
-        {
         }
     }
     class Program

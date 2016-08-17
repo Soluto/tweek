@@ -10,5 +10,6 @@ namespace Engine.Drivers.Context
     public interface IContextWriter
     {
         Task AppendContext(Identity identity, Dictionary<string, string> context);
+        Task RemoveFromContext(Identity identity, string key);
     }
 }

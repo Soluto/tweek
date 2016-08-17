@@ -88,7 +88,6 @@ namespace Tweek.ApiService
             container.Register<ITweek>((ctx, no) => tweek);
             container.Register<IContextDriver>((ctx, no) => contextDriver);
             container.Register<IRuleParser>((ctx, no) => parser);
-
             base.ApplicationStartup(container, pipelines);
         }
 
