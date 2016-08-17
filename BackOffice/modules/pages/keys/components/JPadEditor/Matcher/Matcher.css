@@ -29,7 +29,9 @@
   font-size: 10px;
   padding-bottom: 4px;
   background-color: #bcbcbc;
-  margin-top: 7px;
+  font-size: 12px;
+  padding-top: 1px;
+  margin-top: 10px;
   margin-right: 4px;
 }
 .matcher .conditions-wrapper .delete-condition-button:hover {
@@ -53,6 +55,10 @@
 .matcher .conditions-wrapper .delete-condition-button:active {
   background-color: #7b7b7b;
 }
+.matcher .conditions-wrapper .delete-condition-button:after {
+  font-family: 'tweekIcons';
+  content: '\E900';
+}
 .matcher .add-condition-button {
   vertical-align: top;
   background-color: rgba(0, 122, 204, 0.8);
@@ -73,6 +79,8 @@
   width: 20px;
   height: 20px;
   padding-bottom: 3px;
+  font-size: 16px;
+  padding-top: 2px;
   margin-top: 8px;
   box-sizing: border-box;
 }
@@ -91,15 +99,13 @@
   cursor: default;
   background-color: gray;
 }
-.matcher .add-condition-button.big {
-  width: 35px;
-  height: 35px;
-  margin-left: 5px;
-  margin-top: 10px;
+.matcher .add-condition-button:after {
+  font-family: 'tweekIcons';
+  content: '\E905';
 }
 .matcher .match-all-message {
   display: inline-block;
-  margin: 15px;
+  margin: 10px;
   margin-left: 30px;
   color: gray;
 }

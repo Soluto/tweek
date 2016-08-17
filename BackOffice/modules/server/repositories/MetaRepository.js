@@ -16,6 +16,10 @@ class MetaRepository {
     return this._gitRepo.updateFile(this._buildMetaJsonFilePath(ruleName), JSON.stringify(payload), author);
   }
 
+  deleteKeyMeta(keyPath, author) {
+    return this._gitRepo.deleteFile(this._buildMetaJsonFilePath(keyPath), author);
+  }
+
   _buildMetaJsonFilePath(ruleName) {
     return `${MetaRepository.META_REPOSITORY_DIRECTORY_NAME}/${ruleName}${MetaRepository.META_REPOSITORY_FILE_EXTENSION_NAME}`;
   }

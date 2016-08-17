@@ -5,15 +5,19 @@ const KEY_RULEDEF_UPDATED = 'KEY_RULEDEF_UPDATED';
 const KEY_RULE_META_UPDATED = 'KEY_RULE_META_UPDATED';
 const KEY_SAVED = 'KEY_SAVED';
 const KEY_SAVING = 'KEY_SAVING';
+const KEY_DELETED = 'KEY_DELETED';
+const KEY_DELETING = 'KEY_DELETING';
 
 export async function downloadKey(key) {
   const { ruleDef, meta } = await (await fetch(`/api/keys/${key}`, { credentials: 'same-origin' })).json();
-  return { type: KEY_DOWNLOADED, payload:
-  {
-    key,
-    meta,
-    ruleDef,
-  } };
+  return {
+    type: KEY_DOWNLOADED, payload:
+    {
+      key,
+      meta,
+      ruleDef,
+    }
+  };
 }
 
 export function updateKeyRuleDef(ruleDef) {
@@ -33,6 +37,7 @@ function withJSONdata(data) {
     body: JSON.stringify(data),
   };
 }
+
 export function saveKey(key) {
   return async function (dispatch, getState) {
     const { selectedKey: { local: keyData } } = getState();
@@ -42,10 +47,22 @@ export function saveKey(key) {
       method: 'put',
       ...withJSONdata(keyData),
     });
-    dispatch({ type: KEY_SAVED });
-  };
+  dispatch({ type: KEY_SAVED });
+};
 }
 
+export function deleteKey(key) {
+  return async function (dispatch, getState) {
+    const { selectedKey: { local: keyData } } = getState();
+    dispatch({ type: KEY_DELETING });
+    await fetch(`/api/keys/${key}`, {
+      credentials: 'same-origin',
+      method: 'delete',
+      ...withJSONdata(keyData),
+    });
+  dispatch({ type: KEY_DELETED });
+};
+}
 
 export default handleActions({
   [KEY_DOWNLOADED]: (state, { payload: { key, ...props } }) => ({
@@ -53,27 +70,27 @@ export default handleActions({
     local: R.clone(props),
     remote: R.clone(props),
   }),
-  [KEY_RULEDEF_UPDATED]: (state, { payload }) => ({
+    [KEY_RULEDEF_UPDATED]: (state, { payload }) => ({
     ...state,
-    local: {
+      local: {
       ...state.local,
-      ruleDef: { ...state.local.ruleDef, ...payload },
-    },
-  }),
-  [KEY_RULE_META_UPDATED]: (state, { payload }) => ({
+        ruleDef: { ...state.local.ruleDef, ...payload },
+      },
+    }),
+      [KEY_RULE_META_UPDATED]: (state, { payload }) => ({
     ...state,
-    local: {
+        local: {
       ...state.local,
-      meta: payload,
-    },
-  }),
-  [KEY_SAVED]: (state) => ({
+          meta: payload,
+        },
+      }),
+        [KEY_SAVED]: (state) => ({
     ...state,
-    remote: R.clone(state.local),
-    isSaving: false,
-  }),
-  [KEY_SAVING]: (state) => ({
+          remote: R.clone(state.local),
+          isSaving: false,
+        }),
+          [KEY_SAVING]: (state) => ({
     ...state,
-    isSaving: true,
-  }),
+            isSaving: true,
+          }),
 }, null);
