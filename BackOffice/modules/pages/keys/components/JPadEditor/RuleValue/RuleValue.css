@@ -41,6 +41,9 @@
   width: auto;
   padding: 0 4px;
   background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
   box-sizing: border-box;
@@ -150,12 +153,16 @@
   width: auto;
   padding: 0 4px;
   background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
   height: 16px;
   font-size: 12px;
+  font-size: 14px;
   width: 40px;
 }
 .bernoulli-trial-container .bernoulli-trial-input-wrapper .bernoulli-trial-input:focus {

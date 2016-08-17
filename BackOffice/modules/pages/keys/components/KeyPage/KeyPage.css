@@ -36,7 +36,7 @@
   transition: all 0.2s ease-in-out;
 }
 .key-viewer-container .key-action-buttons-wrapper .save-changes-button:hover {
-  background-color: #00AEEF;
+  background-color: #007acc;
   cursor: pointer;
 }
 .key-viewer-container .key-action-buttons-wrapper .save-changes-button:active {
@@ -72,7 +72,7 @@
   margin-right: 10px;
 }
 .key-viewer-container .key-action-buttons-wrapper .delete-key-button:hover {
-  background-color: #00AEEF;
+  background-color: #007acc;
   cursor: pointer;
 }
 .key-viewer-container .key-action-buttons-wrapper .delete-key-button:active {
@@ -128,6 +128,9 @@
   width: auto;
   padding: 0 4px;
   background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
   transition: all 0.2s ease-in-out;
@@ -282,9 +285,11 @@
 }
 .key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tags-suggestion ul li:active,
 .key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tags-suggestion ul li:global(.active):active {
+  cursor: pointer;
   background-color: #d9d9d9;
 }
 .key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tags-suggestion ul li:global(.active) {
+  cursor: pointer;
   background-color: #eeeeee;
 }
 .key-viewer-container .key-rules-editor {
