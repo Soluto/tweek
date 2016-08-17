@@ -116,7 +116,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="TestDrivers\CassandraTestDriver.cs" />
     <Compile Include="Helpers\ContextCreator.cs" />
     <Compile Include="EngineIntegrationTests.cs" />
     <Compile Include="TestDrivers\CouchbaseTestDriver.cs" />

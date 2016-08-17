@@ -13,7 +13,7 @@ using Unit = LanguageExt.Unit;
 
 namespace Engine.Drivers.Cassandra
 {
-    public class CassandraDriver : IContextDriver
+    public class CassandraDriver : IContextReader
     {
         private readonly string _keyspace;
 

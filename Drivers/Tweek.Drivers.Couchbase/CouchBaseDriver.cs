@@ -39,6 +39,22 @@ namespace Tweek.Drivers.CouchbaseDriver
             return _bucket;
         }
 
+        public async Task RemoveFromContext(Identity identity, string key)
+        {
+            var keyIdentity = GetKey(identity);
+            var bucket = GetOrOpenBucket();
+
+            if (await bucket.ExistsAsync(keyIdentity))
+            {
+                string query = $"UPDATE `{_bucketName}` USE KEYS \"{keyIdentity}\" UNSET `{key}`";
+                var result = await bucket.QueryAsync<dynamic>(query);
+                if (!result.Success)
+                {
+                    throw new Exception(query, result.Exception);
+                }
+            }
+        }
+
         public async Task AppendContext(Identity identity, Dictionary<string, string> context)
         {
             var key = GetKey(identity);
@@ -60,7 +76,7 @@ namespace Tweek.Drivers.CouchbaseDriver
             else
             {
 
-                string query = $"UPDATE `{_bucketName}` USE KEYS \"{key}\" SET {String.Join(", ",context.Select(x=>$"{x.Key} = \"{x.Value}\""))}";
+                string query = $"UPDATE `{_bucketName}` USE KEYS \"{key}\" SET {string.Join(", ",context.Select(x=>$"{x.Key} = \"{x.Value}\""))}";
                 var result = await bucket.QueryAsync<dynamic>(query);
                 if (!result.Success)
                 {

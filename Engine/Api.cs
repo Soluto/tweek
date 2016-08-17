@@ -25,10 +25,10 @@ namespace Engine
 
     public class TweekRunner : ITweek
     {
-        private readonly IContextDriver _contextDriver;
+        private readonly IContextReader _contextDriver;
         private readonly Func<IReadOnlyDictionary<string, IRule>> _rulesLoader;
 
-        public TweekRunner(IContextDriver contextDriver,
+        public TweekRunner(IContextReader contextDriver,
             Func<IReadOnlyDictionary<string, IRule>> rulesLoader)
         {
             _contextDriver = contextDriver;
@@ -76,7 +76,7 @@ namespace Engine
 
     public static class Tweek
     {
-        public static async Task<ITweek> Create(IContextDriver contextDriver, IRulesDriver rulesDriver, IRuleParser parser)
+        public static async Task<ITweek> Create(IContextReader contextDriver, IRulesDriver rulesDriver, IRuleParser parser)
         {
             var rulesLoader = await RulesLoader.Factory(rulesDriver, parser);
             return new TweekRunner(contextDriver, rulesLoader);
