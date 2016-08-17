@@ -45,7 +45,7 @@ export default hasChanged(({ matcher, mutate }) => {
         title="Add condition"
         ></button>
       {(props.length === 0) ?
-        <div className={style['match-all-message']}>Match all</div>
+        <div className={style['default-value-message']}>Default value</div>
         : null
       }
     </div>);
