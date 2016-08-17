@@ -15,52 +15,65 @@
   flex-grow: 1;
   flex-direction: column;
 }
-.key-viewer-container .save-button {
+.key-viewer-container .key-action-buttons-wrapper {
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 5px;
+}
+.key-viewer-container .key-action-buttons-wrapper .save-button {
   vertical-align: top;
   background-color: rgba(0, 122, 204, 0.8);
   height: 28px;
   border: 0;
-  padding: 0 5px;
+  padding: 0 20px;
   color: white;
   outline: 0;
   padding-bottom: 2px;
+  border-radius: 14px;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
-  position: absolute;
-  width: 100px;
-  right: 0;
-  top: 0;
-  margin: 10px;
-  z-index: 2;
 }
-.key-viewer-container .save-button:hover {
+.key-viewer-container .key-action-buttons-wrapper .save-button:hover {
   background-color: #007acc;
   cursor: pointer;
 }
-.key-viewer-container .save-button:active {
+.key-viewer-container .key-action-buttons-wrapper .save-button:active {
   background-color: #0098ff;
 }
-.key-viewer-container .save-button:disabled {
+.key-viewer-container .key-action-buttons-wrapper .save-button:disabled {
   background-color: gray;
 }
-.key-viewer-container .save-button:disabled:hover,
-.key-viewer-container .save-button:disabled:active {
+.key-viewer-container .key-action-buttons-wrapper .save-button:disabled:hover,
+.key-viewer-container .key-action-buttons-wrapper .save-button:disabled:active {
   cursor: default;
   background-color: gray;
 }
-.key-viewer-container .save-button:hover {
+.key-viewer-container .key-action-buttons-wrapper .save-button:hover {
   cursor: default;
 }
-.key-viewer-container .save-button[data-state-is-saving=true],
-.key-viewer-container .save-button[data-state-is-saving=true]:disabled {
+.key-viewer-container .key-action-buttons-wrapper .save-button[data-state-is-saving=true],
+.key-viewer-container .key-action-buttons-wrapper .save-button[data-state-is-saving=true]:disabled {
   background-color: green;
 }
 .key-viewer-container .key-header {
   position: relative;
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid lightgray;
+  margin-top: 10px;
   clear: both;
+  padding: 20px;
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.key-viewer-container .key-header .modification-data {
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 .key-viewer-container .key-header .display-name {
   font-size: 20px;
@@ -109,7 +122,7 @@
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
 .key-viewer-container .key-header .rule-sub-text {
-  color: darkgray;
+  color: gray;
   font-size: 13px;
   margin-left: 5px;
   margin-bottom: 4px;
@@ -119,53 +132,56 @@
   user-select: none;
 }
 .key-viewer-container .key-header .rule-sub-text a {
-  color: darkgray;
+  color: gray;
+  text-decoration: none;
 }
-.key-viewer-container .key-header .rule-sub-text a .actual-sub-text {
-  text-decoration: underline;
-}
-.key-viewer-container .key-header .rule-sub-text a .actual-sub-text:hover {
+.key-viewer-container .key-header .rule-sub-text a label {
   cursor: pointer;
 }
+.key-viewer-container .key-header .rule-sub-text a:hover,
+.key-viewer-container .key-header .rule-sub-text a:active {
+  text-decoration: underline;
+}
 .key-viewer-container .key-header .rule-sub-text a:visited {
-  color: darkgray;
+  color: gray;
 }
 .key-viewer-container .key-header .rule-sub-text .actual-sub-text {
   font-style: italic;
-  -moz-user-select: text;
-  -ms-user-select: text;
-  -webkit-user-select: text;
-  user-select: text;
 }
-.key-viewer-container .key-header .rule-sub-text .actual-sub-text:hover {
-  cursor: text;
+.key-viewer-container .key-header .key-description-and-tags-wrapper {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
 }
-.key-viewer-container .key-header .description-input {
-  margin-top: 5px;
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  width: auto;
-  padding: 0 4px;
-  background-color: transparent;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  transition: all 0.2s ease-in-out;
-  width: 100%;
-  box-sizing: border-box;
+.key-viewer-container .key-header .key-description-and-tags-wrapper .description-input {
   resize: none;
-  font-family: calibri;
-  font-size: 18px;
+  font-size: 14px;
+  color: gray;
+  min-width: 400px;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  outline: none;
+  padding: 10px;
 }
-.key-viewer-container .key-header .description-input:focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.key-viewer-container .key-header .tags-container {
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper {
+  flex-direction: column;
   position: relative;
+  display: flex;
+  flex-grow: 1;
   padding-top: 0;
+  border-left: 1px solid lightgray;
+  padding-left: 20px;
+  margin-left: 20px;
 }
-.key-viewer-container .key-header .tags-container .tag {
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-title {
+  color: gray;
+  display: block;
+  font-size: 14px;
+}
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container {
+  margin-top: 6px;
+}
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag {
   border: 1px solid #ddd;
   background-color: #eeeeee;
   font-size: 12px;
@@ -174,7 +190,7 @@
   margin: 5px 5px 0 0;
   border-radius: 2px;
 }
-.key-viewer-container .key-header .tags-container .tag .tag-delete-button {
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag .tag-delete-button {
   display: block;
   float: right;
   margin-top: 1px;
@@ -186,15 +202,15 @@
   height: 9px;
   transition: all 0.2s ease-in-out;
 }
-.key-viewer-container .key-header .tags-container .tag .tag-delete-button:hover {
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag .tag-delete-button:hover {
   cursor: pointer;
   color: #939393;
 }
-.key-viewer-container .key-header .tags-container .tag-input {
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag-input {
   display: inline-block;
 }
-.key-viewer-container .key-header .tags-container .tag-input input,
-.key-viewer-container .key-header .tags-container .tag-input input:focus {
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag-input input,
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag-input input:focus {
   border: 1px solid #ddd;
   background-color: #eeeeee;
   font-size: 12px;
@@ -204,8 +220,8 @@
   border-radius: 2px;
   outline: none;
 }
-.key-viewer-container .key-header .tags-container .tag-input input .tag-delete-button,
-.key-viewer-container .key-header .tags-container .tag-input input:focus .tag-delete-button {
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag-input input .tag-delete-button,
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag-input input:focus .tag-delete-button {
   display: block;
   float: right;
   margin-top: 1px;
@@ -217,46 +233,45 @@
   height: 9px;
   transition: all 0.2s ease-in-out;
 }
-.key-viewer-container .key-header .tags-container .tag-input input .tag-delete-button:hover,
-.key-viewer-container .key-header .tags-container .tag-input input:focus .tag-delete-button:hover {
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag-input input .tag-delete-button:hover,
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag-input input:focus .tag-delete-button:hover {
   cursor: pointer;
   color: #939393;
 }
-.key-viewer-container .key-header .tags-container .tags-suggestion {
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tags-suggestion {
   position: absolute;
   z-index: 1;
 }
-.key-viewer-container .key-header .tags-container .tags-suggestion ul {
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tags-suggestion ul {
   list-style-type: none;
   box-shadow: 0.05em 0.01em 0.5em rgba(0, 0, 0, 0.2);
   background: white;
   width: 200px;
 }
-.key-viewer-container .key-header .tags-container .tags-suggestion ul li {
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tags-suggestion ul li {
   border-bottom: 1px solid #ddd;
   padding: 5px 10px;
   margin: 0;
   transition: all 0.2s ease-in-out;
 }
-.key-viewer-container .key-header .tags-container .tags-suggestion ul li mark {
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tags-suggestion ul li mark {
   text-decoration: underline;
   background: none;
   font-weight: 600;
 }
-.key-viewer-container .key-header .tags-container .tags-suggestion ul li:hover {
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tags-suggestion ul li:hover {
   cursor: pointer;
   background-color: #eeeeee;
 }
-.key-viewer-container .key-header .tags-container .tags-suggestion ul li:active,
-.key-viewer-container .key-header .tags-container .tags-suggestion ul li:global(.active):active {
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tags-suggestion ul li:active,
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tags-suggestion ul li:global(.active):active {
   background-color: #d9d9d9;
 }
-.key-viewer-container .key-header .tags-container .tags-suggestion ul li:global(.active) {
+.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tags-suggestion ul li:global(.active) {
   background-color: #eeeeee;
 }
 .key-viewer-container .key-rules-editor {
   display: flex;
   flex-grow: 1;
   margin-top: 7px;
-  border-top: 1px solid lightgray;
 }

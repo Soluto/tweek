@@ -5,6 +5,8 @@ import Mutator from '../../../../utils/mutator';
 import wrapComponentWithClass from '../../../../utils/wrapComponentWithClass';
 import { compose } from 'recompose';
 import style from './KeyRulesEditor.css';
+import ruleDefinitionIconSrc from './resources/ruleDefinition.svg';
+import ruleSourceIconSrc from './resources/ruleSource.svg';
 
 const MutatorFor = (propName) => (Comp) =>
   class extends React.Component {
@@ -26,8 +28,14 @@ const KeyRulesEditor = ({ ruleDef, mutate }) =>
       <Tabs className={style['tab-container']}
         selectedIndex={0}>
         <TabList>
-          <Tab>Rule</Tab>
-          <Tab>Source</Tab>
+          <Tab className={style['tab-header']}>
+            <img className={style['rule-definition-tab-icon']} src={ruleDefinitionIconSrc}/>
+            <label className={style['tab-title']}>Rule</label>
+          </Tab>
+          <Tab className={style['tab-header']}>
+            <img className={style['rule-source-tab-icon']} src={ruleSourceIconSrc}/>
+            <label className={style['tab-title']}>Source</label>
+          </Tab>
         </TabList>
         <TabPanel className={style['tab-content']}>
           <JPadEditor cases={mutate.target}
@@ -35,7 +43,7 @@ const KeyRulesEditor = ({ ruleDef, mutate }) =>
             />
         </TabPanel>
         <TabPanel className={style['tab-content']}>
-          <pre>
+          <pre className={style['rule-def-json']}>
             {JSON.stringify(JSON.parse(ruleDef.source), null, 4) }
           </pre>
         </TabPanel>

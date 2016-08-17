@@ -1,18 +1,22 @@
 @import (reference) "../../../../../styles/core/core.less";
+.rule-value-button {
+  .metro-button(true);
+  margin-top: 7px;
+  opacity: .7;
+}
+
 .rule-value-container {
   .values-input {
     .metro-textbox;
     width: 100%;
-    box-sizing: border-box;
-    margin-top: 8px;
+    margin-top: 6px;
     resize: none;
-    font-size: 18px;
   }
   .add-variant-button {
-    .metro-button;
+    .rule-value-button;
   }
   .to-feature-flag-button {
-    .metro-button;
+    .rule-value-button;
   }
 }
 
@@ -47,9 +51,9 @@
 }
 
 .set-bernoulli-button {
-  .metro-button;
+  .rule-value-button;
   display: inline-block;
-  margin-left:25px;
+  margin-left: 25px;
 }
 
 .set-to-true-button {

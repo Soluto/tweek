@@ -2,17 +2,42 @@
 .app {
     padding-top: 60px;
     .menu {
-        margin-left: 20px;
-        li {
-            vertical-align: top;
-            padding: 20px 20px;
-            display: inline-block;
+        margin-left: 40px;
+        display: flex;
+        height: 100%;
+        .menu-item {
+            display: flex;
+            border-bottom: 4px solid transparent;
+            width: 100px;
+            .transitioned();
             a {
-                &:visited, &:hover, &:link {
-                    color: @accent-color1;
+                .transitioned();
+                &:visited, &:link {
+                    display: flex;
+                    flex-grow: 1;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100%;
+                    color: darkgray;
                     text-decoration: none;
                     font-size: 17px;
                 }
+                &:hover {
+                    color: gray;
+                }
+            }
+            &.selected-location-path {
+                border-bottom: 4px solid @accent-color5;
+            }
+            &:hover {
+                cursor: pointer;
+                border-bottom: 4px solid @accent-color6;
+                &.selected-location-path {
+                    border-bottom: 4px solid @accent-color5;
+                }
+            }
+            &:active {
+                border-bottom: 4px solid @accent-color4;
             }
         }
     }
@@ -23,12 +48,12 @@
         height: 64px;
         display: flex;
         position: fixed;
-        background-color: #fff;
+        background-color: #f0f0f0;
         border-bottom: 1px solid lightgray;
         align-items: center;
         .logo {
             margin: 5px 0 0 10px;
-            width: 150px;
+            width: 130px;
         }
     }
 }

@@ -14,12 +14,12 @@
     transition: all @duration ease-in-out;
   }
   
-  .metro-button {
+  .metro-button(@small: false) when not (@small) {
     vertical-align: top;
     background-color: @accent-color2;
     height: 28px;
     border: 0;
-    padding: 0 5px;
+    padding: 0 20px;
     color: @accent-foreground;
     outline: 0;
     padding-bottom: 2px;
@@ -40,6 +40,13 @@
         background-color: gray;
       }
     }
+  }
+  
+  .metro-button(@small: false) when (@small) {
+    .metro-button;
+    font-size: 12px;
+    height: 20px;
+    padding: 0 10px;
   }
   
   .metro-textbox(@small: false) when not (@small) {
@@ -71,7 +78,7 @@
     border-radius: 50%;
     width: 20px;
     height: 20px;
-    padding-bottom: 1px;
+    padding-bottom: 3px;
     box-sizing: border-box;
   }
   
@@ -80,7 +87,7 @@
     width: 13px;
     height: 13px;
     font-size: 10px;
-    padding-bottom: 3px;
+    padding-bottom: 4px;
   }
   
   .gray-circle-button(@small: false) {
