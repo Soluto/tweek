@@ -46,7 +46,7 @@ namespace Tweek.Drivers.CouchbaseDriver
 
             if (await bucket.ExistsAsync(keyIdentity))
             {
-                string query = $"UPDATE `{_bucketName}` USE KEYS \"{keyIdentity}\" UNSET `{key.ToLower()}`";
+                string query = $"UPDATE `{_bucketName}` USE KEYS \"{keyIdentity}\" UNSET `{key}`";
                 var result = await bucket.QueryAsync<dynamic>(query);
                 if (!result.Success)
                 {
@@ -64,7 +64,7 @@ namespace Tweek.Drivers.CouchbaseDriver
             {
                 var contextWithCreationDate  = context.ContainsKey("@CreationDate") ? context : context
                     .Concat(new[] { new KeyValuePair<string, string>("@CreationDate", DateTimeOffset.UtcNow.ToString()) })
-                    .ToDictionary(x => x.Key.ToLower(), x => x.Value);
+                    .ToDictionary(x => x.Key, x => x.Value);
 
                 var result = await bucket.UpsertAsync(key, contextWithCreationDate);
                 if (!result.Success)
@@ -76,7 +76,7 @@ namespace Tweek.Drivers.CouchbaseDriver
             else
             {
 
-                string query = $"UPDATE `{_bucketName}` USE KEYS \"{key}\" SET {string.Join(", ",context.Select(x=>$"{x.Key.ToLower()} = \"{x.Value}\""))}";
+                string query = $"UPDATE `{_bucketName}` USE KEYS \"{key}\" SET {string.Join(", ",context.Select(x=>$"{x.Key} = \"{x.Value}\""))}";
                 var result = await bucket.QueryAsync<dynamic>(query);
                 if (!result.Success)
                 {
