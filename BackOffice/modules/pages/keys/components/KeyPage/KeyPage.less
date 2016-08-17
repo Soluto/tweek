@@ -3,6 +3,8 @@
   .centered-message;
 }
 
+@text-color: #515c66;
+@sub-text-color: #a5a5a5;
 .key-viewer-container {
   padding: 16px;
   display: flex;
@@ -30,7 +32,7 @@
     margin-top: 16px;
     clear: both;
     padding: 20px;
-    min-height: 165px;
+    min-height: 168px;
     overflow-y: auto;
     overflow-x: hidden;
     box-sizing: border-box;
@@ -42,32 +44,31 @@
     .display-name {
       font-size: 20px;
     }
-    .meta-data-input {
-      .metro-textbox;
-      width: 100%;
-      box-sizing: border-box;
-    }
     .display-name-wrapper {
       min-height: 34px;
       border: 1px solid transparent;
-      @display-name-font-size: 23px;
+      @display-name-font-size: 22px;
       .display-name {
         font-size: @display-name-font-size;
+        color: @text-color;
         margin-left: 4px;
       }
       .display-name-input {
-        .meta-data-input;
+        .metro-textbox;
         font-size: @display-name-font-size;
+        color: @text-color;
+        width: 100%;
+        box-sizing: border-box;
       }
     }
     .rule-sub-text {
-      color: gray;
-      font-size: 13px;
+      color: @sub-text-color;
+      font-size: 14px;
       margin-left: 5px;
       margin-bottom: 4px;
       .user-select(none);
       a {
-        color: gray;
+        color: @sub-text-color;
         text-decoration: none;
         label {
           cursor: pointer;
@@ -76,7 +77,7 @@
           text-decoration: underline;
         }
         &:visited {
-          color: gray;
+          color: @sub-text-color;
         }
       }
       .actual-sub-text {}
@@ -88,7 +89,7 @@
       .description-input {
         resize: none;
         font-size: 14px;
-        color: gray;
+        color: @text-color;
         min-width: 400px;
         min-height: 40px;
         border: 1px solid lightgray;
@@ -109,7 +110,7 @@
         .tags-container {
           &:before {
             content: 'Tags';
-            color: gray;
+            color: @sub-text-color;
             float: left;
             font-size: 14px;
             margin-right: 10px;
@@ -142,6 +143,7 @@
           }
           .tag-input {
             display: inline-block;
+            font-size: 12px;
             input, input:focus {
               .tag;
               outline: none;

@@ -11,7 +11,7 @@ const editorMetaService = EditorMetaService.instance;
 
 const Property = ({ property, predicate, mutate, suggestedValues = []}) =>
   (<div className={style['conditions-wrapper']}>
-    <button className={style['delete-condition-button']} onClick={mutate.delete} title="Remove condition">x</button>
+    <button className={style['delete-condition-button']} onClick={mutate.delete} title="Remove condition"></button>
     <PropertyName {...{ property, mutate, suggestedValues }} />
     <PropertyPredicate {...{ predicate, mutate, property }} />
   </div>);
@@ -43,7 +43,7 @@ export default hasChanged(({ matcher, mutate }) => {
       <button className={style['add-condition-button']}
         onClick={() => mutate.insert('', '') }
         title="Add condition"
-        >+</button>
+        ></button>
       {(props.length === 0) ?
         <div className={style['match-all-message']}>Match all</div>
         : null
