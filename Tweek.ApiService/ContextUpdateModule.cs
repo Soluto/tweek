@@ -36,6 +36,16 @@ namespace Tweek.ApiService
                 
                 return 200;
             };
+
+            Delete["/{identityType}/{identityId}/{key*}", runAsync: true] = async (@params, ct) =>
+            {
+                string identityType = @params.identityType;
+                string identityId = @params.identityId;
+                string key = @params.key;
+                var identity = new Identity(identityType, identityId);
+                await driver.RemoveFromContext(identity, key);
+                return 200;
+            };
         }
     }
 }

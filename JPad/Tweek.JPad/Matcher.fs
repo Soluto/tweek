@@ -133,7 +133,7 @@ module Matcher =
                     | None -> ParseError ("missing comparer - " + newComparer) |> raise
                 | Empty -> (fun context->true)
 
-        let defaultComparer (l:string) (r:string) = l.CompareTo r
+        let defaultComparer (l:string) (r:string) = l.ToLower().CompareTo (r.ToLower())
         CompileExpression "" defaultComparer exp
 
     let parseJsonSchema (schema:JsonValue) = parsePropertySchema ConjuctionOp.And schema
