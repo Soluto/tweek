@@ -8,6 +8,7 @@ import { Observable } from 'rxjs/Rx';
 import { compose, setObservableConfig } from 'recompose';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
+require('../styles/core/fonts/fonts.css');
 
 setObservableConfig({
   fromESObservable: Observable.from,

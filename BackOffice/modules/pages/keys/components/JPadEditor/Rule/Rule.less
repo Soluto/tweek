@@ -1,6 +1,11 @@
+@import (reference) "../../../../../styles/core/core.less";
 .rule-container {
     display: flex;
     padding: 10px;
+    .transitioned();
+    &.default-value {
+        background-color: #ebebeb;
+    }
     .case-partial-title {
         color: gray;
         font-size: 13px;
@@ -10,11 +15,12 @@
         flex-basis: 60%;
         border-right: 1px solid lightgray;
         padding-right: 5px;
-        .matcher-wrapper {
-            padding: 5px;
-        }
     }
     .values {
         margin-left: 10px;
+        margin-left: 10px;
+        display: flex;
+        flex-grow: 1;
+        flex-direction: column;
     }
 }

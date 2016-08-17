@@ -26,29 +26,28 @@ export default ({ data, onUpdate, sliderColors, displaySliderDragger = true, dis
                     const itemToUpdate = items[i === 0 ? 1 : i - 1];
                     return m.in(value).delete().in(itemToUpdate.value).updateValue(itemToUpdate.weight + weight);
                   }) }
-                >x</button>
+                  ></button>
                 <div className={style['vertical-accent']} style={{ backgroundColor: sliderColor }} />
                 <input type="text" className={style['legend-value-input']} onChange={e => mutator.in(value).updateKey(e.target.value) } value={value} />
                 <input type="text"
                   className={style['legend-precent-input']}
                   onChange={({ target: { value: newWeight } }) => mutator.in(value).updateValue((parseNumericInput(newWeight)):: replaceNaN(weight)) }
-                  onWheel={({ deltaY }) => {
+                onWheel={({ deltaY }) => {
                   const currentValue = mutator.in(value).getValue();
                   const newValue = deltaY < 0 ? currentValue + 1 : currentValue - 1;
                   if (newValue < 0 || newValue > 100) return;
                   mutator.in(value).updateValue(newValue);
                 } }
-                  value={weight}
+                value={weight}
                 />
               </div>
             ) }
           </div>
           {(items.length !== sliderColors.length) ?
             <button title="Add variant"
-              className={style['add-legend-button']}
+              className={style['add-variant-button']}
               onClick={() => mutator.insert(`value #${items.length + 1}`, 0) }
-            >
-              +
+              >
             </button> : null
           }
         </div> : null
@@ -66,7 +65,7 @@ export default ({ data, onUpdate, sliderColors, displaySliderDragger = true, dis
                   .in(value).updateValue(weight + data.deltaX));
               } }
                 axis="x"
-              >
+                >
                 <div>
                   <div className={style['dragger']}>
                     <label style={{ zIndex: 1000 - i }} className={style['arrow']} ></label>

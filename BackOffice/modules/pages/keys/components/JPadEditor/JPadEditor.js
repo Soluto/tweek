@@ -36,7 +36,7 @@ export default ({ cases, mutate }) => {
                               onClick={() => mutate.replaceKeys(i, i - 1) }
                               title="Move up"
                             >
-                                &#9650;
+                                &#xE908;
                             </button>
                             : null }
                         {i < cases.length - 1 ?
@@ -44,13 +44,13 @@ export default ({ cases, mutate }) => {
                               onClick={() => mutate.replaceKeys(i, i + 1) }
                               title="Move down"
                             >
-                                &#9660;
+                                &#xE902;
                             </button>
                             : null }
                         <button className={style['delete-case-button']}
                           onClick={() => deleteCase(mutate, i) }
                           title="Remove case"
-                        >x</button>
+                        ></button>
                     </div>
 
                     <Rule key={rule.Id} mutate={mutate.in(i) } rule={rule} />

@@ -1,6 +1,10 @@
 .rule-container {
   display: flex;
   padding: 10px;
+  transition: all 0.2s ease-in-out;
+}
+.rule-container.default-value {
+  background-color: #ebebeb;
 }
 .rule-container .case-partial-title {
   color: gray;
@@ -12,9 +16,9 @@
   border-right: 1px solid lightgray;
   padding-right: 5px;
 }
-.rule-container .conditions .matcher-wrapper {
-  padding: 5px;
-}
 .rule-container .values {
   margin-left: 10px;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
 }
