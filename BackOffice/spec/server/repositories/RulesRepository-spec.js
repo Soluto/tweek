@@ -4,6 +4,7 @@ jest.unmock('../../../spec-mocks/server/repositories/GitRepositoryMock');
 
 import RulesRepository from '../../../modules/server/repositories/RulesRepository';
 import GitRepositoryMock from '../../../spec-mocks/server/repositories/GitRepositoryMock';
+
 const chai = require('chai');
 chai.use(require('chai-as-promised'));
 const { expect, assert } = chai;
