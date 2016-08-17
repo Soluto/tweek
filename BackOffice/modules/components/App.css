@@ -2,19 +2,45 @@
   padding-top: 60px;
 }
 .app .menu {
-  margin-left: 20px;
+  margin-left: 40px;
+  display: flex;
+  height: 100%;
 }
-.app .menu li {
-  vertical-align: top;
-  padding: 20px 20px;
-  display: inline-block;
+.app .menu .menu-item {
+  display: flex;
+  border-bottom: 4px solid transparent;
+  width: 100px;
+  transition: all 0.2s ease-in-out;
 }
-.app .menu li a:visited,
-.app .menu li a:hover,
-.app .menu li a:link {
-  color: #007acc;
+.app .menu .menu-item a {
+  transition: all 0.2s ease-in-out;
+}
+.app .menu .menu-item a:visited,
+.app .menu .menu-item a:link {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: darkgray;
   text-decoration: none;
   font-size: 17px;
+}
+.app .menu .menu-item a:hover {
+  color: gray;
+}
+.app .menu .menu-item.selected-location-path {
+  border-bottom: 4px solid rgba(0, 122, 204, 0.4);
+}
+.app .menu .menu-item:hover {
+  cursor: pointer;
+  border-bottom: 4px solid rgba(0, 122, 204, 0.2);
+}
+.app .menu .menu-item:hover.selected-location-path {
+  border-bottom: 4px solid rgba(0, 122, 204, 0.4);
+}
+.app .menu .menu-item:active {
+  border-bottom: 4px solid rgba(0, 122, 204, 0.5);
 }
 .app .header {
   top: 0;
@@ -23,11 +49,11 @@
   height: 64px;
   display: flex;
   position: fixed;
-  background-color: #fff;
+  background-color: #f0f0f0;
   border-bottom: 1px solid lightgray;
   align-items: center;
 }
 .app .header .logo {
   margin: 5px 0 0 10px;
-  width: 150px;
+  width: 130px;
 }

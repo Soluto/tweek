@@ -1,13 +1,13 @@
-import React from 'react'
-import favicon from '../favicon.ico'
+import React from 'react';
+import favicon from '../favicon.ico';
 
-const { arrayOf, string, node, object } = React.PropTypes
+const { arrayOf, string, node, object } = React.PropTypes;
 
 const shims = `
   (String.prototype.trim && Function.prototype.bind) || document.write('<script src="/es5-shim.js"><\\/script>');
   window.Promise || document.write('<script src="/Promise.js"><\\/script>');
   window.fetch || document.write('<script src="/fetch.js"><\\/script>');
-`
+`;
 
 const Document = React.createClass({
 
@@ -16,32 +16,31 @@ const Document = React.createClass({
     scripts: arrayOf(node),
     content: string,
     title: string,
-    initialState: object
+    initialState: object,
   },
-  
+
   render() {
-    const { styles, scripts, content, title, initialState } = this.props
-    let storeScript = `window.STORE_INITIAL_STATE = ${JSON.stringify(initialState)}`
+    const { styles, scripts, content, title, initialState } = this.props;
+    let storeScript = `window.STORE_INITIAL_STATE = ${JSON.stringify(initialState)}`;
     return (
       <html>
         <head>
           <meta charSet="utf-8"/>
           <link rel="shortcut icon" href={favicon}/>
-          <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,500" rel="stylesheet" type="text/css" />
-          <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+          <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
           <title>{title}</title>
           {styles}
         </head>
         <body>
           <div id="app" dangerouslySetInnerHTML={{ __html: content }}/>
-          <script dangerouslySetInnerHTML={{ __html: storeScript }} /> 
+          <script dangerouslySetInnerHTML={{ __html: storeScript }} />
           <script dangerouslySetInnerHTML={{ __html: shims }}/>
           {scripts}
         </body>
       </html>
-    )
-  }
+    );
+  },
 
-})
+});
 
-export default Document
+export default Document;
