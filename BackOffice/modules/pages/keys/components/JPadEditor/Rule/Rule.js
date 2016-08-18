@@ -4,7 +4,7 @@ import { shouldUpdate } from 'recompose';
 import style from './Rule.css';
 import Matcher from '../Matcher/Matcher';
 import RuleValue from '../RuleValue/RuleValue';
-import classNames from 'classNames';
+import classNames from 'classnames';
 
 const ruleHasChanged = (props, nextProps) =>
   !R.equals(props.rule, nextProps.rule) ||
