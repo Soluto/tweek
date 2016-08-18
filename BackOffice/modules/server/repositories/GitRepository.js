@@ -146,7 +146,7 @@ class GitRepository {
         throw new Error('fail to push changes');
       }
 
-      console.log(`push completed:${code}`);
+      console.log(`push completed`);
     } catch (ex) {
       console.error(ex);
     }
