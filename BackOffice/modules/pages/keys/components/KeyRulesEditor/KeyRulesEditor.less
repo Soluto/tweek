@@ -11,6 +11,9 @@
     .tab-header {
       color: #515c66;
       display: inline-block;
+      box-sizing: border-box;
+      padding: 12px 32px;
+      height: 46px;
       .tab-icon {
         float: left;
         font-family: 'tweekIcons';
@@ -47,8 +50,7 @@
 
 :global(.ReactTabs__TabList) {
   @tab-item-border-bottom-height: 3px;
-  display: flex;
-  flex-basis: 110px;
+  display: block;
   :global(.ReactTabs__Tab) {
     display: inline-block;
     border-width: 1px 1px @tab-item-border-bottom-height 1px;

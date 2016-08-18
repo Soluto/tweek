@@ -11,6 +11,9 @@
 .key-rules-editor-container .tab-container .tab-header {
   color: #515c66;
   display: inline-block;
+  box-sizing: border-box;
+  padding: 12px 32px;
+  height: 46px;
 }
 .key-rules-editor-container .tab-container .tab-header .tab-icon {
   float: left;
@@ -45,8 +48,7 @@
   background-color: white;
 }
 :global(.ReactTabs__TabList) {
-  display: flex;
-  flex-basis: 110px;
+  display: block;
 }
 :global(.ReactTabs__TabList) :global(.ReactTabs__Tab) {
   display: inline-block;
