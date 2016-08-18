@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
 using Couchbase.Configuration.Client;
@@ -34,7 +35,7 @@ namespace Tweek.ApiService
             var bucketName = _settings.couchbase.bucketName.ToString();
             var password = _settings.couchbase.password.ToString();
             var url = _settings.couchbase.url.ToString();
-
+            
             var cluster = new Couchbase.Cluster(new ClientConfiguration
             {
                 Servers = new List<Uri> { new Uri(url) },
@@ -43,9 +44,7 @@ namespace Tweek.ApiService
                     [bucketName] = new BucketConfiguration
                     {
                         BucketName = bucketName,
-                        Password = password,
-                        UseEnhancedDurability = true
-                    }
+                        Password = password                    }
                     
                 },
                 Serializer = () => new DefaultSerializer(
