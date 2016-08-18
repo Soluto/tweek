@@ -6,8 +6,6 @@ const KEY_RULEDEF_UPDATED = 'KEY_RULEDEF_UPDATED';
 const KEY_RULE_META_UPDATED = 'KEY_RULE_META_UPDATED';
 const KEY_SAVED = 'KEY_SAVED';
 const KEY_SAVING = 'KEY_SAVING';
-const KEY_DELETED = 'KEY_DELETED';
-const KEY_DELETING = 'KEY_DELETING';
 
 export async function downloadKey(key) {
   const { ruleDef, meta } = await (await fetch(`/api/keys/${key}`, { credentials: 'same-origin' })).json();
@@ -52,19 +50,6 @@ export function saveKey(key) {
   };
 }
 
-export function deleteKey(key) {
-  return async function (dispatch, getState) {
-    const { selectedKey: { local: keyData } } = getState();
-    dispatch({ type: KEY_DELETING });
-    await fetch(`/api/keys/${key}`, {
-      credentials: 'same-origin',
-      method: 'delete',
-      ...withJSONdata(keyData),
-    });
-    dispatch({ type: KEY_DELETED });
-  };
-}
-
 export default handleActions({
   [KEY_DOWNLOADED]: (state, { payload: { key, ...props } }) => ({
     key,
@@ -74,16 +59,16 @@ export default handleActions({
   [KEY_RULEDEF_UPDATED]: (state, { payload }) => ({
     ...state,
     local: {
-        ...state.local,
-        ruleDef: { ...state.local.ruleDef, ...payload },
-      },
+      ...state.local,
+      ruleDef: { ...state.local.ruleDef, ...payload },
+    },
   }),
   [KEY_RULE_META_UPDATED]: (state, { payload }) => ({
     ...state,
     local: {
-          ...state.local,
-          meta: payload,
-        },
+      ...state.local,
+      meta: payload,
+    },
   }),
   [KEY_SAVED]: (state) => ({
     ...state,
@@ -93,13 +78,5 @@ export default handleActions({
   [KEY_SAVING]: (state) => ({
     ...state,
     isSaving: true,
-  }),
-  [KEY_DELETED]: (state) => ({
-    ...state,
-    isDeleting: false,
-  }),
-  [KEY_DELETING]: (state) => ({
-    ...state,
-    isDeleting: true,
   }),
 }, null);

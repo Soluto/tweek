@@ -4,6 +4,7 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import KeyRulesEditor from '../KeyRulesEditor/KeyRulesEditor';
 import * as keysActions from '../../ducks/selectedKey';
+import { deleteKey } from '../../ducks/keys';
 import * as tagActions from '../../ducks/tags';
 import style from './KeyPage.css';
 import { diff } from 'deep-diff';
@@ -34,7 +35,7 @@ const KeyModificationDetails = wrapComponentWithClass(({ modifyCompareUrl, modif
 
 export default connect((state, { params }) => (
   { selectedKey: state.selectedKey, tags: state.tags, configKey: params.splat }),
-  { ...keysActions, ...tagActions })(
+  { ...keysActions, ...tagActions, deleteKey })(
   class KeyPage extends Component {
 
     static propTypes = {
@@ -109,7 +110,7 @@ renderKeyActionButtons() {
   const hasChanges = (changes || []).length > 0;
   return (
     <div className={style['key-action-buttons-wrapper']}>
-      <button disabled={!hasChanges || isSaving || isDeleting }
+      <button disabled={!hasChanges || isSaving }
         data-state-has-changes={hasChanges}
         data-state-is-saving={isSaving}
         className={style['save-changes-button']}
@@ -117,12 +118,11 @@ renderKeyActionButtons() {
         >
         {isSaving ? 'Saving...' : 'Save changes'}
       </button>
-      <button disabled={isSaving || isDeleting }
-        data-state-is-deleting={isDeleting}
+      <button disabled={isSaving}
         className={style['delete-key-button']}
         onClick={() => this.props.deleteKey(this.props.configKey) }
         >
-        {isDeleting ? 'Deleting...' : 'Delete key'}
+        Delete key
       </button>
     </div>
   );

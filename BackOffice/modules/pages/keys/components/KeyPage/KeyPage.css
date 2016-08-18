@@ -89,10 +89,6 @@
   cursor: default;
   background-color: gray;
 }
-.key-viewer-container .key-action-buttons-wrapper .delete-key-button[data-state-is-deleting=true],
-.key-viewer-container .key-action-buttons-wrapper .delete-key-button[data-state-is-deleting=true]:disabled {
-  background-color: green;
-}
 .key-viewer-container .key-header {
   position: relative;
   background-color: white;

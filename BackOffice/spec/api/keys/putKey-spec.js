@@ -33,6 +33,10 @@ describe('putKey', () => {
   beforeEach(() => {
     const responseSendMock = jest.fn(async () => { });
     expressResponseMock.send = responseSendMock;
+
+    rulesRepositoryMock.updateRule = jest.fn(async () => { });
+    metaRepositoryMock.updateRuleMeta = jest.fn(async () => { });
+    tagsRepositoryMock.mergeNewTags = jest.fn(async () => { });
   });
 
   it('should call rulesRepository, metaRepository, tagsRepository once at this order', async () => {
@@ -71,10 +75,6 @@ describe('putKey', () => {
 
   it('should call rulesRepository with correct parameters', async () => {
     // Arrange
-    rulesRepositoryMock.updateRule = jest.fn(async () => { });
-    metaRepositoryMock.updateRuleMeta = jest.fn(async () => { });
-    tagsRepositoryMock.mergeNewTags = jest.fn(async () => { });
-
     const paramsMock = {
       splat: validKeyPath,
     };
@@ -97,10 +97,6 @@ describe('putKey', () => {
 
   it('should call metaRepository with correct parameters', async () => {
     // Arrange
-    rulesRepositoryMock.updateRule = jest.fn(async () => { });
-    metaRepositoryMock.updateRuleMeta = jest.fn(async () => { });
-    tagsRepositoryMock.mergeNewTags = jest.fn(async () => { });
-
     const paramsMock = {
       splat: validKeyPath,
     };
@@ -123,10 +119,6 @@ describe('putKey', () => {
 
   it('should call tagsRepository with correct parameters', async () => {
     // Arrange
-    rulesRepositoryMock.updateRule = jest.fn(async () => { });
-    metaRepositoryMock.updateRuleMeta = jest.fn(async () => { });
-    tagsRepositoryMock.mergeNewTags = jest.fn(async () => { });
-
     const expectedTags = metaMock.tags.map(x => ({ name: x }));
 
     const paramsMock = {
@@ -150,10 +142,6 @@ describe('putKey', () => {
 
   it('should call express response once with correct parameters', async () => {
     // Arrange
-    rulesRepositoryMock.updateRule = jest.fn(async () => { });
-    metaRepositoryMock.updateRuleMeta = jest.fn(async () => { });
-    tagsRepositoryMock.mergeNewTags = jest.fn(async () => { });
-
     const paramsMock = {
       splat: validKeyPath,
     };
@@ -175,10 +163,6 @@ describe('putKey', () => {
 
   it('should call rulesRepository, metaRepository, tagsRepository with default author if author wasnt given', async () => {
     // Arrange
-    rulesRepositoryMock.updateRule = jest.fn(async () => { });
-    metaRepositoryMock.updateRuleMeta = jest.fn(async () => { });
-    tagsRepositoryMock.mergeNewTags = jest.fn(async () => { });
-
     const paramsMock = {
       splat: validKeyPath,
     };
