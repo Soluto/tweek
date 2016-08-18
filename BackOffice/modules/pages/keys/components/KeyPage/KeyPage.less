@@ -12,16 +12,18 @@
   flex-direction: column;
   .key-action-buttons-wrapper {
     text-align: right;
-    direction: rtl;
+    @key-action-button-width: 125px;
     .save-changes-button {
       .metro-button;
+      width: @key-action-button-width;
+      margin-right: 10px;
       &[data-state-is-saving=true], &[data-state-is-saving=true]:disabled {
         background-color: green;
       }
     }
     .delete-key-button {
       .metro-button;
-      margin-right: 10px;
+      width: @key-action-button-width;
       &[data-state-is-deleting=true], &[data-state-is-deleting=true]:disabled {
         background-color: green;
       }

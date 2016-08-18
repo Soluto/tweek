@@ -17,7 +17,6 @@
 }
 .key-viewer-container .key-action-buttons-wrapper {
   text-align: right;
-  direction: rtl;
 }
 .key-viewer-container .key-action-buttons-wrapper .save-changes-button {
   vertical-align: top;
@@ -29,11 +28,14 @@
   outline: 0;
   padding-bottom: 2px;
   border-radius: 14px;
+  direction: ltr;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
+  width: 125px;
+  margin-right: 10px;
 }
 .key-viewer-container .key-action-buttons-wrapper .save-changes-button:hover {
   background-color: #007acc;
@@ -64,12 +66,13 @@
   outline: 0;
   padding-bottom: 2px;
   border-radius: 14px;
+  direction: ltr;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
-  margin-right: 10px;
+  width: 125px;
 }
 .key-viewer-container .key-action-buttons-wrapper .delete-key-button:hover {
   background-color: #007acc;
