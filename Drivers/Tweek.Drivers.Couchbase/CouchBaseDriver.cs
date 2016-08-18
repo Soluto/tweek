@@ -1,6 +1,7 @@
 ﻿using Engine.Drivers.Context;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -40,53 +41,43 @@ namespace Tweek.Drivers.CouchbaseDriver
             return _bucket;
         }
 
+        public async Task InsertOrUpdate(string key, 
+            Func<IDictionary<string, string>, IDictionary<string, string>> updateFn)
+        {
+            var bucket = GetOrOpenBucket();
+            IOperationResult<IDictionary<string,string>> result = null;
+            var cas = (ulong)0;
+            if (!await bucket.ExistsAsync(key))
+            {
+                var contextWithCreationDate = updateFn(new Dictionary<string, string>
+                {
+                    ["@CreationDate"] = DateTimeOffset.UtcNow.ToString()
+                });
+                result = await bucket.UpsertAsync(key, contextWithCreationDate, cas);
+            }
+            while (!(result?.Success ?? false) && cas != result?.Cas)
+            {
+                var doc = bucket.GetDocument<Dictionary<string, string>>(key);
+                var newData = updateFn(doc.Content);
+                cas = doc.Document.Cas;
+                result = await bucket.UpsertAsync(key, newData, cas);
+            }
+            if (!result.Success)
+            {
+                throw result.Exception;
+            }
+        }
+
         public async Task RemoveFromContext(Identity identity, string key)
         {
             var keyIdentity = GetKey(identity);
-            var bucket = GetOrOpenBucket();
-
-            if (await bucket.ExistsAsync(keyIdentity))
-            {
-                string query = $"UPDATE `{_bucketName}` USE KEYS \"{keyIdentity}\" UNSET `{key}`";
-                var result = await bucket.QueryAsync<dynamic>(query);
-                if (!result.Success)
-                {
-                    throw new Exception(query, result.Exception);
-                }
-            }
+            await InsertOrUpdate(keyIdentity, dictionary => dictionary.ToImmutableDictionary().Remove(key));
         }
 
         public async Task AppendContext(Identity identity, Dictionary<string, string> context)
         {
             var key = GetKey(identity);
-            var bucket = GetOrOpenBucket();
-            
-            if (!await bucket.ExistsAsync(key))
-            {
-                var contextWithCreationDate  = context.ContainsKey("@CreationDate") ? context : context
-                    .Concat(new[] { new KeyValuePair<string, string>("@CreationDate", DateTimeOffset.UtcNow.ToString()) })
-                    .ToDictionary(x => x.Key, x => x.Value);
-
-                var result = await bucket.UpsertAsync(key, contextWithCreationDate);
-                if (!result.Success)
-                {
-                    Trace.TraceError(result.Message);
-                    Trace.TraceError(result.Exception.ToString() ?? "");
-                    throw (result.Exception ?? new Exception(result.Message));
-                }
-
-            }
-            else
-            {
-
-                string query = $"UPDATE `{_bucketName}` USE KEYS \"{key}\" SET {string.Join(", ",context.Select(x=>$"`{x.Key}` = \"{x.Value}\""))}";
-                var result = await bucket.QueryAsync<dynamic>(query);
-                if (!result.Success)
-                {
-                    throw new Exception(query, result.Exception);
-                }
-
-            }
+            await InsertOrUpdate(key, dictionary => dictionary.ToImmutableDictionary().SetItems(context));
         }
 
         public async Task<Dictionary<string, string>> GetContext(Identity identity)
