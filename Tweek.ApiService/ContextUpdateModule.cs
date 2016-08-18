@@ -18,7 +18,7 @@ namespace Tweek.ApiService
 
         public ContextUpdateModule(IContextDriver driver) : base(PREFIX)
         {
-            Post["/{identityType}/{identityId}", runAsync: true] = async (@params, ct) =>
+            Post["/{identityType}/{identityId*}", runAsync: true] = async (@params, ct) =>
             {
                 string identityType = @params.identityType;
                 string identityId = @params.identityId;
