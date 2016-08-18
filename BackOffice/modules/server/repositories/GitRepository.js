@@ -44,6 +44,7 @@ class GitRepository {
   }
 
   async readFile(fileName) {
+    console.log('git read', fileName);
     await this._repoPromise;
     const fileContent = (await fs.readFile(`${this._localPath}/${fileName}`)).toString();
 
@@ -67,7 +68,7 @@ class GitRepository {
 
   updateFile = synchronized(async function (fileName, payload, { name, email }) {
     const repo = await this._repoPromise;
-    console.log('start updating');
+    console.log('git update', fileName);
 
     await repo.fetchAll(this._defaultGitOperationSettings);
 
@@ -79,8 +80,8 @@ class GitRepository {
     }
 
     try {
-      await fs.ensureFile(`${this._localPath}/${fileName}`);
-      await fs.writeFile(`${this._localPath}/${fileName}`, payload);
+      await fs.ensureFile(this._getFileLocalPath(fileName));
+      await fs.writeFile(this._getFileLocalPath(fileName), payload);
 
       const author = Git.Signature.now(name, email);
 
@@ -88,8 +89,49 @@ class GitRepository {
         [fileName],
         author,
         this._tweekCommiterSignature,
-        `update file:${fileName}`
+        `update file: ${fileName}`
       );
+
+      await this._pushRepositoryChanges();
+    } catch (ex) {
+      console.error(ex);
+    }
+  })
+
+  deleteFile = synchronized(async function (fileName, { name, email }) {
+    const repo = await this._repoPromise;
+    console.log('git remove', fileName);
+
+    try {
+      const author = Git.Signature.now(name, email);
+
+      const repoIndex = await repo.refreshIndex();
+      await repoIndex.removeByPath(fileName);
+      await repoIndex.write();
+      const oid = await repoIndex.writeTree();
+      const parent = await repo.getHeadCommit();
+
+      await repo.createCommit(
+        'HEAD',
+        author,
+        this._tweekCommiterSignature,
+        `delete file: ${fileName}`,
+        oid,
+        [parent]
+      );
+
+      await this._pushRepositoryChanges();
+
+      await fs.remove(this._getFileLocalPath(fileName));
+    } catch (ex) {
+      console.error(ex);
+    }
+  });
+
+  async _pushRepositoryChanges() {
+    const repo = await this._repoPromise;
+    try {
+      console.log('pushing changes');
 
       const remote = await repo.getRemote('origin');
       const code = await remote.push(['refs/heads/master:refs/heads/master'],
@@ -108,11 +150,11 @@ class GitRepository {
     } catch (ex) {
       console.error(ex);
     }
-  })
+  }
 
-  deleteFile = synchronized(async function (fileName, { name, email }) {
-    return '';
-  });
+  _getFileLocalPath(fileName) {
+    return `${this._localPath}/${fileName}`;
+  }
 
   get _defaultGitOperationSettings() {
     return {
@@ -133,9 +175,9 @@ class GitRepository {
   }
 
   async _cloneAsync() {
-    console.log('start cloning', this._localPath);
     await fs.remove(this._localPath);
 
+    console.log('cloning rules repository');
     const repo = await Git.Clone(this._url, this._localPath, {
       fetchOpts: this._defaultGitOperationSettings,
     });
