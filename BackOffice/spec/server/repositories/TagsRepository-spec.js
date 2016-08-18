@@ -4,7 +4,6 @@ jest.unmock('../../../spec-mocks/server/repositories/GitRepositoryMock');
 
 import TagsRepository from '../../../modules/server/repositories/TagsRepository';
 import GitRepositoryMock from '../../../spec-mocks/server/repositories/GitRepositoryMock';
-console.log(GitRepositoryMock);
 import R from 'ramda';
 
 const chai = require('chai');

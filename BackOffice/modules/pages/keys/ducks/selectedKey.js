@@ -1,5 +1,6 @@
 import { handleActions } from 'redux-actions';
 import R from 'ramda';
+
 const KEY_DOWNLOADED = 'KEY_DOWNLOADED';
 const KEY_RULEDEF_UPDATED = 'KEY_RULEDEF_UPDATED';
 const KEY_RULE_META_UPDATED = 'KEY_RULE_META_UPDATED';
@@ -16,7 +17,7 @@ export async function downloadKey(key) {
       key,
       meta,
       ruleDef,
-    }
+    },
   };
 }
 
@@ -47,8 +48,8 @@ export function saveKey(key) {
       method: 'put',
       ...withJSONdata(keyData),
     });
-  dispatch({ type: KEY_SAVED });
-};
+    dispatch({ type: KEY_SAVED });
+  };
 }
 
 export function deleteKey(key) {
@@ -60,8 +61,8 @@ export function deleteKey(key) {
       method: 'delete',
       ...withJSONdata(keyData),
     });
-  dispatch({ type: KEY_DELETED });
-};
+    dispatch({ type: KEY_DELETED });
+  };
 }
 
 export default handleActions({
@@ -70,27 +71,35 @@ export default handleActions({
     local: R.clone(props),
     remote: R.clone(props),
   }),
-    [KEY_RULEDEF_UPDATED]: (state, { payload }) => ({
+  [KEY_RULEDEF_UPDATED]: (state, { payload }) => ({
     ...state,
-      local: {
-      ...state.local,
+    local: {
+        ...state.local,
         ruleDef: { ...state.local.ruleDef, ...payload },
       },
-    }),
-      [KEY_RULE_META_UPDATED]: (state, { payload }) => ({
+  }),
+  [KEY_RULE_META_UPDATED]: (state, { payload }) => ({
     ...state,
-        local: {
-      ...state.local,
+    local: {
+          ...state.local,
           meta: payload,
         },
-      }),
-        [KEY_SAVED]: (state) => ({
+  }),
+  [KEY_SAVED]: (state) => ({
     ...state,
-          remote: R.clone(state.local),
-          isSaving: false,
-        }),
-          [KEY_SAVING]: (state) => ({
+    remote: R.clone(state.local),
+    isSaving: false,
+  }),
+  [KEY_SAVING]: (state) => ({
     ...state,
-            isSaving: true,
-          }),
+    isSaving: true,
+  }),
+  [KEY_DELETED]: (state) => ({
+    ...state,
+    isDeleting: false,
+  }),
+  [KEY_DELETING]: (state) => ({
+    ...state,
+    isDeleting: true,
+  }),
 }, null);
