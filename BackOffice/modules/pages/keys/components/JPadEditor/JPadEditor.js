@@ -6,11 +6,9 @@ const isBrowser = typeof (window) === 'object';
 const chance = new Chance();
 
 function deleteCase(mutate, caseIndex) {
-  let isDeleteConfirmed = confirm('Are you sure?');
-
-  if (isDeleteConfirmed) {
-    mutate.in(caseIndex).delete();
-  }
+  if (confirm('Are you sure?')) {
+      mutate.in(caseIndex).delete();
+    }
 }
 
 export default ({ cases, mutate }) => {

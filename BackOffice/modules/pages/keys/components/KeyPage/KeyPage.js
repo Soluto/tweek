@@ -73,42 +73,42 @@ export default connect((state, { params }) => (
     }
 
     onDescriptionChanged(newDescription) {
-      const newMeta = { ...this.props.selectedKey.local.meta, description: newDescription };
-      this._onSelectedKeyMetaChanged(newMeta);
-    }
+  const newMeta = { ...this.props.selectedKey.local.meta, description: newDescription };
+  this._onSelectedKeyMetaChanged(newMeta);
+}
 
     onTagDeleted(deletedTagIndex) {
-      const meta = this.props.selectedKey.local.meta;
-      const newMeta = { ...meta, tags: R.remove(deletedTagIndex, 1, meta.tags) };
-      this._onSelectedKeyMetaChanged(newMeta);
-    }
+  const meta = this.props.selectedKey.local.meta;
+  const newMeta = { ...meta, tags: R.remove(deletedTagIndex, 1, meta.tags) };
+  this._onSelectedKeyMetaChanged(newMeta);
+}
 
     onTagAdded(newTagText) {
-      const meta = this.props.selectedKey.local.meta;
-      const newMeta = { ...meta, tags: [...meta.tags, newTagText] };
-      this._onSelectedKeyMetaChanged(newMeta);
-    }
+  const meta = this.props.selectedKey.local.meta;
+  const newMeta = { ...meta, tags: [...meta.tags, newTagText] };
+  this._onSelectedKeyMetaChanged(newMeta);
+}
 
     get tags() {
-      return R.map(_ => ({
+  return R.map(_ => ({
     id: _,
     text: _,
   }), this.props.selectedKey.local.meta.tags);
-    }
+}
 
     get tagsSuggestions() {
-      return this.props.tags ? this.props.tags.map(tag => tag.name) : [];
-    }
+  return this.props.tags ? this.props.tags.map(tag => tag.name) : [];
+}
 
     _onSelectedKeyMetaChanged(newMeta) {
-      this.props.updateKeyMetaDef(newMeta);
-    }
+  this.props.updateKeyMetaDef(newMeta);
+}
 
     renderKeyActionButtons() {
-      let { local, remote, isSaving, isDeleting } = this.props.selectedKey;
-      const changes = diff(local, remote);
-      const hasChanges = (changes || []).length > 0;
-      return (
+  let { local, remote, isSaving, isDeleting } = this.props.selectedKey;
+  const changes = diff(local, remote);
+  const hasChanges = (changes || []).length > 0;
+  return (
     <div className={style['key-action-buttons-wrapper']}>
       <button disabled={!hasChanges || isSaving }
         data-state-has-changes={hasChanges}
@@ -121,9 +121,7 @@ export default connect((state, { params }) => (
       <button disabled={isSaving}
         className={style['delete-key-button']}
         onClick={() => {
-          let isDeleteConfirmed = confirm('Are you sure?');
-
-          if (isDeleteConfirmed) {
+          if (confirm('Are you sure?')) {
             this.props.deleteKey(this.props.configKey);
           }
         } }
@@ -132,14 +130,14 @@ export default connect((state, { params }) => (
       </button>
     </div>
   );
-    }
+}
 
     render() {
-      const { dispatch, configKey, selectedKey } = this.props;
-      if (!selectedKey) return <div className={style['loading-message']}>loading</div>;
-      const { meta, ruleDef } = selectedKey.local;
+  const { dispatch, configKey, selectedKey } = this.props;
+  if (!selectedKey) return <div className={style['loading-message']}>loading</div>;
+  const { meta, ruleDef } = selectedKey.local;
 
-      return (
+  return (
     <div className={style['key-viewer-container']}>
       {this.renderKeyActionButtons() }
       <div className={style['key-header']}>
@@ -195,12 +193,12 @@ export default connect((state, { params }) => (
               minQueryLength={ 1 }
               allowDeleteFromEmptyInput
               classNames={{
-                tags: style['tags-container'],
-                tagInput: style['tag-input'],
-                tag: style['tag'],
-                remove: style['tag-delete-button'],
-                suggestions: style['tags-suggestion'],
-              } }
+              tags: style['tags-container'],
+              tagInput: style['tag-input'],
+              tag: style['tag'],
+              remove: style['tag-delete-button'],
+              suggestions: style['tags-suggestion'],
+            } }
             />
 
           </div>
@@ -217,4 +215,4 @@ export default connect((state, { params }) => (
 
     </div >
   );
-    } });
+} });
