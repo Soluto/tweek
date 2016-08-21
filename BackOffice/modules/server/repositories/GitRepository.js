@@ -1,6 +1,6 @@
 import Git from 'nodegit';
 import glob from 'glob';
-import synchronized from '../../utils/synchronizedFunction';
+import createLock from '../../utils/createLock';
 
 const fs = require('promisify-node')('fs-extra');
 
@@ -20,6 +20,9 @@ class GitRepository {
     this._password = settings.password;
     this._url = settings.url;
     this._localPath = settings.localPath;
+    const lock = createLock();
+    this.deleteFile = lock.synchronized(this.deleteFile);
+    this.updateFile = lock.synchronized(this.updateFile);
 
     this._tweekCommiterSignature =
       Git.Signature.now(GitRepository.TWEEK_BACKOFFICE_USER, GitRepository.TWEEK_BACKOFFICE_MAIL);
@@ -66,18 +69,12 @@ class GitRepository {
     };
   }
 
-  updateFile = synchronized(async function (fileName, payload, { name, email }) {
+  async updateFile(fileName, payload, { name, email }) {
+    const actionName = `update ${fileName}`;
     const repo = await this._repoPromise;
-    console.log('git update', fileName);
+    console.log('git', actionName);
 
-    await repo.fetchAll(this._defaultGitOperationSettings);
-
-    await repo.mergeBranches('master', 'origin/master');
-
-    if (!(await this._isSynced())) {
-      console.log('invalid repo state');
-      throw new Error('invalid repo state');
-    }
+    await this._prepareForUpdate();
 
     try {
       await fs.ensureFile(this._getFileLocalPath(fileName));
@@ -89,18 +86,21 @@ class GitRepository {
         [fileName],
         author,
         this._tweekCommiterSignature,
-        `update file: ${fileName}`
+        actionName
       );
 
-      await this._pushRepositoryChanges();
+      await this._pushRepositoryChanges(actionName);
     } catch (ex) {
       console.error(ex);
     }
-  })
+  }
 
-  deleteFile = synchronized(async function (fileName, { name, email }) {
+  async deleteFile(fileName, { name, email }) {
+    const actionName = `delete ${fileName}`;
     const repo = await this._repoPromise;
-    console.log('git remove', fileName);
+    console.log('git', actionName);
+
+    await this._prepareForUpdate();
 
     try {
       const author = Git.Signature.now(name, email);
@@ -115,23 +115,36 @@ class GitRepository {
         'HEAD',
         author,
         this._tweekCommiterSignature,
-        `delete file: ${fileName}`,
+        actionName,
         oid,
         [parent]
       );
 
-      await this._pushRepositoryChanges();
+      await this._pushRepositoryChanges(actionName);
 
       await fs.remove(this._getFileLocalPath(fileName));
     } catch (ex) {
       console.error(ex);
     }
-  });
+  }
 
-  async _pushRepositoryChanges() {
+  async _prepareForUpdate() {
+    const repo = await this._repoPromise;
+
+    await repo.fetchAll(this._defaultGitOperationSettings);
+
+    await repo.mergeBranches('master', 'origin/master');
+
+    if (!(await this._isSynced())) {
+      console.log('invalid repo state');
+      throw new Error('invalid repo state');
+    }
+  }
+
+  async _pushRepositoryChanges(actionName) {
     const repo = await this._repoPromise;
     try {
-      console.log('pushing changes');
+      console.log('pushing changes:', actionName);
 
       const remote = await repo.getRemote('origin');
       const code = await remote.push(['refs/heads/master:refs/heads/master'],
@@ -140,13 +153,13 @@ class GitRepository {
       if (!(await this._isSynced())) {
         console.log('push failed, attempting to reset');
         const remoteCommit = (await repo.getBranchCommit('remotes/origin/master'));
-        return await Git.Reset.reset(repo, remoteCommit, 3);
+        await Git.Reset.reset(repo, remoteCommit, 3);
 
         console.log('reset worked');
         throw new Error('fail to push changes');
       }
 
-      console.log(`push completed`);
+      console.log('push completed');
     } catch (ex) {
       console.error(ex);
     }
