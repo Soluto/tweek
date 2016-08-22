@@ -1,6 +1,7 @@
 import { handleActions } from 'redux-actions';
 import R from 'ramda';
 import { push } from 'react-router-redux';
+import { BLANK_KEY } from './blankKeyDefinition';
 
 const KEY_OPENED = 'KEY_OPENED';
 const KEY_RULEDEF_UPDATED = 'KEY_RULEDEF_UPDATED';
@@ -9,21 +10,8 @@ const KEY_SAVED = 'KEY_SAVED';
 const KEY_SAVING = 'KEY_SAVING';
 const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
 
-const BLANK_KEY = {
-  ruleDef: {
-    source: '[]',
-    type: 'jpad',
-  },
-  meta: {
-    displayName: '',
-    description: '',
-    tags: [],
-  },
-  key: '_blank',
-};
-
 export async function openKey(key) {
-  if (key === '_blank') {
+  if (key === BLANK_KEY.key) {
     return {
       type: KEY_OPENED, payload: BLANK_KEY,
     };
@@ -67,6 +55,16 @@ export function saveKey() {
     const { selectedKey: { local: keyData, key } } = getState();
 
     const savedKey = keyData.key || key;
+    if (!saveKey) {
+      alert('Key name cannot be empty');
+      return;
+    }
+
+    if (saveKey === BLANK_KEY.key) {
+      alert('Invalid key name');
+      return;
+    }
+
     dispatch({ type: KEY_SAVING });
     await fetch(`/api/keys/${savedKey}`, {
       credentials: 'same-origin',
@@ -74,27 +72,27 @@ export function saveKey() {
       ...withJSONdata(keyData),
     });
 
-    dispatch({ type: KEY_SAVED });
-    dispatch({ type: 'KEY_ADDED', payload: keyData.key });
-    dispatch(push(`/keys/${keyData.key}`));
-  };
+  dispatch({ type: KEY_SAVED });
+  dispatch({ type: 'KEY_ADDED', payload: keyData.key });
+  dispatch(push(`/keys/${keyData.key}`));
+};
 }
 
 export default handleActions({
   [KEY_OPENED]: (state, { payload: { key, ...props } }) => {
-    return {
-      key,
-      local: R.clone(props),
-      remote: R.clone(props),
-    };
+  return {
+    key,
+    local: R.clone(props),
+    remote: R.clone(props),
+  };
+},
+[KEY_RULEDEF_UPDATED]: (state, { payload }) => ({
+  ...state,
+  local: {
+    ...state.local,
+    ruleDef: { ...state.local.ruleDef, ...payload },
   },
-  [KEY_RULEDEF_UPDATED]: (state, { payload }) => ({
-    ...state,
-    local: {
-      ...state.local,
-      ruleDef: { ...state.local.ruleDef, ...payload },
-    },
-  }),
+}),
   [KEY_RULE_META_UPDATED]: (state, { payload }) => ({
     ...state,
     local: {
@@ -102,23 +100,23 @@ export default handleActions({
       meta: payload,
     },
   }),
-  [KEY_SAVED]: ({ local: { key, ...localData }, ...otherState }) => ({
-    key,
-    ...otherState,
-    local: localData,
-    remote: R.clone(localData),
-    isSaving: false,
-  }),
-  [KEY_SAVING]: (state) => ({
-    ...state,
-    isSaving: true,
-  }),
-  [KEY_NAME_CHANGE]: ({ local: { key, ...localData }, ...otherState }, { payload }) => ({
-    ...otherState,
-    local: {
-      ...localData,
-      meta: { ...localData.meta, displayName: payload },
-      ...(payload === '' ? {} : { key: payload }), // get displayName from payload
-    },
-  }),
+    [KEY_SAVED]: ({ local: { key, ...localData }, ...otherState }) => ({
+      key,
+      ...otherState,
+      local: localData,
+      remote: R.clone(localData),
+      isSaving: false,
+    }),
+      [KEY_SAVING]: (state) => ({
+        ...state,
+        isSaving: true,
+      }),
+        [KEY_NAME_CHANGE]: ({ local: { key, ...localData }, ...otherState }, { payload }) => ({
+          ...otherState,
+          local: {
+            ...localData,
+            meta: { ...localData.meta, displayName: payload },
+            ...(payload === '' ? {} : { key: payload }), // get displayName from payload
+        },
+        }),
 }, null);
