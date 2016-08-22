@@ -4,7 +4,6 @@
 }
 
 @text-color: #515c66;
-@sub-text-color: #a5a5a5;
 .key-viewer-container {
   padding: 16px;
   display: flex;
@@ -16,17 +15,35 @@
     .save-changes-button {
       .metro-button;
       width: @key-action-button-width;
-      margin-right: 10px;
       &[data-state-is-saving=true], &[data-state-is-saving=true]:disabled {
         background-color: green;
       }
     }
     .delete-key-button {
       .metro-button;
+      margin-right: 10px;
       width: @key-action-button-width;
+      text-decoration: underline;
+      background-color: transparent;
+      color: gray;
+      &:hover {
+        background-color: rgba(0, 0, 0, .05);
+      }
+      &:active {
+        background-color: rgba(0, 0, 0, .2);
+      }
+      &:disabled {
+        background-color: transparent;
+        &:hover, &:active {
+          cursor: default;
+          background-color: transparent;
+        }
+      }
     }
   }
   .key-header {
+    display: flex;
+    flex-direction: column;
     position: relative;
     background-color: white;
     border-radius: 5px;
@@ -47,46 +64,48 @@
       font-size: 20px;
     }
     .display-name-wrapper {
-      min-height: 34px;
-      border: 1px solid transparent;
       @display-name-font-size: 22px;
-      .display-name {
-        font-size: @display-name-font-size;
-        color: @text-color;
-        margin-left: 4px;
+      .display-name-container {
+        min-height: 34px;
+        display: flex;
+        flex-grow: 1;
+      }
+      .display-name-form {
+        display: flex;
+        flex-grow: 1;
       }
       .display-name-input {
         .metro-textbox;
         font-size: @display-name-font-size;
-        color: @text-color;
+        font-weight: 300;
+        display: flex;
+        flex-grow: 1;
         width: 100%;
-        box-sizing: border-box;
+      }
+      .key-name-input {
+        .display-name-input;
+        margin-bottom: 20px;
+      }
+      .display-name-text {
+        font-size: @display-name-font-size;
+        display: flex;
+        flex-grow: 1;
       }
     }
-    .rule-sub-text {
-      color: @sub-text-color;
+    .key-full-path {
+      color: #a5a5a5;
       font-size: 14px;
       margin-left: 5px;
       margin-bottom: 4px;
       .user-select(none);
-      a {
-        color: @sub-text-color;
-        text-decoration: none;
-        label {
-          cursor: pointer;
-        }
-        &:hover, &:active {
-          text-decoration: underline;
-        }
-        &:visited {
-          color: @sub-text-color;
-        }
+      .actual-path {
+        .user-select(text);
       }
-      .actual-sub-text {}
     }
     .key-description-and-tags-wrapper {
       display: flex;
       flex-direction: row;
+      flex-grow: 1;
       margin-top: 10px;
       .description-input {
         resize: none;
@@ -109,82 +128,6 @@
         border-left: 1px solid lightgray;
         padding-left: 20px;
         margin-left: 20px;
-        .tags-container {
-          &:before {
-            content: 'Tags';
-            color: @sub-text-color;
-            float: left;
-            font-size: 14px;
-            margin-right: 10px;
-            margin-top: 10px;
-          }
-          .tag {
-            border: 1px solid #ddd;
-            background-color: #eeeeee;
-            font-size: 12px;
-            display: inline-block;
-            padding: 5px;
-            margin: 5px 5px 0 0;
-            border-radius: 2px;
-            .tag-delete-button {
-              display: block;
-              float: right;
-              margin-top: 1px;
-              color: #aaa;
-              margin-left: 6px;
-              padding-left: 1px;
-              padding-bottom: 4px;
-              width: 9px;
-              height: 9px;
-              .transitioned();
-              &:hover {
-                cursor: pointer;
-                color: #939393;
-              }
-            }
-          }
-          .tag-input {
-            display: inline-block;
-            font-size: 12px;
-            input, input:focus {
-              .tag;
-              outline: none;
-            }
-          }
-          .tags-suggestion {
-            position: absolute;
-            z-index: 1;
-            ul {
-              list-style-type: none;
-              box-shadow: .05em .01em .5em rgba(0, 0, 0, .2);
-              background: white;
-              width: 200px;
-              li {
-                border-bottom: 1px solid #ddd;
-                padding: 5px 10px;
-                margin: 0;
-                .transitioned();
-                mark {
-                  text-decoration: underline;
-                  background: none;
-                  font-weight: 600;
-                }
-                &:hover {
-                  cursor: pointer;
-                  background-color: #eeeeee;
-                }
-                &:active, &:global(.active):active {
-                  cursor: pointer;
-                  background-color: #d9d9d9;
-                }
-                &:global(.active) {
-                  cursor: pointer;
-                  background-color: #eeeeee;
-                }
-              }
-            }
-          }
-        }
       }
     }
   }
