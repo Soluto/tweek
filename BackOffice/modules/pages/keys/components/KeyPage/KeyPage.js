@@ -42,22 +42,34 @@ export default connect((state, { params, route }) => (
       }
     }
 
-    onKeyNameChanged(newKeyName) {
+    _onKeyNameChanged(newKeyName) {
       this.props.updateKeyName(newKeyName);
     }
 
-    onDisplayNameChanged(newDisplayName) {
+    _onDisplayNameChanged(newDisplayName) {
       const newMeta = { ...this.props.selectedKey.local.meta, displayName: newDisplayName };
       this._onSelectedKeyMetaChanged(newMeta);
     }
 
-    onDescriptionChanged(newDescription) {
+    _onDescriptionChanged(newDescription) {
       const newMeta = { ...this.props.selectedKey.local.meta, description: newDescription };
       this._onSelectedKeyMetaChanged(newMeta);
     }
 
     _onSelectedKeyMetaChanged(newMeta) {
       this.props.updateKeyMetaDef(newMeta);
+    }
+
+    _onTagAdded(newTagText) {
+      const meta = this.props.selectedKey.local.meta;
+      const newMeta = { ...meta, tags: [...meta.tags, newTagText] };
+      this._onSelectedKeyMetaChanged(newMeta);
+    }
+
+    _onTagDeleted(deletedTagIndex) {
+      const meta = this.props.selectedKey.local.meta;
+      const newMeta = { ...meta, tags: R.remove(deletedTagIndex, 1, meta.tags) };
+      this._onSelectedKeyMetaChanged(newMeta);
     }
 
     renderKeyActionButtons(isInAddMode) {
@@ -108,12 +120,12 @@ export default connect((state, { params, route }) => (
           {isInAddMode ?
             <input type="text"
               className={style['key-name-input']}
-              onChange={ (e) => this.onKeyNameChanged(e.target.value) }
+              onChange={ (e) => this._onKeyNameChanged(e.target.value) }
               value = { key }
               placeholder="Enter key full path"
             />
             :
-            <EditableText onTextChanged={(text) => this:: this.onDisplayNameChanged(text) }
+            <EditableText onTextChanged={(text) => this:: this._onDisplayNameChanged(text) }
               placeHolder="Enter key display name"
               value={meta.displayName}
               classNames={{
@@ -136,7 +148,7 @@ export default connect((state, { params, route }) => (
         <div className={style['key-description-and-tags-wrapper']}>
 
           <TextareaAutosize
-            onChange={ (e) => this.onDescriptionChanged(e.target.value) }
+            onChange={ (e) => this._onDescriptionChanged(e.target.value) }
             value = { meta.description }
             placeholder="Write key description"
             className={style['description-input']}
@@ -144,7 +156,9 @@ export default connect((state, { params, route }) => (
 
           <div className={style['tags-wrapper']}>
 
-            <KeyTags/>
+            <KeyTags onTagAdded={ this::this._onTagAdded }
+              onTagDeleted={ this::this._onTagDeleted }
+            />
 
           </div>
 
