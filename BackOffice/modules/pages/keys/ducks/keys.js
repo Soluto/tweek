@@ -2,6 +2,7 @@ import { handleActions } from 'redux-actions';
 import R from 'ramda';
 
 const KEYS_UPDATED = 'KEYS_UPDATED';
+const KEY_ADDING = 'KEY_ADDING';
 const KEY_ADDED = 'KEY_ADDED';
 const KEY_DELETED = 'KEY_DELETED';
 const KEY_DELETING = 'KEY_DELETING';
@@ -10,26 +11,8 @@ import { withJSONdata } from '../../../utils/http';
 import { push } from 'react-router-redux';
 
 export const addKey = (key) => async function (dispatch) {
-  dispatch({ type: 'ADDING_KEY', payload: key });
-  const meta = {
-    displayName: `${key}`,
-    description: '',
-    tags: [],
-  };
-
-  const ruleDef = {
-    source: '[]',
-    type: 'jpad',
-  };
-  dispatch({ type: KEY_ADDED, payload: key });
-  dispatch({ type: 'KEY_DOWNLOADED', payload: { key, meta, ruleDef } });
-  dispatch(push(`/keys/${key}`));
-
-  await fetch(`/api/keys/${key}`, {
-    credentials: 'same-origin',
-    method: 'put',
-    ...withJSONdata({ meta, ruleDef }),
-  });
+  dispatch(push(`/keys/_blank`));
+  dispatch({ type: KEY_ADDING, payload: key });
 };
 
 export const deleteKey = (key) => async function (dispatch) {

@@ -188,10 +188,16 @@ class GitRepository {
   }
 
   async _cloneAsync() {
+    let repo;
+    // const path = `${this._localPath}//.git`;
+    // console.log('open git repo', path);
+    // repo = await Git.Repository.open(path);
+    // return repo;
+    
     await fs.remove(this._localPath);
 
     console.log('cloning rules repository');
-    const repo = await Git.Clone(this._url, this._localPath, {
+    repo = await Git.Clone(this._url, this._localPath, {
       fetchOpts: this._defaultGitOperationSettings,
     });
 
