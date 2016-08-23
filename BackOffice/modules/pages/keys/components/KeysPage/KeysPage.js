@@ -10,9 +10,6 @@ import Autosuggest from 'react-autosuggest';
 import R from 'ramda';
 import { inputKeyboardHandlers } from '../../../../utils/input';
 
-const getKeyPrefix = (path) => R.slice(0, -1, path.split('/')).join('/');
-const getSugesstions = R.pipe(R.map(getKeyPrefix), R.uniq(), R.filter(x => x !== ''));
-
 export default connect(state => state, { ...actions })(class KeysPage extends Component {
   constructor(props) {
     super(props);

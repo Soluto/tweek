@@ -14,6 +14,7 @@
   display: flex;
   flex-grow: 1;
   flex-direction: column;
+  flex-shrink: 0;
 }
 .key-viewer-container .key-action-buttons-wrapper {
   text-align: right;
@@ -109,16 +110,13 @@
 .key-viewer-container .key-header {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   position: relative;
   background-color: white;
   border-radius: 5px;
   border: 1px solid lightgray;
   margin-top: 16px;
-  clear: both;
   padding: 20px;
-  min-height: 168px;
-  overflow-y: auto;
-  overflow-x: hidden;
   box-sizing: border-box;
 }
 .key-viewer-container .key-header .modification-data {
@@ -156,8 +154,8 @@
   font-size: 22px;
   font-weight: 300;
   display: flex;
-  flex-grow: 1;
   width: 100%;
+  flex-grow: 1;
 }
 .key-viewer-container .key-header .display-name-wrapper .display-name-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -180,9 +178,9 @@
   font-size: 22px;
   font-weight: 300;
   display: flex;
-  flex-grow: 1;
   width: 100%;
-  margin-bottom: 20px;
+  flex-grow: 1;
+  margin-bottom: 10px;
 }
 .key-viewer-container .key-header .display-name-wrapper .key-name-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -192,11 +190,86 @@
   display: flex;
   flex-grow: 1;
 }
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper {
+  margin-bottom: 13px;
+}
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .input {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  width: auto;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+}
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .suggestionsContainer {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  max-height: 400px;
+  overflow-y: auto;
+  width: 400px;
+  z-index: 2;
+  border: 1px solid lightgray;
+}
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .suggestion {
+  background-color: white;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  flex-shrink: 0;
+  transition: all 0.2s ease-in-out;
+}
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .suggestion:hover {
+  cursor: pointer;
+  background-color: #ededed;
+}
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .suggestion:active {
+  background-color: #dfdfdf;
+}
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .suggestionFocused {
+  background-color: #dfdfdf;
+}
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .input {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  width: auto;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  font-size: 22px;
+  font-weight: 300;
+  display: flex;
+  width: 100%;
+  flex-grow: 1;
+}
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
 .key-viewer-container .key-header .key-full-path {
   color: #a5a5a5;
   font-size: 14px;
   margin-left: 5px;
-  margin-bottom: 4px;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
@@ -213,23 +286,32 @@
   flex-direction: row;
   flex-grow: 1;
   margin-top: 10px;
+  max-height: 100px;
 }
-.key-viewer-container .key-header .key-description-and-tags-wrapper .description-input {
+.key-viewer-container .key-header .key-description-and-tags-wrapper .key-description-wrapper {
+  height: 100px;
+}
+.key-viewer-container .key-header .key-description-and-tags-wrapper .key-description-wrapper .description-input {
   resize: none;
   font-size: 14px;
   color: #515c66;
   min-width: 400px;
-  min-height: 40px;
+  min-height: 100px;
+  max-height: 100px;
   border: 1px solid lightgray;
   border-radius: 5px;
   outline: none;
   padding: 10px;
+  box-sizing: border-box;
 }
 .key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper {
+  display: flex;
+  width: 0;
   flex-direction: column;
   position: relative;
-  display: flex;
   flex-grow: 1;
+  max-height: 100px;
+  overflow-y: auto;
   padding-top: 0;
   border-left: 1px solid lightgray;
   padding-left: 20px;

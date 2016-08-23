@@ -1,0 +1,49 @@
+.auto-suggest-basic .input {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  width: auto;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+}
+.auto-suggest-basic .input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.auto-suggest-basic .suggestionsContainer {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  max-height: 400px;
+  overflow-y: auto;
+  width: 400px;
+  z-index: 2;
+  border: 1px solid lightgray;
+}
+.auto-suggest-basic .suggestion {
+  background-color: white;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  flex-shrink: 0;
+  transition: all 0.2s ease-in-out;
+}
+.auto-suggest-basic .suggestion:hover {
+  cursor: pointer;
+  background-color: #ededed;
+}
+.auto-suggest-basic .suggestion:active {
+  background-color: #dfdfdf;
+}
+.auto-suggest-basic .suggestionFocused {
+  background-color: #dfdfdf;
+}

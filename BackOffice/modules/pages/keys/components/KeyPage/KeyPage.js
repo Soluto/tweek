@@ -12,9 +12,13 @@ import TextareaAutosize from 'react-autosize-textarea';
 import KeyTags from './KeyTags/KeyTags';
 import EditableText from './EditableText/EditableText';
 import KeyModificationDetails from './KeyModificationDetails/KeyModificationDetails';
+import Autosuggest from 'react-autosuggest';
+
+const getKeyPrefix = (path) => R.slice(0, -1, path.split('/')).join('/');
+const getSugesstions = R.pipe(R.map(getKeyPrefix), R.uniq(), R.filter(x => x !== ''));
 
 export default connect((state, { params, route }) => (
-  { selectedKey: state.selectedKey, configKey: route.isInAddMode ? '_blank' : params.splat, isInAddMode: route.isInAddMode }),
+  { keysList: state.keys, selectedKey: state.selectedKey, configKey: route.isInAddMode ? '_blank' : params.splat, isInAddMode: route.isInAddMode }),
   { ...keysActions, deleteKey })(
   class KeyPage extends Component {
 
@@ -52,31 +56,35 @@ export default connect((state, { params, route }) => (
     }
 
     _onDescriptionChanged(newDescription) {
-      const newMeta = { ...this.props.selectedKey.local.meta, description: newDescription };
-      this._onSelectedKeyMetaChanged(newMeta);
-    }
+  const newMeta = { ...this.props.selectedKey.local.meta, description: newDescription };
+  this._onSelectedKeyMetaChanged(newMeta);
+}
 
     _onSelectedKeyMetaChanged(newMeta) {
-      this.props.updateKeyMetaDef(newMeta);
-    }
+  this.props.updateKeyMetaDef(newMeta);
+}
 
     _onTagAdded(newTagText) {
-      const meta = this.props.selectedKey.local.meta;
-      const newMeta = { ...meta, tags: [...meta.tags, newTagText] };
-      this._onSelectedKeyMetaChanged(newMeta);
-    }
+  const meta = this.props.selectedKey.local.meta;
+  const newMeta = { ...meta, tags: [...meta.tags, newTagText] };
+  this._onSelectedKeyMetaChanged(newMeta);
+}
 
     _onTagDeleted(deletedTagIndex) {
-      const meta = this.props.selectedKey.local.meta;
-      const newMeta = { ...meta, tags: R.remove(deletedTagIndex, 1, meta.tags) };
-      this._onSelectedKeyMetaChanged(newMeta);
-    }
+  const meta = this.props.selectedKey.local.meta;
+  const newMeta = { ...meta, tags: R.remove(deletedTagIndex, 1, meta.tags) };
+  this._onSelectedKeyMetaChanged(newMeta);
+}
+
+    _keyNameSuggestions() {
+  return getSugesstions(this.props.keysList).sort();
+}
 
     renderKeyActionButtons(isInAddMode) {
-      const { local, remote, isSaving, isDeleting } = this.props.selectedKey;
-      const changes = diff(local, remote);
-      const hasChanges = (changes || []).length > 0;
-      return (
+  const { local, remote, isSaving, isDeleting } = this.props.selectedKey;
+  const changes = diff(local, remote);
+  const hasChanges = (changes || []).length > 0;
+  return (
     <div className={style['key-action-buttons-wrapper']}>
       {!isInAddMode ?
         <button disabled={isSaving}
@@ -99,14 +107,20 @@ export default connect((state, { params, route }) => (
       </button>
     </div>
   );
-    }
+}
 
     render() {
-      const { configKey, selectedKey, isInAddMode } = this.props;
-      if (!selectedKey) return <div className={style['loading-message']}>loading</div>;
-      const { meta, ruleDef, key = '' } = selectedKey.local;
+  const { configKey, selectedKey, isInAddMode } = this.props;
+  if (!selectedKey) return <div className={style['loading-message']}>loading</div>;
+  const { meta, ruleDef, key = '' } = selectedKey.local;
 
-      return (
+  const inputProps = {
+    placeholder: 'Enter key full path',
+    value: key,
+    onChange: (_, { newValue }) => this._onKeyNameChanged(newValue),
+  };
+
+  return (
     <div className={style['key-viewer-container']}>
       {this.renderKeyActionButtons(isInAddMode) }
       <div className={style['key-header']}>
@@ -118,22 +132,25 @@ export default connect((state, { params, route }) => (
 
         <div className={style['display-name-wrapper']}>
           {isInAddMode ?
-            <input type="text"
-              className={style['key-name-input']}
-              onChange={ (e) => this._onKeyNameChanged(e.target.value) }
-              value = { key }
-              placeholder="Enter key full path"
+            <div className={style['auto-suggest-wrapper']}>
+            <Autosuggest
+              suggestions={ this._keyNameSuggestions() }
+              getSuggestionValue={(x) => x}
+              renderSuggestion={x => <span>{x}</span>}
+              inputProps={inputProps}
+              theme={style}
             />
+              </div>
             :
             <EditableText onTextChanged={(text) => this:: this._onDisplayNameChanged(text) }
               placeHolder="Enter key display name"
               value={meta.displayName}
               classNames={{
-                container: style['display-name-container'],
-                input: style['display-name-input'],
-                text: style['display-name-text'],
-                form: style['display-name-form'],
-              }}
+            container: style['display-name-container'],
+            input: style['display-name-input'],
+            text: style['display-name-text'],
+            form: style['display-name-form'],
+          }}
             />
           }
         </div>
@@ -147,17 +164,19 @@ export default connect((state, { params, route }) => (
 
         <div className={style['key-description-and-tags-wrapper']}>
 
-          <TextareaAutosize
-            onChange={ (e) => this._onDescriptionChanged(e.target.value) }
-            value = { meta.description }
-            placeholder="Write key description"
-            className={style['description-input']}
-          />
+          <div className={style['key-description-wrapper']}>
+            <TextareaAutosize
+              onChange={ (e) => this._onDescriptionChanged(e.target.value) }
+              value = { meta.description }
+              placeholder="Write key description"
+              className={style['description-input']}
+            />
+          </div>
 
           <div className={style['tags-wrapper']}>
 
-            <KeyTags onTagAdded={ this::this._onTagAdded }
-              onTagDeleted={ this::this._onTagDeleted }
+            <KeyTags onTagAdded={ this:: this._onTagAdded }
+              onTagDeleted={ this:: this._onTagDeleted }
             />
 
           </div>
@@ -174,4 +193,4 @@ export default connect((state, { params, route }) => (
 
     </div >
   );
-    } });
+} });
