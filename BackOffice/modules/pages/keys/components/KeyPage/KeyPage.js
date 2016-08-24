@@ -8,9 +8,9 @@ import { deleteKey } from '../../ducks/keys';
 import style from './KeyPage.css';
 import { diff } from 'deep-diff';
 import R from 'ramda';
-import TextareaAutosize from 'react-autosize-textarea';
 import KeyTags from './KeyTags/KeyTags';
 import EditableText from './EditableText/EditableText';
+import EditableTextArea from './EditableTextArea/EditableTextArea';
 import KeyModificationDetails from './KeyModificationDetails/KeyModificationDetails';
 import Autosuggest from 'react-autosuggest';
 
@@ -123,6 +123,7 @@ export default connect((state, { params, route }) => (
   return (
     <div className={style['key-viewer-container']}>
       {this.renderKeyActionButtons(isInAddMode) }
+      
       <div className={style['key-header']}>
 
         {ruleDef.modificationData ?
@@ -133,14 +134,14 @@ export default connect((state, { params, route }) => (
         <div className={style['display-name-wrapper']}>
           {isInAddMode ?
             <div className={style['auto-suggest-wrapper']}>
-            <Autosuggest
-              suggestions={ this._keyNameSuggestions() }
-              getSuggestionValue={(x) => x}
-              renderSuggestion={x => <span>{x}</span>}
-              inputProps={inputProps}
-              theme={style}
-            />
-              </div>
+              <Autosuggest
+                suggestions={ this._keyNameSuggestions() }
+                getSuggestionValue={(x) => x}
+                renderSuggestion={x => <span>{x}</span>}
+                inputProps={inputProps}
+                theme={style}
+              />
+            </div>
             :
             <EditableText onTextChanged={(text) => this:: this._onDisplayNameChanged(text) }
               placeHolder="Enter key display name"
@@ -165,11 +166,12 @@ export default connect((state, { params, route }) => (
         <div className={style['key-description-and-tags-wrapper']}>
 
           <div className={style['key-description-wrapper']}>
-            <TextareaAutosize
-              onChange={ (e) => this._onDescriptionChanged(e.target.value) }
-              value = { meta.description }
-              placeholder="Write key description"
-              className={style['description-input']}
+            <EditableTextArea value={meta.description}
+              onTextChanged={(text) => this._onDescriptionChanged(text) }
+              placeHolder="Write key description"
+              classNames={{
+                input: style['description-input'],
+              }}
             />
           </div>
 
