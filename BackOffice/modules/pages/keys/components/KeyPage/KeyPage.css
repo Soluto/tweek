@@ -296,12 +296,9 @@
   font-size: 14px;
   color: #515c66;
   min-width: 400px;
-  min-height: 100px;
+  min-height: 35px;
   max-height: 100px;
-  border: 1px solid lightgray;
-  border-radius: 5px;
   outline: none;
-  padding: 10px;
   box-sizing: border-box;
 }
 .key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper {
