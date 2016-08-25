@@ -1,5 +1,3 @@
-import promisify from 'promisify-node';
-const fs = promisify('fs');
 import path from 'path';
 
 export default function (req, res, { rulesRepository, metaRepository }, { params }) {

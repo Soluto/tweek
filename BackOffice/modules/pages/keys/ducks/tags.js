@@ -12,17 +12,20 @@ export async function downloadTags() {
 
 export const saveNewTags = (tagsToSave) => async function (dispatch, getState) {
   const currentTags = getState().tags.map(x => x.name);
-  console.log(tagsToSave, currentTags);
-  return;
-  const newTagsDiff = R.symmetricDifference(tagsToSave, currentTags);
+  const newTags = R.difference(tagsToSave, currentTags);
+
+  if (newTags.length < 1) {
+    console.log('no new tags to save found');
+    return;
+  }
 
   await fetch('/api/tags', {
     credentials: 'same-origin',
     method: 'put',
-    ...withJsonData(newTagsDiff),
+    ...withJsonData(newTags),
   });
 
-  dispatch({ type: TAGS_SAVED, payload: newTagsDiff });
+  dispatch({ type: TAGS_SAVED, payload: newTags });
 };
 
 export default handleActions({
