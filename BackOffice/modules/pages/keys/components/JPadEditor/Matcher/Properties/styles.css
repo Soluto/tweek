@@ -1,11 +1,12 @@
-.matcher-op {
+.matcher-operator {
+  margin: 0 5px;
   display: inline-block;
 }
-.matcher-op input {
+.matcher-operator input {
   max-width: 30px;
   min-width: 30px;
 }
-.matcher-op :global(.react-autosuggest__suggestions-container) {
+.matcher-operator :global(.react-autosuggest__suggestions-container) {
   max-width: 60px;
   min-width: 60px;
 }
@@ -30,6 +31,18 @@
 }
 .property-value-wrapper .value-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-suggestion-wrapper {
+  border: 1px solid transparent;
+}
+.property-suggestion-wrapper .suggestion-type {
+  margin-left: 10px;
+  font-size: 12px;
+  color: gray;
+}
+.property-suggestion-wrapper .suggestion-identity {
+  color: gray;
+  margin-top: 4px;
 }
 :global(.react-autosuggest__suggestions-container) {
   top: 30px;

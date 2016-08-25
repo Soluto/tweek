@@ -1,6 +1,6 @@
 import { handleActions } from 'redux-actions';
-import { withJsonData } from './withJsonData';
 import R from 'ramda';
+import { withJsonData } from '../../../utils/http';
 
 const TAGS_DOWNLOADED = 'TAGS_DOWNLOADED';
 const TAGS_SAVED = 'TAGS_SAVED';

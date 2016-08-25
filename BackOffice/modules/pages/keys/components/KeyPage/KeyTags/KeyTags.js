@@ -5,11 +5,19 @@ import { connect } from 'react-redux';
 import R from 'ramda';
 import style from './KeyTags.css';
 import * as tagActions from '../../../ducks/tags';
-import * as keysActions from '../../../ducks/selectedKey';
+import { compose, mapProps } from 'recompose';
 
-export default connect(state => (
-  { selectedKey: state.selectedKey, tags: state.tags }),
-  { ...tagActions })(
+export default compose(
+  connect(state => ({ globalTags: state.tags }), { ...tagActions }),
+  mapProps(({ globalTags, tags, ...props }) => (
+    { ...props,
+    tagsSuggestions: globalTags.map(x => x.name),
+    tags: tags.map(x => ({
+      id: x,
+      text: x,
+    })),
+    }))
+    )(
   class KeyTags extends Component {
 
     constructor(props) {
@@ -21,34 +29,43 @@ export default connect(state => (
       downloadTags();
     }
 
-    get tags() {
-      return R.map(_ => ({
-        id: _,
-        text: _,
-      }), this.props.selectedKey.local.meta.tags);
+    _onTagAdded(newTagText) {
+      const { saveNewTags } = this.props;
+
+      const currentTags = this.props.tags.map(x => x.text);
+      if (currentTags.indexOf(newTagText) >= 0) {
+        return;
+      }
+
+      const newTags = [...currentTags, newTagText];
+      this.props.onTagsChanged(newTags);
+
+      saveNewTags([newTagText]);
     }
 
-    get tagsSuggestions() {
-      return this.props.tags ? this.props.tags.map(tag => tag.name) : [];
+    _onTagDeleted(deletedTagIndex) {
+      const newTags = R.remove(deletedTagIndex, 1, this.props.tags);
+      this.props.onTagsChanged(newTags);
     }
 
     render() {
+      const { tags, tagsSuggestions } = this.props;
       return (
 
-        <ReactTags tags={ this.tags }
-          handleDelete={ this.props.onTagDeleted }
-          handleAddition={ this.props.onTagAdded }
-          suggestions = { this.tagsSuggestions }
+        <ReactTags tags={ tags }
+          handleDelete={ this::this._onTagDeleted }
+          handleAddition = { this::this._onTagAdded }
+          suggestions = { tagsSuggestions }
           placeholder = "New tag"
-          minQueryLength = { 1 }
           allowDeleteFromEmptyInput
+          minQueryLength = { 1 }
           classNames = {{
-            tags: style['tags-container'],
-            tagInput: style['tag-input'],
-            tag: style['tag'],
-            remove: style['tag-delete-button'],
-            suggestions: style['tags-suggestion'],
-          } }
+      tags: style['tags-container'],
+      tagInput: style['tag-input'],
+      tag: style['tag'],
+      remove: style['tag-delete-button'],
+      suggestions: style['tags-suggestion'],
+    } }
         />
 
       );

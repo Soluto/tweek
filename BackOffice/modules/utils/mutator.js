@@ -32,6 +32,8 @@ class StatelessMutator {
   get insert() {return this._liftMutation(m => m.insert);}
 
   get prepend() {return this._liftMutation(m => m.prepend);}
+
+  get append() {return this._liftMutation(m => m.append);}
 }
 
 class Mutator {
@@ -72,6 +74,12 @@ class Mutator {
   prepend = (value) => {
     const container = R.reduce((acc, x) => acc[x], this.target, this.path);
     container.unshift(value);
+    return new Mutator(this.target, this.path);
+  }
+
+  append = (value) => {
+    const container = R.reduce((acc, x) => acc[x], this.target, this.path);
+    container.push(value);
     return new Mutator(this.target, this.path);
   }
 

@@ -33,14 +33,14 @@ export default connect((state, { params, route }) => (
     }
 
     componentDidMount() {
-      const { openKey, configKey, selectedKey, isInAddMode } = this.props;
+      const { openKey, configKey, selectedKey } = this.props;
       if (!configKey) return;
       if (selectedKey && selectedKey.key === configKey) return;
       openKey(configKey);
     }
 
     componentWillReceiveProps({ configKey }) {
-      const { openKey, selectedKey, isInAddMode } = this.props;
+      const { openKey, selectedKey } = this.props;
       if (configKey !== this.props.configKey || !selectedKey) {
         openKey(configKey);
       }
@@ -52,35 +52,28 @@ export default connect((state, { params, route }) => (
 
     _onDisplayNameChanged(newDisplayName) {
       const newMeta = { ...this.props.selectedKey.local.meta, displayName: newDisplayName };
-      this._onSelectedKeyMetaChanged(newMeta);
+this._onSelectedKeyMetaChanged(newMeta);
     }
 
-    _onDescriptionChanged(newDescription) {
+_onDescriptionChanged(newDescription) {
   const newMeta = { ...this.props.selectedKey.local.meta, description: newDescription };
   this._onSelectedKeyMetaChanged(newMeta);
 }
 
-    _onSelectedKeyMetaChanged(newMeta) {
+_onSelectedKeyMetaChanged(newMeta) {
   this.props.updateKeyMetaDef(newMeta);
 }
 
-    _onTagAdded(newTagText) {
-  const meta = this.props.selectedKey.local.meta;
-  const newMeta = { ...meta, tags: [...meta.tags, newTagText] };
+_onTagsChanged(newTags) {
+  const newMeta = { ...this.props.selectedKey.local.meta, tags: newTags };
   this._onSelectedKeyMetaChanged(newMeta);
 }
 
-    _onTagDeleted(deletedTagIndex) {
-  const meta = this.props.selectedKey.local.meta;
-  const newMeta = { ...meta, tags: R.remove(deletedTagIndex, 1, meta.tags) };
-  this._onSelectedKeyMetaChanged(newMeta);
-}
-
-    _keyNameSuggestions() {
+_keyNameSuggestions() {
   return getSugesstions(this.props.keysList).sort();
 }
 
-    renderKeyActionButtons(isInAddMode) {
+renderKeyActionButtons(isInAddMode) {
   const { local, remote, isSaving, isDeleting } = this.props.selectedKey;
   const changes = diff(local, remote);
   const hasChanges = (changes || []).length > 0;
@@ -94,7 +87,7 @@ export default connect((state, { params, route }) => (
               this.props.deleteKey(this.props.configKey);
             }
           } }
-        >
+          >
           Delete key
         </button> : null}
       <button disabled={!hasChanges || isSaving }
@@ -102,19 +95,19 @@ export default connect((state, { params, route }) => (
         data-state-is-saving={isSaving}
         className={style['save-changes-button']}
         onClick={() => this.props.saveKey(this.props.configKey) }
-      >
+        >
         {isSaving ? 'Saving...' : 'Save changes'}
       </button>
     </div>
   );
 }
 
-    render() {
+render() {
   const { configKey, selectedKey, isInAddMode } = this.props;
   if (!selectedKey) return <div className={style['loading-message']}>loading</div>;
   const { meta, ruleDef, key = '' } = selectedKey.local;
 
-  const inputProps = {
+  const keyNameAutoSuggestProps = {
     placeholder: 'Enter key full path',
     value: key,
     onChange: (_, { newValue }) => this._onKeyNameChanged(newValue),
@@ -123,7 +116,7 @@ export default connect((state, { params, route }) => (
   return (
     <div className={style['key-viewer-container']}>
       {this.renderKeyActionButtons(isInAddMode) }
-      
+
       <div className={style['key-header']}>
 
         {ruleDef.modificationData ?
@@ -138,21 +131,21 @@ export default connect((state, { params, route }) => (
                 suggestions={ this._keyNameSuggestions() }
                 getSuggestionValue={(x) => x}
                 renderSuggestion={x => <span>{x}</span>}
-                inputProps={inputProps}
+                inputProps={keyNameAutoSuggestProps}
                 theme={style}
-              />
+                />
             </div>
             :
             <EditableText onTextChanged={(text) => this:: this._onDisplayNameChanged(text) }
-              placeHolder="Enter key display name"
-              value={meta.displayName}
-              classNames={{
+          placeHolder="Enter key display name"
+          value={meta.displayName}
+          classNames={{
             container: style['display-name-container'],
             input: style['display-name-input'],
             text: style['display-name-text'],
             form: style['display-name-form'],
           }}
-            />
+          />
           }
         </div>
 
@@ -169,16 +162,17 @@ export default connect((state, { params, route }) => (
             <EditableTextArea value={meta.description}
               onTextChanged={(text) => this._onDescriptionChanged(text) }
               placeHolder="Write key description"
+              title="Click to edit description"
               classNames={{
                 input: style['description-input'],
               }}
-            />
+              />
           </div>
 
           <div className={style['tags-wrapper']}>
 
-            <KeyTags onTagAdded={ this:: this._onTagAdded }
-              onTagDeleted={ this:: this._onTagDeleted }
+            <KeyTags onTagsChanged={ (newTags) => this:: this._onTagsChanged(newTags) }
+            tags={ meta.tags }
             />
 
           </div>
@@ -191,7 +185,7 @@ export default connect((state, { params, route }) => (
         sourceTree={JSON.parse(ruleDef.source) }
         onMutation={x => this.props.updateKeyRuleDef({ source: JSON.stringify(x, null, 4) }) }
         className={style['key-rules-editor']}
-      />
+        />
 
     </div >
   );

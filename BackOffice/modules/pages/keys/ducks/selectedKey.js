@@ -1,7 +1,8 @@
 import { handleActions } from 'redux-actions';
 import R from 'ramda';
 import { push } from 'react-router-redux';
-import { BLANK_KEY } from './blankKeyDefinition';
+import { createBlankKey, BLANK_KEY_NAME } from './blankKeyDefinition';
+import { withJsonData } from '../../../utils/http';
 
 const KEY_OPENED = 'KEY_OPENED';
 const KEY_RULEDEF_UPDATED = 'KEY_RULEDEF_UPDATED';
@@ -11,9 +12,9 @@ const KEY_SAVING = 'KEY_SAVING';
 const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
 
 export async function openKey(key) {
-  if (key === BLANK_KEY.key) {
+  if (key === BLANK_KEY_NAME) {
     return {
-      type: KEY_OPENED, payload: BLANK_KEY,
+      type: KEY_OPENED, payload: createBlankKey(),
     };
   }
 
@@ -40,16 +41,6 @@ export function updateKeyName(name) {
   return { type: KEY_NAME_CHANGE, payload: name };
 }
 
-function withJSONdata(data) {
-  return {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  };
-}
-
 export function saveKey() {
   return async function (dispatch, getState) {
     const { selectedKey: { local: keyData, key } } = getState();
@@ -60,33 +51,34 @@ export function saveKey() {
       return;
     }
 
-    if (saveKey === BLANK_KEY.key) {
+    if (saveKey === BLANK_KEY_NAME) {
       alert('Invalid key name');
       return;
     }
 
     dispatch({ type: KEY_SAVING });
+
     await fetch(`/api/keys/${savedKey}`, {
       credentials: 'same-origin',
       method: 'put',
-      ...withJSONdata(keyData),
+      ...withJsonData(keyData),
     });
 
-  dispatch({ type: KEY_SAVED });
-  dispatch({ type: 'KEY_ADDED', payload: keyData.key });
-  dispatch(push(`/keys/${keyData.key}`));
-};
+    dispatch({ type: KEY_SAVED });
+    dispatch({ type: 'KEY_ADDED', payload: keyData.key });
+    dispatch(push(`/keys/${keyData.key}`));
+  };
 }
 
 export default handleActions({
   [KEY_OPENED]: (state, { payload: { key, ...props } }) => {
-  return {
+    return {
     key,
     local: R.clone(props),
     remote: R.clone(props),
   };
-},
-[KEY_RULEDEF_UPDATED]: (state, { payload }) => ({
+  },
+  [KEY_RULEDEF_UPDATED]: (state, { payload }) => ({
   ...state,
   local: {
     ...state.local,
@@ -100,23 +92,23 @@ export default handleActions({
       meta: payload,
     },
   }),
-    [KEY_SAVED]: ({ local: { key, ...localData }, ...otherState }) => ({
+  [KEY_SAVED]: ({ local: { key, ...localData }, ...otherState }) => ({
       key,
       ...otherState,
       local: localData,
       remote: R.clone(localData),
       isSaving: false,
     }),
-      [KEY_SAVING]: (state) => ({
+  [KEY_SAVING]: (state) => ({
         ...state,
         isSaving: true,
       }),
-        [KEY_NAME_CHANGE]: ({ local: { key, ...localData }, ...otherState }, { payload }) => ({
+  [KEY_NAME_CHANGE]: ({ local: { key, ...localData }, ...otherState }, { payload }) => ({
           ...otherState,
           local: {
             ...localData,
             meta: { ...localData.meta, displayName: payload },
             ...(payload === '' ? {} : { key: payload }), // get displayName from payload
-        },
+          },
         }),
 }, null);

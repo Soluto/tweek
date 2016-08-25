@@ -13,6 +13,7 @@
   outline: 0;
   padding-bottom: 2px;
   border-radius: 14px;
+  direction: ltr;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
@@ -35,7 +36,7 @@
   margin-right: 4px;
 }
 .matcher .conditions-wrapper .delete-condition-button:hover {
-  background-color: #00AEEF;
+  background-color: #007acc;
   cursor: pointer;
 }
 .matcher .conditions-wrapper .delete-condition-button:active {
@@ -59,6 +60,9 @@
   font-family: 'tweekIcons';
   content: '\E900';
 }
+.matcher .conditions-wrapper .delete-condition-button.hidden {
+  visibility: hidden;
+}
 .matcher .add-condition-button {
   vertical-align: top;
   background-color: rgba(0, 122, 204, 0.8);
@@ -69,6 +73,7 @@
   outline: 0;
   padding-bottom: 2px;
   border-radius: 14px;
+  direction: ltr;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
@@ -85,7 +90,7 @@
   box-sizing: border-box;
 }
 .matcher .add-condition-button:hover {
-  background-color: #00AEEF;
+  background-color: #007acc;
   cursor: pointer;
 }
 .matcher .add-condition-button:active {
@@ -105,7 +110,7 @@
 }
 .matcher .default-value-message {
   display: inline-block;
-  margin: 10px;
+  margin: 8px;
   margin-left: 30px;
   color: gray;
 }

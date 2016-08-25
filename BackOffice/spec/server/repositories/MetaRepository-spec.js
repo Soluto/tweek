@@ -22,7 +22,7 @@ describe('MetaRepository', () => {
         tags: ['tag1', 'tag2'],
       };
 
-      const stringMetaMock = JSON.stringify(metaMock);
+      const stringMetaMock = JSON.stringify(metaMock, null, 4);
 
       const requestedRuleName = 'some rule name';
 
@@ -60,7 +60,7 @@ describe('MetaRepository', () => {
         tags: ['tag1', 'tag2'],
       };
 
-      const metaPayload = JSON.stringify(metaMock);
+      const metaPayload = JSON.stringify(metaMock, null, 4);
       const requestedRuleName = 'some rule name';
 
       const expectedFileName =
