@@ -13,8 +13,9 @@ const Property = ({ property, predicate, mutate, suggestedValues = [], canBeClos
   (<div className={style['conditions-wrapper']}>
     <button onClick={mutate.delete}
       className={style['delete-condition-button']}
-      className={classNames(style['delete-condition-button'], { [style['hidden']]: !canBeClosed }) }
+      className={style['delete-condition-button']}
       title="Remove condition"
+      disabled={!canBeClosed}
     ></button>
     <PropertyName {...{ property, mutate, suggestedValues }} />
     <PropertyPredicate {...{ predicate, mutate, property }} />

@@ -27,7 +27,8 @@ export default withState('tempValue', 'updateTempValue', null)(({
 
   return (
     <div className={style['autosuggest-wrapper']}>
-    <Autosuggest className="OpDropdown"
+    <Autosuggest
+      className="OpDropdown"
       placeholder={placeholder}
       inputProps={{ ...otherInputProps, onChange:
         (e, { newValue }) => updateTempValue(newValue),

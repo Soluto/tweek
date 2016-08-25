@@ -28,5 +28,5 @@ export default ({ mutate, property, suggestedValues }) => (
     }}
     renderSuggestion={ suggestion => (<PropertySuggestion suggestion={suggestion} />) }
     suggestions={R.uniqBy(x => x.value)([...suggestedValues]) }
-    />
+  />
 );
