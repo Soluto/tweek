@@ -33,6 +33,55 @@
   cursor: default;
   background-color: gray;
 }
+.transparent-metro-button {
+  vertical-align: top;
+  background-color: rgba(0, 122, 204, 0.8);
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  direction: ltr;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  text-decoration: underline;
+  background-color: transparent;
+  color: gray;
+}
+.transparent-metro-button:hover {
+  background-color: #007acc;
+  cursor: pointer;
+}
+.transparent-metro-button:active {
+  background-color: #0098ff;
+}
+.transparent-metro-button:disabled {
+  background-color: gray;
+}
+.transparent-metro-button:disabled:hover,
+.transparent-metro-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.transparent-metro-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.transparent-metro-button:active {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.transparent-metro-button:disabled {
+  background-color: transparent;
+}
+.transparent-metro-button:disabled:hover,
+.transparent-metro-button:disabled:active {
+  cursor: default;
+  background-color: transparent;
+}
 .small-metro-button {
   vertical-align: top;
   background-color: rgba(0, 122, 204, 0.8);
