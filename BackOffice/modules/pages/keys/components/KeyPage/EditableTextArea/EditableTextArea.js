@@ -8,7 +8,7 @@ import { withState } from 'recompose';
 import TextareaAutosize from 'react-autosize-textarea';
 
 const EditableTextArea = withState('isInEditMode', 'setIsInEditMode', false)(
-  ({ value, placeHolder, classNames: classes = {}, isInEditMode, setIsInEditMode, onTextChanged = () => { } }) => {
+  ({ value, placeHolder, title, classNames: classes = {}, isInEditMode, setIsInEditMode, onTextChanged = () => { } }) => {
     return (
       <div className={classNames(style['textarea-container'], classes.container) }>
         <TextareaAutosize
@@ -21,13 +21,14 @@ const EditableTextArea = withState('isInEditMode', 'setIsInEditMode', false)(
           onChange={ (e) => onTextChanged(e.target.value) }
           value = { value }
           placeholder={ placeHolder }
+          title={ title }
           className={classNames(style['textarea-input'], classes.input) }
           onBlur={() => {
             value = value.trim();
             setIsInEditMode(false);
             onTextChanged(value);
           } }
-          />
+        />
       </div>
     );
   });

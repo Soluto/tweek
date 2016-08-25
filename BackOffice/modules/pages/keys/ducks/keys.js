@@ -7,7 +7,6 @@ const KEY_ADDED = 'KEY_ADDED';
 const KEY_DELETED = 'KEY_DELETED';
 const KEY_DELETING = 'KEY_DELETING';
 
-import { withJSONdata } from '../../../utils/http';
 import { push } from 'react-router-redux';
 
 export const addKey = (key) => async function (dispatch) {

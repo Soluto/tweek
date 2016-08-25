@@ -25,7 +25,7 @@ describe('TagsRepository', () => {
       // Arrange
       const tagsMock = [{ name: 'tag1' }, { name: 'tag2' }];
 
-      const stringTagsMock = JSON.stringify(tagsMock);
+      const stringTagsMock = JSON.stringify(tagsMock, null, 4);
 
       gitMock.setReadFileMock(stringTagsMock, '');
 
@@ -44,10 +44,10 @@ describe('TagsRepository', () => {
 
       const newTagsMock = [{ name: 'tag3' }, { name: 'tag4' }, { name: 'tag1' }];
 
-      gitMock.setReadFileMock(JSON.stringify(exsitingTagsMock), '');
+      gitMock.setReadFileMock(JSON.stringify(exsitingTagsMock, null, 4), '');
       gitMock.setUpdateFile(true, '');
 
-      const expectedUpdateTagsFileContent = JSON.stringify(R.uniqBy(x => x.name, [...exsitingTagsMock, ...newTagsMock]));
+      const expectedUpdateTagsFileContent = JSON.stringify(R.uniqBy(x => x.name, [...exsitingTagsMock, ...newTagsMock]), null, 4);
 
       // Act
       await tagsRepo.mergeNewTags(newTagsMock, validAuthor);
@@ -59,14 +59,15 @@ describe('TagsRepository', () => {
       expect(gitMock.updateFile.mock.calls[0][2]).to.eql(validAuthor, 'should call git repo with correct author');
     });
 
-    it('should fail: git repo readFile rejected', async () => {
+    it('should return empty array: git repo readFile rejected', async () => {
       // Arrange
       let expectedException = 'pita exception';
 
       gitMock.setRejectedReadFileMock(expectedException);
 
       // Act & Assert
-      await expect(tagsRepo.getTags()).to.eventually.be.rejectedWith(expectedException);
+      const tags = await tagsRepo.getTags();
+      expect(tags).to.eql([]);
     });
   });
 });

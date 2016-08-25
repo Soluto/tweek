@@ -22,25 +22,9 @@
       }
     }
     .delete-key-button {
-      .metro-button;
+      .transparent-metro-button;
       margin-right: 10px;
       width: @key-action-button-width;
-      text-decoration: underline;
-      background-color: transparent;
-      color: gray;
-      &:hover {
-        background-color: rgba(0, 0, 0, .05);
-      }
-      &:active {
-        background-color: rgba(0, 0, 0, .2);
-      }
-      &:disabled {
-        background-color: transparent;
-        &:hover, &:active {
-          cursor: default;
-          background-color: transparent;
-        }
-      }
     }
   }
   .key-header {
@@ -121,7 +105,7 @@
           font-size: 14px;
           color: @text-color;
           min-width: 400px;
-          min-height: 35px;
+          min-height: @description-and-tags-max-height;
           max-height: @description-and-tags-max-height;
           outline: none;
           box-sizing: border-box;

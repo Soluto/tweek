@@ -19,7 +19,7 @@ export default ({ data, onUpdate, sliderColors, displaySliderDragger = true, dis
         <div className={style['legend-bar']}>
           <div className={style['variant-list']}>
             {items.map(({ value, weight, sliderColor }, i) =>
-              <div className= { style['legend-item']} >
+              <div key={i} className= { style['legend-item']} >
                 <button className={style['delete-legend-button']}
                   title="Remove variant"
                   onClick={() => mutator.apply(m => {
@@ -54,7 +54,7 @@ export default ({ data, onUpdate, sliderColors, displaySliderDragger = true, dis
       }
       <div className={style['horizontal-variant-slider-wrapper']}>
         {items.map(({ sliderColor, weight, value }, i) =>
-          (<div className={style['horizontal-variant-slider']} >
+          (<div key={i} className={style['horizontal-variant-slider']} >
             <div className={style['horizontal-accent']} style={{ width: parseFloat(weight), backgroundColor: sliderColor }} />
             {displaySliderDragger && i < (items.length - 1) ?
               <DraggableCore onDrag={(_, data) => {

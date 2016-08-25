@@ -2,62 +2,78 @@ import React from 'react';
 import Rule from './Rule/Rule';
 import style from './JPadEditor.css';
 import Chance from 'chance';
+import R from 'ramda';
+
 const isBrowser = typeof (window) === 'object';
 const chance = new Chance();
 
-function deleteCase(mutate, caseIndex) {
+function deleteRule(mutate, ruleIndex) {
   if (confirm('Are you sure?')) {
-      mutate.in(caseIndex).delete();
-    }
+    mutate.in(ruleIndex).delete();
+  }
 }
 
-export default ({ cases, mutate }) => {
-  if (!cases) return (<div/>);
+function addMutatorDefaultValue(mutate) {
+  mutate.append({ Id: chance.guid(), Matcher: {}, Value: '', Type: 'SingleVariant' });
+}
+
+function addMutatorRule(mutate) {
+  mutate.prepend({ Id: chance.guid(), Matcher: { '': '' }, Value: '', Type: 'SingleVariant' });
+}
+
+export default ({ rules, mutate }) => {
+  if (!rules) return (<div/>);
+
+  const hasDefaultValue = R.any(rule => Object.keys(rule.Matcher).length < 1)(rules);
+
   return isBrowser ? (
-        <div className={style['case-container']}>
+    <div className={style['rule-container']}>
 
-            <button className={style['add-case-button']} onClick={() =>
-                mutate.prepend({ Id: chance.guid(), Matcher: {}, Value: '', Type: 'SingleVariant' })
-            } >
-                Add Case
-            </button>
+      <button className={style['add-rule-button']} onClick={() => addMutatorRule(mutate) } >
+        Add Rule
+      </button>
+      { !hasDefaultValue ?
+        <button className={style['add-default-value-button']} onClick={() => addMutatorDefaultValue(mutate) } >
+          Add default rule
+        </button> : null }
 
-            {cases.map((rule, i) => (
-                <div className={style['conditions-container']}
-                  disabled
-                  key={rule.Id}
-                >
+      {rules.map((rule, i) => (
+        <div className={style['conditions-container']}
+          disabled
+          key={rule.Id}
+        >
 
-                    <div className={style['case-control-wrapper']} >
-                        {i > 0 ?
-                            <button className={style['case-order-button']}
-                              onClick={() => mutate.replaceKeys(i, i - 1) }
-                              title="Move up"
-                            >
-                                &#xE908;
-                            </button>
-                            : null }
-                        {i < cases.length - 1 ?
-                            <button className={style['case-order-button']}
-                              onClick={() => mutate.replaceKeys(i, i + 1) }
-                              title="Move down"
-                            >
-                                &#xE902;
-                            </button>
-                            : null }
-                        <button className={style['delete-case-button']}
-                          onClick={() => deleteCase(mutate, i) }
-                          title="Remove case"
-                        ></button>
-                    </div>
+          <div className={style['rule-control-wrapper']} >
+            {i > 0 ?
+              <button className={style['rule-order-button']}
+                onClick={() => mutate.replaceKeys(i, i - 1) }
+                title="Move up"
+              >
+                &#xE908;
+              </button>
+              : null }
+            {i < rules.length - 1 ?
+              <button className={style['rule-order-button']}
+                onClick={() => mutate.replaceKeys(i, i + 1) }
+                title="Move down"
+              >
+                &#xE902;
+              </button>
+              : null }
+            <button className={style['delete-rule-button']}
+              onClick={() => deleteRule(mutate, i) }
+              title="Remove rule"
+            ></button>
+          </div>
 
-                    <Rule key={rule.Id} mutate={mutate.in(i) } rule={rule} />
-
-                </div>
-            )) }
+          <Rule key={rule.Id} mutate={mutate.in(i) } rule={rule} />
 
         </div>
-    )
-        :
-        (<div>Loading rule...</div>);
+      ))
+      }
+
+    </div >
+  )
+    :
+    (<div>Loading rule...</div>);
 };

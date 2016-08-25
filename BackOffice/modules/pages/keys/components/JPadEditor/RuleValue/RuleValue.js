@@ -31,7 +31,7 @@ let SingleVariantValue = ({ value, mutate, identities }) => (
               args: 0.1,
             })
         ) }
-        >To Feature Flag</button>
+        >Gradual release</button>
       :
       <button className={style['add-variant-button']}
         onClick={() => mutate.apply(m =>

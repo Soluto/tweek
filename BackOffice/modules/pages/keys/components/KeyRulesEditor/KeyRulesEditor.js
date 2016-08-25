@@ -25,7 +25,7 @@ const KeyRulesEditor = ({ ruleDef, mutate }) =>
     <div className={style['key-rules-editor-container']}>
       <Tabs className={style['tab-container']}
         selectedIndex={0}
-      >
+        >
         <TabList>
           <Tab className={style['tab-header']}>
             <label className={style['rule-definition-tab-icon']}>&#xE904; </label>
@@ -37,9 +37,9 @@ const KeyRulesEditor = ({ ruleDef, mutate }) =>
           </Tab>
         </TabList>
         <TabPanel className={style['tab-content']}>
-          <JPadEditor cases={mutate.target}
+          <JPadEditor rules={mutate.target}
             mutate={mutate}
-          />
+            />
         </TabPanel>
         <TabPanel className={style['tab-content']}>
           <pre className={style['rule-def-json']}>

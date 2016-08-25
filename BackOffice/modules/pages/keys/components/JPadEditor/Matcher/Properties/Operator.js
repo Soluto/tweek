@@ -14,7 +14,7 @@ export const getSupportedOperators = (meta) => {
 };
 
 export const Operator = ({ selectedOp, onUpdate, supportedOperators }) => (
-  <div className={style['matcher-op']}>
+  <div className={style['matcher-operator']}>
     <ClosedComboBox
       inputProps={{ onChange: ({ value }) => { onUpdate(value); }, value: supportedOperators[selectedOp] }}
       suggestions={R.keys(supportedOperators).map(op => ({ value: op, label: supportedOperators[op] })) }

@@ -72,11 +72,11 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
-  margin-right: 10px;
-  width: 125px;
   text-decoration: underline;
   background-color: transparent;
   color: gray;
+  margin-right: 10px;
+  width: 125px;
 }
 .key-viewer-container .key-action-buttons-wrapper .delete-key-button:hover {
   background-color: #007acc;
@@ -296,7 +296,7 @@
   font-size: 14px;
   color: #515c66;
   min-width: 400px;
-  min-height: 35px;
+  min-height: 100px;
   max-height: 100px;
   outline: none;
   box-sizing: border-box;

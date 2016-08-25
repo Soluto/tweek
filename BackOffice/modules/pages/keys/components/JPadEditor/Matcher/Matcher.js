@@ -9,9 +9,13 @@ import classNames from 'classnames';
 
 const editorMetaService = EditorMetaService.instance;
 
-const Property = ({ property, predicate, mutate, suggestedValues = []}) =>
+const Property = ({ property, predicate, mutate, suggestedValues = [], canBeClosed = true }) =>
   (<div className={style['conditions-wrapper']}>
-    <button className={style['delete-condition-button']} onClick={mutate.delete} title="Remove condition"></button>
+    <button onClick={mutate.delete}
+      className={style['delete-condition-button']}
+      className={classNames(style['delete-condition-button'], { [style['hidden']]: !canBeClosed }) }
+      title="Remove condition"
+    ></button>
     <PropertyName {...{ property, mutate, suggestedValues }} />
     <PropertyPredicate {...{ predicate, mutate, property }} />
   </div>);
@@ -27,23 +31,25 @@ export default hasChanged(({ matcher, mutate }) => {
   const filterActiveProps = (currentProp) => (propsWithMeta) =>
     propsWithMeta.filter(x => x.value === currentProp || IgnoreActivePropsPropsPredicate(x.value));
 
+  const canBeClosed = props.length > 1;
   return (
     <div className={style['matcher']}>
       {
-        props.map(([property, predicate], i) => {
-          const allSuggestions = editorMetaService.getSuggestions({ type: 'MatcherProperty', query: { input: '' } });
-          const suggestedValues = filterActiveProps(property)(allSuggestions);
-          return (
-            <Property mutate={mutate.in(property) } key={i}
-              {...{ suggestedValues, property, predicate }}
-              />
-          );
-        })
+      props.map(([property, predicate], i) => {
+        const allSuggestions = editorMetaService.getSuggestions({ type: 'MatcherProperty', query: { input: '' } });
+        const suggestedValues = filterActiveProps(property)(allSuggestions);
+        return (
+      <Property key={i}
+        mutate={mutate.in(property) }
+        {...{ suggestedValues, property, predicate, canBeClosed }}
+      />
+      );
+      })
       }
       <button className={style['add-condition-button']}
         onClick={() => mutate.insert('', '') }
         title="Add condition"
-        ></button>
+      ></button>
       {(props.length === 0) ?
         <div className={style['default-value-message']}>Default value</div>
         : null
