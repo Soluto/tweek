@@ -4,12 +4,15 @@ import getKey from './api/keys/getKey';
 import putKey from './api/keys/putKey';
 import deleteKey from './api/keys/deleteKey';
 import getTags from './api/tags/getTags';
+import putTags from './api/tags/putTags';
 
 export default ({ rulesRepository, metaRepository, tagsRepository }) => (
   <ServerRoute path="/api">
-    <ServerRoute get={getTags}
-      tagsRepository={tagsRepository} path="tags"
-    />
+    <ServerRoute path="tags"
+      get={getTags}
+      put={putTags}
+      tagsRepository={tagsRepository}
+      />
     <ServerRoute path="keys">
       <ServerRoute path="*"
         get={getKey}
@@ -17,8 +20,7 @@ export default ({ rulesRepository, metaRepository, tagsRepository }) => (
         delete={deleteKey}
         rulesRepository={rulesRepository}
         metaRepository={metaRepository}
-        tagsRepository={tagsRepository}
-      />
+        />
     </ServerRoute>
   </ServerRoute>)
   ;
