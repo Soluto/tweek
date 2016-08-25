@@ -10,7 +10,7 @@ const parseNumericInput = (inputValue) => inputValue === '' ? 0 : parseInt(input
 
 const editorMetaService = EditorMetaService.instance;
 
-let SingleVariantValue = ({ value, mutate, identities }) => (
+let SingleVariantValue = ({ value, mutate, identities, autofocus }) => (
   (<div className={style['rule-value-container']}>
 
     <input
@@ -18,6 +18,7 @@ let SingleVariantValue = ({ value, mutate, identities }) => (
       value = { value }
       placeholder="Enter values here"
       className={style['values-input']}
+      ref={(e)=> e && autofocus && e.focus()}
       />
 
     {(value === 'true' || value === 'false') ?
@@ -162,11 +163,11 @@ const MultiVariantValue = ({ valueDistrubtion: { type, args }, mutate, identitie
   return null;
 };
 
-export default ({ rule, mutate }) => {
+export default ({ rule, mutate, autofocus }) => {
   const identities = editorMetaService.getIdentities();
 
   if (rule.Type === 'SingleVariant')
-    return (<SingleVariantValue mutate={mutate.in('Value') } value={rule.Value} identities={identities} />);
+    return (<SingleVariantValue mutate={mutate.in('Value') } value={rule.Value} identities={identities} autofocus={autofocus} />);
   if (rule.Type === 'MultiVariant')
     return (<MultiVariantValue mutate={mutate.in('ValueDistribution') } valueDistrubtion={rule.ValueDistribution} identities={identities} />);
   return null;

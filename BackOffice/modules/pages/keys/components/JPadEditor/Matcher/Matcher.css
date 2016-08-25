@@ -13,7 +13,6 @@
   outline: 0;
   padding-bottom: 2px;
   border-radius: 14px;
-  direction: ltr;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
@@ -60,7 +59,7 @@
   font-family: 'tweekIcons';
   content: '\E900';
 }
-.matcher .conditions-wrapper .delete-condition-button.hidden {
+.matcher .conditions-wrapper .delete-condition-button:disabled {
   visibility: hidden;
 }
 .matcher .add-condition-button {
@@ -73,7 +72,6 @@
   outline: 0;
   padding-bottom: 2px;
   border-radius: 14px;
-  direction: ltr;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;

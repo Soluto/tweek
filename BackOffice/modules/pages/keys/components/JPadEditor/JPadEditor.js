@@ -40,15 +40,15 @@ export default ({ rules, mutate }) => {
       {rules.map((rule, i) => (
         <div className={style['conditions-container']}
           disabled
-          key={rule.Id}
-        >
+          key={i}
+          >
 
           <div className={style['rule-control-wrapper']} >
             {i > 0 ?
               <button className={style['rule-order-button']}
                 onClick={() => mutate.replaceKeys(i, i - 1) }
                 title="Move up"
-              >
+                >
                 &#xE908;
               </button>
               : null }
@@ -56,14 +56,14 @@ export default ({ rules, mutate }) => {
               <button className={style['rule-order-button']}
                 onClick={() => mutate.replaceKeys(i, i + 1) }
                 title="Move down"
-              >
+                >
                 &#xE902;
               </button>
               : null }
             <button className={style['delete-rule-button']}
               onClick={() => deleteRule(mutate, i) }
               title="Remove rule"
-            ></button>
+              ></button>
           </div>
 
           <Rule key={rule.Id} mutate={mutate.in(i) } rule={rule} />
