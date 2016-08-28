@@ -2,7 +2,6 @@ import path from 'path';
 
 export default function (req, res, { rulesRepository, metaRepository }, { params }) {
   const keyPath = params.splat;
-
   (async function () {
     const ruleData = await rulesRepository.getRule(keyPath);
 
