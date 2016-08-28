@@ -10,9 +10,9 @@ const ruleHasChanged = (props, nextProps) =>
   !R.equals(props.rule, nextProps.rule) ||
   !R.equals(props.mutate.path, nextProps.mutate.path);
 
-const comp = ({ rule, mutate }) => {
+const comp = ({ rule, mutate, autofocus }) => {
   const isDefaultValue = Object.keys(rule.Matcher).length === 0;
-  
+
   let valueTitle = isDefaultValue ? 'Default V' : 'V';
   valueTitle += rule.Type === 'SingleVariant' ? 'alue' : 'alues';
 
@@ -21,12 +21,12 @@ const comp = ({ rule, mutate }) => {
       { !isDefaultValue ?
         <div className={style['conditions']}>
           <label className={style['case-partial-title']}>Conditions</label>
-          <Matcher matcher={rule.Matcher} mutate={mutate.in('Matcher') } />
+          <Matcher matcher={rule.Matcher} mutate={mutate.in('Matcher') } autofocus={autofocus} />
         </div> : null
       }
       <div className={style['values']} >
         <label className={style['case-partial-title']}>{valueTitle}</label>
-        <RuleValue {...{ rule, mutate }} autofocus={isDefaultValue} />
+        <RuleValue {...{ rule, mutate }} autofocus={isDefaultValue && autofocus} />
       </div >
     </div >
   );

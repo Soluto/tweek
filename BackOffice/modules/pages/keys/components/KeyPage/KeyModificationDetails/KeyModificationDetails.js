@@ -10,12 +10,12 @@ const KeyModificationDetails = wrapComponentWithClass(({ modifyCompareUrl, modif
   const formatedModifyDate = 'Modify date: ' + moment(modifyDate).format(modifyDateFromat);
 
   return (
-    <div className={style['modification-details-text']} >
+    <div className={style['modification-details-text']} title={ formatedModifyDate }>
       <a href={modifyCompareUrl}
         target="_blank"
-      >
+        >
         <label>Last modify: </label>
-        <label className={style['actual-sub-text']} title={ formatedModifyDate }>{modifyDateFromNow}, by {modifyUser}</label>
+        <label className={style['actual-sub-text']}>{modifyDateFromNow}, by {modifyUser}</label>
       </a>
     </div>
   );

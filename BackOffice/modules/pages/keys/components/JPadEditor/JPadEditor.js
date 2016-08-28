@@ -3,6 +3,7 @@ import Rule from './Rule/Rule';
 import style from './JPadEditor.css';
 import Chance from 'chance';
 import R from 'ramda';
+import { withState, lifecycle, compose } from 'recompose';
 
 const isBrowser = typeof (window) === 'object';
 const chance = new Chance();
@@ -21,7 +22,7 @@ function addMutatorRule(mutate) {
   mutate.prepend({ Id: chance.guid(), Matcher: { '': '' }, Value: '', Type: 'SingleVariant' });
 }
 
-export default ({ rules, mutate }) => {
+const comp = ({ rules, mutate, autofocusRuleIndex, setAutofocusRuleIndex }) => {
   if (!rules) return (<div/>);
 
   const hasDefaultValue = R.any(rule => Object.keys(rule.Matcher).length < 1)(rules);
@@ -29,47 +30,63 @@ export default ({ rules, mutate }) => {
   return isBrowser ? (
     <div className={style['rule-container']}>
 
-      <button className={style['add-rule-button']} onClick={() => addMutatorRule(mutate) } >
+      <button className={style['add-rule-button']} onClick={() => {
+        addMutatorRule(mutate);
+        setAutofocusRuleIndex(0);
+      } } >
         Add Rule
       </button>
       { !hasDefaultValue ?
-        <button className={style['add-default-value-button']} onClick={() => addMutatorDefaultValue(mutate) } >
+        <button className={style['add-default-value-button']} onClick={() => {
+          addMutatorDefaultValue(mutate);
+          setAutofocusRuleIndex(mutate.target.length);
+        } } >
           Add default rule
-        </button> : null }
+        </button> : null
+      }
 
-      {rules.map((rule, i) => (
-        <div className={style['conditions-container']}
-          disabled
-          key={i}
+      {
+        rules.map((rule, i) => (
+          <div className={style['conditions-container']}
+            disabled
+            key={i}
           >
 
-          <div className={style['rule-control-wrapper']} >
-            {i > 0 ?
-              <button className={style['rule-order-button']}
-                onClick={() => mutate.replaceKeys(i, i - 1) }
-                title="Move up"
+            <div className={style['rule-control-wrapper']} >
+              {(i > 0 && i !== rules.length - 1) ?
+                <button className= { style['rule-order-button']}
+                  onClick={() => mutate.replaceKeys(i, i - 1) }
+                  title="Move up"
                 >
-                &#xE908;
-              </button>
-              : null }
-            {i < rules.length - 1 ?
-              <button className={style['rule-order-button']}
-                onClick={() => mutate.replaceKeys(i, i + 1) }
-                title="Move down"
+                  &#xE908;
+                </button>
+                : null }
+              {(i < rules.length - 1 && i !== rules.length - 2) ?
+                <button className={style['rule-order-button']}
+                  onClick={() => mutate.replaceKeys(i, i + 1) }
+                  title="Move down"
                 >
-                &#xE902;
-              </button>
-              : null }
-            <button className={style['delete-rule-button']}
-              onClick={() => deleteRule(mutate, i) }
-              title="Remove rule"
+                  &#xE902;
+                </button>
+                : null }
+              <button className={style['delete-rule-button']}
+                onClick={() => {
+                  deleteRule(mutate, i);
+                  setAutofocusRuleIndex(undefined);
+                } }
+                title="Remove rule"
               ></button>
+            </div>
+
+            <Rule key={rule.Id}
+              mutate={mutate.in(i) }
+              rule={rule}
+              ruleIndex={i}
+              autofocus={i === autofocusRuleIndex}
+            />
+
           </div>
-
-          <Rule key={rule.Id} mutate={mutate.in(i) } rule={rule} />
-
-        </div>
-      ))
+        ))
       }
 
     </div >
@@ -77,3 +94,11 @@ export default ({ rules, mutate }) => {
     :
     (<div>Loading rule...</div>);
 };
+
+export default compose(
+  withState('autofocusRuleIndex', 'setAutofocusRuleIndex', undefined),
+  lifecycle({
+    componentDidUpdate() {
+      if (this.props.addMutatorDefaultValue !== undefined) this.props.setAutofocusRuleIndex(undefined);
+    },
+  }))(comp);
