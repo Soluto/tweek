@@ -23,15 +23,16 @@ class GitRepository {
     const lock = createLock();
     this.deleteFile = lock.synchronized(this.deleteFile);
     this.updateFile = lock.synchronized(this.updateFile);
-
-    this._tweekCommiterSignature =
-      Git.Signature.now(GitRepository.TWEEK_BACKOFFICE_USER, GitRepository.TWEEK_BACKOFFICE_MAIL);
   }
 
   static init(settings) {
     const gitRepo = new GitRepository(settings);
     gitRepo.init();
     return gitRepo;
+  }
+
+  get _tweekCommiterSignature() {
+    return Git.Signature.now(GitRepository.TWEEK_BACKOFFICE_USER, GitRepository.TWEEK_BACKOFFICE_MAIL);
   }
 
   init() {

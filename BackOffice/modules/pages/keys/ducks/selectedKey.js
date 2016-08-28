@@ -44,14 +44,14 @@ export function updateKeyName(name) {
 export function saveKey() {
   return async function (dispatch, getState) {
     const { selectedKey: { local: keyData, key } } = getState();
-
+    const isNewKey = !!(keyData.key);
     const savedKey = keyData.key || key;
-    if (!saveKey) {
+    if (!savedKey) {
       alert('Key name cannot be empty');
       return;
     }
 
-    if (saveKey === BLANK_KEY_NAME) {
+    if (savedKey === BLANK_KEY_NAME) {
       alert('Invalid key name');
       return;
     }
@@ -63,10 +63,13 @@ export function saveKey() {
       method: 'put',
       ...withJsonData(keyData),
     });
-
+    
+    if (isNewKey) {
+      dispatch({ type: 'KEY_ADDED', payload: savedKey });
+      dispatch(push(`/keys/${savedKey}`));
+    }
+    await dispatch(openKey(savedKey));
     dispatch({ type: KEY_SAVED });
-    dispatch({ type: 'KEY_ADDED', payload: keyData.key });
-    dispatch(push(`/keys/${keyData.key}`));
   };
 }
 
