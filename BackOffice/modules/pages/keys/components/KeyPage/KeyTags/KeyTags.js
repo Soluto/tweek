@@ -5,10 +5,11 @@ import { connect } from 'react-redux';
 import R from 'ramda';
 import style from './KeyTags.css';
 import * as tagActions from '../../../ducks/tags';
-import { compose, mapProps } from 'recompose';
+import { compose, mapProps, pure, shouldUpdate, shallowEqual } from 'recompose';
 
 export default compose(
   connect(state => ({ globalTags: state.tags }), { ...tagActions }),
+  pure,
   mapProps(({ globalTags, tags, ...props }) => (
     { ...props,
     tagsSuggestions: globalTags.map(x => x.name),
@@ -45,7 +46,7 @@ export default compose(
 
     _onTagDeleted(deletedTagIndex) {
       const newTags = R.remove(deletedTagIndex, 1, this.props.tags);
-      this.props.onTagsChanged(newTags);
+      this.props.onTagsChanged(newTags.map(x => x.text));
     }
 
     render() {
@@ -60,12 +61,12 @@ export default compose(
           allowDeleteFromEmptyInput
           minQueryLength = { 1 }
           classNames = {{
-      tags: style['tags-container'],
-      tagInput: style['tag-input'],
-      tag: style['tag'],
-      remove: style['tag-delete-button'],
-      suggestions: style['tags-suggestion'],
-    } }
+            tags: style['tags-container'],
+            tagInput: style['tag-input'],
+            tag: style['tag'],
+            remove: style['tag-delete-button'],
+            suggestions: style['tags-suggestion'],
+          } }
         />
 
       );

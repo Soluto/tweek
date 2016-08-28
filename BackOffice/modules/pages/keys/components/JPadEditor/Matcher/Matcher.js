@@ -9,7 +9,7 @@ import classNames from 'classnames';
 
 const editorMetaService = EditorMetaService.instance;
 
-const Property = ({ property, predicate, mutate, suggestedValues = [], canBeClosed = true }) =>
+const Property = ({ property, predicate, mutate, suggestedValues = [], canBeClosed = true, autofocus }) =>
   (<div className={style['conditions-wrapper']}>
     <button onClick={mutate.delete}
       className={style['delete-condition-button']}
@@ -17,7 +17,7 @@ const Property = ({ property, predicate, mutate, suggestedValues = [], canBeClos
       title="Remove condition"
       disabled={!canBeClosed}
     ></button>
-    <PropertyName {...{ property, mutate, suggestedValues }} />
+    <PropertyName {...{ property, mutate, suggestedValues, autofocus }} />
     <PropertyPredicate {...{ predicate, mutate, property }} />
   </div>);
 
@@ -25,7 +25,7 @@ const hasChanged = shouldUpdate((props, nextProps) =>
   !R.equals(props.matcher, nextProps.matcher) ||
   !R.equals(props.mutate.path, nextProps.mutate.path));
 
-export default hasChanged(({ matcher, mutate }) => {
+export default hasChanged(({ matcher, mutate, autofocus }) => {
   const [ops, props] = R.pipe(R.toPairs, R.partition(([prop]) => prop[0] === '$'))(matcher);
   const IgnoreActivePropsPropsPredicate = R.compose(R.not, R.contains(R.__, R.map(R.head, props)));
 
@@ -42,7 +42,7 @@ export default hasChanged(({ matcher, mutate }) => {
         return (
       <Property key={i}
         mutate={mutate.in(property) }
-        {...{ suggestedValues, property, predicate, canBeClosed }}
+        {...{ suggestedValues, property, predicate, canBeClosed, autofocus }}
       />
       );
       })
