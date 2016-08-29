@@ -14,15 +14,15 @@ class TagsRepository {
 
   async mergeNewTags(newTags, author) {
     const currentTags = await this._getParsedTags();
-    const combined = JSON.stringify(R.uniqBy(x => x.name, [...currentTags, ...newTags]));
+    const combined = JSON.stringify(R.uniqBy(x => x.name, [...currentTags, ...newTags]), null, 4);
 
     return await this._gitRepo.updateFile(TagsRepository.TAGS_REPOSITORY_FILE_NAME, combined, author);
   }
 
   async _getParsedTags() {
     try {
-    const tagsFile = await this._gitRepo.readFile(TagsRepository.TAGS_REPOSITORY_FILE_NAME);
-    return JSON.parse(tagsFile.fileContent);
+      const tagsFile = await this._gitRepo.readFile(TagsRepository.TAGS_REPOSITORY_FILE_NAME);
+      return JSON.parse(tagsFile.fileContent);
     } catch (exp) {
       return [];
     }

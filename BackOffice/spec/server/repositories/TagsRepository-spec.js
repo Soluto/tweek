@@ -20,7 +20,6 @@ describe('TagsRepository', () => {
       email: 'some email',
     };
 
-
     it('should be able to get all tags: call git repo with correct file name and return correct tags', async () => {
       // Arrange
       const tagsMock = [{ name: 'tag1' }, { name: 'tag2' }];
