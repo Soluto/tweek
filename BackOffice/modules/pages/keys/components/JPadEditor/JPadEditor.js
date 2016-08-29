@@ -99,6 +99,6 @@ export default compose(
   withState('autofocusRuleIndex', 'setAutofocusRuleIndex', undefined),
   lifecycle({
     componentDidUpdate() {
-      if (this.props.addMutatorDefaultValue !== undefined) this.props.setAutofocusRuleIndex(undefined);
+      if (this.props.autofocusRuleIndex !== undefined) this.props.setAutofocusRuleIndex(undefined);
     },
   }))(comp);
