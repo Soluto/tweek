@@ -22,6 +22,7 @@ class TagsRepository {
   async _getParsedTags() {
     try {
       const tagsFile = await this._gitRepo.readFile(TagsRepository.TAGS_REPOSITORY_FILE_NAME);
+   
       return JSON.parse(tagsFile.fileContent);
     } catch (exp) {
       return [];
