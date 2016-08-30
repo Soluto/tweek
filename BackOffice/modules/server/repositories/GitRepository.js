@@ -1,6 +1,6 @@
 import Git from 'nodegit';
 import glob from 'glob';
-import synchronized from '../../utils/synchronizedFunction';
+import createLock from '../../utils/createLock';
 
 const fs = require('promisify-node')('fs-extra');
 
@@ -20,15 +20,19 @@ class GitRepository {
     this._password = settings.password;
     this._url = settings.url;
     this._localPath = settings.localPath;
-
-    this._tweekCommiterSignature =
-      Git.Signature.now(GitRepository.TWEEK_BACKOFFICE_USER, GitRepository.TWEEK_BACKOFFICE_MAIL);
+    const lock = createLock();
+    this.deleteFile = lock.synchronized(this.deleteFile);
+    this.updateFile = lock.synchronized(this.updateFile);
   }
 
   static init(settings) {
     const gitRepo = new GitRepository(settings);
     gitRepo.init();
     return gitRepo;
+  }
+
+  get _tweekCommiterSignature() {
+    return Git.Signature.now(GitRepository.TWEEK_BACKOFFICE_USER, GitRepository.TWEEK_BACKOFFICE_MAIL);
   }
 
   init() {
@@ -44,6 +48,7 @@ class GitRepository {
   }
 
   async readFile(fileName) {
+    console.log('git read', fileName);
     await this._repoPromise;
     const fileContent = (await fs.readFile(`${this._localPath}/${fileName}`)).toString();
 
@@ -65,9 +70,67 @@ class GitRepository {
     };
   }
 
-  updateFile = synchronized(async function (fileName, payload, { name, email }) {
+  async updateFile(fileName, payload, { name, email }) {
+    const actionName = `update ${fileName}`;
     const repo = await this._repoPromise;
-    console.log('start updating');
+    console.log('git', actionName);
+
+    await this._prepareForUpdate();
+
+    try {
+      await fs.ensureFile(this._getFileLocalPath(fileName));
+      await fs.writeFile(this._getFileLocalPath(fileName), payload);
+
+      const author = Git.Signature.now(name, email);
+
+      await repo.createCommitOnHead(
+        [fileName],
+        author,
+        this._tweekCommiterSignature,
+        actionName
+      );
+
+      await this._pushRepositoryChanges(actionName);
+    } catch (ex) {
+      console.error(ex);
+    }
+  }
+
+  async deleteFile(fileName, { name, email }) {
+    const actionName = `delete ${fileName}`;
+    const repo = await this._repoPromise;
+    console.log('git', actionName);
+
+    await this._prepareForUpdate();
+
+    try {
+      const author = Git.Signature.now(name, email);
+
+      const repoIndex = await repo.refreshIndex();
+      await repoIndex.removeByPath(fileName);
+      await repoIndex.write();
+      const oid = await repoIndex.writeTree();
+      const parent = await repo.getHeadCommit();
+
+      await repo.createCommit(
+        'HEAD',
+        author,
+        this._tweekCommiterSignature,
+        actionName,
+        oid,
+        [parent]
+      );
+
+      await this._pushRepositoryChanges(actionName);
+
+      await fs.remove(this._getFileLocalPath(fileName));
+    } catch (ex) {
+      console.error(ex);
+    }
+  }
+
+  async _prepareForUpdate() {
+    const repo = await this._repoPromise;
 
     await repo.fetchAll(this._defaultGitOperationSettings);
 
@@ -77,19 +140,12 @@ class GitRepository {
       console.log('invalid repo state');
       throw new Error('invalid repo state');
     }
+  }
 
+  async _pushRepositoryChanges(actionName) {
+    const repo = await this._repoPromise;
     try {
-      await fs.ensureFile(`${this._localPath}/${fileName}`);
-      await fs.writeFile(`${this._localPath}/${fileName}`, payload);
-
-      const author = Git.Signature.now(name, email);
-
-      await repo.createCommitOnHead(
-        [fileName],
-        author,
-        this._tweekCommiterSignature,
-        `update file:${fileName}`
-      );
+      console.log('pushing changes:', actionName);
 
       const remote = await repo.getRemote('origin');
       const code = await remote.push(['refs/heads/master:refs/heads/master'],
@@ -98,21 +154,21 @@ class GitRepository {
       if (!(await this._isSynced())) {
         console.log('push failed, attempting to reset');
         const remoteCommit = (await repo.getBranchCommit('remotes/origin/master'));
-        return await Git.Reset.reset(repo, remoteCommit, 3);
+        await Git.Reset.reset(repo, remoteCommit, 3);
 
         console.log('reset worked');
         throw new Error('fail to push changes');
       }
 
-      console.log(`push completed:${code}`);
+      console.log('push completed');
     } catch (ex) {
       console.error(ex);
     }
-  })
+  }
 
-  deleteFile = synchronized(async function (fileName, { name, email }) {
-    return '';
-  });
+  _getFileLocalPath(fileName) {
+    return `${this._localPath}/${fileName}`;
+  }
 
   get _defaultGitOperationSettings() {
     return {
@@ -133,9 +189,9 @@ class GitRepository {
   }
 
   async _cloneAsync() {
-    console.log('start cloning', this._localPath);
     await fs.remove(this._localPath);
 
+    console.log('cloning rules repository');
     const repo = await Git.Clone(this._url, this._localPath, {
       fetchOpts: this._defaultGitOperationSettings,
     });

@@ -1,9 +1,13 @@
 @import (reference) "../../../../styles/core/core.less";
-.case-container {
+.rule-container {
     padding: 0;
     margin: 0;
-    .add-case-button {
+    .add-rule-button {
         .metro-button;
+    }
+    .add-default-value-button {
+        .transparent-metro-button;
+        margin-left: 20px;
     }
     .conditions-container {
         margin-top: 15px;
@@ -11,11 +15,11 @@
         box-shadow: 0 10px 9px -10px rgba(0, 0, 0, 0.2);
         border: 1px solid lightgray;
         margin-bottom: 16px;
-        .case-control-wrapper {
+        .rule-control-wrapper {
             position: absolute;
             top: 10px;
             right: 20px;
-            .case-order-button {
+            .rule-order-button {
                 margin-right: 3px;
                 font-size: 18px;
                 font-family: 'tweekIcons';
@@ -36,7 +40,7 @@
                     border: 1px solid gray;
                 }
             }
-            .delete-case-button {
+            .delete-rule-button {
                 .close-circle-button;
             }
         }

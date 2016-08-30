@@ -13,7 +13,7 @@ class MetaRepository {
   }
 
   updateRuleMeta(ruleName, payload, author) {
-    return this._gitRepo.updateFile(this._buildMetaJsonFilePath(ruleName), JSON.stringify(payload), author);
+    return this._gitRepo.updateFile(this._buildMetaJsonFilePath(ruleName), JSON.stringify(payload, null, 4), author);
   }
 
   deleteKeyMeta(keyPath, author) {

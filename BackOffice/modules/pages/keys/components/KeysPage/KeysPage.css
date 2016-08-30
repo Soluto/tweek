@@ -26,6 +26,8 @@
   bottom: 0;
   right: 0;
   flex-grow: 1;
+  flex-shrink: 0;
+  overflow-y: auto;
 }
 .keys-page-container .add-button-wrapper {
   min-height: 80px;
@@ -50,6 +52,7 @@
   user-select: none;
   transition: all 0.2s ease-in-out;
   height: 34px;
+  border-radius: 17px;
   width: 200px;
 }
 .keys-page-container .add-button-wrapper .add-button:hover {
@@ -66,7 +69,4 @@
 .keys-page-container .add-button-wrapper .add-button:disabled:active {
   cursor: default;
   background-color: gray;
-}
-.keys-page-container .add-key-input-wrapper input {
-  width: 100%;
 }

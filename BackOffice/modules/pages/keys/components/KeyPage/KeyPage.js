@@ -4,37 +4,22 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import KeyRulesEditor from '../KeyRulesEditor/KeyRulesEditor';
 import * as keysActions from '../../ducks/selectedKey';
-import * as tagActions from '../../ducks/tags';
+import { deleteKey } from '../../ducks/keys';
 import style from './KeyPage.css';
 import { diff } from 'deep-diff';
-import { WithContext as ReactTags } from 'react-tag-input';
 import R from 'ramda';
-import TextareaAutosize from 'react-autosize-textarea';
-import moment from 'moment';
-import wrapComponentWithClass from '../../../../utils/wrapComponentWithClass';
+import KeyTags from './KeyTags/KeyTags';
+import EditableText from './EditableText/EditableText';
+import EditableTextArea from './EditableTextArea/EditableTextArea';
+import KeyModificationDetails from './KeyModificationDetails/KeyModificationDetails';
+import Autosuggest from 'react-autosuggest';
 
-const modifyDateFromat = 'DD/MM/YYYY HH:mm';
+const getKeyPrefix = (path) => R.slice(0, -1, path.split('/')).join('/');
+const getSugesstions = R.pipe(R.map(getKeyPrefix), R.uniq(), R.filter(x => x !== ''));
 
-const KeyModificationDetails = wrapComponentWithClass(({ modifyCompareUrl, modifyDate, modifyUser }) => {
-  const modifyDateFromNow = moment(modifyDate).fromNow();
-  const formatedModifyDate = 'Modify date: ' + moment(modifyDate).format(modifyDateFromat);
-
-  return (
-    <div className={style['rule-sub-text']} >
-      <a href={modifyCompareUrl}
-        target="_blank"
-        >
-        <label>Last modify: </label>
-        <label className={style['actual-sub-text']} title={ formatedModifyDate }>{modifyDateFromNow}, by {modifyUser}</label>
-      </a>
-    </div>
-  );
-});
-
-
-export default connect((state, { params }) => (
-  { selectedKey: state.selectedKey, tags: state.tags, configKey: params.splat }),
-  { ...keysActions, ...tagActions })(
+export default connect((state, { params, route }) => (
+  { keysList: state.keys, selectedKey: state.selectedKey, configKey: route.isInAddMode ? '_blank' : params.splat, isInAddMode: route.isInAddMode }),
+  { ...keysActions, deleteKey })(
   class KeyPage extends Component {
 
     static propTypes = {
@@ -43,158 +28,152 @@ export default connect((state, { params }) => (
       selectedKey: React.PropTypes.object,
     }
 
-    constructor(props) {
-      super(props);
-
-      this.state = {
-        isDisplayNameInEditMode: false,
-      };
+    _onTagsChanged =(newTags) => {
+      const newMeta = { ...this.props.selectedKey.local.meta, tags: newTags };
+      this._onSelectedKeyMetaChanged(newMeta);
     }
 
+    constructor(props) {
+      super(props);
+    }
+    
     componentDidMount() {
-      const { downloadKey, configKey, selectedKey, downloadTags } = this.props;
+      const { openKey, configKey, selectedKey } = this.props;
       if (!configKey) return;
       if (selectedKey && selectedKey.key === configKey) return;
-      downloadKey(configKey);
-      downloadTags();
+      openKey(configKey);
     }
 
     componentWillReceiveProps({ configKey }) {
-      const { downloadKey, selectedKey, downloadTags } = this.props;
+      const { openKey, selectedKey } = this.props;
       if (configKey !== this.props.configKey || !selectedKey) {
-        downloadKey(configKey);
+        openKey(configKey);
       }
     }
 
-    onDisplayNameChanged(newDisplayName) {
-      const newMeta = { ...this.props.selectedKey.local.meta, displayName: newDisplayName };
-this._onSelectedKeyMetaChanged(newMeta);
+    _onKeyNameChanged(newKeyName) {
+      this.props.updateKeyName(newKeyName);
     }
 
-onDescriptionChanged(newDescription) {
-  const newMeta = { ...this.props.selectedKey.local.meta, description: newDescription };
-  this._onSelectedKeyMetaChanged(newMeta);
-}
+    _onDisplayNameChanged(newDisplayName) {
+      const newMeta = { ...this.props.selectedKey.local.meta, displayName: newDisplayName };
+      this._onSelectedKeyMetaChanged(newMeta);
+    }
 
-onTagDeleted(deletedTagIndex) {
-  const meta = this.props.selectedKey.local.meta;
-  const newMeta = { ...meta, tags: R.remove(deletedTagIndex, 1, meta.tags) };
-  this._onSelectedKeyMetaChanged(newMeta);
-}
+    _onDescriptionChanged(newDescription) {
+      const newMeta = { ...this.props.selectedKey.local.meta, description: newDescription };
+      this._onSelectedKeyMetaChanged(newMeta);
+    }
 
-onTagAdded(newTagText) {
-  const meta = this.props.selectedKey.local.meta;
-  const newMeta = { ...meta, tags: [...meta.tags, newTagText] };
-  this._onSelectedKeyMetaChanged(newMeta);
-}
+    _onSelectedKeyMetaChanged(newMeta) {
+      this.props.updateKeyMetaDef(newMeta);
+    }
 
-get tags() {
-  return R.map(_ => ({
-    id: _,
-    text: _,
-  }), this.props.selectedKey.local.meta.tags);
-}
 
-get tagsSuggestions() {
-  return this.props.tags ? this.props.tags.map(tag => tag.name) : [];
-}
+    _keyNameSuggestions() {
+      return getSugesstions(this.props.keysList).sort();
+    }
 
-_onSelectedKeyMetaChanged(newMeta) {
-  this.props.updateKeyMetaDef(newMeta);
-}
-
-renderKeyActionButtons() {
-  let { local, remote, isSaving, isDeleting } = this.props.selectedKey;
-  const changes = diff(local, remote);
-  const hasChanges = (changes || []).length > 0;
-  return (
+    renderKeyActionButtons(isInAddMode) {
+      const { local, remote, isSaving, isDeleting } = this.props.selectedKey;
+      const changes = diff(local, remote);
+      const hasChanges = (changes || []).length > 0;
+      return (
     <div className={style['key-action-buttons-wrapper']}>
-      <button disabled={!hasChanges || isSaving || isDeleting }
+      {!isInAddMode ?
+        <button disabled={isSaving}
+          className={style['delete-key-button']}
+          onClick={() => {
+            if (confirm('Are you sure?')) {
+              this.props.deleteKey(this.props.configKey);
+            }
+          } }
+        >
+          Delete key
+        </button> : null}
+      <button disabled={!hasChanges || isSaving }
         data-state-has-changes={hasChanges}
         data-state-is-saving={isSaving}
         className={style['save-changes-button']}
         onClick={() => this.props.saveKey(this.props.configKey) }
-        >
+      >
         {isSaving ? 'Saving...' : 'Save changes'}
-      </button>
-      <button disabled={isSaving || isDeleting }
-        data-state-is-deleting={isDeleting}
-        className={style['delete-key-button']}
-        onClick={() => this.props.deleteKey(this.props.configKey) }
-        >
-        {isDeleting ? 'Deleting...' : 'Delete key'}
       </button>
     </div>
   );
-}
+    }
 
-render() {
-  const { dispatch, configKey, selectedKey } = this.props;
-  if (!selectedKey) return <div className={style['loading-message']}>loading</div>;
-  const { meta, ruleDef } = selectedKey.local;
+    render() {
+      const { configKey, selectedKey, isInAddMode } = this.props;
+      if (!selectedKey) return <div className={style['loading-message']}>loading</div>;
+      const { meta, ruleDef, key = '' } = selectedKey.local;
+      
+      const keyNameAutoSuggestProps = {
+    placeholder: 'Enter key full path',
+    value: key,
+    onChange: (_, { newValue }) => this._onKeyNameChanged(newValue),
+  };
 
-  return (
+      return (
     <div className={style['key-viewer-container']}>
-      {this.renderKeyActionButtons() }
+      {this.renderKeyActionButtons(isInAddMode) }
+
       <div className={style['key-header']}>
 
         {ruleDef.modificationData ?
           <KeyModificationDetails className={style['modification-data']} {...ruleDef.modificationData} />
-          : null}
+          : null
+        }
 
         <div className={style['display-name-wrapper']}>
-          {this.state.isDisplayNameInEditMode ?
-
-            <form onSubmit={ (e) => { this.setState({ isDisplayNameInEditMode: false }); e.preventDefault(); } }>
-              <input type="text"
-                ref={(input) => input && input.focus() }
-                className={style['display-name-input']}
-                onChange={ (e) => this.onDisplayNameChanged(e.target.value) }
-                value = { meta.displayName }
-                onBlur={() => { this.setState({ isDisplayNameInEditMode: false }); } }
-                />
-            </form>
-            :
-            <div className={style['display-name']}
-              onClick={() => {
-                this.setState({ isDisplayNameInEditMode: true });
-              } }
-              >
-              {meta.displayName}
+          {isInAddMode ?
+            <div className={style['auto-suggest-wrapper']}>
+              <Autosuggest
+                suggestions={ this._keyNameSuggestions() }
+                getSuggestionValue={(x) => x}
+                renderSuggestion={x => <span>{x}</span>}
+                inputProps={keyNameAutoSuggestProps}
+                theme={style}
+              />
             </div>
+            :
+            <EditableText onTextChanged={(text) => this:: this._onDisplayNameChanged(text) }
+              placeHolder="Enter key display name"
+              value={meta.displayName}
+              classNames={{
+                container: style['display-name-container'],
+                input: style['display-name-input'],
+                text: style['display-name-text'],
+                form: style['display-name-form'],
+              }}
+            />
           }
         </div>
 
-        <div className={style['rule-sub-text']}>
-          <label>Full path: </label>
-          <label className={style['actual-sub-text']}>{configKey}</label>
-        </div>
+        {!isInAddMode ?
+          <div className={style['key-full-path']}>
+            <label>Full path: </label>
+            <label className={style['actual-path']}>{configKey}</label>
+          </div>
+          : null}
 
         <div className={style['key-description-and-tags-wrapper']}>
 
-          <TextareaAutosize
-            onChange={ (e) => this.onDescriptionChanged(e.target.value) }
-            value = { meta.description }
-            placeholder="Write key description"
-            className={style['description-input']}
+          <div className={style['key-description-wrapper']}>
+            <EditableTextArea value={meta.description}
+              onTextChanged={(text) => this._onDescriptionChanged(text) }
+              placeHolder="Write key description"
+              title="Click to edit description"
+              classNames={{
+                input: style['description-input'],
+              }}
             />
+          </div>
 
           <div className={style['tags-wrapper']}>
 
-            <ReactTags tags={ this.tags }
-              handleDelete={ this:: this.onTagDeleted }
-            handleAddition={ this:: this.onTagAdded }
-            suggestions={this.tagsSuggestions }
-            placeholder="New tag"
-            minQueryLength={ 1 }
-            allowDeleteFromEmptyInput
-            classNames={{
-              tags: style['tags-container'],
-              tagInput: style['tag-input'],
-              tag: style['tag'],
-              remove: style['tag-delete-button'],
-              suggestions: style['tags-suggestion'],
-            } }
+            <KeyTags onTagsChanged={this._onTagsChanged}
+              tags={ meta.tags }
             />
 
           </div>
@@ -207,8 +186,8 @@ render() {
         sourceTree={JSON.parse(ruleDef.source) }
         onMutation={x => this.props.updateKeyRuleDef({ source: JSON.stringify(x, null, 4) }) }
         className={style['key-rules-editor']}
-        />
+      />
 
     </div >
   );
-} });
+    } });

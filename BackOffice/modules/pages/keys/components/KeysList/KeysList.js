@@ -94,7 +94,7 @@ export default wrapComponentWithClass(componentFromStream(prop$ => {
   const keyList$ = prop$.map(x => x.keys).distinctUntilChanged();
 
   const { handler: setFilter, stream: filter$ } = createEventHandler();
-  const textFilter$ = filter$.debounceTime(300).startWith('');
+  const textFilter$ = filter$.debounceTime(500).startWith('');
 
   const filteredKeys$ = Observable.combineLatest(textFilter$, keyList$)
     .map(([filter, keys]) => keys.filter(key => key.includes(filter)));
