@@ -14,6 +14,7 @@
   display: flex;
   flex-grow: 1;
   flex-direction: column;
+  flex-shrink: 0;
 }
 .key-viewer-container .key-action-buttons-wrapper {
   text-align: right;
@@ -35,7 +36,6 @@
   user-select: none;
   transition: all 0.2s ease-in-out;
   width: 125px;
-  margin-right: 10px;
 }
 .key-viewer-container .key-action-buttons-wrapper .save-changes-button:hover {
   background-color: #007acc;
@@ -72,6 +72,10 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
+  text-decoration: underline;
+  background-color: transparent;
+  color: gray;
+  margin-right: 10px;
   width: 125px;
 }
 .key-viewer-container .key-action-buttons-wrapper .delete-key-button:hover {
@@ -89,21 +93,30 @@
   cursor: default;
   background-color: gray;
 }
-.key-viewer-container .key-action-buttons-wrapper .delete-key-button[data-state-is-deleting=true],
-.key-viewer-container .key-action-buttons-wrapper .delete-key-button[data-state-is-deleting=true]:disabled {
-  background-color: green;
+.key-viewer-container .key-action-buttons-wrapper .delete-key-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.key-viewer-container .key-action-buttons-wrapper .delete-key-button:active {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.key-viewer-container .key-action-buttons-wrapper .delete-key-button:disabled {
+  background-color: transparent;
+}
+.key-viewer-container .key-action-buttons-wrapper .delete-key-button:disabled:hover,
+.key-viewer-container .key-action-buttons-wrapper .delete-key-button:disabled:active {
+  cursor: default;
+  background-color: transparent;
 }
 .key-viewer-container .key-header {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
   position: relative;
   background-color: white;
   border-radius: 5px;
   border: 1px solid lightgray;
   margin-top: 16px;
-  clear: both;
   padding: 20px;
-  min-height: 168px;
-  overflow-y: auto;
-  overflow-x: hidden;
   box-sizing: border-box;
 }
 .key-viewer-container .key-header .modification-data {
@@ -114,14 +127,14 @@
 .key-viewer-container .key-header .display-name {
   font-size: 20px;
 }
-.key-viewer-container .key-header .display-name-wrapper {
+.key-viewer-container .key-header .display-name-wrapper .display-name-container {
   min-height: 34px;
-  border: 1px solid transparent;
+  display: flex;
+  flex-grow: 1;
 }
-.key-viewer-container .key-header .display-name-wrapper .display-name {
-  font-size: 22px;
-  color: #515c66;
-  margin-left: 4px;
+.key-viewer-container .key-header .display-name-wrapper .display-name-form {
+  display: flex;
+  flex-grow: 1;
 }
 .key-viewer-container .key-header .display-name-wrapper .display-name-input {
   display: inline-block;
@@ -136,164 +149,170 @@
   color: #515C66;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
+  box-sizing: border-box;
   transition: all 0.2s ease-in-out;
   font-size: 22px;
-  color: #515c66;
+  font-weight: 300;
+  display: flex;
   width: 100%;
-  box-sizing: border-box;
+  flex-grow: 1;
 }
 .key-viewer-container .key-header .display-name-wrapper .display-name-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.key-viewer-container .key-header .rule-sub-text {
+.key-viewer-container .key-header .display-name-wrapper .key-name-input {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  width: auto;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  font-size: 22px;
+  font-weight: 300;
+  display: flex;
+  width: 100%;
+  flex-grow: 1;
+  margin-bottom: 10px;
+}
+.key-viewer-container .key-header .display-name-wrapper .key-name-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.key-viewer-container .key-header .display-name-wrapper .display-name-text {
+  font-size: 22px;
+  display: flex;
+  flex-grow: 1;
+}
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper {
+  margin-bottom: 13px;
+}
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .input {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  width: auto;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+}
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .suggestionsContainer {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  max-height: 400px;
+  overflow-y: auto;
+  width: 400px;
+  z-index: 2;
+  border: 1px solid lightgray;
+}
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .suggestion {
+  background-color: white;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  flex-shrink: 0;
+  transition: all 0.2s ease-in-out;
+}
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .suggestion:hover {
+  cursor: pointer;
+  background-color: #ededed;
+}
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .suggestion:active {
+  background-color: #dfdfdf;
+}
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .suggestionFocused {
+  background-color: #dfdfdf;
+}
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .input {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  width: auto;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  font-size: 22px;
+  font-weight: 300;
+  display: flex;
+  width: 100%;
+  flex-grow: 1;
+}
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.key-viewer-container .key-header .key-full-path {
   color: #a5a5a5;
   font-size: 14px;
   margin-left: 5px;
-  margin-bottom: 4px;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
   user-select: none;
 }
-.key-viewer-container .key-header .rule-sub-text a {
-  color: #a5a5a5;
-  text-decoration: none;
-}
-.key-viewer-container .key-header .rule-sub-text a label {
-  cursor: pointer;
-}
-.key-viewer-container .key-header .rule-sub-text a:hover,
-.key-viewer-container .key-header .rule-sub-text a:active {
-  text-decoration: underline;
-}
-.key-viewer-container .key-header .rule-sub-text a:visited {
-  color: #a5a5a5;
+.key-viewer-container .key-header .key-full-path .actual-path {
+  -moz-user-select: text;
+  -ms-user-select: text;
+  -webkit-user-select: text;
+  user-select: text;
 }
 .key-viewer-container .key-header .key-description-and-tags-wrapper {
   display: flex;
   flex-direction: row;
+  flex-grow: 1;
   margin-top: 10px;
+  max-height: 100px;
 }
-.key-viewer-container .key-header .key-description-and-tags-wrapper .description-input {
+.key-viewer-container .key-header .key-description-and-tags-wrapper .key-description-wrapper {
+  height: 100px;
+}
+.key-viewer-container .key-header .key-description-and-tags-wrapper .key-description-wrapper .description-input {
   resize: none;
   font-size: 14px;
   color: #515c66;
   min-width: 400px;
-  min-height: 40px;
-  border: 1px solid lightgray;
-  border-radius: 5px;
+  min-height: 100px;
+  max-height: 100px;
   outline: none;
-  padding: 10px;
+  box-sizing: border-box;
 }
 .key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper {
+  display: flex;
+  width: 0;
   flex-direction: column;
   position: relative;
-  display: flex;
   flex-grow: 1;
+  max-height: 100px;
+  overflow-y: auto;
   padding-top: 0;
   border-left: 1px solid lightgray;
   padding-left: 20px;
   margin-left: 20px;
-}
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container:before {
-  content: 'Tags';
-  color: #a5a5a5;
-  float: left;
-  font-size: 14px;
-  margin-right: 10px;
-  margin-top: 10px;
-}
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag {
-  border: 1px solid #ddd;
-  background-color: #eeeeee;
-  font-size: 12px;
-  display: inline-block;
-  padding: 5px;
-  margin: 5px 5px 0 0;
-  border-radius: 2px;
-}
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag .tag-delete-button {
-  display: block;
-  float: right;
-  margin-top: 1px;
-  color: #aaa;
-  margin-left: 6px;
-  padding-left: 1px;
-  padding-bottom: 4px;
-  width: 9px;
-  height: 9px;
-  transition: all 0.2s ease-in-out;
-}
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag .tag-delete-button:hover {
-  cursor: pointer;
-  color: #939393;
-}
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag-input {
-  display: inline-block;
-  font-size: 12px;
-}
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag-input input,
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag-input input:focus {
-  border: 1px solid #ddd;
-  background-color: #eeeeee;
-  font-size: 12px;
-  display: inline-block;
-  padding: 5px;
-  margin: 5px 5px 0 0;
-  border-radius: 2px;
-  outline: none;
-}
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag-input input .tag-delete-button,
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag-input input:focus .tag-delete-button {
-  display: block;
-  float: right;
-  margin-top: 1px;
-  color: #aaa;
-  margin-left: 6px;
-  padding-left: 1px;
-  padding-bottom: 4px;
-  width: 9px;
-  height: 9px;
-  transition: all 0.2s ease-in-out;
-}
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag-input input .tag-delete-button:hover,
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tag-input input:focus .tag-delete-button:hover {
-  cursor: pointer;
-  color: #939393;
-}
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tags-suggestion {
-  position: absolute;
-  z-index: 1;
-}
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tags-suggestion ul {
-  list-style-type: none;
-  box-shadow: 0.05em 0.01em 0.5em rgba(0, 0, 0, 0.2);
-  background: white;
-  width: 200px;
-}
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tags-suggestion ul li {
-  border-bottom: 1px solid #ddd;
-  padding: 5px 10px;
-  margin: 0;
-  transition: all 0.2s ease-in-out;
-}
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tags-suggestion ul li mark {
-  text-decoration: underline;
-  background: none;
-  font-weight: 600;
-}
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tags-suggestion ul li:hover {
-  cursor: pointer;
-  background-color: #eeeeee;
-}
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tags-suggestion ul li:active,
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tags-suggestion ul li:global(.active):active {
-  cursor: pointer;
-  background-color: #d9d9d9;
-}
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper .tags-container .tags-suggestion ul li:global(.active) {
-  cursor: pointer;
-  background-color: #eeeeee;
 }
 .key-viewer-container .key-rules-editor {
   display: flex;

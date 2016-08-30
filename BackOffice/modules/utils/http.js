@@ -1,4 +1,4 @@
-export function withJSONdata(data) {
+export function withJsonData(data) {
   return {
     headers: {
       Accept: 'application/json',

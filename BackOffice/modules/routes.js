@@ -16,6 +16,7 @@ export default serverRoutes => (
         <IndexRoute component={() => (
           <div className={style['select-key-message']}>Select key...</div>)
         } />
+        <Route path="_blank" isInAddMode="true" component={KeyPage} />
         <Route path="*" component={KeyPage}/>
       </Route>
     </Route>

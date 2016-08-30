@@ -1,0 +1,58 @@
+.autosuggest-wrapper .input {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  width: auto;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+}
+.autosuggest-wrapper .input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.autosuggest-wrapper .suggestionsContainer {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  max-height: 400px;
+  overflow-y: auto;
+  width: 400px;
+  z-index: 2;
+  border: 1px solid lightgray;
+}
+.autosuggest-wrapper .suggestion {
+  background-color: white;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  flex-shrink: 0;
+  transition: all 0.2s ease-in-out;
+}
+.autosuggest-wrapper .suggestion:hover {
+  cursor: pointer;
+  background-color: #ededed;
+}
+.autosuggest-wrapper .suggestion:active {
+  background-color: #dfdfdf;
+}
+.autosuggest-wrapper .suggestionFocused {
+  background-color: #dfdfdf;
+}
+.autosuggest-wrapper .suggestionsContainer {
+  width: auto;
+  box-sizing: border-box;
+}
+.autosuggest-wrapper .suggestion {
+  height: auto;
+  padding: 10px;
+  padding-right: 30px;
+}

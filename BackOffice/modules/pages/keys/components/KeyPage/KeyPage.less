@@ -1,45 +1,42 @@
 @import (reference) "../../../../styles/core/core.less";
+@import (reference) "../../../../styles/core/autoSuggest.less";
 .loading-message {
   .centered-message;
 }
 
 @text-color: #515c66;
-@sub-text-color: #a5a5a5;
 .key-viewer-container {
   padding: 16px;
   display: flex;
   flex-grow: 1;
   flex-direction: column;
+  flex-shrink: 0;
   .key-action-buttons-wrapper {
     text-align: right;
     @key-action-button-width: 125px;
     .save-changes-button {
       .metro-button;
       width: @key-action-button-width;
-      margin-right: 10px;
       &[data-state-is-saving=true], &[data-state-is-saving=true]:disabled {
         background-color: green;
       }
     }
     .delete-key-button {
-      .metro-button;
+      .transparent-metro-button;
+      margin-right: 10px;
       width: @key-action-button-width;
-      &[data-state-is-deleting=true], &[data-state-is-deleting=true]:disabled {
-        background-color: green;
-      }
     }
   }
   .key-header {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
     position: relative;
     background-color: white;
     border-radius: 5px;
     border: 1px solid lightgray;
     margin-top: 16px;
-    clear: both;
     padding: 20px;
-    min-height: 168px;
-    overflow-y: auto;
-    overflow-x: hidden;
     box-sizing: border-box;
     .modification-data {
       position: absolute;
@@ -50,144 +47,82 @@
       font-size: 20px;
     }
     .display-name-wrapper {
-      min-height: 34px;
-      border: 1px solid transparent;
       @display-name-font-size: 22px;
-      .display-name {
-        font-size: @display-name-font-size;
-        color: @text-color;
-        margin-left: 4px;
+      .display-name-container {
+        min-height: 34px;
+        display: flex;
+        flex-grow: 1;
+      }
+      .display-name-form {
+        display: flex;
+        flex-grow: 1;
       }
       .display-name-input {
         .metro-textbox;
         font-size: @display-name-font-size;
-        color: @text-color;
+        font-weight: 300;
+        display: flex;
         width: 100%;
-        box-sizing: border-box;
+        flex-grow: 1;
+      }
+      .key-name-input {
+        .display-name-input;
+        margin-bottom: 10px;
+      }
+      .display-name-text {
+        font-size: @display-name-font-size;
+        display: flex;
+        flex-grow: 1;
+      }
+      .auto-suggest-wrapper {
+        margin-bottom: 13px;
+        .auto-suggest-basic;
+        .input {
+          .display-name-input;
+        }
       }
     }
-    .rule-sub-text {
-      color: @sub-text-color;
+    .key-full-path {
+      color: #a5a5a5;
       font-size: 14px;
       margin-left: 5px;
-      margin-bottom: 4px;
       .user-select(none);
-      a {
-        color: @sub-text-color;
-        text-decoration: none;
-        label {
-          cursor: pointer;
-        }
-        &:hover, &:active {
-          text-decoration: underline;
-        }
-        &:visited {
-          color: @sub-text-color;
-        }
+      .actual-path {
+        .user-select(text);
       }
-      .actual-sub-text {}
     }
     .key-description-and-tags-wrapper {
+      @description-and-tags-max-height: 100px;
       display: flex;
       flex-direction: row;
+      flex-grow: 1;
       margin-top: 10px;
-      .description-input {
-        resize: none;
-        font-size: 14px;
-        color: @text-color;
-        min-width: 400px;
-        min-height: 40px;
-        border: 1px solid lightgray;
-        border-radius: 5px;
-        outline: none;
-        padding: 10px;
+      max-height: @description-and-tags-max-height;
+      .key-description-wrapper {
+        height: @description-and-tags-max-height;
+        .description-input {
+          resize: none;
+          font-size: 14px;
+          color: @text-color;
+          min-width: 400px;
+          min-height: @description-and-tags-max-height;
+          max-height: @description-and-tags-max-height;
+          outline: none;
+          box-sizing: border-box;
+        }
       }
       .tags-wrapper {
         display: flex;
+        width: 0;
         flex-direction: column;
         position: relative;
-        display: flex;
         flex-grow: 1;
+        max-height: @description-and-tags-max-height;
+        overflow-y: auto;
         padding-top: 0;
         border-left: 1px solid lightgray;
         padding-left: 20px;
         margin-left: 20px;
-        .tags-container {
-          &:before {
-            content: 'Tags';
-            color: @sub-text-color;
-            float: left;
-            font-size: 14px;
-            margin-right: 10px;
-            margin-top: 10px;
-          }
-          .tag {
-            border: 1px solid #ddd;
-            background-color: #eeeeee;
-            font-size: 12px;
-            display: inline-block;
-            padding: 5px;
-            margin: 5px 5px 0 0;
-            border-radius: 2px;
-            .tag-delete-button {
-              display: block;
-              float: right;
-              margin-top: 1px;
-              color: #aaa;
-              margin-left: 6px;
-              padding-left: 1px;
-              padding-bottom: 4px;
-              width: 9px;
-              height: 9px;
-              .transitioned();
-              &:hover {
-                cursor: pointer;
-                color: #939393;
-              }
-            }
-          }
-          .tag-input {
-            display: inline-block;
-            font-size: 12px;
-            input, input:focus {
-              .tag;
-              outline: none;
-            }
-          }
-          .tags-suggestion {
-            position: absolute;
-            z-index: 1;
-            ul {
-              list-style-type: none;
-              box-shadow: .05em .01em .5em rgba(0, 0, 0, .2);
-              background: white;
-              width: 200px;
-              li {
-                border-bottom: 1px solid #ddd;
-                padding: 5px 10px;
-                margin: 0;
-                .transitioned();
-                mark {
-                  text-decoration: underline;
-                  background: none;
-                  font-weight: 600;
-                }
-                &:hover {
-                  cursor: pointer;
-                  background-color: #eeeeee;
-                }
-                &:active, &:global(.active):active {
-                  cursor: pointer;
-                  background-color: #d9d9d9;
-                }
-                &:global(.active) {
-                  cursor: pointer;
-                  background-color: #eeeeee;
-                }
-              }
-            }
-          }
-        }
       }
     }
   }

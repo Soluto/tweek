@@ -9,7 +9,8 @@ const ClosedComboBoxPropertyValue = ({ onUpdate, allowedValues, value }) =>
     <ClosedComboBox
       inputProps={{ onChange: ({ value }) => onUpdate(value), value }}
       suggestions={allowedValues}
-      />
+      placeholder="Value"
+    />
   </div>);
 
 const TagsPropertyValue = ({ onUpdate, value }) => {
@@ -18,30 +19,55 @@ const TagsPropertyValue = ({ onUpdate, value }) => {
   const handleAddtion = (newValue) => onUpdate([...value, newValue]);
   const handleDelete = (valueIndex) => onUpdate(R.remove(valueIndex, 1, value));
 
-  return (<div>
-    <label className={style['wrapping-bracet']}>[</label><ReactTags tags={ indexedTags }
-      handleAddition={handleAddtion}
-      handleDelete={handleDelete}
-      placeholder="add value"
-      allowDeleteFromEmptyInput
-      classNames={{
-        tags: style['tags-container'],
-        tagInput: style['tag-input'],
-        tag: style['tag'],
-        remove: style['tag-delete-button'],
-        suggestions: style['tags-suggestion'],
-      } }
+  return (
+    <div>
+      <label className={style['wrapping-bracet']}>[</label><ReactTags tags={ indexedTags }
+        handleAddition={handleAddtion}
+        handleDelete={handleDelete}
+        placeholder="Add value"
+        allowDeleteFromEmptyInput
+        classNames={{
+          tags: style['tags-container'],
+          tagInput: style['tag-input'],
+          tag: style['tag'],
+          remove: style['tag-delete-button'],
+          suggestions: style['tags-suggestion'],
+        } }
       /><label className={style['wrapping-bracet']}>]</label>
-  </div>);
+    </div>
+  );
 };
 
-const InputPropertyValue = ({ onUpdate, value }) =>
-  (<input className={style['value-input']} type="text" onChange={(e) => onUpdate(e.target.value) } value={value} />);
+const InputPropertyValue = ({ onUpdate, value }) => (
+  <input className={style['value-input']}
+    type="text"
+    onChange={(e) => onUpdate(e.target.value) }
+    value={value}
+    placeholder="Value"
+  />
+);
 
 function PropertyValueComponent({ onUpdate, meta, value, op }) {
-  if (meta.allowedValues) return (<ClosedComboBoxPropertyValue onUpdate={onUpdate} allowedValues={meta.allowedValues} value={value}/>);
-  if (meta.multipleValues && op === '$in') { return (<TagsPropertyValue onUpdate={onUpdate} value={value}/>); }
-  return (<InputPropertyValue onUpdate={onUpdate} value={value} />);
+  if (meta.allowedValues)
+    return (
+      <ClosedComboBoxPropertyValue onUpdate={onUpdate}
+        allowedValues={meta.allowedValues}
+        value={value}
+      />
+    );
+
+  if (meta.multipleValues && op === '$in')
+    return (
+      <TagsPropertyValue onUpdate={onUpdate}
+        value={value}
+      />
+    );
+
+  return (
+    <InputPropertyValue onUpdate={onUpdate}
+      value={value}
+    />
+  );
 }
 
 export default (props) => <div className={style['property-value-wrapper']}>

@@ -109,6 +109,14 @@ describe('mutator tests', () => {
     }));
   });
 
+  describe('append', () => {
+    it('should be able to insert item to the end of an array', newMutator((target, mutator) => {
+      target.someProp = [1, 2, 3];
+      mutator.in('someProp').append(4);
+      expect(target.someProp).toEqual([1, 2, 3, 4]);
+    }));
+  });
+
   describe('replace keys', () => {
     it('should be able replace two field values', newMutator((target, mutator) => {
       target.someKey = 5;
