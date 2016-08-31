@@ -1,7 +1,7 @@
 import React from 'react';
 import R from 'ramda';
-import ClosedComboBox from '../../../../../../components/common/ClosedComboBox/ClosedComboBox';
 import style from './styles.css';
+import Typeahead from 'react-bootstrap-typeahead';
 
 let PropertySuggestion = ({ suggestion }) => {
   const [identity, prop] = suggestion.value.split('.');
@@ -18,18 +18,21 @@ let getPropertyDisplayName = prop => prop === '' ? prop : prop.split('.')[1];
 
 export default ({ mutate, property, suggestedValues, autofocus }) => {
   return (
-    <ClosedComboBox
-      inputProps={{
-        value: getPropertyDisplayName(property),
-        placeholder: 'Property',
-        onChange: (selectedOption) =>
+    <div className={style['property-name-wrapper']} >
+      <Typeahead
+        options={ R.uniqBy(x => x.value)([...suggestedValues]) }
+        onChange={(selectedValues) => {
+          if (selectedValues.length < 1) return;
+          const selectedOption = selectedValues[0];
           mutate.apply(m =>
             m.updateKey(selectedOption.value)
-              .updateValue((selectedOption.meta && selectedOption.meta.defaultValue) || '')),
-      }}
-      autofocus={autofocus}
-      renderSuggestion={ suggestion => (<PropertySuggestion suggestion={suggestion} />) }
-      suggestions={R.uniqBy(x => x.value)([...suggestedValues]) }
+              .updateValue((selectedOption.meta && selectedOption.meta.defaultValue) || ''));
+        } }
+        placeholder="Property"
+        selected={[R.find(x => x.value === property)(suggestedValues)]}
+        renderMenuItemChildren={ (_, suggestion) => (<PropertySuggestion suggestion={suggestion} />) }
+        ref={e => e && autofocus && e.refs.instance.focus() }
       />
+    </div >
   );
 };

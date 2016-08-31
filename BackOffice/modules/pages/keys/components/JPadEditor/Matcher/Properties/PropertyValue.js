@@ -1,17 +1,8 @@
 import React from 'react';
-import ClosedComboBox from '../../../../../../components/common/ClosedComboBox/ClosedComboBox';
 import style from './styles.css';
 import { WithContext as ReactTags } from 'react-tag-input';
 import R from 'ramda';
-
-const ClosedComboBoxPropertyValue = ({ onUpdate, allowedValues, value }) =>
-  (<div>
-    <ClosedComboBox
-      inputProps={{ onChange: ({ value }) => onUpdate(value), value }}
-      suggestions={allowedValues}
-      placeholder="Value"
-    />
-  </div>);
+import Typeahead from 'react-bootstrap-typeahead';
 
 const TagsPropertyValue = ({ onUpdate, value }) => {
   let indexedTags = value.map(x => ({ id: x, text: x }));
@@ -49,10 +40,15 @@ const InputPropertyValue = ({ onUpdate, value }) => (
 
 function PropertyValueComponent({ onUpdate, meta, value, op }) {
   if (meta.allowedValues)
-    return (
-      <ClosedComboBoxPropertyValue onUpdate={onUpdate}
-        allowedValues={meta.allowedValues}
-        value={value}
+  return (
+      <Typeahead
+        options={ meta.allowedValues }
+        placeholder="Value"
+        onChange={(selectedValues) => {
+          if (selectedValues.length < 1) return;
+          onUpdate(selectedValues[0].value);
+        } }
+        selected={[R.find(x => x.value === value)(meta.allowedValues)]}
       />
     );
 
