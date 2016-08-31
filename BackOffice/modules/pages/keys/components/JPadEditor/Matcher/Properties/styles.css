@@ -2,16 +2,186 @@
   margin: 0 5px;
   display: inline-block;
 }
-.matcher-operator input {
-  max-width: 30px;
-  min-width: 30px;
+.matcher-operator :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  width: auto;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 30px;
 }
-.matcher-operator :global(.react-autosuggest__suggestions-container) {
-  max-width: 60px;
-  min-width: 60px;
+.matcher-operator :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.matcher-operator :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  width: auto;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 30px;
+}
+.matcher-operator :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.matcher-operator :global(.bootstrap-typeahead) :global(.dropdown-menu) {
+  position: absolute;
+  max-height: 350px;
+  min-width: 30px;
+  overflow-y: auto;
+  width: auto;
+  z-index: 2;
+}
+.matcher-operator :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-width: 1px 0 0px 1px;
+  border-style: solid;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.matcher-operator :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
+  border-bottom: 1px;
+}
+.matcher-operator :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.matcher-operator :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
+  background-color: #d1d1d1;
+}
+.matcher-operator :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.matcher-operator :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.matcher-operator :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.disabled) {
+  display: none;
+}
+.matcher-operator :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
+  background-color: #dfdfdf;
 }
 .property-value-wrapper {
   display: inline-block;
+}
+.property-value-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: auto;
+}
+.property-value-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-value-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: auto;
+}
+.property-value-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-value-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) {
+  position: absolute;
+  max-height: 350px;
+  min-width: 80px;
+  overflow-y: auto;
+  width: auto;
+  z-index: 2;
+}
+.property-value-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-width: 1px 0 0px 1px;
+  border-style: solid;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.property-value-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
+  border-bottom: 1px;
+}
+.property-value-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.property-value-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
+  background-color: #d1d1d1;
+}
+.property-value-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.property-value-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.property-value-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.disabled) {
+  display: none;
+}
+.property-value-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
+  background-color: #dfdfdf;
 }
 .property-value-wrapper .value-input {
   display: inline-block;
@@ -32,9 +202,6 @@
 .property-value-wrapper .value-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.property-suggestion-wrapper {
-  border: 1px solid transparent;
-}
 .property-suggestion-wrapper .suggestion-type {
   margin-left: 10px;
   font-size: 12px;
@@ -44,18 +211,11 @@
   color: gray;
   margin-top: 4px;
 }
-:global(.react-autosuggest__suggestions-container) {
-  top: 30px;
-}
-:global(.react-autosuggest__container) {
-  position: relative;
-}
-:global(.react-autosuggest__input) {
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
   display: inline-block;
   border: 0;
   border-style: none;
   height: 28px;
-  width: auto;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
@@ -65,42 +225,79 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
+  width: auto;
 }
-:global(.react-autosuggest__input):focus {
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-:global(.react-autosuggest__input):focus {
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: auto;
 }
-:global(.react-autosuggest__container--open):global(.react-autosuggest__input) {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-:global(.react-autosuggest__suggestions-container) {
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
-  top: 31px;
-  width: 200px;
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-  border: 1px solid #aaa;
-  background-color: #fff;
-  font-weight: 300;
-  font-size: 16px;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
+  max-height: 350px;
+  min-width: 300px;
+  overflow-y: auto;
+  width: auto;
   z-index: 2;
 }
-:global(.react-autosuggest__suggestion) {
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-width: 1px 0 0px 1px;
+  border-style: solid;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
+  border-bottom: 1px;
+}
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
   cursor: pointer;
-  padding: 10px 20px;
+  background-color: #dfdfdf;
 }
-:global(.react-autosuggest__suggestion--focused) {
-  background-color: #ddd;
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
+  background-color: #d1d1d1;
 }
-:global(.no-suggestions) {
-  margin-top: 10px;
-  padding-left: 10px;
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.disabled) {
+  display: none;
+}
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
+  background-color: #dfdfdf;
 }
 .tags-container {
   padding-top: 4px;
