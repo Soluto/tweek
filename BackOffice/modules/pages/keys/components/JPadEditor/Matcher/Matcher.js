@@ -50,6 +50,7 @@ export default hasChanged(({ matcher, mutate, autofocus }) => {
       <button className={style['add-condition-button']}
         onClick={() => mutate.insert('', '') }
         title="Add condition"
+        tabIndex="-1"
       ></button>
       {(props.length === 0) ?
         <div className={style['default-value-message']}>Default value</div>
