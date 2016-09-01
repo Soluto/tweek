@@ -1,5 +1,4 @@
   @import (reference) "../../../../styles/core/core.less";
-  @import (reference) "../../../../styles/core/autoSuggest.less";
   .loading-message {
     .centered-message;
   }
@@ -75,16 +74,11 @@
         }
         .auto-suggest-wrapper {
           margin-bottom: 13px;
-          .auto-suggest-basic;
-          :global(.bootstrap-typeahead) {
-            :global(.bootstrap-typeahead-input) {
-              :global(.bootstrap-typeahead-input-main) {
-                .key-name-input;
-              }
-              :global(.bootstrap-typeahead-input-hint) {
-                .key-name-input;
-              }
-            }
+          :global(.bootstrap-typeahead-input-main) {
+            .key-name-input;
+          }
+          :global(.bootstrap-typeahead-input-hint) {
+            .key-name-input;
           }
         }
       }

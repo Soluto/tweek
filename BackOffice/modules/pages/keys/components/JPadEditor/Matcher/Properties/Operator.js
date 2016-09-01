@@ -1,7 +1,7 @@
 import R from 'ramda';
 import React from 'react';
 import style from './styles.css';
-import Typeahead from 'react-bootstrap-typeahead';
+import ComboBox from '../../../../../../components/common/ComboBox/ComboBox';
 
 let equalityOps = { '$eq': '=', '$ne': '!=' };
 let comparisonOps = { '$ge': '>=', '$gt': '>', '$lt': '<', '$le': '<=', ...equalityOps };
@@ -15,20 +15,18 @@ export const getSupportedOperators = (meta) => {
 
 export const Operator = ({ selectedOp, onUpdate, supportedOperators }) => {
   return (
-    <div className={style['matcher-operator']}>
-      <Typeahead
-        options={ R.keys(supportedOperators).map(op => ({ value: op, label: supportedOperators[op] })) }
-        onChange={(selectedValues) => {
-          if (selectedValues.length < 1) return;
-          onUpdate(selectedValues[0].value);
-        } }
-        selected={ [
-          {
-            label: supportedOperators[selectedOp],
-            value: selectedOp,
-          },
-        ] }
-      />
-    </div>
+    <ComboBox
+      options={ R.keys(supportedOperators).map(op => ({ value: op, label: supportedOperators[op] })) }
+      wrapperThemeClass={style['matcher-operator']}
+      onChange={(selectedValues) => {
+        onUpdate(selectedValues.value);
+      } }
+      selected={[
+        {
+          label: supportedOperators[selectedOp],
+          value: selectedOp,
+        },
+      ]}
+    />
   );
 };

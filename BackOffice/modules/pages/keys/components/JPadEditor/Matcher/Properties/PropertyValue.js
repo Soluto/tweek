@@ -2,7 +2,7 @@ import React from 'react';
 import style from './styles.css';
 import { WithContext as ReactTags } from 'react-tag-input';
 import R from 'ramda';
-import Typeahead from 'react-bootstrap-typeahead';
+import ComboBox from '../../../../../../components/common/ComboBox/ComboBox';
 
 const TagsPropertyValue = ({ onUpdate, value }) => {
   let indexedTags = value.map(x => ({ id: x, text: x }));
@@ -40,13 +40,13 @@ const InputPropertyValue = ({ onUpdate, value }) => (
 
 function PropertyValueComponent({ onUpdate, meta, value, op }) {
   if (meta.allowedValues)
-  return (
-      <Typeahead
+    return (
+      <ComboBox
         options={ meta.allowedValues }
         placeholder="Value"
-        onChange={(selectedValues) => {
-          if (selectedValues.length < 1) return;
-          onUpdate(selectedValues[0].value);
+        wrapperThemeClass={style['property-value-combo-box']}
+        onChange={(selectedValue) => {
+          onUpdate(selectedValue.value);
         } }
         selected={[R.find(x => x.value === value)(meta.allowedValues)]}
       />

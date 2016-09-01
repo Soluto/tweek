@@ -2,7 +2,7 @@ import React from 'react';
 import CustomSlider from '../../../../../components/common/CustomSlider/CustomSlider';
 import style from './RuleValue.css';
 import EditorMetaService from '../../../../../services/EditorMetaService';
-import Typeahead from 'react-bootstrap-typeahead';
+import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 
 function replaceNaN(fallbackValue) { return isNaN(this) ? fallbackValue : this; }
 const parseNumericInput = (inputValue) => inputValue === '' ? 0 : parseInt(inputValue);
@@ -90,12 +90,9 @@ const IdetitySelection = ({ identities, mutate }) => {
     <div>
       <label className={style['identity-selection-title']}>Identity: </label>
       <div className={style['identity-selection-combobox-wrapper']}>
-        <Typeahead
+        <ComboBox
           options={ identities }
-          onChange={(selectedValues) => {
-            if (selectedValues.length < 1) return;
-            mutate.in('OwnerType').updateValue(selectedValues[0].value);
-          } }
+          onChange={(selectedValues) => mutate.in('OwnerType').updateValue(selectedValues.value)}
           defaultSelected={[identities[0]]}
         />
       </div>
