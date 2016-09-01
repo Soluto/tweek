@@ -56,7 +56,7 @@
   display: flex;
   align-items: center;
   border-color: rgba(0, 0, 0, 0.2);
-  border-width: 1px 0 0px 1px;
+  border-width: 1px 1px 0px 1px;
   border-style: solid;
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
@@ -95,7 +95,7 @@
 .property-value-wrapper {
   display: inline-block;
 }
-.property-value-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+.property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -111,10 +111,10 @@
   transition: all 0.2s ease-in-out;
   width: auto;
 }
-.property-value-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+.property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.property-value-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
+.property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -130,10 +130,10 @@
   transition: all 0.2s ease-in-out;
   width: auto;
 }
-.property-value-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
+.property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.property-value-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) {
+.property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
   max-height: 350px;
   min-width: 80px;
@@ -141,28 +141,28 @@
   width: auto;
   z-index: 2;
 }
-.property-value-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
+.property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
   align-items: center;
   border-color: rgba(0, 0, 0, 0.2);
-  border-width: 1px 0 0px 1px;
+  border-width: 1px 1px 0px 1px;
   border-style: solid;
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-.property-value-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
+.property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
   border-bottom: 1px;
 }
-.property-value-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
+.property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-.property-value-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
+.property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
   background-color: #d1d1d1;
 }
-.property-value-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
+.property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -173,14 +173,14 @@
   flex-direction: column;
   justify-content: center;
 }
-.property-value-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
+.property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-.property-value-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.disabled) {
+.property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.disabled) {
   display: none;
 }
-.property-value-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
+.property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
   background-color: #dfdfdf;
 }
 .property-value-wrapper .value-input {
@@ -263,7 +263,7 @@
   display: flex;
   align-items: center;
   border-color: rgba(0, 0, 0, 0.2);
-  border-width: 1px 0 0px 1px;
+  border-width: 1px 1px 0px 1px;
   border-style: solid;
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;

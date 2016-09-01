@@ -1,14 +1,16 @@
 @import (reference) "../../../../../../styles/core/core.less";
-@import (reference) "../../../../../../styles/core/autoSuggest.less";
+@import (reference) "../../../../../../styles/core/comboBox.less";
 .matcher-operator {
   margin: 0 5px;
   display: inline-block;
   @width: 30px;
-  .auto-suggest-basic(@width, @width);
+  .combo-box-basic(@width, @width);
 }
 
 .property-value-wrapper {
-  .auto-suggest-basic(80px);
+  .property-value-combo-box {
+    .combo-box-basic(80px);
+  }
   display: inline-block;
   .value-input {
     .metro-textbox;
@@ -29,7 +31,7 @@
 }
 
 .property-name-wrapper {
-  .auto-suggest-basic(300px);
+  .combo-box-basic(300px);
 }
 
 .wrapping-bracet {}

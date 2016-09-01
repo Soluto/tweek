@@ -190,92 +190,7 @@
 .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper {
   margin-bottom: 13px;
 }
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  width: auto;
-}
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  width: auto;
-}
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) {
-  position: absolute;
-  max-height: 350px;
-  min-width: 450px;
-  overflow-y: auto;
-  width: auto;
-  z-index: 2;
-}
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
-  background-color: #f4f4f4;
-  min-height: 35px;
-  display: flex;
-  align-items: center;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-width: 1px 1px 0px 1px;
-  border-style: solid;
-  overflow-x: hidden;
-  transition: all 0.2s ease-in-out;
-}
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
-  border-bottom: 1px;
-}
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
-  cursor: pointer;
-  background-color: #dfdfdf;
-}
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
-  background-color: #d1d1d1;
-}
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
-  text-decoration: none;
-  color: gray;
-  font-size: 13px;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-  justify-content: center;
-}
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
-  padding: 10px;
-  padding-right: 30px;
-}
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
-  background-color: #dfdfdf;
-}
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-main) {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -296,10 +211,10 @@
   width: 100%;
   flex-grow: 1;
 }
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -320,7 +235,7 @@
   width: 100%;
   flex-grow: 1;
 }
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
+.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
 .key-viewer-container .key-header .key-full-path {

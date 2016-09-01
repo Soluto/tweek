@@ -1,5 +1,5 @@
   @import (reference) "./core.less";
-  .auto-suggest-basic(@dropdown-min-width: 450px, @input-width: auto) {
+  .combo-box-basic(@dropdown-min-width: 450px, @input-width: auto) {
     :global(.bootstrap-typeahead) {
       :global(.bootstrap-typeahead-input) {
         :global(.bootstrap-typeahead-input-main) {
@@ -55,7 +55,7 @@
           }
         }
         :global(.disabled) {
-          // display: none;
+          display: none;
         }
         :global(.active) {
           background-color: #dfdfdf;
