@@ -58,13 +58,13 @@ namespace Tweek.Drivers.CouchbaseDriver
             while (!(result?.Success ?? false) && cas != result?.Cas)
             {
                 var doc = bucket.GetDocument<Dictionary<string, string>>(key);
-                var newData = updateFn(doc.Content);
+                var newData = updateFn(doc.Content ?? new Dictionary<string,string>());
                 cas = doc.Document.Cas;
                 result = await bucket.UpsertAsync(key, newData, cas);
             }
-            if (!result.Success)
+            if (!(result?.Success ?? false))
             {
-                throw result.Exception;
+                throw result?.Exception ?? new Exception("failed to update couchbase");
             }
         }
 
