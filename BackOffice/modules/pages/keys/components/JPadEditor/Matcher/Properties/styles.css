@@ -208,7 +208,6 @@
   color: gray;
 }
 .property-suggestion-wrapper .suggestion-identity {
-  color: gray;
   margin-top: 4px;
 }
 .property-name-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {

@@ -17,17 +17,19 @@ let BinaryPredicate = ({ onValueUpdate, onOpUpdate, op, meta, value }) => (
   </div>);
 
 let ShortPredicate = ({ meta, mutate, value }) => {
-  return (<BinaryPredicate
-    onValueUpdate={mutate.updateValue}
-    onOpUpdate={selectedOp => {
-      if (selectedOp === '$eq') return;
-      mutate.updateValue({
-        [selectedOp]: meta.multipleValues && selectedOp === '$in' ? [] : mutate.getValue(),
-        ...(meta.compare ? { $compare: meta.compare } : {}),
-      });
-    }}
-    op = "$eq" {...{ value, meta } }
-  />);
+  return (
+    <BinaryPredicate
+      onValueUpdate={mutate.updateValue}
+      onOpUpdate={selectedOp => {
+        if (selectedOp === '$eq') return;
+        mutate.updateValue({
+          [selectedOp]: meta.multipleValues && selectedOp === '$in' ? [] : mutate.getValue(),
+          ...(meta.compare ? { $compare: meta.compare } : {}),
+        });
+      }}
+      op = "$eq" {...{ value, meta } }
+    />
+  );
 };
 
 let ComplexPredicate = ({ predicate, mutate, property, meta }) => {
