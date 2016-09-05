@@ -18,12 +18,6 @@ namespace Engine.Core.Tests
         }
 
         [Fact]
-        public void FailedTestForBuildSystem()
-        {
-            Assert.True(false, "Testing Build System Failure");
-        }
-
-        [Fact]
         public void PathWithSimpleRule()
         {
             var identity = new Identity("device", "1");
