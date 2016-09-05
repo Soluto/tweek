@@ -4,11 +4,10 @@ using System.Linq;
 using Engine.Core.Context;
 using Engine.DataTypes;
 using LanguageExt;
-using NUnit.Framework;
+using Xunit;
 
 namespace Engine.Core.Tests
 {
-    [TestFixture]
     public class EngineCoreTests
     {
 
@@ -18,13 +17,13 @@ namespace Engine.Core.Tests
             return fnIdentityType => key => fnIdentityType.Equals(identity.Type) && data.ContainsKey(key) ? data[key] : Option<string>.None;
         }
 
-        [Test]
+        [Fact]
         public void FailedTestForBuildSystem()
         {
-            Assert.Fail("Testing Build System Failure");
+            Assert.True(false, "Testing Build System Failure");
         }
 
-        [Test]
+        [Fact]
         public void PathWithSimpleRule()
         {
             var identity = new Identity("device", "1");
@@ -33,10 +32,10 @@ namespace Engine.Core.Tests
             var rulesRepo = RulesRepositoryHelpers.With("path/to/key", FakeRule.Create(ctx => new ConfigurationValue("SomeValue")));
                 
             var value = EngineCore.CalculateKey(identities, context, "path/to/key", rulesRepo).Map(x => x.Value);
-            Assert.AreEqual("SomeValue", value);
+            Assert.Equal("SomeValue", value);
         }
 
-        [Test]
+        [Fact]
         public void PathWithNoMatchingRule()
         {
             var identity = new Identity("device", "1");
@@ -45,10 +44,10 @@ namespace Engine.Core.Tests
 
             var missingValue = EngineCore.CalculateKey(new HashSet<Identity> {identity}, context, "path/to/key2",rulesRepo);
 
-            Assert.IsTrue(missingValue.IsNone);
+            Assert.True(missingValue.IsNone);
         }
 
-        [Test]
+        [Fact]
         public void FixedValueInContext()
         {
             var identity = new Identity("device", "1");
@@ -57,10 +56,10 @@ namespace Engine.Core.Tests
 
             var value = EngineCore.CalculateKey(new HashSet<Identity> { identity }, context, "path/to/key", rulesRepo).Map(x => x.Value);
 
-            Assert.AreEqual("SomeValue", value);
+            Assert.Equal("SomeValue", value);
         }
 
-        [Test]
+        [Fact]
         public void ExternalPathRefernceInContext()
         {
             var identity = new Identity("device", "1");
@@ -70,10 +69,10 @@ namespace Engine.Core.Tests
 
             var value = EngineCore.CalculateKey(new HashSet<Identity> { identity }, context, "path/to/key", rulesRepo).Map(x => x.Value);
 
-            Assert.AreEqual("SomeValue", value);
+            Assert.Equal("SomeValue", value);
         }
 
-        [Test]
+        [Fact]
         public void RulesThatCheckContextValue()
         {
             var identity = new Identity("device", "1");
@@ -83,20 +82,20 @@ namespace Engine.Core.Tests
                 .With("path/to/key", FakeRule.Create(ctx => ctx("device.PartnerBrand") == "ABC" ? new ConfigurationValue("SomeValue") : Option<ConfigurationValue>.None));
 
             var value = EngineCore.CalculateKey(new HashSet<Identity> { identity }, context, "path/to/key", rulesRepo).Map(x => x.Value);
-            Assert.AreEqual("SomeValue", value);
+            Assert.Equal("SomeValue", value);
 
             rulesRepo = rulesRepo
                 .With("path/to/other/key", FakeRule.Create(ctx => ctx("device.OtherProp") == "DEF" ? new ConfigurationValue("SomeValue") : Option<ConfigurationValue>.None));
 
             value = EngineCore.CalculateKey(new HashSet<Identity> { identity }, context, "path/to/other/key", rulesRepo).Map(x => x.Value);
-            Assert.IsTrue(value.IsNone);
+            Assert.True(value.IsNone);
 
             rulesRepo = rulesRepo
                 .With("path/to/other/key", FakeRule.Create(ctx => ctx("device.PartnerBrand") == "ABC" ? new ConfigurationValue("SomeValue") : Option<ConfigurationValue>.None));
 
             value = EngineCore.CalculateKey(new HashSet<Identity> { identity }, context, "path/to/other/key", rulesRepo).Map(x => x.Value);
 
-            Assert.AreEqual("SomeValue", value);
+            Assert.Equal("SomeValue", value);
         }
 
         
