@@ -19,6 +19,12 @@ namespace Engine.Core.Tests
         }
 
         [Test]
+        public void FailedTestForBuildSystem()
+        {
+            Assert.Fail("Testing Build System Failure");
+        }
+
+        [Test]
         public void PathWithSimpleRule()
         {
             var identity = new Identity("device", "1");
