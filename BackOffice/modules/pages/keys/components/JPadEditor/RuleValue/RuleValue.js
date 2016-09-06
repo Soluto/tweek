@@ -63,7 +63,15 @@ const BernoulliTrial = ({ onUpdate, ratio }) => (
       <input type="text"
         className={style['bernoulli-trial-input']}
         value={ratio * 100}
-        onChange={e => onUpdate((parseNumericInput(e.target.value) * 0.01):: replaceNaN(ratio)) }
+        onChange={e => {
+          const newValue = e.target.value;
+          if (newValue < 0 ||
+            newValue > 100) {
+            e.stopPropagation();
+            return;
+          }
+          onUpdate((parseNumericInput(newValue) * 0.01):: replaceNaN(ratio));
+        }}
         onWheel={({ deltaY, target }) => {
           const currentValue = parseNumericInput(target.value);
           const newValue = deltaY < 0 ? currentValue + 1 : currentValue - 1;
@@ -92,7 +100,7 @@ const IdetitySelection = ({ identities, mutate }) => {
       <div className={style['identity-selection-combobox-wrapper']}>
         <ComboBox
           options={ identities }
-          onChange={(selectedValues) => mutate.in('OwnerType').updateValue(selectedValues.value)}
+          onChange={(selectedValues) => mutate.in('OwnerType').updateValue(selectedValues.value) }
           defaultSelected={[identities[0]]}
         />
       </div>
