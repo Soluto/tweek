@@ -35,7 +35,6 @@ namespace Engine
             _rulesLoader = rulesLoader;
         }
 
-
         private HashSet<ConfigurationPath> GetAllPaths(Dictionary<Identity, Dictionary<string, string>> allContextData,
             IReadOnlyDictionary<string, IRule> ruleset, ConfigurationPath query)
         {

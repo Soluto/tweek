@@ -28,8 +28,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.ApiService", "Tweek.A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{21F63D0A-8C90-4829-A3A2-83AD683AC5A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleUtils", "ConsoleUtils\ConsoleUtils.csproj", "{65A79C2C-275A-474F-B67F-8A32663556A3}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Management", "Management", "{4ED8DCFD-A7FF-47A7-BD68-18DDE737DBD5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Management.Drivers", "Engine.Management.Drivers\Engine.Management.Drivers.csproj", "{7FC49A33-6B72-4251-ABE0-ECACED5B71BD}"
@@ -101,10 +99,6 @@ Global
 		{BB2E0DC8-8ACB-4A4F-9D22-257F33859EBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB2E0DC8-8ACB-4A4F-9D22-257F33859EBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB2E0DC8-8ACB-4A4F-9D22-257F33859EBE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{65A79C2C-275A-474F-B67F-8A32663556A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{65A79C2C-275A-474F-B67F-8A32663556A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{65A79C2C-275A-474F-B67F-8A32663556A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{65A79C2C-275A-474F-B67F-8A32663556A3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7FC49A33-6B72-4251-ABE0-ECACED5B71BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7FC49A33-6B72-4251-ABE0-ECACED5B71BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FC49A33-6B72-4251-ABE0-ECACED5B71BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
