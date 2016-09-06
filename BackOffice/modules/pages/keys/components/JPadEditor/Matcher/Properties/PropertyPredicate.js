@@ -1,12 +1,11 @@
 
 import React from 'react';
-
 import R from 'ramda';
 import EditorMetaService from '../../../../../../services/EditorMetaService';
 import { Operator, getSupportedOperators } from './Operator';
 import PropertyValue from './PropertyValue';
 
-let editorMetaService = EditorMetaService.instance;
+const editorMetaService = EditorMetaService.instance;
 
 const isValueType = (value) => R.isArrayLike(value) || typeof (value) !== 'object';
 
@@ -54,9 +53,9 @@ let ComplexPredicate = ({ predicate, mutate, property, meta }) => {
 };
 
 let PropertyPredicate = ({ predicate, mutate, property }) => {
-  let meta = editorMetaService.getFieldMeta(property);
-  if (typeof (predicate) !== 'object') return <ShortPredicate value={predicate} {...{ meta, mutate } } />;
-
-  return <ComplexPredicate {...{ predicate, mutate, property, meta }} />;
+  const meta = editorMetaService.getFieldMeta(property);
+  return (typeof (predicate) !== 'object') ?
+    <ShortPredicate value={predicate} {...{ meta, mutate } } /> :
+    <ComplexPredicate {...{ predicate, mutate, property, meta }} />;
 };
 export default PropertyPredicate;
