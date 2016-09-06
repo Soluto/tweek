@@ -28,8 +28,6 @@ namespace Tweek.ApiService.Tests
         [Fact]
         public async Task GetSingleKey_NoRules_ShouldReturnDefaultKeyValue()
         {
-            // Arrange
-
             // Act
             var response = await mConfigurationsApi.Get("@tests/simple", mEmptyContext);
 
@@ -41,8 +39,6 @@ namespace Tweek.ApiService.Tests
         [Fact]
         public async Task GetKeyTree_NoRules_ShouldReturnObjectWithDefaultValuesForAllKeys()
         {
-            // Arrange
-
             // Act
             var response = await mConfigurationsApi.Get("@tests/nested/_", mEmptyContext);
 
@@ -50,6 +46,20 @@ namespace Tweek.ApiService.Tests
             Assert.Equal(JTokenType.Object, response.Type);
             Assert.Equal("test", response.Value<string>("key1"));
             Assert.Equal("test", response.Value<string>("key2"));
+        }
+
+        [Theory]
+        [InlineData("Android", "android result")]
+        [InlineData("iOS", "ios result")]
+        [InlineData("Unknown", "default result")]
+        public async Task GetSingleKey_BySimpleRules_ShouldReturnMatchingKeyValue(string osType, string expectedResult)
+        {
+            // Act
+            var response = await mConfigurationsApi.Get("@tests/rules/simple", new Dictionary<string, string> { { "device.DeviceOsType", osType} });
+
+            // Assert
+            Assert.Equal(JTokenType.String, response.Type);
+            Assert.Equal(expectedResult, response.ToString());
         }
     }
 }
