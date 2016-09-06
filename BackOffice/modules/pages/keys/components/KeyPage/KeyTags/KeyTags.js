@@ -5,20 +5,19 @@ import { connect } from 'react-redux';
 import R from 'ramda';
 import style from './KeyTags.css';
 import * as tagActions from '../../../ducks/tags';
-import { compose, mapProps, pure, shouldUpdate, shallowEqual } from 'recompose';
+import { compose, mapProps, pure } from 'recompose';
 
 export default compose(
   connect(state => ({ globalTags: state.tags }), { ...tagActions }),
   pure,
-  mapProps(({ globalTags, tags, ...props }) => (
-    { ...props,
+  mapProps(({ globalTags, tags, ...props }) => ({
+    ...props,
     tagsSuggestions: globalTags.map(x => x.name),
     tags: tags.map(x => ({
       id: x,
       text: x,
     })),
-    }))
-    )(
+  })))(
   class KeyTags extends Component {
 
     constructor(props) {

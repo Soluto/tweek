@@ -52,7 +52,7 @@ function PropertyValueComponent({ onUpdate, meta, value, op }) {
       />
     );
 
-  if (meta.multipleValues && op === '$in')
+  if (op === '$in')
     return (
       <TagsPropertyValue onUpdate={onUpdate}
         value={value}
