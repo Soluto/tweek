@@ -7,18 +7,24 @@ using Newtonsoft.Json.Linq;
 using RestEase;
 using Xunit;
 using Xunit.Abstractions;
+using Tweek.ApiService.Tests.Models;
+using Xunit.Extensions;
 
 namespace Tweek.ApiService.Tests
 {
-    public class ServingModuleTests
+    public class ServingModuleTests : IClassFixture<TestContextProvider>
     {
         private readonly ITestOutputHelper mOutput;
         private readonly Dictionary<string, string> mEmptyContext;
         private readonly IConfigurationsApi mConfigurationsApi;
 
-        public ServingModuleTests(ITestOutputHelper output)
+        private TestContextProvider mTestContextProvider;
+
+        public ServingModuleTests(ITestOutputHelper output, TestContextProvider testContextProvider)
         {
             mOutput = output;
+            mTestContextProvider = testContextProvider;
+
             var targetBaseUrl = Environment.GetEnvironmentVariable("TWEEK_SMOKE_TARGET");
 
             if (string.IsNullOrEmpty(targetBaseUrl))
@@ -60,7 +66,7 @@ namespace Tweek.ApiService.Tests
         public async Task GetSingleKey_BySimpleRules_ShouldReturnMatchingKeyValue(string osType, string expectedResult)
         {
             // Act
-            var response = await mConfigurationsApi.Get("@tests/rules/simple", new Dictionary<string, string> { { "device.DeviceOsType", osType} });
+            var response = await mConfigurationsApi.Get("@tests/rules/simple", new Dictionary<string, string> { { "device.DeviceOsType", osType } });
 
             // Assert
             Assert.Equal(JTokenType.String, response.Type);
@@ -73,22 +79,22 @@ namespace Tweek.ApiService.Tests
             // Arrange
             const double probablityOfTestFailure = 0.001;
             const double configurationKeyBernoulliTrialSplit = 0.3;
-            var attemptsForHighEnoughProbability = 
+            var attemptsForHighEnoughProbability =
                 (int)
                 Math.Round(
                     Math.Max(
                         Math.Log(probablityOfTestFailure, configurationKeyBernoulliTrialSplit),
-                        Math.Log(probablityOfTestFailure, 1-configurationKeyBernoulliTrialSplit)
+                        Math.Log(probablityOfTestFailure, 1 - configurationKeyBernoulliTrialSplit)
                     )
                 );
-                 
+
             // Act
             var keyRequests = Enumerable.Range(0, attemptsForHighEnoughProbability)
-                .Select(async i => await mConfigurationsApi.Get("@tests/multivariantkeys/bernoulli", new Dictionary<string, string> {{"device", Guid.NewGuid().ToString()}}));
+                .Select(async i => await mConfigurationsApi.Get("@tests/multivariantkeys/bernoulli", new Dictionary<string, string> { { "device", Guid.NewGuid().ToString() } }));
 
             var results = await Task.WhenAll(keyRequests);
             var returnedValues = results.Where(x => x.Type == JTokenType.String).Select(x => x.ToString()).ToList();
-            
+
             // Assert
             Assert.Contains("true", returnedValues);
             Assert.Contains("false", returnedValues);
@@ -124,7 +130,38 @@ namespace Tweek.ApiService.Tests
             Assert.Contains("test2", returnedValues);
             Assert.Contains("test3", returnedValues);
             Assert.Contains("test4", returnedValues);
-            
+
+        }
+
+        [Theory, MemberData("COMPARISON_OPERATORS_TEST_CONTEXTS", MemberType = typeof(TestContextProvider))]
+        public async Task GetSingleKey_ComparisonOperators_ShouldReturnMatchingKeyValue(TestContext testContext)
+        {
+            await RunContextBasedTest(testContext);
+        }
+
+        [Theory, MemberData("IN_OPERATOR_TEST_CONTEXTS", MemberType = typeof(TestContextProvider))]
+        public async Task GetSingleKey_InOperator_ShouldReturnMatchingKeyValue(TestContext testContext)
+        {
+            await RunContextBasedTest(testContext);
+        }
+
+        [Theory, MemberData("MULTI_CONDITIONS_TEST_CONTEXTS", MemberType = typeof(TestContextProvider))]
+        public async Task GetSingleKey_BasedOnMultiConditionsRules_ShouldReturnMatchingKeyValue(TestContext testContext)
+        {
+            await RunContextBasedTest(testContext);
+        }
+
+        private async Task RunContextBasedTest(TestContext context)
+        {
+            // Arrange
+            mOutput.WriteLine(context.TestName);
+
+            // Act
+            var response = await mConfigurationsApi.Get(context.KeyName, context.Context);
+
+            // Assert
+            Assert.Equal(JTokenType.String, response.Type);
+            Assert.Equal(context.ExpectedValue, response.ToString());
         }
     }
 }
