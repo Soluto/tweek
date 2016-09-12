@@ -10,8 +10,8 @@ chai.use(require('chai-as-promised'));
 const { expect, assert } = chai;
 
 describe('MetaRepository', () => {
-  let gitMock = new GitRepositoryMock();
-  let metaRepo = new MetaRepository(gitMock);
+  const gitMock = new GitRepositoryMock();
+  const metaRepo = new MetaRepository(gitMock);
 
   describe('getRuleMeta', async () => {
     it('should be able to get rule meta: call git repo with correct rule name and return correct meta after parsing a json file', async () => {

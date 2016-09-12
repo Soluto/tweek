@@ -15,7 +15,7 @@ const EditableText = withState('isInEditMode', 'setIsInEditMode', false)(
           isInEditMode ?
             <form onSubmit={ (e) => { setIsInEditMode(false); e.preventDefault(); } }
               className={classNames(style['editable-text-form'], classes.form) }
-              >
+            >
               <input type="text"
                 ref={(input) => input && input.focus() }
                 className={classNames(style['editable-text-input'], classes.input) }
@@ -23,12 +23,12 @@ const EditableText = withState('isInEditMode', 'setIsInEditMode', false)(
                 value = { value }
                 placeholder={ placeHolder }
                 onBlur={() => setIsInEditMode(false) }
-                />
+              />
             </form>
             :
             <div className={classNames(style['editable-text-value'], classes.text) }
               onClick={() => setIsInEditMode(true) }
-              >
+            >
               { value }
             </div>
         }

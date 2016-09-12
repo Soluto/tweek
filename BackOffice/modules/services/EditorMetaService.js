@@ -24,17 +24,18 @@ export default class EditorMetaService {
       fields: {
         device: {
           '@@id': multipleValues(true)(description('device id')(types.String)),
-          PartnerBrandId: defaultValue('AsurionFriends')(description('The name of the partner')(types.String)),
-          DeviceOsType: defaultValue('Android')(types.Enum('Android', 'Ios')),
-          SubscriptionType: types.Enum('Evaluation', 'Free', 'Insurance', 'InsuranceAndSupport', 'HomeSupport', 'DefaultFree'),
-          AgentVersion: defaultValue('1.0.0.0')(types.Version),
-          DeviceVendor: types.String,
-          CountryCode: types.String,
-          DeviceModel: types.String,
-          InstallationSource: types.String,
-          DeviceOsVersion: types.Version,
-          IsInGroup: defaultValue(false)(types.Bool),
-          DeviceType: types.Enum('Unknown',
+          PartnerBrandId: multipleValues(true)(defaultValue('AsurionFriends')(description('The name of the partner')(types.String))),
+          DeviceOsType: multipleValues(true)(defaultValue('Android')(types.Enum('Android', 'Ios'))),
+          SubscriptionType: multipleValues(true)(types.Enum('Evaluation', 'Free', 'Insurance', 'InsuranceAndSupport', 'HomeSupport', 'DefaultFree')),
+          AgentVersion: multipleValues(true)(defaultValue('1.0.0.0')(types.Version)),
+          DeviceVendor: multipleValues(true)(types.String),
+          CountryCode: multipleValues(true)(types.String),
+          DeviceModel: multipleValues(true)(types.String),
+          InstallationSource: multipleValues(true)(types.String),
+          DeviceOsVersion: multipleValues(true)(types.Version),
+          IsInGroup: multipleValues(true)(defaultValue(false)(types.Bool)),
+          DeviceType: multipleValues(true)(types.Enum(
+            'Unknown',
             'Desktop',
             'Laptop',
             'Tablet',
@@ -51,7 +52,7 @@ export default class EditorMetaService {
             'HomeTheaterDevice',
             'Computer',
             'Other'
-          ),
+          )),
         },
       },
     };

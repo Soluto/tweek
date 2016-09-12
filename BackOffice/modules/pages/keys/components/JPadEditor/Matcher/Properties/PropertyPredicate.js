@@ -1,12 +1,11 @@
 
 import React from 'react';
-
 import R from 'ramda';
 import EditorMetaService from '../../../../../../services/EditorMetaService';
 import { Operator, getSupportedOperators } from './Operator';
 import PropertyValue from './PropertyValue';
 
-let editorMetaService = EditorMetaService.instance;
+const editorMetaService = EditorMetaService.instance;
 
 const isValueType = (value) => R.isArrayLike(value) || typeof (value) !== 'object';
 
@@ -17,17 +16,19 @@ let BinaryPredicate = ({ onValueUpdate, onOpUpdate, op, meta, value }) => (
   </div>);
 
 let ShortPredicate = ({ meta, mutate, value }) => {
-  return (<BinaryPredicate
-    onValueUpdate={mutate.updateValue}
-    onOpUpdate={selectedOp => {
-      if (selectedOp === '$eq') return;
-      mutate.updateValue({
-        [selectedOp]: meta.multipleValues && selectedOp === '$in' ? [] : mutate.getValue(),
-        ...(meta.compare ? { $compare: meta.compare } : {}),
-      });
-    }}
-    op = "$eq" {...{ value, meta } }
-  />);
+  return (
+    <BinaryPredicate
+      onValueUpdate={mutate.updateValue}
+      onOpUpdate={selectedOp => {
+        if (selectedOp === '$eq') return;
+        mutate.updateValue({
+          [selectedOp]: meta.multipleValues && selectedOp === '$in' ? [] : mutate.getValue(),
+          ...(meta.compare ? { $compare: meta.compare } : {}),
+        });
+      }}
+      op = "$eq" {...{ value, meta } }
+    />
+  );
 };
 
 let ComplexPredicate = ({ predicate, mutate, property, meta }) => {
@@ -52,9 +53,9 @@ let ComplexPredicate = ({ predicate, mutate, property, meta }) => {
 };
 
 let PropertyPredicate = ({ predicate, mutate, property }) => {
-  let meta = editorMetaService.getFieldMeta(property);
-  if (typeof (predicate) !== 'object') return <ShortPredicate value={predicate} {...{ meta, mutate } } />;
-
-  return <ComplexPredicate {...{ predicate, mutate, property, meta }} />;
+  const meta = editorMetaService.getFieldMeta(property);
+  return (typeof (predicate) !== 'object') ?
+    <ShortPredicate value={predicate} {...{ meta, mutate } } /> :
+    <ComplexPredicate {...{ predicate, mutate, property, meta }} />;
 };
 export default PropertyPredicate;

@@ -1,35 +1,59 @@
 import React from 'react';
 import R from 'ramda';
-import ClosedComboBox from '../../../../../../components/common/ClosedComboBox/ClosedComboBox';
 import style from './styles.css';
+import ComboBox from '../../../../../../components/common/ComboBox/ComboBox';
+import { withState } from 'recompose';
+import Highlighter from 'react-highlight-words';
 
-let PropertySuggestion = ({ suggestion }) => {
+const HIGHLIGHTED_TEXT_INLINE_STYLE = {
+  fontWeight: 800,
+  backgroundColor: 'transparent',
+  color: 'gray',
+};
+
+let PropertySuggestion = ({ suggestion, textToMark }) => {
   const [identity, prop] = suggestion.value.split('.');
   const type = suggestion.meta && (suggestion.meta.typeAlias || suggestion.meta.type);
+
   return (
     <div className={style['property-suggestion-wrapper']}>
-      <span className={style['suggestion-label']}>{prop}</span><span className={style['suggestion-type']}>({type}) </span>
-      <div className={style['suggestion-identity']}>{identity}</div>
+      <Highlighter
+        highlightClassName={style['suggestion-label']}
+        highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
+        searchWords={[textToMark]}
+        textToHighlight={prop}
+      />
+      <span className={style['suggestion-type']}>({type}) </span>
+      <div className={style['suggestion-identity']}><Highlighter
+        highlightClassName={style['suggestion-label']}
+        highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
+        searchWords={[textToMark]}
+        textToHighlight={identity}
+      /></div>
     </div>
   );
 };
 
-let getPropertyDisplayName = prop => prop === '' ? prop : prop.split('.')[1];
 
-export default ({ mutate, property, suggestedValues, autofocus }) => {
-  return (
-    <ClosedComboBox
-      inputProps={{
-        value: getPropertyDisplayName(property),
-        placeholder: 'Property',
-        onChange: (selectedOption) =>
+export default withState('currentInputValue', 'setCurrentInputValue', '')(
+  ({ mutate, property, suggestedValues, autofocus, currentInputValue, setCurrentInputValue }) => {
+    return (
+      <ComboBox
+        options={ R.uniqBy(x => x.value)([...suggestedValues]) }
+        onChange={(selectedValue) =>
           mutate.apply(m =>
-            m.updateKey(selectedOption.value)
-              .updateValue((selectedOption.meta && selectedOption.meta.defaultValue) || '')),
-      }}
-      autofocus={autofocus}
-      renderSuggestion={ suggestion => (<PropertySuggestion suggestion={suggestion} />) }
-      suggestions={R.uniqBy(x => x.value)([...suggestedValues]) }
+            m.updateKey(selectedValue.value)
+              .updateValue((selectedValue.meta && selectedValue.meta.defaultValue) || ''))
+        }
+        placeholder="Property"
+        selected={[R.find(x => x.value === property)(suggestedValues)]}
+        onInputChange={text => {
+          setCurrentInputValue(text);
+        } }
+        filterBy={ option => option.value.toLowerCase().includes(currentInputValue) }
+        renderMenuItemChildren={ (_, suggestion) => (<PropertySuggestion suggestion={suggestion} textToMark={currentInputValue}/>) }
+        autofocus={autofocus}
+        wrapperThemeClass={style['property-name-wrapper']}
       />
-  );
-};
+    );
+  });

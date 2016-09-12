@@ -12,13 +12,35 @@ import KeyTags from './KeyTags/KeyTags';
 import EditableText from './EditableText/EditableText';
 import EditableTextArea from './EditableTextArea/EditableTextArea';
 import KeyModificationDetails from './KeyModificationDetails/KeyModificationDetails';
-import Autosuggest from 'react-autosuggest';
+import { compose } from 'recompose';
+import ComboBox from '../../../../components/common/ComboBox/ComboBox';
 
 const getKeyPrefix = (path) => R.slice(0, -1, path.split('/')).join('/');
 const getSugesstions = R.pipe(R.map(getKeyPrefix), R.uniq(), R.filter(x => x !== ''));
 
+function getKeyNameSuggestions(keysList) {
+  return getSugesstions(keysList).sort();
+}
+
+const NewKeyInput = compose(
+  connect(state => ({ keysList: state.keys }))
+)(({ keysList, onKeyNameChanged }) => {
+  const suggestions = getKeyNameSuggestions(keysList).map(x => ({ label: x, value: x }));
+
+  return (
+    <div className={style['auto-suggest-wrapper']}>
+    <ComboBox
+      options={ suggestions }
+      placeholder="Enter key full path"
+      onInputChange={text => onKeyNameChanged(text) }
+      showValueInOptions 
+    />
+    </div>
+  );
+});
+
 export default connect((state, { params, route }) => (
-  { keysList: state.keys, selectedKey: state.selectedKey, configKey: route.isInAddMode ? '_blank' : params.splat, isInAddMode: route.isInAddMode }),
+  { selectedKey: state.selectedKey, configKey: route.isInAddMode ? '_blank' : params.splat, isInAddMode: route.isInAddMode }),
   { ...keysActions, deleteKey })(
   class KeyPage extends Component {
 
@@ -28,57 +50,53 @@ export default connect((state, { params, route }) => (
       selectedKey: React.PropTypes.object,
     }
 
-    _onTagsChanged =(newTags) => {
+    _onTagsChanged = (newTags) => {
       const newMeta = { ...this.props.selectedKey.local.meta, tags: newTags };
       this._onSelectedKeyMetaChanged(newMeta);
     }
 
     constructor(props) {
-      super(props);
-    }
-    
+  super(props);
+}
+
     componentDidMount() {
-      const { openKey, configKey, selectedKey } = this.props;
-      if (!configKey) return;
-      if (selectedKey && selectedKey.key === configKey) return;
-      openKey(configKey);
-    }
+  const { openKey, configKey, selectedKey } = this.props;
+  if (!configKey) return;
+  if (selectedKey && selectedKey.key === configKey) return;
+  openKey(configKey);
+}
 
     componentWillReceiveProps({ configKey }) {
-      const { openKey, selectedKey } = this.props;
-      if (configKey !== this.props.configKey || !selectedKey) {
-        openKey(configKey);
-      }
-    }
+  const { openKey, selectedKey } = this.props;
+  if (configKey !== this.props.configKey || !selectedKey) {
+    openKey(configKey);
+  }
+}
 
     _onKeyNameChanged(newKeyName) {
-      this.props.updateKeyName(newKeyName);
-    }
+  this.props.updateKeyName(newKeyName);
+}
 
     _onDisplayNameChanged(newDisplayName) {
-      const newMeta = { ...this.props.selectedKey.local.meta, displayName: newDisplayName };
-      this._onSelectedKeyMetaChanged(newMeta);
-    }
+  const newMeta = { ...this.props.selectedKey.local.meta, displayName: newDisplayName };
+  this._onSelectedKeyMetaChanged(newMeta);
+}
 
     _onDescriptionChanged(newDescription) {
-      const newMeta = { ...this.props.selectedKey.local.meta, description: newDescription };
-      this._onSelectedKeyMetaChanged(newMeta);
-    }
+  const newMeta = { ...this.props.selectedKey.local.meta, description: newDescription };
+  this._onSelectedKeyMetaChanged(newMeta);
+}
 
     _onSelectedKeyMetaChanged(newMeta) {
-      this.props.updateKeyMetaDef(newMeta);
-    }
+  this.props.updateKeyMetaDef(newMeta);
+}
 
-
-    _keyNameSuggestions() {
-      return getSugesstions(this.props.keysList).sort();
-    }
 
     renderKeyActionButtons(isInAddMode) {
-      const { local, remote, isSaving, isDeleting } = this.props.selectedKey;
-      const changes = diff(local, remote);
-      const hasChanges = (changes || []).length > 0;
-      return (
+  const { local, remote, isSaving, isDeleting } = this.props.selectedKey;
+  const changes = diff(local, remote);
+  const hasChanges = (changes || []).length > 0;
+  return (
     <div className={style['key-action-buttons-wrapper']}>
       {!isInAddMode ?
         <button disabled={isSaving}
@@ -101,20 +119,14 @@ export default connect((state, { params, route }) => (
       </button>
     </div>
   );
-    }
+}
 
     render() {
-      const { configKey, selectedKey, isInAddMode } = this.props;
-      if (!selectedKey) return <div className={style['loading-message']}>loading</div>;
-      const { meta, ruleDef, key = '' } = selectedKey.local;
-      
-      const keyNameAutoSuggestProps = {
-    placeholder: 'Enter key full path',
-    value: key,
-    onChange: (_, { newValue }) => this._onKeyNameChanged(newValue),
-  };
+  const { configKey, selectedKey, isInAddMode } = this.props;
+  if (!selectedKey) return <div className={style['loading-message']}>loading</div>;
+  const { meta, ruleDef, key = '' } = selectedKey.local;
 
-      return (
+  return (
     <div className={style['key-viewer-container']}>
       {this.renderKeyActionButtons(isInAddMode) }
 
@@ -127,25 +139,17 @@ export default connect((state, { params, route }) => (
 
         <div className={style['display-name-wrapper']}>
           {isInAddMode ?
-            <div className={style['auto-suggest-wrapper']}>
-              <Autosuggest
-                suggestions={ this._keyNameSuggestions() }
-                getSuggestionValue={(x) => x}
-                renderSuggestion={x => <span>{x}</span>}
-                inputProps={keyNameAutoSuggestProps}
-                theme={style}
-              />
-            </div>
+            <NewKeyInput onKeyNameChanged={(name) => this._onKeyNameChanged(name) }/>
             :
             <EditableText onTextChanged={(text) => this:: this._onDisplayNameChanged(text) }
               placeHolder="Enter key display name"
               value={meta.displayName}
               classNames={{
-                container: style['display-name-container'],
-                input: style['display-name-input'],
-                text: style['display-name-text'],
-                form: style['display-name-form'],
-              }}
+            container: style['display-name-container'],
+            input: style['display-name-input'],
+            text: style['display-name-text'],
+            form: style['display-name-form'],
+          }}
             />
           }
         </div>
@@ -190,4 +194,4 @@ export default connect((state, { params, route }) => (
 
     </div >
   );
-    } });
+} });

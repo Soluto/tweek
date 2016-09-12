@@ -98,12 +98,13 @@
     "prompt": "1.0.0",
     "ramda": "0.21.0",
     "react": "^15.0.2",
-    "react-addons-create-fragment": "15.0.2",
     "react-addons-perf": "15.0.2",
     "react-autosize-textarea": "0.3.1",
     "react-autosuggest": "3.7.3",
+    "react-bootstrap-typeahead": "0.9.0",
     "react-dom": "15.0.1",
     "react-draggable": "2.1.2",
+    "react-highlight-words": "0.3.0",
     "react-input-enhancements": "0.4.10",
     "react-portal-tooltip": "1.1.4",
     "react-project": "0.0.30",
@@ -129,7 +130,6 @@
     "webpack-dev-server": "1.14.1"
   },
   "devDependencies": {
-    "awesome-typescript-loader": "2.1.0",
     "babel-jest": "13.2.2",
     "babel-plugin-transform-async-to-generator": "6.7.4",
     "babel-plugin-transform-runtime": "6.7.5",
@@ -154,7 +154,6 @@
     "jest-css-modules": "1.0.2",
     "less": "2.7.1",
     "less-loader": "2.2.3",
-    "react-tag-input": "4.0.0",
-    "ts-loader": "0.8.2"
+    "react-tag-input": "4.0.0"
   }
 }

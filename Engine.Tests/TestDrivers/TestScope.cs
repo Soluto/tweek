@@ -1,15 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using Engine.Context;
 using Engine.Drivers.Context;
 using Engine.Drivers.Rules;
-using Engine.Rules.Creation;
-using Engine.Core.Rules;
 using Tweek.JPad;
-using Engine.Core.Context;
-using Engine.DataTypes;
-using LanguageExt;
-using static LanguageExt.Prelude;
 using System.Collections.Generic;
 using Tweek.JPad.Utils;
 
@@ -35,7 +28,6 @@ namespace Engine.Tests.TestDrivers
             Exception e = null;
             try
             {
-                
                 await _init();
                 var parserSettings = new ParserSettings(new Dictionary<string, ComparerDelegate>());
                 var tweek = await Tweek.Create(_contextDriver, _rulesDriver, JPadRulesParserAdapter.Convert(new JPadParser(parserSettings)));

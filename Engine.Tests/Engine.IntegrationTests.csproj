@@ -153,7 +153,7 @@
       <Name>Engine</Name>
     </ProjectReference>
     <ProjectReference Include="..\JPad\Tweek.JPad\Tweek.JPad.fsproj">
-      <Project>{2f526cff-086d-4607-b8f1-18c16b9a48d5}</Project>
+      <Project>{2F526CFF-086D-4607-B8F1-18C16B9A48D5}</Project>
       <Name>Tweek.JPad</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj">
