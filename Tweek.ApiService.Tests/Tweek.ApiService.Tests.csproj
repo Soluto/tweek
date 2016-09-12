@@ -74,10 +74,13 @@
   </Choose>
   <ItemGroup>
     <Compile Include="IConfigurationsApi.cs" />
+    <Compile Include="Models\TestContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Models\TestContextProvider.cs" />
     <Compile Include="ServingModuleTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
