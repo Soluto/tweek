@@ -21,7 +21,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
             mTweekApi = TweekApiServiceFactory.GetTweekApiClient();
         }
 
-        [Theory]
+        [Theory(DisplayName = "Get key with simple rules")]
         [InlineData("Android", "android result")]
         [InlineData("iOS", "ios result")]
         [InlineData("Unknown", "default result")]
@@ -35,20 +35,24 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
             Assert.Equal(expectedResult, response.ToString());
         }
 
-        [Theory, MemberData("COMPARISON_OPERATORS_TEST_CONTEXTS", MemberType = typeof(TestContextProvider))]
-        public async Task GetSingleKey_ComparisonOperators_ShouldReturnMatchingKeyValue(TestContext testContext)
+
+        [Theory(DisplayName = "Get key with rules using comparison operators")]
+        [MemberData("COMPARISON_OPERATORS_TEST_CONTEXTS", MemberType = typeof(TestContextProvider))]
+        public async Task RulesBasedKey_WithComparisonOperators_ShouldReturnMatchingKeyValue(TestContext testContext)
         {
             await RunContextBasedTest(testContext);
         }
 
-        [Theory, MemberData("IN_OPERATOR_TEST_CONTEXTS", MemberType = typeof(TestContextProvider))]
-        public async Task GetSingleKey_InOperator_ShouldReturnMatchingKeyValue(TestContext testContext)
+        [Theory(DisplayName = "Get key with rules using in operator")]
+        [MemberData("IN_OPERATOR_TEST_CONTEXTS", MemberType = typeof(TestContextProvider))]
+        public async Task RulesBasedKey_WithInOperator_ShouldReturnMatchingKeyValue(TestContext testContext)
         {
             await RunContextBasedTest(testContext);
         }
 
-        [Theory, MemberData("MULTI_CONDITIONS_TEST_CONTEXTS", MemberType = typeof(TestContextProvider))]
-        public async Task GetSingleKey_BasedOnMultiConditionsRules_ShouldReturnMatchingKeyValue(TestContext testContext)
+        [Theory(DisplayName = "Get key with rules using multiple fields")]
+        [MemberData("MULTI_CONDITIONS_TEST_CONTEXTS", MemberType = typeof(TestContextProvider))]
+        public async Task RulesBasedKey_UsingMultipleFields_ShouldReturnMatchingKeyValue(TestContext testContext)
         {
             await RunContextBasedTest(testContext);
         }
