@@ -1,9 +1,8 @@
 import React from 'react';
 import CustomSlider from '../../../../../components/common/CustomSlider/CustomSlider';
-import TextareaAutosize from 'react-autosize-textarea';
 import style from './RuleValue.css';
 import EditorMetaService from '../../../../../services/EditorMetaService';
-import ClosedComboBox from '../../../../../components/common/ClosedComboBox/ClosedComboBox';
+import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 
 function replaceNaN(fallbackValue) { return isNaN(this) ? fallbackValue : this; }
 const parseNumericInput = (inputValue) => inputValue === '' ? 0 : parseInt(inputValue);
@@ -18,8 +17,8 @@ let SingleVariantValue = ({ value, mutate, identities, autofocus }) => (
       value = { value }
       placeholder="Enter values here"
       className={style['values-input']}
-      ref={(e)=> e && autofocus && e.focus()}
-      />
+      ref={(e) => e && autofocus && e.focus() }
+    />
 
     {(value === 'true' || value === 'false') ?
       <button className={style['to-feature-flag-button']}
@@ -32,7 +31,7 @@ let SingleVariantValue = ({ value, mutate, identities, autofocus }) => (
               args: 0.1,
             })
         ) }
-        >Gradual release</button>
+      >Gradual release</button>
       :
       <button className={style['add-variant-button']}
         onClick={() => mutate.apply(m =>
@@ -47,7 +46,7 @@ let SingleVariantValue = ({ value, mutate, identities, autofocus }) => (
               },
             })
         ) }
-        >Add Variant</button>}
+      >Add Variant</button>}
 
   </div>)
 );
@@ -64,13 +63,21 @@ const BernoulliTrial = ({ onUpdate, ratio }) => (
       <input type="text"
         className={style['bernoulli-trial-input']}
         value={ratio * 100}
-        onChange={e => onUpdate((parseNumericInput(e.target.value) * 0.01):: replaceNaN(ratio)) }
-      onWheel={({ deltaY, target }) => {
-        const currentValue = parseNumericInput(target.value);
-        const newValue = deltaY < 0 ? currentValue + 1 : currentValue - 1;
-        if (newValue < 0 || newValue > 100) return;
-        onUpdate(newValue * 0.01);
-      } }
+        onChange={e => {
+          const newValue = e.target.value;
+          if (newValue < 0 ||
+            newValue > 100) {
+            e.stopPropagation();
+            return;
+          }
+          onUpdate((parseNumericInput(newValue) * 0.01):: replaceNaN(ratio));
+        }}
+        onWheel={({ deltaY, target }) => {
+          const currentValue = parseNumericInput(target.value);
+          const newValue = deltaY < 0 ? currentValue + 1 : currentValue - 1;
+          if (newValue < 0 || newValue > 100) return;
+          onUpdate(newValue * 0.01);
+        } }
       />
       <label>%</label>
     </div>
@@ -79,7 +86,7 @@ const BernoulliTrial = ({ onUpdate, ratio }) => (
         sliderColors={bernouliTrialSliderColors}
         data={{ true: 1000 * ratio / 10, false: 100 - (1000 * ratio / 10) }}
         onUpdate={x => onUpdate(x.true / 100) }
-        />
+      />
     </div>
   </div>
 );
@@ -91,10 +98,11 @@ const IdetitySelection = ({ identities, mutate }) => {
     <div>
       <label className={style['identity-selection-title']}>Identity: </label>
       <div className={style['identity-selection-combobox-wrapper']}>
-        <ClosedComboBox
-          inputProps={{ onChange: ({ value }) => { mutate.in('OwnerType').updateValue(value); }, value: identities[0] }}
-          suggestions={comboBoxIdentities}
-          />
+        <ComboBox
+          options={ identities }
+          onChange={(selectedValues) => mutate.in('OwnerType').updateValue(selectedValues.value) }
+          defaultSelected={[identities[0]]}
+        />
       </div>
     </div>
   );
@@ -118,7 +126,7 @@ const MultiVariantValue = ({ valueDistrubtion: { type, args }, mutate, identitie
               mutate.in('args').updateValue(variants);
             }
           } }
-          />
+        />
       </div>
     );
   if (type === 'bernoulliTrial') {
@@ -129,7 +137,7 @@ const MultiVariantValue = ({ valueDistrubtion: { type, args }, mutate, identitie
         <div style={{ marginTop: 5 }}>
           <BernoulliTrial onUpdate={mutate.in('args').updateValue}
             ratio={args}
-            />
+          />
 
           {(args === 1) ?
             <button className={style['set-to-true-button']}
@@ -140,7 +148,7 @@ const MultiVariantValue = ({ valueDistrubtion: { type, args }, mutate, identitie
                   .in('ValueDistribution').delete()
                   .in('OwnerType').delete()
               ) }
-              >Set to true
+            >Set to true
             </button> : null}
 
           {(args === 0) ?
@@ -152,7 +160,7 @@ const MultiVariantValue = ({ valueDistrubtion: { type, args }, mutate, identitie
                   .in('ValueDistribution').delete()
                   .in('OwnerType').delete()
               ) }
-              >Set to false
+            >Set to false
             </button> : null}
 
         </div>

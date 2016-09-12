@@ -1,134 +1,134 @@
-@import (reference) "../../../../styles/core/core.less";
-@import (reference) "../../../../styles/core/autoSuggest.less";
-.loading-message {
-  .centered-message;
-}
-
-@text-color: #515c66;
-.key-viewer-container {
-  padding: 16px;
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-  flex-shrink: 0;
-  .key-action-buttons-wrapper {
-    text-align: right;
-    @key-action-button-width: 125px;
-    .save-changes-button {
-      .metro-button;
-      width: @key-action-button-width;
-      &[data-state-is-saving=true], &[data-state-is-saving=true]:disabled {
-        background-color: green;
-      }
-    }
-    .delete-key-button {
-      .transparent-metro-button;
-      margin-right: 10px;
-      width: @key-action-button-width;
-    }
+  @import (reference) "../../../../styles/core/core.less";
+  .loading-message {
+    .centered-message;
   }
-  .key-header {
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    position: relative;
-    background-color: white;
-    border-radius: 5px;
-    border: 1px solid lightgray;
-    margin-top: 16px;
-    padding: 20px;
-    box-sizing: border-box;
-    .modification-data {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-    }
-    .display-name {
-      font-size: 20px;
-    }
-    .display-name-wrapper {
-      @display-name-font-size: 22px;
-      .display-name-container {
-        min-height: 34px;
-        display: flex;
-        flex-grow: 1;
-      }
-      .display-name-form {
-        display: flex;
-        flex-grow: 1;
-      }
-      .display-name-input {
-        .metro-textbox;
-        font-size: @display-name-font-size;
-        font-weight: 300;
-        display: flex;
-        width: 100%;
-        flex-grow: 1;
-      }
-      .key-name-input {
-        .display-name-input;
-        margin-bottom: 10px;
-      }
-      .display-name-text {
-        font-size: @display-name-font-size;
-        display: flex;
-        flex-grow: 1;
-      }
-      .auto-suggest-wrapper {
-        margin-bottom: 13px;
-        .auto-suggest-basic;
-        .input {
-          .display-name-input;
-        }
-      }
-    }
-    .key-full-path {
-      color: #a5a5a5;
-      font-size: 14px;
-      margin-left: 5px;
-      .user-select(none);
-      .actual-path {
-        .user-select(text);
-      }
-    }
-    .key-description-and-tags-wrapper {
-      @description-and-tags-max-height: 100px;
-      display: flex;
-      flex-direction: row;
-      flex-grow: 1;
-      margin-top: 10px;
-      max-height: @description-and-tags-max-height;
-      .key-description-wrapper {
-        height: @description-and-tags-max-height;
-        .description-input {
-          resize: none;
-          font-size: 14px;
-          color: @text-color;
-          min-width: 400px;
-          min-height: @description-and-tags-max-height;
-          max-height: @description-and-tags-max-height;
-          outline: none;
-          box-sizing: border-box;
-        }
-      }
-      .tags-wrapper {
-        display: flex;
-        width: 0;
-        flex-direction: column;
-        position: relative;
-        flex-grow: 1;
-        max-height: @description-and-tags-max-height;
-        overflow-y: auto;
-        padding-top: 0;
-        border-left: 1px solid lightgray;
-        padding-left: 20px;
-        margin-left: 20px;
-      }
-    }
-  }
-  .key-rules-editor {
+  
+  @text-color: #515c66;
+  .key-viewer-container {
+    padding: 16px;
     display: flex;
     flex-grow: 1;
-    margin-top: 7px;
+    flex-direction: column;
+    flex-shrink: 0;
+    .key-action-buttons-wrapper {
+      text-align: right;
+      @key-action-button-width: 125px;
+      .save-changes-button {
+        .metro-button;
+        width: @key-action-button-width;
+        &[data-state-is-saving=true], &[data-state-is-saving=true]:disabled {
+          background-color: green;
+        }
+      }
+      .delete-key-button {
+        .transparent-metro-button;
+        margin-right: 10px;
+        width: @key-action-button-width;
+      }
+    }
+    .key-header {
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      position: relative;
+      background-color: white;
+      border-radius: 5px;
+      border: 1px solid lightgray;
+      margin-top: 16px;
+      padding: 20px;
+      box-sizing: border-box;
+      .modification-data {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+      }
+      .display-name {
+        font-size: 20px;
+      }
+      .display-name-wrapper {
+        @display-name-font-size: 22px;
+        .display-name-container {
+          min-height: 34px;
+          display: flex;
+          flex-grow: 1;
+        }
+        .display-name-form {
+          display: flex;
+          flex-grow: 1;
+        }
+        .display-name-input {
+          .metro-textbox;
+          font-size: @display-name-font-size;
+          font-weight: 300;
+          display: flex;
+          width: 100%;
+          flex-grow: 1;
+        }
+        .key-name-input {
+          .display-name-input;
+        }
+        .display-name-text {
+          font-size: @display-name-font-size;
+          display: flex;
+          flex-grow: 1;
+        }
+        .auto-suggest-wrapper {
+          margin-bottom: 13px;
+          :global(.bootstrap-typeahead-input-main) {
+            .key-name-input;
+          }
+          :global(.bootstrap-typeahead-input-hint) {
+            .key-name-input;
+          }
+        }
+      }
+      .key-full-path {
+        color: #a5a5a5;
+        font-size: 14px;
+        margin-left: 5px;
+        .user-select(none);
+        .actual-path {
+          .user-select(text);
+        }
+      }
+      .key-description-and-tags-wrapper {
+        @description-and-tags-max-height: 100px;
+        display: flex;
+        flex-direction: row;
+        flex-grow: 1;
+        margin-top: 10px;
+        max-height: @description-and-tags-max-height;
+        .key-description-wrapper {
+          height: @description-and-tags-max-height;
+          .description-input {
+            resize: none;
+            font-size: 14px;
+            color: @text-color;
+            min-width: 400px;
+            min-height: @description-and-tags-max-height;
+            max-height: @description-and-tags-max-height;
+            outline: none;
+            box-sizing: border-box;
+          }
+        }
+        .tags-wrapper {
+          display: flex;
+          width: 0;
+          flex-direction: column;
+          position: relative;
+          flex-grow: 1;
+          max-height: @description-and-tags-max-height;
+          overflow-y: auto;
+          padding-top: 0;
+          border-left: 1px solid lightgray;
+          padding-left: 20px;
+          margin-left: 20px;
+        }
+      }
+    }
+    .key-rules-editor {
+      display: flex;
+      flex-grow: 1;
+      margin-top: 7px;
+    }
   }
-}

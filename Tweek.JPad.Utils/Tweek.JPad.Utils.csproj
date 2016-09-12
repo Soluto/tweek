@@ -93,6 +93,7 @@
     <ProjectReference Include="..\JPad\Tweek.JPad\Tweek.JPad.fsproj">
       <Project>{2f526cff-086d-4607-b8f1-18c16b9a48d5}</Project>
       <Name>Tweek.JPad</Name>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
