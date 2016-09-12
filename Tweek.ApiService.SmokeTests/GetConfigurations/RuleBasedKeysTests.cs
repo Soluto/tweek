@@ -6,18 +6,15 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Tweek.ApiService.SmokeTests.GetConfigurations.Models;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Tweek.ApiService.SmokeTests.GetConfigurations
 {
     public class RuleBasedKeysTests
     {
-        private readonly ITestOutputHelper mOutput;
         private readonly ITweekApi mTweekApi;
 
-        public RuleBasedKeysTests(ITestOutputHelper output)
+        public RuleBasedKeysTests()
         {
-            mOutput = output;
             mTweekApi = TweekApiServiceFactory.GetTweekApiClient();
         }
 
@@ -59,9 +56,6 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
 
         private async Task RunContextBasedTest(TestContext context)
         {
-            // Arrange
-            mOutput.WriteLine(context.TestName);
-
             // Act
             var response = await mTweekApi.GetConfigurations(context.KeyName, context.Context);
 
