@@ -3,7 +3,7 @@ $xunitConsoleRunner = ".\\packages\\xunit.runner.console.2.1.0\\tools\\xunit.con
 # Start Local Service for Smoke Tests
 Start-Job -Name RunLocalDeployment -ArgumentList (Resolve-Path "Tweek.ApiService").Path -ScriptBlock { 
     Param($webservicePath)
-        & 'C:\\Program Files (x86)\\IIS Express\\iisexpress.exe' /port:1234 /path:"$webservicePath"
+        & 'C:\\Program Files (x86)\\IIS Express\\iisexpress.exe' /port:1234 /path:"$webservicePath" /trace:warning
 }
 
 Wait-Job -Name RunLocalDeployment -Timeout 5
