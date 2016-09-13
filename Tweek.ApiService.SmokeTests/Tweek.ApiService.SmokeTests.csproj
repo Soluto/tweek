@@ -74,8 +74,9 @@
   <ItemGroup>
     <Compile Include="GetConfigurations\IdentityContextTests.cs" />
     <Compile Include="GetConfigurations\KeyPathsTests.cs" />
+    <Compile Include="GetConfigurations\Models\IdentityBasedTestsContextProvider.cs" />
     <Compile Include="GetConfigurations\Models\TestContext.cs" />
-    <Compile Include="GetConfigurations\Models\TestContextProvider.cs" />
+    <Compile Include="GetConfigurations\Models\RulesBasedTestsContextProvider.cs" />
     <Compile Include="GetConfigurations\RuleBasedKeysTests.cs" />
     <Compile Include="GetConfigurations\ValueDistributionTests.cs" />
     <Compile Include="ITweekApi.cs" />
