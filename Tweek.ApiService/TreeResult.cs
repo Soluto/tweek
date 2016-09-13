@@ -14,7 +14,6 @@ namespace Tweek.ApiService
 
             foreach (var item in configuration)
             {
-                if (item.Key == "") return item.Value.Value;
                 builder[item.Key] = item.Value.Value;
             }
             return builder.ToDictionary();
