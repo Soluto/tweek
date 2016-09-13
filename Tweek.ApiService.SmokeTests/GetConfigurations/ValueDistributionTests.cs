@@ -19,7 +19,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
             mTweekApi = TweekApiServiceFactory.GetTweekApiClient();
         }
 
-        [Fact(DisplayName = "Get key with value using bernulli open rate")]
+        [Fact(DisplayName = "Get key with value using bernulli open rate", Skip = "Working on this test")]
         public async Task GetKeyWithBernoulliValueDistribution_SeveralRequestsFromDifferentIdentities_ResultsShouldBeDistributed()
         {
             // Arrange
@@ -49,7 +49,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
             mOutput.WriteLine("Chance for a test fail due to statistics: {0}%", probablityOfTestFailure * 100);
         }
 
-        [Fact(DisplayName = "Get key with weighted multi value")]
+        [Fact(DisplayName = "Get key with weighted multi value", Skip = "Working on this test")]
         public async Task GetKeyWithMultiVariantsValues_SeveralRequestsFromDifferentIdentities_ResultsShouldBeDistributed()
         {
             // Arrange
