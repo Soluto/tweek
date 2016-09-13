@@ -27,7 +27,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                     Context = new Dictionary<string, string>
                     {
                         { "test", "smokeTest1" },
-                        { "test.favoriteFruit", "apple" }
+                        { "test.FavoriteFruit", "apple" }
                     }
                 }};
 
