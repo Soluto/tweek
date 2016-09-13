@@ -47,7 +47,7 @@ namespace Tweek.ApiService
                         ? TreeResult.From(data)
                         : data.ToDictionary(x => x.Key.ToString(), x => x.Value.ToString()));
 
-                return data.Select(x => x.Value.Value).FirstOrDefault();
+                return JsonConvert.SerializeObject(data.Select(x => x.Value.Value).FirstOrDefault());
             };
             
         }
