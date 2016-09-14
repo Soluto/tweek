@@ -51,23 +51,23 @@ export default compose(
     render() {
       const { tags, tagsSuggestions } = this.props;
       return (
-
-        <ReactTags tags={ tags }
-          handleDelete={ this::this._onTagDeleted }
-          handleAddition = { this::this._onTagAdded }
-          suggestions = { tagsSuggestions }
-          placeholder = "New tag"
-          allowDeleteFromEmptyInput
-          minQueryLength = { 1 }
-          classNames = {{
-            tags: style['tags-container'],
-            tagInput: style['tag-input'],
-            tag: style['tag'],
-            remove: style['tag-delete-button'],
-            suggestions: style['tags-suggestion'],
-          } }
-        />
-
+        <div className={style['tags-wrapper']}>
+          <ReactTags tags={ tags }
+            handleDelete={ this:: this._onTagDeleted }
+            handleAddition = { this:: this._onTagAdded }
+            suggestions = { tagsSuggestions }
+            placeholder = "New tag"
+            allowDeleteFromEmptyInput
+            minQueryLength = { 1 }
+            classNames = {{
+              tags: style['tags-container'],
+              tagInput: style['tag-input'],
+              tag: style['tag'],
+              remove: style['tag-delete-button'],
+              suggestions: style['tags-suggestion'],
+            } }
+          />
+        </div >
       );
     }
   });

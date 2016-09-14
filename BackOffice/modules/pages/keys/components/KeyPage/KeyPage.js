@@ -143,6 +143,7 @@ export default connect((state, { params, route }) => (
             :
             <EditableText onTextChanged={(text) => this:: this._onDisplayNameChanged(text) }
               placeHolder="Enter key display name"
+              maxLength={80}
               value={meta.displayName}
               classNames={{
             container: style['display-name-container'],
@@ -171,6 +172,7 @@ export default connect((state, { params, route }) => (
               classNames={{
                 input: style['description-input'],
               }}
+              maxLength={400}
             />
           </div>
 

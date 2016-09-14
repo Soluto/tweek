@@ -1,12 +1,12 @@
-.tags-container:before {
+.tags-wrapper .tags-container:before {
   content: 'Tags';
   color: #a5a5a5;
-  float: left;
   font-size: 14px;
+  float: left;
   margin-right: 10px;
   margin-top: 10px;
 }
-.tags-container .tag {
+.tags-wrapper .tags-container .tag {
   border: 1px solid #ddd;
   background-color: #eeeeee;
   font-size: 12px;
@@ -15,7 +15,7 @@
   margin: 5px 5px 0 0;
   border-radius: 2px;
 }
-.tags-container .tag .tag-delete-button {
+.tags-wrapper .tags-container .tag .tag-delete-button {
   display: block;
   float: right;
   margin-top: 1px;
@@ -27,16 +27,16 @@
   height: 9px;
   transition: all 0.2s ease-in-out;
 }
-.tags-container .tag .tag-delete-button:hover {
+.tags-wrapper .tags-container .tag .tag-delete-button:hover {
   cursor: pointer;
   color: #939393;
 }
-.tags-container .tag-input {
+.tags-wrapper .tags-container .tag-input {
   display: inline-block;
   font-size: 12px;
 }
-.tags-container .tag-input input,
-.tags-container .tag-input input:focus {
+.tags-wrapper .tags-container .tag-input input,
+.tags-wrapper .tags-container .tag-input input:focus {
   border: 1px solid #ddd;
   background-color: #eeeeee;
   font-size: 12px;
@@ -46,8 +46,8 @@
   border-radius: 2px;
   outline: none;
 }
-.tags-container .tag-input input .tag-delete-button,
-.tags-container .tag-input input:focus .tag-delete-button {
+.tags-wrapper .tags-container .tag-input input .tag-delete-button,
+.tags-wrapper .tags-container .tag-input input:focus .tag-delete-button {
   display: block;
   float: right;
   margin-top: 1px;
@@ -59,42 +59,42 @@
   height: 9px;
   transition: all 0.2s ease-in-out;
 }
-.tags-container .tag-input input .tag-delete-button:hover,
-.tags-container .tag-input input:focus .tag-delete-button:hover {
+.tags-wrapper .tags-container .tag-input input .tag-delete-button:hover,
+.tags-wrapper .tags-container .tag-input input:focus .tag-delete-button:hover {
   cursor: pointer;
   color: #939393;
 }
-.tags-container .tags-suggestion {
+.tags-wrapper .tags-container .tags-suggestion {
   position: absolute;
   z-index: 1;
 }
-.tags-container .tags-suggestion ul {
+.tags-wrapper .tags-container .tags-suggestion ul {
   list-style-type: none;
   box-shadow: 0.05em 0.01em 0.5em rgba(0, 0, 0, 0.2);
   background: white;
   width: 200px;
 }
-.tags-container .tags-suggestion ul li {
+.tags-wrapper .tags-container .tags-suggestion ul li {
   border-bottom: 1px solid #ddd;
   padding: 5px 10px;
   margin: 0;
   transition: all 0.2s ease-in-out;
 }
-.tags-container .tags-suggestion ul li mark {
+.tags-wrapper .tags-container .tags-suggestion ul li mark {
   text-decoration: underline;
   background: none;
   font-weight: 600;
 }
-.tags-container .tags-suggestion ul li:hover {
+.tags-wrapper .tags-container .tags-suggestion ul li:hover {
   cursor: pointer;
   background-color: #eeeeee;
 }
-.tags-container .tags-suggestion ul li:active,
-.tags-container .tags-suggestion ul li:global(.active):active {
+.tags-wrapper .tags-container .tags-suggestion ul li:active,
+.tags-wrapper .tags-container .tags-suggestion ul li:global(.active):active {
   cursor: pointer;
   background-color: #d9d9d9;
 }
-.tags-container .tags-suggestion ul li:global(.active) {
+.tags-wrapper .tags-container .tags-suggestion ul li:global(.active) {
   cursor: pointer;
   background-color: #eeeeee;
 }

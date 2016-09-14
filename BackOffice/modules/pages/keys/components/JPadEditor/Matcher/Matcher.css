@@ -1,7 +1,8 @@
 .matcher .conditions-wrapper {
   display: flex;
   padding-left: 3px;
-  height: 30px;
+  height: auto;
+  min-height: 30px;
 }
 .matcher .conditions-wrapper .delete-condition-button {
   vertical-align: top;
@@ -18,11 +19,11 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
-  padding: 0;
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  padding-bottom: 3px;
+  line-height: 1;
+  padding: 0 0 3px;
   box-sizing: border-box;
   width: 13px;
   height: 13px;
@@ -77,11 +78,11 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
-  padding: 0;
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  padding-bottom: 3px;
+  line-height: 1;
+  padding: 0 0 3px;
   font-size: 16px;
   padding-top: 2px;
   margin-top: 8px;
