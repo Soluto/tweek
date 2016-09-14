@@ -62,10 +62,10 @@ describe('GitRepository', () => {
     expect(rules.length).to.equal(1);
   });
 
-  it('should be able to read rule data', async function () {
+  it('should be able to read key data', async function () {
     this.timeout(15000);
     const repo = GitRepository.init({ url: remoteFolder, localPath: testFolder });
-    const rule = await repo.readFile('rules/path/to/someRule.jpad');
+    const key = await repo.readFile('rules/path/to/someRule.jpad');
 
     const expectedRule = {
       fileContent: '[]',
@@ -73,14 +73,14 @@ describe('GitRepository', () => {
     };
 
     // TODO: chekck modify date
-    expect(rule.fileContent).to.equals(expectedRule.fileContent);
+    expect(key.fileContent).to.equals(expectedRule.fileContent);
   });
 
-  it('should be able to update rule data', async function () {
+  it('should be able to update key data', async function () {
     this.timeout(15000);
     const repo = GitRepository.init({ url: remoteFolder, localPath: testFolder });
-    const rule = await repo.readFile('rules/path/to/someRule.jpad');
-    expect(rule.fileContent).to.equals('[]');
+    const key = await repo.readFile('rules/path/to/someRule.jpad');
+    expect(key.fileContent).to.equals('[]');
     await repo.updateFile('rules/path/to/someRule.jpad', '[{}]', { name: 'test', email: 'test@soluto.com' });
     await checkRemoteRepository(async path => {
       expect(fs.readFileSync(`${path}/rules/path/to/someRule.jpad`, { encoding: 'utf-8' })).to.equal('[{}]');

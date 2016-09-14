@@ -1,18 +1,18 @@
 import path from 'path';
 
-export default function (req, res, { rulesRepository, metaRepository }, { params }) {
+export default function (req, res, { keysRepository, metaRepository }, { params }) {
   const keyPath = params.splat;
   
   (async function () {
-    const ruleData = await rulesRepository.getRule(keyPath);
+    const keyData = await keysRepository.getKey(keyPath);
 
     return {
-      ruleDef: {
+      keyDef: {
         type: path.extname(keyPath).substring(1),
-        source: ruleData.fileContent,
-        modificationData: ruleData.fileModificationData,
+        source: keyData.fileContent,
+        modificationData: keyData.fileModificationData,
       },
-      meta: await metaRepository.getRuleMeta(keyPath),
+      meta: await metaRepository.getKeyMeta(keyPath),
     };
   }()).then((x) => res.json(x), console.error.bind(console));
 }

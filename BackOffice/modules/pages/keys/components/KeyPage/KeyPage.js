@@ -124,7 +124,7 @@ export default connect((state, { params, route }) => (
     render() {
   const { configKey, selectedKey, isInAddMode } = this.props;
   if (!selectedKey) return <div className={style['loading-message']}>loading</div>;
-  const { meta, ruleDef, key = '' } = selectedKey.local;
+  const { meta, keyDef, key = '' } = selectedKey.local;
 
   return (
     <div className={style['key-viewer-container']}>
@@ -132,8 +132,8 @@ export default connect((state, { params, route }) => (
 
       <div className={style['key-header']}>
 
-        {ruleDef.modificationData ?
-          <KeyModificationDetails className={style['modification-data']} {...ruleDef.modificationData} />
+        {keyDef.modificationData ?
+          <KeyModificationDetails className={style['modification-data']} {...keyDef.modificationData} />
           : null
         }
 
@@ -188,9 +188,9 @@ export default connect((state, { params, route }) => (
 
       </div>
 
-      <KeyRulesEditor ruleDef={ruleDef}
-        sourceTree={JSON.parse(ruleDef.source) }
-        onMutation={x => this.props.updateKeyRuleDef({ source: JSON.stringify(x, null, 4) }) }
+      <KeyRulesEditor keyDef={keyDef}
+        sourceTree={JSON.parse(keyDef.source) }
+        onMutation={x => this.props.updateKeyDef({ source: JSON.stringify(x, null, 4) }) }
         className={style['key-rules-editor']}
       />
 
