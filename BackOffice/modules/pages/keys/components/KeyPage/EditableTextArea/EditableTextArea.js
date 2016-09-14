@@ -8,7 +8,7 @@ import { withState } from 'recompose';
 import TextareaAutosize from 'react-autosize-textarea';
 
 const EditableTextArea = withState('isInEditMode', 'setIsInEditMode', false)(
-  ({ value, placeHolder, title, classNames: classes = {}, isInEditMode, setIsInEditMode, onTextChanged = () => { } }) => {
+  ({ value, placeHolder, title, maxLength, classNames: classes = {}, isInEditMode, setIsInEditMode, onTextChanged = () => { } }) => {
     return (
       <div className={classNames(style['textarea-container'], classes.container) }>
         <TextareaAutosize
@@ -28,7 +28,8 @@ const EditableTextArea = withState('isInEditMode', 'setIsInEditMode', false)(
             setIsInEditMode(false);
             onTextChanged(value);
           } }
-        />
+          maxLength={ maxLength }
+          />
       </div>
     );
   });
