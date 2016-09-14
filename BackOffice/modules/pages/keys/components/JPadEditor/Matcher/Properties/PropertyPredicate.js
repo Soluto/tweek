@@ -22,11 +22,12 @@ let ShortPredicate = ({ meta, mutate, value }) => {
       onOpUpdate={selectedOp => {
         if (selectedOp === '$eq') return;
         mutate.updateValue({
-          [selectedOp]: meta.multipleValues && selectedOp === '$in' ? [] : mutate.getValue(),
+          [selectedOp]: meta.multipleValues && selectedOp === '$in' ? [mutate.getValue()] : mutate.getValue(),
           ...(meta.compare ? { $compare: meta.compare } : {}),
         });
       }}
-      op = "$eq" {...{ value, meta } }
+      op = "$eq"
+      {...{ value, meta } }
     />
   );
 };
