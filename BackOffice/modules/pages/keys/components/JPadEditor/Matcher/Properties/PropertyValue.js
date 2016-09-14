@@ -5,8 +5,7 @@ import R from 'ramda';
 import ComboBox from '../../../../../../components/common/ComboBox/ComboBox';
 
 const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
-  // value = Array.isArray(value) ? value : [value];
-  // let indexedTags = value.map(x => ({ id: x, text: x }));
+  let indexedTags = value.map(x => ({ id: x, text: x }));
 
   const handleAddtion = (newValue) => onUpdate([...value, newValue]);
   const handleDelete = (valueIndex) => onUpdate(R.remove(valueIndex, 1, value));
@@ -14,7 +13,7 @@ const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
 
   return (
     <div className={style['tags-wrapper']}>
-      <ReactTags tags={ [] }
+      <ReactTags tags={ indexedTags }
         suggestions={indexedSuggestions}
         handleAddition={handleAddtion}
         handleDelete={handleDelete}
