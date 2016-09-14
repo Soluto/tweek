@@ -7,7 +7,7 @@
   border: 0;
   border-style: none;
   height: 28px;
-  width: auto;
+  width: 150px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
@@ -27,7 +27,7 @@
   border: 0;
   border-style: none;
   height: 28px;
-  width: auto;
+  width: 150px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
@@ -109,7 +109,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: auto;
+  width: 150px;
 }
 .property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -128,7 +128,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: auto;
+  width: 150px;
 }
 .property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -188,7 +188,7 @@
   border: 0;
   border-style: none;
   height: 28px;
-  width: auto;
+  width: 150px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
@@ -224,7 +224,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: auto;
+  width: 150px;
 }
 .property-name-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -243,7 +243,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: auto;
+  width: 150px;
 }
 .property-name-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -403,9 +403,11 @@
 .tags-wrapper .tags-container {
   display: flex;
   max-width: 500px;
+  min-width: 150px;
   overflow-y: auto;
   border-bottom: 1px solid rgba(0, 122, 204, 0.6);
   padding: 4px;
+  box-sizing: border-box;
 }
 .tags-wrapper .tags-container:before {
   content: '';
@@ -421,7 +423,7 @@
 .tags-wrapper .tags-container .tag-input input,
 .tags-wrapper .tags-container .tag-input input:focus {
   background-color: transparent;
-  width: 65px;
+  width: 100px;
   border: none;
   outline: none;
   padding: 0;
