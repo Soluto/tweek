@@ -4,17 +4,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RestEase;
 using Tweek.ApiService.SmokeTests.GetConfigurations.Models;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Tweek.ApiService.SmokeTests.GetConfigurations
 {
     public class IdentityContextTests
     {
+        private readonly ITestOutputHelper mOutput;
         private readonly ITweekApi mTweekApi;
 
-        public IdentityContextTests()
+        public IdentityContextTests(ITestOutputHelper output)
         {
+            mOutput = output;
             mTweekApi = TweekApiServiceFactory.GetTweekApiClient();
         }
 
@@ -22,7 +26,17 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
         [MemberData("IDENTITY_TEST_CONTEXTS", MemberType = typeof(IdentityBasedTestsContextProvider))]
         public async Task GetKey_WithIdentityInContext_ReturnsValue(TestContext testContext)
         {
-            await RunContextBasedTest(testContext);
+            try
+            {
+                await RunContextBasedTest(testContext);
+            }
+            catch (ApiException e)
+            {
+                mOutput.WriteLine(e.ReasonPhrase);
+                mOutput.WriteLine(e.Content);
+                throw;
+            }
+            
         }
 
         private async Task RunContextBasedTest(TestContext context)
