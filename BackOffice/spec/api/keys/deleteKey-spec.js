@@ -7,7 +7,7 @@ describe('deleteKey', () => {
   const expressRequestMock = {};
   const expressResponseMock = {};
 
-  const rulesRepositoryMock = {};
+  const keysRepositoryMock = {};
   const metaRepositoryMock = {};
 
   const validAuthor = {
@@ -21,15 +21,15 @@ describe('deleteKey', () => {
     const responseSendMock = jest.fn(async () => { });
     expressResponseMock.send = responseSendMock;
 
-    rulesRepositoryMock.deleteKey = jest.fn(async () => { });
+    keysRepositoryMock.deleteKey = jest.fn(async () => { });
     metaRepositoryMock.deleteKeyMeta = jest.fn(async () => { });
   });
 
-  it('should call rulesRepository, metaRepository once at this order', async () => {
+  it('should call keysRepository, metaRepository once at this order', async () => {
     // Arrange
     const functionsReferenceOrder = [];
 
-    rulesRepositoryMock.deleteKey = jest.fn(async () => functionsReferenceOrder.push(rulesRepositoryMock.deleteKey));
+    keysRepositoryMock.deleteKey = jest.fn(async () => functionsReferenceOrder.push(keysRepositoryMock.deleteKey));
     metaRepositoryMock.deleteKeyMeta = jest.fn(async () => functionsReferenceOrder.push(metaRepositoryMock.deleteKeyMeta));
 
     const expectedKeyPath = 'some key path';
@@ -40,7 +40,7 @@ describe('deleteKey', () => {
 
     // Act
     await deleteKey(expressRequestMock, expressResponseMock, {
-      rulesRepository: rulesRepositoryMock,
+      keysRepository: keysRepositoryMock,
       metaRepository: metaRepositoryMock,
       undefined,
     }, {
@@ -48,15 +48,15 @@ describe('deleteKey', () => {
       });
 
     // Assert
-    expect(rulesRepositoryMock.deleteKey.mock.calls.length).toEqual(1, 'should call delete key once');
+    expect(keysRepositoryMock.deleteKey.mock.calls.length).toEqual(1, 'should call delete key once');
     expect(metaRepositoryMock.deleteKeyMeta.mock.calls.length).toEqual(1, 'should call delete key meta once');
 
     expect(functionsReferenceOrder).toEqual(
-      [rulesRepositoryMock.deleteKey, metaRepositoryMock.deleteKeyMeta],
+      [keysRepositoryMock.deleteKey, metaRepositoryMock.deleteKeyMeta],
       'shoudl call repositories once');
   });
 
-  it('should call rulesRepository with correct parameters', async () => {
+  it('should call keysRepository with correct parameters', async () => {
     // Arrange
     const paramsMock = {
       splat: validKeyPath,
@@ -64,7 +64,7 @@ describe('deleteKey', () => {
 
     // Act
     await deleteKey(expressRequestMock, expressResponseMock, {
-      rulesRepository: rulesRepositoryMock,
+      keysRepository: keysRepositoryMock,
       metaRepository: metaRepositoryMock,
       author: validAuthor,
     }, {
@@ -72,8 +72,8 @@ describe('deleteKey', () => {
       });
 
     // Assert
-    expect(rulesRepositoryMock.deleteKey.mock.calls[0][0]).toEqual(paramsMock.splat, 'should call delete key with correct key');
-    expect(rulesRepositoryMock.deleteKey.mock.calls[0][1]).toEqual(validAuthor, 'should call delete key with correct author');
+    expect(keysRepositoryMock.deleteKey.mock.calls[0][0]).toEqual(paramsMock.splat, 'should call delete key with correct key');
+    expect(keysRepositoryMock.deleteKey.mock.calls[0][1]).toEqual(validAuthor, 'should call delete key with correct author');
   });
 
   it('should call metaRepository with correct parameters', async () => {
@@ -84,7 +84,7 @@ describe('deleteKey', () => {
 
     // Act
     await deleteKey(expressRequestMock, expressResponseMock, {
-      rulesRepository: rulesRepositoryMock,
+      keysRepository: keysRepositoryMock,
       metaRepository: metaRepositoryMock,
       author: validAuthor,
     }, {
@@ -104,7 +104,7 @@ describe('deleteKey', () => {
 
     // Act
     await deleteKey(expressRequestMock, expressResponseMock, {
-      rulesRepository: rulesRepositoryMock,
+      keysRepository: keysRepositoryMock,
       metaRepository: metaRepositoryMock,
       author: validAuthor,
     }, {
@@ -116,7 +116,7 @@ describe('deleteKey', () => {
     expect(expressResponseMock.send.mock.calls[0][0]).toEqual('OK', 'should call express request with correct parameter');
   });
 
-  it('should call rulesRepository, metaRepository with default author if author wasnt given', async () => {
+  it('should call keysRepository, metaRepository with default author if author wasnt given', async () => {
     // Arrange
     const paramsMock = {
       splat: validKeyPath,
@@ -129,7 +129,7 @@ describe('deleteKey', () => {
 
     // Act
     await deleteKey(expressRequestMock, expressResponseMock, {
-      rulesRepository: rulesRepositoryMock,
+      keysRepository: keysRepositoryMock,
       metaRepository: metaRepositoryMock,
       undefined,
     }, {
@@ -137,7 +137,7 @@ describe('deleteKey', () => {
       });
 
     // Assert
-    expect(rulesRepositoryMock.deleteKey.mock.calls[0][1]).toEqual(expectedAuthor, 'should call delete key with default author');
+    expect(keysRepositoryMock.deleteKey.mock.calls[0][1]).toEqual(expectedAuthor, 'should call delete key with default author');
     expect(metaRepositoryMock.deleteKeyMeta.mock.calls[0][1]).toEqual(expectedAuthor, 'should call delete key meta with default author');
   });
 });

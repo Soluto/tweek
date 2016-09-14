@@ -10,7 +10,7 @@ describe('putKey', () => {
 
   const expressRequestMock = {
     body: {
-      ruleDef: {
+      keyDef: {
         source: 'some source',
       },
       meta: metaMock,
@@ -19,7 +19,7 @@ describe('putKey', () => {
 
   const expressResponseMock = {};
 
-  const rulesRepositoryMock = {};
+  const keysRepositoryMock = {};
   const metaRepositoryMock = {};
 
   const validAuthor = {
@@ -33,15 +33,15 @@ describe('putKey', () => {
     const responseSendMock = jest.fn(async () => { });
     expressResponseMock.send = responseSendMock;
 
-    rulesRepositoryMock.updateRule = jest.fn(async () => { });
+    keysRepositoryMock.updateKey = jest.fn(async () => { });
     metaRepositoryMock.updateRuleMeta = jest.fn(async () => { });
   });
 
-  it('should call rulesRepository, metaRepository once at this order', async () => {
+  it('should call keysRepository, metaRepository once at this order', async () => {
     // Arrange
     const functionsReferenceOrder = [];
 
-    rulesRepositoryMock.updateRule = jest.fn(async () => functionsReferenceOrder.push(rulesRepositoryMock.updateRule));
+    keysRepositoryMock.updateKey = jest.fn(async () => functionsReferenceOrder.push(keysRepositoryMock.updateKey));
     metaRepositoryMock.updateRuleMeta = jest.fn(async () => functionsReferenceOrder.push(metaRepositoryMock.updateRuleMeta));
 
     const expectedKeyPath = 'some key path';
@@ -52,7 +52,7 @@ describe('putKey', () => {
 
     // Act
     await putKey(expressRequestMock, expressResponseMock, {
-      rulesRepository: rulesRepositoryMock,
+      keysRepository: keysRepositoryMock,
       metaRepository: metaRepositoryMock,
       undefined,
     }, {
@@ -60,15 +60,15 @@ describe('putKey', () => {
       });
 
     // Assert
-    expect(rulesRepositoryMock.updateRule.mock.calls.length).toEqual(1, 'should call updatre rule once');
-    expect(metaRepositoryMock.updateRuleMeta.mock.calls.length).toEqual(1, 'should call update rule meta once');
+    expect(keysRepositoryMock.updateKey.mock.calls.length).toEqual(1, 'should call updatre key once');
+    expect(metaRepositoryMock.updateRuleMeta.mock.calls.length).toEqual(1, 'should call update key meta once');
 
     expect(functionsReferenceOrder).toEqual(
-      [rulesRepositoryMock.updateRule, metaRepositoryMock.updateRuleMeta],
+      [keysRepositoryMock.updateKey, metaRepositoryMock.updateRuleMeta],
       'shoudl call repositories once');
   });
 
-  it('should call rulesRepository with correct parameters', async () => {
+  it('should call keysRepository with correct parameters', async () => {
     // Arrange
     const paramsMock = {
       splat: validKeyPath,
@@ -76,7 +76,7 @@ describe('putKey', () => {
 
     // Act
     await putKey(expressRequestMock, expressResponseMock, {
-      rulesRepository: rulesRepositoryMock,
+      keysRepository: keysRepositoryMock,
       metaRepository: metaRepositoryMock,
       author: validAuthor,
     }, {
@@ -84,9 +84,9 @@ describe('putKey', () => {
       });
 
     // Assert
-    expect(rulesRepositoryMock.updateRule.mock.calls[0][0]).toEqual(paramsMock.splat, 'should call update rule with correct rule path');
-    expect(rulesRepositoryMock.updateRule.mock.calls[0][1]).toEqual(expressRequestMock.body.ruleDef.source, 'should call update ruel with correct rule def source');
-    expect(rulesRepositoryMock.updateRule.mock.calls[0][2]).toEqual(validAuthor, 'should call update rule with correct author');
+    expect(keysRepositoryMock.updateKey.mock.calls[0][0]).toEqual(paramsMock.splat, 'should call update key with correct key path');
+    expect(keysRepositoryMock.updateKey.mock.calls[0][1]).toEqual(expressRequestMock.body.keyDef.source, 'should call update ruel with correct key def source');
+    expect(keysRepositoryMock.updateKey.mock.calls[0][2]).toEqual(validAuthor, 'should call update key with correct author');
   });
 
   it('should call metaRepository with correct parameters', async () => {
@@ -97,7 +97,7 @@ describe('putKey', () => {
 
     // Act
     await putKey(expressRequestMock, expressResponseMock, {
-      rulesRepository: rulesRepositoryMock,
+      keysRepository: keysRepositoryMock,
       metaRepository: metaRepositoryMock,
       author: validAuthor,
     }, {
@@ -105,9 +105,9 @@ describe('putKey', () => {
       });
 
     // Assert
-    expect(metaRepositoryMock.updateRuleMeta.mock.calls[0][0]).toEqual(paramsMock.splat, 'should call update rule meta with correct rule path');
-    expect(metaRepositoryMock.updateRuleMeta.mock.calls[0][1]).toEqual(expressRequestMock.body.meta, 'should call update rule meta with correct meta');
-    expect(metaRepositoryMock.updateRuleMeta.mock.calls[0][2]).toEqual(validAuthor, 'should call update rule meta with correct author');
+    expect(metaRepositoryMock.updateRuleMeta.mock.calls[0][0]).toEqual(paramsMock.splat, 'should call update key meta with correct key path');
+    expect(metaRepositoryMock.updateRuleMeta.mock.calls[0][1]).toEqual(expressRequestMock.body.meta, 'should call update key meta with correct meta');
+    expect(metaRepositoryMock.updateRuleMeta.mock.calls[0][2]).toEqual(validAuthor, 'should call update key meta with correct author');
   });
 
   it('should call express response once with correct parameters', async () => {
@@ -118,7 +118,7 @@ describe('putKey', () => {
 
     // Act
     await putKey(expressRequestMock, expressResponseMock, {
-      rulesRepository: rulesRepositoryMock,
+      keysRepository: keysRepositoryMock,
       metaRepository: metaRepositoryMock,
       author: validAuthor,
     }, {
@@ -130,7 +130,7 @@ describe('putKey', () => {
     expect(expressResponseMock.send.mock.calls[0][0]).toEqual('OK', 'should call express request with correct parameter');
   });
 
-  it('should call rulesRepository, metaRepository with default author if author wasnt given', async () => {
+  it('should call keysRepository, metaRepository with default author if author wasnt given', async () => {
     // Arrange
     const paramsMock = {
       splat: validKeyPath,
@@ -143,7 +143,7 @@ describe('putKey', () => {
 
     // Act
     await putKey(expressRequestMock, expressResponseMock, {
-      rulesRepository: rulesRepositoryMock,
+      keysRepository: keysRepositoryMock,
       metaRepository: metaRepositoryMock,
       undefined,
     }, {
@@ -151,7 +151,7 @@ describe('putKey', () => {
       });
 
     // Assert
-    expect(rulesRepositoryMock.updateRule.mock.calls[0][2]).toEqual(expectedAuthor, 'should call update rule with default author');
-    expect(metaRepositoryMock.updateRuleMeta.mock.calls[0][2]).toEqual(expectedAuthor, 'should call update rule meta with default author');
+    expect(keysRepositoryMock.updateKey.mock.calls[0][2]).toEqual(expectedAuthor, 'should call update key with default author');
+    expect(metaRepositoryMock.updateRuleMeta.mock.calls[0][2]).toEqual(expectedAuthor, 'should call update key meta with default author');
   });
 });

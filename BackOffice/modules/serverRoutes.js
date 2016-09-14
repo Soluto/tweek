@@ -1,12 +1,12 @@
 import React from 'react';
-import { ServerRoute, IndexRoute } from 'react-project';
+import { ServerRoute } from 'react-project';
 import getKey from './api/keys/getKey';
 import putKey from './api/keys/putKey';
 import deleteKey from './api/keys/deleteKey';
 import getTags from './api/tags/getTags';
 import putTags from './api/tags/putTags';
 
-export default ({ rulesRepository, metaRepository, tagsRepository }) => (
+export default ({ keysRepository, metaRepository, tagsRepository }) => (
   <ServerRoute path="/api">
     <ServerRoute path="tags"
       get={getTags}
@@ -18,7 +18,7 @@ export default ({ rulesRepository, metaRepository, tagsRepository }) => (
         get={getKey}
         put={putKey}
         delete={deleteKey}
-        rulesRepository={rulesRepository}
+        keysRepository={keysRepository}
         metaRepository={metaRepository}
         />
     </ServerRoute>
