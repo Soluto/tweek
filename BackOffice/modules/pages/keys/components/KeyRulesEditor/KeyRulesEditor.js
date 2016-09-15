@@ -29,7 +29,7 @@ const KeyRulesEditor = ({ keyDef, mutate }) =>
         <TabList>
           <Tab className={style['tab-header']}>
             <label className={style['key-definition-tab-icon']}>&#xE904; </label>
-            <label className={style['tab-title']}>Rule</label>
+            <label className={style['tab-title']}>Rules</label>
           </Tab>
           <Tab className={style['tab-header']}>
             <label className={style['key-source-tab-icon']}>&#xE901; </label>
