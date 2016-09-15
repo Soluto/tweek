@@ -27,7 +27,7 @@ export const deleteKey = (key) => async function (dispatch) {
   dispatch({ type: KEY_DELETED, payload: key });
 };
 
-export async function getKeys(payload) {
+export function getKeys(payload) {
   return { type: KEYS_UPDATED, payload };
 }
 

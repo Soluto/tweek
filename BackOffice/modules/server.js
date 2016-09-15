@@ -16,8 +16,8 @@ const passport = require('passport');
 const nconf = require('nconf');
 
 nconf.argv()
-   .env()
-   .file({ file: `${process.cwd()}/tweek_config.json` });
+  .env()
+  .file({ file: `${process.cwd()}/tweek_config.json` });
 
 console.log(nconf.get('GIT_URL'));
 
@@ -26,6 +26,7 @@ const gitRepo = GitRepository.init({
   username: nconf.get('GIT_USER'),
   password: nconf.get('GIT_PASSWORD'),
   localPath: `${process.cwd()}/rulesRepository`,
+  pullIntervalInMS: nconf.get('GIT_PULL_INTERVAL_IN_MS'),
 });
 
 const keysRepository = new KeysRepository(gitRepo);
