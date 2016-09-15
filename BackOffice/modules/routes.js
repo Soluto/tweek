@@ -2,20 +2,19 @@ import './styles/styles.css';
 import React from 'react';
 import { Route, IndexRoute, Redirect } from 'react-router';
 import App from './components/App';
-import Home from './components/Home';
 import KeysPage from './pages/keys/components/KeysPage/KeysPage';
 import KeyPage from './pages/keys/components/KeyPage/KeyPage';
 import NoMatch from './components/NoMatch';
 import style from './styles/styles.css';
 
+const SelectKeyMessage = () => <div className={style['select-key-message']}>Select key...</div>;
+
 export default serverRoutes => (
   <Route>
+    <Redirect from="/" to="keys" />
     <Route path="/" component={App}>
-      <IndexRoute component={Home}/>
       <Route path="keys" component={KeysPage} >
-        <IndexRoute component={() => (
-          <div className={style['select-key-message']}>Select key...</div>)
-        } />
+        <IndexRoute component={() => <SelectKeyMessage/> } />
         <Route path="_blank" isInAddMode="true" component={KeyPage} />
         <Route path="*" component={KeyPage}/>
       </Route>
