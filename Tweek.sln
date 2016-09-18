@@ -61,6 +61,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.JPad.Utils", "Tweek.J
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.ApiService.SmokeTests", "Tweek.ApiService.SmokeTests\Tweek.ApiService.SmokeTests.csproj", "{BC336A4E-B905-4E15-9A67-F5711C7EB9CB}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Tweek.JPad2", "JPad\Tweek.JPad2\Tweek.JPad2.fsproj", "{9A374180-A25D-4191-94A2-B141A2E21D73}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -135,6 +137,10 @@ Global
 		{BC336A4E-B905-4E15-9A67-F5711C7EB9CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC336A4E-B905-4E15-9A67-F5711C7EB9CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC336A4E-B905-4E15-9A67-F5711C7EB9CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A374180-A25D-4191-94A2-B141A2E21D73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A374180-A25D-4191-94A2-B141A2E21D73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A374180-A25D-4191-94A2-B141A2E21D73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A374180-A25D-4191-94A2-B141A2E21D73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -152,5 +158,6 @@ Global
 		{2F526CFF-086D-4607-B8F1-18C16B9A48D5} = {D1D5F58E-03BB-40D7-BF23-783C8831686B}
 		{6CD45513-4483-4E66-A589-1029AB20C992} = {D1D5F58E-03BB-40D7-BF23-783C8831686B}
 		{BC336A4E-B905-4E15-9A67-F5711C7EB9CB} = {21F63D0A-8C90-4829-A3A2-83AD683AC5A7}
+		{9A374180-A25D-4191-94A2-B141A2E21D73} = {D1D5F58E-03BB-40D7-BF23-783C8831686B}
 	EndGlobalSection
 EndGlobal
