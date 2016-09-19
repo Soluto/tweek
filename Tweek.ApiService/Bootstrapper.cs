@@ -63,7 +63,7 @@ namespace Tweek.ApiService
 
         IRuleParser GetRulesParser()
         {
-            return JPadRulesParserAdapter.Convert(new JPad2Parser(new ParserSettings(
+            return JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
                 comparers: new Dictionary<string, ComparerDelegate>()
                 {
                     ["version"] = Version.Parse
