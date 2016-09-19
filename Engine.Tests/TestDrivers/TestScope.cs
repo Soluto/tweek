@@ -30,7 +30,7 @@ namespace Engine.Tests.TestDrivers
             {
                 await _init();
                 var parserSettings = new ParserSettings(new Dictionary<string, ComparerDelegate>());
-                var tweek = await Tweek.Create(_contextDriver, _rulesDriver, JPadRulesParserAdapter.Convert(new JPadParser(parserSettings)));
+                var tweek = await Tweek.Create(_contextDriver, _rulesDriver, JPadRulesParserAdapter.Convert(new JPad2Parser(parserSettings)));
                 await test(tweek);
             }
             catch (Exception ex)

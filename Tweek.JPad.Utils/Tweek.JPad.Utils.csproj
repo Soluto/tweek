@@ -90,10 +90,9 @@
       <Project>{8569DD6D-27D1-40A1-8161-E12157E845F3}</Project>
       <Name>Engine.Drivers</Name>
     </ProjectReference>
-    <ProjectReference Include="..\JPad\Tweek.JPad\Tweek.JPad.fsproj">
-      <Project>{2f526cff-086d-4607-b8f1-18c16b9a48d5}</Project>
-      <Name>Tweek.JPad</Name>
-      <Private>True</Private>
+    <ProjectReference Include="..\JPad\Tweek.JPad2\Tweek.JPad2.fsproj">
+      <Project>{9a374180-a25d-4191-94a2-b141a2e21d73}</Project>
+      <Name>Tweek.JPad2</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
