@@ -14,7 +14,7 @@ type public JPadParser(settings:ParserSettings) =
             match pattern with
                 | PatternType.Exact -> 
                     rulesData |> 
-                    Array.map (fun (k,v) -> (k, parseRulesContainer (depth - 1) v) ) |>
+                    Array.map (fun (k,v) -> (k.ToLower(), parseRulesContainer (depth - 1) v) ) |>
                     Map.ofArray |>
                     PatternBlock.Map
                 | PatternType.Default -> parseRulesContainer (depth - 1) (snd rulesData.[0]) |> PatternBlock.Default      
@@ -71,7 +71,7 @@ type public JPadParser(settings:ParserSettings) =
     
      and evaluatePatternBlock block contextValue =
         match block, contextValue with
-            |Map map, Some value ->  map.TryFind(value);
+            |Map map, Some value ->  map.TryFind(value.ToLower());
             |Map map, None -> None;
             |PatternBlock.Default container, _ -> Some(container);
     //--
