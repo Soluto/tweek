@@ -9,15 +9,15 @@ import serverRoutes from './serverRoutes';
 import { getKeys } from '../modules/pages/keys/ducks/keys';
 import GitRepository from './server/repositories/GitRepository';
 import MetaRepository from './server/repositories/MetaRepository';
-import RulesRepository from './server/repositories/RulesRepository';
+import KeysRepository from './server/repositories/KeysRepository';
 import TagsRepository from './server/repositories/TagsRepository';
 import session from 'express-session';
 const passport = require('passport');
 const nconf = require('nconf');
 
 nconf.argv()
-   .env()
-   .file({ file: `${process.cwd()}/tweek_config.json` });
+  .env()
+  .file({ file: `${process.cwd()}/tweek_config.json` });
 
 console.log(nconf.get('GIT_URL'));
 
@@ -26,18 +26,19 @@ const gitRepo = GitRepository.init({
   username: nconf.get('GIT_USER'),
   password: nconf.get('GIT_PASSWORD'),
   localPath: `${process.cwd()}/rulesRepository`,
+  pullIntervalInMS: nconf.get('GIT_PULL_INTERVAL_IN_MS'),
 });
 
-const rulesRepository = new RulesRepository(gitRepo);
+const keysRepository = new KeysRepository(gitRepo);
 const metaRepository = new MetaRepository(gitRepo);
 const tagsRepository = new TagsRepository(gitRepo);
 
 function getApp(req, res, requestCallback) {
   requestCallback(null, {
-    routes: routes(serverRoutes({ rulesRepository, metaRepository, tagsRepository })),
+    routes: routes(serverRoutes({ keysRepository, metaRepository, tagsRepository })),
     render(routerProps, renderCallback) {
       const store = configureStore({});
-      rulesRepository.getAllRules().then(keys => store.dispatch(getKeys(keys)))
+      keysRepository.getAllKeys().then(keys => store.dispatch(getKeys(keys)))
         .then(() =>
           renderCallback(null, {
             renderDocument: (props) => <Document {...props} initialState={store.getState() } />,

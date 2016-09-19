@@ -18,7 +18,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
         public async Task GetSingleKey_KeyExists_ShouldReturnKeyValue()
         {
             // Act
-            var response = await mTweekApi.GetConfigurations("@tests/nested/key1", new Dictionary<string, string>());
+            var response = await mTweekApi.GetConfigurations("@tests/keyPath/key1", new Dictionary<string, string>());
 
             // Assert
             Assert.Equal(JTokenType.String, response.Type);
@@ -26,10 +26,10 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
         }
 
         [Fact(DisplayName = "Requesting a non-existant key should return null")]
-        public async Task GetSingleKey_KeyDoesntExists_ShouldReturnKeyValue()
+        public async Task GetSingleKey_KeyDoesntExists_ShouldReturnNull()
         {
             // Act
-            var response = await mTweekApi.GetConfigurations("@tests/nested/nonexisting-key", new Dictionary<string, string>());
+            var response = await mTweekApi.GetConfigurations("@tests/keyPath/nonexisting-key", new Dictionary<string, string>());
 
             // Assert
             Assert.Equal(JTokenType.Null, response.Type);
@@ -39,7 +39,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
         public async Task GetKeyTree_KeysExistsInPath_ShouldReturnObjectWithValueForEachKey()
         {
             // Act
-            var response = await mTweekApi.GetConfigurations("@tests/nested/_", new Dictionary<string, string>());
+            var response = await mTweekApi.GetConfigurations("@tests/keyPath/_", new Dictionary<string, string>());
 
             // Assert
             Assert.Equal(JTokenType.Object, response.Type);
@@ -51,7 +51,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
         public async Task GetKeyTree_PathDoesntExist_ShouldReturnEmptyObject()
         {
             // Act
-            var response = await mTweekApi.GetConfigurations("@tests/nested/nonexisting-key-path/_", new Dictionary<string, string>());
+            var response = await mTweekApi.GetConfigurations("@tests/keyPath/nonexisting-key-path/_", new Dictionary<string, string>());
 
             // Assert
             Assert.Equal(JTokenType.Object, response.Type);

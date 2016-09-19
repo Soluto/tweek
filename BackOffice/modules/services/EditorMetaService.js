@@ -34,6 +34,7 @@ export default class EditorMetaService {
           InstallationSource: multipleValues(true)(types.String),
           DeviceOsVersion: multipleValues(true)(types.Version),
           IsInGroup: multipleValues(true)(defaultValue(false)(types.Bool)),
+          CreatedAt: multipleValues(true)(types.String),
           DeviceType: multipleValues(true)(types.Enum(
             'Unknown',
             'Desktop',

@@ -119,7 +119,7 @@
   border: 0;
   border-style: none;
   height: 28px;
-  width: auto;
+  width: 150px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
@@ -138,7 +138,7 @@
   border: 0;
   border-style: none;
   height: 28px;
-  width: auto;
+  width: 150px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
@@ -169,11 +169,11 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
-  padding: 0;
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  padding-bottom: 3px;
+  line-height: 1;
+  padding: 0 0 3px;
   box-sizing: border-box;
 }
 .circle-button:hover {
@@ -206,11 +206,11 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
-  padding: 0;
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  padding-bottom: 3px;
+  line-height: 1;
+  padding: 0 0 3px;
   box-sizing: border-box;
   width: 13px;
   height: 13px;
@@ -256,11 +256,11 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
-  padding: 0;
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  padding-bottom: 3px;
+  line-height: 1;
+  padding: 0 0 3px;
   box-sizing: border-box;
   background-color: #bcbcbc;
 }
@@ -300,11 +300,11 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
-  padding: 0;
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  padding-bottom: 3px;
+  line-height: 1;
+  padding: 0 0 3px;
   box-sizing: border-box;
   width: 13px;
   height: 13px;
@@ -356,11 +356,11 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
-  padding: 0;
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  padding-bottom: 3px;
+  line-height: 1;
+  padding: 0 0 3px;
   box-sizing: border-box;
   font-size: 16px;
   padding-top: 2px;
@@ -399,11 +399,11 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
-  padding: 0;
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  padding-bottom: 3px;
+  line-height: 1;
+  padding: 0 0 3px;
   box-sizing: border-box;
   width: 13px;
   height: 13px;
@@ -446,11 +446,11 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
-  padding: 0;
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  padding-bottom: 3px;
+  line-height: 1;
+  padding: 0 0 3px;
   box-sizing: border-box;
   background-color: #bcbcbc;
   font-size: 16px;
@@ -496,11 +496,11 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
-  padding: 0;
   border-radius: 50%;
   width: 20px;
   height: 20px;
-  padding-bottom: 3px;
+  line-height: 1;
+  padding: 0 0 3px;
   box-sizing: border-box;
   width: 13px;
   height: 13px;

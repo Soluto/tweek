@@ -1,37 +1,52 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RestEase;
+using Tweek.ApiService.SmokeTests.GetConfigurations.Models;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Tweek.ApiService.SmokeTests.GetConfigurations
 {
     public class IdentityContextTests
     {
-        [Fact(DisplayName = "Get key by identity", Skip = "Not Implemented Yet")]
-        public void GetKey_WithIdentityInContext_ReturnsValue()
+        private readonly ITestOutputHelper mOutput;
+        private readonly ITweekApi mTweekApi;
+
+        public IdentityContextTests(ITestOutputHelper output)
         {
+            mOutput = output;
+            mTweekApi = TweekApiServiceFactory.GetTweekApiClient();
+        }
+
+        [Theory(DisplayName = "Get key by identity")]
+        [MemberData("IDENTITY_TEST_CONTEXTS", MemberType = typeof(IdentityBasedTestsContextProvider))]
+        public async Task GetKey_WithIdentityInContext_ReturnsValue(TestContext testContext)
+        {
+            try
+            {
+                await RunContextBasedTest(testContext);
+            }
+            catch (ApiException e)
+            {
+                mOutput.WriteLine(e.ReasonPhrase);
+                mOutput.WriteLine(e.Content);
+                throw;
+            }
             
         }
 
-        [Fact(DisplayName = "Get key with rules and identity", Skip = "Not Implemented Yet")]
-        public void GetKeyWithRules_WithIdentityInContext_ReturnsMatchValueForIdentityContext()
+        private async Task RunContextBasedTest(TestContext context)
         {
+            // Act
+            var response = await mTweekApi.GetConfigurations(context.KeyName, context.Context);
 
+            // Assert
+            Assert.Equal(JTokenType.String, response.Type);
+            Assert.Equal(context.ExpectedValue, response.ToString());
         }
-
-        [Fact(DisplayName = "Get key with rules, identity, and a field in the context", Skip = "Not Implemented Yet")]
-        public void GetKeyWithRules_WithIdentityAndFieldInContext_FieldOverridesIdentityContext()
-        {
-
-        }
-
-        [Fact(DisplayName = "Get key with rules and an unknown identity", Skip = "Not Implemented Yet")]
-        public void GetKeyWithRules_WithUnkownIdentityInContext_ReturnsValueForNothingMatched()
-        {
-
-        }
-
     }
 }

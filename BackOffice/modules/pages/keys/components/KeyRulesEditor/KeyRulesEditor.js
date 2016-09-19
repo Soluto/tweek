@@ -20,7 +20,7 @@ const MutatorFor = (propName) => (Comp) =>
     }
   };
 
-const KeyRulesEditor = ({ ruleDef, mutate }) =>
+const KeyRulesEditor = ({ keyDef, mutate }) =>
   (
     <div className={style['key-rules-editor-container']}>
       <Tabs className={style['tab-container']}
@@ -28,11 +28,11 @@ const KeyRulesEditor = ({ ruleDef, mutate }) =>
         >
         <TabList>
           <Tab className={style['tab-header']}>
-            <label className={style['rule-definition-tab-icon']}>&#xE904; </label>
-            <label className={style['tab-title']}>Rule</label>
+            <label className={style['key-definition-tab-icon']}>&#xE904; </label>
+            <label className={style['tab-title']}>Rules</label>
           </Tab>
           <Tab className={style['tab-header']}>
-            <label className={style['rule-source-tab-icon']}>&#xE901; </label>
+            <label className={style['key-source-tab-icon']}>&#xE901; </label>
             <label className={style['tab-title']}>Source</label>
           </Tab>
         </TabList>
@@ -42,8 +42,8 @@ const KeyRulesEditor = ({ ruleDef, mutate }) =>
             />
         </TabPanel>
         <TabPanel className={style['tab-content']}>
-          <pre className={style['rule-def-json']}>
-            {JSON.stringify(JSON.parse(ruleDef.source), null, 4) }
+          <pre className={style['key-def-json']}>
+            {JSON.stringify(JSON.parse(keyDef.source), null, 4) }
           </pre>
         </TabPanel>
       </Tabs>

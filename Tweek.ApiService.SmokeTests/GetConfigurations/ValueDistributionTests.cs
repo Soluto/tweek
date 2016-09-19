@@ -19,7 +19,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
             mTweekApi = TweekApiServiceFactory.GetTweekApiClient();
         }
 
-        [Fact(DisplayName = "Get key with value using bernulli open rate")]
+        [Fact(DisplayName = "Get key with value using bernulli open rate", Skip = "Working on this test")]
         public async Task GetKeyWithBernoulliValueDistribution_SeveralRequestsFromDifferentIdentities_ResultsShouldBeDistributed()
         {
             // Arrange
@@ -36,7 +36,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
 
             // Act
             var keyRequests = Enumerable.Range(0, numberOfAttempts)
-                .Select(async i => await mTweekApi.GetConfigurations("@tests/multivariantkeys/bernoulli", new Dictionary<string, string> { { "device", Guid.NewGuid().ToString() } }));
+                .Select(async i => await mTweekApi.GetConfigurations("@tests/valueDistribution/bernoulli", new Dictionary<string, string> { { "device", Guid.NewGuid().ToString() } }));
 
             var results = await Task.WhenAll(keyRequests);
             var returnedValues = results.Where(x => x.Type == JTokenType.String).Select(x => x.ToString()).ToList();
@@ -49,7 +49,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
             mOutput.WriteLine("Chance for a test fail due to statistics: {0}%", probablityOfTestFailure * 100);
         }
 
-        [Fact(DisplayName = "Get key with weighted multi value")]
+        [Fact(DisplayName = "Get key with weighted multi value", Skip = "Working on this test")]
         public async Task GetKeyWithMultiVariantsValues_SeveralRequestsFromDifferentIdentities_ResultsShouldBeDistributed()
         {
             // Arrange
@@ -60,7 +60,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
 
             // Act
             var keyRequests = Enumerable.Range(0, numberOfAttempts)
-                .Select(async i => await mTweekApi.GetConfigurations("@tests/multivariantkeys/weighted_normalized", new Dictionary<string, string> { { "device", Guid.NewGuid().ToString() } }));
+                .Select(async i => await mTweekApi.GetConfigurations("@tests/valueDistribution/weighted_normalized", new Dictionary<string, string> { { "device", Guid.NewGuid().ToString() } }));
 
             var results = await Task.WhenAll(keyRequests);
             var returnedValues = results.Where(x => x.Type == JTokenType.String).Select(x => x.ToString()).ToList();

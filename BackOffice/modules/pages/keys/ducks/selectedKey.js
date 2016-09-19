@@ -18,19 +18,19 @@ export async function openKey(key) {
     };
   }
 
-  const { ruleDef, meta } = await (await fetch(`/api/keys/${key}`, { credentials: 'same-origin' })).json();
+  const { keyDef, meta } = await (await fetch(`/api/keys/${key}`, { credentials: 'same-origin' })).json();
   return {
     type: KEY_OPENED, payload:
     {
       key,
       meta,
-      ruleDef,
+      keyDef,
     },
   };
 }
 
-export function updateKeyRuleDef(ruleDef) {
-  return { type: KEY_RULEDEF_UPDATED, payload: ruleDef };
+export function updateKeyDef(keyDef) {
+  return { type: KEY_RULEDEF_UPDATED, payload: keyDef };
 }
 
 export function updateKeyMetaDef(meta) {
@@ -85,7 +85,7 @@ export default handleActions({
   ...state,
   local: {
     ...state.local,
-    ruleDef: { ...state.local.ruleDef, ...payload },
+    keyDef: { ...state.local.keyDef, ...payload },
   },
 }),
   [KEY_RULE_META_UPDATED]: (state, { payload }) => ({

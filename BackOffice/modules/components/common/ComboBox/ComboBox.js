@@ -7,7 +7,8 @@ import R from 'ramda';
 export default compose(
   withState('currentInputValue', 'setCurrentInputValue', ''),
   mapProps(({ options, currentInputValue, showValueInOptions, ...props }) => ({
-    options: currentInputValue && showValueInOptions ? [currentInputValue, ...options] : options,
+    options: currentInputValue && showValueInOptions && R.findIndex(x => x.label === currentInputValue)(options) < 0 ?
+    [({ label: currentInputValue, value: currentInputValue }), ...options] : options,
     ...props,
   })
 )

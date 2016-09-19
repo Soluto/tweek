@@ -4,7 +4,7 @@ const chance = new Chance();
 export const BLANK_KEY_NAME = '_blank';
 export function createBlankKey() {
   const guid = chance.guid();
-  const ruleDefSource = [{
+  const keyDefSource = [{
     Id: guid,
     Matcher: {},
     Value: '',
@@ -12,8 +12,8 @@ export function createBlankKey() {
   }];
 
   return {
-    ruleDef: {
-      source: JSON.stringify(ruleDefSource, null, 4),
+    keyDef: {
+      source: JSON.stringify(keyDefSource, null, 4),
       type: 'jpad',
     },
     meta: {

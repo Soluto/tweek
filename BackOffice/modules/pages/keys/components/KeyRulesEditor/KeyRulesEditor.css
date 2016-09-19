@@ -19,13 +19,13 @@
   float: left;
   font-family: 'tweekIcons';
 }
-.key-rules-editor-container .tab-container .tab-header .rule-definition-tab-icon {
+.key-rules-editor-container .tab-container .tab-header .key-definition-tab-icon {
   float: left;
   font-family: 'tweekIcons';
   margin-top: 2px;
   font-size: 17px;
 }
-.key-rules-editor-container .tab-container .tab-header .rule-source-tab-icon {
+.key-rules-editor-container .tab-container .tab-header .key-source-tab-icon {
   float: left;
   font-family: 'tweekIcons';
   font-size: 20px;
@@ -37,7 +37,7 @@
 .key-rules-editor-container .tab-container .tab-header .tab-title:hover {
   cursor: pointer;
 }
-.key-rules-editor-container .tab-container .rule-def-json {
+.key-rules-editor-container .tab-container .key-def-json {
   font-size: 13px;
 }
 .key-rules-editor-container .tab-content {
