@@ -33,7 +33,7 @@ namespace Tweek.JPad.Utils
 
     public class JPadRulesParserAdapter
     {
-        public static IRuleParser Convert(JPadParser parser)
+        public static IRuleParser Convert(JPad2Parser parser)
         {
             return new AnonymousParser((source) =>
             {
