@@ -41,7 +41,7 @@ namespace SimpleBenchmarks
                 });
 
             ITweek tweek = Task.Run(async () => await Engine.Tweek.Create(
-                new RamContextDriver(), gitDriver, JPadRulesParserAdapter.Convert(new JPad2Parser(new ParserSettings(
+                new RamContextDriver(), gitDriver, JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
                         new Dictionary<string, ComparerDelegate>
                         {
                             ["version"] =Version.Parse

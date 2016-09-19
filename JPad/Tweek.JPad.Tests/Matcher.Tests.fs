@@ -13,7 +13,7 @@ open Microsoft.FSharp.Reflection;
 open Tweek.JPad;
 open System;
 
-let validator jsonString = Matcher.Compile {Comparers=dict(Seq.empty)} (jsonString|>JsonValue.Parse)
+let validator jsonString = Matcher.createEvaluator {Comparers=dict(Seq.empty)} (jsonString|>JsonValue.Parse|>Matcher.parse)
 let createContext seq = fun name -> seq |> Seq.tryFind (fun (k,v)->k = name) |> Option.map (fun (k,v)->v)
 let context = createContext;
 
@@ -54,15 +54,15 @@ let ``"nested" context``() =
 [<Fact>]
 let ``use custom comparer``() =
     let comparers = dict([("version", new ComparerDelegate(fun x -> Version.Parse(x) :> IComparable))]);
-    let matcher = """{"AgentVersion": {"$compare": "version", "$gt": "1.5.1", "$le": "1.15.2" }}""" |> JsonValue.Parse;
-    let validate =  Matcher.Compile {Comparers=comparers} matcher;
+    let matcher = """{"AgentVersion": {"$compare": "version", "$gt": "1.5.1", "$le": "1.15.2" }}""" |> JsonValue.Parse |> Matcher.parse;
+    let validate =  Matcher.createEvaluator {Comparers=comparers} matcher;
     validate (context [("AgentVersion", "1.15.1" )]) |> should equal true;
 
 [<Fact>]
 let ``use custom comparer with broken mismatched target value should fail in compile time``() =
     let comparers = dict([("version", new ComparerDelegate(fun x -> Version.Parse(x) :> IComparable))]);
-    let matcher = """{"AgentVersion": {"$compare": "version", "$gt": "debug-1.5.1", "$le": "1.15.2" }}""" |> JsonValue.Parse;
-    (fun () ->(Matcher.Compile {Comparers=comparers}) matcher |> ignore) |> should throw typeof<ParseError>
+    let matcher = """{"AgentVersion": {"$compare": "version", "$gt": "debug-1.5.1", "$le": "1.15.2" }}""" |> JsonValue.Parse |> Matcher.parse;
+    (fun () ->(Matcher.createEvaluator {Comparers=comparers}) matcher |> ignore) |> should throw typeof<ParseError>
 
 [<Fact>]
 let ``exist/not exist prop support -> expressed with null``() =
