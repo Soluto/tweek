@@ -1,6 +1,7 @@
 import Git from 'nodegit';
 import glob from 'glob';
 import createLock from '../../utils/createLock';
+import Promise from 'bluebird';
 
 const fs = require('promisify-node')('fs-extra');
 
@@ -20,9 +21,14 @@ class GitRepository {
     this._password = settings.password;
     this._url = settings.url;
     this._localPath = settings.localPath;
+    this._pullIntervalInMS = settings.pullIntervalInMS;
+
     const lock = createLock();
     this.deleteFile = lock.synchronized(this.deleteFile);
     this.updateFile = lock.synchronized(this.updateFile);
+    this._synchronizedPull = lock.synchronized(this._pull);
+
+    this._initIntervalPull();
   }
 
   static init(settings) {
@@ -73,16 +79,16 @@ class GitRepository {
   async updateFile(fileName, payload, { name, email }) {
     const actionName = `update ${fileName}`;
     const repo = await this._repoPromise;
+
     console.log('git', actionName);
 
-    await this._prepareForUpdate();
+    await this._pull();
 
     try {
       await fs.ensureFile(this._getFileLocalPath(fileName));
       await fs.writeFile(this._getFileLocalPath(fileName), payload);
 
       const author = Git.Signature.now(name, email);
-
       await repo.createCommitOnHead(
         [fileName],
         author,
@@ -101,7 +107,7 @@ class GitRepository {
     const repo = await this._repoPromise;
     console.log('git', actionName);
 
-    await this._prepareForUpdate();
+    await this._pull();
 
     try {
       const author = Git.Signature.now(name, email);
@@ -129,16 +135,27 @@ class GitRepository {
     }
   }
 
-  async _prepareForUpdate() {
+  async _pull() {
     const repo = await this._repoPromise;
 
     await repo.fetchAll(this._defaultGitOperationSettings);
-
     await repo.mergeBranches('master', 'origin/master');
 
-    if (!(await this._isSynced())) {
-      console.log('invalid repo state');
+    const isSynced = await this._isSynced();
+    if (!isSynced) {
       throw new Error('invalid repo state');
+    }
+  }
+
+  async _initIntervalPull() {
+    while(true) {
+      await Promise.delay(this._pullIntervalInMS);
+
+      const isSynced = await this._isSynced();
+      if(!isSynced) {
+        console.log('repository changes founded. git pull');
+        await this._synchronizedPull();
+      }
     }
   }
 
@@ -185,7 +202,7 @@ class GitRepository {
     const remoteCommit = (await repo.getBranchCommit('remotes/origin/master'));
     const localCommit = (await repo.getBranchCommit('master'));
 
-    return remoteCommit.id().equal(localCommit.id());
+    return remoteCommit.id().equal(localCommit.id()) === 1;
   }
 
   async _cloneAsync() {
@@ -211,6 +228,7 @@ class GitRepository {
       const firstCommitOnMaster = await repo.getMasterCommit();
       const walker = repo.createRevWalk();
       walker.push(firstCommitOnMaster.sha());
+      walker.sorting(Git.Revwalk.SORT.Time);
 
       const lastCommits = await walker.fileHistoryWalk(fileName, 100);
       const lastCommit = lastCommits[0].commit;

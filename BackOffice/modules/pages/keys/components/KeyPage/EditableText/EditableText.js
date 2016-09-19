@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import { withState } from 'recompose';
 
 const EditableText = withState('isInEditMode', 'setIsInEditMode', false)(
-  ({ value, placeHolder, classNames: classes = {}, isInEditMode, setIsInEditMode, onTextChanged = () => { } }) => {
+  ({ value, placeHolder, maxLength, classNames: classes = {}, isInEditMode, setIsInEditMode, onTextChanged = () => { } }) => {
     return (
       <div className={ classNames(style['editable-text-container'], classes.container) }>
         {
@@ -23,6 +23,7 @@ const EditableText = withState('isInEditMode', 'setIsInEditMode', false)(
                 value = { value }
                 placeholder={ placeHolder }
                 onBlur={() => setIsInEditMode(false) }
+                maxLength={maxLength}
               />
             </form>
             :

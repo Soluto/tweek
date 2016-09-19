@@ -25,7 +25,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
         public async Task GetSingleKey_BySimpleRules_ShouldReturnMatchingKeyValue(string osType, string expectedResult)
         {
             // Act
-            var response = await mTweekApi.GetConfigurations("@tests/rules/simple", new Dictionary<string, string> { { "device.DeviceOsType", osType } });
+            var response = await mTweekApi.GetConfigurations("@tests/ruleBasedKeys/simple", new Dictionary<string, string> { { "device.DeviceOsType", osType } });
 
             // Assert
             Assert.Equal(JTokenType.String, response.Type);
@@ -34,21 +34,21 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
 
 
         [Theory(DisplayName = "Get key with rules using comparison operators")]
-        [MemberData("COMPARISON_OPERATORS_TEST_CONTEXTS", MemberType = typeof(TestContextProvider))]
+        [MemberData("COMPARISON_OPERATORS_TEST_CONTEXTS", MemberType = typeof(RulesBasedTestsContextProvider))]
         public async Task RulesBasedKey_WithComparisonOperators_ShouldReturnMatchingKeyValue(TestContext testContext)
         {
             await RunContextBasedTest(testContext);
         }
 
         [Theory(DisplayName = "Get key with rules using in operator")]
-        [MemberData("IN_OPERATOR_TEST_CONTEXTS", MemberType = typeof(TestContextProvider))]
+        [MemberData("IN_OPERATOR_TEST_CONTEXTS", MemberType = typeof(RulesBasedTestsContextProvider))]
         public async Task RulesBasedKey_WithInOperator_ShouldReturnMatchingKeyValue(TestContext testContext)
         {
             await RunContextBasedTest(testContext);
         }
 
         [Theory(DisplayName = "Get key with rules using multiple fields")]
-        [MemberData("MULTI_CONDITIONS_TEST_CONTEXTS", MemberType = typeof(TestContextProvider))]
+        [MemberData("MULTI_CONDITIONS_TEST_CONTEXTS", MemberType = typeof(RulesBasedTestsContextProvider))]
         public async Task RulesBasedKey_UsingMultipleFields_ShouldReturnMatchingKeyValue(TestContext testContext)
         {
             await RunContextBasedTest(testContext);

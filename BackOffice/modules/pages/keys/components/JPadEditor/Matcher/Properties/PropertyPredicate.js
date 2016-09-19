@@ -9,11 +9,20 @@ const editorMetaService = EditorMetaService.instance;
 
 const isValueType = (value) => R.isArrayLike(value) || typeof (value) !== 'object';
 
-let BinaryPredicate = ({ onValueUpdate, onOpUpdate, op, meta, value }) => (
-  <div style={{ display: 'flex' }}>
-    <Operator onUpdate={onOpUpdate} supportedOperators={getSupportedOperators(meta) } selectedOp={op} />
-    <PropertyValue {...{ meta, value, onUpdate: onValueUpdate, op }} />
-  </div>);
+let BinaryPredicate = ({ onValueUpdate, onOpUpdate, op, meta, value }) => {
+  return (
+    <div style={{ display: 'flex' }}>
+      <Operator onUpdate={onOpUpdate} supportedOperators={getSupportedOperators(meta) } selectedOp={op} />
+      <PropertyValue {...{ meta, value, onUpdate: onValueUpdate, op }} />
+    </div>
+  );
+};
+
+let translateValue = (oldOp, newOp, value) => {
+  if (oldOp === '$in') return value.length === 1 ? value[0] : '';
+  if (newOp === '$in') return value === '' ? [] : [value];
+  return value;
+};
 
 let ShortPredicate = ({ meta, mutate, value }) => {
   return (
@@ -22,11 +31,12 @@ let ShortPredicate = ({ meta, mutate, value }) => {
       onOpUpdate={selectedOp => {
         if (selectedOp === '$eq') return;
         mutate.updateValue({
-          [selectedOp]: meta.multipleValues && selectedOp === '$in' ? [] : mutate.getValue(),
+          [selectedOp]: translateValue('$eq', selectedOp, value),
           ...(meta.compare ? { $compare: meta.compare } : {}),
         });
       }}
-      op = "$eq" {...{ value, meta } }
+      op = "$eq"
+      {...{ value, meta } }
     />
   );
 };
@@ -41,8 +51,9 @@ let ComplexPredicate = ({ predicate, mutate, property, meta }) => {
           (isValueType(value)) ?
             <BinaryPredicate key={op}
               onOpUpdate={selectedOp => {
-                if (selectedOp === '$eq') mutate.updateValue(mutate.in(op).getValue());
-                else mutate.in(op).updateKey(selectedOp);
+                const newValue = translateValue(op, selectedOp, value);
+                if (selectedOp === '$eq') mutate.updateValue(newValue);
+                else mutate.apply(m => m.in(op).updateKey(selectedOp).updateValue(newValue));
               } }
               onValueUpdate={mutate.in(op).updateValue} {...{ value, op, meta }}
             />

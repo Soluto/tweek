@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Engine;
 using Engine.Core.Context;
+using Engine.Core.Utils;
 using Engine.DataTypes;
 using LanguageExt;
 using Nancy;
@@ -40,9 +41,13 @@ namespace Tweek.ApiService
                 
                 var query = ConfigurationPath.New(((string) @params.query));
                 var data = await tweek.Calculate(query, identities, contextProps);
-                return JsonConvert.SerializeObject(!isFlatten
+
+                if (query.IsScan)
+                    return JsonConvert.SerializeObject(!isFlatten
                         ? TreeResult.From(data)
                         : data.ToDictionary(x => x.Key.ToString(), x => x.Value.ToString()));
+
+                return JsonConvert.SerializeObject(data.Select(x => x.Value.Value).FirstOrDefault());
             };
             
         }

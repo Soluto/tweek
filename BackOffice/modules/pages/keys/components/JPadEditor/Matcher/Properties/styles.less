@@ -1,5 +1,6 @@
 @import (reference) "../../../../../../styles/core/core.less";
 @import (reference) "../../../../../../styles/core/comboBox.less";
+@import (reference) "../../../../../../styles/core/tags.less";
 .matcher-operator {
   margin: 0 5px;
   display: inline-block;
@@ -33,54 +34,39 @@
   .combo-box-basic(300px);
 }
 
-.wrapping-bracet {}
-
-.tags-container {
-  padding-top: 4px;
-  display: inline-block;
-  max-width: 500px;
-  overflow-y: auto;
-  border-bottom: 1px solid @accent-color3;
-  .tag-base {
-    font-size: 12px;
-    display: inline-block;
-    color: black;
-    height: 20px;
+.tags-wrapper {
+  .tags-basic;
+  .tags-container {
+    display: flex;
+    max-width: 500px;
+    min-width: 150px;
+    overflow-y: auto;
+    border-bottom: 1px solid @accent-color3;
+    padding: 4px;
     box-sizing: border-box;
-  }
-  .tag {
-    .tag-base;
-    float: left;
-    padding: 3px 3px 0 3px;
-    .tag-delete-button {
-      display: block;
-      float: right;
-      margin-top: 1px;
-      margin-left: 6px;
-      padding-left: 1px;
-      padding-bottom: 4px;
-      width: 9px;
-      height: 9px;
-      color: #8c8c8c;
-      .transitioned();
-      &:hover {
-        cursor: pointer;
-        color: #636363;
-      }
-      &:after {
-        content: ';';
+    &:before {
+      content: '';
+      margin: 0
+    }
+    .tag {
+      padding: 2px 3px 2px 3px;
+      margin: 0 5px 0 0;
+    }
+    .tag-input {
+      display: inline-block;
+      input, input:focus {
+        background-color: transparent;
+        width: 100px;
+        border: none;
+        outline: none;
+        padding: 0;
+        margin: 0;
+        font-size: 13px;
+        font-weight: 500;
       }
     }
-  }
-  .tag-input {
-    display: inline-block;
-    input, input:focus {
-      .tag-base;
-      float: right;
-      width: 65px;
-      border: none;
-      outline: none;
-      padding-left: 3px;
+    .tags-suggestion {
+      margin-top: 6px;
     }
   }
 }

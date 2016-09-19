@@ -13,8 +13,8 @@ describe('MetaRepository', () => {
   const gitMock = new GitRepositoryMock();
   const metaRepo = new MetaRepository(gitMock);
 
-  describe('getRuleMeta', async () => {
-    it('should be able to get rule meta: call git repo with correct rule name and return correct meta after parsing a json file', async () => {
+  describe('getKeyMeta', async () => {
+    it('should be able to get key meta: call git repo with correct key name and return correct meta after parsing a json file', async () => {
       // Arrange
       const metaMock = {
         displayName: 'some displayName',
@@ -24,15 +24,15 @@ describe('MetaRepository', () => {
 
       const stringMetaMock = JSON.stringify(metaMock, null, 4);
 
-      const requestedRuleName = 'some rule name';
+      const requestedKeyName = 'some key name';
 
       const expectedFileName =
-        `${MetaRepository.META_REPOSITORY_DIRECTORY_NAME}/${requestedRuleName}${MetaRepository.META_REPOSITORY_FILE_EXTENSION_NAME}`;
+        `${MetaRepository.META_REPOSITORY_DIRECTORY_NAME}/${requestedKeyName}${MetaRepository.META_REPOSITORY_FILE_EXTENSION_NAME}`;
 
       gitMock.setReadFileMock(stringMetaMock, '');
 
       // Act
-      let result = await metaRepo.getRuleMeta(requestedRuleName);
+      let result = await metaRepo.getKeyMeta(requestedKeyName);
 
       // Assert
       expect(result).to.eql(metaMock);
@@ -47,12 +47,12 @@ describe('MetaRepository', () => {
       gitMock.setRejectedReadFileMock(expectedException);
 
       // Act & Assert
-      await expect(metaRepo.getRuleMeta()).to.eventually.be.rejectedWith(expectedException);
+      await expect(metaRepo.getKeyMeta()).to.eventually.be.rejectedWith(expectedException);
     });
   });
 
   describe('updateRuleMeta', async () => {
-    it('should be able to update rule meta: call git repo with correct parameters', async () => {
+    it('should be able to update key meta: call git repo with correct parameters', async () => {
       // Arrange
       const metaMock = {
         displayName: 'some displayName',
@@ -61,10 +61,10 @@ describe('MetaRepository', () => {
       };
 
       const metaPayload = JSON.stringify(metaMock, null, 4);
-      const requestedRuleName = 'some rule name';
+      const requestedKeyName = 'some key name';
 
       const expectedFileName =
-        `${MetaRepository.META_REPOSITORY_DIRECTORY_NAME}/${requestedRuleName}${MetaRepository.META_REPOSITORY_FILE_EXTENSION_NAME}`;
+        `${MetaRepository.META_REPOSITORY_DIRECTORY_NAME}/${requestedKeyName}${MetaRepository.META_REPOSITORY_FILE_EXTENSION_NAME}`;
 
       const name = 'some user';
       const email = 'email';
@@ -77,7 +77,7 @@ describe('MetaRepository', () => {
       gitMock.setUpdateFile(true, '');
 
       // Act
-      await metaRepo.updateRuleMeta(requestedRuleName, metaMock, expectedAuthor);
+      await metaRepo.updateRuleMeta(requestedKeyName, metaMock, expectedAuthor);
 
       // Assert
       expect(gitMock.updateFile.mock.calls.length).to.eql(1);

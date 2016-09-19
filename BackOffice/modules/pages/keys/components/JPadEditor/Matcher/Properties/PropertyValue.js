@@ -4,19 +4,22 @@ import { WithContext as ReactTags } from 'react-tag-input';
 import R from 'ramda';
 import ComboBox from '../../../../../../components/common/ComboBox/ComboBox';
 
-const TagsPropertyValue = ({ onUpdate, value }) => {
+const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
   let indexedTags = value.map(x => ({ id: x, text: x }));
 
   const handleAddtion = (newValue) => onUpdate([...value, newValue]);
   const handleDelete = (valueIndex) => onUpdate(R.remove(valueIndex, 1, value));
+  const indexedSuggestions = suggestions ? suggestions.map(x => x.label) : [];
 
   return (
-    <div>
-      <label className={style['wrapping-bracet']}>[</label><ReactTags tags={ indexedTags }
+    <div className={style['tags-wrapper']}>
+      <ReactTags tags={ indexedTags }
+        suggestions={indexedSuggestions}
         handleAddition={handleAddtion}
         handleDelete={handleDelete}
         placeholder="Add value"
-        allowDeleteFromEmptyInput
+        minQueryLength = { 1 }
+        allowDeleteFromEmptyInput={false}
         classNames={{
           tags: style['tags-container'],
           tagInput: style['tag-input'],
@@ -24,7 +27,7 @@ const TagsPropertyValue = ({ onUpdate, value }) => {
           remove: style['tag-delete-button'],
           suggestions: style['tags-suggestion'],
         } }
-      /><label className={style['wrapping-bracet']}>]</label>
+      />
     </div>
   );
 };
@@ -39,6 +42,14 @@ const InputPropertyValue = ({ onUpdate, value }) => (
 );
 
 function PropertyValueComponent({ onUpdate, meta, value, op }) {
+  if (op === '$in')
+    return (
+      <TagsPropertyValue onUpdate={onUpdate}
+        value={value}
+        suggestions={meta.allowedValues}
+      />
+    );
+
   if (meta.allowedValues)
     return (
       <ComboBox
@@ -49,13 +60,6 @@ function PropertyValueComponent({ onUpdate, meta, value, op }) {
           onUpdate(selectedValue.value);
         } }
         selected={[R.find(x => x.value === value)(meta.allowedValues)]}
-      />
-    );
-
-  if (op === '$in')
-    return (
-      <TagsPropertyValue onUpdate={onUpdate}
-        value={value}
       />
     );
 

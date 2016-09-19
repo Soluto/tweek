@@ -1,5 +1,6 @@
 {
   "GIT_URL":"http://tweek-gogs.c8940f48.svc.dockerapp.io/tweek/tweek.git",
   "GIT_USER":"tweek",
-  "GIT_PASSWORD": "po09!@QW"
+  "GIT_PASSWORD": "po09!@QW",
+  "GIT_PULL_INTERVAL_IN_MS": 2000
 }
