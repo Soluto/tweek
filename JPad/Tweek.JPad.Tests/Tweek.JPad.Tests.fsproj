@@ -55,6 +55,7 @@
     <Content Include="packages.config" />
     <Content Include="app.config" />
     <Compile Include="Matcher.Tests.fs" />
+    <Compile Include="Partitions.Tests.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FsCheck">

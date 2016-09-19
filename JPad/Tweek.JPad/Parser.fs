@@ -23,9 +23,10 @@ type public JPadParser(settings:ParserSettings) =
     and parseRulesContainer (depth) (rulesData:JsonValue)  : RulesContainer =
             match (rulesData) with
                 | JsonValue.String s when (depth = 0) -> s |> RulesContainer.RuleSimpleValue
-                | JsonValue.Array rules when (depth = 0) -> rules |> Array.map Rule.parse |> RulesContainer.RulesList
                 | JsonValue.String s when (depth > 0) -> [|parsePatternBlock depth PatternType.Default [|("*",JsonValue.String(s))|]|] |>
                                                          RulesContainer.RulesByPartition
+                | JsonValue.Array rules when (depth = 0) -> rules |> Array.map Rule.parse |> RulesContainer.RulesList
+                
                 | JsonValue.Record r when (depth > 0) -> 
                     r |> Array.groupBy (fst >> parsePatternType) |>
                     Array.map (fun (patternType,data) -> parsePatternBlock depth patternType data) |>
