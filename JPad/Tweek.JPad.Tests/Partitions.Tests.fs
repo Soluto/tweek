@@ -29,7 +29,7 @@ let ``Use partitions with simple values``() =
 		    "*": "unknown"
 	    }
     }"""
-    validate rules (createContext [("fruit", "apple");("subtype", "smith");]) "green"
+    validate rules (createContext [("fruit", "Apple");("subtype", "smith");]) "green"
     validate rules (createContext [("fruit", "apple");("subtype", "granny");]) "red"
     validate rules (createContext [("fruit", "apple")]) "red"
     validate rules (createContext [("fruit", "banana")]) "yellow"
