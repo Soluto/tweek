@@ -4,6 +4,7 @@ import R from 'ramda';
 import EditorMetaService from '../../../../../../services/EditorMetaService';
 import { Operator, getSupportedOperators } from './Operator';
 import PropertyValue from './PropertyValue';
+import { types as MetaTypes } from '../../../../../../services/MetaHelpers';
 
 const editorMetaService = EditorMetaService.instance;
 
@@ -64,7 +65,7 @@ let ComplexPredicate = ({ predicate, mutate, property, meta }) => {
 };
 
 let PropertyPredicate = ({ predicate, mutate, property }) => {
-  const meta = editorMetaService.getFieldMeta(property);
+  const meta = property.startsWith('@@key') ? MetaTypes.String : editorMetaService.getFieldMeta(property);
   return (typeof (predicate) !== 'object') ?
     <ShortPredicate value={predicate} {...{ meta, mutate } } /> :
     <ComplexPredicate {...{ predicate, mutate, property, meta }} />;
