@@ -23,7 +23,7 @@ namespace Engine.Tests.TestDrivers
             this.rules = rules;
         }
 
-        public event Action OnRulesChange;
+        public event Action<IDictionary<string, RuleDefinition>> OnRulesChange;
 
         public async Task<Dictionary<string, RuleDefinition>> GetAllRules()
         {
