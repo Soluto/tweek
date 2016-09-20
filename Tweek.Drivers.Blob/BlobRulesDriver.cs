@@ -20,7 +20,7 @@ namespace Tweek.Drivers.Blob
             _url = url;
             _subject = new ReplaySubject<Dictionary<string, RuleDefinition>>(1);
 
-            _subscription = Observable.Interval(TimeSpan.FromSeconds(120))
+            _subscription = Observable.Interval(TimeSpan.FromSeconds(30))
                 .StartWith(0)
                 .SelectMany(async _ =>
                 {
@@ -31,17 +31,17 @@ namespace Tweek.Drivers.Blob
                 })
                 .DistinctUntilChanged()
                 .Select(JsonConvert.DeserializeObject<Dictionary<string, RuleDefinition>>)
-                .Do(x => OnRulesChange?.Invoke())
                 .Catch((Exception exception) =>
                 {
                     //Log.Error("Failed to create engine with updated ruleset", exception, new Dictionary<string, object> { { "RoleName", "TweekApi" } });
-                    return Observable.Empty<Dictionary<string, RuleDefinition>>();
+                    return Observable.Empty<Dictionary<string, RuleDefinition>>().Delay(TimeSpan.FromMinutes(1));
                 })
                 .Repeat()
-                .Subscribe(_subject);
+                .Do(_subject)
+                .Subscribe(x=> OnRulesChange?.Invoke(x));
         }
 
-        public event Action OnRulesChange;
+        public event Action<IDictionary<string, RuleDefinition>> OnRulesChange;
 
         public async Task<Dictionary<string, RuleDefinition>> GetAllRules()
         {

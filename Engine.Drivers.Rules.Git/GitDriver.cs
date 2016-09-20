@@ -95,6 +95,8 @@ namespace Engine.Drivers.Rules.Git
                 }).Subscribe());
         }
 
+        
+
         private IObservable<string> ScanFileTree(string root)
         {
             return Observable.Merge(
@@ -127,7 +129,7 @@ namespace Engine.Drivers.Rules.Git
             return new Dictionary<string, RuleDefinition>(data);
         }
 
-        public event Action OnRulesChange;
+        public event Action<IDictionary<string, RuleDefinition>> OnRulesChange;
 
         private void Connect()
         {

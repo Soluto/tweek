@@ -130,6 +130,7 @@
     <None Include="Properties\PublishProfiles\soluto-tweek - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\soluto-tweek-prod.pubxml" />
     <None Include="Properties\PublishProfiles\soluto-tweek-qa - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\soluto-tweek-staging - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
