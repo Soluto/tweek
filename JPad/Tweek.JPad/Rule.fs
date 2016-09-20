@@ -170,7 +170,7 @@ module Rule =
 
     let buildEvaluator (settings:ParserSettings) (rule : (MatcherExpression * RuleValue)) : JPadEvaluate =
         let matcher = Matcher.createEvaluator settings (fst rule);
-        let validateMatcher context = if (matcher context) then Some(context) else None;
+        let validateMatcher context = if (matcher context) then Some(context) else None; 
         match (snd rule) with
             |SingleVariant value -> validateMatcher >> Option.map (fun _ -> value);
             |MultiVariant valueDistribution -> validateMatcher >> Option.bind (fun context->

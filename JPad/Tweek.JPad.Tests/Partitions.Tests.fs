@@ -19,7 +19,7 @@ let validate (rules:JPadEvaluateExt) context value = rules.Invoke context |> sho
 let ``Use partitions with simple values``() =
     let rules = parser.Parse """
     {
-	    "partitions": ["fruit", "subtype"],
+	    "partitions": ["fruit", "cultivar"],
 	    "rules":{
 		    "apple": {
 			    "smith": "green",
@@ -29,8 +29,8 @@ let ``Use partitions with simple values``() =
 		    "*": "unknown"
 	    }
     }"""
-    validate rules (createContext [("fruit", "Apple");("subtype", "smith");]) "green"
-    validate rules (createContext [("fruit", "apple");("subtype", "granny");]) "red"
+    validate rules (createContext [("fruit", "Apple");("cultivar", "smith");]) "green"
+    validate rules (createContext [("fruit", "apple");("cultivar", "granny");]) "red"
     validate rules (createContext [("fruit", "apple")]) "red"
     validate rules (createContext [("fruit", "banana")]) "yellow"
     validate rules (createContext [("fruit", "grapes")]) "unknown"
@@ -44,7 +44,7 @@ let ``Use partitions with full rules``() =
 	    "rules":{
 		    "apple": [{
 			            "Matcher": {
-                            "subtype": "smith"
+                            "cultivar": "smith"
                             },
                         "Value": "green",
                         "Type": "SingleVariant"
@@ -58,8 +58,8 @@ let ``Use partitions with full rules``() =
 		    "*": "unknown"
 	    }
     }"""
-    validate rules (createContext [("fruit", "apple");("subtype", "smith");]) "green"
-    validate rules (createContext [("fruit", "apple");("subtype", "granny");]) "red"
+    validate rules (createContext [("fruit", "apple");("cultivar", "smith");]) "green"
+    validate rules (createContext [("fruit", "apple");("cultivar", "granny");]) "red"
     validate rules (createContext [("fruit", "apple")]) "red"
     validate rules (createContext [("fruit", "banana")]) "yellow"
     validate rules (createContext [("fruit", "grapes")]) "unknown"
