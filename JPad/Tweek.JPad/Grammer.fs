@@ -9,22 +9,13 @@ module Grammer =
     }
     and Partitions = string[]
     and RulesContainer = 
-        | RuleSimpleValue of string
         | RulesByPartition of PatternBlock[]
-        | RulesList of (MatcherExpression * RuleValue)[]
+        | RulesList of (MatcherExpression * RuleValue) list
     and PatternBlock =
         | Map of Map<string,RulesContainer>
-        | Patterns of (Pattern * RulesContainer)[]
+        | Patterns of (Pattern * RulesContainer) list
         | Default of RulesContainer
     and RuleSimpleValue = string
-    and RuleValue = 
-        | SingleVariant of string
-        | MultiVariant  of ValueDistribution
-    and ValueDistribution = {
-            HashFunction: (Object[])->string
-            OwnerType: Option<string>
-            Salt:string
-        }
     and Pattern = string
     and PatternType = 
         | Exact
@@ -38,6 +29,14 @@ module Grammer =
             | ArrayTest of ArrayOp * ComparisonValue
             | SwitchComparer of string * MatcherExpression
             | Empty
+    and RuleValue = 
+        | SingleVariant of string
+        | MultiVariant  of ValueDistribution
+    and ValueDistribution = {
+            HashFunction: (Object[])->string
+            OwnerType: Option<string>
+            Salt:string
+        }
     and PropertyName = string
     and ConjuctionOp = And | Or 
     and CompareOp = Equal | GreaterThan | LessThan | GreaterEqual | LessEqual | NotEqual 
