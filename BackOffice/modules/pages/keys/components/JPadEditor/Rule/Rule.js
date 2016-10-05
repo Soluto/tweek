@@ -20,12 +20,12 @@ const comp = ({ rule, mutate, autofocus }) => {
     <div className={classNames(style['rule-container'], { [style['default-value']]: isDefaultValue }) }>
       { !isDefaultValue ?
         <div className={style['conditions']}>
-          <label className={style['case-partial-title']}>Conditions</label>
+          <label className={style['rule-partial-title']}>Conditions</label>
           <Matcher matcher={rule.Matcher} mutate={mutate.in('Matcher') } autofocus={autofocus} />
         </div> : null
       }
       <div className={style['values']} >
-        <label className={style['case-partial-title']}>{valueTitle}</label>
+        <label className={style['rule-partial-title']}>{valueTitle}</label>
         <RuleValue {...{ rule, mutate }} autofocus={isDefaultValue && autofocus} />
       </div >
     </div >

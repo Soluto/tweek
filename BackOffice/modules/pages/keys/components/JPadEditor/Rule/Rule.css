@@ -6,7 +6,7 @@
 .rule-container.default-value {
   background-color: #ebebeb;
 }
-.rule-container .case-partial-title {
+.rule-container .rule-partial-title {
   color: gray;
   font-size: 13px;
   margin-bottom: 5px;

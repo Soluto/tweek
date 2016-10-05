@@ -10,7 +10,7 @@ import classNames from 'classnames';
 const editorMetaService = EditorMetaService.instance;
 
 const Property = ({ property, predicate, mutate, suggestedValues = [], canBeClosed = true, autofocus }) =>
-  (<div className={style['conditions-wrapper']}>
+  (<div className={style['condition-wrapper']}>
     <button onClick={mutate.delete}
       className={style['delete-condition-button']}
       className={style['delete-condition-button']}
@@ -51,9 +51,5 @@ export default hasChanged(({ matcher, mutate, autofocus }) => {
         onClick={() => mutate.insert('', '') }
         title="Add condition"
       ></button>
-      {(props.length === 0) ?
-        <div className={style['default-value-message']}>Default value</div>
-        : null
-      }
     </div>);
 });

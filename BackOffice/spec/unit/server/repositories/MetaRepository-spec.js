@@ -1,9 +1,9 @@
 /* global jest, beforeEach, describe, it, expect */
-jest.unmock('../../../modules/server/repositories/MetaRepository');
-jest.unmock('../../../spec-mocks/server/repositories/GitRepositoryMock');
+jest.unmock('../../../../modules/server/repositories/MetaRepository');
+jest.unmock('../../../../spec-mocks/server/repositories/GitRepositoryMock');
 
-import MetaRepository from '../../../modules/server/repositories/MetaRepository';
-import GitRepositoryMock from '../../../spec-mocks/server/repositories/GitRepositoryMock';
+import MetaRepository from '../../../../modules/server/repositories/MetaRepository';
+import GitRepositoryMock from '../../../../spec-mocks/server/repositories/GitRepositoryMock';
 
 const chai = require('chai');
 chai.use(require('chai-as-promised'));

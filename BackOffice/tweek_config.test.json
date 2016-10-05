@@ -1,0 +1,6 @@
+{
+  "GIT_URL": "http://tweek-gogs.c8940f48.svc.dockerapp.io/yshay/tweek-tests.git",
+  "GIT_USER": "gil",
+  "GIT_PASSWORD": "password",
+  "GIT_PULL_INTERVAL_IN_MS": 2000
+}

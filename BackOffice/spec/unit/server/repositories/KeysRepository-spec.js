@@ -1,9 +1,9 @@
 /* global jest, beforeEach, describe, it */
-jest.unmock('../../../modules/server/repositories/KeysRepository');
-jest.unmock('../../../spec-mocks/server/repositories/GitRepositoryMock');
+jest.unmock('../../../../modules/server/repositories/KeysRepository');
+jest.unmock('../../../../spec-mocks/server/repositories/GitRepositoryMock');
 
-import KeysRepository from '../../../modules/server/repositories/KeysRepository';
-import GitRepositoryMock from '../../../spec-mocks/server/repositories/GitRepositoryMock';
+import KeysRepository from '../../../../modules/server/repositories/KeysRepository';
+import GitRepositoryMock from '../../../../spec-mocks/server/repositories/GitRepositoryMock';
 
 const chai = require('chai');
 chai.use(require('chai-as-promised'));
@@ -12,7 +12,7 @@ const { expect, assert } = chai;
 describe('KeysRepository', () => {
   let gitMock = new GitRepositoryMock();
   let keysRepo = new KeysRepository(gitMock);
-
+  
   describe('getAllKeys', async () => {
     it('should be able to get all keys from git repo: call git repo with correct folder name, remove jpad suffix and return correct items', async () => {
       // Arrange

@@ -1,7 +1,7 @@
 /* global jest, beforeEach, describe, it, expect */
-jest.unmock('../../modules/utils/createLock');
+jest.unmock('../../../modules/utils/createLock');
 
-import createLock from '../../modules/utils/createLock';
+import createLock from '../../../modules/utils/createLock';
 
 describe('createLock', () => {
   it('should return object with syncronized funtion', async () => {
