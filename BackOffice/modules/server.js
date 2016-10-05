@@ -16,10 +16,12 @@ const passport = require('passport');
 const nconf = require('nconf');
 
 nconf.argv()
-  .env()
-  .file({ file: `${process.cwd()}/tweek_config.json` });
+  .env();
 
-console.log(nconf.get('GIT_URL'));
+const configFileName = nconf.get('NODE_ENV') === 'production' ?
+  'tweek_config.prod.json' : 'tweek_config.test.json';
+
+nconf.file({ file: `${process.cwd()}/${configFileName}` });
 
 const gitRepo = GitRepository.init({
   url: nconf.get('GIT_URL'),

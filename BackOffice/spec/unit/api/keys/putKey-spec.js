@@ -1,10 +1,22 @@
 /* global jest, beforeEach, describe, it, expect */
-jest.unmock('../../../modules/api/keys/deleteKey');
+jest.unmock('../../../../modules/api/keys/putKey');
 
-import deleteKey from '../../../modules/api/keys/deleteKey';
+import putKey from '../../../../modules/api/keys/putKey';
 
-describe('deleteKey', () => {
-  const expressRequestMock = {};
+describe('putKey', () => {
+  const metaMock = {
+    tags: ['pita1', 'pita2'],
+  };
+
+  const expressRequestMock = {
+    body: {
+      keyDef: {
+        source: 'some source',
+      },
+      meta: metaMock,
+    },
+  };
+
   const expressResponseMock = {};
 
   const keysRepositoryMock = {};
@@ -21,16 +33,16 @@ describe('deleteKey', () => {
     const responseSendMock = jest.fn(async () => { });
     expressResponseMock.send = responseSendMock;
 
-    keysRepositoryMock.deleteKey = jest.fn(async () => { });
-    metaRepositoryMock.deleteKeyMeta = jest.fn(async () => { });
+    keysRepositoryMock.updateKey = jest.fn(async () => { });
+    metaRepositoryMock.updateRuleMeta = jest.fn(async () => { });
   });
 
   it('should call keysRepository, metaRepository once at this order', async () => {
     // Arrange
     const functionsReferenceOrder = [];
 
-    keysRepositoryMock.deleteKey = jest.fn(async () => functionsReferenceOrder.push(keysRepositoryMock.deleteKey));
-    metaRepositoryMock.deleteKeyMeta = jest.fn(async () => functionsReferenceOrder.push(metaRepositoryMock.deleteKeyMeta));
+    keysRepositoryMock.updateKey = jest.fn(async () => functionsReferenceOrder.push(keysRepositoryMock.updateKey));
+    metaRepositoryMock.updateRuleMeta = jest.fn(async () => functionsReferenceOrder.push(metaRepositoryMock.updateRuleMeta));
 
     const expectedKeyPath = 'some key path';
 
@@ -39,7 +51,7 @@ describe('deleteKey', () => {
     };
 
     // Act
-    await deleteKey(expressRequestMock, expressResponseMock, {
+    await putKey(expressRequestMock, expressResponseMock, {
       keysRepository: keysRepositoryMock,
       metaRepository: metaRepositoryMock,
       undefined,
@@ -48,11 +60,11 @@ describe('deleteKey', () => {
       });
 
     // Assert
-    expect(keysRepositoryMock.deleteKey.mock.calls.length).toEqual(1, 'should call delete key once');
-    expect(metaRepositoryMock.deleteKeyMeta.mock.calls.length).toEqual(1, 'should call delete key meta once');
+    expect(keysRepositoryMock.updateKey.mock.calls.length).toEqual(1, 'should call updatre key once');
+    expect(metaRepositoryMock.updateRuleMeta.mock.calls.length).toEqual(1, 'should call update key meta once');
 
     expect(functionsReferenceOrder).toEqual(
-      [keysRepositoryMock.deleteKey, metaRepositoryMock.deleteKeyMeta],
+      [keysRepositoryMock.updateKey, metaRepositoryMock.updateRuleMeta],
       'shoudl call repositories once');
   });
 
@@ -63,7 +75,7 @@ describe('deleteKey', () => {
     };
 
     // Act
-    await deleteKey(expressRequestMock, expressResponseMock, {
+    await putKey(expressRequestMock, expressResponseMock, {
       keysRepository: keysRepositoryMock,
       metaRepository: metaRepositoryMock,
       author: validAuthor,
@@ -72,8 +84,9 @@ describe('deleteKey', () => {
       });
 
     // Assert
-    expect(keysRepositoryMock.deleteKey.mock.calls[0][0]).toEqual(paramsMock.splat, 'should call delete key with correct key');
-    expect(keysRepositoryMock.deleteKey.mock.calls[0][1]).toEqual(validAuthor, 'should call delete key with correct author');
+    expect(keysRepositoryMock.updateKey.mock.calls[0][0]).toEqual(paramsMock.splat, 'should call update key with correct key path');
+    expect(keysRepositoryMock.updateKey.mock.calls[0][1]).toEqual(expressRequestMock.body.keyDef.source, 'should call update ruel with correct key def source');
+    expect(keysRepositoryMock.updateKey.mock.calls[0][2]).toEqual(validAuthor, 'should call update key with correct author');
   });
 
   it('should call metaRepository with correct parameters', async () => {
@@ -83,7 +96,7 @@ describe('deleteKey', () => {
     };
 
     // Act
-    await deleteKey(expressRequestMock, expressResponseMock, {
+    await putKey(expressRequestMock, expressResponseMock, {
       keysRepository: keysRepositoryMock,
       metaRepository: metaRepositoryMock,
       author: validAuthor,
@@ -92,8 +105,9 @@ describe('deleteKey', () => {
       });
 
     // Assert
-    expect(metaRepositoryMock.deleteKeyMeta.mock.calls[0][0]).toEqual(paramsMock.splat, 'should call delete key meta with correct key');
-    expect(metaRepositoryMock.deleteKeyMeta.mock.calls[0][1]).toEqual(validAuthor, 'should call delete key meta with correct author');
+    expect(metaRepositoryMock.updateRuleMeta.mock.calls[0][0]).toEqual(paramsMock.splat, 'should call update key meta with correct key path');
+    expect(metaRepositoryMock.updateRuleMeta.mock.calls[0][1]).toEqual(expressRequestMock.body.meta, 'should call update key meta with correct meta');
+    expect(metaRepositoryMock.updateRuleMeta.mock.calls[0][2]).toEqual(validAuthor, 'should call update key meta with correct author');
   });
 
   it('should call express response once with correct parameters', async () => {
@@ -103,7 +117,7 @@ describe('deleteKey', () => {
     };
 
     // Act
-    await deleteKey(expressRequestMock, expressResponseMock, {
+    await putKey(expressRequestMock, expressResponseMock, {
       keysRepository: keysRepositoryMock,
       metaRepository: metaRepositoryMock,
       author: validAuthor,
@@ -128,7 +142,7 @@ describe('deleteKey', () => {
     };
 
     // Act
-    await deleteKey(expressRequestMock, expressResponseMock, {
+    await putKey(expressRequestMock, expressResponseMock, {
       keysRepository: keysRepositoryMock,
       metaRepository: metaRepositoryMock,
       undefined,
@@ -137,7 +151,7 @@ describe('deleteKey', () => {
       });
 
     // Assert
-    expect(keysRepositoryMock.deleteKey.mock.calls[0][1]).toEqual(expectedAuthor, 'should call delete key with default author');
-    expect(metaRepositoryMock.deleteKeyMeta.mock.calls[0][1]).toEqual(expectedAuthor, 'should call delete key meta with default author');
+    expect(keysRepositoryMock.updateKey.mock.calls[0][2]).toEqual(expectedAuthor, 'should call update key with default author');
+    expect(metaRepositoryMock.updateRuleMeta.mock.calls[0][2]).toEqual(expectedAuthor, 'should call update key meta with default author');
   });
 });

@@ -1,9 +1,9 @@
 /* global jest, beforeEach, describe, it, expect */
-jest.unmock('../../../modules/server/repositories/TagsRepository');
-jest.unmock('../../../spec-mocks/server/repositories/GitRepositoryMock');
+jest.unmock('../../../../modules/server/repositories/TagsRepository');
+jest.unmock('../../../../spec-mocks/server/repositories/GitRepositoryMock');
 
-import TagsRepository from '../../../modules/server/repositories/TagsRepository';
-import GitRepositoryMock from '../../../spec-mocks/server/repositories/GitRepositoryMock';
+import TagsRepository from '../../../../modules/server/repositories/TagsRepository';
+import GitRepositoryMock from '../../../../spec-mocks/server/repositories/GitRepositoryMock';
 import R from 'ramda';
 
 const chai = require('chai');

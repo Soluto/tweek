@@ -23,7 +23,7 @@ const getNumberOfTreeNodeKeys = (tree) => {
   });
 
   return result;
-}
+};
 
 const TreeKeyItem = compose(
   connect(state => ({ selectedKey: state.selectedKey && state.selectedKey.key })),
@@ -32,40 +32,43 @@ pure)(({ isActive, path, pad }) =>
   <Link className={classNames(style['key-link'], { [style['selected']]: isActive }) }
     style={{ paddingLeft: pad }}
     to={`/keys/${path}`}
-    >{getName(path) }
+  >{getName(path) }
   </Link>
 );
 
 const TreeFolder = withState('isCollapsed', 'setIsCollapsed', true)(({ currentPath, tree, pad, isCollapsed, setIsCollapsed }) => {
-  return (<div className={style['key-folder']}>
-    {getName(currentPath) ? (
-      <div style={{ paddingLeft: pad }} className={style['key-folder-name']}
-        onClick={
-          () => {
-            setIsCollapsed(!isCollapsed);
-          } }>
-        {isCollapsed ?
-          <img className={style['key-folder-icon']} src={closedFolderIconSrc}/> :
-          <img className={style['key-folder-icon']} src={openedFolderIconSrc}/>}
-        {currentPath}
-        <label className={style['number-of-folder-keys']}>({getNumberOfTreeNodeKeys(tree) }) </label>
-      </div>
-    )
-      :
-      null}
+  return (
+    <div className={style['key-folder']}>
 
-    <VelocityTransitionGroup enter={{ animation: 'slideDown' }} leave={{ animation: 'slideUp' }}>
-      {!isCollapsed || currentPath === '' ?
-        <ul className={style['folder-items']}>
-          {Object.keys(tree).map(key => (
-            <li className={style['sub-tree']} key={key}>
-              {renderTree(tree[key], currentPath === '' ? `${key}` : `${currentPath}/${key}`, pad + 10) }
-            </li>
-          )) }
-        </ul> : undefined}
-    </VelocityTransitionGroup>
+      {getName(currentPath) ? (
+        <div style={{ paddingLeft: pad }}
+          className={style['key-folder-name']}
+          onClick={() => setIsCollapsed(!isCollapsed) }
+          data-folder-name={currentPath}
+        >
+          {isCollapsed ?
+            <img className={style['key-folder-icon']} src={closedFolderIconSrc}/> :
+            <img className={style['key-folder-icon']} src={openedFolderIconSrc}/> }
+          {currentPath}
+          <label className={style['number-of-folder-keys']}>({getNumberOfTreeNodeKeys(tree) }) </label>
+        </div>
+      )
+        :
+        null}
 
-  </div >);
+      <VelocityTransitionGroup enter={{ animation: 'slideDown' }} leave={{ animation: 'slideUp' }}>
+        {!isCollapsed || currentPath === '' ?
+          <ul className={style['folder-items']}>
+            {Object.keys(tree).map(key => (
+              <li className={style['sub-tree']} key={key}>
+                {renderTree(tree[key], currentPath === '' ? `${key}` : `${currentPath}/${key}`, pad + 10) }
+              </li>
+            )) }
+          </ul> : undefined}
+      </VelocityTransitionGroup>
+
+    </div>
+  );
 });
 
 function renderTree(tree, currentPath, pad) {
@@ -106,7 +109,7 @@ export default wrapComponentWithClass(componentFromStream(prop$ => {
         <div className={style['search-input-wrapper']}>
           <input type="text" className={style['search-input']} placeholder="Search..."
             onKeyUp={ (e) => setFilter(e.target.value) }
-            />
+          />
         </div>
         {renderTree(filteredTree, '', 0) }
       </div>);

@@ -1,10 +1,10 @@
-.matcher .conditions-wrapper {
+.matcher .condition-wrapper {
   display: flex;
   padding-left: 3px;
   height: auto;
   min-height: 30px;
 }
-.matcher .conditions-wrapper .delete-condition-button {
+.matcher .condition-wrapper .delete-condition-button {
   vertical-align: top;
   background-color: rgba(0, 122, 204, 0.8);
   height: 28px;
@@ -35,32 +35,32 @@
   margin-top: 10px;
   margin-right: 4px;
 }
-.matcher .conditions-wrapper .delete-condition-button:hover {
+.matcher .condition-wrapper .delete-condition-button:hover {
   background-color: #007acc;
   cursor: pointer;
 }
-.matcher .conditions-wrapper .delete-condition-button:active {
+.matcher .condition-wrapper .delete-condition-button:active {
   background-color: #0098ff;
 }
-.matcher .conditions-wrapper .delete-condition-button:disabled {
+.matcher .condition-wrapper .delete-condition-button:disabled {
   background-color: gray;
 }
-.matcher .conditions-wrapper .delete-condition-button:disabled:hover,
-.matcher .conditions-wrapper .delete-condition-button:disabled:active {
+.matcher .condition-wrapper .delete-condition-button:disabled:hover,
+.matcher .condition-wrapper .delete-condition-button:disabled:active {
   cursor: default;
   background-color: gray;
 }
-.matcher .conditions-wrapper .delete-condition-button:hover {
+.matcher .condition-wrapper .delete-condition-button:hover {
   background-color: #9c9c9c;
 }
-.matcher .conditions-wrapper .delete-condition-button:active {
+.matcher .condition-wrapper .delete-condition-button:active {
   background-color: #7b7b7b;
 }
-.matcher .conditions-wrapper .delete-condition-button:after {
+.matcher .condition-wrapper .delete-condition-button:after {
   font-family: 'tweekIcons';
   content: '\E900';
 }
-.matcher .conditions-wrapper .delete-condition-button:disabled {
+.matcher .condition-wrapper .delete-condition-button:disabled {
   visibility: hidden;
 }
 .matcher .add-condition-button {
