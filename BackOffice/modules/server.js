@@ -18,7 +18,7 @@ const nconf = require('nconf');
 nconf.argv()
   .env();
 
-const configFileName = nconf.get('NODE_ENV') === 'production' ?
+const configFileName = nconf.get(true || 'NODE_ENV') === 'production' ?
   'tweek_config_prod.json' : 'tweek_config_test.json';
 
 nconf.file({ file: `${process.cwd()}/${configFileName}` });
@@ -43,7 +43,7 @@ function getApp(req, res, requestCallback) {
       keysRepository.getAllKeys().then(keys => store.dispatch(getKeys(keys)))
         .then(() =>
           renderCallback(null, {
-            renderDocument: (props) => <Document {...props} initialState={store.getState() } />,
+            renderDocument: (props) => <Document {...props} initialState={store.getState()} />,
             renderApp: (props) =>
               <Provider store={store}><RouterContext {...props} /></Provider>,
           })
