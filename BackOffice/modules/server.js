@@ -18,7 +18,7 @@ const nconf = require('nconf');
 nconf.argv()
   .env();
 
-const configFileName = nconf.get('NODE_ENV') === 'production' ?
+const configFileName = nconf.get(true || 'NODE_ENV') === 'production' ?
   'tweek_config.prod.json' : 'tweek_config.test.json';
 
 nconf.file({ file: `${process.cwd()}/${configFileName}` });
