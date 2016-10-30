@@ -152,6 +152,8 @@
     <Compile Include="TreeResult.cs" />
     <Compile Include="ContextUpdateModule.cs" />
     <Compile Include="ValidationModule.cs" />
+    <Compile Include="WebClient\SystemWebClient.cs" />
+    <Compile Include="WebClient\SystemWebClientFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Drivers\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj">
