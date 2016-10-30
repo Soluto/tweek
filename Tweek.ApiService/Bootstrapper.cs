@@ -22,6 +22,7 @@ using Tweek.Drivers.Blob;
 using Tweek.Drivers.CouchbaseDriver;
 using Tweek.JPad;
 using Tweek.JPad.Utils;
+using Tweek.ApiService.WebClient;
 
 namespace Tweek.ApiService
 {
@@ -29,13 +30,14 @@ namespace Tweek.ApiService
     public class Bootstrapper : DefaultNancyBootstrapper
     {
         private dynamic _settings;
+        private IWebClientFactory _webClientFactory;
 
         private CouchBaseDriver GetCouchbaseDriver()
         {
             var bucketName = _settings.couchbase.bucketName.ToString();
             var password = _settings.couchbase.password.ToString();
             var url = _settings.couchbase.url.ToString();
-            
+
             var cluster = new Couchbase.Cluster(new ClientConfiguration
             {
                 Servers = new List<Uri> { new Uri(url) },
@@ -44,11 +46,12 @@ namespace Tweek.ApiService
                     [bucketName] = new BucketConfiguration
                     {
                         BucketName = bucketName,
-                        Password = password                    }
-                    
+                        Password = password
+                    }
+
                 },
                 Serializer = () => new DefaultSerializer(
-                   
+
                    new JsonSerializerSettings()
                    {
                        ContractResolver = new DefaultContractResolver()
@@ -74,7 +77,8 @@ namespace Tweek.ApiService
         {
             InitLogging();
 
-            _settings = GetSettings().Result;
+            _webClientFactory = new SystemWebClientFactory();
+            _settings = GetSettings(_webClientFactory).Result;
 
             var contextDriver = GetCouchbaseDriver();
             var rulesDriver = GetRulesDriver();
@@ -90,12 +94,12 @@ namespace Tweek.ApiService
             base.ApplicationStartup(container, pipelines);
         }
 
-        private static async Task<JObject> GetSettings()
+        private static async Task<JObject> GetSettings(IWebClientFactory webClientFactory)
         {
             var managementBaseUrl = new Uri(ConfigurationManager.AppSettings["Tweek.Management.BaseUrl"]);
             var managementUrl = new Uri(managementBaseUrl, "settings");
 
-            using (var client = new WebClient())
+            using (var client = webClientFactory.Create())
             {
                 var json = await client.DownloadStringTaskAsync(managementUrl);
                 return JsonConvert.DeserializeObject<dynamic>(json);
@@ -104,7 +108,7 @@ namespace Tweek.ApiService
 
         private BlobRulesDriver GetRulesDriver()
         {
-            return new BlobRulesDriver(new Uri(_settings.rulesBlobUrl.ToString()));
+            return new BlobRulesDriver(new Uri(_settings.rulesBlobUrl.ToString()), _webClientFactory);
         }
 
         private static void InitLogging()
@@ -113,7 +117,7 @@ namespace Tweek.ApiService
 
             var fileTarget = new FileTarget
             {
-                FileName = "${basedir}/tweek-"+ DateTime.UtcNow.ToString("yyyyMMdd") + ".log",
+                FileName = "${basedir}/tweek-" + DateTime.UtcNow.ToString("yyyyMMdd") + ".log",
                 Layout = @"${date:format=HH\:mm\:ss} | ${message}"
             };
 

@@ -67,6 +67,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlobRulesDriver.cs" />
+    <Compile Include="IWebClient.cs" />
+    <Compile Include="IWebClientFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

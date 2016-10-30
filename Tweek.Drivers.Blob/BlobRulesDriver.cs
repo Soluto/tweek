@@ -6,6 +6,7 @@ using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using Engine.Drivers.Rules;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace Tweek.Drivers.Blob
 {
@@ -15,7 +16,7 @@ namespace Tweek.Drivers.Blob
         private readonly ISubject<Dictionary<string, RuleDefinition>> _subject;
         private IDisposable _subscription;
 
-        public BlobRulesDriver(Uri url)
+        public BlobRulesDriver(Uri url, IWebClientFactory webClientFactory)
         {
             _url = url;
             _subject = new ReplaySubject<Dictionary<string, RuleDefinition>>(1);
@@ -24,8 +25,10 @@ namespace Tweek.Drivers.Blob
                 .StartWith(0)
                 .SelectMany(async _ =>
                 {
-                    using (var client = new WebClient())
+                    using (var client = webClientFactory.Create())
                     {
+                        client.Encoding = Encoding.UTF8;
+
                         return await client.DownloadStringTaskAsync(_url);
                     }
                 })
@@ -38,7 +41,7 @@ namespace Tweek.Drivers.Blob
                 })
                 .Repeat()
                 .Do(_subject)
-                .Subscribe(x=> OnRulesChange?.Invoke(x));
+                .Subscribe(x => OnRulesChange?.Invoke(x));
         }
 
         public event Action<IDictionary<string, RuleDefinition>> OnRulesChange;
