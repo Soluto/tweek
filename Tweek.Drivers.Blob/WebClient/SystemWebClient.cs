@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Tweek.Drivers.Blob;
 
-namespace Tweek.ApiService.WebClient
+namespace Tweek.Drivers.Blob.WebClient
 {
     public class SystemWebClient : IWebClient
     {

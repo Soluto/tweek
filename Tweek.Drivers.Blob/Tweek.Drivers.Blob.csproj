@@ -70,6 +70,8 @@
     <Compile Include="IWebClient.cs" />
     <Compile Include="IWebClientFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebClient\SystemWebClient.cs" />
+    <Compile Include="WebClient\SystemWebClientFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine.Drivers\Engine.Drivers.csproj">
