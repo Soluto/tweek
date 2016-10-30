@@ -5,7 +5,7 @@ using System.Net;
 using System.Web;
 using Tweek.Drivers.Blob;
 
-namespace Tweek.ApiService.WebClient
+namespace Tweek.Drivers.Blob.WebClient
 {
     public class SystemWebClientFactory : IWebClientFactory
     {

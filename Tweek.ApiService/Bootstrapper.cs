@@ -22,7 +22,7 @@ using Tweek.Drivers.Blob;
 using Tweek.Drivers.CouchbaseDriver;
 using Tweek.JPad;
 using Tweek.JPad.Utils;
-using Tweek.ApiService.WebClient;
+using Tweek.Drivers.Blob.WebClient;
 
 namespace Tweek.ApiService
 {
