@@ -44,7 +44,10 @@ namespace Tweek.ApiService
                     }
 
                 },
-                DefaultOperationLifespan = 100000,
+                PoolConfiguration = new PoolConfiguration
+                {
+                    SendTimeout = 60000
+                },
                 Serializer = () => new DefaultSerializer(
 
                    new JsonSerializerSettings()
