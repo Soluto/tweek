@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
-using System.Net;
 using System.Threading.Tasks;
 using Couchbase.Configuration.Client;
 using Couchbase.Core.Serialization;
@@ -13,7 +11,6 @@ using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.TinyIoc;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using NLog;
 using NLog.Config;
@@ -29,14 +26,11 @@ namespace Tweek.ApiService
 
     public class Bootstrapper : DefaultNancyBootstrapper
     {
-        private SettingsModel _settings;
-        private IWebClientFactory _webClientFactory;
-
         private CouchBaseDriver GetCouchbaseDriver()
         {
-            var bucketName = _settings.couchbase.bucketName;
-            var password = _settings.couchbase.password;
-            var url = _settings.couchbase.url;
+            var bucketName = ConfigurationManager.AppSettings["Couchbase.BucketName"];
+            var password = ConfigurationManager.AppSettings["Couchbase.Password"];
+            var url = ConfigurationManager.AppSettings["Couchbase.Url"];
 
             var cluster = new Couchbase.Cluster(new ClientConfiguration
             {
@@ -46,10 +40,11 @@ namespace Tweek.ApiService
                     [bucketName] = new BucketConfiguration
                     {
                         BucketName = bucketName,
-                        Password = password
+                        Password = password,
                     }
 
                 },
+                DefaultOperationLifespan = 100000,
                 Serializer = () => new DefaultSerializer(
 
                    new JsonSerializerSettings()
@@ -77,9 +72,6 @@ namespace Tweek.ApiService
         {
             InitLogging();
 
-            _webClientFactory = new SystemWebClientFactory();
-            _settings = GetSettings(_webClientFactory).Result;
-
             var contextDriver = GetCouchbaseDriver();
             var rulesDriver = GetRulesDriver();
             StaticConfiguration.DisableErrorTraces = false;
@@ -94,21 +86,9 @@ namespace Tweek.ApiService
             base.ApplicationStartup(container, pipelines);
         }
 
-        private static async Task<SettingsModel> GetSettings(IWebClientFactory webClientFactory)
-        {
-            var managementBaseUrl = new Uri(ConfigurationManager.AppSettings["Tweek.Management.BaseUrl"]);
-            var managementUrl = new Uri(managementBaseUrl, "settings");
-
-            using (var client = webClientFactory.Create())
-            {
-                var json = await client.DownloadStringTaskAsync(managementUrl);
-                return JsonConvert.DeserializeObject<SettingsModel>(json);
-            }
-        }
-
         private BlobRulesDriver GetRulesDriver()
         {
-            return new BlobRulesDriver(new Uri(_settings.rulesBlobUrl.ToString()), _webClientFactory);
+            return new BlobRulesDriver(new Uri(ConfigurationManager.AppSettings["RulesBlob.Url"]), new SystemWebClientFactory());
         }
 
         private static void InitLogging()
@@ -127,11 +107,6 @@ namespace Tweek.ApiService
             configuration.LoggingRules.Add(rule);
 
             LogManager.Configuration = configuration;
-        }
-
-        private static Task<ITweek> CreateEngine(CouchBaseDriver contextDriver, BlobRulesDriver rulesDriver, IRuleParser parser)
-        {
-            return Engine.Tweek.Create(contextDriver, rulesDriver, parser);
         }
     }
 }
