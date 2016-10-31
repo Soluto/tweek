@@ -29,14 +29,14 @@ namespace Tweek.ApiService
 
     public class Bootstrapper : DefaultNancyBootstrapper
     {
-        private dynamic _settings;
+        private SettingsModel _settings;
         private IWebClientFactory _webClientFactory;
 
         private CouchBaseDriver GetCouchbaseDriver()
         {
-            var bucketName = _settings.couchbase.bucketName.ToString();
-            var password = _settings.couchbase.password.ToString();
-            var url = _settings.couchbase.url.ToString();
+            var bucketName = _settings.couchbase.bucketName;
+            var password = _settings.couchbase.password;
+            var url = _settings.couchbase.url;
 
             var cluster = new Couchbase.Cluster(new ClientConfiguration
             {
@@ -94,7 +94,7 @@ namespace Tweek.ApiService
             base.ApplicationStartup(container, pipelines);
         }
 
-        private static async Task<JObject> GetSettings(IWebClientFactory webClientFactory)
+        private static async Task<SettingsModel> GetSettings(IWebClientFactory webClientFactory)
         {
             var managementBaseUrl = new Uri(ConfigurationManager.AppSettings["Tweek.Management.BaseUrl"]);
             var managementUrl = new Uri(managementBaseUrl, "settings");
@@ -102,7 +102,7 @@ namespace Tweek.ApiService
             using (var client = webClientFactory.Create())
             {
                 var json = await client.DownloadStringTaskAsync(managementUrl);
-                return JsonConvert.DeserializeObject<dynamic>(json);
+                return JsonConvert.DeserializeObject<SettingsModel>(json);
             }
         }
 
