@@ -38,22 +38,12 @@ namespace Tweek.ApiService
                 {
                     data = JsonConvert.DeserializeObject<JObject>(await reader.ReadToEndAsync())
                         .Properties()
+                        .Where(x => x.HasValues && x.Value.Type != JTokenType.Null)
                         .ToDictionary(x => x.Name, x => x.Value.ToObject<object>()
                             .ToString());
                 }
-                try
-                {
-                    await driver.AppendContext(identity, data);
-                }
-                catch (Exception ex)
-                {
-                    return new Response
-                    {
-                        StatusCode = HttpStatusCode.InternalServerError,
-                        ContentType = "text/plain",
-                        Contents = stream => (new StreamWriter(stream) { AutoFlush = true }).Write(ex.Message)
-                    };
-                }
+
+                await driver.AppendContext(identity, data);
                 
                 return 200;
             };
