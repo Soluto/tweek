@@ -33,7 +33,7 @@ namespace Tweek.ApiService
                 string identityType = @params.identityType;
                 string identityId = @params.identityId;
                 var identity = new Identity(identityType, identityId);
-                Dictionary<string,string> data;
+                Dictionary<string, string> data;
                 using (var reader = new StreamReader(Request.Body))
                 {
                     data = JsonConvert.DeserializeObject<JObject>(await reader.ReadToEndAsync())
@@ -41,8 +41,19 @@ namespace Tweek.ApiService
                         .ToDictionary(x => x.Name, x => x.Value.ToObject<object>()
                             .ToString());
                 }
-                
-                await driver.AppendContext(identity, data);
+                try
+                {
+                    await driver.AppendContext(identity, data);
+                }
+                catch (Exception ex)
+                {
+                    return new Response
+                    {
+                        StatusCode = HttpStatusCode.InternalServerError,
+                        ContentType = "text/plain",
+                        Contents = stream => (new StreamWriter(stream) { AutoFlush = true }).Write(ex.Message)
+                    };
+                }
                 
                 return 200;
             };
