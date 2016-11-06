@@ -12,6 +12,8 @@ artifacts:
 - path: Tweek.ApiService
   name: Tweek.ApiService
   type: WebDeployPackage
+test:
+  assemblies: Tweek.Drivers.Blob.Tests\bin\Debug
 test_script:
 - ps: ".\\runTests.ps1"
 deploy:
