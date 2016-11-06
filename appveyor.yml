@@ -20,6 +20,5 @@ deploy:
   website: soluto-tweek__staging
   username: $soluto-tweek__staging
   password: 1QxhtcumzClQpHSaEaAxn7o8nk4mkvswAsJjQEmwDhzuibxhaPDnB0xFeHsv
-    secure: Nq/SZjmic8l0nDQ96J9VwAQz0H8lFC3qBIiWNKxujUO5q+O4pKVvrLckCLTOyZRcdtMJF3gnocaByunyJzJo4Q==
   artifact: Tweek.ApiService
   remove_files: true
