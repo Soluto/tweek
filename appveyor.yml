@@ -17,6 +17,7 @@ test_script:
 deploy:
 - provider: WebDeploy
   server: soluto-tweek-staging.scm.azurewebsites.net:443/msdeploy.axd?site=soluto-tweek__staging
+  website:
   username: $soluto-tweek__staging
   password: 1QxhtcumzClQpHSaEaAxn7o8nk4mkvswAsJjQEmwDhzuibxhaPDnB0xFeHsv
   artifact: Tweek.ApiService
