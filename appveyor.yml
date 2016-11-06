@@ -16,7 +16,7 @@ test_script:
 - ps: ".\\runTests.ps1"
 deploy:
 - provider: WebDeploy
-  server: https://2soluto-tweek-staging.scm.azurewebsites.net:443/msdeploy.axd?site=soluto-tweek__staging
+  server: https://soluto-tweek-staging.scm.azurewebsites.net:443/msdeploy.axd?site=soluto-tweek__staging
   website: soluto-tweek__staging
   username: $soluto-tweek__staging
   password:
