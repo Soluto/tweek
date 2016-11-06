@@ -146,6 +146,7 @@
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="ManagementModule.cs" />
+    <Compile Include="MonitoringModule.cs" />
     <Compile Include="ServingModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
