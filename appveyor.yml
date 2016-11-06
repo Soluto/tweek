@@ -16,9 +16,10 @@ test_script:
 - ps: "return 0"
 deploy:
 - provider: WebDeploy
-  server: soluto-tweek-staging.scm.azurewebsites.net:443/msdeploy.axd?site=soluto-tweek__staging
-  website:
+  server: https://soluto-tweek-staging.scm.azurewebsites.net:443/msdeploy.axd?site=soluto-tweek__staging
+  website: soluto-tweek__staging
   username: $soluto-tweek__staging
-  password: 1QxhtcumzClQpHSaEaAxn7o8nk4mkvswAsJjQEmwDhzuibxhaPDnB0xFeHsv
+  password:
+    secure: Nq/SZjmic8l0nDQ96J9VwAQz0H8lFC3qBIiWNKxujUO5q+O4pKVvrLckCLTOyZRcdtMJF3gnocaByunyJzJo4Q==
   artifact: Tweek.ApiService
   remove_files: true
