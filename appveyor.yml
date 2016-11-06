@@ -15,11 +15,11 @@ artifacts:
 test_script:
 - ps: "return 0"
 deploy:
-  -notifications:
+- provider: WebDeploy
+  notifications:
     - provider: Slack
       url: https://hooks.slack.com/services/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
       channel: tweek
-- provider: WebDeploy
   server: https://soluto-tweek-staging.scm.azurewebsites.net:443/msdeploy.axd?site=soluto-tweek__staging
   website: soluto-tweek__staging
   username: $soluto-tweek__staging
