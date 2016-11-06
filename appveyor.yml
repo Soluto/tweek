@@ -16,10 +16,6 @@ test_script:
 - ps: "return 0"
 deploy:
 - provider: WebDeploy
-  notifications:
-    provider: Slack
-    url: https://hooks.slack.com/services/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
-    channel: tweek
   server: https://soluto-tweek-staging.scm.azurewebsites.net:443/msdeploy.axd?site=soluto-tweek__staging
   website: soluto-tweek__staging
   username: $soluto-tweek__staging
@@ -27,3 +23,13 @@ deploy:
     secure: Nq/SZjmic8l0nDQ96J9VwAQz0H8lFC3qBIiWNKxujUO5q+O4pKVvrLckCLTOyZRcdtMJF3gnocaByunyJzJo4Q==
   artifact: Tweek.ApiService
   remove_files: true
+notifications:
+- provider: Slack
+  incoming_webhook: https://hooks.slack.com/services/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
+  channel: tweek
+  on_build_success: false
+  on_build_failure: false
+  on_build_status_changed: true
+  on_deploy_success: false
+  on_deploy_failure: false
+  on_deploy_status_changed: true
