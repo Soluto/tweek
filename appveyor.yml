@@ -17,5 +17,5 @@ deploy:
   username: $soluto-tweek__staging
   password:
     secure: Nq/SZjmic8l0nDQ96J9VwAQz0H8lFC3qBIiWNKxujUO5q+O4pKVvrLckCLTOyZRcdtMJF3gnocaByunyJzJo4Q==
-  artifact: Tweek.ApiService
+  artifact: Tweek.ApiService\bin
   remove_files: true
