@@ -30,6 +30,6 @@ notifications:
   on_build_success: false
   on_build_failure: false
   on_build_status_changed: true
-  on_deploy_success: false
-  on_deploy_failure: false
-  on_deploy_status_changed: true
+  on_deployment_success: false
+  on_deployment_failure: false
+  on_deployment_status_changed: true
