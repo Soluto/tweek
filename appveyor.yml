@@ -13,7 +13,7 @@ artifacts:
   name: Tweek.ApiService
   type: WebDeployPackage
 test_script:
-- ps: ""
+- ps: "return 0"
 deploy:
 - provider: WebDeploy
   server: soluto-tweek-staging.scm.azurewebsites.net:443/msdeploy.axd?site=soluto-tweek__staging
