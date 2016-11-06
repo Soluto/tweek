@@ -13,7 +13,7 @@ artifacts:
   name: Tweek.ApiService
   type: WebDeployPackage
 test:
-  assemblies: '**\*.test-assembly.dll'
+  assemblies: '**\*Tweek.Drivers.Blob.Tests.dll'
 test_script:
 - ps: ".\\runTests.ps1"
 deploy:
