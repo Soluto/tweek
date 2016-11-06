@@ -14,4 +14,4 @@ artifacts:
   type: WebDeployPackage
 test:
   assemblies:
-    - '**\*.tests.dll'
+    - '**\*tests.dll'
