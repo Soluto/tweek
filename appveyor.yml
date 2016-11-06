@@ -8,7 +8,7 @@ before_build:
 - cmd: nuget restore -verbosity quiet
 build:
   verbosity: quiet
-  artifacts:
+artifacts:
 - path: Tweek.ApiService\bin
   name: Tweek.ApiService
   type: WebDeployPackage
@@ -21,5 +21,5 @@ deploy:
   username: $soluto-tweek__staging
   password: 1QxhtcumzClQpHSaEaAxn7o8nk4mkvswAsJjQEmwDhzuibxhaPDnB0xFeHsv
     secure: Nq/SZjmic8l0nDQ96J9VwAQz0H8lFC3qBIiWNKxujUO5q+O4pKVvrLckCLTOyZRcdtMJF3gnocaByunyJzJo4Q==
-artifact: Tweek.ApiService
+  artifact: Tweek.ApiService
   remove_files: true
