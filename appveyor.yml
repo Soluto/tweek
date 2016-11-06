@@ -12,6 +12,10 @@ artifacts:
 - path: Tweek.ApiService
   name: Tweek.ApiService
   type: WebDeployPackage
+before_test:
+- ps: .\beforeTests.ps1
 test:
   assemblies:
     - '**\*tests.dll'
+after_test:
+- ps: .\afterTests.ps1
