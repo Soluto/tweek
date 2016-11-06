@@ -9,7 +9,7 @@ before_build:
 build:
   verbosity: quiet
 artifacts:
-- path: Tweek.ApiService\bin
+- path: Tweek.ApiService
   name: Tweek.ApiService
   type: WebDeployPackage
 test_script:
