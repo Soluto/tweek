@@ -23,10 +23,3 @@ deploy:
     secure: Nq/SZjmic8l0nDQ96J9VwAQz0H8lFC3qBIiWNKxujUO5q+O4pKVvrLckCLTOyZRcdtMJF3gnocaByunyJzJo4Q==
   artifact: Tweek.ApiService
   remove_files: true
-notifications:
-- provider: Slack
-  incoming_webhook: https://hooks.slack.com/services/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
-  channel: tweek
-  on_build_success: false
-  on_build_failure: false
-  on_build_status_changed: true
