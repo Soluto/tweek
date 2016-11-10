@@ -160,9 +160,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <Content Include="ApplicationInsights.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="Properties\PublishProfiles\soluto-tweek - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\soluto-tweek-prod.pubxml" />
     <None Include="Properties\PublishProfiles\soluto-tweek-qa - Web Deploy.pubxml" />
