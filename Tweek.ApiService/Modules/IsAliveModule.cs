@@ -9,7 +9,7 @@ using LanguageExt;
 using Nancy;
 using Newtonsoft.Json;
 
-namespace Tweek.ApiService
+namespace Tweek.ApiService.Modules
 {
     public class IsAliveModule : NancyModule
     {

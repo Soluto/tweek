@@ -10,7 +10,7 @@ using Nancy.ModelBinding;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Tweek.ApiService
+namespace Tweek.ApiService.Modules
 {
     public class ContextUpdateModule : NancyModule
     {
