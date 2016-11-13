@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using Engine.Core.Rules;
 using System.Web;
 
-namespace Tweek.ApiService
+namespace Tweek.ApiService.Modules
 {
     public class ValidationModule : NancyModule
     {
