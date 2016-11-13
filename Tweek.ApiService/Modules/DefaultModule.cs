@@ -10,10 +10,7 @@ namespace Tweek.ApiService.Modules
     {
         public DefaultModule()
         {
-            Get["/"] = _ =>
-            {
-                return HttpStatusCode.OK;
-            };
+            Get["/"] = _ => HttpStatusCode.OK;
         }
     }
 }
