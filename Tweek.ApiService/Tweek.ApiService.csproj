@@ -149,14 +149,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <Content Include="ApplicationInsights.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="Properties\PublishProfiles\soluto-tweek - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\soluto-tweek-prod.pubxml" />
     <None Include="Properties\PublishProfiles\soluto-tweek-qa - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\soluto-tweek-staging - Web Deploy.pubxml" />
-    <Content Include="Service References\Application Insights\ConnectedService.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
