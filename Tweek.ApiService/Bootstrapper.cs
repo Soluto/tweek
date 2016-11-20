@@ -44,10 +44,6 @@ namespace Tweek.ApiService
                     }
 
                 },
-                PoolConfiguration = new PoolConfiguration
-                {
-                    SendTimeout = 60000
-                },
                 Serializer = () => new DefaultSerializer(
 
                    new JsonSerializerSettings()
