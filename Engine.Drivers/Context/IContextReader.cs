@@ -10,6 +10,5 @@ namespace Engine.Drivers.Context
     public interface IContextReader
     {
         Task<Dictionary<string, string>> GetContext(Identity identity);
-
     }
 }
