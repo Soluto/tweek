@@ -8,17 +8,15 @@ using Engine.DataTypes;
 using LanguageExt;
 using Nancy;
 using Newtonsoft.Json;
+using Tweek.ApiService.Interfaces;
 
 namespace Tweek.ApiService.Modules
 {
     public class IsAliveModule : NancyModule
     {
-        public IsAliveModule()
+        public IsAliveModule(IIsAliveService isAliveService)
         {
-            Get["/isalive"] = _ =>
-            {
-                return HttpStatusCode.OK;
-            };
+            Get["/isalive"] = _ => isAliveService.IsAlive() ? HttpStatusCode.OK : HttpStatusCode.ServiceUnavailable;
         }
     }
 }

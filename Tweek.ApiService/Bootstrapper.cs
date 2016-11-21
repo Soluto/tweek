@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
+using Couchbase;
 using Couchbase.Configuration.Client;
 using Couchbase.Core.Serialization;
 using Engine;
@@ -15,6 +16,8 @@ using Newtonsoft.Json.Serialization;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using Tweek.ApiService.Interfaces;
+using Tweek.ApiService.Services;
 using Tweek.Drivers.Blob;
 using Tweek.Drivers.CouchbaseDriver;
 using Tweek.JPad;
@@ -23,41 +26,8 @@ using Tweek.Drivers.Blob.WebClient;
 
 namespace Tweek.ApiService
 {
-
     public class Bootstrapper : DefaultNancyBootstrapper
     {
-        private CouchBaseDriver GetCouchbaseDriver()
-        {
-            var bucketName = ConfigurationManager.AppSettings["Couchbase.BucketName"];
-            var password = ConfigurationManager.AppSettings["Couchbase.Password"];
-            var url = ConfigurationManager.AppSettings["Couchbase.Url"];
-
-            var cluster = new Couchbase.Cluster(new ClientConfiguration
-            {
-                Servers = new List<Uri> { new Uri(url) },
-                BucketConfigs = new Dictionary<string, BucketConfiguration>
-                {
-                    [bucketName] = new BucketConfiguration
-                    {
-                        BucketName = bucketName,
-                        Password = password,
-                    }
-
-                },
-                Serializer = () => new DefaultSerializer(
-
-                   new JsonSerializerSettings()
-                   {
-                       ContractResolver = new DefaultContractResolver()
-                   },
-                   new JsonSerializerSettings()
-                   {
-                       ContractResolver = new DefaultContractResolver()
-                   })
-            });
-            return new CouchBaseDriver(cluster, bucketName);
-        }
-
         IRuleParser GetRulesParser()
         {
             return JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
@@ -70,8 +40,13 @@ namespace Tweek.ApiService
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
             InitLogging();
+            
+            var contextBucketName = ConfigurationManager.AppSettings["Couchbase.BucketName"];
+            var contextBucketPassword = ConfigurationManager.AppSettings["Couchbase.Password"];
 
-            var contextDriver = GetCouchbaseDriver();
+            var cluster = GetCouchbaseCluster(contextBucketName, contextBucketPassword);
+            var contextDriver = new CouchBaseDriver(cluster, contextBucketName);
+
             var rulesDriver = GetRulesDriver();
             StaticConfiguration.DisableErrorTraces = false;
 
@@ -79,10 +54,42 @@ namespace Tweek.ApiService
 
             var tweek = Task.Run(async () => await Engine.Tweek.Create(contextDriver, rulesDriver, parser)).Result;
 
+            var isAliveService = new BucketConnectionIsAlive(cluster, contextBucketName);
+
             container.Register<ITweek>((ctx, no) => tweek);
             container.Register<IContextDriver>((ctx, no) => contextDriver);
             container.Register<IRuleParser>((ctx, no) => parser);
+            container.Register<IIsAliveService>((ctx, no) => isAliveService);
             base.ApplicationStartup(container, pipelines);
+        }
+
+        private Cluster GetCouchbaseCluster(string bucketName, string bucketPassword)
+        {
+            var url = ConfigurationManager.AppSettings["Couchbase.Url"];
+
+            var cluster = new Couchbase.Cluster(new ClientConfiguration
+            {
+                Servers = new List<Uri> { new Uri(url) },
+                BucketConfigs = new Dictionary<string, BucketConfiguration>
+                {
+                    [bucketName] = new BucketConfiguration
+                    {
+                        BucketName = bucketName,
+                        Password = bucketPassword,
+                    }
+                },
+                Serializer = () => new DefaultSerializer(
+                   new JsonSerializerSettings()
+                   {
+                       ContractResolver = new DefaultContractResolver()
+                   },
+                   new JsonSerializerSettings()
+                   {
+                       ContractResolver = new DefaultContractResolver()
+                   })
+            });
+
+            return cluster;
         }
 
         private BlobRulesDriver GetRulesDriver()
