@@ -1,38 +1,42 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using Couchbase;
 using Couchbase.Core;
 using Tweek.ApiService.Interfaces;
 
 namespace Tweek.ApiService.Services
 {
-    public class BucketConnectionIsAlive : IIsAliveService, IDisposable
+    public class BucketConnectionIsAlive : IDisposable, IDiagnosticsProvider
     {
-        private Cluster mCluster;
-        private string mBucketName;
-        private IBucket mBucket;
+        public string Name { get; } = "CouchbaseConnectionIsAlive";
+
+        private readonly Cluster _cluster;
+        private readonly string _bucketName;
+        private IBucket _bucket;
 
         public BucketConnectionIsAlive(Cluster cluster, string bucketNameToCheck)
         {
-            mCluster = cluster;
-            mBucketName = bucketNameToCheck;
+            _cluster = cluster;
+            _bucketName = bucketNameToCheck;
+        }
+
+        public object GetDetails()
+        {
+            return new { IsConnectionAlive = IsAlive() };
         }
 
         public bool IsAlive()
         {
-            if (!mCluster.IsOpen(mBucketName))
+            if (!_cluster.IsOpen(_bucketName))
             {
-                mBucket = mCluster.OpenBucket(mBucketName);
+                _bucket = _cluster.OpenBucket(_bucketName);
             }
 
-            return mCluster.IsOpen(mBucketName);
+            return _cluster.IsOpen(_bucketName);
         }
 
         public void Dispose()
         {
-            if (mBucket != null) mCluster.CloseBucket(mBucket);
+            if (_bucket != null) _cluster.CloseBucket(_bucket);
         }
     }
 }

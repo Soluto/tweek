@@ -4,15 +4,34 @@ using System.Threading.Tasks;
 
 namespace Engine.Drivers.Rules
 {
+    public interface IRulesDriver
+    {
+        event Action<IDictionary<string, RuleDefinition>> OnRulesChange;
+        Task<Dictionary<string, RuleDefinition>> GetAllRules();
+    }
+
     public class RuleDefinition
     {
         public string Format { get; set; }
         public string Payload { get; set; }
     }
 
-    public interface IRulesDriver
+    public class RuleDefinitionComparer : IEqualityComparer<RuleDefinition>
     {
-        event Action<IDictionary<string, RuleDefinition>> OnRulesChange;
-        Task<Dictionary<string, RuleDefinition>> GetAllRules();
+        public bool Equals(RuleDefinition x, RuleDefinition y)
+        {
+            if (x == y)
+                return true;
+
+            if (x == null || y == null)
+                return false;
+
+            return string.Equals(x.Format, y.Format) && string.Equals(x.Payload, y.Payload);
+        }
+
+        public int GetHashCode(RuleDefinition obj)
+        {
+            return obj.GetHashCode();
+        }
     }
 }
