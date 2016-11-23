@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace Tweek.ApiService.Interfaces
 {
-    public interface IIsAliveService
+    public interface IDiagnosticsProvider
     {
+        string Name { get; }
+
+        object GetDetails();
+
         bool IsAlive();
     }
 }

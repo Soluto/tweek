@@ -8,6 +8,7 @@ using Couchbase.Core.Serialization;
 using Engine;
 using Engine.Core.Rules;
 using Engine.Drivers.Context;
+using Engine.Drivers.Rules;
 using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.TinyIoc;
@@ -17,6 +18,7 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 using Tweek.ApiService.Interfaces;
+using Tweek.ApiService.Modules;
 using Tweek.ApiService.Services;
 using Tweek.Drivers.Blob;
 using Tweek.Drivers.CouchbaseDriver;
@@ -28,15 +30,6 @@ namespace Tweek.ApiService
 {
     public class Bootstrapper : DefaultNancyBootstrapper
     {
-        IRuleParser GetRulesParser()
-        {
-            return JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
-                comparers: new Dictionary<string, ComparerDelegate>()
-                {
-                    ["version"] = Version.Parse
-                })));
-        }
-
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
             InitLogging();
@@ -54,13 +47,24 @@ namespace Tweek.ApiService
 
             var tweek = Task.Run(async () => await Engine.Tweek.Create(contextDriver, rulesDriver, parser)).Result;
 
-            var isAliveService = new BucketConnectionIsAlive(cluster, contextBucketName);
+            var bucketConnectionIsAlive = new BucketConnectionIsAlive(cluster, contextBucketName);
+            var rulesDriverStatusService = new RulesDriverStatusService(rulesDriver);
 
             container.Register<ITweek>((ctx, no) => tweek);
             container.Register<IContextDriver>((ctx, no) => contextDriver);
             container.Register<IRuleParser>((ctx, no) => parser);
-            container.Register<IIsAliveService>((ctx, no) => isAliveService);
+            container.Register<IEnumerable<IDiagnosticsProvider>>((ctx, no) => new List<IDiagnosticsProvider> {  bucketConnectionIsAlive, rulesDriverStatusService});
+
             base.ApplicationStartup(container, pipelines);
+        }
+
+        IRuleParser GetRulesParser()
+        {
+            return JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
+                comparers: new Dictionary<string, ComparerDelegate>()
+                {
+                    ["version"] = Version.Parse
+                })));
         }
 
         private Cluster GetCouchbaseCluster(string bucketName, string bucketPassword)
