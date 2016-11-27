@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
+using Couchbase;
 using Couchbase.Configuration.Client;
 using Couchbase.Core.Serialization;
 using Engine;
 using Engine.Core.Rules;
 using Engine.Drivers.Context;
+using Engine.Drivers.Rules;
 using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.TinyIoc;
@@ -15,6 +17,9 @@ using Newtonsoft.Json.Serialization;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using Tweek.ApiService.Interfaces;
+using Tweek.ApiService.Modules;
+using Tweek.ApiService.Services;
 using Tweek.Drivers.Blob;
 using Tweek.Drivers.CouchbaseDriver;
 using Tweek.JPad;
@@ -23,39 +28,34 @@ using Tweek.Drivers.Blob.WebClient;
 
 namespace Tweek.ApiService
 {
-
     public class Bootstrapper : DefaultNancyBootstrapper
     {
-        private CouchBaseDriver GetCouchbaseDriver()
+        protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
-            var bucketName = ConfigurationManager.AppSettings["Couchbase.BucketName"];
-            var password = ConfigurationManager.AppSettings["Couchbase.Password"];
-            var url = ConfigurationManager.AppSettings["Couchbase.Url"];
+            InitLogging();
+            
+            var contextBucketName = ConfigurationManager.AppSettings["Couchbase.BucketName"];
+            var contextBucketPassword = ConfigurationManager.AppSettings["Couchbase.Password"];
 
-            var cluster = new Couchbase.Cluster(new ClientConfiguration
-            {
-                Servers = new List<Uri> { new Uri(url) },
-                BucketConfigs = new Dictionary<string, BucketConfiguration>
-                {
-                    [bucketName] = new BucketConfiguration
-                    {
-                        BucketName = bucketName,
-                        Password = password,
-                    }
+            var cluster = GetCouchbaseCluster(contextBucketName, contextBucketPassword);
+            var contextDriver = new CouchBaseDriver(cluster, contextBucketName);
 
-                },
-                Serializer = () => new DefaultSerializer(
+            var rulesDriver = GetRulesDriver();
+            StaticConfiguration.DisableErrorTraces = false;
 
-                   new JsonSerializerSettings()
-                   {
-                       ContractResolver = new DefaultContractResolver()
-                   },
-                   new JsonSerializerSettings()
-                   {
-                       ContractResolver = new DefaultContractResolver()
-                   })
-            });
-            return new CouchBaseDriver(cluster, bucketName);
+            var parser = GetRulesParser();
+
+            var tweek = Task.Run(async () => await Engine.Tweek.Create(contextDriver, rulesDriver, parser)).Result;
+
+            var bucketConnectionIsAlive = new BucketConnectionIsAlive(cluster, contextBucketName);
+            var rulesDriverStatusService = new RulesDriverStatusService(rulesDriver);
+
+            container.Register<ITweek>((ctx, no) => tweek);
+            container.Register<IContextDriver>((ctx, no) => contextDriver);
+            container.Register<IRuleParser>((ctx, no) => parser);
+            container.Register<IEnumerable<IDiagnosticsProvider>>((ctx, no) => new List<IDiagnosticsProvider> {  bucketConnectionIsAlive, rulesDriverStatusService});
+
+            base.ApplicationStartup(container, pipelines);
         }
 
         IRuleParser GetRulesParser()
@@ -67,22 +67,33 @@ namespace Tweek.ApiService
                 })));
         }
 
-        protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
+        private Cluster GetCouchbaseCluster(string bucketName, string bucketPassword)
         {
-            InitLogging();
+            var url = ConfigurationManager.AppSettings["Couchbase.Url"];
 
-            var contextDriver = GetCouchbaseDriver();
-            var rulesDriver = GetRulesDriver();
-            StaticConfiguration.DisableErrorTraces = false;
+            var cluster = new Couchbase.Cluster(new ClientConfiguration
+            {
+                Servers = new List<Uri> { new Uri(url) },
+                BucketConfigs = new Dictionary<string, BucketConfiguration>
+                {
+                    [bucketName] = new BucketConfiguration
+                    {
+                        BucketName = bucketName,
+                        Password = bucketPassword,
+                    }
+                },
+                Serializer = () => new DefaultSerializer(
+                   new JsonSerializerSettings()
+                   {
+                       ContractResolver = new DefaultContractResolver()
+                   },
+                   new JsonSerializerSettings()
+                   {
+                       ContractResolver = new DefaultContractResolver()
+                   })
+            });
 
-            var parser = GetRulesParser();
-
-            var tweek = Task.Run(async () => await Engine.Tweek.Create(contextDriver, rulesDriver, parser)).Result;
-
-            container.Register<ITweek>((ctx, no) => tweek);
-            container.Register<IContextDriver>((ctx, no) => contextDriver);
-            container.Register<IRuleParser>((ctx, no) => parser);
-            base.ApplicationStartup(container, pipelines);
+            return cluster;
         }
 
         private BlobRulesDriver GetRulesDriver()

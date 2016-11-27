@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -14,7 +16,7 @@ namespace Tweek.Drivers.Blob
     {
         private readonly Uri _url;
         private readonly ISubject<Dictionary<string, RuleDefinition>> _subject;
-        private IDisposable _subscription;
+        private readonly IDisposable _subscription;
 
         public BlobRulesDriver(Uri url, IWebClientFactory webClientFactory)
         {
@@ -28,15 +30,15 @@ namespace Tweek.Drivers.Blob
                     using (var client = webClientFactory.Create())
                     {
                         client.Encoding = Encoding.UTF8;
-
                         return await client.DownloadStringTaskAsync(_url);
                     }
                 })
                 .DistinctUntilChanged()
                 .Select(JsonConvert.DeserializeObject<Dictionary<string, RuleDefinition>>)
+                .DistinctUntilChanged(new DictionaryEqualityComparer<string, RuleDefinition>(new RuleDefinitionComparer()))
                 .Catch((Exception exception) =>
                 {
-                    //Log.Error("Failed to create engine with updated ruleset", exception, new Dictionary<string, object> { { "RoleName", "TweekApi" } });
+                    Trace.TraceWarning($"Failed to update rules from {url}\r\n{exception}");
                     return Observable.Empty<Dictionary<string, RuleDefinition>>().Delay(TimeSpan.FromMinutes(1));
                 })
                 .Repeat()

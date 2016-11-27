@@ -135,10 +135,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Interfaces\IDiagnosticsProvider.cs" />
     <Compile Include="Modules\DefaultModule.cs" />
-    <Compile Include="Modules\IsAliveModule.cs" />
+    <Compile Include="Modules\DiagnosticsModule.cs" />
     <Compile Include="Modules\ServingModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\BucketConnectionIsAlive.cs" />
+    <Compile Include="Services\RulesDriverStatusService.cs" />
     <Compile Include="TreeResult.cs" />
     <Compile Include="Modules\ContextUpdateModule.cs" />
     <Compile Include="Modules\ValidationModule.cs" />
