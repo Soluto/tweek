@@ -36,16 +36,15 @@ namespace Tweek.Drivers.CouchbaseDriver
             if (_bucket == null || !_cluster.IsOpen(_bucketName))
             {
                 _bucket = _cluster.OpenBucket(_bucketName);
-
             }
             return _bucket;
         }
 
-        public async Task InsertOrUpdate(string key, 
+        public async Task InsertOrUpdate(string key,
             Func<IDictionary<string, string>, IDictionary<string, string>> updateFn)
         {
             var bucket = GetOrOpenBucket();
-            IOperationResult<IDictionary<string,string>> result = null;
+            IOperationResult<IDictionary<string, string>> result = null;
             var cas = (ulong)0;
             if (!await bucket.ExistsAsync(key))
             {
@@ -58,7 +57,7 @@ namespace Tweek.Drivers.CouchbaseDriver
             while (!(result?.Success ?? false) && cas != result?.Cas)
             {
                 var doc = bucket.GetDocument<Dictionary<string, string>>(key);
-                var newData = updateFn(doc.Content ?? new Dictionary<string,string>());
+                var newData = updateFn(doc.Content ?? new Dictionary<string, string>());
                 cas = doc.Document.Cas;
                 result = await bucket.UpsertAsync(key, newData, cas);
             }
@@ -84,7 +83,7 @@ namespace Tweek.Drivers.CouchbaseDriver
         {
             var key = GetKey(identity);
             var bucket = GetOrOpenBucket();
-            var document = await bucket.GetDocumentAsync<Dictionary<string,string>>(key);
+            var document = await bucket.GetDocumentAsync<Dictionary<string, string>>(key);
             if (document.Status == Couchbase.IO.ResponseStatus.KeyNotFound)
             {
                 return new Dictionary<string, string>();
@@ -101,7 +100,7 @@ namespace Tweek.Drivers.CouchbaseDriver
 
         public void Dispose()
         {
-            if (_bucket !=null) _cluster.CloseBucket(_bucket);
+            if (_bucket != null) _cluster.CloseBucket(_bucket);
         }
     }
 }
