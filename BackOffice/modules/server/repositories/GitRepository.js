@@ -78,6 +78,7 @@ class GitRepository {
 
   async updateFile(fileName, payload, { name, email }) {
     const actionName = `update ${fileName}`;
+    console.time(actionName);
     const repo = await this._repoPromise;
 
     console.log('git', actionName);
@@ -99,6 +100,8 @@ class GitRepository {
       await this._pushRepositoryChanges(actionName);
     } catch (ex) {
       console.error(ex);
+    } finally {
+      console.timeEnd(actionName);
     }
   }
 
@@ -148,11 +151,11 @@ class GitRepository {
   }
 
   async _initIntervalPull() {
-    while(true) {
+    while (true) {
       await Promise.delay(this._pullIntervalInMS);
 
       const isSynced = await this._isSynced();
-      if(!isSynced) {
+      if (!isSynced) {
         console.log('repository changes founded. git pull');
         await this._synchronizedPull();
       }
