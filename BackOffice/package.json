@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "if-env NODE_ENV=production && npm run react-project:start:prod || npm run react-project:start:dev",
-    "test": "npm run test:unit && npm run test:integration && npm run test:e2e",
+    "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "jest",
     "test:watch": "jest --watch",
     "test:integration": "mocha --compilers js:babel-register ./integration-tests/**/*.js",
