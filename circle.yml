@@ -10,4 +10,4 @@ notify:
   webhooks:
     - url: https://hooks.slack.com/services/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
 general:
-  build_dir: .build
+  build_dir: backoffice/.build
