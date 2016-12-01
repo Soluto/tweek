@@ -7,7 +7,7 @@ dependencies:
     - cd backoffice && npm install
 test:
   override:
-    npm run test:unit
+    - npm run test:unit
 notify:
   webhook:
     - url: https://hooks.slack.com/services/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
