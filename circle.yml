@@ -4,7 +4,7 @@ machine:
   node: 
     version: 4.4.7
 dependencies:
-  pre:
+  override:
     - npm install: # aa
       pwd: BackOffice
 general:
