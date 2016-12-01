@@ -4,7 +4,8 @@ machine:
   node: 
     version: 4.4.7
 dependencies:
-  pre: cd BackOffice
+  pre: 
+    - cd BackOffice
 general:
   build_dir: .build
 notify:
