@@ -1,4 +1,4 @@
-FROM node:4.3.2
+FROM node:4.4.7
 
 ADD package.json /tmp/package.json
 RUN npm install npm -g
