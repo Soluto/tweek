@@ -1,6 +1,7 @@
 machine:
   environment:
-  NODE_ENV: production
+    NODE_ENV: development
+  node: 4.4.7
 dependencies:
   pre:
     - cd backoffice && npm install
