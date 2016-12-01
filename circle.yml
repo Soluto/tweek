@@ -5,9 +5,9 @@ machine:
     version: 4.4.7
 dependencies:
   pre:
-    - cd ./BackOffice && npm install
+    - cd BackOffice && npm install
 general:
-  build_dir: ./BackOffice/.build
+  build_dir: BackOffice/.build
 notify:
   webhooks:
     - url: https://hooks.slack.com/services/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
