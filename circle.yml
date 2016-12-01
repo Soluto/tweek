@@ -5,8 +5,9 @@ machine:
     version: 4.4.7
 dependencies:
   override:
-    - npm install: # aa
-      pwd: BackOffice
+    - npm install # aa
+      pwd: 
+        BackOffice
 general:
   build_dir: .build
 notify:
