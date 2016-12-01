@@ -1,12 +1,13 @@
 machine:
   environment:
     NODE_ENV: development
-  node: 4.4.7
+  node: 
+    version: 4.4.7
 dependencies:
   pre:
     - cd backoffice && npm install
 notify:
-  webhook:
+  webhooks:
     - url: https://hooks.slack.com/services/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
 general:
   build_dir: .build
