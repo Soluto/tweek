@@ -6,8 +6,7 @@ machine:
 dependencies:
   pre:
     - npm install: # aa
-      pwd: 
-        BackOffice
+      pwd: BackOffice
 general:
   build_dir: .build
 notify:
