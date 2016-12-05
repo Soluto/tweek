@@ -5,8 +5,12 @@ machine:
     version: 4.4.7
 dependencies:
   pre:
-    - dir
+    - echo @@@@@@@@@@@@@pre
+    - ls -a
   override: 
+    - echo @@@@@@@@@@@@@overr
     - npm install:
+  post:
+    - echo @@@@@@@@@@@@@post
 general:
   build_dir: BackOffice
