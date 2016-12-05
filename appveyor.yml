@@ -19,3 +19,6 @@ test:
     - '**\*tests.dll'
 after_test:
 - ps: .\afterTests.ps1
+skip_commits:
+  files:
+    - BackOffice/*
