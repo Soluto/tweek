@@ -7,11 +7,12 @@ module.exports = function (server, config) {
     clientID: config.get('AZUREAD_CLIENT_ID'),
     clientSecret: config.get('AZUREAD_CLIENT_SECRET'),
     skipUserProfile: true,
+    allowHttpForRedirectUrl: true,
     loggingLevel: 'info',
     responseType: 'code',
     responseMode: 'query',
     scope: ['profile'],
-    callbackURL: config.get('AZUREAD_CALLBACK_URL'),
+    redirectUrl: config.get('AZUREAD_CALLBACK_URL'),
   },
     function (token, done) {
       return done(null, { name: token.sub }, token);
