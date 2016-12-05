@@ -2,14 +2,14 @@ machine:
   environment:
     NODE_ENV: development
     YARN_VERSION: 0.17.8
-    PATH: "${PATH}:${HOME}.yarn/bin"
+    PATH: "${PATH}:${HOME}/yarn/bin"
   node: 
     version: 6.9.1
 dependencies:
   pre:
     - wget https://yarnpkg.com/latest.tar.gz
-    - tar -xf latest.tar.gz dist -C ${HOME}.yarn --strip-components=1
-    - ls ${HOME}.yarn -a
+    - tar -xf latest.tar.gz dist -C ${HOME}/yarn --strip-components=1
+    - ls ${HOME}/yarn -a
   override:
     - yarn install
   cache_directories:
