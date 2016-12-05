@@ -7,17 +7,15 @@ machine:
     version: 6.9.1
 dependencies:
   pre:
-    - |
-      if [[ ! -e ~/.yarn/bin/yarn || $(yarn --version) != "${YARN_VERSION}" ]]; then
-        echo "Download and install Yarn."
-        curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version $YARN_VERSION
-      else
-        echo "The correct version of Yarn is already installed."
-      fi
-  override: 
-    - yarn
+    - mkdir -p ~/.yarn
+    - cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
+  override:
+    - yarn install
   cache_directories:
     - ~/.yarn
-    - ~/.yarn-cache   
+    - ~/.yarn-cache
+test:
+  override:
+    - yarn test:unit
 general:
   build_dir: BackOffice
