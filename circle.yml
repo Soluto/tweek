@@ -8,10 +8,7 @@ machine:
 dependencies:
   pre:
     - mkdir -p ~/.yarn
-    - cd ~/.yarn
-    - ls
-    - wget https://yarnpkg.com/latest.tar.gz
-    - tar -xf latest.tar.gz dist --strip-components=1
+    - cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
   override:
     - yarn install
   cache_directories:
