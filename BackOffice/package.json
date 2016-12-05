@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "",
+  "engines": {
+    "node": ">=6.9.0"
+  },
   "react-project": {
     "server": "modules/server.js",
     "client": "modules/client.js",
@@ -48,14 +51,14 @@
   "dependencies": {
     "axios": "0.12.0",
     "babel-cli": "6.5.1",
-    "babel-core": "6.5.1",
+    "babel-core": "^6.18.2",
     "babel-eslint": "4.1.8",
     "babel-loader": "6.2.2",
     "babel-preset-es2015": "6.5.0",
     "babel-preset-react": "6.5.0",
     "babel-preset-react-hmre": "1.1.0",
     "babel-preset-stage-1": "6.5.0",
-    "babel-runtime": "6.6.1",
+    "babel-runtime": "^6.18.0",
     "bluebird": "3.4.6",
     "body-parser": "1.15.0",
     "bundle-loader": "0.5.4",
@@ -94,7 +97,7 @@
     "node-fetch": "1.3.3",
     "nodegit": "0.14.1",
     "null-loader": "0.1.1",
-    "passport-azure-ad": "2.0.0",
+    "passport-azure-ad": "^3.0.3",
     "postcss-loader": "0.8.1",
     "promisify-node": "0.4.0",
     "prompt": "1.0.0",
@@ -107,7 +110,7 @@
     "react-dom": "15.4.1",
     "react-draggable": "2.1.2",
     "react-highlight-words": "0.3.0",
-    "react-input-enhancements": "0.4.10",
+    "react-input-enhancements": "^0.5.3",
     "react-portal-tooltip": "1.1.4",
     "react-project": "0.0.30",
     "react-redux": "4.4.5",
@@ -135,9 +138,9 @@
     "babel-jest": "13.2.2",
     "babel-plugin-transform-async-to-generator": "6.7.4",
     "babel-plugin-transform-runtime": "6.7.5",
-    "babel-polyfill": "6.9.1",
+    "babel-polyfill": "^6.16.0",
     "babel-preset-stage-0": "6.5.0",
-    "babel-register": "6.9.0",
+    "babel-register": "^6.18.0",
     "babel-runtime": "6.6.1",
     "chai": "3.5.0",
     "chai-as-promised": "5.3.0",
@@ -160,7 +163,7 @@
     "react-tap-event-plugin": "1.0.0",
     "wdio-mocha-framework": "0.4.3",
     "wdio-phantomjs-service": "0.1.0",
-    "wdio-selenium-standalone-service": "0.0.6",
+    "wdio-selenium-standalone-service": "^0.0.7",
     "webdriverio": "4.2.15"
   }
 }
