@@ -1,16 +1,23 @@
 machine:
   environment:
     NODE_ENV: development
+    YARN_VERSION: 0.17.8
+    PATH: "${PATH}:${HOME}/.yarn/bin"
   node: 
     version: 6.9.1
 dependencies:
   pre:
-    - npm install yarn -g
-    - echo @@@@@@@@@@@@@pre
-    - ls -a
+    - |
+      if [[ ! -e ~/.yarn/bin/yarn || $(yarn --version) != "${YARN_VERSION}" ]]; then
+        echo "Download and install Yarn."
+        curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version $YARN_VERSION
+      else
+        echo "The correct version of Yarn is already installed."
+      fi
   override: 
-    - cd BackOffice && yarn
-  post:
-    - echo @@@@@@@@@@@@@post
+    - yarn
+  cache_directories:
+    - ~/.yarn
+    - ~/.yarn-cache   
 general:
   build_dir: BackOffice
