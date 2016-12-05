@@ -11,6 +11,7 @@ module.exports = function (server, config) {
     loggingLevel: 'info',
     responseType: 'code',
     responseMode: 'query',
+    validateIssuer: false,
     scope: ['profile'],
     redirectUrl: config.get('AZUREAD_CALLBACK_URL'),
   },
