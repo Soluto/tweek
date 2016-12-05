@@ -1,0 +1,21 @@
+machine:
+  environment:
+    NODE_ENV: development
+    YARN_VERSION: 0.17.8
+    PATH: "${PATH}:${HOME}/.yarn/bin"
+  node: 
+    version: 6.9.1
+dependencies:
+  pre:
+    - mkdir -p ~/.yarn
+    - cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
+  override:
+    - yarn install
+  cache_directories:
+    - ~/.yarn
+    - ~/.yarn-cache
+test:
+  override:
+    - yarn test:unit
+general:
+  build_dir: BackOffice
