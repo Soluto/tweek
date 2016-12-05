@@ -8,6 +8,15 @@ machine:
 dependencies:
   pre:
     - ls -a
+    - echo "$PATH"
+    - echo "$YARN"
+    - |
+      if [[ ! -e ~/.yarn/bin/yarn.js || $(~/.yarn/bin/yarn.js --version) != "${YARN_VERSION}" ]]; then
+        echo "Download and install Yarn."
+        curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version $YARN_VERSION
+      else
+        echo "The correct version of Yarn is already installed."
+      fi
   override:
     - ${YARN} install
   cache_directories:
