@@ -17,7 +17,7 @@ dependencies:
   override: 
     - yarn
   cache_directories:
-    - ~/.yarn
+    - ~/.yarn install
     - ~/.yarn-cache   
 general:
   build_dir: BackOffice
