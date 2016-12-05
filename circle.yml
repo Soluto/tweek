@@ -17,5 +17,6 @@ dependencies:
 test:
   override:
     - yarn test:unit
+    - yarn test:e2e
 general:
   build_dir: BackOffice
