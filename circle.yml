@@ -7,6 +7,4 @@ dependencies:
   override: 
     - npm install:
 general:
-  build_dir: .build
-general:
   build_dir: BackOffice
