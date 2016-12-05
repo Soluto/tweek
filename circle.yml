@@ -16,6 +16,6 @@ dependencies:
 test:
   override:
     - npm start
-    - yarn test
+    - yarn test:unit
 general:
   build_dir: BackOffice
