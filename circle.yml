@@ -7,7 +7,7 @@ machine:
     version: 6.9.1
 dependencies:
   pre:
-    - npm install yarn -g
+    - wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist -C /opt/yarn --strip-components=1
   override:
     - yarn install
   cache_directories:
@@ -15,7 +15,6 @@ dependencies:
     - ~/.yarn-cache
 test:
   override:
-    - npm start
     - yarn test:unit
 general:
   build_dir: BackOffice
