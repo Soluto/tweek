@@ -15,7 +15,14 @@ dependencies:
     - ~/.yarn
     - ~/.yarn-cache
 test:
+  pre:
+    - yarn global add selenium-standalone
+    - yarn run start
   override:
-    - yarn test:unit
+    # - yarn test:unit
+    - yarn test:e2e
 general:
   build_dir: BackOffice
+notify:
+  webhooks:
+    - url: https://ci.appveyor.com/api/github/webhook?id=cncldr9jrdhdqe80

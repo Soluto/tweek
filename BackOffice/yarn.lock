@@ -686,7 +686,7 @@ babel-plugin-react-display-name@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/babel-plugin-react-display-name/-/babel-plugin-react-display-name-1.0.3.tgz#754fe38926e8424a4e7b15ab6ea6139dee0514fc"
 
-babel-plugin-react-transform@^2.0.0:
+babel-plugin-react-transform@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/babel-plugin-react-transform/-/babel-plugin-react-transform-2.0.2.tgz#515bbfa996893981142d90b1f9b1635de2995109"
   dependencies:
@@ -1090,13 +1090,13 @@ babel-preset-jest@^13.2.2:
   dependencies:
     babel-plugin-jest-hoist "^13.2.2"
 
-babel-preset-react-hmre@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/babel-preset-react-hmre/-/babel-preset-react-hmre-1.1.0.tgz#cd5c0f0eb71c628109df1d8a70351835f411b58a"
+babel-preset-react-hmre@^1.1.0:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/babel-preset-react-hmre/-/babel-preset-react-hmre-1.1.1.tgz#d216e60cb5b8d4c873e19ed0f54eaff1437bc492"
   dependencies:
-    babel-plugin-react-transform "^2.0.0"
+    babel-plugin-react-transform "^2.0.2"
     react-transform-catch-errors "^1.0.2"
-    react-transform-hmr "^1.0.2"
+    react-transform-hmr "^1.0.3"
     redbox-react "^1.2.2"
 
 babel-preset-react@6.5.0:
@@ -6326,7 +6326,7 @@ react-transform-catch-errors@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-transform-catch-errors/-/react-transform-catch-errors-1.0.2.tgz#1b4d4a76e97271896fc16fe3086c793ec88a9eeb"
 
-react-transform-hmr@^1.0.2:
+react-transform-hmr@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/react-transform-hmr/-/react-transform-hmr-1.0.4.tgz#e1a40bd0aaefc72e8dfd7a7cda09af85066397bb"
   dependencies:
