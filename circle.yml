@@ -7,10 +7,11 @@ machine:
     version: 6.9.1
 dependencies:
   pre:
-    - wget https://yarnpkg.com/latest.tar.gz
     - mkdir -p ~/.yarn
-    - tar -xf latest.tar.gz dist -C ~/.yarn --strip-components=1
-    - ls ~/.yarn -a
+    - cd ~/.yarn
+    - ls
+    - wget https://yarnpkg.com/latest.tar.gz
+    - tar -xf latest.tar.gz dist --strip-components=1
   override:
     - yarn install
   cache_directories:
