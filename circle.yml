@@ -9,6 +9,7 @@ dependencies:
   pre:
     - wget https://yarnpkg.com/latest.tar.gz
     - tar -xf latest.tar.gz dist -C ${HOME}/.yarn --strip-components=1
+    - ls ${HOME}/.yarn -a
   override:
     - yarn install
   cache_directories:
