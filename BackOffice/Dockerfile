@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 FROM node:6.9.1
 
 
+=======
+FROM node:4.4.7
+>>>>>>> 0d60d2ddfea78966fd9c0c8643040a235204517b
 
 ADD package.json /tmp/package.json
 RUN wget https://yarnpkg.com/latest.tar.gz
