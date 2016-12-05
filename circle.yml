@@ -2,9 +2,15 @@ machine:
   environment:
     NODE_ENV: development
   node: 
-    version: 4.4.7
+    version: 6.9.1
 dependencies:
+  pre:
+    - npm install yarn -g
+    - echo @@@@@@@@@@@@@pre
+    - ls -a
   override: 
-    - npm install:
+    - cd BackOffice && yarn
+  post:
+    - echo @@@@@@@@@@@@@post
 general:
   build_dir: BackOffice
