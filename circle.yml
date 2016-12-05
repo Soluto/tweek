@@ -15,9 +15,12 @@ dependencies:
         echo "The correct version of Yarn is already installed."
       fi
   override: 
-    - yarn
+    - yarn install
   cache_directories:
-    - ~/.yarn install
+    - ~/.yarn
     - ~/.yarn-cache   
+test:
+  override:
+    - yarn test
 general:
   build_dir: BackOffice
