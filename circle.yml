@@ -6,11 +6,10 @@ machine:
 dependencies:
   pre:
     - npm install yarn -g
-    - echo @@@@@@@@@@@@@pre
-    - ls -a
   override: 
     - yarn
-  post:
-    - echo @@@@@@@@@@@@@post
+  cache_directories:
+    - ~/.yarn
+    - ~/.yarn-cache   
 general:
   build_dir: BackOffice
