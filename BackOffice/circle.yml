@@ -9,7 +9,6 @@ dependencies:
     - ls -a
   override: 
     - echo @@@@@@@@@@@@@overr
-    - npm install:
   post:
     - echo @@@@@@@@@@@@@post
 general:
