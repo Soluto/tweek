@@ -15,6 +15,7 @@ dependencies:
     - ~/.yarn-cache
 test:
   override:
+    - npm start
     - yarn test
 general:
   build_dir: BackOffice
