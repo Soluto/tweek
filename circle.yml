@@ -9,7 +9,7 @@ dependencies:
     - echo @@@@@@@@@@@@@pre
     - ls -a
   override: 
-    - cd BackOffice && yarn
+    - yarn
   post:
     - echo @@@@@@@@@@@@@post
 general:
