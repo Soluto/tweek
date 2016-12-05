@@ -2,19 +2,19 @@ machine:
   environment:
     NODE_ENV: development
     YARN_VERSION: 0.17.8
-    PATH: "${PATH}:${HOME}/.yarn/bin"
+    YARN: "${HOME}/.yarn/bin/yarn.js"
   node: 
     version: 6.9.1
 dependencies:
   pre:
     - ls -a
   override:
-    - yarn install
+    - ${YARN} install
   cache_directories:
     - ~/.yarn
     - ~/.yarn-cache   
 test:
   override:
-    - yarn test
+    - ${YARN} test
 general:
   build_dir: BackOffice
