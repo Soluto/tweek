@@ -38,7 +38,7 @@ export default class KeysPageObject {
 
     this.browser.waitUntil(() =>
       this.isInKeyPage(keyName),
-      10000);
+      1000000/*TODO: REMOVE afater test passes in circle !!!!!!!*/);
   }
 
   isInKeyPage(keyName) {

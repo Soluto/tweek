@@ -17,7 +17,7 @@
     "test:unit": "jest",
     "test:watch": "jest --watch",
     "test:integration": "mocha --compilers js:babel-register ./integration-tests/**/*.js",
-    "test:e2e": "node_modules/.bin/wdio wdio.conf.js",
+    "test:e2e": "./node_modules/.bin/wdio wdio.conf.js",
     "coverage:upload:code-climate": "codeclimate-test-reporter < ./coverage-unit/lcov.info",
     "react-project:start:dev": "node ./node_modules/react-project/bin/react-project.js start",
     "react-project:start:prod": "rm -rf .build && react-project build && node .build/server.js",
