@@ -1,0 +1,15 @@
+machine:
+  environment:
+    NODE_ENV: development
+  node: 
+    version: 4.4.7
+dependencies:
+  pre:
+    - echo @@@@@@@@@@@@@pre
+    - ls -a
+  override: 
+    - echo @@@@@@@@@@@@@overr
+  post:
+    - echo @@@@@@@@@@@@@post
+general:
+  build_dir: BackOffice

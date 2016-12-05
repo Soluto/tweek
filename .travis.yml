@@ -12,6 +12,6 @@ install:
   - cd ./BackOffice
   - npm i
 script:
-  - npm run test
+  - npm run test:unit
   - npm run coverage:upload:code-climate
   
