@@ -1,7 +1,7 @@
 /* global describe, before, after it, browser */
 
 import KeysAsserts from './KeysAsserts';
-import KeysPageObject from '../keysPageObject';
+import KeysPageObject from '../KeysPageObject';
 import assert from 'assert';
 import { selectors } from '../selectors';
 
