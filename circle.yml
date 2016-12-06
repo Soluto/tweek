@@ -19,10 +19,10 @@ test:
     - ls -a
     - docker build -t tweek-image
     - docker images
-    - docker run tweek-image
+    - docker run -p 3000:80 tweek-image 
   override:
     - yarn test:unit
-    - curl -v localhost:
+    - curl -v http://localhost:3000
     # - yarn test:e2e
 general:
   build_dir: BackOffice
