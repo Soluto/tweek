@@ -17,9 +17,9 @@ dependencies:
 test:
   pre:
     - ls -a
-    - docker build -t tweek-image
+    - docker build -t tweek .
     - docker images
-    - docker run -p 3000:80 tweek-image 
+    - docker run -p 3000:80 tweek
   override:
     - yarn test:unit
     - curl -v http://localhost:3000
