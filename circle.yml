@@ -16,10 +16,13 @@ dependencies:
     - ~/.yarn-cache
 test:
   pre:
-    #- yarn global add selenium-standalone
-    #- yarn run start
+    - ls -a
+    - docker build -t tweek-image
+    - docker images
+    - docker run tweek-image
   override:
     - yarn test:unit
+    - curl -v localhost:
     # - yarn test:e2e
 general:
   build_dir: BackOffice
