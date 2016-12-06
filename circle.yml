@@ -9,8 +9,7 @@ machine:
     version: 6.9.1
 dependencies:
   pre:
-    - mkdir -p ~/.yarn
-    - cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
+    - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
   override:
     - yarn install
   cache_directories:
@@ -19,7 +18,7 @@ dependencies:
 test:
   pre:
     - docker info
-    - docker build -t tweek .
+    - docker build --rm=false -t tweek .
     - docker images
     - docker run -p 3000:3000 tweek
   override:
