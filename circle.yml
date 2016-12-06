@@ -29,4 +29,4 @@ general:
   build_dir: BackOffice
 notify:
   webhooks:
-    - url: https://ci.appveyor.com/api/github/webhook?id=cncldr9jrdhdqe80
+    - url: https://hooks.slack.com/services/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
