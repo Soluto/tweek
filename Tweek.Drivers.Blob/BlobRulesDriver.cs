@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
@@ -25,6 +26,7 @@ namespace Tweek.Drivers.Blob
 
             _subscription = Observable.Interval(TimeSpan.FromSeconds(30))
                 .StartWith(0)
+                .SubscribeOn(TaskPoolScheduler.Default)
                 .SelectMany(async _ =>
                 {
                     using (var client = webClientFactory.Create())
