@@ -21,4 +21,9 @@ RUN yarn install
 
 ADD . /home/foo/app
 
-CMD bash
+EXPOSE 3000
+
+ENV PORT=3000
+ENV NODE_ENV=production
+RUN npm run build-prod
+ENTRYPOINT ["node", "./.build/server.js"]
