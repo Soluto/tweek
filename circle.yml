@@ -22,8 +22,8 @@ test:
     - docker info
     - docker build --rm=false -t tweek .
     - docker images
-    - docker run -p 3000:3000 tweek
-    - curl -v http://localhost:3000
+    - docker run --log-opt -p 3000:3000 tweek
+    - curl --retry-delay 5 --retry 10 -v http://localhost:3000
     # - yarn test:e2e
 general:
   build_dir: BackOffice
