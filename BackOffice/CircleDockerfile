@@ -13,10 +13,7 @@ RUN chown -R foo /usr/local
 
 USER foo
 
-RUN wget https://yarnpkg.com/latest.tar.gz
-RUN mkdir -p /opt/yarn
-RUN tar -xf latest.tar.gz dist -C /opt/yarn --strip-components=1
-ENV PATH "$PATH:/opt/yarn/bin"
+RUN npm install --global yarn
 
 RUN ls -la ~/app
 
