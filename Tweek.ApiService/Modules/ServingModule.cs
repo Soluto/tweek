@@ -43,11 +43,11 @@ namespace Tweek.ApiService.Modules
                 var data = await tweek.Calculate(query, identities, contextProps);
 
                 if (query.IsScan)
-                    return JsonConvert.SerializeObject(!isFlatten
-                        ? TreeResult.From(data)
+                    return Response.AsJson(!isFlatten
+                        ? (TreeResult.From(data))
                         : data.ToDictionary(x => x.Key.ToString(), x => x.Value.ToString()));
                 
-                return JsonConvert.SerializeObject(data.Select(x => x.Value.Value).FirstOrDefault());
+                return Response.AsJson(data.Select(x => x.Value.Value).FirstOrDefault());
             };
             
         }
