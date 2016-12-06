@@ -1,4 +1,6 @@
 machine:
+  services:
+    - docker
   environment:
     NODE_ENV: development
     YARN_VERSION: 0.17.8
@@ -16,12 +18,12 @@ dependencies:
     - ~/.yarn-cache
 test:
   pre:
-    - ls -a
+    - docker info
     - docker build -t tweek .
     - docker images
-    - docker run -p 3000:80 tweek
+    - docker run -p 3000:3000 tweek
   override:
-    - yarn test:unit
+    # - yarn test:unit
     - curl -v http://localhost:3000
     # - yarn test:e2e
 general:
