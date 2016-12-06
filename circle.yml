@@ -17,6 +17,7 @@ dependencies:
     - ~/.yarn-cache
 test:
   pre:
+    - cat CircleDockerfile > Dockerfile
     - docker info
     - docker build --rm=false -t tweek .
     - docker images
