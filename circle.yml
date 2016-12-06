@@ -16,14 +16,13 @@ dependencies:
     - ~/.yarn
     - ~/.yarn-cache
 test:
-  pre:
+  override:
+    # - yarn test:unit
     - cat CircleDockerfile > Dockerfile
     - docker info
     - docker build --rm=false -t tweek .
     - docker images
     - docker run -p 3000:3000 tweek
-  override:
-    # - yarn test:unit
     - curl -v http://localhost:3000
     # - yarn test:e2e
 general:
