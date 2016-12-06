@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Couchbase;
 using Couchbase.Core;
 using Tweek.ApiService.Interfaces;
@@ -28,6 +29,7 @@ namespace Tweek.ApiService.Services
         {
             if (!_cluster.IsOpen(_bucketName))
             {
+                Trace.TraceInformation("Opening couchbase connection");
                 _bucket = _cluster.OpenBucket(_bucketName);
             }
 
