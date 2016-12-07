@@ -29,7 +29,3 @@ test:
     - yarn test:e2e
 general:
   build_dir: BackOffice
-deployment:
-  prod:
-    branch: master
-    commands:
