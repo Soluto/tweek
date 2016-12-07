@@ -55,7 +55,9 @@ namespace Tweek.ApiService.Modules
                         ? (TreeResult.From(data))
                         : data.ToDictionary(x => x.Key.ToString(), x => x.Value.ToString()));
 
-                return Response.AsJson(data.Select(x => x.Value.Value).FirstOrDefault() ?? "null");
+                return data.Select(x => x.Value.Value)
+                    .FirstOrNone()
+                    .Match(x=>Response.AsJson(x), () => Response.AsText("null"));
             });
 
         }
