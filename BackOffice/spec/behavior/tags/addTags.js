@@ -35,10 +35,10 @@ describe('add tags', () => {
     const tagsElements = browser.elements(selectors.TAG);
 
     return tagsElements.value
-            .map(x => browser.elementIdText(x.ELEMENT))
-            .map(x => x.value)
-            .filter(x => !!x && x !== '×')
-            .map(x => x.slice(0, x.length - 2));
+      .map(x => browser.elementIdText(x.ELEMENT))
+      .map(x => x.value)
+      .filter(x => !!x && x !== '×')
+      .map(x => x.slice(0, x.length - 2));
   }
 
   function assertTagSuggestionExists(partialTagName) {
@@ -50,7 +50,7 @@ describe('add tags', () => {
 
   // it('should succeed add tags to key', () => {
   //   keysPageObject.goToKey(tagsTestKeyFullPath);
-    
+
   //   const guid1 = chance.guid();
   //   const guid2 = chance.guid();
   //   addTag(guid1);
@@ -85,7 +85,13 @@ describe('add tags', () => {
   //   assertTagSuggestionExists(partialGuid2);
   // });
 
-  it('should do something TEST',()=>{
-    keysPageObject.goToKey("@tests/behavior/addKeyTest-05-12-2016-11-52-29");
+  // it('should do something TEST',()=>{
+  //   // keysPageObject.goToKey("@tests/behavior/addKeyTest-05-12-2016-11-52-29");
+
+  // });
+
+  it('Github test', function () {
+    browser.url('http://localhost:8080');
+    browser.waitForVisible("#app", 2000);
   });
 });
