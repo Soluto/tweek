@@ -19,14 +19,14 @@ namespace Tweek.Drivers.Blob
         private readonly ISubject<Dictionary<string, RuleDefinition>> _subject;
         private readonly IDisposable _subscription;
 
-        public BlobRulesDriver(Uri url, IWebClientFactory webClientFactory)
+        public BlobRulesDriver(Uri url, IWebClientFactory webClientFactory, IScheduler scheduler = null)
         {
             _url = url;
             _subject = new ReplaySubject<Dictionary<string, RuleDefinition>>(1);
-
+            scheduler = scheduler ?? TaskPoolScheduler.Default;
             _subscription = Observable.Interval(TimeSpan.FromSeconds(30))
                 .StartWith(0)
-                .SubscribeOn(TaskPoolScheduler.Default)
+                .SubscribeOn(scheduler)
                 .SelectMany(async _ =>
                 {
                     using (var client = webClientFactory.Create())
