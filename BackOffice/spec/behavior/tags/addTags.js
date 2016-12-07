@@ -91,7 +91,7 @@ describe('add tags', () => {
   // });
 
   it('Github test', function () {
-    browser.url('https://github.com/');
-    browser.waitForVisible(".header-logo-invertocat", 2000);
+    browser.url('http://localhost:8080');
+    browser.waitForVisible("#app", 2000);
   });
 });
