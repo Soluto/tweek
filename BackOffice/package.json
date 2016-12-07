@@ -80,7 +80,7 @@
     "extract-text-webpack-plugin": "1.0.1",
     "file-loader": "0.8.5",
     "fs-extra": "0.30.0",
-    "glob-promise": "2.0.0",
+    "glob-promise": "^2.0.0",
     "helmet": "1.1.0",
     "hpp": "0.2.0",
     "if-env": "1.0.0",
@@ -131,12 +131,12 @@
     "style-loader": "0.13.0",
     "url-loader": "0.5.7",
     "velocity-react": "1.1.5",
-    "webpack": "1.12.14",
-    "webpack-dev-server": "1.14.1",
     "wdio-mocha-framework": "0.4.3",
     "wdio-phantomjs-service": "0.1.0",
-    "wdio-selenium-standalone-service": "^0.0.7",
-    "webdriverio": "4.2.15"
+    "wdio-selenium-standalone-service": "0.0.7",
+    "webdriverio": "4.2.15",
+    "webpack": "1.12.14",
+    "webpack-dev-server": "1.14.1"
   },
   "devDependencies": {
     "babel-jest": "13.2.2",
