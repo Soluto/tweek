@@ -1,0 +1,10 @@
+# Indentation override for all JS under lib directory
+[**.js]
+charset = utf-8
+indent_style = space
+indent_size = 2
+
+[**.html]
+charset = utf-8
+indent_style = space
+indent_size = 2
