@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Web;
 using Engine;
 using Engine.Core.Context;
 using Engine.Core.Utils;
@@ -8,6 +11,7 @@ using Engine.DataTypes;
 using LanguageExt;
 using Nancy;
 using Newtonsoft.Json;
+using static Tweek.ApiService.Utils.NancyHelpers;
 
 namespace Tweek.ApiService.Modules
 {
@@ -27,18 +31,22 @@ namespace Tweek.ApiService.Modules
 
         public ServingModule(ITweek tweek) : base(PREFIX)
         {
-            Get["{query*}", runAsync:true] = async (@params, ct) =>
+            Get["{query*}", runAsync: true] = AsyncTimeout(10000, async(@params, ct) =>
             {
-                var allParams = PartitionByKey(((DynamicDictionary) Request.Query).ToDictionary(), x => x.StartsWith("$"));
+                var allParams = PartitionByKey(((DynamicDictionary) Request.Query).ToDictionary(),
+                    x => x.StartsWith("$"));
                 var modifiers = allParams.Item1;
-                var isFlatten = modifiers.TryGetValue("$flatten").Select(x=>bool.Parse(x.ToString())).IfNone(false);
+                var isFlatten = modifiers.TryGetValue("$flatten").Select(x => bool.Parse(x.ToString())).IfNone(false);
 
-                IReadOnlyDictionary<string, string> contextParams = allParams.Item2.ToDictionary(x=>x.Key, x=>x.Value.ToString());
+                IReadOnlyDictionary<string, string> contextParams = allParams.Item2.ToDictionary(x => x.Key,
+                    x => x.Value.ToString());
 
-                var identities = new HashSet<Identity>(contextParams.Where(x => !x.Key.Contains(".")).Select(x=>new Identity(x.Key, x.Value)));
+                var identities =
+                    new HashSet<Identity>(
+                        contextParams.Where(x => !x.Key.Contains(".")).Select(x => new Identity(x.Key, x.Value)));
                 GetLoadedContextByIdentityType contextProps =
                     identityType => key => contextParams.TryGetValue($"{identityType}.{key}");
-                
+
                 var query = ConfigurationPath.New(((string) @params.query));
                 var data = await tweek.Calculate(query, identities, contextProps);
 
@@ -46,11 +54,13 @@ namespace Tweek.ApiService.Modules
                     return Response.AsJson(!isFlatten
                         ? (TreeResult.From(data))
                         : data.ToDictionary(x => x.Key.ToString(), x => x.Value.ToString()));
-                
-                return Response.AsJson(data.Select(x => x.Value.Value).FirstOrDefault());
-            };
-            
+
+                return Response.AsJson(data.Select(x => x.Value.Value).FirstOrDefault() ?? "null");
+            });
+
         }
+
+        
 
     }
 }

@@ -145,6 +145,7 @@
     <Compile Include="TreeResult.cs" />
     <Compile Include="Modules\ContextUpdateModule.cs" />
     <Compile Include="Modules\ValidationModule.cs" />
+    <Compile Include="Utils\NancyHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Drivers\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj">
