@@ -82,15 +82,25 @@ namespace Tweek.Drivers.CouchbaseDriver
         public async Task<Dictionary<string, string>> GetContext(Identity identity)
         {
             var key = GetKey(identity);
-            var bucket = GetOrOpenBucket();
-            var document = await bucket.GetDocumentAsync<Dictionary<string, string>>(key);
-            if (document.Status == Couchbase.IO.ResponseStatus.KeyNotFound)
+            var data = await GetFromAllSources<Dictionary<string, string>>(key);
+            if (data == null)
             {
                 return new Dictionary<string, string>();
             }
-            if (!document.Success)
-                throw (document.Exception ?? new Exception(document.Message));
-            return document.Content;
+            return data;
+        }
+
+        private async Task<T> GetFromAllSources<T>(string key) where T:class
+        {
+            var bucket = GetOrOpenBucket();
+            var document = await bucket.GetAsync<T>(key);
+            if (document.Success) return document.Value;
+            if (document.Status == Couchbase.IO.ResponseStatus.KeyNotFound) return null;
+            var replica = (await bucket.GetFromReplicaAsync<T>(key));
+            if (replica.Success) return replica.Value;
+            if (replica.Status == Couchbase.IO.ResponseStatus.KeyNotFound) return null;
+            throw new AggregateException(document.Exception ?? new Exception(document.Message),
+                                          replica.Exception ?? new Exception(replica.Message));
         }
 
         public async Task RemoveIdentityContext(Identity identity)
