@@ -47,6 +47,8 @@ exports.config = {
      browserName: 'chrome',
      chromeOptions : { "args" : ["--no-sandbox"] }
   }],
+  host: 'localhost',
+  port: 4444,
   //
   // ===================
   // Test Configurations
