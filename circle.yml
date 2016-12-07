@@ -28,10 +28,10 @@ test:
     - sudo apt-get --only-upgrade install google-chrome-stable
     - npm install selenium-standalone -g
     - cat CircleDockerfile > Dockerfile
-    #- docker build --rm=false -t tweek .
-    #- docker images
-    #- docker run -d -p 8080:3000 tweek
-    - npm start
+    - docker build --rm=false -t tweek .
+    - docker images
+    - docker run -d -p 8080:3000 tweek
+    #- npm start
     - curl --retry-delay 5 --retry 10 -v http://localhost:8080
     - npm run test:e2e
 general:
