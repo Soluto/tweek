@@ -1,14 +1,9 @@
 import Git from 'nodegit';
-import glob from 'glob';
+import glob from 'glob-promise';
 import createLock from '../../utils/createLock';
 import Promise from 'bluebird';
 
 const fs = require('promisify-node')('fs-extra');
-
-const promisify = (fn, context) => (...args) => new Promise((resolve, reject) =>
-  fn.call(context, ...args.concat([(err, res) => !!(err) ? reject(err) : resolve(res)])));
-
-const globAsync = promisify(glob);
 
 class GitRepository {
 
@@ -48,7 +43,7 @@ class GitRepository {
   async getFileNames(folderName = '') {
     await this._repoPromise;
 
-    return await globAsync('**/*.*', {
+    return await glob('**/*.*', {
       cwd: `${this._localPath}/${folderName}`,
     });
   }
