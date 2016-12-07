@@ -1,4 +1,6 @@
 machine:
+  services:
+    - docker
   environment:
     NODE_ENV: development
     YARN_VERSION: 0.17.8
@@ -7,8 +9,7 @@ machine:
     version: 6.9.1
 dependencies:
   pre:
-    - mkdir -p ~/.yarn
-    - cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
+    - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
   override:
     - yarn install
   cache_directories:
@@ -16,13 +17,15 @@ dependencies:
     - ~/.yarn-cache
 test:
   pre:
-    - yarn global add selenium-standalone
-    - yarn run start
+    - docker images
   override:
     # - yarn test:unit
+    - cat CircleDockerfile > Dockerfile
+    - docker info
+    - docker build --rm=false -t tweek .
+    - docker images
+    - docker run -d -p 8080:8080 tweek
+    - curl --retry-delay 5 --retry 10 -v http://localhost:8080
     - yarn test:e2e
 general:
   build_dir: BackOffice
-notify:
-  webhooks:
-    - url: https://ci.appveyor.com/api/github/webhook?id=cncldr9jrdhdqe80
