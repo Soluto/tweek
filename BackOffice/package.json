@@ -132,7 +132,11 @@
     "url-loader": "0.5.7",
     "velocity-react": "1.1.5",
     "webpack": "1.12.14",
-    "webpack-dev-server": "1.14.1"
+    "webpack-dev-server": "1.14.1",
+    "wdio-mocha-framework": "0.4.3",
+    "wdio-phantomjs-service": "0.1.0",
+    "wdio-selenium-standalone-service": "^0.0.7",
+    "webdriverio": "4.2.15"
   },
   "devDependencies": {
     "babel-jest": "13.2.2",
