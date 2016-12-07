@@ -39,6 +39,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Azure", "Azure", "{CF97CC73-E1AC-4CF3-9839-612298C314D3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Performance", "Performance", "{CACAD098-D265-4C1B-AF6D-F75B8F89E26D}"
+	ProjectSection(SolutionItems) = preProject
+		Tweek.ApiService\Utils\TraceHelpers.cs = Tweek.ApiService\Utils\TraceHelpers.cs
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleBenchmarks", "Performance\SimpleBenchmarks\SimpleBenchmarks.csproj", "{7DBBABD4-53D4-4782-909E-53CC6876CBC0}"
 EndProject

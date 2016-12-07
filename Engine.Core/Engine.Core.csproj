@@ -69,6 +69,7 @@
     <Compile Include="Rules\IRuleParser.cs" />
     <Compile Include="Utils\OptionHelpers.cs" />
     <Compile Include="Utils\OptionIEnumrableHelpers.cs" />
+    <Compile Include="Utils\TraceHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
