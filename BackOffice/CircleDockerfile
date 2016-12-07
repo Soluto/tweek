@@ -1,0 +1,29 @@
+FROM node:6.9.1
+
+RUN mkdir -p ~/app/node_modules
+
+WORKDIR /home/foo/app
+
+COPY yarn.lock yarn.lock
+COPY package.json package.json
+
+RUN adduser foo
+RUN chown -R foo /home/foo
+RUN chown -R foo /usr/local
+
+USER foo
+
+RUN npm install --global yarn
+
+RUN ls -la ~/app
+
+RUN yarn install
+
+ADD . /home/foo/app
+
+EXPOSE 3000
+
+ENV PORT=3000
+ENV NODE_ENV=production
+RUN npm run build-prod
+ENTRYPOINT ["node", "./.build/server.js"]
