@@ -44,8 +44,11 @@ exports.config = {
     // 5 instance gets started at a time.
     // maxInstances: 5,
     //
-    browserName: 'chrome',
+     browserName: 'chrome',
+     chromeOptions : { "args" : ["--no-sandbox"] }
   }],
+  host: 'localhost',
+  port: 4444,
   //
   // ===================
   // Test Configurations
@@ -68,7 +71,7 @@ exports.config = {
   //
   // Set a base URL in order to shorten url command calls. If your url parameter starts
   // with "/", then the base url gets prepended.
-  // baseUrl: 'http://localhost:3000',
+  //baseUrl: 'http://localhost:3000',
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,
