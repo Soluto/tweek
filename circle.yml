@@ -8,19 +8,19 @@ machine:
   node: 
     version: 6.9.1
 dependencies:
+  cache_directories:
+    - ~/.yarn
+    - ~/.yarn-cache
   pre:
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
   override:
     - yarn install
-  cache_directories:
-    - ~/.yarn
-    - ~/.yarn-cache
 test:
   override:
     # - yarn test:unit
     - wget https://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar
     - java -jar selenium-server-standalone-2.44.0.jar:
-          background: false
+          background: true
     - cat CircleDockerfile > Dockerfile
     - docker build --rm=false -t tweek .
     - docker images
