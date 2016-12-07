@@ -13,6 +13,7 @@ using Engine.Core.Rules;
 using Tweek.JPad;
 using ContextHelpers = Engine.Context.ContextHelpers;
 using LanguageExt;
+using static Engine.Core.Utils.TraceHelpers;
 
 namespace Engine
 {
@@ -51,8 +52,13 @@ namespace Engine
             HashSet<Identity> identities, 
             GetLoadedContextByIdentityType externalContext = null)
         {
-            var allContextData = (await Task.WhenAll(identities.Select(async identity => new { Identity = identity, Context = await _contextDriver.GetContext(identity) })))
-                                  .ToDictionary(x=>x.Identity, x=>x.Context);
+            Dictionary<Identity, Dictionary<string, string>> allContextData;
+            using (TraceTime("Reading from context"))
+            {
+                allContextData = (await Task.WhenAll(identities.Select(async identity => new { Identity = identity, Context = await _contextDriver.GetContext(identity) })))
+                                  .ToDictionary(x => x.Identity, x => x.Context);
+            }
+            
             var allRules = _rulesLoader();
 
             var paths = GetAllPaths(allContextData, allRules, pathQuery);
@@ -63,13 +69,17 @@ namespace Engine
             var contexts =  ContextHelpers.Fallback(externalContext, loadedContexts);
             var pathsWithRules = paths.Select(path => new { Path = path, Rules = allRules.TryGetValue(path) }).ToList();
 
-            return pathsWithRules
-                .AsParallel()
-                .Select(x =>
-                    EngineCore.CalculateKey(identities, contexts, x.Path, p=>allRules.TryGetValue(p)).Select(value => new { path = x.Path.ToRelative(pathQuery), value })
-                 )
-                .SkipEmpty()
-                .ToDictionary(x => x.path, x => x.value);
+            using (TraceTime($"Calculating keys count-{pathsWithRules.Count}"))
+            {
+                return pathsWithRules
+                    .AsParallel()
+                    .Select(x =>
+                        EngineCore.CalculateKey(identities, contexts, x.Path, p => allRules.TryGetValue(p))
+                            .Select(value => new {path = x.Path.ToRelative(pathQuery), value})
+                    )
+                    .SkipEmpty()
+                    .ToDictionary(x => x.path, x => x.value);
+            }
         }
     }
 
