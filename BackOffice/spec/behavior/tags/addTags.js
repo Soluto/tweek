@@ -97,6 +97,6 @@ it('test', function () {
   
   it('test', function () {
     browser.url('http://localhost:8080');
-    browser.waitForVisible("#app", 2000);
+    browser.waitForVisible("#app", 10000);
   });
 });
