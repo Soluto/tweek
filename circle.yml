@@ -14,7 +14,7 @@ dependencies:
   pre:
     - ls -a
     - ls ~/ -a
-    - yarn chache dir
+    - yarn cache dir
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
     - cat CircleDockerfile > Dockerfile
     - docker build --rm=false -t tweek .
