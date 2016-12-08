@@ -37,8 +37,8 @@ exports.config = {
      browserName: 'chrome',
      chromeOptions : { "args" : ["--no-sandbox"] }
   }],
-  host: 'localhost',
-  port: 8080,
+  // host: 'http://localhost',
+  // port: 8080,
   //
   // ===================
   // Test Configurations
@@ -68,10 +68,10 @@ exports.config = {
   //
   // Default timeout in milliseconds for request
   // if Selenium Grid doesn't send response
-  connectionRetryTimeout: 90000,
+  connectionRetryTimeout: 10000,
   //
   // Default request retries count
-  connectionRetryCount: 3,
+  connectionRetryCount: 2,
   //
   // Initialize the browser instance with a WebdriverIO plugin. The object should have the
   // plugin name as key and the desired plugin options as properties. Make sure you have
@@ -118,7 +118,7 @@ exports.config = {
   mochaOpts: {
     ui: 'bdd',
     compilers: ['js:babel-register'],
-    timeout: 1000000,
+    timeout: 10000,
   },
   onPrepare: () => {
     console.log('prepare');
