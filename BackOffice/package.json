@@ -132,7 +132,8 @@
     "url-loader": "0.5.7",
     "velocity-react": "1.1.5",
     "webpack": "1.12.14",
-    "webpack-dev-server": "1.14.1"
+    "webpack-dev-server": "1.14.1",
+    "wdio-selenium-standalone-service": "^0.0.7"
   },
   "devDependencies": {
     "babel-jest": "13.2.2",
