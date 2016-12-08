@@ -9,6 +9,8 @@ machine:
     version: 6.9.1
 dependencies:
   pre:
+    - echo $DOCKER_EMAIL
+    - echo $DOCKER_USER
     #- ls -a
     #- ls ~/ -a
     #- docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
