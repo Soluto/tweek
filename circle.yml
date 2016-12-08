@@ -11,14 +11,14 @@ dependencies:
   pre:
     #- ls -a
     #- ls ~/ -a
-    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+    #- docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
     - yarn cache dir
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
   override:
     - yarn install
     - ls -a
     - ls ~/ -a
-    - docker pull soluto/tweek-back-office:latest || true
+    #- docker pull soluto/tweek-back-office:latest || true
   cache_directories:
     - ~/.yarn
     - ~/.yarn-cache
@@ -43,8 +43,8 @@ test:
     - npm run test:e2e
 general:
   build_dir: BackOffice
-deployment:
-  production:
-    branch: master
-    commands:
-      - docker push soluto/tweek-back-office:latest
+#deployment:
+  #production:
+    #branch: master
+    #commands:
+      #- docker push soluto/tweek-back-office:latest
