@@ -11,14 +11,14 @@ dependencies:
   pre:
     #- ls -a
     #- ls ~/ -a
+    #- docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
     - yarn cache dir
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
-    - cat CircleDockerfile > Dockerfile
-    - docker build --rm=false -t tweek .
   override:
     - yarn install
     - ls -a
     - ls ~/ -a
+    #- docker pull soluto/tweek-back-office:latest || true
   cache_directories:
     - ~/.yarn
     - ~/.yarn-cache
@@ -34,16 +34,17 @@ test:
     #- sudo apt-get update
     #- sudo apt-get --only-upgrade install google-chrome-stable
     #- npm install selenium-standalone -g
+    - cat CircleDockerfile > Dockerfile
+    - docker build --rm=false -t soluto/tweek-back-office:latest .
     - docker images
-    - docker run -d -p 8080:3000 tweek
+    - docker run -d -p 90:3000 soluto/tweek-back-office:latest
     #- npm start
-    - curl --retry-delay 5 --retry 10 -v http://localhost:8080/keys
+    - curl --retry-delay 5 --retry 10 -v http://localhost:90/keys
     - npm run test:e2e
 general:
   build_dir: BackOffice
-deployment:
-  production:
-    branch: master
-    commands:
-      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker push tweek
+#deployment:
+  #production:
+    #branch: master
+    #commands:
+      #- docker push soluto/tweek-back-office:latest
