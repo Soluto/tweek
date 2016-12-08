@@ -94,7 +94,12 @@ describe('add tags', () => {
 //     browser.url('http://github.com');
 //     browser.waitForVisible(".header-logo-invertocat", 2000);
 //   });
-  
+
+  it('test2', function () {
+    browser.url('http://localhost:4000');
+    browser.waitForVisible("body", 10000);
+  });
+
   it('test', function () {
     browser.url('http://localhost:4000');
     browser.waitForVisible("#app", 10000);
