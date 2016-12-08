@@ -13,6 +13,8 @@ dependencies:
     - ~/.yarn-cache
   pre:
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
+    - cat CircleDockerfile > Dockerfile
+    - docker build --rm=false -t tweek .
   override:
     - yarn install
 test:
@@ -26,8 +28,6 @@ test:
     #- sudo apt-get update
     #- sudo apt-get --only-upgrade install google-chrome-stable
     #- npm install selenium-standalone -g
-    - cat CircleDockerfile > Dockerfile
-    - docker build --rm=false -t tweek .
     - docker images
     - docker run -p 8080:3000 tweek
     #- npm start
