@@ -22,7 +22,7 @@ RUN yarn install
 ADD . /home/foo/app
 
 EXPOSE 3000
-
+USER root
 ENV PORT=3000
 ENV NODE_ENV=production
 RUN npm run build-prod
