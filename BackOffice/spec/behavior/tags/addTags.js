@@ -90,8 +90,8 @@ describe('add tags', () => {
 
   // });
 
-  it('Github test', function () {
-    browser.url('http://localhost:90');
+  it('test', function () {
+    browser.url('http://localhost:8080');
     browser.waitForVisible("#app", 2000);
   });
 });
