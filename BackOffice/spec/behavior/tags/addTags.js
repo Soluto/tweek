@@ -90,13 +90,13 @@ describe('add tags', () => {
 
   // });
 
-it('test', function () {
-    browser.url('http://github.com');
-    browser.waitForVisible(".header-logo-invertocat", 2000);
-  });
+// it('test', function () {
+//     browser.url('http://github.com');
+//     browser.waitForVisible(".header-logo-invertocat", 2000);
+//   });
   
   it('test', function () {
-    browser.url('http://localhost:90');
+    browser.url('http://localhost:4000');
     browser.waitForVisible("#app", 10000);
   });
 });
