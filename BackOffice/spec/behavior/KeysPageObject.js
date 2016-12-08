@@ -4,7 +4,7 @@ import moment from 'moment';
 export default class KeysPageObject {
 
   // static BASE_URL = 'http://localhost:8080/';
-  static BASE_URL = 'http://127.0.0.1:8080/';
+  static BASE_URL = 'http://127.0.0.1:90/';
   static KEYS_PAGE_URL = 'keys';
 
   constructor(browser) {
