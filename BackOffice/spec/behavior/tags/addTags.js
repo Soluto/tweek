@@ -90,17 +90,17 @@ describe('add tags', () => {
 
   // });
 
-// it('test', function () {
-//     browser.url('http://github.com');
-//     browser.waitForVisible(".header-logo-invertocat", 2000);
-//   });
-
-  it('test2', function () {
-    browser.url('http://localhost:4000');
-    browser.waitForVisible("body", 10000);
+  it('test1', function () {
+    browser.url('http://github.com');
+    browser.waitForVisible(".header-logo-invertocat", 2000);
   });
 
-  it('test', function () {
+  it('test2', function () {
+    browser.url('http://127.0.0.1:4000');
+    browser.waitForVisible("#app", 10000);
+  });
+
+  it('test3', function () {
     browser.url('http://localhost:4000');
     browser.waitForVisible("#app", 10000);
   });
