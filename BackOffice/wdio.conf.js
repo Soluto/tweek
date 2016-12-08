@@ -118,7 +118,7 @@ exports.config = {
   mochaOpts: {
     ui: 'bdd',
     compilers: ['js:babel-register'],
-    timeout: 10000,
+    timeout: 100000,
   },
   onPrepare: () => {
     console.log('prepare');
