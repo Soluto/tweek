@@ -8,17 +8,21 @@ machine:
   node: 
     version: 6.9.1
 dependencies:
-  cache_directories:
-    - ~/.yarn
-    - ~/.yarn-cache
   pre:
-    - ls -a
-    - ls ~/ -a
+    #- ls -a
+    #- ls ~/ -a
+    - yarn cache dir
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
     - cat CircleDockerfile > Dockerfile
     - docker build --rm=false -t tweek .
   override:
     - yarn install
+    - ls -a
+    - ls ~/ -a
+  cache_directories:
+    - ~/.yarn
+    - ~/.yarn-cache
+    - /home/ubuntu/.cache/yarn
 test:
   override:
     # - yarn test:unit
