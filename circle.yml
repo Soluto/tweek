@@ -11,7 +11,7 @@ dependencies:
   pre:
     #- ls -a
     #- ls ~/ -a
-    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+    - docker login -u $DOCKER_USER -p $DOCKER_PASS
     - yarn cache dir
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
   override:
