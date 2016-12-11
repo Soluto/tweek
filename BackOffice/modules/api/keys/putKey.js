@@ -1,12 +1,20 @@
 import { UKNOWN_AUTHOR } from '../unknownAuthor';
+import {getPathForMeta, getPathForJPad} from "../../server/repositories/gitPathsUtils";
 
 export default async function (req, res,
-  { metaRepository,
-    keysRepository,
-    author = UKNOWN_AUTHOR }, { params }) {
+  { gitTransactionManager, author = UKNOWN_AUTHOR },
+  { params })
+{
   const keyPath = params.splat;
-  await keysRepository.updateKey(keyPath, req.body.keyDef.source, author);
-  await metaRepository.updateRuleMeta(keyPath, req.body.meta, author);
+
+  await gitTransactionManager.transact(async gitRepo => {
+    await gitRepo.pull();
+
+    await gitRepo.updateFile(getPathForMeta(keyPath), JSON.stringify(req.body.meta, null, 4));
+    await gitRepo.updateFile(getPathForJPad(keyPath), req.body.keyDef.source);
+
+    await gitRepo.commitAndPush("BackOffice - updating " + keyPath, author)
+  });
 
   res.send('OK');
 }
