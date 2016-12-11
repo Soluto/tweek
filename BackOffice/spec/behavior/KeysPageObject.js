@@ -3,9 +3,9 @@ import moment from 'moment';
 
 export default class KeysPageObject {
 
-  // static BASE_URL = 'http://localhost:8080/';
-  static BASE_URL = 'http://127.0.0.1:90/';
+  static BASE_URL = 'http://127.0.0.1:4000/';
   static KEYS_PAGE_URL = 'keys';
+  static GIT_TRANSACTION_TIMEOUT = 180000;
 
   constructor(browser) {
     this.browser = browser;
@@ -39,7 +39,7 @@ export default class KeysPageObject {
 
     this.browser.waitUntil(() =>
       this.isInKeyPage(keyName),
-      1000000/*TODO: REMOVE afater test passes in circle !!!!!!!*/);
+      KeysPageObject.GIT_TRANSACTION_TIMEOUT);
   }
 
   isInKeyPage(keyName) {
@@ -70,11 +70,12 @@ export default class KeysPageObject {
   }
 
   wait(delayInMs) {
+    console.log('wait', delayInMs, 'ms');
     let isDone = false;
 
     setTimeout(() => isDone = true, delayInMs);
 
-    this.browser.waitUntil(() => isDone, delayInMs + 10);
+    this.browser.waitUntil(() => isDone, delayInMs + 200);
   }
 
   waitForPageToLoad() {
@@ -85,7 +86,7 @@ export default class KeysPageObject {
     this.browser.waitForVisible(selectors.SAVE_CHANGES_BUTTON, timeout);
   }
 
-  generateKeyName(prefix) {
+  generateTestKeyName(prefix) {
     const currentDate = new Date();
     return `${prefix}-${moment(currentDate).format('DD-MM-YYYY-HH-mm-ss')}`;
   }

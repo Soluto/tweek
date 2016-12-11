@@ -9,7 +9,7 @@ import { selectors } from '../selectors';
 describe('delete key', () => {
   const keysPageObject = new KeysPageObject(browser);
 
-  const keyToDelete = keysPageObject.generateKeyName('deleteKeyTest');
+  const keyToDelete = keysPageObject.generateTestKeyName('deleteKeyTest');
   const testFolder = '@tests';
   const behaviorTestFolder = `${testFolder}/behavior`;
   const keyToDeleteFullPath = `${behaviorTestFolder}/${keyToDelete}`;
@@ -32,8 +32,7 @@ describe('delete key', () => {
     browser.alertAccept();
 
     pageAsserts.assertIsInPage(KeysPageObject.KEYS_PAGE_URL, 'should moves to keys page url');
-
-    keysAsserts.assertIsKeyExistsAfterTransaction(keyToDeleteFullPath, false, 'key should not exist after delete', 10000);
+    keysAsserts.assertIsKeyExistsAfterTransaction(keyToDeleteFullPath, false, 'key should not exist after delete');
   });
 });
 

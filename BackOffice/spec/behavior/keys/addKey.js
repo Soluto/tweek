@@ -8,7 +8,7 @@ import { selectors } from '../selectors';
 describe('add key', () => {
   const keysPageObject = new KeysPageObject(browser);
 
-  const keyToAdd = keysPageObject.generateKeyName('addKeyTest');
+  const keyToAdd = keysPageObject.generateTestKeyName('addKeyTest');
   const testFolder = '@tests';
   const behaviorTestFolder = `${testFolder}/behavior`;
   const keyToAddFullPath = `${behaviorTestFolder}/${keyToAdd}`;
@@ -24,8 +24,6 @@ describe('add key', () => {
   });
 
   it('should succeed adding key', () => {
-    const saveKeyTimeout = 10000;
-
     browser.click(selectors.ADD_KEY_BUTTON);
     keysAsserts.assertKeyOpened('_blank');
 
@@ -48,7 +46,7 @@ describe('add key', () => {
     
     browser.waitUntil(() =>
       keysPageObject.isInKeyPage(keyToAddFullPath),
-      saveKeyTimeout);
+      KeysPageObject.GIT_TRANSACTION_TIMEOUT);
 
     assert(browser.getText(selectors.EDITABLE_KEY_NAME),
       keyToAddFullPath,
