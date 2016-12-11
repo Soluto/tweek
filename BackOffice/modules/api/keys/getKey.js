@@ -1,18 +1,26 @@
 import path from 'path';
+import {getPathForJPad, getPathForMeta} from "../../server/repositories/gitPathsUtils";
 
-export default function (req, res, { keysRepository, metaRepository }, { params }) {
+export default async function (req, res,
+  { gitTransactionManager },
+  { params })
+{
   const keyPath = params.splat;
-  
-  (async function () {
-    const keyData = await keysRepository.getKey(keyPath);
+
+  const key = await gitTransactionManager.transact(async gitRepo => {
+    await gitRepo.pull();
+
+    let pathForJPad = getPathForJPad(keyPath);
 
     return {
       keyDef: {
         type: path.extname(keyPath).substring(1),
-        source: keyData.fileContent,
-        modificationData: keyData.fileModificationData,
+        source: await gitRepo.readFile(pathForJPad),
+        modificationData: await gitRepo.getFileDetails(pathForJPad)
       },
-      meta: await metaRepository.getKeyMeta(keyPath),
-    };
-  }()).then((x) => res.json(x), console.error.bind(console));
+      meta: JSON.parse(await gitRepo.getFileDetails(getPathForMeta(keyPath)))
+    }
+  });
+
+  res.json(key);
 }
