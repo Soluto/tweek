@@ -46,12 +46,11 @@ export default class KeysAsserts {
     this.pageAsserts.assertIsInPage(`${KeysPageObject.KEYS_PAGE_URL}/${expectedKey}`, message);
   }
 
-  assertIsKeyExistsAfterTransaction(keyName, isExisting, message, transactionDelay = 3000) {
-    console.log(`assert ${keyName} key, expected existing:${isExisting}. transaction delay:${transactionDelay}`);
-
+  assertIsKeyExistsAfterTransaction(keyName, isExisting, message) {
+    console.log(`assert ${keyName} key, expected existing:${isExisting}. transaction delay:${KeysPageObject.GIT_TRANSACTION_TIMEOUT}`);
+    this.keysPageObject.wait(KeysPageObject.GIT_TRANSACTION_TIMEOUT);
     const currentUrl = this.browser.getUrl();
-    this.keysPageObject.wait(transactionDelay);
-
+    
     let isKeyExists;
 
     try {

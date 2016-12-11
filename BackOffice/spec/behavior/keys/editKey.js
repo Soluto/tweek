@@ -8,7 +8,7 @@ import { selectors, getRelativeSelector } from '../selectors';
 describe('edit key', () => {
   const keysPageObject = new KeysPageObject(browser);
 
-  const keyToEdit = keysPageObject.generateKeyName('editKeyTest');
+  const keyToEdit = keysPageObject.generateTestKeyName('editKeyTest');
   const testFolder = '@tests';
   const behaviorTestFolder = `${testFolder}/behavior`;
   const keyToEditFullPath = `${behaviorTestFolder}/${keyToEdit}`;
@@ -74,7 +74,6 @@ describe('edit key', () => {
 
     addRuleAndAssertItsFocus(3);
     keysAsserts.assertKeyHasNumberOfRules(4);
-
     const secondRule = selectors.ruleContainer(2);
 
     const secondRuleFirstConditionPropertyName = getRelativeSelector([secondRule, selectors.conditionPropertyName()]);
@@ -96,11 +95,10 @@ describe('edit key', () => {
     browser.click(selectors.SAVE_CHANGES_BUTTON);
     assert(keysPageObject.isSaving(), 'should move to in saving state');
 
-    browser.waitUntil(() => !keysPageObject.isSaving(), saveChangesTimeout);
+    browser.waitUntil(() => !keysPageObject.isSaving(), KeysPageObject.GIT_TRANSACTION_TIMEOUT);
 
     browser.refresh();
 
     readAndAssertKeySource();
   });
 });
-
