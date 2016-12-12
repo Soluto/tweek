@@ -20,7 +20,7 @@ namespace Tweek.ApiService.Utils
                     try
                     {
                         var result = await Task.WhenAny(delay, fn(context, newToken.Token));
-                        token.ThrowIfCancellationRequested();
+                        if (token.IsCancellationRequested) throw new TaskCanceledException();
                         if (result == delay) throw new TimeoutException();
                         return await result;
                     }
