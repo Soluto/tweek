@@ -50,9 +50,9 @@ namespace Tweek.ApiService
             var bucketConnectionIsAlive = new BucketConnectionIsAlive(cluster, contextBucketName);
             var rulesDriverStatusService = new RulesDriverStatusService(rulesDriver);
 
-            container.Register<ITweek>((ctx, no) => tweek);
-            container.Register<IContextDriver>((ctx, no) => contextDriver);
-            container.Register<IRuleParser>((ctx, no) => parser);
+            container.Register<ITweek>((ctx, no) => tweek).AsSingleton();
+            container.Register<IContextDriver>((ctx, no) => contextDriver).AsSingleton();
+            container.Register<IRuleParser>((ctx, no) => parser).AsSingleton();
             container.Register<IEnumerable<IDiagnosticsProvider>>((ctx, no) => new List<IDiagnosticsProvider> {  bucketConnectionIsAlive, rulesDriverStatusService});
 
             base.ApplicationStartup(container, pipelines);
