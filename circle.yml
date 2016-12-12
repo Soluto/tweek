@@ -32,8 +32,8 @@ test:
     - npm run test:e2e
 general:
   build_dir: BackOffice
-deployment:
-  production:
-    branch: master
-    commands:
+#deployment:
+  #production:
+    #branch: master
+    #commands:
       #- docker push soluto/tweek-back-office:latest
