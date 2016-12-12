@@ -6,102 +6,83 @@ import { selectors } from '../selectors';
 import Chance from 'chance';
 
 describe('add tags', () => {
-  const keysPageObject = new KeysPageObject(browser);
+    const keysPageObject = new KeysPageObject(browser);
 
-  const tagsTestKeyName = keysPageObject.generateKeyName('tagsTest');
-  const testFolder = '@tests';
-  const behaviorTestFolder = `${testFolder}/behavior`;
-  const tagsTestKeyFullPath = `${behaviorTestFolder}/${tagsTestKeyName}`;
+    const tagsTestKeyName = keysPageObject.generateTestKeyName('tagsTest');
+    const testFolder = '@tests';
+    const behaviorTestFolder = `${testFolder}/behavior`;
+    const tagsTestKeyFullPath = `${behaviorTestFolder}/${tagsTestKeyName}`;
 
-  const chance = new Chance();
+    const chance = new Chance();
 
-  const enterKeyCode = '\uE007';
+    const enterKeyCode = '\uE007';
 
-  // beforeEach(() => {
-  //   keysPageObject.addEmptyKey(tagsTestKeyFullPath);
-  //   browser.windowHandleMaximize();
-  // });
+    beforeEach(() => {
+        keysPageObject.addEmptyKey(tagsTestKeyFullPath);
+        browser.windowHandleMaximize();
+    });
 
-  // afterEach(() => {
-  //   keysPageObject.deleteKeyIfExists(tagsTestKeyFullPath);
-  // });
+    afterEach(() => {
+        keysPageObject.deleteKeyIfExists(tagsTestKeyFullPath);
+    });
 
-  function addTag(tagName) {
-    browser.setValue(selectors.TAGS_INPUT, tagName);
-    browser.keys(enterKeyCode);
-  }
+    function addTag(tagName) {
+        browser.setValue(selectors.TAGS_INPUT, tagName);
+        browser.keys(enterKeyCode);
+    }
 
-  function getOpenedKeyTags() {
-    const tagsElements = browser.elements(selectors.TAG);
+    function getOpenedKeyTags() {
+        const tagsElements = browser.elements(selectors.TAG);
 
-    return tagsElements.value
-      .map(x => browser.elementIdText(x.ELEMENT))
-      .map(x => x.value)
-      .filter(x => !!x && x !== '×')
-      .map(x => x.slice(0, x.length - 2));
-  }
+        return tagsElements.value
+            .map(x => browser.elementIdText(x.ELEMENT))
+            .map(x => x.value)
+            .filter(x => !!x && x !== '×')
+            .map(x => x.slice(0, x.length - 2));
+    }
 
-  function assertTagSuggestionExists(partialTagName) {
-    browser.setValue(selectors.TAGS_INPUT, partialTagName);
+    function assertTagSuggestionExists(partialTagName) {
+        browser.setValue(selectors.TAGS_INPUT, partialTagName);
 
-    const tagsSuggestions = browser.elements(selectors.TAGS_SUGGESTION);
-    assert.equal(tagsSuggestions.value.length, 1);
-  }
+        browser.waitForVisible(selectors.TAGS_SUGGESTION, 2000);
+        const tagsSuggestions = browser.elements(selectors.TAGS_SUGGESTION);
 
-  // it('should succeed add tags to key', () => {
-  //   keysPageObject.goToKey(tagsTestKeyFullPath);
+        assert.equal(tagsSuggestions.value.length, 1);
+    }
 
-  //   const guid1 = chance.guid();
-  //   const guid2 = chance.guid();
-  //   addTag(guid1);
-  //   addTag(guid2);
+    it('should succeed add tags to key', () => {
+      keysPageObject.goToKey(tagsTestKeyFullPath);
 
-  //   browser.click(selectors.SAVE_CHANGES_BUTTON);
-  //   browser.waitUntil(() => !keysPageObject.isSaving(), 10000);
+      const guid1 = chance.guid();
+      const guid2 = chance.guid();
+      addTag(guid1);
+      addTag(guid2);
 
-  //   browser.refresh();
-  //   keysPageObject.waitForKeyToLoad();
+      browser.click(selectors.SAVE_CHANGES_BUTTON);
+      browser.waitUntil(() => !keysPageObject.isSaving(), KeysPageObject.GIT_TRANSACTION_TIMEOUT);
+      browser.refresh();
+      keysPageObject.waitForKeyToLoad();
 
-  //   const tags = getOpenedKeyTags();
+      const tags = getOpenedKeyTags();
 
-  //   assert.deepEqual([guid1, guid2], tags);
-  // });
+      assert.deepEqual([guid1, guid2], tags);
+    });
 
-  // it('should save the tag as a suggestion on submiting it without saving the key', () => {
-  //   keysPageObject.goToKey(tagsTestKeyFullPath);
+    it('should save the tag as a suggestion on submiting it without saving the key', () => {
+        keysPageObject.goToKey(tagsTestKeyFullPath);
 
-  //   const guid1 = chance.guid();
-  //   const guid2 = chance.guid();
-  //   addTag(guid1);
-  //   addTag(guid2);
+        const guid1 = chance.guid();
+        const guid2 = chance.guid();
+        addTag(guid1);
+        addTag(guid2);
 
-  //   browser.refresh();
-  //   keysPageObject.waitForKeyToLoad();
+        browser.refresh();
+        keysPageObject.wait(KeysPageObject.GIT_TRANSACTION_TIMEOUT);
 
-  //   const partialGuid1 = guid1.slice(0, guid1.length - 1);
-  //   assertTagSuggestionExists(partialGuid1);
+        const partialGuid1 = guid1.slice(0, guid1.length - 1);
+        assertTagSuggestionExists(partialGuid1);
 
-  //   const partialGuid2 = guid1.slice(0, guid2.length - 1);
-  //   assertTagSuggestionExists(partialGuid2);
-  // });
-
-  // it('should do something TEST',()=>{
-  //   // keysPageObject.goToKey("@tests/behavior/addKeyTest-05-12-2016-11-52-29");
-
-  // });
-
-  it('test1', function () {
-    browser.url('http://github.com');
-    browser.waitForVisible(".header-logo-invertocat", 2000);
-  });
-
-  it('test2', function () {
-    browser.url('http://127.0.0.1:4000');
-    browser.waitForVisible("#app", 10000);
-  });
-
-  it('test3', function () {
-    browser.url('http://localhost:4000');
-    browser.waitForVisible("#app", 10000);
-  });
+        const partialGuid2 = guid1.slice(0, guid2.length - 1);
+        assertTagSuggestionExists(partialGuid2);
+    });
 });
