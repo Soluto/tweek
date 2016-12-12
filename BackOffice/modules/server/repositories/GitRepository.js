@@ -23,7 +23,7 @@ class GitRepository {
     this.updateFile = lock.synchronized(this.updateFile);
     this._synchronizedPull = lock.synchronized(this._pull);
 
-    this._initIntervalPull();
+    //this._initIntervalPull();
   }
 
   static init(settings) {
@@ -145,17 +145,17 @@ class GitRepository {
     }
   }
 
-  async _initIntervalPull() {
-    while (true) {
-      await Promise.delay(this._pullIntervalInMS);
+  // async _initIntervalPull() {
+  //   while (true) {
+  //     await Promise.delay(this._pullIntervalInMS);
 
-      const isSynced = await this._isSynced();
-      if (!isSynced) {
-        console.log('repository changes founded. git pull');
-        await this._synchronizedPull();
-      }
-    }
-  }
+  //     const isSynced = await this._isSynced();
+  //     if (!isSynced) {
+  //       console.log('repository changes founded. git pull');
+  //       await this._synchronizedPull();
+  //     }
+  //   }
+  // }
 
   async _pushRepositoryChanges(actionName) {
     const repo = await this._repoPromise;

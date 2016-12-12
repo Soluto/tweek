@@ -1,6 +1,6 @@
 exports.config = {
   specs: [
-    //'./spec/behavior/keys/*.js',
+    './spec/behavior/keys/*.js',
     './spec/behavior/tags/*.js',
   ],
   exclude: [
@@ -34,8 +34,8 @@ exports.config = {
     // 5 instance gets started at a time.
     // maxInstances: 5,
     //
-     browserName: 'chrome',
-     chromeOptions : { "args" : ["--no-sandbox"] }
+    browserName: 'chrome',
+    chromeOptions: { "args": ["--no-sandbox"] }
   }],
   // host: 'http://localhost',
   // port: 8080,
@@ -68,7 +68,7 @@ exports.config = {
   //
   // Default timeout in milliseconds for request
   // if Selenium Grid doesn't send response
-  connectionRetryTimeout: 10000,
+  connectionRetryTimeout: 1000000,
   //
   // Default request retries count
   connectionRetryCount: 2,
@@ -118,7 +118,7 @@ exports.config = {
   mochaOpts: {
     ui: 'bdd',
     compilers: ['js:babel-register'],
-    timeout: 100000,
+    timeout: 99999999,
   },
   onPrepare: () => {
     console.log('prepare');
