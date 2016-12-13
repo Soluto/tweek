@@ -35,6 +35,7 @@ namespace Tweek.Drivers.CouchbaseDriver
         {
             if (_bucket == null || !_cluster.IsOpen(_bucketName))
             {
+                Trace.TraceInformation("opening couchbase bucket");
                 _bucket = _cluster.OpenBucket(_bucketName);
             }
             return _bucket;
@@ -110,7 +111,10 @@ namespace Tweek.Drivers.CouchbaseDriver
 
         public void Dispose()
         {
-            if (_bucket != null) _cluster.CloseBucket(_bucket);
+            if (_bucket != null){
+                Trace.TraceInformation("closing couchbase bucket");
+                _cluster.CloseBucket(_bucket);
+            }
         }
     }
 }
