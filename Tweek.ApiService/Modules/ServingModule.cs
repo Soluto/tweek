@@ -31,9 +31,9 @@ namespace Tweek.ApiService.Modules
 
         public ServingModule(ITweek tweek) : base(PREFIX)
         {
-            Get["{query*}", runAsync: true] = AsyncTimeout(10000, async(@params, ct) =>
+            Get["{query*}", runAsync: true] = async (@params, ct) =>
             {
-                var allParams = PartitionByKey(((DynamicDictionary) Request.Query).ToDictionary(),
+                var allParams = PartitionByKey(((DynamicDictionary)Request.Query).ToDictionary(),
                     x => x.StartsWith("$"));
                 var modifiers = allParams.Item1;
                 var isFlatten = modifiers.TryGetValue("$flatten").Select(x => bool.Parse(x.ToString())).IfNone(false);
@@ -47,7 +47,7 @@ namespace Tweek.ApiService.Modules
                 GetLoadedContextByIdentityType contextProps =
                     identityType => key => contextParams.TryGetValue($"{identityType}.{key}");
 
-                var query = ConfigurationPath.New(((string) @params.query));
+                var query = ConfigurationPath.New(((string)@params.query));
                 var data = await tweek.Calculate(query, identities, contextProps);
 
                 if (query.IsScan)
@@ -57,9 +57,8 @@ namespace Tweek.ApiService.Modules
 
                 return data.Select(x => x.Value.Value)
                     .FirstOrNone()
-                    .Match(x=>Response.AsJson(x), () => Response.AsText("null"));
-            });
-
+                    .Match(x => Response.AsJson(x), () => Response.AsText("null"));
+            };
         }
 
         
