@@ -27,14 +27,15 @@ namespace Tweek.Drivers.Blob
             _subscription = Observable.Interval(TimeSpan.FromSeconds(30))
                 .StartWith(0)
                 .SubscribeOn(scheduler)
-                .SelectMany(async _ =>
+                .Select((_)=>Observable.FromAsync(async () =>
                 {
                     using (var client = webClientFactory.Create())
                     {
                         client.Encoding = Encoding.UTF8;
                         return await client.DownloadStringTaskAsync(_url);
                     }
-                })
+                }))
+                .Switch()
                 .DistinctUntilChanged()
                 .Select(JsonConvert.DeserializeObject<Dictionary<string, RuleDefinition>>)
                 .DistinctUntilChanged(new DictionaryEqualityComparer<string, RuleDefinition>(new RuleDefinitionComparer()))
