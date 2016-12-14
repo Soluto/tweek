@@ -25,6 +25,7 @@ test:
   override:
     - yarn test:unit
     - cat CircleDockerfile > Dockerfile
+    - docker images
     - docker build --rm=false -t soluto/tweek-back-office:latest .
     - docker images
     - docker run -d -p 4000:3000 soluto/tweek-back-office:latest
