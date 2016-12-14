@@ -146,11 +146,13 @@ module ValueDistribution =
         | "bernoulliTrial" -> let percentage = schema.GetProperty("args").AsFloat() |>floatToWeighted
                               weightedCalc [|("true", percentage);("false", (100 - percentage))|];
         | s -> raise (Exception("expected operator, found:"+s));
-        let sha1 = new SHA1CryptoServiceProvider(); 
+        
 
         (fun (units : Object[])-> 
+            let sha1 = new SHA1CryptoServiceProvider(); 
             let input = units |> Seq.map string |>  String.concat "."
             let hash = BitConverter.ToUInt64(((sha1.ComputeHash (Encoding.UTF8.GetBytes input)).[0..15]), 0)
+            sha1.Dispose()
             fn(hash))
     
 module Rule = 
