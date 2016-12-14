@@ -46,7 +46,6 @@ describe('add tags', () => {
 
         browser.waitForVisible(selectors.TAGS_SUGGESTION, 2000);
         const tagsSuggestions = browser.elements(selectors.TAGS_SUGGESTION);
-
         assert.equal(tagsSuggestions.value.length, 1);
     }
 
@@ -76,8 +75,8 @@ describe('add tags', () => {
         addTag(guid1);
         addTag(guid2);
 
+        keysPageObject.wait(25000);
         browser.refresh();
-        keysPageObject.wait(KeysPageObject.GIT_TRANSACTION_TIMEOUT);
 
         const partialGuid1 = guid1.slice(0, guid1.length - 1);
         assertTagSuggestionExists(partialGuid1);
