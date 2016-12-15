@@ -6,17 +6,16 @@ using Tweek.ApiService.Interfaces;
 
 namespace Tweek.ApiService.Services
 {
-    public class BucketConnectionIsAlive : IDisposable, IDiagnosticsProvider
+    public class BucketConnectionIsAlive : IDiagnosticsProvider
     {
         public string Name { get; } = "CouchbaseConnectionIsAlive";
 
-        private readonly Cluster _cluster;
         private readonly string _bucketName;
-        private IBucket _bucket;
+        private Func<string, IBucket> _getBucket;
 
-        public BucketConnectionIsAlive(Cluster cluster, string bucketNameToCheck)
+        public BucketConnectionIsAlive(Func<string, IBucket> getBucket, string bucketNameToCheck)
         {
-            _cluster = cluster;
+            _getBucket = getBucket;
             _bucketName = bucketNameToCheck;
         }
 
@@ -27,18 +26,18 @@ namespace Tweek.ApiService.Services
 
         public bool IsAlive()
         {
-            if (!_cluster.IsOpen(_bucketName))
+            try
             {
-                Trace.TraceInformation("Opening couchbase connection");
-                _bucket = _cluster.OpenBucket(_bucketName);
+                _getBucket(_bucketName);
+            }
+            catch (Exception e)
+            {
+                Trace.TraceError("couchbase not alive", e);
+                return false;
             }
 
-            return _cluster.IsOpen(_bucketName);
+            return true;
         }
 
-        public void Dispose()
-        {
-            if (_bucket != null) _cluster.CloseBucket(_bucket);
-        }
     }
 }
