@@ -10,6 +10,7 @@ machine:
 dependencies:
   pre:
     #- docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+    - ipconfig
     - yarn cache dir
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
   override:
@@ -25,7 +26,6 @@ test:
   override:
     - yarn test:unit
     - cat CircleDockerfile > Dockerfile
-    - docker images
     - docker build --rm=false -t soluto/tweek-back-office:latest .
     - docker images
     - docker run -d -p 4000:3000 soluto/tweek-back-office:latest
