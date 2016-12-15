@@ -33,7 +33,6 @@ namespace Engine.Tests.TestDrivers
 
     class CouchbaseTestDriver : ITestDriver
     {
-        readonly Cluster _cluster;
         readonly CouchBaseDriver _driver;
         
         public IContextDriver Context => _driver;
@@ -41,19 +40,13 @@ namespace Engine.Tests.TestDrivers
 
         public CouchbaseTestDriver(Cluster cluster, string bucket)
         {
-            _cluster = cluster;
-            _driver = new CouchBaseDriver(cluster, bucket);
+            _driver = new CouchBaseDriver(cluster.OpenBucket, bucket);
+            cleanup += async () =>
+            {
+                if (cluster.IsOpen(bucket)) cluster.CloseBucket(_driver.GetOrOpenBucket()); 
+                
+            };
         }
-
-        /*
-        async Task InsertRuleData(GitDriver driver, Dictionary<string, RuleDefinition> rules)
-        {
-            await
-                Task.WhenAll(
-                    rules.Select(
-                        x => driver.CommitRuleset(x.Key, x.Value, "tweekintegrationtests", "tweek@soluto.com", DateTimeOffset.UtcNow)));
-        }*/
-
 
         async Task InsertContextRows(Dictionary<Identity, Dictionary<string, string>> contexts)
         {
@@ -68,7 +61,6 @@ namespace Engine.Tests.TestDrivers
         async Task Flush()
         {
             await cleanup();
-            _driver.Dispose();
         }
 
         public TestScope SetTestEnviornment(Dictionary<Identity, Dictionary<string, string>> contexts, string[] keys, Dictionary<string, RuleDefinition> rules)
