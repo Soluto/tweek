@@ -37,8 +37,8 @@ namespace Tweek.ApiService
             var contextBucketName = ConfigurationManager.AppSettings["Couchbase.BucketName"];
             var contextBucketPassword = ConfigurationManager.AppSettings["Couchbase.Password"];
 
-            var cluster = GetCouchbaseCluster(contextBucketName, contextBucketPassword);
-            var contextDriver = new CouchBaseDriver(cluster, contextBucketName);
+            InitCouchbaseCluster(contextBucketName, contextBucketPassword);
+            var contextDriver = new CouchBaseDriver(ClusterHelper.GetBucket, contextBucketName);
 
             var rulesDriver = GetRulesDriver();
             StaticConfiguration.DisableErrorTraces = false;
@@ -47,7 +47,7 @@ namespace Tweek.ApiService
 
             var tweek = Task.Run(async () => await Engine.Tweek.Create(contextDriver, rulesDriver, parser)).Result;
 
-            var bucketConnectionIsAlive = new BucketConnectionIsAlive(cluster, contextBucketName);
+            var bucketConnectionIsAlive = new BucketConnectionIsAlive(ClusterHelper.GetBucket, contextBucketName);
             var rulesDriverStatusService = new RulesDriverStatusService(rulesDriver);
 
             container.Register<ITweek>(tweek);
@@ -67,11 +67,11 @@ namespace Tweek.ApiService
                 })));
         }
 
-        private Cluster GetCouchbaseCluster(string bucketName, string bucketPassword)
+        private void InitCouchbaseCluster(string bucketName, string bucketPassword)
         {
             var url = ConfigurationManager.AppSettings["Couchbase.Url"];
 
-            var cluster = new Couchbase.Cluster(new ClientConfiguration
+            ClusterHelper.Initialize(new ClientConfiguration
             {
                 Servers = new List<Uri> { new Uri(url) },
                 BucketConfigs = new Dictionary<string, BucketConfiguration>
@@ -92,8 +92,6 @@ namespace Tweek.ApiService
                        ContractResolver = new DefaultContractResolver()
                    })
             });
-
-            return cluster;
         }
 
         private BlobRulesDriver GetRulesDriver()

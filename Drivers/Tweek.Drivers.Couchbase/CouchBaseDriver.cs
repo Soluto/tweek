@@ -15,30 +15,22 @@ using System.Dynamic;
 
 namespace Tweek.Drivers.CouchbaseDriver
 {
-    public class CouchBaseDriver : IContextDriver, IDisposable
+    public class CouchBaseDriver : IContextDriver
     {
-        readonly Cluster _cluster;
         readonly string _bucketName;
-        private IBucket _bucket;
+        private Func<string, IBucket> _getBucket;
 
-        public CouchBaseDriver(Cluster cluster, string bucketName)
+        public CouchBaseDriver(Func<string, IBucket> getBucket,  string bucketName)
         {
             _bucketName = bucketName;
-            _cluster = cluster;
-
-            _bucket = null;
+            _getBucket = getBucket;
         }
 
         public string GetKey(Identity identity) => "identity_" + identity.Type + "_" + identity.Id;
 
-        private IBucket GetOrOpenBucket()
+        public IBucket GetOrOpenBucket()
         {
-            if (_bucket == null || !_cluster.IsOpen(_bucketName))
-            {
-                Trace.TraceInformation("opening couchbase bucket");
-                _bucket = _cluster.OpenBucket(_bucketName);
-            }
-            return _bucket;
+            return _getBucket(_bucketName);
         }
 
         public async Task InsertOrUpdate(string key,
@@ -109,12 +101,6 @@ namespace Tweek.Drivers.CouchbaseDriver
             await GetOrOpenBucket().RemoveAsync(GetKey(identity));
         }
 
-        public void Dispose()
-        {
-            if (_bucket != null){
-                Trace.TraceInformation("closing couchbase bucket");
-                _cluster.CloseBucket(_bucket);
-            }
-        }
+
     }
 }
