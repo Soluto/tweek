@@ -25,8 +25,8 @@ namespace SimpleBenchmarks
                 ["PartnerBrandId"] = "Verizon",
                 ["DeviceType"] = "Mobile",
                 ["IsInGroup"] = "False",
-                ["DeviceOsVersion"] = "NMR1",
-                ["DeviceOsType"] = "5.0.0.0",
+                ["DeviceOsVersion"] = "5.0.0.0",
+                ["DeviceOsType"] = "Android",
                 ["SubscriptionType"] = "InsuranceAndSupport",
                 ["DeviceVendor"] = "google",
                 ["IsTestDevice"] = "false",
@@ -36,8 +36,28 @@ namespace SimpleBenchmarks
             });
         }
     }
+
+    static class MathHelpers
+    {
+        public static double Percentile(this IEnumerable<long> seq, double percentile)
+        {
+            var elements = seq.ToArray();
+            System.Array.Sort(elements);
+            double realIndex = percentile * (elements.Length - 1);
+            int index = (int)realIndex;
+            double frac = realIndex - index;
+            if (index + 1 < elements.Length)
+                return elements[index] * (1 - frac) + elements[index + 1] * frac;
+            else
+                return elements[index];
+        }
+
+    }
+
+
     class Program
     {
+        
         static void Main(string[] args)
         {
             var gitDriver = new Tweek.Drivers.Blob.BlobRulesDriver(
@@ -60,17 +80,21 @@ namespace SimpleBenchmarks
             Console.WriteLine("Start running");
             Stopwatch swOverall = new Stopwatch();
             swOverall.Start();
+            var keycount = 0;
             var results = Task.WhenAll(Enumerable.Range(0, 1000)
                 .Select(async _ =>
                 {
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
                     var data = await tweek.Calculate(query, new HashSet<Identity>() { }, ext_context).ConfigureAwait(false);
+                    System.Threading.Interlocked.Increment(ref keycount);
                     sw.Stop();
                     return sw.ElapsedMilliseconds;
                 })).Result;
             swOverall.Stop();
             Console.WriteLine("total:" + swOverall.ElapsedMilliseconds);
+            Console.WriteLine("keys count:" + keycount / 1000);
+            Console.WriteLine("(95%)" + results.Percentile(0.95));
             Console.WriteLine("avg:" + results.Average());
             Console.WriteLine("max:" + results.Max());
             Console.WriteLine("min:" + results.Min());
