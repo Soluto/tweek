@@ -83,7 +83,7 @@ namespace SimpleBenchmarks
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
                     var data = await tweek.Calculate(query, new HashSet<Identity>() { new Identity("device", "test") }).ConfigureAwait(false);
-                    System.Threading.Interlocked.Increment(ref keycount);
+                    System.Threading.Interlocked.Add(ref keycount, keycount);
                     sw.Stop();
                     return sw.ElapsedMilliseconds;
                 })).Result;
