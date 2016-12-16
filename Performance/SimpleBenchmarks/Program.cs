@@ -25,7 +25,7 @@ namespace SimpleBenchmarks
                 ["PartnerBrandId"] = "Verizon",
                 ["DeviceType"] = "Mobile",
                 ["IsInGroup"] = "False",
-                ["DeviceOsVersion"] = "5.0.0.0",
+                ["DeviceOsVersion"] = "6.0.0",
                 ["DeviceOsType"] = "Android",
                 ["SubscriptionType"] = "InsuranceAndSupport",
                 ["DeviceVendor"] = "google",
@@ -73,10 +73,6 @@ namespace SimpleBenchmarks
                     ))))).Result;
             var query = ConfigurationPath.New("_");
 
-            GetLoadedContextByIdentityType ext_context =
-                (identityType) =>
-                    (key) => (identityType == "device" && key == "@CreationDate") ? Some("06/06/16") : None;
-
             Console.WriteLine("Start running");
             Stopwatch swOverall = new Stopwatch();
             swOverall.Start();
@@ -86,7 +82,7 @@ namespace SimpleBenchmarks
                 {
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
-                    var data = await tweek.Calculate(query, new HashSet<Identity>() { }, ext_context).ConfigureAwait(false);
+                    var data = await tweek.Calculate(query, new HashSet<Identity>() { new Identity("device", "test") }).ConfigureAwait(false);
                     System.Threading.Interlocked.Increment(ref keycount);
                     sw.Stop();
                     return sw.ElapsedMilliseconds;
