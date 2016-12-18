@@ -61,7 +61,7 @@ export default class GitRepository {
       commitSha = lastCommit.sha();
     }
     catch (exp) {
-      console.log('failed read modification data', exp);
+      console.warn('failed read modification data', exp);
     }
 
     return {
@@ -75,8 +75,7 @@ export default class GitRepository {
     let filePath = path.join(this._repo.workdir(), fileName);
     await fs.ensureFile(filePath);
     await fs.writeFile(filePath, content);
-
-    if (!this._modifiedFiles.contains(fileName))
+    if (this._modifiedFiles.indexOf(fileName) == -1)
     {
       this._modifiedFiles.push(fileName);
     }

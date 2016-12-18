@@ -8,8 +8,14 @@ class Transactionable {
   }
 
   async transact(transactionAction) {
-    let context = await this._contextPromise;
-    return await transactionAction(context);
+    try {
+      let context = await this._contextPromise;
+      return await transactionAction(context);
+    }
+    catch (err) {
+      console.error('Error occurred during transaction ', err);
+      throw err;
+    }
   }
 }
 
