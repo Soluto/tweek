@@ -6,21 +6,20 @@ import deleteKey from './api/keys/deleteKey';
 import getTags from './api/tags/getTags';
 import putTags from './api/tags/putTags';
 
-export default ({ keysRepository, metaRepository, tagsRepository }) => (
+export default ({ gitTransactionManager }) => (
   <ServerRoute path="/api">
     <ServerRoute path="tags"
-      get={getTags}
-      put={putTags}
-      tagsRepository={tagsRepository}
-      />
+                 get={getTags}
+                 put={putTags}
+                 gitTransactionManager={gitTransactionManager}
+    />
     <ServerRoute path="keys">
       <ServerRoute path="*"
-        get={getKey}
-        put={putKey}
-        delete={deleteKey}
-        keysRepository={keysRepository}
-        metaRepository={metaRepository}
-        />
+                   get={getKey}
+                   put={putKey}
+                   delete={deleteKey}
+                   gitTransactionManager={gitTransactionManager}
+      />
     </ServerRoute>
   </ServerRoute>)
-  ;
+;
