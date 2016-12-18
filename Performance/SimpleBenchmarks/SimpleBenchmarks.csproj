@@ -96,10 +96,6 @@
       <Project>{f3953018-7813-4eab-8116-670848de8bb1}</Project>
       <Name>Engine.DataTypes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Engine.Drivers.Rules.Git\Engine.Drivers.Rules.Git.csproj">
-      <Project>{cae4a92c-1271-4afa-b333-ecbd2f026bd8}</Project>
-      <Name>Engine.Drivers.Rules.Git</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Engine.Drivers\Engine.Drivers.csproj">
       <Project>{8569dd6d-27d1-40a1-8161-e12157e845f3}</Project>
       <Name>Engine.Drivers</Name>
@@ -115,6 +111,10 @@
     <ProjectReference Include="..\..\JPad\Tweek.JPad\Tweek.JPad.fsproj">
       <Project>{9a374180-a25d-4191-94a2-b141a2e21d73}</Project>
       <Name>Tweek.JPad</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Tweek.Drivers.Blob\Tweek.Drivers.Blob.csproj">
+      <Project>{94574c86-8fe9-4282-bac4-e2fc62afda06}</Project>
+      <Name>Tweek.Drivers.Blob</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj">
       <Project>{d20f24eb-860a-4dc0-a849-28627e342b89}</Project>

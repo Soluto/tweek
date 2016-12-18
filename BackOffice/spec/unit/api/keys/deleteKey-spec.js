@@ -1,5 +1,6 @@
 /* global jest, beforeEach, describe, it, expect */
 jest.unmock('../../../../modules/api/keys/deleteKey');
+jest.unmock('../../../../modules/server/repositories/gitPathsUtils');
 
 import deleteKey from '../../../../modules/api/keys/deleteKey';
 
@@ -7,8 +8,8 @@ describe('deleteKey', () => {
   const expressRequestMock = {};
   const expressResponseMock = {};
 
-  const keysRepositoryMock = {};
-  const metaRepositoryMock = {};
+  const gitRepoMock = {};
+  const transactionManagerMock = { transact: function(action) { return action(gitRepoMock); }};
 
   const validAuthor = {
     name: 'some name',
@@ -18,19 +19,20 @@ describe('deleteKey', () => {
   const validKeyPath = 'some key path';
 
   beforeEach(() => {
-    const responseSendMock = jest.fn(async () => { });
-    expressResponseMock.send = responseSendMock;
+    expressResponseMock.send = jest.fn(async() => { });
 
-    keysRepositoryMock.deleteKey = jest.fn(async () => { });
-    metaRepositoryMock.deleteKeyMeta = jest.fn(async () => { });
+    gitRepoMock.pull = jest.fn(async () => { });
+    gitRepoMock.deleteFile = jest.fn(async () => { });
+    gitRepoMock.commitAndPush = jest.fn(async () => { });
   });
 
-  it('should call keysRepository, metaRepository once at this order', async () => {
+  it('Should pull before deleting and committing', async () => {
     // Arrange
     const functionsReferenceOrder = [];
 
-    keysRepositoryMock.deleteKey = jest.fn(async () => functionsReferenceOrder.push(keysRepositoryMock.deleteKey));
-    metaRepositoryMock.deleteKeyMeta = jest.fn(async () => functionsReferenceOrder.push(metaRepositoryMock.deleteKeyMeta));
+    gitRepoMock.pull = jest.fn(async () => functionsReferenceOrder.push(gitRepoMock.pull));
+    gitRepoMock.deleteFile = jest.fn(async () => functionsReferenceOrder.push(gitRepoMock.deleteFile));
+    gitRepoMock.commitAndPush = jest.fn(async () => functionsReferenceOrder.push(gitRepoMock.commitAndPush));
 
     const expectedKeyPath = 'some key path';
 
@@ -40,23 +42,22 @@ describe('deleteKey', () => {
 
     // Act
     await deleteKey(expressRequestMock, expressResponseMock, {
-      keysRepository: keysRepositoryMock,
-      metaRepository: metaRepositoryMock,
-      undefined,
+      gitTransactionManager: transactionManagerMock,
     }, {
-        params: paramsMock,
-      });
+      params: paramsMock,
+    });
 
     // Assert
-    expect(keysRepositoryMock.deleteKey.mock.calls.length).toEqual(1, 'should call delete key once');
-    expect(metaRepositoryMock.deleteKeyMeta.mock.calls.length).toEqual(1, 'should call delete key meta once');
-
-    expect(functionsReferenceOrder).toEqual(
-      [keysRepositoryMock.deleteKey, metaRepositoryMock.deleteKeyMeta],
-      'shoudl call repositories once');
+    expect(functionsReferenceOrder).toEqual([
+        gitRepoMock.pull,
+        gitRepoMock.deleteFile,
+        gitRepoMock.deleteFile,
+        gitRepoMock.commitAndPush
+      ],
+      'Operation order is not correct');
   });
 
-  it('should call keysRepository with correct parameters', async () => {
+  it('should delete the correct files for the key', async () => {
     // Arrange
     const paramsMock = {
       splat: validKeyPath,
@@ -64,36 +65,14 @@ describe('deleteKey', () => {
 
     // Act
     await deleteKey(expressRequestMock, expressResponseMock, {
-      keysRepository: keysRepositoryMock,
-      metaRepository: metaRepositoryMock,
-      author: validAuthor,
+      gitTransactionManager: transactionManagerMock,
     }, {
-        params: paramsMock,
-      });
+      params: paramsMock,
+    });
 
     // Assert
-    expect(keysRepositoryMock.deleteKey.mock.calls[0][0]).toEqual(paramsMock.splat, 'should call delete key with correct key');
-    expect(keysRepositoryMock.deleteKey.mock.calls[0][1]).toEqual(validAuthor, 'should call delete key with correct author');
-  });
-
-  it('should call metaRepository with correct parameters', async () => {
-    // Arrange
-    const paramsMock = {
-      splat: validKeyPath,
-    };
-
-    // Act
-    await deleteKey(expressRequestMock, expressResponseMock, {
-      keysRepository: keysRepositoryMock,
-      metaRepository: metaRepositoryMock,
-      author: validAuthor,
-    }, {
-        params: paramsMock,
-      });
-
-    // Assert
-    expect(metaRepositoryMock.deleteKeyMeta.mock.calls[0][0]).toEqual(paramsMock.splat, 'should call delete key meta with correct key');
-    expect(metaRepositoryMock.deleteKeyMeta.mock.calls[0][1]).toEqual(validAuthor, 'should call delete key meta with correct author');
+    expect(gitRepoMock.deleteFile.mock.calls[0][0]).toEqual(`meta/${paramsMock.splat}.json`, 'Should delete meta file');
+    expect(gitRepoMock.deleteFile.mock.calls[1][0]).toEqual(`rules/${paramsMock.splat}.jpad`, 'Should delete jpad');
   });
 
   it('should call express response once with correct parameters', async () => {
@@ -104,19 +83,37 @@ describe('deleteKey', () => {
 
     // Act
     await deleteKey(expressRequestMock, expressResponseMock, {
-      keysRepository: keysRepositoryMock,
-      metaRepository: metaRepositoryMock,
-      author: validAuthor,
+      gitTransactionManager: transactionManagerMock,
     }, {
-        params: paramsMock,
-      });
+      params: paramsMock,
+    });
 
     // Assert
     expect(expressResponseMock.send.mock.calls.length).toEqual(1, 'should call express response mock once');
     expect(expressResponseMock.send.mock.calls[0][0]).toEqual('OK', 'should call express request with correct parameter');
   });
 
-  it('should call keysRepository, metaRepository with default author if author wasnt given', async () => {
+  it ('should commit and push with the author send if it was given', async () => {
+    // Arrange
+    const paramsMock = {
+      splat: validKeyPath,
+    };
+
+    // Act
+    await deleteKey(expressRequestMock, expressResponseMock, {
+      gitTransactionManager: transactionManagerMock,
+      author: validAuthor,
+    }, {
+      params: paramsMock,
+    });
+
+    // Assert
+    expect(gitRepoMock.commitAndPush.mock.calls[0][1].name).toEqual(validAuthor.name, 'should call commit and push with default author');
+    expect(gitRepoMock.commitAndPush.mock.calls[0][1].email).toEqual(validAuthor.email, 'should call commit and push key with default author');
+
+  });
+
+  it('should call push with default author if author wasnt given', async () => {
     // Arrange
     const paramsMock = {
       splat: validKeyPath,
@@ -129,15 +126,14 @@ describe('deleteKey', () => {
 
     // Act
     await deleteKey(expressRequestMock, expressResponseMock, {
-      keysRepository: keysRepositoryMock,
-      metaRepository: metaRepositoryMock,
+      gitTransactionManager: transactionManagerMock,
       undefined,
     }, {
-        params: paramsMock,
-      });
+      params: paramsMock,
+    });
 
     // Assert
-    expect(keysRepositoryMock.deleteKey.mock.calls[0][1]).toEqual(expectedAuthor, 'should call delete key with default author');
-    expect(metaRepositoryMock.deleteKeyMeta.mock.calls[0][1]).toEqual(expectedAuthor, 'should call delete key meta with default author');
+    expect(gitRepoMock.commitAndPush.mock.calls[0][1].name).toEqual(expectedAuthor.name, 'should call commit and push with default author');
+    expect(gitRepoMock.commitAndPush.mock.calls[0][1].email).toEqual(expectedAuthor.email, 'should call commit and push key with default author');
   });
 });
