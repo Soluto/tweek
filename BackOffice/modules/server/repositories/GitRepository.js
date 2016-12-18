@@ -132,7 +132,7 @@ export default class GitRepository {
 
       if (!(await this.isSynced())) {
         console.log('push failed, attempting to reset');
-        const remoteCommit = (await repo.getBranchCommit('remotes/origin/master'));
+        const remoteCommit = (await this._repo.getBranchCommit('remotes/origin/master'));
         await Git.Reset.reset(this._repo, remoteCommit, 3);
 
         console.error('fail to push changes - reset changes');
