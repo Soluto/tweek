@@ -75,7 +75,7 @@ describe('add tags', () => {
         addTag(guid1);
         addTag(guid2);
 
-        keysPageObject.wait(25000);
+        keysPageObject.wait(45000);
         browser.refresh();
 
         const partialGuid1 = guid1.slice(0, guid1.length - 1);
