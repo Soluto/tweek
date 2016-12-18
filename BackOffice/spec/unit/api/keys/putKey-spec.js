@@ -1,5 +1,6 @@
 /* global jest, beforeEach, describe, it, expect */
 jest.unmock('../../../../modules/api/keys/putKey');
+jest.unmock('../../../../modules/server/repositories/gitPathsUtils');
 
 import putKey from '../../../../modules/api/keys/putKey';
 
@@ -19,8 +20,8 @@ describe('putKey', () => {
 
   const expressResponseMock = {};
 
-  const keysRepositoryMock = {};
-  const metaRepositoryMock = {};
+  const gitRepoMock = {};
+  const transactionManagerMock = { transact: function(action) { return action(gitRepoMock); }};
 
   const validAuthor = {
     name: 'some name',
@@ -30,19 +31,20 @@ describe('putKey', () => {
   const validKeyPath = 'some key path';
 
   beforeEach(() => {
-    const responseSendMock = jest.fn(async () => { });
-    expressResponseMock.send = responseSendMock;
+    expressResponseMock.send = jest.fn(async() => { });
 
-    keysRepositoryMock.updateKey = jest.fn(async () => { });
-    metaRepositoryMock.updateRuleMeta = jest.fn(async () => { });
+    gitRepoMock.pull = jest.fn(async () => { });
+    gitRepoMock.updateFile = jest.fn(async () => { });
+    gitRepoMock.commitAndPush = jest.fn(async () => { });
   });
 
-  it('should call keysRepository, metaRepository once at this order', async () => {
+  it('Should pull before updating and committing', async () => {
     // Arrange
     const functionsReferenceOrder = [];
 
-    keysRepositoryMock.updateKey = jest.fn(async () => functionsReferenceOrder.push(keysRepositoryMock.updateKey));
-    metaRepositoryMock.updateRuleMeta = jest.fn(async () => functionsReferenceOrder.push(metaRepositoryMock.updateRuleMeta));
+    gitRepoMock.pull = jest.fn(async () => functionsReferenceOrder.push(gitRepoMock.pull));
+    gitRepoMock.updateFile = jest.fn(async () => functionsReferenceOrder.push(gitRepoMock.updateFile));
+    gitRepoMock.commitAndPush = jest.fn(async () => functionsReferenceOrder.push(gitRepoMock.commitAndPush));
 
     const expectedKeyPath = 'some key path';
 
@@ -52,23 +54,21 @@ describe('putKey', () => {
 
     // Act
     await putKey(expressRequestMock, expressResponseMock, {
-      keysRepository: keysRepositoryMock,
-      metaRepository: metaRepositoryMock,
+      gitTransactionManager: transactionManagerMock,
       undefined,
     }, {
         params: paramsMock,
       });
 
-    // Assert
-    expect(keysRepositoryMock.updateKey.mock.calls.length).toEqual(1, 'should call updatre key once');
-    expect(metaRepositoryMock.updateRuleMeta.mock.calls.length).toEqual(1, 'should call update key meta once');
-
-    expect(functionsReferenceOrder).toEqual(
-      [keysRepositoryMock.updateKey, metaRepositoryMock.updateRuleMeta],
-      'shoudl call repositories once');
+    expect(functionsReferenceOrder).toEqual([
+        gitRepoMock.pull,
+        gitRepoMock.updateFile,
+        gitRepoMock.updateFile,
+        gitRepoMock.commitAndPush],
+      'should pull, then save files and only then commit and push');
   });
 
-  it('should call keysRepository with correct parameters', async () => {
+  it('should update the jpad rule file', async () => {
     // Arrange
     const paramsMock = {
       splat: validKeyPath,
@@ -76,20 +76,18 @@ describe('putKey', () => {
 
     // Act
     await putKey(expressRequestMock, expressResponseMock, {
-      keysRepository: keysRepositoryMock,
-      metaRepository: metaRepositoryMock,
+      gitTransactionManager: transactionManagerMock,
       author: validAuthor,
     }, {
         params: paramsMock,
       });
 
     // Assert
-    expect(keysRepositoryMock.updateKey.mock.calls[0][0]).toEqual(paramsMock.splat, 'should call update key with correct key path');
-    expect(keysRepositoryMock.updateKey.mock.calls[0][1]).toEqual(expressRequestMock.body.keyDef.source, 'should call update ruel with correct key def source');
-    expect(keysRepositoryMock.updateKey.mock.calls[0][2]).toEqual(validAuthor, 'should call update key with correct author');
+    expect(gitRepoMock.updateFile.mock.calls[1][0]).toEqual(`rules/${paramsMock.splat}.jpad`, 'should call update key with correct key path');
+    expect(gitRepoMock.updateFile.mock.calls[1][1]).toEqual(expressRequestMock.body.keyDef.source, 'should call update rule with correct key def source');
   });
 
-  it('should call metaRepository with correct parameters', async () => {
+  it('should update the key meta file', async () => {
     // Arrange
     const paramsMock = {
       splat: validKeyPath,
@@ -97,17 +95,15 @@ describe('putKey', () => {
 
     // Act
     await putKey(expressRequestMock, expressResponseMock, {
-      keysRepository: keysRepositoryMock,
-      metaRepository: metaRepositoryMock,
+      gitTransactionManager: transactionManagerMock,
       author: validAuthor,
     }, {
-        params: paramsMock,
-      });
+      params: paramsMock,
+    });
 
     // Assert
-    expect(metaRepositoryMock.updateRuleMeta.mock.calls[0][0]).toEqual(paramsMock.splat, 'should call update key meta with correct key path');
-    expect(metaRepositoryMock.updateRuleMeta.mock.calls[0][1]).toEqual(expressRequestMock.body.meta, 'should call update key meta with correct meta');
-    expect(metaRepositoryMock.updateRuleMeta.mock.calls[0][2]).toEqual(validAuthor, 'should call update key meta with correct author');
+    expect(gitRepoMock.updateFile.mock.calls[0][0]).toEqual(`meta/${paramsMock.splat}.json`, 'should call update key with correct meta path');
+    expect(gitRepoMock.updateFile.mock.calls[0][1]).toEqual(JSON.stringify(expressRequestMock.body.meta, null, 4), 'should call update meta with correct key meta source');
   });
 
   it('should call express response once with correct parameters', async () => {
@@ -118,8 +114,7 @@ describe('putKey', () => {
 
     // Act
     await putKey(expressRequestMock, expressResponseMock, {
-      keysRepository: keysRepositoryMock,
-      metaRepository: metaRepositoryMock,
+      gitTransactionManager: transactionManagerMock,
       author: validAuthor,
     }, {
         params: paramsMock,
@@ -130,7 +125,28 @@ describe('putKey', () => {
     expect(expressResponseMock.send.mock.calls[0][0]).toEqual('OK', 'should call express request with correct parameter');
   });
 
-  it('should call keysRepository, metaRepository with default author if author wasnt given', async () => {
+  it ('should commit and push with the author send if it was given', async () => {
+    // Arrange
+    const paramsMock = {
+      splat: validKeyPath,
+    };
+
+    // Act
+    await putKey(expressRequestMock, expressResponseMock, {
+      gitTransactionManager: transactionManagerMock,
+      author: validAuthor,
+    }, {
+      params: paramsMock,
+    });
+
+    // Assert
+    expect(gitRepoMock.commitAndPush.mock.calls[0][1].name).toEqual(validAuthor.name, 'should call commit and push with default author');
+    expect(gitRepoMock.commitAndPush.mock.calls[0][1].email).toEqual(validAuthor.email, 'should call commit and push key with default author');
+
+  });
+
+
+  it('should commit and push with default author if author wasnt given', async () => {
     // Arrange
     const paramsMock = {
       splat: validKeyPath,
@@ -143,15 +159,14 @@ describe('putKey', () => {
 
     // Act
     await putKey(expressRequestMock, expressResponseMock, {
-      keysRepository: keysRepositoryMock,
-      metaRepository: metaRepositoryMock,
+      gitTransactionManager: transactionManagerMock,
       undefined,
     }, {
         params: paramsMock,
       });
 
     // Assert
-    expect(keysRepositoryMock.updateKey.mock.calls[0][2]).toEqual(expectedAuthor, 'should call update key with default author');
-    expect(metaRepositoryMock.updateRuleMeta.mock.calls[0][2]).toEqual(expectedAuthor, 'should call update key meta with default author');
+    expect(gitRepoMock.commitAndPush.mock.calls[0][1].name).toEqual(expectedAuthor.name, 'should call commit and push with default author');
+    expect(gitRepoMock.commitAndPush.mock.calls[0][1].email).toEqual(expectedAuthor.email, 'should call commit and push key with default author');
   });
 });
