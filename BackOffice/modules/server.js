@@ -8,12 +8,12 @@ import { Provider } from 'react-redux';
 import serverRoutes from './serverRoutes';
 import { getKeys } from '../modules/pages/keys/ducks/keys';
 import GitRepository from './server/repositories/GitRepository';
-import MetaRepository from './server/repositories/MetaRepository';
-import KeysRepository from './server/repositories/KeysRepository';
-import TagsRepository from './server/repositories/TagsRepository';
 import session from 'express-session';
+import Transactional from "./utils/transact";
+import { getBasePathForKeys, getKeyFromJPadPath} from "./server/repositories/gitPathsUtils";
 const passport = require('passport');
 const nconf = require('nconf');
+
 
 nconf.argv()
   .env();
@@ -23,31 +23,33 @@ const configFileName = true || nconf.get('NODE_ENV') === 'production' ?
 
 nconf.file({ file: `${process.cwd()}/${configFileName}` });
 
-const gitRepo = GitRepository.init({
+var gitPromise = GitRepository.create({
   url: nconf.get('GIT_URL'),
   username: nconf.get('GIT_USER'),
   password: nconf.get('GIT_PASSWORD'),
-  localPath: `${process.cwd()}/rulesRepository`,
-  pullIntervalInMS: nconf.get('GIT_PULL_INTERVAL_IN_MS'),
+  localPath: `${process.cwd()}/rulesRepository`
 });
 
-const keysRepository = new KeysRepository(gitRepo);
-const metaRepository = new MetaRepository(gitRepo);
-const tagsRepository = new TagsRepository(gitRepo);
+const gitTransactionManager = new Transactional(gitPromise);
 
 function getApp(req, res, requestCallback) {
   requestCallback(null, {
-    routes: routes(serverRoutes({ keysRepository, metaRepository, tagsRepository })),
-    render(routerProps, renderCallback) {
+    routes: routes(serverRoutes({ gitTransactionManager })),
+    async render(routerProps, renderCallback) {
+
       const store = configureStore({});
-      keysRepository.getAllKeys().then(keys => store.dispatch(getKeys(keys)))
-        .then(() =>
-          renderCallback(null, {
-            renderDocument: (props) => <Document {...props} initialState={store.getState()} />,
-            renderApp: (props) =>
-              <Provider store={store}><RouterContext {...props} /></Provider>,
-          })
-        );
+      const keys = await gitTransactionManager.transact(async gitRepo => {
+        const keyFiles = await gitRepo.listFiles(getBasePathForKeys());
+        return keyFiles.map(keyFile => getKeyFromJPadPath(keyFile));
+      });
+
+      await store.dispatch(getKeys(keys));
+
+      renderCallback(null, {
+        renderDocument: (props) => <Document {...props} initialState={store.getState()} />,
+        renderApp: (props) =>
+          <Provider store={store}><RouterContext {...props} /></Provider>,
+      });
     },
   });
 }
