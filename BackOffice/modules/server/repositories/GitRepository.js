@@ -43,7 +43,9 @@ export default class GitRepository {
     let modifyDate = "unknown";
     let modifyUser = "unknown";
     let commitSha = null;
-    let remoteUrl = this._repo.getRemote('origin').url();
+
+    let remote = await this._repo.getRemote('origin');
+    let remoteUrl = remote.url();
 
     try {
       const firstCommitOnMaster = await this._repo.getMasterCommit();
