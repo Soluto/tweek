@@ -2,7 +2,6 @@
 using Engine.Core.Rules;
 using Engine.DataTypes;
 using Tweek.JPad;
-using System.Collections.Specialized;
 using LanguageExt;
 using System;
 
@@ -34,19 +33,14 @@ namespace Tweek.JPad.Utils
 
     public class JPadRulesParserAdapter
     {
-
         public static IRuleParser Convert(JPadParser parser)
         {
             return new AnonymousParser((source) =>
             {
-                var dictionary = new ListDictionary();
                 var compiled = parser.Parse.Invoke(source);
-                return new AnonymousRule(context => FSharp.fs(compiled.Invoke((s) => {
-                    if (!dictionary.Contains(s)) {
-                        dictionary[s] = context.Invoke(s).ToFSharp();
-                    }
-                    return (Microsoft.FSharp.Core.FSharpOption<string>)dictionary[s];
-                })).Map(ConfigurationValue.New));
+                return new AnonymousRule(context =>
+                    FSharp.fs(compiled.Invoke((s) => context.Invoke(s).ToFSharp()))
+                            .Map(ConfigurationValue.New));
             });
         }
     }
