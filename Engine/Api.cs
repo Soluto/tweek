@@ -53,11 +53,8 @@ namespace Engine
             GetLoadedContextByIdentityType externalContext = null)
         {
             Dictionary<Identity, Dictionary<string, string>> allContextData;
-            using (TraceTime("Reading from context"))
-            {
-                allContextData = (await Task.WhenAll(identities.Select(async identity => new { Identity = identity, Context = await _contextDriver.GetContext(identity) })))
+            allContextData = (await Task.WhenAll(identities.Select(async identity => new { Identity = identity, Context = await _contextDriver.GetContext(identity) })))
                                   .ToDictionary(x => x.Identity, x => x.Context);
-            }
             
             var allRules = _rulesLoader();
 
@@ -69,17 +66,13 @@ namespace Engine
             var contexts =  ContextHelpers.Fallback(externalContext, loadedContexts);
             var pathsWithRules = paths.Select(path => new { Path = path, Rules = allRules.TryGetValue(path) }).ToList();
 
-            using (TraceTime($"Calculating keys count-{pathsWithRules.Count}"))
-            {
-                return pathsWithRules
-                    .AsParallel()
+            return pathsWithRules
                     .Select(x =>
                         EngineCore.CalculateKey(identities, contexts, x.Path, p => allRules.TryGetValue(p))
                             .Select(value => new {path = x.Path.ToRelative(pathQuery), value})
                     )
                     .SkipEmpty()
                     .ToDictionary(x => x.path, x => x.value);
-            }
         }
     }
 
