@@ -1,6 +1,5 @@
 import Git from 'nodegit';
 import glob from 'glob-promise';
-
 import path from 'path';
 const fs = require('promisify-node')('fs-extra');
 
@@ -32,9 +31,8 @@ export default class GitRepository {
     return new GitRepository(repo, operationSettings);
   }
 
-  async listFiles(path) {
-    console.log('reading path: ' + path.join(this._repo.workdir(), path));
-    return await glob('**/*.*', { cwd: path.join(this._repo.workdir(), path) });
+  listFiles(directoryPath) {
+    return glob('**/*.*', { cwd: path.join(this._repo.workdir(), directoryPath) });
   }
 
   async readFile(fileName) {
