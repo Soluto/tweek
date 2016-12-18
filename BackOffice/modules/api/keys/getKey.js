@@ -11,6 +11,7 @@ export default async function (req, res,
     await gitRepo.pull();
 
     let pathForJPad = getPathForJPad(keyPath);
+    let pathForMeta = getPathForMeta(keyPath);
 
     return {
       keyDef: {
@@ -18,7 +19,7 @@ export default async function (req, res,
         source: await gitRepo.readFile(pathForJPad),
         modificationData: await gitRepo.getFileDetails(pathForJPad)
       },
-      meta: JSON.parse(await gitRepo.getFileDetails(getPathForMeta(keyPath)))
+      meta: JSON.parse(await gitRepo.readFile(pathForMeta))
     }
   });
 
