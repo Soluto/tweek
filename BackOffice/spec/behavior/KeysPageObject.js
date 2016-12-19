@@ -32,6 +32,7 @@ export default class KeysPageObject {
   }
 
   addEmptyKey(keyName) {
+    console.log('adding key', keyName);
     this.goToKey('_blank');
 
     this.browser.setValue(selectors.KEY_PATH_INPUT, keyName);
