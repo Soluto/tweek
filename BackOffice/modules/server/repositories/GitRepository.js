@@ -7,7 +7,6 @@ export default class GitRepository {
 
   constructor(repo, operationSettings) {
     this._repo = repo;
-    this._modifiedFiles = [];
     this._operationSettings = operationSettings;
   }
 
@@ -75,18 +74,19 @@ export default class GitRepository {
     let filePath = path.join(this._repo.workdir(), fileName);
     await fs.ensureFile(filePath);
     await fs.writeFile(filePath, content);
-    if (this._modifiedFiles.indexOf(fileName) == -1)
-    {
-      this._modifiedFiles.push(fileName);
-    }
+
+    const repoIndex = await this._repo.index();
+    await repoIndex.addByPath(fileName);
+    await repoIndex.write();
+    await repoIndex.writeTree();
   }
 
   async deleteFile(fileName) {
     let filePath = path.join(this._repo.workdir(), fileName);
 
-    await fs.remove(filePath);
+      await fs.remove(filePath);
 
-    const repoIndex = await this._repo.refreshIndex();
+    const repoIndex = await this._repo.index();
     await repoIndex.removeByPath(fileName);
     await repoIndex.write();
     await repoIndex.writeTree();
@@ -96,7 +96,7 @@ export default class GitRepository {
     const author = Git.Signature.now(name, email);
     const pusher = Git.Signature.now('tweek-backoffice', 'tweek-backoffice@tweek');
     await this._repo.createCommitOnHead(
-      this._modifiedFiles,
+      [],
       author,
       pusher,
       message
@@ -111,7 +111,7 @@ export default class GitRepository {
 
     const isSynced = await this.isSynced();
     if (!isSynced) {
-      throw new Error('invalid repo state');
+      throw new Error('Repo is not synced after pull');
     }
   }
 
@@ -131,16 +131,15 @@ export default class GitRepository {
       await remote.push(['refs/heads/master:refs/heads/master'], this._operationSettings);
 
       if (!(await this.isSynced())) {
-        console.log('push failed, attempting to reset');
+        console.log('Not synced after Push, attempting to reset');
         const remoteCommit = (await this._repo.getBranchCommit('remotes/origin/master'));
         await Git.Reset.reset(this._repo, remoteCommit, 3);
 
-        console.error('fail to push changes - reset changes');
+        console.error('Reset successfully');
       }
       else{
-        console.log('push completed');
+        console.log('Pushed changes');
       }
-
     } catch (ex) {
       console.error(ex);
     }
