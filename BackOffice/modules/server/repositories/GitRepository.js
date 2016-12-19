@@ -92,7 +92,7 @@ export default class GitRepository {
     await repoIndex.writeTree();
   }
 
-  async commitAndPush(message, { name, email }){
+  async commitAndPush(message, { name, email }) {
     const author = Git.Signature.now(name, email);
     const pusher = Git.Signature.now('tweek-backoffice', 'tweek-backoffice@tweek');
     await this._repo.createCommitOnHead(
@@ -116,7 +116,6 @@ export default class GitRepository {
   }
 
   async isSynced() {
-
     const remoteCommit = (await this._repo.getBranchCommit('remotes/origin/master'));
     const localCommit = (await this._repo.getBranchCommit('master'));
 
@@ -145,4 +144,3 @@ export default class GitRepository {
     }
   }
 }
-

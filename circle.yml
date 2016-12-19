@@ -24,6 +24,8 @@ dependencies:
     #- /home/ubuntu/.cache/yarn ??
 test:
   override:
+    - docker pull logzio/logzio-docker
+    - docker run --privileged -d --restart=always -v /var/run/docker.sock:/var/run/docker.sock logzio/logzio-docker -t wsEabfWJZpXkwVqUVrVNvhSvUnnYtzbg --no-stats -no-dockerEvents -z us -a env=prod
     - yarn test:unit
     - cat CircleDockerfile > Dockerfile
     - docker build --rm=false -t soluto/tweek-back-office:latest .
