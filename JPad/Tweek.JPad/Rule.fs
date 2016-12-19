@@ -90,11 +90,6 @@ module Matcher =
 
     let getPropName prefix prop = if prefix = "" then prop else (prefix + "." + prop)
 
-    let evaluateAnd lExp rExp context =  (lExp context) && (rExp context)
-    let evaluateOr  lExp rExp context  =  (rExp context) || (rExp context)
-
-    let defaultComparer (l:string) (r:string) = l.ToLower().CompareTo (r.ToLower())
-
     let private compile_internal (comparers:System.Collections.Generic.IDictionary<string,ComparerDelegate>) exp  = 
         let getComparer s = if comparers.ContainsKey(s) then Some comparers.[s] else None;
         let rec CompileExpression (prefix:string) comparer (exp: MatcherExpression)  : (Context) -> bool =
@@ -105,8 +100,8 @@ module Matcher =
                     let lExp = CompileExpression prefix comparer l;
                     let rExp = CompileExpression prefix comparer r;
                     match op with
-                    |ConjuctionOp.And -> evaluateAnd lExp rExp 
-                    |ConjuctionOp.Or ->  evaluateOr lExp rExp 
+                    |ConjuctionOp.And -> fun c-> (lExp c) && (rExp c)
+                    |ConjuctionOp.Or -> fun c->  (lExp c) || (rExp c)
                 | ArrayTest (op, op_value) ->  
                     (|>) prefix >> evaluateArrayTest comparer op op_value  
                 | Compare (op, op_value) ->  
@@ -116,6 +111,7 @@ module Matcher =
                     | None -> ParseError ("missing comparer - " + newComparer) |> raise
                 | Empty -> (fun context->true)
 
+        let defaultComparer (l:string) (r:string) = l.ToLower().CompareTo (r.ToLower())
         CompileExpression "" defaultComparer exp
 
     let parse (schema:JsonValue) = parsePropertySchema ConjuctionOp.And schema
