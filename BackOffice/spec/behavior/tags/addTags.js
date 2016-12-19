@@ -8,7 +8,7 @@ import Chance from 'chance';
 describe('add tags', () => {
     const keysPageObject = new KeysPageObject(browser);
 
-    const tagsTestKeyName = keysPageObject.generateTestKeyName('tagsTest');
+    const tagsTestKeyName = 'tagsTest';
     const testFolder = '@tests';
     const behaviorTestFolder = `${testFolder}/behavior`;
     const tagsTestKeyFullPath = `${behaviorTestFolder}/${tagsTestKeyName}`;
@@ -17,13 +17,15 @@ describe('add tags', () => {
 
     const enterKeyCode = '\uE007';
 
-    beforeEach(() => {
-        keysPageObject.addEmptyKey(tagsTestKeyFullPath);
-        browser.windowHandleMaximize();
-    });
+    before(() => {
+        try {
+            keysPageObject.goToKey(tagsTestKeyFullPath);
+        }
+        catch (exp) {
+            keysPageObject.addEmptyKey(tagsTestKeyFullPath);
+        }
 
-    afterEach(() => {
-        keysPageObject.deleteKeyIfExists(tagsTestKeyFullPath);
+        browser.windowHandleMaximize();
     });
 
     function addTag(tagName) {
@@ -43,41 +45,25 @@ describe('add tags', () => {
 
     function assertTagSuggestionExists(partialTagName) {
         browser.setValue(selectors.TAGS_INPUT, partialTagName);
-
+        keysPageObject.wait(10000);
         browser.waitForVisible(selectors.TAGS_SUGGESTION, 2000);
         const tagsSuggestions = browser.elements(selectors.TAGS_SUGGESTION);
         assert.equal(tagsSuggestions.value.length, 1);
     }
 
-    it('should succeed add tags to key', () => {
-      keysPageObject.goToKey(tagsTestKeyFullPath);
-
-      const guid1 = chance.guid();
-      const guid2 = chance.guid();
-      addTag(guid1);
-      addTag(guid2);
-
-      browser.click(selectors.SAVE_CHANGES_BUTTON);
-      browser.waitUntil(() => !keysPageObject.isSaving(), KeysPageObject.GIT_TRANSACTION_TIMEOUT);
-      browser.refresh();
-      keysPageObject.waitForKeyToLoad();
-
-      const tags = getOpenedKeyTags();
-
-      assert.deepEqual([guid1, guid2], tags);
-    });
-
     it('should save the tag as a suggestion on submiting it without saving the key', () => {
-        keysPageObject.goToKey(tagsTestKeyFullPath);
-
+        // Arrange
         const guid1 = chance.guid();
         const guid2 = chance.guid();
+        
+        // Act
         addTag(guid1);
         addTag(guid2);
 
-        keysPageObject.wait(45000);
+        keysPageObject.wait(40000);
         browser.refresh();
 
+        // Assert
         const partialGuid1 = guid1.slice(0, guid1.length - 1);
         assertTagSuggestionExists(partialGuid1);
 
