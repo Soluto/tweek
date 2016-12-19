@@ -44,8 +44,9 @@ describe('add tags', () => {
     }
 
     function assertTagSuggestionExists(partialTagName) {
+        browser.waitForVisible(selectors.TAGS_INPUT, 2000);
         browser.setValue(selectors.TAGS_INPUT, partialTagName);
-        keysPageObject.wait(10000);
+
         browser.waitForVisible(selectors.TAGS_SUGGESTION, 2000);
         const tagsSuggestions = browser.elements(selectors.TAGS_SUGGESTION);
         assert.equal(tagsSuggestions.value.length, 1);
@@ -53,9 +54,11 @@ describe('add tags', () => {
 
     it('should save the tag as a suggestion on submiting it without saving the key', () => {
         // Arrange
+        keysPageObject.goToKey(tagsTestKeyFullPath);
+
         const guid1 = chance.guid();
         const guid2 = chance.guid();
-        
+
         // Act
         addTag(guid1);
         addTag(guid2);
