@@ -1,7 +1,7 @@
 exports.config = {
   specs: [
     './spec/behavior/tags/*.js',
-    //'./spec/behavior/keys/*.js',
+    // './spec/behavior/keys/*.js',
   ],
   exclude: [
     './spec/behavior/keys/KeysAsserts.js',
