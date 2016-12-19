@@ -75,8 +75,7 @@ export default class GitRepository {
     let filePath = path.join(this._repo.workdir(), fileName);
     await fs.ensureFile(filePath);
     await fs.writeFile(filePath, content);
-    if (this._modifiedFiles.indexOf(fileName) == -1)
-    {
+    if (this._modifiedFiles.indexOf(fileName) == -1) {
       this._modifiedFiles.push(fileName);
     }
   }
@@ -92,7 +91,7 @@ export default class GitRepository {
     await repoIndex.writeTree();
   }
 
-  async commitAndPush(message, { name, email }){
+  async commitAndPush(message, { name, email }) {
     const author = Git.Signature.now(name, email);
     const pusher = Git.Signature.now('tweek-backoffice', 'tweek-backoffice@tweek');
     await this._repo.createCommitOnHead(
@@ -116,7 +115,6 @@ export default class GitRepository {
   }
 
   async isSynced() {
-
     const remoteCommit = (await this._repo.getBranchCommit('remotes/origin/master'));
     const localCommit = (await this._repo.getBranchCommit('master'));
 
@@ -130,20 +128,18 @@ export default class GitRepository {
       const remote = await this._repo.getRemote('origin');
       await remote.push(['refs/heads/master:refs/heads/master'], this._operationSettings);
 
-      if (!(await this.isSynced())) {
-        console.log('push failed, attempting to reset');
-        const remoteCommit = (await repo.getBranchCommit('remotes/origin/master'));
-        await Git.Reset.reset(this._repo, remoteCommit, 3);
-
-        console.error('fail to push changes - reset changes');
-      }
-      else{
+      if (await this.isSynced()) {
         console.log('push completed');
+        return;
       }
 
+      console.log('push failed, attempting to reset');
+      const remoteCommit = (await repo.getBranchCommit('remotes/origin/master'));
+      await Git.Reset.reset(this._repo, remoteCommit, 3);
+
+      console.error('fail to push changes - reset changes');
     } catch (ex) {
       console.error(ex);
     }
   }
 }
-
