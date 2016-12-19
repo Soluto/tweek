@@ -44,10 +44,12 @@ describe('add tags', () => {
     }
 
     function assertTagSuggestionExists(partialTagName) {
-        browser.waitForVisible(selectors.TAGS_INPUT, 2000);
+        keysPageObject.waitForVisible(selectors.TAGS_INPUT, 2000, 'cannot find tags input');
+
         browser.setValue(selectors.TAGS_INPUT, partialTagName);
 
-        browser.waitForVisible(selectors.TAGS_SUGGESTION, 2000);
+        keysPageObject.waitForVisible(selectors.TAGS_SUGGESTION, 2000, 'cannot find tags suggestion list');
+
         const tagsSuggestions = browser.elements(selectors.TAGS_SUGGESTION);
         assert.equal(tagsSuggestions.value.length, 1);
     }

@@ -86,6 +86,14 @@ export default class KeysPageObject {
     this.browser.waitForVisible(selectors.SAVE_CHANGES_BUTTON, timeout);
   }
 
+  waitForVisible(selector, timeout, exceptionMessage) {
+    try {
+      this.browser.waitForVisible(selector, timeout);
+    } catch (exp) {
+      throw exp.message + ' from keyPageObject.waitForVisible: ' + exceptionMessage;
+    }
+  }
+
   generateTestKeyName(prefix) {
     const currentDate = new Date();
     return `${prefix}-${moment(currentDate).format('DD-MM-YYYY-HH-mm-ss')}`;
