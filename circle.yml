@@ -18,7 +18,7 @@ dependencies:
     - yarn install
     - ls -a
     - ls ~/ -a
-    - docker pull soluto/tweek-back-office:latest
+    - docker pull soluto/tweek-back-office
   cache_directories:
     - ~/.yarn
     - ~/.yarn-cache
@@ -39,4 +39,4 @@ deployment:
   production:
     branch: master
     commands:
-      - docker push soluto/tweek-back-office:latest
+      - docker push soluto/tweek-back-office
