@@ -9,15 +9,16 @@ machine:
     version: 6.9.1
 dependencies:
   pre:
-    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+    - curl ipinfo.io/ip
     - ifconfig
+    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS && docker pull soluto/tweek-back-office
     - yarn cache dir
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
   override:
     - yarn install
     - ls -a
     - ls ~/ -a
-    - docker pull soluto/tweek-back-office:latest
+    #- docker pull soluto/tweek-back-office
   cache_directories:
     - ~/.yarn
     - ~/.yarn-cache
@@ -38,4 +39,4 @@ deployment:
   production:
     branch: master
     commands:
-      - docker push soluto/tweek-back-office:latest
+      - docker push soluto/tweek-back-office
