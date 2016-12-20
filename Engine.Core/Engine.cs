@@ -10,41 +10,49 @@ namespace Engine.Core
 {
     public delegate Option<IRule> RulesRepository(ConfigurationPath path);
 
+
     public static class EngineCore
     {
-        internal static Option<ConfigurationValue> CalculateRule(
-            IRule rule,
-            GetContextValue contextByIdentityType)
+        public delegate Option<ConfigurationValue> GetRuleValue(ConfigurationPath path);
+
+        public static GetRuleValue GetRulesEvaluator(HashSet<Identity> identities, GetLoadedContextByIdentityType contextByIdentity, RulesRepository rules)
         {
-            return rule.GetValue(contextByIdentityType);
-        }
+            var identityTypes = identities.Select(x => x.Type).ToArray();
+            var flattenContext = ContextHelpers.FlattenLoadedContext(contextByIdentity);
 
-        public static Option<ConfigurationValue> CalculateKey(HashSet<Identity> identities,
-            GetLoadedContextByIdentityType loadedContext,
-            ConfigurationPath path,
-            RulesRepository rules)
-        {
-
-            var flattenContext = ContextHelpers.FlattenLoadedContext(loadedContext);
-
-            GetContextValue recCalculateKeyContext = key =>
+            GetRuleValue getRuleValue = null;
+            GetContextValue recursiveContext = key =>
             {
                 if (!key.StartsWith("@@key")) return Option<string>.None;
-                return CalculateKey(identities, loadedContext, new ConfigurationPath(key.Split(':')[1]), rules).Map(x => x.ToString());
+                var path = new ConfigurationPath(key.Split(':')[1]);
+                return getRuleValue(path).Map(x => x.Value);
             };
 
-            var fullContext = ContextHelpers.Merge(flattenContext, recCalculateKeyContext);
+            var context = ContextHelpers.Merge(flattenContext, recursiveContext);
 
-            var fixedResult = Option<ConfigurationValue>.None;
-            foreach (var identityType in identities.Select(x => x.Type))
+            getRuleValue = Memoize(path =>
             {
-                fixedResult = ContextHelpers.GetFixedConfigurationContext(fullContext, identityType)(path);
-                if (fixedResult.IsSome) break;
-            }
+                foreach (var identity in identityTypes)
+                {
+                    var fixedResult = ContextHelpers.GetFixedConfigurationContext(context, identity)(path);
+                    if (fixedResult.IsSome) return fixedResult;
+                }
+                return rules(path).Bind(x => x.GetValue(context));
+            });
+            return getRuleValue;
+        }
 
-            var result = fixedResult.IfNone(() => rules(path).Bind(rule=>CalculateRule(rule, fullContext)));
-
-            return result;
+        private static GetRuleValue Memoize(GetRuleValue getRuleValue)
+        {
+            var dict = new Dictionary<ConfigurationPath, Option<ConfigurationValue>>();
+            return (path) =>
+            {
+                if (!dict.ContainsKey(path))
+                {
+                    dict[path] = getRuleValue(path);
+                }
+                return dict[path];
+            };
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using Engine.Core.Utils;
 using Engine.DataTypes;
@@ -11,8 +12,6 @@ namespace Engine.Core.Context
 {
     public class ContextHelpers
     {
-        
-
         internal class FullKey : Tuple<string, string>
         {
             public FullKey(string identityType, string key) : base(identityType, key) { }
@@ -45,6 +44,19 @@ namespace Engine.Core.Context
         public static GetContextValue Merge(GetContextValue a, GetContextValue b)
         {
             return key => a(key).IfNone(() => b(key));
+        }
+
+        public static GetContextValue Memoize(GetContextValue context)
+        {
+            var cache = new ListDictionary();
+            return key =>
+            {
+                if (!cache.Contains(key))
+                {
+                    cache[key] = context(key);
+                }
+                return (Option<string>) cache[key];
+            };
         }
     }
 }

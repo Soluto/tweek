@@ -74,7 +74,7 @@ namespace SimpleBenchmarks
                             ["version"] =  Version.Parse
                         }
                     ))))).Result;
-            var query = ConfigurationPath.New("_");
+            var query = ConfigurationPath.New("legacy/content/_");
 
             Console.WriteLine("Start running");
             Stopwatch swOverall = new Stopwatch();

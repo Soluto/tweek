@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using Engine.Core.Context;
@@ -47,6 +48,19 @@ namespace Engine.Context
                     .TryGetValue(identity)
                     .Bind(x => ((IReadOnlyDictionary<string,string>)x).TryGetValue(key));
                 
+            };
+        }
+
+        internal static GetLoadedContextByIdentityType Memoize(GetLoadedContextByIdentityType c)
+        {
+            var list = new ListDictionary();
+            return (t) =>
+            {
+                if (!list.Contains(t))
+                {
+                    list[t] = Core.Context.ContextHelpers.Memoize(c(t));
+                }
+                return (GetContextValue) list[t];
             };
         }
 

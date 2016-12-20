@@ -8,11 +8,13 @@ using Engine.Drivers.Context;
 using Engine.Drivers.Rules;
 using Engine.Rules.Creation;
 using System;
+using System.Collections.Specialized;
 using Engine.Core.Context;
 using Engine.Core.Rules;
 using Tweek.JPad;
 using ContextHelpers = Engine.Context.ContextHelpers;
 using LanguageExt;
+using Tweek.JPad.Rules;
 using static Engine.Core.Utils.TraceHelpers;
 
 namespace Engine
@@ -48,31 +50,31 @@ namespace Engine
                 .Distinct());
         }
 
+        
+
+
         public async Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(ConfigurationPath pathQuery,
             HashSet<Identity> identities, 
             GetLoadedContextByIdentityType externalContext = null)
         {
-            Dictionary<Identity, Dictionary<string, string>> allContextData;
-            allContextData = (await Task.WhenAll(identities.Select(async identity => new { Identity = identity, Context = await _contextDriver.GetContext(identity) })))
-                                  .ToDictionary(x => x.Identity, x => x.Context);
+            var allContextData = (await Task.WhenAll(identities.Select(async identity => new { Identity = identity, Context = await _contextDriver.GetContext(identity) })))
+                .ToDictionary(x => x.Identity, x => x.Context);
             
             var allRules = _rulesLoader();
-
-            var paths = GetAllPaths(allContextData, allRules, pathQuery);
 
             externalContext = externalContext ?? ContextHelpers.EmptyContextByIdentityType;
             
             var loadedContexts = ContextHelpers.GetContextRetrieverByType(ContextHelpers.LoadContexts(allContextData), identities);
-            var contexts =  ContextHelpers.Fallback(externalContext, loadedContexts);
-            var pathsWithRules = paths.Select(path => new { Path = path, Rules = allRules.TryGetValue(path) }).ToList();
+            var context =  ContextHelpers.Fallback(externalContext, loadedContexts);
+            
+            var getRuleValue = EngineCore.GetRulesEvaluator(identities, context, (path)=>allRules.TryGetValue(path));
+            
+            var paths = GetAllPaths(allContextData, allRules, pathQuery);
 
-            return pathsWithRules
-                    .Select(x =>
-                        EngineCore.CalculateKey(identities, contexts, x.Path, p => allRules.TryGetValue(p))
-                            .Select(value => new {path = x.Path.ToRelative(pathQuery), value})
-                    )
-                    .SkipEmpty()
-                    .ToDictionary(x => x.path, x => x.value);
+            return paths
+                .Select(path => getRuleValue(path).Map(value=>new {path= path.ToRelative(pathQuery), value}))
+                .SkipEmpty()
+                .ToDictionary(x => x.path, x => x.value);
         }
     }
 
