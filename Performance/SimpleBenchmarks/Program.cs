@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -7,6 +9,7 @@ using System.Threading.Tasks;
 using Cassandra;
 using Engine;
 using Engine.Core.Context;
+using Engine.Core.Utils;
 using Engine.DataTypes;
 using Engine.Drivers.Cassandra;
 using Engine.Drivers.Context;
@@ -68,7 +71,7 @@ namespace SimpleBenchmarks
                 new RamContextDriver(), gitDriver, JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
                         new Dictionary<string, ComparerDelegate>
                         {
-                            ["version"] = Version.Parse
+                            ["version"] =  Version.Parse
                         }
                     ))))).Result;
             var query = ConfigurationPath.New("_");
@@ -77,24 +80,24 @@ namespace SimpleBenchmarks
             Stopwatch swOverall = new Stopwatch();
             swOverall.Start();
             var keycount = 0;
-            var results = Task.WhenAll(Enumerable.Range(0, 1000)
-                .Select(async _ =>
+            var results = Enumerable.Range(0, 1000)
+                .Select(_ =>
                 {
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
-                    var data = await tweek.Calculate(query, new HashSet<Identity>() { new Identity("device", "test") }).ConfigureAwait(false);
-                    System.Threading.Interlocked.Add(ref keycount, keycount);
+                    var data = tweek.Calculate(query, new HashSet<Identity>() {new Identity("device", "test")}).Result;
+                    System.Threading.Interlocked.Exchange(ref keycount, data.Count);
                     sw.Stop();
                     return sw.ElapsedMilliseconds;
-                })).Result;
+                }).ToList();
             swOverall.Stop();
+
             Console.WriteLine("total:" + swOverall.ElapsedMilliseconds);
-            Console.WriteLine("keys count:" + keycount / 1000);
+            Console.WriteLine("keys count:" + keycount);
             Console.WriteLine("(95%)" + results.Percentile(0.95));
             Console.WriteLine("avg:" + results.Average());
             Console.WriteLine("max:" + results.Max());
             Console.WriteLine("min:" + results.Min());
-
             Console.ReadLine();
 
 
