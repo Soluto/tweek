@@ -9,7 +9,7 @@ machine:
     version: 6.9.1
 dependencies:
   pre:
-  - curl -s http://ifconfig.me
+    - curl -s http://ifconfig.me
     - ifconfig
     - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
     - yarn cache dir
