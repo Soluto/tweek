@@ -25,7 +25,7 @@ namespace Engine.Core.Tests
             var context = CreateContext(identity);
             var rulesRepo = RulesRepositoryHelpers.With("path/to/key", FakeRule.Create(ctx => new ConfigurationValue("SomeValue")));
                 
-            var value = EngineCore.CalculateKey(identities, context, "path/to/key", rulesRepo).Map(x => x.Value);
+            var value = EngineCore.GetRulesEvaluator(identities, context, rulesRepo)("path/to/key").Map(x => x.Value);
             Assert.Equal("SomeValue", value);
         }
 
@@ -36,7 +36,7 @@ namespace Engine.Core.Tests
             var context = CreateContext(identity);
             var rulesRepo = RulesRepositoryHelpers.With("path/to/key", FakeRule.Create(ctx => new ConfigurationValue("SomeValue")));
 
-            var missingValue = EngineCore.CalculateKey(new HashSet<Identity> {identity}, context, "path/to/key2",rulesRepo);
+            var missingValue = EngineCore.GetRulesEvaluator(new HashSet<Identity> {identity}, context,rulesRepo)("path/to/key2");
 
             Assert.True(missingValue.IsNone);
         }
@@ -48,7 +48,7 @@ namespace Engine.Core.Tests
             var context = CreateContext(identity, new Tuple<string, string>("@fixed:path/to/key", "SomeValue"));
             var rulesRepo = RulesRepositoryHelpers.Empty();
 
-            var value = EngineCore.CalculateKey(new HashSet<Identity> { identity }, context, "path/to/key", rulesRepo).Map(x => x.Value);
+            var value = EngineCore.GetRulesEvaluator(new HashSet<Identity> { identity }, context, rulesRepo)("path/to/key").Map(x => x.Value);
 
             Assert.Equal("SomeValue", value);
         }
@@ -61,7 +61,7 @@ namespace Engine.Core.Tests
             var rulesRepo = RulesRepositoryHelpers.With("path/to/key2", FakeRule.Create(ctx => new ConfigurationValue("SomeValue")))
                                                   .With("path/to/key", FakeRule.Create(ctx => ctx("@@key:path/to/key2").Map(x=>new ConfigurationValue(x))));
 
-            var value = EngineCore.CalculateKey(new HashSet<Identity> { identity }, context, "path/to/key", rulesRepo).Map(x => x.Value);
+            var value = EngineCore.GetRulesEvaluator(new HashSet<Identity> { identity }, context, rulesRepo)("path/to/key").Map(x => x.Value);
 
             Assert.Equal("SomeValue", value);
         }
@@ -75,19 +75,19 @@ namespace Engine.Core.Tests
             var rulesRepo = RulesRepositoryHelpers
                 .With("path/to/key", FakeRule.Create(ctx => ctx("device.PartnerBrand") == "ABC" ? new ConfigurationValue("SomeValue") : Option<ConfigurationValue>.None));
 
-            var value = EngineCore.CalculateKey(new HashSet<Identity> { identity }, context, "path/to/key", rulesRepo).Map(x => x.Value);
+            var value = EngineCore.GetRulesEvaluator(new HashSet<Identity> { identity }, context, rulesRepo)("path/to/key").Map(x => x.Value);
             Assert.Equal("SomeValue", value);
 
             rulesRepo = rulesRepo
                 .With("path/to/other/key", FakeRule.Create(ctx => ctx("device.OtherProp") == "DEF" ? new ConfigurationValue("SomeValue") : Option<ConfigurationValue>.None));
 
-            value = EngineCore.CalculateKey(new HashSet<Identity> { identity }, context, "path/to/other/key", rulesRepo).Map(x => x.Value);
+            value = EngineCore.GetRulesEvaluator(new HashSet<Identity> { identity }, context, rulesRepo)("path/to/other/key").Map(x => x.Value);
             Assert.True(value.IsNone);
 
             rulesRepo = rulesRepo
                 .With("path/to/other/key", FakeRule.Create(ctx => ctx("device.PartnerBrand") == "ABC" ? new ConfigurationValue("SomeValue") : Option<ConfigurationValue>.None));
 
-            value = EngineCore.CalculateKey(new HashSet<Identity> { identity }, context, "path/to/other/key", rulesRepo).Map(x => x.Value);
+            value = EngineCore.GetRulesEvaluator(new HashSet<Identity> { identity }, context, rulesRepo)("path/to/other/key").Map(x => x.Value);
 
             Assert.Equal("SomeValue", value);
         }

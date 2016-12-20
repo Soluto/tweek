@@ -117,7 +117,8 @@ namespace Engine.DataTypes
             //broken, need to add support for nested relative path a/b/_/d/  with a/b/c/d/e should return e
             if (!Match(this, query)) throw new Exception(this + " not match query:" + query);
 
-            return From(_fragments.Skip(query._fragments.Length - (query.IsScan ? 1 : 0)).ToArray());
+            var index = query._fragments.Length - (query.IsScan ? 1 : 0);
+            return From(new ArraySegment<string>(_fragments, index, _fragments.Length - index).ToArray());
         }
 
         public static bool Match(ConfigurationPath path, ConfigurationPath query)
