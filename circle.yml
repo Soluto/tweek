@@ -10,8 +10,7 @@ machine:
 dependencies:
   pre:
     - curl ipinfo.io/ip
-    - ifconfig
-    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS && docker pull soluto/tweek-back-office
+    #- docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS && docker pull soluto/tweek-back-office
     - yarn cache dir
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
   override:
@@ -35,8 +34,8 @@ test:
     - npm run test:e2e
 general:
   build_dir: BackOffice
-deployment:
-  production:
-    branch: master
-    commands:
-      - docker push soluto/tweek-back-office
+#deployment:
+  #production:
+    #branch: master
+    #commands:
+      #- docker push soluto/tweek-back-office
