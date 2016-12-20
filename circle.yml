@@ -9,7 +9,7 @@ machine:
     version: 6.9.1
 dependencies:
   pre:
-    #- docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
     - ifconfig
     - yarn cache dir
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
@@ -17,7 +17,7 @@ dependencies:
     - yarn install
     - ls -a
     - ls ~/ -a
-    #- docker pull soluto/tweek-back-office:latest || true
+    - docker pull soluto/tweek-back-office:latest
   cache_directories:
     - ~/.yarn
     - ~/.yarn-cache
@@ -29,13 +29,13 @@ test:
     - yarn test:unit
     - cat CircleDockerfile > Dockerfile
     - docker build --rm=false -t soluto/tweek-back-office:latest .
-    - docker run -d -p 4000:3000 soluto/tweek-back-office:latest
+    - docker run -d -p 4000:3000 soluto/tweek-back-office:latest .
     - curl --retry-delay 5 --retry 10 -v http://localhost:4000/keys
     - npm run test:e2e
 general:
   build_dir: BackOffice
-#deployment:
-  #production:
-    #branch: master
-    #commands:
-      #- docker push soluto/tweek-back-office:latest
+deployment:
+  production:
+    branch: master
+    commands:
+      - docker push soluto/tweek-back-office:latest
