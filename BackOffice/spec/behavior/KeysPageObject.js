@@ -37,14 +37,12 @@ export default class KeysPageObject {
 
     this.waitForVisible(selectors.KEY_PATH_INPUT, 5000);
     this.browser.setValue(selectors.KEY_PATH_INPUT, keyName);
-    this.wait(5000);
 
     this.browser.click(selectors.SAVE_CHANGES_BUTTON);
 
     this.browser.waitUntil(() =>
       this.isInKeyPage(keyName),
       KeysPageObject.GIT_TRANSACTION_TIMEOUT);
-    this.wait(5000);
 
     this.waitForVisible(selectors.DELETE_KEY_BUTTON, 10000, 'key: ' + keyName + ' didnt added correctly');
   }
