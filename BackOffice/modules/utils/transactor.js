@@ -1,19 +1,29 @@
 
 class Transactor {
-  constructor(contextPromise){
+  constructor(contextPromise, prepareAction, cleanupAction){
     this._contextPromise = contextPromise;
+    this._prepareAction = prepareAction;
+    this._cleanupAction = cleanupAction;
     const lock = createLock();
     this.transact = lock.synchronized(this.transact);
   }
 
   async transact(transactionAction) {
+    let context = await this._contextPromise;
+
     try {
-      let context = await this._contextPromise;
+      if (this._prepareAction)
+        await this._prepareAction(context);
+
       return await transactionAction(context);
     }
     catch (err) {
       console.error('Error occurred during transaction ', err);
       throw err;
+    }
+    finally {
+      if (this._cleanupAction)
+        this._cleanupAction(context);
     }
   }
 }

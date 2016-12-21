@@ -112,9 +112,13 @@ export default class GitRepository {
     const isSynced = await this.isSynced();
     if (!isSynced) {
       console.warn('Repo is not synced after pull');
-      const remoteCommit = (await this._repo.getBranchCommit('remotes/origin/master'));
-      await Git.Reset.reset(this._repo, remoteCommit, 3);
+      await this.reset();
     }
+  }
+
+  async reset() {
+    const remoteCommit = (await this._repo.getBranchCommit('remotes/origin/master'));
+    await Git.Reset.reset(this._repo, remoteCommit, 3);
   }
 
   async isSynced() {
@@ -132,8 +136,7 @@ export default class GitRepository {
 
       if (!await this.isSynced()) {
         console.warn('Not synced after Push, attempting to reset');
-        const remoteCommit = (await this._repo.getBranchCommit('remotes/origin/master'));
-        await Git.Reset.reset(this._repo, remoteCommit, 3);
+        await this.reset();
 
         throw new Error("Repo was not in sync after push");
       }

@@ -29,7 +29,7 @@ const gitPromise = GitRepository.create({
   localPath: `${process.cwd()}/rulesRepository`
 });
 
-const gitTransactionManager = new Transactor(gitPromise);
+const gitTransactionManager = new Transactor(gitPromise, async gitRepo => await gitRepo.reset());
 const gitContinuousPullPromise = gitContinuousPull(gitTransactionManager);
 
 function getApp(req, res, requestCallback) {
