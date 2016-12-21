@@ -8,8 +8,6 @@ export default async function (req, res,
   const keyPath = params.splat;
 
   const key = await gitTransactionManager.transact(async gitRepo => {
-    await gitRepo.pull();
-
     let pathForJPad = getPathForJPad(keyPath);
     let pathForMeta = getPathForMeta(keyPath);
 
