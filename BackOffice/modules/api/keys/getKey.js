@@ -13,15 +13,29 @@ export default async function (req, res,
     let pathForJPad = getPathForJPad(keyPath);
     let pathForMeta = getPathForMeta(keyPath);
 
-    return {
-      keyDef: {
-        type: path.extname(keyPath).substring(1),
-        source: await gitRepo.readFile(pathForJPad),
-        modificationData: await gitRepo.getFileDetails(pathForJPad)
-      },
-      meta: JSON.parse(await gitRepo.readFile(pathForMeta))
+    try {
+      let ruleHistory = await gitRepo.getFileDetails(pathForJPad);
+      let jpadSource = await gitRepo.readFile(pathForJPad);
+      let metaSource = await gitRepo.readFile(pathForMeta);
+
+      return {
+        keyDef: {
+          type: path.extname(keyPath).substring(1),
+          source: jpadSource,
+          modificationData: ruleHistory
+        },
+        meta: JSON.parse(metaSource)
+      }
+    }
+    catch (err) {
+      console.warn(`Could not get key ${keyPath}: ${err}`);
+      return null;
     }
   });
+
+  if (key == null) {
+    res.status(404).send(null);
+  }
 
   res.json(key);
 }
