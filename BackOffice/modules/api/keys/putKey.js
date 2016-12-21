@@ -1,5 +1,5 @@
 import { UKNOWN_AUTHOR } from '../unknownAuthor';
-import {getPathForMeta, getPathForJPad} from "../../server/repositories/gitPathsUtils";
+import {getPathForMeta, getPathForJPad} from "../../server/repositories/tweekPathsUtils";
 
 export default async function (req, res,
   { gitTransactionManager, author = UKNOWN_AUTHOR },

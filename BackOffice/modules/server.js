@@ -10,7 +10,7 @@ import { getKeys } from '../modules/pages/keys/ducks/keys';
 import GitRepository from './server/repositories/GitRepository';
 import session from 'express-session';
 import Transactional from "./utils/transact";
-import { getBasePathForKeys, getKeyFromJPadPath} from "./server/repositories/gitPathsUtils";
+import { getBasePathForKeys, getKeyFromJPadPath} from "./server/repositories/tweekPathsUtils";
 import gitContinuousPull from "./server/repositories/gitContinuousPull";
 const passport = require('passport');
 const nconf = require('nconf');
@@ -32,8 +32,7 @@ var gitPromise = GitRepository.create({
 });
 
 const gitTransactionManager = new Transactional(gitPromise);
-
-gitContinuousPull(gitTransactionManager);
+const gitContinuousPullPromise = gitContinuousPull(gitTransactionManager);
 
 function getApp(req, res, requestCallback) {
   requestCallback(null, {
@@ -43,7 +42,7 @@ function getApp(req, res, requestCallback) {
       const store = configureStore({});
       const keys = await gitTransactionManager.transact(async gitRepo => {
         const keyFiles = await gitRepo.listFiles(getBasePathForKeys());
-        return keyFiles.map(keyFile => getKeyFromJPadPath(keyFile));
+        return keyFiles.map(getKeyFromJPadPath);
       });
 
       await store.dispatch(getKeys(keys));
