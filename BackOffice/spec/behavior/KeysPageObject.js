@@ -18,7 +18,7 @@ export default class KeysPageObject {
 
   goToKey(keyName) {
     this.browser.url(`${KeysPageObject.BASE_URL}${KeysPageObject.KEYS_PAGE_URL}/${keyName}`);
-    this.waitForKeyToLoad();
+    this.waitForVisible(selectors.SAVE_CHANGES_BUTTON, 10000, 'key: ' + keyName + ' didnt added correctly');
   }
 
   deleteKeyIfExists(keyName) {
@@ -32,14 +32,19 @@ export default class KeysPageObject {
   }
 
   addEmptyKey(keyName) {
+    console.log('adding key', keyName);
     this.goToKey('_blank');
 
+    this.waitForVisible(selectors.KEY_PATH_INPUT, 5000);
     this.browser.setValue(selectors.KEY_PATH_INPUT, keyName);
+
     this.browser.click(selectors.SAVE_CHANGES_BUTTON);
 
     this.browser.waitUntil(() =>
       this.isInKeyPage(keyName),
       KeysPageObject.GIT_TRANSACTION_TIMEOUT);
+
+    this.waitForVisible(selectors.DELETE_KEY_BUTTON, 10000, 'key: ' + keyName + ' didnt added correctly');
   }
 
   isInKeyPage(keyName) {
@@ -82,8 +87,16 @@ export default class KeysPageObject {
     this.browser.waitForVisible(selectors.KEY_PAGE, 2000);
   }
 
-  waitForKeyToLoad(timeout = 2000) {
-    this.browser.waitForVisible(selectors.SAVE_CHANGES_BUTTON, timeout);
+  waitForKeyToLoad(timeout = 10000) {
+    this.browser.waitForVisible(selectors.DELETE_KEY_BUTTON, timeout);
+  }
+
+  waitForVisible(selector, timeout, exceptionMessage) {
+    try {
+      this.browser.waitForVisible(selector, timeout);
+    } catch (exp) {
+      throw exp.message + ' from keyPageObject.waitForVisible: ' + exceptionMessage;
+    }
   }
 
   generateTestKeyName(prefix) {
