@@ -11,6 +11,7 @@ import GitRepository from './server/repositories/GitRepository';
 import session from 'express-session';
 import Transactional from "./utils/transact";
 import { getBasePathForKeys, getKeyFromJPadPath} from "./server/repositories/gitPathsUtils";
+import gitContinuousPull from "./server/repositories/gitContinuousPull";
 const passport = require('passport');
 const nconf = require('nconf');
 
@@ -31,6 +32,8 @@ var gitPromise = GitRepository.create({
 });
 
 const gitTransactionManager = new Transactional(gitPromise);
+
+gitContinuousPull(gitTransactionManager);
 
 function getApp(req, res, requestCallback) {
   requestCallback(null, {
