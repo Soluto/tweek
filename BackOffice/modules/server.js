@@ -15,16 +15,14 @@ import gitContinuousPull from "./server/repositories/gitContinuousPull";
 const passport = require('passport');
 const nconf = require('nconf');
 
-
-nconf.argv()
-  .env();
+nconf.argv().env();
 
 const configFileName = true || nconf.get('NODE_ENV') === 'production' ?
   'tweek_config_prod.json' : 'tweek_config_test.json';
 
 nconf.file({ file: `${process.cwd()}/${configFileName}` });
 
-var gitPromise = GitRepository.create({
+const gitPromise = GitRepository.create({
   url: nconf.get('GIT_URL'),
   username: nconf.get('GIT_USER'),
   password: nconf.get('GIT_PASSWORD'),

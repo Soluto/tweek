@@ -6,12 +6,12 @@ export default async function (req, res,
   { params })
 {
   const keyPath = params.splat;
+  try {
 
-  const key = await gitTransactionManager.transact(async gitRepo => {
-    let pathForJPad = getPathForJPad(keyPath);
-    let pathForMeta = getPathForMeta(keyPath);
+    const key = await gitTransactionManager.transact(async gitRepo => {
+      let pathForJPad = getPathForJPad(keyPath);
+      let pathForMeta = getPathForMeta(keyPath);
 
-    try {
       let ruleHistory = await gitRepo.getFileDetails(pathForJPad);
       let jpadSource = await gitRepo.readFile(pathForJPad);
       let metaSource = await gitRepo.readFile(pathForMeta);
@@ -24,16 +24,17 @@ export default async function (req, res,
         },
         meta: JSON.parse(metaSource)
       }
-    }
-    catch (err) {
-      console.warn(`Could not get key ${keyPath}: ${err}`);
-      return null;
-    }
-  });
+    });
+    res.json(key);
 
-  if (key == null) {
-    res.status(404).send(null);
   }
-
-  res.json(key);
+  catch (err) {
+    if (err.message.includes("no such file or directory")) {
+      res.sendStatus(404);
+    }
+    else {
+      console.error(err);
+      res.sendStatus(500);
+    }
+  }
 }
