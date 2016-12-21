@@ -44,18 +44,23 @@ describe('add tags', () => {
     }
 
     function assertTagSuggestionExists(partialTagName) {
+        keysPageObject.waitForVisible(selectors.TAGS_INPUT, 2000, 'cannot find tags input');
+
         browser.setValue(selectors.TAGS_INPUT, partialTagName);
-        keysPageObject.wait(10000);
-        browser.waitForVisible(selectors.TAGS_SUGGESTION, 2000);
+
+        keysPageObject.waitForVisible(selectors.TAGS_SUGGESTION, 2000, 'cannot find tags suggestion list');
+
         const tagsSuggestions = browser.elements(selectors.TAGS_SUGGESTION);
         assert.equal(tagsSuggestions.value.length, 1);
     }
 
     it('should save the tag as a suggestion on submiting it without saving the key', () => {
         // Arrange
+        keysPageObject.goToKey(tagsTestKeyFullPath);
+
         const guid1 = chance.guid();
         const guid2 = chance.guid();
-        
+
         // Act
         addTag(guid1);
         addTag(guid2);
