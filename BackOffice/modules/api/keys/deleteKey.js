@@ -7,13 +7,19 @@ export default async function (req, res,
 {
   const keyPath = params.splat;
 
-  await gitTransactionManager.transact(async gitRepo => {
-    await gitRepo.pull();
+  try{
+    await gitTransactionManager.transact(async gitRepo => {
+      await gitRepo.pull();
 
-    await gitRepo.deleteFile(getPathForMeta(keyPath));
-    await gitRepo.deleteFile(getPathForJPad(keyPath));
+      await gitRepo.deleteFile(getPathForMeta(keyPath));
+      await gitRepo.deleteFile(getPathForJPad(keyPath));
 
-    await gitRepo.commitAndPush("BackOffice - deleting " + keyPath, author)
-  });
-  res.send('OK');
+      await gitRepo.commitAndPush("BackOffice - deleting " + keyPath, author)
+    });
+    res.send('OK');
+  }
+  catch(err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
 }

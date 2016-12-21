@@ -7,14 +7,20 @@ export default async function (req, res,
 {
   const keyPath = params.splat;
 
-  await gitTransactionManager.transact(async gitRepo => {
-    await gitRepo.pull();
+  try {
+    await gitTransactionManager.transact(async gitRepo => {
+      await gitRepo.pull();
 
-    await gitRepo.updateFile(getPathForMeta(keyPath), JSON.stringify(req.body.meta, null, 4));
-    await gitRepo.updateFile(getPathForJPad(keyPath), req.body.keyDef.source);
+      await gitRepo.updateFile(getPathForMeta(keyPath), JSON.stringify(req.body.meta, null, 4));
+      await gitRepo.updateFile(getPathForJPad(keyPath), req.body.keyDef.source);
 
-    await gitRepo.commitAndPush("BackOffice - updating " + keyPath, author)
-  });
+      await gitRepo.commitAndPush("BackOffice - updating " + keyPath, author)
+    });
 
-  res.send('OK');
+    res.send('OK');
+  }
+  catch(err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
 }
