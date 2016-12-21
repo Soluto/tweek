@@ -30,8 +30,8 @@ export default class GitRepository {
     return new GitRepository(repo, operationSettings);
   }
 
-  listFiles(directoryPath) {
-    return glob('**/*.*', { cwd: path.join(this._repo.workdir(), directoryPath) });
+  async listFiles(directoryPath) {
+    return await glob('**/*.*', { cwd: path.join(this._repo.workdir(), directoryPath) });
   }
 
   async readFile(fileName) {
@@ -112,6 +112,8 @@ export default class GitRepository {
     const isSynced = await this.isSynced();
     if (!isSynced) {
       console.warn('Repo is not synced after pull');
+      const remoteCommit = (await this._repo.getBranchCommit('remotes/origin/master'));
+      await Git.Reset.reset(this._repo, remoteCommit, 3);
     }
   }
 
@@ -123,24 +125,17 @@ export default class GitRepository {
   }
 
   async _pushRepositoryChanges(actionName) {
-    try {
       console.log('pushing changes:', actionName);
 
       const remote = await this._repo.getRemote('origin');
       await remote.push(['refs/heads/master:refs/heads/master'], this._operationSettings);
 
-      if (!(await this.isSynced())) {
-        console.log('Not synced after Push, attempting to reset');
+      if (!await this.isSynced()) {
+        console.warn('Not synced after Push, attempting to reset');
         const remoteCommit = (await this._repo.getBranchCommit('remotes/origin/master'));
         await Git.Reset.reset(this._repo, remoteCommit, 3);
 
-        console.error('Reset successfully');
+        throw new Error("Repo was not in sync after push");
       }
-      else{
-        console.log('Pushed changes');
-      }
-    } catch (ex) {
-      console.error(ex);
-    }
   }
 }

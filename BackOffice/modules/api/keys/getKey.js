@@ -1,5 +1,5 @@
 import path from 'path';
-import {getPathForJPad, getPathForMeta} from "../../server/repositories/gitPathsUtils";
+import {getPathForJPad, getPathForMeta} from "../../server/repositories/tweekPathsUtils";
 
 export default async function (req, res,
   { gitTransactionManager },

@@ -1,5 +1,5 @@
 import { UKNOWN_AUTHOR } from '../unknownAuthor';
-import { getPathForTags } from "../../server/repositories/gitPathsUtils";
+import { getPathForTags } from "../../server/repositories/tweekPathsUtils";
 import { uniqBy } from "ramda";
 
 export default async function (req, res,
