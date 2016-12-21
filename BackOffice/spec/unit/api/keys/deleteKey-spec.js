@@ -1,6 +1,6 @@
 /* global jest, beforeEach, describe, it, expect */
 jest.unmock('../../../../modules/api/keys/deleteKey');
-jest.unmock('../../../../modules/server/repositories/gitPathsUtils');
+jest.unmock('../../../../modules/server/repositories/tweekPathsUtils');
 
 import deleteKey from '../../../../modules/api/keys/deleteKey';
 

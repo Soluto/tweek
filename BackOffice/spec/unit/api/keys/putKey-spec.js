@@ -1,6 +1,6 @@
 /* global jest, beforeEach, describe, it, expect */
 jest.unmock('../../../../modules/api/keys/putKey');
-jest.unmock('../../../../modules/server/repositories/gitPathsUtils');
+jest.unmock('../../../../modules/server/repositories/tweekPathsUtils');
 
 import putKey from '../../../../modules/api/keys/putKey';
 
