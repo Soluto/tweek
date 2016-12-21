@@ -9,7 +9,7 @@ import serverRoutes from './serverRoutes';
 import { getKeys } from '../modules/pages/keys/ducks/keys';
 import GitRepository from './server/repositories/GitRepository';
 import session from 'express-session';
-import Transactional from "./utils/transact";
+import Transactor from "./utils/transactor";
 import { getBasePathForKeys, getKeyFromJPadPath} from "./server/repositories/tweekPathsUtils";
 import gitContinuousPull from "./server/repositories/gitContinuousPull";
 const passport = require('passport');
@@ -31,7 +31,7 @@ var gitPromise = GitRepository.create({
   localPath: `${process.cwd()}/rulesRepository`
 });
 
-const gitTransactionManager = new Transactional(gitPromise);
+const gitTransactionManager = new Transactor(gitPromise);
 const gitContinuousPullPromise = gitContinuousPull(gitTransactionManager);
 
 function getApp(req, res, requestCallback) {
