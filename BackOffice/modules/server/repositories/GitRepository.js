@@ -46,21 +46,21 @@ export default class GitRepository {
     let remote = await this._repo.getRemote('origin');
     let remoteUrl = remote.url();
 
-    try {
-      const firstCommitOnMaster = await this._repo.getMasterCommit();
-      const walker = this._repo.createRevWalk();
-      walker.push(firstCommitOnMaster.sha());
-      walker.sorting(Git.Revwalk.SORT.Time);
+    const firstCommitOnMaster = await this._repo.getMasterCommit();
+    const walker = this._repo.createRevWalk();
+    walker.push(firstCommitOnMaster.sha());
+    walker.sorting(Git.Revwalk.SORT.Time);
 
-      const lastCommits = await walker.fileHistoryWalk(fileName, 100);
+    const lastCommits = await walker.fileHistoryWalk(fileName, 100);
+    if (lastCommits.length == 0) {
+      console.info('No recent history found for key');
+    }
+    else {
       const lastCommit = lastCommits[0].commit;
 
       modifyDate = lastCommit.date();
       modifyUser = lastCommit.author().name();
       commitSha = lastCommit.sha();
-    }
-    catch (exp) {
-      console.warn('failed read modification data', exp);
     }
 
     return {
@@ -84,7 +84,7 @@ export default class GitRepository {
   async deleteFile(fileName) {
     let filePath = path.join(this._repo.workdir(), fileName);
 
-      await fs.remove(filePath);
+    await fs.remove(filePath);
 
     const repoIndex = await this._repo.index();
     await repoIndex.removeByPath(fileName);
@@ -111,7 +111,7 @@ export default class GitRepository {
 
     const isSynced = await this.isSynced();
     if (!isSynced) {
-      throw new Error('Repo is not synced after pull');
+      console.warn('Repo is not synced after pull');
     }
   }
 
