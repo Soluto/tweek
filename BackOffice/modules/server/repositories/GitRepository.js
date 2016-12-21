@@ -129,16 +129,18 @@ export default class GitRepository {
   }
 
   async _pushRepositoryChanges(actionName) {
-      console.log('pushing changes:', actionName);
+    console.log('pushing changes:', actionName);
 
-      const remote = await this._repo.getRemote('origin');
-      await remote.push(['refs/heads/master:refs/heads/master'], this._operationSettings);
+    const remote = await this._repo.getRemote('origin');
+    await remote.push(['refs/heads/master:refs/heads/master'], this._operationSettings);
 
-      if (!await this.isSynced()) {
-        console.warn('Not synced after Push, attempting to reset');
-        await this.reset();
+    const isSynced = await this.isSynced();
 
-        throw new Error("Repo was not in sync after push");
-      }
+    if (!isSynced) {
+      console.warn('Not synced after Push, attempting to reset');
+      await this.reset();
+
+      throw new Error("Repo was not in sync after push");
+    }
   }
 }
