@@ -9,40 +9,39 @@ import serverRoutes from './serverRoutes';
 import { getKeys } from '../modules/pages/keys/ducks/keys';
 import GitRepository from './server/repositories/GitRepository';
 import session from 'express-session';
-import Transactional from "./utils/transact";
-import { getBasePathForKeys, getKeyFromJPadPath} from "./server/repositories/gitPathsUtils";
+import Transactor from "./utils/transactor";
+import KeysRepository from './server/repositories/keys-repository';
+import TagsRepository from "./server/repositories/tags-repository";
+import gitContinuousPull from "./server/repositories/gitContinuousPull";
 const passport = require('passport');
 const nconf = require('nconf');
 
-
-nconf.argv()
-  .env();
+nconf.argv().env();
 
 const configFileName = true || nconf.get('NODE_ENV') === 'production' ?
   'tweek_config_prod.json' : 'tweek_config_test.json';
 
 nconf.file({ file: `${process.cwd()}/${configFileName}` });
 
-var gitPromise = GitRepository.create({
+const gitPromise = GitRepository.create({
   url: nconf.get('GIT_URL'),
   username: nconf.get('GIT_USER'),
   password: nconf.get('GIT_PASSWORD'),
   localPath: `${process.cwd()}/rulesRepository`
 });
 
-const gitTransactionManager = new Transactional(gitPromise);
+const gitTransactionManager = new Transactor(gitPromise, async gitRepo => await gitRepo.reset());
+const gitContinuousPullPromise = gitContinuousPull(gitTransactionManager);
+const keysRepository = new KeysRepository(gitTransactionManager);
+const tagsRepository = new TagsRepository(gitTransactionManager);
 
 function getApp(req, res, requestCallback) {
   requestCallback(null, {
-    routes: routes(serverRoutes({ gitTransactionManager })),
+    routes: routes(serverRoutes({ tagsRepository, keysRepository })),
     async render(routerProps, renderCallback) {
 
       const store = configureStore({});
-      const keys = await gitTransactionManager.transact(async gitRepo => {
-        const keyFiles = await gitRepo.listFiles(getBasePathForKeys());
-        return keyFiles.map(keyFile => getKeyFromJPadPath(keyFile));
-      });
-
+      const keys = await keysRepository.getAllKeys();
       await store.dispatch(getKeys(keys));
 
       renderCallback(null, {
