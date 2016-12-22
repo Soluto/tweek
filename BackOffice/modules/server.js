@@ -12,7 +12,7 @@ import session from 'express-session';
 import Transactor from "./utils/transactor";
 import KeysRepository from './server/repositories/keys-repository';
 import TagsRepository from "./server/repositories/tags-repository";
-import gitContinuousPull from "./server/repositories/gitContinuousPull";
+import GitContinuousUpdater from "./server/repositories/git-continuous-updater";
 const passport = require('passport');
 const nconf = require('nconf');
 
@@ -35,6 +35,8 @@ const gitTransactionManager = new Transactor(gitPromise, async gitRepo => await 
 const gitContinuousPullPromise = gitContinuousPull(gitTransactionManager);
 const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
+
+GitContinuousUpdater.start(gitTransactionManager);
 
 function getApp(req, res, requestCallback) {
   requestCallback(null, {
