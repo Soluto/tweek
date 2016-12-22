@@ -7,7 +7,6 @@ export default class GitRepository {
 
   constructor(repo, operationSettings) {
     this._repo = repo;
-    this._modifiedFiles = [];
     this._operationSettings = operationSettings;
   }
 
@@ -31,8 +30,8 @@ export default class GitRepository {
     return new GitRepository(repo, operationSettings);
   }
 
-  listFiles(directoryPath) {
-    return glob('**/*.*', { cwd: path.join(this._repo.workdir(), directoryPath) });
+  async listFiles(directoryPath) {
+    return await glob('**/*.*', { cwd: path.join(this._repo.workdir(), directoryPath) });
   }
 
   async readFile(fileName) {
@@ -47,21 +46,21 @@ export default class GitRepository {
     let remote = await this._repo.getRemote('origin');
     let remoteUrl = remote.url();
 
-    try {
-      const firstCommitOnMaster = await this._repo.getMasterCommit();
-      const walker = this._repo.createRevWalk();
-      walker.push(firstCommitOnMaster.sha());
-      walker.sorting(Git.Revwalk.SORT.Time);
+    const firstCommitOnMaster = await this._repo.getMasterCommit();
+    const walker = this._repo.createRevWalk();
+    walker.push(firstCommitOnMaster.sha());
+    walker.sorting(Git.Revwalk.SORT.Time);
 
-      const lastCommits = await walker.fileHistoryWalk(fileName, 100);
+    const lastCommits = await walker.fileHistoryWalk(fileName, 100);
+    if (lastCommits.length == 0) {
+      console.info('No recent history found for key');
+    }
+    else {
       const lastCommit = lastCommits[0].commit;
 
       modifyDate = lastCommit.date();
       modifyUser = lastCommit.author().name();
       commitSha = lastCommit.sha();
-    }
-    catch (exp) {
-      console.warn('failed read modification data', exp);
     }
 
     return {
@@ -75,10 +74,11 @@ export default class GitRepository {
     let filePath = path.join(this._repo.workdir(), fileName);
     await fs.ensureFile(filePath);
     await fs.writeFile(filePath, content);
-    if (this._modifiedFiles.indexOf(fileName) == -1)
-    {
-      this._modifiedFiles.push(fileName);
-    }
+
+    const repoIndex = await this._repo.index();
+    await repoIndex.addByPath(fileName);
+    await repoIndex.write();
+    await repoIndex.writeTree();
   }
 
   async deleteFile(fileName) {
@@ -86,17 +86,17 @@ export default class GitRepository {
 
     await fs.remove(filePath);
 
-    const repoIndex = await this._repo.refreshIndex();
+    const repoIndex = await this._repo.index();
     await repoIndex.removeByPath(fileName);
     await repoIndex.write();
     await repoIndex.writeTree();
   }
 
-  async commitAndPush(message, { name, email }){
+  async commitAndPush(message, { name, email }) {
     const author = Git.Signature.now(name, email);
     const pusher = Git.Signature.now('tweek-backoffice', 'tweek-backoffice@tweek');
     await this._repo.createCommitOnHead(
-      this._modifiedFiles,
+      [],
       author,
       pusher,
       message
@@ -111,12 +111,17 @@ export default class GitRepository {
 
     const isSynced = await this.isSynced();
     if (!isSynced) {
-      throw new Error('invalid repo state');
+      console.warn('Repo is not synced after pull');
+      await this.reset();
     }
   }
 
-  async isSynced() {
+  async reset() {
+    const remoteCommit = (await this._repo.getBranchCommit('remotes/origin/master'));
+    await Git.Reset.reset(this._repo, remoteCommit, 3);
+  }
 
+  async isSynced() {
     const remoteCommit = (await this._repo.getBranchCommit('remotes/origin/master'));
     const localCommit = (await this._repo.getBranchCommit('master'));
 
@@ -124,26 +129,18 @@ export default class GitRepository {
   }
 
   async _pushRepositoryChanges(actionName) {
-    try {
-      console.log('pushing changes:', actionName);
+    console.log('pushing changes:', actionName);
 
-      const remote = await this._repo.getRemote('origin');
-      await remote.push(['refs/heads/master:refs/heads/master'], this._operationSettings);
+    const remote = await this._repo.getRemote('origin');
+    await remote.push(['refs/heads/master:refs/heads/master'], this._operationSettings);
 
-      if (!(await this.isSynced())) {
-        console.log('push failed, attempting to reset');
-        const remoteCommit = (await repo.getBranchCommit('remotes/origin/master'));
-        await Git.Reset.reset(this._repo, remoteCommit, 3);
+    const isSynced = await this.isSynced();
 
-        console.error('fail to push changes - reset changes');
-      }
-      else{
-        console.log('push completed');
-      }
+    if (!isSynced) {
+      console.warn('Not synced after Push, attempting to reset');
+      await this.reset();
 
-    } catch (ex) {
-      console.error(ex);
+      throw new Error("Repo was not in sync after push");
     }
   }
 }
-

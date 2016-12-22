@@ -43,15 +43,18 @@ describe('add key', () => {
 
     browser.click(selectors.SAVE_CHANGES_BUTTON);
     assert(keysPageObject.isSaving(), 'should be in saving state');
-    
+
     browser.waitUntil(() =>
       keysPageObject.isInKeyPage(keyToAddFullPath),
       KeysPageObject.GIT_TRANSACTION_TIMEOUT);
+
+    keysPageObject.waitForVisible(selectors.DELETE_KEY_BUTTON, 10000, 'new key did not openned currectly');
 
     assert(browser.getText(selectors.EDITABLE_KEY_NAME),
       keyToAddFullPath,
       'should set the key name correctly');
 
-    assert(!keysPageObject.hasChanges(), 'should not has changes');
+    browser.waitUntil(() =>
+      !keysPageObject.hasChanges(), 4000, 'new key should not be in with-changes state');
   });
 });

@@ -89,11 +89,10 @@ describe('edit key', () => {
     browser.setValue(secondRuleFirstConditionValue, 'someValue');
 
     browser.setValue(selectors.DEFAULT_VALUE_INPUT, 'some default value');
-
     readAndAssertKeySource();
 
     browser.click(selectors.SAVE_CHANGES_BUTTON);
-    assert(keysPageObject.isSaving(), 'should move to in saving state');
+    browser.waitUntil(() => keysPageObject.isSaving(), 5000, 'should move to in saving state');
 
     browser.waitUntil(() => !keysPageObject.isSaving(), KeysPageObject.GIT_TRANSACTION_TIMEOUT);
 
