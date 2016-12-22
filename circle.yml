@@ -11,7 +11,7 @@ dependencies:
   pre:
     - echo $GIT_URL
     - curl ipinfo.io/ip
-    #- docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS && docker pull soluto/tweek-back-office
+    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS && docker pull soluto/tweek-back-office
     - yarn cache dir
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
   override:
