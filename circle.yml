@@ -9,6 +9,9 @@ machine:
     version: 6.9.1
 dependencies:
   pre:
+    - echo ${GIT_URL}
+    - echo ${GIT_PASSWORD}
+    - echo ${GIT_USER}
     - curl ipinfo.io/ip
     #- docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS && docker pull soluto/tweek-back-office
     - yarn cache dir
