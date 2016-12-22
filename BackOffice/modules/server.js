@@ -16,12 +16,11 @@ import gitContinuousPull from "./server/repositories/gitContinuousPull";
 const passport = require('passport');
 const nconf = require('nconf');
 
-nconf.argv().env();
 
-const configFileName = true || nconf.get('NODE_ENV') === 'production' ?
-  'tweek_config_prod.json' : 'tweek_config_test.json';
-
-nconf.file({ file: `${process.cwd()}/${configFileName}` });
+const optionalConfigFileName = 'config.json';
+nconf.argv()
+  .file({ file: `${process.cwd()}/${optionalConfigFileName}` })
+  .env();
 
 const gitPromise = GitRepository.create({
   url: nconf.get('GIT_URL'),
@@ -31,7 +30,6 @@ const gitPromise = GitRepository.create({
 });
 
 const gitTransactionManager = new Transactor(gitPromise, async gitRepo => await gitRepo.reset());
-const gitContinuousPullPromise = gitContinuousPull(gitTransactionManager);
 const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
 
