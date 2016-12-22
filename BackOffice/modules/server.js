@@ -17,15 +17,24 @@ const passport = require('passport');
 const nconf = require('nconf');
 
 
-const optionalConfigFileName = 'config.json';
 nconf.argv()
-  .file({ file: `${process.cwd()}/${optionalConfigFileName}` })
+  .file({ file: `${process.cwd()}/config.json` })
   .env();
 
+const gitUrl = nconf.get('GIT_URL');
+const gitUsername = nconf.get('GIT_USER');
+const gitPassword = nconf.get('GIT_PASSWORD');
+
+if (!gitUrl ||
+  !gitUsername ||
+  !gitPromise) {
+  throw 'missing rules repostiroy details';
+}
+
 const gitRepostoryConfig = {
-  url: nconf.get('GIT_URL'),
-  username: nconf.get('GIT_USER'),
-  password: nconf.get('GIT_PASSWORD'),
+  url: url,
+  username: gitUsername,
+  password: gitPassword,
   localPath: `${process.cwd()}/rulesRepository`
 };
 
