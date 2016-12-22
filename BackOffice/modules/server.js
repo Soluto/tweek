@@ -32,7 +32,6 @@ const gitRepostoryConfig = {
 const gitPromise = GitRepository.create(gitRepostoryConfig);
 
 const gitTransactionManager = new Transactor(gitPromise, async gitRepo => await gitRepo.reset());
-const gitContinuousPullPromise = gitContinuousPull(gitTransactionManager);
 const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
 
