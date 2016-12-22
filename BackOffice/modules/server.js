@@ -22,14 +22,17 @@ nconf.argv()
   .file({ file: `${process.cwd()}/${optionalConfigFileName}` })
   .env();
 
-const gitPromise = GitRepository.create({
+const gitRepostoryConfig = {
   url: nconf.get('GIT_URL'),
   username: nconf.get('GIT_USER'),
   password: nconf.get('GIT_PASSWORD'),
   localPath: `${process.cwd()}/rulesRepository`
-});
+};
+
+const gitPromise = GitRepository.create(gitRepostoryConfig);
 
 const gitTransactionManager = new Transactor(gitPromise, async gitRepo => await gitRepo.reset());
+const gitContinuousPullPromise = gitContinuousPull(gitTransactionManager);
 const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
 
