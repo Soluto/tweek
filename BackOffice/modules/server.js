@@ -10,7 +10,8 @@ import { getKeys } from '../modules/pages/keys/ducks/keys';
 import GitRepository from './server/repositories/GitRepository';
 import session from 'express-session';
 import Transactor from "./utils/transactor";
-import { getBasePathForKeys, getKeyFromJPadPath} from "./server/repositories/tweekPathsUtils";
+import KeysRepository from './server/repositories/keys-repository';
+import TagsRepository from "./server/repositories/tags-repository";
 import gitContinuousPull from "./server/repositories/gitContinuousPull";
 const passport = require('passport');
 const nconf = require('nconf');
@@ -31,18 +32,16 @@ const gitPromise = GitRepository.create({
 
 const gitTransactionManager = new Transactor(gitPromise, async gitRepo => await gitRepo.reset());
 const gitContinuousPullPromise = gitContinuousPull(gitTransactionManager);
+const keysRepository = new KeysRepository(gitTransactionManager);
+const tagsRepository = new TagsRepository(gitTransactionManager);
 
 function getApp(req, res, requestCallback) {
   requestCallback(null, {
-    routes: routes(serverRoutes({ gitTransactionManager })),
+    routes: routes(serverRoutes({ tagsRepository, keysRepository })),
     async render(routerProps, renderCallback) {
 
       const store = configureStore({});
-      const keys = await gitTransactionManager.transact(async gitRepo => {
-        const keyFiles = await gitRepo.listFiles(getBasePathForKeys());
-        return keyFiles.map(getKeyFromJPadPath);
-      });
-
+      const keys = await keysRepository.getAllKeys();
       await store.dispatch(getKeys(keys));
 
       renderCallback(null, {
