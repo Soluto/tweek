@@ -9,17 +9,14 @@ import serverRoutes from './serverRoutes';
 import { getKeys } from '../modules/pages/keys/ducks/keys';
 import GitRepository from './server/repositories/GitRepository';
 import session from 'express-session';
-import Transactor from "./utils/transactor";
+import Transactor from './utils/transactor';
 import KeysRepository from './server/repositories/keys-repository';
-import TagsRepository from "./server/repositories/tags-repository";
-import GitContinuousUpdater from "./server/repositories/git-continuous-updater";
+import TagsRepository from './server/repositories/tags-repository';
+import GitContinuousUpdater from './server/repositories/git-continuous-updater';
 const passport = require('passport');
 const nconf = require('nconf');
 
-
-nconf.argv()
-  .file({ file: `${process.cwd()}/config.json` })
-  .env();
+nconf.argv().env().file({ file: `${process.cwd()}/config.json` });
 
 const gitUrl = nconf.get('GIT_URL');
 const gitUsername = nconf.get('GIT_USER');
@@ -27,15 +24,15 @@ const gitPassword = nconf.get('GIT_PASSWORD');
 
 if (!gitUrl ||
   !gitUsername ||
-  !gitPromise) {
+  !gitPassword) {
   throw 'missing rules repostiroy details';
 }
 
 const gitRepostoryConfig = {
-  url: url,
+  url: gitUrl,
   username: gitUsername,
   password: gitPassword,
-  localPath: `${process.cwd()}/rulesRepository`
+  localPath: `${process.cwd()}/rulesRepository`,
 };
 
 const gitPromise = GitRepository.create(gitRepostoryConfig);
