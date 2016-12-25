@@ -7,7 +7,7 @@ import configureStore from './store/configureStore';
 import { Provider } from 'react-redux';
 import serverRoutes from './serverRoutes';
 import { getKeys } from '../modules/pages/keys/ducks/keys';
-import GitRepository from './server/repositories/GitRepository';
+import GitRepository from './server/repositories/git-repository';
 import session from 'express-session';
 import Transactor from './utils/transactor';
 import KeysRepository from './server/repositories/keys-repository';
@@ -22,6 +22,7 @@ const gitUrl = nconf.get('GIT_URL');
 const gitUsername = nconf.get('GIT_USER');
 const gitPassword = nconf.get('GIT_PASSWORD');
 
+console.log("git stuff: ", gitUrl, gitUsername, gitPassword);
 if (!gitUrl ||
   !gitUsername ||
   !gitPassword) {
