@@ -4,7 +4,7 @@ import { WithContext as ReactTags } from 'react-tag-input';
 import { connect } from 'react-redux';
 import R from 'ramda';
 import style from './KeyTags.css';
-import * as tagActions from '../../../ducks/tags';
+import * as tagActions from '../../../../ducks/tags';
 import { compose, mapProps, pure } from 'recompose';
 
 export default compose(

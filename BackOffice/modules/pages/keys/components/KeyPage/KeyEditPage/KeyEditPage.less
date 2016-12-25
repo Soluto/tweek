@@ -1,8 +1,4 @@
-  @import (reference) "../../../../styles/core/core.less";
-  .loading-message {
-    .centered-message;
-  }
-  
+  @import (reference) "../../../../../styles/core/core.less";
   @text-color: #515c66;
   .key-viewer-container {
     padding: 16px;
@@ -10,22 +6,6 @@
     flex-grow: 1;
     flex-direction: column;
     flex-shrink: 0;
-    .key-action-buttons-wrapper {
-      text-align: right;
-      @key-action-button-width: 125px;
-      .save-changes-button {
-        .metro-button;
-        width: @key-action-button-width;
-        &[data-state-is-saving=true], &[data-state-is-saving=true]:disabled {
-          background-color: green;
-        }
-      }
-      .delete-key-button {
-        .transparent-metro-button;
-        margin-right: 10px;
-        width: @key-action-button-width;
-      }
-    }
     .key-header {
       display: flex;
       flex-direction: column;
