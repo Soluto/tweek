@@ -1,0 +1,89 @@
+.key-action-buttons-wrapper {
+  text-align: right;
+}
+.key-action-buttons-wrapper .save-changes-button {
+  vertical-align: top;
+  background-color: rgba(0, 122, 204, 0.8);
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  width: 125px;
+}
+.key-action-buttons-wrapper .save-changes-button:hover {
+  background-color: #007acc;
+  cursor: pointer;
+}
+.key-action-buttons-wrapper .save-changes-button:active {
+  background-color: #0098ff;
+}
+.key-action-buttons-wrapper .save-changes-button:disabled {
+  background-color: gray;
+}
+.key-action-buttons-wrapper .save-changes-button:disabled:hover,
+.key-action-buttons-wrapper .save-changes-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.key-action-buttons-wrapper .save-changes-button[data-state-is-saving=true],
+.key-action-buttons-wrapper .save-changes-button[data-state-is-saving=true]:disabled {
+  background-color: green;
+}
+.key-action-buttons-wrapper .delete-key-button {
+  vertical-align: top;
+  background-color: rgba(0, 122, 204, 0.8);
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  text-decoration: underline;
+  background-color: transparent;
+  color: gray;
+  margin-right: 10px;
+  width: 125px;
+}
+.key-action-buttons-wrapper .delete-key-button:hover {
+  background-color: #007acc;
+  cursor: pointer;
+}
+.key-action-buttons-wrapper .delete-key-button:active {
+  background-color: #0098ff;
+}
+.key-action-buttons-wrapper .delete-key-button:disabled {
+  background-color: gray;
+}
+.key-action-buttons-wrapper .delete-key-button:disabled:hover,
+.key-action-buttons-wrapper .delete-key-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.key-action-buttons-wrapper .delete-key-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.key-action-buttons-wrapper .delete-key-button:active {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.key-action-buttons-wrapper .delete-key-button:disabled {
+  background-color: transparent;
+}
+.key-action-buttons-wrapper .delete-key-button:disabled:hover,
+.key-action-buttons-wrapper .delete-key-button:disabled:active {
+  cursor: default;
+  background-color: transparent;
+}

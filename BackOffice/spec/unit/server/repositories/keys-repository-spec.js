@@ -49,8 +49,6 @@ describe("KeysRepository", () => {
     });
 
     it("should pull, update files then commit and push", async () => {
-      // Arrange
-
       // Act
       await target.updateKey(testKeyPath, testMetaSource, testRulesSource, testAuthor);
 
@@ -61,8 +59,6 @@ describe("KeysRepository", () => {
     });
 
     it("should update the jpad rule file and the meta details file", async () => {
-      // Arrange
-
       // Act
       await target.updateKey(testKeyPath, testMetaSource, testRulesSource, testAuthor);
 
@@ -72,8 +68,6 @@ describe("KeysRepository", () => {
     });
 
     it("should commit and push with the author sent", async () => {
-      // Arrange
-
       // Act
       await target.updateKey(testKeyPath, testMetaSource, testRulesSource, testAuthor);
 
@@ -91,8 +85,6 @@ describe("KeysRepository", () => {
     });
 
     it("should pull, delete files then commit and push", async () => {
-      // Arrange
-
       // Act
       await target.deleteKey(testKeyPath, testAuthor);
 
@@ -103,8 +95,6 @@ describe("KeysRepository", () => {
     });
 
     it("should delete the jpad rule file and the meta details file", async () => {
-      // Arrange
-
       // Act
       await target.deleteKey(testKeyPath, testAuthor);
 
@@ -114,8 +104,6 @@ describe("KeysRepository", () => {
     });
 
     it("should commit and push with the author sent", async () => {
-      // Arrange
-
       // Act
       await target.deleteKey(testKeyPath, testAuthor);
 
