@@ -80,6 +80,11 @@ namespace Tweek.ApiService
                     {
                         BucketName = bucketName,
                         Password = bucketPassword,
+                        PoolConfiguration = new PoolConfiguration()
+                        {
+                            MaxSize = 30,
+                            MinSize = 5
+                        }
                     }
                 },
                 Serializer = () => new DefaultSerializer(
