@@ -15,11 +15,11 @@ dependencies:
     - yarn cache dir
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
   override:
-    - yarn install
     - cat CircleDockerfile > Dockerfile
     - |
-       docker login -u $DOCKER_USER -p $DOCKER_PASS
+       docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
        docker pull soluto/tweek-back-office
+    - yarn install
 test:
   override:
     - yarn test:unit
@@ -32,5 +32,5 @@ deployment:
   hub: 
     branch: master
     commands:
-      - docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
       - docker push soluto/tweek-back-office
