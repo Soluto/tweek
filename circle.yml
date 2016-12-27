@@ -19,6 +19,7 @@ dependencies:
     - |
        docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
        docker pull soluto/tweek-back-office
+       docker build --rm=false -t soluto/tweek-back-office .
     - yarn install
 test:
   override:
