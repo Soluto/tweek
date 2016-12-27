@@ -1,6 +1,4 @@
 machine:
-  services:
-    - docker
   environment:
     NODE_ENV: development
     YARN_VERSION: 0.17.8
@@ -9,6 +7,11 @@ machine:
     version: 6.9.1
 dependencies:
   pre:
+    -|
+      sudo curl -L -o /usr/bin/docker 'http://s3-external-1.amazonaws.com/circle-downloads/docker-1.6.2-circleci'
+      sudo chmod 0755 /usr/bin/docker
+      sudo start docker
+      
     - echo $GIT_URL
     - curl ipinfo.io/ip
     - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS && docker pull soluto/tweek-back-office
