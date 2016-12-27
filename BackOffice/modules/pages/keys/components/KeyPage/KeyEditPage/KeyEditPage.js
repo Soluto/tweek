@@ -44,7 +44,7 @@ export default class KeyEditPage extends Component {
 
   render() {
     const { configKey, selectedKey, isInAddMode } = this.props;
-    const { meta, keyDef, key = '' } = selectedKey.local;
+    const { key, local:{meta, keyDef}} = selectedKey;
 
     return (
       <div className={style['key-viewer-container']}>
