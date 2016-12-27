@@ -2,7 +2,7 @@ import React from 'react';
 import { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import KeyRulesEditor from '../../KeyRulesEditor/KeyRulesEditor';
+import KeyRulesEditor from './KeyRulesEditor/KeyRulesEditor';
 import style from './KeyEditPage.css';
 import KeyTags from './KeyTags/KeyTags';
 import EditableText from './EditableText/EditableText';

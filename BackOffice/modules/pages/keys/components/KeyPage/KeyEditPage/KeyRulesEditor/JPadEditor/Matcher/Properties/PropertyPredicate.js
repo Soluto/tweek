@@ -1,10 +1,9 @@
-
 import React from 'react';
 import R from 'ramda';
-import EditorMetaService from '../../../../../../services/EditorMetaService';
+import EditorMetaService from '../../../../../../../../../services/EditorMetaService.js';
 import { Operator, getSupportedOperators } from './Operator';
 import PropertyValue from './PropertyValue';
-import { types as MetaTypes } from '../../../../../../services/MetaHelpers';
+import { types as MetaTypes } from '../../../../../../../../../services/MetaHelpers.js';
 
 const editorMetaService = EditorMetaService.instance;
 
