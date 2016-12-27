@@ -72,7 +72,7 @@ describe('add tags', () => {
         const partialGuid1 = guid1.slice(0, guid1.length - 1);
         assertTagSuggestionExists(partialGuid1);
 
-        const partialGuid2 = guid1.slice(0, guid2.length - 1);
+        const partialGuid2 = guid2.slice(0, guid2.length - 1);
         assertTagSuggestionExists(partialGuid2);
     });
 });

@@ -22,7 +22,7 @@ export default class TagsRepository {
 
       const newTags = uniqBy(x => x.name, [...currentTags, ...changedTags]);
 
-      await gitRepo.updateFile(TagsFile, JSON.stringify(newTags));
+      await gitRepo.updateFile(TagsFile, JSON.stringify(newTags, null, 4));
 
       await gitRepo.commitAndPush("BackOffice - updating tags", author);
     });
