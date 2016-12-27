@@ -22,8 +22,8 @@ dependencies:
     - ls -a
     - ls ~/ -a
     - docker info
-    - if [[ -e ~/docker/image.tar ]]; then docker load --input ~/docker/image.tar; fi
     - cat CircleDockerfile > Dockerfile
+    - if [[ -e ~/docker/image.tar ]]; then docker load -i ~/docker/image.tar; fi
     - docker build --rm=false -t soluto/tweek-back-office .
     - mkdir -p ~/docker; docker save soluto/tweek-back-office > ~/docker/image.tar
     #- docker pull soluto/tweek-back-office
