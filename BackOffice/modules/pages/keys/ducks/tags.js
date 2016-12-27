@@ -12,7 +12,7 @@ export async function downloadTags() {
 
 export const saveNewTags = (tagsToSave) => async function (dispatch, getState) {
   const currentTags = getState().tags.map(x => x.name);
-  const newTags = R.difference(tagsToSave, currentTags).filter(x=>x.name != null);
+  const newTags = R.difference(tagsToSave, currentTags).filter(x=>x != null);
 
   if (newTags.length < 1) {
     console.log('no new tags to save found');
