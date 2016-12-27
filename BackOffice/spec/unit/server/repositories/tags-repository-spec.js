@@ -58,7 +58,7 @@ describe("TagsRepository", () => {
       await target.mergeTags(["tag2", "tag3"], testAuthor);
 
       // Assert
-      expect(mockGitRepo.updateFile.mock.calls[0][1]).toEqual(JSON.stringify([{name: "tag1"}, {name: "tag2"}, {name: "tag3"}]));
+      expect(mockGitRepo.updateFile.mock.calls[0][1]).toEqual(JSON.stringify([{name: "tag1"}, {name: "tag2"}, {name: "tag3"}], null, 4));
     });
 
     it ("should save the resulting tags into tags.json", async () => {
