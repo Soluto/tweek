@@ -19,7 +19,7 @@ const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
         handleDelete={handleDelete}
         placeholder="Add value"
         minQueryLength = { 1 }
-        allowDeleteFromEmptyInput={false}
+        allowDeleteFromEmptyInput={true}
         classNames={{
           tags: style['tags-container'],
           tagInput: style['tag-input'],
