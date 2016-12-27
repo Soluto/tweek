@@ -8,6 +8,10 @@ machine:
   node: 
     version: 6.9.1
 dependencies:
+  cache_directories:
+    - ~/.yarn
+    - ~/.yarn-cache
+    - "~/docker"
   pre:
     - echo $GIT_URL
     - curl ipinfo.io/ip
@@ -20,13 +24,9 @@ dependencies:
     - docker info
     - if [[ -e ~/docker/image.tar ]]; then docker load --input ~/docker/image.tar; fi
     - cat CircleDockerfile > Dockerfile
-    - docker build --rm=false -t soluto/tweek-back-office:latest .
-    - mkdir -p ~/docker; docker save soluto/tweek-back-office:latest > ~/docker/image.tar
+    - docker build --rm=false -t soluto/tweek-back-office .
+    - mkdir -p ~/docker; docker save soluto/tweek-back-office > ~/docker/image.tar
     #- docker pull soluto/tweek-back-office
-  cache_directories:
-    - ~/.yarn
-    - ~/.yarn-cache
-    - ~/docker
     #- /home/ubuntu/.cache/yarn ??
 test:
   override:
@@ -43,4 +43,4 @@ deployment:
     branch: master
     commands:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker push soluto/tweek-back-office:latest 
+      - docker push soluto/tweek-back-office
