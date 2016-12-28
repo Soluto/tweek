@@ -5,6 +5,7 @@ import { createBlankKey, BLANK_KEY_NAME } from './blankKeyDefinition';
 import { withJsonData } from '../../../utils/http';
 
 const KEY_OPENED = 'KEY_OPENED';
+const KEY_OPENING = 'KEY_OPENING';
 const KEY_RULEDEF_UPDATED = 'KEY_RULEDEF_UPDATED';
 const KEY_RULE_META_UPDATED = 'KEY_RULE_META_UPDATED';
 const KEY_SAVED = 'KEY_SAVED';
@@ -12,30 +13,31 @@ const KEY_SAVING = 'KEY_SAVING';
 const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
 
 export function openKey(key) {
-    return async function(dispatch) {
+    return async function (dispatch) {
         if (key === BLANK_KEY_NAME) {
             dispatch({ type: KEY_OPENED, payload: createBlankKey() });
             return;
         }
 
-        let keyOpenedPayload = {
-            key,
-            isLoaded: false,
-            meta: null,
-            keyDef: null,
-        };
-
-        dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
+        dispatch({ type: KEY_OPENING, payload: key });
 
         try {
             const keyData = await (await fetch(`/api/keys/${key}`, { credentials: 'same-origin' })).json();
 
-            keyOpenedPayload.isLoaded = true;
-            keyOpenedPayload.meta = keyData.meta;
-            keyOpenedPayload.keyDef = keyData.keyDef;
+            const keyOpenedPayload = {
+                key,
+                meta: keyData.meta,
+                keyDef: keyData.keyDef,
+            };
+
             dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
         } catch (exp) {
-            keyOpenedPayload.isLoaded = true;
+            let keyOpenedPayload = {
+                key,
+                meta: null,
+                keyDef: null,
+            };
+
             dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
         }
     };
@@ -54,7 +56,7 @@ export function updateKeyName(name) {
 }
 
 export function saveKey() {
-    return async function(dispatch, getState) {
+    return async function (dispatch, getState) {
         const { selectedKey: { local: keyData, key } } = getState();
         const isNewKey = !!(keyData.key);
         const savedKey = keyData.key || key;
@@ -86,45 +88,53 @@ export function saveKey() {
 }
 
 export default handleActions({
-    [KEY_OPENED]: (state, { payload: { key, isLoaded, ...props } }) => {
+    [KEY_OPENED]: (state, { payload: { key, ...props } }) => {
     return {
         key,
-        isLoaded,
+        isLoaded: true,
         local: R.clone(props),
         remote: R.clone(props),
     };
 },
-[KEY_RULEDEF_UPDATED]: (state, { payload }) => ({
+[KEY_OPENING]: (state, { payload: { key, ...props } }) => {
+    return {
+        key,
+        isLoaded: false,
+        local: R.clone(props),
+        remote: R.clone(props),
+    };
+},
+    [KEY_RULEDEF_UPDATED]: (state, { payload }) => ({
   ...state,
-    local: {
-    ...state.local,
-        keyDef: { ...state.local.keyDef, ...payload },
-    },
-}),
-    [KEY_RULE_META_UPDATED]: (state, { payload }) => ({
-    ...state,
         local: {
-      ...state.local,
-            meta: payload,
+    ...state.local,
+            keyDef: { ...state.local.keyDef, ...payload },
         },
     }),
-        [KEY_SAVED]: ({ local: { key, ...localData }, ...otherState }) => ({
-            key,
+        [KEY_RULE_META_UPDATED]: (state, { payload }) => ({
+    ...state,
+            local: {
+      ...state.local,
+                meta: payload,
+            },
+        }),
+            [KEY_SAVED]: ({ local: { key, ...localData }, ...otherState }) => ({
+                key,
       ...otherState,
-            local: localData,
-            remote: R.clone(localData),
-            isSaving: false,
-        }),
-            [KEY_SAVING]: (state) => ({
-        ...state,
-                isSaving: true,
+                local: localData,
+                remote: R.clone(localData),
+                isSaving: false,
             }),
-                [KEY_NAME_CHANGE]: ({ local: { key, ...localData }, ...otherState }, { payload }) => ({
+                [KEY_SAVING]: (state) => ({
+        ...state,
+                    isSaving: true,
+                }),
+                    [KEY_NAME_CHANGE]: ({ local: { key, ...localData }, ...otherState }, { payload }) => ({
           ...otherState,
-                    local: {
+                        local: {
             ...localData,
-                        meta: { ...localData.meta, displayName: payload },
+                            meta: { ...localData.meta, displayName: payload },
             ...(payload === '' ? {} : { key: payload }), // get displayName from payload
-                },
+                    },
         }),
-}, null);
+    }, null);
