@@ -11,27 +11,18 @@ dependencies:
   cache_directories:
     - ~/.yarn
     - ~/.yarn-cache
-    - "~/docker"
   pre:
-    - echo $GIT_URL
-    - curl ipinfo.io/ip
     - yarn cache dir
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
   override:
-    - yarn install
-    - ls -a
-    - ls ~/ -a
-    - docker info
     - cat CircleDockerfile > Dockerfile
-    - if [[ -e ~/docker/image.tar ]]; then docker load -i ~/docker/image.tar; fi
-    - docker build --rm=false -t soluto/tweek-back-office .
-    - mkdir -p ~/docker; docker save soluto/tweek-back-office > ~/docker/image.tar
-    #- docker pull soluto/tweek-back-office
-    #- /home/ubuntu/.cache/yarn ??
+    - |
+       docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
+       docker pull soluto/tweek-back-office
+       docker build --rm=false -t soluto/tweek-back-office .
+    - yarn install
 test:
   override:
-    #- docker pull logzio/logzio-docker
-    #- docker run --privileged -d --restart=always -v /var/run/docker.sock:/var/run/docker.sock logzio/logzio-docker -t wsEabfWJZpXkwVqUVrVNvhSvUnnYtzbg --no-stats -no-dockerEvents -z us -a env=prod
     - yarn test:unit
     - docker run -d -p 4000:3000 -e GIT_URL=${GIT_URL} -e GIT_PASSWORD=${GIT_PASSWORD} -e GIT_USER=${GIT_USER} soluto/tweek-back-office:latest .
     - curl --retry-delay 5 --retry 10 -v http://localhost:4000/keys
@@ -42,5 +33,5 @@ deployment:
   hub: 
     branch: master
     commands:
-      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
       - docker push soluto/tweek-back-office

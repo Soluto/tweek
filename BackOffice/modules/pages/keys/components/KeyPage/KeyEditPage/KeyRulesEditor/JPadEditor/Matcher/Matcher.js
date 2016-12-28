@@ -1,7 +1,7 @@
 import React from 'react';
 import R from 'ramda';
 import style from './Matcher.css';
-import EditorMetaService from '../../../../../services/EditorMetaService';
+import EditorMetaService from '../../../../../../../../services/EditorMetaService.js';
 import PropertyName from './Properties/PropertyName';
 import PropertyPredicate from './Properties/PropertyPredicate';
 import { shouldUpdate } from 'recompose';
