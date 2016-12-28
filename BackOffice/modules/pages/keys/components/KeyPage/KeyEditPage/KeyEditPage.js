@@ -50,7 +50,7 @@ export default class KeyEditPage extends Component {
     return (
       <form className={style['key-viewer-container-form']}>
         <fieldset className={style['key-viewer-container-fieldset']}
-          disabled={true}>
+          disabled={isReadonly}>
 
           <div className={style['key-viewer-container']}>
             <KeyPageActions isInAddMode={isInAddMode}
