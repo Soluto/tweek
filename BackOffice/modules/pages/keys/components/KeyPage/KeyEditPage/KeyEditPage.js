@@ -48,7 +48,8 @@ export default class KeyEditPage extends Component {
     const isReadonly = meta.readOnly;
 
     return (
-      <form className={style['key-viewer-container-form']}>
+      <form className={style['key-viewer-container-form']}
+        onSubmit={e => e.preventDefault()}>
         <fieldset className={style['key-viewer-container-fieldset']}
           disabled={isReadonly}>
 
