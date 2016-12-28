@@ -44,77 +44,87 @@ export default class KeyEditPage extends Component {
 
   render() {
     const { configKey, selectedKey, isInAddMode } = this.props;
-    const { key, local:{meta, keyDef}} = selectedKey;
+    const { key, local: {meta, keyDef}} = selectedKey;
+    const isReadonly = meta.readOnly;
 
     return (
-      <div className={style['key-viewer-container']}>
-        <KeyPageActions isInAddMode={isInAddMode}></KeyPageActions>
+      <form className={style['key-viewer-container-form']}>
+        <fieldset className={style['key-viewer-container-fieldset']}
+          disabled={true}>
 
-        <div className={style['key-header']}>
+          <div className={style['key-viewer-container']}>
+            <KeyPageActions isInAddMode={isInAddMode}
+              isReadonly={isReadonly} />
 
-          {keyDef.modificationData ?
-            <KeyModificationDetails className={style['modification-data']} {...keyDef.modificationData} />
-            : null
-          }
+            <div className={style['key-header']}>
 
-          <div className={style['display-name-wrapper']}>
-            {isInAddMode ?
-              <NewKeyInput onKeyNameChanged={(name) => this._onKeyNameChanged(name)} />
-              :
-              <EditableText onTextChanged={(text) => this:: this._onDisplayNameChanged(text) }
-              placeHolder="Enter key display name"
+              {keyDef.modificationData ?
+                <KeyModificationDetails className={style['modification-data']} {...keyDef.modificationData} />
+                : null
+              }
+
+              <div className={style['display-name-wrapper']}>
+                {isInAddMode ?
+                  <NewKeyInput onKeyNameChanged={(name) => this._onKeyNameChanged(name)} />
+                  :
+                  <EditableText onTextChanged={(text) => this:: this._onDisplayNameChanged(text) }
+                  placeHolder="Enter key display name"
               maxLength={80}
-            value={meta.displayName}
-            classNames={{
-              container: style['display-name-container'],
-              input: style['display-name-input'],
-              text: style['display-name-text'],
-              form: style['display-name-form'],
-            }}
-            />
+                value={meta.displayName}
+                isReadonly={isReadonly}
+                classNames={{
+                  container: style['display-name-container'],
+                  input: style['display-name-input'],
+                  text: style['display-name-text'],
+                  form: style['display-name-form'],
+                }}
+                />
           }
         </div>
 
-          {!isInAddMode ?
-            <div className={style['key-full-path']}>
-              <label>Full path: </label>
-              <label className={style['actual-path']}>{key}</label>
+              {!isInAddMode ?
+                <div className={style['key-full-path']}>
+                  <label>Full path: </label>
+                  <label className={style['actual-path']}>{key}</label>
+                </div>
+                : null}
+
+              <div className={style['key-description-and-tags-wrapper']}>
+
+                <div className={style['key-description-wrapper']}>
+                  <EditableTextArea value={meta.description}
+                    onTextChanged={(text) => this._onDescriptionChanged(text)}
+                    placeHolder="Write key description"
+                    title="Click to edit description"
+                    classNames={{
+                      input: style['description-input'],
+                    }}
+                    maxLength={400}
+                    />
+                </div>
+
+                <div className={style['tags-wrapper']}>
+
+                  <KeyTags onTagsChanged={(newTags) => this._onTagsChanged(newTags)}
+                    tags={meta.tags}
+                    />
+
+                </div>
+
+              </div>
+
             </div>
-            : null}
 
-          <div className={style['key-description-and-tags-wrapper']}>
-
-            <div className={style['key-description-wrapper']}>
-              <EditableTextArea value={meta.description}
-                onTextChanged={(text) => this._onDescriptionChanged(text)}
-                placeHolder="Write key description"
-                title="Click to edit description"
-                classNames={{
-                  input: style['description-input'],
-                }}
-                maxLength={400}
-                />
-            </div>
-
-            <div className={style['tags-wrapper']}>
-
-              <KeyTags onTagsChanged={(newTags) => this._onTagsChanged(newTags)}
-                tags={meta.tags}
-                />
-
-            </div>
+            <KeyRulesEditor keyDef={keyDef}
+              sourceTree={JSON.parse(keyDef.source)}
+              onMutation={x => this.props.updateKeyDef({ source: JSON.stringify(x, null, 4) })}
+              className={style['key-rules-editor']}
+              />
 
           </div>
 
-        </div>
-
-        <KeyRulesEditor keyDef={keyDef}
-          sourceTree={JSON.parse(keyDef.source)}
-          onMutation={x => this.props.updateKeyDef({ source: JSON.stringify(x, null, 4) })}
-          className={style['key-rules-editor']}
-          />
-
-      </div>
+        </fieldset>
+      </form>
     );
   }
 }

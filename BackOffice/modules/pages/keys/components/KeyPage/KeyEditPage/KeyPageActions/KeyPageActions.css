@@ -1,5 +1,10 @@
+.readonly-key-message {
+  float: left;
+  font-size: 22px;
+  color: #888;
+}
 .key-action-buttons-wrapper {
-  text-align: right;
+  float: right;
 }
 .key-action-buttons-wrapper .save-changes-button {
   vertical-align: top;

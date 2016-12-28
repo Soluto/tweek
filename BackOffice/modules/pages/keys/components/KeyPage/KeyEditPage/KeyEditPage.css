@@ -1,11 +1,19 @@
-.key-viewer-container {
+.key-viewer-container-form {
+  display: flex;
+  flex-grow: 1;
+}
+.key-viewer-container-form .key-viewer-container-fieldset {
+  display: flex;
+  flex-grow: 1;
+  border: none;
+}
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container {
+  flex-direction: column;
   padding: 16px;
   display: flex;
   flex-grow: 1;
-  flex-direction: column;
-  flex-shrink: 0;
 }
-.key-viewer-container .key-header {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -17,24 +25,24 @@
   padding: 20px;
   box-sizing: border-box;
 }
-.key-viewer-container .key-header .modification-data {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .modification-data {
   position: absolute;
   top: 10px;
   right: 10px;
 }
-.key-viewer-container .key-header .display-name {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name {
   font-size: 20px;
 }
-.key-viewer-container .key-header .display-name-wrapper .display-name-container {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .display-name-container {
   min-height: 34px;
   display: flex;
   flex-grow: 1;
 }
-.key-viewer-container .key-header .display-name-wrapper .display-name-form {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .display-name-form {
   display: flex;
   flex-grow: 1;
 }
-.key-viewer-container .key-header .display-name-wrapper .display-name-input {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .display-name-input {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -55,10 +63,10 @@
   width: 100%;
   flex-grow: 1;
 }
-.key-viewer-container .key-header .display-name-wrapper .display-name-input:focus {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .display-name-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.key-viewer-container .key-header .display-name-wrapper .key-name-input {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .key-name-input {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -79,18 +87,18 @@
   width: 100%;
   flex-grow: 1;
 }
-.key-viewer-container .key-header .display-name-wrapper .key-name-input:focus {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .key-name-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.key-viewer-container .key-header .display-name-wrapper .display-name-text {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .display-name-text {
   font-size: 22px;
   display: flex;
   flex-grow: 1;
 }
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper {
   margin-bottom: 13px;
 }
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-main) {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-main) {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -111,10 +119,10 @@
   width: 100%;
   flex-grow: 1;
 }
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-main):focus {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-hint) {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -135,10 +143,10 @@
   width: 100%;
   flex-grow: 1;
 }
-.key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-hint):focus {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.key-viewer-container .key-header .key-full-path {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-full-path {
   color: #a5a5a5;
   font-size: 14px;
   margin-left: 5px;
@@ -147,23 +155,23 @@
   -webkit-user-select: none;
   user-select: none;
 }
-.key-viewer-container .key-header .key-full-path .actual-path {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-full-path .actual-path {
   -moz-user-select: text;
   -ms-user-select: text;
   -webkit-user-select: text;
   user-select: text;
 }
-.key-viewer-container .key-header .key-description-and-tags-wrapper {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-description-and-tags-wrapper {
   display: flex;
   flex-direction: row;
   flex-grow: 1;
   margin-top: 10px;
   max-height: 100px;
 }
-.key-viewer-container .key-header .key-description-and-tags-wrapper .key-description-wrapper {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-description-and-tags-wrapper .key-description-wrapper {
   height: 100px;
 }
-.key-viewer-container .key-header .key-description-and-tags-wrapper .key-description-wrapper .description-input {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-description-and-tags-wrapper .key-description-wrapper .description-input {
   resize: none;
   font-size: 14px;
   color: #515c66;
@@ -173,7 +181,7 @@
   outline: none;
   box-sizing: border-box;
 }
-.key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper {
   display: flex;
   width: 0;
   flex-direction: column;
@@ -186,7 +194,7 @@
   padding-left: 20px;
   margin-left: 20px;
 }
-.key-viewer-container .key-rules-editor {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-rules-editor {
   display: flex;
   flex-grow: 1;
   margin-top: 7px;
