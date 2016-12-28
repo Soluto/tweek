@@ -57,6 +57,7 @@ export default compose(
             handleAddition = { this:: this._onTagAdded }
             suggestions = { tagsSuggestions }
             placeholder = "New tag"
+            autofocus={false}
             allowDeleteFromEmptyInput
             minQueryLength = { 1 }
             classNames = {{
