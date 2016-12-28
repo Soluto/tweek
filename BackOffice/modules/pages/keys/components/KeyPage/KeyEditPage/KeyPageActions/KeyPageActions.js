@@ -6,7 +6,7 @@ import * as keysActions from '../../../../ducks/selectedKey';
 import { deleteKey } from '../../../../ducks/keys';
 import { diff } from 'deep-diff';
 
-const DeleteButton = ({isSaving, selectedKey}) => (
+const DeleteButton = ({isSaving, selectedKey, deleteKey}) => (
   <button disabled={isSaving}
     className={style['delete-key-button']}
     onClick={() => {
@@ -16,7 +16,7 @@ const DeleteButton = ({isSaving, selectedKey}) => (
     } }>Delete key</button>
 );
 
-const SaveButton = ({selectedKey, isSaving, hasChanges}) => (
+const SaveButton = ({selectedKey, isSaving, hasChanges, saveKey}) => (
   <button disabled={!hasChanges || isSaving}
     data-state-has-changes={hasChanges}
     data-state-is-saving={isSaving}
@@ -44,11 +44,13 @@ const comp = compose(
         <div className={style['key-action-buttons-wrapper']}>
           {!isInAddMode ?
             <DeleteButton isSaving={isSaving}
-              selectedKey={selectedKey} />
+              selectedKey={selectedKey}
+              deleteKey={deleteKey} />
             : null}
           <SaveButton selectedKey={selectedKey}
             isSaving={isSaving}
-            hasChanges={hasChanges} />
+            hasChanges={hasChanges}
+            saveKey={saveKey} />
         </div>
       </div>
     );
