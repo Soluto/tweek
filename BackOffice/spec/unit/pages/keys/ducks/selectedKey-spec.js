@@ -1,9 +1,9 @@
 /* global jest, beforeEach, describe, it, expect */
-jest.unmock('../../../../../modules/pages/keys/ducks/selectedKey');
-jest.unmock('../../../../../modules/pages/keys/ducks/blankKeyDefinition');
+jest.unmock('../../../../../modules/store/ducks/selectedKey');
+jest.unmock('../../../../../modules/store/ducks/blankKeyDefinition');
 
-import { openKey } from '../../../../../modules/pages/keys/ducks/selectedKey';
-import { createBlankKey, BLANK_KEY_NAME } from '../../../../../modules/pages/keys/ducks/blankKeyDefinition';
+import { openKey } from '../../../../../modules/store/ducks/selectedKey';
+import { createBlankKey, BLANK_KEY_NAME } from '../../../../../modules/store/ducks/blankKeyDefinition';
 import { assert, expect } from 'chai';
 import fetchMock from 'fetch-mock';
 
