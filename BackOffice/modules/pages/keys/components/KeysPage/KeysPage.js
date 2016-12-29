@@ -1,6 +1,6 @@
 import React from 'react';
 import { Component } from 'react';
-import * as actions from '../../ducks/keys';
+import * as actions from '../../../../store/ducks/keys';
 import { connect } from 'react-redux';
 import KeysList from '../KeysList/KeysList';
 import style from './KeysPage.css';

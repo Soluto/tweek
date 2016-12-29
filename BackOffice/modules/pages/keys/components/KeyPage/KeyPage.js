@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import * as selectedKeyActions from '../../ducks/selectedKey';
+import * as selectedKeyActions from '../../../../store/ducks/selectedKey';
 import { compose, lifecycle } from 'recompose';
 import MessageKeyPage from './MessageKeyPage/MessageKeyPage';
 import KeyEditPage from './KeyEditPage/KeyEditPage';

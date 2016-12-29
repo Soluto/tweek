@@ -6,7 +6,7 @@ import routes from '../modules/routes';
 import configureStore from './store/configureStore';
 import { Provider } from 'react-redux';
 import serverRoutes from './serverRoutes';
-import { getKeys } from '../modules/pages/keys/ducks/keys';
+import { getKeys } from './store/ducks/keys';
 import GitRepository from './server/repositories/git-repository';
 import session from 'express-session';
 import Transactor from './utils/transactor';

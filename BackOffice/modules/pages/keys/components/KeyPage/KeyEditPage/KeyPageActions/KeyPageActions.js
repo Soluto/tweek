@@ -2,8 +2,8 @@ import React from 'react';
 import style from './KeyPageActions.css';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
-import * as keysActions from '../../../../ducks/selectedKey';
-import { deleteKey } from '../../../../ducks/keys';
+import * as keysActions from '../../../../../../store/ducks/selectedKey';
+import { deleteKey } from '../../../../../../store/ducks/keys';
 import { diff } from 'deep-diff';
 
 const DeleteButton = ({isSaving, selectedKey, deleteKey}) => (
