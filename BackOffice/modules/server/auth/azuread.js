@@ -12,11 +12,11 @@ module.exports = function (server, config) {
     responseType: 'code',
     responseMode: 'query',
     validateIssuer: false,
-    scope: ['profile'],
+    scope: ['profile', 'email'],
     redirectUrl: config.get('AZUREAD_CALLBACK_URL'),
   },
     function (token, done) {
-      return done(null, { name: token.sub }, token);
+      return done(null, { id: token.upn, sub:token.sub, name: token.name, email: token.upn, displayName: token.displayName }, token);
     }
 );
 
@@ -27,7 +27,7 @@ module.exports = function (server, config) {
   });
 
   passport.use(oidcStrategy);
-  passport.serializeUser(function (user, done) {
+  passport.serializeUser(function (user, done) {;
     done(null, user);
   });
 
