@@ -2,7 +2,7 @@ import { handleActions } from 'redux-actions';
 import R from 'ramda';
 import { push } from 'react-router-redux';
 import { createBlankKey, BLANK_KEY_NAME } from './blankKeyDefinition';
-import { withJsonData } from '../../../utils/http';
+import { withJsonData } from '../../utils/http';
 
 const KEY_OPENED = 'KEY_OPENED';
 const KEY_OPENING = 'KEY_OPENING';

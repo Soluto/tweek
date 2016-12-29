@@ -2,8 +2,8 @@
 jest.unmock('../../../../../modules/pages/keys/ducks/selectedKey');
 jest.unmock('../../../../../modules/pages/keys/ducks/blankKeyDefinition');
 
-import { openKey } from '../../../../../modules/pages/keys/ducks/selectedKey';
-import { createBlankKey, BLANK_KEY_NAME } from '../../../../../modules/pages/keys/ducks/blankKeyDefinition';
+import { openKey } from '../../../../../modules/store/ducks/selectedKey';
+import { createBlankKey, BLANK_KEY_NAME } from '../../../../../modules/store/ducks/blankKeyDefinition';
 import { assert, expect } from 'chai';
 import fetchMock from 'fetch-mock';
 
