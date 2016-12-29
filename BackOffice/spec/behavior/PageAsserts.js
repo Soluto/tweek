@@ -8,6 +8,7 @@ export default class PageAsserts {
 
   assertIsInPage(expectedLocation, message = 'should be in correct page') {
     const location = this.keysPageObject.getUrlLocation();
-    assert.equal(location, expectedLocation, message);
+    assert(location === expectedLocation ||
+      location === expectedLocation + '?', message);
   }
 }
