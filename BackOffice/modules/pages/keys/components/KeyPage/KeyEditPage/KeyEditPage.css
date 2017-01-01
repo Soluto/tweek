@@ -95,6 +95,9 @@
   display: flex;
   flex-grow: 1;
 }
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .validation-message {
+  font-size: 13px;
+}
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper {
   margin-bottom: 13px;
 }

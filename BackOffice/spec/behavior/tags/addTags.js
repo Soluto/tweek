@@ -9,9 +9,9 @@ describe('add tags', () => {
     const keysPageObject = new KeysPageObject(browser);
 
     const tagsTestKeyName = 'tagsTest';
-    const testFolder = '@tests';
-    const behaviorTestFolder = `${testFolder}/behavior`;
-    const tagsTestKeyFullPath = `${behaviorTestFolder}/${tagsTestKeyName}`;
+    const testFolder = KeysPageObject.TEST_KEYS_FOLDER;
+    const tagsTestFolder = '@tags';
+    const tagsTestKeyFullPath = `${testFolder}/${tagsTestFolder}/${tagsTestKeyName}`;
 
     const chance = new Chance();
 

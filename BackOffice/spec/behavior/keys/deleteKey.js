@@ -1,6 +1,6 @@
 /* global describe, before, after it, browser */
 
-import KeysAsserts from './KeysAsserts';
+import KeysAsserts from '../KeysAsserts';
 import PageAsserts from '../PageAsserts';
 import KeysPageObject from '../KeysPageObject';
 import assert from 'assert';
@@ -10,9 +10,9 @@ describe('delete key', () => {
   const keysPageObject = new KeysPageObject(browser);
 
   const keyToDelete = keysPageObject.generateTestKeyName('deleteKeyTest');
-  const testFolder = '@tests';
-  const behaviorTestFolder = `${testFolder}/behavior`;
-  const keyToDeleteFullPath = `${behaviorTestFolder}/${keyToDelete}`;
+  const testFolder = KeysPageObject.TEST_KEYS_FOLDER;
+  const deleteKeyTestFolder = '@deleteKey';
+  const keyToDeleteFullPath = `${testFolder}/${deleteKeyTestFolder}/${keyToDelete}`;
 
   const pageAsserts = new PageAsserts(keysPageObject);
   const keysAsserts = new KeysAsserts(keysPageObject, browser);
