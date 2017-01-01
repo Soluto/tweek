@@ -1,17 +1,18 @@
 /* global describe, before, after it, browser */
 
-import KeysAsserts from './KeysAsserts';
+import KeysAsserts from '../KeysAsserts';
 import KeysPageObject from '../KeysPageObject';
 import assert from 'assert';
 import { selectors } from '../selectors';
+import { BLANK_KEY_NAME } from '../../../modules/store/ducks/ducks-utils/blankKeyDefinition';
 
 describe('add key', () => {
   const keysPageObject = new KeysPageObject(browser);
 
   const keyToAdd = keysPageObject.generateTestKeyName('addKeyTest');
-  const testFolder = '@tests';
-  const behaviorTestFolder = `${testFolder}/behavior`;
-  const keyToAddFullPath = `${behaviorTestFolder}/${keyToAdd}`;
+  const testFolder = KeysPageObject.TEST_KEYS_FOLDER;
+  const addKeyTestFolder = '@addKey';
+  const keyToAddFullPath = `${testFolder}/${addKeyTestFolder}/${keyToAdd}`;
 
   const keysAsserts = new KeysAsserts(keysPageObject, browser);
 
@@ -25,7 +26,7 @@ describe('add key', () => {
 
   it('should succeed adding key', () => {
     browser.click(selectors.ADD_KEY_BUTTON);
-    keysAsserts.assertKeyOpened('_blank');
+    keysAsserts.assertKeyOpened(BLANK_KEY_NAME);
 
     let isKeyPathSuggestionsExists = browser.isExisting(selectors.KEY_PATH_SUGGESTIONS);
     assert(!isKeyPathSuggestionsExists, 'should not show key name suggestions on start');
@@ -33,11 +34,11 @@ describe('add key', () => {
     keysAsserts.assertKeyHasNumberOfRules(1);
     keysAsserts.assertKeyHasDefaultValueRule();
 
-    browser.click(selectors.KEY_PATH_INPUT);
+    browser.click(selectors.KEY_NAME_INPUT);
     isKeyPathSuggestionsExists = browser.isExisting(selectors.KEY_PATH_SUGGESTIONS);
     assert(isKeyPathSuggestionsExists, 'should show key name suggestions focus the input');
 
-    browser.setValue(selectors.KEY_PATH_INPUT, keyToAddFullPath);
+    browser.setValue(selectors.KEY_NAME_INPUT, keyToAddFullPath);
 
     assert(keysPageObject.hasChanges(), 'should has changes');
 

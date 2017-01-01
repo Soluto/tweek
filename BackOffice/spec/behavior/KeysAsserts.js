@@ -1,7 +1,7 @@
 import assert from 'assert';
-import KeysPageObject from '../KeysPageObject';
-import PageAsserts from '../PageAsserts';
-import { selectors } from '../selectors';
+import KeysPageObject from './KeysPageObject';
+import PageAsserts from './PageAsserts';
+import { selectors } from './selectors';
 
 export default class KeysAsserts {
 
@@ -13,8 +13,6 @@ export default class KeysAsserts {
 
   assertKeyOpened(keyName) {
     this.assertIsInKeyPage(keyName, `should be in ${keyName} key page`);
-
-    this.browser.waitForVisible(selectors.SAVE_CHANGES_BUTTON, 1000);
     assert(!this.keysPageObject.hasChanges(), 'should not has changes');
     assert(!this.keysPageObject.isSaving(), 'should not be in saving state');
   }
@@ -50,7 +48,7 @@ export default class KeysAsserts {
     console.log(`assert ${keyName} key, expected existing:${isExisting}. transaction delay:${KeysPageObject.GIT_TRANSACTION_TIMEOUT}`);
     this.keysPageObject.wait(KeysPageObject.GIT_TRANSACTION_TIMEOUT);
     const currentUrl = this.browser.getUrl();
-    
+
     let isKeyExists;
 
     try {

@@ -12,6 +12,7 @@ import { compose } from 'recompose';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import R from 'ramda';
+import { BLANK_KEY_NAME } from '../../../../../store/ducks/ducks-utils/blankKeyDefinition';
 
 export default class KeyEditPage extends Component {
 
@@ -46,6 +47,8 @@ export default class KeyEditPage extends Component {
     const { configKey, selectedKey, isInAddMode } = this.props;
     const { key, local: {meta, keyDef}} = selectedKey;
     const isReadonly = meta.readOnly;
+    const isSaveEnable = !selectedKey.validation || 
+    (selectedKey.validation.key && selectedKey.validation.key.isValid);
 
     return (
       <form className={style['key-viewer-container-form']}
@@ -55,7 +58,8 @@ export default class KeyEditPage extends Component {
 
           <div className={style['key-viewer-container']}>
             <KeyPageActions isInAddMode={isInAddMode}
-              isReadonly={isReadonly} />
+              isReadonly={isReadonly}
+              isSaveEnable={isSaveEnable} />
 
             <div className={style['key-header']}>
 
@@ -65,10 +69,11 @@ export default class KeyEditPage extends Component {
               }
 
               <div className={style['display-name-wrapper']}>
-                {isInAddMode ?
-                  <NewKeyInput onKeyNameChanged={(name) => this._onKeyNameChanged(name)} />
-                  :
-                  <EditableText onTextChanged={(text) => this:: this._onDisplayNameChanged(text) }
+                {
+                  isInAddMode ?
+                    <NewKeyInput onKeyNameChanged={(name) => this._onKeyNameChanged(name)} />
+                    :
+                    <EditableText onTextChanged={(text) => this:: this._onDisplayNameChanged(text) }
                   placeHolder="Enter key display name"
               maxLength={80}
                 value={meta.displayName}
@@ -138,18 +143,27 @@ function getKeyNameSuggestions(keysList) {
 }
 
 const NewKeyInput = compose(
-  connect(state => ({ keysList: state.keys }))
-)(({ keysList, onKeyNameChanged }) => {
+  connect(state => ({ keysList: state.keys, keyNameValidation: state.selectedKey.validation }))
+)(({ keysList,
+  keyNameValidation,
+  onKeyNameChanged }) => {
   const suggestions = getKeyNameSuggestions(keysList).map(x => ({ label: x, value: x }));
 
   return (
-    <div className={style['auto-suggest-wrapper']}>
-      <ComboBox
-        options={suggestions}
-        placeholder="Enter key full path"
-        onInputChange={text => onKeyNameChanged(text)}
-        showValueInOptions
-        />
+    <div>
+      {
+        keyNameValidation && keyNameValidation.key && !keyNameValidation.key.isValid ?
+          <label className={style['validation-message']}>{keyNameValidation.key.hint}</label>
+          : null
+      }
+      <div className={style['auto-suggest-wrapper']}>
+        <ComboBox
+          options={suggestions}
+          placeholder="Enter key full path"
+          onInputChange={text => onKeyNameChanged(text)}
+          showValueInOptions
+          />
+      </div>
     </div>
   );
 });

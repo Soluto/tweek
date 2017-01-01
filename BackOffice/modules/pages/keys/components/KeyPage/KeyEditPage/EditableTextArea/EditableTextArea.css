@@ -7,4 +7,5 @@
 }
 .textarea-container .textarea-input:read-only {
   border: 1px solid transparent;
+  padding-left: 3px;
 }
