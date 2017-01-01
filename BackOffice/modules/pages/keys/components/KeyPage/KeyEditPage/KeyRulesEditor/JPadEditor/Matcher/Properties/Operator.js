@@ -1,8 +1,8 @@
 import R from 'ramda';
 import React from 'react';
 import style from './styles.css';
-import ComboBox from '../../../../../../../../../components/common/ComboBox/ComboBox.js';
-import { types } from '../../../../../../../../../services/MetaHelpers.js';
+import ComboBox from '../../../../../../../../../components/common/ComboBox/ComboBox';
+import { types } from '../../../../../../../../../services/MetaHelpers';
 
 const equalityOps = { '$eq': '=', '$ne': '!=' };
 const comparisonOps = { '$ge': '>=', '$gt': '>', '$lt': '<', '$le': '<=' };
