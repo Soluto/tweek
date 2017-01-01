@@ -63,10 +63,11 @@ export default class GitRepository {
       commitSha = lastCommit.sha();
     }
 
+
     return {
       modifyDate,
       modifyUser,
-      modifyCompareUrl: commitSha ? path.join(remoteUrl, "commit", commitSha) : path.join(remoteUrl, "commits/master/", fileName)
+      modifyCompareUrl: `${remoteUrl.replace(/\.git$/, "")}/${commitSha ? `commit/${commitSha}` : `commits/master/${fileName}`}`
     };
   }
 
