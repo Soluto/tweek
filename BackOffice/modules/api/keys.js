@@ -1,5 +1,15 @@
 import { UKNOWN_AUTHOR } from './unknownAuthor';
 
+
+let injectAuthor = (fn) => function(req, res, deps, ...rest){
+   return this::fn(req, res, {
+     author: (req.user && req.user.email && {
+       name: req.user.displayName || req.user.email,
+       email: req.user.email
+     }) || UKNOWN_AUTHOR,
+     ...deps}, ...rest);
+}
+
 export async function getKey(req, res, { keysRepository }, { params })
 {
   const keyPath = params.splat;
@@ -12,7 +22,7 @@ export async function getKey(req, res, { keysRepository }, { params })
   res.json(key);
 }
 
-export async function saveKey(req, res, { keysRepository, author = UKNOWN_AUTHOR }, { params })
+export const saveKey = injectAuthor(async function(req, res, { keysRepository, author}, { params })
 {
   const keyPath = params.splat;
 
@@ -22,11 +32,11 @@ export async function saveKey(req, res, { keysRepository, author = UKNOWN_AUTHOR
   await keysRepository.updateKey(keyPath, keyMetaSource, keyRulesSource, author);
 
   res.send('OK');
-}
+})
 
-export async function deleteKey(req, res, { keysRepository, author = UKNOWN_AUTHOR }, { params })
+export const deleteKey = injectAuthor(async function (req, res, { keysRepository, author}, { params })
 {
   const keyPath = params.splat;
   await keysRepository.deleteKey(keyPath, author);
   res.send('OK');
-}
+})
