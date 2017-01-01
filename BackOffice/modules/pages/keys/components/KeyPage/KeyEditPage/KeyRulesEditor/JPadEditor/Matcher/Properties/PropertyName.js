@@ -1,10 +1,10 @@
 import React from 'react';
 import R from 'ramda';
 import style from './styles.css';
-import ComboBox from '../../../../../../../../../components/common/ComboBox/ComboBox.js';
+import ComboBox from '../../../../../../../../../components/common/ComboBox/ComboBox';
 import { withState } from 'recompose';
 import Highlighter from 'react-highlight-words';
-import { types as MetaTypes } from '../../../../../../../../../services/MetaHelpers.js';
+import { types as MetaTypes } from '../../../../../../../../../services/MetaHelpers';
 
 const HIGHLIGHTED_TEXT_INLINE_STYLE = {
   fontWeight: 800,

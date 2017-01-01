@@ -1,7 +1,7 @@
 import React from 'react';
-import CustomSlider from '../../../../../../../../components/common/CustomSlider/CustomSlider.js';
+import CustomSlider from '../../../../../../../../components/common/CustomSlider/CustomSlider';
 import style from './RuleValue.css';
-import EditorMetaService from '../../../../../../../../services/EditorMetaService.js';
+import EditorMetaService from '../../../../../../../../services/EditorMetaService';
 import ComboBox from '../../../../../../../../components/common/ComboBox/ComboBox';
 
 function replaceNaN(fallbackValue) { return isNaN(this) ? fallbackValue : this; }
