@@ -9,11 +9,12 @@
         .menu-item {
             display: flex;
             border-bottom: 4px solid transparent;
-            width: 100px;
+            padding: 0 10px;
             color: white;
             height: 100%;
             .transitioned();
             a {
+                margin-right: 24px;
                 .transitioned();
                 &:visited, &:link {
                     display: flex;
@@ -24,6 +25,7 @@
                     text-decoration: none;
                     font-size: 22px;
                     font-weight: 300;
+                    
                     color: white;
                 }
             }
@@ -60,7 +62,7 @@
     }
     .page {
         position: absolute;
-        top:@header-size + 1;
+        top:@header-size;
         left:0;
         right:0;
         bottom: 0;

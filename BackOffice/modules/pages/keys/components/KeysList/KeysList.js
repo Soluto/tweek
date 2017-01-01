@@ -61,7 +61,7 @@ const TreeFolder = withState('isCollapsed', 'setIsCollapsed', true)(({ currentPa
           <ul className={style['folder-items']}>
             {Object.keys(tree).map(key => (
               <li className={style['sub-tree']} key={key}>
-                {renderTree(tree[key], currentPath === '' ? `${key}` : `${currentPath}/${key}`, pad + 10) }
+                {renderTree(tree[key], currentPath === '' ? `${key}` : `${currentPath}/${key}`, pad + 22) }
               </li>
             )) }
           </ul> : undefined}

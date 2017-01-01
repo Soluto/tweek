@@ -23,6 +23,7 @@ export default ({ location: { pathname }, children }) => {
         <IndexLink to="/"><img className={style['logo']} src={logoSrc} /></IndexLink>
         <ul className={style['menu']} >
           <li className={classNames(style['menu-item'], { [style['selected-location-path']]: pathname.startsWith('/keys') }) }>
+            <img src={require("./resources/keys.svg")} />
             <Link to="/keys">Keys</Link>
           </li>
         </ul>
