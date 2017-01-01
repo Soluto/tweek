@@ -23,11 +23,13 @@ export default ({ location: { pathname }, children }) => {
         <IndexLink to="/"><img className={style['logo']} src={logoSrc} /></IndexLink>
         <ul className={style['menu']} >
           <li className={classNames(style['menu-item'], { [style['selected-location-path']]: pathname.startsWith('/keys') }) }>
-            <Link to="/keys">keys</Link>
+            <Link to="/keys">Keys</Link>
           </li>
         </ul>
       </div>
-      {children}
+      <div className={style['page']}>
+        {children}
+      </div>
     </div>
   );
 };
