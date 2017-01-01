@@ -2,7 +2,7 @@ import React from 'react';
 import style from './styles.css';
 import { WithContext as ReactTags } from 'react-tag-input';
 import R from 'ramda';
-import ComboBox from '../../../../../../../../../components/common/ComboBox/ComboBox.js';
+import ComboBox from '../../../../../../../../../components/common/ComboBox/ComboBox';
 
 const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
   let indexedTags = value.map(x => ({ id: x, text: x }));

@@ -1,8 +1,9 @@
 import { handleActions } from 'redux-actions';
 import R from 'ramda';
 import { push } from 'react-router-redux';
-import { createBlankKey, BLANK_KEY_NAME } from './blankKeyDefinition';
+import { createBlankKey, BLANK_KEY_NAME } from './ducks-utils/blankKeyDefinition';
 import { withJsonData } from '../../utils/http';
+import keyNameValidations from './ducks-utils/key-name-validations';
 
 const KEY_OPENED = 'KEY_OPENED';
 const KEY_OPENING = 'KEY_OPENING';
@@ -11,6 +12,7 @@ const KEY_RULE_META_UPDATED = 'KEY_RULE_META_UPDATED';
 const KEY_SAVED = 'KEY_SAVED';
 const KEY_SAVING = 'KEY_SAVING';
 const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
+const KEY_VALIDATION_CHANGE = 'KEY_VALIDATION_CHANGE';
 
 export function openKey(key) {
     return async function (dispatch) {
@@ -51,8 +53,13 @@ export function updateKeyMetaDef(meta) {
     return { type: KEY_RULE_META_UPDATED, payload: meta };
 }
 
-export function updateKeyName(name) {
-    return { type: KEY_NAME_CHANGE, payload: name };
+export function updateKeyName(newKeyName) {
+    return async function (dispatch, getState) {
+        dispatch({ type: KEY_NAME_CHANGE, payload: newKeyName });
+
+        var validationResult = keyNameValidations(newKeyName, getState().keys);
+        dispatch({ type: KEY_VALIDATION_CHANGE, payload: validationResult });
+    };
 }
 
 export function saveKey() {
@@ -87,54 +94,77 @@ export function saveKey() {
 };
 }
 
-export default handleActions({
-    [KEY_OPENED]: (state, { payload: { key, ...props } }) => {
+const handleKeyOpened = (state, { payload: { key, ...props } }) => {
     return {
         key,
         isLoaded: true,
         local: R.clone(props),
         remote: R.clone(props),
     };
-},
-[KEY_OPENING]: (state, { payload: { key, ...props } }) => {
+};
+
+const handleKeyOpening = (state, { payload: { key, ...props } }) => {
     return {
         key,
         isLoaded: false,
         local: R.clone(props),
         remote: R.clone(props),
     };
-},
-    [KEY_RULEDEF_UPDATED]: (state, { payload }) => ({
+};
+
+const handleKeyRuleDefUpdated = (state, { payload }) => ({
   ...state,
-        local: {
+    local: {
     ...state.local,
-            keyDef: { ...state.local.keyDef, ...payload },
-        },
-    }),
-        [KEY_RULE_META_UPDATED]: (state, { payload }) => ({
+        keyDef: { ...state.local.keyDef, ...payload },
+},
+});
+
+const handleKeyMetaUpdated = (state, { payload }) => ({
     ...state,
-            local: {
+    local: {
       ...state.local,
-                meta: payload,
-            },
-        }),
-            [KEY_SAVED]: ({ local: { key, ...localData }, ...otherState }) => ({
-                key,
+        meta: payload,
+    },
+});
+
+const handleKeySaved = ({ local: { key, ...localData }, ...otherState }) => ({
+    key,
       ...otherState,
-                local: localData,
-                remote: R.clone(localData),
-                isSaving: false,
-            }),
-                [KEY_SAVING]: (state) => ({
-        ...state,
-                    isSaving: true,
-                }),
-                    [KEY_NAME_CHANGE]: ({ local: { key, ...localData }, ...otherState }, { payload }) => ({
-          ...otherState,
-                        local: {
-            ...localData,
-                            meta: { ...localData.meta, displayName: payload },
-            ...(payload === '' ? {} : { key: payload }), // get displayName from payload
-                    },
-        }),
-    }, null);
+    local: localData,
+    remote: R.clone(localData),
+    isSaving: false,
+});
+
+const handleKeySaving = (state) => ({
+    ...state,
+    isSaving: true,
+});
+
+const handleKeyNameChange = ({ local: { key, ...localData }, ...otherState }, { payload }) => ({
+    ...otherState,
+    local: {
+        ...localData,
+        meta: { ...localData.meta, displayName: payload },
+        ...(payload === '' ? {} : { key: payload }), // get displayName from payload
+},
+});
+
+const handleKeyValidationChange = ({ validation, ...otherState }, { payload }) => ({
+    ...otherState,
+    validation: {
+        ...validation,
+        key: {...payload },
+    }
+});
+
+export default handleActions({
+    [KEY_OPENED]: handleKeyOpened,
+    [KEY_OPENING]: handleKeyOpening,
+    [KEY_RULEDEF_UPDATED]: handleKeyRuleDefUpdated,
+    [KEY_RULE_META_UPDATED]: handleKeyMetaUpdated,
+    [KEY_SAVED]: handleKeySaved,
+    [KEY_SAVING]: handleKeySaving,
+    [KEY_NAME_CHANGE]: handleKeyNameChange,
+    [KEY_VALIDATION_CHANGE]: handleKeyValidationChange,
+}, null);

@@ -5,11 +5,12 @@ import * as selectedKeyActions from '../../../../store/ducks/selectedKey';
 import { compose, lifecycle } from 'recompose';
 import MessageKeyPage from './MessageKeyPage/MessageKeyPage';
 import KeyEditPage from './KeyEditPage/KeyEditPage';
+import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefinition';
 
 const keyPageComp = compose(
   connect(
     (state, { params, route }) =>
-      ({ selectedKey: state.selectedKey, configKey: route.isInAddMode ? '_blank' : params.splat, isInAddMode: route.isInAddMode }),
+      ({ selectedKey: state.selectedKey, configKey: route.isInAddMode ? BLANK_KEY_NAME : params.splat, isInAddMode: route.isInAddMode }),
     { ...selectedKeyActions }),
 lifecycle({
   componentDidMount() {
