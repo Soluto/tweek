@@ -31,11 +31,13 @@ const comp = compose(
     state => ({ selectedKey: state.selectedKey }),
     { ...keysActions, deleteKey })
 )(
-  ({ selectedKey, isInAddMode, saveKey, deleteKey, isReadonly, isSaveEnable }) => {
+  ({ selectedKey, isInAddMode, saveKey, deleteKey, isReadonly }) => {
     const { local, remote, isSaving, isDeleting } = selectedKey;
     const changes = diff(local, remote);
     const hasChanges = (changes || []).length > 0;
-    
+    const isSaveEnable = !selectedKey.validation ||
+      (selectedKey.validation.key && selectedKey.validation.key.isValid);
+
     return (
       <div>
         {isReadonly ?

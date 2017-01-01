@@ -47,8 +47,6 @@ export default class KeyEditPage extends Component {
     const { configKey, selectedKey, isInAddMode } = this.props;
     const { key, local: {meta, keyDef}} = selectedKey;
     const isReadonly = meta.readOnly;
-    const isSaveEnable = !selectedKey.validation || 
-    (selectedKey.validation.key && selectedKey.validation.key.isValid);
 
     return (
       <form className={style['key-viewer-container-form']}
@@ -58,8 +56,7 @@ export default class KeyEditPage extends Component {
 
           <div className={style['key-viewer-container']}>
             <KeyPageActions isInAddMode={isInAddMode}
-              isReadonly={isReadonly}
-              isSaveEnable={isSaveEnable} />
+              isReadonly={isReadonly} />
 
             <div className={style['key-header']}>
 
