@@ -1,6 +1,6 @@
 /* global describe, before, after it, browser */
 
-import KeysAsserts from './KeysAsserts';
+import KeysAsserts from '../KeysAsserts';
 import KeysPageObject from '../KeysPageObject';
 import assert from 'assert';
 import { selectors, getRelativeSelector } from '../selectors';
@@ -9,9 +9,9 @@ describe('edit key', () => {
   const keysPageObject = new KeysPageObject(browser);
 
   const keyToEdit = keysPageObject.generateTestKeyName('editKeyTest');
-  const testFolder = '@tests';
-  const behaviorTestFolder = `${testFolder}/behavior`;
-  const keyToEditFullPath = `${behaviorTestFolder}/${keyToEdit}`;
+  const testFolder = KeysPageObject.TEST_KEYS_FOLDER;
+  const editKeyTestFolder = '@editKey';
+  const keyToEditFullPath = `${testFolder}/${editKeyTestFolder}/${keyToEdit}`;
 
   const keysAsserts = new KeysAsserts(keysPageObject, browser);
 
@@ -67,8 +67,6 @@ describe('edit key', () => {
   }
 
   it('should succeed editing key', () => {
-    const saveChangesTimeout = 10000;
-
     keysPageObject.goToKey(keyToEditFullPath);
     keysAsserts.assertKeyOpened(keyToEditFullPath);
 

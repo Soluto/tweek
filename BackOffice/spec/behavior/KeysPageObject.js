@@ -1,10 +1,12 @@
 import { selectors } from './selectors';
 import moment from 'moment';
+import { BLANK_KEY_NAME } from '../../modules/store/ducks/ducks-utils/blankKeyDefinition';
 
 export default class KeysPageObject {
 
   static BASE_URL = 'http://127.0.0.1:4000/';
   static KEYS_PAGE_URL = 'keys';
+  static TEST_KEYS_FOLDER = '@behavior-tests';
   static GIT_TRANSACTION_TIMEOUT = 30000;
 
   constructor(browser) {
@@ -33,10 +35,10 @@ export default class KeysPageObject {
 
   addEmptyKey(keyName) {
     console.log('adding key', keyName);
-    this.goToKey('_blank');
+    this.goToKey(BLANK_KEY_NAME);
 
-    this.waitForVisible(selectors.KEY_PATH_INPUT, 5000);
-    this.browser.setValue(selectors.KEY_PATH_INPUT, keyName);
+    this.waitForVisible(selectors.KEY_NAME_INPUT, 5000);
+    this.browser.setValue(selectors.KEY_NAME_INPUT, keyName);
 
     this.browser.click(selectors.SAVE_CHANGES_BUTTON);
 
@@ -58,6 +60,10 @@ export default class KeysPageObject {
 
   hasChanges() {
     return this.browser.getAttribute(selectors.SAVE_CHANGES_BUTTON, 'data-state-has-changes') === 'true';
+  }
+
+  isSaveButtonDisabled() {
+    return this.browser.getAttribute(selectors.SAVE_CHANGES_BUTTON, 'disabled') === 'true';
   }
 
   clickOnFolder(folderName) {

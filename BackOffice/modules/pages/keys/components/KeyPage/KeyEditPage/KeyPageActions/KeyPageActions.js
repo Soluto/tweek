@@ -16,8 +16,8 @@ const DeleteButton = ({isSaving, selectedKey, deleteKey}) => (
     } }>Delete key</button>
 );
 
-const SaveButton = ({selectedKey, isSaving, hasChanges, saveKey}) => (
-  <button disabled={!hasChanges || isSaving}
+const SaveButton = ({selectedKey, isSaving, hasChanges, saveKey, disabled}) => (
+  <button disabled={disabled || !hasChanges || isSaving}
     data-state-has-changes={hasChanges}
     data-state-is-saving={isSaving}
     className={style['save-changes-button']}
@@ -31,11 +31,11 @@ const comp = compose(
     state => ({ selectedKey: state.selectedKey }),
     { ...keysActions, deleteKey })
 )(
-  ({ selectedKey, isInAddMode, saveKey, deleteKey, isReadonly }) => {
+  ({ selectedKey, isInAddMode, saveKey, deleteKey, isReadonly, isSaveEnable }) => {
     const { local, remote, isSaving, isDeleting } = selectedKey;
     const changes = diff(local, remote);
     const hasChanges = (changes || []).length > 0;
-
+    
     return (
       <div>
         {isReadonly ?
@@ -50,7 +50,8 @@ const comp = compose(
           <SaveButton selectedKey={selectedKey}
             isSaving={isSaving}
             hasChanges={hasChanges}
-            saveKey={saveKey} />
+            saveKey={saveKey}
+            disabled={!isSaveEnable} />
         </div>
       </div>
     );

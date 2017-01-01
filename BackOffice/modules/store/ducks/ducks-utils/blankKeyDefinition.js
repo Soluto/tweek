@@ -21,6 +21,7 @@ export function createBlankKey() {
       description: '',
       tags: [],
     },
-    key: '_blank',
+    key: BLANK_KEY_NAME,
+    isValid: false,
   };
 }
