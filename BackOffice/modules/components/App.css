@@ -7,12 +7,13 @@
 .app .menu .menu-item {
   display: flex;
   border-bottom: 4px solid transparent;
-  width: 100px;
+  padding: 0 10px;
   color: white;
   height: 100%;
   transition: all 0.2s ease-in-out;
 }
 .app .menu .menu-item a {
+  margin-right: 24px;
   transition: all 0.2s ease-in-out;
 }
 .app .menu .menu-item a:visited,
@@ -58,7 +59,7 @@
 }
 .app .page {
   position: absolute;
-  top: 71px;
+  top: 70px;
   left: 0;
   right: 0;
   bottom: 0;

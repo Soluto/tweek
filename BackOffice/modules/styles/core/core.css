@@ -3,7 +3,7 @@
 }
 .metro-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.8);
+  background-color: #00aeef;
   height: 28px;
   border: 0;
   padding: 0 20px;
@@ -18,11 +18,8 @@
   transition: all 0.2s ease-in-out;
 }
 .metro-button:hover {
-  background-color: #007acc;
+  background-color: #029CD5;
   cursor: pointer;
-}
-.metro-button:active {
-  background-color: #0098ff;
 }
 .metro-button:disabled {
   background-color: gray;
@@ -34,7 +31,7 @@
 }
 .transparent-metro-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.8);
+  background-color: #00aeef;
   height: 28px;
   border: 0;
   padding: 0 20px;
@@ -52,11 +49,8 @@
   color: gray;
 }
 .transparent-metro-button:hover {
-  background-color: #007acc;
+  background-color: #029CD5;
   cursor: pointer;
-}
-.transparent-metro-button:active {
-  background-color: #0098ff;
 }
 .transparent-metro-button:disabled {
   background-color: gray;
@@ -82,7 +76,7 @@
 }
 .small-metro-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.8);
+  background-color: #00aeef;
   height: 28px;
   border: 0;
   padding: 0 20px;
@@ -100,11 +94,8 @@
   padding: 0 10px;
 }
 .small-metro-button:hover {
-  background-color: #007acc;
+  background-color: #029CD5;
   cursor: pointer;
-}
-.small-metro-button:active {
-  background-color: #0098ff;
 }
 .small-metro-button:disabled {
   background-color: gray;
@@ -156,7 +147,7 @@
 }
 .circle-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.8);
+  background-color: #00aeef;
   height: 28px;
   border: 0;
   padding: 0 20px;
@@ -177,11 +168,8 @@
   box-sizing: border-box;
 }
 .circle-button:hover {
-  background-color: #007acc;
+  background-color: #029CD5;
   cursor: pointer;
-}
-.circle-button:active {
-  background-color: #0098ff;
 }
 .circle-button:disabled {
   background-color: gray;
@@ -193,7 +181,7 @@
 }
 .small-circle-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.8);
+  background-color: #00aeef;
   height: 28px;
   border: 0;
   padding: 0 20px;
@@ -218,11 +206,8 @@
   padding-bottom: 4px;
 }
 .small-circle-button:hover {
-  background-color: #007acc;
+  background-color: #029CD5;
   cursor: pointer;
-}
-.small-circle-button:active {
-  background-color: #0098ff;
 }
 .small-circle-button:disabled {
   background-color: gray;
@@ -243,7 +228,7 @@
 }
 .gray-circle-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.8);
+  background-color: #00aeef;
   height: 28px;
   border: 0;
   padding: 0 20px;
@@ -265,11 +250,8 @@
   background-color: #bcbcbc;
 }
 .gray-circle-button:hover {
-  background-color: #007acc;
+  background-color: #029CD5;
   cursor: pointer;
-}
-.gray-circle-button:active {
-  background-color: #0098ff;
 }
 .gray-circle-button:disabled {
   background-color: gray;
@@ -287,7 +269,7 @@
 }
 .small-gray-circle-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.8);
+  background-color: #00aeef;
   height: 28px;
   border: 0;
   padding: 0 20px;
@@ -313,11 +295,8 @@
   background-color: #bcbcbc;
 }
 .small-gray-circle-button:hover {
-  background-color: #007acc;
+  background-color: #029CD5;
   cursor: pointer;
-}
-.small-gray-circle-button:active {
-  background-color: #0098ff;
 }
 .small-gray-circle-button:disabled {
   background-color: gray;
@@ -343,7 +322,7 @@
 }
 .add-circle-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.8);
+  background-color: #00aeef;
   height: 28px;
   border: 0;
   padding: 0 20px;
@@ -366,11 +345,8 @@
   padding-top: 2px;
 }
 .add-circle-button:hover {
-  background-color: #007acc;
+  background-color: #029CD5;
   cursor: pointer;
-}
-.add-circle-button:active {
-  background-color: #0098ff;
 }
 .add-circle-button:disabled {
   background-color: gray;
@@ -386,7 +362,7 @@
 }
 .small-add-circle-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.8);
+  background-color: #00aeef;
   height: 28px;
   border: 0;
   padding: 0 20px;
@@ -413,11 +389,8 @@
   padding-top: 1px;
 }
 .small-add-circle-button:hover {
-  background-color: #007acc;
+  background-color: #029CD5;
   cursor: pointer;
-}
-.small-add-circle-button:active {
-  background-color: #0098ff;
 }
 .small-add-circle-button:disabled {
   background-color: gray;
@@ -433,7 +406,7 @@
 }
 .close-circle-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.8);
+  background-color: #00aeef;
   height: 28px;
   border: 0;
   padding: 0 20px;
@@ -457,11 +430,8 @@
   padding-top: 2px;
 }
 .close-circle-button:hover {
-  background-color: #007acc;
+  background-color: #029CD5;
   cursor: pointer;
-}
-.close-circle-button:active {
-  background-color: #0098ff;
 }
 .close-circle-button:disabled {
   background-color: gray;
@@ -483,7 +453,7 @@
 }
 .small-close-circle-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.8);
+  background-color: #00aeef;
   height: 28px;
   border: 0;
   padding: 0 20px;
@@ -511,11 +481,8 @@
   padding-top: 1px;
 }
 .small-close-circle-button:hover {
-  background-color: #007acc;
+  background-color: #029CD5;
   cursor: pointer;
-}
-.small-close-circle-button:active {
-  background-color: #0098ff;
 }
 .small-close-circle-button:disabled {
   background-color: gray;
