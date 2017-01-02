@@ -33,7 +33,7 @@ namespace Engine.Context
             return type =>
             {
                 return
-                    identities.Where(x => x.Type == type)
+                    identities.Where(x => x.Type.Equals(type, StringComparison.OrdinalIgnoreCase))
                         .FirstOrNone()
                         .Map(identity => Core.Context.ContextHelpers.Merge(getLoadedContexts(identity), ContextValueForId(identity.Id)))
                         .IfNone(EmptyContext);
