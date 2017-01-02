@@ -43,6 +43,7 @@ selectors.KEY_PAGE = getSelectorByClassNames('key-page');
 selectors.TAGS_INPUT = getRelativeSelector([getSelectorByClassNames('tag-input'), 'input']);
 selectors.TAG = getSelectorByClassNames('tags-container', 'selected', 'tag');
 selectors.TAGS_SUGGESTION = getRelativeSelector([getSelectorByClassNames('tags-suggestion'), 'ul', 'li']);
+selectors.KEY_LIST_FILTER = getSelectorByClassNames('search-input');
 
 selectors.folder = (folderName) => {
   return _getSelectorWithAttribute(selectors.KEY_FOLDER_NAME, 'data-folder-name', folderName);
