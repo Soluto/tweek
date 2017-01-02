@@ -1,17 +1,13 @@
 .keys-page-container {
-  position: absolute;
-  top: 56px;
-  left: 0;
-  bottom: 0;
-  right: 0;
   display: flex;
+  flex-grow: 1;
   background-color: #eee;
 }
 .keys-page-container .keys-list {
   display: flex;
   flex-basis: 400px;
   flex-direction: column;
-  background-color: #e2e2e2;
+  background-color: #414b53;
   border-right: 2px solid #e2e2e2;
 }
 .keys-page-container .keys-list .keys-list-wrapper {
@@ -34,11 +30,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #cbcbcb;
+  background-color: #333b41;
 }
 .keys-page-container .add-button-wrapper .add-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.8);
+  background-color: #00aeef;
   height: 28px;
   border: 0;
   padding: 0 20px;
@@ -56,11 +52,8 @@
   width: 200px;
 }
 .keys-page-container .add-button-wrapper .add-button:hover {
-  background-color: #007acc;
+  background-color: #029CD5;
   cursor: pointer;
-}
-.keys-page-container .add-button-wrapper .add-button:active {
-  background-color: #0098ff;
 }
 .keys-page-container .add-button-wrapper .add-button:disabled {
   background-color: gray;
