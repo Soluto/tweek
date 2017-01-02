@@ -13,6 +13,7 @@ import KeyPageActions from './KeyPageActions/KeyPageActions';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import R from 'ramda';
 import { BLANK_KEY_NAME } from '../../../../../store/ducks/ducks-utils/blankKeyDefinition';
+import ReactTooltip from 'react-tooltip';
 
 export default class KeyEditPage extends Component {
 
@@ -145,22 +146,28 @@ const NewKeyInput = compose(
   keyNameValidation,
   onKeyNameChanged }) => {
   const suggestions = getKeyNameSuggestions(keysList).map(x => ({ label: x, value: x }));
+  const isShowingValidationMessage = keyNameValidation && keyNameValidation.key && !keyNameValidation.key.isValid;
+  const keyValidationHint = isShowingValidationMessage ? keyNameValidation.key.hint : '';
 
   return (
-    <div>
-      {
-        keyNameValidation && keyNameValidation.key && !keyNameValidation.key.isValid ?
-          <label className={style['validation-message']}>{keyNameValidation.key.hint}</label>
-          : null
-      }
-      <div className={style['auto-suggest-wrapper']}>
-        <ComboBox
-          options={suggestions}
-          placeholder="Enter key full path"
-          onInputChange={text => onKeyNameChanged(text)}
-          showValueInOptions
-          />
-      </div>
+    <div className={style['auto-suggest-wrapper']}
+      data-with-error={isShowingValidationMessage}>
+      <div data-tip={keyValidationHint}
+        className={style['validation-icon']}
+        data-is-shown={isShowingValidationMessage}>!</div>
+      <ComboBox
+        options={suggestions}
+        placeholder="Enter key full path"
+        onInputChange={text => onKeyNameChanged(text)}
+        showValueInOptions
+        className={style['auto-suggest']}
+        />
+      <ReactTooltip delayHide={1000}
+        disable={!isShowingValidationMessage}
+        effect='solid'
+        class={style['validation-message']}
+        place="top"
+        delayHide="500" />
     </div>
   );
 });

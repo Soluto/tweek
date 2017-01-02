@@ -62,7 +62,26 @@
               font-size: 13px;
             }
             .auto-suggest-wrapper {
+              display: flex;
+              flex-grow: 1;
+              flex-direction: row;
               margin-bottom: 13px;
+              .validation-icon {
+                flex-direction: row;
+                font-size: 25px;
+                padding-left: 7px;
+                width: 0;
+                opacity: 0;
+                .transitioned();
+                &[data-is-shown="true"] {
+                  width: 14px;
+                  opacity: 1;
+                }
+              }
+              .auto-suggest {
+                flex-grow: 1;
+              }
+              .validation-message {}
               :global(.bootstrap-typeahead-input-main) {
                 .key-name-input;
               }

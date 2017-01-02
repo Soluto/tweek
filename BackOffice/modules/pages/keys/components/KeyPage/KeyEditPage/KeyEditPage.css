@@ -99,7 +99,25 @@
   font-size: 13px;
 }
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row;
   margin-bottom: 13px;
+}
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .validation-icon {
+  flex-direction: row;
+  font-size: 25px;
+  padding-left: 7px;
+  width: 0;
+  opacity: 0;
+  transition: all 0.2s ease-in-out;
+}
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .validation-icon[data-is-shown="true"] {
+  width: 14px;
+  opacity: 1;
+}
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .auto-suggest {
+  flex-grow: 1;
 }
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-main) {
   display: inline-block;

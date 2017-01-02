@@ -3,12 +3,13 @@ import React from 'react';
 import style from './ComboBox.css';
 import { compose, withState, mapProps } from 'recompose';
 import R from 'ramda';
+import wrapComponentWithClass from '../../../utils/wrapComponentWithClass';
 
-export default compose(
+const comp = compose(
   withState('currentInputValue', 'setCurrentInputValue', ''),
   mapProps(({ options, currentInputValue, showValueInOptions, ...props }) => ({
     options: currentInputValue && showValueInOptions && R.findIndex(x => x.label === currentInputValue)(options) < 0 ?
-    [({ label: currentInputValue, value: currentInputValue }), ...options] : options,
+      [({ label: currentInputValue, value: currentInputValue }), ...options] : options,
     ...props,
   })
 )
@@ -29,8 +30,10 @@ export default compose(
           setCurrentInputValue(text);
           if (text === '' && props.onChange) props.onChange(emptyItem);
         } }
-        ref={e => e && autofocus && e.refs.instance.focus() }
-      />
+        ref={e => e && autofocus && e.refs.instance.focus()}
+        />
     </div>
   );
 });
+
+export default wrapComponentWithClass(comp);
