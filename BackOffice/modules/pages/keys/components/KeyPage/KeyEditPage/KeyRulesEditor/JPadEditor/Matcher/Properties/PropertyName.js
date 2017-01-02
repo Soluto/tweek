@@ -30,20 +30,20 @@ let PropertySuggestion = ({ suggestion, textToMark }) => {
   const type = suggestion.meta && (suggestion.meta.typeAlias || suggestion.meta.type);
 
   return (
-    <div className={style['property-suggestion-wrapper']}>
+    <div className={style['property-suggestion-wrapper']} data-field-type={type}>
+      <i/>
       <Highlighter
         highlightClassName={style['suggestion-label']}
         highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
         searchWords={[textToMark]}
         textToHighlight={prop}
         />
-      <span className={style['suggestion-type']}>({type}) </span>
-      <div className={style['suggestion-identity']}><Highlighter
+      <span className={style['suggestion-identity']}>(<Highlighter
         highlightClassName={style['suggestion-label']}
         highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
         searchWords={[textToMark]}
         textToHighlight={identity}
-        /></div>
+      />)</span>
     </div>
   );
 };
@@ -73,7 +73,7 @@ export default withState('currentInputValue', 'setCurrentInputValue', '')(
             selectProperty({ value: text });
           }
         } }
-        filterBy={ option => option.value.toLowerCase().includes(currentInputValue) }
+        filterBy={ option => option.value.toLowerCase().includes(currentInputValue.toLowerCase()) }
         renderMenuItemChildren={ (_, suggestion) => (<PropertySuggestion suggestion={suggestion} textToMark={currentInputValue}/>) }
         autofocus={autofocus}
         wrapperThemeClass={style['property-name-wrapper']}

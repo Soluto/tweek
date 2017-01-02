@@ -1,18 +1,19 @@
-.app {
-  padding-top: 60px;
-}
 .app .menu {
-  margin-left: 40px;
   display: flex;
-  height: 100%;
+  flex-grow: 1;
+  margin-right: 70px;
+  justify-content: flex-end;
 }
 .app .menu .menu-item {
   display: flex;
   border-bottom: 4px solid transparent;
-  width: 100px;
+  padding: 0 10px;
+  color: white;
+  height: 100%;
   transition: all 0.2s ease-in-out;
 }
 .app .menu .menu-item a {
+  margin-right: 24px;
   transition: all 0.2s ease-in-out;
 }
 .app .menu .menu-item a:visited,
@@ -21,39 +22,46 @@
   flex-grow: 1;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  color: darkgray;
+  height: 65px;
   text-decoration: none;
-  font-size: 17px;
-}
-.app .menu .menu-item a:hover {
-  color: gray;
+  font-size: 22px;
+  font-weight: 300;
+  color: white;
 }
 .app .menu .menu-item.selected-location-path {
-  border-bottom: 4px solid rgba(0, 122, 204, 0.4);
+  border-bottom: 4px solid white;
 }
 .app .menu .menu-item:hover {
   cursor: pointer;
-  border-bottom: 4px solid rgba(0, 122, 204, 0.2);
+  border-bottom: 4px solid white;
 }
 .app .menu .menu-item:hover.selected-location-path {
-  border-bottom: 4px solid rgba(0, 122, 204, 0.4);
+  border-bottom: 4px solid white;
 }
 .app .menu .menu-item:active {
-  border-bottom: 4px solid rgba(0, 122, 204, 0.5);
+  border-bottom: 4px solid white;
 }
 .app .header {
   top: 0;
   left: 0;
   right: 0;
-  height: 55px;
+  height: 70px;
   display: flex;
   position: fixed;
   background-color: white;
   border-bottom: 1px solid lightgray;
   align-items: center;
+  background-color: #009fda;
 }
 .app .header .logo {
-  margin: 5px 0 0 10px;
+  margin: 5px 0 0 20px;
   width: 140px;
+}
+.app .page {
+  position: absolute;
+  top: 70px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
 }

@@ -8,6 +8,8 @@
   border: none;
 }
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container {
+  min-height: 100%;
+  box-sizing: border-box;
   flex-direction: column;
   padding: 16px;
   display: flex;
