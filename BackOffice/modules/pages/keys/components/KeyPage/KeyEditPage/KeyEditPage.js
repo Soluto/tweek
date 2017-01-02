@@ -14,6 +14,7 @@ import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import R from 'ramda';
 import { BLANK_KEY_NAME } from '../../../../../store/ducks/ducks-utils/blankKeyDefinition';
 import ReactTooltip from 'react-tooltip';
+import alertIconSrc from './resources/alert-icon.svg';
 
 export default class KeyEditPage extends Component {
 
@@ -152,9 +153,12 @@ const NewKeyInput = compose(
   return (
     <div className={style['auto-suggest-wrapper']}
       data-with-error={isShowingValidationMessage}>
-      <div data-tip={keyValidationHint}
-        className={style['validation-icon']}
-        data-is-shown={isShowingValidationMessage}>!</div>
+      <div className={style['validation-icon-wrapper']}
+        data-is-shown={isShowingValidationMessage}>
+        <img data-tip={keyValidationHint}
+          className={style['validation-icon']}
+          src={alertIconSrc}></img>
+      </div>
       <ComboBox
         options={suggestions}
         placeholder="Enter key full path"
@@ -167,7 +171,7 @@ const NewKeyInput = compose(
         effect='solid'
         class={style['validation-message']}
         place="top"
-        delayHide="500" />
+        delayHide={500} />
     </div>
   );
 });
