@@ -39,7 +39,7 @@ namespace Tweek.ApiService.Modules
                 var isFlatten = modifiers.TryGetValue("$flatten").Select(x => bool.Parse(x.ToString())).IfNone(false);
 
                 IReadOnlyDictionary<string, string> contextParams = allParams.Item2.ToDictionary(x => x.Key,
-                    x => x.Value.ToString());
+                    x => x.Value.ToString(), StringComparer.OrdinalIgnoreCase);
 
                 var identities =
                     new HashSet<Identity>(
