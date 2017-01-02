@@ -14,7 +14,9 @@ export default class KeysPageObject {
   }
 
   getUrlLocation() {
+    this.browser.waitUntil(() => !!this.browser.getUrl(), 5000);
     const location = this.browser.getUrl().split(KeysPageObject.BASE_URL)[1];
+
     return location;
   }
 

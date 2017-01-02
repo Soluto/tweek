@@ -2,6 +2,7 @@
 
 import KeysAsserts from '../KeysAsserts';
 import KeysPageObject from '../KeysPageObject';
+import assert from 'assert';
 import moment from "moment";
 import { selectors } from '../selectors';
 
@@ -22,7 +23,7 @@ describe('keys list and filter', () => {
     keysPageObject.goToKeysList();
 
     keysPageObject.clickOnFolder(KeysPageObject.TEST_KEYS_FOLDER);
-    keysPageObject.clickOnFolder(`${KeysPageObject.TEST_KEYS_FOLDER}/@keyList/`);
+    keysPageObject.clickOnFolder(`${KeysPageObject.TEST_KEYS_FOLDER}/@keyList`);
     keysPageObject.clickOnFolder(`${KeysPageObject.TEST_KEYS_FOLDER}/@keyList/${testFolder}`);
 
     keysPageObject.clickOnKeyLink(`${KeysPageObject.TEST_KEYS_FOLDER}/@keyList/${testFolder}/greenApple`);
@@ -35,8 +36,9 @@ describe('keys list and filter', () => {
 
     keysPageObject.enterFilterInKeysList("Apple");
 
-    assert.equal(true, browser.isVisible(selectors.keyLink(`${KeysPageObject.TEST_KEYS_FOLDER}/@keyList/${testFolder}/greenApple`)));
-    assert.equal(true, browser.isVisible(selectors.keyLink(`${KeysPageObject.TEST_KEYS_FOLDER}/@keyList/${testFolder}/redApple`)));
+    browser.waitForVisible(selectors.keyLink(`${KeysPageObject.TEST_KEYS_FOLDER}/@keyList/${testFolder}/greenApple`), 2000);
+    browser.waitForVisible(selectors.keyLink(`${KeysPageObject.TEST_KEYS_FOLDER}/@keyList/${testFolder}/redApple`), 2000);
+
     assert.equal(false, browser.isVisible(selectors.keyLink(`${KeysPageObject.TEST_KEYS_FOLDER}/@keyList/${testFolder}/banana`)));
   });
 });

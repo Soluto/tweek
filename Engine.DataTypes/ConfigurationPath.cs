@@ -29,31 +29,13 @@ namespace Engine.DataTypes
             return new ConfigurationPath(path);
         }
 
-        public string Root
-        {
-            get
-            {
-                return _fragments.First();    
-            }
-        }
+        public string Root => _fragments.First();
 
-        public string Prefix
-        {
-            get
-            {
-                return string.Join("/", _fragments.Take(_fragments.Length - 1)); 
-            }
-        }
+        public string Prefix => string.Join("/", _fragments.Take(_fragments.Length - 1));
 
-        public string Name
-        {
-            get { return _fragments.Last(); }
-        }
+        public string Name => _fragments.Last();
 
-        public bool IsScan
-        {
-            get { return Name == "_"; }
-        }
+        public bool IsScan => Name == "_";
 
         public override bool Equals(object obj)
         {
@@ -114,7 +96,6 @@ namespace Engine.DataTypes
 
         public ConfigurationPath ToRelative(ConfigurationPath query)
         {
-            //broken, need to add support for nested relative path a/b/_/d/  with a/b/c/d/e should return e
             if (!Match(this, query)) throw new Exception(this + " not match query:" + query);
 
             var index = query._fragments.Length - (query.IsScan ? 1 : 0);
@@ -124,18 +105,9 @@ namespace Engine.DataTypes
         public static bool Match(ConfigurationPath path, ConfigurationPath query)
         {
             if (query == FullScan) return true;
-            if (query._fragments.Length == 1)
-            {
-                if (query.IsScan) return true;
-                if (path._fragments.Length == 1) return query.Name == path.Name;
-            }
-            if (path._fragments.Length > 1)
-            {
-                if (query._fragments[0] != FullScan && path._fragments[0] != query._fragments[0]) return false;
-                return Match(From(path._fragments.Skip(1).ToArray()), From(query._fragments.Skip(1).ToArray()));
-            }
+            if (query == path) return true;
+            if (query.IsScan) return path._path.StartsWith(query.Prefix);
             return false;
-            
         }
     }
 }

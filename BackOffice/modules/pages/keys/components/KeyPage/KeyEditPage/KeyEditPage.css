@@ -68,6 +68,9 @@
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .display-name-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .display-name-input:focus {
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+}
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .key-name-input {
   display: inline-block;
   border: 0;
@@ -92,6 +95,9 @@
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .key-name-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .key-name-input:focus {
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+}
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .display-name-text {
   font-size: 22px;
   display: flex;
@@ -101,7 +107,28 @@
   font-size: 13px;
 }
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row;
   margin-bottom: 13px;
+}
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .validation-icon-wrapper {
+  flex-direction: row;
+  width: 0;
+  opacity: 0;
+  margin: 11px 0 0 0;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.6);
+  transition: all 0.2s ease-in-out;
+}
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .validation-icon-wrapper[data-is-shown="true"] {
+  width: 16px;
+  height: 16px;
+  opacity: 1;
+  margin-top: 5px;
+  padding: 3px 5px;
+}
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .auto-suggest {
+  flex-grow: 1;
 }
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-main) {
   display: inline-block;
@@ -127,6 +154,9 @@
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-main):focus {
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+}
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -150,6 +180,9 @@
 }
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-hint):focus {
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
 }
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-full-path {
   color: #a5a5a5;
