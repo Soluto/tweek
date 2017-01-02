@@ -120,6 +120,7 @@
     "react-tabs": "0.5.3",
     "react-tap-event-plugin": "^2.0.1",
     "react-title-component": "1.0.1",
+    "react-tooltip": "^3.2.2",
     "recompose": "0.20.0",
     "redux": "3.4.0",
     "redux-actions": "0.9.1",
