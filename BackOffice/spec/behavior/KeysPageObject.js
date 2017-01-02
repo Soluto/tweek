@@ -4,7 +4,7 @@ import { BLANK_KEY_NAME } from '../../modules/store/ducks/ducks-utils/blankKeyDe
 
 export default class KeysPageObject {
 
-  static BASE_URL = 'http://127.0.0.1:4000/';
+  static BASE_URL = 'http://127.0.0.1:8080/';
   static KEYS_PAGE_URL = 'keys';
   static TEST_KEYS_FOLDER = '@behavior-tests';
   static GIT_TRANSACTION_TIMEOUT = 30000;
@@ -14,7 +14,9 @@ export default class KeysPageObject {
   }
 
   getUrlLocation() {
+    this.browser.waitUntil(() => !!this.browser.getUrl(), 5000);
     const location = this.browser.getUrl().split(KeysPageObject.BASE_URL)[1];
+
     return location;
   }
 
