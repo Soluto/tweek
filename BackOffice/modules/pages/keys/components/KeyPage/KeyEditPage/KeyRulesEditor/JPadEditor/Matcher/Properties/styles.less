@@ -22,7 +22,7 @@
 }
 
 .property-suggestion-wrapper {
-  padding: 8px 4px 8px 6px;
+  padding: 8px 4px 8px 16px;
   .suggestion-label {}
   .suggestion-identity {
     margin-left: 10px;
@@ -39,7 +39,7 @@
     vertical-align: middle;
     background-color: rgba(215, 215, 215, 0.49);
     border-radius: 16px;
-    margin-right: 12px;
+    margin-right: 14px;
   }
   
   &[data-field-type=bool]{
@@ -72,6 +72,20 @@
 .property-name-wrapper {
   .combo-box-basic(300px);
   :global(.bootstrap-typeahead) :global(.dropdown-menu) {
+    &::-webkit-scrollbar {
+      width: 12px;
+    }
+    &::-webkit-scrollbar-thumb {
+      border-radius: 6px;
+      background-color: #d8d8d8;
+      border: 3px solid #f1f1f1;
+    }
+    &::-webkit-scrollbar-track {
+      background-color: #f1f1f1;
+      border-radius: 6px;
+    }
+
+    min-width: 250px;
     box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.15);
     border-radius: 4px;
     background-color: #ffffff;
