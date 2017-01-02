@@ -73,7 +73,7 @@ export default withState('currentInputValue', 'setCurrentInputValue', '')(
             selectProperty({ value: text });
           }
         } }
-        filterBy={ option => option.value.toLowerCase().includes(currentInputValue) }
+        filterBy={ option => option.value.toLowerCase().includes(currentInputValue.toLowerCase()) }
         renderMenuItemChildren={ (_, suggestion) => (<PropertySuggestion suggestion={suggestion} textToMark={currentInputValue}/>) }
         autofocus={autofocus}
         wrapperThemeClass={style['property-name-wrapper']}
