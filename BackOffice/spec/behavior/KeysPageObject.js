@@ -23,6 +23,11 @@ export default class KeysPageObject {
     this.waitForVisible(selectors.SAVE_CHANGES_BUTTON, 10000, 'key: ' + keyName + ' didnt added correctly');
   }
 
+  goToKeysList() {
+    this.browser.url(`${KeysPageObject.BASE_URL}keys`);
+    this.waitForVisible(selectors.KEY_LIST_FILTER, 10000);
+  }
+
   deleteKeyIfExists(keyName) {
     try {
       this.goToKey(keyName);
@@ -78,6 +83,14 @@ export default class KeysPageObject {
 
     this.browser.waitForVisible(keyLinkSelector, 1000);
     this.browser.click(keyLinkSelector);
+  }
+
+  enterFilterInKeysList(filter) {
+    const keyListFilterSelector = selectors.KEY_LIST_FILTER;
+
+    this.browser.waitForVisible(keyListFilterSelector, 1000);
+    this.browser.click(keyListFilterSelector);
+    this.browser.setValue(keyListFilterSelector, filter);
   }
 
   wait(delayInMs) {
