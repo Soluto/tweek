@@ -22,7 +22,9 @@ export default connect(state => state, { ...actions })(
         return (
             <div className={style['keys-page-container']}>
               <div key="KeysList" className={style['keys-list']}>
-                <KeysList className={style['keys-list-wrapper']} keys={keys} />
+                <div className={style['keys-list-wrapper']}>
+                  <KeysList keys={keys} />
+                </div>
                 <div className={style['add-button-wrapper']}>
                   <button className={style['add-button']} onClick={() => addKey() }>Add key</button>
                 </div>
