@@ -57,7 +57,8 @@ namespace Engine
             HashSet<Identity> identities, 
             GetLoadedContextByIdentityType externalContext = null)
         {
-            var allContextData = (await Task.WhenAll(identities.Select(async identity => new { Identity = identity, Context = await _contextDriver.GetContext(identity) })))
+            var allContextData = (await Task.WhenAll(identities.Select(async identity => new { Identity = identity, Context = 
+                new Dictionary<string,string>(await _contextDriver.GetContext(identity), StringComparer.OrdinalIgnoreCase ) })))
                 .ToDictionary(x => x.Identity, x => x.Context);
             
             var allRules = _rulesLoader();

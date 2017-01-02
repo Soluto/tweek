@@ -26,11 +26,11 @@ describe('key name validations', () => {
     browser.setValue(selectors.KEY_NAME_INPUT, chance.guid());
 
     assert(!keysPageObject.isSaveButtonDisabled(), 'should not disable save button');
-    assert(!browser.isVisible(selectors.VALIDATION_MESSAGE), 'should show key name validation message');
+    assert(!browser.isVisible(selectors.VALIDATION_ALERT_ICON), 'should show key name validation message');
 
     browser.setValue(selectors.KEY_NAME_INPUT, BLANK_KEY_NAME);
 
     assert(keysPageObject.isSaveButtonDisabled(), 'should disable save button');
-    assert(browser.isVisible(selectors.VALIDATION_MESSAGE), 'should show key name validation message');
+    assert(browser.isVisible(selectors.VALIDATION_ALERT_ICON), 'should show key name validation message');
   });
 });

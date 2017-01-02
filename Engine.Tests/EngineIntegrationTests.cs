@@ -244,6 +244,28 @@ namespace Engine.Tests
             });
         }
 
+        [Fact]
+        public async Task ContextKeysShouldBeCaseInsensitive()
+        {
+            contexts = ContextCreator.Create("device", "1", new[] { "someDeviceProp", "5" });
+            paths = new[] { "abc/somepath" };
+            rules = new Dictionary<string, RuleDefinition>()
+            {
+                ["abc/somepath"] =
+                    JPadGenerator.New()
+                        .AddSingleVariantRule(matcher: JsonConvert.SerializeObject(new Dictionary<string, object>()
+                        {
+                            {"Device.sOmeDeviceProp", 5}
+                        }), value: "true").Generate()
+            };
+
+            await Run(async tweek =>
+            {
+                var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
+                Assert.Equal("true", val["somepath"].Value);
+            });
+        }
+
         /*
         [Fact]
         public async Task MultiVariantWithMultipleValueDistrubtion()

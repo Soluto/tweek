@@ -203,7 +203,7 @@
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
 .property-suggestion-wrapper {
-  padding: 8px 4px 8px 6px;
+  padding: 8px 4px 8px 16px;
 }
 .property-suggestion-wrapper .suggestion-identity {
   margin-left: 10px;
@@ -220,7 +220,7 @@
   vertical-align: middle;
   background-color: rgba(215, 215, 215, 0.49);
   border-radius: 16px;
-  margin-right: 12px;
+  margin-right: 14px;
 }
 .property-suggestion-wrapper[data-field-type=bool] i {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyB3aWR0aD0iNDhweCIgaGVpZ2h0PSI0OHB4IiB2aWV3Qm94PSIwIDAgNDggNDgiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+ICAgICAgICA8dGl0bGU+Qm9vbGVhbiBpY29uPC90aXRsZT4gICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+ICAgIDxkZWZzPjwvZGVmcz4gICAgPGcgaWQ9IlR3ZWVrLWljb25zIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPiAgICAgICAgPGcgaWQ9IkJvb2xlYW4taWNvbiIgc3Ryb2tlPSIjNTE1QzY2Ij4gICAgICAgICAgICA8ZyBpZD0iUGFnZS0xIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMi4wMDAwMDAsIDE1LjAwMDAwMCkiPiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTYuMTYxNSw1Ljg0NDQgTDIzLjI0NDUsMTIuOTI3NCIgaWQ9IlN0cm9rZS0xIiBzdHJva2Utd2lkdGg9IjIiPjwvcGF0aD4gICAgICAgICAgICAgICAgPHBhdGggZD0iTTIzLjI0NDksNS44NDQ0IEwxNi4xNjE5LDEyLjkyNzQiIGlkPSJTdHJva2UtMyIgc3Ryb2tlLXdpZHRoPSIyIj48L3BhdGg+ICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMS44MzIzNjI3LDEuNSBMMTEuODMyMzYyNywxNi45NTE1NzQ1IiBpZD0iU3Ryb2tlLTUiPjwvcGF0aD4gICAgICAgICAgICAgICAgPHBhdGggZD0iTTAsMTAuMTIwNSBMMi40MzgsMTIuNTU4NSIgaWQ9IlN0cm9rZS03IiBzdHJva2Utd2lkdGg9IjIiPjwvcGF0aD4gICAgICAgICAgICAgICAgPHBhdGggZD0iTTguNDI0NSw0LjYxIEwyLjY2MTUsMTIuNzg3IiBpZD0iU3Ryb2tlLTkiIHN0cm9rZS13aWR0aD0iMiI+PC9wYXRoPiAgICAgICAgICAgIDwvZz4gICAgICAgIDwvZz4gICAgPC9nPjwvc3ZnPg==);
@@ -326,9 +326,22 @@
   background-color: #dfdfdf;
 }
 .property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) {
+  min-width: 250px;
   box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.15);
   border-radius: 4px;
   background-color: #ffffff;
+}
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu)::-webkit-scrollbar {
+  width: 12px;
+}
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu)::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background-color: #d8d8d8;
+  border: 3px solid #f1f1f1;
+}
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu)::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+  border-radius: 6px;
 }
 .property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
   background: transparent;

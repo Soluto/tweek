@@ -51,6 +51,9 @@
               display: flex;
               width: 100%;
               flex-grow: 1;
+              &:focus {
+                border-bottom: 1px solid @accent-color4;
+              }
             }
             .key-name-input {
               .display-name-input;
@@ -64,7 +67,30 @@
               font-size: 13px;
             }
             .auto-suggest-wrapper {
+              display: flex;
+              flex-grow: 1;
+              flex-direction: row;
               margin-bottom: 13px;
+              .validation-icon-wrapper {
+                flex-direction: row;
+                width: 0;
+                opacity: 0;
+                margin: 11px 0 0 0;
+                border-bottom: 1px solid @accent-color3;
+                .transitioned();
+                .validation-icon {}
+                &[data-is-shown="true"] {
+                  width: 16px;
+                  height: 16px;
+                  opacity: 1;
+                  margin-top: 5px;
+                  padding: 3px 5px;
+                }
+              }
+              .auto-suggest {
+                flex-grow: 1;
+              }
+              .validation-message {}
               :global(.bootstrap-typeahead-input-main) {
                 .key-name-input;
               }
