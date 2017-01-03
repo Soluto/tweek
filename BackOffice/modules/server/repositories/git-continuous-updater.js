@@ -6,7 +6,8 @@ export default {
     while (true){
 
       try {
-        await gitTransactionManager.transact(async gitRepo => await gitRepo.pull());
+        await gitTransactionManager.read(async gitRepo => await gitRepo.fetch());
+        await gitTransactionManager.write(async gitRepo => await gitRepo.mergeMaster());
       }
       catch (err){
         console.error("Error pulling changes in git repo ", err)

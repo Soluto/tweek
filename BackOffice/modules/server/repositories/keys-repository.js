@@ -36,7 +36,7 @@ export default class KeysRepository {
   }
 
   async updateKey(keyPath, keyMetaSource, keyRulesSource, author) {
-    await this._gitTransactionManager.transact(async gitRepo => {
+    await this._gitTransactionManager.write(async gitRepo => {
       await gitRepo.updateFile(getPathForMeta(keyPath), keyMetaSource);
       await gitRepo.updateFile(getPathForJPad(keyPath), keyRulesSource);
 
@@ -45,7 +45,7 @@ export default class KeysRepository {
   }
 
   async deleteKey(keyPath, author) {
-    await this._gitTransactionManager.transact(async gitRepo => {
+    await this._gitTransactionManager.write(async gitRepo => {
       await gitRepo.deleteFile(getPathForMeta(keyPath));
       await gitRepo.deleteFile(getPathForJPad(keyPath));
 

@@ -5,7 +5,10 @@ import TagsRepository from '../../../../modules/server/repositories/tags-reposit
 
 describe("TagsRepository", () => {
   let mockGitRepo = {};
-  let mockTransactionManager = { transact: function(action) { return action(mockGitRepo); }};
+  let mockTransactionManager = {
+    write: function(action) { return action(mockGitRepo); },
+    read: function(action) { return action(mockGitRepo); }
+  };
   let target = new TagsRepository(mockTransactionManager);
 
   const testAuthor = { name: 'some name', email: 'some email' };

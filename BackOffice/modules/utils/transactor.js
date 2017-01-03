@@ -11,18 +11,18 @@ export default class Transactor {
   async read(readAction) {
     let context = await this._contextPromise;
 
-    try {
-      return await this._lock.run(async() => {
+    return await this._lock.run(async() => {
+      try{
         return await readAction(context);
-      });
-    }
-    catch (err) {
-      console.error('Error occurred during transaction ', err);
-      throw err;
-    }
+      }
+      catch (err) {
+        console.error('Error occurred during transaction ', err);
+        throw err;
+      }
+    });
   }
 
-  async transact(transactionAction) {
+  async write(transactionAction) {
     let context = await this._contextPromise;
     return await this._lock.lock(async() => {
       try {

@@ -6,7 +6,10 @@ import KeysRepository from '../../../../modules/server/repositories/keys-reposit
 describe("KeysRepository", () => {
 
   let mockGitRepo = {};
-  let mockTransactionManager = { transact: function(action) { return action(mockGitRepo); }};
+  let mockTransactionManager = {
+    write: function(action) { return action(mockGitRepo); },
+    read: function(action) { return action(mockGitRepo); }
+  };
   let target = new KeysRepository(mockTransactionManager);
 
   const testAuthor = { name: 'some name', email: 'some email' };
@@ -48,12 +51,11 @@ describe("KeysRepository", () => {
       mockGitRepo.commitAndPush = jest.fn();
     });
 
-    it("should pull, update files then commit and push", async () => {
+    it("should update files then commit and push", async () => {
       // Act
       await target.updateKey(testKeyPath, testMetaSource, testRulesSource, testAuthor);
 
       // Assert
-      expect(mockGitRepo.pull.mock.calls.length).toBe(1);
       expect(mockGitRepo.updateFile.mock.calls.length).toBe(2);
       expect(mockGitRepo.commitAndPush.mock.calls.length).toBe(1);
     });
@@ -79,7 +81,6 @@ describe("KeysRepository", () => {
   describe("deleteKey", () => {
 
     beforeEach(() => {
-      mockGitRepo.pull = jest.fn();
       mockGitRepo.deleteFile = jest.fn();
       mockGitRepo.commitAndPush = jest.fn();
     });
@@ -89,7 +90,6 @@ describe("KeysRepository", () => {
       await target.deleteKey(testKeyPath, testAuthor);
 
       // Assert
-      expect(mockGitRepo.pull.mock.calls.length).toBe(1);
       expect(mockGitRepo.deleteFile.mock.calls.length).toBe(2);
       expect(mockGitRepo.commitAndPush.mock.calls.length).toBe(1);
     });

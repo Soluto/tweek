@@ -106,8 +106,11 @@ export default class GitRepository {
     await this._pushRepositoryChanges(message);
   }
 
-  async pull() {
+  async fetch() {
     await this._repo.fetchAll(this._operationSettings);
+  }
+
+  async mergeMaster() {
     await this._repo.mergeBranches('master', 'origin/master');
 
     const isSynced = await this.isSynced();
