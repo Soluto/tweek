@@ -24,9 +24,9 @@ export default class EditorMetaService {
       fields: {
         device: {
           '@@id': multipleValues(true)(description('device id')(types.String)),
-          PartnerBrandId: multipleValues(true)(defaultValue('AsurionFriends')(description('The name of the partner')(types.String))),
-          DeviceOsType: multipleValues(true)(defaultValue('Android')(types.Enum('Android', 'Ios'))),
-          SubscriptionType: multipleValues(true)(types.Enum('Evaluation', 'Free', 'Insurance', 'InsuranceAndSupport', 'HomeSupport', 'DefaultFree')),
+          PartnerBrandId: multipleValues(true)(description('The name of the partner')(types.String)),
+          DeviceOsType: multipleValues(true)(description('Device operation system name')(types.Enum('Android', 'Ios'))),
+          SubscriptionType: multipleValues(true)(description('The home tier subscription of the device')(types.Enum('Evaluation', 'Free', 'Insurance', 'InsuranceAndSupport', 'HomeSupport', 'DefaultFree'))),
           AgentVersion: multipleValues(true)(defaultValue('1.0.0.0')(types.Version)),
           DeviceVendor: multipleValues(true)(types.String),
           CountryCode: multipleValues(true)(types.String),

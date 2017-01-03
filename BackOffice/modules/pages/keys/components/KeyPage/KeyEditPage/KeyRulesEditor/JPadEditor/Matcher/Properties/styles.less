@@ -71,7 +71,10 @@
 
 .property-name-wrapper {
   .combo-box-basic(300px);
+
   :global(.bootstrap-typeahead) :global(.dropdown-menu) {
+    overflow-y: auto;
+    overflow-x: visible;
     &::-webkit-scrollbar {
       width: 12px;
     }

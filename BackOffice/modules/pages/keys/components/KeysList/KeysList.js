@@ -20,7 +20,7 @@ const KeyItem = connect((state, props) => ({ isActive: state.selectedKey && stat
 (({name, fullPath, depth, isActive}) => (
   <div className={classNames(style['key-link-wrapper'])}>
     <Link className={classNames(style['key-link'], { [style['selected']]: isActive }) }
-          style={{ paddingLeft: (depth + 1) * 22 }}
+          style={{ paddingLeft: (depth + 1) * 14 }}
           to={`/keys/${fullPath}`}>
       {name}
     </Link>
