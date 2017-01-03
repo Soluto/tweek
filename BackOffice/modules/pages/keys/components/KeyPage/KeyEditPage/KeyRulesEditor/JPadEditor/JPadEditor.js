@@ -29,7 +29,6 @@ const comp = ({ rules, mutate, autofocusRuleIndex, setAutofocusRuleIndex }) => {
 
   return isBrowser ? (
     <div className={style['rule-container']}>
-
       <button className={style['add-rule-button']} onClick={() => {
         addMutatorRule(mutate);
         setAutofocusRuleIndex(0);

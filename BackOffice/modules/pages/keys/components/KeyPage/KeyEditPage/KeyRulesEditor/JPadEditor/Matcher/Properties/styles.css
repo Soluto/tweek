@@ -326,6 +326,8 @@
   background-color: #dfdfdf;
 }
 .property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) {
+  overflow-y: auto;
+  overflow-x: visible;
   min-width: 250px;
   box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.15);
   border-radius: 4px;
