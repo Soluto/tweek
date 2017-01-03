@@ -5,12 +5,29 @@ import ComboBox from '../../../../../../../../../components/common/ComboBox/Comb
 import { withState } from 'recompose';
 import Highlighter from 'react-highlight-words';
 import { types as MetaTypes } from '../../../../../../../../../services/MetaHelpers';
+import Chance from 'chance';
+import ReactTooltip from 'react-tooltip';
 
 const HIGHLIGHTED_TEXT_INLINE_STYLE = {
   fontWeight: 800,
   backgroundColor: 'transparent',
   color: 'gray',
 };
+
+let PropertyTooltip = ({propName, description, propType, identityType}) =>
+    <div>
+    <div style={{fontSize:18}}><span>{identityType}</span>.<span>{propName}</span></div>
+      <div style={{display:"flex", marginTop:10}}>
+        <div style={{minWidth:200, maxWidth: 400}} >{description}</div>
+        <div style={{textAlign:"center", height:60, marginLeft:40, borderLeftColor: "#ffffff", borderLeftStyle: "solid", borderLeftWidth:1, paddingLeft: 18, fontSize:14}}>
+          <div style={{marginBottom:10}}>Property Type</div>
+          <div>
+            {propType}
+          </div>
+        </div>
+      </div>
+      </div>
+
 
 let PropertySuggestion = ({ suggestion, textToMark }) => {
 
@@ -28,9 +45,10 @@ let PropertySuggestion = ({ suggestion, textToMark }) => {
 
   const [identity, prop] = suggestion.value.split('.');
   const type = suggestion.meta && (suggestion.meta.typeAlias || suggestion.meta.type);
+  const tooltipId = chance.guid();
 
   return (
-    <div className={style['property-suggestion-wrapper']} data-field-type={type}>
+    <div data-tip data-for={tooltipId} className={style['property-suggestion-wrapper']} data-field-type={type}>
       <i/>
       <Highlighter
         highlightClassName={style['suggestion-label']}
@@ -44,6 +62,9 @@ let PropertySuggestion = ({ suggestion, textToMark }) => {
         searchWords={[textToMark]}
         textToHighlight={identity}
       />)</span>
+      <ReactTooltip id={tooltipId} place="right" type="dark" effect="solid">
+        <PropertyTooltip propName={prop} identityType={identity} propType={type} description={suggestion.meta && suggestion.meta.description || ""} />
+      </ReactTooltip>
     </div>
   );
 };
