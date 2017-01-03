@@ -91,6 +91,7 @@
     "karma-mocha-reporter": "1.2.0",
     "karma-sourcemap-loader": "0.3.7",
     "karma-webpack": "1.7.0",
+    "lock-queue": "1.0.1",
     "mocha": "2.4.5",
     "moment": "2.14.1",
     "morgan": "1.7.0",

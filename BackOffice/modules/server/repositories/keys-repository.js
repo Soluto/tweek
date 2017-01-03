@@ -8,7 +8,7 @@ export default class KeysRepository {
   }
 
   async getAllKeys() {
-    return await this._gitTransactionManager.transact(async gitRepo => {
+    return await this._gitTransactionManager.read(async gitRepo => {
       const keyFiles = await gitRepo.listFiles(BasePathForRules);
 
       return keyFiles.map(getKeyFromJPadPath);
@@ -16,7 +16,7 @@ export default class KeysRepository {
   }
 
   async getKeyDetails(keyPath){
-    return await this._gitTransactionManager.transact(async gitRepo => {
+    return await this._gitTransactionManager.read(async gitRepo => {
       let pathForJPad = getPathForJPad(keyPath);
       let pathForMeta = getPathForMeta(keyPath);
 
@@ -37,8 +37,6 @@ export default class KeysRepository {
 
   async updateKey(keyPath, keyMetaSource, keyRulesSource, author) {
     await this._gitTransactionManager.transact(async gitRepo => {
-      await gitRepo.pull();
-
       await gitRepo.updateFile(getPathForMeta(keyPath), keyMetaSource);
       await gitRepo.updateFile(getPathForJPad(keyPath), keyRulesSource);
 
@@ -48,8 +46,6 @@ export default class KeysRepository {
 
   async deleteKey(keyPath, author) {
     await this._gitTransactionManager.transact(async gitRepo => {
-      await gitRepo.pull();
-
       await gitRepo.deleteFile(getPathForMeta(keyPath));
       await gitRepo.deleteFile(getPathForJPad(keyPath));
 
