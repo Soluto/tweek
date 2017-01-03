@@ -8,15 +8,13 @@ export default class TagsRepository {
   }
 
   async getTags() {
-    return await this._gitTransactionManager.transact(async gitRepo => {
+    return await this._gitTransactionManager.read(async gitRepo => {
       return JSON.parse(await gitRepo.readFile(TagsFile));
     });
   }
 
   async mergeTags (tagsToSave, author) {
     await this._gitTransactionManager.transact(async gitRepo => {
-      await gitRepo.pull();
-
       const currentTags = JSON.parse(await gitRepo.readFile(TagsFile));
       const changedTags = tagsToSave.map(x => ({name: x}));
 
