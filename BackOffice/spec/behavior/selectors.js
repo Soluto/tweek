@@ -22,7 +22,7 @@ selectors.BACKGROUND = getSelectorByClassNames('header');
 selectors.SAVE_CHANGES_BUTTON = getSelectorByClassNames('key-action-buttons-wrapper', 'save-changes-button');
 selectors.ADD_KEY_BUTTON = getSelectorByClassNames('keys-page-container', 'add-button');
 selectors.KEY_NAME_INPUT = getSelectorByClassNames('display-name-wrapper', 'bootstrap-typeahead-input-main');
-selectors.EDITABLE_KEY_NAME = getSelectorByClassNames('display-name-text');
+selectors.KEY_DISPLAY_NAME = getSelectorByClassNames('display-name-text');
 selectors.VALIDATION_ALERT_ICON = getSelectorByClassNames('validation-icon');
 selectors.KEY_PATH_SUGGESTIONS = getSelectorByClassNames('dropdown-menu');
 selectors.KEY_ACTUAL_PATH = getSelectorByClassNames('actual-path');
@@ -44,6 +44,7 @@ selectors.TAGS_INPUT = getRelativeSelector([getSelectorByClassNames('tag-input')
 selectors.TAG = getSelectorByClassNames('tags-container', 'selected', 'tag');
 selectors.TAGS_SUGGESTION = getRelativeSelector([getSelectorByClassNames('tags-suggestion'), 'ul', 'li']);
 selectors.KEY_LIST_FILTER = getRelativeSelector([getSelectorByClassNames('search-input-wrapper'), getSelectorByClassNames('search-input')]);
+selectors.READONLY_KEY_MESSAGE = getSelectorByClassNames('readonly-key-message');
 
 selectors.folder = (folderName) => {
   return _getSelectorWithAttribute(selectors.KEY_FOLDER_NAME, 'data-folder-name', folderName);

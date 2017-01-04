@@ -2,7 +2,7 @@ import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import JPadEditor from './JPadEditor/JPadEditor';
 import Mutator from '../../../../../../utils/mutator';
-import wrapComponentWithClass from '../../../../../../utils/wrapComponentWithClass';
+import wrapComponentWithClass from '../../../../../../hoc/wrap-component-with-class';
 import { compose } from 'recompose';
 import style from './KeyRulesEditor.css';
 

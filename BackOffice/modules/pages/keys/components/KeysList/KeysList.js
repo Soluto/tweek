@@ -16,7 +16,7 @@ function KeysFilter ({onFilterChange}) {
   );
 }
 
-const KeyItem = connect((state, props) => ({ isActive: state.selectedKey && state.selectedKey.key && state.selectedKey.key == props.fullPath }))
+const KeyItem = connect((state, props) => ({ isActive: state.selectedKey && state.selectedKey.key && state.selectedKey.key === props.fullPath }))
 (({name, fullPath, depth, isActive}) => (
   <div className={classNames(style['key-link-wrapper'])}>
     <Link className={classNames(style['key-link'], { [style['selected']]: isActive }) }

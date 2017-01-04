@@ -32,8 +32,7 @@ export default class KeysAsserts {
   }
 
   assertKeyHasNumberOfRules(expectedNumberOfRules, message = 'should have correct ammount of rules') {
-    const keyRules = this.browser.elements(selectors.ruleContainer());
-    assert.equal(keyRules.value.length, expectedNumberOfRules, message);
+    assert.equal(this.keysPageObject.getNumberOfRules(), expectedNumberOfRules, message);
   }
 
   assertKeyHasDefaultValueRule(message = 'should have default value rule') {

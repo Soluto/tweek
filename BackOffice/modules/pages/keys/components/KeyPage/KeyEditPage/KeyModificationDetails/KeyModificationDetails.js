@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import wrapComponentWithClass from '../../../../../../utils/wrapComponentWithClass';
+import wrapComponentWithClass from '../../../../../../hoc/wrap-component-with-class';
 import style from './KeyModificationDetails.css';
 
 const modifyDateFromat = 'DD/MM/YYYY HH:mm';

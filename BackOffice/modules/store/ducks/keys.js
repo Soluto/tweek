@@ -16,8 +16,8 @@ export const addKey = (key) => async function (dispatch) {
 
 export const deleteKey = (key) => async function (dispatch) {
   dispatch({ type: KEY_DELETING, payload: key });
-
-  dispatch(push('/keys'));
+  await Promise.resolve(); 
+  dispatch(push('/keys/'));
 
   await fetch(`/api/keys/${key}`, {
     credentials: 'same-origin',

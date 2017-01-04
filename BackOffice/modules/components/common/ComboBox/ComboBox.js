@@ -3,7 +3,7 @@ import React from 'react';
 import style from './ComboBox.css';
 import { compose, withState, mapProps } from 'recompose';
 import R from 'ramda';
-import wrapComponentWithClass from '../../../utils/wrapComponentWithClass';
+import wrapComponentWithClass from '../../../hoc/wrap-component-with-class';
 
 const comp = compose(
   withState('currentInputValue', 'setCurrentInputValue', ''),

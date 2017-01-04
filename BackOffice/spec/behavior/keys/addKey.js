@@ -51,7 +51,7 @@ describe('add key', () => {
 
     keysPageObject.waitForVisible(selectors.DELETE_KEY_BUTTON, 10000, 'new key did not openned currectly');
 
-    assert(browser.getText(selectors.EDITABLE_KEY_NAME),
+    assert(browser.getText(selectors.KEY_DISPLAY_NAME),
       keyToAddFullPath,
       'should set the key name correctly');
 

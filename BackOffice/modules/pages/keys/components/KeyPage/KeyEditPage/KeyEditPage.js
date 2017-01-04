@@ -147,7 +147,12 @@ const NewKeyInput = compose(
   keyNameValidation,
   onKeyNameChanged }) => {
   const suggestions = getKeyNameSuggestions(keysList).map(x => ({ label: x, value: x }));
-  const isShowingValidationMessage = keyNameValidation && keyNameValidation.key && !keyNameValidation.key.isValid;
+
+  const isShowingValidationMessage = keyNameValidation &&
+    keyNameValidation.key &&
+    !keyNameValidation.key.isValid &&
+    !!keyNameValidation.key.hint;
+
   const keyValidationHint = isShowingValidationMessage ? keyNameValidation.key.hint : '';
 
   return (

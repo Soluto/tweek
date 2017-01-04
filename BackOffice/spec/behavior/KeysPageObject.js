@@ -22,12 +22,16 @@ export default class KeysPageObject {
 
   goToKey(keyName) {
     this.browser.url(`${KeysPageObject.BASE_URL}${KeysPageObject.KEYS_PAGE_URL}/${keyName}`);
-    this.waitForVisible(selectors.SAVE_CHANGES_BUTTON, 10000, 'key: ' + keyName + ' didnt added correctly');
+    this.browser.waitUntil(() => this.browser.getText(selectors.KEY_DISPLAY_NAME) === keyName, 10000);
   }
 
   goToKeysList() {
     this.browser.url(`${KeysPageObject.BASE_URL}keys`);
     this.waitForVisible(selectors.KEY_LIST_FILTER, 10000);
+  }
+
+  getNumberOfRules() {
+    return this.browser.elements(selectors.ruleContainer()).value.length;
   }
 
   deleteKeyIfExists(keyName) {
@@ -76,15 +80,29 @@ export default class KeysPageObject {
   clickOnFolder(folderName) {
     const folderSelector = selectors.folder(folderName);
 
-    this.browser.waitForVisible(folderSelector, 1000);
+    this.browser.waitForVisible(folderSelector, 2000);
     this.browser.click(folderSelector);
   }
 
   clickOnKeyLink(keyName) {
     const keyLinkSelector = selectors.keyLink(keyName);
 
-    this.browser.waitForVisible(keyLinkSelector, 1000);
+    this.browser.waitForVisible(keyLinkSelector, 2000);
     this.browser.click(keyLinkSelector);
+  }
+
+  navigateToKey(keyFullPath) {
+    const keyFolders = keyFullPath.split('/');
+    const keyName = keyFolders.pop();
+
+    let partialFolderPath = '';
+    keyFolders.forEach(folder => {
+      partialFolderPath += folder;
+      this.clickOnFolder(partialFolderPath);
+      partialFolderPath += '/';
+    });
+
+    this.clickOnKeyLink(partialFolderPath + keyName);
   }
 
   enterFilterInKeysList(filter) {
@@ -95,8 +113,8 @@ export default class KeysPageObject {
     this.browser.setValue(keyListFilterSelector, filter);
   }
 
-  wait(delayInMs) {
-    console.log('wait', delayInMs, 'ms');
+  wait(delayInMs, printWait = true) {
+    if (printWait) console.log('wait', delayInMs, 'ms');
     let isDone = false;
 
     setTimeout(() => isDone = true, delayInMs);
@@ -123,5 +141,14 @@ export default class KeysPageObject {
   generateTestKeyName(prefix) {
     const currentDate = new Date();
     return `${prefix}-${moment(currentDate).format('DD-MM-YYYY-HH-mm-ss')}`;
+  }
+
+  didAlertRaised() {
+    try {
+      this.browser.alertText();
+      return true;
+    } catch (exp) {
+      return false;
+    }
   }
 }
