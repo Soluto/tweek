@@ -69,7 +69,6 @@ class TreeDirectory extends React.Component {
 
   static propTypes = {
     name: React.PropTypes.string.isRequired,
-    node: React.PropTypes.object.isRequired,
     fullPath: React.PropTypes.string,
     depth: React.PropTypes.number.isRequired,
     children: React.PropTypes.arrayOf(React.PropTypes.node).isRequired,
