@@ -14,12 +14,11 @@ export default serverRoutes => (
     <Redirect from="/" to="keys" />
     <Route path="/" component={App}>
       <Route path="keys" component={KeysPage} >
-        <IndexRoute component={() => <SelectKeyMessage/> } />
-        <Route path="_blank" isInAddMode="true" component={KeyPage} />
-        <Route path="*" component={KeyPage}/>
+        <IndexRoute component={() => <SelectKeyMessage />} />
+        <Route path="*" component={KeyPage} />
       </Route>
     </Route>
     {serverRoutes}
-    <Route path="*" status={404} component={NoMatch}/>
+    <Route path="*" status={404} component={NoMatch} />
   </Route>
 );

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Component } from 'react';
-import wrapComponentWithClass from '../../../../../../utils/wrapComponentWithClass';
+import wrapComponentWithClass from '../../../../../../hoc/wrap-component-with-class';
 import { connect } from 'react-redux';
 import style from './EditableText.css';
 import classNames from 'classnames';

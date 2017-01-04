@@ -64,51 +64,47 @@ export function updateKeyName(newKeyName) {
 
 export function saveKey() {
     return async function (dispatch, getState) {
-        const { selectedKey: { local: keyData, key } } = getState();
-        const isNewKey = !!(keyData.key);
-        const savedKey = keyData.key || key;
-        if (!savedKey) {
-            alert('Key name cannot be empty');
-            return;
-        }
-
-        if (savedKey === BLANK_KEY_NAME) {
-            alert('Invalid key name');
-            return;
-        }
+        const { selectedKey: { local, key } } = getState();
+        const isNewKey = !!(local.key);
+        const savedKey = local.key || key;
 
         dispatch({ type: KEY_SAVING });
 
         await fetch(`/api/keys/${savedKey}`, {
             credentials: 'same-origin',
             method: 'put',
-      ...withJsonData(keyData),
+      ...withJsonData(local),
     });
 
-    if (isNewKey) {
-        dispatch({ type: 'KEY_ADDED', payload: savedKey });
+    dispatch({ type: KEY_SAVED, payload: savedKey });
+
+    if (isNewKey) dispatch({ type: 'KEY_ADDED', payload: savedKey });
+    const shouldOpenNewKey = isNewKey && getState().selectedKey.key === BLANK_KEY_NAME;
+
+    if (shouldOpenNewKey) {
         dispatch(push(`/keys/${savedKey}`));
     }
-    await openKey(savedKey);
-    dispatch({ type: KEY_SAVED });
 };
 }
 
 const handleKeyOpened = (state, { payload: { key, ...props } }) => {
+    const validation = key !== BLANK_KEY_NAME ? undefined : {
+        key: { isValid: false, }
+    };
+
     return {
         key,
         isLoaded: true,
         local: R.clone(props),
         remote: R.clone(props),
+        validation,
     };
 };
 
-const handleKeyOpening = (state, { payload: { key, ...props } }) => {
+const handleKeyOpening = (state, { payload: { key } }) => {
     return {
         key,
         isLoaded: false,
-        local: R.clone(props),
-        remote: R.clone(props),
     };
 };
 
@@ -128,17 +124,17 @@ const handleKeyMetaUpdated = (state, { payload }) => ({
     },
 });
 
-const handleKeySaved = ({ local: { key, ...localData }, ...otherState }) => ({
-    key,
-      ...otherState,
-    local: localData,
-    remote: R.clone(localData),
-    isSaving: false,
-});
+const handleKeySaved = (state, { payload }) => {
+    return state.key === payload ?
+        { ...state, isSaving: false, } :
+        ({...state });
+};
 
-const handleKeySaving = (state) => ({
-    ...state,
+const handleKeySaving = ({ local, ...otherState }) => ({
+    ...otherState,
     isSaving: true,
+    local,
+    remote: R.clone(local),
 });
 
 const handleKeyNameChange = ({ local: { key, ...localData }, ...otherState }, { payload }) => ({
@@ -146,7 +142,7 @@ const handleKeyNameChange = ({ local: { key, ...localData }, ...otherState }, { 
     local: {
         ...localData,
         meta: { ...localData.meta, displayName: payload },
-        ...(payload === '' ? {} : { key: payload }), // get displayName from payload
+        ...(payload === '' ? {} : { key: payload }),
 },
 });
 
@@ -158,6 +154,14 @@ const handleKeyValidationChange = ({ validation, ...otherState }, { payload }) =
     }
 });
 
+const handleKeyDeleting = ({ remote, ...otherState }) => {
+    return ({
+    ...otherState,
+        local: {...remote },
+        remote: { ...remote },
+    });
+};
+
 export default handleActions({
     [KEY_OPENED]: handleKeyOpened,
     [KEY_OPENING]: handleKeyOpening,
@@ -167,4 +171,5 @@ export default handleActions({
     [KEY_SAVING]: handleKeySaving,
     [KEY_NAME_CHANGE]: handleKeyNameChange,
     [KEY_VALIDATION_CHANGE]: handleKeyValidationChange,
+    ['KEY_DELETING']: handleKeyDeleting,
 }, null);

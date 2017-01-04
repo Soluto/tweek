@@ -22,7 +22,6 @@ const gitUrl = nconf.get('GIT_URL');
 const gitUsername = nconf.get('GIT_USER');
 const gitPassword = nconf.get('GIT_PASSWORD');
 
-console.log("git stuff: ", gitUrl, gitUsername, gitPassword);
 if (!gitUrl ||
   !gitUsername ||
   !gitPassword) {
