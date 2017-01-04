@@ -23,7 +23,12 @@ const keyAsFolderNameValidation = {
   hint: 'Key name similar to existing category'
 };
 
-let keyNameValidations = [lengthValidation, blankNameValidation, existingKeyValidation, keyAsFolderNameValidation];
+const invalidCharactersValidation = {
+  rule: ({value}) => /(^[A-Za-z0-9#!@#$%^&()\-_=]+)(\/([A-Za-z0-9#!@#$%^&()\-_=\s])+){0,2}$/.test(value),
+  hint: "Invalid key name",
+};
+
+let keyNameValidations = [lengthValidation, blankNameValidation, existingKeyValidation, keyAsFolderNameValidation, invalidCharactersValidation];
 
 export default function (keyName, keysList) {
   var failedRule = keyNameValidations.find(x => !x.rule({ value: keyName, keysList }));
