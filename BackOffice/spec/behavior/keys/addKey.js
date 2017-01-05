@@ -22,6 +22,7 @@ describe('add key', () => {
 
   after(() => {
     keysPageObject.deleteKeyIfExists(keyToAddFullPath);
+    keysPageObject.wait(40000);
   });
 
   it('should succeed adding key', () => {
@@ -49,7 +50,7 @@ describe('add key', () => {
       keysPageObject.isInKeyPage(keyToAddFullPath),
       KeysPageObject.GIT_TRANSACTION_TIMEOUT);
 
-    keysPageObject.waitForVisible(selectors.DELETE_KEY_BUTTON, 10000, 'new key did not openned currectly');
+    browser.waitForVisible(selectors.DELETE_KEY_BUTTON, 10000);
 
     assert(browser.getText(selectors.KEY_DISPLAY_NAME),
       keyToAddFullPath,

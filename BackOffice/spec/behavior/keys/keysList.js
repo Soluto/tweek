@@ -10,25 +10,24 @@ import { selectors } from '../selectors';
 describe('keys list and filter', () => {
   const keysPageObject = new KeysPageObject(browser);
   const keyAsserts = new KeysAsserts(keysPageObject, browser);
-  const testFolder = `${moment(new Date()).format('DD-MM-YYYY-HH-mm-ss')}`;
+
+  const testFolder = KeysPageObject.TEST_KEYS_FOLDER;
+  const keysListTestFolder = '@keysList';
+
+  const greenAppleKeyFullPath = `${testFolder}/${keysListTestFolder}/greenApple`;
+  const redAppleKeyFullPath = `${testFolder}/${keysListTestFolder}/redApple`;
+  const bananaAppleKeyFullPath = `${testFolder}/${keysListTestFolder}/banana`;
 
   before(() => {
     browser.url(KeysPageObject.BASE_URL);
-    keysPageObject.addEmptyKey(`${KeysPageObject.TEST_KEYS_FOLDER}/@keyList/${testFolder}/greenApple`);
-    keysPageObject.addEmptyKey(`${KeysPageObject.TEST_KEYS_FOLDER}/@keyList/${testFolder}/redApple`);
-    keysPageObject.addEmptyKey(`${KeysPageObject.TEST_KEYS_FOLDER}/@keyList/${testFolder}/banana`);
   });
 
   it("should be able to navigate to key by folders", () => {
     keysPageObject.goToKeysList();
 
-    keysPageObject.clickOnFolder(KeysPageObject.TEST_KEYS_FOLDER);
-    keysPageObject.clickOnFolder(`${KeysPageObject.TEST_KEYS_FOLDER}/@keyList`);
-    keysPageObject.clickOnFolder(`${KeysPageObject.TEST_KEYS_FOLDER}/@keyList/${testFolder}`);
+    keysPageObject.navigateToKey(greenAppleKeyFullPath);
 
-    keysPageObject.clickOnKeyLink(`${KeysPageObject.TEST_KEYS_FOLDER}/@keyList/${testFolder}/greenApple`);
-
-    keyAsserts.assertIsInKeyPage(`${KeysPageObject.TEST_KEYS_FOLDER}/@keyList/${testFolder}/greenApple`);
+    keyAsserts.assertIsInKeyPage(greenAppleKeyFullPath);
   });
 
   it("should display matching keys when filtering", () => {
@@ -36,9 +35,9 @@ describe('keys list and filter', () => {
 
     keysPageObject.enterFilterInKeysList("Apple");
 
-    browser.waitForVisible(selectors.keyLink(`${KeysPageObject.TEST_KEYS_FOLDER}/@keyList/${testFolder}/greenApple`), 2000);
-    browser.waitForVisible(selectors.keyLink(`${KeysPageObject.TEST_KEYS_FOLDER}/@keyList/${testFolder}/redApple`), 2000);
+    browser.waitForVisible(selectors.keyLink(greenAppleKeyFullPath), 2000);
+    browser.waitForVisible(selectors.keyLink(redAppleKeyFullPath), 2000);
 
-    assert.equal(false, browser.isVisible(selectors.keyLink(`${KeysPageObject.TEST_KEYS_FOLDER}/@keyList/${testFolder}/banana`)));
+    assert(!browser.isVisible(selectors.keyLink(bananaAppleKeyFullPath)), 'should show banana key in keys list');
   });
 });
