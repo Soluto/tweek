@@ -34,7 +34,7 @@ export default class Transactor {
       }
       finally {
         if (this._cleanupAction)
-          this._cleanupAction(context);
+          await this._cleanupAction(context);
       }
     });
   }
