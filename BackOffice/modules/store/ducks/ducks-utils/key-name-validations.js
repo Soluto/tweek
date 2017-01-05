@@ -24,8 +24,8 @@ const keyAsFolderNameValidation = {
 };
 
 const invalidCharactersValidation = {
-  rule: ({value}) => /(^[A-Za-z0-9#!@#$%^&()\-_=]+)(\/([A-Za-z0-9#!@#$%^&()\-_=\s])+){0,2}$/.test(value),
-  hint: "Invalid key name",
+  rule: ({value}) => /(^[A-Za-z0-9#!@#$%^&()\-_=]+)(\/([A-Za-z0-9#!@#$%^&()\-_=\s])+)*$/.test(value),
+  hint: 'Invalid key name',
 };
 
 let keyNameValidations = [lengthValidation, blankNameValidation, existingKeyValidation, keyAsFolderNameValidation, invalidCharactersValidation];
