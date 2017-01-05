@@ -44,11 +44,11 @@ describe('add tags', () => {
     }
 
     function assertTagSuggestionExists(partialTagName) {
-        keysPageObject.waitForVisible(selectors.TAGS_INPUT, 2000, 'cannot find tags input');
+        browser.waitForVisible(selectors.TAGS_INPUT, 2000);
 
         browser.setValue(selectors.TAGS_INPUT, partialTagName);
 
-        keysPageObject.waitForVisible(selectors.TAGS_SUGGESTION, 2000, 'cannot find tags suggestion list');
+        browser.waitForVisible(selectors.TAGS_SUGGESTION, 2000);
 
         const tagsSuggestions = browser.elements(selectors.TAGS_SUGGESTION);
         assert.equal(tagsSuggestions.value.length, 1);
@@ -67,6 +67,7 @@ describe('add tags', () => {
 
         keysPageObject.wait(40000);
         browser.refresh();
+        browser.alertAccept();
 
         // Assert
         const partialGuid1 = guid1.slice(0, guid1.length - 1);

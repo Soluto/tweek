@@ -21,13 +21,20 @@ export default class KeysPageObject {
   }
 
   goToKey(keyName) {
-    this.browser.url(`${KeysPageObject.BASE_URL}${KeysPageObject.KEYS_PAGE_URL}/${keyName}`);
-    this.browser.waitUntil(() => this.browser.getText(selectors.KEY_DISPLAY_NAME) === keyName, 10000);
+    const goTo = `${KeysPageObject.BASE_URL}${KeysPageObject.KEYS_PAGE_URL}/${keyName}`;
+    console.log('set url to', goTo);
+
+    this.browser.url(goTo);
+
+    const selectorToWaitFor = keyName.startsWith(BLANK_KEY_NAME) ?
+      selectors.KEY_NAME_INPUT : selectors.KEY_DISPLAY_NAME;
+
+    this.browser.waitForVisible(selectorToWaitFor, 10000);
   }
 
   goToKeysList() {
     this.browser.url(`${KeysPageObject.BASE_URL}keys`);
-    this.waitForVisible(selectors.KEY_LIST_FILTER, 10000);
+    this.browser.waitForVisible(selectors.KEY_LIST_FILTER, 10000);
   }
 
   getNumberOfRules() {
@@ -48,16 +55,15 @@ export default class KeysPageObject {
     console.log('adding key', keyName);
     this.goToKey(BLANK_KEY_NAME);
 
-    this.waitForVisible(selectors.KEY_NAME_INPUT, 5000);
+    this.browser.waitForVisible(selectors.KEY_NAME_INPUT, 5000);
     this.browser.setValue(selectors.KEY_NAME_INPUT, keyName);
 
     this.browser.click(selectors.SAVE_CHANGES_BUTTON);
-
     this.browser.waitUntil(() =>
       this.isInKeyPage(keyName),
       KeysPageObject.GIT_TRANSACTION_TIMEOUT);
 
-    this.waitForVisible(selectors.DELETE_KEY_BUTTON, 10000, 'key: ' + keyName + ' didnt added correctly');
+    this.browser.waitForVisible(selectors.KEY_DISPLAY_NAME, 10000);
   }
 
   isInKeyPage(keyName) {
@@ -128,14 +134,6 @@ export default class KeysPageObject {
 
   waitForKeyToLoad(timeout = 10000) {
     this.browser.waitForVisible(selectors.DELETE_KEY_BUTTON, timeout);
-  }
-
-  waitForVisible(selector, timeout, exceptionMessage) {
-    try {
-      this.browser.waitForVisible(selector, timeout);
-    } catch (exp) {
-      throw exp.message + ' from keyPageObject.waitForVisible: ' + exceptionMessage;
-    }
   }
 
   generateTestKeyName(prefix) {

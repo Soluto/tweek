@@ -18,8 +18,7 @@ export const deleteKey = (key) => async function (dispatch) {
   dispatch({ type: KEY_DELETING, payload: key });
   
   await Promise.delay(1);
-  dispatch(push('/keys/'));
-  
+  dispatch(push('/keys'));
   
   await fetch(`/api/keys/${key}`, {
     credentials: 'same-origin',
