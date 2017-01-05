@@ -1,6 +1,6 @@
 import { handleActions } from 'redux-actions';
 import R from 'ramda';
-
+import Promise from 'bluebird';
 const KEYS_UPDATED = 'KEYS_UPDATED';
 const KEY_ADDING = 'KEY_ADDING';
 const KEY_ADDED = 'KEY_ADDED';
@@ -16,14 +16,16 @@ export const addKey = (key) => async function (dispatch) {
 
 export const deleteKey = (key) => async function (dispatch) {
   dispatch({ type: KEY_DELETING, payload: key });
-  await Promise.resolve(); 
+  
+  await Promise.delay(1);
   dispatch(push('/keys/'));
-
+  
+  
   await fetch(`/api/keys/${key}`, {
     credentials: 'same-origin',
     method: 'delete',
   });
-
+  
   dispatch({ type: KEY_DELETED, payload: key });
 };
 
