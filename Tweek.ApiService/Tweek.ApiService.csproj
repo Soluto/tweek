@@ -120,6 +120,8 @@
     <None Include="Properties\PublishProfiles\soluto-tweek-prod.pubxml" />
     <None Include="Properties\PublishProfiles\soluto-tweek-qa - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\soluto-tweek-staging - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\tweek-playground - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\tweek-playground-staging - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\TweekAiTest - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
