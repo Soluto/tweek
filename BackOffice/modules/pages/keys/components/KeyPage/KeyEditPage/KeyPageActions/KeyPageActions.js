@@ -31,8 +31,8 @@ const comp = compose(
     state => ({ selectedKey: state.selectedKey }),
     { ...keysActions, deleteKey })
 )(
-  ({ selectedKey, isInAddMode, saveKey, deleteKey, isReadonly }) => {
-    const { local, remote, isSaving, isDeleting } = selectedKey;
+  ({ selectedKey, isInAddMode, saveKey, deleteKey, isReadonly, isInStickyMode }) => {
+    const { local, remote, isSaving } = selectedKey;
     const changes = diff(local, remote);
     const hasChanges = (changes || []).length > 0;
     const isSaveEnable = !selectedKey.validation ||
@@ -44,7 +44,7 @@ const comp = compose(
           <div className={style['readonly-key-message']}>This key is readonly</div>
           : null}
         <div className={style['key-action-buttons-wrapper']}>
-          {!isInAddMode ?
+          {!isInAddMode && !isInStickyMode ?
             <DeleteButton isSaving={isSaving}
               selectedKey={selectedKey}
               deleteKey={deleteKey} />

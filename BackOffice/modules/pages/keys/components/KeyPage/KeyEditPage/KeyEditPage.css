@@ -1,6 +1,7 @@
 .key-viewer-container-form {
   display: flex;
   flex-grow: 1;
+  overflow-y: auto;
 }
 .key-viewer-container-form .key-viewer-container-fieldset {
   display: flex;
@@ -11,40 +12,24 @@
   min-height: 100%;
   box-sizing: border-box;
   flex-direction: column;
-  padding: 16px;
   display: flex;
   flex-grow: 1;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input {
   display: flex;
+  flex-grow: 1;
   flex-direction: column;
-  flex-shrink: 0;
-  position: relative;
-  background-color: white;
-  border-radius: 5px;
-  border: 1px solid lightgray;
-  margin-top: 16px;
-  padding: 20px;
-  box-sizing: border-box;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .modification-data {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name {
-  font-size: 20px;
-}
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .display-name-container {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-container {
   min-height: 34px;
   display: flex;
   flex-grow: 1;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .display-name-form {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-form {
   display: flex;
   flex-grow: 1;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .display-name-input {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-input {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -61,17 +46,17 @@
   transition: all 0.2s ease-in-out;
   font-size: 22px;
   font-weight: 300;
+  margin-right: 20px;
   display: flex;
-  width: 100%;
   flex-grow: 1;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .display-name-input:focus {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .display-name-input:focus {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-input:focus {
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .key-name-input {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .key-name-input {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -88,31 +73,31 @@
   transition: all 0.2s ease-in-out;
   font-size: 22px;
   font-weight: 300;
+  margin-right: 20px;
   display: flex;
-  width: 100%;
   flex-grow: 1;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .key-name-input:focus {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .key-name-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .key-name-input:focus {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .key-name-input:focus {
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .display-name-text {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-text {
   font-size: 22px;
   display: flex;
   flex-grow: 1;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .validation-message {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .validation-message {
   font-size: 13px;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper {
   display: flex;
   flex-grow: 1;
   flex-direction: row;
   margin-bottom: 13px;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .validation-icon-wrapper {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .validation-icon-wrapper {
   flex-direction: row;
   width: 0;
   opacity: 0;
@@ -120,17 +105,21 @@
   border-bottom: 1px solid rgba(0, 122, 204, 0.6);
   transition: all 0.2s ease-in-out;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .validation-icon-wrapper[data-is-shown="true"] {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .validation-icon-wrapper[data-is-shown="true"] {
   width: 16px;
   height: 16px;
   opacity: 1;
   margin-top: 5px;
   padding: 3px 5px;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper .auto-suggest {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .auto-suggest {
   flex-grow: 1;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-main) {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper :global(.bootstrap-typeahead-input) {
+  display: flex;
+  flex-grow: 1;
+}
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -147,17 +136,17 @@
   transition: all 0.2s ease-in-out;
   font-size: 22px;
   font-weight: 300;
+  margin-right: 20px;
   display: flex;
-  width: 100%;
   flex-grow: 1;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-main):focus {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-main):focus {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-hint) {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -174,17 +163,50 @@
   transition: all 0.2s ease-in-out;
   font-size: 22px;
   font-weight: 300;
+  margin-right: 20px;
   display: flex;
-  width: 100%;
   flex-grow: 1;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-hint):focus {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .display-name-wrapper .auto-suggest-wrapper :global(.bootstrap-typeahead-input-hint):focus {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-full-path {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .sticky-key-header {
+  position: absolute;
+  height: 72px;
+  width: 100%;
+  display: flex;
+  padding: 16px;
+  padding-top: 22px;
+  background-color: white;
+  box-shadow: 0 5px 1px 0 rgba(0, 0, 0, 0.15);
+  z-index: 2;
+  box-sizing: border-box;
+}
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: relative;
+  margin: 16px;
+}
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-meta-container {
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid lightgray;
+  margin-top: 16px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-meta-container .key-header-and-modification-wrapper {
+  display: flex;
+}
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-meta-container .key-header-and-modification-wrapper .modification-data {
+  float: right;
+}
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-meta-container .key-full-path {
   color: #a5a5a5;
   font-size: 14px;
   margin-left: 5px;
@@ -193,23 +215,23 @@
   -webkit-user-select: none;
   user-select: none;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-full-path .actual-path {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-meta-container .key-full-path .actual-path {
   -moz-user-select: text;
   -ms-user-select: text;
   -webkit-user-select: text;
   user-select: text;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-description-and-tags-wrapper {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-meta-container .key-description-and-tags-wrapper {
   display: flex;
   flex-direction: row;
   flex-grow: 1;
   margin-top: 10px;
   max-height: 100px;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-description-and-tags-wrapper .key-description-wrapper {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-meta-container .key-description-and-tags-wrapper .key-description-wrapper {
   height: 100px;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-description-and-tags-wrapper .key-description-wrapper .description-input {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-meta-container .key-description-and-tags-wrapper .key-description-wrapper .description-input {
   resize: none;
   font-size: 14px;
   color: #515c66;
@@ -219,7 +241,7 @@
   outline: none;
   box-sizing: border-box;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-description-and-tags-wrapper .tags-wrapper {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-header .key-meta-container .key-description-and-tags-wrapper .tags-wrapper {
   display: flex;
   width: 0;
   flex-direction: column;
@@ -235,5 +257,9 @@
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-rules-editor {
   display: flex;
   flex-grow: 1;
-  margin-top: 7px;
+  margin: 16px;
+  margin-top: 0;
+}
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-rules-editor.sticky {
+  z-index: 1;
 }

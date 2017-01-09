@@ -42,9 +42,9 @@ describe('switch key', () => {
       makeKeyChanges();
       pageChangeTrigger();
 
-      keysPageObject.wait(2000, false);
-      const didAlertRaised = keysPageObject.didAlertRaised();
-      assert(didAlertRaised, 'should show confirm message on ' + testName);
+      browser.waitUntil(() => keysPageObject.didAlertRaised(),
+        8000,
+        'should show confirm message on ' + testName);
 
       browser.alertAccept();
     });
