@@ -51,7 +51,7 @@ class KeyEditPage extends Component {
   render() {
     const { selectedKey, isInAddMode, isInStickyMode } = this.props;
     const { key, local: {meta, keyDef}} = selectedKey;
-    const isReadonly = meta.readOnly;
+    const isReadonly = !!meta.readOnly && meta.readOnly;
 
     const commonHeadersProps = {
       onKeyNameChanged: this::this._onKeyNameChanged,
@@ -108,9 +108,11 @@ const KeyStickyHeader = (props) => {
 
       <HeaderMainInput {...props} />
 
-      <div className={style['sticky-key-page-action-wrapper']}>
-        <KeyPageActions isInAddMode={isInAddMode} isReadonly={isReadonly} isInStickyMode={true} />
-      </div>
+      {!isReadonly ?
+        <div className={style['sticky-key-page-action-wrapper']}>
+          <KeyPageActions isInAddMode={isInAddMode} isReadonly={isReadonly} isInStickyMode={true} />
+        </div> :
+        null}
 
     </div>
   );
