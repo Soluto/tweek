@@ -6,7 +6,7 @@ import { selectors } from '../selectors';
 import Chance from 'chance';
 
 describe('add tags', () => {
-    const NUMBER_OF_TAGS_TO_ADD = 2;
+    const NUMBER_OF_TAGS_TO_ADD = 1;
 
     const keysPageObject = new KeysPageObject(browser);
 
