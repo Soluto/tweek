@@ -6,9 +6,13 @@
     border-radius: 5px;
     padding: 10px;
     .transitioned();
-    &:read-only {
+    &.read-only {
       border: 1px solid transparent;
       padding-left: 3px;
+    }
+    &:disabled {
+      border: 1px solid transparent;
+      padding-left: 10px;
     }
   }
 }
