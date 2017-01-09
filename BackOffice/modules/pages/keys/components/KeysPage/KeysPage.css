@@ -8,7 +8,6 @@
   flex-basis: 400px;
   flex-direction: column;
   background-color: #414b53;
-  border-right: 2px solid #e2e2e2;
 }
 .keys-page-container .keys-list .keys-list-wrapper {
   display: flex;
@@ -23,7 +22,6 @@
   right: 0;
   flex-grow: 1;
   flex-shrink: 0;
-  overflow-y: auto;
 }
 .keys-page-container .add-button-wrapper {
   min-height: 80px;

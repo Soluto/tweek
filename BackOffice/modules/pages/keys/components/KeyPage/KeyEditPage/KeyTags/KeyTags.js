@@ -24,11 +24,6 @@ export default compose(
       super(props);
     }
 
-    componentDidMount() {
-      const { downloadTags } = this.props;
-      downloadTags();
-    }
-
     _onTagAdded(newTagText) {
       const { saveNewTags } = this.props;
 

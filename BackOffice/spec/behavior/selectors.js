@@ -21,7 +21,7 @@ function _getSelectorWithAttribute(selector, attribute, value) {
 selectors.BACKGROUND = getSelectorByClassNames('header');
 selectors.SAVE_CHANGES_BUTTON = getSelectorByClassNames('key-action-buttons-wrapper', 'save-changes-button');
 selectors.ADD_KEY_BUTTON = getSelectorByClassNames('keys-page-container', 'add-button');
-selectors.KEY_NAME_INPUT = getSelectorByClassNames('display-name-wrapper', 'bootstrap-typeahead-input-main');
+selectors.KEY_NAME_INPUT = getSelectorByClassNames('key-main-input', 'bootstrap-typeahead-input-main');
 selectors.KEY_DISPLAY_NAME = getSelectorByClassNames('display-name-text');
 selectors.VALIDATION_ALERT_ICON = getSelectorByClassNames('validation-icon');
 selectors.KEY_PATH_SUGGESTIONS = getSelectorByClassNames('dropdown-menu');

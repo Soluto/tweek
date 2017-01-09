@@ -8,15 +8,16 @@ import KeyTags from './KeyTags/KeyTags';
 import EditableText from './EditableText/EditableText';
 import EditableTextArea from './EditableTextArea/EditableTextArea';
 import KeyModificationDetails from './KeyModificationDetails/KeyModificationDetails';
-import { compose } from 'recompose';
+import { compose, pure } from 'recompose';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import R from 'ramda';
-import { BLANK_KEY_NAME } from '../../../../../store/ducks/ducks-utils/blankKeyDefinition';
 import ReactTooltip from 'react-tooltip';
 import alertIconSrc from './resources/alert-icon.svg';
+import classNames from 'classnames';
+import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
 
-export default class KeyEditPage extends Component {
+class KeyEditPage extends Component {
 
   constructor(props) {
     super(props);
@@ -45,86 +46,46 @@ export default class KeyEditPage extends Component {
     this.props.updateKeyMetaDef(newMeta);
   }
 
+  _onMutation = (x) => this.props.updateKeyDef({ source: JSON.stringify(x, null, 4) })
+
   render() {
-    const { configKey, selectedKey, isInAddMode } = this.props;
+    const { selectedKey, isInAddMode, isInStickyMode } = this.props;
     const { key, local: {meta, keyDef}} = selectedKey;
     const isReadonly = meta.readOnly;
 
+    const commonHeadersProps = {
+      onKeyNameChanged: this::this._onKeyNameChanged,
+      onDisplayNameChanged: this::this._onDisplayNameChanged,
+      isInAddMode,
+      isReadonly,
+      keyMeta: meta,
+    };
+
     return (
-      <form className={style['key-viewer-container-form']}
+      <form id="key-viewer-container-form" className={style['key-viewer-container-form']}
         onSubmit={e => e.preventDefault()}>
         <fieldset className={style['key-viewer-container-fieldset']}
           disabled={isReadonly}>
 
           <div className={style['key-viewer-container']}>
-            <KeyPageActions isInAddMode={isInAddMode}
-              isReadonly={isReadonly} />
 
-            <div className={style['key-header']}>
+            {isInStickyMode ?
+              <KeyStickyHeader {...commonHeadersProps} />
+              :
+              <KeyFullHeader
+                {...commonHeadersProps}
+                onDescriptionChanged={text => this._onDescriptionChanged(text)}
+                onTagsChanged={newTags => this._onTagsChanged(newTags)}
+                modificationData={keyDef.modificationData}
+                keyFullPath={key}
+                isInStickyMode={isInStickyMode} />
+            }
 
-              {keyDef.modificationData ?
-                <KeyModificationDetails className={style['modification-data']} {...keyDef.modificationData} />
-                : null
-              }
-
-              <div className={style['display-name-wrapper']}>
-                {
-                  isInAddMode ?
-                    <NewKeyInput onKeyNameChanged={(name) => this._onKeyNameChanged(name)} />
-                    :
-                    <EditableText onTextChanged={(text) => this:: this._onDisplayNameChanged(text) }
-                  placeHolder="Enter key display name"
-              maxLength={80}
-                value={meta.displayName}
-                isReadonly={isReadonly}
-                classNames={{
-                  container: style['display-name-container'],
-                  input: style['display-name-input'],
-                  text: style['display-name-text'],
-                  form: style['display-name-form'],
-                }}
-                />
-          }
-        </div>
-
-              {!isInAddMode ?
-                <div className={style['key-full-path']}>
-                  <label>Full path: </label>
-                  <label className={style['actual-path']}>{key}</label>
-                </div>
-                : null}
-
-              <div className={style['key-description-and-tags-wrapper']}>
-
-                <div className={style['key-description-wrapper']}>
-                  <EditableTextArea value={meta.description}
-                    onTextChanged={(text) => this._onDescriptionChanged(text)}
-                    placeHolder="Write key description"
-                    title="Click to edit description"
-                    classNames={{
-                      input: style['description-input'],
-                    }}
-                    maxLength={400}
-                    />
-                </div>
-
-                <div className={style['tags-wrapper']}>
-
-                  <KeyTags onTagsChanged={(newTags) => this._onTagsChanged(newTags)}
-                    tags={meta.tags}
-                    />
-
-                </div>
-
-              </div>
-
-            </div>
-
-            <KeyRulesEditor keyDef={keyDef}
+            <KeyRulesEditor
+              keyDef={keyDef}
               sourceTree={JSON.parse(keyDef.source)}
-              onMutation={x => this.props.updateKeyDef({ source: JSON.stringify(x, null, 4) })}
-              className={style['key-rules-editor']}
-              />
+              onMutation={this._onMutation}
+              className={classNames(style['key-rules-editor'], { [style['sticky']]: isInStickyMode })} />
 
           </div>
 
@@ -133,6 +94,93 @@ export default class KeyEditPage extends Component {
     );
   }
 }
+
+export default compose(
+  stickyHeaderIdentifier('key-viewer-container-form', 150),
+  pure
+)(KeyEditPage);
+
+const KeyStickyHeader = (props) => {
+  const {isInAddMode, isReadonly} = props;
+
+  return (
+    <div className={style['sticky-key-header']} >
+
+      <HeaderMainInput {...props} />
+
+      <div className={style['sticky-key-page-action-wrapper']}>
+        <KeyPageActions isInAddMode={isInAddMode} isReadonly={isReadonly} isInStickyMode={true} />
+      </div>
+
+    </div>
+  );
+};
+
+const KeyFullHeader = (props) => {
+  const {isInAddMode, isReadonly, modificationData, keyMeta, onDescriptionChanged, onTagsChanged, keyFullPath} = props;
+
+  return (
+    <div className={style['key-header']} >
+
+      <KeyPageActions isInAddMode={isInAddMode} isReadonly={isReadonly} isInStickyMode={false} />
+
+      <div className={style['key-meta-container']}>
+
+        <div className={style['key-header-and-modification-wrapper']}>
+
+          <HeaderMainInput {...props} />
+
+          {modificationData ?
+            <KeyModificationDetails className={style['modification-data']} {...modificationData} />
+            : null
+          }
+
+        </div>
+
+        {!isInAddMode ? <div className={style['key-full-path']}>
+          <label>Full path: </label>
+          <label className={style['actual-path']}>{keyFullPath}</label>
+        </div> : null}
+
+        <div className={style['key-description-and-tags-wrapper']}>
+          <div className={style['key-description-wrapper']}>
+            <EditableTextArea
+              value={keyMeta.description}
+              onTextChanged={text => onDescriptionChanged(text)}
+              placeHolder="Write key description"
+              title="Click to edit description"
+              classNames={{ input: style['description-input'] }}
+              maxLength={400}
+              />
+          </div>
+
+          <div className={style['tags-wrapper']}>
+            <KeyTags onTagsChanged={newTags => onTagsChanged(newTags)}
+              tags={keyMeta.tags} />
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  );
+};
+
+const HeaderMainInput = (props) => {
+  const {isInAddMode, onKeyNameChanged, onDisplayNameChanged, keyMeta, isReadonly } = props;
+  return (
+    <div className={style['key-main-input']}>
+      {isInAddMode ?
+        <NewKeyInput onKeyNameChanged={name => onKeyNameChanged(name)} />
+        :
+        <EditableText
+          onTextChanged={text => onDisplayNameChanged(text)}
+          placeHolder="Enter key display name" maxLength={80} value={keyMeta.displayName} isReadonly={isReadonly}
+          classNames={{ container: style['display-name-container'], input: style['display-name-input'], text: style['display-name-text'], form: style['display-name-form'] }}
+          />}
+    </div>
+  );
+};
 
 const getKeyPrefix = (path) => R.slice(0, -1, path.split('/')).join('/');
 const getSugesstions = R.pipe(R.map(getKeyPrefix), R.uniq(), R.filter(x => x !== ''));
@@ -143,7 +191,7 @@ function getKeyNameSuggestions(keysList) {
 
 const NewKeyInput = compose(
   connect(state => ({ keysList: state.keys, keyNameValidation: state.selectedKey.validation }))
-)(({ keysList,
+)(({keysList,
   keyNameValidation,
   onKeyNameChanged }) => {
   const suggestions = getKeyNameSuggestions(keysList).map(x => ({ label: x, value: x }));
@@ -174,7 +222,6 @@ const NewKeyInput = compose(
       <ReactTooltip delayHide={1000}
         disable={!isShowingValidationMessage}
         effect='solid'
-        class={style['validation-message']}
         place="top"
         delayHide={500} />
     </div>

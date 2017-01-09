@@ -1,4 +1,5 @@
 /* global jest, beforeEach, describe, it, expect */
+jest.unmock('../../../../../modules/store/ducks/tags');
 jest.unmock('../../../../../modules/store/ducks/selectedKey');
 jest.unmock('../../../../../modules/store/ducks/ducks-utils/blankKeyDefinition');
 jest.unmock('../../../../../modules/utils/http');
@@ -15,6 +16,7 @@ describe('selectedKey', async () => {
   const KEY_SAVED = 'KEY_SAVED';
   const KEY_SAVING = 'KEY_SAVING';
   const KEY_ADDED = 'KEY_ADDED';
+  const TAGS_DOWNLOADED = 'TAGS_DOWNLOADED';
 
   let dispatchMock;
   let currentState;
@@ -57,15 +59,13 @@ describe('selectedKey', async () => {
       func(dispatchMock);
 
       // Assert
-      assert(dispatchMock.mock.calls.length, 1, 'should call dispatch once');
-
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[0][0];
+      const keyOpenedDispatchAction = dispatchMock.mock.calls[1][0];
       expect(keyOpenedDispatchAction).to.deep.equal({ type: KEY_OPENED, payload: createBlankKey() }, 'should dispatch correct action');
     });
 
     it('should dispatch KEY_OPENING with correct payload', async () => {
       // Arrange
-      const keyName = 'category//some key';
+      const keyName = 'category/some key';
 
       // Act
       const func = openKey(keyName);
@@ -74,13 +74,13 @@ describe('selectedKey', async () => {
       // Assert
       assert(dispatchMock.mock.calls.length > 0, 'should call dispatch atleast once');
 
-      const keyOpeningdDispatchAction = dispatchMock.mock.calls[0][0];
+      const keyOpeningdDispatchAction = dispatchMock.mock.calls[1][0];
       expect(keyOpeningdDispatchAction).to.deep.equal({ type: KEY_OPENING, payload: keyName }, 'should dispatch correct action');
     });
 
     it('should dispatch KEY_OPENED with correct payload if GET succeeded', async () => {
       // Arrange
-      const keyName = 'category//some key';
+      const keyName = 'category/some key';
 
       const expectedKeyData = {
         keyDef: 'some key definition',
@@ -100,15 +100,13 @@ describe('selectedKey', async () => {
       await func(dispatchMock);
 
       // Assert
-      assert(dispatchMock.mock.calls.length === 2, 'should call dispatch once');
-
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[1][0];
+      const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
       expect(keyOpenedDispatchAction).to.deep.equal({ type: KEY_OPENED, payload: expectedPayload }, 'should dispatch correct action');
     });
 
     it('should dispatch KEY_OPENED with correct payload if GET failed', async () => {
       // Arrange
-      const keyName = 'category//some key';
+      const keyName = 'category/some key';
 
       const expectedPayload = {
         key: keyName,
@@ -123,10 +121,23 @@ describe('selectedKey', async () => {
       await func(dispatchMock);
 
       // Assert
-      assert(dispatchMock.mock.calls.length === 2, 'should call dispatch once');
-
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[1][0];
+      const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
       expect(keyOpenedDispatchAction).to.deep.equal({ type: KEY_OPENED, payload: expectedPayload }, 'should dispatch correct action');
+    });
+
+    it('should dispatch TAGS_DOWNLOADED', async () => {
+      // Arrange
+      fetchMock.get('glob:*/api/tags', []);
+
+      // Act
+      const func = openKey('category/some key');
+      await func(dispatchMock);
+
+      // Assert
+      const asyncDownloadTagsDispatchActionPromise = dispatchMock.mock.calls[0][0];
+      const downloadTagsDispatchAction = await asyncDownloadTagsDispatchActionPromise;
+
+      expect(downloadTagsDispatchAction).to.deep.equal({ type: TAGS_DOWNLOADED, payload: [] }, 'should dispatch correct action');
     });
   });
 

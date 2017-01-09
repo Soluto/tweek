@@ -4,6 +4,7 @@ import { push } from 'react-router-redux';
 import { createBlankKey, BLANK_KEY_NAME } from './ducks-utils/blankKeyDefinition';
 import { withJsonData } from '../../utils/http';
 import keyNameValidations from './ducks-utils/key-name-validations';
+import { downloadTags } from './tags.js';
 
 const KEY_OPENED = 'KEY_OPENED';
 const KEY_OPENING = 'KEY_OPENING';
@@ -16,32 +17,34 @@ const KEY_VALIDATION_CHANGE = 'KEY_VALIDATION_CHANGE';
 
 export function openKey(key) {
     return async function (dispatch) {
+        dispatch(downloadTags());
+
         if (key === BLANK_KEY_NAME) {
             dispatch({ type: KEY_OPENED, payload: createBlankKey() });
             return;
         }
 
         dispatch({ type: KEY_OPENING, payload: key });
+        let keyOpenedPayload = {
+            key,
+            meta: null,
+            keyDef: null,
+        };
+
+        let keyData;
 
         try {
-            const keyData = await (await fetch(`/api/keys/${key}`, { credentials: 'same-origin' })).json();
-
-            const keyOpenedPayload = {
-                key,
-                meta: keyData.meta,
-                keyDef: keyData.keyDef,
-            };
-
-            dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
+            keyData = await (await fetch(`/api/keys/${key}`, { credentials: 'same-origin' })).json();
         } catch (exp) {
-            let keyOpenedPayload = {
-                key,
-                meta: null,
-                keyDef: null,
-            };
 
             dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
+            return;
         }
+
+        keyOpenedPayload.meta = keyData.meta;
+        keyOpenedPayload.keyDef = keyData.keyDef;
+
+        dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
     };
 }
 
@@ -73,18 +76,18 @@ export function saveKey() {
         await fetch(`/api/keys/${savedKey}`, {
             credentials: 'same-origin',
             method: 'put',
-      ...withJsonData(local),
-    });
+            ...withJsonData(local),
+        });
 
-    dispatch({ type: KEY_SAVED, payload: savedKey });
+        dispatch({ type: KEY_SAVED, payload: savedKey });
 
-    if (isNewKey) dispatch({ type: 'KEY_ADDED', payload: savedKey });
-    const shouldOpenNewKey = isNewKey && getState().selectedKey.key === BLANK_KEY_NAME;
+        if (isNewKey) dispatch({ type: 'KEY_ADDED', payload: savedKey });
+        const shouldOpenNewKey = isNewKey && getState().selectedKey.key === BLANK_KEY_NAME;
 
-    if (shouldOpenNewKey) {
-        dispatch(push(`/keys/${savedKey}`));
-    }
-};
+        if (shouldOpenNewKey) {
+            dispatch(push(`/keys/${savedKey}`));
+        }
+    };
 }
 
 const handleKeyOpened = (state, { payload: { key, ...props } }) => {
@@ -109,17 +112,17 @@ const handleKeyOpening = (state, { payload: { key } }) => {
 };
 
 const handleKeyRuleDefUpdated = (state, { payload }) => ({
-  ...state,
+    ...state,
     local: {
-    ...state.local,
+        ...state.local,
         keyDef: { ...state.local.keyDef, ...payload },
-},
+    },
 });
 
 const handleKeyMetaUpdated = (state, { payload }) => ({
     ...state,
     local: {
-      ...state.local,
+        ...state.local,
         meta: payload,
     },
 });
@@ -127,7 +130,7 @@ const handleKeyMetaUpdated = (state, { payload }) => ({
 const handleKeySaved = (state, { payload }) => {
     return state.key === payload ?
         { ...state, isSaving: false, } :
-        ({...state });
+        ({ ...state });
 };
 
 const handleKeySaving = ({ local, ...otherState }) => ({
@@ -143,21 +146,21 @@ const handleKeyNameChange = ({ local: { key, ...localData }, ...otherState }, { 
         ...localData,
         meta: { ...localData.meta, displayName: payload },
         ...(payload === '' ? {} : { key: payload }),
-},
+    },
 });
 
 const handleKeyValidationChange = ({ validation, ...otherState }, { payload }) => ({
     ...otherState,
     validation: {
         ...validation,
-        key: {...payload },
+        key: { ...payload },
     }
 });
 
 const handleKeyDeleting = ({ remote, ...otherState }) => {
     return ({
-    ...otherState,
-        local: {...remote },
+        ...otherState,
+        local: { ...remote },
         remote: { ...remote },
     });
 };
