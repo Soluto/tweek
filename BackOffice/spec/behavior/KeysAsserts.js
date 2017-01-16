@@ -44,8 +44,7 @@ export default class KeysAsserts {
   }
 
   assertIsKeyExistsAfterTransaction(keyName, isExisting, message) {
-    console.log(`assert ${keyName} key, expected existing:${isExisting}. transaction delay:${KeysPageObject.GIT_TRANSACTION_TIMEOUT}`);
-    this.keysPageObject.wait(KeysPageObject.GIT_TRANSACTION_TIMEOUT);
+    this.keysPageObject.waitForKeyToBeDeleted(keyName);
     const currentUrl = this.browser.getUrl();
 
     let isKeyExists;
