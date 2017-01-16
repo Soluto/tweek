@@ -8,6 +8,8 @@ import { compose, setObservableConfig } from 'recompose';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import logoSrc from './resources/logo.svg';
+import withLoading from '../hoc/with-loading';
+import EditorMetaService from '../services/EditorMetaService';
 require('../styles/core/fonts/fonts.css');
 
 setObservableConfig({
@@ -15,14 +17,16 @@ setObservableConfig({
 });
 Tabs.setUseDefaultStyles(false);
 
-export default ({ location: { pathname }, children }) => {
+export default compose(
+  withLoading(() => null, EditorMetaService.initialize())
+)(({ location: { pathname }, children }) => {
   return (
     <div className={style['app']}>
       <div className={style['header']}>
-        <Title render="Tweek"/>
+        <Title render="Tweek" />
         <IndexLink to="/"><img className={style['logo']} src={logoSrc} /></IndexLink>
         <ul className={style['menu']} >
-          <li className={classNames(style['menu-item'], { [style['selected-location-path']]: pathname.startsWith('/keys') }) }>
+          <li className={classNames(style['menu-item'], { [style['selected-location-path']]: pathname.startsWith('/keys') })}>
             <img src={require("./resources/keys.svg")} />
             <Link to="/keys">Keys</Link>
           </li>
@@ -33,5 +37,5 @@ export default ({ location: { pathname }, children }) => {
       </div>
     </div>
   );
-};
+});
 
