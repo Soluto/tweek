@@ -128,6 +128,21 @@ export default class KeysPageObject {
     this.browser.waitUntil(() => isDone, delayInMs + 200);
   }
 
+  waitForKeyToBeDeleted(keyName) {
+
+    const checkIsKeyWasDeleted = (keyName) => {
+      try {
+        this.goToKey(keyName);
+        this.browser.waitForVisible(selectors.KEY_VIEWER_CONTAINER);
+        return false;
+      } catch (exp) {
+        return true;
+      }
+    };
+
+    this.browser.waitUntil(() => checkIsKeyWasDeleted(keyName), KeysPageObject.GIT_TRANSACTION_TIMEOUT);
+  }
+
   waitForPageToLoad() {
     this.browser.waitForVisible(selectors.KEY_PAGE, 2000);
   }
