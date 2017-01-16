@@ -4,7 +4,7 @@ import style from './styles.css';
 import ComboBox from '../../../../../../../../../components/common/ComboBox/ComboBox';
 import { withState } from 'recompose';
 import Highlighter from 'react-highlight-words';
-import { types as MetaTypes } from '../../../../../../../../../services/MetaHelpers';
+import { types } from '../../../../../../../../../services/TypesService';
 import Chance from 'chance';
 import ReactTooltip from 'react-tooltip';
 
@@ -15,18 +15,18 @@ const HIGHLIGHTED_TEXT_INLINE_STYLE = {
 };
 
 let PropertyTooltip = ({propName, description, propType, identityType}) =>
-    <div>
-    <div style={{fontSize:18}}><span>{identityType}</span>.<span>{propName}</span></div>
-      <div style={{display:"flex", marginTop:10}}>
-        <div style={{minWidth:200, maxWidth: 400}} >{description}</div>
-        <div style={{textAlign:"center", height:60, marginLeft:40, borderLeftColor: "#ffffff", borderLeftStyle: "solid", borderLeftWidth:1, paddingLeft: 18, fontSize:14}}>
-          <div style={{marginBottom:10}}>Property Type</div>
-          <div>
-            {propType}
-          </div>
+  <div>
+    <div style={{ fontSize: 18 }}><span>{identityType}</span>.<span>{propName}</span></div>
+    <div style={{ display: "flex", marginTop: 10 }}>
+      <div style={{ minWidth: 200, maxWidth: 400 }} >{description}</div>
+      <div style={{ textAlign: "center", height: 60, marginLeft: 40, borderLeftColor: "#ffffff", borderLeftStyle: "solid", borderLeftWidth: 1, paddingLeft: 18, fontSize: 14 }}>
+        <div style={{ marginBottom: 10 }}>Property Type</div>
+        <div>
+          {propType}
         </div>
       </div>
-      </div>
+    </div>
+  </div>
 
 
 let PropertySuggestion = ({ suggestion, textToMark }) => {
@@ -49,7 +49,7 @@ let PropertySuggestion = ({ suggestion, textToMark }) => {
 
   return (
     <div data-tip data-for={tooltipId} className={style['property-suggestion-wrapper']} data-field-type={type}>
-      <i/>
+      <i />
       <Highlighter
         highlightClassName={style['suggestion-label']}
         highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
@@ -61,7 +61,7 @@ let PropertySuggestion = ({ suggestion, textToMark }) => {
         highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
         searchWords={[textToMark]}
         textToHighlight={identity}
-      />)</span>
+        />)</span>
       <ReactTooltip id={tooltipId} place="right" type="dark" effect="solid">
         <PropertyTooltip propName={prop} identityType={identity} propType={type} description={suggestion.meta && suggestion.meta.description || ""} />
       </ReactTooltip>
@@ -77,7 +77,7 @@ export default withState('currentInputValue', 'setCurrentInputValue', '')(
         .updateValue((newProperty.meta && newProperty.meta.defaultValue) || ''));
 
     if (!!property && !suggestedValues.some(x => x.value === property)) {
-      suggestedValues = [...suggestedValues, { label: property, value: property, meta: MetaTypes.string }];
+      suggestedValues = [...suggestedValues, { label: property, value: property, meta: { type: 'string' } }];
     }
 
     suggestedValues = R.uniqBy(x => x.value)([...suggestedValues]);
@@ -94,8 +94,8 @@ export default withState('currentInputValue', 'setCurrentInputValue', '')(
             selectProperty({ value: text });
           }
         } }
-        filterBy={ option => option.value.toLowerCase().includes(currentInputValue.toLowerCase()) }
-        renderMenuItemChildren={ (_, suggestion) => (<PropertySuggestion suggestion={suggestion} textToMark={currentInputValue}/>) }
+        filterBy={option => option.value.toLowerCase().includes(currentInputValue.toLowerCase())}
+        renderMenuItemChildren={(_, suggestion) => (<PropertySuggestion suggestion={suggestion} textToMark={currentInputValue} />)}
         autofocus={autofocus}
         wrapperThemeClass={style['property-name-wrapper']}
         />
