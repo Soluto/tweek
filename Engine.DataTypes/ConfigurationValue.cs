@@ -1,22 +1,24 @@
+using FSharp.Data;
+
 namespace Engine.DataTypes
 {
     public struct ConfigurationValue
     {
-        public string Value;
+        public readonly JsonValue Value;
 
-        public ConfigurationValue(string value)
+        public ConfigurationValue(JsonValue value)
         {
             Value = value;
         }
 
-        public static ConfigurationValue New(string value)
+        public static ConfigurationValue New(JsonValue value)
         {
             return new ConfigurationValue(value);
         }
 
         public override string ToString()
         {
-            return Value;
+            return Value.ToString();
         }
     }
 }

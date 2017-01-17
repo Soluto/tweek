@@ -1,9 +1,9 @@
 ﻿using Engine.Core.Context;
 using Engine.Core.Rules;
 using Engine.DataTypes;
-using Tweek.JPad;
 using LanguageExt;
 using System;
+using FSharpExt = LanguageExt.FSharp;
 
 namespace Tweek.JPad.Utils
 {
@@ -39,7 +39,7 @@ namespace Tweek.JPad.Utils
             {
                 var compiled = parser.Parse.Invoke(source);
                 return new AnonymousRule(context =>
-                    FSharp.fs(compiled.Invoke((s) => context.Invoke(s).ToFSharp()))
+                    FSharpExt.fs(compiled.Invoke((s) => context.Invoke(s).ToFSharp()))
                             .Map(ConfigurationValue.New));
             });
         }
