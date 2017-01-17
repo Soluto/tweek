@@ -3,7 +3,7 @@ open FSharp.Data
 open System;
 open Tweek.JPad.Grammer
 
-type public JPadEvaluateExt = delegate of ContextDelegate -> Option<string>
+type public JPadEvaluateExt = delegate of ContextDelegate -> Option<JsonValue>
 
 type public JPadParser(settings:ParserSettings) = 
     
@@ -23,8 +23,8 @@ type public JPadParser(settings:ParserSettings) =
     
     and parseRulesContainer (depth) (rulesData:JsonValue)  : RulesContainer =
             match (rulesData) with
-                | JsonValue.String s when (depth = 0) -> RulesContainer.RulesList [(MatcherExpression.Empty,SingleVariant(s))]
                 | JsonValue.Array rules when (depth = 0) -> rules |> List.ofArray |> List.map Rule.parse |> RulesContainer.RulesList
+                | value when (depth = 0) -> RulesContainer.RulesList [(MatcherExpression.Empty, SingleVariant(value))]
                 | JsonValue.Record r when (depth > 0) -> 
                     r |> Array.groupBy (fst >> parsePatternType) |>
                     Array.map (fun (patternType,data) -> parsePatternBlock depth patternType data) |>
@@ -64,7 +64,7 @@ type public JPadParser(settings:ParserSettings) =
     
      and evaluatePatternBlock block contextValue =
         match block, contextValue with
-            |Map map, Some value ->  map.TryFind(value.ToLower());
+            |Map map, Some value ->  map.TryFind(value.ToString().ToLower());
             |Map map, None -> None;
             |PatternBlock.Default container, _ -> Some(container);
     //--
@@ -74,7 +74,7 @@ type public JPadParser(settings:ParserSettings) =
         createRuleContainerEvaluator (jpad.Partitions |> List.ofArray) jpad.Rules |>
         (fun evaluator -> JPadEvaluateExt(fun context -> evaluator context.Invoke))
     
-    member public this.Parse : (string-> JPadEvaluateExt) = 
+    member public this.Parse : (string -> JPadEvaluateExt) = 
         JsonValue.Parse >>
         buildAST >>
         buildEvaluator
