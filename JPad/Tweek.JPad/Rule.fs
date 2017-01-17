@@ -39,7 +39,7 @@ module Matcher =
 
     type private comparer = (JsonValue)->(JsonValue)->int
 
-    let private createComparer (fn:(JsonValue-> IComparable)) l = 
+    let private createComparer (fn:(string-> IComparable)) l = 
         let target = (
             try
                 fn(l)
