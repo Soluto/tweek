@@ -14,7 +14,7 @@ open Tweek.JPad;
 open System;
 
 let validator jsonString = Matcher.createEvaluator {Comparers=dict(Seq.empty)} (jsonString|>JsonValue.Parse|>Matcher.parse)
-let createContext seq = fun name -> seq |> Seq.tryFind (fun (k,v)->k = name) |> Option.map (fun (k,v)->v)
+let createContext seq = fun name -> seq |> Seq.tryFind (fun (k,v)->k = name) |> Option.map (fun (k,v)-> JsonValue.String v)
 let context = createContext;
 
 [<Fact>]

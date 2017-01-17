@@ -11,6 +11,7 @@ using System;
 using System.Collections.Specialized;
 using Engine.Core.Context;
 using Engine.Core.Rules;
+using FSharp.Data;
 using Tweek.JPad;
 using ContextHelpers = Engine.Context.ContextHelpers;
 using LanguageExt;
@@ -38,7 +39,7 @@ namespace Engine
             _rulesLoader = rulesLoader;
         }
 
-        private HashSet<ConfigurationPath> GetAllPaths(Dictionary<Identity, Dictionary<string, string>> allContextData,
+        private HashSet<ConfigurationPath> GetAllPaths(Dictionary<Identity, Dictionary<string, JsonValue>> allContextData,
             IReadOnlyDictionary<string, IRule> ruleset, ConfigurationPath query)
         {
             return new HashSet<ConfigurationPath>(allContextData.Values.SelectMany(x => x.Keys)
@@ -61,7 +62,7 @@ namespace Engine
                 .Select(async identity => new
                     {
                         Identity = identity,
-                        Context = new Dictionary<string,string>(await _contextDriver.GetContext(identity), StringComparer.OrdinalIgnoreCase )
+                        Context = new Dictionary<string,JsonValue>(await _contextDriver.GetContext(identity), StringComparer.OrdinalIgnoreCase )
                     })))
                 .ToDictionary(x => x.Identity, x => x.Context);
             

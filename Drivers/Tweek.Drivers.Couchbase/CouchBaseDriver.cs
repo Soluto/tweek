@@ -12,6 +12,7 @@ using Couchbase.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Dynamic;
+using FSharp.Data;
 
 namespace Tweek.Drivers.CouchbaseDriver
 {
@@ -72,13 +73,13 @@ namespace Tweek.Drivers.CouchbaseDriver
             await InsertOrUpdate(key, dictionary => dictionary.ToImmutableDictionary().SetItems(context));
         }
 
-        public async Task<Dictionary<string, string>> GetContext(Identity identity)
+        public async Task<Dictionary<string, JsonValue>> GetContext(Identity identity)
         {
             var key = GetKey(identity);
-            var data = await GetFromAllSources<Dictionary<string, string>>(key);
+            var data = await GetFromAllSources<Dictionary<string, JsonValue>>(key);
             if (data == null)
             {
-                return new Dictionary<string, string>();
+                return new Dictionary<string, JsonValue>();
             }
             return data;
         }

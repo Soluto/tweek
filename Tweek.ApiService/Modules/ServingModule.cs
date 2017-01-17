@@ -8,10 +8,10 @@ using Engine;
 using Engine.Core.Context;
 using Engine.Core.Utils;
 using Engine.DataTypes;
+using FSharp.Data;
 using LanguageExt;
 using Nancy;
 using Newtonsoft.Json;
-using static Tweek.ApiService.Utils.NancyHelpers;
 
 namespace Tweek.ApiService.Modules
 {
@@ -45,7 +45,7 @@ namespace Tweek.ApiService.Modules
                     new HashSet<Identity>(
                         contextParams.Where(x => !x.Key.Contains(".")).Select(x => new Identity(x.Key, x.Value)));
                 GetLoadedContextByIdentityType contextProps =
-                    identityType => key => contextParams.TryGetValue($"{identityType}.{key}");
+                    identityType => key => contextParams.TryGetValue($"{identityType}.{key}").Map(JsonValue.NewString);
 
                 var query = ConfigurationPath.New(((string)@params.query));
                 var data = await tweek.Calculate(query, identities, contextProps);
