@@ -1,75 +1,44 @@
 import R from 'ramda';
-import { types, defaultValue, description, multipleValues } from './MetaHelpers';
+import { types, initializeTypes } from './TypesService';
+import { boolAllowedValue, fromEnum } from './EditorMetaAllowedValuesService';
 
 export default class EditorMetaService {
 
   static _instance;
+
   static get instance() {
     if (!EditorMetaService._instance) {
       EditorMetaService._instance = new EditorMetaService();
-      EditorMetaService._instance.init();
     }
 
     return EditorMetaService._instance;
   }
 
-  _meta = {};
+  static async initialize() {
+    const initPromise = initializeTypes();
 
-  init() {
-    this.meta = {
-      identities: {
-        device: {},
-        technician: {},
-      },
-      fields: {
-        device: {
-          '@@id': multipleValues(true)(description('device id')(types.String)),
-          PartnerBrandId: multipleValues(true)(description('The name of the partner')(types.String)),
-          DeviceOsType: multipleValues(true)(description('Device operation system name')(types.Enum('Android', 'Ios'))),
-          SubscriptionType: multipleValues(true)(description('The home tier subscription of the device')(types.Enum('Evaluation', 'Free', 'Insurance', 'InsuranceAndSupport', 'HomeSupport', 'DefaultFree'))),
-          AgentVersion: multipleValues(true)(defaultValue('1.0.0.0')(types.Version)),
-          DeviceVendor: multipleValues(true)(types.String),
-          CountryCode: multipleValues(true)(types.String),
-          DeviceModel: multipleValues(true)(types.String),
-          InstallationSource: multipleValues(true)(types.String),
-          DeviceOsVersion: multipleValues(true)(types.Version),
-          IsInGroup: multipleValues(true)(defaultValue(false)(types.Bool)),
-          CreatedAt: multipleValues(true)(types.String),
-          DeviceType: multipleValues(true)(types.Enum(
-            'Unknown',
-            'Desktop',
-            'Laptop',
-            'Tablet',
-            'Mobile',
-            'WinServer',
-            'Car',
-            'Television',
-            'PrinterFax',
-            'Bike',
-            'ChildItem',
-            'KitchenAppliance',
-            'CleaningAppliance',
-            'VideoGamingDevice',
-            'HomeTheaterDevice',
-            'Computer',
-            'Other'
-          )),
-        },
-      },
-    };
+    initPromise.then(() => EditorMetaService._instance._initializeMeta());
+
+    return initPromise;
   }
 
   getFieldMeta(field) {
-    if (field === '') return types.Empty;
-    const [identity, property] = field.split('.');
+    if (field === '') return { type: 'empty' };
 
-    const fieldMeta = this.meta.fields[identity][property];
-    if (!fieldMeta) {
-      console.log('unsupported property name', property);
-      return types.String;
+    try {
+      const [identity, property] = field.split('.');
+
+      const fieldMeta = this.meta.fields[identity][property];
+      if (!fieldMeta) {
+        throw 'unsupported field meta: ' + field;
+      }
+
+      return fieldMeta;
     }
-
-    return fieldMeta;
+    catch (exp) {
+      console.log('error occurd getting field meta', exp);
+      return { type: 'string' };
+    }
   }
 
   getKeyMeta(key) {
@@ -90,4 +59,104 @@ export default class EditorMetaService {
     }
   }
 
+  _initializeMeta() {
+    this.meta = {
+      identities: {
+        device: {},
+        technician: {},
+      },
+      fields: {
+        device: {
+          '@@id': {
+            multipleValues: true,
+            description: "device id",
+            type: "string",
+          },
+          PartnerBrandId: {
+            multipleValues: true,
+            description: "The name of the partner",
+            type: "string",
+          },
+          DeviceOsType: {
+            multipleValues: true,
+            description: "Device operation system name",
+            ...types.Enum('string'),
+            allowedValues: fromEnum('Android', 'Ios'),
+          },
+          SubscriptionType: {
+            multipleValues: true,
+            description: "The home tier subscription of the device",
+            ...types.Enum('string', ),
+            allowedValues: fromEnum('Evaluation', 'Free', 'Insurance', 'InsuranceAndSupport', 'HomeSupport', 'DefaultFree'),
+          },
+          AgentVersion: {
+            multipleValues: true,
+            defaultValue: '1.0.0.0',
+            ...types.version
+          },
+          DeviceOsVersion: {
+            multipleValues: true,
+            ...types.version
+          },
+          DeviceVendor: {
+            multipleValues: true,
+            description: "Device vendor",
+            type: "string",
+          },
+          CountryCode: {
+            multipleValues: true,
+            description: "Country code",
+            type: "string",
+          },
+          DeviceModel: {
+            multipleValues: true,
+            description: "device model",
+            type: "string",
+          },
+          InstallationSource: {
+            multipleValues: true,
+            description: "Installation source",
+            type: "string",
+          },
+          IsInGroup: {
+            multipleValues: true,
+            description: "Is in group",
+            defaultValue: false,
+            type: 'bool',
+            allowedValues: boolAllowedValue,
+          },
+          CreatedAt: {
+            multipleValues: true,
+            description: "Created at",
+            type: "string",
+          },
+          DeviceType: {
+            multipleValues: true,
+            description: "Device type",
+            ...types.Enum('string'),
+            allowedValues: fromEnum('Unknown',
+              'Desktop',
+              'Laptop',
+              'Tablet',
+              'Mobile',
+              'WinServer',
+              'Car',
+              'Television',
+              'PrinterFax',
+              'Bike',
+              'ChildItem',
+              'KitchenAppliance',
+              'CleaningAppliance',
+              'VideoGamingDevice',
+              'HomeTheaterDevice',
+              'Computer',
+              'Other'
+            ),
+          },
+        },
+      },
+    };
+
+    EditorMetaService.isLoaded = true;
+  }
 }

@@ -12,7 +12,7 @@ import routeLeaveHook from '../../../../hoc/route-leave-hook';
 const onRouteLeaveConfirmFunc = (props) => {
   if (!props.selectedKey ||
     props.selectedKey.isSaving) return;
-    
+
   const { local, remote } = props.selectedKey;
   const changes = diff(local, remote);
   const hasChanges = (changes || []).length > 0;
@@ -25,7 +25,7 @@ const keyPageComp = compose(
   connect((state, { params }) =>
     ({ selectedKey: state.selectedKey, configKey: params.splat, isInAddMode: params.splat === BLANK_KEY_NAME }),
     { ...selectedKeyActions }),
-routeLeaveHook(onRouteLeaveConfirmFunc),
+  routeLeaveHook(onRouteLeaveConfirmFunc),
   lifecycle({
     componentDidMount() {
       const { configKey, selectedKey, openKey } = this.props;
@@ -40,18 +40,18 @@ routeLeaveHook(onRouteLeaveConfirmFunc),
       }
     },
   }))
-(props => {
-  const { selectedKey } = props;
+  (props => {
+    const { selectedKey } = props;
 
-  if (!selectedKey ||
-    !selectedKey.isLoaded)
-    return <MessageKeyPage message="Loading..."></MessageKeyPage>;
+    if (!selectedKey ||
+      !selectedKey.isLoaded)
+      return <MessageKeyPage message="Loading..."></MessageKeyPage>;
 
-  const { meta, keyDef } = selectedKey.local;
-  if (!meta || !keyDef)
-    return <MessageKeyPage message="Damaged key :("></MessageKeyPage>;
+    const { meta, keyDef } = selectedKey.local;
+    if (!meta || !keyDef)
+      return <MessageKeyPage message="Damaged key :("></MessageKeyPage>;
 
-  return <KeyEditPage {...props} />;
-});
+    return <KeyEditPage {...props} />;
+  });
 
 export default keyPageComp;

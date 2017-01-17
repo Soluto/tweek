@@ -3,7 +3,7 @@ import R from 'ramda';
 import EditorMetaService from '../../../../../../../../../services/EditorMetaService';
 import { Operator, getSupportedOperators } from './Operator';
 import PropertyValue from './PropertyValue';
-import { types as MetaTypes } from '../../../../../../../../../services/MetaHelpers';
+import { types } from '../../../../../../../../../services/TypesService';
 
 const editorMetaService = EditorMetaService.instance;
 
@@ -12,7 +12,7 @@ const isValueType = (value) => R.isArrayLike(value) || typeof (value) !== 'objec
 let BinaryPredicate = ({ onValueUpdate, onOpUpdate, op, meta, value }) => {
   return (
     <div style={{ display: 'flex' }}>
-      <Operator onUpdate={onOpUpdate} supportedOperators={getSupportedOperators(meta) } selectedOp={op} />
+      <Operator onUpdate={onOpUpdate} supportedOperators={getSupportedOperators(meta)} selectedOp={op} />
       <PropertyValue {...{ meta, value, onUpdate: onValueUpdate, op }} />
     </div>
   );
@@ -34,10 +34,10 @@ let ShortPredicate = ({ meta, mutate, value }) => {
           [selectedOp]: translateValue('$eq', selectedOp, value),
           ...(meta.compare ? { $compare: meta.compare } : {}),
         });
-      }}
-      op = "$eq"
+      } }
+      op="$eq"
       {...{ value, meta } }
-    />
+      />
   );
 };
 
@@ -56,15 +56,15 @@ let ComplexPredicate = ({ predicate, mutate, property, meta }) => {
                 else mutate.apply(m => m.in(op).updateKey(selectedOp).updateValue(newValue));
               } }
               onValueUpdate={mutate.in(op).updateValue} {...{ value, op, meta }}
-            />
-            : <PropertyPredicate predicate={value} mutate={mutate.in(op) } property={property} />)
+              />
+            : <PropertyPredicate predicate={value} mutate={mutate.in(op)} property={property} />)
       )
     }</div>
   );
 };
 
 let PropertyPredicate = ({ predicate, mutate, property }) => {
-  const meta = property.startsWith('@@key') ? MetaTypes.String : editorMetaService.getFieldMeta(property);
+  const meta = property.startsWith('@@key') ? { type: 'string' } : editorMetaService.getFieldMeta(property);
   return (typeof (predicate) !== 'object') ?
     <ShortPredicate value={predicate} {...{ meta, mutate } } /> :
     <ComplexPredicate {...{ predicate, mutate, property, meta }} />;
