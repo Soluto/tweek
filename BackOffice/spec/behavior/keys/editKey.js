@@ -46,10 +46,6 @@ describe('edit key', () => {
     keysPageObject.addEmptyKey(keyToEditFullPath);
   });
 
-  after(() => {
-    keysPageObject.wait(20000);
-  });
-
   function readAndAssertKeySource() {
     browser.waitForVisible(selectors.TAB_ITEM_HEADER, 2000);
     browser.click(selectors.SOURCE_TAB_ITEM);

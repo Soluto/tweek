@@ -67,7 +67,7 @@
   color: #939393;
 }
 .tags-wrapper .tags-container .tags-suggestion {
-  position: absolute;
+  position: fixed;
   z-index: 1;
 }
 .tags-wrapper .tags-container .tags-suggestion ul {
@@ -75,6 +75,9 @@
   box-shadow: 0.05em 0.01em 0.5em rgba(0, 0, 0, 0.2);
   background: white;
   width: 200px;
+  position: fixed;
+  max-height: 300px;
+  overflow-y: auto;
 }
 .tags-wrapper .tags-container .tags-suggestion ul li {
   border-bottom: 1px solid #ddd;

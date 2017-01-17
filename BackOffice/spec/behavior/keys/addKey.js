@@ -22,7 +22,7 @@ describe('add key', () => {
 
   after(() => {
     keysPageObject.deleteKeyIfExists(keyToAddFullPath);
-    keysPageObject.wait(40000);
+    keysPageObject.waitForKeyToBeDeleted(keyToAddFullPath);
   });
 
   it('should succeed adding key', () => {
