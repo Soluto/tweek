@@ -12,6 +12,7 @@ using Xunit;
 using Tweek.JPad.Generator;
 using MatcherData = System.Collections.Generic.Dictionary<string, object>;
 using Couchbase.Configuration.Client;
+using FSharp.Data;
 
 namespace Engine.Tests
 {
@@ -81,13 +82,13 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("_", NoIdentities);
-                Assert.Equal("SomeValue", val["abc/somepath"].Value);
+                Assert.Equal("SomeValue", val["abc/somepath"].Value.AsString());
 
                 val = await tweek.Calculate("abc/_", NoIdentities);
-                Assert.Equal( "SomeValue", val["somepath"].Value);
+                Assert.Equal( "SomeValue", val["somepath"].Value.AsString());
 
                 val = await tweek.Calculate("abc/somepath", NoIdentities);
-                Assert.Equal( "SomeValue", val[""].Value);
+                Assert.Equal( "SomeValue", val[""].Value.AsString());
             });
         }
 
@@ -103,9 +104,9 @@ namespace Engine.Tests
             {
                 var val = await tweek.Calculate("abc/_", NoIdentities);
                 Assert.Equal(3, val.Count);
-                Assert.Equal("SomeValue",val["somepath"].Value);
-                Assert.Equal("SomeValue",val["otherpath"].Value);
-                Assert.Equal("SomeValue",val["nested/somepath"].Value);
+                Assert.Equal("SomeValue",val["somepath"].Value.AsString());
+                Assert.Equal("SomeValue",val["otherpath"].Value.AsString());
+                Assert.Equal("SomeValue",val["nested/somepath"].Value.AsString());
             });
         }
 
@@ -134,7 +135,7 @@ namespace Engine.Tests
                 Assert.Equal(0, val.Count);
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "3") });
-                Assert.Equal("SomeValue", val["somepath"].Value);
+                Assert.Equal("SomeValue", val["somepath"].Value.AsString());
             });
         }
 
@@ -163,7 +164,7 @@ namespace Engine.Tests
                 Assert.Equal(0, val.Count);
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1"), new Identity("user", "1") });
-                Assert.Equal("SomeValue", val["somepath"].Value);
+                Assert.Equal("SomeValue", val["somepath"].Value.AsString());
             });
         }
 
@@ -182,7 +183,7 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
-                Assert.Equal( "SomeValue", val["somepath"].Value);
+                Assert.Equal( "SomeValue", val["somepath"].Value.AsString());
             });
         }
 
@@ -208,7 +209,7 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
-                Assert.Equal("SomeValue", val["somepath"].Value);
+                Assert.Equal("SomeValue", val["somepath"].Value.AsString());
             });
         }
 
@@ -236,7 +237,7 @@ namespace Engine.Tests
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { });
                 Assert.Equal(0, val.Count);
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1")});
-                Assert.True(val["somepath"].Value == "true" || val["somepath"].Value == "false");
+                Assert.True(val["somepath"].Value.AsString() == "true" || val["somepath"].Value.AsString() == "false");
                 await Task.WhenAll(Enumerable.Range(0, 10).Select(async x =>
                 {
                     Assert.Equal((await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }))["somepath"].Value, val["somepath"].Value);
@@ -262,7 +263,7 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
-                Assert.Equal("true", val["somepath"].Value);
+                Assert.Equal("true", val["somepath"].Value.AsString());
             });
         }
 
@@ -331,13 +332,13 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
-                Assert.Equal("FixedValue", val["somepath"].Value);
+                Assert.Equal("FixedValue", val["somepath"].Value.AsString());
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "2") });
-                Assert.Equal("RuleBasedValue", val["somepath"].Value);
+                Assert.Equal("RuleBasedValue", val["somepath"].Value.AsString());
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "3") });
-                Assert.Equal("FixedValue", val["somepath"].Value);
+                Assert.Equal("FixedValue", val["somepath"].Value.AsString());
                 
             });
         }
@@ -370,13 +371,13 @@ namespace Engine.Tests
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
                 Assert.Equal(1, val.Count);
-                Assert.Equal("true", val["dep_path1"].Value);
+                Assert.Equal("true", val["dep_path1"].Value.AsString());
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "2") });
                 Assert.Equal(3, val.Count);
-                Assert.Equal("true", val["dep_path1"].Value);
-                Assert.Equal("true", val["dep_path2"].Value);
-                Assert.Equal("true", val["somepath"].Value);
+                Assert.Equal("true", val["dep_path1"].Value.AsString());
+                Assert.Equal("true", val["dep_path2"].Value.AsString());
+                Assert.Equal("true", val["somepath"].Value.AsString());
             });
         }
 

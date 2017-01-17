@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{590593D3-6EC9-4BD1-86EF-02960D69798A}</ProjectGuid>
+    <ProjectGuid>{A7F3138B-914B-47DC-83BC-A7C004087F73}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tweek.Drivers.Couchbase</RootNamespace>
-    <AssemblyName>Tweek.Drivers.Couchbase</AssemblyName>
+    <RootNamespace>JsonValueConverter</RootNamespace>
+    <AssemblyName>JsonValueConverter</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,18 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Common.Logging, Version=3.3.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Common.Logging.3.3.1\lib\net40\Common.Logging.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Common.Logging.Core, Version=3.3.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Common.Logging.Core.3.3.1\lib\net40\Common.Logging.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Couchbase.NetClient, Version=2.3.8.0, Culture=neutral, PublicKeyToken=05e9c6b5a9ec94c2, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CouchbaseNetClient.2.3.8\lib\net45\Couchbase.NetClient.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="FSharp.Data, Version=2.3.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\FSharp.Data.2.3.2\lib\net40\FSharp.Data.dll</HintPath>
       <Private>True</Private>
@@ -52,10 +39,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Collections.Immutable.1.2.0\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -65,22 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CouchBaseDriver.cs" />
+    <Compile Include="JsonValueConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Engine.DataTypes\Engine.DataTypes.csproj">
-      <Project>{f3953018-7813-4eab-8116-670848de8bb1}</Project>
-      <Name>Engine.DataTypes</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Engine.Drivers\Engine.Drivers.csproj">
-      <Project>{8569dd6d-27d1-40a1-8161-e12157e845f3}</Project>
-      <Name>Engine.Drivers</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
