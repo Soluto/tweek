@@ -6,7 +6,7 @@ using FSharp.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace JsonValueConverter
+namespace Tweek.Utils
 {
     public class JsonValueConverter : JsonConverter
     {

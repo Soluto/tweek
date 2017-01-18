@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Engine.DataTypes;
+using Tweek.ApiService.Modules;
 
-namespace Tweek.ApiService
+namespace Tweek.ApiService.Utils
 {
+    public delegate object TranslateValue(ConfigurationValue json);
+
     public class TreeResult
     {
-        public static object From(Dictionary<ConfigurationPath, ConfigurationValue> configuration)
+        public static object From(Dictionary<ConfigurationPath, ConfigurationValue> configuration, TranslateValue translateValue)
         {
             var builder = new TreeBuilder();
 
             foreach (var item in configuration)
             {
-                builder[item.Key] = item.Value.Value;
+                builder[item.Key] = translateValue(item.Value);
             }
             return builder.ToDictionary();
         }

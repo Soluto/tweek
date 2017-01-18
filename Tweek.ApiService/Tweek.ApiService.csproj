@@ -58,7 +58,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\FSharp.Core.4.0.0.1\lib\net40\FSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="FSharp.Data, Version=2.3.2.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="FSharp.Data, Version=2.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FSharp.Data.2.3.2\lib\net40\FSharp.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="LanguageExt.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LanguageExt.Core.1.9.4\lib\net45\LanguageExt.Core.dll</HintPath>
       <Private>True</Private>
@@ -70,6 +73,10 @@
     </Reference>
     <Reference Include="Nancy.Hosting.Aspnet, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Nancy.Hosting.Aspnet.1.4.1\lib\net40\Nancy.Hosting.Aspnet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Nancy.Serialization.JsonNet, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nancy.Serialization.JsonNet.1.4.1\lib\net40\Nancy.Serialization.JsonNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -145,10 +152,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BucketConnectionIsAlive.cs" />
     <Compile Include="Services\RulesDriverStatusService.cs" />
-    <Compile Include="TreeResult.cs" />
+    <Compile Include="Utils\TreeResult.cs" />
     <Compile Include="Modules\ContextUpdateModule.cs" />
     <Compile Include="Modules\ValidationModule.cs" />
-    <Compile Include="Utils\JsonValueConverter.cs" />
     <Compile Include="Utils\NancyHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -187,6 +193,10 @@
     <ProjectReference Include="..\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj">
       <Project>{d20f24eb-860a-4dc0-a849-28627e342b89}</Project>
       <Name>Tweek.JPad.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utils\JsonValueConverter\JsonValueConverter.csproj">
+      <Project>{a7f3138b-914b-47dc-83bc-a7c004087f73}</Project>
+      <Name>JsonValueConverter</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
