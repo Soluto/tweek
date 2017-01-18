@@ -51,9 +51,11 @@ module Matcher =
     let private evaluateComparison (comparer) (op: CompareOp) (leftValue:ComparisonValue) (rightValueOption:Option<ComparisonValue>) =
         match (leftValue, rightValueOption) with
             | JsonValue.Null , None -> true
-            | JsonValue.Null, _ -> false
             | _, None -> false
             | _, Some rightValue -> match (leftValue, rightValue) with
+                        | JsonValue.Null, JsonValue.Null -> true
+                        | _, JsonValue.Null -> false
+                        | JsonValue.Null, _ -> false
                         | JsonValue.Number x, JsonValue.Number y -> evaluateComparisonOp op x y
                         | JsonValue.Boolean x, JsonValue.Boolean y -> evaluateComparisonOp op x y
                         | JsonValue.Float x, JsonValue.Float y -> evaluateComparisonOp op x y

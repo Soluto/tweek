@@ -35,9 +35,9 @@ let ``Use comparisons on multipe fields, "and" is implict``() =
 
 [<Fact>]
 let ``Use not ``() =
-    let addNot schema = """{"$not":{"Age": {"$lt":21}}}"""
     let validate = validator """{"$not":{"Age": {"$lt":21}}}"""
     validate (context [("Age", JsonValue.Number(22m));])  |> should equal true;
+    validate (context [("Age", JsonValue.Number(20m));])  |> should equal false;
     
 [<Fact>]
 let ``Use logical operater at root``() =
@@ -129,3 +129,40 @@ let ``Use implict Equal``() =
     compareValidators (context [("Age", JsonValue.Number(31m));]) 
     compareValidators (context [("Age", JsonValue.Number(30m));]) 
     compareValidators (context [("Age", JsonValue.Number(29m));]) 
+
+[<Fact>]
+let ``Compare numeric values``() =
+    let validate = validator """{"Age": 30}"""
+    validate (context [("Age", JsonValue.Number(30m));])  |> should equal true
+    validate (context [("Age", JsonValue.Number(31m));])  |> should equal false
+
+[<Fact>]
+let ``Compare string values``() =
+    let validate = validator """{"Country": "Germany"}"""
+    validate (context [("Country", JsonValue.String("Germany"));])  |> should equal true
+    validate (context [("Country", JsonValue.String("France"));])  |> should equal false
+
+[<Fact>]
+let ``Compare boolean values``() =
+    let validate = validator """{"IsVIP": true}"""
+    validate (context [("IsVIP", JsonValue.Boolean(true));])  |> should equal true
+    validate (context [("IsVIP", JsonValue.Boolean(false));])  |> should equal false
+
+[<Fact>]
+let ``Use null value in rule``() =
+    let validate = validator """{"GroupName": null}"""
+    validate (context [("GroupName", JsonValue.String("Some Group"));])  |> should equal false
+    validate (context [("GroupName", JsonValue.Null);])  |> should equal true
+    validate (context [])  |> should equal true
+
+[<Fact>]
+let ``Compare to null value from context``() =
+    let validate = validator """{"GroupName": "Some Group"}"""
+    validate (context [("GroupName", JsonValue.String("Some Group"));])  |> should equal true
+    validate (context [("GroupName", JsonValue.Null);])  |> should equal false
+    validate (context [])  |> should equal false
+
+[<Fact>]
+let ``Compare incompatible values``() =
+    let validate = validator """{"Age": 30}"""
+    (fun () -> validate (context [("Age", JsonValue.String("Oopsy"));]) |> ignore) |> should throw typeof<Exception>
