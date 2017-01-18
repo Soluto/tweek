@@ -29,7 +29,7 @@ namespace Tweek.ApiService.Modules
                 Dictionary<string, JsonValue> data;
                 using (var reader = new StreamReader(Request.Body))
                 {
-                    data = JsonConvert.DeserializeObject<Dictionary<string,JsonValue>>(await reader.ReadToEndAsync(), new JsonValueConverter())
+                    data = JsonConvert.DeserializeObject<Dictionary<string,JsonValue>>(await reader.ReadToEndAsync(), JsonValueConverter.Instance)
                         .Where(x=>x.Value != JsonValue.Null)
                         .ToDictionary(x => x.Key, x => x.Value);
                 }

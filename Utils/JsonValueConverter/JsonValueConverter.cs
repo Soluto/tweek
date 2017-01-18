@@ -10,7 +10,7 @@ namespace Tweek.Utils
 {
     public class JsonValueConverter : JsonConverter
     {
-
+        public static JsonValueConverter Instance = new JsonValueConverter();
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             WriteJson(writer, (JsonValue) value);
