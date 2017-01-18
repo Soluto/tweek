@@ -1,14 +1,25 @@
-export const types = {
-  Enum(baseType) {
-    return {
-      type: baseType,
-      typeAlias: 'enum',
-    }
+export let types = {
+  string: {
+    type: 'string'
+  },
+  number: {
+    type: 'number'
+  },
+  bool: {
+    type: 'bool'
   }
 };
 
+export const enumType = (baseType) => ({
+  type: baseType,
+  typeAlias: 'enum',
+});
+
+let initializationPromise;
+
 export async function initializeTypes() {
-  await fetch(`/api/types`, { credentials: 'same-origin' })
+  if (!!initializationPromise) return;
+  initializationPromise = fetch(`/api/types`, { credentials: 'same-origin' })
     .then(data => data.json())
     .then(loadedTypes => {
       loadedTypes.forEach(x => {
@@ -16,4 +27,6 @@ export async function initializeTypes() {
         types[typeAlias] = x;
       });
     });
+
+  await initializationPromise;
 };
