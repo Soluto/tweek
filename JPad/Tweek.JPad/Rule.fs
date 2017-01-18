@@ -69,8 +69,11 @@ module Matcher =
                             | JsonValue.Null, CompareOp.Equal, _ -> false
                             | JsonValue.Null, CompareOp.NotEqual, _ -> true
                             | JsonValue.Number x, _ , JsonValue.Number y -> evaluateComparisonOp op x y
+                            | JsonValue.Number x, _ , JsonValue.String y -> decimal y |> evaluateComparisonOp op x 
                             | JsonValue.Boolean x, _ ,JsonValue.Boolean y -> evaluateComparisonOp op x y
+                            | JsonValue.Boolean x, _ ,JsonValue.String y -> bool.Parse y |> evaluateComparisonOp op x
                             | JsonValue.Float x, _ ,JsonValue.Float y -> evaluateComparisonOp op x y
+                            | JsonValue.Float x, _ ,JsonValue.String y -> float y |> evaluateComparisonOp op x
                             | _ , _ , _ -> Exception("non matching types") |> raise
                         )
 
