@@ -32,12 +32,6 @@ namespace Tweek.ApiService.Modules
 
         private static object TranslateValueToString(ConfigurationValue v) => v.Value.IsString ? v.Value.AsString() : v.Value.ToString();
 
-        private static JsonValue FixValue(string o)
-        {
-            if (o == "true") return NewBoolean(true);
-            if (o == "false") return NewBoolean(false);
-            return NewString(o);
-        }
         
         public ServingModule(ITweek tweek) : base(PREFIX)
         {
@@ -51,7 +45,7 @@ namespace Tweek.ApiService.Modules
                 TranslateValue translateValue = ignoreKeyTypes ? (TranslateValue)TranslateValueToString : (x =>x.Value) ;
 
                 IReadOnlyDictionary <string, JsonValue> contextParams = allParams.Item2.ToDictionary(x => x.Key,
-                    x => FixValue(x.Value.ToString()), StringComparer.OrdinalIgnoreCase);
+                    x => NewString(x.Value.ToString()), StringComparer.OrdinalIgnoreCase);
 
                 var identities =
                     new HashSet<Identity>(contextParams.Where(x => !x.Key.Contains(".")).Select(x => new Identity(x.Key, x.Value.AsString())));
