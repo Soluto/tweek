@@ -10,6 +10,7 @@ using Nancy;
 using Nancy.ModelBinding;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Tweek.Utils;
 
 namespace Tweek.ApiService.Modules
 {
@@ -28,10 +29,9 @@ namespace Tweek.ApiService.Modules
                 Dictionary<string, JsonValue> data;
                 using (var reader = new StreamReader(Request.Body))
                 {
-                    data = JsonConvert.DeserializeObject<JObject>(await reader.ReadToEndAsync())
-                        .Properties()
-                        .Where(x => x.HasValues && x.Value.Type != JTokenType.Null)
-                        .ToDictionary(x => x.Name, x => x.Value.Value<JsonValue>());
+                    data = JsonConvert.DeserializeObject<Dictionary<string,JsonValue>>(await reader.ReadToEndAsync(), new JsonValueConverter())
+                        .Where(x=>x.Value != JsonValue.Null)
+                        .ToDictionary(x => x.Key, x => x.Value);
                 }
 
                 await driver.AppendContext(identity, data);
