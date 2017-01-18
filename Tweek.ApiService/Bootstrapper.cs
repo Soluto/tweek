@@ -57,7 +57,7 @@ namespace Tweek.ApiService
             container.Register<IRuleParser>(parser);
             container.Register<IEnumerable<IDiagnosticsProvider>>((ctx, no) => new List<IDiagnosticsProvider> {  bucketConnectionIsAlive, rulesDriverStatusService});
 
-            var jsonSerializer = new JsonSerializer() {Converters = {new JsonValueConverter()}};
+            var jsonSerializer = new JsonSerializer() {Converters = { JsonValueConverter.Instance } };
             container.Register<JsonSerializer>(jsonSerializer);
                 
             base.ApplicationStartup(container, pipelines);
@@ -98,7 +98,7 @@ namespace Tweek.ApiService
                        ContractResolver = new DefaultContractResolver(),
                        Converters =
                        {
-                           new JsonValueConverter()
+                           JsonValueConverter.Instance
                        }
                    },
                    new JsonSerializerSettings()
@@ -106,7 +106,7 @@ namespace Tweek.ApiService
                        ContractResolver = new DefaultContractResolver(),
                        Converters =
                        {
-                           new JsonValueConverter()
+                           JsonValueConverter.Instance
                        }
                    })
             });

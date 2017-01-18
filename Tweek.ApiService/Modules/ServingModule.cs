@@ -8,7 +8,10 @@ using Engine.DataTypes;
 using FSharp.Data;
 using LanguageExt;
 using Nancy;
+using Newtonsoft.Json;
 using Tweek.ApiService.Utils;
+using Tweek.Utils;
+using static FSharp.Data.JsonValue;
 
 namespace Tweek.ApiService.Modules
 {
@@ -28,6 +31,13 @@ namespace Tweek.ApiService.Modules
         private static readonly string PREFIX = "/configurations";
 
         private static object TranslateValueToString(ConfigurationValue v) => v.Value.IsString ? v.Value.AsString() : v.Value.ToString();
+
+        private static JsonValue FixValue(string o)
+        {
+            if (o == "true") return NewBoolean(true);
+            if (o == "false") return NewBoolean(false);
+            return NewString(o);
+        }
         
         public ServingModule(ITweek tweek) : base(PREFIX)
         {
@@ -40,14 +50,14 @@ namespace Tweek.ApiService.Modules
                 var ignoreKeyTypes = modifiers.TryGetValue("$ignoreKeyTypes").Select(x => bool.Parse(x.ToString())).IfNone(true);
                 TranslateValue translateValue = ignoreKeyTypes ? (TranslateValue)TranslateValueToString : (x =>x.Value) ;
 
-                IReadOnlyDictionary <string, string> contextParams = allParams.Item2.ToDictionary(x => x.Key,
-                    x => x.Value.ToString(), StringComparer.OrdinalIgnoreCase);
+                IReadOnlyDictionary <string, JsonValue> contextParams = allParams.Item2.ToDictionary(x => x.Key,
+                    x => FixValue(x.Value.ToString()), StringComparer.OrdinalIgnoreCase);
 
                 var identities =
-                    new HashSet<Identity>(contextParams.Where(x => !x.Key.Contains(".")).Select(x => new Identity(x.Key, x.Value)));
+                    new HashSet<Identity>(contextParams.Where(x => !x.Key.Contains(".")).Select(x => new Identity(x.Key, x.Value.AsString())));
 
                 GetLoadedContextByIdentityType contextProps =
-                    identityType => key => contextParams.TryGetValue($"{identityType}.{key}").Map(JsonValue.NewString);
+                    identityType => key => contextParams.TryGetValue($"{identityType}.{key}");
 
                 var query = ConfigurationPath.New(((string)@params.query));
                 var data = await tweek.Calculate(query, identities, contextProps);

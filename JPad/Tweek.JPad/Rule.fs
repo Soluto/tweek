@@ -35,7 +35,7 @@ module Matcher =
                     | CompareOp.LessThan -> (fun b a -> a < b)
                     | CompareOp.GreaterEqual -> (fun b a -> a >= b)
                     | CompareOp.LessEqual -> (fun b a -> a <= b)
-                    | CompareOp.NotEqual -> (fun b a -> a = b)
+                    | CompareOp.NotEqual -> (fun b a -> a <> b)
 
     type private comparer = (JsonValue)->(JsonValue)->int
 
