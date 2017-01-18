@@ -39,12 +39,12 @@ let assertCalculated (weights:float[]) (numberOfUsers:int) (samplingError:float)
 [<Fact>]
 let ``Use uniform distrubtion with single value``() =
     let calculator = """{"type": "uniform", "args": ["abc"] }""" |> JsonValue.Parse |> ValueDistribution.compile
-    calculator [|"userName", 5|]  |> should equal "abc";
+    calculator [|"userName", 5|]  |> should equal (JsonValue.String "abc");
     
 [<Fact>]
 let ``Use weighted distrubtion with single value``() =
     let calculator = """{"type": "weighted","args": {"5": 1} }""" |> JsonValue.Parse |> ValueDistribution.compile
-    calculator [|"userName", 5|]  |> should equal "5";
+    calculator [|"userName", 5|]  |> should equal (JsonValue.String "5");
 
 [<Property>]
 let ``Use Bernoulli distribution should equal weighted``() =
@@ -55,7 +55,7 @@ let ``Use Bernoulli distribution should equal weighted``() =
         let bernoulliInput = (sprintf """{"type": "bernoulliTrial","args": %.2f }""" p)
         let calculatorWeighted = weightedInput |> JsonValue.Parse |> ValueDistribution.compile
         let calculatorBernoulli = bernoulliInput |> JsonValue.Parse |> ValueDistribution.compile
-        let getValue x = match x with | JsonValue.String "true" -> 1 | JsonValue.String "false" -> 0 
+        let getValue x = match x with | JsonValue.String "true" -> 1 | JsonValue.String "false" -> 0 | JsonValue.Boolean true -> 1 | JsonValue.Boolean false -> 0 
         let numTests = 1000;
         [|1..numTests|]
             |> Seq.map (fun x -> (calculatorWeighted [|x|], calculatorBernoulli [|x|]))
