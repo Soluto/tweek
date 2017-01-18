@@ -3,8 +3,9 @@ using System.Threading;
 using FSharp.Data;
 using Newtonsoft.Json;
 using Xunit;
+using Tweek.Utils;
 
-namespace JsonValueConverter.Tests
+namespace Tweek.Utils.Tests
 {
     class Test
     {
