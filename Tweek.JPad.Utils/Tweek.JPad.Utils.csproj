@@ -98,6 +98,10 @@
       <Project>{9a374180-a25d-4191-94a2-b141a2e21d73}</Project>
       <Name>Tweek.JPad</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Utils\JsonValueConverter\JsonValueConverter.csproj">
+      <Project>{A7F3138B-914B-47DC-83BC-A7C004087F73}</Project>
+      <Name>JsonValueConverter</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

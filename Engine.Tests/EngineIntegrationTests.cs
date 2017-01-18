@@ -13,6 +13,7 @@ using Tweek.JPad.Generator;
 using MatcherData = System.Collections.Generic.Dictionary<string, object>;
 using Couchbase.Configuration.Client;
 using FSharp.Data;
+using Tweek.Utils;
 
 namespace Engine.Tests
 {
@@ -36,11 +37,20 @@ namespace Engine.Tests
                 Serializer = () => new Couchbase.Core.Serialization.DefaultSerializer(
                    new JsonSerializerSettings()
                    {
-                       ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver()
+                       ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver(),
+                       Converters = 
+                       {
+                           new JsonValueConverter()
+                       }
+                       
                    },
                    new JsonSerializerSettings()
                    {
-                       ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver()
+                       ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver(),
+                       Converters =
+                       {
+                           new JsonValueConverter()
+                       }
                    })
             });
 
@@ -51,12 +61,12 @@ namespace Engine.Tests
     public class EngineIntegrationTests : IClassFixture<CouchBaseFixture>
     {
         ITestDriver driver;
-        Dictionary<Identity, Dictionary<string, string>> contexts;
+        Dictionary<Identity, Dictionary<string, JsonValue>> contexts;
         Dictionary<string, RuleDefinition> rules;
         string[] paths;
 
         readonly HashSet<Identity> NoIdentities = new HashSet<Identity>();
-        readonly Dictionary<Identity, Dictionary<string, string>> EmptyContexts = new Dictionary<Identity, Dictionary<string, string>>();
+        readonly Dictionary<Identity, Dictionary<string, JsonValue>> EmptyContexts = new Dictionary<Identity, Dictionary<string, JsonValue>>();
 
         public EngineIntegrationTests(CouchBaseFixture fixture)
         {
@@ -114,8 +124,8 @@ namespace Engine.Tests
         public async Task CalculateFilterByMatcher()
         {
             contexts = ContextCreator.Merge(ContextCreator.Create("device", "1"), 
-                                            ContextCreator.Create("device", "2", new[] { "SomeDeviceProp", "10" }),
-                                            ContextCreator.Create("device", "3", new[] { "SomeDeviceProp", "5" }));
+                                            ContextCreator.Create("device", "2",  Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(10) )),
+                                            ContextCreator.Create("device", "3",  Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(5)) ));
 
             paths = new[] { "abc/somepath" };
             rules = new Dictionary<string, RuleDefinition>
@@ -143,8 +153,8 @@ namespace Engine.Tests
         public async Task CalculateFilterByMatcherWithMultiIdentities()
         {
             contexts = ContextCreator.Merge(
-                                               ContextCreator.Create("user", "1", new[] { "SomeUserProp", "10" }),
-                                               ContextCreator.Create("device", "1", new[] { "SomeDeviceProp", "5" }));
+                                               ContextCreator.Create("user", "1", Tuple.Create("SomeUserProp", JsonValue.NewNumber(10)) ),
+                                               ContextCreator.Create("device", "1", Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(5))));
             paths = new[] { "abc/somepath" };
             rules = new Dictionary<string, RuleDefinition>
             {
@@ -190,7 +200,7 @@ namespace Engine.Tests
         [Fact]
         public async Task MultipleRulesWithFallback()
         {
-            contexts = ContextCreator.Create("device", "1", new[] { "SomeDeviceProp", "5" });
+            contexts = ContextCreator.Create("device", "1", Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(5)));
             paths = new[] { "abc/somepath" };
 
             rules = new Dictionary<string, RuleDefinition>
@@ -216,7 +226,7 @@ namespace Engine.Tests
         [Fact]
         public async Task CalculateWithMultiVariant()
         {
-            contexts = ContextCreator.Create("device", "1", new[] { "SomeDeviceProp", "5"}, new []{"@CreationDate", "10/10/10" });
+            contexts = ContextCreator.Create("device", "1", Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(5)));
             paths = new[] { "abc/somepath" };
             rules = new Dictionary<string, RuleDefinition>()
             {
@@ -248,7 +258,7 @@ namespace Engine.Tests
         [Fact]
         public async Task ContextKeysShouldBeCaseInsensitive()
         {
-            contexts = ContextCreator.Create("device", "1", new[] { "someDeviceProp", "5" });
+            contexts = ContextCreator.Create("device", "1", Tuple.Create("someDeviceProp", JsonValue.NewNumber(5)));
             paths = new[] { "abc/somepath" };
             rules = new Dictionary<string, RuleDefinition>()
             {
@@ -315,9 +325,9 @@ namespace Engine.Tests
         [Fact]
         public async Task CalculateWithFixedValue()
         {
-            contexts = ContextCreator.Merge(ContextCreator.Create("device", "1", new[] { "@fixed:abc/somepath", "FixedValue" }),
-                                            ContextCreator.Create("device", "2", new[] { "SomeDeviceProp", "5" }),
-                                            ContextCreator.Create("device", "3", new[] { "SomeDeviceProp", "5" }, new[] { "@fixed:abc/somepath", "FixedValue" }));
+            contexts = ContextCreator.Merge(ContextCreator.Create("device", "1", Tuple.Create("@fixed:abc/somepath", JsonValue.NewString("FixedValue"))),
+                                            ContextCreator.Create("device", "2", Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(5))),
+                                            ContextCreator.Create("device", "3", Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(5)), Tuple.Create("@fixed:abc/somepath", JsonValue.NewString("FixedValue"))));
 
             paths = new[] { "abc/somepath" };
             rules = new Dictionary<string, RuleDefinition>()
@@ -347,8 +357,8 @@ namespace Engine.Tests
         public async Task CalculateWithRecursiveMatcher()
         {
             contexts = ContextCreator.Merge(
-                            ContextCreator.Create("device", "1", new[] { "SomeDeviceProp", "5" }),
-                            ContextCreator.Create("device", "2", new[] { "@fixed:abc/dep_path2", "true" }, new[] { "SomeDeviceProp", "5" })
+                            ContextCreator.Create("device", "1", Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(5))),
+                            ContextCreator.Create("device", "2", Tuple.Create("@fixed:abc/dep_path2", JsonValue.NewBoolean(true)), Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(5))) 
                             );
 
             paths = new[] { "abc/somepath", "abc/dep_path1", "abc/dep_path2" };
@@ -358,13 +368,13 @@ namespace Engine.Tests
                 ["abc/dep_path1"] = JPadGenerator.New().AddSingleVariantRule(matcher: JsonConvert.SerializeObject(new Dictionary<string, object>()
             {
                 {"device.SomeDeviceProp", 5}
-            }), value: "true").Generate(),
+            }), value: true).Generate(),
                 ["abc/somepath"] = JPadGenerator.New().AddSingleVariantRule(matcher: JsonConvert.SerializeObject(new Dictionary<string, object>()
             {
                 {"@@key:abc/dep_path1", true},
                 {"@@key:abc/dep_path2", true}
             }),
-                value: "true").Generate()
+                value: true).Generate()
             };
 
             await Run(async tweek =>
