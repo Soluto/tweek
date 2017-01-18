@@ -10,16 +10,10 @@ namespace JsonValueConverter
 {
     public class JsonValueConverter : JsonConverter
     {
+
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            if (value is JsonValue)
-            {
-                WriteJson(writer, (JsonValue) value);
-            }
-            else
-            {
-                writer.WriteNull();
-            }
+            WriteJson(writer, (JsonValue) value);
         }
 
         private void WriteJson(JsonWriter writer, JsonValue value)
@@ -50,7 +44,18 @@ namespace JsonValueConverter
                 }
                 writer.WriteEndArray();
             }
-            else
+            else if (value is JsonValue.Record)
+            {
+                writer.WriteStartObject();
+                var elements = ((JsonValue.Record)value).properties;
+                foreach (var v in elements)
+                {
+                    writer.WritePropertyName(v.Item1);
+                    WriteJson(writer, v.Item2);
+                }
+                writer.WriteEndObject();
+            }
+            else if (value == JsonValue.Null)
             {
                 writer.WriteNull();
             }
@@ -62,9 +67,9 @@ namespace JsonValueConverter
             {
                 return JsonValue.Null;
             }
-            else if (token.Type == JTokenType.Float)
+            else if (token.Type == JTokenType.Float || token.Type == JTokenType.Integer)
             {
-                return JsonValue.NewFloat(token.Value<float>());
+                return JsonValue.NewNumber(token.Value<decimal>());
             }
             else if (token.Type == JTokenType.Boolean)
             {
@@ -78,10 +83,11 @@ namespace JsonValueConverter
             {
                 return JsonValue.NewArray(((JArray)token).Select(ConvertToJSONValue).ToArray());
             }
-            else
+            else if (token.Type == JTokenType.Object)
             {
-                return JsonValue.Null;
+                return JsonValue.NewRecord( ((JObject)token).Properties().Select(x=>Tuple.Create(x.Name, ConvertToJSONValue(x.Value))).ToArray());
             }
+            return null;
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -91,7 +97,7 @@ namespace JsonValueConverter
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType.IsAssignableFrom(typeof(JsonValue));
+            return typeof (JsonValue).IsAssignableFrom(objectType);
         }
     }
 }
