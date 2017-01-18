@@ -48,11 +48,12 @@ module Matcher =
             )
         target.CompareTo << fn;
     
-    let private evaluateComparison (comparer) (op: CompareOp) (jsonValue:ComparisonValue) (v:Option<JsonValue>) =
-        match (jsonValue, v) with
+    let private evaluateComparison (comparer) (op: CompareOp) (leftValue:ComparisonValue) (rightValueOption:Option<ComparisonValue>) =
+        match (leftValue, rightValueOption) with
             | JsonValue.Null , None -> true
+            | JsonValue.Null, _ -> false
             | _, None -> false
-            | _, Some otherValue -> match (jsonValue, otherValue) with
+            | _, Some rightValue -> match (leftValue, rightValue) with
                         | JsonValue.Number x, JsonValue.Number y -> evaluateComparisonOp op x y
                         | JsonValue.Boolean x, JsonValue.Boolean y -> evaluateComparisonOp op x y
                         | JsonValue.Float x, JsonValue.Float y -> evaluateComparisonOp op x y
