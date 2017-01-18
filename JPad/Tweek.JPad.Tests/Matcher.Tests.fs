@@ -171,4 +171,4 @@ let ``Compare to null value with not equal operator``() =
 [<Fact>]
 let ``Compare incompatible values``() =
     let validate = validator """{"Age": 30}"""
-    (fun () -> validate (context [("Age", JsonValue.String("Oopsy"));]) |> ignore) |> should throw typeof<Exception>
+    (fun () -> validate (context [("Age", JsonValue.Boolean(false));]) |> ignore) |> should throw typeof<Exception>
