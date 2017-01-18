@@ -35,7 +35,7 @@ module Matcher =
                     | CompareOp.LessThan -> (fun b a -> a < b)
                     | CompareOp.GreaterEqual -> (fun b a -> a >= b)
                     | CompareOp.LessEqual -> (fun b a -> a <= b)
-                    | CompareOp.NotEqual -> (fun b a -> a <> b)
+                    | CompareOp.NotEqual -> (fun b a -> a = b)
 
     type private comparer = (JsonValue)->(JsonValue)->int
 
@@ -48,16 +48,31 @@ module Matcher =
             )
         target.CompareTo << fn;
     
-    let private evaluateComparison (comparer) (op: CompareOp) (jsonValue:ComparisonValue) (v:Option<JsonValue>) =
-        match (jsonValue, v) with
-            | JsonValue.Null , None -> true
-            | _, None -> false
-            | _, Some otherValue -> match (jsonValue, otherValue) with
-                        | JsonValue.Number x, JsonValue.Number y -> evaluateComparisonOp op x y
-                        | JsonValue.Boolean x, JsonValue.Boolean y -> evaluateComparisonOp op x y
-                        | JsonValue.Float x, JsonValue.Float y -> evaluateComparisonOp op x y
-                        | JsonValue.String x, JsonValue.String y -> evaluateComparisonOp op (comparer x y) 0
-                        | _ , _ -> Exception("non matching types") |> raise
+    let private evaluateComparison (comparer) (op: CompareOp) (leftValue:ComparisonValue) =
+        match (leftValue) with
+            | JsonValue.String l -> (comparer l) |> (fun comparison rightValue -> 
+                match rightValue with 
+                | None -> false 
+                |Some json -> match json with 
+                    |JsonValue.String v -> evaluateComparisonOp op (comparison v) 0
+                    | _ -> false)
+            | _ -> (fun (rightValueOption:Option<ComparisonValue>) -> match (leftValue, op, rightValueOption) with
+                | JsonValue.Null, CompareOp.Equal, None -> true
+                | JsonValue.Null, CompareOp.NotEqual, None -> false
+                | _, CompareOp.Equal, None -> false
+                | _, CompareOp.NotEqual, None -> true
+                | _, _, Some rightValue -> match (leftValue, op,  rightValue) with
+                            | JsonValue.Null, CompareOp.Equal, JsonValue.Null -> true
+                            | JsonValue.Null, CompareOp.NotEqual, JsonValue.Null -> false
+                            | _, CompareOp.Equal, JsonValue.Null -> false
+                            | _, CompareOp.NotEqual, JsonValue.Null -> true
+                            | JsonValue.Null, CompareOp.Equal, _ -> false
+                            | JsonValue.Null, CompareOp.NotEqual, _ -> true
+                            | JsonValue.Number x, _ , JsonValue.Number y -> evaluateComparisonOp op x y
+                            | JsonValue.Boolean x, _ ,JsonValue.Boolean y -> evaluateComparisonOp op x y
+                            | JsonValue.Float x, _ ,JsonValue.Float y -> evaluateComparisonOp op x y
+                            | _ , _ , _ -> Exception("non matching types") |> raise
+                        )
 
     let private evaluateArrayTest (comparer) (op: ArrayOp) (jsonValue:ComparisonValue) : (Option<JsonValue>->bool) =
         match jsonValue with
