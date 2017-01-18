@@ -64,7 +64,7 @@ type public JPadParser(settings:ParserSettings) =
     
      and evaluatePatternBlock block contextValue =
         match block, contextValue with
-            |Map map, Some value ->  map.TryFind(value.ToString().ToLower());
+            |Map map, Some value ->  map.TryFind(value.AsString().ToLower());
             |Map map, None -> None;
             |PatternBlock.Default container, _ -> Some(container);
     //--

@@ -13,7 +13,7 @@ open System
 
 let parser = JPadParser({Comparers=System.Collections.Generic.Dictionary()})
 let createContext seq = ContextDelegate(fun name -> seq |> Seq.tryFind (fun (k,v)->k = name) |> Option.map (fun (k,v)->JsonValue.String v))
-let validate (rules:JPadEvaluateExt) context value = rules.Invoke context |> should equal (Some value)
+let validate (rules:JPadEvaluateExt) context value = rules.Invoke context |> should equal (Some(JsonValue.String value))
 
 [<Fact>]
 let ``Use partitions with simple values``() =
