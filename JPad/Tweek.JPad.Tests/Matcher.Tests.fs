@@ -158,8 +158,14 @@ let ``Use null value in rule``() =
 [<Fact>]
 let ``Compare to null value from context``() =
     let validate = validator """{"GroupName": "Some Group"}"""
-    validate (context [("GroupName", JsonValue.String("Some Group"));])  |> should equal true
     validate (context [("GroupName", JsonValue.Null);])  |> should equal false
+    validate (context [])  |> should equal false
+
+[<Fact>]
+let ``Compare to null value with not equal operator``() =
+    let validate = validator """{"Age": {"$ne": null }}"""
+    validate (context [("Age", JsonValue.Number(30m));])  |> should equal true
+    validate (context [("Age", JsonValue.Null);])  |> should equal false
     validate (context [])  |> should equal false
 
 [<Fact>]
