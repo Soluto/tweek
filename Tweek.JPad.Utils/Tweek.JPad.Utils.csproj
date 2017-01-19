@@ -35,10 +35,6 @@
       <HintPath>..\packages\FSharp.Core.4.0.0.1\lib\net40\FSharp.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FSharp.Data, Version=2.3.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FSharp.Data.2.3.2\lib\net40\FSharp.Data.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="LanguageExt.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LanguageExt.Core.1.9.4\lib\net45\LanguageExt.Core.dll</HintPath>
       <Private>True</Private>
@@ -98,13 +94,8 @@
       <Project>{9a374180-a25d-4191-94a2-b141a2e21d73}</Project>
       <Name>Tweek.JPad</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Utils\JsonValueConverter\JsonValueConverter.csproj">
-      <Project>{A7F3138B-914B-47DC-83BC-A7C004087F73}</Project>
-      <Name>JsonValueConverter</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

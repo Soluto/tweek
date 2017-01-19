@@ -1,10 +1,9 @@
 ﻿using Engine.DataTypes;
-using FSharp.Data;
 using LanguageExt;
 
 namespace Engine.Core.Context
 {
-    public delegate Option<JsonValue> GetContextValue(string key);
+    public delegate Option<string> GetContextValue(string key);
 
     //utils
     public delegate GetContextValue GetLoadedContextByIdentity(Identity identity);

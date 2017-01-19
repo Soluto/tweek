@@ -13,7 +13,6 @@ using Engine.Core.Utils;
 using Engine.DataTypes;
 using Engine.Drivers.Cassandra;
 using Engine.Drivers.Context;
-using FSharp.Data;
 using static LanguageExt.Prelude;
 using Tweek.JPad.Utils;
 using Tweek.JPad;
@@ -22,21 +21,21 @@ namespace SimpleBenchmarks
 {
     class RamContextDriver : IContextReader
     {
-        public async Task<Dictionary<string, JsonValue>> GetContext(Identity identity)
+        public async Task<Dictionary<string, string>> GetContext(Identity identity)
         {
-            return new Dictionary<string, JsonValue>(new Dictionary<string, JsonValue>()
+            return new Dictionary<string, string>(new Dictionary<string, string>()
             {
-                ["PartnerBrandId"] = JsonValue.NewString("Verizon"),
-                ["DeviceType"] = JsonValue.NewString("Mobile"),
-                ["IsInGroup"] = JsonValue.NewString("False"),
-                ["DeviceOsVersion"] = JsonValue.NewString("6.0.0"),
-                ["DeviceOsType"] = JsonValue.NewString("Android"),
-                ["SubscriptionType"] = JsonValue.NewString("InsuranceAndSupport"),
-                ["DeviceVendor"] = JsonValue.NewString("google"),
-                ["IsTestDevice"] = JsonValue.NewString("false"),
-                ["@CreationDate"] = JsonValue.NewString("9/26/2016 9:52:47 PM"),
-                ["DeviceModel"] = JsonValue.NewString("marlin"),
-                ["AgentVersion"] = JsonValue.NewString("3.282.17")
+                ["PartnerBrandId"] = "Verizon",
+                ["DeviceType"] = "Mobile",
+                ["IsInGroup"] = "False",
+                ["DeviceOsVersion"] = "6.0.0",
+                ["DeviceOsType"] = "Android",
+                ["SubscriptionType"] = "InsuranceAndSupport",
+                ["DeviceVendor"] = "google",
+                ["IsTestDevice"] = "false",
+                ["@CreationDate"] = "9/26/2016 9:52:47 PM",
+                ["DeviceModel"] = "marlin",
+                ["AgentVersion"] = "3.282.17"
             });
         }
     }

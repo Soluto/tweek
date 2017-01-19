@@ -10,7 +10,6 @@ using Couchbase;
 using Tweek.Drivers.CouchbaseDriver;
 using System.IO;
 using Couchbase.Core;
-using FSharp.Data;
 using LanguageExt;
 
 namespace Engine.Tests.TestDrivers
@@ -49,7 +48,7 @@ namespace Engine.Tests.TestDrivers
             };
         }
 
-        async Task InsertContextRows(Dictionary<Identity, Dictionary<string, JsonValue>> contexts)
+        async Task InsertContextRows(Dictionary<Identity, Dictionary<string, string>> contexts)
         {
             cleanup = () => Task.WhenAll(contexts.Select(x => x.Key).Select(_driver.RemoveIdentityContext));
 
@@ -64,7 +63,7 @@ namespace Engine.Tests.TestDrivers
             await cleanup();
         }
 
-        public TestScope SetTestEnviornment(Dictionary<Identity, Dictionary<string, JsonValue>> contexts, string[] keys, Dictionary<string, RuleDefinition> rules)
+        public TestScope SetTestEnviornment(Dictionary<Identity, Dictionary<string, string>> contexts, string[] keys, Dictionary<string, RuleDefinition> rules)
         {
             return new TestScope(rules: new InMemoryTestDriver(rules), context: Context, 
                 init: () => InsertContextRows(contexts),

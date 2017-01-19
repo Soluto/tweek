@@ -1,5 +1,5 @@
 import R from 'ramda';
-import { types, initializeTypes } from './TypesService';
+import { types, enumType, initializeTypes } from './TypesService';
 import { boolAllowedValue, fromEnum } from './EditorMetaAllowedValuesService';
 
 export default class EditorMetaService {
@@ -17,7 +17,7 @@ export default class EditorMetaService {
   static async initialize() {
     const initPromise = initializeTypes();
 
-    initPromise.then(() => EditorMetaService._instance._initializeMeta());
+    initPromise.then(() => EditorMetaService.instance._initializeMeta());
 
     return initPromise;
   }
@@ -36,7 +36,7 @@ export default class EditorMetaService {
       return fieldMeta;
     }
     catch (exp) {
-      console.log('error occurd getting field meta', exp);
+      console.log('error occurd getting field meta', exp.message);
       return { type: 'string' };
     }
   }
@@ -70,23 +70,23 @@ export default class EditorMetaService {
           '@@id': {
             multipleValues: true,
             description: "device id",
-            type: "string",
+            ...types.string,
           },
           PartnerBrandId: {
             multipleValues: true,
             description: "The name of the partner",
-            type: "string",
+            ...types.string,
           },
           DeviceOsType: {
             multipleValues: true,
             description: "Device operation system name",
-            ...types.Enum('string'),
+            ...enumType('string'),
             allowedValues: fromEnum('Android', 'Ios'),
           },
           SubscriptionType: {
             multipleValues: true,
             description: "The home tier subscription of the device",
-            ...types.Enum('string', ),
+            ...enumType('string'),
             allowedValues: fromEnum('Evaluation', 'Free', 'Insurance', 'InsuranceAndSupport', 'HomeSupport', 'DefaultFree'),
           },
           AgentVersion: {
@@ -101,7 +101,7 @@ export default class EditorMetaService {
           DeviceVendor: {
             multipleValues: true,
             description: "Device vendor",
-            type: "string",
+            ...types.string,
           },
           CountryCode: {
             multipleValues: true,
@@ -111,29 +111,29 @@ export default class EditorMetaService {
           DeviceModel: {
             multipleValues: true,
             description: "device model",
-            type: "string",
+            ...types.string,
           },
           InstallationSource: {
             multipleValues: true,
             description: "Installation source",
-            type: "string",
+            ...types.string,
           },
           IsInGroup: {
             multipleValues: true,
             description: "Is in group",
             defaultValue: false,
-            type: 'bool',
+            ...types.bool,
             allowedValues: boolAllowedValue,
           },
           CreatedAt: {
             multipleValues: true,
             description: "Created at",
-            type: "string",
+            ...types.string,
           },
           DeviceType: {
             multipleValues: true,
             description: "Device type",
-            ...types.Enum('string'),
+            ...enumType('string'),
             allowedValues: fromEnum('Unknown',
               'Desktop',
               'Laptop',
