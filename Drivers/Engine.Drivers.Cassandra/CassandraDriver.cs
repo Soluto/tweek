@@ -8,7 +8,6 @@ using Cassandra.Data.Linq;
 using Cassandra.Mapping;
 using Engine.DataTypes;
 using Engine.Drivers.Context;
-using FSharp.Data;
 using LanguageExt;
 using Unit = LanguageExt.Unit;
 
@@ -43,11 +42,11 @@ namespace Engine.Drivers.Cassandra
         public MappingConfiguration MappingConfiguration { get; }
 
 
-        public async Task<Dictionary<string, JsonValue>> GetContext(Identity identity)
+        public async Task<Dictionary<string, string>> GetContext(Identity identity)
         {
             var contextTable = new Table<ContextRow>(_session, MappingConfiguration);
             var queryResult = await contextTable.Where(x=>x.identity_id == identity.Id && x.identity_type == identity.Type).ExecuteAsync();
-            return queryResult.ToDictionary(x => x.key, x => JsonValue.NewString(x.value));
+            return queryResult.ToDictionary(x => x.key, x => x.value);
         }
 
         public async Task AppendContext(Identity identity, Dictionary<string, string> context)
