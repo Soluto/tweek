@@ -37,47 +37,28 @@ module Matcher =
                     | CompareOp.LessEqual -> (fun b a -> a <= b)
                     | CompareOp.NotEqual -> (fun b a -> a <> b)
 
-    type private comparer = (JsonValue)->(JsonValue)->int
+    type private comparer = (string)->(string)->int
 
     let private createComparer (fn:(string-> IComparable)) l = 
         let target = (
             try
                 fn(l)
             with
-                | ex -> ParseError ("failure in parser value:" + l.ToString()) |> raise
+                | ex -> ParseError ("failure in parser value:" + l) |> raise
             )
         target.CompareTo << fn;
     
-    let private evaluateComparison (comparer) (op: CompareOp) (leftValue:ComparisonValue) =
-        match (leftValue) with
-            | JsonValue.String l -> (comparer l) |> (fun comparison rightValue -> 
-                match rightValue with 
-                | None -> false 
-                |Some json -> match json with 
-                    |JsonValue.String v -> evaluateComparisonOp op (comparison v) 0
-                    | _ -> false)
-            | _ -> (fun (rightValueOption:Option<ComparisonValue>) -> match (leftValue, op, rightValueOption) with
-                | JsonValue.Null, CompareOp.Equal, None -> true
-                | JsonValue.Null, CompareOp.NotEqual, None -> false
-                | _, CompareOp.Equal, None -> false
-                | _, CompareOp.NotEqual, None -> true
-                | _, _, Some rightValue -> match (leftValue, op,  rightValue) with
-                            | JsonValue.Null, CompareOp.Equal, JsonValue.Null -> true
-                            | JsonValue.Null, CompareOp.NotEqual, JsonValue.Null -> false
-                            | _, CompareOp.Equal, JsonValue.Null -> false
-                            | _, CompareOp.NotEqual, JsonValue.Null -> true
-                            | JsonValue.Null, CompareOp.Equal, _ -> false
-                            | JsonValue.Null, CompareOp.NotEqual, _ -> true
-                            | JsonValue.Number x, _ , JsonValue.Number y -> evaluateComparisonOp op x y
-                            | JsonValue.Number x, _ , JsonValue.String y -> decimal y |> evaluateComparisonOp op x 
-                            | JsonValue.Boolean x, _ ,JsonValue.Boolean y -> evaluateComparisonOp op x y
-                            | JsonValue.Boolean x, _ ,JsonValue.String y -> bool.Parse y |> evaluateComparisonOp op x
-                            | JsonValue.Float x, _ ,JsonValue.Float y -> evaluateComparisonOp op x y
-                            | JsonValue.Float x, _ ,JsonValue.String y -> float y |> evaluateComparisonOp op x
-                            | _ , _ , _ -> Exception("non matching types") |> raise
-                        )
+    let private evaluateComparison (comparer) (op: CompareOp) (jsonValue:ComparisonValue) : (Option<string>->bool) =
+        let onNoneReturnFalse fn = function |Some x-> fn x|None -> false
+        match jsonValue with
+            | JsonValue.String x -> (comparer x) >> (fun intValue-> evaluateComparisonOp op  intValue 0) |> onNoneReturnFalse
+            | JsonValue.Number x ->  decimal >> evaluateComparisonOp op x |> onNoneReturnFalse
+            | JsonValue.Boolean x -> bool.Parse >> evaluateComparisonOp op x|> onNoneReturnFalse
+            | JsonValue.Float x -> float >> evaluateComparisonOp op x |> onNoneReturnFalse
+            | JsonValue.Null -> (fun x->x.IsNone) 
+            | _ -> (fun _->false)
 
-    let private evaluateArrayTest (comparer) (op: ArrayOp) (jsonValue:ComparisonValue) : (Option<JsonValue>->bool) =
+    let private evaluateArrayTest (comparer) (op: ArrayOp) (jsonValue:ComparisonValue) : (Option<string>->bool) =
         match jsonValue with
             | JsonValue.Array arr -> match op with
                 | ArrayOp.In ->  
@@ -139,13 +120,13 @@ module Matcher =
         ( matcher |> (compile_internal settings.Comparers))
 
 module ValueDistribution = 
-    let private uniformCalc (choices:JsonValue[]) (hash) = 
+    let private uniformCalc (choices:string[]) (hash) = 
         let index  = (hash % (choices.Length |> uint64)) |> int
         choices.[index]
 
     let scanWithFirstItem fold seq = seq |> Seq.skip 1 |> Seq.scan fold (Seq.head seq)
 
-    let private weightedCalc (weighted:(JsonValue*int)[]) (hash) = 
+    let private weightedCalc (weighted:(string*int)[]) (hash) = 
         let selectedItem = hash % (weighted |> Seq.sumBy snd |> uint64) |> int
 
         weighted
@@ -158,13 +139,12 @@ module ValueDistribution =
 
     let compile (schema:JsonValue) =
         let fn = match schema.GetProperty("type").AsString() with
-        | "uniform" ->  schema.GetProperty("args").AsArray() |> uniformCalc;
-        | "weighted" ->  let weightedValues = match schema.GetProperty("args") with  
-                             | JsonValue.Array r -> r |> Array.map (fun(item) -> (item.["value"], item.["weight"].AsInteger()))
-                             | JsonValue.Record r -> r |> Array.map (fun (k,v)-> (JsonValue.String(k), v.AsInteger()))
-                         weightedCalc weightedValues
+        | "uniform" ->  let args = (schema.GetProperty("args").AsArray() |> Array.map (fun x-> x.AsString()));
+                        uniformCalc args
+        | "weighted" ->  let args = schema.GetProperty("args").Properties() |> Array.map (fun (k,v)-> (k, v.AsInteger()));
+                         weightedCalc args
         | "bernoulliTrial" -> let percentage = schema.GetProperty("args").AsFloat() |>floatToWeighted
-                              weightedCalc [|(JsonValue.Boolean(true), percentage);(JsonValue.Boolean(false), (100 - percentage))|];
+                              weightedCalc [|("true", percentage);("false", (100 - percentage))|];
         | s -> raise (Exception("expected operator, found:"+s));
         
         let sha1 = new SHA1Managed(); 
@@ -178,7 +158,7 @@ module Rule =
     let parse (jsonRule:JsonValue) = 
         let matcher = jsonRule.["Matcher"] |> Matcher.parse;
         let value = match jsonRule.["Type"].AsString() with
-                            | "SingleVariant" -> RuleValue.SingleVariant(jsonRule.["Value"])
+                            | "SingleVariant" -> RuleValue.SingleVariant(jsonRule.["Value"].AsString())
                             | "MultiVariant" ->  
                                 RuleValue.MultiVariant({
                                                         HashFunction = jsonRule.["ValueDistribution"] |> ValueDistribution.compile;

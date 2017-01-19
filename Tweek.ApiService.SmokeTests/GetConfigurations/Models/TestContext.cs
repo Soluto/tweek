@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using FSharp.Data;
 
 namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
 {
@@ -8,7 +7,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
         public string TestName { get; set; }
         public string KeyName { get; set; }
         public string ExpectedValue { get; set; }
-        public Dictionary<string, JsonValue> Context { get; set; } = new Dictionary<string, JsonValue>();
+        public Dictionary<string, string> Context { get; set; } = new Dictionary<string, string>();
 
         public override string ToString()
         {

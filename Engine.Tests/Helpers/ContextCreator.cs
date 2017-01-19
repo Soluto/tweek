@@ -1,22 +1,20 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Engine.DataTypes;
-using FSharp.Data;
 
 namespace Engine.Tests.Helpers
 {
     public static class ContextCreator
     {
-        public static Dictionary<Identity, Dictionary<string, JsonValue>> Create(string identityType, string identityId, params Tuple<string,JsonValue>[] contextValues){
-            return new Dictionary<Identity, Dictionary<string, JsonValue>>
+        public static Dictionary<Identity, Dictionary<string, string>> Create(string identityType, string identityId, params string[][] contextValues){
+            return new Dictionary<Identity, Dictionary<string, string>>
             {
-                {new Identity(identityType, identityId), contextValues.ToDictionary(x=>x.Item1, x=>x.Item2)}
+                {new Identity(identityType, identityId), contextValues.ToDictionary(x=>x[0], x=>x[1])}
             };
         }
 
-        public static Dictionary<Identity, Dictionary<string, JsonValue>> Merge(
-            params Dictionary<Identity, Dictionary<string, JsonValue>>[] contexts)
+        public static Dictionary<Identity, Dictionary<string, string>> Merge(
+            params Dictionary<Identity, Dictionary<string, string>>[] contexts)
         {
             return contexts.AsEnumerable().Aggregate((a,b)=>a.Concat(b).ToDictionary(x => x.Key, x => x.Value));
         }
