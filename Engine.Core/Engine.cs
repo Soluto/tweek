@@ -5,7 +5,6 @@ using Engine.Core.Rules;
 using LanguageExt;
 using Engine.Core.Utils;
 using Engine.DataTypes;
-using FSharp.Data;
 
 namespace Engine.Core
 {
@@ -24,7 +23,7 @@ namespace Engine.Core
             GetRuleValue getRuleValue = null;
             GetContextValue recursiveContext = key =>
             {
-                if (!key.StartsWith("@@key")) return Option<JsonValue>.None;
+                if (!key.StartsWith("@@key")) return Option<string>.None;
                 var path = new ConfigurationPath(key.Split(':')[1]);
                 return getRuleValue(path).Map(x => x.Value);
             };

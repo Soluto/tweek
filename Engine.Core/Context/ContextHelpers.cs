@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using Engine.Core.Utils;
 using Engine.DataTypes;
-using FSharp.Data;
 using LanguageExt;
+using LanguageExt.Trans.Linq;
+using LanguageExt.Trans;
 
 namespace Engine.Core.Context
 {
@@ -52,7 +55,7 @@ namespace Engine.Core.Context
                 {
                     cache[key] = context(key);
                 }
-                return (Option<JsonValue>) cache[key];
+                return (Option<string>) cache[key];
             };
         }
     }

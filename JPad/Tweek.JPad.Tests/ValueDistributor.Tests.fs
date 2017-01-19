@@ -22,7 +22,7 @@ let generatedCalculatedScheme weights = weights |> Array.mapi (fun a b -> (a,b) 
                                                 |> JsonValue.Parse
                                                 |> ValueDistribution.compile
 
-let assertCalculated (weights:float[]) (numberOfUsers:int) (samplingError:float) (calcFunction:obj[]->JsonValue)  = 
+let assertCalculated (weights:float[]) (numberOfUsers:int) (samplingError:float) (calcFunction:obj[]->string)  = 
             let sumWeights = weights |> Array.sum
             let rnd = new Random();
             [|1..numberOfUsers|] 
@@ -39,12 +39,12 @@ let assertCalculated (weights:float[]) (numberOfUsers:int) (samplingError:float)
 [<Fact>]
 let ``Use uniform distrubtion with single value``() =
     let calculator = """{"type": "uniform", "args": ["abc"] }""" |> JsonValue.Parse |> ValueDistribution.compile
-    calculator [|"userName", 5|]  |> should equal (JsonValue.String "abc");
+    calculator [|"userName", 5|]  |> should equal "abc";
     
 [<Fact>]
 let ``Use weighted distrubtion with single value``() =
     let calculator = """{"type": "weighted","args": {"5": 1} }""" |> JsonValue.Parse |> ValueDistribution.compile
-    calculator [|"userName", 5|]  |> should equal (JsonValue.String "5");
+    calculator [|"userName", 5|]  |> should equal "5";
 
 [<Property>]
 let ``Use Bernoulli distribution should equal weighted``() =
@@ -55,7 +55,7 @@ let ``Use Bernoulli distribution should equal weighted``() =
         let bernoulliInput = (sprintf """{"type": "bernoulliTrial","args": %.2f }""" p)
         let calculatorWeighted = weightedInput |> JsonValue.Parse |> ValueDistribution.compile
         let calculatorBernoulli = bernoulliInput |> JsonValue.Parse |> ValueDistribution.compile
-        let getValue x = match x with | JsonValue.String "true" -> 1 | JsonValue.String "false" -> 0 | JsonValue.Boolean true -> 1 | JsonValue.Boolean false -> 0 
+        let getValue x = match x with | "true" -> 1 | "false" -> 0 
         let numTests = 1000;
         [|1..numTests|]
             |> Seq.map (fun x -> (calculatorWeighted [|x|], calculatorBernoulli [|x|]))
@@ -95,7 +95,7 @@ let ``FF rollout is possible with Bernoulli ``()=
     [|1..20|] |> Array.map ((*) 5)
               |> Array.map (fun i-> 
                     let calc = getCalculator ((float i)/100.0)
-                    users |> Array.filter (fun x-> calc [|x|] = JsonValue.Boolean(true))
+                    users |> Array.filter (fun x-> calc [|x|] = "true")
               )
               |> Array.pairwise
               |> Array.iter (fun (prev,next) ->

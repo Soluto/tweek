@@ -15,7 +15,7 @@ module Grammer =
         | Map of Map<string,RulesContainer>
         | Patterns of (Pattern * RulesContainer) list
         | Default of RulesContainer
-    and RuleSimpleValue = JsonValue
+    and RuleSimpleValue = string
     and Pattern = string
     and PatternType = 
         | Exact
@@ -30,10 +30,10 @@ module Grammer =
             | SwitchComparer of string * MatcherExpression
             | Empty
     and RuleValue = 
-        | SingleVariant of JsonValue
+        | SingleVariant of string
         | MultiVariant  of ValueDistribution
     and ValueDistribution = {
-            HashFunction: (Object[])->FSharp.Data.JsonValue
+            HashFunction: (Object[])->string
             OwnerType: Option<string>
             Salt:string
         }
