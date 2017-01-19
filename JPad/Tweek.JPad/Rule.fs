@@ -143,7 +143,7 @@ module ValueDistribution =
         | "uniform" ->  schema.GetProperty("args").AsArray() |> uniformCalc;
         | "weighted" ->  let weightedValues = match schema.GetProperty("args") with  
                              | JsonValue.Array r -> r |> Array.map (fun(item) -> (item.["value"], item.["weight"].AsInteger()))
-                             | JsonValue.Record r -> schema.GetProperty("args").Properties() |>  Array.map (fun (k,v)-> (JsonValue.String(k), v.AsInteger()))
+                             | JsonValue.Record r -> r |>  Array.map (fun (k,v)-> (JsonValue.String(k), v.AsInteger()))
                          weightedCalc weightedValues
         | "bernoulliTrial" -> let percentage = schema.GetProperty("args").AsFloat() |>floatToWeighted
                               weightedCalc [|("true", percentage);("false", (100 - percentage))|];
