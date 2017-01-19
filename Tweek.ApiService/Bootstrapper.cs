@@ -20,11 +20,13 @@ using NLog.Targets;
 using Tweek.ApiService.Interfaces;
 using Tweek.ApiService.Modules;
 using Tweek.ApiService.Services;
+using Tweek.ApiService.Utils;
 using Tweek.Drivers.Blob;
 using Tweek.Drivers.CouchbaseDriver;
 using Tweek.JPad;
 using Tweek.JPad.Utils;
 using Tweek.Drivers.Blob.WebClient;
+using Tweek.Utils;
 
 namespace Tweek.ApiService
 {
@@ -55,6 +57,9 @@ namespace Tweek.ApiService
             container.Register<IRuleParser>(parser);
             container.Register<IEnumerable<IDiagnosticsProvider>>((ctx, no) => new List<IDiagnosticsProvider> {  bucketConnectionIsAlive, rulesDriverStatusService});
 
+            var jsonSerializer = new JsonSerializer() {Converters = { JsonValueConverter.Instance } };
+            container.Register<JsonSerializer>(jsonSerializer);
+                
             base.ApplicationStartup(container, pipelines);
         }
 
@@ -90,11 +95,19 @@ namespace Tweek.ApiService
                 Serializer = () => new DefaultSerializer(
                    new JsonSerializerSettings()
                    {
-                       ContractResolver = new DefaultContractResolver()
+                       ContractResolver = new DefaultContractResolver(),
+                       Converters =
+                       {
+                           JsonValueConverter.Instance
+                       }
                    },
                    new JsonSerializerSettings()
                    {
-                       ContractResolver = new DefaultContractResolver()
+                       ContractResolver = new DefaultContractResolver(),
+                       Converters =
+                       {
+                           JsonValueConverter.Instance
+                       }
                    })
             });
         }
