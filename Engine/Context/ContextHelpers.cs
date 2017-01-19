@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Engine.Core.Context;
 using Engine.Core.Utils;
 using Engine.DataTypes;
+using FSharp.Data;
 using LanguageExt;
 using static LanguageExt.Prelude;
 
@@ -25,7 +26,7 @@ namespace Engine.Context
 
         internal static GetContextValue ContextValueForId(string id)
         {
-            return key => key == "@@id" ? id : Option<string>.None;
+            return key => key == "@@id" ? JsonValue.NewString(id) : Option<JsonValue>.None;
         }
 
         internal static GetLoadedContextByIdentityType GetContextRetrieverByType(GetLoadedContextByIdentity getLoadedContexts, HashSet<Identity> identities)
@@ -40,13 +41,13 @@ namespace Engine.Context
             };
         }
 
-        internal static  GetLoadedContextByIdentity LoadContexts(Dictionary<Identity, Dictionary<string,string>> loadContextData)
+        internal static  GetLoadedContextByIdentity LoadContexts(Dictionary<Identity, Dictionary<string,JsonValue>> loadContextData)
         {   
             return (Identity identity) => (key)=>
             {
-                return ((IReadOnlyDictionary<Identity,Dictionary<string,string>>)loadContextData)
+                return ((IReadOnlyDictionary<Identity,Dictionary<string, JsonValue>>)loadContextData)
                     .TryGetValue(identity)
-                    .Bind(x => ((IReadOnlyDictionary<string,string>)x).TryGetValue(key));
+                    .Bind(x => ((IReadOnlyDictionary<string, JsonValue>)x).TryGetValue(key));
                 
             };
         }

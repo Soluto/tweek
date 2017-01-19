@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using FSharp.Data;
+using static FSharp.Data.JsonValue;
 
 namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
 {
@@ -12,9 +14,9 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                     TestName = "Get key based on identity, should reutrn matching value",
                     KeyName = "@tests/identityContext/key1",
                     ExpectedValue = "yellow",
-                    Context = new Dictionary<string, string>
+                    Context = new Dictionary<string, JsonValue>
                     {
-                        { "test", "smokeTest1" }
+                        ["test"] = NewString("smokeTest1") 
                     }
                 }};
 
@@ -24,10 +26,10 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                     TestName = "Get key based on identity with field override, should return matching value",
                     KeyName = "@tests/identityContext/key1",
                     ExpectedValue = "green",
-                    Context = new Dictionary<string, string>
+                    Context = new Dictionary<string, JsonValue>
                     {
-                        { "test", "smokeTest1" },
-                        { "test.FavoriteFruit", "apple" }
+                        ["test"] = NewString("smokeTest1"),
+                        ["test.FavoriteFruit"] = NewString("apple")
                     }
                 }};
 
@@ -37,9 +39,9 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                     TestName = "Get key based on unknown identity, should return default value",
                     KeyName = "@tests/identityContext/key1",
                     ExpectedValue = "unknown",
-                    Context = new Dictionary<string, string>
+                    Context = new Dictionary<string, JsonValue>
                     {
-                        { "test", "someUnknownIdentity" }
+                        ["test"] = NewString("someUnknownIdentity") 
                     }
                 }};
         }
