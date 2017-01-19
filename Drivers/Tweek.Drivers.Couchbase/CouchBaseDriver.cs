@@ -12,7 +12,6 @@ using Couchbase.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Dynamic;
-using FSharp.Data;
 
 namespace Tweek.Drivers.CouchbaseDriver
 {
@@ -35,23 +34,23 @@ namespace Tweek.Drivers.CouchbaseDriver
         }
 
         public async Task InsertOrUpdate(string key,
-            Func<IDictionary<string, JsonValue>, IDictionary<string, JsonValue>> updateFn)
+            Func<IDictionary<string, string>, IDictionary<string, string>> updateFn)
         {
             var bucket = GetOrOpenBucket();
-            IOperationResult<IDictionary<string, JsonValue>> result = null;
+            IOperationResult<IDictionary<string, string>> result = null;
             var cas = (ulong)0;
             if (!await bucket.ExistsAsync(key))
             {
-                var contextWithCreationDate = updateFn(new Dictionary<string, JsonValue>
+                var contextWithCreationDate = updateFn(new Dictionary<string, string>
                 {
-                    ["@CreationDate"] = JsonValue.NewString(DateTimeOffset.UtcNow.ToString())
+                    ["@CreationDate"] = DateTimeOffset.UtcNow.ToString()
                 });
                 result = await bucket.UpsertAsync(key, contextWithCreationDate, cas);
             }
             while (!(result?.Success ?? false) && cas != result?.Cas)
             {
-                var doc = bucket.GetDocument<Dictionary<string, JsonValue>>(key);
-                var newData = updateFn(doc.Content ?? new Dictionary<string, JsonValue>());
+                var doc = bucket.GetDocument<Dictionary<string, string>>(key);
+                var newData = updateFn(doc.Content ?? new Dictionary<string, string>());
                 cas = doc.Document.Cas;
                 result = await bucket.UpsertAsync(key, newData, cas);
             }
@@ -67,19 +66,19 @@ namespace Tweek.Drivers.CouchbaseDriver
             await InsertOrUpdate(keyIdentity, dictionary => dictionary.ToImmutableDictionary().Remove(key));
         }
 
-        public async Task AppendContext(Identity identity, Dictionary<string, JsonValue> context)
+        public async Task AppendContext(Identity identity, Dictionary<string, string> context)
         {
             var key = GetKey(identity);
             await InsertOrUpdate(key, dictionary => dictionary.ToImmutableDictionary().SetItems(context));
         }
 
-        public async Task<Dictionary<string, JsonValue>> GetContext(Identity identity)
+        public async Task<Dictionary<string, string>> GetContext(Identity identity)
         {
             var key = GetKey(identity);
-            var data = await GetFromAllSources<Dictionary<string, JsonValue>>(key);
+            var data = await GetFromAllSources<Dictionary<string, string>>(key);
             if (data == null)
             {
-                return new Dictionary<string, JsonValue>();
+                return new Dictionary<string, string>();
             }
             return data;
         }

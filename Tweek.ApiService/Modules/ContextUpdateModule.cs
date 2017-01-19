@@ -5,12 +5,10 @@ using System.Linq;
 using System.Web;
 using Engine.DataTypes;
 using Engine.Drivers.Context;
-using FSharp.Data;
 using Nancy;
 using Nancy.ModelBinding;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Tweek.Utils;
 
 namespace Tweek.ApiService.Modules
 {
@@ -26,12 +24,14 @@ namespace Tweek.ApiService.Modules
                 string identityType = @params.identityType;
                 string identityId = @params.identityId;
                 var identity = new Identity(identityType, identityId);
-                Dictionary<string, JsonValue> data;
+                Dictionary<string, string> data;
                 using (var reader = new StreamReader(Request.Body))
                 {
-                    data = JsonConvert.DeserializeObject<Dictionary<string,JsonValue>>(await reader.ReadToEndAsync(), JsonValueConverter.Instance)
-                        .Where(x=>x.Value != JsonValue.Null)
-                        .ToDictionary(x => x.Key, x => x.Value);
+                    data = JsonConvert.DeserializeObject<JObject>(await reader.ReadToEndAsync())
+                        .Properties()
+                        .Where(x => x.HasValues && x.Value.Type != JTokenType.Null)
+                        .ToDictionary(x => x.Name, x => x.Value.ToObject<object>()
+                            .ToString());
                 }
 
                 await driver.AppendContext(identity, data);
