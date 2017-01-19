@@ -161,7 +161,7 @@ module ValueDistribution =
         | "uniform" ->  schema.GetProperty("args").AsArray() |> uniformCalc;
         | "weighted" ->  let weightedValues = match schema.GetProperty("args") with  
                              | JsonValue.Array r -> r |> Array.map (fun(item) -> (item.["value"], item.["weight"].AsInteger()))
-                             | JsonValue.Record r -> r |> Array.map (fun (k,v)-> (JsonValue.String(k), v.AsInteger()))
+                             | JsonValue.Record r -> schema.GetProperty("args").Properties() |>  Array.map (fun (k,v)-> (JsonValue.String(k), v.AsInteger()))
                          weightedCalc weightedValues
         | "bernoulliTrial" -> let percentage = schema.GetProperty("args").AsFloat() |>floatToWeighted
                               weightedCalc [|(JsonValue.Boolean(true), percentage);(JsonValue.Boolean(false), (100 - percentage))|];
@@ -196,5 +196,5 @@ module Rule =
             |SingleVariant value -> validateMatcher >> Option.map (fun _ -> value);
             |MultiVariant valueDistribution -> validateMatcher >> Option.bind (fun context->
                 let opOwner = valueDistribution.OwnerType |> Option.map (fun owner -> owner + ".@@id") |> Option.bind context;
-                opOwner |> Option.map (fun owner -> valueDistribution.HashFunction [|owner :> Object;valueDistribution.Salt :> Object|])
+                opOwner |> Option.map (fun s-> s.AsString()) |> Option.map (fun owner -> valueDistribution.HashFunction [|owner :> Object;valueDistribution.Salt :> Object|])
             )
