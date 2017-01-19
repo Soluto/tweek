@@ -31,10 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FSharp.Data, Version=2.3.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FSharp.Data.2.3.2\lib\net40\FSharp.Data.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="JPad">
       <HintPath>..\JPad\Tweek.JPad\bin\Release\JPad.dll</HintPath>
     </Reference>
@@ -76,11 +72,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api.cs" />
+    <Compile Include="Context\ContextCreation.cs" />
     <Compile Include="Context\ContextHelpers.cs" />
     <Compile Include="FallbackRule.cs" />
     <Compile Include="Rules\Creation\RulesLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rules\Schema\ContextValidation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine.Core\Engine.Core.csproj">

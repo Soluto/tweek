@@ -4,10 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Engine.Drivers.Rules;
-using FSharp.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Tweek.Utils;
 
 namespace Tweek.JPad.Generator
 {
@@ -23,15 +21,6 @@ namespace Tweek.JPad.Generator
         }
 
         public JPadGenerator AddSingleVariantRule(string matcher, string value, string ruleId = null)
-            => AddSingleVariantRule(matcher, JsonValue.NewString(value), ruleId);
-
-        public JPadGenerator AddSingleVariantRule(string matcher, bool value, string ruleId = null)
-            => AddSingleVariantRule(matcher, JsonValue.NewBoolean(value), ruleId);
-
-        public JPadGenerator AddSingleVariantRule(string matcher, decimal number, string ruleId = null)
-            => AddSingleVariantRule(matcher, JsonValue.NewNumber(number), ruleId);
-
-        public JPadGenerator AddSingleVariantRule(string matcher, JsonValue value, string ruleId = null)
             => AddRule(new 
                 {
                     Id = ruleId ?? Guid.NewGuid().ToString(),
@@ -62,6 +51,6 @@ namespace Tweek.JPad.Generator
         
         private JPadGenerator AddRule(object rule) => new JPadGenerator(_rules.Concat(new [] {rule}).ToArray());        
 
-        public RuleDefinition Generate() => new RuleDefinition() { Format = "jpad", Payload = JsonConvert.SerializeObject(_rules, Formatting.Indented, new JsonValueConverter()) };
+        public RuleDefinition Generate() => new RuleDefinition() { Format = "jpad", Payload = JsonConvert.SerializeObject(_rules, Formatting.Indented) };
     }
 }

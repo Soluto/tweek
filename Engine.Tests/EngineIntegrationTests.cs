@@ -12,8 +12,6 @@ using Xunit;
 using Tweek.JPad.Generator;
 using MatcherData = System.Collections.Generic.Dictionary<string, object>;
 using Couchbase.Configuration.Client;
-using FSharp.Data;
-using Tweek.Utils;
 
 namespace Engine.Tests
 {
@@ -37,20 +35,11 @@ namespace Engine.Tests
                 Serializer = () => new Couchbase.Core.Serialization.DefaultSerializer(
                    new JsonSerializerSettings()
                    {
-                       ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver(),
-                       Converters = 
-                       {
-                           new JsonValueConverter()
-                       }
-                       
+                       ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver()
                    },
                    new JsonSerializerSettings()
                    {
-                       ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver(),
-                       Converters =
-                       {
-                           new JsonValueConverter()
-                       }
+                       ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver()
                    })
             });
 
@@ -61,12 +50,12 @@ namespace Engine.Tests
     public class EngineIntegrationTests : IClassFixture<CouchBaseFixture>
     {
         ITestDriver driver;
-        Dictionary<Identity, Dictionary<string, JsonValue>> contexts;
+        Dictionary<Identity, Dictionary<string, string>> contexts;
         Dictionary<string, RuleDefinition> rules;
         string[] paths;
 
         readonly HashSet<Identity> NoIdentities = new HashSet<Identity>();
-        readonly Dictionary<Identity, Dictionary<string, JsonValue>> EmptyContexts = new Dictionary<Identity, Dictionary<string, JsonValue>>();
+        readonly Dictionary<Identity, Dictionary<string, string>> EmptyContexts = new Dictionary<Identity, Dictionary<string, string>>();
 
         public EngineIntegrationTests(CouchBaseFixture fixture)
         {
@@ -92,13 +81,13 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("_", NoIdentities);
-                Assert.Equal("SomeValue", val["abc/somepath"].Value.AsString());
+                Assert.Equal("SomeValue", val["abc/somepath"].Value);
 
                 val = await tweek.Calculate("abc/_", NoIdentities);
-                Assert.Equal( "SomeValue", val["somepath"].Value.AsString());
+                Assert.Equal( "SomeValue", val["somepath"].Value);
 
                 val = await tweek.Calculate("abc/somepath", NoIdentities);
-                Assert.Equal( "SomeValue", val[""].Value.AsString());
+                Assert.Equal( "SomeValue", val[""].Value);
             });
         }
 
@@ -114,9 +103,9 @@ namespace Engine.Tests
             {
                 var val = await tweek.Calculate("abc/_", NoIdentities);
                 Assert.Equal(3, val.Count);
-                Assert.Equal("SomeValue",val["somepath"].Value.AsString());
-                Assert.Equal("SomeValue",val["otherpath"].Value.AsString());
-                Assert.Equal("SomeValue",val["nested/somepath"].Value.AsString());
+                Assert.Equal("SomeValue",val["somepath"].Value);
+                Assert.Equal("SomeValue",val["otherpath"].Value);
+                Assert.Equal("SomeValue",val["nested/somepath"].Value);
             });
         }
 
@@ -124,8 +113,8 @@ namespace Engine.Tests
         public async Task CalculateFilterByMatcher()
         {
             contexts = ContextCreator.Merge(ContextCreator.Create("device", "1"), 
-                                            ContextCreator.Create("device", "2",  Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(10) )),
-                                            ContextCreator.Create("device", "3",  Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(5)) ));
+                                            ContextCreator.Create("device", "2", new[] { "SomeDeviceProp", "10" }),
+                                            ContextCreator.Create("device", "3", new[] { "SomeDeviceProp", "5" }));
 
             paths = new[] { "abc/somepath" };
             rules = new Dictionary<string, RuleDefinition>
@@ -145,7 +134,7 @@ namespace Engine.Tests
                 Assert.Equal(0, val.Count);
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "3") });
-                Assert.Equal("SomeValue", val["somepath"].Value.AsString());
+                Assert.Equal("SomeValue", val["somepath"].Value);
             });
         }
 
@@ -153,8 +142,8 @@ namespace Engine.Tests
         public async Task CalculateFilterByMatcherWithMultiIdentities()
         {
             contexts = ContextCreator.Merge(
-                                               ContextCreator.Create("user", "1", Tuple.Create("SomeUserProp", JsonValue.NewNumber(10)) ),
-                                               ContextCreator.Create("device", "1", Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(5))));
+                                               ContextCreator.Create("user", "1", new[] { "SomeUserProp", "10" }),
+                                               ContextCreator.Create("device", "1", new[] { "SomeDeviceProp", "5" }));
             paths = new[] { "abc/somepath" };
             rules = new Dictionary<string, RuleDefinition>
             {
@@ -174,7 +163,7 @@ namespace Engine.Tests
                 Assert.Equal(0, val.Count);
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1"), new Identity("user", "1") });
-                Assert.Equal("SomeValue", val["somepath"].Value.AsString());
+                Assert.Equal("SomeValue", val["somepath"].Value);
             });
         }
 
@@ -193,14 +182,14 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
-                Assert.Equal( "SomeValue", val["somepath"].Value.AsString());
+                Assert.Equal( "SomeValue", val["somepath"].Value);
             });
         }
 
         [Fact]
         public async Task MultipleRulesWithFallback()
         {
-            contexts = ContextCreator.Create("device", "1", Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(5)));
+            contexts = ContextCreator.Create("device", "1", new[] { "SomeDeviceProp", "5" });
             paths = new[] { "abc/somepath" };
 
             rules = new Dictionary<string, RuleDefinition>
@@ -219,14 +208,14 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
-                Assert.Equal("SomeValue", val["somepath"].Value.AsString());
+                Assert.Equal("SomeValue", val["somepath"].Value);
             });
         }
 
         [Fact]
         public async Task CalculateWithMultiVariant()
         {
-            contexts = ContextCreator.Create("device", "1", Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(5)));
+            contexts = ContextCreator.Create("device", "1", new[] { "SomeDeviceProp", "5"}, new []{"@CreationDate", "10/10/10" });
             paths = new[] { "abc/somepath" };
             rules = new Dictionary<string, RuleDefinition>()
             {
@@ -247,7 +236,7 @@ namespace Engine.Tests
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { });
                 Assert.Equal(0, val.Count);
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1")});
-                Assert.True(val["somepath"].Value.AsString() == "true" || val["somepath"].Value.AsString() == "false");
+                Assert.True(val["somepath"].Value == "true" || val["somepath"].Value == "false");
                 await Task.WhenAll(Enumerable.Range(0, 10).Select(async x =>
                 {
                     Assert.Equal((await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }))["somepath"].Value, val["somepath"].Value);
@@ -258,7 +247,7 @@ namespace Engine.Tests
         [Fact]
         public async Task ContextKeysShouldBeCaseInsensitive()
         {
-            contexts = ContextCreator.Create("device", "1", Tuple.Create("someDeviceProp", JsonValue.NewNumber(5)));
+            contexts = ContextCreator.Create("device", "1", new[] { "someDeviceProp", "5" });
             paths = new[] { "abc/somepath" };
             rules = new Dictionary<string, RuleDefinition>()
             {
@@ -273,7 +262,7 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
-                Assert.Equal("true", val["somepath"].Value.AsString());
+                Assert.Equal("true", val["somepath"].Value);
             });
         }
 
@@ -325,9 +314,9 @@ namespace Engine.Tests
         [Fact]
         public async Task CalculateWithFixedValue()
         {
-            contexts = ContextCreator.Merge(ContextCreator.Create("device", "1", Tuple.Create("@fixed:abc/somepath", JsonValue.NewString("FixedValue"))),
-                                            ContextCreator.Create("device", "2", Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(5))),
-                                            ContextCreator.Create("device", "3", Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(5)), Tuple.Create("@fixed:abc/somepath", JsonValue.NewString("FixedValue"))));
+            contexts = ContextCreator.Merge(ContextCreator.Create("device", "1", new[] { "@fixed:abc/somepath", "FixedValue" }),
+                                            ContextCreator.Create("device", "2", new[] { "SomeDeviceProp", "5" }),
+                                            ContextCreator.Create("device", "3", new[] { "SomeDeviceProp", "5" }, new[] { "@fixed:abc/somepath", "FixedValue" }));
 
             paths = new[] { "abc/somepath" };
             rules = new Dictionary<string, RuleDefinition>()
@@ -342,13 +331,13 @@ namespace Engine.Tests
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
-                Assert.Equal("FixedValue", val["somepath"].Value.AsString());
+                Assert.Equal("FixedValue", val["somepath"].Value);
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "2") });
-                Assert.Equal("RuleBasedValue", val["somepath"].Value.AsString());
+                Assert.Equal("RuleBasedValue", val["somepath"].Value);
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "3") });
-                Assert.Equal("FixedValue", val["somepath"].Value.AsString());
+                Assert.Equal("FixedValue", val["somepath"].Value);
                 
             });
         }
@@ -357,8 +346,8 @@ namespace Engine.Tests
         public async Task CalculateWithRecursiveMatcher()
         {
             contexts = ContextCreator.Merge(
-                            ContextCreator.Create("device", "1", Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(5))),
-                            ContextCreator.Create("device", "2", Tuple.Create("@fixed:abc/dep_path2", JsonValue.NewBoolean(true)), Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(5))) 
+                            ContextCreator.Create("device", "1", new[] { "SomeDeviceProp", "5" }),
+                            ContextCreator.Create("device", "2", new[] { "@fixed:abc/dep_path2", "true" }, new[] { "SomeDeviceProp", "5" })
                             );
 
             paths = new[] { "abc/somepath", "abc/dep_path1", "abc/dep_path2" };
@@ -368,26 +357,26 @@ namespace Engine.Tests
                 ["abc/dep_path1"] = JPadGenerator.New().AddSingleVariantRule(matcher: JsonConvert.SerializeObject(new Dictionary<string, object>()
             {
                 {"device.SomeDeviceProp", 5}
-            }), value: true).Generate(),
+            }), value: "true").Generate(),
                 ["abc/somepath"] = JPadGenerator.New().AddSingleVariantRule(matcher: JsonConvert.SerializeObject(new Dictionary<string, object>()
             {
                 {"@@key:abc/dep_path1", true},
                 {"@@key:abc/dep_path2", true}
             }),
-                value: true).Generate()
+                value: "true").Generate()
             };
 
             await Run(async tweek =>
             {
                 var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
                 Assert.Equal(1, val.Count);
-                Assert.Equal("true", val["dep_path1"].Value.AsString());
+                Assert.Equal("true", val["dep_path1"].Value);
 
                 val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "2") });
                 Assert.Equal(3, val.Count);
-                Assert.Equal("true", val["dep_path1"].Value.AsString());
-                Assert.Equal("true", val["dep_path2"].Value.AsString());
-                Assert.Equal("true", val["somepath"].Value.AsString());
+                Assert.Equal("true", val["dep_path1"].Value);
+                Assert.Equal("true", val["dep_path2"].Value);
+                Assert.Equal("true", val["somepath"].Value);
             });
         }
 
