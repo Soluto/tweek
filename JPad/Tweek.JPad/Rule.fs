@@ -139,7 +139,6 @@ module ValueDistribution =
 
     let compile (schema:JsonValue) =
         let fn = match schema.GetProperty("type").AsString() with
-
         | "uniform" ->  schema.GetProperty("args").AsArray() |> uniformCalc;
         | "weighted" ->  let weightedValues = match schema.GetProperty("args") with  
                              | JsonValue.Array r -> r |> Array.map (fun(item) -> (item.["value"], item.["weight"].AsInteger()))
