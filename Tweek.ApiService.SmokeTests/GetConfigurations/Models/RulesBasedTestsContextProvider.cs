@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using FSharp.Data;
+using static FSharp.Data.JsonValue;
 
 namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
 {
@@ -27,9 +29,9 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                     TestName = COMPARISON_OPERATORS_TEST_NAME_4,
                     KeyName = "@tests/ruleBasedKeys/comparison",
                     ExpectedValue = "value4",
-                    Context = new Dictionary<string, string>
+                    Context = new Dictionary<string, JsonValue>
                     {
-                        { "device.AgentVersion", "9.0.0.0" }
+                        ["device.AgentVersion"] = NewString("9.0.0.0")
                     }
                 }};
 
@@ -39,9 +41,9 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                     TestName = COMPARISON_OPERATORS_TEST_NAME_3,
                     KeyName = "@tests/ruleBasedKeys/comparison",
                     ExpectedValue = "value3",
-                    Context = new Dictionary<string, string>
+                    Context = new Dictionary<string, JsonValue>
                     {
-                        { "device.DeviceOsVersion", "1.5.0.0" }
+                        ["device.DeviceOsVersion"] = NewString("1.5.0.0")
                     }
                 }};
 
@@ -51,9 +53,9 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                     TestName = COMPARISON_OPERATORS_TEST_NAME_2,
                     KeyName = "@tests/ruleBasedKeys/comparison",
                     ExpectedValue = "value2",
-                    Context = new Dictionary<string, string>
+                    Context = new Dictionary<string, JsonValue>
                     {
-                        { "device.AgentVersion", "4.9.0.0" }
+                        ["device.AgentVersion"] = NewString("4.9.0.0")
                     }
                 }};
 
@@ -74,9 +76,9 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                     TestName = IN_OPERATOR_TEST_NAME_4,
                     KeyName = "@tests/ruleBasedKeys/in",
                     ExpectedValue = "value4",
-                    Context = new Dictionary<string, string>
+                    Context = new Dictionary<string, JsonValue>
                     {
-                        { "device.CountryCode", "999" }
+                        ["device.CountryCode"] = NewString("999")
                     }
                 }};
 
@@ -86,9 +88,9 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                     TestName = IN_OPERATOR_TEST_NAME_3,
                     KeyName = "@tests/ruleBasedKeys/in",
                     ExpectedValue = "value3",
-                    Context = new Dictionary<string, string>
+                    Context = new Dictionary<string, JsonValue>
                     {
-                        { "device.AgentVersion", "4.1" }
+                        ["device.AgentVersion"] =  NewString("4.1")
                     }
                 }};
 
@@ -98,9 +100,9 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                     TestName = IN_OPERATOR_TEST_NAME_2,
                     KeyName = "@tests/ruleBasedKeys/in",
                     ExpectedValue = "value2",
-                    Context = new Dictionary<string, string>
+                    Context = new Dictionary<string, JsonValue>
                     {
-                        { "device.PartnerBrandId", "cellcom" }
+                        ["device.PartnerBrandId"] = NewString("cellcom") 
                     }
                 }};
 
@@ -121,17 +123,17 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                     TestName = MULTI_CONDITONS_TEST_NAME_4,
                     KeyName = "@tests/ruleBasedKeys/multi_conditions",
                     ExpectedValue = "value4",
-                    Context = new Dictionary<string, string>
+                    Context = new Dictionary<string, JsonValue>
                     {
-                        { "device.SubscriptionType", "HomeSupport" },
-                        { "device.IsInGroup", "true" },
-                        { "device.DeviceOsVersion", "2.1.0.0" },
-                        { "device.AgentVersion", "3.0.0.4" },
-                        { "device.DeviceType", "Laptop" },
-                        { "device.DeviceVendor", "vendor3" },
-                        { "device.CountryCode", "888" },
-                        { "device.PartnerBrandId", "AsurionFriends" },
-                        { "device.DeviceModel", "Samsung" }
+                        { "device.SubscriptionType", NewString("HomeSupport") },
+                        { "device.IsInGroup", NewBoolean(true) },
+                        { "device.DeviceOsVersion", NewString("2.1.0.0") },
+                        { "device.AgentVersion", NewString("3.0.0.4") },
+                        { "device.DeviceType", NewString("Laptop") },
+                        { "device.DeviceVendor", NewString("vendor3") },
+                        { "device.CountryCode", NewString("888") },
+                        { "device.PartnerBrandId", NewString("AsurionFriends") },
+                        { "device.DeviceModel", NewString("Samsung") }
                     }
                 }};
 
@@ -141,11 +143,11 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                     TestName = MULTI_CONDITONS_TEST_NAME_3,
                     KeyName = "@tests/ruleBasedKeys/multi_conditions",
                     ExpectedValue = "value3",
-                    Context = new Dictionary<string, string>
+                    Context = new Dictionary<string, JsonValue>
                     {
-                        { "device.DeviceOsType", "Android" },
-                        { "device.PartnerBrandId", "cellcom" },
-                        { "device.AgentVersion", "4.6.9.0" }
+                        { "device.DeviceOsType", NewString("Android") },
+                        { "device.PartnerBrandId", NewString("cellcom") },
+                        { "device.AgentVersion", NewString("4.6.9.0") }
                     }
                 }};
 
@@ -155,10 +157,10 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                     TestName = MULTI_CONDITONS_TEST_NAME_2,
                     KeyName = "@tests/ruleBasedKeys/multi_conditions",
                     ExpectedValue = "value2",
-                    Context = new Dictionary<string, string>
+                    Context = new Dictionary<string, JsonValue>
                     {
-                        { "device.CountryCode", "887" },
-                        { "device.DeviceOsVersion", "2.0.0.0" }
+                        { "device.CountryCode", NewString("887") },
+                        { "device.DeviceOsVersion", NewString("2.0.0.0") }
                     }
                 }};
 
