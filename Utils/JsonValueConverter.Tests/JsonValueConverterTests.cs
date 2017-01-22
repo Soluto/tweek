@@ -13,6 +13,7 @@ namespace Tweek.Utils.Tests
         public JsonValue stringValue;
         public JsonValue nullValue;
         public JsonValue arrayOfObjectsValue;
+        public JsonValue dateLikeString;
     }
 
     public class JsonValueConverterTests
@@ -25,6 +26,7 @@ namespace Tweek.Utils.Tests
                 numberValue = JsonValue.NewNumber(5),
                 stringValue = JsonValue.NewString("abc"),
                 nullValue = JsonValue.Null,
+                dateLikeString = JsonValue.NewString(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")),
                 arrayOfObjectsValue = JsonValue.NewArray(
                     new[] {
                     JsonValue.NewNumber(10),
@@ -41,7 +43,8 @@ namespace Tweek.Utils.Tests
             Assert.Equal(testSubject.stringValue, target.stringValue);
             Assert.Equal(testSubject.nullValue, target.nullValue);
             Assert.Equal(testSubject.arrayOfObjectsValue, target.arrayOfObjectsValue);
-            
+            Assert.Equal(testSubject.dateLikeString, target.dateLikeString);
+
         }
        
     }
