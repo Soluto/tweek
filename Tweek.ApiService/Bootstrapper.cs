@@ -36,7 +36,7 @@ namespace Tweek.ApiService
     {
         protected override JsonContract CreateContract(Type objectType)
          {
-            JsonContract contract = base.CreateContract(objectType);
+            var contract = base.CreateContract(objectType);
  
             if (typeof(JsonValue).IsAssignableFrom(objectType))
             {
