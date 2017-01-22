@@ -9,10 +9,12 @@ using Engine;
 using Engine.Core.Rules;
 using Engine.Drivers.Context;
 using Engine.Drivers.Rules;
+using FSharp.Data;
 using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.TinyIoc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using NLog;
 using NLog.Config;
@@ -30,6 +32,20 @@ using Tweek.Utils;
 
 namespace Tweek.ApiService
 {
+    class TweekContractResolver : DefaultContractResolver
+    {
+        protected override JsonContract CreateContract(Type objectType)
+         {
+            JsonContract contract = base.CreateContract(objectType);
+ 
+            if (typeof(JsonValue).IsAssignableFrom(objectType))
+            {
+                contract.Converter = new JsonValueConverter();
+            }
+
+            return contract;
+        }
+    }
     public class Bootstrapper : DefaultNancyBootstrapper
     {
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
@@ -57,7 +73,7 @@ namespace Tweek.ApiService
             container.Register<IRuleParser>(parser);
             container.Register<IEnumerable<IDiagnosticsProvider>>((ctx, no) => new List<IDiagnosticsProvider> {  bucketConnectionIsAlive, rulesDriverStatusService});
 
-            var jsonSerializer = new JsonSerializer() {Converters = { JsonValueConverter.Instance } };
+            var jsonSerializer = new JsonSerializer() {ContractResolver = new TweekContractResolver()};
             container.Register<JsonSerializer>(jsonSerializer);
                 
             base.ApplicationStartup(container, pipelines);
@@ -95,19 +111,11 @@ namespace Tweek.ApiService
                 Serializer = () => new DefaultSerializer(
                    new JsonSerializerSettings()
                    {
-                       ContractResolver = new DefaultContractResolver(),
-                       Converters =
-                       {
-                           JsonValueConverter.Instance
-                       }
+                       ContractResolver = new TweekContractResolver()
                    },
                    new JsonSerializerSettings()
                    {
-                       ContractResolver = new DefaultContractResolver(),
-                       Converters =
-                       {
-                           JsonValueConverter.Instance
-                       }
+                       ContractResolver = new TweekContractResolver()
                    })
             });
         }
