@@ -87,6 +87,11 @@ namespace Tweek.Utils
             {
                 return JsonValue.NewRecord( ((JObject)token).Properties().Select(x=>Tuple.Create(x.Name, ConvertToJSONValue(x.Value))).ToArray());
             }
+
+            else if (token.Type == JTokenType.Date)
+            {
+                return JsonValue.NewString( token.Value<DateTime>().ToString("yyyy-MM-ddTHH:mm:ssZ"));
+            }
             return null;
         }
 
