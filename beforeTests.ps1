@@ -2,7 +2,7 @@
 
 echo "Before tests"
 
-Start-Job -Name RunLocalDeployment -ArgumentList (Resolve-Path "Tweek.ApiService").Path -ScriptBlock { 
+Start-Job -Name RunLocalDeployment -ArgumentList (Resolve-Path "Tweek.ApiService.NetCore").Path -ScriptBlock { 
     Param($webservicePath)
         & 'C:\\Program Files (x86)\\IIS Express\\iisexpress.exe' /port:1234 /path:"$webservicePath" /trace:warning
 }
