@@ -24,5 +24,10 @@ namespace Tweek.ApiService.NetCore.Controllers
         [HttpGet("status")]
         public dynamic Status()
             => _diagnosticsProviders.ToDictionary(provider => provider.Name, provider => provider.GetDetails());
+
+        [HttpGet("")]
+        public void Default(){
+            
+        }
     }
 }
