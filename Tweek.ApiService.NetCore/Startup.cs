@@ -59,6 +59,8 @@ namespace Tweek.ApiService.NetCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry(Configuration);
+
             var contextBucketName = Configuration["Couchbase.BucketName"];
             var contextBucketPassword = Configuration["Couchbase.Password"];
 
@@ -91,7 +93,10 @@ namespace Tweek.ApiService.NetCore
                 loggerFactory.AddConsole(Configuration.GetSection("Logging"));
                 loggerFactory.AddDebug();
             }
-           
+
+            app.UseApplicationInsightsRequestTelemetry();
+            app.UseApplicationInsightsExceptionTelemetry();
+
             app.UseMvc();
         }
 
