@@ -11,7 +11,7 @@ namespace Tweek.ApiService.SmokeTests
     {
         public static ITweekApi GetTweekApiClient()
         {
-            var targetBaseUrl = Environment.GetEnvironmentVariable("TWEEK_SMOKE_TARGET");
+            var targetBaseUrl = "http://localhost:54069";
 
             if (string.IsNullOrEmpty(targetBaseUrl))
             {
