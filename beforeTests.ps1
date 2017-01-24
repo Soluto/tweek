@@ -2,13 +2,13 @@
 
 echo "Before tests"
 
-Start-Job -Name RunLocalDeployment -ArgumentList (Resolve-Path "Tweek.ApiService").Path -ScriptBlock { 
+Start-Job -Name RunLocalDeployment -ArgumentList (Resolve-Path "Tweek.ApiService.NetCore").Path -ScriptBlock { 
     Param($webservicePath)
-        & 'C:\\Program Files (x86)\\IIS Express\\iisexpress.exe' /port:1234 /path:"$webservicePath" /trace:warning
+        Start-Process -FilePath "$($webservicePath)/bin/Release/net461/Tweek.ApiService.NetCore.exe" -WorkingDirectory $webservicePath
 }
 
 Wait-Job -Name RunLocalDeployment -Timeout 5
 
-$Env:TWEEK_SMOKE_TARGET = "http://localhost:1234"
+$Env:TWEEK_SMOKE_TARGET = "http://localhost:5000"
 
 exit $LastExitCode
