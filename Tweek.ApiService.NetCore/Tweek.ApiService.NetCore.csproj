@@ -32,7 +32,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.0.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="1.0.2" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0-beta1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Drivers\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj" />
