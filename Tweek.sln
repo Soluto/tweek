@@ -43,6 +43,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E4A52DC8-2814-4510-9E59-40778011EF5B}"
 	ProjectSection(SolutionItems) = preProject
 		.travis.yml = .travis.yml
+		afterTests.ps1 = afterTests.ps1
+		beforeTests.ps1 = beforeTests.ps1
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.JPad.Utils", "Tweek.JPad.Utils\Tweek.JPad.Utils.csproj", "{D20F24EB-860A-4DC0-A849-28627E342B89}"
