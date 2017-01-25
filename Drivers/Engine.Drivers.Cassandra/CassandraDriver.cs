@@ -8,7 +8,7 @@ using Cassandra.Data.Linq;
 using Cassandra.Mapping;
 using Engine.DataTypes;
 using Engine.Drivers.Context;
-using FSharp.Data;
+using FSharpUtils.Newtonsoft;
 using LanguageExt;
 using Unit = LanguageExt.Unit;
 

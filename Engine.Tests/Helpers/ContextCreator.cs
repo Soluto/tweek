@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Engine.DataTypes;
-using FSharp.Data;
+using FSharpUtils.Newtonsoft;
 
 namespace Engine.Tests.Helpers
 {

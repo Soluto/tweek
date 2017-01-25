@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Engine.Core.Context;
 using Engine.DataTypes;
-using FSharp.Data;
+using FSharpUtils.Newtonsoft;
 using LanguageExt;
 using Xunit;
 

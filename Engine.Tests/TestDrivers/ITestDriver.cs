@@ -3,7 +3,7 @@ using Engine.DataTypes;
 using Engine.Drivers.Context;
 using Engine.Drivers.Rules;
 using Engine.Rules.Creation;
-using FSharp.Data;
+using FSharpUtils.Newtonsoft;
 
 namespace Engine.Tests.TestDrivers
 {

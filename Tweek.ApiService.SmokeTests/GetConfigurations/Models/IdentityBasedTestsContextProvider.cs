@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using FSharp.Data;
-using static FSharp.Data.JsonValue;
+using FSharpUtils.Newtonsoft;
+using static FSharpUtils.Newtonsoft.JsonValue;
 
 namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
 {

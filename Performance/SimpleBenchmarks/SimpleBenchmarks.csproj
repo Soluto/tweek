@@ -42,9 +42,8 @@
       <HintPath>..\..\packages\FSharp.Core.4.0.0.1\lib\net40\FSharp.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FSharp.Data, Version=2.3.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\FSharp.Data.2.3.2\lib\net40\FSharp.Data.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="FSharpUtils.Newtonsoft.JsonValue, Version=0.1.6233.20455, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FSharpUtils.Newtonsoft.JsonValue.0.1.6233.20455\lib\portable45-net45+win8+wp8+wpa81\FSharpUtils.Newtonsoft.JsonValue.dll</HintPath>
     </Reference>
     <Reference Include="LanguageExt.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\LanguageExt.Core.1.9.4\lib\net45\LanguageExt.Core.dll</HintPath>
@@ -54,7 +53,26 @@
       <HintPath>..\..\packages\lz4net.1.0.10.93\lib\net4-client\LZ4.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PCLCrypto, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d4421c8a4786956c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\PCLCrypto.2.0.147\lib\net45\PCLCrypto.dll</HintPath>
+    </Reference>
+    <Reference Include="PInvoke.BCrypt, Version=0.3.0.0, Culture=neutral, PublicKeyToken=9e300f9f87f04a7a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\PInvoke.BCrypt.0.3.2\lib\net40\PInvoke.BCrypt.dll</HintPath>
+    </Reference>
+    <Reference Include="PInvoke.Kernel32, Version=0.3.0.0, Culture=neutral, PublicKeyToken=9e300f9f87f04a7a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\PInvoke.Kernel32.0.3.2\lib\net40\PInvoke.Kernel32.dll</HintPath>
+    </Reference>
+    <Reference Include="PInvoke.NCrypt, Version=0.3.0.0, Culture=neutral, PublicKeyToken=9e300f9f87f04a7a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\PInvoke.NCrypt.0.3.2\lib\net40\PInvoke.NCrypt.dll</HintPath>
+    </Reference>
+    <Reference Include="PInvoke.Windows.Core, Version=0.3.0.0, Culture=neutral, PublicKeyToken=9e300f9f87f04a7a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\PInvoke.Windows.Core.0.3.2\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\PInvoke.Windows.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Reactive.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Reactive.Core.3.0.0\lib\net45\System.Reactive.Core.dll</HintPath>
@@ -72,12 +90,21 @@
       <HintPath>..\..\packages\System.Reactive.PlatformServices.3.0.0\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="Tweek.JPad, Version=0.3.6233.20598, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Tweek.JPad.0.3.6233.20598\lib\portable45-net45+win8+wp8+wpa81\Tweek.JPad.dll</HintPath>
+    </Reference>
+    <Reference Include="Validation, Version=2.2.0.0, Culture=neutral, PublicKeyToken=2fc06f0d701809a7, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Validation.2.2.8\lib\dotnet\Validation.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -111,10 +138,6 @@
     <ProjectReference Include="..\..\Engine\Engine.csproj">
       <Project>{88200f63-8699-4b6e-8969-4c45827ad0c3}</Project>
       <Name>Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\JPad\Tweek.JPad\Tweek.JPad.fsproj">
-      <Project>{9a374180-a25d-4191-94a2-b141a2e21d73}</Project>
-      <Name>Tweek.JPad</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Tweek.Drivers.Blob\Tweek.Drivers.Blob.csproj">
       <Project>{94574c86-8fe9-4282-bac4-e2fc62afda06}</Project>
