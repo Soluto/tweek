@@ -1,4 +1,4 @@
-using FSharp.Data;
+using FSharpUtils.Newtonsoft;
 
 namespace Engine.DataTypes
 {

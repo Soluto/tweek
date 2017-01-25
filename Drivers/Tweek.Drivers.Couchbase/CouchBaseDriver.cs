@@ -12,7 +12,7 @@ using Couchbase.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Dynamic;
-using FSharp.Data;
+using FSharpUtils.Newtonsoft;
 
 namespace Tweek.Drivers.CouchbaseDriver
 {

@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 using Couchbase.Core.Serialization;
 using Engine;
 using Newtonsoft.Json.Serialization;
-using FSharp.Data;
+using FSharpUtils.Newtonsoft;
 using Tweek.Utils;
 using Tweek.Drivers.CouchbaseDriver;
 using Engine.Core.Rules;

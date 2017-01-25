@@ -11,7 +11,7 @@ using System;
 using System.Collections.Specialized;
 using Engine.Core.Context;
 using Engine.Core.Rules;
-using FSharp.Data;
+using FSharpUtils.Newtonsoft;
 using Tweek.JPad;
 using ContextHelpers = Engine.Context.ContextHelpers;
 using LanguageExt;

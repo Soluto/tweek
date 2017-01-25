@@ -5,7 +5,7 @@ using Engine.Core.Rules;
 using LanguageExt;
 using Engine.Core.Utils;
 using Engine.DataTypes;
-using FSharp.Data;
+using FSharpUtils.Newtonsoft;
 
 namespace Engine.Core
 {

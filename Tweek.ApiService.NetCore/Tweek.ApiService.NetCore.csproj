@@ -1,4 +1,4 @@
-<Project ToolsVersion="15.0" Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project ToolsVersion="15.0" Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
@@ -19,7 +19,7 @@
   <ItemGroup>
     <PackageReference Include="CouchbaseNetClient" Version="2.3.11" />
     <PackageReference Include="FSharp.Core" Version="4.0.0.1" />
-    <PackageReference Include="FSharp.Data" Version="2.3.2" />
+    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.1.6233.20455" />
     <PackageReference Include="LanguageExt.Core" Version="1.9.7" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Routing" Version="1.0.1" />
@@ -33,6 +33,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.0.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0-beta1" />
+    <PackageReference Include="Tweek.JPad" Version="0.3.6233.20598" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Drivers\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj" />
@@ -40,7 +41,6 @@
     <ProjectReference Include="..\Engine.DataTypes\Engine.DataTypes.csproj" />
     <ProjectReference Include="..\Engine.Drivers\Engine.Drivers.csproj" />
     <ProjectReference Include="..\Engine\Engine.csproj" />
-    <ProjectReference Include="..\JPad\Tweek.JPad\Tweek.JPad.fsproj" />
     <ProjectReference Include="..\Tweek.Drivers.Blob\Tweek.Drivers.Blob.csproj" />
     <ProjectReference Include="..\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj" />
     <ProjectReference Include="..\Utils\JsonValueConverter\JsonValueConverter.csproj" />

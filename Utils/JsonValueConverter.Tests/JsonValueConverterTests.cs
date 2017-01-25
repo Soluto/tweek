@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using FSharp.Data;
+using FSharpUtils.Newtonsoft;
 using Newtonsoft.Json;
 using Xunit;
 using Tweek.Utils;

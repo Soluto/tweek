@@ -12,7 +12,7 @@ using Xunit;
 using Tweek.JPad.Generator;
 using MatcherData = System.Collections.Generic.Dictionary<string, object>;
 using Couchbase.Configuration.Client;
-using FSharp.Data;
+using FSharpUtils.Newtonsoft;
 using Tweek.Utils;
 
 namespace Engine.Tests
