@@ -35,7 +35,7 @@ namespace Tweek.ApiService.NetCore.Controllers
                                 dict.TryGetValue(false).IfNone(new Dictionary<TKey, TValue>()));
         }
         
-        private static object TranslateValueToString(ConfigurationValue v) => v.Value.IsString ? v.Value.AsString() : v.Value.ToString();
+        private static object TranslateValueToString(ConfigurationValue v) => v.Value.AsString();
 
         [HttpGet("{*path}")]
         public async Task<ActionResult> GetAsync([FromRoute] string path)
