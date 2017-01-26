@@ -49,7 +49,7 @@ namespace Tweek.ApiService.NetCore.Controllers
             }
             catch (Exception)
             {
-                return BadRequest();
+                return BadRequest("invalid ruleset");
             }
 
             var failures = ruleset
