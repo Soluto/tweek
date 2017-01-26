@@ -38,7 +38,7 @@ namespace Tweek.ApiService.NetCore.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<dynamic> Validate()
         {
             Dictionary<string, RuleDefinition> ruleset = null;
