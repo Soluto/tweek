@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Web;
 using Tweek.Drivers.Blob;
 
 namespace Tweek.Drivers.Blob.WebClient
