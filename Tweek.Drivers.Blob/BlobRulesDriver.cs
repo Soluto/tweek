@@ -41,7 +41,7 @@ namespace Tweek.Drivers.Blob
                 .DistinctUntilChanged(new DictionaryEqualityComparer<string, RuleDefinition>(new RuleDefinitionComparer()))
                 .Catch((Exception exception) =>
                 {
-                    Trace.TraceWarning($"Failed to update rules from {url}\r\n{exception}");
+                    //Trace.TraceWarning($"Failed to update rules from {url}\r\n{exception}");
                     return Observable.Empty<Dictionary<string, RuleDefinition>>().Delay(TimeSpan.FromMinutes(1));
                 })
                 .Repeat()

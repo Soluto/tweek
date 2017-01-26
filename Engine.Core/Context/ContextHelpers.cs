@@ -4,6 +4,7 @@ using Engine.Core.Utils;
 using Engine.DataTypes;
 using FSharpUtils.Newtonsoft;
 using LanguageExt;
+using System.Collections.Generic;
 
 namespace Engine.Core.Context
 {
@@ -45,14 +46,14 @@ namespace Engine.Core.Context
 
         public static GetContextValue Memoize(GetContextValue context)
         {
-            var cache = new ListDictionary();
+            var cache = new Dictionary<string,Option<JsonValue>>();
             return key =>
             {
-                if (!cache.Contains(key))
+                if (!cache.ContainsKey(key))
                 {
                     cache[key] = context(key);
                 }
-                return (Option<JsonValue>) cache[key];
+                return cache[key];
             };
         }
     }

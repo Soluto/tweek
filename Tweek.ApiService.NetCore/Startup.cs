@@ -23,6 +23,7 @@ using Engine.Drivers.Context;
 using Tweek.JPad.Utils;
 using Tweek.JPad;
 using Tweek.ApiService.NetCore.Diagnostics;
+using System.Reflection;
 
 namespace Tweek.ApiService.NetCore
 {
@@ -32,7 +33,7 @@ namespace Tweek.ApiService.NetCore
         {
             var contract = base.CreateContract(objectType);
 
-            if (typeof(JsonValue).IsAssignableFrom(objectType))
+            if (typeof(JsonValue).GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo()))
             {
                 contract.Converter = new JsonValueConverter();
             }
