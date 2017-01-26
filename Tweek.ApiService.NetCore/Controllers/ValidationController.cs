@@ -15,7 +15,7 @@ using Engine.Core.Rules;
 
 namespace Tweek.ApiService.NetCore.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("validation")]
     public class ValidationController : Controller
     {
         private IRuleParser _parser;
@@ -38,6 +38,7 @@ namespace Tweek.ApiService.NetCore.Controllers
             }
         }
 
+        [HttpGet]
         public async Task<dynamic> Validate()
         {
             Dictionary<string, RuleDefinition> ruleset = null;
@@ -48,14 +49,14 @@ namespace Tweek.ApiService.NetCore.Controllers
             }
             catch (Exception)
             {
-                throw new HttpRequestException("Invalid ruleset");
+                return BadRequest("Invalid ruleset");
             }
 
             var failures = ruleset
                 .Where(x => !IsParsable(x.Value.Payload))
                 .Select(x => x.Key);
 
-            if (failures.Any()) return failures;
+            if (failures.Any()) return BadRequest(failures);
             return true;
         }
     }
