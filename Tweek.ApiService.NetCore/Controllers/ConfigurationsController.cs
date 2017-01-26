@@ -12,6 +12,8 @@ using Engine.Core.Context;
 using Engine;
 using Engine.Core.Utils;
 using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json;
+using Tweek.Utils;
 
 namespace Tweek.ApiService.NetCore.Controllers
 {
@@ -34,8 +36,12 @@ namespace Tweek.ApiService.NetCore.Controllers
             return Tuple.Create(dict.TryGetValue(true).IfNone(new Dictionary<TKey, TValue>()),
                                 dict.TryGetValue(false).IfNone(new Dictionary<TKey, TValue>()));
         }
-        
-        private static object TranslateValueToString(ConfigurationValue v) => v.Value.AsString();
+
+        private static object TranslateValueToString(ConfigurationValue v)
+            =>
+                (v.Value.IsRecord || v.Value.IsArray)
+                    ? JsonConvert.SerializeObject(v.Value, JsonValueConverter.Instance)
+                    : v.Value.AsString();
 
         [HttpGet("{*path}")]
         public async Task<ActionResult> GetAsync([FromRoute] string path)
