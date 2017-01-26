@@ -39,7 +39,7 @@ namespace Tweek.ApiService.NetCore.Controllers
         }
 
         [HttpPost]
-        public async Task<dynamic> Validate()
+        public async Task<ActionResult> Validate()
         {
             Dictionary<string, RuleDefinition> ruleset = null;
             try
@@ -49,7 +49,7 @@ namespace Tweek.ApiService.NetCore.Controllers
             }
             catch (Exception)
             {
-                return BadRequest("Invalid ruleset");
+                return BadRequest();
             }
 
             var failures = ruleset
@@ -57,7 +57,7 @@ namespace Tweek.ApiService.NetCore.Controllers
                 .Select(x => x.Key);
 
             if (failures.Any()) return BadRequest(failures);
-            return true;
+            return Content("true");
         }
     }
 }
