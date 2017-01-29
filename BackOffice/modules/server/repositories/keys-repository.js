@@ -3,7 +3,7 @@ import path from 'path';
 const BasePathForRules = "rules";
 
 export default class KeysRepository {
-  constructor(gitTransactionManager){
+  constructor(gitTransactionManager) {
     this._gitTransactionManager = gitTransactionManager;
   }
 
@@ -15,22 +15,24 @@ export default class KeysRepository {
     });
   }
 
-  async getKeyDetails(keyPath){
+  async getKeyDetails(keyPath) {
     return await this._gitTransactionManager.read(async gitRepo => {
       let pathForJPad = getPathForJPad(keyPath);
       let pathForMeta = getPathForMeta(keyPath);
 
       let ruleHistory = await gitRepo.getFileDetails(pathForJPad);
-      let jpadSource = await gitRepo.readFile(pathForJPad);
-      let metaSource = await gitRepo.readFile(pathForMeta);
 
+      let jpadSource = await gitRepo.readFile(pathForJPad);
+      jpadSource = getNewJpadFormatSourceIfNeeded(jpadSource);
+
+      let metaSource = await gitRepo.readFile(pathForMeta);
       return {
         keyDef: {
           type: path.extname(pathForJPad).substring(1),
           source: jpadSource,
           modificationData: ruleHistory
         },
-        meta: JSON.parse(metaSource)
+        meta: JSON.parse(metaSource),
       }
     });
   }
@@ -54,6 +56,17 @@ export default class KeysRepository {
   }
 }
 
+function getNewJpadFormatSourceIfNeeded(originalJpadSource) {
+  const parsedJpad = JSON.parse(originalJpadSource);
+  if (!Array.isArray(parsedJpad)) return originalJpadSource;
+
+  return JSON.stringify({
+    Partitions: [],
+    ValueType: 'string',
+    Rules: parsedJpad,
+  });
+}
+
 function getPathForJPad(keyName) {
   return `${BasePathForRules}/${keyName}.jpad`;
 }
@@ -62,7 +75,7 @@ function getPathForMeta(keyName) {
   return `meta/${keyName}.json`;
 }
 
-function getKeyFromJPadPath(keyPath){
+function getKeyFromJPadPath(keyPath) {
   const ext = path.extname(keyPath);
   return keyPath.substring(0, keyPath.length - ext.length);
 }

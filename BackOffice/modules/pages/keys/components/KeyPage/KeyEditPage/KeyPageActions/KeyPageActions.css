@@ -7,8 +7,9 @@
   float: right;
 }
 .key-action-buttons-wrapper .save-changes-button {
+  margin-left: 10px;
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.8);
+  background-color: #00aeef;
   height: 28px;
   border: 0;
   padding: 0 20px;
@@ -24,11 +25,8 @@
   width: 125px;
 }
 .key-action-buttons-wrapper .save-changes-button:hover {
-  background-color: #007acc;
+  background-color: #029CD5;
   cursor: pointer;
-}
-.key-action-buttons-wrapper .save-changes-button:active {
-  background-color: #0098ff;
 }
 .key-action-buttons-wrapper .save-changes-button:disabled {
   background-color: gray;
@@ -44,7 +42,7 @@
 }
 .key-action-buttons-wrapper .delete-key-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.8);
+  background-color: #00aeef;
   height: 28px;
   border: 0;
   padding: 0 20px;
@@ -60,15 +58,11 @@
   text-decoration: underline;
   background-color: transparent;
   color: gray;
-  margin-right: 10px;
   width: 125px;
 }
 .key-action-buttons-wrapper .delete-key-button:hover {
-  background-color: #007acc;
+  background-color: #029CD5;
   cursor: pointer;
-}
-.key-action-buttons-wrapper .delete-key-button:active {
-  background-color: #0098ff;
 }
 .key-action-buttons-wrapper .delete-key-button:disabled {
   background-color: gray;

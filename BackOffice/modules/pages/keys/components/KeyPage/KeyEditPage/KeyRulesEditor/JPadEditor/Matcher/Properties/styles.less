@@ -2,11 +2,11 @@
 @import (reference) "../../../../../../../../../styles/core/comboBox.less";
 @import (reference) "../../../../../../../../../styles/core/tags.less";
 @import (reference) "./icons.less";
-
 .matcher-operator {
   margin: 0 5px;
   display: inline-block;
   @width: 30px;
+  text-align: center;
   .combo-box-basic(@width, @width);
 }
 
@@ -14,7 +14,6 @@
   .property-value-combo-box {
     .combo-box-basic(80px);
   }
-  
   display: inline-block;
   .value-input {
     .metro-textbox;
@@ -29,7 +28,7 @@
     font-size: 12px;
     color: gray;
   }
-  i{
+  i {
     background: no-repeat;
     background-position: center center;
     background-size: 48px;
@@ -41,29 +40,28 @@
     border-radius: 16px;
     margin-right: 14px;
   }
-  
-  &[data-field-type=bool]{
-    i{
+  &[data-field-type=bool] {
+    i {
       background-image: @bool_icon;
     }
   }
-  &[data-field-type=string]{
-    i{
+  &[data-field-type=string] {
+    i {
       background-image: @string_icon;
     }
   }
-  &[data-field-type=version]{
-    i{
+  &[data-field-type=version] {
+    i {
       background-image: @version_icon;
     }
   }
-  &[data-field-type=enum]{
-    i{
+  &[data-field-type=enum] {
+    i {
       background-image: @list_icon;
     }
   }
-  &[data-field-type=number]{
-    i{
+  &[data-field-type=number] {
+    i {
       background-image: @number_icon;
     }
   }
@@ -71,33 +69,33 @@
 
 .property-name-wrapper {
   .combo-box-basic(300px);
-
-  :global(.bootstrap-typeahead) :global(.dropdown-menu) {
-    overflow-y: auto;
-    overflow-x: visible;
-    &::-webkit-scrollbar {
-      width: 12px;
-    }
-    &::-webkit-scrollbar-thumb {
-      border-radius: 6px;
-      background-color: #d8d8d8;
-      border: 3px solid #f1f1f1;
-    }
-    &::-webkit-scrollbar-track {
-      background-color: #f1f1f1;
-      border-radius: 6px;
-    }
-
-    min-width: 250px;
-    box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.15);
-    border-radius: 4px;
-    background-color: #ffffff;
-    li{
-      background: transparent;
-      border: none;
-      a:first-child{
-        padding:0;  
-        color: #515c66;
+  :global(.bootstrap-typeahead) {
+    :global(.dropdown-menu) {
+      overflow-y: auto;
+      overflow-x: visible;
+      &::-webkit-scrollbar {
+        width: 12px;
+      }
+      &::-webkit-scrollbar-thumb {
+        border-radius: 6px;
+        background-color: #d8d8d8;
+        border: 3px solid #f1f1f1;
+      }
+      &::-webkit-scrollbar-track {
+        background-color: #f1f1f1;
+        border-radius: 6px;
+      }
+      min-width: 250px;
+      box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.15);
+      border-radius: 4px;
+      background-color: #ffffff;
+      li {
+        background: transparent;
+        border: none;
+        a:first-child {
+          padding: 0;
+          color: #515c66;
+        }
       }
     }
   }

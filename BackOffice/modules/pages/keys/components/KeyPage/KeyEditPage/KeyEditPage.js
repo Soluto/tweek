@@ -12,10 +12,11 @@ import { compose, pure } from 'recompose';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import R from 'ramda';
-import ReactTooltip from 'react-tooltip';
 import alertIconSrc from './resources/alert-icon.svg';
 import classNames from 'classnames';
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
+import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
+import ReactTooltip from 'react-tooltip';
 
 class KeyEditPage extends Component {
 
@@ -173,7 +174,11 @@ const HeaderMainInput = (props) => {
   return (
     <div className={style['key-main-input']}>
       {isInAddMode ?
-        <NewKeyInput onKeyNameChanged={name => onKeyNameChanged(name)} />
+        <div className={style['new-key-input-wrapper']}>
+          <NewKeyInput onKeyNameChanged={name => onKeyNameChanged(name)} />
+          <div className={style['vertical-separator']}></div>
+          <KeyValueTypeSelector />
+        </div>
         :
         <EditableText
           onTextChanged={text => onDisplayNameChanged(text)}
@@ -192,26 +197,19 @@ function getKeyNameSuggestions(keysList) {
 }
 
 const NewKeyInput = compose(
-  connect(state => ({ keysList: state.keys, keyNameValidation: state.selectedKey.validation }))
+  connect(state => ({ keysList: state.keys, keyNameValidation: state.selectedKey.validation.key }))
 )(({keysList,
   keyNameValidation,
   onKeyNameChanged }) => {
   const suggestions = getKeyNameSuggestions(keysList).map(x => ({ label: x, value: x }));
-
-  const isShowingValidationMessage = keyNameValidation &&
-    keyNameValidation.key &&
-    !keyNameValidation.key.isValid &&
-    !!keyNameValidation.key.hint;
-
-  const keyValidationHint = isShowingValidationMessage ? keyNameValidation.key.hint : '';
-
   return (
     <div className={style['auto-suggest-wrapper']}
-      data-with-error={isShowingValidationMessage}>
+      data-with-error={keyNameValidation.isShowingHint}>
       <div className={style['validation-icon-wrapper']}
-        data-is-shown={isShowingValidationMessage}>
-        <img data-tip={keyValidationHint}
+        data-is-shown={keyNameValidation.isShowingHint}>
+        <img
           className={style['validation-icon']}
+          data-tip={keyNameValidation.hint}
           src={alertIconSrc}></img>
       </div>
       <ComboBox
@@ -222,8 +220,8 @@ const NewKeyInput = compose(
         className={style['auto-suggest']}
         />
       <ReactTooltip delayHide={1000}
-        disable={!isShowingValidationMessage}
-        effect='solid'
+        disable={!keyNameValidation.isShowingHint}
+        effect="solid"
         place="top"
         delayHide={500} />
     </div>

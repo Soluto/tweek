@@ -21,9 +21,10 @@ function _getSelectorWithAttribute(selector, attribute, value) {
 selectors.BACKGROUND = getSelectorByClassNames('header');
 selectors.SAVE_CHANGES_BUTTON = getSelectorByClassNames('key-action-buttons-wrapper', 'save-changes-button');
 selectors.ADD_KEY_BUTTON = getSelectorByClassNames('keys-page-container', 'add-button');
-selectors.KEY_NAME_INPUT = getSelectorByClassNames('key-main-input', 'bootstrap-typeahead-input-main');
+selectors.KEY_NAME_INPUT = getSelectorByClassNames('key-main-input', 'auto-suggest', 'bootstrap-typeahead-input-main');
 selectors.KEY_DISPLAY_NAME = getSelectorByClassNames('display-name-text');
-selectors.VALIDATION_ALERT_ICON = getSelectorByClassNames('validation-icon');
+selectors.KEY_NAME_VALIDATION_ALERT_ICON = getSelectorByClassNames('auto-suggest-wrapper','validation-icon-wrapper');
+selectors.KEY_VALUE_TYPE_VALIDATION_ALERT_ICON = getSelectorByClassNames('auto-suggest-wrapper','validation-icon-wrapper');
 selectors.KEY_PATH_SUGGESTIONS = getSelectorByClassNames('dropdown-menu');
 selectors.KEY_ACTUAL_PATH = getSelectorByClassNames('actual-path');
 selectors.KEY_FOLDER_NAME = getSelectorByClassNames('key-folder-name');
@@ -34,6 +35,7 @@ selectors.DELETE_KEY_BUTTON = getSelectorByClassNames('delete-key-button');
 selectors.ADD_RULE_BUTTON = getSelectorByClassNames('add-rule-button');
 selectors.ADD_CONDITION_BUTTON = getSelectorByClassNames('add-condition-button');
 selectors.RULE_CONDITION = getSelectorByClassNames('condition-wrapper');
+selectors.RULE_VALUE_INPUT = getSelectorByClassNames('values-input');
 selectors.TAB_ITEM_HEADER = getSelectorByClassNames('tab-header');
 selectors.RULES_TAB_ITEM = _getSelectorByIndex(selectors.TAB_ITEM_HEADER, 1);
 selectors.SOURCE_TAB_ITEM = _getSelectorByIndex(selectors.TAB_ITEM_HEADER, 2);
@@ -45,6 +47,7 @@ selectors.TAG = getSelectorByClassNames('tags-container', 'selected', 'tag');
 selectors.TAGS_SUGGESTION = getRelativeSelector([getSelectorByClassNames('tags-suggestion'), 'ul', 'li']);
 selectors.KEY_LIST_FILTER = getRelativeSelector([getSelectorByClassNames('search-input-wrapper'), getSelectorByClassNames('search-input')]);
 selectors.READONLY_KEY_MESSAGE = getSelectorByClassNames('readonly-key-message');
+selectors.KEY_VALUE_TYPE_INPUT = getSelectorByClassNames('key-value-type-selector-wrapper', 'bootstrap-typeahead-input-main');
 
 selectors.folder = (folderName) => {
   return _getSelectorWithAttribute(selectors.KEY_FOLDER_NAME, 'data-folder-name', folderName);
@@ -90,5 +93,7 @@ selectors.conditionPropertyNameSuggestion = (suggestionIndex) => {
 
   return selector;
 };
+
+selectors.ruleValueInput = (ruleIndex) => getRelativeSelector([selectors.ruleContainer(ruleIndex), selectors.RULE_VALUE_INPUT]);
 
 export { selectors, getRelativeSelector };

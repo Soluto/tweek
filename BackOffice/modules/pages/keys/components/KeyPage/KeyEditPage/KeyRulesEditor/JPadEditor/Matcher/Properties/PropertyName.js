@@ -4,7 +4,6 @@ import style from './styles.css';
 import ComboBox from '../../../../../../../../../components/common/ComboBox/ComboBox';
 import { withState } from 'recompose';
 import Highlighter from 'react-highlight-words';
-import { types } from '../../../../../../../../../services/TypesService';
 import Chance from 'chance';
 import ReactTooltip from 'react-tooltip';
 
@@ -62,7 +61,12 @@ let PropertySuggestion = ({ suggestion, textToMark }) => {
         searchWords={[textToMark]}
         textToHighlight={identity}
         />)</span>
-      <ReactTooltip id={tooltipId} place="right" type="dark" effect="solid">
+      <ReactTooltip id={tooltipId}
+        place="right"
+        type="dark"
+        effect="solid"
+        delayShow={1000}
+        delayHide={1000}>
         <PropertyTooltip propName={prop} identityType={identity} propType={type} description={suggestion.meta && suggestion.meta.description || ""} />
       </ReactTooltip>
     </div>

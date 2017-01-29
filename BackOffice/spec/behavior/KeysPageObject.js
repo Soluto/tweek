@@ -48,15 +48,17 @@ export default class KeysPageObject {
       this.browser.alertAccept();
 
       console.log('deleting key', keyName);
+      this.waitForKeyToBeDeleted(keyName);
     } catch (exp) { }
   }
 
-  addEmptyKey(keyName) {
+  addEmptyKey(keyName, keyValueType = 'String') {
     console.log('adding key', keyName);
     this.goToKey(BLANK_KEY_NAME);
 
     this.browser.waitForVisible(selectors.KEY_NAME_INPUT, 5000);
     this.browser.setValue(selectors.KEY_NAME_INPUT, keyName);
+    this.browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, keyValueType);
 
     this.browser.click(selectors.SAVE_CHANGES_BUTTON);
     this.browser.waitUntil(() =>

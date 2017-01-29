@@ -156,7 +156,7 @@ export default class EditorMetaService {
         },
       },
     };
-
+    
     EditorMetaService.isLoaded = true;
   }
 }
