@@ -39,7 +39,7 @@ describe('add key', () => {
     assert(isKeyPathSuggestionsExists, 'should show key name suggestions on input focus');
 
     browser.setValue(selectors.KEY_NAME_INPUT, keyToAddFullPath);
-    browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, 'string');
+    browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, 'String');
 
     assert(keysPageObject.hasChanges(), 'should has changes');
 
