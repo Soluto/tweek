@@ -2,6 +2,8 @@ import assert from 'assert';
 import KeysPageObject from './KeysPageObject';
 import PageAsserts from './PageAsserts';
 import { selectors } from './selectors';
+import { expect } from 'chai';
+import { diff } from 'deep-diff';
 
 export default class KeysAsserts {
 
@@ -17,18 +19,29 @@ export default class KeysAsserts {
     assert(!this.keysPageObject.isSaving(), 'should not be in saving state');
   }
 
-  assertKeySource(keySource, expectedSource, message = 'key source should be correct') {
-    const keySourceObject = JSON.parse(keySource);
-    const expectedKeySourceObject = JSON.parse(keySource);
+  assertKeySource(expectedSourceObject, message = 'key source should be correct') {
+    browser.waitForVisible(selectors.TAB_ITEM_HEADER, 2000);
+    browser.click(selectors.SOURCE_TAB_ITEM);
+    const keySourceCode = browser.getText(selectors.KEY_SOURCE_TEXT);
+
+    browser.click(selectors.RULES_TAB_ITEM);
+    let keySourceObject;
+    try {
+      keySourceObject = JSON.parse(keySourceCode);
+    }
+    catch (exp) {
+      assert(false, 'failed read key source, ' + exp);
+    }
 
     const deleteIds = (sourceObject) => {
-      sourceObject.forEach(matcher => { delete matcher['Id']; });
+      sourceObject.Rules.forEach(matcher => { delete matcher['Id']; });
     };
 
     deleteIds(keySourceObject);
-    deleteIds(expectedKeySourceObject);
+    deleteIds(expectedSourceObject);
 
-    assert(keySourceObject, expectedKeySourceObject, message);
+    const diffs = diff(keySourceObject, expectedSourceObject);
+    expect(diffs).to.equal(undefined, message + ' diffs are:' + diffs);
   }
 
   assertKeyHasNumberOfRules(expectedNumberOfRules, message = 'should have correct ammount of rules') {

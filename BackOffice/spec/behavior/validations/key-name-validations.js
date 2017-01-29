@@ -13,8 +13,9 @@ describe('key name validations', () => {
   const keysPageObject = new KeysPageObject(browser);
   const keysAsserts = new KeysAsserts(keysPageObject, browser);
 
-  before(() => {
+  beforeEach(() => {
     browser.url(KeysPageObject.BASE_URL);
+    if (keysPageObject.didAlertRaised()) browser.alertAccept();
   });
 
   it('should show invalid key name and disable save button', () => {
@@ -26,11 +27,22 @@ describe('key name validations', () => {
     browser.setValue(selectors.KEY_NAME_INPUT, chance.guid());
 
     assert(!keysPageObject.isSaveButtonDisabled(), 'should not disable save button');
-    assert(!browser.isVisible(selectors.VALIDATION_ALERT_ICON), 'should show key name validation message');
+    assert(!browser.isVisible(selectors.KEY_NAME_VALIDATION_ALERT_ICON), 'should not show key name validation');
 
     browser.setValue(selectors.KEY_NAME_INPUT, BLANK_KEY_NAME);
+    assert(browser.isVisible(selectors.KEY_NAME_VALIDATION_ALERT_ICON), 'should show key name validation');
+  });
 
-    assert(keysPageObject.isSaveButtonDisabled(), 'should disable save button');
-    assert(browser.isVisible(selectors.VALIDATION_ALERT_ICON), 'should show key name validation message');
+  it('should show validaton alert on clicking save without a value', () => {
+    browser.click(selectors.ADD_KEY_BUTTON);
+    keysAsserts.assertKeyOpened(BLANK_KEY_NAME);
+
+    browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, 'String'); // to make local changes
+
+    assert(!keysPageObject.isSaveButtonDisabled(), 'should not disable save button');
+    browser.click(selectors.SAVE_CHANGES_BUTTON);
+
+    assert(!keysPageObject.isSaving(), 'should not enter saving mode');
+    assert(browser.isVisible(selectors.KEY_NAME_VALIDATION_ALERT_ICON), 'should show key name validation');
   });
 });

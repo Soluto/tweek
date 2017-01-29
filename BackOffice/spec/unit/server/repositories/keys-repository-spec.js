@@ -3,12 +3,12 @@ jest.unmock('../../../../modules/server/repositories/keys-repository');
 
 import KeysRepository from '../../../../modules/server/repositories/keys-repository';
 
-describe("KeysRepository", () => {
+describe("keys-repository", () => {
 
   let mockGitRepo = {};
   let mockTransactionManager = {
-    write: function(action) { return action(mockGitRepo); },
-    read: function(action) { return action(mockGitRepo); }
+    write: function (action) { return action(mockGitRepo); },
+    read: function (action) { return action(mockGitRepo); }
   };
   let target = new KeysRepository(mockTransactionManager);
 
@@ -114,20 +114,24 @@ describe("KeysRepository", () => {
 
   describe("getKeyDetails", () => {
 
-    const metaSource = `{
-      "displayName": "test",      
+    const metaSource = JSON.stringify({
+      "displayName": "test",
       "description": "",
-      "tags": []
-    }`;
+      "tags": [],
+      "valueType": "",
+    });
 
-    const rulesSource = `[
-        {
-            "Id": "test",
-            "Matcher": {},
-            "Value": "test",
-            "Type": "SingleVariant"
-        }
-    ]`;
+    const rulesSource = JSON.stringify({
+      Rules: [{
+        "Id": "test",
+        "Matcher": {},
+        "Value": "test",
+        "Type": "SingleVariant",
+        "valueType": "",
+      }],
+      Partitions: [],
+      ValueType: "",
+    });
 
     const modificationData = {
       modifyDate: Date.now(),
@@ -137,12 +141,10 @@ describe("KeysRepository", () => {
 
     beforeEach(() => {
       mockGitRepo.getFileDetails = jest.fn(path => modificationData);
-      mockGitRepo.readFile = jest.fn(path => path.startsWith("meta") ? metaSource : rulesSource );
+      mockGitRepo.readFile = jest.fn(path => path.startsWith("meta") ? metaSource : rulesSource);
     });
 
     it("should return key definition with the source for the jpad", async () => {
-      // Arrange
-
       // Act
       let keyDetails = await target.getKeyDetails(testKeyPath);
 
@@ -152,8 +154,6 @@ describe("KeysRepository", () => {
     });
 
     it("should return key definition with the key's rules history", async () => {
-      // Arrange
-
       // Act
       let keyDetails = await target.getKeyDetails(testKeyPath);
 
@@ -162,13 +162,36 @@ describe("KeysRepository", () => {
     });
 
     it("should parse and return meta as an object", async () => {
-      // Arrange
-
       // Act
       let keyDetails = await target.getKeyDetails(testKeyPath);
 
       // Assert
       expect(keyDetails.meta).toEqual(JSON.parse(metaSource));
-    })
+    });
+
+    it("should convert old JPAD format to new format if needed", async () => {
+      // Arrange
+      const oldFormatJPAD = [{
+        "Id": "test",
+        "Matcher": {},
+        "Value": "test",
+        "Type": "SingleVariant",
+        "valueType": "",
+      }];
+
+      const expecteJPAD = {
+        Partitions: [],
+        ValueType: "string",
+        Rules: oldFormatJPAD,
+      };
+
+      mockGitRepo.readFile = jest.fn(path => path.startsWith("meta") ? metaSource : JSON.stringify(oldFormatJPAD));
+
+      // Act
+      let keyDetails = await target.getKeyDetails(testKeyPath);
+
+      // Assert
+      expect(keyDetails.keyDef.source).toEqual(JSON.stringify(expecteJPAD));
+    });
   })
 });

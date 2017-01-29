@@ -7,28 +7,29 @@ import RuleValue from '../RuleValue/RuleValue';
 import classNames from 'classnames';
 
 const ruleHasChanged = (props, nextProps) =>
+  props.valueType !== nextProps.valueType ||
   !R.equals(props.rule, nextProps.rule) ||
   !R.equals(props.mutate.path, nextProps.mutate.path);
 
-const comp = ({ rule, mutate, autofocus }) => {
+const comp = ({ rule, valueType, mutate, autofocus }) => {
   const isDefaultValue = Object.keys(rule.Matcher).length === 0;
 
   let valueTitle = isDefaultValue ? 'Default V' : 'V';
   valueTitle += rule.Type === 'SingleVariant' ? 'alue' : 'alues';
 
   return (
-    <div className={classNames(style['rule-container'], { [style['default-value']]: isDefaultValue }) }>
-      { !isDefaultValue ?
+    <div className={classNames(style['rule-container'], { [style['default-value']]: isDefaultValue })}>
+      {!isDefaultValue ?
         <div className={style['conditions']}>
           <label className={style['rule-partial-title']}>Conditions</label>
-          <Matcher matcher={rule.Matcher} mutate={mutate.in('Matcher') } autofocus={autofocus} />
+          <Matcher matcher={rule.Matcher} mutate={mutate.in('Matcher')} autofocus={autofocus} />
         </div> : null
       }
       <div className={style['values']} >
         <label className={style['rule-partial-title']}>{valueTitle}</label>
-        <RuleValue {...{ rule, mutate }} autofocus={isDefaultValue && autofocus} />
-      </div >
-    </div >
+        <RuleValue {...{ rule, mutate, valueType }} autofocus={isDefaultValue && autofocus} />
+      </div>
+    </div>
   );
 };
 

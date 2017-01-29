@@ -12,7 +12,7 @@ const comp = compose(
       [({ label: currentInputValue, value: currentInputValue }), ...options] : options,
     ...props,
   })
-)
+  )
 )(({ ...props, autofocus, setCurrentInputValue, emptyItem = { label: '', value: '' } }) => {
   const wrapperThemeClass = props.wrapperThemeClass ?
     props.wrapperThemeClass : style['combo-box-default-wrapper-theme-class'];
@@ -28,7 +28,9 @@ const comp = compose(
         onInputChange={text => {
           if (props.onInputChange) props.onInputChange(text);
           setCurrentInputValue(text);
-          if (text === '' && props.onChange) props.onChange(emptyItem);
+          if (!props.onChange) return;
+          const newSelectedItem = text === '' ? emptyItem : props.options.find(x => x.label === text);
+          if (!!newSelectedItem) props.onChange(newSelectedItem);
         } }
         ref={e => e && autofocus && e.refs.instance.focus()}
         />

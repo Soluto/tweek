@@ -1,8 +1,8 @@
 /* global jest, beforeEach, describe, it, expect */
-jest.unmock('../../../../../modules/store/ducks/ducks-utils/key-name-validations');
+jest.unmock('../../../../../modules/store/ducks/ducks-utils/validations/key-name-validations');
 jest.unmock('chance');
 
-import keyNameValidations from '../../../../../modules/store/ducks/ducks-utils/key-name-validations';
+import keyNameValidations from '../../../../../modules/store/ducks/ducks-utils/validations/key-name-validations';
 import Chance from 'chance';
 import { assert } from 'chai';
 import { BLANK_KEY_NAME } from '../../../../../modules/store/ducks/ducks-utils/blankKeyDefinition';

@@ -22,7 +22,6 @@ describe('add key', () => {
 
   after(() => {
     keysPageObject.deleteKeyIfExists(keyToAddFullPath);
-    keysPageObject.waitForKeyToBeDeleted(keyToAddFullPath);
   });
 
   it('should succeed adding key', () => {
@@ -37,9 +36,10 @@ describe('add key', () => {
 
     browser.click(selectors.KEY_NAME_INPUT);
     isKeyPathSuggestionsExists = browser.isExisting(selectors.KEY_PATH_SUGGESTIONS);
-    assert(isKeyPathSuggestionsExists, 'should show key name suggestions focus the input');
+    assert(isKeyPathSuggestionsExists, 'should show key name suggestions on input focus');
 
     browser.setValue(selectors.KEY_NAME_INPUT, keyToAddFullPath);
+    browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, 'string');
 
     assert(keysPageObject.hasChanges(), 'should has changes');
 

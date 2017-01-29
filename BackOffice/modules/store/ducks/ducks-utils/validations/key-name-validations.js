@@ -1,4 +1,4 @@
-import { BLANK_KEY_NAME } from './blankKeyDefinition';
+import { BLANK_KEY_NAME } from '../blankKeyDefinition';
 
 const lengthValidation = {
   rule: ({value}) => value.length > 0,

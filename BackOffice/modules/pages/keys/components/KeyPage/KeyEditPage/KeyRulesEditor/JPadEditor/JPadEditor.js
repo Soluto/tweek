@@ -22,23 +22,25 @@ function addMutatorRule(mutate) {
   mutate.prepend({ Id: chance.guid(), Matcher: { '': '' }, Value: '', Type: 'SingleVariant' });
 }
 
-const comp = ({ rules, mutate, autofocusRuleIndex, setAutofocusRuleIndex }) => {
-  if (!rules) return (<div/>);
+const comp = ({ mutate, valueType, autofocusRuleIndex, setAutofocusRuleIndex }) => {
+  const rulesMutator = mutate.in("Rules");
+  const rules = rulesMutator.getValue();
+  if (!rules) return (<div />);
 
   const hasDefaultValue = R.any(rule => Object.keys(rule.Matcher).length < 1)(rules);
 
-  return isBrowser ? (
-    <div className={style['rule-container']}>
+  return !isBrowser ? (<div>Loading rule...</div>) :
+    (<div className={style['rule-container']}>
       <button className={style['add-rule-button']} onClick={() => {
-        addMutatorRule(mutate);
+        addMutatorRule(rulesMutator);
         setAutofocusRuleIndex(0);
       } } >
         Add Rule
       </button>
-      { !hasDefaultValue ?
+      {!hasDefaultValue ?
         <button className={style['add-default-value-button']} onClick={() => {
-          addMutatorDefaultValue(mutate);
-          setAutofocusRuleIndex(mutate.target.length);
+          addMutatorDefaultValue(rulesMutator);
+          setAutofocusRuleIndex(rulesMutator.getValue().length);
         } } >
           Add default rule
         </button> : null
@@ -49,49 +51,41 @@ const comp = ({ rules, mutate, autofocusRuleIndex, setAutofocusRuleIndex }) => {
           <div className={style['conditions-container']}
             disabled
             key={i}
-          >
+            >
 
             <div className={style['rule-control-wrapper']} >
               {(i > 0 && i !== rules.length - 1) ?
-                <button className= { style['rule-order-button']}
-                  onClick={() => mutate.replaceKeys(i, i - 1) }
-                  title="Move up"
-                >
-                  &#xE908;
-                </button>
-                : null }
+                <button className={style['rule-order-button']}
+                  onClick={() => rulesMutator.replaceKeys(i, i - 1)}
+                  title="Move up">&#xE908;</button>
+                : null}
               {(i < rules.length - 1 && i !== rules.length - 2) ?
                 <button className={style['rule-order-button']}
-                  onClick={() => mutate.replaceKeys(i, i + 1) }
-                  title="Move down"
-                >
-                  &#xE902;
-                </button>
-                : null }
+                  onClick={() => rulesMutator.replaceKeys(i, i + 1)}
+                  title="Move down">&#xE902;</button>
+                : null}
               <button className={style['delete-rule-button']}
                 onClick={() => {
-                  deleteRule(mutate, i);
+                  deleteRule(rulesMutator, i);
                   setAutofocusRuleIndex(undefined);
                 } }
-                title="Remove rule"
-              ></button>
+                title="Remove rule"></button>
             </div>
 
             <Rule key={rule.Id}
-              mutate={mutate.in(i) }
+              mutate={rulesMutator.in(i)}
               rule={rule}
+              valueType={valueType}
               ruleIndex={i}
               autofocus={i === autofocusRuleIndex}
-            />
+              />
 
           </div>
         ))
       }
 
     </div >
-  )
-    :
-    (<div>Loading rule...</div>);
+    );
 };
 
 export default compose(

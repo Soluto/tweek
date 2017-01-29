@@ -1,13 +1,28 @@
 /* global jest, beforeEach, describe, it, expect */
 jest.unmock('../../../../../modules/store/ducks/tags');
 jest.unmock('../../../../../modules/store/ducks/selectedKey');
-jest.unmock('../../../../../modules/store/ducks/ducks-utils/blankKeyDefinition');
+// jest.unmock('../../../../../modules/store/ducks/ducks-utils/blankKeyDefinition');
 jest.unmock('../../../../../modules/utils/http');
+jest.unmock('../../../../../modules/store/ducks/ducks-utils/validations/key-name-validations');
+jest.unmock('../../../../../modules/store/ducks/ducks-utils/validations/key-value-type-validations');
+jest.unmock('../../../../../modules/services/TypesService');
 
-import { openKey, saveKey } from '../../../../../modules/store/ducks/selectedKey';
+jest.mock('../../../../../modules/store/ducks/ducks-utils/blankKeyDefinition', () => {
+  return {
+    BLANK_KEY_NAME: 'some key name',
+    createBlankKey: () => ({
+      keyDef: 'some key def',
+      meta: 'some meta',
+    }),
+  };
+});
+
+import { openKey, saveKey, updateKeyValueType, updateKeyName } from '../../../../../modules/store/ducks/selectedKey';
 import { createBlankKey, BLANK_KEY_NAME } from '../../../../../modules/store/ducks/ducks-utils/blankKeyDefinition';
 import { assert, expect } from 'chai';
 import fetchMock from 'fetch-mock';
+import keyNameValidations from '../../../../../modules/store/ducks/ducks-utils/validations/key-name-validations';
+import keyValueTypeValidations from '../../../../../modules/store/ducks/ducks-utils/validations/key-value-type-validations';
 
 describe('selectedKey', async () => {
 
@@ -17,6 +32,10 @@ describe('selectedKey', async () => {
   const KEY_SAVING = 'KEY_SAVING';
   const KEY_ADDED = 'KEY_ADDED';
   const TAGS_DOWNLOADED = 'TAGS_DOWNLOADED';
+  const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
+  const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
+  const KEY_VALIDATION_CHANGE = 'KEY_VALIDATION_CHANGE';
+  const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
 
   let dispatchMock;
   let currentState;
@@ -30,14 +49,17 @@ describe('selectedKey', async () => {
     fetchMock.restore();
   });
 
-  const generateState = (openedKeyName, keyNameToAdd) => {
+  const generateState = (openedKeyName, keyNameToAdd, validation = { isValid: true }) => {
     return {
       selectedKey: {
         key: openedKeyName,
         local: {
           key: keyNameToAdd,
           keyDef: 'some jpad',
-        }
+        },
+        validation: {
+          ...validation
+        },
       }
     };
   };
@@ -83,8 +105,16 @@ describe('selectedKey', async () => {
       const keyName = 'category/some key';
 
       const expectedKeyData = {
-        keyDef: 'some key definition',
-        meta: 'some meta',
+        keyDef: {
+          source: 'some key def source',
+          type: 'cs',
+          valueType: 'string',
+        },
+        meta: {
+          displayName: '',
+          description: '',
+          valueType: '',
+        },
       };
 
       const expectedPayload = {
@@ -101,6 +131,7 @@ describe('selectedKey', async () => {
 
       // Assert
       const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
+
       expect(keyOpenedDispatchAction).to.deep.equal({ type: KEY_OPENED, payload: expectedPayload }, 'should dispatch correct action');
     });
 
@@ -142,10 +173,9 @@ describe('selectedKey', async () => {
   });
 
   describe('saveKey', () => {
-    const commonSaveKeyFollowTest = (isNewKey) => it('should dispatch KEY_SAVING, fetch PUT key and dispatch KEY_SAVED', async () => {
+    const saveKeyCommonFlowTest = (isNewKey) => it('should dispatch KEY_SAVING, fetch PUT key and dispatch KEY_SAVED', async () => {
       // Arrange
       const keyNameToSave = 'someCategory/someKeyName';
-
       currentState = generateState(isNewKey ? BLANK_KEY_NAME : keyNameToSave, keyNameToSave);
 
       fetchMock.putOnce('glob:*/api/keys/*', {});
@@ -165,8 +195,45 @@ describe('selectedKey', async () => {
       expect(keySavedDispatchAction).to.deep.equal({ type: KEY_SAVED, payload: keyNameToSave }, 'should dispatch correct action');
     });
 
+    const saveKeyShouldShowValidationHints = (isNewKey) =>
+      it('should not save the key and show the validation hints if the validation state is invalid',
+        async () => {
+          // Arrang
+          const keyNameToSave = 'someCategory/someKeyName';
+
+          const stateValidation = {
+            isValid: false,
+            meta: {
+              someProperty: {
+                someProperty2: {
+                  isValid: false,
+                  isShowingHint: false,
+                  hint: 'pita',
+                }
+              }
+            }
+          };
+
+          currentState = generateState(isNewKey ? BLANK_KEY_NAME : keyNameToSave,
+            keyNameToSave,
+            stateValidation);
+
+          fetchMock.putOnce('glob:*/api/keys/*', {});
+
+          // Act
+          const func = saveKey();
+          await func(dispatchMock, () => currentState);
+
+          // Assert
+          const showKeyValiadtionHintsDispatchAction = dispatchMock.mock.calls[0][0];
+
+          expect(showKeyValiadtionHintsDispatchAction).to.deep.equal(
+            { type: SHOW_KEY_VALIDATIONS }, 'should dispatch correct action');
+        });
+
     describe('save new key', () => {
-      commonSaveKeyFollowTest(true);
+      saveKeyCommonFlowTest(true);
+      saveKeyShouldShowValidationHints(true);
 
       it('should open the new saved key if there wasnt key change while saving', async () => {
         // Arrange
@@ -219,7 +286,8 @@ describe('selectedKey', async () => {
     });
 
     describe('save existing key', () => {
-      commonSaveKeyFollowTest(false);
+      saveKeyCommonFlowTest(false);
+      saveKeyShouldShowValidationHints(false);
 
       it('should not dispatch KEY_ADDED, and not open the saved key', async () => {
         // Arrange
@@ -236,6 +304,73 @@ describe('selectedKey', async () => {
         assert(!doesDispatchPushTookAction(), 'should not open the new saved key');
         assert(!doesSpecificDispatchTookAction(KEY_ADDED), 'should not dispatch KEY_ADDED');
       });
+    });
+  });
+
+  describe('updateKeyValueType', () => {
+    it('should dispatch actions correctly', async () => {
+      // Arrange
+      const keyValueType = 'pita';
+      const expectedKeyValueTypeValidation = keyValueTypeValidations(keyValueType);
+      expectedKeyValueTypeValidation.isShowingHint = true;
+
+      const initializeState = generateState('some key', 'some new key');
+      initializeState.keys = [];
+
+      const expectedValidationPayload = {
+        ...initializeState.selectedKey.validation,
+        meta: {
+          ...initializeState.selectedKey.validation.meta,
+          valueType: expectedKeyValueTypeValidation,
+        },
+      };
+
+      // Act
+      const func = updateKeyValueType(keyValueType);
+      await func(dispatchMock, () => initializeState);
+
+      // Assert
+      const keyValueTypeChangeDispatchAction = dispatchMock.mock.calls[0][0];
+
+      expect(keyValueTypeChangeDispatchAction.type).to.deep.equal(KEY_VALUE_TYPE_CHANGE);
+      expect(keyValueTypeChangeDispatchAction.payload).to.deep.equal(keyValueType);
+
+      const keyValidationChangeDispatchAction = dispatchMock.mock.calls[1][0];
+      expect(keyValidationChangeDispatchAction).to.deep.equal(
+        { type: KEY_VALIDATION_CHANGE, payload: expectedValidationPayload }, 'should dispatch correct action');
+    });
+  });
+
+  describe('updateKeyName', () => {
+    it('should dispatch actions correctly', async () => {
+      // Arrange
+      const newKeyName = 'pita';
+
+      const initializeState = generateState('some key', 'some new key');
+      initializeState.keys = [];
+
+      const expectedKeyNameValidation = keyNameValidations(newKeyName, []);
+      expectedKeyNameValidation.isShowingHint = false;
+
+      const expectedValidationPayload = {
+        ...initializeState.selectedKey.validation,
+        key: expectedKeyNameValidation,
+      };
+
+      // Act
+      const func = updateKeyName(newKeyName);
+      await func(dispatchMock, () => initializeState);
+
+      // Assert
+      const keyNameChangeDispatchAction = dispatchMock.mock.calls[0][0];
+
+      expect(keyNameChangeDispatchAction.type).to.deep.equal(KEY_NAME_CHANGE);
+      expect(keyNameChangeDispatchAction.payload).to.deep.equal(newKeyName);
+
+      const keyValidationChangeDispatchAction = dispatchMock.mock.calls[1][0];
+
+      expect(keyValidationChangeDispatchAction).to.deep.equal(
+        { type: KEY_VALIDATION_CHANGE, payload: expectedValidationPayload }, 'should dispatch correct action');
     });
   });
 });
