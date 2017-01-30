@@ -16,9 +16,9 @@ describe('edit key', () => {
   const keysAsserts = new KeysAsserts(keysPageObject, browser);
 
   const expectedKeySource = {
-    Partitions: [],
-    ValueType: "string",
-    Rules: [{
+    partitions: [],
+    valueType: "string",
+    rules: [{
       "Id": "021430ef-d234-5b96-bd00-23ab5c78b054",
       "Matcher": {
         "": ""

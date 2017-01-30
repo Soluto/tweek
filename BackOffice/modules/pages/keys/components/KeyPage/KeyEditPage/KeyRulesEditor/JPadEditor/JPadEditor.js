@@ -23,7 +23,7 @@ function addMutatorRule(mutate) {
 }
 
 const comp = ({ mutate, valueType, autofocusRuleIndex, setAutofocusRuleIndex }) => {
-  const rulesMutator = mutate.in("Rules");
+  const rulesMutator = mutate.in("rules");
   const rules = rulesMutator.getValue();
   if (!rules) return (<div />);
 

@@ -5,9 +5,9 @@ export const BLANK_KEY_NAME = '_blank';
 export function createBlankKey() {
   const guid = chance.guid();
   const keyDefSource = {
-    Partitions: [],
-    ValueType: '',
-    Rules: [{
+    partitions: [],
+    valueType: '',
+    rules: [{
       Id: guid,
       Matcher: {},
       Value: '',

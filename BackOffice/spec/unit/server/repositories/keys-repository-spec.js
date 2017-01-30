@@ -122,15 +122,15 @@ describe("keys-repository", () => {
     });
 
     const rulesSource = JSON.stringify({
-      Rules: [{
+      rules: [{
         "Id": "test",
         "Matcher": {},
         "Value": "test",
         "Type": "SingleVariant",
         "valueType": "",
       }],
-      Partitions: [],
-      ValueType: "",
+      partitions: [],
+      valueType: "",
     });
 
     const modificationData = {
@@ -180,9 +180,9 @@ describe("keys-repository", () => {
       }];
 
       const expecteJPAD = {
-        Partitions: [],
-        ValueType: "string",
-        Rules: oldFormatJPAD,
+        partitions: [],
+        valueType: "string",
+        rules: oldFormatJPAD,
       };
 
       mockGitRepo.readFile = jest.fn(path => path.startsWith("meta") ? metaSource : JSON.stringify(oldFormatJPAD));

@@ -34,7 +34,7 @@ export default class KeysAsserts {
     }
 
     const deleteIds = (sourceObject) => {
-      sourceObject.Rules.forEach(matcher => { delete matcher['Id']; });
+      sourceObject.rules.forEach(matcher => { delete matcher['Id']; });
     };
 
     deleteIds(keySourceObject);
