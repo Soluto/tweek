@@ -58,7 +58,7 @@ export default compose(
   pure,
   lifecycle({
     componentWillReceiveProps({keyDef, mutate}) {
-      if (keyDef.valueType === mutate.in('ValueType').getValue()) return;
-      mutate.in('ValueType').updateValue(keyDef.valueType);
+      if (keyDef.valueType === mutate.in('valueType').getValue()) return;
+      mutate.in('valueType').updateValue(keyDef.valueType);
     }
   }))(KeyRulesEditor);

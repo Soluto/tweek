@@ -27,9 +27,9 @@ describe('key-value-type', () => {
   }
 
   let expectedKeySource = {
-    "Partitions": [],
-    "ValueType": "",
-    "Rules": [{
+    "partitions": [],
+    "valueType": "",
+    "rules": [{
       "Id": "b74a6ea7-3ad6-58bd-9159-8460162b2e42",
       "Matcher": {},
       "Value": "",
@@ -59,7 +59,7 @@ describe('key-value-type', () => {
 
       const ruleValueInputSelector = selectors.ruleValueInput(x.ruleIndexToAssert);
       browser.setValue(ruleValueInputSelector, x.ruleValue);
-      expectedKeySource.Rules[x.ruleIndexToAssert].Value = x.jpadRuleValue;
+      expectedKeySource.rules[x.ruleIndexToAssert].Value = x.jpadRuleValue;
 
       keysAsserts.assertKeySource(expectedKeySource);
     });

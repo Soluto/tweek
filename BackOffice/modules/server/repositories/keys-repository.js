@@ -61,9 +61,9 @@ function getNewJpadFormatSourceIfNeeded(originalJpadSource) {
   if (!Array.isArray(parsedJpad)) return originalJpadSource;
 
   return JSON.stringify({
-    Partitions: [],
-    ValueType: 'string',
-    Rules: parsedJpad,
+    partitions: [],
+    valueType: 'string',
+    rules: parsedJpad,
   });
 }
 
