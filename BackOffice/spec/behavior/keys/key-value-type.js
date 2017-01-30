@@ -40,22 +40,21 @@ describe('key-value-type', () => {
   before(() => {
     browser.url(KeysPageObject.BASE_URL);
     browser.windowHandleMaximize();
-  });
-
-  it('should succeed editing key', () => {
     browser.click(selectors.ADD_KEY_BUTTON);
     keysAsserts.assertKeyOpened(BLANK_KEY_NAME);
+  });
 
-    addKeyValueTypeAssertion('String', 'string', 0, 'value', 'value');
-    addKeyValueTypeAssertion('Number', 'number', 0, '5', 5);
-    addKeyValueTypeAssertion('Number', 'number', 0, 5, 5);
-    addKeyValueTypeAssertion('Bool', 'bool', 0, 'true', true);
-    addKeyValueTypeAssertion('Bool', 'bool', 0, 'false', false);
-    addKeyValueTypeAssertion('Version', 'version', 0, '5.0.6', '5.0.6');
+  addKeyValueTypeAssertion('String', 'string', 0, 'value', 'value');
+  addKeyValueTypeAssertion('Number', 'number', 0, '5', 5);
+  addKeyValueTypeAssertion('Number', 'number', 0, 5, 5);
+  addKeyValueTypeAssertion('Bool', 'bool', 0, 'true', true);
+  addKeyValueTypeAssertion('Bool', 'bool', 0, 'false', false);
+  addKeyValueTypeAssertion('Version', 'version', 0, '5.0.6', '5.0.6');
 
-    keyValueTypesAssertions.forEach(x => {
+  keyValueTypesAssertions.forEach(x => {
+    it('should succeed editing key for value type:' + x.keyValueTypeInput, () => {
       browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, x.keyValueTypeInput);
-      expectedKeySource.ValueType = x.jpadKeyValueType;
+      expectedKeySource.valueType = x.jpadKeyValueType;
 
       const ruleValueInputSelector = selectors.ruleValueInput(x.ruleIndexToAssert);
       browser.setValue(ruleValueInputSelector, x.ruleValue);
