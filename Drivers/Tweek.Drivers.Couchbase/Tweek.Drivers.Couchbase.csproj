@@ -4,10 +4,6 @@
     <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.6' ">$(PackageTargetFallback);portable-net45+win8+wp8+wpa81</PackageTargetFallback>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="**\*.cs" />
-    <EmbeddedResource Include="**\*.resx" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="CouchbaseNetClient" Version="2.4.0-dp3" />
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.1.6233.20455" />
     <PackageReference Include="NETStandard.Library" Version="1.6" />
@@ -17,8 +13,5 @@
     <ProjectReference Include="..\..\Engine.Drivers\Engine.Drivers.csproj" />
     <ProjectReference Include="..\..\Engine.Core\Engine.Core.csproj" />
     <ProjectReference Include="..\..\Engine.DataTypes\Engine.DataTypes.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
 </Project>
