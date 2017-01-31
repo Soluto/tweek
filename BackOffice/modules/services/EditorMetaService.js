@@ -130,6 +130,11 @@ export default class EditorMetaService {
             description: "Created at",
             ...types.string,
           },
+          EngagementLevel: {
+            multipleValues: true,
+            description: "Engagement Level",
+            ...types.string,
+          },
           DeviceType: {
             multipleValues: true,
             description: "Device type",
