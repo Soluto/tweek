@@ -22,7 +22,7 @@ function addMutatorRule(mutate) {
   mutate.prepend({ Id: chance.guid(), Matcher: { '': '' }, Value: '', Type: 'SingleVariant' });
 }
 
-const comp = ({ mutate, valueType, autofocusRuleIndex, setAutofocusRuleIndex }) => {
+const comp = ({ mutate, valueType, autofocusRuleIndex, setAutofocusRuleIndex, schema }) => {
   const rulesMutator = mutate.in("rules");
   const rules = rulesMutator.getValue();
   if (!rules) return (<div />);
@@ -69,11 +69,13 @@ const comp = ({ mutate, valueType, autofocusRuleIndex, setAutofocusRuleIndex }) 
                   deleteRule(rulesMutator, i);
                   setAutofocusRuleIndex(undefined);
                 } }
-                title="Remove rule"></button>
+                title="Remove rule"/>
             </div>
 
-            <Rule key={rule.Id}
+            <Rule
+              key={rule.Id}
               mutate={rulesMutator.in(i)}
+              schema={schema}
               rule={rule}
               valueType={valueType}
               ruleIndex={i}

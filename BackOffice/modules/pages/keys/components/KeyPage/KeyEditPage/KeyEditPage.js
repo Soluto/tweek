@@ -1,14 +1,14 @@
 import React from 'react';
-import { Component } from 'react';
+import {Component} from 'react';
 import ReactDOM from 'react-dom';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import KeyRulesEditor from './KeyRulesEditor/KeyRulesEditor';
 import style from './KeyEditPage.css';
 import KeyTags from './KeyTags/KeyTags';
 import EditableText from './EditableText/EditableText';
 import EditableTextArea from './EditableTextArea/EditableTextArea';
 import KeyModificationDetails from './KeyModificationDetails/KeyModificationDetails';
-import { compose, pure } from 'recompose';
+import {compose, pure} from 'recompose';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import R from 'ramda';
@@ -25,7 +25,7 @@ class KeyEditPage extends Component {
   }
 
   _onTagsChanged(newTags) {
-    const newMeta = { ...this.props.selectedKey.local.meta, tags: newTags };
+    const newMeta = {...this.props.selectedKey.local.meta, tags: newTags};
     this._onSelectedKeyMetaChanged(newMeta);
   }
 
@@ -34,12 +34,12 @@ class KeyEditPage extends Component {
   }
 
   _onDisplayNameChanged(newDisplayName) {
-    const newMeta = { ...this.props.selectedKey.local.meta, displayName: newDisplayName };
+    const newMeta = {...this.props.selectedKey.local.meta, displayName: newDisplayName};
     this._onSelectedKeyMetaChanged(newMeta);
   }
 
   _onDescriptionChanged(newDescription) {
-    const newMeta = { ...this.props.selectedKey.local.meta, description: newDescription };
+    const newMeta = {...this.props.selectedKey.local.meta, description: newDescription};
     this._onSelectedKeyMetaChanged(newMeta);
   }
 
@@ -47,11 +47,11 @@ class KeyEditPage extends Component {
     this.props.updateKeyMetaDef(newMeta);
   }
 
-  _onMutation = (x) => this.props.updateKeyDef({ source: JSON.stringify(x, null, 4) })
+  _onMutation = (x) => this.props.updateKeyDef({source: JSON.stringify(x, null, 4)})
 
   render() {
-    const { selectedKey, isInAddMode, isInStickyMode } = this.props;
-    const { key, local: {meta, keyDef}} = selectedKey;
+    const {selectedKey, isInAddMode, isInStickyMode, schema} = this.props;
+    const {key, local: {meta, keyDef}} = selectedKey;
     const isReadonly = !!meta.readOnly && meta.readOnly;
 
     const commonHeadersProps = {
@@ -64,9 +64,9 @@ class KeyEditPage extends Component {
 
     return (
       <form id="key-viewer-container-form" className={style['key-viewer-container-form']}
-        onSubmit={e => e.preventDefault()}>
+            onSubmit={e => e.preventDefault()}>
         <fieldset className={style['key-viewer-container-fieldset']}
-          disabled={isReadonly}>
+                  disabled={isReadonly}>
 
           <div className={style['key-viewer-container']}>
 
@@ -79,14 +79,15 @@ class KeyEditPage extends Component {
                 onTagsChanged={newTags => this._onTagsChanged(newTags)}
                 modificationData={keyDef.modificationData}
                 keyFullPath={key}
-                isInStickyMode={isInStickyMode} />
+                isInStickyMode={isInStickyMode}/>
             }
 
             <KeyRulesEditor
               keyDef={keyDef}
+              schema={schema}
               sourceTree={JSON.parse(keyDef.source)}
               onMutation={this._onMutation}
-              className={classNames(style['key-rules-editor'], { [style['sticky']]: isInStickyMode })} />
+              className={classNames(style['key-rules-editor'], {[style['sticky']]: isInStickyMode})}/>
 
           </div>
 
@@ -105,13 +106,13 @@ const KeyStickyHeader = (props) => {
   const {isInAddMode, isReadonly} = props;
 
   return (
-    <div className={style['sticky-key-header']} >
+    <div className={style['sticky-key-header']}>
 
       <HeaderMainInput {...props} />
 
       {!isReadonly ?
         <div className={style['sticky-key-page-action-wrapper']}>
-          <KeyPageActions isInAddMode={isInAddMode} isReadonly={isReadonly} isInStickyMode={true} />
+          <KeyPageActions isInAddMode={isInAddMode} isReadonly={isReadonly} isInStickyMode={true}/>
         </div> :
         null}
 
@@ -123,9 +124,9 @@ const KeyFullHeader = (props) => {
   const {isInAddMode, isReadonly, modificationData, keyMeta, onDescriptionChanged, onTagsChanged, keyFullPath} = props;
 
   return (
-    <div className={style['key-header']} >
+    <div className={style['key-header']}>
 
-      <KeyPageActions isInAddMode={isInAddMode} isReadonly={isReadonly} isInStickyMode={false} />
+      <KeyPageActions isInAddMode={isInAddMode} isReadonly={isReadonly} isInStickyMode={false}/>
 
       <div className={style['key-meta-container']}>
 
@@ -141,9 +142,9 @@ const KeyFullHeader = (props) => {
         </div>
 
         {!isInAddMode ? <div className={style['key-full-path']}>
-          <label>Full path: </label>
-          <label className={style['actual-path']}>{keyFullPath}</label>
-        </div> : null}
+            <label>Full path: </label>
+            <label className={style['actual-path']}>{keyFullPath}</label>
+          </div> : null}
 
         <div className={style['key-description-and-tags-wrapper']}>
           <div className={style['key-description-wrapper']}>
@@ -152,14 +153,14 @@ const KeyFullHeader = (props) => {
               onTextChanged={text => onDescriptionChanged(text)}
               placeHolder="Write key description"
               title="Click to edit description"
-              classNames={{ input: style['description-input'] }}
+              classNames={{input: style['description-input']}}
               maxLength={400}
-              />
+            />
           </div>
 
           <div className={style['tags-wrapper']}>
             <KeyTags onTagsChanged={newTags => onTagsChanged(newTags)}
-              tags={keyMeta.tags} />
+                     tags={keyMeta.tags}/>
           </div>
         </div>
 
@@ -170,12 +171,12 @@ const KeyFullHeader = (props) => {
 };
 
 const HeaderMainInput = (props) => {
-  const {isInAddMode, onKeyNameChanged, onDisplayNameChanged, keyMeta, isReadonly } = props;
+  const {isInAddMode, onKeyNameChanged, onDisplayNameChanged, keyMeta, isReadonly} = props;
   return (
     <div className={style['key-main-input']}>
       {isInAddMode ?
         <div className={style['new-key-input-wrapper']}>
-          <NewKeyInput onKeyNameChanged={name => onKeyNameChanged(name)} />
+          <NewKeyInput onKeyNameChanged={name => onKeyNameChanged(name)}/>
           <div className={style['vertical-separator']}></div>
           <KeyValueTypeSelector />
         </div>
@@ -183,8 +184,13 @@ const HeaderMainInput = (props) => {
         <EditableText
           onTextChanged={text => onDisplayNameChanged(text)}
           placeHolder="Enter key display name" maxLength={80} value={keyMeta.displayName} isReadonly={isReadonly}
-          classNames={{ container: style['display-name-container'], input: style['display-name-input'], text: style['display-name-text'], form: style['display-name-form'] }}
-          />}
+          classNames={{
+            container: style['display-name-container'],
+            input: style['display-name-input'],
+            text: style['display-name-text'],
+            form: style['display-name-form']
+          }}
+        />}
     </div>
   );
 };
@@ -197,20 +203,22 @@ function getKeyNameSuggestions(keysList) {
 }
 
 const NewKeyInput = compose(
-  connect(state => ({ keysList: state.keys, keyNameValidation: state.selectedKey.validation.key }))
-)(({keysList,
+  connect(state => ({keysList: state.keys, keyNameValidation: state.selectedKey.validation.key}))
+)(({
+  keysList,
   keyNameValidation,
-  onKeyNameChanged }) => {
-  const suggestions = getKeyNameSuggestions(keysList).map(x => ({ label: x, value: x }));
+  onKeyNameChanged
+}) => {
+  const suggestions = getKeyNameSuggestions(keysList).map(x => ({label: x, value: x}));
   return (
     <div className={style['auto-suggest-wrapper']}
-      data-with-error={keyNameValidation.isShowingHint}>
+         data-with-error={keyNameValidation.isShowingHint}>
       <div className={style['validation-icon-wrapper']}
-        data-is-shown={keyNameValidation.isShowingHint}>
+           data-is-shown={keyNameValidation.isShowingHint}>
         <img
           className={style['validation-icon']}
           data-tip={keyNameValidation.hint}
-          src={alertIconSrc}></img>
+          src={alertIconSrc}/>
       </div>
       <ComboBox
         options={suggestions}
@@ -218,12 +226,12 @@ const NewKeyInput = compose(
         onInputChange={text => onKeyNameChanged(text)}
         showValueInOptions
         className={style['auto-suggest']}
-        />
-      <ReactTooltip delayHide={1000}
+      />
+      <ReactTooltip
         disable={!keyNameValidation.isShowingHint}
         effect="solid"
         place="top"
-        delayHide={500} />
+        delayHide={500}/>
     </div>
   );
 });

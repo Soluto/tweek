@@ -1,24 +1,21 @@
 import React from 'react';
 import CustomSlider from '../../../../../../../../components/common/CustomSlider/CustomSlider';
 import style from './RuleValue.css';
-import EditorMetaService from '../../../../../../../../services/EditorMetaService';
 import ComboBox from '../../../../../../../../components/common/ComboBox/ComboBox';
 import editorRulesValuesConverter from '../../../../../../../../services/editor-rules-values-converter';
 
 function replaceNaN(fallbackValue) { return isNaN(this) ? fallbackValue : this; }
 const parseNumericInput = (inputValue) => inputValue === '' ? 0 : parseInt(inputValue);
 
-const editorMetaService = EditorMetaService.instance;
-
-function updateTypedValue(value, valueType) {
-  this.updateValue(editorRulesValuesConverter(value, '' + value, valueType).value)
+function updateTypedValue(mutate, value, valueType) {
+  mutate.updateValue(editorRulesValuesConverter(value, '' + value, valueType).value)
 }
 
 let SingleVariantValue = ({ value, mutate, valueType, identities, autofocus }) => (
   (<div className={style['rule-value-container']}>
 
     <input
-      onChange={e => mutate::updateTypedValue(e.target.value, valueType) }
+      onChange={e => updateTypedValue(mutate, e.target.value, valueType) }
       value={value}
     placeholder="Enter values here"
       className={style['values-input']}
@@ -100,8 +97,6 @@ const BernoulliTrial = ({ onUpdate, ratio }) => (
 );
 
 const IdetitySelection = ({ identities, mutate }) => {
-  const comboBoxIdentities = identities.map(x => ({ label: x, value: x }));
-
   return (
     <div>
       <label className={style['identity-selection-title']}>Identity: </label>
@@ -163,12 +158,12 @@ const MultiVariantValue = ({ valueDistrubtion: { type, args }, mutate, identitie
           {(args === 0) ?
             <button className={style['set-to-false-button']}
               onClick={() => mutate.apply(m =>
-                m.up()
-                  .in('Value').updateValue('false').up()
-                  .in('Type').updateValue('SingleVariant').up()
-                  .in('ValueDistribution').delete()
-                  .in('OwnerType').delete()
-              )}
+                  m.up()
+                    .in('Value').updateValue('false').up()
+                    .in('Type').updateValue('SingleVariant').up()
+                    .in('ValueDistribution').delete()
+                    .in('OwnerType').delete()
+                )}
               >Set to false
             </button> : null}
 
@@ -180,8 +175,8 @@ const MultiVariantValue = ({ valueDistrubtion: { type, args }, mutate, identitie
   return null;
 };
 
-export default ({ rule, mutate, valueType, autofocus }) => {
-  const identities = editorMetaService.getIdentities();
+export default ({ rule, mutate, valueType, autofocus, schema }) => {
+  const identities = Object.keys(schema);
 
   if (rule.Type === 'SingleVariant')
     return (<SingleVariantValue mutate={mutate.in('Value')}
