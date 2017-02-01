@@ -1,7 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import * as selectedKeyActions from '../../../../store/ducks/selectedKey';
+import {refreshSchemaInfo} from '../../../../store/ducks/schema';
 import { compose, lifecycle } from 'recompose';
 import MessageKeyPage from './MessageKeyPage/MessageKeyPage';
 import KeyEditPage from './KeyEditPage/KeyEditPage';
@@ -23,8 +23,8 @@ const onRouteLeaveConfirmFunc = (props) => {
 
 const keyPageComp = compose(
   connect((state, { params }) =>
-    ({ selectedKey: state.selectedKey, configKey: params.splat, isInAddMode: params.splat === BLANK_KEY_NAME }),
-    { ...selectedKeyActions }),
+    ({ selectedKey: state.selectedKey, configKey: params.splat, schema: state.schema, isInAddMode: params.splat === BLANK_KEY_NAME }),
+    { ...selectedKeyActions, refreshSchemaInfo }),
   routeLeaveHook(onRouteLeaveConfirmFunc),
   lifecycle({
     componentDidMount() {
@@ -34,8 +34,9 @@ const keyPageComp = compose(
       openKey(configKey);
     },
     componentWillReceiveProps({ configKey }) {
-      const { openKey, selectedKey } = this.props;
+      const { openKey, selectedKey, refreshSchemaInfo } = this.props;
       if (configKey !== this.props.configKey || !selectedKey) {
+        refreshSchemaInfo();
         openKey(configKey);
       }
     },
@@ -45,11 +46,11 @@ const keyPageComp = compose(
 
     if (!selectedKey ||
       !selectedKey.isLoaded)
-      return <MessageKeyPage message="Loading..."></MessageKeyPage>;
+      return <MessageKeyPage message="Loading..."/>;
 
     const { keyDef } = selectedKey.local;
     return !keyDef ?
-      <MessageKeyPage message="None existent key"></MessageKeyPage> :
+      <MessageKeyPage message="None existent key"/> :
       <KeyEditPage {...props} />;
   });
 
