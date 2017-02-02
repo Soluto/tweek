@@ -16,15 +16,30 @@ using Tweek.JPad;
 using ContextHelpers = Engine.Context.ContextHelpers;
 using LanguageExt;
 using Tweek.JPad.Rules;
-using static Engine.Core.Utils.TraceHelpers;
+using static LanguageExt.Prelude;
 
 namespace Engine
 {
+    public static class ITweekExtensions
+    {
+        private static readonly ConfigurationPath Root = ConfigurationPath.New("");
+        public static Option<JsonValue> SingleKey(this IDictionary<ConfigurationPath, ConfigurationValue> results) => SingleKey(results, Root);
+        public static Option<JsonValue> SingleKey(this IDictionary<ConfigurationPath, ConfigurationValue> results, ConfigurationPath path )
+        {
+            if (results.ContainsKey(path)) return Some(results[path].Value);
+            return None;
+        } 
+
+    }
     public interface ITweek
     {
         Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(
             ConfigurationPath pathQuery,
             HashSet<Identity> identities, GetLoadedContextByIdentityType externalContext = null);
+
+        Dictionary<ConfigurationPath, ConfigurationValue> CalculateWithLoaclContext(
+            ConfigurationPath pathQuery,
+            HashSet<Identity> identities, GetLoadedContextByIdentityType context, ConfigurationPath[] includePaths = null);
     }
 
     public class TweekRunner : ITweek
@@ -39,20 +54,24 @@ namespace Engine
             _rulesLoader = rulesLoader;
         }
 
-        private HashSet<ConfigurationPath> GetAllPaths(Dictionary<Identity, Dictionary<string, JsonValue>> allContextData,
-            IReadOnlyDictionary<string, IRule> ruleset, ConfigurationPath query)
+
+        public Dictionary<ConfigurationPath, ConfigurationValue> CalculateWithLoaclContext(ConfigurationPath pathQuery,
+            HashSet<Identity> identities,
+            GetLoadedContextByIdentityType context, ConfigurationPath[] includePaths = null)
         {
-            return new HashSet<ConfigurationPath>(allContextData.Values.SelectMany(x => x.Keys)
-                .Where(x => x.Contains("@fixed:"))
-                .Select(x=>x.Split(':')[1]) 
-                .Concat(ruleset.Keys)
-                .Select(ConfigurationPath.New)
-                .Where(path => ConfigurationPath.Match(path: path, query: query))
-                .Distinct());
+            includePaths = includePaths ?? Array<ConfigurationPath>();
+            var allRules = _rulesLoader();
+
+            var getRuleValue = EngineCore.GetRulesEvaluator(identities, context, (path) => allRules.TryGetValue(path));
+
+            var paths = includePaths.Concat(allRules.Keys.Select(ConfigurationPath.New))
+                .Where(path => ConfigurationPath.Match(path: path, query: pathQuery));
+
+            return paths
+                .Select(path => getRuleValue(path).Map(value => new { path = path.ToRelative(pathQuery), value }))
+                .SkipEmpty()
+                .ToDictionary(x => x.path, x => x.value);
         }
-
-        
-
 
         public async Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(ConfigurationPath pathQuery,
             HashSet<Identity> identities, 
@@ -65,22 +84,19 @@ namespace Engine
                         Context = new Dictionary<string,JsonValue>(await _contextDriver.GetContext(identity), StringComparer.OrdinalIgnoreCase )
                     })))
                 .ToDictionary(x => x.Identity, x => x.Context);
-            
-            var allRules = _rulesLoader();
 
             externalContext = externalContext ?? ContextHelpers.EmptyContextByIdentityType;
             
             var loadedContexts = ContextHelpers.GetContextRetrieverByType(ContextHelpers.LoadContexts(allContextData), identities);
-            var context =  ContextHelpers.Fallback(externalContext, loadedContexts);
-            
-            var getRuleValue = EngineCore.GetRulesEvaluator(identities, context, (path)=>allRules.TryGetValue(path));
-            
-            var paths = GetAllPaths(allContextData, allRules, pathQuery);
 
-            return paths
-                .Select(path => getRuleValue(path).Map(value=>new {path= path.ToRelative(pathQuery), value}))
-                .SkipEmpty()
-                .ToDictionary(x => x.path, x => x.value);
+            var fullContext =  ContextHelpers.Fallback(externalContext, loadedContexts);
+
+            var contextPaths = allContextData.Values.SelectMany(x => x.Keys)
+                .Where(x => x.Contains("@fixed:"))
+                .Select(x => x.Split(':')[1])
+                .Select(ConfigurationPath.New).ToArray();
+
+            return CalculateWithLoaclContext(pathQuery, identities, fullContext, contextPaths);
         }
     }
 

@@ -23,9 +23,17 @@ using Engine.Drivers.Context;
 using Tweek.JPad.Utils;
 using Tweek.JPad;
 using Tweek.ApiService.NetCore.Diagnostics;
+using Tweek;
+using Microsoft.AspNetCore.Diagnostics;
+using Tweek.ApiService.NetCore.Security;
+using System.Reflection;
+using Tweek.ApiService.NetCore.Addons;
+
+//using IdentityServer = Tweek.Auth.IdentityServer;
 
 namespace Tweek.ApiService.NetCore
 {
+
     class TweekContractResolver : DefaultContractResolver
     {
         protected override JsonContract CreateContract(Type objectType)
@@ -57,14 +65,18 @@ namespace Tweek.ApiService.NetCore
             }
 
             Configuration = builder.Build();
+            AddonsList = new AddonsList();
         }
 
         public IConfigurationRoot Configuration { get; }
+
+        public AddonsList AddonsList;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             
+
             services.AddApplicationInsightsTelemetry(Configuration);
 
             var contextBucketName = Configuration["Couchbase.BucketName"];
@@ -81,10 +93,10 @@ namespace Tweek.ApiService.NetCore
             var tweek = Task.Run(async () => await Engine.Tweek.Create(contextDriver, rulesDriver, parser)).Result;
 
             services.AddSingleton(tweek);
+            services.AddSingleton<CheckAccess>(Authorization.CreateAccessChecker(tweek));
             services.AddSingleton<IContextDriver>(contextDriver);
             services.AddSingleton(parser);
             services.AddSingleton<IEnumerable<IDiagnosticsProvider>>(new IDiagnosticsProvider[] {rulesDiagnostics, couchbaseDiagnosticsProvider});
-
             services.AddMvc().AddJsonOptions(opt =>
             {
                 opt.SerializerSettings.ContractResolver = new TweekContractResolver();
@@ -99,10 +111,12 @@ namespace Tweek.ApiService.NetCore
                 loggerFactory.AddConsole(Configuration.GetSection("Logging"));
                 loggerFactory.AddDebug();
             }
+            app.UseAuthenticationProviders(Configuration, AddonsList);
 
-            app.UseApplicationInsightsRequestTelemetry();
-            app.UseApplicationInsightsExceptionTelemetry();
-
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
             app.UseMvc();
         }
 
