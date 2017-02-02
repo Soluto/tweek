@@ -23,7 +23,7 @@ let translateValue = (oldOp, newOp, value) => {
 let ShortPredicate = ({meta, mutate, value}) => {
   return (
     <BinaryPredicate
-      onValueUpdate={(value) => { console.log(value); mutate.updateValue(value);}}
+      onValueUpdate={mutate.updateValue}
       onOpUpdate={selectedOp => {
         if (selectedOp === '$eq') return;
         mutate.updateValue({
