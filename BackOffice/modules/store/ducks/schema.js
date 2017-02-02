@@ -13,10 +13,8 @@ export function refreshSchemaInfo() {
     let schemaDetails = await GetSchema();
     let processedSchemaDetails = {};
 
-    for (let identity in schemaDetails) {
-      if (schemaDetails.hasOwnProperty(identity)) {
+    for (let identity in Object.keys(schemaDetails)) {
         processedSchemaDetails[identity] = mapKeys(changeCase.pascalCase, schemaDetails[identity]);
-      }
     }
 
     dispatch({type: SCHEMA_REFRESH, payload: processedSchemaDetails})

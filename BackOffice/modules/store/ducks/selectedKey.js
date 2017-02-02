@@ -6,6 +6,7 @@ import { withJsonData } from '../../utils/http';
 import keyNameValidations from './ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
 import { downloadTags } from './tags.js';
+import { refreshSchemaInfo } from './schema';
 
 const KEY_OPENED = 'KEY_OPENED';
 const KEY_OPENING = 'KEY_OPENING';
@@ -21,6 +22,7 @@ const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
 export function openKey(key) {
     return async function (dispatch) {
         dispatch(downloadTags());
+        dispatch(refreshSchemaInfo());
 
         if (key === BLANK_KEY_NAME) {
             dispatch({ type: KEY_OPENED, payload: createBlankKey() });
