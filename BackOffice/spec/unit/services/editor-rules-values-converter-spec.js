@@ -5,8 +5,7 @@ jest.mock('../../../modules/services/TypesService', () => {
     types: {
       string: { type: 'string' },
       number: { type: 'number' },
-      bool: { type: 'bool' },
-      mockType2: { type: 'bool', typeAlias: 'mock-type' },
+      bool: { type: 'boolean' },
     },
   };
 });
@@ -23,10 +22,9 @@ describe('editor-rules-values-converter', () => {
   setTestDefenition('pita', undefined, 'string', 'pita', true);
   setTestDefenition('5', undefined, 'number', 5, true);
   setTestDefenition('5a', 'aa', 'number', 'aa', false);
-  setTestDefenition('true', undefined, 'bool', true, true);
-  setTestDefenition('false', undefined, 'bool', false, true);
+  setTestDefenition('true', undefined, 'boolean', true, true);
+  setTestDefenition('false', undefined, 'boolean', false, true);
   setTestDefenition('5a', 'fallbackVal', 'unknown-type', 'fallbackVal', false);
-  setTestDefenition('true', undefined, 'mock-type', true, true);
 
   testDefenitions.forEach(x => it('should convert value correctly', () => {
     // Arrange
