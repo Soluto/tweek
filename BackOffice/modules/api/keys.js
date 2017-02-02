@@ -14,12 +14,14 @@ let injectAuthor = (fn) => function (req, res, deps, ...rest) {
 export async function getKey(req, res, { keysRepository }, { params }) {
   const keyPath = params.splat;
 
-  const key = await keysRepository.getKeyDetails(keyPath);
-  if (!key) {
+  let keyDetails;
+  try {
+    keyDetails = await keysRepository.getKeyDetails(keyPath);
+  } catch (exp) {
     res.sendStatus(404);
   }
 
-  res.json(key);
+  res.json(keyDetails);
 }
 
 export const saveKey = injectAuthor(async function (req, res, { keysRepository, author}, { params }) {

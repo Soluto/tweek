@@ -21,12 +21,16 @@ export function createBlankKey() {
       type: 'jpad',
       valueType: '',
     },
-    meta: {
-      displayName: '',
-      description: '',
-      tags: [],
-      valueType: '',
-    },
+    meta: createBlankKeyMeta(),
     key: BLANK_KEY_NAME,
   };
+}
+
+export function createBlankKeyMeta(keyName) {
+  return {
+    displayName: keyName || '',
+    description: '',
+    tags: [],
+    valueType: '',
+  }
 }

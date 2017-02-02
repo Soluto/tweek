@@ -25,14 +25,20 @@ export default class KeysRepository {
       let jpadSource = await gitRepo.readFile(pathForJPad);
       jpadSource = getNewJpadFormatSourceIfNeeded(jpadSource);
 
-      let metaSource = await gitRepo.readFile(pathForMeta);
+      let meta = null;
+      try {
+        meta = JSON.parse(await gitRepo.readFile(pathForMeta));
+      } catch (exp) {
+        console.warn('failed getting meta file', exp.message);
+      }
+
       return {
         keyDef: {
           type: path.extname(pathForJPad).substring(1),
           source: jpadSource,
           modificationData: ruleHistory
         },
-        meta: JSON.parse(metaSource),
+        meta,
       }
     });
   }
@@ -42,7 +48,7 @@ export default class KeysRepository {
       await gitRepo.updateFile(getPathForMeta(keyPath), keyMetaSource);
       await gitRepo.updateFile(getPathForJPad(keyPath), keyRulesSource);
 
-      await gitRepo.commitAndPush("BackOffice - updating " + keyPath, author)
+      await gitRepo.commitAndPush("BackOffice - updating " + keyPath, author);
     });
   }
 

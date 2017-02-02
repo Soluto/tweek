@@ -47,11 +47,10 @@ const keyPageComp = compose(
       !selectedKey.isLoaded)
       return <MessageKeyPage message="Loading..."></MessageKeyPage>;
 
-    const { meta, keyDef } = selectedKey.local;
-    if (!meta || !keyDef)
-      return <MessageKeyPage message="Damaged key :("></MessageKeyPage>;
-
-    return <KeyEditPage {...props} />;
+    const { keyDef } = selectedKey.local;
+    return !keyDef ?
+      <MessageKeyPage message="None existent key"></MessageKeyPage> :
+      <KeyEditPage {...props} />;
   });
 
 export default keyPageComp;

@@ -20,9 +20,9 @@ export default class KeysPageObject {
     return location;
   }
 
-  goToKey(keyName) {
+  goToKey(keyName, printToLog = true) {
     const goTo = `${KeysPageObject.BASE_URL}${KeysPageObject.KEYS_PAGE_URL}/${keyName}`;
-    console.log('set url to', goTo);
+    if (printToLog) console.log('set url to', goTo);
 
     this.browser.url(goTo);
 
@@ -134,7 +134,7 @@ export default class KeysPageObject {
 
     const checkIsKeyWasDeleted = (keyName) => {
       try {
-        this.goToKey(keyName);
+        this.goToKey(keyName, false);
         this.browser.waitForVisible(selectors.KEY_VIEWER_CONTAINER);
         return false;
       } catch (exp) {

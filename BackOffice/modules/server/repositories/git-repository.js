@@ -63,7 +63,6 @@ export default class GitRepository {
       commitSha = lastCommit.sha();
     }
 
-
     return {
       modifyDate,
       modifyUser,
