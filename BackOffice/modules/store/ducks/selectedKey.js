@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions';
 import R from 'ramda';
 import { push } from 'react-router-redux';
-import { createBlankKey, BLANK_KEY_NAME } from './ducks-utils/blankKeyDefinition';
+import { createBlankKey, createBlankKeyMeta, BLANK_KEY_NAME } from './ducks-utils/blankKeyDefinition';
 import { withJsonData } from '../../utils/http';
 import keyNameValidations from './ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
@@ -28,24 +28,25 @@ export function openKey(key) {
         }
 
         dispatch({ type: KEY_OPENING, payload: key });
-        let keyOpenedPayload = {
-            key,
-            meta: null,
-            keyDef: null,
-        };
 
         let keyData;
 
         try {
             keyData = await (await fetch(`/api/keys/${key}`, { credentials: 'same-origin' })).json();
         } catch (exp) {
-            dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
+            dispatch({ type: KEY_OPENED, payload: { key } });
             return;
         }
 
-        keyOpenedPayload.meta = keyData.meta;
-        keyOpenedPayload.keyDef = keyData.keyDef;
-        keyOpenedPayload.keyDef.valueType = keyData.meta.valueType || "string";
+        const meta = keyData.meta || createBlankKeyMeta(key);
+        const keyOpenedPayload = {
+            key,
+            keyDef: {
+                ...keyData.keyDef,
+                valueType: meta.valueType || "string",
+            },
+            meta
+        };
 
         dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
     };
@@ -110,13 +111,19 @@ export function saveKey() {
 
         dispatch({ type: KEY_SAVING });
 
-        await fetch(`/api/keys/${savedKey}`, {
+        const response = await fetch(`/api/keys/${savedKey}`, {
             credentials: 'same-origin',
             method: 'put',
             ...withJsonData(local),
         });
 
-        dispatch({ type: KEY_SAVED, payload: savedKey });
+        const isSaveSucceeded = response.status < 400;
+        dispatch({ type: KEY_SAVED, payload: { keyName: savedKey, isSaveSucceeded } });
+
+        if (!isSaveSucceeded) {
+            alert("Save key failed");
+            return;
+        }
 
         if (isNewKey) dispatch({ type: 'KEY_ADDED', payload: savedKey });
         const shouldOpenNewKey = isNewKey && getState().selectedKey.key === BLANK_KEY_NAME;
@@ -174,17 +181,20 @@ const handleKeyMetaUpdated = (state, { payload }) => ({
     },
 });
 
-const handleKeySaved = (state, { payload }) => {
-    return state.key === payload ?
-        { ...state, isSaving: false, } :
+const handleKeySaved = ({ local, remote, ...state }, { payload: { keyName, isSaveSucceeded } }) => {
+    return state.key === BLANK_KEY_NAME || state.key === keyName ?
+        {
+            ...state,
+            isSaving: false,
+            local,
+            remote: isSaveSucceeded ? R.clone(local) : remote,
+        } :
         ({ ...state });
 };
 
-const handleKeySaving = ({ local, ...otherState }) => ({
-    ...otherState,
+const handleKeySaving = ({ ...state }) => ({
+    ...state,
     isSaving: true,
-    local,
-    remote: R.clone(local),
 });
 
 const handleKeyNameChange = ({ local: { key, ...localData }, ...otherState }, { payload }) => ({
