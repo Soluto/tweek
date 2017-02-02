@@ -1,4 +1,6 @@
 /* global jest, beforeEach, describe, it, expect */
+jest.mock('../../../../../modules/services/tweek-api', () => {});
+
 jest.unmock('../../../../../modules/store/ducks/tags');
 jest.unmock('../../../../../modules/store/ducks/selectedKey');
 jest.unmock('../../../../../modules/utils/http');
@@ -92,7 +94,7 @@ describe('selectedKey', async () => {
       func(dispatchMock);
 
       // Assert
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[1][0];
+      const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
       assertDispatchAction(keyOpenedDispatchAction, { type: KEY_OPENED, payload: createBlankKey() });
     });
 
@@ -107,7 +109,7 @@ describe('selectedKey', async () => {
       // Assert
       assert(dispatchMock.mock.calls.length > 0, 'should call dispatch atleast once');
 
-      const keyOpeningdDispatchAction = dispatchMock.mock.calls[1][0];
+      const keyOpeningdDispatchAction = dispatchMock.mock.calls[2][0];
       assertDispatchAction(keyOpeningdDispatchAction, { type: KEY_OPENING, payload: keyName });
     });
 
@@ -141,7 +143,7 @@ describe('selectedKey', async () => {
       await func(dispatchMock);
 
       // Assert
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
+      const keyOpenedDispatchAction = dispatchMock.mock.calls[3][0];
       assertDispatchAction(keyOpenedDispatchAction, { type: KEY_OPENED, payload: expectedPayload });
     });
 
@@ -190,7 +192,7 @@ describe('selectedKey', async () => {
       await func(dispatchMock);
 
       // Assert
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
+      const keyOpenedDispatchAction = dispatchMock.mock.calls[3][0];
       assertDispatchAction(keyOpenedDispatchAction, { type: KEY_OPENED, payload: expectedPayload });
     });
 
