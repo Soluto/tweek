@@ -35,14 +35,14 @@ const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
 const InputPropertyValue = ({ onUpdate, value }) => (
   <input className={style['value-input']}
     type="text"
-    onChange={(e) => onUpdate(e.target.value) }
+    onChange={(e) => onUpdate(e.target.value)}
     value={value}
     placeholder="Value"
   />
 );
 
 function PropertyValueComponent({ onUpdate, meta, value, op }) {
-  let allowedValues = [];
+  let allowedValues = null;
   if (meta.type == "custom")
     allowedValues = meta["custom_type"].allowedValues || [];
 
@@ -60,10 +60,7 @@ function PropertyValueComponent({ onUpdate, meta, value, op }) {
         options={ allowedValues }
         placeholder="Value"
         wrapperThemeClass={style['property-value-combo-box']}
-        onChange={(selectedValue) => {
-          console.log(selectedValue);
-          onUpdate(selectedValue);
-        } }
+        onChange={(selectedValue) => { onUpdate(selectedValue); } }
         selected={[R.find(x => x === value)(allowedValues)]}
       />
     );
