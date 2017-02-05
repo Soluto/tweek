@@ -21,8 +21,8 @@ describe('edit key', () => {
     rules: [{
       "Id": "985627a1-d627-5516-89a9-79bc1b5515d0",
       "Matcher": {
-        "device.PartnerBrandId": "someValue 1",
-        "device.@@id": "id",
+        "device.AgentVersion": "1.1.1",
+        "device.CountryCode": "someValue 1",
       },
       "Value": "",
       "Type": "SingleVariant"
@@ -84,7 +84,7 @@ describe('edit key', () => {
     browser.click(firstSuggestion);
 
     browser.setValue(firstRuleFirstConditionValue, 'someValue 1');
-    browser.setValue(firstRuleSecondConditionValue, 'id');
+    browser.setValue(firstRuleSecondConditionValue, '1.1.1');
 
     browser.setValue(selectors.DEFAULT_VALUE_INPUT, 'some default value');
 
