@@ -23,14 +23,14 @@ selectors.SAVE_CHANGES_BUTTON = getSelectorByClassNames('key-action-buttons-wrap
 selectors.ADD_KEY_BUTTON = getSelectorByClassNames('keys-page-container', 'add-button');
 selectors.KEY_NAME_INPUT = getSelectorByClassNames('key-main-input', 'auto-suggest', 'bootstrap-typeahead-input-main');
 selectors.KEY_DISPLAY_NAME = getSelectorByClassNames('display-name-text');
-selectors.KEY_NAME_VALIDATION_ALERT_ICON = getSelectorByClassNames('auto-suggest-wrapper','validation-icon-wrapper');
-selectors.KEY_VALUE_TYPE_VALIDATION_ALERT_ICON = getSelectorByClassNames('auto-suggest-wrapper','validation-icon-wrapper');
+selectors.KEY_NAME_VALIDATION_ALERT_ICON = getSelectorByClassNames('auto-suggest-wrapper', 'validation-icon-wrapper');
+selectors.KEY_VALUE_TYPE_VALIDATION_ALERT_ICON = getSelectorByClassNames('auto-suggest-wrapper', 'validation-icon-wrapper');
 selectors.KEY_PATH_SUGGESTIONS = getSelectorByClassNames('dropdown-menu');
 selectors.KEY_ACTUAL_PATH = getSelectorByClassNames('actual-path');
 selectors.KEY_FOLDER_NAME = getSelectorByClassNames('key-folder-name');
 selectors.KEY_LINK = getSelectorByClassNames('key-link');
 selectors.DEFAULT_VALUE_RULE = getSelectorByClassNames('conditions-container', 'default-value');
-selectors.DEFAULT_VALUE_INPUT = getRelativeSelector([selectors.DEFAULT_VALUE_RULE, getSelectorByClassNames('values-input')]);
+selectors.DEFAULT_VALUE_INPUT = getRelativeSelector([selectors.DEFAULT_VALUE_RULE, 'input']);
 selectors.DELETE_KEY_BUTTON = getSelectorByClassNames('delete-key-button');
 selectors.ADD_RULE_BUTTON = getSelectorByClassNames('add-rule-button');
 selectors.ADD_CONDITION_BUTTON = getSelectorByClassNames('add-condition-button');
@@ -62,33 +62,32 @@ selectors.ruleContainer = (ruleIndex) => {
   return ruleIndex ? _getSelectorByIndex(ruleContainerSelector, ruleIndex) : ruleContainerSelector;
 };
 
-selectors.conditionValue = (conditionIndex) => {
-  const selector = getRelativeSelector([
+selectors.conditionValue = (ruleIndex, conditionIndex) => {
+  const conditionValueSelector = getRelativeSelector([
     _getSelectorByIndex(selectors.RULE_CONDITION, conditionIndex),
     getSelectorByClassNames('property-value-wrapper'),
-    getSelectorByClassNames('value-input'),
+    'input',
   ]);
 
-  return selector;
+  return getRelativeSelector([selectors.ruleContainer(ruleIndex), conditionValueSelector]);
 };
 
-selectors.conditionPropertyName = (conditionIndex) => {
-  const selector =
+selectors.conditionPropertyName = (ruleIndex, conditionIndex) => {
+  const propertyNameSelector =
     getRelativeSelector([
       _getSelectorByIndex(selectors.RULE_CONDITION, conditionIndex),
       getSelectorByClassNames('property-name-wrapper'),
       getSelectorByClassNames('bootstrap-typeahead-input-main'),
     ]);
 
-  return selector;
+  return getRelativeSelector([selectors.ruleContainer(ruleIndex), propertyNameSelector]);
 };
 
-selectors.conditionPropertyNameSuggestion = (suggestionIndex) => {
+selectors.typeaheadSuggestionByIndex = (suggestionIndex) => {
   const selector =
     getRelativeSelector([
       getSelectorByClassNames('bootstrap-typeahead-menu'),
       _getSelectorByIndex('li', suggestionIndex),
-      getSelectorByClassNames('property-suggestion-wrapper'),
     ]);
 
   return selector;
