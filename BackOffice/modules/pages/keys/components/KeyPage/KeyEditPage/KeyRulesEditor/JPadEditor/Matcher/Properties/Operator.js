@@ -13,7 +13,7 @@ export const getSupportedOperators = (meta) => {
   if (type === 'empty') return allOps;
 
   let ops = {};
-  if (type === 'boolean' || type === 'string') ops = equalityOps;
+  if (type === 'boolean' || type === 'string' || type === 'version') ops = equalityOps;
   if (type === 'number' || type === 'version') ops = { ...ops, ...comparisonOps };
 
   ops = { ...ops, ...groupOps };
