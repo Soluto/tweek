@@ -1,6 +1,4 @@
 /* global jest, beforeEach, describe, it, expect */
-jest.mock('../../../../../modules/services/tweek-api', () => {});
-
 jest.unmock('../../../../../modules/store/ducks/tags');
 jest.unmock('../../../../../modules/store/ducks/selectedKey');
 jest.unmock('../../../../../modules/utils/http');
@@ -172,7 +170,7 @@ describe('selectedKey', async () => {
       await func(dispatchMock);
 
       // Assert
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
+      const keyOpenedDispatchAction = dispatchMock.mock.calls[3][0];
       expect(keyOpenedDispatchAction.type).to.deep.equal(KEY_OPENED);
       expect(keyOpenedDispatchAction.payload.meta).to.deep.equal(createBlankKeyMeta());
     });
