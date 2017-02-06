@@ -3,7 +3,6 @@
 import KeysAsserts from '../KeysAsserts';
 import KeysPageObject from '../KeysPageObject';
 import assert from 'assert';
-import moment from "moment";
 import { selectors } from '../selectors';
 
 

@@ -47,8 +47,8 @@ describe('key-value-type', () => {
   addKeyValueTypeAssertion('String', 'string', 0, 'value', 'value');
   addKeyValueTypeAssertion('Number', 'number', 0, '5', 5);
   addKeyValueTypeAssertion('Number', 'number', 0, 5, 5);
-  addKeyValueTypeAssertion('Bool', 'bool', 0, 'true', true);
-  addKeyValueTypeAssertion('Bool', 'bool', 0, 'false', false);
+  addKeyValueTypeAssertion('Boolean', 'boolean', 0, 'true', true);
+  addKeyValueTypeAssertion('Boolean', 'boolean', 0, 'false', false);
   addKeyValueTypeAssertion('Version', 'version', 0, '5.0.6', '5.0.6');
 
   keyValueTypesAssertions.forEach(x => {

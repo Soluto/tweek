@@ -6,14 +6,9 @@ export let types = {
     type: 'number'
   },
   bool: {
-    type: 'bool'
+    type: 'boolean'
   }
 };
-
-export const enumType = (baseType) => ({
-  type: baseType,
-  typeAlias: 'enum',
-});
 
 let initializationPromise;
 

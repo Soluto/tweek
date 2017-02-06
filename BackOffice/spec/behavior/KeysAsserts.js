@@ -41,7 +41,7 @@ export default class KeysAsserts {
     deleteIds(expectedSourceObject);
 
     const diffs = diff(keySourceObject, expectedSourceObject);
-    expect(diffs).to.equal(undefined, message + ' diffs are:' + diffs);
+    expect(diffs).to.equal(undefined, message + ' diffs are:' + JSON.stringify(diffs));
   }
 
   assertKeyHasNumberOfRules(expectedNumberOfRules, message = 'should have correct ammount of rules') {

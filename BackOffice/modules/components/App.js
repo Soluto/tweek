@@ -4,12 +4,9 @@ import Title from 'react-title-component';
 import style from './App.css';
 import { Tabs } from 'react-tabs';
 import { Observable } from 'rxjs/Rx';
-import { compose, setObservableConfig } from 'recompose';
-import { connect } from 'react-redux';
+import { setObservableConfig } from 'recompose';
 import classNames from 'classnames';
 import logoSrc from './resources/logo.svg';
-import withLoading from '../hoc/with-loading';
-import EditorMetaService from '../services/EditorMetaService';
 require('../styles/core/fonts/fonts.css');
 
 setObservableConfig({
@@ -17,9 +14,7 @@ setObservableConfig({
 });
 Tabs.setUseDefaultStyles(false);
 
-export default compose(
-  withLoading(() => null, EditorMetaService.initialize())
-)(({ location: { pathname }, children }) => {
+export default (({ location: { pathname }, children }) => {
   return (
     <div className={style['app']}>
       <div className={style['header']}>

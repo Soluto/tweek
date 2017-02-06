@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import * as selectedKeyActions from '../../../../store/ducks/selectedKey';
 import { compose, lifecycle } from 'recompose';
@@ -23,7 +22,7 @@ const onRouteLeaveConfirmFunc = (props) => {
 
 const keyPageComp = compose(
   connect((state, { params }) =>
-    ({ selectedKey: state.selectedKey, configKey: params.splat, isInAddMode: params.splat === BLANK_KEY_NAME }),
+    ({ selectedKey: state.selectedKey, configKey: params.splat, schema: state.schema, isInAddMode: params.splat === BLANK_KEY_NAME }),
     { ...selectedKeyActions }),
   routeLeaveHook(onRouteLeaveConfirmFunc),
   lifecycle({
@@ -45,11 +44,11 @@ const keyPageComp = compose(
 
     if (!selectedKey ||
       !selectedKey.isLoaded)
-      return <MessageKeyPage message="Loading..."></MessageKeyPage>;
+      return <MessageKeyPage message="Loading..."/>;
 
     const { keyDef } = selectedKey.local;
     return !keyDef ?
-      <MessageKeyPage message="None existent key"></MessageKeyPage> :
+      <MessageKeyPage message="None existent key"/> :
       <KeyEditPage {...props} />;
   });
 

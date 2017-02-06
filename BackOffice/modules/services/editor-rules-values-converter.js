@@ -7,8 +7,9 @@ export default function convert(value, fallbackValue, type) {
     switch (type) {
       case '': return toStringConvertion;
       case 'string': return toStringConvertion;
-      case 'bool': return checkConvertedValue(JSON.parse(value), 'boolean', fallbackValue);
+      case 'boolean': return checkConvertedValue(JSON.parse(value), 'boolean', fallbackValue);
       case 'number': return checkConvertedValue(JSON.parse(value), 'number', fallbackValue);
+      case 'custom': return toStringConvertion;
       default: {
         const customType = Object.keys(types)
           .map(x => types[x])

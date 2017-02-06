@@ -64,6 +64,7 @@
     "body-parser": "1.15.0",
     "bundle-loader": "0.5.4",
     "chance": "1.0.3",
+    "change-case": "3.0.1",
     "classnames": "2.2.5",
     "compression": "1.6.1",
     "css-loader": "0.23.1",

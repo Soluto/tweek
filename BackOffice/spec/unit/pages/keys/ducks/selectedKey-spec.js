@@ -92,7 +92,7 @@ describe('selectedKey', async () => {
       func(dispatchMock);
 
       // Assert
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[1][0];
+      const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
       assertDispatchAction(keyOpenedDispatchAction, { type: KEY_OPENED, payload: createBlankKey() });
     });
 
@@ -107,7 +107,7 @@ describe('selectedKey', async () => {
       // Assert
       assert(dispatchMock.mock.calls.length > 0, 'should call dispatch atleast once');
 
-      const keyOpeningdDispatchAction = dispatchMock.mock.calls[1][0];
+      const keyOpeningdDispatchAction = dispatchMock.mock.calls[2][0];
       assertDispatchAction(keyOpeningdDispatchAction, { type: KEY_OPENING, payload: keyName });
     });
 
@@ -141,7 +141,7 @@ describe('selectedKey', async () => {
       await func(dispatchMock);
 
       // Assert
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
+      const keyOpenedDispatchAction = dispatchMock.mock.calls[3][0];
       assertDispatchAction(keyOpenedDispatchAction, { type: KEY_OPENED, payload: expectedPayload });
     });
 
@@ -170,7 +170,7 @@ describe('selectedKey', async () => {
       await func(dispatchMock);
 
       // Assert
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
+      const keyOpenedDispatchAction = dispatchMock.mock.calls[3][0];
       expect(keyOpenedDispatchAction.type).to.deep.equal(KEY_OPENED);
       expect(keyOpenedDispatchAction.payload.meta).to.deep.equal(createBlankKeyMeta());
     });
@@ -190,7 +190,7 @@ describe('selectedKey', async () => {
       await func(dispatchMock);
 
       // Assert
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
+      const keyOpenedDispatchAction = dispatchMock.mock.calls[3][0];
       assertDispatchAction(keyOpenedDispatchAction, { type: KEY_OPENED, payload: expectedPayload });
     });
 
