@@ -13,21 +13,21 @@ using static LanguageExt.Prelude;
 
 namespace Tweek.ApiService.NetCore.Security
 {
-    public delegate bool CheckAccess(ClaimsPrincipal identity, string path, ICollection<Identity> tweekIdentities, string permissionType);
+    public delegate bool CheckReadConfigurationAccess(ClaimsPrincipal identity, string path, ICollection<Identity> tweekIdentities);
     
     public static class Authorization
     {
-        public static CheckAccess CreateAccessChecker(ITweek tweek)
+        public static CheckReadConfigurationAccess CreateAccessChecker(ITweek tweek)
         {
-            return (identity, path, tweekIdentities, permissionType) =>
+            return (identity, path, tweekIdentities) =>
             {
                 if (path.StartsWith("@tweek")) return false;
                 return tweekIdentities.Select(tweekIdentity =>
                 {
                     var identityType = tweekIdentity.Type;
-                    var result = tweek.CalculateWithLoaclContext($"@tweek/auth/{identityType}/{permissionType}", new HashSet<Identity>(),
+                    var result = tweek.CalculateWithLocalContext($"@tweek/auth/{identityType}/read_configuration", new HashSet<Identity>(),
                         type => type == "token" ? (GetContextValue)((string q) => Optional(identity.FindFirst(q)).Map(x=>x.Value).Map(JsonValue.NewString)) : (_) => None)
-                        .SingleKey("")
+                        .SingleKey()
                         .Map(j => j.AsString())
                         .Match(x => match(x, 
                                 with("allow", (_) => true),

@@ -21,9 +21,9 @@ namespace Tweek.ApiService.NetCore.Controllers
     public class KeysController : Controller
     {
         private ITweek _tweek;
-        private readonly CheckAccess _checkAccess;
+        private readonly CheckReadConfigurationAccess _checkAccess;
 
-        public KeysController(ITweek tweek, CheckAccess checkAccess)
+        public KeysController(ITweek tweek, CheckReadConfigurationAccess checkAccess)
         {
             _tweek = tweek;
             _checkAccess = checkAccess;
@@ -45,8 +45,7 @@ namespace Tweek.ApiService.NetCore.Controllers
                     ? JsonConvert.SerializeObject(v.Value, JsonValueConverter.Instance)
                     : v.Value.AsString();
 
-        [HttpGet("keys/{*path}")]
-        [HttpGet("configurations/{*path}", Name = "LegacySecurity")]
+        [HttpGet("v1/keys/{*path}")]
         public async Task<ActionResult> GetAsync([FromRoute] string path, [FromQuery]Dictionary<string, string> context)
         {
             var allParams = PartitionByKey(context.ToDictionary(x => x.Key, x => x.Value),
@@ -58,11 +57,12 @@ namespace Tweek.ApiService.NetCore.Controllers
             var identities =
                 new HashSet<Identity>(contextParams.Where(x => !x.Key.Contains(".")).Select(x => new Identity(x.Key, x.Value.AsString())));
 
-            if (!_checkAccess(User, path, identities, "read_configuration")) return Forbid("Not authorized");
+            if (!_checkAccess(User, path, identities)) return Forbid("Not authorized");
 
             var modifiers = allParams.Item1;
             var isFlatten = modifiers.TryGetValue("$flatten").Select(x => bool.Parse(x.ToString())).IfNone(false);
-            var ignoreKeyTypes = modifiers.TryGetValue("$ignoreKeyTypes").Select(x => bool.Parse(x.ToString())).IfNone(true);
+            var ignoreKeyTypes = modifiers.TryGetValue("$ignoreKeyTypes").Select(x => bool.Parse(x.ToString())).IfNone(false);
+
             TranslateValue translateValue = ignoreKeyTypes ? (TranslateValue)TranslateValueToString : (x => x.Value);
 
             GetLoadedContextByIdentityType contextProps =
@@ -80,41 +80,5 @@ namespace Tweek.ApiService.NetCore.Controllers
                 .FirstOrNone()
                 .Match(x => Json(x), () => Json(null));
         }
-
-        /*
-        [HttpGet("configurations/{*path}")]
-        public async Task<ActionResult> GetLegacyAsync([FromRoute] string path, [FromQuery]IDictionary<string,string> context)
-        {
-            var allParams = PartitionByKey(context,
-                   x => x.StartsWith("$"));
-
-            IReadOnlyDictionary<string, JsonValue> contextParams = allParams.Item2.ToDictionary(x => x.Key,
-                x => NewString(x.Value.ToString()), StringComparer.OrdinalIgnoreCase);
-
-            var identities =
-                new HashSet<Identity>(contextParams.Where(x => !x.Key.Contains(".")).Select(x => new Identity(x.Key, x.Value.AsString())));
-
-            if (_checkAccess(User, path, identities, "read-configuation")) return Forbid("Not authorized");
-
-            var modifiers = allParams.Item1;
-            var isFlatten = modifiers.TryGetValue("$flatten").Select(x => bool.Parse(x.ToString())).IfNone(false);
-            var ignoreKeyTypes = modifiers.TryGetValue("$ignoreKeyTypes").Select(x => bool.Parse(x.ToString())).IfNone(true);
-            TranslateValue translateValue = ignoreKeyTypes ? (TranslateValue)TranslateValueToString : (x => x.Value);
-
-            GetLoadedContextByIdentityType contextProps =
-                identityType => key => contextParams.TryGetValue($"{identityType}.{key}");
-
-            var query = ConfigurationPath.New(path);
-            var data = await _tweek.Calculate(query, identities, contextProps);
-
-            if (query.IsScan)
-                return Json((!isFlatten
-                    ? (TreeResult.From(data, translateValue))
-                    : data.ToDictionary(x => x.Key.ToString(), x => translateValue(x.Value))));
-
-            return data.Select(x => ignoreKeyTypes ? (object)x.Value.Value.AsString() : x.Value.Value)
-                .FirstOrNone()
-                .Match(x => Json(x), () => Json(null));
-        }*/
     }
 }
