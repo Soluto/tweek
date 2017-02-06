@@ -37,7 +37,7 @@ namespace Engine
             ConfigurationPath pathQuery,
             HashSet<Identity> identities, GetLoadedContextByIdentityType externalContext = null);
 
-        Dictionary<ConfigurationPath, ConfigurationValue> CalculateWithLoaclContext(
+        Dictionary<ConfigurationPath, ConfigurationValue> CalculateWithLocalContext(
             ConfigurationPath pathQuery,
             HashSet<Identity> identities, GetLoadedContextByIdentityType context, ConfigurationPath[] includePaths = null);
     }
@@ -55,7 +55,7 @@ namespace Engine
         }
 
 
-        public Dictionary<ConfigurationPath, ConfigurationValue> CalculateWithLoaclContext(ConfigurationPath pathQuery,
+        public Dictionary<ConfigurationPath, ConfigurationValue> CalculateWithLocalContext(ConfigurationPath pathQuery,
             HashSet<Identity> identities,
             GetLoadedContextByIdentityType context, ConfigurationPath[] includePaths = null)
         {
@@ -64,8 +64,9 @@ namespace Engine
 
             var getRuleValue = EngineCore.GetRulesEvaluator(identities, context, (path) => allRules.TryGetValue(path));
 
-            var paths = includePaths.Concat(allRules.Keys.Select(ConfigurationPath.New))
-                .Where(path => ConfigurationPath.Match(path: path, query: pathQuery));
+            var paths = pathQuery.IsScan ? includePaths.Concat(allRules.Keys.Select(ConfigurationPath.New))
+                .Where(path => ConfigurationPath.Match(path: path, query: pathQuery))
+                : new[] { pathQuery };
 
             return paths
                 .Select(path => getRuleValue(path).Map(value => new { path = path.ToRelative(pathQuery), value }))
@@ -90,13 +91,12 @@ namespace Engine
             var loadedContexts = ContextHelpers.GetContextRetrieverByType(ContextHelpers.LoadContexts(allContextData), identities);
 
             var fullContext =  ContextHelpers.Fallback(externalContext, loadedContexts);
-
-            var contextPaths = allContextData.Values.SelectMany(x => x.Keys)
-                .Where(x => x.Contains("@fixed:"))
-                .Select(x => x.Split(':')[1])
-                .Select(ConfigurationPath.New).ToArray();
-
-            return CalculateWithLoaclContext(pathQuery, identities, fullContext, contextPaths);
+            var contextPaths = pathQuery.IsScan ? allContextData.Values.SelectMany(x => x.Keys)
+                    .Where(x => x.Contains("@fixed:"))
+                    .Select(x => x.Split(':')[1])
+                    .Select(ConfigurationPath.New).ToArray() : null;
+            
+            return CalculateWithLocalContext(pathQuery, identities, fullContext, contextPaths);
         }
     }
 
