@@ -72,15 +72,14 @@ class KeyEditPage extends Component {
 
             {isInStickyMode ?
               <KeyStickyHeader {...commonHeadersProps} />
-              :
-              <KeyFullHeader
-                {...commonHeadersProps}
-                onDescriptionChanged={text => this._onDescriptionChanged(text)}
-                onTagsChanged={newTags => this._onTagsChanged(newTags)}
-                modificationData={keyDef.modificationData}
-                keyFullPath={key}
-                isInStickyMode={isInStickyMode} />
-            }
+              : null}
+            <KeyFullHeader
+              {...commonHeadersProps}
+              onDescriptionChanged={text => this._onDescriptionChanged(text)}
+              onTagsChanged={newTags => this._onTagsChanged(newTags)}
+              modificationData={keyDef.modificationData}
+              keyFullPath={key}
+              isInStickyMode={isInStickyMode} />
 
             <KeyRulesEditor
               keyDef={keyDef}
@@ -154,7 +153,7 @@ const KeyFullHeader = (props) => {
               title="Click to edit description"
               classNames={{ input: style['description-input'] }}
               maxLength={400}
-              />
+            />
           </div>
 
           <div className={style['tags-wrapper']}>
@@ -184,7 +183,7 @@ const HeaderMainInput = (props) => {
           onTextChanged={text => onDisplayNameChanged(text)}
           placeHolder="Enter key display name" maxLength={80} value={keyMeta.displayName} isReadonly={isReadonly}
           classNames={{ container: style['display-name-container'], input: style['display-name-input'], text: style['display-name-text'], form: style['display-name-form'] }}
-          />}
+        />}
     </div>
   );
 };
@@ -218,7 +217,7 @@ const NewKeyInput = compose(
         onInputChange={text => onKeyNameChanged(text)}
         showValueInOptions
         className={style['auto-suggest']}
-        />
+      />
       <ReactTooltip delayHide={1000}
         disable={!keyNameValidation.isShowingHint}
         effect="solid"
