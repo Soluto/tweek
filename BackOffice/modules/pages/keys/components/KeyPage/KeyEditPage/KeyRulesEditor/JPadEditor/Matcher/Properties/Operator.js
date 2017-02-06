@@ -9,12 +9,14 @@ const groupOps = { '$in': 'in' };
 const allOps = { ...equalityOps, ...comparisonOps, ...groupOps };
 
 export const getSupportedOperators = (meta) => {
-  if (meta.type === 'empty') return allOps;
+  let type = meta.type == "custom" ? meta.custom_type.base : meta.type;
+  if (type === 'empty') return allOps;
 
   let ops = {};
-  if (meta.type === 'bool' || meta.type === 'string') ops = equalityOps;
-  if (meta.type === 'number' || meta.typeAlias === 'version') ops = { ...ops, ...comparisonOps };
-  if (meta.multipleValues) ops = { ...ops, ...groupOps };
+  if (type === 'boolean' || type === 'string' || type === 'version') ops = equalityOps;
+  if (type === 'number' || type === 'version') ops = { ...ops, ...comparisonOps };
+
+  ops = { ...ops, ...groupOps };
 
   return ops;
 };

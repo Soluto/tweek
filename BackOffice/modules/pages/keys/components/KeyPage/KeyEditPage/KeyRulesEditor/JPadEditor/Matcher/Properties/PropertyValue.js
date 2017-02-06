@@ -9,7 +9,7 @@ const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
 
   const handleAddtion = (newValue) => onUpdate([...value, newValue]);
   const handleDelete = (valueIndex) => onUpdate(R.remove(valueIndex, 1, value));
-  const indexedSuggestions = suggestions ? suggestions.map(x => x.label) : [];
+  const indexedSuggestions = suggestions ? suggestions.map(x => x) : [];
 
   return (
     <div className={style['tags-wrapper']}>
@@ -35,31 +35,33 @@ const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
 const InputPropertyValue = ({ onUpdate, value }) => (
   <input className={style['value-input']}
     type="text"
-    onChange={(e) => onUpdate(e.target.value) }
+    onChange={(e) => onUpdate(e.target.value)}
     value={value}
     placeholder="Value"
   />
 );
 
 function PropertyValueComponent({ onUpdate, meta, value, op }) {
+  let allowedValues = null;
+  if (meta.type == "custom")
+    allowedValues = meta["custom_type"].allowedValues || [];
+
   if (op === '$in')
     return (
       <TagsPropertyValue onUpdate={onUpdate}
         value={value}
-        suggestions={meta.allowedValues}
+        suggestions={allowedValues}
       />
     );
 
-  if (meta.allowedValues)
+  if (allowedValues)
     return (
       <ComboBox
-        options={ meta.allowedValues }
+        options={ allowedValues }
         placeholder="Value"
         wrapperThemeClass={style['property-value-combo-box']}
-        onChange={(selectedValue) => {
-          onUpdate(selectedValue.value);
-        } }
-        selected={[R.find(x => x.value === value)(meta.allowedValues)]}
+        onChange={(selectedValue) => { onUpdate(selectedValue); } }
+        selected={[R.find(x => x === value)(allowedValues)]}
       />
     );
 
