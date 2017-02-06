@@ -34,7 +34,7 @@ const keyPageComp = compose(
     },
     componentWillReceiveProps({ configKey }) {
       const { openKey, selectedKey } = this.props;
-      if (configKey !== this.props.configKey || !selectedKey) {
+      if (configKey !== this.props.configKey) {
         openKey(configKey);
       }
     },
@@ -44,11 +44,11 @@ const keyPageComp = compose(
 
     if (!selectedKey ||
       !selectedKey.isLoaded)
-      return <MessageKeyPage message="Loading..."/>;
+      return <MessageKeyPage message="Loading..." />;
 
     const { keyDef } = selectedKey.local;
     return !keyDef ?
-      <MessageKeyPage message="None existent key"/> :
+      <MessageKeyPage message="None existent key" /> :
       <KeyEditPage {...props} />;
   });
 
