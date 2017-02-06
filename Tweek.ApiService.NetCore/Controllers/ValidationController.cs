@@ -8,7 +8,6 @@ using Engine.Core.Rules;
 using Engine.Drivers.Rules;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Engine.Core.Rules;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
