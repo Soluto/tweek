@@ -13,9 +13,10 @@ const stickyHeaderIdentifier = (elementId, triggerScrollFromTop) => (Comp) => {
         const handler = (eventArgs) => {
           const distanceFromTop = eventArgs.target.scrollTop;
 
-          const newState = distanceFromTop > triggerScrollFromTop;
-          if (newState === this.props.isInStickyMode) return;
-          this.props.setIsInStickyMode(newState);
+          const shouldShowSticky = distanceFromTop > triggerScrollFromTop;
+          if (shouldShowSticky === this.props.isInStickyMode) return;
+
+          this.props.setIsInStickyMode(shouldShowSticky);
         };
 
         element.addEventListener('scroll', handler);
