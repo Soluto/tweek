@@ -22,8 +22,7 @@ export default class KeysAsserts {
   assertKeySource(expectedSourceObject, message = 'key source should be correct') {
     browser.waitForVisible(selectors.TAB_ITEM_HEADER, 2000);
     browser.click(selectors.SOURCE_TAB_ITEM);
-    const keySourceCode = browser.getText(selectors.KEY_SOURCE_TEXT);
-
+    const keySourceCode = browser.getHTML(selectors.KEY_SOURCE_TEXT, false);
     browser.click(selectors.RULES_TAB_ITEM);
     let keySourceObject;
     try {
