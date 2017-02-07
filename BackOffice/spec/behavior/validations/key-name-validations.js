@@ -38,6 +38,7 @@ describe('key name validations', () => {
     keysAsserts.assertKeyOpened(BLANK_KEY_NAME);
 
     browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, 'String'); // to make local changes
+    browser.click(selectors.BACKGROUND);
 
     assert(!keysPageObject.isSaveButtonDisabled(), 'should not disable save button');
     browser.click(selectors.SAVE_CHANGES_BUTTON);
