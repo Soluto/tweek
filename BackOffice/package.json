@@ -114,6 +114,7 @@
     "react-draggable": "2.1.2",
     "react-highlight-words": "0.3.0",
     "react-input-enhancements": "^0.5.3",
+    "react-monaco-editor": "0.7.3",
     "react-portal-tooltip": "1.1.4",
     "react-project": "0.0.30",
     "react-redux": "4.4.5",

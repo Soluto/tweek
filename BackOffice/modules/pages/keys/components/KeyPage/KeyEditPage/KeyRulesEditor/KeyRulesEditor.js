@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import JPadEditor from './JPadEditor/JPadEditor';
+import JPadTextEditor from './JPadTextEditor/JPadTextEditor';
 import Mutator from '../../../../../../utils/mutator';
 import wrapComponentWithClass from '../../../../../../hoc/wrap-component-with-class';
 import { compose, pure, lifecycle } from 'recompose';
@@ -23,7 +24,7 @@ const MutatorFor = (propName) => (Comp) =>
     }
   };
 
-const KeyRulesEditor = ({ keyDef, mutate, schema }) => {
+const KeyRulesEditor = ({ keyDef, mutate, schema, onMutation }) => {
 
   return (
     <div className={style['key-rules-editor-container']}>
@@ -47,7 +48,10 @@ const KeyRulesEditor = ({ keyDef, mutate, schema }) => {
           />
         </TabPanel>
         <TabPanel className={style['tab-content']}>
-          <pre className={style['key-def-json']}>
+          <JPadTextEditor
+            source={keyDef.source}
+            onChange={x => onMutation(JSON.parse(x))} />
+          <pre style={{"display": "none"}}>
             {JSON.stringify(JSON.parse(keyDef.source), null, 4)}
           </pre>
         </TabPanel>
