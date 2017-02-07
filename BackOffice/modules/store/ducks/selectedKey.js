@@ -63,7 +63,6 @@ export function updateKeyMetaDef(meta) {
 }
 
 export function updateKeyValueType(keyValueType) {
-    alert(keyValueType);
     return async function (dispatch, getState) {
         const rules = JSON.parse(getState().selectedKey.local.keyDef.source).rules;
         const shouldShowAlert = rules.some(x => !!x.Value || x.Type !== 'SingleVariant');
