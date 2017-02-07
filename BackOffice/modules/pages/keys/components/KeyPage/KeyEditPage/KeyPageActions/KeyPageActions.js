@@ -7,8 +7,10 @@ import { deleteKey } from '../../../../../../store/ducks/keys';
 import { diff } from 'deep-diff';
 
 const DeleteButton = ({isSaving, selectedKey, deleteKey}) => (
-  <button disabled={isSaving}
+  <button
+    disabled={isSaving}
     className={style['delete-key-button']}
+    tabIndex="-1"
     onClick={() => {
       if (confirm('Are you sure?')) {
         deleteKey(selectedKey.key);
@@ -17,9 +19,11 @@ const DeleteButton = ({isSaving, selectedKey, deleteKey}) => (
 );
 
 const SaveButton = ({selectedKey, isSaving, hasChanges, saveKey}) => (
-  <button disabled={!hasChanges || isSaving}
+  <button
+    disabled={!hasChanges || isSaving}
     data-state-has-changes={hasChanges}
     data-state-is-saving={isSaving}
+    tabIndex="-1"
     className={style['save-changes-button']}
     onClick={() => saveKey(selectedKey.key)}>
     {isSaving ? 'Saving...' : 'Save changes'}
