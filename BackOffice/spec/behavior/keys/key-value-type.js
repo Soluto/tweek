@@ -54,6 +54,7 @@ describe('key-value-type', () => {
   keyValueTypesAssertions.forEach(x => {
     it('should succeed editing key for value type:' + x.keyValueTypeInput, () => {
       browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, x.keyValueTypeInput);
+      browser.click(selectors.BACKGROUND);
       expectedKeySource.valueType = x.jpadKeyValueType;
 
       const ruleValueInputSelector = selectors.ruleValueInput(x.ruleIndexToAssert, x.jpadKeyValueType);
