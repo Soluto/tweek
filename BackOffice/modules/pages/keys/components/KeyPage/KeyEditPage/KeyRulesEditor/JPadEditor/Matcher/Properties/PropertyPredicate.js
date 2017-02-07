@@ -66,10 +66,15 @@ let getMetaForProperty = function (property, schema) {
 
   const [identity, innerProperty] = property.split('.');
 
-  meta = schema[identity][innerProperty];
+  let identityDetails = schema[identity];
+  if (!identityDetails) {
+    console.warn('unsupported identity: ' + identity);
+    return {type: 'string'};
+  }
+  meta = identityDetails[innerProperty];
   if (!meta) {
     console.warn('unsupported field meta: ' + property);
-    meta = {type: 'string'};
+    return {type: 'string'};
   }
   return meta;
 };

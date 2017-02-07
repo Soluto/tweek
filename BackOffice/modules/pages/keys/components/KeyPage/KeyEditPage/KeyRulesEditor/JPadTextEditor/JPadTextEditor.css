@@ -1,0 +1,39 @@
+.editor {
+  margin-top: 15px;
+  position: relative;
+  box-shadow: 0 10px 9px -10px rgba(0, 0, 0, 0.2);
+  border: 1px solid lightgray;
+  margin-bottom: 16px;
+}
+.save-code-changes-button {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  font-size: 12px;
+  height: 20px;
+  padding: 0 10px;
+  margin-bottom: 16px;
+}
+.save-code-changes-button:hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.save-code-changes-button:disabled {
+  background-color: gray;
+}
+.save-code-changes-button:disabled:hover,
+.save-code-changes-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
