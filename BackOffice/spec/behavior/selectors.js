@@ -92,8 +92,8 @@ selectors.typeaheadSuggestionByIndex = (suggestionIndex) => {
   return selector;
 };
 
-selectors.ruleValueInput = (ruleIndex, keyValueType) => {
-  if (keyValueType === 'boolean')
+selectors.ruleValueInput = (ruleIndex, isValueContainsSuggestions) => {
+  if (isValueContainsSuggestions)
     return getRelativeSelector([
       selectors.ruleContainer(ruleIndex),
       getSelectorByClassNames('rule-value-container'),
