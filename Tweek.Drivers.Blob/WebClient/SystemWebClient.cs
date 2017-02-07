@@ -3,40 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
+using System.Net.Http;
 using Tweek.Drivers.Blob;
 
 namespace Tweek.Drivers.Blob.WebClient
 {
     public class SystemWebClient : IWebClient
     {
-        private System.Net.WebClient mWebClient;
+        private HttpClient _client;
 
         public SystemWebClient()
         {
-            mWebClient = new System.Net.WebClient();
+
+            _client = new HttpClient();
         }
 
-        public Encoding Encoding
-        {
-            get
-            {
-                return mWebClient.Encoding;
-            }
-            set
-            {
-                mWebClient.Encoding = value;
-            }
-        }
+        public Encoding Encoding { get; set; } = Encoding.UTF8;
 
         public void Dispose()
         {
-            mWebClient.Dispose();
+            _client.Dispose();
         }
 
-        public Task<string> DownloadStringTaskAsync(Uri address)
+        public async Task<string> DownloadStringTaskAsync(Uri address)
         {
-            return mWebClient.DownloadStringTaskAsync(address);
+            return Encoding.GetString(await _client.GetByteArrayAsync(address));
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Tweek.ApiService.NetCore.Diagnostics
             }
             catch (Exception e)
             {
-                Trace.TraceError("couchbase not alive", e);
+                //Trace.TraceError("couchbase not alive", e);
                 return false;
             }
 
