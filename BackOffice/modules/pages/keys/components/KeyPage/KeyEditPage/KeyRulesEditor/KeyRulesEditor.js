@@ -51,7 +51,7 @@ const KeyRulesEditor = ({ keyDef, mutate, schema, onMutation }) => {
           <JPadTextEditor
             source={keyDef.source}
             onChange={x => onMutation(JSON.parse(x))} />
-          <pre style={{"display": "none"}}>
+          <pre className={style['key-def-json']} style={{"display": "none"}}>
             {JSON.stringify(JSON.parse(keyDef.source), null, 4)}
           </pre>
         </TabPanel>
