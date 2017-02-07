@@ -17,6 +17,8 @@ const comp = ({ rule, valueType, mutate, autofocus, schema }) => {
   let valueTitle = isDefaultValue ? 'Default ' : '';
   valueTitle += rule.Type === 'SingleVariant' ? 'Value' : 'Values';
 
+  const identities = Object.keys(schema);
+
   return (
     <div className={classNames(style['rule-container'], { [style['default-value']]: isDefaultValue })}>
       {!isDefaultValue ?
@@ -27,7 +29,7 @@ const comp = ({ rule, valueType, mutate, autofocus, schema }) => {
       }
       <div className={style['values']} >
         <label className={style['rule-partial-title']}>{valueTitle}</label>
-        <RuleValue {...{ rule, mutate, valueType, schema }} autofocus={isDefaultValue && autofocus} />
+        <RuleValue {...{ rule, mutate, valueType, identities }} autofocus={isDefaultValue && autofocus} />
       </div>
     </div>
   );

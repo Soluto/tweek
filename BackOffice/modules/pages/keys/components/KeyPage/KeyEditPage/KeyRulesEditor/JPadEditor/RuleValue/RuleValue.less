@@ -2,34 +2,39 @@
 @import (reference) "../../../../../../../../styles/core/comboBox.less";
 .rule-value-button {
   .small-metro-button;
-  margin-top: 7px;
+  margin: 7px;
   opacity: .7;
 }
 
 .rule-value-container {
   .values-input {
     .metro-textbox;
-    margin-top: 6px;
     resize: none;
     display: inline-block;
   }
   .add-variant-button {
     .rule-value-button;
-    margin: 10px;
   }
-  .to-feature-flag-button {
-    .rule-value-button;
+  .boolean-single-variant-wrapper {
+    .combo-box-basic(150px, 150px);
+    .to-feature-flag-button {
+      .rule-value-button;
+    }
   }
 }
 
-.identity-selection-title {
-  font-size: 12px;
-  color: darkgray;
-}
-
-.identity-selection-combobox-wrapper {
-  display: inline-block;
-  .combo-box-basic(auto);
+.identity-selection-container {
+  display: flex;
+  .identity-selection-title {
+    font-size: 12px;
+    color: darkgray;
+    display: flex;
+    margin-top: 7px;
+  }
+  .identity-selection-combobox-wrapper {
+    .combo-box-basic(150px, 150px);
+    display: inline-block;
+  }
 }
 
 .bernoulli-trial-container {

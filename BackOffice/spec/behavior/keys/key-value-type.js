@@ -56,7 +56,7 @@ describe('key-value-type', () => {
       browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, x.keyValueTypeInput);
       expectedKeySource.valueType = x.jpadKeyValueType;
 
-      const ruleValueInputSelector = selectors.ruleValueInput(x.ruleIndexToAssert);
+      const ruleValueInputSelector = selectors.ruleValueInput(x.ruleIndexToAssert, x.jpadKeyValueType);
       browser.setValue(ruleValueInputSelector, x.ruleValue);
       expectedKeySource.rules[x.ruleIndexToAssert].Value = x.jpadRuleValue;
 
