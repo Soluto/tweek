@@ -1,21 +1,10 @@
 ﻿<Project ToolsVersion="15.0" Sdk="Microsoft.NET.Sdk.Web">
-  <PropertyGroup Label="Configuration">
-    <PlatformTarget>x86</PlatformTarget>
-  </PropertyGroup>
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net461</TargetFramework>
-    <RuntimeIdentifier>win7-x86</RuntimeIdentifier>
-    <PreserveCompilationContext>true</PreserveCompilationContext>
-    <Prefer32Bit>False</Prefer32Bit>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81</PackageTargetFallback>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Data" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="CouchbaseNetClient" Version="2.3.11" />
+    <PackageReference Include="Microsoft.NETCore.App" Version="1.1.0" />
     <PackageReference Include="FSharp.Core" Version="4.0.0.1" />
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.1.6233.20455" />
     <PackageReference Include="LanguageExt.Core" Version="1.9.7" />
@@ -30,12 +19,11 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0-beta1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.AzureAppServicesIntegration" Version="1.0.0" />
-    <PackageReference Include="Tweek.JPad" Version="0.3.6233.20598" />
+    <PackageReference Include="Tweek.JPad" Version="0.5.6245.17626" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Drivers\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj" />
     <ProjectReference Include="..\Engine.Core\Engine.Core.csproj" />
     <ProjectReference Include="..\Engine.DataTypes\Engine.DataTypes.csproj" />
     <ProjectReference Include="..\Engine.Drivers\Engine.Drivers.csproj" />
@@ -43,5 +31,23 @@
     <ProjectReference Include="..\Tweek.Drivers.Blob\Tweek.Drivers.Blob.csproj" />
     <ProjectReference Include="..\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj" />
     <ProjectReference Include="..\Utils\JsonValueConverter\JsonValueConverter.csproj" />
+    <ProjectReference Include="..\Drivers\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update=".dockerignore">
+      <DependentUpon>Dockerfile</DependentUpon>
+    </Content>
+    <Content Update="docker-compose.override.yml">
+      <DependentUpon>docker-compose.yml</DependentUpon>
+    </Content>
+    <Content Update="docker-compose.vs.debug.yml">
+      <DependentUpon>docker-compose.yml</DependentUpon>
+    </Content>
+    <Content Update="docker-compose.vs.release.yml">
+      <DependentUpon>docker-compose.yml</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0-msbuild3-final" />
   </ItemGroup>
 </Project>

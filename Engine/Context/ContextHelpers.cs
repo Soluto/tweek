@@ -54,14 +54,14 @@ namespace Engine.Context
 
         internal static GetLoadedContextByIdentityType Memoize(GetLoadedContextByIdentityType c)
         {
-            var list = new ListDictionary();
+            var list = new Dictionary<string, GetContextValue>();
             return (t) =>
             {
-                if (!list.Contains(t))
+                if (!list.ContainsKey(t))
                 {
                     list[t] = Core.Context.ContextHelpers.Memoize(c(t));
                 }
-                return (GetContextValue) list[t];
+                return list[t];
             };
         }
 

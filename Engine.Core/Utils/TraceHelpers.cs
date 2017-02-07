@@ -12,7 +12,7 @@ namespace Engine.Core.Utils
         {
             foreach (var item in c)
             {
-                Trace.TraceInformation(item);
+                //Trace.TraceInformation(item);
             }
         }
         public static IDisposable TraceTime(string message)

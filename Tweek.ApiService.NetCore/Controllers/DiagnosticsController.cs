@@ -25,6 +25,9 @@ namespace Tweek.ApiService.NetCore.Controllers
         public dynamic Status()
             => _diagnosticsProviders.ToDictionary(provider => provider.Name, provider => provider.GetDetails());
 
+        [HttpGet("gc")]
+        public dynamic GC() => System.Runtime.GCSettings.IsServerGC;
+
         [HttpGet("")]
         public void Default(){
             

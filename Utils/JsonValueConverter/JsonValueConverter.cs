@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using FSharpUtils.Newtonsoft;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Reflection;
 
 namespace Tweek.Utils
 {
@@ -102,7 +102,7 @@ namespace Tweek.Utils
 
         public override bool CanConvert(Type objectType)
         {
-            return typeof (JsonValue).IsAssignableFrom(objectType);
+            return typeof (JsonValue).GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo());
         }
     }
 }

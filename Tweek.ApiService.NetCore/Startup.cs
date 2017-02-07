@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,7 +12,6 @@ using Tweek.Drivers.Blob;
 using Tweek.Drivers.Blob.WebClient;
 using Newtonsoft.Json;
 using Couchbase.Core.Serialization;
-using Engine;
 using Newtonsoft.Json.Serialization;
 using FSharpUtils.Newtonsoft;
 using Tweek.Utils;
@@ -23,6 +21,8 @@ using Engine.Drivers.Context;
 using Tweek.JPad.Utils;
 using Tweek.JPad;
 using Tweek.ApiService.NetCore.Diagnostics;
+using System.Reflection;
+using static LanguageExt.Prelude;
 
 namespace Tweek.ApiService.NetCore
 {
@@ -32,7 +32,7 @@ namespace Tweek.ApiService.NetCore
         {
             var contract = base.CreateContract(objectType);
 
-            if (typeof(JsonValue).IsAssignableFrom(objectType))
+            if (typeof(JsonValue).GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo()))
             {
                 contract.Converter = new JsonValueConverter();
             }
@@ -96,10 +96,11 @@ namespace Tweek.ApiService.NetCore
         {
             if (env.IsDevelopment())
             { 
-                loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-                loggerFactory.AddDebug();
+                //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+                //loggerFactory.AddDebug();
             }
-
+            Console.WriteLine(System.Runtime.GCSettings.IsServerGC);
+            Console.WriteLine(System.Runtime.GCSettings.LatencyMode);
             app.UseApplicationInsightsRequestTelemetry();
             app.UseApplicationInsightsExceptionTelemetry();
 
@@ -145,11 +146,18 @@ namespace Tweek.ApiService.NetCore
 
         IRuleParser GetRulesParser()
         {
+
             return JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
-                comparers: new Dictionary<string, ComparerDelegate>()
+                Comparers: Microsoft.FSharp.Core.FSharpOption<IDictionary<string, ComparerDelegate>>.Some(new Dictionary<string, ComparerDelegate>()
                 {
                     ["version"] = Version.Parse
-                })));
+                }), Sha1Provider: Microsoft.FSharp.Core.FSharpOption<Sha1Provider>.Some((s)=>
+                {
+                    using (var sha1 = System.Security.Cryptography.SHA1.Create())
+                    {
+                        return sha1.ComputeHash(s);
+                    }
+                }))));
         }
     }
 }
