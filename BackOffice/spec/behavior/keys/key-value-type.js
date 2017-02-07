@@ -16,13 +16,15 @@ describe('key-value-type', () => {
     jpadKeyValueType,
     ruleIndexToAssert,
     ruleValue,
-    jpadRuleValue) => {
+    jpadRuleValue,
+    isValueContainsSuggestions) => {
     keyValueTypesAssertions.push({
       keyValueTypeInput,
       jpadKeyValueType,
       ruleIndexToAssert,
       ruleValue,
       jpadRuleValue,
+      isValueContainsSuggestions,
     });
   }
 
@@ -42,23 +44,34 @@ describe('key-value-type', () => {
     browser.windowHandleMaximize();
     browser.click(selectors.ADD_KEY_BUTTON);
     keysAsserts.assertKeyOpened(BLANK_KEY_NAME);
+
+    const ruleValueInputSelector = selectors.ruleValueInput(0, false);
+    browser.setValue(ruleValueInputSelector, 'initialize value');
   });
 
-  addKeyValueTypeAssertion('String', 'string', 0, 'value', 'value');
-  addKeyValueTypeAssertion('Number', 'number', 0, '5', 5);
-  addKeyValueTypeAssertion('Number', 'number', 0, 5, 5);
-  addKeyValueTypeAssertion('Boolean', 'boolean', 0, 'true', true);
-  addKeyValueTypeAssertion('Boolean', 'boolean', 0, 'false', false);
-  addKeyValueTypeAssertion('Version', 'version', 0, '5.0.6', '5.0.6');
+  addKeyValueTypeAssertion('String', 'string', 0, 'value', 'value', false);
+  addKeyValueTypeAssertion('Number', 'number', 0, '5', 5, false);
+  addKeyValueTypeAssertion('Number', 'number', 0, 5, 5, false);
+  addKeyValueTypeAssertion('Boolean', 'boolean', 0, 'true', true, true);
+  addKeyValueTypeAssertion('Boolean', 'boolean', 0, 'false', false, true);
+  addKeyValueTypeAssertion('Version', 'version', 0, '5.0.6', '5.0.6', false);
 
   keyValueTypesAssertions.forEach(x => {
     it('should succeed editing key for value type:' + x.keyValueTypeInput, () => {
       browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, x.keyValueTypeInput);
-      browser.click(selectors.BACKGROUND);
+      const firstSuggestion = selectors.typeaheadSuggestionByIndex(0);
+      browser.click(firstSuggestion);
+
       expectedKeySource.valueType = x.jpadKeyValueType;
 
-      const ruleValueInputSelector = selectors.ruleValueInput(x.ruleIndexToAssert, x.jpadKeyValueType);
+      browser.waitUntil(() => keysPageObject.didAlertRaised(), 2000, 'should have shown changing value type alert');
+      browser.alertAccept();
+
+      const ruleValueInputSelector = selectors.ruleValueInput(x.ruleIndexToAssert, x.isValueContainsSuggestions);
+
       browser.setValue(ruleValueInputSelector, x.ruleValue);
+      if (x.isValueContainsSuggestions) browser.click(firstSuggestion);
+
       expectedKeySource.rules[x.ruleIndexToAssert].Value = x.jpadRuleValue;
 
       keysAsserts.assertKeySource(expectedKeySource);

@@ -29,11 +29,6 @@ const comp = compose(
           setCurrentInputValue(text);
           if (props.onInputChange) props.onInputChange(text);
         }}
-        onBlur={() => {
-          if (!props.onChange) return;
-          const newSelectedItem = currentInputValue === '' ? emptyItem : props.options.find(x => x.label === currentInputValue);
-          if (!!newSelectedItem) props.onChange(newSelectedItem);
-        }}
         ref={e => e && autofocus && e.refs.instance.focus()}
       />
     </div>
