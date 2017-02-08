@@ -1,5 +1,6 @@
 import React from 'react';
 import MonacoEditor from 'react-monaco-editor';
+import {AutoSizer} from 'react-virtualized'
 import style from './JPadTextEditor.css';
 
 const requireConfig = {
@@ -17,34 +18,37 @@ export default class JPadTextEditor extends React.Component {
     this.state = {
       currentSource: props.source,
       allowSave: false
-    }
+    };
   }
 
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps) {
     this.setState({
       currentSource: nextProps.source,
       allowSave: false
-    })
+    });
   }
 
   render() {
     let {currentSource} = this.state;
     return (
-      <div>
-        <button className={style['save-code-changes-button']} onClick={() => this._save()}
-                disabled={!this.state.allowSave}>Insert Changes
-        </button>
-
-        <div className={style['editor']}>
-          <MonacoEditor
-            height="300"
-            language="json"
-            value={currentSource}
-            onChange={newSource => this._onChange(newSource)}
-            requireConfig={requireConfig}
-          />
-        </div>
-      </div>
+      <AutoSizer disableWidth={true}>
+        {({height}) => (
+          <div style={{height: height - 20}}>
+            <MonacoEditor
+              height={height - 20}
+              language="json"
+              value={currentSource}
+              options={{scrollBeyondLastLine: false}}
+              onChange={newSource => this._onChange(newSource)}
+              requireConfig={requireConfig}
+            />
+            <button className={style['save-code-changes-button']} onClick={() => this._save()}
+                    disabled={!this.state.allowSave}>
+              Insert Changes
+            </button>
+          </div>
+        )}
+      </AutoSizer>
     )
   }
 

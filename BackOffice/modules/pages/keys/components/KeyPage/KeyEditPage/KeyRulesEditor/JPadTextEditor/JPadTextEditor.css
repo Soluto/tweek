@@ -1,10 +1,3 @@
-.editor {
-  margin-top: 15px;
-  position: relative;
-  box-shadow: 0 10px 9px -10px rgba(0, 0, 0, 0.2);
-  border: 1px solid lightgray;
-  margin-bottom: 16px;
-}
 .save-code-changes-button {
   vertical-align: top;
   background-color: #00aeef;
@@ -20,10 +13,9 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
-  font-size: 12px;
-  height: 20px;
-  padding: 0 10px;
-  margin-bottom: 16px;
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
 }
 .save-code-changes-button:hover {
   background-color: #029CD5;
