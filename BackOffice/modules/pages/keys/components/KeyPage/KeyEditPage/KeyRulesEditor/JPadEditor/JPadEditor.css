@@ -1,10 +1,10 @@
 .rule-container {
-  padding: 0;
+  padding: 20px 25px;
   margin: 0;
 }
 .rule-container .add-rule-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.8);
+  background-color: #00aeef;
   height: 28px;
   border: 0;
   padding: 0 20px;
@@ -19,11 +19,8 @@
   transition: all 0.2s ease-in-out;
 }
 .rule-container .add-rule-button:hover {
-  background-color: #007acc;
+  background-color: #029CD5;
   cursor: pointer;
-}
-.rule-container .add-rule-button:active {
-  background-color: #0098ff;
 }
 .rule-container .add-rule-button:disabled {
   background-color: gray;
@@ -35,7 +32,7 @@
 }
 .rule-container .add-default-value-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.8);
+  background-color: #00aeef;
   height: 28px;
   border: 0;
   padding: 0 20px;
@@ -54,11 +51,8 @@
   margin-left: 20px;
 }
 .rule-container .add-default-value-button:hover {
-  background-color: #007acc;
+  background-color: #029CD5;
   cursor: pointer;
-}
-.rule-container .add-default-value-button:active {
-  background-color: #0098ff;
 }
 .rule-container .add-default-value-button:disabled {
   background-color: gray;
@@ -117,7 +111,7 @@
 }
 .rule-container .conditions-container .rule-control-wrapper .delete-rule-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.8);
+  background-color: #00aeef;
   height: 28px;
   border: 0;
   padding: 0 20px;
@@ -141,11 +135,8 @@
   padding-top: 2px;
 }
 .rule-container .conditions-container .rule-control-wrapper .delete-rule-button:hover {
-  background-color: #007acc;
+  background-color: #029CD5;
   cursor: pointer;
-}
-.rule-container .conditions-container .rule-control-wrapper .delete-rule-button:active {
-  background-color: #0098ff;
 }
 .rule-container .conditions-container .rule-control-wrapper .delete-rule-button:disabled {
   background-color: gray;
