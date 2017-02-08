@@ -16,14 +16,14 @@ export default class JPadTextEditor extends React.Component {
     super(props);
 
     this.state = {
-      currentSource: props.source,
+      currentSource: JSON.stringify(JSON.parse(props.source), null, 4),
       allowSave: false
     };
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      currentSource: nextProps.source,
+      currentSource: JSON.stringify(JSON.parse(nextProps.source), null, 4),
       allowSave: false
     });
   }
