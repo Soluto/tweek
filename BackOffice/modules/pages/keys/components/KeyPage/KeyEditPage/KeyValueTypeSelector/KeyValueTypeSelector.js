@@ -1,11 +1,10 @@
 import React from 'react';
 import ComboBox from '../../../../../../components/common/ComboBox/ComboBox';
 import style from './KeyValueTypeSelector.css';
-import {types, initializeTypes} from '../../../../../../services/TypesService';
-import {compose} from 'recompose';
-import withLoading from '../../../../../../hoc/with-loading';
-import {connect} from 'react-redux';
-import {updateKeyValueType} from '../../../../../../store/ducks/selectedKey';
+import { types } from '../../../../../../services/TypesService';
+import { compose } from 'recompose';
+import { connect } from 'react-redux';
+import { updateKeyValueType } from '../../../../../../store/ducks/selectedKey';
 import ReactTooltip from 'react-tooltip';
 import alertIconSrc from '../resources/alert-icon.svg';
 
@@ -21,23 +20,22 @@ const getValueTypeSuggestions = () => {
 };
 
 const KeyValueTypeSelector = compose(
-  withLoading(() => null, initializeTypes()),
   connect(state => ({
     selectedKey: state.selectedKey,
     validation: state.selectedKey.validation.meta.valueType,
-  }), {updateKeyValueType})
+  }), { updateKeyValueType })
 )(props => {
   const suggestions = getValueTypeSuggestions();
   return (
     <div className={style['key-value-type-selector-container']}>
       <label className={style['key-value-type-label']}>Key value type:</label>
       <div className={style['key-value-type-selector-wrapper']}
-           data-with-error={props.validation.isShowingHint}>
+        data-with-error={props.validation.isShowingHint}>
         <div className={style['validation-icon-wrapper']}
-             data-is-shown={props.validation.isShowingHint}>
+          data-is-shown={props.validation.isShowingHint}>
           <img data-tip={props.validation.hint}
-               className={style['validation-icon']}
-               src={alertIconSrc}/>
+            className={style['validation-icon']}
+            src={alertIconSrc} />
         </div>
         <ComboBox
           options={suggestions}
@@ -49,7 +47,7 @@ const KeyValueTypeSelector = compose(
           disable={!props.validation.isShowingHint}
           effect="solid"
           place="top"
-          delayHide={500}/>
+          delayHide={500} />
       </div>
     </div>
   );

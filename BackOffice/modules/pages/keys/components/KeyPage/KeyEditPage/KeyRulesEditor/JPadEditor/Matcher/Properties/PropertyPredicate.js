@@ -1,15 +1,16 @@
 import React from 'react';
 import R from 'ramda';
-import {Operator, getSupportedOperators} from './Operator';
+import { Operator, getSupportedOperators } from './Operator';
 import PropertyValue from './PropertyValue';
+import { types } from '../../../../../../../../../services/TypesService';
 
 const isValueType = (value) => R.isArrayLike(value) || typeof (value) !== 'object';
 
 let BinaryPredicate = ({onValueUpdate, onOpUpdate, op, meta, value}) => {
   return (
-    <div style={{display: 'flex'}}>
-      <Operator onUpdate={onOpUpdate} supportedOperators={getSupportedOperators(meta)} selectedOp={op}/>
-      <PropertyValue {...{meta, value, onUpdate: onValueUpdate, op}} />
+    <div style={{ display: 'flex' }}>
+      <Operator onUpdate={onOpUpdate} supportedOperators={getSupportedOperators(meta)} selectedOp={op} />
+      <PropertyValue {...{ meta, value, onUpdate: onValueUpdate, op }} />
     </div>
   );
 };
@@ -28,32 +29,32 @@ let ShortPredicate = ({meta, mutate, value}) => {
         if (selectedOp === '$eq') return;
         mutate.updateValue({
           [selectedOp]: translateValue('$eq', selectedOp, value),
-          ...(meta.compare ? {$compare: meta.compare} : {}),
+          ...(meta.compare ? { $compare: meta.compare } : {}),
         });
-      } }
+      }}
       op="$eq"
-      {...{value, meta} }
+      {...{ value, meta } }
     />
   );
 };
 
 let ComplexPredicate = ({predicate, mutate, property, meta, schema}) => {
   return (
-    <div style={{display: 'flex'}}>{
+    <div style={{ display: 'flex' }}>{
       R.flatten(R.toPairs(predicate)
         .filter(([key]) => key[0] === '$')
         .filter(([op]) => op !== '$compare')
         .map(([op, value]) =>
           (isValueType(value)) ?
             <BinaryPredicate key={op}
-                             onOpUpdate={selectedOp => {
-                               const newValue = translateValue(op, selectedOp, value);
-                               if (selectedOp === '$eq') mutate.updateValue(newValue);
-                               else mutate.apply(m => m.in(op).updateKey(selectedOp).updateValue(newValue));
-                             } }
-                             onValueUpdate={mutate.in(op).updateValue} {...{value, op, meta}}
+              onOpUpdate={selectedOp => {
+                const newValue = translateValue(op, selectedOp, value);
+                if (selectedOp === '$eq') mutate.updateValue(newValue);
+                else mutate.apply(m => m.in(op).updateKey(selectedOp).updateValue(newValue));
+              }}
+              onValueUpdate={mutate.in(op).updateValue} {...{ value, op, meta }}
             />
-            : <PropertyPredicate predicate={value} mutate={mutate.in(op)} property={property} schema={schema}/>)
+            : <PropertyPredicate predicate={value} mutate={mutate.in(op)} property={property} schema={schema} />)
       )
     }</div>
   );
@@ -61,24 +62,43 @@ let ComplexPredicate = ({predicate, mutate, property, meta, schema}) => {
 
 let getMetaForProperty = function (property, schema) {
   let meta;
-  if (!property) return {type: 'empty'};
-  if (property.startsWith('@@key')) return {type: 'string'};
+  if (!property) return { type: 'empty' };
+  if (property.startsWith('@@key')) return { type: 'string' };
 
   const [identity, innerProperty] = property.split('.');
 
-  meta = schema[identity][innerProperty];
+  let identityDetails = schema[identity];
+  if (!identityDetails) {
+    console.warn('unsupported identity: ' + identity);
+    return { type: 'string' };
+  }
+  meta = identityDetails[innerProperty];
+
   if (!meta) {
     console.warn('unsupported field meta: ' + property);
-    meta = {type: 'string'};
+    return { type: 'string' };
   }
-  return meta;
+
+  const typeDefenition = Object.keys(types)
+    .map(x => types[x])
+    .find(x => x.typeAlias === meta.type || x.type === meta.type);
+
+  if (!typeDefenition)
+    return meta;
+
+  let {type, typeAlias, ...props} = typeDefenition;
+
+  return {
+    ...meta,
+    ...props,
+  };
 };
 
 let PropertyPredicate = ({predicate, mutate, property, schema}) => {
   let meta = getMetaForProperty(property, schema);
 
   return (typeof (predicate) !== 'object') ?
-    <ShortPredicate value={predicate} {...{meta, mutate} } /> :
-    <ComplexPredicate {...{predicate, mutate, property, meta, schema}} />;
+    <ShortPredicate value={predicate} {...{ meta, mutate } } /> :
+    <ComplexPredicate {...{ predicate, mutate, property, meta, schema }} />;
 };
 export default PropertyPredicate;

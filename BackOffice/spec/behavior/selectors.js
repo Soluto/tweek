@@ -35,7 +35,6 @@ selectors.DELETE_KEY_BUTTON = getSelectorByClassNames('delete-key-button');
 selectors.ADD_RULE_BUTTON = getSelectorByClassNames('add-rule-button');
 selectors.ADD_CONDITION_BUTTON = getSelectorByClassNames('add-condition-button');
 selectors.RULE_CONDITION = getSelectorByClassNames('condition-wrapper');
-selectors.RULE_VALUE_INPUT = getSelectorByClassNames('values-input');
 selectors.TAB_ITEM_HEADER = getSelectorByClassNames('tab-header');
 selectors.RULES_TAB_ITEM = _getSelectorByIndex(selectors.TAB_ITEM_HEADER, 1);
 selectors.SOURCE_TAB_ITEM = _getSelectorByIndex(selectors.TAB_ITEM_HEADER, 2);
@@ -93,6 +92,17 @@ selectors.typeaheadSuggestionByIndex = (suggestionIndex) => {
   return selector;
 };
 
-selectors.ruleValueInput = (ruleIndex) => getRelativeSelector([selectors.ruleContainer(ruleIndex), selectors.RULE_VALUE_INPUT]);
+selectors.ruleValueInput = (ruleIndex, isValueContainsSuggestions) => {
+  if (isValueContainsSuggestions)
+    return getRelativeSelector([
+      selectors.ruleContainer(ruleIndex),
+      getSelectorByClassNames('rule-value-container'),
+      getSelectorByClassNames('bootstrap-typeahead-input-main')]);
+
+  return getRelativeSelector([
+    selectors.ruleContainer(ruleIndex),
+    getSelectorByClassNames('rule-value-container'),
+    'input']);
+}
 
 export { selectors, getRelativeSelector };

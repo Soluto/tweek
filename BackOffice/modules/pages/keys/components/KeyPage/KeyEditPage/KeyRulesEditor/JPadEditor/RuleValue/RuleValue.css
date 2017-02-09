@@ -16,7 +16,7 @@
   font-size: 12px;
   height: 20px;
   padding: 0 10px;
-  margin-top: 7px;
+  margin: 7px;
   opacity: .7;
 }
 .rule-value-button:hover {
@@ -45,7 +45,6 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  margin-top: 6px;
   resize: none;
   display: inline-block;
 }
@@ -70,9 +69,8 @@
   font-size: 12px;
   height: 20px;
   padding: 0 10px;
-  margin-top: 7px;
+  margin: 7px;
   opacity: .7;
-  margin: 10px;
 }
 .rule-value-container .add-variant-button:hover {
   background-color: #029CD5;
@@ -86,7 +84,374 @@
   cursor: default;
   background-color: gray;
 }
-.rule-value-container .to-feature-flag-button {
+.rule-value-container .boolean-single-variant-wrapper {
+  display: flex;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-input {
+  flex-grow: 1;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) {
+  position: absolute;
+  max-height: 350px;
+  min-width: 150px;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-width: 1px 1px 0px 1px;
+  border-style: solid;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li:last-child {
+  border-bottom: 1px;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li:active {
+  background-color: #d1d1d1;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) :global(.disabled) {
+  display: none;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) :global(.active) {
+  background-color: #dfdfdf;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) {
+  flex-grow: 1;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) {
+  position: absolute;
+  max-height: 350px;
+  min-width: 150px;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-width: 1px 1px 0px 1px;
+  border-style: solid;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
+  border-bottom: 1px;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
+  background-color: #d1d1d1;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.disabled) {
+  display: none;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
+  background-color: #dfdfdf;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-input {
+  flex-grow: 1;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.rule-value-container .boolean-single-variant-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.rule-value-container .boolean-single-variant-wrapper .override-dropdown :global(.dropdown-menu) {
+  position: absolute;
+  max-height: 350px;
+  min-width: 150px;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-dropdown :global(.dropdown-menu) li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-width: 1px 1px 0px 1px;
+  border-style: solid;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-dropdown :global(.dropdown-menu) li:last-child {
+  border-bottom: 1px;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-dropdown :global(.dropdown-menu) li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-dropdown :global(.dropdown-menu) li:active {
+  background-color: #d1d1d1;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-dropdown :global(.dropdown-menu) li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-dropdown :global(.dropdown-menu) li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-dropdown :global(.dropdown-menu) :global(.disabled) {
+  display: none;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-dropdown :global(.dropdown-menu) :global(.active) {
+  background-color: #dfdfdf;
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) {
+  flex-grow: 1;
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) {
+  position: absolute;
+  max-height: 350px;
+  min-width: 150px;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-width: 1px 1px 0px 1px;
+  border-style: solid;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
+  border-bottom: 1px;
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
+  background-color: #d1d1d1;
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.disabled) {
+  display: none;
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
+  background-color: #dfdfdf;
+}
+.rule-value-container .boolean-single-variant-wrapper .to-feature-flag-button {
   vertical-align: top;
   background-color: #00aeef;
   height: 28px;
@@ -104,33 +469,38 @@
   font-size: 12px;
   height: 20px;
   padding: 0 10px;
-  margin-top: 7px;
+  margin: 7px;
   opacity: .7;
 }
-.rule-value-container .to-feature-flag-button:hover {
+.rule-value-container .boolean-single-variant-wrapper .to-feature-flag-button:hover {
   background-color: #029CD5;
   cursor: pointer;
 }
-.rule-value-container .to-feature-flag-button:disabled {
+.rule-value-container .boolean-single-variant-wrapper .to-feature-flag-button:disabled {
   background-color: gray;
 }
-.rule-value-container .to-feature-flag-button:disabled:hover,
-.rule-value-container .to-feature-flag-button:disabled:active {
+.rule-value-container .boolean-single-variant-wrapper .to-feature-flag-button:disabled:hover,
+.rule-value-container .boolean-single-variant-wrapper .to-feature-flag-button:disabled:active {
   cursor: default;
   background-color: gray;
 }
-.identity-selection-title {
+.identity-selection-container {
+  display: flex;
+}
+.identity-selection-container .identity-selection-title {
   font-size: 12px;
   color: darkgray;
-}
-.identity-selection-combobox-wrapper {
-  display: inline-block;
   display: flex;
+  margin-top: 7px;
 }
-.identity-selection-combobox-wrapper .override-typeahead .override-input {
+.identity-selection-container .identity-selection-combobox-wrapper {
+  display: flex;
+  display: inline-block;
+}
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-input {
   flex-grow: 1;
 }
-.identity-selection-combobox-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -146,10 +516,10 @@
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.identity-selection-combobox-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.identity-selection-combobox-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -165,18 +535,18 @@
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.identity-selection-combobox-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.identity-selection-combobox-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) {
   position: absolute;
   max-height: 350px;
-  min-width: auto;
+  min-width: 150px;
   overflow-y: auto;
   width: auto;
   z-index: 5;
 }
-.identity-selection-combobox-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
@@ -187,17 +557,17 @@
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-.identity-selection-combobox-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li:last-child {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li:last-child {
   border-bottom: 1px;
 }
-.identity-selection-combobox-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li:hover {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-.identity-selection-combobox-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li:active {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li:active {
   background-color: #d1d1d1;
 }
-.identity-selection-combobox-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li a {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -208,20 +578,20 @@
   flex-direction: column;
   justify-content: center;
 }
-.identity-selection-combobox-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li a:first-child {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-.identity-selection-combobox-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) :global(.disabled) {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) :global(.disabled) {
   display: none;
 }
-.identity-selection-combobox-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) :global(.active) {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) :global(.active) {
   background-color: #dfdfdf;
 }
-.identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) {
   flex-grow: 1;
 }
-.identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -237,10 +607,10 @@
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -256,18 +626,18 @@
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
   max-height: 350px;
-  min-width: auto;
+  min-width: 150px;
   overflow-y: auto;
   width: auto;
   z-index: 5;
 }
-.identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
@@ -278,17 +648,17 @@
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-.identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
   border-bottom: 1px;
 }
-.identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-.identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
   background-color: #d1d1d1;
 }
-.identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -299,20 +669,20 @@
   flex-direction: column;
   justify-content: center;
 }
-.identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-.identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.disabled) {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.disabled) {
   display: none;
 }
-.identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
   background-color: #dfdfdf;
 }
-.identity-selection-combobox-wrapper .override-input {
+.identity-selection-container .identity-selection-combobox-wrapper .override-input {
   flex-grow: 1;
 }
-.identity-selection-combobox-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+.identity-selection-container .identity-selection-combobox-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -328,10 +698,10 @@
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.identity-selection-combobox-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+.identity-selection-container .identity-selection-combobox-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.identity-selection-combobox-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
+.identity-selection-container .identity-selection-combobox-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -347,18 +717,18 @@
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.identity-selection-combobox-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
+.identity-selection-container .identity-selection-combobox-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.identity-selection-combobox-wrapper .override-dropdown :global(.dropdown-menu) {
+.identity-selection-container .identity-selection-combobox-wrapper .override-dropdown :global(.dropdown-menu) {
   position: absolute;
   max-height: 350px;
-  min-width: auto;
+  min-width: 150px;
   overflow-y: auto;
   width: auto;
   z-index: 5;
 }
-.identity-selection-combobox-wrapper .override-dropdown :global(.dropdown-menu) li {
+.identity-selection-container .identity-selection-combobox-wrapper .override-dropdown :global(.dropdown-menu) li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
@@ -369,17 +739,17 @@
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-.identity-selection-combobox-wrapper .override-dropdown :global(.dropdown-menu) li:last-child {
+.identity-selection-container .identity-selection-combobox-wrapper .override-dropdown :global(.dropdown-menu) li:last-child {
   border-bottom: 1px;
 }
-.identity-selection-combobox-wrapper .override-dropdown :global(.dropdown-menu) li:hover {
+.identity-selection-container .identity-selection-combobox-wrapper .override-dropdown :global(.dropdown-menu) li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-.identity-selection-combobox-wrapper .override-dropdown :global(.dropdown-menu) li:active {
+.identity-selection-container .identity-selection-combobox-wrapper .override-dropdown :global(.dropdown-menu) li:active {
   background-color: #d1d1d1;
 }
-.identity-selection-combobox-wrapper .override-dropdown :global(.dropdown-menu) li a {
+.identity-selection-container .identity-selection-combobox-wrapper .override-dropdown :global(.dropdown-menu) li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -390,20 +760,20 @@
   flex-direction: column;
   justify-content: center;
 }
-.identity-selection-combobox-wrapper .override-dropdown :global(.dropdown-menu) li a:first-child {
+.identity-selection-container .identity-selection-combobox-wrapper .override-dropdown :global(.dropdown-menu) li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-.identity-selection-combobox-wrapper .override-dropdown :global(.dropdown-menu) :global(.disabled) {
+.identity-selection-container .identity-selection-combobox-wrapper .override-dropdown :global(.dropdown-menu) :global(.disabled) {
   display: none;
 }
-.identity-selection-combobox-wrapper .override-dropdown :global(.dropdown-menu) :global(.active) {
+.identity-selection-container .identity-selection-combobox-wrapper .override-dropdown :global(.dropdown-menu) :global(.active) {
   background-color: #dfdfdf;
 }
-.identity-selection-combobox-wrapper :global(.bootstrap-typeahead) {
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) {
   flex-grow: 1;
 }
-.identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -419,10 +789,10 @@
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
   border-style: none;
@@ -438,18 +808,18 @@
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) {
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
   max-height: 350px;
-  min-width: auto;
+  min-width: 150px;
   overflow-y: auto;
   width: auto;
   z-index: 5;
 }
-.identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
@@ -460,17 +830,17 @@
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-.identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
   border-bottom: 1px;
 }
-.identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-.identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
   background-color: #d1d1d1;
 }
-.identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -481,14 +851,14 @@
   flex-direction: column;
   justify-content: center;
 }
-.identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-.identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.disabled) {
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.disabled) {
   display: none;
 }
-.identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
   background-color: #dfdfdf;
 }
 .bernoulli-trial-container {
@@ -548,7 +918,7 @@
   font-size: 12px;
   height: 20px;
   padding: 0 10px;
-  margin-top: 7px;
+  margin: 7px;
   opacity: .7;
   display: inline-block;
   margin-left: 25px;
@@ -583,7 +953,7 @@
   font-size: 12px;
   height: 20px;
   padding: 0 10px;
-  margin-top: 7px;
+  margin: 7px;
   opacity: .7;
   display: inline-block;
   margin-left: 25px;
@@ -618,7 +988,7 @@
   font-size: 12px;
   height: 20px;
   padding: 0 10px;
-  margin-top: 7px;
+  margin: 7px;
   opacity: .7;
   display: inline-block;
   margin-left: 25px;
