@@ -3,9 +3,10 @@ import { ServerRoute } from 'react-project';
 import * as KeysRoutes from './api/keys';
 import * as TypesRoutes from './api/types';
 import * as TagsRoutes from './api/tags';
+import * as ContextSchemaRoutes from "./api/context";
 import requestErrorHandlingWrapper from './utils/request-error-handling-wrapper';
 
-export default ({ tagsRepository, keysRepository, typesRepository }) => (
+export default ({ tagsRepository, keysRepository, typesRepository, tweekApiHostname }) => (
   <ServerRoute path="/api">
     <ServerRoute path="tags"
       get={requestErrorHandlingWrapper(TagsRoutes.getTags)}
@@ -16,6 +17,10 @@ export default ({ tagsRepository, keysRepository, typesRepository }) => (
       get={requestErrorHandlingWrapper(TypesRoutes.getTypes)}
       typesRepository={typesRepository}
       />
+    <ServerRoute path="context-schema"
+                 get={requestErrorHandlingWrapper(ContextSchemaRoutes.getContextSchema)}
+                 tweekApiHostname={tweekApiHostname}
+    />
     <ServerRoute path="keys">
       <ServerRoute path="*"
         get={requestErrorHandlingWrapper(KeysRoutes.getKey)}

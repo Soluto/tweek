@@ -7,8 +7,6 @@ import configureStore from './store/configureStore';
 import { Provider } from 'react-redux';
 import serverRoutes from './serverRoutes';
 import { getKeys } from './store/ducks/keys';
-import { refreshSchemaInfo } from './store/ducks/schema';
-import { setConfigurations } from './store/ducks/config';
 import GitRepository from './server/repositories/git-repository';
 import session from 'express-session';
 import Transactor from './utils/transactor';
@@ -24,11 +22,17 @@ nconf.argv().env().file({ file: `${process.cwd()}/config.json` });
 const gitUrl = nconf.get('GIT_URL');
 const gitUsername = nconf.get('GIT_USER');
 const gitPassword = nconf.get('GIT_PASSWORD');
+const tweekApiHostname = nconf.get('TWEEK_API_HOSTNAME');
+
 
 if (!gitUrl ||
   !gitUsername ||
   !gitPassword) {
-  throw 'missing rules repostiroy details';
+  throw 'missing rules repository details';
+}
+
+if (!tweekApiHostname) {
+  throw 'missing tweek api hostname';
 }
 
 const gitRepostoryConfig = {
@@ -49,16 +53,12 @@ GitContinuousUpdater.start(gitTransactionManager);
 
 function getApp(req, res, requestCallback) {
   requestCallback(null, {
-    routes: routes(serverRoutes({ tagsRepository, keysRepository, typesRepository })),
+    routes: routes(serverRoutes({ tagsRepository, keysRepository, typesRepository, tweekApiHostname })),
     async render(routerProps, renderCallback) {
 
       const store = configureStore({});
       const keys = await keysRepository.getAllKeys();
       await store.dispatch(getKeys(keys));
-      await store.dispatch(setConfigurations({
-        "TWEEK_API_HOSTNAME": nconf.get('TWEEK_API_HOSTNAME')
-      }));
-      await store.dispatch(refreshSchemaInfo());
 
       renderCallback(null, {
         renderDocument: (props) => <Document {...props} initialState={store.getState()} />,
