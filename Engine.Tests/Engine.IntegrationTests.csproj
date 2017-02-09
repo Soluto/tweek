@@ -1,14 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
-    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.6' ">$(PackageTargetFallback);portable-net45+win8+wp8+wpa81</PackageTargetFallback>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81</PackageTargetFallback>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.1.6233.20455" />
-    <PackageReference Include="NETStandard.Library" Version="1.6" />
     <PackageReference Include="LanguageExt.Core" version="1.9.7" />
-    <PackageReference Include="xunit" version="2.0.0" />
-    <PackageReference Include="xunit.abstractions" Version="2.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0-preview-20170106-08" />
+    <PackageReference Include="xunit" Version="2.2.0-beta5-build3474" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0-beta5-build1225" />
+    <PackageReference Include="Tweek.JPad" Version="0.5.6245.17626" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Drivers\Engine.Drivers.Cassandra\Engine.Drivers.Cassandra.csproj" />
@@ -20,5 +22,8 @@
     <ProjectReference Include="..\Engine\Engine.csproj" />
     <ProjectReference Include="..\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj" />
     <ProjectReference Include="..\Utils\JsonValueConverter\JsonValueConverter.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
 </Project>
