@@ -1,9 +1,8 @@
 import React from 'react';
 import ComboBox from '../../../../../../components/common/ComboBox/ComboBox';
 import style from './KeyValueTypeSelector.css';
-import { types, initializeTypes } from '../../../../../../services/TypesService';
+import { types } from '../../../../../../services/TypesService';
 import { compose } from 'recompose';
-import withLoading from '../../../../../../hoc/with-loading';
 import { connect } from 'react-redux';
 import { updateKeyValueType } from '../../../../../../store/ducks/selectedKey';
 import ReactTooltip from 'react-tooltip';
@@ -21,7 +20,6 @@ const getValueTypeSuggestions = () => {
 };
 
 const KeyValueTypeSelector = compose(
-  withLoading(() => null, initializeTypes()),
   connect(state => ({
     selectedKey: state.selectedKey,
     validation: state.selectedKey.validation.meta.valueType,

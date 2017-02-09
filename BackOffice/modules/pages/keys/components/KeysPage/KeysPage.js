@@ -4,35 +4,40 @@ import * as actions from '../../../../store/ducks/keys';
 import { connect } from 'react-redux';
 import KeysList from '../KeysList/KeysList';
 import style from './KeysPage.css';
+import { compose } from 'recompose';
+import withLoading from '../../../../hoc/with-loading';
+import { getInitializationPromise } from '../../../../services/TypesService';
 
-export default connect(state => state, { ...actions })(
-    class KeysPage extends Component {
-      constructor(props) {
-        super(props);
+export default compose(
+  connect(state => state, { ...actions }),
+  withLoading(() => null, getInitializationPromise()))
+  (class KeysPage extends Component {
+    constructor(props) {
+      super(props);
+    }
+
+    componentDidMount() {
+      if (!this.props.keys) {
+        this.props.getKeys([]);
       }
+    }
 
-      componentDidMount() {
-        if (!this.props.keys) {
-          this.props.getKeys([]);
-        }
-      }
-
-      render() {
-        const { keys, addKey, children } = this.props;
-        return (
-            <div className={style['keys-page-container']}>
-              <div key="KeysList" className={style['keys-list']}>
-                <div className={style['keys-list-wrapper']}>
-                  <KeysList keys={keys} />
-                </div>
-                <div className={style['add-button-wrapper']}>
-                  <button className={style['add-button']} onClick={() => addKey() }>Add key</button>
-                </div>
-              </div>
-              <div key="Page" className={style['key-page']}>
-                {children}
-              </div>
+    render() {
+      const { keys, addKey, children } = this.props;
+      return (
+        <div className={style['keys-page-container']}>
+          <div key="KeysList" className={style['keys-list']}>
+            <div className={style['keys-list-wrapper']}>
+              <KeysList keys={keys} />
             </div>
-        );
-      }
-    });
+            <div className={style['add-button-wrapper']}>
+              <button className={style['add-button']} onClick={() => addKey()}>Add key</button>
+            </div>
+          </div>
+          <div key="Page" className={style['key-page']}>
+            {children}
+          </div>
+        </div>
+      );
+    }
+  });
