@@ -8,6 +8,7 @@
     <PackageReference Include="NETStandard.Library" Version="1.6" />
     <PackageReference Include="LanguageExt.Core" version="1.9.7" />
     <PackageReference Include="xunit" version="2.1.0" />
+    <PackageReference Include="xunit.abstractions" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Drivers\Engine.Drivers.Cassandra\Engine.Drivers.Cassandra.csproj" />
