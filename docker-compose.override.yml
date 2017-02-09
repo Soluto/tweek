@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  tweek.apiservice.netcore:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"

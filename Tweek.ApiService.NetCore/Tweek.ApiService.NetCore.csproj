@@ -4,6 +4,9 @@
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81</PackageTargetFallback>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Properties\PublishProfiles\FileSystemProfile.pubxml" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.App" Version="1.1.0" />
     <PackageReference Include="FSharp.Core" Version="4.0.0.1" />
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.1.6233.20455" />

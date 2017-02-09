@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using RestEase;
+using FSharpUtils.Newtonsoft;
 
 namespace Tweek.ApiService.SmokeTests
 {
@@ -9,5 +10,7 @@ namespace Tweek.ApiService.SmokeTests
     {
         [Get("configurations/{keyPath}")]
         Task<JToken> GetConfigurations([Path] string keyPath,[QueryMap] Dictionary<string, string> context);
+
+        Task AppendContext([Path] string identityType, [Path]string identityId, Dictionary<string, JsonValue> context);
     }
 }
