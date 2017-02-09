@@ -27,6 +27,7 @@ describe('add key', () => {
   it('should succeed adding key', () => {
     browser.click(selectors.ADD_KEY_BUTTON);
     keysAsserts.assertKeyOpened(BLANK_KEY_NAME);
+    browser.windowHandleMaximize();
 
     let isKeyPathSuggestionsExists = browser.isExisting(selectors.KEY_PATH_SUGGESTIONS);
     assert(!isKeyPathSuggestionsExists, 'should not show key name suggestions on start');
@@ -39,7 +40,11 @@ describe('add key', () => {
     assert(isKeyPathSuggestionsExists, 'should show key name suggestions on input focus');
 
     browser.setValue(selectors.KEY_NAME_INPUT, keyToAddFullPath);
+    browser.click(selectors.BACKGROUND);
+
     browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, 'String');
+    const firstSuggestion = selectors.typeaheadSuggestionByIndex(0);
+    browser.click(firstSuggestion);
 
     assert(keysPageObject.hasChanges(), 'should has changes');
 
