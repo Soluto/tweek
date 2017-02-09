@@ -10,11 +10,14 @@ export let types = {
   }
 };
 
-let initializationPromise;
+let _initializationPromise;
+export function getInitializationPromise() {
+  return _initializationPromise || initializeTypes();
+}
 
 export async function initializeTypes() {
-  if (!!initializationPromise) return;
-  initializationPromise = fetch(`/api/types`, { credentials: 'same-origin' })
+  if (!!_initializationPromise) return;
+  _initializationPromise = fetch(`/api/types`, { credentials: 'same-origin' })
     .then(data => data.json())
     .then(loadedTypes => {
       loadedTypes.forEach(x => {
@@ -23,5 +26,5 @@ export async function initializeTypes() {
       });
     });
 
-  await initializationPromise;
+  await _initializationPromise;
 };
