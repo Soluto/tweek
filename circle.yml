@@ -30,9 +30,6 @@ test:
     - npm run test:e2e
 general:
   build_dir: BackOffice
-  branches:
-    only:
-      - master
 deployment:
   hub: 
     branch: master
