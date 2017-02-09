@@ -5,9 +5,11 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using FSharpUtils.Newtonsoft;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestEase;
+using Tweek.Utils;
 
 namespace Tweek.ApiService.SmokeTests
 {
@@ -18,6 +20,12 @@ namespace Tweek.ApiService.SmokeTests
         public TweekApi(HttpClient client)
         {
             this._client = client;
+        }
+
+        public async Task AppendContext(string identityType, string identityId, Dictionary<string, JsonValue> context)
+        {
+            await _client.PostAsync(
+                $"http://localhost:5000/context/{identityType}/{identityId}", new StringContent(JsonConvert.SerializeObject(context, new JsonValueConverter()), Encoding.UTF8, "application/json"));
         }
 
         public async Task<JToken> GetConfigurations(string keyPath, Dictionary<string, string> context)

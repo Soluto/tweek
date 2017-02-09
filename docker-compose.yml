@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  tweek.apiservice.netcore:
+    image: tweek.apiservice.netcore
+    build:
+      context: ./Tweek.ApiService.NetCore
+      dockerfile: Dockerfile

@@ -84,10 +84,12 @@ namespace Tweek.ApiService.NetCore
             services.AddSingleton<IContextDriver>(contextDriver);
             services.AddSingleton(parser);
             services.AddSingleton<IEnumerable<IDiagnosticsProvider>>(new IDiagnosticsProvider[] {rulesDiagnostics, couchbaseDiagnosticsProvider});
-
+            var tweekContactResolver = new TweekContractResolver();
+            var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };
+            services.AddSingleton(jsonSerializer);
             services.AddMvc().AddJsonOptions(opt =>
             {
-                opt.SerializerSettings.ContractResolver = new TweekContractResolver();
+                opt.SerializerSettings.ContractResolver = tweekContactResolver;
             });
         }
 

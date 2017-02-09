@@ -84,6 +84,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="AppendContext\AppendContextTests.cs" />
     <Compile Include="GetConfigurations\IdentityContextTests.cs" />
     <Compile Include="GetConfigurations\KeyPathsTests.cs" />
     <Compile Include="GetConfigurations\Models\IdentityBasedTestsContextProvider.cs" />
@@ -99,7 +100,12 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Utils\JsonValueConverter\JsonValueConverter.csproj">
+      <Project>{a7f3138b-914b-47dc-83bc-a7c004087f73}</Project>
+      <Name>JsonValueConverter</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26020.0
+VisualStudioVersion = 15.0.26127.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine", "Engine\Engine.csproj", "{88200F63-8699-4B6E-8969-4C45827AD0C3}"
 EndProject
@@ -62,6 +62,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonValueConverter.Tests", "utils\JsonValueConverter.Tests\JsonValueConverter.Tests.csproj", "{2ED5906A-2F09-4988-A7EF-75E6A6147958}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.ApiService.NetCore", "Tweek.ApiService.NetCore\Tweek.ApiService.NetCore.csproj", "{7DFE68E4-A1CB-4CCC-B36E-14A8CEF72B56}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{85753D7E-C64D-475E-A914-AF9FB3EA6235}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -213,6 +215,18 @@ Global
 		{7DFE68E4-A1CB-4CCC-B36E-14A8CEF72B56}.Release|x64.Build.0 = Release|x64
 		{7DFE68E4-A1CB-4CCC-B36E-14A8CEF72B56}.Release|x86.ActiveCfg = Release|x86
 		{7DFE68E4-A1CB-4CCC-B36E-14A8CEF72B56}.Release|x86.Build.0 = Release|x86
+		{85753D7E-C64D-475E-A914-AF9FB3EA6235}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85753D7E-C64D-475E-A914-AF9FB3EA6235}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85753D7E-C64D-475E-A914-AF9FB3EA6235}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{85753D7E-C64D-475E-A914-AF9FB3EA6235}.Debug|x64.Build.0 = Debug|Any CPU
+		{85753D7E-C64D-475E-A914-AF9FB3EA6235}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{85753D7E-C64D-475E-A914-AF9FB3EA6235}.Debug|x86.Build.0 = Debug|Any CPU
+		{85753D7E-C64D-475E-A914-AF9FB3EA6235}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85753D7E-C64D-475E-A914-AF9FB3EA6235}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85753D7E-C64D-475E-A914-AF9FB3EA6235}.Release|x64.ActiveCfg = Release|Any CPU
+		{85753D7E-C64D-475E-A914-AF9FB3EA6235}.Release|x64.Build.0 = Release|Any CPU
+		{85753D7E-C64D-475E-A914-AF9FB3EA6235}.Release|x86.ActiveCfg = Release|Any CPU
+		{85753D7E-C64D-475E-A914-AF9FB3EA6235}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
