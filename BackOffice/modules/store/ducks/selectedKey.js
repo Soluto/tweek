@@ -1,12 +1,12 @@
-import { handleActions } from 'redux-actions';
+import {handleActions} from 'redux-actions';
 import R from 'ramda';
-import { push } from 'react-router-redux';
-import { createBlankKey, createBlankKeyMeta, BLANK_KEY_NAME } from './ducks-utils/blankKeyDefinition';
-import { withJsonData } from '../../utils/http';
+import {push} from 'react-router-redux';
+import {createBlankKey, createBlankKeyMeta, BLANK_KEY_NAME} from './ducks-utils/blankKeyDefinition';
+import {withJsonData} from '../../utils/http';
 import keyNameValidations from './ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
-import { downloadTags } from './tags.js';
-import { refreshSchemaInfo } from './schema';
+import {downloadTags} from './tags.js';
+import * as ContextService from "../../services/context-service";
 
 const KEY_OPENED = 'KEY_OPENED';
 const KEY_OPENING = 'KEY_OPENING';
@@ -20,280 +20,280 @@ const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
 const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
 
 export function openKey(key) {
-    return async function (dispatch) {
-        dispatch(downloadTags());
-        dispatch(refreshSchemaInfo());
+  return async function (dispatch) {
+    dispatch(downloadTags());
+    await ContextService.refreshSchema();
 
-        if (key === BLANK_KEY_NAME) {
-            dispatch({ type: KEY_OPENED, payload: createBlankKey() });
-            return;
-        }
+    if (key === BLANK_KEY_NAME) {
+      dispatch({type: KEY_OPENED, payload: createBlankKey()});
+      return;
+    }
 
-        dispatch({ type: KEY_OPENING, payload: key });
+    dispatch({type: KEY_OPENING, payload: key});
 
-        let keyData;
+    let keyData;
 
-        try {
-            keyData = await (await fetch(`/api/keys/${key}`, { credentials: 'same-origin' })).json();
-        } catch (exp) {
-            dispatch({ type: KEY_OPENED, payload: { key } });
-            return;
-        }
+    try {
+      keyData = await (await fetch(`/api/keys/${key}`, {credentials: 'same-origin'})).json();
+    } catch (exp) {
+      dispatch({type: KEY_OPENED, payload: {key}});
+      return;
+    }
 
-        const meta = keyData.meta || createBlankKeyMeta(key);
-        const keyOpenedPayload = {
-            key,
-            keyDef: {
-                ...keyData.keyDef,
-                valueType: meta.valueType || "string",
-            },
-            meta
-        };
-
-        dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
+    const meta = keyData.meta || createBlankKeyMeta(key);
+    const keyOpenedPayload = {
+      key,
+      keyDef: {
+        ...keyData.keyDef,
+        valueType: meta.valueType || "string",
+      },
+      meta
     };
+
+    dispatch({type: KEY_OPENED, payload: keyOpenedPayload});
+  };
 }
 
 export function updateKeyDef(keyDef) {
-    return { type: KEY_RULEDEF_UPDATED, payload: keyDef };
+  return {type: KEY_RULEDEF_UPDATED, payload: keyDef};
 }
 
 export function updateKeyMetaDef(meta) {
-    return { type: KEY_RULE_META_UPDATED, payload: meta };
+  return {type: KEY_RULE_META_UPDATED, payload: meta};
 }
 
 export function updateKeyValueType(keyValueType) {
-    return async function (dispatch, getState) {
-        const rules = JSON.parse(getState().selectedKey.local.keyDef.source).rules;
-        const shouldShowAlert =
-            rules.some(x => x.Type !== 'SingleVariant' || (x.Value !== null && x.Value !== undefined && x.Value !== ''));
-            
-        if (shouldShowAlert && !confirm(`Rules values will try be converted to new type. Proceed?`)) {
-            return;
-        }
+  return async function (dispatch, getState) {
+    const rules = JSON.parse(getState().selectedKey.local.keyDef.source).rules;
+    const shouldShowAlert =
+      rules.some(x => x.Type !== 'SingleVariant' || (x.Value !== null && x.Value !== undefined && x.Value !== ''));
 
-        const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
-        keyValueTypeValidation.isShowingHint = !keyValueTypeValidation.isValid;
+    if (shouldShowAlert && !confirm(`Rules values will try be converted to new type. Proceed?`)) {
+      return;
+    }
 
-        dispatch({ type: KEY_VALUE_TYPE_CHANGE, payload: keyValueType });
+    const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
+    keyValueTypeValidation.isShowingHint = !keyValueTypeValidation.isValid;
 
-        const currentValidationState = getState().selectedKey.validation;
-        const newValidation = {
-            ...currentValidationState,
-            meta: {
-                ...currentValidationState.meta,
-                valueType: keyValueTypeValidation,
-            },
-        };
+    dispatch({type: KEY_VALUE_TYPE_CHANGE, payload: keyValueType});
 
-        dispatch({ type: KEY_VALIDATION_CHANGE, payload: newValidation });
+    const currentValidationState = getState().selectedKey.validation;
+    const newValidation = {
+      ...currentValidationState,
+      meta: {
+        ...currentValidationState.meta,
+        valueType: keyValueTypeValidation,
+      },
     };
+
+    dispatch({type: KEY_VALIDATION_CHANGE, payload: newValidation});
+  };
 }
 
 export function updateKeyName(newKeyName) {
-    return async function (dispatch, getState) {
-        const keyNameValidation = keyNameValidations(newKeyName, getState().keys);
-        keyNameValidation.isShowingHint = !keyNameValidation.isValid;
+  return async function (dispatch, getState) {
+    const keyNameValidation = keyNameValidations(newKeyName, getState().keys);
+    keyNameValidation.isShowingHint = !keyNameValidation.isValid;
 
-        dispatch({ type: KEY_NAME_CHANGE, payload: newKeyName });
+    dispatch({type: KEY_NAME_CHANGE, payload: newKeyName});
 
-        const currentValidationState = getState().selectedKey.validation;
-        const newValidation = {
-            ...currentValidationState,
-            key: keyNameValidation,
-        };
-
-        dispatch({ type: KEY_VALIDATION_CHANGE, payload: newValidation });
+    const currentValidationState = getState().selectedKey.validation;
+    const newValidation = {
+      ...currentValidationState,
+      key: keyNameValidation,
     };
+
+    dispatch({type: KEY_VALIDATION_CHANGE, payload: newValidation});
+  };
 }
 
 export function saveKey() {
-    return async function (dispatch, getState) {
-        const currentState = getState();
-        const { selectedKey: { local, key } } = currentState;
-        const isNewKey = !!(local.key);
-        const savedKey = local.key || key;
+  return async function (dispatch, getState) {
+    const currentState = getState();
+    const {selectedKey: {local, key}} = currentState;
+    const isNewKey = !!(local.key);
+    const savedKey = local.key || key;
 
-        if (!currentState.selectedKey.validation.isValid) {
-            dispatch({ type: SHOW_KEY_VALIDATIONS });
-            return;
-        }
+    if (!currentState.selectedKey.validation.isValid) {
+      dispatch({type: SHOW_KEY_VALIDATIONS});
+      return;
+    }
 
-        dispatch({ type: KEY_SAVING });
+    dispatch({type: KEY_SAVING});
 
-        const response = await fetch(`/api/keys/${savedKey}`, {
-            credentials: 'same-origin',
-            method: 'put',
-            ...withJsonData(local),
-        });
+    const response = await fetch(`/api/keys/${savedKey}`, {
+      credentials: 'same-origin',
+      method: 'put',
+      ...withJsonData(local),
+    });
 
-        const isSaveSucceeded = response.status < 400;
-        dispatch({ type: KEY_SAVED, payload: { keyName: savedKey, isSaveSucceeded } });
+    const isSaveSucceeded = response.status < 400;
+    dispatch({type: KEY_SAVED, payload: {keyName: savedKey, isSaveSucceeded}});
 
-        if (!isSaveSucceeded) {
-            alert("Save key failed");
-            return;
-        }
+    if (!isSaveSucceeded) {
+      alert("Save key failed");
+      return;
+    }
 
-        if (isNewKey) dispatch({ type: 'KEY_ADDED', payload: savedKey });
-        const shouldOpenNewKey = isNewKey && getState().selectedKey.key === BLANK_KEY_NAME;
+    if (isNewKey) dispatch({type: 'KEY_ADDED', payload: savedKey});
+    const shouldOpenNewKey = isNewKey && getState().selectedKey.key === BLANK_KEY_NAME;
 
-        if (shouldOpenNewKey) {
-            dispatch(push(`/keys/${savedKey}`));
-        }
-    };
+    if (shouldOpenNewKey) {
+      dispatch(push(`/keys/${savedKey}`));
+    }
+  };
 }
 
-const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
-    const validation = key !== BLANK_KEY_NAME ?
-        {
-            isValid: true,
-        } :
-        {
-            key: keyNameValidations(key, []),
-            meta: {
-                valueType: keyValueTypeValidations(keyData.meta.valueType),
-            },
-            isValid: false,
-        };
-
-    setValidationHintsVisability(validation, false);
-
-    return {
-        local: R.clone(keyData),
-        remote: R.clone(keyData),
-        key,
-        isLoaded: true,
-        validation,
+const handleKeyOpened = (state, {payload: {key, ...keyData}}) => {
+  const validation = key !== BLANK_KEY_NAME ?
+    {
+      isValid: true,
+    } :
+    {
+      key: keyNameValidations(key, []),
+      meta: {
+        valueType: keyValueTypeValidations(keyData.meta.valueType),
+      },
+      isValid: false,
     };
+
+  setValidationHintsVisability(validation, false);
+
+  return {
+    local: R.clone(keyData),
+    remote: R.clone(keyData),
+    key,
+    isLoaded: true,
+    validation,
+  };
 };
 
-const handleKeyOpening = (state, { payload: { key } }) => {
-    return {
-        key,
-        isLoaded: false,
-    };
+const handleKeyOpening = (state, {payload: {key}}) => {
+  return {
+    key,
+    isLoaded: false,
+  };
 };
 
-const handleKeyRuleDefUpdated = (state, { payload }) => ({
-    ...state,
-    local: {
-        ...state.local,
-        keyDef: { ...state.local.keyDef, ...payload },
-    },
+const handleKeyRuleDefUpdated = (state, {payload}) => ({
+  ...state,
+  local: {
+    ...state.local,
+    keyDef: {...state.local.keyDef, ...payload},
+  },
 });
 
-const handleKeyMetaUpdated = (state, { payload }) => ({
-    ...state,
-    local: {
-        ...state.local,
-        meta: payload,
-    },
+const handleKeyMetaUpdated = (state, {payload}) => ({
+  ...state,
+  local: {
+    ...state.local,
+    meta: payload,
+  },
 });
 
-const handleKeySaved = ({ local, remote, ...state }, { payload: { keyName, isSaveSucceeded } }) => {
-    return state.key === BLANK_KEY_NAME || state.key === keyName ?
-        {
-            ...state,
-            isSaving: false,
-            local,
-            remote: isSaveSucceeded ? R.clone(local) : remote,
-        } :
-        ({ ...state });
+const handleKeySaved = ({local, remote, ...state}, {payload: {keyName, isSaveSucceeded}}) => {
+  return state.key === BLANK_KEY_NAME || state.key === keyName ?
+    {
+      ...state,
+      isSaving: false,
+      local,
+      remote: isSaveSucceeded ? R.clone(local) : remote,
+    } :
+    ({...state});
 };
 
-const handleKeySaving = ({ ...state }) => ({
-    ...state,
-    isSaving: true,
+const handleKeySaving = ({...state}) => ({
+  ...state,
+  isSaving: true,
 });
 
-const handleKeyNameChange = ({ local: { key, ...localData }, ...otherState }, { payload }) => ({
+const handleKeyNameChange = ({local: {key, ...localData}, ...otherState}, {payload}) => ({
+  ...otherState,
+  local: {
+    ...localData,
+    meta: {...localData.meta, displayName: payload},
+    ...(payload === '' ? {} : {key: payload}),
+  },
+});
+
+const handleKeyValidationChange = ({...state}, {payload}) => {
+  const isKeyInvalid = isStateInvalid(payload);
+  return {
+    ...state,
+    validation: {
+      ...payload,
+      isValid: !isKeyInvalid
+    }
+  };
+};
+
+const handleKeyDeleting = ({remote, ...otherState}) => {
+  return ({
     ...otherState,
-    local: {
-        ...localData,
-        meta: { ...localData.meta, displayName: payload },
-        ...(payload === '' ? {} : { key: payload }),
+    local: {...remote},
+    remote: {...remote},
+  });
+};
+
+const handleKeyValueTypeChange = ({local: {keyDef, meta, ...restOfLocal}, ...state}, {payload}) => ({
+  ...state,
+  local: {
+    ...restOfLocal,
+    keyDef: {
+      ...keyDef,
+      valueType: payload,
     },
+    meta: {
+      ...meta,
+      valueType: payload,
+    },
+  },
 });
 
-const handleKeyValidationChange = ({ ...state }, { payload }) => {
-    const isKeyInvalid = isStateInvalid(payload);
-    return {
-        ...state,
-        validation: {
-            ...payload,
-            isValid: !isKeyInvalid
-        }
-    };
-};
-
-const handleKeyDeleting = ({ remote, ...otherState }) => {
-    return ({
-        ...otherState,
-        local: { ...remote },
-        remote: { ...remote },
-    });
-};
-
-const handleKeyValueTypeChange = ({local: {keyDef, meta, ...restOfLocal}, ...state}, { payload }) => ({
+const handleShowKeyValidations = ({validation, ...state}) => {
+  setValidationHintsVisability(validation, true);
+  return {
     ...state,
-    local: {
-        ...restOfLocal,
-        keyDef: {
-            ...keyDef,
-            valueType: payload,
-        },
-        meta: {
-            ...meta,
-            valueType: payload,
-        },
-    },
-});
-
-const handleShowKeyValidations = ({ validation, ...state }) => {
-    setValidationHintsVisability(validation, true);
-    return {
-        ...state,
-        validation,
-    };
+    validation,
+  };
 }
 
 const isStateInvalid = (validationState) => {
-    let isOneValidationTypeInvalid = Object.keys(validationState)
-        .map(x => validationState[x])
-        .filter(x => typeof (x) === 'object')
-        .some(x => {
-            return x.isValid === false || isStateInvalid(x)
-        });
+  let isOneValidationTypeInvalid = Object.keys(validationState)
+    .map(x => validationState[x])
+    .filter(x => typeof (x) === 'object')
+    .some(x => {
+      return x.isValid === false || isStateInvalid(x)
+    });
 
-    return isOneValidationTypeInvalid;
+  return isOneValidationTypeInvalid;
 }
 
 const setValidationHintsVisability = (validationState, isShown) => {
-    Object.keys(validationState)
-        .map(x => validationState[x])
-        .filter(x => typeof (x) === 'object')
-        .map(x => {
-            setValidationHintsVisability(x, isShown);
-            return x;
-        })
-        .filter(x => x.isValid === false)
-        .forEach(x => {
-            x.isShowingHint = isShown;
-            setValidationHintsVisability(x, isShown);
-        });
+  Object.keys(validationState)
+    .map(x => validationState[x])
+    .filter(x => typeof (x) === 'object')
+    .map(x => {
+      setValidationHintsVisability(x, isShown);
+      return x;
+    })
+    .filter(x => x.isValid === false)
+    .forEach(x => {
+      x.isShowingHint = isShown;
+      setValidationHintsVisability(x, isShown);
+    });
 }
 
 export default handleActions({
-    [KEY_OPENED]: handleKeyOpened,
-    [KEY_OPENING]: handleKeyOpening,
-    [KEY_RULEDEF_UPDATED]: handleKeyRuleDefUpdated,
-    [KEY_RULE_META_UPDATED]: handleKeyMetaUpdated,
-    [KEY_SAVED]: handleKeySaved,
-    [KEY_SAVING]: handleKeySaving,
-    [KEY_NAME_CHANGE]: handleKeyNameChange,
-    [KEY_VALIDATION_CHANGE]: handleKeyValidationChange,
-    ['KEY_DELETING']: handleKeyDeleting,
-    [KEY_VALUE_TYPE_CHANGE]: handleKeyValueTypeChange,
-    [SHOW_KEY_VALIDATIONS]: handleShowKeyValidations,
+  [KEY_OPENED]: handleKeyOpened,
+  [KEY_OPENING]: handleKeyOpening,
+  [KEY_RULEDEF_UPDATED]: handleKeyRuleDefUpdated,
+  [KEY_RULE_META_UPDATED]: handleKeyMetaUpdated,
+  [KEY_SAVED]: handleKeySaved,
+  [KEY_SAVING]: handleKeySaving,
+  [KEY_NAME_CHANGE]: handleKeyNameChange,
+  [KEY_VALIDATION_CHANGE]: handleKeyValidationChange,
+  ['KEY_DELETING']: handleKeyDeleting,
+  [KEY_VALUE_TYPE_CHANGE]: handleKeyValueTypeChange,
+  [SHOW_KEY_VALIDATIONS]: handleShowKeyValidations,
 }, null);
