@@ -58,7 +58,11 @@ export default class KeysPageObject {
 
     this.browser.waitForVisible(selectors.KEY_NAME_INPUT, 5000);
     this.browser.setValue(selectors.KEY_NAME_INPUT, keyName);
+    browser.click(selectors.BACKGROUND);
+    
     this.browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, keyValueType);
+    const firstSuggestion = selectors.typeaheadSuggestionByIndex(0);
+    browser.click(firstSuggestion);
 
     this.browser.click(selectors.SAVE_CHANGES_BUTTON);
     this.browser.waitUntil(() =>

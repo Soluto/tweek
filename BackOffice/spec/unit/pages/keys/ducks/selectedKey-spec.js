@@ -26,6 +26,7 @@ import { assert, expect } from 'chai';
 import fetchMock from 'fetch-mock';
 import keyNameValidations from '../../../../../modules/store/ducks/ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from '../../../../../modules/store/ducks/ducks-utils/validations/key-value-type-validations';
+import R from 'ramda';
 
 describe('selectedKey', async () => {
 
@@ -52,19 +53,24 @@ describe('selectedKey', async () => {
     fetchMock.restore();
   });
 
-  const generateState = (openedKeyName, keyNameToAdd, validation = { isValid: true }) => {
-    return {
+  const generateState = (openedKeyName, keyNameToAdd, keySource = '') => {
+    const state = {
       selectedKey: {
         key: openedKeyName,
         local: {
           key: keyNameToAdd,
-          keyDef: 'some jpad',
+          keyDef: {
+            source: ''
+          },
         },
         validation: {
-          ...validation
+          isValid: true
         },
       }
     };
+
+    state.selectedKey['remote'] = R.clone(state.selectedKey.local);
+    return state;
   };
 
   const doesDispatchPushTookAction = () => dispatchMock.mock.calls
@@ -256,8 +262,8 @@ describe('selectedKey', async () => {
           };
 
           currentState = generateState(isNewKey ? BLANK_KEY_NAME : keyNameToSave,
-            keyNameToSave,
-            stateValidation);
+            keyNameToSave);
+          currentState.selectedKey.validation = stateValidation;
 
           fetchMock.putOnce('glob:*/api/keys/*', {});
 
@@ -356,6 +362,7 @@ describe('selectedKey', async () => {
       expectedKeyValueTypeValidation.isShowingHint = true;
 
       const initializeState = generateState('some key', 'some new key');
+      initializeState.selectedKey.local.keyDef.source = JSON.stringify({ rules: [] });
       initializeState.keys = [];
 
       const expectedValidationPayload = {
@@ -376,6 +383,39 @@ describe('selectedKey', async () => {
 
       const keyValidationChangeDispatchAction = dispatchMock.mock.calls[1][0];
       assertDispatchAction(keyValidationChangeDispatchAction, { type: KEY_VALIDATION_CHANGE, payload: expectedValidationPayload });
+    });
+
+    it('should show confirm if there are existing rules values and only dispatch for confirm', async () => {
+      // Arrange
+      const keyValueType = 'pita';
+      const expectedKeyValueTypeValidation = keyValueTypeValidations(keyValueType);
+      expectedKeyValueTypeValidation.isShowingHint = true;
+
+      const initializeState = generateState('some key', 'some new key');
+      initializeState.selectedKey.local.keyDef.source = JSON.stringify({
+        rules: [{
+          Value: 'some rule value'
+        }]
+      });
+
+      initializeState.keys = [];
+
+      global.confirm = jest.fn(message => false);
+
+      // Act & Assert
+      const func1 = updateKeyValueType(keyValueType);
+      await func1(dispatchMock, () => initializeState);
+
+      expect(dispatchMock.mock.calls.length).to.equal(0, 'should not dispatch any action');
+      expect(global.confirm.mock.calls.length).to.equal(1, 'should call confirm once');
+
+      global.confirm = jest.fn(message => true);
+
+      const func2 = updateKeyValueType(keyValueType);
+      await func2(dispatchMock, () => initializeState);
+
+      expect(dispatchMock.mock.calls.length).to.equal(2, 'should not dispatch any action');
+      expect(global.confirm.mock.calls.length).to.equal(1, 'should call confirm once');
     });
   });
 

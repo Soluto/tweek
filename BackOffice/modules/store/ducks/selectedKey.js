@@ -64,6 +64,14 @@ export function updateKeyMetaDef(meta) {
 
 export function updateKeyValueType(keyValueType) {
     return async function (dispatch, getState) {
+        const rules = JSON.parse(getState().selectedKey.local.keyDef.source).rules;
+        const shouldShowAlert =
+            rules.some(x => x.Type !== 'SingleVariant' || (x.Value !== null && x.Value !== undefined && x.Value !== ''));
+            
+        if (shouldShowAlert && !confirm(`Rules values will try be converted to new type. Proceed?`)) {
+            return;
+        }
+
         const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
         keyValueTypeValidation.isShowingHint = !keyValueTypeValidation.isValid;
 

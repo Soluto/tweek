@@ -10,10 +10,10 @@ const comp = compose(
   mapProps(({ options, currentInputValue, showValueInOptions, ...props }) => ({
     options: currentInputValue && showValueInOptions && R.findIndex(x => x.label === currentInputValue)(options) < 0 ?
       [({ label: currentInputValue, value: currentInputValue }), ...options] : options,
-    ...props,
+    currentInputValue, ...props,
   })
   )
-)(({ ...props, autofocus, setCurrentInputValue, emptyItem = { label: '', value: '' } }) => {
+)(({ ...props, autofocus, currentInputValue, setCurrentInputValue, emptyItem = { label: '', value: '' } }) => {
   const wrapperThemeClass = props.wrapperThemeClass ?
     props.wrapperThemeClass : style['combo-box-default-wrapper-theme-class'];
 
@@ -22,18 +22,15 @@ const comp = compose(
       <Typeahead {...props}
         onChange={selectedValues => {
           if (!props.onChange || selectedValues.length < 1) return;
-          setCurrentInputValue(selectedValues[0]);
+          setCurrentInputValue(selectedValues[0].label);
           props.onChange(selectedValues[0]);
-        } }
+        }}
         onInputChange={text => {
-          if (props.onInputChange) props.onInputChange(text);
           setCurrentInputValue(text);
-          if (!props.onChange) return;
-          const newSelectedItem = text === '' ? emptyItem : props.options.find(x => x.label === text);
-          if (!!newSelectedItem) props.onChange(newSelectedItem);
-        } }
+          if (props.onInputChange) props.onInputChange(text);
+        }}
         ref={e => e && autofocus && e.refs.instance.focus()}
-        />
+      />
     </div>
   );
 });
