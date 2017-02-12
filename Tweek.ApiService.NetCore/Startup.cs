@@ -97,9 +97,10 @@ namespace Tweek.ApiService.NetCore
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
-            { 
-                //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-                //loggerFactory.AddDebug();
+            {
+                app.UseDeveloperExceptionPage();
+                loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+                loggerFactory.AddDebug();
             }
             Console.WriteLine(System.Runtime.GCSettings.IsServerGC);
             Console.WriteLine(System.Runtime.GCSettings.LatencyMode);
