@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reactive.Concurrency;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Threading.Tasks;
 using System.Text;
@@ -8,7 +7,6 @@ using Xunit;
 
 namespace Tweek.Drivers.Blob.Tests
 {
-    [TestClass]
     public class BlobRulesDriverTest
     {
         private Mock<IWebClient> mWebClientMock;
