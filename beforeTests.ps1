@@ -7,6 +7,8 @@ Start-Job -Name RunLocalDeployment -ArgumentList (Resolve-Path "Tweek.ApiService
 
 Wait-Job -Name RunLocalDeployment -Timeout 5
 
+Start-Sleep -s 10
+
 $Env:TWEEK_SMOKE_TARGET = "http://localhost:5000"
 
 exit $LastExitCode
