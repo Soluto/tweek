@@ -1,11 +1,14 @@
 /* global jest, beforeEach, describe, it, expect */
 jest.unmock('../../../../../modules/store/ducks/ducks-utils/validations/key-value-type-validations');
 jest.mock('../../../../../modules/services/TypesService', () => {
+  const types = {
+    mockType1: { type: "mock-type1" },
+    mockType2: { type: "mock-type1", typeAlias: "mock-type2" },
+  };
   return {
-    types: {
-      mockType1: { type: "mock-type1" },
-      mockType2: { type: "mock-type1", typeAlias: "mock-type2" },
-    },
+    types,
+    getTypeMeta: (type) =>
+      Object.keys(types).map(x => types[x]).find(x => x.typeAlias === type || x.type === type)
   };
 });
 
@@ -27,7 +30,7 @@ describe('key-value-type-validations', () => {
   setTestDefenition('mock-type2', true);
   setTestDefenition('unexisting-mock-type', false);
 
-  testsDefenitions.forEach(x => it('', () => {
+  testsDefenitions.forEach(x => it('should return correct validation result for type:' + x.keyValueType, () => {
     // Act
     const validationResult = keyValueTypeValidation(x.keyValueType);
 

@@ -3,7 +3,7 @@ import CustomSlider from '../../../../../../../../components/common/CustomSlider
 import style from './RuleValue.css';
 import ComboBox from '../../../../../../../../components/common/ComboBox/ComboBox';
 import editorRulesValuesConverter from '../../../../../../../../services/editor-rules-values-converter';
-import { types } from '../../../../../../../../services/TypesService';
+import { types, getTypeMeta } from '../../../../../../../../services/TypesService';
 import R from 'ramda';
 import { withState, compose, mapProps } from 'recompose';
 
@@ -194,12 +194,8 @@ const MultiVariantValue = ({valueDistrubtion: {type, args }, mutate, identities,
   return null;
 };
 
-const getActualValueType = type => Object.keys(types)
-  .map(x => types[x])
-  .find(x => x.type === type || x.typeAlias === type);
-
 export default compose(
-  mapProps(({valueType, ...props}) => ({ valueType: getActualValueType(valueType) || 'string', ...props }))
+  mapProps(({valueType, ...props}) => ({ valueType: getTypeMeta(valueType) || types.string, ...props }))
 )(({rule, mutate, valueType, autofocus, identities }) => {
   if (rule.Type === 'SingleVariant')
     return (
