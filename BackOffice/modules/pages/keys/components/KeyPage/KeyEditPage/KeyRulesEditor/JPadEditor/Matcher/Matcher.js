@@ -24,7 +24,7 @@ export default hasChanged(({matcher, mutate, autofocus}) => {
   const [ops, props] = R.pipe(R.toPairs, R.partition(([prop]) => prop[0] === '$'))(matcher);
   const IgnoreActivePropsPropsPredicate = R.compose(R.not, R.contains(R.__, R.map(R.head, props)));
 
-  const allSuggestions = ContextService.getProperties().map(prop => ({ label: prop.name, value: prop.id, meta: prop.meta }));
+  const allSuggestions = ContextService.getProperties().map(prop => ({ label: prop.name, value: prop.id }));
 
   const filterActiveProps = (currentProp) =>
     allSuggestions.filter(x => x.value === currentProp || IgnoreActivePropsPropsPredicate(x.value));

@@ -1,6 +1,6 @@
 /* global jest, beforeEach, describe, it, expect */
 jest.unmock('../../../../../modules/store/ducks/ducks-utils/validations/key-value-type-validations');
-jest.mock('../../../../../modules/services/TypesService', () => {
+jest.mock('../../../../../modules/services/types-service', () => {
   const types = {
     mockType1: { type: "mock-type1" },
     mockType2: { type: "mock-type1", typeAlias: "mock-type2" },

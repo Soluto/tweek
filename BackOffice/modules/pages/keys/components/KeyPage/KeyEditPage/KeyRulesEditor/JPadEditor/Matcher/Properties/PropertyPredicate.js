@@ -6,11 +6,11 @@ import * as ContextService from "../../../../../../../../../services/context-ser
 
 const isValueType = (value) => R.isArrayLike(value) || typeof (value) !== 'object';
 
-let BinaryPredicate = ({onValueUpdate, onOpUpdate, op, meta, value}) => {
+let BinaryPredicate = ({onValueUpdate, onOpUpdate, op, typeDetails, value}) => {
   return (
     <div style={{ display: 'flex' }}>
-      <Operator onUpdate={onOpUpdate} supportedOperators={getSupportedOperators(meta)} selectedOp={op} />
-      <PropertyValue {...{ meta, value, onUpdate: onValueUpdate, op }} />
+      <Operator onUpdate={onOpUpdate} supportedOperators={getSupportedOperators(typeDetails)} selectedOp={op} />
+      <PropertyValue {...{ typeDetails, value, onUpdate: onValueUpdate, op }} />
     </div>
   );
 };
@@ -21,8 +21,8 @@ let translateValue = (oldOp, newOp, value) => {
   return value;
 };
 
-let ShortPredicate = ({meta, mutate, value}) => {
-  console.log(meta);
+let ShortPredicate = ({typeDetails, mutate, value}) => {
+  console.log(typeDetails);
   return (
     <BinaryPredicate
       onValueUpdate={mutate.updateValue}
@@ -30,16 +30,16 @@ let ShortPredicate = ({meta, mutate, value}) => {
         if (selectedOp === '$eq') return;
         mutate.updateValue({
           [selectedOp]: translateValue('$eq', selectedOp, value),
-          ...(meta.comparer ? { $compare: meta.comparer } : {}),
+          ...(typeDetails.comparer ? { $compare: typeDetails.comparer } : {}),
         });
       }}
       op="$eq"
-      {...{ value, meta } }
+      {...{ value, typeDetails } }
     />
   );
 };
 
-let ComplexPredicate = ({predicate, mutate, property, meta}) => {
+let ComplexPredicate = ({predicate, mutate, property, typeDetails}) => {
   return (
     <div style={{ display: 'flex' }}>{
       R.flatten(R.toPairs(predicate)
@@ -53,7 +53,7 @@ let ComplexPredicate = ({predicate, mutate, property, meta}) => {
                 if (selectedOp === '$eq') mutate.updateValue(newValue);
                 else mutate.apply(m => m.in(op).updateKey(selectedOp).updateValue(newValue));
               }}
-              onValueUpdate={mutate.in(op).updateValue} {...{ value, op, meta }}
+              onValueUpdate={mutate.in(op).updateValue} {...{ value, op, typeDetails }}
             />
             : <PropertyPredicate predicate={value} mutate={mutate.in(op)} property={property} />)
       )
@@ -62,10 +62,10 @@ let ComplexPredicate = ({predicate, mutate, property, meta}) => {
 };
 
 let PropertyPredicate = ({predicate, mutate, property}) => {
-  let meta = ContextService.getMetaForProperty(property);
+  let typeDetails = ContextService.getPropertyTypeDetails(property);
 
   return (typeof (predicate) !== 'object') ?
-    <ShortPredicate value={predicate} {...{ meta, mutate } } /> :
-    <ComplexPredicate {...{ predicate, mutate, property, meta }} />;
+    <ShortPredicate value={predicate} {...{ typeDetails, mutate } } /> :
+    <ComplexPredicate {...{ predicate, mutate, property, typeDetails }} />;
 };
 export default PropertyPredicate;

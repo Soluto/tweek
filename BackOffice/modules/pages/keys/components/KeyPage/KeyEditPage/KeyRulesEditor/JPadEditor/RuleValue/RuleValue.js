@@ -14,7 +14,7 @@ function getTypedValue(value, valueType) {
     return TypesService.convertValue(value, valueType);
   }
   catch (err) {
-    return valueType === TypesService.types.bool.base ? '' : '' + value
+    return valueType === TypesService.types.boolean.base ? '' : '' + value
   }
 }
 
@@ -47,7 +47,7 @@ const BooleanSingleVariant = ({value, valueType, mutate, identities}) => (
 
 const SingleVariantValue = ({value, mutate, identities, autofocus, valueType}) => (
   <div className={style['rule-value-container']}>
-    {valueType === TypesService.types.bool ?
+    {valueType === TypesService.types.boolean ?
       <BooleanSingleVariant {...{ value, valueType, mutate, identities }} />
       :
       <div>

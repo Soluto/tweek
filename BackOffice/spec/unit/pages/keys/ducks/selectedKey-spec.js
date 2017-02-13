@@ -4,7 +4,7 @@ jest.unmock('../../../../../modules/store/ducks/selectedKey');
 jest.unmock('../../../../../modules/utils/http');
 jest.unmock('../../../../../modules/store/ducks/ducks-utils/validations/key-name-validations');
 jest.unmock('../../../../../modules/store/ducks/ducks-utils/validations/key-value-type-validations');
-jest.unmock('../../../../../modules/services/TypesService');
+jest.unmock('../../../../../modules/services/types-service');
 jest.unmock('../../../../../modules/services/context-service');
 
 jest.mock('../../../../../modules/store/ducks/ducks-utils/blankKeyDefinition', () => {
