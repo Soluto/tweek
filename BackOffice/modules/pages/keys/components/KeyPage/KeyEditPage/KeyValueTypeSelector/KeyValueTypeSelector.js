@@ -1,20 +1,18 @@
 import React from 'react';
 import ComboBox from '../../../../../../components/common/ComboBox/ComboBox';
 import style from './KeyValueTypeSelector.css';
-import { types } from '../../../../../../services/TypesService';
+import * as TypesServices from '../../../../../../services/types-service';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
 import { updateKeyValueType } from '../../../../../../store/ducks/selectedKey';
 import ReactTooltip from 'react-tooltip';
 import alertIconSrc from '../resources/alert-icon.svg';
+import changeCase from "change-case";
 
-const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 const getValueTypeSuggestions = () => {
-  return Object.keys(types)
-    .map(x => types[x])
-    .map(x => !!x.typeAlias ? x.typeAlias : x.type)
+  return Object.keys(TypesServices.types)
     .map(x => ({
-      label: capitalizeFirstLetter(x),
+      label: changeCase.titleCase(x),
       value: x,
     }));
 };
