@@ -3,8 +3,8 @@ jest.unmock('../../../modules/services/context-service');
 jest.mock('../../../modules/services/types-service', () => {
   return {
     types: {
-      testType1: { type: 'string', validate: 'someMeta' },
-      testType2: { type: 'number' },
+      string: { name: 'string' },
+      version: { name: 'version', base: 'string' }
     },
   };
 });
@@ -59,48 +59,52 @@ describe('context-service', () => {
   });
 
   describe('getPropertyMeta', () => {
-    const testDefenitions = [];
-
-    const setTestDefenition = (property, expectedMeta) => {
-      testDefenitions.push({ property, expectedMeta });
-    };
-
-    setTestDefenition(null, ({ type: 'empty' }));
-    setTestDefenition(undefined, ({ type: 'empty' }));
-    setTestDefenition('', ({ type: 'empty' }));
-    setTestDefenition('@@key.something', ({ type: 'string' }));
-
-    setTestDefenition('device.testProp1', ({ type: 'testType1', validate: 'someMeta' }));
-    setTestDefenition('device.testProp2', ({ type: 'testType2' }));
+    let refreshSchemaPromise;
 
     const initializeSchema = {
       device: {
-        testProp1: {
-          type: 'testType1'
+        Name: {
+          type: 'string'
         },
-        testProp2: {
-          type: 'testType2'
+        CustomPropertyType: {
+          type: 'custom',
+          custom_type: {
+            base: 'string'
+          }
+        },
+        PropertyWithBadType: {
+          type: 'i dunno lol'
         }
       }
     };
 
-    let refreshSchemaPromise;
     beforeAll(() => {
       fetchMock.get(contextServiceApiMatcher, initializeSchema);
       refreshSchemaPromise = ContextService.refreshSchema();
     });
 
-    testDefenitions.forEach(x => {
-      it('should return correct meta for property:' + x.property, async () => {
+    const runPropertyTypeTest = (property, expectedMeta) => {
+      it('should return correct meta for property:' + property, async () => {
         // Arrange
         await refreshSchemaPromise;
 
         // Act
-        const propertyMeta = ContextService.getPropertyMeta(x.property);
-        
+        const propertyTypeDetails = ContextService.getPropertyTypeDetails(property);
+
         // Assert
-        expect(propertyMeta).to.deep.equal(x.expectedMeta, 'should return correct property meta');
+        expect(propertyTypeDetails).to.deep.equal(expectedMeta, 'should return correct property meta');
       });
-    });
+    };
+
+    runPropertyTypeTest(null, ({ name: 'empty' }));
+    runPropertyTypeTest(undefined, ({ name: 'empty' }));
+    runPropertyTypeTest('', ({ name: 'empty' }));
+    runPropertyTypeTest('@@key.something', ({ name: 'string' }));
+
+    runPropertyTypeTest('device.Name', ({ name: 'string' }));
+    runPropertyTypeTest('device.CustomPropertyType', ({ name: 'custom', base: 'string' }));
+
+    runPropertyTypeTest('device.UnknownProperty', ({ name: 'string' }));
+    runPropertyTypeTest('device.PropertyWithBadType', ({ name: 'string' }));
   });
 });

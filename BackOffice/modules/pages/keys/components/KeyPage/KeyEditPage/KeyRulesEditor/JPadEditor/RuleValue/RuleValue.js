@@ -14,7 +14,7 @@ function getTypedValue(value, valueType) {
     return TypesService.convertValue(value, valueType);
   }
   catch (err) {
-    return valueType === TypesService.types.boolean.base ? '' : '' + value
+    return valueType === TypesService.types.boolean.name ? '' : '' + value
   }
 }
 
