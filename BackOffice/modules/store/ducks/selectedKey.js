@@ -1,11 +1,11 @@
-import {handleActions} from 'redux-actions';
+import { handleActions } from 'redux-actions';
 import R from 'ramda';
-import {push} from 'react-router-redux';
-import {createBlankKey, createBlankKeyMeta, BLANK_KEY_NAME} from './ducks-utils/blankKeyDefinition';
-import {withJsonData} from '../../utils/http';
+import { push } from 'react-router-redux';
+import { createBlankKey, createBlankKeyMeta, BLANK_KEY_NAME } from './ducks-utils/blankKeyDefinition';
+import { withJsonData } from '../../utils/http';
 import keyNameValidations from './ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
-import {downloadTags} from './tags.js';
+import { downloadTags } from './tags.js';
 import * as ContextService from "../../services/context-service";
 
 const KEY_OPENED = 'KEY_OPENED';
@@ -22,21 +22,22 @@ const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
 export function openKey(key) {
   return async function (dispatch) {
     dispatch(downloadTags());
+    
     await ContextService.refreshSchema();
-
+    
     if (key === BLANK_KEY_NAME) {
-      dispatch({type: KEY_OPENED, payload: createBlankKey()});
+      dispatch({ type: KEY_OPENED, payload: createBlankKey() });
       return;
     }
 
-    dispatch({type: KEY_OPENING, payload: key});
+    dispatch({ type: KEY_OPENING, payload: key });
 
     let keyData;
 
     try {
-      keyData = await (await fetch(`/api/keys/${key}`, {credentials: 'same-origin'})).json();
+      keyData = await (await fetch(`/api/keys/${key}`, { credentials: 'same-origin' })).json();
     } catch (exp) {
-      dispatch({type: KEY_OPENED, payload: {key}});
+      dispatch({ type: KEY_OPENED, payload: { key } });
       return;
     }
 
@@ -50,16 +51,16 @@ export function openKey(key) {
       meta
     };
 
-    dispatch({type: KEY_OPENED, payload: keyOpenedPayload});
+    dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
   };
 }
 
 export function updateKeyDef(keyDef) {
-  return {type: KEY_RULEDEF_UPDATED, payload: keyDef};
+  return { type: KEY_RULEDEF_UPDATED, payload: keyDef };
 }
 
 export function updateKeyMetaDef(meta) {
-  return {type: KEY_RULE_META_UPDATED, payload: meta};
+  return { type: KEY_RULE_META_UPDATED, payload: meta };
 }
 
 export function updateKeyValueType(keyValueType) {
@@ -75,7 +76,7 @@ export function updateKeyValueType(keyValueType) {
     const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
     keyValueTypeValidation.isShowingHint = !keyValueTypeValidation.isValid;
 
-    dispatch({type: KEY_VALUE_TYPE_CHANGE, payload: keyValueType});
+    dispatch({ type: KEY_VALUE_TYPE_CHANGE, payload: keyValueType });
 
     const currentValidationState = getState().selectedKey.validation;
     const newValidation = {
@@ -86,7 +87,7 @@ export function updateKeyValueType(keyValueType) {
       },
     };
 
-    dispatch({type: KEY_VALIDATION_CHANGE, payload: newValidation});
+    dispatch({ type: KEY_VALIDATION_CHANGE, payload: newValidation });
   };
 }
 
@@ -95,7 +96,7 @@ export function updateKeyName(newKeyName) {
     const keyNameValidation = keyNameValidations(newKeyName, getState().keys);
     keyNameValidation.isShowingHint = !keyNameValidation.isValid;
 
-    dispatch({type: KEY_NAME_CHANGE, payload: newKeyName});
+    dispatch({ type: KEY_NAME_CHANGE, payload: newKeyName });
 
     const currentValidationState = getState().selectedKey.validation;
     const newValidation = {
@@ -103,7 +104,7 @@ export function updateKeyName(newKeyName) {
       key: keyNameValidation,
     };
 
-    dispatch({type: KEY_VALIDATION_CHANGE, payload: newValidation});
+    dispatch({ type: KEY_VALIDATION_CHANGE, payload: newValidation });
   };
 }
 
@@ -115,11 +116,11 @@ export function saveKey() {
     const savedKey = local.key || key;
 
     if (!currentState.selectedKey.validation.isValid) {
-      dispatch({type: SHOW_KEY_VALIDATIONS});
+      dispatch({ type: SHOW_KEY_VALIDATIONS });
       return;
     }
 
-    dispatch({type: KEY_SAVING});
+    dispatch({ type: KEY_SAVING });
 
     const response = await fetch(`/api/keys/${savedKey}`, {
       credentials: 'same-origin',
@@ -128,14 +129,14 @@ export function saveKey() {
     });
 
     const isSaveSucceeded = response.status < 400;
-    dispatch({type: KEY_SAVED, payload: {keyName: savedKey, isSaveSucceeded}});
+    dispatch({ type: KEY_SAVED, payload: { keyName: savedKey, isSaveSucceeded } });
 
     if (!isSaveSucceeded) {
       alert("Save key failed");
       return;
     }
 
-    if (isNewKey) dispatch({type: 'KEY_ADDED', payload: savedKey});
+    if (isNewKey) dispatch({ type: 'KEY_ADDED', payload: savedKey });
     const shouldOpenNewKey = isNewKey && getState().selectedKey.key === BLANK_KEY_NAME;
 
     if (shouldOpenNewKey) {
@@ -179,7 +180,7 @@ const handleKeyRuleDefUpdated = (state, {payload}) => ({
   ...state,
   local: {
     ...state.local,
-    keyDef: {...state.local.keyDef, ...payload},
+    keyDef: { ...state.local.keyDef, ...payload },
   },
 });
 
@@ -199,7 +200,7 @@ const handleKeySaved = ({local, remote, ...state}, {payload: {keyName, isSaveSuc
       local,
       remote: isSaveSucceeded ? R.clone(local) : remote,
     } :
-    ({...state});
+    ({ ...state });
 };
 
 const handleKeySaving = ({...state}) => ({
@@ -211,8 +212,8 @@ const handleKeyNameChange = ({local: {key, ...localData}, ...otherState}, {paylo
   ...otherState,
   local: {
     ...localData,
-    meta: {...localData.meta, displayName: payload},
-    ...(payload === '' ? {} : {key: payload}),
+    meta: { ...localData.meta, displayName: payload },
+    ...(payload === '' ? {} : { key: payload }),
   },
 });
 
@@ -230,8 +231,8 @@ const handleKeyValidationChange = ({...state}, {payload}) => {
 const handleKeyDeleting = ({remote, ...otherState}) => {
   return ({
     ...otherState,
-    local: {...remote},
-    remote: {...remote},
+    local: { ...remote },
+    remote: { ...remote },
   });
 };
 
