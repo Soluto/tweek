@@ -97,7 +97,7 @@ describe('context-service', () => {
 
         // Act
         const propertyMeta = ContextService.getPropertyMeta(x.property);
-        console.log('@@', propertyMeta, x.expectedMeta);
+        
         // Assert
         expect(propertyMeta).to.deep.equal(x.expectedMeta, 'should return correct property meta');
       });
