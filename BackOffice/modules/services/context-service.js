@@ -1,5 +1,5 @@
 import R from 'ramda';
-import { types } from './TypesService';
+import { types } from './types-service';
 
 let contextSchema = {};
 
@@ -43,7 +43,7 @@ export function getPropertyMeta(property) {
     return { type: 'string' };
   }
 
-  const typeMeta = getTypeMeta(meta.type);
+  const typeMeta = types[meta.type];
 
   if (!typeMeta)
     return meta;
