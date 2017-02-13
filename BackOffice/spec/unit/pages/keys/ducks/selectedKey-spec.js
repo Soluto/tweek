@@ -5,6 +5,7 @@ jest.unmock('../../../../../modules/utils/http');
 jest.unmock('../../../../../modules/store/ducks/ducks-utils/validations/key-name-validations');
 jest.unmock('../../../../../modules/store/ducks/ducks-utils/validations/key-value-type-validations');
 jest.unmock('../../../../../modules/services/TypesService');
+jest.unmock('../../../../../modules/services/context-service');
 
 jest.mock('../../../../../modules/store/ducks/ducks-utils/blankKeyDefinition', () => {
   return {
@@ -92,13 +93,18 @@ describe('selectedKey', async () => {
   };
 
   describe('openKey', () => {
-    it('should dispatch KEY_OPENED with blank payload for blank key name', () => {
+    beforeEach(() => {
+      fetchMock.get('glob:*/api/tags', []);
+      fetchMock.get('glob:*/api/context-schema/', {});
+    });
+
+    it('should dispatch KEY_OPENED with blank payload for blank key name', async () => {
       // Act
       const func = openKey(BLANK_KEY_NAME);
-      func(dispatchMock);
+      await func(dispatchMock);
 
       // Assert
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
+      const keyOpenedDispatchAction = dispatchMock.mock.calls[1][0];
       assertDispatchAction(keyOpenedDispatchAction, { type: KEY_OPENED, payload: createBlankKey() });
     });
 
@@ -113,7 +119,7 @@ describe('selectedKey', async () => {
       // Assert
       assert(dispatchMock.mock.calls.length > 0, 'should call dispatch atleast once');
 
-      const keyOpeningdDispatchAction = dispatchMock.mock.calls[2][0];
+      const keyOpeningdDispatchAction = dispatchMock.mock.calls[1][0];
       assertDispatchAction(keyOpeningdDispatchAction, { type: KEY_OPENING, payload: keyName });
     });
 
@@ -147,7 +153,7 @@ describe('selectedKey', async () => {
       await func(dispatchMock);
 
       // Assert
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[3][0];
+      const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
       assertDispatchAction(keyOpenedDispatchAction, { type: KEY_OPENED, payload: expectedPayload });
     });
 
@@ -176,7 +182,7 @@ describe('selectedKey', async () => {
       await func(dispatchMock);
 
       // Assert
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[3][0];
+      const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
       expect(keyOpenedDispatchAction.type).to.deep.equal(KEY_OPENED);
       expect(keyOpenedDispatchAction.payload.meta).to.deep.equal(createBlankKeyMeta());
     });
@@ -196,13 +202,16 @@ describe('selectedKey', async () => {
       await func(dispatchMock);
 
       // Assert
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[3][0];
+      const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
       assertDispatchAction(keyOpenedDispatchAction, { type: KEY_OPENED, payload: expectedPayload });
     });
 
     it('should dispatch TAGS_DOWNLOADED', async () => {
       // Arrange
-      fetchMock.get('glob:*/api/tags', []);
+      const expectedTags = [{ name: 'pita' }];
+      fetchMock.restore();
+      fetchMock.get('glob:*/api/context-schema/', {});
+      fetchMock.get('glob:*/api/tags', expectedTags);
 
       // Act
       const func = openKey('category/some key');
@@ -211,7 +220,7 @@ describe('selectedKey', async () => {
       // Assert
       const asyncDownloadTagsDispatchActionPromise = dispatchMock.mock.calls[0][0];
       const downloadTagsDispatchAction = await asyncDownloadTagsDispatchActionPromise;
-      assertDispatchAction(downloadTagsDispatchAction, { type: TAGS_DOWNLOADED, payload: [] });
+      assertDispatchAction(downloadTagsDispatchAction, { type: TAGS_DOWNLOADED, payload: expectedTags });
     });
   });
 
