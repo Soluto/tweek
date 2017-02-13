@@ -9,8 +9,10 @@ const groupOps = { '$in': 'in' };
 const allOps = { ...equalityOps, ...comparisonOps, ...groupOps };
 
 export const getSupportedOperators = (typeDetails) => {
-  let type = typeDetails.type == "custom" ? typeDetails.custom_type.base : typeDetails.type;
-  if (type === 'empty') return allOps;
+  let type = typeDetails.name == "custom" ? typeDetails.base : typeDetails.name;
+
+  if (type === 'empty')
+    return allOps;
 
   let ops = {};
   if (type === 'boolean' || type === 'string' || type === 'version') ops = equalityOps;

@@ -24,7 +24,7 @@ export function getProperties() {
 }
 
 export function getPropertyTypeDetails(property) {
-  if (!property) return { type: 'empty' };
+  if (!property) return { name: 'empty' };
   if (property.startsWith('@@key')) return TypesService.types.string;
 
   let propertyDetails = getProperties().find(x => x.id == property);
