@@ -1,9 +1,7 @@
-import { types } from '../../../../services/TypesService';
+import { types, getTypeMeta } from '../../../../services/TypesService';
 
 function isExistingType(type) {
-  return Object.keys(types)
-    .map(x => types[x])
-    .some(x => type === x.type || type === x.typeAlias);
+  return !!getTypeMeta(type);
 }
 
 export default function (keyValueType) {
