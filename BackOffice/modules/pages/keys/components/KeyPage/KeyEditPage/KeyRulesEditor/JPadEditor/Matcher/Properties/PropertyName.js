@@ -59,7 +59,7 @@ let PropertySuggestion = ({suggestion, textToMark}) => {
 
   return (
     <div data-tip data-for={tooltipId} className={style['property-suggestion-wrapper']}
-         data-field-type={typeDetails.type}>
+         data-field-type={typeDetails.name}>
       <i />
       <Highlighter
         highlightClassName={style['suggestion-label']}
@@ -79,7 +79,9 @@ let PropertySuggestion = ({suggestion, textToMark}) => {
                     effect="solid"
                     delayShow={1000}
                     delayHide={1000}>
-        <PropertyTooltip propName={prop} identityType={identity} propType={typeDetails.base}
+        <PropertyTooltip propName={prop}
+                         identityType={identity}
+                         propType={typeDetails.name}
                          description={typeDetails.description || ""}/>
       </ReactTooltip>
     </div>
