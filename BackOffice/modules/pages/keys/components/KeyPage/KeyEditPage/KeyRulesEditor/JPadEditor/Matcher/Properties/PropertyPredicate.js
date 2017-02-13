@@ -22,7 +22,6 @@ let translateValue = (oldOp, newOp, value) => {
 };
 
 let ShortPredicate = ({typeDetails, mutate, value}) => {
-  console.log(typeDetails);
   return (
     <BinaryPredicate
       onValueUpdate={mutate.updateValue}
