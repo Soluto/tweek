@@ -35,7 +35,7 @@ export function getPropertyTypeDetails(property) {
   }
 
   if (propertyDetails.type == "custom") {
-    return propertyDetails.custom_type;
+    return Object.assign({}, {name: 'custom'}, propertyDetails.custom_type);
   }
 
   let typeDetails = TypesService.types[propertyDetails.type];
@@ -44,6 +44,6 @@ export function getPropertyTypeDetails(property) {
     console.warn("Type details not found for type", propertyDetails.type, property);
     return TypesService.types.string;
   }
-  
+
   return typeDetails;
 }

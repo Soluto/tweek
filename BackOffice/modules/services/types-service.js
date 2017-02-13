@@ -1,11 +1,14 @@
 export let types = {
   string: {
+    name: 'string',
     base: 'string'
   },
   number: {
+    name: 'number',
     base: 'number'
   },
   boolean: {
+    name: 'boolean',
     base: 'boolean'
   }
 };
@@ -14,7 +17,9 @@ export async function refreshTypes() {
   let data = await fetch(`/api/types`, {credentials: 'same-origin'});
   let loadedTypes = await data.json();
 
-  types = Object.assign({}, types, loadedTypes);
+  for (let type of Object.keys(loadedTypes)){
+    types[type] = Object.assign({}, {name: type}, loadedTypes[type]);
+  }
 }
 
 export function convertValue(value, targetType) {
