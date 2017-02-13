@@ -5,7 +5,7 @@ export let types = {
   number: {
     base: 'number'
   },
-  bool: {
+  boolean: {
     base: 'boolean'
   }
 };

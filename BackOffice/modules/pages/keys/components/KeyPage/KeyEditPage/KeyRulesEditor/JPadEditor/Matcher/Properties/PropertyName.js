@@ -5,6 +5,7 @@ import ComboBox from '../../../../../../../../../components/common/ComboBox/Comb
 import {withState} from 'recompose';
 import Highlighter from 'react-highlight-words';
 import ReactTooltip from 'react-tooltip';
+import * as ContextService from '../../../../../../../../../services/context-service';
 
 const HIGHLIGHTED_TEXT_INLINE_STYLE = {
   fontWeight: 800,
@@ -33,7 +34,7 @@ let PropertyTooltip = ({propName, description, propType, identityType}) =>
         </div>
       </div>
     </div>
-  </div>
+  </div>;
 
 
 let PropertySuggestion = ({suggestion, textToMark}) => {
@@ -52,12 +53,13 @@ let PropertySuggestion = ({suggestion, textToMark}) => {
       </div>);
   }
 
+  const typeDetails = ContextService.getPropertyTypeDetails(suggestion.value);
   const [identity, prop] = suggestion.value.split('.');
-  const type = suggestion.meta && (suggestion.meta.type == "custom" ? suggestion.meta.custom_type.base : suggestion.meta.type);
   const tooltipId = chance.guid();
 
   return (
-    <div data-tip data-for={tooltipId} className={style['property-suggestion-wrapper']} data-field-type={suggestion.meta && suggestion.meta.type}>
+    <div data-tip data-for={tooltipId} className={style['property-suggestion-wrapper']}
+         data-field-type={typeDetails.type}>
       <i />
       <Highlighter
         highlightClassName={style['suggestion-label']}
@@ -77,8 +79,8 @@ let PropertySuggestion = ({suggestion, textToMark}) => {
                     effect="solid"
                     delayShow={1000}
                     delayHide={1000}>
-        <PropertyTooltip propName={prop} identityType={identity} propType={type}
-                         description={suggestion.meta && suggestion.meta.description || ""}/>
+        <PropertyTooltip propName={prop} identityType={identity} propType={typeDetails.base}
+                         description={typeDetails.description || ""}/>
       </ReactTooltip>
     </div>
   );
@@ -89,10 +91,10 @@ export default withState('currentInputValue', 'setCurrentInputValue', '')(
   ({mutate, property, suggestedValues, autofocus, currentInputValue, setCurrentInputValue}) => {
     const selectProperty = (newProperty) => mutate.apply(m =>
       m.updateKey(newProperty.value)
-        .updateValue((newProperty.meta && newProperty.meta.defaultValue) || ''));
+        .updateValue((newProperty && newProperty.defaultValue) || ''));
 
     if (!!property && !suggestedValues.some(x => x.value === property)) {
-      suggestedValues = [...suggestedValues, {label: property, value: property, meta: {type: 'string'}}];
+      suggestedValues = [...suggestedValues, {label: property, value: property}];
     }
 
     suggestedValues = R.uniqBy(x => x.value)([...suggestedValues]);
@@ -102,16 +104,17 @@ export default withState('currentInputValue', 'setCurrentInputValue', '')(
         options={suggestedValues}
         onChange={selectProperty}
         placeholder="Property"
-        selected={[R.find(x => x.value === property)(suggestedValues)]}
+        selected={suggestedValues.filter(x => x.value === property)}
         onInputChange={text => {
           setCurrentInputValue(text);
           if (text.startsWith('@@key:')) {
             selectProperty({value: text});
           }
-        } }
+        }}
         filterBy={option => option.value.toLowerCase().includes(currentInputValue.toLowerCase())}
         renderMenuItemChildren={(_, suggestion) => (
-          <PropertySuggestion suggestion={suggestion} textToMark={currentInputValue}/>)}
+          <PropertySuggestion suggestion={suggestion} textToMark={currentInputValue}/>
+        )}
         autofocus={autofocus}
         wrapperThemeClass={style['property-name-wrapper']}
       />

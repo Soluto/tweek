@@ -1,5 +1,5 @@
 import R from 'ramda';
-import { types } from './TypesService';
+import * as TypesService from './types-service';
 
 let contextSchema = {};
 
@@ -19,41 +19,31 @@ export function getProperties() {
       identity: identity,
       name: property,
       type: contextSchema[identity][property].type,
-      meta: getPropertyMeta(identity + "." + property)
+      custom_type: contextSchema[identity][property].custom_type
     })), Object.keys(contextSchema));
 }
 
-export function getPropertyMeta(property) {
-  let meta;
+export function getPropertyTypeDetails(property) {
   if (!property) return { type: 'empty' };
-  if (property.startsWith('@@key')) return { type: 'string' };
+  if (property.startsWith('@@key')) return TypesService.types.string;
 
-  const [identity, innerProperty] = property.split('.');
+  let propertyDetails = getProperties().find(x => x.id == property);
 
-  let identityDetails = contextSchema[identity];
-  if (!identityDetails) {
-    console.warn('unsupported identity: ' + identity);
-    return { type: 'string' };
+  if (!propertyDetails) {
+    console.warn('Property details not found', property);
+    return TypesService.types.string;
   }
 
-  meta = identityDetails[innerProperty];
-
-  if (!meta) {
-    console.warn('unsupported field meta: ' + property);
-    return { type: 'string' };
+  if (propertyDetails.type == "custom") {
+    return propertyDetails.custom_type;
   }
 
-  const typeMeta = getTypeMeta(meta.type);
+  let typeDetails = TypesService.types[propertyDetails.type];
 
-  if (!typeMeta)
-    return meta;
-
-  let {type, typeAlias, ...props} = typeMeta;
-
-  return {
-    ...meta,
-    ...props,
-  };
-};
-
-
+  if (!typeDetails) {
+    console.warn("Type details not found for type", propertyDetails.type, property);
+    return TypesService.types.string;
+  }
+  
+  return typeDetails;
+}

@@ -1,11 +1,11 @@
 /* global jest, beforeEach, describe, it, expect */
 jest.unmock('../../../modules/services/editor-rules-values-converter');
-jest.mock('../../../modules/services/TypesService', () => {
+jest.mock('../../../modules/services/types-service', () => {
   return {
     types: {
       string: { type: 'string' },
       number: { type: 'number' },
-      bool: { type: 'boolean' },
+      boolean: { type: 'boolean' },
     },
   };
 });

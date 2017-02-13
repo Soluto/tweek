@@ -8,8 +8,8 @@ const comparisonOps = { '$ge': '>=', '$gt': '>', '$lt': '<', '$le': '<=' };
 const groupOps = { '$in': 'in' };
 const allOps = { ...equalityOps, ...comparisonOps, ...groupOps };
 
-export const getSupportedOperators = (meta) => {
-  let type = meta.type == "custom" ? meta.custom_type.base : meta.type;
+export const getSupportedOperators = (typeDetails) => {
+  let type = typeDetails.type == "custom" ? typeDetails.custom_type.base : typeDetails.type;
   if (type === 'empty') return allOps;
 
   let ops = {};
