@@ -1,15 +1,12 @@
 export let types = {
   string: {
-    name: 'string',
-    base: 'string'
+    name: 'string'
   },
   number: {
-    name: 'number',
-    base: 'number'
+    name: 'number'
   },
   boolean: {
-    name: 'boolean',
-    base: 'boolean'
+    name: 'boolean'
   }
 };
 
@@ -28,7 +25,7 @@ export function convertValue(value, targetType) {
   if (!type)
     throw new Error("Unknown type", targetType);
 
-  switch (type.base){
+  switch (type.base || type.name){
     case 'boolean':
       return safeConvertToBaseType(value, 'boolean');
     case 'number':
