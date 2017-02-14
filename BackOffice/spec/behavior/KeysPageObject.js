@@ -20,6 +20,14 @@ export default class KeysPageObject {
     return location;
   }
 
+  goToBase(){
+    this.browser.url(KeysPageObject.BASE_URL);
+    if (this.didAlertRaised())
+      this.browser.alertAccept();
+
+    this.browser.waitForVisible(selectors.ADD_KEY_BUTTON, 5000);
+  }
+
   goToKey(keyName) {
     const goTo = `${KeysPageObject.BASE_URL}${KeysPageObject.KEYS_PAGE_URL}/${keyName}`;
 

@@ -18,7 +18,7 @@ describe('delete key', () => {
   const keysAsserts = new KeysAsserts(keysPageObject, browser);
 
   before(() => {
-    browser.url(KeysPageObject.BASE_URL);
+    keysPageObject.goToBase();
     keysPageObject.addEmptyKey(keyToDeleteFullPath);
   });
 
