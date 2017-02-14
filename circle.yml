@@ -13,10 +13,6 @@ dependencies:
     - ~/.yarn
     - ~/.yarn-cache
   pre:
-    - wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/paping/paping_1.5.5_x86-64_linux.tar.gz
-    - tar xvzf paping_1.5.5_x86-64_linux.tar.gz
-    - ls
-    - ./paping www.google.com -p 80 -c 4
     - yarn cache dir
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
   override:
@@ -30,7 +26,10 @@ test:
   override:
     - yarn test:unit
     - docker run -d -p 4000:3000 -e GIT_URL=${GIT_URL} -e GIT_PASSWORD=${GIT_PASSWORD} -e GIT_USER=${GIT_USER} -e TWEEK_API_HOSTNAME=${TWEEK_API_HOSTNAME} -e GIT_CLONE_TIMEOUT_IN_MINUTES=${GIT_CLONE_TIMEOUT_IN_MINUTES} soluto/tweek-back-office:latest .
-    - curl --ipv4 --retry 20 --retry-delay 20 -v http://localhost:4000/keys
+    #- curl --ipv4 --retry 20 --retry-delay 20 -v http://localhost:4000/keys
+    - wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/paping/paping_1.5.5_x86-64_linux.tar.gz
+    - tar xvzf paping_1.5.5_x86-64_linux.tar.gz
+    - ./paping localhost -p 4000 -c 24 -t 10000
     - npm run test:e2e
 general:
   build_dir: BackOffice
