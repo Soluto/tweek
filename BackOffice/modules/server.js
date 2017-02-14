@@ -23,16 +23,12 @@ const azureADAuthProvider = require('./server/auth/azuread');
 
 nconf.argv().env().file({ file: `${process.cwd()}/config.json` });
 nconf.required(['GIT_URL', 'GIT_USER', 'GIT_PASSWORD', 'TWEEK_API_HOSTNAME', 'GIT_CLONE_TIMEOUT_IN_MINUTES']);
-const gitUrl = nconf.get('GIT_URL');
-const gitUsername = nconf.get('GIT_USER');
-const gitPassword = nconf.get('GIT_PASSWORD');
-const tweekApiHostname = nconf.get('TWEEK_API_HOSTNAME');
 const gitCloneTimeoutInMinutes = nconf.get('GIT_CLONE_TIMEOUT_IN_MINUTES');
 
 const gitRepostoryConfig = {
-  url: gitUrl,
-  username: gitUsername,
-  password: gitPassword,
+  url: nconf.get('GIT_URL'),
+  username: nconf.get('GIT_USER'),
+  password: nconf.get('GIT_PASSWORD'),
   localPath: `${process.cwd()}/rulesRepository`,
 };
 
@@ -77,24 +73,25 @@ function getApp(req, res, requestCallback) {
 const startServer = () => {
   const server = createServer(getApp);
   server.use(session({ secret: 'some-secret' }));
-  if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true') {
-    server.use(passport.initialize());
-    server.use(passport.session());
-
-    const authProviders = [azureADAuthProvider(server, nconf)];
-    server.use('/login', function (req, res) {
-      res.send(authProviders.map(x => `<a href="${x.url}">login with ${x.name}</a>`).join(''));
-    });
-
-    server.use('*', function (req, res, next) {
-      if (req.isAuthenticated() || req.path.startsWith('auth')) {
-        return next();
-      }
-      return res.redirect('/login');
-    });
+  if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() !== 'true') {
+    server.start();
+    return;
   }
 
-  server.start();
+  server.use(passport.initialize());
+  server.use(passport.session());
+
+  const authProviders = [azureADAuthProvider(server, nconf)];
+  server.use('/login', function (req, res) {
+    res.send(authProviders.map(x => `<a href="${x.url}">login with ${x.name}</a>`).join(''));
+  });
+
+  server.use('*', function (req, res, next) {
+    if (req.isAuthenticated() || req.path.startsWith('auth')) {
+      return next();
+    }
+    return res.redirect('/login');
+  });
 };
 
 gitRepoCreationPromiseWithTimeout
