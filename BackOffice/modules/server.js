@@ -16,20 +16,18 @@ import KeysRepository from './server/repositories/keys-repository';
 import TagsRepository from './server/repositories/tags-repository';
 import TypesRepository from './server/repositories/types-repository';
 import GitContinuousUpdater from './server/repositories/git-continuous-updater';
+import Promise from 'bluebird';
 const passport = require('passport');
 const nconf = require('nconf');
+const azureADAuthProvider = require('./server/auth/azuread');
 
 nconf.argv().env().file({ file: `${process.cwd()}/config.json` });
-
+nconf.required(['GIT_URL', 'GIT_USER', 'GIT_PASSWORD', 'TWEEK_API_HOSTNAME', 'GIT_CLONE_TIMEOUT_IN_MINUTES']);
 const gitUrl = nconf.get('GIT_URL');
 const gitUsername = nconf.get('GIT_USER');
 const gitPassword = nconf.get('GIT_PASSWORD');
-
-if (!gitUrl ||
-  !gitUsername ||
-  !gitPassword) {
-  throw 'missing rules repostiroy details';
-}
+const tweekApiHostname = nconf.get('TWEEK_API_HOSTNAME');
+const gitCloneTimeoutInMinutes = nconf.get('GIT_CLONE_TIMEOUT_IN_MINUTES');
 
 const gitRepostoryConfig = {
   url: gitUrl,
@@ -38,9 +36,16 @@ const gitRepostoryConfig = {
   localPath: `${process.cwd()}/rulesRepository`,
 };
 
-const gitPromise = GitRepository.create(gitRepostoryConfig);
+const gitRepoCreationPromise = GitRepository.create(gitRepostoryConfig);
+const gitRepoCreationPromiseWithTimeout = new Promise((resolve, reject) => {
+  gitRepoCreationPromise.then(() => resolve());
+})
+  .timeout(gitCloneTimeoutInMinutes * 60 * 1000)
+  .catch(Promise.TimeoutError, () => {
+    throw `git repository clonning timeout after ${gitCloneTimeoutInMinutes} minutes`;
+  });
 
-const gitTransactionManager = new Transactor(gitPromise, async gitRepo => await gitRepo.reset());
+const gitTransactionManager = new Transactor(gitRepoCreationPromise, async gitRepo => await gitRepo.reset());
 const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
 const typesRepository = new TypesRepository(gitTransactionManager);
@@ -69,25 +74,32 @@ function getApp(req, res, requestCallback) {
   });
 }
 
-const server = createServer(getApp);
-server.use(session({ secret: 'some-secret' }));
-const azureADAuthProvider = require('./server/auth/azuread');
-if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true') {
-  server.use(passport.initialize());
-  server.use(passport.session());
+const startServer = () => {
+  const server = createServer(getApp);
+  server.use(session({ secret: 'some-secret' }));
+  if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true') {
+    server.use(passport.initialize());
+    server.use(passport.session());
 
-  const authProviders = [azureADAuthProvider(server, nconf)];
-  server.use('/login', function (req, res) {
-    res.send(authProviders.map(x => `<a href="${x.url}">login with ${x.name}</a>`).join(''));
+    const authProviders = [azureADAuthProvider(server, nconf)];
+    server.use('/login', function (req, res) {
+      res.send(authProviders.map(x => `<a href="${x.url}">login with ${x.name}</a>`).join(''));
+    });
+
+    server.use('*', function (req, res, next) {
+      if (req.isAuthenticated() || req.path.startsWith('auth')) {
+        return next();
+      }
+      return res.redirect('/login');
+    });
+  }
+
+  server.start();
+};
+
+gitRepoCreationPromiseWithTimeout
+  .then(() => startServer())
+  .catch(reason => {
+    console.error(reason);
+    process.exit();
   });
-
-  server.use('*', function (req, res, next) {
-    if (req.isAuthenticated() || req.path.startsWith('auth')) {
-      return next();
-    }
-    return res.redirect('/login');
-  });
-}
-
-server.start();
-
