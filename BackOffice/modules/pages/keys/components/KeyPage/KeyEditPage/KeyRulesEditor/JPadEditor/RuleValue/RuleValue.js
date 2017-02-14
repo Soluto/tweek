@@ -47,7 +47,7 @@ const BooleanSingleVariant = ({value, valueType, mutate, identities}) => (
 
 const SingleVariantValue = ({value, mutate, identities, autofocus, valueType}) => (
   <div className={style['rule-value-container']}>
-    {valueType === TypesService.types.boolean ?
+    {valueType === TypesService.types.boolean.name ?
       <BooleanSingleVariant {...{ value, valueType, mutate, identities }} />
       :
       <div>
