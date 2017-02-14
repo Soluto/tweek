@@ -13,8 +13,8 @@ dependencies:
     - ~/.yarn
     - ~/.yarn-cache
   pre:
-    - wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/paping/paping_1.5.5_x86_linux.tar.gz
-    - tar xvzf paping_1.5.5_x86_linux.tar.gz
+    - wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/paping/paping_1.5.5_x86-64_linux.tar.gz
+    - tar xvzf paping_1.5.5_x86-64_linux.tar.gz
     - ls
     - paping www.google.com -p 80 -c 4
     - yarn cache dir
