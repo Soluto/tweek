@@ -18,7 +18,7 @@ describe('keys list and filter', () => {
   const bananaAppleKeyFullPath = `${testFolder}/${keysListTestFolder}/banana`;
 
   before(() => {
-    browser.url(KeysPageObject.BASE_URL);
+    keysPageObject.goToBase();
   });
 
   it("should be able to navigate to key by folders", () => {
@@ -30,8 +30,6 @@ describe('keys list and filter', () => {
   });
 
   it("should display matching keys when filtering", () => {
-    browser.url(KeysPageObject.BASE_URL);
-
     keysPageObject.enterFilterInKeysList("Apple");
 
     browser.waitForVisible(selectors.keyLink(greenAppleKeyFullPath), 2000);

@@ -10,9 +10,7 @@ describe('key-value-type', () => {
   const keysAsserts = new KeysAsserts(keysPageObject, browser);
 
   before(() => {
-    browser.url(KeysPageObject.BASE_URL);
-    if (keysPageObject.didAlertRaised())
-      browser.alertAccept();
+    keysPageObject.goToBase();
     browser.windowHandleMaximize();
     browser.click(selectors.ADD_KEY_BUTTON);
     keysAsserts.assertKeyOpened(BLANK_KEY_NAME);
