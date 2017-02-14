@@ -30,7 +30,7 @@ const BooleanSingleVariant = ({value, valueType, mutate, identities}) => (
       selected={[R.find(x => x.value === value)(booleanSingleVariantSuggestions)]}
       placeholder="Enter value here"
       showValueInOptions={false}
-      onChange={e => updateMutateTypedValue(mutate, e.value, valueType.type)}
+      onChange={e => updateMutateTypedValue(mutate, e.value, valueType)}
     />
     <button className={style['to-feature-flag-button']}
       onClick={() => mutate.apply(m =>
@@ -52,7 +52,7 @@ const SingleVariantValue = ({value, mutate, identities, autofocus, valueType}) =
       :
       <div>
         <input
-          onChange={e => updateMutateTypedValue(mutate, e.target.value, valueType.type)}
+          onChange={e => updateMutateTypedValue(mutate, e.target.value, valueType)}
           value={value}
           placeholder="Enter value here"
           className={style['values-input']}
