@@ -36,7 +36,7 @@ describe('edit key', () => {
   };
 
   before(() => {
-    browser.url(KeysPageObject.BASE_URL);
+    keysPageObject.goToBase();
     keysPageObject.addEmptyKey(keyToEditFullPath);
   });
 

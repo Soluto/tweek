@@ -22,7 +22,7 @@ function addMutatorRule(mutate) {
   mutate.prepend({ Id: chance.guid(), Matcher: { '': '' }, Value: '', Type: 'SingleVariant' });
 }
 
-const comp = ({ mutate, valueType, autofocusRuleIndex, setAutofocusRuleIndex, schema }) => {
+const comp = ({ mutate, valueType, autofocusRuleIndex, setAutofocusRuleIndex }) => {
   const rulesMutator = mutate.in("rules");
   const rules = rulesMutator.getValue();
   if (!rules) return (<div />);
@@ -75,7 +75,6 @@ const comp = ({ mutate, valueType, autofocusRuleIndex, setAutofocusRuleIndex, sc
             <Rule
               key={rule.Id}
               mutate={rulesMutator.in(i)}
-              schema={schema}
               rule={rule}
               valueType={valueType}
               ruleIndex={i}
