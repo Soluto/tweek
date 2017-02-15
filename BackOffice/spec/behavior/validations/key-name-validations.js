@@ -17,14 +17,14 @@ describe('key name validations', () => {
     browser.url(KeysPageObject.BASE_URL);
     if (keysPageObject.didAlertRaised()) browser.alertAccept();
   });
-
+  
   it('should show invalid key name and disable save button', () => {
     browser.click(selectors.ADD_KEY_BUTTON);
     keysAsserts.assertKeyOpened(BLANK_KEY_NAME);
 
     browser.click(selectors.KEY_NAME_INPUT);
 
-    browser.setValue(selectors.KEY_NAME_INPUT, chance.guid());
+    browser.setValue(selectors.KEY_NAME_INPUT, 'someKeyName');
 
     assert(!keysPageObject.isSaveButtonDisabled(), 'should not disable save button');
     assert(!browser.isVisible(selectors.KEY_NAME_VALIDATION_ALERT_ICON), 'should not show key name validation');
