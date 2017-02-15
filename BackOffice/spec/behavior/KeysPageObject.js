@@ -6,7 +6,7 @@ export default class KeysPageObject {
 
   static BASE_URL = 'http://127.0.0.1:4000/';
   static KEYS_PAGE_URL = 'keys';
-  static TEST_KEYS_FOLDER = '@behavior-tests';
+  static TEST_KEYS_FOLDER = '@behavior_tests';
   static GIT_TRANSACTION_TIMEOUT = 30000;
 
   constructor(browser) {
@@ -159,7 +159,7 @@ export default class KeysPageObject {
 
   generateTestKeyName(prefix) {
     const currentDate = new Date();
-    return `${prefix}-${moment(currentDate).format('DD-MM-YYYY-HH-mm-ss')}`;
+    return `${prefix}_${moment(currentDate).format('DD_MM_YYYY_HH_mm_ss')}`;
   }
 
   didAlertRaised() {
