@@ -4,7 +4,7 @@
     <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.6' ">$(PackageTargetFallback);portable-net45+win8+wp8+wpa81</PackageTargetFallback>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Tweek.JPad" Version="0.3.6233.20598" />
+    <PackageReference Include="Tweek.JPad" Version="0.5.6245.17626" />
     <PackageReference Include="NETStandard.Library" Version="1.6" />
     <PackageReference Include="LanguageExt.Core" Version="1.9.7" />
   </ItemGroup>
