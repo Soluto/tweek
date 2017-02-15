@@ -1,52 +1,43 @@
-/* global describe, before, after it, browser */
+/* global describe, before, after, beforeEach, it, browser */
 
 import KeysPageObject from '../KeysPageObject';
-import assert from 'assert';
+import { BLANK_KEY_NAME } from '../../../modules/store/ducks/ducks-utils/blankKeyDefinition';
 import { selectors } from '../selectors';
-import PageAsserts from '../PageAsserts';
 
-describe('switch key', () => {
+describe('navigating from key with changes', () => {
   const keysPageObject = new KeysPageObject(browser);
-  const pageAsserts = new PageAsserts(keysPageObject);
 
   const testFolder = KeysPageObject.TEST_KEYS_FOLDER;
   const testKey1 = `testKey1`;
-  const testKey2 = `testKey2`;
   const folderPath = `@routing`;
 
   const testKey1FullPath = `${testFolder}/${folderPath}/${testKey1}`;
-  const testKey2FullPath = `${testFolder}/${folderPath}/${testKey2}`;
 
-  const tests = [];
-  const _setupTest = (testName, pageChangeTrigger) => {
-    tests.push({ testName, pageChangeTrigger });
-  };
+  before(() => {
+    browser.windowHandleMaximize();
+  });
 
-  _setupTest('navigate to testKey2', () => keysPageObject.navigateToKey(testKey2FullPath));
-  _setupTest('navigate to testKey1', () => keysPageObject.clickOnKeyLink(testKey1FullPath));
-  _setupTest('browser refresh', () => browser.refresh());
+  beforeEach(() => {
+    keysPageObject.goToKey(BLANK_KEY_NAME);
+  });
 
-  const makeKeyChanges = () => {
+  it('should show confirm message if navigating to another key', () => {
     browser.click(selectors.ADD_RULE_BUTTON);
     browser.waitUntil(() => keysPageObject.hasChanges(), 2000);
-  };
 
-  it('should show confirm message only if there are key changes', () => {
-    browser.windowHandleMaximize();
+    keysPageObject.navigateToKey(testKey1FullPath);
 
-    keysPageObject.goToKey(testKey1FullPath);
+    browser.waitUntil(() => keysPageObject.didAlertRaised(), 1000, 'should show confirm message');
+    browser.alertAccept();
+  });
 
-    tests.forEach(({ testName, pageChangeTrigger }) => {
-      browser.waitForVisible(selectors.KEY_DISPLAY_NAME, 5000);
+  it('should show confirm message if refreshing', () => {
+    browser.click(selectors.ADD_RULE_BUTTON);
+    browser.waitUntil(() => keysPageObject.hasChanges(), 2000);
 
-      makeKeyChanges();
-      pageChangeTrigger();
+    browser.refresh();
 
-      browser.waitUntil(() => keysPageObject.didAlertRaised(),
-        8000,
-        'should show confirm message on ' + testName);
-
-      browser.alertAccept();
-    });
+    browser.waitUntil(() => keysPageObject.didAlertRaised(), 1000, 'should show confirm message');
+    browser.alertAccept();
   });
 });
