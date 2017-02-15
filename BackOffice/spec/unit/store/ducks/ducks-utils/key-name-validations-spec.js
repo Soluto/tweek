@@ -40,7 +40,7 @@ describe('key-name-validations', () => {
   setTestDefenition(true, 'key/key_key');
   setTestDefenition(true, 'key_key');
   setTestDefenition(true, 'key_');
-  setTestDefenition(true, 'key@');
+  setTestDefenition(false, 'key@');
   setTestDefenition(true, '@key');
 
   const existingKeyList = ['aa',
