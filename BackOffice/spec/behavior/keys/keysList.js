@@ -5,7 +5,6 @@ import KeysPageObject from '../KeysPageObject';
 import assert from 'assert';
 import { selectors } from '../selectors';
 
-
 describe('keys list and filter', () => {
   const keysPageObject = new KeysPageObject(browser);
   const keyAsserts = new KeysAsserts(keysPageObject, browser);
@@ -15,7 +14,7 @@ describe('keys list and filter', () => {
 
   const greenAppleKeyFullPath = `${testFolder}/${keysListTestFolder}/greenApple`;
   const redAppleKeyFullPath = `${testFolder}/${keysListTestFolder}/redApple`;
-  const bananaAppleKeyFullPath = `${testFolder}/${keysListTestFolder}/banana`;
+  const bananaKeyFullPath = `${testFolder}/${keysListTestFolder}/banana`;
 
   before(() => {
     keysPageObject.goToBase();
@@ -32,9 +31,13 @@ describe('keys list and filter', () => {
   it("should display matching keys when filtering", () => {
     keysPageObject.enterFilterInKeysList("Apple");
 
+    keysPageObject.wait(500);
+
     browser.waitForVisible(selectors.keyLink(greenAppleKeyFullPath), 2000);
     browser.waitForVisible(selectors.keyLink(redAppleKeyFullPath), 2000);
 
-    assert(!browser.isVisible(selectors.keyLink(bananaAppleKeyFullPath)), 'should show banana key in keys list');
+    let isBananaVisible = browser.isVisible(selectors.keyLink(bananaKeyFullPath));
+
+    assert(!isBananaVisible, "shouldn't show banana key in keys list");
   });
 });
