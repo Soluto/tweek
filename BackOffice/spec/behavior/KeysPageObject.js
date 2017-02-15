@@ -33,6 +33,10 @@ export default class KeysPageObject {
 
     this.browser.url(goTo);
 
+    if (this.didAlertRaised()) {
+      this.browser.alertAccept();
+    }
+
     const selectorToWaitFor = keyName.startsWith(BLANK_KEY_NAME) ?
       selectors.KEY_NAME_INPUT : selectors.KEY_DISPLAY_NAME;
 
