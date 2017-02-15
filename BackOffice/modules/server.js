@@ -22,6 +22,7 @@ const azureADAuthProvider = require('./server/auth/azuread');
 nconf.argv().env().file({ file: `${process.cwd()}/config.json` });
 nconf.required(['GIT_URL', 'GIT_USER', 'GIT_PASSWORD', 'TWEEK_API_HOSTNAME', 'GIT_CLONE_TIMEOUT_IN_MINUTES']);
 const gitCloneTimeoutInMinutes = nconf.get('GIT_CLONE_TIMEOUT_IN_MINUTES');
+const tweekApiHostname = nconf.get('TWEEK_API_HOSTNAME');
 
 const gitRepostoryConfig = {
   url: nconf.get('GIT_URL'),
