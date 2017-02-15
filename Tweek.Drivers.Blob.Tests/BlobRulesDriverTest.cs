@@ -1,27 +1,25 @@
 ﻿using System;
 using System.Reactive.Concurrency;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Threading.Tasks;
 using System.Text;
+using Xunit;
 
 namespace Tweek.Drivers.Blob.Tests
 {
-    [TestClass]
     public class BlobRulesDriverTest
     {
         private Mock<IWebClient> mWebClientMock;
         private Mock<IWebClientFactory> mWebClientFactoryMock;
 
-        [TestInitialize]
-        public void TestInitialize()
+        public BlobRulesDriverTest()
         {
             mWebClientMock = new Mock<IWebClient>();
             mWebClientFactoryMock = new Mock<IWebClientFactory>();
             mWebClientFactoryMock.Setup(x => x.Create()).Returns(mWebClientMock.Object);
         }
 
-        [TestMethod]
+        [Fact]
         public void Ctor_ShouldUseUTF8Encoding()
         {
             // Arrange
