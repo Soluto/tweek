@@ -24,7 +24,7 @@ const keyAsFolderNameValidation = {
 };
 
 const invalidCharactersValidation = {
-  rule: ({value}) => /(^[A-Za-z0-9#!@#$%^&()\-_=]+)(\/([A-Za-z0-9#!@#$%^&()\-_=\s])+)*$/.test(value),
+  rule: ({value}) => /(^[A-Za-z0-9@_]+)(\/([A-Za-z0-9@\_\s])+)*$/.test(value),
   hint: 'Key name cannot include special characters',
 };
 

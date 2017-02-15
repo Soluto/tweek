@@ -170,7 +170,7 @@ export default class KeysPageObject {
 
   generateTestKeyName(prefix) {
     const currentDate = new Date();
-    return `${prefix}-${moment(currentDate).format('DD-MM-YYYY-HH-mm-ss')}`;
+    return `${prefix}_${moment(currentDate).format('DD_MM_YYYY_HH_mm_ss')}`;
   }
 
   didAlertRaised() {
