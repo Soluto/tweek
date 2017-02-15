@@ -64,7 +64,7 @@ describe('add tags', () => {
         // Act
         tagsToAdd.forEach(x => addTag(x));
 
-        keysPageObject.wait(2000, false);
+        keysPageObject.wait(10000, false);
         browser.refresh();
         browser.alertAccept();
 

@@ -6,11 +6,11 @@ import KeysList from '../KeysList/KeysList';
 import style from './KeysPage.css';
 import { compose } from 'recompose';
 import withLoading from '../../../../hoc/with-loading';
-import { getInitializationPromise } from '../../../../services/TypesService';
+import { refreshTypes } from '../../../../services/types-service';
 
 export default compose(
   connect(state => state, { ...actions }),
-  withLoading(() => null, getInitializationPromise()))
+  withLoading(() => null, refreshTypes()))
   (class KeysPage extends Component {
     constructor(props) {
       super(props);

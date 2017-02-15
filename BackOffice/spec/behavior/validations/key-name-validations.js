@@ -14,8 +14,7 @@ describe('key name validations', () => {
   const keysAsserts = new KeysAsserts(keysPageObject, browser);
 
   beforeEach(() => {
-    browser.url(KeysPageObject.BASE_URL);
-    if (keysPageObject.didAlertRaised()) browser.alertAccept();
+    keysPageObject.goToBase();
   });
   
   it('should show invalid key name and disable save button', () => {
