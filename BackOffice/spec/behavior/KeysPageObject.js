@@ -6,7 +6,7 @@ export default class KeysPageObject {
 
   static BASE_URL = 'http://127.0.0.1:4000/';
   static KEYS_PAGE_URL = 'keys';
-  static TEST_KEYS_FOLDER = '@behavior-tests';
+  static TEST_KEYS_FOLDER = '@behavior_tests';
   static GIT_TRANSACTION_TIMEOUT = 30000;
 
   constructor(browser) {
