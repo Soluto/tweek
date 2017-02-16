@@ -10,10 +10,10 @@ describe('keys list and filter', () => {
   const keyAsserts = new KeysAsserts(keysPageObject, browser);
 
   const testFolder = KeysPageObject.TEST_KEYS_FOLDER;
-  const keysListTestFolder = '@keysList';
+  const keysListTestFolder = '@keys_list';
 
-  const greenAppleKeyFullPath = `${testFolder}/${keysListTestFolder}/greenApple`;
-  const redAppleKeyFullPath = `${testFolder}/${keysListTestFolder}/redApple`;
+  const greenAppleKeyFullPath = `${testFolder}/${keysListTestFolder}/green_apple`;
+  const redAppleKeyFullPath = `${testFolder}/${keysListTestFolder}/red_apple`;
   const bananaKeyFullPath = `${testFolder}/${keysListTestFolder}/banana`;
 
   before(() => {

@@ -8,7 +8,7 @@ describe('navigating from key with changes', () => {
   const keysPageObject = new KeysPageObject(browser);
 
   const testFolder = KeysPageObject.TEST_KEYS_FOLDER;
-  const testKey1 = `testKey1`;
+  const testKey1 = `test_key1`;
   const folderPath = `@routing`;
 
   const testKey1FullPath = `${testFolder}/${folderPath}/${testKey1}`;

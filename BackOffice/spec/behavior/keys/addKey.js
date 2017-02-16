@@ -9,9 +9,9 @@ import { BLANK_KEY_NAME } from '../../../modules/store/ducks/ducks-utils/blankKe
 describe('add key', () => {
   const keysPageObject = new KeysPageObject(browser);
 
-  const keyToAdd = keysPageObject.generateTestKeyName('addKeyTest');
+  const keyToAdd = keysPageObject.generateTestKeyName('add_key_test');
   const testFolder = KeysPageObject.TEST_KEYS_FOLDER;
-  const addKeyTestFolder = '@addKey';
+  const addKeyTestFolder = '@add_key';
   const keyToAddFullPath = `${testFolder}/${addKeyTestFolder}/${keyToAdd}`;
 
   const keysAsserts = new KeysAsserts(keysPageObject, browser);

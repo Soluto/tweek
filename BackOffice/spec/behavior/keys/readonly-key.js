@@ -9,7 +9,7 @@ describe('readonly key', () => {
   const keysPageObject = new KeysPageObject(browser);
 
   const testFolder = KeysPageObject.TEST_KEYS_FOLDER;
-  const testKey = `testKey`;
+  const testKey = `test_key`;
   const folderPath = `@readonly`;
 
   const testKeyFullPath = `${testFolder}/${folderPath}/${testKey}`;
