@@ -29,7 +29,7 @@ describe('keys list and filter', () => {
   });
 
   it("should display matching keys when filtering", () => {
-    keysPageObject.enterFilterInKeysList("Apple");
+    keysPageObject.enterFilterInKeysList("apple");
 
     keysPageObject.wait(500);
 
