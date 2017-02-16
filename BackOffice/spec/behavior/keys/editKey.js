@@ -8,9 +8,9 @@ import { selectors, getRelativeSelector } from '../selectors';
 describe('edit key', () => {
   const keysPageObject = new KeysPageObject(browser);
 
-  const keyToEdit = keysPageObject.generateTestKeyName('editKeyTest');
+  const keyToEdit = keysPageObject.generateTestKeyName('edit_key_test');
   const testFolder = KeysPageObject.TEST_KEYS_FOLDER;
-  const editKeyTestFolder = '@editKey';
+  const editKeyTestFolder = '@edit_key';
   const keyToEditFullPath = `${testFolder}/${editKeyTestFolder}/${keyToEdit}`;
 
   const keysAsserts = new KeysAsserts(keysPageObject, browser);

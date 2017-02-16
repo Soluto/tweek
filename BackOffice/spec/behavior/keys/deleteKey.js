@@ -9,9 +9,9 @@ import { selectors } from '../selectors';
 describe('delete key', () => {
   const keysPageObject = new KeysPageObject(browser);
 
-  const keyToDelete = keysPageObject.generateTestKeyName('deleteKeyTest');
+  const keyToDelete = keysPageObject.generateTestKeyName('delete_key_test');
   const testFolder = KeysPageObject.TEST_KEYS_FOLDER;
-  const deleteKeyTestFolder = '@deleteKey';
+  const deleteKeyTestFolder = '@delete_key';
   const keyToDeleteFullPath = `${testFolder}/${deleteKeyTestFolder}/${keyToDelete}`;
 
   const pageAsserts = new PageAsserts(keysPageObject);

@@ -10,7 +10,7 @@ describe('add tags', () => {
 
     const keysPageObject = new KeysPageObject(browser);
 
-    const tagsTestKeyName = 'tagsTest';
+    const tagsTestKeyName = 'tags_test';
     const testFolder = KeysPageObject.TEST_KEYS_FOLDER;
     const tagsTestFolder = '@tags';
     const tagsTestKeyFullPath = `${testFolder}/${tagsTestFolder}/${tagsTestKeyName}`;
