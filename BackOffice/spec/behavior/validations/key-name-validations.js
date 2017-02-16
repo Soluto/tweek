@@ -22,7 +22,7 @@ describe('key name validations', () => {
 
   const invalidKeyNames =
     ['key name', 'keyname@', 'keyName', '/keyname', 'key@name/', 'category/key@_name', '@keyName', '@category/@keyName'];
-  const validKeyNames = ['key_name', 'category/key_name', 'category/key_name/key_name', '@key_name', '@category/@keyname', 'key_name'];
+  const validKeyNames = ['key_name', 'category/key_name', 'category/key_name/key_name', '@key_name', '@category/@keyname'];
 
   invalidKeyNames.forEach(x => setTestDefenition(x, false));
   validKeyNames.forEach(x => setTestDefenition(x, true));
@@ -36,6 +36,7 @@ describe('key name validations', () => {
     testDefenitions.forEach(x => {
       const {keyName, isValid} = x;
       browser.setValue(selectors.KEY_NAME_INPUT, keyName);
+      keysPageObject.wait(1000, false);
       expect(browser.isVisible(selectors.KEY_NAME_VALIDATION_ALERT_ICON))
         .to.equal(!isValid, `should show key name validation for key name:${keyName}`);
     });
