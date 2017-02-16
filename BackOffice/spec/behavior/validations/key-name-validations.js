@@ -21,8 +21,8 @@ describe('key name validations', () => {
   const setTestDefenition = (keyName, isValid) => testDefenitions.push({ keyName, isValid });
 
   const invalidKeyNames =
-    ['key name', 'keyname@', 'keyName', '/keyname', 'key@name/', 'category/key@_name', '@keyName', '@category/@keyName', 'keyname'];
-  const validKeyNames = ['key_name', 'category/key_name', 'category/key_name/key_name', '@key_name', '@category/@keyname'];
+    ['key name', 'keyname@', 'keyName', '/keyname', 'key@name/', 'category/key@_name', '@keyName', '@category/@keyName'];
+  const validKeyNames = ['key_name', 'category/key_name', 'category/key_name/key_name', '@key_name', '@category/@keyname', 'key_name'];
 
   invalidKeyNames.forEach(x => setTestDefenition(x, false));
   validKeyNames.forEach(x => setTestDefenition(x, true));
