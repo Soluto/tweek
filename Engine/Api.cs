@@ -8,23 +8,25 @@ using Engine.Drivers.Context;
 using Engine.Drivers.Rules;
 using Engine.Rules.Creation;
 using System;
-using System.Collections.Specialized;
 using Engine.Core.Context;
 using Engine.Core.Rules;
 using FSharpUtils.Newtonsoft;
-using Tweek.JPad;
 using ContextHelpers = Engine.Context.ContextHelpers;
 using LanguageExt;
-using Tweek.JPad.Rules;
-using static Engine.Core.Utils.TraceHelpers;
 
 namespace Engine
 {
     public interface ITweek
     {
         Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(
-            ConfigurationPath pathQuery,
-            HashSet<Identity> identities, GetLoadedContextByIdentityType externalContext = null);
+            ICollection<ConfigurationPath> pathQuery,
+            HashSet<Identity> identities, 
+            GetLoadedContextByIdentityType externalContext = null);
+
+        Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(
+            ConfigurationPath pathQuery, 
+            HashSet<Identity> identities, 
+            GetLoadedContextByIdentityType externalContext = null);
     }
 
     public class TweekRunner : ITweek
@@ -39,22 +41,30 @@ namespace Engine
             _rulesLoader = rulesLoader;
         }
 
-        private HashSet<ConfigurationPath> GetAllPaths(Dictionary<Identity, Dictionary<string, JsonValue>> allContextData,
-            IReadOnlyDictionary<string, IRule> ruleset, ConfigurationPath query)
+        private HashSet<ConfigurationPath> GetAllPaths(
+            Dictionary<Identity, Dictionary<string, JsonValue>> allContextData,
+            IReadOnlyDictionary<string, IRule> ruleset, 
+            ICollection<ConfigurationPath> query)
         {
             return new HashSet<ConfigurationPath>(allContextData.Values.SelectMany(x => x.Keys)
                 .Where(x => x.Contains("@fixed:"))
                 .Select(x=>x.Split(':')[1]) 
                 .Concat(ruleset.Keys)
                 .Select(ConfigurationPath.New)
-                .Where(path => ConfigurationPath.Match(path: path, query: query))
+                .Where(path => query.Any(queryPath => ConfigurationPath.Match(path, queryPath)))
                 .Distinct());
         }
 
-        
+        public async Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(
+            ConfigurationPath pathQuery,
+            HashSet<Identity> identities,
+            GetLoadedContextByIdentityType externalContext = null)
+        {
+            return await Calculate(new List<ConfigurationPath> {pathQuery}, identities, externalContext);
+        }
 
-
-        public async Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(ConfigurationPath pathQuery,
+        public async Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(
+            ICollection<ConfigurationPath> pathQuery,
             HashSet<Identity> identities, 
             GetLoadedContextByIdentityType externalContext = null)
         {
@@ -78,7 +88,7 @@ namespace Engine
             var paths = GetAllPaths(allContextData, allRules, pathQuery);
 
             return paths
-                .Select(path => getRuleValue(path).Map(value=>new {path= path.ToRelative(pathQuery), value}))
+                .Select(path => getRuleValue(path).Map(value=>new {path, value}))
                 .SkipEmpty()
                 .ToDictionary(x => x.path, x => x.value);
         }
