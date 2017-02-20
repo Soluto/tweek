@@ -28,7 +28,7 @@ namespace Tweek.ApiService.SmokeTests
                 $"http://localhost:5000/context/{identityType}/{identityId}", new StringContent(JsonConvert.SerializeObject(context, new JsonValueConverter()), Encoding.UTF8, "application/json"));
         }
 
-        public async Task<JToken> GetConfigurations(string keyPath, Dictionary<string, string> context)
+        public async Task<JToken> GetConfigurations(string keyPath, IEnumerable<KeyValuePair<string, string>> context)
         {
             var stream = await _client.GetStreamAsync(
                 $"http://localhost:5000/configurations/{keyPath}?{String.Join("&", context.Select(x => String.Join("=", x.Key, x.Value)))}");
