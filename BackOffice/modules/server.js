@@ -90,6 +90,7 @@ const startServer = () => {
 };
 
 gitRepoCreationPromiseWithTimeout
+  .then(() => console.log('starting tweek server'))
   .then(() => startServer())
   .catch(reason => {
     console.error(reason);
