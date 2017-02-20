@@ -8,7 +8,6 @@
     <None Remove="Properties\PublishProfiles\FileSystemProfile.pubxml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NETCore.App" Version="1.1.0" />
     <PackageReference Include="FSharp.Core" Version="4.0.0.1" />
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.1.6233.20455" />
     <PackageReference Include="LanguageExt.Core" Version="1.9.7" />

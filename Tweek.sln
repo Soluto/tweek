@@ -63,6 +63,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonValueConverter.Tests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.ApiService.NetCore", "Tweek.ApiService.NetCore\Tweek.ApiService.NetCore.csproj", "{7DFE68E4-A1CB-4CCC-B36E-14A8CEF72B56}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{66EB85A6-8711-4538-8AD8-05D6FCF664D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -213,6 +215,18 @@ Global
 		{7DFE68E4-A1CB-4CCC-B36E-14A8CEF72B56}.Release|x64.Build.0 = Release|x64
 		{7DFE68E4-A1CB-4CCC-B36E-14A8CEF72B56}.Release|x86.ActiveCfg = Release|x86
 		{7DFE68E4-A1CB-4CCC-B36E-14A8CEF72B56}.Release|x86.Build.0 = Release|x86
+		{66EB85A6-8711-4538-8AD8-05D6FCF664D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66EB85A6-8711-4538-8AD8-05D6FCF664D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66EB85A6-8711-4538-8AD8-05D6FCF664D0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{66EB85A6-8711-4538-8AD8-05D6FCF664D0}.Debug|x64.Build.0 = Debug|Any CPU
+		{66EB85A6-8711-4538-8AD8-05D6FCF664D0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{66EB85A6-8711-4538-8AD8-05D6FCF664D0}.Debug|x86.Build.0 = Debug|Any CPU
+		{66EB85A6-8711-4538-8AD8-05D6FCF664D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66EB85A6-8711-4538-8AD8-05D6FCF664D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66EB85A6-8711-4538-8AD8-05D6FCF664D0}.Release|x64.ActiveCfg = Release|Any CPU
+		{66EB85A6-8711-4538-8AD8-05D6FCF664D0}.Release|x64.Build.0 = Release|Any CPU
+		{66EB85A6-8711-4538-8AD8-05D6FCF664D0}.Release|x86.ActiveCfg = Release|Any CPU
+		{66EB85A6-8711-4538-8AD8-05D6FCF664D0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
