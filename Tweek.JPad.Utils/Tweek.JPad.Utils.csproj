@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
-    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.6' ">$(PackageTargetFallback);portable-net45+win8+wp8+wpa81</PackageTargetFallback>
+    <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81</PackageTargetFallback>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Tweek.JPad" Version="0.5.6245.17626" />
-    <PackageReference Include="NETStandard.Library" Version="1.6" />
     <PackageReference Include="LanguageExt.Core" Version="1.9.7" />
   </ItemGroup>
   <ItemGroup>
