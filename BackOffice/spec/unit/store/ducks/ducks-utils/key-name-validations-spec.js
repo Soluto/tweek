@@ -4,7 +4,7 @@ jest.unmock('chance');
 
 import keyNameValidations from '../../../../../modules/store/ducks/ducks-utils/validations/key-name-validations';
 import Chance from 'chance';
-import { assert } from 'chai';
+import { assert, expect } from 'chai';
 import { BLANK_KEY_NAME } from '../../../../../modules/store/ducks/ducks-utils/blankKeyDefinition';
 
 describe('key-name-validations', () => {
@@ -14,35 +14,50 @@ describe('key-name-validations', () => {
   const categoryName2 = 'someCategoryName2';
   const keyName = 'someKeyName';
 
-  const invalidValues = [BLANK_KEY_NAME, '', keyName, categoryName1, categoryName2, categoryName1 + '/' + keyName];
+  const testDefenitions = [];
+  const setTestDefenition = (expectedIsValid, keyName) => testDefenitions.push(({ keyName, expectedIsValid }));
 
-  const mockKeysList = ['aa',
+  setTestDefenition(false, BLANK_KEY_NAME);
+  setTestDefenition(false, '');
+  setTestDefenition(false, keyName);
+  setTestDefenition(false, categoryName1);
+  setTestDefenition(false, categoryName2);
+  setTestDefenition(false, categoryName1 + '/' + keyName);
+  setTestDefenition(false, 'key!');
+  setTestDefenition(false, 'key#');
+  setTestDefenition(false, 'key%');
+  setTestDefenition(false, 'key^');
+  setTestDefenition(false, 'key&');
+  setTestDefenition(false, 'key*');
+  setTestDefenition(false, 'key(');
+  setTestDefenition(false, 'key)');
+  setTestDefenition(false, 'key-');
+  setTestDefenition(false, 'key=');
+  setTestDefenition(false, 'key+');
+  setTestDefenition(false, 'key$');
+  setTestDefenition(false, 'key$key');
+  setTestDefenition(true, 'key');
+  setTestDefenition(true, 'key/key_key');
+  setTestDefenition(true, 'key_key');
+  setTestDefenition(true, 'key_');
+  setTestDefenition(false, 'key@');
+  setTestDefenition(true, '@key');
+
+  const existingKeyList = ['aa',
     'bb',
     'aa/bb',
     keyName,
     categoryName1 + '/' + keyName,
     categoryName1 + '/' + categoryName2 + '/' + keyName];
 
-  invalidValues.forEach(invalidValue => {
-    it('should return value is invalid for:' + invalidValue, () => {
+  testDefenitions.forEach(x => {
+    it(`should return validation ${x.expectedIsValid} for ${x.keyName}`, () => {
       // Act
-      const validationResult = keyNameValidations(invalidValue, mockKeysList);
+      const validationResult = keyNameValidations(x.keyName, existingKeyList);
 
       // Assert
-      assert(!validationResult.isValid, 'should return value is invalid');
-      assert(validationResult.hint.length > 0, 'should return an un empty hint');
+      expect(validationResult.isValid).to.equal(x.expectedIsValid, 'should return value is invalid');
+      if (!validationResult.isValid) assert(validationResult.hint.length > 0, 'should return an un empty hint');
     });
-  });
-
-  it('should return value is valid', () => {
-    // Arrange
-    const randomKeyName = chance.guid();
-
-    // Act
-    const validationResult = keyNameValidations(randomKeyName, mockKeysList);
-
-    // Assert
-    assert(validationResult.isValid, 'should return value is valid');
-    assert(validationResult.hint === undefined, 'should return an undefined hint');
   });
 });

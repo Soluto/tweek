@@ -6,8 +6,7 @@ import Mutator from '../../../../../../utils/mutator';
 import wrapComponentWithClass from '../../../../../../hoc/wrap-component-with-class';
 import { compose, pure, lifecycle } from 'recompose';
 import style from './KeyRulesEditor.css';
-import { types } from '../../../../../../services/TypesService';
-import editorRulesValuesConverter from '../../../../../../services/editor-rules-values-converter';
+import * as TypesService from '../../../../../../services/types-service';
 
 const MutatorFor = (propName) => (Comp) =>
   class extends React.Component {
@@ -24,7 +23,7 @@ const MutatorFor = (propName) => (Comp) =>
     }
   };
 
-const KeyRulesEditor = ({ keyDef, mutate, schema, onMutation }) => {
+const KeyRulesEditor = ({ keyDef, mutate, onMutation }) => {
 
   return (
     <div className={style['key-rules-editor-container']}>
@@ -43,7 +42,6 @@ const KeyRulesEditor = ({ keyDef, mutate, schema, onMutation }) => {
           <JPadEditor
             jpadSource={keyDef.source}
             mutate={mutate}
-            schema={schema}
             valueType={keyDef.valueType}
           />
         </TabPanel>
@@ -61,7 +59,12 @@ const KeyRulesEditor = ({ keyDef, mutate, schema, onMutation }) => {
 };
 
 function getTypedValue(value, valueType) {
-  return editorRulesValuesConverter(value, valueType === types.bool.type ? '' : '' + value, valueType).value;
+  try {
+    return TypesService.convertValue(value, valueType);
+  }
+  catch (err) {
+    return valueType === TypesService.types.boolean.name ? '' : '' + value
+  }
 }
 
 export default compose(

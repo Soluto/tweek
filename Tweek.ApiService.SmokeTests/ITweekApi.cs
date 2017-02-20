@@ -9,7 +9,7 @@ namespace Tweek.ApiService.SmokeTests
     public interface ITweekApi
     {
         [Get("configurations/{keyPath}")]
-        Task<JToken> GetConfigurations([Path] string keyPath,[QueryMap] Dictionary<string, string> context);
+        Task<JToken> GetConfigurations([Path] string keyPath,[QueryMap] IEnumerable<KeyValuePair<string, string>> context);
 
         Task AppendContext([Path] string identityType, [Path]string identityId, Dictionary<string, JsonValue> context);
     }

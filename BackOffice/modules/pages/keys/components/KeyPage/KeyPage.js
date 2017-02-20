@@ -22,7 +22,7 @@ const onRouteLeaveConfirmFunc = (props) => {
 
 const keyPageComp = compose(
   connect((state, { params }) =>
-    ({ selectedKey: state.selectedKey, configKey: params.splat, schema: state.schema, isInAddMode: params.splat === BLANK_KEY_NAME }),
+    ({ selectedKey: state.selectedKey, configKey: params.splat, isInAddMode: params.splat === BLANK_KEY_NAME }),
     { ...selectedKeyActions }),
   routeLeaveHook(onRouteLeaveConfirmFunc),
   lifecycle({

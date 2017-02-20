@@ -2,8 +2,7 @@ import React from 'react';
 import CustomSlider from '../../../../../../../../components/common/CustomSlider/CustomSlider';
 import style from './RuleValue.css';
 import ComboBox from '../../../../../../../../components/common/ComboBox/ComboBox';
-import editorRulesValuesConverter from '../../../../../../../../services/editor-rules-values-converter';
-import { types } from '../../../../../../../../services/TypesService';
+import * as TypesService from '../../../../../../../../services/types-service';
 import R from 'ramda';
 import { withState, compose, mapProps } from 'recompose';
 
@@ -11,7 +10,12 @@ function replaceNaN(fallbackValue) { return isNaN(this) ? fallbackValue : this; 
 const parseNumericInput = (inputValue) => inputValue === '' ? 0 : parseInt(inputValue);
 
 function getTypedValue(value, valueType) {
-  return editorRulesValuesConverter(value, valueType === types.bool.type ? '' : '' + value, valueType).value;
+  try {
+    return TypesService.convertValue(value, valueType);
+  }
+  catch (err) {
+    return valueType === TypesService.types.boolean.name ? '' : '' + value
+  }
 }
 
 function updateMutateTypedValue(mutate, value, valueType) {
@@ -26,7 +30,7 @@ const BooleanSingleVariant = ({value, valueType, mutate, identities}) => (
       selected={[R.find(x => x.value === value)(booleanSingleVariantSuggestions)]}
       placeholder="Enter value here"
       showValueInOptions={false}
-      onChange={e => updateMutateTypedValue(mutate, e.value, valueType.type)}
+      onChange={e => updateMutateTypedValue(mutate, e.value, valueType)}
     />
     <button className={style['to-feature-flag-button']}
       onClick={() => mutate.apply(m =>
@@ -43,12 +47,12 @@ const BooleanSingleVariant = ({value, valueType, mutate, identities}) => (
 
 const SingleVariantValue = ({value, mutate, identities, autofocus, valueType}) => (
   <div className={style['rule-value-container']}>
-    {valueType.type === types.bool.type ?
+    {valueType === TypesService.types.boolean.name ?
       <BooleanSingleVariant {...{ value, valueType, mutate, identities }} />
       :
       <div>
         <input
-          onChange={e => updateMutateTypedValue(mutate, e.target.value, valueType.type)}
+          onChange={e => updateMutateTypedValue(mutate, e.target.value, valueType)}
           value={value}
           placeholder="Enter value here"
           className={style['values-input']}
@@ -194,12 +198,8 @@ const MultiVariantValue = ({valueDistrubtion: {type, args }, mutate, identities,
   return null;
 };
 
-const getActualValueType = type => Object.keys(types)
-  .map(x => types[x])
-  .find(x => x.type === type || x.typeAlias === type);
-
 export default compose(
-  mapProps(({valueType, ...props}) => ({ valueType: getActualValueType(valueType) || 'string', ...props }))
+  mapProps(({valueType, ...props}) => ({ valueType: TypesService.types[valueType] ? valueType : 'string', ...props }))
 )(({rule, mutate, valueType, autofocus, identities }) => {
   if (rule.Type === 'SingleVariant')
     return (

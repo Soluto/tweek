@@ -8,9 +8,11 @@ const comparisonOps = { '$ge': '>=', '$gt': '>', '$lt': '<', '$le': '<=' };
 const groupOps = { '$in': 'in' };
 const allOps = { ...equalityOps, ...comparisonOps, ...groupOps };
 
-export const getSupportedOperators = (meta) => {
-  let type = meta.type == "custom" ? meta.custom_type.base : meta.type;
-  if (type === 'empty') return allOps;
+export const getSupportedOperators = (typeDetails) => {
+  let type = typeDetails.name == "custom" ? typeDetails.base : typeDetails.name;
+
+  if (type === 'empty')
+    return allOps;
 
   let ops = {};
   if (type === 'boolean' || type === 'string' || type === 'version') ops = equalityOps;
