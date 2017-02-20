@@ -62,6 +62,10 @@ namespace Tweek.ApiService.NetCore.Controllers
             if (path == null)
             {
                 var includedPaths = HttpContext.Request.Query["$include"];
+
+                if (includedPaths.Count == 0)
+                    return StatusCode(400, "No paths were requested, request a path in the url or use $include query parameters to specify multiple paths");
+
                 var query = includedPaths.Select(ConfigurationPath.New).ToList();
                 var data = await _tweek.Calculate(query, identities, contextProps);
                 return Json(!isFlatten ? (TreeResult.From(data, translateValue)) : data.ToDictionary(x => x.Key.ToString(), x => translateValue(x.Value)));
