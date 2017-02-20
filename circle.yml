@@ -24,10 +24,14 @@ dependencies:
     - yarn install
 test:
   override:
-    - yarn test:unit
-    - docker run -d -p 4000:3000 -e GIT_URL=${GIT_URL} -e GIT_PASSWORD=${GIT_PASSWORD} -e GIT_USER=${GIT_USER} -e TWEEK_API_HOSTNAME=${TWEEK_API_HOSTNAME} soluto/tweek-back-office:latest .
-    - curl --retry-delay 5 --retry 20 -v http://localhost:4000/keys
-    - npm run test:e2e
+    #- yarn test:unit 
+    - docker run -d -p 4000:3000 -e GIT_URL=${GIT_URL} -e GIT_PASSWORD=${GIT_PASSWORD} -e GIT_USER=${GIT_USER} -e TWEEK_API_HOSTNAME=${TWEEK_API_HOSTNAME} -e GIT_CLONE_TIMEOUT_IN_MINUTES=${GIT_CLONE_TIMEOUT_IN_MINUTES} soluto/tweek-back-office:latest .
+    #- curl --ipv4 --retry 20 --retry-delay 20 -v http://localhost:4000/keys
+    - wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/paping/paping_1.5.5_x86-64_linux.tar.gz
+    - tar xvzf paping_1.5.5_x86-64_linux.tar.gz
+    #- ./paping localhost -p 4000 -c 24 -t 10000
+    - yarn test:unit && ./paping localhost -p 4000 -c 24 -t 10000 && npm run test:e2e
+    #-npm run test:e2e
 general:
   build_dir: BackOffice
 deployment:

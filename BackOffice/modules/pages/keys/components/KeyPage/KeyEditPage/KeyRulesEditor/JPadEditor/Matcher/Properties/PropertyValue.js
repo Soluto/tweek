@@ -41,10 +41,8 @@ const InputPropertyValue = ({ onUpdate, value }) => (
   />
 );
 
-function PropertyValueComponent({ onUpdate, meta, value, op }) {
-  let allowedValues = null;
-  if (meta.type == "custom")
-    allowedValues = meta["custom_type"].allowedValues || [];
+function PropertyValueComponent({ onUpdate, typeDetails, value, op }) {
+  let allowedValues = typeDetails.allowedValues || [];
 
   if (op === '$in')
     return (
@@ -54,7 +52,7 @@ function PropertyValueComponent({ onUpdate, meta, value, op }) {
       />
     );
 
-  if (allowedValues)
+  if (allowedValues.length > 0)
     return (
       <ComboBox
         options={ allowedValues }

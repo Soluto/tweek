@@ -47,6 +47,38 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
             Assert.Equal("test", response.Value<string>("key2"));
         }
 
+        [Fact(DisplayName = "Requesting multiple keys using $include should return an object with the values for all the keys with full path")]
+        public async Task GetMultipleKeys_KeysExists_ShouldReturnObjectWithValueForEachKey()
+        {
+            // Act
+            var response = await mTweekApi.GetConfigurations(null, new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("$include", "@tests/keypath/key1"),
+                new KeyValuePair<string, string>("$include", "@tests/keypath/key2")
+            });
+
+            // Assert
+            Assert.Equal(JTokenType.Object, response.Type);
+            Assert.Equal("test", response.Value<JObject>("@tests").Value<JObject>("keypath").Value<string>("key1"));
+            Assert.Equal("test", response.Value<JObject>("@tests").Value<JObject>("keypath").Value<string>("key2"));
+        }
+
+        [Fact(DisplayName = "Requesting multiple keys using $include should return an object with the values for all the keys with full path")]
+        public async Task GetMultipleKeys_WithScan_ShouldReturnObjectWithValueForEachKeyWithoutDuplicates()
+        {
+            // Act
+            var response = await mTweekApi.GetConfigurations(null, new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("$include", "@tests/keypath/key1"),
+                new KeyValuePair<string, string>("$include", "@tests/keypath/_")
+            });
+
+            // Assert
+            Assert.Equal(JTokenType.Object, response.Type);
+            Assert.Equal("test", response.Value<JObject>("@tests").Value<JObject>("keypath").Value<string>("key1"));
+            Assert.Equal("test", response.Value<JObject>("@tests").Value<JObject>("keypath").Value<string>("key2"));
+        }
+
         [Fact(DisplayName = "Requesting a non-existant key tree should return an empty object")]
         public async Task GetKeyTree_PathDoesntExist_ShouldReturnEmptyObject()
         {

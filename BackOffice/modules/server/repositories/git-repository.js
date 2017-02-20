@@ -21,12 +21,15 @@ export default class GitRepository {
       },
     };
 
-    console.log('cloning rules repository');
+    console.log('clonning rules repository');
+    const clonningOp = 'clonning end in';
+    console.time(clonningOp);
+    
     const repo = await Git.Clone(settings.url, settings.localPath, {
       fetchOpts: operationSettings,
     });
 
-    console.log('clone success');
+    console.timeEnd(clonningOp);
     return new GitRepository(repo, operationSettings);
   }
 

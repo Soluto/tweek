@@ -10,7 +10,7 @@ describe('add tags', () => {
 
     const keysPageObject = new KeysPageObject(browser);
 
-    const tagsTestKeyName = 'tagsTest';
+    const tagsTestKeyName = 'tags_test';
     const testFolder = KeysPageObject.TEST_KEYS_FOLDER;
     const tagsTestFolder = '@tags';
     const tagsTestKeyFullPath = `${testFolder}/${tagsTestFolder}/${tagsTestKeyName}`;
@@ -64,7 +64,7 @@ describe('add tags', () => {
         // Act
         tagsToAdd.forEach(x => addTag(x));
 
-        keysPageObject.wait(2000, false);
+        keysPageObject.wait(10000, false);
         browser.refresh();
         browser.alertAccept();
 
