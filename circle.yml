@@ -26,7 +26,6 @@ dependencies:
       else
         echo "cached image wasnt found"
       fi
-    #- docker build --rm=false -t circleci/elasticsearch .
       cat CircleDockerfile > Dockerfile
       docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
       docker pull soluto/tweek-back-office
