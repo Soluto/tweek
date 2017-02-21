@@ -27,11 +27,10 @@ dependencies:
       fi
     #- docker build --rm=false -t circleci/elasticsearch .
     - cat CircleDockerfile > Dockerfile
-    - |
-       docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-       docker pull soluto/tweek-back-office
-       docker build --rm=false -t soluto/tweek-back-office .
-       mkdir -p ~/docker; docker save soluto/tweek-back-office > ~/docker/tweek-back-office-image.tar
+    -  docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
+    -  docker pull soluto/tweek-back-office
+    -  docker build --rm=false -t soluto/tweek-back-office .
+    - mkdir -p ~/docker; docker save soluto/tweek-back-office > ~/docker/tweek-back-office-image.tar
     - yarn install
 test:
   override:
