@@ -65,14 +65,7 @@ function getApp(req, res, requestCallback) {
   });
 }
 
-const startServer = () => {
-  const server = createServer(getApp);
-  server.use(session({ secret: 'some-secret' }));
-  if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() !== 'true') {
-    server.start();
-    return;
-  }
-
+const addAuthSupport = (server) => {
   server.use(passport.initialize());
   server.use(passport.session());
 
@@ -87,6 +80,16 @@ const startServer = () => {
     }
     return res.redirect('/login');
   });
+}
+
+const startServer = () => {
+  const server = createServer(getApp);
+  server.use(session({ secret: 'some-secret' }));
+  if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true') {
+    addAuthSupport(server);
+  }
+
+  server.start();
 };
 
 gitRepoCreationPromiseWithTimeout
