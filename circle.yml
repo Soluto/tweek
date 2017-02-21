@@ -18,6 +18,7 @@ dependencies:
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
   override:
     #- if [[ -e ~/docker/tweek-back-office-image.tar ]]; then docker load -i ~/docker/tweek-back-office-image.tar; fi
+    #- docker pull soluto/tweek-back-office
     - |
       if [[ -e ~/docker/tweek-back-office-image.tar ]]; then
         docker load -i ~/docker/tweek-back-office-image.tar
@@ -28,7 +29,6 @@ dependencies:
       fi
       cat CircleDockerfile > Dockerfile
       docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-      docker pull soluto/tweek-back-office
       docker build --rm=false -t soluto/tweek-back-office .
       mkdir -p ~/docker; docker save soluto/tweek-back-office > ~/docker/tweek-back-office-image.tar
     - yarn install
