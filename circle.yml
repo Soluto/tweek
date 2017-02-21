@@ -20,8 +20,9 @@ dependencies:
     - if [[ -e ~/docker/tweek-back-office-image.tar ]]; then docker load -i ~/docker/tweek-back-office-image.tar; fi
     - |
       if [[ -e ~/docker/tweek-back-office-image.tar ]]; then
-        echo "found cached image"
         docker load -i ~/docker/tweek-back-office-image.tar
+        docker images
+        echo "found cached image"
       else
         echo "cached image wasnt found"
       fi
