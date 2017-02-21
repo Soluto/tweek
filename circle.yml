@@ -12,22 +12,19 @@ dependencies:
   cache_directories:
     - ~/.yarn
     - ~/.yarn-cache
+    - ~/docker
   pre:
     - yarn cache dir
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
-    - |
-      URL2=http://google.com
-      RESPONSE=$(curl --write-out "%{http_code}\n" --silent --output /dev/null "$URL2")
-      while [ $RESPONSE -ne 200 ]
-      do
-      RESPONSE=$(curl --write-out "%{http_code}\n" --silent --output /dev/null "$URL2")
-      done
   override:
+    - if [[ -e ~/docker/tweek-back-office-image.tar ]]; then docker load -i ~/docker/tweek-back-office-image.tar; fi
+    #- docker build --rm=false -t circleci/elasticsearch .
     - cat CircleDockerfile > Dockerfile
     - |
        docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
        docker pull soluto/tweek-back-office
        docker build --rm=false -t soluto/tweek-back-office .
+       mkdir -p ~/docker; docker save soluto/tweek-back-office > ~/docker/tweek-back-office-image.tar
     - yarn install
 test:
   override:
@@ -35,13 +32,6 @@ test:
     - wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/paping/paping_1.5.5_x86-64_linux.tar.gz
     - tar xvzf paping_1.5.5_x86-64_linux.tar.gz
     #- ./paping localhost -p 4000 -c 35 -t 10000
-    - |
-      URL=http://localhost:4000/keys
-      RESPONSE=$(curl --write-out "%{http_code}\n" --silent --output /dev/null "$URL")
-      while [ $RESPONSE -ne 200 ]
-      do
-      RESPONSE=$(curl --write-out "%{http_code}\n" --silent --output /dev/null "$URL")
-      done
     - curl --retry-delay 5 --retry 20 -v http://localhost:4000/keys
     - yarn test:unit && ./paping localhost -p 4000 -c 24 -t 10000 && npm run test:e2e
 general:
@@ -50,5 +40,5 @@ deployment:
   hub: 
     branch: master
     commands:
-      - docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-      - docker push soluto/tweek-back-office
+      #- docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
+      #- docker push soluto/tweek-back-office
