@@ -23,8 +23,8 @@ using Tweek.JPad;
 using Tweek.ApiService.NetCore.Diagnostics;
 using System.Reflection;
 using static LanguageExt.Prelude;
-
-//using IdentityServer = Tweek.Auth.IdentityServer;
+using Tweek.ApiService.NetCore.Security;
+using Tweek.ApiService.NetCore.Addons;
 
 namespace Tweek.ApiService.NetCore
 {
@@ -101,9 +101,6 @@ namespace Tweek.ApiService.NetCore
             }
             Console.WriteLine(System.Runtime.GCSettings.IsServerGC);
             Console.WriteLine(System.Runtime.GCSettings.LatencyMode);
-            app.UseApplicationInsightsRequestTelemetry();
-            app.UseApplicationInsightsExceptionTelemetry();
-
 
             app.InstallAddons(Configuration);
             app.UseMvc();

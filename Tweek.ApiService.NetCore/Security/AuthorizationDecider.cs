@@ -25,9 +25,10 @@ namespace Tweek.ApiService.NetCore.Security
                 return tweekIdentities.Select(tweekIdentity =>
                 {
                     var identityType = tweekIdentity.Type;
-                    var result = tweek.CalculateWithLocalContext($"@tweek/auth/{identityType}/read_configuration", new HashSet<Identity>(),
+                    var key = $"@tweek/auth/{identityType}/read_configuration";
+                    var result = tweek.CalculateWithLocalContext(key, new HashSet<Identity>(),
                         type => type == "token" ? (GetContextValue)((string q) => Optional(identity.FindFirst(q)).Map(x=>x.Value).Map(JsonValue.NewString)) : (_) => None)
-                        .SingleKey()
+                        .SingleKey(key)
                         .Map(j => j.AsString())
                         .Match(x => match(x, 
                                 with("allow", (_) => true),
