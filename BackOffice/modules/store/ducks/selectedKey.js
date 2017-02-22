@@ -22,9 +22,8 @@ const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
 export function openKey(key) {
   return async function (dispatch) {
     dispatch(downloadTags());
-    
-    await ContextService.refreshSchema();
-    
+    ContextService.refreshSchema();
+
     if (key === BLANK_KEY_NAME) {
       dispatch({ type: KEY_OPENED, payload: createBlankKey() });
       return;
