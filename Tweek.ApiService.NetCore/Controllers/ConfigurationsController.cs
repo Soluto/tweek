@@ -42,6 +42,13 @@ namespace Tweek.ApiService.NetCore.Controllers
                     ? JsonConvert.SerializeObject(v.Value, JsonValueConverter.Instance)
                     : v.Value.AsString();
 
+        private static ConfigurationPath[] GetQuery(ConfigurationPath path, string[] includePaths)
+        {
+            if (includePaths.Length == 0 || !path.IsScan) return new []{path};
+            if (path == ConfigurationPath.FullScan) return includePaths.Select(ConfigurationPath.New).ToArray();
+            return includePaths.Select(x=> ConfigurationPath.From(path.Prefix, x)).ToArray();
+        }
+
         [HttpGet("{*path}")]
         public async Task<ActionResult> GetAsync([FromRoute] string path)
         {
@@ -49,6 +56,8 @@ namespace Tweek.ApiService.NetCore.Controllers
             var modifiers = allParams.Item1;
             var isFlatten = modifiers.TryGetValue("$flatten").Select(x => bool.Parse(x.ToString())).IfNone(false);
             var ignoreKeyTypes = modifiers.TryGetValue("$ignoreKeyTypes").Select(x => bool.Parse(x.ToString())).IfNone(true);
+            var includePaths = modifiers.TryGetValue("$include").Select(x => x.ToArray()).IfNone(new string[] {});
+
             var translateValue = ignoreKeyTypes ? (TranslateValue)TranslateValueToString : (x => x.Value);
 
             IReadOnlyDictionary<string, JsonValue> contextParams = allParams.Item2.ToDictionary(x => x.Key,
@@ -59,32 +68,21 @@ namespace Tweek.ApiService.NetCore.Controllers
             GetLoadedContextByIdentityType contextProps =
                 identityType => key => contextParams.TryGetValue($"{identityType}.{key}");
 
-            if (path == null)
+            var root = ConfigurationPath.New(path);
+
+            var query = GetQuery(root, includePaths);
+
+            var data = await _tweek.Calculate(query, identities, contextProps);
+
+            if (root.IsScan)
             {
-                var includedPaths = HttpContext.Request.Query["$include"];
-
-                if (includedPaths.Count == 0)
-                    return StatusCode(400, "No paths were requested, request a path in the url or use $include query parameters to specify multiple paths");
-
-                var query = includedPaths.Select(ConfigurationPath.New).ToList();
-                var data = await _tweek.Calculate(query, identities, contextProps);
-                return Json(!isFlatten ? (TreeResult.From(data, translateValue)) : data.ToDictionary(x => x.Key.ToString(), x => translateValue(x.Value)));
+                var relativeData = data.ToDictionary(x => x.Key.ToRelative(root), x => x.Value);
+                return Json(!isFlatten ? (TreeResult.From(relativeData, translateValue)) : relativeData.ToDictionary(x => x.Key.ToString(), x => translateValue(x.Value)));
             }
-            else
-            {
-                var query = ConfigurationPath.New(path);
-                var data = await _tweek.Calculate(query, identities, contextProps);
 
-                if (query.IsScan)
-                {
-                    var relativeData = data.ToDictionary(x => x.Key.ToRelative(query), x => x.Value);
-                    return Json(!isFlatten ? (TreeResult.From(relativeData, translateValue)) : relativeData.ToDictionary(x => x.Key.ToString(), x => translateValue(x.Value)));
-                }
-
-                return data.Select(x => ignoreKeyTypes ? (object) x.Value.Value.AsString() : x.Value.Value)
+            return data.Select(x => ignoreKeyTypes ? (object) x.Value.Value.AsString() : x.Value.Value)
                     .FirstOrNone()
                     .Match(x => Json(x), () => Json(null));
-            }
         }
     }
 }

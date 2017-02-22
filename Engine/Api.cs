@@ -22,11 +22,17 @@ namespace Engine
             ICollection<ConfigurationPath> pathQuery,
             HashSet<Identity> identities, 
             GetLoadedContextByIdentityType externalContext = null);
+    }
 
-        Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(
-            ConfigurationPath pathQuery, 
-            HashSet<Identity> identities, 
-            GetLoadedContextByIdentityType externalContext = null);
+    public static class TweekExtensions
+    {
+        public static  Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(this ITweek tweek,
+            ConfigurationPath pathQuery,
+            HashSet<Identity> identities,
+            GetLoadedContextByIdentityType externalContext = null)
+        {
+            return tweek.Calculate(new []{ pathQuery }, identities, externalContext);
+        }
     }
 
     public class TweekRunner : ITweek
@@ -53,14 +59,6 @@ namespace Engine
                 .Select(ConfigurationPath.New)
                 .Where(path => query.Any(queryPath => ConfigurationPath.Match(path, queryPath)))
                 .Distinct());
-        }
-
-        public async Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(
-            ConfigurationPath pathQuery,
-            HashSet<Identity> identities,
-            GetLoadedContextByIdentityType externalContext = null)
-        {
-            return await Calculate(new List<ConfigurationPath> {pathQuery}, identities, externalContext);
         }
 
         public async Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(
