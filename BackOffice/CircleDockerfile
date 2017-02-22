@@ -13,15 +13,11 @@ RUN chown -R foo /usr/local
 
 USER foo
 
-#RUN npm install --global yarn
-RUN wget https://yarnpkg.com/latest.tar.gz
-#RUN mkdir -p /opt/yarn
-RUN tar -xf latest.tar.gz --strip-components=1
-#RUN ls /opt/yarn
-#ENV PATH "$PATH:/opt/yarn/bin"
-#RUN ls -la ./
+RUN npm install --global yarn
 
-RUN ./yarn install
+RUN ls -la ~/app
+
+RUN yarn install
 
 ADD . /home/foo/app
 
