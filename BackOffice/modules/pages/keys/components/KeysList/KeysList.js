@@ -36,7 +36,7 @@ const KeysList = componentFromStream(prop$ => {
   return Observable
     .combineLatest(textFilter$, keyList$)
     .map(([filter, keys]) => {
-      let filteredKeys = keys.filter(key => key.includes(filter));
+      let filteredKeys = keys.filter(key => key.toLowerCase().includes(filter.toLowerCase()));
 
       return (
         <div className={style['keys-list-container']}>
