@@ -24,8 +24,11 @@ using Tweek.ApiService.NetCore.Diagnostics;
 using System.Reflection;
 using static LanguageExt.Prelude;
 
+//using IdentityServer = Tweek.Auth.IdentityServer;
+
 namespace Tweek.ApiService.NetCore
 {
+
     class TweekContractResolver : DefaultContractResolver
     {
         protected override JsonContract CreateContract(Type objectType)
@@ -51,11 +54,6 @@ namespace Tweek.ApiService.NetCore
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
 
-            if (env.IsDevelopment())
-            {
-                builder.AddApplicationInsightsSettings(developerMode: true);
-            }
-
             Configuration = builder.Build();
         }
 
@@ -64,8 +62,6 @@ namespace Tweek.ApiService.NetCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
-            services.AddApplicationInsightsTelemetry(Configuration);
 
             var contextBucketName = Configuration["Couchbase.BucketName"];
             var contextBucketPassword = Configuration["Couchbase.Password"];
@@ -81,6 +77,7 @@ namespace Tweek.ApiService.NetCore
             var tweek = Task.Run(async () => await Engine.Tweek.Create(contextDriver, rulesDriver, parser)).Result;
 
             services.AddSingleton(tweek);
+            services.AddSingleton<CheckReadConfigurationAccess>(Authorization.CreateAccessChecker(tweek));
             services.AddSingleton<IContextDriver>(contextDriver);
             services.AddSingleton(parser);
             services.AddSingleton<IEnumerable<IDiagnosticsProvider>>(new IDiagnosticsProvider[] {rulesDiagnostics, couchbaseDiagnosticsProvider});
@@ -107,6 +104,8 @@ namespace Tweek.ApiService.NetCore
             app.UseApplicationInsightsRequestTelemetry();
             app.UseApplicationInsightsExceptionTelemetry();
 
+
+            app.InstallAddons(Configuration);
             app.UseMvc();
         }
 

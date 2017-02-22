@@ -13,17 +13,19 @@ using Engine;
 using Engine.Core.Utils;
 using Newtonsoft.Json;
 using Tweek.Utils;
+using Tweek.ApiService.NetCore.Security;
 
 namespace Tweek.ApiService.NetCore.Controllers
 {
-    [Route("configurations")]
-    public class ConfigurationsController : Controller
+    public class KeysController : Controller
     {
         private ITweek _tweek;
+        private readonly CheckReadConfigurationAccess _checkAccess;
 
-        public ConfigurationsController(ITweek tweek)
+        public KeysController(ITweek tweek, CheckReadConfigurationAccess checkAccess)
         {
-            this._tweek = tweek;
+            _tweek = tweek;
+            _checkAccess = checkAccess;
         }
 
         public static Tuple<IReadOnlyDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>> PartitionByKey<TKey, TValue>(IDictionary<TKey, TValue> source,
@@ -49,7 +51,7 @@ namespace Tweek.ApiService.NetCore.Controllers
             return includePaths.Select(x=> ConfigurationPath.From(path.Prefix, x)).ToArray();
         }
 
-        [HttpGet("{*path}")]
+        [HttpGet("v1/keys/{*path}")]
         public async Task<ActionResult> GetAsync([FromRoute] string path)
         {
             var allParams = PartitionByKey(HttpContext.Request.Query.ToDictionary(x => x.Key, x => x.Value), x => x.StartsWith("$"));
@@ -64,7 +66,7 @@ namespace Tweek.ApiService.NetCore.Controllers
                 x => NewString(x.Value.ToString()), StringComparer.OrdinalIgnoreCase);
 
             var identities = new HashSet<Identity>(contextParams.Where(x => !x.Key.Contains(".")).Select(x => new Identity(x.Key, x.Value.AsString())));
-
+            if (!_checkAccess(User, path, identities)) return Forbid("Not authorized");
             GetLoadedContextByIdentityType contextProps =
                 identityType => key => contextParams.TryGetValue($"{identityType}.{key}");
 

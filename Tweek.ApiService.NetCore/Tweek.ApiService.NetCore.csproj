@@ -32,6 +32,7 @@
     <ProjectReference Include="..\Engine.DataTypes\Engine.DataTypes.csproj" />
     <ProjectReference Include="..\Engine.Drivers\Engine.Drivers.csproj" />
     <ProjectReference Include="..\Engine\Engine.csproj" />
+    <ProjectReference Include="..\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj" />
     <ProjectReference Include="..\Tweek.Drivers.Blob\Tweek.Drivers.Blob.csproj" />
     <ProjectReference Include="..\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj" />
     <ProjectReference Include="..\Utils\JsonValueConverter\JsonValueConverter.csproj" />
