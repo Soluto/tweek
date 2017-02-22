@@ -51,7 +51,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
         public async Task GetMultipleKeys_KeysExists_ShouldReturnObjectWithValueForEachKey()
         {
             // Act
-            var response = await mTweekApi.GetConfigurations(null, new List<KeyValuePair<string, string>>
+            var response = await mTweekApi.GetConfigurations("_", new List<KeyValuePair<string, string>>
             {
                 new KeyValuePair<string, string>("$include", "@tests/keypath/key1"),
                 new KeyValuePair<string, string>("$include", "@tests/keypath/key2")
@@ -67,7 +67,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
         public async Task GetMultipleKeys_WithScan_ShouldReturnObjectWithValueForEachKeyWithoutDuplicates()
         {
             // Act
-            var response = await mTweekApi.GetConfigurations(null, new List<KeyValuePair<string, string>>
+            var response = await mTweekApi.GetConfigurations("_", new List<KeyValuePair<string, string>>
             {
                 new KeyValuePair<string, string>("$include", "@tests/keypath/key1"),
                 new KeyValuePair<string, string>("$include", "@tests/keypath/_")
@@ -77,6 +77,22 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
             Assert.Equal(JTokenType.Object, response.Type);
             Assert.Equal("test", response.Value<JObject>("@tests").Value<JObject>("keypath").Value<string>("key1"));
             Assert.Equal("test", response.Value<JObject>("@tests").Value<JObject>("keypath").Value<string>("key2"));
+        }
+
+        [Fact(DisplayName = "Requesting multiple keys with $include should be relative to the path")]
+        public async Task GetMultipleKeys_WithScanRoot_ResultsShouldBeRelativeToThePath()
+        {
+            // Act
+            var response = await mTweekApi.GetConfigurations("@tests/_", new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("$include", "keypath/key1"),
+                new KeyValuePair<string, string>("$include", "keypath/_")
+            });
+
+            // Assert
+            Assert.Equal(JTokenType.Object, response.Type);
+            Assert.Equal("test", response.Value<JObject>("keypath").Value<string>("key1"));
+            Assert.Equal("test", response.Value<JObject>("keypath").Value<string>("key2"));
         }
 
         [Fact(DisplayName = "Requesting a non-existant key tree should return an empty object")]
