@@ -19,9 +19,9 @@ RUN wget https://yarnpkg.com/latest.tar.gz
 RUN tar -xf latest.tar.gz --strip-components=1
 #RUN ls /opt/yarn
 #ENV PATH "$PATH:/opt/yarn/bin"
-#RUN ls -la ~/app
+#RUN ls -la ./
 
-RUN yarn install
+RUN ./yarn install
 
 ADD . /home/foo/app
 
