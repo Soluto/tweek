@@ -14,6 +14,7 @@ namespace Tweek.ApiService.NetCore.Addons
     {
         public static void InstallAddons(this IApplicationBuilder app, IConfiguration configuration)
         {
+
             var dependencies = DependencyContext.Default.RuntimeLibraries;
             var assemblies = dependencies.SelectMany(dep =>
             {
@@ -28,7 +29,17 @@ namespace Tweek.ApiService.NetCore.Addons
                 }
             }).ToArray();
 
-            var addonTypes = assemblies.Bind(x => x.GetTypes()).Filter(x => x.IsClass && typeof(ITweekAddon).IsAssignableFrom(x)).ToArray();
+            var addonTypes = assemblies.Bind(x =>
+            {
+                try
+                {
+                    return x.GetTypes();
+                }
+                catch (Exception ex)
+                {
+                    return new Type[] {};
+                }
+            }).Filter(x => x != typeof(ITweekAddon) && typeof(ITweekAddon).IsAssignableFrom(x)).ToArray();
 
             foreach  (ITweekAddon addon in addonTypes.Map(t => (ITweekAddon)Activator.CreateInstance(t))) { 
                 addon.Install(app, configuration);

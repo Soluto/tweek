@@ -30,7 +30,16 @@ namespace Engine
 
         public static Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(this ITweek tweek,
             ConfigurationPath pathQuery,
-            HashSet<Identity> identities, GetLoadedContextByIdentityType externalContext = null);
+            HashSet<Identity> identities, GetLoadedContextByIdentityType externalContext = null)
+        {
+            return tweek.Calculate(new []{pathQuery}, identities, externalContext);
+        }
+        public static Dictionary<ConfigurationPath, ConfigurationValue> CalculateWithLocalContext(this ITweek tweek,
+            ConfigurationPath pathQuery,
+            HashSet<Identity> identities, GetLoadedContextByIdentityType context, ConfigurationPath[] includeFixedPaths = null)
+        {
+            return tweek.CalculateWithLocalContext(new[] { pathQuery }, identities, context, includeFixedPaths);
+        }
 
     }
     public interface ITweek
@@ -41,8 +50,8 @@ namespace Engine
             GetLoadedContextByIdentityType externalContext = null);
 
         Dictionary<ConfigurationPath, ConfigurationValue> CalculateWithLocalContext(
-            ConfigurationPath pathQuery,
-            HashSet<Identity> identities, GetLoadedContextByIdentityType context, ConfigurationPath[] includePaths = null);
+            ICollection<ConfigurationPath> pathQuery,
+            HashSet<Identity> identities, GetLoadedContextByIdentityType context, ConfigurationPath[] includeFixedPaths = null);
     }
     
 
@@ -59,7 +68,7 @@ namespace Engine
         }
 
 
-        public Dictionary<ConfigurationPath, ConfigurationValue> CalculateWithLocalContext(ConfigurationPath pathQuery,
+        public Dictionary<ConfigurationPath, ConfigurationValue> CalculateWithLocalContext(ICollection<ConfigurationPath> pathQuery,
             HashSet<Identity> identities,
             GetLoadedContextByIdentityType context, ConfigurationPath[] includePaths = null)
         {
@@ -68,17 +77,18 @@ namespace Engine
 
             var getRuleValue = EngineCore.GetRulesEvaluator(identities, context, (path) => allRules.TryGetValue(path));
 
-            var paths = pathQuery.IsScan ? includePaths.Concat(allRules.Keys.Select(ConfigurationPath.New))
-                .Where(path => ConfigurationPath.Match(path: path, query: pathQuery))
-                : new[] { pathQuery };
+            var paths = pathQuery.Any((x=>x.IsScan)) ? includePaths.Concat(allRules.Keys.Select(ConfigurationPath.New))
+                .Where(path => pathQuery.Any(query=>ConfigurationPath.Match(path: path, query: query)))
+                : pathQuery;
 
             return paths
-                .Select(path => getRuleValue(path).Map(value => new { path = path.ToRelative(pathQuery), value }))
+                .Distinct()
+                .Select(path => getRuleValue(path).Map(value => new { path, value }))
                 .SkipEmpty()
                 .ToDictionary(x => x.path, x => x.value);
         }
 
-        public async Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(ConfigurationPath pathQuery,
+        public async Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(ICollection<ConfigurationPath> pathQuery,
             HashSet<Identity> identities, 
             GetLoadedContextByIdentityType externalContext = null)
         {
@@ -94,15 +104,21 @@ namespace Engine
             
             var loadedContexts = ContextHelpers.GetContextRetrieverByType(ContextHelpers.LoadContexts(allContextData), identities);
             var context =  ContextHelpers.Fallback(externalContext, loadedContexts);
-            
-            var getRuleValue = EngineCore.GetRulesEvaluator(identities, context, (path)=>allRules.TryGetValue(path));
-            
-            var paths = GetAllPaths(allContextData, allRules, pathQuery);
+            var contextPaths = pathQuery.Any(x=>x.IsScan) ? allContextData.Values.SelectMany(x => x.Keys)
+                    .Where(x => x.Contains("@fixed:"))
+                    .Select(x => x.Split(':')[1])
+                    .Select(ConfigurationPath.New).ToArray() : null;
 
-            return paths
-                .Select(path => getRuleValue(path).Map(value=>new {path, value}))
-                .SkipEmpty()
-                .ToDictionary(x => x.path, x => x.value);
+
+            return CalculateWithLocalContext(pathQuery, identities, context, contextPaths);
+
+            /*
+        var paths = GetAllPaths(allContextData, allRules, pathQuery);
+
+        return paths
+            .Select(path => getRuleValue(path).Map(value=>new {path, value}))
+            .SkipEmpty()
+            .ToDictionary(x => x.path, x => x.value);*/
         }
     }
 
