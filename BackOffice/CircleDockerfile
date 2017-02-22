@@ -15,7 +15,7 @@ USER foo
 
 #RUN npm install --global yarn
 RUN wget https://yarnpkg.com/latest.tar.gz
-RUN mkdir -p /opt/yarn
+#RUN mkdir -p /opt/yarn
 RUN tar -xf latest.tar.gz --strip-components=1
 #RUN ls /opt/yarn
 #ENV PATH "$PATH:/opt/yarn/bin"
