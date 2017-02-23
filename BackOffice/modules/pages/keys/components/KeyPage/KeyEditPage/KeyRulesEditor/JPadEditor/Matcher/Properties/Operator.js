@@ -24,6 +24,9 @@ export const getSupportedOperators = (typeDetails) => {
 };
 
 export const Operator = ({ selectedOp, onUpdate, supportedOperators }) => {
+  if (!supportedOperators[selectedOp])
+    console.error("Selected operator is not supported for this value type!", selectedOp, supportedOperators);
+
   return (
     <ComboBox
       options={ R.keys(supportedOperators).map(op => ({ value: op, label: supportedOperators[op] })) }
@@ -34,7 +37,7 @@ export const Operator = ({ selectedOp, onUpdate, supportedOperators }) => {
       } }
       selected={[
         {
-          label: supportedOperators[selectedOp],
+          label: supportedOperators[selectedOp] || selectedOp,
           value: selectedOp,
         },
       ]}
