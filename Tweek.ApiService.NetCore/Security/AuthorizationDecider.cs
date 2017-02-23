@@ -21,7 +21,7 @@ namespace Tweek.ApiService.NetCore.Security
         {
             return (identity, path, tweekIdentities) =>
             {
-                if (path.StartsWith("@tweek")) return false;
+                if (path == "@tweek/_" || path.StartsWith("@tweek/auth")) return false;
                 return tweekIdentities.Select(tweekIdentity =>
                 {
                     var identityType = tweekIdentity.Type;
