@@ -14,11 +14,8 @@ dependencies:
     - ~/.yarn-cache
     - ~/docker
   pre:
-    #- yarn cache dir
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
   override:
-    #- if [[ -e ~/docker/tweek-back-office-image.tar ]]; then docker load -i ~/docker/tweek-back-office-image.tar; fi
-    #- docker pull soluto/tweek-back-office
     - |
       if [[ -e ~/docker/tweek-back-office-image.tar ]]; then
         docker load -i ~/docker/tweek-back-office-image.tar
