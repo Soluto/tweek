@@ -8,7 +8,7 @@ import { componentFromStream, createEventHandler } from 'recompose';
 
 import style from './KeysList.css';
 
-function KeysFilter ({onFilterChange}) {
+function KeysFilter({onFilterChange}) {
   return (
     <div className={style['search-input-wrapper']}>
       <input type="text" className={style['search-input']} placeholder="Search..." onKeyUp={e => onFilterChange(e.target.value)} />
@@ -17,15 +17,15 @@ function KeysFilter ({onFilterChange}) {
 }
 
 const KeyItem = connect((state, props) => ({ isActive: state.selectedKey && state.selectedKey.key && state.selectedKey.key === props.fullPath }))
-(({name, fullPath, depth, isActive}) => (
-  <div className={classNames(style['key-link-wrapper'])}>
-    <Link className={classNames(style['key-link'], { [style['selected']]: isActive }) }
-          style={{ paddingLeft: (depth + 1) * 14 }}
-          to={`/keys/${fullPath}`}>
-      {name}
-    </Link>
-  </div>
-));
+  (({name, fullPath, depth, isActive}) => (
+    <div className={classNames(style['key-link-wrapper'])}>
+      <Link className={classNames(style['key-link'], { [style['selected']]: isActive })}
+        style={{ paddingLeft: (depth + 1) * 14 }}
+        to={`/keys/${fullPath}`}>
+        {name}
+      </Link>
+    </div>
+  ));
 
 const KeysList = componentFromStream(prop$ => {
   const keyList$ = prop$.map(x => x.keys).distinctUntilChanged();
@@ -41,7 +41,9 @@ const KeysList = componentFromStream(prop$ => {
       return (
         <div className={style['keys-list-container']}>
           <KeysFilter onFilterChange={setFilter} />
-          <DirectoryTreeView paths={filteredKeys} renderItem={KeyItem} expandByDefault={!!filter} />
+          <DirectoryTreeView paths={filteredKeys}
+            renderItem={KeyItem}
+            expandByDefault={!!filter} />
         </div>
       );
     });
