@@ -9,6 +9,7 @@ const leaf = Symbol();
 
 export default function DirectoryTreeView({ paths, renderItem, expandByDefault }) {
   let pathTree = pathsToTree(paths);
+  console.log(pathTree, paths);
   return (
     <div className={style['key-folder']}>
       {Object.keys(pathTree).map(pathNode => (
@@ -35,25 +36,20 @@ DirectoryTreeView.propTypes = {
 function TreeNode({ node, name, fullPath, depth, renderItem, expandByDefault }) {
   let LeafElement = renderItem;
 
-  if (node === leaf) {
-    return <LeafElement {...{name, fullPath, depth}}  />
-  }
-  else {
-    return (
-      <TreeDirectory descendantsCount={countLeafsInTree(node)} {...{name, fullPath, depth, expandByDefault}} >
-        {Object.keys(node).map(childPath => (
-          <TreeNode
-            key={childPath}
-            name={childPath}
-            node={node[childPath]}
-            fullPath={fullPath + "/" + childPath}
-            depth={depth + 1}
-            renderItem={renderItem}
-            expandByDefault={expandByDefault} />
-        ))}
-      </TreeDirectory>
-    );
-  }
+  return node === leaf ?
+    <LeafElement {...{ name, fullPath, depth }} /> :
+    <TreeDirectory descendantsCount={countLeafsInTree(node)} {...{ name, fullPath, depth, expandByDefault }} >
+      {Object.keys(node).map(childPath => (
+        <TreeNode
+          key={childPath}
+          name={childPath}
+          node={node[childPath]}
+          fullPath={fullPath + "/" + childPath}
+          depth={depth + 1}
+          renderItem={renderItem}
+          expandByDefault={expandByDefault} />
+      ))}
+    </TreeDirectory>
 }
 
 TreeNode.propTypes = {
@@ -84,18 +80,18 @@ class TreeDirectory extends React.Component {
   }
 
   render() {
-    let { fullPath, depth, children, descendantsCount } = this.props;
+    let { fullPath, name, depth, children, descendantsCount } = this.props;
     let { isCollapsed } = this.state;
 
     return (
       <div className={style['key-folder']}>
 
         <div style={{ paddingLeft: (depth + 1) * 10 }}
-             className={style['key-folder-name']}
-             onClick={() => this.setState({ isCollapsed: !isCollapsed }) }
-             data-folder-name={fullPath} >
-          <img className={style['key-folder-icon']} src={isCollapsed ? closedFolderIconSrc : openedFolderIconSrc}/>
-          {fullPath}
+          className={style['key-folder-name']}
+          onClick={() => this.setState({ isCollapsed: !isCollapsed })}
+          data-folder-name={fullPath} >
+          <img className={style['key-folder-icon']} src={isCollapsed ? closedFolderIconSrc : openedFolderIconSrc} />
+          {name}
           <label className={style['number-of-folder-keys']}>{descendantsCount}</label>
         </div>
 
@@ -110,7 +106,7 @@ class TreeDirectory extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.expandByDefault != nextProps.expandByDefault){
+    if (this.props.expandByDefault != nextProps.expandByDefault) {
       this.setState({
         isCollapsed: !nextProps.expandByDefault
       });
@@ -129,7 +125,7 @@ function pathsToTree(paths) {
   return tree;
 }
 
-function countLeafsInTree(tree){
+function countLeafsInTree(tree) {
   if ((typeof tree) === 'symbol') return 1;
 
   return Object.keys(tree).reduce((aggregator, item) => aggregator + countLeafsInTree(tree[item]), 0);
