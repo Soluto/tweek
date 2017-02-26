@@ -12,7 +12,6 @@ import session from 'express-session';
 import Transactor from './utils/transactor';
 import KeysRepository from './server/repositories/keys-repository';
 import TagsRepository from './server/repositories/tags-repository';
-import TypesRepository from './server/repositories/types-repository';
 import GitContinuousUpdater from './server/repositories/git-continuous-updater';
 import Promise from 'bluebird';
 const passport = require('passport');
@@ -43,13 +42,12 @@ const gitRepoCreationPromiseWithTimeout = new Promise((resolve, reject) => {
 const gitTransactionManager = new Transactor(gitRepoCreationPromise, async gitRepo => await gitRepo.reset());
 const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
-const typesRepository = new TypesRepository(gitTransactionManager);
 
 GitContinuousUpdater.start(gitTransactionManager);
 
 function getApp(req, res, requestCallback) {
   requestCallback(null, {
-    routes: routes(serverRoutes({ tagsRepository, keysRepository, typesRepository, tweekApiHostname })),
+    routes: routes(serverRoutes({ tagsRepository, keysRepository, tweekApiHostname })),
     async render(routerProps, renderCallback) {
 
       const store = configureStore({});
