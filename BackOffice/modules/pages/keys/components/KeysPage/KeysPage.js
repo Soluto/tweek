@@ -7,11 +7,14 @@ import style from './KeysPage.css';
 import { compose } from 'recompose';
 import withLoading from '../../../../hoc/with-loading';
 import { refreshTypes } from '../../../../services/types-service';
+import { refreshSchema } from "../../../../services/context-service";
 
 export default compose(
   connect(state => state, { ...actions }),
-  withLoading(() => null, refreshTypes()))
-  (class KeysPage extends Component {
+  withLoading(() => null, refreshTypes()),
+  withLoading(() => null, refreshSchema())
+)
+(class KeysPage extends Component {
     constructor(props) {
       super(props);
     }
