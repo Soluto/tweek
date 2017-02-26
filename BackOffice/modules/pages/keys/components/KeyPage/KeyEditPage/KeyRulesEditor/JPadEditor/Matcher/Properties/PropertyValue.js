@@ -59,7 +59,7 @@ function PropertyValueComponent({ onUpdate, typeDetails, value, op }) {
         placeholder="Value"
         wrapperThemeClass={style['property-value-combo-box']}
         onChange={(selectedValue) => { onUpdate(selectedValue); } }
-        selected={[R.find(x => x === value)(allowedValues)]}
+        selected={[allowedValues.find(x => x.toLowerCase() == (value || "").toLowerCase())]}
       />
     );
 
