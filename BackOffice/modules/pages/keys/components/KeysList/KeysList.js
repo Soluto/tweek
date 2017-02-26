@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import TreeDirectoryView from './TreeDirectoryView';
+import DirectoryTreeView from './DirectoryTreeView';
 import { connect } from "react-redux";
 import { Link } from 'react-router';
 import { Observable } from 'rxjs/Rx';
@@ -41,7 +41,7 @@ const KeysList = componentFromStream(prop$ => {
       return (
         <div className={style['keys-list-container']}>
           <KeysFilter onFilterChange={setFilter} />
-          <TreeDirectoryView paths={filteredKeys} renderItem={KeyItem} expandByDefault={!!filter} />
+          <DirectoryTreeView paths={filteredKeys} renderItem={KeyItem} expandByDefault={!!filter} />
         </div>
       );
     });
