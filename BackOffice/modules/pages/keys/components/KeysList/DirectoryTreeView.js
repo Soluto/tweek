@@ -9,7 +9,6 @@ const leaf = Symbol();
 
 export default function DirectoryTreeView({ paths, renderItem, expandByDefault }) {
   let pathTree = pathsToTree(paths);
-  console.log(pathTree, paths);
   return (
     <div className={style['key-folder']}>
       {Object.keys(pathTree).map(pathNode => (
