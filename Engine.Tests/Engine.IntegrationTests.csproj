@@ -13,12 +13,10 @@
     <PackageReference Include="Tweek.JPad" Version="0.5.6245.17626" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Drivers\Engine.Drivers.Cassandra\Engine.Drivers.Cassandra.csproj" />
     <ProjectReference Include="..\Drivers\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj" />
     <ProjectReference Include="..\Engine.Core\Engine.Core.csproj" />
     <ProjectReference Include="..\Engine.DataTypes\Engine.DataTypes.csproj" />
     <ProjectReference Include="..\Engine.Drivers\Engine.Drivers.csproj" />
-    <ProjectReference Include="..\Engine.Management.Drivers\Engine.Management.Drivers.csproj" />
     <ProjectReference Include="..\Engine\Engine.csproj" />
     <ProjectReference Include="..\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj" />
     <ProjectReference Include="..\Utils\JsonValueConverter\JsonValueConverter.csproj" />
