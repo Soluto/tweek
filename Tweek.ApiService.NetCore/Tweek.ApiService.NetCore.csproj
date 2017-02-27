@@ -3,6 +3,7 @@
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81</PackageTargetFallback>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <VersionPrefix>0.1.3</VersionPrefix>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Properties\PublishProfiles\FileSystemProfile.pubxml" />
@@ -37,8 +38,8 @@
     <ProjectReference Include="..\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj" />
     <ProjectReference Include="..\Tweek.Drivers.Blob\Tweek.Drivers.Blob.csproj" />
     <ProjectReference Include="..\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj" />
-    <ProjectReference Include="..\Utils\JsonValueConverter\JsonValueConverter.csproj" />
     <ProjectReference Include="..\Drivers\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj" />
+    <ProjectReference Include="..\Utils\JsonValueConverter\JsonValueConverter.csproj" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0-msbuild3-final" />
