@@ -28,7 +28,7 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.AzureAppServicesIntegration" Version="1.0.0" />
-    <PackageReference Include="Tweek.JPad" Version="0.5.6245.17626" />
+    <PackageReference Include="Tweek.JPad" Version="0.5.6267.15391" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine.Core\Engine.Core.csproj" />
