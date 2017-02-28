@@ -314,6 +314,40 @@ namespace Engine.Tests
             });
         }
 
+        [Fact]
+        public async Task RuleUsingTimeBasedOperators()
+        {
+            contexts = ContextCreator.Merge(
+                ContextCreator.Create("device", "1", Tuple.Create("birthday", JsonValue.NewString(DateTime.UtcNow.AddDays(-2).ToString("O")))),
+                ContextCreator.Create("device", "2", Tuple.Create("birthday", JsonValue.NewString(DateTime.UtcNow.AddDays(-5).ToString("O")))));
+
+            paths = new[] { "abc/somepath" };
+            rules = new Dictionary<string, RuleDefinition>()
+            {
+                ["abc/somepath"] =
+                    JPadGenerator.New()
+                        .AddSingleVariantRule(JsonConvert.SerializeObject(new Dictionary<string, object>()
+                        {
+                            {"Device.birthday", new Dictionary<string, object>()
+                                {
+                                    {"$withinTime", "3d"}
+                                }}
+                        }), value: "true")
+                        .AddSingleVariantRule(JsonConvert.SerializeObject(new {}), value: "false")
+                        .Generate()
+            };
+
+            await Run(async tweek =>
+            {
+                var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
+                Assert.Equal("true", val["abc/somepath"].Value.AsString());
+
+                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "2") });
+                Assert.Equal("false", val["abc/somepath"].Value.AsString());
+
+            });
+        }
+
         /*
         [Fact]
         public async Task MultiVariantWithMultipleValueDistrubtion()

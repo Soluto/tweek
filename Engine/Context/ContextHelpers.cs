@@ -24,6 +24,28 @@ namespace Engine.Context
             return list.Reduce((l,r)=> identityType => key => l(identityType)(key).IfNone(()=>r(identityType)(key)));
         }
 
+        public static GetLoadedContextByIdentityType AddSystemContext(GetLoadedContextByIdentityType context)
+        {
+            var timeUtc = Option<JsonValue>.Some(JsonValue.NewString(DateTime.UtcNow.ToString("O")));
+
+            return Fallback(context, type =>
+            {
+                if (type.Equals("system", StringComparison.CurrentCultureIgnoreCase))
+                    return (key =>
+                    {
+                        switch (key)
+                        {
+                            case "time_utc":
+                                return timeUtc;
+                            default:
+                                return Option<JsonValue>.None;
+                        }
+                    });
+
+                return (key => Option<JsonValue>.None);
+            });
+        }
+
         internal static GetContextValue ContextValueForId(string id)
         {
             return key => key == "@@id" ? JsonValue.NewString(id) : Option<JsonValue>.None;
