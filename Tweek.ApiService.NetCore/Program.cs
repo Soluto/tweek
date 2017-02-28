@@ -16,7 +16,6 @@ namespace Tweek.ApiService.NetCore
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseApplicationInsights()
-                .UseAzureAppServices()
                 .UseStartup<Startup>()
                 .Build();
 

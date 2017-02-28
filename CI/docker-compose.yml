@@ -7,6 +7,6 @@ services:
       - /usr/bin/docker:/usr/bin/docker
       - /var/run/docker.sock:/var/run/docker.sock
       - ../:/src
-      - ${appdata}/nuget/Nuget.Config:/root/.nuget/NuGet/NuGet.Config
+      - ./Nuget.Config:/root/.nuget/NuGet/NuGet.Config
     working_dir: /src
     command: /bin/bash -c "./ci/build.sh && ./ci/test.sh && ./ci/publish.sh"

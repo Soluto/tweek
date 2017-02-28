@@ -1,17 +1,10 @@
-language: node_js
-node_js:
-  - "6.9.1"
+sudo: required
 
-addons:
-  code_climate:
-    repo_token: e671493e18dd04b83fb2513dda65e7f7b7b1c48860b5f1e5b3284d7d4e9af9c7
-
+services:
+  - docker
 before_install:
-  - npm install yarn -g
-install:
-  - cd ./BackOffice
-  - yarn install
+  - docker pull microsoft/dotnet:1.1.0-sdk-msbuild-rc4
 script:
-  - npm run test:unit
-  - npm run coverage:upload:code-climate
-  
+  - cd CI
+  - envsubst < ./NuGet.Config.tmpl > NuGet.Config
+  - ./docker-compose up  
