@@ -1,2 +1,2 @@
-dotnet publish ./Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj  -c Release -o ./obj/Docker/publish
+dotnet publish ./Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj  -c Release -o ./obj/Docker/publish --version-sufix $BUILD_NUMBER
 docker build -t soluto/tweek-api:latest ./Tweek.ApiService.NetCore
