@@ -318,8 +318,8 @@ namespace Engine.Tests
         public async Task RuleUsingTimeBasedOperators()
         {
             contexts = ContextCreator.Merge(
-                ContextCreator.Create("device", "1", Tuple.Create("birthday", JsonValue.NewString(DateTime.UtcNow.AddDays(-2).ToString("O")))),
-                ContextCreator.Create("device", "2", Tuple.Create("birthday", JsonValue.NewString(DateTime.UtcNow.AddDays(-5).ToString("O")))));
+                ContextCreator.Create("device", "1", Tuple.Create("birthday", JsonValue.NewString(DateTime.UtcNow.AddDays(-2).ToString("u")))),
+                ContextCreator.Create("device", "2", Tuple.Create("birthday", JsonValue.NewString(DateTime.UtcNow.AddDays(-5).ToString("u")))));
 
             paths = new[] { "abc/somepath" };
             rules = new Dictionary<string, RuleDefinition>()

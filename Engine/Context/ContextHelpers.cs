@@ -26,7 +26,7 @@ namespace Engine.Context
 
         public static GetLoadedContextByIdentityType AddSystemContext(GetLoadedContextByIdentityType context)
         {
-            var timeUtc = Option<JsonValue>.Some(JsonValue.NewString(DateTime.UtcNow.ToString("O")));
+            var timeUtc = Option<JsonValue>.Some(JsonValue.NewString(DateTime.UtcNow.ToString("u")));
 
             return Fallback(context, type =>
             {
