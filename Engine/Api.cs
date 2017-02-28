@@ -13,7 +13,6 @@ using Engine.Core.Rules;
 using FSharpUtils.Newtonsoft;
 using ContextHelpers = Engine.Context.ContextHelpers;
 using LanguageExt;
-using Tweek.JPad.Rules;
 using static LanguageExt.Prelude;
 
 namespace Engine
@@ -68,9 +67,11 @@ namespace Engine
         }
 
 
-        public Dictionary<ConfigurationPath, ConfigurationValue> CalculateWithLocalContext(ICollection<ConfigurationPath> pathQuery,
+        public Dictionary<ConfigurationPath, ConfigurationValue> CalculateWithLocalContext(
+            ICollection<ConfigurationPath> pathQuery,
             HashSet<Identity> identities,
-            GetLoadedContextByIdentityType context, ConfigurationPath[] includePaths = null)
+            GetLoadedContextByIdentityType context, 
+            ConfigurationPath[] includePaths = null)
         {
             includePaths = includePaths ?? Array<ConfigurationPath>();
             var allRules = _rulesLoader();
@@ -88,7 +89,8 @@ namespace Engine
                 .ToDictionary(x => x.path, x => x.value);
         }
 
-        public async Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(ICollection<ConfigurationPath> pathQuery,
+        public async Task<Dictionary<ConfigurationPath, ConfigurationValue>> Calculate(
+            ICollection<ConfigurationPath> pathQuery,
             HashSet<Identity> identities, 
             GetLoadedContextByIdentityType externalContext = null)
         {
@@ -103,7 +105,7 @@ namespace Engine
             externalContext = externalContext ?? ContextHelpers.EmptyContextByIdentityType;
             
             var loadedContexts = ContextHelpers.GetContextRetrieverByType(ContextHelpers.LoadContexts(allContextData), identities);
-            var context =  ContextHelpers.Fallback(externalContext, loadedContexts);
+            var context = ContextHelpers.AddSystemContext(ContextHelpers.Fallback(externalContext, loadedContexts));
             var contextPaths = pathQuery.Any(x=>x.IsScan) ? allContextData.Values.SelectMany(x => x.Keys)
                     .Where(x => x.Contains("@fixed:"))
                     .Select(x => x.Split(':')[1])
