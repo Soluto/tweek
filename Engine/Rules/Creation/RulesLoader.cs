@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Engine.Core;
 using Engine.Core.Rules;
-using Engine.DataTypes;
 using Engine.Drivers.Rules;
-using Tweek.JPad;
 using static Engine.Core.Utils.TraceHelpers;
 
 namespace Engine.Rules.Creation
