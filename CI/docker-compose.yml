@@ -10,5 +10,5 @@ services:
       - ./NuGet.Config:/root/.nuget/NuGet/NuGet.Config
     working_dir: /src
     environment:
-      - BUILD_NUMBER=$(CIRCLE_BUILD_NUM)
+      - BUILD_NUMBER=${CIRCLE_BUILD_NUM}
     command: /bin/bash -c "./ci/build.sh && ./ci/test.sh && ./ci/publish.sh"
