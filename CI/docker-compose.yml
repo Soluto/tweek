@@ -11,4 +11,4 @@ services:
     working_dir: /src
     environment:
       - BUILD_NUMBER=${CIRCLE_BUILD_NUM}
-    command: /bin/bash -c "./ci/build.sh && ./ci/test.sh && ./ci/publish.sh"
+    command: /bin/bash -c "sh ./CI/build.sh && sh ./CI/test.sh && sh ./CI/publish.sh"
