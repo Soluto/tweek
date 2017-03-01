@@ -3,7 +3,7 @@ ci-build:
   volumes:
     - /usr/bin/docker:/usr/bin/docker
     - /var/run/docker.sock:/var/run/docker.sock
-    - $(pwd)/../:/src
+    - ../:/src
     - ./NuGet.Config:/root/.nuget/NuGet/NuGet.Config
   working_dir: /src
   environment:
