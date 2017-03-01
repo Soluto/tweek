@@ -31,10 +31,10 @@ dependencies:
       docker build --rm=false -t soluto/tweek-back-office .
     - mkdir -p ~/docker; docker save soluto/tweek-back-office > ~/docker/tweek-back-office-image.tar
     - yarn
-    - cd ci && ./init-nuget-config.sh
+    - cd CI && ./init-nuget-config.sh
 test:
   override:
-    - cd ci && docker-compose up
+    - cd CI && docker-compose up
     - docker run -d -p 4000:3000 -e GIT_URL=${GIT_URL} -e GIT_PASSWORD=${GIT_PASSWORD} -e GIT_USER=${GIT_USER} -e TWEEK_API_HOSTNAME=${TWEEK_API_HOSTNAME} -e GIT_CLONE_TIMEOUT_IN_MINUTES=${GIT_CLONE_TIMEOUT_IN_MINUTES} soluto/tweek-back-office:latest .
     - wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'http://localhost:4000/keys'
     - yarn test:unit && yarn test:e2e
