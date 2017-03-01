@@ -1,14 +1,11 @@
-version: '2'
-
-services:
-  ci-build:
-    image: microsoft/dotnet:1.1.0-sdk-msbuild-rc4
-    volumes:
-      - /usr/bin/docker:/usr/bin/docker
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ../:/src
-      - ./NuGet.Config:/root/.nuget/NuGet/NuGet.Config
-    working_dir: /src
-    environment:
-      - BUILD_NUMBER=${CIRCLE_BUILD_NUM}
-    command: /bin/bash -c "sh ./CI/build.sh && sh ./CI/test.sh && sh ./CI/publish.sh"
+ci-build:
+  image: microsoft/dotnet:1.1.0-sdk-msbuild-rc4
+  volumes:
+    - /usr/bin/docker:/usr/bin/docker
+    - /var/run/docker.sock:/var/run/docker.sock
+    - ../:/src
+    - ./NuGet.Config:/root/.nuget/NuGet/NuGet.Config
+  working_dir: /src
+  environment:
+    - BUILD_NUMBER=${CIRCLE_BUILD_NUM}
+  command: /bin/bash -c "sh ./CI/build.sh && sh ./CI/test.sh && sh ./CI/publish.sh"
