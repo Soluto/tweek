@@ -31,7 +31,7 @@ dependencies:
       docker build --rm=false -t soluto/tweek-back-office .
     - mkdir -p ~/docker; docker save soluto/tweek-back-office > ~/docker/tweek-back-office-image.tar
     - yarn
-	- cd ci && ./init-nuget-config.sh
+    - cd ci && ./init-nuget-config.sh
 test:
   override:
     - cd ci && docker-compose up
