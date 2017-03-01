@@ -2,6 +2,8 @@
 machine:
   services:
     - docker
+  pre:
+    - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
   environment:
     NODE_ENV: development
     YARN_VERSION: 0.17.8
