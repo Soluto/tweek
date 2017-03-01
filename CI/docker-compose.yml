@@ -7,8 +7,8 @@ services:
       - /usr/bin/docker:/usr/bin/docker
       - /var/run/docker.sock:/var/run/docker.sock
       - ../:/src
-      - ./Nuget.Config:/root/.nuget/NuGet/NuGet.Config
+      - ./NuGet.Config:/root/.nuget/NuGet/NuGet.Config
     working_dir: /src
-	environment:
-	  - BUILD_NUMBER=$(CIRCLE_BUILD_NUM)
+    environment:
+      - BUILD_NUMBER=$(CIRCLE_BUILD_NUM)
     command: /bin/bash -c "./ci/build.sh && ./ci/test.sh && ./ci/publish.sh"
