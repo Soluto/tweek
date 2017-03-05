@@ -1,7 +1,6 @@
 .matcher-operator {
   margin: 0 5px;
   display: inline-block;
-  text-align: center;
   display: flex;
 }
 .matcher-operator .override-typeahead .override-input {
@@ -22,7 +21,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 30px;
+  width: 50px;
 }
 .matcher-operator .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -42,7 +41,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 30px;
+  width: 50px;
 }
 .matcher-operator .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -50,7 +49,7 @@
 .matcher-operator .override-typeahead .override-dropdown :global(.dropdown-menu) {
   position: absolute;
   max-height: 350px;
-  min-width: 30px;
+  min-width: 50px;
   overflow-y: auto;
   width: auto;
   z-index: 5;
@@ -115,7 +114,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 30px;
+  width: 50px;
 }
 .matcher-operator .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -135,7 +134,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 30px;
+  width: 50px;
 }
 .matcher-operator .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -143,7 +142,7 @@
 .matcher-operator .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
   max-height: 350px;
-  min-width: 30px;
+  min-width: 50px;
   overflow-y: auto;
   width: auto;
   z-index: 5;
@@ -208,7 +207,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 30px;
+  width: 50px;
 }
 .matcher-operator .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -228,7 +227,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 30px;
+  width: 50px;
 }
 .matcher-operator .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -236,7 +235,7 @@
 .matcher-operator .override-dropdown :global(.dropdown-menu) {
   position: absolute;
   max-height: 350px;
-  min-width: 30px;
+  min-width: 50px;
   overflow-y: auto;
   width: auto;
   z-index: 5;
@@ -301,7 +300,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 30px;
+  width: 50px;
 }
 .matcher-operator :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -321,7 +320,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 30px;
+  width: 50px;
 }
 .matcher-operator :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -329,7 +328,7 @@
 .matcher-operator :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
   max-height: 350px;
-  min-width: 30px;
+  min-width: 50px;
   overflow-y: auto;
   width: auto;
   z-index: 5;
@@ -375,6 +374,9 @@
 }
 .matcher-operator :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
   background-color: #dfdfdf;
+}
+.matcher-operator :global(.bootstrap-typeahead-input-main) {
+  text-align: center;
 }
 .property-value-wrapper {
   display: inline-block;

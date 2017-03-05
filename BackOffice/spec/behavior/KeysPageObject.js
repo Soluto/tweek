@@ -1,4 +1,4 @@
-import { selectors } from './selectors';
+import { getRelativeSelector, selectors } from './selectors';
 import moment from 'moment';
 import { BLANK_KEY_NAME } from '../../modules/store/ducks/ducks-utils/blankKeyDefinition';
 
@@ -20,7 +20,7 @@ export default class KeysPageObject {
     return location;
   }
 
-  goToBase(){
+  goToBase() {
     this.browser.url(KeysPageObject.BASE_URL);
     if (this.didAlertRaised())
       this.browser.alertAccept();
@@ -70,7 +70,7 @@ export default class KeysPageObject {
     this.browser.waitForVisible(selectors.KEY_NAME_INPUT, 5000);
     this.browser.setValue(selectors.KEY_NAME_INPUT, keyName);
     browser.click(selectors.BACKGROUND);
-    
+
     this.browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, keyValueType);
     const firstSuggestion = selectors.typeaheadSuggestionByIndex(0);
     browser.click(firstSuggestion);
@@ -146,11 +146,9 @@ export default class KeysPageObject {
   }
 
   waitForKeyToBeDeleted(keyName) {
-
     const checkIsKeyWasDeleted = (keyName) => {
       try {
         this.goToKey(keyName);
-        this.browser.waitForVisible(selectors.KEY_VIEWER_CONTAINER);
         return false;
       } catch (exp) {
         return true;
@@ -180,5 +178,33 @@ export default class KeysPageObject {
     } catch (exp) {
       return false;
     }
+  }
+
+  setConditionPropertyFromSuggestion(ruleNumber, conditionNumber, suggestionIndex) {
+    const conditionPropertyInputSelector = selectors.conditionPropertyName(ruleNumber, conditionNumber)
+    const suggestionSelector = selectors.typeaheadSuggestionByIndex(suggestionIndex);
+
+    this.browser.click(selectors.BACKGROUND);
+    this.browser.click(conditionPropertyInputSelector);
+    this.browser.click(suggestionSelector);
+  }
+
+  setConditionPropertyFromSuggestionValuePrefix(ruleNumber, conditionNumber, valuePrefix) {
+    const conditionPropertyInputSelector = selectors.conditionPropertyName(ruleNumber, conditionNumber)
+    this.browser.setValue(conditionPropertyInputSelector, valuePrefix);
+    const suggestionSelector = selectors.typeaheadSuggestionByIndex(0);
+    this.browser.click(suggestionSelector);
+  }
+
+  setConditionValue(ruleNumber, conditionNumber, value) {
+    const conditionValueInputSelector = selectors.conditionValue(ruleNumber, conditionNumber);
+    this.browser.setValue(conditionValueInputSelector, value);
+  }
+
+  addRuleCondition(ruleNumber) {
+    const ruleSelector = selectors.ruleContainer(ruleNumber);
+    const addConditionButtonSelector = getRelativeSelector([ruleSelector, selectors.ADD_CONDITION_BUTTON]);
+    this.browser.click(addConditionButtonSelector);
+    this.browser.click(selectors.BACKGROUND);
   }
 }

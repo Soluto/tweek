@@ -61,25 +61,25 @@ selectors.ruleContainer = (ruleIndex) => {
   return ruleIndex ? _getSelectorByIndex(ruleContainerSelector, ruleIndex) : ruleContainerSelector;
 };
 
-selectors.conditionValue = (ruleIndex, conditionIndex) => {
+selectors.conditionValue = (ruleNumber, conditionNumber) => {
   const conditionValueSelector = getRelativeSelector([
-    _getSelectorByIndex(selectors.RULE_CONDITION, conditionIndex),
+    _getSelectorByIndex(selectors.RULE_CONDITION, conditionNumber),
     getSelectorByClassNames('property-value-wrapper'),
     'input',
   ]);
 
-  return getRelativeSelector([selectors.ruleContainer(ruleIndex), conditionValueSelector]);
+  return getRelativeSelector([selectors.ruleContainer(ruleNumber), conditionValueSelector]);
 };
 
-selectors.conditionPropertyName = (ruleIndex, conditionIndex) => {
+selectors.conditionPropertyName = (ruleNumber, conditionNumber) => {
   const propertyNameSelector =
     getRelativeSelector([
-      _getSelectorByIndex(selectors.RULE_CONDITION, conditionIndex),
+      _getSelectorByIndex(selectors.RULE_CONDITION, conditionNumber),
       getSelectorByClassNames('property-name-wrapper'),
       getSelectorByClassNames('bootstrap-typeahead-input-main'),
     ]);
 
-  return getRelativeSelector([selectors.ruleContainer(ruleIndex), propertyNameSelector]);
+  return getRelativeSelector([selectors.ruleContainer(ruleNumber), propertyNameSelector]);
 };
 
 selectors.typeaheadSuggestionByIndex = (suggestionIndex) => {
