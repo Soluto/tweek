@@ -3,22 +3,23 @@ import R from 'ramda';
 import style from './Matcher.css';
 import PropertyName from './Properties/PropertyName';
 import PropertyPredicate from './Properties/PropertyPredicate';
-import {shouldUpdate} from 'recompose';
+import { shouldUpdate } from 'recompose';
 import * as ContextService from '../../../../../../../../services/context-service';
 
-const Property = ({property, predicate, mutate, suggestedValues = [], canBeClosed = true, autofocus}) =>
-  (<div className={style['condition-wrapper']}>
+const Property = ({property, predicate, mutate, suggestedValues = [], canBeClosed = true, autofocus}) => {
+  return (<div className={style['condition-wrapper']}>
     <button onClick={mutate.delete}
-            className={style['delete-condition-button']}
-            title="Remove condition"
-            disabled={!canBeClosed}
+      className={style['delete-condition-button']}
+      title="Remove condition"
+      disabled={!canBeClosed}
     />
-    <PropertyName {...{property, mutate, suggestedValues, autofocus}} />
-    <PropertyPredicate {...{predicate, mutate, property}} />
-  </div>);
+    <PropertyName {...{ property, mutate, suggestedValues, autofocus }} />
+    <PropertyPredicate {...{ predicate, mutate, property }} />
+  </div>)
+};
 
 const hasChanged = shouldUpdate((props, nextProps) =>
-!R.equals(props.matcher, nextProps.matcher) || !R.equals(props.mutate.path, nextProps.mutate.path));
+  !R.equals(props.matcher, nextProps.matcher) || !R.equals(props.mutate.path, nextProps.mutate.path));
 
 export default hasChanged(({matcher, mutate, autofocus}) => {
   const [ops, props] = R.pipe(R.toPairs, R.partition(([prop]) => prop[0] === '$'))(matcher);
@@ -38,15 +39,15 @@ export default hasChanged(({matcher, mutate, autofocus}) => {
           const suggestedValues = filterActiveProps(property);
           return (
             <Property key={i}
-                      mutate={mutate.in(property) }
-                      {...{suggestedValues, property, predicate, canBeClosed, autofocus}}
+              mutate={mutate.in(property)}
+              {...{ suggestedValues, property, predicate, canBeClosed, autofocus }}
             />
           );
         })
       }
       <button className={style['add-condition-button']}
-              onClick={() => mutate.insert('', '') }
-              title="Add condition"
+        onClick={() => mutate.insert('', '')}
+        title="Add condition"
       />
     </div>);
 });

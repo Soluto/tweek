@@ -3,44 +3,22 @@ import React from 'react';
 import style from './styles.css';
 import ComboBox from '../../../../../../../../../components/common/ComboBox/ComboBox';
 
-const equalityOps = { '$eq': '=', '$ne': '!=' };
-const comparisonOps = { '$ge': '>=', '$gt': '>', '$lt': '<', '$le': '<=' };
-const groupOps = { '$in': 'in' };
-const allOps = { ...equalityOps, ...comparisonOps, ...groupOps };
-
-export const getSupportedOperators = (typeDetails) => {
-  let type = typeDetails.name == "custom" ? typeDetails.base : typeDetails.name;
-
-  if (type === 'empty')
-    return allOps;
-
-  let ops = {};
-  if (type === 'boolean' || type === 'string' || type === 'version') ops = equalityOps;
-  if (type === 'number' || type === 'version') ops = { ...ops, ...comparisonOps };
-
-  ops = { ...ops, ...groupOps };
-
-  return ops;
-};
-
-export const Operator = ({ selectedOp, onUpdate, supportedOperators }) => {
-  if (!supportedOperators[selectedOp])
-    console.error("Selected operator is not supported for this value type!", selectedOp, supportedOperators);
+export const Operator = ({ selectedOperator, onUpdate, supportedOperators }) => {
+  const props = {};
+  if (!!selectedOperator) props['selected'] = [{
+    label: selectedOperator.label,
+    value: selectedOperator.operatorValue,
+  }];
 
   return (
     <ComboBox
-      options={ R.keys(supportedOperators).map(op => ({ value: op, label: supportedOperators[op] })) }
+      options={supportedOperators.map(op => ({ value: op.operatorValue, label: op.label }))}
       wrapperThemeClass={style['matcher-operator']}
       onChange={(selected) => {
         if (selected.value === '') return;
-        onUpdate(selected.value);
-      } }
-      selected={[
-        {
-          label: supportedOperators[selectedOp] || selectedOp,
-          value: selectedOp,
-        },
-      ]}
-      />
+        onUpdate(supportedOperators.find(x => x.operatorValue === selected.value));
+      }}
+      {...props}
+    />
   );
 };
