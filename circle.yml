@@ -34,7 +34,7 @@ dependencies:
     # run tweek api    
     - docker run -d -p 1111:80 --link tweek-management --name tweek-api -e Couchbase.Url=${COUCHBASE_URL} -e Couchbase.BucketName=${COUCHBASE_BUCKET_NAME} -e Couchbase.Password=${COUCHBASE_PASSWORD} -e RulesBlob.Url='http://tweek-management:3000/ruleset/latest' soluto/tweek-api
     # run tweek editor
-    - docker run -d -p 4000:3000 -e GIT_URL=${GIT_URL} -e GIT_PASSWORD=${GIT_PASSWORD} -e GIT_USER=${GIT_USER} -e TWEEK_API_HOSTNAME=${TWEEK_API_HOSTNAME} -e GIT_CLONE_TIMEOUT_IN_MINUTES=${GIT_CLONE_TIMEOUT_IN_MINUTES} soluto/tweek-back-office:latest .
+    - docker run -d -p 4000:3000 --link tweek-api -e GIT_URL=${GIT_URL} -e GIT_PASSWORD=${GIT_PASSWORD} -e GIT_USER=${GIT_USER} -e TWEEK_API_HOSTNAME='http://tweek-api' -e GIT_CLONE_TIMEOUT_IN_MINUTES=${GIT_CLONE_TIMEOUT_IN_MINUTES} soluto/tweek-back-office:latest .
     - mkdir -p ~/docker
     - docker save soluto/tweek-api:latest tweekci/tweek-management:latest soluto/tweek-back-office > ~/docker/tweek-images.tar
   override:
