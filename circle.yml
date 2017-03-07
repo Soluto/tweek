@@ -22,18 +22,18 @@ dependencies:
       else
         echo "cached images were not found"
       fi
-    - cat CircleDockerfile > Dockerfile
-    - docker images
+      cat CircleDockerfile > Dockerfile
+      docker images
     #- |
     #  docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
     #  docker pull soluto/tweek-api:latest
     #  docker pull tweekci/tweek-management:latest
     #  docker pull soluto/tweek-back-office 
-    - docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-    - docker pull soluto/tweek-api:latest
-    - docker pull tweekci/tweek-management:latest
-    - docker pull soluto/tweek-back-office 
-    - docker build --rm=false -t soluto/tweek-back-office .
+      docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
+      docker pull soluto/tweek-api:latest
+      docker pull tweekci/tweek-management:latest
+      docker pull soluto/tweek-back-office 
+      docker build --rm=false -t soluto/tweek-back-office .
     # run tweek management
     - docker run -d --name tweek-management -e GIT_URL=${GIT_URL} -e GIT_USER=${GIT_USER} -e GIT_PASSWORD=${GIT_PASSWORD} -e VALIDATION_URL='localhost:1111/validation' tweekci/tweek-management
     # run tweek api    
