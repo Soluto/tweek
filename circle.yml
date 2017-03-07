@@ -19,17 +19,21 @@ dependencies:
       if [[ -e ~/docker/tweek-back-office-image.tar ]]; then
         docker load -i ~/docker/tweek-images.tar
         echo "found cached images"
-        docker images
       else
         echo "cached images were not found"
       fi
     - cat CircleDockerfile > Dockerfile
-    - |
-      docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-      docker pull soluto/tweek-api:latest
-      docker pull tweekci/tweek-management:latest
-      docker pull soluto/tweek-back-office 
-      docker build --rm=false -t soluto/tweek-back-office .
+    - docker images
+    #- |
+    #  docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
+    #  docker pull soluto/tweek-api:latest
+    #  docker pull tweekci/tweek-management:latest
+    #  docker pull soluto/tweek-back-office 
+    - docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
+    - docker pull soluto/tweek-api:latest
+    - docker pull tweekci/tweek-management:latest
+    - docker pull soluto/tweek-back-office 
+    - docker build --rm=false -t soluto/tweek-back-office .
     # run tweek management
     - docker run -d --name tweek-management -e GIT_URL=${GIT_URL} -e GIT_USER=${GIT_USER} -e GIT_PASSWORD=${GIT_PASSWORD} -e VALIDATION_URL='localhost:1111/validation' tweekci/tweek-management
     # run tweek api    
@@ -37,9 +41,7 @@ dependencies:
     # run tweek editor
     - docker run -d -p 4000:3000 -e GIT_URL=${GIT_URL} -e GIT_PASSWORD=${GIT_PASSWORD} -e GIT_USER=${GIT_USER} -e TWEEK_API_HOSTNAME=${TWEEK_API_HOSTNAME} -e GIT_CLONE_TIMEOUT_IN_MINUTES=${GIT_CLONE_TIMEOUT_IN_MINUTES} soluto/tweek-back-office:latest .
     - mkdir -p ~/docker
-    - docker save soluto/tweek-back-office > ~/docker/tweek-images.tar
-    - docker save soluto/tweek-api:latest > ~/docker/tweek-images.tar
-    - docker save tweekci/tweek-management:latest > ~/docker/tweek-images.tar
+    - docker save soluto/tweek-api:latest tweekci/tweek-management:latest soluto/tweek-back-office > ~/docker/tweek-images.tar
   override:
     - yarn
     - cd ../CI && sh ./init-nuget-config.sh 
