@@ -6,7 +6,7 @@ exports.config = {
   ],
   exclude: [
   ],
-  maxInstances: 20,
+  maxInstances: 1,
   //
   // If you have trouble getting all important capabilities together, check out the
   // Sauce Labs platform configurator - a great tool to configure your capabilities:
@@ -37,7 +37,7 @@ exports.config = {
   //baseUrl: 'http://localhost:3000',
   //
   // Default timeout for all waitFor* commands.
-  waitforTimeout: 60000,
+  waitforTimeout: 1000000,
   //
   // Default timeout in milliseconds for request
   connectionRetryTimeout: 1000000,
