@@ -29,7 +29,6 @@ describe('key name validations', () => {
 
   it('should check and show key name validation', () => {
     browser.click(selectors.ADD_KEY_BUTTON);
-    keysAsserts.assertKeyOpened(BLANK_KEY_NAME);
 
     browser.click(selectors.KEY_NAME_INPUT);
 

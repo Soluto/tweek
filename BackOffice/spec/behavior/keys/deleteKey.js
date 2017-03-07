@@ -25,8 +25,6 @@ describe('delete key', () => {
   it('should succeed deleting key', () => {
     keysPageObject.goToKey(keyToDeleteFullPath);
 
-    keysAsserts.assertKeyOpened(keyToDeleteFullPath);
-
     browser.click(selectors.DELETE_KEY_BUTTON);
     assert(browser.alertText(), 'should show deleting alert');
     browser.alertAccept();

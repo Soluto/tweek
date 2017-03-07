@@ -14,7 +14,6 @@ export default class KeysPageObject {
   }
 
   getUrlLocation() {
-    this.browser.waitUntil(() => !!this.browser.getUrl(), 5000);
     const location = this.browser.getUrl().split(KeysPageObject.BASE_URL)[1];
 
     return location;
@@ -25,7 +24,7 @@ export default class KeysPageObject {
     if (this.didAlertRaised())
       this.browser.alertAccept();
 
-    this.browser.waitForVisible(selectors.ADD_KEY_BUTTON, 5000);
+    this.browser.waitForVisible(selectors.ADD_KEY_BUTTON, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
   }
 
   goToKey(keyName) {
@@ -40,7 +39,7 @@ export default class KeysPageObject {
     const selectorToWaitFor = keyName.startsWith(BLANK_KEY_NAME) ?
       selectors.KEY_NAME_INPUT : selectors.KEY_DISPLAY_NAME;
 
-    this.browser.waitForVisible(selectorToWaitFor, 10000);
+    this.browser.waitForVisible(selectorToWaitFor, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
   }
 
   goToKeysList() {
@@ -80,7 +79,7 @@ export default class KeysPageObject {
       this.isInKeyPage(keyName),
       KeysPageObject.GIT_TRANSACTION_TIMEOUT);
 
-    this.browser.waitForVisible(selectors.KEY_DISPLAY_NAME, 10000);
+    this.browser.waitForVisible(selectors.KEY_DISPLAY_NAME, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
   }
 
   isInKeyPage(keyName) {
@@ -159,7 +158,7 @@ export default class KeysPageObject {
   }
 
   waitForPageToLoad() {
-    this.browser.waitForVisible(selectors.KEY_PAGE, 2000);
+    this.browser.waitForVisible(selectors.KEY_PAGE, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
   }
 
   waitForKeyToLoad(timeout = 10000) {
