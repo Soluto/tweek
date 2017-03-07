@@ -15,30 +15,39 @@ dependencies:
     - ~/docker
   pre:
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
-  override:
-    - echo $TWEEK_API_HOSTNAME && echo ${TWEEK_API_HOSTNAME} && echo TWEEK_API_HOSTNAME
-    - docker version
     - |
       if [[ -e ~/docker/tweek-back-office-image.tar ]]; then
-        docker load -i ~/docker/tweek-back-office-image.tar
+        docker load -i ~/docker/tweek-images.tar
         echo "found cached images"
         docker images
       else
-        echo "cached image wasnt found"
+        echo "cached images were not found"
       fi
     - cat CircleDockerfile > Dockerfile
     - |
       docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
+      docker pull soluto/tweek-api:latest
+      docker pull tweekci/tweek-management:latest
       docker pull soluto/tweek-back-office 
       docker build --rm=false -t soluto/tweek-back-office .
-    - mkdir -p ~/docker; docker save soluto/tweek-back-office > ~/docker/tweek-back-office-image.tar
+    # run tweek management
+    - docker run -d --name tweek-management -e GIT_URL=${GIT_URL} -e GIT_USER=${GIT_USER} -e GIT_PASSWORD=${GIT_PASSWORD} -e VALIDATION_URL='localhost:1111/validation' tweekci/tweek-management
+    # run tweek api    
+    - docker run -d -p 1111:80 --link tweek-management --name tweek-api -e Couchbase.Url=${COUCHBASE_URL} -e Couchbase.BucketName=${COUCHBASE_BUCKET_NAME} -e Couchbase.Password=${COUCHBASE_PASSWORD} -e RulesBlob.Url='http://tweek-management:3000/ruleset/latest' soluto/tweek-api
+    # run tweek editor
+    - docker run -d -p 4000:3000 -e GIT_URL=${GIT_URL} -e GIT_PASSWORD=${GIT_PASSWORD} -e GIT_USER=${GIT_USER} -e TWEEK_API_HOSTNAME=${TWEEK_API_HOSTNAME} -e GIT_CLONE_TIMEOUT_IN_MINUTES=${GIT_CLONE_TIMEOUT_IN_MINUTES} soluto/tweek-back-office:latest .
+    - mkdir -p ~/docker
+    - docker save soluto/tweek-back-office > ~/docker/tweek-images.tar
+    - docker save soluto/tweek-api:latest > ~/docker/tweek-images.tar
+    - docker save tweekci/tweek-management:latest > ~/docker/tweek-images.tar
+  override:
     - yarn
     - cd ../CI && sh ./init-nuget-config.sh 
 test:
   override:
     - cd ../CI && docker-compose up
-    - docker run -d -p 4000:3000 -e GIT_URL=${GIT_URL} -e GIT_PASSWORD=${GIT_PASSWORD} -e GIT_USER=${GIT_USER} -e TWEEK_API_HOSTNAME=${TWEEK_API_HOSTNAME} -e GIT_CLONE_TIMEOUT_IN_MINUTES=${GIT_CLONE_TIMEOUT_IN_MINUTES} soluto/tweek-back-office:latest .
     - wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'http://localhost:4000/keys'
+    - wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'localhost:1111/status'
     - yarn test:unit && yarn test:e2e
 general:
   build_dir: BackOffice
