@@ -16,6 +16,7 @@ dependencies:
   pre:
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
   override:
+    - echo $TWEEK_API_HOSTNAME && echo ${TWEEK_API_HOSTNAME} && echo TWEEK_API_HOSTNAME
     - docker version
     - |
       if [[ -e ~/docker/tweek-back-office-image.tar ]]; then
