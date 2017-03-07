@@ -39,6 +39,7 @@ export default class KeysAsserts {
 
     deleteIds(keySourceObject);
     deleteIds(expectedSourceObject);
+    console.log('@@', keySourceObject);
 
     const diffs = diff(keySourceObject, expectedSourceObject);
     expect(diffs).to.equal(undefined, message + '. diffs are:' + JSON.stringify(diffs));
