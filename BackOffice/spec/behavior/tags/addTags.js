@@ -68,7 +68,7 @@ describe('add tags', () => {
         browser.refresh();
         browser.alertAccept();
 
-        browser.waitForVisible(selectors.TAGS_INPUT, 10000);
+        browser.waitForVisible(selectors.TAGS_INPUT, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
 
         // Assert
         tagsToAdd.forEach(x => browser.waitUntil(() => isTagExists(x), KeysPageObject.GIT_TRANSACTION_TIMEOUT));
