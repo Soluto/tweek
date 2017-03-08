@@ -8,5 +8,7 @@ ci-build:
   working_dir: /src
   net: "host"
   environment:
-    - BUILD_NUMBER=${CIRCLE_BUILD_NUM}
-  command: /bin/bash -c "ls && ./CI/build.sh && ./CI/test.sh && ./CI/publish.sh && ./CI/smoke-test.sh"
+    - BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
+    - DOCKER_USERNAME
+    - DOCKER_PASSWORD
+  command: /bin/bash -c "./CI/prepare.sh && ./CI/build.sh && ./CI/test.sh && ./CI/pack.sh && ./CI/smoke-test.sh && ./CI/deploy.sh"
