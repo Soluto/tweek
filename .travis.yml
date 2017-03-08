@@ -6,6 +6,7 @@ before_install:
   - docker pull microsoft/dotnet:1.1.1-sdk
 script:
   - docker version
+  - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
   - cd CI
   - chmod u+x *.sh
   - ./init-nuget-config.sh
