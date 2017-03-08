@@ -6,6 +6,7 @@ ci-build:
     - ./..:/src
     - ./NuGet.Config:/root/.nuget/NuGet/NuGet.Config
   working_dir: /src
+  privileged: true
   net: "host"
   environment:
     - BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
