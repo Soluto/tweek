@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Tweek.ApiService.NetCore.Controllers
 {
-    [Route("context")]
+    [Route("v1/context")]
     public class ContextController : Controller
     {
         private readonly IContextDriver _contextDriver;

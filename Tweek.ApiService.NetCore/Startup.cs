@@ -62,6 +62,7 @@ namespace Tweek.ApiService.NetCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
 
             var contextBucketName = Configuration["Couchbase.BucketName"];
             var contextBucketPassword = Configuration["Couchbase.Password"];
@@ -84,10 +85,12 @@ namespace Tweek.ApiService.NetCore
             var tweekContactResolver = new TweekContractResolver();
             var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };
             services.AddSingleton(jsonSerializer);
-            services.AddMvc().AddJsonOptions(opt =>
-            {
-                opt.SerializerSettings.ContractResolver = tweekContactResolver;
-            });
+            services.AddMvc()
+                .AddJsonOptions(opt =>
+                {
+                    opt.SerializerSettings.ContractResolver = tweekContactResolver;
+                });
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -99,11 +102,10 @@ namespace Tweek.ApiService.NetCore
                 loggerFactory.AddConsole(Configuration.GetSection("Logging"));
                 loggerFactory.AddDebug();
             }
-            Console.WriteLine(System.Runtime.GCSettings.IsServerGC);
-            Console.WriteLine(System.Runtime.GCSettings.LatencyMode);
 
             app.InstallAddons(Configuration);
             app.UseMvc();
+            app.UseCors((policy) => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
         }
 
         private void InitCouchbaseCluster(string bucketName, string bucketPassword)
