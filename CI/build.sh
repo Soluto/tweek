@@ -1,4 +1,4 @@
 echo "restoring packages"
-dotnet restore tweek.sln
+dotnet restore Tweek.sln;
 echo "building"
-dotnet build -c Release
+dotnet build Tweek.sln -c Release;
