@@ -7,15 +7,18 @@ export let types = {
   },
   boolean: {
     name: 'boolean'
+  },
+  date: {
+    name: 'date'
   }
 };
 
 export async function refreshTypes() {
-  let data = await fetch(`/api/types`, {credentials: 'same-origin'});
+  let data = await fetch(`/api/types`, { credentials: 'same-origin' });
   let loadedTypes = await data.json();
 
-  for (let type of Object.keys(loadedTypes)){
-    types[type] = Object.assign({}, {name: type}, loadedTypes[type]);
+  for (let type of Object.keys(loadedTypes)) {
+    types[type] = Object.assign({}, { name: type }, loadedTypes[type]);
   }
 }
 
@@ -25,7 +28,7 @@ export function convertValue(value, targetType) {
   if (!type)
     throw new Error("Unknown type", targetType);
 
-  switch (type.base || type.name){
+  switch (type.base || type.name) {
     case 'boolean':
       return safeConvertToBaseType(value, 'boolean');
     case 'number':
@@ -35,7 +38,7 @@ export function convertValue(value, targetType) {
   }
 }
 
-function safeConvertToBaseType(value, type){
+function safeConvertToBaseType(value, type) {
   let jsonValue = JSON.parse(value);
 
   if (typeof jsonValue != type) {

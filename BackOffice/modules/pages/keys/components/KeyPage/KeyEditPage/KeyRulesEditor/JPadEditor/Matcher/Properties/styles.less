@@ -5,9 +5,11 @@
 .matcher-operator {
   margin: 0 5px;
   display: inline-block;
-  @width: 30px;
-  text-align: center;
+  @width: 50px;
   .combo-box-basic(@width, @width);
+  :global(.bootstrap-typeahead-input-main) {
+    text-align: center;
+  }
 }
 
 .property-value-wrapper {
@@ -63,6 +65,12 @@
   &[data-field-type=number] {
     i {
       background-image: @number_icon;
+    }
+  }
+  &[data-field-type=date] {
+    i {
+      background-image: @calendar_icon;
+      background-size: 40px;
     }
   }
 }

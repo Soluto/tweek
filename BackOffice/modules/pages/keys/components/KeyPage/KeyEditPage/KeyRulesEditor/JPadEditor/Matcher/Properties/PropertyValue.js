@@ -3,6 +3,7 @@ import style from './styles.css';
 import { WithContext as ReactTags } from 'react-tag-input';
 import R from 'ramda';
 import ComboBox from '../../../../../../../../../components/common/ComboBox/ComboBox';
+import { inOp } from '../../../../../../../../../services/operators-provider';
 
 const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
   let indexedTags = value.map(x => ({ id: x, text: x }));
@@ -13,12 +14,12 @@ const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
 
   return (
     <div className={style['tags-wrapper']}>
-      <ReactTags tags={ indexedTags }
+      <ReactTags tags={indexedTags}
         suggestions={indexedSuggestions}
         handleAddition={handleAddtion}
         handleDelete={handleDelete}
         placeholder="Add value"
-        minQueryLength = { 1 }
+        minQueryLength={1}
         allowDeleteFromEmptyInput={true}
         classNames={{
           tags: style['tags-container'],
@@ -26,7 +27,7 @@ const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
           tag: style['tag'],
           remove: style['tag-delete-button'],
           suggestions: style['tags-suggestion'],
-        } }
+        }}
       />
     </div>
   );
@@ -41,12 +42,13 @@ const InputPropertyValue = ({ onUpdate, value }) => (
   />
 );
 
-function PropertyValueComponent({ onUpdate, typeDetails, value, op }) {
-  let allowedValues = typeDetails.allowedValues || [];
+function PropertyValueComponent({ onUpdate, propertyTypeDetails, value, selectedOperator }) {
+  let allowedValues = propertyTypeDetails.allowedValues || [];
 
-  if (op === '$in')
+  if (selectedOperator === inOp.operatorValue)
     return (
-      <TagsPropertyValue onUpdate={onUpdate}
+      <TagsPropertyValue
+        onUpdate={onUpdate}
         value={value}
         suggestions={allowedValues}
       />
@@ -55,10 +57,12 @@ function PropertyValueComponent({ onUpdate, typeDetails, value, op }) {
   if (allowedValues.length > 0)
     return (
       <ComboBox
-        options={ allowedValues }
+        options={allowedValues}
         placeholder="Value"
         wrapperThemeClass={style['property-value-combo-box']}
-        onChange={(selectedValue) => { onUpdate(selectedValue); } }
+        onChange={(selectedValue) => {
+          onUpdate(selectedValue);
+        }}
         selected={[allowedValues.find(x => x.toLowerCase() == (value || "").toLowerCase())]}
       />
     );

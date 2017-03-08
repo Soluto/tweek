@@ -23,6 +23,9 @@ describe('edit key', () => {
       "Matcher": {
         "device.AgentVersion": "1.1.1",
         "device.CountryCode": "someValue 1",
+        "device.CreatedAt": {
+          "$withinTime": "3d"
+        }
       },
       "Value": "",
       "Type": "SingleVariant"
@@ -60,31 +63,18 @@ describe('edit key', () => {
 
     addRuleAndAssertItsFocus(1);
     keysAsserts.assertKeyHasNumberOfRules(2);
-    const firstRule = selectors.ruleContainer(1);
 
-    const firstRuleFirstConditionPropertyName = selectors.conditionPropertyName(1, 1);
-    const firstRuleFirstConditionValue = selectors.conditionValue(1, 1);
+    keysPageObject.setConditionPropertyFromSuggestion(1, 1, 2);
+    keysPageObject.addRuleCondition(1);
+    keysPageObject.setConditionPropertyFromSuggestion(1, 2, 0);
 
-    const firstSuggestion = selectors.typeaheadSuggestionByIndex(0);
-    const secondSuggestion = selectors.typeaheadSuggestionByIndex(2);
+    keysPageObject.setConditionValue(1, 1, 'someValue 1');
+    keysPageObject.setConditionValue(1, 2, '1.1.1');
 
-    const firstRuleAddConditionButton = getRelativeSelector([firstRule, selectors.ADD_CONDITION_BUTTON]);
+    keysPageObject.addRuleCondition(1);
 
-    browser.click(selectors.BACKGROUND); // to close the auto focus suggestions
-
-    browser.click(firstRuleFirstConditionPropertyName);
-    browser.click(secondSuggestion);
-
-    browser.click(firstRuleAddConditionButton);
-
-    const firstRuleSecondConditionPropertyName = selectors.conditionPropertyName(1, 2);
-    const firstRuleSecondConditionValue = selectors.conditionValue(1, 2);
-
-    browser.click(firstRuleSecondConditionPropertyName);
-    browser.click(firstSuggestion);
-
-    browser.setValue(firstRuleFirstConditionValue, 'someValue 1');
-    browser.setValue(firstRuleSecondConditionValue, '1.1.1');
+    keysPageObject.setConditionPropertyFromSuggestionValuePrefix(1, 3, 'Create');
+    keysPageObject.setConditionValue(1, 3, '3d');
 
     browser.setValue(selectors.DEFAULT_VALUE_INPUT, 'some default value');
 

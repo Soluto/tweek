@@ -1,4 +1,4 @@
-import { selectors } from './selectors';
+import { getRelativeSelector, selectors } from './selectors';
 import moment from 'moment';
 import { BLANK_KEY_NAME } from '../../modules/store/ducks/ducks-utils/blankKeyDefinition';
 
@@ -7,25 +7,24 @@ export default class KeysPageObject {
   static BASE_URL = 'http://127.0.0.1:4000/';
   static KEYS_PAGE_URL = 'keys';
   static TEST_KEYS_FOLDER = '@behavior_tests';
-  static GIT_TRANSACTION_TIMEOUT = 30000;
+  static GIT_TRANSACTION_TIMEOUT = 60000;
 
   constructor(browser) {
     this.browser = browser;
   }
 
   getUrlLocation() {
-    this.browser.waitUntil(() => !!this.browser.getUrl(), 5000);
     const location = this.browser.getUrl().split(KeysPageObject.BASE_URL)[1];
 
     return location;
   }
 
-  goToBase(){
+  goToBase() {
     this.browser.url(KeysPageObject.BASE_URL);
     if (this.didAlertRaised())
       this.browser.alertAccept();
 
-    this.browser.waitForVisible(selectors.ADD_KEY_BUTTON, 5000);
+    this.browser.waitForVisible(selectors.ADD_KEY_BUTTON, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
   }
 
   goToKey(keyName) {
@@ -40,7 +39,7 @@ export default class KeysPageObject {
     const selectorToWaitFor = keyName.startsWith(BLANK_KEY_NAME) ?
       selectors.KEY_NAME_INPUT : selectors.KEY_DISPLAY_NAME;
 
-    this.browser.waitForVisible(selectorToWaitFor, 10000);
+    this.browser.waitForVisible(selectorToWaitFor, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
   }
 
   goToKeysList() {
@@ -70,7 +69,7 @@ export default class KeysPageObject {
     this.browser.waitForVisible(selectors.KEY_NAME_INPUT, 5000);
     this.browser.setValue(selectors.KEY_NAME_INPUT, keyName);
     browser.click(selectors.BACKGROUND);
-    
+
     this.browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, keyValueType);
     const firstSuggestion = selectors.typeaheadSuggestionByIndex(0);
     browser.click(firstSuggestion);
@@ -80,7 +79,7 @@ export default class KeysPageObject {
       this.isInKeyPage(keyName),
       KeysPageObject.GIT_TRANSACTION_TIMEOUT);
 
-    this.browser.waitForVisible(selectors.KEY_DISPLAY_NAME, 10000);
+    this.browser.waitForVisible(selectors.KEY_DISPLAY_NAME, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
   }
 
   isInKeyPage(keyName) {
@@ -146,11 +145,9 @@ export default class KeysPageObject {
   }
 
   waitForKeyToBeDeleted(keyName) {
-
     const checkIsKeyWasDeleted = (keyName) => {
       try {
         this.goToKey(keyName);
-        this.browser.waitForVisible(selectors.KEY_VIEWER_CONTAINER);
         return false;
       } catch (exp) {
         return true;
@@ -161,7 +158,7 @@ export default class KeysPageObject {
   }
 
   waitForPageToLoad() {
-    this.browser.waitForVisible(selectors.KEY_PAGE, 2000);
+    this.browser.waitForVisible(selectors.KEY_PAGE, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
   }
 
   waitForKeyToLoad(timeout = 10000) {
@@ -180,5 +177,33 @@ export default class KeysPageObject {
     } catch (exp) {
       return false;
     }
+  }
+
+  setConditionPropertyFromSuggestion(ruleNumber, conditionNumber, suggestionIndex) {
+    const conditionPropertyInputSelector = selectors.conditionPropertyName(ruleNumber, conditionNumber)
+    const suggestionSelector = selectors.typeaheadSuggestionByIndex(suggestionIndex);
+
+    this.browser.click(selectors.BACKGROUND);
+    this.browser.click(conditionPropertyInputSelector);
+    this.browser.click(suggestionSelector);
+  }
+
+  setConditionPropertyFromSuggestionValuePrefix(ruleNumber, conditionNumber, valuePrefix) {
+    const conditionPropertyInputSelector = selectors.conditionPropertyName(ruleNumber, conditionNumber)
+    this.browser.setValue(conditionPropertyInputSelector, valuePrefix);
+    const suggestionSelector = selectors.typeaheadSuggestionByIndex(0);
+    this.browser.click(suggestionSelector);
+  }
+
+  setConditionValue(ruleNumber, conditionNumber, value) {
+    const conditionValueInputSelector = selectors.conditionValue(ruleNumber, conditionNumber);
+    this.browser.setValue(conditionValueInputSelector, value);
+  }
+
+  addRuleCondition(ruleNumber) {
+    const ruleSelector = selectors.ruleContainer(ruleNumber);
+    const addConditionButtonSelector = getRelativeSelector([ruleSelector, selectors.ADD_CONDITION_BUTTON]);
+    this.browser.click(addConditionButtonSelector);
+    this.browser.click(selectors.BACKGROUND);
   }
 }

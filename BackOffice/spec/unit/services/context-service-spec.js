@@ -58,7 +58,7 @@ describe('context-service', () => {
     });
   });
 
-  describe('getPropertyMeta', () => {
+  describe('getPropertyTypeDetails', () => {
     let refreshSchemaPromise;
 
     const initializeSchema = {

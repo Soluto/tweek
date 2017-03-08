@@ -17,7 +17,7 @@ RUN npm install --global yarn
 
 RUN ls -la ~/app
 
-RUN yarn install
+RUN yarn
 
 ADD . /home/foo/app
 
