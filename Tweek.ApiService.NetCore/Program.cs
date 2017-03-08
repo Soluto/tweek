@@ -19,6 +19,8 @@ namespace Tweek.ApiService.NetCore
                 .UseStartup<Startup>()
                 .Build();
 
+
+
             host.Run();
         }
     }
