@@ -18,8 +18,8 @@ if docker_tag_exists soluto/tweek-api $TWEEK_VERSION; then
 else 
 	echo new tagged release
 	docker tag soluto/tweek-api:candidate soluto/tweek-api:$TWEEK_VERSION
-	docker push soluto/tweek-api:$TWEEK_VERSION
+	# docker push soluto/tweek-api:$TWEEK_VERSION
 fi
 
 docker tag soluto/tweek-api:candidate soluto/tweek-api:latest
-docker push soluto/tweek-api:latest
+# docker push soluto/tweek-api:latest
