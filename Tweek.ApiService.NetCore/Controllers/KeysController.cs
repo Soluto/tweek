@@ -14,9 +14,11 @@ using Engine.Core.Utils;
 using Newtonsoft.Json;
 using Tweek.Utils;
 using Tweek.ApiService.NetCore.Security;
+using Microsoft.AspNetCore.Cors;
 
 namespace Tweek.ApiService.NetCore.Controllers
 {
+    [EnableCors("All")]
     public class KeysController : Controller
     {
         private ITweek _tweek;
@@ -57,7 +59,7 @@ namespace Tweek.ApiService.NetCore.Controllers
             var allParams = PartitionByKey(HttpContext.Request.Query.ToDictionary(x => x.Key, x => x.Value), x => x.StartsWith("$"));
             var modifiers = allParams.Item1;
             var isFlatten = modifiers.TryGetValue("$flatten").Select(x => bool.Parse(x.First())).IfNone(false);
-            var ignoreKeyTypes = modifiers.TryGetValue("$ignoreKeyTypes").Select(x => bool.Parse(x.First())).IfNone(true);
+            var ignoreKeyTypes = modifiers.TryGetValue("$ignoreKeyTypes").Select(x => bool.Parse(x.First())).IfNone(false);
             var includePaths = modifiers.TryGetValue("$include").Select(x => x.ToArray()).IfNone(new string[] {});
 
             var translateValue = ignoreKeyTypes ? (TranslateValue)TranslateValueToString : (x => x.Value);

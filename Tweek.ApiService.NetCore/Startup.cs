@@ -90,7 +90,14 @@ namespace Tweek.ApiService.NetCore
                 {
                     opt.SerializerSettings.ContractResolver = tweekContactResolver;
                 });
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("All",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -105,7 +112,7 @@ namespace Tweek.ApiService.NetCore
 
             app.InstallAddons(Configuration);
             app.UseMvc();
-            app.UseCors((policy) => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+
         }
 
         private void InitCouchbaseCluster(string bucketName, string bucketPassword)
