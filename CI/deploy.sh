@@ -6,6 +6,7 @@ echo getting version number
 export TWEEK_VERSION=$(curl http://localhost:5000/status | jq '.EnvironmentDetails .Version' | grep -Po [0-9]+.[0-9]+.[0-9]+)
 echo $TWEEK_VERSION
 docker kill tweek-latest
+docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 
 function docker_tag_exists() {
     TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d '{"username": "'${DOCKER_USERNAME}'", "password": "'${DOCKER_PASSWORD}'"}' https://hub.docker.com/v2/users/login/ | jq -r .token)
@@ -18,8 +19,8 @@ if docker_tag_exists soluto/tweek-api $TWEEK_VERSION; then
 else 
 	echo new tagged release
 	docker tag soluto/tweek-api:candidate soluto/tweek-api:$TWEEK_VERSION
-	# docker push soluto/tweek-api:$TWEEK_VERSION
+	docker push soluto/tweek-api:$TWEEK_VERSION
 fi
 
 docker tag soluto/tweek-api:candidate soluto/tweek-api:latest
-# docker push soluto/tweek-api:latest
+docker push soluto/tweek-api:latest
