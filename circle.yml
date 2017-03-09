@@ -14,6 +14,8 @@ dependencies:
     - ~/.yarn-cache
     - ~/docker
   pre:
+    - echo $TWEEK_API_HOSTNAME && echo ${TWEEK_API_HOSTNAME}
+    - wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused ${TWEEK_API_HOSTNAME}
     - mkdir -p ~/.yarn && cd ~/.yarn && wget https://yarnpkg.com/latest.tar.gz && tar -xf latest.tar.gz dist --strip-components=1
     - |
       if [[ -e ~/docker/tweek-back-office-image.tar ]]; then
