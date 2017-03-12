@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Tweek.ApiService.NetCore.Diagnostics
 {
@@ -10,7 +11,7 @@ namespace Tweek.ApiService.NetCore.Diagnostics
         public string Name => "EnvironmentDetails";
 
         public string AppVersion =
-            Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion;
+            Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
 
         public object GetDetails()
         {
