@@ -8,7 +8,7 @@ ci-build:
   working_dir: /src
   net: "host"
   environment:
-    - VERSION_SUFFIX=ci-${TRAVIS_PULL_REQUEST_BRANCH}${TRAVIS_COMMIT}-${TRAVIS_BUILD_ID}
+    - VERSION_SUFFIX=ci-${TRAVIS_BUILD_NUMBER}-${TRAVIS_PULL_REQUEST_BRANCH}${TRAVIS_COMMIT}
     - DOCKER_USERNAME
     - DOCKER_PASSWORD
   command: /bin/bash
