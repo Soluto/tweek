@@ -33,7 +33,7 @@ namespace Tweek.ApiService.NetCore.Security
                         .Match(x => match(x, 
                                 with("allow", (_) => true),
                                 with("deny", (_) => false),
-                                (claim) => Optional(identity.FindFirst(claim)).Match(c=> c.Value == tweekIdentity.Id, ()=>false)), () => true);
+                                (claim) => Optional(identity.FindFirst(claim)).Match(c=> c.Value.Equals(tweekIdentity.Id, StringComparison.OrdinalIgnoreCase), ()=>false)), () => true);
 
                     return result;
                 }).All(x => x);
