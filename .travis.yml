@@ -1,5 +1,5 @@
+language: generic
 sudo: required
-
 services:
   - docker
 before_install:
