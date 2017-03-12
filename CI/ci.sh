@@ -2,7 +2,7 @@ set -e
 docker-compose run ci-build bash "./CI/docker-ci.sh"
 docker build -t soluto/tweek-api:candidate ./../Tweek.ApiService.NetCore
 echo running image;
-docker run --rm -d -p 5000:80 --name tweek-latest soluto/tweek-api:candidate;
+docker run -d -p 5000:80 --name tweek-latest soluto/tweek-api:candidate;
 set +e
 curl --retry-delay 5 --retry 20 -v http://localhost:5000/status
 set -e
