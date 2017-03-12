@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System;
 using Engine;
 using Engine.Core.Context;
 using Engine.DataTypes;
@@ -33,7 +34,7 @@ namespace Tweek.ApiService.NetCore.Security
                         .Match(x => match(x, 
                                 with("allow", (_) => true),
                                 with("deny", (_) => false),
-                                (claim) => Optional(identity.FindFirst(claim)).Match(c=> c.Value.Equals(tweekIdentity.Id, StringComparison.OrdinalIgnoreCase), ()=>false)), () => true);
+                                (claim) => Optional(identity.FindFirst(claim)).Match(c=> c.Value.Equals(tweekIdentity.Id,StringComparison.OrdinalIgnoreCase), ()=>false)), () => true);
 
                     return result;
                 }).All(x => x);
