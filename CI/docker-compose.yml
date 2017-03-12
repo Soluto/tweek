@@ -6,10 +6,9 @@ ci-build:
     - ./..:/src
     - ./NuGet.Config:/root/.nuget/NuGet/NuGet.Config
   working_dir: /src
-  privileged: true
   net: "host"
   environment:
     - BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
     - DOCKER_USERNAME
     - DOCKER_PASSWORD
-  command: /bin/bash -c "./CI/prepare.sh && ./CI/build.sh && ./CI/test.sh && ./CI/pack.sh && ./CI/smoke-test.sh && ./CI/deploy.sh"
+  command: /bin/bash
