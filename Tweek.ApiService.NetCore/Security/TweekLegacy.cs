@@ -15,8 +15,8 @@ namespace Tweek.ApiService.NetCore.Security
     {
         public void Install(IApplicationBuilder builder, IConfiguration configuration)
         {
-            builder.UseRewriter(new RewriteOptions().AddRewrite("^configurations/([^?]+)[?]?(.*)", "v1/keys/$1?$tweeklegacy=tweeklegacy&$ignoreKeyTypes=true&$2", true));
-            builder.UseRewriter(new RewriteOptions().AddRewrite("^context/([^?]+)[?]?(.*)", "v1/context/$1?$tweeklegacy=tweeklegacy&$2", true));
+            builder.UseRewriter(new RewriteOptions().AddRewrite("^configurations/([^?]+)[?]?(.*)", "api/v1/keys/$1?$tweeklegacy=tweeklegacy&$ignoreKeyTypes=true&$2", true));
+            builder.UseRewriter(new RewriteOptions().AddRewrite("^context/([^?]+)[?]?(.*)", "api/v1/context/$1?$tweeklegacy=tweeklegacy&$2", true));
             builder.Use(next => (ctx) => {
               if (ctx.Request.Query.ContainsKey("$tweeklegacy"))
                 {
