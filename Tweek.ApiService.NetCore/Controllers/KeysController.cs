@@ -53,7 +53,7 @@ namespace Tweek.ApiService.NetCore.Controllers
             return includePaths.Select(x=> ConfigurationPath.From(path.Prefix, x)).ToArray();
         }
 
-        [HttpGet("v1/keys/{*path}")]
+        [HttpGet("api/v1/keys/{*path}")]
         public async Task<ActionResult> GetAsync([FromRoute] string path)
         {
             var allParams = PartitionByKey(HttpContext.Request.Query.ToDictionary(x => x.Key, x => x.Value), x => x.StartsWith("$"));
