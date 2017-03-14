@@ -57,6 +57,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonValueConverter", "Utils
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonValueConverter.Tests", "Utils\JsonValueConverter.Tests\JsonValueConverter.Tests.csproj", "{9CB88F61-5ABB-4968-908A-A548E414A6F4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Addons.Auth.PingIdentity", "Addons\Tweek.Addons.Auth.PingIdentity\Tweek.Addons.Auth.PingIdentity.csproj", "{09FC7F52-BD7D-41DC-941E-7F6477509AC5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -203,6 +205,18 @@ Global
 		{9CB88F61-5ABB-4968-908A-A548E414A6F4}.Release|x64.Build.0 = Release|Any CPU
 		{9CB88F61-5ABB-4968-908A-A548E414A6F4}.Release|x86.ActiveCfg = Release|Any CPU
 		{9CB88F61-5ABB-4968-908A-A548E414A6F4}.Release|x86.Build.0 = Release|Any CPU
+		{09FC7F52-BD7D-41DC-941E-7F6477509AC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09FC7F52-BD7D-41DC-941E-7F6477509AC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09FC7F52-BD7D-41DC-941E-7F6477509AC5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{09FC7F52-BD7D-41DC-941E-7F6477509AC5}.Debug|x64.Build.0 = Debug|Any CPU
+		{09FC7F52-BD7D-41DC-941E-7F6477509AC5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{09FC7F52-BD7D-41DC-941E-7F6477509AC5}.Debug|x86.Build.0 = Debug|Any CPU
+		{09FC7F52-BD7D-41DC-941E-7F6477509AC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09FC7F52-BD7D-41DC-941E-7F6477509AC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09FC7F52-BD7D-41DC-941E-7F6477509AC5}.Release|x64.ActiveCfg = Release|Any CPU
+		{09FC7F52-BD7D-41DC-941E-7F6477509AC5}.Release|x64.Build.0 = Release|Any CPU
+		{09FC7F52-BD7D-41DC-941E-7F6477509AC5}.Release|x86.ActiveCfg = Release|Any CPU
+		{09FC7F52-BD7D-41DC-941E-7F6477509AC5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -218,5 +232,6 @@ Global
 		{2F5DD059-93F5-40DE-AEBB-7B50F7A2B577} = {45B6BE57-E43F-4749-B176-46E8391D574C}
 		{5690F491-8A13-4229-9402-843FCDD3019B} = {C02FF402-63D9-4625-AAF6-FE88F859703B}
 		{9CB88F61-5ABB-4968-908A-A548E414A6F4} = {C02FF402-63D9-4625-AAF6-FE88F859703B}
+		{09FC7F52-BD7D-41DC-941E-7F6477509AC5} = {45B6BE57-E43F-4749-B176-46E8391D574C}
 	EndGlobalSection
 EndGlobal

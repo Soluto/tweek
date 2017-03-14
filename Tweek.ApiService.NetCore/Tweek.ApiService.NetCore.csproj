@@ -16,7 +16,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Rewrite" Version="1.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
@@ -32,6 +32,7 @@
     <ProjectReference Include="..\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj" />
     <ProjectReference Include="..\Drivers\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj" />
     <ProjectReference Include="..\Utils\JsonValueConverter\JsonValueConverter.csproj" />
+    <ProjectReference Include="..\Addons\Tweek.Addons.Auth.PingIdentity\Tweek.Addons.Auth.PingIdentity.csproj" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0-msbuild3-final" />

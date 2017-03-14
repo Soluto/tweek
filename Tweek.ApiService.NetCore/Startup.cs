@@ -111,6 +111,7 @@ namespace Tweek.ApiService.NetCore
                 loggerFactory.AddDebug();
             }
 
+            app.UseJwtAuthenticationProviders(Configuration);
             app.InstallAddons(Configuration);
             app.UseMvc();
 

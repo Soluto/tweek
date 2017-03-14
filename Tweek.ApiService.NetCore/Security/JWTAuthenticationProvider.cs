@@ -8,10 +8,17 @@ using Tweek.ApiService.Addons;
 
 namespace Tweek.ApiService.NetCore.Security
 {
-    public class JWTAuthenticationProvider: ITweekAddon
+    public static class JWTAuthenticationProviderExtensions
+    {
+        public static void UseJwtAuthenticationProviders(this IApplicationBuilder app, IConfiguration configuration) 
+            => new JWTAuthenticationProvider().Install(app, configuration);
+    }
+
+    public class JWTAuthenticationProvider
     {
         public void Install(IApplicationBuilder app, IConfiguration configuration)
         {
+            
             foreach (var authProvider in configuration.GetSection("Security:Providers").GetChildren())
             {
                 app.UseJwtBearerAuthentication(new JwtBearerOptions()
