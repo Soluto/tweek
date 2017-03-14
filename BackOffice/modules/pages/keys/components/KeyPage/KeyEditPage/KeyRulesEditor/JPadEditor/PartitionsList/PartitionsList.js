@@ -2,9 +2,10 @@ import React from 'react';
 import RulesList from '../RulesList/RulesList';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import R from 'ramda';
+import style from './PartitionsList.css';
 
 const PartitionExpand = ({valueType, mutate}) => (
-  <div>
+  <div className={style['partition-container']}>
     <RulesList valueType={valueType} mutate={mutate} />
   </div>
 );
@@ -40,15 +41,15 @@ export default class PartitionsList extends React.Component {
     const hasDefaultValue = Object.keys(rulesByPartitions).includes("*");
 
     return (
-      <div>
-        <button onClick={() => this.addPartition()}>Add partition</button>
+      <div className={style['partitions-list-container']}>
+        <button className={style['add-partition-button']} onClick={() => this.addPartition()}>Add partition</button>
         {!hasDefaultValue ?
-          <button onClick={() => this.addDefaultPartition()}>
+          <button className={style['add-default-partition-button']} onClick={() => this.addDefaultPartition()}>
             Add default partition
           </button> : null
         }
 
-        <BootstrapTable data={rulesData} headerStyle={{display: 'none'}} expandComponent={PartitionExpand} expandableRow={() => true}>
+        <BootstrapTable data={rulesData} headerStyle={{display: 'none'}} tableStyle={{margin: '15px 0'}} expandComponent={PartitionExpand} expandableRow={() => true}>
           <TableHeaderColumn dataField='id' isKey={ true } autoValue={ true } />
           {
             partitions.map((partitionName) => (
