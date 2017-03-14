@@ -1,43 +1,62 @@
 import React from 'react';
 import RulesList from '../RulesList/RulesList';
+import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+import R from 'ramda';
+
+const PartitionExpand = ({valueType, mutate}) => (
+  <div>
+    <RulesList valueType={valueType} mutate={mutate} />
+  </div>
+);
+
+const extractPartitionToObject = (mutate, partitions) => {
+  if (partitions.length == 0)
+    return [{mutate: mutate}];
+
+  return R.flatten(
+    Object.keys(mutate.getValue())
+      .map(partitionValue => {
+        const innerResults = extractPartitionToObject(mutate.in(partitionValue), partitions.slice(1));
+        return innerResults.map(innerResult => ({
+          [partitions[0]]: partitionValue,
+          ...innerResult,
+        }))
+      })
+  );
+};
 
 export default class PartitionsList extends React.Component {
   render () {
-    let {mutate, valueType} = this.props;
+    let {partitions, mutate, valueType} = this.props;
 
-    const partitions = mutate.getValue();
-    if (!partitions) return (<div />);
+    const rulesByPartitions = mutate.getValue();
+    if (!rulesByPartitions) return (<div />);
 
-    const partitionKeys = Object.keys(partitions);
-    const hasDefaultValue = partitionKeys.includes("*");
+    let rulesData = extractPartitionToObject(mutate, partitions);
+
+    rulesData = rulesData.map(x => ({...x, valueType}));
+
+    console.log(rulesData);
+    const hasDefaultValue = Object.keys(rulesByPartitions).includes("*");
 
     return (
       <div>
-      <button onClick={() => this.addPartition()}>Add partition</button>
-      {!hasDefaultValue ?
-        <button onClick={() => this.addDefaultPartition()}>
-          Add default partition
-        </button> : null
-      }
+        <button onClick={() => this.addPartition()}>Add partition</button>
+        {!hasDefaultValue ?
+          <button onClick={() => this.addDefaultPartition()}>
+            Add default partition
+          </button> : null
+        }
 
-      {partitionKeys.filter(key => key != "*").map((partitionKey) => (
-          <div key={partitionKey}>
-            <h3>{partitionKey}</h3>
-            <button onClick={() => this.deletePartition(partitionKey)}>Delete</button>
-
-            <RulesList valueType={valueType} mutate={mutate.in(partitionKey)} />
-          </div>
-        ))}
-
-        {!hasDefaultValue ? null : (
-            <div key={"default-partition"}>
-              <h3>Default</h3>
-              <button onClick={() => this.deletePartition("*")}>Delete</button>
-
-              <RulesList valueType={valueType} mutate={mutate.in("*")} />
-            </div>
-          )}
-    </div >)
+        <BootstrapTable data={rulesData} headerStyle={{display: 'none'}} expandComponent={PartitionExpand} expandableRow={() => true}>
+          <TableHeaderColumn dataField='id' isKey={ true } autoValue={ true } />
+          {
+            partitions.map((partitionName) => (
+              <TableHeaderColumn key={partitionName} dataField={partitionName}>{partitionName}</TableHeaderColumn>
+            ))
+          }
+        </BootstrapTable>
+      </div >)
   }
 
   addPartition() {
