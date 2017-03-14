@@ -3,4 +3,6 @@ import RulesList from './RulesList/RulesList';
 
 const isBrowser = typeof (window) === 'object';
 
-export default (props) => isBrowser ? <RulesList {...props} /> : <div>Loading rule...</div>
+export default ({valueType, mutate}) => isBrowser ?
+  (<RulesList valueType={valueType} mutate={mutate.in("rules")} />) :
+  (<div>Loading rule...</div>);

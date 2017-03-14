@@ -3,42 +3,42 @@ import Rule from '../Rule/Rule';
 import style from './RulesList.css';
 import Chance from 'chance';
 import R from 'ramda';
-import { withState, lifecycle, compose } from 'recompose';
 
 const chance = new Chance();
 
-function deleteRule(mutate, ruleIndex) {
-  if (confirm('Are you sure?')) {
-    mutate.in(ruleIndex).delete();
+export default class RulesList extends React.Component {
+
+  constructor(props){
+    super(props);
+    this.state = {
+      autofocusRuleIndex: undefined
+    }
   }
-}
 
-function addMutatorDefaultValue(mutate) {
-  mutate.append({ Id: chance.guid(), Matcher: {}, Value: '', Type: 'SingleVariant' });
-}
+  componentDidUpdate() {
+    if (this.state.autofocusRuleIndex !== undefined) this.setState({autofocusRuleIndex: undefined})
+  }
 
-function addMutatorRule(mutate) {
-  mutate.prepend({ Id: chance.guid(), Matcher: { '': '' }, Value: '', Type: 'SingleVariant' });
-}
+  render () {
+    let {mutate, valueType} = this.props;
+    let {autofocusRuleIndex} = this.state;
 
-const RulesList = ({ mutate, valueType, autofocusRuleIndex, setAutofocusRuleIndex }) => {
-  const rulesMutator = mutate.in("rules");
-  const rules = rulesMutator.getValue();
-  if (!rules) return (<div />);
+    const rules = mutate.getValue();
+    if (!rules) return (<div />);
 
-  const hasDefaultValue = R.any(rule => Object.keys(rule.Matcher).length < 1)(rules);
+    const hasDefaultValue = R.any(rule => Object.keys(rule.Matcher).length < 1)(rules);
 
-  return <div className={style['rule-container']}>
+    return <div className={style['rule-container']}>
       <button className={style['add-rule-button']} onClick={() => {
-        addMutatorRule(rulesMutator);
-        setAutofocusRuleIndex(0);
+        this.addMutatorRule();
+        this.setState({autofocusRuleIndex: 0});
       } } >
         Add Rule
       </button>
       {!hasDefaultValue ?
         <button className={style['add-default-value-button']} onClick={() => {
-          addMutatorDefaultValue(rulesMutator);
-          setAutofocusRuleIndex(rulesMutator.getValue().length);
+          this.addMutatorDefaultValue();
+          this.setState({autofocusRuleIndex: (mutate.getValue().length)});
         } } >
           Add default rule
         </button> : null
@@ -47,49 +47,62 @@ const RulesList = ({ mutate, valueType, autofocusRuleIndex, setAutofocusRuleInde
       {
         rules.map((rule, i) => (
           <div className={style['conditions-container']}
-            disabled
-            key={i}
-            >
+               disabled
+               key={i}
+          >
 
             <div className={style['rule-control-wrapper']} >
               {(i > 0 && i !== rules.length - 1) ?
                 <button className={style['rule-order-button']}
-                  onClick={() => rulesMutator.replaceKeys(i, i - 1)}
-                  title="Move up">&#xE908;</button>
+                        onClick={() => mutate.replaceKeys(i, i - 1)}
+                        title="Move up">&#xE908;</button>
                 : null}
               {(i < rules.length - 1 && i !== rules.length - 2) ?
                 <button className={style['rule-order-button']}
-                  onClick={() => rulesMutator.replaceKeys(i, i + 1)}
-                  title="Move down">&#xE902;</button>
+                        onClick={() => mutate.replaceKeys(i, i + 1)}
+                        title="Move down">&#xE902;</button>
                 : null}
               <button className={style['delete-rule-button']}
-                onClick={() => {
-                  deleteRule(rulesMutator, i);
-                  setAutofocusRuleIndex(undefined);
-                } }
-                title="Remove rule"/>
+                      onClick={() => {
+                        this.deleteRule(i);
+                        this.setState({autofocusRuleIndex: undefined});
+                      } }
+                      title="Remove rule"/>
             </div>
 
             <Rule
               key={rule.Id}
-              mutate={rulesMutator.in(i)}
+              mutate={mutate.in(i)}
               rule={rule}
               valueType={valueType}
               ruleIndex={i}
               autofocus={i === autofocusRuleIndex}
-              />
+            />
 
           </div>
         ))
       }
 
     </div >
-};
+  }
 
-export default compose(
-  withState('autofocusRuleIndex', 'setAutofocusRuleIndex', undefined),
-  lifecycle({
-    componentDidUpdate() {
-      if (this.props.autofocusRuleIndex !== undefined) this.props.setAutofocusRuleIndex(undefined);
-    },
-  }))(RulesList);
+  addMutatorRule() {
+    let {mutate} = this.props;
+
+    mutate.prepend({ Id: chance.guid(), Matcher: { '': '' }, Value: '', Type: 'SingleVariant' });
+  }
+
+  addMutatorDefaultValue() {
+    let {mutate} = this.props;
+
+    mutate.append({ Id: chance.guid(), Matcher: {}, Value: '', Type: 'SingleVariant' });
+  }
+
+  deleteRule(ruleIndex) {
+    let {mutate} = this.props;
+
+    if (confirm('Are you sure?')) {
+      mutate.in(ruleIndex).delete();
+    }
+  }
+}
