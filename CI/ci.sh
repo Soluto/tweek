@@ -17,6 +17,11 @@ function docker_tag_exists() {
     test $EXISTS = 1
 }
 
+if ! [ $CIRCLE_BRANCH == "master" ]; then
+	echo "no publish for non-master branches"
+	exit 0
+fi
+
 if docker_tag_exists soluto/tweek-api $TWEEK_VERSION; then
 	echo no tagged release
 else 
