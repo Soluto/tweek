@@ -20,7 +20,6 @@ export function createBlankKey() {
       source: JSON.stringify(keyDefSource, null, 4),
       type: 'jpad',
       valueType: '',
-      partitions: [],
     },
     meta: createBlankKeyMeta(),
     key: BLANK_KEY_NAME,
