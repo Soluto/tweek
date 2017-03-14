@@ -1,5 +1,6 @@
 import React from 'react';
 import {Component} from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 import KeyRulesEditor from './KeyRulesEditor/KeyRulesEditor';
 import style from './KeyEditPage.css';
@@ -15,7 +16,6 @@ import alertIconSrc from './resources/alert-icon.svg';
 import classNames from 'classnames';
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
-import KeyPartitionSelector from './KeyPartitionSelector/KeyPartitionSelector';
 import ReactTooltip from 'react-tooltip';
 
 class KeyEditPage extends Component {
@@ -177,8 +177,6 @@ const HeaderMainInput = (props) => {
           <NewKeyInput onKeyNameChanged={name => onKeyNameChanged(name)}/>
           <div className={style['vertical-separator']}></div>
           <KeyValueTypeSelector />
-          <div className={style['vertical-separator']}></div>
-          <KeyPartitionSelector />
         </div>
         :
         <EditableText

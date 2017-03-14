@@ -5,7 +5,6 @@ import { createBlankKey, createBlankKeyMeta, BLANK_KEY_NAME } from './ducks-util
 import { withJsonData } from '../../utils/http';
 import keyNameValidations from './ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
-import keyPartitionValidations from './ducks-utils/validations/key-partition-validations';
 import { downloadTags } from './tags.js';
 import * as ContextService from "../../services/context-service";
 
@@ -18,7 +17,6 @@ const KEY_SAVING = 'KEY_SAVING';
 const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
 const KEY_VALIDATION_CHANGE = 'KEY_VALIDATION_CHANGE';
 const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
-const KEY_PARTITION_CHANGE = 'KEY_PARTITION_CHANGE';
 const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
 
 export function openKey(key) {
@@ -92,28 +90,6 @@ export function updateKeyValueType(keyValueType) {
   };
 }
 
-export function updateKeyPartitions(partitions = []) {
-  return async function (dispatch, getState) {
-    const filteredPartitions = partitions.filter(p => p && p != '');
-
-    const keyPartitionsValidation = keyPartitionValidations(filteredPartitions);
-    keyPartitionsValidation.isShowingHint = !keyPartitionsValidation.isValid;
-
-    dispatch({ type: KEY_PARTITION_CHANGE, payload: filteredPartitions });
-
-    const currentValidationState = getState().selectedKey.validation;
-    const newValidation = {
-      ...currentValidationState,
-      meta: {
-        ...currentValidationState.meta,
-        partitions: keyPartitionsValidation,
-      },
-    };
-
-    dispatch({ type: KEY_VALIDATION_CHANGE, payload: newValidation });
-  };
-}
-
 export function updateKeyName(newKeyName) {
   return async function (dispatch, getState) {
     const keyNameValidation = keyNameValidations(newKeyName, getState().keys);
@@ -177,7 +153,6 @@ const handleKeyOpened = (state, {payload: {key, ...keyData}}) => {
       key: keyNameValidations(key, []),
       meta: {
         valueType: keyValueTypeValidations(keyData.meta.valueType),
-        partitions: keyPartitionValidations(keyData.keyDef.partitions),
       },
       isValid: false,
     };
@@ -275,17 +250,6 @@ const handleKeyValueTypeChange = ({local: {keyDef, meta, ...restOfLocal}, ...sta
   },
 });
 
-const handleKeyPartitionChange = ({local: {keyDef, ...restOfLocal}, ...state}, {payload}) => ({
-    ...state,
-    local: {
-        ...restOfLocal,
-        keyDef: {
-            ...keyDef,
-            partitions: payload,
-        }
-    }
-});
-
 const handleShowKeyValidations = ({validation, ...state}) => {
   setValidationHintsVisability(validation, true);
   return {
@@ -331,6 +295,5 @@ export default handleActions({
   [KEY_VALIDATION_CHANGE]: handleKeyValidationChange,
   ['KEY_DELETING']: handleKeyDeleting,
   [KEY_VALUE_TYPE_CHANGE]: handleKeyValueTypeChange,
-  [KEY_PARTITION_CHANGE]: handleKeyPartitionChange,
   [SHOW_KEY_VALIDATIONS]: handleShowKeyValidations,
 }, null);
