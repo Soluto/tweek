@@ -9,7 +9,7 @@ set -e
 echo running smoke tests;
 docker-compose run ci-build bash -c "dotnet restore Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && dotnet test Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release --no-build";
 echo getting version number
-TWEEK_VERSION=$(curl http://localhost:5000/status | jq '.EnvironmentDetails .Version' | grep -Po [0-9]+.[0-9]+.[0-9]+)
+TWEEK_VERSION=$(curl http://localhost:5000/status | jq '.EnvironmentDetails .Version' | grep -Po [0-9]+?\\.[0-9]+?\\.[0-9]+?)
 echo tweek version: $TWEEK_VERSION
 docker rm -f tweek-latest
 function docker_tag_exists() {
