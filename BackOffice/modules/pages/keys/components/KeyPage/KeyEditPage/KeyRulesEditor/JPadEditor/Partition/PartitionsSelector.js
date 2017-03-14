@@ -1,39 +1,38 @@
 import React from 'react';
 import R from 'ramda';
-import PropertyComboBox from '../Matcher/Properties/PropertyComboBox';
+import { WithContext as ReactTags } from 'react-tag-input';
 import * as ContextService from '../../../../../../../../services/context-service';
+import style from './PartitionsSelector.css';
 
 export default ({partitions, onPartitionsChange}) => {
-  if (partitions.length > 1){
-    return (
-      <div>
-        <label>Partition by:</label>
-        <div>
-          {
-            partitions.join(", ")
-          }
-        </div>
-      </div>
-    );
-  }
+  const allProperties = ContextService.getProperties().map(x => ({ id: x.id, text: `${x.name} (${x.identity})` }));
+  const indexedSuggestions = allProperties.filter(property => !partitions.includes(property.id)).map(x => x.text);
+  const indexedTags = partitions.map(partition => allProperties.find(property => property.id == partition));
 
-  const suggestedValues = ContextService.getProperties().map(prop => ({ label: prop.name, value: prop.id }));
-
-  const selectPartition = (newProperty) => {
-    const newPartitions = [newProperty.value];
-    if (!R.equals(partitions, newPartitions) && onPartitionsChange) {
-      onPartitionsChange(newPartitions);
-    }
-  };
+  const handleAddition = (newValue) => onPartitionsChange([...partitions, allProperties.find(x => x.text === newValue).id]);
+  const handleDelete = (valueIndex) => onPartitionsChange(R.remove(valueIndex, 1, partitions));
 
   return (
-    <div>
-      <label>Partition by:</label>
-      <PropertyComboBox
-        suggestedValues={suggestedValues}
-        property={partitions[0]}
-        onPropertyChange={selectPartition}
-      />
+    <div className={style['partitions-selector-container']}>
+      <label className={style['partitions-label']}>Partition by:</label>
+      <div className={style['tags-wrapper']}>
+        <ReactTags tags={indexedTags}
+                   suggestions={indexedSuggestions}
+                   handleAddition={handleAddition}
+                   handleDelete={handleDelete}
+                   placeholder="Add partition"
+                   minQueryLength={1}
+                   allowDeleteFromEmptyInput={true}
+                   autocomplete={true}
+                   classNames={{
+                     tags: style['tags-container'],
+                     tagInput: style['tag-input'],
+                     tag: style['tag'],
+                     remove: style['tag-delete-button'],
+                     suggestions: style['tags-suggestion'],
+                   }}
+        />
+      </div>
     </div>
   );
 };

@@ -5,6 +5,17 @@ import PartitionsList from './PartitionsList/PartitionsList';
 
 const isBrowser = typeof (window) === 'object';
 
+function createPartitionedRules(depth) {
+  if (depth == 0) return [];
+  return {"*": createPartitionedRules(depth - 1)};
+}
+
+function isEmptyRules(rules) {
+  if (Array.isArray(rules)) return rules.length == 0;
+  if (Object.keys(rules).some(k => k != '*')) return false;
+  return isEmptyRules(rules['*']);
+}
+
 export default ({valueType, mutate}) => {
   if (!isBrowser)
     return (<div>Loading rule...</div>);
@@ -12,8 +23,8 @@ export default ({valueType, mutate}) => {
   const partitions = mutate.in("partitions").getValue();
 
   const updatePartitions = newPartitions => {
-    if (!confirm("If you change the partitions the rules will be reset.\nDo you want to continue?")) return;
-    mutate.apply(m => m.insert("partitions", newPartitions).insert("rules", newPartitions.length > 0 ? {"*": []} : []));
+    if (!isEmptyRules(mutate.in("rules").getValue()) && !confirm("If you change the partitions the rules will be reset.\nDo you want to continue?")) return;
+    mutate.apply(m => m.insert("partitions", newPartitions).insert("rules", createPartitionedRules(newPartitions.length)));
   };
 
   return (
