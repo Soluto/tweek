@@ -1,0 +1,78 @@
+.partitions-list-container {
+  padding: 20px 25px;
+  margin: 0;
+}
+.partitions-list-container .add-partition-button {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+}
+.partitions-list-container .add-partition-button:hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.partitions-list-container .add-partition-button:disabled {
+  background-color: gray;
+}
+.partitions-list-container .add-partition-button:disabled:hover,
+.partitions-list-container .add-partition-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.partitions-list-container .add-default-partition-button {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  text-decoration: underline;
+  background-color: transparent;
+  color: gray;
+  margin-left: 20px;
+}
+.partitions-list-container .add-default-partition-button:hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.partitions-list-container .add-default-partition-button:disabled {
+  background-color: gray;
+}
+.partitions-list-container .add-default-partition-button:disabled:hover,
+.partitions-list-container .add-default-partition-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.partitions-list-container .add-default-partition-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.partitions-list-container .add-default-partition-button:active {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.partitions-list-container .add-default-partition-button:disabled {
+  background-color: transparent;
+}
+.partitions-list-container .add-default-partition-button:disabled:hover,
+.partitions-list-container .add-default-partition-button:disabled:active {
+  cursor: default;
+  background-color: transparent;
+}
