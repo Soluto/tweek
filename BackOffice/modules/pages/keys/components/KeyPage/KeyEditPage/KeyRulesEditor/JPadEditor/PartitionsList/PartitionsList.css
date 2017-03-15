@@ -88,6 +88,13 @@
   color: #333;
   padding: 20px;
   transition: background-color 0.3s;
+  display: flex;
+}
+.partitions-accordion-container-item-title-details {
+  flex-grow: 1;
+  margin-left: 10px;
+  font-size: 1em;
+  color: #999999;
 }
 .partitions-accordion-container-item:first-child .partitions-accordion-container-item-title {
   border-top: none;
@@ -95,6 +102,9 @@
 .partitions-accordion-container-item-expanded .partitions-accordion-container-item-title {
   background-color: #03a9f4;
   color: #fff;
+}
+.partitions-accordion-container-item-expanded .partitions-accordion-container-item-title-details {
+  color: #CCCCCC;
 }
 .partitions-accordion-container-item-body-wrapper {
   color: #666;
