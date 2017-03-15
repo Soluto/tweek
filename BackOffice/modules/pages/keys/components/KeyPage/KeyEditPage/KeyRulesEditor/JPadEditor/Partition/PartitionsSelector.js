@@ -7,9 +7,16 @@ import style from './PartitionsSelector.css';
 export default ({partitions, onPartitionsChange}) => {
   const allProperties = ContextService.getProperties().map(x => ({ id: x.id, text: `${x.name} (${x.identity})` }));
   const indexedSuggestions = allProperties.filter(property => !partitions.includes(property.id)).map(x => x.text);
-  const indexedTags = partitions.map(partition => allProperties.find(property => property.id == partition));
+  const indexedTags = partitions.map(partition => allProperties.find(property => property.id == partition) || {id: partition, text: partition});
 
-  const handleAddition = (newValue) => onPartitionsChange([...partitions, allProperties.find(x => x.text === newValue).id]);
+  const handleAddition = (newValue) => {
+    const newProperty = allProperties.find(x => x.text === newValue || x.id == newValue) || {id: newValue, text: newValue};
+    if (!partitions.includes(newProperty.id)) {
+      onPartitionsChange([...partitions, newProperty.id]);
+    } else {
+      alert(`Property "${newProperty.text}" already exists in partitions list`);
+    }
+  };
   const handleDelete = (valueIndex) => onPartitionsChange(R.remove(valueIndex, 1, partitions));
 
   return (
