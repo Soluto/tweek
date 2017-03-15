@@ -35,9 +35,7 @@ export default class PartitionsList extends React.Component {
 
     let rulesData = extractPartitionToObject(mutate, partitions);
 
-    rulesData = rulesData.map(x => ({...x, valueType}));
-
-    console.log(rulesData);
+    rulesData = rulesData.map((x, i) => ({...x, valueType, id: i}));
     const hasDefaultValue = Object.keys(rulesByPartitions).includes("*");
 
     return (
@@ -49,8 +47,8 @@ export default class PartitionsList extends React.Component {
           </button> : null
         }
 
-        <BootstrapTable data={rulesData} headerStyle={{display: 'none'}} tableStyle={{margin: '15px 0'}} expandComponent={PartitionExpand} expandableRow={() => true}>
-          <TableHeaderColumn dataField='id' isKey={ true } autoValue={ true } />
+        <BootstrapTable data={rulesData} tableStyle={{margin: '15px 0'}} expandComponent={PartitionExpand} expandableRow={() => true}>
+          <TableHeaderColumn dataField='id' isKey={ true } hidden={true} />
           {
             partitions.map((partitionName) => (
               <TableHeaderColumn key={partitionName} dataField={partitionName}>{partitionName}</TableHeaderColumn>
