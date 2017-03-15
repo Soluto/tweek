@@ -76,3 +76,28 @@
   cursor: default;
   background-color: transparent;
 }
+.partitions-accordion-container {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-bottom: 70px;
+  margin-top: 40px;
+}
+.partitions-accordion-container-item-title {
+  background-color: #fafafa;
+  border-top: 1px solid #ccc;
+  color: #333;
+  padding: 20px;
+  transition: background-color 0.3s;
+}
+.partitions-accordion-container-item:first-child .partitions-accordion-container-item-title {
+  border-top: none;
+}
+.partitions-accordion-container-item-expanded .partitions-accordion-container-item-title {
+  background-color: #03a9f4;
+  color: #fff;
+}
+.partitions-accordion-container-item-body-wrapper {
+  color: #666;
+  padding: 20px;
+  position: relative;
+}
