@@ -1,14 +1,8 @@
-import React from 'react';
-import RulesList from '../RulesList/RulesList';
-import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
-import R from 'ramda';
-import style from './PartitionsList.css';
-
-const PartitionExpand = ({valueType, mutate}) => (
-  <div className={style['partition-container']}>
-    <RulesList valueType={valueType} mutate={mutate} />
-  </div>
-);
+import React from "react";
+import RulesList from "../RulesList/RulesList";
+import R from "ramda";
+import style from "./PartitionsList.css";
+import {Accordion, AccordionItem} from "react-sanfona";
 
 const extractPartitionToObject = (mutate, partitions) => {
   if (partitions.length == 0)
@@ -33,9 +27,9 @@ export default class PartitionsList extends React.Component {
     const rulesByPartitions = mutate.getValue();
     if (!rulesByPartitions) return (<div />);
 
-    let rulesData = extractPartitionToObject(mutate, partitions);
+    let partitionsData = extractPartitionToObject(mutate, partitions);
 
-    rulesData = rulesData.map((x, i) => ({...x, valueType, id: i}));
+    partitionsData = partitionsData.map((x, i) => ({...x, valueType, id: i}));
     const hasDefaultValue = Object.keys(rulesByPartitions).includes("*");
 
     return (
@@ -47,14 +41,25 @@ export default class PartitionsList extends React.Component {
           </button> : null
         }
 
-        <BootstrapTable data={rulesData} tableStyle={{margin: '15px 0'}} expandComponent={PartitionExpand} expandableRow={() => true}>
-          <TableHeaderColumn dataField='id' isKey={ true } hidden={true} />
+        <Accordion className={style["partitions-accordion-container"]} allowMultiple={true}>
           {
-            partitions.map((partitionName) => (
-              <TableHeaderColumn key={partitionName} dataField={partitionName}>{partitionName}</TableHeaderColumn>
-            ))
+            partitionsData.map(partitionData => {
+
+              let partitionGroupName = partitions.map(partitionName => partitionData[partitionName]).join(', ');
+              return (
+                <AccordionItem
+                  title={partitionGroupName}
+                  key={partitionGroupName}
+                  className={style["partitions-accordion-container-item"]}
+                  titleClassName={style["partitions-accordion-container-item-title"]}
+                  expandedClassName={style["partitions-accordion-container-item-expanded"]}
+                >
+                  <RulesList valueType={valueType} mutate={partitionData.mutate} />
+                </AccordionItem>
+              )
+            })
           }
-        </BootstrapTable>
+        </Accordion>
       </div >)
   }
 
