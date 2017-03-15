@@ -21,6 +21,11 @@ const extractPartitionToObject = (mutate, partitions) => {
 };
 
 export default class PartitionsList extends React.Component {
+
+  state = {
+    activeItems: []
+  };
+
   render () {
     let {partitions, mutate, valueType} = this.props;
 
@@ -29,7 +34,7 @@ export default class PartitionsList extends React.Component {
 
     let partitionsData = extractPartitionToObject(mutate, partitions);
 
-    partitionsData = partitionsData.map((x, i) => ({...x, valueType, id: i}));
+    partitionsData = partitionsData.map((x, i) => ({...x, valueType, id: i, partitionsValues: partitions.map(partitionName => x[partitionName])}));
     const hasDefaultValue = Object.keys(rulesByPartitions).includes("*");
 
     return (
@@ -41,14 +46,22 @@ export default class PartitionsList extends React.Component {
           </button> : null
         }
 
-        <Accordion className={style["partitions-accordion-container"]} allowMultiple={true}>
+        <Accordion className={style["partitions-accordion-container"]} allowMultiple={true} activeItems={this.state.activeItems || []} onChange={({activeItems}) => this.setState({activeItems})}>
           {
             partitionsData.map(partitionData => {
 
-              let partitionGroupName = partitions.map(partitionName => partitionData[partitionName]).join(', ');
+              let partitionGroupName = partitionData.partitionsValues.map(x => x == "*" ? "Default" : x).join(', ');
               return (
                 <AccordionItem
-                  title={partitionGroupName}
+                  title={(
+                    <div className={style["partitions-accordion-container-item-title"]}>
+                      <h3>{partitionGroupName}</h3>
+                      <div className={style["partitions-accordion-container-item-title-details"]}>rules: {partitionData.mutate.getValue().length}</div>
+                      <div className={style["partitions-accordion-container-item-title-actions"]}>
+                        <button className={style['add-partition-button']} onClick={() => this.deletePartition(partitionData.partitionsValues)}>delete</button>
+                      </div>
+                    </div>
+                  )}
                   key={partitionGroupName}
                   className={style["partitions-accordion-container-item"]}
                   titleClassName={style["partitions-accordion-container-item-title"]}
@@ -73,11 +86,28 @@ export default class PartitionsList extends React.Component {
     mutate.insert("*", []);
   }
 
-  deletePartition(partitionKey) {
+  deletePartition(partitionGroup) {
     let {mutate} = this.props;
 
     if (confirm('Are you sure?')) {
-      mutate.in(partitionKey).delete();
+      let partitionMutate = mutate;
+
+      for (let partition of partitionGroup){
+        partitionMutate = partitionMutate.in(partition);
+      }
+
+      partitionMutate.delete();
+
+      for (let i = 0; i < partitionGroup.length - 1; i++){
+        partitionMutate.up();
+
+        if (Object.keys(partitionMutate.getValue()).length == 0){
+          partitionMutate.delete();
+        }
+        else {
+          break;
+        }
+      }
     }
   }
 }
