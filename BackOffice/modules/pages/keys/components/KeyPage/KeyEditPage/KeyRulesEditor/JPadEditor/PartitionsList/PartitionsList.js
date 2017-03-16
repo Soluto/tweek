@@ -50,13 +50,22 @@ export default class PartitionsList extends React.Component {
           {
             partitionsData.map(partitionData => {
 
+              const rules = partitionData.mutate.getValue();
+              const isOnlyDefault = rules.length === 1 && Object.keys(rules[0].Matcher).length === 0;
+
               let partitionGroupName = partitionData.partitionsValues.map(x => x == "*" ? "Default" : x).join(', ');
               return (
                 <AccordionItem
                   title={(
                     <div className={style["partitions-accordion-container-item-title"]}>
                       <h3>{partitionGroupName}</h3>
-                      <div className={style["partitions-accordion-container-item-title-details"]}>rules: {partitionData.mutate.getValue().length}</div>
+                      <div className={style["partitions-accordion-container-item-title-details"]}>
+                        {
+                          isOnlyDefault
+                            ? 'value: ' + rules[0].Value
+                            : 'rules: ' + rules.length
+                        }
+                      </div>
                       <div className={style["partitions-accordion-container-item-title-actions"]}>
                         <button className={style['add-partition-button']} onClick={() => this.deletePartition(partitionData.partitionsValues)}>delete</button>
                       </div>

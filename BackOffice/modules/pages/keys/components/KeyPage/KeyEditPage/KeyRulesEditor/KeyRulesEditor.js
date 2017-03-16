@@ -67,6 +67,35 @@ function getTypedValue(value, valueType) {
   }
 }
 
+function changeValueType(valueType, rulesMutate, depth) {
+  const rules = rulesMutate.getValue();
+  if (depth == 0) {
+    for (let i = 0; i < rules.length; i++) {
+      const ruleMutate = rulesMutate.in(i);
+
+      const valueDistrubtion = ruleMutate.in('ValueDistribution').getValue();
+      if (!valueDistrubtion) {
+        const currentRuleValue = ruleMutate.in('Value').getValue();
+        ruleMutate.in('Value').updateValue(getTypedValue(currentRuleValue, valueType));
+        break;
+      }
+
+      const valueToConvert = valueDistrubtion.type === 'weighted' ?
+        Object.keys(valueDistrubtion['args'])[0] : '';
+      const convertedValue = getTypedValue(valueToConvert, valueType);
+
+      ruleMutate
+        .in('ValueDistribution').delete()
+        .in('OwnerType').delete()
+        .in('Type').updateValue('SingleVariant').up()
+        .insert('Value', convertedValue);
+    }
+    return;
+  }
+
+  Object.keys(rules).forEach(key => changeValueType(valueType, rulesMutate.in(key), depth -1));
+}
+
 export default compose(
   MutatorFor('sourceTree'),
   wrapComponentWithClass,
@@ -75,31 +104,10 @@ export default compose(
     componentWillReceiveProps({keyDef, mutate}) {
       const currentValueType = mutate.in('valueType').getValue();
       if (keyDef.valueType === currentValueType) return;
+
       mutate.apply(m => {
         m.in('valueType').updateValue(keyDef.valueType);
-
-        const rulesMutate = m.in('rules');
-        rulesMutate.getValue().map((rule, i) => {
-          const ruleMutate = rulesMutate.in(i);
-
-          const valueDistrubtion = ruleMutate.in('ValueDistribution').getValue();
-          if (!valueDistrubtion) {
-            const currentRuleValue = ruleMutate.in('Value').getValue();
-            ruleMutate.in('Value').updateValue(getTypedValue(currentRuleValue, keyDef.valueType));
-            return;
-          }
-
-          const valueToConvert = valueDistrubtion.type === 'weighted' ?
-            Object.keys(valueDistrubtion['args'])[0] : '';
-          const convertedValue = getTypedValue(valueToConvert, keyDef.valueType);
-
-          ruleMutate
-            .in('ValueDistribution').delete()
-            .in('OwnerType').delete()
-            .in('Type').updateValue('SingleVariant').up()
-            .insert('Value', convertedValue);
-        });
-
+        changeValueType(keyDef.valueType, m.in('rules'), m.in('partitions').getValue().length);
         return m;
       });
     }
