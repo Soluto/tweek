@@ -4,7 +4,7 @@ const change = new Chance();
 
 export function addPartition(partition, rules, depth) {
   if (depth == 0) {
-    if (rules.length === 0) return {'*' : []};
+    if (rules.length == 0) return {'*' : []};
 
     const byPartition = R.groupBy((rule) => rule.Matcher[partition] || '*');
     const partitioned = byPartition(rules);
@@ -15,6 +15,7 @@ export function addPartition(partition, rules, depth) {
     });
     return partitioned;
   }
+
   return Object.keys(rules).reduce((result, key) => ({
     ...result,
     [key]: addPartition(partition, rules[key], depth - 1)
