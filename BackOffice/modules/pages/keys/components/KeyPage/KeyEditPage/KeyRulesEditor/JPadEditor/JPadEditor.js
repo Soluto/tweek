@@ -13,6 +13,7 @@ function createPartitionedRules(depth) {
 }
 
 function isEmptyRules(rules) {
+  if (!rules) return true;
   if (Array.isArray(rules)) return rules.length == 0;
   if (Object.keys(rules).some(k => k != '*')) return false;
   return isEmptyRules(rules['*']);
