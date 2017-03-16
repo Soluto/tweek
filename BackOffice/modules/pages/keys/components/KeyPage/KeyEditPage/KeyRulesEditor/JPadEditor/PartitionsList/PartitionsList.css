@@ -80,7 +80,6 @@
   border: 1px solid #ccc;
   border-radius: 3px;
   margin-bottom: 70px;
-  margin-top: 40px;
 }
 .partitions-accordion-container-item-title {
   background-color: #fafafa;
@@ -89,6 +88,7 @@
   padding: 20px;
   transition: background-color 0.3s;
   display: flex;
+  align-items: center;
 }
 .partitions-accordion-container-item-title-details {
   flex-grow: 1;
@@ -110,4 +110,79 @@
   color: #666;
   padding: 20px;
   position: relative;
+}
+.new-partition-container {
+  margin-top: 40px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #fafafa;
+  border: 1px solid #ccc;
+  border-bottom: 0;
+  color: #333;
+  padding: 20px;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+}
+.new-partition-container .add-partition-button {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  padding: 0 0 3px;
+  box-sizing: border-box;
+  font-size: 16px;
+  padding-top: 2px;
+}
+.new-partition-container .add-partition-button:hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.new-partition-container .add-partition-button:disabled {
+  background-color: gray;
+}
+.new-partition-container .add-partition-button:disabled:hover,
+.new-partition-container .add-partition-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.new-partition-container .add-partition-button:after {
+  font-family: 'tweekIcons';
+  content: '\E905';
+}
+.new-partition-item-container {
+  margin-right: 15px;
+}
+.new-partition-item-container .value-input {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  width: 150px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+}
+.new-partition-item-container .value-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
