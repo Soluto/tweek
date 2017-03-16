@@ -52,7 +52,7 @@ export default class PartitionsList extends React.Component {
             partitionsData.map(partitionData => {
 
               const rules = partitionData.mutate.getValue();
-              const isOnlyDefault = rules.length === 1 && Object.keys(rules[0].Matcher).length === 0;
+              const isOnlyDefault = rules.length == 1 && Object.keys(rules[0].Matcher).length == 0 && rules[0].Type == 'SingleVariant';
 
               let partitionGroupName = partitionData.partitionsValues.map(x => x == "*" ? "Default" : x).join(', ');
               return (
