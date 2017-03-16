@@ -22,7 +22,6 @@
   border: 1px solid #ccc;
   border-radius: 3px;
   margin-bottom: 70px;
-  margin-top: 40px;
 }
 
 .partitions-accordion-container-item-title {
@@ -32,6 +31,7 @@
   padding: 20px;
   transition: background-color .3s;
   display: flex;
+  align-items: center;
 }
 
 .partitions-accordion-container-item-title h3 {
@@ -62,4 +62,30 @@
   color: #666;
   padding: 20px;
   position: relative;
+}
+
+.new-partition-container {
+  margin-top: 40px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #fafafa;
+  border: 1px solid #ccc;
+  border-bottom: 0;
+  color: #333;
+  padding: 20px;
+  transition: background-color .3s;
+  display: flex;
+  align-items: center;
+
+  .add-partition-button {
+    .add-circle-button;
+  }
+}
+
+.new-partition-item-container {
+  margin-right: 15px;
+
+  .value-input {
+    .metro-textbox;
+  }
 }
