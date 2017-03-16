@@ -27,7 +27,7 @@ export default ({partitions, handlePartitionAddition, handlePartitionDelete}) =>
                    suggestions={indexedSuggestions}
                    handleAddition={handleAddition}
                    handleDelete={handlePartitionDelete}
-                   placeholder="Add partition"
+                   placeholder={partitions.length == 0 ? "Add partition" : ""}
                    minQueryLength={1}
                    allowDeleteFromEmptyInput={true}
                    autocomplete={true}
