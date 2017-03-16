@@ -2,6 +2,7 @@ import React from "react";
 import RulesList from "../RulesList/RulesList";
 import R from "ramda";
 import style from "./PartitionsList.css";
+import coreStyle from '../../../../../../../../styles/core/core.css'
 import {Accordion, AccordionItem} from "react-sanfona";
 
 const extractPartitionToObject = (mutate, partitions) => {
@@ -67,7 +68,10 @@ export default class PartitionsList extends React.Component {
                         }
                       </div>
                       <div className={style["partitions-accordion-container-item-title-actions"]}>
-                        <button className={style['add-partition-button']} onClick={() => this.deletePartition(partitionData.partitionsValues)}>delete</button>
+                        <button className={coreStyle['gray-circle-button']} onClick={(e) => {
+                          this.deletePartition(partitionData.partitionsValues);
+                          e.stopPropagation();
+                        }}>x</button>
                       </div>
                     </div>
                   )}
@@ -80,6 +84,7 @@ export default class PartitionsList extends React.Component {
                 </AccordionItem>
               )
             })
+
           }
         </Accordion>
       </div >)
@@ -134,24 +139,21 @@ export default class PartitionsList extends React.Component {
   deletePartition(partitionGroup) {
     let {mutate} = this.props;
 
-    if (confirm('Are you sure?')) {
+    if (confirm('Are you sure? \nThis will delete the partition along with all the rules inside it.')) {
       let partitionMutate = mutate;
 
       for (let partition of partitionGroup){
         partitionMutate = partitionMutate.in(partition);
       }
 
-      partitionMutate.delete();
-
       for (let i = 0; i < partitionGroup.length - 1; i++){
-        partitionMutate.up();
 
-        if (Object.keys(partitionMutate.getValue()).length == 0){
-          partitionMutate.delete();
-        }
-        else {
+
+        if (Object.keys(partitionMutate.getValue()).length != 0)
           break;
-        }
+
+        partitionMutate.delete();
+        partitionMutate.up();
       }
     }
   }
