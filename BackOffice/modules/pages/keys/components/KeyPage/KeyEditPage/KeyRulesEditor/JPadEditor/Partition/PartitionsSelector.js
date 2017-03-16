@@ -9,8 +9,10 @@ export default ({partitions, handlePartitionAddition, handlePartitionDelete}) =>
   const indexedTags = partitions.map(partition => allProperties.find(property => property.id == partition) || {id: partition, text: partition});
 
   const handleAddition = (newValue) => {
-    const newProperty = allProperties.find(x => x.text === newValue || x.id == newValue) || {id: newValue, text: newValue};
-    if (!partitions.includes(newProperty.id)) {
+    const newProperty = allProperties.find(x => x.text === newValue || x.id === newValue);
+    if (!newProperty) {
+      alert(`Can't partition by ${newValue}`);
+    } else if (!partitions.includes(newProperty.id)) {
       handlePartitionAddition(newProperty.id);
     } else {
       alert(`Property "${newProperty.text}" already exists in partitions list`);
