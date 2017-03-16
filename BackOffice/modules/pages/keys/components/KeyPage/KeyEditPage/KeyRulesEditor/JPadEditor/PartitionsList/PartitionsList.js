@@ -90,7 +90,7 @@ export default class PartitionsList extends React.Component {
       <div className={style['partitions-list-container']}>
 
         {!hasDefaultValue ?
-          <button className={style['add-default-partition-button']} onClick={() => this.addDefaultPartition()}>
+          <button className={style['add-default-partition-button']} onClick={() => this.addPartition({})}>
             Add default partition
           </button> : null
         }
@@ -158,38 +158,23 @@ export default class PartitionsList extends React.Component {
     });
   }
 
-  addDefaultPartition() {
-    let {mutate, partitions} = this.props;
-
-    mutate.apply(m => {
-      for (let partition of partitions) {
-        if (!m.getValue()[partition]) {
-          m.insert("*", partition.indexOf(partitions) == partitions.length - 1 ? [] : {});
-        }
-
-        m = m.in("*");
-      }
-
-      return m;
-    });
-
-    mutate.insert("*", []);
-  }
-
   deletePartition(partitionGroup) {
     if (!confirm('Are you sure? \nThis will delete the partition along with all the rules inside it.')) return;
 
-    let {mutate: partitionMutate} = this.props;
+    let {mutate} = this.props;
+    mutate.apply(partitionMutate => {
+      for (let partition of partitionGroup) {
+        partitionMutate = partitionMutate.in(partition);
+      }
 
-    for (let partition of partitionGroup) {
-      partitionMutate = partitionMutate.in(partition);
-    }
+      let i = partitionGroup.length;
+      do {
+        i--;
+        partitionMutate.delete();
+        partitionMutate = partitionMutate.up();
+      } while (i && Object.keys(partitionMutate.getValue()).length == 0);
 
-    let i = partitionGroup.length;
-    do {
-      i--;
-      partitionMutate.delete();
-      partitionMutate.up();
-    } while (i && Object.keys(partitionMutate.getValue()).length == 0);
+      return partitionMutate;
+    });
   }
 }
