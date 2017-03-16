@@ -8,14 +8,13 @@ const fakeId = 'someId';
 const idGenerator = {
   guid: () => fakeId
 };
-const ruleValue = "someValue";
-const explicitRuleValue = {
+const toExplicitRule = (Value) => ({
   Id: fakeId,
   Matcher: {},
-  Value: ruleValue,
+  Value,
   Type: "SingleVariant"
-};
 
+});
 
 describe('rules-service', () => {
   describe('addPartition', () => {
@@ -25,21 +24,40 @@ describe('rules-service', () => {
       {expected: {'*': []}, partition, rules: [], depth: 0},
       {
         expected: {
-          someValue: [{Matcher: {}}],
+          someValue1: [{Matcher: {}}],
+          someValue2: [
+            {Matcher: {}},
+            {Matcher: {property: 'someValue'}}
+          ],
           '*': [{Matcher: {}}]
         },
         partition,
-        rules: [{Matcher: {[partition]: 'someValue'}}, {Matcher: {}}],
+        rules: [
+          {Matcher: {[partition]: 'someValue1'}},
+          {Matcher: {[partition]: 'someValue2'}},
+          {Matcher: {[partition]: 'someValue2', property: 'someValue'}},
+          {Matcher: {}}
+        ],
         depth: 0
       },
       {
         expected: {
-          partition1: {'someValue': [{Matcher: {}}], '*': [{Matcher: {}}]},
+          partition1: {
+            someValue: [
+              {Matcher: {}},
+              {Matcher: {property: 'someValue2'}}
+            ],
+            '*': [{Matcher: {}}]
+          },
           partition2: {'*': []}
         },
         partition,
         rules: {
-          partition1: [{Matcher: {[partition]: 'someValue'}}, {Matcher: {}}],
+          partition1: [
+            {Matcher: {[partition]: 'someValue'}},
+            {Matcher: {[partition]: 'someValue', property: 'someValue2'}},
+            {Matcher: {}}
+          ],
           partition2: []
         },
         depth: 1
@@ -57,58 +75,62 @@ describe('rules-service', () => {
   describe('convertToExplicitRules', () => {
     const rulesToCheck = [
       {
-        expected: [explicitRuleValue],
-        rule: ruleValue,
+        expected: [toExplicitRule("someValue")],
+        rule: "someValue",
         depth: 0
       },
       {
-        expected: [explicitRuleValue],
-        rule: [explicitRuleValue],
+        expected: [toExplicitRule("someValue")],
+        rule: [toExplicitRule("someValue")],
         depth: 0
       },
       {
-        expected: {'*': [explicitRuleValue]},
-        rule: ruleValue,
+        expected: {'*': [toExplicitRule("someValue")]},
+        rule: "someValue",
         depth: 1
       },
       {
-        expected: {'*': [explicitRuleValue]},
-        rule: [explicitRuleValue],
+        expected: {'*': [toExplicitRule("someValue")]},
+        rule: [toExplicitRule("someValue")],
         depth: 1
       },
       {
         expected: {
-          somePartition1: [explicitRuleValue],
-          somePartition2: [explicitRuleValue]
+          somePartition1: [toExplicitRule("someValue1")],
+          somePartition2: [toExplicitRule("someValue2")]
         },
         rule: {
-          somePartition1: ruleValue,
-          somePartition2: [explicitRuleValue]
+          somePartition1: "someValue1",
+          somePartition2: [toExplicitRule("someValue2")]
         },
         depth: 1
       },
       {
-        expected: {'*': {'*': [explicitRuleValue]}},
-        rule: ruleValue,
+        expected: {'*': {'*': [toExplicitRule("someValue")]}},
+        rule: "someValue",
         depth: 2
       },
       {
-        expected: {'*': {'*': [explicitRuleValue]}},
-        rule: [explicitRuleValue],
+        expected: {'*': {'*': [toExplicitRule("someValue")]}},
+        rule: [toExplicitRule("someValue")],
         depth: 2
       },
       {
         expected: {
-          somePartition1: {'*': [explicitRuleValue]},
-          somePartition2: {'*': [explicitRuleValue]},
-          somePartition3: {innerPartition: [explicitRuleValue]},
-          somePartition4: {innerPartition: [explicitRuleValue]}
+          somePartition1: {'*': [toExplicitRule("someValue1")]},
+          somePartition2: {'*': [toExplicitRule("someValue2")]},
+          somePartition3: {
+            innerPartition1: [toExplicitRule("someValue3")],
+            innerPartition2: [toExplicitRule("someValue4")]
+          },
         },
         rule: {
-          somePartition1: ruleValue,
-          somePartition2: [explicitRuleValue],
-          somePartition3: {innerPartition: ruleValue},
-          somePartition4: {innerPartition: [explicitRuleValue]}
+          somePartition1: "someValue1",
+          somePartition2: [toExplicitRule("someValue2")],
+          somePartition3: {
+            innerPartition1: "someValue3",
+            innerPartition2: [toExplicitRule("someValue4")]
+          },
         },
         depth: 2
       },
@@ -123,24 +145,24 @@ describe('rules-service', () => {
   });
 
   describe('convertToExplicitKey', () => {
-    it ('should convert to explicit key', () => {
+    it('should convert to explicit key', () => {
       const key = {
-        partitions: ['p1','p2'],
+        partitions: ['p1', 'p2'],
         rules: {
-          somePartition1: ruleValue,
-          somePartition2: [explicitRuleValue],
-          somePartition3: {innerPartition: ruleValue},
-          somePartition4: {innerPartition: [explicitRuleValue]}
+          somePartition1: "someValue1",
+          somePartition2: [toExplicitRule("someValue2")],
+          somePartition3: {innerPartition: "someValue3"},
+          somePartition4: {innerPartition: [toExplicitRule("someValue4")]}
         },
         valueType: 'someType'
       };
       const expected = {
-        partitions: ['p1','p2'],
+        partitions: ['p1', 'p2'],
         rules: {
-          somePartition1: {'*': [explicitRuleValue]},
-          somePartition2: {'*': [explicitRuleValue]},
-          somePartition3: {innerPartition: [explicitRuleValue]},
-          somePartition4: {innerPartition: [explicitRuleValue]}
+          somePartition1: {'*': [toExplicitRule("someValue1")]},
+          somePartition2: {'*': [toExplicitRule("someValue2")]},
+          somePartition3: {innerPartition: [toExplicitRule("someValue3")]},
+          somePartition4: {innerPartition: [toExplicitRule("someValue4")]}
         },
         valueType: 'someType'
       };
