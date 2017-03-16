@@ -77,12 +77,50 @@ export default class PartitionsList extends React.Component {
   }
 
   addPartition() {
-    let {mutate} = this.props;
-    mutate.insert("Verizon", []);
+    let {mutate, partitions} = this.props;
+
+    let partitionValues = [];
+
+    for (let partition of partitions){
+
+      let partitionInputValue = prompt("Insert value for " + partition + " (\"*\" for default partition)");
+
+      if (!partitionInputValue)
+        return;
+
+      partitionValues.push(partitionInputValue);
+    }
+
+    mutate.apply(m => {
+      for (let partitionValue of partitionValues) {
+        if (!m.getValue()[partitionValue]) {
+          debugger;
+          m.insert(partitionValue, partitionValues.indexOf(partitionValue) == partitionValues.length - 1 ? [] : {});
+        }
+
+        m = m.in(partitionValue);
+      }
+
+      return m;
+    });
   }
 
   addDefaultPartition() {
-    let {mutate} = this.props;
+    let {mutate, partitions} = this.props;
+
+    mutate.apply(m => {
+      for (let partition of partitions) {
+        if (!m.getValue()[partition]) {
+          m.insert("*", partition.indexOf(partitions) == partitions.length - 1 ? [] : {});
+          debugger;
+        }
+
+        m = m.in("*");
+      }
+
+      return m;
+    });
+
     mutate.insert("*", []);
   }
 
