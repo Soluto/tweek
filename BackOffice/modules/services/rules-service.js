@@ -1,6 +1,6 @@
 import R from 'ramda';
 import Chance from 'chance';
-const change = new Chance();
+const chance = new Chance();
 
 export function addPartition(partition, rules, depth) {
   if (depth == 0) {
@@ -22,19 +22,19 @@ export function addPartition(partition, rules, depth) {
   }), {});
 }
 
-export function convertToExplicitKey(key) {
+export function convertToExplicitKey(key, idGenerator) {
   return {
     ...key,
-    rules: convertToExplicitRules(key.rules, key.partitions.length)
+    rules: convertToExplicitRules(key.rules, key.partitions.length, idGenerator)
   }
 }
 
-export function convertToExplicitRules(rules, depth) {
+export function convertToExplicitRules(rules, depth, idGenerator = chance) {
   let fixedRules = rules;
 
   if (typeof rules === 'string') {
     fixedRules =[{
-        Id: change.guid(),
+        Id: idGenerator.guid(),
         Matcher: {},
         Value: rules,
         Type: "SingleVariant"
@@ -50,6 +50,6 @@ export function convertToExplicitRules(rules, depth) {
 
   return Object.keys(rules).reduce((result, key) => ({
     ...result,
-    [key]: convertToExplicitRules(rules[key], depth - 1)
+    [key]: convertToExplicitRules(rules[key], depth - 1, idGenerator)
   }), {});
 }
