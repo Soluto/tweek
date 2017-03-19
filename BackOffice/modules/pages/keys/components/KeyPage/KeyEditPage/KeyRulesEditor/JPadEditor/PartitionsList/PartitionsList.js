@@ -111,6 +111,7 @@ export default class PartitionsList extends React.Component {
                 <AccordionItem
                   title={(
                     <div className={style["partitions-accordion-container-item-title"]}>
+                      <div className={[style["expander-icon"]]}>&#xE902;</div>
                       <h3>{partitionGroupName}</h3>
                       <div className={style["partitions-accordion-container-item-title-details"]}>
                         {
