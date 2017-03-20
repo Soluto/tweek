@@ -6,7 +6,7 @@
 }
 .matcher .condition-wrapper .delete-condition-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.8);
+  background-color: #00aeef;
   height: 28px;
   border: 0;
   padding: 0 20px;
@@ -36,11 +36,8 @@
   margin-right: 4px;
 }
 .matcher .condition-wrapper .delete-condition-button:hover {
-  background-color: #007acc;
+  background-color: #029CD5;
   cursor: pointer;
-}
-.matcher .condition-wrapper .delete-condition-button:active {
-  background-color: #0098ff;
 }
 .matcher .condition-wrapper .delete-condition-button:disabled {
   background-color: gray;
@@ -65,7 +62,7 @@
 }
 .matcher .add-condition-button {
   vertical-align: top;
-  background-color: rgba(0, 122, 204, 0.8);
+  background-color: #00aeef;
   height: 28px;
   border: 0;
   padding: 0 20px;
@@ -89,11 +86,8 @@
   box-sizing: border-box;
 }
 .matcher .add-condition-button:hover {
-  background-color: #007acc;
+  background-color: #029CD5;
   cursor: pointer;
-}
-.matcher .add-condition-button:active {
-  background-color: #0098ff;
 }
 .matcher .add-condition-button:disabled {
   background-color: gray;
