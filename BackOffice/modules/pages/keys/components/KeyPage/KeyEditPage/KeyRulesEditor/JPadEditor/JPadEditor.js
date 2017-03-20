@@ -26,13 +26,18 @@ export default ({valueType, mutate}) => {
   const partitions = mutate.in("partitions").getValue();
 
   const handlePartitionAddition = (newPartition) => {
-    const rules = mutate.in("rules").getValue();
-    if (!isEmptyRules(rules) && !confirm("This operation will partition all the rules.\nDo you want to continue?")) return;
-    mutate.apply(m => m.insert("rules", RulesService.addPartition(newPartition, rules, partitions.length)).in("partitions").append(newPartition).up());
+    // const rules = mutate.in("rules").getValue();
+    // if (!isEmptyRules(rules) && !confirm("This operation will partition all the rules.\nDo you want to continue?")) return;
+    // mutate.apply(m => m.insert("rules", RulesService.addPartition(newPartition, rules, partitions.length)).in("partitions").append(newPartition).up());
+    const newPartitions = partitions.concat(newPartition);
+    onPartitionsChanged(newPartitions);
   };
   const handlePartitionDelete = (index) => {
-    if (!isEmptyRules(mutate.in("rules").getValue()) && !confirm("If you change the partitions the rules will be reset.\nDo you want to continue?")) return;
     const newPartitions = R.remove(index, 1, partitions);
+    onPartitionsChanged(newPartitions);
+  };
+  const onPartitionsChanged = (newPartitions) => {
+    if (!isEmptyRules(mutate.in("rules").getValue()) && !confirm("If you change the partitions the rules will be reset.\nDo you want to continue?")) return;
     mutate.apply(m => m.insert("partitions", newPartitions).insert("rules", createPartitionedRules(newPartitions.length)));
   };
 
