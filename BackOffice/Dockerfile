@@ -1,7 +1,7 @@
 FROM node:6.10.0-alpine
 
 ADD package.json /tmp/package.json
-RUN wget https://yarnpkg.com/latest.tar.gz
+RUN wget http://yarnpkg.com/latest.tar.gz
 RUN mkdir -p /opt/yarn
 RUN tar -xf latest.tar.gz dist -C /opt/yarn --strip-components=1
 RUN ls /opt/yarn
