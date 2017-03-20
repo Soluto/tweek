@@ -24,6 +24,7 @@ dependencies:
       else
         echo "cached images were not found"
       fi
+      cat CircleDockerfile > Dockerfile
       docker images
       docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
     - docker-compose up -d
