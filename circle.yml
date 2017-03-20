@@ -27,7 +27,7 @@ dependencies:
       cat CircleDockerfile > Dockerfile
       docker images
       docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-    - docker-compose up
+    - docker-compose up -d
     - mkdir -p ~/docker
     - docker save soluto/tweek-api:latest soluto/tweek-management:latest backoffice_tweek-backoffice:latest > ~/docker/tweek-images.tar
   override:
