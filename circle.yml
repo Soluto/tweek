@@ -44,5 +44,5 @@ deployment:
     branch: master
     commands:
       - docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-      - docker tag backoffice_tweek-backoffice:latest soluto/tweek-backoffice
+      - docker tag backoffice_tweek-backoffice:latest soluto/tweek-back-office
       - docker push soluto/tweek-back-office
