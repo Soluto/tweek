@@ -1,8 +1,6 @@
-FROM node:6.10.0-alpine
+FROM node:6.10.0
 
 ADD package.json /tmp/package.json
-RUN npm install yarn -g
-
 ADD package.json yarn.lock /tmp/
 
 RUN cd /tmp && yarn
