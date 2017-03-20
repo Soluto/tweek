@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81</PackageTargetFallback>
-    <VersionPrefix>0.1.9</VersionPrefix>
+    <VersionPrefix>0.1.10</VersionPrefix>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Properties\PublishProfiles\FileSystemProfile.pubxml" />
@@ -18,9 +18,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Rewrite" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
-    <PackageReference Include="Tweek.JPad" Version="0.5.6267.15391" />
+    <PackageReference Include="Tweek.JPad" Version="0.5.6287.28670" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine.Core\Engine.Core.csproj" />
