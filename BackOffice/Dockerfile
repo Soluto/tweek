@@ -1,4 +1,4 @@
-FROM node:6.9.1
+FROM node:6.10.0-alpine
 
 ADD package.json /tmp/package.json
 RUN wget https://yarnpkg.com/latest.tar.gz

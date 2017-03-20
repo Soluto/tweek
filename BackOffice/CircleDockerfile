@@ -1,4 +1,4 @@
-FROM node:6.9.1
+FROM node:6.10.0-alpine
 
 RUN mkdir -p ~/app/node_modules
 
