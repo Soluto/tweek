@@ -63,8 +63,7 @@ class KeyEditPage extends Component {
     };
 
     return (
-      <form id="key-viewer-container-form" className={style['key-viewer-container-form']}
-            onSubmit={e => e.preventDefault()}>
+      <div id="key-viewer-container-form" className={style['key-viewer-container-form']}>
         <fieldset className={style['key-viewer-container-fieldset']}
                   disabled={isReadonly}>
 
@@ -90,7 +89,7 @@ class KeyEditPage extends Component {
           </div>
 
         </fieldset>
-      </form>
+      </div>
     );
   }
 }
