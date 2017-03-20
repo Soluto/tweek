@@ -1,98 +1,59 @@
 import React from 'react';
-import Rule from './Rule/Rule';
-import style from './JPadEditor.css';
-import Chance from 'chance';
 import R from 'ramda';
-import { withState, lifecycle, compose } from 'recompose';
+import PartitionsSelector from './Partition/PartitionsSelector';
+import RulesList from './RulesList/RulesList';
+import PartitionsList from './PartitionsList/PartitionsList';
+import * as RulesService from '../../../../../../../services/rules-service';
 
 const isBrowser = typeof (window) === 'object';
-const chance = new Chance();
 
-function deleteRule(mutate, ruleIndex) {
-  if (confirm('Are you sure?')) {
-    mutate.in(ruleIndex).delete();
-  }
+function createPartitionedRules(depth) {
+  if (depth == 0) return [];
+  return {"*": createPartitionedRules(depth - 1)};
 }
 
-function addMutatorDefaultValue(mutate) {
-  mutate.append({ Id: chance.guid(), Matcher: {}, Value: '', Type: 'SingleVariant' });
+function isEmptyRules(rules) {
+  if (!rules) return true;
+  if (Array.isArray(rules)) return rules.length == 0;
+  if (Object.keys(rules).some(k => k != '*')) return false;
+  return isEmptyRules(rules['*']);
 }
 
-function addMutatorRule(mutate) {
-  mutate.prepend({ Id: chance.guid(), Matcher: { '': '' }, Value: '', Type: 'SingleVariant' });
-}
+export default ({valueType, mutate}) => {
+  if (!isBrowser)
+    return (<div>Loading rule...</div>);
 
-const comp = ({ mutate, valueType, autofocusRuleIndex, setAutofocusRuleIndex }) => {
-  const rulesMutator = mutate.in("rules");
-  const rules = rulesMutator.getValue();
-  if (!rules) return (<div />);
+  const partitions = mutate.in("partitions").getValue();
 
-  const hasDefaultValue = R.any(rule => Object.keys(rule.Matcher).length < 1)(rules);
+  const handlePartitionAddition = (newPartition) => {
+    // const rules = mutate.in("rules").getValue();
+    // if (!isEmptyRules(rules) && !confirm("This operation will partition all the rules.\nDo you want to continue?")) return;
+    // mutate.apply(m => m.insert("rules", RulesService.addPartition(newPartition, rules, partitions.length)).in("partitions").append(newPartition).up());
+    const newPartitions = partitions.concat(newPartition);
+    onPartitionsChanged(newPartitions);
+  };
+  const handlePartitionDelete = (index) => {
+    const newPartitions = R.remove(index, 1, partitions);
+    onPartitionsChanged(newPartitions);
+  };
+  const onPartitionsChanged = (newPartitions) => {
+    if (!isEmptyRules(mutate.in("rules").getValue()) && !confirm("If you change the partitions the rules will be reset.\nDo you want to continue?")) return;
+    mutate.apply(m => m.insert("partitions", newPartitions).insert("rules", createPartitionedRules(newPartitions.length)));
+  };
 
-  return !isBrowser ? (<div>Loading rule...</div>) :
-    (<div className={style['rule-container']}>
-      <button className={style['add-rule-button']} onClick={() => {
-        addMutatorRule(rulesMutator);
-        setAutofocusRuleIndex(0);
-      } } >
-        Add Rule
-      </button>
-      {!hasDefaultValue ?
-        <button className={style['add-default-value-button']} onClick={() => {
-          addMutatorDefaultValue(rulesMutator);
-          setAutofocusRuleIndex(rulesMutator.getValue().length);
-        } } >
-          Add default rule
-        </button> : null
-      }
+  return (
+    <div>
+      <PartitionsSelector
+        partitions={partitions}
+        handlePartitionAddition={handlePartitionAddition}
+        handlePartitionDelete={handlePartitionDelete}
+      />
 
       {
-        rules.map((rule, i) => (
-          <div className={style['conditions-container']}
-            disabled
-            key={i}
-            >
-
-            <div className={style['rule-control-wrapper']} >
-              {(i > 0 && i !== rules.length - 1) ?
-                <button className={style['rule-order-button']}
-                  onClick={() => rulesMutator.replaceKeys(i, i - 1)}
-                  title="Move up">&#xE908;</button>
-                : null}
-              {(i < rules.length - 1 && i !== rules.length - 2) ?
-                <button className={style['rule-order-button']}
-                  onClick={() => rulesMutator.replaceKeys(i, i + 1)}
-                  title="Move down">&#xE902;</button>
-                : null}
-              <button className={style['delete-rule-button']}
-                onClick={() => {
-                  deleteRule(rulesMutator, i);
-                  setAutofocusRuleIndex(undefined);
-                } }
-                title="Remove rule"/>
-            </div>
-
-            <Rule
-              key={rule.Id}
-              mutate={rulesMutator.in(i)}
-              rule={rule}
-              valueType={valueType}
-              ruleIndex={i}
-              autofocus={i === autofocusRuleIndex}
-              />
-
-          </div>
-        ))
+        partitions && partitions.length > 0
+          ? <PartitionsList partitions={partitions} valueType={valueType} mutate={mutate.in("rules")}/>
+          : <RulesList valueType={valueType} mutate={mutate.in("rules")}/>
       }
-
-    </div >
-    );
-};
-
-export default compose(
-  withState('autofocusRuleIndex', 'setAutofocusRuleIndex', undefined),
-  lifecycle({
-    componentDidUpdate() {
-      if (this.props.autofocusRuleIndex !== undefined) this.props.setAutofocusRuleIndex(undefined);
-    },
-  }))(comp);
+    </div>
+  );
+}

@@ -1,6 +1,5 @@
 import React from 'react';
 import {Component} from 'react';
-import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 import KeyRulesEditor from './KeyRulesEditor/KeyRulesEditor';
 import style from './KeyEditPage.css';
@@ -17,6 +16,7 @@ import classNames from 'classnames';
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
 import ReactTooltip from 'react-tooltip';
+import * as RulesService from '../../../../../services/rules-service';
 
 class KeyEditPage extends Component {
 
@@ -82,7 +82,7 @@ class KeyEditPage extends Component {
 
             <KeyRulesEditor
               keyDef={keyDef}
-              sourceTree={JSON.parse(keyDef.source)}
+              sourceTree={RulesService.convertToExplicitKey(JSON.parse(keyDef.source))}
               onMutation={this._onMutation}
               className={classNames(style['key-rules-editor'], {[style['sticky']]: isInStickyMode})}/>
 
