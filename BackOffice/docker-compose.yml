@@ -1,0 +1,32 @@
+tweek-management:
+  image: soluto/tweek-management
+  container_name: tweek-management
+  environment:
+    - GIT_URL
+    - GIT_USER
+    - GIT_PASSWORD
+    - VALIDATION_URL=localhost:1111/validation
+
+tweek-api:
+  image: soluto/tweek-api
+  container_name: tweek-api
+  ports:
+    - "1111:80"
+  links:
+    - tweek-management
+  environment:
+    - RulesBlob.Url=http://tweek-management:3000/ruleset/latest
+
+tweek-backoffice:
+  build: .
+  container_name: tweek-backoffice
+  ports:
+    - "4000:3000"
+  links:
+    - tweek-api
+  environment:
+    - GIT_URL
+    - GIT_USER
+    - GIT_PASSWORD
+    - GIT_CLONE_TIMEOUT_IN_MINUTES=5
+    - TWEEK_API_HOSTNAME=http://tweek-api
