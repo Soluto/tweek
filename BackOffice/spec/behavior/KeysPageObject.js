@@ -137,11 +137,7 @@ export default class KeysPageObject {
 
   wait(delayInMs, printWait = true) {
     if (printWait) console.log('wait', delayInMs, 'ms');
-    let isDone = false;
-
-    setTimeout(() => isDone = true, delayInMs);
-
-    this.browser.waitUntil(() => isDone, delayInMs + 200);
+    this.browser.pause(delayInMs);
   }
 
   waitForKeyToBeDeleted(keyName) {
