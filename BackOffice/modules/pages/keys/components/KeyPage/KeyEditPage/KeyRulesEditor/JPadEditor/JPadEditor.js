@@ -2,8 +2,10 @@ import React from 'react';
 import R from 'ramda';
 import PartitionsSelector from './Partition/PartitionsSelector';
 import RulesList from './RulesList/RulesList';
+import DefaultValue from './Rule/DefaultValue';
 import PartitionsList from './PartitionsList/PartitionsList';
 import * as RulesService from '../../../../../../../services/rules-service';
+import style from './JPadEditor.css';
 
 const isBrowser = typeof (window) === 'object';
 
@@ -42,12 +44,20 @@ export default ({valueType, mutate}) => {
   };
 
   return (
-    <div>
-      <PartitionsSelector
-        partitions={partitions}
-        handlePartitionAddition={handlePartitionAddition}
-        handlePartitionDelete={handlePartitionDelete}
-      />
+    <div className={style['rules-list-container']}>
+      <div className={style['rules-data-container']}>
+        <DefaultValue
+          value={mutate.in("defaultValue").getValue()}
+          valueType={valueType}
+          mutate={mutate.in("defaultValue")}
+        />
+
+        <PartitionsSelector
+          partitions={partitions}
+          handlePartitionAddition={handlePartitionAddition}
+          handlePartitionDelete={handlePartitionDelete}
+        />
+      </div>
 
       {
         partitions && partitions.length > 0
