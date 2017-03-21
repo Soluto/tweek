@@ -12,7 +12,8 @@ const SingleVariantValue = ({value, valueType, onChange}) => {
         selected={booleanSingleVariantSuggestions.filter(x => x.value === value)}
         placeholder="Enter value here"
         showValueInOptions={false}
-        onChange={e => onChange(e.value)}
+        clearButton
+        onChange={e => onChange(e && e.value)}
       />
     )
   }
@@ -26,22 +27,23 @@ const SingleVariantValue = ({value, valueType, onChange}) => {
   )
 };
 
+function updateValue(mutate, value, valueType) {
+  const typedValue = value && TypesService.safeConvertValue(value, valueType);
+  if (typedValue === undefined || typedValue === '') {
+    mutate.delete();
+  } else {
+    mutate.updateValue(typedValue);
+  }
+}
+
 const DefaultValue = ({value, valueType, mutate}) => {
   return (
     <div className={style['default-rule-container']}>
       <h3 className={style['rule-partial-title']}>Default Value</h3>
       <SingleVariantValue
         {...{value, valueType}}
-        onChange={newValue => mutate.updateValue(TypesService.safeConvertValue(newValue, valueType))}
+        onChange={newValue => updateValue(mutate, newValue, valueType)}
       />
-      {
-        value === undefined ? null :
-          <button
-            className={style['clear-default-value-button']}
-            onClick={mutate.delete}
-            title="Clear default value"
-          />
-      }
     </div>
   );
 };
