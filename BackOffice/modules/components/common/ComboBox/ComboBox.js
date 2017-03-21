@@ -1,27 +1,32 @@
-import Typeahead from 'react-bootstrap-typeahead';
+import {Typeahead} from 'react-bootstrap-typeahead';
 import React from 'react';
 import style from './ComboBox.css';
-import { compose, withState, mapProps } from 'recompose';
+import {compose, withState, mapProps} from 'recompose';
 import R from 'ramda';
 import wrapComponentWithClass from '../../../hoc/wrap-component-with-class';
 
 const comp = compose(
   withState('currentInputValue', 'setCurrentInputValue', ''),
-  mapProps(({ options, currentInputValue, showValueInOptions, ...props }) => ({
-    options: currentInputValue && showValueInOptions && R.findIndex(x => x.label === currentInputValue)(options) < 0 ?
-      [({ label: currentInputValue, value: currentInputValue }), ...options] : options,
-    currentInputValue, ...props,
-  })
+  mapProps(({options, currentInputValue, showValueInOptions, ...props}) => ({
+      options: currentInputValue && showValueInOptions && R.findIndex(x => x.label === currentInputValue)(options) < 0 ?
+        [({label: currentInputValue, value: currentInputValue}), ...options] : options,
+      currentInputValue, ...props,
+    })
   )
-)(({ ...props, autofocus, currentInputValue, setCurrentInputValue, emptyItem = { label: '', value: '' } }) => {
+)(({...props, autofocus, setCurrentInputValue}) => {
   const wrapperThemeClass = props.wrapperThemeClass ?
     props.wrapperThemeClass : style['combo-box-default-wrapper-theme-class'];
 
   return (
     <div className={wrapperThemeClass}>
-      <Typeahead {...props}
+      <Typeahead
+        {...props}
         onChange={selectedValues => {
-          if (!props.onChange || selectedValues.length < 1) return;
+          if (!props.onChange) return;
+          if (selectedValues.length < 1) {
+            if (props.clearButton) props.onChange();
+            return;
+          }
           setCurrentInputValue(selectedValues[0].label);
           props.onChange(selectedValues[0]);
         }}

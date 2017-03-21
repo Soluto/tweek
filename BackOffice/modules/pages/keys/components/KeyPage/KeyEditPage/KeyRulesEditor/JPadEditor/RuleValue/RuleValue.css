@@ -269,6 +269,61 @@
 .rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
   background-color: #dfdfdf;
 }
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  padding: 0 0 3px;
+  box-sizing: border-box;
+  background-color: #bcbcbc;
+  font-size: 16px;
+  padding-top: 2px;
+  margin-top: -12px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  z-index: 1;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled {
+  background-color: gray;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:hover,
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
+  background-color: #9c9c9c;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):active {
+  background-color: #7b7b7b;
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):after {
+  font-family: 'tweekIcons';
+  content: '\E900';
+}
+.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) span {
+  display: none;
+}
 .rule-value-container .boolean-single-variant-wrapper .override-input {
   flex-grow: 1;
 }
@@ -450,6 +505,61 @@
 }
 .rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
   background-color: #dfdfdf;
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  padding: 0 0 3px;
+  box-sizing: border-box;
+  background-color: #bcbcbc;
+  font-size: 16px;
+  padding-top: 2px;
+  margin-top: -12px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  z-index: 1;
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled {
+  background-color: gray;
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:hover,
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
+  background-color: #9c9c9c;
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):active {
+  background-color: #7b7b7b;
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):after {
+  font-family: 'tweekIcons';
+  content: '\E900';
+}
+.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) span {
+  display: none;
 }
 .rule-value-container .boolean-single-variant-wrapper .to-feature-flag-button {
   vertical-align: top;
@@ -679,6 +789,61 @@
 .identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
   background-color: #dfdfdf;
 }
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  padding: 0 0 3px;
+  box-sizing: border-box;
+  background-color: #bcbcbc;
+  font-size: 16px;
+  padding-top: 2px;
+  margin-top: -12px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  z-index: 1;
+}
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled {
+  background-color: gray;
+}
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:hover,
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
+  background-color: #9c9c9c;
+}
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):active {
+  background-color: #7b7b7b;
+}
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):after {
+  font-family: 'tweekIcons';
+  content: '\E900';
+}
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) span {
+  display: none;
+}
 .identity-selection-container .identity-selection-combobox-wrapper .override-input {
   flex-grow: 1;
 }
@@ -860,6 +1025,61 @@
 }
 .identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
   background-color: #dfdfdf;
+}
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  padding: 0 0 3px;
+  box-sizing: border-box;
+  background-color: #bcbcbc;
+  font-size: 16px;
+  padding-top: 2px;
+  margin-top: -12px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  z-index: 1;
+}
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled {
+  background-color: gray;
+}
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:hover,
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
+  background-color: #9c9c9c;
+}
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):active {
+  background-color: #7b7b7b;
+}
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):after {
+  font-family: 'tweekIcons';
+  content: '\E900';
+}
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) span {
+  display: none;
 }
 .bernoulli-trial-container {
   display: inline-block;
