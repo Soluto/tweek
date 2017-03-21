@@ -1,9 +1,9 @@
-FROM node:6.10.0
+FROM node:6.10.0-slim
 
 ADD package.json /tmp/package.json
 ADD package.json yarn.lock /tmp/
 
-RUN cd /tmp && yarn
+RUN cd /tmp && npm install --only=production
 RUN mkdir -p /opt/app && cd /opt/app && ln -s /tmp/node_modules 
 
 ADD . /opt/app
