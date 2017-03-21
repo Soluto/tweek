@@ -15,8 +15,7 @@ const ruleHasChanged = (props, nextProps) =>
 const Rule = ({ rule, valueType, mutate, autofocus }) => {
   const isDefaultValue = Object.keys(rule.Matcher).length === 0;
 
-  let valueTitle = isDefaultValue ? 'Default ' : '';
-  valueTitle += rule.Type === 'SingleVariant' ? 'Value' : 'Values';
+  const valueTitle = isDefaultValue ? 'Default Rule' : (rule.Type === 'SingleVariant' ? 'Value' : 'Values');
 
   const identities = ContextService.getIdentities();
 

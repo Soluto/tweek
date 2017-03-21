@@ -1,0 +1,24 @@
+@import (reference) "../../../../../../../../styles/core/core.less";
+
+.default-rule-container {
+  display: flex;
+  padding: 10px 0 0 25px;
+  align-items: center;
+  .transitioned();
+
+  .rule-partial-title {
+    color: gray;
+    margin-right: 10px;
+  }
+
+  .values-input {
+    .metro-textbox;
+    resize: none;
+    display: inline-block;
+  }
+
+  .clear-default-value-button {
+    margin-left: 10px;
+    .close-circle-button;
+  }
+}
