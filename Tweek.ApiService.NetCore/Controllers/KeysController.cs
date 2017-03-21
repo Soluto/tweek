@@ -68,7 +68,7 @@ namespace Tweek.ApiService.NetCore.Controllers
                 x => NewString(x.Value.ToString()), StringComparer.OrdinalIgnoreCase);
 
             var identities = new HashSet<Identity>(contextParams.Where(x => !x.Key.Contains(".")).Select(x => new Identity(x.Key, x.Value.AsString())));
-            if (!_checkAccess(User, path, identities)) return Forbid("Not authorized");
+            if (!_checkAccess(User, path, identities)) return Forbid();
             GetLoadedContextByIdentityType contextProps =
                 identityType => key => contextParams.TryGetValue($"{identityType}.{key}");
 
