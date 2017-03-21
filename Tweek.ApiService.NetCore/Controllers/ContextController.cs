@@ -29,7 +29,7 @@ namespace Tweek.ApiService.NetCore.Controllers
         [HttpPost("{identityType}/{*identityId}")]
         public async Task<ActionResult> AppendContext([FromRoute] string identityType, [FromRoute] string identityId)
         {
-            if (!_checkAccess(User, new Identity(identityType, identityId))) return Forbid("Not authorized");
+            if (!_checkAccess(User, new Identity(identityType, identityId))) return Forbid();
 
             Dictionary<string, JsonValue> data;
             using (var txtReader = new StreamReader(HttpContext.Request.Body))
@@ -44,7 +44,7 @@ namespace Tweek.ApiService.NetCore.Controllers
         [HttpDelete("{identityType}/{identityId}/{*prop}")]
         public async Task<ActionResult> DeleteFromContext([FromRoute] string identityType, [FromRoute] string identityId, [FromRoute] string prop)
         {
-            if (!_checkAccess(User, new Identity(identityType, identityId))) return Forbid("Not authorized");
+            if (!_checkAccess(User, new Identity(identityType, identityId))) return Forbid();
             var identity = new Identity(identityType, identityId);
             await _contextDriver.RemoveFromContext(identity, prop);
             return Ok();
