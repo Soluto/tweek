@@ -23,24 +23,25 @@ const hasChanged = shouldUpdate((props, nextProps) =>
 
 export default hasChanged(({matcher, mutate, autofocus}) => {
   const [ops, props] = R.pipe(R.toPairs, R.partition(([prop]) => prop[0] === '$'))(matcher);
-  const IgnoreActivePropsPropsPredicate = R.compose(R.not, R.contains(R.__, R.map(R.head, props)));
+  const ignoreActivePropsPropsPredicate = R.compose(R.not, R.contains(R.__, R.map(R.head, props)));
 
   const allSuggestions = ContextService.getProperties().map(prop => ({ label: prop.name, value: prop.id }));
 
   const filterActiveProps = (currentProp) =>
-    allSuggestions.filter(x => x.value === currentProp || IgnoreActivePropsPropsPredicate(x.value));
+    allSuggestions.filter(x => x.value === currentProp || ignoreActivePropsPropsPredicate(x.value));
 
-  const canBeClosed = props.length > 1;
   return (
     <div className={style['matcher']}>
       {
+        props.length == 0?
+          <h3 className={style['empty-matcher-watermark']}>Match all</h3>
+          :
         props.map(([property, predicate], i) => {
-
           const suggestedValues = filterActiveProps(property);
           return (
             <Property key={i}
               mutate={mutate.in(property)}
-              {...{ suggestedValues, property, predicate, canBeClosed, autofocus }}
+              {...{ suggestedValues, property, predicate, autofocus }}
             />
           );
         })
