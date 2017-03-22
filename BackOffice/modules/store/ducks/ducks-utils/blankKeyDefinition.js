@@ -1,18 +1,9 @@
-import Chance from 'chance';
-const chance = new Chance();
-
 export const BLANK_KEY_NAME = '_blank';
 export function createBlankKey() {
-  const guid = chance.guid();
   const keyDefSource = {
     partitions: [],
     valueType: '',
-    rules: [{
-      Id: guid,
-      Matcher: {},
-      Value: '',
-      Type: 'SingleVariant',
-    }]
+    rules: []
   };
 
   return {
