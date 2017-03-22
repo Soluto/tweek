@@ -29,6 +29,7 @@ selectors.KEY_PATH_SUGGESTIONS = getSelectorByClassNames('dropdown-menu');
 selectors.KEY_ACTUAL_PATH = getSelectorByClassNames('actual-path');
 selectors.KEY_FOLDER_NAME = getSelectorByClassNames('key-folder-name');
 selectors.KEY_LINK = getSelectorByClassNames('key-link');
+selectors.DEFAULT_VALUE_INPUT = getRelativeSelector([getSelectorByClassNames('default-value-container'), 'input']);
 selectors.DELETE_KEY_BUTTON = getSelectorByClassNames('delete-key-button');
 selectors.ADD_RULE_BUTTON = getSelectorByClassNames('add-rule-button');
 selectors.ADD_CONDITION_BUTTON = getSelectorByClassNames('add-condition-button');

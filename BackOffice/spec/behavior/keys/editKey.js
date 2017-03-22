@@ -35,7 +35,8 @@ describe('edit key', () => {
       "Matcher": {},
       "Value": "some default value",
       "Type": "SingleVariant"
-    }]
+    }],
+    defaultValue: 'some default value'
   };
 
   before(() => {
@@ -78,6 +79,8 @@ describe('edit key', () => {
 
     keysPageObject.removeRuleCondition(2, 0);
     keysPageObject.setRuleValue(2, 'some default value');
+
+    browser.setValue(selectors.DEFAULT_VALUE_INPUT, 'some default value');
 
     keysAsserts.assertKeySource(expectedKeySource);
     browser.click(selectors.SAVE_CHANGES_BUTTON);
