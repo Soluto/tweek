@@ -38,8 +38,8 @@ function updateValue(mutate, value, valueType) {
 
 const DefaultValue = ({value, valueType, mutate}) => {
   return (
-    <div className={style['default-rule-container']}>
-      <h3 className={style['rule-partial-title']}>Default Value</h3>
+    <div className={style['default-value-container']}>
+      <label className={style['default-value-label']}>Default Value:</label>
       <SingleVariantValue
         {...{value, valueType}}
         onChange={newValue => updateValue(mutate, newValue, valueType)}

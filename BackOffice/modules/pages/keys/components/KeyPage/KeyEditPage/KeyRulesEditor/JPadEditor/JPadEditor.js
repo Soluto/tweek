@@ -51,7 +51,7 @@ export default ({valueType, mutate}) => {
           valueType={valueType}
           mutate={mutate.in("defaultValue")}
         />
-
+        <div className={style['vertical-separator']}></div>
         <PartitionsSelector
           partitions={partitions}
           handlePartitionAddition={handlePartitionAddition}

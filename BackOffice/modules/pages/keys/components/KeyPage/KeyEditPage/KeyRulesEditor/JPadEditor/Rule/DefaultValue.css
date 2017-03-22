@@ -1,14 +1,13 @@
-.default-rule-container {
+.default-value-container {
   display: flex;
-  padding: 10px 0 0 25px;
-  align-items: center;
   transition: all 0.2s ease-in-out;
 }
-.default-rule-container .rule-partial-title {
+.default-value-container .default-value-label {
+  font-size: 13px;
+  margin: 5px 5px 0 0;
   color: gray;
-  margin-right: 10px;
 }
-.default-rule-container .values-input {
+.default-value-container .values-input {
   border: 0;
   border-style: none;
   height: 28px;
@@ -25,10 +24,10 @@
   resize: none;
   display: inline-block;
 }
-.default-rule-container .values-input:focus {
+.default-value-container .values-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.default-rule-container .clear-default-value-button {
+.default-value-container .clear-default-value-button {
   margin-left: 10px;
   vertical-align: top;
   background-color: #00aeef;
@@ -54,25 +53,25 @@
   font-size: 16px;
   padding-top: 2px;
 }
-.default-rule-container .clear-default-value-button:hover {
+.default-value-container .clear-default-value-button:hover {
   background-color: #029CD5;
   cursor: pointer;
 }
-.default-rule-container .clear-default-value-button:disabled {
+.default-value-container .clear-default-value-button:disabled {
   background-color: gray;
 }
-.default-rule-container .clear-default-value-button:disabled:hover,
-.default-rule-container .clear-default-value-button:disabled:active {
+.default-value-container .clear-default-value-button:disabled:hover,
+.default-value-container .clear-default-value-button:disabled:active {
   cursor: default;
   background-color: gray;
 }
-.default-rule-container .clear-default-value-button:hover {
+.default-value-container .clear-default-value-button:hover {
   background-color: #9c9c9c;
 }
-.default-rule-container .clear-default-value-button:active {
+.default-value-container .clear-default-value-button:active {
   background-color: #7b7b7b;
 }
-.default-rule-container .clear-default-value-button:after {
+.default-value-container .clear-default-value-button:after {
   font-family: 'tweekIcons';
   content: '\E900';
 }
