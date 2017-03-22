@@ -63,15 +63,18 @@ export default class KeysAsserts {
     let isKeyExists;
 
     try {
-      this.keysPageObject.goToKey(keyName);
+      this.keysPageObject.getToKeyUrl(keyName);
+      this.keysPageObject.waitForPageToLoad();
       isKeyExists = this.browser.isExisting(selectors.KEY_VIEWER_CONTAINER);
     } catch (exp) {
       isKeyExists = false;
     } finally {
       assert(isExisting === isKeyExists, message);
 
-      this.browser.url(currentUrl);
-      this.keysPageObject.waitForPageToLoad();
+      if (currentUrl != this.browser.getUrl()) {
+        this.browser.url(currentUrl);
+        this.keysPageObject.waitForPageToLoad();
+      }
     }
   }
 }
