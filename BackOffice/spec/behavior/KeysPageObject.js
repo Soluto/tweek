@@ -207,4 +207,9 @@ export default class KeysPageObject {
     this.browser.click(addConditionButtonSelector);
     this.browser.click(selectors.BACKGROUND);
   }
+
+  removeRuleCondition(ruleNumber, conditionNumber) {
+    const conditionDeleteButtonSelector = selectors.conditionDeleteButton(ruleNumber, conditionNumber);
+    this.browser.click(conditionDeleteButtonSelector);
+  }
 }
