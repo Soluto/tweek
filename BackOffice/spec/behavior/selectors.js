@@ -83,6 +83,16 @@ selectors.conditionPropertyName = (ruleNumber, conditionNumber) => {
   return getRelativeSelector([selectors.ruleContainer(ruleNumber), propertyNameSelector]);
 };
 
+selectors.conditionDeleteButton = (ruleNumber, conditionNumber) => {
+  const propertyNameSelector =
+    getRelativeSelector([
+      _getSelectorByIndex(selectors.RULE_CONDITION, conditionNumber),
+      getSelectorByClassNames('delete-condition-button'),
+    ]);
+
+  return getRelativeSelector([selectors.ruleContainer(ruleNumber), propertyNameSelector]);
+};
+
 selectors.typeaheadSuggestionByIndex = (suggestionIndex) => {
   const selector =
     getRelativeSelector([
