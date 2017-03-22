@@ -1,8 +1,5 @@
 .partitions-selector-container {
   display: flex;
-  padding-right: 25px;
-  padding-top: 10px;
-  float: right;
 }
 .partitions-selector-container .partitions-label {
   font-size: 13px;

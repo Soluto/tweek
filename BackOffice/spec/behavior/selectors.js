@@ -29,8 +29,7 @@ selectors.KEY_PATH_SUGGESTIONS = getSelectorByClassNames('dropdown-menu');
 selectors.KEY_ACTUAL_PATH = getSelectorByClassNames('actual-path');
 selectors.KEY_FOLDER_NAME = getSelectorByClassNames('key-folder-name');
 selectors.KEY_LINK = getSelectorByClassNames('key-link');
-selectors.DEFAULT_VALUE_RULE = getSelectorByClassNames('conditions-container', 'default-value');
-selectors.DEFAULT_VALUE_INPUT = getRelativeSelector([selectors.DEFAULT_VALUE_RULE, 'input']);
+selectors.DEFAULT_VALUE_INPUT = getRelativeSelector([getSelectorByClassNames('default-value-container'), 'input']);
 selectors.DELETE_KEY_BUTTON = getSelectorByClassNames('delete-key-button');
 selectors.ADD_RULE_BUTTON = getSelectorByClassNames('add-rule-button');
 selectors.ADD_CONDITION_BUTTON = getSelectorByClassNames('add-condition-button');
@@ -47,6 +46,7 @@ selectors.TAGS_SUGGESTION = getRelativeSelector([getSelectorByClassNames('tags-s
 selectors.KEY_LIST_FILTER = getRelativeSelector([getSelectorByClassNames('search-input-wrapper'), getSelectorByClassNames('search-input')]);
 selectors.READONLY_KEY_MESSAGE = getSelectorByClassNames('readonly-key-message');
 selectors.KEY_VALUE_TYPE_INPUT = getSelectorByClassNames('key-value-type-selector-wrapper', 'bootstrap-typeahead-input-main');
+selectors.NONE_EXISTING_KEY = getSelectorByClassNames('key-page-message');
 
 selectors.folder = (folderName) => {
   return _getSelectorWithAttribute(selectors.KEY_FOLDER_NAME, 'data-folder-name', folderName);
@@ -77,6 +77,16 @@ selectors.conditionPropertyName = (ruleNumber, conditionNumber) => {
       _getSelectorByIndex(selectors.RULE_CONDITION, conditionNumber),
       getSelectorByClassNames('property-name-wrapper'),
       getSelectorByClassNames('bootstrap-typeahead-input-main'),
+    ]);
+
+  return getRelativeSelector([selectors.ruleContainer(ruleNumber), propertyNameSelector]);
+};
+
+selectors.conditionDeleteButton = (ruleNumber, conditionNumber) => {
+  const propertyNameSelector =
+    getRelativeSelector([
+      _getSelectorByIndex(selectors.RULE_CONDITION, conditionNumber),
+      getSelectorByClassNames('delete-condition-button'),
     ]);
 
   return getRelativeSelector([selectors.ruleContainer(ruleNumber), propertyNameSelector]);

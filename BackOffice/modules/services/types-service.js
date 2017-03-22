@@ -38,6 +38,15 @@ export function convertValue(value, targetType) {
   }
 }
 
+export function safeConvertValue(value, targetType) {
+  try {
+    return convertValue(value, targetType);
+  }
+  catch (err) {
+    return targetType === types.boolean.name ? '' : '' + value
+  }
+}
+
 function safeConvertToBaseType(value, type) {
   let jsonValue = JSON.parse(value);
 

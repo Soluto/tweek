@@ -183,6 +183,61 @@
 .combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
   background-color: #dfdfdf;
 }
+.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  padding: 0 0 3px;
+  box-sizing: border-box;
+  background-color: #bcbcbc;
+  font-size: 16px;
+  padding-top: 2px;
+  margin-top: -12px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  z-index: 1;
+}
+.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled {
+  background-color: gray;
+}
+.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:hover,
+.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
+  background-color: #9c9c9c;
+}
+.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):active {
+  background-color: #7b7b7b;
+}
+.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):after {
+  font-family: 'tweekIcons';
+  content: '\E900';
+}
+.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) span {
+  display: none;
+}
 .combo-box-default-wrapper-theme-class .override-input {
   flex-grow: 1;
 }
@@ -364,4 +419,59 @@
 }
 .combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
   background-color: #dfdfdf;
+}
+.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  padding: 0 0 3px;
+  box-sizing: border-box;
+  background-color: #bcbcbc;
+  font-size: 16px;
+  padding-top: 2px;
+  margin-top: -12px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  z-index: 1;
+}
+.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled {
+  background-color: gray;
+}
+.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:hover,
+.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
+  background-color: #9c9c9c;
+}
+.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):active {
+  background-color: #7b7b7b;
+}
+.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):after {
+  font-family: 'tweekIcons';
+  content: '\E900';
+}
+.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) span {
+  display: none;
 }

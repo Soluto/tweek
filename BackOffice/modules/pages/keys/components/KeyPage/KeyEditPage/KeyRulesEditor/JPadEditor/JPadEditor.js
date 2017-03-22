@@ -2,8 +2,11 @@ import React from 'react';
 import R from 'ramda';
 import PartitionsSelector from './Partition/PartitionsSelector';
 import RulesList from './RulesList/RulesList';
+import DefaultValue from './Rule/DefaultValue';
 import PartitionsList from './PartitionsList/PartitionsList';
 import * as RulesService from '../../../../../../../services/rules-service';
+import * as TypesService from '../../../../../../../services/types-service';
+import style from './JPadEditor.css';
 
 const isBrowser = typeof (window) === 'object';
 
@@ -24,6 +27,7 @@ export default ({valueType, mutate}) => {
     return (<div>Loading rule...</div>);
 
   const partitions = mutate.in("partitions").getValue();
+  const defaultValueMutate = mutate.in("defaultValue");
 
   const handlePartitionAddition = (newPartition) => {
     // const rules = mutate.in("rules").getValue();
@@ -40,14 +44,30 @@ export default ({valueType, mutate}) => {
     if (!isEmptyRules(mutate.in("rules").getValue()) && !confirm("If you change the partitions the rules will be reset.\nDo you want to continue?")) return;
     mutate.apply(m => m.insert("partitions", newPartitions).insert("rules", createPartitionedRules(newPartitions.length)));
   };
+  const updateDefaultValue = (newValue) => {
+    const typedValue = newValue && TypesService.safeConvertValue(newValue, valueType);
+    if (typedValue === undefined || typedValue === '') {
+      defaultValueMutate.delete();
+    } else {
+      defaultValueMutate.updateValue(typedValue);
+    }
+  };
 
   return (
-    <div>
-      <PartitionsSelector
-        partitions={partitions}
-        handlePartitionAddition={handlePartitionAddition}
-        handlePartitionDelete={handlePartitionDelete}
-      />
+    <div className={style['jpad-editor-container']}>
+      <div className={style['jpad-settings']}>
+        <DefaultValue
+          value={defaultValueMutate.getValue()}
+          valueType={valueType}
+          onChange={updateDefaultValue}
+        />
+        <div className={style['vertical-separator']}></div>
+        <PartitionsSelector
+          partitions={partitions}
+          handlePartitionAddition={handlePartitionAddition}
+          handlePartitionDelete={handlePartitionDelete}
+        />
+      </div>
 
       {
         partitions && partitions.length > 0

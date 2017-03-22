@@ -48,10 +48,6 @@ export default class KeysAsserts {
     assert.equal(this.keysPageObject.getNumberOfRules(), expectedNumberOfRules, message);
   }
 
-  assertKeyHasDefaultValueRule(message = 'should have default value rule') {
-    assert(this.browser.isExisting(selectors.DEFAULT_VALUE_RULE), message);
-  }
-
   assertIsInKeyPage(expectedKey, message) {
     this.pageAsserts.assertIsInPage(`${KeysPageObject.KEYS_PAGE_URL}/${expectedKey}`, message);
   }
@@ -63,15 +59,17 @@ export default class KeysAsserts {
     let isKeyExists;
 
     try {
-      this.keysPageObject.goToKey(keyName);
+      this.keysPageObject.getToKeyUrl(keyName);
       isKeyExists = this.browser.isExisting(selectors.KEY_VIEWER_CONTAINER);
     } catch (exp) {
       isKeyExists = false;
     } finally {
       assert(isExisting === isKeyExists, message);
 
-      this.browser.url(currentUrl);
-      this.keysPageObject.waitForPageToLoad();
+      if (currentUrl != this.browser.getUrl()) {
+        this.browser.url(currentUrl);
+        this.keysPageObject.waitForPageToLoad();
+      }
     }
   }
 }

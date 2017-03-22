@@ -3,7 +3,7 @@
 import KeysAsserts from '../KeysAsserts';
 import KeysPageObject from '../KeysPageObject';
 import assert from 'assert';
-import { selectors, getRelativeSelector } from '../selectors';
+import {selectors} from '../selectors';
 
 describe('edit key', () => {
   const keysPageObject = new KeysPageObject(browser);
@@ -33,9 +33,10 @@ describe('edit key', () => {
     {
       "Id": "b74a6ea7-3ad6-58bd-9159-8460162b2e42",
       "Matcher": {},
-      "Value": "some default value",
+      "Value": "some value",
       "Type": "SingleVariant"
-    }]
+    }],
+    defaultValue: 'some default value'
   };
 
   before(() => {
@@ -61,7 +62,7 @@ describe('edit key', () => {
     browser.windowHandleMaximize();
     keysAsserts.assertKeyOpened(keyToEditFullPath);
 
-    addRuleAndAssertItsFocus(1);
+    addRuleAndAssertItsFocus(2);
     keysAsserts.assertKeyHasNumberOfRules(2);
 
     keysPageObject.setConditionPropertyFromSuggestion(1, 1, 2);
@@ -75,6 +76,9 @@ describe('edit key', () => {
 
     keysPageObject.setConditionPropertyFromSuggestionValuePrefix(1, 3, 'Create');
     keysPageObject.setConditionValue(1, 3, '3d');
+
+    keysPageObject.removeRuleCondition(2, 0);
+    keysPageObject.setRuleValue(2, 'some value');
 
     browser.setValue(selectors.DEFAULT_VALUE_INPUT, 'some default value');
 
