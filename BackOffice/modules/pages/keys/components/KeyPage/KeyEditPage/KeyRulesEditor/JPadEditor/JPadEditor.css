@@ -1,4 +1,11 @@
 .rules-list-container .rules-data-container {
   display: flex;
-  justify-content: space-between;
+  float: right;
+  padding: 20px 25px;
+}
+.rules-list-container .vertical-separator {
+  width: 1px;
+  background-color: lightgray;
+  height: 30px;
+  margin: 0 15px 0 12px;
 }
