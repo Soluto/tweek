@@ -33,7 +33,7 @@ export default hasChanged(({matcher, mutate, autofocus}) => {
   return (
     <div className={style['matcher']}>
       {
-        props.length == 0?
+        props.length === 0?
           <h3 className={style['empty-matcher-watermark']}>Match all</h3>
           :
         props.map(([property, predicate], i) => {

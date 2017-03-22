@@ -35,6 +35,8 @@ export default class KeysPageObject {
     if (this.didAlertRaised()) {
       this.browser.alertAccept();
     }
+
+    this.waitForPageToLoad();
   }
 
   goToKey(keyName) {
@@ -148,7 +150,6 @@ export default class KeysPageObject {
     const checkIsKeyWasDeleted = (keyName) => {
       try {
         this.getToKeyUrl(keyName);
-        this.waitForPageToLoad();
         return this.browser.isExisting(selectors.NONE_EXISTING_KEY);
       } catch (exp) {
         return false;

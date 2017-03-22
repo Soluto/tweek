@@ -4,7 +4,7 @@ import ComboBox from '../../../../../../../../components/common/ComboBox/ComboBo
 import style from './DefaultValue.css';
 
 const booleanSingleVariantSuggestions = [{label: 'true', value: true}, {label: 'false', value: false}];
-const SingleVariantValue = ({value, valueType, onChange}) => {
+const DefaultValueInput = ({value, valueType, onChange}) => {
   if (valueType === TypesService.types.boolean.name) {
     return (
       <ComboBox
@@ -27,23 +27,11 @@ const SingleVariantValue = ({value, valueType, onChange}) => {
   )
 };
 
-function updateValue(mutate, value, valueType) {
-  const typedValue = value && TypesService.safeConvertValue(value, valueType);
-  if (typedValue === undefined || typedValue === '') {
-    mutate.delete();
-  } else {
-    mutate.updateValue(typedValue);
-  }
-}
-
-const DefaultValue = ({value, valueType, mutate}) => {
+const DefaultValue = (props) => {
   return (
     <div className={style['default-value-container']}>
       <label className={style['default-value-label']}>Default Value:</label>
-      <SingleVariantValue
-        {...{value, valueType}}
-        onChange={newValue => updateValue(mutate, newValue, valueType)}
-      />
+      <DefaultValueInput {...props}/>
     </div>
   );
 };

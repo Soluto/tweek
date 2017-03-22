@@ -1,9 +1,9 @@
-.rules-list-container .rules-data-container {
+.jpad-editor-container .jpad-settings {
   display: flex;
   float: right;
   padding: 20px 25px;
 }
-.rules-list-container .vertical-separator {
+.jpad-editor-container .vertical-separator {
   width: 1px;
   background-color: lightgray;
   height: 30px;
