@@ -70,6 +70,18 @@
       :global(.bootstrap-typeahead) {
         .override-input;
         .override-dropdown;
+
+        :global(.bootstrap-typeahead-clear-button) {
+          .close-circle-button;
+          margin-top: -12px;
+          position: absolute;
+          right: 0;
+          top: 50%;
+          z-index: 1;
+          span {
+            display: none;
+          }
+        }
       }
     }
     .override-typeahead;

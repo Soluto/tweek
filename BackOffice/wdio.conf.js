@@ -37,10 +37,10 @@ exports.config = {
   //baseUrl: 'http://localhost:3000',
   //
   // Default timeout for all waitFor* commands.
-  waitforTimeout: 1000000,
+  waitforTimeout: 10000,
   //
   // Default timeout in milliseconds for request
-  connectionRetryTimeout: 1000000,
+  connectionRetryTimeout: 60000,
   //
   // Default request retries count
   connectionRetryCount: 2,

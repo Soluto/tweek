@@ -14,6 +14,9 @@ describe('key-value-type', () => {
     browser.windowHandleMaximize();
     browser.click(selectors.ADD_KEY_BUTTON);
     keysAsserts.assertKeyOpened(BLANK_KEY_NAME);
+    browser.click(selectors.ADD_RULE_BUTTON);
+    browser.waitForExist(selectors.ruleContainer(0));
+    keysPageObject.removeRuleCondition(1, 0);
   });
 
   let setKeyValueAndType = function (keyValueType, value) {

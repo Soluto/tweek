@@ -32,8 +32,7 @@ describe('add key', () => {
     let isKeyPathSuggestionsExists = browser.isExisting(selectors.KEY_PATH_SUGGESTIONS);
     assert(!isKeyPathSuggestionsExists, 'should not show key name suggestions on start');
 
-    keysAsserts.assertKeyHasNumberOfRules(1);
-    keysAsserts.assertKeyHasDefaultValueRule();
+    keysAsserts.assertKeyHasNumberOfRules(0);
 
     browser.click(selectors.KEY_NAME_INPUT);
     isKeyPathSuggestionsExists = browser.isExisting(selectors.KEY_PATH_SUGGESTIONS);
@@ -46,7 +45,7 @@ describe('add key', () => {
     const firstSuggestion = selectors.typeaheadSuggestionByIndex(0);
     browser.click(firstSuggestion);
 
-    assert(keysPageObject.hasChanges(), 'should has changes');
+    assert(keysPageObject.hasChanges(), 'should have changes');
 
     browser.click(selectors.SAVE_CHANGES_BUTTON);
     assert(keysPageObject.isSaving(), 'should be in saving state');

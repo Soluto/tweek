@@ -1,3 +1,10 @@
+.matcher .empty-matcher-watermark {
+  color: #d0d0d0;
+  font-style: italic;
+  margin: 7px 35px 0;
+  letter-spacing: 2px;
+  cursor: default;
+}
 .matcher .condition-wrapper {
   display: flex;
   padding-left: 3px;

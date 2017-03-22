@@ -26,8 +26,6 @@ export default class RulesList extends React.Component {
     const rules = mutate.getValue();
     if (!rules) return (<div />);
 
-    const hasDefaultValue = R.any(rule => Object.keys(rule.Matcher).length < 1)(rules);
-
     return <div className={style['rule-container']}>
       <button className={style['add-rule-button']} onClick={() => {
         this.addMutatorRule();
@@ -35,14 +33,6 @@ export default class RulesList extends React.Component {
       } } >
         Add Rule
       </button>
-      {!hasDefaultValue ?
-        <button className={style['add-default-value-button']} onClick={() => {
-          this.addMutatorDefaultValue();
-          this.setState({autofocusRuleIndex: (mutate.getValue().length)});
-        } } >
-          Add default rule
-        </button> : null
-      }
 
       {
         rules.map((rule, i) => (
@@ -52,12 +42,12 @@ export default class RulesList extends React.Component {
           >
 
             <div className={style['rule-control-wrapper']} >
-              {(i > 0 && i !== rules.length - 1) ?
+              {(i > 0) ?
                 <button className={style['rule-order-button']}
                         onClick={() => mutate.replaceKeys(i, i - 1)}
                         title="Move up">&#xE908;</button>
                 : null}
-              {(i < rules.length - 1 && i !== rules.length - 2) ?
+              {(i < rules.length - 1) ?
                 <button className={style['rule-order-button']}
                         onClick={() => mutate.replaceKeys(i, i + 1)}
                         title="Move down">&#xE902;</button>
