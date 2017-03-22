@@ -88,7 +88,14 @@
     "helmet": "1.1.0",
     "hpp": "0.2.0",
     "if-env": "1.0.0",
+    "karma": "0.13.21",
+    "karma-chrome-launcher": "0.2.2",
+    "karma-mocha": "0.2.2",
+    "karma-mocha-reporter": "1.2.0",
+    "karma-sourcemap-loader": "0.3.7",
+    "karma-webpack": "1.7.0",
     "lock-queue": "1.0.1",
+    "mocha": "2.4.5",
     "moment": "2.14.1",
     "morgan": "1.7.0",
     "nconf": "0.8.4",
@@ -135,8 +142,9 @@
     "style-loader": "0.13.0",
     "url-loader": "0.5.7",
     "velocity-react": "1.1.5",
-    "webpack": "1.12.14"
-   },
+    "webpack": "1.12.14",
+    "webpack-dev-server": "1.14.1"
+  },
   "devDependencies": {
     "babel-jest": "18.0.0",
     "babel-plugin-transform-async-to-generator": "6.7.4",
@@ -159,19 +167,11 @@
     "fetch-mock": "^5.8.0",
     "jest-cli": "18.1.0",
     "jest-css-modules": "1.0.2",
-    "karma": "0.13.21",
-    "karma-chrome-launcher": "0.2.2",
-    "karma-mocha": "0.2.2",
-    "karma-mocha-reporter": "1.2.0",
-    "karma-sourcemap-loader": "0.3.7",
-    "karma-webpack": "1.7.0",
     "less": "2.7.1",
     "less-loader": "2.2.3",
-    "mocha": "2.4.5",
     "wdio-mocha-framework": "0.4.3",
     "wdio-selenium-standalone-service": "^0.0.7",
     "wdio-spec-reporter": "0.0.5",
-    "webdriverio": "4.2.15",
-    "webpack-dev-server": "1.14.1"
+    "webdriverio": "4.2.15"
   }
 }
