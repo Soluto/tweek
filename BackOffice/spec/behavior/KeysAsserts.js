@@ -48,10 +48,6 @@ export default class KeysAsserts {
     assert.equal(this.keysPageObject.getNumberOfRules(), expectedNumberOfRules, message);
   }
 
-  assertKeyHasDefaultValueRule(message = 'should have default value rule') {
-    assert(this.browser.isExisting(selectors.DEFAULT_VALUE_RULE), message);
-  }
-
   assertIsInKeyPage(expectedKey, message) {
     this.pageAsserts.assertIsInPage(`${KeysPageObject.KEYS_PAGE_URL}/${expectedKey}`, message);
   }
