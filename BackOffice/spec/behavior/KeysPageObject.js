@@ -181,7 +181,7 @@ export default class KeysPageObject {
   }
 
   setConditionPropertyFromSuggestion(ruleNumber, conditionNumber, suggestionIndex) {
-    const conditionPropertyInputSelector = selectors.conditionPropertyName(ruleNumber, conditionNumber)
+    const conditionPropertyInputSelector = selectors.conditionPropertyName(ruleNumber, conditionNumber);
     const suggestionSelector = selectors.typeaheadSuggestionByIndex(suggestionIndex);
 
     this.browser.click(selectors.BACKGROUND);
@@ -190,7 +190,7 @@ export default class KeysPageObject {
   }
 
   setConditionPropertyFromSuggestionValuePrefix(ruleNumber, conditionNumber, valuePrefix) {
-    const conditionPropertyInputSelector = selectors.conditionPropertyName(ruleNumber, conditionNumber)
+    const conditionPropertyInputSelector = selectors.conditionPropertyName(ruleNumber, conditionNumber);
     this.browser.setValue(conditionPropertyInputSelector, valuePrefix);
     const suggestionSelector = selectors.typeaheadSuggestionByIndex(0);
     this.browser.click(suggestionSelector);
@@ -211,5 +211,14 @@ export default class KeysPageObject {
   removeRuleCondition(ruleNumber, conditionNumber) {
     const conditionDeleteButtonSelector = selectors.conditionDeleteButton(ruleNumber, conditionNumber);
     this.browser.click(conditionDeleteButtonSelector);
+  }
+
+  setRuleValue(ruleNumber, value, keyValueType) {
+    const ruleValueInputSelector = selectors.ruleValueInput(ruleNumber, keyValueType == "Boolean");
+    this.browser.setValue(ruleValueInputSelector, value);
+    if (keyValueType == "Boolean") {
+      const firstSuggestion = selectors.typeaheadSuggestionByIndex(0);
+      browser.click(firstSuggestion);
+    }
   }
 }
