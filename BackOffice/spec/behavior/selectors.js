@@ -47,6 +47,7 @@ selectors.TAGS_SUGGESTION = getRelativeSelector([getSelectorByClassNames('tags-s
 selectors.KEY_LIST_FILTER = getRelativeSelector([getSelectorByClassNames('search-input-wrapper'), getSelectorByClassNames('search-input')]);
 selectors.READONLY_KEY_MESSAGE = getSelectorByClassNames('readonly-key-message');
 selectors.KEY_VALUE_TYPE_INPUT = getSelectorByClassNames('key-value-type-selector-wrapper', 'bootstrap-typeahead-input-main');
+selectors.NONE_EXISTING_KEY = getSelectorByClassNames('key-page-message');
 
 selectors.folder = (folderName) => {
   return _getSelectorWithAttribute(selectors.KEY_FOLDER_NAME, 'data-folder-name', folderName);

@@ -27,7 +27,7 @@ export default class KeysPageObject {
     this.browser.waitForVisible(selectors.ADD_KEY_BUTTON, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
   }
 
-  goToKey(keyName) {
+  getToKeyUrl(keyName) {
     const goTo = `${KeysPageObject.BASE_URL}${KeysPageObject.KEYS_PAGE_URL}/${keyName}`;
 
     this.browser.url(goTo);
@@ -35,6 +35,10 @@ export default class KeysPageObject {
     if (this.didAlertRaised()) {
       this.browser.alertAccept();
     }
+  }
+
+  goToKey(keyName) {
+    this.getToKeyUrl(keyName);
 
     const selectorToWaitFor = keyName.startsWith(BLANK_KEY_NAME) ?
       selectors.KEY_NAME_INPUT : selectors.KEY_DISPLAY_NAME;
@@ -143,10 +147,11 @@ export default class KeysPageObject {
   waitForKeyToBeDeleted(keyName) {
     const checkIsKeyWasDeleted = (keyName) => {
       try {
-        this.goToKey(keyName);
-        return false;
+        this.getToKeyUrl(keyName);
+        this.waitForPageToLoad();
+        return this.browser.isExisting(selectors.NONE_EXISTING_KEY);
       } catch (exp) {
-        return true;
+        return false;
       }
     };
 
