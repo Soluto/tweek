@@ -108,7 +108,7 @@ export default withState('currentInputValue', 'setCurrentInputValue', '')(
           }
         }}
         filterBy={option => option.value.toLowerCase().includes(currentInputValue.toLowerCase())}
-        renderMenuItemChildren={(_, suggestion) => (
+        renderMenuItemChildren={(suggestion) => (
           <PropertySuggestion suggestion={suggestion} textToMark={currentInputValue} />
         )}
         autofocus={autofocus}
