@@ -60,7 +60,6 @@ export default class KeysAsserts {
 
     try {
       this.keysPageObject.getToKeyUrl(keyName);
-      this.keysPageObject.waitForPageToLoad();
       isKeyExists = this.browser.isExisting(selectors.KEY_VIEWER_CONTAINER);
     } catch (exp) {
       isKeyExists = false;

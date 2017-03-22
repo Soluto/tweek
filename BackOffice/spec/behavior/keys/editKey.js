@@ -33,7 +33,7 @@ describe('edit key', () => {
     {
       "Id": "b74a6ea7-3ad6-58bd-9159-8460162b2e42",
       "Matcher": {},
-      "Value": "some default value",
+      "Value": "some value",
       "Type": "SingleVariant"
     }],
     defaultValue: 'some default value'
@@ -78,7 +78,7 @@ describe('edit key', () => {
     keysPageObject.setConditionValue(1, 3, '3d');
 
     keysPageObject.removeRuleCondition(2, 0);
-    keysPageObject.setRuleValue(2, 'some default value');
+    keysPageObject.setRuleValue(2, 'some value');
 
     browser.setValue(selectors.DEFAULT_VALUE_INPUT, 'some default value');
 

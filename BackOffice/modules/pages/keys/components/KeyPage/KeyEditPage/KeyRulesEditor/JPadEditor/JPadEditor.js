@@ -5,6 +5,7 @@ import RulesList from './RulesList/RulesList';
 import DefaultValue from './Rule/DefaultValue';
 import PartitionsList from './PartitionsList/PartitionsList';
 import * as RulesService from '../../../../../../../services/rules-service';
+import * as TypesService from '../../../../../../../services/types-service';
 import style from './JPadEditor.css';
 
 const isBrowser = typeof (window) === 'object';
@@ -26,6 +27,7 @@ export default ({valueType, mutate}) => {
     return (<div>Loading rule...</div>);
 
   const partitions = mutate.in("partitions").getValue();
+  const defaultValueMutate = mutate.in("defaultValue");
 
   const handlePartitionAddition = (newPartition) => {
     // const rules = mutate.in("rules").getValue();
@@ -42,14 +44,22 @@ export default ({valueType, mutate}) => {
     if (!isEmptyRules(mutate.in("rules").getValue()) && !confirm("If you change the partitions the rules will be reset.\nDo you want to continue?")) return;
     mutate.apply(m => m.insert("partitions", newPartitions).insert("rules", createPartitionedRules(newPartitions.length)));
   };
+  const updateDefaultValue = (newValue) => {
+    const typedValue = newValue && TypesService.safeConvertValue(newValue, valueType);
+    if (typedValue === undefined || typedValue === '') {
+      defaultValueMutate.delete();
+    } else {
+      defaultValueMutate.updateValue(typedValue);
+    }
+  };
 
   return (
-    <div className={style['rules-list-container']}>
-      <div className={style['rules-data-container']}>
+    <div className={style['jpad-editor-container']}>
+      <div className={style['jpad-settings']}>
         <DefaultValue
-          value={mutate.in("defaultValue").getValue()}
+          value={defaultValueMutate.getValue()}
           valueType={valueType}
-          mutate={mutate.in("defaultValue")}
+          onChange={updateDefaultValue}
         />
         <div className={style['vertical-separator']}></div>
         <PartitionsSelector
