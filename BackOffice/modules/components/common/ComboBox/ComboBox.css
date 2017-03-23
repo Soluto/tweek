@@ -55,14 +55,13 @@
   min-height: 35px;
   display: flex;
   align-items: center;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-width: 1px 1px 0px 1px;
-  border-style: solid;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
 .combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown :global(.dropdown-menu) li:last-child {
-  border-bottom: 1px;
+  border-bottom-width: 1px;
 }
 .combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown :global(.dropdown-menu) li:hover {
   cursor: pointer;
@@ -146,14 +145,13 @@
   min-height: 35px;
   display: flex;
   align-items: center;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-width: 1px 1px 0px 1px;
-  border-style: solid;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
 .combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
-  border-bottom: 1px;
+  border-bottom-width: 1px;
 }
 .combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
   cursor: pointer;
@@ -292,14 +290,13 @@
   min-height: 35px;
   display: flex;
   align-items: center;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-width: 1px 1px 0px 1px;
-  border-style: solid;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
 .combo-box-default-wrapper-theme-class .override-dropdown :global(.dropdown-menu) li:last-child {
-  border-bottom: 1px;
+  border-bottom-width: 1px;
 }
 .combo-box-default-wrapper-theme-class .override-dropdown :global(.dropdown-menu) li:hover {
   cursor: pointer;
@@ -383,14 +380,13 @@
   min-height: 35px;
   display: flex;
   align-items: center;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-width: 1px 1px 0px 1px;
-  border-style: solid;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
 .combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
-  border-bottom: 1px;
+  border-bottom-width: 1px;
 }
 .combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
   cursor: pointer;

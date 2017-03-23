@@ -28,13 +28,12 @@
             min-height: 35px;
             display: flex;
             align-items: center;
-            border-color: rgba(0, 0, 0, 0.2);
-            border-width: 1px 1px 0px 1px;
-            border-style: solid;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-bottom-width: 0;
             overflow-x: hidden;
             .transitioned();
             &:last-child {
-              border-bottom: 1px;
+              border-bottom-width: 1px;
             }
             &:hover {
               cursor: pointer;
