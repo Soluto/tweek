@@ -20,8 +20,8 @@ function docker_tag_exists() {
 
 
 
-if [ $TRAVIS_BRANCH != master ]; then
-	echo "no publish for non-master branches"
+if [ $TRAVIS_BRANCH != master ] || [ ! -z $TRAVIS_PULL_REQUEST_BRANCH ] ; then
+	echo "no publish for non-master branches or pull requests"
 	exit 0
 fi
 
