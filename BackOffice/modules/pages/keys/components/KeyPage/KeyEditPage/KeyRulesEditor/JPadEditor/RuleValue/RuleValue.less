@@ -6,6 +6,12 @@
   opacity: .7;
 }
 
+.inputValue{
+  &:global(.input-type-boolean){
+    .combo-box-basic(150px, 150px);
+  }
+}
+
 .rule-value-container {
   .values-input {
     .metro-textbox;
@@ -15,11 +21,8 @@
   .add-variant-button {
     .rule-value-button;
   }
-  .boolean-single-variant-wrapper {
-    .combo-box-basic(150px, 150px);
-    .to-feature-flag-button {
+  .to-feature-flag-button {
       .rule-value-button;
-    }
   }
 }
 

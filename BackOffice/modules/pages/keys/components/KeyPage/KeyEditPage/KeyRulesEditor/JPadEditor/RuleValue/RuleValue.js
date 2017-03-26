@@ -8,6 +8,8 @@ import { withState, compose, mapProps } from 'recompose';
 
 function replaceNaN(fallbackValue) { return isNaN(this) ? fallbackValue : this; }
 const parseNumericInput = (inputValue) => inputValue === '' ? 0 : parseInt(inputValue);
+const wrapWithClass = propToClassNameFn => Comp => props =>
+    <div className={propToClassNameFn(props)} ><Comp {...props } /></div>
 
 function getTypedValue(value, valueType) {
   try {
@@ -22,7 +24,9 @@ function updateMutateTypedValue(mutate, value, valueType) {
   mutate.updateValue(getTypedValue(value, valueType));
 }
 
+
 const booleanSingleVariantSuggestions = [{ label: 'true', value: true }, { label: 'false', value: false }];
+
 const BooleanSingleVariant = ({value, valueType, mutate, identities}) => (
   <div className={style['boolean-single-variant-wrapper']}>
     <ComboBox
@@ -45,20 +49,42 @@ const BooleanSingleVariant = ({value, valueType, mutate, identities}) => (
   </div>
 );
 
-const SingleVariantValue = ({value, mutate, identities, autofocus, valueType}) => (
-  <div className={style['rule-value-container']}>
-    {valueType === TypesService.types.boolean.name ?
-      <BooleanSingleVariant {...{ value, valueType, mutate, identities }} />
-      :
-      <div>
-        <input
-          onChange={e => updateMutateTypedValue(mutate, e.target.value, valueType)}
+export const InputValue = wrapWithClass(({valueType})=> `${style.inputValue} input-type-${valueType}`)(({valueType, value, onChange, autofocus, placeholder="Enter Value Here"})=>{
+    if (valueType === TypesService.types.boolean.name){
+      return <ComboBox
+          options={booleanSingleVariantSuggestions}
+          selected={R.filter(x => x.value === value)(booleanSingleVariantSuggestions)}
+          placeholder="Enter value here"
+          showValueInOptions={false}
+          onChange={onChange}
+      />
+   }
+   else {
+      return <input
+          onChange={e => onChange({value:e.target.value})}  
           value={value}
           placeholder="Enter value here"
           className={style['values-input']}
           ref={(e) => e && autofocus && e.focus()}
         />
-        <button className={style['add-variant-button']}
+   }
+});
+
+const MultiVariantConverter = ({valueType, identities, mutate, value}) => {
+  if (valueType === TypesService.types.boolean.name){
+   return <button className={style['to-feature-flag-button']}
+      onClick={() => mutate.apply(m =>
+        m.delete()
+          .in('Type').updateValue('MultiVariant').up()
+          .insert('OwnerType', identities[0])
+          .insert('ValueDistribution', {
+            type: 'bernoulliTrial',
+            args: 0.1,
+          })
+      )}>Gradual release</button>
+  }
+  else {
+    return <button className={style['add-variant-button']}
           onClick={() => mutate.apply(m =>
             m.delete()
               .in('Type').updateValue('MultiVariant').up()
@@ -71,8 +97,13 @@ const SingleVariantValue = ({value, mutate, identities, autofocus, valueType}) =
                 },
               })
           )}>Add Variant</button>
-      </div>
-    }
+  }
+}
+
+const SingleVariantValue = ({value, mutate, identities, autofocus, valueType}) => (
+  <div className={style['rule-value-container']}>
+      <InputValue {...{ value, valueType }} onChange={e => updateMutateTypedValue(mutate, e.value, valueType)} />
+      <MultiVariantConverter {...{ value, valueType, mutate, identities }} /> 
   </div>
 );
 
