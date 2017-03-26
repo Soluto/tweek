@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import * as selectedKeyActions from '../../../../store/ducks/selectedKey';
+import { showConfirm } from '../../../../store/ducks/alerts';
 import { compose, lifecycle } from 'recompose';
 import MessageKeyPage from './MessageKeyPage/MessageKeyPage';
 import KeyEditPage from './KeyEditPage/KeyEditPage';
@@ -23,7 +24,7 @@ const onRouteLeaveConfirmFunc = (props) => {
 const keyPageComp = compose(
   connect((state, { params }) =>
     ({ selectedKey: state.selectedKey, configKey: params.splat, isInAddMode: params.splat === BLANK_KEY_NAME }),
-    { ...selectedKeyActions }),
+    { ...selectedKeyActions, showConfirm }),
   routeLeaveHook(onRouteLeaveConfirmFunc),
   lifecycle({
     componentDidMount() {
