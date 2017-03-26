@@ -22,7 +22,7 @@ function isEmptyRules(rules) {
   return isEmptyRules(rules['*']);
 }
 
-export default ({valueType, mutate}) => {
+export default ({valueType, mutate, showConfirm}) => {
   if (!isBrowser)
     return (<div>Loading rule...</div>);
 
@@ -41,8 +41,15 @@ export default ({valueType, mutate}) => {
     onPartitionsChanged(newPartitions);
   };
   const onPartitionsChanged = (newPartitions) => {
-    if (!isEmptyRules(mutate.in("rules").getValue()) && !confirm("If you change the partitions the rules will be reset.\nDo you want to continue?")) return;
-    mutate.apply(m => m.insert("partitions", newPartitions).insert("rules", createPartitionedRules(newPartitions.length)));
+    showConfirm({
+      shouldShow: !isEmptyRules(mutate.in("rules").getValue()),
+      title: 'Warning',
+      message: 'If you change the partitions the rules will be reset.\nDo you want to continue?',
+      onResult: (result) => {
+        if (!result) return;
+        mutate.apply(m => m.insert("partitions", newPartitions).insert("rules", createPartitionedRules(newPartitions.length)));
+      }
+    });
   };
   const updateDefaultValue = (newValue) => {
     const typedValue = newValue && TypesService.safeConvertValue(newValue, valueType);

@@ -50,7 +50,7 @@ class KeyEditPage extends Component {
   _onMutation = (x) => this.props.updateKeyDef({source: JSON.stringify(x, null, 4)});
 
   render() {
-    const {selectedKey, isInAddMode, isInStickyMode } = this.props;
+    const {selectedKey, isInAddMode, isInStickyMode, showConfirm } = this.props;
     const {key, local: {meta, keyDef}} = selectedKey;
     const isReadonly = !!meta.readOnly && meta.readOnly;
 
@@ -81,6 +81,7 @@ class KeyEditPage extends Component {
               isInStickyMode={isInStickyMode} />
 
             <KeyRulesEditor
+              showConfirm={showConfirm}
               keyDef={keyDef}
               sourceTree={RulesService.convertToExplicitKey(JSON.parse(keyDef.source))}
               onMutation={this._onMutation}
