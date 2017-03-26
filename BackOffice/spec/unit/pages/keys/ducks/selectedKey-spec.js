@@ -21,6 +21,17 @@ jest.mock('../../../../../modules/store/ducks/ducks-utils/blankKeyDefinition', (
   };
 });
 
+jest.mock('../../../../../modules/store/ducks/alerts', () => {
+  let result = true;
+  const addAlert = ({onResult}) => onResult(result);
+  return {
+    setResult: r => result = r,
+    showCustomAlert: addAlert,
+    showAlert: addAlert,
+    showConfirm: addAlert
+  };
+});
+
 import { openKey, saveKey, updateKeyValueType, updateKeyName } from '../../../../../modules/store/ducks/selectedKey';
 import { createBlankKey, createBlankKeyMeta, BLANK_KEY_NAME } from '../../../../../modules/store/ducks/ducks-utils/blankKeyDefinition';
 import { assert, expect } from 'chai';
@@ -28,6 +39,7 @@ import fetchMock from 'fetch-mock';
 import keyNameValidations from '../../../../../modules/store/ducks/ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from '../../../../../modules/store/ducks/ducks-utils/validations/key-value-type-validations';
 import R from 'ramda';
+import alerts from '../../../../../modules/store/ducks/alerts';
 
 describe('selectedKey', async () => {
 
@@ -416,22 +428,20 @@ describe('selectedKey', async () => {
 
       initializeState.keys = [];
 
-      global.confirm = jest.fn(message => false);
+      alerts.setResult(false);
 
       // Act & Assert
       const func1 = updateKeyValueType(keyValueType);
       await func1(dispatchMock, () => initializeState);
 
-      expect(dispatchMock.mock.calls.length).to.equal(0, 'should not dispatch any action');
-      expect(global.confirm.mock.calls.length).to.equal(1, 'should call confirm once');
+      expect(dispatchMock.mock.calls.length).to.equal(1, 'should call confirm once');
 
-      global.confirm = jest.fn(message => true);
+      alerts.setResult(true);
 
       const func2 = updateKeyValueType(keyValueType);
       await func2(dispatchMock, () => initializeState);
 
-      expect(dispatchMock.mock.calls.length).to.equal(2, 'should not dispatch any action');
-      expect(global.confirm.mock.calls.length).to.equal(1, 'should call confirm once');
+      expect(dispatchMock.mock.calls.length).to.equal(4, 'should call confirm once');
     });
   });
 
