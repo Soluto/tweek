@@ -89,10 +89,15 @@ export default class RulesList extends React.Component {
   }
 
   deleteRule(ruleIndex) {
-    let {mutate} = this.props;
+    const {mutate, showConfirm} = this.props;
 
-    if (confirm('Are you sure?')) {
-      mutate.in(ruleIndex).delete();
-    }
+    showConfirm({
+      title: 'Warning',
+      message: 'Are you sure you want to delete this rule?',
+      onResult: (result) => {
+        if (!result) return;
+        mutate.in(ruleIndex).delete();
+      }
+    });
   }
 }

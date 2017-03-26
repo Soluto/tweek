@@ -76,7 +76,7 @@ export default class PartitionsList extends React.Component {
   };
 
   render() {
-    let {partitions, mutate, valueType} = this.props;
+    let {partitions, mutate, valueType, showConfirm} = this.props;
 
     const rulesByPartitions = mutate.getValue();
     if (!rulesByPartitions) return (<div />);
@@ -138,7 +138,7 @@ export default class PartitionsList extends React.Component {
                   titleClassName={style["partitions-accordion-container-item-title"]}
                   expandedClassName={style["partitions-accordion-container-item-expanded"]}
                 >
-                  <RulesList valueType={valueType} mutate={partitionData.mutate}/>
+                  <RulesList {...{valueType, showConfirm}} mutate={partitionData.mutate}/>
                 </AccordionItem>
               )
             })
