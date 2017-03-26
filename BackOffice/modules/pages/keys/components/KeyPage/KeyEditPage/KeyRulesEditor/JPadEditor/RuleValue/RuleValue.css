@@ -31,6 +31,479 @@
   cursor: default;
   background-color: gray;
 }
+.inputValue:global(.input-type-boolean) {
+  display: flex;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead .override-input {
+  flex-grow: 1;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.inputValue:global(.input-type-boolean) .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.inputValue:global(.input-type-boolean) .override-typeahead .override-dropdown :global(.dropdown-menu) {
+  position: absolute;
+  max-height: 350px;
+  min-width: 150px;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead .override-dropdown :global(.dropdown-menu) li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead .override-dropdown :global(.dropdown-menu) li:last-child {
+  border-bottom-width: 1px;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead .override-dropdown :global(.dropdown-menu) li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead .override-dropdown :global(.dropdown-menu) li:active {
+  background-color: #d1d1d1;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead .override-dropdown :global(.dropdown-menu) li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead .override-dropdown :global(.dropdown-menu) li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead .override-dropdown :global(.dropdown-menu) :global(.disabled) {
+  display: none;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead .override-dropdown :global(.dropdown-menu) :global(.active) {
+  background-color: #dfdfdf;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) {
+  flex-grow: 1;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) {
+  position: absolute;
+  max-height: 350px;
+  min-width: 150px;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
+  border-bottom-width: 1px;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
+  background-color: #d1d1d1;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.disabled) {
+  display: none;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
+  background-color: #dfdfdf;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  padding: 0 0 3px;
+  box-sizing: border-box;
+  background-color: #bcbcbc;
+  font-size: 16px;
+  padding-top: 2px;
+  margin-top: -12px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  z-index: 1;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled {
+  background-color: gray;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:hover,
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
+  background-color: #9c9c9c;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):active {
+  background-color: #7b7b7b;
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):after {
+  font-family: 'tweekIcons';
+  content: '\E900';
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) span {
+  display: none;
+}
+.inputValue:global(.input-type-boolean) .override-input {
+  flex-grow: 1;
+}
+.inputValue:global(.input-type-boolean) .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.inputValue:global(.input-type-boolean) .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.inputValue:global(.input-type-boolean) .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.inputValue:global(.input-type-boolean) .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.inputValue:global(.input-type-boolean) .override-dropdown :global(.dropdown-menu) {
+  position: absolute;
+  max-height: 350px;
+  min-width: 150px;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.inputValue:global(.input-type-boolean) .override-dropdown :global(.dropdown-menu) li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.inputValue:global(.input-type-boolean) .override-dropdown :global(.dropdown-menu) li:last-child {
+  border-bottom-width: 1px;
+}
+.inputValue:global(.input-type-boolean) .override-dropdown :global(.dropdown-menu) li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.inputValue:global(.input-type-boolean) .override-dropdown :global(.dropdown-menu) li:active {
+  background-color: #d1d1d1;
+}
+.inputValue:global(.input-type-boolean) .override-dropdown :global(.dropdown-menu) li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.inputValue:global(.input-type-boolean) .override-dropdown :global(.dropdown-menu) li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.inputValue:global(.input-type-boolean) .override-dropdown :global(.dropdown-menu) :global(.disabled) {
+  display: none;
+}
+.inputValue:global(.input-type-boolean) .override-dropdown :global(.dropdown-menu) :global(.active) {
+  background-color: #dfdfdf;
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) {
+  flex-grow: 1;
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.dropdown-menu) {
+  position: absolute;
+  max-height: 350px;
+  min-width: 150px;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
+  border-bottom-width: 1px;
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
+  background-color: #d1d1d1;
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.disabled) {
+  display: none;
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
+  background-color: #dfdfdf;
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  padding: 0 0 3px;
+  box-sizing: border-box;
+  background-color: #bcbcbc;
+  font-size: 16px;
+  padding-top: 2px;
+  margin-top: -12px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  z-index: 1;
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled {
+  background-color: gray;
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:hover,
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
+  background-color: #9c9c9c;
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):active {
+  background-color: #7b7b7b;
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):after {
+  font-family: 'tweekIcons';
+  content: '\E900';
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) span {
+  display: none;
+}
 .rule-value-container .values-input {
   border: 0;
   border-style: none;
@@ -84,480 +557,7 @@
   cursor: default;
   background-color: gray;
 }
-.rule-value-container .boolean-single-variant-wrapper {
-  display: flex;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-input {
-  flex-grow: 1;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  width: 150px;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  width: 150px;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) {
-  position: absolute;
-  max-height: 350px;
-  min-width: 150px;
-  overflow-y: auto;
-  width: auto;
-  z-index: 5;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li {
-  background-color: #f4f4f4;
-  min-height: 35px;
-  display: flex;
-  align-items: center;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-bottom-width: 0;
-  overflow-x: hidden;
-  transition: all 0.2s ease-in-out;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li:last-child {
-  border-bottom-width: 1px;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li:hover {
-  cursor: pointer;
-  background-color: #dfdfdf;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li:active {
-  background-color: #d1d1d1;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li a {
-  text-decoration: none;
-  color: gray;
-  font-size: 13px;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-  justify-content: center;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) li a:first-child {
-  padding: 10px;
-  padding-right: 30px;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) :global(.disabled) {
-  display: none;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) :global(.active) {
-  background-color: #dfdfdf;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) {
-  flex-grow: 1;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  width: 150px;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  width: 150px;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) {
-  position: absolute;
-  max-height: 350px;
-  min-width: 150px;
-  overflow-y: auto;
-  width: auto;
-  z-index: 5;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
-  background-color: #f4f4f4;
-  min-height: 35px;
-  display: flex;
-  align-items: center;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-bottom-width: 0;
-  overflow-x: hidden;
-  transition: all 0.2s ease-in-out;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
-  border-bottom-width: 1px;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
-  cursor: pointer;
-  background-color: #dfdfdf;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
-  background-color: #d1d1d1;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
-  text-decoration: none;
-  color: gray;
-  font-size: 13px;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-  justify-content: center;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
-  padding: 10px;
-  padding-right: 30px;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.disabled) {
-  display: none;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
-  background-color: #dfdfdf;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) {
-  vertical-align: top;
-  background-color: #00aeef;
-  height: 28px;
-  border: 0;
-  padding: 0 20px;
-  color: white;
-  outline: 0;
-  padding-bottom: 2px;
-  border-radius: 14px;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  transition: all 0.2s ease-in-out;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  line-height: 1;
-  padding: 0 0 3px;
-  box-sizing: border-box;
-  background-color: #bcbcbc;
-  font-size: 16px;
-  padding-top: 2px;
-  margin-top: -12px;
-  position: absolute;
-  right: 0;
-  top: 50%;
-  z-index: 1;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
-  background-color: #029CD5;
-  cursor: pointer;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled {
-  background-color: gray;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:hover,
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:active {
-  cursor: default;
-  background-color: gray;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
-  background-color: #9c9c9c;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):active {
-  background-color: #7b7b7b;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):after {
-  font-family: 'tweekIcons';
-  content: '\E900';
-}
-.rule-value-container .boolean-single-variant-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) span {
-  display: none;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-input {
-  flex-grow: 1;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  width: 150px;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.rule-value-container .boolean-single-variant-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  width: 150px;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.rule-value-container .boolean-single-variant-wrapper .override-dropdown :global(.dropdown-menu) {
-  position: absolute;
-  max-height: 350px;
-  min-width: 150px;
-  overflow-y: auto;
-  width: auto;
-  z-index: 5;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-dropdown :global(.dropdown-menu) li {
-  background-color: #f4f4f4;
-  min-height: 35px;
-  display: flex;
-  align-items: center;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-bottom-width: 0;
-  overflow-x: hidden;
-  transition: all 0.2s ease-in-out;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-dropdown :global(.dropdown-menu) li:last-child {
-  border-bottom-width: 1px;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-dropdown :global(.dropdown-menu) li:hover {
-  cursor: pointer;
-  background-color: #dfdfdf;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-dropdown :global(.dropdown-menu) li:active {
-  background-color: #d1d1d1;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-dropdown :global(.dropdown-menu) li a {
-  text-decoration: none;
-  color: gray;
-  font-size: 13px;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-  justify-content: center;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-dropdown :global(.dropdown-menu) li a:first-child {
-  padding: 10px;
-  padding-right: 30px;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-dropdown :global(.dropdown-menu) :global(.disabled) {
-  display: none;
-}
-.rule-value-container .boolean-single-variant-wrapper .override-dropdown :global(.dropdown-menu) :global(.active) {
-  background-color: #dfdfdf;
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) {
-  flex-grow: 1;
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  width: 150px;
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  width: 150px;
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) {
-  position: absolute;
-  max-height: 350px;
-  min-width: 150px;
-  overflow-y: auto;
-  width: auto;
-  z-index: 5;
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
-  background-color: #f4f4f4;
-  min-height: 35px;
-  display: flex;
-  align-items: center;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-bottom-width: 0;
-  overflow-x: hidden;
-  transition: all 0.2s ease-in-out;
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
-  border-bottom-width: 1px;
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
-  cursor: pointer;
-  background-color: #dfdfdf;
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
-  background-color: #d1d1d1;
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
-  text-decoration: none;
-  color: gray;
-  font-size: 13px;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-  justify-content: center;
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
-  padding: 10px;
-  padding-right: 30px;
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.disabled) {
-  display: none;
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
-  background-color: #dfdfdf;
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) {
-  vertical-align: top;
-  background-color: #00aeef;
-  height: 28px;
-  border: 0;
-  padding: 0 20px;
-  color: white;
-  outline: 0;
-  padding-bottom: 2px;
-  border-radius: 14px;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  transition: all 0.2s ease-in-out;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  line-height: 1;
-  padding: 0 0 3px;
-  box-sizing: border-box;
-  background-color: #bcbcbc;
-  font-size: 16px;
-  padding-top: 2px;
-  margin-top: -12px;
-  position: absolute;
-  right: 0;
-  top: 50%;
-  z-index: 1;
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
-  background-color: #029CD5;
-  cursor: pointer;
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled {
-  background-color: gray;
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:hover,
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:active {
-  cursor: default;
-  background-color: gray;
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
-  background-color: #9c9c9c;
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):active {
-  background-color: #7b7b7b;
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):after {
-  font-family: 'tweekIcons';
-  content: '\E900';
-}
-.rule-value-container .boolean-single-variant-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) span {
-  display: none;
-}
-.rule-value-container .boolean-single-variant-wrapper .to-feature-flag-button {
+.rule-value-container .to-feature-flag-button {
   vertical-align: top;
   background-color: #00aeef;
   height: 28px;
@@ -578,15 +578,15 @@
   margin: 7px;
   opacity: .7;
 }
-.rule-value-container .boolean-single-variant-wrapper .to-feature-flag-button:hover {
+.rule-value-container .to-feature-flag-button:hover {
   background-color: #029CD5;
   cursor: pointer;
 }
-.rule-value-container .boolean-single-variant-wrapper .to-feature-flag-button:disabled {
+.rule-value-container .to-feature-flag-button:disabled {
   background-color: gray;
 }
-.rule-value-container .boolean-single-variant-wrapper .to-feature-flag-button:disabled:hover,
-.rule-value-container .boolean-single-variant-wrapper .to-feature-flag-button:disabled:active {
+.rule-value-container .to-feature-flag-button:disabled:hover,
+.rule-value-container .to-feature-flag-button:disabled:active {
   cursor: default;
   background-color: gray;
 }
