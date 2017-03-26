@@ -12,7 +12,7 @@ const Alert = ({title, message, buttons, onClose, showCloseButton = false}) => {
       {reactify(message, {className:style['rodal-body']})}
       <div className={style['rodal-button-container']}>
         {
-          buttons.map(({value, className, ...props}, i) => <button key={i} className={style[className]} {...props} >{value}</button>)
+          buttons.map(({text, className, ...props}, i) => <button key={i} className={style[className]} {...props} >{text}</button>)
         }
       </div>
     </Rodal>
