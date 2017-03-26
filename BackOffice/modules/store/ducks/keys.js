@@ -1,13 +1,15 @@
 import { handleActions } from 'redux-actions';
 import R from 'ramda';
 import Promise from 'bluebird';
+import { push } from 'react-router-redux';
+import fetch from '../../utils/fetch';
+import { showError } from './notifications';
+
 const KEYS_UPDATED = 'KEYS_UPDATED';
 const KEY_ADDING = 'KEY_ADDING';
 const KEY_ADDED = 'KEY_ADDED';
 const KEY_DELETED = 'KEY_DELETED';
 const KEY_DELETING = 'KEY_DELETING';
-
-import { push } from 'react-router-redux';
 
 export const addKey = (key) => async function (dispatch) {
   dispatch(push(`/keys/_blank`));
@@ -16,16 +18,19 @@ export const addKey = (key) => async function (dispatch) {
 
 export const deleteKey = (key) => async function (dispatch) {
   dispatch({ type: KEY_DELETING, payload: key });
-  
+
   await Promise.delay(1);
   dispatch(push('/keys'));
-  
-  await fetch(`/api/keys/${key}`, {
-    credentials: 'same-origin',
-    method: 'delete',
-  });
-  
-  dispatch({ type: KEY_DELETED, payload: key });
+  try {
+    await fetch(`/api/keys/${key}`, {
+      credentials: 'same-origin',
+      method: 'delete',
+    });
+
+    dispatch({ type: KEY_DELETED, payload: key });
+  } catch (error) {
+    dispatch(showError({title: "Failed to delete key!", error}));
+  }
 };
 
 export function getKeys(payload) {
