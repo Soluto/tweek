@@ -9,6 +9,7 @@ import { downloadTags } from './tags.js';
 import * as ContextService from "../../services/context-service";
 import fetch from '../../utils/fetch';
 import { showError } from './notifications';
+import { showConfirm } from './alerts';
 
 const KEY_OPENED = 'KEY_OPENED';
 const KEY_OPENING = 'KEY_OPENING';
@@ -70,30 +71,33 @@ export function updateKeyMetaDef(meta) {
 }
 
 export function updateKeyValueType(keyValueType) {
-  return async function (dispatch, getState) {
+  return function (dispatch, getState) {
     const rules = JSON.parse(getState().selectedKey.local.keyDef.source).rules;
-    const shouldShowAlert =
-      rules.some(x => x.Type !== 'SingleVariant' || (x.Value !== null && x.Value !== undefined && x.Value !== ''));
 
-    if (shouldShowAlert && !confirm(`Rules values will try be converted to new type. Proceed?`)) {
-      return;
-    }
+    dispatch(showConfirm({
+      shouldShow: rules.some(x => x.Type !== 'SingleVariant' || (x.Value !== null && x.Value !== undefined && x.Value !== '')),
+      title: 'Attention',
+      message: 'Rule values will try to be converted to new type.\nDo you want to continue?',
+      onResult: (result) => {
+        if (!result) return;
 
-    const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
-    keyValueTypeValidation.isShowingHint = !keyValueTypeValidation.isValid;
+        const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
+        keyValueTypeValidation.isShowingHint = !keyValueTypeValidation.isValid;
 
-    dispatch({ type: KEY_VALUE_TYPE_CHANGE, payload: keyValueType });
+        dispatch({ type: KEY_VALUE_TYPE_CHANGE, payload: keyValueType });
 
-    const currentValidationState = getState().selectedKey.validation;
-    const newValidation = {
-      ...currentValidationState,
-      meta: {
-        ...currentValidationState.meta,
-        valueType: keyValueTypeValidation,
-      },
-    };
+        const currentValidationState = getState().selectedKey.validation;
+        const newValidation = {
+          ...currentValidationState,
+          meta: {
+            ...currentValidationState.meta,
+            valueType: keyValueTypeValidation,
+          },
+        };
 
-    dispatch({ type: KEY_VALIDATION_CHANGE, payload: newValidation });
+        dispatch({ type: KEY_VALIDATION_CHANGE, payload: newValidation });
+      }
+    }))
   };
 }
 
