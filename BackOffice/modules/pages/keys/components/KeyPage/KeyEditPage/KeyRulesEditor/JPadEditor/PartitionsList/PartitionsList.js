@@ -1,10 +1,13 @@
 import React from "react";
-import RulesList from "../RulesList/RulesList";
 import R from "ramda";
+import {Accordion, AccordionItem} from "react-sanfona";
+import {mapProps} from 'recompose';
+import RulesList from "../RulesList/RulesList";
+import PropertyValue from "../Matcher/Properties/PropertyValue";
 import style from "./PartitionsList.css";
 import coreStyle from '../../../../../../../../styles/core/core.css'
-import {Accordion, AccordionItem} from "react-sanfona";
 import * as ContextService from '../../../../../../../../services/context-service';
+import {equal} from '../../../../../../../../services/operators-provider';
 
 const extractPartitionToObject = (mutate, partitions) => {
   if (partitions.length == 0)
@@ -22,15 +25,13 @@ const extractPartitionToObject = (mutate, partitions) => {
   );
 };
 
-const NewProperty = ({value, setProperty, name, identity}) =>
-  <div className={style['new-partition-item-container']}>
-    <input className={style['value-input']}
-           type="text"
-           onChange={(e) => setProperty(e.target.value)}
-           value={value || ''}
-           placeholder={`${name} (${identity})`}
-    />
-  </div>;
+const NewPartitionPropertyValue = mapProps(({value, onUpdate, name, identity, id:property}) => ({
+  value,
+  onUpdate,
+  placeholder: `${name} (${identity})`,
+  propertyTypeDetails: ContextService.getPropertyTypeDetails(property),
+  selectedOperator: equal.operatorValue,
+}))(PropertyValue);
 
 class AddPartition extends React.Component {
   state = {};
@@ -54,10 +55,14 @@ class AddPartition extends React.Component {
     return (
       <div className={style['new-partition-container']}>
         {
-          indexedPartitions.map(partition => <NewProperty key={partition.id}
-                                                          {...partition}
-                                                          value={this.state[partition.id]}
-                                                          setProperty={value => this.setState({[partition.id]: value})}/>)
+          indexedPartitions.map(partition =>
+            <div className={style['new-partition-item-container']} key={partition.id}>
+              <NewPartitionPropertyValue
+                {...partition}
+                value={this.state[partition.id]}
+                onUpdate={value => this.setState({[partition.id]: value})}
+              />
+            </div>)
         }
         <button className={style['add-partition-button']} onClick={this.addPartition.bind(this)}/>
       </div>
