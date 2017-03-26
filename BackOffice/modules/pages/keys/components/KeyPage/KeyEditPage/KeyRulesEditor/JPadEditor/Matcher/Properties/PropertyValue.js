@@ -33,16 +33,16 @@ const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
   );
 };
 
-const InputPropertyValue = ({ onUpdate, value }) => (
+const InputPropertyValue = ({ onUpdate, value, placeholder='Value' }) => (
   <input className={style['value-input']}
     type="text"
     onChange={(e) => onUpdate(e.target.value)}
     value={value}
-    placeholder="Value"
+    placeholder={placeholder}
   />
 );
 
-function PropertyValueComponent({ onUpdate, propertyTypeDetails, value, selectedOperator }) {
+function PropertyValueComponent({ onUpdate, propertyTypeDetails, value, selectedOperator, placeholder='Value' }) {
   let allowedValues = propertyTypeDetails.allowedValues || [];
 
   if (selectedOperator === inOp.operatorValue)
@@ -58,7 +58,7 @@ function PropertyValueComponent({ onUpdate, propertyTypeDetails, value, selected
     return (
       <ComboBox
         options={allowedValues}
-        placeholder="Value"
+        placeholder={placeholder}
         wrapperThemeClass={style['property-value-combo-box']}
         onChange={(selectedValue) => {
           onUpdate(selectedValue);
@@ -68,9 +68,7 @@ function PropertyValueComponent({ onUpdate, propertyTypeDetails, value, selected
     );
 
   return (
-    <InputPropertyValue onUpdate={onUpdate}
-      value={value}
-    />
+    <InputPropertyValue {...{onUpdate, value, placeholder}} />
   );
 }
 
