@@ -7,6 +7,8 @@ import keyNameValidations from './ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
 import { downloadTags } from './tags.js';
 import * as ContextService from "../../services/context-service";
+import fetch from '../../utils/fetch';
+import { showError } from './notifications';
 
 const KEY_OPENED = 'KEY_OPENED';
 const KEY_OPENING = 'KEY_OPENING';
@@ -22,7 +24,12 @@ const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
 export function openKey(key) {
   return async function (dispatch) {
     dispatch(downloadTags());
-    ContextService.refreshSchema();
+
+    try {
+      ContextService.refreshSchema();
+    } catch (error) {
+      dispatch(showError({title: "Failed to refresh schema", error}));
+    }
 
     if (key === BLANK_KEY_NAME) {
       dispatch({ type: KEY_OPENED, payload: createBlankKey() });
@@ -119,20 +126,21 @@ export function saveKey() {
       return;
     }
 
-    dispatch({ type: KEY_SAVING });
-
-    const response = await fetch(`/api/keys/${savedKey}`, {
-      credentials: 'same-origin',
-      method: 'put',
-      ...withJsonData(local),
-    });
-
-    const isSaveSucceeded = response.status < 400;
-    dispatch({ type: KEY_SAVED, payload: { keyName: savedKey, isSaveSucceeded } });
-
-    if (!isSaveSucceeded) {
-      alert("Save key failed");
+    dispatch({type: KEY_SAVING});
+    let isSaveSucceeded;
+    try {
+      await fetch(`/api/keys/${savedKey}`, {
+        credentials: 'same-origin',
+        method: 'put',
+        ...withJsonData(local),
+      });
+      isSaveSucceeded = true;
+    } catch (error) {
+      isSaveSucceeded = false;
+      dispatch(showError({title: "Failed to save key", error}));
       return;
+    } finally {
+      dispatch({type: KEY_SAVED, payload: {keyName: savedKey, isSaveSucceeded}});
     }
 
     if (isNewKey) dispatch({ type: 'KEY_ADDED', payload: savedKey });
