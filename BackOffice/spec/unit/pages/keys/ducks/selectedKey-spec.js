@@ -41,6 +41,7 @@ describe('selectedKey', async () => {
   const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
   const KEY_VALIDATION_CHANGE = 'KEY_VALIDATION_CHANGE';
   const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
+  const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
 
   let dispatchMock;
   let currentState;
@@ -244,8 +245,14 @@ describe('selectedKey', async () => {
         const fetchJsonDataString = fetchMock.lastOptions().body;
         assert(JSON.parse(fetchJsonDataString), currentState.selectedKey.local, 'should pass correct data to fetch PUT');
 
-        const [[keySavingDispatchAction], [keySavedDispatchAction]] = dispatchMock.mock.calls;
+        let [[keySavingDispatchAction], [keySavedDispatchAction]] = dispatchMock.mock.calls;
         assertDispatchAction(keySavingDispatchAction, { type: KEY_SAVING });
+
+        if (!shouldSaveSucceed) {
+          const [_,[addNotificationDispatchAction]] = dispatchMock.mock.calls;
+          assert.equal(ADD_NOTIFICATION, addNotificationDispatchAction.type, 'should add error notification');
+          keySavedDispatchAction = dispatchMock.mock.calls[2][0];
+        }
 
         assertDispatchAction(keySavedDispatchAction,
           { type: KEY_SAVED, payload: { keyName: keyNameToSave, isSaveSucceeded: shouldSaveSucceed } });
