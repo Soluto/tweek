@@ -25,7 +25,7 @@ const extractPartitionToObject = (mutate, partitions) => {
   );
 };
 
-const NewPropertyValue = mapProps(({value, onUpdate, name, identity, id:property}) => ({
+const NewPartitionPropertyValue = mapProps(({value, onUpdate, name, identity, id:property}) => ({
   value,
   onUpdate,
   placeholder: `${name} (${identity})`,
@@ -57,7 +57,7 @@ class AddPartition extends React.Component {
         {
           indexedPartitions.map(partition =>
             <div className={style['new-partition-item-container']} key={partition.id}>
-              <NewPropertyValue
+              <NewPartitionPropertyValue
                 {...partition}
                 value={this.state[partition.id]}
                 onUpdate={value => this.setState({[partition.id]: value})}
