@@ -79,7 +79,7 @@ export default ({valueType, mutate, showConfirm}) => {
       {
         partitions && partitions.length > 0
           ? <PartitionsList {...{partitions, valueType, showConfirm}} mutate={mutate.in("rules")}/>
-          : <RulesList valueType={valueType} mutate={mutate.in("rules")}/>
+          : <RulesList {...{valueType, showConfirm}} mutate={mutate.in("rules")}/>
       }
     </div>
   );
