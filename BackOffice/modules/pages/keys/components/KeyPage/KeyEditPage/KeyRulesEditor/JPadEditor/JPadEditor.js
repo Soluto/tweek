@@ -22,7 +22,7 @@ function isEmptyRules(rules) {
   return isEmptyRules(rules['*']);
 }
 
-export default ({valueType, mutate, showConfirm}) => {
+export default ({valueType, mutate, showConfirm, showAlert}) => {
   if (!isBrowser)
     return (<div>Loading rule...</div>);
 
@@ -69,11 +69,7 @@ export default ({valueType, mutate, showConfirm}) => {
           onChange={updateDefaultValue}
         />
         <div className={style['vertical-separator']}></div>
-        <PartitionsSelector
-          partitions={partitions}
-          handlePartitionAddition={handlePartitionAddition}
-          handlePartitionDelete={handlePartitionDelete}
-        />
+        <PartitionsSelector {...{partitions, handlePartitionAddition, handlePartitionDelete, showAlert}} />
       </div>
 
       {
