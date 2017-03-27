@@ -18,14 +18,13 @@ const buttons = {
   }
 };
 
-
 function addAlert({buttons, onResult, shouldShow = true, ...alertProps}) {
-  if (!shouldShow) {
-    if (onResult) onResult(true);
-    return;
-  }
-
   return (dispatch) => {
+    if (!shouldShow) {
+      if (onResult) onResult(true);
+      return;
+    }
+
     const id = chance.guid();
     const onClose = (result) => {
       dispatch({type: REMOVE_ALERT, id});
