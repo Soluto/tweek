@@ -47,6 +47,8 @@ selectors.KEY_LIST_FILTER = getRelativeSelector([getSelectorByClassNames('search
 selectors.READONLY_KEY_MESSAGE = getSelectorByClassNames('readonly-key-message');
 selectors.KEY_VALUE_TYPE_INPUT = getSelectorByClassNames('key-value-type-selector-wrapper', 'bootstrap-typeahead-input-main');
 selectors.NONE_EXISTING_KEY = getSelectorByClassNames('key-page-message');
+selectors.ALERT_OK_BUTTON = getSelectorByClassNames('rodal-confirm-btn');
+selectors.ALERT_CANCEL_BUTTON = getSelectorByClassNames('rodal-cancel-btn');
 
 selectors.folder = (folderName) => {
   return _getSelectorWithAttribute(selectors.KEY_FOLDER_NAME, 'data-folder-name', folderName);
