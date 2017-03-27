@@ -22,7 +22,7 @@ function isEmptyRules(rules) {
   return isEmptyRules(rules['*']);
 }
 
-export default ({valueType, mutate, showConfirm, showAlert}) => {
+export default ({valueType, mutate, showConfirm, showAlert, showCustomAlert}) => {
   if (!isBrowser)
     return (<div>Loading rule...</div>);
 
@@ -30,17 +30,54 @@ export default ({valueType, mutate, showConfirm, showAlert}) => {
   const defaultValueMutate = mutate.in("defaultValue");
 
   const handlePartitionAddition = (newPartition) => {
-    // const rules = mutate.in("rules").getValue();
-    // if (!isEmptyRules(rules) && !confirm("This operation will partition all the rules.\nDo you want to continue?")) return;
-    // mutate.apply(m => m.insert("rules", RulesService.addPartition(newPartition, rules, partitions.length)).in("partitions").append(newPartition).up());
-    const newPartitions = partitions.concat(newPartition);
-    onPartitionsChanged(newPartitions);
+    const rules = mutate.in("rules").getValue();
+    const testAutoPartition = RulesService.testAutoPartition(newPartition, rules, partitions.length);
+
+    if (!testAutoPartition.isValid) {
+      const newPartitions = partitions.concat(newPartition);
+      clearPartitions(newPartitions);
+      return;
+    }
+
+    showCustomAlert({
+      shouldShow: !isEmptyRules(mutate.in("rules").getValue()),
+      title: 'Warning',
+      message: `Auto-partition can move ${testAutoPartition.match} rules to matching partitions, and ${testAutoPartition.default} rules to default partition/s.\n
+          This can cause some side effects related to rule ordering.\n
+          Do you want to use auto-partition, or prefer to delete all rules?`,
+      buttons: [{
+        text: 'Auto-partition',
+        value: 'OK',
+        className: 'rodal-confirm-btn',
+      }, {
+        text: 'Reset',
+        value: 'RESET',
+        className: 'reset-partitions',
+      }, {
+        text: 'Cancel',
+        value: 'CANCEL',
+        className: 'cancel-reset-partitions',
+      }],
+      onResult: (result) => {
+        switch (result) {
+          case 'RESET':
+            mutate.apply(m => m.insert('rules', createPartitionedRules(partitions.length + 1)).in('partitions').append(newPartition));
+            break;
+          case 'OK':
+            mutate.apply(m => m.insert("rules", RulesService.addPartition(newPartition, rules, partitions.length)).in("partitions").append(newPartition));
+            break;
+        }
+      }
+    });
   };
+
   const handlePartitionDelete = (index) => {
+    if (partitions.length === 0) return;
     const newPartitions = R.remove(index, 1, partitions);
-    onPartitionsChanged(newPartitions);
+    clearPartitions(newPartitions);
   };
-  const onPartitionsChanged = (newPartitions) => {
+
+  const clearPartitions = (newPartitions) => {
     showConfirm({
       shouldShow: !isEmptyRules(mutate.in("rules").getValue()),
       title: 'Warning',
