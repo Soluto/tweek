@@ -21,8 +21,7 @@ export default class KeysPageObject {
 
   goToBase() {
     this.browser.url(KeysPageObject.BASE_URL);
-    if (this.didAlertRaised())
-      this.browser.alertAccept();
+    this.browser.acceptAlertIfPresent();
 
     this.browser.waitForVisible(selectors.ADD_KEY_BUTTON, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
   }
@@ -32,9 +31,7 @@ export default class KeysPageObject {
 
     this.browser.url(goTo);
 
-    if (this.didAlertRaised()) {
-      this.browser.alertAccept();
-    }
+    this.browser.acceptAlertIfPresent();
 
     this.waitForPageToLoad();
   }
@@ -61,7 +58,7 @@ export default class KeysPageObject {
     try {
       this.goToKey(keyName);
       this.browser.click(selectors.DELETE_KEY_BUTTON);
-      this.browser.alertAccept();
+      this.acceptRodalIfRaised();
 
       console.log('deleting key', keyName);
       this.waitForKeyToBeDeleted(keyName);
@@ -172,13 +169,8 @@ export default class KeysPageObject {
     return `${prefix}_${moment(currentDate).format('DD_MM_YYYY_HH_mm_ss')}`;
   }
 
-  didAlertRaised() {
-    try {
-      this.browser.alertText();
-      return true;
-    } catch (exp) {
-      return false;
-    }
+  acceptRodalIfRaised() {
+    this.browser.clickIfVisible(selectors.ALERT_OK_BUTTON, 500);
   }
 
   setConditionPropertyFromSuggestion(ruleNumber, conditionNumber, suggestionIndex) {

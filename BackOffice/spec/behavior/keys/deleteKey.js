@@ -26,8 +26,8 @@ describe('delete key', () => {
     keysPageObject.goToKey(keyToDeleteFullPath);
 
     browser.click(selectors.DELETE_KEY_BUTTON);
-    assert(browser.alertText(), 'should show deleting alert');
-    browser.alertAccept();
+    browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
+    keysPageObject.acceptRodalIfRaised();
 
     pageAsserts.assertIsInPage(KeysPageObject.KEYS_PAGE_URL, 'should moves to keys page url');
     keysAsserts.assertIsKeyExistsAfterTransaction(keyToDeleteFullPath, false, 'key should not exist after delete');
