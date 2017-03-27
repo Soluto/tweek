@@ -20,7 +20,7 @@ const DefaultValueInput = ({value, valueType, onChange}) => {
   return (
     <input
       onChange={e => onChange(e.target.value)}
-      value={value}
+      value={value || ''}
       placeholder="Enter value here"
       className={style['values-input']}
     />
