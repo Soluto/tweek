@@ -32,10 +32,14 @@
 .rodal-container .rodal-button-container .rodal-confirm-btn:hover {
   background: #0098e3;
 }
-.rodal-container .rodal-button-container .rodal-cancel-btn {
+.rodal-container .rodal-button-container .rodal-cancel-btn,
+.rodal-container .rodal-button-container .reset-partitions,
+.rodal-container .rodal-button-container .cancel-reset-partitions {
   color: #03a9f4;
   background: #fff;
 }
-.rodal-container .rodal-button-container .rodal-cancel-btn:hover {
+.rodal-container .rodal-button-container .rodal-cancel-btn:hover,
+.rodal-container .rodal-button-container .reset-partitions:hover,
+.rodal-container .rodal-button-container .cancel-reset-partitions:hover {
   background: #fafafa;
 }

@@ -23,7 +23,7 @@ const MutatorFor = (propName) => (Comp) =>
     }
   };
 
-const KeyRulesEditor = ({ keyDef, mutate, onMutation , showConfirm, showAlert}) => {
+const KeyRulesEditor = ({ keyDef, mutate, onMutation , showConfirm, showAlert, showCustomAlert}) => {
 
   return (
     <div className={style['key-rules-editor-container']}>
@@ -40,7 +40,7 @@ const KeyRulesEditor = ({ keyDef, mutate, onMutation , showConfirm, showAlert}) 
         </TabList>
         <TabPanel className={style['tab-content']}>
           <JPadEditor
-            {...{mutate, showConfirm, showAlert}}
+            {...{mutate, showConfirm, showAlert, showCustomAlert}}
             jpadSource={keyDef.source}
             valueType={keyDef.valueType}
           />
