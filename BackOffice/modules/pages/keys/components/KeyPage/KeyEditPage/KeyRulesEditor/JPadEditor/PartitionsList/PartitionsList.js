@@ -167,10 +167,12 @@ export default class PartitionsList extends React.Component {
   async deletePartition(partitionGroup) {
     let {mutate, alerter} = this.props;
 
-    if ((await alerter.showConfirm({
-        title: 'Are you sure?',
-        message: 'This operation will delete the partition along with all the rules inside it.\nDo you want to continue?',
-      })).result) {
+    const alert = {
+      title: 'Are you sure?',
+      message: 'This operation will delete the partition along with all the rules inside it.\nDo you want to continue?',
+    };
+
+    if ((await alerter.showConfirm(alert)).result) {
       mutate.apply(partitionMutate => {
         for (let partition of partitionGroup) {
           partitionMutate = partitionMutate.in(partition);
