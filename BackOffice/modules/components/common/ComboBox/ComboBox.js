@@ -46,12 +46,14 @@ const comp = compose(
           }
           setCurrentInputValue(selectedValues[0].label);
           onChange(selectedValues[0]);
+          onChange = noop;
         }}
         onInputChange={text => {
           setCurrentInputValue(text);
           const selectedItem = options.find((x) => compareLowerCase(x, text) || compareLowerCase(x.label, text));
-          if (selectedItem && onChange) {
+          if (selectedItem && selectedItem !== selected[0]) {
             onChange(selectedItem);
+            onChange = noop;
           }
           onInputChange(text);
         }}
