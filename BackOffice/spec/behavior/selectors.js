@@ -19,6 +19,7 @@ function _getSelectorWithAttribute(selector, attribute, value) {
 }
 
 selectors.BACKGROUND = getSelectorByClassNames('header');
+selectors.ALERT_BACKGROUND = '.rodal-mask';
 selectors.SAVE_CHANGES_BUTTON = getSelectorByClassNames('key-action-buttons-wrapper', 'save-changes-button');
 selectors.ADD_KEY_BUTTON = getSelectorByClassNames('keys-page-container', 'add-button');
 selectors.KEY_NAME_INPUT = getSelectorByClassNames('key-main-input', 'auto-suggest', 'bootstrap-typeahead-input-main');
