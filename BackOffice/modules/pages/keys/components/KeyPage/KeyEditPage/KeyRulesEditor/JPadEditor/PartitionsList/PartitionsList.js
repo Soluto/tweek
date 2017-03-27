@@ -164,29 +164,26 @@ export default class PartitionsList extends React.Component {
     });
   }
 
-  deletePartition(partitionGroup) {
+  async deletePartition(partitionGroup) {
     let {mutate, showConfirm} = this.props;
 
-    showConfirm({
-      title: 'Are you sure?',
-      message: 'This operation will delete the partition along with all the rules inside it.\nDo you want to continue?',
-      onResult: (result) => {
-        if (!result) return;
+    if ((await showConfirm({
+        title: 'Are you sure?',
+        message: 'This operation will delete the partition along with all the rules inside it.\nDo you want to continue?',
+      })).result) {
+      mutate.apply(partitionMutate => {
+        for (let partition of partitionGroup) {
+          partitionMutate = partitionMutate.in(partition);
+        }
 
-        mutate.apply(partitionMutate => {
-          for (let partition of partitionGroup) {
-            partitionMutate = partitionMutate.in(partition);
-          }
+        let i = partitionGroup.length;
+        do {
+          partitionMutate.delete();
+          partitionMutate = partitionMutate.up();
+        } while (--i && Object.keys(partitionMutate.getValue()).length == 0);
 
-          let i = partitionGroup.length;
-          do {
-            partitionMutate.delete();
-            partitionMutate = partitionMutate.up();
-          } while (--i && Object.keys(partitionMutate.getValue()).length == 0);
-
-          return partitionMutate;
-        });
-      }
-    });
+        return partitionMutate;
+      });
+    }
   }
 }
