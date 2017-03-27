@@ -4,6 +4,7 @@ import keysReducer from './ducks/keys';
 import selectedKeyReducer from './ducks/selectedKey';
 import tagsReducer from './ducks/tags';
 import notificationsReducer from './ducks/notifications';
+import alertsReducer from './ducks/alerts'
 
 export default (combineReducers(
   {
@@ -12,5 +13,6 @@ export default (combineReducers(
     routing: routerReducer,
     tags: tagsReducer,
     notifications: notificationsReducer,
+    alerts: alertsReducer,
   }
 ));

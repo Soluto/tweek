@@ -19,6 +19,7 @@ function _getSelectorWithAttribute(selector, attribute, value) {
 }
 
 selectors.BACKGROUND = getSelectorByClassNames('header');
+selectors.ALERT_BACKGROUND = '.rodal-mask';
 selectors.SAVE_CHANGES_BUTTON = getSelectorByClassNames('key-action-buttons-wrapper', 'save-changes-button');
 selectors.ADD_KEY_BUTTON = getSelectorByClassNames('keys-page-container', 'add-button');
 selectors.KEY_NAME_INPUT = getSelectorByClassNames('key-main-input', 'auto-suggest', 'bootstrap-typeahead-input-main');
@@ -47,6 +48,8 @@ selectors.KEY_LIST_FILTER = getRelativeSelector([getSelectorByClassNames('search
 selectors.READONLY_KEY_MESSAGE = getSelectorByClassNames('readonly-key-message');
 selectors.KEY_VALUE_TYPE_INPUT = getSelectorByClassNames('key-value-type-selector-wrapper', 'bootstrap-typeahead-input-main');
 selectors.NONE_EXISTING_KEY = getSelectorByClassNames('key-page-message');
+selectors.ALERT_OK_BUTTON = getSelectorByClassNames('rodal-confirm-btn');
+selectors.ALERT_CANCEL_BUTTON = getSelectorByClassNames('rodal-cancel-btn');
 
 selectors.folder = (folderName) => {
   return _getSelectorWithAttribute(selectors.KEY_FOLDER_NAME, 'data-folder-name', folderName);

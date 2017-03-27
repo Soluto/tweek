@@ -4,6 +4,7 @@ import * as actions from '../../../../store/ducks/keys';
 import { connect } from 'react-redux';
 import KeysList from '../KeysList/KeysList';
 import Notifications from './Notifications';
+import Alerts from './Alerts';
 import style from './KeysPage.css';
 import { compose } from 'recompose';
 import withLoading from '../../../../hoc/with-loading';
@@ -27,7 +28,7 @@ export default compose(
     }
 
     render() {
-      const { keys, addKey, children, notifications } = this.props;
+      const { keys, addKey, children, notifications, alerts } = this.props;
       return (
         <div className={style['keys-page-container']}>
           <div key="KeysList" className={style['keys-list']}>
@@ -42,6 +43,7 @@ export default compose(
             {children}
           </div>
           <Notifications {...notifications} />
+          <Alerts alerts={alerts} />
         </div>
       );
     }

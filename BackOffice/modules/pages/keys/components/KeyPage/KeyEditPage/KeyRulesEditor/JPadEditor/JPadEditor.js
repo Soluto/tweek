@@ -22,27 +22,32 @@ function isEmptyRules(rules) {
   return isEmptyRules(rules['*']);
 }
 
-export default ({valueType, mutate}) => {
+export default ({valueType, mutate, alerter}) => {
   if (!isBrowser)
     return (<div>Loading rule...</div>);
 
   const partitions = mutate.in("partitions").getValue();
   const defaultValueMutate = mutate.in("defaultValue");
 
-  const handlePartitionAddition = (newPartition) => {
+  const handlePartitionAddition = async (newPartition) => {
     // const rules = mutate.in("rules").getValue();
     // if (!isEmptyRules(rules) && !confirm("This operation will partition all the rules.\nDo you want to continue?")) return;
     // mutate.apply(m => m.insert("rules", RulesService.addPartition(newPartition, rules, partitions.length)).in("partitions").append(newPartition).up());
     const newPartitions = partitions.concat(newPartition);
-    onPartitionsChanged(newPartitions);
+    await onPartitionsChanged(newPartitions);
   };
-  const handlePartitionDelete = (index) => {
+  const handlePartitionDelete = async (index) => {
     const newPartitions = R.remove(index, 1, partitions);
-    onPartitionsChanged(newPartitions);
+    await onPartitionsChanged(newPartitions);
   };
-  const onPartitionsChanged = (newPartitions) => {
-    if (!isEmptyRules(mutate.in("rules").getValue()) && !confirm("If you change the partitions the rules will be reset.\nDo you want to continue?")) return;
-    mutate.apply(m => m.insert("partitions", newPartitions).insert("rules", createPartitionedRules(newPartitions.length)));
+  const onPartitionsChanged = async (newPartitions) => {
+    const alert = {
+      title: 'Warning',
+      message: 'If you change the partitions the rules will be reset.\nDo you want to continue?',
+    };
+    if (isEmptyRules(mutate.in("rules").getValue()) || (await alerter.showConfirm(alert)).result) {
+      mutate.apply(m => m.insert("partitions", newPartitions).insert("rules", createPartitionedRules(newPartitions.length)));
+    }
   };
   const updateDefaultValue = (newValue) => {
     const typedValue = newValue && TypesService.safeConvertValue(newValue, valueType);
@@ -62,17 +67,13 @@ export default ({valueType, mutate}) => {
           onChange={updateDefaultValue}
         />
         <div className={style['vertical-separator']}></div>
-        <PartitionsSelector
-          partitions={partitions}
-          handlePartitionAddition={handlePartitionAddition}
-          handlePartitionDelete={handlePartitionDelete}
-        />
+        <PartitionsSelector {...{partitions, handlePartitionAddition, handlePartitionDelete, alerter}} />
       </div>
 
       {
         partitions && partitions.length > 0
-          ? <PartitionsList partitions={partitions} valueType={valueType} mutate={mutate.in("rules")}/>
-          : <RulesList valueType={valueType} mutate={mutate.in("rules")}/>
+          ? <PartitionsList {...{partitions, valueType, alerter}} mutate={mutate.in("rules")}/>
+          : <RulesList {...{valueType, alerter}} mutate={mutate.in("rules")}/>
       }
     </div>
   );
