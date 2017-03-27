@@ -3,7 +3,7 @@ import { WithContext as ReactTags } from 'react-tag-input';
 import * as ContextService from '../../../../../../../../services/context-service';
 import style from './PartitionsSelector.css';
 
-export default ({partitions, handlePartitionAddition, handlePartitionDelete}) => {
+export default ({partitions, handlePartitionAddition, handlePartitionDelete, alerter}) => {
   const allProperties = ContextService.getProperties().map(x => ({ id: x.id, text: `${x.name} (${x.identity})` }));
   const indexedSuggestions = allProperties.filter(property => !partitions.includes(property.id)).map(x => x.text);
   const indexedTags = partitions.map(partition => allProperties.find(property => property.id == partition) || {id: partition, text: partition});
@@ -11,11 +11,17 @@ export default ({partitions, handlePartitionAddition, handlePartitionDelete}) =>
   const handleAddition = (newValue) => {
     const newProperty = allProperties.find(x => x.text === newValue || x.id === newValue);
     if (!newProperty) {
-      alert(`Can't partition by ${newValue}`);
+      alerter.showAlert({
+        title: 'Attention!',
+        message: `Can't partition by '${newValue}'`
+      });
     } else if (!partitions.includes(newProperty.id)) {
       handlePartitionAddition(newProperty.id);
     } else {
-      alert(`Property "${newProperty.text}" already exists in partitions list`);
+      alerter.showAlert({
+        title: 'Attention!',
+        message: `Property '${newProperty.text}' already exists in partitions list`
+      });
     }
   };
 

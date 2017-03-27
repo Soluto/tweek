@@ -11,11 +11,7 @@ const DeleteButton = ({isSaving, selectedKey, deleteKey}) => (
     disabled={isSaving}
     className={style['delete-key-button']}
     tabIndex="-1"
-    onClick={() => {
-      if (confirm('Are you sure?')) {
-        deleteKey(selectedKey.key);
-      }
-    } }>Delete key</button>
+    onClick={() => deleteKey(selectedKey.key)}>Delete key</button>
 );
 
 const SaveButton = ({selectedKey, isSaving, hasChanges, saveKey}) => (
@@ -47,15 +43,9 @@ const comp = compose(
           : null}
         <div className={style['key-action-buttons-wrapper']}>
           {!isInAddMode && !isInStickyMode ?
-            <DeleteButton isSaving={isSaving}
-              selectedKey={selectedKey}
-              deleteKey={deleteKey} />
+            <DeleteButton {...{selectedKey, isSaving, deleteKey}} />
             : null}
-          <SaveButton selectedKey={selectedKey}
-            isSaving={isSaving}
-            hasChanges={hasChanges}
-            saveKey={saveKey}
-            />
+          <SaveButton {...{selectedKey, isSaving, hasChanges, saveKey}} />
         </div>
       </div>
     );

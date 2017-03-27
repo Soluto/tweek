@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import * as selectedKeyActions from '../../../../store/ducks/selectedKey';
+import * as alertActions from '../../../../store/ducks/alerts';
 import { compose, lifecycle } from 'recompose';
 import MessageKeyPage from './MessageKeyPage/MessageKeyPage';
 import KeyEditPage from './KeyEditPage/KeyEditPage';
@@ -23,7 +24,7 @@ const onRouteLeaveConfirmFunc = (props) => {
 const keyPageComp = compose(
   connect((state, { params }) =>
     ({ selectedKey: state.selectedKey, configKey: params.splat, isInAddMode: params.splat === BLANK_KEY_NAME }),
-    { ...selectedKeyActions }),
+    { ...selectedKeyActions, ...alertActions }),
   routeLeaveHook(onRouteLeaveConfirmFunc),
   lifecycle({
     componentDidMount() {
@@ -39,9 +40,13 @@ const keyPageComp = compose(
       }
     },
   }))
-  (props => {
-    const { selectedKey } = props;
-
+(({showCustomAlert, showAlert, showConfirm, ...props}) => {
+  const {selectedKey} = props;
+  const alerter = {
+    showCustomAlert,
+    showAlert,
+    showConfirm
+  };
     if (!selectedKey ||
       !selectedKey.isLoaded)
       return <MessageKeyPage message="Loading..." />;
@@ -49,7 +54,7 @@ const keyPageComp = compose(
     const { keyDef } = selectedKey.local;
     return !keyDef ?
       <MessageKeyPage message="None existent key" /> :
-      <KeyEditPage {...props} />;
+      <KeyEditPage {...props} alerter={alerter} />;
   });
 
 export default keyPageComp;

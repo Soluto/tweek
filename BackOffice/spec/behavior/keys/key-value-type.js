@@ -24,8 +24,7 @@ describe('key-value-type', () => {
     const firstSuggestion = selectors.typeaheadSuggestionByIndex(0);
     browser.click(firstSuggestion);
 
-    if (keysPageObject.didAlertRaised())
-      browser.alertAccept();
+    keysPageObject.acceptRodalIfRaised();
 
     const ruleValueInputSelector = selectors.ruleValueInput(0, keyValueType == "Boolean");
     browser.setValue(ruleValueInputSelector, value);
