@@ -18,34 +18,23 @@ const buttons = {
   }
 };
 
-function addAlert({buttons, onResult, shouldShow = true, ...alertProps}) {
-  return (dispatch) => {
-    if (!shouldShow) {
-      if (onResult) onResult(true);
-      return;
-    }
-
-    const id = chance.guid();
-    const onClose = (result) => {
-      dispatch({type: REMOVE_ALERT, id});
-      if (onResult) onResult(result);
-    };
-
-    const alert = {
-      ...alertProps,
-      id,
-      onClose: () => onClose(false),
-      buttons: Array.isArray(buttons) ? buttons : buttons(onClose)
-    };
-    dispatch({type: ADD_ALERT, alert});
-  }
-}
-
 export function showCustomAlert({buttons, ...alertProps}) {
-  return addAlert({
-    ...alertProps,
-    buttons: onClose => buttons.map(({value, ...props}) => ({...props, onClick: () => onClose(value)}))
-  });
+  return (dispatch) => {
+    return dispatch(new Promise(function (resolve) {
+      const id = chance.guid();
+      const onClose = (result) => {
+        resolve({type: REMOVE_ALERT, id, result});
+      };
+
+      const alert = {
+        ...alertProps,
+        id,
+        onClose: () => onClose(),
+        buttons: buttons.map(({value, ...props}) => ({...props, onClick: () => onClose(value)}))
+      };
+      dispatch({type: ADD_ALERT, alert});
+    }));
+  }
 }
 
 export function showAlert(alertProps) {
