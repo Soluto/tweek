@@ -23,7 +23,7 @@ jest.mock('../../../../../modules/store/ducks/ducks-utils/blankKeyDefinition', (
 
 jest.mock('../../../../../modules/store/ducks/alerts', () => {
   let result = true;
-  const addAlert = ({onResult}) => onResult(result);
+  const addAlert = (dispatch) => Promise.resolve({result});
   return {
     setResult: r => result = r,
     showCustomAlert: addAlert,
@@ -58,8 +58,19 @@ describe('selectedKey', async () => {
   let dispatchMock;
   let currentState;
 
+  function isFunction(functionToCheck) {
+    var getType = {};
+    return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+  }
+
   beforeEach(() => {
-    dispatchMock = jest.fn();
+    dispatchMock = jest.fn(action => {
+      if (isFunction(action)) {
+        return action(dispatchMock);
+      }
+      return action;
+
+    });
     currentState = {};
   });
 
