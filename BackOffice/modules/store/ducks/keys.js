@@ -4,6 +4,7 @@ import Promise from 'bluebird';
 import { push } from 'react-router-redux';
 import fetch from '../../utils/fetch';
 import { showError } from './notifications';
+import { showConfirm } from './alerts';
 
 const KEYS_UPDATED = 'KEYS_UPDATED';
 const KEY_ADDING = 'KEY_ADDING';
@@ -16,7 +17,7 @@ export const addKey = (key) => async function (dispatch) {
   dispatch({ type: KEY_ADDING, payload: key });
 };
 
-export const deleteKey = (key) => async function (dispatch) {
+const performDeleteKey = (key) => async function (dispatch) {
   dispatch({ type: KEY_DELETING, payload: key });
 
   await Promise.delay(1);
@@ -32,6 +33,18 @@ export const deleteKey = (key) => async function (dispatch) {
     dispatch(showError({title: "Failed to delete key!", error}));
   }
 };
+
+export function deleteKey(key) {
+  return async function (dispatch) {
+    const alert = {
+      title: 'Warning',
+      message: `Are you sure you want to delete '${key}' key?`,
+    };
+    if ((await dispatch(showConfirm(alert))).result) {
+      dispatch(performDeleteKey(key))
+    }
+  }
+}
 
 export function getKeys(payload) {
   return { type: KEYS_UPDATED, payload };

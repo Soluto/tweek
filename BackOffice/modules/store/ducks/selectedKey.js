@@ -9,6 +9,7 @@ import { downloadTags } from './tags.js';
 import * as ContextService from "../../services/context-service";
 import fetch from '../../utils/fetch';
 import { showError } from './notifications';
+import { showConfirm } from './alerts';
 
 const KEY_OPENED = 'KEY_OPENED';
 const KEY_OPENING = 'KEY_OPENING';
@@ -75,9 +76,12 @@ export function updateKeyValueType(keyValueType) {
     const shouldShowAlert =
       rules.some(x => x.Type !== 'SingleVariant' || (x.Value !== null && x.Value !== undefined && x.Value !== ''));
 
-    if (shouldShowAlert && !confirm(`Rules values will try be converted to new type. Proceed?`)) {
-      return;
-    }
+    const alert = {
+      title: 'Attention',
+      message: 'Rule values will try to be converted to new type.\nDo you want to continue?',
+    };
+
+    if (shouldShowAlert && !(await dispatch(showConfirm(alert))).result) return;
 
     const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
     keyValueTypeValidation.isShowingHint = !keyValueTypeValidation.isValid;
