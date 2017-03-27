@@ -9,6 +9,6 @@ export default class PageAsserts {
   assertIsInPage(expectedLocation, message = 'should be in correct page') {
     const location = this.keysPageObject.getUrlLocation();
     assert(location === expectedLocation ||
-      location === expectedLocation + '?', message);
+      location === expectedLocation + '?', `${message}\nexpected: '${expectedLocation}' but was: '${location}'`);
   }
 }

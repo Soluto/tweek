@@ -56,7 +56,7 @@ export default class KeysPageObject {
 
   deleteKeyIfExists(keyName) {
     try {
-      this.goToKey(keyName);
+      this.getToKeyUrl(keyName);
       this.browser.click(selectors.DELETE_KEY_BUTTON);
       this.acceptRodalIfRaised();
 
@@ -145,12 +145,8 @@ export default class KeysPageObject {
 
   waitForKeyToBeDeleted(keyName) {
     const checkIsKeyWasDeleted = (keyName) => {
-      try {
-        this.getToKeyUrl(keyName);
-        return this.browser.isExisting(selectors.NONE_EXISTING_KEY);
-      } catch (exp) {
-        return false;
-      }
+      this.getToKeyUrl(keyName);
+      return this.browser.isExisting(selectors.NONE_EXISTING_KEY);
     };
 
     this.browser.waitUntil(() => checkIsKeyWasDeleted(keyName), KeysPageObject.GIT_TRANSACTION_TIMEOUT);

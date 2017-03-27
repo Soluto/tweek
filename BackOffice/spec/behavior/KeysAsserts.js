@@ -53,23 +53,15 @@ export default class KeysAsserts {
   }
 
   assertIsKeyExistsAfterTransaction(keyName, isExisting, message) {
-    this.keysPageObject.waitForKeyToBeDeleted(keyName);
+    if (!isExisting) this.keysPageObject.waitForKeyToBeDeleted(keyName);
     const currentUrl = this.browser.getUrl();
 
-    let isKeyExists;
+    this.keysPageObject.getToKeyUrl(keyName);
+    assert(isExisting === this.browser.isExisting(selectors.KEY_VIEWER_CONTAINER), message);
 
-    try {
-      this.keysPageObject.getToKeyUrl(keyName);
-      isKeyExists = this.browser.isExisting(selectors.KEY_VIEWER_CONTAINER);
-    } catch (exp) {
-      isKeyExists = false;
-    } finally {
-      assert(isExisting === isKeyExists, message);
-
-      if (currentUrl != this.browser.getUrl()) {
-        this.browser.url(currentUrl);
-        this.keysPageObject.waitForPageToLoad();
-      }
+    if (currentUrl != this.browser.getUrl()) {
+      this.browser.url(currentUrl);
+      this.keysPageObject.waitForPageToLoad();
     }
   }
 }
