@@ -34,7 +34,7 @@ function addAlert({buttons, onResult, shouldShow = true, ...alertProps}) {
     const alert = {
       ...alertProps,
       id,
-      onClose,
+      onClose: () => onClose(false),
       buttons: Array.isArray(buttons) ? buttons : buttons(onClose)
     };
     dispatch({type: ADD_ALERT, alert});
