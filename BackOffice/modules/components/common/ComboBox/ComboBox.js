@@ -45,14 +45,17 @@ const comp = compose(
             return;
           }
           setCurrentInputValue(selectedValues[0].label);
+          onChange(selectedValues[0]);
         }}
         onInputChange={text => {
           setCurrentInputValue(text);
-          const selectedItem = options.find((x) => compareLowerCase(x, text) || compareLowerCase(x.label, text));
+          onInputChange(text);
+        }}
+        onBlur={e => {
+          const selectedItem = options.find((x) => compareLowerCase(x, currentInputValue) || compareLowerCase(x.label, currentInputValue));
           if (selectedItem) {
             onChange(selectedItem);
           }
-          onInputChange(text);
         }}
         ref={e =>
         {
