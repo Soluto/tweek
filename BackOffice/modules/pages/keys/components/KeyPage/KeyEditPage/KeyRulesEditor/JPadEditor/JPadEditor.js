@@ -22,7 +22,7 @@ function isEmptyRules(rules) {
   return isEmptyRules(rules['*']);
 }
 
-export default ({valueType, mutate, showConfirm, showAlert}) => {
+export default ({valueType, mutate, alerter}) => {
   if (!isBrowser)
     return (<div>Loading rule...</div>);
 
@@ -41,7 +41,7 @@ export default ({valueType, mutate, showConfirm, showAlert}) => {
     await onPartitionsChanged(newPartitions);
   };
   const onPartitionsChanged = async (newPartitions) => {
-    if (isEmptyRules(mutate.in("rules").getValue()) || (await showConfirm({
+    if (isEmptyRules(mutate.in("rules").getValue()) || (await alerter.showConfirm({
         title: 'Warning',
         message: 'If you change the partitions the rules will be reset.\nDo you want to continue?',
       })).result) {
@@ -66,13 +66,13 @@ export default ({valueType, mutate, showConfirm, showAlert}) => {
           onChange={updateDefaultValue}
         />
         <div className={style['vertical-separator']}></div>
-        <PartitionsSelector {...{partitions, handlePartitionAddition, handlePartitionDelete, showAlert}} />
+        <PartitionsSelector {...{partitions, handlePartitionAddition, handlePartitionDelete, alerter}} />
       </div>
 
       {
         partitions && partitions.length > 0
-          ? <PartitionsList {...{partitions, valueType, showConfirm}} mutate={mutate.in("rules")}/>
-          : <RulesList {...{valueType, showConfirm}} mutate={mutate.in("rules")}/>
+          ? <PartitionsList {...{partitions, valueType, alerter}} mutate={mutate.in("rules")}/>
+          : <RulesList {...{valueType, alerter}} mutate={mutate.in("rules")}/>
       }
     </div>
   );
