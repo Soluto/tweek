@@ -34,14 +34,16 @@ const performDeleteKey = (key) => async function (dispatch) {
   }
 };
 
-export const deleteKey = (key) => (dispatch) => dispatch(showConfirm({
-  title: 'Warning',
-  message: `Are you sure you want to delete '${key}' key?`,
-  onResult: (result) => {
-    if (!result) return;
-    dispatch(performDeleteKey(key))
+export function deleteKey(key) {
+  return async function (dispatch) {
+    if ((await dispatch(showConfirm({
+        title: 'Warning',
+        message: `Are you sure you want to delete '${key}' key?`,
+      }))).result) {
+      dispatch(performDeleteKey(key))
+    }
   }
-}));
+}
 
 export function getKeys(payload) {
   return { type: KEYS_UPDATED, payload };

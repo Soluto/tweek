@@ -29,27 +29,24 @@ export default ({valueType, mutate, showConfirm, showAlert}) => {
   const partitions = mutate.in("partitions").getValue();
   const defaultValueMutate = mutate.in("defaultValue");
 
-  const handlePartitionAddition = (newPartition) => {
+  const handlePartitionAddition = async (newPartition) => {
     // const rules = mutate.in("rules").getValue();
     // if (!isEmptyRules(rules) && !confirm("This operation will partition all the rules.\nDo you want to continue?")) return;
     // mutate.apply(m => m.insert("rules", RulesService.addPartition(newPartition, rules, partitions.length)).in("partitions").append(newPartition).up());
     const newPartitions = partitions.concat(newPartition);
-    onPartitionsChanged(newPartitions);
+    await onPartitionsChanged(newPartitions);
   };
-  const handlePartitionDelete = (index) => {
+  const handlePartitionDelete = async (index) => {
     const newPartitions = R.remove(index, 1, partitions);
-    onPartitionsChanged(newPartitions);
+    await onPartitionsChanged(newPartitions);
   };
-  const onPartitionsChanged = (newPartitions) => {
-    showConfirm({
-      shouldShow: !isEmptyRules(mutate.in("rules").getValue()),
-      title: 'Warning',
-      message: 'If you change the partitions the rules will be reset.\nDo you want to continue?',
-      onResult: (result) => {
-        if (!result) return;
-        mutate.apply(m => m.insert("partitions", newPartitions).insert("rules", createPartitionedRules(newPartitions.length)));
-      }
-    });
+  const onPartitionsChanged = async (newPartitions) => {
+    if (isEmptyRules(mutate.in("rules").getValue()) || (await showConfirm({
+        title: 'Warning',
+        message: 'If you change the partitions the rules will be reset.\nDo you want to continue?',
+      })).result) {
+      mutate.apply(m => m.insert("partitions", newPartitions).insert("rules", createPartitionedRules(newPartitions.length)));
+    }
   };
   const updateDefaultValue = (newValue) => {
     const typedValue = newValue && TypesService.safeConvertValue(newValue, valueType);
