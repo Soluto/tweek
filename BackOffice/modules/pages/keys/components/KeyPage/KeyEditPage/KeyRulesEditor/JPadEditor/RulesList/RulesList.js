@@ -90,10 +90,12 @@ export default class RulesList extends React.Component {
   async deleteRule(ruleIndex) {
     const {mutate, alerter} = this.props;
 
-    if ((await alerter.showConfirm({
-        title: 'Warning',
-        message: 'Are you sure you want to delete this rule?',
-      })).result) {
+    const alert = {
+      title: 'Warning',
+      message: 'Are you sure you want to delete this rule?',
+    };
+
+    if ((await alerter.showConfirm(alert)).result) {
       mutate.in(ruleIndex).delete();
     }
   }

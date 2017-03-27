@@ -76,12 +76,12 @@ export function updateKeyValueType(keyValueType) {
     const shouldShowAlert =
       rules.some(x => x.Type !== 'SingleVariant' || (x.Value !== null && x.Value !== undefined && x.Value !== ''));
 
-    if (shouldShowAlert && !(await dispatch(showConfirm({
-        title: 'Attention',
-        message: 'Rule values will try to be converted to new type.\nDo you want to continue?',
-      }))).result) {
-      return;
-    }
+    const alert = {
+      title: 'Attention',
+      message: 'Rule values will try to be converted to new type.\nDo you want to continue?',
+    };
+
+    if (shouldShowAlert && !(await dispatch(showConfirm(alert))).result) return;
 
     const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
     keyValueTypeValidation.isShowingHint = !keyValueTypeValidation.isValid;
