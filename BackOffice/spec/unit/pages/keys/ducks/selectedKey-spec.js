@@ -401,7 +401,7 @@ describe('selectedKey', async () => {
       expectedKeyValueTypeValidation.isShowingHint = true;
 
       const initializeState = generateState('some key', 'some new key');
-      initializeState.selectedKey.local.keyDef.source = JSON.stringify({ rules: [] });
+      initializeState.selectedKey.local.keyDef.source = JSON.stringify({ partitions: [], rules: [] });
       initializeState.keys = [];
 
       const expectedValidationPayload = {
@@ -432,6 +432,7 @@ describe('selectedKey', async () => {
 
       const initializeState = generateState('some key', 'some new key');
       initializeState.selectedKey.local.keyDef.source = JSON.stringify({
+        partitions:[],
         rules: [{
           Value: 'some rule value'
         }]
