@@ -76,7 +76,7 @@ export default class PartitionsList extends React.Component {
   };
 
   render() {
-    let {partitions, mutate, valueType, showConfirm} = this.props;
+    let {partitions, mutate, valueType, alerter} = this.props;
 
     const rulesByPartitions = mutate.getValue();
     if (!rulesByPartitions) return (<div />);
@@ -138,7 +138,7 @@ export default class PartitionsList extends React.Component {
                   titleClassName={style["partitions-accordion-container-item-title"]}
                   expandedClassName={style["partitions-accordion-container-item-expanded"]}
                 >
-                  <RulesList {...{valueType, showConfirm}} mutate={partitionData.mutate}/>
+                  <RulesList {...{valueType, alerter}} mutate={partitionData.mutate}/>
                 </AccordionItem>
               )
             })
@@ -165,9 +165,9 @@ export default class PartitionsList extends React.Component {
   }
 
   async deletePartition(partitionGroup) {
-    let {mutate, showConfirm} = this.props;
+    let {mutate, alerter} = this.props;
 
-    if ((await showConfirm({
+    if ((await alerter.showConfirm({
         title: 'Are you sure?',
         message: 'This operation will delete the partition along with all the rules inside it.\nDo you want to continue?',
       })).result) {

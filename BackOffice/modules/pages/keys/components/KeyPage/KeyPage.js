@@ -40,9 +40,13 @@ const keyPageComp = compose(
       }
     },
   }))
-  (props => {
-    const { selectedKey } = props;
-
+(({showCustomAlert, showAlert, showConfirm, ...props}) => {
+  const {selectedKey} = props;
+  const alerter = {
+    showCustomAlert,
+    showAlert,
+    showConfirm
+  };
     if (!selectedKey ||
       !selectedKey.isLoaded)
       return <MessageKeyPage message="Loading..." />;
@@ -50,7 +54,7 @@ const keyPageComp = compose(
     const { keyDef } = selectedKey.local;
     return !keyDef ?
       <MessageKeyPage message="None existent key" /> :
-      <KeyEditPage {...props} />;
+      <KeyEditPage {...props} alerter={alerter} />;
   });
 
 export default keyPageComp;
