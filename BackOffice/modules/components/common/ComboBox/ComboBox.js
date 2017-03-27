@@ -45,15 +45,12 @@ const comp = compose(
             return;
           }
           setCurrentInputValue(selectedValues[0].label);
-          onChange(selectedValues[0]);
-          onChange = noop;
         }}
         onInputChange={text => {
           setCurrentInputValue(text);
           const selectedItem = options.find((x) => compareLowerCase(x, text) || compareLowerCase(x.label, text));
-          if (selectedItem && selectedItem !== selected[0]) {
+          if (selectedItem) {
             onChange(selectedItem);
-            onChange = noop;
           }
           onInputChange(text);
         }}
