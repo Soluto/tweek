@@ -27,7 +27,7 @@ describe('navigating from key with changes', () => {
 
     keysPageObject.navigateToKey(testKey1FullPath);
 
-    browser.waitUntil(() => keysPageObject.didAlertRaised(), 1000, 'should show confirm message');
+    browser.waitForAlert(1000, 'should show confirm message');
     browser.alertAccept();
   });
 
@@ -37,7 +37,7 @@ describe('navigating from key with changes', () => {
 
     browser.refresh();
 
-    browser.waitUntil(() => keysPageObject.didAlertRaised(), 1000, 'should show confirm message');
+    browser.waitForAlert(1000, 'should show confirm message');
     browser.alertAccept();
   });
 });

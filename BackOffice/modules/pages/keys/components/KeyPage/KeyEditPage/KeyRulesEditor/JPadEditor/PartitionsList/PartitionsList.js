@@ -84,7 +84,7 @@ export default class PartitionsList extends React.Component {
   };
 
   render() {
-    let {partitions, mutate, valueType} = this.props;
+    let {partitions, mutate, valueType, alerter} = this.props;
 
     const rulesByPartitions = mutate.getValue();
     if (!rulesByPartitions) return (<div />);
@@ -146,7 +146,7 @@ export default class PartitionsList extends React.Component {
                   titleClassName={style["partitions-accordion-container-item-title"]}
                   expandedClassName={style["partitions-accordion-container-item-expanded"]}
                 >
-                  <RulesList valueType={valueType} mutate={partitionData.mutate}/>
+                  <RulesList {...{valueType, alerter}} mutate={partitionData.mutate}/>
                 </AccordionItem>
               )
             })
@@ -173,23 +173,28 @@ export default class PartitionsList extends React.Component {
     });
   }
 
-  deletePartition(partitionGroup) {
-    if (!confirm('Are you sure? \nThis will delete the partition along with all the rules inside it.')) return;
+  async deletePartition(partitionGroup) {
+    let {mutate, alerter} = this.props;
 
-    let {mutate} = this.props;
-    mutate.apply(partitionMutate => {
-      for (let partition of partitionGroup) {
-        partitionMutate = partitionMutate.in(partition);
-      }
+    const alert = {
+      title: 'Are you sure?',
+      message: 'This operation will delete the partition along with all the rules inside it.\nDo you want to continue?',
+    };
 
-      let i = partitionGroup.length;
-      do {
-        i--;
-        partitionMutate.delete();
-        partitionMutate = partitionMutate.up();
-      } while (i && Object.keys(partitionMutate.getValue()).length == 0);
+    if ((await alerter.showConfirm(alert)).result) {
+      mutate.apply(partitionMutate => {
+        for (let partition of partitionGroup) {
+          partitionMutate = partitionMutate.in(partition);
+        }
 
-      return partitionMutate;
-    });
+        let i = partitionGroup.length;
+        do {
+          partitionMutate.delete();
+          partitionMutate = partitionMutate.up();
+        } while (--i && Object.keys(partitionMutate.getValue()).length == 0);
+
+        return partitionMutate;
+      });
+    }
   }
 }

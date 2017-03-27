@@ -2,7 +2,6 @@ import React from 'react';
 import Rule from '../Rule/Rule';
 import style from './RulesList.css';
 import Chance from 'chance';
-import R from 'ramda';
 
 const chance = new Chance();
 
@@ -88,10 +87,15 @@ export default class RulesList extends React.Component {
     mutate.append({ Id: chance.guid(), Matcher: {}, Value: '', Type: 'SingleVariant' });
   }
 
-  deleteRule(ruleIndex) {
-    let {mutate} = this.props;
+  async deleteRule(ruleIndex) {
+    const {mutate, alerter} = this.props;
 
-    if (confirm('Are you sure?')) {
+    const alert = {
+      title: 'Warning',
+      message: 'Are you sure you want to delete this rule?',
+    };
+
+    if ((await alerter.showConfirm(alert)).result) {
       mutate.in(ruleIndex).delete();
     }
   }
