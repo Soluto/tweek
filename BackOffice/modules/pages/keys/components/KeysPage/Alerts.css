@@ -25,17 +25,17 @@
   transition: background .2s;
   border: 1px solid #03a9f4;
 }
-.rodal-container .rodal-button-container .rodal-confirm-brn {
+.rodal-container .rodal-button-container .rodal-confirm-btn {
   color: #fff;
   background: #03a9f4;
 }
-.rodal-container .rodal-button-container .rodal-confirm-brn:hover {
+.rodal-container .rodal-button-container .rodal-confirm-btn:hover {
   background: #0098e3;
 }
-.rodal-container .rodal-button-container .rodal-cancel-brn {
+.rodal-container .rodal-button-container .rodal-cancel-btn {
   color: #03a9f4;
   background: #fff;
 }
-.rodal-container .rodal-button-container .rodal-cancel-brn:hover {
+.rodal-container .rodal-button-container .rodal-cancel-btn:hover {
   background: #fafafa;
 }
