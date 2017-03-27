@@ -36,10 +36,11 @@ const performDeleteKey = (key) => async function (dispatch) {
 
 export function deleteKey(key) {
   return async function (dispatch) {
-    if ((await dispatch(showConfirm({
-        title: 'Warning',
-        message: `Are you sure you want to delete '${key}' key?`,
-      }))).result) {
+    const alert = {
+      title: 'Warning',
+      message: `Are you sure you want to delete '${key}' key?`,
+    };
+    if ((await dispatch(showConfirm(alert))).result) {
       dispatch(performDeleteKey(key))
     }
   }

@@ -41,10 +41,11 @@ export default ({valueType, mutate, alerter}) => {
     await onPartitionsChanged(newPartitions);
   };
   const onPartitionsChanged = async (newPartitions) => {
-    if (isEmptyRules(mutate.in("rules").getValue()) || (await alerter.showConfirm({
-        title: 'Warning',
-        message: 'If you change the partitions the rules will be reset.\nDo you want to continue?',
-      })).result) {
+    const alert = {
+      title: 'Warning',
+      message: 'If you change the partitions the rules will be reset.\nDo you want to continue?',
+    };
+    if (isEmptyRules(mutate.in("rules").getValue()) || (await alerter.showConfirm(alert)).result) {
       mutate.apply(m => m.insert("partitions", newPartitions).insert("rules", createPartitionedRules(newPartitions.length)));
     }
   };
