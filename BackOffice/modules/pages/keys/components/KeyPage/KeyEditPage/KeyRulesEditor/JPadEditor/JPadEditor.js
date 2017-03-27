@@ -22,7 +22,7 @@ function isEmptyRules(rules) {
   return isEmptyRules(rules['*']);
 }
 
-export default ({valueType, mutate, showConfirm, showAlert, showCustomAlert}) => {
+export default ({valueType, mutate, alerter}) => {
   if (!isBrowser)
     return (<div>Loading rule...</div>);
 
@@ -59,7 +59,7 @@ export default ({valueType, mutate, showConfirm, showAlert, showCustomAlert}) =>
       }]
     };
 
-    const alertResult = (await showCustomAlert(alert)).result;
+    const alertResult = (await alerter.showCustomAlert(alert)).result;
 
     switch (alertResult) {
       case 'RESET':
@@ -69,13 +69,6 @@ export default ({valueType, mutate, showConfirm, showAlert, showCustomAlert}) =>
         mutate.apply(m => m.insert("rules", RulesService.addPartition(newPartition, rules, partitions.length)).in("partitions").append(newPartition));
         break;
     }
-  };
-  const handlePartitionAddition = async (newPartition) => {
-    // const rules = mutate.in("rules").getValue();
-    // if (!isEmptyRules(rules) && !confirm("This operation will partition all the rules.\nDo you want to continue?")) return;
-    // mutate.apply(m => m.insert("rules", RulesService.addPartition(newPartition, rules, partitions.length)).in("partitions").append(newPartition).up());
-    const newPartitions = partitions.concat(newPartition);
-    await clearPartitions(newPartitions);
   };
   const handlePartitionDelete = async (index) => {
     if (partitions.length === 0) return;
@@ -87,7 +80,7 @@ export default ({valueType, mutate, showConfirm, showAlert, showCustomAlert}) =>
       title: 'Warning',
       message: 'If you change the partitions the rules will be reset.\nDo you want to continue?',
     };
-    if (isEmptyRules(mutate.in("rules").getValue()) || (await showConfirm(alert)).result) {
+    if (isEmptyRules(mutate.in("rules").getValue()) || (await alerter.showConfirm(alert)).result) {
       mutate.apply(m => m.insert("partitions", newPartitions).insert("rules", createPartitionedRules(newPartitions.length)));
     }
   };
@@ -109,13 +102,13 @@ export default ({valueType, mutate, showConfirm, showAlert, showCustomAlert}) =>
           onChange={updateDefaultValue}
         />
         <div className={style['vertical-separator']}></div>
-        <PartitionsSelector {...{partitions, handlePartitionAddition, handlePartitionDelete, showAlert}} />
+        <PartitionsSelector {...{partitions, handlePartitionAddition, handlePartitionDelete, alerter}} />
       </div>
 
       {
         partitions && partitions.length > 0
-          ? <PartitionsList {...{partitions, valueType, showConfirm}} mutate={mutate.in("rules")}/>
-          : <RulesList {...{valueType, showConfirm}} mutate={mutate.in("rules")}/>
+          ? <PartitionsList {...{partitions, valueType, alerter}} mutate={mutate.in("rules")}/>
+          : <RulesList {...{valueType, alerter}} mutate={mutate.in("rules")}/>
       }
     </div>
   );
