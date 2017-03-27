@@ -71,33 +71,33 @@ export function updateKeyMetaDef(meta) {
 }
 
 export function updateKeyValueType(keyValueType) {
-  return function (dispatch, getState) {
+  return async function (dispatch, getState) {
     const rules = JSON.parse(getState().selectedKey.local.keyDef.source).rules;
+    const shouldShowAlert =
+      rules.some(x => x.Type !== 'SingleVariant' || (x.Value !== null && x.Value !== undefined && x.Value !== ''));
 
-    dispatch(showConfirm({
-      shouldShow: rules.some(x => x.Type !== 'SingleVariant' || (x.Value !== null && x.Value !== undefined && x.Value !== '')),
-      title: 'Attention',
-      message: 'Rule values will try to be converted to new type.\nDo you want to continue?',
-      onResult: (result) => {
-        if (!result) return;
+    if (shouldShowAlert && !(await dispatch(showConfirm({
+        title: 'Attention',
+        message: 'Rule values will try to be converted to new type.\nDo you want to continue?',
+      }))).result) {
+      return;
+    }
 
-        const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
-        keyValueTypeValidation.isShowingHint = !keyValueTypeValidation.isValid;
+    const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
+    keyValueTypeValidation.isShowingHint = !keyValueTypeValidation.isValid;
 
-        dispatch({ type: KEY_VALUE_TYPE_CHANGE, payload: keyValueType });
+    dispatch({ type: KEY_VALUE_TYPE_CHANGE, payload: keyValueType });
 
-        const currentValidationState = getState().selectedKey.validation;
-        const newValidation = {
-          ...currentValidationState,
-          meta: {
-            ...currentValidationState.meta,
-            valueType: keyValueTypeValidation,
-          },
-        };
+    const currentValidationState = getState().selectedKey.validation;
+    const newValidation = {
+      ...currentValidationState,
+      meta: {
+        ...currentValidationState.meta,
+        valueType: keyValueTypeValidation,
+      },
+    };
 
-        dispatch({ type: KEY_VALIDATION_CHANGE, payload: newValidation });
-      }
-    }))
+    dispatch({ type: KEY_VALIDATION_CHANGE, payload: newValidation });
   };
 }
 
