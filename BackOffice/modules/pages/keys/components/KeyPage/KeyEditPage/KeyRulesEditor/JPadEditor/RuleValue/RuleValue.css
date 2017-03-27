@@ -504,7 +504,7 @@
 .inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) span {
   display: none;
 }
-.rule-value-container .values-input {
+.inputValue .values-input {
   border: 0;
   border-style: none;
   height: 28px;
@@ -521,7 +521,7 @@
   resize: none;
   display: inline-block;
 }
-.rule-value-container .values-input:focus {
+.inputValue .values-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
 .rule-value-container .add-variant-button {
