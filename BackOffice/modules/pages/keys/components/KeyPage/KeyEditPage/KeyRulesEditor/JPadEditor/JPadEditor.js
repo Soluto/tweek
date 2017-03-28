@@ -10,6 +10,31 @@ import style from './JPadEditor.css';
 
 const isBrowser = typeof (window) === 'object';
 
+const resetPartitionsAlert = {
+  title: 'Warning',
+  message: 'If you change the partitions the rules will be reset.\nDo you want to continue?',
+};
+
+const autoPartitionAlert = (testAutoPartition) => ({
+  title: 'Warning',
+  message: `Auto-partition can move ${testAutoPartition.match} rules to matching partitions, and ${testAutoPartition.default} rules to default partition/s.\n
+          This can cause some side effects related to rule ordering.\n
+          Do you want to use auto-partition, or prefer to delete all rules?`,
+  buttons: [{
+    text: 'Auto-partition',
+    value: 'OK',
+    className: 'auto-partition-btn',
+  }, {
+    text: 'Reset',
+    value: 'RESET',
+    className: 'reset-partitions-btn',
+  }, {
+    text: 'Cancel',
+    value: 'CANCEL',
+    className: 'rodal-cancel-btn',
+  }]
+});
+
 function createPartitionedRules(depth) {
   return depth == 0 ? [] : {};
 }
@@ -38,27 +63,7 @@ export default ({valueType, mutate, alerter}) => {
       return;
     }
 
-    const alert = {
-      title: 'Warning',
-      message: `Auto-partition can move ${testAutoPartition.match} rules to matching partitions, and ${testAutoPartition.default} rules to default partition/s.\n
-          This can cause some side effects related to rule ordering.\n
-          Do you want to use auto-partition, or prefer to delete all rules?`,
-      buttons: [{
-        text: 'Auto-partition',
-        value: 'OK',
-        className: 'auto-partition-btn',
-      }, {
-        text: 'Reset',
-        value: 'RESET',
-        className: 'reset-partitions-btn',
-      }, {
-        text: 'Cancel',
-        value: 'CANCEL',
-        className: 'rodal-cancel-btn',
-      }]
-    };
-
-    const alertResult = (await alerter.showCustomAlert(alert)).result;
+    const alertResult = (await alerter.showCustomAlert(autoPartitionAlert(testAutoPartition))).result;
 
     switch (alertResult) {
       case 'RESET':
@@ -75,11 +80,7 @@ export default ({valueType, mutate, alerter}) => {
     await clearPartitions(newPartitions);
   };
   const clearPartitions = async (newPartitions) => {
-    const alert = {
-      title: 'Warning',
-      message: 'If you change the partitions the rules will be reset.\nDo you want to continue?',
-    };
-    if (isEmptyRules(mutate.in("rules").getValue()) || (await alerter.showConfirm(alert)).result) {
+    if (isEmptyRules(mutate.in("rules").getValue()) || (await alerter.showConfirm(resetPartitionsAlert)).result) {
       mutate.apply(m => m.insert("partitions", newPartitions).insert("rules", createPartitionedRules(newPartitions.length)));
     }
   };
