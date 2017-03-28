@@ -1,0 +1,29 @@
+FROM alpine:3.4
+
+RUN apk add --no-cache \
+# openssh=7.2_p2-r1 \
+  openssh \
+# git=2.8.3-r0
+  git
+
+RUN ssh-keygen -A
+
+WORKDIR /tweek
+
+RUN adduser -D -s /usr/bin/git-shell git \
+  && echo git:12345 | chpasswd \
+  && mkdir /home/git/.ssh
+
+COPY source /tweek/source
+RUN git config --global user.email "git@tweek"
+RUN git config --global user.name "git"
+RUN mkdir repo && cd repo && git init --bare
+RUN cd ./source && git init && git add . && git commit -m "init"  && git push ../repo master
+VOLUME /tweek/repo
+
+COPY sshd_config /etc/ssh/sshd_config
+COPY init.sh init.sh
+
+EXPOSE 22
+
+CMD ["sh", "init.sh"]
