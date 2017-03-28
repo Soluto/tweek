@@ -27,7 +27,7 @@ export function testAutoPartition(partition, rules, depth) {
       match: test.match + result.match,
       default: test.default + result.default
     };
-  }, {isValid: true});
+  }, {isValid: true, match: 0, default: 0});
 }
 
 export function addPartition(partition, rules, depth) {
