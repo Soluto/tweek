@@ -15,5 +15,10 @@ module.exports = function (browser) {
       this.pause(50);
       this.click(selector);
     } catch (_) { }
-  })
+  });
+
+  browser.addCommand('clickWhenVisible', function (selector, timeout) {
+    this.waitForVisible(selector, timeout);
+    this.click(selector);
+  });
 };

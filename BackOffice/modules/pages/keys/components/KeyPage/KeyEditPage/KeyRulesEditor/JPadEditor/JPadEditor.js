@@ -47,15 +47,15 @@ export default ({valueType, mutate, alerter}) => {
       buttons: [{
         text: 'Auto-partition',
         value: 'OK',
-        className: 'rodal-confirm-btn',
+        className: 'auto-partition-btn',
       }, {
         text: 'Reset',
         value: 'RESET',
-        className: 'reset-partitions',
+        className: 'reset-partitions-btn',
       }, {
         text: 'Cancel',
         value: 'CANCEL',
-        className: 'cancel-reset-partitions',
+        className: 'rodal-cancel-btn',
       }]
     };
 
