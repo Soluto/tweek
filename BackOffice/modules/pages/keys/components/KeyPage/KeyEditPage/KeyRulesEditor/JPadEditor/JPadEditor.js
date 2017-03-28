@@ -11,8 +11,7 @@ import style from './JPadEditor.css';
 const isBrowser = typeof (window) === 'object';
 
 function createPartitionedRules(depth) {
-  if (depth == 0) return [];
-  return {"*": createPartitionedRules(depth - 1)};
+  return depth == 0 ? [] : {};
 }
 
 function isEmptyRules(rules) {
