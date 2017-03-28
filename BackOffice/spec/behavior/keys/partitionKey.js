@@ -115,7 +115,7 @@ describe('partition key', () => {
         keysAsserts.assertKeySource({
           partitions: ["device.PartnerBrandId"],
           valueType: "string",
-          rules: {"*": []}
+          rules: {}
         });
       });
     });
@@ -157,8 +157,6 @@ describe('partition key', () => {
         keysPageObject.addEmptyKey(keyFullPath);
         keysPageObject.addPartitionFromProperty('device.PartnerBrandId');
         keysPageObject.addPartitionFromProperty('device.DeviceVendor');
-        browser.click(selectors.partitionGroupDeleteButton(1));
-        keysPageObject.acceptRodalIfRaised();
         keysPageObject.saveChanges();
       });
 
