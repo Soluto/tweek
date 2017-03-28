@@ -10,9 +10,33 @@ import style from './JPadEditor.css';
 
 const isBrowser = typeof (window) === 'object';
 
+const resetPartitionsAlert = {
+  title: 'Warning',
+  message: 'If you change the partitions the rules will be reset.\nDo you want to continue?',
+};
+
+const autoPartitionAlert = (testAutoPartition) => ({
+  title: 'Warning',
+  message: `Auto-partition can move ${testAutoPartition.match} rules to matching partitions, and ${testAutoPartition.default} rules to default partition/s.\n
+          This can cause some side effects related to rule ordering.\n
+          Do you want to use auto-partition, or prefer to delete all rules?`,
+  buttons: [{
+    text: 'Auto-partition',
+    value: 'OK',
+    className: 'auto-partition-btn',
+  }, {
+    text: 'Reset',
+    value: 'RESET',
+    className: 'reset-partitions-btn',
+  }, {
+    text: 'Cancel',
+    value: 'CANCEL',
+    className: 'rodal-cancel-btn',
+  }]
+});
+
 function createPartitionedRules(depth) {
-  if (depth == 0) return [];
-  return {"*": createPartitionedRules(depth - 1)};
+  return depth == 0 ? [] : {};
 }
 
 function isEmptyRules(rules) {
@@ -30,22 +54,33 @@ export default ({valueType, mutate, alerter}) => {
   const defaultValueMutate = mutate.in("defaultValue");
 
   const handlePartitionAddition = async (newPartition) => {
-    // const rules = mutate.in("rules").getValue();
-    // if (!isEmptyRules(rules) && !confirm("This operation will partition all the rules.\nDo you want to continue?")) return;
-    // mutate.apply(m => m.insert("rules", RulesService.addPartition(newPartition, rules, partitions.length)).in("partitions").append(newPartition).up());
-    const newPartitions = partitions.concat(newPartition);
-    await onPartitionsChanged(newPartitions);
+    const rules = mutate.in("rules").getValue();
+    const testAutoPartition = RulesService.testAutoPartition(newPartition, rules, partitions.length);
+
+    if (!testAutoPartition.isValid || isEmptyRules(mutate.in("rules").getValue())) {
+      const newPartitions = partitions.concat(newPartition);
+      await clearPartitions(newPartitions);
+      return;
+    }
+
+    const alertResult = (await alerter.showCustomAlert(autoPartitionAlert(testAutoPartition))).result;
+
+    switch (alertResult) {
+      case 'RESET':
+        mutate.apply(m => m.insert('rules', createPartitionedRules(partitions.length + 1)).in('partitions').append(newPartition));
+        break;
+      case 'OK':
+        mutate.apply(m => m.insert("rules", RulesService.addPartition(newPartition, rules, partitions.length)).in("partitions").append(newPartition));
+        break;
+    }
   };
   const handlePartitionDelete = async (index) => {
+    if (partitions.length === 0) return;
     const newPartitions = R.remove(index, 1, partitions);
-    await onPartitionsChanged(newPartitions);
+    await clearPartitions(newPartitions);
   };
-  const onPartitionsChanged = async (newPartitions) => {
-    const alert = {
-      title: 'Warning',
-      message: 'If you change the partitions the rules will be reset.\nDo you want to continue?',
-    };
-    if (isEmptyRules(mutate.in("rules").getValue()) || (await alerter.showConfirm(alert)).result) {
+  const clearPartitions = async (newPartitions) => {
+    if (isEmptyRules(mutate.in("rules").getValue()) || (await alerter.showConfirm(resetPartitionsAlert)).result) {
       mutate.apply(m => m.insert("partitions", newPartitions).insert("rules", createPartitionedRules(newPartitions.length)));
     }
   };

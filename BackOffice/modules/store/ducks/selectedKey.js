@@ -74,20 +74,19 @@ function getAllRules({ jpad, rules = [jpad.rules], depth = jpad.partitions.lengt
   return depth === 0 ? R.flatten(rules) : getAllRules({ rules: R.flatten(rules.map(x => Object.values(x))), depth: depth - 1 });
 }
 
+const convertRuleValuesAlert = {
+  title: 'Attention',
+  message: 'Rule values will try to be converted to new type.\nDo you want to continue?',
+};
+
 export function updateKeyValueType(keyValueType) {
   return async function (dispatch, getState) {
     const jpad = JSON.parse(getState().selectedKey.local.keyDef.source);
     const allRules = getAllRules({jpad});
-    console.log(allRules);
     const shouldShowAlert =
       allRules.some(x => x.Type !== 'SingleVariant' || (x.Value !== null && x.Value !== undefined && x.Value !== ''));
 
-    const alert = {
-      title: 'Attention',
-      message: 'Rule values will try to be converted to new type.\nDo you want to continue?',
-    };
-
-    if (shouldShowAlert && !(await dispatch(showConfirm(alert))).result) return;
+    if (shouldShowAlert && !(await dispatch(showConfirm(convertRuleValuesAlert))).result) return;
 
     const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
     keyValueTypeValidation.isShowingHint = !keyValueTypeValidation.isValid;

@@ -5,6 +5,11 @@ import Chance from 'chance';
 
 const chance = new Chance();
 
+const deleteRuleAlert = {
+  title: 'Warning',
+  message: 'Are you sure you want to delete this rule?',
+};
+
 export default class RulesList extends React.Component {
 
   constructor(props){
@@ -90,12 +95,7 @@ export default class RulesList extends React.Component {
   async deleteRule(ruleIndex) {
     const {mutate, alerter} = this.props;
 
-    const alert = {
-      title: 'Warning',
-      message: 'Are you sure you want to delete this rule?',
-    };
-
-    if ((await alerter.showConfirm(alert)).result) {
+    if ((await alerter.showConfirm(deleteRuleAlert)).result) {
       mutate.in(ruleIndex).delete();
     }
   }

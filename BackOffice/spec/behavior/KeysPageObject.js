@@ -26,7 +26,7 @@ export default class KeysPageObject {
     this.browser.waitForVisible(selectors.ADD_KEY_BUTTON, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
   }
 
-  getToKeyUrl(keyName) {
+  goToKeyUrl(keyName) {
     const goTo = `${KeysPageObject.BASE_URL}${KeysPageObject.KEYS_PAGE_URL}/${keyName}`;
 
     this.browser.url(goTo);
@@ -37,7 +37,7 @@ export default class KeysPageObject {
   }
 
   goToKey(keyName) {
-    this.getToKeyUrl(keyName);
+    this.goToKeyUrl(keyName);
 
     const selectorToWaitFor = keyName.startsWith(BLANK_KEY_NAME) ?
       selectors.KEY_NAME_INPUT : selectors.KEY_DISPLAY_NAME;
@@ -50,13 +50,21 @@ export default class KeysPageObject {
     this.browser.waitForVisible(selectors.KEY_LIST_FILTER, 10000);
   }
 
+  getKeySource() {
+    this.browser.waitForVisible(selectors.TAB_ITEM_HEADER, 2000);
+    this.browser.click(selectors.SOURCE_TAB_ITEM);
+    const keySourceCode = this.browser.getHTML(selectors.KEY_SOURCE_TEXT, false);
+    this.browser.click(selectors.RULES_TAB_ITEM);
+    return JSON.parse(keySourceCode);
+  }
+
   getNumberOfRules() {
     return this.browser.elements(selectors.ruleContainer()).value.length;
   }
 
   deleteKeyIfExists(keyName) {
     try {
-      this.getToKeyUrl(keyName);
+      this.goToKeyUrl(keyName);
       this.browser.click(selectors.DELETE_KEY_BUTTON);
       this.acceptRodalIfRaised();
 
@@ -145,7 +153,7 @@ export default class KeysPageObject {
 
   waitForKeyToBeDeleted(keyName) {
     const checkIsKeyWasDeleted = (keyName) => {
-      this.getToKeyUrl(keyName);
+      this.goToKeyUrl(keyName);
       return this.browser.isExisting(selectors.NONE_EXISTING_KEY);
     };
 
@@ -209,5 +217,21 @@ export default class KeysPageObject {
       const firstSuggestion = selectors.typeaheadSuggestionByIndex(0);
       browser.click(firstSuggestion);
     }
+  }
+
+  addPartitionFromProperty(property) {
+    this.browser.setValue(selectors.ADD_PARTITION_INPUT, property);
+    this.browser.keys('\uE007');
+  }
+
+  addPartitionFromSuggestion(suggestion) {
+    this.browser.setValue(selectors.ADD_PARTITION_INPUT, suggestion);
+    this.browser.clickWhenVisible(selectors.partitionSuggestionByIndex(0), 1000);
+  }
+
+  saveChanges() {
+    this.browser.click(selectors.SAVE_CHANGES_BUTTON);
+    this.browser.waitUntil(() => this.isSaving(), 5000, 'should move to in saving state');
+    this.browser.waitUntil(() => !this.isSaving(), KeysPageObject.GIT_TRANSACTION_TIMEOUT);
   }
 }
