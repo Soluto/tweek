@@ -8,6 +8,7 @@ import style from "./PartitionsList.css";
 import coreStyle from '../../../../../../../../styles/core/core.css'
 import * as ContextService from '../../../../../../../../services/context-service';
 import {equal} from '../../../../../../../../services/operators-provider';
+import {InputValue} from '../RuleValue/RuleValue'
 
 const extractPartitionToObject = (mutate, partitions) => {
   if (partitions.length == 0)
@@ -33,8 +34,12 @@ const NewPartitionPropertyValue = mapProps(({value, onUpdate, name, identity, id
   selectedOperator: equal.operatorValue,
 }))(PropertyValue);
 
+const PartitionDefaultValue = ({value, valueType, onChange}) => {
+    return <InputValue {...{value, valueType, onChange}} autofocus={false} placeholder="Partition's default value" />
+}
+
 class AddPartition extends React.Component {
-  state = {};
+  state = {partition:{}, defaultValue:""};
 
   replaceState(state) {
     this.state = state;
@@ -44,11 +49,11 @@ class AddPartition extends React.Component {
   addPartition() {
     const {handlePartitionAddition} = this.props;
     if (handlePartitionAddition) handlePartitionAddition(this.state);
-    this.replaceState({});
+    this.replaceState({partition:{}, defaultValue:""});
   }
 
   render() {
-    const {partitions} = this.props;
+    const {partitions,valueType} = this.props;
     const allProperties = ContextService.getProperties();
     const indexedPartitions = partitions
       .map(partition => allProperties.find(property => property.id == partition) || {id: partition, name: partition});
@@ -59,11 +64,14 @@ class AddPartition extends React.Component {
             <div className={style['new-partition-item-container']} key={partition.id}>
               <NewPartitionPropertyValue
                 {...partition}
-                value={this.state[partition.id]}
-                onUpdate={value => this.setState({[partition.id]: value})}
+                value={this.state.partition[partition.id] || ""}
+                onUpdate={value => this.setState({partition: {...this.state.partition,[partition.id]: value}})}
               />
             </div>)
         }
+        <PartitionDefaultValue value={this.state.defaultValue} valueType={valueType} onChange={e=> 
+          this.setState({defaultValue: e.value})}
+         />
         <button className={style['add-partition-button']} onClick={this.addPartition.bind(this)}/>
       </div>
     );
@@ -100,7 +108,7 @@ export default class PartitionsList extends React.Component {
           </button> : null
         }
 
-        <AddPartition partitions={partitions} handlePartitionAddition={this.addPartition.bind(this)}/>
+        <AddPartition partitions={partitions} handlePartitionAddition={this.addPartition.bind(this)} valueType={valueType} />
 
         <Accordion className={style["partitions-accordion-container"]} allowMultiple={true}
                    activeItems={this.state.activeItems || []}
@@ -148,14 +156,15 @@ export default class PartitionsList extends React.Component {
       </div >)
   }
 
-  addPartition(newPartition) {
+  addPartition({partition:newPartition, defaultValue}) {
+    console.log({newPartition,defaultValue});
     let {mutate, partitions} = this.props;
-
+    let partitionDefaultValue = defaultValue === "" ? [] : [{"Type": "SingleVariant", "Matcher": {}, "Value": defaultValue}];
     mutate.apply(m => {
       partitions.forEach((partition, i) => {
         const partitionValue = newPartition[partition] || '*';
         if (!m.getValue()[partitionValue]) {
-          m.insert(partitionValue, i == partitions.length - 1 ? [] : {});
+          m.insert(partitionValue, i == partitions.length - 1 ? partitionDefaultValue : {});
         }
         m = m.in(partitionValue);
       });

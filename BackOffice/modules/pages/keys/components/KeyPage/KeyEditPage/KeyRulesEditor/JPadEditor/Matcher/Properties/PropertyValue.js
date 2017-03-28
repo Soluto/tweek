@@ -63,7 +63,7 @@ function PropertyValueComponent({ onUpdate, propertyTypeDetails, value, selected
         onChange={(selectedValue) => {
           onUpdate(selectedValue);
         }}
-        selected={[allowedValues.find(x => x.toLowerCase() == (value || "").toLowerCase())]}
+        selected={allowedValues.filter(x => x.toLowerCase() == (value || "").toLowerCase())}
       />
     );
 
