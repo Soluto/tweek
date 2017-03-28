@@ -6,7 +6,7 @@ import { withJsonData } from '../../utils/http';
 import keyNameValidations from './ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
 import { downloadTags } from './tags.js';
-import * as ContextService from "../../services/context-service";
+import * as ContextService from '../../services/context-service';
 import fetch from '../../utils/fetch';
 import { showError } from './notifications';
 import { showConfirm } from './alerts';
@@ -29,7 +29,7 @@ export function openKey(key) {
     try {
       ContextService.refreshSchema();
     } catch (error) {
-      dispatch(showError({title: "Failed to refresh schema", error}));
+      dispatch(showError({ title: 'Failed to refresh schema', error }));
     }
 
     if (key === BLANK_KEY_NAME) {
@@ -53,9 +53,9 @@ export function openKey(key) {
       key,
       keyDef: {
         ...keyData.keyDef,
-        valueType: meta.valueType || "string",
+        valueType: meta.valueType || 'string',
       },
-      meta
+      meta,
     };
 
     dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
@@ -70,11 +70,16 @@ export function updateKeyMetaDef(meta) {
   return { type: KEY_RULE_META_UPDATED, payload: meta };
 }
 
+function getAllRules({ jpad, rules = [jpad.rules], depth = jpad.partitions.length }) {
+  return depth === 0 ? R.flatten(rules) : getAllRules({ rules: R.flatten(rules.map(x => Object.values(x))), depth: depth - 1 });
+}
+
 export function updateKeyValueType(keyValueType) {
   return async function (dispatch, getState) {
-    const rules = JSON.parse(getState().selectedKey.local.keyDef.source).rules;
+    const jpad = JSON.parse(getState().selectedKey.local.keyDef.source);
+    const allRules = getAllRules({jpad});
     const shouldShowAlert =
-      rules.some(x => x.Type !== 'SingleVariant' || (x.Value !== null && x.Value !== undefined && x.Value !== ''));
+      allRules.some(x => x.Type !== 'SingleVariant' || (x.Value !== null && x.Value !== undefined && x.Value !== ''));
 
     const alert = {
       title: 'Attention',
@@ -121,7 +126,7 @@ export function updateKeyName(newKeyName) {
 export function saveKey() {
   return async function (dispatch, getState) {
     const currentState = getState();
-    const {selectedKey: {local, key}} = currentState;
+    const { selectedKey: { local, key } } = currentState;
     const isNewKey = !!(local.key);
     const savedKey = local.key || key;
 
@@ -130,7 +135,7 @@ export function saveKey() {
       return;
     }
 
-    dispatch({type: KEY_SAVING});
+    dispatch({ type: KEY_SAVING });
     let isSaveSucceeded;
     try {
       await fetch(`/api/keys/${savedKey}`, {
@@ -141,10 +146,10 @@ export function saveKey() {
       isSaveSucceeded = true;
     } catch (error) {
       isSaveSucceeded = false;
-      dispatch(showError({title: "Failed to save key", error}));
+      dispatch(showError({ title: 'Failed to save key', error }));
       return;
     } finally {
-      dispatch({type: KEY_SAVED, payload: {keyName: savedKey, isSaveSucceeded}});
+      dispatch({ type: KEY_SAVED, payload: { keyName: savedKey, isSaveSucceeded } });
     }
 
     if (isNewKey) dispatch({ type: 'KEY_ADDED', payload: savedKey });
@@ -156,18 +161,18 @@ export function saveKey() {
   };
 }
 
-const handleKeyOpened = (state, {payload: {key, ...keyData}}) => {
+const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
   const validation = key !== BLANK_KEY_NAME ?
-    {
-      isValid: true,
-    } :
-    {
-      key: keyNameValidations(key, []),
-      meta: {
-        valueType: keyValueTypeValidations(keyData.meta.valueType),
-      },
-      isValid: false,
-    };
+  {
+    isValid: true,
+  } :
+  {
+    key: keyNameValidations(key, []),
+    meta: {
+      valueType: keyValueTypeValidations(keyData.meta.valueType),
+    },
+    isValid: false,
+  };
 
   setValidationHintsVisability(validation, false);
 
@@ -180,14 +185,14 @@ const handleKeyOpened = (state, {payload: {key, ...keyData}}) => {
   };
 };
 
-const handleKeyOpening = (state, {payload: {key}}) => {
+const handleKeyOpening = (state, { payload: { key } }) => {
   return {
     key,
     isLoaded: false,
   };
 };
 
-const handleKeyRuleDefUpdated = (state, {payload}) => ({
+const handleKeyRuleDefUpdated = (state, { payload }) => ({
   ...state,
   local: {
     ...state.local,
@@ -195,7 +200,7 @@ const handleKeyRuleDefUpdated = (state, {payload}) => ({
   },
 });
 
-const handleKeyMetaUpdated = (state, {payload}) => ({
+const handleKeyMetaUpdated = (state, { payload }) => ({
   ...state,
   local: {
     ...state.local,
@@ -203,23 +208,23 @@ const handleKeyMetaUpdated = (state, {payload}) => ({
   },
 });
 
-const handleKeySaved = ({local, remote, ...state}, {payload: {keyName, isSaveSucceeded}}) => {
+const handleKeySaved = ({ local, remote, ...state }, { payload: { keyName, isSaveSucceeded } }) => {
   return state.key === BLANK_KEY_NAME || state.key === keyName ?
-    {
-      ...state,
-      isSaving: false,
-      local,
-      remote: isSaveSucceeded ? R.clone(local) : remote,
-    } :
+  {
+    ...state,
+    isSaving: false,
+    local,
+    remote: isSaveSucceeded ? R.clone(local) : remote,
+  } :
     ({ ...state });
 };
 
-const handleKeySaving = ({...state}) => ({
+const handleKeySaving = ({ ...state }) => ({
   ...state,
   isSaving: true,
 });
 
-const handleKeyNameChange = ({local: {key, ...localData}, ...otherState}, {payload}) => ({
+const handleKeyNameChange = ({ local: { key, ...localData }, ...otherState }, { payload }) => ({
   ...otherState,
   local: {
     ...localData,
@@ -228,18 +233,18 @@ const handleKeyNameChange = ({local: {key, ...localData}, ...otherState}, {paylo
   },
 });
 
-const handleKeyValidationChange = ({...state}, {payload}) => {
+const handleKeyValidationChange = ({ ...state }, { payload }) => {
   const isKeyInvalid = isStateInvalid(payload);
   return {
     ...state,
     validation: {
       ...payload,
-      isValid: !isKeyInvalid
-    }
+      isValid: !isKeyInvalid,
+    },
   };
 };
 
-const handleKeyDeleting = ({remote, ...otherState}) => {
+const handleKeyDeleting = ({ remote, ...otherState }) => {
   return ({
     ...otherState,
     local: { ...remote },
@@ -247,7 +252,7 @@ const handleKeyDeleting = ({remote, ...otherState}) => {
   });
 };
 
-const handleKeyValueTypeChange = ({local: {keyDef, meta, ...restOfLocal}, ...state}, {payload}) => ({
+const handleKeyValueTypeChange = ({ local: { keyDef, meta, ...restOfLocal }, ...state }, { payload }) => ({
   ...state,
   local: {
     ...restOfLocal,
@@ -262,24 +267,24 @@ const handleKeyValueTypeChange = ({local: {keyDef, meta, ...restOfLocal}, ...sta
   },
 });
 
-const handleShowKeyValidations = ({validation, ...state}) => {
+const handleShowKeyValidations = ({ validation, ...state }) => {
   setValidationHintsVisability(validation, true);
   return {
     ...state,
     validation,
   };
-}
+};
 
 const isStateInvalid = (validationState) => {
   let isOneValidationTypeInvalid = Object.keys(validationState)
     .map(x => validationState[x])
     .filter(x => typeof (x) === 'object')
     .some(x => {
-      return x.isValid === false || isStateInvalid(x)
+      return x.isValid === false || isStateInvalid(x);
     });
 
   return isOneValidationTypeInvalid;
-}
+};
 
 const setValidationHintsVisability = (validationState, isShown) => {
   Object.keys(validationState)
@@ -294,7 +299,7 @@ const setValidationHintsVisability = (validationState, isShown) => {
       x.isShowingHint = isShown;
       setValidationHintsVisability(x, isShown);
     });
-}
+};
 
 export default handleActions({
   [KEY_OPENED]: handleKeyOpened,
