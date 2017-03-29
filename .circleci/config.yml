@@ -16,21 +16,16 @@ jobs:
       PATH: "${PATH}:${HOME}/.yarn/bin:/usr/sbin:/sbin"
     
     steps:
-      - run: 
-          command: |
-            echo $TWEEK_API_HOSTNAME && echo ${TWEEK_API_HOSTNAME}
-            cat /proc/sys/kernel/osrelease
-            wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused ${TWEEK_API_HOSTNAME}
-      
+      - setup_remote_docker
+
       - restore_cache:
           keys:
             - docker-cache-{{ .Branch }}
             - docker-cache-master
             - docker-cache-
-
-      - setup_remote_docker
       
       - run: 
+          name: docker-compose
           command: |
             if [[ -e ~/docker/tweek-images.tar ]]; then
               docker load -i ~/docker/tweek-images.tar
@@ -66,12 +61,14 @@ jobs:
             - ~/.yarn-cache
 
       - run: 
+          name: test
           command: |
             wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'http://localhost:4000/keys'
             wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'localhost:1111/status'
             yarn test:unit && yarn test:e2e
 
       - deploy: 
+          name: deploy
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
