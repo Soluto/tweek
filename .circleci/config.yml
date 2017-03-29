@@ -16,11 +16,10 @@ jobs:
       PATH: "${PATH}:${HOME}/.yarn/bin:/usr/sbin:/sbin"
     
     steps:
-      - setup_remote_docker
-      
       - run: 
           command: |
             echo $TWEEK_API_HOSTNAME && echo ${TWEEK_API_HOSTNAME}
+            curl
             wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused ${TWEEK_API_HOSTNAME}
       
       - restore_cache:
@@ -29,6 +28,8 @@ jobs:
             - docker-cache-master
             - docker-cache-
 
+      - setup_remote_docker
+      
       - run: 
           command: |
             if [[ -e ~/docker/tweek-images.tar ]]; then
