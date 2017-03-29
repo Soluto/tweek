@@ -17,11 +17,14 @@ jobs:
     
     steps:
       - run: 
-          command: |
-            echo $TWEEK_API_HOSTNAME && echo ${TWEEK_API_HOSTNAME}
-            curl
-            wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused ${TWEEK_API_HOSTNAME}
+          command: echo $TWEEK_API_HOSTNAME && echo ${TWEEK_API_HOSTNAME}
       
+      - run:
+          command: curl
+
+      - run:
+          command: wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused ${TWEEK_API_HOSTNAME}
+
       - restore_cache:
           keys:
             - docker-cache-{{ .Branch }}
