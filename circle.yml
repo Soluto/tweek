@@ -20,7 +20,7 @@ dependencies:
     - echo $TWEEK_API_HOSTNAME && echo ${TWEEK_API_HOSTNAME}
     - wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused ${TWEEK_API_HOSTNAME}
     - |
-      if [[ -e ~/docker/tweek-back-office-image.tar ]]; then
+      if [[ -e ~/docker/tweek-images.tar ]]; then
         docker load -i ~/docker/tweek-images.tar
         echo "found cached images"
       else
