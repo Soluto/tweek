@@ -1,11 +1,12 @@
 /* global describe, before, after it, browser */
 
-import KeysAsserts from '../KeysAsserts';
-import KeysPageObject from '../KeysPageObject';
+import KeysAsserts from '../../KeysAsserts';
+import KeysPageObject from '../../KeysPageObject';
 import { expect, assert } from 'chai';
-import { selectors } from '../selectors';
-import { BLANK_KEY_NAME } from '../../../modules/store/ducks/ducks-utils/blankKeyDefinition';
+import { selectors } from '../../selectors';
 import Chance from 'chance';
+
+const BLANK_KEY_NAME = '_blank';
 
 describe('key name validations', () => {
   const chance = new Chance();

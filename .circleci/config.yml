@@ -55,13 +55,14 @@ jobs:
           command: |
             docker images
             docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-            docker-compose build --pull
+            docker-compose pull
+            docker-compose build
             docker-compose up -d
             mkdir -p ~/docker
             docker save soluto/tweek-api:latest soluto/tweek-management:latest backoffice_tweek-backoffice > ~/docker/tweek-images.tar
 
       - save_cache:
-          key: docker-cache-{{ .Branch }}
+          key: docker-cache-{{ .Branch }}-{{ epoch }}
           paths:
             - ~/docker
       
@@ -74,22 +75,26 @@ jobs:
 
       - run:
           working_directory: ~/tweek/BackOffice
-          command: yarn --cache-folder "~/.yarn-cache"
+          command: yarn --cache-folder "/.yarn-cache"
 
       - save_cache:
-          key: yarn-cache-{{ .Branch }}-{{ checksum "BackOffice/yarn.lock" }}
+          key: yarn-cache-{{ .Branch }}-{{ checksum "BackOffice/yarn.lock" }}-{{ epoch }}
           paths:
-            - ~/.yarn-cache
+            - ~/tweek/BackOffice/.yarn-cache
 
       - run: 
-          name: test
+          name: unit tests
           working_directory: ~/tweek/BackOffice
+          command: yarn test:unit
+            
+      - run:
+          name: e2e tests
+          working_directory: ~/tweek/e2e
           command: |
-            yarn test:unit
-            docker ps
-            wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'http://tweek-api/status'
-            wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'http://tweek-backoffice/keys'
-            yarn test:e2e
+            docker-compose pull
+            docker-compose build
+            docker-compose exec tweek-backoffice wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status
+            docker-compose run backoffice-e2e
 
       - deploy: 
           name: deploy

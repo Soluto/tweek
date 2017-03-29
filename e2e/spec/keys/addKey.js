@@ -1,10 +1,11 @@
 /* global describe, before, after it, browser */
 
-import KeysAsserts from '../KeysAsserts';
-import KeysPageObject from '../KeysPageObject';
+import KeysAsserts from '../../KeysAsserts';
+import KeysPageObject from '../../KeysPageObject';
 import assert from 'assert';
-import { selectors } from '../selectors';
-import { BLANK_KEY_NAME } from '../../../modules/store/ducks/ducks-utils/blankKeyDefinition';
+import { selectors } from '../../selectors';
+
+const BLANK_KEY_NAME = '_blank';
 
 describe('add key', () => {
   const keysPageObject = new KeysPageObject(browser);
