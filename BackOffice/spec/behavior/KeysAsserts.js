@@ -21,24 +21,24 @@ export default class KeysAsserts {
   }
 
   assertKeySource(expectedSourceObject, message = 'key source should be correct') {
-    browser.waitForVisible(selectors.TAB_ITEM_HEADER, 2000);
-    browser.click(selectors.SOURCE_TAB_ITEM);
-    const keySourceCode = browser.getHTML(selectors.KEY_SOURCE_TEXT, false);
-    browser.click(selectors.RULES_TAB_ITEM);
     let keySourceObject;
     try {
-      keySourceObject = JSON.parse(keySourceCode);
+      keySourceObject = this.keysPageObject.getKeySource();
     }
     catch (exp) {
       assert(false, 'failed read key source, ' + exp);
     }
 
-    const deleteIds = (sourceObject) => {
-      sourceObject.rules.forEach(matcher => { delete matcher['Id']; });
+    const deleteIds = (rulesObject, depth) => {
+      if (depth == 0) {
+        rulesObject.forEach(matcher => { delete matcher['Id']; });
+        return;
+      }
+      Object.keys(rulesObject).forEach(key => deleteIds(rulesObject[key], depth -1));
     };
 
-    deleteIds(keySourceObject);
-    deleteIds(expectedSourceObject);
+    deleteIds(keySourceObject.rules, keySourceObject.partitions.length);
+    deleteIds(expectedSourceObject.rules, expectedSourceObject.partitions.length);
 
     const diffs = diff(keySourceObject, expectedSourceObject);
     expect(diffs).to.equal(undefined, message + '. diffs are:' + JSON.stringify(diffs));
@@ -56,7 +56,7 @@ export default class KeysAsserts {
     if (!isExisting) this.keysPageObject.waitForKeyToBeDeleted(keyName);
     const currentUrl = this.browser.getUrl();
 
-    this.keysPageObject.getToKeyUrl(keyName);
+    this.keysPageObject.goToKeyUrl(keyName);
     assert(isExisting === this.browser.isExisting(selectors.KEY_VIEWER_CONTAINER), message);
 
     if (currentUrl != this.browser.getUrl()) {

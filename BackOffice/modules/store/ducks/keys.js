@@ -34,13 +34,14 @@ const performDeleteKey = (key) => async function (dispatch) {
   }
 };
 
+const deleteKeyAlert = (key) => ({
+  title: 'Warning',
+  message: `Are you sure you want to delete '${key}' key?`,
+});
+
 export function deleteKey(key) {
   return async function (dispatch) {
-    const alert = {
-      title: 'Warning',
-      message: `Are you sure you want to delete '${key}' key?`,
-    };
-    if ((await dispatch(showConfirm(alert))).result) {
+    if ((await dispatch(showConfirm(deleteKeyAlert(key)))).result) {
       dispatch(performDeleteKey(key))
     }
   }
