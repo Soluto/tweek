@@ -9,8 +9,7 @@ jobs:
 
     environment:
       NODE_ENV: development
-      YARN_VERSION: 0.17.8
-
+ 
     docker:
       - image: node:6.10.1
     
@@ -20,6 +19,15 @@ jobs:
           wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused ${TWEEK_API_HOSTNAME}
 
       - setup_remote_docker
+
+      - run:
+          name: Install Docker client
+          command: |
+            set -x
+            VER="17.03.0-ce"
+            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+            mv /tmp/docker/* /usr/bin
 
       - restore_cache:
           keys:
@@ -69,7 +77,7 @@ jobs:
             wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'http://localhost:4000/keys'
             wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'localhost:1111/status'
             yarn test:unit && yarn test:e2e
-            
+
       - deploy: 
           name: deploy
           command: |
