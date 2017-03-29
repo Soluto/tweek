@@ -9,9 +9,9 @@ jobs:
 
     environment:
       NODE_ENV: development
-       YARN_VERSION: 0.17.8
-       PATH: "${PATH}:${HOME}/.yarn/bin:/usr/sbin:/sbin"
-       
+      YARN_VERSION: 0.17.8
+      PATH: "${PATH}:${HOME}/.yarn/bin:/usr/sbin:/sbin"
+
     docker:
       - image: node:6.10.1
     
