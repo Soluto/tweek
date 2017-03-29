@@ -1,8 +1,12 @@
 version: 2
 jobs:
   build:
+    branches:
+      ignore:
+        - gh-pages
+        
     working_directory: /BackOffice
-    
+
     docker:
       - image: node:6.10.1
     
