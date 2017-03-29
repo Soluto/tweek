@@ -16,6 +16,8 @@ jobs:
       PATH: "${PATH}:${HOME}/.yarn/bin:/usr/sbin:/sbin"
     
     steps:
+      - setup_remote_docker
+      
       - run: 
           command: |
             echo $TWEEK_API_HOSTNAME && echo ${TWEEK_API_HOSTNAME}
