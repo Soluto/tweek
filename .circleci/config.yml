@@ -5,7 +5,7 @@ jobs:
       ignore:
         - gh-pages
 
-    working_directory: ~/tweek/BackOffice
+    working_directory: ~/tweek
 
     environment:
       NODE_ENV: development
@@ -31,8 +31,7 @@ jobs:
             curl -L -o /usr/bin/docker-compose "https://github.com/docker/compose/releases/download/1.11.2/docker-compose-$(uname -s)-$(uname -m)"
             chmod +x /usr/bin/docker-compose
 
-      - checkout:
-          path: ~/tweek
+      - checkout
 
       - restore_cache:
           keys:
@@ -51,7 +50,7 @@ jobs:
             fi
             docker images
             docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-            pwd
+            cd BackOffice
             docker-compose pull
             docker-compose build
             docker-compose up -d
@@ -70,7 +69,7 @@ jobs:
             - yarn-cache-
 
       - run: 
-          command: yarn
+          command: cd BackOffice && yarn
 
       - save_cache:
           key: yarn-cache-{{ .Branch }}
@@ -82,7 +81,7 @@ jobs:
           command: |
             wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'http://localhost:4000/keys'
             wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'localhost:1111/status'
-            yarn test:unit && yarn test:e2e
+            cd BackOffice && yarn test:unit && yarn test:e2e
 
       - deploy: 
           name: deploy
