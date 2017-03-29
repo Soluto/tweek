@@ -1,0 +1,67 @@
+[
+    {
+        "Id": "43eebf1f-c1af-54ca-809f-868f284f4b51",
+        "Matcher": {
+            "device.SubscriptionType": {
+                "$ne": "Free"
+            },
+            "device.IsInGroup": true,
+            "device.DeviceOsVersion": {
+                "$lt": "2.2.0.0",
+                "$compare": "version"
+            },
+            "device.AgentVersion": {
+                "$ge": "3.0.0.4",
+                "$compare": "version"
+            },
+            "device.DeviceType": "Laptop",
+            "device.DeviceVendor": "vendor3",
+            "device.CountryCode": "888",
+            "device.PartnerBrandId": "AsurionFriends",
+            "device.DeviceModel": {
+                "$ne": "LG"
+            }
+        },
+        "Value": "value4",
+        "Type": "SingleVariant"
+    },
+    {
+        "Id": "9c50f638-084f-5a05-9c31-cb8885fb6658",
+        "Matcher": {
+            "device.DeviceOsType": "Android",
+            "device.PartnerBrandId": {
+                "$in": [
+                    "verzion",
+                    "cellcom"
+                ]
+            },
+            "device.AgentVersion": "4.6.9.0"
+        },
+        "Value": "value3",
+        "Type": "SingleVariant"
+    },
+    {
+        "Id": "67f8fa24-8e0c-5e1b-b8b7-ec5782fadc24",
+        "Matcher": {
+            "device.CountryCode": {
+                "$in": [
+                    "972",
+                    "007",
+                    "887"
+                ]
+            },
+            "device.DeviceOsVersion": {
+                "$gt": "1.9.5.8",
+                "$compare": "version"
+            }
+        },
+        "Value": "value2",
+        "Type": "SingleVariant"
+    },
+    {
+        "Id": "a40f1b87-c419-5af2-9b74-de6e10bbaa75",
+        "Matcher": {},
+        "Value": "value1",
+        "Type": "SingleVariant"
+    }
+]

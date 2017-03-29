@@ -1,0 +1,52 @@
+[
+    {
+        "Id": "9738fe6a-af81-5106-ab61-2c56cca72af4",
+        "Matcher": {
+            "device.CountryCode": {
+                "$in": [
+                    "972",
+                    "007",
+                    "999",
+                    "777"
+                ]
+            }
+        },
+        "Value": "value4",
+        "Type": "SingleVariant"
+    },
+    {
+        "Id": "aab0d2c6-55a3-517a-aa52-04c1036c002c",
+        "Matcher": {
+            "device.AgentVersion": {
+                "$in": [
+                    "1.1",
+                    "2.9",
+                    "4.1"
+                ],
+                "$compare": "version"
+            }
+        },
+        "Value": "value3",
+        "Type": "SingleVariant"
+    },
+    {
+        "Id": "a11040be-a905-5ec9-8c96-c7b50d70b4a6",
+        "Matcher": {
+            "device.PartnerBrandId": {
+                "$in": [
+                    "sprint",
+                    "verzion",
+                    "cellcom"
+                ]
+            }
+        },
+        "Value": "value2",
+        "Type": "SingleVariant"
+    },
+    {
+        "Id": "7dccedcf-4867-5798-b899-e7461741d1b8",
+        "Matcher": {},
+        "Value": "value1",
+        "Type": "SingleVariant"
+    }
+]

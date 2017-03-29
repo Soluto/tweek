@@ -1,0 +1,12 @@
+{
+    "partitions": [],
+    "valueType": "string",
+    "rules": [
+        {
+            "Id": "c4e36781-9fbf-5820-8513-17f1116e2f1b",
+            "Matcher": {},
+            "Value": "",
+            "Type": "SingleVariant"
+        }
+    ]
+}

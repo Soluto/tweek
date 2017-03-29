@@ -1,0 +1,9 @@
+{
+    "displayName": "@tweek_clients_tests/test_category2/user_fruit",
+    "description": "e2e",
+    "tags": [
+        "test",
+        "do not delete or change"
+    ],
+    "valueType": "string"
+}

@@ -1,0 +1,20 @@
+{
+    "partitions": [],
+    "valueType": "string",
+    "rules": [
+        {
+            "Id": "ef0bc1ef-f4c3-5198-a59d-930efe2d569a",
+            "Matcher": {
+                "device.DeviceType": "Desktop"
+            },
+            "Value": "orange",
+            "Type": "SingleVariant"
+        },
+        {
+            "Id": "9915db32-2a8c-5110-a518-94878ed19541",
+            "Matcher": {},
+            "Value": "apple",
+            "Type": "SingleVariant"
+        }
+    ]
+}

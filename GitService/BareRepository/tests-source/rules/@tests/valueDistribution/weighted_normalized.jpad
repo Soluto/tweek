@@ -1,0 +1,17 @@
+[
+    {
+        "Id": "98e76a52-c7d8-59d8-86de-b957938e5f87",
+        "Matcher": {},
+        "Type": "MultiVariant",
+        "OwnerType": "device",
+        "ValueDistribution": {
+            "type": "weighted",
+            "args": {
+                "test1": 25,
+                "test2": 25,
+                "test3": 25,
+                "test4": 25
+            }
+        }
+    }
+]
