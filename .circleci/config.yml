@@ -22,7 +22,7 @@ jobs:
             wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused ${TWEEK_API_HOSTNAME}
       
       - restore_cache:
-          kes:
+          keys:
             - docker-cache-{{ .Branch }}
             - docker-cache-master
             - docker-cache-
@@ -49,7 +49,7 @@ jobs:
             - ~/docker
       
       - restore_cache:
-          kes:
+          keys:
             - yarn-cache-{{ .Branch }}
             - yarn-cache-master
             - yarn-cache-
