@@ -83,10 +83,8 @@ describe('edit key', () => {
     browser.setValue(selectors.DEFAULT_VALUE_INPUT, 'some default value');
 
     keysAsserts.assertKeySource(expectedKeySource);
-    browser.click(selectors.SAVE_CHANGES_BUTTON);
-    browser.waitUntil(() => keysPageObject.isSaving(), 5000, 'should move to in saving state');
 
-    browser.waitUntil(() => !keysPageObject.isSaving(), KeysPageObject.GIT_TRANSACTION_TIMEOUT);
+    keysPageObject.saveChanges();
 
     browser.refresh();
     keysPageObject.waitForPageToLoad(keyToEditFullPath);

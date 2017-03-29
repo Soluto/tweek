@@ -50,6 +50,10 @@ selectors.KEY_VALUE_TYPE_INPUT = getSelectorByClassNames('key-value-type-selecto
 selectors.NONE_EXISTING_KEY = getSelectorByClassNames('key-page-message');
 selectors.ALERT_OK_BUTTON = getSelectorByClassNames('rodal-confirm-btn');
 selectors.ALERT_CANCEL_BUTTON = getSelectorByClassNames('rodal-cancel-btn');
+selectors.ADD_PARTITION_INPUT = getRelativeSelector([getSelectorByClassNames('partitions-selector-container'), 'input']);
+selectors.AUTO_PARTITION_BUTTON = getSelectorByClassNames('auto-partition-btn');
+selectors.RESET_PARTITIONS_BUTTON = getSelectorByClassNames('reset-partitions-btn');
+selectors.ADD_PARTITION_GROUP_BUTTON = getSelectorByClassNames('new-partition-container', 'add-partition-button');
 
 selectors.folder = (folderName) => {
   return _getSelectorWithAttribute(selectors.KEY_FOLDER_NAME, 'data-folder-name', folderName);
@@ -116,6 +120,37 @@ selectors.ruleValueInput = (ruleIndex, isValueContainsSuggestions) => {
     selectors.ruleContainer(ruleIndex),
     getSelectorByClassNames('rule-value-container'),
     'input']);
-}
+};
+
+selectors.partitionDeleteButton = (partitionIndex) => {
+  const partitionsSelector = getSelectorByClassNames('partitions-selector-container', 'tag-delete-button');
+  return _getSelectorByIndex(partitionsSelector, partitionIndex);
+};
+
+selectors.partitionGroup = (groupIndex) => {
+  const headerSelector = getSelectorByClassNames('partitions-accordion-container-item');
+  return groupIndex ? _getSelectorByIndex(headerSelector, groupIndex) : headerSelector;
+};
+
+selectors.partitionGroupDeleteButton = (groupIndex) => {
+  return getRelativeSelector([
+    selectors.partitionGroup(groupIndex),
+    getSelectorByClassNames('partitions-accordion-container-item-title'),
+    'button']);
+};
+
+selectors.partitionSuggestionByIndex = (suggestionIndex) => {
+  return getRelativeSelector([
+    getSelectorByClassNames('partitions-selector-container', 'tags-suggestion'),
+    _getSelectorByIndex('li', suggestionIndex),
+  ]);
+};
+
+selectors.newPartitionGroupInput = (partitionIndex) => {
+  return getRelativeSelector([
+    _getSelectorByIndex(getSelectorByClassNames('new-partition-container', 'new-partition-item-container'), partitionIndex),
+    'input'
+  ]);
+};
 
 export { selectors, getRelativeSelector };
