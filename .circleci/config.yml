@@ -86,8 +86,9 @@ jobs:
           working_directory: ~/tweek/BackOffice
           command: |
             yarn test:unit
-            wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'http://localhost:4000/keys'
-            wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'localhost:1111/status'
+            docker ps
+            wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'http://tweek-api/status'
+            wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'http://tweek-backoffice/keys'
             yarn test:e2e
 
       - deploy: 
