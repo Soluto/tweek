@@ -64,24 +64,26 @@ jobs:
       
       - restore_cache:
           keys:
+            - yarn-cache-{{ .Branch }}-{{ checksum "BackOffice/yarn.lock" }}
             - yarn-cache-{{ .Branch }}
             - yarn-cache-master
             - yarn-cache-
 
-      - run: 
-          command: cd BackOffice && yarn
+      - run: cd BackOffice && yarn
 
       - save_cache:
-          key: yarn-cache-{{ .Branch }}
+          key: yarn-cache-{{ .Branch }}-{{ checksum "BackOffice/yarn.lock" }}
           paths:
             - ~/.yarn-cache
 
       - run: 
           name: test
           command: |
+            cd BackOffice
+            yarn test:unit
             wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'http://localhost:4000/keys'
             wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'localhost:1111/status'
-            cd BackOffice && yarn test:unit && yarn test:e2e
+            yarn test:e2e
 
       - deploy: 
           name: deploy
