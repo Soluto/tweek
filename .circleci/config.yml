@@ -2,9 +2,11 @@ version: 2
 jobs:
   build:
     working_directory: /BackOffice
+    
     docker:
       - image: node:6.10.1
     
     steps:
-      - run: echo "starting!"
-      - run: uname -a
+      - run: |
+          echo "starting!"
+          uname -a
