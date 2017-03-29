@@ -8,7 +8,7 @@ services:
   tweek-management:
     image: soluto/tweek-management
     container_name: tweek-management
-    links:
+    depends_on:
       - tweek-git
     networks:
       - tweek
@@ -35,7 +35,7 @@ services:
   tweek-api:
     image: soluto/tweek-api
     container_name: tweek-api
-    links:
+    depends_on:
       - tweek-management
     expose:
       - 80
