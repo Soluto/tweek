@@ -16,15 +16,15 @@ export default class GitRepository {
 
     const operationSettings = {
       callbacks: {
-        credentials: () =>
-          Git.Cred.userpassPlaintextNew(settings.username, settings.password),
+        credentials: () => settings.url.startsWith('ssh://') ? Git.Cred.sshKeyNew(settings.username, settings.publicKey, settings.privateKey, '')
+                                                         : Git.Cred.userpassPlaintextNew(settings.username, settings.password),
       },
     };
 
     console.log('clonning rules repository');
     const clonningOp = 'clonning end in';
     console.time(clonningOp);
-    
+
     const repo = await Git.Clone(settings.url, settings.localPath, {
       fetchOpts: operationSettings,
     });
@@ -42,8 +42,8 @@ export default class GitRepository {
   }
 
   async getFileDetails(fileName) {
-    let modifyDate = "unknown";
-    let modifyUser = "unknown";
+    let modifyDate = 'unknown';
+    let modifyUser = 'unknown';
     let commitSha = null;
 
     let remote = await this._repo.getRemote('origin');
@@ -69,7 +69,7 @@ export default class GitRepository {
     return {
       modifyDate,
       modifyUser,
-      modifyCompareUrl: `${remoteUrl.replace(/\.git$/, "")}/${commitSha ? `commit/${commitSha}` : `commits/master/${fileName}`}`
+      modifyCompareUrl: `${remoteUrl.replace(/\.git$/, '')}/${commitSha ? `commit/${commitSha}` : `commits/master/${fileName}`}`,
     };
   }
 
@@ -146,7 +146,7 @@ export default class GitRepository {
       console.warn('Not synced after Push, attempting to reset');
       await this.reset();
 
-      throw new Error("Repo was not in sync after push");
+      throw new Error('Repo was not in sync after push');
     }
   }
 }

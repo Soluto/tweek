@@ -14,6 +14,15 @@ cd /tweek/repo
 chown -R git:git .
 chmod -R ug+rwX .
 chmod g+s .
+chmod -R g+x hooks
+
+cd /tweek/tests
+chown -R git:git .
+chmod -R ug+rwX .
+chmod g+s .
+chmod -R g+x hooks
+
+echo export TWEEK_MANAGEMENT_URL=$TWEEK_MANAGEMENT_URL >> /home/git/.bashrc
 
 # -D flag avoids executing sshd as a daemon
 /usr/sbin/sshd -D

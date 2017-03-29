@@ -1,0 +1,24 @@
+[
+    {
+        "Id": "ee6a6ada-2eb2-5683-b4db-8d31ed2b892d",
+        "Matcher": {
+            "device.DeviceOsType": "Ios"
+        },
+        "Value": "ios result",
+        "Type": "SingleVariant"
+    },
+    {
+        "Id": "d0bd0f7a-9841-5411-8b43-15a523b0e173",
+        "Matcher": {
+            "device.DeviceOsType": "Android"
+        },
+        "Value": "android result",
+        "Type": "SingleVariant"
+    },
+    {
+        "Id": "3d25cee7-d5cd-50ad-97b6-99178d4333f6",
+        "Matcher": {},
+        "Type": "SingleVariant",
+        "Value": "default result"
+    }
+]

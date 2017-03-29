@@ -33,7 +33,7 @@ dependencies:
       docker pull soluto/tweek-api:latest
       docker pull soluto/tweek-management:latest
     - docker-compose build
-    - docker-compose up -d
+    - docker-compose -f docker-compose.yml -f docker-compose.tests.yml up -d
     - mkdir -p ~/docker
     - docker save soluto/tweek-api:latest soluto/tweek-management:latest backoffice_tweek-backoffice > ~/docker/tweek-images.tar
   override:

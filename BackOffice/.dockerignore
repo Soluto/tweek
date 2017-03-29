@@ -4,3 +4,4 @@ coverage-unit/
 .build/
 .typings/
 Dockerfile
+docker-compose*

@@ -1,0 +1,9 @@
+{
+    "displayName": "@tweek_clients_tests/test_category/test_key1",
+    "description": "e2e test",
+    "tags": [
+        "test",
+        "do not delete or change"
+    ],
+    "valueType": "string"
+}
