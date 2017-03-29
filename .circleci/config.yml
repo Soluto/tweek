@@ -17,31 +17,31 @@ jobs:
     
     steps:
       - run: 
-        command: |
-          echo $TWEEK_API_HOSTNAME && echo ${TWEEK_API_HOSTNAME}
-          wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused ${TWEEK_API_HOSTNAME}
+          command: |
+            echo $TWEEK_API_HOSTNAME && echo ${TWEEK_API_HOSTNAME}
+            wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused ${TWEEK_API_HOSTNAME}
       
       - restore_cache:
-        kes:
-          - docker-cache-{{ .Branch }}
-          - docker-cache-master
-          - docker-cache-
+          kes:
+            - docker-cache-{{ .Branch }}
+            - docker-cache-master
+            - docker-cache-
 
       - run: 
-        command: |
-          if [[ -e ~/docker/tweek-images.tar ]]; then
-            docker load -i ~/docker/tweek-images.tar
-            echo "found cached images"
-          else
-            echo "cached images were not found"
-          fi
-          docker images
-          docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-          docker-compose pull
-          docker-compose build
-          docker-compose up -d
-          mkdir -p ~/docker
-          docker save soluto/tweek-api:latest soluto/tweek-management:latest backoffice_tweek-backoffice > ~/docker/tweek-images.tar
+          command: |
+            if [[ -e ~/docker/tweek-images.tar ]]; then
+              docker load -i ~/docker/tweek-images.tar
+              echo "found cached images"
+            else
+              echo "cached images were not found"
+            fi
+            docker images
+            docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
+            docker-compose pull
+            docker-compose build
+            docker-compose up -d
+            mkdir -p ~/docker
+            docker save soluto/tweek-api:latest soluto/tweek-management:latest backoffice_tweek-backoffice > ~/docker/tweek-images.tar
 
       - save_cache:
           key: docker-cache-{{ .Branch }}
@@ -49,13 +49,13 @@ jobs:
             - ~/docker
       
       - restore_cache:
-        kes:
-          - yarn-cache-{{ .Branch }}
-          - yarn-cache-master
-          - yarn-cache-
+          kes:
+            - yarn-cache-{{ .Branch }}
+            - yarn-cache-master
+            - yarn-cache-
 
       - run: 
-        command: yarn
+          command: yarn
 
       - save_cache:
           key: yarn-cache-{{ .Branch }}
@@ -63,17 +63,17 @@ jobs:
             - ~/.yarn-cache
 
       - run: 
-        command: |
-          wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'http://localhost:4000/keys'
-          wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'localhost:1111/status'
-          yarn test:unit && yarn test:e2e
+          command: |
+            wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'http://localhost:4000/keys'
+            wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'localhost:1111/status'
+            yarn test:unit && yarn test:e2e
 
       - deploy: 
-        command: |
-          if [ "${CIRCLE_BRANCH}" == "master" ]; then
-            docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-            docker tag backoffice_tweek-backoffice:latest soluto/tweek-back-office
-            docker push soluto/tweek-back-office
-          else 
-            echo "not deploying on non master branches"
-          fi
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
+              docker tag backoffice_tweek-backoffice:latest soluto/tweek-back-office
+              docker push soluto/tweek-back-office
+            else 
+              echo "not deploying on non master branches"
+            fi
