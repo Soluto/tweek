@@ -41,6 +41,7 @@ jobs:
       
       - run: 
           name: docker-compose
+          working_directory: /BackOffice
           command: |
             if [[ -e ~/docker/tweek-images.tar ]]; then
               docker load -i ~/docker/tweek-images.tar
@@ -50,9 +51,7 @@ jobs:
             fi
             docker images
             docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-            cd BackOffice
-            docker-compose pull
-            docker-compose build
+            docker-compose build --pull
             docker-compose up -d
             mkdir -p ~/docker
             docker save soluto/tweek-api:latest soluto/tweek-management:latest backoffice_tweek-backoffice > ~/docker/tweek-images.tar
@@ -69,7 +68,9 @@ jobs:
             - yarn-cache-master
             - yarn-cache-
 
-      - run: cd BackOffice && yarn
+      - run:
+          working_directory: /BackOffice
+          command: yarn --cache-folder "~/.yarn-cache"
 
       - save_cache:
           key: yarn-cache-{{ .Branch }}-{{ checksum "BackOffice/yarn.lock" }}
@@ -78,8 +79,8 @@ jobs:
 
       - run: 
           name: test
+          working_directory: /BackOffice
           command: |
-            cd BackOffice
             yarn test:unit
             wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'http://localhost:4000/keys'
             wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'localhost:1111/status'
