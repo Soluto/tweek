@@ -19,8 +19,7 @@ jobs:
       - run: 
           command: |
             echo $TWEEK_API_HOSTNAME && echo ${TWEEK_API_HOSTNAME}
-            uname -a
-            curl
+            cat /proc/sys/kernel/osrelease
             wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused ${TWEEK_API_HOSTNAME}
       
       - restore_cache:
