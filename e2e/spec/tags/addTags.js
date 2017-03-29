@@ -1,8 +1,8 @@
 /* global describe, before, after it, browser */
 
-import KeysPageObject from '../KeysPageObject';
+import KeysPageObject from '../../KeysPageObject';
 import assert from 'assert';
-import { selectors } from '../selectors';
+import { selectors } from '../../selectors';
 import Chance from 'chance';
 
 describe('add tags', () => {

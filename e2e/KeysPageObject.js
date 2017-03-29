@@ -1,10 +1,12 @@
 import { getRelativeSelector, selectors } from './selectors';
 import moment from 'moment';
-import { BLANK_KEY_NAME } from '../../modules/store/ducks/ducks-utils/blankKeyDefinition';
+import nconf from 'nconf';
+
+const BLANK_KEY_NAME = '_blank';
 
 export default class KeysPageObject {
 
-  static BASE_URL = 'http://127.0.0.1:4000/';
+  static BASE_URL = nconf.get('BACKOFFICE_URL');
   static KEYS_PAGE_URL = 'keys';
   static TEST_KEYS_FOLDER = '@behavior_tests';
   static GIT_TRANSACTION_TIMEOUT = 60000;
