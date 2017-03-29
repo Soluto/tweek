@@ -14,6 +14,8 @@ jobs:
       - image: node:6.10.1
     
     steps:
+      - checkout
+
       - run: |
           echo $TWEEK_API_HOSTNAME && echo ${TWEEK_API_HOSTNAME}
           wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused ${TWEEK_API_HOSTNAME}
@@ -30,8 +32,6 @@ jobs:
             mv /tmp/docker/* /usr/bin
             curl -L -o /usr/bin/docker-compose "https://github.com/docker/compose/releases/download/1.11.2/docker-compose-$(uname -s)-$(uname -m)"
             chmod +x /usr/bin/docker-compose
-
-      - checkout
 
       - restore_cache:
           keys:
