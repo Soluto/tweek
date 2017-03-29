@@ -5,7 +5,7 @@ jobs:
       ignore:
         - gh-pages
 
-    working_directory: ~/BackOffice
+    working_directory: ~/tweek
 
     environment:
       NODE_ENV: development
@@ -14,8 +14,10 @@ jobs:
       - image: node:6.10.1
     
     steps:
+      - checkout
+
       - run: |
-          cd ~ && ls
+          cd BackOffice/
           echo $TWEEK_API_HOSTNAME && echo ${TWEEK_API_HOSTNAME}
           wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused ${TWEEK_API_HOSTNAME}
 
@@ -49,6 +51,7 @@ jobs:
             fi
             docker images
             docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
+            pwd
             docker-compose pull
             docker-compose build
             docker-compose up -d
