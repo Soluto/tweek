@@ -1,0 +1,27 @@
+[
+    {
+        "Matcher": {},
+        "Value": {
+            "base": "string",
+            "allowedValues": [
+                "Desktop",
+                "Laptop",
+                "Tablet",
+                "Mobile",
+                "WinServer",
+                "Car",
+                "Television",
+                "PrinterFax",
+                "Bike",
+                "ChildItem",
+                "KitchenAppliance",
+                "CleaningAppliance",
+                "VideoGamingDevice",
+                "HomeTheaterDevice",
+                "Computer",
+                "Other"
+            ]
+        },
+        "Type": "SingleVariant"
+    }
+]
