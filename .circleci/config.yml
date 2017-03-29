@@ -5,7 +5,7 @@ jobs:
       ignore:
         - gh-pages
 
-    working_directory: /BackOffice
+    working_directory: ~/BackOffice
 
     environment:
       NODE_ENV: development
@@ -17,6 +17,7 @@ jobs:
       - run: |
           echo $TWEEK_API_HOSTNAME && echo ${TWEEK_API_HOSTNAME}
           wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused ${TWEEK_API_HOSTNAME}
+          ls
 
       - setup_remote_docker
 
