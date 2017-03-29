@@ -40,8 +40,7 @@ jobs:
             - docker-cache-
       
       - run: 
-          name: docker-compose
-          working_directory: /BackOffice
+          name: Restore docker images
           command: |
             if [[ -e ~/docker/tweek-images.tar ]]; then
               docker load -i ~/docker/tweek-images.tar
@@ -49,6 +48,11 @@ jobs:
             else
               echo "cached images were not found"
             fi
+
+      - run: 
+          name: docker-compose
+          working_directory: ~/tweek/BackOffice
+          command: |
             docker images
             docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
             docker-compose build --pull
@@ -69,7 +73,7 @@ jobs:
             - yarn-cache-
 
       - run:
-          working_directory: /BackOffice
+          working_directory: ~/tweek/BackOffice
           command: yarn --cache-folder "~/.yarn-cache"
 
       - save_cache:
@@ -79,7 +83,7 @@ jobs:
 
       - run: 
           name: test
-          working_directory: /BackOffice
+          working_directory: ~/tweek/BackOffice
           command: |
             yarn test:unit
             wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused 'http://localhost:4000/keys'
