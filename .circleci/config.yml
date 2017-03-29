@@ -1,6 +1,7 @@
 version: 2
 jobs:
   build:
+    working_directory: ~
     docker:
       - image: node:6.10.1
     
