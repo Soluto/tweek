@@ -12,7 +12,6 @@ export async function getContextSchema(req, res, {tweekApiHostname}) {
 
   for (let identity of Object.keys(schemaDetails)) {
     processedSchemaDetails[identity] = mapKeys(changeCase.pascalCase, schemaDetails[identity]);
-    //processedSchemaDetails[identity] = {...mapKeys(changeCase.pascalCase, schemaDetails[identity]), "@@Id": {type:"string"}, "@CreationDate": {type:"date"}};
   }
 
   res.json(processedSchemaDetails);
