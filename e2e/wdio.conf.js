@@ -1,3 +1,7 @@
+const nconf = require('nconf');
+nconf.argv().env().defaults({BACKOFFICE_URL: "http://localhost:4000/"});
+const host = nconf.get('host');
+
 exports.config = {
   specs: [
     './spec/*.js',
@@ -11,8 +15,6 @@ exports.config = {
   // Sauce Labs platform configurator - a great tool to configure your capabilities:
   // https://docs.saucelabs.com/reference/platforms-configurator
   //
-  host: 'selenium',
-  port: 4444,
   capabilities: [
     {
       // maxInstances can get overwritten per capability. So if you have an in-house Selenium
@@ -62,7 +64,7 @@ exports.config = {
   //     webdriverrtc: {},
   //     browserevent: {}
   // },
-  // services: ['selenium-standalone'],
+  services: host ? [] : ['selenium-standalone'],
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber
   // see also: http://webdriver.io/guide/testrunner/frameworks.html
@@ -106,8 +108,7 @@ exports.config = {
   // variables, such as `browser`. It is the perfect place to define custom commands.
   before: function () {
     workingDirectory = process.cwd().replace(/\\/g, '/');
-    require('nconf').argv().env().defaults({BACKOFFICE_URL: "http://localhost:4000/" });;
-    require(workingDirectory + '/browserExtensionCommands')(browser)
+    require(workingDirectory + '/browserExtensionCommands')(browser);
   },
   //
   // Hook that gets executed before the suite starts
