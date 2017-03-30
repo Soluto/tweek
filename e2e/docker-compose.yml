@@ -1,15 +1,21 @@
-selenium:
-  image: selenium/standalone-chrome
-  container_name: selenium
-  external_links:
-    - tweek-backoffice
+version: '2''
 
-backoffice-e2e:
-  build: .
-  container_name: e2e
-  external_links:
-    - tweek-backoffice
-  links:
-    - selenium
-  environment:
-    - BACKOFFICE_URL=http://tweek-backoffice:3000/
+networks:
+  tweek:
+    external:
+      name: backoffice_tweek
+
+services:
+  selenium:
+    image: selenium/standalone-chrome
+    container_name: selenium
+    networks:
+      - tweek
+
+  backoffice-e2e:
+    build: .
+    container_name: e2e
+    networks:
+      - tweek
+    environment:
+      - BACKOFFICE_URL=http://tweek-backoffice:3000/
