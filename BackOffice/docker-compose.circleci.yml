@@ -12,7 +12,7 @@ services:
     networks:
       - tweek
     environment:
-      - PUBLIC_KEY_PATH=/keys/tweekgit.pub
+      - PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
       - TWEEK_MANAGEMENT_URL=http://tweek-management:3000
     volumes: []
 
@@ -21,8 +21,8 @@ services:
       - keys
     environment: 
       - GIT_URL=ssh://git@tweek-git/tweek/tests
-      - GIT_PRIVATE_KEY_PATH=/keys/tweekgit
-      - GIT_PUBLIC_KEY_PATH=/keys/tweekgit.pub
+      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+      - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
     volumes: []
 
   tweek-backoffice:
@@ -30,6 +30,6 @@ services:
       - keys
     environment: 
       - GIT_URL=ssh://git@tweek-git/tweek/tests
-      - GIT_PRIVATE_KEY_PATH=/keys/tweekgit
-      - GIT_PUBLIC_KEY_PATH=/keys/tweekgit.pub
+      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+      - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
     volumes: []
