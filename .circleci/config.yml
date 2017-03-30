@@ -36,8 +36,8 @@ jobs:
           command: |
             docker images
             docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-            docker-compose pull
-            docker-compose build
+            docker-compose -f docker-compose.yml -f docker-compose.tests.yml -f docker-compose.circleci.yml pull
+            docker-compose -f docker-compose.yml -f docker-compose.tests.yml -f docker-compose.circleci.yml build
 
       - run:
           name: Run tweek-backoffice
