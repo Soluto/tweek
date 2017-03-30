@@ -72,12 +72,12 @@ jobs:
           command: |
             docker-compose pull
             docker-compose build
-            docker run --link tweek-api node:6.10.1-slim wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status
+            docker run --network=backoffice_tweek node:6.10.1-slim wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status
 
       - run:
           name: Run e2e tests
           working_directory: ~/tweek/e2e
-          command: docker-compose run backoffice-e2e
+          command: docker-compose run --network=backoffice_tweek backoffice-e2e
 
       - deploy: 
           name: deploy
