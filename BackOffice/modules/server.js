@@ -36,9 +36,6 @@ const gitRepostoryConfig = {
   privateKey: toFullPath(nconf.get('GIT_PRIVATE_KEY_PATH') || ''),
 };
 
-console.log(fs.readFileSync(toFullPath(nconf.get('GIT_PUBLIC_KEY_PATH') || '')).toString());
-console.log(fs.readFileSync(toFullPath(nconf.get('GIT_PRIVATE_KEY_PATH') || '')).toString());
-
 const gitRepoCreationPromise = GitRepository.create(gitRepostoryConfig);
 const gitRepoCreationPromiseWithTimeout = new Promise((resolve, reject) => {
   gitRepoCreationPromise.then(() => resolve());
