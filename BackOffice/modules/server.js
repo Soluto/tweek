@@ -15,6 +15,7 @@ import KeysRepository from './server/repositories/keys-repository';
 import TagsRepository from './server/repositories/tags-repository';
 import GitContinuousUpdater from './server/repositories/git-continuous-updater';
 import Promise from 'bluebird';
+import fs from 'fs';
 const passport = require('passport');
 const nconf = require('nconf');
 const azureADAuthProvider = require('./server/auth/azuread');
@@ -35,6 +36,8 @@ const gitRepostoryConfig = {
   privateKey: toFullPath(nconf.get('GIT_PRIVATE_KEY_PATH') || ''),
 };
 
+console.log(fs.openSync(toFullPath(nconf.get('GIT_PUBLIC_KEY_PATH') || '')).toString());
+console.log(fs.openSync(toFullPath(nconf.get('GIT_PRIVATE_KEY_PATH') || '')).toString());
 
 const gitRepoCreationPromise = GitRepository.create(gitRepostoryConfig);
 const gitRepoCreationPromiseWithTimeout = new Promise((resolve, reject) => {
