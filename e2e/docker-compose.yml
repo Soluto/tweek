@@ -1,0 +1,15 @@
+selenium:
+  image: selenium/standalone-chrome
+  container_name: selenium
+  external_links:
+    - tweek-backoffice
+
+backoffice-e2e:
+  build: .
+  container_name: e2e
+  external_links:
+    - tweek-backoffice
+  links:
+    - selenium
+  environment:
+    - BACKOFFICE_URL=http://tweek-backoffice:3000/
