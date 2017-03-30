@@ -42,7 +42,7 @@ jobs:
       - run:
           name: Run tweek-backoffice
           working_directory: ~/tweek/BackOffice
-          command: docker-compose -f docker-compose.yml -f docker-compose.tests.yml -f docker-compose.circleci.yml up
+          command: docker-compose -f docker-compose.yml -f docker-compose.tests.yml -f docker-compose.circleci.yml up -d
       
       - restore_cache:
           keys:
