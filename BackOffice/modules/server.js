@@ -3,7 +3,6 @@ import { createServer } from 'react-project/server';
 import { RouterContext } from 'react-router';
 import Document from '../modules/components/Document';
 import routes from '../modules/routes';
-import fs from 'fs';
 import path from 'path';
 import configureStore from './store/configureStore';
 import { Provider } from 'react-redux';
@@ -25,15 +24,15 @@ nconf.required(['GIT_URL', 'GIT_USER']);
 const gitCloneTimeoutInMinutes = nconf.get('GIT_CLONE_TIMEOUT_IN_MINUTES');
 const tweekApiHostname = nconf.get('TWEEK_API_HOSTNAME');
 
-const relativePath = x => path.normalize(path.isAbsolute(x) ? x : `${process.cwd()}/${x}`);
+const toFullPath = x => path.normalize(path.isAbsolute(x) ? x : `${process.cwd()}/${x}`);
 
 const gitRepostoryConfig = {
   url: nconf.get('GIT_URL'),
   username: nconf.get('GIT_USER'),
   password: nconf.get('GIT_PASSWORD'),
   localPath: `${process.cwd()}/rulesRepository`,
-  publicKey: relativePath(nconf.get('GIT_PUBLIC_KEY_PATH') || ''),
-  privateKey: relativePath(nconf.get('GIT_PRIVATE_KEY_PATH') || ''),
+  publicKey: toFullPath(nconf.get('GIT_PUBLIC_KEY_PATH') || ''),
+  privateKey: toFullPath(nconf.get('GIT_PRIVATE_KEY_PATH') || ''),
 };
 
 
