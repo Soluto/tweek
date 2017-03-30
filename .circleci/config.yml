@@ -16,10 +16,6 @@ jobs:
     steps:
       - checkout
 
-      - run: |
-          echo $TWEEK_API_HOSTNAME && echo ${TWEEK_API_HOSTNAME}
-          wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused ${TWEEK_API_HOSTNAME}
-
       - setup_remote_docker
 
       - run:
@@ -34,14 +30,18 @@ jobs:
             chmod +x /usr/bin/docker-compose
 
       - run: 
-          name: docker-compose
+          name: Build tweek-backoffice
           working_directory: ~/tweek/BackOffice
           command: |
             docker images
             docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
             docker-compose pull
             docker-compose build
-            docker-compose up -d
+
+      - run:
+          name: Run tweek-backoffice
+          working_directory: ~/tweek/BackOffice
+          command: docker-compose up -d
       
       - restore_cache:
           keys:
@@ -51,6 +51,7 @@ jobs:
             - yarn-cache-
 
       - run:
+          name: yarn install
           working_directory: ~/tweek/BackOffice
           command: yarn --cache-folder "/.yarn-cache"
 
@@ -60,12 +61,12 @@ jobs:
             - ~/tweek/BackOffice/.yarn-cache
 
       - run: 
-          name: unit tests
+          name: Run unit tests
           working_directory: ~/tweek/BackOffice
           command: yarn test:unit
             
       - run:
-          name: e2e tests
+          name: Run e2e tests
           working_directory: ~/tweek/e2e
           command: |
             docker-compose pull
