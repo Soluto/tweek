@@ -1,8 +1,11 @@
+const nconf = require('nconf');
+nconf.argv().env().defaults({BACKOFFICE_URL: "http://localhost:4000/"});
+const host = nconf.get('host');
+
 exports.config = {
   specs: [
-    './spec/behavior/keys/*.js',
-    './spec/behavior/validations/*.js',
-    './spec/behavior/tags/*.js',
+    './spec/*.js',
+    './spec/*/*.js',
   ],
   exclude: [
   ],
@@ -22,8 +25,7 @@ exports.config = {
       browserName: 'chrome',
       chromeOptions: { "args": ["--no-sandbox"] }
     }
-  ],
-  // host: 'http://localhost',
+  ], // host: 'http://localhost',
   // port: 8080,
   sync: true,
   // Level of logging verbosity: silent | verbose | command | data | result | error
@@ -62,7 +64,7 @@ exports.config = {
   //     webdriverrtc: {},
   //     browserevent: {}
   // },
-  services: ['selenium-standalone'],
+  services: host ? [] : ['selenium-standalone'],
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber
   // see also: http://webdriver.io/guide/testrunner/frameworks.html
@@ -106,8 +108,7 @@ exports.config = {
   // variables, such as `browser`. It is the perfect place to define custom commands.
   before: function () {
     workingDirectory = process.cwd().replace(/\\/g, '/');
-
-    require(workingDirectory + '/spec/behavior/browserExtensionCommands')(browser)
+    require(workingDirectory + '/browserExtensionCommands')(browser);
   },
   //
   // Hook that gets executed before the suite starts

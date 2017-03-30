@@ -1,8 +1,9 @@
 /* global describe, before, after, beforeEach, it, browser */
 
-import KeysPageObject from '../KeysPageObject';
-import { BLANK_KEY_NAME } from '../../../modules/store/ducks/ducks-utils/blankKeyDefinition';
-import { selectors } from '../selectors';
+import KeysPageObject from '../../KeysPageObject';
+import { selectors } from '../../selectors';
+
+const BLANK_KEY_NAME = '_blank';
 
 describe('navigating from key with changes', () => {
   const keysPageObject = new KeysPageObject(browser);
