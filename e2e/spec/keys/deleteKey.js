@@ -1,9 +1,9 @@
 /* global describe, before, beforeEach, after, afterEach, it, browser */
 
-import KeysAsserts from '../KeysAsserts';
-import PageAsserts from '../PageAsserts';
-import KeysPageObject from '../KeysPageObject';
-import { selectors } from '../selectors';
+import KeysAsserts from '../../KeysAsserts';
+import PageAsserts from '../../PageAsserts';
+import KeysPageObject from '../../KeysPageObject';
+import { selectors } from '../../selectors';
 
 describe('delete key', () => {
   const keysPageObject = new KeysPageObject(browser);
