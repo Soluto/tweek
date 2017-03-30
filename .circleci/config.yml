@@ -55,7 +55,7 @@ jobs:
           command: yarn --cache-folder "/.yarn-cache"
 
       - save_cache:
-          key: yarn-cache-{{ .Branch }}-{{ checksum "BackOffice/yarn.lock" }}-{{ epoch }}
+          key: yarn-cache-{{ .Branch }}-{{ checksum "BackOffice/yarn.lock" }}
           paths:
             - ~/tweek/BackOffice/.yarn-cache
 
@@ -70,7 +70,7 @@ jobs:
           command: |
             docker-compose pull
             docker-compose build
-            docker run --link tweek-api alpine wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status
+            docker run --link tweek-api node:6.10.1-slim wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status
             docker-compose run backoffice-e2e
 
       - deploy: 

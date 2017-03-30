@@ -1,4 +1,4 @@
-FROM node:6.10.1
+FROM node:6.10.1-slim
 
 ADD package.json /tmp/package.json
 
