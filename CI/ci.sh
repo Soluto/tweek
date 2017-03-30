@@ -6,8 +6,6 @@ docker-compose run --name tweek-management -d tweek-management
 docker run -d -p 5000:80 --name tweek-latest --network ci_tweek --env RulesBlob.Url=http://tweek-management:3000/ruleset/latest  soluto/tweek-api:candidate;
 set +e
 curl --retry-delay 5 --retry 20 -v http://localhost:5000/status
-curl --retry-delay 5 --retry 20 -v http://localhost:5000/configurations/_ | echo
-docker exec tweek-latest curl http://tweek-management:3000/ruleset/latest | echo
 set -e
 echo running smoke tests;
 docker-compose run ci-build bash -c "dotnet restore Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && dotnet test Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release --no-build";
