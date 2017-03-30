@@ -33,22 +33,6 @@ jobs:
             curl -L -o /usr/bin/docker-compose "https://github.com/docker/compose/releases/download/1.11.2/docker-compose-$(uname -s)-$(uname -m)"
             chmod +x /usr/bin/docker-compose
 
-      - restore_cache:
-          keys:
-            - docker-cache-{{ .Branch }}
-            - docker-cache-master
-            - docker-cache-
-      
-      - run: 
-          name: Restore docker images
-          command: |
-            if [[ -e ~/docker/tweek-images.tar ]]; then
-              docker load -i ~/docker/tweek-images.tar
-              echo "found cached images"
-            else
-              echo "cached images were not found"
-            fi
-
       - run: 
           name: docker-compose
           working_directory: ~/tweek/BackOffice
@@ -58,13 +42,6 @@ jobs:
             docker-compose pull
             docker-compose build
             docker-compose up -d
-            mkdir -p ~/docker
-            docker save soluto/tweek-api:latest soluto/tweek-management:latest backoffice_tweek-backoffice > ~/docker/tweek-images.tar
-
-      - save_cache:
-          key: docker-cache-{{ .Branch }}-{{ epoch }}
-          paths:
-            - ~/docker
       
       - restore_cache:
           keys:
@@ -93,7 +70,7 @@ jobs:
           command: |
             docker-compose pull
             docker-compose build
-            docker-compose exec tweek-backoffice wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status
+            docker run --link tweek-api alpine wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status
             docker-compose run backoffice-e2e
 
       - deploy: 
