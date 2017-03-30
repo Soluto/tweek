@@ -1,6 +1,5 @@
-FROM node:6.10.0-slim
+FROM node:6.10.1-slim
 
-ADD package.json /tmp/package.json
 ADD package.json yarn.lock /tmp/
 
 ENV NODE_ENV=production
