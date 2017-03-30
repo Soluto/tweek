@@ -1,0 +1,8 @@
+{
+    "displayName": "@behavior_tests/@partitions/partition_groups",
+    "description": "e2e partition tests",
+    "tags": [
+        "do not delete or change"
+    ],
+    "valueType": "string"
+}

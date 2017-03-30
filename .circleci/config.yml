@@ -36,13 +36,13 @@ jobs:
           command: |
             docker images
             docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-            docker-compose pull
-            docker-compose build
+            docker-compose -f docker-compose.yml -f docker-compose.tests.yml -f docker-compose.circleci.yml pull
+            docker-compose -f docker-compose.yml -f docker-compose.tests.yml -f docker-compose.circleci.yml build
 
       - run:
           name: Run tweek-backoffice
           working_directory: ~/tweek/BackOffice
-          command: docker-compose up -d
+          command: docker-compose -f docker-compose.yml -f docker-compose.tests.yml -f docker-compose.circleci.yml up -d
       
       - restore_cache:
           keys:
@@ -72,7 +72,7 @@ jobs:
           command: |
             docker-compose pull
             docker-compose build
-            docker run --link tweek-api node:6.10.1-slim wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status
+            docker run --network=backoffice_tweek node:6.10.1-slim wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status
 
       - run:
           name: Run e2e tests

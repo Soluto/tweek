@@ -1,0 +1,13 @@
+[
+    {
+        "Matcher": {},
+        "Value": {
+            "base": "string",
+            "allowedValues": [
+                "android",
+                "ios"
+            ]
+        },
+        "Type": "SingleVariant"
+    }
+]

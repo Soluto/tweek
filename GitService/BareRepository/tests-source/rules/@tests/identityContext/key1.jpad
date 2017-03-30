@@ -1,0 +1,32 @@
+[
+    {
+		"Id": "b756449f-b92d-4ef3-b90d-597a16b485e3",
+		"Matcher": {
+			"test.FavoriteFruit": "banana"
+        },
+        "Value": "yellow",
+        "Type": "SingleVariant"
+    },
+	{
+        "Id": "48f8ccda-e3e6-45f2-9d78-46593f6cea44",
+        "Matcher": {
+			"test.FavoriteFruit": "apple"
+        },
+        "Value": "green",
+        "Type": "SingleVariant"
+    },
+	{
+        "Id": "48f8ccda-e3e6-45f2-9d78-46593f6cea44",
+        "Matcher": {
+			"test.FavoriteFruit": "orange"
+        },
+        "Value": "orange",
+        "Type": "SingleVariant"
+    },
+    {
+        "Id": "99103dc4-6aff-4017-bdba-e422b25ce795",
+        "Matcher": {},
+        "Type": "SingleVariant",
+        "Value": "unknown"
+    }
+]

@@ -1,0 +1,41 @@
+[
+    {
+        "Id": "3700fac1-f206-5f80-980a-1ac5eff87a60",
+        "Matcher": {
+            "device.AgentVersion": {
+                "$gt": "8.0.0.0",
+                "$compare": "version"
+            }
+        },
+        "Value": "value4",
+        "Type": "SingleVariant"
+    },
+    {
+        "Id": "f10ac913-b816-5337-8901-cd7a2aef9c67",
+        "Matcher": {
+            "device.DeviceOsVersion": {
+                "$lt": "2.6.0.5",
+                "$compare": "version"
+            }
+        },
+        "Value": "value3",
+        "Type": "SingleVariant"
+    },
+    {
+        "Id": "fb1c88fe-d2c8-579f-b4d4-37b503170a43",
+        "Matcher": {
+            "device.AgentVersion": {
+                "$le": "5.1.0.4",
+                "$compare": "version"
+            }
+        },
+        "Value": "value2",
+        "Type": "SingleVariant"
+    },
+    {
+        "Id": "322820bc-8fd5-5b5a-a9fc-75670f0237cf",
+        "Matcher": {},
+        "Value": "value1",
+        "Type": "SingleVariant"
+    }
+]

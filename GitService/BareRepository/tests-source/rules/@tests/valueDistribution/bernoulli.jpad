@@ -1,0 +1,12 @@
+[
+    {
+        "Id": "4fe86e17-83d9-52e2-97fe-6e03ef037c8c",
+        "Matcher": {},
+        "Type": "MultiVariant",
+        "OwnerType": "device",
+        "ValueDistribution": {
+            "type": "bernoulliTrial",
+            "args": 0.3
+        }
+    }
+]

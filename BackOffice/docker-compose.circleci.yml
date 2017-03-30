@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  keys:
+    build: "../GitService/ssh"
+
+  tweek-git:
+    build: ../GitService/BareRepository/.
+    container_name: tweek-git
+    volumes_from: 
+      - keys
+    networks:
+      - tweek
+    environment:
+      - PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
+      - TWEEK_MANAGEMENT_URL=http://tweek-management:3000
+    volumes: []
+
+  tweek-management:
+    volumes_from: 
+      - keys
+    environment: 
+      - GIT_URL=ssh://git@tweek-git/tweek/tests
+      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+      - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
+    volumes: []
+
+  tweek-backoffice:
+    volumes_from: 
+      - keys
+    environment: 
+      - GIT_URL=ssh://git@tweek-git/tweek/tests
+      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+      - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
+    volumes: []
