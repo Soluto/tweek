@@ -77,7 +77,7 @@ jobs:
       - run:
           name: Run e2e tests
           working_directory: ~/tweek/e2e
-          command: docker-compose run --network=backoffice_tweek backoffice-e2e
+          command: docker-compose run backoffice-e2e
 
       - deploy: 
           name: deploy
