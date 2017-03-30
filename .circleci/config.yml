@@ -1,0 +1,91 @@
+version: 2
+jobs:
+  build:
+    branches:
+      ignore:
+        - gh-pages
+
+    working_directory: ~/tweek
+
+    environment:
+      NODE_ENV: development
+ 
+    docker:
+      - image: node:6.10.1
+    
+    steps:
+      - checkout
+
+      - setup_remote_docker:
+          reusable: true
+
+      - run:
+          name: Install Docker client
+          command: |
+            set -x
+            VER="17.03.0-ce"
+            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+            mv /tmp/docker/* /usr/bin
+            curl -L -o /usr/bin/docker-compose "https://github.com/docker/compose/releases/download/1.11.2/docker-compose-$(uname -s)-$(uname -m)"
+            chmod +x /usr/bin/docker-compose
+
+      - run: 
+          name: Build tweek-backoffice
+          working_directory: ~/tweek/BackOffice
+          command: |
+            docker images
+            docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
+            docker-compose pull
+            docker-compose build
+
+      - run:
+          name: Run tweek-backoffice
+          working_directory: ~/tweek/BackOffice
+          command: docker-compose up -d
+      
+      - restore_cache:
+          keys:
+            - yarn-cache-{{ .Branch }}-{{ checksum "BackOffice/yarn.lock" }}
+            - yarn-cache-{{ .Branch }}
+            - yarn-cache-master
+            - yarn-cache-
+
+      - run:
+          name: yarn install
+          working_directory: ~/tweek/BackOffice
+          command: yarn --cache-folder "/.yarn-cache"
+
+      - save_cache:
+          key: yarn-cache-{{ .Branch }}-{{ checksum "BackOffice/yarn.lock" }}
+          paths:
+            - ~/tweek/BackOffice/.yarn-cache
+
+      - run: 
+          name: Run unit tests
+          working_directory: ~/tweek/BackOffice
+          command: yarn test:unit
+            
+      - run:
+          name: Prepare for e2e tests
+          working_directory: ~/tweek/e2e
+          command: |
+            docker-compose pull
+            docker-compose build
+            docker run --link tweek-api node:6.10.1-slim wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status
+
+      - run:
+          name: Run e2e tests
+          working_directory: ~/tweek/e2e
+          command: docker-compose run backoffice-e2e
+
+      - deploy: 
+          name: deploy
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
+              docker tag backoffice_tweek-backoffice:latest soluto/tweek-back-office
+              docker push soluto/tweek-back-office
+            else 
+              echo "not deploying on non master branches"
+            fi
