@@ -1,0 +1,20 @@
+{
+    "partitions": [],
+    "valueType": "string",
+    "rules": [
+        {
+            "Id": "cb310798-17b7-5412-8010-46cc86fed5d0",
+            "Matcher": {
+                "device.DeviceOsType": "Ios"
+            },
+            "Value": "ios value",
+            "Type": "SingleVariant"
+        },
+        {
+            "Id": "93b5538a-e7d4-5e47-9b05-bfd465392fc5",
+            "Matcher": {},
+            "Value": "def value",
+            "Type": "SingleVariant"
+        }
+    ]
+}

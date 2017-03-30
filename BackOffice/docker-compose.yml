@@ -1,32 +1,63 @@
-tweek-management:
-  image: soluto/tweek-management
-  container_name: tweek-management
-  environment:
-    - GIT_URL
-    - GIT_USER
-    - GIT_PASSWORD
-    - VALIDATION_URL=localhost:1111/validation
+version: "2"
 
-tweek-api:
-  image: soluto/tweek-api
-  container_name: tweek-api
-  ports:
-    - "1111:80"
-  links:
-    - tweek-management
-  environment:
-    - RulesBlob.Url=http://tweek-management:3000/ruleset/latest
+networks:
+  tweek: 
+    driver: bridge
 
-tweek-backoffice:
-  build: .
-  container_name: tweek-backoffice
-  ports:
-    - "4000:3000"
-  links:
-    - tweek-api
-  environment:
-    - GIT_URL
-    - GIT_USER
-    - GIT_PASSWORD
-    - GIT_CLONE_TIMEOUT_IN_MINUTES=5
-    - TWEEK_API_HOSTNAME=http://tweek-api
+services:
+  tweek-management:
+    image: soluto/tweek-management
+    container_name: tweek-management
+    depends_on:
+      - tweek-git
+    networks:
+      - tweek
+    volumes:
+      - ../GitService/ssh:/keys
+    environment:
+      - GIT_USER=git
+      - GIT_URL=ssh://git@tweek-git/tweek/repo
+      - GIT_PUBLIC_KEY_PATH=/keys/tweekgit.pub
+      - GIT_PRIVATE_KEY_PATH=/keys/tweekgit
+      - VALIDATION_URL=http://tweek-api/validation
+
+  tweek-git:
+    build: ../GitService/BareRepository/.
+    container_name: tweek-git
+    networks:
+      - tweek
+    environment:
+      - PUBLIC_KEY_PATH=/tweek/key.pub
+      - TWEEK_MANAGEMENT_URL=http://tweek-management:3000
+    volumes:
+      - ../GitService/ssh/tweekgit.pub:/tweek/key.pub
+
+  tweek-api:
+    image: soluto/tweek-api
+    container_name: tweek-api
+    depends_on:
+      - tweek-management
+    expose:
+      - 80
+    ports:
+      - "1111:80"
+    networks:
+      - tweek
+    environment:
+      - RulesBlob.Url=http://tweek-management:3000/ruleset/latest
+
+  tweek-backoffice:
+    build: .
+    container_name: tweek-backoffice
+    ports:
+      - "4000:3000"
+    networks:
+      - tweek
+    volumes: 
+      - ../GitService/ssh:/keys
+    environment:
+      - GIT_USER=git
+      - GIT_URL=ssh://git@tweek-git/tweek/repo
+      - GIT_PUBLIC_KEY_PATH=/keys/tweekgit.pub
+      - GIT_PRIVATE_KEY_PATH=/keys/tweekgit
+      - TWEEK_API_HOSTNAME=http://tweek-api

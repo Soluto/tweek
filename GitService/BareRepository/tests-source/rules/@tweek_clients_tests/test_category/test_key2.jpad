@@ -1,0 +1,20 @@
+{
+    "partitions": [],
+    "valueType": "boolean",
+    "rules": [
+        {
+            "Id": "c820d23b-9581-5ce1-9780-df85b2dc6278",
+            "Matcher": {
+                "device.PartnerBrandId": "testPartner"
+            },
+            "Value": true,
+            "Type": "SingleVariant"
+        },
+        {
+            "Id": "9d909c0c-089d-5c48-aee2-adc8bc641104",
+            "Matcher": {},
+            "Value": false,
+            "Type": "SingleVariant"
+        }
+    ]
+}
