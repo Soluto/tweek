@@ -3,6 +3,7 @@ jobs:
   build:
     branches:
       ignore:
+        - docs
         - gh-pages
 
     working_directory: ~/tweek
