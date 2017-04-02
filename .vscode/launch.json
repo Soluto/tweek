@@ -15,7 +15,7 @@
                 "args": "${auto-detect-url}",
                 "windows": {
                     "command": "cmd.exe",
-                    "args": "/C start ${auto-detect-url}"
+                    "args": "/C start ${auto-detect-url}/status"
                 },
                 "osx": {
                     "command": "open"
@@ -25,6 +25,7 @@
                 }
             },
             "env": {
+                "RulesBlob.Url": "http://localhost:41/ruleset/latest",
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "sourceFileMap": {
@@ -36,6 +37,34 @@
             "type": "coreclr",
             "request": "attach",
             "processId": "${command:pickProcess}"
-        }
+        },
+        {
+			"name": "Editor",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceRoot}/services/editor/node_modules/react-project/bin/react-project.js",
+			"stopOnEntry": false,
+			"args": [
+				"start"
+			],
+			"cwd": "${workspaceRoot}/services/editor",
+			"preLaunchTask": "dev-env-editor",
+			"runtimeExecutable": null,
+			"runtimeArgs": [
+				"--nolazy"
+			],
+			"env": {
+				"NODE_ENV": "development",
+				"AUTO_RELOAD": "hot",
+                "GIT_USER":"git",
+                "GIT_URL":"ssh://git@localhost:40/tweek/repo",
+                "GIT_PUBLIC_KEY_PATH": "../git-service/ssh/tweekgit.pub",
+                "GIT_PRIVATE_KEY_PATH": "../git-service/ssh/tweekgit",
+                "TWEEK_API_HOSTNAME":"http://localhost:42"
+			},
+			"externalConsole": false,
+			"sourceMaps": false,
+			"outDir": null
+		}
     ]
 }

@@ -6,20 +6,27 @@
         {
             "taskName": "dev-env-api",
             "command": "docker-compose",
-            "isShellCommand": true
+            "isShellCommand": true,
+            "args": ["-f", "./deployments/dev/docker-compose.yml", "up", "-d", "tweek-management"]
+        },
+        {
+            "taskName": "teardown-dev-env",
+            "command": "docker-compose",
+            "isShellCommand": true,
+            "args": ["-f", "./deployments/dev/docker-compose.yml", "down"]
         },
         {
             "taskName": "dev-env-editor",
             "command": "docker-compose",
-            "isShellCommand": true
+            "isShellCommand": true,
+            "args": ["-f", "./deployments/dev/docker-compose.yml", "up", "-d", "tweek-api", "tweek-management"]
         },
         {
             "command": "dotnet",
             "isShellCommand": true,
-            "taskName": "api-build",
-            "args": ["build", "services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj"],
-            "isBuildCommand": true,
-            "showOutput": "silent",
+            "taskName": "api-publish-for-docker",
+            "args": ["publish", "services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj","-o", "./obj/Docker/publish"],
+            "showOutput": "always",
             "problemMatcher": "$msCompile"
         },
         {
@@ -28,7 +35,7 @@
             "taskName": "api-build",
             "args": ["build", "services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj"],
             "isBuildCommand": true,
-            "showOutput": "silent",
+            "showOutput": "always",
             "problemMatcher": "$msCompile"
         }
     ]
