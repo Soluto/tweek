@@ -5,7 +5,7 @@ services:
     build: ../../services/git-service/BareRepository/.
     container_name: tweek-git
     ports: 
-      - 40:22
+      - "40:22"
     environment:
       - PUBLIC_KEY_PATH=/tweek/key.pub
       - TWEEK_MANAGEMENT_URL=http://tweek-management:3000
@@ -21,7 +21,7 @@ services:
     volumes:
       - ../../services/git-service/ssh:/keys
     ports:
-      - 41:3000
+      - "41:3000"
     environment:
       - GIT_USER=git
       - GIT_URL=ssh://git@tweek-git/tweek/repo
@@ -35,18 +35,19 @@ services:
     container_name: tweek-api
     depends_on:
       - tweek-management
-    expose:
-      - 80
     ports:
-      - 42:80
+      - "42:80"
     environment:
       - RulesBlob.Url=http://tweek-management:3000/ruleset/latest
 
   tweek-backoffice:
     build: ../../services/editor/
     container_name: tweek-backoffice
+    depends_on: 
+      - tweek-api
+      - tweek-git
     ports:
-      - 43:3000
+      - "43:3000"
     volumes: 
       - ../GitService/ssh:/keys
     environment:

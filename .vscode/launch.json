@@ -65,6 +65,34 @@
 			"externalConsole": false,
 			"sourceMaps": false,
 			"outDir": null
+		},
+        {
+			"name": "Editor (tests)",
+			"type": "node",
+			"request": "launch",
+			"stopOnEntry": false,
+            "runtimeExecutable": "npm",
+            "windows": {
+                "runtimeExecutable": "npm.cmd"
+            },
+            "runtimeArgs": [
+                "test"
+            ],
+            "port": 5858,
+			"cwd": "${workspaceRoot}/services/editor",
+			"preLaunchTask": "dev-env-editor",
+			"env": {
+				"NODE_ENV": "development",
+				"AUTO_RELOAD": "hot",
+                "GIT_USER":"git",
+                "GIT_URL":"ssh://git@localhost:40/tweek/repo",
+                "GIT_PUBLIC_KEY_PATH": "../git-service/ssh/tweekgit.pub",
+                "GIT_PRIVATE_KEY_PATH": "../git-service/ssh/tweekgit",
+                "TWEEK_API_HOSTNAME":"http://localhost:42"
+			},
+			"externalConsole": false,
+			"sourceMaps": false,
+			"outDir": null
 		}
     ]
 }

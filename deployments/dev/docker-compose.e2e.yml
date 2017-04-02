@@ -1,25 +1,24 @@
 version: '2'
 
-networks:
-  tweek:
-    external:
-      name: backoffice_tweek
-
 services:
   selenium:
     image: selenium/standalone-chrome
     container_name: selenium
-    networks:
-      - tweek
 
   backoffice-e2e:
-    build: .
+    build: ../../e2e
     container_name: e2e
     links:
       - selenium
     depends_on: 
       - selenium
-    networks:
-      - tweek
     environment:
       - BACKOFFICE_URL=http://tweek-backoffice:3000/
+
+  tweek-management:
+    environment: 
+      - GIT_URL=ssh://git@tweek-git/tweek/tests
+
+  tweek-backoffice:
+    environment: 
+      - GIT_URL=ssh://git@tweek-git/tweek/tests
