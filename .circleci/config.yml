@@ -35,9 +35,8 @@ jobs:
           name: Build tweek-backoffice
           working_directory: ~/tweek/deployments/dev
           command: |
-            docker images
-            docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-            docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml pull
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml pull selenium tweek-management tweek-api
             docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml build tweek-git tweek-backoffice backoffice-e2e
 
       - run:
