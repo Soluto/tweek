@@ -82,7 +82,6 @@ jobs:
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-              docker tag backoffice_tweek-backoffice:latest soluto/tweek-back-office
               docker push soluto/tweek-back-office
             else 
               echo "not deploying on non master branches"
