@@ -12,13 +12,13 @@
     <PackageReference Include="Tweek.JPad" Version="0.5.6287.28670" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Drivers\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj" />
+    <ProjectReference Include="..\..\..\addons\Context\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj" />
     <ProjectReference Include="..\Engine.Core\Engine.Core.csproj" />
     <ProjectReference Include="..\Engine.DataTypes\Engine.DataTypes.csproj" />
     <ProjectReference Include="..\Engine.Drivers\Engine.Drivers.csproj" />
     <ProjectReference Include="..\Engine\Engine.csproj" />
-    <ProjectReference Include="..\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj" />
-    <ProjectReference Include="..\Utils\JsonValueConverter\JsonValueConverter.csproj" />
+    <ProjectReference Include="..\..\JPad\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj" />
+    <ProjectReference Include="..\..\Utils\JsonValueConverter\JsonValueConverter.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />

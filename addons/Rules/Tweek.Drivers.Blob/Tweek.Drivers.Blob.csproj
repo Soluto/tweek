@@ -9,8 +9,8 @@
     <PackageReference Include="System.Reactive.PlatformServices" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Engine.Drivers\Engine.Drivers.csproj" />
-    <ProjectReference Include="..\Engine.Core\Engine.Core.csproj" />
-    <ProjectReference Include="..\Engine.DataTypes\Engine.DataTypes.csproj" />
+    <ProjectReference Include="..\..\..\core\Engine\Engine.Drivers\Engine.Drivers.csproj" />
+    <ProjectReference Include="..\..\..\core\Engine\Engine.Core\Engine.Core.csproj" />
+    <ProjectReference Include="..\..\..\core\Engine\Engine.DataTypes\Engine.DataTypes.csproj" />
   </ItemGroup>
 </Project>

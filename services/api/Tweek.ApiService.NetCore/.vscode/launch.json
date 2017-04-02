@@ -2,14 +2,15 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Tweek-api",
+            "name": ".NET Core Launch (web)",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "api-build",
-            "program": "${workspaceRoot}/services/api/Tweek.ApiService.NetCore/bin/Debug/netcoreapp1.1/Tweek.ApiService.NetCore.dll",
+            "preLaunchTask": "build",
+            "program": "${workspaceRoot}\\bin\\Debug\\netcoreapp1.1\\Tweek.ApiService.NetCore.dll",
             "args": [],
-            "cwd": "${workspaceRoot}/services/api/Tweek.ApiService.NetCore",
+            "cwd": "${workspaceRoot}",
             "stopAtEntry": false,
+            "internalConsoleOptions": "openOnSessionStart",
             "launchBrowser": {
                 "enabled": true,
                 "args": "${auto-detect-url}",

@@ -22,16 +22,16 @@
     <PackageReference Include="Tweek.JPad" Version="0.5.6287.28670" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Engine.Core\Engine.Core.csproj" />
-    <ProjectReference Include="..\Engine.DataTypes\Engine.DataTypes.csproj" />
-    <ProjectReference Include="..\Engine.Drivers\Engine.Drivers.csproj" />
-    <ProjectReference Include="..\Engine\Engine.csproj" />
-    <ProjectReference Include="..\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj" />
-    <ProjectReference Include="..\Tweek.Drivers.Blob\Tweek.Drivers.Blob.csproj" />
-    <ProjectReference Include="..\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj" />
-    <ProjectReference Include="..\Drivers\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj" />
-    <ProjectReference Include="..\Utils\JsonValueConverter\JsonValueConverter.csproj" />
-    <ProjectReference Include="..\Addons\Tweek.Addons.Auth.PingIdentity\Tweek.Addons.Auth.PingIdentity.csproj" />
+    <ProjectReference Include="..\..\..\core\Engine\Engine.Core\Engine.Core.csproj" />
+    <ProjectReference Include="..\..\..\core\Engine\Engine.DataTypes\Engine.DataTypes.csproj" />
+    <ProjectReference Include="..\..\..\core\Engine\Engine.Drivers\Engine.Drivers.csproj" />
+    <ProjectReference Include="..\..\..\core\Engine\Engine\Engine.csproj" />
+    <ProjectReference Include="..\..\..\core\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj" />
+    <ProjectReference Include="..\..\..\addons\Rules\Tweek.Drivers.Blob\Tweek.Drivers.Blob.csproj" />
+    <ProjectReference Include="..\..\..\core\JPad\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj" />
+    <ProjectReference Include="..\..\..\addons\Context\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj" />
+    <ProjectReference Include="..\..\..\core\Utils\JsonValueConverter\JsonValueConverter.csproj" />
+    <ProjectReference Include="..\..\..\addons\Auth\Tweek.Addons.Auth.PingIdentity\Tweek.Addons.Auth.PingIdentity.csproj" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0-msbuild3-final" />
