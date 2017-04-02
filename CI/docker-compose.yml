@@ -6,7 +6,7 @@ networks:
 
 services:
   tweek-git:
-      build: ../GitService/BareRepository/.
+      build: ../services/git-service/BareRepository/.
       container_name: tweek-git
       networks:
         - tweek
@@ -14,7 +14,7 @@ services:
         - PUBLIC_KEY_PATH=/tweek/key.pub
         - TWEEK_MANAGEMENT_URL=http://tweek-management:3000
       volumes:
-        - ../GitService/ssh/tweekgit.pub:/tweek/key.pub
+        - ../services/git-service/ssh/tweekgit.pub:/tweek/key.pub
   
   ci-build:
     image: microsoft/aspnetcore-build:1.0-1.1
@@ -39,7 +39,7 @@ services:
       networks:
         - tweek
       volumes:
-        - ../GitService/ssh:/keys
+        - ../services/git-service/ssh:/keys
       environment:
         - GIT_USER=git
         - GIT_URL=ssh://git@tweek-git/tweek/tests

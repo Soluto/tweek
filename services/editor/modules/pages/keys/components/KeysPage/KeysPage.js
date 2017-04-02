@@ -11,10 +11,12 @@ import withLoading from '../../../../hoc/with-loading';
 import { refreshTypes } from '../../../../services/types-service';
 import { refreshSchema } from "../../../../services/context-service";
 
+const isNode=new Function("try {return this===global;}catch(e){return false;}");
+
 export default compose(
   connect(state => state, { ...actions }),
-  withLoading(() => null, refreshTypes()),
-  withLoading(() => null, refreshSchema())
+  withLoading(() => null, isNode() ? Promise.resolve() : refreshTypes()),
+  withLoading(() => null, isNode() ? Promise.resolve() : refreshSchema())
 )
 (class KeysPage extends Component {
     constructor(props) {
