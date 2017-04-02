@@ -2,7 +2,7 @@ set -e
 docker-compose run ci-build bash "./CI/docker-ci.sh"
 docker build -t soluto/tweek-api:candidate ../services/api/Tweek.ApiService.NetCore
 echo running image;
-docker-compose run --name tweek-management -d tweek-management
+docker-compose run --name tweek-management tweek-management
 docker run -d -p 5000:80 --name tweek-latest --network ci_default --env RulesBlob.Url=http://tweek-management:3000/ruleset/latest  soluto/tweek-api:candidate;
 set +e
 curl --retry-delay 5 --retry 20 -v http://localhost:5000/status
