@@ -1,15 +1,9 @@
 version: '2'
 
-networks:
-  tweek: 
-    driver: bridge
-
 services:
   tweek-git:
       build: ../services/git-service/BareRepository/.
       container_name: tweek-git
-      networks:
-        - tweek
       environment:
         - PUBLIC_KEY_PATH=/tweek/key.pub
         - TWEEK_MANAGEMENT_URL=http://tweek-management:3000
@@ -36,8 +30,6 @@ services:
       container_name: tweek-management
       depends_on:
         - tweek-git
-      networks:
-        - tweek
       volumes:
         - ../services/git-service/ssh:/keys
       environment:
