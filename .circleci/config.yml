@@ -70,7 +70,7 @@ jobs:
           name: Prepare for e2e tests
           working_directory: ~/tweek/deployments/dev
           command: |
-            docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml run selenium
+            docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml run -d selenium
             docker run --network=dev_default node:6.10.1-slim wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status
             
 
