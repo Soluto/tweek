@@ -41,6 +41,7 @@ services:
       - RulesBlob.Url=http://tweek-management:3000/ruleset/latest
 
   tweek-backoffice:
+    image: soluto/tweek-back-office
     build: ../../services/editor/
     container_name: tweek-backoffice
     depends_on: 
