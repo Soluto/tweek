@@ -44,10 +44,6 @@ describe('edit key', () => {
     keysPageObject.addEmptyKey(keyToEditFullPath);
   });
 
-  after(() => {
-    keysPageObject.deleteKeyIfExists(keyToEditFullPath);
-  });
-
   function addRuleAndAssertItsFocus(numberOfRules) {
 
     for (var i = 0; i < numberOfRules; i++) {

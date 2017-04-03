@@ -160,10 +160,6 @@ describe('partition key', () => {
         keysPageObject.saveChanges();
       });
 
-      after(() => {
-        keysPageObject.deleteKeyIfExists(keyFullPath);
-      });
-
       it('should add new partition group', () => {
         const newPartitionGroups = [['newPartner1'], ['newPartner2', 'LG'], [false, 'Google']];
         newPartitionGroups.forEach((group) => {
