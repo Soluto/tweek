@@ -38,8 +38,8 @@ OR
     ```
 2. dotnet restore
 3. dotnet publish services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj -o ./obj/Docker/publish
-4. docker-compose -f /deployments/dev/docker-compose.yml build
-5. docker-compose -f /deployments/dev/docker-compose.yml up -d
+4. docker-compose -f ./deployments/dev/docker-compose.yml build
+5. docker-compose -f ./deployments/dev/docker-compose.yml up -d
 
 All tweek microservices should be run on ports 4001-4004:  
 4001 - Git server (ssh)  
@@ -59,7 +59,7 @@ VS 2017
 
 ### RUN
 1. If you haven't ran the full environment before, run management service: 
-   ```docker-compose -f /deployments/dev/docker-compose.yml up tweek-management -d```
+   ```docker-compose -f ./deployments/dev/docker-compose.yml up tweek-management -d```
 
 2. Debug tweek in VS2017 or VSCODE tweek-api task
 ### TESTS
