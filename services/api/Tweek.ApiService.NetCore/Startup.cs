@@ -22,7 +22,6 @@ using Tweek.JPad.Utils;
 using Tweek.JPad;
 using Tweek.ApiService.NetCore.Diagnostics;
 using System.Reflection;
-using static LanguageExt.Prelude;
 using Tweek.ApiService.NetCore.Security;
 using Tweek.ApiService.NetCore.Addons;
 
@@ -62,8 +61,6 @@ namespace Tweek.ApiService.NetCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
-
             var contextBucketName = Configuration["Couchbase.BucketName"];
             var contextBucketPassword = Configuration["Couchbase.Password"];
 
@@ -111,10 +108,9 @@ namespace Tweek.ApiService.NetCore
                 loggerFactory.AddDebug();
             }
 
-            app.UseJwtAuthenticationProviders(Configuration);
+            app.UseAuthenticationProviders(Configuration);
             app.InstallAddons(Configuration);
             app.UseMvc();
-
         }
 
         private void InitCouchbaseCluster(string bucketName, string bucketPassword)
