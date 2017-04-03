@@ -108,7 +108,7 @@ namespace Tweek.ApiService.NetCore
                 loggerFactory.AddDebug();
             }
 
-            app.UseAuthenticationProviders(Configuration);
+            app.UseAuthenticationProviders(Configuration, loggerFactory.CreateLogger("AuthenticationProviders"));
             app.InstallAddons(Configuration);
             app.UseMvc();
         }
