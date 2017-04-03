@@ -31,7 +31,7 @@ services:
 
   tweek-api:
     image: soluto/tweek-api
-    build: "../../services/api/Tweek.ApiService.NetCore"
+    build: ../../services/api/Tweek.ApiService.NetCore
     container_name: tweek-api
     depends_on:
       - tweek-management
@@ -39,7 +39,7 @@ services:
       - "42:80"
     environment:
       - RulesBlob.Url=http://tweek-management:3000/ruleset/latest
-     - PUBLIC_KEY_PATH=/keys/public_key.pfx
+      - PUBLIC_KEY_PATH=/keys/public_key.pfx
     volumes:
       -  ../../services/git-service/ssh/tweekgit_public.pfx:/keys/public_key.pfx
 
