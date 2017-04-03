@@ -1,15 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System;
 using Engine;
 using Engine.Core.Context;
 using Engine.DataTypes;
 using FSharpUtils.Newtonsoft;
-using LanguageExt.Trans;
-using LanguageExt.SomeHelp;
-using LanguageExt.Trans.Linq;
-using LanguageExt;
 using static LanguageExt.Prelude;
 
 namespace Tweek.ApiService.NetCore.Security
@@ -34,14 +30,15 @@ namespace Tweek.ApiService.NetCore.Security
             var identityType = tweekIdentity.Type;
             var key = $"@tweek/auth/{identityType}/{permissionType}";
 
-            return tweek.CalculateWithLocalContext(key, new HashSet<Identity>(),
-                        type => type == "token" ? (GetContextValue)((string q) => Optional(identity.FindFirst(q)).Map(x=>x.Value).Map(JsonValue.NewString)) : (_) => None)
+            return Optional(identity.FindFirst("iss")).Match(c => c.Value.Equals("tweek"), () => false) ||
+                tweek.CalculateWithLocalContext(key, new HashSet<Identity>(),
+                        type => type == "token" ? (GetContextValue)(q => Optional(identity.FindFirst(q)).Map(x=>x.Value).Map(JsonValue.NewString)) : _ => None)
                         .SingleKey(key)
                         .Map(j => j.AsString())
                         .Match(x => match(x, 
-                                with("allow", (_) => true),
-                                with("deny", (_) => false),
-                                (claim) => Optional(identity.FindFirst(claim)).Match(c=> c.Value.Equals(tweekIdentity.Id,StringComparison.OrdinalIgnoreCase), ()=>false)), () => true);
+                                with("allow", _ => true),
+                                with("deny", _ => false),
+                                claim => Optional(identity.FindFirst(claim)).Match(c=> c.Value.Equals(tweekIdentity.Id,StringComparison.OrdinalIgnoreCase), ()=>false)), () => true);
         }
 
         public static CheckWriteContextAccess CreateWriteContextAccessChecker(ITweek tweek)
