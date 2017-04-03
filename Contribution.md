@@ -2,7 +2,8 @@
 
 ## Add Appveyor nuget source
 1. Install nuget cli
-2. nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -UserName it@soluto.com -Password <password>
+2. run
+```nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -UserName it@soluto.com -Password <password>```
 OR
 3. You can edit manuallty global NuGet.Config
 
@@ -22,11 +23,11 @@ OR
 4. docker-compose -f /deployments/dev/docker-compose.yml build
 5. docker-compose -f /deployments/dev/docker-compose.yml up -d
 
-All tweek microservices should be run on ports 4001-4004:
-4001 - Git server (ssh)
-4002 - Management (http)
-4003 - Api (http)
-4004 - Editor (http)
+All tweek microservices should be run on ports 4001-4004: 
+4001 - Git server (ssh) 
+4002 - Management (http) 
+4003 - Api (http) 
+4004 - Editor (http) 
 
 ## Debugging Tweek api
 
