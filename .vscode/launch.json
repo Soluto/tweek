@@ -1,33 +1,21 @@
 {
     "version": "0.2.0",
     "configurations": [
-
         {
-            "name": ".NET Core Launch (console)",
+            "name": "Tweek-api",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceRoot}/bin/Debug/<target-framework>/<project-name.dll>",
+            "preLaunchTask": "api-build",
+            "program": "${workspaceRoot}/services/api/Tweek.ApiService.NetCore/bin/Debug/netcoreapp1.1/Tweek.ApiService.NetCore.dll",
             "args": [],
-            "cwd": "${workspaceRoot}",
-            "stopAtEntry": false,
-            "console": "internalConsole"
-        },
-        {
-            "name": ".NET Core Launch (web)",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceRoot}/Tweek.ApiService.NetCore/bin/Debug/netcoreapp1.1/Tweek.ApiService.NetCore.dll",
-            "args": [],
-            "cwd": "${workspaceRoot}/Tweek.ApiService.NetCore",
+            "cwd": "${workspaceRoot}/services/api/Tweek.ApiService.NetCore",
             "stopAtEntry": false,
             "launchBrowser": {
                 "enabled": true,
                 "args": "${auto-detect-url}",
                 "windows": {
                     "command": "cmd.exe",
-                    "args": "/C start ${auto-detect-url}"
+                    "args": "/C start ${auto-detect-url}/status"
                 },
                 "osx": {
                     "command": "open"
@@ -37,6 +25,7 @@
                 }
             },
             "env": {
+                "RulesBlob.Url": "http://localhost:41/ruleset/latest",
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "sourceFileMap": {
@@ -48,6 +37,62 @@
             "type": "coreclr",
             "request": "attach",
             "processId": "${command:pickProcess}"
-        }
+        },
+        {
+			"name": "Editor",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceRoot}/services/editor/node_modules/react-project/bin/react-project.js",
+			"stopOnEntry": false,
+			"args": [
+				"start"
+			],
+			"cwd": "${workspaceRoot}/services/editor",
+			"preLaunchTask": "dev-env-editor",
+			"runtimeExecutable": null,
+			"runtimeArgs": [
+				"--nolazy"
+			],
+			"env": {
+				"NODE_ENV": "development",
+				"AUTO_RELOAD": "hot",
+                "GIT_USER":"git",
+                "GIT_URL":"ssh://git@localhost:40/tweek/repo",
+                "GIT_PUBLIC_KEY_PATH": "../git-service/ssh/tweekgit.pub",
+                "GIT_PRIVATE_KEY_PATH": "../git-service/ssh/tweekgit",
+                "TWEEK_API_HOSTNAME":"http://localhost:42"
+			},
+			"externalConsole": false,
+			"sourceMaps": false,
+			"outDir": null
+		},
+        {
+			"name": "Editor (tests)",
+			"type": "node",
+			"request": "launch",
+			"stopOnEntry": false,
+            "runtimeExecutable": "npm",
+            "windows": {
+                "runtimeExecutable": "npm.cmd"
+            },
+            "runtimeArgs": [
+                "test"
+            ],
+            "port": 5858,
+			"cwd": "${workspaceRoot}/services/editor",
+			"preLaunchTask": "dev-env-editor",
+			"env": {
+				"NODE_ENV": "development",
+				"AUTO_RELOAD": "hot",
+                "GIT_USER":"git",
+                "GIT_URL":"ssh://git@localhost:40/tweek/repo",
+                "GIT_PUBLIC_KEY_PATH": "../git-service/ssh/tweekgit.pub",
+                "GIT_PRIVATE_KEY_PATH": "../git-service/ssh/tweekgit",
+                "TWEEK_API_HOSTNAME":"http://localhost:42"
+			},
+			"externalConsole": false,
+			"sourceMaps": false,
+			"outDir": null
+		}
     ]
 }

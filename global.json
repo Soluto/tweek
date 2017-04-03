@@ -1,0 +1,3 @@
+{
+  "projects":["services/api/Tweek.ApiService.NetCore", "services/api/Tweek.ApiService.SmokeTests"]
+}
