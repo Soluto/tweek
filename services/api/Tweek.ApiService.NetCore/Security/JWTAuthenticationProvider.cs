@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Tweek.ApiService.NetCore.Security
 {
      public class JwtAuthenticationProvider
     {
-        public void Install(IApplicationBuilder app, IConfiguration configuration)
+        public void Install(IApplicationBuilder app, IConfiguration configuration, ILogger logger)
         {
             foreach (var authProvider in configuration.GetSection("Security:Providers").GetChildren())
             {
