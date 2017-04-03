@@ -12,9 +12,9 @@ OR
 3. You can edit manuallty global NuGet.Config
 
 ## Install runtime dependencis
-1. Install dotnet cli
-2. Install docker
-3. Install node 6+
+1. Install .Net core (https://www.microsoft.com/net/download/core)
+2. Install docker (https://www.docker.com/)
+3. Install node 6+ (https://nodejs.org/en/)
 
 ## Running full environment
 1. clone:
