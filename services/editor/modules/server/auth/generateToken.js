@@ -1,6 +1,10 @@
 import jwt from 'jsonwebtoken';
 import nconf from 'nconf';
 import fs from 'fs';
+import {promisify} from 'bluebird';
+
+const jwtSign = promisify(jwt.sign);
+const readFile = promisify(fs.readFile);
 
 const jwtOptions = {
   algorithm: 'RS256',
@@ -8,32 +12,24 @@ const jwtOptions = {
   expiresIn: "5m"
 };
 
-function getAuthKey() {
-  return new Promise(function (resolve, reject) {
-    const keyPath = nconf.get('GIT_PRIVATE_KEY_PATH');
-    if (!keyPath) reject('private key not found');
-
-    fs.readFile(keyPath, (err, data) => {
-      if (err) reject(err);
-      else resolve(data);
-    });
-  });
-}
-
-function getSignedToken(authKey) {
-  return new Promise(function (resolve, reject) {
-    jwt.sign({}, authKey, jwtOptions, function(err, token) {
-      if (err) reject(err);
-      else resolve(token);
-    });
-  })
+async function getAuthKey() {
+  const keyPath = nconf.get('GIT_PRIVATE_KEY_PATH');
+  if (!keyPath || !fs.existsSync(keyPath)) {
+    console.warn('private key not found');
+    return undefined;
+  }
+  return await readFile(keyPath);
 }
 
 let authKeyPromise;
 
 export default async function generateToken() {
   authKeyPromise = authKeyPromise || getAuthKey();
-  const authKey = await authKeyPromise;
-  if (!authKey) return undefined;
-  return await getSignedToken(authKey);
+  try {
+    const authKey = await authKeyPromise;
+    if (!authKey) return undefined;
+    return await jwtSign({}, authKey, jwtOptions);
+  } catch (err) {
+    console.error('failed to generate token', err);
+  }
 }
