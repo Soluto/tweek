@@ -38,7 +38,7 @@ jobs:
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml pull selenium tweek-management tweek-api
             docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml build tweek-git backoffice-e2e
-            docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml build --pull tweek-backoffice
+            docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml build tweek-backoffice
 
       - run:
           name: Run tweek-backoffice
