@@ -7,10 +7,9 @@
    - git-service (stand along git rules repository for dev & testing)
 - deployments
    - dev (docker compose files for devlopment)
-- e2e (full tests)
+- e2e (full system tests)
 
-
-# Build tweek environment
+# Build & Run tweek environment
 
 ## Requirements 
 1. Docker compatible environment  (Windows 10/Mac/Linux)
@@ -60,8 +59,8 @@ VS 2017
 ### RUN
 1. If you haven't ran the full environment before, run management service: 
    ```docker-compose -f ./deployments/dev/docker-compose.yml up tweek-management -d```
-
 2. Debug tweek in VS2017 or VSCODE tweek-api task
+
 ### TESTS
 
 #### UNIT
@@ -74,7 +73,11 @@ mac: find . -wholename '*.Tests.csproj' -print0 | xargs -0 -n 1 dotnet test (onl
 2. Run smoke tests in vs or run ```dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release --no-build```
 
 ## Debugging Tweek editor
+1. go to services\editor
+2. run npm i/yarn
 
+### debug
+- run npm start:full-env
 
-
-
+### unit test
+- run npm test
