@@ -1,3 +1,15 @@
+# Project structure
+
+- services (all tweek microservices)
+   - api (rest api for getting configurations and updating context)
+   - editor (admin ui for editing rules and managing Tweek)
+   - management (CI and serving layer for new rules)
+   - git-service (stand along git rules repository for dev & testing)
+- deployments
+   - dev (docker compose files for devlopment)
+- e2e (full tests)
+
+
 # Build tweek environment
 
 ## Requirements 
@@ -48,5 +60,19 @@ VS 2017
    ```docker-compose -f /deployments/dev/docker-compose.yml up tweek-management -d```
 
 2. Debug tweek in VS2017 or VSCODE tweek-api task
+### TESTS
+
+#### UNIT
+1. Run in Visual studio 2017 
+or
+mac: find . -wholename '*.Tests.csproj' -print0 | xargs -0 -n 1 dotnet test (only with shell)
+
+#### BLACKBOX/SMOKE
+1. Run service
+2. Run smoke tests in vs or run ```dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release --no-build```
 
 ## Debugging Tweek editor
+
+
+
+
