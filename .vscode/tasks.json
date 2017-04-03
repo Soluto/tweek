@@ -2,15 +2,40 @@
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
     "version": "0.1.0",
-    "command": "dotnet",
-    "isShellCommand": true,
-    "args": [],
     "tasks": [
         {
-            "taskName": "build",
-            "args": [ ],
+            "taskName": "dev-env-api",
+            "command": "docker-compose",
+            "isShellCommand": true,
+            "args": ["-f", "./deployments/dev/docker-compose.yml", "up", "-d", "tweek-management"]
+        },
+        {
+            "taskName": "teardown-dev-env",
+            "command": "docker-compose",
+            "isShellCommand": true,
+            "args": ["-f", "./deployments/dev/docker-compose.yml", "down"]
+        },
+        {
+            "taskName": "dev-env-editor",
+            "command": "docker-compose",
+            "isShellCommand": true,
+            "args": ["-f", "./deployments/dev/docker-compose.yml", "up", "-d", "tweek-api", "tweek-management"]
+        },
+        {
+            "command": "dotnet",
+            "isShellCommand": true,
+            "taskName": "api-publish-for-docker",
+            "args": ["publish", "services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj","-o", "./obj/Docker/publish"],
+            "showOutput": "always",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "command": "dotnet",
+            "isShellCommand": true,
+            "taskName": "api-build",
+            "args": ["build", "services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj"],
             "isBuildCommand": true,
-            "showOutput": "silent",
+            "showOutput": "always",
             "problemMatcher": "$msCompile"
         }
     ]

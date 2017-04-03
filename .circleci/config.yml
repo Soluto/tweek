@@ -33,59 +33,57 @@ jobs:
 
       - run: 
           name: Build tweek-backoffice
-          working_directory: ~/tweek/BackOffice
+          working_directory: ~/tweek/deployments/dev
           command: |
-            docker images
-            docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-            docker-compose -f docker-compose.yml -f docker-compose.tests.yml -f docker-compose.circleci.yml pull
-            docker-compose -f docker-compose.yml -f docker-compose.tests.yml -f docker-compose.circleci.yml build
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml pull selenium tweek-management tweek-api
+            docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml build tweek-git tweek-backoffice backoffice-e2e
 
       - run:
           name: Run tweek-backoffice
-          working_directory: ~/tweek/BackOffice
-          command: docker-compose -f docker-compose.yml -f docker-compose.tests.yml -f docker-compose.circleci.yml up -d
+          working_directory: ~/tweek/deployments/dev
+          command: docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml up -d tweek-backoffice
       
       - restore_cache:
           keys:
-            - yarn-cache-{{ .Branch }}-{{ checksum "BackOffice/yarn.lock" }}
+            - yarn-cache-{{ .Branch }}-{{ checksum "services/editor/yarn.lock" }}
             - yarn-cache-{{ .Branch }}
             - yarn-cache-master
             - yarn-cache-
 
       - run:
           name: yarn install
-          working_directory: ~/tweek/BackOffice
+          working_directory: ~/tweek/services/editor
           command: yarn --cache-folder "/.yarn-cache"
 
       - save_cache:
-          key: yarn-cache-{{ .Branch }}-{{ checksum "BackOffice/yarn.lock" }}
+          key: yarn-cache-{{ .Branch }}-{{ checksum "services/editor/yarn.lock" }}
           paths:
-            - ~/tweek/BackOffice/.yarn-cache
+            - ~/tweek/services/editor.yarn-cache
 
       - run: 
           name: Run unit tests
-          working_directory: ~/tweek/BackOffice
+          working_directory: ~/tweek/services/editor
           command: yarn test:unit
             
       - run:
           name: Prepare for e2e tests
-          working_directory: ~/tweek/e2e
+          working_directory: ~/tweek/deployments/dev
           command: |
-            docker-compose pull
-            docker-compose build
-            docker run --network=backoffice_tweek node:6.10.1-slim wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status
+            docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml run -d selenium
+            docker run --network=dev_default node:6.10.1-slim wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status
+            
 
       - run:
           name: Run e2e tests
-          working_directory: ~/tweek/e2e
-          command: docker-compose run backoffice-e2e
+          working_directory: ~/tweek/deployments/dev
+          command: docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml run backoffice-e2e
 
       - deploy: 
           name: deploy
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
-              docker tag backoffice_tweek-backoffice:latest soluto/tweek-back-office
               docker push soluto/tweek-back-office
             else 
               echo "not deploying on non master branches"

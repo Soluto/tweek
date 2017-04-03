@@ -1,14 +1,15 @@
 set -e
 docker-compose run ci-build bash "./CI/docker-ci.sh"
-docker build -t soluto/tweek-api:candidate ./../Tweek.ApiService.NetCore
+docker build -t soluto/tweek-api:candidate ../services/api/Tweek.ApiService.NetCore
 echo running image;
 docker-compose run --name tweek-management -d tweek-management
-docker run -d -p 5000:80 --name tweek-latest --network ci_tweek --env RulesBlob.Url=http://tweek-management:3000/ruleset/latest  soluto/tweek-api:candidate;
+docker network ls
+docker run -d -p 5000:80 --name tweek-latest --network ci_default --env RulesBlob.Url=http://tweek-management:3000/ruleset/latest  soluto/tweek-api:candidate;
 set +e
 curl --retry-delay 5 --retry 20 -v http://localhost:5000/status
 set -e
 echo running smoke tests;
-docker-compose run ci-build bash -c "dotnet restore Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && dotnet test Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release --no-build";
+docker-compose run ci-build bash -c "dotnet restore services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release --no-build";
 echo getting version number
 TWEEK_VERSION=$(curl http://localhost:5000/status | jq '.EnvironmentDetails .Version' | grep -Po [0-9]+\\.[0-9]+\\.[0-9]+)
 echo tweek version: $TWEEK_VERSION
