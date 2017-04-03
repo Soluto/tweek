@@ -4,6 +4,7 @@ docker build -t soluto/tweek-api:candidate ../services/api/Tweek.ApiService.NetC
 echo running image;
 docker-compose run --name tweek-management -d tweek-management
 docker network ls
+sleep 10
 docker run -d -p 5000:80 --name tweek-latest --network ci_default --env RulesBlob.Url=http://tweek-management:3000/ruleset/latest  soluto/tweek-api:candidate;
 set +e
 curl --retry-delay 5 --retry 20 -v http://localhost:5000/status
@@ -20,8 +21,6 @@ function docker_tag_exists() {
     EXISTS=$(curl -s -H "Authorization: JWT ${TOKEN}" https://hub.docker.com/v2/repositories/$1/tags/?page_size=10000 | jq -r "[.results | .[] | .name == \"$2\"]" | grep -c true)
     test $EXISTS = 1
 }
-
-
 
 if [ $TRAVIS_BRANCH != master ] || [ ! -z $TRAVIS_PULL_REQUEST_BRANCH ] ; then
 	echo "no publish for non-master branches or pull requests"
