@@ -19,7 +19,9 @@
 ## Add Appveyor nuget source
 1. Install nuget cli
 2. run
-```nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -UserName it@soluto.com -Password <password>```
+mac: ```nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -Us
+erName it@soluto.com -StorePasswordInClearText -ConfigFile ~/.nuge
+t/NuGet/NuGet.Config -Password <Password>```
 OR
 3. You can edit manuallty global NuGet.Config
 
