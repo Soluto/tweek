@@ -1,5 +1,8 @@
 # Build tweek environment
 
+## Requirements 
+1. Docker compatible environment  (Windows 10/Mac/Linux)
+
 ## Add Appveyor nuget source
 1. Install nuget cli
 2. run
