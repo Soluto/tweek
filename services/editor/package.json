@@ -13,6 +13,7 @@
   },
   "scripts": {
     "start": "if-env NODE_ENV=production && npm run react-project:start:prod || npm run react-project:start:dev",
+    "start:full-env": "docker-compose -f ../../deployments/dev/docker-compose.yml up -d tweek-management && npm run react-project:start:dev",
     "test": "npm run test:unit",
     "test:unit": "jest",
     "test:watch": "jest --watch",
