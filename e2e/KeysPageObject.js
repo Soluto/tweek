@@ -222,7 +222,8 @@ export default class KeysPageObject {
 
   saveChanges() {
     this.browser.click(selectors.SAVE_CHANGES_BUTTON);
-    this.browser.waitUntil(() => this.isSaving(), 5000, 'should move to in saving state', 10);
-    this.browser.waitUntil(() => !this.isSaving(), KeysPageObject.GIT_TRANSACTION_TIMEOUT);
+    const buttonSavingSelector = selectors.SAVE_CHANGES_BUTTON + '.saving';
+    this.browser.waitForVisible(buttonSavingSelector, 5000);
+    this.browser.waitForVisible(buttonSavingSelector, KeysPageObject.GIT_TRANSACTION_TIMEOUT, true);
   }
 }

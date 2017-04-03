@@ -5,6 +5,7 @@ import { compose } from 'recompose';
 import * as keysActions from '../../../../../../store/ducks/selectedKey';
 import { deleteKey } from '../../../../../../store/ducks/keys';
 import { diff } from 'deep-diff';
+import classNames from 'classnames';
 
 const DeleteButton = ({isSaving, selectedKey, deleteKey}) => (
   <button
@@ -20,7 +21,7 @@ const SaveButton = ({selectedKey, isSaving, hasChanges, saveKey}) => (
     data-state-has-changes={hasChanges}
     data-state-is-saving={isSaving}
     tabIndex="-1"
-    className={style['save-changes-button']}
+    className={classNames(style['save-changes-button'], { 'saving' : isSaving })}
     onClick={() => saveKey(selectedKey.key)}>
     {isSaving ? 'Saving...' : 'Save changes'}
   </button>
