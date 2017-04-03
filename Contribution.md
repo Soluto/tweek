@@ -16,7 +16,7 @@
 2. Docker hub account with access to Soluto team
 
 ## Add Appveyor nuget source
-1. Install nuget cli
+1. Install nuget cli (mac:brew install nuget, windows: https://dist.nuget.org/index.html)
 2. run
 mac: ```nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -Us
 erName it@soluto.com -StorePasswordInClearText -ConfigFile ~/.nuget/NuGet/NuGet.Config -Password <Password>```  
@@ -24,7 +24,7 @@ windows: ```nuget sources add -Name solutoappveyor -Source https://ci.appveyor.c
 erName it@soluto.com -StorePasswordInClearText -Password <Password>```  
 
 OR
-3. You can edit manuallty global NuGet.Config
+3. You can edit manuallty global NuGet.Config instead
 
 ## Install runtime dependencis
 1. Install .Net core (https://www.microsoft.com/net/download/core)
