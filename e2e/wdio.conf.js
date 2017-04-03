@@ -1,5 +1,5 @@
 const nconf = require('nconf');
-nconf.argv().env().defaults({BACKOFFICE_URL: "http://localhost:4000/"});
+nconf.argv().env().defaults({BACKOFFICE_URL: "http://localhost:4004/"});
 const host = nconf.get('host');
 
 exports.config = {
