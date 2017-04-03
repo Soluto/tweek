@@ -37,7 +37,7 @@ OR
     cd tweek
     ```
 2. dotnet restore
-3. dotnet publish services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj","-o", "./obj/Docker/publish"
+3. dotnet publish services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj -o ./obj/Docker/publish
 4. docker-compose -f /deployments/dev/docker-compose.yml build
 5. docker-compose -f /deployments/dev/docker-compose.yml up -d
 
