@@ -21,10 +21,6 @@ describe('add key', () => {
     keysPageObject.goToBase();
   });
 
-  after(() => {
-    keysPageObject.deleteKeyIfExists(keyToAddFullPath);
-  });
-
   it('should succeed adding key', () => {
     browser.click(selectors.ADD_KEY_BUTTON);
     keysAsserts.assertKeyOpened(BLANK_KEY_NAME);
