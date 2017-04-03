@@ -26,3 +26,10 @@ services:
       - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
       - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
     volumes: []
+
+  tweek-api:
+    volumes_from: 
+      - keys
+    environment: 
+      - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
+    volumes: []
