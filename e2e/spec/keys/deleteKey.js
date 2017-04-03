@@ -22,10 +22,6 @@ describe('delete key', () => {
     keysPageObject.addEmptyKey(keyToDeleteFullPath);
   });
 
-  afterEach(() => {
-    keysPageObject.deleteKeyIfExists(keyToDeleteFullPath);
-  });
-
   it('should not delete key if alert was not accepted', () => {
     keysPageObject.goToKey(keyToDeleteFullPath);
 
