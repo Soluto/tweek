@@ -1,6 +1,7 @@
-export async function getTypes(req, res, { tweekApiHostname }) {
-  let response = await fetch(`${tweekApiHostname}/configurations/@tweek/custom_types/_?$ignoreKeyTypes=false`);
-  let customTypes = await response.json();
+import authenticatedClient from '../server/auth/authenticatedClient';
 
-  res.json(customTypes);
+export async function getTypes(req, res, { tweekApiHostname }) {
+  const tweekApiClient = await authenticatedClient({baseURL: tweekApiHostname});
+  const response = await tweekApiClient.get('/api/v1/keys/@tweek/custom_types/_?$ignoreKeyTypes=false');
+  res.json(response.data);
 }

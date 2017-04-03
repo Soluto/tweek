@@ -49,7 +49,7 @@
   },
   "license": "ISC",
   "dependencies": {
-    "axios": "0.12.0",
+    "axios": "0.16.0",
     "babel-cli": "6.5.1",
     "babel-core": "^6.18.2",
     "babel-eslint": "4.1.8",
@@ -87,6 +87,7 @@
     "helmet": "1.1.0",
     "hpp": "0.2.0",
     "if-env": "1.0.0",
+    "jsonwebtoken": "7.3.0",
     "karma": "0.13.21",
     "karma-chrome-launcher": "0.2.2",
     "karma-mocha": "0.2.2",
