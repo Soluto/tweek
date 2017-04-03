@@ -1,14 +1,16 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Tweek.ApiService.NetCore.Security
 {
     public class InternalAuthenticationProvider
     {
-        public void Install(IApplicationBuilder app, IConfiguration configuration)
+        public void Install(IApplicationBuilder app, IConfiguration configuration, ILogger logger)
         {
             try
             {
@@ -26,9 +28,15 @@ namespace Tweek.ApiService.NetCore.Security
                         RequireHttpsMetadata = false,
                         AuthenticationScheme = "tweekinternal"
                     });
+                    logger.LogInformation("Tweek certificate was loaded successfully");
+                }
+                else{
+                    logger.LogInformation("No Tweek certificate defined");
                 }
             }
-            catch { }
+            catch (Exception e){
+                logger.LogError("Failed to load certificate", e);
+             }
         }
     }
 }
