@@ -2,6 +2,7 @@
 
 ## Requirements 
 1. Docker compatible environment  (Windows 10/Mac/Linux)
+2. Docker hub account with access to Soluto team
 
 ## Add Appveyor nuget source
 1. Install nuget cli
