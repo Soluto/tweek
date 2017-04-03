@@ -23,7 +23,7 @@ OR
 4. docker-compose -f /deployments/dev/docker-compose.yml build
 5. docker-compose -f /deployments/dev/docker-compose.yml up -d
 
-All tweek microservices should be run on ports 4001-4004: 
+All tweek microservices should be run on ports 4001-4004:  
 4001 - Git server (ssh)  
 4002 - Management (http)  
 4003 - Api (http)  
