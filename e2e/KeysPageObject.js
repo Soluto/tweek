@@ -64,17 +64,6 @@ export default class KeysPageObject {
     return this.browser.elements(selectors.ruleContainer()).value.length;
   }
 
-  deleteKeyIfExists(keyName) {
-    try {
-      this.goToKeyUrl(keyName);
-      this.browser.click(selectors.DELETE_KEY_BUTTON);
-      this.acceptRodalIfRaised();
-
-      console.log('deleting key', keyName);
-      this.waitForKeyToBeDeleted(keyName);
-    } catch (exp) { }
-  }
-
   addEmptyKey(keyName, keyValueType = 'String') {
     console.log('adding key', keyName);
     this.goToKey(BLANK_KEY_NAME);
@@ -233,7 +222,8 @@ export default class KeysPageObject {
 
   saveChanges() {
     this.browser.click(selectors.SAVE_CHANGES_BUTTON);
-    this.browser.waitUntil(() => this.isSaving(), 5000, 'should move to in saving state');
-    this.browser.waitUntil(() => !this.isSaving(), KeysPageObject.GIT_TRANSACTION_TIMEOUT);
+    const buttonSavingSelector = selectors.SAVE_CHANGES_BUTTON + '.saving';
+    this.browser.waitForVisible(buttonSavingSelector, 5000);
+    this.browser.waitForVisible(buttonSavingSelector, KeysPageObject.GIT_TRANSACTION_TIMEOUT, true);
   }
 }

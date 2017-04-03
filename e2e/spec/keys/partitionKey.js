@@ -148,20 +148,10 @@ describe('partition key', () => {
   describe('partition groups', () => {
 
     describe('add', () => {
-      let keyFullPath;
+      const addPartitionGroupFullPath = `${testFolder}/${partitionsTestFolder}/add_partition_group`;
 
       before(() => {
-        const keyName = keysPageObject.generateTestKeyName('add_partition_group');
-        keyFullPath = `${testFolder}/${partitionsTestFolder}/${keyName}`;
-        keysPageObject.goToBase();
-        keysPageObject.addEmptyKey(keyFullPath);
-        keysPageObject.addPartitionFromProperty('device.PartnerBrandId');
-        keysPageObject.addPartitionFromProperty('device.DeviceVendor');
-        keysPageObject.saveChanges();
-      });
-
-      after(() => {
-        keysPageObject.deleteKeyIfExists(keyFullPath);
+        keysPageObject.goToKey(addPartitionGroupFullPath);
       });
 
       it('should add new partition group', () => {

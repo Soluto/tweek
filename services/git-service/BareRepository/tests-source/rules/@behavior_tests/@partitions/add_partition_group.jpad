@@ -1,0 +1,8 @@
+{
+    "partitions": [
+        "device.PartnerBrandId",
+        "device.DeviceVendor"
+    ],
+    "valueType": "string",
+    "rules": {}
+}
