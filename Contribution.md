@@ -19,8 +19,10 @@
 1. Install nuget cli
 2. run
 mac: ```nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -Us
-erName it@soluto.com -StorePasswordInClearText -ConfigFile ~/.nuge
-t/NuGet/NuGet.Config -Password <Password>```
+erName it@soluto.com -StorePasswordInClearText -ConfigFile ~/.nuget/NuGet/NuGet.Config -Password <Password>```  
+windows: ```nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -Us
+erName it@soluto.com -StorePasswordInClearText -Password <Password>```  
+
 OR
 3. You can edit manuallty global NuGet.Config
 
