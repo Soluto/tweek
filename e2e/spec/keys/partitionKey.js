@@ -36,9 +36,9 @@ describe('partition key', () => {
       });
 
       it('should not allow duplicate properties', () => {
-        keysPageObject.addPartitionFromProperty('device.DeviceType');
+        keysPageObject.addPartitionFromProperty('user.FavoriteFruit');
         browser.waitForVisible(selectors.ALERT_OK_BUTTON, 1000, true);
-        keysPageObject.addPartitionFromProperty('device.DeviceType');
+        keysPageObject.addPartitionFromProperty('user.FavoriteFruit');
         browser.waitForVisible(selectors.ALERT_OK_BUTTON, 1000);
         browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000, true);
       });
@@ -52,28 +52,28 @@ describe('partition key', () => {
       });
 
       it('should show alert when rules are not empty', () => {
-        keysPageObject.addPartitionFromSuggestion('partner');
+        keysPageObject.addPartitionFromSuggestion('favorite');
         browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
       });
 
       it('should not partition if canceled', () => {
         const keySource = keysPageObject.getKeySource();
-        keysPageObject.addPartitionFromSuggestion('partner');
+        keysPageObject.addPartitionFromSuggestion('favorite');
         browser.clickWhenVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
         keysAsserts.assertKeySource(keySource);
       });
 
       it('should auto-partition correctly if auto-partition was selected', () => {
-        keysPageObject.addPartitionFromProperty('device.PartnerBrandId');
+        keysPageObject.addPartitionFromProperty('user.FavoriteFruit');
         browser.clickWhenVisible(selectors.AUTO_PARTITION_BUTTON, 1000);
         keysAsserts.assertKeySource({
-          partitions: ["device.PartnerBrandId"],
+          partitions: ["user.FavoriteFruit"],
           valueType: "string",
           rules: {
             "*": [
               {
                 Matcher: {
-                  "device.AgentVersion": {
+                  "user.AgentVersion": {
                     "$ge": "0.12.3",
                     "$compare": "version"
                   }
@@ -82,8 +82,8 @@ describe('partition key', () => {
                 Type: "SingleVariant"
               },
               {
-                Matcher: {"device.DeviceOsType": "android"},
-                Value: "osValue",
+                Matcher: {"user.Gender": "female"},
+                Value: "femaleValue",
                 Type: "SingleVariant"
               },
               {
@@ -92,10 +92,10 @@ describe('partition key', () => {
                 Type: "SingleVariant"
               }
             ],
-            "SomePartner": [
+            "Apple": [
               {
                 Matcher: {},
-                Value: "partnerValue",
+                Value: "appleValue",
                 Type: "SingleVariant"
               }
             ]
@@ -104,16 +104,16 @@ describe('partition key', () => {
       });
 
       it('should not allow auto-partition if matcher is invalid', () => {
-        keysPageObject.addPartitionFromProperty('device.PartnerBrandId');
+        keysPageObject.addPartitionFromProperty('user.FavoriteFruit');
         browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
         browser.waitForVisible(selectors.AUTO_PARTITION_BUTTON, 1000, false);
       });
 
       it('should reset partitions if reset was selected', () => {
-        keysPageObject.addPartitionFromProperty('device.PartnerBrandId');
+        keysPageObject.addPartitionFromProperty('user.FavoriteFruit');
         browser.clickWhenVisible(selectors.RESET_PARTITIONS_BUTTON, 1000);
         keysAsserts.assertKeySource({
-          partitions: ["device.PartnerBrandId"],
+          partitions: ["user.FavoriteFruit"],
           valueType: "string",
           rules: {}
         });
@@ -155,7 +155,7 @@ describe('partition key', () => {
       });
 
       it('should add new partition group', () => {
-        const newPartitionGroups = [['newPartner1'], ['newPartner2', 'LG'], [false, 'Google']];
+        const newPartitionGroups = [['Banana'], ['Orange', 'Rick'], [false, 'Morty']];
         newPartitionGroups.forEach((group) => {
           group.forEach((value, i) => {
             if (value) browser.setValue(selectors.newPartitionGroupInput(i + 1), value);
@@ -163,17 +163,17 @@ describe('partition key', () => {
           browser.click(selectors.ADD_PARTITION_GROUP_BUTTON);
         });
         keysAsserts.assertKeySource({
-          partitions: ["device.PartnerBrandId", "device.DeviceVendor"],
+          partitions: ["user.FavoriteFruit", "user.FatherName"],
           valueType: "string",
           rules: {
-            "newPartner1": {
+            "Banana": {
               "*": []
             },
-            "newPartner2": {
-              "LG": []
+            "Orange": {
+              "Rick": []
             },
             "*": {
-              "Google": []
+              "Morty": []
             }
           }
         });
@@ -196,11 +196,11 @@ describe('partition key', () => {
         browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
         keysPageObject.acceptRodalIfRaised();
         keysAsserts.assertKeySource({
-          partitions: ["device.PartnerBrandId", "device.DeviceVendor"],
+          partitions: ["user.FavoriteFruit", "user.Gender"],
           valueType: "string",
           rules: {
-            "SomePartner": {
-              "Samsung": [
+            "Banana": {
+              "male": [
                 {
                   Matcher: {},
                   Value: "someValue",

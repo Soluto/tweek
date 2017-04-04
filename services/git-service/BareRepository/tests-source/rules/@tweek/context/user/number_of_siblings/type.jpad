@@ -1,7 +1,7 @@
 [
     {
         "Matcher": {},
-        "Value": "custom",
+        "Value": "number",
         "Type": "SingleVariant"
     }
 ]

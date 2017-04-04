@@ -4,8 +4,9 @@
         "Value": {
             "base": "string",
             "allowedValues": [
-                "android",
-                "ios"
+                "male",
+                "female",
+                "other"
             ]
         },
         "Type": "SingleVariant"

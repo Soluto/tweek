@@ -1,7 +1,7 @@
 {
     "partitions": [
-        "device.PartnerBrandId",
-        "device.DeviceVendor"
+        "user.FavoriteFruit",
+        "user.FatherName"
     ],
     "valueType": "string",
     "rules": {}
