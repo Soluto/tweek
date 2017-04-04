@@ -22,27 +22,34 @@
 ## Install runtime dependencis
 1. Install .Net core (https://www.microsoft.com/net/download/core)
 2. Install docker (https://www.docker.com/)
+   - Log in to Docker hub: `docker login -u <user> -p <password>`
 3. Install node 6+ (https://nodejs.org/en/)
 
 ## Add Appveyor nuget source
 1. Install nuget cli (mac:brew install nuget, windows: https://dist.nuget.org/index.html)
 2. run  
-mac: ```nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -UserName it@soluto.com -StorePasswordInClearText -ConfigFile ~/.nuget/NuGet/NuGet.Config -Password <Password>```  
-windows: ```nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -UserName it@soluto.com -StorePasswordInClearText -Password <Password>```  
+   - mac: 
+   ```
+   nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -UserName it@soluto.com -StorePasswordInClearText -ConfigFile ~/.nuget/NuGet/NuGet.Config -Password <Password>
+   ```
+   - windows:
+   ```
+   nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -UserName it@soluto.com -StorePasswordInClearText -Password <Password>
+   ```
 
 OR
 3. You can edit manuallty global NuGet.Config instead
 
 ## Running full environment
 1. clone:
-    ```
-    git clone https://github.com/Soluto/tweek.git
-    cd tweek
-    ```
-2. dotnet restore
-3. dotnet publish services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj -o ./obj/Docker/publish
-4. docker-compose -f ./deployments/dev/docker-compose.yml build
-5. docker-compose -f ./deployments/dev/docker-compose.yml up -d
+   ```
+   git clone https://github.com/Soluto/tweek.git
+   cd tweek
+   ```
+2. `dotnet restore`
+3. `dotnet publish services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj -o ./obj/Docker/publish`
+4. `docker-compose -f ./deployments/dev/docker-compose.yml build`
+5. `docker-compose -f ./deployments/dev/docker-compose.yml up -d`
 
 All tweek microservices should be run on ports 4001-4004:  
 4001 - Git server (ssh)  
@@ -61,9 +68,15 @@ VS 2017
 1. Install VS 2017
 
 ### RUN
-1. If you haven't ran the full environment before, run management service: 
-   ```docker-compose -f ./deployments/dev/docker-compose.yml up tweek-management -d```
-2. Debug tweek in VS2017 or VSCODE tweek-api task
+1. If you haven't built the full environment before, pull management service: 
+   ```
+   docker-compose -f ./deployments/dev/docker-compose.yml pull tweek-management
+   ```
+2. If you haven't ran the full environment before, run management service: 
+   ```
+   docker-compose -f ./deployments/dev/docker-compose.yml up -d tweek-management
+   ```
+3. Debug tweek in VS2017 or VSCODE tweek-api task
 
 ### TESTS
 
@@ -74,20 +87,35 @@ mac: find . -wholename '*.Tests.csproj' -print0 | xargs -0 -n 1 dotnet test (onl
 
 #### BLACKBOX/SMOKE
 1. Run service
-2. Run smoke tests in vs or run ```dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release --no-build```
+2. Run smoke tests in VS or run:
+   ```
+   dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release --no-build
+   ```
 
 ## Debugging Tweek editor
 1. go to services\editor
 2. run npm i/yarn
 
 ### environment
-- to get that latest environment version from the server run `npm run pull-env`
-- to build environment with local changes run `npm run build-env`
+- to get that latest environment version from the server:
+   ```
+   npm run pull-env
+   ```
+- to build environment with local changes:
+   ```
+   npm run build-env
+   ```
 - if you want to pull/build only part of the services and not all of them, add `-- [SERVICES]` at the end of the command.
-The options are: `tweek-git` `tweek-management` `tweek-api` `tweek-backoffice`
-#### examples:
-- get latest management and api version from server: `npm run pull-env -- tweek-management tweek-api`
-- build local management version: `npm run build-env -- tweek-management`
+   The options are: `tweek-git` `tweek-management` `tweek-api` `tweek-backoffice`
+   #### examples:
+   - get latest management and api version from server: 
+      ```
+      npm run pull-env -- tweek-management tweek-api
+      ```
+   - build local management version: 
+      ```
+      npm run build-env -- tweek-management
+      ```
 
 ### debug
 - if you haven't pulled or built the environment, run `npm run pull-env`
@@ -101,8 +129,16 @@ The options are: `tweek-git` `tweek-management` `tweek-api` `tweek-backoffice`
 2. run npm i/yarn
 
 ### run tests
-- if you didn't make any changes to editor, or already built it, run `npm run test:full-env`
-- to rebuild editor and then run tests, run `npm run test:full-env:rebuild`
+- if you didn't make any changes to editor, or already built it:
+   ```
+   npm run test:full-env
+   ```
+- to rebuild editor and then run tests:
+   ```
+   npm run test:full-env:rebuild
+   ```
 
 ## TEARDOWN
+```
 docker-compose -f ./deployments/dev/docker-compose.yml down
+```
