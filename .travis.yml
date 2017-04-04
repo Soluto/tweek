@@ -11,5 +11,10 @@ script:
 - "./init-nuget-config.sh"
 - "./ci.sh"
 notifications:
+  email:
+    on_success: change
+    on_failure: always
   slack:
+    on_success: change
+    on_failure: always
     secure: DhXqwEuLMYUfBrUreBQyqgK1wsuyRmfjiA4iqevYcwK1sLmqdwzEPXNkIJ20q/DeXcsHT+qgcK+Ek6yDj9QJsLZ7Ph0+rbfpEKSeVrW+89c3LDikTT45HFcZ9JXRpBgQgjYdRQoLO33B+UHu+1e1VBXZWyUx0/bCZ4pjLNZAtJ+rCeafQ595lvexoiPb5shsnMC/zTnNyJVld+gRTUUO9UxegOIH+V0EmwVx1YSceGwDYAWXjFjTqXItzSXAmmQeMvXTcPuXjkvF/dZnXGJQUenAFcTz4JrbroYyVaf6BrJq/jQm5R7iDfm+7f+MCgaIz7tan5S039qiOX+0/KA1Qn/jK3GuwiDaOyvQ88a0sBbDeww/2mE+5isJphXLnlHmaAgX8sF+ys8NFp8VW2/NmXiA14AUABH/q/mjoqHIVkVLX7ORWTuA7cy5/QaiEx+C/RLgG35utK9wPMOLGDcIb9NMAK3WHf1JQorckZYXTAeFsXfD2CuLZqXf+//EtA/FsTUfnBPsFZjz18VKugp5XisqexNRZRi8FSoDdAQhLVa9SJ22u3/j2dsH9UE38W81nHxffeGCKhTYSlyUf8UqTB7TymxR5ZLcIl1I3PexYUzAsr3e5Bfg9bYmou+F0Sq010P8yKGZuea8Ektre42sa5Utj2NKlKn4ch8Kkf7tvF8=
