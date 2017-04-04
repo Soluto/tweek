@@ -5,7 +5,7 @@
         {
             "Id": "b769843d-7320-5950-beb7-3055e9d8218f",
             "Matcher": {
-                "device.AgentVersion": {
+                "user.AgentVersion": {
                     "$ge": "0.12.3",
                     "$compare": "version"
                 }
@@ -16,17 +16,17 @@
         {
             "Id": "a9a022c3-c105-5cb7-b559-7113a5f3b5a1",
             "Matcher": {
-                "device.DeviceOsType": "android"
+                "user.Gender": "female"
             },
-            "Value": "osValue",
+            "Value": "femaleValue",
             "Type": "SingleVariant"
         },
         {
             "Id": "a3338820-452a-58b1-9e28-8b2029d5e1c9",
             "Matcher": {
-                "device.PartnerBrandId": "SomePartner"
+                "user.FavoriteFruit": "Apple"
             },
-            "Value": "partnerValue",
+            "Value": "appleValue",
             "Type": "SingleVariant"
         },
         {

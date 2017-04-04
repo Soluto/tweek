@@ -21,9 +21,9 @@ describe('edit key', () => {
     rules: [{
       "Id": "985627a1-d627-5516-89a9-79bc1b5515d0",
       "Matcher": {
-        "device.AgentVersion": "1.1.1",
-        "device.CountryCode": "someValue 1",
-        "device.CreatedAt": {
+        "user.AgentVersion": "1.1.1",
+        "user.FavoriteFruit": "Banana",
+        "user.BirthDate": {
           "$withinTime": "3d"
         }
       },
@@ -63,14 +63,14 @@ describe('edit key', () => {
 
     keysPageObject.setConditionPropertyFromSuggestion(1, 1, 2);
     keysPageObject.addRuleCondition(1);
-    keysPageObject.setConditionPropertyFromSuggestion(1, 2, 0);
+    keysPageObject.setConditionPropertyFromSuggestion(1, 2, 4);
 
-    keysPageObject.setConditionValue(1, 1, 'someValue 1');
-    keysPageObject.setConditionValue(1, 2, '1.1.1');
+    keysPageObject.setConditionValue(1, 2, 'Banana');
+    keysPageObject.setConditionValue(1, 1, '1.1.1');
 
     keysPageObject.addRuleCondition(1);
 
-    keysPageObject.setConditionPropertyFromSuggestionValuePrefix(1, 3, 'Create');
+    keysPageObject.setConditionPropertyFromSuggestionValuePrefix(1, 3, 'Birth');
     keysPageObject.setConditionValue(1, 3, '3d');
 
     keysPageObject.removeRuleCondition(2, 0);
