@@ -82,13 +82,22 @@ mac: find . -wholename '*.Tests.csproj' -print0 | xargs -0 -n 1 dotnet test (onl
 1. go to services\editor
 2. run npm i/yarn
 
+### environment
+- to get that latest environment version from the server run `npm run pull-env`
+- to build environment with local changes run `npm run build-env`
+- if you want to pull/build only part of the services and not all of them, add `-- [SERVICES]` at the end of the command.
+The options are: `tweek-git` `tweek-management` `tweek-api` `tweek-backoffice`
+#### examples:
+- get latest management and api version from server: `npm run pull-env -- tweek-management tweek-api`
+- build local management version: `npm run build-env -- tweek-management`
+
 ### debug
 - run `npm run start:full-env`
 
 ### unit test
 - run `npm test`
 
-#### E2E
+## E2E
 1. go to e2e folder
 2. run npm i/yarn
 3. run `npm run test:full-env`
