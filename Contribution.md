@@ -27,18 +27,11 @@
 
 ## Add Appveyor nuget source
 1. Install nuget cli (mac:brew install nuget, windows: https://dist.nuget.org/index.html)
-2. run  
-   - mac: 
-   ```
-   nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -UserName it@soluto.com -StorePasswordInClearText -ConfigFile ~/.nuget/NuGet/NuGet.Config -Password <Password>
-   ```
-   - windows:
-   ```
-   nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -UserName it@soluto.com -StorePasswordInClearText -Password <Password>
-   ```
+2. dotnet restore`
+3. run `nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -UserName it@soluto.com -StorePasswordInClearText -Password <Password>`
 
 OR
-3. You can edit manuallty global NuGet.Config instead
+4. You can edit manuallty global NuGet.Config instead
 
 ## Running full environment
 1. clone:
@@ -47,9 +40,23 @@ OR
    cd tweek
    ```
 2. `dotnet restore`
-3. `dotnet publish services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj -o ./obj/Docker/publish`
-4. `docker-compose -f ./deployments/dev/docker-compose.yml build`
-5. `docker-compose -f ./deployments/dev/docker-compose.yml up -d`
+3.  if you're getting an error, run:
+- mac: 
+   ```
+   nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -UserName it@soluto.com -StorePasswordInClearText -ConfigFile ~/.nuget/NuGet/NuGet.Config -Password <Password>
+   ```
+   - windows:
+   ```
+   nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -UserName it@soluto.com -StorePasswordInClearText -Password <Password>
+   ```
+   
+4. `dotnet publish services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj -o ./obj/Docker/publish`
+-- if using windows
+open files /tweek/services/git-service/BareRepository/init, /tweek/services/git-service/BareRepository/pre-receive
+save both files with linux EOL instead of windows. (in VS code, it's in the bottom right page (CRLF to LF), in notepad++, Edit->EOL Conversion ->  UNIX/OSX format
+--
+5. `docker-compose -f ./deployments/dev/docker-compose.yml build`
+6. `docker-compose -f ./deployments/dev/docker-compose.yml up -d`
 
 All tweek microservices should be run on ports 4001-4004:  
 4001 - Git server (ssh)  
