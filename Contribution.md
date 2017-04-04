@@ -22,10 +22,8 @@
 ## Add Appveyor nuget source
 1. Install nuget cli (mac:brew install nuget, windows: https://dist.nuget.org/index.html)
 2. run  
-mac: ```nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -Us
-erName it@soluto.com -StorePasswordInClearText -ConfigFile ~/.nuget/NuGet/NuGet.Config -Password <Password>```  
-windows: ```nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -Us
-erName it@soluto.com -StorePasswordInClearText -Password <Password>```  
+mac: ```nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -UserName it@soluto.com -StorePasswordInClearText -ConfigFile ~/.nuget/NuGet/NuGet.Config -Password <Password>```  
+windows: ```nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -UserName it@soluto.com -StorePasswordInClearText -Password <Password>```  
 
 OR
 3. You can edit manuallty global NuGet.Config instead
@@ -101,7 +99,10 @@ The options are: `tweek-git` `tweek-management` `tweek-api` `tweek-backoffice`
 ## E2E
 1. go to e2e folder
 2. run npm i/yarn
-3. run `npm run test:full-env`
+
+### run tests
+- if you didn't make any changes to editor, or already built it, run `npm run test:full-env`
+- to rebuild editor before tests run `npm run test:full-env:rebuild`
 
 ## TEARDOWN
 docker-compose -f ./deployments/dev/docker-compose.yml down
