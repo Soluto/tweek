@@ -7,6 +7,10 @@
    - git-service (stand along git rules repository for dev & testing)
 - deployments
    - dev (docker compose files for devlopment)
+- core
+   - Tweek calculation lib (.Net)
+- addons
+   - Addons for Tweek api
 - e2e (full system tests)
 
 # Build & Run tweek environment
