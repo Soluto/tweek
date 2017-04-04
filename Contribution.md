@@ -104,7 +104,7 @@ The options are: `tweek-git` `tweek-management` `tweek-api` `tweek-backoffice`
 
 ### run tests
 - if you didn't make any changes to editor, or already built it, run `npm run test:full-env`
-- to rebuild editor before tests and then run the tests, run `npm run test:full-env:rebuild`
+- to rebuild editor and then run tests, run `npm run test:full-env:rebuild`
 
 ## TEARDOWN
 docker-compose -f ./deployments/dev/docker-compose.yml down
