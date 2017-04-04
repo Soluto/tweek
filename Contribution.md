@@ -149,3 +149,9 @@ mac: find . -wholename '*.Tests.csproj' -print0 | xargs -0 -n 1 dotnet test (onl
 ```
 docker-compose -f ./deployments/dev/docker-compose.yml down
 ```
+
+## Contributing 
+Create branch with the format {issueNumber}_{someName}  
+Commit, push, create pull request
+
+
