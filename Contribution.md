@@ -23,6 +23,7 @@
 1. Install .Net core (https://www.microsoft.com/net/core)
 2. Install docker (https://www.docker.com/)
    - Log in to Docker hub: `docker login -u <user> -p <password>`
+   - On windows, open docker setting through traybar and your working drive as shared drive (under shared drives)
 3. Install node 6+ (https://nodejs.org/en/)
 
 ## Add Appveyor nuget source
