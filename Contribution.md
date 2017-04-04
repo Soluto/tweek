@@ -89,6 +89,9 @@ mac: find . -wholename '*.Tests.csproj' -print0 | xargs -0 -n 1 dotnet test (onl
 - run `npm test`
 
 #### E2E
+1. go to e2e folder
+2. run npm i/yarn
+3. run `npm run test:full-env`
 
 ## TEARDOWN
 docker-compose -f ./deployments/dev/docker-compose.yml down
