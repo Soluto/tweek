@@ -83,10 +83,10 @@ mac: find . -wholename '*.Tests.csproj' -print0 | xargs -0 -n 1 dotnet test (onl
 2. run npm i/yarn
 
 ### debug
-- run npm start:full-env
+- run `npm run start:full-env`
 
 ### unit test
-- run npm test
+- run `npm test`
 
 #### E2E
 
