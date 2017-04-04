@@ -11,10 +11,8 @@ script:
 - "./init-nuget-config.sh"
 - "./ci.sh"
 notifications:
-  email:
-    on_success: change
-    on_failure: always
   slack:
     on_success: change
     on_failure: always
-    secure: DhXqwEuLMYUfBrUreBQyqgK1wsuyRmfjiA4iqevYcwK1sLmqdwzEPXNkIJ20q/DeXcsHT+qgcK+Ek6yDj9QJsLZ7Ph0+rbfpEKSeVrW+89c3LDikTT45HFcZ9JXRpBgQgjYdRQoLO33B+UHu+1e1VBXZWyUx0/bCZ4pjLNZAtJ+rCeafQ595lvexoiPb5shsnMC/zTnNyJVld+gRTUUO9UxegOIH+V0EmwVx1YSceGwDYAWXjFjTqXItzSXAmmQeMvXTcPuXjkvF/dZnXGJQUenAFcTz4JrbroYyVaf6BrJq/jQm5R7iDfm+7f+MCgaIz7tan5S039qiOX+0/KA1Qn/jK3GuwiDaOyvQ88a0sBbDeww/2mE+5isJphXLnlHmaAgX8sF+ys8NFp8VW2/NmXiA14AUABH/q/mjoqHIVkVLX7ORWTuA7cy5/QaiEx+C/RLgG35utK9wPMOLGDcIb9NMAK3WHf1JQorckZYXTAeFsXfD2CuLZqXf+//EtA/FsTUfnBPsFZjz18VKugp5XisqexNRZRi8FSoDdAQhLVa9SJ22u3/j2dsH9UE38W81nHxffeGCKhTYSlyUf8UqTB7TymxR5ZLcIl1I3PexYUzAsr3e5Bfg9bYmou+F0Sq010P8yKGZuea8Ektre42sa5Utj2NKlKn4ch8Kkf7tvF8=
+    rooms:
+      secure: N0G7JHNJxaEaDm4z11ZHvukXuDhZX6qUMGJd+Q/bh0qE2E0NeVh86CbqbXLK/Rholmp9vnwsdIBC0cuSqaqU3INA3Cpylbc3faI9PrX1hzMAmmmse66V+34LA+JAYnQFshNw487Ml37BdL3Gp1v/hSBbnr8hmK9o3DSzNbNB9WgHb5ghtfCTPSsT/Zr9gHwvxUo4zpH9nEN6KQN+os/48UylM4Zp375pLZB4P+4PKw6i0P1vwF4G836RqAQqUyNiGrXLZvZ47MrXK8pbpc+eOQNVyhJZyv/kgeyYtbLFzEHwhWXHAczg2bc//Q5mRlzlsiyogYzoZVheeLJ1XT9Q0ZBybC1VLilQigMWwe8+nftdDiJVohU6lrn4e/VfmfwWpV6fi+UUJNhIaL4dje3Q+1HMNx98iwtOyWbjxO4StIRXAWTeCxPy6bmvAdZyHeQzX6lWWknh8VxgHv0XAuidgy4lpMJAAl3cujj6BbsFQQrdKuZiP/NHLqEpgcOydTiFTILucPoX9xanu8DowcQNKcCwxCrZcTsk6HoOl3g4wkUyiZxRhg8wAw+E9gYL4Bcu8ctgV2Oo0vLqGHd97/X9R7gS11bA55VAZoGtg5Ax5gLlYxQtAMJ4/ZUd5DUraBqWByqjQQrtiuR7a8fleBtPG6LVzkiuVD4ALv5UrYLXi+s=
