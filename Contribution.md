@@ -61,11 +61,9 @@ VS 2017
 1. Install VS 2017
 
 ### RUN
-1. If you haven't built the full environment before, pull management service:
-   ```docker-compose -f ./deployments/dev/docker-compose.yml pull tweek-management```
-2. If you haven't ran the full environment before, run management service: 
+1. If you haven't ran the full environment before, run management service: 
    ```docker-compose -f ./deployments/dev/docker-compose.yml up tweek-management -d```
-3. Debug tweek in VS2017 or VSCODE tweek-api task
+2. Debug tweek in VS2017 or VSCODE tweek-api task
 
 ### TESTS
 
