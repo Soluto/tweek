@@ -19,6 +19,11 @@
 1. Docker compatible environment  (Windows 10/Mac/Linux)
 2. Docker hub account with access to Soluto team
 
+## Install runtime dependencis
+1. Install .Net core (https://www.microsoft.com/net/download/core)
+2. Install docker (https://www.docker.com/)
+3. Install node 6+ (https://nodejs.org/en/)
+
 ## Add Appveyor nuget source
 1. Install nuget cli (mac:brew install nuget, windows: https://dist.nuget.org/index.html)
 2. run  
@@ -27,11 +32,6 @@ windows: ```nuget sources add -Name solutoappveyor -Source https://ci.appveyor.c
 
 OR
 3. You can edit manuallty global NuGet.Config instead
-
-## Install runtime dependencis
-1. Install .Net core (https://www.microsoft.com/net/download/core)
-2. Install docker (https://www.docker.com/)
-3. Install node 6+ (https://nodejs.org/en/)
 
 ## Running full environment
 1. clone:
