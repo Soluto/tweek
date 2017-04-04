@@ -20,7 +20,7 @@
 2. Docker hub account with access to Soluto team
 
 ## Install runtime dependencis
-1. Install .Net core (https://www.microsoft.com/net/download/core)
+1. Install .Net core (https://www.microsoft.com/net/core)
 2. Install docker (https://www.docker.com/)
    - Log in to Docker hub: `docker login -u <user> -p <password>`
 3. Install node 6+ (https://nodejs.org/en/)
