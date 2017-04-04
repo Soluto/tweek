@@ -58,7 +58,8 @@ open files /tweek/services/git-service/BareRepository/init, /tweek/services/git-
 save both files with linux EOL instead of windows.  
 (in VS code, it's in the bottom right page (CRLF to LF), in notepad++, Edit->EOL Conversion ->  UNIX/OSX format) 
 
---
+--  
+
 5. `docker-compose -f ./deployments/dev/docker-compose.yml build`
 6. `docker-compose -f ./deployments/dev/docker-compose.yml up -d`
 
