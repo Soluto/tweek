@@ -92,6 +92,7 @@ The options are: `tweek-git` `tweek-management` `tweek-api` `tweek-backoffice`
 - build local management version: `npm run build-env -- tweek-management`
 
 ### debug
+- if you haven't pulled or built the environment, run `npm run pull-env`
 - run `npm run start:full-env`
 
 ### unit test
