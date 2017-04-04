@@ -50,10 +50,14 @@ OR
    nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -UserName it@soluto.com -StorePasswordInClearText -Password <Password>
    ```
    
-4. `dotnet publish services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj -o ./obj/Docker/publish`
--- if using windows
-open files /tweek/services/git-service/BareRepository/init, /tweek/services/git-service/BareRepository/pre-receive
-save both files with linux EOL instead of windows. (in VS code, it's in the bottom right page (CRLF to LF), in notepad++, Edit->EOL Conversion ->  UNIX/OSX format
+4. `dotnet publish services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj -o ./obj/Docker/publish`  
+
+-- if using windows  
+
+open files /tweek/services/git-service/BareRepository/init, /tweek/services/git-service/BareRepository/pre-receive  
+save both files with linux EOL instead of windows.  
+(in VS code, it's in the bottom right page (CRLF to LF), in notepad++, Edit->EOL Conversion ->  UNIX/OSX format) 
+
 --
 5. `docker-compose -f ./deployments/dev/docker-compose.yml build`
 6. `docker-compose -f ./deployments/dev/docker-compose.yml up -d`
