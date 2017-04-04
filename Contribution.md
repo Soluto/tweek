@@ -3,7 +3,7 @@
 - services (all tweek microservices)
    - api (rest api for getting configurations and updating context)
    - editor (admin ui for editing rules and managing Tweek)
-   - management (CI and serving layer for new rules)
+   - management ("CI" and serving layer for new rules)
    - git-service (stand along git rules repository for dev & testing)
 - deployments
    - dev (docker compose files for devlopment)
