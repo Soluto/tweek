@@ -22,6 +22,10 @@ using Tweek.JPad.Utils;
 using Tweek.JPad;
 using Tweek.ApiService.NetCore.Diagnostics;
 using System.Reflection;
+using System.Threading;
+using App.Metrics;
+using App.Metrics.Health;
+using Microsoft.AspNetCore.Mvc;
 using Tweek.ApiService.NetCore.Security;
 using Tweek.ApiService.NetCore.Addons;
 
@@ -83,7 +87,7 @@ namespace Tweek.ApiService.NetCore
             var tweekContactResolver = new TweekContractResolver();
             var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };
             services.AddSingleton(jsonSerializer);
-            services.AddMvc()
+            services.AddMvc(options => options.AddMetricsResourceFilter())
                 .AddJsonOptions(opt =>
                 {
                     opt.SerializerSettings.ContractResolver = tweekContactResolver;
@@ -96,6 +100,29 @@ namespace Tweek.ApiService.NetCore
                         .AllowAnyHeader()
                         .AllowCredentials());
             });
+
+            var envProvider = new EnvironmentDiagnosticsProvider();
+
+            services
+                .AddMetrics()
+                .AddJsonSerialization()
+                .AddHealthChecks(factory =>
+                {
+                    factory.RegisterProcessPrivateMemorySizeHealthCheck("Private Memory Size", 1);
+                    factory.RegisterProcessVirtualMemorySizeHealthCheck("Virtual Memory Size", 1);
+                    factory.RegisterProcessPhysicalMemoryHealthCheck("Working Set (physical memory)", 1);
+                    factory.RegisterPingHealthCheck("google ping", "google.com", TimeSpan.FromSeconds(10));
+
+                    factory.Register(couchbaseDiagnosticsProvider.Name, 
+                        ()=> Task.FromResult(couchbaseDiagnosticsProvider.IsAlive() ? HealthCheckResult.Healthy() : HealthCheckResult.Unhealthy("Couchbase not alive")));
+
+                    factory.Register(rulesDiagnostics.Name,
+                        () => Task.FromResult(rulesDiagnostics.IsAlive() ? HealthCheckResult.Healthy() : HealthCheckResult.Unhealthy("RulesDriverStatusService check failed")));
+
+                    factory.Register(envProvider.Name,
+                        () => Task.FromResult(envProvider.IsAlive() ? HealthCheckResult.Healthy() : HealthCheckResult.Unhealthy("Environment is not healty")));
+                })
+                .AddMetricsMiddleware(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -110,7 +137,9 @@ namespace Tweek.ApiService.NetCore
 
             app.UseAuthenticationProviders(Configuration, loggerFactory.CreateLogger("AuthenticationProviders"));
             app.InstallAddons(Configuration);
+            app.UseMetrics();
             app.UseMvc();
+            
         }
 
         private void InitCouchbaseCluster(string bucketName, string bucketPassword)
