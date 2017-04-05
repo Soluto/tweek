@@ -1,6 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
+        
         {
             "name": "Tweek-api",
             "type": "coreclr",
@@ -30,6 +31,33 @@
             },
             "sourceFileMap": {
                 "/Views": "${workspaceRoot}/Views"
+            }
+        },
+        {
+            "name": "Tweek-analytics-api",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "analytics-api-build",
+            "program": "${workspaceRoot}/services/analytics-api/Tweek.AnalyticsApiService.NetCore/bin/Debug/netcoreapp1.1/Tweek.AnalyticsApiService.NetCore.dll",
+            "args": [],
+            "cwd": "${workspaceRoot}/services/analytics-api/Tweek.AnalyticsApiService.NetCore",
+            "stopAtEntry": false,
+            "launchBrowser": {
+                "enabled": true,
+                "args": "${auto-detect-url}",
+                "windows": {
+                    "command": "cmd.exe",
+                    "args": "/C start ${auto-detect-url}/status"
+                },
+                "osx": {
+                    "command": "open"
+                },
+                "linux": {
+                    "command": "xdg-open"
+                }
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
             }
         },
         {

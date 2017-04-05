@@ -1,14 +1,13 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
-using System.Linq;
-using System.Collections.Generic;
-using Engine.DataTypes;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Tweek.ApiService.NetCore.Controllers
+namespace Tweek.AnalyticsApiService.NetCore.Controllers
 {
-  [Route("api/v1/funnel")]
+    [Route("api/v1/funnel")]
     [EnableCors("All")]
     public class FunnelController : Controller
     {
@@ -18,6 +17,11 @@ namespace Tweek.ApiService.NetCore.Controllers
 
         private string _eventHash(string path, Identity identity, string eventName) => 
 			path + identity.Item1 + identity.Item2 + eventName;
+            
+		public FunnelController()
+		{
+
+		}
 
         [HttpPost("{*path}")]
         public async Task<ActionResult> Post([FromRoute] string path, [FromQuery(Name = "event")] string eventName)
@@ -44,5 +48,16 @@ namespace Tweek.ApiService.NetCore.Controllers
 			if (!EventCounters.ContainsKey(path)) return new Dictionary<string, long>();
 			return EventCounters[path];
 		}
+    }
+
+	public class Identity: Tuple<string, string>
+    {
+        public string Type {get { return Item1; }}
+        public string Id {get { return Item2; }}
+
+        public Identity(string type, string id)
+            : base(type, id)
+        {
+        }
     }
 }
