@@ -23,3 +23,10 @@ export async function getContext(req, res, { tweekApiHostname }, { params }){
   const response = await tweekApiClient.get(`context/${params.contextType}/${params.contextId}`);
   res.json(response.data);
 }
+
+export async function updateContext(req, res, { tweekApiHostname }, { params }){
+  const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
+  await tweekApiClient.post(`context/${params.contextType}/${params.contextId}`, {
+    context: req.body
+  });
+}
