@@ -23,7 +23,9 @@ const FixedConfiguration = ({ fixedConfigurations, updateContext }) => {
 
 FixedConfiguration.propTypes = {
   fixedConfigurations: PropTypes.object,
-  updateContext: PropTypes.func.isRequired
+  updateContext: PropTypes.func.isRequired,
+  contextType: PropTypes.string.isRequired,
+  contextId: PropTypes.string.isRequired
 }
 
 export default compose(

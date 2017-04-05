@@ -37,9 +37,16 @@ export default compose(
         }</select>
 
         <input type="text" placeholder="Value" onChange={(e)=>this.setState({contextId: e.target.value})} />
-        <button onClick={()=>this.props.onGetContext(this.state.contextType,this.state.contextId)}>Get</button>
+        <button onClick={ this.onGetClick.bind(this) }>Get</button>
       </div>
     );
+  }
+
+  onGetClick(){
+    this.props.onGetContext({
+      contextType: this.state.contextType,
+      contextId: this.state.contextId
+    })
   }
 });
 
