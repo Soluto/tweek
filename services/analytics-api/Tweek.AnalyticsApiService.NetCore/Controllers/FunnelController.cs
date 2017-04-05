@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using ServiceStack.Redis;
 
 namespace Tweek.AnalyticsApiService.NetCore.Controllers
 {
@@ -11,22 +12,23 @@ namespace Tweek.AnalyticsApiService.NetCore.Controllers
     [EnableCors("All")]
     public class FunnelController : Controller
     {
-		private static HashSet<string> Events = new HashSet<string>();
-		private static Dictionary<string, Dictionary<string, long>> EventCounters = 
-			new Dictionary<string, Dictionary<string, long>>();
-
-        private string _eventHash(string path, Identity identity, string eventName) => 
+		private string _eventHash(string path, Identity identity, string eventName) => 
 			path + identity.Item1 + identity.Item2 + eventName;
-            
-		public FunnelController()
-		{
 
-		}
+		private T persistenceAction<T>(Func<IRedisClient, T> action)
+		{ 
+			var manager = new RedisManagerPool("tweek-analytics-redis.119e4587.svc.dockerapp.io:6379");
+			using (var client = manager.GetClient())
+            {
+				// TODO: change to client with async api
+				return action(client);
+			}
+		}  
 
         [HttpPost("{*path}")]
         public async Task<ActionResult> Post([FromRoute] string path, [FromQuery(Name = "event")] string eventName)
         {
-            var identities = new HashSet<Identity>(
+			var identities = new HashSet<Identity>(
 				HttpContext.Request.Query.Where(x => x.Key != "event").ToDictionary(x => x.Key, x => x.Value)
 					.Select(x => new Identity(x.Key, x.Value)));
 
@@ -35,18 +37,21 @@ namespace Tweek.AnalyticsApiService.NetCore.Controllers
 			
 			var identity = identities.ElementAt(0);
 			var eventHash = _eventHash(path, identity, eventName);
-			if (Events.Contains(eventHash)) return Ok();
-			Events.Add(eventHash);
-			if (!EventCounters.ContainsKey(path)) EventCounters.Add(path, new Dictionary<string, long>{{eventName, 0}});
-			EventCounters[path][eventName] = EventCounters[path][eventName] + 1;
+			var didHappen = persistenceAction(client => client.Get<bool>(eventHash));
+			if (didHappen) return Ok();
+			persistenceAction(client => {
+				client.Set(eventHash, true);
+				client.IncrementValueInHash(path, eventName, 1);
+				return true;
+			});
 			return Ok();
         }
 
 		[HttpGet("{*path}")]
 		public async Task<Dictionary<string, long>> Get([FromRoute] string path)
 		{
-			if (!EventCounters.ContainsKey(path)) return new Dictionary<string, long>();
-			return EventCounters[path];
+			var keyEvents = persistenceAction(client => client.GetAllEntriesFromHash(path));
+			return keyEvents.ToDictionary(x => x.Key, x => long.Parse(x.Value));
 		}
     }
 

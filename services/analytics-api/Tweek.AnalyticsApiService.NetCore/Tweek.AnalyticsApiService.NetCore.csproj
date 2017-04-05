@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
+    <PackageReference Include="ServiceStack.Redis.Core" Version="1.0.5" />
   </ItemGroup>
 
 </Project>
