@@ -1,0 +1,36 @@
+@import (reference) "../../../../styles/core/core.less";
+@sidebarBgColor:#414b53;
+
+.identities-list-container {
+  display: flex;
+  color: #d8d8d8;
+  flex-direction: column;
+  background-color: transparent;
+
+  .identity-link-wrapper {
+    display: flex;
+    flex-grow: 1;
+    .identity-link {
+      color: white;
+      font-size: 14px;
+      padding-top: 6px;
+      display: block;
+      height: 25px;
+      text-decoration: none;
+      background-color: transparent;
+      display: flex;
+      flex-grow: 1;
+      .transitioned();
+      &:hover {
+        background-color: #363a3e;
+        cursor: pointer;
+      }
+      &:active {
+        background-color: #363a3e;
+      }
+      &.selected {
+        background-color: #686e74;
+      }
+    }
+  }
+}
