@@ -60,3 +60,14 @@ services:
       - GIT_PUBLIC_KEY_PATH=/keys/tweekgit.pub
       - GIT_PRIVATE_KEY_PATH=/keys/tweekgit
       - TWEEK_API_HOSTNAME=http://tweek-api
+
+  tweek-analytics-api:
+    image: soluto/tweek-analytics-api
+    build: ../../services/analytics-api/Tweek.AnalyticsApiService.NetCore
+    container_name: tweek-analytics-api
+    depends_on:
+      - tweek-api
+    ports:
+      - "4005:80"
+    environment:
+      - TweekApi.Url=http://tweek-api
