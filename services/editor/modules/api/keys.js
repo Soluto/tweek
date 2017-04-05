@@ -13,10 +13,10 @@ let injectAuthor = (fn) => function (req, res, deps, ...rest) {
 
 export async function getKey(req, res, { keysRepository }, { params }) {
   const keyPath = params.splat;
-
+  const revision = req.query.revision;
   let keyDetails;
   try {
-    keyDetails = await keysRepository.getKeyDetails(keyPath);
+    keyDetails = await keysRepository.getKeyDetails(keyPath, { revision });
   } catch (exp) {
     res.sendStatus(404);
   }
@@ -24,7 +24,7 @@ export async function getKey(req, res, { keysRepository }, { params }) {
   res.json(keyDetails);
 }
 
-export const saveKey = injectAuthor(async function (req, res, { keysRepository, author}, { params }) {
+export const saveKey = injectAuthor(async function (req, res, { keysRepository, author }, { params }) {
   const keyPath = params.splat;
 
   let keyRulesSource = req.body.keyDef.source;
@@ -34,7 +34,7 @@ export const saveKey = injectAuthor(async function (req, res, { keysRepository, 
   res.send('OK');
 })
 
-export const deleteKey = injectAuthor(async function (req, res, { keysRepository, author}, { params }) {
+export const deleteKey = injectAuthor(async function (req, res, { keysRepository, author }, { params }) {
   const keyPath = params.splat;
   await keysRepository.deleteKey(keyPath, author);
   res.send('OK');
