@@ -6,25 +6,31 @@ import transformProps from '../../utils/transformProps';
 
 const filterFixedConfigurationProps = filteredPropsValues(prop => prop.startsWith("@fixed:"));
 const removeFixedPrefix = transformProps(prop => prop.replace("@fixed:", ""))
+const addFixedPrefix = transformProps(prop => `@fixed:${prop}`)
 
 import withContextData from '../../hoc/withContextData/withContextData';
+import withUpdateContextData from '../../hoc/withContextData/withUpdateContextData';
+
 import FixedConfigurationTable from './FixedConfigurationTable';
 
-const FixedConfiguration = ({ fixedConfigurations }) => {
+const FixedConfiguration = ({ fixedConfigurations, updateContext }) => {
   return (
     <div>
-      <FixedConfigurationTable fixedConfigurations={ fixedConfigurations } />
+      <FixedConfigurationTable onSave={ data => updateContext(addFixedPrefix(data)) } fixedConfigurations={ fixedConfigurations } />
     </div>
   )
 }
 
 FixedConfiguration.propTypes = {
-  fixedConfigurations: PropTypes.object
+  fixedConfigurations: PropTypes.object,
+  updateContext: PropTypes.func.isRequired
 }
 
 export default compose(
   withContextData(),
+  withUpdateContextData(),
   mapProps(props => ({
+    ...props,
     fixedConfigurations: removeFixedPrefix(filterFixedConfigurationProps(props.contextData))
   }))
 )(FixedConfiguration);

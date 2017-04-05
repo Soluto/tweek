@@ -44,7 +44,7 @@ class FixedConfigurationTable extends Component {
         
       </div>
 
-      <button>Save it</button>
+      <button onClick={ () => this.props.onSave(this.state.configurations) }>Save it</button>
 
       </div>
     )
@@ -65,7 +65,8 @@ class FixedConfigurationTable extends Component {
 }
 
 FixedConfigurationTable.propTypes = {
-  fixedConfigurations: PropTypes.object.isRequired
+  fixedConfigurations: PropTypes.object.isRequired,
+  onSave: PropTypes.func.isRequired
 }
 
 const style = {
