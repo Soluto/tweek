@@ -50,5 +50,14 @@ namespace Tweek.ApiService.NetCore.Controllers
             return Ok();
         }
 
+        [HttpGet("{identityType}/{identityId}")]
+        public async Task<ActionResult> GetContext([FromRoute] string identityType, [FromRoute] string identityId)
+        {
+            Identity identity = new Identity(identityType, identityId);
+            if (!_checkAccess(User, identity)) return Forbid();
+
+            var contextData = await _contextDriver.GetContext(identity);
+            return Json(contextData);
+        }
     }
 }
