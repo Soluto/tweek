@@ -147,7 +147,7 @@ namespace Tweek.ApiService.NetCore
 
         private BlobRulesDriver GetRulesDriver()
         {
-            return new BlobRulesDriver(new Uri(Configuration["RulesBlobUrl"]), new SystemWebClientFactory());
+            return new BlobRulesDriver(new Uri(Configuration["RulesBlob.Url"]), new SystemWebClientFactory());
         }
 
         IRuleParser GetRulesParser()
