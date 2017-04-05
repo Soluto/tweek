@@ -61,3 +61,6 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+services/git-service/BareRepository/init    text eol=lf
+services/git-service/BareRepository/pre-receive text eol=lf
