@@ -17,3 +17,9 @@ export async function getContextSchema(req, res, {tweekApiHostname}) {
 
   res.json(processedSchemaDetails);
 }
+
+export async function getContext(req, res, { tweekApiHostname }, { params }){
+  const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
+  const response = await tweekApiClient.get(`context/${params.contextType}/${params.contextId}`);
+  res.json(response.data);
+}
