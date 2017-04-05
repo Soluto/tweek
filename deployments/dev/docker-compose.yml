@@ -4,7 +4,7 @@ services:
   tweek-git:
     build: ../../services/git-service/BareRepository/.
     container_name: tweek-git
-    ports: 
+    ports:
       - "4001:22"
     environment:
       - PUBLIC_KEY_PATH=/tweek/key.pub
@@ -38,7 +38,7 @@ services:
     ports:
       - "4003:80"
     environment:
-      - RulesBlob.Url=http://tweek-management:3000/ruleset/latest
+      - RulesBlobUrl=http://tweek-management:3000/ruleset/latest
       - PUBLIC_KEY_PATH=/keys/public_key.pfx
     volumes:
       -  ../../services/git-service/ssh/tweekgit_public.pfx:/keys/public_key.pfx
@@ -47,12 +47,12 @@ services:
     image: soluto/tweek-back-office
     build: ../../services/editor/
     container_name: tweek-backoffice
-    depends_on: 
+    depends_on:
       - tweek-api
       - tweek-git
     ports:
       - "4004:3000"
-    volumes: 
+    volumes:
       - ../../services/git-service/ssh:/keys
     environment:
       - GIT_USER=git
