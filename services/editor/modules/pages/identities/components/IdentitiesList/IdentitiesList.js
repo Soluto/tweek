@@ -8,9 +8,12 @@ import style from './IdentitiesList.css';
 
 const IdentityItem = ({name}) => {
   return (
-    <li className={classNames(style['identity-link'], { [style['selected']]: true })}>
-      {name}
-    </li>
+    <div className={classNames(style['identity-link-wrapper'])}>
+      <Link className={classNames(style['identity-link'], { [style['selected']]: true })}
+        to={`/identities/@tweek/context/${name}`}>
+        {name}
+      </Link>
+    </div>
   );
 };
 
