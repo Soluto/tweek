@@ -1,0 +1,5 @@
+.identities-page-container {
+  display: flex;
+  flex-grow: 1;
+  background-color: #eee;
+}
