@@ -21,10 +21,12 @@ export default ({tagsRepository, keysRepository, tweekApiHostname}) => (
       get={requestErrorHandlingWrapper(ContextRoutes.getContextSchema)}
       tweekApiHostname={tweekApiHostname}
     />
-    <ServerRoute path="context"
-      get={requestErrorHandlingWrapper(ContextRoutes.getContext)}
-      tweekApiHostname={tweekApiHostname}
-    />
+    <ServerRoute path="context">
+      <ServerRoute path=":contextType/:contextId"
+        get={requestErrorHandlingWrapper(ContextRoutes.getContext)}
+        tweekApiHostname={tweekApiHostname}
+      />
+    </ ServerRoute>
     <ServerRoute path="keys">
       <ServerRoute path="*"
         get={requestErrorHandlingWrapper(KeysRoutes.getKey)}
