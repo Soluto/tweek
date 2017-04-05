@@ -15,18 +15,25 @@ class ContextPage extends Component {
   }
 
   onGetContext(contextType,contextId) {
-
     this.setState({ contextType: contextType,  contextId: contextId});
   }
-
 
   render() {
     return (
       <div >
-        <SearchBox onGetContext={this.onGetContext.bind(this)}/>
-        <FixedConfiguration contextType={this.state.contextType} contextId={this.state.contextId}/>
+        <SearchBox onGetContext={this.onGetContext.bind(this)}/> 
+        { 
+          this.shouldRender()
+            ? <FixedConfiguration contextType={this.state.contextType} contextId={this.state.contextId}/>
+            : null
+        }
+        
       </div>
     );
+  }
+
+  shouldRender(){
+    return this.state.contextType && this.state.contextId
   }
 
 }
