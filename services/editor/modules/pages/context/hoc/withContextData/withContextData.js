@@ -12,7 +12,7 @@ const createContextDataStream = propsStream =>
   propsStream.flatMap(async props => await getContextData(props));
 
 const getContextData = async ({ contextType, contextId }) => {
-  let response = await fetch("/api/context/device/tal", { credentials: 'same-origin' });
+  let response = await fetch(`/api/context/${contextType}/${contextId}`, { credentials: 'same-origin' });
   return await response.json()
 }
 

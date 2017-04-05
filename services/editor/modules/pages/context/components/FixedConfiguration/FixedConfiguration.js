@@ -19,13 +19,7 @@ FixedConfiguration.propTypes = {
   fixedConfigurations: PropTypes.object
 }
 
-const enhanceWithFakeProps = () => withProps({
-  contextType: 'device',
-  contextId: 'tal'
-})
-
 export default compose(
-  enhanceWithFakeProps(),
   withContextData(),
   mapProps(props => ({
     fixedConfigurations: filterFixedConfigurationProps(props.contextData)
