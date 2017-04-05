@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs/Rx';
 import { mapPropsStream } from 'recompose';
 
-const enhance = mapPropsStream(propsStream => {
+const enhance = () => mapPropsStream(propsStream => {
   return propsStream.combineLatest(createContextDataStream(propsStream), (props, contextData) => ({
     ...props,
     contextData
@@ -15,3 +15,5 @@ const getContextData = async ({ contextType, contextId }) => ({
   "someContextProperty": "some-hardcoded-context-value",
   "@fixed:example": "some-fixed-example-hardcoded-value"
 })
+
+export default enhance;
