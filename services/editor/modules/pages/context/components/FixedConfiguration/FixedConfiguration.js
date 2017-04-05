@@ -2,7 +2,10 @@ import React, { Component, PropTypes } from 'react';
 import { compose, withProps, mapProps } from 'recompose';
 
 import filteredPropsValues from '../../utils/filteredPropsValues';
+import transformProps from '../../utils/transformProps';
+
 const filterFixedConfigurationProps = filteredPropsValues(prop => prop.startsWith("@fixed:"));
+const removeFixedPrefix = transformProps(prop => prop.replace("@fixed:", ""))
 
 import withContextData from '../../hoc/withContextData/withContextData';
 import FixedConfigurationTable from './FixedConfigurationTable';
@@ -22,6 +25,6 @@ FixedConfiguration.propTypes = {
 export default compose(
   withContextData(),
   mapProps(props => ({
-    fixedConfigurations: filterFixedConfigurationProps(props.contextData)
+    fixedConfigurations: removeFixedPrefix(filterFixedConfigurationProps(props.contextData))
   }))
 )(FixedConfiguration);
