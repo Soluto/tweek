@@ -2,6 +2,7 @@ import React from 'react';
 import {Component} from 'react';
 import {connect} from 'react-redux';
 import KeyRulesEditor from './KeyRulesEditor/KeyRulesEditor';
+import TopVariants from './TopVariants/TopVariants';
 import style from './KeyEditPage.css';
 import KeyTags from './KeyTags/KeyTags';
 import EditableText from './EditableText/EditableText';
@@ -117,19 +118,20 @@ const KeyStickyHeader = (props) => {
   );
 };
 
+
 const KeyFullHeader = (props) => {
   const {isInAddMode, isReadonly, modificationData, keyMeta, onDescriptionChanged, onTagsChanged, keyFullPath} = props;
 
   return (
     <div className={style['key-header']}>
-
+      
       <KeyPageActions isInAddMode={isInAddMode} isReadonly={isReadonly} isInStickyMode={false}/>
-
       <div className={style['key-meta-container']}>
 
         <div className={style['key-header-and-modification-wrapper']}>
 
           <HeaderMainInput {...props} />
+          
 
           {modificationData ?
             <KeyModificationDetails className={style['modification-data']} {...modificationData} />
@@ -161,6 +163,10 @@ const KeyFullHeader = (props) => {
           </div>
         </div>
 
+      </div>
+
+      <div className={style['key-meta-container']}>
+          <TopVariants keyPath={keyFullPath} />
       </div>
 
     </div>
