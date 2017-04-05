@@ -108,9 +108,11 @@ namespace Tweek.ApiService.NetCore
                 .AddJsonSerialization()
                 .AddHealthChecks(factory =>
                 {
-                    factory.RegisterProcessPrivateMemorySizeHealthCheck("Private Memory Size", 1);
-                    factory.RegisterProcessVirtualMemorySizeHealthCheck("Virtual Memory Size", 1);
-                    factory.RegisterProcessPhysicalMemoryHealthCheck("Working Set (physical memory)", 1);
+                    var threshold = 5000000;
+
+                    factory.RegisterProcessPrivateMemorySizeHealthCheck("Private Memory Size", threshold);
+                    factory.RegisterProcessVirtualMemorySizeHealthCheck("Virtual Memory Size", threshold);
+                    factory.RegisterProcessPhysicalMemoryHealthCheck("Working Set (physical memory)", threshold);
                     factory.RegisterPingHealthCheck("google ping", "google.com", TimeSpan.FromSeconds(10));
 
                     factory.Register(couchbaseDiagnosticsProvider.Name, 
