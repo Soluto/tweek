@@ -9,6 +9,9 @@ const withLoading = (loadingRenderer, loadingPromise) => (Comp) => {
     lifecycle({
       componentWillMount() {
         var _this = this;
+        if (typeof(loadingPromise) === "function") {
+           loadingPromise = loadingPromise(this.props);
+        }
         loadingPromise.then(() => _this.props.setIsLoading(false));
       },
     }))(props => {
