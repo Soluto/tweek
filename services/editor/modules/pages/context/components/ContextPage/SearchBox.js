@@ -1,10 +1,9 @@
 import React from 'react';
-import { Component } from 'react';
+import { Component,PropTypes } from 'react';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
-import * as ContextService from "../../../../services/context-service";
 import withLoading from '../../../../hoc/with-loading';
-import { refreshSchema } from "../../../../services/context-service";
+import { refreshSchema,getIdentities } from "../../../../services/context-service";
 
 export default compose(
   connect(state => state),
@@ -13,26 +12,34 @@ export default compose(
 (class SearchBox extends Component {
   constructor(props) {
     super(props);
-  }
 
-  componentDidMount() {
-
-    if (!this.props.keys) {
-      this.props.getKeys([]);
+    this.state = {
+      contextType: '',
+      contextId: '',
+      identities: []
     }
   }
 
+  componentDidMount() {
+    const identities = getIdentities();
+    const contextType = identities[0];
+
+    this.setState({ identities, contextType })
+  }
+
+
   render() {
-    const identities = ContextService.getIdentities();
+
     return (
       <div>
-        <select>{
-          identities.map(identity => <option key={identity} value={ identity }>{ identity }</option>)
+        <select onChange={(e)=>this.setState({contextType: e.target.value})} value={ this.state.contextType }>{
+          this.state.identities.map(identity => <option key={identity} value={ identity } >{ identity }</option>)
         }</select>
 
-        <input type="text" placeholder="Value" />
-        <button>Get</button>
+        <input type="text" placeholder="Value" onChange={(e)=>this.setState({contextId: e.target.value})} />
+        <button onClick={()=>this.props.onGetContext(this.state.contextType,this.state.contextId)}>Get</button>
       </div>
     );
   }
 });
+
