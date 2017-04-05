@@ -1,0 +1,32 @@
+.identities-list-container {
+  display: flex;
+  color: #d8d8d8;
+  flex-direction: column;
+  background-color: transparent;
+}
+.identities-list-container .identity-link-wrapper {
+  display: flex;
+  flex-grow: 1;
+}
+.identities-list-container .identity-link-wrapper .identity-link {
+  color: white;
+  font-size: 14px;
+  padding-top: 6px;
+  display: block;
+  height: 25px;
+  text-decoration: none;
+  background-color: transparent;
+  display: flex;
+  flex-grow: 1;
+  transition: all 0.2s ease-in-out;
+}
+.identities-list-container .identity-link-wrapper .identity-link:hover {
+  background-color: #363a3e;
+  cursor: pointer;
+}
+.identities-list-container .identity-link-wrapper .identity-link:active {
+  background-color: #363a3e;
+}
+.identities-list-container .identity-link-wrapper .identity-link.selected {
+  background-color: #686e74;
+}
