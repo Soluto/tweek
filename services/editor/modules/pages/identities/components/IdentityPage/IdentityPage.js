@@ -1,9 +1,9 @@
 import React from 'react';
 import classNames from 'classnames';
 import { connect } from "react-redux";
-import { getIdentities } from "../../../../services/context-service";
 
-const IdentityPage = ({params:{identity}}) => {
+const IdentityPage = ({params:{identity}, allProperties}) => {
+  let properties = allProperties.filter((property) => (property.identity === identity));
   return (
       <div>
         {identity}
@@ -12,6 +12,6 @@ const IdentityPage = ({params:{identity}}) => {
 };
 
 export default connect((state) => ({
-
+    allProperties: state.schema.properties
 }))
 (IdentityPage);
