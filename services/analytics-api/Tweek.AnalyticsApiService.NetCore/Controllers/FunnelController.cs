@@ -29,7 +29,7 @@ namespace Tweek.AnalyticsApiService.NetCore.Controllers
 		}
 
 		private async Task<string> GetVariant(string path, Identity identity){
-			var baseUrl = "http://localhost:4003/api/v1";
+			var baseUrl = "http://tweek-api/api/v1";
 			var url = baseUrl.TrimEnd('/') + "/keys/" + path.Trim('/') + $"?{identity.Type}={identity.Id}";
 			using (var httpClient = new HttpClient())
 			{
