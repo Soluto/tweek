@@ -37,10 +37,10 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: tweek-back-office
+  name: tweek-api
 spec:
   selector:
-    app: tweek-back-office
+    app: tweek-api
   ports:
     - protocol: TCP
       port: 4003
