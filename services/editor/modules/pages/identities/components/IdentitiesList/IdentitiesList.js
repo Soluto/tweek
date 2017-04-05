@@ -18,7 +18,7 @@ const IdentitiesList = ({identities}) => {
   const listItems = identities
     .map((identitiy) => {
       return (
-        <IdentityItem key={identitiy.name} name={identitiy.name} />
+        <IdentityItem key={identitiy} name={identitiy} />
       )});
 
   return (
