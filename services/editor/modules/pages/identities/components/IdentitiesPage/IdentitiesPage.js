@@ -1,6 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { connect } from 'react-redux';
+import style from './IdentitiesPage.css';
 import { compose } from 'recompose';
 import withLoading from '../../../../hoc/with-loading';
 import { refreshTypes } from '../../../../services/types-service';
@@ -22,7 +23,7 @@ export default compose(
 
     render() {
       return (
-        <div>
+        <div className={style['identities-page-container']}>
         </div>
       );
     }
