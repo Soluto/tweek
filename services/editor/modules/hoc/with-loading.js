@@ -13,7 +13,7 @@ const withLoading = (loadingRenderer, loadingPromise) => (Comp) => {
       },
     }))(props => {
       return (
-        props.isLoading ? loadingRenderer() : <Comp {...props} />
+        props.isLoading ? loadingRenderer(props) : <Comp {...props} />
       );
     })
 };
