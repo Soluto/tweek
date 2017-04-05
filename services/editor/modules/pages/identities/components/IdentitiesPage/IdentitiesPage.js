@@ -11,13 +11,14 @@ import { refreshSchema } from "../../../../services/context-service";
 const isNode = new Function("try {return this===global;}catch(e){return false;}");
 
 export default compose(
-  connect(state => ({identities: state.schema.identities || []}), { ...actions }),
-  withLoading(({loadSchema}) => null, isNode() ? Promise.resolve() : refreshSchema()),
+  connect(state => ({}), { ...actions }),
+  withLoading(() => null, ({loadSchema}) => isNode() ? Promise.resolve() : refreshSchema().then(loadSchema)),
+  connect(state => ({identities: state.schema.identities})),
   lifecycle({
     componentDidMount(){
       this.props.loadSchema();
     }
-  })
+  }),
 )
 ( (props) => {
       const { identities, children } = props;
