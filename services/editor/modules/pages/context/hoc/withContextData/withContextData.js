@@ -12,10 +12,8 @@ const createContextDataStream = propsStream =>
   propsStream.flatMap(async props => await getContextData(props));
 
 const getContextData = async ({ contextType, contextId }) => {
-  return {
-    "someContextProperty": "some-hardcoded-context-value",
-    "@fixed:example": "some-fixed-example-hardcoded-value"
-  }
+  let response = await fetch("/api/context/device/tal", { credentials: 'same-origin' });
+  return await response.json()
 }
 
 export default enhance;
