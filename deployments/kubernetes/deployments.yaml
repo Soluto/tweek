@@ -12,26 +12,25 @@ spec:
       containers:
       - name: tweek-back-office
         image: soluto/tweek-back-office:latest
-        imagePullPolicy: never
+        imagePullPolicy: Never
         ports:
         - containerPort: 3000
           protocol: TCP
-        - env:
-          - name: GIT_USER
-          - value: git
-          - name: GIT_URL
-          - value: ssh://git@tweek-git/tweek/repo
-          - name: GIT_PUBLIC_KEY_PATH
-          - value: /keys/tweekgit.pub
-          - name: GIT_PRIVATE_KEY_PATH
-          - value: /keys/tweekgit
-          - name: TWEEK_API_HOSTNAME
-          - value: http://tweek-api
-        # volumeMounts:
-        # - name: vmfs-vmdk-storage
-        #   mountPath: /data/
-      # volumes:
-      # - name: vmfs-vmdk-storage
-      #   vsphereVolume:
-      #     volumePath: "[Datastore] volumes/testdir"
-      #     fsType: ext4
+      # - env:
+      #   - name: GIT_USER
+      #   - value: git
+      #   - name: GIT_URL
+      #   - value: ssh://git@tweek-git/tweek/repo
+      #   - name: GIT_PUBLIC_KEY_PATH
+      #   - value: /keys/tweekgit.pub
+      #   - name: GIT_PRIVATE_KEY_PATH
+      #   - value: /keys/tweekgit
+      #   - name: TWEEK_API_HOSTNAME
+      #   - value: http://tweek-api
+        volumeMounts:
+        - name: git-volume
+          mountPath: /keys
+      volumes:
+      - name: git-volume
+        hostPath:
+          path: /Users/yaron/code/tweek/services/git-service/ssh
