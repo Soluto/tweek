@@ -5,6 +5,7 @@ import App from './components/App';
 import KeysPage from './pages/keys/components/KeysPage/KeysPage';
 import KeyPage from './pages/keys/components/KeyPage/KeyPage';
 import IdentitiesPage from './pages/identities/components/IdentitiesPage/IdentitiesPage';
+import IdentityPage from './pages/identities/components/IdentityPage/IdentityPage';
 import NoMatch from './components/NoMatch';
 import style from './styles/styles.css';
 
@@ -19,6 +20,7 @@ export default serverRoutes => (
         <Route path="*" component={KeyPage} />
       </Route>
       <Route path="identities" component={IdentitiesPage} >
+        <Route path=":identity" component={IdentityPage} />
       </Route>
     </Route>
     {serverRoutes}

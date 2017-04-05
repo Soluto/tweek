@@ -10,7 +10,7 @@ const IdentityItem = ({name}) => {
   return (
     <div className={classNames(style['identity-link-wrapper'])}>
       <Link className={classNames(style['identity-link'], { [style['selected']]: true })}
-        to={`/identities/@tweek/context/${name}`}>
+        to={`/identities/${name}`}>
         {name}
       </Link>
     </div>
