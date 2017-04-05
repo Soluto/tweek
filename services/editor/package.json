@@ -21,7 +21,7 @@
     "test:watch": "jest --watch",
     "test:integration": "mocha --compilers js:babel-register ./integration-tests/**/*.js",
     "coverage:upload:code-climate": "codeclimate-test-reporter < ./coverage-unit/lcov.info",
-    "react-project:start:dev": "node ./node_modules/react-project/bin/react-project.js start",
+    "react-project:start:dev": "nodemon --watch modules -e js  --exec node ./node_modules/react-project/bin/react-project.js start",
     "react-project:start:prod": "rm -rf .build && react-project build && node .build/server.js",
     "build-prod": "rm -rf .build && react-project build"
   },
@@ -173,6 +173,7 @@
     "jest-cli": "18.1.0",
     "jest-css-modules": "1.0.2",
     "less": "2.7.1",
-    "less-loader": "2.2.3"
+    "less-loader": "2.2.3",
+    "nodemon": "1.11.0"
   }
 }
