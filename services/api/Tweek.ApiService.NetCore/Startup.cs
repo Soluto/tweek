@@ -121,6 +121,13 @@ namespace Tweek.ApiService.NetCore
 
                     factory.Register(envProvider.Name,
                         () => Task.FromResult(envProvider.IsAlive() ? HealthCheckResult.Healthy() : HealthCheckResult.Unhealthy("Environment is not healty")));
+
+
+                    var rulesBlobUri =
+                        new Uri(Configuration["RulesBlob.Url"]).GetComponents(
+                            UriComponents.Scheme | UriComponents.StrongAuthority, UriFormat.Unescaped);
+
+                    factory.RegisterHttpGetHealthCheck("ManagementIsAlive", new Uri($"{rulesBlobUri}/isAlive"), TimeSpan.FromSeconds(5)); 
                 })
                 .AddMetricsMiddleware(Configuration);
         }
