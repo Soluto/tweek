@@ -14,8 +14,8 @@ class ContextPage extends Component {
     }
   }
 
-  onGetContext(contextType,contextId) {
-    this.setState({ contextType: contextType,  contextId: contextId});
+  onGetContext(context) {
+    this.setState({ ...context });
   }
 
   render() {

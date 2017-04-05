@@ -6,12 +6,21 @@ class FixedConfigurationTable extends Component {
 
     super(props)
 
+
     this.state = {
       configurations: props.fixedConfigurations,
 
       keyToAppend: '',
       valueToAppend: ''
     }
+  }
+
+  componentWillReceiveProps(nextProps){
+    this.setState({
+      configurations: nextProps.fixedConfigurations,
+      keyToAppend: '',
+      valueToAppend: ''
+    })
   }
 
   render(){
