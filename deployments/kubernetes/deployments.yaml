@@ -12,7 +12,9 @@ spec:
       containers:
       - name: tweek-back-office
         image: soluto/tweek-back-office:latest
-        imagePullPolicy: Never
+        imagePullPolicy: Always
+        imagePullSecrets:
+          - name: docker-hub-key
         ports:
         - containerPort: 3000
           protocol: TCP
