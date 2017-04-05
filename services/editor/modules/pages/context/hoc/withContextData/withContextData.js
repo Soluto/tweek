@@ -8,12 +8,14 @@ const enhance = () => mapPropsStream(propsStream => {
   }))
 })
 
-const createContextDataStream = propsStream =>
+const createContextDataStream = propsStream => 
   propsStream.flatMap(async props => await getContextData(props));
 
-const getContextData = async ({ contextType, contextId }) => ({
-  "someContextProperty": "some-hardcoded-context-value",
-  "@fixed:example": "some-fixed-example-hardcoded-value"
-})
+const getContextData = async ({ contextType, contextId }) => {
+  return {
+    "someContextProperty": "some-hardcoded-context-value",
+    "@fixed:example": "some-fixed-example-hardcoded-value"
+  }
+}
 
 export default enhance;
