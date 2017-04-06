@@ -22,28 +22,26 @@ const onRouteLeaveConfirmFunc = (props) => {
 };
 
 const keyPageComp = compose(
-  connect((state, { params,location }) =>
+  connect((state, { params, location }) =>
     ({
       selectedKey: state.selectedKey,
       configKey: params.splat,
       isInAddMode: params.splat === BLANK_KEY_NAME,
-      revision : location.query.revision
+      revision: location.query.revision
     }),
     { ...selectedKeyActions, ...alertActions }),
   routeLeaveHook(onRouteLeaveConfirmFunc),
   lifecycle({
     componentDidMount() {
-          console.log('123')
-
-      const { configKey, selectedKey, openKey,revision } = this.props;
+      const { configKey, selectedKey, openKey, revision } = this.props;
       if (!configKey) return;
       if (selectedKey && selectedKey.key === configKey) return;
       openKey(configKey, { revision });
     },
-    componentWillReceiveProps({ configKey }) {
+    componentWillReceiveProps({ configKey, revision }) {
       const { openKey, selectedKey } = this.props;
-      if (configKey !== this.props.configKey) {
-        openKey(configKey);
+      if (configKey !== this.props.configKey || revision !== this.props.revision) {
+        openKey(configKey, { revision });
       }
     },
   }))
