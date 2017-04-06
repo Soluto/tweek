@@ -38,8 +38,25 @@
         {
             "command": "dotnet",
             "isShellCommand": true,
+            "taskName": "analytics-api-publish-for-docker",
+            "args": ["publish", "services/analytics-api/Tweek.AnalyticsApiService.NetCore/Tweek.AnalyticsApiService.NetCore.csproj","-o", "./obj/Docker/publish"],
+            "showOutput": "always",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "command": "dotnet",
+            "isShellCommand": true,
             "taskName": "api-build",
             "args": ["build", "services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj"],
+            "isBuildCommand": true,
+            "showOutput": "always",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "command": "dotnet",
+            "isShellCommand": true,
+            "taskName": "analytics-api-build",
+            "args": ["build", "services/analytics-api/Tweek.AnalyticsApiService.NetCore/Tweek.AnalyticsApiService.NetCore.csproj"],
             "isBuildCommand": true,
             "showOutput": "always",
             "problemMatcher": "$msCompile"
