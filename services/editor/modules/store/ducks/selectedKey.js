@@ -38,9 +38,9 @@ export function openKey(key, { revision } = {}) {
     dispatch({ type: KEY_OPENING, payload: key });
 
     let keyData;
-    const revisionQueryParam = revision ? `revision=${revision}` : ''
+    const search = revision ? `?revision=${revision}` : ''
     try {
-      keyData = await (await fetch(`/api/keys/${key}?${revisionQueryParam}`, { credentials: 'same-origin' })).json();
+      keyData = await (await fetch(`/api/keys/${key}${search}`, { credentials: 'same-origin' })).json();
     } catch (exp) {
       dispatch({ type: KEY_OPENED, payload: { key } });
       return;
