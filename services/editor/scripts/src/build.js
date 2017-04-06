@@ -7,6 +7,7 @@ import {APP_PATH, PUBLIC_DIR, NODE_ENV} from './constants'
 import ProgressPlugin from 'webpack/lib/ProgressPlugin'
 import {transformFile} from 'babel-core'
 import {mkdir} from 'shelljs'
+import Promise from 'bluebird';
 
 const WEBPACK_PATH = path.join(PUBLIC_DIR, 'webpack.config.js');
 
@@ -17,15 +18,20 @@ export default function build(cb) {
   });
 }
 
+const transformFileAsync = Promise.promisify(transformFile);
+const readDirAsync = Promise.promisify(fs.readdir);
+
 function transpileWebpackConfig(cb) {
-  const configPath = path.join(APP_PATH, 'webpack.config.js');
+  mkdir('-p', PUBLIC_DIR);
   const options = JSON.parse(fs.readFileSync(path.join(APP_PATH, '.babelrc')));
-  transformFile(configPath, options, (err, result) => {
-    if (err) throw err;
-    mkdir('-p', PUBLIC_DIR);
-    fs.writeFileSync(WEBPACK_PATH, result.code);
-    cb()
-  })
+  const configDir = path.join(APP_PATH, 'webpack');
+  readDirAsync(configDir).then(files => {
+    const writeFiles = files.map(configPath => {
+      const fullpath = path.join(configDir, configPath);
+      return transformFileAsync(fullpath, options).then(result => fs.writeFileSync(path.join(PUBLIC_DIR, configPath), result.code));
+    });
+    return Promise.all(writeFiles);
+  }).then(cb);
 }
 
 function getAppWebpackConfig() {
