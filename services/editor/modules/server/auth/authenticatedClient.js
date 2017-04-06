@@ -7,7 +7,7 @@ export default async function({headers, ...config}) {
     ...config,
     headers: {
       ...headers,
-      'Authorization': token && `Bearer ${token}`
+      ...(token ? {'Authorization': `Bearer ${token}`} : {})
     }
   });
 }
