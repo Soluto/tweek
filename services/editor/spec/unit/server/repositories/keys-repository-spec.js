@@ -173,6 +173,7 @@ describe("keys-repository", () => {
     const getKeyRevisions = revision => Object.keys(keyRevisions)
       .filter(rev => JSON.parse(rev.slice(-1)) <= JSON.parse(revision.slice(-1)))
       .map(rev => keyRevisions[rev])
+
     beforeEach(() => {
       mockGitRepo.getFileDetails = jest.fn((path, { revision = 'revision-3' } = {}) => {
         return getKeyRevisions(revision)
@@ -190,6 +191,16 @@ describe("keys-repository", () => {
       expect(keyDetails.keyDef.type).toEqual("jpad");
     });
 
+    it("should return key definition with the source for the jpad for specified revision", async () => {
+      // Act
+      let keyDetails = await target.getKeyDetails(testKeyPath, { revision: 'revision-2' });
+
+      // Assert
+      expect(keyDetails.keyDef.source).toEqual(JSON.stringify(keyRevisions['revision-2']));
+      expect(keyDetails.keyDef.type).toEqual("jpad");
+    });
+
+
     it("should return key definition with the key's revision history", async () => {
       // Act
       let keyDetails = await target.getKeyDetails(testKeyPath);
@@ -198,12 +209,28 @@ describe("keys-repository", () => {
       expect(keyDetails.keyDef.revisionHistory).toEqual(getKeyRevisions('revision-3'));
     });
 
+    it("should return key definition with the key's revision history from specified revision", async () => {
+      // Act
+      let keyDetails = await target.getKeyDetails(testKeyPath, { revision: 'revision-2' });
+
+      // Assert
+      expect(keyDetails.keyDef.revisionHistory).toEqual(getKeyRevisions('revision-2'));
+    });
+
     it("should parse and return meta as an object", async () => {
       // Act
       let keyDetails = await target.getKeyDetails(testKeyPath);
 
       // Assert
       expect(keyDetails.meta).toEqual(metaRevisions['revision-3']);
+    });
+
+      it("should parse and return meta as an object for specified revision", async () => {
+      // Act
+      let keyDetails = await target.getKeyDetails(testKeyPath,{revision:'revision-2'});
+
+      // Assert
+      expect(keyDetails.meta).toEqual(metaRevisions['revision-2']);
     });
 
     it("should convert old JPAD format to new format if needed", async () => {
