@@ -23,8 +23,6 @@ using Tweek.JPad;
 using Tweek.ApiService.NetCore.Diagnostics;
 using System.Reflection;
 using System.Threading;
-using App.Metrics;
-using App.Metrics.Health;
 using Microsoft.AspNetCore.Mvc;
 using Tweek.ApiService.NetCore.Security;
 using Tweek.ApiService.NetCore.Addons;
@@ -75,6 +73,8 @@ namespace Tweek.ApiService.NetCore
             var rulesDriver = GetRulesDriver();
             var rulesDiagnostics = new RulesDriverStatusService(rulesDriver);
 
+            var diagnosticsProviders = new IDiagnosticsProvider[] {rulesDiagnostics, couchbaseDiagnosticsProvider, new EnvironmentDiagnosticsProvider()};
+
             var parser = GetRulesParser();
             var tweek = Task.Run(async () => await Engine.Tweek.Create(contextDriver, rulesDriver, parser)).Result;
 
@@ -83,7 +83,7 @@ namespace Tweek.ApiService.NetCore
             services.AddSingleton<CheckWriteContextAccess>(Authorization.CreateWriteContextAccessChecker(tweek));
             services.AddSingleton<IContextDriver>(contextDriver);
             services.AddSingleton(parser);
-            services.AddSingleton<IEnumerable<IDiagnosticsProvider>>(new IDiagnosticsProvider[] {rulesDiagnostics, couchbaseDiagnosticsProvider, new EnvironmentDiagnosticsProvider()});
+            services.AddSingleton<IEnumerable<IDiagnosticsProvider>>(diagnosticsProviders);
             var tweekContactResolver = new TweekContractResolver();
             var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };
             services.AddSingleton(jsonSerializer);
@@ -101,37 +101,18 @@ namespace Tweek.ApiService.NetCore
                         .AllowCredentials());
             });
 
-            var envProvider = new EnvironmentDiagnosticsProvider();
+            RegisterMetrics(services, diagnosticsProviders);
+        }
+
+        private void RegisterMetrics(IServiceCollection services, IDiagnosticsProvider[] diagnosticsProviders)
+        {
+            var healthChecksRegistrar = new HealthChecksRegistrar(diagnosticsProviders, Configuration["RulesBlob.Url"]);
 
             services
                 .AddMetrics()
                 .AddJsonSerialization()
-                .AddHealthChecks(factory =>
-                {
-                    var threshold = 5000000;
-
-                    factory.RegisterProcessPrivateMemorySizeHealthCheck("Private Memory Size", threshold);
-                    factory.RegisterProcessVirtualMemorySizeHealthCheck("Virtual Memory Size", threshold);
-                    factory.RegisterProcessPhysicalMemoryHealthCheck("Working Set (physical memory)", threshold);
-                    factory.RegisterPingHealthCheck("google ping", "google.com", TimeSpan.FromSeconds(10));
-
-                    factory.Register(couchbaseDiagnosticsProvider.Name, 
-                        ()=> Task.FromResult(couchbaseDiagnosticsProvider.IsAlive() ? HealthCheckResult.Healthy() : HealthCheckResult.Unhealthy("Couchbase not alive")));
-
-                    factory.Register(rulesDiagnostics.Name,
-                        () => Task.FromResult(rulesDiagnostics.IsAlive() ? HealthCheckResult.Healthy() : HealthCheckResult.Unhealthy("RulesDriverStatusService check failed")));
-
-                    factory.Register(envProvider.Name,
-                        () => Task.FromResult(envProvider.IsAlive() ? HealthCheckResult.Healthy() : HealthCheckResult.Unhealthy("Environment is not healty")));
-
-
-                    var rulesBlobUri =
-                        new Uri(Configuration["RulesBlob.Url"]).GetComponents(
-                            UriComponents.Scheme | UriComponents.StrongAuthority, UriFormat.Unescaped);
-
-                    factory.RegisterHttpGetHealthCheck("ManagementIsAlive", new Uri($"{rulesBlobUri}/isAlive"), TimeSpan.FromSeconds(5)); 
-                })
-                .AddMetricsMiddleware(Configuration);
+                .AddHealthChecks(healthChecksRegistrar.RegisterHelthChecks)
+                .AddMetricsMiddleware(Configuration.GetSection("AspNetMetrics"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
