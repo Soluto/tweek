@@ -21,9 +21,10 @@
     "test:watch": "jest --watch",
     "test:integration": "mocha --compilers js:babel-register ./integration-tests/**/*.js",
     "coverage:upload:code-climate": "codeclimate-test-reporter < ./coverage-unit/lcov.info",
-    "react-project:start:dev": "node ./node_modules/react-project/bin/react-project.js start",
-    "react-project:start:prod": "rm -rf .build && react-project build && node .build/server.js",
-    "build-prod": "rm -rf .build && react-project build"
+    "react-project:start:dev": "npm run cli -- start",
+    "react-project:start:prod": "npm run build-prod && node .build/server.js",
+    "build-prod": "rm -rf .build && npm run cli -- build",
+    "cli": "babel scripts/src --out-dir scripts/lib && node ./scripts/lib/cli.js"
   },
   "author": "",
   "jest": {
