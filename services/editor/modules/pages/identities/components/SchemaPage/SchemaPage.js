@@ -3,7 +3,7 @@ import { Component } from 'react';
 import * as actions from '../../../../store/ducks/schema';
 import { connect } from 'react-redux';
 import IdentitiesList from '../IdentitiesList/IdentitiesList';
-import style from './IdentitiesPage.css';
+import style from './SchemaPage.css';
 import { compose, lifecycle } from 'recompose';
 import withLoading from '../../../../hoc/with-loading';
 import { refreshSchema } from "../../../../services/context-service";
