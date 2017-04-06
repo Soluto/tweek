@@ -75,12 +75,7 @@ function getExternals() {
   return [
     function (context, request, callback) {
       const pathStart = request.split('/')[0];
-      // can't remember why we need to bundle up react-project stuff ...
-      if (
-        nodeModules.indexOf(pathStart) >= 0 &&
-        request !== 'react-project' &&
-        request !== 'react-project/server'
-      ) {
+      if (nodeModules.indexOf(pathStart) >= 0) {
         callback(null, 'commonjs ' + request)
       } else {
         callback()
