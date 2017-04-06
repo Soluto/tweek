@@ -1,15 +1,15 @@
-.identities-page-container {
+.schema-page-container {
   display: flex;
   flex-grow: 1;
   background-color: #eee;
 }
-.identities-page-container .identities-list {
+.schema-page-container .identity-types-list {
   display: flex;
   flex-basis: 400px;
   flex-direction: column;
   background-color: #414b53;
 }
-.identities-page-container .identities-list .identities-list-wrapper {
+.schema-page-container .identity-types-list .identity-types-list-wrapper {
   display: flex;
   flex-grow: 1;
 }

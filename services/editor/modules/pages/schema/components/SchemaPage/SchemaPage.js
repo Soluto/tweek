@@ -2,7 +2,7 @@ import React from 'react';
 import { Component } from 'react';
 import * as actions from '../../../../store/ducks/schema';
 import { connect } from 'react-redux';
-import IdentitiesList from '../IdentitiesList/IdentitiesList';
+import IdentityTypesList from '../IdentityTypesList/IdentityTypesList';
 import style from './SchemaPage.css';
 import { compose, lifecycle } from 'recompose';
 import withLoading from '../../../../hoc/with-loading';
@@ -23,10 +23,10 @@ export default compose(
 ( (props) => {
       const { identities, children } = props;
       return (
-        <div className={style['identities-page-container']}>
-          <div key="IdentitiesList" className={style['identities-list']}>
-            <div className={style['identities-list-wrapper']}>
-              <IdentitiesList identities={identities} />
+        <div className={style['schema-page-container']}>
+          <div key="IdentityTypesList" className={style['identity-types-list']}>
+            <div className={style['identity-types-list-wrapper']}>
+              <IdentityTypesList identityTypes={identities} />
             </div>
           </div>
           <div key="Page">

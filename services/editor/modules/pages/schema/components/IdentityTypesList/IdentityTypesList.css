@@ -1,16 +1,16 @@
-.identities-list-container {
+.identity-types-list-container {
   display: flex;
   color: #d8d8d8;
   flex-direction: column;
   background-color: transparent;
 }
-.identities-list-container .identity-link-wrapper {
+.identity-types-list-container .identity-type-link-wrapper {
   display: flex;
   flex-grow: 1;
   max-width: 400px;
   min-width: 400px;
 }
-.identities-list-container .identity-link-wrapper .identity-link {
+.identity-types-list-container .identity-type-link-wrapper .identity-type-link {
   font-size: 16px;
   display: flex;
   flex-grow: 1;
@@ -22,13 +22,13 @@
   transition: all 0.2s ease-in-out;
   text-decoration: none;
 }
-.identities-list-container .identity-link-wrapper .identity-link:hover {
+.identity-types-list-container .identity-type-link-wrapper .identity-type-link:hover {
   background-color: #363a3e;
   cursor: pointer;
 }
-.identities-list-container .identity-link-wrapper .identity-link:active {
+.identity-types-list-container .identity-type-link-wrapper .identity-type-link:active {
   background-color: #363a3e;
 }
-.identities-list-container .identity-link-wrapper .identity-link.selected {
+.identity-types-list-container .identity-type-link-wrapper .identity-type-link.selected {
   background-color: #686e74;
 }

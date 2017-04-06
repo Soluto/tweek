@@ -2,11 +2,11 @@ import React from 'react';
 import classNames from 'classnames';
 import { connect } from "react-redux";
 
-const IdentityPage = ({params:{identity}, allProperties}) => {
-  let properties = allProperties.filter((property) => (property.identity === identity));
+const IdentityPage = ({params:{identityType}, allProperties}) => {
+  let propertyTypes = allProperties.filter((property) => (property.identity === identityType));
   return (
       <div>
-        {identity}
+        {identityType}
       </div>
     );
 };
