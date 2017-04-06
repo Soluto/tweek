@@ -25,6 +25,10 @@ export default (({ location: { pathname }, children }) => {
             <img src={require("./resources/keys.svg")} />
             <Link to="/keys">Keys</Link>
           </li>
+          <li className={classNames(style['menu-item'], { [style['selected-location-path']]: pathname.startsWith('/history') })}>
+            <img src={require("./resources/history.svg")} />
+            <Link to="/history">History</Link>
+          </li>
         </ul>
       </div>
       <div className={style['page']}>

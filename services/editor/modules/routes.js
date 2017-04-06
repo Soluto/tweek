@@ -4,6 +4,7 @@ import { Route, IndexRoute, Redirect } from 'react-router';
 import App from './components/App';
 import KeysPage from './pages/keys/components/KeysPage/KeysPage';
 import KeyPage from './pages/keys/components/KeyPage/KeyPage';
+import HistoryPage from './pages/history/components/HistoryPage/HistoryPage';
 import NoMatch from './components/NoMatch';
 import style from './styles/styles.css';
 
@@ -17,6 +18,7 @@ export default serverRoutes => (
         <IndexRoute component={() => <SelectKeyMessage />} />
         <Route path="*" component={KeyPage} />
       </Route>
+      <Route path="history" component={HistoryPage} />
     </Route>
     {serverRoutes}
     <Route path="*" status={404} component={NoMatch} />

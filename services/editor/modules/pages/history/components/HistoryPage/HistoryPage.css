@@ -1,0 +1,23 @@
+.history-list {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -150px;
+  margin-left: -400px;
+  font-size: 18px;
+  color: black;
+}
+
+table {
+    border-collapse: collapse;
+    text-align: center;
+}
+
+table, th, td {
+   border: 1px solid black;
+   width: 800px;   
+}
+
+th {
+    height: 25px;
+}
