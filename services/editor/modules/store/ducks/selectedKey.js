@@ -9,6 +9,7 @@ import * as ContextService from '../../services/context-service';
 import fetch from '../../utils/fetch';
 import { showError } from './notifications';
 import { showConfirm } from './alerts';
+import { push } from 'react-router-redux';
 
 const KEY_OPENED = 'KEY_OPENED';
 const KEY_OPENING = 'KEY_OPENING';
@@ -23,7 +24,7 @@ const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
 
 export function openKey(key, { revision } = {}) {
   return async function (dispatch) {
-
+    dispatch(downloadTags());
     try {
       ContextService.refreshSchema();
     } catch (error) {
