@@ -52,7 +52,7 @@ class KeyEditPage extends Component {
   render() {
     const {selectedKey, isInAddMode, isInStickyMode, alerter } = this.props;
     const {key, local: {meta, keyDef}} = selectedKey;
-    const isReadonly = !!meta.readOnly && meta.readOnly;
+    const isReadonly = (!!meta.readOnly && meta.readOnly) || meta.archived;
 
     const commonHeadersProps = {
       onKeyNameChanged: this::this._onKeyNameChanged,
@@ -169,6 +169,7 @@ const KeyFullHeader = (props) => {
 
 const HeaderMainInput = (props) => {
   const {isInAddMode, onKeyNameChanged, onDisplayNameChanged, keyMeta, isReadonly} = props;
+  const keyDisplayName = keyMeta.archived ? "ARCHIVE: " + keyMeta.displayName : keyMeta.displayName;
   return (
     <div className={style['key-main-input']}>
       {isInAddMode ?
@@ -180,7 +181,7 @@ const HeaderMainInput = (props) => {
         :
         <EditableText
           onTextChanged={text => onDisplayNameChanged(text)}
-          placeHolder="Enter key display name" maxLength={80} value={keyMeta.displayName} isReadonly={isReadonly}
+          placeHolder="Enter key display name" maxLength={80} value={keyDisplayName} isReadonly={isReadonly}
           classNames={{
             container: style['display-name-container'],
             input: style['display-name-input'],
