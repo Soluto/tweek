@@ -36,6 +36,7 @@ namespace Tweek.ApiService.NetCore.Controllers
             using (var jsonReader = new JsonTextReader(txtReader)) {
                 data = _serializer.Deserialize<Dictionary<string,JsonValue>>(jsonReader);
             }
+
             var identity = new Identity(identityType, identityId);
             await _contextDriver.AppendContext(identity, data);
             return Ok();

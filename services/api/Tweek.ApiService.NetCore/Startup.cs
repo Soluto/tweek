@@ -16,6 +16,7 @@ using Newtonsoft.Json.Serialization;
 using FSharpUtils.Newtonsoft;
 using Tweek.Utils;
 using Tweek.Drivers.CouchbaseDriver;
+using Tweek.Drivers.LiteDBDriver;
 using Engine.Core.Rules;
 using Engine.Drivers.Context;
 using Tweek.JPad.Utils;
@@ -57,16 +58,13 @@ namespace Tweek.ApiService.NetCore
         }
 
         public IConfigurationRoot Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var contextBucketName = Configuration["Couchbase.BucketName"];
-            var contextBucketPassword = Configuration["Couchbase.Password"];
-
-            InitCouchbaseCluster(contextBucketName, contextBucketPassword);
-            var contextDriver = new CouchBaseDriver(ClusterHelper.GetBucket, contextBucketName);
-            var couchbaseDiagnosticsProvider = new BucketConnectionIsAlive(ClusterHelper.GetBucket, contextBucketName);
+            var contextDriver = GetContextDriver();
+            
+            //will be replaced by health checking
+            // var couchbaseDiagnosticsProvider = new BucketConnectionIsAlive(ClusterHelper.GetBucket, contextBucketName);
 
             var rulesDriver = GetRulesDriver();
             var rulesDiagnostics = new RulesDriverStatusService(rulesDriver);
@@ -79,7 +77,7 @@ namespace Tweek.ApiService.NetCore
             services.AddSingleton<CheckWriteContextAccess>(Authorization.CreateWriteContextAccessChecker(tweek));
             services.AddSingleton<IContextDriver>(contextDriver);
             services.AddSingleton(parser);
-            services.AddSingleton<IEnumerable<IDiagnosticsProvider>>(new IDiagnosticsProvider[] {rulesDiagnostics, couchbaseDiagnosticsProvider, new EnvironmentDiagnosticsProvider()});
+            services.AddSingleton<IEnumerable<IDiagnosticsProvider>>(new IDiagnosticsProvider[] {rulesDiagnostics, new EnvironmentDiagnosticsProvider()});
             var tweekContactResolver = new TweekContractResolver();
             var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };
             services.AddSingleton(jsonSerializer);
@@ -98,8 +96,34 @@ namespace Tweek.ApiService.NetCore
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+    private IContextDriver GetContextDriver()
+    {
+        IContextDriver contextDriver = null;
+        var contextProvider = Configuration["Context.Provider"];
+
+        switch (contextProvider)
+        {
+            case "litedb":
+                var collectionName = Configuration["LiteDb.CollectionName"];
+                var filePath = Configuration["LiteDb.FilePath"];
+                contextDriver = new LiteDBDriver(collectionName, filePath);
+                break;
+            case "couchbase":
+                var contextBucketName = Configuration["Couchbase.BucketName"];
+                var contextBucketPassword = Configuration["Couchbase.Password"];
+
+                InitCouchbaseCluster(contextBucketName, contextBucketPassword);
+                contextDriver = new CouchBaseDriver(ClusterHelper.GetBucket, contextBucketName);
+                break;
+            default:
+                throw new Exception("invalid configuration value for Context.Provider");
+        }
+
+        return contextDriver;
+    }
+
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
