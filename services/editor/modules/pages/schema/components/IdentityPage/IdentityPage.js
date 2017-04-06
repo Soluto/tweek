@@ -1,14 +1,19 @@
 import React from 'react';
-import classNames from 'classnames';
+import style from './IdentityPage.css';
 import { connect } from "react-redux";
+import PropertyType from "./PropertyType/PropertyType";
 
 const IdentityPage = ({params:{identityType}, allProperties}) => {
-  let propertyTypes = allProperties.filter((property) => (property.identity === identityType));
+  const propertyTypes = allProperties.filter((property) => (property.identity === identityType));
+
   return (
-      <div>
-        {identityType}
-      </div>
-    );
+    <div className={style['property-types-list']}>
+      {
+          propertyTypes.map((property, i) =>
+            <PropertyType key={i} property={property} />
+          )
+      }
+    </div>);
 };
 
 export default connect((state) => ({
