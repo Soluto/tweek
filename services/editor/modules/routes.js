@@ -4,8 +4,8 @@ import { Route, IndexRoute, Redirect } from 'react-router';
 import App from './components/App';
 import KeysPage from './pages/keys/components/KeysPage/KeysPage';
 import KeyPage from './pages/keys/components/KeyPage/KeyPage';
-import SchemaPage from './pages/identities/components/SchemaPage/SchemaPage';
-import IdentityPage from './pages/identities/components/IdentityPage/IdentityPage';
+import SchemaPage from './pages/schema/components/SchemaPage/SchemaPage';
+import IdentityPage from './pages/schema/components/IdentityPage/IdentityPage';
 import NoMatch from './components/NoMatch';
 import style from './styles/styles.css';
 
@@ -20,7 +20,7 @@ export default serverRoutes => (
         <Route path="*" component={KeyPage} />
       </Route>
       <Route path="schema" component={SchemaPage} >
-        <Route path=":identity" component={IdentityPage} />
+        <Route path=":identityType" component={IdentityPage} />
       </Route>
     </Route>
     {serverRoutes}
