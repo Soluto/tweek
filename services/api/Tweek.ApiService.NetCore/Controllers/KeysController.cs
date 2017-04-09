@@ -11,6 +11,7 @@ using static FSharpUtils.Newtonsoft.JsonValue;
 using Engine.Core.Context;
 using Engine;
 using Engine.Core.Utils;
+using Engine.Drivers.Context;
 using Newtonsoft.Json;
 using Tweek.Utils;
 using Tweek.ApiService.NetCore.Security;
@@ -21,13 +22,15 @@ namespace Tweek.ApiService.NetCore.Controllers
     [EnableCors("All")]
     public class KeysController : Controller
     {
-        private ITweek _tweek;
+        private readonly ITweek _tweek;
+        private readonly IContextDriver _contextDriver;
         private readonly CheckReadConfigurationAccess _checkAccess;
 
-        public KeysController(ITweek tweek, CheckReadConfigurationAccess checkAccess)
+        public KeysController(ITweek tweek, IContextDriver contextDriver, CheckReadConfigurationAccess checkAccess)
         {
             _tweek = tweek;
             _checkAccess = checkAccess;
+            _contextDriver = contextDriver;
         }
 
         public static Tuple<IReadOnlyDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>> PartitionByKey<TKey, TValue>(IDictionary<TKey, TValue> source,
@@ -76,7 +79,7 @@ namespace Tweek.ApiService.NetCore.Controllers
 
             var query = GetQuery(root, includePaths);
 
-            var data = await _tweek.Calculate(query, identities, contextProps);
+            var data = await _tweek.GetContextAndCalculate(query, identities, _contextDriver, contextProps);
 
             if (root.IsScan)
             {

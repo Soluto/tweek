@@ -11,7 +11,8 @@
     "test": "./node_modules/.bin/wdio wdio.conf.js",
     "rebuild": "docker-compose -f ../deployments/dev/docker-compose.yml build tweek-backoffice",
     "test:full-env": "npm run start && npm run test",
-    "test:full-env:rebuild": "npm run rebuild && npm run test:full-env"
+    "test:full-env:rebuild": "npm run rebuild && npm run test:full-env",
+    "teardown": "docker-compose -f ../deployments/dev/docker-compose.yml down"
   },
   "author": "",
   "license": "ISC",
