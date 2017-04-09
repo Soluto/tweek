@@ -44,7 +44,7 @@ const SaveButton = ({selectedKey, isSaving, hasChanges, saveKey}) => (
 
 const ActionButtons = ({isInAddMode, isInStickyMode, saveKey, selectedKey, isSaving, deleteKey, archiveKey, unarchiveKey, hasChanges}) => {
   var shouldDiplayDeleteButtons = !isInAddMode && !isInStickyMode;
-  const isArchived = selectedKey.local.meta.archived;
+  const isArchived = selectedKey.local && selectedKey.local.meta.archived;
 
   return <div className={style['key-action-buttons-wrapper']}>
     {isArchived && shouldDiplayDeleteButtons ? <DeleteButton {...{selectedKey, isSaving, deleteKey}} /> : null}
