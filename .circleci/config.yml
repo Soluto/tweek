@@ -16,34 +16,6 @@ jobs:
     
     steps:
       - checkout
-
-      - setup_remote_docker:
-          reusable: true
-
-      - run:
-          name: Install Docker client
-          command: |
-            set -x
-            VER="17.03.0-ce"
-            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
-            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
-            mv /tmp/docker/* /usr/bin
-            curl -L -o /usr/bin/docker-compose "https://github.com/docker/compose/releases/download/1.11.2/docker-compose-$(uname -s)-$(uname -m)"
-            chmod +x /usr/bin/docker-compose
-
-      - run: 
-          name: Build tweek-backoffice
-          working_directory: ~/tweek/deployments/dev
-          command: |
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml pull selenium tweek-management tweek-api
-            docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml build tweek-git backoffice-e2e
-            docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml build tweek-backoffice
-
-      - run:
-          name: Run tweek-backoffice
-          working_directory: ~/tweek/deployments/dev
-          command: docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml up -d tweek-backoffice
       
       - restore_cache:
           keys:
@@ -65,7 +37,39 @@ jobs:
       - run: 
           name: Run unit tests
           working_directory: ~/tweek/services/editor
-          command: yarn test:unit
+          command: yarn test
+
+      - run:
+          name: yarn build
+          working_directory: ~/tweek/services/editor
+          command: yarn build-prod
+
+      - setup_remote_docker:
+          reusable: true
+
+      - run:
+          name: Install Docker client
+          command: |
+            set -x
+            VER="17.03.0-ce"
+            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+            mv /tmp/docker/* /usr/bin
+            curl -L -o /usr/bin/docker-compose "https://github.com/docker/compose/releases/download/1.11.2/docker-compose-$(uname -s)-$(uname -m)"
+            chmod +x /usr/bin/docker-compose
+
+      - run: 
+          name: Build tweek-backoffice
+          working_directory: ~/tweek/deployments/dev
+          command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml pull selenium tweek-management tweek-api
+            docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml build tweek-git backoffice-e2e tweek-backoffice
+
+      - run:
+          name: Run tweek-backoffice
+          working_directory: ~/tweek/deployments/dev
+          command: docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml up -d tweek-backoffice
             
       - run:
           name: Prepare for e2e tests
@@ -73,8 +77,7 @@ jobs:
           command: |
             docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml run -d selenium
             docker run --network=dev_default node:6.10.1-slim wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status
-            
-
+ 
       - run:
           name: Run e2e tests
           working_directory: ~/tweek/deployments/dev
