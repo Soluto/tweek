@@ -6,9 +6,9 @@ import * as keysActions from '../../../../../../store/ducks/selectedKey';
 import { deleteKey } from '../../../../../../store/ducks/keys';
 import { diff } from 'deep-diff';
 
-const ArchiveButton = ({isSaving, selectedKey, archiveKey}) => (
+const ArchiveButton = ({isSaving, selectedKey, hasChanges, archiveKey}) => (
   <button
-    disabled={isSaving}
+    disabled={hasChanges || isSaving}
     className={style['delete-key-button']}
     tabIndex="-1"
     onClick={() => archiveKey(selectedKey.key)}>Archive key</button>
@@ -50,7 +50,7 @@ const ActionButtons = ({isInAddMode, isInStickyMode, saveKey, selectedKey, isSav
     {isArchived && shouldDiplayDeleteButtons ? <DeleteButton {...{selectedKey, isSaving, deleteKey}} /> : null}
     {isArchived ?
       shouldDiplayDeleteButtons ? <UnarchiveButton {...{selectedKey, isSaving, unarchiveKey}} /> : null
-      :  shouldDiplayDeleteButtons ? <ArchiveButton {...{selectedKey, isSaving, archiveKey}} /> : null}
+      :  shouldDiplayDeleteButtons ? <ArchiveButton {...{selectedKey, isSaving, hasChanges, archiveKey}} /> : null}
     <SaveButton {...{selectedKey, isSaving, hasChanges, saveKey}} />
   </div>;
 };
@@ -67,9 +67,11 @@ const comp = compose(
     const hasChanges = (changes || []).length > 0;
     const archiveKey = () => {
       updateKeyMetaDef({...local.meta, archived: true});
+      saveKey(selectedKey.key);
     };
     const unarchiveKey = () => {
       updateKeyMetaDef({...local.meta, archived: false});
+      saveKey(selectedKey.key);
     };
 
     return <div>

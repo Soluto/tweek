@@ -64,8 +64,7 @@ class KeyEditPage extends Component {
 
     return (
       <div id="key-viewer-container-form" className={style['key-viewer-container-form']}>
-        <fieldset className={style['key-viewer-container-fieldset']}
-                  disabled={isReadonly}>
+        <div className={style['key-viewer-container-fieldset']} >
 
           <div className={style['key-viewer-container']}>
 
@@ -88,7 +87,7 @@ class KeyEditPage extends Component {
 
           </div>
 
-        </fieldset>
+        </div>
       </div>
     );
   }
