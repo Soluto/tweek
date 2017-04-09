@@ -65,7 +65,7 @@ jobs:
       - run: 
           name: Run unit tests
           working_directory: ~/tweek/services/editor
-          command: yarn test:unit
+          command: yarn test
             
       - run:
           name: Prepare for e2e tests
