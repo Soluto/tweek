@@ -76,11 +76,11 @@ namespace Tweek.ApiService.NetCore
             var diagnosticsProviders = new IDiagnosticsProvider[] {rulesDiagnostics, couchbaseDiagnosticsProvider, new EnvironmentDiagnosticsProvider()};
 
             var parser = GetRulesParser();
-            var tweek = Task.Run(async () => await Engine.Tweek.Create(contextDriver, rulesDriver, parser)).Result;
+            var tweek = Task.Run(async () => await Engine.Tweek.Create(rulesDriver, parser)).Result;
 
             services.AddSingleton(tweek);
-            services.AddSingleton<CheckReadConfigurationAccess>(Authorization.CreateReadConfigurationAccessChecker(tweek));
-            services.AddSingleton<CheckWriteContextAccess>(Authorization.CreateWriteContextAccessChecker(tweek));
+            services.AddSingleton(Authorization.CreateReadConfigurationAccessChecker(tweek));
+            services.AddSingleton(Authorization.CreateWriteContextAccessChecker(tweek));
             services.AddSingleton<IContextDriver>(contextDriver);
             services.AddSingleton(parser);
             services.AddSingleton<IEnumerable<IDiagnosticsProvider>>(diagnosticsProviders);
