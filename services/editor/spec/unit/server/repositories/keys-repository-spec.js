@@ -209,14 +209,6 @@ describe("keys-repository", () => {
       expect(keyDetails.keyDef.revisionHistory).toEqual(getKeyRevisions('revision-3'));
     });
 
-    it("should return key definition with the key's revision history from specified revision", async () => {
-      // Act
-      let keyDetails = await target.getKeyDetails(testKeyPath, { revision: 'revision-2' });
-
-      // Assert
-      expect(keyDetails.keyDef.revisionHistory).toEqual(getKeyRevisions('revision-2'));
-    });
-
     it("should parse and return meta as an object", async () => {
       // Act
       let keyDetails = await target.getKeyDetails(testKeyPath);
