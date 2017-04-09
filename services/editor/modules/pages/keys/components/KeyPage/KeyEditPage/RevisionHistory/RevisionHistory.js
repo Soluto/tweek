@@ -3,10 +3,10 @@ import moment from 'moment';
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 
-const RevisionHistory = (({ revisionHistory, goToRevision, selectedKey }) => {
+const RevisionHistory = (({ revisionHistory, goToRevision, selectedKey, revision }) => {
   return (
     <div>
-      <select onChange={(e) => goToRevision(selectedKey, e.target.value)}>
+      <select value={revision} onChange={(e) => goToRevision(selectedKey, e.target.value)} >
         {revisionHistory.map(item => (
           <option key={item.sha} value={item.sha}>
             {moment(item.date).format('DD/MM/YYYY hh:mm:ss')}

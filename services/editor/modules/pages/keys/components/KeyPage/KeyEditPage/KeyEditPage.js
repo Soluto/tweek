@@ -50,16 +50,16 @@ class KeyEditPage extends Component {
   _onMutation = (x) => this.props.updateKeyDef({ source: JSON.stringify(x, null, 4) });
 
   render() {
-    const { selectedKey, isInAddMode, isInStickyMode, alerter } = this.props;
+    const { selectedKey, isInAddMode, isInStickyMode, alerter, revision } = this.props;
     const { key, local: { meta, keyDef } } = selectedKey;
-    const isReadonly = !!meta.readOnly && meta.readOnly;
+    const isReadonly = (!!meta.readOnly && meta.readOnly) //|| (revision && keyDef.revisionHistory[0] !== revision);
 
     const commonHeadersProps = {
       onKeyNameChanged: this::this._onKeyNameChanged,
       onDisplayNameChanged: this::this._onDisplayNameChanged,
       isInAddMode,
       isReadonly,
-      keyMeta: meta,
+      keyMeta: meta,  
     };
 
     return (
@@ -68,7 +68,6 @@ class KeyEditPage extends Component {
           disabled={isReadonly}>
 
           <div className={style['key-viewer-container']}>
-
             {isInStickyMode ?
               <KeyStickyHeader {...commonHeadersProps} />
               : null}
@@ -77,6 +76,7 @@ class KeyEditPage extends Component {
               onDescriptionChanged={text => this._onDescriptionChanged(text)}
               onTagsChanged={newTags => this._onTagsChanged(newTags)}
               revisionHistory={keyDef.revisionHistory}
+              revision={revision}
               keyFullPath={key}
               isInStickyMode={isInStickyMode} />
 
@@ -118,7 +118,7 @@ const KeyStickyHeader = (props) => {
 };
 
 const KeyFullHeader = (props) => {
-  const { isInAddMode, isReadonly, revisionHistory, keyMeta, onDescriptionChanged, onTagsChanged, keyFullPath } = props;
+  const { isInAddMode, isReadonly, revisionHistory, keyMeta, onDescriptionChanged, onTagsChanged, keyFullPath,revision } = props;
   return (
     <div className={style['key-header']}>
 
@@ -131,7 +131,7 @@ const KeyFullHeader = (props) => {
           <HeaderMainInput {...props} />
 
           {revisionHistory ?
-            <RevisionHistory revisionHistory={revisionHistory}/>
+            <RevisionHistory revision={revision} revisionHistory={revisionHistory}/>
             : null
           }
 
