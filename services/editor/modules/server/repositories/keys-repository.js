@@ -30,7 +30,7 @@ export default class KeysRepository {
         console.warn('failed getting meta file', exp.message);
       }
 
-      let revisionHistory = await gitRepo.getFileDetails(pathForJPad, { revision });
+      let revisionHistory = await gitRepo.getFileDetails(pathForJPad);
       return {
         keyDef: {
           type: path.extname(pathForJPad).substring(1),
