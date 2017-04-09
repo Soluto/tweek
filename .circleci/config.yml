@@ -34,6 +34,11 @@ jobs:
           paths:
             - ~/tweek/services/editor.yarn-cache
 
+      - run: 
+          name: Run unit tests
+          working_directory: ~/tweek/services/editor
+          command: yarn test
+
       - run:
           name: yarn build
           working_directory: ~/tweek/services/editor
@@ -65,11 +70,6 @@ jobs:
           name: Run tweek-backoffice
           working_directory: ~/tweek/deployments/dev
           command: docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml up -d tweek-backoffice
-
-      - run: 
-          name: Run unit tests
-          working_directory: ~/tweek/services/editor
-          command: yarn test
             
       - run:
           name: Prepare for e2e tests
