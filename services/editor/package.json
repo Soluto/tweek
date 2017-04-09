@@ -17,7 +17,7 @@
     "test:watch": "jest --watch",
     "test:integration": "mocha --compilers js:babel-register ./integration-tests/**/*.js",
     "coverage:upload:code-climate": "codeclimate-test-reporter < ./coverage-unit/lcov.info",
-    "build-prod": "rm -rf .build && npm run cli -- build",
+    "build-prod": "rm -rf .build && npm run cli -- build --NODE_ENV production",
     "cli": "babel scripts/src --out-dir scripts/lib && node ./scripts/lib/cli.js"
   },
   "author": "",
