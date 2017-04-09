@@ -9,7 +9,7 @@ const RevisionHistory = (({ revisionHistory, goToRevision, selectedKey, revision
       <select value={revision} onChange={(e) => goToRevision(selectedKey, e.target.value)} >
         {revisionHistory.map(item => (
           <option key={item.sha} value={item.sha}>
-            {moment(item.date).format('DD/MM/YYYY hh:mm:ss')}
+            {`${moment(item.date).calendar()} : ${item.author}`}
           </option>
         ))}
       </select>

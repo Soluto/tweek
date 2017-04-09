@@ -66,7 +66,7 @@ export default class GitRepository {
     }
     return historyEntries.map(({ commit }) => ({
       sha: commit.sha(),
-      author: `${commit.author().name()} ${commit.author().email()}`,
+      author: `${commit.author().name()}`,
       date: commit.date(),
       message: commit.message()
     }))
