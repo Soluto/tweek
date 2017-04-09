@@ -52,20 +52,21 @@ class KeyEditPage extends Component {
   render() {
     const { selectedKey, isInAddMode, isInStickyMode, alerter, revision } = this.props;
     const { key, local: { meta, keyDef } } = selectedKey;
-    const isReadonly = (!!meta.readOnly && meta.readOnly) //|| (revision && keyDef.revisionHistory[0] !== revision);
+    const isHistoricRevision = (revision && keyDef.revisionHistory[0].sha !== revision);
+    const isReadonly = (!!meta.readOnly && meta.readOnly) || isHistoricRevision
 
     const commonHeadersProps = {
       onKeyNameChanged: this::this._onKeyNameChanged,
       onDisplayNameChanged: this::this._onDisplayNameChanged,
       isInAddMode,
+      isHistoricRevision,
       isReadonly,
-      keyMeta: meta,  
+      keyMeta: meta,
     };
 
     return (
       <div id="key-viewer-container-form" className={style['key-viewer-container-form']}>
-        <fieldset className={style['key-viewer-container-fieldset']}
-          disabled={isReadonly}>
+        <div className={style['key-viewer-container-fieldset']}>
 
           <div className={style['key-viewer-container']}>
             {isInStickyMode ?
@@ -84,11 +85,12 @@ class KeyEditPage extends Component {
               {...{ keyDef, alerter }}
               sourceTree={RulesService.convertToExplicitKey(JSON.parse(keyDef.source))}
               onMutation={this._onMutation}
+              isReadonly={isReadonly}
               className={classNames(style['key-rules-editor'], { [style['sticky']]: isInStickyMode })} />
 
           </div>
 
-        </fieldset>
+        </div>
       </div>
     );
   }
@@ -100,65 +102,67 @@ export default compose(
 )(KeyEditPage);
 
 const KeyStickyHeader = (props) => {
-  const { isInAddMode, isReadonly } = props;
+  const { isInAddMode, isReadonly, isHistoricRevision } = props;
 
   return (
-    <div className={style['sticky-key-header']}>
+    <div className={style['sticky-key-header']} disabled={isReadonly}>
 
       <HeaderMainInput {...props} />
 
       {!isReadonly ?
         <div className={style['sticky-key-page-action-wrapper']}>
-          <KeyPageActions isInAddMode={isInAddMode} isReadonly={isReadonly} isInStickyMode={true} />
+          <KeyPageActions isInAddMode={isInAddMode} isReadonly={isReadonly} isInStickyMode={true} isHistoricRevision={isHistoricRevision} />
         </div> :
         null}
-
     </div>
   );
 };
 
 const KeyFullHeader = (props) => {
-  const { isInAddMode, isReadonly, revisionHistory, keyMeta, onDescriptionChanged, onTagsChanged, keyFullPath,revision } = props;
+  const { isInAddMode, isReadonly, revisionHistory, keyMeta, onDescriptionChanged, onTagsChanged, keyFullPath, revision, isHistoricRevision } = props;
   return (
     <div className={style['key-header']}>
 
-      <KeyPageActions isInAddMode={isInAddMode} isReadonly={isReadonly} isInStickyMode={false} />
+      <KeyPageActions isInAddMode={isInAddMode} isReadonly={isReadonly} isInStickyMode={false} isHistoricRevision={isHistoricRevision}/>
 
       <div className={style['key-meta-container']}>
 
         <div className={style['key-header-and-modification-wrapper']}>
 
           <HeaderMainInput {...props} />
-
           {revisionHistory ?
-            <RevisionHistory revision={revision} revisionHistory={revisionHistory}/>
+            <RevisionHistory revision={revision} revisionHistory={revisionHistory} />
             : null
           }
 
         </div>
 
-        {!isInAddMode ? <div className={style['key-full-path']}>
-          <label>Full path: </label>
-          <label className={style['actual-path']}>{keyFullPath}</label>
-        </div> : null}
+        <fieldset disabled={isReadonly} style={{ border: 'none' }}>
 
-        <div className={style['key-description-and-tags-wrapper']}>
-          <div className={style['key-description-wrapper']}>
-            <EditableTextArea
-              value={keyMeta.description}
-              onTextChanged={text => onDescriptionChanged(text)}
-              placeHolder="Write key description"
-              title="Click to edit description"
-              classNames={{ input: style['description-input'] }}
-              maxLength={400}
-            />
+          {!isInAddMode ? <div className={style['key-full-path']}>
+            <label>Full path: </label>
+            <label className={style['actual-path']}>{keyFullPath}</label>
+          </div> : null}
+
+          <div className={style['key-description-and-tags-wrapper']}>
+            <div className={style['key-description-wrapper']}>
+              <EditableTextArea
+                value={keyMeta.description}
+                onTextChanged={text => onDescriptionChanged(text)}
+                placeHolder="Write key description"
+                title="Click to edit description"
+                classNames={{ input: style['description-input'] }}
+                maxLength={400}
+              />
+            </div>
+
+            <div className={style['tags-wrapper']}>
+              <KeyTags onTagsChanged={newTags => onTagsChanged(newTags)}
+                tags={keyMeta.tags} />
+            </div>
           </div>
 
-          <div className={style['tags-wrapper']}>
-            <KeyTags onTagsChanged={newTags => onTagsChanged(newTags)}
-              tags={keyMeta.tags} />
-          </div>
-        </div>
+        </fieldset>
 
       </div>
 

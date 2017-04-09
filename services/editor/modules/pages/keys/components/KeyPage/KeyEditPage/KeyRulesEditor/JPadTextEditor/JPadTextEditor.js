@@ -30,6 +30,8 @@ export default class JPadTextEditor extends React.Component {
 
   render() {
     let {currentSource} = this.state;
+    const {isReadonly} = this.props;
+
     return (
       <AutoSizer disableWidth={true}>
         {({height}) => (
@@ -38,7 +40,7 @@ export default class JPadTextEditor extends React.Component {
               height={height - 20}
               language="json"
               value={currentSource}
-              options={{scrollBeyondLastLine: false}}
+              options={{scrollBeyondLastLine: false,readOnly:isReadonly}}
               onChange={newSource => this._onChange(newSource)}
               requireConfig={requireConfig}
             />
