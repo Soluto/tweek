@@ -1,4 +1,5 @@
 import React, { PropTypes, Component } from 'react';
+import Button from '../Button/Button';
 
 class FixedConfigurationTable extends Component {
 
@@ -48,7 +49,8 @@ class FixedConfigurationTable extends Component {
         </div>
 
         <div style={ style.col }>
-          <button onClick={ this.appendValue.bind(this) }>Add</button>
+          <Button text={'Add'} />
+          { false ? <button onClick={ this.appendValue.bind(this) }>Add</button> : null }
         </div>
         
       </div>
