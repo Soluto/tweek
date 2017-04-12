@@ -5,6 +5,10 @@ import { connect } from 'react-redux';
 import withLoading from '../../../../hoc/with-loading';
 import { refreshSchema,getIdentities } from "../../../../services/context-service";
 
+import Button from '../Button/Button';
+import TextInput from '../TextInput/TextInput';
+import Select from '../Select/Select';
+
 export default compose(
   connect(state => state),
   withLoading(() => null, refreshSchema())
@@ -29,17 +33,38 @@ export default compose(
 
 
   render() {
+    const { contextType, identities } = this.state;
 
     return (
-      <div>
-        <select onChange={(e)=>this.setState({contextType: e.target.value})} value={ this.state.contextType }>{
-          this.state.identities.map(identity => <option key={identity} value={ identity } >{ identity }</option>)
-        }</select>
+      <div style={ style.container }>
 
-        <input type="text" placeholder="Value" onChange={(e)=>this.setState({contextId: e.target.value})} />
-        <button onClick={ this.onGetClick.bind(this) }>Get</button>
+        <div style={ style.containerItem }>
+          <p style={ style.containerItemLabel }>Context Type</p>
+          <Select value={ contextType } options={ identities }
+            onChange={ e => this.onContextTypeChange(e.target.value) } />
+        </div>
+
+        <div style={ style.containerItem }>
+          <p style={ style.containerItemLabel }>Context Id</p>
+          <TextInput
+            placeholder={ 'Value' }
+            onEnterKeyPress= { () => this.onGetClick() }
+            onChange={ e => this.onContextIdChange(e.target.value) } />
+        </div>
+
+        <div style={ style.containerItem }>
+          <Button style={{ alignSelf: 'flex-end' }} text={ 'Get' } onClick={ () => this.onGetClick() } />
+        </div>
       </div>
     );
+  }
+
+  onContextTypeChange(contextType){
+    this.setState({ contextType });
+  }
+
+  onContextIdChange(contextId){
+    this.setState({ contextId });
   }
 
   onGetClick(){
@@ -49,4 +74,20 @@ export default compose(
     })
   }
 });
+
+const style = {
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-end'
+  },
+
+  containerItemLabel: {
+    marginBottom: '4px'
+  },
+
+  containerItem: {
+    padding: '10px'
+  }
+}
 
