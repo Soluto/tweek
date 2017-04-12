@@ -22,6 +22,8 @@ using Tweek.JPad.Utils;
 using Tweek.JPad;
 using Tweek.ApiService.NetCore.Diagnostics;
 using System.Reflection;
+using System.Threading;
+using Microsoft.AspNetCore.Mvc;
 using Tweek.ApiService.NetCore.Security;
 using Tweek.ApiService.NetCore.Addons;
 
@@ -71,6 +73,8 @@ namespace Tweek.ApiService.NetCore
             var rulesDriver = GetRulesDriver();
             var rulesDiagnostics = new RulesDriverStatusService(rulesDriver);
 
+            var diagnosticsProviders = new IDiagnosticsProvider[] {rulesDiagnostics, couchbaseDiagnosticsProvider, new EnvironmentDiagnosticsProvider()};
+
             var parser = GetRulesParser();
             var tweek = Task.Run(async () => await Engine.Tweek.Create(rulesDriver, parser)).Result;
 
@@ -79,11 +83,11 @@ namespace Tweek.ApiService.NetCore
             services.AddSingleton(Authorization.CreateWriteContextAccessChecker(tweek));
             services.AddSingleton<IContextDriver>(contextDriver);
             services.AddSingleton(parser);
-            services.AddSingleton<IEnumerable<IDiagnosticsProvider>>(new IDiagnosticsProvider[] {rulesDiagnostics, couchbaseDiagnosticsProvider, new EnvironmentDiagnosticsProvider()});
+            services.AddSingleton<IEnumerable<IDiagnosticsProvider>>(diagnosticsProviders);
             var tweekContactResolver = new TweekContractResolver();
             var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };
             services.AddSingleton(jsonSerializer);
-            services.AddMvc()
+            services.AddMvc(options => options.AddMetricsResourceFilter())
                 .AddJsonOptions(opt =>
                 {
                     opt.SerializerSettings.ContractResolver = tweekContactResolver;
@@ -96,6 +100,19 @@ namespace Tweek.ApiService.NetCore
                         .AllowAnyHeader()
                         .AllowCredentials());
             });
+
+            RegisterMetrics(services, diagnosticsProviders);
+        }
+
+        private void RegisterMetrics(IServiceCollection services, IDiagnosticsProvider[] diagnosticsProviders)
+        {
+            var healthChecksRegistrar = new HealthChecksRegistrar(diagnosticsProviders, Configuration["RulesBlob.Url"]);
+
+            services
+                .AddMetrics()
+                .AddJsonSerialization()
+                .AddHealthChecks(healthChecksRegistrar.RegisterHelthChecks)
+                .AddMetricsMiddleware(Configuration.GetSection("AspNetMetrics"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -110,7 +127,9 @@ namespace Tweek.ApiService.NetCore
 
             app.UseAuthenticationProviders(Configuration, loggerFactory.CreateLogger("AuthenticationProviders"));
             app.InstallAddons(Configuration);
+            app.UseMetrics();
             app.UseMvc();
+            
         }
 
         private void InitCouchbaseCluster(string bucketName, string bucketPassword)
