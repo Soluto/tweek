@@ -1,0 +1,24 @@
+.context-fixed-configuration-table-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.context-fixed-configuration-table-row {
+  display: flex;
+  flex-direction: row;
+  padding: 5px 0 5px 0;
+
+  border-bottom: 1px solid #cecece;
+}
+
+.context-fixed-configuration-table-input-row {
+  display: flex;
+  flex-direction: row;
+  padding: 5px 0 5px 0;
+}
+
+.context-fixed-configuration-table-col {
+  flex: 0.33;
+  margin-right: 10px;
+}
