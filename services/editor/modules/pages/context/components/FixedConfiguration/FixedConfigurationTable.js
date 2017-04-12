@@ -1,12 +1,13 @@
 import React, { PropTypes, Component } from 'react';
+
 import Button from '../Button/Button';
+import InputText from '../TextInput/TextInput';
 
 class FixedConfigurationTable extends Component {
 
   constructor(props){
 
     super(props)
-
 
     this.state = {
       configurations: props.fixedConfigurations,
@@ -38,30 +39,41 @@ class FixedConfigurationTable extends Component {
       
       <div style={ style.row }>
         <div style={ style.col }>
-          <input type="text" placeholder="key"
+          <InputText placeholder="key"
             value={ this.state.keyToAppend }
-            onChange={ e => this.setState({ keyToAppend: e.target.value }) } />
+            onChange={ e => this.onKeyToAppendChange(e.target.value) } />
         </div>
         <div style={ style.col }>
-          <input type="text" placeholder="value"
+          <InputText placeholder="value"
             value={ this.state.valueToAppend }
-            onChange={ e => this.setState({ valueToAppend: e.target.value }) } />
+            onEnterKeyPress={ () => this.appendConfiguration() }
+            onChange={ e => this.onValueToAppendChange(e.target.value) } />
         </div>
 
         <div style={ style.col }>
-          <Button text={'Add'} />
-          { false ? <button onClick={ this.appendValue.bind(this) }>Add</button> : null }
+          <Button text={'Add'} onClick={ () => this.appendConfiguration() } />
         </div>
-        
       </div>
 
-      <button onClick={ () => this.props.onSave(this.state.configurations) }>Save it</button>
-
+      <div style={{ marginTop: '10px' }}>
+        <Button onClick={ () => this.props.onSave(this.state.configurations) } text={ 'Save' } />
+      </div>
+      
       </div>
     )
   }
 
-  appendValue(){
+  onValueToAppendChange(valueToAppend){
+    console.log({ valueToAppend })
+    this.setState({ valueToAppend  });
+  }
+
+  onKeyToAppendChange(keyToAppend){
+    console.log({ keyToAppend })
+    this.setState({ keyToAppend })
+  }
+
+  appendConfiguration(){
     const newConfiguration = {
       ...this.state.configurations,
       [this.state.keyToAppend]: this.state.valueToAppend
@@ -95,7 +107,8 @@ const style = {
   },
 
   col: {
-    flex: 0.33
+    flex: 0.33,
+    marginRight: '10px'
   }
 }
 

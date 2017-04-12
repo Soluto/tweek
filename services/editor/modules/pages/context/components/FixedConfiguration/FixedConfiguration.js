@@ -15,7 +15,8 @@ import FixedConfigurationTable from './FixedConfigurationTable';
 
 const FixedConfiguration = ({ fixedConfigurations, updateContext }) => {
   return (
-    <div>
+    <div style={ style.container }>
+      <h3>Fixed Configuration</h3>
       <FixedConfigurationTable onSave={ data => updateContext(addFixedPrefix(data)) } fixedConfigurations={ fixedConfigurations } />
     </div>
   )
@@ -26,6 +27,12 @@ FixedConfiguration.propTypes = {
   updateContext: PropTypes.func.isRequired,
   contextType: PropTypes.string.isRequired,
   contextId: PropTypes.string.isRequired
+}
+
+const style = {
+  container: {
+    marginLeft: '10px'
+  }
 }
 
 export default compose(
