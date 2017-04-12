@@ -3,7 +3,6 @@ import { Component } from 'react';
 
 import SearchBox from './SearchBox'
 import FixedConfiguration from '../FixedConfiguration/FixedConfiguration';
-
 class ContextPage extends Component {
 
   constructor(props) {
@@ -23,9 +22,12 @@ class ContextPage extends Component {
       <div >
         <SearchBox onGetContext={this.onGetContext.bind(this)}/> 
         { 
-          this.shouldRender()
-            ? <FixedConfiguration contextType={this.state.contextType} contextId={this.state.contextId}/>
-            : null
+          !this.shouldRender()
+            ? null
+            : <div style={{ marginTop: '20px' }}>
+              <FixedConfiguration contextType={this.state.contextType} contextId={this.state.contextId}/>
+            </div>
+                
         }
         
       </div>
