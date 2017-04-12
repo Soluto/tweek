@@ -7,10 +7,12 @@
     "node": ">=6.9.0"
   },
   "scripts": {
-    "start": "./node_modules/.bin/wdio wdio.conf.js",
+    "start": "docker-compose -f ../deployments/dev/docker-compose.yml -f ../deployments/dev/docker-compose.e2e.yml up -d tweek-backoffice",
     "test": "./node_modules/.bin/wdio wdio.conf.js",
-    "test:full-env": "docker-compose -f ../deployments/dev/docker-compose.yml -f ../deployments/dev/docker-compose.e2e.yml up -d tweek-backoffice && npm run test",
-    "test:full-env:rebuild": "docker-compose -f ../deployments/dev/docker-compose.yml build tweek-backoffice && npm run test:full-env"
+    "rebuild": "docker-compose -f ../deployments/dev/docker-compose.yml build tweek-backoffice",
+    "test:full-env": "npm run start && npm run test",
+    "test:full-env:rebuild": "npm run rebuild && npm run test:full-env",
+    "teardown": "docker-compose -f ../deployments/dev/docker-compose.yml down"
   },
   "author": "",
   "license": "ISC",
