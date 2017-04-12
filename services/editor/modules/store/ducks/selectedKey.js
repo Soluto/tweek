@@ -55,6 +55,7 @@ export function openKey(key, { revision } = {}) {
         valueType: meta.valueType || 'string',
       },
       meta,
+      revisionHistory: keyData.revisionHistory
     };
 
     dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
