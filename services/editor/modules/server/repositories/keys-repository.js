@@ -32,10 +32,10 @@ export default class KeysRepository {
 
       let revisionHistory = await gitRepo.getFileDetails(pathForJPad);
       return {
+        revisionHistory,
         keyDef: {
           type: path.extname(pathForJPad).substring(1),
-          source: jpadSource,
-          revisionHistory
+          source: jpadSource
         },
         meta,
       }

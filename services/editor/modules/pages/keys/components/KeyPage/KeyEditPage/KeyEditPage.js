@@ -51,8 +51,8 @@ class KeyEditPage extends Component {
 
   render() {
     const { selectedKey, isInAddMode, isInStickyMode, alerter, revision } = this.props;
-    const { key, local: { meta, keyDef } } = selectedKey;
-    const isHistoricRevision = (revision && keyDef.revisionHistory[0].sha !== revision);
+    const { key, local: { meta, keyDef,revisionHistory } } = selectedKey;
+    const isHistoricRevision = (revision && revisionHistory[0].sha !== revision);
     const isReadonly = (!!meta.readOnly && meta.readOnly) || isHistoricRevision
 
     const commonHeadersProps = {
@@ -76,7 +76,7 @@ class KeyEditPage extends Component {
               {...commonHeadersProps}
               onDescriptionChanged={text => this._onDescriptionChanged(text)}
               onTagsChanged={newTags => this._onTagsChanged(newTags)}
-              revisionHistory={keyDef.revisionHistory}
+              revisionHistory={revisionHistory}
               revision={revision}
               keyFullPath={key}
               isInStickyMode={isInStickyMode} />
