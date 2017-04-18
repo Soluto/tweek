@@ -17,7 +17,7 @@ export default class GitRepository {
     const operationSettings = {
       callbacks: {
         credentials: () => settings.url.startsWith('ssh://') ? Git.Cred.sshKeyNew(settings.username, settings.publicKey, settings.privateKey, '')
-                                                         : Git.Cred.userpassPlaintextNew(settings.username, settings.password),
+          : Git.Cred.userpassPlaintextNew(settings.username, settings.password),
       },
     };
 
@@ -37,11 +37,16 @@ export default class GitRepository {
     return await glob('**/*.*', { cwd: path.join(this._repo.workdir(), directoryPath) });
   }
 
-  async readFile(fileName) {
-    return (await fs.readFile(path.join(this._repo.workdir(), fileName))).toString();
+  async readFile(fileName, { revision } = {}) {
+
+    if (!revision) return (await fs.readFile(path.join(this._repo.workdir(), fileName))).toString();
+    const sha = revision ? revision : (await this._repo.getMasterCommit()).sha();
+    const commit = await this._repo.getCommit(sha)
+    const entry = await commit.getEntry(fileName);
+    return entry.isBlob() ? (await entry.getBlob()).toString() : undefined;
   }
 
-  async getFileDetails(fileName) {
+  async getFileDetails(fileName, { revision } = {}) {
     let modifyDate = 'unknown';
     let modifyUser = 'unknown';
     let commitSha = null;
@@ -49,28 +54,22 @@ export default class GitRepository {
     let remote = await this._repo.getRemote('origin');
     let remoteUrl = remote.url();
 
-    const firstCommitOnMaster = await this._repo.getMasterCommit();
-    const walker = this._repo.createRevWalk();
-    walker.push(firstCommitOnMaster.sha());
-    walker.sorting(Git.Revwalk.SORT.Time);
+    const sha = revision ? revision : (await this._repo.getMasterCommit()).sha();
 
-    const lastCommits = await walker.fileHistoryWalk(fileName, 100);
-    if (lastCommits.length == 0) {
+    const walker = this._repo.createRevWalk();
+    walker.push(sha);
+    walker.sorting(Git.Revwalk.SORT.TIME);
+
+    const historyEntries = await walker.fileHistoryWalk(fileName, 100);
+    if (historyEntries.length == 0) {
       console.info('No recent history found for key');
     }
-    else {
-      const lastCommit = lastCommits[0].commit;
-
-      modifyDate = lastCommit.date();
-      modifyUser = lastCommit.author().name();
-      commitSha = lastCommit.sha();
-    }
-
-    return {
-      modifyDate,
-      modifyUser,
-      modifyCompareUrl: `${remoteUrl.replace(/\.git$/, '')}/${commitSha ? `commit/${commitSha}` : `commits/master/${fileName}`}`,
-    };
+    return historyEntries.map(({ commit }) => ({
+      sha: commit.sha(),
+      author: `${commit.author().name()}`,
+      date: commit.date(),
+      message: commit.message()
+    }))
   }
 
   async updateFile(fileName, content) {

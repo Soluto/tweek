@@ -31,15 +31,14 @@ const comp = compose(
     state => ({ selectedKey: state.selectedKey }),
     { ...keysActions, deleteKey })
 )(
-  ({ selectedKey, isInAddMode, saveKey, deleteKey, isReadonly, isInStickyMode }) => {
+  ({ selectedKey, isInAddMode, saveKey, deleteKey, isReadonly,isHistoricRevision, isInStickyMode }) => {
     const { local, remote, isSaving } = selectedKey;
     const changes = diff(local, remote);
     const hasChanges = (changes || []).length > 0;
-
     return (
       <div>
         {isReadonly ?
-          <div className={style['readonly-key-message']}>This key is readonly</div>
+          <div className={style['readonly-key-message']}> {isHistoricRevision ? 'This is an old revision of this key' : 'This key is readonly'} </div>
           : null}
         <div className={style['key-action-buttons-wrapper']}>
           {!isInAddMode && !isInStickyMode ?
