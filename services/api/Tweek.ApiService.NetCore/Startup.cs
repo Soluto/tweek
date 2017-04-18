@@ -111,7 +111,18 @@ namespace Tweek.ApiService.NetCore
             services
                 .AddMetrics()
                 .AddJsonSerialization()
-                .AddReporting(factory => factory.AddGraphite(Configuration.GetValue<string>("Graphite:Url"), Configuration.GetValue("Graphite:Port", 2003), ConnectionType.Tcp))
+                .AddReporting(factory =>
+                {
+                    var appMetricsReporters = Configuration.GetSection("AppMetricsReporters");
+                    foreach (var reporter in appMetricsReporters.GetChildren())
+                    {
+                        if (reporter.Key.Equals("graphite", StringComparison.OrdinalIgnoreCase))
+                        {
+                            factory.AddGraphite(reporter.GetValue<string>("Url"),
+                                reporter.GetValue("Port", 2003), ConnectionType.Tcp);
+                        }
+                    }
+                })
                 .AddHealthChecks(healthChecksRegistrar.RegisterHelthChecks)
                 .AddMetricsMiddleware(Configuration.GetSection("AspNetMetrics"));
         }
@@ -131,10 +142,7 @@ namespace Tweek.ApiService.NetCore
             app.InstallAddons(Configuration);
             app.UseMetrics();
             app.UseMvc();
-
-            if (Configuration.GetSection("Graphite").GetChildren().Any())
-                app.UseMetricsReporting(lifetime);
-            
+            app.UseMetricsReporting(lifetime);
         }
 
         private void InitCouchbaseCluster(string bucketName, string bucketPassword)
