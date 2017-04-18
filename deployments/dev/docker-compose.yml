@@ -67,7 +67,15 @@ services:
     container_name: tweek-analytics-api
     depends_on:
       - tweek-api
+      - tweek-redis
     ports:
       - "4005:80"
     environment:
-      - TweekApi.Url=http://tweek-api
+      - TweekApi__Url=http://tweek-api
+      - Redis__Url=tweek-redis
+
+  tweek-redis:
+    image: redis
+    container_name: tweek-redis  
+    ports:
+      - "4006:6379"

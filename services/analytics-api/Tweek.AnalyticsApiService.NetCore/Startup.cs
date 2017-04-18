@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Tweek.AnalyticsApiService.NetCore.Utils;
 
 namespace Tweek.AnalyticsApiService.NetCore
 {
@@ -29,6 +26,12 @@ namespace Tweek.AnalyticsApiService.NetCore
         {
             // Add framework services.
             services.AddMvc();
+
+            var redisUrl = Configuration.GetValue<string>("Redis:Url");
+            services.AddSingleton<RedisContext>(new RedisContext(redisUrl));
+
+            var tweekApiUrl = Configuration.GetValue<string>("TweekApi:Url");
+            services.AddSingleton<TweekApiClient>(new TweekApiClient(tweekApiUrl));
 
             services.AddCors(options =>
             {
