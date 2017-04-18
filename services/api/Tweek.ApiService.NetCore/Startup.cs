@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,14 +23,13 @@ using Tweek.JPad.Utils;
 using Tweek.JPad;
 using Tweek.ApiService.NetCore.Diagnostics;
 using System.Reflection;
-using System.Threading;
+using App.Metrics.Extensions.Reporting.Graphite;
 using Microsoft.AspNetCore.Mvc;
 using Tweek.ApiService.NetCore.Security;
 using Tweek.ApiService.NetCore.Addons;
 
 namespace Tweek.ApiService.NetCore
 {
-
     class TweekContractResolver : DefaultContractResolver
     {
         protected override JsonContract CreateContract(Type objectType)
@@ -111,12 +111,14 @@ namespace Tweek.ApiService.NetCore
             services
                 .AddMetrics()
                 .AddJsonSerialization()
+                .AddReporting(factory => factory.AddGraphite(Configuration.GetValue<string>("Graphite:Url"), Configuration.GetValue("Graphite:Port", 2003), ConnectionType.Tcp))
                 .AddHealthChecks(healthChecksRegistrar.RegisterHelthChecks)
                 .AddMetricsMiddleware(Configuration.GetSection("AspNetMetrics"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
+            IApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {
@@ -129,6 +131,9 @@ namespace Tweek.ApiService.NetCore
             app.InstallAddons(Configuration);
             app.UseMetrics();
             app.UseMvc();
+
+            if (Configuration.GetSection("Graphite").GetChildren().Any())
+                app.UseMetricsReporting(lifetime);
             
         }
 
