@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -23,7 +22,9 @@ using Tweek.JPad.Utils;
 using Tweek.JPad;
 using Tweek.ApiService.NetCore.Diagnostics;
 using System.Reflection;
+using App.Metrics.Configuration;
 using App.Metrics.Extensions.Reporting.Graphite;
+using App.Metrics.Extensions.Reporting.Graphite.Client;
 using Microsoft.AspNetCore.Mvc;
 using Tweek.ApiService.NetCore.Security;
 using Tweek.ApiService.NetCore.Addons;
@@ -109,7 +110,16 @@ namespace Tweek.ApiService.NetCore
             var healthChecksRegistrar = new HealthChecksRegistrar(diagnosticsProviders, Configuration["RulesBlob.Url"]);
 
             services
-                .AddMetrics()
+                .AddMetrics(options =>
+                {
+                    options.WithGlobalTags((globalTags, envInfo) =>
+                    {
+                        globalTags.Add("host", envInfo.HostName);
+                        globalTags.Add("machine_name", envInfo.MachineName);
+                        globalTags.Add("app_name", envInfo.EntryAssemblyName);
+                        globalTags.Add("app_version", envInfo.EntryAssemblyVersion);
+                    });
+                })
                 .AddJsonSerialization()
                 .AddReporting(factory =>
                 {
@@ -118,8 +128,13 @@ namespace Tweek.ApiService.NetCore
                     {
                         if (reporter.Key.Equals("graphite", StringComparison.OrdinalIgnoreCase))
                         {
-                            factory.AddGraphite(reporter.GetValue<string>("Url"),
-                                reporter.GetValue("Port", 2003), ConnectionType.Tcp);
+                            factory.AddGraphite(new GraphiteReporterSettings()
+                            {
+                                ConnectionType = ConnectionType.Tcp,
+                                Host = reporter.GetValue<string>("Url"),
+                                Port = reporter.GetValue("Port", 2003),
+                                NameFormatter = new DefaultGraphiteNameFormatter(reporter.GetValue("Prefix", "TweekApi"), new[] { "host", "route" }, new[] { "http_status_code" })
+                            });
                         }
                     }
                 })
