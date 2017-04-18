@@ -22,31 +22,36 @@ const onRouteLeaveConfirmFunc = (props) => {
 };
 
 const keyPageComp = compose(
-  connect((state, { params }) =>
-    ({ selectedKey: state.selectedKey, configKey: params.splat, isInAddMode: params.splat === BLANK_KEY_NAME }),
+  connect((state, { params, location }) =>
+    ({
+      selectedKey: state.selectedKey,
+      configKey: params.splat,
+      isInAddMode: params.splat === BLANK_KEY_NAME,
+      revision: location.query.revision
+    }),
     { ...selectedKeyActions, ...alertActions }),
   routeLeaveHook(onRouteLeaveConfirmFunc),
   lifecycle({
     componentDidMount() {
-      const { configKey, selectedKey, openKey } = this.props;
+      const { configKey, selectedKey, openKey, revision } = this.props;
       if (!configKey) return;
       if (selectedKey && selectedKey.key === configKey) return;
-      openKey(configKey);
+      openKey(configKey, { revision });
     },
-    componentWillReceiveProps({ configKey }) {
+    componentWillReceiveProps({ configKey, revision }) {
       const { openKey, selectedKey } = this.props;
-      if (configKey !== this.props.configKey) {
-        openKey(configKey);
+      if (configKey !== this.props.configKey || revision !== this.props.revision) {
+        openKey(configKey, { revision });
       }
     },
   }))
-(({showCustomAlert, showAlert, showConfirm, ...props}) => {
-  const {selectedKey} = props;
-  const alerter = {
-    showCustomAlert,
-    showAlert,
-    showConfirm
-  };
+  (({ showCustomAlert, showAlert, showConfirm, ...props }) => {
+    const { selectedKey } = props;
+    const alerter = {
+      showCustomAlert,
+      showAlert,
+      showConfirm
+    };
     if (!selectedKey ||
       !selectedKey.isLoaded)
       return <MessageKeyPage message="Loading..." />;
