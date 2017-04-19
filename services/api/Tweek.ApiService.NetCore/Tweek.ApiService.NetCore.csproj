@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81</PackageTargetFallback>
-    <VersionPrefix>0.1.15</VersionPrefix>
+    <VersionPrefix>0.1.16</VersionPrefix>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Properties\PublishProfiles\FileSystemProfile.pubxml" />
@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="App.Metrics.Extensions.Middleware" Version="1.0.0" />
     <PackageReference Include="App.Metrics.Extensions.Mvc" Version="1.0.0" />
-    <PackageReference Include="App.Metrics.Extensions.Reporting.Graphite" Version="1.0.0-alpha-6" />
+    <PackageReference Include="App.Metrics.Extensions.Reporting.Graphite" Version="1.0.0-alpha-7" />
     <PackageReference Include="App.Metrics.Formatters.Json" Version="1.0.0" />
     <PackageReference Include="FSharp.Core" Version="4.0.0.1" />
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.1.6233.20455" />
