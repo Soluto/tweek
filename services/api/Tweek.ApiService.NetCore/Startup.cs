@@ -128,12 +128,12 @@ namespace Tweek.ApiService.NetCore
                     {
                         if (reporter.Key.Equals("graphite", StringComparison.OrdinalIgnoreCase))
                         {
-                            factory.AddGraphite(new GraphiteReporterSettings()
+                            factory.AddGraphite(new GraphiteReporterSettings
                             {
                                 ConnectionType = ConnectionType.Tcp,
                                 Host = reporter.GetValue<string>("Url"),
                                 Port = reporter.GetValue("Port", 2003),
-                                NameFormatter = new DefaultGraphiteNameFormatter(reporter.GetValue("Prefix", "TweekApi"), new[] { "host", "route" }, new[] { "http_status_code" })
+                                NameFormatter = new DefaultGraphiteNameFormatter(reporter.GetValue("Prefix", "TweekApi") +  ".{type}.{tag:host}.{context}.{tag:route}.{nameWithUnit}.{tag:http_status_code}")
                             });
                         }
                     }
