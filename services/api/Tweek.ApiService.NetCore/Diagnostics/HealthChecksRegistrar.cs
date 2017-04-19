@@ -19,8 +19,6 @@ namespace Tweek.ApiService.NetCore.Diagnostics
         }
         public void RegisterHelthChecks(IHealthCheckFactory factory)
         {
-            factory.RegisterPingHealthCheck("google ping", "google.com", TimeSpan.FromSeconds(10));
-
             foreach (var diagnosticsProvider in mDiagnosticsProviders)
             {
                 var healthy = diagnosticsProvider.GetDetails().ToString()
