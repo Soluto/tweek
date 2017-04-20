@@ -8,11 +8,13 @@ import configureStore from './store/configureStore';
 import { Provider } from 'react-redux';
 import serverRoutes from './serverRoutes';
 import { getKeys } from './store/ducks/keys';
+import { getHistory } from './store/ducks/history';
 import GitRepository from './server/repositories/git-repository';
 import session from 'express-session';
 import Transactor from './utils/transactor';
 import KeysRepository from './server/repositories/keys-repository';
 import TagsRepository from './server/repositories/tags-repository';
+import HistoryRepository from './server/repositories/history-repository';
 import GitContinuousUpdater from './server/repositories/git-continuous-updater';
 import Promise from 'bluebird';
 const passport = require('passport');
@@ -47,16 +49,19 @@ const gitRepoCreationPromiseWithTimeout = new Promise((resolve, reject) => {
 const gitTransactionManager = new Transactor(gitRepoCreationPromise, async gitRepo => await gitRepo.reset());
 const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
+const historyRepository = new HistoryRepository(gitTransactionManager, gitRepostoryConfig);
 
 GitContinuousUpdater.start(gitTransactionManager);
 
 function getApp(req, res, requestCallback) {
   requestCallback(null, {
-    routes: routes(serverRoutes({ tagsRepository, keysRepository, tweekApiHostname })),
+    routes: routes(serverRoutes({ tagsRepository, keysRepository, historyRepository, tweekApiHostname })),
     async render(routerProps, renderCallback) {
       const store = configureStore({});
       const keys = await keysRepository.getAllKeys();
+      const history = await historyRepository.getHistory();
       await store.dispatch(getKeys(keys));
+      store.dispatch(getHistory(history));
 
       renderCallback(null, {
         renderDocument: (props) => <Document {...props} initialState={store.getState()} />,
