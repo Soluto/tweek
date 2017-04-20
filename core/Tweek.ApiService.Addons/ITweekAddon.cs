@@ -9,4 +9,9 @@ namespace Tweek.ApiService.Addons
     {
         void Install(IApplicationBuilder builder, IConfiguration configuration);
     }
+
+    public interface ITweekServiceAddon
+    {
+        void Register(IServiceCollection services, IConfiguration configuration);
+    }
 }

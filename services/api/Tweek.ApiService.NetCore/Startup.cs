@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,25 +27,13 @@ using App.Metrics.Configuration;
 using App.Metrics.Extensions.Reporting.Graphite;
 using App.Metrics.Extensions.Reporting.Graphite.Client;
 using Microsoft.AspNetCore.Mvc;
+using Tweek.ApiService.Addons;
 using Tweek.ApiService.NetCore.Security;
 using Tweek.ApiService.NetCore.Addons;
+using TweekContractResolver;
 
 namespace Tweek.ApiService.NetCore
 {
-    class TweekContractResolver : DefaultContractResolver
-    {
-        protected override JsonContract CreateContract(Type objectType)
-        {
-            var contract = base.CreateContract(objectType);
-
-            if (typeof(JsonValue).GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo()))
-            {
-                contract.Converter = new JsonValueConverter();
-            }
-
-            return contract;
-        }
-    }
 
     public class Startup
     {
@@ -64,17 +53,14 @@ namespace Tweek.ApiService.NetCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var contextBucketName = Configuration["Couchbase.BucketName"];
-            var contextBucketPassword = Configuration["Couchbase.Password"];
-
-            InitCouchbaseCluster(contextBucketName, contextBucketPassword);
-            var contextDriver = new CouchBaseDriver(ClusterHelper.GetBucket, contextBucketName);
-            var couchbaseDiagnosticsProvider = new BucketConnectionIsAlive(ClusterHelper.GetBucket, contextBucketName);
+            
+            services.InstallServiceAddons(Configuration);
 
             var rulesDriver = GetRulesDriver();
             var rulesDiagnostics = new RulesDriverStatusService(rulesDriver);
 
-            var diagnosticsProviders = new IDiagnosticsProvider[] {rulesDiagnostics, couchbaseDiagnosticsProvider, new EnvironmentDiagnosticsProvider()};
+            services.AddSingleton<IDiagnosticsProvider>(rulesDiagnostics);
+            services.AddSingleton<IDiagnosticsProvider>(new EnvironmentDiagnosticsProvider());
 
             var parser = GetRulesParser();
             var tweek = Task.Run(async () => await Engine.Tweek.Create(rulesDriver, parser)).Result;
@@ -82,10 +68,9 @@ namespace Tweek.ApiService.NetCore
             services.AddSingleton(tweek);
             services.AddSingleton(Authorization.CreateReadConfigurationAccessChecker(tweek));
             services.AddSingleton(Authorization.CreateWriteContextAccessChecker(tweek));
-            services.AddSingleton<IContextDriver>(contextDriver);
             services.AddSingleton(parser);
-            services.AddSingleton<IEnumerable<IDiagnosticsProvider>>(diagnosticsProviders);
-            var tweekContactResolver = new TweekContractResolver();
+
+            var tweekContactResolver = new TweekContractResolver.TweekContractResolver();
             var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };
             services.AddSingleton(jsonSerializer);
             services.AddMvc(options => options.AddMetricsResourceFilter())
@@ -102,11 +87,12 @@ namespace Tweek.ApiService.NetCore
                         .AllowCredentials());
             });
 
-            RegisterMetrics(services, diagnosticsProviders);
+            RegisterMetrics(services);
         }
 
-        private void RegisterMetrics(IServiceCollection services, IDiagnosticsProvider[] diagnosticsProviders)
+        private void RegisterMetrics(IServiceCollection services)
         {
+            var diagnosticsProviders = services.BuildServiceProvider().GetServices<IDiagnosticsProvider>();
             var healthChecksRegistrar = new HealthChecksRegistrar(diagnosticsProviders, Configuration["RulesBlob.Url"]);
 
             services
@@ -160,37 +146,6 @@ namespace Tweek.ApiService.NetCore
             app.UseMetricsReporting(lifetime);
         }
 
-        private void InitCouchbaseCluster(string bucketName, string bucketPassword)
-        {
-            var url = Configuration["Couchbase.Url"];
-
-            ClusterHelper.Initialize(new ClientConfiguration
-            {
-                Servers = new List<Uri> { new Uri(url) },
-                BucketConfigs = new Dictionary<string, BucketConfiguration>
-                {
-                    [bucketName] = new BucketConfiguration
-                    {
-                        BucketName = bucketName,
-                        Password = bucketPassword,
-                        PoolConfiguration = new PoolConfiguration()
-                        {
-                            MaxSize = 30,
-                            MinSize = 5
-                        }
-                    }
-                },
-                Serializer = () => new DefaultSerializer(
-                   new JsonSerializerSettings()
-                   {
-                       ContractResolver = new TweekContractResolver()
-                   },
-                   new JsonSerializerSettings()
-                   {
-                       ContractResolver = new TweekContractResolver()
-                   })
-            });
-        }
 
         private BlobRulesDriver GetRulesDriver()
         {

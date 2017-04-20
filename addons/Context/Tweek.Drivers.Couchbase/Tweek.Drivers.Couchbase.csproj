@@ -12,5 +12,7 @@
     <ProjectReference Include="..\..\..\core\Engine\Engine.Drivers\Engine.Drivers.csproj" />
     <ProjectReference Include="..\..\..\core\Engine\Engine.Core\Engine.Core.csproj" />
     <ProjectReference Include="..\..\..\core\Engine\Engine.DataTypes\Engine.DataTypes.csproj" />
+    <ProjectReference Include="..\..\..\core\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj" />
+    <ProjectReference Include="..\..\..\core\Utils\TweekContractResolver\TweekContractResolver.csproj" />
   </ItemGroup>
 </Project>
