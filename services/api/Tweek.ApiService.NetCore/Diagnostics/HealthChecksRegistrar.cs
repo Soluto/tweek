@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using App.Metrics;
 using App.Metrics.Health;
 using App.Metrics.Health.Abstractions;
+using Tweek.ApiService.Addons;
 
 namespace Tweek.ApiService.NetCore.Diagnostics
 {
