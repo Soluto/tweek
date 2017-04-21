@@ -12,7 +12,7 @@
     "rebuild": "docker-compose -f ../deployments/dev/docker-compose.yml build tweek-backoffice",
     "test:full-env": "npm run start && npm run test",
     "test:full-env:rebuild": "npm run rebuild && npm run test:full-env",
-    "teardown": "docker-compose -f ../deployments/dev/docker-compose.yml down"
+    "teardown": "docker-compose -f ../deployments/dev/docker-compose.yml -f ../deployments/dev/docker-compose.e2e.yml down"
   },
   "author": "",
   "license": "ISC",
