@@ -60,7 +60,7 @@ export default class GitRepository {
     walker.push(sha);
     walker.sorting(Git.Revwalk.SORT.TIME);
 
-    const historyEntries = await walker.fileHistoryWalk(fileName, 100);
+    const historyEntries = await walker.fileHistoryWalk(fileName, 10000);
     if (historyEntries.length == 0) {
       console.info('No recent history found for key');
     }
