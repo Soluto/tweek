@@ -3,14 +3,12 @@ using System.Linq;
 using Engine.Core.Context;
 using Engine.Core.Rules;
 using LanguageExt;
-using Engine.Core.Utils;
 using Engine.DataTypes;
 using FSharpUtils.Newtonsoft;
 
 namespace Engine.Core
 {
     public delegate Option<IRule> RulesRepository(ConfigurationPath path);
-
 
     public static class EngineCore
     {
