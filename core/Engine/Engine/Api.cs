@@ -100,7 +100,7 @@ namespace Engine
             var getRuleValue = EngineCore.GetRulesEvaluator(identities, context, (path) => allRules.TryGetValue(path));
 
             var paths = pathQuery.Any(x=>x.IsScan) ? includePaths.Concat(allRules.Keys.Select(ConfigurationPath.New))
-                .Where(path => pathQuery.Any(query => ConfigurationPath.Match(path: path, query: query)))
+                .Where(path => pathQuery.Any(query => query.Contains(path)))
                 : pathQuery;
 
             return paths

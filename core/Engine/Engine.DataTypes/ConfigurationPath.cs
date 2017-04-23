@@ -1,27 +1,30 @@
 using System;
-using System.Linq;
 
 namespace Engine.DataTypes
 {
-    public struct ConfigurationPath:
+    public struct ConfigurationPath :
         IEquatable<ConfigurationPath>, IComparable<ConfigurationPath>,
         IEquatable<string>, IComparable<string>
     {
-        public static ConfigurationPath FullScan = From("_");
+        public const string SCAN = "_";
+        public static readonly ConfigurationPath FullScan = New(SCAN);
 
         private readonly string _path;
-        private readonly string[] _fragments;
 
         public ConfigurationPath(string path)
         {
-            _path = path.ToLower();
-            _fragments = _path.Split('/');
+            _path = path.ToLower().Trim('/');
+
+            var nameStart = _path.LastIndexOf('/');
+            Name = _path.Substring(nameStart + 1);
+
+            IsScan = Name.Equals(SCAN);
+            Location = IsScan ? _path.Substring(0, _path.Length - 2) : _path;
         }
 
         public static ConfigurationPath From(params string[] fragments)
         {
-            string path  = string.Join("/", fragments).ToLower();
-            return new ConfigurationPath(path);
+            return new ConfigurationPath(string.Join("/", fragments));
         }
 
         public static ConfigurationPath New(string path)
@@ -29,39 +32,36 @@ namespace Engine.DataTypes
             return new ConfigurationPath(path);
         }
 
-        public string Root => _fragments.First();
+        public string Location { get; }
 
-        public string Prefix => string.Join("/", _fragments.Take(_fragments.Length - 1));
+        public string Name { get; }
 
-        public string Name => _fragments.Last();
-
-        public bool IsScan => Name == "_";
+        public bool IsScan { get; }
 
         public override bool Equals(object obj)
         {
             var otherPath = obj as ConfigurationPath?;
-            if (otherPath == null) return false;
-            return Equals(otherPath);
+            return otherPath != null && Equals(otherPath);
         }
 
         public bool Equals(ConfigurationPath other)
         {
-            return _path.Equals(other._path);
+            return Equals(other._path);
         }
 
         public int CompareTo(ConfigurationPath other)
         {
-            return _path.CompareTo(other._path);
+            return CompareTo(other._path);
         }
 
         public bool Equals(string other)
         {
-            return _path.Equals(new ConfigurationPath(other));
+            return _path.Equals(other);
         }
 
         public int CompareTo(string other)
         {
-            return _path.CompareTo(new ConfigurationPath(other));
+            return string.Compare(_path, other, StringComparison.Ordinal);
         }
 
         public override int GetHashCode()
@@ -96,18 +96,16 @@ namespace Engine.DataTypes
 
         public ConfigurationPath ToRelative(ConfigurationPath query)
         {
-            if (!Match(this, query)) throw new Exception(this + " not match query:" + query);
+            if (!query.Contains(this)) throw new Exception($"{this} is not in: {query}");
 
-            var index = query._fragments.Length - (query.IsScan ? 1 : 0);
-            return From(new ArraySegment<string>(_fragments, index, _fragments.Length - index).ToArray());
+            return New(_path.Substring(query.Location.Length));
         }
 
-        public static bool Match(ConfigurationPath path, ConfigurationPath query)
+        public bool Contains(ConfigurationPath other)
         {
-            if (query == FullScan) return true;
-            if (query == path) return true;
-            if (query.IsScan) return path._path.StartsWith(query.Prefix);
-            return false;
+            if (_path.Equals(other._path)) return true;
+
+            return IsScan && other._path.StartsWith(Location);
         }
     }
 }

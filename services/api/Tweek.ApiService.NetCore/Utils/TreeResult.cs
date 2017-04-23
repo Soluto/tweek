@@ -41,15 +41,12 @@ namespace Tweek.ApiService.Utils
 
         private IEnumerable<string> ExtractLocationFragments(ConfigurationPath path)
         {
-            return path.Prefix.Split('/').SkipWhile(x => x == "");
+            return path.Location.Split('/').SkipWhile(x => x == "");
         }
 
         public object this[ConfigurationPath path]
         {
-            set
-            {
-                GetOrCreateContainer(ExtractLocationFragments(path))[path.Name] = value;
-            }
+            set => GetOrCreateContainer(ExtractLocationFragments(path))[path.Name] = value;
         }
 
         public IDictionary<string, object> ToDictionary()
