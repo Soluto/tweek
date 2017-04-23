@@ -53,7 +53,7 @@ namespace Tweek.ApiService.NetCore.Controllers
         {
             if (includePaths.Length == 0 || !path.IsScan) return new []{path};
             if (path == ConfigurationPath.FullScan) return includePaths.Select(ConfigurationPath.New).ToArray();
-            return includePaths.Select(x=> ConfigurationPath.From(path.Prefix, x)).ToArray();
+            return includePaths.Select(x=> ConfigurationPath.From(path.Location, x)).ToArray();
         }
 
         [HttpGet("api/v1/keys/{*path}")]
