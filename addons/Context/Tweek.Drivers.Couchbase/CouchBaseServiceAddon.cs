@@ -4,6 +4,7 @@ using Couchbase;
 using Couchbase.Configuration.Client;
 using Couchbase.Core.Serialization;
 using Engine.Drivers.Context;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -12,8 +13,12 @@ using Tweek.Drivers.Couchbase;
 
 namespace Tweek.Drivers.CouchbaseDriver
 {
-    public class CouchBaseServiceAddon: ITweekServiceAddon
+    public class CouchBaseServiceAddon: ITweekAddon
     {
+        public void Install(IApplicationBuilder builder, IConfiguration configuration)
+        {
+        }
+
         public void Register(IServiceCollection services, IConfiguration configuration)
         {
             var contextBucketName = configuration["Couchbase.BucketName"];
