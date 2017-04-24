@@ -32,7 +32,7 @@ namespace Engine.Rules.Creation
 
             Option<IRule> RulesRepository(ConfigurationPath path) => tree.TryGetValue(path, out var rule) ? Option<IRule>.Some(rule) : Option<IRule>.None;
 
-            IEnumerable<ConfigurationPath> PathExpander(ConfigurationPath path) => tree.ListPrefix(path).Select(c => c.key).Select(ConfigurationPath.New);
+            IEnumerable<ConfigurationPath> PathExpander(ConfigurationPath path) => tree.ListPrefix(path.Location).Select(c => c.key).Select(ConfigurationPath.New);
 
             return (RulesRepository, PathExpander);
         }
