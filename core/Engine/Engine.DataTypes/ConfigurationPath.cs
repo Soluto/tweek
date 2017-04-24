@@ -19,7 +19,7 @@ namespace Engine.DataTypes
             Name = _path.Substring(nameStart + 1);
 
             IsScan = Name.Equals(SCAN);
-            Location = IsScan ? _path.Substring(0, _path.Length - 2) : _path;
+            Location = IsScan ? _path.Substring(0, _path.Length - 1).TrimEnd('/') : _path;
         }
 
         public static ConfigurationPath From(params string[] fragments)
