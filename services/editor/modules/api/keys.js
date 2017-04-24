@@ -38,7 +38,6 @@ function generateMetaForKey(keyPath, {keyDef, meta}) {
 
 function retrieveMetaForKey(meta) {
   if (meta.meta == undefined) return meta;
-  console.log('dependencies', meta.dependencies);
   const {meta: newMeta} = meta;
   return {
     displayName: newMeta.name,
