@@ -1,36 +1,31 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Couchbase;
-using Couchbase.Configuration.Client;
-using Tweek.Drivers.Blob;
-using Tweek.Drivers.Blob.WebClient;
-using Newtonsoft.Json;
-using Couchbase.Core.Serialization;
-using Newtonsoft.Json.Serialization;
-using FSharpUtils.Newtonsoft;
-using Tweek.Utils;
-using Tweek.Drivers.CouchbaseDriver;
-using Engine.Core.Rules;
-using Engine.Drivers.Context;
-using Tweek.JPad.Utils;
-using Tweek.JPad;
-using Tweek.ApiService.NetCore.Diagnostics;
-using System.Reflection;
+﻿using App.Metrics;
 using App.Metrics.Configuration;
 using App.Metrics.Extensions.Reporting.Graphite;
 using App.Metrics.Extensions.Reporting.Graphite.Client;
+using Engine;
+using Engine.Core.Rules;
+using Engine.Drivers.Context;
+using Engine.Drivers.Rules;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Tweek.ApiService.Addons;
 using Tweek.ApiService.NetCore.Security;
 using Tweek.ApiService.NetCore.Addons;
-using TweekContractResolver;
+using Scrutor;
+using Tweek.ApiService.NetCore.Diagnostics;
+using Tweek.ApiService.NetCore.Metrics;
+using Tweek.Drivers.Blob;
+using Tweek.Drivers.Blob.WebClient;
+using Tweek.JPad;
+using Tweek.JPad.Utils;
 
 namespace Tweek.ApiService.NetCore
 {
@@ -53,25 +48,31 @@ namespace Tweek.ApiService.NetCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
+
             services.InstallServiceAddons(Configuration);
 
-            var rulesDriver = GetRulesDriver();
-            var rulesDiagnostics = new RulesDriverStatusService(rulesDriver);
+            services.Decorate<IContextDriver>((driver, provider) => new TimedContextDriver(driver, provider.GetService<IMetrics>()));
 
-            services.AddSingleton<IDiagnosticsProvider>(rulesDiagnostics);
+            var blobRulesDriver = GetRulesDriver();
+            services.AddSingleton<IRulesDriver>(provider => new TimedRulesDriver(blobRulesDriver, provider.GetService<IMetrics>()));
+
+            services.AddSingleton<IDiagnosticsProvider>(new RulesDriverStatusService(blobRulesDriver));
             services.AddSingleton<IDiagnosticsProvider>(new EnvironmentDiagnosticsProvider());
 
-            var parser = GetRulesParser();
-            var tweek = Task.Run(async () => await Engine.Tweek.Create(rulesDriver, parser)).Result;
+            services.AddSingleton(GetRulesParser());
+            services.AddSingleton(provider =>
+            {
+                var parser = provider.GetService<IRuleParser>();
+                var rulesDriver = provider.GetService<IRulesDriver>();
+                return Task.Run(async () => await Engine.Tweek.Create(rulesDriver, parser)).Result;
+            });
 
-            services.AddSingleton(tweek);
-            services.AddSingleton(Authorization.CreateReadConfigurationAccessChecker(tweek));
-            services.AddSingleton(Authorization.CreateWriteContextAccessChecker(tweek));
-            services.AddSingleton(parser);
+            services.AddSingleton(provider => Authorization.CreateReadConfigurationAccessChecker(provider.GetService<ITweek>()));
+            services.AddSingleton(provider => Authorization.CreateWriteContextAccessChecker(provider.GetService<ITweek>()));
 
             var tweekContactResolver = new TweekContractResolver.TweekContractResolver();
             var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };
+
             services.AddSingleton(jsonSerializer);
             services.AddMvc(options => options.AddMetricsResourceFilter())
                 .AddJsonOptions(opt =>
@@ -152,7 +153,7 @@ namespace Tweek.ApiService.NetCore
             return new BlobRulesDriver(new Uri(Configuration["RulesBlob.Url"]), new SystemWebClientFactory());
         }
 
-        IRuleParser GetRulesParser()
+        private static IRuleParser GetRulesParser()
         {
 
             return JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
