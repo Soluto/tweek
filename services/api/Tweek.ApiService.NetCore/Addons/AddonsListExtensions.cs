@@ -31,9 +31,9 @@ namespace Tweek.ApiService.NetCore.Addons
         {
             var selectedServiceAddons = configuration.GetSection("ServiceAddons").GetChildren().ToDictionary(x=>x.Key, x=>x.Value);
 
-            var addonTypes = GetAddonTypes<ITweekServiceAddon>(selectedServiceAddons.Keys);
+            var addonTypes = GetAddonTypes<ITweekAddon>(selectedServiceAddons.Keys);
 
-            foreach (var addon in addonTypes.Map(t => (ITweekServiceAddon)Activator.CreateInstance(t)))
+            foreach (var addon in addonTypes.Map(t => (ITweekAddon)Activator.CreateInstance(t)))
             {
                 addon.Register(services, configuration);
             }
@@ -43,30 +43,11 @@ namespace Tweek.ApiService.NetCore.Addons
         {
             var dependencies = DependencyContext.Default.RuntimeLibraries;
 
-            var assemblies = dependencies.SelectMany(dep =>
-            {
-                try
-                {
+            var assemblies = dependencies
+                .SelectMany(library => library.GetDefaultAssemblyNames(DependencyContext.Default).Select(Assembly.Load));
 
-                    return new[] { Assembly.Load(new AssemblyName(dep.Name)) };
-                }
-                catch (Exception)
-                {
-                    return new Assembly[] { };
-                }
-            }).ToArray();
-
-            var addonTypes = assemblies.Bind(x =>
-            {
-                try
-                {
-                    return x.GetTypes();
-                }
-                catch (Exception)
-                {
-                    return new Type[] { };
-                }
-            }).Filter(x => x != typeof(TInterface) && typeof(TInterface).IsAssignableFrom(x)).ToArray();
+            var addonTypes = assemblies.Bind(x => x.GetTypes())
+                .Filter(x => x != typeof(TInterface) && typeof(TInterface).IsAssignableFrom(x));
 
             return addonTypes.Filter(type =>typeNames.Contains(type.FullName));
         }

@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http.Features.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text.Encodings.Web;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Tweek.ApiService.NetCore.Security
 {
@@ -60,6 +61,10 @@ namespace Tweek.ApiService.NetCore.Security
             builder.UseRewriter(new RewriteOptions().AddRewrite("^configurations/([^?]+)[?]?(.*)", "api/v1/keys/$1?$tweeklegacy=tweeklegacy&$ignoreKeyTypes=true&$2", true));
             builder.UseRewriter(new RewriteOptions().AddRewrite("^context/([^?]+)[?]?(.*)", "api/v1/context/$1?$tweeklegacy=tweeklegacy&$2", true));
             builder.UseMiddleware<TweekLegacySupportMiddleware>();
+        }
+
+        public void Register(IServiceCollection services, IConfiguration configuration)
+        {
         }
     }
 }
