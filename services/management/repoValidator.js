@@ -8,24 +8,23 @@ const Rx = require('rxjs');
 
 nconf.argv().env().file({ file: `${process.cwd()}/config.json` });
 const validationUrl = nconf.get('VALIDATION_URL');
-const DEPENDENT_KEY_PREFIX = '@@key:';
 
-function getDependenciesFromMatcher(matcher) {
-  return Object.keys(matcher).filter(x => x.startsWith(DEPENDENT_KEY_PREFIX)).map(x => x.substring(DEPENDENT_KEY_PREFIX.length));
-}
+function getAllGroups(str, pattern, groupIndex) {
+    const result = [];
+    const regex = new RegExp(pattern, 'g');
+    var match;
 
-function calculateDependencies(rules, depth) {
-  if (depth == 0) {
-      return _.flatMap(rules.filter(r => r.Matcher).map(r => r.Matcher), getDependenciesFromMatcher);
-  }
-  return Object.keys(rules).map(k => rules[k]).reduce((result, rule) => result.concat(calculateDependencies(rule, depth - 1)), []);
+    while (match = regex.exec(str)) {
+        result.push(match[groupIndex]);
+    }
+
+    return result;
 }
 
 function getDependencies(meta, rule) {
     if (!meta) return [];
     if (meta.meta) return meta.dependencies;
-    const rulesObj = JSON.parse(rule);
-    return calculateDependencies(rulesObj.rules || rulesObj, rulesObj.partitions? rulesObj.partitions.length : 0);
+    return _.uniq(getAllGroups(rule, /"@@key:(.+?)"/, 1));
 }
 
 module.exports = function (data) {
