@@ -19,7 +19,7 @@ services:
       - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
     volumes: []
 
-  tweek-backoffice:
+  tweek-editor:
     volumes_from: 
       - keys
     environment: 
@@ -27,7 +27,7 @@ services:
       - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
     volumes: []
 
-  tweek-api:
+  tweek.apiservice.netcore:
     volumes_from: 
       - keys
     environment: 
