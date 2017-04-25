@@ -13,12 +13,12 @@ services:
     depends_on: 
       - selenium
     environment:
-      - BACKOFFICE_URL=http://tweek-backoffice:3000/
+      - BACKOFFICE_URL=http://tweek-editor:3000/
 
   tweek-management:
     environment: 
       - GIT_URL=ssh://git@tweek-git/tweek/tests
 
-  tweek-backoffice:
+  tweek-editor:
     environment: 
       - GIT_URL=ssh://git@tweek-git/tweek/tests
