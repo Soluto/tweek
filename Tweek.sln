@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.ApiService.NetCore", "services\api\Tweek.ApiService.NetCore\Tweek.ApiService.NetCore.csproj", "{F1F37A97-5937-4B3F-A342-EACC4D17BE19}"
 EndProject
@@ -46,6 +46,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonValueConverter.Tests", "core\Utils\JsonValueConverter.Tests\JsonValueConverter.Tests.csproj", "{92BA3225-2F06-4988-9F0E-DA097DAEDB0E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.ApiService.Addons", "core\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj", "{2E921C38-5F30-456D-A78C-4902C0432959}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "deployments\dev\docker-compose.dcproj", "{7BFB4ED8-676D-4649-93EB-8B6014F91B88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,6 +119,9 @@ Global
 		{2E921C38-5F30-456D-A78C-4902C0432959}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E921C38-5F30-456D-A78C-4902C0432959}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E921C38-5F30-456D-A78C-4902C0432959}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BFB4ED8-676D-4649-93EB-8B6014F91B88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BFB4ED8-676D-4649-93EB-8B6014F91B88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BFB4ED8-676D-4649-93EB-8B6014F91B88}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
