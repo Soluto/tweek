@@ -1,11 +1,13 @@
 ﻿﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+ using System.Linq;
+ using System.Threading.Tasks;
 ﻿using App.Metrics;
 using App.Metrics.Configuration;
 using App.Metrics.Extensions.Reporting.Graphite;
 using App.Metrics.Extensions.Reporting.Graphite.Client;
-using Engine;
+ using App.Metrics.Health;
+ using Engine;
 using Engine.Core.Rules;
 using Engine.Drivers.Context;
 using Engine.Drivers.Rules;
@@ -22,7 +24,8 @@ using Tweek.ApiService.NetCore.Addons;
 using Scrutor;
 using Tweek.ApiService.NetCore.Diagnostics;
 using Tweek.ApiService.NetCore.Metrics;
-using Tweek.Drivers.Blob;
+ using Tweek.ApiService.NetCore.Utils;
+ using Tweek.Drivers.Blob;
 using Tweek.Drivers.Blob.WebClient;
 using Tweek.JPad;
 using Tweek.JPad.Utils;
@@ -88,13 +91,15 @@ namespace Tweek.ApiService.NetCore
                         .AllowCredentials());
             });
 
+            // Adapt all IDiagnosticsProviders to support App.Metrics HealthCheck
+            services.AdaptSingletons<IDiagnosticsProvider, HealthCheck>(inner => new DiagnosticsProviderDecorator(inner));
+
             RegisterMetrics(services);
         }
 
         private void RegisterMetrics(IServiceCollection services)
         {
-            var diagnosticsProviders = services.BuildServiceProvider().GetServices<IDiagnosticsProvider>();
-            var healthChecksRegistrar = new HealthChecksRegistrar(diagnosticsProviders, Configuration["RulesBlob.Url"]);
+            var healthChecksRegistrar = new HealthChecksRegistrar(Configuration["RulesBlob.Url"]);
 
             services
                 .AddMetrics(options =>
