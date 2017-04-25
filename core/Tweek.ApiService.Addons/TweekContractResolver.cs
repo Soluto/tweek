@@ -4,7 +4,7 @@ using FSharpUtils.Newtonsoft;
 using Newtonsoft.Json.Serialization;
 using Tweek.Utils;
 
-namespace TweekContractResolver
+namespace Tweek.ApiService.Addons
 {
     public class TweekContractResolver : DefaultContractResolver
     {

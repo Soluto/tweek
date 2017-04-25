@@ -46,8 +46,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonValueConverter.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.ApiService.Addons", "core\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj", "{2E921C38-5F30-456D-A78C-4902C0432959}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TweekContractResolver", "core\Utils\TweekContractResolver\TweekContractResolver.csproj", "{664FAFE2-0C11-45EF-8AB3-F26A1B2E36B4}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -186,18 +184,6 @@ Global
 		{2E921C38-5F30-456D-A78C-4902C0432959}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2E921C38-5F30-456D-A78C-4902C0432959}.Release|x64.ActiveCfg = Release|Any CPU
 		{2E921C38-5F30-456D-A78C-4902C0432959}.Release|x86.ActiveCfg = Release|Any CPU
-		{664FAFE2-0C11-45EF-8AB3-F26A1B2E36B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{664FAFE2-0C11-45EF-8AB3-F26A1B2E36B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{664FAFE2-0C11-45EF-8AB3-F26A1B2E36B4}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{664FAFE2-0C11-45EF-8AB3-F26A1B2E36B4}.Debug|x64.Build.0 = Debug|Any CPU
-		{664FAFE2-0C11-45EF-8AB3-F26A1B2E36B4}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{664FAFE2-0C11-45EF-8AB3-F26A1B2E36B4}.Debug|x86.Build.0 = Debug|Any CPU
-		{664FAFE2-0C11-45EF-8AB3-F26A1B2E36B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{664FAFE2-0C11-45EF-8AB3-F26A1B2E36B4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{664FAFE2-0C11-45EF-8AB3-F26A1B2E36B4}.Release|x64.ActiveCfg = Release|Any CPU
-		{664FAFE2-0C11-45EF-8AB3-F26A1B2E36B4}.Release|x64.Build.0 = Release|Any CPU
-		{664FAFE2-0C11-45EF-8AB3-F26A1B2E36B4}.Release|x86.ActiveCfg = Release|Any CPU
-		{664FAFE2-0C11-45EF-8AB3-F26A1B2E36B4}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -222,6 +208,5 @@ Global
 		{C8EB3D59-9582-4C34-AB07-98DB22B095A3} = {25C9E706-270D-498F-934A-18F9FC7A6129}
 		{92BA3225-2F06-4988-9F0E-DA097DAEDB0E} = {25C9E706-270D-498F-934A-18F9FC7A6129}
 		{2E921C38-5F30-456D-A78C-4902C0432959} = {8FC42FA8-4EE7-4C6E-B1A9-55C70FA52A5A}
-		{664FAFE2-0C11-45EF-8AB3-F26A1B2E36B4} = {25C9E706-270D-498F-934A-18F9FC7A6129}
 	EndGlobalSection
 EndGlobal

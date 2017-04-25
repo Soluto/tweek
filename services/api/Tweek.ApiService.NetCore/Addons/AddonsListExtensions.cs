@@ -5,7 +5,6 @@ using LanguageExt;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Tweek.ApiService.Addons;
-using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,40 +15,41 @@ namespace Tweek.ApiService.NetCore.Addons
     {
         public static void InstallAddons(this IApplicationBuilder app, IConfiguration configuration)
         {
-            var selectedAddons = configuration.GetSection("Addons").GetChildren().ToDictionary(x=>x.Key, x=>x.Value);
-
-            var addonTypes = GetAddonTypes<ITweekAddon>(selectedAddons.Keys);
-
-            foreach  (ITweekAddon addon in addonTypes
-                .Filter(addonType=> selectedAddons.ContainsKey(addonType.FullName))
-                .Map(t => (ITweekAddon)Activator.CreateInstance(t))) {
-                addon.Install(app, configuration);
-            }
+            ForEachAddon(configuration, addon => addon.Install(app, configuration));
         }
 
-        public static void InstallServiceAddons(this IServiceCollection services, IConfiguration configuration)
+        public static void RegisterAddonServices(this IServiceCollection services, IConfiguration configuration)
         {
-            var selectedServiceAddons = configuration.GetSection("ServiceAddons").GetChildren().ToDictionary(x=>x.Key, x=>x.Value);
+            ForEachAddon(configuration, addon => addon.Register(services, configuration));
+        }
 
-            var addonTypes = GetAddonTypes<ITweekAddon>(selectedServiceAddons.Keys);
-
-            foreach (var addon in addonTypes.Map(t => (ITweekAddon)Activator.CreateInstance(t)))
+        private static void ForEachAddon(IConfiguration configuration, Action<ITweekAddon> action)
+        {
+            foreach (var tweekAddon in GetAddons(configuration))
             {
-                addon.Register(services, configuration);
+                action(tweekAddon);
             }
         }
 
-        private static IEnumerable<Type> GetAddonTypes<TInterface>(IEnumerable<string> typeNames)
+        private static IEnumerable<ITweekAddon> GetAddons(IConfiguration configuration)
         {
+            if (mAddonsCache != null) return mAddonsCache;
+
+            var selectedAddons = configuration.GetSection("Addons").GetChildren().ToDictionary(x => x.Key, x => x.Value);
             var dependencies = DependencyContext.Default.RuntimeLibraries;
 
             var assemblies = dependencies
                 .SelectMany(library => library.GetDefaultAssemblyNames(DependencyContext.Default).Select(Assembly.Load));
 
             var addonTypes = assemblies.Bind(x => x.GetTypes())
-                .Filter(x => x != typeof(TInterface) && typeof(TInterface).IsAssignableFrom(x));
+                .Filter(x => x != typeof(ITweekAddon) && typeof(ITweekAddon).IsAssignableFrom(x));
 
-            return addonTypes.Filter(type =>typeNames.Contains(type.FullName));
+            mAddonsCache = addonTypes.Filter(type => selectedAddons.ContainsKey(type.FullName))
+                .Map(t => (ITweekAddon)Activator.CreateInstance(t));
+
+            return mAddonsCache;
         }
+
+        private static IEnumerable<ITweekAddon> mAddonsCache;
     }
 }
