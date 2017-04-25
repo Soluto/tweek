@@ -52,7 +52,7 @@ namespace Tweek.ApiService.NetCore
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.InstallServiceAddons(Configuration);
+            services.RegisterAddonServices(Configuration);
 
             services.Decorate<IContextDriver>((driver, provider) => new TimedContextDriver(driver, provider.GetService<IMetrics>()));
 
@@ -73,7 +73,7 @@ namespace Tweek.ApiService.NetCore
             services.AddSingleton(provider => Authorization.CreateReadConfigurationAccessChecker(provider.GetService<ITweek>()));
             services.AddSingleton(provider => Authorization.CreateWriteContextAccessChecker(provider.GetService<ITweek>()));
 
-            var tweekContactResolver = new TweekContractResolver.TweekContractResolver();
+            var tweekContactResolver = new TweekContractResolver();
             var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };
 
             services.AddSingleton(jsonSerializer);

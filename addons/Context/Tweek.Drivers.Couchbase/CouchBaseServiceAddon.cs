@@ -57,11 +57,11 @@ namespace Tweek.Drivers.CouchbaseDriver
                 Serializer = () => new DefaultSerializer(
                     new JsonSerializerSettings()
                     {
-                        ContractResolver = new TweekContractResolver.TweekContractResolver()
+                        ContractResolver = new TweekContractResolver()
                     },
                     new JsonSerializerSettings()
                     {
-                        ContractResolver = new TweekContractResolver.TweekContractResolver()
+                        ContractResolver = new TweekContractResolver()
                     })
             });
         }

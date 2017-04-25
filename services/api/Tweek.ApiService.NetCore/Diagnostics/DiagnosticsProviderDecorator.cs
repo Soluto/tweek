@@ -24,7 +24,7 @@ namespace Tweek.ApiService.NetCore.Diagnostics
                 : mUnhealthyResult;
         }
 
-        private string FromatDetails(object details)
+        private static string FromatDetails(object details)
         {
             return details.ToString().Replace("{", "").Replace("}", "").Trim();
         }
