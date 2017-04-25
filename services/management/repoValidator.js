@@ -4,6 +4,7 @@ const fetch = require('node-fetch');
 const Promise = require('bluebird');
 const logger = require('./logger');
 const nconf = require('nconf');
+const Rx = require('rxjs');
 
 nconf.argv().env().file({ file: `${process.cwd()}/config.json` });
 const validationUrl = nconf.get('VALIDATION_URL');
@@ -33,50 +34,43 @@ module.exports = function (data) {
         throw 'missing rules validation url';
     }
 
-    return Promise.resolve(data)
-        .then(data => new JSZip().loadAsync(data))
-        .then(folder => {
+    return Rx.Observable.fromPromise(new JSZip().loadAsync(data))
+        .flatMap(folder => {
             const filteredFiles = _.values(folder.files)
                 .filter(file => file.name.startsWith('rules') || file.name.startsWith('meta'))
                 .filter(file => !file.dir)
                 .map(file => {
                     const name = file.name.replace(/\\/g, '/').replace(/.j(pad|son)/g, '');
-                    const index = name.indexOf('/');
+                    const splitName = name.split('/');
                     return {
-                        key: name.substring(index + 1),
-                        type: name.substring(0, index),
+                        key: splitName.slice(1).join('/'),
+                        folder: splitName[0],
                         file,
                     };
                 });
-
+            
             const groupedFiles = _.groupBy(filteredFiles, 'key');
 
-            return Object.keys(groupedFiles)
-                .filter(key => groupedFiles[key].some(x => x.type == 'rules'))
-                .map(key => ({ key, files: groupedFiles[key].map(x => x.file.async('string').then(contents => [x.type, contents])) }))
-                .map(x => 
-                    Promise.all(x.files)
+            return Rx.Observable.from(Object.keys(groupedFiles))
+                .filter(key => groupedFiles[key].some(x => x.folder == 'rules'))
+                .flatMap(key => Rx.Observable.defer(() => {
+                    const filesPromise = groupedFiles[key].map(x => x.file.async('string').then(contents => [x.folder, contents]));
+                    return Promise.all(filesPromise)
                         .then(pairs => _.fromPairs(pairs))
-                        .then(result => [x.key, { format: 'jpad', payload: result.rules, dependencies: getDependencies(result.meta, result.rules)}])
-                );
+                        .then(result => [key, { format: 'jpad', payload: result.rules, dependencies: getDependencies(result.meta, result.rules)}])
+                }), 10)
+                .toArray();
         })
-        .then(promises => Promise.all(promises))
-        .then(pairs => _.fromPairs(pairs))
-        .then(ruleset => {
-            logger.info('new ruleset was bundled');
-            return ruleset;
+        .map(pairs => _.fromPairs(pairs))
+        .do(_ => logger.info('new ruleset was bundled'))
+        .do(_ => fetchStartTime = Date.now())
+        .flatMap(ruleset => {
+            return fetch(validationUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(ruleset) });
         })
-        .then(ruleset => {
-            fetchStartTime = Date.now();
-            return ruleset;
-        })
-        .then(ruleset => fetch(validationUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(ruleset) }))
-        .then(ruleset => {
-            logger.info('finished request to validate rules', { timeToFetch: Date.now() - fetchStartTime });
-            return ruleset;
-        })
-        .then(checkStatus)
-        .then(response => response.json())
+        .do(_ => logger.info('finished request to validate rules', { timeToFetch: Date.now() - fetchStartTime }))
+        .map(checkStatus)
+        .map(response => response.json())
+        .toPromise();
 };
 
 const checkStatus = (response) => {
