@@ -13,14 +13,3 @@ services:
       - ~/.nuget/packages:/root/.nuget/packages:ro
       - ~/clrdbg:/clrdbg:ro
     entrypoint: tail -f /dev/null
-
-  tweek-management:
-    image: soluto/tweek-management:dev
-    expose:
-      - "5858"
-    ports:
-      - "5858:5858"
-    entrypoint:
-      - node
-      - --debug=5858
-      - ./server.js
