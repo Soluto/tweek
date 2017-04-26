@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tweek.ApiService.NetCore.Diagnostics
+namespace Tweek.ApiService.Addons
 {
     public interface IDiagnosticsProvider
     {
