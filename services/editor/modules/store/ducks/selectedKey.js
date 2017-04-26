@@ -55,7 +55,7 @@ export function openKey(key, { revision } = {}) {
         valueType: meta.valueType || 'string',
       },
       meta,
-      revisionHistory: keyData.revisionHistory
+      revisionHistory: keyData.revisionHistory,
     };
 
     dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
@@ -228,7 +228,7 @@ const handleKeyNameChange = ({ local: { key, ...localData }, ...otherState }, { 
   ...otherState,
   local: {
     ...localData,
-    meta: { ...localData.meta, displayName: payload },
+    meta: { ...localData.meta, meta: { ...localData.meta.meta, name: payload } },
     ...(payload === '' ? {} : { key: payload }),
   },
 });

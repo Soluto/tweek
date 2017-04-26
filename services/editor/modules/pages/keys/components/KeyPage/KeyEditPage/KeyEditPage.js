@@ -19,13 +19,19 @@ import ReactTooltip from 'react-tooltip';
 import * as RulesService from '../../../../../services/rules-service';
 
 class KeyEditPage extends Component {
-
   constructor(props) {
     super(props);
   }
 
   _onTagsChanged(newTags) {
-    const newMeta = { ...this.props.selectedKey.local.meta, tags: newTags };
+    const oldMeta = this.props.selectedKey.local.meta;
+    const newMeta = {
+      ...oldMeta,
+      meta: {
+        ...oldMeta.meta,
+        tags: newTags,
+      }
+    };
     this._onSelectedKeyMetaChanged(newMeta);
   }
 
@@ -34,12 +40,26 @@ class KeyEditPage extends Component {
   }
 
   _onDisplayNameChanged(newDisplayName) {
-    const newMeta = { ...this.props.selectedKey.local.meta, displayName: newDisplayName };
+    const oldMeta = this.props.selectedKey.local.meta;
+    const newMeta = {
+      ...oldMeta,
+      meta: {
+        ...oldMeta.meta,
+        name: newDisplayName,
+      }
+    };
     this._onSelectedKeyMetaChanged(newMeta);
   }
 
   _onDescriptionChanged(newDescription) {
-    const newMeta = { ...this.props.selectedKey.local.meta, description: newDescription };
+    const oldMeta = this.props.selectedKey.local.meta;
+    const newMeta = {
+      ...oldMeta,
+      meta: {
+        ...oldMeta.meta,
+        description: newDescription,
+      }
+    };
     this._onSelectedKeyMetaChanged(newMeta);
   }
 
@@ -53,7 +73,7 @@ class KeyEditPage extends Component {
     const { selectedKey, isInAddMode, isInStickyMode, alerter, revision } = this.props;
     const { key, local: { meta, keyDef,revisionHistory } } = selectedKey;
     const isHistoricRevision = (revision && revisionHistory[0].sha !== revision);
-    const isReadonly = (!!meta.readOnly && meta.readOnly) || isHistoricRevision
+    const isReadonly = (!!meta.meta.readOnly && meta.meta.readOnly) || isHistoricRevision;
 
     const commonHeadersProps = {
       onKeyNameChanged: this::this._onKeyNameChanged,
@@ -147,7 +167,7 @@ const KeyFullHeader = (props) => {
           <div className={style['key-description-and-tags-wrapper']}>
             <div className={style['key-description-wrapper']}>
               <EditableTextArea
-                value={keyMeta.description}
+                value={keyMeta.meta.description}
                 onTextChanged={text => onDescriptionChanged(text)}
                 placeHolder="Write key description"
                 title="Click to edit description"
@@ -158,7 +178,7 @@ const KeyFullHeader = (props) => {
 
             <div className={style['tags-wrapper']}>
               <KeyTags onTagsChanged={newTags => onTagsChanged(newTags)}
-                tags={keyMeta.tags} />
+                tags={keyMeta.meta.tags} />
             </div>
           </div>
 
@@ -183,7 +203,7 @@ const HeaderMainInput = (props) => {
         :
         <EditableText
           onTextChanged={text => onDisplayNameChanged(text)}
-          placeHolder="Enter key display name" maxLength={80} value={keyMeta.displayName} isReadonly={isReadonly}
+          placeHolder="Enter key display name" maxLength={80} value={keyMeta.meta.name} isReadonly={isReadonly}
           classNames={{
             container: style['display-name-container'],
             input: style['display-name-input'],

@@ -1,22 +1,20 @@
 import { UKNOWN_AUTHOR } from './unknownAuthor';
 import R from 'ramda';
 
-const DEPENDENT_KEY_PREFIX = '@@key:';
+function getAllGroups(str, pattern, groupIndex) {
+  const regex = new RegExp(pattern, 'g');
+  const result = [];
+  let match;
 
-function getDependenciesFromMatcher(matcher) {
-  return Object.keys(matcher).filter(x => x.startsWith(DEPENDENT_KEY_PREFIX)).map(x => x.substring(DEPENDENT_KEY_PREFIX.length));
-}
-
-function getDependencies(rules, depth) {
-  if (depth == 0) {
-    return R.chain(getDependenciesFromMatcher, rules.filter(r => r.Matcher).map(r => r.Matcher));
+  while (match = regex.exec(str)) {
+    result.push(match[groupIndex]);
   }
-  return Object.keys(rules).map(key => rules[key]).reduce((result, rule) => result.concat(getDependencies(rule, depth - 1)), []);
+
+  return result;
 }
 
-function generateMetaForKey(keyPath, {keyDef, meta}) {
-  const source = JSON.parse(keyDef.source);
-  const dependencies = R.uniq(getDependencies(source.rules, source.partitions.length));
+function convertMetaToNewFormat(keyPath, {keyDef, meta}) {
+  if (!meta || meta.meta) return meta;
 
   return {
     key_path: keyPath,
@@ -24,29 +22,17 @@ function generateMetaForKey(keyPath, {keyDef, meta}) {
       name: meta.displayName,
       tags: meta.tags,
       description: meta.description,
-      archived: meta.archived,
+      readOnly: meta.readOnly,
+      archived: false,
     },
     implementation: {
       type: 'file',
       format: keyDef.type,
     },
     valueType: meta.valueType,
-    dependencies,
+    dependencies: R.uniq(getAllGroups(keyDef.source, /"@@key:(.+?)"/, 1)),
     enabled: true,
   };
-}
-
-function retrieveMetaForKey(meta) {
-  if (meta.meta == undefined) return meta;
-  const {meta: newMeta} = meta;
-  return {
-    displayName: newMeta.name,
-    description: newMeta.description,
-    tags: newMeta.tags,
-    valueType: meta.valueType,
-    archived: newMeta.archived,
-    enabled: meta.enabled,
-  }
 }
 
 let injectAuthor = (fn) => function (req, res, deps, ...rest) {
@@ -64,7 +50,7 @@ export async function getKey(req, res, { keysRepository }, { params }) {
   const revision = req.query.revision;
   try {
     const keyDetails = await keysRepository.getKeyDetails(keyPath, { revision });
-    res.json({...keyDetails, meta: retrieveMetaForKey(keyDetails.meta)});
+    res.json({...keyDetails, meta: convertMetaToNewFormat(keyPath, keyDetails)});
   } catch (exp) {
     res.sendStatus(404);
   }
@@ -73,9 +59,9 @@ export async function getKey(req, res, { keysRepository }, { params }) {
 export const saveKey = injectAuthor(async function (req, res, { keysRepository, author }, { params }) {
   const keyPath = params.splat;
 
-  let keyRulesSource = req.body.keyDef.source;
-  const meta = generateMetaForKey(keyPath, req.body);
-  let keyMetaSource = JSON.stringify(meta, null, 4);
+  const keyRulesSource = req.body.keyDef.source;
+  const meta = {...req.body.meta, key_path: keyPath};
+  const keyMetaSource = JSON.stringify(meta, null, 4);
   await keysRepository.updateKey(keyPath, keyMetaSource, keyRulesSource, author);
 
   res.send('OK');

@@ -2,11 +2,18 @@ export const BLANK_KEY_NAME = '_blank';
 
 export function createBlankKeyMeta(keyName) {
   return {
-    displayName: keyName || '',
-    description: '',
-    tags: [],
+    meta: {
+      name: keyName || '',
+      tags: [],
+      description: '',
+      archived: false,
+    },
+    implementation: {
+      type: 'file',
+      format: 'jpad',
+    },
     valueType: '',
-    archived: false,
+    dependencies: [],
     enabled: true,
   };
 }
