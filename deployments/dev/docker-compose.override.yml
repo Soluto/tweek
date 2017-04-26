@@ -18,8 +18,15 @@ services:
       - tweek-git
     volumes:
       - ../../services/git-service/ssh:/keys
+    expose:
+      - "5858"
     ports:
+      - "5858:5858"
       - "4002:3000"
+    entrypoint:
+      - node
+      - --debug=5858
+      - ./server.js
     environment:
       - GIT_USER=git
       - GIT_URL=ssh://git@tweek-git/tweek/repo
