@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Tweek.ApiService.Addons;
 using Microsoft.Extensions.Options;
 
@@ -17,6 +18,10 @@ namespace Tweek.Addons.Auth.PingIdentity
                     Issuer = pingIdentityConfig["Issuer"],
                     Authority = pingIdentityConfig["Authority"]
                 }));
+        }
+
+        public void Register(IServiceCollection services, IConfiguration configuration)
+        {
         }
     }
 }
