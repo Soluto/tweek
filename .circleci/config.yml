@@ -19,10 +19,10 @@ jobs:
       
       - restore_cache:
           keys:
-            - yarn-cache-{{ .Branch }}-{{ checksum "services/editor/yarn.lock" }}
-            - yarn-cache-{{ .Branch }}
-            - yarn-cache-master
-            - yarn-cache-
+            - local-yarn-cache-{{ .Branch }}-{{ checksum "services/editor/yarn.lock" }}
+            - local-yarn-cache-{{ .Branch }}
+            - local-yarn-cache-master
+            - local-yarn-cache-
 
       - run:
           name: yarn install
@@ -30,9 +30,9 @@ jobs:
           command: yarn --cache-folder "/.yarn-cache"
 
       - save_cache:
-          key: yarn-cache-{{ .Branch }}-{{ checksum "services/editor/yarn.lock" }}
+          key: local-yarn-cache-{{ .Branch }}-{{ checksum "services/editor/yarn.lock" }}
           paths:
-            - ~/tweek/services/editor.yarn-cache
+            - ~/tweek/services/editor/.yarn-cache
 
       - run: 
           name: Run unit tests
