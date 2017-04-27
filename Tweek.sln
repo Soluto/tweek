@@ -49,6 +49,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.ApiService.Addons", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.UnitTests", "core\Engine\Engine.UnitTests\Engine.UnitTests.csproj", "{A7ABF431-D7D6-4476-8BF9-A4D2631897FF}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "deployments\dev\docker-compose.dcproj", "{7BFB4ED8-676D-4649-93EB-8B6014F91B88}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +125,9 @@ Global
 		{A7ABF431-D7D6-4476-8BF9-A4D2631897FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7ABF431-D7D6-4476-8BF9-A4D2631897FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7ABF431-D7D6-4476-8BF9-A4D2631897FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BFB4ED8-676D-4649-93EB-8B6014F91B88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BFB4ED8-676D-4649-93EB-8B6014F91B88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BFB4ED8-676D-4649-93EB-8B6014F91B88}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
