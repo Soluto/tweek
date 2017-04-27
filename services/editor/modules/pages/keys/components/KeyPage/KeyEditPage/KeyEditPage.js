@@ -69,10 +69,19 @@ class KeyEditPage extends Component {
     this.props.updateKeyMetaDef(newMeta);
   }
 
+  onDependencyChanges(dependencies) {
+    const oldMeta = this.props.selectedKey.local.meta;
+    const newMeta = {
+      ...oldMeta,
+      dependencies,
+    };
+    this.onSelectedKeyMetaChanged(newMeta);
+  }
+
   onMutation(x) {
     const dependencies = RulesService.getDependencies(x.rules, x.partitions.length);
     if (!R.equals(this.props.selectedKey.local.meta.dependencies, dependencies)) {
-      this.props.updateKeyDependencies(dependencies);
+      this.onDependencyChanges(dependencies);
     }
     this.props.updateKeyDef({ source: JSON.stringify(x, null, 4) });
   }

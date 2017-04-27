@@ -60,7 +60,7 @@ export const saveKey = injectAuthor(async function (req, res, { keysRepository, 
   const keyPath = params.splat;
 
   const keyRulesSource = req.body.keyDef.source;
-  const meta = {...req.body.meta, key_path: keyPath};
+  const meta = { key_path: keyPath, ...req.body.meta };
   const keyMetaSource = JSON.stringify(meta, null, 4);
   await keysRepository.updateKey(keyPath, keyMetaSource, keyRulesSource, author);
 

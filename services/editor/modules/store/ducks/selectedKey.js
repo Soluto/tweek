@@ -126,10 +126,6 @@ export function updateKeyName(newKeyName) {
   };
 }
 
-export function updateKeyDependencies(newDependencies) {
-  return { type: KEY_DEPENDENCY_CHANGE, payload: newDependencies };
-}
-
 export function saveKey() {
   return async function (dispatch, getState) {
     const currentState = getState();
@@ -257,14 +253,6 @@ const handleKeyNameChange = ({ local: { key, ...localData }, ...otherState }, { 
   },
 });
 
-const handleKeyDependenciesChange = ({ local, ...otherState }, { payload }) => ({
-  ...otherState,
-  local: {
-    ...local,
-    meta: { ...local.meta, dependencies: payload },
-  },
-});
-
 const isStateInvalid = (validationState) => {
   return Object.keys(validationState)
     .map(x => validationState[x])
@@ -322,7 +310,6 @@ export default handleActions({
   [KEY_SAVED]: handleKeySaved,
   [KEY_SAVING]: handleKeySaving,
   [KEY_NAME_CHANGE]: handleKeyNameChange,
-  [KEY_DEPENDENCY_CHANGE]: handleKeyDependenciesChange,
   [KEY_VALIDATION_CHANGE]: handleKeyValidationChange,
   KEY_DELETING: handleKeyDeleting,
   [KEY_VALUE_TYPE_CHANGE]: handleKeyValueTypeChange,
