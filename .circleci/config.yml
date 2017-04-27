@@ -19,10 +19,10 @@ jobs:
       
       - restore_cache:
           keys:
-            - yarn-cache-{{ .Branch }}-{{ checksum "services/editor/yarn.lock" }}
-            - yarn-cache-{{ .Branch }}
-            - yarn-cache-master
-            - yarn-cache-
+            - local-yarn-cache-{{ .Branch }}-{{ checksum "services/editor/yarn.lock" }}
+            - local-yarn-cache-{{ .Branch }}
+            - local-yarn-cache-master
+            - local-yarn-cache-
 
       - run:
           name: yarn install
@@ -30,9 +30,9 @@ jobs:
           command: yarn --cache-folder "/.yarn-cache"
 
       - save_cache:
-          key: yarn-cache-{{ .Branch }}-{{ checksum "services/editor/yarn.lock" }}
+          key: local-yarn-cache-{{ .Branch }}-{{ checksum "services/editor/yarn.lock" }}
           paths:
-            - ~/tweek/services/editor.yarn-cache
+            - ~/tweek/services/editor/.yarn-cache
 
       - run: 
           name: Run unit tests
@@ -63,25 +63,25 @@ jobs:
           working_directory: ~/tweek/deployments/dev
           command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml pull selenium tweek-management tweek-api
-            docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml build tweek-git backoffice-e2e tweek-backoffice
+            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml pull selenium tweek-management tweek.apiservice.netcore
+            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml build tweek-git backoffice-e2e tweek-editor
 
       - run:
           name: Run tweek-backoffice
           working_directory: ~/tweek/deployments/dev
-          command: docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml up -d tweek-backoffice
+          command: docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml up -d tweek-editor
             
       - run:
           name: Prepare for e2e tests
           working_directory: ~/tweek/deployments/dev
           command: |
-            docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml run -d selenium
-            docker run --network=dev_default node:6.10.1-slim wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status
+            docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml run -d selenium
+            docker run --network=dev_default node:6.10.1-slim wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek.apiservice.netcore/status
  
       - run:
           name: Run e2e tests
           working_directory: ~/tweek/deployments/dev
-          command: docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml run backoffice-e2e
+          command: docker-compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml run backoffice-e2e
 
       - deploy: 
           name: deploy

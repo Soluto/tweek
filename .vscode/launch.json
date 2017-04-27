@@ -108,6 +108,18 @@
 			"externalConsole": false,
 			"sourceMaps": false,
 			"outDir": null
-		}
+		},
+        {
+            "name": "Attach Management",
+            "type": "node",
+            "request": "attach",
+            "port": 5858,
+            "address": "localhost",
+            "restart": false,
+            "sourceMaps": false,
+            "outDir": null,
+            "localRoot": "${workspaceRoot}/services/management/",
+            "remoteRoot": "/opt/app/"
+        }
     ]
 }
