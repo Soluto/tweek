@@ -9,6 +9,7 @@ using FSharpUtils.Newtonsoft;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestEase;
+using Tweek.ApiService.SmokeTests.Validation.Models;
 using Tweek.Utils;
 
 namespace Tweek.ApiService.SmokeTests
@@ -26,6 +27,16 @@ namespace Tweek.ApiService.SmokeTests
         {
             await _client.PostAsync(
                 $"http://localhost:5000/context/{identityType}/{identityId}", new StringContent(JsonConvert.SerializeObject(context, new JsonValueConverter()), Encoding.UTF8, "application/json"));
+        }
+
+        public async Task<string> Validate(Dictionary<string, RuleDefinition> ruleset)
+        {
+            var response = await _client.PostAsync($"http://localhost:5000/validation",
+                new StringContent(JsonConvert.SerializeObject(ruleset, new JsonValueConverter()), Encoding.UTF8,
+                    "application/json"));
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsStringAsync();
         }
 
         public async Task<JToken> GetConfigurations(string keyPath, IEnumerable<KeyValuePair<string, string>> context)

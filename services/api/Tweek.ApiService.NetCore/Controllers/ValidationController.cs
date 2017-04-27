@@ -6,7 +6,10 @@ using System.Net;
 using System.Threading.Tasks;
 using Engine.Core.Rules;
 using Engine.Drivers.Rules;
+using Engine.Rules.Creation;
+using Engine.Rules.Validation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -50,12 +53,7 @@ namespace Tweek.ApiService.NetCore.Controllers
                 return BadRequest("invalid ruleset");
             }
 
-            var failures = ruleset
-                .Where(x => !IsParsable(x.Value.Payload))
-                .Select(x => x.Key);
-
-            if (failures.Any()) return BadRequest(failures);
-            return Content("true");
+            return await Validator.Validate(ruleset, _parser) ? (ActionResult)Content("true") : BadRequest("bad");
         }
     }
 }
