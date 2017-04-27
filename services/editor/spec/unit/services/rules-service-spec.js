@@ -13,10 +13,10 @@ const toExplicitRule = Value => ({
 
 describe('rules-service', () => {
   describe('addPartition', () => {
-    const PARTITION_NAME = 'somePartition';
+    const partition = 'somePartition';
 
     const rulesToCheck = [
-      { expected: { '*': [] }, PARTITION_NAME, rules: [], depth: 0 },
+      { expected: { '*': [] }, partition, rules: [], depth: 0 },
       {
         expected: {
           someValue1: [{ Matcher: {} }],
@@ -26,11 +26,11 @@ describe('rules-service', () => {
           ],
           '*': [{ Matcher: {} }],
         },
-        PARTITION_NAME,
+        partition,
         rules: [
-          { Matcher: { [PARTITION_NAME]: 'someValue1' } },
-          { Matcher: { [PARTITION_NAME]: 'someValue2' } },
-          { Matcher: { [PARTITION_NAME]: 'someValue2', property: 'someValue' } },
+          { Matcher: { [partition]: 'someValue1' } },
+          { Matcher: { [partition]: 'someValue2' } },
+          { Matcher: { [partition]: 'someValue2', property: 'someValue' } },
           { Matcher: {} },
         ],
         depth: 0,
@@ -46,11 +46,11 @@ describe('rules-service', () => {
           },
           partition2: { '*': [] },
         },
-        PARTITION_NAME,
+        partition,
         rules: {
           partition1: [
-            { Matcher: { [PARTITION_NAME]: 'someValue' } },
-            { Matcher: { [PARTITION_NAME]: 'someValue', property: 'someValue2' } },
+            { Matcher: { [partition]: 'someValue' } },
+            { Matcher: { [partition]: 'someValue', property: 'someValue2' } },
             { Matcher: {} },
           ],
           partition2: [],
