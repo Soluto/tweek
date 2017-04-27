@@ -13,7 +13,7 @@ namespace Tweek.ApiService.NetCore
         public static void Main(string[] args)
         {
             var host = new WebHostBuilder()
-                .UseKestrel()
+                .UseKestrel(opts=> opts.Limits.MaxRequestLineSize = 128 * 1024)
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseApplicationInsights()
                 .UseStartup<Startup>()
