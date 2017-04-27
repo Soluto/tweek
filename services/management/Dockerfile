@@ -9,4 +9,6 @@ ADD . /opt/app
 EXPOSE 3000
 
 ENV PORT=3000
+HEALTHCHECK --interval=10s --timeout=10s --retries=8 \
+      CMD curl -f http://localhost:3000/isalive || exit 1
 ENTRYPOINT ["node", "./server.js"]
