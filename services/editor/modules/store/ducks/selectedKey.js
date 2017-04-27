@@ -257,12 +257,11 @@ const handleKeyNameChange = ({ local: { key, ...localData }, ...otherState }, { 
   },
 });
 
-const handleKeyDependenciesChange = ({ local: { key, ...localData }, ...otherState }, { payload }) => ({
+const handleKeyDependenciesChange = ({ local, ...otherState }, { payload }) => ({
   ...otherState,
   local: {
-    ...localData,
-    meta: { ...localData.meta, dependencies: payload },
-    ...(payload === '' ? {} : { key: payload }),
+    ...local,
+    meta: { ...local.meta, dependencies: payload },
   },
 });
 
