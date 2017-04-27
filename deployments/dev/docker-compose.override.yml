@@ -2,6 +2,7 @@ version: '2'
 
 services:
   tweek-git:
+    image: soluto/tweek-bare-repo
     build: ../../services/git-service/BareRepository
     ports: 
       - "4001:22"
