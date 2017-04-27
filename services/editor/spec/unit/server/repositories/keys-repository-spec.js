@@ -114,34 +114,72 @@ describe("keys-repository", () => {
 
   describe("getKeyDetails", () => {
 
-    const metaSource = JSON.stringify({
-      "displayName": "test",
-      "description": "",
-      "tags": [],
-      "valueType": "",
-    });
+    const metaRevisions = {
+      "revision-1": {
+        "displayName": "test",
+        "description": "desc-1",
+        "tags": [],
+        "valueType": ""
+      },
+      "revision-2": {
+        "displayName": "test",
+        "description": "desc-2",
+        "tags": [],
+        "valueType": ""
+      },
+      "revision-3": {
+        "displayName": "test",
+        "description": "desc-3",
+        "tags": [],
+        "valueType": ""
+      }
+    }
 
-    const rulesSource = JSON.stringify({
-      rules: [{
-        "Id": "test",
-        "Matcher": {},
-        "Value": "test",
-        "Type": "SingleVariant",
-        "valueType": "",
-      }],
-      partitions: [],
-      valueType: "",
-    });
-
-    const modificationData = {
-      modifyDate: Date.now(),
-      modifyUser: "testUser",
-      modifyCompareUrl: "testCompareUrl"
-    };
+    const keyRevisions = {
+      "revision-1": {
+        rules: [{
+          "Id": "test",
+          "Matcher": {},
+          "Value": "test1",
+          "Type": "SingleVariant",
+          "valueType": "",
+        }],
+        partitions: [],
+        valueType: ""
+      },
+      "revision-2": {
+        rules: [{
+          "Id": "test",
+          "Matcher": {},
+          "Value": "test2",
+          "Type": "SingleVariant",
+          "valueType": "",
+        }],
+        partitions: [],
+        valueType: ""
+      },
+      "revision-3": {
+        rules: [{
+          "Id": "test",
+          "Matcher": {},
+          "Value": "test3",
+          "Type": "SingleVariant",
+          "valueType": "",
+        }],
+        partitions: [],
+        valueType: ""
+      }
+    }
+    const getKeyRevisions = revision => Object.keys(keyRevisions)
+      .filter(rev => JSON.parse(rev.slice(-1)) <= JSON.parse(revision.slice(-1)))
+      .map(rev => keyRevisions[rev])
 
     beforeEach(() => {
-      mockGitRepo.getFileDetails = jest.fn(path => modificationData);
-      mockGitRepo.readFile = jest.fn(path => path.startsWith("meta") ? metaSource : rulesSource);
+      mockGitRepo.getFileDetails = jest.fn((path, { revision = 'revision-3' } = {}) => {
+        return getKeyRevisions(revision)
+      });
+      mockGitRepo.readFile = jest.fn((path, { revision = 'revision-3' } = {}) =>
+        JSON.stringify(path.startsWith("meta") ? metaRevisions[revision] : keyRevisions[revision]));
     });
 
     it("should return key definition with the source for the jpad", async () => {
@@ -149,16 +187,26 @@ describe("keys-repository", () => {
       let keyDetails = await target.getKeyDetails(testKeyPath);
 
       // Assert
-      expect(keyDetails.keyDef.source).toEqual(rulesSource);
+      expect(keyDetails.keyDef.source).toEqual(JSON.stringify(keyRevisions['revision-3']));
       expect(keyDetails.keyDef.type).toEqual("jpad");
     });
 
-    it("should return key definition with the key's rules history", async () => {
+    it("should return key definition with the source for the jpad for specified revision", async () => {
+      // Act
+      let keyDetails = await target.getKeyDetails(testKeyPath, { revision: 'revision-2' });
+
+      // Assert
+      expect(keyDetails.keyDef.source).toEqual(JSON.stringify(keyRevisions['revision-2']));
+      expect(keyDetails.keyDef.type).toEqual("jpad");
+    });
+
+
+    it("should return key definition with the key's revision history", async () => {
       // Act
       let keyDetails = await target.getKeyDetails(testKeyPath);
 
       // Assert
-      expect(keyDetails.keyDef.modificationData).toEqual(modificationData);
+      expect(keyDetails.revisionHistory).toEqual(getKeyRevisions('revision-3'));
     });
 
     it("should parse and return meta as an object", async () => {
@@ -166,11 +214,27 @@ describe("keys-repository", () => {
       let keyDetails = await target.getKeyDetails(testKeyPath);
 
       // Assert
-      expect(keyDetails.meta).toEqual(JSON.parse(metaSource));
+      expect(keyDetails.meta).toEqual(metaRevisions['revision-3']);
+    });
+
+      it("should parse and return meta as an object for specified revision", async () => {
+      // Act
+      let keyDetails = await target.getKeyDetails(testKeyPath,{revision:'revision-2'});
+
+      // Assert
+      expect(keyDetails.meta).toEqual(metaRevisions['revision-2']);
     });
 
     it("should convert old JPAD format to new format if needed", async () => {
       // Arrange
+      const metaSource = JSON.stringify({
+        "displayName": "test",
+        "description": "",
+        "tags": [],
+        "valueType": "",
+      });
+
+
       const oldFormatJPAD = [{
         "Id": "test",
         "Matcher": {},
