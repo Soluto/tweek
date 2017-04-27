@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Couchbase;
+using Couchbase.Configuration.Client;
 using Engine.DataTypes;
+using Engine.Drivers.Context;
 using Engine.Drivers.Rules;
 using Engine.Tests.Helpers;
 using Engine.Tests.TestDrivers;
-using Newtonsoft.Json;
-using Xunit;
-using Tweek.JPad.Generator;
-using MatcherData = System.Collections.Generic.Dictionary<string, object>;
-using Couchbase.Configuration.Client;
-using Engine.Drivers.Context;
 using FSharpUtils.Newtonsoft;
+using Newtonsoft.Json;
+using Tweek.JPad.Generator;
 using Tweek.Utils;
+using Xunit;
+using MatcherData = System.Collections.Generic.Dictionary<string, object>;
 
-namespace Engine.Tests
+namespace Engine.IntegrationTests
 {
     public class CouchBaseFixture
     {
