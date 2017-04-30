@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import { compose, withProps, mapProps } from 'recompose';
+import { compose, withProps, mapProps, lifecycle } from 'recompose';
+import { connect } from 'react-redux';
 
 import filteredPropsValues from '../../utils/filteredPropsValues';
 import transformProps from '../../utils/transformProps';
@@ -13,11 +14,15 @@ import withUpdateContextData from '../../hoc/withContextData/withUpdateContextDa
 
 import FixedConfigurationTable from './FixedConfigurationTable';
 
+import { getContext, updateContext } from '../../../../store/ducks/context';
+
 const FixedConfiguration = ({ fixedConfigurations, updateContext }) => {
   return (
     <div style={ style.container }>
       <h3>Fixed Configuration</h3>
-      <FixedConfigurationTable onSave={ data => updateContext(addFixedPrefix(data)) } fixedConfigurations={ fixedConfigurations } />
+      <FixedConfigurationTable
+        onSave={ data => updateContext(addFixedPrefix(data)) }
+        fixedConfigurations={ fixedConfigurations } />
     </div>
   )
 }
@@ -35,11 +40,38 @@ const style = {
   }
 }
 
+const mapStateToProps = state => ({
+  contextData: state.context.contextData
+})
+
+const mapDispatchToProps = (dispatch, props) => ({
+  getContext: () => dispatch(getContext({
+    contextType: props.contextType,
+    contextId: props.contextId
+  })),
+  updateContext: contextData => dispatch(updateContext({
+    contextType: props.contextType,
+    contextId: props.contextid,
+    contextData 
+  }))
+})
+
 export default compose(
-  withContextData(),
-  withUpdateContextData(),
+  connect(mapStateToProps, mapDispatchToProps),
+  lifecycle({
+    componentWillMount(){
+      this.props.getContext();
+    },
+
+    componentDidUpdate(prev){
+      const { props } = this;
+      if (props.contextId != prev.contextId || props.contextType != prev.contextType){
+        props.getContext();
+      }
+    }
+  }),
   mapProps(props => ({
     ...props,
-    fixedConfigurations: removeFixedPrefix(filterFixedConfigurationProps(props.contextData))
+    fixedConfigurations: removeFixedPrefix(filterFixedConfigurationProps(props.contextData || {}))
   }))
 )(FixedConfiguration);

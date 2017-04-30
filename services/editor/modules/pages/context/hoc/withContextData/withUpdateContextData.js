@@ -1,7 +1,7 @@
 import { withProps } from 'recompose';
 
-const enhance = () => withProps(props => ({
-  updateContext: contextData => {
+const enhance = input => withProps(props => ({
+  updateContext: async contextData => {
     fetch(`/api/context/${props.contextType}/${props.contextId}`, {
       credentials: 'same-origin',
       method: 'POST',
