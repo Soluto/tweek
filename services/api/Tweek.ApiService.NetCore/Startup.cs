@@ -25,6 +25,7 @@ using System.Reflection;
 using App.Metrics.Configuration;
 using App.Metrics.Extensions.Reporting.Graphite;
 using App.Metrics.Extensions.Reporting.Graphite.Client;
+using Engine.Rules.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Tweek.ApiService.NetCore.Security;
 using Tweek.ApiService.NetCore.Addons;
@@ -79,6 +80,7 @@ namespace Tweek.ApiService.NetCore
             var parser = GetRulesParser();
             var tweek = Task.Run(async () => await Engine.Tweek.Create(rulesDriver, parser)).Result;
 
+            services.AddSingleton(provider => Validator.GetValidationDelegate(provider.GetService<IRuleParser>()));
             services.AddSingleton(tweek);
             services.AddSingleton(Authorization.CreateReadConfigurationAccessChecker(tweek));
             services.AddSingleton(Authorization.CreateWriteContextAccessChecker(tweek));
