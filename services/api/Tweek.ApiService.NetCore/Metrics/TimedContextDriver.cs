@@ -60,7 +60,7 @@ namespace Tweek.ApiService.NetCore.Metrics
                 Name = name,
                 MeasurementUnit = Unit.None,
                 DurationUnit = TimeUnit.Milliseconds,
-                RateUnit = TimeUnit.Milliseconds,
+                RateUnit = TimeUnit.Seconds,
             };
         }
     }
