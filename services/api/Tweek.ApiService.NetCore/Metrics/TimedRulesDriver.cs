@@ -24,7 +24,7 @@ namespace Tweek.ApiService.NetCore.Metrics
                 Name = "GetAll",
                 MeasurementUnit = Unit.None,
                 DurationUnit = TimeUnit.Milliseconds,
-                RateUnit = TimeUnit.Milliseconds
+                RateUnit = TimeUnit.Seconds,
             };
         }
 
