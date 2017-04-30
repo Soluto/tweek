@@ -14,7 +14,7 @@ const classes = {
   inputRow: style['context-fixed-configuration-table-input-row']
 }
 
-function renderConfigurationDiff(key, diff){
+function renderConfigurationDiff(key, diff, onDelete){
 
   if (key === undefined || key === ""){
     return null;
@@ -22,7 +22,6 @@ function renderConfigurationDiff(key, diff){
 
   let keyComponent;
   let valueComponent;
-  let operationComponent = <div className={ classes.col }><Button text="Delete" /></div>
 
   if (diff.isAdded){
     keyComponent = <div className={ classes.col } style={{ color: 'green' }}>{ key }</div>
@@ -44,7 +43,7 @@ function renderConfigurationDiff(key, diff){
   return <div key={ key } className={ classes.row }>
     { keyComponent }
     { valueComponent }
-    { operationComponent }
+    { diff.isRemoved == false ?  <div className={ classes.col }><Button text="Delete" onClick={ onDelete }/></div> : null }
   </div>
 }
 class FixedConfigurationTable extends Component {
@@ -82,7 +81,7 @@ class FixedConfigurationTable extends Component {
     return (
       <div className={ classes.container }>{
         Object.keys(configurationDiff).map(key => {
-          return renderConfigurationDiff(key, configurationDiff[key])
+          return renderConfigurationDiff(key, configurationDiff[key], () => this.onDelete(key))
         })
       }
       
@@ -105,17 +104,35 @@ class FixedConfigurationTable extends Component {
       </div>
 
       <div style={{ marginTop: '10px' }}>
-        <Button onClick={ () => this.props.onSave(this.state.newConfiguration) } text={ 'Save' } />
+        <Button onClick={ () => this.onSave() } text={ 'Save' } />
       </div>
       
       </div>
     )
   }
 
-  calculateConfigurationDiff(){
+  onSave(){
+    this.props.onSave({
+      updatedConfiguration: this.state.newConfiguration,
+      deletedKeys: Object
+        .entries(this.state.configurationDiff)
+        .filter(([key, value]) => value.isRemoved)
+        .map(([key, value]) => key)
+    })
+  }
+
+  onDelete(key) {
+    let newConfiguration = Object.keys(this.state.newConfiguration)
+      .filter(configKey => configKey != key)
+      .reduce((result, configKey) => ({
+        ...result,
+        [configKey]: this.state.newConfiguration[configKey]
+      }), {})
+
     this.setState({
+      newConfiguration,
       configurationDiff: getConfigurationDiff({
-        newConfiguration: this.state.configurations,
+        newConfiguration,
         initialConfiguration: this.props.fixedConfigurations
       })
     })

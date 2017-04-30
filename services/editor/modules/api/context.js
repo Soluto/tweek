@@ -29,3 +29,10 @@ export async function updateContext(req, res, { tweekApiHostname }, { params }){
   await tweekApiClient.post(`context/${params.contextType}/${params.contextId}`, req.body);
   res.sendStatus(200);
 }
+
+export async function deleteContextKey(req, res, { tweekApiHostname }, { params }) {
+
+  const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
+  await tweekApiClient.delete(`context/${params.contextType}/${params.contextId}/${params.key}`);
+
+}

@@ -21,7 +21,10 @@ const FixedConfiguration = ({ fixedConfigurations, updateContext }) => {
     <div style={ style.container }>
       <h3>Fixed Configuration</h3>
       <FixedConfigurationTable
-        onSave={ data => updateContext(addFixedPrefix(data)) }
+        onSave={ ({ updatedConfiguration, deletedKeys }) => updateContext({
+          updatedConfiguration,
+          deletedKeys
+        }) }
         fixedConfigurations={ fixedConfigurations } />
     </div>
   )
@@ -49,10 +52,11 @@ const mapDispatchToProps = (dispatch, props) => ({
     contextType: props.contextType,
     contextId: props.contextId
   })),
-  updateContext: contextData => dispatch(updateContext({
+  updateContext: ({ updatedConfiguration, deletedKeys }) => dispatch(updateContext({
     contextType: props.contextType,
     contextId: props.contextId,
-    contextData 
+    updatedContextData: addFixedPrefix(updatedConfiguration),
+    deletedContextKeys: deletedKeys.map(key => `@fixed:${key}`)
   }))
 })
 

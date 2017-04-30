@@ -13,15 +13,24 @@ export const getContext = ({ contextType, contextId }) => async function (dispat
     dispatch({ type: CONTEXT_RECEIVED, payload: { contextData } });
 };
 
-export const updateContext = ({ contextType, contextId, contextData }) => async function(dispatch){
+export const updateContext = ({ contextType, contextId, updatedContextData, deletedContextKeys }) => async function(dispatch){
     dispatch({ type: UPDATE_CONTEXT });
 
-    await fetch(`/api/context/${contextType}/${contextId}`, {
-      credentials: 'same-origin',
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(contextData) 
-    })
+    await Promise.all([
+      ...deletedContextKeys
+          .map(encodeURIComponent)
+          .map(key => fetch(`/api/context/${contextType}/${contextId}/${key}`, {
+        credentials: 'same-origin',
+        method: 'DELETE',
+      })),
+
+      fetch(`/api/context/${contextType}/${contextId}`, {
+        credentials: 'same-origin',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedContextData)
+      })
+    ]);
 
     dispatch({ type: CONTEXT_UPDATED });
     dispatch(getContext({ contextType, contextId }));
