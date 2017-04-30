@@ -19,24 +19,11 @@ namespace Tweek.ApiService.NetCore.Controllers
     [Route("validation")]
     public class ValidationController : Controller
     {
-        private IRuleParser _parser;
-        // GET: api/values
-        public ValidationController(IRuleParser parser)
-        {
-            _parser = parser;
-        }
+        private readonly Validator.ValidationDelegate mValidateRules;
 
-        public bool IsParsable(string payload)
+        public ValidationController(Validator.ValidationDelegate validateRules)
         {
-            try
-            {
-                _parser.Parse(payload);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            mValidateRules = validateRules;
         }
 
         [HttpPost]
@@ -53,7 +40,7 @@ namespace Tweek.ApiService.NetCore.Controllers
                 return BadRequest("invalid ruleset");
             }
 
-            return await Validator.Validate(ruleset, _parser) ? (ActionResult)Content("true") : BadRequest("bad");
+            return await mValidateRules(ruleset) ? (ActionResult)Content("true") : BadRequest("invalid ruleset");
         }
     }
 }
