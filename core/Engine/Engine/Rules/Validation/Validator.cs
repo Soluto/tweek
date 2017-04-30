@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using Engine.Drivers.Rules;
 using Engine.Core.Rules;
 using Engine.Rules.Creation;
@@ -10,9 +9,12 @@ namespace Engine.Rules.Validation
 {
     public static class Validator
     {
-        public static async Task<bool> Validate(IDictionary<string, RuleDefinition> rules, IRuleParser parser)
+        public delegate Task<bool> ValidationDelegate(IDictionary<string, RuleDefinition> rules);
+
+        public static ValidationDelegate GetValidationDelegate(IRuleParser parser) => rules => Validate(rules, parser);
+
+        private static async Task<bool> Validate(IDictionary<string, RuleDefinition> rules, IRuleParser parser)
         {
-            var tokenSource = new CancellationTokenSource();
             var parsingTask = Task.Run(() =>
                 {
                     try
@@ -24,13 +26,12 @@ namespace Engine.Rules.Validation
                     {
                         return false;
                     }
-                }, tokenSource.Token);
+                });
 
-            var dependencyCheckingTask = Task.Run(() => !DependencyChecker.HasCircularDependencies(rules), tokenSource.Token);
+            var dependencyCheckingTask = Task.Run(() => !DependencyChecker.HasCircularDependencies(rules));
 
-            var result = await Task.WhenAny(parsingTask, dependencyCheckingTask);
-            tokenSource.Cancel();
-            return await result;
+            await Task.WhenAll(parsingTask, dependencyCheckingTask);
+            return (await parsingTask) && (await dependencyCheckingTask);
         }
     }
 }

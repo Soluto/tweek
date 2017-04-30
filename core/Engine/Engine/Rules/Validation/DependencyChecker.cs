@@ -15,7 +15,11 @@ namespace Engine.Rules.Validation
 
             var visited = new HashSet<string>();
             var recursionVisiting = new HashSet<string>();
-            return keysWithDeps.Any(pair => HasCircularDependencies(pair.Key, keysWithDeps, visited, recursionVisiting));
+            foreach (var pair in keysWithDeps)
+            {
+                if (HasCircularDependencies(pair.Key, keysWithDeps, visited, recursionVisiting)) return true;
+            }
+            return false;
         }
 
         private static bool HasCircularDependencies(string key, IDictionary<string, HashSet<string>> keysWithDeps, HashSet<string> visited, HashSet<string> recursionVisiting)
