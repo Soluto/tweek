@@ -60,8 +60,12 @@ class FixedConfigurationTable extends Component {
   }
 
   componentWillReceiveProps(nextProps){
+
+    const newConfiguration = nextProps.fixedConfigurations;
+
     this.setState({
-      newConfiguration: nextProps.fixedConfigurations,
+      newConfiguration: newConfiguration,
+      configurationDiff: getConfigurationDiff({ newConfiguration }),
       keyToAppend: '',
       valueToAppend: ''
     })

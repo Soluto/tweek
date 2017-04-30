@@ -9,7 +9,7 @@ const enhance = () => mapPropsStream(propsStream => {
 })
 
 const createContextDataStream = propsStream => 
-  propsStream.flatMap(async props => await getContextData(props));
+  propsStream.switchMap(async props => await getContextData(props));
 
 const getContextData = async ({ contextType, contextId }) => {
   let response = await fetch(`/api/context/${contextType}/${contextId}`, { credentials: 'same-origin' });
