@@ -25,7 +25,7 @@ namespace Engine.Tests.TestDrivers
             _dispose = dispose;
         }
 
-        public async Task Run(Func<ITweek, Task> test)
+        public async Task Run(Func<ITweek, IContextDriver, Task> test)
         {
             Exception e = null;
             try
@@ -40,8 +40,8 @@ namespace Engine.Tests.TestDrivers
                         }
                     } 
                 ));
-                var tweek = await Tweek.Create(_contextDriver, _rulesDriver, JPadRulesParserAdapter.Convert(new JPadParser(parserSettings)));
-                await test(tweek);
+                var tweek = await Tweek.Create(_rulesDriver, JPadRulesParserAdapter.Convert(new JPadParser(parserSettings)));
+                await test(tweek, _contextDriver);
             }
             catch (Exception ex)
             {

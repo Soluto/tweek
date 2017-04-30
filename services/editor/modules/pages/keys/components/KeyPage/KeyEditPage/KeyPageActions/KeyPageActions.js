@@ -61,6 +61,7 @@ const comp = compose(
     state => ({ selectedKey: state.selectedKey }),
     { ...keysActions, deleteKey })
 )(
+<<<<<<< HEAD
   ({ selectedKey, isInAddMode, saveKey, deleteKey, isReadonly, isInStickyMode, updateKeyMetaDef }) => {
     const { local, remote, isSaving } = selectedKey;
     const changes = diff(local, remote);
@@ -79,6 +80,23 @@ const comp = compose(
         <div className={style['readonly-key-message']}>This key is readonly</div>
         : null}
         <ActionButtons {...{isInAddMode, isInStickyMode, saveKey, selectedKey, isSaving, deleteKey, archiveKey, unarchiveKey, hasChanges}} />
+=======
+  ({ selectedKey, isInAddMode, saveKey, deleteKey, isReadonly,isHistoricRevision, isInStickyMode }) => {
+    const { local, remote, isSaving } = selectedKey;
+    const changes = diff(local, remote);
+    const hasChanges = (changes || []).length > 0;
+    return (
+      <div>
+        {isReadonly ?
+          <div className={style['readonly-key-message']}> {isHistoricRevision ? 'This is an old revision of this key' : 'This key is readonly'} </div>
+          : null}
+        <div className={style['key-action-buttons-wrapper']}>
+          {!isInAddMode && !isInStickyMode ?
+            <DeleteButton {...{selectedKey, isSaving, deleteKey}} />
+            : null}
+          <SaveButton {...{selectedKey, isSaving, hasChanges, saveKey}} />
+        </div>
+>>>>>>> master
       </div>
   });
 

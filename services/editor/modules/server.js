@@ -1,5 +1,5 @@
 import React from 'react';
-import { createServer } from 'react-project/server';
+import createServer from './server/createServer';
 import { RouterContext } from 'react-router';
 import Document from '../modules/components/Document';
 import routes from '../modules/routes';
@@ -15,10 +15,10 @@ import KeysRepository from './server/repositories/keys-repository';
 import TagsRepository from './server/repositories/tags-repository';
 import GitContinuousUpdater from './server/repositories/git-continuous-updater';
 import Promise from 'bluebird';
-import fs from 'fs';
 const passport = require('passport');
 const nconf = require('nconf');
 const azureADAuthProvider = require('./server/auth/azuread');
+const crypto = require('crypto');
 
 nconf.argv().env().file({ file: `${process.cwd()}/config.json` }).defaults({ GIT_CLONE_TIMEOUT_IN_MINUTES: 1, TWEEK_API_HOSTNAME: 'https://api.playground.tweek.host' });
 nconf.required(['GIT_URL', 'GIT_USER']);
@@ -87,7 +87,11 @@ const addAuthSupport = (server) => {
 
 const startServer = () => {
   const server = createServer(getApp);
-  server.use(session({ secret: 'some-secret' }));
+  const cookieOptions = {
+    secret: nconf.get('SESSION_COOKIE_SECRET_KEY') || crypto.randomBytes(20).toString('base64'),
+    cookie: { httpOnly: true },
+  };
+  server.use(session(cookieOptions));
   if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true') {
     addAuthSupport(server);
   }

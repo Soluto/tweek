@@ -1,7 +1,6 @@
 node_modules/
 .git/
 coverage-unit/
-.build/
 .typings/
 .env
 Dockerfile

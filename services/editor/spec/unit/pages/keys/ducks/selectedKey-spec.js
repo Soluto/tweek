@@ -162,12 +162,14 @@ describe('selectedKey', async () => {
           description: '',
           valueType: '',
         },
+        revisionHistory: undefined
       };
 
       const expectedPayload = {
         key: keyName,
         meta: expectedKeyData.meta,
         keyDef: expectedKeyData.keyDef,
+        revisionHistory: undefined
       };
 
       fetchMock.get('glob:*/api/keys/*', expectedKeyData);
