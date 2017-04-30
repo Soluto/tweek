@@ -51,7 +51,7 @@ const mapDispatchToProps = (dispatch, props) => ({
   })),
   updateContext: contextData => dispatch(updateContext({
     contextType: props.contextType,
-    contextId: props.contextid,
+    contextId: props.contextId,
     contextData 
   }))
 })
