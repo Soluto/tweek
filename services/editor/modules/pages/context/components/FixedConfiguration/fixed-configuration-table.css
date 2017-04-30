@@ -1,24 +1,39 @@
-.context-fixed-configuration-table-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+.context-fixed-configuration-table {
+  border-collapse: collapse;
 }
 
-.context-fixed-configuration-table-row {
-  display: flex;
-  flex-direction: row;
-  padding: 5px 0 5px 0;
-
-  border-bottom: 1px solid #cecece;
+.context-fixed-configuration-table th, .context-fixed-configuration-table td {
+  padding: 0.4em;  
+  margin: 0;  
 }
 
-.context-fixed-configuration-table-input-row {
-  display: flex;
-  flex-direction: row;
-  padding: 5px 0 5px 0;
+.context-fixed-configuration-table th {
+  font-size: 1em;
+  border-bottom: 4px solid #029CD5;
 }
 
-.context-fixed-configuration-table-col {
-  flex: 0.33;
-  margin-right: 10px;
+.context-fixed-configuration-table tbody tr:hover td {
+  background-color: #efefef;
+}
+
+  .context-fixed-configuration-table tbody tr:hover td:last-child {
+    border-top-right-radius: 0.4em;
+    border-bottom-right-radius: 0.4em;
+  }
+
+  .context-fixed-configuration-table tbody tr:hover td:first-child {
+    border-left: 4px solid #029CD5;
+  }
+
+
+.context-fixed-configuration-table tbody th {
+  text-align: left;
+}
+
+.context-fixed-configuration-table tbody tr td {
+  border-left: 4px solid transparent;
+  box-sizing: border-box;
+}
+
+.context-fixed-configuration-table tbody tr:not(:last-child) td:last-child {
 }

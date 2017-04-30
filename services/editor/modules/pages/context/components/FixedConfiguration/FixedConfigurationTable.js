@@ -8,13 +8,12 @@ import getConfigurationDiff from './getConfigurationDiff';
 import style from './fixed-configuration-table.css';
 
 const classes = {
-  container: style['context-fixed-configuration-table-container'],
-  col: style['context-fixed-configuration-table-col'],
-  row: style['context-fixed-configuration-table-row'],
-  inputRow: style['context-fixed-configuration-table-input-row']
+  table: style['context-fixed-configuration-table'],
 }
 
 function renderConfigurationDiff(key, diff, onDelete){
+
+  // REFACTOR //
 
   if (key === undefined || key === ""){
     return null;
@@ -40,11 +39,21 @@ function renderConfigurationDiff(key, diff, onDelete){
       </div>
   }
 
+  return <tr key={ key }>
+    <td>{ keyComponent }</td>
+    <td>{ valueComponent }</td>
+    <td>{
+      diff.isRemoved ? null : <Button text="Delete" onClick={ onDelete } />
+    }</td>
+  </tr>
+
+  /*
   return <div key={ key } className={ classes.row }>
     { keyComponent }
     { valueComponent }
     { diff.isRemoved == false ?  <div className={ classes.col }><Button text="Delete" onClick={ onDelete }/></div> : null }
   </div>
+  */
 }
 class FixedConfigurationTable extends Component {
 
@@ -79,6 +88,45 @@ class FixedConfigurationTable extends Component {
     const { configurationDiff } = this.state;
 
     return (
+      <table className={ classes.table }>
+        <thead>
+          <tr>
+            <th>Key</th>
+            <th>Value</th>
+            <th />
+          </tr>
+        </thead>
+
+        <tbody>
+          {
+            Object.entries(configurationDiff).map(([key, diff]) => 
+              renderConfigurationDiff(key, diff, () => this.onDelete(key)))
+          }
+
+          <tr>
+            <td>
+              <InputText placeholder='key' value={ this.state.keyToAppend } 
+                onEnterKeyPress={ () => this.appendConfiguration() }
+                onChange={ e => this.onKeyToAppendChange(e.target.value) } />
+            </td>
+            <td>
+              <InputText placeholder='value' value={ this.state.valueToAppend }
+                onEnterKeyPress={ () => this.appendConfiguration() }
+                onChange={ e => this.onValueToAppendChange(e.target.value) } />
+            </td>
+            <td>
+              <Button text='Add' onClick={ this::this.appendConfiguration } />              
+            </td>
+          </tr>
+          <tr>
+            <td><Button onClick={ () => this.onSave() } text={ 'Save' } /></td>
+          </tr>
+        </tbody>
+      </table>
+    )
+
+/*
+    return (
       <div className={ classes.container }>{
         Object.keys(configurationDiff).map(key => {
           return renderConfigurationDiff(key, configurationDiff[key], () => this.onDelete(key))
@@ -109,6 +157,7 @@ class FixedConfigurationTable extends Component {
       
       </div>
     )
+*/
   }
 
   onSave(){

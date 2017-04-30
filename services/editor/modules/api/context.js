@@ -31,8 +31,8 @@ export async function updateContext(req, res, { tweekApiHostname }, { params }){
 }
 
 export async function deleteContextKey(req, res, { tweekApiHostname }, { params }) {
-
+  console.log("ke", params.key)
   const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
   await tweekApiClient.delete(`context/${params.contextType}/${params.contextId}/${params.key}`);
-
+  res.sendStatus(200);
 }
