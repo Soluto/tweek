@@ -20,27 +20,31 @@ function renderConfigurationDiff(key, diff){
     return null;
   }
 
-  let keyComponent = <div className={ classes.col }>{ key }</div>
+  let keyComponent;
   let valueComponent;
-  let operationIndicatorSrc;
+  let operationComponent = <div className={ classes.col }><Button text="Delete" /></div>
 
   if (diff.isAdded){
+    keyComponent = <div className={ classes.col } style={{ color: 'green' }}>{ key }</div>
     valueComponent = <div className={ classes.col } style={{ color: 'green' }}>{ diff.newValue }</div>
-    operationIndicatorSrc = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTz36QsaI_Kzzs1-H5QMZQ67TlTPpMlsr9GNU6TRkX7TCmK7146ytomTKQ";
   } else if (diff.isUpdated) {
-    valueComponent = <div className={ classes.col }>{ diff.newValue }<br /><small>{diff.initialValue}</small></div>
-    operationIndicatorSrc = "http://www.iconsdb.com/icons/preview/caribbean-blue/available-updates-xxl.png";
+    keyComponent = <div className={ classes.col }>{ key }</div>
+    valueComponent = <div className={ classes.col } style={{ color: 'green' }}>{ diff.newValue }<br />
+      <small style={{ textDecoration: 'line-through',color: 'red' }}>{diff.initialValue}</small></div>
   } else if (diff.isRemoved) {
+    keyComponent = <div className={ classes.col } style={{ textDecoration: 'line-through', color: 'red' }}>{ key }</div>
     valueComponent = <div className={ classes.col } style={{ textDecoration: 'line-through', color: 'red' }}>{ diff.initialValue }</div>
-    operationIndicatorSrc = "https://cdn0.iconfinder.com/data/icons/round-ui-icons/512/close_red.png";
   } else {
-    valueComponent = <div className={ classes.col }>{ diff.newValue }</div>
+    keyComponent = <div className={ classes.col }>{ key }</div>
+    valueComponent = <div style={{display: 'flex', flexDirection: 'row'}} className={ classes.col }>
+        <div style={{display: 'flex', flexDirection: 'col'}}>{ diff.newValue } </div>
+      </div>
   }
 
   return <div key={ key } className={ classes.row }>
     { keyComponent }
     { valueComponent }
-    { operationIndicatorSrc ? <img src={ operationIndicatorSrc } style={{ width: '18px', height: '18px' }} /> : null }
+    { operationComponent }
   </div>
 }
 class FixedConfigurationTable extends Component {
