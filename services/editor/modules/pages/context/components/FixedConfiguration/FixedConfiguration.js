@@ -5,9 +5,12 @@ import { connect } from 'react-redux';
 import filteredPropsValues from '../../utils/filteredPropsValues';
 import transformProps from '../../utils/transformProps';
 
+const trimString = value => value.trim()
+const padWithFixedPrefix = prop => `@fixed:${prop}`
 const filterFixedConfigurationProps = filteredPropsValues(prop => prop.startsWith("@fixed:"));
 const removeFixedPrefix = transformProps(prop => prop.replace("@fixed:", ""))
-const addFixedPrefix = transformProps(prop => `@fixed:${prop}`)
+const addFixedPrefix = transformProps(padWithFixedPrefix)
+const trimSpaces = transformProps(trimString);
 
 import withContextData from '../../hoc/withContextData/withContextData';
 import withUpdateContextData from '../../hoc/withContextData/withUpdateContextData';
@@ -19,7 +22,7 @@ import { getContext, updateContext } from '../../../../store/ducks/context';
 const FixedConfiguration = ({ fixedConfigurations, updateContext }) => {
   return (
     <div style={ style.container }>
-      <h3>Fixed Configuration</h3>
+      <h3 style={{ marginBottom: '1em' }}>Fixed Configuration</h3>
       <FixedConfigurationTable
         onSave={ ({ updatedConfiguration, deletedKeys }) => updateContext({
           updatedConfiguration,
@@ -55,8 +58,8 @@ const mapDispatchToProps = (dispatch, props) => ({
   updateContext: ({ updatedConfiguration, deletedKeys }) => dispatch(updateContext({
     contextType: props.contextType,
     contextId: props.contextId,
-    updatedContextData: addFixedPrefix(updatedConfiguration),
-    deletedContextKeys: deletedKeys.map(key => `@fixed:${key}`)
+    updatedContextData: addFixedPrefix(trimSpaces(updatedConfiguration)),
+    deletedContextKeys: deletedKeys.map(trimString).map(padWithFixedPrefix)
   }))
 })
 

@@ -10,11 +10,14 @@ export const getContext = ({ contextType, contextId }) => async function (dispat
     dispatch({ type: GET_CONTEXT });
     let response = await fetch(`/api/context/${contextType}/${contextId}`, { credentials: 'same-origin' });
     const contextData = await response.json()
+    console.log({ contextData });
     dispatch({ type: CONTEXT_RECEIVED, payload: { contextData } });
 };
 
 export const updateContext = ({ contextType, contextId, updatedContextData, deletedContextKeys }) => async function(dispatch){
     dispatch({ type: UPDATE_CONTEXT });
+
+    console.log({updatedContextData, deletedContextKeys});
 
     await Promise.all([
       ...deletedContextKeys
