@@ -1,4 +1,10 @@
-export default projection => objectToTransform => Object.keys(objectToTransform).reduce((result, key) => ({
-  ...result,
-  [projection(key)]: objectToTransform[key]
-}), {})
+export default projection => objectToTransform => {
+  if (objectToTransform == undefined || objectToTransform == null){
+    return objectToTransform;
+  }
+
+  return Object.keys(objectToTransform).reduce((result, key) => ({
+    ...result,
+    [projection(key)]: objectToTransform[key]
+  }), {})
+}

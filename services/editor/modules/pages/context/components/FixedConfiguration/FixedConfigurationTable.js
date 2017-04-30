@@ -97,7 +97,7 @@ class FixedConfigurationTable extends Component {
       </div>
 
       <div style={{ marginTop: '10px' }}>
-        <Button onClick={ () => this.props.onSave(this.state.configurations) } text={ 'Save' } />
+        <Button onClick={ () => this.props.onSave(this.state.newConfiguration) } text={ 'Save' } />
       </div>
       
       </div>
