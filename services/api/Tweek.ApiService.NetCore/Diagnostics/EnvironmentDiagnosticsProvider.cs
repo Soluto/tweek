@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Reflection;
+using Tweek.ApiService.Addons;
 
 namespace Tweek.ApiService.NetCore.Diagnostics
 {
