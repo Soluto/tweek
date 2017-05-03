@@ -3,6 +3,7 @@ steps:
   BuildingSolution:
     title: Building Solution
     image: microsoft/aspnetcore-build:1.0-1.1
+    working_directory: ${{main_clone}}
     commands: 
       - apt update && apt install gettext -y
       - cd CI && envsubst < ./NuGet.Config.tmpl > NuGet.Config
