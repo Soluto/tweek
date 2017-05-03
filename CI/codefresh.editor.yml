@@ -13,8 +13,8 @@ steps:
     composition_candidates:
       ci-build:
         volumes:
-          - ${{CF_VOLUME_NAME}}:/tweek
-        working_dir: /tweek/services/editor
+          - .:/opt/app
+        working_dir: /opt/app
         command: /bin/bash -c "yarn && yarn build-prod"
   BuildingDockerImage:
     title: Building Docker Image
