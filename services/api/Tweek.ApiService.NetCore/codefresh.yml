@@ -4,6 +4,7 @@ steps:
     title: Building Solution
     image: microsoft/aspnetcore-build:1.0-1.1
     commands: 
+      - apt update && apt install gettext -y
       - cd CI && envsubst < ./NuGet.Config.tmpl > NuGet.Config
       - dotnet restore ./Tweek.sln --configfile ./CI/NuGet.Config
       - dotnet publish ./Tweek.sln -c Release -o ./obj/Docker/publish
