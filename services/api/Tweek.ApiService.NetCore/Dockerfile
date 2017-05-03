@@ -1,5 +1,6 @@
 FROM microsoft/aspnetcore:1.1.1
-COPY obj/Docker/publish /app
+ARG source
 WORKDIR /app
 EXPOSE 80
+COPY ${source:-obj/Docker/publish} .
 ENTRYPOINT ["dotnet", "Tweek.ApiService.NetCore.dll"]
