@@ -18,16 +18,18 @@ const MutatorFor = (propName) => (Comp) =>
       this.state.mutator = Mutator.stateless(() => this.props[propName], this.props.onMutation);
     }
     render() {
-      const {[propName]: _, ...otherProps } = this.props;
+      const { [propName]: _, ...otherProps } = this.props;
       return <Comp mutate={this.state.mutator} {...otherProps} />;
     }
   };
 
-const KeyRulesEditor = ({ keyDef, mutate, onMutation, alerter}) => {
+const KeyRulesEditor = ({ keyDef, mutate, onMutation, alerter, isReadonly }) => {
 
   return (
-    <div className={style['key-rules-editor-container']}>
+    <div className={style['key-rules-editor-container']} disabled={isReadonly}>
+
       <Tabs className={style['tab-container']}>
+
         <TabList>
           <Tab className={style['tab-header']}>
             <label className={style['key-definition-tab-icon']}>&#xE904; </label>
@@ -39,21 +41,27 @@ const KeyRulesEditor = ({ keyDef, mutate, onMutation, alerter}) => {
           </Tab>
         </TabList>
         <TabPanel className={style['tab-content']}>
-          <JPadEditor
-            {...{mutate, alerter}}
-            jpadSource={keyDef.source}
-            valueType={keyDef.valueType}
-          />
+          <fieldset disabled={isReadonly} style={{border:'none'}} >
+            <JPadEditor
+              {...{ mutate, alerter }}
+              jpadSource={keyDef.source}
+              valueType={keyDef.valueType}
+            />
+          </fieldset>
+
         </TabPanel>
         <TabPanel className={style['tab-content']}>
           <JPadTextEditor
             source={keyDef.source}
-            onChange={x => onMutation(JSON.parse(x))} />
-          <pre className={style['key-def-json']} style={{"display": "none"}}>
+            onChange={x => onMutation(JSON.parse(x))} 
+            isReadonly={isReadonly}/>
+          <pre className={style['key-def-json']} style={{ "display": "none" }}>
             {JSON.stringify(JSON.parse(keyDef.source), null, 4)}
           </pre>
         </TabPanel>
+
       </Tabs>
+
     </div>
   );
 };
@@ -93,7 +101,7 @@ function changeValueType(valueType, rulesMutate, depth) {
     return;
   }
 
-  Object.keys(rules).forEach(key => changeValueType(valueType, rulesMutate.in(key), depth -1));
+  Object.keys(rules).forEach(key => changeValueType(valueType, rulesMutate.in(key), depth - 1));
 }
 
 export default compose(
@@ -101,7 +109,7 @@ export default compose(
   wrapComponentWithClass,
   pure,
   lifecycle({
-    componentWillReceiveProps({keyDef, mutate}) {
+    componentWillReceiveProps({ keyDef, mutate }) {
       const currentValueType = mutate.in('valueType').getValue();
       if (keyDef.valueType === currentValueType) return;
 

@@ -1,6 +1,5 @@
 import { handleActions } from 'redux-actions';
 import R from 'ramda';
-import { push } from 'react-router-redux';
 import { createBlankKey, createBlankKeyMeta, BLANK_KEY_NAME } from './ducks-utils/blankKeyDefinition';
 import { withJsonData } from '../../utils/http';
 import keyNameValidations from './ducks-utils/validations/key-name-validations';
@@ -10,6 +9,7 @@ import * as ContextService from '../../services/context-service';
 import fetch from '../../utils/fetch';
 import { showError } from './notifications';
 import { showConfirm } from './alerts';
+import { push } from 'react-router-redux';
 
 const KEY_OPENED = 'KEY_OPENED';
 const KEY_OPENING = 'KEY_OPENING';
@@ -22,10 +22,9 @@ const KEY_VALIDATION_CHANGE = 'KEY_VALIDATION_CHANGE';
 const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
 const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
 
-export function openKey(key) {
+export function openKey(key, { revision } = {}) {
   return async function (dispatch) {
     dispatch(downloadTags());
-
     try {
       ContextService.refreshSchema();
     } catch (error) {
@@ -40,9 +39,9 @@ export function openKey(key) {
     dispatch({ type: KEY_OPENING, payload: key });
 
     let keyData;
-
+    const search = revision ? `?revision=${revision}` : ''
     try {
-      keyData = await (await fetch(`/api/keys/${key}`, { credentials: 'same-origin' })).json();
+      keyData = await (await fetch(`/api/keys/${key}${search}`, { credentials: 'same-origin' })).json();
     } catch (exp) {
       dispatch({ type: KEY_OPENED, payload: { key } });
       return;
@@ -56,6 +55,7 @@ export function openKey(key) {
         valueType: meta.valueType || 'string',
       },
       meta,
+      revisionHistory: keyData.revisionHistory
     };
 
     dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
@@ -82,7 +82,7 @@ const convertRuleValuesAlert = {
 export function updateKeyValueType(keyValueType) {
   return async function (dispatch, getState) {
     const jpad = JSON.parse(getState().selectedKey.local.keyDef.source);
-    const allRules = getAllRules({jpad});
+    const allRules = getAllRules({ jpad });
     const shouldShowAlert =
       allRules.some(x => x.Type !== 'SingleVariant' || (x.Value !== null && x.Value !== undefined && x.Value !== ''));
 
@@ -163,16 +163,16 @@ export function saveKey() {
 
 const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
   const validation = key !== BLANK_KEY_NAME ?
-  {
-    isValid: true,
-  } :
-  {
-    key: keyNameValidations(key, []),
-    meta: {
-      valueType: keyValueTypeValidations(keyData.meta.valueType),
-    },
-    isValid: false,
-  };
+    {
+      isValid: true,
+    } :
+    {
+      key: keyNameValidations(key, []),
+      meta: {
+        valueType: keyValueTypeValidations(keyData.meta.valueType),
+      },
+      isValid: false,
+    };
 
   setValidationHintsVisability(validation, false);
 
@@ -210,12 +210,12 @@ const handleKeyMetaUpdated = (state, { payload }) => ({
 
 const handleKeySaved = ({ local, remote, ...state }, { payload: { keyName, isSaveSucceeded } }) => {
   return state.key === BLANK_KEY_NAME || state.key === keyName ?
-  {
-    ...state,
-    isSaving: false,
-    local,
-    remote: isSaveSucceeded ? R.clone(local) : remote,
-  } :
+    {
+      ...state,
+      isSaving: false,
+      local,
+      remote: isSaveSucceeded ? R.clone(local) : remote,
+    } :
     ({ ...state });
 };
 
