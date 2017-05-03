@@ -16,33 +16,6 @@ jobs:
     
     steps:
       - checkout
-      
-      - restore_cache:
-          keys:
-            - yarn-cache-{{ .Branch }}-{{ checksum "services/editor/yarn.lock" }}
-            - yarn-cache-{{ .Branch }}
-            - yarn-cache-master
-            - yarn-cache-
-
-      - run:
-          name: yarn install
-          working_directory: ~/tweek/services/editor
-          command: yarn --cache-folder "/.yarn-cache"
-
-      - save_cache:
-          key: yarn-cache-{{ .Branch }}-{{ checksum "services/editor/yarn.lock" }}
-          paths:
-            - ~/tweek/services/editor.yarn-cache
-
-      - run: 
-          name: Run unit tests
-          working_directory: ~/tweek/services/editor
-          command: yarn test
-
-      - run:
-          name: yarn build
-          working_directory: ~/tweek/services/editor
-          command: yarn build-prod
 
       - setup_remote_docker:
           reusable: true
