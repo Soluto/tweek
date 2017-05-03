@@ -13,7 +13,7 @@ steps:
       ci-build:
         volumes:
           - ${{CF_VOLUME_NAME}}:/tweek
-        command: /bin/bash -c "cd tweek/services/editor && yarn && yarn build-prod"
+        command: /bin/bash -c "cd tweek && ls && cd services && ls && cd editor && yarn && yarn build-prod"
   BuildingDockerImage:
     title: Building Docker Image
     type: build
