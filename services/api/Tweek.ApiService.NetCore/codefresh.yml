@@ -19,6 +19,4 @@ steps:
     title: Building Docker Image
     type: build
     image_name: soluto/tweek-api
-    build_arguments:
-      - source=/codefresh/volume/tweek/services/api/Tweek.ApiService.NetCore/obj/Docker/publish
     working_directory: ${{main_clone}}/services/api/Tweek.ApiService.NetCore/
