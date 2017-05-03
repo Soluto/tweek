@@ -12,7 +12,7 @@ steps:
     composition_candidates:
       ci-build:
         volumes:
-          - ${{CF_VOLUME_NAME}}:/tweek
+          - ${{main_clone}}:/tweek
         command: /bin/bash -c "cd tweek && ls && cd services && ls && cd editor && yarn && yarn build-prod"
   BuildingDockerImage:
     title: Building Docker Image
