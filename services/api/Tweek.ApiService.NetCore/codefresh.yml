@@ -9,6 +9,12 @@ steps:
       - dotnet restore ./Tweek.sln --configfile ./CI/NuGet.Config
       - dotnet publish ./Tweek.sln -c Release -o ./obj/Docker/publish
 
+  CheckDir:
+    image: alpine:latest
+    working_directory: ${{main_clone}}/services/api/Tweek.ApiService.NetCore/
+    commands:
+      - cd obj/Docker/publish && ls
+
   BuildingDockerImage:
     title: Building Docker Image
     type: build
