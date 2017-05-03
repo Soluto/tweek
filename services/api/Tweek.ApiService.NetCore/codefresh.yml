@@ -13,7 +13,7 @@ steps:
     image: alpine:latest
     working_directory: ${{main_clone}}/services/api/Tweek.ApiService.NetCore/
     commands:
-      - cd obj/Docker/publish && ls
+      - pwd && cd obj/Docker/publish && ls
 
   BuildingDockerImage:
     title: Building Docker Image
