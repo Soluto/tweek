@@ -1,12 +1,14 @@
 FROM node:6.10.1-slim
 
-ADD package.json yarn.lock /tmp/
-
 ENV NODE_ENV=production
-RUN cd /tmp && npm install --only=prod
-RUN mkdir -p /opt/app && cd /opt/app && ln -s /tmp/node_modules 
 
-ADD ./.build /opt/app/.build
+ADD package.json yarn.lock /tmp/
+WORKDIR /tmp
+RUN npm install --only=prod && mkdir -p /opt/app && cp -a node_modules /opt/app/node_modules && npm install --only=dev
+
+ADD . /tmp/
+RUN npm run test
+RUN npm run build-prod && mv .build /opt/app/.build && rm -rf /tmp
 
 WORKDIR /opt/app
 EXPOSE 3000
