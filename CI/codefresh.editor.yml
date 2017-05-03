@@ -1,19 +1,13 @@
 version: '1.0'
 steps:
   BuildingEditor:
-    type: composition
-    image_name: node:6.10.2
+    image: node:6.10.2
     description: Building server...
-    composition:
-      version: '2'
-      services:
-        ci-build:
-          image: node:6.10.1-slim
-    composition_candidates:
-      ci-build:
-        volumes:
-          - ${{main_clone}}:/tweek
-        command: /bin/bash -c "cd tweek && ls && cd services && ls && cd editor && yarn && yarn build-prod"
+    working_directory: ./services/editor/
+    commands:
+      - yarn
+      - yarn test
+      - yarn build-prod
   BuildingDockerImage:
     title: Building Docker Image
     type: build
