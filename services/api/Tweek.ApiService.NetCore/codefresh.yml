@@ -1,0 +1,14 @@
+version: '1.0'
+steps:
+  BuildingSolution:
+    title: Building Solution
+    image: microsoft/aspnetcore-build:1.0-1.1
+    commands: 
+      - /bin/bash -c "dotnet restore ./Tweek.sln && dotnet publish ./Tweek.sln -c Release -o ./obj/Docker/publish"
+
+  BuildingDockerImage:
+    title: Building Docker Image
+    type: build
+    image_name: soluto/tweek-api
+    working_directory: ./services/api/Tweek.ApiService.NetCore/
+    dockerfile: Dockerfile
