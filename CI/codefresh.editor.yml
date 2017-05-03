@@ -1,0 +1,16 @@
+version: '1.0'
+steps:
+  BuildingEditor:
+    image_name: node:6.10.2
+    working_directory: ./services/editor/
+    description: Building server...
+    commands:
+      - yarn 
+      - yarn test
+      - yarn build-prod
+  BuildingDockerImage:
+    title: Building Docker Image
+    type: build
+    image_name: soluto/tweek-back-office
+    working_directory: ./services/editor/
+    dockerfile: Dockerfile
