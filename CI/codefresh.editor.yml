@@ -8,6 +8,7 @@ steps:
       - yarn
       - yarn test
       - yarn build-prod
+      - rm -rf node_modules
   BuildingDockerImage:
     title: Building Docker Image
     type: build
