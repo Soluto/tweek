@@ -3,18 +3,18 @@ steps:
   BuildingSolution:
     title: Building Solution
     image: microsoft/aspnetcore-build:1.0-1.1
+    working_directory: ${{main_clone}}
     commands: 
       - apt update && apt install gettext -y
       - cd CI && envsubst < ./NuGet.Config.tmpl > NuGet.Config
       - dotnet restore ./Tweek.sln --configfile ./CI/NuGet.Config
-      - dotnet build ./Tweek.sln -c Release
-      - dotnet publish ./services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj -c Release -o ${{main_clone}}/publish
+      - dotnet publish ./Tweek.sln -c Release -o ./obj/Docker/publish
 
   BuildingDockerImage:
     title: Building Docker Image
     type: build
     image_name: soluto/tweek-api
-    working_directory: ${{main_clone}}/publish
+    working_directory: ${{main_clone}}/services/api/Tweek.ApiService.NetCore/obj/Docker/publish
     dockerfile: ${{main_clone}}/services/api/Tweek.ApiService.NetCore/Dockerfile
     build_arguments: 
       - source=.
