@@ -20,12 +20,16 @@ steps:
       - cd CI && envsubst < ./NuGet.Config.tmpl > NuGet.Config
       - dotnet restore ./Tweek.sln --configfile ./CI/NuGet.Config
       - dotnet publish ./Tweek.sln -c Release -o ./obj/Docker/publish
+      - cp ./services/api/Tweek.ApiService.NetCore/Dockerfile ./services/api/Tweek.ApiService.NetCore/obj/Docker/publish/Dockerfile
+      - echo Dockerfile > ./services/api/Tweek.ApiService.NetCore/obj/Docker/publish/.dockerignore
 
   BuildingApiImage:
     title: Building Tweek Api Docker Image
     type: build
     image_name: soluto/tweek-api
-    working_directory: ./services/api/Tweek.ApiService.NetCore/
+    working_directory: ${{main_clone}}/services/api/Tweek.ApiService.NetCore/obj/Docker/publish
+    build_arguments: 
+      - source=.
     
   BuildingManagement:
     title: Building Management Docker Image

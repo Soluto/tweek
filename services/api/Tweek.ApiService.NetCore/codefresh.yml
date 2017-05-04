@@ -10,7 +10,7 @@ steps:
       - dotnet restore ./Tweek.sln --configfile ./CI/NuGet.Config
       - dotnet publish ./Tweek.sln -c Release -o ./obj/Docker/publish
       - cp ./services/api/Tweek.ApiService.NetCore/Dockerfile ./services/api/Tweek.ApiService.NetCore/obj/Docker/publish/Dockerfile
-      - cp ./services/api/Tweek.ApiService.NetCore/.dockerignore ./services/api/Tweek.ApiService.NetCore/obj/Docker/publish/.dockerignore
+      - echo Dockerfile > ./services/api/Tweek.ApiService.NetCore/obj/Docker/publish/.dockerignore
 
   BuildingDockerImage:
     title: Building Docker Image
