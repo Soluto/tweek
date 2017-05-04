@@ -3,7 +3,6 @@ steps:
   BuildingSolution:
     title: Building Solution
     image: microsoft/aspnetcore-build:1.0-1.1
-    working_directory: ${{main_clone}}
     commands: 
       - apt update && apt install gettext -y
       - cd CI && envsubst < ./NuGet.Config.tmpl > NuGet.Config
@@ -12,7 +11,7 @@ steps:
 
   CheckDir:
     image: alpine:latest
-    working_directory: ${{main_clone}}/services/api/Tweek.ApiService.NetCore/
+    working_directory: ./services/api/Tweek.ApiService.NetCore/
     commands:
       - pwd && cd obj/Docker/publish && ls
 
@@ -20,4 +19,4 @@ steps:
     title: Building Docker Image
     type: build
     image_name: soluto/tweek-api
-    working_directory: ${{main_clone}}/services/api/Tweek.ApiService.NetCore/
+    working_directory: ./services/api/Tweek.ApiService.NetCore/
