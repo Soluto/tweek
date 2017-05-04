@@ -1,13 +1,16 @@
 version: '1.0'
 steps:
-  BuildingSolution:
-    title: Building Solution
-    image: microsoft/aspnetcore-build:1.0-1.1
-    working_directory: ${{main_clone}}
+  BuildingCompiler:
+    type: build
+    image_name: soluto/aspnetcore-build
+    working_directory: ./CI
+    
+  CompilingApi:
+    title: Compiling Tweek Api Solution
+    image: ${{BuildingCompiler}}
     commands: 
-      - apt update && apt install gettext -y
-      - cd CI && envsubst < ./NuGet.Config.tmpl > NuGet.Config
-      - dotnet restore ./Tweek.sln --configfile ./CI/NuGet.Config
+      - ls /config
+      - dotnet restore ./Tweek.sln --configfile /config/NuGet.Config
       - dotnet publish ./Tweek.sln -c Release -o ./obj/Docker/publish
       - cp ./services/api/Tweek.ApiService.NetCore/Dockerfile ./services/api/Tweek.ApiService.NetCore/obj/Docker/publish/Dockerfile
       - echo Dockerfile > ./services/api/Tweek.ApiService.NetCore/obj/Docker/publish/.dockerignore
