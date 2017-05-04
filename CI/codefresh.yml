@@ -107,6 +107,7 @@ steps:
         image: ${{BuildingTests}}
         depends_on: 
           - selenium
+          - tweek-editor
         environment:
           - BACKOFFICE_URL=http://tweek-backoffice:3000/
         command: wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && yarn test -- --host selenium --port 4444
