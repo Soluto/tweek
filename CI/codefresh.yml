@@ -112,4 +112,22 @@ steps:
           - tweek-editor
         environment:
           - BACKOFFICE_URL=http://tweek-editor:3000/
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && yarn test -- --host selenium --port 4444"
+        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-editor:3000 && yarn test -- --host selenium --port 4444"
+    on_success:
+      metadata:
+        set:
+          - ${{BuildingApiImage.imageId}}:
+            - CF_QUALITY: true
+          - ${{BuildingManagement.imageId}}:
+            - CF_QUALITY: true
+          - ${{BuildingEditor.imageId}}:
+            - CF_QUALITY: true
+    on_fail:
+      metadata:
+        set:
+          - ${{BuildingApiImage.imageId}}:
+            - CF_QUALITY: false
+          - ${{BuildingManagement.imageId}}:
+            - CF_QUALITY: false
+          - ${{BuildingEditor.imageId}}:
+            - CF_QUALITY: false
