@@ -21,7 +21,7 @@ steps:
     title: Compiling Tweek Api Solution
     image: ${{BuildingCompiler}}
     commands: 
-      - dotnet restore ./Tweek.sln --configfile /NuGet.Config
+      - dotnet restore ./Tweek.sln --configfile /config/NuGet.Config
       - dotnet publish ./Tweek.sln -c Release -o ./obj/Docker/publish
       - cp ./services/api/Tweek.ApiService.NetCore/Dockerfile ./services/api/Tweek.ApiService.NetCore/obj/Docker/publish/Dockerfile
       - echo Dockerfile > ./services/api/Tweek.ApiService.NetCore/obj/Docker/publish/.dockerignore
