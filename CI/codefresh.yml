@@ -1,0 +1,40 @@
+version: '1.0'
+steps:
+  BuildGitKeys:
+    title: Building Git Keys Docker Image
+    type: build
+    image_name: soluto/git-keys
+    working_directory: ./services/git-service/ssh/
+
+  BuildingGitRepository:
+    title: Building Git Repository Docker Image
+    type: build
+    image_name: soluto/tweek-bare-repo
+    working_directory: ./services/git-service/BareRepository/
+
+  CompilingApi:
+    title: Compiling Tweek Api Solution
+    image: microsoft/aspnetcore-build:1.0-1.1
+    commands: 
+      - apt update && apt install gettext -y
+      - cd CI && envsubst < ./NuGet.Config.tmpl > NuGet.Config
+      - dotnet restore ./Tweek.sln --configfile ./CI/NuGet.Config
+      - dotnet publish ./Tweek.sln -c Release -o ./obj/Docker/publish
+
+  BuildingApiImage:
+    title: Building Tweek Api Docker Image
+    type: build
+    image_name: soluto/tweek-api
+    working_directory: ./services/api/Tweek.ApiService.NetCore/
+    
+  BuildingManagement:
+    title: Building Management Docker Image
+    type: build
+    image_name: soluto/tweek-management
+    working_directory: ./services/management/
+
+  BuildingEditor:
+    title: Building Editor Docker Image
+    type: build
+    image_name: soluto/tweek-back-office
+    working_directory: ./services/editor/
