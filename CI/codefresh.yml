@@ -100,6 +100,8 @@ steps:
             - TWEEK_API_HOSTNAME=http://tweek-api
         selenium:
           image: selenium/standalone-chrome
+          logging:
+            driver: "none"
     composition_candidates:
       backoffice-e2e:
         image: ${{BuildingTests}}
