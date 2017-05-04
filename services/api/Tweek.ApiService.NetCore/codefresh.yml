@@ -7,16 +7,14 @@ steps:
       - apt update && apt install gettext -y
       - cd CI && envsubst < ./NuGet.Config.tmpl > NuGet.Config
       - dotnet restore ./Tweek.sln --configfile ./CI/NuGet.Config
-      - dotnet publish ./Tweek.sln -c Release -o ./obj/Docker/publish
-
-  CheckDir:
-    image: alpine:latest
-    working_directory: services/api/Tweek.ApiService.NetCore/
-    commands:
-      - pwd && cd obj/Docker/publish && ls
+      - dotnet build ./Tweek.sln -c Release
+      - dotnet publish ./services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj -c Release -o ${{CF_VOLUME_NAME}}/publish
 
   BuildingDockerImage:
     title: Building Docker Image
     type: build
     image_name: soluto/tweek-api
-    working_directory: services/api/Tweek.ApiService.NetCore/
+    working_directory: ${{CF_VOLUME_NAME}}/publish
+    dockerfile: ${{main_clone}}/services/api/Tweek.ApiService.NetCore/Dockerfile
+    build_arguments: 
+      - source=.
