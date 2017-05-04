@@ -8,13 +8,13 @@ steps:
       - cd CI && envsubst < ./NuGet.Config.tmpl > NuGet.Config
       - dotnet restore ./Tweek.sln --configfile ./CI/NuGet.Config
       - dotnet build ./Tweek.sln -c Release
-      - dotnet publish ./services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj -c Release -o ${{CF_VOLUME_NAME}}/publish
+      - dotnet publish ./services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj -c Release -o ${{main_clone}}/publish
 
   BuildingDockerImage:
     title: Building Docker Image
     type: build
     image_name: soluto/tweek-api
-    working_directory: ${{CF_VOLUME_NAME}}/publish
+    working_directory: ${{main_clone}}/publish
     dockerfile: ${{main_clone}}/services/api/Tweek.ApiService.NetCore/Dockerfile
     build_arguments: 
       - source=.
