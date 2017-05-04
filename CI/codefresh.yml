@@ -70,6 +70,8 @@ steps:
             - tweek-git
           volumes_from:
             - keys
+          logging:
+            driver: "none"
           environment:
             - GIT_USER=git
             - GIT_URL=ssh://git@tweek-git/tweek/tests
@@ -109,5 +111,5 @@ steps:
           - selenium
           - tweek-editor
         environment:
-          - BACKOFFICE_URL=http://tweek-backoffice:3000/
+          - BACKOFFICE_URL=http://tweek-editor:3000/
         command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && yarn test -- --host selenium --port 4444"
