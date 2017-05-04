@@ -42,3 +42,70 @@ steps:
     type: build
     image_name: soluto/tweek-back-office
     working_directory: ./services/editor/
+
+  BuildingTests:
+    title: Building E2E Tests Docker Image
+    type: build
+    image_name: soluto/backoffice-e2e
+    working_directory: ./e2e/
+
+  EndToEndTest:
+    title: End to End tests
+    type: composition
+    composition:
+      version: '2'
+      services:
+        keys:
+          image: ${{BuildGitKeys}}
+        tweek-git:
+          image: ${{BuildingGitRepository}}
+          volumes_from:
+            - keys
+          environment:
+            - PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
+            - TWEEK_MANAGEMENT_URL=http://tweek-management:3000
+        tweek-management:
+          image: ${{BuildingManagement}}
+          depends_on:
+            - tweek-git
+          volumes_from:
+            - keys
+          environment:
+            - GIT_USER=git
+            - GIT_URL=ssh://git@tweek-git/tweek/tests
+            - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+            - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
+            - VALIDATION_URL=http://tweek-api/validation
+        tweek-api:
+          image: ${{BuildingApiImage}}
+          depends_on:
+            - tweek-management
+          volumes_from:
+            - keys
+          environment:
+            - RulesBlob.Url=http://tweek-management:3000/ruleset/latest
+            - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
+        tweek-editor:
+          image: ${{BuildingEditor}}
+          depends_on:
+            - tweek-api
+            - tweek-git
+          volumes_from:
+            - keys
+          environment:
+            - GIT_USER=git
+            - GIT_URL=ssh://git@tweek-git/tweek/tests
+            - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+            - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
+            - TWEEK_API_HOSTNAME=http://tweek-api
+        selenium:
+          image: selenium/standalone-chrome
+    composition_candidates:
+      backoffice-e2e:
+        image: ${{BuildingTests}}
+        links:
+          - selenium
+        depends_on: 
+          - selenium
+        environment:
+          - BACKOFFICE_URL=http://tweek-backoffice:3000/
