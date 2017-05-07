@@ -97,6 +97,7 @@ steps:
           environment:
             - RulesBlob.Url=http://tweek-management:3000/ruleset/latest
             - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
+            - Couchbase.Url=http://13.92.123.60:8091/index.html
         tweek-editor:
           image: ${{BuildingEditor}}
           depends_on:
