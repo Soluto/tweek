@@ -136,18 +136,33 @@ steps:
     on_success:
       metadata:
         set:
-          - ${{BuildingApiImage.imageId}}:
+          - '${{BuildingApiImage.imageId}}':
             - CF_QUALITY: true
-          - ${{BuildingManagement.imageId}}:
+          - '${{BuildingManagement.imageId}}':
             - CF_QUALITY: true
-          - ${{BuildingEditor.imageId}}:
+          - '${{BuildingEditor.imageId}}':
             - CF_QUALITY: true
     on_fail:
       metadata:
         set:
-          - ${{BuildingApiImage.imageId}}:
+          - '${{BuildingApiImage.imageId}}':
             - CF_QUALITY: false
-          - ${{BuildingManagement.imageId}}:
+          - '${{BuildingManagement.imageId}}':
             - CF_QUALITY: false
-          - ${{BuildingEditor.imageId}}:
+          - '${{BuildingEditor.imageId}}':
             - CF_QUALITY: false
+
+  PushApiImage:
+    type: push
+    title: Push Tweek Api
+    candidate: ${{BuildingApiImage}}
+
+  PushManagementImage:
+    type: push
+    title: Push Tweek Api
+    candidate: ${{BuildingManagement}}
+
+  PushEditorImage:
+    type: push
+    title: Push Tweek Api
+    candidate: ${{BuildingEditor}}
