@@ -1,4 +1,4 @@
-FROM node:6.10.0-slim
+FROM node:6.10.3-slim
 
 ADD package.json /tmp/package.json
 RUN cd /tmp && npm install

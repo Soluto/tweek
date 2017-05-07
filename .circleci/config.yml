@@ -12,7 +12,7 @@ jobs:
       NODE_ENV: development
  
     docker:
-      - image: node:6.10.1
+      - image: node:6.10.3
     
     steps:
       - checkout
@@ -49,7 +49,7 @@ jobs:
           working_directory: ~/tweek/deployments/dev
           command: |
             docker-compose -f docker-compose.yml -f docker-compose.e2e.yml -f docker-compose.circleci.yml run -d selenium
-            docker run --network=dev_default node:6.10.1-slim wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status
+            docker run --network=dev_default node:6.10.3-slim wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status
  
       - run:
           name: Run e2e tests
