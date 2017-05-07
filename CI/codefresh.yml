@@ -152,17 +152,59 @@ steps:
           - '${{BuildingEditor.imageId}}':
             - CF_QUALITY: false
 
-  PushApiImage:
+  PushApiImageBranch:
     type: push
-    title: Push Tweek Api
+    title: Push Tweek Api - ${{CF_BRANCH}}
+    tag: ${{CF_BRANCH_TAG_NORMALIZED}}
+    when:
+      branch:
+        ignore:
+          - master
     candidate: ${{BuildingApiImage}}
 
-  PushManagementImage:
+  PushApiImageMaster:
     type: push
-    title: Push Tweek Api
+    title: Push Tweek Api - lastest
+    when:
+      branch:
+        only:
+          - master
+    candidate: ${{BuildingApiImage}}
+
+  PushManagementImageBranch:
+    type: push
+    title: Push Management - ${{CF_BRANCH}}
+    tag: ${{CF_BRANCH_TAG_NORMALIZED}}
+    when:
+      branch:
+        ignore:
+          - master
+    candidate: ${{BuildingManagement}}
+
+  PushManagementImageMaster:
+    type: push
+    title: Push Management - lastest
+    when:
+      branch:
+        only:
+          - master
     candidate: ${{BuildingManagement}}
 
   PushEditorImage:
     type: push
-    title: Push Tweek Api
+    title: Push Editor - ${{CF_BRANCH}}
+    tag: ${{CF_BRANCH_TAG_NORMALIZED}}
+    when:
+      branch:
+        ignore:
+          - master
+    candidate: ${{BuildingEditor}}
+
+  PushEditorImage:
+    type: push
+    title: Push Editor - latest
+    when:
+      branch:
+        only:
+          - master
     candidate: ${{BuildingEditor}}
