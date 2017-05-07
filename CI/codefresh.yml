@@ -94,6 +94,8 @@ steps:
             - tweek-management
           volumes_from:
             - keys
+          logging:
+            driver: "none"
           environment:
             - RulesBlob.Url=http://tweek-management:3000/ruleset/latest
             - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
