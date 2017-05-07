@@ -1,5 +1,13 @@
 version: '1.0'
 steps:
+  NugetConfig:
+    title: Generate NuGet.config file
+    image: node:6.10.2-alpine
+    working_directory: ./CI
+    commands:
+      - npm install -g envsub
+      - envsub NuGet.Config.tmpl NuGet.Config
+
   BuildGitKeys:
     title: Building Git Keys Docker Image
     type: build
@@ -18,8 +26,6 @@ steps:
     environment:
       - VERSION_SUFFIX=ci-${{CF_BUILD_ID}}-${{CF_SHORT_REVISION}}
     commands: 
-      - apt update && apt install gettext -y
-      - cd CI && envsubst < ./NuGet.Config.tmpl > NuGet.Config
       - dotnet restore ./Tweek.sln --configfile ./CI/NuGet.Config
       - dotnet build Tweek.sln -c Release --version-suffix "$VERSION_SUFFIX";
       - find . -wholename '*.Tests.csproj' -print0 | xargs -0 -n 1 dotnet test
@@ -115,10 +121,10 @@ steps:
           - tweek-api
         volumes:
           - ${{CF_VOLUME}}:/repo
-        working_dir: /repo
+        working_dir: /repo/tweek
         environment: 
           - TWEEK_API_URL=http://tweek-api/
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release --no-build"
+        command: /bin/bash -c "ls && wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release --no-build"
       backoffice-e2e:
         image: ${{BuildingTests}}
         depends_on: 
