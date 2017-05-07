@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using FSharpUtils.Newtonsoft;
 using Newtonsoft.Json.Linq;
 using Tweek.ApiService.SmokeTests.GetConfigurations.Models;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Tweek.ApiService.SmokeTests.GetConfigurations
 {
@@ -14,9 +13,9 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
     {
         private readonly ITweekApi mTweekApi;
 
-        public RuleBasedKeysTests()
+        public RuleBasedKeysTests(ITestOutputHelper output)
         {
-            mTweekApi = TweekApiServiceFactory.GetTweekApiClient();
+            mTweekApi = TweekApiServiceFactory.GetTweekApiClient(output);
         }
 
         [Theory(DisplayName = "Get key with simple rules")]
