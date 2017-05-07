@@ -1,4 +1,4 @@
-FROM node:6.10.1-slim
+FROM node:6.10.3-slim
 
 ENV NODE_ENV=production
 
