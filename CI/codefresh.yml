@@ -53,8 +53,8 @@ steps:
     image_name: soluto/backoffice-e2e
     working_directory: ./e2e/
 
-  EndToEndTest:
-    title: End to End tests
+  Tests:
+    title: Tests - e2e & smoke
     type: composition
     composition:
       version: '2'
@@ -111,6 +111,8 @@ steps:
     composition_candidates:
       smoke-tests:
         image: microsoft/aspnetcore-build:1.0-1.1
+        depends_on: 
+          - tweek-api
         volumes:
           - ${{CF_VOLUME}}:/repo
         working_dir: /repo
