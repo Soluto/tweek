@@ -112,7 +112,8 @@ steps:
       smoke-tests:
         image: microsoft/aspnetcore-build:1.0-1.1
         volumes:
-          - ${{CF_VOLUME}}:.
+          - ${{CF_VOLUME}}:/repo
+        working_dir: /repo
         command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release --no-build"
       backoffice-e2e:
         image: ${{BuildingTests}}
