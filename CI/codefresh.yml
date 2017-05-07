@@ -114,7 +114,9 @@ steps:
         volumes:
           - ${{CF_VOLUME}}:/repo
         working_dir: /repo
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release --no-build"
+        environment: 
+          - TWEEK_API_URL=http://tweek-api/
+        command: /bin/bash -c "curl --retry-delay 5 --retry 20 -v http://tweek-api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release --no-build"
       backoffice-e2e:
         image: ${{BuildingTests}}
         depends_on: 
