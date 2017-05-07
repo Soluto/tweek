@@ -190,7 +190,7 @@ steps:
           - master
     candidate: ${{BuildingManagement}}
 
-  PushEditorImage:
+  PushEditorImageBranch:
     type: push
     title: Push Editor - ${{CF_BRANCH}}
     tag: ${{CF_BRANCH_TAG_NORMALIZED}}
@@ -200,7 +200,7 @@ steps:
           - master
     candidate: ${{BuildingEditor}}
 
-  PushEditorImage:
+  PushEditorImageMaster:
     type: push
     title: Push Editor - latest
     when:
