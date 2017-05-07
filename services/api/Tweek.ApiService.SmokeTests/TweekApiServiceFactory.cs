@@ -8,30 +8,29 @@ using System.Threading.Tasks;
 using FSharpUtils.Newtonsoft;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using RestEase;
 using Tweek.Utils;
 
 namespace Tweek.ApiService.SmokeTests
 {
     public class TweekApi : ITweekApi
     {
-        private HttpClient _client;
+        private readonly HttpClient _client;
 
         public TweekApi(HttpClient client)
         {
-            this._client = client;
+            _client = client;
         }
 
         public async Task AppendContext(string identityType, string identityId, Dictionary<string, JsonValue> context)
         {
             await _client.PostAsync(
-                $"http://localhost:5000/context/{identityType}/{identityId}", new StringContent(JsonConvert.SerializeObject(context, new JsonValueConverter()), Encoding.UTF8, "application/json"));
+                $"/context/{identityType}/{identityId}", new StringContent(JsonConvert.SerializeObject(context, new JsonValueConverter()), Encoding.UTF8, "application/json"));
         }
 
         public async Task<JToken> GetConfigurations(string keyPath, IEnumerable<KeyValuePair<string, string>> context)
         {
             var stream = await _client.GetStreamAsync(
-                $"http://localhost:5000/configurations/{keyPath}?{String.Join("&", context.Select(x => String.Join("=", x.Key, x.Value)))}");
+                $"/configurations/{keyPath}?{string.Join("&", context.Select(x => String.Join("=", x.Key, x.Value)))}");
 
             return JToken.Load(new JsonTextReader(new StreamReader(stream)));
         }
@@ -41,9 +40,10 @@ namespace Tweek.ApiService.SmokeTests
     {
         public static ITweekApi GetTweekApiClient()
         {
-            return new TweekApi(new HttpClient()
+            var baseUrl = Environment.GetEnvironmentVariable("TWEEK_API_URL") ?? "http://localhost:5000";
+            return new TweekApi(new HttpClient
             {
-                BaseAddress = new Uri("http://localhost:5000")
+                BaseAddress = new Uri(baseUrl)
             });
         }
     }
