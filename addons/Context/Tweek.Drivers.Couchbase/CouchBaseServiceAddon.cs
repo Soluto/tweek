@@ -7,6 +7,7 @@ using Engine.Drivers.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Tweek.ApiService.Addons;
 using Tweek.Drivers.Couchbase;
@@ -15,7 +16,7 @@ namespace Tweek.Drivers.CouchbaseDriver
 {
     public class CouchBaseServiceAddon: ITweekAddon
     {
-        public void Install(IApplicationBuilder builder, IConfiguration configuration)
+        public void Install(IApplicationBuilder builder, IConfiguration configuration, ILoggerFactory loggerFactory)
         {
         }
 

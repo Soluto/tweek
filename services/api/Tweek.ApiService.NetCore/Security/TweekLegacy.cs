@@ -56,7 +56,7 @@ namespace Tweek.ApiService.NetCore.Security
 
     public class TweekLegacySupport : ITweekAddon
     {
-        public void Install(IApplicationBuilder builder, IConfiguration configuration)
+        public void Install(IApplicationBuilder builder, IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             builder.UseRewriter(new RewriteOptions().AddRewrite("^configurations/([^?]+)[?]?(.*)", "api/v1/keys/$1?$tweeklegacy=tweeklegacy&$ignoreKeyTypes=true&$2", true));
             builder.UseRewriter(new RewriteOptions().AddRewrite("^context/([^?]+)[?]?(.*)", "api/v1/context/$1?$tweeklegacy=tweeklegacy&$2", true));
