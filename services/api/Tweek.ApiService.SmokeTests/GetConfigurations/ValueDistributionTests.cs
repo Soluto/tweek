@@ -16,7 +16,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
         public ValueDistributionTests(ITestOutputHelper output)
         {
             mOutput = output;
-            mTweekApi = TweekApiServiceFactory.GetTweekApiClient();
+            mTweekApi = TweekApiServiceFactory.GetTweekApiClient(output);
         }
 
         [Fact(DisplayName = "Get key with value using bernulli open rate", Skip = "Working on this test")]

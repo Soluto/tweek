@@ -1,10 +1,8 @@
-﻿using FSharpUtils.Newtonsoft;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 using static FSharpUtils.Newtonsoft.JsonValue;
 
 namespace Tweek.ApiService.SmokeTests.AppendContext
@@ -13,9 +11,9 @@ namespace Tweek.ApiService.SmokeTests.AppendContext
     {
         private readonly ITweekApi mTweekApi;
 
-        public AppendContextTests()
+        public AppendContextTests(ITestOutputHelper output)
         {
-            mTweekApi = TweekApiServiceFactory.GetTweekApiClient();
+            mTweekApi = TweekApiServiceFactory.GetTweekApiClient(output);
         }
 
 
