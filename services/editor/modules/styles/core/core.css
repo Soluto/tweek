@@ -313,6 +313,10 @@
   font-family: 'tweekIcons';
   content: '\E905';
 }
+.search-button:after {
+  font-family: 'tweekIcons';
+  content: '\E906';
+}
 .close-button:after {
   font-family: 'tweekIcons';
   content: '\E900';
@@ -400,6 +404,46 @@
 .small-add-circle-button:after {
   font-family: 'tweekIcons';
   content: '\E905';
+}
+.search-circle-button {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  padding: 0 0 3px;
+  box-sizing: border-box;
+  font-size: 12px;
+  padding-top: 3px;
+}
+.search-circle-button:hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.search-circle-button:disabled {
+  background-color: gray;
+}
+.search-circle-button:disabled:hover,
+.search-circle-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.search-circle-button:after {
+  font-family: 'tweekIcons';
+  content: '\E906';
 }
 .close-circle-button {
   vertical-align: top;
