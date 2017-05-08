@@ -7,32 +7,35 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Tweek.ApiService.Addons;
+using System.Linq;
+using App.Metrics.Health;
+using App.Metrics.Core.Abstractions;
 
 namespace Tweek.Drivers.Rules.Management
 {
     public class RulesManagementAddon : ITweekAddon
     {
-        private ILogger _logger;
-        private Uri _managementServiceUrl;
-        public void Install(IApplicationBuilder builder, IConfiguration configuration, ILoggerFactory loggerFactory)
+        public void Use(IApplicationBuilder builder, IConfiguration configuration)
         {
-            _logger = loggerFactory.CreateLogger("RulesManagementDriver");
-            _managementServiceUrl = new Uri(configuration.GetValue<string>("Rules:Management"));
+            
         }
 
-        public void Register(IServiceCollection services, IConfiguration configuration)
+        public void Configure(IServiceCollection services, IConfiguration configuration)
         {
+            //_logger = loggerFactory.CreateLogger("RulesManagementDriver");
+            var managementServiceUrl = new Uri(configuration.GetValue<string>("Rules:Management:Url"));
             var httpClient = new HttpClient()
             {
-                BaseAddress = _managementServiceUrl
+                BaseAddress = managementServiceUrl
             };
 
-            services.AddSingleton<IRulesDriver, TweekManagementRulesDriver>(
-                ctx => TweekManagementRulesDriver.StartNew(httpClient.GetAsync, _logger,
-                    ctx.GetService<IMetrics>()));
+            services.AddSingleton<IRulesDriver>(
+                ctx => 
+                TweekManagementRulesDriver.StartNew(httpClient.GetAsync, ctx.GetService<ILoggerFactory>().CreateLogger("RulesManagementDriver"), 
+                ctx.GetService<IMeasureMetrics>()));
 
-            services.AddSingleton<IDiagnosticsProvider>(
-                ctx => new TweekManagementHealthCheck(ctx.GetService<TweekManagementRulesDriver>()));
+            services.AddSingleton<IDiagnosticsProvider>(ctx => new TweekManagementHealthCheck(ctx.GetServices<IRulesDriver>().OfType<TweekManagementRulesDriver>().Single()));
+                
 
         }
     }
