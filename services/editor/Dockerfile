@@ -1,16 +1,17 @@
-FROM node:6.10.1-slim
-
-ADD package.json yarn.lock /tmp/
+FROM node:6.10.3-slim
 
 ENV NODE_ENV=production
-RUN cd /tmp && npm install
-RUN mkdir -p /opt/app && cd /opt/app && ln -s /tmp/node_modules 
 
-ADD . /opt/app
+ADD package.json yarn.lock /tmp/
+WORKDIR /tmp
+RUN npm install --only=prod && mkdir -p /opt/app && cp -a node_modules /opt/app/node_modules && npm install --only=dev
+
+ADD . /tmp/
+RUN npm run test
+RUN npm run build-prod && mv .build /opt/app/.build && rm -rf /tmp
 
 WORKDIR /opt/app
 EXPOSE 3000
 
 ENV PORT=3000
-RUN npm run build-prod
 ENTRYPOINT ["node", "./.build/server.js"]
