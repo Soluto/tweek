@@ -1,8 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using FSharpUtils.Newtonsoft;
 using RestEase;
@@ -20,7 +17,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
         public IdentityContextTests(ITestOutputHelper output)
         {
             mOutput = output;
-            mTweekApi = TweekApiServiceFactory.GetTweekApiClient();
+            mTweekApi = TweekApiServiceFactory.GetTweekApiClient(output);
         }
 
         [Theory(DisplayName = "Get key by identity")]

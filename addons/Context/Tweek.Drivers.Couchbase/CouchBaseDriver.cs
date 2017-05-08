@@ -89,10 +89,10 @@ namespace Tweek.Drivers.CouchbaseDriver
             var bucket = GetOrOpenBucket();
             var document = await bucket.GetAsync<T>(key);
             if (document.Success) return document.Value;
-            if (document.Status == Couchbase.IO.ResponseStatus.KeyNotFound) return null;
+            if (document.Status == global::Couchbase.IO.ResponseStatus.KeyNotFound) return null;
             var replica = (await bucket.GetFromReplicaAsync<T>(key));
             if (replica.Success) return replica.Value;
-            if (replica.Status == Couchbase.IO.ResponseStatus.KeyNotFound) return null;
+            if (replica.Status == global::Couchbase.IO.ResponseStatus.KeyNotFound) return null;
             throw new AggregateException(document.Exception ?? new Exception(document.Message),
                                           replica.Exception ?? new Exception(replica.Message));
         }
