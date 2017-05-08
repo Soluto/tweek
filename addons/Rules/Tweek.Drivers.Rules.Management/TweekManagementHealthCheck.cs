@@ -18,6 +18,6 @@ namespace Tweek.Drivers.Rules.Management
         public string Name { get; } = "TweekManagementRulesDriver";
         public object GetDetails() => new {_driver.CurrentLabel, _driver.LastCheckTime };
 
-        public bool IsAlive() => DateTime.UtcNow - _driver.LastCheckTime > TimeSpan.FromMinutes(5);
+        public bool IsAlive() => DateTime.UtcNow - _driver.LastCheckTime < TimeSpan.FromMinutes(5);
     }
 }

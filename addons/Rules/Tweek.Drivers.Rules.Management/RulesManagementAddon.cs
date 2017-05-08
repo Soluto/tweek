@@ -28,7 +28,7 @@ namespace Tweek.Drivers.Rules.Management
             };
 
             services.AddSingleton<IRulesDriver, TweekManagementRulesDriver>(
-                ctx => TweekManagementRulesDriver.StartNew(HttpUtils.FromHttpClient(httpClient), _logger,
+                ctx => TweekManagementRulesDriver.StartNew(httpClient.GetAsync, _logger,
                     ctx.GetService<IMetrics>()));
 
             services.AddSingleton<IDiagnosticsProvider>(
