@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Tweek.ApiService.SmokeTests.GetConfigurations
 {
@@ -9,9 +10,9 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
     {
         private readonly ITweekApi mTweekApi;
 
-        public KeyPathsTests()
+        public KeyPathsTests(ITestOutputHelper output)
         {
-            mTweekApi = TweekApiServiceFactory.GetTweekApiClient();
+            mTweekApi = TweekApiServiceFactory.GetTweekApiClient(output);
         }
 
         [Fact(DisplayName = "Requesting a key should return its value as a string")]
