@@ -21,18 +21,18 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Rewrite" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="1.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Scrutor" Version="1.12.0" />
     <PackageReference Include="Tweek.JPad" Version="0.5.6287.28670" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\addons\Rules\Tweek.Drivers.Rules.Management\Tweek.Drivers.Rules.Management.csproj" />
     <ProjectReference Include="..\..\..\core\Engine\Engine.Core\Engine.Core.csproj" />
     <ProjectReference Include="..\..\..\core\Engine\Engine.DataTypes\Engine.DataTypes.csproj" />
     <ProjectReference Include="..\..\..\core\Engine\Engine.Drivers\Engine.Drivers.csproj" />
     <ProjectReference Include="..\..\..\core\Engine\Engine\Engine.csproj" />
     <ProjectReference Include="..\..\..\core\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj" />
-    <ProjectReference Include="..\..\..\addons\Rules\Tweek.Drivers.Blob\Tweek.Drivers.Blob.csproj" />
     <ProjectReference Include="..\..\..\core\JPad\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj" />
     <ProjectReference Include="..\..\..\addons\Context\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj" />
     <ProjectReference Include="..\..\..\core\Utils\JsonValueConverter\JsonValueConverter.csproj" />
