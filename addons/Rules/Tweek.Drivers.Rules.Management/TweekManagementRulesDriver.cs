@@ -23,6 +23,7 @@ namespace Tweek.Drivers.Rules.Management
 
     public class TweekManagementRulesDriver : IRulesDriver, IDisposable
     {
+
         public event Action<IDictionary<string, RuleDefinition>> OnRulesChange;
         
         private const string RULESET_PATH =  "/ruleset/latest";
@@ -64,23 +65,39 @@ namespace Tweek.Drivers.Rules.Management
             var measuredGetter = MeasureAsync<string, HttpResponseMessage>(metrics, "download_latest_header", s=>getter(s));
             var measuredDownloader = MeasureAsync(metrics, "download_ruleset", (HttpResponseMessage message)=> message.ExtractRules());
 
-            _pipeline = Observable.Timer(TimeSpan.Zero, TimeSpan.FromSeconds(30))
+            _pipeline = Observable.Create<Dictionary<string, RuleDefinition>>( async (sub, ct)=>{
+                    var shouldStop = false;
+                    try {
+                    string currentVersion = null;
+                    while(!shouldStop){
+                        {
+                            var response = await measuredGetter(RULESET_PATH);
+                            var newVersion = response.GetRulesVersion();
+                            if (newVersion == currentVersion) {
+                                await Task.Delay(30000);
+                                continue;
+                            }
+                            currentVersion = newVersion;
+                            var ruleset = await measuredDownloader(response);
+                            CurrentLabel = newVersion;
+                            await Task.Delay(5000);
+                            sub.OnNext(ruleset);
+                        }
+                    }
+                    } catch(Exception ex){
+                        sub.OnError(ex);
+                        shouldStop = true;
+                    }
+                    ct.Register(()=> shouldStop = true);
+                    return ()=> shouldStop=true ;
+                })
                 .SubscribeOn(scheduler)
-                .Select(_ => Observable.FromAsync(() => measuredGetter(RULESET_PATH)))
-                .Switch()
-                .Do(_ => LastCheckTime = DateTime.UtcNow)
-                .DistinctUntilChanged(x => x.GetRulesVersion())
-                .Select(x => Observable.FromAsync(() => measuredDownloader(x)).Select(rules => (label: x.GetRulesVersion(), rules: rules)))
-                .Switch()
                 .Catch((Exception exception) =>
                 {
                     logger.LogWarning($"Failed to update rules: \r\n{exception}");
-                    return Observable.Empty<(string label, Dictionary<string, RuleDefinition> rules)>()
+                    return Observable.Empty<Dictionary<string, RuleDefinition>>()
                         .Delay(TimeSpan.FromMinutes(1));
                 })
-                .Repeat()
-                .Do(x => CurrentLabel = x.label)
-                .Select(x=>x.rules)
                 .Replay(1);
         }
 
