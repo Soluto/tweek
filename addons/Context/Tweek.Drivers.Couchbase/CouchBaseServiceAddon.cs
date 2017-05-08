@@ -16,11 +16,11 @@ namespace Tweek.Drivers.CouchbaseDriver
 {
     public class CouchBaseServiceAddon: ITweekAddon
     {
-        public void Install(IApplicationBuilder builder, IConfiguration configuration, ILoggerFactory loggerFactory)
+        public void Use(IApplicationBuilder builder, IConfiguration configuration)
         {
         }
 
-        public void Register(IServiceCollection services, IConfiguration configuration)
+        public void Configure(IServiceCollection services, IConfiguration configuration)
         {
             var contextBucketName = configuration["Couchbase.BucketName"];
             var contextBucketPassword = configuration["Couchbase.Password"];

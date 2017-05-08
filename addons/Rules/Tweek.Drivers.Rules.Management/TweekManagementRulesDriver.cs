@@ -8,6 +8,7 @@ using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
 using App.Metrics;
+using App.Metrics.Core.Abstractions;
 using App.Metrics.Core.Options;
 using Engine.Drivers.Rules;
 using LanguageExt;
@@ -43,20 +44,20 @@ namespace Tweek.Drivers.Rules.Management
             };
         }
 
-        private static Func<T, Task<U>> MeasureAsync<T, U>(IMetrics metrics, string name, Func<T, Task<U>> mapFunc)
+        private static Func<T, Task<U>> MeasureAsync<T, U>(IMeasureMetrics metrics, string name, Func<T, Task<U>> mapFunc)
         {
             return Optional(metrics)
                 .Match(someMetrics =>
                     async (T t) =>
                     {
-                        using (someMetrics.Measure.Timer.Time(GetTimerOptions(name)))
+                        using (someMetrics.Timer.Time(GetTimerOptions(name)))
                         {
                             return await mapFunc(t);
                         }
                     }, () => mapFunc);
         }
 
-        private TweekManagementRulesDriver(HttpGet getter, ILogger logger = null, IMetrics metrics = null, IScheduler scheduler = null)
+        private TweekManagementRulesDriver(HttpGet getter, ILogger logger = null, IMeasureMetrics metrics = null, IScheduler scheduler = null)
         {
             logger = logger ?? NullLogger.Instance;
             scheduler = scheduler ?? TaskPoolScheduler.Default;
@@ -86,7 +87,7 @@ namespace Tweek.Drivers.Rules.Management
         private void Start() => _subscrption = new CompositeDisposable(_pipeline.Subscribe(rules => OnRulesChange?.Invoke(rules)),_pipeline.Connect());
 
         public static TweekManagementRulesDriver StartNew(HttpGet getter, ILogger logger = null,
-            IMetrics metrics = null, IScheduler scheduler = null)
+            IMeasureMetrics metrics = null, IScheduler scheduler = null)
         {
             var driver = new TweekManagementRulesDriver(getter, logger,
                 metrics, scheduler);

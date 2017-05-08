@@ -87,15 +87,14 @@ namespace Tweek.ApiService.NetCore
             });
 
             // Adapt all IDiagnosticsProviders to support App.Metrics HealthCheck
+            RegisterMetrics(services);
             services.AdaptSingletons<IDiagnosticsProvider, HealthCheck>(inner => new DiagnosticsProviderDecorator(inner));
 
-            RegisterMetrics(services);
+            
         }
 
         private void RegisterMetrics(IServiceCollection services)
         {
-            var healthChecksRegistrar = new HealthChecksRegistrar(Configuration["RulesBlob.Url"]);
-
             services
                 .AddMetrics(options =>
                 {
@@ -125,7 +124,7 @@ namespace Tweek.ApiService.NetCore
                         }
                     }
                 })
-                .AddHealthChecks(healthChecksRegistrar.RegisterHelthChecks)
+                .AddHealthChecks()
                 .AddMetricsMiddleware(Configuration.GetSection("AspNetMetrics"));
         }
 
@@ -141,7 +140,7 @@ namespace Tweek.ApiService.NetCore
             }
 
             app.UseAuthenticationProviders(Configuration, loggerFactory.CreateLogger("AuthenticationProviders"));
-            app.InstallAddons(Configuration, loggerFactory);
+            app.InstallAddons(Configuration);
             app.UseMetrics();
             app.UseMvc();
             app.UseMetricsReporting(lifetime);

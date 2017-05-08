@@ -14,14 +14,14 @@ namespace Tweek.ApiService.NetCore.Addons
 {
     public static class AddonsListExtensions
     {
-        public static void InstallAddons(this IApplicationBuilder app, IConfiguration configuration, ILoggerFactory loggerFactory)
+        public static void InstallAddons(this IApplicationBuilder app, IConfiguration configuration)
         {
-            ForEachAddon(configuration, addon => addon.Install(app, configuration, loggerFactory));
+            ForEachAddon(configuration, addon => addon.Use(app, configuration));
         }
 
         public static void RegisterAddonServices(this IServiceCollection services, IConfiguration configuration)
         {
-            ForEachAddon(configuration, addon => addon.Register(services, configuration));
+            ForEachAddon(configuration, addon => addon.Configure(services, configuration));
         }
 
         private static void ForEachAddon(IConfiguration configuration, Action<ITweekAddon> action)

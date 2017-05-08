@@ -8,7 +8,7 @@ namespace Tweek.ApiService.Addons
 {
     public interface ITweekAddon
     {
-        void Install(IApplicationBuilder builder, IConfiguration configuration, ILoggerFactory loggerFactory);
-        void Register(IServiceCollection services, IConfiguration configuration);
+        void Use(IApplicationBuilder builder, IConfiguration configuration);
+        void Configure(IServiceCollection services, IConfiguration configuration);
     }
 }
