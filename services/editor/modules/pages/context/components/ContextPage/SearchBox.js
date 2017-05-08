@@ -1,93 +1,78 @@
-import React from 'react';
-import { Component,PropTypes } from 'react';
-import { compose } from 'recompose';
-import { connect } from 'react-redux';
+import React, { Component, PropTypes } from 'react';
+import changeCase from 'change-case';
+import { refreshSchema, getIdentities } from '../../../../services/context-service';
 import withLoading from '../../../../hoc/with-loading';
-import { refreshSchema,getIdentities } from "../../../../services/context-service";
-
+import ComboBox from '../../../../components/common/ComboBox/ComboBox';
+import Input from '../../../../components/common/Input/Input';
 import Button from '../Button/Button';
-import TextInput from '../TextInput/TextInput';
-import Select from '../Select/Select';
+import style from './SearchBox.css';
 
-export default compose(
-  connect(state => state),
-  withLoading(() => null, refreshSchema())
-)
-(class SearchBox extends Component {
+class SearchBox extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       contextType: '',
       contextId: '',
-      identities: []
-    }
+      identities: [],
+    };
   }
 
-  componentDidMount() {
-    const identities = getIdentities();
+  componentWillMount() {
+    const identities = getIdentities().map(x => ({ label: changeCase.pascalCase(x), value: x }));
     const contextType = identities[0];
 
-    this.setState({ identities, contextType })
+    this.setState({ identities, contextType });
   }
 
+  onContextTypeChange({ value: contextType }) {
+    this.setState({ contextType });
+  }
+
+  onContextIdChange(contextId) {
+    this.setState({ contextId });
+  }
+
+  onGetClick() {
+    this.props.onGetContext({
+      contextType: this.state.contextType,
+      contextId: this.state.contextId,
+    });
+  }
 
   render() {
-    const { contextType, identities } = this.state;
+    const { contextType, identities, contextId } = this.state;
 
     return (
-      <div style={ style.container }>
+      <div className={style['context-search-container']}>
 
-        <div style={ style.containerItem }>
-          <p style={ style.containerItemLabel }>Context Type</p>
-          <Select value={ contextType } options={ identities }
-            onChange={ e => this.onContextTypeChange(e.target.value) } />
+        <div className={style['context-type-container']}>
+          <ComboBox
+            placeholder="Context Type"
+            options={identities}
+            onChange={this.onContextTypeChange.bind(this)}
+            selected={identities.filter(x => x.value === contextType)}
+          />
         </div>
 
-        <div style={ style.containerItem }>
-          <p style={ style.containerItemLabel }>Context Id</p>
-          <TextInput
-            placeholder={ 'Value' }
-            onEnterKeyPress= { () => this.onGetClick() }
-            onChange={ e => this.onContextIdChange(e.target.value) } />
+        <div className={style['context-id-container']}>
+          <Input
+            placeholder="Context Id"
+            onEnterKeyPress={() => this.onGetClick()}
+            onChange={e => this.onContextIdChange(e.target.value)}
+          />
         </div>
 
-        <div style={ style.containerItem }>
-          <Button style={{ alignSelf: 'flex-end' }} text={ 'Get' } onClick={ () => this.onGetClick() } />
+        <div className={style['search-button-container']}>
+          <button className={style['search-button']} onClick={this.onGetClick.bind(this)} disabled={!contextType || !contextId} />
         </div>
       </div>
     );
   }
-
-  onContextTypeChange(contextType){
-    this.setState({ contextType });
-  }
-
-  onContextIdChange(contextId){
-    this.setState({ contextId });
-  }
-
-  onGetClick(){
-    this.props.onGetContext({
-      contextType: this.state.contextType,
-      contextId: this.state.contextId
-    })
-  }
-});
-
-const style = {
-  container: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'flex-end'
-  },
-
-  containerItemLabel: {
-    marginBottom: '4px'
-  },
-
-  containerItem: {
-    padding: '10px'
-  }
 }
 
+SearchBox.propTypes = {
+  onGetContext: PropTypes.func.isRequired,
+};
+
+export default withLoading(() => null, refreshSchema())(SearchBox);

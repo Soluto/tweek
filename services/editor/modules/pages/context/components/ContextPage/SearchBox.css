@@ -1,0 +1,50 @@
+.context-search-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+.context-search-container .context-type-container,
+.context-search-container .context-id-container,
+.context-search-container .search-button-container {
+  padding: 5px;
+}
+.context-search-container .search-button {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  padding: 0 0 3px;
+  box-sizing: border-box;
+  font-size: 12px;
+  padding-top: 3px;
+}
+.context-search-container .search-button:hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.context-search-container .search-button:disabled {
+  background-color: gray;
+}
+.context-search-container .search-button:disabled:hover,
+.context-search-container .search-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.context-search-container .search-button:after {
+  font-family: 'tweekIcons';
+  content: '\E906';
+}
