@@ -133,7 +133,14 @@
       content: '\E905';
     }
   }
-  
+
+  .search-button {
+    &:after {
+      font-family: 'tweekIcons';
+      content: '\E906';
+    }
+  }
+
   .close-button {
     &:after {
       font-family: 'tweekIcons';
@@ -147,14 +154,21 @@
     font-size: 16px;
     padding-top: 2px;
   }
-  
+
   .small-add-circle-button {
     .small-circle-button;
     .add-button;
     font-size: 11px;
     padding-top: 1px;
   }
-  
+
+  .search-circle-button {
+    .circle-button;
+    .search-button;
+    font-size: 12px;
+    padding-top: 3px;
+  }
+
   .close-circle-button {
     .gray-circle-button;
     .close-button;
