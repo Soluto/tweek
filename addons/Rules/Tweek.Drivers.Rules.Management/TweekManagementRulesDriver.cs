@@ -98,6 +98,7 @@ namespace Tweek.Drivers.Rules.Management
                     return Observable.Empty<Dictionary<string, RuleDefinition>>()
                         .Delay(TimeSpan.FromMinutes(1));
                 })
+                .Repeat()
                 .Replay(1);
         }
 
