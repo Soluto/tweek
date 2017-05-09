@@ -1,0 +1,40 @@
+@import (reference) "../../../../../../styles/core/core.less";
+
+.fixed-keys-list {
+  border-collapse: collapse;
+
+  th, td {
+    padding: 0.4em;
+    margin: 0;
+  }
+
+  th {
+    font-size: 1em;
+    border-bottom: 4px solid #029CD5;
+  }
+
+  tbody {
+    tr:hover {
+      td {
+        background-color: #efefef;
+      }
+
+      td:last-child {
+        border-top-right-radius: 0.4em;
+        border-bottom-right-radius: 0.4em;
+      }
+      td:first-child {
+        border-left: 4px solid #029CD5;
+      }
+    }
+
+    th {
+      text-align: left;
+    }
+
+    tr td {
+      border-left: 4px solid transparent;
+      box-sizing: border-box;
+    }
+  }
+}
