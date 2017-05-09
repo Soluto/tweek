@@ -70,13 +70,7 @@ class FixedKeysList extends Component {
       .filter(x => !x.isRemoved && exists(x.local.key))
       .reduce((result, x) => ({ ...result, [x.local.key]: x.local.value }), {});
 
-    const deletedKeys = Object.keys(this.props.fixedKeys)
-      .filter(x => !updatedConfiguration.hasOwnProperty(x));
-
-    this.props.onSave({
-      updatedConfiguration,
-      deletedKeys,
-    });
+    this.props.onSave(updatedConfiguration);
   }
 
   get canSave() {

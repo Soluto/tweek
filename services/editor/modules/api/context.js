@@ -27,7 +27,22 @@ export async function getContext(req, res, { tweekApiHostname }, { params }) {
 
 export async function updateContext(req, res, { tweekApiHostname }, { params }) {
   const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
-  await tweekApiClient.post(`api/v1/context/${params.contextType}/${encodeURIComponent(params.contextId)}`, req.body);
+
+  const contextUrl = `api/v1/context/${params.contextType}/${encodeURIComponent(params.contextId)}`;
+
+  const response = await tweekApiClient.get(contextUrl);
+  const currentContext = response.data;
+  const newContext = req.body;
+
+  const deletedKeys = Object.keys(currentContext)
+    .filter(key => !newContext.hasOwnProperty(key))
+    .map(key => tweekApiClient.delete(`${contextUrl}/${key}`));
+
+  await Promise.all([
+    ...deletedKeys,
+    tweekApiClient.post(contextUrl, newContext),
+  ]);
+
   res.sendStatus(200);
 }
 
