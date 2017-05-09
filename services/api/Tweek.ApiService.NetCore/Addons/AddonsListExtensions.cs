@@ -8,6 +8,7 @@ using Tweek.ApiService.Addons;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Tweek.ApiService.NetCore.Addons
 {
@@ -15,12 +16,12 @@ namespace Tweek.ApiService.NetCore.Addons
     {
         public static void InstallAddons(this IApplicationBuilder app, IConfiguration configuration)
         {
-            ForEachAddon(configuration, addon => addon.Install(app, configuration));
+            ForEachAddon(configuration, addon => addon.Use(app, configuration));
         }
 
         public static void RegisterAddonServices(this IServiceCollection services, IConfiguration configuration)
         {
-            ForEachAddon(configuration, addon => addon.Register(services, configuration));
+            ForEachAddon(configuration, addon => addon.Configure(services, configuration));
         }
 
         private static void ForEachAddon(IConfiguration configuration, Action<ITweekAddon> action)
