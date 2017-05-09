@@ -3,7 +3,7 @@ import style from './Input.css';
 
 const isEnterKeyPressed = event => event.keyCode === 13 || event.which === 13;
 
-const TextInput = ({ onEnterKeyPress, ...props }) => (
+const Input = ({ onEnterKeyPress, ...props }) => (
   <input
     onKeyPress={(e) => {
       if (onEnterKeyPress && isEnterKeyPressed(e)) {
@@ -15,18 +15,18 @@ const TextInput = ({ onEnterKeyPress, ...props }) => (
   />
   );
 
-TextInput.propTypes = {
+Input.propTypes = {
   onEnterKeyPress: PropTypes.func,
   placeholder: PropTypes.string,
   className: PropTypes.string,
   type: PropTypes.string,
 };
 
-TextInput.defaultProps = {
+Input.defaultProps = {
   onEnterKeyPress: undefined,
   placeholder: '',
   className: style['text-input'],
   type: 'text',
 };
 
-export default TextInput;
+export default Input;

@@ -20,7 +20,7 @@ SaveButton.propTypes = {
 
 SaveButton.defaultProps = {
   isSaving: false,
-  hasChanges: false,
+  hasChanges: true,
   className: style['save-button'],
 };
 
