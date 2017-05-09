@@ -106,10 +106,10 @@ namespace Tweek.Drivers.Rules.Management
 
         private void Start() => _subscrption = new CompositeDisposable(_pipeline.Subscribe(rules => OnRulesChange?.Invoke(rules)),_pipeline.Connect());
 
-        public static TweekManagementRulesDriver StartNew(HttpGet getter, ILogger logger = null,
+        public static TweekManagementRulesDriver StartNew(HttpGet getter, TweekManagementRulesDriverSettings settings, ILogger logger = null,
             IMeasureMetrics metrics = null, IScheduler scheduler = null)
         {
-            var driver = new TweekManagementRulesDriver(getter, logger,
+            var driver = new TweekManagementRulesDriver(getter, settings, logger,
                 metrics, scheduler);
             driver.Start();
             return driver;
