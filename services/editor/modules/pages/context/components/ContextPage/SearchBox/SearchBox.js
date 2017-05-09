@@ -1,10 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import changeCase from 'change-case';
-import { refreshSchema, getIdentities } from '../../../../services/context-service';
-import withLoading from '../../../../hoc/with-loading';
-import ComboBox from '../../../../components/common/ComboBox/ComboBox';
-import Input from '../../../../components/common/Input/Input';
-import Button from '../Button/Button';
+import { refreshSchema, getIdentities } from '../../../../../services/context-service';
+import withLoading from '../../../../../hoc/with-loading';
+import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
+import Input from '../../../../../components/common/Input/Input';
 import style from './SearchBox.css';
 
 class SearchBox extends Component {

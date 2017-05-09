@@ -3,37 +3,44 @@ import ServerRoute from './server/ServerRoute';
 import * as KeysRoutes from './api/keys';
 import * as TypesRoutes from './api/types';
 import * as TagsRoutes from './api/tags';
-import * as ContextRoutes from "./api/context";
+import * as ContextRoutes from './api/context';
 import requestErrorHandlingWrapper from './utils/request-error-handling-wrapper';
 
-export default ({tagsRepository, keysRepository, tweekApiHostname}) => (
+export default ({ tagsRepository, keysRepository, tweekApiHostname }) => (
   <ServerRoute path="/api">
-    <ServerRoute path="tags"
+    <ServerRoute
+      path="tags"
       get={requestErrorHandlingWrapper(TagsRoutes.getTags)}
       put={requestErrorHandlingWrapper(TagsRoutes.saveTags)}
       tagsRepository={tagsRepository}
     />
-    <ServerRoute path="types"
+    <ServerRoute
+      path="types"
       get={requestErrorHandlingWrapper(TypesRoutes.getTypes)}
       tweekApiHostname={tweekApiHostname}
     />
-    <ServerRoute path="context-schema"
+    <ServerRoute
+      path="context-schema"
       get={requestErrorHandlingWrapper(ContextRoutes.getContextSchema)}
       tweekApiHostname={tweekApiHostname}
     />
     <ServerRoute path="context">
-      <ServerRoute path=":contextType/:contextId"
+      <ServerRoute
+        path=":contextType/:contextId"
         get={requestErrorHandlingWrapper(ContextRoutes.getContext)}
         post={requestErrorHandlingWrapper(ContextRoutes.updateContext)}
-        tweekApiHostname={tweekApiHostname}>
-        <ServerRoute path=":key"
-             delete={requestErrorHandlingWrapper(ContextRoutes.deleteContextKey)}
-             tweekApiHostname={tweekApiHostname}
+        tweekApiHostname={tweekApiHostname}
+      >
+        <ServerRoute
+          path=":key"
+          delete={requestErrorHandlingWrapper(ContextRoutes.deleteContextKey)}
+          tweekApiHostname={tweekApiHostname}
         />
       </ServerRoute>
-    </ ServerRoute>
+    </ServerRoute>
     <ServerRoute path="keys">
-      <ServerRoute path="*"
+      <ServerRoute
+        path="*"
         get={requestErrorHandlingWrapper(KeysRoutes.getKey)}
         put={requestErrorHandlingWrapper(KeysRoutes.saveKey)}
         delete={requestErrorHandlingWrapper(KeysRoutes.deleteKey)}
