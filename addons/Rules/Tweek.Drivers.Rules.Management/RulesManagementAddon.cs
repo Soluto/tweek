@@ -25,7 +25,6 @@ namespace Tweek.Drivers.Rules.Management
 
         public void Configure(IServiceCollection services, IConfiguration configuration)
         {
-            //_logger = loggerFactory.CreateLogger("RulesManagementDriver");
             var managementServiceUrl = new Uri(configuration.GetValue<string>("Rules:Management:Url"));
             var httpClient = new HttpClient()
             {
@@ -42,7 +41,6 @@ namespace Tweek.Drivers.Rules.Management
 
             services.AddSingleton<IDiagnosticsProvider>(ctx => new TweekManagementHealthCheck(ctx.GetServices<IRulesDriver>().OfType<TweekManagementRulesDriver>().Single()));
                 
-
         }
     }
 }
