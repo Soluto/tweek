@@ -10,6 +10,9 @@ using Tweek.ApiService.Addons;
 using System.Linq;
 using App.Metrics.Health;
 using App.Metrics.Core.Abstractions;
+using LanguageExt;
+using static LanguageExt.Prelude;
+using LanguageExt.Trans.Linq;
 
 namespace Tweek.Drivers.Rules.Management
 {
@@ -28,10 +31,13 @@ namespace Tweek.Drivers.Rules.Management
             {
                 BaseAddress = managementServiceUrl
             };
+            var settings = new TweekManagementRulesDriverSettings();
+            configuration.GetValue<string>("Rules:Management:SampleIntervalInMs")?.Iter(x=> settings.SampleIntervalInMs = x);
+            configuration.GetValue<string>("Rules:Management:FailureDelay")?.Iter(x=> settings.FailureDelay = x);
 
             services.AddSingleton<IRulesDriver>(
                 ctx => 
-                TweekManagementRulesDriver.StartNew(httpClient.GetAsync, ctx.GetService<ILoggerFactory>().CreateLogger("RulesManagementDriver"), 
+                TweekManagementRulesDriver.StartNew(httpClient.GetAsync, settings, ctx.GetService<ILoggerFactory>().CreateLogger("RulesManagementDriver"), 
                 ctx.GetService<IMeasureMetrics>()));
 
             services.AddSingleton<IDiagnosticsProvider>(ctx => new TweekManagementHealthCheck(ctx.GetServices<IRulesDriver>().OfType<TweekManagementRulesDriver>().Single()));
