@@ -75,6 +75,7 @@ namespace Tweek.Drivers.Rules.Management
           {
             var response = await measuredGetter(RULESET_PATH);
             var newVersion = response.GetRulesVersion();
+            LastCheckTime = DateTime.UtcNow;
             if (newVersion == CurrentLabel)
             {
               await Delay(settings.SampleInterval, scheduler);
