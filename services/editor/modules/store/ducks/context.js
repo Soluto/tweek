@@ -20,26 +20,17 @@ export const getContext = ({ contextType, contextId }) => async function (dispat
   }
 };
 
-export const updateContext = ({ contextType, contextId, updatedContextData, deletedContextKeys }) => async function (dispatch) {
+export const updateContext = ({ contextType, contextId, updatedContextData }) => async function (dispatch) {
   dispatch({ type: UPDATE_CONTEXT });
   const encodedContextId = encodeURIComponent(contextId);
 
   try {
-    await Promise.all([
-      ...deletedContextKeys
-        .map(encodeURIComponent)
-        .map(key => fetch(`/api/context/${contextType}/${encodedContextId}/${key}`, {
-          credentials: 'same-origin',
-          method: 'DELETE',
-        })),
-
-      fetch(`/api/context/${contextType}/${encodedContextId}`, {
-        credentials: 'same-origin',
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedContextData),
-      }),
-    ]);
+    await fetch(`/api/context/${contextType}/${encodedContextId}`, {
+      credentials: 'same-origin',
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedContextData),
+    });
     dispatch({ type: CONTEXT_UPDATED, payload: { contextData: updatedContextData } });
   } catch (error) {
     dispatch(showError({ title: 'Failed to update context', error }));

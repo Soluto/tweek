@@ -19,24 +19,19 @@ const style = {
   },
 };
 
-const FixedKeys = ({ fixedConfigurations, updateContext }) => (
+const FixedKeys = ({ fixedKeys, updateContext: onSave }) => (
   <div style={style.container}>
     <h3 style={{ marginBottom: '1em' }}>Fixed Configuration</h3>
     <FixedKeysList
-      onSave={({ updatedConfiguration, deletedKeys }) => updateContext({
-        updatedConfiguration,
-        deletedKeys,
-      })}
-      fixedKeys={fixedConfigurations}
+      onSave={onSave}
+      fixedKeys={fixedKeys}
     />
   </div>
-  );
+);
 
 FixedKeys.propTypes = {
-  fixedConfigurations: PropTypes.object,
+  fixedKeys: PropTypes.object.isRequired,
   updateContext: PropTypes.func.isRequired,
-  contextType: PropTypes.string.isRequired,
-  contextId: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -48,11 +43,10 @@ const mapDispatchToProps = (dispatch, props) => ({
     contextType: props.contextType,
     contextId: props.contextId,
   })),
-  updateContext: ({ updatedConfiguration, deletedKeys }) => dispatch(updateContext({
+  updateContext: updatedConfiguration => dispatch(updateContext({
     contextType: props.contextType,
     contextId: props.contextId,
     updatedContextData: addFixedPrefix(trimSpaces(updatedConfiguration)),
-    deletedContextKeys: deletedKeys.map(trimString).map(padWithFixedPrefix),
   })),
 });
 
@@ -72,6 +66,6 @@ export default compose(
   }),
   mapProps(props => ({
     ...props,
-    fixedConfigurations: removeFixedPrefix(filterFixedConfigurationProps(props.contextData || {})),
+    fixedKeys: removeFixedPrefix(filterFixedConfigurationProps(props.contextData || {})),
   })),
 )(FixedKeys);
