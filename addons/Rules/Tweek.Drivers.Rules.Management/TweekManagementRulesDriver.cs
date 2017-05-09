@@ -58,10 +58,14 @@ namespace Tweek.Drivers.Rules.Management
                     }, () => mapFunc);
         }
 
+        private static async Task Delay(int ms, IScheduler scheduler){
+            await Observable.Return(System.Reactive.Unit.Default).Delay(TimeSpan.FromMilliseconds(ms), scheduler);
+        }
+
         private TweekManagementRulesDriver(HttpGet getter, ILogger logger = null, IMeasureMetrics metrics = null, IScheduler scheduler = null)
         {
             logger = logger ?? NullLogger.Instance;
-            scheduler = scheduler ?? TaskPoolScheduler.Default;
+            scheduler = scheduler ?? DefaultScheduler.Instance;
             var measuredGetter = MeasureAsync<string, HttpResponseMessage>(metrics, "download_latest_header", s=>getter(s));
             var measuredDownloader = MeasureAsync(metrics, "download_ruleset", (HttpResponseMessage message)=> message.ExtractRules());
 
@@ -74,13 +78,13 @@ namespace Tweek.Drivers.Rules.Management
                             var response = await measuredGetter(RULESET_PATH);
                             var newVersion = response.GetRulesVersion();
                             if (newVersion == currentVersion) {
-                                await Task.Delay(30000);
+                                await Delay(30000, scheduler);
                                 continue;
                             }
                             currentVersion = newVersion;
                             var ruleset = await measuredDownloader(response);
                             CurrentLabel = newVersion;
-                            await Task.Delay(5000);
+                            await Delay(5000, scheduler);
                             sub.OnNext(ruleset);
                         }
                     }
