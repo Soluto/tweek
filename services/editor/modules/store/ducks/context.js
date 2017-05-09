@@ -16,6 +16,7 @@ export const getContext = ({ contextType, contextId }) => async function (dispat
     dispatch({ type: CONTEXT_RECEIVED, payload: { contextData } });
   } catch (error) {
     dispatch(showError({ title: 'Failed to retrieve context', error }));
+    dispatch({ type: CONTEXT_RECEIVED });
   }
 };
 
@@ -39,37 +40,36 @@ export const updateContext = ({ contextType, contextId, updatedContextData, dele
         body: JSON.stringify(updatedContextData),
       }),
     ]);
-
-    dispatch({ type: CONTEXT_UPDATED });
-    dispatch(getContext({ contextType, contextId }));
+    dispatch({ type: CONTEXT_UPDATED, payload: { contextData: updatedContextData } });
   } catch (error) {
     dispatch(showError({ title: 'Failed to update context', error }));
+    dispatch({ type: CONTEXT_UPDATED });
   }
 };
 
 export default handleActions({
-  [GET_CONTEXT]: (state, action) => ({
+  [GET_CONTEXT]: state => ({
     ...state,
     isGettingContext: true,
   }),
   [CONTEXT_RECEIVED]: (state, action) => ({
     ...state,
-    contextData: action.payload.contextData,
+    contextData: action.payload ? action.payload.contextData : state.contextData,
     isGettingContext: false,
   }),
 
-  [UPDATE_CONTEXT]: (state, action) => ({
+  [UPDATE_CONTEXT]: state => ({
     ...state,
     isUpdatingContext: true,
   }),
 
   [CONTEXT_UPDATED]: (state, action) => ({
     ...state,
+    contextData: action.payload ? action.payload.contextData : state.contextData,
     isUpdatingContext: false,
   }),
 }, {
   isGettingContext: false,
   contextData: {},
-
   isUpdatingContext: false,
 });
