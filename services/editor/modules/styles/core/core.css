@@ -121,6 +121,9 @@
 .metro-textbox:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.metro-textbox:disabled {
+  border-color: #bcbcbc;
+}
 .small-metro-textbox {
   display: inline-block;
   border: 0;
@@ -141,6 +144,9 @@
 }
 .small-metro-textbox:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.small-metro-textbox:disabled {
+  border-color: #bcbcbc;
 }
 .circle-button {
   vertical-align: top;
