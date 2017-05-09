@@ -226,3 +226,6 @@
 .new-partition-item-container .value-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.new-partition-item-container .value-input:disabled {
+  border-color: #bcbcbc;
+}
