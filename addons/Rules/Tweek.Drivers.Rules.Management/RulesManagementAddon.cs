@@ -33,7 +33,7 @@ namespace Tweek.Drivers.Rules.Management
             };
             var settings = new TweekManagementRulesDriverSettings();
             configuration.GetValue<string>("Rules:Management:SampleIntervalInMs")?.Iter(x=> settings.SampleIntervalInMs = x);
-            configuration.GetValue<string>("Rules:Management:FailureDelay")?.Iter(x=> settings.FailureDelayInMs = x);
+            configuration.GetValue<string>("Rules:Management:FailureDelayInMs")?.Iter(x=> settings.FailureDelayInMs = x);
 
             services.AddSingleton<IRulesDriver>(
                 ctx => 
