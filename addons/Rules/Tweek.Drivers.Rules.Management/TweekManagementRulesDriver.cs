@@ -58,11 +58,11 @@ namespace Tweek.Drivers.Rules.Management
                     }, () => mapFunc);
         }
 
-        private static async Task Delay(int ms, IScheduler scheduler){
-            await Observable.Return(System.Reactive.Unit.Default).Delay(TimeSpan.FromMilliseconds(ms), scheduler);
+        private static async Task Delay(TimeSpan delay, IScheduler scheduler){
+            await Observable.Return(System.Reactive.Unit.Default).Delay(delay, scheduler);
         }
 
-        private TweekManagementRulesDriver(HttpGet getter, ILogger logger = null, IMeasureMetrics metrics = null, IScheduler scheduler = null)
+        private TweekManagementRulesDriver(HttpGet getter, TweekManagementRulesDriverSettings settings, ILogger logger = null, IMeasureMetrics metrics = null, IScheduler scheduler = null)
         {
             logger = logger ?? NullLogger.Instance;
             scheduler = scheduler ?? DefaultScheduler.Instance;
@@ -78,13 +78,12 @@ namespace Tweek.Drivers.Rules.Management
                             var response = await measuredGetter(RULESET_PATH);
                             var newVersion = response.GetRulesVersion();
                             if (newVersion == currentVersion) {
-                                await Delay(30000, scheduler);
+                                await Delay(settings.SampleInterval, scheduler);
                                 continue;
                             }
                             currentVersion = newVersion;
                             var ruleset = await measuredDownloader(response);
                             CurrentLabel = newVersion;
-                            await Delay(5000, scheduler);
                             sub.OnNext(ruleset);
                         }
                     }
@@ -99,8 +98,8 @@ namespace Tweek.Drivers.Rules.Management
                 .Catch((Exception exception) =>
                 {
                     logger.LogWarning($"Failed to update rules: \r\n{exception}");
-                    return Observable.Empty<Dictionary<string, RuleDefinition>>()
-                        .Delay(TimeSpan.FromMinutes(1));
+                    return  Observable.Empty<Dictionary<string, RuleDefinition>>()
+                        .Delay(settings.FailureDelay);
                 })
                 .Replay(1);
         }
