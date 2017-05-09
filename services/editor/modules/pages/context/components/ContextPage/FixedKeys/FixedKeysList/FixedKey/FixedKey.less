@@ -1,0 +1,45 @@
+@import (reference) "../../../../../../../styles/core/core.less";
+
+.fixed-key-container {
+  display: flex;
+  align-items: center;
+
+  .delete-button {
+    .small-close-circle-button;
+  }
+
+  .removed-key-container {
+    display: flex;
+    .removed-key, .removed-value {
+      .metro-textbox;
+      display: flex;
+      align-items: center;
+      text-decoration: line-through;
+      margin: 5px;
+    }
+  }
+
+  .editable-key-container {
+    display: flex;
+
+    &.new-item {
+      input {
+        color: green;
+      }
+    }
+
+    .key-container, .value-container, .initial-value {
+      margin: 5px;
+    }
+
+    .initial-value {
+      .metro-textbox;
+      opacity: 0.5;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      border-color: transparent;
+    }
+  }
+}
+

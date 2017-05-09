@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import SearchBox from './SearchBox/SearchBox';
-import FixedConfiguration from './FixedKeys/FixedKeys';
+import FixedKeys from './FixedKeys/FixedKeys';
 
 class ContextPage extends Component {
   constructor(props) {
@@ -27,7 +27,7 @@ class ContextPage extends Component {
           !this.shouldRender()
             ? null
             : <div style={{ marginTop: '20px' }}>
-              <FixedConfiguration
+              <FixedKeys
                 contextType={this.state.contextType}
                 contextId={this.state.contextId}
               />

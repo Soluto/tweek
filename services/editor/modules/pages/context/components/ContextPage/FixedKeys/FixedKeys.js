@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import filteredPropsValues from '../../../utils/filteredPropsValues';
 import transformProps from '../../../utils/transformProps';
 import { getContext, updateContext } from '../../../../../store/ducks/context';
-import FixedConfigurationTable from './FixedKeysList/FixedKeysList';
+import FixedKeysList from './FixedKeysList/FixedKeysList';
 
 const trimString = value => value.trim();
 const padWithFixedPrefix = prop => `@fixed:${prop}`;
@@ -19,23 +19,20 @@ const style = {
   },
 };
 
-const FixedConfiguration = ({ fixedConfigurations, updateContext }) => (
+const FixedKeys = ({ fixedConfigurations, updateContext }) => (
   <div style={style.container}>
-    <div>
-      <h3 style={{ marginBottom: '1em' }}>Fixed Configuration</h3>
-      <div />
-    </div>
-    <FixedConfigurationTable
+    <h3 style={{ marginBottom: '1em' }}>Fixed Configuration</h3>
+    <FixedKeysList
       onSave={({ updatedConfiguration, deletedKeys }) => updateContext({
         updatedConfiguration,
         deletedKeys,
       })}
-      fixedConfigurations={fixedConfigurations}
+      fixedKeys={fixedConfigurations}
     />
   </div>
   );
 
-FixedConfiguration.propTypes = {
+FixedKeys.propTypes = {
   fixedConfigurations: PropTypes.object,
   updateContext: PropTypes.func.isRequired,
   contextType: PropTypes.string.isRequired,
@@ -77,4 +74,4 @@ export default compose(
     ...props,
     fixedConfigurations: removeFixedPrefix(filterFixedConfigurationProps(props.contextData || {})),
   })),
-)(FixedConfiguration);
+)(FixedKeys);

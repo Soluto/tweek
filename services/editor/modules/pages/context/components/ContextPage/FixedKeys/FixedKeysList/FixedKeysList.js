@@ -1,174 +1,130 @@
 import React, { PropTypes, Component } from 'react';
-import Button from '../../../Button/Button';
-import Input from '../../../../../../components/common/Input/Input';
-import getConfigurationDiff from '../getConfigurationDiff';
+import R from 'ramda';
+import FixedKey from './FixedKey/FixedKey';
+import SaveButton from '../../../../../../components/common/SaveButton/SaveButton';
 import style from './FixedKeysList.css';
 
-function renderConfigurationDiff(key, diff, onDelete) {
-  // REFACTOR //
+function calculateKeys(fixedKeys) {
+  const result = Object.entries(fixedKeys).map(([key, value]) => ({
+    remote: { key, value },
+    local: { key, value },
+    isRemoved: false,
+  }));
 
-  if (key === undefined || key === '') {
-    return null;
+  if (result.length === 0) {
+    return [{
+      local: { key: '', value: '' },
+      isRemoved: false,
+    }];
   }
 
-  let keyComponent;
-  let valueComponent;
-
-  if (diff.isAdded) {
-    keyComponent = <div className={classes.col} style={{ color: 'green' }}>{ key }</div>;
-    valueComponent = <div className={classes.col} style={{ color: 'green' }}>{ diff.newValue }</div>;
-  } else if (diff.isUpdated) {
-    keyComponent = <div className={classes.col}>{ key }</div>;
-    valueComponent = (<div className={classes.col} style={{ color: 'green' }}>{ diff.newValue }<br />
-      <small style={{ textDecoration: 'line-through', color: 'red' }}>{diff.initialValue}</small></div>);
-  } else if (diff.isRemoved) {
-    keyComponent = <div className={classes.col} style={{ textDecoration: 'line-through', color: 'red' }}>{ key }</div>;
-    valueComponent = <div className={classes.col} style={{ textDecoration: 'line-through', color: 'red' }}>{ diff.initialValue }</div>;
-  } else {
-    keyComponent = <div className={classes.col}>{ key }</div>;
-    valueComponent = (<div style={{ display: 'flex', flexDirection: 'row' }} className={classes.col}>
-      <div style={{ display: 'flex', flexDirection: 'col' }}>{ diff.newValue } </div>
-    </div>);
-  }
-
-  return (<tr key={key}>
-    <td>{ keyComponent }</td>
-    <td>{ valueComponent }</td>
-    <td>{
-      diff.isRemoved ? null : <Button text="Delete" onClick={onDelete} />
-    }</td>
-  </tr>);
+  return result;
 }
 
-class FixedConfigurationTable extends Component {
+function exists(obj) {
+  return obj !== undefined && obj.toString() !== '';
+}
+
+class FixedKeysList extends Component {
   constructor(props) {
     super(props);
 
-    const newConfiguration = props.fixedConfigurations;
-    const configurationDiff = getConfigurationDiff({ newConfiguration });
-
+    const keys = calculateKeys(props.fixedKeys);
     this.state = {
-      newConfiguration,
-      configurationDiff,
-      keyToAppend: '',
-      valueToAppend: '',
+      keys,
+      hasChanges: false,
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    const newConfiguration = nextProps.fixedConfigurations;
-
-    this.setState({
-      newConfiguration,
-      configurationDiff: getConfigurationDiff({ newConfiguration }),
-      keyToAppend: '',
-      valueToAppend: '',
-    });
+    if (!R.equals(this.props.fixedKeys, nextProps.fixedKeys)) {
+      const keys = calculateKeys(nextProps.fixedKeys);
+      this.setState({
+        keys,
+        hasChanges: false,
+      });
+    }
   }
 
-  render() {
-    const { configurationDiff } = this.state;
+  onChange(index, isRemoved, local) {
+    const keys = this.state.keys.slice();
 
-    return (
-      <table className={style['fixed-keys-list']}>
-        <thead>
-          <tr>
-            <th>Key</th>
-            <th>Value</th>
-            <th />
-          </tr>
-        </thead>
+    if (isRemoved && !keys[index].remote) {
+      keys.splice(index, 1);
+    } else {
+      keys[index] = {
+        ...keys[index],
+        local,
+        isRemoved,
+      };
+    }
 
-        <tbody>
-          {
-            Object.entries(configurationDiff).map(([key, diff]) =>
-              renderConfigurationDiff(key, diff, () => this.onDelete(key)))
-          }
-
-          <tr>
-            <td>
-              <Input
-                placeholder="key" value={this.state.keyToAppend}
-                onEnterKeyPress={() => this.appendConfiguration()}
-                onChange={e => this.onKeyToAppendChange(e.target.value)}
-              />
-            </td>
-            <td>
-              <Input
-                placeholder="value" value={this.state.valueToAppend}
-                onEnterKeyPress={() => this.appendConfiguration()}
-                onChange={e => this.onValueToAppendChange(e.target.value)}
-              />
-            </td>
-            <td>
-              <Button text="Add" onClick={this.appendConfiguration.bind(this)} />
-            </td>
-          </tr>
-          <tr>
-            <td><Button onClick={() => this.onSave()} text={'Save'} /></td>
-          </tr>
-        </tbody>
-      </table>
-    );
+    this.setState({
+      keys,
+      hasChanges: true,
+    });
   }
 
   onSave() {
+    const updatedConfiguration = this.state.keys
+      .filter(x => !x.isRemoved && exists(x.local.key))
+      .reduce((result, x) => ({ ...result, [x.local.key]: x.local.value }), {});
+
+    const deletedKeys = Object.keys(this.props.fixedKeys)
+      .filter(x => !updatedConfiguration.hasOwnProperty(x));
+
     this.props.onSave({
-      updatedConfiguration: this.state.newConfiguration,
-      deletedKeys: Object
-        .entries(this.state.configurationDiff)
-        .filter(([key, value]) => value.isRemoved)
-        .map(([key, value]) => key),
+      updatedConfiguration,
+      deletedKeys,
     });
   }
 
-  onDelete(key) {
-    const newConfiguration = Object.keys(this.state.newConfiguration)
-      .filter(configKey => configKey != key)
-      .reduce((result, configKey) => ({
-        ...result,
-        [configKey]: this.state.newConfiguration[configKey],
-      }), {});
+  get canSave() {
+    const { hasChanges, keys } = this.state;
 
-    this.setState({
-      newConfiguration,
-      configurationDiff: getConfigurationDiff({
-        newConfiguration,
-        initialConfiguration: this.props.fixedConfigurations,
-      }),
+    if (!hasChanges) return false;
+
+    const existingKeys = keys.filter(x => !x.isRemoved);
+
+    return existingKeys.length === R.uniq(existingKeys.map(k => k.local.key)).length &&
+      existingKeys
+        .map(x => ({ key: exists(x.local.key), value: exists(x.local.value) }))
+        .every(x => (x.key && x.value) || (!x.key && !x.value));
+  }
+
+  appendKey() {
+    const keys = this.state.keys.concat({
+      local: { key: '', value: '' },
+      isRemoved: false,
     });
+    this.setState({ keys });
   }
 
-  onValueToAppendChange(valueToAppend) {
-    this.setState({ valueToAppend });
-  }
+  render() {
+    const { keys } = this.state;
 
-  onKeyToAppendChange(keyToAppend) {
-    this.setState({ keyToAppend });
-  }
-
-  appendConfiguration() {
-    const newConfiguration = {
-      ...this.state.newConfiguration,
-      [this.state.keyToAppend]: this.state.valueToAppend,
-    };
-
-    this.setState({
-      newConfiguration,
-      configurationDiff: getConfigurationDiff({
-        newConfiguration,
-        initialConfiguration: this.props.fixedConfigurations,
-      }),
-      keyToAppend: '',
-      valueToAppend: '',
-    });
+    return (
+      <div className={style['fixed-keys-container']}>
+        <SaveButton onClick={this.onSave.bind(this)} hasChanges={this.canSave} />
+        {
+          keys.map((key, index) => (
+            <FixedKey
+              key={key.remote ? key.remote.key : index}
+              {...key}
+              onChange={(...args) => this.onChange(index, ...args)}
+            />
+          ))
+        }
+        <button className={style['add-key-button']} onClick={this.appendKey.bind(this)} />
+      </div>
+    );
   }
 }
 
-FixedConfigurationTable.propTypes = {
-  fixedConfigurations: PropTypes.object.isRequired,
+FixedKeysList.propTypes = {
+  fixedKeys: PropTypes.object.isRequired,
   onSave: PropTypes.func.isRequired,
 };
 
-export default FixedConfigurationTable;
+export default FixedKeysList;
 

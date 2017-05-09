@@ -1,29 +1,40 @@
-.fixed-keys-list {
-  border-collapse: collapse;
-}
-.fixed-keys-list th,
-.fixed-keys-list td {
-  padding: 0.4em;
-  margin: 0;
-}
-.fixed-keys-list th {
-  font-size: 1em;
-  border-bottom: 4px solid #029CD5;
-}
-.fixed-keys-list tbody tr:hover td {
-  background-color: #efefef;
-}
-.fixed-keys-list tbody tr:hover td:last-child {
-  border-top-right-radius: 0.4em;
-  border-bottom-right-radius: 0.4em;
-}
-.fixed-keys-list tbody tr:hover td:first-child {
-  border-left: 4px solid #029CD5;
-}
-.fixed-keys-list tbody th {
-  text-align: left;
-}
-.fixed-keys-list tbody tr td {
-  border-left: 4px solid transparent;
+.fixed-keys-container .add-key-button {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  padding: 0 0 3px;
   box-sizing: border-box;
+  font-size: 16px;
+  padding-top: 2px;
+}
+.fixed-keys-container .add-key-button:hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.fixed-keys-container .add-key-button:disabled {
+  background-color: gray;
+}
+.fixed-keys-container .add-key-button:disabled:hover,
+.fixed-keys-container .add-key-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.fixed-keys-container .add-key-button:after {
+  font-family: 'tweekIcons';
+  content: '\E905';
 }
