@@ -20,17 +20,13 @@ using Unit = App.Metrics.Unit;
 
 namespace Tweek.Drivers.Rules.Management
 {
-
     public class TweekManagementRulesDriver : IRulesDriver, IDisposable
     {
-
         public event Action<IDictionary<string, RuleDefinition>> OnRulesChange;
-        
         private const string RULESET_PATH =  "/ruleset/latest";
         private IDisposable _subscrption;
         private readonly IConnectableObservable<Dictionary<string, RuleDefinition>> _pipeline;
         public string CurrentLabel { get; private set; }
-
         public DateTime LastCheckTime = DateTime.UtcNow;
 
         private static TimerOptions GetTimerOptions(string name)
@@ -69,25 +65,26 @@ namespace Tweek.Drivers.Rules.Management
             var measuredGetter = MeasureAsync<string, HttpResponseMessage>(metrics, "download_latest_header", s=>getter(s));
             var measuredDownloader = MeasureAsync(metrics, "download_ruleset", (HttpResponseMessage message)=> message.ExtractRules());
 
-            _pipeline = Observable.Create<Dictionary<string, RuleDefinition>>( async (sub, ct)=>{
+            _pipeline = Observable.Create<Dictionary<string, RuleDefinition>>(async (sub, ct)=>{
                     var shouldStop = false;
-                    try {
-                    string currentVersion = null;
-                    while(!shouldStop){
+                    try 
+                    {
+                        while(!shouldStop)
                         {
                             var response = await measuredGetter(RULESET_PATH);
                             var newVersion = response.GetRulesVersion();
-                            if (newVersion == currentVersion) {
+                            if (newVersion == CurrentLabel) 
+                            {
                                 await Delay(settings.SampleInterval, scheduler);
                                 continue;
                             }
-                            currentVersion = newVersion;
                             var ruleset = await measuredDownloader(response);
-                            CurrentLabel = newVersion;
                             sub.OnNext(ruleset);
+                            CurrentLabel = newVersion;
                         }
-                    }
-                    } catch(Exception ex){
+                    } 
+                    catch(Exception ex)
+                    {
                         sub.OnError(ex);
                         shouldStop = true;
                     }
