@@ -22,7 +22,7 @@ steps:
 
   CompilingApi:
     title: Compile & Unit Test Tweek Api Solution
-    image: microsoft/aspnetcore-build:1.0-1.1
+    image: microsoft/aspnetcore-build:1.1.1
     environment:
       - VERSION_SUFFIX=ci-${{CF_BUILD_ID}}-${{CF_SHORT_REVISION}}
     commands: 
