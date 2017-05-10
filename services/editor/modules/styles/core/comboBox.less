@@ -1,16 +1,16 @@
   @import (reference) "./core.less";
-  .combo-box-basic(@dropdown-min-width: 450px, @input-width: @text-box-default-width) {
+  .combo-box-basic(@dropdown-min-width: 450px, @input-width: @text-box-default-width, @font-size: 13px, @dropdown-font-size: 13px) {
     display: flex;
     .override-typeahead {
       .override-input {
         flex-grow: 1;
         :global(.bootstrap-typeahead-input) {
           :global(.bootstrap-typeahead-input-main) {
-            .metro-textbox;
+            .metro-textbox(@font-size);
             width: @input-width;
           }
           :global(.bootstrap-typeahead-input-hint) {
-            .metro-textbox;
+            .metro-textbox(@font-size);
             width: @input-width;
           }
         }
@@ -45,7 +45,7 @@
             a {
               text-decoration: none;
               color: gray;
-              font-size: 13px;
+              font-size: @dropdown-font-size;
               width: 100%;
               height: 100%;
               display: flex;

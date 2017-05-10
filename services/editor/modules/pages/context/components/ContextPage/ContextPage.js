@@ -1,29 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { mapProps } from 'recompose';
 import SearchBox from './SearchBox/SearchBox';
+import style from './ContextPage.css';
 
-class ContextPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      contextType: '',
-      contextId: '',
-    };
-  }
-
-  onGetContext(context) {
-    this.setState({ ...context });
-  }
-
-  render() {
-    return (
-      <div >
-        <SearchBox onGetContext={this.onGetContext.bind(this)} />
-        <div style={{ marginTop: '20px' }}>
-          {this.props.children}
-        </div>
-      </div>
-    );
-  }
-}
-
-export default ContextPage;
+export default mapProps(({ children, params }) => ({ ...params, children }))(({ children, ...props }) => (
+  <div className={style['context-page-container']}>
+    <div className={style['context-page']}>
+      <SearchBox {...props} />
+      {children}
+    </div>
+  </div>
+));

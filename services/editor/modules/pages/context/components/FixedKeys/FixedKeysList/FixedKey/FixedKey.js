@@ -21,21 +21,19 @@ RemovedKey.propTypes = {
 
 const EditableKey = ({ remote, local, onKeyChange, onValueChange }) => (
   <div className={classNames(style['editable-key-container'], { [style['new-item']]: !remote })}>
-    <div className={style['key-container']}>
-      <Input
-        placeholder="Key"
-        value={local.key}
-        onChange={e => onKeyChange(e.target.value)}
-        disabled={!!remote}
-      />
-    </div>
-    <div className={style['value-container']}>
-      <Input
-        placeholder="Value"
-        value={local.value}
-        onChange={e => onValueChange(e.target.value)}
-      />
-    </div>
+    <Input
+      className={style['key-input']}
+      placeholder="Key"
+      value={local.key}
+      onChange={e => onKeyChange(e.target.value)}
+      disabled={!!remote}
+    />
+    <Input
+      className={classNames(style['value-input'], { [style['has-changes']]: remote && remote.value !== local.value })}
+      placeholder="Value"
+      value={local.value}
+      onChange={e => onValueChange(e.target.value)}
+    />
     {
       remote && remote.value !== local.value ? <div className={style['initial-value']}>{remote.value}</div> : null
     }
