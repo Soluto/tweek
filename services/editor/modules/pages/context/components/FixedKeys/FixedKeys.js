@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import { compose, mapProps, lifecycle } from 'recompose';
 import { connect } from 'react-redux';
-import filteredPropsValues from '../../../utils/filteredPropsValues';
-import transformProps from '../../../utils/transformProps';
-import { getContext, updateContext } from '../../../../../store/ducks/context';
+import filteredPropsValues from '../../utils/filteredPropsValues';
+import transformProps from '../../utils/transformProps';
+import { getContext, updateContext } from '../../../../store/ducks/context';
 import FixedKeysList from './FixedKeysList/FixedKeysList';
 
 const trimString = value => value.trim();
@@ -51,6 +51,7 @@ const mapDispatchToProps = (dispatch, props) => ({
 });
 
 export default compose(
+  mapProps(props => props.params),
   connect(mapStateToProps, mapDispatchToProps),
   lifecycle({
     componentWillMount() {

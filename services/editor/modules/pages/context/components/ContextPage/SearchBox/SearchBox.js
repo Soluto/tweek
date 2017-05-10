@@ -1,7 +1,10 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { compose } from 'recompose';
 import changeCase from 'change-case';
 import { refreshSchema, getIdentities } from '../../../../../services/context-service';
 import withLoading from '../../../../../hoc/with-loading';
+import { openContext } from '../../../../../store/ducks/context';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import Input from '../../../../../components/common/Input/Input';
 import style from './SearchBox.css';
@@ -33,7 +36,7 @@ class SearchBox extends Component {
   }
 
   onGetClick() {
-    this.props.onGetContext({
+    this.props.openContext({
       contextType: this.state.contextType,
       contextId: this.state.contextId,
     });
@@ -71,7 +74,10 @@ class SearchBox extends Component {
 }
 
 SearchBox.propTypes = {
-  onGetContext: PropTypes.func.isRequired,
+  openContext: PropTypes.func.isRequired,
 };
 
-export default withLoading(() => null, refreshSchema())(SearchBox);
+export default compose(
+  connect(state => state, { openContext }),
+  withLoading(() => null, refreshSchema()),
+)(SearchBox);
