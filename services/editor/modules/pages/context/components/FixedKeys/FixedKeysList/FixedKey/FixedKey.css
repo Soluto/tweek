@@ -76,6 +76,7 @@
   align-items: center;
   text-decoration: line-through;
   margin: 5px;
+  border-color: #bcbcbc;
 }
 .fixed-key-container .removed-key-container .removed-key:focus,
 .fixed-key-container .removed-key-container .removed-value:focus {
@@ -85,14 +86,65 @@
 .fixed-key-container .removed-key-container .removed-value:disabled {
   border-color: #bcbcbc;
 }
+.fixed-key-container .removed-key-container .removed-key {
+  width: 300px;
+}
 .fixed-key-container .editable-key-container {
   display: flex;
 }
 .fixed-key-container .editable-key-container.new-item input {
   color: green;
 }
-.fixed-key-container .editable-key-container .key-container,
-.fixed-key-container .editable-key-container .value-container,
+.fixed-key-container .editable-key-container .key-input {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  width: 150px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 300px;
+  margin: 5px;
+}
+.fixed-key-container .editable-key-container .key-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.fixed-key-container .editable-key-container .key-input:disabled {
+  border-color: #bcbcbc;
+}
+.fixed-key-container .editable-key-container .value-input {
+  display: inline-block;
+  border: 0;
+  border-style: none;
+  height: 28px;
+  width: 150px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  margin: 5px;
+}
+.fixed-key-container .editable-key-container .value-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.fixed-key-container .editable-key-container .value-input:disabled {
+  border-color: #bcbcbc;
+}
+.fixed-key-container .editable-key-container .value-input.has-changes {
+  color: green;
+}
 .fixed-key-container .editable-key-container .initial-value {
   margin: 5px;
 }

@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import changeCase from 'change-case';
@@ -22,9 +22,11 @@ class SearchBox extends Component {
 
   componentWillMount() {
     const identities = getIdentities().map(x => ({ label: changeCase.pascalCase(x), value: x }));
-    const contextType = identities[0];
+    this.setState({ identities });
+  }
 
-    this.setState({ identities, contextType });
+  componentWillReceiveProps(nextProps) {
+    this.setState(nextProps);
   }
 
   onContextTypeChange({ value: contextType }) {
@@ -44,13 +46,15 @@ class SearchBox extends Component {
 
   render() {
     const { contextType, identities, contextId } = this.state;
+    const contextTypeText = contextType || 'context';
 
     return (
       <div className={style['context-search-container']}>
 
         <div className={style['context-type-container']}>
           <ComboBox
-            placeholder="Context Type"
+            className={style['context-type']}
+            placeholder="Enter Context Type"
             options={identities}
             onChange={this.onContextTypeChange.bind(this)}
             selected={identities.filter(x => x.value === contextType)}
@@ -59,9 +63,10 @@ class SearchBox extends Component {
 
         <div className={style['context-id-container']}>
           <Input
-            placeholder="Context Id"
+            placeholder={`Enter ${changeCase.pascalCase(contextTypeText)} Id`}
             onEnterKeyPress={() => this.onGetClick()}
             onChange={e => this.onContextIdChange(e.target.value)}
+            value={this.state.contextId}
           />
         </div>
 
@@ -72,10 +77,6 @@ class SearchBox extends Component {
     );
   }
 }
-
-SearchBox.propTypes = {
-  openContext: PropTypes.func.isRequired,
-};
 
 export default compose(
   connect(state => state, { openContext }),

@@ -16,6 +16,10 @@
       align-items: center;
       text-decoration: line-through;
       margin: 5px;
+      border-color: rgb(188, 188, 188);
+    }
+    .removed-key {
+      width: 300px;
     }
   }
 
@@ -28,7 +32,21 @@
       }
     }
 
-    .key-container, .value-container, .initial-value {
+    .key-input {
+      .metro-textbox;
+      width: 300px;
+      margin: 5px;
+    }
+
+    .value-input {
+      .metro-textbox;
+      margin: 5px;
+      &.has-changes {
+        color: green;
+      }
+    }
+
+    .initial-value {
       margin: 5px;
     }
 

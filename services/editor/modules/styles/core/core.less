@@ -63,7 +63,7 @@
   }
   
   @text-box-default-width: 150px;
-  .metro-textbox {
+  .metro-textbox(@font-size: 13px) {
     display: inline-block;
     border: 0;
     border-style: none;
@@ -71,7 +71,7 @@
     width: @text-box-default-width;
     padding: 0 4px;
     background-color: transparent;
-    font-size: 13px;
+    font-size: @font-size;
     font-weight: 500;
     color: #515C66;
     border-bottom: 1px solid @accent-color4;
