@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import R from 'ramda';
 import FixedKey from './FixedKey/FixedKey';
-import SaveButton from '../../../../../../components/common/SaveButton/SaveButton';
+import SaveButton from '../../../../../components/common/SaveButton/SaveButton';
 import style from './FixedKeysList.css';
 
 function calculateKeys(fixedKeys) {

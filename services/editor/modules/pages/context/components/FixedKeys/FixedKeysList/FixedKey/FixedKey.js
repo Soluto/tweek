@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import Input from '../../../../../../../components/common/Input/Input';
+import Input from '../../../../../../components/common/Input/Input';
 import style from './FixedKey.css';
 
 const configShape = {

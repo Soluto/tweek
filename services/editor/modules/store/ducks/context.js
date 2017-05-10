@@ -1,4 +1,5 @@
 import { handleActions } from 'redux-actions';
+import { push } from 'react-router-redux';
 import fetch from '../../utils/fetch';
 import { showError } from './notifications';
 
@@ -7,6 +8,8 @@ const CONTEXT_RECEIVED = 'CONTEXT_RECEIVED';
 
 const UPDATE_CONTEXT = 'UPDATE_CONTEXT';
 const CONTEXT_UPDATED = 'CONTEXT_UPDATED';
+
+export const openContext = ({ contextType, contextId }) => push(`/context/${contextType}/${contextId}`);
 
 export const getContext = ({ contextType, contextId }) => async function (dispatch) {
   dispatch({ type: GET_CONTEXT });

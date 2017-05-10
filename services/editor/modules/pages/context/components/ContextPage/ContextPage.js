@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import SearchBox from './SearchBox/SearchBox';
-import FixedKeys from './FixedKeys/FixedKeys';
 
 class ContextPage extends Component {
   constructor(props) {
@@ -15,24 +14,13 @@ class ContextPage extends Component {
     this.setState({ ...context });
   }
 
-  shouldRender() {
-    return this.state.contextType && this.state.contextId;
-  }
-
   render() {
     return (
       <div >
         <SearchBox onGetContext={this.onGetContext.bind(this)} />
-        {
-          !this.shouldRender()
-            ? null
-            : <div style={{ marginTop: '20px' }}>
-              <FixedKeys
-                contextType={this.state.contextType}
-                contextId={this.state.contextId}
-              />
-            </div>
-        }
+        <div style={{ marginTop: '20px' }}>
+          {this.props.children}
+        </div>
       </div>
     );
   }
