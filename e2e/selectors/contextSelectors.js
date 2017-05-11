@@ -11,29 +11,48 @@ contextSelectors.CURRENT_CONTEXT_ID = getSelectorByClassNames('context-title', '
 contextSelectors.ADD_KEY_BUTTON = getSelectorByClassNames('fixed-keys-container', 'add-key-button');
 contextSelectors.SAVE_CHANGES_BUTTON = getSelectorByClassNames('fixed-keys-container', 'save-button');
 
-contextSelectors.keyContainer = (index) => {
+contextSelectors.keyContainer = (keyName = '') => {
   const keyContainerSelector = getSelectorByClassNames('fixed-key-container');
-  return index ? _getSelectorByIndex(keyContainerSelector, index) : keyContainerSelector;
-
+  return `${keyContainerSelector}[data-fixed-key= "${keyName}"]`;
 };
 
-contextSelectors.keyDeleteButton = (index) => {
+contextSelectors.keyContainerByIndex = (index) => {
+  const keyContainerSelector = getSelectorByClassNames('fixed-key-container');
+  return index ? _getSelectorByIndex(keyContainerSelector, index) : keyContainerSelector;
+};
+
+contextSelectors.keyDeleteButton = (keyName) => {
   return getRelativeSelector([
-    contextSelectors.keyContainer(index),
+    contextSelectors.keyContainer(keyName),
     getSelectorByClassNames('delete-button'),
   ]);
 };
 
-contextSelectors.keyNameInput = (index) => {
+contextSelectors.keyNameInput = (keyName) => {
   return getRelativeSelector([
-    contextSelectors.keyContainer(index),
+    contextSelectors.keyContainer(keyName),
     getSelectorByClassNames('key-input'),
   ]);
 };
 
-contextSelectors.keyValueInput = (index) => {
+
+contextSelectors.keyNameInputByIndex = (index) => {
   return getRelativeSelector([
-    contextSelectors.keyContainer(index),
+    contextSelectors.keyContainerByIndex(index),
+    getSelectorByClassNames('key-input'),
+  ]);
+};
+
+contextSelectors.keyValueInput = (keyName) => {
+  return getRelativeSelector([
+    contextSelectors.keyContainer(keyName),
+    getSelectorByClassNames('value-input'),
+  ]);
+};
+
+contextSelectors.keyValueInputByIndex = (index) => {
+  return getRelativeSelector([
+    contextSelectors.keyContainerByIndex(index),
     getSelectorByClassNames('value-input'),
   ]);
 };

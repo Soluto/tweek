@@ -41,26 +41,21 @@ export default class ContextPageObject extends PageObject {
     this.waitForContext(contextType, contextId);
   }
 
-  isInContextPage(contextType, contextId) {
-    const location = this.getUrlLocation();
-    return location === `${ContextPageObject.CONTEXT_PAGE_URL}/${contextType}/${contextId}`;
-  }
-
   getContextData() {
     const numOfKeys = this.getNumberOfKeys();
 
     const contextData = {};
 
     for (let i = 1; i <= numOfKeys; i++) {
-      const key = this.browser.getValue(contextSelectors.keyNameInput(i));
-      contextData[key] = this.browser.getValue(contextSelectors.keyValueInput(i));
+      const key = this.browser.getValue(contextSelectors.keyNameInputByIndex(i));
+      contextData[key] = this.browser.getValue(contextSelectors.keyValueInputByIndex(i));
     }
 
     return contextData;
   }
 
   getNumberOfKeys() {
-    return this.browser.elements(contextSelectors.keyContainer()).value.length;
+    return this.browser.elements(contextSelectors.keyContainerByIndex()).value.length;
   }
 
   isSaving() {
