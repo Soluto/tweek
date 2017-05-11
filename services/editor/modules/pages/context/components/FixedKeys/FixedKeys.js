@@ -114,19 +114,23 @@ class FixedKeys extends Component {
           <div className={style['context-type']}>{changeCase.pascalCase(contextType)}</div>
         </div>
 
-        <div className={style['fixed-keys-list-container']}>
-          <div className={style['override-keys-title']}>
-            <div>Override Keys</div>
-            <SaveButton onClick={this.onSave.bind(this)} hasChanges={this.canSave} isSaving={this.props.isUpdatingContext} />
-          </div>
+        {
+          this.props.isGettingContext ?
+            'Loading...' :
+            <div className={style['fixed-keys-list-container']}>
+              <div className={style['override-keys-title']}>
+                <div>Override Keys</div>
+                <SaveButton onClick={this.onSave.bind(this)} hasChanges={this.canSave} isSaving={this.props.isUpdatingContext} />
+              </div>
 
-          <FixedKeysList
-            keys={this.state.keys}
-            onChange={this.onChange.bind(this)}
-          />
+              <FixedKeysList
+                keys={this.state.keys}
+                onChange={this.onChange.bind(this)}
+              />
 
-          <button className={style['add-key-button']} onClick={this.appendKey.bind(this)} />
-        </div>
+              <button className={style['add-key-button']} onClick={this.appendKey.bind(this)} />
+            </div>
+        }
       </div>
     );
   }
