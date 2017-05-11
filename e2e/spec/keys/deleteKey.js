@@ -2,8 +2,9 @@
 
 import KeysAsserts from '../../KeysAsserts';
 import PageAsserts from '../../PageAsserts';
-import KeysPageObject from '../../KeysPageObject';
-import { selectors } from '../../selectors';
+import KeysPageObject from '../../utils/KeysPageObject';
+import keySelectors from '../../selectors/keySelectors';
+import globalSelectors from '../../selectors/globalSelectors';
 
 describe('delete key', () => {
   const keysPageObject = new KeysPageObject(browser);
@@ -25,9 +26,9 @@ describe('delete key', () => {
   it('should not delete key if alert was not accepted', () => {
     keysPageObject.goToKey(keyToDeleteFullPath);
 
-    browser.click(selectors.DELETE_KEY_BUTTON);
-    browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
-    browser.leftClick(selectors.ALERT_BACKGROUND, -200, -200);
+    browser.click(keySelectors.DELETE_KEY_BUTTON);
+    browser.waitForVisible(keySelectors.ALERT_CANCEL_BUTTON, 1000);
+    browser.leftClick(globalSelectors.ALERT_BACKGROUND, -200, -200);
     pageAsserts.assertIsInPage(`${KeysPageObject.KEYS_PAGE_URL}/${keyToDeleteFullPath}`, 'should still be in key page');
     keysAsserts.assertIsKeyExistsAfterTransaction(keyToDeleteFullPath, true, 'key should exist after cancel delete');
   });
@@ -35,9 +36,9 @@ describe('delete key', () => {
   it('should not delete key if alert was canceled', () => {
     keysPageObject.goToKey(keyToDeleteFullPath);
 
-    browser.click(selectors.DELETE_KEY_BUTTON);
-    browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
-    browser.click(selectors.ALERT_CANCEL_BUTTON);
+    browser.click(keySelectors.DELETE_KEY_BUTTON);
+    browser.waitForVisible(keySelectors.ALERT_CANCEL_BUTTON, 1000);
+    browser.click(keySelectors.ALERT_CANCEL_BUTTON);
     pageAsserts.assertIsInPage(`${KeysPageObject.KEYS_PAGE_URL}/${keyToDeleteFullPath}`, 'should still be in key page');
     keysAsserts.assertIsKeyExistsAfterTransaction(keyToDeleteFullPath, true, 'key should exist after cancel delete');
   });
@@ -45,8 +46,8 @@ describe('delete key', () => {
   it('should succeed deleting key', () => {
     keysPageObject.goToKey(keyToDeleteFullPath);
 
-    browser.click(selectors.DELETE_KEY_BUTTON);
-    browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
+    browser.click(keySelectors.DELETE_KEY_BUTTON);
+    browser.waitForVisible(keySelectors.ALERT_CANCEL_BUTTON, 1000);
     keysPageObject.acceptRodalIfRaised();
 
     pageAsserts.assertIsInPage(KeysPageObject.KEYS_PAGE_URL, 'should moves to keys page url');

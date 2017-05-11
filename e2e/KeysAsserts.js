@@ -1,7 +1,7 @@
 import assert from 'assert';
-import KeysPageObject from './KeysPageObject';
+import KeysPageObject from './utils/KeysPageObject';
 import PageAsserts from './PageAsserts';
-import { selectors } from './selectors';
+import selectors from './selectors/keySelectors';
 import { expect } from 'chai';
 import { diff } from 'deep-diff';
 

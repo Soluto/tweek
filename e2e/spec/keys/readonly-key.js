@@ -1,9 +1,9 @@
-/* global describe, before, after it, browser */
+/* global describe, before, after, it, browser */
 
 import KeysAsserts from '../../KeysAsserts';
-import KeysPageObject from '../../KeysPageObject';
+import KeysPageObject from '../../utils/KeysPageObject';
 import assert from 'assert';
-import { selectors } from '../../selectors';
+import selectors from '../../selectors/keySelectors';
 
 describe('readonly key', () => {
   const keysPageObject = new KeysPageObject(browser);
