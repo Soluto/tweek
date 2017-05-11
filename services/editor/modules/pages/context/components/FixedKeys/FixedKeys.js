@@ -117,7 +117,7 @@ class FixedKeys extends Component {
         <div className={style['fixed-keys-list-container']}>
           <div className={style['override-keys-title']}>
             <div>Override Keys</div>
-            <SaveButton onClick={this.onSave.bind(this)} hasChanges={this.canSave} />
+            <SaveButton onClick={this.onSave.bind(this)} hasChanges={this.canSave} isSaving={this.props.isUpdatingContext} />
           </div>
 
           <FixedKeysList
@@ -140,9 +140,7 @@ FixedKeys.propTypes = {
   contextId: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = state => ({
-  contextData: state.context.contextData,
-});
+const mapStateToProps = state => ({ ...state.context });
 
 const mapDispatchToProps = (dispatch, props) => ({
   ...props,
@@ -176,8 +174,8 @@ export default compose(
       }
     },
   }),
-  mapProps(props => ({
+  mapProps(({ contextData, ...props }) => ({
     ...props,
-    fixedKeys: removeFixedPrefix(getFixedKeys(props.contextData || {})),
+    fixedKeys: removeFixedPrefix(getFixedKeys(contextData || {})),
   })),
 )(FixedKeys);
