@@ -3,19 +3,14 @@ import { compose, mapProps, lifecycle } from 'recompose';
 import { connect } from 'react-redux';
 import R from 'ramda';
 import changeCase from 'change-case';
-import filteredPropsValues from '../../utils/filteredPropsValues';
-import transformProps from '../../utils/transformProps';
+import transformProps from '../../../../utils/transformProps';
 import { getContext, updateContext } from '../../../../store/ducks/context';
 import FixedKeysList from './FixedKeysList/FixedKeysList';
 import SaveButton from '../../../../components/common/SaveButton/SaveButton';
 import style from './FixedKeys.css';
 
-const trimString = value => value.trim();
-const padWithFixedPrefix = prop => `@fixed:${prop}`;
-const filterFixedConfigurationProps = filteredPropsValues(prop => prop.startsWith('@fixed:'));
 const removeFixedPrefix = transformProps(prop => prop.replace('@fixed:', ''));
-const addFixedPrefix = transformProps(padWithFixedPrefix);
-const trimSpaces = transformProps(trimString);
+const addFixedPrefix = transformProps(prop => `@fixed:${prop.trim()}`);
 
 function calculateKeys(fixedKeys) {
   const result = Object.entries(fixedKeys).map(([key, value]) => ({
@@ -158,9 +153,13 @@ const mapDispatchToProps = (dispatch, props) => ({
   updateContext: updatedConfiguration => dispatch(updateContext({
     contextType: props.contextType,
     contextId: props.contextId,
-    updatedContextData: addFixedPrefix(trimSpaces(updatedConfiguration)),
+    updatedContextData: addFixedPrefix(updatedConfiguration),
   })),
 });
+
+function getFixedKeys(contextData) {
+  return R.pickBy((_, prop) => prop.startsWith('@fixed:'), contextData);
+}
 
 export default compose(
   mapProps(props => props.params),
@@ -179,6 +178,6 @@ export default compose(
   }),
   mapProps(props => ({
     ...props,
-    fixedKeys: removeFixedPrefix(filterFixedConfigurationProps(props.contextData || {})),
+    fixedKeys: removeFixedPrefix(getFixedKeys(props.contextData || {})),
   })),
 )(FixedKeys);

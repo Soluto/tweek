@@ -46,7 +46,7 @@ class SearchBox extends Component {
 
   render() {
     const { contextType, identities, contextId } = this.state;
-    const contextTypeText = contextType || 'context';
+    const contextTypeText = contextType || 'identity';
 
     return (
       <div className={style['context-search-container']}>
@@ -54,7 +54,7 @@ class SearchBox extends Component {
         <div className={style['context-type-container']}>
           <ComboBox
             className={style['context-type']}
-            placeholder="Enter Context Type"
+            placeholder="Enter Identity Type"
             options={identities}
             onChange={this.onContextTypeChange.bind(this)}
             selected={identities.filter(x => x.value === contextType)}
