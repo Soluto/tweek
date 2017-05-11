@@ -95,7 +95,7 @@ steps:
           volumes_from:
             - keys
           environment:
-            - RulesBlob.Url=http://tweek-management:3000/ruleset/latest
+            - Rules__Management__Url=http://tweek-management:3000
             - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
             - Couchbase.Url=http://13.92.123.60:8091/index.html
         tweek-editor:
@@ -155,16 +155,6 @@ steps:
           - '${{BuildingEditor.imageId}}':
             - CF_QUALITY: false
 
-  PushApiImageBranch:
-    type: push
-    title: Push Tweek Api - ${{CF_BRANCH}}
-    tag: ${{CF_BRANCH_TAG_NORMALIZED}}
-    when:
-      branch:
-        ignore:
-          - master
-    candidate: ${{BuildingApiImage}}
-
   PushApiImageMaster:
     type: push
     title: Push Tweek Api - lastest
@@ -174,16 +164,6 @@ steps:
           - master
     candidate: ${{BuildingApiImage}}
 
-  PushManagementImageBranch:
-    type: push
-    title: Push Management - ${{CF_BRANCH}}
-    tag: ${{CF_BRANCH_TAG_NORMALIZED}}
-    when:
-      branch:
-        ignore:
-          - master
-    candidate: ${{BuildingManagement}}
-
   PushManagementImageMaster:
     type: push
     title: Push Management - lastest
@@ -192,16 +172,6 @@ steps:
         only:
           - master
     candidate: ${{BuildingManagement}}
-
-  PushEditorImageBranch:
-    type: push
-    title: Push Editor - ${{CF_BRANCH}}
-    tag: ${{CF_BRANCH_TAG_NORMALIZED}}
-    when:
-      branch:
-        ignore:
-          - master
-    candidate: ${{BuildingEditor}}
 
   PushEditorImageMaster:
     type: push
