@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import * as keysActions from '../../../../../../store/ducks/selectedKey';
 import { deleteKey } from '../../../../../../store/ducks/keys';
+import SaveButton from '../../../../../../components/common/SaveButton/SaveButton';
+
 import { diff } from 'deep-diff';
 
 const DeleteButton = ({isSaving, selectedKey, deleteKey}) => (
@@ -14,16 +16,13 @@ const DeleteButton = ({isSaving, selectedKey, deleteKey}) => (
     onClick={() => deleteKey(selectedKey.key)}>Delete key</button>
 );
 
-const SaveButton = ({selectedKey, isSaving, hasChanges, saveKey}) => (
-  <button
-    disabled={!hasChanges || isSaving}
-    data-state-has-changes={hasChanges}
-    data-state-is-saving={isSaving}
+const SaveChangesButton = ({selectedKey, saveKey, ...props}) => (
+  <SaveButton
+    {...props}
     tabIndex="-1"
     className={style['save-changes-button']}
-    onClick={() => saveKey(selectedKey.key)}>
-    {isSaving ? 'Saving...' : 'Save changes'}
-  </button>
+    onClick={() => saveKey(selectedKey.key)}
+  />
 );
 
 const comp = compose(
@@ -44,7 +43,7 @@ const comp = compose(
           {!isInAddMode && !isInStickyMode ?
             <DeleteButton {...{selectedKey, isSaving, deleteKey}} />
             : null}
-          <SaveButton {...{selectedKey, isSaving, hasChanges, saveKey}} />
+          <SaveChangesButton {...{selectedKey, isSaving, hasChanges, saveKey}} />
         </div>
       </div>
     );
