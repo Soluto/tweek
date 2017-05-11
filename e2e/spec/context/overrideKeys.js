@@ -2,7 +2,6 @@
 
 import ContextPageObject from '../../utils/ContextPageObject';
 import contextSelectors from '../../selectors/contextSelectors';
-import assert from 'assert';
 import { expect } from 'chai';
 import { diff } from 'deep-diff';
 import Chance from 'chance';
@@ -20,16 +19,15 @@ describe('override keys', () => {
 
   it('should modify override keys', () => {
     contextPageObject.openContext(contextType, contextId);
-    assert(contextPageObject.isInContextPage(contextType, contextId), 'should be in context page');
 
     const fixedKeys = {
       'some/key': 'someValue',
       'some/otherKey': 'someOtherValue',
     };
 
-    Object.keys(fixedKeys).forEach((key, index) => {
-      browser.setValue(contextSelectors.keyNameInput(index + 1), key);
-      browser.setValue(contextSelectors.keyValueInput(index + 1), fixedKeys[key]);
+    Object.keys(fixedKeys).forEach((key) => {
+      browser.setValue(contextSelectors.keyNameInput(), key);
+      browser.setValue(contextSelectors.keyValueInput(key), fixedKeys[key]);
       browser.click(contextSelectors.ADD_KEY_BUTTON);
     });
 
@@ -45,11 +43,11 @@ describe('override keys', () => {
       'some/new/key': 'anotherValue',
     };
 
-    browser.click(contextSelectors.keyDeleteButton(1));
-    browser.setValue(contextSelectors.keyValueInput(2), 'newValue');
+    browser.click(contextSelectors.keyDeleteButton('some/key'));
+    browser.setValue(contextSelectors.keyValueInput('some/otherKey'), 'newValue');
     browser.click(contextSelectors.ADD_KEY_BUTTON);
-    browser.setValue(contextSelectors.keyNameInput(3), 'some/new/key');
-    browser.setValue(contextSelectors.keyValueInput(3), 'anotherValue');
+    browser.setValue(contextSelectors.keyNameInput(), 'some/new/key');
+    browser.setValue(contextSelectors.keyValueInput('some/new/key'), 'anotherValue');
 
     contextPageObject.saveChanges();
 

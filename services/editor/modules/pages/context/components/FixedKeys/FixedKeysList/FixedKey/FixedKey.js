@@ -48,7 +48,7 @@ EditableKey.propTypes = {
 };
 
 const FixedKey = ({ remote, local, isRemoved, onChange }) => (
-  <div className={style['fixed-key-container']}>
+  <div className={style['fixed-key-container']} data-fixed-key={local.key}>
     <button
       onClick={() => onChange(!isRemoved, local)}
       className={style['delete-button']}
