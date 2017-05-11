@@ -25,8 +25,6 @@ using Scrutor;
 using Tweek.ApiService.NetCore.Diagnostics;
 using Tweek.ApiService.NetCore.Metrics;
  using Tweek.ApiService.NetCore.Utils;
- using Tweek.Drivers.Blob;
-using Tweek.Drivers.Blob.WebClient;
 using Tweek.JPad;
 using Tweek.JPad.Utils;
 
@@ -56,10 +54,7 @@ namespace Tweek.ApiService.NetCore
 
             services.Decorate<IContextDriver>((driver, provider) => new TimedContextDriver(driver, provider.GetService<IMetrics>()));
 
-            var blobRulesDriver = GetRulesDriver();
-            services.AddSingleton<IRulesDriver>(provider => new TimedRulesDriver(blobRulesDriver, provider.GetService<IMetrics>()));
-
-            services.AddSingleton<IDiagnosticsProvider>(new RulesDriverStatusService(blobRulesDriver));
+            //services.AddSingleton<IDiagnosticsProvider>(new RulesDriverStatusService(blobRulesDriver));
             services.AddSingleton<IDiagnosticsProvider>(new EnvironmentDiagnosticsProvider());
 
             services.AddSingleton(GetRulesParser());
@@ -92,15 +87,14 @@ namespace Tweek.ApiService.NetCore
             });
 
             // Adapt all IDiagnosticsProviders to support App.Metrics HealthCheck
+            RegisterMetrics(services);
             services.AdaptSingletons<IDiagnosticsProvider, HealthCheck>(inner => new DiagnosticsProviderDecorator(inner));
 
-            RegisterMetrics(services);
+            
         }
 
         private void RegisterMetrics(IServiceCollection services)
         {
-            var healthChecksRegistrar = new HealthChecksRegistrar(Configuration["RulesBlob.Url"]);
-
             services
                 .AddMetrics(options =>
                 {
@@ -130,7 +124,7 @@ namespace Tweek.ApiService.NetCore
                         }
                     }
                 })
-                .AddHealthChecks(healthChecksRegistrar.RegisterHelthChecks)
+                .AddHealthChecks()
                 .AddMetricsMiddleware(Configuration.GetSection("AspNetMetrics"));
         }
 
@@ -150,12 +144,6 @@ namespace Tweek.ApiService.NetCore
             app.UseMetrics();
             app.UseMvc();
             app.UseMetricsReporting(lifetime);
-        }
-
-
-        private BlobRulesDriver GetRulesDriver()
-        {
-            return new BlobRulesDriver(new Uri(Configuration["RulesBlob.Url"]), new SystemWebClientFactory());
         }
 
         private static IRuleParser GetRulesParser()
