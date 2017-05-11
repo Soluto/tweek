@@ -86,6 +86,9 @@
 .custom-slider-container .legend-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.custom-slider-container .legend-input:disabled {
+  border-color: #bcbcbc;
+}
 .custom-slider-container .legend-value-input {
   display: inline-block;
   border: 0;
@@ -109,6 +112,9 @@
 .custom-slider-container .legend-value-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.custom-slider-container .legend-value-input:disabled {
+  border-color: #bcbcbc;
+}
 .custom-slider-container .legend-precent-input {
   display: inline-block;
   border: 0;
@@ -131,6 +137,9 @@
 }
 .custom-slider-container .legend-precent-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.custom-slider-container .legend-precent-input:disabled {
+  border-color: #bcbcbc;
 }
 .custom-slider-container .add-variant-button {
   vertical-align: top;
