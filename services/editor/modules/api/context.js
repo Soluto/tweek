@@ -35,7 +35,8 @@ export async function updateContext(req, res, { tweekApiHostname }, { params }) 
   const newContext = req.body;
 
   const deletedKeys = Object.keys(currentContext)
-    .filter(key => !newContext.hasOwnProperty(key))
+    .filter(key => key.includes("@fixed:"))
+    .filter(key => !newContext.hasOwnProperty(key) )
     .map(key => tweekApiClient.delete(`${contextUrl}/${key}`));
 
   await Promise.all([
