@@ -1,21 +1,25 @@
-import { Typeahead } from 'react-bootstrap-typeahead';
 import React from 'react';
-import style from './ComboBox.css';
+import { Typeahead } from 'react-bootstrap-typeahead';
 import { compose, withState, mapProps, mapPropsStream } from 'recompose';
-import R from 'ramda';
+import style from './ComboBox.css';
 import wrapComponentWithClass from '../../../hoc/wrap-component-with-class';
+
 const noop = () => {};
-const compareLowerCase = (a, b) =>
-            (a && a.toLowerCase && a.toLowerCase()) === (b && b.toLowerCase && b.toLowerCase());
+const toLowerCase = a => a && a.toLowerCase && a.toLowerCase();
+const compareLowerCase = (a, b) => toLowerCase(a) === toLowerCase(b);
 
 const comp = compose(
   withState('currentInputValue', 'setCurrentInputValue', ''),
-  mapProps(({ options, currentInputValue, showValueInOptions, ...props }) => ({
-    options: currentInputValue && showValueInOptions && R.findIndex(x => x.label === currentInputValue)(options) < 0 ?
-        [({ label: currentInputValue, value: currentInputValue }), ...options] : options,
-    currentInputValue, ...props,
-  })
-  ),
+  mapProps(({ showValueInOptions, ...props }) => {
+    const { options, currentInputValue } = props;
+    if (currentInputValue && showValueInOptions && !options.some(x => x.label === currentInputValue)) {
+      return {
+        ...props,
+        options: [({ label: currentInputValue, value: currentInputValue }), ...options],
+      };
+    }
+    return props;
+  }),
   mapPropsStream(props$ => props$.scan((prev, next) =>
     (prev.selected && prev.selected.length > 0 && next.selected && next.selected.length === 0) ?
     {
@@ -24,7 +28,8 @@ const comp = compose(
     } : next
   )
   )
-)(({ ...props, options,
+)(({ ...props,
+  options,
   selected = [],
   autofocus,
   setCurrentInputValue,

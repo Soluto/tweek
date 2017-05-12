@@ -1,0 +1,51 @@
+@import (reference) "../../../../styles/core/core.less";
+
+.data-container() {
+  box-shadow: 0 10px 9px -10px rgba(0, 0, 0, 0.2);
+  border: 1px solid lightgray;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.fixed-keys-container {
+  min-width: 900px;
+
+  .horizontal-separator {
+    background: lightgrey;
+    height: 1px;
+    margin: 20px 0;
+  }
+
+  .context-title {
+    display: flex;
+    flex-direction: column;
+
+    .context-id {
+      font-size: 22px;
+      color: #515c66;
+    }
+    .context-type {
+      margin-top: 10px;
+      color: #a5a5a5;
+      font-size: 14px;
+    }
+  }
+
+  .fixed-keys-list-container {
+    .data-container;
+    margin-top: 16px;
+
+    .override-keys-title {
+      font-size: 22px;
+      color: #a5a5a5;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .add-key-button {
+      .add-circle-button;
+      margin-top: 20px;
+    }
+  }
+}

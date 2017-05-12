@@ -3,10 +3,8 @@ using Engine.Drivers.Context;
 using FSharpUtils.Newtonsoft;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Tweek.ApiService.NetCore.Security;
 
@@ -50,5 +48,14 @@ namespace Tweek.ApiService.NetCore.Controllers
             return Ok();
         }
 
+        [HttpGet("{identityType}/{identityId}")]
+        public async Task<ActionResult> GetContext([FromRoute] string identityType, [FromRoute] string identityId)
+        {
+            if (!User.IsTweekIdentity()) return Forbid();
+
+            var identity = new Identity(identityType, identityId);
+            var contextData = await _contextDriver.GetContext(identity);
+            return Json(contextData);
+        }
     }
 }

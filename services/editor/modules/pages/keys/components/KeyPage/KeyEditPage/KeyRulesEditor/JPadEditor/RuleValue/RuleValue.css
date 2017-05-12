@@ -56,6 +56,9 @@
 .inputValue:global(.input-type-boolean) .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.inputValue:global(.input-type-boolean) .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .inputValue:global(.input-type-boolean) .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -74,6 +77,9 @@
 }
 .inputValue:global(.input-type-boolean) .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.inputValue:global(.input-type-boolean) .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .inputValue:global(.input-type-boolean) .override-typeahead .override-dropdown :global(.dropdown-menu) {
   position: absolute;
@@ -146,6 +152,9 @@
 .inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -164,6 +173,9 @@
 }
 .inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .inputValue:global(.input-type-boolean) .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
@@ -291,6 +303,9 @@
 .inputValue:global(.input-type-boolean) .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.inputValue:global(.input-type-boolean) .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .inputValue:global(.input-type-boolean) .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -309,6 +324,9 @@
 }
 .inputValue:global(.input-type-boolean) .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.inputValue:global(.input-type-boolean) .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .inputValue:global(.input-type-boolean) .override-dropdown :global(.dropdown-menu) {
   position: absolute;
@@ -381,6 +399,9 @@
 .inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -399,6 +420,9 @@
 }
 .inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .inputValue:global(.input-type-boolean) :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
@@ -524,6 +548,9 @@
 .inputValue .values-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.inputValue .values-input:disabled {
+  border-color: #bcbcbc;
+}
 .rule-value-container .add-variant-button {
   vertical-align: top;
   background-color: #00aeef;
@@ -625,6 +652,9 @@
 .identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -643,6 +673,9 @@
 }
 .identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .identity-selection-container .identity-selection-combobox-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) {
   position: absolute;
@@ -715,6 +748,9 @@
 .identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -733,6 +769,9 @@
 }
 .identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .identity-selection-container .identity-selection-combobox-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
@@ -860,6 +899,9 @@
 .identity-selection-container .identity-selection-combobox-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.identity-selection-container .identity-selection-combobox-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .identity-selection-container .identity-selection-combobox-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -878,6 +920,9 @@
 }
 .identity-selection-container .identity-selection-combobox-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.identity-selection-container .identity-selection-combobox-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .identity-selection-container .identity-selection-combobox-wrapper .override-dropdown :global(.dropdown-menu) {
   position: absolute;
@@ -950,6 +995,9 @@
 .identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -968,6 +1016,9 @@
 }
 .identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .identity-selection-container .identity-selection-combobox-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
@@ -1105,6 +1156,9 @@
 }
 .bernoulli-trial-container .bernoulli-trial-input-wrapper .bernoulli-trial-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.bernoulli-trial-container .bernoulli-trial-input-wrapper .bernoulli-trial-input:disabled {
+  border-color: #bcbcbc;
 }
 .bernoulli-trial-container .bernoulli-trial-slider-wrapper {
   display: inline-block;
