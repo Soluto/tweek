@@ -61,9 +61,9 @@ describe('edit key', () => {
     addRuleAndAssertItsFocus(2);
     keysAsserts.assertKeyHasNumberOfRules(2);
 
-    keysPageObject.setConditionPropertyFromSuggestion(1, 1, 2);
+    keysPageObject.setConditionPropertyFromSuggestion(1, 1, 4);
     keysPageObject.addRuleCondition(1);
-    keysPageObject.setConditionPropertyFromSuggestion(1, 2, 4);
+    keysPageObject.setConditionPropertyFromSuggestion(1, 2, 6);
 
     keysPageObject.setConditionValue(1, 2, 'Banana');
     keysPageObject.setConditionValue(1, 1, '1.1.1');
