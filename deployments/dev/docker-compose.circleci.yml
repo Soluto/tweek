@@ -27,7 +27,7 @@ services:
       - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
     volumes: []
 
-  tweek.apiservice.netcore:
+  tweek-api:
     volumes_from: 
       - keys
     environment: 
