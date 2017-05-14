@@ -1,13 +1,9 @@
-﻿﻿using System;
-using System.Collections.Generic;
- using System.Linq;
- using System.Threading.Tasks;
 ﻿using App.Metrics;
 using App.Metrics.Configuration;
 using App.Metrics.Extensions.Reporting.Graphite;
 using App.Metrics.Extensions.Reporting.Graphite.Client;
- using App.Metrics.Health;
- using Engine;
+using App.Metrics.Health;
+using Engine;
 using Engine.Core.Rules;
 using Engine.Drivers.Context;
 using Engine.Drivers.Rules;
@@ -18,13 +14,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Tweek.ApiService.Addons;
-using Tweek.ApiService.NetCore.Security;
-using Tweek.ApiService.NetCore.Addons;
 using Scrutor;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Engine.Rules.Validation;
+using Tweek.ApiService.Addons;
+using Tweek.ApiService.NetCore.Addons;
 using Tweek.ApiService.NetCore.Diagnostics;
 using Tweek.ApiService.NetCore.Metrics;
- using Tweek.ApiService.NetCore.Utils;
+using Tweek.ApiService.NetCore.Security;
+using Tweek.ApiService.NetCore.Utils;
 using Tweek.JPad;
 using Tweek.JPad.Utils;
 
@@ -67,6 +67,7 @@ namespace Tweek.ApiService.NetCore
 
             services.AddSingleton(provider => Authorization.CreateReadConfigurationAccessChecker(provider.GetService<ITweek>()));
             services.AddSingleton(provider => Authorization.CreateWriteContextAccessChecker(provider.GetService<ITweek>()));
+            services.AddSingleton(provider => Validator.GetValidationDelegate(provider.GetService<IRuleParser>()));
 
             var tweekContactResolver = new TweekContractResolver();
             var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };

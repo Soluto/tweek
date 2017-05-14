@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./server.js"
+    "start": "node ./server.js",
+    "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml"
   },
   "author": "",
   "license": "ISC",
@@ -27,6 +28,7 @@
     "node-fetch": "^1.5.1",
     "nodegit": "0.14.1",
     "recursive-readdir": "^2.0.0",
+    "rxjs": "^5.3.0",
     "winston": "^2.2.0",
     "winston-logzio": "^1.0.1"
   }
