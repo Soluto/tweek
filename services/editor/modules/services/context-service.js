@@ -14,7 +14,7 @@ export function getIdentities() {
 
 export function getProperties() {
   return R.chain(identity => (
-    [{id: `${identity}.${@@id}`, name: "Id", type:"string", identity},
+    [{id: `${identity}.@@${id}`, name: "Id", type:"string", identity},
     ...Object.keys(contextSchema[identity])
     .map(property => ({
       id: identity + "." + property,
