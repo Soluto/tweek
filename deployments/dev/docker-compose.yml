@@ -7,11 +7,11 @@ services:
       context: ../../services/management
       dockerfile: Dockerfile
     environment:
-      - VALIDATION_URL=http://tweek.apiservice.netcore/validation
+      - VALIDATION_URL=http://tweek-api/validation
     labels:
       - "com.microsoft.visualstudio.targetoperatingsystem=linux"
 
-  tweek.apiservice.netcore:
+  tweek-api:
     image: soluto/tweek-api
     build:
       context: ../../services/api/Tweek.ApiService.NetCore
@@ -27,8 +27,8 @@ services:
     image: soluto/tweek-back-office
     build: ../../services/editor
     depends_on: 
-      - tweek.apiservice.netcore
+      - tweek-api
     environment:
-      - TWEEK_API_HOSTNAME=http://tweek.apiservice.netcore
+      - TWEEK_API_HOSTNAME=http://tweek-api
     labels:
       - "com.microsoft.visualstudio.targetoperatingsystem=linux"

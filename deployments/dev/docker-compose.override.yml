@@ -34,7 +34,7 @@ services:
       - GIT_PUBLIC_KEY_PATH=/keys/tweekgit.pub
       - GIT_PRIVATE_KEY_PATH=/keys/tweekgit
 
-  tweek.apiservice.netcore:
+  tweek-api:
     ports:
       - "4003:80"
     environment:

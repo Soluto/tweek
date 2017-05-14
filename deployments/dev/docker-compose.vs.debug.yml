@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-  tweek.apiservice.netcore:
+  tweek-api:
     image: soluto/tweek-api:dev
     build:
       args:
