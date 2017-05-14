@@ -38,6 +38,9 @@
 .keys-list-container .search-input-wrapper .search-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.keys-list-container .search-input-wrapper .search-input:disabled {
+  border-color: #bcbcbc;
+}
 .keys-list-container .search-input-wrapper .search-input:focus {
   border: none;
 }

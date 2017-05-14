@@ -61,6 +61,9 @@
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-input:disabled {
+  border-color: #bcbcbc;
+}
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .key-name-input {
   display: inline-block;
   border: 0;
@@ -84,6 +87,9 @@
 }
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .key-name-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .key-name-input:disabled {
+  border-color: #bcbcbc;
 }
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-text {
   font-size: 22px;
@@ -128,6 +134,9 @@
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -152,6 +161,9 @@
 }
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] :global(.bootstrap-typeahead-input) {
   display: flex;
@@ -182,6 +194,9 @@
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -206,6 +221,9 @@
 }
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .validation-icon-wrapper {
   flex-direction: row;

@@ -228,9 +228,9 @@ const HeaderMainInput = (props) => {
     <div className={style['key-main-input']}>
       {isInAddMode ?
         <div className={style['new-key-input-wrapper']}>
-          <NewKeyInput onKeyNameChanged={name => onKeyNameChanged(name)} />
+          <NewKeyInput onKeyNameChanged={name => onKeyNameChanged(name)} displayName={keyMeta.displayName} />
           <div className={style['vertical-separator']} />
-          <KeyValueTypeSelector />
+          <KeyValueTypeSelector value={keyMeta.valueType} />
         </div>
         :
         <EditableText
@@ -261,6 +261,7 @@ const NewKeyInput = compose(
   keysList,
   keyNameValidation,
   onKeyNameChanged,
+  displayName
 }) => {
   const suggestions = getKeyNameSuggestions(keysList).map(x => ({ label: x, value: x }));
   return (
@@ -278,6 +279,7 @@ const NewKeyInput = compose(
         onInputChange={text => onKeyNameChanged(text)}
         showValueInOptions
         className={style['auto-suggest']}
+        selected={displayName && displayName != '' ? [displayName] : []}
       />
       <ReactTooltip
         disable={!keyNameValidation.isShowingHint}

@@ -16,7 +16,7 @@ namespace Tweek.ApiService.SmokeTests.Validation
         public CircularDependencyTests(ITestOutputHelper output)
         {
             mOutput = output;
-            mTweekApi = TweekApiServiceFactory.GetTweekApiClient();
+            mTweekApi = TweekApiServiceFactory.GetTweekApiClient(mOutput);
         }
 
         [Theory(DisplayName = "Validating ruleset which has no circular dependencies should pass")]

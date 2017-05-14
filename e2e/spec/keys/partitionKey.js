@@ -1,8 +1,8 @@
 /* global describe, before, beforeEach, after, it, browser */
 
 import KeysAsserts from '../../KeysAsserts';
-import KeysPageObject from '../../KeysPageObject';
-import {selectors} from '../../selectors';
+import KeysPageObject from '../../utils/KeysPageObject';
+import selectors from '../../selectors/keySelectors';
 
 describe('partition key', () => {
   const keysPageObject = new KeysPageObject(browser);
