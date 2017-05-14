@@ -1,9 +1,28 @@
 export const BLANK_KEY_NAME = '_blank';
+
+export function createBlankKeyMeta(keyName) {
+  return {
+    meta: {
+      name: keyName || '',
+      tags: [],
+      description: '',
+      archived: false,
+    },
+    implementation: {
+      type: 'file',
+      format: 'jpad',
+    },
+    valueType: '',
+    dependencies: [],
+    enabled: true,
+  };
+}
+
 export function createBlankKey() {
   const keyDefSource = {
     partitions: [],
     valueType: '',
-    rules: []
+    rules: [],
   };
 
   return {
@@ -15,13 +34,4 @@ export function createBlankKey() {
     meta: createBlankKeyMeta(),
     key: BLANK_KEY_NAME,
   };
-}
-
-export function createBlankKeyMeta(keyName) {
-  return {
-    displayName: keyName || '',
-    description: '',
-    tags: [],
-    valueType: '',
-  }
 }
