@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81</PackageTargetFallback>
-    <VersionPrefix>0.1.22</VersionPrefix>
+    <VersionPrefix>0.1.23</VersionPrefix>
     <DockerComposeProjectPath>..\..\..\deployments\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
   <ItemGroup>
@@ -25,7 +25,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Scrutor" Version="1.12.0" />
-    <PackageReference Include="Tweek.JPad" Version="0.5.6287.28670" />
+    <PackageReference Include="Tweek.JPad" Version="0.5.6339.31043" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\addons\Rules\Tweek.Drivers.Rules.Management\Tweek.Drivers.Rules.Management.csproj" />
