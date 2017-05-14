@@ -1,5 +1,39 @@
 import { UKNOWN_AUTHOR } from './unknownAuthor';
+import R from 'ramda';
 
+function getAllGroups(str, pattern, groupIndex) {
+  const regex = new RegExp(pattern, 'g');
+  const result = [];
+  let match;
+
+  while (match = regex.exec(str)) {
+    result.push(match[groupIndex]);
+  }
+
+  return result;
+}
+
+function convertMetaToNewFormat(keyPath, {keyDef, meta}) {
+  if (!meta || meta.meta) return meta;
+
+  return {
+    key_path: keyPath,
+    meta: {
+      name: meta.displayName,
+      tags: meta.tags,
+      description: meta.description,
+      readOnly: meta.readOnly,
+      archived: false,
+    },
+    implementation: {
+      type: 'file',
+      format: keyDef.type,
+    },
+    valueType: meta.valueType,
+    dependencies: R.uniq(getAllGroups(keyDef.source, /"@@key:(.+?)"/, 1)),
+    enabled: true,
+  };
+}
 
 let injectAuthor = (fn) => function (req, res, deps, ...rest) {
   return this::fn(req, res, {
@@ -9,33 +43,32 @@ let injectAuthor = (fn) => function (req, res, deps, ...rest) {
     }) || UKNOWN_AUTHOR,
     ...deps
   }, ...rest);
-}
+};
 
 export async function getKey(req, res, { keysRepository }, { params }) {
   const keyPath = params.splat;
   const revision = req.query.revision;
-  let keyDetails;
   try {
-    keyDetails = await keysRepository.getKeyDetails(keyPath, { revision });
+    const keyDetails = await keysRepository.getKeyDetails(keyPath, { revision });
+    res.json({...keyDetails, meta: convertMetaToNewFormat(keyPath, keyDetails)});
   } catch (exp) {
     res.sendStatus(404);
   }
-
-  res.json(keyDetails);
 }
 
 export const saveKey = injectAuthor(async function (req, res, { keysRepository, author }, { params }) {
   const keyPath = params.splat;
 
-  let keyRulesSource = req.body.keyDef.source;
-  let keyMetaSource = JSON.stringify(req.body.meta, null, 4);
+  const keyRulesSource = req.body.keyDef.source;
+  const meta = { key_path: keyPath, ...req.body.meta };
+  const keyMetaSource = JSON.stringify(meta, null, 4);
   await keysRepository.updateKey(keyPath, keyMetaSource, keyRulesSource, author);
 
   res.send('OK');
-})
+});
 
 export const deleteKey = injectAuthor(async function (req, res, { keysRepository, author }, { params }) {
   const keyPath = params.splat;
   await keysRepository.deleteKey(keyPath, author);
   res.send('OK');
-})
+});

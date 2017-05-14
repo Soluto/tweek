@@ -28,7 +28,7 @@ steps:
     commands: 
       - dotnet restore ./Tweek.sln --configfile ./CI/NuGet.Config
       - dotnet build Tweek.sln -c Release --version-suffix "$VERSION_SUFFIX";
-      - find . -wholename '*.Tests.csproj' -print0 | xargs -0 -n 1 dotnet test
+      - find . -regex '.*\.\(Unit\|Integration\|\)Tests\.csproj' -print0 | xargs -0 -n 1 dotnet test
       - dotnet publish ./services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj  -c Release -o ./obj/Docker/publish --version-suffix "$VERSION_SUFFIX"
       - cp ./services/api/Tweek.ApiService.NetCore/Dockerfile ./services/api/Tweek.ApiService.NetCore/obj/Docker/publish/Dockerfile
       - echo Dockerfile > ./services/api/Tweek.ApiService.NetCore/obj/Docker/publish/.dockerignore
@@ -119,7 +119,7 @@ steps:
             driver: "none"
     composition_candidates:
       smoke-tests:
-        image: microsoft/aspnetcore-build:1.0-1.1
+        image: microsoft/aspnetcore-build:1.1.1
         depends_on: 
           - tweek-api
         volumes:
