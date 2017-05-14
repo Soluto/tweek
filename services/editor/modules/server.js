@@ -89,7 +89,7 @@ const startServer = () => {
   const server = createServer(getApp);
   const cookieOptions = {
     secret: nconf.get('SESSION_COOKIE_SECRET_KEY') || crypto.randomBytes(20).toString('base64'),
-    cookie: { secure: true, httpOnly: true },
+    cookie: { httpOnly: true },
   };
   server.use(session(cookieOptions));
   if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true') {

@@ -40,6 +40,7 @@ const KeyValueTypeSelector = compose(
           placeholder="Select type"
           showValueInOptions={false}
           onChange={item => props.updateKeyValueType(item.value)}
+          selected={props.value && props.value != '' ? [props.value] : []}
         />
         <ReactTooltip
           disable={!props.validation.isShowingHint}

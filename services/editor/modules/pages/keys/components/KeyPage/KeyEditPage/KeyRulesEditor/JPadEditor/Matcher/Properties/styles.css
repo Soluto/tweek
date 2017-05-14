@@ -26,6 +26,9 @@
 .matcher-operator .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.matcher-operator .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .matcher-operator .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -45,6 +48,9 @@
 }
 .matcher-operator .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.matcher-operator .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .matcher-operator .override-typeahead .override-dropdown :global(.dropdown-menu) {
   position: absolute;
@@ -118,6 +124,9 @@
 .matcher-operator .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.matcher-operator .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .matcher-operator .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -137,6 +146,9 @@
 }
 .matcher-operator .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.matcher-operator .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .matcher-operator .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
@@ -265,6 +277,9 @@
 .matcher-operator .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.matcher-operator .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .matcher-operator .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -284,6 +299,9 @@
 }
 .matcher-operator .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.matcher-operator .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .matcher-operator .override-dropdown :global(.dropdown-menu) {
   position: absolute;
@@ -357,6 +375,9 @@
 .matcher-operator :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.matcher-operator :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .matcher-operator :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -376,6 +397,9 @@
 }
 .matcher-operator :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.matcher-operator :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .matcher-operator :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
@@ -512,6 +536,9 @@
 .property-value-wrapper .property-value-combo-box .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .property-value-wrapper .property-value-combo-box .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -530,6 +557,9 @@
 }
 .property-value-wrapper .property-value-combo-box .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .property-value-wrapper .property-value-combo-box .override-typeahead .override-dropdown :global(.dropdown-menu) {
   position: absolute;
@@ -602,6 +632,9 @@
 .property-value-wrapper .property-value-combo-box .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.property-value-wrapper .property-value-combo-box .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .property-value-wrapper .property-value-combo-box .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -620,6 +653,9 @@
 }
 .property-value-wrapper .property-value-combo-box .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .property-value-wrapper .property-value-combo-box .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
@@ -747,6 +783,9 @@
 .property-value-wrapper .property-value-combo-box .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.property-value-wrapper .property-value-combo-box .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .property-value-wrapper .property-value-combo-box .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -765,6 +804,9 @@
 }
 .property-value-wrapper .property-value-combo-box .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-value-wrapper .property-value-combo-box .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .property-value-wrapper .property-value-combo-box .override-dropdown :global(.dropdown-menu) {
   position: absolute;
@@ -837,6 +879,9 @@
 .property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -855,6 +900,9 @@
 }
 .property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
@@ -979,6 +1027,9 @@
 .property-value-wrapper .value-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.property-value-wrapper .value-input:disabled {
+  border-color: #bcbcbc;
+}
 .property-suggestion-wrapper {
   padding: 8px 4px 8px 16px;
 }
@@ -1043,6 +1094,9 @@
 .property-name-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.property-name-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .property-name-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -1061,6 +1115,9 @@
 }
 .property-name-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-name-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .property-name-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) {
   position: absolute;
@@ -1133,6 +1190,9 @@
 .property-name-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.property-name-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .property-name-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -1151,6 +1211,9 @@
 }
 .property-name-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-name-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .property-name-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
@@ -1278,6 +1341,9 @@
 .property-name-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.property-name-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .property-name-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -1296,6 +1362,9 @@
 }
 .property-name-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-name-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .property-name-wrapper .override-dropdown :global(.dropdown-menu) {
   position: absolute;
@@ -1368,6 +1437,9 @@
 .property-name-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .property-name-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -1386,6 +1458,9 @@
 }
 .property-name-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;

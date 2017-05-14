@@ -19,7 +19,7 @@ services:
     depends_on:
       - tweek-management
     environment:
-      - RulesBlob.Url=http://tweek-management:3000/ruleset/latest
+      - Rules__Management__Url=http://tweek-management:3000
     labels:
       - "com.microsoft.visualstudio.targetoperatingsystem=linux"
      

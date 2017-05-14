@@ -25,7 +25,7 @@
                 }
             },
             "env": {
-                "RulesBlob.Url": "http://localhost:4002/ruleset/latest",
+                "Rules__Management__Url": "http://localhost:4002",
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "sourceFileMap": {

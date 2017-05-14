@@ -27,6 +27,9 @@
 .default-value-container .values-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.default-value-container .values-input:disabled {
+  border-color: #bcbcbc;
+}
 .default-value-container .clear-default-value-button {
   margin-left: 10px;
   vertical-align: top;
@@ -97,6 +100,9 @@
 .default-value-container .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.default-value-container .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .default-value-container .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -115,6 +121,9 @@
 }
 .default-value-container .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.default-value-container .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .default-value-container .override-typeahead .override-dropdown :global(.dropdown-menu) {
   position: absolute;
@@ -187,6 +196,9 @@
 .default-value-container .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.default-value-container .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .default-value-container .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -205,6 +217,9 @@
 }
 .default-value-container .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.default-value-container .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .default-value-container .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
@@ -332,6 +347,9 @@
 .default-value-container .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.default-value-container .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .default-value-container .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -350,6 +368,9 @@
 }
 .default-value-container .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.default-value-container .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .default-value-container .override-dropdown :global(.dropdown-menu) {
   position: absolute;
@@ -422,6 +443,9 @@
 .default-value-container :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
+.default-value-container :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+  border-color: #bcbcbc;
+}
 .default-value-container :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
   display: inline-block;
   border: 0;
@@ -440,6 +464,9 @@
 }
 .default-value-container :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.default-value-container :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+  border-color: #bcbcbc;
 }
 .default-value-container :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
