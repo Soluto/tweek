@@ -111,11 +111,13 @@ export default compose(
       if (keyDef.valueType === currentValueType) return;
 
       const currentDefaultValue = mutate.in('defaultValue').getValue();
-      const modifiedDefaultValue = getTypedValue(currentDefaultValue, keyDef.valueType);
 
       mutate.apply((m) => {
         m.in('valueType').updateValue(keyDef.valueType);
-        m.in('defaultValue').updateValue(modifiedDefaultValue);
+        if (currentDefaultValue !== undefined) {
+          const modifiedDefaultValue = getTypedValue(currentDefaultValue, keyDef.valueType);
+          m.in('defaultValue').updateValue(modifiedDefaultValue);
+        }
         changeValueType(keyDef.valueType, m.in('rules'), m.in('partitions').getValue().length);
         return m;
       });
