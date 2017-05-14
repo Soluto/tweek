@@ -4,7 +4,7 @@
     <ProjectGuid>7bfb4ed8-676d-4649-93eb-8b6014f91b88</ProjectGuid>
     <DockerLaunchBrowser>True</DockerLaunchBrowser>
     <DockerServiceUrl>http://localhost:{ServicePort}</DockerServiceUrl>
-    <DockerServiceName>tweek.apiservice.netcore</DockerServiceName>
+    <DockerServiceName>tweek-api</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.ci.build.yml" />
