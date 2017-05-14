@@ -47,7 +47,7 @@ export default class KeysRepository {
       await gitRepo.updateFile(getPathForMeta(keyPath), keyMetaSource);
       await gitRepo.updateFile(getPathForJPad(keyPath), keyRulesSource);
 
-      await gitRepo.commitAndPush("BackOffice - updating " + keyPath, author);
+      await gitRepo.commitAndPush("Editor - updating " + keyPath, author);
     });
   }
 
@@ -56,7 +56,7 @@ export default class KeysRepository {
       await gitRepo.deleteFile(getPathForMeta(keyPath));
       await gitRepo.deleteFile(getPathForJPad(keyPath));
 
-      await gitRepo.commitAndPush("BackOffice - deleting " + keyPath, author)
+      await gitRepo.commitAndPush("Editor - deleting " + keyPath, author)
     });
   }
 }
