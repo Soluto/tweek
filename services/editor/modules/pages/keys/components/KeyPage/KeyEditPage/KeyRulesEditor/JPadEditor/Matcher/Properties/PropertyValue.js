@@ -1,5 +1,5 @@
 import React from 'react';
-import changeCase from "change-case";
+import changeCase from 'change-case';
 import R from 'ramda';
 import { WithContext as ReactTags } from 'react-tag-input';
 import ComboBox from '../../../../../../../../../components/common/ComboBox/ComboBox';
