@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+  tweek-api:
+    build:
+      args:
+        source: ${DOCKER_BUILD_SOURCE}
+    volumes:
+      - ~/clrdbg:/clrdbg:ro
+    entrypoint: tail -f /dev/null
