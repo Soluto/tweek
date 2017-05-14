@@ -18,6 +18,7 @@ using Scrutor;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Engine.Rules.Validation;
 using Tweek.ApiService.Addons;
 using Tweek.ApiService.NetCore.Addons;
 using Tweek.ApiService.NetCore.Diagnostics;
@@ -66,6 +67,7 @@ namespace Tweek.ApiService.NetCore
 
             services.AddSingleton(provider => Authorization.CreateReadConfigurationAccessChecker(provider.GetService<ITweek>()));
             services.AddSingleton(provider => Authorization.CreateWriteContextAccessChecker(provider.GetService<ITweek>()));
+            services.AddSingleton(provider => Validator.GetValidationDelegate(provider.GetService<IRuleParser>()));
 
             var tweekContactResolver = new TweekContractResolver();
             var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };

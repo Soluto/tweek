@@ -32,7 +32,7 @@ namespace Tweek.ApiService.SmokeTests
 
         public async Task<string> Validate(Dictionary<string, RuleDefinition> ruleset)
         {
-            var response = await _client.PostAsync($"http://localhost:5000/validation",
+            var response = await _client.PostAsync("validation",
                 new StringContent(JsonConvert.SerializeObject(ruleset, new JsonValueConverter()), Encoding.UTF8,
                     "application/json"));
             response.EnsureSuccessStatusCode();
