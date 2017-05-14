@@ -1,10 +1,10 @@
 import React from 'react';
+import changeCase from "change-case";
+import { compose, mapProps } from 'recompose';
 import CustomSlider from '../../../../../../../../components/common/CustomSlider/CustomSlider';
 import style from './RuleValue.css';
 import ComboBox from '../../../../../../../../components/common/ComboBox/ComboBox';
 import * as TypesService from '../../../../../../../../services/types-service';
-import R from 'ramda';
-import { withState, compose, mapProps } from 'recompose';
 
 function replaceNaN(fallbackValue) { return isNaN(this) ? fallbackValue : this; }
 const parseNumericInput = (inputValue) => inputValue === '' ? 0 : parseInt(inputValue);
@@ -24,36 +24,14 @@ function updateMutateTypedValue(mutate, value, valueType) {
   mutate.updateValue(getTypedValue(value, valueType));
 }
 
-
-const booleanSingleVariantSuggestions = [{ label: 'true', value: true }, { label: 'false', value: false }];
-
-const BooleanSingleVariant = ({value, valueType, mutate, identities}) => (
-  <div className={style['boolean-single-variant-wrapper']}>
-    <ComboBox
-      options={booleanSingleVariantSuggestions}
-      selected={[R.find(x => x.value === value)(booleanSingleVariantSuggestions)]}
-      placeholder="Enter value here"
-      showValueInOptions={false}
-      onChange={e => updateMutateTypedValue(mutate, e.value, valueType)}
-    />
-    <button className={style['to-feature-flag-button']}
-      onClick={() => mutate.apply(m =>
-        m.delete()
-          .in('Type').updateValue('MultiVariant').up()
-          .insert('OwnerType', identities[0])
-          .insert('ValueDistribution', {
-            type: 'bernoulliTrial',
-            args: 0.1,
-          })
-      )}>Gradual release</button>
-  </div>
-);
-
 export const InputValue = wrapWithClass(({valueType})=> `${style.inputValue} input-type-${valueType}`)(({valueType, value, onChange, autofocus, placeholder="Enter Value Here"})=>{
-    if (valueType === TypesService.types.boolean.name){
-      return <ComboBox
-          options={booleanSingleVariantSuggestions}
-          selected={R.filter(x => x.value === value)(booleanSingleVariantSuggestions)}
+  const typeDefinition = TypesService.types[valueType];
+
+  if (typeDefinition.allowedValues && typeDefinition.allowedValues.length > 0) {
+    const allowedValues = typeDefinition.allowedValues.map(x => ({ label: changeCase.pascalCase(x), value: x }));
+    return <ComboBox
+          options={allowedValues}
+          selected={allowedValues.filter(x => x.value === value)}
           placeholder="Enter value here"
           showValueInOptions={false}
           onChange={onChange}
