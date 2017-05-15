@@ -15,6 +15,7 @@ import KeysRepository from './server/repositories/keys-repository';
 import TagsRepository from './server/repositories/tags-repository';
 import GitContinuousUpdater from './server/repositories/git-continuous-updater';
 import Promise from 'bluebird';
+import KeysIndex from './server/KeysIndex';
 const passport = require('passport');
 const nconf = require('nconf');
 const azureADAuthProvider = require('./server/auth/azuread');
@@ -49,7 +50,10 @@ const gitTransactionManager = new Transactor(gitRepoCreationPromise, async gitRe
 const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
 
+const keysIndex = new KeysIndex(gitRepostoryConfig.localPath);
+
 GitContinuousUpdater.onUpdate(gitTransactionManager)
+  .exhaustMap(_ => keysIndex.refresh())
   .subscribe();
 
 function getApp(req, res, requestCallback) {
@@ -100,6 +104,8 @@ const startServer = () => {
 };
 
 gitRepoCreationPromiseWithTimeout
+  .then(() => console.log('indexing keys...'))
+  .then(() => keysIndex.init())
   .then(() => console.log('starting tweek server'))
   .then(() => startServer())
   .catch(reason => {

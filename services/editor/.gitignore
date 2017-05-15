@@ -4,4 +4,5 @@ rulesRepository/
 coverage-unit/
 node_modules/
 typings/
+si/
 config*.json
