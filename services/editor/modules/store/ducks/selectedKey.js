@@ -84,7 +84,8 @@ const convertRuleValuesAlert = {
 
 export function updateKeyValueType(keyValueType) {
   return async function (dispatch, getState) {
-    const jpad = JSON.parse(getState().selectedKey.local.keyDef.source);
+    const jpad = JSON.parse(getState().selectedKey.
+                            .keyDef.source);
     const allRules = getAllRules({ jpad });
     const shouldShowAlert =
       allRules.some(x => x.Type !== 'SingleVariant' || (x.Value !== null && x.Value !== undefined && x.Value !== ''));
@@ -144,7 +145,7 @@ export function saveKey() {
       await fetch(`/api/keys/${savedKey}`, {
         credentials: 'same-origin',
         method: 'put',
-        ...withJsonData(local),
+        ...withJsonData({keyPath:local.keyPath, meta:local.meta}),
       });
       isSaveSucceeded = true;
     } catch (error) {
