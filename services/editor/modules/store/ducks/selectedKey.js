@@ -144,7 +144,7 @@ export function saveKey() {
       await fetch(`/api/keys/${savedKey}`, {
         credentials: 'same-origin',
         method: 'put',
-        ...withJsonData({keyPath:local.keyPath, meta:local.meta}),
+        ...withJsonData(R.dissoc("revisionHistory", local)),
       });
       isSaveSucceeded = true;
     } catch (error) {
