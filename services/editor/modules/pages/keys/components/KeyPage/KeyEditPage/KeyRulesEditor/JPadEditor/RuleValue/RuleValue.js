@@ -133,26 +133,26 @@ const BernoulliTrial = ({onUpdate, ratio }) => (
   </div>
 );
 
-const IdetitySelection = ({identities, mutate }) => {
+const IdetitySelection = ({identities, mutate, ownerType }) => {
   return (
     <div className={style['identity-selection-container']}>
       <label className={style['identity-selection-title']}>Identity: </label>
       <div className={style['identity-selection-combobox-wrapper']}>
         <ComboBox
           options={identities}
-          onChange={(selectedValues) => mutate.in('OwnerType').updateValue(selectedValues.value)}
-          selected={[identities[0]]}
+          onChange={(value) => mutate.up().in('OwnerType').updateValue(value)}
+          selected={[ownerType]}
         />
       </div>
     </div>
   );
 };
 
-const MultiVariantValue = ({valueDistrubtion: {type, args }, mutate, identities, valueType }) => {
+const MultiVariantValue = ({valueDistrubtion: {type, args }, mutate, identities, valueType, ownerType }) => {
   if (type === 'weighted')
     return (
       <div>
-        <IdetitySelection identities={identities} mutate={mutate} />
+        <IdetitySelection ownerType={ownerType} identities={identities} mutate={mutate} />
         <WeightedValues variants={args}
           onUpdate={variants => {
             if (Object.keys(variants).length !== 1) {
@@ -173,7 +173,7 @@ const MultiVariantValue = ({valueDistrubtion: {type, args }, mutate, identities,
   if (type === 'bernoulliTrial') {
     return (
       <div>
-        <IdetitySelection identities={identities} mutate={mutate} />
+        <IdetitySelection ownerType={ownerType} identities={identities} mutate={mutate} />
 
         <div style={{ marginTop: 5 }}>
           <BernoulliTrial onUpdate={mutate.in('args').updateValue}
@@ -226,7 +226,7 @@ export default compose(
   if (rule.Type === 'MultiVariant')
     return (
       <MultiVariantValue mutate={mutate.in('ValueDistribution')}
-        valueDistrubtion={rule.ValueDistribution}
+        valueDistrubtion={rule.ValueDistribution} ownerType={rule.OwnerType}
         {...{ identities, valueType }}
       />
     );
