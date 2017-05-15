@@ -13,14 +13,16 @@ export function getIdentities() {
 }
 
 export function getProperties() {
-  return R.chain(identity => Object.keys(contextSchema[identity])
+  return R.chain(identity => (
+    [{id: `${identity}.@@id`, name: "Id", type:"string", identity},
+    ...Object.keys(contextSchema[identity])
     .map(property => ({
       id: identity + "." + property,
       identity: identity,
       name: property,
       type: contextSchema[identity][property].type,
       custom_type: contextSchema[identity][property].custom_type
-    })), Object.keys(contextSchema));
+    }) )]), Object.keys(contextSchema));
 }
 
 export function getPropertyTypeDetails(property) {
