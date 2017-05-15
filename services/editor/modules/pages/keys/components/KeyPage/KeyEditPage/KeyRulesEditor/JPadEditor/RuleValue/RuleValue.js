@@ -5,6 +5,8 @@ import CustomSlider from '../../../../../../../../components/common/CustomSlider
 import style from './RuleValue.css';
 import ComboBox from '../../../../../../../../components/common/ComboBox/ComboBox';
 import * as TypesService from '../../../../../../../../services/types-service';
+import R from 'ramda';
+const chance = new (require('chance'));
 
 function replaceNaN(fallbackValue) { return isNaN(this) ? fallbackValue : this; }
 const parseNumericInput = (inputValue) => inputValue === '' ? 0 : parseInt(inputValue);
@@ -85,7 +87,10 @@ const SingleVariantValue = ({value, mutate, identities, autofocus, valueType}) =
   </div>
 );
 
-const multiVariantSliderColors = ['#ccf085', '#bebebe', '#c395f6', '#ef7478', '#5a8dc3', '#6e6e6e'];
+const multiVariantSliderColors = [...['#ccf085', '#bebebe', '#c395f6', '#ef7478', '#5a8dc3', '#6e6e6e'],
+                                  ...(R.range(1,30).map(_=>chance.color()))];
+
+
 const WeightedValues = ({onUpdate, variants }) =>
   (<CustomSlider data={variants}
     onUpdate={onUpdate}
@@ -136,7 +141,7 @@ const IdetitySelection = ({identities, mutate }) => {
         <ComboBox
           options={identities}
           onChange={(selectedValues) => mutate.in('OwnerType').updateValue(selectedValues.value)}
-          defaultSelected={[identities[0]]}
+          selected={[identities[0]]}
         />
       </div>
     </div>
