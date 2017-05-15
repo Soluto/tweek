@@ -49,7 +49,8 @@ const gitTransactionManager = new Transactor(gitRepoCreationPromise, async gitRe
 const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
 
-GitContinuousUpdater.start(gitTransactionManager);
+GitContinuousUpdater.onUpdate(gitTransactionManager)
+  .subscribe();
 
 function getApp(req, res, requestCallback) {
   requestCallback(null, {
