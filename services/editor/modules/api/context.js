@@ -13,7 +13,7 @@ export async function getContextSchema(req, res, { tweekApiHostname }) {
     Object.keys(schemaDetails)
       .reduce((result, identity) => ({
         ...result,
-        [identity]: mapKeys(changeCase.pascalCase, schemaDetails[identity]),
+        [identity]: mapKeys(changeCase.pascalCase, schemaDetails[identity])
       }), {});
 
   res.json(processedSchemaDetails);
