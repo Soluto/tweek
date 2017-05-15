@@ -84,8 +84,7 @@ const convertRuleValuesAlert = {
 
 export function updateKeyValueType(keyValueType) {
   return async function (dispatch, getState) {
-    const jpad = JSON.parse(getState().selectedKey.
-                            .keyDef.source);
+    const jpad = JSON.parse(getState().selectedKey.local.keyDef.source);
     const allRules = getAllRules({ jpad });
     const shouldShowAlert =
       allRules.some(x => x.Type !== 'SingleVariant' || (x.Value !== null && x.Value !== undefined && x.Value !== ''));
