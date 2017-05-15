@@ -133,14 +133,14 @@ const BernoulliTrial = ({onUpdate, ratio }) => (
   </div>
 );
 
-const IdetitySelection = ({identities, mutate, ownerType }) => {
+const IdentitySelection = ({identities, onChange, ownerType }) => {
   return (
     <div className={style['identity-selection-container']}>
       <label className={style['identity-selection-title']}>Identity: </label>
       <div className={style['identity-selection-combobox-wrapper']}>
         <ComboBox
           options={identities}
-          onChange={(value) => mutate.up().in('OwnerType').updateValue(value)}
+          onChange={onChange}
           selected={[ownerType]}
         />
       </div>
@@ -149,10 +149,12 @@ const IdetitySelection = ({identities, mutate, ownerType }) => {
 };
 
 const MultiVariantValue = ({valueDistrubtion: {type, args }, mutate, identities, valueType, ownerType }) => {
+  let updateOwnerType = (identity)=> mutate.up().in("OwnerType").updateValue(identity);
+
   if (type === 'weighted')
     return (
       <div>
-        <IdetitySelection ownerType={ownerType} identities={identities} mutate={mutate} />
+        <IdentitySelection ownerType={ownerType} identities={identities} onChange={updateOwnerType} />
         <WeightedValues variants={args}
           onUpdate={variants => {
             if (Object.keys(variants).length !== 1) {
@@ -173,7 +175,7 @@ const MultiVariantValue = ({valueDistrubtion: {type, args }, mutate, identities,
   if (type === 'bernoulliTrial') {
     return (
       <div>
-        <IdetitySelection ownerType={ownerType} identities={identities} mutate={mutate} />
+        <IdentitySelection ownerType={ownerType} identities={identities} onChange={updateOwnerType} />
 
         <div style={{ marginTop: 5 }}>
           <BernoulliTrial onUpdate={mutate.in('args').updateValue}
