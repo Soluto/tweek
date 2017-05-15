@@ -5,6 +5,8 @@ import CustomSlider from '../../../../../../../../components/common/CustomSlider
 import style from './RuleValue.css';
 import ComboBox from '../../../../../../../../components/common/ComboBox/ComboBox';
 import * as TypesService from '../../../../../../../../services/types-service';
+import R from 'ramda';
+const chance = new (require('chance'));
 
 function replaceNaN(fallbackValue) { return isNaN(this) ? fallbackValue : this; }
 const parseNumericInput = (inputValue) => inputValue === '' ? 0 : parseInt(inputValue);
@@ -85,7 +87,10 @@ const SingleVariantValue = ({value, mutate, identities, autofocus, valueType}) =
   </div>
 );
 
-const multiVariantSliderColors = ['#ccf085', '#bebebe', '#c395f6', '#ef7478', '#5a8dc3', '#6e6e6e'];
+const multiVariantSliderColors = [...['#ccf085', '#bebebe', '#c395f6', '#ef7478', '#5a8dc3', '#6e6e6e'],
+                                  ...(R.range(1,30).map(_=>chance.color()))];
+
+
 const WeightedValues = ({onUpdate, variants }) =>
   (<CustomSlider data={variants}
     onUpdate={onUpdate}
@@ -128,26 +133,28 @@ const BernoulliTrial = ({onUpdate, ratio }) => (
   </div>
 );
 
-const IdetitySelection = ({identities, mutate }) => {
+const IdentitySelection = ({identities, onChange, ownerType }) => {
   return (
     <div className={style['identity-selection-container']}>
       <label className={style['identity-selection-title']}>Identity: </label>
       <div className={style['identity-selection-combobox-wrapper']}>
         <ComboBox
           options={identities}
-          onChange={(selectedValues) => mutate.in('OwnerType').updateValue(selectedValues.value)}
-          defaultSelected={[identities[0]]}
+          onChange={onChange}
+          selected={[ownerType]}
         />
       </div>
     </div>
   );
 };
 
-const MultiVariantValue = ({valueDistrubtion: {type, args }, mutate, identities, valueType }) => {
+const MultiVariantValue = ({valueDistrubtion: {type, args }, mutate, identities, valueType, ownerType }) => {
+  let updateOwnerType = (identity)=> mutate.up().in("OwnerType").updateValue(identity);
+
   if (type === 'weighted')
     return (
       <div>
-        <IdetitySelection identities={identities} mutate={mutate} />
+        <IdentitySelection ownerType={ownerType} identities={identities} onChange={updateOwnerType} />
         <WeightedValues variants={args}
           onUpdate={variants => {
             if (Object.keys(variants).length !== 1) {
@@ -168,7 +175,7 @@ const MultiVariantValue = ({valueDistrubtion: {type, args }, mutate, identities,
   if (type === 'bernoulliTrial') {
     return (
       <div>
-        <IdetitySelection identities={identities} mutate={mutate} />
+        <IdentitySelection ownerType={ownerType} identities={identities} onChange={updateOwnerType} />
 
         <div style={{ marginTop: 5 }}>
           <BernoulliTrial onUpdate={mutate.in('args').updateValue}
@@ -221,7 +228,7 @@ export default compose(
   if (rule.Type === 'MultiVariant')
     return (
       <MultiVariantValue mutate={mutate.in('ValueDistribution')}
-        valueDistrubtion={rule.ValueDistribution}
+        valueDistrubtion={rule.ValueDistribution} ownerType={rule.OwnerType}
         {...{ identities, valueType }}
       />
     );
