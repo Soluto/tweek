@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { compose, mapPropsStream, pure } from 'recompose';
+import Rx from 'rxjs';
 import classNames from 'classnames';
 import * as SearchService from '../../../../../../services/search-service';
 import * as TypesService from '../../../../../../services/types-service';
@@ -23,15 +24,24 @@ RemovedKey.propTypes = {
   config: PropTypes.shape(configShape).isRequired,
 };
 
+const mapValueTypeToProps = (props$) => {
+  const unknownType = 'unknown';
+
+  const propsStream = props$.map(({ keyPath, ...props }) => props);
+
+  const valueTypeStream = props$.map(x => x.keyPath)
+    .distinctUntilChanged()
+    .switchMap(keyPath => Rx.Observable.fromPromise(TypesService.getValueTypeDefinition(keyPath))
+      .map(x => x.name)
+      .startWith(unknownType))
+    .map(valueType => ({ disabled: valueType === unknownType, valueType }));
+
+  return propsStream.combineLatest(valueTypeStream, (props, valueType) => ({ ...props, ...valueType }));
+};
+
 const OverrideValueInput = compose(
+  mapPropsStream(mapValueTypeToProps),
   pure,
-  mapPropsStream(props$ => props$
-    .scan((prev, next) => ({
-      ...next,
-      typeDefinitionPromise: prev.keyPath === next.keyPath ? prev.typeDefinitionPromise : TypesService.getValueTypeDefinition(next.keyPath),
-    }), {})
-    .switchMap(async ({ keyPath, typeDefinitionPromise, ...rest }) => ({ ...rest, typeDefinition: await typeDefinitionPromise }))
-    .map(({ typeDefinition, ...rest }) => ({ ...rest, allowedValues: typeDefinition && typeDefinition.allowedValues }))),
 )(TypedInput);
 
 const EditableKey = ({ remote, local, onKeyChange, onValueChange }) => (

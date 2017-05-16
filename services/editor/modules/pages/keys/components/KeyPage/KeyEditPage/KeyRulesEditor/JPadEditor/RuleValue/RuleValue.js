@@ -14,23 +14,7 @@ const parseNumericInput = (inputValue) => inputValue === '' ? 0 : parseInt(input
 const wrapWithClass = propToClassNameFn => Comp => props =>
     <div className={propToClassNameFn(props)} ><Comp {...props } /></div>
 
-function getTypedValue(value, valueType) {
-  try {
-    return TypesService.convertValue(value, valueType);
-  }
-  catch (err) {
-    return valueType === TypesService.types.boolean.name ? '' : '' + value
-  }
-}
-
-function updateMutateTypedValue(mutate, value, valueType) {
-  mutate.updateValue(getTypedValue(value, valueType));
-}
-
-export const InputValue = compose(
-  wrapWithClass(({valueType})=> `${style.inputValue} input-type-${valueType}`),
-  mapProps(({valueType, ...props}) => ({ ...props,  allowedValues: TypesService.types[valueType].allowedValues }))
-)(TypedInput);
+export const InputValue = wrapWithClass(({valueType})=> `${style.inputValue} input-type-${valueType}`)(TypedInput);
 
 const MultiVariantConverter = ({valueType, identities, mutate, value}) => {
   if (valueType === TypesService.types.boolean.name){
@@ -64,7 +48,7 @@ const MultiVariantConverter = ({valueType, identities, mutate, value}) => {
 
 const SingleVariantValue = ({value, mutate, identities, autofocus, valueType}) => (
   <div className={style['rule-value-container']}>
-    <InputValue {...{ value, valueType }} onChange={newValue => updateMutateTypedValue(mutate, newValue, valueType)} />
+    <InputValue {...{ value, valueType }} onChange={newValue => mutate.updateValue(newValue)} />
     <MultiVariantConverter {...{ value, valueType, mutate, identities }} />
   </div>
 );
