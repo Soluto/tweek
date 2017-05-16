@@ -4,7 +4,7 @@ import ComboBox from '../../../../../../../../components/common/ComboBox/ComboBo
 import style from './DefaultValue.css';
 
 const booleanSingleVariantSuggestions = [{label: 'true', value: true}, {label: 'false', value: false}];
-const DefaultValueInput = ({value, valueType, onChange}) => {
+const DefaultValueInput = ({value = '', valueType, onChange}) => {
   if (valueType === TypesService.types.boolean.name) {
     return (
       <ComboBox
@@ -20,7 +20,7 @@ const DefaultValueInput = ({value, valueType, onChange}) => {
   return (
     <input
       onChange={e => onChange(e.target.value)}
-      value={value || ''}
+      value={value}
       placeholder="Enter value here"
       className={style['values-input']}
     />
