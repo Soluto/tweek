@@ -1008,28 +1008,6 @@
 .property-value-wrapper .property-value-combo-box :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) span {
   display: none;
 }
-.property-value-wrapper .value-input {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  width: 150px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-}
-.property-value-wrapper .value-input:focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.property-value-wrapper .value-input:disabled {
-  border-color: #bcbcbc;
-}
 .property-suggestion-wrapper {
   padding: 8px 4px 8px 16px;
 }

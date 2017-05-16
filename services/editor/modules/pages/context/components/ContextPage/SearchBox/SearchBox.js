@@ -63,7 +63,7 @@ class SearchBox extends Component {
           <Input
             placeholder={`Enter ${changeCase.pascalCase(contextTypeText)} Id`}
             onEnterKeyPress={() => this.onGetClick()}
-            onChange={e => this.onContextIdChange(e.target.value)}
+            onChange={value => this.onContextIdChange(value)}
             value={this.state.contextId}
           />
         </div>
