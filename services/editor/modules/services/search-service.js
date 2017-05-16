@@ -8,7 +8,7 @@ const byScore = R.descend(R.prop('score'));
 let index;
 
 export async function refreshIndex() {
-  const response = await fetch('/api/search/', { credentials: 'same-origin' });
+  const response = await fetch('/api/search-index/', { credentials: 'same-origin' });
   const serializedIndex = await response.json();
   index = lunr.Index.load(serializedIndex);
 }

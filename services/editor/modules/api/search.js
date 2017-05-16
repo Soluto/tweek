@@ -1,5 +1,5 @@
 import searchIndex from '../server/searchIndex';
 
-export function getKeysIndex(req, res) {
+export function getSearchIndex(req, res) {
   res.json(searchIndex.index);
 }
