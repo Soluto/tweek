@@ -209,7 +209,7 @@ const KeyFullHeader = (props) => {
             <div className={style['tags-wrapper']}>
               <KeyTags
                 onTagsChanged={newTags => onTagsChanged(newTags)}
-                tags={keyMeta.meta.tags}
+                tags={keyMeta.meta.tags || []}
               />
             </div>
           </div>
