@@ -42,6 +42,12 @@ export default ({ tagsRepository, keysRepository, tweekApiHostname }) => (
         keysRepository={keysRepository}
       />
     </ServerRoute>
+    <ServerRoute path="meta">
+      <ServerRoute
+        path="*"
+        keysRepository={keysRepository}
+        get={requestErrorHandlingWrapper(KeysRoutes.getKeyMeta)} />
+    </ServerRoute>
     <ServerRoute
       path="search"
       get={requestErrorHandlingWrapper(SearchRoutes.getKeysIndex)}
