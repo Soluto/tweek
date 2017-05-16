@@ -63,7 +63,6 @@ export async function getKeyMeta(req, res, { keysRepository }, { params }) {
     const meta = await keysRepository.getKeyMeta(keyPath, { revision });
     res.json(meta);
   } catch (exp) {
-    console.warn(exp.message);
     res.sendStatus(404);
   }
 }
