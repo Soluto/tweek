@@ -67,6 +67,7 @@
     "hpp": "0.2.0",
     "jsonwebtoken": "7.3.0",
     "lock-queue": "1.0.1",
+    "lunr": "2.0.3",
     "moment": "2.14.1",
     "morgan": "1.7.0",
     "nconf": "0.8.4",
@@ -103,7 +104,6 @@
     "rodal": "1.4.1",
     "rxjs": "5.0.0-beta.10",
     "rxjs-es": "5.0.0-beta.10",
-    "search-index": "0.11.0",
     "source-map-support": "0.4.0",
     "velocity-react": "1.1.5"
   },
