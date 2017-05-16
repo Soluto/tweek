@@ -87,11 +87,8 @@ namespace Tweek.ApiService.NetCore
                         .AllowCredentials());
             });
 
-            // Adapt all IDiagnosticsProviders to support App.Metrics HealthCheck
             RegisterMetrics(services);
-            services.AdaptSingletons<IDiagnosticsProvider, HealthCheck>(inner => new DiagnosticsProviderDecorator(inner));
-
-            
+            services.AdaptSingletons<IDiagnosticsProvider, HealthCheck>(inner => new DiagnosticsProviderDecorator(inner));            
         }
 
         private void RegisterMetrics(IServiceCollection services)
