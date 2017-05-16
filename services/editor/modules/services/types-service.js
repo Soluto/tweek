@@ -1,3 +1,5 @@
+/* global fetch */
+
 export const types = {
   string: {
     name: 'string',
@@ -54,4 +56,15 @@ function safeConvertToBaseType(value, type) {
   }
 
   return jsonValue;
+}
+
+export async function getValueTypeDefinition(key) {
+  if (!key || key.length === 0) return types.string;
+  try {
+    const response = await fetch(`/api/meta/${key}`, { credentials: 'same-origin' });
+    const meta = await response.json();
+    return types[meta.valueType] || types.string;
+  } catch (err) {
+    return types.string;
+  }
 }

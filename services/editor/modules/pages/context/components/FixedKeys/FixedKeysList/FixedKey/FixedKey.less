@@ -38,10 +38,12 @@
     }
 
     .value-input {
-      .metro-textbox;
       margin: 5px;
       &.has-changes {
         color: green;
+        :global(.bootstrap-typeahead-input-main) {
+          color: green;
+        }
       }
     }
 

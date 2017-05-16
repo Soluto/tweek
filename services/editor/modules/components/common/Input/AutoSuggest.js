@@ -29,5 +29,4 @@ AutoSuggest.defaultProps = {
   className: style['autosuggest-default-wrapper-theme-class'],
 };
 
-
 export default withState('suggestions', 'setSuggestions')(AutoSuggest);
