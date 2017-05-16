@@ -8,6 +8,7 @@
     "jsx-a11y/label-has-for": "off",
     "linebreak-style": "off",
     "max-len" : "warn",
+    "no-new-func": "off",
     "no-param-reassign": "warn",
     "no-plusplus": "off",
     "no-underscore-dangle": "warn",

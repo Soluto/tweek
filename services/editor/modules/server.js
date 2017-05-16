@@ -15,7 +15,7 @@ import Transactor from './utils/transactor';
 import KeysRepository from './server/repositories/keys-repository';
 import TagsRepository from './server/repositories/tags-repository';
 import GitContinuousUpdater from './server/repositories/git-continuous-updater';
-import keysIndex from './server/keysIndex';
+import searchIndex from './server/searchIndex';
 
 const passport = require('passport');
 const nconf = require('nconf');
@@ -52,7 +52,7 @@ const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
 
 GitContinuousUpdater.onUpdate(gitTransactionManager)
-  .exhaustMap(_ => keysIndex.refresh())
+  .exhaustMap(_ => searchIndex.refreshIndex(gitRepostoryConfig.localPath))
   .subscribe();
 
 function getApp(req, res, requestCallback) {
@@ -104,7 +104,7 @@ const startServer = () => {
 
 gitRepoCreationPromiseWithTimeout
   .then(() => console.log('indexing keys...'))
-  .then(() => keysIndex.init(gitRepostoryConfig.localPath))
+  .then(() => searchIndex.refreshIndex(gitRepostoryConfig.localPath))
   .then(() => console.log('starting tweek server'))
   .then(() => startServer())
   .catch((reason) => {
