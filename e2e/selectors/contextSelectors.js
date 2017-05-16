@@ -31,7 +31,7 @@ contextSelectors.keyDeleteButton = (keyName) => {
 contextSelectors.keyNameInput = (keyName) => {
   return getRelativeSelector([
     contextSelectors.keyContainer(keyName),
-    getSelectorByClassNames('key-input'),
+    getSelectorByClassNames('key-input', 'bootstrap-typeahead-input-main'),
   ]);
 };
 
@@ -39,7 +39,7 @@ contextSelectors.keyNameInput = (keyName) => {
 contextSelectors.keyNameInputByIndex = (index) => {
   return getRelativeSelector([
     contextSelectors.keyContainerByIndex(index),
-    getSelectorByClassNames('key-input'),
+    getSelectorByClassNames('key-input', 'bootstrap-typeahead-input-main'),
   ]);
 };
 
