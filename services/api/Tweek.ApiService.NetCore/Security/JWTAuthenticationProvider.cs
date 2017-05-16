@@ -48,7 +48,9 @@ namespace Tweek.ApiService.NetCore.Security
                 });
             });
 
-            var issuers = authProviders.Map(authProvider => authProvider["Issuer"]).ToImmutableHashSet();
+            var issuers = authProviders.Map(authProvider => authProvider["Issuer"])
+                .Append("tweek")
+                .ToImmutableHashSet();
 
             app.Use( async (ctx, next) =>
             {
