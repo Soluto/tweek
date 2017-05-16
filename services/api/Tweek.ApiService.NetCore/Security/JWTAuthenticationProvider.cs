@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Immutable;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using LanguageExt;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
@@ -27,7 +29,9 @@ namespace Tweek.ApiService.NetCore.Security
 
         public void Install(IApplicationBuilder app, IConfiguration configuration, ILogger logger)
         {
-            foreach (var authProvider in configuration.GetSection("Security:Providers").GetChildren())
+            var authProviders = configuration.GetSection("Security:Providers").GetChildren().ToArray();
+
+            authProviders.Iter(authProvider =>
             {
                 app.UseJwtBearerAuthentication(new JwtBearerOptions
                 {
@@ -42,7 +46,10 @@ namespace Tweek.ApiService.NetCore.Security
                     AutomaticChallenge = false,
                     AuthenticationScheme = $"JWT {authProvider["Issuer"]}"
                 });
-            }
+            });
+
+            var issuers = authProviders.Map(authProvider => authProvider["Issuer"]).ToImmutableHashSet();
+
             app.Use( async (ctx, next) =>
             {
                 var jwtString = GetAuthToken(ctx);
@@ -60,7 +67,9 @@ namespace Tweek.ApiService.NetCore.Security
                         return;
                     }
                     var issuer = jwtSecurityToken.Issuer;
-                    ctx.User = await ctx.Authentication.AuthenticateAsync($"JWT {issuer}");
+                    if (issuers.Contains(issuer)) {
+                        ctx.User = await ctx.Authentication.AuthenticateAsync($"JWT {issuer}");
+                    }
                 }
 
                 await next();
