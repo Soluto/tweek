@@ -1,10 +1,5 @@
-import keysIndex from '../server/keysIndex';
+import searchIndex from '../server/searchIndex';
 
 export function getKeysIndex(req, res) {
-  res.json(keysIndex.index);
-}
-
-export function getSuggestions(req, res) {
-  const suggestions = keysIndex.getSuggestions(req.query.query);
-  res.json(suggestions);
+  res.json(searchIndex.index);
 }
