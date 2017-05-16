@@ -35,7 +35,7 @@ const EditableKey = ({ remote, local, onKeyChange, onValueChange }) => (
       className={classNames(style['value-input'], { [style['has-changes']]: remote && remote.value !== local.value })}
       placeholder="Value"
       value={local.value}
-      onChange={e => onValueChange(e.target.value)}
+      onChange={onValueChange}
     />
     {
       remote && remote.value !== local.value ? <div className={style['initial-value']}>{remote.value}</div> : null

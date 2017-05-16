@@ -3,6 +3,7 @@ import changeCase from 'change-case';
 import R from 'ramda';
 import { WithContext as ReactTags } from 'react-tag-input';
 import ComboBox from '../../../../../../../../../components/common/ComboBox/ComboBox';
+import Input from '../../../../../../../../../components/common/Input/Input';
 import { inOp } from '../../../../../../../../../services/operators-provider';
 import style from './styles.css';
 
@@ -35,16 +36,6 @@ const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
   );
 };
 
-const InputPropertyValue = ({ onUpdate, value, placeholder = 'Value' }) => (
-  <input
-    className={style['value-input']}
-    type="text"
-    onChange={e => onUpdate(e.target.value)}
-    value={value}
-    placeholder={placeholder}
-  />
-);
-
 function PropertyValueComponent({ onUpdate, propertyTypeDetails, value = '', selectedOperator, placeholder = 'Value' }) {
   let allowedValues = propertyTypeDetails.allowedValues || [];
 
@@ -74,7 +65,7 @@ function PropertyValueComponent({ onUpdate, propertyTypeDetails, value = '', sel
   }
 
   return (
-    <InputPropertyValue {...{ onUpdate, value, placeholder }} />
+    <Input {...{ onChange: onUpdate, value, placeholder }} />
   );
 }
 
