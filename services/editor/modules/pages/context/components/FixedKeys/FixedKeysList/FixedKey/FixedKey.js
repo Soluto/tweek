@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import * as SearchService from '../../../../../../services/search-service';
 import Input from '../../../../../../components/common/Input/Input';
+import AutoSuggest from '../../../../../../components/common/AutoSuggest/AutoSuggest';
 import style from './FixedKey.css';
 
 const configShape = {
@@ -21,11 +23,12 @@ RemovedKey.propTypes = {
 
 const EditableKey = ({ remote, local, onKeyChange, onValueChange }) => (
   <div className={classNames(style['editable-key-container'], { [style['new-item']]: !remote })}>
-    <Input
+    <AutoSuggest
       className={style['key-input']}
       placeholder="Key"
       value={local.key}
-      onChange={e => onKeyChange(e.target.value)}
+      getSuggestions={SearchService.suggestions}
+      onChange={onKeyChange}
       disabled={!!remote}
     />
     <Input
