@@ -29,7 +29,7 @@ const OverrideValueInput = compose(
     .scan((prev, next) => ({
       ...next,
       typeDefinitionPromise: prev.keyPath === next.keyPath ? prev.typeDefinitionPromise : TypesService.getValueTypeDefinition(next.keyPath),
-    }))
+    }), {})
     .switchMap(async ({ keyPath, typeDefinitionPromise, ...rest }) => ({ ...rest, typeDefinition: await typeDefinitionPromise }))
     .map(({ typeDefinition, ...rest }) => ({ ...rest, allowedValues: typeDefinition && typeDefinition.allowedValues }))),
 )(TypedInput);
