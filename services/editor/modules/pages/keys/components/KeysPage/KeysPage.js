@@ -13,9 +13,7 @@ const isNode = new Function('try {return this===global;}catch(e){return false;}'
 
 export default compose(
   connect(state => state, { ...actions }),
-  withLoading(() => null, isNode() ? Promise.resolve() : refreshTypes()),
-  withLoading(() => null, isNode() ? Promise.resolve() : refreshSchema()),
-  withLoading(() => null, isNode() ? Promise.resolve() : refreshIndex()),
+  withLoading(() => null, isNode() ? Promise.resolve() : Promise.all([refreshTypes(), refreshSchema(), refreshIndex()])),
 )(class KeysPage extends Component {
   componentDidMount() {
     if (!this.props.keys) {
