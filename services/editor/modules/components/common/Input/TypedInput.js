@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import changeCase from 'change-case';
-import Input from '../Input/Input';
+import Input from './Input';
 import ComboBox from '../ComboBox/ComboBox';
 
 const TypedInput = ({ allowedValues, value, onChange, ...props }) => {

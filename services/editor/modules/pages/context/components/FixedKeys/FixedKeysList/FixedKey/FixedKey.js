@@ -1,13 +1,15 @@
 import React, { PropTypes } from 'react';
+import { compose, mapPropsStream, pure } from 'recompose';
 import classNames from 'classnames';
 import * as SearchService from '../../../../../../services/search-service';
-import Input from '../../../../../../components/common/Input/Input';
-import AutoSuggest from '../../../../../../components/common/AutoSuggest/AutoSuggest';
+import * as TypesService from '../../../../../../services/types-service';
+import TypedInput from '../../../../../../components/common/Input/TypedInput';
+import AutoSuggest from '../../../../../../components/common/Input/AutoSuggest';
 import style from './FixedKey.css';
 
 const configShape = {
   key: PropTypes.string,
-  value: PropTypes.string,
+  value: PropTypes.any,
 };
 
 const RemovedKey = ({ config: { key, value } }) => (
@@ -21,6 +23,17 @@ RemovedKey.propTypes = {
   config: PropTypes.shape(configShape).isRequired,
 };
 
+const OverrideValueInput = compose(
+  pure,
+  mapPropsStream(props$ => props$
+    .scan((prev, next) => ({
+      ...next,
+      typeDefinitionPromise: prev.keyPath === next.keyPath ? prev.typeDefinitionPromise : TypesService.getValueTypeDefinition(next.keyPath),
+    }))
+    .switchMap(async ({ keyPath, typeDefinitionPromise, ...rest }) => ({ ...rest, typeDefinition: await typeDefinitionPromise }))
+    .map(({ typeDefinition, ...rest }) => ({ ...rest, allowedValues: typeDefinition && typeDefinition.allowedValues }))),
+)(TypedInput);
+
 const EditableKey = ({ remote, local, onKeyChange, onValueChange }) => (
   <div className={classNames(style['editable-key-container'], { [style['new-item']]: !remote })}>
     <AutoSuggest
@@ -31,7 +44,8 @@ const EditableKey = ({ remote, local, onKeyChange, onValueChange }) => (
       onChange={onKeyChange}
       disabled={!!remote}
     />
-    <Input
+    <OverrideValueInput
+      keyPath={local.key}
       className={classNames(style['value-input'], { [style['has-changes']]: remote && remote.value !== local.value })}
       placeholder="Value"
       value={local.value}
