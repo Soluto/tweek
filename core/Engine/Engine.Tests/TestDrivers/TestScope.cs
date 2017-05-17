@@ -31,15 +31,15 @@ namespace Engine.Tests.TestDrivers
             try
             {
                 await _init();
-                var parserSettings = new ParserSettings(FSharpOption<IDictionary<string, ComparerDelegate>>.Some(new Dictionary<string, ComparerDelegate>()), FSharpOption<Sha1Provider>.Some(
-                    (b) =>
+                var parserSettings = new ParserSettings((b) =>
+                {
+                    using (var sha1 = SHA1.Create())
                     {
-                        using (var sha1 = SHA1.Create())
-                        {
-                            return sha1.ComputeHash(b);
-                        }
-                    } 
-                ));
+                        return sha1.ComputeHash(b);
+                    }
+                },FSharpOption<IDictionary<string, ComparerDelegate>>.Some(new Dictionary<string, ComparerDelegate>())
+                    
+                );
                 var tweek = await Tweek.Create(_rulesDriver, JPadRulesParserAdapter.Convert(new JPadParser(parserSettings)));
                 await test(tweek, _contextDriver);
             }
