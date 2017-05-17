@@ -1,10 +1,19 @@
 import React, { PropTypes } from 'react';
+import { withContext, getContext } from 'recompose';
 import changeCase from 'change-case';
-import { safeConvertValue, types } from '../../../services/types-service';
 import Input from './Input';
 import ComboBox from '../ComboBox/ComboBox';
 
-const TypedInput = ({ valueType, value, onChange, ...props }) => {
+export const typesServiceContextType = {
+  types: PropTypes.object.isRequired,
+  safeConvertValue: PropTypes.func.isRequired,
+};
+
+export const withTypesService = ({ safeConvertValue, types }) => withContext(typesServiceContextType, () => ({ safeConvertValue, types }));
+
+const getTypesService = getContext(typesServiceContextType);
+
+const TypedInput = ({ safeConvertValue, types, valueType, value, onChange, ...props }) => {
   const typeDefinition = types[valueType];
   const allowedValues = typeDefinition && typeDefinition.allowedValues;
   const onChangeConvert = newValue => onChange(safeConvertValue(newValue, valueType));
@@ -33,4 +42,4 @@ TypedInput.defaultProps = {
   value: undefined,
 };
 
-export default TypedInput;
+export default getTypesService(TypedInput);
