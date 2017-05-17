@@ -14,8 +14,8 @@ services:
   tweek-api:
     image: soluto/tweek-api
     build:
-      context: ../../services/api/Tweek.ApiService.NetCore
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: TweekApiDockerfile
     depends_on:
       - tweek-management
     environment:

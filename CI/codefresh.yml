@@ -20,26 +20,14 @@ steps:
     image_name: soluto/tweek-bare-repo
     working_directory: ./services/git-service/BareRepository/
 
-  CompilingApi:
-    title: Compile & Unit Test Tweek Api Solution
-    image: microsoft/aspnetcore-build:1.1.1
-    environment:
-      - VERSION_SUFFIX=ci-${{CF_BUILD_ID}}-${{CF_SHORT_REVISION}}
-    commands: 
-      - dotnet restore ./Tweek.sln --configfile ./CI/NuGet.Config
-      - dotnet build Tweek.sln -c Release --version-suffix "$VERSION_SUFFIX";
-      - find . -regex '.*\.\(Unit\|Integration\|\)Tests\.csproj' -print0 | xargs -0 -n 1 dotnet test
-      - dotnet publish ./services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj  -c Release -o ./obj/Docker/publish --version-suffix "$VERSION_SUFFIX"
-      - cp ./services/api/Tweek.ApiService.NetCore/Dockerfile ./services/api/Tweek.ApiService.NetCore/obj/Docker/publish/Dockerfile
-      - echo Dockerfile > ./services/api/Tweek.ApiService.NetCore/obj/Docker/publish/.dockerignore
-
   BuildingApiImage:
     title: Building Tweek Api Docker Image
     type: build
     image_name: soluto/tweek-api
-    working_directory: ${{main_clone}}/services/api/Tweek.ApiService.NetCore/obj/Docker/publish
+    working_directory: ${{main_clone}}
+    dockerfile: TweekApiDockerfile
     build_arguments: 
-      - source=.
+      - VERSION_SUFFIX=ci-${{CF_BUILD_ID}}-${{CF_SHORT_REVISION}}
     
   BuildingManagement:
     title: Building Management Docker Image
