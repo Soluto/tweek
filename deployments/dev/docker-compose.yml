@@ -14,7 +14,7 @@ services:
   tweek-api:
     image: soluto/tweek-api
     build:
-      context: .
+      context: ../../
       dockerfile: TweekApiDockerfile
     depends_on:
       - tweek-management
