@@ -132,7 +132,7 @@ steps:
         image: ${{BuildingTests}}
         volumes_from:
           - keys
-       depends_on: 
+        depends_on: 
           - selenium
           - tweek-editor
           - tweek-api
