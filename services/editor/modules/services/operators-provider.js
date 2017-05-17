@@ -11,26 +11,26 @@ const _createOperator = (label, operatorValue) => {
     default:
       getValue = (propertyValue, propertyTypeDetails) =>
         _toComplexValue(operatorValue, propertyValue, propertyTypeDetails);
-  };
+  }
 
   return {
     label,
     operatorValue,
-    getValue
+    getValue,
   };
 };
 
 const _toArrayValue = (operatorValue, propertyValue, propertyTypeDetails) => {
   if (!propertyValue)
-    return _toComplexValue(operatorValue, [], propertyTypeDetails);
+    {return _toComplexValue(operatorValue, [], propertyTypeDetails);}
   if (Array.isArray(propertyValue))
-    return _toComplexValue(operatorValue, propertyValue, propertyTypeDetails);
+    {return _toComplexValue(operatorValue, propertyValue, propertyTypeDetails);}
   return _toComplexValue(operatorValue, [propertyValue], propertyTypeDetails);
 };
 
 const _toComplexValue = (operatorValue, propertyValue, propertyTypeDetails) => ({
   [operatorValue]: propertyValue,
-  ...propertyTypeDetails
+  ...propertyTypeDetails,
 });
 
 export const equal = _createOperator('=', '$eq');
@@ -41,24 +41,34 @@ export const lessThan = _createOperator('<', '$lt');
 export const lessEqualThan = _createOperator('<=', '$le');
 export const inOp = _createOperator('in', '$in');
 export const within = _createOperator('within', '$withinTime');
+export const startsWith = _createOperator('starts with', '$startsWith');
+export const endsWith = _createOperator('ends with', '$endsWith');
+export const contains = _createOperator('contains', '$contains');
 
 export const allOperators =
-  [equal, notEqual, greaterEqualThan, greater, lessThan, lessEqualThan, inOp, within];
+  [equal, notEqual, greaterEqualThan, greater, lessThan, lessEqualThan, inOp, within, startsWith, endsWith, contains];
 
-export const getPropertySupportedOperators = propertyTypeDetails => {
-  const type = propertyTypeDetails.name == 'custom' ? propertyTypeDetails.base : propertyTypeDetails.name;
+export const getPropertySupportedOperators = (propertyTypeDetails) => {
+  const type = propertyTypeDetails.name === 'custom' ? propertyTypeDetails.base : propertyTypeDetails.name;
 
-  if (type === 'empty')
+  if (type === 'empty') {
     return [equal, notEqual, greaterEqualThan, greater, lessThan, lessEqualThan, inOp, within];
+  }
 
-  if (type === 'date')
+  if (type === 'date') {
     return [within];
+  }
 
   let operators = [];
-  if (type === 'boolean' || type === 'string' || type === 'version')
+  if (type === 'boolean' || type === 'string' || type === 'version') {
     operators = operators.concat([equal, notEqual]);
-  if (type === 'number' || type === 'version')
+  }
+  if (type === 'number' || type === 'version') {
     operators = operators.concat([greaterEqualThan, greater, lessThan, lessEqualThan]);
+  }
+  if (type === 'string') {
+    operators = operators.concat([startsWith, endsWith, contains]);
+  }
 
   operators.push(inOp);
   return operators;
