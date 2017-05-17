@@ -112,18 +112,21 @@ export default class GitRepository {
   }
 
   async mergeMaster() {
-    await this._repo.mergeBranches('master', 'origin/master');
+    let commitId = await this._repo.mergeBranches('master', 'origin/master');
 
     const isSynced = await this.isSynced();
     if (!isSynced) {
       console.warn('Repo is not synced after pull');
-      await this.reset();
+      commitId = await this.reset();
     }
+
+    return commitId;
   }
 
   async reset() {
     const remoteCommit = (await this._repo.getBranchCommit('remotes/origin/master'));
     await Git.Reset.reset(this._repo, remoteCommit, 3);
+    return remoteCommit.id();
   }
 
   async isSynced() {

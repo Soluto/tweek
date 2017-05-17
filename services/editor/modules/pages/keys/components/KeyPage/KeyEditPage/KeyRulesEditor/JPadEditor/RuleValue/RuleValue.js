@@ -1,11 +1,12 @@
 import React from 'react';
-import changeCase from "change-case";
+import R from 'ramda';
 import { compose, mapProps } from 'recompose';
 import CustomSlider from '../../../../../../../../components/common/CustomSlider/CustomSlider';
-import style from './RuleValue.css';
+import TypedInput from '../../../../../../../../components/common/Input/TypedInput';
 import ComboBox from '../../../../../../../../components/common/ComboBox/ComboBox';
+import style from './RuleValue.css';
 import * as TypesService from '../../../../../../../../services/types-service';
-import R from 'ramda';
+
 const chance = new (require('chance'));
 
 function replaceNaN(fallbackValue) { return isNaN(this) ? fallbackValue : this; }
@@ -13,42 +14,7 @@ const parseNumericInput = (inputValue) => inputValue === '' ? 0 : parseInt(input
 const wrapWithClass = propToClassNameFn => Comp => props =>
     <div className={propToClassNameFn(props)} ><Comp {...props } /></div>
 
-function getTypedValue(value, valueType) {
-  try {
-    return TypesService.convertValue(value, valueType);
-  }
-  catch (err) {
-    return valueType === TypesService.types.boolean.name ? '' : '' + value
-  }
-}
-
-function updateMutateTypedValue(mutate, value, valueType) {
-  mutate.updateValue(getTypedValue(value, valueType));
-}
-
-export const InputValue = wrapWithClass(({valueType})=> `${style.inputValue} input-type-${valueType}`)(({valueType, value, onChange, autofocus, placeholder="Enter Value Here"})=>{
-  const typeDefinition = TypesService.types[valueType];
-
-  if (typeDefinition.allowedValues && typeDefinition.allowedValues.length > 0) {
-    const allowedValues = typeDefinition.allowedValues.map(x => ({ label: changeCase.pascalCase(x), value: x }));
-    return <ComboBox
-          options={allowedValues}
-          selected={allowedValues.filter(x => x.value === value)}
-          placeholder="Enter value here"
-          showValueInOptions={false}
-          onChange={onChange}
-      />
-   }
-   else {
-      return <input
-          onChange={e => onChange({value:e.target.value})}  
-          value={value}
-          placeholder="Enter value here"
-          className={style['values-input']}
-          ref={(e) => e && autofocus && e.focus()}
-        />
-   }
-});
+export const InputValue = wrapWithClass(({valueType})=> `${style.inputValue} input-type-${valueType}`)(TypedInput);
 
 const MultiVariantConverter = ({valueType, identities, mutate, value}) => {
   if (valueType === TypesService.types.boolean.name){
@@ -82,8 +48,8 @@ const MultiVariantConverter = ({valueType, identities, mutate, value}) => {
 
 const SingleVariantValue = ({value, mutate, identities, autofocus, valueType}) => (
   <div className={style['rule-value-container']}>
-      <InputValue {...{ value, valueType }} onChange={e => updateMutateTypedValue(mutate, e.value, valueType)} />
-      <MultiVariantConverter {...{ value, valueType, mutate, identities }} /> 
+    <InputValue {...{ value, valueType }} onChange={newValue => mutate.updateValue(newValue)} />
+    <MultiVariantConverter {...{ value, valueType, mutate, identities }} />
   </div>
 );
 

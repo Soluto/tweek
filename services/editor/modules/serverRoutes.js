@@ -4,6 +4,7 @@ import * as KeysRoutes from './api/keys';
 import * as TypesRoutes from './api/types';
 import * as TagsRoutes from './api/tags';
 import * as ContextRoutes from './api/context';
+import * as SearchRoutes from './api/search';
 import requestErrorHandlingWrapper from './utils/request-error-handling-wrapper';
 
 export default ({ tagsRepository, keysRepository, tweekApiHostname }) => (
@@ -41,5 +42,15 @@ export default ({ tagsRepository, keysRepository, tweekApiHostname }) => (
         keysRepository={keysRepository}
       />
     </ServerRoute>
+    <ServerRoute path="meta">
+      <ServerRoute
+        path="*"
+        keysRepository={keysRepository}
+        get={requestErrorHandlingWrapper(KeysRoutes.getKeyMeta)} />
+    </ServerRoute>
+    <ServerRoute
+      path="search-index"
+      get={requestErrorHandlingWrapper(SearchRoutes.getSearchIndex)}
+    />
   </ServerRoute>)
   ;

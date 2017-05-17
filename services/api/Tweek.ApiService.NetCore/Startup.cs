@@ -87,11 +87,8 @@ namespace Tweek.ApiService.NetCore
                         .AllowCredentials());
             });
 
-            // Adapt all IDiagnosticsProviders to support App.Metrics HealthCheck
             RegisterMetrics(services);
-            services.AdaptSingletons<IDiagnosticsProvider, HealthCheck>(inner => new DiagnosticsProviderDecorator(inner));
-
-            
+            services.AdaptSingletons<IDiagnosticsProvider, HealthCheck>(inner => new DiagnosticsProviderDecorator(inner));            
         }
 
         private void RegisterMetrics(IServiceCollection services)
@@ -154,13 +151,13 @@ namespace Tweek.ApiService.NetCore
                 Comparers: Microsoft.FSharp.Core.FSharpOption<IDictionary<string, ComparerDelegate>>.Some(new Dictionary<string, ComparerDelegate>()
                 {
                     ["version"] = Version.Parse
-                }), Sha1Provider: Microsoft.FSharp.Core.FSharpOption<Sha1Provider>.Some((s)=>
+                }), sha1Provider: (s)=>
                 {
                     using (var sha1 = System.Security.Cryptography.SHA1.Create())
                     {
                         return sha1.ComputeHash(s);
                     }
-                }))));
+                })));
         }
     }
 }
