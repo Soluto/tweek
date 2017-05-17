@@ -1,11 +1,16 @@
 import React, { PropTypes } from 'react';
+import { compose, mapPropsStream, pure } from 'recompose';
+import Rx from 'rxjs';
 import classNames from 'classnames';
-import Input from '../../../../../../components/common/Input/Input';
+import * as SearchService from '../../../../../../services/search-service';
+import * as TypesService from '../../../../../../services/types-service';
+import TypedInput from '../../../../../../components/common/Input/TypedInput';
+import AutoSuggest from '../../../../../../components/common/Input/AutoSuggest';
 import style from './FixedKey.css';
 
 const configShape = {
   key: PropTypes.string,
-  value: PropTypes.string,
+  value: PropTypes.any,
 };
 
 const RemovedKey = ({ config: { key, value } }) => (
@@ -19,20 +24,42 @@ RemovedKey.propTypes = {
   config: PropTypes.shape(configShape).isRequired,
 };
 
+const mapValueTypeToProps = (props$) => {
+  const unknownType = 'unknown';
+
+  const propsStream = props$.map(({ keyPath, ...props }) => props);
+
+  const valueTypeStream = props$.map(x => x.keyPath)
+    .distinctUntilChanged()
+    .switchMap(keyPath => Rx.Observable.fromPromise(TypesService.getValueTypeDefinition(keyPath))
+      .map(x => x.name)
+      .startWith(unknownType))
+    .map(valueType => ({ disabled: valueType === unknownType, valueType }));
+
+  return propsStream.combineLatest(valueTypeStream, (props, valueType) => ({ ...props, ...valueType }));
+};
+
+const OverrideValueInput = compose(
+  mapPropsStream(mapValueTypeToProps),
+  pure,
+)(TypedInput);
+
 const EditableKey = ({ remote, local, onKeyChange, onValueChange }) => (
   <div className={classNames(style['editable-key-container'], { [style['new-item']]: !remote })}>
-    <Input
+    <AutoSuggest
       className={style['key-input']}
       placeholder="Key"
       value={local.key}
-      onChange={e => onKeyChange(e.target.value)}
+      getSuggestions={SearchService.suggestions}
+      onChange={onKeyChange}
       disabled={!!remote}
     />
-    <Input
+    <OverrideValueInput
+      keyPath={local.key}
       className={classNames(style['value-input'], { [style['has-changes']]: remote && remote.value !== local.value })}
       placeholder="Value"
       value={local.value}
-      onChange={e => onValueChange(e.target.value)}
+      onChange={onValueChange}
     />
     {
       remote && remote.value !== local.value ? <div className={style['initial-value']}>{remote.value}</div> : null

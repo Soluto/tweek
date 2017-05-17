@@ -1,5 +1,5 @@
 @import (reference) "../../../../../../styles/core/core.less";
-
+@import (reference) "../../../../../../styles/core/comboBox.less";
 .fixed-key-container {
   display: flex;
   align-items: center;
@@ -33,16 +33,17 @@
     }
 
     .key-input {
-      .metro-textbox;
-      width: 300px;
+      .combo-box-basic(@dropdown-min-width: 300px, @input-width: 300px);
       margin: 5px;
     }
 
     .value-input {
-      .metro-textbox;
       margin: 5px;
       &.has-changes {
         color: green;
+        :global(.bootstrap-typeahead-input-main) {
+          color: green;
+        }
       }
     }
 
