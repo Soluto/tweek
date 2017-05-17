@@ -34,10 +34,6 @@ const NewPartitionPropertyValue = mapProps(({value, onUpdate, name, identity, id
   selectedOperator: equal.operatorValue,
 }))(PropertyValue);
 
-const PartitionDefaultValue = ({value, valueType, onChange}) => {
-    return <InputValue {...{value, valueType, onChange}} autofocus={false} placeholder="Partition's default value" />
-}
-
 class AddPartition extends React.Component {
   state = {partition:{}, defaultValue:""};
 
@@ -69,9 +65,12 @@ class AddPartition extends React.Component {
               />
             </div>)
         }
-        <PartitionDefaultValue value={this.state.defaultValue} valueType={valueType} onChange={e=> 
-          this.setState({defaultValue: e.value})}
-         />
+        <InputValue
+          value={this.state.defaultValue}
+          valueType={valueType}
+          onChange={defaultValue=> this.setState({defaultValue})}
+          placeholder="Partition's default value"
+        />
         <button className={style['add-partition-button']} onClick={this.addPartition.bind(this)}/>
       </div>
     );

@@ -1,20 +1,22 @@
 import React from 'react';
-import createServer from './server/createServer';
 import { RouterContext } from 'react-router';
+import path from 'path';
+import { Provider } from 'react-redux';
+import session from 'express-session';
+import Promise from 'bluebird';
+import createServer from './server/createServer';
 import Document from '../modules/components/Document';
 import routes from '../modules/routes';
-import path from 'path';
 import configureStore from './store/configureStore';
-import { Provider } from 'react-redux';
 import serverRoutes from './serverRoutes';
 import { getKeys } from './store/ducks/keys';
 import GitRepository from './server/repositories/git-repository';
-import session from 'express-session';
 import Transactor from './utils/transactor';
 import KeysRepository from './server/repositories/keys-repository';
 import TagsRepository from './server/repositories/tags-repository';
 import GitContinuousUpdater from './server/repositories/git-continuous-updater';
-import Promise from 'bluebird';
+import searchIndex from './server/searchIndex';
+
 const passport = require('passport');
 const nconf = require('nconf');
 const azureADAuthProvider = require('./server/auth/azuread');
@@ -37,7 +39,7 @@ const gitRepostoryConfig = {
 };
 
 const gitRepoCreationPromise = GitRepository.create(gitRepostoryConfig);
-const gitRepoCreationPromiseWithTimeout = new Promise((resolve, reject) => {
+const gitRepoCreationPromiseWithTimeout = new Promise((resolve) => {
   gitRepoCreationPromise.then(() => resolve());
 })
   .timeout(gitCloneTimeoutInMinutes * 60 * 1000)
@@ -45,11 +47,13 @@ const gitRepoCreationPromiseWithTimeout = new Promise((resolve, reject) => {
     throw `git repository clonning timeout after ${gitCloneTimeoutInMinutes} minutes`;
   });
 
-const gitTransactionManager = new Transactor(gitRepoCreationPromise, async gitRepo => await gitRepo.reset());
+const gitTransactionManager = new Transactor(gitRepoCreationPromise, gitRepo => gitRepo.reset());
 const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
 
-GitContinuousUpdater.start(gitTransactionManager);
+GitContinuousUpdater.onUpdate(gitTransactionManager)
+  .exhaustMap(_ => searchIndex.refreshIndex(gitRepostoryConfig.localPath))
+  .subscribe();
 
 function getApp(req, res, requestCallback) {
   requestCallback(null, {
@@ -60,8 +64,8 @@ function getApp(req, res, requestCallback) {
       await store.dispatch(getKeys(keys));
 
       renderCallback(null, {
-        renderDocument: (props) => <Document {...props} initialState={store.getState()} />,
-        renderApp: (props) =>
+        renderDocument: props => <Document {...props} initialState={store.getState()} />,
+        renderApp: props =>
           <Provider store={store}><RouterContext {...props} /></Provider>,
       });
     },
@@ -73,11 +77,11 @@ const addAuthSupport = (server) => {
   server.use(passport.session());
 
   const authProviders = [azureADAuthProvider(server, nconf)];
-  server.use('/login', function (req, res) {
+  server.use('/login', (req, res) => {
     res.send(authProviders.map(x => `<a href="${x.url}">login with ${x.name}</a>`).join(''));
   });
 
-  server.use('*', function (req, res, next) {
+  server.use('*', (req, res, next) => {
     if (req.isAuthenticated() || req.path.startsWith('auth')) {
       return next();
     }
@@ -99,9 +103,11 @@ const startServer = () => {
 };
 
 gitRepoCreationPromiseWithTimeout
+  .then(() => console.log('indexing keys...'))
+  .then(() => searchIndex.refreshIndex(gitRepostoryConfig.localPath))
   .then(() => console.log('starting tweek server'))
   .then(() => startServer())
-  .catch(reason => {
+  .catch((reason) => {
     console.error(reason);
-    //process.exit();
+    // process.exit();
   });
