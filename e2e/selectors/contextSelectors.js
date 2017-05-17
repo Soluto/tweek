@@ -1,4 +1,4 @@
-import { getRelativeSelector, getSelectorByClassNames, _getSelectorByIndex, _getSelectorWithAttribute } from './selectorUtils';
+import { getRelativeSelector, getSelectorByClassNames } from './selectorUtils';
 
 const contextSelectors = {};
 contextSelectors.CONTEXT_TYPE_INPUT = getSelectorByClassNames('context-search-container', 'context-type-container', 'bootstrap-typeahead-input-main');
@@ -16,11 +16,6 @@ contextSelectors.keyContainer = (keyName = '') => {
   return `${keyContainerSelector}[data-fixed-key= "${keyName}"]`;
 };
 
-contextSelectors.keyContainerByIndex = (index) => {
-  const keyContainerSelector = getSelectorByClassNames('fixed-key-container');
-  return index ? _getSelectorByIndex(keyContainerSelector, index) : keyContainerSelector;
-};
-
 contextSelectors.keyDeleteButton = (keyName) => {
   return getRelativeSelector([
     contextSelectors.keyContainer(keyName),
@@ -31,28 +26,13 @@ contextSelectors.keyDeleteButton = (keyName) => {
 contextSelectors.keyNameInput = (keyName) => {
   return getRelativeSelector([
     contextSelectors.keyContainer(keyName),
-    getSelectorByClassNames('key-input'),
-  ]);
-};
-
-
-contextSelectors.keyNameInputByIndex = (index) => {
-  return getRelativeSelector([
-    contextSelectors.keyContainerByIndex(index),
-    getSelectorByClassNames('key-input'),
+    getSelectorByClassNames('key-input', 'bootstrap-typeahead-input-main'),
   ]);
 };
 
 contextSelectors.keyValueInput = (keyName) => {
   return getRelativeSelector([
     contextSelectors.keyContainer(keyName),
-    getSelectorByClassNames('value-input'),
-  ]);
-};
-
-contextSelectors.keyValueInputByIndex = (index) => {
-  return getRelativeSelector([
-    contextSelectors.keyContainerByIndex(index),
     getSelectorByClassNames('value-input'),
   ]);
 };

@@ -207,25 +207,3 @@
 .new-partition-item-container {
   margin-right: 15px;
 }
-.new-partition-item-container .value-input {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  width: 150px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-}
-.new-partition-item-container .value-input:focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.new-partition-item-container .value-input:disabled {
-  border-color: #bcbcbc;
-}
