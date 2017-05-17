@@ -1,38 +1,23 @@
 import React, { Component, PropTypes } from 'react';
-import Rx from 'rxjs';
+import { createEventHandler, componentFromStream } from 'recompose';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import style from './AutoSuggest.css';
 
-class AutoSuggest extends Component {
-  constructor(props) {
-    super(props);
+const AutoSuggest = componentFromStream((props$) => {
+  const { handler: onSearch, stream: onSearch$ } = createEventHandler();
+  const suggestions$ = props$.combineLatest(onSearch$, ({ getSuggestions }, query) => ({ getSuggestions, query }))
+    .distinctUntilChanged(x => x.query)
+    .debounceTime(500)
+    .switchMap(({ getSuggestions, query }) => Promise.resolve(getSuggestions(query)))
+    .startWith([]);
 
-    this.state = {
-      suggestions: [],
-    };
-  }
-
-  componentWillMount() {
-    this.onSearch$ = new Rx.Subject();
-    this.onSearch$
-      .debounceTime(500)
-      .switchMap(query => Promise.resolve(this.props.getSuggestions(query)))
-      .subscribe(suggestions => this.setState({ suggestions }));
-  }
-
-  componentWillUnmount() {
-    this.onSearch$.complete();
-  }
-
-  render() {
-    const { suggestions } = this.state;
-    const { onChange, value, className, ...props } = this.props;
-
-    return (
+  return props$.combineLatest(
+    suggestions$,
+    ({ onChange, value, className, ...props }, suggestions) => (
       <div className={className}>
         <AsyncTypeahead
           {...props}
-          onSearch={query => this.onSearch$.next(query)}
+          onSearch={onSearch}
           onChange={selectedValues => onChange(selectedValues[0])}
           onInputChange={onChange}
           options={suggestions}
@@ -40,9 +25,8 @@ class AutoSuggest extends Component {
           selected={value === undefined ? [] : [value]}
         />
       </div>
-    );
-  }
-}
+  ));
+});
 
 AutoSuggest.propTypes = {
   value: PropTypes.any,
