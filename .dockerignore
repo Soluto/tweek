@@ -1,0 +1,8 @@
+/.circleci/
+**/.vs/
+**/.vscode/
+/deployments/
+/e2e/
+**/obj/
+**/bin/
+**/node_modules/
