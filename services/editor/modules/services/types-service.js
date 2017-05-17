@@ -1,32 +1,34 @@
-export let types = {
+/* global fetch */
+
+export const types = {
   string: {
-    name: 'string'
+    name: 'string',
   },
   number: {
-    name: 'number'
+    name: 'number',
   },
   boolean: {
-    name: 'boolean'
+    name: 'boolean',
+    allowedValues: [true, false],
   },
   date: {
-    name: 'date'
-  }
+    name: 'date',
+  },
 };
 
 export async function refreshTypes() {
-  let data = await fetch(`/api/types`, { credentials: 'same-origin' });
-  let loadedTypes = await data.json();
+  const data = await fetch('/api/types', { credentials: 'same-origin' });
+  const loadedTypes = await data.json();
 
-  for (let type of Object.keys(loadedTypes)) {
+  for (const type of Object.keys(loadedTypes)) {
     types[type] = Object.assign({}, { name: type }, loadedTypes[type]);
   }
 }
 
 export function convertValue(value, targetType) {
-  let type = types[targetType];
+  const type = types[targetType];
 
-  if (!type)
-    throw new Error("Unknown type", targetType);
+  if (!type) { throw new Error('Unknown type', targetType); }
 
   switch (type.base || type.name) {
     case 'boolean':
@@ -41,18 +43,28 @@ export function convertValue(value, targetType) {
 export function safeConvertValue(value, targetType) {
   try {
     return convertValue(value, targetType);
-  }
-  catch (err) {
-    return targetType === types.boolean.name ? '' : '' + value
+  } catch (err) {
+    return targetType === types.boolean.name ? '' : `${value}`;
   }
 }
 
 function safeConvertToBaseType(value, type) {
-  let jsonValue = JSON.parse(value);
+  const jsonValue = JSON.parse(value);
 
-  if (typeof jsonValue != type) {
-    throw new Error("Value could not be parsed to target type");
+  if (typeof jsonValue !== type) {
+    throw new Error('Value could not be parsed to target type');
   }
 
   return jsonValue;
+}
+
+export async function getValueTypeDefinition(key) {
+  if (!key || key.length === 0) return types.string;
+  try {
+    const response = await fetch(`/api/meta/${key}`, { credentials: 'same-origin' });
+    const meta = await response.json();
+    return types[meta.valueType] || types.string;
+  } catch (err) {
+    return types.string;
+  }
 }

@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { compose } from 'recompose';
 import changeCase from 'change-case';
-import { refreshSchema, getIdentities } from '../../../../../services/context-service';
-import withLoading from '../../../../../hoc/with-loading';
+import { getIdentities } from '../../../../../services/context-service';
 import { openContext } from '../../../../../store/ducks/context';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import Input from '../../../../../components/common/Input/Input';
@@ -65,7 +63,7 @@ class SearchBox extends Component {
           <Input
             placeholder={`Enter ${changeCase.pascalCase(contextTypeText)} Id`}
             onEnterKeyPress={() => this.onGetClick()}
-            onChange={e => this.onContextIdChange(e.target.value)}
+            onChange={value => this.onContextIdChange(value)}
             value={this.state.contextId}
           />
         </div>
@@ -78,7 +76,4 @@ class SearchBox extends Component {
   }
 }
 
-export default compose(
-  connect(state => state, { openContext }),
-  withLoading(() => null, refreshSchema()),
-)(SearchBox);
+export default connect(state => state, { openContext })(SearchBox);

@@ -1,74 +1,20 @@
 import React from 'react';
-import CustomSlider from '../../../../../../../../components/common/CustomSlider/CustomSlider';
-import style from './RuleValue.css';
-import ComboBox from '../../../../../../../../components/common/ComboBox/ComboBox';
-import * as TypesService from '../../../../../../../../services/types-service';
 import R from 'ramda';
-import { withState, compose, mapProps } from 'recompose';
+import { compose, mapProps } from 'recompose';
+import CustomSlider from '../../../../../../../../components/common/CustomSlider/CustomSlider';
+import TypedInput from '../../../../../../../../components/common/Input/TypedInput';
+import ComboBox from '../../../../../../../../components/common/ComboBox/ComboBox';
+import style from './RuleValue.css';
+import * as TypesService from '../../../../../../../../services/types-service';
+
+const chance = new (require('chance'));
 
 function replaceNaN(fallbackValue) { return isNaN(this) ? fallbackValue : this; }
 const parseNumericInput = (inputValue) => inputValue === '' ? 0 : parseInt(inputValue);
 const wrapWithClass = propToClassNameFn => Comp => props =>
     <div className={propToClassNameFn(props)} ><Comp {...props } /></div>
 
-function getTypedValue(value, valueType) {
-  try {
-    return TypesService.convertValue(value, valueType);
-  }
-  catch (err) {
-    return valueType === TypesService.types.boolean.name ? '' : '' + value
-  }
-}
-
-function updateMutateTypedValue(mutate, value, valueType) {
-  mutate.updateValue(getTypedValue(value, valueType));
-}
-
-
-const booleanSingleVariantSuggestions = [{ label: 'true', value: true }, { label: 'false', value: false }];
-
-const BooleanSingleVariant = ({value, valueType, mutate, identities}) => (
-  <div className={style['boolean-single-variant-wrapper']}>
-    <ComboBox
-      options={booleanSingleVariantSuggestions}
-      selected={[R.find(x => x.value === value)(booleanSingleVariantSuggestions)]}
-      placeholder="Enter value here"
-      showValueInOptions={false}
-      onChange={e => updateMutateTypedValue(mutate, e.value, valueType)}
-    />
-    <button className={style['to-feature-flag-button']}
-      onClick={() => mutate.apply(m =>
-        m.delete()
-          .in('Type').updateValue('MultiVariant').up()
-          .insert('OwnerType', identities[0])
-          .insert('ValueDistribution', {
-            type: 'bernoulliTrial',
-            args: 0.1,
-          })
-      )}>Gradual release</button>
-  </div>
-);
-
-export const InputValue = wrapWithClass(({valueType})=> `${style.inputValue} input-type-${valueType}`)(({valueType, value, onChange, autofocus, placeholder="Enter Value Here"})=>{
-    if (valueType === TypesService.types.boolean.name){
-      return <ComboBox
-          options={booleanSingleVariantSuggestions}
-          selected={R.filter(x => x.value === value)(booleanSingleVariantSuggestions)}
-          placeholder="Enter value here"
-          showValueInOptions={false}
-          onChange={onChange}
-      />
-   }
-   else {
-      return <input
-          onChange={e => onChange({value:e.target.value})}  
-          value={value}
-          placeholder="Enter value here"
-          className={style['values-input']}
-          ref={(e) => e && autofocus && e.focus()}
-        />
-   }
-});
+export const InputValue = wrapWithClass(({valueType})=> `${style.inputValue} input-type-${valueType}`)(TypedInput);
 
 const MultiVariantConverter = ({valueType, identities, mutate, value}) => {
   if (valueType === TypesService.types.boolean.name){
@@ -102,12 +48,15 @@ const MultiVariantConverter = ({valueType, identities, mutate, value}) => {
 
 const SingleVariantValue = ({value, mutate, identities, autofocus, valueType}) => (
   <div className={style['rule-value-container']}>
-      <InputValue {...{ value, valueType }} onChange={e => updateMutateTypedValue(mutate, e.value, valueType)} />
-      <MultiVariantConverter {...{ value, valueType, mutate, identities }} /> 
+    <InputValue {...{ value, valueType }} onChange={newValue => mutate.updateValue(newValue)} />
+    <MultiVariantConverter {...{ value, valueType, mutate, identities }} />
   </div>
 );
 
-const multiVariantSliderColors = ['#ccf085', '#bebebe', '#c395f6', '#ef7478', '#5a8dc3', '#6e6e6e'];
+const multiVariantSliderColors = [...['#ccf085', '#bebebe', '#c395f6', '#ef7478', '#5a8dc3', '#6e6e6e'],
+                                  ...(R.range(1,30).map(_=>chance.color()))];
+
+
 const WeightedValues = ({onUpdate, variants }) =>
   (<CustomSlider data={variants}
     onUpdate={onUpdate}
@@ -150,26 +99,28 @@ const BernoulliTrial = ({onUpdate, ratio }) => (
   </div>
 );
 
-const IdetitySelection = ({identities, mutate }) => {
+const IdentitySelection = ({identities, onChange, ownerType }) => {
   return (
     <div className={style['identity-selection-container']}>
       <label className={style['identity-selection-title']}>Identity: </label>
       <div className={style['identity-selection-combobox-wrapper']}>
         <ComboBox
           options={identities}
-          onChange={(selectedValues) => mutate.in('OwnerType').updateValue(selectedValues.value)}
-          defaultSelected={[identities[0]]}
+          onChange={onChange}
+          selected={[ownerType]}
         />
       </div>
     </div>
   );
 };
 
-const MultiVariantValue = ({valueDistrubtion: {type, args }, mutate, identities, valueType }) => {
+const MultiVariantValue = ({valueDistrubtion: {type, args }, mutate, identities, valueType, ownerType }) => {
+  let updateOwnerType = (identity)=> mutate.up().in("OwnerType").updateValue(identity);
+
   if (type === 'weighted')
     return (
       <div>
-        <IdetitySelection identities={identities} mutate={mutate} />
+        <IdentitySelection ownerType={ownerType} identities={identities} onChange={updateOwnerType} />
         <WeightedValues variants={args}
           onUpdate={variants => {
             if (Object.keys(variants).length !== 1) {
@@ -190,7 +141,7 @@ const MultiVariantValue = ({valueDistrubtion: {type, args }, mutate, identities,
   if (type === 'bernoulliTrial') {
     return (
       <div>
-        <IdetitySelection identities={identities} mutate={mutate} />
+        <IdentitySelection ownerType={ownerType} identities={identities} onChange={updateOwnerType} />
 
         <div style={{ marginTop: 5 }}>
           <BernoulliTrial onUpdate={mutate.in('args').updateValue}
@@ -243,7 +194,7 @@ export default compose(
   if (rule.Type === 'MultiVariant')
     return (
       <MultiVariantValue mutate={mutate.in('ValueDistribution')}
-        valueDistrubtion={rule.ValueDistribution}
+        valueDistrubtion={rule.ValueDistribution} ownerType={rule.OwnerType}
         {...{ identities, valueType }}
       />
     );
