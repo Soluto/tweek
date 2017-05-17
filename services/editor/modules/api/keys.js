@@ -56,6 +56,17 @@ export async function getKey(req, res, { keysRepository }, { params }) {
   }
 }
 
+export async function getKeyMeta(req, res, { keysRepository }, { params }) {
+  const keyPath = params.splat;
+  const revision = req.query.revision;
+  try {
+    const meta = await keysRepository.getKeyMeta(keyPath, { revision });
+    res.json(meta);
+  } catch (exp) {
+    res.sendStatus(404);
+  }
+}
+
 export const saveKey = injectAuthor(async function (req, res, { keysRepository, author }, { params }) {
   const keyPath = params.splat;
 

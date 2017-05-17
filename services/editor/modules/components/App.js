@@ -9,6 +9,8 @@ import logoSrc from './resources/logo.svg';
 import Alerts from './alerts/Alerts';
 import Notifications from './alerts/Notifications';
 import style from './App.css';
+import * as TypesService from '../services/types-service';
+import { withTypesService } from './common/Input/TypedInput';
 
 require('../styles/core/fonts/fonts.css');
 
@@ -17,7 +19,7 @@ setObservableConfig({
 });
 Tabs.setUseDefaultStyles(false);
 
-export default (({ location: { pathname }, children }) => (
+export default withTypesService(TypesService)(({ location: { pathname }, children }) => (
   <div className={style.app}>
     <div className={style.header}>
       <Title render="Tweek" />
