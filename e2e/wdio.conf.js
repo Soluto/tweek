@@ -1,11 +1,10 @@
 const nconf = require('nconf');
-nconf.argv().env().defaults({BACKOFFICE_URL: "http://localhost:4004/"});
+nconf.argv().env().defaults({BACKOFFICE_URL: "http://localhost:4004/", TWEEK_API_URL: "http://localhost:4003/", GIT_PRIVATE_KEY_PATH: "../services/git-service/ssh/tweekgit"});
 const host = nconf.get('host');
 
 exports.config = {
   specs: [
-    './spec/*.js',
-    './spec/*/*.js',
+    './spec/**/*.js',
   ],
   exclude: [
   ],

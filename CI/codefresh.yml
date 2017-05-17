@@ -130,11 +130,16 @@ steps:
         command: /bin/bash -c "dotnet restore services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj --configfile /repo/tweek/CI/NuGet.Config && wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release --no-build"
       backoffice-e2e:
         image: ${{BuildingTests}}
-        depends_on: 
+        volumes_from:
+          - keys
+       depends_on: 
           - selenium
           - tweek-editor
+          - tweek-api
         environment:
           - BACKOFFICE_URL=http://tweek-editor:3000/
+          - TWEEK_API_URL=http://tweek-api/
+          - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
         command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && yarn test -- --host selenium --port 4444"
     on_success:
       metadata:
