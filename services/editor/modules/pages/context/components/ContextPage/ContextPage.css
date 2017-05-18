@@ -16,3 +16,8 @@
   flex-direction: column;
   width: 900px;
 }
+.context-page-container .context-page .horizontal-separator {
+  background: lightgrey;
+  height: 1px;
+  margin: 20px 0;
+}

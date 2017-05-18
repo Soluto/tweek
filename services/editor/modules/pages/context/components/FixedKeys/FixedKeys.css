@@ -1,39 +1,18 @@
 .fixed-keys-container {
-  min-width: 900px;
-}
-.fixed-keys-container .horizontal-separator {
-  background: lightgrey;
-  height: 1px;
-  margin: 20px 0;
-}
-.fixed-keys-container .context-title {
-  display: flex;
-  flex-direction: column;
-}
-.fixed-keys-container .context-title .context-id {
-  font-size: 22px;
-  color: #515c66;
-}
-.fixed-keys-container .context-title .context-type {
-  margin-top: 10px;
-  color: #a5a5a5;
-  font-size: 14px;
-}
-.fixed-keys-container .fixed-keys-list-container {
   box-shadow: 0 10px 9px -10px rgba(0, 0, 0, 0.2);
   border: 1px solid lightgray;
   padding: 15px;
   box-sizing: border-box;
   margin-top: 16px;
 }
-.fixed-keys-container .fixed-keys-list-container .override-keys-title {
+.fixed-keys-container .override-keys-title {
   font-size: 22px;
   color: #a5a5a5;
   margin-bottom: 20px;
   display: flex;
   justify-content: space-between;
 }
-.fixed-keys-container .fixed-keys-list-container .add-key-button {
+.fixed-keys-container .add-key-button {
   vertical-align: top;
   background-color: #00aeef;
   height: 28px;
@@ -58,19 +37,19 @@
   padding-top: 2px;
   margin-top: 20px;
 }
-.fixed-keys-container .fixed-keys-list-container .add-key-button:hover {
+.fixed-keys-container .add-key-button:hover {
   background-color: #029CD5;
   cursor: pointer;
 }
-.fixed-keys-container .fixed-keys-list-container .add-key-button:disabled {
+.fixed-keys-container .add-key-button:disabled {
   background-color: gray;
 }
-.fixed-keys-container .fixed-keys-list-container .add-key-button:disabled:hover,
-.fixed-keys-container .fixed-keys-list-container .add-key-button:disabled:active {
+.fixed-keys-container .add-key-button:disabled:hover,
+.fixed-keys-container .add-key-button:disabled:active {
   cursor: default;
   background-color: gray;
 }
-.fixed-keys-container .fixed-keys-list-container .add-key-button:after {
+.fixed-keys-container .add-key-button:after {
   font-family: 'tweekIcons';
   content: '\E905';
 }

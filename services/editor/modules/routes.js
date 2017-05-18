@@ -4,7 +4,7 @@ import App from './components/App';
 import KeysPage from './pages/keys/components/KeysPage/KeysPage';
 import KeyPage from './pages/keys/components/KeyPage/KeyPage';
 import ContextPage from './pages/context/components/ContextPage/ContextPage';
-import FixedKeys from './pages/context/components/FixedKeys/FixedKeys';
+import ContextDetails from './pages/context/components/ContextDetails/ContextDetails';
 import NoMatch from './components/NoMatch';
 import style from './styles/styles.css';
 import './styles/styles.css';
@@ -20,7 +20,7 @@ export default serverRoutes => (
         <Route path="*" component={KeyPage} />
       </Route>
       <Route path="context" component={ContextPage} >
-        <Route path=":contextType/:contextId" component={FixedKeys} />
+        <Route path=":contextType/:contextId" component={ContextDetails} />
       </Route>
     </Route>
     {serverRoutes}
