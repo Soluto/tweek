@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import R from 'ramda';
+import classnames from 'classnames';
 import FixedKeysList from './FixedKeysList/FixedKeysList';
 import SaveButton from '../../../../components/common/SaveButton/SaveButton';
 import style from './FixedKeys.css';
@@ -95,10 +96,10 @@ class FixedKeys extends Component {
   }
 
   render() {
-    const { isUpdatingContext } = this.props;
+    const { className, isUpdatingContext } = this.props;
 
     return (
-      <div className={style['fixed-keys-container']}>
+      <div className={classnames(style['fixed-keys-container'], className)}>
         <div className={style['override-keys-title']}>
           <div>Override Keys</div>
           <SaveButton onClick={this.onSave.bind(this)} hasChanges={this.canSave} isSaving={isUpdatingContext} />
@@ -119,11 +120,13 @@ FixedKeys.propTypes = {
   fixedKeys: PropTypes.object,
   updateFixedKeys: PropTypes.func.isRequired,
   isUpdatingContext: PropTypes.bool,
+  className: PropTypes.string,
 };
 
 FixedKeys.defaultProps = {
   fixedKeys: {},
   isUpdatingContext: false,
+  className: undefined,
 };
 
 export default FixedKeys;

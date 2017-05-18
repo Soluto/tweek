@@ -18,7 +18,7 @@ export const getContext = ({ contextType, contextId }) => async function (dispat
     const response = await fetch(`/api/context/${contextType}/${encodeURIComponent(contextId)}`, { credentials: 'same-origin' });
     const contextData = await response.json();
     const fixedKeys = getFixedKeys(contextData);
-    const properties = getContextProperties(contextData);
+    const properties = getContextProperties(contextType, contextData);
     dispatch({ type: CONTEXT_RECEIVED, payload: { fixedKeys, properties } });
   } catch (error) {
     dispatch(showError({ title: 'Failed to retrieve context', error }));

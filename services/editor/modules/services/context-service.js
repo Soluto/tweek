@@ -58,6 +58,9 @@ export function getFixedKeys(contextData = {}) {
   return Object.keys(fixedKeys).reduce((result, key) => ({ ...result, [key.substring(FIXED_PREFIX.length)]: fixedKeys[key] }), {});
 }
 
-export function getContextProperties(contextData = {}) {
-  return R.pickBy((_, prop) => !prop.startsWith(FIXED_PREFIX), contextData);
+export function getContextProperties(identity, contextData = {}) {
+  const identityScheme = R.map(_ => '', contextSchema[identity] || {});
+  const properties = R.pickBy((_, prop) => !prop.startsWith(FIXED_PREFIX), contextData);
+
+  return { ...identityScheme, ...properties };
 }
