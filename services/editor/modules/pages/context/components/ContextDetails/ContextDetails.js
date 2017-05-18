@@ -4,16 +4,21 @@ import { compose, mapProps, lifecycle } from 'recompose';
 import changeCase from 'change-case';
 import * as contextActions from '../../../../store/ducks/context';
 import FixedKeys from '../FixedKeys/FixedKeys';
+import ContextProperties from '../ContextProperties/ContextProperties';
 import style from './ContextDetails.css';
 
-const ContextDetails = ({ contextId, contextType, isGettingContext, updateFixedKeys, fixedKeys, isUpdatingContext }) => (
+const ContextDetails = ({ contextId, contextType, isGettingContext, updateFixedKeys, fixedKeys, isUpdatingContext, properties }) => (
   <div className={style['context-details-container']}>
     <div className={style['context-title']}>
       <div className={style['context-id']}>{contextId}</div>
       <div className={style['context-type']}>{changeCase.pascalCase(contextType)}</div>
     </div>
     {
-      isGettingContext ? 'Loading...' : <FixedKeys {...{ updateFixedKeys, fixedKeys, isUpdatingContext }} />
+      isGettingContext ? 'Loading...' :
+      <div>
+        <ContextProperties className={style.section} {...{ properties }} />
+        <FixedKeys className={style.section} {...{ updateFixedKeys, fixedKeys, isUpdatingContext }} />
+      </div>
     }
   </div>
 );

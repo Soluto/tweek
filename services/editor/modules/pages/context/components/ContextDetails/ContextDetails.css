@@ -14,3 +14,10 @@
   color: #a5a5a5;
   font-size: 14px;
 }
+.context-details-container .section {
+  box-shadow: 0 10px 9px -10px rgba(0, 0, 0, 0.2);
+  border: 1px solid lightgray;
+  padding: 15px;
+  box-sizing: border-box;
+  margin-top: 16px;
+}
