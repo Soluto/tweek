@@ -27,7 +27,7 @@ export default ({ tagsRepository, keysRepository, tweekApiHostname }) => (
     />
     <ServerRoute path="context">
       <ServerRoute
-        path=":contextType/:contextId"
+        path=":identityName/:identityId"
         get={requestErrorHandlingWrapper(ContextRoutes.getContext)}
         post={requestErrorHandlingWrapper(ContextRoutes.updateContext)}
         tweekApiHostname={tweekApiHostname}
