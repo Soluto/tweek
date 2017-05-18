@@ -12,8 +12,8 @@ class SearchBox extends Component {
     super(props);
 
     this.state = {
-      contextType: '',
-      contextId: '',
+      identityName: '',
+      identityId: '',
       identities: [],
     };
   }
@@ -27,24 +27,24 @@ class SearchBox extends Component {
     this.setState(nextProps);
   }
 
-  onContextTypeChange({ value: contextType }) {
-    this.setState({ contextType });
+  onIdentityChange({ value: identityName }) {
+    this.setState({ identityName });
   }
 
-  onContextIdChange(contextId) {
-    this.setState({ contextId });
+  onIdentityIdChange(identityId) {
+    this.setState({ identityId });
   }
 
   onGetClick() {
     this.props.openContext({
-      contextType: this.state.contextType,
-      contextId: this.state.contextId,
+      identityName: this.state.identityName,
+      identityId: this.state.identityId,
     });
   }
 
   render() {
-    const { contextType, identities, contextId } = this.state;
-    const contextTypeText = contextType || 'identity';
+    const { identityName, identities, identityId } = this.state;
+    const identityText = identityName || 'identity';
 
     return (
       <div className={style['context-search-container']}>
@@ -54,22 +54,22 @@ class SearchBox extends Component {
             className={style['context-type']}
             placeholder="Enter Identity Type"
             options={identities}
-            onChange={this.onContextTypeChange.bind(this)}
-            selected={identities.filter(x => x.value === contextType)}
+            onChange={this.onIdentityChange.bind(this)}
+            selected={identities.filter(x => x.value === identityName)}
           />
         </div>
 
         <div className={style['context-id-container']}>
           <Input
-            placeholder={`Enter ${changeCase.pascalCase(contextTypeText)} Id`}
+            placeholder={`Enter ${changeCase.pascalCase(identityText)} Id`}
             onEnterKeyPress={() => this.onGetClick()}
-            onChange={value => this.onContextIdChange(value)}
-            value={this.state.contextId}
+            onChange={value => this.onIdentityIdChange(value)}
+            value={this.state.identityId}
           />
         </div>
 
         <div className={style['search-button-container']}>
-          <button className={style['search-button']} onClick={this.onGetClick.bind(this)} disabled={!contextType || !contextId} />
+          <button className={style['search-button']} onClick={this.onGetClick.bind(this)} disabled={!identityName || !identityId} />
         </div>
       </div>
     );
