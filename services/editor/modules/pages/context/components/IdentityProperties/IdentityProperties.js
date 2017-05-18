@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import Input from '../../../../components/common/Input/Input';
 import TypedInput from '../../../../components/common/Input/TypedInput';
 import { getPropertyTypeDetails } from '../../../../services/context-service';
-import style from './ContextProperties.css';
+import style from './IdentityProperties.css';
 
 const getPropertyValueType = property => getPropertyTypeDetails(property).name;
 
@@ -20,7 +20,7 @@ const Property = ({ property, value }) => (
   </div>
 );
 
-const ContextProperties = ({ className, properties }) => (
+const IdentityProperties = ({ className, properties }) => (
   <div className={classnames(style['context-properties-container'], className)}>
     <div className={style['context-properties-title']}>Properties</div>
     <div className={style['property-list']}>
@@ -31,4 +31,4 @@ const ContextProperties = ({ className, properties }) => (
   </div>
 );
 
-export default ContextProperties;
+export default IdentityProperties;

@@ -10,15 +10,15 @@ const CONTEXT_RECEIVED = 'CONTEXT_RECEIVED';
 const UPDATE_CONTEXT = 'UPDATE_CONTEXT';
 const FIXED_KEYS_UPDATED = 'FIXED_KEYS_UPDATED';
 
-export const openContext = ({ contextType, contextId }) => push(`/context/${contextType}/${contextId}`);
+export const openContext = ({ identityName, identityId }) => push(`/context/${identityName}/${identityId}`);
 
-export const getContext = ({ contextType, contextId }) => async function (dispatch) {
+export const getContext = ({ identityName, identityId }) => async function (dispatch) {
   dispatch({ type: GET_CONTEXT });
   try {
-    const response = await fetch(`/api/context/${contextType}/${encodeURIComponent(contextId)}`, { credentials: 'same-origin' });
+    const response = await fetch(`/api/context/${identityName}/${encodeURIComponent(identityId)}`, { credentials: 'same-origin' });
     const contextData = await response.json();
     const fixedKeys = getFixedKeys(contextData);
-    const properties = getContextProperties(contextType, contextData);
+    const properties = getContextProperties(identityName, contextData);
     dispatch({ type: CONTEXT_RECEIVED, payload: { fixedKeys, properties } });
   } catch (error) {
     dispatch(showError({ title: 'Failed to retrieve context', error }));
@@ -26,14 +26,14 @@ export const getContext = ({ contextType, contextId }) => async function (dispat
   }
 };
 
-export const updateFixedKeys = ({ contextType, contextId, fixedKeys }) => async function (dispatch) {
+export const updateFixedKeys = ({ identityName, identityId, fixedKeys }) => async function (dispatch) {
   dispatch({ type: UPDATE_CONTEXT });
 
-  const encodedContextId = encodeURIComponent(contextId);
+  const encodedIdentityId = encodeURIComponent(identityId);
   const fixedKeysWithPrefix = Object.keys(fixedKeys).reduce((result, key) => ({ ...result, [FIXED_PREFIX + key.trim()]: fixedKeys[key] }), {});
 
   try {
-    await fetch(`/api/context/${contextType}/${encodedContextId}`, {
+    await fetch(`/api/context/${identityName}/${encodedIdentityId}`, {
       credentials: 'same-origin',
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

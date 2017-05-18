@@ -4,19 +4,19 @@ import { compose, mapProps, lifecycle } from 'recompose';
 import changeCase from 'change-case';
 import * as contextActions from '../../../../store/ducks/context';
 import FixedKeys from '../FixedKeys/FixedKeys';
-import ContextProperties from '../ContextProperties/ContextProperties';
-import style from './ContextDetails.css';
+import IdentityProperties from '../IdentityProperties/IdentityProperties';
+import style from './IdentityDetails.css';
 
-const ContextDetails = ({ contextId, contextType, isGettingContext, updateFixedKeys, fixedKeys, isUpdatingContext, properties }) => (
+const IdentityDetails = ({ identityId, identityName, isGettingContext, updateFixedKeys, fixedKeys, isUpdatingContext, properties }) => (
   <div className={style['context-details-container']}>
     <div className={style['context-title']}>
-      <div className={style['context-id']}>{contextId}</div>
-      <div className={style['context-type']}>{changeCase.pascalCase(contextType)}</div>
+      <div className={style['context-id']}>{identityId}</div>
+      <div className={style['context-type']}>{changeCase.pascalCase(identityName)}</div>
     </div>
     {
       isGettingContext ? 'Loading...' :
       <div>
-        <ContextProperties className={style.section} {...{ properties }} />
+        <IdentityProperties className={style.section} {...{ properties }} />
         <FixedKeys className={style.section} {...{ updateFixedKeys, fixedKeys, isUpdatingContext }} />
       </div>
     }
@@ -26,12 +26,12 @@ const ContextDetails = ({ contextId, contextType, isGettingContext, updateFixedK
 export default compose(
   mapProps(props => props.params),
   connect(state => state.context, contextActions),
-  mapProps(({ getContext, updateFixedKeys, contextType, contextId, ...props }) => ({
+  mapProps(({ getContext, updateFixedKeys, identityName, identityId, ...props }) => ({
     ...props,
-    contextType,
-    contextId,
-    getContext: () => getContext({ contextType, contextId }),
-    updateFixedKeys: fixedKeys => updateFixedKeys({ contextType, contextId, fixedKeys }),
+    identityName,
+    identityId,
+    getContext: () => getContext({ identityName, identityId }),
+    updateFixedKeys: fixedKeys => updateFixedKeys({ identityName, identityId, fixedKeys }),
   })),
   lifecycle({
     componentWillMount() {
@@ -39,9 +39,9 @@ export default compose(
     },
     componentWillReceiveProps(nextProps) {
       const { props } = this;
-      if (props.contextId !== nextProps.contextId || props.contextType !== nextProps.contextType) {
+      if (props.identityId !== nextProps.identityId || props.identityName !== nextProps.identityName) {
         nextProps.getContext();
       }
     },
   }),
-)(ContextDetails);
+)(IdentityDetails);
