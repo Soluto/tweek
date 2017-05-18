@@ -1,10 +1,11 @@
+/* global fetch */
 import R from 'ramda';
 import * as TypesService from './types-service';
 
 let contextSchema = {};
 
 export async function refreshSchema() {
-  let response = await fetch("/api/context-schema/", { credentials: 'same-origin' });
+  const response = await fetch('/api/context-schema/', { credentials: 'same-origin' });
   contextSchema = await response.json();
 }
 
@@ -14,38 +15,49 @@ export function getIdentities() {
 
 export function getProperties() {
   return R.chain(identity => (
-    [{id: `${identity}.@@id`, name: "Id", type:"string", identity},
-    ...Object.keys(contextSchema[identity])
+    [{ id: `${identity}.@@id`, name: 'Id', type: 'string', identity },
+      ...Object.keys(contextSchema[identity])
     .map(property => ({
-      id: identity + "." + property,
-      identity: identity,
+      id: `${identity}.${property}`,
+      identity,
       name: property,
       type: contextSchema[identity][property].type,
-      custom_type: contextSchema[identity][property].custom_type
-    }) )]), Object.keys(contextSchema));
+      custom_type: contextSchema[identity][property].custom_type,
+    }))]), Object.keys(contextSchema));
 }
 
 export function getPropertyTypeDetails(property) {
   if (!property) return { name: 'empty' };
   if (property.startsWith('@@key')) return TypesService.types.string;
 
-  let propertyDetails = getProperties().find(x => x.id == property);
+  const propertyDetails = getProperties().find(x => x.id === property);
 
   if (!propertyDetails) {
     console.warn('Property details not found', property);
     return TypesService.types.string;
   }
 
-  if (propertyDetails.type == "custom") {
-    return Object.assign({}, {name: 'custom'}, propertyDetails.custom_type);
+  if (propertyDetails.type === 'custom') {
+    return Object.assign({}, { name: 'custom' }, propertyDetails.custom_type);
   }
 
-  let typeDetails = TypesService.types[propertyDetails.type];
+  const typeDetails = TypesService.types[propertyDetails.type];
 
   if (!typeDetails) {
-    console.warn("Type details not found for type", propertyDetails.type, property);
+    console.warn('Type details not found for type', propertyDetails.type, property);
     return TypesService.types.string;
   }
 
   return typeDetails;
+}
+
+export const FIXED_PREFIX = '@fixed:';
+
+export function getFixedKeys(contextData = {}) {
+  const fixedKeys = R.pickBy((_, prop) => prop.startsWith(FIXED_PREFIX), contextData);
+  return Object.keys(fixedKeys).reduce((result, key) => ({ ...result, [key.substring(FIXED_PREFIX.length)]: fixedKeys[key] }), {});
+}
+
+export function getContextProperties(contextData = {}) {
+  return R.pickBy((_, prop) => !prop.startsWith(FIXED_PREFIX), contextData);
 }

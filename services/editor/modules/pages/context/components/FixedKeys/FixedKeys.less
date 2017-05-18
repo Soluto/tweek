@@ -8,44 +8,19 @@
 }
 
 .fixed-keys-container {
-  min-width: 900px;
+  .data-container;
+  margin-top: 16px;
 
-  .horizontal-separator {
-    background: lightgrey;
-    height: 1px;
-    margin: 20px 0;
-  }
-
-  .context-title {
+  .override-keys-title {
+    font-size: 22px;
+    color: #a5a5a5;
+    margin-bottom: 20px;
     display: flex;
-    flex-direction: column;
-
-    .context-id {
-      font-size: 22px;
-      color: #515c66;
-    }
-    .context-type {
-      margin-top: 10px;
-      color: #a5a5a5;
-      font-size: 14px;
-    }
+    justify-content: space-between;
   }
 
-  .fixed-keys-list-container {
-    .data-container;
-    margin-top: 16px;
-
-    .override-keys-title {
-      font-size: 22px;
-      color: #a5a5a5;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .add-key-button {
-      .add-circle-button;
-      margin-top: 20px;
-    }
+  .add-key-button {
+    .add-circle-button;
+    margin-top: 20px;
   }
 }
