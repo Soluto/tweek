@@ -16,7 +16,7 @@ const IdentityDetails = ({ identityId, identityName, isGettingContext, updateFix
     {
       isGettingContext ? 'Loading...' :
       <div>
-        <IdentityProperties className={style.section} {...{ properties }} />
+        <IdentityProperties className={style.section} {...{ identityName, properties }} />
         <FixedKeys className={style.section} {...{ updateFixedKeys, fixedKeys, isUpdatingContext }} />
       </div>
     }

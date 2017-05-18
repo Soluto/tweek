@@ -9,6 +9,7 @@
 }
 .context-properties-container .property-list .property-wrapper {
   margin-right: 60px;
+  display: flex;
 }
 .context-properties-container .property-list .property-wrapper .property-input {
   margin: 5px;
