@@ -117,7 +117,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 300px;
+  width: 350px;
 }
 .fixed-key-container .editable-key-container .key-input .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -140,7 +140,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 300px;
+  width: 350px;
 }
 .fixed-key-container .editable-key-container .key-input .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -151,7 +151,7 @@
 .fixed-key-container .editable-key-container .key-input .override-typeahead .override-dropdown :global(.dropdown-menu) {
   position: absolute;
   max-height: 350px;
-  min-width: 300px;
+  min-width: 350px;
   overflow-y: auto;
   width: auto;
   z-index: 5;
@@ -215,7 +215,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 300px;
+  width: 350px;
 }
 .fixed-key-container .editable-key-container .key-input .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -238,7 +238,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 300px;
+  width: 350px;
 }
 .fixed-key-container .editable-key-container .key-input .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -249,7 +249,7 @@
 .fixed-key-container .editable-key-container .key-input .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
   max-height: 350px;
-  min-width: 300px;
+  min-width: 350px;
   overflow-y: auto;
   width: auto;
   z-index: 5;
@@ -368,7 +368,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 300px;
+  width: 350px;
 }
 .fixed-key-container .editable-key-container .key-input .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -391,7 +391,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 300px;
+  width: 350px;
 }
 .fixed-key-container .editable-key-container .key-input .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -402,7 +402,7 @@
 .fixed-key-container .editable-key-container .key-input .override-dropdown :global(.dropdown-menu) {
   position: absolute;
   max-height: 350px;
-  min-width: 300px;
+  min-width: 350px;
   overflow-y: auto;
   width: auto;
   z-index: 5;
@@ -466,7 +466,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 300px;
+  width: 350px;
 }
 .fixed-key-container .editable-key-container .key-input :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -489,7 +489,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 300px;
+  width: 350px;
 }
 .fixed-key-container .editable-key-container .key-input :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -500,7 +500,7 @@
 .fixed-key-container .editable-key-container .key-input :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
   max-height: 350px;
-  min-width: 300px;
+  min-width: 350px;
   overflow-y: auto;
   width: auto;
   z-index: 5;

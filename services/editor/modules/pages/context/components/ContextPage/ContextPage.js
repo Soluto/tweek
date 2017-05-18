@@ -10,6 +10,7 @@ const ContextPage = ({ children, ...props }) => (
   <div className={style['context-page-container']}>
     <div className={style['context-page']}>
       <SearchBox {...props} />
+      {children ? <div className={style['horizontal-separator']} /> : null}
       {children}
     </div>
   </div>

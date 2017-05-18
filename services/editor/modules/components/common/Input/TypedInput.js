@@ -16,7 +16,7 @@ const getTypesService = getContext(typesServiceContextType);
 const TypedInput = ({ safeConvertValue, types, valueType, value, onChange, ...props }) => {
   const typeDefinition = types[valueType];
   const allowedValues = typeDefinition && typeDefinition.allowedValues;
-  const onChangeConvert = newValue => onChange(safeConvertValue(newValue, valueType));
+  const onChangeConvert = onChange ? newValue => onChange(safeConvertValue(newValue, valueType)) : undefined;
   if (allowedValues && allowedValues.length > 0) {
     return (<ComboBox
       {...props}
@@ -33,13 +33,14 @@ const TypedInput = ({ safeConvertValue, types, valueType, value, onChange, ...pr
 TypedInput.propTypes = {
   placeholder: PropTypes.string,
   valueType: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func,
   value: PropTypes.any,
 };
 
 TypedInput.defaultProps = {
   placeholder: 'Enter Value Here',
   value: undefined,
+  onChange: undefined,
 };
 
 export default getTypesService(TypedInput);
