@@ -11,9 +11,7 @@ services:
       - TWEEK_MANAGEMENT_URL=http://tweek-management:3000
     volumes:
       -  ../../services/git-service/ssh/tweekgit.pub:/tweek/key.pub
-    labels:
-      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
-
+ 
   tweek-management:
     depends_on:
       - tweek-git
