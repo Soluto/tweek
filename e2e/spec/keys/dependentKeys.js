@@ -60,7 +60,7 @@ describe('dependent keys', () => {
     keysPageObject.setConditionValue(1, 1, 'value');
     browser.click(keySelectors.SAVE_CHANGES_BUTTON);
 
-    browser.waitForVisible(globalSelectors.ERROR_NOTIFICATION_TITLE, 5000);
+    browser.waitForVisible(globalSelectors.ERROR_NOTIFICATION_TITLE, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
     const errorText = browser.getText(globalSelectors.ERROR_NOTIFICATION_TITLE);
     expect(errorText).to.equal('Failed to save key');
   })
