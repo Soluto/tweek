@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Engine.Rules.Validation;
+using Swashbuckle.AspNetCore.Swagger;
 using Tweek.ApiService.Addons;
 using Tweek.ApiService.NetCore.Addons;
 using Tweek.ApiService.NetCore.Diagnostics;
@@ -88,7 +89,8 @@ namespace Tweek.ApiService.NetCore
             });
 
             RegisterMetrics(services);
-            services.AdaptSingletons<IDiagnosticsProvider, HealthCheck>(inner => new DiagnosticsProviderDecorator(inner));            
+            services.AdaptSingletons<IDiagnosticsProvider, HealthCheck>(inner => new DiagnosticsProviderDecorator(inner));
+            services.AddSwaggerGen(options => { options.SwaggerDoc("tweek", new Info {Title = "Tweek Api"}); });
         }
 
         private void RegisterMetrics(IServiceCollection services)
@@ -142,6 +144,7 @@ namespace Tweek.ApiService.NetCore
             app.UseMetrics();
             app.UseMvc();
             app.UseMetricsReporting(lifetime);
+            app.UseSwagger(options => { });
         }
 
         private static IRuleParser GetRulesParser()
