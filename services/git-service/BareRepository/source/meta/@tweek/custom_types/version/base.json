@@ -1,6 +1,17 @@
 {
-    "displayName": "@tweek/custom_types/version/base",
-    "description": "",
-    "tags": [],
-    "valueType": "string"
+    "key_path": "@tweek/custom_types/version/base",
+    "meta": {
+        "name": "@tweek/custom_types/version/base",
+        "description": "",
+        "tags": [],
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "file",
+        "format": "jpad"
+    },
+    "valueType": "string",
+    "enabled": true,
+    "dependencies": []
 }
