@@ -33,7 +33,7 @@ app.post('/on-repo-change', upload.any(), (req, res) => {
 		})
 		.catch(err => {
 			logger.error(err);
-			err.response.text().then(x => res.status(500).send(x))
+			res.status(500).send(err.response.data);
 		});
 });
 

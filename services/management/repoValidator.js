@@ -1,10 +1,10 @@
 const _ = require('lodash');
 const JSZip = require('jszip');
-const fetch = require('node-fetch');
 const Promise = require('bluebird');
 const logger = require('./logger');
 const nconf = require('nconf');
 const Rx = require('rxjs');
+const getAuthenticatedClient = require('./auth/getAuthenticatedClient');
 
 nconf.argv().env().file({ file: `${process.cwd()}/config.json` });
 const validationUrl = nconf.get('VALIDATION_URL');
@@ -24,7 +24,7 @@ function getAllGroups(str, pattern, groupIndex) {
 function getDependencies(meta, rule) {
     if (!meta) return [];
     if (meta.meta) return meta.dependencies;
-    return _.uniq(getAllGroups(rule, /"@@key:(.+?)"/, 1));
+    return _.uniq(getAllGroups(rule, /"(?:keys\.|@@key:)(.+?)"/, 1));
 }
 
 module.exports = function (data) {
@@ -63,21 +63,12 @@ module.exports = function (data) {
         .map(pairs => _.fromPairs(pairs))
         .do(_ => logger.info('new ruleset was bundled'))
         .do(_ => fetchStartTime = Date.now())
-        .flatMap(ruleset => {
-            return fetch(validationUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(ruleset) });
-        })
+        .flatMap(ruleset =>
+          getAuthenticatedClient({headers: { 'Content-Type': 'application/json' }}).then(client =>
+            client.post(validationUrl, JSON.stringify(ruleset))
+          )
+        )
         .do(_ => logger.info('finished request to validate rules', { timeToFetch: Date.now() - fetchStartTime }))
-        .map(checkStatus)
-        .map(response => response.json())
+        .map(response => response.data)
         .toPromise();
-};
-
-const checkStatus = (response) => {
-    if (response.status >= 200 && response.status < 300) {
-        return response
-    } else {
-        var error = new Error(response.statusText);
-        error.response = response;
-        throw error
-    }
 };
