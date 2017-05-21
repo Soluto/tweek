@@ -79,11 +79,12 @@ export function convertToExplicitKey(key) {
   };
 }
 
-export const DEPENDENT_KEY_PREFIX = '@@key:';
+export const DEPENDENT_KEY_PREFIX = 'keys.';
 
 function calculateDependenciesForMatcher(matcher) {
   return Object.keys(matcher)
     .map(x => x.toLowerCase())
+    .map(x => (x.startsWith('@@key:') ? x.replace('@@key:', 'keys.') : x))
     .filter(x => x.startsWith(DEPENDENT_KEY_PREFIX))
     .map(x => x.substring(DEPENDENT_KEY_PREFIX.length));
 }
