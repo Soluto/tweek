@@ -4,7 +4,7 @@ const Promise = require('bluebird');
 const logger = require('./logger');
 const nconf = require('nconf');
 const Rx = require('rxjs');
-const authenticatedClient = require('./auth/authenticatedClient');
+const getAuthenticatedClient = require('./auth/getAuthenticatedClient');
 
 nconf.argv().env().file({ file: `${process.cwd()}/config.json` });
 const validationUrl = nconf.get('VALIDATION_URL');
@@ -64,7 +64,7 @@ module.exports = function (data) {
         .do(_ => logger.info('new ruleset was bundled'))
         .do(_ => fetchStartTime = Date.now())
         .flatMap(ruleset =>
-          authenticatedClient({headers: { 'Content-Type': 'application/json' }}).then(client =>
+          getAuthenticatedClient({headers: { 'Content-Type': 'application/json' }}).then(client =>
             client.post(validationUrl, JSON.stringify(ruleset))
           )
         )
