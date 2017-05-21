@@ -1,9 +1,20 @@
 {
-    "displayName": "@tweek_clients_tests/test_category/test_key1",
-    "description": "e2e test",
-    "tags": [
-        "test",
-        "do not delete or change"
-    ],
-    "valueType": "string"
+    "key_path": "@tweek_clients_tests/test_category/test_key1",
+    "meta": {
+        "name": "@tweek_clients_tests/test_category/test_key1",
+        "description": "e2e test",
+        "tags": [
+            "test",
+            "do not delete or change"
+        ],
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "file",
+        "format": "jpad"
+    },
+    "valueType": "string",
+    "enabled": true,
+    "dependencies": []
 }
