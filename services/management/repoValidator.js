@@ -1,10 +1,10 @@
 const _ = require('lodash');
 const JSZip = require('jszip');
-const fetch = require('node-fetch');
 const Promise = require('bluebird');
 const logger = require('./logger');
 const nconf = require('nconf');
 const Rx = require('rxjs');
+const authenticatedClient = require('./auth/authenticatedClient');
 
 nconf.argv().env().file({ file: `${process.cwd()}/config.json` });
 const validationUrl = nconf.get('VALIDATION_URL');
@@ -63,12 +63,14 @@ module.exports = function (data) {
         .map(pairs => _.fromPairs(pairs))
         .do(_ => logger.info('new ruleset was bundled'))
         .do(_ => fetchStartTime = Date.now())
-        .flatMap(ruleset => {
-            return fetch(validationUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(ruleset) });
-        })
+        .flatMap(ruleset =>
+          authenticatedClient({headers: { 'Content-Type': 'application/json' }}).then(client =>
+            client.post(validationUrl, JSON.stringify(ruleset))
+          )
+        )
         .do(_ => logger.info('finished request to validate rules', { timeToFetch: Date.now() - fetchStartTime }))
         .map(checkStatus)
-        .map(response => response.json())
+        .map(response => response.data)
         .toPromise();
 };
 
