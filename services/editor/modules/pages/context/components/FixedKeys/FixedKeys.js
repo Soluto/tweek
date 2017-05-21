@@ -1,16 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import { compose, mapProps, lifecycle } from 'recompose';
-import { connect } from 'react-redux';
 import R from 'ramda';
-import changeCase from 'change-case';
-import transformProps from '../../../../utils/transformProps';
-import { getContext, updateContext } from '../../../../store/ducks/context';
+import classnames from 'classnames';
 import FixedKeysList from './FixedKeysList/FixedKeysList';
 import SaveButton from '../../../../components/common/SaveButton/SaveButton';
 import style from './FixedKeys.css';
-
-const removeFixedPrefix = transformProps(prop => prop.replace('@fixed:', ''));
-const addFixedPrefix = transformProps(prop => `@fixed:${prop.trim()}`);
 
 function calculateKeys(fixedKeys) {
   const result = Object.entries(fixedKeys).map(([key, value]) => ({
@@ -78,7 +71,7 @@ class FixedKeys extends Component {
       .filter(x => !x.isRemoved && exists(x.local.key))
       .reduce((result, x) => ({ ...result, [x.local.key]: x.local.value }), {});
 
-    this.props.updateContext(updatedConfiguration);
+    this.props.updateFixedKeys(updatedConfiguration);
   }
 
   get canSave() {
@@ -103,83 +96,37 @@ class FixedKeys extends Component {
   }
 
   render() {
-    const { contextType, contextId } = this.props;
+    const { className, isUpdatingContext } = this.props;
 
     return (
-      <div className={style['fixed-keys-container']}>
-        <div className={style['horizontal-separator']} />
-
-        <div className={style['context-title']}>
-          <div className={style['context-id']}>{contextId}</div>
-          <div className={style['context-type']}>{changeCase.pascalCase(contextType)}</div>
+      <div className={classnames(style['fixed-keys-container'], className)}>
+        <div className={style['override-keys-title']}>
+          <div>Override Keys</div>
+          <SaveButton onClick={this.onSave.bind(this)} hasChanges={this.canSave} isSaving={isUpdatingContext} />
         </div>
 
-        {
-          this.props.isGettingContext ?
-            'Loading...' :
-            <div className={style['fixed-keys-list-container']}>
-              <div className={style['override-keys-title']}>
-                <div>Override Keys</div>
-                <SaveButton onClick={this.onSave.bind(this)} hasChanges={this.canSave} isSaving={this.props.isUpdatingContext} />
-              </div>
+        <FixedKeysList
+          keys={this.state.keys}
+          onChange={this.onChange.bind(this)}
+        />
 
-              <FixedKeysList
-                keys={this.state.keys}
-                onChange={this.onChange.bind(this)}
-              />
-
-              <button className={style['add-key-button']} onClick={this.appendKey.bind(this)} />
-            </div>
-        }
+        <button className={style['add-key-button']} onClick={this.appendKey.bind(this)} />
       </div>
     );
   }
 }
 
-
 FixedKeys.propTypes = {
-  fixedKeys: PropTypes.object.isRequired,
-  updateContext: PropTypes.func.isRequired,
-  contextType: PropTypes.string.isRequired,
-  contextId: PropTypes.string.isRequired,
+  fixedKeys: PropTypes.object,
+  updateFixedKeys: PropTypes.func.isRequired,
+  isUpdatingContext: PropTypes.bool,
+  className: PropTypes.string,
 };
 
-const mapStateToProps = state => ({ ...state.context });
+FixedKeys.defaultProps = {
+  fixedKeys: {},
+  isUpdatingContext: false,
+  className: undefined,
+};
 
-const mapDispatchToProps = (dispatch, props) => ({
-  ...props,
-  getContext: () => dispatch(getContext({
-    contextType: props.contextType,
-    contextId: props.contextId,
-  })),
-  updateContext: updatedConfiguration => dispatch(updateContext({
-    contextType: props.contextType,
-    contextId: props.contextId,
-    updatedContextData: addFixedPrefix(updatedConfiguration),
-  })),
-});
-
-function getFixedKeys(contextData) {
-  return R.pickBy((_, prop) => prop.startsWith('@fixed:'), contextData);
-}
-
-export default compose(
-  mapProps(props => props.params),
-  connect(mapStateToProps, mapDispatchToProps),
-  lifecycle({
-    componentWillMount() {
-      this.props.getContext();
-    },
-
-    componentDidUpdate(prev) {
-      const { props } = this;
-      if (props.contextId !== prev.contextId || props.contextType !== prev.contextType) {
-        props.getContext();
-      }
-    },
-  }),
-  mapProps(({ contextData, ...props }) => ({
-    ...props,
-    fixedKeys: removeFixedPrefix(getFixedKeys(contextData || {})),
-  })),
-)(FixedKeys);
+export default FixedKeys;

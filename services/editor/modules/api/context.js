@@ -11,9 +11,9 @@ export async function getContextSchema(req, res, { tweekApiHostname }) {
   const schemaDetails = response.data;
   const processedSchemaDetails =
     Object.keys(schemaDetails)
-      .reduce((result, identity) => ({
+      .reduce((result, identityName) => ({
         ...result,
-        [identity]: mapKeys(changeCase.pascalCase, schemaDetails[identity])
+        [identityName]: mapKeys(changeCase.pascalCase, schemaDetails[identityName]),
       }), {});
 
   res.json(processedSchemaDetails);
@@ -21,22 +21,22 @@ export async function getContextSchema(req, res, { tweekApiHostname }) {
 
 export async function getContext(req, res, { tweekApiHostname }, { params }) {
   const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
-  const response = await tweekApiClient.get(`api/v1/context/${params.contextType}/${encodeURIComponent(params.contextId)}`);
+  const response = await tweekApiClient.get(`api/v1/context/${params.identityName}/${encodeURIComponent(params.identityId)}`);
   res.json(response.data);
 }
 
 export async function updateContext(req, res, { tweekApiHostname }, { params }) {
   const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
 
-  const contextUrl = `api/v1/context/${params.contextType}/${encodeURIComponent(params.contextId)}`;
+  const contextUrl = `api/v1/context/${params.identityName}/${encodeURIComponent(params.identityId)}`;
 
   const response = await tweekApiClient.get(contextUrl);
   const currentContext = response.data;
   const newContext = req.body;
 
   const deletedKeys = Object.keys(currentContext)
-    .filter(key => key.includes("@fixed:"))
-    .filter(key => !newContext.hasOwnProperty(key) )
+    .filter(key => key.includes('@fixed:'))
+    .filter(key => !newContext.hasOwnProperty(key))
     .map(key => tweekApiClient.delete(`${contextUrl}/${key}`));
 
   await Promise.all([
