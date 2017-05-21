@@ -24,7 +24,7 @@ function getAllGroups(str, pattern, groupIndex) {
 function getDependencies(meta, rule) {
     if (!meta) return [];
     if (meta.meta) return meta.dependencies;
-    return _.uniq(getAllGroups(rule, /"@@key:(.+?)"/, 1));
+    return _.uniq(getAllGroups(rule, /"(?:keys\.|@@key:)(.+?)"/, 1));
 }
 
 module.exports = function (data) {
