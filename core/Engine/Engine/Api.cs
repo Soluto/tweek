@@ -113,9 +113,9 @@ namespace Engine
 
     public static class Tweek
     {
-        public static async Task<ITweek> Create(IRulesDriver rulesDriver, IRuleParser parser)
+        public static async Task<ITweek> Create(IRulesDriver rulesDriver, GetRuleParser parsers)
         {
-            var rulesLoader = await RulesLoader.Factory(rulesDriver, parser);
+            var rulesLoader = await RulesLoader.Factory(rulesDriver, parsers);
             return new TweekRunner(rulesLoader);
         }
     }

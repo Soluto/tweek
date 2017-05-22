@@ -27,10 +27,15 @@ using Tweek.ApiService.NetCore.Security;
 using Tweek.ApiService.NetCore.Utils;
 using Tweek.JPad;
 using Tweek.JPad.Utils;
+using Engine.Rules.Creation;
+using static Engine.Core.Rules.Utils;
+using static LanguageExt.Prelude;
+using FSharpUtils.Newtonsoft;
+using Engine.DataTypes;
+using Newtonsoft.Json.Linq;
 
 namespace Tweek.ApiService.NetCore
 {
-
     public class Startup
     {
         public Startup(IHostingEnvironment env)
@@ -57,17 +62,17 @@ namespace Tweek.ApiService.NetCore
             //services.AddSingleton<IDiagnosticsProvider>(new RulesDriverStatusService(blobRulesDriver));
             services.AddSingleton<IDiagnosticsProvider>(new EnvironmentDiagnosticsProvider());
 
-            services.AddSingleton(GetRulesParser());
+            services.AddSingleton(CreateParserResolver());
             services.AddSingleton(provider =>
             {
-                var parser = provider.GetService<IRuleParser>();
+                var parserResolver = provider.GetService<GetRuleParser>();
                 var rulesDriver = provider.GetService<IRulesDriver>();
-                return Task.Run(async () => await Engine.Tweek.Create(rulesDriver, parser)).Result;
+                return Task.Run(async () => await Engine.Tweek.Create(rulesDriver, parserResolver)).Result;
             });
 
             services.AddSingleton(provider => Authorization.CreateReadConfigurationAccessChecker(provider.GetService<ITweek>()));
             services.AddSingleton(provider => Authorization.CreateWriteContextAccessChecker(provider.GetService<ITweek>()));
-            services.AddSingleton(provider => Validator.GetValidationDelegate(provider.GetService<IRuleParser>()));
+            services.AddSingleton(provider => Validator.GetValidationDelegate(provider.GetService<GetRuleParser>()));
 
             var tweekContactResolver = new TweekContractResolver();
             var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };
@@ -144,10 +149,9 @@ namespace Tweek.ApiService.NetCore
             app.UseMetricsReporting(lifetime);
         }
 
-        private static IRuleParser GetRulesParser()
+        private static GetRuleParser CreateParserResolver()
         {
-
-            return JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
+            var jpadParser = JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
                 Comparers: Microsoft.FSharp.Core.FSharpOption<IDictionary<string, ComparerDelegate>>.Some(new Dictionary<string, ComparerDelegate>()
                 {
                     ["version"] = Version.Parse
@@ -158,6 +162,13 @@ namespace Tweek.ApiService.NetCore
                         return sha1.ComputeHash(s);
                     }
                 })));
+
+            var dict = new Dictionary<string, IRuleParser>(StringComparer.OrdinalIgnoreCase){
+                ["jpad"] = jpadParser,
+                ["const"] = ConstValueParser
+            };
+
+            return x=>dict[x];
         }
     }
 }
