@@ -72,7 +72,17 @@ function getApp(req, res, requestCallback) {
   });
 }
 
-const addAuthSupport = (server) => {
+function addDirectoryTraversalProtection(server) {
+  const DANGEROUS_PATH_PATTERN = /(?:^|[\\/])\.\.(?:[\\/]|$)/;
+  server.use('*', (req, res, next) => {
+    if (req.path.contains('\0') || DANGEROUS_PATH_PATTERN.test(req.path)) {
+      return res.status(400).send({ error: 'Dangerous path' });
+    }
+    return next();
+  });
+}
+
+function addAuthSupport(server) {
   server.use(passport.initialize());
   server.use(passport.session());
 
@@ -81,16 +91,18 @@ const addAuthSupport = (server) => {
     res.send(authProviders.map(x => `<a href="${x.url}">login with ${x.name}</a>`).join(''));
   });
 
+
   server.use('*', (req, res, next) => {
     if (req.isAuthenticated() || req.path.startsWith('auth')) {
       return next();
     }
     return res.redirect('/login');
   });
-};
+}
 
 const startServer = () => {
   const server = createServer(getApp);
+  addDirectoryTraversalProtection(server);
   const cookieOptions = {
     secret: nconf.get('SESSION_COOKIE_SECRET_KEY') || crypto.randomBytes(20).toString('base64'),
     cookie: { httpOnly: true },
@@ -99,6 +111,7 @@ const startServer = () => {
   if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true') {
     addAuthSupport(server);
   }
+
   server.start();
 };
 
