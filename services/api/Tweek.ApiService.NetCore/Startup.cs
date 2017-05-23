@@ -17,8 +17,10 @@ using Newtonsoft.Json;
 using Scrutor;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using Engine.Rules.Validation;
+using FSharpUtils.Newtonsoft;
 using Swashbuckle.AspNetCore.Swagger;
 using Tweek.ApiService.Addons;
 using Tweek.ApiService.NetCore.Addons;
@@ -90,7 +92,19 @@ namespace Tweek.ApiService.NetCore
 
             RegisterMetrics(services);
             services.AdaptSingletons<IDiagnosticsProvider, HealthCheck>(inner => new DiagnosticsProviderDecorator(inner));
-            services.AddSwaggerGen(options => { options.SwaggerDoc("tweek", new Info {Title = "Tweek Api"}); });
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("tweek", new Info
+                {
+                    Title = "Tweek Api",
+                    License = new License {Name = "MIT", Url = "https://github.com/Soluto/tweek/blob/master/LICENSE" },
+                    Version = Assembly.GetEntryAssembly()
+                        .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                        .InformationalVersion
+                });
+                // Generate Dictionary<string,JsonValue> as JSON object in Swagger
+                options.MapType(typeof(Dictionary<string,JsonValue>), () => new Schema {Type = "object"});
+            });
         }
 
         private void RegisterMetrics(IServiceCollection services)
@@ -144,7 +158,15 @@ namespace Tweek.ApiService.NetCore
             app.UseMetrics();
             app.UseMvc();
             app.UseMetricsReporting(lifetime);
-            app.UseSwagger(options => { });
+            app.UseSwagger(options =>
+            {
+                options.RouteTemplate = "{documentName}-swagger.json";
+                options.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+                {
+                    swaggerDoc.Host = httpReq.Host.Value;
+                    swaggerDoc.Schemes = new[] {httpReq.Scheme};
+                });
+            });
         }
 
         private static IRuleParser GetRulesParser()
