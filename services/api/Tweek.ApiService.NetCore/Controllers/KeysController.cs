@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using LanguageExt;
@@ -57,6 +58,9 @@ namespace Tweek.ApiService.NetCore.Controllers
         }
 
         [HttpGet("api/v1/keys/{*path}")]
+        [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden)]
+        [Produces("application/json")]
         public async Task<ActionResult> GetAsync([FromRoute] string path)
         {
             var allParams = PartitionByKey(HttpContext.Request.Query.ToDictionary(x => x.Key, x => x.Value), x => x.StartsWith("$"));
