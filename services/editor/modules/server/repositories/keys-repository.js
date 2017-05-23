@@ -1,4 +1,5 @@
 import path from 'path';
+import R from 'ramda';
 
 function generateEmptyMeta(keyPath) {
   return ({
@@ -47,7 +48,7 @@ function getKeyFromPath(keyPath) {
 async function getKeyDef(meta, repo, revision) {
   if (meta.implementation.type === 'file') {
     const keyDef = {
-      source: await repo.readFile(`rules/${meta.key_path}.${meta.implementation.format}`, { revision }),
+      source: await repo.readFile(getPathForSourceFile(meta), { revision }),
       type: meta.implementation.format,
     };
     if (meta.implementation.format === 'jpad') {
@@ -65,7 +66,7 @@ async function getRevisionHistory(meta, repo) {
   const fileMeta = (meta.implementation.type === 'file') ?
     repo.getHistory(`rules/${meta.key_path}.${meta.implementation.format}`) : Promise.resolve([]);
 
-  return [...(await repo.getHistory(`meta/${meta.key_path}.json`)), ...(await fileMeta)];
+  return R.uniqBy(x => x.sha, [...(await repo.getHistory(`meta/${meta.key_path}.json`)), ...(await fileMeta)]);
 }
 
 async function getMetaFile(keyPath, gitRepo, revision) {
