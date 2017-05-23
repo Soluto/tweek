@@ -1,5 +1,6 @@
 import path from 'path';
 import R from 'ramda';
+import { convertMetaToNewFormat } from '../../utils/meta-legacy';
 
 function generateEmptyMeta(keyPath) {
   return ({
@@ -72,7 +73,8 @@ async function getRevisionHistory(meta, repo) {
 async function getMetaFile(keyPath, gitRepo, revision) {
   const pathForMeta = getPathForMeta(keyPath);
   try {
-    return JSON.parse(await gitRepo.readFile(pathForMeta, { revision }));
+    const meta = JSON.parse(await gitRepo.readFile(pathForMeta, { revision }));
+    return meta.meta ? meta : convertMetaToNewFormat(keyPath, { meta });
   } catch (exp) {
     return generateEmptyMeta(keyPath);
   }
