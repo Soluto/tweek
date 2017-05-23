@@ -179,7 +179,7 @@ describe('rules-service', () => {
       },
       {
         expected: ['some/key1', 'some/key2'],
-        rule: [toExplicitRule('value', '@@key:some/key1', '@@key:some/key2')],
+        rule: [toExplicitRule('value', '@@key:some/key1', 'keys.some/key2')],
         depth: 0,
       },
       {
@@ -189,7 +189,7 @@ describe('rules-service', () => {
       },
       {
         expected: ['some/key'],
-        rule: { partition1: [toExplicitRule('value', '@@key:some/key')], partition2: [toExplicitRule('value', '@@key:some/key')] },
+        rule: { partition1: [toExplicitRule('value', 'keys.some/key')], partition2: [toExplicitRule('value', 'keys.some/key')] },
         depth: 1,
       },
       {
