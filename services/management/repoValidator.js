@@ -19,23 +19,16 @@ const getAllFileHandlers = Promise.coroutine(function*(data){
     }))
 });
 
-module.exports = function (data) {
-    var fetchStartTime;
+module.exports =  Promise.coroutine(function* (data){
     if (!validationUrl) {
         throw 'missing rules validation url';
     }
-  
-    return getAllFileHandlers(data)
-        .then(buildRulesArtifiact)
-        .then(ruleset => {
-            logger.info('new ruleset was bundled')
-            fetchStartTime = Date.now()
-            return getAuthenticatedClient({headers: { 'Content-Type': 'application/json' }}).then(client =>
-                client.post(validationUrl, JSON.stringify(ruleset))
-            )
-        })
-        .then(response => {
-            logger.info('finished request to validate rules', { timeToFetch: Date.now() - fetchStartTime })
-            return response.data;
-        });
-};
+    let files = yield getAllFileHandlers(data);
+    let ruleset = yield buildRulesArtifiact(files);
+    logger.info('new ruleset was bundled')
+    let fetchStartTime = Date.now()
+    let client = yield getAuthenticatedClient({headers: { 'Content-Type': 'application/json' }});
+    let response = yield client.post(validationUrl, JSON.stringify(ruleset))
+    logger.info('finished request to validate rules', { timeToFetch: Date.now() - fetchStartTime })
+    return response.data;
+});
