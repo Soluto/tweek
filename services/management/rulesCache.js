@@ -57,7 +57,6 @@ const updateLatestCache = Promise.coroutine(function* () {
             const oid = yield repo.mergeBranches('master', 'origin/master');
 
             const newLatestSha = (yield repo.getMasterCommit()).sha();
-            console.log(`merge result:${oid}, current:${rulesCache.sha} latest:${newLatestSha}`);
 
             if (newLatestSha === rulesCache.sha) {
                 yield Promise.delay(5000);
