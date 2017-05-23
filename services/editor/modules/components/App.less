@@ -2,6 +2,9 @@
 .app {
     @header-size: 70px;
     .menu {
+        li{
+            list-style: none;
+        }
         display: flex;
         flex-grow: 1;
         margin-right: 70px;
@@ -13,10 +16,12 @@
             color: white;
             height: 100%;
             .transitioned();
-            a {
+            span {
                 margin-right: 24px;
                 .transitioned();
-                &:visited, &:link {
+               
+            }
+             &:visited, &:link {
                     display: flex;
                     flex-grow: 1;
                     justify-content: center;
@@ -28,7 +33,6 @@
                     
                     color: white;
                 }
-            }
             &.selected-location-path {
                 border-bottom: 4px solid white;
             }

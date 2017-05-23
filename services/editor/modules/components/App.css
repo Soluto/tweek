@@ -4,6 +4,9 @@
   margin-right: 70px;
   justify-content: flex-end;
 }
+.app .menu li {
+  list-style: none;
+}
 .app .menu .menu-item {
   display: flex;
   border-bottom: 4px solid transparent;
@@ -12,12 +15,12 @@
   height: 100%;
   transition: all 0.2s ease-in-out;
 }
-.app .menu .menu-item a {
+.app .menu .menu-item span {
   margin-right: 24px;
   transition: all 0.2s ease-in-out;
 }
-.app .menu .menu-item a:visited,
-.app .menu .menu-item a:link {
+.app .menu .menu-item:visited,
+.app .menu .menu-item:link {
   display: flex;
   flex-grow: 1;
   justify-content: center;
