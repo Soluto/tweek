@@ -24,8 +24,11 @@ namespace Engine.Core
             GetRuleValue getRuleValue = null;
             GetContextValue recursiveContext = key =>
             {
-                if (!key.StartsWith("@@key")) return Option<JsonValue>.None;
-                var path = new ConfigurationPath(key.Split(':')[1]);
+                if (key.StartsWith("@@key:")){
+                    key = key.Replace("@@key:", "keys.");
+                }
+                if (!key.StartsWith("keys.")) return Option<JsonValue>.None;
+                var path = new ConfigurationPath(key.Split('.')[1]);
                 return getRuleValue(path).Map(x => x.Value);
             };
 

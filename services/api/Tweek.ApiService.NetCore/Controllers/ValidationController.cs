@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using Engine.Core.Rules;
 using Engine.Drivers.Rules;
-using Engine.Rules.Creation;
 using Engine.Rules.Validation;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
+using Tweek.ApiService.NetCore.Security;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -29,6 +25,8 @@ namespace Tweek.ApiService.NetCore.Controllers
         [HttpPost]
         public async Task<ActionResult> Validate()
         {
+            if (!User.IsTweekIdentity()) return Forbid();
+
             Dictionary<string, RuleDefinition> ruleset = null;
             try
             {
