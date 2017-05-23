@@ -1,6 +1,17 @@
 {
-    "displayName": "@tweek/context/device/created_at/type",
-    "description": "",
-    "tags": [],
-    "valueType": ""
+    "key_path": "@tweek/context/device/created_at/type",
+    "meta": {
+        "name": "@tweek/context/device/created_at/type",
+        "description": "",
+        "tags": [],
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "file",
+        "format": "jpad"
+    },
+    "valueType": "",
+    "enabled": true,
+    "dependencies": []
 }
