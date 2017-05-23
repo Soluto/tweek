@@ -24,7 +24,7 @@ module.exports = function (files) {
         keyDef.payload = meta.implementation.value;
       }
       return [meta.key_path, keyDef];
-    }))
+    })))
     .mergeAll(10)
-    .toArray().map( _.fromPairs).toPromise();
+    .toArray().map(_.fromPairs).toPromise();
 }
