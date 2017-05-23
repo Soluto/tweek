@@ -1,6 +1,24 @@
 import path from 'path';
 
-const BasePathForRules = 'rules';
+function generateEmptyMeta(keyPath) {
+  return ({
+    key_path: keyPath,
+    meta: {
+      name: keyPath,
+      description: '',
+      tags: [],
+      readOnly: false,
+      archived: false,
+    },
+    implementation: {
+      type: 'file',
+      format: 'jpad',
+    },
+    valueType: 'string',
+    enabled: true,
+    dependencies: [],
+  });
+}
 
 function getNewJpadFormatSourceIfNeeded(originalJpadSource) {
   const parsedJpad = JSON.parse(originalJpadSource);
@@ -13,17 +31,50 @@ function getNewJpadFormatSourceIfNeeded(originalJpadSource) {
   });
 }
 
-function getPathForJPad(keyName) {
-  return `${BasePathForRules}/${keyName}.jpad`;
-}
-
 function getPathForMeta(keyName) {
   return `meta/${keyName}.json`;
 }
 
-function getKeyFromJPadPath(keyPath) {
+function getPathForSourceFile(meta) {
+  return `rules/${meta.key_path}.${meta.implementation.format}`;
+}
+
+function getKeyFromPath(keyPath) {
   const ext = path.extname(keyPath);
   return keyPath.substring(0, keyPath.length - ext.length);
+}
+
+async function getKeyDef(meta, repo, revision) {
+  if (meta.implementation.type === 'file') {
+    const keyDef = {
+      source: await repo.readFile(`rules/${meta.key_path}.${meta.implementation.format}`, { revision }),
+      type: meta.implementation.format,
+    };
+    if (meta.implementation.format === 'jpad') {
+      keyDef.source = getNewJpadFormatSourceIfNeeded(keyDef.source);
+    }
+    return keyDef;
+  }
+  if (meta.implementation.type === 'const') {
+    return { source: meta.implementation.value, type: 'const' };
+  }
+  throw new Error('unsupported type');
+}
+
+async function getRevisionHistory(meta, repo) {
+  const fileMeta = (meta.implementation.type === 'file') ?
+    repo.getHistory(`rules/${meta.key_path}.${meta.implementation.format}`) : Promise.resolve([]);
+
+  return [...(await repo.getHistory(`meta/${meta.key_path}.json`)), ...(await fileMeta)];
+}
+
+async function getMetaFile(keyPath, gitRepo, revision) {
+  const pathForMeta = getPathForMeta(keyPath);
+  try {
+    return JSON.parse(await gitRepo.readFile(pathForMeta, { revision }));
+  } catch (exp) {
+    return generateEmptyMeta(keyPath);
+  }
 }
 
 export default class KeysRepository {
@@ -33,34 +84,20 @@ export default class KeysRepository {
 
   getAllKeys() {
     return this._gitTransactionManager.read(async (gitRepo) => {
-      const keyFiles = await gitRepo.listFiles(BasePathForRules);
+      const keyFiles = await gitRepo.listFiles('meta');
 
-      return keyFiles.map(getKeyFromJPadPath);
+      return keyFiles.map(getKeyFromPath);
     });
   }
 
   getKeyDetails(keyPath, { revision } = {}) {
     return this._gitTransactionManager.read(async (gitRepo) => {
-      const pathForJPad = getPathForJPad(keyPath);
-      const pathForMeta = getPathForMeta(keyPath);
-
-      let jpadSource = await gitRepo.readFile(pathForJPad, { revision });
-      jpadSource = getNewJpadFormatSourceIfNeeded(jpadSource);
-
-      let meta = null;
-      try {
-        meta = JSON.parse(await gitRepo.readFile(pathForMeta, { revision }));
-      } catch (exp) {
-        console.warn('failed getting meta file', exp.message);
-      }
-
-      const revisionHistory = await gitRepo.getFileDetails(pathForJPad);
+      const meta = await getMetaFile(keyPath, gitRepo, revision);
+      const keyDef = getKeyDef(meta, gitRepo, revision);
+      const revisionHistory = getRevisionHistory(meta, gitRepo);
       return {
-        revisionHistory,
-        keyDef: {
-          type: path.extname(pathForJPad).substring(1),
-          source: jpadSource,
-        },
+        revisionHistory: await revisionHistory,
+        keyDef: await keyDef,
         meta,
       };
     });
@@ -75,17 +112,23 @@ export default class KeysRepository {
 
   updateKey(keyPath, keyMetaSource, keyRulesSource, author) {
     return this._gitTransactionManager.write(async (gitRepo) => {
+      // if changing implementation type will be possible in the future, we'll might need better solution
       await gitRepo.updateFile(getPathForMeta(keyPath), keyMetaSource);
-      await gitRepo.updateFile(getPathForJPad(keyPath), keyRulesSource);
-
+      const meta = JSON.parse(keyMetaSource);
+      if (meta.implementation.type === 'file') {
+        await gitRepo.updateFile(getPathForSourceFile(meta), keyRulesSource);
+      }
       await gitRepo.commitAndPush(`Editor - updating ${keyPath}`, author);
     });
   }
 
   deleteKey(keyPath, author) {
     return this._gitTransactionManager.write(async (gitRepo) => {
+      const meta = await getMetaFile(keyPath);
       await gitRepo.deleteFile(getPathForMeta(keyPath));
-      await gitRepo.deleteFile(getPathForJPad(keyPath));
+      if (meta.implementation.type === 'file') {
+        await gitRepo.deleteFile(getPathForSourceFile(meta));
+      }
 
       await gitRepo.commitAndPush(`Editor - deleting ${keyPath}`, author);
     });
