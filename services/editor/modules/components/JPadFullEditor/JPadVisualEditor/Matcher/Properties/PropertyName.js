@@ -1,7 +1,7 @@
 import React from 'react';
 import PropertyComboBox from './PropertyComboBox';
-import * as ContextService from '../../../../../../../../../services/context-service';
-import { getPropertySupportedOperators } from '../../../../../../../../../services/operators-provider';
+import * as ContextService from '../../../../../services/context-service';
+import { getPropertySupportedOperators } from '../../../../../services/operators-provider';
 
 const propertyTypeDetailsToComparer = propertyTypeDetails => !!propertyTypeDetails.comparer ? { ['$compare']: propertyTypeDetails.comparer } : {};
 

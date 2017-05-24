@@ -4,9 +4,9 @@ import PartitionsSelector from './Partition/PartitionsSelector';
 import RulesList from './RulesList/RulesList';
 import DefaultValue from './Rule/DefaultValue';
 import PartitionsList from './PartitionsList/PartitionsList';
-import * as RulesService from '../../../../../../../services/rules-service';
-import * as TypesService from '../../../../../../../services/types-service';
-import style from './JPadEditor.css';
+import * as RulesService from '../rules-utils';
+import * as TypesService from '../../../services/types-service';
+import style from './JPadVisualEditor.css';
 
 const isBrowser = typeof (window) === 'object';
 

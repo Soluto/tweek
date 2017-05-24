@@ -1,8 +1,8 @@
 /* global jest, before, beforeEach, describe, it, expect */
 import { assert, expect } from 'chai';
-import * as RulesService from '../../../modules/services/rules-service';
+import * as RulesUtils from '../../../../modules/components/JPadFullEditor/rules-utils';
 
-jest.unmock('../../../modules/services/rules-service');
+jest.unmock('../../../../modules/components/JPadFullEditor/rules-utils');
 
 const toExplicitRule = (Value, ...matchers) => ({
   Matcher: matchers.reduce((result, matcher) => ({ ...result, [matcher]: 'matcherValue' }), {}),
@@ -60,7 +60,7 @@ describe('rules-service', () => {
 
     rulesToCheck.forEach(({ expected, partition, rules, depth }) => {
       it('should add partition', () => {
-        const result = RulesService.addPartition(partition, rules, depth);
+        const result = RulesUtils.addPartition(partition, rules, depth);
         assert.deepEqual(result, expected);
       });
     });
@@ -132,7 +132,7 @@ describe('rules-service', () => {
 
     rulesToCheck.forEach(({ expected, rule, depth }) => {
       it('should convert to explicit', () => {
-        const result = RulesService.convertToExplicitRules(rule, depth);
+        const result = RulesUtils.convertToExplicitRules(rule, depth);
         assert.deepEqual(result, expected);
       });
     });
@@ -160,7 +160,7 @@ describe('rules-service', () => {
         },
         valueType: 'someType',
       };
-      const result = RulesService.convertToExplicitKey(key);
+      const result = RulesUtils.convertToExplicitKey(key);
       assert.deepEqual(result, expected);
     });
   });
@@ -200,7 +200,7 @@ describe('rules-service', () => {
     ];
 
     rulesToCheck.forEach(({ expected, rule, depth }) => {
-      const result = RulesService.getDependencies(rule, depth);
+      const result = RulesUtils.getDependencies(rule, depth);
       assert.deepEqual(result, expected);
     });
   });

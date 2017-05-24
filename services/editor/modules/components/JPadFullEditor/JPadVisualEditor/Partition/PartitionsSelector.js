@@ -1,6 +1,6 @@
 import React from 'react';
 import { WithContext as ReactTags } from 'react-tag-input';
-import * as ContextService from '../../../../../../../../services/context-service';
+import * as ContextService from '../../../../services/context-service';
 import style from './PartitionsSelector.css';
 
 export default ({partitions, handlePartitionAddition, handlePartitionDelete, alerter}) => {
