@@ -58,7 +58,7 @@ async function getKeyDef(manifest, repo, revision) {
     return keyDef;
   }
   if (manifest.implementation.type === 'const') {
-    return { source: manifest.implementation.value, type: 'const' };
+    return { source: JSON.stringify(manifest.implementation.value), type: 'const' };
   }
   throw new Error('unsupported type');
 }
