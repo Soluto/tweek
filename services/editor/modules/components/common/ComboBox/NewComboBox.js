@@ -98,6 +98,7 @@ class ComboBoxComponent extends Component {
       suggestions,
       getLabel,
       className,
+      renderSuggestion,
 
       onChange,
       onKeyDown,
@@ -122,6 +123,7 @@ class ComboBoxComponent extends Component {
         { hasFocus && suggestions.length > 0 ?
           <Suggestions
             {...{suggestions, getLabel, highlightedSuggestion, onSuggestionHighlighted}}
+            renderSuggestion={renderSuggestion && (x => renderSuggestion(x, value))}
             onSuggestionSelected={this.onSuggestionSelected}
           /> : null}
       </ClickOutside>
@@ -189,6 +191,7 @@ ComboBox.propTypes = {
   showValueInOptions: PropTypes.bool,
   autofocus: PropTypes.bool,
   className: PropTypes.string,
+  renderSuggestion: PropTypes.func,
 };
 
 ComboBox.defaultProps = {

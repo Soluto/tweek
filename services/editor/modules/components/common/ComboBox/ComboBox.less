@@ -8,13 +8,11 @@
   flex-direction: column;
 
   :global(.combo-box-suggestions-container) {
-    display: flex;
-    flex-direction: column;
     width: 300px;
     border: solid black 1px;
 
-    :global(.combo-box-suggestion-wrapper) {
-      &:global(.isSelected) {
+    :global(.combo-box-suggestion-item) {
+      &:global(.active), &:hover {
         background-color: yellow;
       }
     }

@@ -1,44 +1,59 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 
-const suggestionType = PropTypes.oneOfType([
-  PropTypes.string,
-  PropTypes.object,
-]);
-
-const SuggestionItem = ({ className, suggestion, isSelected, getLabel, ...props }) => (
-  <div className={classnames(className, 'combo-box-suggestion-wrapper', { isSelected })} {...props}>
-    {getLabel(suggestion)}
-  </div>
+const SuggestionItem = ({ children, className, onSelect, active, disabled, ...props }) => (
+  <li className={classnames(className, { active, disabled })} {...props}>
+    <a
+      role="button"
+      onClick={(e) => {
+        e.preventDefault();
+        !disabled && onSelect(e);
+      }}
+    >
+      {children}
+    </a>
+  </li>
 );
 
 SuggestionItem.propTypes = {
-  suggestion: suggestionType.isRequired,
-  getLabel: PropTypes.func.isRequired,
-  isSelected: PropTypes.bool.isRequired,
+  className: PropTypes.string,
+  onSelect: PropTypes.func.isRequired,
+  active: PropTypes.bool,
+  disabled: PropTypes.bool,
 };
 
-const Suggestions = ({suggestions, getLabel, highlightedSuggestion, onSuggestionSelected, onSuggestionHighlighted}) => (
-  <div className="combo-box-suggestions-container">
+SuggestionItem.defaultProps = {
+  active: false,
+  disabled: false,
+};
+
+const Suggestions = ({suggestions, getLabel, highlightedSuggestion, onSuggestionSelected, onSuggestionHighlighted, renderSuggestion}) => (
+  <ul className="combo-box-suggestions-container">
     {
-      suggestions.map((x,i) => <SuggestionItem
-        key={`${i}_${getLabel(x)}`}
-        isSelected={highlightedSuggestion === i}
-        suggestion={x}
-        onClick={() => onSuggestionSelected(i)}
-        onMouseOver={() => onSuggestionHighlighted(i)}
-        getLabel={getLabel}
-      />)
+      suggestions.map((x,i) => (
+        <SuggestionItem
+          key={`${i}_${getLabel(x)}`}
+          onSelect={() => onSuggestionSelected(i)}
+          active={highlightedSuggestion === i}
+          className="combo-box-suggestion-item"
+        >
+          { renderSuggestion ? renderSuggestion(x) : getLabel(x) }
+        </SuggestionItem>
+      ))
     }
-  </div>
+  </ul>
 );
 
 Suggestions.propTypes = {
-  suggestions: PropTypes.arrayOf(suggestionType).isRequired,
+  suggestions: PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+  ])).isRequired,
   getLabel: PropTypes.func.isRequired,
   highlightedSuggestion: PropTypes.number.isRequired,
   onSuggestionSelected: PropTypes.func.isRequired,
   onSuggestionHighlighted: PropTypes.func.isRequired,
+  renderSuggestion: PropTypes.func,
 };
 
 export default Suggestions;
