@@ -94,7 +94,7 @@ namespace Tweek.ApiService.NetCore
             services.AdaptSingletons<IDiagnosticsProvider, HealthCheck>(inner => new DiagnosticsProviderDecorator(inner));
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("tweek", new Info
+                options.SwaggerDoc("api", new Info
                 {
                     Title = "Tweek Api",
                     License = new License {Name = "MIT", Url = "https://github.com/Soluto/tweek/blob/master/LICENSE" },
@@ -160,7 +160,7 @@ namespace Tweek.ApiService.NetCore
             app.UseMetricsReporting(lifetime);
             app.UseSwagger(options =>
             {
-                options.RouteTemplate = "{documentName}-swagger.json";
+                options.RouteTemplate = "{documentName}/swagger.json";
                 options.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
                 {
                     swaggerDoc.Host = httpReq.Host.Value;

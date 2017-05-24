@@ -16,5 +16,8 @@ namespace Tweek.ApiService.SmokeTests
 
         [Post("validation")]
         Task<string> Validate([Body] Dictionary<string, RuleDefinition> ruleset);
+
+        [Get("/api/swagger.json")]
+        Task<JToken> GetSwagger();
     }
 }
