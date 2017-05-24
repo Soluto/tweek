@@ -4,6 +4,7 @@
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81</PackageTargetFallback>
     <VersionPrefix>0.1.25</VersionPrefix>
     <DockerComposeProjectPath>..\..\..\deployments\docker-compose.dcproj</DockerComposeProjectPath>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Properties\PublishProfiles\FileSystemProfile.pubxml" />

@@ -17,10 +17,12 @@ using Newtonsoft.Json;
 using Scrutor;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using Engine.Rules.Validation;
 using FSharpUtils.Newtonsoft;
+using Microsoft.Extensions.PlatformAbstractions;
 using Swashbuckle.AspNetCore.Swagger;
 using Tweek.ApiService.Addons;
 using Tweek.ApiService.NetCore.Addons;
@@ -104,6 +106,11 @@ namespace Tweek.ApiService.NetCore
                 });
                 // Generate Dictionary<string,JsonValue> as JSON object in Swagger
                 options.MapType(typeof(Dictionary<string,JsonValue>), () => new Schema {Type = "object"});
+
+                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                var xmlPath = Path.Combine(basePath, "Tweek.ApiService.NetCore.xml");
+                options.IncludeXmlComments(xmlPath);
+
             });
         }
 

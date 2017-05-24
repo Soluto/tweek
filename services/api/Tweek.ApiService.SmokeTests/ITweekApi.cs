@@ -13,9 +13,6 @@ namespace Tweek.ApiService.SmokeTests
 
         Task AppendContext([Path] string identityType, [Path]string identityId, Dictionary<string, JsonValue> context);
 
-        [Post("validation")]
-        Task<string> Validate([Body] Dictionary<string, RuleDefinition> ruleset);
-
         [Get("/api/swagger.json")]
         Task<JToken> GetSwagger();
     }

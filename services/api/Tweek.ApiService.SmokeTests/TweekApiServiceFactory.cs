@@ -29,16 +29,6 @@ namespace Tweek.ApiService.SmokeTests
                 $"/context/{identityType}/{identityId}", new StringContent(JsonConvert.SerializeObject(context, new JsonValueConverter()), Encoding.UTF8, "application/json"));
         }
 
-        public async Task<string> Validate(Dictionary<string, RuleDefinition> ruleset)
-        {
-            var response = await _client.PostAsync("validation",
-                new StringContent(JsonConvert.SerializeObject(ruleset, new JsonValueConverter()), Encoding.UTF8,
-                    "application/json"));
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadAsStringAsync();
-        }
-
         public async Task<JToken> GetSwagger()
         {
             var stream = await _client.GetStreamAsync("/api/swagger.json");
