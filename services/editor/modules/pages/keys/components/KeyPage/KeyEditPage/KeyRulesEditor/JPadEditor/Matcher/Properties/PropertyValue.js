@@ -2,7 +2,7 @@ import React from 'react';
 import changeCase from 'change-case';
 import R from 'ramda';
 import { WithContext as ReactTags } from 'react-tag-input';
-import ComboBox from '../../../../../../../../../components/common/ComboBox/ComboBox';
+import ComboBox from '../../../../../../../../../components/common/ComboBox/NewComboBox';
 import Input from '../../../../../../../../../components/common/Input/Input';
 import { inOp } from '../../../../../../../../../services/operators-provider';
 import style from './styles.css';
@@ -53,13 +53,11 @@ function PropertyValueComponent({ onUpdate, propertyTypeDetails, value = '', sel
     allowedValues = allowedValues.map(x => ({ label: changeCase.pascalCase(x), value: x }));
     return (
       <ComboBox
-        options={allowedValues}
+        suggestions={allowedValues}
         placeholder={placeholder}
-        wrapperThemeClass={style['property-value-combo-box']}
-        onChange={(selectedValue) => {
-          onUpdate(selectedValue.value);
-        }}
-        selected={allowedValues.filter(x => x.value === value)}
+        className={style['property-value-combo-box']}
+        onChange={(_, selectedValue) => selectedValue && onUpdate(selectedValue.value)}
+        value={allowedValues.find(x => x.value === value)}
       />
     );
   }
