@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+/* global document */
+import React, { Component, PropTypes } from 'react';
 
 const events = ['mousedown', 'touchstart'];
 
@@ -11,9 +12,16 @@ export default class ClickOutside extends Component {
     onClickOutside: PropTypes.func.isRequired,
   };
 
+  handle = (e) => {
+    if (clickedScrollbar(e)) return;
+    const { onClickOutside } = this.props;
+    const el = this.container;
+    if (!el.contains(e.target)) onClickOutside(e);
+  };
+
   render() {
     const { children, onClickOutside, ...props } = this.props;
-    return <div {...props} ref={ref => this.container = ref}>{children}</div>
+    return <div {...props} ref={ref => this.container = ref}>{children}</div>;
   }
 
   componentDidMount() {
@@ -23,11 +31,4 @@ export default class ClickOutside extends Component {
   componentWillUnmount() {
     events.forEach(eventName => document.removeEventListener(eventName, this.handle, true));
   }
-
-  handle = e => {
-    if (clickedScrollbar(e)) return;
-    const { onClickOutside } = this.props;
-    const el = this.container;
-    if (!el.contains(e.target)) onClickOutside(e)
-  };
 }
