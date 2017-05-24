@@ -16,10 +16,32 @@ import alertIconSrc from './resources/alert-icon.svg';
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
 
+const Editor = ({ manifest, sourceFile, onManifestChange, onSourceFileChange, isReadonly, isInStickyMode, alerter }) => {
+  if (manifest.implementation.type === 'file') {
+    let FileEditor = null;
+    if (manifest.implementation.format === 'jpad') {
+      FileEditor = JPadFullEditor;
+    }
+    return (<FileEditor
+      alerter={alerter}
+      source={sourceFile}
+      onChange={onSourceFileChange}
+      dependencies={manifest.dependencies}
+      onDependencyChanges={dependencies => onManifestChange({ ...manifest, dependencies })}
+      isReadonly={isReadonly}
+      valueType={manifest.valueType}
+      className={classNames(style['key-rules-editor'], { [style.sticky]: isInStickyMode })}
+    />);
+  }
+  if (manifest.implementation.type === 'const') {
+    return <input onManifestChange={value => ({ ...manifest, implementation: { ...manifest.implementation, value } })} value={manifest.implementation.value} />;
+  }
+  return null;
+};
+
 class KeyEditPage extends Component {
   constructor(props) {
     super(props);
-    // this.onMutation = this.onMutation.bind(this);
     this.onKeyNameChanged = this.onKeyNameChanged.bind(this);
     this.onDisplayNameChanged = this.onDisplayNameChanged.bind(this);
   }
@@ -68,14 +90,6 @@ class KeyEditPage extends Component {
     this.props.updateKeyMetaDef(newMeta);
   }
 
-  onDependencyChanges(dependencies) {
-    const oldMeta = this.props.selectedKey.local.meta;
-    const newMeta = {
-      ...oldMeta,
-      dependencies,
-    };
-    this.onSelectedKeyMetaChanged(newMeta);
-  }
 
   render() {
     const { selectedKey, isInAddMode, isInStickyMode, alerter, revision } = this.props;
@@ -110,15 +124,26 @@ class KeyEditPage extends Component {
               isInStickyMode={isInStickyMode}
             />
 
+            <Editor
+              manifest={meta}
+              sourceFile={keyDef.source}
+              onSourceFileChange={source => this.props.updateKeyDef({ source })}
+              onManifestChange={manifest => this.onSelectedKeyMetaChanged(manifest)}
+              isReadonly={isReadonly}
+              isInStickyMode={isInStickyMode}
+              alerter={alerter}
+            />
+
+            {/*
             <JPadFullEditor
               {...{ keyDef, alerter }}
               source={keyDef.source}
               onChange={source => this.props.updateKeyDef({ source })}
               dependencies={meta.dependencies}
-              onDependencyChanges={deps => this.onDependencyChanges(deps)}
+              onDependencyChanges={manifest => this.onSelectedKeyMetaChanged(manifest)}
               isReadonly={isReadonly}
               className={classNames(style['key-rules-editor'], { [style.sticky]: isInStickyMode })}
-            />
+            />*/}
 
           </div>
 

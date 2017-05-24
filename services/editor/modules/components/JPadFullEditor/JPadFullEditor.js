@@ -25,7 +25,7 @@ const MutatorFor = propName => Comp =>
     }
   };
 
-const KeyRulesEditor = ({ keyDef, mutate, onMutation, alerter, isReadonly }) => (
+const KeyRulesEditor = ({ source, valueType, mutate, onMutation, alerter, isReadonly }) => (
   <div className={style['key-rules-editor-container']} disabled={isReadonly}>
 
     <Tabs className={style['tab-container']}>
@@ -44,20 +44,20 @@ const KeyRulesEditor = ({ keyDef, mutate, onMutation, alerter, isReadonly }) => 
         <fieldset disabled={isReadonly} style={{ border: 'none' }} >
           <JPadVisualEditor
             {...{ mutate, alerter }}
-            jpadSource={keyDef.source}
-            valueType={keyDef.valueType}
+            jpadSource={source}
+            valueType={valueType}
           />
         </fieldset>
 
       </TabPanel>
       <TabPanel className={style['tab-content']}>
         <JPadTextEditor
-          source={keyDef.source}
+          source={source}
           onChange={x => onMutation(JSON.parse(x))}
           isReadonly={isReadonly}
         />
         <pre className={style['key-def-json']} style={{ display: 'none' }}>
-          {JSON.stringify(JSON.parse(keyDef.source), null, 4)}
+          {JSON.stringify(JSON.parse(source), null, 4)}
         </pre>
       </TabPanel>
 
@@ -112,25 +112,26 @@ export default compose(
       }
       onChange(JSON.stringify(sourceTree, null, 4));
     },
+    source,
     sourceTree: RulesService.convertToExplicitKey(JSON.parse(source)),
     ...other })),
   MutatorFor('sourceTree'),
   wrapComponentWithClass,
   pure,
   lifecycle({
-    componentWillReceiveProps({ keyDef, mutate }) {
+    componentWillReceiveProps({ valueType, mutate }) {
       const currentValueType = mutate.in('valueType').getValue();
-      if (keyDef.valueType === currentValueType) return;
+      if (valueType === currentValueType) return;
 
       const currentDefaultValue = mutate.in('defaultValue').getValue();
 
       mutate.apply((m) => {
-        m.in('valueType').updateValue(keyDef.valueType);
+        m.in('valueType').updateValue(valueType);
         if (currentDefaultValue !== undefined) {
-          const modifiedDefaultValue = getTypedValue(currentDefaultValue, keyDef.valueType);
+          const modifiedDefaultValue = getTypedValue(currentDefaultValue, valueType);
           m.in('defaultValue').updateValue(modifiedDefaultValue);
         }
-        changeValueType(keyDef.valueType, m.in('rules'), m.in('partitions').getValue().length);
+        changeValueType(valueType, m.in('rules'), m.in('partitions').getValue().length);
         return m;
       });
     },
