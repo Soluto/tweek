@@ -21,7 +21,7 @@ module.exports = function (files) {
       }
       if (meta.implementation.type === "const") {
         keyDef.format = "const";
-        keyDef.payload = meta.implementation.value;
+        keyDef.payload = JSON.stringify(meta.implementation.value);
       }
       return [meta.key_path, keyDef];
     })))
