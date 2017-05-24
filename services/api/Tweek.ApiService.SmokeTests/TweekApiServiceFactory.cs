@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,7 +9,6 @@ using FSharpUtils.Newtonsoft;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestEase;
-using Tweek.ApiService.SmokeTests.Validation.Models;
 using Tweek.Utils;
 using Xunit.Abstractions;
 
