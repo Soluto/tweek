@@ -11,7 +11,7 @@ import EditableText from './EditableText/EditableText';
 import EditableTextArea from './EditableTextArea/EditableTextArea';
 import RevisionHistory from './RevisionHistory';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
-import ComboBox from '../../../../../components/common/ComboBox/NewComboBox';
+import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import alertIconSrc from './resources/alert-icon.svg';
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';

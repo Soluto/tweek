@@ -3,7 +3,7 @@ import { compose } from 'recompose';
 import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import changeCase from 'change-case';
-import ComboBox from '../../../../../../components/common/ComboBox/NewComboBox';
+import ComboBox from '../../../../../../components/common/ComboBox/ComboBox';
 import * as TypesServices from '../../../../../../services/types-service';
 import { updateKeyValueType } from '../../../../../../store/ducks/selectedKey';
 import style from './KeyValueTypeSelector.css';

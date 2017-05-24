@@ -3,7 +3,7 @@ import R from 'ramda';
 import { compose, mapProps } from 'recompose';
 import CustomSlider from '../../../../../../../../components/common/CustomSlider/CustomSlider';
 import TypedInput from '../../../../../../../../components/common/Input/TypedInput';
-import ComboBox from '../../../../../../../../components/common/ComboBox/NewComboBox';
+import ComboBox from '../../../../../../../../components/common/ComboBox/ComboBox';
 import style from './RuleValue.css';
 import * as TypesService from '../../../../../../../../services/types-service';
 

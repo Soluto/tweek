@@ -2,7 +2,7 @@ import React from 'react';
 import changeCase from 'change-case';
 import R from 'ramda';
 import { WithContext as ReactTags } from 'react-tag-input';
-import ComboBox from '../../../../../../../../../components/common/ComboBox/NewComboBox';
+import ComboBox from '../../../../../../../../../components/common/ComboBox/ComboBox';
 import Input from '../../../../../../../../../components/common/Input/Input';
 import { inOp } from '../../../../../../../../../services/operators-provider';
 import style from './styles.css';

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import changeCase from 'change-case';
 import { getIdentities } from '../../../../../services/context-service';
 import { openContext } from '../../../../../store/ducks/context';
-import ComboBox from '../../../../../components/common/ComboBox/NewComboBox';
+import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import Input from '../../../../../components/common/Input/Input';
 import style from './SearchBox.css';
 
