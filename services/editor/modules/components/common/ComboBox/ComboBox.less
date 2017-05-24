@@ -2,3 +2,21 @@
 .combo-box-default-wrapper-theme-class {
   .combo-box-basic;
 }
+
+:global(.combo-box-wrapper) {
+  display: flex;
+  flex-direction: column;
+
+  :global(.combo-box-suggestions-container) {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    border: solid black 1px;
+
+    :global(.combo-box-suggestion-wrapper) {
+      &:global(.isSelected) {
+        background-color: yellow;
+      }
+    }
+  }
+}
