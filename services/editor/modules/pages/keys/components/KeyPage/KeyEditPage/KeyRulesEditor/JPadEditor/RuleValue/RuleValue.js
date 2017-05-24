@@ -3,7 +3,7 @@ import R from 'ramda';
 import { compose, mapProps } from 'recompose';
 import CustomSlider from '../../../../../../../../components/common/CustomSlider/CustomSlider';
 import TypedInput from '../../../../../../../../components/common/Input/TypedInput';
-import ComboBox from '../../../../../../../../components/common/ComboBox/ComboBox';
+import ComboBox from '../../../../../../../../components/common/ComboBox/NewComboBox';
 import style from './RuleValue.css';
 import * as TypesService from '../../../../../../../../services/types-service';
 
@@ -105,9 +105,9 @@ const IdentitySelection = ({identities, onChange, ownerType }) => {
       <label className={style['identity-selection-title']}>Identity: </label>
       <div className={style['identity-selection-combobox-wrapper']}>
         <ComboBox
-          options={identities}
-          onChange={onChange}
-          selected={[ownerType]}
+          suggestions={identities}
+          onChange={(_,e) => e && onChange(e)}
+          value={ownerType}
         />
       </div>
     </div>
