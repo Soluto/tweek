@@ -2,7 +2,7 @@ import path from 'path';
 import R from 'ramda';
 import { convertMetaToNewFormat } from '../../utils/meta-legacy';
 
-function generateEmptyMeta(keyPath) {
+function generateEmptyManifest(keyPath) {
   return ({
     key_path: keyPath,
     meta: {
@@ -33,7 +33,7 @@ function getNewJpadFormatSourceIfNeeded(originalJpadSource) {
   });
 }
 
-function getPathForMeta(keyName) {
+function getPathForManifest(keyName) {
   return `meta/${keyName}.json`;
 }
 
@@ -46,37 +46,37 @@ function getKeyFromPath(keyPath) {
   return keyPath.substring(0, keyPath.length - ext.length);
 }
 
-async function getKeyDef(meta, repo, revision) {
-  if (meta.implementation.type === 'file') {
+async function getKeyDef(manifest, repo, revision) {
+  if (manifest.implementation.type === 'file') {
     const keyDef = {
-      source: await repo.readFile(getPathForSourceFile(meta), { revision }),
-      type: meta.implementation.format,
+      source: await repo.readFile(getPathForSourceFile(manifest), { revision }),
+      type: manifest.implementation.format,
     };
-    if (meta.implementation.format === 'jpad') {
+    if (manifest.implementation.format === 'jpad') {
       keyDef.source = getNewJpadFormatSourceIfNeeded(keyDef.source);
     }
     return keyDef;
   }
-  if (meta.implementation.type === 'const') {
-    return { source: meta.implementation.value, type: 'const' };
+  if (manifest.implementation.type === 'const') {
+    return { source: manifest.implementation.value, type: 'const' };
   }
   throw new Error('unsupported type');
 }
 
-async function getRevisionHistory(meta, repo) {
-  const fileMeta = (meta.implementation.type === 'file') ?
-    repo.getHistory(`rules/${meta.key_path}.${meta.implementation.format}`) : Promise.resolve([]);
+async function getRevisionHistory(manifest, repo) {
+  const fileMeta = (manifest.implementation.type === 'file') ?
+    repo.getHistory(`rules/${manifest.key_path}.${manifest.implementation.format}`) : Promise.resolve([]);
 
-  return R.uniqBy(x => x.sha, [...(await repo.getHistory(`meta/${meta.key_path}.json`)), ...(await fileMeta)]);
+  return R.uniqBy(x => x.sha, [...(await repo.getHistory(`meta/${manifest.key_path}.json`)), ...(await fileMeta)]);
 }
 
-async function getMetaFile(keyPath, gitRepo, revision) {
-  const pathForMeta = getPathForMeta(keyPath);
+async function getManifestFile(keyPath, gitRepo, revision) {
+  const pathForManifest = getPathForManifest(keyPath);
   try {
-    const meta = JSON.parse(await gitRepo.readFile(pathForMeta, { revision }));
-    return meta.meta ? meta : convertMetaToNewFormat(keyPath, { meta });
+    const manifest = JSON.parse(await gitRepo.readFile(pathForManifest, { revision }));
+    return manifest.meta ? manifest : convertMetaToNewFormat(keyPath, { manifest });
   } catch (exp) {
-    return generateEmptyMeta(keyPath);
+    return generateEmptyManifest(keyPath);
   }
 }
 
@@ -95,31 +95,31 @@ export default class KeysRepository {
 
   getKeyDetails(keyPath, { revision } = {}) {
     return this._gitTransactionManager.read(async (gitRepo) => {
-      const meta = await getMetaFile(keyPath, gitRepo, revision);
-      const keyDef = getKeyDef(meta, gitRepo, revision);
-      const revisionHistory = getRevisionHistory(meta, gitRepo);
+      const manifest = await getManifestFile(keyPath, gitRepo, revision);
+      const keyDef = getKeyDef(manifest, gitRepo, revision);
+      const revisionHistory = getRevisionHistory(manifest, gitRepo);
       return {
         revisionHistory: await revisionHistory,
         keyDef: await keyDef,
-        meta,
+        manifest,
       };
     });
   }
 
-  getKeyMeta(keyPath, { revision } = {}) {
+  getKeyManifest(keyPath, { revision } = {}) {
     return this._gitTransactionManager.read(async (gitRepo) => {
-      const pathForMeta = getPathForMeta(keyPath);
-      return JSON.parse(await gitRepo.readFile(pathForMeta, { revision }));
+      const pathForManifest = getPathForManifest(keyPath);
+      return JSON.parse(await gitRepo.readFile(pathForManifest, { revision }));
     });
   }
 
-  updateKey(keyPath, keyMetaSource, keyRulesSource, author) {
+  updateKey(keyPath, manifestSource, keyRulesSource, author) {
     return this._gitTransactionManager.write(async (gitRepo) => {
       // if changing implementation type will be possible in the future, we'll might need better solution
-      await gitRepo.updateFile(getPathForMeta(keyPath), keyMetaSource);
-      const meta = JSON.parse(keyMetaSource);
-      if (meta.implementation.type === 'file') {
-        await gitRepo.updateFile(getPathForSourceFile(meta), keyRulesSource);
+      await gitRepo.updateFile(getPathForManifest(keyPath), manifestSource);
+      const manifest = JSON.parse(manifestSource);
+      if (manifest.implementation.type === 'file') {
+        await gitRepo.updateFile(getPathForSourceFile(manifest), keyRulesSource);
       }
       await gitRepo.commitAndPush(`Editor - updating ${keyPath}`, author);
     });
@@ -127,10 +127,10 @@ export default class KeysRepository {
 
   deleteKey(keyPath, author) {
     return this._gitTransactionManager.write(async (gitRepo) => {
-      const meta = await getMetaFile(keyPath);
-      await gitRepo.deleteFile(getPathForMeta(keyPath));
-      if (meta.implementation.type === 'file') {
-        await gitRepo.deleteFile(getPathForSourceFile(meta));
+      const manifest = await getManifestFile(keyPath);
+      await gitRepo.deleteFile(getPathForManifest(keyPath));
+      if (manifest.implementation.type === 'file') {
+        await gitRepo.deleteFile(getPathForSourceFile(manifest));
       }
 
       await gitRepo.commitAndPush(`Editor - deleting ${keyPath}`, author);

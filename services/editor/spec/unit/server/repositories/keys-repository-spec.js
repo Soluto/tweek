@@ -109,7 +109,7 @@ describe('keys-repository', () => {
   });
 
   describe('getKeyDetails', () => {
-    const metaRevisions = {
+    const manifestRevisions = {
       'revision-1': {
         key_path: testKeyPath,
         meta: {
@@ -205,7 +205,7 @@ describe('keys-repository', () => {
     beforeEach(() => {
       mockGitRepo.getHistory = jest.fn((path, { revision = 'revision-3' } = {}) => getKeyRevisions(revision));
       mockGitRepo.readFile = jest.fn((path, { revision = 'revision-3' } = {}) =>
-        JSON.stringify(path.startsWith('meta') ? metaRevisions[revision] : keyRevisions[revision]));
+        JSON.stringify(path.startsWith('meta') ? manifestRevisions[revision] : keyRevisions[revision]));
     });
 
     it('should return key definition with the source for the jpad', async () => {
@@ -234,29 +234,35 @@ describe('keys-repository', () => {
       expect(keyDetails.revisionHistory).toEqual(getKeyRevisions('revision-3'));
     });
 
-    it('should parse and return meta as an object', async () => {
+    it('should parse and return manifest as an object', async () => {
       // Act
       const keyDetails = await target.getKeyDetails(testKeyPath);
 
       // Assert
-      expect(keyDetails.meta).toEqual(metaRevisions['revision-3']);
+      expect(keyDetails.manifest).toEqual(manifestRevisions['revision-3']);
     });
 
-    it('should parse and return meta as an object for specified revision', async () => {
+    it('should parse and return manifest as an object for specified revision', async () => {
       // Act
       const keyDetails = await target.getKeyDetails(testKeyPath, { revision: 'revision-2' });
 
       // Assert
-      expect(keyDetails.meta).toEqual(metaRevisions['revision-2']);
+      expect(keyDetails.manifest).toEqual(manifestRevisions['revision-2']);
     });
 
     it('should convert old JPAD format to new format if needed', async () => {
       // Arrange
       const metaSource = JSON.stringify({
-        displayName: 'test',
-        description: '',
-        tags: [],
+        meta: {
+          name: 'test',
+          description: '',
+          tags: [],
+        },
         valueType: '',
+        implementation: {
+          type: 'file',
+          format: 'jpad',
+        },
       });
 
 
