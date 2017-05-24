@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Rx from 'rxjs';
 import R from 'ramda';
 import { compose, pure, mapPropsStream, createEventHandler } from 'recompose';
+import classnames from 'classnames';
 import ClickOutside from './ClickOutside';
 import InputWithHint from './InputWithHint';
 import Suggestions from './Suggestions';
@@ -96,6 +97,7 @@ class ComboBoxComponent extends Component {
       value,
       suggestions,
       getLabel,
+      className,
 
       onChange,
       onKeyDown,
@@ -105,7 +107,7 @@ class ComboBoxComponent extends Component {
 
     return (
       <ClickOutside
-        className="combo-box-container"
+        className={classnames('combo-box-wrapper', className)}
         onFocus={() => setFocus(true)}
         onClickOutside={() => setFocus(false)}
       >
@@ -136,13 +138,9 @@ const ComboBox = compose(
     const highlighted$ = onHighlighted$.startWith({index: -1}).distinctUntilChanged();
 
     const value$ = Rx.Observable.merge(
-      props$
-        .map(({value, getLabel}) => ({ input: getLabel(value), selected: value}))
-        .distinctUntilChanged(R.equals),
-      onInputChanged$
-        .distinctUntilChanged(R.equals),
+      props$.map(({value, getLabel}) => ({ input: getLabel(value), selected: value})).distinctUntilChanged(R.equals),
+      onInputChanged$.distinctUntilChanged(R.equals),
     ).distinctUntilChanged(R.equals);
-
 
     const propsWithValue$ = Rx.Observable.combineLatest(props$, value$)
       .map(([props, { input: value }]) => ({ ...props, value })).share();
@@ -190,6 +188,7 @@ ComboBox.propTypes = {
   getLabel: PropTypes.func,
   showValueInOptions: PropTypes.bool,
   autofocus: PropTypes.bool,
+  className: PropTypes.string,
 };
 
 ComboBox.defaultProps = {
