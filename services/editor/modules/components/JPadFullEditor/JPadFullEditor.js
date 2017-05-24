@@ -116,7 +116,6 @@ export default compose(
     sourceTree: RulesService.convertToExplicitKey(JSON.parse(source)),
     ...other })),
   MutatorFor('sourceTree'),
-  wrapComponentWithClass,
   pure,
   lifecycle({
     componentWillReceiveProps({ valueType, mutate }) {
