@@ -12,13 +12,13 @@ namespace Tweek.ApiService.SmokeTests.Swagger
         private ITestOutputHelper mOutput;
         private ITweekApi mTweekApi;
 
-        public Swagger(ITweekApi tweekApi, ITestOutputHelper output)
+        public Swagger(ITestOutputHelper output)
         {
-            mTweekApi = tweekApi;
+            mTweekApi = mTweekApi = TweekApiServiceFactory.GetTweekApiClient(output);
             mOutput = output;
         }
 
-        [Theory(DisplayName = "Verify that Swagger is available on the expected endpoint")]
+        [Fact(DisplayName = "Verify that Swagger is available on the expected endpoint")]
         public async Task VerifyThatSwaggerIsPresent()
         {
             var result = await mTweekApi.GetSwagger();
