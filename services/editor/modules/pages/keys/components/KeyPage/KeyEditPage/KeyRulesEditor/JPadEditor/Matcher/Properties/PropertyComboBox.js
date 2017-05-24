@@ -4,7 +4,7 @@ import Chance from 'chance';
 import Highlighter from 'react-highlight-words';
 import ReactTooltip from 'react-tooltip';
 import style from './styles.css';
-import ComboBox from '../../../../../../../../../components/common/ComboBox/NewComboBox';
+import ComboBox from '../../../../../../../../../components/common/ComboBox/ComboBox';
 import * as ContextService from '../../../../../../../../../services/context-service';
 
 const chance = new Chance();

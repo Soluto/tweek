@@ -1,6 +1,6 @@
 import React from 'react';
 import style from './styles.css';
-import ComboBox from '../../../../../../../../../components/common/ComboBox/NewComboBox';
+import ComboBox from '../../../../../../../../../components/common/ComboBox/ComboBox';
 
 // className={style['matcher-operator']}
 

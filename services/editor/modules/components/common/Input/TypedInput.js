@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { withContext, getContext } from 'recompose';
 import changeCase from 'change-case';
 import Input from './Input';
-import ComboBox from '../ComboBox/NewComboBox';
+import ComboBox from '../ComboBox/ComboBox';
 
 export const typesServiceContextType = {
   types: PropTypes.object.isRequired,
