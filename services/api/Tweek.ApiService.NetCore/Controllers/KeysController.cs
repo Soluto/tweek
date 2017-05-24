@@ -57,6 +57,16 @@ namespace Tweek.ApiService.NetCore.Controllers
             return includePaths.Select(x=> ConfigurationPath.From(path.Prefix, x)).ToArray();
         }
 
+        /// <summary>
+        /// Returns the requested key given by path
+        /// </summary>
+        /// <remarks>
+        /// TODO: add example
+        /// </remarks>
+        /// <param name="path">Path of the key</param>
+        /// <returns>Value for the requested key</returns>
+        /// <response code="200">Value for the requested key</response>
+        /// <response code="403">Access denied</response>
         [HttpGet("api/v1/keys/{*path}")]
         [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden)]

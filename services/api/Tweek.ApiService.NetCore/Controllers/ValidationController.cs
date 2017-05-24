@@ -29,17 +29,6 @@ namespace Tweek.ApiService.NetCore.Controllers
         {
             if (!User.IsTweekIdentity()) return Forbid();
 
-            Dictionary<string, RuleDefinition> ruleset = null;
-            try
-            {
-                var raw = await (new StreamReader(HttpContext.Request.Body).ReadToEndAsync());
-                ruleset = JsonConvert.DeserializeObject<Dictionary<string, RuleDefinition>>(raw);
-            }
-            catch (Exception)
-            {
-                return BadRequest("invalid ruleset");
-            }
-
             return await mValidateRules(ruleset) ? (ActionResult)Content("true") : BadRequest("invalid ruleset");
         }
     }
