@@ -17,6 +17,23 @@ const keyCode = {
 };
 
 class ComboBoxComponent extends Component {
+  onSuggestionSelected = (index) => {
+    const { onChange, getLabel } = this.props;
+    const selected = this.getSuggestion(index);
+    onChange(getLabel(selected), selected);
+  };
+
+  onInputChange = (input) => {
+    const { suggestions, getLabel, onChange } = this.props;
+    const selected = suggestions.find(s => getLabel(s) === input);
+    onChange(input, selected);
+  };
+
+  getSuggestion = (index) => {
+    const { suggestions } = this.props;
+    return suggestions[Math.max(0, index)];
+  };
+
   get hint() {
     const { value, hasFocus, highlightedSuggestion, suggestions, getLabel } = this.props;
     if (!hasFocus) return '';
@@ -33,23 +50,6 @@ class ComboBoxComponent extends Component {
     if (!suggestion || !suggestion.toLowerCase().startsWith(lowerValue)) return '';
     return value + suggestion.substring(value.length);
   }
-
-  getSuggestion = (index) => {
-    const { suggestions } = this.props;
-    return suggestions[Math.max(0, index)];
-  };
-
-  onSuggestionSelected = (index) => {
-    const { onChange, getLabel } = this.props;
-    const selected = this.getSuggestion(index);
-    onChange(getLabel(selected), selected);
-  };
-
-  onInputChange = (input) => {
-    const { suggestions, getLabel, onChange } = this.props;
-    const selected = suggestions.find(s => getLabel(s) === input);
-    onChange(input, selected);
-  };
 
   handleKeyDown = (e) => {
     const { value, suggestions, highlightedSuggestion, onSuggestionHighlighted, onKeyDown, setFocus, getLabel } = this.props;
@@ -115,14 +115,14 @@ class ComboBoxComponent extends Component {
         <InputWithHint
           {...props}
           value={value}
-          onChange={(e) => this.onInputChange(e.target.value)}
+          onChange={e => this.onInputChange(e.target.value)}
           showHint={hasFocus && (hint.length > 0 || value.length > 0)}
           hint={hint}
           onKeyDown={this.handleKeyDown}
         />
         { hasFocus && suggestions.length > 0 ?
           <Suggestions
-            {...{suggestions, getLabel, highlightedSuggestion, onSuggestionHighlighted}}
+            {...{ suggestions, getLabel, highlightedSuggestion, onSuggestionHighlighted }}
             renderSuggestion={renderSuggestion && (x => renderSuggestion(x, value))}
             onSuggestionSelected={this.onSuggestionSelected}
           /> : null}
@@ -137,10 +137,10 @@ const ComboBox = compose(
     const { handler: setFocus, stream: onFocus$ } = createEventHandler();
     const { handler: onInputChanged, stream: onInputChanged$ } = createEventHandler();
 
-    const highlighted$ = onHighlighted$.startWith({index: -1}).distinctUntilChanged();
+    const highlighted$ = onHighlighted$.startWith({ index: -1 }).distinctUntilChanged();
 
     const value$ = Rx.Observable.merge(
-      props$.map(({value, getLabel}) => ({ input: getLabel(value), selected: value})).distinctUntilChanged(R.equals),
+      props$.map(({ value, getLabel }) => ({ input: getLabel(value), selected: value })).distinctUntilChanged(R.equals),
       onInputChanged$.distinctUntilChanged(R.equals),
     ).distinctUntilChanged(R.equals);
 
@@ -149,7 +149,7 @@ const ComboBox = compose(
 
     const suggestions$ = propsWithValue$
       .distinctUntilChanged((x, y) => R.equals(...[x, y].map(R.pick(['suggestions', 'value', 'showValueInOptions']))))
-      .map(({suggestions, filterBy, value, getLabel, showValueInOptions}) => {
+      .map(({ suggestions, filterBy, value, getLabel, showValueInOptions }) => {
         const filterFunc = filterBy || ((input, suggestion) => input === '' || getLabel(suggestion).toLowerCase().includes(input));
 
         const filteredSuggestions = suggestions.filter(s => filterFunc(value.toLowerCase(), s));
@@ -157,25 +157,25 @@ const ComboBox = compose(
         return filteredSuggestions;
       })
       .withLatestFrom(highlighted$, (suggestions, highlighted) => ({ suggestions, highlighted }))
-      .do(({suggestions, highlighted}) => {
+      .do(({ suggestions, highlighted }) => {
         if (highlighted.index === -1) return;
         const index = R.findIndex(R.equals(highlighted.suggestion))(suggestions);
-        onHighlighted({...highlighted, index});
+        onHighlighted({ ...highlighted, index });
       })
       .map(R.prop('suggestions'));
 
     return Rx.Observable.combineLatest(propsWithValue$, suggestions$, highlighted$, onFocus$.startWith(false).distinctUntilChanged())
-      .map(([{onChange, ...props}, suggestions, { index: highlightedSuggestion }, hasFocus]) => ({
+      .map(([{ onChange, ...props }, suggestions, { index: highlightedSuggestion }, hasFocus]) => ({
         ...props,
         hasFocus,
         setFocus,
         suggestions,
         highlightedSuggestion,
         onChange: (input, selected) => {
-          onInputChanged({input, selected});
+          onInputChanged({ input, selected });
           onChange && onChange(input, selected);
         },
-        onSuggestionHighlighted: index => onHighlighted({index, suggestion: suggestions[index]}),
+        onSuggestionHighlighted: index => onHighlighted({ index, suggestion: suggestions[index] }),
       }))
       .map(R.omit(['filterBy', 'showValueInOptions']));
   }),
@@ -197,7 +197,10 @@ ComboBox.propTypes = {
 ComboBox.defaultProps = {
   autofocus: false,
   showValueInOptions: false,
-  getLabel: obj => obj === undefined ? '' : (obj.label === undefined ? obj.toString() : obj.label),
+  getLabel: (obj) => {
+    if (obj === undefined) return '';
+    return obj.label === undefined ? obj.toString() : obj.label;
+  },
 };
 
 export default ComboBox;

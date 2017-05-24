@@ -27,10 +27,10 @@ SuggestionItem.defaultProps = {
   disabled: false,
 };
 
-const Suggestions = ({suggestions, getLabel, highlightedSuggestion, onSuggestionSelected, onSuggestionHighlighted, renderSuggestion}) => (
+const Suggestions = ({ suggestions, getLabel, highlightedSuggestion, onSuggestionSelected, onSuggestionHighlighted, renderSuggestion }) => (
   <ul className="combo-box-suggestions-container">
     {
-      suggestions.map((x,i) => (
+      suggestions.map((x, i) => (
         <SuggestionItem
           key={`${i}_${getLabel(x)}`}
           onSelect={() => onSuggestionSelected(i)}

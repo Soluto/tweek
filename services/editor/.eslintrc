@@ -1,4 +1,12 @@
 {
+  "parserOptions": {
+    "ecmaVersion": 8,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "parser": "babel-eslint",
   "extends": "airbnb",
   "rules": {
     "arrow-body-style": ["warn", "as-needed"],
@@ -12,10 +20,12 @@
     "no-param-reassign": "warn",
     "no-plusplus": "off",
     "no-underscore-dangle": "warn",
+    "no-unused-expressions": "off",
     "no-unused-vars": "warn",
     "react/forbid-prop-types": "off",
     "react/jsx-filename-extension": "off",
     "react/no-array-index-key": "warn",
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    "react/require-default-props": "off"
   }
 }
