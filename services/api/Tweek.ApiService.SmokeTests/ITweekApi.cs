@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using RestEase;
 using FSharpUtils.Newtonsoft;
-using Tweek.ApiService.SmokeTests.Validation.Models;
 
 namespace Tweek.ApiService.SmokeTests
 {

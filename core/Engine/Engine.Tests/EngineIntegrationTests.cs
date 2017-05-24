@@ -444,7 +444,7 @@ namespace Engine.IntegrationTests
                 ["abc/somepath"] = JPadGenerator.New().AddSingleVariantRule(matcher: JsonConvert.SerializeObject(new Dictionary<string, object>()
             {
                 {"@@key:abc/dep_path1", true},
-                {"@@key:abc/dep_path2", true}
+                {"keys.abc/dep_path2", true}
             }),
                 value: true).Generate()
             };
