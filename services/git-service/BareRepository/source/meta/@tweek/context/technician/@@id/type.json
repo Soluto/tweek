@@ -1,6 +1,17 @@
 {
-    "displayName": "@tweek/context/technician/@@id/type",
-    "description": "",
-    "tags": [],
-    "valueType": "string"
+    "key_path": "@tweek/context/technician/@@id/type",
+    "meta": {
+        "name": "@tweek/context/technician/@@id/type",
+        "description": "",
+        "tags": [],
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "file",
+        "format": "jpad"
+    },
+    "valueType": "string",
+    "enabled": true,
+    "dependencies": []
 }

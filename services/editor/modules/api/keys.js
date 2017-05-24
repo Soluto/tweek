@@ -30,7 +30,7 @@ function convertMetaToNewFormat(keyPath, {keyDef, meta}) {
       format: keyDef.type,
     },
     valueType: meta.valueType,
-    dependencies: R.uniq(getAllGroups(keyDef.source, /"@@key:(.+?)"/, 1)),
+    dependencies: R.uniq(getAllGroups(keyDef.source, /"(?:@@key:|keys\.)(.+?)"/, 1)),
     enabled: true,
   };
 }
