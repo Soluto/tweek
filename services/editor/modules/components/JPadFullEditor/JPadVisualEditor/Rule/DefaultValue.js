@@ -1,10 +1,10 @@
 import React from 'react';
-import * as TypesService from '../../../../../../../../services/types-service';
-import ComboBox from '../../../../../../../../components/common/ComboBox/ComboBox';
+import * as TypesService from '../../../../services/types-service';
+import ComboBox from '../../../../components/common/ComboBox/ComboBox';
 import style from './DefaultValue.css';
 
-const booleanSingleVariantSuggestions = [{label: 'true', value: true}, {label: 'false', value: false}];
-const DefaultValueInput = ({value = '', valueType, onChange}) => {
+const booleanSingleVariantSuggestions = [{ label: 'true', value: true }, { label: 'false', value: false }];
+const DefaultValueInput = ({ value = '', valueType, onChange }) => {
   if (valueType === TypesService.types.boolean.name) {
     return (
       <ComboBox
@@ -15,7 +15,7 @@ const DefaultValueInput = ({value = '', valueType, onChange}) => {
         clearButton
         onChange={e => onChange(e && e.value)}
       />
-    )
+    );
   }
   return (
     <input
@@ -24,16 +24,14 @@ const DefaultValueInput = ({value = '', valueType, onChange}) => {
       placeholder="Enter value here"
       className={style['values-input']}
     />
-  )
+  );
 };
 
-const DefaultValue = (props) => {
-  return (
+const DefaultValue = (props) => (
     <div className={style['default-value-container']}>
       <label className={style['default-value-label']}>Default Value:</label>
       <DefaultValueInput {...props}/>
     </div>
   );
-};
 
 export default DefaultValue;

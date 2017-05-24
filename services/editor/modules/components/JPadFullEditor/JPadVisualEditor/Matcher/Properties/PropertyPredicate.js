@@ -1,10 +1,10 @@
 import React from 'react';
 import R from 'ramda';
+import { withState, compose, mapProps } from 'recompose';
 import { Operator } from './Operator';
 import PropertyValue from './PropertyValue';
-import * as ContextService from "../../../../../../../../../services/context-service";
-import { withState, compose, mapProps } from 'recompose';
-import { equal, inOp, allOperators, getPropertySupportedOperators } from '../../../../../../../../../services/operators-provider';
+import * as ContextService from '../../../../../services/context-service';
+import { equal, inOp, allOperators, getPropertySupportedOperators } from '../../../../../services/operators-provider';
 
 const translateValue = (oldOperator, newOperator, value) => {
   if (oldOperator.operatorValue === inOp.operatorValue) return value.length > 0 ? value[0] : '';

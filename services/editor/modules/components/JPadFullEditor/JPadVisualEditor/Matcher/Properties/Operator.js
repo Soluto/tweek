@@ -1,7 +1,7 @@
 import R from 'ramda';
 import React from 'react';
 import style from './styles.css';
-import ComboBox from '../../../../../../../../../components/common/ComboBox/ComboBox';
+import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 
 export const Operator = ({ selectedOperator, onUpdate, supportedOperators }) => {
   const props = {};

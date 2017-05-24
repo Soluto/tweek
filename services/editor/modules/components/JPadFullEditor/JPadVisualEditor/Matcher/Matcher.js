@@ -1,10 +1,10 @@
 import React from 'react';
 import R from 'ramda';
+import { shouldUpdate } from 'recompose';
 import style from './Matcher.css';
 import PropertyName from './Properties/PropertyName';
 import PropertyPredicate from './Properties/PropertyPredicate';
-import { shouldUpdate } from 'recompose';
-import * as ContextService from '../../../../../../../../services/context-service';
+import * as ContextService from '../../../../services/context-service';
 
 const Property = ({property, predicate, mutate, suggestedValues = [], canBeClosed = true, autofocus}) => {
   return (<div className={style['condition-wrapper']}>

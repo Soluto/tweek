@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import R from 'ramda';
 import classNames from 'classnames';
 import ReactTooltip from 'react-tooltip';
-import KeyRulesEditor from './KeyRulesEditor/KeyRulesEditor';
+import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEditor';
 import style from './KeyEditPage.css';
 import KeyTags from './KeyTags/KeyTags';
 import EditableText from './EditableText/EditableText';
@@ -15,12 +15,11 @@ import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import alertIconSrc from './resources/alert-icon.svg';
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
-import * as RulesService from '../../../../../services/rules-service';
 
 class KeyEditPage extends Component {
   constructor(props) {
     super(props);
-    this.onMutation = this.onMutation.bind(this);
+    // this.onMutation = this.onMutation.bind(this);
     this.onKeyNameChanged = this.onKeyNameChanged.bind(this);
     this.onDisplayNameChanged = this.onDisplayNameChanged.bind(this);
   }
@@ -78,14 +77,6 @@ class KeyEditPage extends Component {
     this.onSelectedKeyMetaChanged(newMeta);
   }
 
-  onMutation(x) {
-    const dependencies = RulesService.getDependencies(x.rules, x.partitions.length);
-    if (!R.equals(this.props.selectedKey.local.meta.dependencies, dependencies)) {
-      this.onDependencyChanges(dependencies);
-    }
-    this.props.updateKeyDef({ source: JSON.stringify(x, null, 4) });
-  }
-
   render() {
     const { selectedKey, isInAddMode, isInStickyMode, alerter, revision } = this.props;
     const { key, local: { meta, keyDef, revisionHistory } } = selectedKey;
@@ -119,10 +110,12 @@ class KeyEditPage extends Component {
               isInStickyMode={isInStickyMode}
             />
 
-            <KeyRulesEditor
+            <JPadFullEditor
               {...{ keyDef, alerter }}
-              sourceTree={RulesService.convertToExplicitKey(JSON.parse(keyDef.source))}
-              onMutation={this.onMutation}
+              source={keyDef.source}
+              onChange={source => this.props.updateKeyDef({ source })}
+              dependencies={meta.dependencies}
+              onDependencyChanges={deps => this.onDependencyChanges(deps)}
               isReadonly={isReadonly}
               className={classNames(style['key-rules-editor'], { [style.sticky]: isInStickyMode })}
             />
@@ -261,7 +254,7 @@ const NewKeyInput = compose(
   keysList,
   keyNameValidation,
   onKeyNameChanged,
-  displayName
+  displayName,
 }) => {
   const suggestions = getKeyNameSuggestions(keysList).map(x => ({ label: x, value: x }));
   return (

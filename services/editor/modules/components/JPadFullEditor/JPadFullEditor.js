@@ -1,12 +1,14 @@
 import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import { compose, pure, lifecycle } from 'recompose';
-import JPadEditor from './JPadEditor/JPadEditor';
+import { compose, pure, lifecycle, mapProps } from 'recompose';
+import R from 'ramda';
+import JPadVisualEditor from './JPadVisualEditor/JPadVisualEditor';
 import JPadTextEditor from './JPadTextEditor/JPadTextEditor';
-import Mutator from '../../../../../../utils/mutator';
-import wrapComponentWithClass from '../../../../../../hoc/wrap-component-with-class';
-import style from './KeyRulesEditor.css';
-import * as TypesService from '../../../../../../services/types-service';
+import Mutator from '../../utils/mutator';
+import wrapComponentWithClass from '../../hoc/wrap-component-with-class';
+import style from './JPadFullEditor.css';
+import * as TypesService from '../../services/types-service';
+import * as RulesService from './rules-utils';
 
 const MutatorFor = propName => Comp =>
   class extends React.Component {
@@ -40,7 +42,7 @@ const KeyRulesEditor = ({ keyDef, mutate, onMutation, alerter, isReadonly }) => 
       </TabList>
       <TabPanel className={style['tab-content']}>
         <fieldset disabled={isReadonly} style={{ border: 'none' }} >
-          <JPadEditor
+          <JPadVisualEditor
             {...{ mutate, alerter }}
             jpadSource={keyDef.source}
             valueType={keyDef.valueType}
@@ -102,6 +104,16 @@ function changeValueType(valueType, rulesMutate, depth) {
 }
 
 export default compose(
+  mapProps(({ source, onDependencyChanges, dependencies, onChange, ...other }) => ({
+    onMutation(sourceTree) {
+      const newDependencies = RulesService.getDependencies(sourceTree.rules, sourceTree.partitions.length);
+      if (!R.equals(dependencies, newDependencies)) {
+        onDependencyChanges(newDependencies);
+      }
+      onChange(JSON.stringify(sourceTree, null, 4));
+    },
+    sourceTree: RulesService.convertToExplicitKey(JSON.parse(source)),
+    ...other })),
   MutatorFor('sourceTree'),
   wrapComponentWithClass,
   pure,
