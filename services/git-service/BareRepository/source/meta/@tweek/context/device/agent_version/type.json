@@ -1,13 +1,14 @@
 {
     "key_path": "@tweek/context/device/agent_version/type",
     "meta": {
+        "name": "Agent Version",
         "description": "",
         "readOnly": false,
         "archived": false
     },
     "implementation": {
-        "type": "file",
-        "format": "jpad"
+        "type": "const",
+        "value": "string"
     },
     "valueType": "string",
     "enabled": true,
