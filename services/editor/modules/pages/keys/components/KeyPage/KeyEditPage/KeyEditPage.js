@@ -11,7 +11,7 @@ import EditableText from './EditableText/EditableText';
 import EditableTextArea from './EditableTextArea/EditableTextArea';
 import RevisionHistory from './RevisionHistory';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
-import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
+import ComboBox from '../../../../../components/common/ComboBox/NewComboBox';
 import alertIconSrc from './resources/alert-icon.svg';
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
@@ -274,12 +274,12 @@ const NewKeyInput = compose(
         />
       </div>
       <ComboBox
-        options={suggestions}
+        suggestions={suggestions}
+        value={displayName}
         placeholder="Enter key full path"
-        onInputChange={text => onKeyNameChanged(text)}
+        onChange={text => onKeyNameChanged(text)}
         showValueInOptions
         className={style['auto-suggest']}
-        selected={displayName && displayName != '' ? [displayName] : []}
       />
       <ReactTooltip
         disable={!keyNameValidation.isShowingHint}
