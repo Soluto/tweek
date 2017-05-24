@@ -18,7 +18,7 @@ const onRouteLeaveConfirmFunc = (props) => {
   const hasChanges = (changes || []).length > 0;
 
   if (hasChanges)
-    return 'You have unsaved changes, are you sure you want to leave this page?'
+    {return 'You have unsaved changes, are you sure you want to leave this page?'};
 };
 
 const keyPageComp = compose(
@@ -27,7 +27,7 @@ const keyPageComp = compose(
       selectedKey: state.selectedKey,
       configKey: params.splat,
       isInAddMode: params.splat === BLANK_KEY_NAME,
-      revision: location.query.revision
+      revision: location.query.revision,
     }),
     { ...selectedKeyActions, ...alertActions }),
   routeLeaveHook(onRouteLeaveConfirmFunc),
@@ -44,17 +44,16 @@ const keyPageComp = compose(
         openKey(configKey, { revision });
       }
     },
-  }))
-  (({ showCustomAlert, showAlert, showConfirm, ...props }) => {
+  }))(({ showCustomAlert, showAlert, showConfirm, ...props }) => {
     const { selectedKey } = props;
     const alerter = {
       showCustomAlert,
       showAlert,
-      showConfirm
+      showConfirm,
     };
     if (!selectedKey ||
       !selectedKey.isLoaded)
-      return <MessageKeyPage message="Loading..." />;
+      {return <MessageKeyPage message="Loading..." />;}
 
     const { keyDef } = selectedKey.local;
     return !keyDef ?

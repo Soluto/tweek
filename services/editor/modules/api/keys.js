@@ -17,18 +17,18 @@ export async function getKey(req, res, { keysRepository }, { params }) {
   const revision = req.query.revision;
   try {
     const keyDetails = await keysRepository.getKeyDetails(keyPath, { revision });
-    res.json({...keyDetails, meta: convertMetaToNewFormat(keyPath, keyDetails)});
+    res.json({...keyDetails, manifest: convertMetaToNewFormat(keyPath, keyDetails)});
   } catch (exp) {
     res.sendStatus(404);
   }
 }
 
-export async function getKeyMeta(req, res, { keysRepository }, { params }) {
+export async function getKeyManifest(req, res, { keysRepository }, { params }) {
   const keyPath = params.splat;
   const revision = req.query.revision;
   try {
-    const meta = await keysRepository.getKeyMeta(keyPath, { revision });
-    res.json(meta);
+    const manifest = await keysRepository.getKeyManifest(keyPath, { revision });
+    res.json(manifest);
   } catch (exp) {
     res.sendStatus(404);
   }
@@ -38,9 +38,9 @@ export const saveKey = injectAuthor(async function (req, res, { keysRepository, 
   const keyPath = params.splat;
 
   const keyRulesSource = req.body.keyDef.source;
-  const meta = { key_path: keyPath, ...req.body.meta };
-  const keyMetaSource = JSON.stringify(meta, null, 4);
-  await keysRepository.updateKey(keyPath, keyMetaSource, keyRulesSource, author);
+  const manifest = { key_path: keyPath, ...req.body.manifest };
+  const manifestSource = JSON.stringify(manifest, null, 4);
+  await keysRepository.updateKey(keyPath, manifestSource, keyRulesSource, author);
 
   res.send('OK');
 });
