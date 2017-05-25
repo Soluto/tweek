@@ -66,7 +66,7 @@ function safeConvertToBaseType(value, type) {
 export async function getValueTypeDefinition(key) {
   if (!key || key.length === 0) return types.string;
   try {
-    const response = await fetch(`/api/meta/${key}`, { credentials: 'same-origin' });
+    const response = await fetch(`/api/manifests/${key}`, { credentials: 'same-origin' });
     const meta = await response.json();
     return types[meta.valueType] || types.string;
   } catch (err) {
