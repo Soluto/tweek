@@ -16,6 +16,8 @@ const keyCode = {
   TAB: 9,
 };
 
+const compareBy = (...props) => (...args) => R.equals(...args.map(R.pick(props)));
+
 const createCase = (matchCase, x) => {
   if (x === undefined || matchCase) return x;
   if (typeof x === 'function') {
@@ -176,7 +178,7 @@ const ComboBox = compose(
       .map(([props, { input: value }]) => ({ ...props, value })).share();
 
     const suggestions$ = propsWithValue$
-      .distinctUntilChanged((x, y) => R.equals(...[x, y].map(R.pick(['suggestions', 'value', 'showValueInOptions', 'matchCase']))))
+      .distinctUntilChanged(compareBy('suggestions', 'value', 'showValueInOptions', 'matchCase'))
       .map(({ suggestions, filterBy, value, getLabel, showValueInOptions, matchCase }) => {
         const getCaseLabel = createCase(matchCase, getLabel);
 
