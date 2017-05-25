@@ -2,19 +2,3 @@
 .combo-box-default-wrapper-theme-class {
   .combo-box-basic;
 }
-
-:global(.combo-box-wrapper) {
-  display: flex;
-  flex-direction: column;
-
-  :global(.combo-box-suggestions-container) {
-    width: 300px;
-    border: solid black 1px;
-
-    :global(.combo-box-suggestion-item) {
-      &:global(.active), &:hover {
-        background-color: yellow;
-      }
-    }
-  }
-}

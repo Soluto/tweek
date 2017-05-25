@@ -2,11 +2,10 @@ import React, { Component, PropTypes } from 'react';
 import Rx from 'rxjs';
 import R from 'ramda';
 import { compose, pure, mapPropsStream, createEventHandler } from 'recompose';
-import classnames from 'classnames';
 import ClickOutside from './ClickOutside';
 import InputWithHint from './InputWithHint';
 import Suggestions from './Suggestions';
-import './ComboBox.css';
+import style from './ComboBox.css';
 
 const keyCode = {
   ENTER: 13,
@@ -108,24 +107,25 @@ class ComboBoxComponent extends Component {
 
     return (
       <ClickOutside
-        className={classnames('combo-box-wrapper', className)}
+        className={className}
         onFocus={() => setFocus(true)}
         onClickOutside={() => setFocus(false)}
       >
-        <InputWithHint
-          {...props}
-          value={value}
-          onChange={e => this.onInputChange(e.target.value)}
-          showHint={hasFocus && (hint.length > 0 || value.length > 0)}
-          hint={hint}
-          onKeyDown={this.handleKeyDown}
-        />
-        { hasFocus && suggestions.length > 0 ?
-          <Suggestions
-            {...{ suggestions, getLabel, highlightedSuggestion, onSuggestionHighlighted }}
-            renderSuggestion={renderSuggestion && (x => renderSuggestion(x, value))}
-            onSuggestionSelected={this.onSuggestionSelected}
-          /> : null}
+        <div className="bootstrap-typeahead">
+          <InputWithHint
+            {...props}
+            value={value}
+            onChange={e => this.onInputChange(e.target.value)}
+            showHint={hasFocus && (hint.length > 0 || value.length > 0)}
+            hint={hint}
+            onKeyDown={this.handleKeyDown}
+          />
+          { hasFocus && suggestions.length > 0 ?
+            <Suggestions
+              {...{ value, suggestions, getLabel, highlightedSuggestion, onSuggestionHighlighted, renderSuggestion }}
+              onSuggestionSelected={this.onSuggestionSelected}
+            /> : null}
+        </div>
       </ClickOutside>
     );
   }
@@ -195,6 +195,7 @@ ComboBox.propTypes = {
 };
 
 ComboBox.defaultProps = {
+  className: style['combo-box-default-wrapper-theme-class'],
   autofocus: false,
   showValueInOptions: false,
   getLabel: (obj) => {

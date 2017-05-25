@@ -100,6 +100,7 @@ export default ({valueType, mutate, alerter}) => {
           value={defaultValueMutate.getValue()}
           valueType={valueType}
           onChange={updateDefaultValue}
+          className={style['default-value']}
         />
         <div className={style['vertical-separator']}></div>
         <PartitionsSelector {...{partitions, handlePartitionAddition, handlePartitionDelete, alerter}} />

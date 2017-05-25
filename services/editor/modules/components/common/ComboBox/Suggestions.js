@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
+import Highlighter from 'react-highlight-words';
 
 const SuggestionItem = ({ children, className, onSelect, active, disabled, ...props }) => (
   <li className={classnames(className, { active, disabled })} {...props}>
@@ -27,17 +28,22 @@ SuggestionItem.defaultProps = {
   disabled: false,
 };
 
-const Suggestions = ({ suggestions, getLabel, highlightedSuggestion, onSuggestionSelected, onSuggestionHighlighted, renderSuggestion }) => (
-  <ul className="combo-box-suggestions-container">
+const highlightStyle = { fontWeight: 'bold', background: 'inherit', color: 'inherit' };
+
+const Suggestions = ({ suggestions, value, getLabel, highlightedSuggestion, onSuggestionSelected, onSuggestionHighlighted, renderSuggestion }) => (
+  <ul
+    className="bootstrap-typeahead-menu dropdown-menu dropdown-menu-justify"
+    style={{ display: 'block', overflow: 'auto', maxHeight: '300px' }}
+  >
     {
       suggestions.map((x, i) => (
         <SuggestionItem
-          key={`${i}_${getLabel(x)}`}
+          key={getLabel(x)}
           onSelect={() => onSuggestionSelected(i)}
           active={highlightedSuggestion === i}
-          className="combo-box-suggestion-item"
+          onMouseOver={() => onSuggestionHighlighted(i)}
         >
-          { renderSuggestion ? renderSuggestion(x) : getLabel(x) }
+          { renderSuggestion ? renderSuggestion(x, value) : <Highlighter highlightStyle={highlightStyle} searchWords={value.split(' ')} textToHighlight={getLabel(x)} /> }
         </SuggestionItem>
       ))
     }
@@ -45,6 +51,7 @@ const Suggestions = ({ suggestions, getLabel, highlightedSuggestion, onSuggestio
 );
 
 Suggestions.propTypes = {
+  value: PropTypes.string.isRequired,
   suggestions: PropTypes.arrayOf(PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.object,
