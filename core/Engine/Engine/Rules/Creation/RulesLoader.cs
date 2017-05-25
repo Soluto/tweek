@@ -14,24 +14,24 @@ namespace Engine.Rules.Creation
 
     public static class RulesLoader
     {      
-        public static async Task<Func<IReadOnlyDictionary<string, IRule>>> Factory(IRulesDriver driver, GetRuleParser parsers)
+        public static async Task<Func<IReadOnlyDictionary<string, IRule>>> Factory(IRulesDriver driver, GetRuleParser parserResolver)
         {
-            var instance = Parse(await driver.GetAllRules(), parsers);
+            var instance = Parse(await driver.GetAllRules(), parserResolver);
             driver.OnRulesChange += (newRules) =>
             {
                 using (TraceTime("loading new rules"))
                 {
-                    instance = Parse(newRules, parsers);
+                    instance = Parse(newRules, parserResolver);
                 }
 
             };
             return () => instance;
         }
 
-        public static IReadOnlyDictionary<string,IRule> Parse(IDictionary<string, RuleDefinition> rules, GetRuleParser parsers)
+        public static IReadOnlyDictionary<string,IRule> Parse(IDictionary<string, RuleDefinition> rules, GetRuleParser parserResolver)
         {
             return rules.ToDictionary(x=>x.Key.ToLower(), x=> 
-                    parsers(x.Value.Format).Parse(x.Value.Payload));
+                    parserResolver(x.Value.Format).Parse(x.Value.Payload));
         }
     }
 }

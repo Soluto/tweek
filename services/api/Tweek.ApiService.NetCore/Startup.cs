@@ -149,9 +149,7 @@ namespace Tweek.ApiService.NetCore
             app.UseMetricsReporting(lifetime);
         }
 
-        private static GetRuleParser CreateParserResolver()
-        {
-            var jpadParser = JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
+        private static IRuleParser CreateJPadParser() => JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
                 Comparers: Microsoft.FSharp.Core.FSharpOption<IDictionary<string, ComparerDelegate>>.Some(new Dictionary<string, ComparerDelegate>()
                 {
                     ["version"] = Version.Parse
@@ -162,6 +160,10 @@ namespace Tweek.ApiService.NetCore
                         return sha1.ComputeHash(s);
                     }
                 })));
+
+        private static GetRuleParser CreateParserResolver()
+        {
+            var jpadParser = CreateJPadParser();
 
             var dict = new Dictionary<string, IRuleParser>(StringComparer.OrdinalIgnoreCase){
                 ["jpad"] = jpadParser,
