@@ -23,10 +23,7 @@ export default class ContextPageObject extends PageObject {
   }
 
   async openContext(contextType, contextId) {
-    const suggestionSelector = globalSelectors.typeaheadSuggestionByIndex(0);
-
     await this.browser.setValue(contextSelectors.CONTEXT_TYPE_INPUT, contextType)
-      .click(suggestionSelector)
       .setValue(contextSelectors.CONTEXT_ID_INPUT, contextId)
       .click(contextSelectors.OPEN_CONTEXT_BUTTON);
 
