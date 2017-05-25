@@ -14,6 +14,9 @@ export const types = {
   date: {
     name: 'date',
   },
+  object: {
+    name: 'object',
+  },
 };
 
 export async function refreshTypes() {
@@ -35,6 +38,8 @@ export function convertValue(value, targetType) {
       return safeConvertToBaseType(value, 'boolean');
     case 'number':
       return safeConvertToBaseType(value, 'number');
+    case 'object':
+      return safeConvertToBaseType(value, 'object');
     default:
       return value.toString();
   }

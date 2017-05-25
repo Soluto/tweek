@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { compose, pure } from 'recompose';
 import { connect } from 'react-redux';
 import R from 'ramda';
+import Json from 'react-json';
 import classNames from 'classnames';
 import ReactTooltip from 'react-tooltip';
 import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEditor';
@@ -17,7 +18,8 @@ import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier'
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
 import TypedInput from '../../../../../components/common/Input/TypedInput';
 
-const ConstEditor = props => <TypedInput {...props} />;
+const ConstEditor = ({ value, valueType, onChange }) =>
+     valueType === 'object' ? <Json value={value} onChange={onChange} /> : <TypedInput {...{ value, valueType, onChange }} />;
 
 const Editor = ({ manifest, sourceFile, onManifestChange, onSourceFileChange, isReadonly, alerter }) => {
   if (manifest.implementation.type === 'file') {

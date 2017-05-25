@@ -1,16 +1,19 @@
 {
-    "key_path": "@tweek/context/device/agent_version/type",
+    "key_path": "@tweek/custom_types/version",
     "meta": {
-        "name": "Agent Version",
         "description": "",
         "readOnly": false,
         "archived": false
     },
     "implementation": {
         "type": "const",
-        "value": "string"
+        "value": {
+			"base":"string",
+			"comparer":"version",
+			"validation":"/[0-9.]/"
+		}
     },
-    "valueType": "string",
+    "valueType": "object",
     "enabled": true,
     "dependencies": []
 }
