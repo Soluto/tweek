@@ -38,7 +38,7 @@ const Suggestions = ({ suggestions, value, getLabel, highlightedSuggestion, onSu
     {
       suggestions.map((x, i) => (
         <SuggestionItem
-          key={getLabel(x)}
+          key={`${i}_${getLabel(x)}`}
           onSelect={() => onSuggestionSelected(i)}
           active={highlightedSuggestion === i}
           onMouseOver={() => onSuggestionHighlighted(i)}
