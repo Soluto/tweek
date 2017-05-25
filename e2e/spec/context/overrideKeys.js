@@ -18,8 +18,8 @@ describe('override keys', () => {
     contextPageObject.goToBase();
   });
 
-  it('should modify override keys', async () => {
-    await contextPageObject.openContext(contextType, contextId);
+  it('should modify override keys', () => {
+    contextPageObject.openContext(contextType, contextId);
 
     const fixedKeys = {
       'some/key': 'someValue',
@@ -27,13 +27,13 @@ describe('override keys', () => {
     };
 
     for (const key in fixedKeys) {
-      await contextPageObject.addOverrideKey(key, fixedKeys[key]);
-      await browser.click(contextSelectors.ADD_KEY_BUTTON);
+      contextPageObject.addOverrideKey(key, fixedKeys[key]);
+      browser.click(contextSelectors.ADD_KEY_BUTTON);
     }
 
-    await contextPageObject.saveChanges();
+    contextPageObject.saveChanges();
 
-    let currentContext = await contextPageObject.getOverrideKeys(contextType, contextId);
+    let currentContext = contextPageObject.getOverrideKeys(contextType, contextId);
     let diffs = diff(currentContext, fixedKeys);
     expect(diffs).to.equal(undefined, 'contextData is not as expected. diffs are:' + JSON.stringify(diffs));
 
@@ -42,14 +42,14 @@ describe('override keys', () => {
       'some/new/key': 'anotherValue',
     };
 
-    await browser.click(contextSelectors.keyDeleteButton(typedKey));
-    await browser.setValue(contextSelectors.keyValueInput('some/key'), 'newValue');
-    await browser.click(contextSelectors.ADD_KEY_BUTTON);
-    await contextPageObject.addOverrideKey('some/new/key', 'anotherValue');
+    browser.click(contextSelectors.keyDeleteButton(typedKey));
+    browser.setValue(contextSelectors.keyValueInput('some/key'), 'newValue');
+    browser.click(contextSelectors.ADD_KEY_BUTTON);
+    contextPageObject.addOverrideKey('some/new/key', 'anotherValue');
 
-    await contextPageObject.saveChanges();
+    contextPageObject.saveChanges();
 
-    currentContext = await contextPageObject.getOverrideKeys(contextType, contextId);
+    currentContext = contextPageObject.getOverrideKeys(contextType, contextId);
     diffs = diff(currentContext, updatedKeys);
     expect(diffs).to.equal(undefined, 'contextData is not as expected. diffs are:' + JSON.stringify(diffs));
   });

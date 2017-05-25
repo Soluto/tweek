@@ -9,57 +9,56 @@ export default class ContextPageObject extends PageObject {
   static CONTEXT_PAGE_URL = 'context';
 
   goToBase() {
-    return this.browser.url(PageObject.BASE_URL + ContextPageObject.CONTEXT_PAGE_URL)
-      .waitForVisible(contextSelectors.CONTEXT_TYPE_INPUT, 5000);
+    browser.url(PageObject.BASE_URL + ContextPageObject.CONTEXT_PAGE_URL)
+    browser.waitForVisible(contextSelectors.CONTEXT_TYPE_INPUT, 5000);
   }
 
   waitForContext(contextType, contextId) {
-    return this.browser.waitForVisible(contextSelectors.ADD_KEY_BUTTON, 5000)
-      .waitForVisible(contextSelectors.CURRENT_CONTEXT_TYPE, 5000)
-      .waitUntil(() => {
+    browser.waitForVisible(contextSelectors.ADD_KEY_BUTTON, 5000);
+    browser.waitForVisible(contextSelectors.CURRENT_CONTEXT_TYPE, 5000);
+    browser.waitUntil(() => {
         return this.browser.getText(contextSelectors.CURRENT_CONTEXT_TYPE).toLowerCase() == contextType.toLowerCase() &&
           this.browser.getText(contextSelectors.CURRENT_CONTEXT_ID).toLowerCase() == contextId.toLowerCase();
       }, 5000);
   }
 
-  async openContext(contextType, contextId) {
+  openContext(contextType, contextId) {
     const suggestionSelector = globalSelectors.typeaheadSuggestionByIndex(0);
 
-    await this.browser.setValue(contextSelectors.CONTEXT_TYPE_INPUT, contextType)
-      .click(suggestionSelector)
-      .setValue(contextSelectors.CONTEXT_ID_INPUT, contextId)
-      .click(contextSelectors.OPEN_CONTEXT_BUTTON);
+    browser.setValue(contextSelectors.CONTEXT_TYPE_INPUT, contextType);
+    browser.click(suggestionSelector)
+    browser.setValue(contextSelectors.CONTEXT_ID_INPUT, contextId)
+    browser.click(contextSelectors.OPEN_CONTEXT_BUTTON);
 
-    await this.waitForContext(contextType, contextId);
+    this.waitForContext(contextType, contextId);
   }
 
-  async getOverrideKeys(contextType, contextId) {
+  getOverrideKeys(contextType, contextId) {
     const FIXED_KEY_PREFIX = '@fixed:';
 
-    const tweekApi = await tweekApiClient;
-    const response = await tweekApi.get(`/api/v1/context/${contextType}/${contextId}`);
-    const fixedKeys = R.pickBy((_, prop) => prop.startsWith(FIXED_KEY_PREFIX), response.data);
+    const response = tweekApiClient.getContext(contextType, contextId);
+    const fixedKeys = R.pickBy((_, prop) => prop.startsWith(FIXED_KEY_PREFIX), response);
 
     return Object.keys(fixedKeys).reduce((result, key) => ({...result, [key.substring(FIXED_KEY_PREFIX.length)]: fixedKeys[key]}), {});
   }
 
   isSaving() {
-    return this.browser.getAttribute(contextSelectors.SAVE_CHANGES_BUTTON, 'data-state-is-saving') === 'true';
+    return browser.getAttribute(contextSelectors.SAVE_CHANGES_BUTTON, 'data-state-is-saving') === 'true';
   }
 
   hasChanges() {
-    return this.browser.getAttribute(contextSelectors.SAVE_CHANGES_BUTTON, 'data-state-has-changes') === 'true';
+    return browser.getAttribute(contextSelectors.SAVE_CHANGES_BUTTON, 'data-state-has-changes') === 'true';
   }
 
   saveChanges() {
-    return this.browser.click(contextSelectors.SAVE_CHANGES_BUTTON)
-      .waitUntil(() => !this.hasChanges() && !this.isSaving(), PageObject.GIT_TRANSACTION_TIMEOUT, "changes were not saved");
+    browser.click(contextSelectors.SAVE_CHANGES_BUTTON)
+    browser.waitUntil(() => !this.hasChanges() && !this.isSaving(), PageObject.GIT_TRANSACTION_TIMEOUT, "changes were not saved");
   }
 
   addOverrideKey(key, value) {
     const valueInputSelector = contextSelectors.keyValueInput(key);
-    return this.browser.setValue(contextSelectors.keyNameInput(), key)
-      .waitForEnabled(valueInputSelector, 5000)
-      .setValue(valueInputSelector, value);
+    browser.setValue(contextSelectors.keyNameInput(), key)
+    browser.waitForEnabled(valueInputSelector, 5000)
+    browser.setValue(valueInputSelector, value);
   }
 }

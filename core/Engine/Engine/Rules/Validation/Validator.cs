@@ -11,15 +11,15 @@ namespace Engine.Rules.Validation
     {
         public delegate Task<bool> ValidationDelegate(IDictionary<string, RuleDefinition> rules);
 
-        public static ValidationDelegate GetValidationDelegate(IRuleParser parser) => rules => Validate(rules, parser);
+        public static ValidationDelegate GetValidationDelegate(GetRuleParser parserResolver) => rules => Validate(rules, parserResolver);
 
-        private static async Task<bool> Validate(IDictionary<string, RuleDefinition> rules, IRuleParser parser)
+        private static async Task<bool> Validate(IDictionary<string, RuleDefinition> rules, GetRuleParser parserResolver)
         {
             var parsingTask = Task.Run(() =>
                 {
                     try
                     {
-                        RulesLoader.Parse(rules, parser);
+                        RulesLoader.Parse(rules, parserResolver);
                         return true;
                     }
                     catch (Exception)

@@ -26,3 +26,7 @@ services:
   tweek-editor:
     environment: 
       - GIT_URL=ssh://git@tweek-git/tweek/tests
+
+  tweek-api:
+    environment:
+      - Rules__Management__SampleIntervalInMs=500

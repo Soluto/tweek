@@ -26,7 +26,6 @@ const TypedInput = ({ safeConvertValue, types, valueType, value, onChange, ...pr
       showValueInOptions={false}
     />);
   }
-
   return <Input {...props} onChange={onChangeConvert} value={value} />;
 };
 

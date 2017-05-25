@@ -14,6 +14,9 @@ export const types = {
   date: {
     name: 'date',
   },
+  object: {
+    name: 'object',
+  },
 };
 
 export async function refreshTypes() {
@@ -35,6 +38,8 @@ export function convertValue(value, targetType) {
       return safeConvertToBaseType(value, 'boolean');
     case 'number':
       return safeConvertToBaseType(value, 'number');
+    case 'object':
+      return safeConvertToBaseType(value, 'object');
     default:
       return value.toString();
   }
@@ -61,7 +66,7 @@ function safeConvertToBaseType(value, type) {
 export async function getValueTypeDefinition(key) {
   if (!key || key.length === 0) return types.string;
   try {
-    const response = await fetch(`/api/meta/${key}`, { credentials: 'same-origin' });
+    const response = await fetch(`/api/manifests/${key}`, { credentials: 'same-origin' });
     const meta = await response.json();
     return types[meta.valueType] || types.string;
   } catch (err) {
