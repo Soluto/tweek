@@ -4,87 +4,121 @@ import KeysAsserts from '../../KeysAsserts';
 import KeysPageObject from '../../utils/KeysPageObject';
 import assert from 'assert';
 import selectors from '../../selectors/keySelectors';
+import tweekApiClient from '../../utils/tweekApiClient';
 
-describe('edit key', () => {
-  const keysPageObject = new KeysPageObject(browser);
-
-  const keyToEdit = keysPageObject.generateTestKeyName('edit_key_test');
-  const testFolder = KeysPageObject.TEST_KEYS_FOLDER;
-  const editKeyTestFolder = '@edit_key';
-  const keyToEditFullPath = `${testFolder}/${editKeyTestFolder}/${keyToEdit}`;
-
-  const keysAsserts = new KeysAsserts(keysPageObject, browser);
-
-  const expectedKeySource = {
-    partitions: [],
-    valueType: "string",
-    rules: [{
-      "Id": "985627a1-d627-5516-89a9-79bc1b5515d0",
-      "Matcher": {
-        "user.AgentVersion": "1.1.1",
-        "user.FavoriteFruit": "Banana",
-        "user.BirthDate": {
-          "$withinTime": "3d"
-        }
-      },
-      "Value": "",
-      "Type": "SingleVariant"
-    },
-    {
-      "Id": "b74a6ea7-3ad6-58bd-9159-8460162b2e42",
-      "Matcher": {},
-      "Value": "some value",
-      "Type": "SingleVariant"
-    }],
-    defaultValue: 'some default value'
-  };
-
-  before(() => {
-    keysPageObject.goToBase();
-    keysPageObject.addEmptyKey(keyToEditFullPath);
-  });
-
-  function addRuleAndAssertItsFocus(numberOfRules) {
-
-    for (var i = 0; i < numberOfRules; i++) {
-      let ruleFirstConditionPropertyName = selectors.conditionPropertyName(i, 1);
-      browser.click(selectors.ADD_RULE_BUTTON);
-      assert(browser.hasFocus(ruleFirstConditionPropertyName), 'should focus the added rule first condition property name');
+describe('edit keys', () => {
+    const keysPageObject = new KeysPageObject(browser);
+    const keysAsserts = new KeysAsserts(keysPageObject, browser);
+    function goToKey(keyName){
+        keysPageObject.goToKey(keyName);
+        browser.windowHandleMaximize();
+        keysAsserts.assertKeyOpened(keyName);
     }
-  }
 
-  it('should succeed editing key', () => {
-    keysPageObject.goToKey(keyToEditFullPath);
-    browser.windowHandleMaximize();
-    keysAsserts.assertKeyOpened(keyToEditFullPath);
+    describe('edit JPad keys', () => {
+      const keyToEdit = keysPageObject.generateTestKeyName('edit_key_test');
+      const testFolder = KeysPageObject.TEST_KEYS_FOLDER;
+      const editKeyTestFolder = '@edit_key';
+      const keyToEditFullPath = `${testFolder}/${editKeyTestFolder}/${keyToEdit}`;
 
-    addRuleAndAssertItsFocus(2);
-    keysAsserts.assertKeyHasNumberOfRules(2);
+      const expectedKeySource = {
+        partitions: [],
+        valueType: "string",
+        rules: [{
+          "Id": "985627a1-d627-5516-89a9-79bc1b5515d0",
+          "Matcher": {
+            "user.AgentVersion": "1.1.1",
+            "user.FavoriteFruit": "Banana",
+            "user.BirthDate": {
+              "$withinTime": "3d"
+            }
+          },
+          "Value": "",
+          "Type": "SingleVariant"
+        },
+        {
+          "Id": "b74a6ea7-3ad6-58bd-9159-8460162b2e42",
+          "Matcher": {},
+          "Value": "some value",
+          "Type": "SingleVariant"
+        }],
+        defaultValue: 'some default value'
+      };
 
-    keysPageObject.setConditionPropertyFromSuggestion(1, 1, 4);
-    keysPageObject.addRuleCondition(1);
-    keysPageObject.setConditionPropertyFromSuggestion(1, 2, 6);
+      before(() => {
+        keysPageObject.goToBase();
+        keysPageObject.addEmptyKey(keyToEditFullPath);
+      });
 
-    keysPageObject.setConditionValue(1, 2, 'Banana');
-    keysPageObject.setConditionValue(1, 1, '1.1.1');
+      function addRuleAndAssertItsFocus(numberOfRules) {
 
-    keysPageObject.addRuleCondition(1);
+        for (var i = 0; i < numberOfRules; i++) {
+          let ruleFirstConditionPropertyName = selectors.conditionPropertyName(i, 1);
+          browser.click(selectors.ADD_RULE_BUTTON);
+          assert(browser.hasFocus(ruleFirstConditionPropertyName), 'should focus the added rule first condition property name');
+        }
+      }
 
-    keysPageObject.setConditionPropertyFromSuggestionValuePrefix(1, 3, 'Birth');
-    keysPageObject.setConditionValue(1, 3, '3d');
+      it('should succeed editing JPad key', () => {
+        goToKey(keyToEditFullPath);
+        
+        addRuleAndAssertItsFocus(2);
+        keysAsserts.assertKeyHasNumberOfRules(2);
 
-    keysPageObject.removeRuleCondition(2, 0);
-    keysPageObject.setRuleValue(2, 'some value');
+        keysPageObject.setConditionPropertyFromSuggestion(1, 1, 4);
+        keysPageObject.addRuleCondition(1);
+        keysPageObject.setConditionPropertyFromSuggestion(1, 2, 6);
 
-    browser.setValue(selectors.DEFAULT_VALUE_INPUT, 'some default value');
+        keysPageObject.setConditionValue(1, 2, 'Banana');
+        keysPageObject.setConditionValue(1, 1, '1.1.1');
 
-    keysAsserts.assertKeySource(expectedKeySource);
+        keysPageObject.addRuleCondition(1);
 
-    keysPageObject.saveChanges();
+        keysPageObject.setConditionPropertyFromSuggestionValuePrefix(1, 3, 'Birth');
+        keysPageObject.setConditionValue(1, 3, '3d');
 
-    browser.refresh();
-    keysPageObject.waitForPageToLoad(keyToEditFullPath);
+        keysPageObject.removeRuleCondition(2, 0);
+        keysPageObject.setRuleValue(2, 'some value');
 
-    keysAsserts.assertKeySource(expectedKeySource);
-  });
-});
+        browser.setValue(selectors.DEFAULT_VALUE_INPUT, 'some default value');
+
+        keysAsserts.assertKeySource(expectedKeySource);
+
+        keysPageObject.saveChanges();
+
+        browser.refresh();
+        keysPageObject.waitForPageToLoad(keyToEditFullPath);
+
+        keysAsserts.assertKeySource(expectedKeySource);
+      });
+    });
+
+    describe('edit const keys', () => {
+        const consts_path= "@behavior_tests/@const_keys";
+        const const_selector = "*[data-comp=ConstEditor]";
+        
+        it('should succeed editing key (valueType=number)', () => {
+            const key = `${consts_path}/number_type`;
+            goToKey(key);
+            browser.setValue(`${const_selector} input`, '30')
+            keysPageObject.saveChanges();
+            tweekApiClient.waitForKeyToEqual(key, 30);
+        });
+
+        it('should succeed editing key (valueType=string)', () => {
+            const key = `${consts_path}/string_type`;
+            goToKey(key);
+            browser.setValue(`${const_selector} input`, 'world')
+            keysPageObject.saveChanges();
+            tweekApiClient.waitForKeyToEqual(key, 'world');
+        });
+
+        it('should succeed editing key (valueType=object)', () => {
+            const key = `${consts_path}/object_type`;
+            goToKey(key);
+            browser.click(`${const_selector} .jsonValue input[type=checkbox]`);
+            keysPageObject.saveChanges();
+            tweekApiClient.waitForKeyToEqual(key, {boolProp: false});
+        });
+      });
+    });
