@@ -13,7 +13,7 @@ export const withTypesService = ({ safeConvertValue, types }) => withContext(typ
 
 const getTypesService = getContext(typesServiceContextType);
 
-const valueToItem = value => (value === undefined ? undefined : ({ label: changeCase.pascalCase(value), value }));
+const valueToItem = value => (value === undefined || value === '' ? undefined : ({ label: changeCase.pascalCase(value), value }));
 
 const TypedInput = ({ safeConvertValue, types, valueType, value, onChange, ...props }) => {
   const typeDefinition = types[valueType];
