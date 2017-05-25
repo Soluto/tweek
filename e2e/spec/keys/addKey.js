@@ -38,8 +38,6 @@ describe('add key', () => {
     browser.click(globalSelectors.BACKGROUND);
 
     browser.setValue(keySelectors.KEY_VALUE_TYPE_INPUT, 'String');
-    const firstSuggestion = globalSelectors.typeaheadSuggestionByIndex(0);
-    browser.click(firstSuggestion);
 
     assert(keysPageObject.hasChanges(), 'should have changes');
 

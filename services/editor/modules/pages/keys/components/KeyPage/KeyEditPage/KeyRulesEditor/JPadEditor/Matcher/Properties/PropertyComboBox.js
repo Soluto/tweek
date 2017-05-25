@@ -1,7 +1,6 @@
 import React from 'react';
 import R from 'ramda';
 import Chance from 'chance';
-import { withState } from 'recompose';
 import Highlighter from 'react-highlight-words';
 import ReactTooltip from 'react-tooltip';
 import style from './styles.css';
@@ -97,32 +96,30 @@ const PropertySuggestion = ({ suggestion, textToMark }) => {
   );
 };
 
-export default withState('currentInputValue', 'setCurrentInputValue', '')(
-  ({ property, suggestedValues, onPropertyChange, autofocus, currentInputValue, setCurrentInputValue }) => {
-    if (!!property && !suggestedValues.some(x => x.value === property)) {
-      suggestedValues = [...suggestedValues, { label: property, value: property }];
-    }
+export default ({ property, suggestedValues, onPropertyChange, autofocus }) => {
+  if (!!property && !suggestedValues.some(x => x.value === property)) {
+    suggestedValues = [...suggestedValues, { label: property, value: property }];
+  }
 
-    suggestedValues = R.uniqBy(x => x.value)([...suggestedValues]);
+  suggestedValues = R.uniqBy(x => x.value)([...suggestedValues]);
 
-    return (
-      <ComboBox
-        options={suggestedValues}
-        onChange={onPropertyChange}
-        placeholder="Property"
-        selected={suggestedValues.filter(x => x.value === property)}
-        onInputChange={(text) => {
-          setCurrentInputValue(text);
-          if (text.startsWith('@@key:') || text.startsWith('keys.')) {
-            onPropertyChange({ value: text.replace('@@key:', 'keys.') });
-          }
-        }}
-        filterBy={option => option.value.toLowerCase().includes(currentInputValue.toLowerCase())}
-        renderMenuItemChildren={suggestion => (
-          <PropertySuggestion suggestion={suggestion} textToMark={currentInputValue} />
+  return (
+    <ComboBox
+      suggestions={suggestedValues}
+      value={suggestedValues.find(x => x.value === property)}
+      onChange={(input, selected) => {
+        if (selected) onPropertyChange(selected);
+        else if (input.startsWith('@@key:') || input.startsWith('keys.')) {
+          onPropertyChange({ value: input.replace('@@key:', 'keys.') });
+        }
+      }}
+      placeholder="Property"
+      filterBy={(currentInputValue, option) => option.value.toLowerCase().includes(currentInputValue.toLowerCase())}
+      renderSuggestion={(suggestion, currentInputValue) => (
+        <PropertySuggestion suggestion={suggestion} textToMark={currentInputValue} />
         )}
-        autofocus={autofocus}
-        wrapperThemeClass={style['property-name-wrapper']}
-      />
-    );
-  });
+      autofocus={autofocus}
+      className={style['property-name-wrapper']}
+    />
+  );
+};

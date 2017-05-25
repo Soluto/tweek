@@ -53,13 +53,11 @@ function PropertyValueComponent({ onUpdate, propertyTypeDetails, value = '', sel
     allowedValues = allowedValues.map(x => ({ label: changeCase.pascalCase(x), value: x }));
     return (
       <ComboBox
-        options={allowedValues}
+        suggestions={allowedValues}
         placeholder={placeholder}
-        wrapperThemeClass={style['property-value-combo-box']}
-        onChange={(selectedValue) => {
-          onUpdate(selectedValue.value);
-        }}
-        selected={allowedValues.filter(x => x.value === value)}
+        className={style['property-value-combo-box']}
+        onChange={(_, selectedValue) => selectedValue && onUpdate(selectedValue.value)}
+        value={allowedValues.find(x => x.value === value)}
       />
     );
   }
