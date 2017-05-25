@@ -151,10 +151,23 @@ const ComboBox = compose(
 
     const highlighted$ = onHighlighted$.startWith({ index: -1 }).distinctUntilChanged();
 
-    const value$ = Rx.Observable.merge(
-      props$.map(({ value, getLabel }) => ({ input: getLabel(value), selected: value })).distinctUntilChanged(R.equals),
-      onInputChanged$.distinctUntilChanged(R.equals),
-    ).distinctUntilChanged(R.equals);
+    const value$ = Rx.Observable
+      .merge(
+        props$.map(({ value, getLabel }) => ({ input: getLabel(value), selected: value }))
+          .distinctUntilChanged(R.equals)
+          .map(x => ({ ...x, from: 'props' })),
+        onInputChanged$
+          .distinctUntilChanged(R.equals)
+          .map(x => ({ ...x, from: 'state' })),
+      )
+      .scan((prev, current) => {
+        if (current.input === '' && current.selected === undefined && prev.selected === undefined && current.from === 'props' && prev.from === 'state') {
+          return prev;
+        }
+        return current;
+      })
+      .map(R.omit(['from']))
+      .distinctUntilChanged(R.equals);
 
     const propsWithValue$ = Rx.Observable.combineLatest(props$, value$)
       .map(([props, { input: value }]) => ({ ...props, value })).share();
