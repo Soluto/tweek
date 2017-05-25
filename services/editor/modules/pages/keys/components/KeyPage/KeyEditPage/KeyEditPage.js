@@ -261,7 +261,7 @@ const NewKeyInput = compose(
   keysList,
   keyNameValidation,
   onKeyNameChanged,
-  displayName
+  displayName,
 }) => {
   const suggestions = getKeyNameSuggestions(keysList).map(x => ({ label: x, value: x }));
   return (
@@ -273,15 +273,14 @@ const NewKeyInput = compose(
           src={alertIconSrc}
         />
       </div>
-      <div className={style['auto-suggest']}>
-        <ComboBox
-          suggestions={suggestions}
-          value={displayName}
-          placeholder="Enter key full path"
-          onChange={text => onKeyNameChanged(text)}
-          showValueInOptions
-        />
-      </div>
+      <ComboBox
+        className={style['auto-suggest']}
+        suggestions={suggestions}
+        value={displayName}
+        placeholder="Enter key full path"
+        onChange={text => onKeyNameChanged(text)}
+        showValueInOptions
+      />
       <ReactTooltip
         disable={!keyNameValidation.isShowingHint}
         effect="solid"

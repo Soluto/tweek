@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Rx from 'rxjs';
 import R from 'ramda';
 import { compose, pure, mapPropsStream, createEventHandler } from 'recompose';
+import classnames from 'classnames';
 import ClickOutside from './ClickOutside';
 import InputWithHint from './InputWithHint';
 import Suggestions from './Suggestions';
@@ -108,6 +109,7 @@ class ComboBoxComponent extends Component {
       suggestions,
       getLabel,
       className,
+      disabled,
       renderSuggestion,
 
       matchCase,
@@ -119,7 +121,7 @@ class ComboBoxComponent extends Component {
 
     return (
       <ClickOutside
-        className={className}
+        className={classnames(style['combo-box-default-wrapper-theme-class'], className)}
         onFocus={() => setFocus(true)}
         onClickOutside={() => setFocus(false)}
       >
@@ -127,12 +129,13 @@ class ComboBoxComponent extends Component {
           <InputWithHint
             {...props}
             value={value}
+            disabled={disabled}
             onChange={e => this.onInputChange(e.target.value)}
             showHint={hasFocus && (hint.length > 0 || value.length > 0)}
             hint={hint}
             onKeyDown={this.handleKeyDown}
           />
-          { hasFocus && suggestions.length > 0 ?
+          { hasFocus && !disabled && suggestions.length > 0 ?
             <Suggestions
               {...{ value, suggestions, getLabel, highlightedSuggestion, onSuggestionHighlighted, renderSuggestion }}
               onSuggestionSelected={this.onSuggestionSelected}
@@ -223,7 +226,6 @@ ComboBox.propTypes = {
 };
 
 ComboBox.defaultProps = {
-  className: style['combo-box-default-wrapper-theme-class'],
   autofocus: false,
   showValueInOptions: false,
   matchCase: false,
