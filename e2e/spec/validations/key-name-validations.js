@@ -45,8 +45,6 @@ describe('key name validations', () => {
     keysAsserts.assertKeyOpened(BLANK_KEY_NAME);
 
     browser.setValue(keySelectors.KEY_VALUE_TYPE_INPUT, 'String'); // to make local changes
-    const firstSuggestion = globalSelectors.typeaheadSuggestionByIndex(0);
-    browser.click(firstSuggestion);
 
     browser.click(globalSelectors.BACKGROUND);
 
