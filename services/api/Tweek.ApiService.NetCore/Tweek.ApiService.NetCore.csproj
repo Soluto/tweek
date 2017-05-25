@@ -4,6 +4,7 @@
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81</PackageTargetFallback>
     <VersionPrefix>0.1.25</VersionPrefix>
     <DockerComposeProjectPath>..\..\..\deployments\docker-compose.dcproj</DockerComposeProjectPath>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Properties\PublishProfiles\FileSystemProfile.pubxml" />
@@ -25,6 +26,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Scrutor" Version="1.12.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="1.0.0" />
     <PackageReference Include="Tweek.JPad" Version="0.5.6344.27562" />
   </ItemGroup>
   <ItemGroup>
@@ -42,4 +44,9 @@
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0-msbuild3-final" />
   </ItemGroup>
+  <Target Name="CopyDocumentationFile" AfterTargets="ComputeFilesToPublish">
+    <ItemGroup>
+      <ResolvedFileToPublish Include="@(FinalDocFile)" RelativePath="@(FinalDocFile->'%(Filename)%(Extension)')" />
+    </ItemGroup>
+  </Target>
 </Project>

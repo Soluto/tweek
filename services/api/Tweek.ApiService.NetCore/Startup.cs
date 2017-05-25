@@ -17,8 +17,13 @@ using Newtonsoft.Json;
 using Scrutor;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using Engine.Rules.Validation;
+using FSharpUtils.Newtonsoft;
+using Microsoft.Extensions.PlatformAbstractions;
+using Swashbuckle.AspNetCore.Swagger;
 using Tweek.ApiService.Addons;
 using Tweek.ApiService.NetCore.Addons;
 using Tweek.ApiService.NetCore.Diagnostics;
@@ -93,7 +98,25 @@ namespace Tweek.ApiService.NetCore
             });
 
             RegisterMetrics(services);
-            services.AdaptSingletons<IDiagnosticsProvider, HealthCheck>(inner => new DiagnosticsProviderDecorator(inner));            
+            services.AdaptSingletons<IDiagnosticsProvider, HealthCheck>(inner => new DiagnosticsProviderDecorator(inner));
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("api", new Info
+                {
+                    Title = "Tweek Api",
+                    License = new License {Name = "MIT", Url = "https://github.com/Soluto/tweek/blob/master/LICENSE" },
+                    Version = Assembly.GetEntryAssembly()
+                        .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                        .InformationalVersion
+                });
+                // Generate Dictionary<string,JsonValue> as JSON object in Swagger
+                options.MapType(typeof(Dictionary<string,JsonValue>), () => new Schema {Type = "object"});
+
+                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                var xmlPath = Path.Combine(basePath, "Tweek.ApiService.NetCore.xml");
+                options.IncludeXmlComments(xmlPath);
+
+            });
         }
 
         private void RegisterMetrics(IServiceCollection services)
@@ -147,6 +170,15 @@ namespace Tweek.ApiService.NetCore
             app.UseMetrics();
             app.UseMvc();
             app.UseMetricsReporting(lifetime);
+            app.UseSwagger(options =>
+            {
+                options.RouteTemplate = "{documentName}/swagger.json";
+                options.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+                {
+                    swaggerDoc.Host = httpReq.Host.Value;
+                    swaggerDoc.Schemes = new[] {httpReq.Scheme};
+                });
+            });
         }
 
         private static IRuleParser CreateJPadParser() => JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
