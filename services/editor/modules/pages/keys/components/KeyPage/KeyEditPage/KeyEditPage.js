@@ -18,8 +18,9 @@ import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier'
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
 import TypedInput from '../../../../../components/common/Input/TypedInput';
 
-const ConstEditor = ({ value, valueType, onChange }) =>
-     valueType === 'object' ? <Json value={value} onChange={onChange} /> : <TypedInput {...{ value, valueType, onChange }} />;
+const ConstEditor = ({ value, valueType, onChange }) => <div data-comp="ConstEditor">
+  {valueType === 'object' ? <Json value={value} onChange={onChange} /> : <TypedInput {...{ value, valueType, onChange }} />}
+</div>;
 
 const Editor = ({ manifest, sourceFile, onManifestChange, onSourceFileChange, isReadonly, alerter }) => {
   if (manifest.implementation.type === 'file') {
