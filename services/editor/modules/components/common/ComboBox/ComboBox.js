@@ -15,6 +15,14 @@ const keyCode = {
   TAB: 9,
 };
 
+const createCase = (matchCase, x) => {
+  if (x === undefined || matchCase) return x;
+  if (typeof x === 'function') {
+    return (...args) => x(...args).toLowerCase();
+  }
+  return x.toLowerCase();
+};
+
 class ComboBoxComponent extends Component {
   onSuggestionSelected = (index) => {
     const { onChange, getLabel } = this.props;
@@ -23,8 +31,10 @@ class ComboBoxComponent extends Component {
   };
 
   onInputChange = (input) => {
-    const { suggestions, getLabel, onChange } = this.props;
-    const selected = suggestions.find(s => getLabel(s) === input);
+    const { suggestions, getLabel, onChange, matchCase } = this.props;
+    const caseInput = createCase(matchCase, input);
+    const getLabelWithCase = createCase(matchCase, getLabel);
+    const selected = suggestions.find(s => getLabelWithCase(s) === caseInput);
     onChange(input, selected);
   };
 
@@ -34,19 +44,20 @@ class ComboBoxComponent extends Component {
   };
 
   get hint() {
-    const { value, hasFocus, highlightedSuggestion, suggestions, getLabel } = this.props;
+    const { value, hasFocus, highlightedSuggestion, suggestions, getLabel, matchCase } = this.props;
     if (!hasFocus) return '';
-    const lowerValue = value.toLowerCase();
+    const caseValue = createCase(matchCase, value);
     let suggestion;
 
     if (highlightedSuggestion === -1) {
       if (value === '') return '';
-      suggestion = suggestions.map(getLabel).find(x => x.toLowerCase().startsWith(lowerValue));
+      suggestion = suggestions.map(getLabel).find(x => createCase(matchCase, x).startsWith(caseValue));
     } else {
       suggestion = suggestions[highlightedSuggestion];
     }
     suggestion = suggestion && getLabel(suggestion);
-    if (!suggestion || !suggestion.toLowerCase().startsWith(lowerValue)) return '';
+    const caseSuggestion = createCase(matchCase, suggestion);
+    if (!suggestion || !caseSuggestion.startsWith(caseValue)) return '';
     return value + suggestion.substring(value.length);
   }
 
@@ -99,6 +110,7 @@ class ComboBoxComponent extends Component {
       className,
       renderSuggestion,
 
+      matchCase,
       onChange,
       onKeyDown,
       ...props } = this.props;
@@ -148,12 +160,14 @@ const ComboBox = compose(
       .map(([props, { input: value }]) => ({ ...props, value })).share();
 
     const suggestions$ = propsWithValue$
-      .distinctUntilChanged((x, y) => R.equals(...[x, y].map(R.pick(['suggestions', 'value', 'showValueInOptions']))))
-      .map(({ suggestions, filterBy, value, getLabel, showValueInOptions }) => {
-        const filterFunc = filterBy || ((input, suggestion) => input === '' || getLabel(suggestion).toLowerCase().includes(input));
+      .distinctUntilChanged((x, y) => R.equals(...[x, y].map(R.pick(['suggestions', 'value', 'showValueInOptions', 'matchCase']))))
+      .map(({ suggestions, filterBy, value, getLabel, showValueInOptions, matchCase }) => {
+        const getCaseLabel = createCase(matchCase, getLabel);
 
-        const filteredSuggestions = suggestions.filter(s => filterFunc(value.toLowerCase(), s));
-        if (!showValueInOptions && filteredSuggestions.length === 1 && getLabel(filteredSuggestions[0]) === value) return [];
+        const filterFunc = filterBy || ((input, suggestion) => input === '' || getCaseLabel(suggestion).includes(createCase(matchCase, input)));
+
+        const filteredSuggestions = suggestions.filter(s => filterFunc(value, s));
+        if (!showValueInOptions && filteredSuggestions.length === 1 && getCaseLabel(filteredSuggestions[0]) === createCase(matchCase, value)) return [];
         return filteredSuggestions;
       })
       .withLatestFrom(highlighted$, (suggestions, highlighted) => ({ suggestions, highlighted }))
@@ -192,12 +206,14 @@ ComboBox.propTypes = {
   autofocus: PropTypes.bool,
   className: PropTypes.string,
   renderSuggestion: PropTypes.func,
+  matchCase: PropTypes.bool,
 };
 
 ComboBox.defaultProps = {
   className: style['combo-box-default-wrapper-theme-class'],
   autofocus: false,
   showValueInOptions: false,
+  matchCase: false,
   getLabel: (obj) => {
     if (obj === undefined) return '';
     return obj.label === undefined ? obj.toString() : obj.label;
