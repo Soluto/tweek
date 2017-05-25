@@ -25,9 +25,9 @@ const style = {
 };
 
 const InputWithHint = ({ value, showHint, hint, autofocus, placeholder, ...props }) => (
-  <div className="combo-box-input-wrapper" style={style.container} tabIndex={-1}>
-    <input className="combo-box-input" {...props} value={value} autoComplete="off" style={style.input(props)} ref={e => e && autofocus && e.focus()} />
-    <input className="combo-box-hint" value={showHint ? hint : value.length > 0 ? '' : placeholder} readOnly autoComplete="off" style={style.hint} tabIndex={-1} />
+  <div className="bootstrap-typeahead-input" style={style.container} tabIndex={-1}>
+    <input className="bootstrap-typeahead-input-main" {...props} value={value} autoComplete="off" style={style.input(props)} ref={e => e && autofocus && e.focus()} />
+    <input className="bootstrap-typeahead-input-hint" value={showHint ? hint : value.length > 0 ? '' : placeholder} readOnly autoComplete="off" style={style.hint} tabIndex={-1} />
   </div>
 );
 

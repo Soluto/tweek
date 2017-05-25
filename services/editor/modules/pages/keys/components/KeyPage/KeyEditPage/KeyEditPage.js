@@ -273,14 +273,15 @@ const NewKeyInput = compose(
           src={alertIconSrc}
         />
       </div>
-      <ComboBox
-        suggestions={suggestions}
-        value={displayName}
-        placeholder="Enter key full path"
-        onChange={text => onKeyNameChanged(text)}
-        showValueInOptions
-        className={style['auto-suggest']}
-      />
+      <div className={style['auto-suggest']}>
+        <ComboBox
+          suggestions={suggestions}
+          value={displayName}
+          placeholder="Enter key full path"
+          onChange={text => onKeyNameChanged(text)}
+          showValueInOptions
+        />
+      </div>
       <ReactTooltip
         disable={!keyNameValidation.isShowingHint}
         effect="solid"
