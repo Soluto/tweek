@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { compose, pure } from 'recompose';
 import { connect } from 'react-redux';
 import R from 'ramda';
+import Json from 'react-json';
 import classNames from 'classnames';
 import ReactTooltip from 'react-tooltip';
-import KeyRulesEditor from './KeyRulesEditor/KeyRulesEditor';
+import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEditor';
 import style from './KeyEditPage.css';
 import KeyTags from './KeyTags/KeyTags';
 import EditableText from './EditableText/EditableText';
@@ -15,26 +16,51 @@ import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import alertIconSrc from './resources/alert-icon.svg';
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
-import * as RulesService from '../../../../../services/rules-service';
+import TypedInput from '../../../../../components/common/Input/TypedInput';
+
+const ConstEditor = ({ value, valueType, onChange }) => <div data-comp="ConstEditor">
+  {valueType === 'object' ? <Json value={value} onChange={onChange} /> : <TypedInput {...{ value, valueType, onChange }} />}
+</div>;
+
+const Editor = ({ manifest, sourceFile, onManifestChange, onSourceFileChange, isReadonly, alerter }) => {
+  if (manifest.implementation.type === 'file') {
+    let FileEditor = null;
+    if (manifest.implementation.format === 'jpad') {
+      FileEditor = JPadFullEditor;
+    }
+    return (<FileEditor
+      alerter={alerter}
+      source={sourceFile}
+      onChange={onSourceFileChange}
+      dependencies={manifest.dependencies}
+      onDependencyChanges={dependencies => onManifestChange({ ...manifest, dependencies })}
+      isReadonly={isReadonly}
+      valueType={manifest.valueType}
+    />);
+  }
+  if (manifest.implementation.type === 'const') {
+    return <ConstEditor value={manifest.implementation.value} valueType={manifest.valueType} onChange={value => onManifestChange({ ...manifest, implementation: { ...manifest.implementation, value } })} />;
+  }
+  return null;
+};
 
 class KeyEditPage extends Component {
   constructor(props) {
     super(props);
-    this.onMutation = this.onMutation.bind(this);
     this.onKeyNameChanged = this.onKeyNameChanged.bind(this);
     this.onDisplayNameChanged = this.onDisplayNameChanged.bind(this);
   }
 
   onTagsChanged(newTags) {
-    const oldMeta = this.props.selectedKey.local.meta;
-    const newMeta = {
-      ...oldMeta,
+    const oldManifest = this.props.selectedKey.local.manifest;
+    const newManifest = {
+      ...oldManifest,
       meta: {
-        ...oldMeta.meta,
+        ...oldManifest.meta,
         tags: newTags,
       },
     };
-    this.onSelectedKeyMetaChanged(newMeta);
+    this.onSelectedKeyMetaChanged(newManifest);
   }
 
   onKeyNameChanged(newKeyName) {
@@ -42,55 +68,39 @@ class KeyEditPage extends Component {
   }
 
   onDisplayNameChanged(newDisplayName) {
-    const oldMeta = this.props.selectedKey.local.meta;
-    const newMeta = {
-      ...oldMeta,
+    const oldManifest = this.props.selectedKey.local.manifest;
+    const newManifest = {
+      ...oldManifest,
       meta: {
-        ...oldMeta.meta,
+        ...oldManifest.meta,
         name: newDisplayName,
       },
     };
-    this.onSelectedKeyMetaChanged(newMeta);
+    this.onSelectedKeyMetaChanged(newManifest);
   }
 
   onDescriptionChanged(newDescription) {
-    const oldMeta = this.props.selectedKey.local.meta;
-    const newMeta = {
-      ...oldMeta,
+    const oldManifest = this.props.selectedKey.local.manifest;
+    const newManifest = {
+      ...oldManifest,
       meta: {
-        ...oldMeta.meta,
+        ...oldManifest.meta,
         description: newDescription,
       },
     };
-    this.onSelectedKeyMetaChanged(newMeta);
+    this.onSelectedKeyMetaChanged(newManifest);
   }
 
-  onSelectedKeyMetaChanged(newMeta) {
-    this.props.updateKeyMetaDef(newMeta);
+  onSelectedKeyMetaChanged(newManifest) {
+    this.props.updateKeyMetaDef(newManifest);
   }
 
-  onDependencyChanges(dependencies) {
-    const oldMeta = this.props.selectedKey.local.meta;
-    const newMeta = {
-      ...oldMeta,
-      dependencies,
-    };
-    this.onSelectedKeyMetaChanged(newMeta);
-  }
-
-  onMutation(x) {
-    const dependencies = RulesService.getDependencies(x.rules, x.partitions.length);
-    if (!R.equals(this.props.selectedKey.local.meta.dependencies, dependencies)) {
-      this.onDependencyChanges(dependencies);
-    }
-    this.props.updateKeyDef({ source: JSON.stringify(x, null, 4) });
-  }
 
   render() {
     const { selectedKey, isInAddMode, isInStickyMode, alerter, revision } = this.props;
-    const { key, local: { meta, keyDef, revisionHistory } } = selectedKey;
+    const { key, local: { manifest, keyDef, revisionHistory } } = selectedKey;
     const isHistoricRevision = (revision && revisionHistory[0].sha !== revision);
-    const isReadonly = (!!meta.meta.readOnly && meta.meta.readOnly) || isHistoricRevision;
+    const isReadonly = (!!manifest.meta.readOnly && manifest.meta.readOnly) || isHistoricRevision;
 
     const commonHeadersProps = {
       onKeyNameChanged: this.onKeyNameChanged,
@@ -98,7 +108,7 @@ class KeyEditPage extends Component {
       isInAddMode,
       isHistoricRevision,
       isReadonly,
-      keyMeta: meta,
+      keyManifest: manifest,
     };
 
     return (
@@ -119,14 +129,16 @@ class KeyEditPage extends Component {
               isInStickyMode={isInStickyMode}
             />
 
-            <KeyRulesEditor
-              {...{ keyDef, alerter }}
-              sourceTree={RulesService.convertToExplicitKey(JSON.parse(keyDef.source))}
-              onMutation={this.onMutation}
-              isReadonly={isReadonly}
-              className={classNames(style['key-rules-editor'], { [style.sticky]: isInStickyMode })}
-            />
-
+            <div className={classNames(style['key-rules-editor'], { [style.sticky]: isInStickyMode })}>
+              <Editor
+                manifest={manifest}
+                sourceFile={keyDef.source}
+                onSourceFileChange={source => this.props.updateKeyDef({ source })}
+                onManifestChange={newManifest => this.onSelectedKeyMetaChanged(newManifest)}
+                isReadonly={isReadonly}
+                alerter={alerter}
+              />
+            </div>
           </div>
 
         </div>
@@ -162,7 +174,7 @@ const KeyFullHeader = (props) => {
     isInAddMode,
     isReadonly,
     revisionHistory,
-    keyMeta,
+    keyManifest,
     onDescriptionChanged,
     onTagsChanged,
     keyFullPath,
@@ -197,7 +209,7 @@ const KeyFullHeader = (props) => {
           <div className={style['key-description-and-tags-wrapper']}>
             <div className={style['key-description-wrapper']}>
               <EditableTextArea
-                value={keyMeta.meta.description}
+                value={keyManifest.meta.description}
                 onTextChanged={text => onDescriptionChanged(text)}
                 placeHolder="Write key description"
                 title="Click to edit description"
@@ -209,7 +221,7 @@ const KeyFullHeader = (props) => {
             <div className={style['tags-wrapper']}>
               <KeyTags
                 onTagsChanged={newTags => onTagsChanged(newTags)}
-                tags={keyMeta.meta.tags || []}
+                tags={keyManifest.meta.tags || []}
               />
             </div>
           </div>
@@ -223,20 +235,20 @@ const KeyFullHeader = (props) => {
 };
 
 const HeaderMainInput = (props) => {
-  const { isInAddMode, onKeyNameChanged, onDisplayNameChanged, keyMeta, isReadonly } = props;
+  const { isInAddMode, onKeyNameChanged, onDisplayNameChanged, keyManifest, isReadonly } = props;
   return (
     <div className={style['key-main-input']}>
       {isInAddMode ?
         <div className={style['new-key-input-wrapper']}>
-          <NewKeyInput onKeyNameChanged={name => onKeyNameChanged(name)} displayName={keyMeta.displayName} />
+          <NewKeyInput onKeyNameChanged={name => onKeyNameChanged(name)} displayName={keyManifest.displayName} />
           <div className={style['vertical-separator']} />
-          <KeyValueTypeSelector value={keyMeta.valueType} />
+          <KeyValueTypeSelector value={keyManifest.valueType} />
         </div>
         :
         <EditableText
           onTextChanged={text => onDisplayNameChanged(text)}
           placeHolder="Enter key display name" maxLength={80}
-          value={keyMeta.meta.name} isReadonly={isReadonly}
+          value={keyManifest.meta.name} isReadonly={isReadonly}
           classNames={{
             container: style['display-name-container'],
             input: style['display-name-input'],
@@ -261,7 +273,7 @@ const NewKeyInput = compose(
   keysList,
   keyNameValidation,
   onKeyNameChanged,
-  displayName
+  displayName,
 }) => {
   const suggestions = getKeyNameSuggestions(keysList).map(x => ({ label: x, value: x }));
   return (
@@ -279,7 +291,7 @@ const NewKeyInput = compose(
         onInputChange={text => onKeyNameChanged(text)}
         showValueInOptions
         className={style['auto-suggest']}
-        selected={displayName && displayName != '' ? [displayName] : []}
+        selected={displayName && displayName !== '' ? [displayName] : []}
       />
       <ReactTooltip
         disable={!keyNameValidation.isShowingHint}
