@@ -1,10 +1,11 @@
-﻿using Engine.DataTypes;
+﻿using System;
+using Engine.DataTypes;
 using Engine.Drivers.Context;
 using FSharpUtils.Newtonsoft;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 using Tweek.ApiService.NetCore.Security;
 
@@ -14,32 +15,30 @@ namespace Tweek.ApiService.NetCore.Controllers
     public class ContextController : Controller
     {
         private readonly IContextDriver _contextDriver;
-        private readonly JsonSerializer _serializer;
         private readonly CheckWriteContextAccess _checkAccess;
 
         public ContextController(IContextDriver contextDriver, JsonSerializer serializer, CheckWriteContextAccess checkAccess)
         {
             _contextDriver = contextDriver;
-            _serializer = serializer;
             _checkAccess =checkAccess;
         }
 
         [HttpPost("{identityType}/{*identityId}")]
-        public async Task<ActionResult> AppendContext([FromRoute] string identityType, [FromRoute] string identityId)
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden)]
+        public async Task<ActionResult> AppendContext([FromRoute] string identityType, [FromRoute] string identityId, [FromBody] Dictionary<string, JsonValue> data)
         {
             if (!_checkAccess(User, new Identity(identityType, identityId))) return Forbid();
 
-            Dictionary<string, JsonValue> data;
-            using (var txtReader = new StreamReader(HttpContext.Request.Body))
-            using (var jsonReader = new JsonTextReader(txtReader)) {
-                data = _serializer.Deserialize<Dictionary<string,JsonValue>>(jsonReader);
-            }
             var identity = new Identity(identityType, identityId);
             await _contextDriver.AppendContext(identity, data);
             return Ok();
         }
 
         [HttpDelete("{identityType}/{identityId}/{*prop}")]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden)]
         public async Task<ActionResult> DeleteFromContext([FromRoute] string identityType, [FromRoute] string identityId, [FromRoute] string prop)
         {
             if (!_checkAccess(User, new Identity(identityType, identityId))) return Forbid();
@@ -49,6 +48,7 @@ namespace Tweek.ApiService.NetCore.Controllers
         }
 
         [HttpGet("{identityType}/{identityId}")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult> GetContext([FromRoute] string identityType, [FromRoute] string identityId)
         {
             if (!User.IsTweekIdentity()) return Forbid();

@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions';
 import R from 'ramda';
 import { push } from 'react-router-redux';
-import { createBlankKey, createBlankKeyMeta, BLANK_KEY_NAME } from './ducks-utils/blankKeyDefinition';
+import { createBlankJPadKey, createBlankKeyManifest, BLANK_KEY_NAME } from './ducks-utils/blankKeyDefinition';
 import { withJsonData } from '../../utils/http';
 import keyNameValidations from './ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
@@ -14,7 +14,7 @@ import { showConfirm } from './alerts';
 const KEY_OPENED = 'KEY_OPENED';
 const KEY_OPENING = 'KEY_OPENING';
 const KEY_RULEDEF_UPDATED = 'KEY_RULEDEF_UPDATED';
-const KEY_RULE_META_UPDATED = 'KEY_RULE_META_UPDATED';
+const KEY_MANIFEST_UPDATED = 'KEY_MANIFEST_UPDATED';
 const KEY_SAVED = 'KEY_SAVED';
 const KEY_SAVING = 'KEY_SAVING';
 const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
@@ -32,7 +32,7 @@ export function openKey(key, { revision } = {}) {
     }
 
     if (key === BLANK_KEY_NAME) {
-      dispatch({ type: KEY_OPENED, payload: createBlankKey() });
+      dispatch({ type: KEY_OPENED, payload: createBlankJPadKey() });
       return;
     }
 
@@ -47,14 +47,11 @@ export function openKey(key, { revision } = {}) {
       return;
     }
 
-    const meta = keyData.meta || createBlankKeyMeta(key);
+    const manifest = keyData.manifest || createBlankKeyManifest(key);
     const keyOpenedPayload = {
       key,
-      keyDef: {
-        ...keyData.keyDef,
-        valueType: meta.valueType || 'string',
-      },
-      meta,
+      keyDef: keyData.keyDef,
+      manifest,
       revisionHistory: keyData.revisionHistory,
     };
 
@@ -66,8 +63,8 @@ export function updateKeyDef(keyDef) {
   return { type: KEY_RULEDEF_UPDATED, payload: keyDef };
 }
 
-export function updateKeyMetaDef(meta) {
-  return { type: KEY_RULE_META_UPDATED, payload: meta };
+export function updateKeyMetaDef(manifest) {
+  return { type: KEY_MANIFEST_UPDATED, payload: manifest };
 }
 
 function getAllRules({ jpad, rules = [jpad.rules], depth = jpad.partitions.length }) {
@@ -98,8 +95,8 @@ export function updateKeyValueType(keyValueType) {
     const currentValidationState = getState().selectedKey.validation;
     const newValidation = {
       ...currentValidationState,
-      meta: {
-        ...currentValidationState.meta,
+      manifest: {
+        ...currentValidationState.manifest,
         valueType: keyValueTypeValidation,
       },
     };
@@ -187,8 +184,8 @@ const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
   } else {
     validation = {
       key: keyNameValidations(key, []),
-      meta: {
-        valueType: keyValueTypeValidations(keyData.meta.valueType),
+      manifest: {
+        valueType: keyValueTypeValidations(keyData.manifest.valueType),
       },
       isValid: false,
     };
@@ -220,11 +217,11 @@ const handleKeyRuleDefUpdated = (state, { payload }) => ({
   },
 });
 
-const handleKeyMetaUpdated = (state, { payload }) => ({
+const handleKeyManifestUpdated = (state, { payload }) => ({
   ...state,
   local: {
     ...state.local,
-    meta: payload,
+    manifest: payload,
   },
 });
 
@@ -247,7 +244,7 @@ const handleKeyNameChange = ({ local: { key, ...localData }, ...otherState }, { 
   ...otherState,
   local: {
     ...localData,
-    meta: { ...localData.meta, meta: { ...localData.meta.meta, name: payload } },
+    manifest: { ...localData.manifest, meta: { ...localData.manifest.meta, name: payload } },
     ...(payload === '' ? {} : { key: payload }),
   },
 });
@@ -278,16 +275,12 @@ const handleKeyDeleting = ({ remote, ...otherState }) => {
   });
 };
 
-const handleKeyValueTypeChange = ({ local: { keyDef, meta, ...restOfLocal }, ...state }, { payload }) => ({
+const handleKeyValueTypeChange = ({ local: { manifest, ...restOfLocal }, ...state }, { payload }) => ({
   ...state,
   local: {
     ...restOfLocal,
-    keyDef: {
-      ...keyDef,
-      valueType: payload,
-    },
-    meta: {
-      ...meta,
+    manifest: {
+      ...manifest,
       valueType: payload,
     },
   },
@@ -305,7 +298,7 @@ export default handleActions({
   [KEY_OPENED]: handleKeyOpened,
   [KEY_OPENING]: handleKeyOpening,
   [KEY_RULEDEF_UPDATED]: handleKeyRuleDefUpdated,
-  [KEY_RULE_META_UPDATED]: handleKeyMetaUpdated,
+  [KEY_MANIFEST_UPDATED]: handleKeyManifestUpdated,
   [KEY_SAVED]: handleKeySaved,
   [KEY_SAVING]: handleKeySaving,
   [KEY_NAME_CHANGE]: handleKeyNameChange,
