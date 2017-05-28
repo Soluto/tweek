@@ -1,6 +1,7 @@
 /* global fetch */
 import R from 'ramda';
 import * as TypesService from './types-service';
+import { DEPENDENT_KEY_PREFIX } from './rules-service';
 
 let contextSchema = {};
 
@@ -28,7 +29,7 @@ export function getProperties() {
 
 export function getPropertyTypeDetails(property) {
   if (!property) return { name: 'empty' };
-  if (property.startsWith('@@key')) return TypesService.types.string;
+  if (property.startsWith(DEPENDENT_KEY_PREFIX)) return TypesService.types.string;
 
   const propertyDetails = getProperties().find(x => x.id === property);
 
