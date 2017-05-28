@@ -24,7 +24,6 @@ namespace Tweek.ApiService.NetCore.Controllers
         }
 
         [HttpPost("{identityType}/{*identityId}")]
-        [Consumes("application/json")]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden)]
         public async Task<ActionResult> AppendContext([FromRoute] string identityType, [FromRoute] string identityId, [FromBody] Dictionary<string, JsonValue> data)
