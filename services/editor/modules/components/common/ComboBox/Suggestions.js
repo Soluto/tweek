@@ -30,11 +30,8 @@ SuggestionItem.defaultProps = {
 
 const highlightStyle = { fontWeight: 'bold', background: 'inherit', color: 'inherit' };
 
-const Suggestions = ({ suggestions, value, getLabel, highlightedSuggestion, onSuggestionSelected, onSuggestionHighlighted, renderSuggestion }) => (
-  <ul
-    className="bootstrap-typeahead-menu dropdown-menu dropdown-menu-justify"
-    style={{ display: 'block', overflow: 'auto', maxHeight: '300px' }}
-  >
+const Suggestions = ({ suggestions, value, getLabel, highlightedSuggestion, onSuggestionSelected, onSuggestionHighlighted, renderSuggestion, suggestionsContainer: Container }) => (
+  <Container>
     {
       suggestions.map((x, i) => (
         <SuggestionItem
@@ -47,7 +44,7 @@ const Suggestions = ({ suggestions, value, getLabel, highlightedSuggestion, onSu
         </SuggestionItem>
       ))
     }
-  </ul>
+  </Container>
 );
 
 Suggestions.propTypes = {
@@ -61,6 +58,19 @@ Suggestions.propTypes = {
   onSuggestionSelected: PropTypes.func.isRequired,
   onSuggestionHighlighted: PropTypes.func.isRequired,
   renderSuggestion: PropTypes.func,
+  suggestionsContainer: PropTypes.any,
+};
+
+Suggestions.defaultProps = {
+  suggestionsContainer: ({ children, ...props }) => (
+    <ul
+      {...props}
+      className="bootstrap-typeahead-menu dropdown-menu dropdown-menu-justify"
+      style={{ display: 'block', overflow: 'auto', maxHeight: '300px' }}
+    >
+      {children}
+    </ul>
+  ),
 };
 
 export default Suggestions;
