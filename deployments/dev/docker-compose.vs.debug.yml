@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  tweek-api:
+    image: soluto/tweek-api:dev
+    build:
+      args:
+        source: ${DOCKER_BUILD_SOURCE}
+    environment:
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+    volumes:
+      - ../../services/api/Tweek.ApiService.NetCore:/app
+      - ~/.nuget/packages:/root/.nuget/packages:ro
+      - ~/clrdbg:/clrdbg:ro
+    entrypoint: tail -f /dev/null

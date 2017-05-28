@@ -5,10 +5,10 @@ const Guid = require('guid');
 const Git = require("nodegit");
 const _ = require('lodash');
 const nconf = require('nconf');
-
 const recursive = Promise.promisify(require('recursive-readdir'));
 const mkdirp = Promise.promisify(require('mkdirp'));
 const readFile = Promise.promisify(fs.readFile);
+const buildRulesArtifiact = require('./build-rules-artifiact')
 
 const logger = require('./logger');
 
@@ -26,7 +26,6 @@ if (!gitUrl ||
 }
 
 const repoPath = `${process.env.RULES_DIR || os.tmpdir()}/tweek-rules-${Guid.raw()}`;
-const rulesHome = repoPath + '/rules/';
 
 logger.info('Repository path: ' + repoPath);
 
@@ -57,7 +56,6 @@ const updateLatestCache = Promise.coroutine(function* () {
             const oid = yield repo.mergeBranches('master', 'origin/master');
 
             const newLatestSha = (yield repo.getMasterCommit()).sha();
-            console.log(`merge result:${oid}, current:${rulesCache.sha} latest:${newLatestSha}`);
 
             if (newLatestSha === rulesCache.sha) {
                 yield Promise.delay(5000);
@@ -65,9 +63,9 @@ const updateLatestCache = Promise.coroutine(function* () {
             }
             console.log("change detected")
 
-            const files = yield recursive(rulesHome);
-            const pairs = yield createContentByFilenames(files);
-            const ruleset = _.fromPairs(pairs);
+            const fileNames = yield recursive(repoPath);
+            const fileHandlers = fileNames.map(file=> ({name:file.substr(repoPath.length+1), read: ()=>readFile(file, 'utf8')}));
+            const ruleset = yield buildRulesArtifiact(fileHandlers);
 
             rulesCache.sha = newLatestSha;
             rulesCache.ruleset = ruleset;
@@ -79,17 +77,6 @@ const updateLatestCache = Promise.coroutine(function* () {
         }
     }
 });
-
-const createContentByFilenames = Promise.coroutine(function* (files) {
-    var allContents = [];
-    for (var file of files) {
-        var contents = yield readFile(file, 'utf8');
-        allContents.push([formatFilename(file), { format: 'jpad', payload: contents }]);
-    }
-    return allContents;
-});
-
-const formatFilename = file => file.substr(rulesHome.length).replace(/\\/g, '/').replace('.jpad', '');
 
 module.exports = {
     buildLocalCache,

@@ -30,7 +30,7 @@ namespace Tweek.ApiService.NetCore.Security
             var identityType = tweekIdentity.Type;
             var key = $"@tweek/auth/{identityType}/{permissionType}";
 
-            return Optional(identity.FindFirst("iss")).Match(c => c.Value.Equals("tweek"), () => false) ||
+            return identity.IsTweekIdentity() ||
                 tweek.Calculate(key, new HashSet<Identity>(),
                         type => type == "token" ? (GetContextValue)(q => Optional(identity.FindFirst(q)).Map(x=>x.Value).Map(JsonValue.NewString)) : _ => None)
                         .SingleKey(key)

@@ -1,12 +1,17 @@
 import React from 'react';
 import { IndexLink, Link } from 'react-router';
 import Title from 'react-title-component';
-import style from './App.css';
 import { Tabs } from 'react-tabs';
 import { Observable } from 'rxjs/Rx';
 import { setObservableConfig } from 'recompose';
 import classNames from 'classnames';
 import logoSrc from './resources/logo.svg';
+import Alerts from './alerts/Alerts';
+import Notifications from './alerts/Notifications';
+import style from './App.css';
+import * as TypesService from '../services/types-service';
+import { withTypesService } from './common/Input/TypedInput';
+
 require('../styles/core/fonts/fonts.css');
 
 setObservableConfig({
@@ -14,24 +19,36 @@ setObservableConfig({
 });
 Tabs.setUseDefaultStyles(false);
 
-export default (({ location: { pathname }, children }) => {
-  return (
-    <div className={style['app']}>
-      <div className={style['header']}>
-        <Title render="Tweek" />
-        <IndexLink to="/"><img className={style['logo']} src={logoSrc} /></IndexLink>
-        <ul className={style['menu']} >
-          <li className={classNames(style['menu-item'], { [style['selected-location-path']]: pathname.startsWith('/keys') })}>
+export default withTypesService(TypesService)(({ location: { pathname }, children }) => (
+  <div className={style.app}>
+    <div className={style.header}>
+      <Title render="Tweek" />
+      <IndexLink to="/"><img className={style.logo} src={logoSrc} /></IndexLink>
+      <ul className={style.menu} >
+        <li>
+          <Link className={classNames(style['menu-item'], { [style['selected-location-path']]: pathname.startsWith('/keys') })} to="/keys">
+            <img src={require('./resources/keys.svg')} />
+            <span>Keys</span>
+            </Link>
+        </li>
+        <li>
+          <Link className={classNames(style['menu-item'], { [style['selected-location-path']]: pathname.startsWith('/context') })} to="/context">
+            <img src={require('./resources/keys.svg')} />
+            <span>Context</span>
+          </Link>
+        </li>
+        <li>
+          <Link className={classNames(style['menu-item'], { [style['selected-location-path']]: pathname.startsWith('/schema') })} to="/schema">
             <img src={require("./resources/schema.svg")} />
-            <Link to="/schema">Schema</Link>
-            <img src={require("./resources/keys.svg")} />
-            <Link to="/keys">Keys</Link>
-          </li>
-        </ul>
-      </div>
-      <div className={style['page']}>
-        {children}
-      </div>
+            <span>Schema</span>
+          </Link>
+        </li>
+      </ul>
     </div>
-  );
-});
+    <div className={style.page}>
+      {children}
+      <Alerts />
+      <Notifications />
+    </div>
+  </div>
+  ));

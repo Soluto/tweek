@@ -1,5 +1,6 @@
 import { UKNOWN_AUTHOR } from './unknownAuthor';
-
+import R from 'ramda';
+import {convertMetaToNewFormat} from '../utils/meta-legacy';
 
 let injectAuthor = (fn) => function (req, res, deps, ...rest) {
   return this::fn(req, res, {
@@ -9,33 +10,43 @@ let injectAuthor = (fn) => function (req, res, deps, ...rest) {
     }) || UKNOWN_AUTHOR,
     ...deps
   }, ...rest);
-}
+};
 
 export async function getKey(req, res, { keysRepository }, { params }) {
   const keyPath = params.splat;
   const revision = req.query.revision;
-  let keyDetails;
   try {
-    keyDetails = await keysRepository.getKeyDetails(keyPath, { revision });
+    const keyDetails = await keysRepository.getKeyDetails(keyPath, { revision });
+    res.json({...keyDetails, manifest: convertMetaToNewFormat(keyPath, keyDetails)});
   } catch (exp) {
     res.sendStatus(404);
   }
+}
 
-  res.json(keyDetails);
+export async function getKeyManifest(req, res, { keysRepository }, { params }) {
+  const keyPath = params.splat;
+  const revision = req.query.revision;
+  try {
+    const manifest = await keysRepository.getKeyManifest(keyPath, { revision });
+    res.json(manifest);
+  } catch (exp) {
+    res.sendStatus(404);
+  }
 }
 
 export const saveKey = injectAuthor(async function (req, res, { keysRepository, author }, { params }) {
   const keyPath = params.splat;
 
-  let keyRulesSource = req.body.keyDef.source;
-  let keyMetaSource = JSON.stringify(req.body.meta, null, 4);
-  await keysRepository.updateKey(keyPath, keyMetaSource, keyRulesSource, author);
+  const keyRulesSource = req.body.keyDef.source;
+  const manifest = { key_path: keyPath, ...req.body.manifest };
+  const manifestSource = JSON.stringify(manifest, null, 4);
+  await keysRepository.updateKey(keyPath, manifestSource, keyRulesSource, author);
 
   res.send('OK');
-})
+});
 
 export const deleteKey = injectAuthor(async function (req, res, { keysRepository, author }, { params }) {
   const keyPath = params.splat;
   await keysRepository.deleteKey(keyPath, author);
   res.send('OK');
-})
+});

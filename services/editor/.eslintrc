@@ -1,8 +1,21 @@
 {
   "extends": "airbnb",
   "rules": {
+    "arrow-body-style": ["warn", "as-needed"],
+    "import/no-named-as-default": "off",
+    "import/no-named-as-default-member": "off",
+    "jsx-a11y/img-has-alt": "off",
+    "jsx-a11y/label-has-for": "off",
     "linebreak-style": "off",
+    "max-len" : "off",
+    "no-new-func": "off",
+    "no-param-reassign": "warn",
+    "no-plusplus": "off",
+    "no-underscore-dangle": "warn",
+    "no-unused-vars": "warn",
+    "react/forbid-prop-types": "off",
     "react/jsx-filename-extension": "off",
-    "react/forbid-prop-types": ["error", { "forbid": ["any"] }]
+    "react/no-array-index-key": "warn",
+    "react/prop-types": "off"
   }
 }
