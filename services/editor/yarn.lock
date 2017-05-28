@@ -2726,6 +2726,10 @@ frameguard@1.0.0:
   dependencies:
     lodash.isstring "3.0.1"
 
+freezer-js@^0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/freezer-js/-/freezer-js-0.5.2.tgz#c24dbc47fc327b3475ea34adc408b0953f2a4907"
+
 fresh@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.3.0.tgz#651f838e22424e7566de161d8358caa199f83d4f"
@@ -5640,6 +5644,13 @@ react-highlight-words@0.7.2:
   dependencies:
     highlight-words-core "^1.0.2"
     prop-types "^15.5.8"
+
+react-json@0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/react-json/-/react-json-0.2.1.tgz#f348390189b290cbf7f16c62d68303248e553f70"
+  dependencies:
+    freezer-js "^0.5.2"
+    object-assign "^2.0.0"
 
 react-monaco-editor@0.8.1:
   version "0.8.1"

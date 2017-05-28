@@ -40,7 +40,7 @@ namespace Engine.Tests.TestDrivers
                 },FSharpOption<IDictionary<string, ComparerDelegate>>.Some(new Dictionary<string, ComparerDelegate>())
                     
                 );
-                var tweek = await Tweek.Create(_rulesDriver, JPadRulesParserAdapter.Convert(new JPadParser(parserSettings)));
+                var tweek = await Tweek.Create(_rulesDriver, (any)=> JPadRulesParserAdapter.Convert(new JPadParser(parserSettings)));
                 await test(tweek, _contextDriver);
             }
             catch (Exception ex)

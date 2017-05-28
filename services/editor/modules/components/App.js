@@ -25,13 +25,17 @@ export default withTypesService(TypesService)(({ location: { pathname }, childre
       <Title render="Tweek" />
       <IndexLink to="/"><img className={style.logo} src={logoSrc} /></IndexLink>
       <ul className={style.menu} >
-        <li className={classNames(style['menu-item'], { [style['selected-location-path']]: pathname.startsWith('/keys') })}>
-          <img src={require('./resources/keys.svg')} />
-          <Link to="/keys">Keys</Link>
+        <li>
+          <Link className={classNames(style['menu-item'], { [style['selected-location-path']]: pathname.startsWith('/keys') })} to="/keys">
+            <img src={require('./resources/keys.svg')} />
+            <span>Keys</span>
+            </Link>
         </li>
-        <li className={classNames(style['menu-item'], { [style['selected-location-path']]: pathname.startsWith('/context') })}>
-          <img src={require('./resources/keys.svg')} />
-          <Link to="/context">Context</Link>
+        <li>
+          <Link className={classNames(style['menu-item'], { [style['selected-location-path']]: pathname.startsWith('/context') })} to="/context">
+            <img src={require('./resources/keys.svg')} />
+            <span>Context</span>
+          </Link>
         </li>
       </ul>
     </div>
