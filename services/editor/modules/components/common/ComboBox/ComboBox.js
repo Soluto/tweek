@@ -112,6 +112,7 @@ class ComboBoxComponent extends Component {
       getLabel,
       className,
       disabled,
+      suggestionsContainer,
       renderSuggestion,
 
       matchCase,
@@ -137,9 +138,9 @@ class ComboBoxComponent extends Component {
             hint={hint}
             onKeyDown={this.handleKeyDown}
           />
-          { hasFocus && !disabled && suggestions.length > 0 ?
+          { hasFocus && !disabled ?
             <Suggestions
-              {...{ value, suggestions, getLabel, highlightedSuggestion, onSuggestionHighlighted, renderSuggestion }}
+              {...{ value, suggestions, getLabel, highlightedSuggestion, onSuggestionHighlighted, renderSuggestion, suggestionsContainer }}
               onSuggestionSelected={this.onSuggestionSelected}
             /> : null}
         </div>
@@ -224,6 +225,7 @@ ComboBox.propTypes = {
   autofocus: PropTypes.bool,
   className: PropTypes.string,
   renderSuggestion: PropTypes.func,
+  suggestionsContainer: PropTypes.any,
   matchCase: PropTypes.bool,
 };
 
