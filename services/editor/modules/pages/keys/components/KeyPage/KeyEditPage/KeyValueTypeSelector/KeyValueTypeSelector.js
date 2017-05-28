@@ -18,7 +18,7 @@ const getValueTypeSuggestions = () => Object.keys(TypesServices.types)
 const KeyValueTypeSelector = compose(
   connect(state => ({
     selectedKey: state.selectedKey,
-    validation: state.selectedKey.validation.meta.valueType,
+    validation: state.selectedKey.validation.manifest.valueType,
   }), { updateKeyValueType }),
 )((props) => {
   const suggestions = getValueTypeSuggestions();

@@ -27,7 +27,6 @@ const TypedInput = ({ safeConvertValue, types, valueType, value, onChange, ...pr
       onChange={(input, selected) => onChangeConvert(selected && (selected.value === undefined ? selected : selected.value))}
     />);
   }
-
   return <Input {...props} onChange={onChangeConvert} value={value} />;
 };
 

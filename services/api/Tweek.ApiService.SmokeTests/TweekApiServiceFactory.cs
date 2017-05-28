@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,6 +27,13 @@ namespace Tweek.ApiService.SmokeTests
         {
             await _client.PostAsync(
                 $"/context/{identityType}/{identityId}", new StringContent(JsonConvert.SerializeObject(context, new JsonValueConverter()), Encoding.UTF8, "application/json"));
+        }
+
+        public async Task<JToken> GetSwagger()
+        {
+            var stream = await _client.GetStreamAsync("/api/swagger.json");
+
+            return JToken.Load(new JsonTextReader(new StreamReader(stream)));
         }
 
         public async Task<JToken> GetConfigurations(string keyPath, IEnumerable<KeyValuePair<string, string>> context)
