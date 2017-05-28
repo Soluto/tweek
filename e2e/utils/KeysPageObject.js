@@ -156,6 +156,7 @@ export default class KeysPageObject extends PageObject {
 
     this.browser.click(globalSelectors.BACKGROUND);
     this.browser.click(conditionPropertyInputSelector);
+    this.browser.waitForVisible(suggestionSelector, 5000);
     this.browser.click(suggestionSelector);
   }
 
