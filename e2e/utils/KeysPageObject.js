@@ -164,6 +164,7 @@ export default class KeysPageObject extends PageObject {
     const conditionPropertyInputSelector = keySelectors.conditionPropertyName(ruleNumber, conditionNumber);
     this.browser.setValue(conditionPropertyInputSelector, valuePrefix);
     const suggestionSelector = globalSelectors.typeaheadSuggestionByIndex(0);
+    this.browser.waitForVisible(suggestionSelector, 5000);
     this.browser.click(suggestionSelector);
   }
 
