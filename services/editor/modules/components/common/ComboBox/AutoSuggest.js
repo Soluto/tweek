@@ -18,9 +18,9 @@ const mapSuggestionsToProps = mapPropsStream((props$) => {
   return Rx.Observable.combineLatest(props$, suggestions$)
     .map(([{ getSuggestions, ...props }, suggestions]) => ({ ...props,
       suggestions,
-      onChange: (txt) => {
+      onChange: (txt, ...args) => {
         onSearch(txt);
-        if (props.onChange) props.onChange(txt);
+        if (props.onChange) props.onChange(txt, ...args);
       } }));
 });
 
