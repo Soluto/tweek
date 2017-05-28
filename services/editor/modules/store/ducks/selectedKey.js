@@ -1,20 +1,20 @@
 import { handleActions } from 'redux-actions';
 import R from 'ramda';
-import { createBlankKey, createBlankKeyMeta, BLANK_KEY_NAME } from './ducks-utils/blankKeyDefinition';
+import { push } from 'react-router-redux';
+import { createBlankJPadKey, createBlankKeyManifest, BLANK_KEY_NAME } from './ducks-utils/blankKeyDefinition';
 import { withJsonData } from '../../utils/http';
 import keyNameValidations from './ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
-import { downloadTags } from './tags.js';
+import { downloadTags } from './tags';
 import * as ContextService from '../../services/context-service';
 import fetch from '../../utils/fetch';
 import { showError } from './notifications';
 import { showConfirm } from './alerts';
-import { push } from 'react-router-redux';
 
 const KEY_OPENED = 'KEY_OPENED';
 const KEY_OPENING = 'KEY_OPENING';
 const KEY_RULEDEF_UPDATED = 'KEY_RULEDEF_UPDATED';
-const KEY_RULE_META_UPDATED = 'KEY_RULE_META_UPDATED';
+const KEY_MANIFEST_UPDATED = 'KEY_MANIFEST_UPDATED';
 const KEY_SAVED = 'KEY_SAVED';
 const KEY_SAVING = 'KEY_SAVING';
 const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
@@ -32,14 +32,14 @@ export function openKey(key, { revision } = {}) {
     }
 
     if (key === BLANK_KEY_NAME) {
-      dispatch({ type: KEY_OPENED, payload: createBlankKey() });
+      dispatch({ type: KEY_OPENED, payload: createBlankJPadKey() });
       return;
     }
 
     dispatch({ type: KEY_OPENING, payload: key });
 
     let keyData;
-    const search = revision ? `?revision=${revision}` : ''
+    const search = revision ? `?revision=${revision}` : '';
     try {
       keyData = await (await fetch(`/api/keys/${key}${search}`, { credentials: 'same-origin' })).json();
     } catch (exp) {
@@ -47,15 +47,12 @@ export function openKey(key, { revision } = {}) {
       return;
     }
 
-    const meta = keyData.meta || createBlankKeyMeta(key);
+    const manifest = keyData.manifest || createBlankKeyManifest(key);
     const keyOpenedPayload = {
       key,
-      keyDef: {
-        ...keyData.keyDef,
-        valueType: meta.valueType || 'string',
-      },
-      meta,
-      revisionHistory: keyData.revisionHistory
+      keyDef: keyData.keyDef,
+      manifest,
+      revisionHistory: keyData.revisionHistory,
     };
 
     dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
@@ -66,12 +63,14 @@ export function updateKeyDef(keyDef) {
   return { type: KEY_RULEDEF_UPDATED, payload: keyDef };
 }
 
-export function updateKeyMetaDef(meta) {
-  return { type: KEY_RULE_META_UPDATED, payload: meta };
+export function updateKeyMetaDef(manifest) {
+  return { type: KEY_MANIFEST_UPDATED, payload: manifest };
 }
 
 function getAllRules({ jpad, rules = [jpad.rules], depth = jpad.partitions.length }) {
-  return depth === 0 ? R.flatten(rules) : getAllRules({ rules: R.flatten(rules.map(x => Object.values(x))), depth: depth - 1 });
+  return depth === 0
+    ? R.flatten(rules)
+    : getAllRules({ rules: R.flatten(rules.map(x => Object.values(x))), depth: depth - 1 });
 }
 
 const convertRuleValuesAlert = {
@@ -96,8 +95,8 @@ export function updateKeyValueType(keyValueType) {
     const currentValidationState = getState().selectedKey.validation;
     const newValidation = {
       ...currentValidationState,
-      meta: {
-        ...currentValidationState.meta,
+      manifest: {
+        ...currentValidationState.manifest,
         valueType: keyValueTypeValidation,
       },
     };
@@ -141,7 +140,7 @@ export function saveKey() {
       await fetch(`/api/keys/${savedKey}`, {
         credentials: 'same-origin',
         method: 'put',
-        ...withJsonData(local),
+        ...withJsonData(R.dissoc("revisionHistory", local)),
       });
       isSaveSucceeded = true;
     } catch (error) {
@@ -161,20 +160,38 @@ export function saveKey() {
   };
 }
 
+const setValidationHintsVisibility = (validationState, isShown) => {
+  Object.keys(validationState)
+    .map(x => validationState[x])
+    .filter(x => typeof (x) === 'object')
+    .map((x) => {
+      setValidationHintsVisibility(x, isShown);
+      return x;
+    })
+    .filter(x => x.isValid === false)
+    .forEach((x) => {
+      x.isShowingHint = isShown;
+      setValidationHintsVisibility(x, isShown);
+    });
+};
+
 const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
-  const validation = key !== BLANK_KEY_NAME ?
-    {
+  let validation;
+  if (key !== BLANK_KEY_NAME) {
+    validation = {
       isValid: true,
-    } :
-    {
+    };
+  } else {
+    validation = {
       key: keyNameValidations(key, []),
-      meta: {
-        valueType: keyValueTypeValidations(keyData.meta.valueType),
+      manifest: {
+        valueType: keyValueTypeValidations(keyData.manifest.valueType),
       },
       isValid: false,
     };
+  }
 
-  setValidationHintsVisability(validation, false);
+  setValidationHintsVisibility(validation, false);
 
   return {
     local: R.clone(keyData),
@@ -200,23 +217,22 @@ const handleKeyRuleDefUpdated = (state, { payload }) => ({
   },
 });
 
-const handleKeyMetaUpdated = (state, { payload }) => ({
+const handleKeyManifestUpdated = (state, { payload }) => ({
   ...state,
   local: {
     ...state.local,
-    meta: payload,
+    manifest: payload,
   },
 });
 
 const handleKeySaved = ({ local, remote, ...state }, { payload: { keyName, isSaveSucceeded } }) => {
-  return state.key === BLANK_KEY_NAME || state.key === keyName ?
-    {
-      ...state,
-      isSaving: false,
-      local,
-      remote: isSaveSucceeded ? R.clone(local) : remote,
-    } :
-    ({ ...state });
+  if (state.key !== BLANK_KEY_NAME && state.key !== keyName) return state;
+  return {
+    ...state,
+    isSaving: false,
+    local,
+    remote: isSaveSucceeded ? R.clone(local) : remote,
+  };
 };
 
 const handleKeySaving = ({ ...state }) => ({
@@ -228,10 +244,17 @@ const handleKeyNameChange = ({ local: { key, ...localData }, ...otherState }, { 
   ...otherState,
   local: {
     ...localData,
-    meta: { ...localData.meta, displayName: payload },
+    manifest: { ...localData.manifest, meta: { ...localData.manifest.meta, name: payload } },
     ...(payload === '' ? {} : { key: payload }),
   },
 });
+
+const isStateInvalid = (validationState) => {
+  return Object.keys(validationState)
+    .map(x => validationState[x])
+    .filter(x => typeof (x) === 'object')
+    .some(x => x.isValid === false || isStateInvalid(x));
+};
 
 const handleKeyValidationChange = ({ ...state }, { payload }) => {
   const isKeyInvalid = isStateInvalid(payload);
@@ -252,65 +275,35 @@ const handleKeyDeleting = ({ remote, ...otherState }) => {
   });
 };
 
-const handleKeyValueTypeChange = ({ local: { keyDef, meta, ...restOfLocal }, ...state }, { payload }) => ({
+const handleKeyValueTypeChange = ({ local: { manifest, ...restOfLocal }, ...state }, { payload }) => ({
   ...state,
   local: {
     ...restOfLocal,
-    keyDef: {
-      ...keyDef,
-      valueType: payload,
-    },
-    meta: {
-      ...meta,
+    manifest: {
+      ...manifest,
       valueType: payload,
     },
   },
 });
 
 const handleShowKeyValidations = ({ validation, ...state }) => {
-  setValidationHintsVisability(validation, true);
+  setValidationHintsVisibility(validation, true);
   return {
     ...state,
     validation,
   };
 };
 
-const isStateInvalid = (validationState) => {
-  let isOneValidationTypeInvalid = Object.keys(validationState)
-    .map(x => validationState[x])
-    .filter(x => typeof (x) === 'object')
-    .some(x => {
-      return x.isValid === false || isStateInvalid(x);
-    });
-
-  return isOneValidationTypeInvalid;
-};
-
-const setValidationHintsVisability = (validationState, isShown) => {
-  Object.keys(validationState)
-    .map(x => validationState[x])
-    .filter(x => typeof (x) === 'object')
-    .map(x => {
-      setValidationHintsVisability(x, isShown);
-      return x;
-    })
-    .filter(x => x.isValid === false)
-    .forEach(x => {
-      x.isShowingHint = isShown;
-      setValidationHintsVisability(x, isShown);
-    });
-};
-
 export default handleActions({
   [KEY_OPENED]: handleKeyOpened,
   [KEY_OPENING]: handleKeyOpening,
   [KEY_RULEDEF_UPDATED]: handleKeyRuleDefUpdated,
-  [KEY_RULE_META_UPDATED]: handleKeyMetaUpdated,
+  [KEY_MANIFEST_UPDATED]: handleKeyManifestUpdated,
   [KEY_SAVED]: handleKeySaved,
   [KEY_SAVING]: handleKeySaving,
   [KEY_NAME_CHANGE]: handleKeyNameChange,
   [KEY_VALIDATION_CHANGE]: handleKeyValidationChange,
-  ['KEY_DELETING']: handleKeyDeleting,
+  KEY_DELETING: handleKeyDeleting,
   [KEY_VALUE_TYPE_CHANGE]: handleKeyValueTypeChange,
   [SHOW_KEY_VALIDATIONS]: handleShowKeyValidations,
 }, null);

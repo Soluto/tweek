@@ -1,13 +1,18 @@
-import './styles/styles.css';
 import React from 'react';
 import { Route, IndexRoute, Redirect } from 'react-router';
 import App from './components/App';
 import KeysPage from './pages/keys/components/KeysPage/KeysPage';
 import KeyPage from './pages/keys/components/KeyPage/KeyPage';
+
 import SchemaPage from './pages/schema/components/SchemaPage/SchemaPage';
 import IdentityPage from './pages/schema/components/IdentityPage/IdentityPage';
+
+import ContextPage from './pages/context/components/ContextPage/ContextPage';
+import IdentityDetails from './pages/context/components/IdentityDetails/IdentityDetails';
+
 import NoMatch from './components/NoMatch';
 import style from './styles/styles.css';
+import './styles/styles.css';
 
 const SelectKeyMessage = () => <div className={style['select-key-message']}>Select key...</div>;
 
@@ -21,6 +26,9 @@ export default serverRoutes => (
       </Route>
       <Route path="schema" component={SchemaPage} >
         <Route path=":identityType" component={IdentityPage} />
+      </Route>
+      <Route path="context" component={ContextPage} >
+        <Route path=":identityName/:identityId" component={IdentityDetails} />
       </Route>
     </Route>
     {serverRoutes}

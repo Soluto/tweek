@@ -11,7 +11,8 @@ jest.mock('../../../modules/services/types-service', () => {
 
 import fetchMock from 'fetch-mock';
 import * as ContextService from '../../../modules/services/context-service';
-import { assert, expect } from 'chai';
+import chai, { assert, expect } from 'chai';
+chai.use(require('chai-things'));
 
 describe('context-service', () => {
   const contextServiceApiMatcher = 'glob:*/api/context-schema/*';
@@ -56,6 +57,24 @@ describe('context-service', () => {
       // Assert
       expect(actualIdentities).to.deep.equal(expectedIdentities, 'should return correct identities');
     });
+  });
+
+  describe('getProperties',  ()=>{
+    it('should return schema properties and @@id property',async ()=>{
+     const schema = {
+        user: {
+          someProp: {
+            type: 'string'
+          }
+        }
+      };
+      fetchMock.get(contextServiceApiMatcher, schema);
+      await ContextService.refreshSchema();
+      const result = ContextService.getProperties();
+      expect(result.length).to.eql(2);
+      expect(result).to.include.something.that.deep.equal({id: 'user.@@id', name: "Id", type:"string", identity:'user'});
+      expect(result).to.include.something.that.deep.equal({id: 'user.someProp', name: "someProp", type:"string", identity:'user', custom_type:undefined});
+    })
   });
 
   describe('getPropertyTypeDetails', () => {

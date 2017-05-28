@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Couchbase;
+using Couchbase.Configuration.Client;
 using Engine.DataTypes;
+using Engine.Drivers.Context;
 using Engine.Drivers.Rules;
 using Engine.Tests.Helpers;
 using Engine.Tests.TestDrivers;
-using Newtonsoft.Json;
-using Xunit;
-using Tweek.JPad.Generator;
-using MatcherData = System.Collections.Generic.Dictionary<string, object>;
-using Couchbase.Configuration.Client;
-using Engine.Drivers.Context;
 using FSharpUtils.Newtonsoft;
+using Newtonsoft.Json;
+using Tweek.JPad.Generator;
 using Tweek.Utils;
+using Xunit;
+using MatcherData = System.Collections.Generic.Dictionary<string, object>;
 
-namespace Engine.Tests
+namespace Engine.IntegrationTests
 {
     public class CouchBaseFixture
     {
@@ -349,51 +349,6 @@ namespace Engine.Tests
             });
         }
 
-        /*
-        [Fact]
-        public async Task MultiVariantWithMultipleValueDistrubtion()
-        {
-            contexts = ContextCreator.Merge(
-                       ContextCreator.Create("device", "1", new[] { "@CreationDate", "05/05/05" }),
-                       ContextCreator.Create("device", "2", new[] { "@CreationDate", "07/07/07" }),
-                       ContextCreator.Create("device", "3", new[] { "@CreationDate", "09/09/09" }),
-                       ContextCreator.Create("user", "4", new[] { "@CreationDate", "09/09/09" }));
-
-            paths = new[] { "abc/somepath" };
-            rules = new Dictionary<string, RuleDefinition>()
-            {
-                ["abc/somepath"] = JPadGenerator.New().AddMultiVariantRule(matcher: "{}",
-                    valueDistrubtions: new Dictionary<DateTimeOffset, string>
-                    {
-                        [DateTimeOffset.Parse("06/06/06")] = JsonConvert.SerializeObject(new
-                        {
-                            type = "bernoulliTrial",
-                            args = 1
-                        }),
-                        [DateTimeOffset.Parse("08/08/08")] = JsonConvert.SerializeObject(new
-                        {
-                            type = "bernoulliTrial",
-                            args = 0
-                        })
-                    }, ownerType: "device").Generate()
-            };
-
-            await Run(async tweek =>
-            {
-                var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
-                Assert.Equal(0, val.Count);
-
-                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "2") });
-                Assert.Equal("true", val["somepath"].Value);
-
-                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "3") });
-                Assert.Equal("false", val["somepath"].Value);
-
-                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("user", "4") });
-                Assert.Equal(0, val.Count);
-            });
-        }*/
-
         [Fact]
         public async Task CalculateWithFixedValue()
         {
@@ -444,7 +399,7 @@ namespace Engine.Tests
                 ["abc/somepath"] = JPadGenerator.New().AddSingleVariantRule(matcher: JsonConvert.SerializeObject(new Dictionary<string, object>()
             {
                 {"@@key:abc/dep_path1", true},
-                {"@@key:abc/dep_path2", true}
+                {"keys.abc/dep_path2", true}
             }),
                 value: true).Generate()
             };

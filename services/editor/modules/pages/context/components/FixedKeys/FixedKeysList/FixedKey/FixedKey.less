@@ -1,0 +1,64 @@
+@import (reference) "../../../../../../styles/core/core.less";
+@import (reference) "../../../../../../styles/core/comboBox.less";
+.fixed-key-container {
+  display: flex;
+  align-items: center;
+
+  .delete-button {
+    .small-close-circle-button;
+  }
+
+  .removed-key-container {
+    display: flex;
+    .removed-key, .removed-value {
+      .metro-textbox;
+      display: flex;
+      align-items: center;
+      text-decoration: line-through;
+      margin: 5px;
+      border-color: rgb(188, 188, 188);
+    }
+    .removed-key {
+      width: 300px;
+    }
+  }
+
+  .editable-key-container {
+    display: flex;
+
+    &.new-item {
+      input {
+        color: green;
+      }
+    }
+
+    .key-input {
+      .combo-box-basic(@dropdown-min-width: 350px, @input-width: 350px);
+      margin: 5px;
+    }
+
+    .value-input {
+      margin: 5px;
+      &.has-changes {
+        color: green;
+        :global(.bootstrap-typeahead-input-main) {
+          color: green;
+        }
+      }
+    }
+
+    .initial-value {
+      margin: 5px;
+    }
+
+    .initial-value {
+      .metro-textbox;
+      opacity: 0.5;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      border-color: transparent;
+    }
+  }
+}
+

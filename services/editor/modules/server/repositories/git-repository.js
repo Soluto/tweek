@@ -1,6 +1,7 @@
 import Git from 'nodegit';
 import glob from 'glob-promise';
 import path from 'path';
+
 const fs = require('promisify-node')('fs-extra');
 
 export default class GitRepository {
@@ -33,47 +34,46 @@ export default class GitRepository {
     return new GitRepository(repo, operationSettings);
   }
 
-  async listFiles(directoryPath) {
-    return await glob('**/*.*', { cwd: path.join(this._repo.workdir(), directoryPath) });
+  listFiles(directoryPath) {
+    return glob('**/*.*', { cwd: path.join(this._repo.workdir(), directoryPath) });
   }
 
   async readFile(fileName, { revision } = {}) {
-
     if (!revision) return (await fs.readFile(path.join(this._repo.workdir(), fileName))).toString();
-    const sha = revision ? revision : (await this._repo.getMasterCommit()).sha();
-    const commit = await this._repo.getCommit(sha)
+    const sha = revision || (await this._repo.getMasterCommit()).sha();
+    const commit = await this._repo.getCommit(sha);
     const entry = await commit.getEntry(fileName);
     return entry.isBlob() ? (await entry.getBlob()).toString() : undefined;
   }
 
-  async getFileDetails(fileName, { revision } = {}) {
-    let modifyDate = 'unknown';
-    let modifyUser = 'unknown';
-    let commitSha = null;
+  async getHistory(fileName, { revision } = {}) {
+    const modifyDate = 'unknown';
+    const modifyUser = 'unknown';
+    const commitSha = null;
 
-    let remote = await this._repo.getRemote('origin');
-    let remoteUrl = remote.url();
+    const remote = await this._repo.getRemote('origin');
+    const remoteUrl = remote.url();
 
-    const sha = revision ? revision : (await this._repo.getMasterCommit()).sha();
+    const sha = revision || (await this._repo.getMasterCommit()).sha();
 
     const walker = this._repo.createRevWalk();
     walker.push(sha);
     walker.sorting(Git.Revwalk.SORT.TIME);
 
-    const historyEntries = await walker.fileHistoryWalk(fileName, 10000);
-    if (historyEntries.length == 0) {
+    const historyEntries = await walker.fileHistoryWalk(fileName, 500);
+    if (historyEntries.length === 0) {
       console.info('No recent history found for key');
     }
     return historyEntries.map(({ commit }) => ({
       sha: commit.sha(),
       author: `${commit.author().name()}`,
       date: commit.date(),
-      message: commit.message()
-    }))
+      message: commit.message(),
+    }));
   }
 
   async updateFile(fileName, content) {
-    let filePath = path.join(this._repo.workdir(), fileName);
+    const filePath = path.join(this._repo.workdir(), fileName);
     await fs.ensureFile(filePath);
     await fs.writeFile(filePath, content);
 
@@ -84,7 +84,7 @@ export default class GitRepository {
   }
 
   async deleteFile(fileName) {
-    let filePath = path.join(this._repo.workdir(), fileName);
+    const filePath = path.join(this._repo.workdir(), fileName);
 
     await fs.remove(filePath);
 
@@ -101,7 +101,7 @@ export default class GitRepository {
       [],
       author,
       pusher,
-      message
+      message,
     );
 
     await this._pushRepositoryChanges(message);
@@ -112,18 +112,21 @@ export default class GitRepository {
   }
 
   async mergeMaster() {
-    await this._repo.mergeBranches('master', 'origin/master');
+    let commitId = await this._repo.mergeBranches('master', 'origin/master');
 
     const isSynced = await this.isSynced();
     if (!isSynced) {
       console.warn('Repo is not synced after pull');
-      await this.reset();
+      commitId = await this.reset();
     }
+
+    return commitId;
   }
 
   async reset() {
     const remoteCommit = (await this._repo.getBranchCommit('remotes/origin/master'));
     await Git.Reset.reset(this._repo, remoteCommit, 3);
+    return remoteCommit.id();
   }
 
   async isSynced() {
