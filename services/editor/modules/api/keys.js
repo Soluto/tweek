@@ -1,39 +1,6 @@
 import { UKNOWN_AUTHOR } from './unknownAuthor';
 import R from 'ramda';
-
-function getAllGroups(str, pattern, groupIndex) {
-  const regex = new RegExp(pattern, 'g');
-  const result = [];
-  let match;
-
-  while (match = regex.exec(str)) {
-    result.push(match[groupIndex]);
-  }
-
-  return result;
-}
-
-function convertMetaToNewFormat(keyPath, {keyDef, meta}) {
-  if (!meta || meta.meta) return meta;
-
-  return {
-    key_path: keyPath,
-    meta: {
-      name: meta.displayName,
-      tags: meta.tags,
-      description: meta.description,
-      readOnly: meta.readOnly,
-      archived: false,
-    },
-    implementation: {
-      type: 'file',
-      format: keyDef.type,
-    },
-    valueType: meta.valueType,
-    dependencies: R.uniq(getAllGroups(keyDef.source, /"(?:@@key:|keys\.)(.+?)"/, 1)),
-    enabled: true,
-  };
-}
+import {convertMetaToNewFormat} from '../utils/meta-legacy';
 
 let injectAuthor = (fn) => function (req, res, deps, ...rest) {
   return this::fn(req, res, {
@@ -50,18 +17,18 @@ export async function getKey(req, res, { keysRepository }, { params }) {
   const revision = req.query.revision;
   try {
     const keyDetails = await keysRepository.getKeyDetails(keyPath, { revision });
-    res.json({...keyDetails, meta: convertMetaToNewFormat(keyPath, keyDetails)});
+    res.json({...keyDetails, manifest: convertMetaToNewFormat(keyPath, keyDetails)});
   } catch (exp) {
     res.sendStatus(404);
   }
 }
 
-export async function getKeyMeta(req, res, { keysRepository }, { params }) {
+export async function getKeyManifest(req, res, { keysRepository }, { params }) {
   const keyPath = params.splat;
   const revision = req.query.revision;
   try {
-    const meta = await keysRepository.getKeyMeta(keyPath, { revision });
-    res.json(meta);
+    const manifest = await keysRepository.getKeyManifest(keyPath, { revision });
+    res.json(manifest);
   } catch (exp) {
     res.sendStatus(404);
   }
@@ -71,9 +38,9 @@ export const saveKey = injectAuthor(async function (req, res, { keysRepository, 
   const keyPath = params.splat;
 
   const keyRulesSource = req.body.keyDef.source;
-  const meta = { key_path: keyPath, ...req.body.meta };
-  const keyMetaSource = JSON.stringify(meta, null, 4);
-  await keysRepository.updateKey(keyPath, keyMetaSource, keyRulesSource, author);
+  const manifest = { key_path: keyPath, ...req.body.manifest };
+  const manifestSource = JSON.stringify(manifest, null, 4);
+  await keysRepository.updateKey(keyPath, manifestSource, keyRulesSource, author);
 
   res.send('OK');
 });
