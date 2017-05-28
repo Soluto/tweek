@@ -1,5 +1,4 @@
 import React from 'react';
-import R from 'ramda';
 import Chance from 'chance';
 import Highlighter from 'react-highlight-words';
 import ReactTooltip from 'react-tooltip';
@@ -7,7 +6,6 @@ import style from './styles.css';
 import MultiSourceComboBox from '../../../../common/ComboBox/MultiSourceComboBox';
 import * as ContextService from '../../../../../services/context-service';
 import * as SearchService from '../../../../../services/search-service';
-import { DEPENDENT_KEY_PREFIX } from '../../../rules-utils';
 
 const chance = new Chance();
 
@@ -43,7 +41,7 @@ const PropertyTooltip = ({ propName, description, propType, identityType }) =>
   </div>;
 
 const PropertySuggestion = ({ suggestion, textToMark }) => {
-  if (suggestion.value.startsWith(DEPENDENT_KEY_PREFIX)) {
+  if (suggestion.value.startsWith(ContextService.KEYS_IDENTITY)) {
     return (
       <div
         className={style['property-suggestion-wrapper']}
@@ -101,36 +99,28 @@ const PropertySuggestion = ({ suggestion, textToMark }) => {
   );
 };
 
-export default ({ property, suggestedValues, onPropertyChange, autofocus }) => {
-  if (property && !property.startsWith(DEPENDENT_KEY_PREFIX) && !suggestedValues.some(x => x.value === property)) {
-    suggestedValues = [...suggestedValues, { label: property, value: property }];
-  }
-
-  suggestedValues = R.uniqBy(x => x.value)([...suggestedValues]);
-
-  return (
-    <MultiSourceComboBox
-      getSuggestions={{
-        Context: () => suggestedValues,
-        Keys: (query) => {
-          const search = query.startsWith(DEPENDENT_KEY_PREFIX) ? query.substring(DEPENDENT_KEY_PREFIX.length) : query;
-          return SearchService.suggestions(search).map(label => ({ label, value: `${DEPENDENT_KEY_PREFIX}${label}` }));
-        },
-      }}
-      value={suggestedValues.find(x => x.value === property)}
-      onChange={(input, selected) => {
-        if (selected) onPropertyChange(selected);
-        else if (input.startsWith('@@key:') || input.startsWith(DEPENDENT_KEY_PREFIX)) {
-          onPropertyChange({ value: input.replace('@@key:', DEPENDENT_KEY_PREFIX) });
-        }
-      }}
-      placeholder="Property"
-      filterBy={(currentInputValue, option) => option.value.toLowerCase().includes(currentInputValue.toLowerCase())}
-      renderSuggestion={(suggestion, currentInputValue) => (
-        <PropertySuggestion suggestion={suggestion} textToMark={currentInputValue} />
+export default ({ property, suggestedValues, onPropertyChange, autofocus }) => (
+  <MultiSourceComboBox
+    getSuggestions={{
+      Context: () => suggestedValues,
+      Keys: (query) => {
+        const search = query.startsWith(ContextService.KEYS_IDENTITY) ? query.substring(ContextService.KEYS_IDENTITY.length) : query;
+        return SearchService.suggestions(search).map(label => ({ label, value: `${ContextService.KEYS_IDENTITY}${label}` }));
+      },
+    }}
+    value={suggestedValues.find(x => x.value === property)}
+    onChange={(input, selected) => {
+      if (selected) onPropertyChange(selected);
+      else if (input.startsWith('@@key:') || input.startsWith(ContextService.KEYS_IDENTITY)) {
+        onPropertyChange({ value: input.replace('@@key:', ContextService.KEYS_IDENTITY) });
+      }
+    }}
+    placeholder="Property"
+    filterBy={(currentInputValue, option) => option.value.toLowerCase().includes(currentInputValue.toLowerCase())}
+    renderSuggestion={(suggestion, currentInputValue) => (
+      <PropertySuggestion suggestion={suggestion} textToMark={currentInputValue} />
         )}
-      autofocus={autofocus}
-      className={style['property-name-wrapper']}
-    />
+    autofocus={autofocus}
+    className={style['property-name-wrapper']}
+  />
   );
-};
