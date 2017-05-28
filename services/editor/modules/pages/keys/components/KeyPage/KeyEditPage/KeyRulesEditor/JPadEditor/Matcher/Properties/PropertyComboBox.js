@@ -4,8 +4,10 @@ import Chance from 'chance';
 import Highlighter from 'react-highlight-words';
 import ReactTooltip from 'react-tooltip';
 import style from './styles.css';
-import ComboBox from '../../../../../../../../../components/common/ComboBox/ComboBox';
+import MultiSourceComboBox from '../../../../../../../../../components/common/ComboBox/MultiSourceComboBox';
 import * as ContextService from '../../../../../../../../../services/context-service';
+import * as SearchService from '../../../../../../../../../services/search-service';
+import { DEPENDENT_KEY_PREFIX } from '../../../../../../../../../services/rules-service';
 
 const chance = new Chance();
 
@@ -41,17 +43,20 @@ const PropertyTooltip = ({ propName, description, propType, identityType }) =>
   </div>;
 
 const PropertySuggestion = ({ suggestion, textToMark }) => {
-  if (suggestion.value.startsWith('keys.')) {
+  if (suggestion.value.startsWith(DEPENDENT_KEY_PREFIX)) {
     return (
-      <div className={style['property-suggestion-wrapper']}>
-        <div className={style['suggestion-identity']}>
-          <Highlighter
-            highlightClassName={style['suggestion-label']}
-            highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
-            searchWords={[textToMark]}
-            textToHighlight={suggestion.value}
-          />
-        </div>
+      <div
+        className={style['property-suggestion-wrapper']}
+        data-field-type={'string'}
+      >
+        <i />
+        <Highlighter
+          highlightClassName={style['suggestion-label']}
+          highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
+          searchWords={[textToMark]}
+          textToHighlight={suggestion.label}
+        />
+        <span className={style['suggestion-identity']}>(keys)</span>
       </div>);
   }
 
@@ -97,20 +102,26 @@ const PropertySuggestion = ({ suggestion, textToMark }) => {
 };
 
 export default ({ property, suggestedValues, onPropertyChange, autofocus }) => {
-  if (!!property && !suggestedValues.some(x => x.value === property)) {
+  if (property && !property.startsWith(DEPENDENT_KEY_PREFIX) && !suggestedValues.some(x => x.value === property)) {
     suggestedValues = [...suggestedValues, { label: property, value: property }];
   }
 
   suggestedValues = R.uniqBy(x => x.value)([...suggestedValues]);
 
   return (
-    <ComboBox
-      suggestions={suggestedValues}
+    <MultiSourceComboBox
+      getSuggestions={{
+        Context: () => suggestedValues,
+        Keys: (query) => {
+          const search = query.startsWith(DEPENDENT_KEY_PREFIX) ? query.substring(DEPENDENT_KEY_PREFIX.length) : query;
+          return SearchService.suggestions(search).map(label => ({ label, value: `${DEPENDENT_KEY_PREFIX}${label}` }));
+        },
+      }}
       value={suggestedValues.find(x => x.value === property)}
       onChange={(input, selected) => {
         if (selected) onPropertyChange(selected);
-        else if (input.startsWith('@@key:') || input.startsWith('keys.')) {
-          onPropertyChange({ value: input.replace('@@key:', 'keys.') });
+        else if (input.startsWith('@@key:') || input.startsWith(DEPENDENT_KEY_PREFIX)) {
+          onPropertyChange({ value: input.replace('@@key:', DEPENDENT_KEY_PREFIX) });
         }
       }}
       placeholder="Property"
