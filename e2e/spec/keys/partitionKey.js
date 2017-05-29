@@ -24,7 +24,6 @@ describe('partition key', () => {
 
     describe('invalid partitions', () => {
       const emptyRulesKeyFullPath = `${testFolder}/${partitionsTestFolder}/empty_partition`;
-
       before(() => {
         keysPageObject.goToKey(emptyRulesKeyFullPath);
       });
@@ -46,20 +45,15 @@ describe('partition key', () => {
 
     describe('valid partitions', () => {
       const addPartitionKeyFullPath = `${testFolder}/${partitionsTestFolder}/add_partition`;
-
       before(() => {
         keysPageObject.goToKey(addPartitionKeyFullPath);
       });
 
-      it('should show alert when rules are not empty', () => {
-        keysPageObject.addPartitionFromSuggestion('favorite');
-        browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
-      });
-
       it('should not partition if canceled', () => {
         const keySource = keysPageObject.getKeySource();
-        keysPageObject.addPartitionFromSuggestion('favorite');
-        browser.clickWhenVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
+        keysPageObject.addPartitionFromProperty('user.FavoriteFruit');
+        browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
+        browser.click(selectors.ALERT_CANCEL_BUTTON);
         keysAsserts.assertKeySource(keySource);
       });
 
@@ -107,11 +101,9 @@ describe('partition key', () => {
         keysPageObject.addPartitionFromProperty('user.FavoriteFruit');
         browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
         browser.waitForVisible(selectors.AUTO_PARTITION_BUTTON, 1000, false);
-      });
 
-      it('should reset partitions if reset was selected', () => {
-        keysPageObject.addPartitionFromProperty('user.FavoriteFruit');
-        browser.clickWhenVisible(selectors.RESET_PARTITIONS_BUTTON, 1000);
+        browser.waitForVisible(selectors.RESET_PARTITIONS_BUTTON, 1000);
+        browser.click(selectors.RESET_PARTITIONS_BUTTON);
         keysAsserts.assertKeySource({
           partitions: ["user.FavoriteFruit"],
           valueType: "string",
@@ -123,14 +115,8 @@ describe('partition key', () => {
 
   describe('delete partition', () => {
     const deletePartitionKeyFullPath = `${testFolder}/${partitionsTestFolder}/delete_partition`;
-
     before(() => {
       keysPageObject.goToKey(deletePartitionKeyFullPath);
-    });
-
-    it('should show alert when rules are not empty', () => {
-      browser.click(selectors.partitionDeleteButton(1));
-      browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
     });
 
     it('should clear rules after partition is deleted', () => {
@@ -146,10 +132,8 @@ describe('partition key', () => {
   });
 
   describe('partition groups', () => {
-
     describe('add', () => {
       const addPartitionGroupFullPath = `${testFolder}/${partitionsTestFolder}/add_partition_group`;
-
       before(() => {
         keysPageObject.goToKey(addPartitionGroupFullPath);
       });
@@ -186,11 +170,6 @@ describe('partition key', () => {
         keysPageObject.goToKey(deletePartitionKeyFullPath);
       });
 
-      it('should show alert when deleting partition group', () => {
-        browser.click(selectors.partitionGroupDeleteButton(1));
-        browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
-      });
-
       it('should delete group rules when deleting partition group', () => {
         browser.click(selectors.partitionGroupDeleteButton(2));
         browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
@@ -220,7 +199,6 @@ describe('partition key', () => {
           }
         })
       });
-
     });
   });
 });

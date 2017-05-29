@@ -195,11 +195,6 @@ export default class KeysPageObject extends PageObject {
     this.browser.keys('\uE007');
   }
 
-  addPartitionFromSuggestion(suggestion) {
-    this.browser.setValue(keySelectors.ADD_PARTITION_INPUT, suggestion);
-    this.browser.clickWhenVisible(keySelectors.partitionSuggestionByIndex(0), 1000);
-  }
-
   saveChanges() {
     this.browser.click(keySelectors.SAVE_CHANGES_BUTTON);
     this.browser.waitUntil(() => !this.hasChanges() && !this.isSaving(), PageObject.GIT_TRANSACTION_TIMEOUT, "changes were not saved");
