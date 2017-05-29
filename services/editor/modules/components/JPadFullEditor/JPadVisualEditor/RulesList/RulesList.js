@@ -19,7 +19,9 @@ export default class RulesList extends React.Component {
   }
 
   componentDidUpdate() {
-    if (this.state.autofocusRuleIndex !== undefined) { this.setState({ autofocusRuleIndex: undefined }); }
+    if (this.state.autofocusRuleIndex !== undefined) {
+      this.setState({ autofocusRuleIndex: undefined });
+    }
   }
 
   render() {

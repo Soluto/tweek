@@ -16,26 +16,28 @@ module.exports = function (server, config) {
       scope: ['profile', 'email'],
       redirectUrl: config.get('AZUREAD_CALLBACK_URL'),
     },
-    (token, done) => done(
+    (token, done) =>
+      done(
         null,
-      {
-        id: token.upn,
-        sub: token.sub,
-        name: token.name,
-        email: token.upn,
-        displayName: token.displayName,
-      },
+        {
+          id: token.upn,
+          sub: token.sub,
+          name: token.name,
+          email: token.upn,
+          displayName: token.displayName,
+        },
         token,
       ),
   );
 
   server.get('/auth/openid', passport.authenticate('azuread-openidconnect'));
-  server.get('/auth/openid/callback', passport.authenticate('azuread-openidconnect'), (
-    req,
-    res,
-  ) => {
-    res.redirect('/');
-  });
+  server.get(
+    '/auth/openid/callback',
+    passport.authenticate('azuread-openidconnect'),
+    (req, res) => {
+      res.redirect('/');
+    },
+  );
 
   passport.use(oidcStrategy);
   passport.serializeUser((user, done) => {

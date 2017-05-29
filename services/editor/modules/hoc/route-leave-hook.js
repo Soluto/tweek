@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import { compose, lifecycle } from 'recompose';
 import { withRouter } from 'react-router';
 
-const routeLeaveHook = fnConfirm => Comp => compose(
+const routeLeaveHook = fnConfirm => Comp =>
+  compose(
     withRouter,
     lifecycle({
       componentDidMount() {

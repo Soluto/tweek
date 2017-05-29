@@ -42,12 +42,7 @@ export async function getKeyManifest(req, res, { keysRepository }, { params }) {
   }
 }
 
-export const saveKey = injectAuthor(async (
-  req,
-  res,
-  { keysRepository, author },
-  { params },
-) => {
+export const saveKey = injectAuthor(async (req, res, { keysRepository, author }, { params }) => {
   const keyPath = params.splat;
 
   const keyRulesSource = req.body.keyDef.source;
@@ -58,12 +53,7 @@ export const saveKey = injectAuthor(async (
   res.send('OK');
 });
 
-export const deleteKey = injectAuthor(async (
-  req,
-  res,
-  { keysRepository, author },
-  { params },
-) => {
+export const deleteKey = injectAuthor(async (req, res, { keysRepository, author }, { params }) => {
   const keyPath = params.splat;
   await keysRepository.deleteKey(keyPath, author);
   res.send('OK');

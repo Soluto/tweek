@@ -19,7 +19,8 @@ const buttons = {
 };
 
 export function showCustomAlert({ buttons, ...alertProps }) {
-  return dispatch => dispatch(
+  return dispatch =>
+    dispatch(
       new Promise((resolve) => {
         const id = chance.guid();
         const onClose = (result) => {

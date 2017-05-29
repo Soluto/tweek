@@ -43,7 +43,7 @@ const EditableTextArea = compose(
         maxLength={maxLength}
       />
     </div>
-    ),
+  ),
 );
 
 export default EditableTextArea;
