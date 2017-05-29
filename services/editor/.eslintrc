@@ -15,7 +15,6 @@
     "jsx-a11y/img-has-alt": "off",
     "jsx-a11y/label-has-for": "off",
     "linebreak-style": "off",
-    "max-len" : "off",
     "newline-per-chained-call" : "warn",
     "no-new-func": "off",
     "no-param-reassign": "warn",
