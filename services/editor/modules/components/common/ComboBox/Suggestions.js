@@ -30,29 +30,40 @@ SuggestionItem.defaultProps = {
 
 const highlightStyle = { fontWeight: 'bold', background: 'inherit', color: 'inherit' };
 
-const Suggestions = ({ suggestions, value, getLabel, highlightedSuggestion, onSuggestionSelected, onSuggestionHighlighted, renderSuggestion, suggestionsContainer: Container }) => (
+const Suggestions = ({
+  suggestions,
+  value,
+  getLabel,
+  highlightedSuggestion,
+  onSuggestionSelected,
+  onSuggestionHighlighted,
+  renderSuggestion,
+  suggestionsContainer: Container,
+}) => (
   <Container>
-    {
-      suggestions.map((x, i) => (
-        <SuggestionItem
-          key={`${i}_${getLabel(x)}`}
-          onSelect={() => onSuggestionSelected(i)}
-          active={highlightedSuggestion === i}
-          onMouseOver={() => onSuggestionHighlighted(i)}
-        >
-          { renderSuggestion ? renderSuggestion(x, value) : <Highlighter highlightStyle={highlightStyle} searchWords={value.split(' ')} textToHighlight={getLabel(x)} /> }
-        </SuggestionItem>
-      ))
-    }
+    {suggestions.map((x, i) => (
+      <SuggestionItem
+        key={`${i}_${getLabel(x)}`}
+        onSelect={() => onSuggestionSelected(i)}
+        active={highlightedSuggestion === i}
+        onMouseOver={() => onSuggestionHighlighted(i)}
+      >
+        {renderSuggestion
+          ? renderSuggestion(x, value)
+          : <Highlighter
+            highlightStyle={highlightStyle}
+            searchWords={value.split(' ')}
+            textToHighlight={getLabel(x)}
+          />}
+      </SuggestionItem>
+    ))}
   </Container>
 );
 
 Suggestions.propTypes = {
   value: PropTypes.string.isRequired,
-  suggestions: PropTypes.arrayOf(PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object,
-  ])).isRequired,
+  suggestions: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.object]))
+    .isRequired,
   getLabel: PropTypes.func.isRequired,
   highlightedSuggestion: PropTypes.number.isRequired,
   onSuggestionSelected: PropTypes.func.isRequired,

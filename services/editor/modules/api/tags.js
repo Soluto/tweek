@@ -5,8 +5,7 @@ export async function getTags(req, res, { tagsRepository }) {
   res.json(tags);
 }
 
-export async function saveTags(req, res, { tagsRepository, author = UKNOWN_AUTHOR })
-{
+export async function saveTags(req, res, { tagsRepository, author = UKNOWN_AUTHOR }) {
   const tagsToSave = req.body;
 
   await tagsRepository.mergeTags(tagsToSave, author);

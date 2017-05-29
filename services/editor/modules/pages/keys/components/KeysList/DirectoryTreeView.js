@@ -29,26 +29,30 @@ export default function DirectoryTreeView({ paths, renderItem, expandByDefault }
 DirectoryTreeView.propTypes = {
   paths: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
   renderItem: React.PropTypes.func.isRequired,
-  expandByDefault: React.PropTypes.bool
+  expandByDefault: React.PropTypes.bool,
 };
 
 function TreeNode({ node, name, fullPath, depth, renderItem, expandByDefault }) {
   let LeafElement = renderItem;
 
-  return node === leaf ?
-    <LeafElement {...{ name, fullPath, depth }} /> :
-    <TreeDirectory descendantsCount={countLeafsInTree(node)} {...{ name, fullPath, depth, expandByDefault }} >
+  return node === leaf
+    ? <LeafElement {...{ name, fullPath, depth }} />
+    : <TreeDirectory
+      descendantsCount={countLeafsInTree(node)}
+      {...{ name, fullPath, depth, expandByDefault }}
+    >
       {Object.keys(node).map(childPath => (
         <TreeNode
           key={childPath}
           name={childPath}
           node={node[childPath]}
-          fullPath={fullPath + "/" + childPath}
+          fullPath={`${fullPath}/${childPath}`}
           depth={depth + 1}
           renderItem={renderItem}
-          expandByDefault={expandByDefault} />
-      ))}
-    </TreeDirectory>
+          expandByDefault={expandByDefault}
+        />
+        ))}
+    </TreeDirectory>;
 }
 
 TreeNode.propTypes = {
@@ -57,24 +61,23 @@ TreeNode.propTypes = {
   fullPath: React.PropTypes.string,
   depth: React.PropTypes.number.isRequired,
   renderItem: React.PropTypes.func.isRequired,
-  expandByDefault: React.PropTypes.bool
+  expandByDefault: React.PropTypes.bool,
 };
 
 class TreeDirectory extends React.Component {
-
   static propTypes = {
     name: React.PropTypes.string.isRequired,
     fullPath: React.PropTypes.string,
     depth: React.PropTypes.number.isRequired,
     children: React.PropTypes.arrayOf(React.PropTypes.node).isRequired,
-    expandByDefault: React.PropTypes.bool
+    expandByDefault: React.PropTypes.bool,
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      isCollapsed: !props.expandByDefault
+      isCollapsed: !props.expandByDefault,
     };
   }
 
@@ -85,29 +88,38 @@ class TreeDirectory extends React.Component {
     return (
       <div className={style['key-folder']}>
 
-        <div style={{ paddingLeft: (depth + 1) * 10 }}
+        <div
+          style={{ paddingLeft: (depth + 1) * 10 }}
           className={style['key-folder-name']}
           onClick={() => this.setState({ isCollapsed: !isCollapsed })}
-          data-folder-name={fullPath} >
-          <img className={style['key-folder-icon']} src={isCollapsed ? closedFolderIconSrc : openedFolderIconSrc} />
+          data-folder-name={fullPath}
+        >
+          <img
+            className={style['key-folder-icon']}
+            src={isCollapsed ? closedFolderIconSrc : openedFolderIconSrc}
+          />
           {name}
           <label className={style['number-of-folder-keys']}>{descendantsCount}</label>
         </div>
 
-        <VelocityTransitionGroup enter={{ animation: 'slideDown' }} leave={{ animation: 'slideUp' }}>
-          {isCollapsed ? undefined :
-            <ul className={style['folder-items']}>
-              {children.map((child, i) => (<li className={style['sub-tree']} key={i}>{child}</li>))}
+        <VelocityTransitionGroup
+          enter={{ animation: 'slideDown' }}
+          leave={{ animation: 'slideUp' }}
+        >
+          {isCollapsed
+            ? undefined
+            : <ul className={style['folder-items']}>
+              {children.map((child, i) => <li className={style['sub-tree']} key={i}>{child}</li>)}
             </ul>}
         </VelocityTransitionGroup>
       </div>
-    )
+    );
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.expandByDefault != nextProps.expandByDefault) {
       this.setState({
-        isCollapsed: !nextProps.expandByDefault
+        isCollapsed: !nextProps.expandByDefault,
       });
     }
   }
@@ -115,17 +127,19 @@ class TreeDirectory extends React.Component {
 
 function pathsToTree(paths) {
   let tree = {};
-  paths.map(x => x.split('/'))
-    .forEach(fragments => {
-      const last = fragments.pop();
-      fragments.reduce((node, frag) => node[frag] = node[frag] || {}, tree)[last] = leaf;
-    });
+  paths.map(x => x.split('/')).forEach((fragments) => {
+    const last = fragments.pop();
+    fragments.reduce((node, frag) => (node[frag] = node[frag] || {}), tree)[last] = leaf;
+  });
 
   return tree;
 }
 
 function countLeafsInTree(tree) {
-  if ((typeof tree) === 'symbol') return 1;
+  if (typeof tree === 'symbol') return 1;
 
-  return Object.keys(tree).reduce((aggregator, item) => aggregator + countLeafsInTree(tree[item]), 0);
+  return Object.keys(tree).reduce(
+    (aggregator, item) => aggregator + countLeafsInTree(tree[item]),
+    0,
+  );
 }

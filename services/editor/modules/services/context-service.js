@@ -16,16 +16,19 @@ export function getIdentities() {
 }
 
 export function getProperties() {
-  return R.chain(identity => (
-    [{ id: `${identity}.@@id`, name: 'Id', type: 'string', identity },
-      ...Object.keys(contextSchema[identity])
-    .map(property => ({
-      id: `${identity}.${property}`,
-      identity,
-      name: property,
-      type: contextSchema[identity][property].type,
-      custom_type: contextSchema[identity][property].custom_type,
-    }))]), Object.keys(contextSchema));
+  return R.chain(
+    identity => [
+      { id: `${identity}.@@id`, name: 'Id', type: 'string', identity },
+      ...Object.keys(contextSchema[identity]).map(property => ({
+        id: `${identity}.${property}`,
+        identity,
+        name: property,
+        type: contextSchema[identity][property].type,
+        custom_type: contextSchema[identity][property].custom_type,
+      })),
+    ],
+    Object.keys(contextSchema),
+  );
 }
 
 export function getPropertyTypeDetails(property) {
@@ -57,7 +60,10 @@ export const FIXED_PREFIX = '@fixed:';
 
 export function getFixedKeys(contextData = {}) {
   const fixedKeys = R.pickBy((_, prop) => prop.startsWith(FIXED_PREFIX), contextData);
-  return Object.keys(fixedKeys).reduce((result, key) => ({ ...result, [key.substring(FIXED_PREFIX.length)]: fixedKeys[key] }), {});
+  return Object.keys(fixedKeys).reduce(
+    (result, key) => ({ ...result, [key.substring(FIXED_PREFIX.length)]: fixedKeys[key] }),
+    {},
+  );
 }
 
 export function getContextProperties(identity, contextData = {}) {

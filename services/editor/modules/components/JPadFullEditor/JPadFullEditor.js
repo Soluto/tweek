@@ -32,21 +32,17 @@ const KeyRulesEditor = ({ source, valueType, mutate, onMutation, alerter, isRead
 
       <TabList>
         <Tab className={style['tab-header']}>
-          <label className={style['key-definition-tab-icon']}>&#xE904; </label>
+          <label className={style['key-definition-tab-icon']}> </label>
           <label className={style['tab-title']}>Rules</label>
         </Tab>
         <Tab className={style['tab-header']}>
-          <label className={style['key-source-tab-icon']}>&#xE901; </label>
+          <label className={style['key-source-tab-icon']}> </label>
           <label className={style['tab-title']}>Source</label>
         </Tab>
       </TabList>
       <TabPanel className={style['tab-content']}>
-        <fieldset disabled={isReadonly} style={{ border: 'none' }} >
-          <JPadVisualEditor
-            {...{ mutate, alerter }}
-            jpadSource={source}
-            valueType={valueType}
-          />
+        <fieldset disabled={isReadonly} style={{ border: 'none' }}>
+          <JPadVisualEditor {...{ mutate, alerter }} jpadSource={source} valueType={valueType} />
         </fieldset>
 
       </TabPanel>
@@ -64,7 +60,7 @@ const KeyRulesEditor = ({ source, valueType, mutate, onMutation, alerter, isRead
     </Tabs>
 
   </div>
-  );
+);
 
 function getTypedValue(value, valueType) {
   try {
@@ -87,14 +83,19 @@ function changeValueType(valueType, rulesMutate, depth) {
         break;
       }
 
-      const valueToConvert = valueDistrubtion.type === 'weighted' ?
-        Object.keys(valueDistrubtion.args)[0] : '';
+      const valueToConvert = valueDistrubtion.type === 'weighted'
+        ? Object.keys(valueDistrubtion.args)[0]
+        : '';
       const convertedValue = getTypedValue(valueToConvert, valueType);
 
       ruleMutate
-        .in('ValueDistribution').delete()
-        .in('OwnerType').delete()
-        .in('Type').updateValue('SingleVariant').up()
+        .in('ValueDistribution')
+        .delete()
+        .in('OwnerType')
+        .delete()
+        .in('Type')
+        .updateValue('SingleVariant')
+        .up()
         .insert('Value', convertedValue);
     }
     return;
@@ -106,7 +107,10 @@ function changeValueType(valueType, rulesMutate, depth) {
 export default compose(
   mapProps(({ source, onDependencyChanges, dependencies, onChange, ...other }) => ({
     onMutation(sourceTree) {
-      const newDependencies = RulesService.getDependencies(sourceTree.rules, sourceTree.partitions.length);
+      const newDependencies = RulesService.getDependencies(
+        sourceTree.rules,
+        sourceTree.partitions.length,
+      );
       if (!R.equals(dependencies, newDependencies)) {
         onDependencyChanges(newDependencies);
       }
@@ -114,7 +118,8 @@ export default compose(
     },
     source,
     sourceTree: RulesService.convertToExplicitKey(JSON.parse(source)),
-    ...other })),
+    ...other,
+  })),
   MutatorFor('sourceTree'),
   pure,
   lifecycle({
@@ -134,4 +139,5 @@ export default compose(
         return m;
       });
     },
-  }))(KeyRulesEditor);
+  }),
+)(KeyRulesEditor);

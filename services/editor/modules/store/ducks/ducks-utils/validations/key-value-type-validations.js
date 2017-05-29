@@ -7,4 +7,4 @@ export default function (keyValueType) {
 
   const isExists = !!TypesService.types[keyValueType];
   return { isValid: isExists, hint: !isExists ? 'Invalid type' : undefined };
-};
+}

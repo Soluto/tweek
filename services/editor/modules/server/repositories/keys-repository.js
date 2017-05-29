@@ -3,7 +3,7 @@ import R from 'ramda';
 import { convertMetaToNewFormat } from '../../utils/meta-legacy';
 
 function generateEmptyManifest(keyPath) {
-  return ({
+  return {
     key_path: keyPath,
     meta: {
       name: keyPath,
@@ -19,7 +19,7 @@ function generateEmptyManifest(keyPath) {
     valueType: 'string',
     enabled: true,
     dependencies: [],
-  });
+  };
 }
 
 function getNewJpadFormatSourceIfNeeded(originalJpadSource) {
@@ -64,10 +64,14 @@ async function getKeyDef(manifest, repo, revision) {
 }
 
 async function getRevisionHistory(manifest, repo) {
-  const fileMeta = (manifest.implementation.type === 'file') ?
-    repo.getHistory(`rules/${manifest.key_path}.${manifest.implementation.format}`) : Promise.resolve([]);
+  const fileMeta = manifest.implementation.type === 'file'
+    ? repo.getHistory(`rules/${manifest.key_path}.${manifest.implementation.format}`)
+    : Promise.resolve([]);
 
-  return R.uniqBy(x => x.sha, [...(await repo.getHistory(`meta/${manifest.key_path}.json`)), ...(await fileMeta)]);
+  return R.uniqBy(x => x.sha, [
+    ...(await repo.getHistory(`meta/${manifest.key_path}.json`)),
+    ...(await fileMeta),
+  ]);
 }
 
 async function getManifestFile(keyPath, gitRepo, revision) {

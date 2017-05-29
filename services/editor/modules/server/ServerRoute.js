@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react'
+import React, { Component, PropTypes } from 'react';
 
 class ServerRoute extends Component {
   render() {
@@ -14,11 +14,11 @@ ServerRoute.propTypes = {
   post: handler,
   patch: handler,
   put: handler,
-  delete: handler
+  delete: handler,
 };
 
 ServerRoute.defaultProps = {
-  isServerRoute: true
+  isServerRoute: true,
 };
 
 export default ServerRoute;

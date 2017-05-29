@@ -36,17 +36,17 @@ const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
   );
 };
 
-function PropertyValueComponent({ onUpdate, propertyTypeDetails, value = '', selectedOperator, placeholder = 'Value' }) {
+function PropertyValueComponent({
+  onUpdate,
+  propertyTypeDetails,
+  value = '',
+  selectedOperator,
+  placeholder = 'Value',
+}) {
   let allowedValues = propertyTypeDetails.allowedValues || [];
 
   if (selectedOperator === inOp.operatorValue) {
-    return (
-      <TagsPropertyValue
-        onUpdate={onUpdate}
-        value={value}
-        suggestions={allowedValues}
-      />
-    );
+    return <TagsPropertyValue onUpdate={onUpdate} value={value} suggestions={allowedValues} />;
   }
 
   if (allowedValues.length > 0) {
@@ -62,11 +62,11 @@ function PropertyValueComponent({ onUpdate, propertyTypeDetails, value = '', sel
     );
   }
 
-  return (
-    <Input {...{ onChange: onUpdate, value, placeholder }} />
-  );
+  return <Input {...{ onChange: onUpdate, value, placeholder }} />;
 }
 
-export default props => <div className={style['property-value-wrapper']}>
-  <PropertyValueComponent {...props} />
-</div>;
+export default props => (
+  <div className={style['property-value-wrapper']}>
+    <PropertyValueComponent {...props} />
+  </div>
+);

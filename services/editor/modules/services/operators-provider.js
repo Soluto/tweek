@@ -21,10 +21,12 @@ const _createOperator = (label, operatorValue) => {
 };
 
 const _toArrayValue = (operatorValue, propertyValue, propertyTypeDetails) => {
-  if (!propertyValue)
-    {return _toComplexValue(operatorValue, [], propertyTypeDetails);}
-  if (Array.isArray(propertyValue))
-    {return _toComplexValue(operatorValue, propertyValue, propertyTypeDetails);}
+  if (!propertyValue) {
+    return _toComplexValue(operatorValue, [], propertyTypeDetails);
+  }
+  if (Array.isArray(propertyValue)) {
+    return _toComplexValue(operatorValue, propertyValue, propertyTypeDetails);
+  }
   return _toComplexValue(operatorValue, [propertyValue], propertyTypeDetails);
 };
 
@@ -45,11 +47,24 @@ export const startsWith = _createOperator('starts with', '$startsWith');
 export const endsWith = _createOperator('ends with', '$endsWith');
 export const contains = _createOperator('contains', '$contains');
 
-export const allOperators =
-  [equal, notEqual, greaterEqualThan, greater, lessThan, lessEqualThan, inOp, within, startsWith, endsWith, contains];
+export const allOperators = [
+  equal,
+  notEqual,
+  greaterEqualThan,
+  greater,
+  lessThan,
+  lessEqualThan,
+  inOp,
+  within,
+  startsWith,
+  endsWith,
+  contains,
+];
 
 export const getPropertySupportedOperators = (propertyTypeDetails) => {
-  const type = propertyTypeDetails.name === 'custom' ? propertyTypeDetails.base : propertyTypeDetails.name;
+  const type = propertyTypeDetails.name === 'custom'
+    ? propertyTypeDetails.base
+    : propertyTypeDetails.name;
 
   if (type === 'empty') {
     return [equal, notEqual, greaterEqualThan, greater, lessThan, lessEqualThan, inOp, within];
