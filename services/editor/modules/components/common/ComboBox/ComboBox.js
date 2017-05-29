@@ -26,19 +26,22 @@ const createCase = (matchCase, x) => {
   return x.toLowerCase();
 };
 
+
 class ComboBoxComponent extends Component {
   onSuggestionSelected = (index) => {
-    const { onChange, getLabel } = this.props;
+    const { onChange, getLabel, setFocus } = this.props;
     const selected = this.getSuggestion(index);
     onChange(getLabel(selected), selected);
+    setFocus(false);
   };
 
   onInputChange = (input) => {
-    const { suggestions, getLabel, onChange, matchCase } = this.props;
+    const { suggestions, getLabel, onChange, matchCase, setFocus } = this.props;
     const caseInput = createCase(matchCase, input);
     const getLabelWithCase = createCase(matchCase, getLabel);
     const selected = suggestions.find(s => getLabelWithCase(s) === caseInput);
     onChange(input, selected);
+    setFocus(true);
   };
 
   getSuggestion = (index) => {
@@ -179,14 +182,17 @@ const ComboBox = compose(
       .map(([props, { input: value }]) => ({ ...props, value })).share();
 
     const suggestions$ = propsWithValue$
-      .distinctUntilChanged(compareBy('suggestions', 'value', 'showValueInOptions', 'matchCase'))
-      .map(({ suggestions, filterBy, value, getLabel, showValueInOptions, matchCase }) => {
+      .distinctUntilChanged(compareBy('suggestions', 'value', 'showValueInOptions', 'matchCase', 'suggestionsLimit'))
+      .map(({ suggestions, filterBy, value, getLabel, showValueInOptions, matchCase, suggestionsLimit }) => {
         const getCaseLabel = createCase(matchCase, getLabel);
 
         const filterFunc = filterBy || ((input, suggestion) => input === '' || getCaseLabel(suggestion).includes(createCase(matchCase, input)));
 
         const filteredSuggestions = suggestions.filter(s => filterFunc(value, s));
         if (!showValueInOptions && filteredSuggestions.length === 1 && getCaseLabel(filteredSuggestions[0]) === createCase(matchCase, value)) return [];
+        if (suggestionsLimit > 0) {
+          return filteredSuggestions.slice(0, suggestionsLimit);
+        }
         return filteredSuggestions;
       })
       .withLatestFrom(highlighted$, (suggestions, highlighted) => ({ suggestions, highlighted }))
@@ -210,7 +216,7 @@ const ComboBox = compose(
         },
         onSuggestionHighlighted: index => onHighlighted({ index, suggestion: suggestions[index] }),
       }))
-      .map(R.omit(['filterBy', 'showValueInOptions']));
+      .map(R.omit(['filterBy', 'showValueInOptions', 'suggestionsLimit']));
   }),
   pure,
 )(ComboBoxComponent);
@@ -227,12 +233,14 @@ ComboBox.propTypes = {
   renderSuggestion: PropTypes.func,
   suggestionsContainer: PropTypes.any,
   matchCase: PropTypes.bool,
+  suggestionsLimit: PropTypes.number,
 };
 
 ComboBox.defaultProps = {
   autofocus: false,
   showValueInOptions: false,
   matchCase: false,
+  suggestionsLimit: 10,
   getLabel: (obj) => {
     if (obj === undefined) return '';
     return obj.label === undefined ? obj.toString() : obj.label;
