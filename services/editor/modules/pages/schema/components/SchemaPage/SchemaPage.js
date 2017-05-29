@@ -2,11 +2,12 @@ import React from 'react';
 import { Component } from 'react';
 import * as actions from '../../../../store/ducks/schema';
 import { connect } from 'react-redux';
-import IdentityTypesList from '../IdentityTypesList/IdentityTypesList';
 import style from './SchemaPage.css';
 import { compose, lifecycle } from 'recompose';
 import withLoading from '../../../../hoc/with-loading';
 import { refreshSchema } from "../../../../services/context-service";
+import DirectoryTreeView from "../../../keys/components/KeysList/DirectoryTreeView"
+import IdentityTypesItem from './IdentityTypesItem';
 
 const isNode = new Function("try {return this===global;}catch(e){return false;}");
 
@@ -22,12 +23,13 @@ export default compose(
 )
 ( (props) => {
       const { identities, children } = props;
+      console.log(identities);
       return (
         <div className={style['schema-page-container']}>
-          <div key="IdentityTypesList" className={style['identity-types-list']}>
-            <div className={style['identity-types-list-wrapper']}>
-              <IdentityTypesList identityTypes={identities} />
-            </div>
+          <div className={style['side-menu']} key="SideMenu">
+            <DirectoryTreeView paths={identities.map(x=> `identities/${x}`)}
+                renderItem={IdentityTypesItem}
+                expandByDefault={true} />
           </div>
           <div key="Page">
             {children}

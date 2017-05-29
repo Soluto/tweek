@@ -1,0 +1,28 @@
+.identity-type-link-wrapper {
+  display: flex;
+  flex-grow: 1;
+  max-width: 400px;
+  min-width: 400px;
+}
+.identity-type-link-wrapper .identity-type-link {
+  font-size: 16px;
+  display: flex;
+  flex-grow: 1;
+  height: 30px;
+  padding-left: 40px;
+  padding-top: 13px;
+  color: #d8d8d8;
+  background-color: transparent;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
+.identity-type-link-wrapper .identity-type-link:hover {
+  background-color: #363a3e;
+  cursor: pointer;
+}
+.identity-type-link-wrapper .identity-type-link:active {
+  background-color: #363a3e;
+}
+.identity-type-link-wrapper .identity-type-link.selected {
+  background-color: #686e74;
+}

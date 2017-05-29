@@ -3,6 +3,9 @@
   flex-grow: 1;
   background-color: #eee;
 }
+.schema-page-container .side-menu {
+  background: #414b53;
+}
 .schema-page-container .identity-types-list {
   display: flex;
   flex-basis: 400px;
