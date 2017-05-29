@@ -4202,9 +4202,9 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-lint-staged@^3.5.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-3.5.0.tgz#e8a8900b863e85051a3769e0a11ccb4a7dfa9f83"
+"lint-staged@git+https://github.com/okonet/lint-staged.git#4c600178ac26604f5d543028ac846a061e0729f9":
+  version "0.0.0-development"
+  resolved "git+https://github.com/okonet/lint-staged.git#4c600178ac26604f5d543028ac846a061e0729f9"
   dependencies:
     app-root-path "^2.0.0"
     cosmiconfig "^1.1.0"
