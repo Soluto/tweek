@@ -1,13 +1,13 @@
 import React from 'react';
-import ComboBox from '../../../../../../components/common/ComboBox/ComboBox';
-import style from './KeyValueTypeSelector.css';
-import * as TypesServices from '../../../../../../services/types-service';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
-import { updateKeyValueType } from '../../../../../../store/ducks/selectedKey';
 import ReactTooltip from 'react-tooltip';
-import alertIconSrc from '../resources/alert-icon.svg';
 import changeCase from 'change-case';
+import ComboBox from '../../../../../../components/common/ComboBox/ComboBox';
+import * as TypesServices from '../../../../../../services/types-service';
+import { updateKeyValueType } from '../../../../../../store/ducks/selectedKey';
+import style from './KeyValueTypeSelector.css';
+import alertIconSrc from '../resources/alert-icon.svg';
 
 const getValueTypeSuggestions = () => Object.keys(TypesServices.types)
     .map(x => ({
@@ -40,11 +40,10 @@ const KeyValueTypeSelector = compose(
           />
         </div>
         <ComboBox
-          options={suggestions}
+          suggestions={suggestions}
           placeholder="Select type"
-          showValueInOptions={false}
-          onChange={item => props.updateKeyValueType(item.value)}
-          selected={props.value && props.value != '' ? [props.value] : []}
+          onChange={(_, item) => item && props.updateKeyValueType(item.value)}
+          selected={props.value}
         />
         <ReactTooltip
           disable={!props.validation.isShowingHint}
