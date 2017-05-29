@@ -9,17 +9,20 @@ import { updateKeyValueType } from '../../../../../../store/ducks/selectedKey';
 import style from './KeyValueTypeSelector.css';
 import alertIconSrc from '../resources/alert-icon.svg';
 
-const getValueTypeSuggestions = () => Object.keys(TypesServices.types)
-    .map(x => ({
-      label: changeCase.titleCase(x),
-      value: x,
-    }));
+const getValueTypeSuggestions = () =>
+  Object.keys(TypesServices.types).map(x => ({
+    label: changeCase.titleCase(x),
+    value: x,
+  }));
 
 const KeyValueTypeSelector = compose(
-  connect(state => ({
-    selectedKey: state.selectedKey,
-    validation: state.selectedKey.validation.manifest.valueType,
-  }), { updateKeyValueType }),
+  connect(
+    state => ({
+      selectedKey: state.selectedKey,
+      validation: state.selectedKey.validation.manifest.valueType,
+    }),
+    { updateKeyValueType },
+  ),
 )((props) => {
   const suggestions = getValueTypeSuggestions();
   return (

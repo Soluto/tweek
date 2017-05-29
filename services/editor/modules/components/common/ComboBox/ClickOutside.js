@@ -4,7 +4,10 @@ import React, { Component, PropTypes } from 'react';
 const events = ['mousedown', 'touchstart'];
 
 function clickedScrollbar(evt) {
-  return document.documentElement.clientWidth <= evt.clientX || document.documentElement.clientHeight <= evt.clientY;
+  return (
+    document.documentElement.clientWidth <= evt.clientX ||
+    document.documentElement.clientHeight <= evt.clientY
+  );
 }
 
 export default class ClickOutside extends Component {
@@ -21,7 +24,7 @@ export default class ClickOutside extends Component {
 
   render() {
     const { children, onClickOutside, ...props } = this.props;
-    return <div {...props} ref={ref => this.container = ref}>{children}</div>;
+    return <div {...props} ref={ref => (this.container = ref)}>{children}</div>;
   }
 
   componentDidMount() {

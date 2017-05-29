@@ -15,11 +15,11 @@ export default serverRoutes => (
   <Route>
     <Redirect from="/" to="keys" />
     <Route path="/" component={App}>
-      <Route path="keys" component={KeysPage} >
+      <Route path="keys" component={KeysPage}>
         <IndexRoute component={() => <SelectKeyMessage />} />
         <Route path="*" component={KeyPage} />
       </Route>
-      <Route path="context" component={ContextPage} >
+      <Route path="context" component={ContextPage}>
         <Route path=":identityName/:identityId" component={IdentityDetails} />
       </Route>
     </Route>

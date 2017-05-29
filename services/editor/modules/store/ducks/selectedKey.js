@@ -1,7 +1,11 @@
 import { handleActions } from 'redux-actions';
 import R from 'ramda';
 import { push } from 'react-router-redux';
-import { createBlankJPadKey, createBlankKeyManifest, BLANK_KEY_NAME } from './ducks-utils/blankKeyDefinition';
+import {
+  createBlankJPadKey,
+  createBlankKeyManifest,
+  BLANK_KEY_NAME,
+} from './ducks-utils/blankKeyDefinition';
 import { withJsonData } from '../../utils/http';
 import keyNameValidations from './ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
@@ -41,7 +45,9 @@ export function openKey(key, { revision } = {}) {
     let keyData;
     const search = revision ? `?revision=${revision}` : '';
     try {
-      keyData = await (await fetch(`/api/keys/${key}${search}`, { credentials: 'same-origin' })).json();
+      keyData = await (await fetch(`/api/keys/${key}${search}`, {
+        credentials: 'same-origin',
+      })).json();
     } catch (exp) {
       dispatch({ type: KEY_OPENED, payload: { key } });
       return;
@@ -82,8 +88,10 @@ export function updateKeyValueType(keyValueType) {
   return async function (dispatch, getState) {
     const jpad = JSON.parse(getState().selectedKey.local.keyDef.source);
     const allRules = getAllRules({ jpad });
-    const shouldShowAlert =
-      allRules.some(x => x.Type !== 'SingleVariant' || (x.Value !== null && x.Value !== undefined && x.Value !== ''));
+    const shouldShowAlert = allRules.some(
+      x =>
+        x.Type !== 'SingleVariant' || (x.Value !== null && x.Value !== undefined && x.Value !== ''),
+    );
 
     if (shouldShowAlert && !(await dispatch(showConfirm(convertRuleValuesAlert))).result) return;
 
@@ -126,7 +134,7 @@ export function saveKey() {
   return async function (dispatch, getState) {
     const currentState = getState();
     const { selectedKey: { local, key } } = currentState;
-    const isNewKey = !!(local.key);
+    const isNewKey = !!local.key;
     const savedKey = local.key || key;
 
     if (!currentState.selectedKey.validation.isValid) {
@@ -140,7 +148,7 @@ export function saveKey() {
       await fetch(`/api/keys/${savedKey}`, {
         credentials: 'same-origin',
         method: 'put',
-        ...withJsonData(R.dissoc("revisionHistory", local)),
+        ...withJsonData(R.dissoc('revisionHistory', local)),
       });
       isSaveSucceeded = true;
     } catch (error) {
@@ -163,7 +171,7 @@ export function saveKey() {
 const setValidationHintsVisibility = (validationState, isShown) => {
   Object.keys(validationState)
     .map(x => validationState[x])
-    .filter(x => typeof (x) === 'object')
+    .filter(x => typeof x === 'object')
     .map((x) => {
       setValidationHintsVisibility(x, isShown);
       return x;
@@ -202,12 +210,10 @@ const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
   };
 };
 
-const handleKeyOpening = (state, { payload: { key } }) => {
-  return {
-    key,
-    isLoaded: false,
-  };
-};
+const handleKeyOpening = (state, { payload: { key } }) => ({
+  key,
+  isLoaded: false,
+});
 
 const handleKeyRuleDefUpdated = (state, { payload }) => ({
   ...state,
@@ -249,12 +255,10 @@ const handleKeyNameChange = ({ local: { key, ...localData }, ...otherState }, { 
   },
 });
 
-const isStateInvalid = (validationState) => {
-  return Object.keys(validationState)
+const isStateInvalid = validationState => Object.keys(validationState)
     .map(x => validationState[x])
-    .filter(x => typeof (x) === 'object')
+    .filter(x => typeof x === 'object')
     .some(x => x.isValid === false || isStateInvalid(x));
-};
 
 const handleKeyValidationChange = ({ ...state }, { payload }) => {
   const isKeyInvalid = isStateInvalid(payload);
@@ -267,15 +271,16 @@ const handleKeyValidationChange = ({ ...state }, { payload }) => {
   };
 };
 
-const handleKeyDeleting = ({ remote, ...otherState }) => {
-  return ({
-    ...otherState,
-    local: { ...remote },
-    remote: { ...remote },
-  });
-};
+const handleKeyDeleting = ({ remote, ...otherState }) => ({
+  ...otherState,
+  local: { ...remote },
+  remote: { ...remote },
+});
 
-const handleKeyValueTypeChange = ({ local: { manifest, ...restOfLocal }, ...state }, { payload }) => ({
+const handleKeyValueTypeChange = (
+  { local: { manifest, ...restOfLocal }, ...state },
+  { payload },
+) => ({
   ...state,
   local: {
     ...restOfLocal,
@@ -294,16 +299,19 @@ const handleShowKeyValidations = ({ validation, ...state }) => {
   };
 };
 
-export default handleActions({
-  [KEY_OPENED]: handleKeyOpened,
-  [KEY_OPENING]: handleKeyOpening,
-  [KEY_RULEDEF_UPDATED]: handleKeyRuleDefUpdated,
-  [KEY_MANIFEST_UPDATED]: handleKeyManifestUpdated,
-  [KEY_SAVED]: handleKeySaved,
-  [KEY_SAVING]: handleKeySaving,
-  [KEY_NAME_CHANGE]: handleKeyNameChange,
-  [KEY_VALIDATION_CHANGE]: handleKeyValidationChange,
-  KEY_DELETING: handleKeyDeleting,
-  [KEY_VALUE_TYPE_CHANGE]: handleKeyValueTypeChange,
-  [SHOW_KEY_VALIDATIONS]: handleShowKeyValidations,
-}, null);
+export default handleActions(
+  {
+    [KEY_OPENED]: handleKeyOpened,
+    [KEY_OPENING]: handleKeyOpening,
+    [KEY_RULEDEF_UPDATED]: handleKeyRuleDefUpdated,
+    [KEY_MANIFEST_UPDATED]: handleKeyManifestUpdated,
+    [KEY_SAVED]: handleKeySaved,
+    [KEY_SAVING]: handleKeySaving,
+    [KEY_NAME_CHANGE]: handleKeyNameChange,
+    [KEY_VALIDATION_CHANGE]: handleKeyValidationChange,
+    KEY_DELETING: handleKeyDeleting,
+    [KEY_VALUE_TYPE_CHANGE]: handleKeyValueTypeChange,
+    [SHOW_KEY_VALIDATIONS]: handleShowKeyValidations,
+  },
+  null,
+);

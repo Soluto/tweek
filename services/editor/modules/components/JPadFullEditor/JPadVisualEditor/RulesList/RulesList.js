@@ -11,57 +11,66 @@ const deleteRuleAlert = {
 };
 
 export default class RulesList extends React.Component {
-
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
-      autofocusRuleIndex: undefined
-    }
+      autofocusRuleIndex: undefined,
+    };
   }
 
   componentDidUpdate() {
-    if (this.state.autofocusRuleIndex !== undefined) this.setState({autofocusRuleIndex: undefined})
+    if (this.state.autofocusRuleIndex !== undefined) { this.setState({ autofocusRuleIndex: undefined }); }
   }
 
-  render () {
-    let {mutate, valueType} = this.props;
-    let {autofocusRuleIndex} = this.state;
+  render() {
+    let { mutate, valueType } = this.props;
+    let { autofocusRuleIndex } = this.state;
 
     const rules = mutate.getValue();
-    if (!rules) return (<div />);
+    if (!rules) return <div />;
 
-    return <div className={style['rule-container']}>
-      <button className={style['add-rule-button']} onClick={() => {
-        this.addMutatorRule();
-        this.setState({autofocusRuleIndex: 0});
-      } } >
-        Add Rule
-      </button>
+    return (
+      <div className={style['rule-container']}>
+        <button
+          className={style['add-rule-button']}
+          onClick={() => {
+            this.addMutatorRule();
+            this.setState({ autofocusRuleIndex: 0 });
+          }}
+        >
+          Add Rule
+        </button>
 
-      {
-        rules.map((rule, i) => (
-          <div className={style['conditions-container']}
-               disabled
-               key={i}
-          >
+        {rules.map((rule, i) => (
+          <div className={style['conditions-container']} disabled key={i}>
 
-            <div className={style['rule-control-wrapper']} >
-              {(i > 0) ?
-                <button className={style['rule-order-button']}
-                        onClick={() => mutate.replaceKeys(i, i - 1)}
-                        title="Move up">&#xE908;</button>
+            <div className={style['rule-control-wrapper']}>
+              {i > 0
+                ? <button
+                  className={style['rule-order-button']}
+                  onClick={() => mutate.replaceKeys(i, i - 1)}
+                  title="Move up"
+                >
+                    
+                  </button>
                 : null}
-              {(i < rules.length - 1) ?
-                <button className={style['rule-order-button']}
-                        onClick={() => mutate.replaceKeys(i, i + 1)}
-                        title="Move down">&#xE902;</button>
+              {i < rules.length - 1
+                ? <button
+                  className={style['rule-order-button']}
+                  onClick={() => mutate.replaceKeys(i, i + 1)}
+                  title="Move down"
+                >
+                    
+                  </button>
                 : null}
-              <button className={style['delete-rule-button']}
-                      onClick={() => {
-                        this.deleteRule(i);
-                        this.setState({autofocusRuleIndex: undefined});
-                      } }
-                      title="Remove rule"/>
+              <button
+                className={style['delete-rule-button']}
+                onClick={() => {
+                  this.deleteRule(i);
+                  this.setState({ autofocusRuleIndex: undefined });
+                }}
+                title="Remove rule"
+              />
             </div>
 
             <Rule
@@ -74,26 +83,26 @@ export default class RulesList extends React.Component {
             />
 
           </div>
-        ))
-      }
+        ))}
 
-    </div >
+      </div>
+    );
   }
 
   addMutatorRule() {
-    let {mutate} = this.props;
+    let { mutate } = this.props;
 
     mutate.prepend({ Id: chance.guid(), Matcher: { '': '' }, Value: '', Type: 'SingleVariant' });
   }
 
   addMutatorDefaultValue() {
-    let {mutate} = this.props;
+    let { mutate } = this.props;
 
     mutate.append({ Id: chance.guid(), Matcher: {}, Value: '', Type: 'SingleVariant' });
   }
 
   async deleteRule(ruleIndex) {
-    const {mutate, alerter} = this.props;
+    const { mutate, alerter } = this.props;
 
     if ((await alerter.showConfirm(deleteRuleAlert)).result) {
       mutate.in(ruleIndex).delete();

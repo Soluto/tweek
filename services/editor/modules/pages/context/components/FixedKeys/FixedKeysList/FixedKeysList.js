@@ -4,15 +4,13 @@ import style from './FixedKeysList.css';
 
 const FixedKeysList = ({ keys, onChange }) => (
   <div className={style['fixed-keys-container']}>
-    {
-      keys.map((key, index) => (
-        <FixedKey
-          key={key.remote ? key.remote.key : index}
-          {...key}
-          onChange={(...args) => onChange(index, ...args)}
-        />
-      ))
-    }
+    {keys.map((key, index) => (
+      <FixedKey
+        key={key.remote ? key.remote.key : index}
+        {...key}
+        onChange={(...args) => onChange(index, ...args)}
+      />
+    ))}
   </div>
 );
 
@@ -22,4 +20,3 @@ FixedKeysList.propTypes = {
 };
 
 export default FixedKeysList;
-

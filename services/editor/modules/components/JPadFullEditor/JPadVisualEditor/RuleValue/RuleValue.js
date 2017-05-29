@@ -10,44 +10,65 @@ import * as TypesService from '../../../../services/types-service';
 
 const chance = new Chance();
 
-function replaceNaN(fallbackValue) { return isNaN(this) ? fallbackValue : this; }
+function replaceNaN(fallbackValue) {
+  return isNaN(this) ? fallbackValue : this;
+}
 const parseNumericInput = inputValue => (inputValue === '' ? 0 : parseInt(inputValue));
-const wrapWithClass = propToClassNameFn => Comp => props =>
-  <div className={propToClassNameFn(props)} ><Comp {...props} /></div>;
+const wrapWithClass = propToClassNameFn => Comp => props => (
+  <div className={propToClassNameFn(props)}><Comp {...props} /></div>
+);
 
-export const InputValue = wrapWithClass(({ valueType }) => `${style.inputValue} input-type-${valueType}`)(TypedInput);
+export const InputValue = wrapWithClass(
+  ({ valueType }) => `${style.inputValue} input-type-${valueType}`,
+)(TypedInput);
 
 const MultiVariantConverter = ({ valueType, identities, mutate, value }) => {
   if (valueType === TypesService.types.boolean.name) {
-    return (<button
-      className={style['to-feature-flag-button']}
-      onClick={() => mutate.apply(m =>
-        m.delete()
-          .in('Type').updateValue('MultiVariant').up()
-          .insert('OwnerType', identities[0])
-          .insert('ValueDistribution', {
-            type: 'bernoulliTrial',
-            args: 0.1,
-          }),
-      )}
-    >Gradual release</button>);
-  }
-
-  return (<button
-    className={style['add-variant-button']}
-    onClick={() => mutate.apply(m =>
-            m.delete()
-              .in('Type').updateValue('MultiVariant').up()
+    return (
+      <button
+        className={style['to-feature-flag-button']}
+        onClick={() =>
+          mutate.apply(m =>
+            m
+              .delete()
+              .in('Type')
+              .updateValue('MultiVariant')
+              .up()
               .insert('OwnerType', identities[0])
               .insert('ValueDistribution', {
-                type: 'weighted',
-                args: {
-                  [value]: 50,
-                  'New Varaint': 50,
-                },
+                type: 'bernoulliTrial',
+                args: 0.1,
               }),
           )}
-  >Add Variant</button>);
+      >
+        Gradual release
+      </button>
+    );
+  }
+
+  return (
+    <button
+      className={style['add-variant-button']}
+      onClick={() =>
+        mutate.apply(m =>
+          m
+            .delete()
+            .in('Type')
+            .updateValue('MultiVariant')
+            .up()
+            .insert('OwnerType', identities[0])
+            .insert('ValueDistribution', {
+              type: 'weighted',
+              args: {
+                [value]: 50,
+                'New Varaint': 50,
+              },
+            }),
+        )}
+    >
+      Add Variant
+    </button>
+  );
 };
 
 const SingleVariantValue = ({ value, mutate, identities, autofocus, valueType }) => (
@@ -57,17 +78,19 @@ const SingleVariantValue = ({ value, mutate, identities, autofocus, valueType })
   </div>
 );
 
-const multiVariantSliderColors = [...['#ccf085', '#bebebe', '#c395f6', '#ef7478', '#5a8dc3', '#6e6e6e'],
-  ...(R.range(1, 30).map(_ => chance.color()))];
+const multiVariantSliderColors = [
+  ...['#ccf085', '#bebebe', '#c395f6', '#ef7478', '#5a8dc3', '#6e6e6e'],
+  ...R.range(1, 30).map(_ => chance.color()),
+];
 
-
-const WeightedValues = ({ onUpdate, variants }) =>
-  (<CustomSlider
+const WeightedValues = ({ onUpdate, variants }) => (
+  <CustomSlider
     data={variants}
     onUpdate={onUpdate}
     displaySliderDragger={false}
     sliderColors={multiVariantSliderColors}
-  />);
+  />
+);
 
 const bernouliTrialSliderColors = ['#007acc', 'lightGray'];
 const BernoulliTrial = ({ onUpdate, ratio }) => (
@@ -80,12 +103,11 @@ const BernoulliTrial = ({ onUpdate, ratio }) => (
         value={ratio * 100}
         onChange={(e) => {
           const newValue = e.target.value;
-          if (newValue < 0 ||
-            newValue > 100) {
+          if (newValue < 0 || newValue > 100) {
             e.stopPropagation();
             return;
           }
-          onUpdate((parseNumericInput(newValue) * 0.01) :: replaceNaN(ratio));
+          onUpdate(parseNumericInput(newValue) * 0.01::replaceNaN(ratio));
         }}
         onWheel={({ deltaY, target }) => {
           const currentValue = parseNumericInput(target.value);
@@ -100,7 +122,7 @@ const BernoulliTrial = ({ onUpdate, ratio }) => (
       <CustomSlider
         displayLegend={false}
         sliderColors={bernouliTrialSliderColors}
-        data={{ true: (1000 * ratio) / 10, false: 100 - ((1000 * ratio) / 10) }}
+        data={{ true: 1000 * ratio / 10, false: 100 - 1000 * ratio / 10 }}
         onUpdate={x => onUpdate(x.true / 100)}
       />
     </div>
@@ -117,15 +139,25 @@ const IdentitySelection = ({ identities, onChange, ownerType }) => (
       value={ownerType}
     />
   </div>
-  );
+);
 
-const MultiVariantValue = ({ valueDistrubtion: { type, args }, mutate, identities, valueType, ownerType }) => {
+const MultiVariantValue = ({
+  valueDistrubtion: { type, args },
+  mutate,
+  identities,
+  valueType,
+  ownerType,
+}) => {
   const updateOwnerType = identity => mutate.up().in('OwnerType').updateValue(identity);
 
   if (type === 'weighted') {
     return (
       <div>
-        <IdentitySelection ownerType={ownerType} identities={identities} onChange={updateOwnerType} />
+        <IdentitySelection
+          ownerType={ownerType}
+          identities={identities}
+          onChange={updateOwnerType}
+        />
         <WeightedValues
           variants={args}
           onUpdate={(variants) => {
@@ -135,11 +167,20 @@ const MultiVariantValue = ({ valueDistrubtion: { type, args }, mutate, identitie
             }
 
             const newValue = Object.keys(variants)[0];
-            mutate.apply(m => m.up()
-              .in('Value').updateValue(newValue).up()
-              .in('Type').updateValue('SingleVariant').up()
-              .in('ValueDistribution').delete()
-              .in('OwnerType').delete());
+            mutate.apply(m =>
+              m
+                .up()
+                .in('Value')
+                .updateValue(newValue)
+                .up()
+                .in('Type')
+                .updateValue('SingleVariant')
+                .up()
+                .in('ValueDistribution')
+                .delete()
+                .in('OwnerType')
+                .delete(),
+            );
           }}
         />
       </div>
@@ -148,39 +189,60 @@ const MultiVariantValue = ({ valueDistrubtion: { type, args }, mutate, identitie
   if (type === 'bernoulliTrial') {
     return (
       <div>
-        <IdentitySelection ownerType={ownerType} identities={identities} onChange={updateOwnerType} />
+        <IdentitySelection
+          ownerType={ownerType}
+          identities={identities}
+          onChange={updateOwnerType}
+        />
 
         <div style={{ marginTop: 5 }}>
-          <BernoulliTrial
-            onUpdate={mutate.in('args').updateValue}
-            ratio={args}
-          />
+          <BernoulliTrial onUpdate={mutate.in('args').updateValue} ratio={args} />
 
-          {(args === 1) ?
-            <button
+          {args === 1
+            ? <button
               className={style['set-to-true-button']}
-              onClick={() => mutate.apply(m =>
-                m.up()
-                  .in('Value').updateValue('true').up()
-                  .in('Type').updateValue('SingleVariant').up()
-                  .in('ValueDistribution').delete()
-                  .in('OwnerType').delete(),
-              )}
-            >Set to true
-            </button> : null}
+              onClick={() =>
+                  mutate.apply(m =>
+                    m
+                      .up()
+                      .in('Value')
+                      .updateValue('true')
+                      .up()
+                      .in('Type')
+                      .updateValue('SingleVariant')
+                      .up()
+                      .in('ValueDistribution')
+                      .delete()
+                      .in('OwnerType')
+                      .delete(),
+                  )}
+            >
+                Set to true
+              </button>
+            : null}
 
-          {(args === 0) ?
-            <button
+          {args === 0
+            ? <button
               className={style['set-to-false-button']}
-              onClick={() => mutate.apply(m =>
-                m.up()
-                  .in('Value').updateValue('false').up()
-                  .in('Type').updateValue('SingleVariant').up()
-                  .in('ValueDistribution').delete()
-                  .in('OwnerType').delete(),
-              )}
-            >Set to false
-            </button> : null}
+              onClick={() =>
+                  mutate.apply(m =>
+                    m
+                      .up()
+                      .in('Value')
+                      .updateValue('false')
+                      .up()
+                      .in('Type')
+                      .updateValue('SingleVariant')
+                      .up()
+                      .in('ValueDistribution')
+                      .delete()
+                      .in('OwnerType')
+                      .delete(),
+                  )}
+            >
+                Set to false
+              </button>
+            : null}
 
         </div>
 
@@ -191,7 +253,10 @@ const MultiVariantValue = ({ valueDistrubtion: { type, args }, mutate, identitie
 };
 
 export default compose(
-  mapProps(({ valueType, ...props }) => ({ valueType: TypesService.types[valueType] ? valueType : 'string', ...props })),
+  mapProps(({ valueType, ...props }) => ({
+    valueType: TypesService.types[valueType] ? valueType : 'string',
+    ...props,
+  })),
 )(({ rule, mutate, valueType, autofocus, identities }) => {
   if (rule.Type === 'SingleVariant') {
     return (
@@ -207,7 +272,8 @@ export default compose(
     return (
       <MultiVariantValue
         mutate={mutate.in('ValueDistribution')}
-        valueDistrubtion={rule.ValueDistribution} ownerType={rule.OwnerType}
+        valueDistrubtion={rule.ValueDistribution}
+        ownerType={rule.OwnerType}
         {...{ identities, valueType }}
       />
     );

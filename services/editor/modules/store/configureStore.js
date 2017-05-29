@@ -10,9 +10,11 @@ export default function configureStore(initialState) {
     rootReducer,
     initialState,
     compose(
-        applyMiddleware(thunk, promiseMiddleware),
-        applyMiddleware(routerMiddleware(browserHistory)),
-        typeof window === 'object' && typeof window.devToolsExtension !== 'undefined' ? window.devToolsExtension() : f => f
-    )
+      applyMiddleware(thunk, promiseMiddleware),
+      applyMiddleware(routerMiddleware(browserHistory)),
+      typeof window === 'object' && typeof window.devToolsExtension !== 'undefined'
+        ? window.devToolsExtension()
+        : f => f,
+    ),
   );
 }

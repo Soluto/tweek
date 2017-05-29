@@ -27,9 +27,9 @@ const IdentityProperties = ({ className, identityName, properties }) => (
   <div className={classnames(style['context-properties-container'], className)}>
     <div className={style['context-properties-title']}>Properties</div>
     <div className={style['property-list']}>
-      {
-        Object.keys(properties).map(prop => <Property key={prop} identityName={identityName} property={prop} value={properties[prop]} />)
-      }
+      {Object.keys(properties).map(prop => (
+        <Property key={prop} identityName={identityName} property={prop} value={properties[prop]} />
+      ))}
     </div>
   </div>
 );
