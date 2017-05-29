@@ -2,6 +2,8 @@
 import R from 'ramda';
 import * as TypesService from './types-service';
 
+export const KEYS_IDENTITY = 'keys.';
+
 let contextSchema = {};
 
 export async function refreshSchema() {
@@ -28,7 +30,7 @@ export function getProperties() {
 
 export function getPropertyTypeDetails(property) {
   if (!property) return { name: 'empty' };
-  if (property.startsWith('@@key')) return TypesService.types.string;
+  if (property.startsWith(KEYS_IDENTITY)) return TypesService.types.string;
 
   const propertyDetails = getProperties().find(x => x.id === property);
 

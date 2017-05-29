@@ -1058,6 +1058,7 @@
   border: 0;
   border-style: none;
   height: 28px;
+  width: 150px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
@@ -1067,7 +1068,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 150px;
+  width: 250px;
 }
 .property-name-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -1080,6 +1081,7 @@
   border: 0;
   border-style: none;
   height: 28px;
+  width: 150px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
@@ -1089,7 +1091,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 150px;
+  width: 250px;
 }
 .property-name-wrapper .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -1100,7 +1102,7 @@
 .property-name-wrapper .override-typeahead .override-dropdown :global(.dropdown-menu) {
   position: absolute;
   max-height: 350px;
-  min-width: 300px;
+  min-width: 250px;
   overflow-y: auto;
   width: auto;
   z-index: 5;
@@ -1154,6 +1156,7 @@
   border: 0;
   border-style: none;
   height: 28px;
+  width: 150px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
@@ -1163,7 +1166,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 150px;
+  width: 250px;
 }
 .property-name-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -1176,6 +1179,7 @@
   border: 0;
   border-style: none;
   height: 28px;
+  width: 150px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
@@ -1185,7 +1189,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 150px;
+  width: 250px;
 }
 .property-name-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -1196,7 +1200,7 @@
 .property-name-wrapper .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
   max-height: 350px;
-  min-width: 300px;
+  min-width: 250px;
   overflow-y: auto;
   width: auto;
   z-index: 5;
@@ -1305,6 +1309,7 @@
   border: 0;
   border-style: none;
   height: 28px;
+  width: 150px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
@@ -1314,7 +1319,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 150px;
+  width: 250px;
 }
 .property-name-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -1327,6 +1332,7 @@
   border: 0;
   border-style: none;
   height: 28px;
+  width: 150px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
@@ -1336,7 +1342,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 150px;
+  width: 250px;
 }
 .property-name-wrapper .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -1347,7 +1353,7 @@
 .property-name-wrapper .override-dropdown :global(.dropdown-menu) {
   position: absolute;
   max-height: 350px;
-  min-width: 300px;
+  min-width: 250px;
   overflow-y: auto;
   width: auto;
   z-index: 5;
@@ -1401,6 +1407,7 @@
   border: 0;
   border-style: none;
   height: 28px;
+  width: 150px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
@@ -1410,7 +1417,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 150px;
+  width: 250px;
 }
 .property-name-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -1423,6 +1430,7 @@
   border: 0;
   border-style: none;
   height: 28px;
+  width: 150px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
@@ -1432,7 +1440,7 @@
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  width: 150px;
+  width: 250px;
 }
 .property-name-wrapper :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
@@ -1443,7 +1451,7 @@
 .property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   position: absolute;
   max-height: 350px;
-  min-width: 300px;
+  min-width: 250px;
   overflow-y: auto;
   width: auto;
   z-index: 5;
@@ -1547,7 +1555,6 @@
 .property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) {
   overflow-y: auto;
   overflow-x: visible;
-  min-width: 250px;
   box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.15);
   border-radius: 4px;
   background-color: #ffffff;

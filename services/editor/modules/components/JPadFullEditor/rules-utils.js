@@ -1,4 +1,5 @@
 import R from 'ramda';
+import { KEYS_IDENTITY } from '../../services/context-service';
 
 export function testAutoPartition(partition, rules, depth) {
   if (depth === 0) {
@@ -79,14 +80,12 @@ export function convertToExplicitKey(key) {
   };
 }
 
-export const DEPENDENT_KEY_PREFIX = 'keys.';
-
 function calculateDependenciesForMatcher(matcher) {
   return Object.keys(matcher)
     .map(x => x.toLowerCase())
-    .map(x => (x.startsWith('@@key:') ? x.replace('@@key:', 'keys.') : x))
-    .filter(x => x.startsWith(DEPENDENT_KEY_PREFIX))
-    .map(x => x.substring(DEPENDENT_KEY_PREFIX.length));
+    .map(x => (x.startsWith('@@key:') ? x.replace('@@key:', KEYS_IDENTITY) : x))
+    .filter(x => x.startsWith(KEYS_IDENTITY))
+    .map(x => x.substring(KEYS_IDENTITY.length));
 }
 
 function calculateDependencies(rules, depth) {

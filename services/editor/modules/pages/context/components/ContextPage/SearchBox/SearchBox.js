@@ -27,7 +27,8 @@ class SearchBox extends Component {
     this.setState(nextProps);
   }
 
-  onIdentityChange({ value: identityName }) {
+  onIdentityChange(input, selected) {
+    const identityName = selected ? selected.value : input;
     this.setState({ identityName });
   }
 
@@ -53,9 +54,9 @@ class SearchBox extends Component {
           <ComboBox
             className={style['context-type']}
             placeholder="Enter Identity Type"
-            options={identities}
+            value={identities.find(x => x.value === identityName)}
+            suggestions={identities}
             onChange={this.onIdentityChange.bind(this)}
-            selected={identities.filter(x => x.value === identityName)}
           />
         </div>
 
