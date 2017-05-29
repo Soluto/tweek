@@ -31,7 +31,9 @@ export async function refreshTypes() {
 export function convertValue(value, targetType) {
   const type = types[targetType];
 
-  if (!type) { throw new Error('Unknown type', targetType); }
+  if (!type) {
+    throw new Error('Unknown type', targetType);
+  }
 
   switch (type.base || type.name) {
     case 'boolean':

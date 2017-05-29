@@ -70,7 +70,11 @@ class SearchBox extends Component {
         </div>
 
         <div className={style['search-button-container']}>
-          <button className={style['search-button']} onClick={this.onGetClick.bind(this)} disabled={!identityName || !identityId} />
+          <button
+            className={style['search-button']}
+            onClick={this.onGetClick.bind(this)}
+            disabled={!identityName || !identityId}
+          />
         </div>
       </div>
     );

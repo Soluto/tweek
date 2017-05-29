@@ -5,7 +5,7 @@ function getAllGroups(str, pattern, groupIndex) {
   const result = [];
   let match;
 
-  while (match = regex.exec(str)) {
+  while ((match = regex.exec(str))) {
     result.push(match[groupIndex]);
   }
 

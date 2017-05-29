@@ -12,29 +12,31 @@ const KEY_ADDED = 'KEY_ADDED';
 const KEY_DELETED = 'KEY_DELETED';
 const KEY_DELETING = 'KEY_DELETING';
 
-export const addKey = (key) => async function (dispatch) {
-  dispatch(push(`/keys/_blank`));
-  dispatch({ type: KEY_ADDING, payload: key });
-};
+export const addKey = key =>
+  async function (dispatch) {
+    dispatch(push('/keys/_blank'));
+    dispatch({ type: KEY_ADDING, payload: key });
+  };
 
-const performDeleteKey = (key) => async function (dispatch) {
-  dispatch({ type: KEY_DELETING, payload: key });
+const performDeleteKey = key =>
+  async function (dispatch) {
+    dispatch({ type: KEY_DELETING, payload: key });
 
-  await Promise.delay(1);
-  dispatch(push('/keys'));
-  try {
-    await fetch(`/api/keys/${key}`, {
-      credentials: 'same-origin',
-      method: 'delete',
-    });
+    await Promise.delay(1);
+    dispatch(push('/keys'));
+    try {
+      await fetch(`/api/keys/${key}`, {
+        credentials: 'same-origin',
+        method: 'delete',
+      });
 
-    dispatch({ type: KEY_DELETED, payload: key });
-  } catch (error) {
-    dispatch(showError({title: "Failed to delete key!", error}));
-  }
-};
+      dispatch({ type: KEY_DELETED, payload: key });
+    } catch (error) {
+      dispatch(showError({ title: 'Failed to delete key!', error }));
+    }
+  };
 
-const deleteKeyAlert = (key) => ({
+const deleteKeyAlert = key => ({
   title: 'Warning',
   message: `Are you sure you want to delete '${key}' key?`,
 });
@@ -42,20 +44,23 @@ const deleteKeyAlert = (key) => ({
 export function deleteKey(key) {
   return async function (dispatch) {
     if ((await dispatch(showConfirm(deleteKeyAlert(key)))).result) {
-      dispatch(performDeleteKey(key))
+      dispatch(performDeleteKey(key));
     }
-  }
+  };
 }
 
 export function getKeys(payload) {
   return { type: KEYS_UPDATED, payload };
 }
 
-export default handleActions({
-  [KEYS_UPDATED]: (state, action) => action.payload,
-  [KEY_ADDED]: (state, action) => [...state, action.payload],
-  [KEY_DELETING]: (state, action) => {
-    const deletedKeyIndex = state.indexOf(action.payload);
-    return deletedKeyIndex < 0 ? state : R.remove(deletedKeyIndex, 1, state);
+export default handleActions(
+  {
+    [KEYS_UPDATED]: (state, action) => action.payload,
+    [KEY_ADDED]: (state, action) => [...state, action.payload],
+    [KEY_DELETING]: (state, action) => {
+      const deletedKeyIndex = state.indexOf(action.payload);
+      return deletedKeyIndex < 0 ? state : R.remove(deletedKeyIndex, 1, state);
+    },
   },
-}, []);
+  [],
+);

@@ -10,7 +10,9 @@ const Operator = ({ selectedOperator, onUpdate, supportedOperators }) => (
       if (!selected || selected.value === '') return;
       onUpdate(supportedOperators.find(x => x.operatorValue === selected.value));
     }}
-    value={selectedOperator && ({ label: selectedOperator.label, value: selectedOperator.operatorValue })}
+    value={
+      selectedOperator && { label: selectedOperator.label, value: selectedOperator.operatorValue }
+    }
   />
 );
 

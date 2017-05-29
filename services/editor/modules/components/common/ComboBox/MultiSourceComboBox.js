@@ -17,14 +17,17 @@ const SourceTitle = ({ id, selectSourceId, sourceId }) => (
 
 const MultiSourceComboBox = ({ getSuggestions, sourceId, selectSourceId, ...props }) => (
   <AutoSuggest
-    getSuggestions={(...args) => (getSuggestions[sourceId] ? getSuggestions[sourceId](...args) : R.pipe(R.values, R.chain(x => x(...args)))(getSuggestions))}
+    getSuggestions={(...args) =>
+      getSuggestions[sourceId]
+        ? getSuggestions[sourceId](...args)
+        : R.pipe(R.values, R.chain(x => x(...args)))(getSuggestions)}
     suggestionsContainer={({ children }) => (
       <div className={style['multi-source-combo-box-suggestions']}>
         <div className={style['source-select']}>
           <SourceTitle {...{ sourceId, selectSourceId }} />
-          {
-            Object.keys(getSuggestions).map(key => <SourceTitle id={key} {...{ key, sourceId, selectSourceId }} />)
-          }
+          {Object.keys(getSuggestions).map(key => (
+            <SourceTitle id={key} {...{ key, sourceId, selectSourceId }} />
+          ))}
         </div>
         <ul
           className="bootstrap-typeahead-menu dropdown-menu dropdown-menu-justify"

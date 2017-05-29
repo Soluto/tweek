@@ -18,28 +18,48 @@ import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier'
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
 import TypedInput from '../../../../../components/common/Input/TypedInput';
 
-const ConstEditor = ({ value, valueType, onChange }) => <div data-comp="ConstEditor">
-  {valueType === 'object' ? <Json value={value} onChange={onChange} /> : <TypedInput {...{ value, valueType, onChange }} />}
-</div>;
+const ConstEditor = ({ value, valueType, onChange }) => (
+  <div data-comp="ConstEditor">
+    {valueType === 'object'
+      ? <Json value={value} onChange={onChange} />
+      : <TypedInput {...{ value, valueType, onChange }} />}
+  </div>
+);
 
-const Editor = ({ manifest, sourceFile, onManifestChange, onSourceFileChange, isReadonly, alerter }) => {
+const Editor = ({
+  manifest,
+  sourceFile,
+  onManifestChange,
+  onSourceFileChange,
+  isReadonly,
+  alerter,
+}) => {
   if (manifest.implementation.type === 'file') {
     let FileEditor = null;
     if (manifest.implementation.format === 'jpad') {
       FileEditor = JPadFullEditor;
     }
-    return (<FileEditor
-      alerter={alerter}
-      source={sourceFile}
-      onChange={onSourceFileChange}
-      dependencies={manifest.dependencies}
-      onDependencyChanges={dependencies => onManifestChange({ ...manifest, dependencies })}
-      isReadonly={isReadonly}
-      valueType={manifest.valueType}
-    />);
+    return (
+      <FileEditor
+        alerter={alerter}
+        source={sourceFile}
+        onChange={onSourceFileChange}
+        dependencies={manifest.dependencies}
+        onDependencyChanges={dependencies => onManifestChange({ ...manifest, dependencies })}
+        isReadonly={isReadonly}
+        valueType={manifest.valueType}
+      />
+    );
   }
   if (manifest.implementation.type === 'const') {
-    return <ConstEditor value={manifest.implementation.value} valueType={manifest.valueType} onChange={value => onManifestChange({ ...manifest, implementation: { ...manifest.implementation, value } })} />;
+    return (
+      <ConstEditor
+        value={manifest.implementation.value}
+        valueType={manifest.valueType}
+        onChange={value =>
+          onManifestChange({ ...manifest, implementation: { ...manifest.implementation, value } })}
+      />
+    );
   }
   return null;
 };
@@ -95,11 +115,10 @@ class KeyEditPage extends Component {
     this.props.updateKeyMetaDef(newManifest);
   }
 
-
   render() {
     const { selectedKey, isInAddMode, isInStickyMode, alerter, revision } = this.props;
     const { key, local: { manifest, keyDef, revisionHistory } } = selectedKey;
-    const isHistoricRevision = (revision && revisionHistory[0].sha !== revision);
+    const isHistoricRevision = revision && revisionHistory[0].sha !== revision;
     const isReadonly = (!!manifest.meta.readOnly && manifest.meta.readOnly) || isHistoricRevision;
 
     const commonHeadersProps = {
@@ -116,9 +135,7 @@ class KeyEditPage extends Component {
         <div className={style['key-viewer-container-fieldset']}>
 
           <div className={style['key-viewer-container']}>
-            {isInStickyMode ?
-              <KeyStickyHeader {...commonHeadersProps} />
-              : null}
+            {isInStickyMode ? <KeyStickyHeader {...commonHeadersProps} /> : null}
             <KeyFullHeader
               {...commonHeadersProps}
               onDescriptionChanged={text => this.onDescriptionChanged(text)}
@@ -129,7 +146,9 @@ class KeyEditPage extends Component {
               isInStickyMode={isInStickyMode}
             />
 
-            <div className={classNames(style['key-rules-editor'], { [style.sticky]: isInStickyMode })}>
+            <div
+              className={classNames(style['key-rules-editor'], { [style.sticky]: isInStickyMode })}
+            >
               <Editor
                 manifest={manifest}
                 sourceFile={keyDef.source}
@@ -147,10 +166,7 @@ class KeyEditPage extends Component {
   }
 }
 
-export default compose(
-  stickyHeaderIdentifier('key-viewer-container-form', 150),
-  pure,
-)(KeyEditPage);
+export default compose(stickyHeaderIdentifier('key-viewer-container-form', 150), pure)(KeyEditPage);
 
 const KeyStickyHeader = (props) => {
   const { isInAddMode, isReadonly, isHistoricRevision } = props;
@@ -160,11 +176,11 @@ const KeyStickyHeader = (props) => {
 
       <HeaderMainInput {...props} />
 
-      {!isReadonly ?
-        <div className={style['sticky-key-page-action-wrapper']}>
+      {!isReadonly
+        ? <div className={style['sticky-key-page-action-wrapper']}>
           <KeyPageActions {...{ isInAddMode, isReadonly, isHistoricRevision }} isInStickyMode />
-        </div> :
-        null}
+        </div>
+        : null}
     </div>
   );
 };
@@ -192,19 +208,20 @@ const KeyFullHeader = (props) => {
         <div className={style['key-header-and-modification-wrapper']}>
 
           <HeaderMainInput {...props} />
-          {revisionHistory ?
-            <RevisionHistory revision={revision} revisionHistory={revisionHistory} />
-            : null
-          }
+          {revisionHistory
+            ? <RevisionHistory revision={revision} revisionHistory={revisionHistory} />
+            : null}
 
         </div>
 
         <fieldset disabled={isReadonly} style={{ border: 'none' }}>
 
-          {!isInAddMode ? <div className={style['key-full-path']}>
-            <label>Full path: </label>
-            <label className={style['actual-path']}>{keyFullPath}</label>
-          </div> : null}
+          {!isInAddMode
+            ? <div className={style['key-full-path']}>
+              <label>Full path: </label>
+              <label className={style['actual-path']}>{keyFullPath}</label>
+            </div>
+            : null}
 
           <div className={style['key-description-and-tags-wrapper']}>
             <div className={style['key-description-wrapper']}>
@@ -238,17 +255,21 @@ const HeaderMainInput = (props) => {
   const { isInAddMode, onKeyNameChanged, onDisplayNameChanged, keyManifest, isReadonly } = props;
   return (
     <div className={style['key-main-input']}>
-      {isInAddMode ?
-        <div className={style['new-key-input-wrapper']}>
-          <NewKeyInput onKeyNameChanged={name => onKeyNameChanged(name)} displayName={keyManifest.displayName} />
+      {isInAddMode
+        ? <div className={style['new-key-input-wrapper']}>
+          <NewKeyInput
+            onKeyNameChanged={name => onKeyNameChanged(name)}
+            displayName={keyManifest.displayName}
+          />
           <div className={style['vertical-separator']} />
           <KeyValueTypeSelector value={keyManifest.valueType} />
         </div>
-        :
-        <EditableText
+        : <EditableText
           onTextChanged={text => onDisplayNameChanged(text)}
-          placeHolder="Enter key display name" maxLength={80}
-          value={keyManifest.meta.name} isReadonly={isReadonly}
+          placeHolder="Enter key display name"
+          maxLength={80}
+          value={keyManifest.meta.name}
+          isReadonly={isReadonly}
           classNames={{
             container: style['display-name-container'],
             input: style['display-name-input'],
@@ -269,16 +290,17 @@ function getKeyNameSuggestions(keysList) {
 
 const NewKeyInput = compose(
   connect(state => ({ keysList: state.keys, keyNameValidation: state.selectedKey.validation.key })),
-)(({
-  keysList,
-  keyNameValidation,
-  onKeyNameChanged,
-  displayName,
-}) => {
+)(({ keysList, keyNameValidation, onKeyNameChanged, displayName }) => {
   const suggestions = getKeyNameSuggestions(keysList).map(x => ({ label: x, value: x }));
   return (
-    <div className={style['auto-suggest-wrapper']} data-with-error={keyNameValidation.isShowingHint}>
-      <div className={style['validation-icon-wrapper']} data-is-shown={keyNameValidation.isShowingHint}>
+    <div
+      className={style['auto-suggest-wrapper']}
+      data-with-error={keyNameValidation.isShowingHint}
+    >
+      <div
+        className={style['validation-icon-wrapper']}
+        data-is-shown={keyNameValidation.isShowingHint}
+      >
         <img
           className={style['validation-icon']}
           data-tip={keyNameValidation.hint}

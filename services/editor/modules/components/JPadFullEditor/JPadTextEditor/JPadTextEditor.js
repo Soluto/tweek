@@ -11,7 +11,6 @@ const requireConfig = {
 };
 
 class JPadTextEditor extends Component {
-
   constructor(props) {
     super(props);
 
@@ -63,7 +62,8 @@ class JPadTextEditor extends Component {
               requireConfig={requireConfig}
             />
             <button
-              className={style['save-code-changes-button']} onClick={() => this.save()}
+              className={style['save-code-changes-button']}
+              onClick={() => this.save()}
               disabled={!this.state.allowSave}
             >
               Insert Changes

@@ -7,19 +7,29 @@ import FixedKeys from '../FixedKeys/FixedKeys';
 import IdentityProperties from '../IdentityProperties/IdentityProperties';
 import style from './IdentityDetails.css';
 
-const IdentityDetails = ({ identityId, identityName, isGettingContext, updateFixedKeys, fixedKeys, isUpdatingContext, properties }) => (
+const IdentityDetails = ({
+  identityId,
+  identityName,
+  isGettingContext,
+  updateFixedKeys,
+  fixedKeys,
+  isUpdatingContext,
+  properties,
+}) => (
   <div className={style['context-details-container']}>
     <div className={style['context-title']}>
       <div className={style['context-id']}>{identityId}</div>
       <div className={style['context-type']}>{changeCase.pascalCase(identityName)}</div>
     </div>
-    {
-      isGettingContext ? 'Loading...' :
-      <div>
+    {isGettingContext
+      ? 'Loading...'
+      : <div>
         <IdentityProperties className={style.section} {...{ identityName, properties }} />
-        <FixedKeys className={style.section} {...{ updateFixedKeys, fixedKeys, isUpdatingContext }} />
-      </div>
-    }
+        <FixedKeys
+          className={style.section}
+          {...{ updateFixedKeys, fixedKeys, isUpdatingContext }}
+        />
+      </div>}
   </div>
 );
 
@@ -39,7 +49,10 @@ export default compose(
     },
     componentWillReceiveProps(nextProps) {
       const { props } = this;
-      if (props.identityId !== nextProps.identityId || props.identityName !== nextProps.identityName) {
+      if (
+        props.identityId !== nextProps.identityId ||
+        props.identityName !== nextProps.identityName
+      ) {
         nextProps.getContext();
       }
     },

@@ -4,17 +4,15 @@ import keysReducer from './ducks/keys';
 import selectedKeyReducer from './ducks/selectedKey';
 import tagsReducer from './ducks/tags';
 import notificationsReducer from './ducks/notifications';
-import alertsReducer from './ducks/alerts'
+import alertsReducer from './ducks/alerts';
 import contextReducer from './ducks/context';
 
-export default (combineReducers(
-  {
-    keys: keysReducer,
-    selectedKey: selectedKeyReducer,
-    routing: routerReducer,
-    tags: tagsReducer,
-    notifications: notificationsReducer,
-    alerts: alertsReducer,
-    context: contextReducer
-  }
-));
+export default combineReducers({
+  keys: keysReducer,
+  selectedKey: selectedKeyReducer,
+  routing: routerReducer,
+  tags: tagsReducer,
+  notifications: notificationsReducer,
+  alerts: alertsReducer,
+  context: contextReducer,
+});

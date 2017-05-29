@@ -26,7 +26,6 @@ const createCase = (matchCase, x) => {
   return x.toLowerCase();
 };
 
-
 class ComboBoxComponent extends Component {
   onSuggestionSelected = (index) => {
     const { onChange, getLabel, setFocus } = this.props;
@@ -57,7 +56,9 @@ class ComboBoxComponent extends Component {
 
     if (highlightedSuggestion === -1) {
       if (value === '') return '';
-      suggestion = suggestions.map(getLabel).find(x => createCase(matchCase, x).startsWith(caseValue));
+      suggestion = suggestions
+        .map(getLabel)
+        .find(x => createCase(matchCase, x).startsWith(caseValue));
     } else {
       suggestion = suggestions[highlightedSuggestion];
     }
@@ -68,10 +69,18 @@ class ComboBoxComponent extends Component {
   }
 
   handleKeyDown = (e) => {
-    const { value, suggestions, highlightedSuggestion, onSuggestionHighlighted, onKeyDown, setFocus, getLabel } = this.props;
+    const {
+      value,
+      suggestions,
+      highlightedSuggestion,
+      onSuggestionHighlighted,
+      onKeyDown,
+      setFocus,
+      getLabel,
+    } = this.props;
 
     switch (e.keyCode) {
-      case (keyCode.TAB):
+      case keyCode.TAB:
         if (suggestions.length > 0) {
           const selected = this.getSuggestion(highlightedSuggestion);
           if (getLabel(selected) !== value) {
@@ -82,13 +91,12 @@ class ComboBoxComponent extends Component {
         }
         setFocus(false);
         break;
-      case (keyCode.RIGHT):
-      case (keyCode.ENTER):
+      case keyCode.RIGHT:
+      case keyCode.ENTER:
         if (suggestions.length > 0) this.onSuggestionSelected(highlightedSuggestion);
         break;
-      case (keyCode.DOWN):
-        if (highlightedSuggestion < suggestions.length - 1) onSuggestionHighlighted(highlightedSuggestion + 1);
-        else onSuggestionHighlighted(-1);
+      case keyCode.DOWN:
+        if (highlightedSuggestion < suggestions.length - 1) { onSuggestionHighlighted(highlightedSuggestion + 1); } else onSuggestionHighlighted(-1);
         e.preventDefault();
         break;
       case keyCode.UP:
@@ -121,7 +129,8 @@ class ComboBoxComponent extends Component {
       matchCase,
       onChange,
       onKeyDown,
-      ...props } = this.props;
+      ...props
+    } = this.props;
 
     const hint = this.hint;
 
@@ -141,11 +150,20 @@ class ComboBoxComponent extends Component {
             hint={hint}
             onKeyDown={this.handleKeyDown}
           />
-          { hasFocus && !disabled ?
-            <Suggestions
-              {...{ value, suggestions, getLabel, highlightedSuggestion, onSuggestionHighlighted, renderSuggestion, suggestionsContainer }}
+          {hasFocus && !disabled
+            ? <Suggestions
+              {...{
+                value,
+                suggestions,
+                getLabel,
+                highlightedSuggestion,
+                onSuggestionHighlighted,
+                renderSuggestion,
+                suggestionsContainer,
+              }}
               onSuggestionSelected={this.onSuggestionSelected}
-            /> : null}
+            />
+            : null}
         </div>
       </ClickOutside>
     );
@@ -162,15 +180,20 @@ const ComboBox = compose(
 
     const value$ = Rx.Observable
       .merge(
-        props$.map(({ value, getLabel }) => ({ input: getLabel(value), selected: value }))
+        props$
+          .map(({ value, getLabel }) => ({ input: getLabel(value), selected: value }))
           .distinctUntilChanged(R.equals)
           .map(x => ({ ...x, from: 'props' })),
-        onInputChanged$
-          .distinctUntilChanged(R.equals)
-          .map(x => ({ ...x, from: 'state' })),
+        onInputChanged$.distinctUntilChanged(R.equals).map(x => ({ ...x, from: 'state' })),
       )
       .scan((prev, current) => {
-        if (current.input === '' && current.selected === undefined && prev.selected === undefined && current.from === 'props' && prev.from === 'state') {
+        if (
+          current.input === '' &&
+          current.selected === undefined &&
+          prev.selected === undefined &&
+          current.from === 'props' &&
+          prev.from === 'state'
+        ) {
           return prev;
         }
         return current;
@@ -178,23 +201,44 @@ const ComboBox = compose(
       .map(R.omit(['from']))
       .distinctUntilChanged(R.equals);
 
-    const propsWithValue$ = Rx.Observable.combineLatest(props$, value$)
-      .map(([props, { input: value }]) => ({ ...props, value })).share();
+    const propsWithValue$ = Rx.Observable
+      .combineLatest(props$, value$)
+      .map(([props, { input: value }]) => ({ ...props, value }))
+      .share();
 
     const suggestions$ = propsWithValue$
-      .distinctUntilChanged(compareBy('suggestions', 'value', 'showValueInOptions', 'matchCase', 'suggestionsLimit'))
-      .map(({ suggestions, filterBy, value, getLabel, showValueInOptions, matchCase, suggestionsLimit }) => {
-        const getCaseLabel = createCase(matchCase, getLabel);
+      .distinctUntilChanged(
+        compareBy('suggestions', 'value', 'showValueInOptions', 'matchCase', 'suggestionsLimit'),
+      )
+      .map(
+        ({
+          suggestions,
+          filterBy,
+          value,
+          getLabel,
+          showValueInOptions,
+          matchCase,
+          suggestionsLimit,
+        }) => {
+          const getCaseLabel = createCase(matchCase, getLabel);
 
-        const filterFunc = filterBy || ((input, suggestion) => input === '' || getCaseLabel(suggestion).includes(createCase(matchCase, input)));
+          const filterFunc =
+            filterBy ||
+            ((input, suggestion) =>
+              input === '' || getCaseLabel(suggestion).includes(createCase(matchCase, input)));
 
-        const filteredSuggestions = suggestions.filter(s => filterFunc(value, s));
-        if (!showValueInOptions && filteredSuggestions.length === 1 && getCaseLabel(filteredSuggestions[0]) === createCase(matchCase, value)) return [];
-        if (suggestionsLimit > 0) {
-          return filteredSuggestions.slice(0, suggestionsLimit);
-        }
-        return filteredSuggestions;
-      })
+          const filteredSuggestions = suggestions.filter(s => filterFunc(value, s));
+          if (
+            !showValueInOptions &&
+            filteredSuggestions.length === 1 &&
+            getCaseLabel(filteredSuggestions[0]) === createCase(matchCase, value)
+          ) { return []; }
+          if (suggestionsLimit > 0) {
+            return filteredSuggestions.slice(0, suggestionsLimit);
+          }
+          return filteredSuggestions;
+        },
+      )
       .withLatestFrom(highlighted$, (suggestions, highlighted) => ({ suggestions, highlighted }))
       .do(({ suggestions, highlighted }) => {
         if (highlighted.index === -1) return;
@@ -203,7 +247,13 @@ const ComboBox = compose(
       })
       .map(R.prop('suggestions'));
 
-    return Rx.Observable.combineLatest(propsWithValue$, suggestions$, highlighted$, onFocus$.startWith(false).distinctUntilChanged())
+    return Rx.Observable
+      .combineLatest(
+        propsWithValue$,
+        suggestions$,
+        highlighted$,
+        onFocus$.startWith(false).distinctUntilChanged(),
+      )
       .map(([{ onChange, ...props }, suggestions, { index: highlightedSuggestion }, hasFocus]) => ({
         ...props,
         hasFocus,

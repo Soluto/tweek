@@ -8,15 +8,18 @@ import SaveButton from '../../../../../../components/common/SaveButton/SaveButto
 
 import { diff } from 'deep-diff';
 
-const DeleteButton = ({isSaving, selectedKey, deleteKey}) => (
+const DeleteButton = ({ isSaving, selectedKey, deleteKey }) => (
   <button
     disabled={isSaving}
     className={style['delete-key-button']}
     tabIndex="-1"
-    onClick={() => deleteKey(selectedKey.key)}>Delete key</button>
+    onClick={() => deleteKey(selectedKey.key)}
+  >
+    Delete key
+  </button>
 );
 
-const SaveChangesButton = ({selectedKey, saveKey, ...props}) => (
+const SaveChangesButton = ({ selectedKey, saveKey, ...props }) => (
   <SaveButton
     {...props}
     tabIndex="-1"
@@ -26,27 +29,38 @@ const SaveChangesButton = ({selectedKey, saveKey, ...props}) => (
 );
 
 const comp = compose(
-  connect(
-    state => ({ selectedKey: state.selectedKey }),
-    { ...keysActions, deleteKey })
+  connect(state => ({ selectedKey: state.selectedKey }), { ...keysActions, deleteKey }),
 )(
-  ({ selectedKey, isInAddMode, saveKey, deleteKey, isReadonly,isHistoricRevision, isInStickyMode }) => {
+  ({
+    selectedKey,
+    isInAddMode,
+    saveKey,
+    deleteKey,
+    isReadonly,
+    isHistoricRevision,
+    isInStickyMode,
+  }) => {
     const { local, remote, isSaving } = selectedKey;
     const changes = diff(local, remote);
     const hasChanges = (changes || []).length > 0;
     return (
       <div>
-        {isReadonly ?
-          <div className={style['readonly-key-message']}> {isHistoricRevision ? 'This is an old revision of this key' : 'This key is readonly'} </div>
+        {isReadonly
+          ? <div className={style['readonly-key-message']}>
+            {' '}
+            {isHistoricRevision ? 'This is an old revision of this key' : 'This key is readonly'}
+            {' '}
+          </div>
           : null}
         <div className={style['key-action-buttons-wrapper']}>
-          {!isInAddMode && !isInStickyMode ?
-            <DeleteButton {...{selectedKey, isSaving, deleteKey}} />
+          {!isInAddMode && !isInStickyMode
+            ? <DeleteButton {...{ selectedKey, isSaving, deleteKey }} />
             : null}
-          <SaveChangesButton {...{selectedKey, isSaving, hasChanges, saveKey}} />
+          <SaveChangesButton {...{ selectedKey, isSaving, hasChanges, saveKey }} />
         </div>
       </div>
     );
-  });
+  },
+);
 
 export default comp;

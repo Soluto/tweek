@@ -17,9 +17,9 @@ export default compose(
       id: x,
       text: x,
     })),
-  })))(
+  })),
+)(
   class KeyTags extends Component {
-
     constructor(props) {
       super(props);
     }
@@ -47,23 +47,25 @@ export default compose(
       const { tags, tagsSuggestions } = this.props;
       return (
         <div className={style['tags-wrapper']}>
-          <ReactTags tags={ tags }
-            handleDelete={ this:: this._onTagDeleted }
-            handleAddition = { this:: this._onTagAdded }
-            suggestions = { tagsSuggestions }
-            placeholder = "New tag"
+          <ReactTags
+            tags={tags}
+            handleDelete={this::this._onTagDeleted}
+            handleAddition={this::this._onTagAdded}
+            suggestions={tagsSuggestions}
+            placeholder="New tag"
             autofocus={false}
             allowDeleteFromEmptyInput
-            minQueryLength = { 1 }
-            classNames = {{
+            minQueryLength={1}
+            classNames={{
               tags: style['tags-container'],
               tagInput: style['tag-input'],
-              tag: style['tag'],
+              tag: style.tag,
               remove: style['tag-delete-button'],
               suggestions: style['tags-suggestion'],
-            } }
+            }}
           />
-        </div >
+        </div>
       );
     }
-  });
+  },
+);

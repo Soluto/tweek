@@ -16,7 +16,10 @@ class Notifications extends Component {
   componentWillReceiveProps(nextProps) {
     const { notification: newNotification } = nextProps;
     const { notification: currentNotification } = this.props;
-    if (newNotification && (!currentNotification || currentNotification.uid !== newNotification.uid)) {
+    if (
+      newNotification &&
+      (!currentNotification || currentNotification.uid !== newNotification.uid)
+    ) {
       this._notificationSystem.addNotification(newNotification);
     }
   }

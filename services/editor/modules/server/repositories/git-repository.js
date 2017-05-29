@@ -5,7 +5,6 @@ import path from 'path';
 const fs = require('promisify-node')('fs-extra');
 
 export default class GitRepository {
-
   constructor(repo, operationSettings) {
     this._repo = repo;
     this._operationSettings = operationSettings;
@@ -17,8 +16,10 @@ export default class GitRepository {
 
     const operationSettings = {
       callbacks: {
-        credentials: () => settings.url.startsWith('ssh://') ? Git.Cred.sshKeyNew(settings.username, settings.publicKey, settings.privateKey, '')
-          : Git.Cred.userpassPlaintextNew(settings.username, settings.password),
+        credentials: () =>
+          settings.url.startsWith('ssh://')
+            ? Git.Cred.sshKeyNew(settings.username, settings.publicKey, settings.privateKey, '')
+            : Git.Cred.userpassPlaintextNew(settings.username, settings.password),
       },
     };
 
@@ -97,12 +98,7 @@ export default class GitRepository {
   async commitAndPush(message, { name, email }) {
     const author = Git.Signature.now(name, email);
     const pusher = Git.Signature.now('tweek-backoffice', 'tweek-backoffice@tweek');
-    await this._repo.createCommitOnHead(
-      [],
-      author,
-      pusher,
-      message,
-    );
+    await this._repo.createCommitOnHead([], author, pusher, message);
 
     await this._pushRepositoryChanges(message);
   }
@@ -124,14 +120,14 @@ export default class GitRepository {
   }
 
   async reset() {
-    const remoteCommit = (await this._repo.getBranchCommit('remotes/origin/master'));
+    const remoteCommit = await this._repo.getBranchCommit('remotes/origin/master');
     await Git.Reset.reset(this._repo, remoteCommit, 3);
     return remoteCommit.id();
   }
 
   async isSynced() {
-    const remoteCommit = (await this._repo.getBranchCommit('remotes/origin/master'));
-    const localCommit = (await this._repo.getBranchCommit('master'));
+    const remoteCommit = await this._repo.getBranchCommit('remotes/origin/master');
+    const localCommit = await this._repo.getBranchCommit('master');
 
     return remoteCommit.id().equal(localCommit.id()) === 1;
   }

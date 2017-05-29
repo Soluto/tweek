@@ -19,7 +19,7 @@ const Rule = ({ rule, valueType, mutate, autofocus }) => {
     <div className={style['rule-container']}>
       <div className={style.conditions}>
         <label className={style['rule-partial-title']}>Conditions</label>
-        <Matcher matcher={rule.Matcher} mutate={mutate.in('Matcher')} autofocus={autofocus}  />
+        <Matcher matcher={rule.Matcher} mutate={mutate.in('Matcher')} autofocus={autofocus} />
       </div>
       <div className={style.values}>
         <label className={style['rule-partial-title']}>{valueTitle}</label>
@@ -30,4 +30,3 @@ const Rule = ({ rule, valueType, mutate, autofocus }) => {
 };
 
 export default shouldUpdate(ruleHasChanged)(Rule);
-
