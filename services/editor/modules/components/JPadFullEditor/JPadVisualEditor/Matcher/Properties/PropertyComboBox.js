@@ -122,5 +122,6 @@ export default ({ property, suggestedValues, onPropertyChange, autofocus }) => (
         )}
     autofocus={autofocus}
     className={style['property-name-wrapper']}
+    showValueInOptions
   />
   );
