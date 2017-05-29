@@ -132,73 +132,61 @@ describe('partition key', () => {
   });
 
   describe('partition groups', () => {
-    describe('add', () => {
-      const addPartitionGroupFullPath = `${testFolder}/${partitionsTestFolder}/add_partition_group`;
-      before(() => {
-        keysPageObject.goToKey(addPartitionGroupFullPath);
+    it('should add new partition group', () => {
+      keysPageObject.goToKey(`${testFolder}/${partitionsTestFolder}/add_partition_group`);
+      const newPartitionGroups = [['Banana'], ['Orange', 'Rick'], [false, 'Morty']];
+      newPartitionGroups.forEach((group) => {
+        group.forEach((value, i) => {
+          if (value) browser.setValue(selectors.newPartitionGroupInput(i + 1), value);
+        });
+        browser.click(selectors.ADD_PARTITION_GROUP_BUTTON);
       });
-
-      it('should add new partition group', () => {
-        const newPartitionGroups = [['Banana'], ['Orange', 'Rick'], [false, 'Morty']];
-        newPartitionGroups.forEach((group) => {
-          group.forEach((value, i) => {
-            if (value) browser.setValue(selectors.newPartitionGroupInput(i + 1), value);
-          });
-          browser.click(selectors.ADD_PARTITION_GROUP_BUTTON);
-        });
-        keysAsserts.assertKeySource({
-          partitions: ["user.FavoriteFruit", "user.FatherName"],
-          valueType: "string",
-          rules: {
-            "Banana": {
-              "*": []
-            },
-            "Orange": {
-              "Rick": []
-            },
-            "*": {
-              "Morty": []
-            }
+      keysAsserts.assertKeySource({
+        partitions: ["user.FavoriteFruit", "user.FatherName"],
+        valueType: "string",
+        rules: {
+          "Banana": {
+            "*": []
+          },
+          "Orange": {
+            "Rick": []
+          },
+          "*": {
+            "Morty": []
           }
-        });
+        }
       });
     });
 
-    describe('delete', () => {
-      const deletePartitionKeyFullPath = `${testFolder}/${partitionsTestFolder}/partition_groups`;
-      before(() => {
-        keysPageObject.goToKey(deletePartitionKeyFullPath);
-      });
-
-      it('should delete group rules when deleting partition group', () => {
-        browser.click(selectors.partitionGroupDeleteButton(2));
-        browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
-        keysPageObject.acceptRodalIfRaised();
-        keysAsserts.assertKeySource({
-          partitions: ["user.FavoriteFruit", "user.Gender"],
-          valueType: "string",
-          rules: {
-            "Banana": {
-              "male": [
-                {
-                  Matcher: {},
-                  Value: "someValue",
-                  Type: "SingleVariant"
-                }
-              ]
-            },
-            "*": {
-              "*": [
-                {
-                  Matcher: {},
-                  Value: "otherDefaultValue",
-                  Type: "SingleVariant"
-                }
-              ]
-            }
+    it('should delete group rules when deleting partition group', () => {
+      keysPageObject.goToKey(`${testFolder}/${partitionsTestFolder}/partition_groups`);
+      browser.click(selectors.partitionGroupDeleteButton(2));
+      browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
+      keysPageObject.acceptRodalIfRaised();
+      keysAsserts.assertKeySource({
+        partitions: ["user.FavoriteFruit", "user.Gender"],
+        valueType: "string",
+        rules: {
+          "Banana": {
+            "male": [
+              {
+                Matcher: {},
+                Value: "someValue",
+                Type: "SingleVariant"
+              }
+            ]
+          },
+          "*": {
+            "*": [
+              {
+                Matcher: {},
+                Value: "otherDefaultValue",
+                Type: "SingleVariant"
+              }
+            ]
           }
-        })
-      });
+        }
+      })
     });
   });
 });
