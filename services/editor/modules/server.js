@@ -101,6 +101,9 @@ function addAuthSupport(server) {
     if (req.isAuthenticated() || req.path.startsWith('auth')) {
       return next();
     }
+    if (req.originalUrl.startsWith('/api/')) {
+      return res.sendStatus(403);
+    }
     return res.redirect('/login');
   });
 }
