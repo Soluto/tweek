@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import * as SearchService from '../../../../../../services/search-service';
 import * as TypesService from '../../../../../../services/types-service';
 import TypedInput from '../../../../../../components/common/Input/TypedInput';
-import AutoSuggest from '../../../../../../components/common/Input/AutoSuggest';
+import AutoSuggest from '../../../../../../components/common/ComboBox/AutoSuggest';
 import style from './FixedKey.css';
 
 const configShape = {

@@ -1,12 +1,11 @@
 import React from 'react';
-import R from 'ramda';
 import Chance from 'chance';
-import { withState } from 'recompose';
 import Highlighter from 'react-highlight-words';
 import ReactTooltip from 'react-tooltip';
 import style from './styles.css';
-import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
+import MultiSourceComboBox from '../../../../common/ComboBox/MultiSourceComboBox';
 import * as ContextService from '../../../../../services/context-service';
+import * as SearchService from '../../../../../services/search-service';
 
 const chance = new Chance();
 
@@ -42,17 +41,20 @@ const PropertyTooltip = ({ propName, description, propType, identityType }) =>
   </div>;
 
 const PropertySuggestion = ({ suggestion, textToMark }) => {
-  if (suggestion.value.startsWith('keys.')) {
+  if (suggestion.value.startsWith(ContextService.KEYS_IDENTITY)) {
     return (
-      <div className={style['property-suggestion-wrapper']}>
-        <div className={style['suggestion-identity']}>
-          <Highlighter
-            highlightClassName={style['suggestion-label']}
-            highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
-            searchWords={[textToMark]}
-            textToHighlight={suggestion.value}
-          />
-        </div>
+      <div
+        className={style['property-suggestion-wrapper']}
+        data-field-type={'string'}
+      >
+        <i />
+        <Highlighter
+          highlightClassName={style['suggestion-label']}
+          highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
+          searchWords={[textToMark]}
+          textToHighlight={suggestion.label}
+        />
+        <span className={style['suggestion-identity']}>(keys)</span>
       </div>);
   }
 
@@ -97,32 +99,28 @@ const PropertySuggestion = ({ suggestion, textToMark }) => {
   );
 };
 
-export default withState('currentInputValue', 'setCurrentInputValue', '')(
-  ({ property, suggestedValues, onPropertyChange, autofocus, currentInputValue, setCurrentInputValue }) => {
-    if (!!property && !suggestedValues.some(x => x.value === property)) {
-      suggestedValues = [...suggestedValues, { label: property, value: property }];
-    }
-
-    suggestedValues = R.uniqBy(x => x.value)([...suggestedValues]);
-
-    return (
-      <ComboBox
-        options={suggestedValues}
-        onChange={onPropertyChange}
-        placeholder="Property"
-        selected={suggestedValues.filter(x => x.value === property)}
-        onInputChange={(text) => {
-          setCurrentInputValue(text);
-          if (text.startsWith('@@key:') || text.startsWith('keys.')) {
-            onPropertyChange({ value: text.replace('@@key:', 'keys.') });
-          }
-        }}
-        filterBy={option => option.value.toLowerCase().includes(currentInputValue.toLowerCase())}
-        renderMenuItemChildren={suggestion => (
-          <PropertySuggestion suggestion={suggestion} textToMark={currentInputValue} />
+export default ({ property, suggestedValues, onPropertyChange, autofocus }) => (
+  <MultiSourceComboBox
+    getSuggestions={{
+      Context: () => suggestedValues,
+      Keys: (query) => {
+        const search = query.startsWith(ContextService.KEYS_IDENTITY) ? query.substring(ContextService.KEYS_IDENTITY.length) : query;
+        return SearchService.suggestions(search).map(label => ({ label, value: `${ContextService.KEYS_IDENTITY}${label}` }));
+      },
+    }}
+    value={suggestedValues.find(x => x.value === property)}
+    onChange={(input, selected) => {
+      if (selected) onPropertyChange(selected);
+      else if (input.startsWith('@@key:') || input.startsWith(ContextService.KEYS_IDENTITY)) {
+        onPropertyChange({ value: input.replace('@@key:', ContextService.KEYS_IDENTITY) });
+      }
+    }}
+    placeholder="Property"
+    filterBy={(currentInputValue, option) => option.value.toLowerCase().includes(currentInputValue.toLowerCase())}
+    renderSuggestion={(suggestion, currentInputValue) => (
+      <PropertySuggestion suggestion={suggestion} textToMark={currentInputValue} />
         )}
-        autofocus={autofocus}
-        wrapperThemeClass={style['property-name-wrapper']}
-      />
-    );
-  });
+    autofocus={autofocus}
+    className={style['property-name-wrapper']}
+  />
+  );

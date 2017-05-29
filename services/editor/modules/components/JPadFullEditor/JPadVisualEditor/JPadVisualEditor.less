@@ -1,9 +1,13 @@
-@import (reference) "../../../../../../../styles/core/core.less";
+@import (reference) "../../../../../../../styles/core/comboBox.less";
 .jpad-editor-container {
   .jpad-settings {
     display: flex;
     float: right;
     padding: 20px 25px;
+
+    .default-value {
+      .combo-box-basic(@dropdown-min-width: 150px);
+    }
   }
   .vertical-separator {
     width: 1px;
