@@ -16,6 +16,8 @@ const keyCode = {
   TAB: 9,
 };
 
+const compareBy = (...props) => (...args) => R.equals(...args.map(R.pick(props)));
+
 const createCase = (matchCase, x) => {
   if (x === undefined || matchCase) return x;
   if (typeof x === 'function') {
@@ -110,6 +112,7 @@ class ComboBoxComponent extends Component {
       getLabel,
       className,
       disabled,
+      suggestionsContainer,
       renderSuggestion,
 
       matchCase,
@@ -135,9 +138,9 @@ class ComboBoxComponent extends Component {
             hint={hint}
             onKeyDown={this.handleKeyDown}
           />
-          { hasFocus && !disabled && suggestions.length > 0 ?
+          { hasFocus && !disabled ?
             <Suggestions
-              {...{ value, suggestions, getLabel, highlightedSuggestion, onSuggestionHighlighted, renderSuggestion }}
+              {...{ value, suggestions, getLabel, highlightedSuggestion, onSuggestionHighlighted, renderSuggestion, suggestionsContainer }}
               onSuggestionSelected={this.onSuggestionSelected}
             /> : null}
         </div>
@@ -176,7 +179,7 @@ const ComboBox = compose(
       .map(([props, { input: value }]) => ({ ...props, value })).share();
 
     const suggestions$ = propsWithValue$
-      .distinctUntilChanged((x, y) => R.equals(...[x, y].map(R.pick(['suggestions', 'value', 'showValueInOptions', 'matchCase']))))
+      .distinctUntilChanged(compareBy('suggestions', 'value', 'showValueInOptions', 'matchCase'))
       .map(({ suggestions, filterBy, value, getLabel, showValueInOptions, matchCase }) => {
         const getCaseLabel = createCase(matchCase, getLabel);
 
@@ -222,6 +225,7 @@ ComboBox.propTypes = {
   autofocus: PropTypes.bool,
   className: PropTypes.string,
   renderSuggestion: PropTypes.func,
+  suggestionsContainer: PropTypes.any,
   matchCase: PropTypes.bool,
 };
 
