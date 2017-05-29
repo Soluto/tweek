@@ -62,8 +62,6 @@ export default class KeysPageObject extends PageObject {
     browser.click(globalSelectors.BACKGROUND);
 
     this.browser.setValue(keySelectors.KEY_VALUE_TYPE_INPUT, keyValueType);
-    const firstSuggestion = globalSelectors.typeaheadSuggestionByIndex(0);
-    browser.click(firstSuggestion);
 
     this.browser.click(keySelectors.SAVE_CHANGES_BUTTON);
     this.browser.waitUntil(() =>
@@ -158,6 +156,7 @@ export default class KeysPageObject extends PageObject {
 
     this.browser.click(globalSelectors.BACKGROUND);
     this.browser.click(conditionPropertyInputSelector);
+    this.browser.waitForVisible(suggestionSelector, 5000);
     this.browser.click(suggestionSelector);
   }
 
@@ -165,6 +164,7 @@ export default class KeysPageObject extends PageObject {
     const conditionPropertyInputSelector = keySelectors.conditionPropertyName(ruleNumber, conditionNumber);
     this.browser.setValue(conditionPropertyInputSelector, valuePrefix);
     const suggestionSelector = globalSelectors.typeaheadSuggestionByIndex(0);
+    this.browser.waitForVisible(suggestionSelector, 5000);
     this.browser.click(suggestionSelector);
   }
 
@@ -188,20 +188,11 @@ export default class KeysPageObject extends PageObject {
   setRuleValue(ruleNumber, value, keyValueType) {
     const ruleValueInputSelector = keySelectors.ruleValueInput(ruleNumber, keyValueType == "Boolean");
     this.browser.setValue(ruleValueInputSelector, value);
-    if (keyValueType == "Boolean") {
-      const firstSuggestion = globalSelectors.typeaheadSuggestionByIndex(0);
-      browser.click(firstSuggestion);
-    }
   }
 
   addPartitionFromProperty(property) {
     this.browser.setValue(keySelectors.ADD_PARTITION_INPUT, property);
     this.browser.keys('\uE007');
-  }
-
-  addPartitionFromSuggestion(suggestion) {
-    this.browser.setValue(keySelectors.ADD_PARTITION_INPUT, suggestion);
-    this.browser.clickWhenVisible(keySelectors.partitionSuggestionByIndex(0), 1000);
   }
 
   saveChanges() {

@@ -1,16 +1,17 @@
 import React from 'react';
 import R from 'ramda';
 import { compose, mapProps } from 'recompose';
+import Chance from 'chance';
 import CustomSlider from '../../../../components/common/CustomSlider/CustomSlider';
 import TypedInput from '../../../../components/common/Input/TypedInput';
 import ComboBox from '../../../../components/common/ComboBox/ComboBox';
 import style from './RuleValue.css';
 import * as TypesService from '../../../../services/types-service';
 
-const chance = new (require('chance'))();
+const chance = new Chance();
 
 function replaceNaN(fallbackValue) { return isNaN(this) ? fallbackValue : this; }
-const parseNumericInput = inputValue => inputValue === '' ? 0 : parseInt(inputValue);
+const parseNumericInput = inputValue => (inputValue === '' ? 0 : parseInt(inputValue));
 const wrapWithClass = propToClassNameFn => Comp => props =>
   <div className={propToClassNameFn(props)} ><Comp {...props} /></div>;
 
@@ -99,7 +100,7 @@ const BernoulliTrial = ({ onUpdate, ratio }) => (
       <CustomSlider
         displayLegend={false}
         sliderColors={bernouliTrialSliderColors}
-        data={{ true: 1000 * ratio / 10, false: 100 - (1000 * ratio / 10) }}
+        data={{ true: (1000 * ratio) / 10, false: 100 - ((1000 * ratio) / 10) }}
         onUpdate={x => onUpdate(x.true / 100)}
       />
     </div>
@@ -109,13 +110,12 @@ const BernoulliTrial = ({ onUpdate, ratio }) => (
 const IdentitySelection = ({ identities, onChange, ownerType }) => (
   <div className={style['identity-selection-container']}>
     <label className={style['identity-selection-title']}>Identity: </label>
-    <div className={style['identity-selection-combobox-wrapper']}>
-      <ComboBox
-        options={identities}
-        onChange={onChange}
-        selected={[ownerType]}
-      />
-    </div>
+    <ComboBox
+      className={style['identity-selection-combobox-wrapper']}
+      suggestions={identities}
+      onChange={(_, e) => e && onChange(e)}
+      value={ownerType}
+    />
   </div>
   );
 

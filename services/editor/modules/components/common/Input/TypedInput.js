@@ -13,17 +13,18 @@ export const withTypesService = ({ safeConvertValue, types }) => withContext(typ
 
 const getTypesService = getContext(typesServiceContextType);
 
+const valueToItem = value => (value === undefined || value === '' ? undefined : ({ label: changeCase.pascalCase(value), value }));
+
 const TypedInput = ({ safeConvertValue, types, valueType, value, onChange, ...props }) => {
   const typeDefinition = types[valueType];
   const allowedValues = typeDefinition && typeDefinition.allowedValues;
-  const onChangeConvert = onChange ? newValue => onChange(safeConvertValue(newValue, valueType)) : undefined;
+  const onChangeConvert = newValue => onChange && onChange(safeConvertValue(newValue, valueType));
   if (allowedValues && allowedValues.length > 0) {
     return (<ComboBox
       {...props}
-      options={allowedValues.map(x => ({ label: changeCase.pascalCase(x), value: x }))}
-      onChange={x => onChangeConvert(x.value === undefined ? x : x.value)}
-      selected={value === undefined ? [] : [{ label: changeCase.pascalCase(value), value }]}
-      showValueInOptions={false}
+      value={valueToItem(value)}
+      suggestions={allowedValues.map(valueToItem)}
+      onChange={(input, selected) => onChangeConvert(selected && (selected.value === undefined ? selected : selected.value))}
     />);
   }
   return <Input {...props} onChange={onChangeConvert} value={value} />;

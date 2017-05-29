@@ -21,14 +21,11 @@ describe('key-value-type', () => {
 
   let setKeyValueAndType = function (keyValueType, value) {
     browser.setValue(keySelectors.KEY_VALUE_TYPE_INPUT, keyValueType);
-    const firstSuggestion = globalSelectors.typeaheadSuggestionByIndex(0);
-    browser.click(firstSuggestion);
 
     keysPageObject.acceptRodalIfRaised();
 
     const ruleValueInputSelector = keySelectors.ruleValueInput(0, keyValueType == "Boolean");
     browser.setValue(ruleValueInputSelector, value);
-    if (keyValueType == "Boolean") browser.click(firstSuggestion);
   };
 
   function assertKeySourceWithChanges(valueType, ruleValue) {
