@@ -1,7 +1,7 @@
 import Locker from 'lock-queue';
 
 export default class Transactor {
-  constructor(contextPromise, cleanupAction){
+  constructor(contextPromise, cleanupAction) {
     this._contextPromise = contextPromise;
     this._cleanupAction = cleanupAction;
 
@@ -11,11 +11,10 @@ export default class Transactor {
   async read(readAction) {
     let context = await this._contextPromise;
 
-    return await this._lock.run(async() => {
-      try{
+    return await this._lock.run(async () => {
+      try {
         return await readAction(context);
-      }
-      catch (err) {
+      } catch (err) {
         console.error('Error occurred during transaction ', err);
         throw err;
       }
@@ -24,17 +23,14 @@ export default class Transactor {
 
   async write(transactionAction) {
     let context = await this._contextPromise;
-    return await this._lock.lock(async() => {
+    return await this._lock.lock(async () => {
       try {
         return await transactionAction(context);
-      }
-      catch (err) {
+      } catch (err) {
         console.error('Error occurred during transaction ', err);
         throw err;
-      }
-      finally {
-        if (this._cleanupAction)
-          await this._cleanupAction(context);
+      } finally {
+        if (this._cleanupAction) await this._cleanupAction(context);
       }
     });
   }

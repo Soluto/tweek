@@ -20,9 +20,18 @@
     "build-prod": "rm -rf .build && npm run cli -- build --NODE_ENV production",
     "teardown": "npm run docker-compose -- down",
     "cli": "babel scripts/src --out-dir scripts/lib && node ./scripts/lib/cli.js",
-    "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml"
+    "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml",
+    "format": "prettier-eslint --trailing-comma all --print-width 100 --single-quote --write",
+    "format:all": "npm run format \"modules/**/*.js\"",
+    "precommit": "lint-staged"
   },
   "author": "",
+  "lint-staged": {
+    "gitDir": "../../",
+    "linters" :{
+      "modules/**/*.js": ["npm run format", "git add"]
+    }
+  },
   "jest": {
     "testRegex": "/spec/unit/.*",
     "automock": false,
@@ -138,15 +147,19 @@
     "extract-text-webpack-plugin": "1.0.1",
     "fetch-mock": "^5.8.0",
     "file-loader": "0.8.5",
+    "husky": "^0.13.4",
     "if-env": "1.0.0",
     "jest-cli": "18.1.0",
     "jest-css-modules": "1.0.2",
     "less": "2.7.1",
     "less-loader": "2.2.3",
+    "lint-staged": "git+https://github.com/okonet/lint-staged.git#4c600178ac26604f5d543028ac846a061e0729f9",
     "mocha": "2.4.5",
     "nodemon": "1.11.0",
     "null-loader": "0.1.1",
     "postcss-loader": "0.8.1",
+    "prettier": "^1.3.1",
+    "prettier-eslint-cli": "^3.6.1",
     "shelljs": "^0.7.7",
     "style-loader": "0.13.0",
     "url-loader": "0.5.7",

@@ -15,7 +15,7 @@ const HIGHLIGHTED_TEXT_INLINE_STYLE = {
   color: 'gray',
 };
 
-const PropertyTooltip = ({ propName, description, propType, identityType }) =>
+const PropertyTooltip = ({ propName, description, propType, identityType }) => (
   <div>
     <div style={{ fontSize: 18 }}><span>{identityType}</span>.<span>{propName}</span></div>
     <div style={{ display: 'flex', marginTop: 10 }}>
@@ -38,15 +38,13 @@ const PropertyTooltip = ({ propName, description, propType, identityType }) =>
         </div>
       </div>
     </div>
-  </div>;
+  </div>
+);
 
 const PropertySuggestion = ({ suggestion, textToMark }) => {
   if (suggestion.value.startsWith(ContextService.KEYS_IDENTITY)) {
     return (
-      <div
-        className={style['property-suggestion-wrapper']}
-        data-field-type={'string'}
-      >
+      <div className={style['property-suggestion-wrapper']} data-field-type={'string'}>
         <i />
         <Highlighter
           highlightClassName={style['suggestion-label']}
@@ -55,7 +53,8 @@ const PropertySuggestion = ({ suggestion, textToMark }) => {
           textToHighlight={suggestion.label}
         />
         <span className={style['suggestion-identity']}>(keys)</span>
-      </div>);
+      </div>
+    );
   }
 
   const typeDetails = ContextService.getPropertyTypeDetails(suggestion.value);
@@ -64,7 +63,9 @@ const PropertySuggestion = ({ suggestion, textToMark }) => {
 
   return (
     <div
-      data-tip data-for={tooltipId} className={style['property-suggestion-wrapper']}
+      data-tip
+      data-for={tooltipId}
+      className={style['property-suggestion-wrapper']}
       data-field-type={typeDetails.name}
     >
       <i />
@@ -74,12 +75,16 @@ const PropertySuggestion = ({ suggestion, textToMark }) => {
         searchWords={[textToMark]}
         textToHighlight={prop}
       />
-      <span className={style['suggestion-identity']}>(<Highlighter
-        highlightClassName={style['suggestion-label']}
-        highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
-        searchWords={[textToMark]}
-        textToHighlight={identity}
-      />)</span>
+      <span className={style['suggestion-identity']}>
+        (
+        <Highlighter
+          highlightClassName={style['suggestion-label']}
+          highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
+          searchWords={[textToMark]}
+          textToHighlight={identity}
+        />
+        )
+      </span>
       <ReactTooltip
         id={tooltipId}
         place="right"
@@ -104,8 +109,13 @@ export default ({ property, suggestedValues, onPropertyChange, autofocus }) => (
     getSuggestions={{
       Context: () => suggestedValues,
       Keys: (query) => {
-        const search = query.startsWith(ContextService.KEYS_IDENTITY) ? query.substring(ContextService.KEYS_IDENTITY.length) : query;
-        return SearchService.suggestions(search).map(label => ({ label, value: `${ContextService.KEYS_IDENTITY}${label}` }));
+        const search = query.startsWith(ContextService.KEYS_IDENTITY)
+          ? query.substring(ContextService.KEYS_IDENTITY.length)
+          : query;
+        return SearchService.suggestions(search).map(label => ({
+          label,
+          value: `${ContextService.KEYS_IDENTITY}${label}`,
+        }));
       },
     }}
     value={suggestedValues.find(x => x.value === property)}
@@ -116,12 +126,13 @@ export default ({ property, suggestedValues, onPropertyChange, autofocus }) => (
       }
     }}
     placeholder="Property"
-    filterBy={(currentInputValue, option) => option.value.toLowerCase().includes(currentInputValue.toLowerCase())}
+    filterBy={(currentInputValue, option) =>
+      option.value.toLowerCase().includes(currentInputValue.toLowerCase())}
     renderSuggestion={(suggestion, currentInputValue) => (
       <PropertySuggestion suggestion={suggestion} textToMark={currentInputValue} />
-        )}
+    )}
     autofocus={autofocus}
     className={style['property-name-wrapper']}
     showValueInOptions
   />
-  );
+);

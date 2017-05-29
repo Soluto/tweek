@@ -11,18 +11,18 @@ import { equal } from '../../../../services/operators-provider';
 import { InputValue } from '../RuleValue/RuleValue';
 
 const extractPartitionToObject = (mutate, partitions) => {
-  if (partitions.length == 0)
-    {return [{mutate: mutate}];}
+  if (partitions.length == 0) {
+    return [{ mutate }];
+  }
 
   return R.flatten(
-    Object.keys(mutate.getValue())
-      .map((partitionValue) => {
-        const innerResults = extractPartitionToObject(mutate.in(partitionValue), partitions.slice(1));
-        return innerResults.map(innerResult => ({
-          [partitions[0]]: partitionValue,
-          ...innerResult,
-        }));
-      }),
+    Object.keys(mutate.getValue()).map((partitionValue) => {
+      const innerResults = extractPartitionToObject(mutate.in(partitionValue), partitions.slice(1));
+      return innerResults.map(innerResult => ({
+        [partitions[0]]: partitionValue,
+        ...innerResult,
+      }));
+    }),
   );
 };
 
@@ -35,7 +35,7 @@ const NewPartitionPropertyValue = mapProps(({ value, onUpdate, name, identity, i
 }))(PropertyValue);
 
 class AddPartition extends React.Component {
-  state = {partition:{}, defaultValue:""};
+  state = { partition: {}, defaultValue: '' };
 
   replaceState(state) {
     this.state = state;
@@ -51,27 +51,32 @@ class AddPartition extends React.Component {
   render() {
     const { partitions, valueType } = this.props;
     const allProperties = ContextService.getProperties();
-    const indexedPartitions = partitions
-      .map(partition => allProperties.find(property => property.id == partition) || { id: partition, name: partition });
+    const indexedPartitions = partitions.map(
+      partition =>
+        allProperties.find(property => property.id == partition) || {
+          id: partition,
+          name: partition,
+        },
+    );
     return (
       <div className={style['new-partition-container']}>
-        {
-          indexedPartitions.map(partition =>
-            <div className={style['new-partition-item-container']} key={partition.id}>
-              <NewPartitionPropertyValue
-                {...partition}
-                value={this.state.partition[partition.id] || ''}
-                onUpdate={value => this.setState({ partition: { ...this.state.partition, [partition.id]: value } })}
-              />
-            </div>)
-        }
+        {indexedPartitions.map(partition => (
+          <div className={style['new-partition-item-container']} key={partition.id}>
+            <NewPartitionPropertyValue
+              {...partition}
+              value={this.state.partition[partition.id] || ''}
+              onUpdate={value =>
+                this.setState({ partition: { ...this.state.partition, [partition.id]: value } })}
+            />
+          </div>
+        ))}
         <InputValue
           value={this.state.defaultValue}
           valueType={valueType}
           onChange={defaultValue => this.setState({ defaultValue })}
           placeholder="Partition's default value"
         />
-        <button className={style['add-partition-button']} onClick={this.addPartition.bind(this)}  />
+        <button className={style['add-partition-button']} onClick={this.addPartition.bind(this)} />
       </div>
     );
   }
@@ -84,14 +89,14 @@ const deletePartitionGroupAlert = {
 
 export default class PartitionsList extends React.Component {
   state = {
-    activeItems: []
+    activeItems: [],
   };
 
   render() {
     const { partitions, mutate, valueType, alerter } = this.props;
 
     const rulesByPartitions = mutate.getValue();
-    if (!rulesByPartitions) return (<div />);
+    if (!rulesByPartitions) return <div />;
 
     let partitionsData = extractPartitionToObject(mutate, partitions);
     partitionsData = partitionsData.map((x, i) => ({
@@ -106,67 +111,79 @@ export default class PartitionsList extends React.Component {
     return (
       <div className={style['partitions-list-container']}>
 
-        {!hasDefaultValue ?
-          <button className={style['add-default-partition-button']} onClick={() => this.addPartition({})}>
-            Add default partition
-          </button> : null
-        }
+        {!hasDefaultValue
+          ? <button
+            className={style['add-default-partition-button']}
+            onClick={() => this.addPartition({})}
+          >
+              Add default partition
+            </button>
+          : null}
 
-        <AddPartition partitions={partitions} handlePartitionAddition={this.addPartition.bind(this)} valueType={valueType} />
+        <AddPartition
+          partitions={partitions}
+          handlePartitionAddition={this.addPartition.bind(this)}
+          valueType={valueType}
+        />
 
         <Accordion
-className={style['partitions-accordion-container']} allowMultiple
+          className={style['partitions-accordion-container']}
+          allowMultiple
           activeItems={this.state.activeItems || []}
           onChange={({ activeItems }) => this.setState({ activeItems })}
         >
-          {
-            partitionsData.map((partitionData) => {
-              const rules = partitionData.mutate.getValue();
-              const isOnlyDefault = rules.length == 1 && Object.keys(rules[0].Matcher).length == 0 && rules[0].Type == 'SingleVariant';
+          {partitionsData.map((partitionData) => {
+            const rules = partitionData.mutate.getValue();
+            const isOnlyDefault =
+              rules.length == 1 &&
+              Object.keys(rules[0].Matcher).length == 0 &&
+              rules[0].Type == 'SingleVariant';
 
-              const partitionGroupName = partitionData.partitionsValues.map(x => x == '*' ? 'Default' : x).join(', ');
-              return (
-                <AccordionItem
-                  title={(
-                    <div className={style['partitions-accordion-container-item-title']}>
-                      <div className={[style['expander-icon']]}>&#xE902;</div>
-                      <h3>{partitionGroupName}</h3>
-                      <div className={style['partitions-accordion-container-item-title-details']}>
-                        {
-                          isOnlyDefault
-                            ? `value: ${  rules[0].Value}`
-                            : `rules: ${  rules.length}`
-                        }
-                      </div>
-                      <div className={style['partitions-accordion-container-item-title-actions']}>
-                        <button
-className={coreStyle['gray-circle-button']} onClick={(e) => {
+            const partitionGroupName = partitionData.partitionsValues
+              .map(x => (x == '*' ? 'Default' : x))
+              .join(', ');
+            return (
+              <AccordionItem
+                title={
+                  <div className={style['partitions-accordion-container-item-title']}>
+                    <div className={[style['expander-icon']]}></div>
+                    <h3>{partitionGroupName}</h3>
+                    <div className={style['partitions-accordion-container-item-title-details']}>
+                      {isOnlyDefault ? `value: ${rules[0].Value}` : `rules: ${rules.length}`}
+                    </div>
+                    <div className={style['partitions-accordion-container-item-title-actions']}>
+                      <button
+                        className={coreStyle['gray-circle-button']}
+                        onClick={(e) => {
                           this.deletePartition(partitionData.partitionsValues);
                           e.stopPropagation();
                         }}
-                        >x</button>
-                      </div>
+                      >
+                        x
+                      </button>
                     </div>
-                  )}
-                  key={partitionGroupName}
-                  className={style['partitions-accordion-container-item']}
-                  titleClassName={style['partitions-accordion-container-item-title']}
-                  expandedClassName={style['partitions-accordion-container-item-expanded']}
-                >
-                  <RulesList {...{ valueType, alerter }} mutate={partitionData.mutate}  />
-                </AccordionItem>
-              );
-            })
-
-          }
+                  </div>
+                }
+                key={partitionGroupName}
+                className={style['partitions-accordion-container-item']}
+                titleClassName={style['partitions-accordion-container-item-title']}
+                expandedClassName={style['partitions-accordion-container-item-expanded']}
+              >
+                <RulesList {...{ valueType, alerter }} mutate={partitionData.mutate} />
+              </AccordionItem>
+            );
+          })}
         </Accordion>
-      </div >);
+      </div>
+    );
   }
 
   addPartition({ partition: newPartition, defaultValue }) {
     console.log({ newPartition, defaultValue });
     const { mutate, partitions } = this.props;
-    const partitionDefaultValue = defaultValue === '' ? [] : [{ 'Type': 'SingleVariant', Matcher: {}, Value: defaultValue }];
+    const partitionDefaultValue = defaultValue === ''
+      ? []
+      : [{ Type: 'SingleVariant', Matcher: {}, Value: defaultValue }];
     mutate.apply((m) => {
       partitions.forEach((partition, i) => {
         const partitionValue = newPartition[partition] || '*';

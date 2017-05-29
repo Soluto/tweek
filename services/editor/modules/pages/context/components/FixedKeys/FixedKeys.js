@@ -13,10 +13,12 @@ function calculateKeys(fixedKeys) {
   }));
 
   if (result.length === 0) {
-    return [{
-      local: { key: '', value: '' },
-      isRemoved: false,
-    }];
+    return [
+      {
+        local: { key: '', value: '' },
+        isRemoved: false,
+      },
+    ];
   }
 
   return result;
@@ -81,10 +83,12 @@ class FixedKeys extends Component {
 
     const existingKeys = keys.filter(x => !x.isRemoved);
 
-    return existingKeys.length === R.uniq(existingKeys.map(k => k.local.key)).length &&
+    return (
+      existingKeys.length === R.uniq(existingKeys.map(k => k.local.key)).length &&
       existingKeys
         .map(x => ({ key: exists(x.local.key), value: exists(x.local.value) }))
-        .every(x => (x.key && x.value) || (!x.key && !x.value));
+        .every(x => (x.key && x.value) || (!x.key && !x.value))
+    );
   }
 
   appendKey() {
@@ -102,13 +106,14 @@ class FixedKeys extends Component {
       <div className={classnames(style['fixed-keys-container'], className)}>
         <div className={style['override-keys-title']}>
           <div>Override Keys</div>
-          <SaveButton onClick={this.onSave.bind(this)} hasChanges={this.canSave} isSaving={isUpdatingContext} />
+          <SaveButton
+            onClick={this.onSave.bind(this)}
+            hasChanges={this.canSave}
+            isSaving={isUpdatingContext}
+          />
         </div>
 
-        <FixedKeysList
-          keys={this.state.keys}
-          onChange={this.onChange.bind(this)}
-        />
+        <FixedKeysList keys={this.state.keys} onChange={this.onChange.bind(this)} />
 
         <button className={style['add-key-button']} onClick={this.appendKey.bind(this)} />
       </div>

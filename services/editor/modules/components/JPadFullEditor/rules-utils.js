@@ -4,7 +4,9 @@ import { KEYS_IDENTITY } from '../../services/context-service';
 export function testAutoPartition(partition, rules, depth) {
   if (depth === 0) {
     const matchers = rules.map(r => r.Matcher[partition]).filter(p => p !== undefined);
-    const isValid = matchers.every(p => typeof p === 'string' || Object.keys(p).every(k => k === '$eq'));
+    const isValid = matchers.every(
+      p => typeof p === 'string' || Object.keys(p).every(k => k === '$eq'),
+    );
     if (!isValid) return { isValid };
 
     const match = matchers.length;
@@ -26,7 +28,8 @@ export function testAutoPartition(partition, rules, depth) {
       };
     },
     { isValid: true, match: 0, default: 0 },
-    Object.keys(rules));
+    Object.keys(rules),
+  );
 }
 
 export function addPartition(partition, rules, depth) {
@@ -43,21 +46,26 @@ export function addPartition(partition, rules, depth) {
     return partitioned;
   }
 
-  return Object.keys(rules).reduce((result, key) => ({
-    ...result,
-    [key]: addPartition(partition, rules[key], depth - 1),
-  }), {});
+  return Object.keys(rules).reduce(
+    (result, key) => ({
+      ...result,
+      [key]: addPartition(partition, rules[key], depth - 1),
+    }),
+    {},
+  );
 }
 
 export function convertToExplicitRules(rules, depth) {
   let fixedRules = rules;
 
   if (typeof rules === 'string') {
-    fixedRules = [{
-      Matcher: {},
-      Value: rules,
-      Type: 'SingleVariant',
-    }];
+    fixedRules = [
+      {
+        Matcher: {},
+        Value: rules,
+        Type: 'SingleVariant',
+      },
+    ];
   }
 
   if (Array.isArray(fixedRules) || depth === 0) {
@@ -67,10 +75,13 @@ export function convertToExplicitRules(rules, depth) {
     return fixedRules;
   }
 
-  return Object.keys(rules).reduce((result, key) => ({
-    ...result,
-    [key]: convertToExplicitRules(rules[key], depth - 1),
-  }), {});
+  return Object.keys(rules).reduce(
+    (result, key) => ({
+      ...result,
+      [key]: convertToExplicitRules(rules[key], depth - 1),
+    }),
+    {},
+  );
 }
 
 export function convertToExplicitKey(key) {
@@ -96,8 +107,10 @@ function calculateDependencies(rules, depth) {
     );
   }
 
-  return R.values(rules)
-    .reduce((result, rule) => result.concat(calculateDependencies(rule, depth - 1)), []);
+  return R.values(rules).reduce(
+    (result, rule) => result.concat(calculateDependencies(rule, depth - 1)),
+    [],
+  );
 }
 
 export function getDependencies(...args) {

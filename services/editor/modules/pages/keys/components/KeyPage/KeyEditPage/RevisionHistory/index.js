@@ -1,1 +1,1 @@
-export default from './RevisionHistory'
+export default from './RevisionHistory';

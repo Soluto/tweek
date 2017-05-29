@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import nconf from 'nconf';
 import fs from 'fs';
-import {promisify} from 'bluebird';
+import { promisify } from 'bluebird';
 
 const jwtSign = promisify(jwt.sign);
 const readFile = promisify(fs.readFile);
@@ -9,7 +9,7 @@ const readFile = promisify(fs.readFile);
 const jwtOptions = {
   algorithm: 'RS256',
   issuer: 'tweek',
-  expiresIn: "5m"
+  expiresIn: '5m',
 };
 
 async function getAuthKey() {

@@ -1,23 +1,31 @@
 import { UKNOWN_AUTHOR } from './unknownAuthor';
 import R from 'ramda';
-import {convertMetaToNewFormat} from '../utils/meta-legacy';
+import { convertMetaToNewFormat } from '../utils/meta-legacy';
 
-let injectAuthor = (fn) => function (req, res, deps, ...rest) {
-  return this::fn(req, res, {
-    author: (req.user && req.user.email && {
-      name: req.user.displayName || req.user.email,
-      email: req.user.email
-    }) || UKNOWN_AUTHOR,
-    ...deps
-  }, ...rest);
-};
+let injectAuthor = fn =>
+  function (req, res, deps, ...rest) {
+    return this::fn(
+      req,
+      res,
+      {
+        author: (req.user &&
+        req.user.email && {
+          name: req.user.displayName || req.user.email,
+          email: req.user.email,
+        }) ||
+          UKNOWN_AUTHOR,
+        ...deps,
+      },
+      ...rest,
+    );
+  };
 
 export async function getKey(req, res, { keysRepository }, { params }) {
   const keyPath = params.splat;
   const revision = req.query.revision;
   try {
     const keyDetails = await keysRepository.getKeyDetails(keyPath, { revision });
-    res.json({...keyDetails, manifest: convertMetaToNewFormat(keyPath, keyDetails)});
+    res.json({ ...keyDetails, manifest: convertMetaToNewFormat(keyPath, keyDetails) });
   } catch (exp) {
     res.sendStatus(404);
   }
@@ -34,7 +42,7 @@ export async function getKeyManifest(req, res, { keysRepository }, { params }) {
   }
 }
 
-export const saveKey = injectAuthor(async function (req, res, { keysRepository, author }, { params }) {
+export const saveKey = injectAuthor(async (req, res, { keysRepository, author }, { params }) => {
   const keyPath = params.splat;
 
   const keyRulesSource = req.body.keyDef.source;
@@ -45,7 +53,7 @@ export const saveKey = injectAuthor(async function (req, res, { keysRepository, 
   res.send('OK');
 });
 
-export const deleteKey = injectAuthor(async function (req, res, { keysRepository, author }, { params }) {
+export const deleteKey = injectAuthor(async (req, res, { keysRepository, author }, { params }) => {
   const keyPath = params.splat;
   await keysRepository.deleteKey(keyPath, author);
   res.send('OK');

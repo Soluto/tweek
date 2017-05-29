@@ -11,7 +11,6 @@ const shims = `
 `;
 
 const Document = React.createClass({
-
   propTypes: {
     styles: arrayOf(node),
     scripts: arrayOf(node),
@@ -26,23 +25,25 @@ const Document = React.createClass({
     return (
       <html>
         <head>
-          <meta charSet="utf-8"/>
-          <link rel="shortcut icon" href={favicon}/>
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i" />
+          <meta charSet="utf-8" />
+          <link rel="shortcut icon" href={favicon} />
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i"
+          />
           <link rel="stylesheet" href="https://unpkg.com/rodal@1.4.1/lib/rodal.css" />
           <title>{title}</title>
           {styles}
         </head>
         <body>
-          <div id="app" dangerouslySetInnerHTML={{ __html: content }}/>
+          <div id="app" dangerouslySetInnerHTML={{ __html: content }} />
           <script dangerouslySetInnerHTML={{ __html: storeScript }} />
-          <script dangerouslySetInnerHTML={{ __html: shims }}/>
+          <script dangerouslySetInnerHTML={{ __html: shims }} />
           {scripts}
         </body>
       </html>
     );
   },
-
 });
 
 export default Document;

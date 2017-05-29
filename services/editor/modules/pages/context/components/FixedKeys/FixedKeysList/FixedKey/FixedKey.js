@@ -29,20 +29,24 @@ const mapValueTypeToProps = (props$) => {
 
   const propsStream = props$.map(({ keyPath, ...props }) => props);
 
-  const valueTypeStream = props$.map(x => x.keyPath)
+  const valueTypeStream = props$
+    .map(x => x.keyPath)
     .distinctUntilChanged()
-    .switchMap(keyPath => Rx.Observable.fromPromise(TypesService.getValueTypeDefinition(keyPath))
-      .map(x => x.name)
-      .startWith(unknownType))
+    .switchMap(keyPath =>
+      Rx.Observable
+        .fromPromise(TypesService.getValueTypeDefinition(keyPath))
+        .map(x => x.name)
+        .startWith(unknownType),
+    )
     .map(valueType => ({ disabled: valueType === unknownType, valueType }));
 
-  return propsStream.combineLatest(valueTypeStream, (props, valueType) => ({ ...props, ...valueType }));
+  return propsStream.combineLatest(valueTypeStream, (props, valueType) => ({
+    ...props,
+    ...valueType,
+  }));
 };
 
-const OverrideValueInput = compose(
-  mapPropsStream(mapValueTypeToProps),
-  pure,
-)(TypedInput);
+const OverrideValueInput = compose(mapPropsStream(mapValueTypeToProps), pure)(TypedInput);
 
 const EditableKey = ({ remote, local, onKeyChange, onValueChange }) => (
   <div className={classNames(style['editable-key-container'], { [style['new-item']]: !remote })}>
@@ -56,14 +60,16 @@ const EditableKey = ({ remote, local, onKeyChange, onValueChange }) => (
     />
     <OverrideValueInput
       keyPath={local.key}
-      className={classNames(style['value-input'], { [style['has-changes']]: remote && remote.value !== local.value })}
+      className={classNames(style['value-input'], {
+        [style['has-changes']]: remote && remote.value !== local.value,
+      })}
       placeholder="Value"
       value={local.value}
       onChange={onValueChange}
     />
-    {
-      remote && remote.value !== local.value ? <div className={style['initial-value']}>{remote.value}</div> : null
-    }
+    {remote && remote.value !== local.value
+      ? <div className={style['initial-value']}>{remote.value}</div>
+      : null}
   </div>
 );
 
@@ -81,15 +87,13 @@ const FixedKey = ({ remote, local, isRemoved, onChange }) => (
       className={style['delete-button']}
       title="Remove key"
     />
-    {
-      isRemoved
-        ? <RemovedKey config={remote} />
-        : <EditableKey
-          {...{ remote, local }}
-          onKeyChange={key => onChange(isRemoved, { ...local, key })}
-          onValueChange={value => onChange(isRemoved, { ...local, value })}
-        />
-        }
+    {isRemoved
+      ? <RemovedKey config={remote} />
+      : <EditableKey
+        {...{ remote, local }}
+        onKeyChange={key => onChange(isRemoved, { ...local, key })}
+        onValueChange={value => onChange(isRemoved, { ...local, value })}
+      />}
   </div>
 );
 
