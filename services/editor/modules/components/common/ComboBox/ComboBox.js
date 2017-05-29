@@ -96,7 +96,9 @@ class ComboBoxComponent extends Component {
         if (suggestions.length > 0) this.onSuggestionSelected(highlightedSuggestion);
         break;
       case keyCode.DOWN:
-        if (highlightedSuggestion < suggestions.length - 1) { onSuggestionHighlighted(highlightedSuggestion + 1); } else onSuggestionHighlighted(-1);
+        if (highlightedSuggestion < suggestions.length - 1) {
+          onSuggestionHighlighted(highlightedSuggestion + 1);
+        } else onSuggestionHighlighted(-1);
         e.preventDefault();
         break;
       case keyCode.UP:
@@ -232,7 +234,9 @@ const ComboBox = compose(
             !showValueInOptions &&
             filteredSuggestions.length === 1 &&
             getCaseLabel(filteredSuggestions[0]) === createCase(matchCase, value)
-          ) { return []; }
+          ) {
+            return [];
+          }
           if (suggestionsLimit > 0) {
             return filteredSuggestions.slice(0, suggestionsLimit);
           }

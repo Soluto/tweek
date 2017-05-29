@@ -22,14 +22,10 @@ const nconf = require('nconf');
 const azureADAuthProvider = require('./server/auth/azuread');
 const crypto = require('crypto');
 
-nconf
-  .argv()
-  .env()
-  .file({ file: `${process.cwd()}/config.json` })
-  .defaults({
-    GIT_CLONE_TIMEOUT_IN_MINUTES: 1,
-    TWEEK_API_HOSTNAME: 'https://api.playground.tweek.host',
-  });
+nconf.argv().env().file({ file: `${process.cwd()}/config.json` }).defaults({
+  GIT_CLONE_TIMEOUT_IN_MINUTES: 1,
+  TWEEK_API_HOSTNAME: 'https://api.playground.tweek.host',
+});
 nconf.required(['GIT_URL', 'GIT_USER']);
 const gitCloneTimeoutInMinutes = nconf.get('GIT_CLONE_TIMEOUT_IN_MINUTES');
 const tweekApiHostname = nconf.get('TWEEK_API_HOSTNAME');

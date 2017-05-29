@@ -255,7 +255,8 @@ const handleKeyNameChange = ({ local: { key, ...localData }, ...otherState }, { 
   },
 });
 
-const isStateInvalid = validationState => Object.keys(validationState)
+const isStateInvalid = validationState =>
+  Object.keys(validationState)
     .map(x => validationState[x])
     .filter(x => typeof x === 'object')
     .some(x => x.isValid === false || isStateInvalid(x));
