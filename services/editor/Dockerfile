@@ -7,7 +7,7 @@ WORKDIR /tmp
 RUN npm install --only=production
 
 # ---- Build ----
-FROM node:6.10.3-slim AS build
+FROM node:6.10.3 AS build
 
 COPY package.json yarn.lock /tmp/
 WORKDIR /tmp
