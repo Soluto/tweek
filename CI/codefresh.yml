@@ -175,3 +175,12 @@ steps:
         only:
           - master
     candidate: ${{BuildingEditor}}
+
+  PushGitRepositoryMaster:
+    type: push
+    title: Push Git Repository - latest
+    when:
+      branch:
+        only:
+          - master
+    candidate: ${{BuildingGitRepository}}
