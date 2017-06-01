@@ -51,13 +51,14 @@ function PropertyValueComponent({
 
   if (allowedValues.length > 0) {
     allowedValues = allowedValues.map(x => ({ label: changeCase.pascalCase(x), value: x }));
+    const selected = allowedValues.find(x => x.value === value);
     return (
       <ComboBox
         suggestions={allowedValues}
         placeholder={placeholder}
         className={style['property-value-combo-box']}
         onChange={(_, selectedValue) => selectedValue && onUpdate(selectedValue.value)}
-        value={allowedValues.find(x => x.value === value)}
+        value={selected ? selected.label : value.toString()}
       />
     );
   }

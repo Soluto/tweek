@@ -14,6 +14,7 @@ class SearchBox extends Component {
     this.state = {
       identityName: '',
       identityId: '',
+      inputValue: '',
       identities: [],
     };
   }
@@ -27,24 +28,24 @@ class SearchBox extends Component {
     this.setState(nextProps);
   }
 
-  onIdentityChange(input, selected) {
-    const identityName = selected ? selected.value : input;
-    this.setState({ identityName });
-  }
+  onIdentityChange = (inputValue, selected) => {
+    const identityName = selected ? selected.value : inputValue;
+    this.setState({ inputValue, identityName });
+  };
 
-  onIdentityIdChange(identityId) {
+  onIdentityIdChange = (identityId) => {
     this.setState({ identityId });
-  }
+  };
 
-  onGetClick() {
+  onGetClick = () => {
     this.props.openContext({
       identityName: this.state.identityName,
       identityId: this.state.identityId,
     });
-  }
+  };
 
   render() {
-    const { identityName, identities, identityId } = this.state;
+    const { inputValue, identityName, identities, identityId } = this.state;
     const identityText = identityName || 'identity';
 
     return (
@@ -54,17 +55,17 @@ class SearchBox extends Component {
           <ComboBox
             className={style['context-type']}
             placeholder="Enter Identity Type"
-            value={identities.find(x => x.value === identityName)}
+            value={inputValue}
             suggestions={identities}
-            onChange={this.onIdentityChange.bind(this)}
+            onChange={this.onIdentityChange}
           />
         </div>
 
         <div className={style['context-id-container']}>
           <Input
             placeholder={`Enter ${changeCase.pascalCase(identityText)} Id`}
-            onEnterKeyPress={() => this.onGetClick()}
-            onChange={value => this.onIdentityIdChange(value)}
+            onEnterKeyPress={this.onGetClick}
+            onChange={this.onIdentityIdChange}
             value={this.state.identityId}
           />
         </div>
@@ -72,7 +73,7 @@ class SearchBox extends Component {
         <div className={style['search-button-container']}>
           <button
             className={style['search-button']}
-            onClick={this.onGetClick.bind(this)}
+            onClick={this.onGetClick}
             disabled={!identityName || !identityId}
           />
         </div>

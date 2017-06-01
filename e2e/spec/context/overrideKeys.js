@@ -43,7 +43,9 @@ describe('override keys', () => {
     };
 
     browser.click(contextSelectors.keyDeleteButton(typedKey));
-    browser.setValue(contextSelectors.keyValueInput('some/key'), 'newValue');
+    const inputSelector = contextSelectors.keyValueInput('some/key');
+    browser.waitForEnabled(inputSelector, 5000);
+    browser.setValue(inputSelector, 'newValue');
     browser.click(contextSelectors.ADD_KEY_BUTTON);
     contextPageObject.addOverrideKey('some/new/key', 'anotherValue');
 
