@@ -1,11 +1,11 @@
 import React from 'react';
 import classNames from 'classnames';
-import DirectoryTreeView from './DirectoryTreeView';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { Observable } from 'rxjs/Rx';
 import { componentFromStream, createEventHandler } from 'recompose';
-
+import * as SearchService from '../../../../services/search-service';
+import DirectoryTreeView from './DirectoryTreeView';
 import style from './KeysList.css';
 
 function KeysFilter({ onFilterChange }) {
@@ -42,7 +42,7 @@ const KeysList = componentFromStream((prop$) => {
   const textFilter$ = filter$.debounceTime(500).startWith('');
 
   return Observable.combineLatest(textFilter$, keyList$).map(([filter, keys]) => {
-    let filteredKeys = keys.filter(key => key.toLowerCase().includes(filter.toLowerCase()));
+    const filteredKeys = filter === '' ? keys : SearchService.search(filter);
 
     return (
       <div className={style['keys-list-container']}>
