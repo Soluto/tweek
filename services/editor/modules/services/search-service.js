@@ -16,18 +16,12 @@ export async function refreshIndex() {
 const searchIndex = field => function (query) {
   if (!index || query === undefined || query.length === 0) return [];
 
-  const separatedQuery = query.split(' ')
-    .filter(x => x !== '')
-    .map((word) => {
-      if (separator.test(word)) {
-        const fixedWord = word.split(separator).filter(x => x !== '').join('*');
-        return `${fixedWord}~1 ${fixedWord}*`;
-      }
-      return `${word}~1 *${word}*`;
-    })
-    .join(' ');
+  const searchResults = query.split(separator)
+    .filter(s => s !== '')
+    .map(s => `${s} *${s}~1 *${s}*`)
+    .map(s => index.search(field ? `${field}:${s}` : s))
+    .reduce((acc, results) => R.intersectionWith(R.eqBy(R.prop('ref')), acc, results));
 
-  const searchResults = index.search(field ? `${field}:${separatedQuery}` : separatedQuery);
   return R.sort(byScore, searchResults).map(R.prop('ref'));
 };
 

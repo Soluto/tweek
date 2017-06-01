@@ -9,6 +9,8 @@ import path from 'path';
 const globAsync = promisify(glob);
 const readFile = _.wrapCallback(fs.readFile);
 
+const separator = /(?:[_/]|\s)/;
+
 let index;
 
 async function refreshIndex(repoDir) {
@@ -30,6 +32,8 @@ async function refreshIndex(repoDir) {
     .toPromise();
 
   index = lunr(function () {
+    this.tokenizer.separator = separator;
+    this.pipeline.remove(lunr.stopWordFilter);
     this.ref('id');
     this.field('id');
     this.field('description');
