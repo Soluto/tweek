@@ -31,7 +31,7 @@ export default compose(
                 renderItem={IdentityTypesItem}
                 expandByDefault={true} />
           </div>
-          <div key="Page">
+          <div style={{display:"flex", flexGrow:1}} key="Page">
             {children}
           </div>
         </div>

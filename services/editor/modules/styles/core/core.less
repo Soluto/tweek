@@ -1,9 +1,20 @@
   @import (reference) "./accents.less";
+
   .user-select(@user-select: none) {
     -moz-user-select: @user-select;
     -ms-user-select: @user-select;
     -webkit-user-select: @user-select;
     user-select: @user-select;
+  }
+
+  .panel {
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid lightgray;
+    padding: 15px;
+    box-sizing: content-box;
+    margin: 20px;
+    display: block;
   }
   
   .transitioned(@duration :.2s) {
