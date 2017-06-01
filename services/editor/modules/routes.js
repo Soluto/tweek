@@ -25,7 +25,7 @@ export default serverRoutes => (
         <Route path="*" component={KeyPage} />
       </Route>
       <Route path="schema" component={SchemaPage} >
-        <Route path=":identityType" component={IdentityPage} />
+        <Route path="identities/:identityType" component={IdentityPage} />
       </Route>
       <Route path="context" component={ContextPage} >
         <Route path=":identityName/:identityId" component={IdentityDetails} />

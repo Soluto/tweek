@@ -4,17 +4,32 @@
   flex-grow: 1;
   background-color: #eee;
   .side-menu{
-    background:#414b53;
-  }
-  
-  .identity-types-list {
+    color: #d8d8d8;
+    font-size: 16px;
+    text-decoration: none;
     display: flex;
     flex-basis: 400px;
     flex-direction: column;
-    background-color: #414b53;
-    .identity-types-list-wrapper {
-      display: flex;
-      flex-grow: 1;
+    background:#414b53;
+    ul{
+       display: flex;
+       padding-left: 20px;
+       flex-direction: column;
+       margin-top: 10px;
+    }
+    li {
+        > div{
+          padding: 10px;
+          background-color: #333b41;
+        }
+        flex-direction: column;
+        background:#414b53;
+        display: flex;
+        a{
+          font-size: 16px;
+          color: #d8d8d8;
+          text-decoration: none;
+        }
     }
   }
 }

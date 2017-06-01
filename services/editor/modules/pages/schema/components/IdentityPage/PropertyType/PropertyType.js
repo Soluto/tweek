@@ -11,7 +11,7 @@ const PropertyTypeName = ({ name }) => (
 
 const PropertyTypeSelector = ({ type }) => {
   const suggestions = [...Object.keys(TypesServices.types), 'custom'];
-  return <ComboBox value={type} valueType="string" suggestions={suggestions} />;
+  return <ComboBox value={type} filterBy={() => true} valueType="string" suggestions={suggestions} />;
 };
 
 const PropertyType = ({ property }) => (
