@@ -1,14 +1,16 @@
-@import (reference) "../../../../../../../../../styles/core/core.less";
-@import (reference) "../../../../../../../../../styles/core/comboBox.less";
-@import (reference) "../../../../../../../../../styles/core/tags.less";
+@import (reference) "../../../../../styles/core/core.less";
+@import (reference) "../../../../../styles/core/comboBox.less";
+@import (reference) "../../../../../styles/core/tags.less";
 @import (reference) "./icons.less";
 .matcher-operator {
   margin: 0 5px;
   display: inline-block;
   @width: 80px;
   .combo-box-basic(@width, @width);
-  :global(.bootstrap-typeahead-input-main) {
-    text-align: center;
+  :global(.bootstrap-typeahead-input) {
+    input {
+      text-align: center;
+    }
   }
 }
 
