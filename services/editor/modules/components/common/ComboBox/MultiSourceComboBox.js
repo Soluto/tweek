@@ -18,9 +18,9 @@ const SourceTitle = ({ id, selectSourceId, sourceId }) => (
 const MultiSourceComboBox = ({ getSuggestions, sourceId, selectSourceId, ...props }) => (
   <AutoSuggest
     getSuggestions={(...args) =>
-      getSuggestions[sourceId]
+      (getSuggestions[sourceId]
         ? getSuggestions[sourceId](...args)
-        : R.pipe(R.values, R.chain(x => x(...args)))(getSuggestions)}
+        : R.pipe(R.values, R.chain(x => x(...args)))(getSuggestions))}
     suggestionsContainer={({ children }) => (
       <div className={style['multi-source-combo-box-suggestions']}>
         <div className={style['source-select']}>

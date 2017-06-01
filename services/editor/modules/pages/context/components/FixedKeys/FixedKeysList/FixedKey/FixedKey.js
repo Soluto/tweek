@@ -25,20 +25,19 @@ RemovedKey.propTypes = {
 };
 
 const mapValueTypeToProps = (props$) => {
-  const unknownType = 'unknown';
-
   const propsStream = props$.map(({ keyPath, ...props }) => props);
 
   const valueTypeStream = props$
     .map(x => x.keyPath)
+    .debounceTime(500)
     .distinctUntilChanged()
     .switchMap(keyPath =>
       Rx.Observable
         .fromPromise(TypesService.getValueTypeDefinition(keyPath))
-        .map(x => x.name)
-        .startWith(unknownType),
+        .map(x => x.name),
     )
-    .map(valueType => ({ disabled: valueType === unknownType, valueType }));
+    .map(valueType => ({ disabled: false, valueType }))
+    .startWith({ disabled: true, valueType: 'unknown' });
 
   return propsStream.combineLatest(valueTypeStream, (props, valueType) => ({
     ...props,

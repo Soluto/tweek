@@ -74,13 +74,13 @@ Suggestions.propTypes = {
 
 Suggestions.defaultProps = {
   suggestionsContainer: ({ children, ...props }) => (
-    <ul
+    <div style={{ display: 'flex', position: 'relative' }}><ul
       {...props}
       className="bootstrap-typeahead-menu dropdown-menu dropdown-menu-justify"
       style={{ display: 'block', overflow: 'auto', maxHeight: '300px' }}
     >
       {children}
-    </ul>
+    </ul></div>
   ),
 };
 

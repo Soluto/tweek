@@ -182,30 +182,13 @@ const ComboBox = compose(
 
     const value$ = Rx.Observable
       .merge(
-        props$
-          .map(({ value, getLabel }) => ({ input: getLabel(value), selected: value }))
-          .distinctUntilChanged(R.equals)
-          .map(x => ({ ...x, from: 'props' })),
-        onInputChanged$.distinctUntilChanged(R.equals).map(x => ({ ...x, from: 'state' })),
-      )
-      .scan((prev, current) => {
-        if (
-          current.input === '' &&
-          current.selected === undefined &&
-          prev.selected === undefined &&
-          current.from === 'props' &&
-          prev.from === 'state'
-        ) {
-          return prev;
-        }
-        return current;
-      })
-      .map(R.omit(['from']))
-      .distinctUntilChanged(R.equals);
+        props$.map(R.prop('value')).distinctUntilChanged(),
+        onInputChanged$,
+      );
 
     const propsWithValue$ = Rx.Observable
       .combineLatest(props$, value$)
-      .map(([props, { input: value }]) => ({ ...props, value }))
+      .map(([props, value]) => ({ ...props, value }))
       .share();
 
     const suggestions$ = propsWithValue$
@@ -265,7 +248,7 @@ const ComboBox = compose(
         suggestions,
         highlightedSuggestion,
         onChange: (input, selected) => {
-          onInputChanged({ input, selected });
+          onInputChanged(input);
           onChange && onChange(input, selected);
         },
         onSuggestionHighlighted: index => onHighlighted({ index, suggestion: suggestions[index] }),
@@ -276,7 +259,7 @@ const ComboBox = compose(
 )(ComboBoxComponent);
 
 ComboBox.propTypes = {
-  value: PropTypes.any,
+  value: PropTypes.string,
   suggestions: PropTypes.array.isRequired,
   onChange: PropTypes.func,
   filterBy: PropTypes.func,
@@ -291,6 +274,7 @@ ComboBox.propTypes = {
 };
 
 ComboBox.defaultProps = {
+  value: '',
   autofocus: false,
   showValueInOptions: false,
   matchCase: false,
