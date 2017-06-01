@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { withContext, getContext } from 'recompose';
+import { withContext, getContext, compose, mapProps } from 'recompose';
 import changeCase from 'change-case';
 import Input from './Input';
 import ComboBox from '../ComboBox/ComboBox';
@@ -15,24 +15,22 @@ const getTypesService = getContext(typesServiceContextType);
 
 const valueToItem = value => (value === undefined || value === '' ? undefined : ({ label: changeCase.pascalCase(value), value }));
 
-const TypedInput = ({ safeConvertValue, types, valueType, value, onChange, ...props }) => {
-  const typeDefinition = types[valueType];
-  const allowedValues = typeDefinition && typeDefinition.allowedValues;
-  const onChangeConvert = newValue => onChange && onChange(safeConvertValue(newValue, valueType));
+const TypedInput = ({ types, valueType, value, onChange, ...props }) => {
+  const allowedValues = valueType && valueType.allowedValues;
   if (allowedValues && allowedValues.length > 0) {
     return (<ComboBox
       {...props}
       value={valueToItem(value)}
       suggestions={allowedValues.map(valueToItem)}
-      onChange={(input, selected) => onChangeConvert(selected && (selected.value === undefined ? selected : selected.value))}
+      onChange={(input, selected) => onChange(selected && (selected.value === undefined ? selected : selected.value))}
     />);
   }
-  return <Input {...props} onChange={onChangeConvert} value={value} />;
+  return <Input {...props} onChange={onChange} value={value} />;
 };
 
 TypedInput.propTypes = {
   placeholder: PropTypes.string,
-  valueType: PropTypes.string.isRequired,
+  valueType: PropTypes.object.isRequired,
   onChange: PropTypes.func,
   value: PropTypes.any,
 };
@@ -43,4 +41,9 @@ TypedInput.defaultProps = {
   onChange: undefined,
 };
 
-export default getTypesService(TypedInput);
+export default compose(getTypesService,
+mapProps(({ safeConvertValue, types, onChange, valueType, ...props }) => ({
+  valueType: types[valueType],
+  onChange: newValue => onChange && onChange(safeConvertValue(newValue, valueType)),
+  ...props,
+})))(TypedInput);

@@ -1,29 +1,24 @@
 import React from 'react';
 import style from './PropertyType.css';
+import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
+import * as TypesServices from '../../../../../services/types-service';
 
-const PropertyTypeName = ({name}) => {
-  return (
-    <span className={style['property-type-name-label']}>
-      {name}
-    </span>
+const PropertyTypeName = ({ name }) => (
+  <span className={style['property-type-name-label']}>
+    {name}
+  </span>
   );
+
+const PropertyTypeSelector = ({ type }) => {
+  const suggestions = [...Object.keys(TypesServices.types), 'custom'];
+  return <ComboBox value={type} valueType="string" suggestions={suggestions} />;
 };
 
-const PropertyTypeSelector = ({type}) => {
-  return (
-    <div className={style['property-type-label']}>
-      {type}
-    </div>
+const PropertyType = ({ property }) => (
+  <div className={style['property-type-wrapper']}>
+    <PropertyTypeName name={property.name} />
+    <PropertyTypeSelector type={property.type} />
+  </div>
   );
-};
-
-const PropertyType = ({property}) => {
-  return (
-    <div className={style['property-type-wrapper']}>
-      <PropertyTypeName name={property.name} />
-      <PropertyTypeSelector type={property.type} />
-    </div>
-  );
-};
 
 export default PropertyType;
