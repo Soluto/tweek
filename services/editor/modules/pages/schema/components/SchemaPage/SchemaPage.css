@@ -4,15 +4,31 @@
   background-color: #eee;
 }
 .schema-page-container .side-menu {
-  background: #414b53;
-}
-.schema-page-container .identity-types-list {
+  color: #d8d8d8;
+  font-size: 16px;
+  text-decoration: none;
   display: flex;
   flex-basis: 400px;
   flex-direction: column;
-  background-color: #414b53;
+  background: #414b53;
 }
-.schema-page-container .identity-types-list .identity-types-list-wrapper {
+.schema-page-container .side-menu ul {
   display: flex;
-  flex-grow: 1;
+  padding-left: 20px;
+  flex-direction: column;
+  margin-top: 10px;
+}
+.schema-page-container .side-menu li {
+  flex-direction: column;
+  background: #414b53;
+  display: flex;
+}
+.schema-page-container .side-menu li > div {
+  padding: 10px;
+  background-color: #333b41;
+}
+.schema-page-container .side-menu li a {
+  font-size: 16px;
+  color: #d8d8d8;
+  text-decoration: none;
 }
