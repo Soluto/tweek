@@ -14,7 +14,7 @@ const PropertyTypeSelector = ({ type }) => {
   return <ComboBox value={type} filterBy={() => true} valueType="string" suggestions={suggestions} />;
 };
 
-const PropertyType = ({ property }) => (
+const PropertyType = ({ property, onUpdate }) => (
   <div className={style['property-type-wrapper']}>
     <PropertyTypeName name={property.name} />
     <PropertyTypeSelector type={property.type} />
