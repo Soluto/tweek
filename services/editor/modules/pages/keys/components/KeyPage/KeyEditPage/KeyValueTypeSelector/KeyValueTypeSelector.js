@@ -23,21 +23,21 @@ const KeyValueTypeSelector = compose(
     }),
     { updateKeyValueType },
   ),
-)((props) => {
+)(({ value, validation: { isShowingHint, hint }, updateKeyValueType: onChange }) => {
   const suggestions = getValueTypeSuggestions();
   return (
     <div className={style['key-value-type-selector-container']}>
       <label className={style['key-value-type-label']}>Key value type:</label>
       <div
         className={style['key-value-type-selector-wrapper']}
-        data-with-error={props.validation.isShowingHint}
+        data-with-error={isShowingHint}
       >
         <div
           className={style['validation-icon-wrapper']}
-          data-is-shown={props.validation.isShowingHint}
+          data-is-shown={isShowingHint}
         >
           <img
-            data-tip={props.validation.hint}
+            data-tip={hint}
             className={style['validation-icon']}
             src={alertIconSrc}
           />
@@ -45,11 +45,11 @@ const KeyValueTypeSelector = compose(
         <ComboBox
           suggestions={suggestions}
           placeholder="Select type"
-          onChange={(_, item) => item && props.updateKeyValueType(item.value)}
-          selected={props.value}
+          onChange={(_, item) => item && onChange(item.value)}
+          value={changeCase.titleCase(value)}
         />
         <ReactTooltip
-          disable={!props.validation.isShowingHint}
+          disable={!isShowingHint}
           effect="solid"
           place="top"
           delayHide={500}

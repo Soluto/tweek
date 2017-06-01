@@ -104,6 +104,11 @@ const PropertySuggestion = ({ suggestion, textToMark }) => {
   );
 };
 
+const getProperty = (suggestedValues, property) => {
+  const result = suggestedValues.find(x => x.value === property);
+  return result ? result.label : property;
+};
+
 export default ({ property, suggestedValues, onPropertyChange, autofocus }) => (
   <MultiSourceComboBox
     getSuggestions={{
@@ -118,7 +123,7 @@ export default ({ property, suggestedValues, onPropertyChange, autofocus }) => (
         }));
       },
     }}
-    value={suggestedValues.find(x => x.value === property)}
+    value={getProperty(suggestedValues, property)}
     onChange={(input, selected) => {
       if (selected) onPropertyChange(selected);
       else if (input.startsWith('@@key:') || input.startsWith(ContextService.KEYS_IDENTITY)) {

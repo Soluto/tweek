@@ -505,7 +505,7 @@
 .matcher-operator :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) span {
   display: none;
 }
-.matcher-operator :global(.bootstrap-typeahead-input-main) {
+.matcher-operator :global(.bootstrap-typeahead-input) input {
   text-align: center;
 }
 .property-value-wrapper {
