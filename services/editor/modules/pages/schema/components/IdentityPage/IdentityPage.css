@@ -563,6 +563,9 @@
   border: 1px solid lightgray;
   border-collapse: collapse;
 }
+.identity-page *[data-comp=save-button] {
+  float: right;
+}
 .property-types-list .empty-property-types-list-label {
   color: #d0d0d0;
   font-style: italic;
