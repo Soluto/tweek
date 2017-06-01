@@ -16,6 +16,13 @@ export async function refreshIndex() {
 export function suggestions(query) {
   if (!index || query === undefined || query.length === 0) return [];
   const separatedQuery = query.split(separator).join(' ');
-  const searchResults = index.search(`id:${separatedQuery}*`);
+  const searchResults = index.search(`id:${separatedQuery}*~1`);
+  return R.sort(byScore, searchResults).map(R.prop('ref'));
+}
+
+export function search(query) {
+  if (!index || query === undefined || query.length === 0) return [];
+  const separatedQuery = query.split(separator).map(s => `*${s}*~1`).join(' ');
+  const searchResults = index.search(separatedQuery);
   return R.sort(byScore, searchResults).map(R.prop('ref'));
 }
