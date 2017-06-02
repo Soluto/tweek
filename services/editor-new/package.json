@@ -1,0 +1,39 @@
+{
+  "name": "editor",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "express": "^4.15.3",
+    "nconf": "^0.8.4",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-latest": "^6.24.1",
+    "concurrently": "^3.4.0",
+    "nodemon": "^1.11.0",
+    "react-scripts": "1.0.7"
+  },
+  "scripts": {
+    "start:client": "react-scripts start",
+    "start:server": "nodemon server/index.js --exec babel-node",
+    "start": "concurrently --kill-others \"yarn run start:client\" \"yarn run start:server\"",
+    "build:client": "react-scripts build",
+    "build:server": "babel server --out-dir dist",
+    "build": "yarn run build:client && yarn run build:server",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "proxy": {
+    "/api": {
+      "target": "http://localhost:3001",
+      "secure": false
+    }
+  },
+  "babel": {
+    "presets": [
+      "latest"
+    ]
+  }
+}
