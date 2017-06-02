@@ -25,7 +25,7 @@ services:
      
   tweek-editor:
     image: soluto/tweek-back-office
-    build: ../../services/editor
+    build: ../../services/editor-new
     depends_on: 
       - tweek-api
     environment:

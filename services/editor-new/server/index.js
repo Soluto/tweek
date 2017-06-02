@@ -1,21 +1,118 @@
 import express from 'express';
 import path from 'path';
 import nconf from 'nconf';
+import session from 'express-session';
+import Promise from 'bluebird';
+import serverRoutes from './serverRoutes';
+import GitRepository from './repositories/git-repository';
+import Transactor from './utils/transactor';
+import KeysRepository from './repositories/keys-repository';
+import TagsRepository from './repositories/tags-repository';
+import GitContinuousUpdater from './repositories/git-continuous-updater';
+import searchIndex from './searchIndex';
 
-nconf.argv().env().defaults({ PORT: '3001'});
+const passport = require('passport');
+const azureADAuthProvider = require('./auth/azuread');
+const crypto = require('crypto');
+
+nconf.argv().env().defaults({
+    PORT: 3001,
+    GIT_CLONE_TIMEOUT_IN_MINUTES: 1,
+    TWEEK_API_HOSTNAME: 'https://api.playground.tweek.host',
+});
+nconf.required(['GIT_URL', 'GIT_USER']);
 
 const PORT = nconf.get('PORT');
+const gitCloneTimeoutInMinutes = nconf.get('GIT_CLONE_TIMEOUT_IN_MINUTES');
+const tweekApiHostname = nconf.get('TWEEK_API_HOSTNAME');
 
-const app = express();
+const toFullPath = x => path.normalize(path.isAbsolute(x) ? x : `${process.cwd()}/${x}`);
 
-app.use(express.static(path.join(__dirname, 'build')));
+const gitRepostoryConfig = {
+    url: nconf.get('GIT_URL'),
+    username: nconf.get('GIT_USER'),
+    password: nconf.get('GIT_PASSWORD'),
+    localPath: `${process.cwd()}/rulesRepository`,
+    publicKey: toFullPath(nconf.get('GIT_PUBLIC_KEY_PATH') || ''),
+    privateKey: toFullPath(nconf.get('GIT_PRIVATE_KEY_PATH') || ''),
+};
 
-app.use("/api", (req, res) => {
-   res.send("sup yo yo");
-});
+const gitRepoCreationPromise = GitRepository.create(gitRepostoryConfig);
+const gitRepoCreationPromiseWithTimeout = new Promise((resolve) => {
+    gitRepoCreationPromise.then(() => resolve());
+})
+    .timeout(gitCloneTimeoutInMinutes * 60 * 1000)
+    .catch(Promise.TimeoutError, () => {
+        throw `git repository clonning timeout after ${gitCloneTimeoutInMinutes} minutes`;
+    });
 
-app.get('/*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
+const gitTransactionManager = new Transactor(gitRepoCreationPromise, gitRepo => gitRepo.reset());
+const keysRepository = new KeysRepository(gitTransactionManager);
+const tagsRepository = new TagsRepository(gitTransactionManager);
 
-const server = app.listen(PORT, () => console.log('Listening on port %d', server.address().port));
+GitContinuousUpdater.onUpdate(gitTransactionManager)
+    .exhaustMap(_ => searchIndex.refreshIndex(gitRepostoryConfig.localPath))
+    .subscribe();
+
+function addDirectoryTraversalProtection(server) {
+    const DANGEROUS_PATH_PATTERN = /(?:^|[\\/])\.\.(?:[\\/]|$)/;
+    server.use('*', (req, res, next) => {
+        if (req.path.includes('\0') || DANGEROUS_PATH_PATTERN.test(req.path)) {
+            return res.status(400).send({ error: 'Dangerous path' });
+        }
+        return next();
+    });
+}
+
+function addAuthSupport(server) {
+    server.use(passport.initialize());
+    server.use(passport.session());
+
+    const authProviders = [azureADAuthProvider(server, nconf)];
+    server.use('/login', (req, res) => {
+        res.send(authProviders.map(x => `<a href="${x.url}">login with ${x.name}</a>`).join(''));
+    });
+
+    server.use('*', (req, res, next) => {
+        if (req.isAuthenticated() || req.path.startsWith('auth')) {
+            return next();
+        }
+        if (req.originalUrl.startsWith('/api/')) {
+            return res.sendStatus(403);
+        }
+        return res.redirect('/login');
+    });
+}
+
+const startServer = () => {
+    const app = express();
+
+    addDirectoryTraversalProtection(app);
+    const cookieOptions = {
+        secret: nconf.get('SESSION_COOKIE_SECRET_KEY') || crypto.randomBytes(20).toString('base64'),
+        cookie: { httpOnly: true },
+    };
+    app.use(session(cookieOptions));
+    if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true') {
+        addAuthSupport(app);
+    }
+
+    app.use('/api', serverRoutes({ tagsRepository, keysRepository, tweekApiHostname }));
+
+    app.use(express.static(path.join(__dirname, 'build')));
+    app.get('/*', (req, res) => {
+        res.sendFile(path.join(__dirname, 'build', 'index.html'));
+    });
+
+    const server = app.listen(PORT, () => console.log('Listening on port %d', server.address().port));
+};
+
+gitRepoCreationPromiseWithTimeout
+    .then(() => console.log('indexing keys...'))
+    .then(() => searchIndex.refreshIndex(gitRepostoryConfig.localPath))
+    .then(() => console.log('starting tweek server'))
+    .then(() => startServer())
+    .catch((reason) => {
+        console.error(reason);
+        // process.exit();
+    });

@@ -12,7 +12,7 @@ class App extends Component {
     }
 
     onClick = () => {
-        fetch('/api').then(result => result.text()).then(request => this.setState({ request }));
+        fetch('/api/types').then(result => result.json()).then(request => this.setState({ request }));
     };
 
   render() {
@@ -26,7 +26,7 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
           <button onClick={this.onClick}>Click ME!</button>
-          <p>{this.state.request}</p>
+          <p>{JSON.stringify(this.state.request)}</p>
       </div>
     );
   }
