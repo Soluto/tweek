@@ -11,28 +11,26 @@ import KeyEditPage from './KeyEditPage/KeyEditPage';
 const diff = require('deep-diff').diff;
 
 const onRouteLeaveConfirmFunc = (props) => {
-  if (!props.selectedKey || props.selectedKey.isSaving) return;
+  if (!props.selectedKey || props.selectedKey.isSaving) return false;
 
   const { local, remote } = props.selectedKey;
   const changes = diff(local, remote);
   const hasChanges = (changes || []).length > 0;
 
-  if (hasChanges) {
-    return 'You have unsaved changes, are you sure you want to leave this page?';
-  }
+  return hasChanges;
 };
 
 const keyPageComp = compose(
   connect(
-    (state, { params, location }) => ({
+    (state, { match: { params }, history: { location: { query = { } } } }) => ({
       selectedKey: state.selectedKey,
       configKey: params.splat,
       isInAddMode: params.splat === BLANK_KEY_NAME,
-      revision: location.query.revision,
+      revision: query.revision,
     }),
     { ...selectedKeyActions, ...alertActions },
   ),
-  routeLeaveHook(onRouteLeaveConfirmFunc),
+  routeLeaveHook(onRouteLeaveConfirmFunc, 'You have unsaved changes, are you sure you want to leave this page?'),
   lifecycle({
     componentDidMount() {
       const { configKey, selectedKey, openKey, revision } = this.props;
