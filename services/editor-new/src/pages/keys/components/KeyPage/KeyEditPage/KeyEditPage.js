@@ -235,7 +235,7 @@ const KeyFullHeader = (props) => {
               />
             </div>
 
-            <div className={'tags-wrapper'}>
+            <div className={'key-tags-wrapper'}>
               <KeyTags
                 onTagsChanged={newTags => onTagsChanged(newTags)}
                 tags={keyManifest.meta.tags || []}

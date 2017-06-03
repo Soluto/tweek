@@ -8,6 +8,7 @@ import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefi
 import routeLeaveHook from '../../../../hoc/route-leave-hook';
 import MessageKeyPage from './MessageKeyPage/MessageKeyPage';
 import KeyEditPage from './KeyEditPage/KeyEditPage';
+import './KeyPage.css'
 
 const onRouteLeaveConfirmFunc = (props) => {
   if (!props.selectedKey || props.selectedKey.isSaving) return false;
@@ -29,7 +30,7 @@ const keyPageComp = compose(
     },
     { ...selectedKeyActions, ...alertActions },
   ),
-  routeLeaveHook(onRouteLeaveConfirmFunc, 'You have unsaved changes, are you sure you want to leave this page?'),
+  routeLeaveHook(onRouteLeaveConfirmFunc, 'You have unsaved changes, are you sure you want to leave this page?', { className: 'key-page-wrapper'}),
   lifecycle({
     componentDidMount() {
       const { configKey, selectedKey, openKey, revision } = this.props;

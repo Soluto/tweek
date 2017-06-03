@@ -10,13 +10,10 @@
     .key-value-type-selector-wrapper {
       .combo-box-basic(100px, 100px);
       .override-typeahead(@text-padding) {
-        :global(.bootstrap-typeahead-input) {
+        .bootstrap-typeahead-input-container {
           display: flex;
           flex-grow: 1;
-          :global(.bootstrap-typeahead-input-main) {
-            padding-left: @text-padding;
-          }
-          :global(.bootstrap-typeahead-input-hint) {
+          .bootstrap-typeahead-input {
             padding-left: @text-padding;
           }
         }

@@ -7,11 +7,10 @@ import KeyPage from './pages/keys/components/KeyPage/KeyPage';
 import ContextPage from './pages/context/components/ContextPage/ContextPage';
 import IdentityDetails from './pages/context/components/IdentityDetails/IdentityDetails';
 import NoMatch from './components/NoMatch';
-import style from './styles/styles.css';
 import browserHistory from './store/browserHistory';
 import './styles/styles.css';
 
-const SelectKeyMessage = () => <div className={style['select-key-message']}>Select key...</div>;
+const SelectKeyMessage = () => <div className={'select-key-message'}>Select key...</div>;
 
 export default props => (
     <ConnectedRouter history={browserHistory}>
@@ -20,10 +19,10 @@ export default props => (
                 <Route path="/" exact render={() => <Redirect to="/keys"/>} />
                 <Route
                     path="/keys"
-                    render={() => (
+                    render={({ match: { path }}) => (
                         <KeysPage>
                             <Switch>
-                                <Route exact path="/keys" component={SelectKeyMessage} />
+                                <Route exact path={path} component={SelectKeyMessage} />
                                 <Route component={KeyPage} />
                             </Switch>
                         </KeysPage>)}
@@ -32,7 +31,7 @@ export default props => (
                     path="/context"
                     render={({ match }) => (
                         <ContextPage {...match}>
-                            <Route path="/context/:identityName/:identityId" component={IdentityDetails} />
+                            <Route path={`${match.path}/:identityName/:identityId`} component={IdentityDetails} />
                         </ContextPage>
                     )}
                 />

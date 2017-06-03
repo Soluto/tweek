@@ -9,13 +9,11 @@ import { refreshSchema } from '../../../../services/context-service';
 import { refreshIndex } from '../../../../services/search-service';
 import './KeysPage.css';
 
-const isNode = new Function('try {return this===global;}catch(e){return false;}');
-
 export default compose(
   connect(state => state, { ...actions }),
   withLoading(
     () => null,
-    isNode() ? Promise.resolve() : Promise.all([refreshTypes(), refreshSchema(), refreshIndex()]),
+    Promise.all([refreshTypes(), refreshSchema(), refreshIndex()]),
   ),
 )(
   class KeysPage extends Component {
@@ -34,7 +32,7 @@ export default compose(
               <KeysList keys={keys} />
             </div>
             <div className={'add-button-wrapper'}>
-              <button className={'add-button'} onClick={() => addKey()}>Add key</button>
+              <button className={'add-key-button'} onClick={() => addKey()}>Add key</button>
             </div>
           </div>
           <div key="Page" className={'key-page'}>
