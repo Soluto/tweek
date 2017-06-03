@@ -6,7 +6,6 @@ import Json from 'react-json';
 import classNames from 'classnames';
 import ReactTooltip from 'react-tooltip';
 import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEditor';
-import style from './KeyEditPage.css';
 import KeyTags from './KeyTags/KeyTags';
 import EditableText from './EditableText/EditableText';
 import EditableTextArea from './EditableTextArea/EditableTextArea';
@@ -17,6 +16,7 @@ import alertIconSrc from './resources/alert-icon.svg';
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
 import TypedInput from '../../../../../components/common/Input/TypedInput';
+import './KeyEditPage.css';
 
 const ConstEditor = ({ value, valueType, onChange }) => (
   <div data-comp="ConstEditor">
@@ -131,10 +131,10 @@ class KeyEditPage extends Component {
     };
 
     return (
-      <div id="key-viewer-container-form" className={style['key-viewer-container-form']}>
-        <div className={style['key-viewer-container-fieldset']}>
+      <div id="key-viewer-container-form" className={'key-viewer-container-form'}>
+        <div className={'key-viewer-container-fieldset'}>
 
-          <div className={style['key-viewer-container']}>
+          <div className={'key-viewer-container'}>
             {isInStickyMode ? <KeyStickyHeader {...commonHeadersProps} /> : null}
             <KeyFullHeader
               {...commonHeadersProps}
@@ -147,7 +147,7 @@ class KeyEditPage extends Component {
             />
 
             <div
-              className={classNames(style['key-rules-editor'], { [style.sticky]: isInStickyMode })}
+              className={classNames('key-rules-editor', { sticky: isInStickyMode })}
             >
               <Editor
                 manifest={manifest}
@@ -172,12 +172,12 @@ const KeyStickyHeader = (props) => {
   const { isInAddMode, isReadonly, isHistoricRevision } = props;
 
   return (
-    <div className={style['sticky-key-header']} disabled={isReadonly}>
+    <div className={'sticky-key-header'} disabled={isReadonly}>
 
       <HeaderMainInput {...props} />
 
       {!isReadonly
-        ? <div className={style['sticky-key-page-action-wrapper']}>
+        ? <div className={'sticky-key-page-action-wrapper'}>
           <KeyPageActions {...{ isInAddMode, isReadonly, isHistoricRevision }} isInStickyMode />
         </div>
         : null}
@@ -199,13 +199,13 @@ const KeyFullHeader = (props) => {
   } = props;
 
   return (
-    <div className={style['key-header']}>
+    <div className={'key-header'}>
 
       <KeyPageActions {...{ isInAddMode, isReadonly, isHistoricRevision }} isInStickyMode={false} />
 
-      <div className={style['key-meta-container']}>
+      <div className={'key-meta-container'}>
 
-        <div className={style['key-header-and-modification-wrapper']}>
+        <div className={'key-header-and-modification-wrapper'}>
 
           <HeaderMainInput {...props} />
           {revisionHistory
@@ -217,25 +217,25 @@ const KeyFullHeader = (props) => {
         <fieldset disabled={isReadonly} style={{ border: 'none' }}>
 
           {!isInAddMode
-            ? <div className={style['key-full-path']}>
+            ? <div className={'key-full-path'}>
               <label>Full path: </label>
-              <label className={style['actual-path']}>{keyFullPath}</label>
+              <label className={'actual-path'}>{keyFullPath}</label>
             </div>
             : null}
 
-          <div className={style['key-description-and-tags-wrapper']}>
-            <div className={style['key-description-wrapper']}>
+          <div className={'key-description-and-tags-wrapper'}>
+            <div className={'key-description-wrapper'}>
               <EditableTextArea
                 value={keyManifest.meta.description}
                 onTextChanged={text => onDescriptionChanged(text)}
                 placeHolder="Write key description"
                 title="Click to edit description"
-                classNames={{ input: style['description-input'] }}
+                classNames={{ input: 'description-input' }}
                 maxLength={400}
               />
             </div>
 
-            <div className={style['tags-wrapper']}>
+            <div className={'tags-wrapper'}>
               <KeyTags
                 onTagsChanged={newTags => onTagsChanged(newTags)}
                 tags={keyManifest.meta.tags || []}
@@ -254,14 +254,14 @@ const KeyFullHeader = (props) => {
 const HeaderMainInput = (props) => {
   const { isInAddMode, onKeyNameChanged, onDisplayNameChanged, keyManifest, isReadonly } = props;
   return (
-    <div className={style['key-main-input']}>
+    <div className={'key-main-input'}>
       {isInAddMode
-        ? <div className={style['new-key-input-wrapper']}>
+        ? <div className={'new-key-input-wrapper'}>
           <NewKeyInput
             onKeyNameChanged={name => onKeyNameChanged(name)}
             displayName={keyManifest.displayName}
           />
-          <div className={style['vertical-separator']} />
+          <div className={'vertical-separator'} />
           <KeyValueTypeSelector value={keyManifest.valueType} />
         </div>
         : <EditableText
@@ -271,10 +271,10 @@ const HeaderMainInput = (props) => {
           value={keyManifest.meta.name}
           isReadonly={isReadonly}
           classNames={{
-            container: style['display-name-container'],
-            input: style['display-name-input'],
-            text: style['display-name-text'],
-            form: style['display-name-form'],
+            container: 'display-name-container',
+            input: 'display-name-input',
+            text: 'display-name-text',
+            form: 'display-name-form',
           }}
         />}
     </div>
@@ -294,21 +294,21 @@ const NewKeyInput = compose(
   const suggestions = getKeyNameSuggestions(keysList).map(x => ({ label: x, value: x }));
   return (
     <div
-      className={style['auto-suggest-wrapper']}
+      className={'auto-suggest-wrapper'}
       data-with-error={keyNameValidation.isShowingHint}
     >
       <div
-        className={style['validation-icon-wrapper']}
+        className={'validation-icon-wrapper'}
         data-is-shown={keyNameValidation.isShowingHint}
       >
         <img
-          className={style['validation-icon']}
+          className={'validation-icon'}
           data-tip={keyNameValidation.hint}
           src={alertIconSrc}
         />
       </div>
       <ComboBox
-        className={style['auto-suggest']}
+        className={'auto-suggest'}
         suggestions={suggestions}
         value={displayName}
         placeholder="Enter key full path"

@@ -7,7 +7,7 @@ import classnames from 'classnames';
 import ClickOutside from './ClickOutside';
 import InputWithHint from './InputWithHint';
 import Suggestions from './Suggestions';
-import style from './ComboBox.css';
+import './ComboBox.css';
 
 const keyCode = {
   ENTER: 13,
@@ -139,7 +139,7 @@ class ComboBoxComponent extends Component {
 
     return (
       <ClickOutside
-        className={classnames(style['combo-box-default-wrapper-theme-class'], className)}
+        className={classnames('combo-box-default-wrapper-theme-class', className)}
         onFocus={() => setFocus(true)}
         onClickOutside={() => setFocus(false)}
       >

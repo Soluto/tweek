@@ -5,9 +5,9 @@ import R from 'ramda';
 import JPadVisualEditor from './JPadVisualEditor/JPadVisualEditor';
 import JPadTextEditor from './JPadTextEditor/JPadTextEditor';
 import Mutator from '../../utils/mutator';
-import style from './JPadFullEditor.css';
 import * as TypesService from '../../services/types-service';
 import * as RulesService from './rules-utils';
+import './JPadFullEditor.css';
 
 const MutatorFor = propName => Comp =>
   class extends React.Component {
@@ -25,33 +25,33 @@ const MutatorFor = propName => Comp =>
   };
 
 const KeyRulesEditor = ({ source, valueType, mutate, onMutation, alerter, isReadonly }) => (
-  <div className={style['key-rules-editor-container']} disabled={isReadonly}>
+  <div className={'key-rules-editor-container'} disabled={isReadonly}>
 
-    <Tabs className={style['tab-container']}>
+    <Tabs className={'tab-container'}>
 
       <TabList>
-        <Tab className={style['tab-header']}>
-          <label className={style['key-definition-tab-icon']}> </label>
-          <label className={style['tab-title']}>Rules</label>
+        <Tab className={'tab-header'}>
+          <label className={'key-definition-tab-icon'}> </label>
+          <label className={'tab-title'}>Rules</label>
         </Tab>
-        <Tab className={style['tab-header']}>
-          <label className={style['key-source-tab-icon']}> </label>
-          <label className={style['tab-title']}>Source</label>
+        <Tab className={'tab-header'}>
+          <label className={'key-source-tab-icon'}> </label>
+          <label className={'tab-title'}>Source</label>
         </Tab>
       </TabList>
-      <TabPanel className={style['tab-content']}>
+      <TabPanel className={'tab-content'}>
         <fieldset disabled={isReadonly} style={{ border: 'none' }}>
           <JPadVisualEditor {...{ mutate, alerter }} jpadSource={source} valueType={valueType} />
         </fieldset>
 
       </TabPanel>
-      <TabPanel className={style['tab-content']}>
+      <TabPanel className={'tab-content'}>
         <JPadTextEditor
           source={source}
           onChange={x => onMutation(JSON.parse(x))}
           isReadonly={isReadonly}
         />
-        <pre className={style['key-def-json']} style={{ display: 'none' }}>
+        <pre className={'key-def-json'} style={{ display: 'none' }}>
           {JSON.stringify(JSON.parse(source), null, 4)}
         </pre>
       </TabPanel>

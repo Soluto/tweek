@@ -6,14 +6,14 @@ import { Observable } from 'rxjs/Rx';
 import { componentFromStream, createEventHandler } from 'recompose';
 import * as SearchService from '../../../../services/search-service';
 import DirectoryTreeView from './DirectoryTreeView';
-import style from './KeysList.css';
+import './KeysList.css';
 
 function KeysFilter({ onFilterChange }) {
   return (
-    <div className={style['search-input-wrapper']}>
+    <div className={'search-input-wrapper'}>
       <input
         type="text"
-        className={style['search-input']}
+        className={'search-input'}
         placeholder="Search..."
         onKeyUp={e => onFilterChange(e.target.value)}
       />
@@ -24,9 +24,9 @@ function KeysFilter({ onFilterChange }) {
 const KeyItem = connect((state, props) => ({
   isActive: state.selectedKey && state.selectedKey.key && state.selectedKey.key === props.fullPath,
 }))(({ name, fullPath, depth, isActive }) => (
-  <div className={classNames(style['key-link-wrapper'])}>
+  <div className={classNames('key-link-wrapper')}>
     <Link
-      className={classNames(style['key-link'], { [style.selected]: isActive })}
+      className={classNames('key-link', { selected: isActive })}
       style={{ paddingLeft: (depth + 1) * 14 }}
       to={`/keys/${fullPath}`}
     >
@@ -45,7 +45,7 @@ const KeysList = componentFromStream((prop$) => {
     const filteredKeys = filter === '' ? keys : SearchService.search(filter);
 
     return (
-      <div className={style['keys-list-container']}>
+      <div className={'keys-list-container'}>
         <KeysFilter onFilterChange={setFilter} />
         <DirectoryTreeView paths={filteredKeys} renderItem={KeyItem} expandByDefault={!!filter} />
       </div>

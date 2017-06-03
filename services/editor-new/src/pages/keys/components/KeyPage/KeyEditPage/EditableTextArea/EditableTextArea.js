@@ -1,8 +1,8 @@
 import React from 'react';
-import style from './EditableTextArea.css';
 import classNames from 'classnames';
 import { compose, withState } from 'recompose';
 import TextareaAutosize from 'react-autosize-textarea';
+import './EditableTextArea.css';
 
 const EditableTextArea = compose(
   withState('isInEditMode', 'setIsInEditMode', false),
@@ -17,7 +17,7 @@ const EditableTextArea = compose(
     setIsInEditMode,
     onTextChanged = () => {},
   }) => (
-    <div className={classNames(style['textarea-container'], classes.container)}>
+    <div className={classNames('textarea-container', classes.container)}>
       <TextareaAutosize
         ref={(input) => {
           if (!input) return;
@@ -29,8 +29,8 @@ const EditableTextArea = compose(
         value={value}
         placeholder={placeHolder}
         title={title}
-        className={classNames(style['textarea-input'], classes.input, {
-          [style['read-only']]: !isInEditMode,
+        className={classNames('textarea-input', classes.input, {
+          'read-only': !isInEditMode,
         })}
         onBlur={() => {
           value = value.trim();

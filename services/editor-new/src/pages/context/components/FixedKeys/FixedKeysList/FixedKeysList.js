@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FixedKey from './FixedKey/FixedKey';
-import style from './FixedKeysList.css';
+import './FixedKeysList.css';
 
 const FixedKeysList = ({ keys, onChange }) => (
-  <div className={style['fixed-keys-container']}>
+  <div className={'fixed-keys-container'}>
     {keys.map((key, index) => (
       <FixedKey
         key={key.remote ? key.remote.key : index}

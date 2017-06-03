@@ -2,10 +2,10 @@ import React from 'react';
 import Chance from 'chance';
 import Highlighter from 'react-highlight-words';
 import ReactTooltip from 'react-tooltip';
-import style from './styles.css';
 import MultiSourceComboBox from '../../../../common/ComboBox/MultiSourceComboBox';
 import * as ContextService from '../../../../../services/context-service';
 import * as SearchService from '../../../../../services/search-service';
+import './styles.css';
 
 const chance = new Chance();
 
@@ -44,15 +44,15 @@ const PropertyTooltip = ({ propName, description, propType, identityType }) => (
 const PropertySuggestion = ({ suggestion, textToMark }) => {
   if (suggestion.value.startsWith(ContextService.KEYS_IDENTITY)) {
     return (
-      <div className={style['property-suggestion-wrapper']} data-field-type={'string'}>
+      <div className={'property-suggestion-wrapper'} data-field-type={'string'}>
         <i />
         <Highlighter
-          highlightClassName={style['suggestion-label']}
+          highlightClassName={'suggestion-label'}
           highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
           searchWords={[textToMark]}
           textToHighlight={suggestion.label}
         />
-        <span className={style['suggestion-identity']}>(keys)</span>
+        <span className={'suggestion-identity'}>(keys)</span>
       </div>
     );
   }
@@ -65,20 +65,20 @@ const PropertySuggestion = ({ suggestion, textToMark }) => {
     <div
       data-tip
       data-for={tooltipId}
-      className={style['property-suggestion-wrapper']}
+      className={'property-suggestion-wrapper'}
       data-field-type={typeDetails.name}
     >
       <i />
       <Highlighter
-        highlightClassName={style['suggestion-label']}
+        highlightClassName={'suggestion-label'}
         highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
         searchWords={[textToMark]}
         textToHighlight={prop}
       />
-      <span className={style['suggestion-identity']}>
+      <span className={'suggestion-identity'}>
         (
         <Highlighter
-          highlightClassName={style['suggestion-label']}
+          highlightClassName={'suggestion-label'}
           highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
           searchWords={[textToMark]}
           textToHighlight={identity}
@@ -137,7 +137,7 @@ export default ({ property, suggestedValues, onPropertyChange, autofocus }) => (
       <PropertySuggestion suggestion={suggestion} textToMark={currentInputValue} />
     )}
     autofocus={autofocus}
-    className={style['property-name-wrapper']}
+    className={'property-name-wrapper'}
     showValueInOptions
   />
 );

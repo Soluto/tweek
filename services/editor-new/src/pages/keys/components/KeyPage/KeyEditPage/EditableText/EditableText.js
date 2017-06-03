@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { withState } from 'recompose';
 import wrapComponentWithClass from '../../../../../../hoc/wrap-component-with-class';
-import style from './EditableText.css';
+import './EditableText.css';
 
 const EditableText = withState(
   'isInEditMode',
@@ -20,19 +20,19 @@ const EditableText = withState(
     isReadonly,
     ...props
   }) => (
-    <div className={classNames(style['editable-text-container'], classes.container)}>
+    <div className={classNames('editable-text-container', classes.container)}>
       {isInEditMode
         ? <form
           onSubmit={(e) => {
             setIsInEditMode(false);
             e.preventDefault();
           }}
-          className={classNames(style['editable-text-form'], classes.form)}
+          className={classNames('editable-text-form', classes.form)}
         >
           <input
             type="text"
             ref={input => input && input.focus()}
-            className={classNames(style['editable-text-input'], classes.input)}
+            className={classNames('editable-text-input', classes.input)}
             onChange={e => onTextChanged(e.target.value)}
             value={value}
             placeholder={placeHolder}
@@ -41,7 +41,7 @@ const EditableText = withState(
           />
         </form>
         : <div
-          className={classNames(style['editable-text-value'], classes.text)}
+          className={classNames('editable-text-value', classes.text)}
           onClick={() => isReadonly || setIsInEditMode(true)}
         >
           {value}

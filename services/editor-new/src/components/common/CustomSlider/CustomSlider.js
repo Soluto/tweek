@@ -2,7 +2,7 @@ import React from 'react';
 import { DraggableCore } from 'react-draggable';
 import R from 'ramda';
 import Mutator from '../../../utils/mutator';
-import style from './CustomSlider.css';
+import './CustomSlider.css';
 
 function replaceNaN(fallbackValue) {
   return isNaN(this) ? fallbackValue : this;
@@ -24,14 +24,14 @@ export default ({
 
   const mutator = Mutator.stateless(() => data, onUpdate);
   return (
-    <div className={style['custom-slider-container']}>
+    <div className={'custom-slider-container'}>
       {displayLegend
-        ? <div className={style['legend-bar']}>
-          <div className={style['variant-list']}>
+        ? <div className={'legend-bar'}>
+          <div className={'variant-list'}>
             {items.map(({ value, weight, sliderColor }, i) => (
-              <div key={i} className={style['legend-item']}>
+              <div key={i} className={'legend-item'}>
                 <button
-                  className={style['delete-legend-button']}
+                  className={'delete-legend-button'}
                   title="Remove variant"
                   onClick={() =>
                       mutator.apply((m) => {
@@ -44,18 +44,18 @@ export default ({
                       })}
                 />
                 <div
-                  className={style['vertical-accent']}
+                  className={'vertical-accent'}
                   style={{ backgroundColor: sliderColor }}
                 />
                 <input
                   type="text"
-                  className={style['legend-value-input']}
+                  className={'legend-value-input'}
                   onChange={e => mutator.in(value).updateKey(e.target.value)}
                   value={value}
                 />
                 <input
                   type="text"
-                  className={style['legend-precent-input']}
+                  className={'legend-precent-input'}
                   onChange={({ target: { value: newWeight } }) =>
                       mutator
                         .in(value)
@@ -74,17 +74,17 @@ export default ({
           {items.length !== sliderColors.length
               ? <button
                 title="Add variant"
-                className={style['add-variant-button']}
+                className={'add-variant-button'}
                 onClick={() => mutator.insert(`value #${items.length + 1}`, 0)}
               />
               : null}
         </div>
         : null}
-      <div className={style['horizontal-variant-slider-wrapper']}>
+      <div className={'horizontal-variant-slider-wrapper'}>
         {items.map(({ sliderColor, weight, value }, i) => (
-          <div key={i} className={style['horizontal-variant-slider']}>
+          <div key={i} className={'horizontal-variant-slider'}>
             <div
-              className={style['horizontal-accent']}
+              className={'horizontal-accent'}
               style={{ width: parseFloat(weight), backgroundColor: sliderColor }}
             />
             {displaySliderDragger && i < items.length - 1
@@ -104,8 +104,8 @@ export default ({
                 axis="x"
               >
                 <div>
-                  <div className={style.dragger}>
-                    <label style={{ zIndex: 1000 - i }} className={style.arrow} />
+                  <div className={'dragger'}>
+                    <label style={{ zIndex: 1000 - i }} className={'arrow'} />
                   </div>
                 </div>
               </DraggableCore>

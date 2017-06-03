@@ -1,10 +1,10 @@
 import React from 'react';
 import R from 'ramda';
 import { shouldUpdate } from 'recompose';
-import style from './Matcher.css';
 import PropertyName from './Properties/PropertyName';
 import PropertyPredicate from './Properties/PropertyPredicate';
 import * as ContextService from '../../../../services/context-service';
+import './Matcher.css';
 
 const Property = ({
   property,
@@ -14,10 +14,10 @@ const Property = ({
   canBeClosed = true,
   autofocus,
 }) => (
-  <div className={style['condition-wrapper']}>
+  <div className={'condition-wrapper'}>
     <button
       onClick={mutate.delete}
-      className={style['delete-condition-button']}
+      className={'delete-condition-button'}
       title="Remove condition"
       disabled={!canBeClosed}
     />
@@ -45,9 +45,9 @@ export default hasChanged(({ matcher, mutate, autofocus }) => {
     allSuggestions.filter(x => x.value === currentProp || ignoreActivePropsPropsPredicate(x.value));
 
   return (
-    <div className={style.matcher}>
+    <div className={'matcher'}>
       {props.length === 0
-        ? <h3 className={style['empty-matcher-watermark']}>Match all</h3>
+        ? <h3 className={'empty-matcher-watermark'}>Match all</h3>
         : props.map(([property, predicate], i) => {
           const suggestedValues = filterActiveProps(property);
           return (
@@ -59,7 +59,7 @@ export default hasChanged(({ matcher, mutate, autofocus }) => {
           );
         })}
       <button
-        className={style['add-condition-button']}
+        className={'add-condition-button'}
         onClick={() => mutate.insert('', '')}
         title="Add condition"
       />

@@ -4,13 +4,13 @@ import withLoading from '../../../../hoc/with-loading';
 import { refreshIndex } from '../../../../services/search-service';
 import { refreshSchema } from '../../../../services/context-service';
 import SearchBox from './SearchBox/SearchBox';
-import style from './ContextPage.css';
+import './ContextPage.css';
 
 const ContextPage = ({ children, ...props }) => (
-  <div className={style['context-page-container']}>
-    <div className={style['context-page']}>
+  <div className={'context-page-container'}>
+    <div className={'context-page'}>
       <SearchBox {...props} />
-      {children ? <div className={style['horizontal-separator']} /> : null}
+      {children ? <div className={'horizontal-separator'} /> : null}
       {children}
     </div>
   </div>

@@ -4,11 +4,11 @@ import { Accordion, AccordionItem } from 'react-sanfona';
 import { mapProps } from 'recompose';
 import RulesList from '../RulesList/RulesList';
 import PropertyValue from '../Matcher/Properties/PropertyValue';
-import style from './PartitionsList.css';
-import coreStyle from '../../../../styles/core/core.css';
 import * as ContextService from '../../../../services/context-service';
 import { equal } from '../../../../services/operators-provider';
 import { InputValue } from '../RuleValue/RuleValue';
+import './PartitionsList.css';
+import '../../../../styles/core/core.css';
 
 const extractPartitionToObject = (mutate, partitions) => {
   if (partitions.length === 0) {
@@ -59,9 +59,9 @@ class AddPartition extends React.Component {
         },
     );
     return (
-      <div className={style['new-partition-container']}>
+      <div className={'new-partition-container'}>
         {indexedPartitions.map(partition => (
-          <div className={style['new-partition-item-container']} key={partition.id}>
+          <div className={'new-partition-item-container'} key={partition.id}>
             <NewPartitionPropertyValue
               {...partition}
               value={this.state.partition[partition.id] || ''}
@@ -76,7 +76,7 @@ class AddPartition extends React.Component {
           onChange={defaultValue => this.setState({ defaultValue })}
           placeholder="Partition's default value"
         />
-        <button className={style['add-partition-button']} onClick={this.addPartition.bind(this)} />
+        <button className={'add-partition-button'} onClick={this.addPartition.bind(this)} />
       </div>
     );
   }
@@ -109,11 +109,11 @@ export default class PartitionsList extends React.Component {
     const hasDefaultValue = Object.keys(rulesByPartitions).includes('*');
 
     return (
-      <div className={style['partitions-list-container']}>
+      <div className={'partitions-list-container'}>
 
         {!hasDefaultValue
           ? <button
-            className={style['add-default-partition-button']}
+            className={'add-default-partition-button'}
             onClick={() => this.addPartition({})}
           >
               Add default partition
@@ -127,7 +127,7 @@ export default class PartitionsList extends React.Component {
         />
 
         <Accordion
-          className={style['partitions-accordion-container']}
+          className={'partitions-accordion-container'}
           allowMultiple
           activeItems={this.state.activeItems || []}
           onChange={({ activeItems }) => this.setState({ activeItems })}
@@ -145,15 +145,15 @@ export default class PartitionsList extends React.Component {
             return (
               <AccordionItem
                 title={
-                  <div className={style['partitions-accordion-container-item-title']}>
-                    <div className={[style['expander-icon']]}></div>
+                  <div className={'partitions-accordion-container-item-title'}>
+                    <div className={'expander-icon'}></div>
                     <h3>{partitionGroupName}</h3>
-                    <div className={style['partitions-accordion-container-item-title-details']}>
+                    <div className={'partitions-accordion-container-item-title-details'}>
                       {isOnlyDefault ? `value: ${rules[0].Value}` : `rules: ${rules.length}`}
                     </div>
-                    <div className={style['partitions-accordion-container-item-title-actions']}>
+                    <div className={'partitions-accordion-container-item-title-actions'}>
                       <button
-                        className={coreStyle['gray-circle-button']}
+                        className={'gray-circle-button'}
                         onClick={(e) => {
                           this.deletePartition(partitionData.partitionsValues);
                           e.stopPropagation();
@@ -165,9 +165,9 @@ export default class PartitionsList extends React.Component {
                   </div>
                 }
                 key={partitionGroupName}
-                className={style['partitions-accordion-container-item']}
-                titleClassName={style['partitions-accordion-container-item-title']}
-                expandedClassName={style['partitions-accordion-container-item-expanded']}
+                className={'partitions-accordion-container-item'}
+                titleClassName={'partitions-accordion-container-item-title'}
+                expandedClassName={'partitions-accordion-container-item-expanded'}
               >
                 <RulesList {...{ valueType, alerter }} mutate={partitionData.mutate} />
               </AccordionItem>

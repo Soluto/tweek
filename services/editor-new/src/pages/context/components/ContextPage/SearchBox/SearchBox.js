@@ -5,7 +5,7 @@ import { getIdentities } from '../../../../../services/context-service';
 import { openContext } from '../../../../../store/ducks/context';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import Input from '../../../../../components/common/Input/Input';
-import style from './SearchBox.css';
+import './SearchBox.css';
 
 class SearchBox extends Component {
   constructor(props) {
@@ -49,11 +49,11 @@ class SearchBox extends Component {
     const identityText = identityName || 'identity';
 
     return (
-      <div className={style['context-search-container']}>
+      <div className={'context-search-container'}>
 
-        <div className={style['context-type-container']}>
+        <div className={'context-type-container'}>
           <ComboBox
-            className={style['context-type']}
+            className={'context-type'}
             placeholder="Enter Identity Type"
             value={inputValue}
             suggestions={identities}
@@ -61,7 +61,7 @@ class SearchBox extends Component {
           />
         </div>
 
-        <div className={style['context-id-container']}>
+        <div className={'context-id-container'}>
           <Input
             placeholder={`Enter ${changeCase.pascalCase(identityText)} Id`}
             onEnterKeyPress={this.onGetClick}
@@ -70,9 +70,9 @@ class SearchBox extends Component {
           />
         </div>
 
-        <div className={style['search-button-container']}>
+        <div className={'search-button-container'}>
           <button
-            className={style['search-button']}
+            className={'search-button'}
             onClick={this.onGetClick}
             disabled={!identityName || !identityId}
           />

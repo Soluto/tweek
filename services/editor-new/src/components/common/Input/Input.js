@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import style from './Input.css';
+import classnames from 'classnames';
+import './Input.css';
 
 const isEnterKeyPressed = event => event.keyCode === 13 || event.which === 13;
 
 const Input = ({ onEnterKeyPress, onKeyPress, onChange, autofocus, className, ...props }) => (
   <input
-    className={style['text-input'] + (className ? ` ${className}` : '')}
+    className={classnames('text-input', className)}
     onKeyPress={(e) => {
       if (onEnterKeyPress && isEnterKeyPressed(e)) {
         onEnterKeyPress();

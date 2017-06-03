@@ -7,7 +7,7 @@ import * as SearchService from '../../../../../../services/search-service';
 import * as TypesService from '../../../../../../services/types-service';
 import TypedInput from '../../../../../../components/common/Input/TypedInput';
 import AutoSuggest from '../../../../../../components/common/ComboBox/AutoSuggest';
-import style from './FixedKey.css';
+import './FixedKey.css';
 
 const configShape = {
   key: PropTypes.string,
@@ -15,9 +15,9 @@ const configShape = {
 };
 
 const RemovedKey = ({ config: { key, value } }) => (
-  <div className={style['removed-key-container']}>
-    <div className={style['removed-key']}>{key}</div>
-    <div className={style['removed-value']}>{value}</div>
+  <div className={'removed-key-container'}>
+    <div className={'removed-key'}>{key}</div>
+    <div className={'removed-value'}>{value}</div>
   </div>
 );
 
@@ -49,9 +49,9 @@ const mapValueTypeToProps = (props$) => {
 const OverrideValueInput = compose(mapPropsStream(mapValueTypeToProps), pure)(TypedInput);
 
 const EditableKey = ({ remote, local, onKeyChange, onValueChange }) => (
-  <div className={classNames(style['editable-key-container'], { [style['new-item']]: !remote })}>
+  <div className={classNames('editable-key-container', { 'new-item': !remote })}>
     <AutoSuggest
-      className={style['key-input']}
+      className={'key-input'}
       placeholder="Key"
       value={local.key}
       getSuggestions={SearchService.suggestions}
@@ -60,15 +60,15 @@ const EditableKey = ({ remote, local, onKeyChange, onValueChange }) => (
     />
     <OverrideValueInput
       keyPath={local.key}
-      className={classNames(style['value-input'], {
-        [style['has-changes']]: remote && remote.value !== local.value,
+      className={classNames('value-input', {
+        'has-changes': remote && remote.value !== local.value,
       })}
       placeholder="Value"
       value={local.value}
       onChange={onValueChange}
     />
     {remote && remote.value !== local.value
-      ? <div className={style['initial-value']}>{remote.value}</div>
+      ? <div className={'initial-value'}>{remote.value}</div>
       : null}
   </div>
 );
@@ -81,10 +81,10 @@ EditableKey.propTypes = {
 };
 
 const FixedKey = ({ remote, local, isRemoved, onChange }) => (
-  <div className={style['fixed-key-container']} data-fixed-key={local.key}>
+  <div className={'fixed-key-container'} data-fixed-key={local.key}>
     <button
       onClick={() => onChange(!isRemoved, local)}
-      className={style['delete-button']}
+      className={'delete-button'}
       title="Remove key"
     />
     {isRemoved

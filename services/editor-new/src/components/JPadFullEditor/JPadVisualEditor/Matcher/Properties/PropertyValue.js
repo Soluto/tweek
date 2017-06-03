@@ -5,7 +5,7 @@ import { WithContext as ReactTags } from 'react-tag-input';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import Input from '../../../../../components/common/Input/Input';
 import { inOp } from '../../../../../services/operators-provider';
-import style from './styles.css';
+import './styles.css';
 
 const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
   const indexedTags = value.map(x => ({ id: x, text: x }));
@@ -15,7 +15,7 @@ const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
   const indexedSuggestions = suggestions ? suggestions.map(x => x) : [];
 
   return (
-    <div className={style['tags-wrapper']}>
+    <div className={'tags-wrapper'}>
       <ReactTags
         tags={indexedTags}
         suggestions={indexedSuggestions}
@@ -25,11 +25,11 @@ const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
         minQueryLength={1}
         allowDeleteFromEmptyInput
         classNames={{
-          tags: style['tags-container'],
-          tagInput: style['tag-input'],
-          tag: style.tag,
-          remove: style['tag-delete-button'],
-          suggestions: style['tags-suggestion'],
+          tags: 'tags-container',
+          tagInput: 'tag-input',
+          tag: 'tag',
+          remove: 'tag-delete-button',
+          suggestions: 'tags-suggestion',
         }}
       />
     </div>
@@ -56,7 +56,7 @@ function PropertyValueComponent({
       <ComboBox
         suggestions={allowedValues}
         placeholder={placeholder}
-        className={style['property-value-combo-box']}
+        className={'property-value-combo-box'}
         onChange={(_, selectedValue) => selectedValue && onUpdate(selectedValue.value)}
         value={selected ? selected.label : value.toString()}
       />
@@ -67,7 +67,7 @@ function PropertyValueComponent({
 }
 
 export default props => (
-  <div className={style['property-value-wrapper']}>
+  <div className={'property-value-wrapper'}>
     <PropertyValueComponent {...props} />
   </div>
 );

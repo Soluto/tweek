@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import style from './SaveButton.css';
+import './SaveButton.css';
 
 const SaveButton = ({ isSaving, hasChanges, ...props }) => (
   <button
@@ -22,7 +22,7 @@ SaveButton.propTypes = {
 SaveButton.defaultProps = {
   isSaving: false,
   hasChanges: true,
-  className: style['save-button'],
+  className: 'save-button',
 };
 
 export default SaveButton;
