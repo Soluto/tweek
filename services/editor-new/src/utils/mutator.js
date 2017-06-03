@@ -117,8 +117,8 @@ class Mutator {
   delete = () => {
     const [innerPath, [key]] = R.splitAt(-1, this.path);
     const container = R.reduce((acc, x) => acc[x], this.target, innerPath);
-    if (R.isArrayLike(container)) {
-      Array.prototype.splice.call(container, parseInt(key, 10), 1);
+    if (Array.isArray(container)) {
+      container.splice(parseInt(key, 10), 1);
     } else {
       delete container[key];
     }

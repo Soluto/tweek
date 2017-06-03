@@ -1,6 +1,8 @@
 build/
+coverage-unit/
 dist/
 node_modules/
+rulesRepository/
 .git/
 Dockerfile
 docker-compose*

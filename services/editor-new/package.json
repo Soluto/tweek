@@ -68,9 +68,15 @@
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.5.1",
     "babel-preset-stage-0": "^6.24.1",
+    "chai": "^4.0.1",
+    "chai-things": "^0.2.0",
     "concurrently": "^3.4.0",
+    "fetch-mock": "^5.11.0",
+    "jest-cli": "^20.0.4",
+    "jest-css-modules": "^1.1.0",
     "nodemon": "^1.11.0",
-    "react-scripts": "1.0.7"
+    "react-scripts": "1.0.7",
+    "rimraf": "^2.6.1"
   },
   "scripts": {
     "start:client": "react-scripts start",
@@ -80,10 +86,34 @@
     "build:client": "react-scripts build",
     "build:server": "babel server --out-dir dist",
     "build": "yarn run build:client && yarn run build:server",
-    "test": "react-scripts test --env=jsdom",
+    "test": "jest",
     "eject": "react-scripts eject",
     "teardown": "npm run docker-compose -- down",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml"
+  },
+  "jest": {
+    "testRegex": "/spec/unit/.*",
+    "automock": false,
+    "modulePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "moduleNameMapper": {
+      "^.*css$": "empty/object"
+    },
+    "coverageDirectory": "./coverage-unit/",
+    "collectCoverage": true,
+    "unmockedModulePathPatterns": [
+      "/node_modules/react",
+      "node_modules/react-dom",
+      "node_modules/react-addons-test-utils",
+      "node_modules/recompose",
+      "node_modules/ramda",
+      "node_modules/chai",
+      "node_modules/chai-as-promise",
+      "node_modules/fetch-mock",
+      "babel-runtime",
+      "spec/unit/.*"
+    ]
   },
   "lint-staged": {
     "gitDir": "../../",
