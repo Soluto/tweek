@@ -1,12 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
+import { default as Diff } from 'deep-diff';
 import * as keysActions from '../../../../../../store/ducks/selectedKey';
 import { deleteKey } from '../../../../../../store/ducks/keys';
 import SaveButton from '../../../../../../components/common/SaveButton/SaveButton';
 import './KeyPageActions.css';
 
-const diff = require('deep-diff').diff;
+const diff = Diff.diff;
 
 const DeleteButton = ({ isSaving, selectedKey, deleteKey }) => (
   <button
