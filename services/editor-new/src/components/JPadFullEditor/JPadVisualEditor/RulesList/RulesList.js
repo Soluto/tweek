@@ -32,7 +32,7 @@ export default class RulesList extends React.Component {
     if (!rules) return <div />;
 
     return (
-      <div className={'rule-container'}>
+      <div className={'rule-item-container'}>
         <button
           className={'add-rule-button'}
           onClick={() => {
