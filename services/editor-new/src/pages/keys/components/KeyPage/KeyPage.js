@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, lifecycle } from 'recompose';
+import { default as Diff } from 'deep-diff';
 import * as selectedKeyActions from '../../../../store/ducks/selectedKey';
 import * as alertActions from '../../../../store/ducks/alerts';
 import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefinition';
@@ -8,16 +9,14 @@ import routeLeaveHook from '../../../../hoc/route-leave-hook';
 import MessageKeyPage from './MessageKeyPage/MessageKeyPage';
 import KeyEditPage from './KeyEditPage/KeyEditPage';
 
-const diff = require('deep-diff').diff;
+const diff = Diff.diff;
 
 const onRouteLeaveConfirmFunc = (props) => {
   if (!props.selectedKey || props.selectedKey.isSaving) return false;
 
   const { local, remote } = props.selectedKey;
   const changes = diff(local, remote);
-  const hasChanges = (changes || []).length > 0;
-
-  return hasChanges;
+  return (changes || []).length > 0;
 };
 
 const keyPageComp = compose(
