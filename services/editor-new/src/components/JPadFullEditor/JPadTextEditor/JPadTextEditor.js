@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import MonacoEditor from 'react-monaco-editor';
 import { AutoSizer } from 'react-virtualized';
-import style from './JPadTextEditor.css';
+import './JPadTextEditor.css';
 
 const requireConfig = {
   url: 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.1/require.min.js',
@@ -63,7 +63,7 @@ class JPadTextEditor extends Component {
               requireConfig={requireConfig}
             />
             <button
-              className={style['save-code-changes-button']}
+              className={'save-code-changes-button'}
               onClick={() => this.save()}
               disabled={!this.state.allowSave}
             >

@@ -6,7 +6,7 @@ import DefaultValue from './Rule/DefaultValue';
 import PartitionsList from './PartitionsList/PartitionsList';
 import * as RulesService from '../rules-utils';
 import * as TypesService from '../../../services/types-service';
-import style from './JPadVisualEditor.css';
+import './JPadVisualEditor.css';
 
 const isBrowser = typeof window === 'object';
 
@@ -119,15 +119,15 @@ export default ({ valueType, mutate, alerter }) => {
   };
 
   return (
-    <div className={style['jpad-editor-container']}>
-      <div className={style['jpad-settings']}>
+    <div className={'jpad-editor-container'}>
+      <div className={'jpad-settings'}>
         <DefaultValue
           value={defaultValueMutate.getValue()}
           valueType={valueType}
           onChange={updateDefaultValue}
-          className={style['default-value']}
+          className={'default-value'}
         />
-        <div className={style['vertical-separator']} />
+        <div className={'vertical-separator'} />
         <PartitionsSelector
           {...{ partitions, handlePartitionAddition, handlePartitionDelete, alerter }}
         />

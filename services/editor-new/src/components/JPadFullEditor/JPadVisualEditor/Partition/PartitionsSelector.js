@@ -1,7 +1,7 @@
 import React from 'react';
 import { WithContext as ReactTags } from 'react-tag-input';
 import * as ContextService from '../../../../services/context-service';
-import style from './PartitionsSelector.css';
+import './PartitionsSelector.css';
 
 export default ({ partitions, handlePartitionAddition, handlePartitionDelete, alerter }) => {
   const allProperties = ContextService.getProperties().map(x => ({
@@ -37,9 +37,9 @@ export default ({ partitions, handlePartitionAddition, handlePartitionDelete, al
   };
 
   return (
-    <div className={style['partitions-selector-container']}>
-      <label className={style['partitions-label']}>Partition by:</label>
-      <div className={style['tags-wrapper']}>
+    <div className={'partitions-selector-container'}>
+      <label className={'partitions-label'}>Partition by:</label>
+      <div className={'tags-wrapper'}>
         <ReactTags
           tags={indexedTags}
           suggestions={indexedSuggestions}
@@ -50,11 +50,11 @@ export default ({ partitions, handlePartitionAddition, handlePartitionDelete, al
           allowDeleteFromEmptyInput
           autocomplete
           classNames={{
-            tags: style['tags-container'],
-            tagInput: style['tag-input'],
-            tag: style.tag,
-            remove: style['tag-delete-button'],
-            suggestions: style['tags-suggestion'],
+            tags: 'tags-container',
+            tagInput: 'tag-input',
+            tag: 'tag',
+            remove: 'tag-delete-button',
+            suggestions: 'tags-suggestion',
           }}
         />
       </div>

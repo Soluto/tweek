@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import R from 'ramda';
 import { WithContext as ReactTags } from 'react-tag-input';
 import * as tagActions from '../../../../../../store/ducks/tags';
-import style from './KeyTags.css';
+import './KeyTags.css';
 
 export default compose(
   connect(state => ({ globalTags: state.tags }), { ...tagActions }),
@@ -41,7 +41,7 @@ export default compose(
     render() {
       const { tags, tagsSuggestions } = this.props;
       return (
-        <div className={style['tags-wrapper']}>
+        <div className={'tags-wrapper'}>
           <ReactTags
             tags={tags}
             handleDelete={this._onTagDeleted}
@@ -52,11 +52,11 @@ export default compose(
             allowDeleteFromEmptyInput
             minQueryLength={1}
             classNames={{
-              tags: style['tags-container'],
-              tagInput: style['tag-input'],
-              tag: style.tag,
-              remove: style['tag-delete-button'],
-              suggestions: style['tags-suggestion'],
+              tags: 'tags-container',
+              tagInput: 'tag-input',
+              tag: 'tag',
+              remove: 'tag-delete-button',
+              suggestions: 'tags-suggestion',
             }}
           />
         </div>

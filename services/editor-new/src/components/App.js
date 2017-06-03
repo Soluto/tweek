@@ -9,9 +9,9 @@ import classNames from 'classnames';
 import logoSrc from './resources/logo.svg';
 import Alerts from './alerts/Alerts';
 import Notifications from './alerts/Notifications';
-import style from './App.css';
 import * as TypesService from '../services/types-service';
 import { withTypesService } from './common/Input/TypedInput';
+import './App.css';
 
 require('../styles/core/fonts/fonts.css');
 
@@ -24,8 +24,8 @@ const ListItemLink = ({ to, ...rest }) => (
     <Route path={to} children={({ match }) => (
         <li>
             <Link
-                className={classNames(style['menu-item'], {
-                    [style['selected-location-path']]: match,
+                className={classNames('menu-item', {
+                    'selected-location-path': match,
                 })}
                 to={to}
                 {...rest}/>
@@ -34,11 +34,11 @@ const ListItemLink = ({ to, ...rest }) => (
 )
 
 export default withTypesService(TypesService)(({ children }) => (
-  <div className={style.app}>
-    <div className={style.header}>
+  <div className={'app'}>
+    <div className={'header'}>
       <Title render="Tweek" />
-      <Link to="/" replace><img className={style.logo} src={logoSrc} /></Link>
-      <ul className={style.menu}>
+      <Link to="/" replace><img className={'logo'} src={logoSrc} /></Link>
+      <ul className={'menu'}>
           <ListItemLink to="/keys">
               <img src={require('./resources/keys.svg')} />
               <span>Keys</span>
@@ -49,7 +49,7 @@ export default withTypesService(TypesService)(({ children }) => (
           </ListItemLink>
       </ul>
     </div>
-    <div className={style.page}>
+    <div className={'page'}>
       {children}
       <Alerts />
       <Notifications />

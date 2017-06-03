@@ -5,7 +5,7 @@ import changeCase from 'change-case';
 import * as contextActions from '../../../../store/ducks/context';
 import FixedKeys from '../FixedKeys/FixedKeys';
 import IdentityProperties from '../IdentityProperties/IdentityProperties';
-import style from './IdentityDetails.css';
+import './IdentityDetails.css';
 
 const IdentityDetails = ({
   identityId,
@@ -16,17 +16,17 @@ const IdentityDetails = ({
   isUpdatingContext,
   properties,
 }) => (
-  <div className={style['context-details-container']}>
-    <div className={style['context-title']}>
-      <div className={style['context-id']}>{identityId}</div>
-      <div className={style['context-type']}>{changeCase.pascalCase(identityName)}</div>
+  <div className={'context-details-container'}>
+    <div className={'context-title'}>
+      <div className={'context-id'}>{identityId}</div>
+      <div className={'context-type'}>{changeCase.pascalCase(identityName)}</div>
     </div>
     {isGettingContext
       ? 'Loading...'
       : <div>
-        <IdentityProperties className={style.section} {...{ identityName, properties }} />
+        <IdentityProperties className={'section'} {...{ identityName, properties }} />
         <FixedKeys
-          className={style.section}
+          className={'section'}
           {...{ updateFixedKeys, fixedKeys, isUpdatingContext }}
         />
       </div>}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Rodal from 'rodal';
-import style from './Alerts.css';
+import './Alerts.css';
 
 const reactify = (Content, props) =>
     typeof Content === 'string'
@@ -13,13 +13,13 @@ const Alert = ({ title, message, buttons, onClose, showCloseButton = false }) =>
         visible
         showCloseButton={showCloseButton}
         onClose={onClose}
-        className={style['rodal-container']}
+        className={'rodal-container'}
     >
-        {title ? reactify(title, { className: style['rodal-header'] }) : null}
-        {reactify(message, { className: style['rodal-body'] })}
-        <div className={style['rodal-button-container']}>
+        {title ? reactify(title, { className: 'rodal-header' }) : null}
+        {reactify(message, { className: 'rodal-body' })}
+        <div className={'rodal-button-container'}>
             {buttons.map(({ text, className, ...props }, i) => (
-                <button key={i} className={style[className]} {...props}>{text}</button>
+                <button key={i} className={className} {...props}>{text}</button>
             ))}
         </div>
     </Rodal>

@@ -1,17 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import style from './KeysList.css';
 import openedFolderIconSrc from './resources/Folder-icon-opened.svg';
 import closedFolderIconSrc from './resources/Folder-icon-closed.svg';
 import { VelocityTransitionGroup } from 'velocity-react';
+import './KeysList.css';
 
 const leaf = Symbol();
 
 export default function DirectoryTreeView({ paths, renderItem, expandByDefault }) {
   let pathTree = pathsToTree(paths);
   return (
-    <div className={style['key-folder']}>
+    <div className={'key-folder'}>
       {Object.keys(pathTree).map(pathNode => (
         <TreeNode
           key={pathNode}
@@ -87,20 +87,20 @@ class TreeDirectory extends React.Component {
     let { isCollapsed } = this.state;
 
     return (
-      <div className={style['key-folder']}>
+      <div className={'key-folder'}>
 
         <div
           style={{ paddingLeft: (depth + 1) * 10 }}
-          className={style['key-folder-name']}
+          className={'key-folder-name'}
           onClick={() => this.setState({ isCollapsed: !isCollapsed })}
           data-folder-name={fullPath}
         >
           <img
-            className={style['key-folder-icon']}
+            className={'key-folder-icon'}
             src={isCollapsed ? closedFolderIconSrc : openedFolderIconSrc}
           />
           {name}
-          <label className={style['number-of-folder-keys']}>{descendantsCount}</label>
+          <label className={'number-of-folder-keys'}>{descendantsCount}</label>
         </div>
 
         <VelocityTransitionGroup
@@ -109,8 +109,8 @@ class TreeDirectory extends React.Component {
         >
           {isCollapsed
             ? undefined
-            : <ul className={style['folder-items']}>
-              {children.map((child, i) => <li className={style['sub-tree']} key={i}>{child}</li>)}
+            : <ul className={'folder-items'}>
+              {children.map((child, i) => <li className={'sub-tree'} key={i}>{child}</li>)}
             </ul>}
         </VelocityTransitionGroup>
       </div>
