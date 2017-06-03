@@ -1,13 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
-import { default as Diff } from 'deep-diff';
+import R from 'ramda';
 import * as keysActions from '../../../../../../store/ducks/selectedKey';
 import { deleteKey } from '../../../../../../store/ducks/keys';
 import SaveButton from '../../../../../../components/common/SaveButton/SaveButton';
 import './KeyPageActions.css';
-
-const diff = Diff.diff;
 
 const DeleteButton = ({ isSaving, selectedKey, deleteKey }) => (
   <button
@@ -42,8 +40,7 @@ const comp = compose(
     isInStickyMode,
   }) => {
     const { local, remote, isSaving } = selectedKey;
-    const changes = diff(local, remote);
-    const hasChanges = (changes || []).length > 0;
+    const hasChanges = !R.equals(local, remote);
     return (
       <div>
         {isReadonly

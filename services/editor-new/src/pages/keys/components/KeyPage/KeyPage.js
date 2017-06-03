@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, lifecycle } from 'recompose';
-import { default as Diff } from 'deep-diff';
+import R from 'ramda';
 import * as selectedKeyActions from '../../../../store/ducks/selectedKey';
 import * as alertActions from '../../../../store/ducks/alerts';
 import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefinition';
@@ -9,24 +9,24 @@ import routeLeaveHook from '../../../../hoc/route-leave-hook';
 import MessageKeyPage from './MessageKeyPage/MessageKeyPage';
 import KeyEditPage from './KeyEditPage/KeyEditPage';
 
-const diff = Diff.diff;
-
 const onRouteLeaveConfirmFunc = (props) => {
   if (!props.selectedKey || props.selectedKey.isSaving) return false;
 
   const { local, remote } = props.selectedKey;
-  const changes = diff(local, remote);
-  return (changes || []).length > 0;
+  return !R.equals(local, remote);
 };
 
 const keyPageComp = compose(
   connect(
-    (state, { match: { params }, history: { location: { query = { } } } }) => ({
-      selectedKey: state.selectedKey,
-      configKey: params.splat,
-      isInAddMode: params.splat === BLANK_KEY_NAME,
-      revision: query.revision,
-    }),
+    (state, { match, location }) => {
+      const configKey = location.pathname.substring(match.path.endsWith('/') ? match.path.length : match.path.length + 1)
+      return {
+        selectedKey: state.selectedKey,
+        configKey,
+        isInAddMode: configKey === BLANK_KEY_NAME,
+        revision: location.query && location.query.revision,
+      };
+    },
     { ...selectedKeyActions, ...alertActions },
   ),
   routeLeaveHook(onRouteLeaveConfirmFunc, 'You have unsaved changes, are you sure you want to leave this page?'),

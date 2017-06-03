@@ -25,7 +25,7 @@ export async function getAllKeys(req, res, { keysRepository }) {
 }
 
 export async function getKey(req, res, { keysRepository }, { params }) {
-    const keyPath = params.splat;
+    const keyPath = params[0];
     const revision = req.query.revision;
     try {
         const keyDetails = await keysRepository.getKeyDetails(keyPath, { revision });
@@ -36,7 +36,7 @@ export async function getKey(req, res, { keysRepository }, { params }) {
 }
 
 export async function getKeyManifest(req, res, { keysRepository }, { params }) {
-    const keyPath = params.splat;
+    const keyPath = params[0];
     const revision = req.query.revision;
     try {
         const manifest = await keysRepository.getKeyManifest(keyPath, { revision });
@@ -47,7 +47,7 @@ export async function getKeyManifest(req, res, { keysRepository }, { params }) {
 }
 
 export const saveKey = injectAuthor(async (req, res, { keysRepository, author }, { params }) => {
-    const keyPath = params.splat;
+    const keyPath = params[0];
 
     const keyRulesSource = req.body.keyDef.source;
     const manifest = { key_path: keyPath, ...req.body.manifest };
@@ -58,7 +58,7 @@ export const saveKey = injectAuthor(async (req, res, { keysRepository, author },
 });
 
 export const deleteKey = injectAuthor(async (req, res, { keysRepository, author }, { params }) => {
-    const keyPath = params.splat;
+    const keyPath = params[0];
     await keysRepository.deleteKey(keyPath, author);
     res.send('OK');
 });

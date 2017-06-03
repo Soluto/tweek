@@ -3,6 +3,7 @@ import path from 'path';
 import nconf from 'nconf';
 import session from 'express-session';
 import Promise from 'bluebird';
+import bodyParser from 'body-parser';
 import serverRoutes from './serverRoutes';
 import GitRepository from './repositories/git-repository';
 import Transactor from './utils/transactor';
@@ -96,6 +97,8 @@ const startServer = () => {
     if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true') {
         addAuthSupport(app);
     }
+    app.use(bodyParser.json()); // for parsing application/json
+    app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
     app.use('/api', serverRoutes({ tagsRepository, keysRepository, tweekApiHostname }));
 
