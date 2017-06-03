@@ -34,7 +34,7 @@ const IdentityDetails = ({
 );
 
 export default compose(
-  mapProps(props => props.params),
+  mapProps(props => props.match.params),
   connect(state => state.context, contextActions),
   mapProps(({ getContext, updateFixedKeys, identityName, identityId, ...props }) => ({
     ...props,

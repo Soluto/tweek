@@ -21,12 +21,13 @@ export default ({ tagsRepository, keysRepository, tweekApiHostname }) => {
         .get(requestErrorHandlingWrapper(ContextRoutes.getContext, { tweekApiHostname }))
         .post(requestErrorHandlingWrapper(ContextRoutes.updateContext, { tweekApiHostname }));
 
+    app.get('/keys', requestErrorHandlingWrapper(KeysRoutes.getAllKeys, { keysRepository }));
     app.route('/keys/*')
         .get(requestErrorHandlingWrapper(KeysRoutes.getKey, { keysRepository }))
         .put(requestErrorHandlingWrapper(KeysRoutes.saveKey, { keysRepository }))
         .delete(requestErrorHandlingWrapper(KeysRoutes.deleteKey, { keysRepository }));
 
-    app.get('/manifests/*', requestErrorHandlingWrapper(KeysRoutes.getKeyManifest));
+    app.get('/manifests/*', requestErrorHandlingWrapper(KeysRoutes.getKeyManifest, { keysRepository }));
 
     app.get('/search-index', requestErrorHandlingWrapper(SearchRoutes.getSearchIndex));
 

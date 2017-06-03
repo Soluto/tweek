@@ -19,6 +19,11 @@ let injectAuthor = fn =>
         );
     };
 
+export async function getAllKeys(req, res, { keysRepository }) {
+    const keys = await keysRepository.getAllKeys();
+    res.json(keys);
+}
+
 export async function getKey(req, res, { keysRepository }, { params }) {
     const keyPath = params.splat;
     const revision = req.query.revision;

@@ -20,8 +20,8 @@ export default compose(
 )(
   class KeysPage extends Component {
     componentDidMount() {
-      if (!this.props.keys) {
-        this.props.getKeys([]);
+      if (!this.props.keys || this.props.keys.length === 0) {
+        this.props.getKeys();
       }
     }
 

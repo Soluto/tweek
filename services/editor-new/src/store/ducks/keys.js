@@ -49,8 +49,20 @@ export function deleteKey(key) {
   };
 }
 
-export function getKeys(payload) {
-  return { type: KEYS_UPDATED, payload };
+export function getKeys() {
+    return async function (dispatch) {
+        try {
+            const result = await (await fetch('/api/keys', {
+                credentials: 'same-origin',
+            }));
+
+            const payload = await result.json();
+
+            dispatch({ type: KEYS_UPDATED, payload });
+        } catch (error) {
+            dispatch(showError({ title: 'Failed to retrieve keys!', error }));
+        }
+    }
 }
 
 export default handleActions(
