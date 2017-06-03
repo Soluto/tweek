@@ -11,11 +11,11 @@
   "dependencies": {
     "axios": "^0.16.1",
     "bluebird": "^3.5.0",
+    "body-parser": "^1.17.2",
     "chance": "^1.0.9",
     "change-case": "^3.0.1",
     "classnames": "^2.2.5",
     "crypto": "^0.0.3",
-    "deep-diff": "^0.3.8",
     "express": "^4.15.3",
     "express-session": "^1.15.3",
     "fs-extra": "^3.0.1",
