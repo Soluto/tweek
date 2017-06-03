@@ -4,51 +4,28 @@
 .combo-box-default-wrapper-theme-class .override-typeahead .override-input {
   flex-grow: 1;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+.combo-box-default-wrapper-theme-class .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
   display: inline-block;
-  border: 0;
-  border-style: none;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   height: 28px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
   font-weight: 500;
   color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+.combo-box-default-wrapper-theme-class .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.combo-box-default-wrapper-theme-class .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+.combo-box-default-wrapper-theme-class .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
   border-color: #bcbcbc;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  width: 150px;
-}
-.combo-box-default-wrapper-theme-class .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.combo-box-default-wrapper-theme-class .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
-  border-color: #bcbcbc;
-}
-.combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown :global(.dropdown-menu) {
+.combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown .dropdown-menu {
   position: absolute;
   max-height: 350px;
   min-width: 450px;
@@ -56,7 +33,7 @@
   width: auto;
   z-index: 5;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown :global(.dropdown-menu) li {
+.combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown .dropdown-menu li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
@@ -66,17 +43,17 @@
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown :global(.dropdown-menu) li:last-child {
+.combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown .dropdown-menu li:last-child {
   border-bottom-width: 1px;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown :global(.dropdown-menu) li:hover {
+.combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown .dropdown-menu li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown :global(.dropdown-menu) li:active {
+.combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown .dropdown-menu li:active {
   background-color: #d1d1d1;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown :global(.dropdown-menu) li a {
+.combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown .dropdown-menu li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -87,64 +64,41 @@
   flex-direction: column;
   justify-content: center;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown :global(.dropdown-menu) li a:first-child {
+.combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown .dropdown-menu li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown :global(.dropdown-menu) :global(.disabled) {
+.combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown .dropdown-menu .disabled {
   display: none;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown :global(.dropdown-menu) :global(.active) {
+.combo-box-default-wrapper-theme-class .override-typeahead .override-dropdown .dropdown-menu .active {
   background-color: #dfdfdf;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) {
+.combo-box-default-wrapper-theme-class .override-typeahead .bootstrap-typeahead {
   flex-grow: 1;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+.combo-box-default-wrapper-theme-class .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
   display: inline-block;
-  border: 0;
-  border-style: none;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   height: 28px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
   font-weight: 500;
   color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+.combo-box-default-wrapper-theme-class .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+.combo-box-default-wrapper-theme-class .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
   border-color: #bcbcbc;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  width: 150px;
-}
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
-  border-color: #bcbcbc;
-}
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) {
+.combo-box-default-wrapper-theme-class .override-typeahead .bootstrap-typeahead .dropdown-menu {
   position: absolute;
   max-height: 350px;
   min-width: 450px;
@@ -152,7 +106,7 @@
   width: auto;
   z-index: 5;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
+.combo-box-default-wrapper-theme-class .override-typeahead .bootstrap-typeahead .dropdown-menu li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
@@ -162,17 +116,17 @@
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
+.combo-box-default-wrapper-theme-class .override-typeahead .bootstrap-typeahead .dropdown-menu li:last-child {
   border-bottom-width: 1px;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
+.combo-box-default-wrapper-theme-class .override-typeahead .bootstrap-typeahead .dropdown-menu li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
+.combo-box-default-wrapper-theme-class .override-typeahead .bootstrap-typeahead .dropdown-menu li:active {
   background-color: #d1d1d1;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
+.combo-box-default-wrapper-theme-class .override-typeahead .bootstrap-typeahead .dropdown-menu li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -183,119 +137,41 @@
   flex-direction: column;
   justify-content: center;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
+.combo-box-default-wrapper-theme-class .override-typeahead .bootstrap-typeahead .dropdown-menu li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.disabled) {
+.combo-box-default-wrapper-theme-class .override-typeahead .bootstrap-typeahead .dropdown-menu .disabled {
   display: none;
 }
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
+.combo-box-default-wrapper-theme-class .override-typeahead .bootstrap-typeahead .dropdown-menu .active {
   background-color: #dfdfdf;
-}
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) {
-  vertical-align: top;
-  background-color: #00aeef;
-  height: 28px;
-  border: 0;
-  padding: 0 20px;
-  color: white;
-  outline: 0;
-  padding-bottom: 2px;
-  border-radius: 14px;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  transition: all 0.2s ease-in-out;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  line-height: 1;
-  padding: 0 0 3px;
-  box-sizing: border-box;
-  background-color: #bcbcbc;
-  font-size: 16px;
-  padding-top: 2px;
-  margin-top: -12px;
-  position: absolute;
-  right: 0;
-  top: 50%;
-  z-index: 1;
-}
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
-  background-color: #029CD5;
-  cursor: pointer;
-}
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled {
-  background-color: gray;
-}
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:hover,
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:active {
-  cursor: default;
-  background-color: gray;
-}
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
-  background-color: #9c9c9c;
-}
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):active {
-  background-color: #7b7b7b;
-}
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):after {
-  font-family: 'tweekIcons';
-  content: '\E900';
-}
-.combo-box-default-wrapper-theme-class .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) span {
-  display: none;
 }
 .combo-box-default-wrapper-theme-class .override-input {
   flex-grow: 1;
 }
-.combo-box-default-wrapper-theme-class .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+.combo-box-default-wrapper-theme-class .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
   display: inline-block;
-  border: 0;
-  border-style: none;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   height: 28px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
   font-weight: 500;
   color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.combo-box-default-wrapper-theme-class .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+.combo-box-default-wrapper-theme-class .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.combo-box-default-wrapper-theme-class .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+.combo-box-default-wrapper-theme-class .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
   border-color: #bcbcbc;
 }
-.combo-box-default-wrapper-theme-class .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  width: 150px;
-}
-.combo-box-default-wrapper-theme-class .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.combo-box-default-wrapper-theme-class .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
-  border-color: #bcbcbc;
-}
-.combo-box-default-wrapper-theme-class .override-dropdown :global(.dropdown-menu) {
+.combo-box-default-wrapper-theme-class .override-dropdown .dropdown-menu {
   position: absolute;
   max-height: 350px;
   min-width: 450px;
@@ -303,7 +179,7 @@
   width: auto;
   z-index: 5;
 }
-.combo-box-default-wrapper-theme-class .override-dropdown :global(.dropdown-menu) li {
+.combo-box-default-wrapper-theme-class .override-dropdown .dropdown-menu li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
@@ -313,17 +189,17 @@
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-.combo-box-default-wrapper-theme-class .override-dropdown :global(.dropdown-menu) li:last-child {
+.combo-box-default-wrapper-theme-class .override-dropdown .dropdown-menu li:last-child {
   border-bottom-width: 1px;
 }
-.combo-box-default-wrapper-theme-class .override-dropdown :global(.dropdown-menu) li:hover {
+.combo-box-default-wrapper-theme-class .override-dropdown .dropdown-menu li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-.combo-box-default-wrapper-theme-class .override-dropdown :global(.dropdown-menu) li:active {
+.combo-box-default-wrapper-theme-class .override-dropdown .dropdown-menu li:active {
   background-color: #d1d1d1;
 }
-.combo-box-default-wrapper-theme-class .override-dropdown :global(.dropdown-menu) li a {
+.combo-box-default-wrapper-theme-class .override-dropdown .dropdown-menu li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -334,64 +210,41 @@
   flex-direction: column;
   justify-content: center;
 }
-.combo-box-default-wrapper-theme-class .override-dropdown :global(.dropdown-menu) li a:first-child {
+.combo-box-default-wrapper-theme-class .override-dropdown .dropdown-menu li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-.combo-box-default-wrapper-theme-class .override-dropdown :global(.dropdown-menu) :global(.disabled) {
+.combo-box-default-wrapper-theme-class .override-dropdown .dropdown-menu .disabled {
   display: none;
 }
-.combo-box-default-wrapper-theme-class .override-dropdown :global(.dropdown-menu) :global(.active) {
+.combo-box-default-wrapper-theme-class .override-dropdown .dropdown-menu .active {
   background-color: #dfdfdf;
 }
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) {
+.combo-box-default-wrapper-theme-class .bootstrap-typeahead {
   flex-grow: 1;
 }
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+.combo-box-default-wrapper-theme-class .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
   display: inline-block;
-  border: 0;
-  border-style: none;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   height: 28px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
   font-weight: 500;
   color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+.combo-box-default-wrapper-theme-class .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+.combo-box-default-wrapper-theme-class .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
   border-color: #bcbcbc;
 }
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  width: 150px;
-}
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
-  border-color: #bcbcbc;
-}
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.dropdown-menu) {
+.combo-box-default-wrapper-theme-class .bootstrap-typeahead .dropdown-menu {
   position: absolute;
   max-height: 350px;
   min-width: 450px;
@@ -399,7 +252,7 @@
   width: auto;
   z-index: 5;
 }
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
+.combo-box-default-wrapper-theme-class .bootstrap-typeahead .dropdown-menu li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
@@ -409,17 +262,17 @@
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
+.combo-box-default-wrapper-theme-class .bootstrap-typeahead .dropdown-menu li:last-child {
   border-bottom-width: 1px;
 }
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
+.combo-box-default-wrapper-theme-class .bootstrap-typeahead .dropdown-menu li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
+.combo-box-default-wrapper-theme-class .bootstrap-typeahead .dropdown-menu li:active {
   background-color: #d1d1d1;
 }
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
+.combo-box-default-wrapper-theme-class .bootstrap-typeahead .dropdown-menu li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -430,68 +283,13 @@
   flex-direction: column;
   justify-content: center;
 }
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
+.combo-box-default-wrapper-theme-class .bootstrap-typeahead .dropdown-menu li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.disabled) {
+.combo-box-default-wrapper-theme-class .bootstrap-typeahead .dropdown-menu .disabled {
   display: none;
 }
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
+.combo-box-default-wrapper-theme-class .bootstrap-typeahead .dropdown-menu .active {
   background-color: #dfdfdf;
-}
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) {
-  vertical-align: top;
-  background-color: #00aeef;
-  height: 28px;
-  border: 0;
-  padding: 0 20px;
-  color: white;
-  outline: 0;
-  padding-bottom: 2px;
-  border-radius: 14px;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  transition: all 0.2s ease-in-out;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  line-height: 1;
-  padding: 0 0 3px;
-  box-sizing: border-box;
-  background-color: #bcbcbc;
-  font-size: 16px;
-  padding-top: 2px;
-  margin-top: -12px;
-  position: absolute;
-  right: 0;
-  top: 50%;
-  z-index: 1;
-}
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
-  background-color: #029CD5;
-  cursor: pointer;
-}
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled {
-  background-color: gray;
-}
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:hover,
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:active {
-  cursor: default;
-  background-color: gray;
-}
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
-  background-color: #9c9c9c;
-}
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):active {
-  background-color: #7b7b7b;
-}
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):after {
-  font-family: 'tweekIcons';
-  content: '\E900';
-}
-.combo-box-default-wrapper-theme-class :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) span {
-  display: none;
 }

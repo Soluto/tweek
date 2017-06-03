@@ -15,7 +15,7 @@ const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
   const indexedSuggestions = suggestions ? suggestions.map(x => x) : [];
 
   return (
-    <div className={'tags-wrapper'}>
+    <div className={'property-value-tags-wrapper'}>
       <ReactTags
         tags={indexedTags}
         suggestions={indexedSuggestions}

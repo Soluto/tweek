@@ -41,7 +41,7 @@ export default compose(
     render() {
       const { tags, tagsSuggestions } = this.props;
       return (
-        <div className={'tags-wrapper'}>
+        <div className={'key-tags'}>
           <ReactTags
             tags={tags}
             handleDelete={this._onTagDeleted}

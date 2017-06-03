@@ -4,13 +4,13 @@ import R from 'ramda';
 import { withState } from 'recompose';
 import classnames from 'classnames';
 import AutoSuggest from './AutoSuggest';
-import style from './MultiSourceComboBox.css';
+import './MultiSourceComboBox.css';
 
 const SourceTitle = ({ id, selectSourceId, sourceId }) => (
   <div
     onClick={() => selectSourceId(id)}
     disabled={id === sourceId}
-    className={classnames(style['source-item'], { active: id === sourceId })}
+    className={classnames('source-item', { active: id === sourceId })}
   >
     {id === undefined ? 'All' : id}
   </div>
@@ -23,8 +23,8 @@ const MultiSourceComboBox = ({ getSuggestions, sourceId, selectSourceId, ...prop
         ? getSuggestions[sourceId](...args)
         : R.pipe(R.values, R.chain(x => x(...args)))(getSuggestions))}
     suggestionsContainer={({ children }) => (
-      <div className={style['multi-source-combo-box-suggestions']}>
-        <div className={style['source-select']}>
+      <div className={'multi-source-combo-box-suggestions'}>
+        <div className={'source-select'}>
           <SourceTitle {...{ sourceId, selectSourceId }} />
           {Object.keys(getSuggestions).map(key => (
             <SourceTitle id={key} {...{ key, sourceId, selectSourceId }} />

@@ -39,8 +39,8 @@
 }
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-input {
   display: inline-block;
-  border: 0;
-  border-style: none;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   height: 28px;
   width: 150px;
   padding: 0 4px;
@@ -48,7 +48,6 @@
   font-size: 13px;
   font-weight: 500;
   color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
@@ -66,8 +65,8 @@
 }
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .key-name-input {
   display: inline-block;
-  border: 0;
-  border-style: none;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   height: 28px;
   width: 150px;
   padding: 0 4px;
@@ -75,7 +74,6 @@
   font-size: 13px;
   font-weight: 500;
   color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
@@ -105,14 +103,14 @@
   flex-direction: row;
   margin-bottom: 13px;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper :global(.bootstrap-typeahead-input) {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .bootstrap-typeahead-input-container {
   display: flex;
   flex-grow: 1;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
   display: inline-block;
-  border: 0;
-  border-style: none;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   height: 28px;
   width: 150px;
   padding: 0 4px;
@@ -120,7 +118,6 @@
   font-size: 13px;
   font-weight: 500;
   color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
@@ -131,16 +128,20 @@
   flex-grow: 1;
   padding-left: 0;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
   border-color: #bcbcbc;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] .bootstrap-typeahead-input-container {
+  display: flex;
+  flex-grow: 1;
+}
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
   display: inline-block;
-  border: 0;
-  border-style: none;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   height: 28px;
   width: 150px;
   padding: 0 4px;
@@ -148,39 +149,6 @@
   font-size: 13px;
   font-weight: 500;
   color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  font-size: 22px;
-  font-weight: 300;
-  margin-right: 20px;
-  display: flex;
-  flex-grow: 1;
-  padding-left: 0;
-}
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
-  border-color: #bcbcbc;
-}
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] :global(.bootstrap-typeahead-input) {
-  display: flex;
-  flex-grow: 1;
-}
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  width: 150px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
@@ -191,38 +159,10 @@
   flex-grow: 1;
   padding-left: 30px;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
-  border-color: #bcbcbc;
-}
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  width: 150px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  font-size: 22px;
-  font-weight: 300;
-  margin-right: 20px;
-  display: flex;
-  flex-grow: 1;
-  padding-left: 30px;
-}
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
+.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
   border-color: #bcbcbc;
 }
 .key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .validation-icon-wrapper {
@@ -308,7 +248,7 @@
   outline: none;
   box-sizing: border-box;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-header .key-meta-container .key-description-and-tags-wrapper .tags-wrapper {
+.key-viewer-container-form .key-viewer-container-fieldset .key-header .key-meta-container .key-description-and-tags-wrapper .key-tags-wrapper {
   display: flex;
   width: 0;
   flex-direction: column;

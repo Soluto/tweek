@@ -1,4 +1,4 @@
-.tags-wrapper .tags-container:before {
+.key-tags .tags-container:before {
   content: 'Tags';
   color: #a5a5a5;
   font-size: 14px;
@@ -6,7 +6,7 @@
   margin-right: 10px;
   margin-top: 10px;
 }
-.tags-wrapper .tags-container .tag {
+.key-tags .tags-container .tag {
   border: 1px solid #ddd;
   background-color: #eeeeee;
   font-size: 12px;
@@ -16,7 +16,7 @@
   border-radius: 2px;
   color: #515c66;
 }
-.tags-wrapper .tags-container .tag .tag-delete-button {
+.key-tags .tags-container .tag .tag-delete-button {
   display: block;
   float: right;
   margin-top: 1px;
@@ -28,16 +28,16 @@
   height: 9px;
   transition: all 0.2s ease-in-out;
 }
-.tags-wrapper .tags-container .tag .tag-delete-button:hover {
+.key-tags .tags-container .tag .tag-delete-button:hover {
   cursor: pointer;
   color: #939393;
 }
-.tags-wrapper .tags-container .tag-input {
+.key-tags .tags-container .tag-input {
   display: inline-block;
   font-size: 12px;
 }
-.tags-wrapper .tags-container .tag-input input,
-.tags-wrapper .tags-container .tag-input input:focus {
+.key-tags .tags-container .tag-input input,
+.key-tags .tags-container .tag-input input:focus {
   border: 1px solid #ddd;
   background-color: #eeeeee;
   font-size: 12px;
@@ -48,8 +48,8 @@
   color: #515c66;
   outline: none;
 }
-.tags-wrapper .tags-container .tag-input input .tag-delete-button,
-.tags-wrapper .tags-container .tag-input input:focus .tag-delete-button {
+.key-tags .tags-container .tag-input input .tag-delete-button,
+.key-tags .tags-container .tag-input input:focus .tag-delete-button {
   display: block;
   float: right;
   margin-top: 1px;
@@ -61,16 +61,16 @@
   height: 9px;
   transition: all 0.2s ease-in-out;
 }
-.tags-wrapper .tags-container .tag-input input .tag-delete-button:hover,
-.tags-wrapper .tags-container .tag-input input:focus .tag-delete-button:hover {
+.key-tags .tags-container .tag-input input .tag-delete-button:hover,
+.key-tags .tags-container .tag-input input:focus .tag-delete-button:hover {
   cursor: pointer;
   color: #939393;
 }
-.tags-wrapper .tags-container .tags-suggestion {
+.key-tags .tags-container .tags-suggestion {
   position: fixed;
   z-index: 1;
 }
-.tags-wrapper .tags-container .tags-suggestion ul {
+.key-tags .tags-container .tags-suggestion ul {
   list-style-type: none;
   box-shadow: 0.05em 0.01em 0.5em rgba(0, 0, 0, 0.2);
   background: white;
@@ -79,27 +79,27 @@
   max-height: 300px;
   overflow-y: auto;
 }
-.tags-wrapper .tags-container .tags-suggestion ul li {
+.key-tags .tags-container .tags-suggestion ul li {
   border-bottom: 1px solid #ddd;
   padding: 5px 10px;
   margin: 0;
   transition: all 0.2s ease-in-out;
 }
-.tags-wrapper .tags-container .tags-suggestion ul li mark {
+.key-tags .tags-container .tags-suggestion ul li mark {
   text-decoration: underline;
   background: none;
   font-weight: 600;
 }
-.tags-wrapper .tags-container .tags-suggestion ul li:hover {
+.key-tags .tags-container .tags-suggestion ul li:hover {
   cursor: pointer;
   background-color: #eeeeee;
 }
-.tags-wrapper .tags-container .tags-suggestion ul li:active,
-.tags-wrapper .tags-container .tags-suggestion ul li:global(.active):active {
+.key-tags .tags-container .tags-suggestion ul li:active,
+.key-tags .tags-container .tags-suggestion ul li:global(.active):active {
   cursor: pointer;
   background-color: #d9d9d9;
 }
-.tags-wrapper .tags-container .tags-suggestion ul li:global(.active) {
+.key-tags .tags-container .tags-suggestion ul li:global(.active) {
   cursor: pointer;
   background-color: #eeeeee;
 }

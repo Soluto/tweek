@@ -61,14 +61,10 @@
           flex-direction: row;
           margin-bottom: 13px;
           .override-typeahead(@text-padding) {
-            :global(.bootstrap-typeahead-input) {
+            .bootstrap-typeahead-input-container {
               display: flex;
               flex-grow: 1;
-              :global(.bootstrap-typeahead-input-main) {
-                .key-name-input;
-                padding-left: @text-padding;
-              }
-              :global(.bootstrap-typeahead-input-hint) {
+              .bootstrap-typeahead-input {
                 .key-name-input;
                 padding-left: @text-padding;
               }
@@ -158,7 +154,7 @@
               box-sizing: border-box;
             }
           }
-          .tags-wrapper {
+          .key-tags-wrapper {
             display: flex;
             width: 0;
             flex-direction: column;
