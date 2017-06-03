@@ -1,20 +1,20 @@
 # ---- Base ----
-FROM node:8.0.0-alpine AS base
+FROM node:6.10.3-slim AS base
 
 COPY package.json yarn.lock /src/
 WORKDIR /src/
-RUN yarn --prod
+RUN npm install --only=production
 
 # ---- Build ----
 FROM base AS build
 
-RUN yarn
+RUN npm install --only=dev
 
 COPY . /src/
 RUN yarn build
 
 # ---- Release ----
-FROM node:8.0.0-alpine AS release
+FROM node:6.10.3-slim AS release
 
 COPY --from=build /src/dist/ /opt/app/dist
 COPY --from=build /src/build/ /opt/app/dist/build
