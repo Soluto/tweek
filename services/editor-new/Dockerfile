@@ -11,6 +11,7 @@ FROM base AS build
 RUN npm install --only=dev
 
 COPY . /src/
+RUN yarn test
 RUN yarn build
 
 # ---- Release ----
