@@ -1,7 +1,7 @@
 /* global jest, beforeEach, describe, it, expect */
 jest.unmock('../../../../modules/server/repositories/keys-repository');
 
-import KeysRepository from '../../../../modules/server/repositories/keys-repository';
+import KeysRepository from '../../../../server/repositories/keys-repository';
 
 describe('keys-repository', () => {
   let mockGitRepo = {};

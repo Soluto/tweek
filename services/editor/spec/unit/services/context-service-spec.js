@@ -10,7 +10,7 @@ jest.mock('../../../modules/services/types-service', () => {
 });
 
 import fetchMock from 'fetch-mock';
-import * as ContextService from '../../../modules/services/context-service';
+import * as ContextService from '../../../src/services/context-service';
 import chai, { assert, expect } from 'chai';
 chai.use(require('chai-things'));
 

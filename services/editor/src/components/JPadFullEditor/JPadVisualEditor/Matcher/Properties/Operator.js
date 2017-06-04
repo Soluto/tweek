@@ -1,6 +1,6 @@
 import React from 'react';
 import style from './styles.css';
-import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
+import ComboBox from '../../../../common/ComboBox/ComboBox';
 
 const Operator = ({ selectedOperator, onUpdate, supportedOperators }) => (
   <ComboBox

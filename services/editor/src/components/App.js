@@ -12,7 +12,7 @@ import style from './App.css';
 import * as TypesService from '../services/types-service';
 import { withTypesService } from './common/Input/TypedInput';
 
-require('../styles/core/fonts/fonts.css');
+require('./core/fonts/fonts.css');
 
 setObservableConfig({
   fromESObservable: Observable.from,

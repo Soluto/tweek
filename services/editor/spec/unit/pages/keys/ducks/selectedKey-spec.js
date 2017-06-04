@@ -34,14 +34,14 @@ jest.mock('../../../../../modules/store/ducks/alerts', () => {
   };
 });
 
-import { openKey, saveKey, updateKeyValueType, updateKeyName } from '../../../../../modules/store/ducks/selectedKey';
-import { createBlankJPadKey, createBlankKeyManifest, BLANK_KEY_NAME } from '../../../../../modules/store/ducks/ducks-utils/blankKeyDefinition';
+import { openKey, saveKey, updateKeyValueType, updateKeyName } from '../../../../../src/store/ducks/selectedKey';
+import { createBlankJPadKey, createBlankKeyManifest, BLANK_KEY_NAME } from '../../../../../src/store/ducks/ducks-utils/blankKeyDefinition';
 import { assert, expect } from 'chai';
 import fetchMock from 'fetch-mock';
-import keyNameValidations from '../../../../../modules/store/ducks/ducks-utils/validations/key-name-validations';
-import keyValueTypeValidations from '../../../../../modules/store/ducks/ducks-utils/validations/key-value-type-validations';
+import keyNameValidations from '../../../../../src/store/ducks/ducks-utils/validations/key-name-validations';
+import keyValueTypeValidations from '../../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations';
 import R from 'ramda';
-import alerts from '../../../../../modules/store/ducks/alerts';
+import alerts from '../../../../../src/store/ducks/alerts';
 
 describe('selectedKey', async () => {
   const KEY_OPENED = 'KEY_OPENED';
