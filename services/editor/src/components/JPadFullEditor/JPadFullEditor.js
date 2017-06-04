@@ -40,9 +40,8 @@ const KeyRulesEditor = ({
       className={'tab-container'}
       selectedIndex={selectedTab}
       onSelect={(index, lastIndex) => {
-        console.log('selectedTab', selectedTab);
         if (lastIndex === 1) {
-          return true;
+          console.log('tabtab');
         }
         setSelectedTab(index);
       }}
