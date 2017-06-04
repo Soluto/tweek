@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const style = {
   container: {
@@ -24,10 +25,10 @@ const style = {
   },
 };
 
-const InputWithHint = ({ value, showHint, hint, autofocus, placeholder, ...props }) => (
-  <div className="bootstrap-typeahead-input" style={style.container} tabIndex={-1}>
+const InputWithHint = ({ className, value, showHint, hint, autofocus, placeholder, ...props }) =>
+  <div className={`${className}-container`} style={style.container} tabIndex={-1}>
     <input
-      className="bootstrap-typeahead-input-main"
+      className={`${className} input-main`}
       {...props}
       value={value}
       autoComplete="off"
@@ -35,26 +36,27 @@ const InputWithHint = ({ value, showHint, hint, autofocus, placeholder, ...props
       ref={e => e && autofocus && e.focus()}
     />
     <input
-      className="bootstrap-typeahead-input-hint"
+      className={`${className} input-hint`}
       value={showHint ? hint : value.length > 0 ? '' : placeholder}
       readOnly
       autoComplete="off"
       style={style.hint}
       tabIndex={-1}
     />
-  </div>
-);
+  </div>;
 
 InputWithHint.propTypes = {
   showHint: PropTypes.bool.isRequired,
   hint: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
   autofocus: PropTypes.bool,
+  className: PropTypes.string,
 };
 
 InputWithHint.defaultProps = {
   placeholder: '',
   autofocus: false,
+  className: 'bootstrap-typeahead-input',
 };
 
 export default InputWithHint;

@@ -4,6 +4,7 @@
   position: absolute;
   border: 1px solid lightgray;
   z-index: 5;
+  background-color: white;
 }
 .multi-source-combo-box-suggestions .source-select {
   display: flex;

@@ -1,8 +1,9 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { withContext, getContext } from 'recompose';
 import changeCase from 'change-case';
-import Input from './Input';
 import ComboBox from '../ComboBox/ComboBox';
+import Input from './Input';
 
 export const typesServiceContextType = {
   types: PropTypes.object.isRequired,
@@ -14,11 +15,8 @@ export const withTypesService = ({ safeConvertValue, types }) =>
 
 const getTypesService = getContext(typesServiceContextType);
 
-const valueToItem = value => (
-  value === undefined || value === '' ?
-    undefined :
-    { label: changeCase.pascalCase(value), value }
-);
+const valueToItem = value =>
+  value === undefined || value === '' ? undefined : { label: changeCase.pascalCase(value), value };
 
 const TypedInput = ({ safeConvertValue, types, valueType, value, onChange, ...props }) => {
   const typeDefinition = types[valueType];

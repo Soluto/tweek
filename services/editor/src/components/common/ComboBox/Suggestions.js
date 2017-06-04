@@ -1,8 +1,9 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Highlighter from 'react-highlight-words';
 
-const SuggestionItem = ({ children, className, onSelect, active, disabled, ...props }) => (
+const SuggestionItem = ({ children, className, onSelect, active, disabled, ...props }) =>
   <li className={classnames(className, { active, disabled })} {...props}>
     <a
       role="button"
@@ -13,8 +14,7 @@ const SuggestionItem = ({ children, className, onSelect, active, disabled, ...pr
     >
       {children}
     </a>
-  </li>
-);
+  </li>;
 
 SuggestionItem.propTypes = {
   className: PropTypes.string,
@@ -39,9 +39,9 @@ const Suggestions = ({
   onSuggestionHighlighted,
   renderSuggestion,
   suggestionsContainer: Container,
-}) => (
+}) =>
   <Container>
-    {suggestions.map((x, i) => (
+    {suggestions.map((x, i) =>
       <SuggestionItem
         key={`${i}_${getLabel(x)}`}
         onSelect={() => onSuggestionSelected(i)}
@@ -51,14 +51,13 @@ const Suggestions = ({
         {renderSuggestion
           ? renderSuggestion(x, value)
           : <Highlighter
-            highlightStyle={highlightStyle}
-            searchWords={value.split(' ')}
-            textToHighlight={getLabel(x)}
-          />}
-      </SuggestionItem>
-    ))}
-  </Container>
-);
+              highlightStyle={highlightStyle}
+              searchWords={value.split(' ')}
+              textToHighlight={getLabel(x)}
+            />}
+      </SuggestionItem>,
+    )}
+  </Container>;
 
 Suggestions.propTypes = {
   value: PropTypes.string.isRequired,
@@ -73,15 +72,16 @@ Suggestions.propTypes = {
 };
 
 Suggestions.defaultProps = {
-  suggestionsContainer: ({ children, ...props }) => (
-    <div style={{ display: 'flex', position: 'relative' }}><ul
-      {...props}
-      className="bootstrap-typeahead-menu dropdown-menu dropdown-menu-justify"
-      style={{ display: 'block', overflow: 'auto', maxHeight: '300px' }}
-    >
-      {children}
-    </ul></div>
-  ),
+  suggestionsContainer: ({ children, ...props }) =>
+    <div style={{ display: 'flex', position: 'relative' }}>
+      <ul
+        {...props}
+        className="bootstrap-typeahead-menu dropdown-menu dropdown-menu-justify"
+        style={{ display: 'block', overflow: 'auto', maxHeight: '300px' }}
+      >
+        {children}
+      </ul>
+    </div>,
 };
 
 export default Suggestions;

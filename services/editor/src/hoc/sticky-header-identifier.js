@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { compose, pure, lifecycle, withState } from 'recompose';
 
 const stickyHeaderIdentifier = (elementId, triggerScrollFromTop) => Comp =>

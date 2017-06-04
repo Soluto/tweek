@@ -1,9 +1,8 @@
 import React from 'react';
 
-const wrapComponentWithClass = Comp => ({ className, ...props }) => (
+const wrapComponentWithClass = Comp => ({ className, ...props }) =>
   <div className={className}>
     <Comp {...props} />
-  </div>
-);
+  </div>;
 
 export default wrapComponentWithClass;

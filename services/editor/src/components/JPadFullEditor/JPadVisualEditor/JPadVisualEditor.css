@@ -9,51 +9,28 @@
 .jpad-editor-container .jpad-settings .default-value .override-typeahead .override-input {
   flex-grow: 1;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
   display: inline-block;
-  border: 0;
-  border-style: none;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   height: 28px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
   font-weight: 500;
   color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
   border-color: #bcbcbc;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  width: 150px;
-}
-.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
-  border-color: #bcbcbc;
-}
-.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-dropdown :global(.dropdown-menu) {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-dropdown .dropdown-menu {
   position: absolute;
   max-height: 350px;
   min-width: 150px;
@@ -61,7 +38,7 @@
   width: auto;
   z-index: 5;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-dropdown :global(.dropdown-menu) li {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-dropdown .dropdown-menu li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
@@ -71,17 +48,17 @@
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-dropdown :global(.dropdown-menu) li:last-child {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-dropdown .dropdown-menu li:last-child {
   border-bottom-width: 1px;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-dropdown :global(.dropdown-menu) li:hover {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-dropdown .dropdown-menu li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-dropdown :global(.dropdown-menu) li:active {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-dropdown .dropdown-menu li:active {
   background-color: #d1d1d1;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-dropdown :global(.dropdown-menu) li a {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-dropdown .dropdown-menu li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -92,64 +69,41 @@
   flex-direction: column;
   justify-content: center;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-dropdown :global(.dropdown-menu) li a:first-child {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-dropdown .dropdown-menu li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-dropdown :global(.dropdown-menu) :global(.disabled) {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-dropdown .dropdown-menu .disabled {
   display: none;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-dropdown :global(.dropdown-menu) :global(.active) {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .override-dropdown .dropdown-menu .active {
   background-color: #dfdfdf;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .bootstrap-typeahead {
   flex-grow: 1;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
   display: inline-block;
-  border: 0;
-  border-style: none;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   height: 28px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
   font-weight: 500;
   color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
   border-color: #bcbcbc;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  width: 150px;
-}
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
-  border-color: #bcbcbc;
-}
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .bootstrap-typeahead .dropdown-menu {
   position: absolute;
   max-height: 350px;
   min-width: 150px;
@@ -157,7 +111,7 @@
   width: auto;
   z-index: 5;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .bootstrap-typeahead .dropdown-menu li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
@@ -167,17 +121,17 @@
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .bootstrap-typeahead .dropdown-menu li:last-child {
   border-bottom-width: 1px;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .bootstrap-typeahead .dropdown-menu li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .bootstrap-typeahead .dropdown-menu li:active {
   background-color: #d1d1d1;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .bootstrap-typeahead .dropdown-menu li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -188,119 +142,41 @@
   flex-direction: column;
   justify-content: center;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .bootstrap-typeahead .dropdown-menu li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.disabled) {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .bootstrap-typeahead .dropdown-menu .disabled {
   display: none;
 }
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
+.jpad-editor-container .jpad-settings .default-value .override-typeahead .bootstrap-typeahead .dropdown-menu .active {
   background-color: #dfdfdf;
-}
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) {
-  vertical-align: top;
-  background-color: #00aeef;
-  height: 28px;
-  border: 0;
-  padding: 0 20px;
-  color: white;
-  outline: 0;
-  padding-bottom: 2px;
-  border-radius: 14px;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  transition: all 0.2s ease-in-out;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  line-height: 1;
-  padding: 0 0 3px;
-  box-sizing: border-box;
-  background-color: #bcbcbc;
-  font-size: 16px;
-  padding-top: 2px;
-  margin-top: -12px;
-  position: absolute;
-  right: 0;
-  top: 50%;
-  z-index: 1;
-}
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
-  background-color: #029CD5;
-  cursor: pointer;
-}
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled {
-  background-color: gray;
-}
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:hover,
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:active {
-  cursor: default;
-  background-color: gray;
-}
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
-  background-color: #9c9c9c;
-}
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):active {
-  background-color: #7b7b7b;
-}
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):after {
-  font-family: 'tweekIcons';
-  content: '\E900';
-}
-.jpad-editor-container .jpad-settings .default-value .override-typeahead :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) span {
-  display: none;
 }
 .jpad-editor-container .jpad-settings .default-value .override-input {
   flex-grow: 1;
 }
-.jpad-editor-container .jpad-settings .default-value .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+.jpad-editor-container .jpad-settings .default-value .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
   display: inline-block;
-  border: 0;
-  border-style: none;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   height: 28px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
   font-weight: 500;
   color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.jpad-editor-container .jpad-settings .default-value .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+.jpad-editor-container .jpad-settings .default-value .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.jpad-editor-container .jpad-settings .default-value .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+.jpad-editor-container .jpad-settings .default-value .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
   border-color: #bcbcbc;
 }
-.jpad-editor-container .jpad-settings .default-value .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  width: 150px;
-}
-.jpad-editor-container .jpad-settings .default-value .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.jpad-editor-container .jpad-settings .default-value .override-input :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
-  border-color: #bcbcbc;
-}
-.jpad-editor-container .jpad-settings .default-value .override-dropdown :global(.dropdown-menu) {
+.jpad-editor-container .jpad-settings .default-value .override-dropdown .dropdown-menu {
   position: absolute;
   max-height: 350px;
   min-width: 150px;
@@ -308,7 +184,7 @@
   width: auto;
   z-index: 5;
 }
-.jpad-editor-container .jpad-settings .default-value .override-dropdown :global(.dropdown-menu) li {
+.jpad-editor-container .jpad-settings .default-value .override-dropdown .dropdown-menu li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
@@ -318,17 +194,17 @@
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-.jpad-editor-container .jpad-settings .default-value .override-dropdown :global(.dropdown-menu) li:last-child {
+.jpad-editor-container .jpad-settings .default-value .override-dropdown .dropdown-menu li:last-child {
   border-bottom-width: 1px;
 }
-.jpad-editor-container .jpad-settings .default-value .override-dropdown :global(.dropdown-menu) li:hover {
+.jpad-editor-container .jpad-settings .default-value .override-dropdown .dropdown-menu li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-.jpad-editor-container .jpad-settings .default-value .override-dropdown :global(.dropdown-menu) li:active {
+.jpad-editor-container .jpad-settings .default-value .override-dropdown .dropdown-menu li:active {
   background-color: #d1d1d1;
 }
-.jpad-editor-container .jpad-settings .default-value .override-dropdown :global(.dropdown-menu) li a {
+.jpad-editor-container .jpad-settings .default-value .override-dropdown .dropdown-menu li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -339,64 +215,41 @@
   flex-direction: column;
   justify-content: center;
 }
-.jpad-editor-container .jpad-settings .default-value .override-dropdown :global(.dropdown-menu) li a:first-child {
+.jpad-editor-container .jpad-settings .default-value .override-dropdown .dropdown-menu li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-.jpad-editor-container .jpad-settings .default-value .override-dropdown :global(.dropdown-menu) :global(.disabled) {
+.jpad-editor-container .jpad-settings .default-value .override-dropdown .dropdown-menu .disabled {
   display: none;
 }
-.jpad-editor-container .jpad-settings .default-value .override-dropdown :global(.dropdown-menu) :global(.active) {
+.jpad-editor-container .jpad-settings .default-value .override-dropdown .dropdown-menu .active {
   background-color: #dfdfdf;
 }
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) {
+.jpad-editor-container .jpad-settings .default-value .bootstrap-typeahead {
   flex-grow: 1;
 }
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main) {
+.jpad-editor-container .jpad-settings .default-value .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
   display: inline-block;
-  border: 0;
-  border-style: none;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   height: 28px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
   font-weight: 500;
   color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):focus {
+.jpad-editor-container .jpad-settings .default-value .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-main):disabled {
+.jpad-editor-container .jpad-settings .default-value .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
   border-color: #bcbcbc;
 }
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint) {
-  display: inline-block;
-  border: 0;
-  border-style: none;
-  height: 28px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  width: 150px;
-}
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-input) :global(.bootstrap-typeahead-input-hint):disabled {
-  border-color: #bcbcbc;
-}
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.dropdown-menu) {
+.jpad-editor-container .jpad-settings .default-value .bootstrap-typeahead .dropdown-menu {
   position: absolute;
   max-height: 350px;
   min-width: 150px;
@@ -404,7 +257,7 @@
   width: auto;
   z-index: 5;
 }
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
+.jpad-editor-container .jpad-settings .default-value .bootstrap-typeahead .dropdown-menu li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
@@ -414,17 +267,17 @@
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.dropdown-menu) li:last-child {
+.jpad-editor-container .jpad-settings .default-value .bootstrap-typeahead .dropdown-menu li:last-child {
   border-bottom-width: 1px;
 }
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.dropdown-menu) li:hover {
+.jpad-editor-container .jpad-settings .default-value .bootstrap-typeahead .dropdown-menu li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.dropdown-menu) li:active {
+.jpad-editor-container .jpad-settings .default-value .bootstrap-typeahead .dropdown-menu li:active {
   background-color: #d1d1d1;
 }
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.dropdown-menu) li a {
+.jpad-editor-container .jpad-settings .default-value .bootstrap-typeahead .dropdown-menu li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -435,70 +288,15 @@
   flex-direction: column;
   justify-content: center;
 }
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
+.jpad-editor-container .jpad-settings .default-value .bootstrap-typeahead .dropdown-menu li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.disabled) {
+.jpad-editor-container .jpad-settings .default-value .bootstrap-typeahead .dropdown-menu .disabled {
   display: none;
 }
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.dropdown-menu) :global(.active) {
+.jpad-editor-container .jpad-settings .default-value .bootstrap-typeahead .dropdown-menu .active {
   background-color: #dfdfdf;
-}
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) {
-  vertical-align: top;
-  background-color: #00aeef;
-  height: 28px;
-  border: 0;
-  padding: 0 20px;
-  color: white;
-  outline: 0;
-  padding-bottom: 2px;
-  border-radius: 14px;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  transition: all 0.2s ease-in-out;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  line-height: 1;
-  padding: 0 0 3px;
-  box-sizing: border-box;
-  background-color: #bcbcbc;
-  font-size: 16px;
-  padding-top: 2px;
-  margin-top: -12px;
-  position: absolute;
-  right: 0;
-  top: 50%;
-  z-index: 1;
-}
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
-  background-color: #029CD5;
-  cursor: pointer;
-}
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled {
-  background-color: gray;
-}
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:hover,
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):disabled:active {
-  cursor: default;
-  background-color: gray;
-}
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):hover {
-  background-color: #9c9c9c;
-}
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):active {
-  background-color: #7b7b7b;
-}
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button):after {
-  font-family: 'tweekIcons';
-  content: '\E900';
-}
-.jpad-editor-container .jpad-settings .default-value :global(.bootstrap-typeahead) :global(.bootstrap-typeahead-clear-button) span {
-  display: none;
 }
 .jpad-editor-container .vertical-separator {
   width: 1px;

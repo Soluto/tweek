@@ -1,4 +1,4 @@
-  @import (reference) "accents.less";
+  @import (reference) "./accents.less";
   .user-select(@user-select: none) {
     -moz-user-select: @user-select;
     -ms-user-select: @user-select;
@@ -65,8 +65,8 @@
   @text-box-default-width: 150px;
   .metro-textbox(@font-size: 13px) {
     display: inline-block;
-    border: 0;
-    border-style: none;
+    border: 0 none;
+    border-bottom: 1px solid @accent-color4;
     height: 28px;
     width: @text-box-default-width;
     padding: 0 4px;
@@ -74,7 +74,6 @@
     font-size: @font-size;
     font-weight: 500;
     color: #515C66;
-    border-bottom: 1px solid @accent-color4;
     outline: none;
     box-sizing: border-box;
     .transitioned();

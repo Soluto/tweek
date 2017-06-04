@@ -1,6 +1,6 @@
 import path from 'path';
 import R from 'ramda';
-import { convertMetaToNewFormat } from '../../utils/meta-legacy';
+import { convertMetaToNewFormat } from '../utils/meta-legacy';
 
 function generateEmptyManifest(keyPath) {
   return {

@@ -1,33 +1,33 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import R from 'ramda';
 import { withState } from 'recompose';
 import classnames from 'classnames';
 import AutoSuggest from './AutoSuggest';
-import style from './MultiSourceComboBox.css';
+import './MultiSourceComboBox.css';
 
-const SourceTitle = ({ id, selectSourceId, sourceId }) => (
+const SourceTitle = ({ id, selectSourceId, sourceId }) =>
   <div
     onClick={() => selectSourceId(id)}
     disabled={id === sourceId}
-    className={classnames(style['source-item'], { active: id === sourceId })}
+    className={classnames('source-item', { active: id === sourceId })}
   >
     {id === undefined ? 'All' : id}
-  </div>
-);
+  </div>;
 
-const MultiSourceComboBox = ({ getSuggestions, sourceId, selectSourceId, ...props }) => (
+const MultiSourceComboBox = ({ getSuggestions, sourceId, selectSourceId, ...props }) =>
   <AutoSuggest
     getSuggestions={(...args) =>
-      (getSuggestions[sourceId]
+      getSuggestions[sourceId]
         ? getSuggestions[sourceId](...args)
-        : R.pipe(R.values, R.chain(x => x(...args)))(getSuggestions))}
-    suggestionsContainer={({ children }) => (
-      <div className={style['multi-source-combo-box-suggestions']}>
-        <div className={style['source-select']}>
+        : R.pipe(R.values, R.chain(x => x(...args)))(getSuggestions)}
+    suggestionsContainer={({ children }) =>
+      <div className={'multi-source-combo-box-suggestions'}>
+        <div className={'source-select'}>
           <SourceTitle {...{ sourceId, selectSourceId }} />
-          {Object.keys(getSuggestions).map(key => (
-            <SourceTitle id={key} {...{ key, sourceId, selectSourceId }} />
-          ))}
+          {Object.keys(getSuggestions).map(key =>
+            <SourceTitle id={key} {...{ key, sourceId, selectSourceId }} />,
+          )}
         </div>
         <ul
           className="bootstrap-typeahead-menu dropdown-menu dropdown-menu-justify"
@@ -35,11 +35,9 @@ const MultiSourceComboBox = ({ getSuggestions, sourceId, selectSourceId, ...prop
         >
           {children.length > 0 ? children : 'Not found...'}
         </ul>
-      </div>
-    )}
+      </div>}
     {...props}
-  />
-);
+  />;
 
 MultiSourceComboBox.propTypes = {
   getSuggestions: PropTypes.objectOf(PropTypes.func).isRequired,

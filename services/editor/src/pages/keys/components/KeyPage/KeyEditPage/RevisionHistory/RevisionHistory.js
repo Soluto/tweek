@@ -5,17 +5,16 @@ import { push } from 'react-router-redux';
 
 const formatDate = date => `${moment(date).calendar(null, { sameElse: 'DD/MM/YYYY [at] HH:mm' })}`;
 
-const RevisionHistory = ({ revisionHistory, goToRevision, selectedKey, revision }) => (
+const RevisionHistory = ({ revisionHistory, goToRevision, selectedKey, revision }) =>
   <div>
     <select value={revision} onChange={e => goToRevision(selectedKey, e.target.value)}>
-      {revisionHistory.map(item => (
+      {revisionHistory.map(item =>
         <option key={item.sha} value={item.sha}>
           {`${formatDate(item.date)} : ${item.author}`}
-        </option>
-      ))}
+        </option>,
+      )}
     </select>
-  </div>
-);
+  </div>;
 
 const goToRevision = (key, sha) =>
   push({

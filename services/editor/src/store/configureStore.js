@@ -1,9 +1,9 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import { routerMiddleware } from 'react-router-redux';
-import { browserHistory } from 'react-router';
 import promiseMiddleware from 'redux-promise';
 import thunk from 'redux-thunk';
 import rootReducer from './rootReducer';
+import browserHistory from './browserHistory';
 
 export default function configureStore(initialState) {
   return createStore(

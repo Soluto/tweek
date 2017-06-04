@@ -1,58 +1,60 @@
 import React from 'react';
-import { IndexLink, Link } from 'react-router';
+import { Link } from 'react-router-dom';
+import { Route } from 'react-router';
 import Title from 'react-title-component';
 import { Tabs } from 'react-tabs';
 import { Observable } from 'rxjs/Rx';
 import { setObservableConfig } from 'recompose';
 import classNames from 'classnames';
-import logoSrc from './resources/logo.svg';
+import * as TypesService from '../services/types-service';
 import Alerts from './alerts/Alerts';
 import Notifications from './alerts/Notifications';
-import style from './App.css';
-import * as TypesService from '../services/types-service';
 import { withTypesService } from './common/Input/TypedInput';
+import logoSrc from './resources/logo.svg';
+import './App.css';
 
-require('./core/fonts/fonts.css');
+require('../styles/core/fonts/fonts.css');
 
 setObservableConfig({
   fromESObservable: Observable.from,
 });
 Tabs.setUseDefaultStyles(false);
 
-export default withTypesService(TypesService)(({ location: { pathname }, children }) => (
-  <div className={style.app}>
-    <div className={style.header}>
+const ListItemLink = ({ to, ...rest }) =>
+  <Route
+    path={to}
+    children={({ match }) =>
+      <li>
+        <Link
+          className={classNames('menu-item', {
+            'selected-location-path': match,
+          })}
+          to={to}
+          {...rest}
+        />
+      </li>}
+  />;
+
+export default withTypesService(TypesService)(({ children }) =>
+  <div className={'app'}>
+    <div className={'header'}>
       <Title render="Tweek" />
-      <IndexLink to="/"><img className={style.logo} src={logoSrc} /></IndexLink>
-      <ul className={style.menu}>
-        <li>
-          <Link
-            className={classNames(style['menu-item'], {
-              [style['selected-location-path']]: pathname.startsWith('/keys'),
-            })}
-            to="/keys"
-          >
-            <img src={require('./resources/keys.svg')} />
-            <span>Keys</span>
-          </Link>
-        </li>
-        <li>
-          <Link
-            className={classNames(style['menu-item'], {
-              [style['selected-location-path']]: pathname.startsWith('/context'),
-            })}
-            to="/context"
-          >
-            <img src={require('./resources/keys.svg')} />
-            <span>Context</span>
-          </Link>
-        </li>
+      <Link to="/" replace><img className={'logo'} src={logoSrc} /></Link>
+      <ul className={'menu'}>
+        <ListItemLink to="/keys">
+          <img src={require('./resources/keys.svg')} />
+          <span>Keys</span>
+        </ListItemLink>
+        <ListItemLink to="/context">
+          <img src={require('./resources/keys.svg')} />
+          <span>Context</span>
+        </ListItemLink>
       </ul>
     </div>
-    <div className={style.page}>
+    <div className={'page'}>
       {children}
       <Alerts />
       <Notifications />
     </div>
-  </div>
-));
+  </div>,
+);

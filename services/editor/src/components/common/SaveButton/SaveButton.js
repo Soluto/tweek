@@ -1,7 +1,8 @@
-import React, { PropTypes } from 'react';
-import style from './SaveButton.css';
+import React from 'react';
+import PropTypes from 'prop-types';
+import './SaveButton.css';
 
-const SaveButton = ({ isSaving, hasChanges, ...props }) => (
+const SaveButton = ({ isSaving, hasChanges, ...props }) =>
   <button
     disabled={!hasChanges || isSaving}
     data-state-has-changes={hasChanges}
@@ -9,8 +10,7 @@ const SaveButton = ({ isSaving, hasChanges, ...props }) => (
     {...props}
   >
     {isSaving ? 'Saving...' : 'Save changes'}
-  </button>
-);
+  </button>;
 
 SaveButton.propTypes = {
   isSaving: PropTypes.bool,
@@ -21,7 +21,7 @@ SaveButton.propTypes = {
 SaveButton.defaultProps = {
   isSaving: false,
   hasChanges: true,
-  className: style['save-button'],
+  className: 'save-button',
 };
 
 export default SaveButton;

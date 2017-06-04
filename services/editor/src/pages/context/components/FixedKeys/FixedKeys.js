@@ -1,9 +1,10 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import R from 'ramda';
 import classnames from 'classnames';
-import FixedKeysList from './FixedKeysList/FixedKeysList';
 import SaveButton from '../../../../components/common/SaveButton/SaveButton';
-import style from './FixedKeys.css';
+import FixedKeysList from './FixedKeysList/FixedKeysList';
+import './FixedKeys.css';
 
 function calculateKeys(fixedKeys) {
   const result = Object.entries(fixedKeys).map(([key, value]) => ({
@@ -103,8 +104,8 @@ class FixedKeys extends Component {
     const { className, isUpdatingContext } = this.props;
 
     return (
-      <div className={classnames(style['fixed-keys-container'], className)}>
-        <div className={style['override-keys-title']}>
+      <div className={classnames('fixed-keys-container', className)}>
+        <div className={'override-keys-title'}>
           <div>Override Keys</div>
           <SaveButton
             onClick={this.onSave.bind(this)}
@@ -115,7 +116,7 @@ class FixedKeys extends Component {
 
         <FixedKeysList keys={this.state.keys} onChange={this.onChange.bind(this)} />
 
-        <button className={style['add-key-button']} onClick={this.appendKey.bind(this)} />
+        <button className={'add-key-button'} onClick={this.appendKey.bind(this)} />
       </div>
     );
   }

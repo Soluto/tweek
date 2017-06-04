@@ -1,11 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { Component } from 'react';
-import { connect } from 'react-redux';
-import style from './EditableTextArea.css';
 import classNames from 'classnames';
 import { compose, withState } from 'recompose';
 import TextareaAutosize from 'react-autosize-textarea';
+import './EditableTextArea.css';
 
 const EditableTextArea = compose(
   withState('isInEditMode', 'setIsInEditMode', false),
@@ -19,21 +16,21 @@ const EditableTextArea = compose(
     isInEditMode,
     setIsInEditMode,
     onTextChanged = () => {},
-  }) => (
-    <div className={classNames(style['textarea-container'], classes.container)}>
+  }) =>
+    <div className={classNames('textarea-container', classes.container)}>
       <TextareaAutosize
-        ref={(input) => {
-          if (!input) return;
-          input.refs.textarea.readOnly = !isInEditMode;
-          if (isInEditMode) input.refs.textarea.focus();
+        innerRef={(textarea) => {
+          if (!textarea) return;
+          textarea.readOnly = !isInEditMode;
+          if (isInEditMode) textarea.focus();
         }}
         onClick={() => setIsInEditMode(true)}
         onChange={e => onTextChanged(e.target.value)}
         value={value}
         placeholder={placeHolder}
         title={title}
-        className={classNames(style['textarea-input'], classes.input, {
-          [style['read-only']]: !isInEditMode,
+        className={classNames('textarea-input', classes.input, {
+          'read-only': !isInEditMode,
         })}
         onBlur={() => {
           value = value.trim();
@@ -42,8 +39,7 @@ const EditableTextArea = compose(
         }}
         maxLength={maxLength}
       />
-    </div>
-  ),
+    </div>,
 );
 
 export default EditableTextArea;

@@ -30,7 +30,9 @@ export async function getContext(req, res, { tweekApiHostname }, { params }) {
 export async function updateContext(req, res, { tweekApiHostname }, { params }) {
   const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
 
-  const contextUrl = `api/v1/context/${params.identityName}/${encodeURIComponent(params.identityId)}`;
+  const contextUrl = `api/v1/context/${params.identityName}/${encodeURIComponent(
+    params.identityId,
+  )}`;
 
   const response = await tweekApiClient.get(contextUrl);
   const currentContext = response.data;
