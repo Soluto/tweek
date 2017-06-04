@@ -98,8 +98,7 @@
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml",
     "format": "prettier-eslint --trailing-comma all --print-width 100 --single-quote --write",
     "format:all": "npm run format \"**/*.js\"",
-    "eslint": "eslint --fix src server",
-    "precommit": "lint-staged"
+    "eslint": "eslint --fix src server"
   },
   "jest": {
     "testRegex": "/spec/unit/.*",

@@ -22,8 +22,7 @@
     "cli": "babel scripts/src --out-dir scripts/lib && node ./scripts/lib/cli.js",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml",
     "format": "prettier-eslint --trailing-comma all --print-width 100 --single-quote --write",
-    "format:all": "npm run format \"modules/**/*.js\"",
-    "precommit": "lint-staged"
+    "format:all": "npm run format \"modules/**/*.js\""
   },
   "author": "",
   "lint-staged": {
