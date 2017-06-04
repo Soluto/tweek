@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Route } from 'react-router';
 import Title from 'react-title-component';
-import { Tabs } from 'react-tabs';
 import { Observable } from 'rxjs/Rx';
 import { setObservableConfig } from 'recompose';
 import classNames from 'classnames';
@@ -18,7 +17,6 @@ require('../styles/core/fonts/fonts.css');
 setObservableConfig({
   fromESObservable: Observable.from,
 });
-Tabs.setUseDefaultStyles(false);
 
 const ListItemLink = ({ to, ...rest }) =>
   <Route
