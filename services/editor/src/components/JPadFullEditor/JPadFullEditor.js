@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import { compose, pure, lifecycle, mapProps } from 'recompose';
+import { compose, pure, lifecycle, mapProps, withState } from 'recompose';
 import R from 'ramda';
 import Mutator from '../../utils/mutator';
 import * as TypesService from '../../services/types-service';
@@ -24,10 +24,29 @@ const MutatorFor = propName => Comp =>
     }
   };
 
-const KeyRulesEditor = ({ source, valueType, mutate, onMutation, alerter, isReadonly }) =>
+const KeyRulesEditor = ({
+  source,
+  valueType,
+  mutate,
+  onMutation,
+  alerter,
+  isReadonly,
+  selectedTab,
+  setSelectedTab,
+}) =>
   <div className={'key-rules-editor-container'} disabled={isReadonly}>
 
-    <Tabs className={'tab-container'}>
+    <Tabs
+      className={'tab-container'}
+      selectedIndex={selectedTab}
+      onSelect={(index, lastIndex) => {
+        console.log('selectedTab', selectedTab);
+        if (lastIndex === 1) {
+          return true;
+        }
+        setSelectedTab(index);
+      }}
+    >
 
       <TabList>
         <Tab className={'tab-header'}>
@@ -119,6 +138,7 @@ export default compose(
     ...other,
   })),
   MutatorFor('sourceTree'),
+  withState('selectedTab', 'setSelectedTab', 0),
   pure,
   lifecycle({
     componentWillReceiveProps({ valueType, mutate }) {
