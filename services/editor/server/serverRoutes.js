@@ -1,5 +1,5 @@
 import React from 'react';
-import ServerRoute from './server/ServerRoute';
+import ServerRoute from '../server/ServerRoute';
 import * as KeysRoutes from './api/keys';
 import * as TypesRoutes from './api/types';
 import * as TagsRoutes from './api/tags';

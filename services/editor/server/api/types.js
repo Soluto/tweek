@@ -1,4 +1,4 @@
-import authenticatedClient from '../server/auth/authenticatedClient';
+import authenticatedClient from '../../server/auth/authenticatedClient';
 
 export async function getTypes(req, res, { tweekApiHostname }) {
   const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
