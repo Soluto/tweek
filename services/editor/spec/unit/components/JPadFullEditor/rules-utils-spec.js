@@ -1,8 +1,8 @@
 /* global jest, before, beforeEach, describe, it, expect */
 import { assert, expect } from 'chai';
-import * as RulesUtils from '../../../../modules/components/JPadFullEditor/rules-utils';
+import * as RulesUtils from '../../../../src/components/JPadFullEditor/rules-utils';
 
-jest.unmock('../../../../modules/components/JPadFullEditor/rules-utils');
+jest.unmock('../../../../src/components/JPadFullEditor/rules-utils');
 
 const toExplicitRule = (Value, ...matchers) => ({
   Matcher: matchers.reduce((result, matcher) => ({ ...result, [matcher]: 'matcherValue' }), {}),
@@ -19,10 +19,7 @@ describe('rules-service', () => {
       {
         expected: {
           someValue1: [{ Matcher: {} }],
-          someValue2: [
-            { Matcher: {} },
-            { Matcher: { property: 'someValue' } },
-          ],
+          someValue2: [{ Matcher: {} }, { Matcher: { property: 'someValue' } }],
           '*': [{ Matcher: {} }],
         },
         partition,
@@ -37,10 +34,7 @@ describe('rules-service', () => {
       {
         expected: {
           partition1: {
-            someValue: [
-              { Matcher: {} },
-              { Matcher: { property: 'someValue2' } },
-            ],
+            someValue: [{ Matcher: {} }, { Matcher: { property: 'someValue2' } }],
             '*': [{ Matcher: {} }],
           },
           partition2: { '*': [] },
@@ -189,12 +183,18 @@ describe('rules-service', () => {
       },
       {
         expected: ['some/key'],
-        rule: { partition1: [toExplicitRule('value', 'keys.some/key')], partition2: [toExplicitRule('value', 'keys.some/key')] },
+        rule: {
+          partition1: [toExplicitRule('value', 'keys.some/key')],
+          partition2: [toExplicitRule('value', 'keys.some/key')],
+        },
         depth: 1,
       },
       {
         expected: ['some/key1', 'some/key2'],
-        rule: { partition1: [toExplicitRule('value', '@@key:some/key1')], partition2: [toExplicitRule('value', '@@key:some/key2')] },
+        rule: {
+          partition1: [toExplicitRule('value', '@@key:some/key1')],
+          partition2: [toExplicitRule('value', '@@key:some/key2')],
+        },
         depth: 1,
       },
     ];

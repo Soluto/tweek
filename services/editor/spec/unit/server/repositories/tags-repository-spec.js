@@ -1,13 +1,17 @@
 /* global jest, beforeEach, describe, it, expect */
-jest.unmock('../../../../modules/server/repositories/tags-repository');
+jest.unmock('../../../../server/repositories/tags-repository');
 
-import TagsRepository from '../../../../modules/server/repositories/tags-repository';
+import TagsRepository from '../../../../server/repositories/tags-repository';
 
-describe("TagsRepository", () => {
+describe('TagsRepository', () => {
   let mockGitRepo = {};
   let mockTransactionManager = {
-    write: function(action) { return action(mockGitRepo); },
-    read: function(action) { return action(mockGitRepo); }
+    write: function (action) {
+      return action(mockGitRepo);
+    },
+    read: function (action) {
+      return action(mockGitRepo);
+    },
   };
   let target = new TagsRepository(mockTransactionManager);
 
@@ -21,8 +25,8 @@ describe("TagsRepository", () => {
     mockGitRepo = {};
   });
 
-  describe("getTags", () => {
-    it ("should parse and return tags as an array", async () => {
+  describe('getTags', () => {
+    it('should parse and return tags as an array', async () => {
       // Arrange
       mockGitRepo.readFile = jest.fn(path => testTags);
 
@@ -30,10 +34,10 @@ describe("TagsRepository", () => {
       let tags = await target.getTags();
 
       // Assert
-      expect(tags).toEqual([{name: "tag1"}, {name: "tag2"}]);
+      expect(tags).toEqual([{ name: 'tag1' }, { name: 'tag2' }]);
     });
 
-    it ("should read the tags from the tags.json file", async () => {
+    it('should read the tags from the tags.json file', async () => {
       // Arrange
       mockGitRepo.readFile = jest.fn(path => testTags);
 
@@ -41,12 +45,11 @@ describe("TagsRepository", () => {
       let tags = await target.getTags();
 
       // Assert
-      expect(mockGitRepo.readFile.mock.calls[0][0]).toEqual("tags.json");
+      expect(mockGitRepo.readFile.mock.calls[0][0]).toEqual('tags.json');
     });
   });
 
-  describe("mergeTags", () => {
-
+  describe('mergeTags', () => {
     beforeEach(() => {
       mockGitRepo.readFile = jest.fn(path => testTags);
       mockGitRepo.updateFile = jest.fn();
@@ -54,34 +57,36 @@ describe("TagsRepository", () => {
       mockGitRepo.pull = jest.fn();
     });
 
-    it ("should merge new tags with the existing tags", async () => {
+    it('should merge new tags with the existing tags', async () => {
       // Arrange
 
       // Act
-      await target.mergeTags(["tag2", "tag3"], testAuthor);
+      await target.mergeTags(['tag2', 'tag3'], testAuthor);
 
       // Assert
-      expect(mockGitRepo.updateFile.mock.calls[0][1]).toEqual(JSON.stringify([{name: "tag1"}, {name: "tag2"}, {name: "tag3"}], null, 4));
+      expect(mockGitRepo.updateFile.mock.calls[0][1]).toEqual(
+        JSON.stringify([{ name: 'tag1' }, { name: 'tag2' }, { name: 'tag3' }], null, 4),
+      );
     });
 
-    it ("should save the resulting tags into tags.json", async () => {
+    it('should save the resulting tags into tags.json', async () => {
       // Arrange
 
       // Act
-      await target.mergeTags(["tag2", "tag3"], testAuthor);
+      await target.mergeTags(['tag2', 'tag3'], testAuthor);
 
       // Assert
-      expect(mockGitRepo.updateFile.mock.calls[0][0]).toEqual("tags.json");
+      expect(mockGitRepo.updateFile.mock.calls[0][0]).toEqual('tags.json');
     });
 
-    it ("should commit and push using the author sent", async () => {
+    it('should commit and push using the author sent', async () => {
       // Arrange
 
       // Act
-      await target.mergeTags(["tag2", "tag3"], testAuthor);
+      await target.mergeTags(['tag2', 'tag3'], testAuthor);
 
       // Assert
       expect(mockGitRepo.commitAndPush.mock.calls[0][1]).toEqual(testAuthor);
     });
-  })
+  });
 });
