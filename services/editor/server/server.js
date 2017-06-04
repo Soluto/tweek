@@ -4,22 +4,22 @@ import path from 'path';
 import { Provider } from 'react-redux';
 import session from 'express-session';
 import Promise from 'bluebird';
-import createServer from './server/createServer';
+import createServer from '../server/createServer';
 import Document from '../modules/components/Document';
 import routes from '../modules/routes';
 import configureStore from './store/configureStore';
 import serverRoutes from './serverRoutes';
 import { getKeys } from './store/ducks/keys';
-import GitRepository from './server/repositories/git-repository';
+import GitRepository from '../server/repositories/git-repository';
 import Transactor from './utils/transactor';
-import KeysRepository from './server/repositories/keys-repository';
-import TagsRepository from './server/repositories/tags-repository';
-import GitContinuousUpdater from './server/repositories/git-continuous-updater';
-import searchIndex from './server/searchIndex';
+import KeysRepository from '../server/repositories/keys-repository';
+import TagsRepository from '../server/repositories/tags-repository';
+import GitContinuousUpdater from '../server/repositories/git-continuous-updater';
+import searchIndex from '../server/searchIndex';
 
 const passport = require('passport');
 const nconf = require('nconf');
-const azureADAuthProvider = require('./server/auth/azuread');
+const azureADAuthProvider = require('././auth/azuread');
 const crypto = require('crypto');
 
 nconf.argv().env().file({ file: `${process.cwd()}/config.json` }).defaults({
