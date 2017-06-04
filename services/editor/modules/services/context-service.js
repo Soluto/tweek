@@ -15,6 +15,8 @@ export function getIdentities() {
   return Object.keys(contextSchema);
 }
 
+export function getSchmea() { return contextSchema; }
+
 export function getProperties() {
   return R.chain(identity => (
     [{ id: `${identity}.@@id`, name: 'Id', type: 'string', identity },

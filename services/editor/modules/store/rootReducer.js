@@ -4,8 +4,8 @@ import keysReducer from './ducks/keys';
 import selectedKeyReducer from './ducks/selectedKey';
 import tagsReducer from './ducks/tags';
 import notificationsReducer from './ducks/notifications';
-import alertsReducer from './ducks/alerts'
-import schemaReducer from './ducks/schema'
+import alertsReducer from './ducks/alerts';
+import schemaReducer from './ducks/schema';
 import contextReducer from './ducks/context';
 
 export default (combineReducers(
@@ -17,6 +17,6 @@ export default (combineReducers(
     notifications: notificationsReducer,
     alerts: alertsReducer,
     schema: schemaReducer,
-    context: contextReducer
-  }
+    context: contextReducer,
+  },
 ));
