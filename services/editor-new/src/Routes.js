@@ -1,6 +1,6 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router';
-import { ConnectedRouter } from 'react-router-redux'
+import { ConnectedRouter } from 'react-router-redux';
 import App from './components/App';
 import KeysPage from './pages/keys/components/KeysPage/KeysPage';
 import KeyPage from './pages/keys/components/KeyPage/KeyPage';
@@ -19,7 +19,7 @@ export default props => (
                 <Route path="/" exact render={() => <Redirect to="/keys"/>} />
                 <Route
                     path="/keys"
-                    render={({ match: { path }}) => (
+                    render={({ match: { path } }) => (
                         <KeysPage>
                             <Switch>
                                 <Route exact path={path} component={SelectKeyMessage} />

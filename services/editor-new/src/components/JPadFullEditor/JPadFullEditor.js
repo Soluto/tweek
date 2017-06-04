@@ -2,11 +2,11 @@ import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { compose, pure, lifecycle, mapProps } from 'recompose';
 import R from 'ramda';
-import JPadVisualEditor from './JPadVisualEditor/JPadVisualEditor';
-import JPadTextEditor from './JPadTextEditor/JPadTextEditor';
 import Mutator from '../../utils/mutator';
 import * as TypesService from '../../services/types-service';
 import * as RulesService from './rules-utils';
+import JPadVisualEditor from './JPadVisualEditor/JPadVisualEditor';
+import JPadTextEditor from './JPadTextEditor/JPadTextEditor';
 import './JPadFullEditor.css';
 
 const MutatorFor = propName => Comp =>

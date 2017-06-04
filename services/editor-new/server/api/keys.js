@@ -1,5 +1,5 @@
-import { UKNOWN_AUTHOR } from './unknownAuthor';
 import { convertMetaToNewFormat } from '../utils/meta-legacy';
+import { UKNOWN_AUTHOR } from './unknownAuthor';
 
 let injectAuthor = fn =>
     function (req, res, deps, ...rest) {

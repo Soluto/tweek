@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import { VelocityTransitionGroup } from 'velocity-react';
 import openedFolderIconSrc from './resources/Folder-icon-opened.svg';
 import closedFolderIconSrc from './resources/Folder-icon-closed.svg';
-import { VelocityTransitionGroup } from 'velocity-react';
 import './KeysList.css';
 
 const leaf = Symbol();

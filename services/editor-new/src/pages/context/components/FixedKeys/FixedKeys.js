@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import R from 'ramda';
 import classnames from 'classnames';
-import FixedKeysList from './FixedKeysList/FixedKeysList';
 import SaveButton from '../../../../components/common/SaveButton/SaveButton';
+import FixedKeysList from './FixedKeysList/FixedKeysList';
 import './FixedKeys.css';
 
 function calculateKeys(fixedKeys) {

@@ -1,7 +1,5 @@
 import React from 'react';
 import { mapProps } from 'recompose';
-import Operator from './Operator';
-import PropertyValue from './PropertyValue';
 import * as ContextService from '../../../../../services/context-service';
 import {
   equal,
@@ -9,6 +7,8 @@ import {
   allOperators,
   getPropertySupportedOperators,
 } from '../../../../../services/operators-provider';
+import Operator from './Operator';
+import PropertyValue from './PropertyValue';
 
 const translateValue = (oldOperator, newOperator, value) => {
   if (oldOperator.operatorValue === inOp.operatorValue) return value.length > 0 ? value[0] : '';
