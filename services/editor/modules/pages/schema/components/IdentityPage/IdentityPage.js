@@ -1,13 +1,14 @@
 import React from 'react';
 import style from './IdentityPage.css';
 import { connect } from 'react-redux';
-import PropertyType from './PropertyType/PropertyType';
+import IdentityProperty from './IdentityProperty/IdentityProperty';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import SaveButton from '../../../../components/common/SaveButton/SaveButton';
+import R from 'ramda';
+import * as schemaActions from '../../../../store/ducks/schema';
 
-const IdentityPage = ({ params: { identityType }, allProperties }) => {
-  const propertyTypes = allProperties.filter(property => (property.identity === identityType));
-
+const IdentityPage = ({ params: { identityType }, identityProperties, updateIdentityProperty }) => {
+  console.log(identityProperties);
   return (
     <div className={style['identity-page']}>
       <SaveButton data-comp="save-button" hasChanges={false} isSaving={false} onclick={() => {}} />
@@ -20,8 +21,8 @@ const IdentityPage = ({ params: { identityType }, allProperties }) => {
         <TabPanel>
           <div className={style['property-types-list']}>
             {
-                propertyTypes.map((property, i) =>
-                  <PropertyType key={i} property={property} />,
+                R.toPairs(identityProperties).map(([name, type]) =>
+                  <IdentityProperty name={name} onUpdate={updateIdentityProperty} key={name} type={type} />,
                 )
             }
           </div>
@@ -31,5 +32,7 @@ const IdentityPage = ({ params: { identityType }, allProperties }) => {
 };
 
 export default connect(state => ({
-  allProperties: state.schema.properties,
-}))(IdentityPage);
+  schema: state.schema,
+}), schemaActions,
+ ({ schema }, actions, props) => ({ identityProperties: schema[props.params.identityType].local, ...props, ...actions }),
+)(IdentityPage);

@@ -19,24 +19,24 @@ const LinkMenuItem = ({ path, name }) => (<li key={path} >
 export default compose(
   connect(state => ({}), { ...actions }),
   withLoading(() => null, ({ loadSchema }) => isNode() ? Promise.resolve() : refreshSchema().then(loadSchema)),
-  connect(state => ({ identities: state.schema.identities })),
+  connect(state => ({ schema: state.schema })),
   lifecycle({
     componentDidMount() {
       this.props.loadSchema();
     },
   }),
 )((props) => {
-  const { identities, children } = props;
+  const { schema, children } = props;
   return (
     <div className={style['schema-page-container']}>
       <ul className={style['side-menu']} key="SideMenu">
         <li>
           <div>Identities</div>
           <ul>
-              {
-                identities.map(x => ({ path: `identities/${x}`, name: x })).map(LinkMenuItem)
+            {
+                Object.keys(schema).map(x => ({ path: `identities/${x}`, name: x })).map(LinkMenuItem)
             }
-            </ul>
+          </ul>
         </li>
       </ul>
       <div style={{ display: 'flex', flexGrow: 1 }} key="Page">
