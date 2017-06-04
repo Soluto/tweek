@@ -19,7 +19,8 @@
     "teardown": "npm run docker-compose -- down",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml",
     "format": "prettier-eslint --trailing-comma all --print-width 100 --single-quote --write",
-    "format:all": "npm run format \"**/*.js\""
+    "format:all": "npm run format \"**/*.js\"",
+    "precommit": "lint-staged"
   },
   "author": "",
   "proxy": {
@@ -31,7 +32,7 @@
   "lint-staged": {
     "gitDir": "../../",
     "linters": {
-      "*.js": [
+      "**/editor/**/*.js": [
         "npm run format",
         "git add"
       ]
