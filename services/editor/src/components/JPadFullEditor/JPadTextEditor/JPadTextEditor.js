@@ -30,6 +30,8 @@ class JPadTextEditor extends Component {
   }
 
   onChange(newSource) {
+    const { setHasChanges, source } = this.props;
+
     let isValidJson = false;
     let parsedSource;
 
@@ -40,14 +42,15 @@ class JPadTextEditor extends Component {
       isValidJson = false;
     }
 
-    const hasChanges = !isValidJson || !R.equals(this.props.source, parsedSource);
+    const hasChanges = !isValidJson || !R.equals(source, parsedSource);
 
-    this.props.setHasChanges(hasChanges);
+    setHasChanges(hasChanges);
     this.setState({ currentSource: newSource, allowSave: isValidJson && hasChanges });
   }
 
   save() {
-    const { onChange } = this.props;
+    const { onChange, setHasChanges } = this.props;
+    setHasChanges(false);
     onChange(this.state.currentSource);
   }
 
