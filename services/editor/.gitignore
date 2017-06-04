@@ -1,7 +1,10 @@
-.build
-lib
-rulesRepository/
-coverage-unit/
-node_modules/
-typings/
-config*.json
+# dependencies
+/node_modules
+
+# testing
+/coverage-unit
+
+# production
+/build
+/dist
+/rulesRepository

@@ -3,8 +3,8 @@ import { getRelativeSelector, getSelectorByClassNames, _getSelectorByIndex, _get
 const keySelectors = {};
 
 keySelectors.SAVE_CHANGES_BUTTON = getSelectorByClassNames('key-action-buttons-wrapper', 'save-changes-button');
-keySelectors.ADD_KEY_BUTTON = getSelectorByClassNames('keys-page-container', 'add-button');
-keySelectors.KEY_NAME_INPUT = getSelectorByClassNames('key-main-input', 'auto-suggest', 'bootstrap-typeahead-input-main');
+keySelectors.ADD_KEY_BUTTON = getSelectorByClassNames('keys-page-container', 'add-key-button');
+keySelectors.KEY_NAME_INPUT = getSelectorByClassNames('key-main-input', 'auto-suggest', 'bootstrap-typeahead-input', 'input-main');
 keySelectors.KEY_DISPLAY_NAME = getSelectorByClassNames('display-name-text');
 keySelectors.KEY_NAME_VALIDATION_ALERT_ICON = getSelectorByClassNames('auto-suggest-wrapper', 'validation-icon-wrapper');
 keySelectors.KEY_VALUE_TYPE_VALIDATION_ALERT_ICON = getSelectorByClassNames('auto-suggest-wrapper', 'validation-icon-wrapper');
@@ -28,7 +28,7 @@ keySelectors.TAG = getSelectorByClassNames('tags-container', 'selected', 'tag');
 keySelectors.TAGS_SUGGESTION = getRelativeSelector([getSelectorByClassNames('tags-suggestion'), 'ul', 'li']);
 keySelectors.KEY_LIST_FILTER = getRelativeSelector([getSelectorByClassNames('search-input-wrapper'), getSelectorByClassNames('search-input')]);
 keySelectors.READONLY_KEY_MESSAGE = getSelectorByClassNames('readonly-key-message');
-keySelectors.KEY_VALUE_TYPE_INPUT = getSelectorByClassNames('key-value-type-selector-wrapper', 'bootstrap-typeahead-input-main');
+keySelectors.KEY_VALUE_TYPE_INPUT = getSelectorByClassNames('key-value-type-selector-wrapper', 'bootstrap-typeahead-input', 'input-main');
 keySelectors.NONE_EXISTING_KEY = getSelectorByClassNames('key-page-message');
 keySelectors.ALERT_OK_BUTTON = getSelectorByClassNames('rodal-confirm-btn');
 keySelectors.ALERT_CANCEL_BUTTON = getSelectorByClassNames('rodal-cancel-btn');
@@ -65,7 +65,7 @@ keySelectors.conditionPropertyName = (ruleNumber, conditionNumber) => {
     getRelativeSelector([
       _getSelectorByIndex(keySelectors.RULE_CONDITION, conditionNumber),
       getSelectorByClassNames('property-name-wrapper'),
-      getSelectorByClassNames('bootstrap-typeahead-input-main'),
+      getSelectorByClassNames('bootstrap-typeahead-input', 'input-main'),
     ]);
 
   return getRelativeSelector([keySelectors.ruleContainer(ruleNumber), propertyNameSelector]);
@@ -86,7 +86,7 @@ keySelectors.ruleValueInput = (ruleIndex, isValueContainsSuggestions) => {
     return getRelativeSelector([
       keySelectors.ruleContainer(ruleIndex),
       getSelectorByClassNames('rule-value-container'),
-      getSelectorByClassNames('bootstrap-typeahead-input-main')]);
+      getSelectorByClassNames('bootstrap-typeahead-input', 'input-main')]);
 
   return getRelativeSelector([
     keySelectors.ruleContainer(ruleIndex),

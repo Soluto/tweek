@@ -42,7 +42,7 @@ class TweekApiClient{
       return this._get(`api/v1/context/${identityType}/${identityName}`);
     }
 
-    waitForKeyToEqual(key, target, timeout = 5000){
+    waitForKeyToEqual(key, target, timeout = 10000){
         let start = new Date();
         let value;
         while (new Date() - start < timeout){
@@ -57,8 +57,5 @@ class TweekApiClient{
     }
 
 }
-
-
-
 
 export default new TweekApiClient();
