@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import R from 'ramda';
 import MonacoEditor from 'react-monaco-editor';
 import { AutoSizer } from 'react-virtualized';
 import './JPadTextEditor.css';
@@ -30,15 +31,19 @@ class JPadTextEditor extends Component {
 
   onChange(newSource) {
     let isValidJson = false;
+    let parsedSource;
 
     try {
-      JSON.parse(newSource);
+      parsedSource = JSON.parse(newSource);
       isValidJson = true;
     } catch (e) {
       isValidJson = false;
     }
 
-    this.setState({ currentSource: newSource, allowSave: isValidJson });
+    const hasChanges = !isValidJson || !R.equals(this.props.source, parsedSource);
+
+    this.props.setHasChanges(hasChanges);
+    this.setState({ currentSource: newSource, allowSave: isValidJson && hasChanges });
   }
 
   save() {

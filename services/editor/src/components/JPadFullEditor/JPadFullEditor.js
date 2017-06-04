@@ -9,6 +9,11 @@ import JPadVisualEditor from './JPadVisualEditor/JPadVisualEditor';
 import JPadTextEditor from './JPadTextEditor/JPadTextEditor';
 import './JPadFullEditor.css';
 
+const confirmUnsavedAlert = {
+  title: 'Warning',
+  message: 'You have unsaved changes.\nAre you sure you want to leave?',
+};
+
 const MutatorFor = propName => Comp =>
   class extends React.Component {
     constructor() {
@@ -32,18 +37,24 @@ const KeyRulesEditor = ({
   alerter,
   isReadonly,
   selectedTab,
-  setSelectedTab,
+  onTabSelected,
+  hasChanges,
+  setHasChanges,
 }) =>
   <div className={'key-rules-editor-container'} disabled={isReadonly}>
 
     <Tabs
       className={'tab-container'}
       selectedIndex={selectedTab}
-      onSelect={(index, lastIndex) => {
-        if (lastIndex === 1) {
-          console.log('tabtab');
-        }
-        setSelectedTab(index);
+      onSelect={async (index, lastIndex) => {
+        if (
+          lastIndex === 1 &&
+          hasChanges &&
+          !(await alerter.showConfirm(confirmUnsavedAlert)).result
+        )
+          return true;
+        setHasChanges(false);
+        onTabSelected(index);
       }}
     >
 
@@ -59,15 +70,14 @@ const KeyRulesEditor = ({
       </TabList>
       <TabPanel className={'tab-content'}>
         <fieldset disabled={isReadonly} style={{ border: 'none' }}>
-          <JPadVisualEditor {...{ mutate, alerter }} jpadSource={source} valueType={valueType} />
+          <JPadVisualEditor {...{ mutate, alerter, valueType }} jpadSource={source} />
         </fieldset>
 
       </TabPanel>
       <TabPanel className={'tab-content'}>
         <JPadTextEditor
-          source={source}
+          {...{ source, isReadonly, setHasChanges }}
           onChange={x => onMutation(JSON.parse(x))}
-          isReadonly={isReadonly}
         />
         <pre className={'key-def-json'} style={{ display: 'none' }}>
           {JSON.stringify(JSON.parse(source), null, 4)}
@@ -137,7 +147,8 @@ export default compose(
     ...other,
   })),
   MutatorFor('sourceTree'),
-  withState('selectedTab', 'setSelectedTab', 0),
+  withState('selectedTab', 'onTabSelected', 0),
+  withState('hasChanges', 'setHasChanges', false),
   pure,
   lifecycle({
     componentWillReceiveProps({ valueType, mutate }) {
