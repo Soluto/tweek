@@ -1,13 +1,13 @@
 import React from 'react';
 import { Route, IndexRoute, Redirect } from 'react-router';
-import App from './components/App';
-import KeysPage from './pages/keys/components/KeysPage/KeysPage';
-import KeyPage from './pages/keys/components/KeyPage/KeyPage';
-import ContextPage from './pages/context/components/ContextPage/ContextPage';
-import IdentityDetails from './pages/context/components/IdentityDetails/IdentityDetails';
-import NoMatch from './components/NoMatch';
-import style from './styles/styles.css';
-import './styles/styles.css';
+import App from '../src/components/App';
+import KeysPage from '../src/pages/keys/components/KeysPage/KeysPage';
+import KeyPage from '../src/pages/keys/components/KeyPage/KeyPage';
+import ContextPage from '../src/pages/context/components/ContextPage/ContextPage';
+import IdentityDetails from '../src/pages/context/components/IdentityDetails/IdentityDetails';
+import NoMatch from '../src/components/NoMatch';
+import style from '../src/styles/styles.css';
+import '../src/styles/styles.css';
 
 const SelectKeyMessage = () => <div className={style['select-key-message']}>Select key...</div>;
 

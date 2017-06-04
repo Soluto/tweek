@@ -1,6 +1,6 @@
 /* global jest, before, beforeEach, describe, it, expect */
 import { assert, expect } from 'chai';
-import * as RulesUtils from '../../../../modules/components/JPadFullEditor/rules-utils';
+import * as RulesUtils from '../../../../src/components/JPadFullEditor/rules-utils';
 
 jest.unmock('../../../../modules/components/JPadFullEditor/rules-utils');
 

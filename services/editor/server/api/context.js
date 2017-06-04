@@ -1,6 +1,6 @@
 import changeCase from 'change-case';
 import R from 'ramda';
-import authenticatedClient from '../../server/auth/authenticatedClient';
+import authenticatedClient from '../auth/authenticatedClient';
 
 const mapKeys = R.curry((fn, obj) => R.fromPairs(R.map(R.adjust(fn, 0), R.toPairs(obj))));
 

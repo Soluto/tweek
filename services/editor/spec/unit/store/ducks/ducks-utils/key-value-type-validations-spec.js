@@ -9,7 +9,7 @@ jest.mock('../../../../../modules/services/types-service', () => ({
 }));
 
 import { assert } from 'chai';
-import keyValueTypeValidation from '../../../../../modules/store/ducks/ducks-utils/validations/key-value-type-validations';
+import keyValueTypeValidation from '../../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations';
 
 describe('key-value-type-validations', () => {
 

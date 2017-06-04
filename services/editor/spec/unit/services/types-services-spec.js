@@ -2,7 +2,7 @@
 jest.unmock('../../../modules/services/types-service');
 
 import fetchMock from 'fetch-mock';
-import * as TypesService from '../../../modules/services/types-service';
+import * as TypesService from '../../../src/services/types-service';
 
 describe('types-service', () => {
 

@@ -1,6 +1,6 @@
 /* global jest, beforeEach, afterEach, describe, it, expect */
 
-import GitRepository from '../../../modules/server/repositories/git-repository';
+import GitRepository from '../../../server/repositories/git-repository';
 import { expect } from 'chai';
 import { Repository, Remote, Signature, Clone } from 'nodegit';
 import os from 'os';
