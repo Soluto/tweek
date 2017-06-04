@@ -7,10 +7,18 @@ import SaveButton from '../../../../components/common/SaveButton/SaveButton';
 import R from 'ramda';
 import * as schemaActions from '../../../../store/ducks/schema';
 
-const IdentityPage = ({ params: { identityType }, identityProperties, updateIdentityProperty }) => {
-  console.log(identityProperties);
-  return (
-    <div className={style['identity-page']}>
+const IdentityPropertiesEditor = ({identityProperties, onPropertyUpdate}) => (
+  <div className={style['property-types-list']}>
+    {
+                R.toPairs(identityProperties).map(([name, type]) =>
+                  <IdentityProperty name={name} onUpdate={prop => onPropertyUpdate(name, prop)} key={name} type={type} />,
+                )
+            }
+  </div>
+);
+
+const IdentityPage = ({ params: { identityType }, identityProperties, updateIdentityProperty }) => (
+  <div className={style['identity-page']}>
       <SaveButton data-comp="save-button" hasChanges={false} isSaving={false} onclick={() => {}} />
       <h3 style={{ textTransform: 'capitalize' }}>{identityType}</h3>
       <Tabs>
@@ -19,20 +27,13 @@ const IdentityPage = ({ params: { identityType }, identityProperties, updateIden
           <Tab disabled>Permissions</Tab>
         </TabList>
         <TabPanel>
-          <div className={style['property-types-list']}>
-            {
-                R.toPairs(identityProperties).map(([name, type]) =>
-                  <IdentityProperty name={name} onUpdate={updateIdentityProperty} key={name} type={type} />,
-                )
-            }
-          </div>
+          <IdentityPropertiesEditor identityProperties={identityProperties.local} onPropertyUpdate={updateIdentityProperty} />
         </TabPanel>
       </Tabs>
     </div>);
-};
 
 export default connect(state => ({
   schema: state.schema,
 }), schemaActions,
- ({ schema }, actions, props) => ({ identityProperties: schema[props.params.identityType].local, ...props, ...actions }),
+ ({ schema }, actions, props) => ({ identityProperties: schema[props.params.identityType], ...props, ...actions }),
 )(IdentityPage);
