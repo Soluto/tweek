@@ -1,6 +1,6 @@
+import path from 'path';
 import Git from 'nodegit';
 import glob from 'glob-promise';
-import path from 'path';
 
 const fs = require('promisify-node')('fs-extra');
 
@@ -48,12 +48,7 @@ export default class GitRepository {
     }
 
     async getHistory(fileName, { revision } = {}) {
-        const modifyDate = 'unknown';
-        const modifyUser = 'unknown';
-        const commitSha = null;
-
-        const remote = await this._repo.getRemote('origin');
-        const remoteUrl = remote.url();
+        await this._repo.getRemote('origin');
 
         const sha = revision || (await this._repo.getMasterCommit()).sha();
 

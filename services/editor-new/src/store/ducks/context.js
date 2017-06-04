@@ -1,8 +1,8 @@
 import { handleActions } from 'redux-actions';
 import { push } from 'react-router-redux';
 import fetch from '../../utils/fetch';
-import { showError } from './notifications';
 import { FIXED_PREFIX, getFixedKeys, getContextProperties } from '../../services/context-service';
+import { showError } from './notifications';
 
 const GET_CONTEXT = 'GET_CONTEXT';
 const CONTEXT_RECEIVED = 'CONTEXT_RECEIVED';

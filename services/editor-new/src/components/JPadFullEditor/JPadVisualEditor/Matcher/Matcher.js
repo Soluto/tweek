@@ -1,9 +1,9 @@
 import React from 'react';
 import R from 'ramda';
 import { shouldUpdate } from 'recompose';
+import * as ContextService from '../../../../services/context-service';
 import PropertyName from './Properties/PropertyName';
 import PropertyPredicate from './Properties/PropertyPredicate';
-import * as ContextService from '../../../../services/context-service';
 import './Matcher.css';
 
 const Property = ({

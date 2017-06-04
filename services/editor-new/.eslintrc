@@ -1,0 +1,27 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 8,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "extends": ["react-app", "plugin:jsx-a11y/recommended", "plugin:import/errors", "plugin:import/warnings"],
+  "plugins": ["jsx-a11y", "import"],
+  "rules": {
+    "default-case": "off",
+    "import/first": "error",
+    "import/no-duplicates": "warn",
+    "import/no-unresolved": ["error", { "ignore": [ "^react-monaco-editor$" ]}],
+    "import/order": "warn",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/alt-text": "off",
+    "jsx-a11y/interactive-supports-focus": "off",
+    "jsx-a11y/label-has-for": "off",
+    "jsx-a11y/mouse-events-have-key-events": "off",
+    "jsx-a11y/no-onchange": "warn",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "semi": "error",
+    "object-curly-spacing": ["error", "always"]
+  }
+}

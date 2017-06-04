@@ -5,17 +5,17 @@ import R from 'ramda';
 import Json from 'react-json';
 import classNames from 'classnames';
 import ReactTooltip from 'react-tooltip';
+import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
+import TypedInput from '../../../../../components/common/Input/TypedInput';
 import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEditor';
+import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
 import KeyTags from './KeyTags/KeyTags';
 import EditableText from './EditableText/EditableText';
 import EditableTextArea from './EditableTextArea/EditableTextArea';
 import RevisionHistory from './RevisionHistory';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
-import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import alertIconSrc from './resources/alert-icon.svg';
-import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
-import TypedInput from '../../../../../components/common/Input/TypedInput';
 import './KeyEditPage.css';
 
 const ConstEditor = ({ value, valueType, onChange }) => (

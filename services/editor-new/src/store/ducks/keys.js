@@ -62,7 +62,7 @@ export function getKeys() {
         } catch (error) {
             dispatch(showError({ title: 'Failed to retrieve keys!', error }));
         }
-    }
+    };
 }
 
 export default handleActions(

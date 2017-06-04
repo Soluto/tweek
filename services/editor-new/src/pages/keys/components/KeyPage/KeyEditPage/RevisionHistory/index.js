@@ -1,2 +1,3 @@
-import RevisionHistory from './RevisionHistory'
+import RevisionHistory from './RevisionHistory';
+
 export default RevisionHistory;

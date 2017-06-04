@@ -1,11 +1,11 @@
 import React from 'react';
 import R from 'ramda';
+import * as TypesService from '../../../services/types-service';
+import * as RulesService from '../rules-utils';
 import PartitionsSelector from './Partition/PartitionsSelector';
 import RulesList from './RulesList/RulesList';
 import DefaultValue from './Rule/DefaultValue';
 import PartitionsList from './PartitionsList/PartitionsList';
-import * as RulesService from '../rules-utils';
-import * as TypesService from '../../../services/types-service';
 import './JPadVisualEditor.css';
 
 const isBrowser = typeof window === 'object';

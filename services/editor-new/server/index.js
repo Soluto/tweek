@@ -1,5 +1,5 @@
-import express from 'express';
 import path from 'path';
+import express from 'express';
 import nconf from 'nconf';
 import session from 'express-session';
 import Promise from 'bluebird';
@@ -12,9 +12,9 @@ import TagsRepository from './repositories/tags-repository';
 import GitContinuousUpdater from './repositories/git-continuous-updater';
 import searchIndex from './searchIndex';
 
+const crypto = require('crypto');
 const passport = require('passport');
 const azureADAuthProvider = require('./auth/azuread');
-const crypto = require('crypto');
 
 nconf.argv().env().defaults({
     PORT: 3001,

@@ -6,11 +6,11 @@ import { Tabs } from 'react-tabs';
 import { Observable } from 'rxjs/Rx';
 import { setObservableConfig } from 'recompose';
 import classNames from 'classnames';
-import logoSrc from './resources/logo.svg';
+import * as TypesService from '../services/types-service';
 import Alerts from './alerts/Alerts';
 import Notifications from './alerts/Notifications';
-import * as TypesService from '../services/types-service';
 import { withTypesService } from './common/Input/TypedInput';
+import logoSrc from './resources/logo.svg';
 import './App.css';
 
 require('../styles/core/fonts/fonts.css');
@@ -31,7 +31,7 @@ const ListItemLink = ({ to, ...rest }) => (
                 {...rest}/>
         </li>
     )}/>
-)
+);
 
 export default withTypesService(TypesService)(({ children }) => (
   <div className={'app'}>

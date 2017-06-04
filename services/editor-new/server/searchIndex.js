@@ -1,10 +1,10 @@
+import fs from 'fs';
+import path from 'path';
 import lunr from 'lunr';
 import Rx from 'rxjs';
 import glob from 'glob';
 import { promisify } from 'bluebird';
 import _ from 'highland';
-import fs from 'fs';
-import path from 'path';
 
 const globAsync = promisify(glob);
 const readFile = _.wrapCallback(fs.readFile);

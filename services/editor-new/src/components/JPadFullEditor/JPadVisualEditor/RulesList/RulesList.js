@@ -1,6 +1,6 @@
 import React from 'react';
-import Rule from '../Rule/Rule';
 import Chance from 'chance';
+import Rule from '../Rule/Rule';
 import './RulesList.css';
 
 const chance = new Chance();
