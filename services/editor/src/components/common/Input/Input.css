@@ -1,7 +1,7 @@
 .text-input {
   display: inline-block;
-  border: 0;
-  border-style: none;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   height: 28px;
   width: 150px;
   padding: 0 4px;
@@ -9,7 +9,6 @@
   font-size: 13px;
   font-weight: 500;
   color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;

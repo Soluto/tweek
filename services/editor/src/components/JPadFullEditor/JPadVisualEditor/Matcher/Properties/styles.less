@@ -1,13 +1,13 @@
 @import (reference) "../../../../../styles/core/core.less";
 @import (reference) "../../../../../styles/core/comboBox.less";
 @import (reference) "../../../../../styles/core/tags.less";
-@import (reference) "icons.less";
+@import (reference) "./icons.less";
 .matcher-operator {
   margin: 0 5px;
   display: inline-block;
   @width: 80px;
   .combo-box-basic(@width, @width);
-  :global(.bootstrap-typeahead-input) {
+  .bootstrap-typeahead-input-container {
     input {
       text-align: center;
     }
@@ -107,39 +107,6 @@
   }
 }
 
-.tags-wrapper {
-  .tags-basic;
-  .tags-container {
-    display: flex;
-    max-width: 500px;
-    min-width: 150px;
-    overflow-y: auto;
-    border-bottom: 1px solid @accent-color3;
-    padding: 4px;
-    box-sizing: border-box;
-    &:before {
-      content: '';
-      margin: 0
-    }
-    .tag {
-      padding: 2px 3px 2px 3px;
-      margin: 0 5px 0 0;
-    }
-    .tag-input {
-      display: inline-block;
-      input, input:focus {
-        background-color: transparent;
-        width: 100px;
-        border: none;
-        outline: none;
-        padding: 0;
-        margin: 0;
-        font-size: 13px;
-        font-weight: 500;
-      }
-    }
-    .tags-suggestion {
-      margin-top: 6px;
-    }
-  }
+.property-value-tags-wrapper {
+  .metro-tags;
 }

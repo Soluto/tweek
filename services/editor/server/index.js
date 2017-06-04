@@ -1,15 +1,10 @@
-import React from 'react';
-import { RouterContext } from 'react-router';
 import path from 'path';
-import { Provider } from 'react-redux';
+import express from 'express';
+import nconf from 'nconf';
 import session from 'express-session';
 import Promise from 'bluebird';
-import createServer from './createServer';
-import Document from '../src/components/Document';
-import routes from './routes';
-import configureStore from '../src/store/configureStore';
+import bodyParser from 'body-parser';
 import serverRoutes from './serverRoutes';
-import { getKeys } from '../src/store/ducks/keys';
 import GitRepository from './repositories/git-repository';
 import Transactor from './utils/transactor';
 import KeysRepository from './repositories/keys-repository';
@@ -17,16 +12,18 @@ import TagsRepository from './repositories/tags-repository';
 import GitContinuousUpdater from './repositories/git-continuous-updater';
 import searchIndex from './searchIndex';
 
-const passport = require('passport');
-const nconf = require('nconf');
-const azureADAuthProvider = require('././auth/azuread');
 const crypto = require('crypto');
+const passport = require('passport');
+const azureADAuthProvider = require('./auth/azuread');
 
-nconf.argv().env().file({ file: `${process.cwd()}/config.json` }).defaults({
+nconf.argv().env().defaults({
+  PORT: 3001,
   GIT_CLONE_TIMEOUT_IN_MINUTES: 1,
   TWEEK_API_HOSTNAME: 'https://api.playground.tweek.host',
 });
 nconf.required(['GIT_URL', 'GIT_USER']);
+
+const PORT = nconf.get('PORT');
 const gitCloneTimeoutInMinutes = nconf.get('GIT_CLONE_TIMEOUT_IN_MINUTES');
 const tweekApiHostname = nconf.get('TWEEK_API_HOSTNAME');
 
@@ -57,22 +54,6 @@ const tagsRepository = new TagsRepository(gitTransactionManager);
 GitContinuousUpdater.onUpdate(gitTransactionManager)
   .exhaustMap(_ => searchIndex.refreshIndex(gitRepostoryConfig.localPath))
   .subscribe();
-
-function getApp(req, res, requestCallback) {
-  requestCallback(null, {
-    routes: routes(serverRoutes({ tagsRepository, keysRepository, tweekApiHostname })),
-    async render(routerProps, renderCallback) {
-      const store = configureStore({});
-      const keys = await keysRepository.getAllKeys();
-      await store.dispatch(getKeys(keys));
-
-      renderCallback(null, {
-        renderDocument: props => <Document {...props} initialState={store.getState()} />,
-        renderApp: props => <Provider store={store}><RouterContext {...props} /></Provider>,
-      });
-    },
-  });
-}
 
 function addDirectoryTraversalProtection(server) {
   const DANGEROUS_PATH_PATTERN = /(?:^|[\\/])\.\.(?:[\\/]|$)/;
@@ -105,18 +86,28 @@ function addAuthSupport(server) {
 }
 
 const startServer = () => {
-  const server = createServer(getApp);
-  addDirectoryTraversalProtection(server);
+  const app = express();
+
+  addDirectoryTraversalProtection(app);
   const cookieOptions = {
     secret: nconf.get('SESSION_COOKIE_SECRET_KEY') || crypto.randomBytes(20).toString('base64'),
     cookie: { httpOnly: true },
   };
-  server.use(session(cookieOptions));
+  app.use(session(cookieOptions));
   if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true') {
-    addAuthSupport(server);
+    addAuthSupport(app);
   }
+  app.use(bodyParser.json()); // for parsing application/json
+  app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-  server.start();
+  app.use('/api', serverRoutes({ tagsRepository, keysRepository, tweekApiHostname }));
+
+  app.use(express.static(path.join(__dirname, 'build')));
+  app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  });
+
+  const server = app.listen(PORT, () => console.log('Listening on port %d', server.address().port));
 };
 
 gitRepoCreationPromiseWithTimeout

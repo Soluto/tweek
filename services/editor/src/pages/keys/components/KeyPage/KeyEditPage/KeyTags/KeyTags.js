@@ -1,11 +1,10 @@
-import React from 'react';
-import { Component } from 'react';
-import { WithContext as ReactTags } from 'react-tag-input';
+import React, { Component } from 'react';
+import { compose, mapProps, pure } from 'recompose';
 import { connect } from 'react-redux';
 import R from 'ramda';
-import style from './KeyTags.css';
+import { WithContext as ReactTags } from 'react-tag-input';
 import * as tagActions from '../../../../../../store/ducks/tags';
-import { compose, mapProps, pure } from 'recompose';
+import './KeyTags.css';
 
 export default compose(
   connect(state => ({ globalTags: state.tags }), { ...tagActions }),
@@ -20,11 +19,7 @@ export default compose(
   })),
 )(
   class KeyTags extends Component {
-    constructor(props) {
-      super(props);
-    }
-
-    _onTagAdded(newTagText) {
+    _onTagAdded = (newTagText) => {
       const { saveNewTags } = this.props;
 
       const currentTags = this.props.tags.map(x => x.text);
@@ -38,7 +33,7 @@ export default compose(
       saveNewTags([newTagText]);
     }
 
-    _onTagDeleted(deletedTagIndex) {
+    _onTagDeleted = (deletedTagIndex) => {
       const newTags = R.remove(deletedTagIndex, 1, this.props.tags);
       this.props.onTagsChanged(newTags.map(x => x.text));
     }
@@ -46,22 +41,22 @@ export default compose(
     render() {
       const { tags, tagsSuggestions } = this.props;
       return (
-        <div className={style['tags-wrapper']}>
+        <div className={'key-tags'}>
           <ReactTags
             tags={tags}
-            handleDelete={this::this._onTagDeleted}
-            handleAddition={this::this._onTagAdded}
+            handleDelete={this._onTagDeleted}
+            handleAddition={this._onTagAdded}
             suggestions={tagsSuggestions}
             placeholder="New tag"
             autofocus={false}
             allowDeleteFromEmptyInput
             minQueryLength={1}
             classNames={{
-              tags: style['tags-container'],
-              tagInput: style['tag-input'],
-              tag: style.tag,
-              remove: style['tag-delete-button'],
-              suggestions: style['tags-suggestion'],
+              tags: 'tags-container',
+              tagInput: 'tag-input',
+              tag: 'tag',
+              remove: 'tag-delete-button',
+              suggestions: 'tags-suggestion',
             }}
           />
         </div>

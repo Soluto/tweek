@@ -6,8 +6,8 @@ import changeCase from 'change-case';
 import ComboBox from '../../../../../../components/common/ComboBox/ComboBox';
 import * as TypesServices from '../../../../../../services/types-service';
 import { updateKeyValueType } from '../../../../../../store/ducks/selectedKey';
-import style from './KeyValueTypeSelector.css';
 import alertIconSrc from '../resources/alert-icon.svg';
+import './KeyValueTypeSelector.css';
 
 const getValueTypeSuggestions = () =>
   Object.keys(TypesServices.types).map(x => ({
@@ -26,21 +26,11 @@ const KeyValueTypeSelector = compose(
 )(({ value, validation: { isShowingHint, hint }, updateKeyValueType: onChange }) => {
   const suggestions = getValueTypeSuggestions();
   return (
-    <div className={style['key-value-type-selector-container']}>
-      <label className={style['key-value-type-label']}>Key value type:</label>
-      <div
-        className={style['key-value-type-selector-wrapper']}
-        data-with-error={isShowingHint}
-      >
-        <div
-          className={style['validation-icon-wrapper']}
-          data-is-shown={isShowingHint}
-        >
-          <img
-            data-tip={hint}
-            className={style['validation-icon']}
-            src={alertIconSrc}
-          />
+    <div className={'key-value-type-selector-container'}>
+      <label className={'key-value-type-label'}>Key value type:</label>
+      <div className={'key-value-type-selector-wrapper'} data-with-error={isShowingHint}>
+        <div className={'validation-icon-wrapper'} data-is-shown={isShowingHint}>
+          <img data-tip={hint} className={'validation-icon'} src={alertIconSrc} />
         </div>
         <ComboBox
           suggestions={suggestions}
@@ -48,12 +38,7 @@ const KeyValueTypeSelector = compose(
           onChange={(_, item) => item && onChange(item.value)}
           value={changeCase.titleCase(value)}
         />
-        <ReactTooltip
-          disable={!isShowingHint}
-          effect="solid"
-          place="top"
-          delayHide={500}
-        />
+        <ReactTooltip disable={!isShowingHint} effect="solid" place="top" delayHide={500} />
       </div>
     </div>
   );

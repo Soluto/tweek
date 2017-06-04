@@ -1,5 +1,6 @@
 /* global document */
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 const events = ['mousedown', 'touchstart'];
 
@@ -13,14 +14,14 @@ function clickedScrollbar(evt) {
 export default class ClickOutside extends Component {
   static propTypes = {
     onClickOutside: PropTypes.func.isRequired,
-  };
+  }
 
   handle = (e) => {
     if (clickedScrollbar(e)) return;
     const { onClickOutside } = this.props;
     const el = this.container;
     if (!el.contains(e.target)) onClickOutside(e);
-  };
+  }
 
   render() {
     const { children, onClickOutside, ...props } = this.props;

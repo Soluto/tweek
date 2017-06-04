@@ -1,17 +1,17 @@
 import { handleActions } from 'redux-actions';
 import R from 'ramda';
 import { push } from 'react-router-redux';
+import * as ContextService from '../../services/context-service';
+import fetch from '../../utils/fetch';
+import { withJsonData } from '../../utils/http';
 import {
   createBlankJPadKey,
   createBlankKeyManifest,
   BLANK_KEY_NAME,
 } from './ducks-utils/blankKeyDefinition';
-import { withJsonData } from '../../utils/http';
 import keyNameValidations from './ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
 import { downloadTags } from './tags';
-import * as ContextService from '../../services/context-service';
-import fetch from '../../utils/fetch';
 import { showError } from './notifications';
 import { showConfirm } from './alerts';
 
@@ -278,10 +278,7 @@ const handleKeyDeleting = ({ remote, ...otherState }) => ({
   remote: { ...remote },
 });
 
-const handleKeyValueTypeChange = (
-  { local: { manifest, ...restOfLocal }, ...state },
-  { payload },
-) => ({
+const handleKeyValueTypeChange = ({ local: { manifest, ...restOfLocal }, ...state }, { payload }) => ({
   ...state,
   local: {
     ...restOfLocal,

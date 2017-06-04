@@ -3,35 +3,38 @@ import classnames from 'classnames';
 import Input from '../../../../components/common/Input/Input';
 import TypedInput from '../../../../components/common/Input/TypedInput';
 import { getPropertyTypeDetails } from '../../../../services/context-service';
-import style from './IdentityProperties.css';
+import './IdentityProperties.css';
 
 const getPropertyValueType = (identityName, property) => {
   const details = getPropertyTypeDetails(`${identityName}.${property}`);
   return details.name;
 };
 
-const Property = ({ identityName, property, value }) => (
-  <div className={style['property-wrapper']}>
-    <Input className={style['property-input']} value={property} disabled />
+const Property = ({ identityName, property, value }) =>
+  <div className={'property-wrapper'}>
+    <Input className={'property-input'} value={property} disabled />
     <TypedInput
-      className={style['property-input']}
+      className={'property-input'}
       value={value}
       valueType={getPropertyValueType(identityName, property)}
       placeholder="(no value)"
       disabled
     />
-  </div>
-);
+  </div>;
 
-const IdentityProperties = ({ className, identityName, properties }) => (
-  <div className={classnames(style['context-properties-container'], className)}>
-    <div className={style['context-properties-title']}>Properties</div>
-    <div className={style['property-list']}>
-      {Object.keys(properties).map(prop => (
-        <Property key={prop} identityName={identityName} property={prop} value={properties[prop]} />
-      ))}
+const IdentityProperties = ({ className, identityName, properties }) =>
+  <div className={classnames('context-properties-container', className)}>
+    <div className={'context-properties-title'}>Properties</div>
+    <div className={'property-list'}>
+      {Object.keys(properties).map(prop =>
+        <Property
+          key={prop}
+          identityName={identityName}
+          property={prop}
+          value={properties[prop]}
+        />,
+      )}
     </div>
-  </div>
-);
+  </div>;
 
 export default IdentityProperties;

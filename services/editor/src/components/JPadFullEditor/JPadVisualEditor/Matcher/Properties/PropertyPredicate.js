@@ -1,7 +1,5 @@
 import React from 'react';
 import { mapProps } from 'recompose';
-import Operator from './Operator';
-import PropertyValue from './PropertyValue';
 import * as ContextService from '../../../../../services/context-service';
 import {
   equal,
@@ -9,6 +7,8 @@ import {
   allOperators,
   getPropertySupportedOperators,
 } from '../../../../../services/operators-provider';
+import Operator from './Operator';
+import PropertyValue from './PropertyValue';
 
 const translateValue = (oldOperator, newOperator, value) => {
   if (oldOperator.operatorValue === inOp.operatorValue) return value.length > 0 ? value[0] : '';
@@ -34,7 +34,7 @@ const PropertyPredicate = mapProps(({ property, predicate, ...props }) => {
     predicateValue = predicate[selectedOperator.operatorValue];
   }
   return { supportedOperators, selectedOperator, propertyTypeDetails, predicateValue, ...props };
-})(({ mutate, supportedOperators, selectedOperator, propertyTypeDetails, predicateValue }) => (
+})(({ mutate, supportedOperators, selectedOperator, propertyTypeDetails, predicateValue }) =>
   <div style={{ display: 'flex' }}>
     <Operator
       supportedOperators={supportedOperators}
@@ -59,7 +59,7 @@ const PropertyPredicate = mapProps(({ property, predicate, ...props }) => {
           ),
         )}
     />
-  </div>
-));
+  </div>,
+);
 
 export default PropertyPredicate;

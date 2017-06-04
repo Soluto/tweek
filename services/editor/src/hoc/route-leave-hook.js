@@ -1,17 +1,29 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { compose, lifecycle } from 'recompose';
-import { withRouter } from 'react-router';
+import { Prompt } from 'react-router';
+import { lifecycle, compose } from 'recompose';
 
-const routeLeaveHook = fnConfirm => Comp =>
+const routeLeaveHook = (fn, message, wrapperProps) =>
   compose(
-    withRouter,
     lifecycle({
-      componentDidMount() {
-        window.onbeforeunload = () => fnConfirm(this.props);
-        this.props.router.setRouteLeaveHook(this.props.route, () => fnConfirm(this.props));
+      componentWillMount() {
+        this._onUnload = (e) => {
+          e = e || window.event;
+          if (fn(this.props)) {
+            e.returnValue = message;
+            return message;
+          }
+        };
+        window.addEventListener('beforeunload', this._onUnload);
+      },
+      componentWillUnmount() {
+        window.removeEventListener('beforeunload', this._onUnload);
       },
     }),
-  )(props => <Comp {...props} />);
+    Component => props =>
+      <div {...wrapperProps}>
+        <Prompt message={message} when={fn(props)} />
+        <Component {...props} />
+      </div>,
+  );
 
 export default routeLeaveHook;

@@ -1,7 +1,7 @@
 import React from 'react';
-import Rule from '../Rule/Rule';
-import style from './RulesList.css';
 import Chance from 'chance';
+import Rule from '../Rule/Rule';
+import './RulesList.css';
 
 const chance = new Chance();
 
@@ -32,9 +32,9 @@ export default class RulesList extends React.Component {
     if (!rules) return <div />;
 
     return (
-      <div className={style['rule-container']}>
+      <div className={'rule-item-container'}>
         <button
-          className={style['add-rule-button']}
+          className={'add-rule-button'}
           onClick={() => {
             this.addMutatorRule();
             this.setState({ autofocusRuleIndex: 0 });
@@ -43,30 +43,30 @@ export default class RulesList extends React.Component {
           Add Rule
         </button>
 
-        {rules.map((rule, i) => (
-          <div className={style['conditions-container']} disabled key={i}>
+        {rules.map((rule, i) =>
+          <div className={'conditions-container'} disabled key={i}>
 
-            <div className={style['rule-control-wrapper']}>
+            <div className={'rule-control-wrapper'}>
               {i > 0
                 ? <button
-                  className={style['rule-order-button']}
-                  onClick={() => mutate.replaceKeys(i, i - 1)}
-                  title="Move up"
-                >
+                    className={'rule-order-button'}
+                    onClick={() => mutate.replaceKeys(i, i - 1)}
+                    title="Move up"
+                  >
                     
                   </button>
                 : null}
               {i < rules.length - 1
                 ? <button
-                  className={style['rule-order-button']}
-                  onClick={() => mutate.replaceKeys(i, i + 1)}
-                  title="Move down"
-                >
+                    className={'rule-order-button'}
+                    onClick={() => mutate.replaceKeys(i, i + 1)}
+                    title="Move down"
+                  >
                     
                   </button>
                 : null}
               <button
-                className={style['delete-rule-button']}
+                className={'delete-rule-button'}
                 onClick={() => {
                   this.deleteRule(i);
                   this.setState({ autofocusRuleIndex: undefined });
@@ -84,8 +84,8 @@ export default class RulesList extends React.Component {
               autofocus={i === autofocusRuleIndex}
             />
 
-          </div>
-        ))}
+          </div>,
+        )}
 
       </div>
     );

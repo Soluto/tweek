@@ -1,37 +1,42 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { compose, lifecycle } from 'recompose';
+import R from 'ramda';
 import * as selectedKeyActions from '../../../../store/ducks/selectedKey';
 import * as alertActions from '../../../../store/ducks/alerts';
-import { compose, lifecycle } from 'recompose';
+import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefinition';
+import routeLeaveHook from '../../../../hoc/route-leave-hook';
 import MessageKeyPage from './MessageKeyPage/MessageKeyPage';
 import KeyEditPage from './KeyEditPage/KeyEditPage';
-import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefinition';
-import { diff } from 'deep-diff';
-import routeLeaveHook from '../../../../hoc/route-leave-hook';
+import './KeyPage.css';
 
 const onRouteLeaveConfirmFunc = (props) => {
-  if (!props.selectedKey || props.selectedKey.isSaving) return;
+  if (!props.selectedKey || props.selectedKey.isSaving) return false;
 
   const { local, remote } = props.selectedKey;
-  const changes = diff(local, remote);
-  const hasChanges = (changes || []).length > 0;
-
-  if (hasChanges) {
-    return 'You have unsaved changes, are you sure you want to leave this page?';
-  }
+  return !R.equals(local, remote);
 };
 
 const keyPageComp = compose(
   connect(
-    (state, { params, location }) => ({
-      selectedKey: state.selectedKey,
-      configKey: params.splat,
-      isInAddMode: params.splat === BLANK_KEY_NAME,
-      revision: location.query.revision,
-    }),
+    (state, { match, location }) => {
+      const configKey = location.pathname.substring(
+        match.path.endsWith('/') ? match.path.length : match.path.length + 1,
+      );
+      return {
+        selectedKey: state.selectedKey,
+        configKey,
+        isInAddMode: configKey === BLANK_KEY_NAME,
+        revision: location.query && location.query.revision,
+      };
+    },
     { ...selectedKeyActions, ...alertActions },
   ),
-  routeLeaveHook(onRouteLeaveConfirmFunc),
+  routeLeaveHook(
+    onRouteLeaveConfirmFunc,
+    'You have unsaved changes, are you sure you want to leave this page?',
+    { className: 'key-page-wrapper' },
+  ),
   lifecycle({
     componentDidMount() {
       const { configKey, selectedKey, openKey, revision } = this.props;
@@ -40,7 +45,7 @@ const keyPageComp = compose(
       openKey(configKey, { revision });
     },
     componentWillReceiveProps({ configKey, revision }) {
-      const { openKey, selectedKey } = this.props;
+      const { openKey } = this.props;
       if (configKey !== this.props.configKey || revision !== this.props.revision) {
         openKey(configKey, { revision });
       }

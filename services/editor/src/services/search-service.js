@@ -13,17 +13,19 @@ export async function refreshIndex() {
   index = lunr.Index.load(serializedIndex);
 }
 
-const searchIndex = field => function (query) {
-  if (!index || query === undefined || query.length === 0) return [];
+const searchIndex = field =>
+  function (query) {
+    if (!index || query === undefined || query.length === 0) return [];
 
-  const searchResults = query.split(separator)
-    .filter(s => s !== '')
-    .map(s => `${s} *${s}~1 *${s}*`)
-    .map(s => index.search(field ? `${field}:${s}` : s))
-    .reduce((acc, results) => R.intersectionWith(R.eqBy(R.prop('ref')), acc, results));
+    const searchResults = query
+      .split(separator)
+      .filter(s => s !== '')
+      .map(s => `${s} *${s}~1 *${s}*`)
+      .map(s => index.search(field ? `${field}:${s}` : s))
+      .reduce((acc, results) => R.intersectionWith(R.eqBy(R.prop('ref')), acc, results));
 
-  return R.sort(byScore, searchResults).map(R.prop('ref'));
-};
+    return R.sort(byScore, searchResults).map(R.prop('ref'));
+  };
 
 export const suggestions = searchIndex('id');
 

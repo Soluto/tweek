@@ -1,12 +1,12 @@
 import React from 'react';
 import R from 'ramda';
+import * as TypesService from '../../../services/types-service';
+import * as RulesService from '../rules-utils';
 import PartitionsSelector from './Partition/PartitionsSelector';
 import RulesList from './RulesList/RulesList';
 import DefaultValue from './Rule/DefaultValue';
 import PartitionsList from './PartitionsList/PartitionsList';
-import * as RulesService from '../rules-utils';
-import * as TypesService from '../../../services/types-service';
-import style from './JPadVisualEditor.css';
+import './JPadVisualEditor.css';
 
 const isBrowser = typeof window === 'object';
 
@@ -40,13 +40,13 @@ const autoPartitionAlert = testAutoPartition => ({
 });
 
 function createPartitionedRules(depth) {
-  return depth == 0 ? [] : {};
+  return depth === 0 ? [] : {};
 }
 
 function isEmptyRules(rules) {
   if (!rules) return true;
-  if (Array.isArray(rules)) return rules.length == 0;
-  if (Object.keys(rules).some(k => k != '*')) return false;
+  if (Array.isArray(rules)) return rules.length === 0;
+  if (Object.keys(rules).some(k => k !== '*')) return false;
   return isEmptyRules(rules['*']);
 }
 
@@ -58,11 +58,7 @@ export default ({ valueType, mutate, alerter }) => {
 
   const handlePartitionAddition = async (newPartition) => {
     const rules = mutate.in('rules').getValue();
-    const testAutoPartition = RulesService.testAutoPartition(
-      newPartition,
-      rules,
-      partitions.length,
-    );
+    const testAutoPartition = RulesService.testAutoPartition(newPartition, rules, partitions.length);
 
     if (!testAutoPartition.isValid || isEmptyRules(mutate.in('rules').getValue())) {
       const newPartitions = partitions.concat(newPartition);
@@ -119,15 +115,15 @@ export default ({ valueType, mutate, alerter }) => {
   };
 
   return (
-    <div className={style['jpad-editor-container']}>
-      <div className={style['jpad-settings']}>
+    <div className={'jpad-editor-container'}>
+      <div className={'jpad-settings'}>
         <DefaultValue
           value={defaultValueMutate.getValue()}
           valueType={valueType}
           onChange={updateDefaultValue}
-          className={style['default-value']}
+          className={'default-value'}
         />
-        <div className={style['vertical-separator']} />
+        <div className={'vertical-separator'} />
         <PartitionsSelector
           {...{ partitions, handlePartitionAddition, handlePartitionDelete, alerter }}
         />

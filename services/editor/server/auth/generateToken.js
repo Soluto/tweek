@@ -1,6 +1,6 @@
+import fs from 'fs';
 import jwt from 'jsonwebtoken';
 import nconf from 'nconf';
-import fs from 'fs';
 import { promisify } from 'bluebird';
 
 const jwtSign = promisify(jwt.sign);

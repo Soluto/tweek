@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Rx from 'rxjs';
 import R from 'ramda';
 import { compose, pure, mapPropsStream, createEventHandler } from 'recompose';
@@ -6,7 +7,7 @@ import classnames from 'classnames';
 import ClickOutside from './ClickOutside';
 import InputWithHint from './InputWithHint';
 import Suggestions from './Suggestions';
-import style from './ComboBox.css';
+import './ComboBox.css';
 
 const keyCode = {
   ENTER: 13,
@@ -32,7 +33,7 @@ class ComboBoxComponent extends Component {
     const selected = this.getSuggestion(index);
     onChange(getLabel(selected), selected);
     setFocus(false);
-  };
+  }
 
   onInputChange = (input) => {
     const { suggestions, getLabel, onChange, matchCase, setFocus } = this.props;
@@ -41,12 +42,12 @@ class ComboBoxComponent extends Component {
     const selected = suggestions.find(s => getLabelWithCase(s) === caseInput);
     onChange(input, selected);
     setFocus(true);
-  };
+  }
 
   getSuggestion = (index) => {
     const { suggestions } = this.props;
     return suggestions[Math.max(0, index)];
-  };
+  }
 
   get hint() {
     const { value, hasFocus, highlightedSuggestion, suggestions, getLabel, matchCase } = this.props;
@@ -111,7 +112,7 @@ class ComboBoxComponent extends Component {
     }
 
     if (onKeyDown) onKeyDown(e);
-  };
+  }
 
   render() {
     const {
@@ -138,7 +139,7 @@ class ComboBoxComponent extends Component {
 
     return (
       <ClickOutside
-        className={classnames(style['combo-box-default-wrapper-theme-class'], className)}
+        className={classnames('combo-box-default-wrapper-theme-class', className)}
         onFocus={() => setFocus(true)}
         onClickOutside={() => setFocus(false)}
       >
@@ -154,17 +155,17 @@ class ComboBoxComponent extends Component {
           />
           {hasFocus && !disabled
             ? <Suggestions
-              {...{
-                value,
-                suggestions,
-                getLabel,
-                highlightedSuggestion,
-                onSuggestionHighlighted,
-                renderSuggestion,
-                suggestionsContainer,
-              }}
-              onSuggestionSelected={this.onSuggestionSelected}
-            />
+                {...{
+                  value,
+                  suggestions,
+                  getLabel,
+                  highlightedSuggestion,
+                  onSuggestionHighlighted,
+                  renderSuggestion,
+                  suggestionsContainer,
+                }}
+                onSuggestionSelected={this.onSuggestionSelected}
+              />
             : null}
         </div>
       </ClickOutside>
@@ -180,11 +181,10 @@ const ComboBox = compose(
 
     const highlighted$ = onHighlighted$.startWith({ index: -1 }).distinctUntilChanged();
 
-    const value$ = Rx.Observable
-      .merge(
-        props$.map(R.prop('value')).distinctUntilChanged(),
-        onInputChanged$,
-      );
+    const value$ = Rx.Observable.merge(
+      props$.map(R.prop('value')).distinctUntilChanged(),
+      onInputChanged$,
+    );
 
     const propsWithValue$ = Rx.Observable
       .combineLatest(props$, value$)

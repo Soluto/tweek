@@ -1,17 +1,17 @@
 import React from 'react';
-
-import style from './KeysList.css';
+import PropTypes from 'prop-types';
+import { VelocityTransitionGroup } from 'velocity-react';
 import openedFolderIconSrc from './resources/Folder-icon-opened.svg';
 import closedFolderIconSrc from './resources/Folder-icon-closed.svg';
-import { VelocityTransitionGroup } from 'velocity-react';
+import './KeysList.css';
 
 const leaf = Symbol();
 
 export default function DirectoryTreeView({ paths, renderItem, expandByDefault }) {
   let pathTree = pathsToTree(paths);
   return (
-    <div className={style['key-folder']}>
-      {Object.keys(pathTree).map(pathNode => (
+    <div className={'key-folder'}>
+      {Object.keys(pathTree).map(pathNode =>
         <TreeNode
           key={pathNode}
           name={pathNode}
@@ -20,16 +20,16 @@ export default function DirectoryTreeView({ paths, renderItem, expandByDefault }
           depth={1}
           expandByDefault={expandByDefault}
           renderItem={renderItem}
-        />
-      ))}
+        />,
+      )}
     </div>
   );
 }
 
 DirectoryTreeView.propTypes = {
-  paths: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-  renderItem: React.PropTypes.func.isRequired,
-  expandByDefault: React.PropTypes.bool,
+  paths: PropTypes.arrayOf(PropTypes.string).isRequired,
+  renderItem: PropTypes.func.isRequired,
+  expandByDefault: PropTypes.bool,
 };
 
 function TreeNode({ node, name, fullPath, depth, renderItem, expandByDefault }) {
@@ -38,40 +38,40 @@ function TreeNode({ node, name, fullPath, depth, renderItem, expandByDefault }) 
   return node === leaf
     ? <LeafElement {...{ name, fullPath, depth }} />
     : <TreeDirectory
-      descendantsCount={countLeafsInTree(node)}
-      {...{ name, fullPath, depth, expandByDefault }}
-    >
-      {Object.keys(node).map(childPath => (
-        <TreeNode
-          key={childPath}
-          name={childPath}
-          node={node[childPath]}
-          fullPath={`${fullPath}/${childPath}`}
-          depth={depth + 1}
-          renderItem={renderItem}
-          expandByDefault={expandByDefault}
-        />
-        ))}
-    </TreeDirectory>;
+        descendantsCount={countLeafsInTree(node)}
+        {...{ name, fullPath, depth, expandByDefault }}
+      >
+        {Object.keys(node).map(childPath =>
+          <TreeNode
+            key={childPath}
+            name={childPath}
+            node={node[childPath]}
+            fullPath={`${fullPath}/${childPath}`}
+            depth={depth + 1}
+            renderItem={renderItem}
+            expandByDefault={expandByDefault}
+          />,
+        )}
+      </TreeDirectory>;
 }
 
 TreeNode.propTypes = {
-  node: React.PropTypes.oneOfType([React.PropTypes.object, React.PropTypes.symbol]).isRequired,
-  name: React.PropTypes.string.isRequired,
-  fullPath: React.PropTypes.string,
-  depth: React.PropTypes.number.isRequired,
-  renderItem: React.PropTypes.func.isRequired,
-  expandByDefault: React.PropTypes.bool,
+  node: PropTypes.oneOfType([PropTypes.object, PropTypes.symbol]).isRequired,
+  name: PropTypes.string.isRequired,
+  fullPath: PropTypes.string,
+  depth: PropTypes.number.isRequired,
+  renderItem: PropTypes.func.isRequired,
+  expandByDefault: PropTypes.bool,
 };
 
 class TreeDirectory extends React.Component {
   static propTypes = {
-    name: React.PropTypes.string.isRequired,
-    fullPath: React.PropTypes.string,
-    depth: React.PropTypes.number.isRequired,
-    children: React.PropTypes.arrayOf(React.PropTypes.node).isRequired,
-    expandByDefault: React.PropTypes.bool,
-  };
+    name: PropTypes.string.isRequired,
+    fullPath: PropTypes.string,
+    depth: PropTypes.number.isRequired,
+    children: PropTypes.arrayOf(PropTypes.node).isRequired,
+    expandByDefault: PropTypes.bool,
+  }
 
   constructor(props) {
     super(props);
@@ -86,38 +86,35 @@ class TreeDirectory extends React.Component {
     let { isCollapsed } = this.state;
 
     return (
-      <div className={style['key-folder']}>
+      <div className={'key-folder'}>
 
         <div
           style={{ paddingLeft: (depth + 1) * 10 }}
-          className={style['key-folder-name']}
+          className={'key-folder-name'}
           onClick={() => this.setState({ isCollapsed: !isCollapsed })}
           data-folder-name={fullPath}
         >
           <img
-            className={style['key-folder-icon']}
+            className={'key-folder-icon'}
             src={isCollapsed ? closedFolderIconSrc : openedFolderIconSrc}
           />
           {name}
-          <label className={style['number-of-folder-keys']}>{descendantsCount}</label>
+          <label className={'number-of-folder-keys'}>{descendantsCount}</label>
         </div>
 
-        <VelocityTransitionGroup
-          enter={{ animation: 'slideDown' }}
-          leave={{ animation: 'slideUp' }}
-        >
+        <VelocityTransitionGroup enter={{ animation: 'slideDown' }} leave={{ animation: 'slideUp' }}>
           {isCollapsed
             ? undefined
-            : <ul className={style['folder-items']}>
-              {children.map((child, i) => <li className={style['sub-tree']} key={i}>{child}</li>)}
-            </ul>}
+            : <ul className={'folder-items'}>
+                {children.map((child, i) => <li className={'sub-tree'} key={i}>{child}</li>)}
+              </ul>}
         </VelocityTransitionGroup>
       </div>
     );
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.expandByDefault != nextProps.expandByDefault) {
+    if (this.props.expandByDefault !== nextProps.expandByDefault) {
       this.setState({
         isCollapsed: !nextProps.expandByDefault,
       });

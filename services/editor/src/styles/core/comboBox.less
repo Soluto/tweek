@@ -1,22 +1,18 @@
-  @import (reference) "core.less";
+  @import (reference) "./core.less";
   .combo-box-basic(@dropdown-min-width: 450px, @input-width: @text-box-default-width, @font-size: 13px, @dropdown-font-size: 13px) {
     display: flex;
     .override-typeahead {
       .override-input {
         flex-grow: 1;
-        :global(.bootstrap-typeahead-input) {
-          :global(.bootstrap-typeahead-input-main) {
-            .metro-textbox(@font-size);
-            width: @input-width;
-          }
-          :global(.bootstrap-typeahead-input-hint) {
+        .bootstrap-typeahead-input-container {
+          .bootstrap-typeahead-input {
             .metro-textbox(@font-size);
             width: @input-width;
           }
         }
       }
       .override-dropdown {
-        :global(.dropdown-menu) {
+        .dropdown-menu {
           position: absolute;
           max-height: 350px;
           min-width: @dropdown-min-width;
@@ -58,29 +54,18 @@
               }
             }
           }
-          :global(.disabled) {
+          .disabled {
             display: none;
           }
-          :global(.active) {
+          .active {
             background-color: #dfdfdf;
           }
         }
       }
-      :global(.bootstrap-typeahead) {
+
+      .bootstrap-typeahead {
         .override-input;
         .override-dropdown;
-
-        :global(.bootstrap-typeahead-clear-button) {
-          .close-circle-button;
-          margin-top: -12px;
-          position: absolute;
-          right: 0;
-          top: 50%;
-          z-index: 1;
-          span {
-            display: none;
-          }
-        }
       }
     }
     .override-typeahead;

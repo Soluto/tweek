@@ -30,7 +30,7 @@
   align-items: center;
   background-color: #333b41;
 }
-.keys-page-container .add-button-wrapper .add-button {
+.keys-page-container .add-button-wrapper .add-key-button {
   vertical-align: top;
   background-color: #00aeef;
   height: 28px;
@@ -49,15 +49,15 @@
   border-radius: 17px;
   width: 200px;
 }
-.keys-page-container .add-button-wrapper .add-button:hover {
+.keys-page-container .add-button-wrapper .add-key-button:hover {
   background-color: #029CD5;
   cursor: pointer;
 }
-.keys-page-container .add-button-wrapper .add-button:disabled {
+.keys-page-container .add-button-wrapper .add-key-button:disabled {
   background-color: gray;
 }
-.keys-page-container .add-button-wrapper .add-button:disabled:hover,
-.keys-page-container .add-button-wrapper .add-button:disabled:active {
+.keys-page-container .add-button-wrapper .add-key-button:disabled:hover,
+.keys-page-container .add-button-wrapper .add-key-button:disabled:active {
   cursor: default;
   background-color: gray;
 }
