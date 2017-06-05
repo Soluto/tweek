@@ -17,14 +17,19 @@ const searchIndex = field =>
   function (query) {
     if (!index || query === undefined || query.length === 0) return [];
 
-    const searchResults = query
-      .split(separator)
-      .filter(s => s !== '')
-      .map(s => `${s} *${s}~1 *${s}*`)
-      .map(s => index.search(field ? `${field}:${s}` : s))
-      .reduce((acc, results) => R.intersectionWith(R.eqBy(R.prop('ref')), acc, results));
+    try {
+      const searchResults = query
+        .split(separator)
+        .filter(s => s !== '')
+        .map(s => `${s} *${s}~1 *${s}*`)
+        .map(s => index.search(field ? `${field}:${s}` : s))
+        .reduce((acc, results) => R.intersectionWith(R.eqBy(R.prop('ref')), acc, results));
 
-    return R.sort(byScore, searchResults).map(R.prop('ref'));
+      return R.sort(byScore, searchResults).map(R.prop('ref'));
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
   };
 
 export const suggestions = searchIndex('id');
