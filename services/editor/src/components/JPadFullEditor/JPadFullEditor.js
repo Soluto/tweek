@@ -11,7 +11,7 @@ import './JPadFullEditor.css';
 
 const confirmUnsavedAlert = {
   title: 'Warning',
-  message: 'You have unsaved changes.\nAre you sure you want to leave?',
+  message: 'You have un-inserted changes.\nAre you sure you want to leave?',
 };
 
 const MutatorFor = propName => Comp =>
