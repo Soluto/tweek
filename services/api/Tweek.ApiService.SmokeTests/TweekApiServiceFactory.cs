@@ -26,7 +26,12 @@ namespace Tweek.ApiService.SmokeTests
         public async Task AppendContext(string identityType, string identityId, Dictionary<string, JsonValue> context)
         {
             await _client.PostAsync(
-                $"/context/{identityType}/{identityId}", new StringContent(JsonConvert.SerializeObject(context, new JsonValueConverter()), Encoding.UTF8, "application/json"));
+                $"/api/v1//context/{identityType}/{identityId}", new StringContent(JsonConvert.SerializeObject(context, new JsonValueConverter()), Encoding.UTF8, "application/json"));
+        }
+
+        public async Task RemoveFromContext(string identityType, string identityId, string property)
+        {
+            await _client.DeleteAsync($"api/v1/context/{identityType}/{identityId}/{property}");
         }
 
         public async Task<JToken> GetSwagger()

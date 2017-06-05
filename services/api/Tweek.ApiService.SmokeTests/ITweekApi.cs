@@ -13,6 +13,8 @@ namespace Tweek.ApiService.SmokeTests
 
         Task AppendContext([Path] string identityType, [Path]string identityId, Dictionary<string, JsonValue> context);
 
+        Task RemoveFromContext([Path] string identityType, [Path]string identityId, string property);
+
         [Get("/api/swagger.json")]
         Task<JToken> GetSwagger();
     }
