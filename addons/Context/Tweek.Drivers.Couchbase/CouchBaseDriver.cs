@@ -12,6 +12,7 @@ using Couchbase.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Dynamic;
+using Couchbase.IO;
 using FSharpUtils.Newtonsoft;
 
 namespace Tweek.Drivers.CouchbaseDriver
@@ -36,18 +37,32 @@ namespace Tweek.Drivers.CouchbaseDriver
 
         public async Task RemoveFromContext(Identity identity, string key)
         {
-            var keyIdentity = GetKey(identity);
+            var identityKey = GetKey(identity);
             var bucket = GetOrOpenBucket();
-            var mutator = bucket.MutateIn<dynamic>(keyIdentity);
-            await mutator.Remove(key).ExecuteAsync();
+            var mutator = bucket.MutateIn<dynamic>(identityKey);
+            var deleteResult = await mutator.Remove(key).ExecuteAsync();
+            if (!deleteResult.Success) throw deleteResult.Exception ?? new Exception("Error deleting context property") { Data = { { "Identity_Key", identityKey } ,{ "Property", key } } };
         }
 
         public async Task AppendContext(Identity identity, Dictionary<string, JsonValue> context)
         {
             var key = GetKey(identity);
             var bucket = GetOrOpenBucket();
+            if (!await bucket.ExistsAsync(key))
+            {
+                var contextWithCreationDate = new Dictionary<string, JsonValue>(context)
+                {
+                    ["@CreationDate"] = JsonValue.NewString(DateTimeOffset.UtcNow.ToString())
+                };
+                var insertResult = await bucket.InsertAsync(key, contextWithCreationDate);
+                if (insertResult.Success) return;
+                if (insertResult.Status == ResponseStatus.KeyExists) {
+                    throw insertResult.Exception ?? new Exception("Error adding new identity context "){ Data ={ { "Identity_Key", key }}};
+                }
+            }
             var mutator = context.Aggregate(bucket.MutateIn<dynamic>(key), (acc, next)=> acc.Upsert(next.Key, next.Value));
-            await mutator.ExecuteAsync();
+            var updateResult = await mutator.ExecuteAsync();
+            if (!updateResult.Success) throw updateResult.Exception ?? new Exception("Error updating identity conext") { Data = { { "Identity_Key", key } } };
         }
 
         public async Task<Dictionary<string, JsonValue>> GetContext(Identity identity)
