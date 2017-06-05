@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import { compose, pure, lifecycle, mapProps } from 'recompose';
+import { compose, pure, lifecycle, mapProps, withState } from 'recompose';
 import R from 'ramda';
 import Mutator from '../../utils/mutator';
 import * as TypesService from '../../services/types-service';
@@ -8,6 +8,11 @@ import * as RulesService from './rules-utils';
 import JPadVisualEditor from './JPadVisualEditor/JPadVisualEditor';
 import JPadTextEditor from './JPadTextEditor/JPadTextEditor';
 import './JPadFullEditor.css';
+
+const confirmUnsavedAlert = {
+  title: 'Warning',
+  message: 'You have un-inserted changes.\nAre you sure you want to leave?',
+};
 
 const MutatorFor = propName => Comp =>
   class extends React.Component {
@@ -24,10 +29,34 @@ const MutatorFor = propName => Comp =>
     }
   };
 
-const KeyRulesEditor = ({ source, valueType, mutate, onMutation, alerter, isReadonly }) =>
+const KeyRulesEditor = ({
+  source,
+  valueType,
+  mutate,
+  onMutation,
+  alerter,
+  isReadonly,
+  selectedTab,
+  onTabSelected,
+  hasChanges,
+  setHasChanges,
+}) =>
   <div className={'key-rules-editor-container'} disabled={isReadonly}>
 
-    <Tabs className={'tab-container'}>
+    <Tabs
+      className={'tab-container'}
+      selectedIndex={selectedTab}
+      onSelect={async (index, lastIndex) => {
+        if (
+          lastIndex === 1 &&
+          hasChanges &&
+          !(await alerter.showConfirm(confirmUnsavedAlert)).result
+        )
+          return true;
+        setHasChanges(false);
+        onTabSelected(index);
+      }}
+    >
 
       <TabList>
         <Tab className={'tab-header'}>
@@ -41,15 +70,14 @@ const KeyRulesEditor = ({ source, valueType, mutate, onMutation, alerter, isRead
       </TabList>
       <TabPanel className={'tab-content'}>
         <fieldset disabled={isReadonly} style={{ border: 'none' }}>
-          <JPadVisualEditor {...{ mutate, alerter }} jpadSource={source} valueType={valueType} />
+          <JPadVisualEditor {...{ mutate, alerter, valueType }} jpadSource={source} />
         </fieldset>
 
       </TabPanel>
       <TabPanel className={'tab-content'}>
         <JPadTextEditor
-          source={source}
+          {...{ source, isReadonly, setHasChanges }}
           onChange={x => onMutation(JSON.parse(x))}
-          isReadonly={isReadonly}
         />
         <pre className={'key-def-json'} style={{ display: 'none' }}>
           {JSON.stringify(JSON.parse(source), null, 4)}
@@ -119,6 +147,8 @@ export default compose(
     ...other,
   })),
   MutatorFor('sourceTree'),
+  withState('selectedTab', 'onTabSelected', 0),
+  withState('hasChanges', 'setHasChanges', false),
   pure,
   lifecycle({
     componentWillReceiveProps({ valueType, mutate }) {
