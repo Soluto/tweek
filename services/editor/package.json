@@ -13,7 +13,7 @@
     "start:full-env": "npm run docker-compose -- up -d tweek-api && npm run start",
     "build:client": "react-scripts build",
     "build:server": "babel server --out-dir dist",
-    "build": "yarn run build:client && yarn run build:server",
+    "build": "concurrently --kill-others-on-fail \"yarn run build:client\" \"yarn run build:server\"",
     "test": "jest",
     "eject": "react-scripts eject",
     "teardown": "npm run docker-compose -- down",

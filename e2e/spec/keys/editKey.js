@@ -96,11 +96,11 @@ describe('edit keys', () => {
       });
 
       describe('text editor', () => {
-        const keyToEdit = keysPageObject.generateTestKeyName('edit_key_test');
-        const keyToEditFullPath = `${testFolder}/${editKeyTestFolder}/${keyToEdit}`;
-
         before(() => {
           keysPageObject.goToBase();
+
+          const keyToEdit = keysPageObject.generateTestKeyName('edit_key_source_test');
+          const keyToEditFullPath = `${testFolder}/${editKeyTestFolder}/${keyToEdit}`;
           keysPageObject.addEmptyKey(keyToEditFullPath);
         });
 
