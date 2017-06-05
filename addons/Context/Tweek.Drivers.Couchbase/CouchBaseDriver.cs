@@ -34,43 +34,20 @@ namespace Tweek.Drivers.CouchbaseDriver
             return _getBucket(_bucketName);
         }
 
-        public async Task InsertOrUpdate(string key,
-            Func<IDictionary<string, JsonValue>, IDictionary<string, JsonValue>> updateFn)
-        {
-            var bucket = GetOrOpenBucket();
-            IOperationResult<IDictionary<string, JsonValue>> result = null;
-            var cas = (ulong)0;
-            if (!await bucket.ExistsAsync(key))
-            {
-                var contextWithCreationDate = updateFn(new Dictionary<string, JsonValue>
-                {
-                    ["@CreationDate"] = JsonValue.NewString(DateTimeOffset.UtcNow.ToString())
-                });
-                result = await bucket.UpsertAsync(key, contextWithCreationDate, cas);
-            }
-            while (!(result?.Success ?? false) && cas != result?.Cas)
-            {
-                var doc = bucket.GetDocument<Dictionary<string, JsonValue>>(key);
-                var newData = updateFn(doc.Content ?? new Dictionary<string, JsonValue>());
-                cas = doc.Document.Cas;
-                result = await bucket.UpsertAsync(key, newData, cas);
-            }
-            if (!(result?.Success ?? false))
-            {
-                throw result?.Exception ?? new Exception("failed to update couchbase");
-            }
-        }
-
         public async Task RemoveFromContext(Identity identity, string key)
         {
             var keyIdentity = GetKey(identity);
-            await InsertOrUpdate(keyIdentity, dictionary => dictionary.ToImmutableDictionary().Remove(key));
+            var bucket = GetOrOpenBucket();
+            var mutator = bucket.MutateIn<dynamic>(keyIdentity);
+            await mutator.Remove(key).ExecuteAsync();
         }
 
         public async Task AppendContext(Identity identity, Dictionary<string, JsonValue> context)
         {
             var key = GetKey(identity);
-            await InsertOrUpdate(key, dictionary => dictionary.ToImmutableDictionary().SetItems(context));
+            var bucket = GetOrOpenBucket();
+            var mutator = context.Aggregate(bucket.MutateIn<dynamic>(key), (acc, next)=> acc.Upsert(next.Key, next.Value));
+            await mutator.ExecuteAsync();
         }
 
         public async Task<Dictionary<string, JsonValue>> GetContext(Identity identity)
