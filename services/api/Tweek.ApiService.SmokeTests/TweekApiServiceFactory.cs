@@ -26,7 +26,12 @@ namespace Tweek.ApiService.SmokeTests
         public async Task AppendContext(string identityType, string identityId, Dictionary<string, JsonValue> context)
         {
             await _client.PostAsync(
-                $"/context/{identityType}/{identityId}", new StringContent(JsonConvert.SerializeObject(context, new JsonValueConverter()), Encoding.UTF8, "application/json"));
+                $"/api/v1/context/{identityType}/{identityId}", new StringContent(JsonConvert.SerializeObject(context, new JsonValueConverter()), Encoding.UTF8, "application/json"));
+        }
+
+        public async Task RemoveFromContext(string identityType, string identityId, string property)
+        {
+            await _client.DeleteAsync($"/api/v1/context/{identityType}/{identityId}/{property}");
         }
 
         public async Task<JToken> GetSwagger()
@@ -39,7 +44,7 @@ namespace Tweek.ApiService.SmokeTests
         public async Task<JToken> GetConfigurations(string keyPath, IEnumerable<KeyValuePair<string, string>> context)
         {
             var stream = await _client.GetStreamAsync(
-                $"/configurations/{keyPath}?{string.Join("&", context.Select(x => string.Join("=", x.Key, x.Value)))}");
+                $"api/v1/keys/{keyPath}?{string.Join("&", context.Select(x => string.Join("=", x.Key, x.Value)))}");
 
             return JToken.Load(new JsonTextReader(new StreamReader(stream)));
         }
@@ -49,7 +54,7 @@ namespace Tweek.ApiService.SmokeTests
     {
         public static ITweekApi GetTweekApiClient(ITestOutputHelper output)
         {
-            var baseUrl = Environment.GetEnvironmentVariable("TWEEK_API_URL") ?? "http://localhost:5000";
+            var baseUrl = Environment.GetEnvironmentVariable("TWEEK_API_URL") ?? "http://localhost:4003";
             output.WriteLine($"TWEEK_API_URL {baseUrl}");
 
             return new TweekApi(new HttpClient
