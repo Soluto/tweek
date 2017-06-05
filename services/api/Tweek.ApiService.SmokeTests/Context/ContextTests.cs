@@ -58,7 +58,7 @@ namespace Tweek.ApiService.SmokeTests.ContextTests
                 ["@fixed:tests/fixed/some_fixed_configuration_delete"] = NewString(guid.ToString())
             });
 
-            var results = await mTweekApi.GetConfigurations("@fixed:tests/fixed/some_fixed_configuration_delete", new Dictionary<string, string>()
+            var results = await mTweekApi.GetConfigurations("tests/fixed/some_fixed_configuration_delete", new Dictionary<string, string>()
             {
                 ["test"] = "delete-context-test-1"
             });
@@ -67,7 +67,7 @@ namespace Tweek.ApiService.SmokeTests.ContextTests
             await mTweekApi.RemoveFromContext("test", "delete-context-test-1",
                 "@fixed:tests/fixed/some_fixed_configuration_delete");
 
-            results = await mTweekApi.GetConfigurations("@fixed:tests/fixed/some_fixed_configuration_delete", new Dictionary<string, string>()
+            results = await mTweekApi.GetConfigurations("tests/fixed/some_fixed_configuration_delete", new Dictionary<string, string>()
             {
                 ["test"] = "delete-context-test-1"
             });
