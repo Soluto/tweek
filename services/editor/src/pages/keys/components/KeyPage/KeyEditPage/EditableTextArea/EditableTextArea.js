@@ -19,11 +19,7 @@ const EditableTextArea = compose(
   }) =>
     <div className={classNames('textarea-container', classes.container)}>
       <TextareaAutosize
-        innerRef={(textarea) => {
-          if (!textarea) return;
-          textarea.readOnly = !isInEditMode;
-          if (isInEditMode) textarea.focus();
-        }}
+        readOnly={!isInEditMode}
         onClick={() => setIsInEditMode(true)}
         onChange={e => onTextChanged(e.target.value)}
         value={value}
