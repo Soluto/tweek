@@ -56,7 +56,7 @@ namespace Tweek.Drivers.CouchbaseDriver
                 };
                 var insertResult = await bucket.InsertAsync(key, contextWithCreationDate);
                 if (insertResult.Success) return;
-                if (insertResult.Status == ResponseStatus.KeyExists) {
+                if (insertResult.Status != ResponseStatus.KeyExists) {
                     throw insertResult.Exception ?? new Exception("Error adding new identity context "){ Data ={ { "Identity_Key", key }}};
                 }
             }

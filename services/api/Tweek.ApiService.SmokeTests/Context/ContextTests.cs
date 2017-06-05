@@ -16,7 +16,7 @@ namespace Tweek.ApiService.SmokeTests.ContextTests
         {
             mTweekApi = TweekApiServiceFactory.GetTweekApiClient(output);
         }
-
+        
 
         [Fact(DisplayName = "Appending context (insert/upsert) with fixed configuration works properly")]
         public async Task AppendContextWithFixedConfiguration()
