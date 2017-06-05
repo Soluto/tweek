@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import configureStore from './store/configureStore';
 import Routes from './Routes';
-import registerServiceWorker from './registerServiceWorker';
+// import registerServiceWorker from './registerServiceWorker';
 
 injectTapEventPlugin();
 
@@ -17,4 +17,4 @@ ReactDOM.render(
   document.getElementById('root'),
 );
 
-registerServiceWorker();
+// registerServiceWorker();
