@@ -25,6 +25,7 @@
     "jsx-a11y/no-onchange": "warn",
     "jsx-a11y/no-static-element-interactions": "off",
     "prefer-arrow-callback": "warn",
+    "prefer-template": "error",
     "semi": "error",
     "space-before-function-paren": ["error", {
       "anonymous": "always",
