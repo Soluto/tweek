@@ -4,11 +4,13 @@ import * as TypesRoutes from './api/types';
 import * as TagsRoutes from './api/tags';
 import * as ContextRoutes from './api/context';
 import * as SearchRoutes from './api/search';
+import requestErrorHandlingWrapper from './utils/request-error-handling-wrapper';
 
 export default (config) => {
   const app = express();
 
-  const addConfig = fn => (req, res) => fn(req, res, config, { params: req.params });
+  const addConfig = fn =>
+    requestErrorHandlingWrapper((req, res) => fn(req, res, config, { params: req.params }));
 
   app.use((req, res, next) => {
     console.log(req.method, req.originalUrl);
@@ -40,7 +42,7 @@ export default (config) => {
   app.use('/*', (req, res) => res.sendStatus(404));
 
   app.use((err, req, res, next) => {
-    console.error(err);
+    console.error(req.method, res.originalUrl, err);
     res.status(500).send(err.message);
   });
 
