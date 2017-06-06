@@ -17,6 +17,7 @@
     "import/no-duplicates": "error",
     "import/no-unresolved": ["error", { "ignore": [ "^react-monaco-editor$" ]}],
     "import/order": "warn",
+    "indent": ["error", 2],
     "jsx-a11y/click-events-have-key-events": "off",
     "jsx-a11y/alt-text": "off",
     "jsx-a11y/interactive-supports-focus": "off",
