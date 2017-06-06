@@ -12,6 +12,7 @@
   "rules": {
     "arrow-body-style": ["error", "as-needed"],
     "arrow-parens": ["error", "as-needed", { "requireForBlockBody": true }],
+    "comma-dangle": ["error", "always-multiline"],
     "default-case": "off",
     "import/first": "error",
     "import/no-duplicates": "error",
