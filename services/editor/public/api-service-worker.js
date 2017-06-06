@@ -1,7 +1,13 @@
 self.importScripts('/socket.io/socket.io.js');
 
 const CACHE_NAME = 'v1';
-const urlsToCache = ['/api/keys', '/api/search-index', '/api/types', '/api/context-schema'];
+const urlsToCache = [
+  '/api/keys',
+  '/api/search-index',
+  '/api/types',
+  '/api/context-schema',
+  '/api/tags',
+];
 
 function getUrl(request) {
   const url = new URL(request.url).pathname;
