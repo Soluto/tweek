@@ -6,38 +6,42 @@ import * as ContextRoutes from './api/context';
 import * as SearchRoutes from './api/search';
 import requestErrorHandlingWrapper from './utils/request-error-handling-wrapper';
 
-export default ({ tagsRepository, keysRepository, tweekApiHostname }) => {
+export default (config) => {
   const app = express();
 
-  app
-    .route('/tags')
-    .get(requestErrorHandlingWrapper(TagsRoutes.getTags, { tagsRepository }))
-    .put(requestErrorHandlingWrapper(TagsRoutes.saveTags, { tagsRepository }));
+  const addConfig = fn =>
+    requestErrorHandlingWrapper((req, res) => fn(req, res, config, { params: req.params }));
 
-  app.get('/types', requestErrorHandlingWrapper(TypesRoutes.getTypes, { tweekApiHostname }));
+  app.route('/tags').get(addConfig(TagsRoutes.getTags)).put(addConfig(TagsRoutes.saveTags));
 
-  app.get(
-    '/context-schema',
-    requestErrorHandlingWrapper(ContextRoutes.getContextSchema, { tweekApiHostname }),
-  );
+  app.get('/types', addConfig(TypesRoutes.getTypes));
+
+  app.get('/context-schema', addConfig(ContextRoutes.getContextSchema));
 
   app
     .route('/context/:identityName/:identityId')
-    .get(requestErrorHandlingWrapper(ContextRoutes.getContext, { tweekApiHostname }))
-    .post(requestErrorHandlingWrapper(ContextRoutes.updateContext, { tweekApiHostname }));
+    .get(addConfig(ContextRoutes.getContext))
+    .post(addConfig(ContextRoutes.updateContext));
 
-  app.get('/keys', requestErrorHandlingWrapper(KeysRoutes.getAllKeys, { keysRepository }));
+  app.get('/keys', addConfig(KeysRoutes.getAllKeys));
   app
     .route('/keys/*')
-    .get(requestErrorHandlingWrapper(KeysRoutes.getKey, { keysRepository }))
-    .put(requestErrorHandlingWrapper(KeysRoutes.saveKey, { keysRepository }))
-    .delete(requestErrorHandlingWrapper(KeysRoutes.deleteKey, { keysRepository }));
+    .get(addConfig(KeysRoutes.getKey))
+    .put(addConfig(KeysRoutes.saveKey))
+    .delete(addConfig(KeysRoutes.deleteKey));
 
-  app.get('/manifests/*', requestErrorHandlingWrapper(KeysRoutes.getKeyManifest, { keysRepository }));
+  app.get('/manifests/*', addConfig(KeysRoutes.getKeyManifest));
 
-  app.get('/search-index', requestErrorHandlingWrapper(SearchRoutes.getSearchIndex));
+  app.get('/search-index', addConfig(SearchRoutes.getSearchIndex));
+
+  app.get('/logged-in', (req, res) => res.sendStatus(200));
 
   app.use('/*', (req, res) => res.sendStatus(404));
+
+  app.use((err, req, res, next) => {
+    console.error(req.method, res.originalUrl, err);
+    res.status(500).send(err.message);
+  });
 
   return app;
 };

@@ -1,9 +1,9 @@
-export default function requestErrorHandlingWrapper(handler, config) {
+export default function requestErrorHandlingWrapper(handler) {
   return async (req, res) => {
     try {
-      await Promise.resolve(handler(req, res, config, { params: req.params }));
+      await Promise.resolve(handler(req, res));
     } catch (err) {
-      console.error(err);
+      console.error(req.method, res.originalUrl, err);
       res.status(500).send(err.message);
     }
   };
