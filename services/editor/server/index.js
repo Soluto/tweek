@@ -1,9 +1,12 @@
 import path from 'path';
+import http from 'http';
 import express from 'express';
+import socketio from 'socket.io';
 import nconf from 'nconf';
 import session from 'express-session';
 import Promise from 'bluebird';
 import bodyParser from 'body-parser';
+import Rx from 'rxjs';
 import serverRoutes from './serverRoutes';
 import GitRepository from './repositories/git-repository';
 import Transactor from './utils/transactor';
@@ -11,6 +14,7 @@ import KeysRepository from './repositories/keys-repository';
 import TagsRepository from './repositories/tags-repository';
 import GitContinuousUpdater from './repositories/git-continuous-updater';
 import searchIndex from './searchIndex';
+import * as Registration from './api/registration';
 
 const crypto = require('crypto');
 const passport = require('passport');
@@ -52,7 +56,12 @@ const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
 
 GitContinuousUpdater.onUpdate(gitTransactionManager)
-  .exhaustMap(_ => searchIndex.refreshIndex(gitRepostoryConfig.localPath))
+  .exhaustMap(_ =>
+    Rx.Observable.defer(async () => searchIndex.refreshIndex(gitRepostoryConfig.localPath)),
+  )
+  .do(_ => console.log('index was refreshed'), err => console.log('error refreshing index', err))
+  .retry()
+  .map(Registration.notifyClients)
   .subscribe();
 
 function addDirectoryTraversalProtection(server) {
@@ -87,6 +96,12 @@ function addAuthSupport(server) {
 
 const startServer = () => {
   const app = express();
+  const server = http.Server(app);
+
+  app.use((req, res, next) => {
+    console.log(req.method, req.originalUrl);
+    next();
+  });
 
   addDirectoryTraversalProtection(app);
   const cookieOptions = {
@@ -100,6 +115,9 @@ const startServer = () => {
   app.use(bodyParser.json()); // for parsing application/json
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
+  const io = socketio(server);
+  io.on('connection', Registration.register);
+
   app.use('/api', serverRoutes({ tagsRepository, keysRepository, tweekApiHostname }));
 
   app.use(express.static(path.join(__dirname, 'build')));
@@ -107,7 +125,7 @@ const startServer = () => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
   });
 
-  const server = app.listen(PORT, () => console.log('Listening on port %d', server.address().port));
+  server.listen(PORT, () => console.log('Listening on port %d', server.address().port));
 };
 
 gitRepoCreationPromiseWithTimeout
