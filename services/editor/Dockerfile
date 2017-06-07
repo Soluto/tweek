@@ -1,33 +1,29 @@
-# ---- Dependencies ----
-FROM node:6.10.3-slim AS dependencies
+# ---- Base ----
+FROM node:6.10.3-slim AS base
 
-COPY package.json yarn.lock /tmp/
-WORKDIR /tmp
-
+COPY package.json yarn.lock /src/
+WORKDIR /src/
 RUN npm install --only=production
 
 # ---- Build ----
-FROM node:6.10.3-slim AS build
+FROM base AS build
 
-COPY package.json yarn.lock /tmp/
-WORKDIR /tmp
-
-COPY --from=dependencies /tmp/node_modules /tmp/node_modules
 RUN npm install --only=dev
 
-COPY . /tmp/
-RUN npm run test
-RUN npm run build-prod
+COPY . /src/
+RUN yarn test
+RUN yarn build
 
 # ---- Release ----
 FROM node:6.10.3-slim AS release
 
-COPY --from=dependencies /tmp/node_modules /opt/app/node_modules
-COPY --from=build /tmp/.build /opt/app/.build
-
-WORKDIR /opt/app
-EXPOSE 3000
+COPY --from=build /src/dist/ /opt/app/dist
+COPY --from=build /src/build/ /opt/app/dist/build
+COPY --from=base /src/node_modules/ /opt/app/node_modules
+WORKDIR /opt/app/
 
 ENV NODE_ENV=production
 ENV PORT=3000
-ENTRYPOINT ["node", "./.build/server.js"]
+EXPOSE 3000
+
+ENTRYPOINT [ "node", "./dist/index.js" ]

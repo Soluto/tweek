@@ -1,28 +1,27 @@
 /* global jest, beforeEach, describe, it, expect */
-jest.unmock('../../../../../modules/store/ducks/ducks-utils/validations/key-name-validations');
+jest.unmock('../../../../../src/store/ducks/ducks-utils/validations/key-name-validations');
 jest.unmock('chance');
 
-import keyNameValidations from '../../../../../modules/store/ducks/ducks-utils/validations/key-name-validations';
-import Chance from 'chance';
 import { assert, expect } from 'chai';
-import { BLANK_KEY_NAME } from '../../../../../modules/store/ducks/ducks-utils/blankKeyDefinition';
+import keyNameValidations from '../../../../../src/store/ducks/ducks-utils/validations/key-name-validations';
+import { BLANK_KEY_NAME } from '../../../../../src/store/ducks/ducks-utils/blankKeyDefinition';
 
 describe('key-name-validations', () => {
-
-  const chance = new Chance();
   const categoryName1 = 'someCategoryName1';
   const categoryName2 = 'someCategoryName2';
   const keyName = 'someKeyName';
 
   const testDefenitions = [];
-  const setTestDefenition = (expectedIsValid, keyName) => testDefenitions.push(({ keyName, expectedIsValid }));
+  const setTestDefenition = (expectedIsValid, keyName) =>
+    testDefenitions.push({ keyName, expectedIsValid });
 
   setTestDefenition(false, BLANK_KEY_NAME);
   setTestDefenition(false, '');
   setTestDefenition(false, keyName);
   setTestDefenition(false, categoryName1);
   setTestDefenition(false, categoryName2);
-  setTestDefenition(false, categoryName1 + '/' + keyName);
+  setTestDefenition(false, `${categoryName1}/${keyName}`);
+  setTestDefenition(false, `${keyName}/other_key_name`);
   setTestDefenition(false, 'key!');
   setTestDefenition(false, 'key#');
   setTestDefenition(false, 'key%');
@@ -43,21 +42,24 @@ describe('key-name-validations', () => {
   setTestDefenition(false, 'key@');
   setTestDefenition(true, '@key');
 
-  const existingKeyList = ['aa',
+  const existingKeyList = [
+    'aa',
     'bb',
     'aa/bb',
     keyName,
-    categoryName1 + '/' + keyName,
-    categoryName1 + '/' + categoryName2 + '/' + keyName];
+    `${categoryName1}/${keyName}`,
+    `${categoryName1}/${categoryName2}/${keyName}`,
+  ];
 
-  testDefenitions.forEach(x => {
+  testDefenitions.forEach((x) => {
     it(`should return validation ${x.expectedIsValid} for ${x.keyName}`, () => {
       // Act
       const validationResult = keyNameValidations(x.keyName, existingKeyList);
 
       // Assert
       expect(validationResult.isValid).to.equal(x.expectedIsValid, 'should return value is invalid');
-      if (!validationResult.isValid) assert(validationResult.hint.length > 0, 'should return an un empty hint');
+      if (!validationResult.isValid)
+        assert(validationResult.hint.length > 0, 'should return an un empty hint');
     });
   });
 });

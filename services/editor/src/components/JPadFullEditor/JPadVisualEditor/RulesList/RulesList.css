@@ -1,0 +1,158 @@
+.rule-item-container {
+  padding: 20px 25px;
+  margin: 0;
+}
+.rule-item-container .add-rule-button {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+}
+.rule-item-container .add-rule-button:hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.rule-item-container .add-rule-button:disabled {
+  background-color: gray;
+}
+.rule-item-container .add-rule-button:disabled:hover,
+.rule-item-container .add-rule-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.rule-item-container .add-default-value-button {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  text-decoration: underline;
+  background-color: transparent;
+  color: gray;
+  margin-left: 20px;
+}
+.rule-item-container .add-default-value-button:hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.rule-item-container .add-default-value-button:disabled {
+  background-color: gray;
+}
+.rule-item-container .add-default-value-button:disabled:hover,
+.rule-item-container .add-default-value-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.rule-item-container .add-default-value-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.rule-item-container .add-default-value-button:active {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.rule-item-container .add-default-value-button:disabled {
+  background-color: transparent;
+}
+.rule-item-container .add-default-value-button:disabled:hover,
+.rule-item-container .add-default-value-button:disabled:active {
+  cursor: default;
+  background-color: transparent;
+}
+.rule-item-container .conditions-container {
+  margin-top: 15px;
+  position: relative;
+  box-shadow: 0 10px 9px -10px rgba(0, 0, 0, 0.2);
+  border: 1px solid lightgray;
+  margin-bottom: 16px;
+}
+.rule-item-container .conditions-container .rule-control-wrapper {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+}
+.rule-item-container .conditions-container .rule-control-wrapper .rule-order-button {
+  margin-right: 3px;
+  font-size: 18px;
+  font-family: 'tweekIcons';
+  border: none;
+  color: darkgray;
+  background-color: transparent;
+  outline: none;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  transition: all 0.2s ease-in-out;
+}
+.rule-item-container .conditions-container .rule-control-wrapper .rule-order-button:hover {
+  cursor: pointer;
+  color: gray;
+  border: 1px solid lightgray;
+}
+.rule-item-container .conditions-container .rule-control-wrapper .rule-order-button:active {
+  color: #676767;
+  border: 1px solid gray;
+}
+.rule-item-container .conditions-container .rule-control-wrapper .delete-rule-button {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  padding: 0 0 3px;
+  box-sizing: border-box;
+  background-color: #bcbcbc;
+  font-size: 16px;
+  padding-top: 2px;
+}
+.rule-item-container .conditions-container .rule-control-wrapper .delete-rule-button:hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.rule-item-container .conditions-container .rule-control-wrapper .delete-rule-button:disabled {
+  background-color: gray;
+}
+.rule-item-container .conditions-container .rule-control-wrapper .delete-rule-button:disabled:hover,
+.rule-item-container .conditions-container .rule-control-wrapper .delete-rule-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.rule-item-container .conditions-container .rule-control-wrapper .delete-rule-button:hover {
+  background-color: #9c9c9c;
+}
+.rule-item-container .conditions-container .rule-control-wrapper .delete-rule-button:active {
+  background-color: #7b7b7b;
+}
+.rule-item-container .conditions-container .rule-control-wrapper .delete-rule-button:after {
+  font-family: 'tweekIcons';
+  content: '\E900';
+}
