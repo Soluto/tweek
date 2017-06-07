@@ -35,7 +35,11 @@
     },
     "/sockjs-node": {
       "target": "http://localhost:3001",
-      "ws": true
+      "secure": false
+    },
+    "/login": {
+      "target": "http://localhost:3001",
+      "secure": false
     }
   },
   "lint-staged": {

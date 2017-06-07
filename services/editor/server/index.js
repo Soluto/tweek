@@ -24,6 +24,10 @@ nconf.argv().env().defaults({
   PORT: 3001,
   GIT_CLONE_TIMEOUT_IN_MINUTES: 1,
   TWEEK_API_HOSTNAME: 'https://api.playground.tweek.host',
+  // REQUIRE_AUTH: 'true',
+  AZUREAD_CLIENT_ID: '12b28436-082d-451d-a855-44ee014f342e',
+  AZUREAD_CLIENT_SECRET: 'v388LA98/qTDvWKlQdmXX3wjVLb911rcTh+j30sG6p4=',
+  AZUREAD_CALLBACK_URL: 'http://localhost:3000/auth/opendid/callback',
 });
 nconf.required(['GIT_URL', 'GIT_USER']);
 
@@ -97,6 +101,11 @@ function addAuthSupport(server) {
 const startServer = () => {
   const app = express();
   const server = http.Server(app);
+
+  app.use((req, res, next) => {
+    console.log(req.method, req.originalUrl);
+    next();
+  });
 
   addDirectoryTraversalProtection(app);
   const cookieOptions = {

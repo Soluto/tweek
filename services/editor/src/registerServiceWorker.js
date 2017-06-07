@@ -15,6 +15,8 @@ export default function register() {
       navigator.serviceWorker
         .register(swUrl)
         .then((registration) => {
+          Notification.requestPermission();
+
           registration.onupdatefound = () => {
             const installingWorker = registration.installing;
             installingWorker.onstatechange = () => {
