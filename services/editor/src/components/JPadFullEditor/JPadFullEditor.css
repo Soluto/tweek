@@ -46,42 +46,43 @@
   border: 1px solid lightgray;
   background-color: white;
 }
-:global(.ReactTabs__TabList) {
+.key-rules-editor-container .tab-content:not(.react-tabs__tab-panel--selected) {
+  display: none;
+}
+.react-tabs__tab-list {
   display: block;
 }
-:global(.ReactTabs__TabList) :global(.ReactTabs__Tab) {
-  display: inline-block;
-  border-width: 1px 1px 3px 1px;
-  border-right: 0;
-  border-color: lightgray;
-  border-style: solid;
+.react-tabs__tab-list .tab-header {
+  display: flex;
+  border: 1px solid lightgray;
+  border-right-width: 0;
+  border-bottom-width: 3px;
   border-radius: 5px 5px 0 0;
   padding: 10px 30px;
   outline: none;
   background-color: #ececec;
-  display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease-in-out;
 }
-:global(.ReactTabs__TabList) :global(.ReactTabs__Tab):last-child {
+.react-tabs__tab-list .tab-header:last-child {
   border-right: 1px solid lightgray;
 }
-:global(.ReactTabs__TabList) :global(.ReactTabs__Tab):hover {
+.react-tabs__tab-list .tab-header:hover {
   border-bottom: 3px solid rgba(0, 122, 204, 0.2);
   cursor: pointer;
 }
-:global(.ReactTabs__TabList) :global(.ReactTabs__Tab):active {
+.react-tabs__tab-list .tab-header:active {
   border-bottom: 3px solid rgba(0, 122, 204, 0.6);
 }
-:global(.ReactTabs__TabList) :global(.ReactTabs__Tab--selected) {
+.react-tabs__tab-list .react-tabs__tab--selected {
   border-bottom: 3px solid rgba(0, 122, 204, 0.5);
   background-color: white;
 }
-:global(.ReactTabs__TabList) :global(.ReactTabs__Tab--selected):hover {
+.react-tabs__tab-list .react-tabs__tab--selected:hover {
   border-bottom: 3px solid rgba(0, 122, 204, 0.5);
   cursor: default;
 }
-:global(.ReactTabs__TabList) :global(.ReactTabs__Tab--selected):active {
+.react-tabs__tab-list .react-tabs__tab--selected:active {
   border-bottom: 3px solid rgba(0, 122, 204, 0.5);
 }

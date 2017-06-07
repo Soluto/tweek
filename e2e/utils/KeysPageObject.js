@@ -195,6 +195,13 @@ export default class KeysPageObject extends PageObject {
     this.browser.keys('\uE007');
   }
 
+  setKeySource(source, timeout = 5000) {
+    this.browser.waitForVisible('.monaco-editor', timeout);
+    this.browser.execute(function (source) {
+      window.monaco.editor.getModels()[0].setValue(source);
+    }, source);
+  }
+
   saveChanges() {
     this.browser.click(keySelectors.SAVE_CHANGES_BUTTON);
     this.browser.waitUntil(() => !this.hasChanges() && !this.isSaving(), PageObject.GIT_TRANSACTION_TIMEOUT, "changes were not saved");

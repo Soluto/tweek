@@ -2,13 +2,11 @@
 jest.unmock('../../../../../src/store/ducks/ducks-utils/validations/key-name-validations');
 jest.unmock('chance');
 
-import keyNameValidations from '../../../../../src/store/ducks/ducks-utils/validations/key-name-validations';
-import Chance from 'chance';
 import { assert, expect } from 'chai';
+import keyNameValidations from '../../../../../src/store/ducks/ducks-utils/validations/key-name-validations';
 import { BLANK_KEY_NAME } from '../../../../../src/store/ducks/ducks-utils/blankKeyDefinition';
 
 describe('key-name-validations', () => {
-  const chance = new Chance();
   const categoryName1 = 'someCategoryName1';
   const categoryName2 = 'someCategoryName2';
   const keyName = 'someKeyName';
@@ -22,7 +20,8 @@ describe('key-name-validations', () => {
   setTestDefenition(false, keyName);
   setTestDefenition(false, categoryName1);
   setTestDefenition(false, categoryName2);
-  setTestDefenition(false, categoryName1 + '/' + keyName);
+  setTestDefenition(false, `${categoryName1}/${keyName}`);
+  setTestDefenition(false, `${keyName}/other_key_name`);
   setTestDefenition(false, 'key!');
   setTestDefenition(false, 'key#');
   setTestDefenition(false, 'key%');
@@ -48,8 +47,8 @@ describe('key-name-validations', () => {
     'bb',
     'aa/bb',
     keyName,
-    categoryName1 + '/' + keyName,
-    categoryName1 + '/' + categoryName2 + '/' + keyName,
+    `${categoryName1}/${keyName}`,
+    `${categoryName1}/${categoryName2}/${keyName}`,
   ];
 
   testDefenitions.forEach((x) => {
