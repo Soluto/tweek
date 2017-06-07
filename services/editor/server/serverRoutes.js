@@ -30,6 +30,7 @@ export default (config) => {
     .put(addConfig(KeysRoutes.saveKey))
     .delete(addConfig(KeysRoutes.deleteKey));
 
+  app.get('/manifests', addConfig(KeysRoutes.getAllManifests));
   app.get('/manifests/*', addConfig(KeysRoutes.getKeyManifest));
 
   app.get('/search-index', addConfig(SearchRoutes.getSearchIndex));
@@ -37,11 +38,6 @@ export default (config) => {
   app.get('/logged-in', (req, res) => res.sendStatus(200));
 
   app.use('/*', (req, res) => res.sendStatus(404));
-
-  app.use((err, req, res, next) => {
-    console.error(req.method, res.originalUrl, err);
-    res.status(500).send(err.message);
-  });
 
   return app;
 };

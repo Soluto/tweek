@@ -125,6 +125,11 @@ const startServer = () => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
   });
 
+  app.use((err, req, res, next) => {
+    console.error(req.method, res.originalUrl, err);
+    res.status(500).send(err.message);
+  });
+
   server.listen(PORT, () => console.log('Listening on port %d', server.address().port));
 };
 
