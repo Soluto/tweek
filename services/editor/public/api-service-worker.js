@@ -1,10 +1,24 @@
 self.importScripts('/socket.io/socket.io.js');
+self.importScripts(
+  'https://cdn.rawgit.com/jakearchibald/idb-keyval/cc960ba0/dist/idb-keyval-min.js',
+);
 
 const CACHE_NAME = 'v1';
 const urls = {
   IS_LOGGED_IN: '/api/logged-in',
   LOGIN: '/login',
-  CACHE: ['/api/keys', '/api/search-index', '/api/types', '/api/context-schema', '/api/tags'],
+  CACHE: ['/api/search-index', '/api/types', '/api/context-schema', '/api/tags'],
+  LOCAL_STORAGE: '/api/manifests',
+  REPLACE: [
+    {
+      test: /^\/api\/keys\/?$/,
+      get: idbKeyval.keys,
+    },
+    {
+      test: /^\/api\/manifests\/(.+)/,
+      get: match => idbKeyval.get(match[1]),
+    },
+  ],
 };
 const notificationTypes = {
   LOGIN: 'LOGIN',
@@ -53,6 +67,13 @@ async function refresh() {
   const cache = await caches.open(CACHE_NAME);
   await cache.addAll(urls.CACHE);
 
+  const localStorage = await fetch(urls.LOCAL_STORAGE);
+  if (localStorage.ok) {
+    const data = await localStorage.json();
+    idbKeyval.clear();
+    await Promise.all(data.map(manifest => idbKeyval.set(manifest.key_path, manifest)));
+  }
+
   console.log('cache refreshed');
 }
 
@@ -95,18 +116,24 @@ async function activate() {
 }
 
 async function loadFromCache(originalRequest) {
-  const cache = await caches.open(CACHE_NAME);
   const url = getUrl(originalRequest);
+
+  const replace = urls.REPLACE.find(x => x.test.test(url));
+  if (replace) {
+    const result = await replace.get(url.match(replace.test));
+    return new Response(JSON.stringify(result), { status: result ? 200 : 404 });
+  }
 
   const shouldCache = urls.CACHE.includes(url);
   const request = new Request(originalRequest.url.replace(/\/$/, ''));
 
   if (shouldCache) {
-    const match = await cache.match(request);
+    const match = await caches.match(request);
     if (match) return match;
   }
   const response = await testLogin(originalRequest);
   if (shouldCache && response.ok) {
+    const cache = await caches.open(CACHE_NAME);
     cache.put(request, response.clone());
   }
   return response;
