@@ -47,6 +47,10 @@ export default withTypesService(TypesService)(({ children }) =>
           <img src={require('./resources/keys.svg')} />
           <span>Context</span>
         </ListItemLink>
+        <ListItemLink to="/schema">
+          <img src={require('./resources/schema.svg')} />
+          <span>Schema</span>
+        </ListItemLink>
       </ul>
     </div>
     <div className={'page'}>
