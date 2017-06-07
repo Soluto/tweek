@@ -1,0 +1,39 @@
+@import (reference) "../../../../styles/core/core.less";
+.keys-page-container {
+  display: flex;
+  flex-grow: 1;
+  background-color: #eee;
+  .keys-list {
+    display: flex;
+    flex-basis: 400px;
+    flex-direction: column;
+    background-color: #414b53;
+    .keys-list-wrapper {
+      display: flex;
+      flex-grow: 1;
+    }
+  }
+  .key-page {
+    position: relative;
+    display: flex;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    flex-grow: 1;
+    flex-shrink: 0;
+  }
+  .add-button-wrapper {
+    min-height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #333b41;
+    .add-key-button {
+      .metro-button;
+      height: 34px;
+      border-radius: 17px;
+      width: 200px;
+    }
+  }
+}

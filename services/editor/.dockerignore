@@ -1,3 +1,6 @@
+build/
+dist/
+rulesRepository/
 node_modules/
 .git/
 coverage-unit/

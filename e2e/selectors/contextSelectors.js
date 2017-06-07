@@ -1,7 +1,7 @@
 import { getRelativeSelector, getSelectorByClassNames } from './selectorUtils';
 
 const contextSelectors = {};
-contextSelectors.CONTEXT_TYPE_INPUT = getSelectorByClassNames('context-search-container', 'context-type-container', 'bootstrap-typeahead-input-main');
+contextSelectors.CONTEXT_TYPE_INPUT = getSelectorByClassNames('context-search-container', 'context-type-container', 'bootstrap-typeahead-input', 'input-main');
 contextSelectors.CONTEXT_ID_INPUT = getRelativeSelector([getSelectorByClassNames('context-search-container', 'context-id-container'), 'input']);
 contextSelectors.OPEN_CONTEXT_BUTTON = getSelectorByClassNames('context-search-container', 'search-button');
 
@@ -26,7 +26,7 @@ contextSelectors.keyDeleteButton = (keyName) => {
 contextSelectors.keyNameInput = (keyName) => {
   return getRelativeSelector([
     contextSelectors.keyContainer(keyName),
-    getSelectorByClassNames('key-input', 'bootstrap-typeahead-input-main'),
+    getSelectorByClassNames('key-input', 'bootstrap-typeahead-input', 'input-main'),
   ]);
 };
 
