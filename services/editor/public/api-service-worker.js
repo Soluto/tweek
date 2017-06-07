@@ -15,49 +15,55 @@ function getUrl(request) {
   return url.replace(/\/$/, '');
 }
 
-async function install() {
-  const cache = await caches.open(CACHE_NAME);
-  await cache.addAll(urls.CACHE);
+async function testLogin(request) {
+  const response = await fetch(request);
+  if (response.status === 403 && Notification.permission === 'granted') {
+    self.registration.showNotification('Login expired\nPlease log in again', {
+      icon: '/tweek.png',
+      requireInteraction: true,
+      tag: notificationTypes.LOGIN,
+    });
+  }
 
-  const socket = io(self.origin, { jsonp: false });
-  socket.on('connect', () => console.log('connected to socket'));
-  socket.on('refresh', () => {
-    console.log('refreshing cache...');
-    refresh()
-      .then(() => console.log('cache refreshed'))
-      .catch(error => console.error('error while refreshing cache', error));
-  });
-
-  self.skipWaiting();
+  return response;
 }
 
 async function refresh() {
   console.log('refreshing cache...');
 
-  const isLoggedIn = await fetch(urls.IS_LOGGED_IN);
-  if (isLoggedIn.status === 403) {
-    if (Notification.permission === 'granted') {
-      self.registration.showNotification('Login expired\nPlease log in again', {
-        icon: '/tweek.png',
-        requireInteraction: true,
-        tag: notificationTypes.LOGIN,
-      });
-    }
-    return;
-  }
+  if (!testLogin(urls.IS_LOGGED_IN).ok) return;
 
   const cache = await caches.open(CACHE_NAME);
   await cache.addAll(urls.CACHE);
+
+  console.log('cache refreshed');
 }
 
-async function loadFromCache(originalRequest) {
-  const cache = await caches.open(CACHE_NAME);
+async function redirectToLogin() {
+  await self.clients.claim();
+  const clients = await self.clients.matchAll({ type: 'window' });
+  clients.forEach((client) => {
+    if ('navigate' in client) {
+      client.navigate(urls.LOGIN);
+    }
+  });
+}
 
-  const request = new Request(originalRequest.url.replace(/\/$/, ''));
-  const match = await cache.match(request);
-  if (match) return match;
+async function install() {
+  const socket = io(self.origin, { jsonp: false });
+  socket.on('connect', () => console.log('connected to socket'));
+  socket.on('refresh', () => {
+    console.log('refreshing cache...');
+    refresh().catch(error => console.error('error while refreshing cache', error));
+  });
 
-  return await fetch(originalRequest);
+  try {
+    await refresh();
+  } catch (error) {
+    console.error('error while loading cache', error);
+  }
+
+  self.skipWaiting();
 }
 
 async function activate() {
@@ -71,14 +77,22 @@ async function activate() {
   self.clients.claim();
 }
 
-async function redirectToLogin() {
-  await self.clients.claim();
-  const clients = await self.clients.matchAll({ type: 'window' });
-  clients.forEach((client) => {
-    if ('navigate' in client) {
-      client.navigate(urls.LOGIN);
-    }
-  });
+async function loadFromCache(originalRequest) {
+  const cache = await caches.open(CACHE_NAME);
+  const url = getUrl(originalRequest);
+
+  const shouldCache = urls.CACHE.includes(url);
+  const request = new Request(originalRequest.url.replace(/\/$/, ''));
+
+  if (shouldCache) {
+    const match = await cache.match(request);
+    if (match) return match;
+  }
+  const response = testLogin(originalRequest);
+  if (shouldCache && response.ok) {
+    cache.put(request, response.clone());
+  }
+  return response;
 }
 
 async function handleNotification(notification) {
