@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,28 +10,41 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestEase;
 using Tweek.Utils;
+using Xunit.Abstractions;
 
 namespace Tweek.ApiService.SmokeTests
 {
     public class TweekApi : ITweekApi
     {
-        private HttpClient _client;
+        private readonly HttpClient _client;
 
         public TweekApi(HttpClient client)
         {
-            this._client = client;
+            _client = client;
         }
 
         public async Task AppendContext(string identityType, string identityId, Dictionary<string, JsonValue> context)
         {
             await _client.PostAsync(
-                $"http://localhost:5000/context/{identityType}/{identityId}", new StringContent(JsonConvert.SerializeObject(context, new JsonValueConverter()), Encoding.UTF8, "application/json"));
+                $"/api/v1/context/{identityType}/{identityId}", new StringContent(JsonConvert.SerializeObject(context, new JsonValueConverter()), Encoding.UTF8, "application/json"));
+        }
+
+        public async Task RemoveFromContext(string identityType, string identityId, string property)
+        {
+            await _client.DeleteAsync($"/api/v1/context/{identityType}/{identityId}/{property}");
+        }
+
+        public async Task<JToken> GetSwagger()
+        {
+            var stream = await _client.GetStreamAsync("/api/swagger.json");
+
+            return JToken.Load(new JsonTextReader(new StreamReader(stream)));
         }
 
         public async Task<JToken> GetConfigurations(string keyPath, IEnumerable<KeyValuePair<string, string>> context)
         {
             var stream = await _client.GetStreamAsync(
-                $"http://localhost:5000/configurations/{keyPath}?{String.Join("&", context.Select(x => String.Join("=", x.Key, x.Value)))}");
+                $"api/v1/keys/{keyPath}?{string.Join("&", context.Select(x => string.Join("=", x.Key, x.Value)))}");
 
             return JToken.Load(new JsonTextReader(new StreamReader(stream)));
         }
@@ -39,11 +52,14 @@ namespace Tweek.ApiService.SmokeTests
 
     public static class TweekApiServiceFactory
     {
-        public static ITweekApi GetTweekApiClient()
+        public static ITweekApi GetTweekApiClient(ITestOutputHelper output)
         {
-            return new TweekApi(new HttpClient()
+            var baseUrl = Environment.GetEnvironmentVariable("TWEEK_API_URL") ?? "http://localhost:4003";
+            output.WriteLine($"TWEEK_API_URL {baseUrl}");
+
+            return new TweekApi(new HttpClient
             {
-                BaseAddress = new Uri("http://localhost:5000")
+                BaseAddress = new Uri(baseUrl)
             });
         }
     }

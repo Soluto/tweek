@@ -8,25 +8,28 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./server.js"
+    "start": "node ./server.js",
+    "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bluebird": "^3.3.5",
+    "axios": "0.16.1",
+    "bluebird": "3.5.0",
     "body-parser": "^1.15.0",
     "expres": "0.0.5",
     "express": "^4.13.4",
     "guid": "0.0.12",
+    "jsonwebtoken": "7.4.1",
     "jszip": "^3.0.0",
     "lodash": "^4.11.1",
     "mkdirp": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.5.1.tgz",
     "morgan": "^1.7.0",
     "multer": "^1.1.0",
     "nconf": "^0.8.4",
-    "node-fetch": "^1.5.1",
     "nodegit": "0.14.1",
     "recursive-readdir": "^2.0.0",
+    "rxjs": "^5.3.0",
     "winston": "^2.2.0",
     "winston-logzio": "^1.0.1"
   }

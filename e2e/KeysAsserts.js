@@ -1,7 +1,7 @@
 import assert from 'assert';
-import KeysPageObject from './KeysPageObject';
+import KeysPageObject from './utils/KeysPageObject';
 import PageAsserts from './PageAsserts';
-import { selectors } from './selectors';
+import selectors from './selectors/keySelectors';
 import { expect } from 'chai';
 import { diff } from 'deep-diff';
 
@@ -16,7 +16,7 @@ export default class KeysAsserts {
   assertKeyOpened(keyName) {
     this.assertIsInKeyPage(keyName, `should be in ${keyName} key page`);
     browser.waitForVisible(selectors.KEY_VIEWER_CONTAINER, 4000);
-    assert(!this.keysPageObject.hasChanges(), 'should not has changes');
+    assert(!this.keysPageObject.hasChanges(), 'should not have changes');
     assert(!this.keysPageObject.isSaving(), 'should not be in saving state');
   }
 
