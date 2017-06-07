@@ -11,7 +11,7 @@
 export default function register() {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      const swUrl = `${process.env.PUBLIC_URL}/api-service-worker.js`;
+      const swUrl = `${process.env.PUBLIC_URL}/service-worker/index.js`;
       navigator.serviceWorker
         .register(swUrl)
         .then((registration) => {
