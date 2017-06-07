@@ -10,19 +10,35 @@ const notificationTypes = {
   LOGIN: 'LOGIN',
 };
 
+let isLoggedIn = true;
+
 function getUrl(request) {
   const url = new URL(request.url).pathname;
   return url.replace(/\/$/, '');
 }
 
-async function testLogin(request) {
+async function testLogin(request, shouldLoadCache = true) {
   const response = await fetch(request);
-  if (response.status === 403 && Notification.permission === 'granted') {
-    self.registration.showNotification('Login expired\nPlease log in again', {
-      icon: '/tweek.png',
-      requireInteraction: true,
+
+  const wasLoggedIn = isLoggedIn;
+  isLoggedIn = response.status !== 403;
+
+  if (!isLoggedIn) {
+    if (Notification.permission === 'granted') {
+      self.registration.showNotification('Login expired\nPlease log in again', {
+        icon: '/tweek.png',
+        requireInteraction: true,
+        tag: notificationTypes.LOGIN,
+      });
+    }
+  } else {
+    const loginNotifications = await self.registration.getNotifications({
       tag: notificationTypes.LOGIN,
     });
+    loginNotifications.forEach(notification => notification.close());
+    if (!wasLoggedIn && shouldLoadCache) {
+      refresh();
+    }
   }
 
   return response;
@@ -31,7 +47,8 @@ async function testLogin(request) {
 async function refresh() {
   console.log('refreshing cache...');
 
-  if (!testLogin(urls.IS_LOGGED_IN).ok) return;
+  const testLoginResponse = await testLogin(urls.IS_LOGGED_IN, false);
+  if (!testLoginResponse.ok) return;
 
   const cache = await caches.open(CACHE_NAME);
   await cache.addAll(urls.CACHE);
@@ -88,7 +105,7 @@ async function loadFromCache(originalRequest) {
     const match = await cache.match(request);
     if (match) return match;
   }
-  const response = testLogin(originalRequest);
+  const response = await testLogin(originalRequest);
   if (shouldCache && response.ok) {
     cache.put(request, response.clone());
   }
@@ -96,6 +113,7 @@ async function loadFromCache(originalRequest) {
 }
 
 async function handleNotification(notification) {
+  notification.close();
   switch (notification.tag) {
   case notificationTypes.LOGIN:
     await redirectToLogin();
@@ -120,6 +138,5 @@ self.addEventListener('fetch', (event) => {
 });
 
 self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
   event.waitUntil(handleNotification(event.notification));
 });
