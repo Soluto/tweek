@@ -12,11 +12,6 @@ export default (config) => {
   const addConfig = fn =>
     requestErrorHandlingWrapper((req, res) => fn(req, res, config, { params: req.params }));
 
-  app.use((req, res, next) => {
-    console.log(req.method, req.originalUrl);
-    next();
-  });
-
   app.route('/tags').get(addConfig(TagsRoutes.getTags)).put(addConfig(TagsRoutes.saveTags));
 
   app.get('/types', addConfig(TypesRoutes.getTypes));
@@ -38,6 +33,8 @@ export default (config) => {
   app.get('/manifests/*', addConfig(KeysRoutes.getKeyManifest));
 
   app.get('/search-index', addConfig(SearchRoutes.getSearchIndex));
+
+  app.get('/logged-in', (req, res) => res.sendStatus(200));
 
   app.use('/*', (req, res) => res.sendStatus(404));
 
