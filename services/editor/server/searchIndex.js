@@ -9,7 +9,7 @@ import _ from 'highland';
 const globAsync = promisify(glob);
 const readFile = _.wrapCallback(fs.readFile);
 
-const separator = /(?:[_/]|\s)/;
+export const separator = /(?:[_/]|\s)/;
 
 let index;
 
