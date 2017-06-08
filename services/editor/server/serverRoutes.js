@@ -34,6 +34,8 @@ export default (config) => {
   app.get('/manifests/*', addConfig(KeysRoutes.getKeyManifest));
 
   app.get('/search-index', addConfig(SearchRoutes.getSearchIndex));
+  app.get('/search', addConfig(SearchRoutes.search));
+  app.get('/suggestions', addConfig(SearchRoutes.getSuggestions));
 
   app.get('/logged-in', (req, res) => res.sendStatus(200));
 
