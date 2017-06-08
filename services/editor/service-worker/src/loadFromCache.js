@@ -1,6 +1,6 @@
 import idbKeyval from 'idb-keyval';
 import { CACHE_NAME, urls } from './constants';
-import { testLogin } from './actions';
+import { testLogin } from './data-actions';
 import getUrl from './getUrl';
 
 const replaceUrls = [
