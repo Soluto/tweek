@@ -1,7 +1,6 @@
+import idbKeyval from 'idb-keyval';
+
 self.importScripts('/socket.io/socket.io.js');
-self.importScripts(
-  'https://cdn.rawgit.com/jakearchibald/idb-keyval/cc960ba0/dist/idb-keyval-min.js',
-);
 
 const CACHE_NAME = 'v1';
 const urls = {
