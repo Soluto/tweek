@@ -1,5 +1,6 @@
 import idbKeyval from 'idb-keyval';
 import { CACHE_NAME, notificationTypes, urls } from './constants';
+import getUrl from './getUrl';
 
 self.importScripts('/socket.io/socket.io.js');
 
@@ -15,11 +16,6 @@ const replaceUrls = [
 ];
 
 let isLoggedIn = true;
-
-function getUrl(request) {
-  const url = new URL(request.url).pathname;
-  return url.replace(/\/$/, '');
-}
 
 async function testLogin(request, shouldLoadCache = true) {
   const response = await fetch(request);
