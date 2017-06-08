@@ -5,8 +5,8 @@ module.exports = function (server, config) {
   const oidcStrategy = new OIDCStrategy(
     {
       identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
-      clientID: config.get('AZUREAD_CLIENT_ID'),
-      clientSecret: config.get('AZUREAD_CLIENT_SECRET'),
+      clientID: config.get('AUTH_AZUREAD_CLIENT_ID'),
+      clientSecret: config.get('AUTH_AZUREAD_CLIENT_SECRET'),
       skipUserProfile: true,
       allowHttpForRedirectUrl: true,
       loggingLevel: 'info',
@@ -14,7 +14,7 @@ module.exports = function (server, config) {
       responseMode: 'query',
       validateIssuer: false,
       scope: ['profile', 'email'],
-      redirectUrl: config.get('AZUREAD_CALLBACK_URL'),
+      redirectUrl: config.get('AUTH_AZUREAD_CALLBACK_URL'),
     },
     (token, done) =>
       done(
