@@ -1,6 +1,7 @@
 import idbKeyval from 'idb-keyval';
 import { CACHE_NAME, notificationTypes, urls } from './constants';
-import { testLogin, refresh, redirectToLogin } from './actions';
+import { testLogin, redirectToLogin } from './actions';
+import install from './install';
 import getUrl from './getUrl';
 
 self.importScripts('/socket.io/socket.io.js');
@@ -15,23 +16,6 @@ const replaceUrls = [
     get: match => idbKeyval.get(match[1]),
   },
 ];
-
-async function install() {
-  const socket = io(self.origin, { jsonp: false });
-  socket.on('connect', () => console.log('connected to socket'));
-  socket.on('refresh', () => {
-    console.log('refreshing cache...');
-    refresh().catch(error => console.error('error while refreshing cache', error));
-  });
-
-  try {
-    await refresh();
-  } catch (error) {
-    console.error('error while loading cache', error);
-  }
-
-  self.skipWaiting();
-}
 
 async function activate() {
   const cache = await caches.open(CACHE_NAME);
