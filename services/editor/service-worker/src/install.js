@@ -1,4 +1,4 @@
-import { refresh } from './actions';
+import { refresh } from './data-actions';
 
 export default async function install() {
   const socket = io(self.origin, { jsonp: false });
