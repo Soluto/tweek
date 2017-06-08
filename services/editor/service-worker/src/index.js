@@ -1,21 +1,9 @@
-import { notificationTypes } from './constants';
-import { redirectToLogin } from './actions';
 import install from './install';
 import activate from './activate';
 import loadFromCache from './loadFromCache';
+import handleNotification from './handleNotification';
 
 self.importScripts('/socket.io/socket.io.js');
-
-async function handleNotification(notification) {
-  notification.close();
-  switch (notification.tag) {
-  case notificationTypes.LOGIN:
-    await redirectToLogin();
-    break;
-  default:
-    break;
-  }
-}
 
 self.addEventListener('install', (event) => {
   event.waitUntil(install());
