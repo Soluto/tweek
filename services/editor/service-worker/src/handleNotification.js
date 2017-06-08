@@ -1,5 +1,5 @@
 import { notificationTypes } from './constants';
-import { redirectToLogin } from './actions';
+import redirectToLogin from './redirectToLogin';
 
 export default async function handleNotification(notification) {
   notification.close();
