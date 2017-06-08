@@ -7,13 +7,15 @@
     "node": ">=6.9.0"
   },
   "scripts": {
+    "start:service-worker": "webpack --config ./service-worker/webpack.config.dev.js --watch",
     "start:client": "react-scripts start",
     "start:server": "nodemon --watch server server/index.js --exec babel-node -- --GIT_USER git --GIT_URL ssh://git@localhost:4001/tweek/repo --GIT_PUBLIC_KEY_PATH ../git-service/ssh/tweekgit.pub --GIT_PRIVATE_KEY_PATH ../git-service/ssh/tweekgit --TWEEK_API_HOSTNAME http://localhost:4003",
-    "start": "concurrently --kill-others \"yarn run start:client\" \"yarn run start:server\"",
+    "start": "concurrently --kill-others \"yarn run start:service-worker\" \"yarn run start:client\" \"yarn run start:server\"",
     "start:full-env": "npm run docker-compose -- up -d tweek-api && npm run start",
+    "build:service-worker": "webpack --config ./service-worker/webpack.config.prod.js",
     "build:client": "react-scripts build",
     "build:server": "babel server --out-dir dist",
-    "build": "concurrently --kill-others-on-fail \"yarn run build:client\" \"yarn run build:server\"",
+    "build": "concurrently --kill-others-on-fail \"yarn run build:service-worker && yarn run build:client\" \"yarn run build:server\"",
     "test": "jest",
     "eject": "react-scripts eject",
     "teardown": "npm run docker-compose -- down",
