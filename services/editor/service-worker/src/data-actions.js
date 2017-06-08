@@ -1,5 +1,7 @@
 import idbKeyval from 'idb-keyval';
 import { CACHE_NAME, notificationTypes, urls } from './constants';
+import { refreshIndex } from './search';
+
 let isLoggedIn = true;
 
 export async function testLogin(request, shouldLoadCache = true) {
@@ -38,9 +40,11 @@ export async function refresh() {
   const cache = await caches.open(CACHE_NAME);
   await cache.addAll(urls.CACHE);
 
-  const localStorage = await fetch(urls.LOCAL_STORAGE);
-  if (localStorage.ok) {
-    const data = await localStorage.json();
+  await refreshIndex();
+
+  const manifests = await fetch(urls.MANIFESTS);
+  if (manifests.ok) {
+    const data = await manifests.json();
     idbKeyval.clear();
     await Promise.all(data.map(manifest => idbKeyval.set(manifest.key_path, manifest)));
   }
