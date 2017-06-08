@@ -6,11 +6,11 @@ module.exports = function (server, config) {
   const oauth2Strategy = new OAuth2Strategy(
     {
       scope: 'profile email',
-      authorizationURL: config.get('OAUTH2_AUTHORIZATION_URL'),
-      tokenURL: config.get('OAUTH2_TOKEN_URL'),
-      clientID: config.get('OAUTH2_CLIENT_ID'),
-      clientSecret: config.get('OAUTH2_CLIENT_SECRET'),
-      callbackURL: config.get('OAUTH2_CALLBACK_URL'),
+      authorizationURL: config.get('AUTH_OAUTH2_AUTHORIZATION_URL'),
+      tokenURL: config.get('AUTH_OAUTH2_TOKEN_URL'),
+      clientID: config.get('AUTH_OAUTH2_CLIENT_ID'),
+      clientSecret: config.get('AUTH_OAUTH2_CLIENT_SECRET'),
+      callbackURL: config.get('AUTH_OAUTH2_CALLBACK_URL'),
     },
     (accessToken, refreshToken, profile, cb) => {
       const err = null;
@@ -30,7 +30,7 @@ module.exports = function (server, config) {
   // by default it doesn't propagate the parameters, so we override it here and add resource id
   oauth2Strategy.authorizationParams = options => ({
     ...options,
-    resource: config.get('OAUTH2_RESOURCE_ID'),
+    resource: config.get('AUTH_OAUTH2_RESOURCE_ID'),
   });
 
   server.get('/auth/oauth2', passport.authenticate('oauth2'));
