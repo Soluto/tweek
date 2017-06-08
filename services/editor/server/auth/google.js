@@ -3,9 +3,9 @@ import GoogleOauth2Strategy from 'passport-google-oauth20';
 
 module.exports = function (server, config) {
   const strategyParams = {
-    clientID: config.get('GOOGLE_CLIENT_ID'),
-    clientSecret: config.get('GOOGLE_CLIENT_SECRET'),
-    callbackURL: config.get('GOOGLE_CALLBACK_URL'),
+    clientID: config.get('AUTH_GOOGLE_CLIENT_ID'),
+    clientSecret: config.get('AUTH_GOOGLE_CLIENT_SECRET'),
+    callbackURL: config.get('AUTH_GOOGLE_CALLBACK_URL'),
   };
 
   const scope = ['profile', 'email'];
