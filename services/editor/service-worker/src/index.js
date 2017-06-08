@@ -1,27 +1,18 @@
 import idbKeyval from 'idb-keyval';
+import { CACHE_NAME, notificationTypes, urls } from './constants';
 
 self.importScripts('/socket.io/socket.io.js');
 
-const CACHE_NAME = 'v1';
-const urls = {
-  IS_LOGGED_IN: '/api/logged-in',
-  LOGIN: '/login',
-  CACHE: ['/api/search-index', '/api/types', '/api/context-schema', '/api/tags'],
-  LOCAL_STORAGE: '/api/manifests',
-  REPLACE: [
-    {
-      test: /^\/api\/keys\/?$/,
-      get: idbKeyval.keys,
-    },
-    {
-      test: /^\/api\/manifests\/(.+)/,
-      get: match => idbKeyval.get(match[1]),
-    },
-  ],
-};
-const notificationTypes = {
-  LOGIN: 'LOGIN',
-};
+const replaceUrls = [
+  {
+    test: /^\/api\/keys\/?$/,
+    get: idbKeyval.keys,
+  },
+  {
+    test: /^\/api\/manifests\/(.+)/,
+    get: match => idbKeyval.get(match[1]),
+  },
+];
 
 let isLoggedIn = true;
 
@@ -117,7 +108,7 @@ async function activate() {
 async function loadFromCache(originalRequest) {
   const url = getUrl(originalRequest);
 
-  const replace = urls.REPLACE.find(x => x.test.test(url));
+  const replace = replaceUrls.find(x => x.test.test(url));
   if (replace) {
     const result = await replace.get(url.match(replace.test));
     return new Response(JSON.stringify(result), { status: result ? 200 : 404 });
