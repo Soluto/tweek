@@ -2,6 +2,7 @@ import idbKeyval from 'idb-keyval';
 import { CACHE_NAME, notificationTypes, urls } from './constants';
 import { testLogin, redirectToLogin } from './actions';
 import install from './install';
+import activate from './activate';
 import getUrl from './getUrl';
 
 self.importScripts('/socket.io/socket.io.js');
@@ -16,17 +17,6 @@ const replaceUrls = [
     get: match => idbKeyval.get(match[1]),
   },
 ];
-
-async function activate() {
-  const cache = await caches.open(CACHE_NAME);
-  const cachedKeys = await cache.keys();
-  const urlsToCacheSet = new Set(urls.CACHE);
-  const keysToDelete = cachedKeys.filter(key => !urlsToCacheSet.has(getUrl(key)));
-  await Promise.all(
-    keysToDelete.map(key => (console.log('deleting from cache', key.url), cache.delete(key))),
-  );
-  self.clients.claim();
-}
 
 async function loadFromCache(originalRequest) {
   const url = getUrl(originalRequest);
