@@ -1,16 +1,35 @@
 import idbKeyval from 'idb-keyval';
 import { CACHE_NAME, urls } from './constants';
 import { testLogin } from './data-actions';
+import { search, getSuggestions } from './search';
 import getUrl from './getUrl';
 
 const replaceUrls = [
   {
     test: /^\/api\/keys\/?$/,
-    get: idbKeyval.keys,
+    get: () => idbKeyval.keys(),
   },
   {
     test: /^\/api\/manifests\/(.+)/,
-    get: match => idbKeyval.get(match[1]),
+    get: (req) => {
+      const url = getUrl(req);
+      const match = url.match(/^\/api\/manifests\/(.+)/);
+      return idbKeyval.get(match[1]);
+    },
+  },
+  {
+    test: /^\/api\/search$/,
+    get: (req) => {
+      const url = new URL(req.url);
+      return search(url.searchParams.get('q'), url.searchParams.get('count'));
+    },
+  },
+  {
+    test: /^\/api\/suggestions$/,
+    get: (req) => {
+      const url = new URL(req.url);
+      return getSuggestions(url.searchParams.get('q'), url.searchParams.get('count'));
+    },
   },
 ];
 
@@ -19,8 +38,11 @@ export default async function loadFromCache(originalRequest) {
 
   const replace = replaceUrls.find(x => x.test.test(url));
   if (replace) {
-    const result = await replace.get(url.match(replace.test));
-    return new Response(JSON.stringify(result), { status: result ? 200 : 404 });
+    const result = await replace.get(originalRequest);
+    return new Response(JSON.stringify(result), {
+      status: result ? 200 : 404,
+      statusText: result ? 'OK' : 'Not Found',
+    });
   }
 
   const shouldCache = urls.CACHE.includes(url);
