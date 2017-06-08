@@ -39,18 +39,21 @@ const KeysList = componentFromStream((prop$) => {
   const keyList$ = prop$.map(x => x.keys).distinctUntilChanged();
 
   const { handler: setFilter, stream: filter$ } = createEventHandler();
-  const textFilter$ = filter$.debounceTime(500).startWith('');
+  const filteredKeys$ = filter$
+    .debounceTime(500)
+    .startWith('')
+    .switchMap(async filter => (filter === '' ? undefined : SearchService.search(filter)));
 
-  return Observable.combineLatest(textFilter$, keyList$).map(([filter, keys]) => {
-    const filteredKeys = filter === '' ? keys : SearchService.search(filter);
-
-    return (
-      <div className={'keys-list-container'}>
-        <KeysFilter onFilterChange={setFilter} />
-        <DirectoryTreeView paths={filteredKeys} renderItem={KeyItem} expandByDefault={!!filter} />
-      </div>
-    );
-  });
+  return Observable.combineLatest(filteredKeys$, keyList$).map(([filteredKeys, keys]) =>
+    <div className={'keys-list-container'}>
+      <KeysFilter onFilterChange={setFilter} />
+      <DirectoryTreeView
+        paths={filteredKeys || keys}
+        renderItem={KeyItem}
+        expandByDefault={!!filteredKeys}
+      />
+    </div>,
+  );
 });
 
 export default KeysList;

@@ -6,12 +6,11 @@ import KeysList from '../KeysList/KeysList';
 import withLoading from '../../../../hoc/with-loading';
 import { refreshTypes } from '../../../../services/types-service';
 import { refreshSchema } from '../../../../services/context-service';
-import { refreshIndex } from '../../../../services/search-service';
 import './KeysPage.css';
 
 export default compose(
   connect(state => state, { ...actions }),
-  withLoading(() => null, Promise.all([refreshTypes(), refreshSchema(), refreshIndex()])),
+  withLoading(() => null, () => Promise.all([refreshTypes(), refreshSchema()])),
 )(
   class KeysPage extends Component {
     componentDidMount() {
