@@ -99,6 +99,7 @@
     "lunr": "^2.0.4",
     "moment": "^2.18.1",
     "nconf": "^0.8.4",
+    "node-getopt": "^0.2.3",
     "nodegit": "0.14.1",
     "passport": "^0.3.2",
     "passport-azure-ad": "^3.0.6",
