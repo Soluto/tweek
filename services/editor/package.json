@@ -27,6 +27,23 @@
     "/api": {
       "target": "http://localhost:3001",
       "secure": false
+    },
+    "/login": {
+      "target": "http://localhost:3001",
+      "secure": false
+    },
+    "/socket.io": {
+      "target": "http://localhost:3001",
+      "secure": false,
+      "ws": true
+    },
+    "/sockjs-node": {
+      "target": "http://localhost:3001",
+      "secure": false
+    },
+    "/auth": {
+      "target": "http://localhost:3001",
+      "secure": false
     }
   },
   "lint-staged": {
@@ -86,6 +103,9 @@
     "nodegit": "0.14.1",
     "passport": "^0.3.2",
     "passport-azure-ad": "^3.0.6",
+    "passport-google-oauth20": "^1.0.0",
+    "passport-http": "^0.3.0",
+    "passport-oauth2": "^1.4.0",
     "promisify-node": "^0.4.0",
     "prop-types": "^15.5.10",
     "ramda": "^0.24.1",
@@ -115,6 +135,7 @@
     "redux-thunk": "^2.2.0",
     "rodal": "^1.5.1",
     "rxjs": "^5.4.0",
+    "socket.io": "^2.0.2",
     "velocity-react": "^1.3.3"
   },
   "devDependencies": {
