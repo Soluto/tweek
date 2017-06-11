@@ -34,8 +34,6 @@ export default (config) => {
 
   app.get('/search-index', addConfig(SearchRoutes.getSearchIndex));
 
-  app.get('/logged-in', (req, res) => res.sendStatus(200));
-
   app.use('/*', (req, res) => res.sendStatus(404));
 
   app.use((err, req, res, next) => {
