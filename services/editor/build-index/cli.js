@@ -6,7 +6,7 @@ const writeFile = promisify(require('fs').writeFile);
 const getOpt = require('node-getopt').create([['h', 'help', 'display this help']]).bindHelp();
 
 getOpt.setHelp(
-  `Usage: node ${path.basename(__filename)} <repository_dir> <output_file>\nOptions:\n[[OPTIONS]]`,
+  `Usage: node ${path.basename(__filename)} <repository_dir> <output_file>\nOptions:\n[[OPTIONS]]`
 );
 
 const args = getOpt.parseSystem().argv;
