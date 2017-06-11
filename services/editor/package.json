@@ -30,6 +30,10 @@
       "target": "http://localhost:3001",
       "secure": false
     },
+    "/login": {
+      "target": "http://localhost:3001",
+      "secure": false
+    },
     "/socket.io": {
       "target": "http://localhost:3001",
       "secure": false,
@@ -39,7 +43,7 @@
       "target": "http://localhost:3001",
       "secure": false
     },
-    "/login": {
+    "/auth": {
       "target": "http://localhost:3001",
       "secure": false
     }
@@ -103,6 +107,9 @@
     "nodegit": "0.14.1",
     "passport": "^0.3.2",
     "passport-azure-ad": "^3.0.6",
+    "passport-google-oauth20": "^1.0.0",
+    "passport-http": "^0.3.0",
+    "passport-oauth2": "^1.4.0",
     "promisify-node": "^0.4.0",
     "prop-types": "^15.5.10",
     "ramda": "^0.24.1",
