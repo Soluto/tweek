@@ -20,6 +20,8 @@ FROM node:6.10.3-slim AS release
 COPY --from=build /src/dist/ /opt/app/dist
 COPY --from=build /src/build/ /opt/app/dist/build
 COPY --from=base /src/node_modules/ /opt/app/node_modules
+COPY ./build-index/ /opt/app/build-index
+
 WORKDIR /opt/app/
 
 ENV NODE_ENV=production
