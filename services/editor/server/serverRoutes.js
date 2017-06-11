@@ -37,8 +37,6 @@ export default (config) => {
   app.get('/search', addConfig(SearchRoutes.search));
   app.get('/suggestions', addConfig(SearchRoutes.getSuggestions));
 
-  app.get('/logged-in', (req, res) => res.sendStatus(200));
-
   app.use('/*', (req, res) => res.sendStatus(404));
 
   return app;
