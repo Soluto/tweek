@@ -116,10 +116,12 @@ export default ({ property, suggestedValues, onPropertyChange, autofocus }) =>
         const search = query.startsWith(ContextService.KEYS_IDENTITY)
           ? query.substring(ContextService.KEYS_IDENTITY.length)
           : query;
-        return SearchService.suggestions(search).map(label => ({
-          label,
-          value: `${ContextService.KEYS_IDENTITY}${label}`,
-        }));
+        return SearchService.suggestions(search).then(suggestions =>
+          suggestions.map(label => ({
+            label,
+            value: `${ContextService.KEYS_IDENTITY}${label}`,
+          })),
+        );
       },
     }}
     value={getProperty(suggestedValues, property)}
