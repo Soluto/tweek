@@ -1,5 +1,5 @@
 import lunr from 'lunr';
-import performSearch from '../../common/search';
+import performSearch from '../../server/common/perform-search';
 import { urls } from './constants';
 
 let searchIndex;

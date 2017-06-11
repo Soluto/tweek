@@ -4,7 +4,7 @@ export const separator = /(?:[_/]|\s|-)/;
 
 const byScore = R.descend(R.prop('score'));
 
-export default function search(query = '', { maxResults = 25, field, index }) {
+export default function (query = '', { maxResults = 25, field, index }) {
   query = query.trim();
   if (!index || query === '') return [];
 
