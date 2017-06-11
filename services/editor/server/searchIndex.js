@@ -5,11 +5,10 @@ import Rx from 'rxjs';
 import glob from 'glob';
 import { promisify } from 'bluebird';
 import _ from 'highland';
+import { separator } from '../common/search';
 
 const globAsync = promisify(glob);
 const readFile = _.wrapCallback(fs.readFile);
-
-export const separator = /(?:[_/]|\s)/;
 
 let index;
 
