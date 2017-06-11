@@ -5,7 +5,6 @@ export const notificationTypes = {
 };
 
 export const urls = {
-  IS_LOGGED_IN: '/api/logged-in',
   LOGIN: '/login',
   CACHE: ['/api/types', '/api/context-schema', '/api/tags'],
   MANIFESTS: '/api/manifests',

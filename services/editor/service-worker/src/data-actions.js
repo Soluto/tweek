@@ -34,20 +34,20 @@ export async function testLogin(request, shouldLoadCache = true) {
 export async function refresh() {
   console.log('refreshing cache...');
 
-  const testLoginResponse = await testLogin(urls.IS_LOGGED_IN, false);
-  if (!testLoginResponse.ok) return;
+  try {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.addAll(urls.CACHE);
 
-  const cache = await caches.open(CACHE_NAME);
-  await cache.addAll(urls.CACHE);
+    await refreshIndex();
 
-  await refreshIndex();
-
-  const manifests = await fetch(urls.MANIFESTS);
-  if (manifests.ok) {
-    const data = await manifests.json();
-    idbKeyval.clear();
-    await Promise.all(data.map(manifest => idbKeyval.set(manifest.key_path, manifest)));
+    const manifests = await fetch(urls.MANIFESTS);
+    if (manifests.ok) {
+      const data = await manifests.json();
+      idbKeyval.clear();
+      await Promise.all(data.map(manifest => idbKeyval.set(manifest.key_path, manifest)));
+    }
+    console.log('cache refreshed');
+  } catch (error) {
+    console.warn('failed to refresh cache', error);
   }
-
-  console.log('cache refreshed');
 }
