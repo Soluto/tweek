@@ -36,6 +36,6 @@ module.exports = function createIndex(repoDir) {
       .do(doc => builder.add(doc))
       .ignoreElements()
       .concat(Rx.Observable.defer(() => Rx.Observable.of(builder.build())))
-      .toPromise(),
+      .toPromise()
   );
 };
