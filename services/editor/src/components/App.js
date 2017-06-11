@@ -47,9 +47,9 @@ export default withTypesService(TypesService)(({ children }) =>
           <img src={require('./resources/keys.svg')} />
           <span>Context</span>
         </ListItemLink>
-        <ListItemLink to="/schema">
-          <img src={require('./resources/schema.svg')} />
-          <span>Schema</span>
+        <ListItemLink to="/settings">
+          <img src={require('./resources/settings.svg')} />
+          <span>Settings</span>
         </ListItemLink>
       </ul>
     </div>

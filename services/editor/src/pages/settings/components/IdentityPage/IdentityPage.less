@@ -1,0 +1,53 @@
+@import "../../../../styles/core/core.less";
+
+.identity-page {
+   *[data-comp=save-button]{
+     float: right;
+   }
+   margin: 20px;
+   flex-grow: 1;
+   h3{
+     margin-bottom: 20px;
+   }
+   *[role=tablist]{
+     list-style: none;
+     display: flex;
+   }
+   *[role=tabpanel]{
+     padding: 10px;
+     background-color: white;
+     border:1px solid lightgray;
+     border-collapse: collapse;
+   }
+
+   *[role=tab]{
+     color: #515c66;
+      display: inline-block;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      padding: 12px 32px;
+      border-radius: 5px 5px 0 0;
+      border: 1px solid lightgray;
+      height: 46px;
+      font-size: 14px;
+      &:hover {
+       cursor: pointer;
+       }
+      
+      &[aria-selected=true]{
+        border-bottom: 3px solid rgba(0, 122, 204, 0.5);
+        background-color: white;
+      }
+   }
+
+}
+
+.property-types-list {
+  .empty-property-types-list-label {
+    color: #d0d0d0;
+    font-style: italic;
+    margin: 7px 35px 0;
+    letter-spacing: 2px;
+    cursor: default;
+  }
+}
