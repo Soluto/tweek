@@ -6,7 +6,7 @@ import ComboBox from './ComboBox';
 const mapSuggestionsToProps = mapPropsStream((props$) => {
   const { handler: onSearch, stream: onSearch$ } = createEventHandler();
 
-  const query$ = onSearch$.startWith('').distinctUntilChanged().debounceTime(500);
+  const query$ = onSearch$.map(x => x.trim()).startWith('').distinctUntilChanged().debounceTime(500);
 
   const suggestions$ = Rx.Observable
     .combineLatest(props$, query$)

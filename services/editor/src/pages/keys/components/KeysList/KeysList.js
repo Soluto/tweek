@@ -40,6 +40,8 @@ const KeysList = componentFromStream((prop$) => {
 
   const { handler: setFilter, stream: filter$ } = createEventHandler();
   const filteredKeys$ = filter$
+    .map(x => x.trim())
+    .distinctUntilChanged()
     .debounceTime(500)
     .startWith('')
     .switchMap(async filter => (filter === '' ? undefined : SearchService.search(filter)));
