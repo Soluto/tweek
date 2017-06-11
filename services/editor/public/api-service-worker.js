@@ -17,6 +17,14 @@ function getUrl(request) {
   return url.replace(/\/$/, '');
 }
 
+function showLoginExpiredMessage() {
+  self.registration.showNotification('Login expired\nPlease log in again', {
+    icon: '/tweek.png',
+    requireInteraction: true,
+    tag: notificationTypes.LOGIN,
+  });
+}
+
 async function testLogin(request, shouldLoadCache = true) {
   const response = await fetch(request);
 
@@ -25,11 +33,7 @@ async function testLogin(request, shouldLoadCache = true) {
 
   if (!isLoggedIn) {
     if (Notification.permission === 'granted') {
-      self.registration.showNotification('Login expired\nPlease log in again', {
-        icon: '/tweek.png',
-        requireInteraction: true,
-        tag: notificationTypes.LOGIN,
-      });
+      showLoginExpiredMessage();
     }
   } else {
     const loginNotifications = await self.registration.getNotifications({
@@ -47,11 +51,13 @@ async function testLogin(request, shouldLoadCache = true) {
 async function refresh() {
   console.log('refreshing cache...');
 
-  const testLoginResponse = await testLogin(urls.IS_LOGGED_IN, false);
-  if (!testLoginResponse.ok) return;
-
-  const cache = await caches.open(CACHE_NAME);
-  await cache.addAll(urls.CACHE);
+  try {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.addAll(urls.CACHE);
+  } catch (ex) {
+    // need to check that ex is 403 error
+    showLoginExpiredMessage();
+  }
 
   console.log('cache refreshed');
 }
