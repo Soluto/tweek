@@ -1,4 +1,4 @@
-import performSearch from '../../common/search';
+import performSearch from '../common/perform-search';
 import searchIndex from '../searchIndex';
 
 export function getSearchIndex(req, res) {
