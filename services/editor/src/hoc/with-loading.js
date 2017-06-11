@@ -7,7 +7,7 @@ const withLoading = (loadingRenderer, loadingPromise) => Comp =>
     pure,
     lifecycle({
       componentWillMount() {
-        loadingPromise.then(() => this.props.setIsLoading(false));
+        loadingPromise().then(() => this.props.setIsLoading(false));
       },
     }),
   )(props => (props.isLoading ? loadingRenderer() : <Comp {...props} />));
