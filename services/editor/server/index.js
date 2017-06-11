@@ -18,7 +18,8 @@ import * as Registration from './api/registration';
 
 const crypto = require('crypto');
 const passport = require('passport');
-const azureADAuthProvider = require('./auth/azuread');
+const selectAuthenticationProviders = require('./auth/providerSelector')
+  .selectAuthenticationProviders;
 
 nconf.argv().env().defaults({
   PORT: 3001,
@@ -78,9 +79,9 @@ function addAuthSupport(server) {
   server.use(passport.initialize());
   server.use(passport.session());
 
-  const authProviders = [azureADAuthProvider(server, nconf)];
+  const authProviders = selectAuthenticationProviders(server, nconf);
   server.use('/login', (req, res) => {
-    res.send(authProviders.map(x => `<a href="${x.url}">login with ${x.name}</a>`).join(''));
+    res.send(authProviders.map(x => `<a href="${x.url}">login with ${x.name}</a>`).join('<br/>'));
   });
 
   server.use('*', (req, res, next) => {
