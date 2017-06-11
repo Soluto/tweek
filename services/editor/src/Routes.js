@@ -4,10 +4,10 @@ import { ConnectedRouter } from 'react-router-redux';
 import App from './components/App';
 import KeysPage from './pages/keys/components/KeysPage/KeysPage';
 import KeyPage from './pages/keys/components/KeyPage/KeyPage';
-import ContextPage from './pages/schema/components/ContextPage/ContextPage';
-import SchemaPage from './pages/schema/components/SchemaPage/SchemaPage';
-import SchemaPage from './pages/schema/components/IdentityPage/IdentityPage';
+import ContextPage from './pages/context/components/ContextPage/ContextPage';
 import IdentityDetails from './pages/context/components/IdentityDetails/IdentityDetails';
+import SchemaPage from './pages/schema/components/SchemaPage/SchemaPage';
+import IdentityPage from './pages/schema/components/IdentityPage/IdentityPage';
 import NoMatch from './components/NoMatch';
 import browserHistory from './store/browserHistory';
 import './styles/styles.css';
@@ -38,9 +38,10 @@ export default props =>
         />
         <Route
           path="/schema"
-          render={({ match }) => <SchemaPage {...match}>
+          render={({ match }) =>
+            <SchemaPage {...match}>
               <Route path={`${match.path}/identities/:identityType`} component={IdentityPage} />
-            </ContextPage>}
+            </SchemaPage>}
         />
 
         <Route component={NoMatch} />

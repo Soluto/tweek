@@ -1,24 +1,29 @@
 import React from 'react';
-import style from './IdentityProperty.css';
+import './IdentityProperty.css';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import * as TypesServices from '../../../../../services/types-service';
 
-const PropertyTypeName = ({ name }) => (
-  <span className={style['property-type-name-label']}>
+const PropertyTypeName = ({ name }) =>
+  <span className="property-type-name-label">
     {name}
-  </span>
-  );
+  </span>;
 
 const PropertyTypeSelector = ({ type }) => {
   const suggestions = [...Object.keys(TypesServices.types), 'custom'];
-  return <ComboBox value={type.type} filterBy={() => true} valueType="string" suggestions={suggestions} />;
+  return (
+    <ComboBox
+      value={type.type}
+      filterBy={() => true}
+      valueType="string"
+      suggestions={suggestions}
+    />
+  );
 };
 
-const IdentityProperty = ({ name, type, onUpdate }) => (
-  <div className={style['property-type-wrapper']}>
+const IdentityProperty = ({ name, type, onUpdate }) =>
+  <div className="property-type-wrapper">
     <PropertyTypeName name={name} />
     <PropertyTypeSelector type={type} />
-  </div>
-  );
+  </div>;
 
 export default IdentityProperty;
