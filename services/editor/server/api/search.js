@@ -5,11 +5,12 @@ export function getSearchIndex(req, res) {
   res.json(searchIndex.index);
 }
 
-const createSearchEndpoint = field => (req, res) => {
-  const result = performSearch(req.query.q, {
+const createSearchEndpoint = field => async (req, res, { keysRepository }) => {
+  const result = await performSearch(req.query.q, {
     maxResults: req.query.count,
     field,
     index: searchIndex.index,
+    getManifest: key => keysRepository.getKeyManifest(key),
   });
   res.json(result);
 };
