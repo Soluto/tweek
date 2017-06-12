@@ -30,16 +30,14 @@ export default (config) => {
     .put(addConfig(KeysRoutes.saveKey))
     .delete(addConfig(KeysRoutes.deleteKey));
 
+  app.get('/manifests', addConfig(KeysRoutes.getAllManifests));
   app.get('/manifests/*', addConfig(KeysRoutes.getKeyManifest));
 
   app.get('/search-index', addConfig(SearchRoutes.getSearchIndex));
+  app.get('/search', addConfig(SearchRoutes.search));
+  app.get('/suggestions', addConfig(SearchRoutes.getSuggestions));
 
   app.use('/*', (req, res) => res.sendStatus(404));
-
-  app.use((err, req, res, next) => {
-    console.error(req.method, res.originalUrl, err);
-    res.status(500).send(err.message);
-  });
 
   return app;
 };
