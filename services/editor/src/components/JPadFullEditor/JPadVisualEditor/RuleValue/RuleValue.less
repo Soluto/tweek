@@ -7,12 +7,14 @@
 }
 
 .inputValue{
-  &:global(.input-type-boolean){
-    .combo-box-basic(150px, 150px);
+  input, .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+    width: 150px;
   }
-  
+  .bootstrap-typeahead .dropdown-menu {
+    min-width: 150px;
+  }
+
   .values-input {
-    .metro-textbox;
     resize: none;
     display: inline-block;
   }

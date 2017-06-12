@@ -4,6 +4,7 @@ import { withContext, getContext } from 'recompose';
 import changeCase from 'change-case';
 import ComboBox from '../ComboBox/ComboBox';
 import Input from './Input';
+import './TypedInput.css';
 
 export const typesServiceContextType = {
   types: PropTypes.object.isRequired,
@@ -56,4 +57,10 @@ TypedInput.defaultProps = {
   placeholder: 'Enter Value Here',
 };
 
-export default getTypesService(TypedInput);
+const TypedInputWithIcon = props =>
+  <div className="typed-input-with-icon">
+    <i data-value-type={props.valueType} />
+    <TypedInput {...props} />
+  </div>;
+
+export default getTypesService(TypedInputWithIcon);
