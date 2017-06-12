@@ -10,6 +10,6 @@ const createSearchFunction = endpoint =>
     return results.map(x => x.key_path);
   };
 
-export const suggestions = createSearchFunction('suggestions');
+export const getSuggestions = createSearchFunction('suggestions');
 
 export const search = createSearchFunction('search');
