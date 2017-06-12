@@ -7,14 +7,14 @@ const UPDATE_SCHEMA_PROPERTY = 'SCHEMA_UPDATE_PROPERTY';
 const IDENTITY_SELECTED = 'IDENTITY_SELECTED';
 
 export function loadSchema() {
-  return ({ type: SCHEMA_LOADED });
+  return { type: SCHEMA_LOADED };
 }
 
-const findAndUpdate = idSelector => newItem => arr => R.update(R.findIndex(R.eqBy(idSelector)(newItem), arr), newItem, arr);
-const propUpdater = findAndUpdate(x => x.id);
+//const findAndUpdate = idSelector => newItem => arr => R.update(R.findIndex(R.eqBy(idSelector)(newItem), arr), newItem, arr);
+//const propUpdater = findAndUpdate(x => x.id);
 
-export function updateIdentityProperty(newProp) {
-  return ({ type: UPDATE_SCHEMA_PROPERTY, value: newProp });
+export function updateIdentityProperty(identity, prop, value) {
+  return { type: UPDATE_SCHEMA_PROPERTY, value: { identity, prop, value } };
 }
 
 function createRemoteAndLocalStates(state) {
@@ -25,8 +25,17 @@ function createSchemaState() {
   return R.map(createRemoteAndLocalStates)(getSchmea());
 }
 
-export default handleActions({
-  [SCHEMA_LOADED]: (state, action) => createSchemaState(),
-  [IDENTITY_SELECTED]: (state, action) => ({ selectedIdentity: action.identity, ...state }),
-  [UPDATE_SCHEMA_PROPERTY]: (state, { value }) => ({ ...state, identities: propUpdater(value, state.identities) }),
-}, []);
+export default handleActions(
+  {
+    [SCHEMA_LOADED]: (state, action) => createSchemaState(),
+    [IDENTITY_SELECTED]: (state, action) => ({ selectedIdentity: action.identity, ...state }),
+    [UPDATE_SCHEMA_PROPERTY]: (state, { value: { identity, prop, value } }) => ({
+      ...state,
+      [identity]: {
+        ...state[identity],
+        local: { ...state[identity].local, [prop]: value },
+      },
+    }),
+  },
+  [],
+);

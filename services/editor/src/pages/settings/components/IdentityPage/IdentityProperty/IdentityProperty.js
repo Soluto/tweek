@@ -8,13 +8,14 @@ const PropertyTypeName = ({ name }) =>
     {name}
   </span>;
 
-const PropertyTypeSelector = ({ type }) => {
+const PropertyTypeSelector = ({ type, onUpdate }) => {
   const suggestions = [...Object.keys(TypesServices.types), 'custom'];
   return (
     <ComboBox
       value={type.type}
       filterBy={() => true}
       valueType="string"
+      onChange={propType => onUpdate({ type: propType })}
       suggestions={suggestions}
     />
   );
@@ -23,7 +24,7 @@ const PropertyTypeSelector = ({ type }) => {
 const IdentityProperty = ({ name, type, onUpdate }) =>
   <div className="property-type-wrapper">
     <PropertyTypeName name={name} />
-    <PropertyTypeSelector type={type} />
+    <PropertyTypeSelector type={type} onUpdate={onUpdate} />
   </div>;
 
 export default IdentityProperty;
