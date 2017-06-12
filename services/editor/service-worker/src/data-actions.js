@@ -34,9 +34,8 @@ export async function testLogin(request, shouldLoadCache = true) {
 async function clearCache(){
   const cache = await caches.open(CACHE_NAME);
   const cachedKeys = await cache.keys();
-  const urlsToCacheSet = new Set(urls.CACHE);
   await Promise.all(
-    urlsToCacheSet.map(key => (console.log('deleting from cache', key.url), cache.delete(key))),
+    cachedKeys.map(key => (console.log('deleting from cache', key.url), cache.delete(key))),
   );
 }
 
