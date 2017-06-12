@@ -2,7 +2,7 @@ import React from 'react';
 import { Component } from 'react';
 import * as actions from '../../../../store/ducks/schema';
 import { connect } from 'react-redux';
-import './SchemaPage.css';
+import './SettingsPage.css';
 import { compose, lifecycle } from 'recompose';
 import withLoading from '../../../../hoc/with-loading';
 import { refreshSchema } from '../../../../services/context-service';
@@ -12,7 +12,7 @@ const isNode = new Function('try {return this===global;}catch(e){return false;}'
 
 const LinkMenuItem = ({ path, name }) =>
   <li key={path}>
-    <Link to={`/schema/${path}`}>
+    <Link to={`/settings/${path}`}>
       {name}
     </Link>
   </li>;
