@@ -40,13 +40,7 @@ module.exports = function (server, config) {
   );
 
   passport.use(oidcStrategy);
-  passport.serializeUser((user, done) => {
-    done(null, user);
-  });
 
-  passport.deserializeUser((user, done) => {
-    done(null, user);
-  });
   return {
     url: '/auth/openid',
     name: 'Azure open id connect',
