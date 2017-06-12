@@ -135,8 +135,6 @@ const startServer = () => {
 };
 
 gitRepoCreationPromiseWithTimeout
-  .then(() => console.log('indexing keys...'))
-  .then(() => searchIndex.refreshIndex(gitRepostoryConfig.localPath))
   .then(() => console.log('starting tweek server'))
   .then(() => startServer())
   .catch((reason) => {
