@@ -12,7 +12,7 @@ const IdentityPropertiesEditor = ({ identityProperties, onPropertyUpdate }) =>
     {R.toPairs(identityProperties).map(([name, type]) =>
       <IdentityProperty
         name={name}
-        onUpdate={prop => onPropertyUpdate(name, prop)}
+        onUpdate={value => onPropertyUpdate(name, value)}
         key={name}
         type={type}
       />,
@@ -20,9 +20,7 @@ const IdentityPropertiesEditor = ({ identityProperties, onPropertyUpdate }) =>
   </div>;
 
 const IdentityPage = ({ identityType, identityProperties, updateIdentityProperty }) => {
-  const changes =
-    R.symmetricDifference(identityProperties.local, identityProperties.remote).length === 0;
-  const hasChanges = (changes || []).length > 0;
+  const hasChanges = !R.equals(identityProperties.local, identityProperties.remote);
 
   return (
     <div className="identity-page">
@@ -41,7 +39,8 @@ const IdentityPage = ({ identityType, identityProperties, updateIdentityProperty
         <TabPanel>
           <IdentityPropertiesEditor
             identityProperties={identityProperties.local}
-            onPropertyUpdate={updateIdentityProperty}
+            onPropertyUpdate={(propName, value) =>
+              updateIdentityProperty(identityType, propName, value)}
           />
         </TabPanel>
       </Tabs>
