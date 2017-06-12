@@ -25,6 +25,11 @@ export async function getAllKeys(req, res, { keysRepository }) {
   res.json(keys);
 }
 
+export async function getAllManifests(req, res, { keysRepository }) {
+  const manifests = await keysRepository.getAllManifests();
+  res.json(manifests);
+}
+
 export async function getKey(req, res, { keysRepository }, { params }) {
   const keyPath = params[0];
   const revision = req.query.revision;
