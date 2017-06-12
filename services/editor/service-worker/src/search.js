@@ -21,4 +21,5 @@ export const search = createSearchFunction();
 
 export async function refreshIndex() {
   searchIndexPromise = getIndex();
+  await searchIndexPromise;
 }
