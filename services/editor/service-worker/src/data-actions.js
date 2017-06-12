@@ -31,7 +31,7 @@ export async function testLogin(request, shouldLoadCache = true) {
   return response;
 }
 
-async function clearCache(){
+async function clearCache() {
   const cache = await caches.open(CACHE_NAME);
   const cachedKeys = await cache.keys();
   await Promise.all(
@@ -44,13 +44,13 @@ export async function refresh() {
 
   try {
     await clearCache();
-     
+
     await refreshIndex();
 
-    const manifests = await fetch(urls.MANIFESTS, {credentials: 'include'});
+    const manifests = await fetch(urls.MANIFESTS, { credentials: 'include' });
     if (manifests.ok) {
       const data = await manifests.json();
-      idbKeyval.clear();
+      await idbKeyval.clear();
       await Promise.all(data.map(manifest => idbKeyval.set(manifest.key_path, manifest)));
     }
     console.log('cache refreshed');
