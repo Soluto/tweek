@@ -12,11 +12,13 @@
   "rules": {
     "arrow-body-style": ["error", "as-needed"],
     "arrow-parens": ["error", "as-needed", { "requireForBlockBody": true }],
+    "comma-dangle": ["error", "always-multiline"],
     "default-case": "off",
     "import/first": "error",
     "import/no-duplicates": "error",
     "import/no-unresolved": ["error", { "ignore": [ "^react-monaco-editor$" ]}],
     "import/order": "warn",
+    "indent": ["error", 2],
     "jsx-a11y/click-events-have-key-events": "off",
     "jsx-a11y/alt-text": "off",
     "jsx-a11y/interactive-supports-focus": "off",

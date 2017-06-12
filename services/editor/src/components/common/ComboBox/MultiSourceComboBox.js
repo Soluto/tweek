@@ -20,7 +20,7 @@ const MultiSourceComboBox = ({ getSuggestions, sourceId, selectSourceId, ...prop
     getSuggestions={(...args) =>
       getSuggestions[sourceId]
         ? getSuggestions[sourceId](...args)
-        : R.pipe(R.values, R.chain(x => x(...args)))(getSuggestions)}
+        : Promise.all(R.values(getSuggestions).map(x => x(...args))).then(R.flatten)}
     suggestionsContainer={({ children }) =>
       <div className={'multi-source-combo-box-suggestions'}>
         <div className={'source-select'}>
