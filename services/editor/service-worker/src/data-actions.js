@@ -31,13 +31,21 @@ export async function testLogin(request, shouldLoadCache = true) {
   return response;
 }
 
+async function clearCache(){
+  const cache = await caches.open(CACHE_NAME);
+  const cachedKeys = await cache.keys();
+  const urlsToCacheSet = new Set(urls.CACHE);
+  await Promise.all(
+    urlsToCacheSet.map(key => (console.log('deleting from cache', key.url), cache.delete(key))),
+  );
+}
+
 export async function refresh() {
   console.log('refreshing cache...');
 
   try {
-    const cache = await caches.open(CACHE_NAME);
-    await cache.addAll(urls.CACHE);
-
+    await clearCache();
+     
     await refreshIndex();
 
     const manifests = await fetch(urls.MANIFESTS, {credentials: 'include'});
