@@ -10,7 +10,7 @@ module.exports = function (server, config) {
 
   const scope = ['profile', 'email'];
   // this is very important to specify, otherwise untrusted person with Google Account can log in
-  const hostedDomain = config.get('GOOGLE_HOSTED_DOMAIN');
+  const hostedDomain = config.get('AUTH_GOOGLE_HOSTED_DOMAIN');
   const verify = (accessToken, refreshToken, profile, done) => {
     // this check is very important in order to prevent users of other domains from logging in
     if (hostedDomain && profile._json.domain !== hostedDomain) {
