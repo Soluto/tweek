@@ -40,7 +40,7 @@ export async function refresh() {
 
     await refreshIndex();
 
-    const manifests = await fetch(urls.MANIFESTS);
+    const manifests = await fetch(urls.MANIFESTS, {credentials: 'include'});
     if (manifests.ok) {
       const data = await manifests.json();
       idbKeyval.clear();
