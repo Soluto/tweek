@@ -6,8 +6,8 @@ import KeysPage from './pages/keys/components/KeysPage/KeysPage';
 import KeyPage from './pages/keys/components/KeyPage/KeyPage';
 import ContextPage from './pages/context/components/ContextPage/ContextPage';
 import IdentityDetails from './pages/context/components/IdentityDetails/IdentityDetails';
-import SchemaPage from './pages/schema/components/SchemaPage/SchemaPage';
-import IdentityPage from './pages/schema/components/IdentityPage/IdentityPage';
+import SettingsPage from './pages/settings/components/SettingsPage/SettingsPage';
+import IdentityPage from './pages/settings/components/IdentityPage/IdentityPage';
 import NoMatch from './components/NoMatch';
 import browserHistory from './store/browserHistory';
 import './styles/styles.css';
@@ -37,11 +37,11 @@ export default props =>
             </ContextPage>}
         />
         <Route
-          path="/schema"
+          path="/settings"
           render={({ match }) =>
-            <SchemaPage {...match}>
+            <SettingsPage {...match}>
               <Route path={`${match.path}/identities/:identityType`} component={IdentityPage} />
-            </SchemaPage>}
+            </SettingsPage>}
         />
 
         <Route component={NoMatch} />

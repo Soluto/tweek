@@ -1,12 +1,13 @@
 import React from 'react';
 import { compose, lifecycle, pure, withState } from 'recompose';
 
-const withLoading = (loadingRenderer, loadingPromiseOrFactory) => Comp => compose(
+const withLoading = (loadingRenderer, loadingPromiseOrFactory) => Comp =>
+  compose(
     withState('isLoading', 'setIsLoading', true),
     pure,
     lifecycle({
       componentWillMount() {
-        loadingPromise(this.props).then(() => this.props.setIsLoading(false));
+        loadingPromiseOrFactory(this.props).then(() => this.props.setIsLoading(false));
       },
     }),
   )(props => (props.isLoading ? loadingRenderer() : <Comp {...props} />));
