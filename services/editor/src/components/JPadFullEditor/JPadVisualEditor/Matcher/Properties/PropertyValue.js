@@ -1,9 +1,7 @@
 import React from 'react';
-import changeCase from 'change-case';
 import R from 'ramda';
 import { WithContext as ReactTags } from 'react-tag-input';
-import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
-import Input from '../../../../../components/common/Input/Input';
+import TypedInput from '../../../../../components/common/Input/TypedInput';
 import { inOp } from '../../../../../services/operators-provider';
 import './styles.css';
 
@@ -36,35 +34,32 @@ const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
   );
 };
 
-function PropertyValueComponent({
+const PropertyValueComponent = ({
   onUpdate,
   propertyTypeDetails,
   value = '',
   selectedOperator,
   placeholder = 'Value',
-}) {
-  let allowedValues = propertyTypeDetails.allowedValues || [];
-
+}) => {
   if (selectedOperator === inOp.operatorValue) {
-    return <TagsPropertyValue onUpdate={onUpdate} value={value} suggestions={allowedValues} />;
-  }
-
-  if (allowedValues.length > 0) {
-    allowedValues = allowedValues.map(x => ({ label: changeCase.pascalCase(x), value: x }));
-    const selected = allowedValues.find(x => x.value === value);
     return (
-      <ComboBox
-        suggestions={allowedValues}
-        placeholder={placeholder}
-        className={'property-value-combo-box'}
-        onChange={(_, selectedValue) => selectedValue && onUpdate(selectedValue.value)}
-        value={selected ? selected.label : value.toString()}
+      <TagsPropertyValue
+        onUpdate={onUpdate}
+        value={value}
+        suggestions={propertyTypeDetails.allowedValues || []}
       />
     );
   }
 
-  return <Input {...{ onChange: onUpdate, value, placeholder }} />;
-}
+  return (
+    <TypedInput
+      {...{ value, placeholder }}
+      valueType={propertyTypeDetails.name}
+      customType={propertyTypeDetails}
+      onChange={onUpdate}
+    />
+  );
+};
 
 export default props =>
   <div className={'property-value-wrapper'}>
