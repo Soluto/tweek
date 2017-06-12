@@ -51,7 +51,7 @@ const EditableKey = ({ remote, local, onKeyChange, onValueChange }) =>
       className={'key-input'}
       placeholder="Key"
       value={local.key}
-      getSuggestions={SearchService.suggestions}
+      getSuggestions={SearchService.getSuggestions}
       onChange={onKeyChange}
       disabled={!!remote}
     />
