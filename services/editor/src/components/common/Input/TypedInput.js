@@ -18,8 +18,16 @@ const getTypesService = getContext(typesServiceContextType);
 const valueToItem = value =>
   value === undefined || value === '' ? undefined : { label: changeCase.pascalCase(value), value };
 
-const TypedInput = ({ safeConvertValue, types, valueType, value, onChange, ...props }) => {
-  const typeDefinition = types[valueType];
+const TypedInput = ({
+  safeConvertValue,
+  types,
+  valueType,
+  value,
+  onChange,
+  customType,
+  ...props
+}) => {
+  const typeDefinition = valueType === 'custom' ? customType : types[valueType];
   const allowedValues = typeDefinition && typeDefinition.allowedValues;
   const onChangeConvert = newValue => onChange && onChange(safeConvertValue(newValue, valueType));
   if (allowedValues && allowedValues.length > 0) {
@@ -41,12 +49,11 @@ TypedInput.propTypes = {
   valueType: PropTypes.string.isRequired,
   onChange: PropTypes.func,
   value: PropTypes.any,
+  customType: PropTypes.object,
 };
 
 TypedInput.defaultProps = {
   placeholder: 'Enter Value Here',
-  value: undefined,
-  onChange: undefined,
 };
 
 export default getTypesService(TypedInput);
