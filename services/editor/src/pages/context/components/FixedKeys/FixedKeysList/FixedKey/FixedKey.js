@@ -14,16 +14,6 @@ const configShape = {
   value: PropTypes.any,
 };
 
-const RemovedKey = ({ config: { key, value } }) =>
-  <div className={'removed-key-container'}>
-    <div className={'removed-key'}>{key}</div>
-    <div className={'removed-value'}>{value}</div>
-  </div>;
-
-RemovedKey.propTypes = {
-  config: PropTypes.shape(configShape).isRequired,
-};
-
 const mapValueTypeToProps = (props$) => {
   const propsStream = props$.map(({ keyPath, ...props }) => props);
 
@@ -40,20 +30,22 @@ const mapValueTypeToProps = (props$) => {
   return propsStream.combineLatest(valueTypeStream, (props, valueType) => ({
     ...props,
     ...valueType,
+    disabled: props.disabled || valueType.disabled,
   }));
 };
 
 const OverrideValueInput = compose(mapPropsStream(mapValueTypeToProps), pure)(TypedInput);
+OverrideValueInput.displayName = 'OverrideValueInput';
 
-const EditableKey = ({ remote, local, onKeyChange, onValueChange }) =>
-  <div className={classNames('editable-key-container', { 'new-item': !remote })}>
+const EditableKey = ({ remote, local, onKeyChange, onValueChange, isRemoved }) =>
+  <div className={classNames('editable-key-container', { 'new-item': !remote, removed: isRemoved })}>
     <AutoSuggest
       className={'key-input'}
       placeholder="Key"
       value={local.key}
       getSuggestions={SearchService.getSuggestions}
       onChange={onKeyChange}
-      disabled={!!remote}
+      disabled={isRemoved || !!remote}
     />
     <OverrideValueInput
       keyPath={local.key}
@@ -63,6 +55,7 @@ const EditableKey = ({ remote, local, onKeyChange, onValueChange }) =>
       placeholder="Value"
       value={local.value}
       onChange={onValueChange}
+      disabled={isRemoved}
     />
     {remote && remote.value !== local.value
       ? <div className={'initial-value'}>{remote.value}</div>
@@ -83,13 +76,11 @@ const FixedKey = ({ remote, local, isRemoved, onChange }) =>
       className={'delete-button'}
       title="Remove key"
     />
-    {isRemoved
-      ? <RemovedKey config={remote} />
-      : <EditableKey
-          {...{ remote, local }}
-          onKeyChange={key => onChange(isRemoved, { ...local, key })}
-          onValueChange={value => onChange(isRemoved, { ...local, value })}
-        />}
+    <EditableKey
+      {...{ remote, local, isRemoved }}
+      onKeyChange={key => onChange(isRemoved, { ...local, key })}
+      onValueChange={value => onChange(isRemoved, { ...local, value })}
+    />
   </div>;
 
 FixedKey.propTypes = {
