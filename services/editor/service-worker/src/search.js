@@ -12,7 +12,7 @@ export const getSuggestions = createSearchFunction('id');
 export const search = createSearchFunction();
 
 export async function refreshIndex() {
-  const response = await fetch(urls.SEARCH_INDEX, { credentials: 'same-origin' });
+  const response = await fetch(urls.SEARCH_INDEX, { credentials: 'include' });
   const serializedIndex = await response.json();
   searchIndex = lunr.Index.load(serializedIndex);
 }
