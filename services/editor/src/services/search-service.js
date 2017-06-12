@@ -6,8 +6,7 @@ const createSearchFunction = endpoint =>
     const response = await fetch(`/api/${endpoint}?q=${encodeURIComponent(query)}`, {
       credentials: 'same-origin',
     });
-    const results = await response.json();
-    return results.map(x => x.key_path);
+    return await response.json();
   };
 
 export const getSuggestions = createSearchFunction('suggestions');
