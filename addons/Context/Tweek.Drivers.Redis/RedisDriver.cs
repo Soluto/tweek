@@ -22,12 +22,25 @@ namespace Tweek.Drivers.Redis
 
         public RedisDriver(string connectionString)
         {
-            // FIXME: use the values from configuration
-            // var options = ConfigurationOptions.Parse(connectionString);
-            var endpointIP = Dns.GetHostAddressesAsync("tweek-redis").Result
-                .Select(x => x.MapToIPv4().ToString())
-                .First();
-            mRedisConnection = ConnectionMultiplexer.Connect(endpointIP);
+            var options = TranslateDnsToIP(ConfigurationOptions.Parse(connectionString));
+            mRedisConnection = ConnectionMultiplexer.Connect(options);
+        }
+
+        private ConfigurationOptions TranslateDnsToIP(ConfigurationOptions configurationOptions)
+        {
+            var endpoints = configurationOptions.EndPoints
+                .Select(endpoint => endpoint as DnsEndPoint)
+                .SelectMany(endpoint =>
+                    Dns.GetHostAddressesAsync(endpoint.Host).Result
+                        .Select(ip => new IPEndPoint(ip, endpoint.Port))
+                );
+            var result = configurationOptions.Clone();
+            result.EndPoints.Clear();
+            foreach (var endpoint in endpoints)
+            {
+                result.EndPoints.Add(endpoint);
+            }
+            return result;
         }
 
         public async Task AppendContext(Identity identity, Dictionary<string, JsonValue> context)
