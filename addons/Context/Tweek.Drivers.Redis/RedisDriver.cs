@@ -22,6 +22,11 @@ namespace Tweek.Drivers.Redis
 
         public RedisDriver(string connectionString)
         {
+            if ((connectionString ?? "") == "")
+            {
+                throw new ArgumentException("Missing redis connection string", nameof(connectionString));
+            }
+
             var options = TranslateDnsToIP(ConfigurationOptions.Parse(connectionString));
             mRedisConnection = ConnectionMultiplexer.Connect(options);
         }
