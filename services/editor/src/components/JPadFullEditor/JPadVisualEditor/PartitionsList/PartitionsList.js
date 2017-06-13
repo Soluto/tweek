@@ -3,9 +3,8 @@ import R from 'ramda';
 import { Accordion, AccordionItem } from 'react-sanfona';
 import { mapProps } from 'recompose';
 import RulesList from '../RulesList/RulesList';
-import PropertyValue from '../Matcher/Properties/PropertyValue';
+import TypedInput from '../../../common/Input/TypedInput';
 import * as ContextService from '../../../../services/context-service';
-import { equal } from '../../../../services/operators-provider';
 import { InputValue } from '../RuleValue/RuleValue';
 import './PartitionsList.css';
 import '../../../../styles/core/core.css';
@@ -26,13 +25,18 @@ const extractPartitionToObject = (mutate, partitions) => {
   );
 };
 
-const NewPartitionPropertyValue = mapProps(({ value, onUpdate, name, identity, id: property }) => ({
-  value,
-  onUpdate,
-  placeholder: `${name} (${identity})`,
-  propertyTypeDetails: ContextService.getPropertyTypeDetails(property),
-  selectedOperator: equal.operatorValue,
-}))(PropertyValue);
+const NewPartitionPropertyValue = mapProps(
+  ({ value, onUpdate: onChange, name, identity, id: property }) => {
+    const propertyTypeDetails = ContextService.getPropertyTypeDetails(property);
+    return {
+      value,
+      onChange,
+      placeholder: `${name} (${identity})`,
+      valueType: propertyTypeDetails.name,
+      customType: propertyTypeDetails,
+    };
+  },
+)(TypedInput);
 
 class AddPartition extends React.Component {
   state = { partition: {}, defaultValue: '' }
