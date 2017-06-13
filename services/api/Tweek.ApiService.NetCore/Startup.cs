@@ -55,16 +55,13 @@ namespace Tweek.ApiService.NetCore
         }
 
         public IConfigurationRoot Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
 
             services.RegisterAddonServices(Configuration);
-
             services.Decorate<IContextDriver>((driver, provider) => new TimedContextDriver(driver, provider.GetService<IMetrics>()));
 
-            //services.AddSingleton<IDiagnosticsProvider>(new RulesDriverStatusService(blobRulesDriver));
             services.AddSingleton<IDiagnosticsProvider>(new EnvironmentDiagnosticsProvider());
 
             services.AddSingleton(CreateParserResolver());
@@ -154,6 +151,34 @@ namespace Tweek.ApiService.NetCore
                 .AddMetricsMiddleware(Configuration.GetSection("AspNetMetrics"));
         }
 
+
+/*
+    private IContextDriver GetContextDriver()
+    {
+        IContextDriver contextDriver = null;
+        var contextProvider = Configuration["Context.Provider"];
+
+        switch (contextProvider)
+        {
+            case "litedb":
+                var collectionName = Configuration["LiteDb.CollectionName"];
+                var filePath = Configuration["LiteDb.FilePath"];
+                contextDriver = new LiteDBDriver(collectionName, filePath);
+                break;
+            case "couchbase":
+                var contextBucketName = Configuration["Couchbase.BucketName"];
+                var contextBucketPassword = Configuration["Couchbase.Password"];
+
+                InitCouchbaseCluster(contextBucketName, contextBucketPassword);
+                contextDriver = new CouchBaseDriver(ClusterHelper.GetBucket, contextBucketName);
+                break;
+            default:
+                throw new Exception("invalid configuration value for Context.Provider");
+        }
+
+        return contextDriver;
+    }
+*/
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
             IApplicationLifetime lifetime)

@@ -38,6 +38,7 @@
     <ProjectReference Include="..\..\..\core\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj" />
     <ProjectReference Include="..\..\..\core\JPad\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj" />
     <ProjectReference Include="..\..\..\addons\Context\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj" />
+    <ProjectReference Include="..\..\..\addons\Context\Tweek.Drivers.LiteDB\Tweek.Drivers.LiteDB.csproj" />
     <ProjectReference Include="..\..\..\core\Utils\JsonValueConverter\JsonValueConverter.csproj" />
     <ProjectReference Include="..\..\..\addons\Auth\Tweek.Addons.Auth.PingIdentity\Tweek.Addons.Auth.PingIdentity.csproj" />
   </ItemGroup>
