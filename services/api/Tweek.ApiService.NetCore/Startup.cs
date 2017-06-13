@@ -61,6 +61,7 @@ namespace Tweek.ApiService.NetCore
         {
 
             services.RegisterAddonServices(Configuration);
+            services.SelectContextProvider(Configuration["ContextProvider"]);
 
             services.Decorate<IContextDriver>((driver, provider) => new TimedContextDriver(driver, provider.GetService<IMetrics>()));
 
