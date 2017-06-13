@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withContext, getContext } from 'recompose';
+import { compose, mapProps, withContext, getContext } from 'recompose';
 import changeCase from 'change-case';
 import ComboBox from '../ComboBox/ComboBox';
 import Input from './Input';
@@ -19,18 +19,7 @@ const getTypesService = getContext(typesServiceContextType);
 const valueToItem = value =>
   value === undefined || value === '' ? undefined : { label: changeCase.pascalCase(value), value };
 
-const TypedInput = ({
-  safeConvertValue,
-  types,
-  valueType,
-  value,
-  onChange,
-  customType,
-  ...props
-}) => {
-  const typeDefinition = valueType === 'custom' ? customType : types[valueType];
-  const allowedValues = typeDefinition && typeDefinition.allowedValues;
-  const onChangeConvert = newValue => onChange && onChange(safeConvertValue(newValue, valueType));
+const TypedInput = ({ value, allowedValues, onChange, ...props }) => {
   if (allowedValues && allowedValues.length > 0) {
     return (
       <ComboBox
@@ -38,11 +27,11 @@ const TypedInput = ({
         value={value === undefined ? undefined : changeCase.pascalCase(value)}
         suggestions={allowedValues.map(valueToItem)}
         onChange={(input, selected) =>
-          selected && onChangeConvert(selected.value === undefined ? selected : selected.value)}
+          selected && onChange(selected.value === undefined ? selected : selected.value)}
       />
     );
   }
-  return <Input {...props} onChange={onChangeConvert} value={value} />;
+  return <Input {...props} onChange={onChange} value={value} />;
 };
 
 TypedInput.propTypes = {
@@ -63,4 +52,13 @@ const TypedInputWithIcon = props =>
     <TypedInput {...props} />
   </div>;
 
-export default getTypesService(TypedInputWithIcon);
+export default compose(
+  getTypesService,
+  mapProps(({ safeConvertValue, types, valueType, onChange, customType, ...props }) => {
+    const typeDefinition = valueType === 'custom' ? customType : types[valueType];
+    const allowedValues = typeDefinition && typeDefinition.allowedValues;
+    const onChangeConvert = newValue => onChange && onChange(safeConvertValue(newValue, valueType));
+
+    return { allowedValues, onChange: onChangeConvert, valueType, ...props };
+  }),
+)(TypedInputWithIcon);
