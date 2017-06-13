@@ -17,7 +17,7 @@ namespace Tweek.Drivers.Redis
     public class RedisDriver : IContextDriver
     {
         private readonly ConnectionMultiplexer mRedisConnection;
-
+        private JsonSerializerSettings JSON_SERIALIZER = new JsonSerializerSettings { ContractResolver = new TweekContractResolver() };
         public string GetKey(Identity identity) => "identity_" + identity.Type + "_" + identity.Id;
 
         public RedisDriver(string connectionString)
@@ -53,7 +53,7 @@ namespace Tweek.Drivers.Redis
             var db = mRedisConnection.GetDatabase();
             var id = GetKey(identity);
             HashEntry[] redisContext = context.Select(item =>
-                new HashEntry(item.Key, JsonConvert.SerializeObject(item.Value, new JsonSerializerSettings{ContractResolver = new TweekContractResolver()}))
+                new HashEntry(item.Key, JsonConvert.SerializeObject(item.Value, JSON_SERIALIZER))
             ).ToArray();
 
             await db.HashSetAsync(id, redisContext);
