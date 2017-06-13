@@ -1,10 +1,13 @@
 import React from 'react';
 import Chance from 'chance';
+import { compose, mapProps } from 'recompose';
 import Highlighter from 'react-highlight-words';
 import ReactTooltip from 'react-tooltip';
 import MultiSourceComboBox from '../../../../common/ComboBox/MultiSourceComboBox';
 import * as ContextService from '../../../../../services/context-service';
 import * as SearchService from '../../../../../services/search-service';
+import withPropertyTypeDetails from '../../../../../hoc/with-property-type-details';
+import keyIcon from '../../../../../resources/key-icon.svg';
 import './styles.css';
 
 const chance = new Chance();
@@ -40,75 +43,89 @@ const PropertyTooltip = ({ propName, description, propType, identityType }) =>
     </div>
   </div>;
 
-const PropertySuggestion = ({ suggestion, textToMark }) => {
-  if (suggestion.value.startsWith(ContextService.KEYS_IDENTITY)) {
-    return (
-      <div className={'property-suggestion-wrapper'} data-field-type={'string'}>
-        <i />
-        <Highlighter
-          highlightClassName={'suggestion-label'}
-          highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
-          searchWords={[textToMark]}
-          textToHighlight={suggestion.label}
-        />
-        <span className={'suggestion-identity'}>(keys)</span>
-      </div>
-    );
+function getAvatarText(identity) {
+  const identities = ContextService.getIdentities();
+  const index = identities.indexOf(identity);
+  if (index >= 0) {
+    identities.splice(index, 1);
   }
 
-  const typeDetails = ContextService.getPropertyTypeDetails(suggestion.value);
-  const [identity, prop] = suggestion.value.split('.');
-  const tooltipId = chance.guid();
+  const lowerNames = identities.map(x => x.toLowerCase());
 
-  return (
-    <div
-      data-tip
-      data-for={tooltipId}
-      className={'property-suggestion-wrapper'}
-      data-field-type={typeDetails.name}
+  let i = 1;
+  while (i < identity.length) {
+    const result = identity.substring(0, i).toLowerCase();
+    if (!lowerNames.some(n => n.startsWith(result))) return result;
+    i++;
+  }
+  return identity;
+}
+
+const Avatar = ({ identity, size = 28 }) =>
+  <div
+    style={{
+      width: size,
+      height: size,
+      fontWeight: 'bold',
+      fontSize: Math.floor(size / 2),
+      lineHeight: `${size}px`,
+      fontFamily: 'Helvetica, Arial, sans-serif',
+      textAlign: 'center',
+      textTransform: 'uppercase',
+      color: '#6D6D6D',
+      background: 'rgba(215, 215, 215, 0.49)',
+      borderRadius: '50%',
+      marginRight: 8,
+      display: 'inline-block',
+    }}
+  >
+    {identity === 'keys' ? <img src={keyIcon} /> : getAvatarText(identity)}
+  </div>;
+
+const PropertySuggestion = compose(
+  mapProps(({ suggestion, ...props }) => {
+    const property = suggestion.value;
+    const [identity, propName] = suggestion.value.split('.');
+    const tooltipId = chance.guid();
+
+    return { ...props, property, identity, propName, tooltipId };
+  }),
+  withPropertyTypeDetails('typeDetails'),
+)(({ identity, propName, tooltipId, typeDetails, textToMark }) =>
+  <div data-tip data-for={tooltipId} className={'property-suggestion-wrapper'}>
+    <Avatar identity={identity} />
+    <Highlighter
+      highlightClassName={'suggestion-label'}
+      highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
+      searchWords={[textToMark]}
+      textToHighlight={propName}
+    />
+    <ReactTooltip
+      id={tooltipId}
+      place="right"
+      type="dark"
+      effect="solid"
+      delayShow={1000}
+      delayHide={1000}
     >
-      <i />
-      <Highlighter
-        highlightClassName={'suggestion-label'}
-        highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
-        searchWords={[textToMark]}
-        textToHighlight={prop}
+      <PropertyTooltip
+        propName={propName}
+        identityType={identity}
+        propType={typeDetails.name}
+        description={typeDetails.description || ''}
       />
-      <span className={'suggestion-identity'}>
-        (
-        <Highlighter
-          highlightClassName={'suggestion-label'}
-          highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
-          searchWords={[textToMark]}
-          textToHighlight={identity}
-        />
-        )
-      </span>
-      <ReactTooltip
-        id={tooltipId}
-        place="right"
-        type="dark"
-        effect="solid"
-        delayShow={1000}
-        delayHide={1000}
-      >
-        <PropertyTooltip
-          propName={prop}
-          identityType={identity}
-          propType={typeDetails.name}
-          description={typeDetails.description || ''}
-        />
-      </ReactTooltip>
-    </div>
-  );
-};
+    </ReactTooltip>
+  </div>,
+);
+
+PropertySuggestion.displayName = 'PropertySuggestion';
 
 const getProperty = (suggestedValues, property) => {
   const result = suggestedValues.find(x => x.value === property);
   return result ? result.label : property;
 };
 
-export default ({ property, suggestedValues, onPropertyChange, autofocus }) =>
+const PropertyComboBox = ({ property, suggestedValues, onPropertyChange, autofocus }) =>
   <MultiSourceComboBox
     getSuggestions={{
       Context: () => suggestedValues,
@@ -140,3 +157,5 @@ export default ({ property, suggestedValues, onPropertyChange, autofocus }) =>
     className={'property-name-wrapper'}
     showValueInOptions
   />;
+
+export default PropertyComboBox;
