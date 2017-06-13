@@ -6,7 +6,7 @@ import PropertyComboBox from './PropertyComboBox';
 const propertyTypeDetailsToComparer = propertyTypeDetails =>
   propertyTypeDetails.comparer ? { $compare: propertyTypeDetails.comparer } : {};
 
-export default ({ mutate, ...props }) => {
+const PropertyName = ({ mutate, ...props }) => {
   const selectProperty = (newProperty) => {
     const propertyTypeDetails = ContextService.getPropertyTypeDetails(newProperty.value);
     const supportedOperators = getPropertySupportedOperators(propertyTypeDetails);
@@ -21,3 +21,5 @@ export default ({ mutate, ...props }) => {
 
   return <PropertyComboBox {...props} onPropertyChange={selectProperty} />;
 };
+
+export default PropertyName;
