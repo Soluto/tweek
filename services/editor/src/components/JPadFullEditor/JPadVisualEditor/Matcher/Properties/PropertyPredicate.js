@@ -1,8 +1,6 @@
 import React from 'react';
-import Rx from 'rxjs';
-import { mapPropsStream } from 'recompose';
-import * as ContextService from '../../../../../services/context-service';
-import * as TypesService from '../../../../../services/types-service';
+import { compose, mapProps } from 'recompose';
+import withPropertyTypeDetails from '../../../../../hoc/with-property-type-details';
 import {
   equal,
   inOp,
@@ -54,34 +52,21 @@ const PropertyPredicate = ({
     />
   </div>;
 
-export default mapPropsStream((props$) => {
-  const typeDetails$ = props$
-    .map(x => x.property)
-    .distinctUntilChanged()
-    .switchMap(async (property) => {
-      if (property.startsWith(ContextService.KEYS_IDENTITY)) {
-        return await TypesService.getValueTypeDefinition(
-          property.substring(ContextService.KEYS_IDENTITY.length),
-        );
-      }
-      return ContextService.getPropertyTypeDetails(property);
-    });
-
-  return Rx.Observable
-    .combineLatest(props$, typeDetails$)
-    .map(([{ property, predicate, ...props }, propertyTypeDetails]) => {
-      const supportedOperators = getPropertySupportedOperators(propertyTypeDetails);
-      let predicateValue;
-      let selectedOperator;
-      if (typeof predicate !== 'object') {
-        selectedOperator = supportedOperators.indexOf(equal) >= 0 ? equal : supportedOperators[0];
-        predicateValue = predicate;
-      } else {
-        selectedOperator = allOperators.find(x =>
-          Object.keys(predicate).find(predicateProperty => predicateProperty === x.operatorValue),
-        );
-        predicateValue = predicate[selectedOperator.operatorValue];
-      }
-      return { supportedOperators, selectedOperator, propertyTypeDetails, predicateValue, ...props };
-    });
-})(PropertyPredicate);
+export default compose(
+  withPropertyTypeDetails(),
+  mapProps(({ property, predicate, propertyTypeDetails, ...props }) => {
+    const supportedOperators = getPropertySupportedOperators(propertyTypeDetails);
+    let predicateValue;
+    let selectedOperator;
+    if (typeof predicate !== 'object') {
+      selectedOperator = supportedOperators.indexOf(equal) >= 0 ? equal : supportedOperators[0];
+      predicateValue = predicate;
+    } else {
+      selectedOperator = allOperators.find(x =>
+        Object.keys(predicate).find(predicateProperty => predicateProperty === x.operatorValue),
+      );
+      predicateValue = predicate[selectedOperator.operatorValue];
+    }
+    return { supportedOperators, selectedOperator, propertyTypeDetails, predicateValue, ...props };
+  }),
+)(PropertyPredicate);
