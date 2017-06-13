@@ -26,14 +26,16 @@ namespace Tweek.Drivers.CouchbaseDriver
             var contextBucketPassword = configuration["Couchbase.Password"];
             var url = configuration["Couchbase.Url"];
 
-            InitCouchbaseCluster(contextBucketName, contextBucketPassword, url);
-            var contextDriver = new CouchBaseDriver(ClusterHelper.GetBucket, contextBucketName);
+            services.RegisterContextDriver("couchbase", provider => {
+                InitCouchbaseCluster(contextBucketName, contextBucketPassword, url);
 
-            services.AddSingleton<IContextDriver>(contextDriver);
+                var contextDriver = new CouchBaseDriver(ClusterHelper.GetBucket, contextBucketName);
+                var couchbaseDiagnosticsProvider = new BucketConnectionIsAlive(ClusterHelper.GetBucket, contextBucketName);
 
-            var couchbaseDiagnosticsProvider = new BucketConnectionIsAlive(ClusterHelper.GetBucket, contextBucketName);
+                services.AddSingleton<IDiagnosticsProvider>(couchbaseDiagnosticsProvider);
+                return contextDriver;
+            });
 
-            services.AddSingleton<IDiagnosticsProvider>(couchbaseDiagnosticsProvider);
         }
 
         private void InitCouchbaseCluster(string bucketName, string bucketPassword, string url)

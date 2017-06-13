@@ -15,8 +15,7 @@ namespace Tweek.Drivers.Redis
 
         public void Configure(IServiceCollection services, IConfiguration configuration)
         {
-            var contextDriver = new RedisDriver(configuration.GetSection("Redis")["ConnectionString"]);
-            services.AddSingleton<IContextDriver>(contextDriver);
+            services.RegisterContextDriver("redis", provider => new RedisDriver(configuration.GetSection("Redis")["ConnectionString"]));
         }
     }
 }
