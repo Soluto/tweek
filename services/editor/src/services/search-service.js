@@ -9,6 +9,6 @@ const createSearchFunction = endpoint =>
     return await response.json();
   };
 
-export const suggestions = createSearchFunction('suggestions');
+export const getSuggestions = createSearchFunction('suggestions');
 
 export const search = createSearchFunction('search');
