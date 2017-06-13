@@ -2,6 +2,8 @@ import { CACHE_NAME, urls } from './constants';
 import activateSocket from './activateSocket';
 import { refresh } from './data-actions';
 import getUrl from './getUrl';
+import activateSocket from './activateSocket';
+import { refresh } from './data-actions';
 
 export default async function activate() {
   const cache = await caches.open(CACHE_NAME);

@@ -84,6 +84,14 @@ function addAuthSupport(server) {
     res.send(authProviders.map(x => `<a href="${x.url}">login with ${x.name}</a>`).join('<br/>'));
   });
 
+  passport.serializeUser((user, done) => {
+    done(null, user);
+  });
+
+  passport.deserializeUser((user, done) => {
+    done(null, user);
+  });
+
   server.use('*', (req, res, next) => {
     if (req.isAuthenticated() || req.path.startsWith('auth')) {
       return next();
