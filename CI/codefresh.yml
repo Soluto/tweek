@@ -87,7 +87,10 @@ steps:
             - Rules__Management__Url=http://tweek-management:3000
             - Rules__Management__SampleIntervalInMs=500
             - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
-            - Couchbase.Url=http://13.92.123.60:8091/index.html
+            - ContextProvider=redis
+            - Redis__ConnectionString=tweek-redis:6379
+            - Addons__Redis__className=Tweek.Drivers.Redis.RedisServiceAddon
+            - Addons__Redis__assemblyName=Tweek.Drivers.Redis
         tweek-editor:
           image: ${{BuildingEditor}}
           depends_on:
