@@ -26,8 +26,6 @@ const KEY_VALIDATION_CHANGE = 'KEY_VALIDATION_CHANGE';
 const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
 const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
 
-const byDate = R.descend(R.prop('date'));
-
 export function openKey(key, { revision } = {}) {
   return async function (dispatch) {
     dispatch(downloadTags());
@@ -60,7 +58,7 @@ export function openKey(key, { revision } = {}) {
       key,
       keyDef: keyData.keyDef,
       manifest,
-      revisionHistory: R.sort(byDate, keyData.revisionHistory),
+      revisionHistory: keyData.revisionHistory,
     };
 
     dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
@@ -145,7 +143,8 @@ export function saveKey() {
     }
 
     dispatch({ type: KEY_SAVING });
-    let isSaveSucceeded;
+    let isSaveSucceeded = false,
+      revisionHistory = undefined;
     try {
       await fetch(`/api/keys/${savedKey}`, {
         credentials: 'same-origin',
@@ -153,12 +152,12 @@ export function saveKey() {
         ...withJsonData(local),
       });
       isSaveSucceeded = true;
+      revisionHistory = await (await fetch(`/api/revision-history/${savedKey}`)).json();
     } catch (error) {
-      isSaveSucceeded = false;
       dispatch(showError({ title: 'Failed to save key', error }));
       return;
     } finally {
-      dispatch({ type: KEY_SAVED, payload: { keyName: savedKey, isSaveSucceeded } });
+      dispatch({ type: KEY_SAVED, payload: { keyName: savedKey, isSaveSucceeded, revisionHistory } });
     }
 
     if (isNewKey) dispatch({ type: 'KEY_ADDED', payload: savedKey });
@@ -234,13 +233,17 @@ const handleKeyManifestUpdated = (state, { payload }) => ({
   },
 });
 
-const handleKeySaved = ({ local, remote, ...state }, { payload: { keyName, isSaveSucceeded } }) => {
+const handleKeySaved = (
+  { local, remote, ...state },
+  { payload: { keyName, isSaveSucceeded, revisionHistory } },
+) => {
   if (state.key !== BLANK_KEY_NAME && state.key !== keyName) return state;
   return {
     ...state,
     isSaving: false,
     local,
     remote: isSaveSucceeded ? R.clone(local) : remote,
+    revisionHistory: isSaveSucceeded && revisionHistory ? revisionHistory : state.revisionHistory,
   };
 };
 
