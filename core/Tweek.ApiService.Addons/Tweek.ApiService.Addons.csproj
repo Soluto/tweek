@@ -14,5 +14,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Utils\JsonValueConverter\JsonValueConverter.csproj" />
+    <ProjectReference Include="..\Engine\Engine.Drivers\Engine.Drivers.csproj" />
   </ItemGroup>
 </Project>

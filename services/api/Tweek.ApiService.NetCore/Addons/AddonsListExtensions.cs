@@ -36,7 +36,12 @@ namespace Tweek.ApiService.NetCore.Addons
         {
             if (mAddonsCache != null) return mAddonsCache;
 
-            var selectedAddons = configuration.GetSection("Addons").GetChildren().ToDictionary(x => x.Key, x => x.Value);
+            var selectedAddons = new HashSet<string>(
+                configuration.GetSection("Addons")
+                .GetChildren()
+                .Select(x => Assembly.CreateQualifiedName(x["AssemblyName"], x["ClassName"]))
+            );
+
             var dependencies = DependencyContext.Default.RuntimeLibraries;
 
             var assemblies = dependencies
@@ -45,12 +50,18 @@ namespace Tweek.ApiService.NetCore.Addons
             var addonTypes = assemblies.Bind(x => x.GetTypes())
                 .Filter(x => x != typeof(ITweekAddon) && typeof(ITweekAddon).IsAssignableFrom(x));
 
-            mAddonsCache = addonTypes.Filter(type => selectedAddons.ContainsKey(type.FullName))
+            mAddonsCache = addonTypes.Filter(type => selectedAddons.Contains(type.AssemblyQualifiedNameWithoutVersion()))
                 .Map(t => (ITweekAddon)Activator.CreateInstance(t));
 
             return mAddonsCache;
         }
 
         private static IEnumerable<ITweekAddon> mAddonsCache;
+
+        private static string AssemblyQualifiedNameWithoutVersion(this Type type)
+        {
+            return Assembly.CreateQualifiedName(type.GetTypeInfo().Assembly.GetName().Name, type.FullName);
+        }
     }
+
 }
