@@ -102,9 +102,7 @@ export default class KeysRepository {
     return this._gitTransactionManager.read(async (gitRepo) => {
       const manifest = await getManifestFile(keyPath, gitRepo, revision);
       const keyDef = getKeyDef(manifest, gitRepo, revision);
-      const revisionHistory = getRevisionHistory(manifest, gitRepo);
       return {
-        revisionHistory: await revisionHistory,
         keyDef: await keyDef,
         manifest,
       };
