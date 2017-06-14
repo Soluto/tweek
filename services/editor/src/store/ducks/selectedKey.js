@@ -152,7 +152,11 @@ export function saveKey() {
         ...withJsonData(local),
       });
       isSaveSucceeded = true;
-      revisionHistory = await (await fetch(`/api/revision-history/${savedKey}`)).json();
+      try {
+        revisionHistory = await (await fetch(`/api/revision-history/${savedKey}`)).json();
+      } catch (error) {
+        dispatch(showError({ title: 'Failed to refresh revisionHistory', error }));
+      }
     } catch (error) {
       dispatch(showError({ title: 'Failed to save key', error }));
       return;
