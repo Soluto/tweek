@@ -40,11 +40,7 @@ function updateRevisionHistory(keyName, revisionHistory) {
 }
 
 export function openKey(key, { revision } = {}) {
-  return async function (dispatch, getState) {
-    const selectedKey = getState().selectedKey;
-    const currentKey = selectedKey && selectedKey.key;
-    const currentRevisionHistory = selectedKey && selectedKey.revisionHistory;
-
+  return async function (dispatch) {
     dispatch(downloadTags());
     try {
       ContextService.refreshSchema();
@@ -78,7 +74,7 @@ export function openKey(key, { revision } = {}) {
     };
 
     await dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
-    dispatch(updateRevisionHistory(key, currentKey === key && currentRevisionHistory));
+    dispatch(updateRevisionHistory(key));
   };
 }
 
