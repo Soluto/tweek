@@ -176,14 +176,12 @@ describe('selectedKey', async () => {
           description: '',
           valueType: '',
         },
-        revisionHistory: undefined,
       };
 
       const expectedPayload = {
         key: keyName,
         manifest: expectedKeyData.manifest,
         keyDef: expectedKeyData.keyDef,
-        revisionHistory: undefined,
       };
 
       fetchMock.get('glob:*/api/keys/*', expectedKeyData);
@@ -314,7 +312,6 @@ describe('selectedKey', async () => {
           payload: {
             keyName: keyNameToSave,
             isSaveSucceeded: shouldSaveSucceed,
-            revisionHistory: shouldSaveSucceed ? [] : undefined,
           },
         });
       });
@@ -368,9 +365,15 @@ describe('selectedKey', async () => {
         const func = saveKey();
         await func(dispatchMock, () => currentState);
 
-        assert(dispatchMock.mock.calls.length === 4, 'should call dispatch 4 times');
+        assert(dispatchMock.mock.calls.length === 5, 'should call dispatch 5 times');
 
-        const [[_], [__], [keyAddedDispatchAction], [pushDispatchAction]] = dispatchMock.mock.calls;
+        const [
+          [_],
+          [__],
+          [___],
+          [keyAddedDispatchAction],
+          [pushDispatchAction],
+        ] = dispatchMock.mock.calls;
         assertDispatchAction(keyAddedDispatchAction, { type: KEY_ADDED, payload: keyNameToSave });
 
         const expectedPushPayload = {
