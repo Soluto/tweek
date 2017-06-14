@@ -12,7 +12,7 @@ import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier'
 import KeyTags from './KeyTags/KeyTags';
 import EditableText from './EditableText/EditableText';
 import EditableTextArea from './EditableTextArea/EditableTextArea';
-import RevisionHistory from './RevisionHistory';
+import RevisionHistory from './RevisionHistory/RevisionHistory';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
 import alertIconSrc from './resources/alert-icon.svg';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
@@ -116,8 +116,8 @@ class KeyEditPage extends Component {
 
   render() {
     const { selectedKey, isInAddMode, isInStickyMode, alerter, revision } = this.props;
-    const { key, local: { manifest, keyDef, revisionHistory } } = selectedKey;
-    const isHistoricRevision = revision && revisionHistory[0].sha !== revision;
+    const { key, local: { manifest, keyDef }, revisionHistory } = selectedKey;
+    const isHistoricRevision = revisionHistory && revision && revisionHistory[0].sha !== revision;
     const isReadonly = (!!manifest.meta.readOnly && manifest.meta.readOnly) || isHistoricRevision;
 
     const commonHeadersProps = {

@@ -27,15 +27,13 @@ module.exports = function createIndex(repoDir) {
           .parallel(10)
           .map(x => JSON.parse(x.toString()))
           .filter(x => x.key_path)
-          // .map(({ key_path: id, meta }) => ({ id, ...meta }))
-          .map(({ key_path: id, meta }) => Object.assign({}, meta, { id }))
           .on('error', err => observer.error(err))
           .on('data', x => observer.next(x))
           .on('end', () => observer.complete());
       })
-      .do(doc => builder.add(doc))
-      .ignoreElements()
-      .concat(Rx.Observable.defer(() => Rx.Observable.of(builder.build())))
+      .do(({ key_path: id, meta }) => builder.add(Object.assign({}, meta, { id })))
+      .toArray()
+      .map(manifests => ({ manifests, index: builder.build() }))
       .toPromise()
   );
 };
