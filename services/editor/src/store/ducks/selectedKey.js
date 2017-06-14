@@ -219,7 +219,7 @@ const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
   return {
     local: R.clone(keyData),
     remote: R.clone(keyData),
-    revisionHistory: state.key === key ? state.revisionHistory : undefined,
+    revisionHistory: state && state.key === key ? state.revisionHistory : undefined,
     key,
     isLoaded: true,
     validation,
@@ -298,7 +298,10 @@ const handleKeyDeleting = ({ remote, ...otherState }) => ({
   remote: { ...remote },
 });
 
-const handleKeyValueTypeChange = ({ local: { manifest, ...restOfLocal }, ...state }, { payload }) => ({
+const handleKeyValueTypeChange = (
+  { local: { manifest, ...restOfLocal }, ...state },
+  { payload },
+) => ({
   ...state,
   local: {
     ...restOfLocal,
