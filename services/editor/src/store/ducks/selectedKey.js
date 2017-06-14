@@ -150,7 +150,7 @@ export function saveKey() {
       await fetch(`/api/keys/${savedKey}`, {
         credentials: 'same-origin',
         method: 'put',
-        ...withJsonData(R.dissoc('revisionHistory', local)),
+        ...withJsonData(local),
       });
       isSaveSucceeded = true;
     } catch (error) {
@@ -185,7 +185,7 @@ const setValidationHintsVisibility = (validationState, isShown) => {
     });
 };
 
-const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
+const handleKeyOpened = (state, { payload: { key, revisionHistory, ...keyData } }) => {
   let validation;
   if (key !== BLANK_KEY_NAME) {
     validation = {
@@ -206,6 +206,7 @@ const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
   return {
     local: R.clone(keyData),
     remote: R.clone(keyData),
+    revisionHistory,
     key,
     isLoaded: true,
     validation,
