@@ -52,6 +52,12 @@ export async function getKeyManifest(req, res, { keysRepository }, { params }) {
   }
 }
 
+export async function getKeyRevisionHistory(req, res, { keysRepository }, { params }) {
+  const keyPath = params[0];
+  const revisionHistory = await keysRepository.getKeyRevisionHistory(keyPath);
+  res.json(revisionHistory);
+}
+
 export const saveKey = injectAuthor(async (req, res, { keysRepository, author }, { params }) => {
   const keyPath = params[0];
 

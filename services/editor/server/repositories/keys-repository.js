@@ -118,6 +118,13 @@ export default class KeysRepository {
     });
   }
 
+  getKeyRevisionHistory(keyPath) {
+    return this._gitTransactionManager.read(async (gitRepo) => {
+      const manifest = await getManifestFile(keyPath, gitRepo);
+      return getRevisionHistory(manifest, gitRepo);
+    });
+  }
+
   updateKey(keyPath, manifestSource, keyRulesSource, author) {
     return this._gitTransactionManager.write(async (gitRepo) => {
       // if changing implementation type will be possible in the future, we'll might need better solution
