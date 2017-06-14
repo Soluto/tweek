@@ -22,18 +22,21 @@ namespace Tweek.Drivers.CouchbaseDriver
 
         public void Configure(IServiceCollection services, IConfiguration configuration)
         {
-            var contextBucketName = configuration["Couchbase.BucketName"];
-            var contextBucketPassword = configuration["Couchbase.Password"];
-            var url = configuration["Couchbase.Url"];
+            var couchbaseConfig = configuration.GetSection("Couchbase");
+            var contextBucketName = couchbaseConfig["BucketName"];
+            var contextBucketPassword = couchbaseConfig["Password"];
+            var url = couchbaseConfig["Url"];
 
-            InitCouchbaseCluster(contextBucketName, contextBucketPassword, url);
-            var contextDriver = new CouchBaseDriver(ClusterHelper.GetBucket, contextBucketName);
+            services.RegisterContextDriver("couchbase", provider => {
+                InitCouchbaseCluster(contextBucketName, contextBucketPassword, url);
 
-            services.AddSingleton<IContextDriver>(contextDriver);
+                var contextDriver = new CouchBaseDriver(ClusterHelper.GetBucket, contextBucketName);
+                var couchbaseDiagnosticsProvider = new BucketConnectionIsAlive(ClusterHelper.GetBucket, contextBucketName);
 
-            var couchbaseDiagnosticsProvider = new BucketConnectionIsAlive(ClusterHelper.GetBucket, contextBucketName);
+                services.AddSingleton<IDiagnosticsProvider>(couchbaseDiagnosticsProvider);
+                return contextDriver;
+            });
 
-            services.AddSingleton<IDiagnosticsProvider>(couchbaseDiagnosticsProvider);
         }
 
         private void InitCouchbaseCluster(string bucketName, string bucketPassword, string url)
