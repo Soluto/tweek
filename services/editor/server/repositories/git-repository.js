@@ -92,7 +92,7 @@ export default class GitRepository {
 
   async commitAndPush(message, { name, email }) {
     const author = Git.Signature.now(name, email);
-    const pusher = Git.Signature.now('tweek-backoffice', 'tweek-backoffice@tweek');
+    const pusher = Git.Signature.now('tweek-editor', 'tweek-editor@tweek');
     await this._repo.createCommitOnHead([], author, pusher, message);
 
     await this._pushRepositoryChanges(message);

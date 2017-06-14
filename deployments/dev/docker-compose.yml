@@ -25,7 +25,7 @@ services:
       - "com.microsoft.visualstudio.targetoperatingsystem=linux"
 
   tweek-editor:
-    image: soluto/tweek-back-office
+    image: soluto/tweek-editor
     build: ../../services/editor
     depends_on: 
       - tweek-api
