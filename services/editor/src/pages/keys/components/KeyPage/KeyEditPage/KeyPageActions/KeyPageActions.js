@@ -25,7 +25,7 @@ const SaveChangesButton = ({ selectedKey, saveKey, ...props }) =>
     onClick={() => saveKey(selectedKey.key)}
   />;
 
-const comp = compose(
+const KeyPageActions = compose(
   connect(state => ({ selectedKey: state.selectedKey }), { ...keysActions, deleteKey }),
 )(
   ({
@@ -59,4 +59,6 @@ const comp = compose(
   },
 );
 
-export default comp;
+KeyPageActions.displayName = 'KeyPageActions';
+
+export default KeyPageActions;
