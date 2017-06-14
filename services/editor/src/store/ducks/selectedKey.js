@@ -26,6 +26,8 @@ const KEY_VALIDATION_CHANGE = 'KEY_VALIDATION_CHANGE';
 const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
 const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
 
+const byDate = R.descend(R.prop('date'));
+
 export function openKey(key, { revision } = {}) {
   return async function (dispatch) {
     dispatch(downloadTags());
@@ -58,7 +60,7 @@ export function openKey(key, { revision } = {}) {
       key,
       keyDef: keyData.keyDef,
       manifest,
-      revisionHistory: keyData.revisionHistory,
+      revisionHistory: R.sort(byDate, keyData.revisionHistory),
     };
 
     dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
