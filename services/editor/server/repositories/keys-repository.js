@@ -68,7 +68,8 @@ async function getRevisionHistory(manifest, repo) {
     ? repo.getHistory(`rules/${manifest.key_path}.${manifest.implementation.format}`)
     : Promise.resolve([]);
 
-  return R.uniqBy(x => x.sha, [
+  const uniqSort = R.pipe(R.uniqBy(R.prop('sha')), R.sort(R.descend(R.prop('date'))));
+  return uniqSort([
     ...(await repo.getHistory(`meta/${manifest.key_path}.json`)),
     ...(await fileMeta),
   ]);
