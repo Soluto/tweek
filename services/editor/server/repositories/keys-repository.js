@@ -97,17 +97,6 @@ export default class KeysRepository {
     });
   }
 
-  getAllManifests() {
-    return this._gitTransactionManager.read(async (gitRepo) => {
-      const files = await gitRepo.listFiles('meta');
-      const manifestFiles = files.map(x => path.join('meta', x));
-      const manifests = await Promise.all(
-        manifestFiles.map(pathForManifest => gitRepo.readFile(pathForManifest)),
-      );
-      return manifests.map(JSON.parse);
-    });
-  }
-
   getKeyDetails(keyPath, { revision } = {}) {
     return this._gitTransactionManager.read(async (gitRepo) => {
       const manifest = await getManifestFile(keyPath, gitRepo, revision);
