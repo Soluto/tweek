@@ -38,7 +38,7 @@ steps:
   BuildingEditor:
     title: Building Editor Docker Image
     type: build
-    image_name: soluto/tweek-back-office
+    image_name: soluto/tweek-editor
     working_directory: ./services/editor/
 
   BuildingTests:
@@ -136,7 +136,7 @@ steps:
           - tweek-editor
           - tweek-api
         environment:
-          - BACKOFFICE_URL=http://tweek-editor:3000/
+          - EDITOR_URL=http://tweek-editor:3000/
           - TWEEK_API_URL=http://tweek-api/
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
         command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && yarn test -- --host selenium --port 4444"

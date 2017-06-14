@@ -1,7 +1,7 @@
 import nconf from 'nconf';
 
 export default class PageObject {
-  static BASE_URL = nconf.get('BACKOFFICE_URL');
+  static BASE_URL = nconf.get('EDITOR_URL');
   static TEST_KEYS_FOLDER = '@behavior_tests';
   static GIT_TRANSACTION_TIMEOUT = 60000;
 
