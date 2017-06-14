@@ -22,9 +22,22 @@ const KEY_MANIFEST_UPDATED = 'KEY_MANIFEST_UPDATED';
 const KEY_SAVED = 'KEY_SAVED';
 const KEY_SAVING = 'KEY_SAVING';
 const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
+const KEY_REVISION_HISTORY = 'KEY_REVISION_HISTORY';
 const KEY_VALIDATION_CHANGE = 'KEY_VALIDATION_CHANGE';
 const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
 const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
+
+function updateRevisionHistory(keyName, revisionHistory) {
+  return async function (dispatch) {
+    try {
+      revisionHistory =
+        revisionHistory || (await (await fetch(`/api/revision-history/${keyName}`)).json());
+      dispatch({ type: KEY_REVISION_HISTORY, payload: { keyName, revisionHistory } });
+    } catch (error) {
+      dispatch(showError({ title: 'Failed to refresh revisionHistory', error }));
+    }
+  };
+}
 
 export function openKey(key, { revision } = {}) {
   return async function (dispatch) {
@@ -58,10 +71,10 @@ export function openKey(key, { revision } = {}) {
       key,
       keyDef: keyData.keyDef,
       manifest,
-      revisionHistory: keyData.revisionHistory,
     };
 
-    dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
+    await dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
+    dispatch(updateRevisionHistory(key));
   };
 }
 
@@ -148,7 +161,7 @@ export function saveKey() {
       await fetch(`/api/keys/${savedKey}`, {
         credentials: 'same-origin',
         method: 'put',
-        ...withJsonData(R.dissoc('revisionHistory', local)),
+        ...withJsonData(local),
       });
       isSaveSucceeded = true;
     } catch (error) {
@@ -156,8 +169,10 @@ export function saveKey() {
       dispatch(showError({ title: 'Failed to save key', error }));
       return;
     } finally {
-      dispatch({ type: KEY_SAVED, payload: { keyName: savedKey, isSaveSucceeded } });
+      await dispatch({ type: KEY_SAVED, payload: { keyName: savedKey, isSaveSucceeded } });
     }
+
+    dispatch(updateRevisionHistory(savedKey));
 
     if (isNewKey) dispatch({ type: 'KEY_ADDED', payload: savedKey });
     const shouldOpenNewKey = isNewKey && getState().selectedKey.key === BLANK_KEY_NAME;
@@ -204,6 +219,7 @@ const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
   return {
     local: R.clone(keyData),
     remote: R.clone(keyData),
+    revisionHistory: state && state.key === key ? state.revisionHistory : undefined,
     key,
     isLoaded: true,
     validation,
@@ -231,13 +247,17 @@ const handleKeyManifestUpdated = (state, { payload }) => ({
   },
 });
 
-const handleKeySaved = ({ local, remote, ...state }, { payload: { keyName, isSaveSucceeded } }) => {
+const handleKeySaved = (
+  { local, remote, ...state },
+  { payload: { keyName, isSaveSucceeded, revisionHistory } },
+) => {
   if (state.key !== BLANK_KEY_NAME && state.key !== keyName) return state;
   return {
     ...state,
     isSaving: false,
     local,
     remote: isSaveSucceeded ? R.clone(local) : remote,
+    revisionHistory: isSaveSucceeded && revisionHistory ? revisionHistory : state.revisionHistory,
   };
 };
 
@@ -278,7 +298,10 @@ const handleKeyDeleting = ({ remote, ...otherState }) => ({
   remote: { ...remote },
 });
 
-const handleKeyValueTypeChange = ({ local: { manifest, ...restOfLocal }, ...state }, { payload }) => ({
+const handleKeyValueTypeChange = (
+  { local: { manifest, ...restOfLocal }, ...state },
+  { payload },
+) => ({
   ...state,
   local: {
     ...restOfLocal,
@@ -297,6 +320,14 @@ const handleShowKeyValidations = ({ validation, ...state }) => {
   };
 };
 
+const handleKeyRevisionHistory = (state, { payload: { keyName, revisionHistory } }) => {
+  if (state.key !== keyName) return state;
+  return {
+    ...state,
+    revisionHistory,
+  };
+};
+
 export default handleActions(
   {
     [KEY_OPENED]: handleKeyOpened,
@@ -309,6 +340,7 @@ export default handleActions(
     [KEY_VALIDATION_CHANGE]: handleKeyValidationChange,
     KEY_DELETING: handleKeyDeleting,
     [KEY_VALUE_TYPE_CHANGE]: handleKeyValueTypeChange,
+    [KEY_REVISION_HISTORY]: handleKeyRevisionHistory,
     [SHOW_KEY_VALIDATIONS]: handleShowKeyValidations,
   },
   null,
