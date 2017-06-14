@@ -39,7 +39,7 @@ namespace Tweek.ApiService.NetCore.Addons
             var selectedAddons = new HashSet<string>(
                 configuration.GetSection("Addons")
                 .GetChildren()
-                .Select(x => Assembly.CreateQualifiedName(x["assemblyName"], x["className"]))
+                .Select(x => Assembly.CreateQualifiedName(x["AssemblyName"], x["ClassName"]))
             );
 
             var dependencies = DependencyContext.Default.RuntimeLibraries;
