@@ -22,12 +22,29 @@ const KEY_MANIFEST_UPDATED = 'KEY_MANIFEST_UPDATED';
 const KEY_SAVED = 'KEY_SAVED';
 const KEY_SAVING = 'KEY_SAVING';
 const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
+const KEY_REVISION_HISTORY = 'KEY_REVISION_HISTORY';
 const KEY_VALIDATION_CHANGE = 'KEY_VALIDATION_CHANGE';
 const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
 const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
 
-export function openKey(key, { revision } = {}) {
+function updateRevisionHistory(keyName, revisionHistory) {
   return async function (dispatch) {
+    try {
+      revisionHistory =
+        revisionHistory || (await (await fetch(`/api/revision-history/${keyName}`)).json());
+      dispatch({ type: KEY_REVISION_HISTORY, payload: { keyName, revisionHistory } });
+    } catch (error) {
+      dispatch(showError({ title: 'Failed to refresh revisionHistory', error }));
+    }
+  };
+}
+
+export function openKey(key, { revision } = {}) {
+  return async function (dispatch, getState) {
+    const selectedKey = getState().selectedKey;
+    const currentKey = selectedKey && selectedKey.key;
+    const currentRevisionHistory = selectedKey && selectedKey.revisionHistory;
+
     dispatch(downloadTags());
     try {
       ContextService.refreshSchema();
@@ -58,10 +75,10 @@ export function openKey(key, { revision } = {}) {
       key,
       keyDef: keyData.keyDef,
       manifest,
-      revisionHistory: keyData.revisionHistory,
     };
 
-    dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
+    await dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
+    dispatch(updateRevisionHistory(key, currentKey === key && currentRevisionHistory));
   };
 }
 
@@ -143,8 +160,7 @@ export function saveKey() {
     }
 
     dispatch({ type: KEY_SAVING });
-    let isSaveSucceeded = false,
-      revisionHistory = undefined;
+    let isSaveSucceeded;
     try {
       await fetch(`/api/keys/${savedKey}`, {
         credentials: 'same-origin',
@@ -152,17 +168,15 @@ export function saveKey() {
         ...withJsonData(local),
       });
       isSaveSucceeded = true;
-      try {
-        revisionHistory = await (await fetch(`/api/revision-history/${savedKey}`)).json();
-      } catch (error) {
-        dispatch(showError({ title: 'Failed to refresh revisionHistory', error }));
-      }
     } catch (error) {
+      isSaveSucceeded = false;
       dispatch(showError({ title: 'Failed to save key', error }));
       return;
     } finally {
-      dispatch({ type: KEY_SAVED, payload: { keyName: savedKey, isSaveSucceeded, revisionHistory } });
+      await dispatch({ type: KEY_SAVED, payload: { keyName: savedKey, isSaveSucceeded } });
     }
+
+    dispatch(updateRevisionHistory(savedKey));
 
     if (isNewKey) dispatch({ type: 'KEY_ADDED', payload: savedKey });
     const shouldOpenNewKey = isNewKey && getState().selectedKey.key === BLANK_KEY_NAME;
@@ -188,7 +202,7 @@ const setValidationHintsVisibility = (validationState, isShown) => {
     });
 };
 
-const handleKeyOpened = (state, { payload: { key, revisionHistory, ...keyData } }) => {
+const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
   let validation;
   if (key !== BLANK_KEY_NAME) {
     validation = {
@@ -209,7 +223,7 @@ const handleKeyOpened = (state, { payload: { key, revisionHistory, ...keyData } 
   return {
     local: R.clone(keyData),
     remote: R.clone(keyData),
-    revisionHistory,
+    revisionHistory: state.key === key ? state.revisionHistory : undefined,
     key,
     isLoaded: true,
     validation,
@@ -307,6 +321,14 @@ const handleShowKeyValidations = ({ validation, ...state }) => {
   };
 };
 
+const handleKeyRevisionHistory = (state, { payload: { keyName, revisionHistory } }) => {
+  if (state.key !== keyName) return state;
+  return {
+    ...state,
+    revisionHistory,
+  };
+};
+
 export default handleActions(
   {
     [KEY_OPENED]: handleKeyOpened,
@@ -319,6 +341,7 @@ export default handleActions(
     [KEY_VALIDATION_CHANGE]: handleKeyValidationChange,
     KEY_DELETING: handleKeyDeleting,
     [KEY_VALUE_TYPE_CHANGE]: handleKeyValueTypeChange,
+    [KEY_REVISION_HISTORY]: handleKeyRevisionHistory,
     [SHOW_KEY_VALIDATIONS]: handleShowKeyValidations,
   },
   null,

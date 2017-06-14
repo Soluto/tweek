@@ -117,7 +117,7 @@ class KeyEditPage extends Component {
   render() {
     const { selectedKey, isInAddMode, isInStickyMode, alerter, revision } = this.props;
     const { key, local: { manifest, keyDef }, revisionHistory } = selectedKey;
-    const isHistoricRevision = revision && revisionHistory[0].sha !== revision;
+    const isHistoricRevision = revisionHistory && revision && revisionHistory[0].sha !== revision;
     const isReadonly = (!!manifest.meta.readOnly && manifest.meta.readOnly) || isHistoricRevision;
 
     const commonHeadersProps = {
