@@ -103,7 +103,7 @@
             ],
 			"preLaunchTask": "dev-env-e2e",
 			"env": {
-                "BACKOFFICE_URL": "http://localhost:4004/"
+                "EDITOR_URL": "http://localhost:4004/"
 			},
 			"externalConsole": false,
 			"sourceMaps": false,
