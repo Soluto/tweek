@@ -12,7 +12,7 @@ import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier'
 import KeyTags from './KeyTags/KeyTags';
 import EditableText from './EditableText/EditableText';
 import EditableTextArea from './EditableTextArea/EditableTextArea';
-import RevisionHistory from './RevisionHistory';
+import RevisionHistory from './RevisionHistory/RevisionHistory';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
 import alertIconSrc from './resources/alert-icon.svg';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
