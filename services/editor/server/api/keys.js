@@ -57,8 +57,7 @@ export const saveKey = injectAuthor(async (req, res, { keysRepository, author },
 
   const keyRulesSource = req.body.keyDef.source;
   const manifest = { key_path: keyPath, ...req.body.manifest };
-  const manifestSource = JSON.stringify(manifest, null, 4);
-  await keysRepository.updateKey(keyPath, manifestSource, keyRulesSource, author);
+  await keysRepository.updateKey(keyPath, manifest, keyRulesSource, author);
 
   res.send('OK');
 });

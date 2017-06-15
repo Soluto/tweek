@@ -1,6 +1,8 @@
 import { handleActions } from 'redux-actions';
-import { getSchmea } from '../../services/context-service';
+import { getSchema } from '../../services/context-service';
 import R from 'ramda';
+import jsondiffpatch from 'jsondiffpatch';
+import { withJsonData } from '../../utils/http';
 
 const SCHEMA_LOADED = 'SCHEMA_LOADED';
 const UPDATE_SCHEMA_PROPERTY = 'SCHEMA_UPDATE_PROPERTY';
@@ -10,8 +12,19 @@ export function loadSchema() {
   return { type: SCHEMA_LOADED };
 }
 
-//const findAndUpdate = idSelector => newItem => arr => R.update(R.findIndex(R.eqBy(idSelector)(newItem), arr), newItem, arr);
-//const propUpdater = findAndUpdate(x => x.id);
+export function saveSchema(identityType) {
+  return async (dispatch, getState) => {
+    let identityState = getState().schema[identityType];
+    let patch = jsondiffpatch.diff(identityState.local, identityState.remote);
+    return dispatch(
+      await fetch(`/api/schema/${identityType}`, {
+        credentials: 'same-origin',
+        method: 'PATCH',
+        ...withJsonData(patch),
+      }),
+    );
+  };
+}
 
 export function updateIdentityProperty(identity, prop, value) {
   return { type: UPDATE_SCHEMA_PROPERTY, value: { identity, prop, value } };
@@ -22,7 +35,7 @@ function createRemoteAndLocalStates(state) {
 }
 
 function createSchemaState() {
-  return R.map(createRemoteAndLocalStates)(getSchmea());
+  return R.map(createRemoteAndLocalStates)(getSchema());
 }
 
 export default handleActions(

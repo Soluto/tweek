@@ -4,6 +4,19 @@ import glob from 'glob-promise';
 
 const fs = require('promisify-node')('fs-extra');
 
+async function listFiles(repo) {
+  let commit = await repo.getMasterCommit();
+  let tree = await commit.getTree();
+  let walker = tree.walk(true);
+  return await new Promise((resolve, reject) => {
+    let entries = [];
+    walker.on('entry', entry => entries.push(entry.path().replace(/\\/g, '/')));
+    walker.on('end', () => resolve(entries));
+    walker.on('error', ex => reject(ex));
+    walker.start();
+  });
+}
+
 export default class GitRepository {
   constructor(repo, operationSettings) {
     this._repo = repo;
@@ -35,12 +48,13 @@ export default class GitRepository {
     return new GitRepository(repo, operationSettings);
   }
 
-  listFiles(directoryPath) {
-    return glob('**/*.*', { cwd: path.join(this._repo.workdir(), directoryPath) });
+  async listFiles(directoryPath) {
+    return (await listFiles(this._repo))
+      .filter(x => x.startsWith(directoryPath))
+      .map(x => x.substring(`${directoryPath}/`.length));
   }
 
   async readFile(fileName, { revision } = {}) {
-    if (!revision) return (await fs.readFile(path.join(this._repo.workdir(), fileName))).toString();
     const sha = revision || (await this._repo.getMasterCommit()).sha();
     const commit = await this._repo.getCommit(sha);
     const entry = await commit.getEntry(fileName);
@@ -69,6 +83,7 @@ export default class GitRepository {
   }
 
   async updateFile(fileName, content) {
+    console.log(fileName, content);
     const filePath = path.join(this._repo.workdir(), fileName);
     await fs.ensureFile(filePath);
     await fs.writeFile(filePath, content);

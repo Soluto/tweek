@@ -15,7 +15,9 @@ export function getIdentities() {
   return Object.keys(contextSchema);
 }
 
-export function getSchmea() { return contextSchema; }
+export function getSchema() {
+  return contextSchema;
+}
 
 export function getProperties() {
   return R.chain(
