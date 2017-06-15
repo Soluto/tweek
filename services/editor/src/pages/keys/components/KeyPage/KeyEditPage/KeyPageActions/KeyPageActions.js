@@ -12,9 +12,6 @@ const DeleteButton = ({ isSaving, deleteKey }) =>
     Delete key
   </button>;
 
-const SaveChangesButton = ({ saveKey, ...props }) =>
-  <SaveButton {...props} tabIndex="-1" className={'save-changes-button'} onClick={saveKey} />;
-
 const KeyPageActions = compose(
   connect(state => ({ selectedKey: state.selectedKey }), { ...keysActions, deleteKey }),
   mapProps(({ saveKey, deleteKey, selectedKey: { key, local, remote, isSaving }, ...props }) => ({
@@ -43,7 +40,12 @@ const KeyPageActions = compose(
         : null}
       <div className={'key-action-buttons-wrapper'}>
         {!isInAddMode && !isInStickyMode ? <DeleteButton {...{ isSaving, deleteKey }} /> : null}
-        <SaveChangesButton {...{ isSaving, hasChanges, saveKey }} />
+        <SaveButton
+          {...{ isSaving, hasChanges }}
+          tabIndex="-1"
+          id="save-changes-button"
+          onClick={saveKey}
+        />
       </div>
     </div>,
 );
