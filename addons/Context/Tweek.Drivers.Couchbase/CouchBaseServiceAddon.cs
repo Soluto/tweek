@@ -14,6 +14,7 @@ using Tweek.Drivers.Couchbase;
 
 namespace Tweek.Drivers.CouchbaseDriver
 {
+    [TweekContextAddon("couchbase")]
     public class CouchBaseServiceAddon: ITweekAddon
     {
         public void Use(IApplicationBuilder builder, IConfiguration configuration)
@@ -27,16 +28,14 @@ namespace Tweek.Drivers.CouchbaseDriver
             var contextBucketPassword = couchbaseConfig["Password"];
             var url = couchbaseConfig["Url"];
 
-            services.RegisterContextDriver("couchbase", provider => {
-                InitCouchbaseCluster(contextBucketName, contextBucketPassword, url);
 
-                var contextDriver = new CouchBaseDriver(ClusterHelper.GetBucket, contextBucketName);
-                var couchbaseDiagnosticsProvider = new BucketConnectionIsAlive(ClusterHelper.GetBucket, contextBucketName);
+            InitCouchbaseCluster(contextBucketName, contextBucketPassword, url);
 
-                services.AddSingleton<IDiagnosticsProvider>(couchbaseDiagnosticsProvider);
-                return contextDriver;
-            });
+            var contextDriver = new CouchBaseDriver(ClusterHelper.GetBucket, contextBucketName);
+            var couchbaseDiagnosticsProvider = new BucketConnectionIsAlive(ClusterHelper.GetBucket, contextBucketName);
 
+            services.AddSingleton<IContextDriver>(contextDriver);
+            services.AddSingleton<IDiagnosticsProvider>(couchbaseDiagnosticsProvider);
         }
 
         private void InitCouchbaseCluster(string bucketName, string bucketPassword, string url)

@@ -35,7 +35,6 @@ using Tweek.JPad.Utils;
 using Engine.Rules.Creation;
 using static Engine.Core.Rules.Utils;
 using static LanguageExt.Prelude;
-using FSharpUtils.Newtonsoft;
 using Engine.DataTypes;
 using Newtonsoft.Json.Linq;
 
@@ -61,7 +60,6 @@ namespace Tweek.ApiService.NetCore
         {
 
             services.RegisterAddonServices(Configuration);
-            services.SelectContextProvider(Configuration["ContextProvider"]);
 
             services.Decorate<IContextDriver>((driver, provider) => new TimedContextDriver(driver, provider.GetService<IMetrics>()));
 

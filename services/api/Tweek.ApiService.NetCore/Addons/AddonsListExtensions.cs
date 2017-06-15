@@ -8,7 +8,6 @@ using Tweek.ApiService.Addons;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Tweek.ApiService.NetCore.Addons
 {
@@ -21,8 +20,41 @@ namespace Tweek.ApiService.NetCore.Addons
 
         public static void RegisterAddonServices(this IServiceCollection services, IConfiguration configuration)
         {
-            ForEachAddon(configuration, addon => addon.Configure(services, configuration));
+            var contextProviders = new Dictionary<string, ITweekAddon>();
+            var chosenContextProvider = configuration["ContextProvider"];
+
+            if (chosenContextProvider == null)
+            {
+                throw new InvalidOperationException("Missing configuration option 'ContextProvider'");
+            }
+
+            ForEachAddon(configuration, addon =>
+            {
+                if (addon.HasContextProviderName())
+                {
+                    contextProviders.Add(addon.GetContextProviderName(), addon);
+                }
+                else
+                {
+                    addon.Configure(services, configuration);
+                }
+            });
+
+            if (contextProviders.Count != 0 && contextProviders.ContainsKey(chosenContextProvider))
+            {
+                contextProviders[chosenContextProvider].Configure(services, configuration);
+            }
+            else
+            {
+                throw new InvalidOperationException($"Couldn't find context provider named {chosenContextProvider}");
+            }
         }
+
+        public static string GetContextProviderName(this ITweekAddon addon) =>
+            addon.GetType().GetTypeInfo()
+                .GetCustomAttribute<TweekContextAddonAttribute>()?.Name;
+
+        public static bool HasContextProviderName(this ITweekAddon addon) => addon.GetContextProviderName() != null;
 
         private static void ForEachAddon(IConfiguration configuration, Action<ITweekAddon> action)
         {
