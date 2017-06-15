@@ -7,6 +7,7 @@ using Tweek.ApiService.Addons;
 
 namespace Tweek.Drivers.Redis
 {
+    [TweekContextAddon("redis")]
     public class RedisServiceAddon: ITweekAddon
     {
         public void Use(IApplicationBuilder builder, IConfiguration configuration)
@@ -15,7 +16,7 @@ namespace Tweek.Drivers.Redis
 
         public void Configure(IServiceCollection services, IConfiguration configuration)
         {
-            services.RegisterContextDriver("redis", provider => new RedisDriver(configuration.GetSection("Redis")["ConnectionString"]));
+            services.AddSingleton<IContextDriver>(new RedisDriver(configuration.GetSection("Redis")["ConnectionString"]));
         }
     }
 }

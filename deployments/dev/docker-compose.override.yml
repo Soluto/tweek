@@ -69,3 +69,5 @@ services:
       - "6379"
     ports:
       - "4005:6379"
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"

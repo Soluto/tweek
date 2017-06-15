@@ -89,8 +89,8 @@ steps:
             - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
             - ContextProvider=redis
             - Redis__ConnectionString=tweek-redis:6379
-            - Addons__Redis__className=Tweek.Drivers.Redis.RedisServiceAddon
-            - Addons__Redis__assemblyName=Tweek.Drivers.Redis
+            - Addons__Redis__ClassName=Tweek.Drivers.Redis.RedisServiceAddon
+            - Addons__Redis__AssemblyName=Tweek.Drivers.Redis
         tweek-editor:
           image: ${{BuildingEditor}}
           depends_on:
