@@ -7,30 +7,44 @@ import { deleteKey } from '../../../../../../store/ducks/keys';
 import SaveButton from '../../../../../../components/common/SaveButton/SaveButton';
 import './KeyPageActions.css';
 
-const DeleteButton = ({ isSaving, deleteKey }) =>
-  <button disabled={isSaving} className={'delete-key-button'} tabIndex="-1" onClick={deleteKey}>
-    Delete key
-  </button>;
+const disableButton = ({ text, id }) => props =>
+  <button id={id} className={'disable-button'} tabIndex="-1" {...props}>{text}</button>;
+
+const DeleteButton = disableButton({ text: 'Delete key', id: 'delete-key-button' });
+const ArchiveButton = disableButton({ text: 'Archive key', id: 'archive-key-button' });
+const RestoreButton = disableButton({ text: 'Restore key', id: 'restore-key-button' });
 
 const KeyPageActions = compose(
   connect(state => ({ selectedKey: state.selectedKey }), { ...keysActions, deleteKey }),
-  mapProps(({ saveKey, deleteKey, selectedKey: { key, local, remote, isSaving }, ...props }) => ({
-    ...props,
-    hasChanges: !R.equals(local, remote),
-    deleteKey: () => deleteKey(key),
-    saveKey: () => saveKey(key),
-    isSaving,
-  })),
+  mapProps(
+    ({
+      saveKey,
+      deleteKey,
+      selectedKey: { key, local, remote, isSaving },
+      isInAddMode,
+      isInStickyMode,
+      ...props
+    }) => ({
+      ...props,
+      hasChanges: !R.equals(local, remote),
+      deleteKey: () => deleteKey(key),
+      saveKey: () => saveKey(key),
+      isSaving,
+      extraButtons: !isInAddMode && !isInStickyMode,
+      archived: local && local.manifest.meta.archived,
+    }),
+  ),
 )(
   ({
-    isInAddMode,
     saveKey,
     deleteKey,
     isReadonly,
     isHistoricRevision,
-    isInStickyMode,
     hasChanges,
     isSaving,
+    extraButtons,
+    archived,
+    archiveKey,
   }) =>
     <div>
       {isReadonly
@@ -39,7 +53,12 @@ const KeyPageActions = compose(
           </div>
         : null}
       <div className={'key-action-buttons-wrapper'}>
-        {!isInAddMode && !isInStickyMode ? <DeleteButton {...{ isSaving, deleteKey }} /> : null}
+        {extraButtons && archived ? <DeleteButton disabled={isSaving} onClick={deleteKey} /> : null}
+        {extraButtons
+          ? archived
+            ? <RestoreButton disabled={isSaving} onClick={() => archiveKey(false)} />
+            : <ArchiveButton disabled={isSaving} onClick={() => archiveKey(true)} />
+          : null}
         <SaveButton
           {...{ isSaving, hasChanges }}
           tabIndex="-1"
