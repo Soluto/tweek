@@ -26,7 +26,6 @@ const performDeleteKey = key =>
     dispatch(push('/keys'));
     try {
       await fetch(`/api/keys/${key}`, {
-        credentials: 'same-origin',
         method: 'delete',
       });
 
@@ -52,9 +51,7 @@ export function deleteKey(key) {
 export function getKeys() {
   return async function (dispatch) {
     try {
-      const result = await await fetch('/api/keys', {
-        credentials: 'same-origin',
-      });
+      const result = await await fetch('/api/keys');
 
       const payload = await result.json();
 

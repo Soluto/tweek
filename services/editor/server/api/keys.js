@@ -1,3 +1,4 @@
+import searchIndex from '../searchIndex';
 import { convertMetaToNewFormat } from '../utils/meta-legacy';
 import { UKNOWN_AUTHOR } from './unknownAuthor';
 
@@ -25,9 +26,8 @@ export async function getAllKeys(req, res, { keysRepository }) {
   res.json(keys);
 }
 
-export async function getAllManifests(req, res, { keysRepository }) {
-  const manifests = await keysRepository.getAllManifests();
-  res.json(manifests);
+export function getAllManifests(req, res) {
+  res.json(searchIndex.manifests);
 }
 
 export async function getKey(req, res, { keysRepository }, { params }) {
@@ -50,6 +50,12 @@ export async function getKeyManifest(req, res, { keysRepository }, { params }) {
   } catch (exp) {
     res.sendStatus(404);
   }
+}
+
+export async function getKeyRevisionHistory(req, res, { keysRepository }, { params }) {
+  const keyPath = params[0];
+  const revisionHistory = await keysRepository.getKeyRevisionHistory(keyPath);
+  res.json(revisionHistory);
 }
 
 export const saveKey = injectAuthor(async (req, res, { keysRepository, author }, { params }) => {

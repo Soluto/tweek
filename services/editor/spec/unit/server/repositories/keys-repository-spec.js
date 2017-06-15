@@ -252,9 +252,9 @@ describe('keys-repository', () => {
 
     it("should return key definition with the key's revision history", async () => {
       // Act
-      const keyDetails = await target.getKeyDetails(testKeyPath);
+      const revisionHistory = await target.getKeyRevisionHistory(testKeyPath);
       // Assert
-      expect(keyDetails.revisionHistory).toEqual(getKeyRevisions('revision-3'));
+      expect(revisionHistory).toEqual(getKeyRevisions('revision-3'));
     });
 
     it('should parse and return manifest as an object', async () => {

@@ -7,7 +7,7 @@
             "taskName": "dev-env-e2e",
             "command": "docker-compose",
             "isShellCommand": true,
-            "args": ["-f", "./deployments/dev/docker-compose.yml", "-f", "./deployments/dev/docker-compose.e2e.yml", "up", "-d", "tweek-backoffice"]
+            "args": ["-f", "./deployments/dev/docker-compose.yml", "-f", "./deployments/dev/docker-compose.e2e.yml", "up", "-d", "tweek-editor"]
         },
         {
             "taskName": "dev-env-api",
