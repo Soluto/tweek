@@ -21,7 +21,9 @@ const MutatorFor = propName => Comp =>
       this.state = {};
     }
     componentWillMount() {
-      this.setState({ mutator: Mutator.stateless(() => this.props[propName], this.props.onMutation) });
+      this.setState({
+        mutator: Mutator.stateless(() => this.props[propName], this.props.onMutation),
+      });
     }
     render() {
       const { [propName]: _, ...otherProps } = this.props;
@@ -130,7 +132,7 @@ function changeValueType(valueType, rulesMutate, depth) {
   Object.keys(rules).forEach(key => changeValueType(valueType, rulesMutate.in(key), depth - 1));
 }
 
-export default compose(
+const JPadFullEditor = compose(
   mapProps(({ source, onDependencyChanges, dependencies, onChange, ...other }) => ({
     onMutation(sourceTree) {
       const newDependencies = RulesService.getDependencies(
@@ -169,3 +171,7 @@ export default compose(
     },
   }),
 )(KeyRulesEditor);
+
+JPadFullEditor.displayName = 'JPadFullEditor';
+
+export default JPadFullEditor;
