@@ -1,62 +1,51 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose } from 'recompose';
+import { compose, mapProps } from 'recompose';
 import R from 'ramda';
 import * as keysActions from '../../../../../../store/ducks/selectedKey';
 import { deleteKey } from '../../../../../../store/ducks/keys';
 import SaveButton from '../../../../../../components/common/SaveButton/SaveButton';
 import './KeyPageActions.css';
 
-const DeleteButton = ({ isSaving, selectedKey, deleteKey }) =>
-  <button
-    disabled={isSaving}
-    className={'delete-key-button'}
-    tabIndex="-1"
-    onClick={() => deleteKey(selectedKey.key)}
-  >
+const DeleteButton = ({ isSaving, deleteKey }) =>
+  <button disabled={isSaving} className={'delete-key-button'} tabIndex="-1" onClick={deleteKey}>
     Delete key
   </button>;
 
-const SaveChangesButton = ({ selectedKey, saveKey, ...props }) =>
-  <SaveButton
-    {...props}
-    tabIndex="-1"
-    className={'save-changes-button'}
-    onClick={() => saveKey(selectedKey.key)}
-  />;
+const SaveChangesButton = ({ saveKey, ...props }) =>
+  <SaveButton {...props} tabIndex="-1" className={'save-changes-button'} onClick={saveKey} />;
 
 const KeyPageActions = compose(
   connect(state => ({ selectedKey: state.selectedKey }), { ...keysActions, deleteKey }),
+  mapProps(({ saveKey, deleteKey, selectedKey: { key, local, remote, isSaving }, ...props }) => ({
+    ...props,
+    hasChanges: !R.equals(local, remote),
+    deleteKey: () => deleteKey(key),
+    saveKey: () => saveKey(key),
+    isSaving,
+  })),
 )(
   ({
-    selectedKey,
     isInAddMode,
     saveKey,
     deleteKey,
     isReadonly,
     isHistoricRevision,
     isInStickyMode,
-  }) => {
-    const { local, remote, isSaving } = selectedKey;
-    const hasChanges = !R.equals(local, remote);
-    return (
-      <div>
-        {isReadonly
-          ? <div className={'readonly-key-message'}>
-              {' '}
-              {isHistoricRevision ? 'This is an old revision of this key' : 'This key is readonly'}
-              {' '}
-            </div>
-          : null}
-        <div className={'key-action-buttons-wrapper'}>
-          {!isInAddMode && !isInStickyMode
-            ? <DeleteButton {...{ selectedKey, isSaving, deleteKey }} />
-            : null}
-          <SaveChangesButton {...{ selectedKey, isSaving, hasChanges, saveKey }} />
-        </div>
+    hasChanges,
+    isSaving,
+  }) =>
+    <div>
+      {isReadonly
+        ? <div className={'readonly-key-message'}>
+            {isHistoricRevision ? 'This is an old revision of this key' : 'This key is readonly'}
+          </div>
+        : null}
+      <div className={'key-action-buttons-wrapper'}>
+        {!isInAddMode && !isInStickyMode ? <DeleteButton {...{ isSaving, deleteKey }} /> : null}
+        <SaveChangesButton {...{ isSaving, hasChanges, saveKey }} />
       </div>
-    );
-  },
+    </div>,
 );
 
 KeyPageActions.displayName = 'KeyPageActions';
