@@ -74,7 +74,7 @@ class KeyEditPage extends Component {
         tags: newTags,
       },
     };
-    this.onSelectedKeyMetaChanged(newManifest);
+    this.onSelectedKeyManifestChanged(newManifest);
   }
 
   onKeyNameChanged = (newKeyName) => {
@@ -90,7 +90,7 @@ class KeyEditPage extends Component {
         name: newDisplayName,
       },
     };
-    this.onSelectedKeyMetaChanged(newManifest);
+    this.onSelectedKeyManifestChanged(newManifest);
   };
 
   onDescriptionChanged(newDescription) {
@@ -102,11 +102,11 @@ class KeyEditPage extends Component {
         description: newDescription,
       },
     };
-    this.onSelectedKeyMetaChanged(newManifest);
+    this.onSelectedKeyManifestChanged(newManifest);
   }
 
-  onSelectedKeyMetaChanged = (newManifest) => {
-    this.props.updateKeyMetaDef(newManifest);
+  onSelectedKeyManifestChanged = (newManifest) => {
+    this.props.updateKeyManifest(newManifest);
   };
 
   onDependencyChanged = (dependencies) => {
@@ -115,7 +115,7 @@ class KeyEditPage extends Component {
       ...oldManifest,
       dependencies,
     };
-    this.onSelectedKeyMetaChanged(newManifest);
+    this.onSelectedKeyManifestChanged(newManifest);
   };
 
   render() {
@@ -154,7 +154,7 @@ class KeyEditPage extends Component {
                 manifest={manifest}
                 sourceFile={keyDef.source}
                 onSourceFileChange={source => this.props.updateKeyDef({ source })}
-                onManifestChange={this.onSelectedKeyMetaChanged}
+                onManifestChange={this.onSelectedKeyManifestChanged}
                 onDependencyChanged={this.onDependencyChanged}
                 isReadonly={isReadonly}
                 alerter={alerter}
