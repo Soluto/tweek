@@ -2,7 +2,7 @@ import { getRelativeSelector, getSelectorByClassNames, _getSelectorByIndex, _get
 
 const keySelectors = {};
 
-keySelectors.SAVE_CHANGES_BUTTON = getSelectorByClassNames('key-action-buttons-wrapper', 'save-changes-button');
+keySelectors.SAVE_CHANGES_BUTTON = '[id=save-changes-button]';
 keySelectors.ADD_KEY_BUTTON = getSelectorByClassNames('keys-page-container', 'add-key-button');
 keySelectors.KEY_NAME_INPUT = getSelectorByClassNames('key-main-input', 'auto-suggest', 'bootstrap-typeahead-input', 'input-main');
 keySelectors.KEY_DISPLAY_NAME = getSelectorByClassNames('display-name-text');

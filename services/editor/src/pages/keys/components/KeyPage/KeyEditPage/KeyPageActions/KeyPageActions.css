@@ -6,38 +6,12 @@
 .key-action-buttons-wrapper {
   float: right;
 }
-.key-action-buttons-wrapper .save-changes-button {
+.key-action-buttons-wrapper [id=save-changes-button] {
   margin-left: 10px;
-  vertical-align: top;
-  background-color: #00aeef;
-  height: 28px;
-  border: 0;
-  padding: 0 20px;
-  color: white;
-  outline: 0;
-  padding-bottom: 2px;
-  border-radius: 14px;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  transition: all 0.2s ease-in-out;
   width: 125px;
 }
-.key-action-buttons-wrapper .save-changes-button:hover {
-  background-color: #029CD5;
-  cursor: pointer;
-}
-.key-action-buttons-wrapper .save-changes-button:disabled {
-  background-color: gray;
-}
-.key-action-buttons-wrapper .save-changes-button:disabled:hover,
-.key-action-buttons-wrapper .save-changes-button:disabled:active {
-  cursor: default;
-  background-color: gray;
-}
-.key-action-buttons-wrapper .save-changes-button[data-state-is-saving=true],
-.key-action-buttons-wrapper .save-changes-button[data-state-is-saving=true]:disabled {
+.key-action-buttons-wrapper [id=save-changes-button][data-state-is-saving=true],
+.key-action-buttons-wrapper [id=save-changes-button][data-state-is-saving=true]:disabled {
   background-color: green;
 }
 .key-action-buttons-wrapper .delete-key-button {
