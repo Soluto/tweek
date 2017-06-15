@@ -9,7 +9,7 @@ const TAGS_SAVED = 'TAGS_SAVED';
 
 export async function downloadTags() {
   try {
-    const tags = await (await fetch('/api/tags', { credentials: 'same-origin' })).json();
+    const tags = await (await fetch('/api/tags')).json();
     return { type: TAGS_DOWNLOADED, payload: tags };
   } catch (error) {
     return showError({ title: 'Failed to download tags', error });
@@ -28,7 +28,6 @@ export const saveNewTags = tagsToSave =>
 
     try {
       await fetch('/api/tags', {
-        credentials: 'same-origin',
         method: 'put',
         ...withJsonData(newTags),
       });
