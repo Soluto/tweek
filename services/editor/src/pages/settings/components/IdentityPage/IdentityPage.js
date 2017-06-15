@@ -19,7 +19,7 @@ const IdentityPropertiesEditor = ({ identityProperties, onPropertyUpdate }) =>
     )}
   </div>;
 
-const IdentityPage = ({ identityType, identityProperties, updateIdentityProperty }) => {
+const IdentityPage = ({ identityType, identityProperties, updateIdentityProperty, saveSchema }) => {
   const hasChanges = !R.equals(identityProperties.local, identityProperties.remote);
 
   return (
@@ -28,7 +28,7 @@ const IdentityPage = ({ identityType, identityProperties, updateIdentityProperty
         data-comp="save-button"
         hasChanges={hasChanges}
         isSaving={false}
-        onclick={() => {}}
+        onClick={() => saveSchema(identityType)}
       />
       <h3 style={{ textTransform: 'capitalize' }}>{identityType}</h3>
       <Tabs>
