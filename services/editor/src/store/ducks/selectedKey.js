@@ -80,7 +80,7 @@ export function updateKeyDef(keyDef) {
   return { type: KEY_RULEDEF_UPDATED, payload: keyDef };
 }
 
-export function updateKeyMetaDef(manifest) {
+export function updateKeyManifest(manifest) {
   return { type: KEY_MANIFEST_UPDATED, payload: manifest };
 }
 
