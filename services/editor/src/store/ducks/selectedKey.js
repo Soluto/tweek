@@ -84,6 +84,53 @@ export function updateKeyManifest(manifest) {
   return { type: KEY_MANIFEST_UPDATED, payload: manifest };
 }
 
+const confirmArchievAlert = {
+  title: 'Archive',
+  message: 'Archiving the key will discard all your changes.\nDo you want to continue?',
+};
+
+async function performSave(dispatch, keyName, data) {
+  dispatch({ type: KEY_SAVING });
+
+  let isSaveSucceeded;
+  try {
+    await fetch(`/api/keys/${keyName}`, {
+      method: 'put',
+      ...withJsonData(data),
+    });
+    isSaveSucceeded = true;
+  } catch (error) {
+    isSaveSucceeded = false;
+    dispatch(showError({ title: 'Failed to save key', error }));
+  }
+
+  await dispatch({ type: KEY_SAVED, payload: { keyName, isSaveSucceeded } });
+  return isSaveSucceeded;
+}
+
+export function archiveKey(archived) {
+  return async function (dispatch, getState) {
+    const { selectedKey: { key, local, remote } } = getState();
+
+    if (!R.equals(local, remote) && !(await dispatch(showConfirm(confirmArchievAlert))).result)
+      return;
+
+    const manifest = {
+      ...remote.manifest,
+      meta: {
+        ...remote.manifest.meta,
+        archived,
+      },
+    };
+
+    const keyToSave = { ...remote, manifest };
+    if (!await performSave(dispatch, key, keyToSave)) return;
+
+    dispatch({ type: KEY_OPENED, payload: { key, ...keyToSave } });
+    dispatch(updateRevisionHistory(key));
+  };
+}
+
 function getAllRules({ jpad, rules = [jpad.rules], depth = jpad.partitions.length }) {
   return depth === 0
     ? R.flatten(rules)
@@ -153,21 +200,7 @@ export function saveKey() {
       return;
     }
 
-    dispatch({ type: KEY_SAVING });
-    let isSaveSucceeded;
-    try {
-      await fetch(`/api/keys/${savedKey}`, {
-        method: 'put',
-        ...withJsonData(local),
-      });
-      isSaveSucceeded = true;
-    } catch (error) {
-      isSaveSucceeded = false;
-      dispatch(showError({ title: 'Failed to save key', error }));
-      return;
-    } finally {
-      await dispatch({ type: KEY_SAVED, payload: { keyName: savedKey, isSaveSucceeded } });
-    }
+    if (!await performSave(dispatch, savedKey, local)) return;
 
     dispatch(updateRevisionHistory(savedKey));
 

@@ -14,7 +14,7 @@
 .key-action-buttons-wrapper [id=save-changes-button][data-state-is-saving=true]:disabled {
   background-color: green;
 }
-.key-action-buttons-wrapper .delete-key-button {
+.key-action-buttons-wrapper .disable-button {
   vertical-align: top;
   background-color: #00aeef;
   height: 28px;
@@ -34,29 +34,29 @@
   color: gray;
   width: 125px;
 }
-.key-action-buttons-wrapper .delete-key-button:hover {
+.key-action-buttons-wrapper .disable-button:hover {
   background-color: #029CD5;
   cursor: pointer;
 }
-.key-action-buttons-wrapper .delete-key-button:disabled {
+.key-action-buttons-wrapper .disable-button:disabled {
   background-color: gray;
 }
-.key-action-buttons-wrapper .delete-key-button:disabled:hover,
-.key-action-buttons-wrapper .delete-key-button:disabled:active {
+.key-action-buttons-wrapper .disable-button:disabled:hover,
+.key-action-buttons-wrapper .disable-button:disabled:active {
   cursor: default;
   background-color: gray;
 }
-.key-action-buttons-wrapper .delete-key-button:hover {
+.key-action-buttons-wrapper .disable-button:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
-.key-action-buttons-wrapper .delete-key-button:active {
+.key-action-buttons-wrapper .disable-button:active {
   background-color: rgba(0, 0, 0, 0.2);
 }
-.key-action-buttons-wrapper .delete-key-button:disabled {
+.key-action-buttons-wrapper .disable-button:disabled {
   background-color: transparent;
 }
-.key-action-buttons-wrapper .delete-key-button:disabled:hover,
-.key-action-buttons-wrapper .delete-key-button:disabled:active {
+.key-action-buttons-wrapper .disable-button:disabled:hover,
+.key-action-buttons-wrapper .disable-button:disabled:active {
   cursor: default;
   background-color: transparent;
 }

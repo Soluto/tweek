@@ -13,7 +13,7 @@ keySelectors.KEY_ACTUAL_PATH = getSelectorByClassNames('actual-path');
 keySelectors.KEY_FOLDER_NAME = getSelectorByClassNames('key-folder-name');
 keySelectors.KEY_LINK = getSelectorByClassNames('key-link');
 keySelectors.DEFAULT_VALUE_INPUT = getRelativeSelector([getSelectorByClassNames('default-value-container'), 'input']);
-keySelectors.DELETE_KEY_BUTTON = getSelectorByClassNames('delete-key-button');
+keySelectors.DELETE_KEY_BUTTON = '[id=delete-key-button]';
 keySelectors.ADD_RULE_BUTTON = getSelectorByClassNames('add-rule-button');
 keySelectors.ADD_CONDITION_BUTTON = getSelectorByClassNames('add-condition-button');
 keySelectors.RULE_CONDITION = getSelectorByClassNames('condition-wrapper');
