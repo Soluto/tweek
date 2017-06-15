@@ -12,6 +12,7 @@ const getProperty = (suggestedValues, property) => {
 };
 
 const PropertyComboBox = ({ property, suggestedValues, onPropertyChange, autofocus }) => {
+  property = property.replace(/^@@key:/, ContextService.KEYS_IDENTITY);
   const [identity] = property.split('.');
 
   return (
