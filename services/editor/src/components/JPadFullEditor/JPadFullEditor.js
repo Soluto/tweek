@@ -133,14 +133,14 @@ function changeValueType(valueType, rulesMutate, depth) {
 }
 
 const JPadFullEditor = compose(
-  mapProps(({ source, onDependencyChanges, dependencies, onChange, ...other }) => ({
+  mapProps(({ source, onDependencyChanged, dependencies, onChange, ...other }) => ({
     onMutation(sourceTree) {
       const newDependencies = RulesService.getDependencies(
         sourceTree.rules,
         sourceTree.partitions.length,
       );
       if (!R.equals(dependencies, newDependencies)) {
-        onDependencyChanges(newDependencies);
+        onDependencyChanged(newDependencies);
       }
       onChange(JSON.stringify(sourceTree, null, 4));
     },
