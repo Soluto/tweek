@@ -58,9 +58,7 @@ export function openKey(key, { revision } = {}) {
     let keyData;
     const search = revision ? `?revision=${revision}` : '';
     try {
-      keyData = await (await fetch(`/api/keys/${key}${search}`, {
-        credentials: 'same-origin',
-      })).json();
+      keyData = await (await fetch(`/api/keys/${key}${search}`)).json();
     } catch (exp) {
       dispatch({ type: KEY_OPENED, payload: { key } });
       return;
@@ -159,7 +157,6 @@ export function saveKey() {
     let isSaveSucceeded;
     try {
       await fetch(`/api/keys/${savedKey}`, {
-        credentials: 'same-origin',
         method: 'put',
         ...withJsonData(local),
       });
