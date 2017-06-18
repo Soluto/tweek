@@ -2,7 +2,7 @@ import { getRelativeSelector, getSelectorByClassNames, _getSelectorByIndex, _get
 
 const keySelectors = {};
 
-keySelectors.SAVE_CHANGES_BUTTON = '[id=save-changes-button]';
+keySelectors.SAVE_CHANGES_BUTTON = '#save-changes-button';
 keySelectors.ADD_KEY_BUTTON = getSelectorByClassNames('keys-page-container', 'add-key-button');
 keySelectors.KEY_NAME_INPUT = getSelectorByClassNames('key-main-input', 'auto-suggest', 'bootstrap-typeahead-input', 'input-main');
 keySelectors.KEY_DISPLAY_NAME = getSelectorByClassNames('display-name-text');
@@ -13,7 +13,9 @@ keySelectors.KEY_ACTUAL_PATH = getSelectorByClassNames('actual-path');
 keySelectors.KEY_FOLDER_NAME = getSelectorByClassNames('key-folder-name');
 keySelectors.KEY_LINK = getSelectorByClassNames('key-link');
 keySelectors.DEFAULT_VALUE_INPUT = getRelativeSelector([getSelectorByClassNames('default-value-container'), 'input']);
-keySelectors.DELETE_KEY_BUTTON = '[id=delete-key-button]';
+keySelectors.ARCHIVE_KEY_BUTTON = '#archive-key-button';
+keySelectors.RESTORE_KEY_BUTTON = '#restore-key-button';
+keySelectors.DELETE_KEY_BUTTON = '#delete-key-button';
 keySelectors.ADD_RULE_BUTTON = getSelectorByClassNames('add-rule-button');
 keySelectors.ADD_CONDITION_BUTTON = getSelectorByClassNames('add-condition-button');
 keySelectors.RULE_CONDITION = getSelectorByClassNames('condition-wrapper');
