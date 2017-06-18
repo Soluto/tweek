@@ -48,7 +48,7 @@ describe('add key', () => {
       keysPageObject.isInKeyPage(keyToAddFullPath),
       KeysPageObject.GIT_TRANSACTION_TIMEOUT);
 
-    browser.waitForVisible(keySelectors.DELETE_KEY_BUTTON, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
+    browser.waitForVisible(keySelectors.ARCHIVE_KEY_BUTTON, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
 
     assert(browser.getText(keySelectors.KEY_DISPLAY_NAME),
       keyToAddFullPath,
