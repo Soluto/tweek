@@ -138,7 +138,7 @@ export default class KeysPageObject extends PageObject {
   }
 
   waitForKeyToLoad(timeout = 10000) {
-    this.browser.waitForVisible(keySelectors.DELETE_KEY_BUTTON, timeout);
+    this.browser.waitForVisible(keySelectors.SAVE_CHANGES_BUTTON, timeout);
   }
 
   generateTestKeyName(prefix) {
@@ -202,8 +202,12 @@ export default class KeysPageObject extends PageObject {
     }, source);
   }
 
+  waitForSaved() {
+    this.browser.waitUntil(() => !this.hasChanges() && !this.isSaving(), PageObject.GIT_TRANSACTION_TIMEOUT, "changes were not saved");
+  }
+
   saveChanges() {
     this.browser.click(keySelectors.SAVE_CHANGES_BUTTON);
-    this.browser.waitUntil(() => !this.hasChanges() && !this.isSaving(), PageObject.GIT_TRANSACTION_TIMEOUT, "changes were not saved");
+    this.waitForSaved();
   }
 }
