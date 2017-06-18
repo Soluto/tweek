@@ -5,6 +5,22 @@ import * as ContextService from '../../services/context-service';
 import fetch from '../../utils/fetch';
 import { withJsonData } from '../../utils/http';
 import {
+  KEY_OPENED,
+  KEY_OPENING,
+  KEY_RULEDEF_UPDATED,
+  KEY_MANIFEST_UPDATED,
+  KEY_SAVED,
+  KEY_SAVING,
+  KEY_NAME_CHANGE,
+  KEY_REVISION_HISTORY,
+  KEY_VALIDATION_CHANGE,
+  KEY_VALUE_TYPE_CHANGE,
+  SHOW_KEY_VALIDATIONS,
+  KEY_DELETING,
+  KEY_DELETED,
+  KEY_ADDED,
+} from './ducks-utils/actions';
+import {
   createBlankJPadKey,
   createBlankKeyManifest,
   BLANK_KEY_NAME,
@@ -14,18 +30,6 @@ import keyValueTypeValidations from './ducks-utils/validations/key-value-type-va
 import { downloadTags } from './tags';
 import { showError } from './notifications';
 import { showConfirm } from './alerts';
-
-const KEY_OPENED = 'KEY_OPENED';
-const KEY_OPENING = 'KEY_OPENING';
-const KEY_RULEDEF_UPDATED = 'KEY_RULEDEF_UPDATED';
-const KEY_MANIFEST_UPDATED = 'KEY_MANIFEST_UPDATED';
-const KEY_SAVED = 'KEY_SAVED';
-const KEY_SAVING = 'KEY_SAVING';
-const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
-const KEY_REVISION_HISTORY = 'KEY_REVISION_HISTORY';
-const KEY_VALIDATION_CHANGE = 'KEY_VALIDATION_CHANGE';
-const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
-const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
 
 function updateRevisionHistory(keyName, revisionHistory) {
   return async function (dispatch) {
@@ -127,6 +131,11 @@ export function archiveKey(archived) {
     if (!await performSave(dispatch, key, keyToSave)) return;
 
     dispatch({ type: KEY_OPENED, payload: { key, ...keyToSave } });
+    if (archived) {
+      dispatch({ type: KEY_DELETED, payload: key });
+    } else {
+      dispatch({ type: KEY_ADDED, payload: key });
+    }
     dispatch(updateRevisionHistory(key));
   };
 }
@@ -204,7 +213,7 @@ export function saveKey() {
 
     dispatch(updateRevisionHistory(savedKey));
 
-    if (isNewKey) dispatch({ type: 'KEY_ADDED', payload: savedKey });
+    if (isNewKey) dispatch({ type: KEY_ADDED, payload: savedKey });
     const shouldOpenNewKey = isNewKey && getState().selectedKey.key === BLANK_KEY_NAME;
 
     if (shouldOpenNewKey) {
@@ -368,7 +377,7 @@ export default handleActions(
     [KEY_SAVING]: handleKeySaving,
     [KEY_NAME_CHANGE]: handleKeyNameChange,
     [KEY_VALIDATION_CHANGE]: handleKeyValidationChange,
-    KEY_DELETING: handleKeyDeleting,
+    [KEY_DELETING]: handleKeyDeleting,
     [KEY_VALUE_TYPE_CHANGE]: handleKeyValueTypeChange,
     [KEY_REVISION_HISTORY]: handleKeyRevisionHistory,
     [SHOW_KEY_VALIDATIONS]: handleShowKeyValidations,
