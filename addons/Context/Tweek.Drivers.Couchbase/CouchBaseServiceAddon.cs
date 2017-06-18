@@ -7,7 +7,6 @@ using Engine.Drivers.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Tweek.ApiService.Addons;
 using Tweek.Drivers.Couchbase;
@@ -27,16 +26,13 @@ namespace Tweek.Drivers.CouchbaseDriver
             var contextBucketPassword = couchbaseConfig["Password"];
             var url = couchbaseConfig["Url"];
 
-            services.RegisterContextDriver("couchbase", provider => {
-                InitCouchbaseCluster(contextBucketName, contextBucketPassword, url);
+            InitCouchbaseCluster(contextBucketName, contextBucketPassword, url);
 
-                var contextDriver = new CouchBaseDriver(ClusterHelper.GetBucket, contextBucketName);
-                var couchbaseDiagnosticsProvider = new BucketConnectionIsAlive(ClusterHelper.GetBucket, contextBucketName);
+            var contextDriver = new CouchBaseDriver(ClusterHelper.GetBucket, contextBucketName);
+            var couchbaseDiagnosticsProvider = new BucketConnectionIsAlive(ClusterHelper.GetBucket, contextBucketName);
 
-                services.AddSingleton<IDiagnosticsProvider>(couchbaseDiagnosticsProvider);
-                return contextDriver;
-            });
-
+            services.AddSingleton<IContextDriver>(contextDriver);
+            services.AddSingleton<IDiagnosticsProvider>(couchbaseDiagnosticsProvider);
         }
 
         private void InitCouchbaseCluster(string bucketName, string bucketPassword, string url)
