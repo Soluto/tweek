@@ -18,13 +18,14 @@ services:
       dockerfile: TweekApiDockerfile
     depends_on:
       - tweek-management
+      - tweek-redis
     environment:
       - Rules__Management__Url=http://tweek-management:3000
     labels:
       - "com.microsoft.visualstudio.targetoperatingsystem=linux"
-     
+
   tweek-editor:
-    image: soluto/tweek-back-office
+    image: soluto/tweek-editor
     build: ../../services/editor
     depends_on: 
       - tweek-api

@@ -110,7 +110,7 @@ mac: find . -wholename '*.Tests.csproj' -print0 | xargs -0 -n 1 dotnet test (onl
    npm run build-env
    ```
 - if you want to pull/build only part of the services and not all of them, add `-- [SERVICES]` at the end of the command.
-   The options are: `tweek-git` `tweek-management` `tweek-api` `tweek-backoffice`
+   The options are: `tweek-git` `tweek-management` `tweek-api` `tweek-editor`
    #### examples:
    - get latest management and api version from server: 
       ```

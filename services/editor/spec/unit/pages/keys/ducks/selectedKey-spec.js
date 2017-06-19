@@ -176,14 +176,12 @@ describe('selectedKey', async () => {
           description: '',
           valueType: '',
         },
-        revisionHistory: undefined,
       };
 
       const expectedPayload = {
         key: keyName,
         manifest: expectedKeyData.manifest,
         keyDef: expectedKeyData.keyDef,
-        revisionHistory: undefined,
       };
 
       fetchMock.get('glob:*/api/keys/*', expectedKeyData);
@@ -268,6 +266,10 @@ describe('selectedKey', async () => {
   });
 
   describe('saveKey', () => {
+    beforeEach(() => {
+      fetchMock.get('glob:*/api/revision-history/*', []);
+    });
+
     const saveKeyCommonFlowTest = (isNewKey, shouldSaveSucceed) =>
       it(`save succeess=${shouldSaveSucceed}, should dispatch KEY_SAVING, fetch PUT key and dispatch KEY_SAVED`, async () => {
         // Arrange
@@ -275,16 +277,17 @@ describe('selectedKey', async () => {
         currentState = generateState(isNewKey ? BLANK_KEY_NAME : keyNameToSave, keyNameToSave);
 
         const fetchResponse = shouldSaveSucceed ? { status: 200 } : { status: 500 };
-        fetchMock.putOnce('glob:*/api/keys/*', fetchResponse);
+        const matchName = 'glob:*/api/keys/*';
+        fetchMock.putOnce(matchName, fetchResponse);
 
         // Act
         const func = saveKey();
         await func(dispatchMock, () => currentState);
 
         // Assert
-        assert(fetchMock.done(), 'should call fetch once');
+        assert(fetchMock.done(matchName), 'should call fetch once');
 
-        const fetchJsonDataString = fetchMock.lastOptions().body;
+        const fetchJsonDataString = fetchMock.lastOptions(matchName).body;
         assert(
           JSON.parse(fetchJsonDataString),
           currentState.selectedKey.local,
@@ -306,7 +309,10 @@ describe('selectedKey', async () => {
 
         assertDispatchAction(keySavedDispatchAction, {
           type: KEY_SAVED,
-          payload: { keyName: keyNameToSave, isSaveSucceeded: shouldSaveSucceed },
+          payload: {
+            keyName: keyNameToSave,
+            isSaveSucceeded: shouldSaveSucceed,
+          },
         });
       });
 
@@ -359,9 +365,15 @@ describe('selectedKey', async () => {
         const func = saveKey();
         await func(dispatchMock, () => currentState);
 
-        assert(dispatchMock.mock.calls.length === 4, 'should call dispatch 4 times');
+        assert(dispatchMock.mock.calls.length === 5, 'should call dispatch 5 times');
 
-        const [[_], [__], [keyAddedDispatchAction], [pushDispatchAction]] = dispatchMock.mock.calls;
+        const [
+          [_],
+          [__],
+          [___],
+          [keyAddedDispatchAction],
+          [pushDispatchAction],
+        ] = dispatchMock.mock.calls;
         assertDispatchAction(keyAddedDispatchAction, { type: KEY_ADDED, payload: keyNameToSave });
 
         const expectedPushPayload = {

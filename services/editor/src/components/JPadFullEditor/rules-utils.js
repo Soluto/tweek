@@ -94,7 +94,7 @@ export function convertToExplicitKey(key) {
 function calculateDependenciesForMatcher(matcher) {
   return Object.keys(matcher)
     .map(x => x.toLowerCase())
-    .map(x => (x.startsWith('@@key:') ? x.replace('@@key:', KEYS_IDENTITY) : x))
+    .map(x => x.replace(/^@@key:/, KEYS_IDENTITY))
     .filter(x => x.startsWith(KEYS_IDENTITY))
     .map(x => x.substring(KEYS_IDENTITY.length));
 }
