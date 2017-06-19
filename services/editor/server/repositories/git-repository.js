@@ -83,7 +83,6 @@ export default class GitRepository {
   }
 
   async updateFile(fileName, content) {
-    console.log(fileName, content);
     const filePath = path.join(this._repo.workdir(), fileName);
     await fs.ensureFile(filePath);
     await fs.writeFile(filePath, content);

@@ -145,9 +145,9 @@ export default class KeysRepository {
 
   bulkUpdate(updates, message, author) {
     return this._gitTransactionManager.write(async (gitRepo) => {
-      await updates.map(({ keyPath, manifest, fileImplementation }) =>
-        updateKey(gitRepo, manifest, fileImplementation),
-      );
+      for (let { keyPath, manifest, fileImplementation } of updates) {
+        await updateKey(gitRepo, keyPath, manifest, fileImplementation);
+      }
       await gitRepo.commitAndPush(`Editor - ${message}`, author);
     });
   }
