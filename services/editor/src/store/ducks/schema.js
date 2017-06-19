@@ -15,7 +15,7 @@ export function loadSchema() {
 export function saveSchema(identityType) {
   return async (dispatch, getState) => {
     let identityState = getState().schema[identityType];
-    let patch = jsondiffpatch.diff(identityState.local, identityState.remote);
+    let patch = jsondiffpatch.diff(identityState.remote, identityState.local);
     return dispatch(
       await fetch(`/api/schema/${identityType}`, {
         credentials: 'same-origin',
