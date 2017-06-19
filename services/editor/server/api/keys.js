@@ -74,3 +74,8 @@ export const deleteKey = injectAuthor(async (req, res, { keysRepository, author 
   await keysRepository.deleteKey(keyPath, author);
   res.send('OK');
 });
+
+export async function getRevision(req, res, { keysRepository }) {
+  const commit = await keysRepository.getRevision();
+  res.json(commit.sha());
+}

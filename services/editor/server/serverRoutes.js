@@ -30,6 +30,7 @@ export default (config) => {
     .put(addConfig(KeysRoutes.saveKey))
     .delete(addConfig(KeysRoutes.deleteKey));
 
+  app.get('/revision', addConfig(KeysRoutes.getRevision));
   app.get('/revision-history/*', addConfig(KeysRoutes.getKeyRevisionHistory));
 
   app.get('/manifests', addConfig(KeysRoutes.getAllManifests));
