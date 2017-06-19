@@ -1,3 +1,6 @@
+.revision-history {
+  align-self: flex-start;
+}
 .modification-details-text {
   color: #a5a5a5;
   font-size: 14px;

@@ -38,7 +38,7 @@ steps:
   BuildingEditor:
     title: Building Editor Docker Image
     type: build
-    image_name: soluto/tweek-back-office
+    image_name: soluto/tweek-editor
     working_directory: ./services/editor/
 
   BuildingTests:
@@ -80,13 +80,17 @@ steps:
           image: ${{BuildingApiImage}}
           depends_on:
             - tweek-management
+            - tweek-redis
           volumes_from:
             - keys
           environment:
             - Rules__Management__Url=http://tweek-management:3000
             - Rules__Management__SampleIntervalInMs=500
             - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
-            - Couchbase.Url=http://13.92.123.60:8091/index.html
+            - ContextProvider=redis
+            - Redis__ConnectionString=tweek-redis:6379
+            - Addons__Redis__ClassName=Tweek.Drivers.Redis.RedisServiceAddon
+            - Addons__Redis__AssemblyName=Tweek.Drivers.Redis
         tweek-editor:
           image: ${{BuildingEditor}}
           depends_on:
@@ -104,6 +108,12 @@ steps:
             - TWEEK_API_HOSTNAME=http://tweek-api
         selenium:
           image: selenium/standalone-chrome
+          logging:
+            driver: "none"
+        tweek-redis:
+          image: redis:alpine
+          expose:
+            - "6379"
           logging:
             driver: "none"
     composition_candidates:
@@ -126,7 +136,7 @@ steps:
           - tweek-editor
           - tweek-api
         environment:
-          - BACKOFFICE_URL=http://tweek-editor:3000/
+          - EDITOR_URL=http://tweek-editor:3000/
           - TWEEK_API_URL=http://tweek-api/
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
         command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && yarn test -- --host selenium --port 4444"

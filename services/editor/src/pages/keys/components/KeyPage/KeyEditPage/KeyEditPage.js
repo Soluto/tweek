@@ -12,7 +12,7 @@ import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier'
 import KeyTags from './KeyTags/KeyTags';
 import EditableText from './EditableText/EditableText';
 import EditableTextArea from './EditableTextArea/EditableTextArea';
-import RevisionHistory from './RevisionHistory';
+import RevisionHistory from './RevisionHistory/RevisionHistory';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
 import alertIconSrc from './resources/alert-icon.svg';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
@@ -30,6 +30,7 @@ const Editor = ({
   sourceFile,
   onManifestChange,
   onSourceFileChange,
+  onDependencyChanged,
   isReadonly,
   alerter,
 }) => {
@@ -44,7 +45,7 @@ const Editor = ({
         source={sourceFile}
         onChange={onSourceFileChange}
         dependencies={manifest.dependencies}
-        onDependencyChanges={dependencies => onManifestChange({ ...manifest, dependencies })}
+        onDependencyChanged={onDependencyChanged}
         isReadonly={isReadonly}
         valueType={manifest.valueType}
       />
@@ -64,12 +65,6 @@ const Editor = ({
 };
 
 class KeyEditPage extends Component {
-  constructor(props) {
-    super(props);
-    this.onKeyNameChanged = this.onKeyNameChanged.bind(this);
-    this.onDisplayNameChanged = this.onDisplayNameChanged.bind(this);
-  }
-
   onTagsChanged(newTags) {
     const oldManifest = this.props.selectedKey.local.manifest;
     const newManifest = {
@@ -82,11 +77,11 @@ class KeyEditPage extends Component {
     this.onSelectedKeyMetaChanged(newManifest);
   }
 
-  onKeyNameChanged(newKeyName) {
+  onKeyNameChanged = (newKeyName) => {
     this.props.updateKeyName(newKeyName);
-  }
+  };
 
-  onDisplayNameChanged(newDisplayName) {
+  onDisplayNameChanged = (newDisplayName) => {
     const oldManifest = this.props.selectedKey.local.manifest;
     const newManifest = {
       ...oldManifest,
@@ -96,7 +91,7 @@ class KeyEditPage extends Component {
       },
     };
     this.onSelectedKeyMetaChanged(newManifest);
-  }
+  };
 
   onDescriptionChanged(newDescription) {
     const oldManifest = this.props.selectedKey.local.manifest;
@@ -110,14 +105,23 @@ class KeyEditPage extends Component {
     this.onSelectedKeyMetaChanged(newManifest);
   }
 
-  onSelectedKeyMetaChanged(newManifest) {
+  onSelectedKeyMetaChanged = (newManifest) => {
     this.props.updateKeyMetaDef(newManifest);
-  }
+  };
+
+  onDependencyChanged = (dependencies) => {
+    const oldManifest = this.props.selectedKey.local.manifest;
+    const newManifest = {
+      ...oldManifest,
+      dependencies,
+    };
+    this.onSelectedKeyMetaChanged(newManifest);
+  };
 
   render() {
     const { selectedKey, isInAddMode, isInStickyMode, alerter, revision } = this.props;
-    const { key, local: { manifest, keyDef, revisionHistory } } = selectedKey;
-    const isHistoricRevision = revision && revisionHistory[0].sha !== revision;
+    const { key, local: { manifest, keyDef }, revisionHistory } = selectedKey;
+    const isHistoricRevision = revisionHistory && revision && revisionHistory[0].sha !== revision;
     const isReadonly = (!!manifest.meta.readOnly && manifest.meta.readOnly) || isHistoricRevision;
 
     const commonHeadersProps = {
@@ -150,7 +154,8 @@ class KeyEditPage extends Component {
                 manifest={manifest}
                 sourceFile={keyDef.source}
                 onSourceFileChange={source => this.props.updateKeyDef({ source })}
-                onManifestChange={newManifest => this.onSelectedKeyMetaChanged(newManifest)}
+                onManifestChange={this.onSelectedKeyMetaChanged}
+                onDependencyChanged={this.onDependencyChanged}
                 isReadonly={isReadonly}
                 alerter={alerter}
               />

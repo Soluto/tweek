@@ -11,6 +11,7 @@
   margin-right: 60px;
   display: flex;
 }
-.context-properties-container .property-list .property-wrapper .property-input {
+.context-properties-container .property-list .property-wrapper > input,
+.context-properties-container .property-list .property-wrapper > div {
   margin: 5px;
 }

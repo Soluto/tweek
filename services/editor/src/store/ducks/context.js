@@ -19,7 +19,6 @@ export const getContext = ({ identityName, identityId }) =>
     try {
       const response = await fetch(
         `/api/context/${identityName}/${encodeURIComponent(identityId)}`,
-        { credentials: 'same-origin' },
       );
       const contextData = await response.json();
       const fixedKeys = getFixedKeys(contextData);
@@ -43,7 +42,6 @@ export const updateFixedKeys = ({ identityName, identityId, fixedKeys }) =>
 
     try {
       await fetch(`/api/context/${identityName}/${encodedIdentityId}`, {
-        credentials: 'same-origin',
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(fixedKeysWithPrefix),

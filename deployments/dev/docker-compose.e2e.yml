@@ -15,7 +15,7 @@ services:
     volumes: 
       - ../../services/git-service/ssh:/keys
     environment:
-      - BACKOFFICE_URL=http://tweek-editor:3000/
+      - EDITOR_URL=http://tweek-editor:3000/
       - TWEEK_API_URL=http://tweek-api/
       - GIT_PRIVATE_KEY_PATH=/keys/tweekgit
 
