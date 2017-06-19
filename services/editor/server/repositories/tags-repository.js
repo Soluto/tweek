@@ -22,7 +22,7 @@ export default class TagsRepository {
 
       await gitRepo.updateFile(TagsFile, JSON.stringify(newTags, null, 4));
 
-      await gitRepo.commitAndPush('BackOffice - updating tags', author);
+      await gitRepo.commitAndPush('Editor - updating tags', author);
     });
   }
 }

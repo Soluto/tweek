@@ -75,7 +75,8 @@ async function getRevisionHistory(manifest, repo) {
     ? repo.getHistory(`rules/${manifest.key_path}.${manifest.implementation.format}`)
     : Promise.resolve([]);
 
-  return R.uniqBy(x => x.sha, [
+  const uniqSort = R.pipe(R.uniqBy(R.prop('sha')), R.sort(R.descend(R.prop('date'))));
+  return uniqSort([
     ...(await repo.getHistory(`meta/${manifest.key_path}.json`)),
     ...(await fileMeta),
   ]);
@@ -120,9 +121,7 @@ export default class KeysRepository {
     return this._gitTransactionManager.with(async (gitRepo) => {
       const manifest = await getManifestFile(keyPath, gitRepo, revision);
       const keyDef = getKeyDef(manifest, gitRepo, revision);
-      const revisionHistory = getRevisionHistory(manifest, gitRepo);
       return {
-        revisionHistory: await revisionHistory,
         keyDef: await keyDef,
         manifest,
       };
@@ -133,6 +132,13 @@ export default class KeysRepository {
     return this._gitTransactionManager.with(async (gitRepo) => {
       const pathForManifest = getPathForManifest(keyPath);
       return JSON.parse(await gitRepo.readFile(pathForManifest, { revision }));
+    });
+  }
+
+  getKeyRevisionHistory(keyPath) {
+    return this._gitTransactionManager.read(async (gitRepo) => {
+      const manifest = await getManifestFile(keyPath, gitRepo);
+      return getRevisionHistory(manifest, gitRepo);
     });
   }
 

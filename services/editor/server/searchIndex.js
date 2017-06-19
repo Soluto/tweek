@@ -6,6 +6,7 @@ import { promisify } from 'bluebird';
 const readFile = promisify(fs.readFile);
 
 let index;
+let manifests;
 
 async function refreshIndex(repoDir) {
   const indexFile = './searchIndex.json';
@@ -18,13 +19,18 @@ async function refreshIndex(repoDir) {
     });
   });
 
-  let stringIndex = await readFile(indexFile);
-  index = lunr.Index.load(JSON.parse(stringIndex));
+  const stringIndex = await readFile(indexFile);
+  const obj = JSON.parse(stringIndex);
+  index = lunr.Index.load(obj.index);
+  manifests = obj.manifests;
 }
 
 export default {
   get index() {
     return index;
+  },
+  get manifests() {
+    return manifests;
   },
   refreshIndex,
 };
