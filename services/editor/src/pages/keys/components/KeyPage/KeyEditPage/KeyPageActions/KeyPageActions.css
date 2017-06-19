@@ -6,12 +6,12 @@
 .key-action-buttons-wrapper {
   float: right;
 }
-.key-action-buttons-wrapper [id=save-changes-button] {
+.key-action-buttons-wrapper .save-button {
   margin-left: 10px;
   width: 125px;
 }
-.key-action-buttons-wrapper [id=save-changes-button][data-state-is-saving=true],
-.key-action-buttons-wrapper [id=save-changes-button][data-state-is-saving=true]:disabled {
+.key-action-buttons-wrapper .save-button[data-state-is-saving=true],
+.key-action-buttons-wrapper .save-button[data-state-is-saving=true]:disabled {
   background-color: green;
 }
 .key-action-buttons-wrapper .disable-button {

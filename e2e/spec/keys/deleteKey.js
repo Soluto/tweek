@@ -30,27 +30,24 @@ describe('delete key', () => {
 
   describe('archive', () => {
     it('should archive key', () => {
-      browser.click(keySelectors.ARCHIVE_KEY_BUTTON);
-      keysPageObject.waitForSaved();
+      keysPageObject.commitChanges(keySelectors.ARCHIVE_KEY_BUTTON);
 
       expect(browser.isVisible(keySelectors.READONLY_KEY_MESSAGE), 'should show key is readonly message').to.be.true;
       const displayText = browser.getText(keySelectors.KEY_DISPLAY_NAME);
       expect(displayText).to.startsWith('ARCHIVED: ');
       expect(browser.isVisible(keySelectors.ARCHIVE_KEY_BUTTON), 'should not show archive key button').to.be.false;
       expect(browser.isVisible(keySelectors.DELETE_KEY_BUTTON), 'should show delete key button').to.be.true;
-      expect(browser.isVisible(keySelectors.RESTORE_KEY_BUTTON), 'should show restore key button').to.be.true;
+      expect(browser.isVisible(keySelectors.UNARCHIVE_KEY_BUTTON), 'should show unarchive key button').to.be.true;
     });
   });
 
-  describe('restore', () => {
+  describe('unarchive', () => {
     beforeEach(() => {
-      browser.click(keySelectors.ARCHIVE_KEY_BUTTON);
-      keysPageObject.waitForSaved();
+      keysPageObject.commitChanges(keySelectors.ARCHIVE_KEY_BUTTON);
     });
 
-    it('should restore key', () => {
-      browser.click(keySelectors.RESTORE_KEY_BUTTON);
-      keysPageObject.waitForSaved();
+    it('should unarchive key', () => {
+      keysPageObject.commitChanges(keySelectors.UNARCHIVE_KEY_BUTTON);
 
       expect(browser.isVisible(keySelectors.READONLY_KEY_MESSAGE), 'should not show key is readonly message').to.be.false;
       const displayText = browser.getText(keySelectors.KEY_DISPLAY_NAME);
@@ -58,14 +55,13 @@ describe('delete key', () => {
 
       expect(browser.isVisible(keySelectors.ARCHIVE_KEY_BUTTON), 'should show archive key button').to.be.true;
       expect(browser.isVisible(keySelectors.DELETE_KEY_BUTTON), 'should not show delete key button').to.be.false;
-      expect(browser.isVisible(keySelectors.RESTORE_KEY_BUTTON), 'should not show restore key button').to.be.false;
+      expect(browser.isVisible(keySelectors.UNARCHIVE_KEY_BUTTON), 'should not show unarchive key button').to.be.false;
     })
   });
 
   describe('delete', () => {
     beforeEach(() => {
-      browser.click(keySelectors.ARCHIVE_KEY_BUTTON);
-      keysPageObject.waitForSaved();
+      keysPageObject.commitChanges(keySelectors.ARCHIVE_KEY_BUTTON);
     });
 
     it('should not delete key if alert was not accepted', () => {

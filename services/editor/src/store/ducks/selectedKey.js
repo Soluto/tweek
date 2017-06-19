@@ -5,22 +5,6 @@ import * as ContextService from '../../services/context-service';
 import fetch from '../../utils/fetch';
 import { withJsonData } from '../../utils/http';
 import {
-  KEY_OPENED,
-  KEY_OPENING,
-  KEY_RULEDEF_UPDATED,
-  KEY_MANIFEST_UPDATED,
-  KEY_SAVED,
-  KEY_SAVING,
-  KEY_NAME_CHANGE,
-  KEY_REVISION_HISTORY,
-  KEY_VALIDATION_CHANGE,
-  KEY_VALUE_TYPE_CHANGE,
-  SHOW_KEY_VALIDATIONS,
-  KEY_DELETING,
-  KEY_DELETED,
-  KEY_ADDED,
-} from './ducks-utils/actions';
-import {
   createBlankJPadKey,
   createBlankKeyManifest,
   BLANK_KEY_NAME,
@@ -30,6 +14,20 @@ import keyValueTypeValidations from './ducks-utils/validations/key-value-type-va
 import { downloadTags } from './tags';
 import { showError } from './notifications';
 import { showConfirm } from './alerts';
+import { addKeyToList, removeKeyFromList } from './keys';
+
+const KEY_OPENED = 'KEY_OPENED';
+const KEY_OPENING = 'KEY_OPENING';
+const KEY_RULEDEF_UPDATED = 'KEY_RULEDEF_UPDATED';
+const KEY_MANIFEST_UPDATED = 'KEY_MANIFEST_UPDATED';
+const KEY_SAVED = 'KEY_SAVED';
+const KEY_SAVING = 'KEY_SAVING';
+const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
+const KEY_REVISION_HISTORY = 'KEY_REVISION_HISTORY';
+const KEY_VALIDATION_CHANGE = 'KEY_VALIDATION_CHANGE';
+const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
+const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
+const KEY_CLOSED = 'KEY_CLOSED';
 
 function updateRevisionHistory(keyName, revisionHistory) {
   return async function (dispatch) {
@@ -80,6 +78,10 @@ export function openKey(key, { revision } = {}) {
   };
 }
 
+export function closeKey() {
+  return { type: KEY_CLOSED };
+}
+
 export function updateKeyDef(keyDef) {
   return { type: KEY_RULEDEF_UPDATED, payload: keyDef };
 }
@@ -87,11 +89,6 @@ export function updateKeyDef(keyDef) {
 export function updateKeyManifest(manifest) {
   return { type: KEY_MANIFEST_UPDATED, payload: manifest };
 }
-
-const confirmArchievAlert = {
-  title: 'Archive',
-  message: 'Archiving the key will discard all your changes.\nDo you want to continue?',
-};
 
 async function performSave(dispatch, keyName, data) {
   dispatch({ type: KEY_SAVING });
@@ -112,6 +109,11 @@ async function performSave(dispatch, keyName, data) {
   return isSaveSucceeded;
 }
 
+const confirmArchievAlert = {
+  title: 'Archive',
+  message: 'Archiving the key will discard all your changes.\nDo you want to continue?',
+};
+
 export function archiveKey(archived) {
   return async function (dispatch, getState) {
     const { selectedKey: { key, local, remote } } = getState();
@@ -119,22 +121,14 @@ export function archiveKey(archived) {
     if (!R.equals(local, remote) && !(await dispatch(showConfirm(confirmArchievAlert))).result)
       return;
 
-    const manifest = {
-      ...remote.manifest,
-      meta: {
-        ...remote.manifest.meta,
-        archived,
-      },
-    };
-
-    const keyToSave = { ...remote, manifest };
+    const keyToSave = R.assocPath(['manifest', 'meta', 'archived'], archived, remote);
     if (!await performSave(dispatch, key, keyToSave)) return;
 
     dispatch({ type: KEY_OPENED, payload: { key, ...keyToSave } });
     if (archived) {
-      dispatch({ type: KEY_DELETED, payload: key });
+      dispatch(removeKeyFromList(key));
     } else {
-      dispatch({ type: KEY_ADDED, payload: key });
+      dispatch(addKeyToList(key));
     }
     dispatch(updateRevisionHistory(key));
   };
@@ -213,11 +207,35 @@ export function saveKey() {
 
     dispatch(updateRevisionHistory(savedKey));
 
-    if (isNewKey) dispatch({ type: KEY_ADDED, payload: savedKey });
+    if (isNewKey) dispatch(addKeyToList(savedKey));
     const shouldOpenNewKey = isNewKey && getState().selectedKey.key === BLANK_KEY_NAME;
 
     if (shouldOpenNewKey) {
       dispatch(push(`/keys/${savedKey}`));
+    }
+  };
+}
+
+const deleteKeyAlert = key => ({
+  title: 'Warning',
+  message: `Are you sure you want to delete '${key}' key?`,
+});
+
+export function deleteKey() {
+  return async function (dispatch, getState) {
+    const { selectedKey: { key } } = getState();
+
+    if (!(await dispatch(showConfirm(deleteKeyAlert(key)))).result) return;
+
+    dispatch(push('/keys'));
+    try {
+      await fetch(`/api/keys/${key}`, {
+        method: 'delete',
+      });
+
+      dispatch(removeKeyFromList(key));
+    } catch (error) {
+      dispatch(showError({ title: 'Failed to delete key!', error }));
     }
   };
 }
@@ -331,12 +349,6 @@ const handleKeyValidationChange = ({ ...state }, { payload }) => {
   };
 };
 
-const handleKeyDeleting = ({ remote, ...otherState }) => ({
-  ...otherState,
-  local: { ...remote },
-  remote: { ...remote },
-});
-
 const handleKeyValueTypeChange = (
   { local: { manifest, ...restOfLocal }, ...state },
   { payload },
@@ -377,10 +389,10 @@ export default handleActions(
     [KEY_SAVING]: handleKeySaving,
     [KEY_NAME_CHANGE]: handleKeyNameChange,
     [KEY_VALIDATION_CHANGE]: handleKeyValidationChange,
-    [KEY_DELETING]: handleKeyDeleting,
     [KEY_VALUE_TYPE_CHANGE]: handleKeyValueTypeChange,
     [KEY_REVISION_HISTORY]: handleKeyRevisionHistory,
     [SHOW_KEY_VALIDATIONS]: handleShowKeyValidations,
+    [KEY_CLOSED]: () => null,
   },
   null,
 );
