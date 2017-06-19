@@ -5,10 +5,12 @@ metadata:
 spec:
   selector:
     app: tweek-git
+    type: NodePort
   ports:
     - protocol: TCP
       port: 4001
       targetPort: 22
+
 ---
 kind: Service
 apiVersion: v1
