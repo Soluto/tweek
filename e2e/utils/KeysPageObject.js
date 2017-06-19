@@ -186,7 +186,7 @@ export default class KeysPageObject extends PageObject {
   }
 
   setRuleValue(ruleNumber, value, keyValueType) {
-    const ruleValueInputSelector = keySelectors.ruleValueInput(ruleNumber, keyValueType == "Boolean");
+    const ruleValueInputSelector = keySelectors.ruleValueInput(ruleNumber, keyValueType === "Boolean");
     this.browser.setValue(ruleValueInputSelector, value);
   }
 
@@ -202,12 +202,8 @@ export default class KeysPageObject extends PageObject {
     }, source);
   }
 
-  waitForSaved() {
+  commitChanges(selector = keySelectors.SAVE_CHANGES_BUTTON) {
+    this.browser.click(selector);
     this.browser.waitUntil(() => !this.hasChanges() && !this.isSaving(), PageObject.GIT_TRANSACTION_TIMEOUT, "changes were not saved");
-  }
-
-  saveChanges() {
-    this.browser.click(keySelectors.SAVE_CHANGES_BUTTON);
-    this.waitForSaved();
   }
 }

@@ -31,7 +31,7 @@ describe('dependent keys', () => {
     browser.setValue(conditionPropertyInputSelector, `keys.${keyWithoutDependencyFullPath}`);
     keysPageObject.setConditionValue(1, 1, 'value');
 
-    keysPageObject.saveChanges();
+    keysPageObject.commitChanges();
   });
 
   it('should not save circular dependencies', () => {
@@ -46,13 +46,13 @@ describe('dependent keys', () => {
     browser.click(keySelectors.ADD_RULE_BUTTON);
     browser.setValue(conditionPropertyInputSelector, `keys.${keyWithDependencyFullPath3}`);
     keysPageObject.setConditionValue(1, 1, 'value');
-    keysPageObject.saveChanges();
+    keysPageObject.commitChanges();
 
     keysPageObject.addEmptyKey(keyWithDependencyFullPath2);
     browser.click(keySelectors.ADD_RULE_BUTTON);
     browser.setValue(conditionPropertyInputSelector, `keys.${keyWithDependencyFullPath1}`);
     keysPageObject.setConditionValue(1, 1, 'value');
-    keysPageObject.saveChanges();
+    keysPageObject.commitChanges();
 
     keysPageObject.addEmptyKey(keyWithDependencyFullPath3);
     browser.click(keySelectors.ADD_RULE_BUTTON);
