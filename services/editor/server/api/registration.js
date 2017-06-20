@@ -1,24 +1,40 @@
-import Chance from 'chance';
-const chance = new Chance();
+import webPush from 'web-push';
+import R from 'ramda';
+import vapidKeys from '../vapid.json';
 
 const clients = {};
 
 function log(...args) {
-  console.log('[SOCKET]', ...args);
+  console.log('[PUSH]', ...args);
 }
 
-export const register = (socket) => {
-  log('registering new client');
-  const clientId = chance.guid();
-  clients[clientId] = socket;
-  socket.on('disconnect', () => delete clients[clientId]);
-};
+function clientExists(subscription) {
+  return R.pipe(R.values, R.contains)(subscription)(clients);
+}
 
-export const notifyClients = (msg = 'refresh') => {
-  try {
-    log(`notifying ${Object.keys(clients).length} clients`);
-    Object.keys(clients).forEach(clientId => clients[clientId].emit(msg));
-  } catch (err) {
-    console.warn('error notifying clients', err);
+export function getPublicKey(req, res) {
+  res.send(vapidKeys.publicKey);
+}
+
+export function register(req, res) {
+  const subscription = req.body;
+  if (!clientExists(subscription)) {
+    log('registering new client');
+    clients[subscription.endpoint] = subscription;
+    log(`Clients registered: ${Object.keys(clients).length}`);
   }
-};
+  res.sendStatus(201);
+}
+
+export function notifyClients(payload = 'refresh') {
+  log(`notifying ${Object.keys(clients).length} clients`);
+  Object.keys(clients).forEach(async (clientId) => {
+    const subscription = clients[clientId];
+    try {
+      webPush.sendNotification(subscription, payload);
+    } catch (error) {
+      console.warn('error notifying client', error);
+      delete clients[clientId];
+    }
+  });
+}

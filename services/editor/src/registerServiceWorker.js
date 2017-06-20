@@ -1,45 +1,46 @@
-// In production, we register a service worker to serve assets from local cache.
+import fetch from './utils/fetch';
 
-// This lets the app load faster on subsequent visits in production, and gives
-// it offline capabilities. However, it also means that developers (and users)
-// will only see deployed updates on the "N+1" visit to a page, since previously
-// cached resources are updated in the background.
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
 
-// To learn more about the benefits of this model, read https://goo.gl/KwvDNy.
-// This link also includes instructions on opting out of this behavior.
+  const rawData = atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
+async function getSubscription(pushManager) {
+  const subscription = await pushManager.getSubscription();
+  if (subscription) return subscription;
+
+  const response = await fetch('/api/public-key');
+  const publicKey = await response.text();
+  const applicationServerKey = urlBase64ToUint8Array(publicKey);
+  return pushManager.subscribe({ userVisibleOnly: true, applicationServerKey });
+}
 
 export default function register() {
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
+    window.addEventListener('load', async () => {
       const swUrl = `${process.env.PUBLIC_URL}/service-worker.bundle.js`;
-      navigator.serviceWorker
-        .register(swUrl)
-        .then((registration) => {
-          Notification.requestPermission();
+      try {
+        const registration = await navigator.serviceWorker.register(swUrl);
 
-          registration.onupdatefound = () => {
-            const installingWorker = registration.installing;
-            installingWorker.onstatechange = () => {
-              if (installingWorker.state === 'installed') {
-                if (navigator.serviceWorker.controller) {
-                  // At this point, the old content will have been purged and
-                  // the fresh content will have been added to the cache.
-                  // It's the perfect time to display a "New content is
-                  // available; please refresh." message in your web app.
-                  console.log('New content is available; please refresh.');
-                } else {
-                  // At this point, everything has been precached.
-                  // It's the perfect time to display a
-                  // "Content is cached for offline use." message.
-                  console.log('Content is cached for offline use.');
-                }
-              }
-            };
-          };
-        })
-        .catch((error) => {
-          console.error('Error during service worker registration:', error);
+        Notification.requestPermission();
+
+        const subscription = await getSubscription(registration.pushManager);
+        await fetch('/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(subscription),
         });
+      } catch (error) {
+        console.error('Error during service worker registration:', error);
+      }
     });
   }
 }
