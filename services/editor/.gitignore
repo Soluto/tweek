@@ -11,3 +11,4 @@
 *.bundle.js
 *.bundle.js.map
 searchIndex.json
+vapidKeys.json
