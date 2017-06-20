@@ -24,7 +24,6 @@ self.addEventListener('notificationclick', (event) => {
 
 self.addEventListener('push', (event) => {
   if (event.data.text() === 'refresh') {
-    console.log('refreshing cache...');
     refresh().catch(error => console.error('error while refreshing cache', error));
   }
 });
