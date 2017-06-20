@@ -18,6 +18,7 @@ using Scrutor;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Engine.Rules.Validation;
@@ -37,6 +38,8 @@ using static Engine.Core.Rules.Utils;
 using static LanguageExt.Prelude;
 using FSharpUtils.Newtonsoft;
 using Engine.DataTypes;
+using LanguageExt;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Newtonsoft.Json.Linq;
 
 namespace Tweek.ApiService.NetCore
@@ -88,14 +91,8 @@ namespace Tweek.ApiService.NetCore
                 {
                     opt.SerializerSettings.ContractResolver = tweekContactResolver;
                 });
-            services.AddCors(options =>
-            {
-                options.AddPolicy("All",
-                    builder => builder.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials());
-            });
+
+            SetupCors(services);
 
             RegisterMetrics(services);
             services.AdaptSingletons<IDiagnosticsProvider, HealthCheck>(inner => new DiagnosticsProviderDecorator(inner));
@@ -117,6 +114,38 @@ namespace Tweek.ApiService.NetCore
                 options.IncludeXmlComments(xmlPath);
 
             });
+        }
+
+        private void SetupCors(IServiceCollection services)
+        {
+            foreach (var configurationSection in Configuration.GetSection("CorsPolicies").GetChildren())
+            {
+                services.AddCors(options => options.AddPolicy(configurationSection.Key,
+                    builder =>
+                    {
+                        builder.WithHeaders(configurationSection.GetSection("Headers")?.Value?.Split(',') ?? new [] {""})
+                            .WithMethods(configurationSection.GetSection("Methods")?.Value?.Split(',') ?? new[] { "" })
+                            .WithOrigins(configurationSection.GetSection("Origins")?.Value?.Split(',') ?? new[] { "" })
+                            .WithExposedHeaders(configurationSection.GetSection("ExposedHeaders")?.Value?.Split(',') ?? new[] { "" });
+
+                        if (configurationSection.GetValue<bool>("AllowCredentials"))
+                        {
+                            builder.AllowCredentials();
+                        }
+                        else
+                        {
+                            builder.DisallowCredentials();
+                        }
+
+                        var maxPreflightAge = configurationSection.GetValue<double>("MaxPreflightAge");
+                        if (maxPreflightAge != 0)
+                        {
+                            builder.SetPreflightMaxAge(TimeSpan.FromSeconds(maxPreflightAge));
+                        }
+
+                    }
+                ));
+            }
         }
 
         private void RegisterMetrics(IServiceCollection services)
