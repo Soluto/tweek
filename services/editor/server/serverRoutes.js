@@ -4,6 +4,7 @@ import * as TypesRoutes from './api/types';
 import * as TagsRoutes from './api/tags';
 import * as ContextRoutes from './api/context';
 import * as SearchRoutes from './api/search';
+import * as Registration from './api/registration';
 import requestErrorHandlingWrapper from './utils/request-error-handling-wrapper';
 
 export default (config) => {
@@ -39,6 +40,9 @@ export default (config) => {
   app.get('/search-index', addConfig(SearchRoutes.getSearchIndex));
   app.get('/search', addConfig(SearchRoutes.search));
   app.get('/suggestions', addConfig(SearchRoutes.getSuggestions));
+
+  app.get('/public-key', addConfig(Registration.getPublicKey));
+  app.post('/register', addConfig(Registration.register));
 
   app.use('/*', (req, res) => res.sendStatus(404));
 

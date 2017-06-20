@@ -1,12 +1,12 @@
 import path from 'path';
 import http from 'http';
 import express from 'express';
-import socketio from 'socket.io';
 import nconf from 'nconf';
 import session from 'express-session';
 import Promise from 'bluebird';
 import bodyParser from 'body-parser';
 import Rx from 'rxjs';
+import webpush from 'web-push';
 import serverRoutes from './serverRoutes';
 import GitRepository from './repositories/git-repository';
 import Transactor from './utils/transactor';
@@ -15,6 +15,7 @@ import TagsRepository from './repositories/tags-repository';
 import GitContinuousUpdater from './repositories/git-continuous-updater';
 import searchIndex from './searchIndex';
 import * as Registration from './api/registration';
+import vapidKeys from './vapid.json';
 
 const crypto = require('crypto');
 const passport = require('passport');
@@ -104,6 +105,8 @@ function addAuthSupport(server) {
 }
 
 const startServer = () => {
+  webpush.setVapidDetails('http://tweek.host', vapidKeys.publicKey, vapidKeys.privateKey);
+
   const app = express();
   const server = http.Server(app);
 
@@ -123,9 +126,6 @@ const startServer = () => {
   }
   app.use(bodyParser.json()); // for parsing application/json
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-
-  const io = socketio(server);
-  io.on('connection', Registration.register);
 
   app.use('/api', serverRoutes({ tagsRepository, keysRepository, tweekApiHostname }));
 

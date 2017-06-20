@@ -2,8 +2,7 @@ import install from './install';
 import activate from './activate';
 import loadFromCache from './loadFromCache';
 import handleNotification from './handleNotification';
-
-self.importScripts('/socket.io/socket.io.js');
+import { refresh } from './data-actions';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(install());
@@ -21,4 +20,11 @@ self.addEventListener('fetch', (event) => {
 
 self.addEventListener('notificationclick', (event) => {
   event.waitUntil(handleNotification(event.notification));
+});
+
+self.addEventListener('push', (event) => {
+  if (event.data.text() === 'refresh') {
+    console.log('refreshing cache...');
+    refresh().catch(error => console.error('error while refreshing cache', error));
+  }
 });
