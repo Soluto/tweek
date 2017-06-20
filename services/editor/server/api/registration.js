@@ -14,9 +14,13 @@ export function getPublicKey(req, res) {
 
 export function register(req, res) {
   const subscription = req.body;
-  log('registering new client');
+  if (subscription.endpoint in clients) {
+    log('updating existing client');
+  } else {
+    log('registering new client');
+  }
   clients[subscription.endpoint] = subscription;
-  log(`Clients registered: ${Object.keys(clients).length}`);
+  log('registered clients:', Object.keys(clients).length);
   res.sendStatus(201);
 }
 

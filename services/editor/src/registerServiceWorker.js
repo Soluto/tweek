@@ -1,3 +1,4 @@
+import Promise from 'bluebird';
 import fetch from './utils/fetch';
 
 function urlBase64ToUint8Array(base64String) {
@@ -23,6 +24,22 @@ async function getSubscription(pushManager) {
   return pushManager.subscribe({ userVisibleOnly: true, applicationServerKey });
 }
 
+async function persistRegistration(subscription) {
+  while (true) {
+    try {
+      await fetch('/api/push-service/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(subscription),
+      });
+    } catch (error) {
+      console.error('Error during service worker registration', error);
+    }
+
+    await Promise.delay(5 * 60 * 1000);
+  }
+}
+
 export default function register() {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', async () => {
@@ -33,11 +50,7 @@ export default function register() {
         Notification.requestPermission();
 
         const subscription = await getSubscription(registration.pushManager);
-        await fetch('/api/push-service/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(subscription),
-        });
+        persistRegistration(subscription);
       } catch (error) {
         console.error('Error during service worker registration:', error);
       }
