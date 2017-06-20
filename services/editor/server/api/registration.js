@@ -8,21 +8,15 @@ function log(...args) {
   console.log('[PUSH]', ...args);
 }
 
-function clientExists(subscription) {
-  return R.pipe(R.values, R.contains)(subscription)(clients);
-}
-
 export function getPublicKey(req, res) {
   res.send(vapidKeys.publicKey);
 }
 
 export function register(req, res) {
   const subscription = req.body;
-  if (!clientExists(subscription)) {
-    log('registering new client');
-    clients[subscription.endpoint] = subscription;
-    log(`Clients registered: ${Object.keys(clients).length}`);
-  }
+  log('registering new client');
+  clients[subscription.endpoint] = subscription;
+  log(`Clients registered: ${Object.keys(clients).length}`);
   res.sendStatus(201);
 }
 

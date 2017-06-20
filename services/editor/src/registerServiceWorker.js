@@ -17,7 +17,7 @@ async function getSubscription(pushManager) {
   const subscription = await pushManager.getSubscription();
   if (subscription) return subscription;
 
-  const response = await fetch('/api/public-key');
+  const response = await fetch('/api/push-service/public-key');
   const publicKey = await response.text();
   const applicationServerKey = urlBase64ToUint8Array(publicKey);
   return pushManager.subscribe({ userVisibleOnly: true, applicationServerKey });
@@ -33,7 +33,7 @@ export default function register() {
         Notification.requestPermission();
 
         const subscription = await getSubscription(registration.pushManager);
-        await fetch('/api/register', {
+        await fetch('/api/push-service/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(subscription),
