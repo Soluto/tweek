@@ -26,8 +26,8 @@ export async function getAllKeys(req, res, { keysRepository }) {
   res.json(keys);
 }
 
-export function getAllManifests(req, res) {
-  res.json(searchIndex.manifests);
+export async function getAllManifests(req, res) {
+  res.json(await searchIndex.manifests);
 }
 
 export async function getKey(req, res, { keysRepository }, { params }) {
