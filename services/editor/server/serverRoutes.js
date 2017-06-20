@@ -41,8 +41,8 @@ export default (config) => {
   app.get('/search', addConfig(SearchRoutes.search));
   app.get('/suggestions', addConfig(SearchRoutes.getSuggestions));
 
-  app.get('/public-key', addConfig(Registration.getPublicKey));
-  app.post('/register', addConfig(Registration.register));
+  app.get('/push-service/public-key', addConfig(Registration.getPublicKey));
+  app.post('/push-service/register', addConfig(Registration.register));
 
   app.use('/*', (req, res) => res.sendStatus(404));
 
