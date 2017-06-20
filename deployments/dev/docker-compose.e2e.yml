@@ -33,3 +33,4 @@ services:
       - CorsPolicies__Keys__Origins=http://tweek-editor:3000,http://testorigin
       - CorsPolicies__Keys__Methods=GET
       - CorsPolicies__Keys__MaxPreflightAge=60
+      - CorsEnabled=true
