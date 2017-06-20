@@ -1,5 +1,4 @@
 import webPush from 'web-push';
-import R from 'ramda';
 import vapidKeys from '../vapid.json';
 
 const clients = {};
@@ -12,15 +11,19 @@ export function getPublicKey(req, res) {
   res.send(vapidKeys.publicKey);
 }
 
-export function register(req, res) {
+export async function register(req, res) {
   const subscription = req.body;
   if (subscription.endpoint in clients) {
     log('updating existing client');
   } else {
     log('registering new client');
   }
+
+  await webPush.sendNotification(subscription, 'refresh');
+
   clients[subscription.endpoint] = subscription;
   log('registered clients:', Object.keys(clients).length);
+
   res.sendStatus(201);
 }
 
@@ -29,7 +32,7 @@ export function notifyClients(payload = 'refresh') {
   Object.keys(clients).forEach(async (clientId) => {
     const subscription = clients[clientId];
     try {
-      webPush.sendNotification(subscription, payload);
+      await webPush.sendNotification(subscription, payload);
     } catch (error) {
       console.warn('error notifying client', error);
       delete clients[clientId];
