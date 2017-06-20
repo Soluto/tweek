@@ -15,7 +15,7 @@ import TagsRepository from './repositories/tags-repository';
 import GitContinuousUpdater from './repositories/git-continuous-updater';
 import searchIndex from './searchIndex';
 import * as Registration from './api/registration';
-import vapidKeys from './vapid.json';
+import getVapidKeys from './getVapidKeys';
 
 const crypto = require('crypto');
 const passport = require('passport');
@@ -26,6 +26,7 @@ nconf.argv().env().defaults({
   PORT: 3001,
   GIT_CLONE_TIMEOUT_IN_MINUTES: 1,
   TWEEK_API_HOSTNAME: 'https://api.playground.tweek.host',
+  VAPID_KEYS: './vapidKeys.json',
 });
 nconf.required(['GIT_URL', 'GIT_USER']);
 
@@ -104,7 +105,8 @@ function addAuthSupport(server) {
   });
 }
 
-const startServer = () => {
+const startServer = async () => {
+  const vapidKeys = await getVapidKeys();
   webpush.setVapidDetails('http://tweek.host', vapidKeys.publicKey, vapidKeys.privateKey);
 
   const app = express();

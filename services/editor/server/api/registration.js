@@ -1,5 +1,5 @@
 import webPush from 'web-push';
-import vapidKeys from '../vapid.json';
+import getVapidKeys from '../getVapidKeys';
 
 const clients = {};
 
@@ -7,7 +7,8 @@ function log(...args) {
   console.log('[PUSH]', ...args);
 }
 
-export function getPublicKey(req, res) {
+export async function getPublicKey(req, res) {
+  const vapidKeys = await getVapidKeys();
   res.send(vapidKeys.publicKey);
 }
 
