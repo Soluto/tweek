@@ -14,8 +14,8 @@ injectTapEventPlugin();
 let store = configureStore({});
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.onmessage = (event) => {
-    if (event.data === 'refresh') {
+  navigator.serviceWorker.onmessage = ({ data: { type } }) => {
+    if (type === 'refresh') {
       refreshTypes();
       refreshSchema();
       store.dispatch(getKeys());
