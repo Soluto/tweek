@@ -6,7 +6,6 @@ import KeysList from '../KeysList/KeysList';
 import withLoading from '../../../../hoc/with-loading';
 import { refreshTypes } from '../../../../services/types-service';
 import { refreshSchema } from '../../../../services/context-service';
-import messages$ from '../../../../services/messages';
 import './KeysPage.css';
 
 export default compose(
@@ -20,15 +19,6 @@ export default compose(
       if (!this.props.keys || this.props.keys.length === 0) {
         this.props.getKeys();
       }
-      this.disposable = messages$.filter(x => x === 'refresh').subscribe((_) => {
-        this.props.getKeys();
-        refreshTypes();
-        refreshSchema();
-      });
-    }
-
-    componentWillUnmount() {
-      this.disposable.dispose();
     }
 
     render() {
