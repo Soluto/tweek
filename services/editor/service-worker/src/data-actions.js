@@ -61,6 +61,9 @@ export async function refresh() {
 
     currentRevision = revision;
     console.log('cache refreshed', revision);
+
+    const clients = await self.clients.matchAll();
+    clients.forEach(client => client.postMessage({ type: 'refresh' }));
   } catch (error) {
     console.warn('failed to refresh cache', error);
   }
