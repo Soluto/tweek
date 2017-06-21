@@ -26,8 +26,8 @@ export async function getAllKeys(req, res, { keysRepository }) {
   res.json(keys);
 }
 
-export function getAllManifests(req, res) {
-  res.json(searchIndex.manifests);
+export async function getAllManifests(req, res) {
+  res.json(await searchIndex.manifests);
 }
 
 export async function getKey(req, res, { keysRepository }, { params }) {
@@ -74,3 +74,8 @@ export const deleteKey = injectAuthor(async (req, res, { keysRepository, author 
   await keysRepository.deleteKey(keyPath, author);
   res.send('OK');
 });
+
+export async function getRevision(req, res, { keysRepository }) {
+  const commit = await keysRepository.getRevision();
+  res.json(commit.sha());
+}
