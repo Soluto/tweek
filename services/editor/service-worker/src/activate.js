@@ -1,6 +1,5 @@
 import { CACHE_NAME, urls } from './constants';
 import getUrl from './getUrl';
-import activateSocket from './activateSocket';
 import { refresh } from './data-actions';
 
 export default async function activate() {
@@ -13,7 +12,6 @@ export default async function activate() {
   );
 
   try {
-    activateSocket();
     await refresh();
   } catch (error) {
     console.error('error while loading cache', error);
