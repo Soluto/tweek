@@ -95,6 +95,8 @@ steps:
             - CorsPolicies__Keys__Methods=GET
             - CorsPolicies__Keys__MaxPreflightAge=60
             - CorsEnabled=true
+            - CorsPolicies__Keys__Headers=
+            - CorsPolicies__Keys__ExposedHeaders=
         tweek-editor:
           image: ${{BuildingEditor}}
           depends_on:
