@@ -26,7 +26,7 @@ nconf.argv().env().defaults({
   PORT: 3001,
   GIT_CLONE_TIMEOUT_IN_MINUTES: 1,
   TWEEK_API_HOSTNAME: 'https://api.playground.tweek.host',
-  VAPID_KEYS: './vapidKeys.json',
+  VAPID_KEYS: './vapid/keys.json',
 });
 nconf.required(['GIT_URL', 'GIT_USER']);
 
@@ -64,7 +64,7 @@ GitContinuousUpdater.onUpdate(gitTransactionManager)
   )
   .do(_ => console.log('index was refreshed'), err => console.log('error refreshing index', err))
   .retry()
-  .map(Registration.notifyClients)
+  .map(_ => Registration.notifyClients())
   .subscribe();
 
 function addDirectoryTraversalProtection(server) {

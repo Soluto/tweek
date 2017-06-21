@@ -8,7 +8,7 @@
 /build
 /dist
 /rulesRepository
+/vapid
 *.bundle.js
 *.bundle.js.map
 searchIndex.json
-vapidKeys.json
