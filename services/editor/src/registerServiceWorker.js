@@ -24,7 +24,11 @@ async function getSubscription(pushManager) {
   return pushManager.subscribe({ userVisibleOnly: true, applicationServerKey });
 }
 
+const maxRetryCount = 3;
+
 async function persistRegistration(subscription) {
+  let retryCount = 0;
+
   while (true) {
     try {
       await fetch('/api/push-service/register', {
@@ -34,8 +38,14 @@ async function persistRegistration(subscription) {
       });
     } catch (error) {
       console.error('Error during service worker registration', error);
+      if (retryCount === maxRetryCount) throw error;
+      retryCount++;
+
+      await Promise.delay(60 * 1000);
+      continue;
     }
 
+    retryCount = 0;
     await Promise.delay(5 * 60 * 1000);
   }
 }
@@ -50,7 +60,12 @@ export default function register() {
         Notification.requestPermission();
 
         const subscription = await getSubscription(registration.pushManager);
-        persistRegistration(subscription);
+        persistRegistration(subscription).catch(
+          error => (
+            console.error('unregistering service worker', error),
+            registration.unregister()
+          ),
+        );
       } catch (error) {
         console.error('Error during service worker registration:', error);
       }
