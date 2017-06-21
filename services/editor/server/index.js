@@ -1,12 +1,12 @@
 import path from 'path';
 import http from 'http';
 import express from 'express';
-import socketio from 'socket.io';
 import nconf from 'nconf';
 import session from 'express-session';
 import Promise from 'bluebird';
 import bodyParser from 'body-parser';
 import Rx from 'rxjs';
+import webpush from 'web-push';
 import serverRoutes from './serverRoutes';
 import GitRepository from './repositories/git-repository';
 import Transactor from './utils/transactor';
@@ -15,6 +15,7 @@ import TagsRepository from './repositories/tags-repository';
 import GitContinuousUpdater from './repositories/git-continuous-updater';
 import searchIndex from './searchIndex';
 import * as Registration from './api/registration';
+import getVapidKeys from './getVapidKeys';
 
 const crypto = require('crypto');
 const passport = require('passport');
@@ -25,6 +26,7 @@ nconf.argv().env().defaults({
   PORT: 3001,
   GIT_CLONE_TIMEOUT_IN_MINUTES: 1,
   TWEEK_API_HOSTNAME: 'https://api.playground.tweek.host',
+  VAPID_KEYS: './vapid/keys.json',
 });
 nconf.required(['GIT_URL', 'GIT_USER']);
 
@@ -62,7 +64,7 @@ GitContinuousUpdater.onUpdate(gitTransactionManager)
   )
   .do(_ => console.log('index was refreshed'), err => console.log('error refreshing index', err))
   .retry()
-  .map(Registration.notifyClients)
+  .map(_ => Registration.notifyClients())
   .subscribe();
 
 function addDirectoryTraversalProtection(server) {
@@ -103,7 +105,10 @@ function addAuthSupport(server) {
   });
 }
 
-const startServer = () => {
+const startServer = async () => {
+  const vapidKeys = await getVapidKeys();
+  webpush.setVapidDetails('http://tweek.host', vapidKeys.publicKey, vapidKeys.privateKey);
+
   const app = express();
   const server = http.Server(app);
 
@@ -123,9 +128,6 @@ const startServer = () => {
   }
   app.use(bodyParser.json()); // for parsing application/json
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-
-  const io = socketio(server);
-  io.on('connection', Registration.register);
 
   app.use('/api', serverRoutes({ tagsRepository, keysRepository, tweekApiHostname }));
 
