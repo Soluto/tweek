@@ -16,7 +16,7 @@
     <PackageReference Include="App.Metrics.Extensions.Reporting.Graphite" Version="1.0.0-alpha-7" />
     <PackageReference Include="App.Metrics.Formatters.Json" Version="1.0.0" />
     <PackageReference Include="FSharp.Core" Version="4.0.0.1" />
-    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.1.6344.23786" />
+    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.0" />
     <PackageReference Include="LanguageExt.Core" Version="1.9.7" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
@@ -28,7 +28,7 @@
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Scrutor" Version="1.12.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="1.0.0" />
-    <PackageReference Include="Tweek.JPad" Version="0.5.6344.27562" />
+    <PackageReference Include="Tweek.JPad" Version="0.6.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\addons\Rules\Tweek.Drivers.Rules.Management\Tweek.Drivers.Rules.Management.csproj" />
