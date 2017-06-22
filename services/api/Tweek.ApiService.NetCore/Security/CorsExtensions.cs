@@ -11,16 +11,16 @@ namespace Tweek.ApiService.NetCore.Security
 {
     public static class CorsExtensions
     {
-        public const string DEFAULT_POLICY_NAME = "Keys";
+        public const string KEYS_POLICY_NAME = "Keys";
 
         public static void SetupCors(this IServiceCollection services, IConfiguration configuration)
         {
             if (!configuration.GetValue<bool>("CorsEnabled")) return;
 
             var corsPolicies = configuration.GetSection("CorsPolicies");
-            if (corsPolicies.GetChildren().All(section => section.Key != DEFAULT_POLICY_NAME))
+            if (corsPolicies.GetChildren().All(section => section.Key != KEYS_POLICY_NAME))
             {
-                services.AddCors(options => options.AddPolicy(DEFAULT_POLICY_NAME,
+                services.AddCors(options => options.AddPolicy(KEYS_POLICY_NAME,
                     builder => builder
                         .AllowCredentials()
                         .AllowAnyHeader()
@@ -36,7 +36,7 @@ namespace Tweek.ApiService.NetCore.Security
                 var origins = policyConfiguration.GetSection("Origins").Value?.Split(',');
                 var exposedHeaders = policyConfiguration.GetSection("ExposedHeaders").Value?.Split(',');
 
-                if (headers == null || methods == null || origins == null || exposedHeaders == null)
+                if (methods == null || origins == null)
                 {
                     throw new InvalidOperationException(
                         $"Missing configuration fields for {policyConfiguration.Key}, please specify Headers, Methods, Origins and ExposedHeaders");
@@ -44,9 +44,9 @@ namespace Tweek.ApiService.NetCore.Security
 
                 var policyBuilder = new CorsPolicyBuilder(origins);
                 policyBuilder
-                    .WithHeaders(headers)
+                    .WithHeaders(headers ?? new string[] { })
                     .WithMethods(methods)
-                    .WithExposedHeaders(exposedHeaders);
+                    .WithExposedHeaders(exposedHeaders ?? new string[] { });
 
                 if (policyConfiguration.GetValue<bool>("AllowCredentials"))
                 {
