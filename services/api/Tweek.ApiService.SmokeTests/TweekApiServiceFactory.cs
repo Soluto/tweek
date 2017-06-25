@@ -48,6 +48,14 @@ namespace Tweek.ApiService.SmokeTests
 
             return JToken.Load(new JsonTextReader(new StreamReader(stream)));
         }
+
+        public async Task<HttpResponseMessage> GetCorsPreflightResponse(string origin, string method)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Options, $"api/v1/keys/");
+            request.Headers.Add("Access-Control-Request-Method", method);
+            request.Headers.Add("Origin", origin);
+            return await _client.SendAsync(request);
+        }
     }
 
     public static class TweekApiServiceFactory
