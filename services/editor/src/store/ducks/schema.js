@@ -16,8 +16,8 @@ export function saveSchema(identityType) {
   return async (dispatch, getState) => {
     let identityState = getState().schema[identityType];
     let patch = jsondiffpatch.diff(identityState.remote, identityState.local);
-    return dispatch(
-      await fetch(`/api/schema/${identityType}`, {
+    await dispatch(
+      fetch(`/api/schema/${identityType}`, {
         credentials: 'same-origin',
         method: 'PATCH',
         ...withJsonData(patch),
