@@ -135,10 +135,14 @@ export default class GitRepository {
   }
 
   async isSynced() {
-    const remoteCommit = await this._repo.getBranchCommit('remotes/origin/master');
-    const localCommit = await this._repo.getBranchCommit('master');
+    const remoteCommit = await this.getLastCommit('remotes/origin/master');
+    const localCommit = await this.getLastCommit('master');
 
     return remoteCommit.id().equal(localCommit.id()) === 1;
+  }
+
+  getLastCommit(branch = 'master') {
+    return this._repo.getBranchCommit(branch);
   }
 
   async _pushRepositoryChanges(actionName) {

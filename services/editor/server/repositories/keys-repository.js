@@ -169,4 +169,8 @@ export default class KeysRepository {
       await gitRepo.commitAndPush(`Editor - deleting ${keyPath}`, author);
     });
   }
+
+  getRevision() {
+    return this._gitTransactionManager.read(gitRepo => gitRepo.getLastCommit());
+  }
 }

@@ -13,6 +13,8 @@ export default compose(
   withLoading(() => null, () => Promise.all([refreshTypes(), refreshSchema()])),
 )(
   class KeysPage extends Component {
+    displayName = 'KeysPage';
+
     componentDidMount() {
       if (!this.props.keys || this.props.keys.length === 0) {
         this.props.getKeys();

@@ -10,7 +10,11 @@ const replaceUrls = [
     get: () => idbKeyval.keys(),
   },
   {
-    test: /^\/api\/manifests\/(.+)/,
+    test: /^\/api\/manifests\/?$/,
+    get: () => idbKeyval.keys().then(keys => Promise.all(keys.map(key => idbKeyval.get(key)))),
+  },
+  {
+    test: /^\/api\/manifests\/.+/,
     get: (req) => {
       const url = getUrl(req);
       const match = url.match(/^\/api\/manifests\/(.+)/);

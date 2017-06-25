@@ -59,6 +59,7 @@ services:
       - "4004:3000"
     volumes: 
       - ../../services/git-service/ssh:/keys
+      - ../../services/editor/vapid:/opt/vapid
     environment:
       - GIT_USER=git
       - GIT_URL=ssh://git@tweek-git/tweek/repo

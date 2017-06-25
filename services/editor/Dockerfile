@@ -23,9 +23,11 @@ COPY --from=base /src/node_modules/ /opt/app/node_modules
 COPY ./build-index/ /opt/app/build-index
 
 WORKDIR /opt/app/
+VOLUME /opt/vapid/
 
 ENV NODE_ENV=production
 ENV PORT=3000
+ENV VAPID_KEYS=/opt/vapid/keys.json
 EXPOSE 3000
 
 ENTRYPOINT [ "node", "./dist/index.js" ]

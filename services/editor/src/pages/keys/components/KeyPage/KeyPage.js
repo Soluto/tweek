@@ -17,7 +17,7 @@ const onRouteLeaveConfirmFunc = (props) => {
   return !R.equals(local, remote);
 };
 
-const keyPageComp = compose(
+const KeyPage = compose(
   connect(
     (state, { match, location }) => {
       const configKey = location.pathname.substring(
@@ -50,6 +50,9 @@ const keyPageComp = compose(
         openKey(configKey, { revision });
       }
     },
+    componentWillUnmount() {
+      this.props.closeKey();
+    },
   }),
 )(({ showCustomAlert, showAlert, showConfirm, ...props }) => {
   const { selectedKey } = props;
@@ -68,4 +71,6 @@ const keyPageComp = compose(
     : <KeyEditPage {...props} alerter={alerter} />;
 });
 
-export default keyPageComp;
+KeyPage.displayName = 'KeyPage';
+
+export default KeyPage;
