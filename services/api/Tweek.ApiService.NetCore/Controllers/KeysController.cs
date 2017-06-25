@@ -20,7 +20,7 @@ using Microsoft.AspNetCore.Cors;
 
 namespace Tweek.ApiService.NetCore.Controllers
 {
-    [EnableCors("All")]
+    [EnableCors("Keys")]
     public class KeysController : Controller
     {
         private readonly ITweek _tweek;
