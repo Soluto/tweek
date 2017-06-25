@@ -58,4 +58,6 @@ const KeysList = componentFromStream((prop$) => {
   );
 });
 
+KeysList.displayName = 'KeysList';
+
 export default KeysList;
