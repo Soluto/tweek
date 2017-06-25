@@ -39,7 +39,7 @@
     "ramda": "^0.23.0",
     "wdio-mocha-framework": "0.4.3",
     "wdio-spec-reporter": "0.0.5",
-    "webdriverio": "4.2.15"
+    "webdriverio": "4.8.0"
   },
   "devDependencies": {
     "wdio-selenium-standalone-service": "0.0.8"
