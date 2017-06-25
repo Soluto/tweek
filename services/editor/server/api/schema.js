@@ -14,35 +14,29 @@ function getAuthor(req) {
   );
 }
 
+export async function getSchemas(req, res, { keysRepository }) {
+  const prefix = `@tweek/schema`;
+  const manifests = await keysRepository.getAllManifests(prefix);
+  const schemas = manifests.reduce(
+    (acc, m) => ({ ...acc, [m.key_path.substring(prefix.length + 1)]: m.implementation.value }),
+    {},
+  );
+  res.json(schemas);
+}
+
 export async function patchIdentity(req, res, { keysRepository }, { params: { identityName } }) {
   try {
     const author = getAuthor(req);
     const patch = req.body;
-    const prefix = `@tweek/context/${identityName}`;
-    const manifests = await keysRepository.getAllManifests(prefix);
-    const propManifestIndex = R.indexBy(x =>
-      changeCase.pascalCase(x.key_path.substring(`${prefix}/`.length)),
-    )(manifests);
-    const valueDefintion = R.map(manifest => R.clone(manifest.implementation.value))(
-      propManifestIndex,
-    );
-    const newDefintion = jsondiffpatch.patch(valueDefintion, patch);
-
-    const updates = R.toPairs(newDefintion)
-      .filter(
-        ([propName, value]) => !R.equals(propManifestIndex[propName].implementation.value, value),
-      )
-      .map(([propName, value]) => {
-        const manifest = propManifestIndex[propName]
-          ? R.assocPath(['implementation', 'value'], value)(propManifestIndex[propName])
-          : generateSchemaManifest(propName, value);
-
-        const keyPath = `${prefix}/${changeCase.snakeCase(propName)}`;
-        return { keyPath, manifest };
-      });
-    console.log('updates', updates);
-
-    await keysRepository.bulkUpdate(updates, `update schema: ${identityName}`, author);
+    console.log(patch);
+    const key = `@tweek/schema/${identityName}`;
+    const manifest = await keysRepository.getKeyManifest(key);
+    console.log(manifest);
+    const newManifest = R.assocPath(
+      ['implementation', 'value'],
+      jsondiffpatch.patch(manifest.implementation.value, patch),
+    )(manifest);
+    await keysRepository.updateKey(key, newManifest, null, author);
     res.sendStatus(200);
   } catch (ex) {
     console.log(ex);

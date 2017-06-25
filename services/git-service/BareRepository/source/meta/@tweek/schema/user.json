@@ -1,0 +1,37 @@
+{
+    "key_path": "@tweek/schema/user",
+    "meta": {
+        "name": "@tweek/schema/user",
+        "description": "The schema of a user",
+        "tags": [],
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "const",
+        "value": {
+             "BirthDate": {
+               "type":"date"
+             },
+             "ClientVersion": {
+               "type":"version"
+             },
+             "Country": {
+               "type":"string"
+             },
+             "Gender":{
+               "type":{
+                 "base": "string",
+                  "allowedValues": [
+                    "Male",
+                    "Female",
+                    "Other"
+                  ]
+               }
+             }
+        }
+    },
+    "valueType": "object",
+    "enabled": true,
+    "dependencies": []
+}

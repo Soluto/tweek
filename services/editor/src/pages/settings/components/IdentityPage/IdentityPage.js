@@ -1,7 +1,7 @@
 import React from 'react';
 import './IdentityPage.css';
 import { connect } from 'react-redux';
-import IdentityProperty from './IdentityProperty/IdentityProperty';
+import { IdentityPropertyItem, NewIdentityProperty } from './IdentityProperty/IdentityProperty';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import SaveButton from '../../../../components/common/SaveButton/SaveButton';
 import R from 'ramda';
@@ -9,12 +9,12 @@ import * as schemaActions from '../../../../store/ducks/schema';
 
 const IdentityPropertiesEditor = ({ identityProperties, onPropertyUpdate }) =>
   <div className="property-types-list">
-    {R.toPairs(identityProperties).map(([name, type]) =>
-      <IdentityProperty
+    {R.toPairs(identityProperties).map(([name, def]) =>
+      <IdentityPropertyItem
         name={name}
-        onUpdate={value => onPropertyUpdate(name, value)}
+        onUpdate={newDef => onPropertyUpdate(name, newDef)}
         key={name}
-        type={type}
+        def={def}
       />,
     )}
   </div>;
@@ -39,9 +39,9 @@ const IdentityPage = ({ identityType, identityProperties, updateIdentityProperty
         <TabPanel>
           <IdentityPropertiesEditor
             identityProperties={identityProperties.local}
-            onPropertyUpdate={(propName, value) =>
-              updateIdentityProperty(identityType, propName, value)}
+            onPropertyUpdate={R.curryN(3, updateIdentityProperty)(identityType)}
           />
+          <NewIdentityProperty onCreate={R.curryN(3, updateIdentityProperty)(identityType)} />
         </TabPanel>
       </Tabs>
     </div>
