@@ -74,7 +74,7 @@ class KeyEditPage extends Component {
         tags: newTags,
       },
     };
-    this.onSelectedKeyMetaChanged(newManifest);
+    this.onSelectedKeyManifestChanged(newManifest);
   }
 
   onKeyNameChanged = (newKeyName) => {
@@ -90,7 +90,7 @@ class KeyEditPage extends Component {
         name: newDisplayName,
       },
     };
-    this.onSelectedKeyMetaChanged(newManifest);
+    this.onSelectedKeyManifestChanged(newManifest);
   };
 
   onDescriptionChanged(newDescription) {
@@ -102,11 +102,11 @@ class KeyEditPage extends Component {
         description: newDescription,
       },
     };
-    this.onSelectedKeyMetaChanged(newManifest);
+    this.onSelectedKeyManifestChanged(newManifest);
   }
 
-  onSelectedKeyMetaChanged = (newManifest) => {
-    this.props.updateKeyMetaDef(newManifest);
+  onSelectedKeyManifestChanged = (newManifest) => {
+    this.props.updateKeyManifest(newManifest);
   };
 
   onDependencyChanged = (dependencies) => {
@@ -115,14 +115,14 @@ class KeyEditPage extends Component {
       ...oldManifest,
       dependencies,
     };
-    this.onSelectedKeyMetaChanged(newManifest);
+    this.onSelectedKeyManifestChanged(newManifest);
   };
 
   render() {
     const { selectedKey, isInAddMode, isInStickyMode, alerter, revision } = this.props;
     const { key, local: { manifest, keyDef }, revisionHistory } = selectedKey;
     const isHistoricRevision = revisionHistory && revision && revisionHistory[0].sha !== revision;
-    const isReadonly = (!!manifest.meta.readOnly && manifest.meta.readOnly) || isHistoricRevision;
+    const isReadonly = manifest.meta.readOnly || manifest.meta.archived || isHistoricRevision;
 
     const commonHeadersProps = {
       onKeyNameChanged: this.onKeyNameChanged,
@@ -154,7 +154,7 @@ class KeyEditPage extends Component {
                 manifest={manifest}
                 sourceFile={keyDef.source}
                 onSourceFileChange={source => this.props.updateKeyDef({ source })}
-                onManifestChange={this.onSelectedKeyMetaChanged}
+                onManifestChange={this.onSelectedKeyManifestChanged}
                 onDependencyChanged={this.onDependencyChanged}
                 isReadonly={isReadonly}
                 alerter={alerter}
@@ -253,35 +253,37 @@ const KeyFullHeader = (props) => {
   );
 };
 
-const HeaderMainInput = (props) => {
-  const { isInAddMode, onKeyNameChanged, onDisplayNameChanged, keyManifest, isReadonly } = props;
-  return (
-    <div className={'key-main-input'}>
-      {isInAddMode
-        ? <div className={'new-key-input-wrapper'}>
-            <NewKeyInput
-              onKeyNameChanged={name => onKeyNameChanged(name)}
-              displayName={keyManifest.displayName}
-            />
-            <div className={'vertical-separator'} />
-            <KeyValueTypeSelector value={keyManifest.valueType} />
-          </div>
-        : <EditableText
-            onTextChanged={text => onDisplayNameChanged(text)}
-            placeHolder="Enter key display name"
-            maxLength={80}
-            value={keyManifest.meta.name}
-            isReadonly={isReadonly}
-            classNames={{
-              container: 'display-name-container',
-              input: 'display-name-input',
-              text: 'display-name-text',
-              form: 'display-name-form',
-            }}
-          />}
-    </div>
-  );
-};
+const HeaderMainInput = ({
+  isInAddMode,
+  onKeyNameChanged,
+  onDisplayNameChanged,
+  keyManifest: { meta: { name: displayName, archived }, valueType },
+  isReadonly,
+}) =>
+  <div className={'key-main-input'}>
+    {isInAddMode
+      ? <div className={'new-key-input-wrapper'}>
+          <NewKeyInput
+            onKeyNameChanged={name => onKeyNameChanged(name)}
+            displayName={displayName}
+          />
+          <div className={'vertical-separator'} />
+          <KeyValueTypeSelector value={valueType} />
+        </div>
+      : <EditableText
+          onTextChanged={text => onDisplayNameChanged(text)}
+          placeHolder="Enter key display name"
+          maxLength={80}
+          value={archived ? `ARCHIVED: ${displayName}` : displayName}
+          isReadonly={isReadonly}
+          classNames={{
+            container: 'display-name-container',
+            input: 'display-name-input',
+            text: 'display-name-text',
+            form: 'display-name-form',
+          }}
+        />}
+  </div>;
 
 const getKeyPrefix = path => R.slice(0, -1, path.split('/')).join('/');
 const getSugesstions = R.pipe(R.map(getKeyPrefix), R.uniq(), R.filter(x => x !== ''));
@@ -316,3 +318,5 @@ const NewKeyInput = compose(
     </div>
   );
 });
+
+NewKeyInput.displayName = 'NewKeyInput';

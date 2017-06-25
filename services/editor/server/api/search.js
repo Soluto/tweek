@@ -1,15 +1,15 @@
 import performSearch from '../common/perform-search';
 import searchIndex from '../searchIndex';
 
-export function getSearchIndex(req, res) {
-  res.json(searchIndex.index);
+export async function getSearchIndex(req, res) {
+  res.json(await searchIndex.index);
 }
 
-const createSearchEndpoint = field => (req, res) => {
+const createSearchEndpoint = field => async (req, res) => {
   const result = performSearch(req.query.q, {
     maxResults: req.query.count,
     field,
-    index: searchIndex.index,
+    index: await searchIndex.index,
   });
   res.json(result);
 };
