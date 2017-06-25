@@ -3,6 +3,7 @@ import { CACHE_NAME, notificationTypes, urls } from './constants';
 import { refreshIndex } from './search';
 
 let isLoggedIn = true;
+let currentRevision;
 
 export async function testLogin(request, shouldLoadCache = true) {
   const response = await fetch(request);
@@ -40,11 +41,13 @@ async function clearCache() {
 }
 
 export async function refresh() {
+  const response = await fetch(urls.REVISION, { credentials: 'include' });
+  const revision = await response.json();
+  if (revision === currentRevision) return;
+
   console.log('refreshing cache...');
 
   try {
-    await clearCache();
-
     await refreshIndex();
 
     const manifests = await fetch(urls.MANIFESTS, { credentials: 'include' });
@@ -53,7 +56,14 @@ export async function refresh() {
       await idbKeyval.clear();
       await Promise.all(data.map(manifest => idbKeyval.set(manifest.key_path, manifest)));
     }
-    console.log('cache refreshed');
+
+    await clearCache();
+
+    currentRevision = revision;
+    console.log('cache refreshed', revision);
+
+    const clients = await self.clients.matchAll();
+    clients.forEach(client => client.postMessage({ type: 'refresh' }));
   } catch (error) {
     console.warn('failed to refresh cache', error);
   }

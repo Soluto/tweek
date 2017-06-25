@@ -86,7 +86,7 @@ describe('edit keys', () => {
 
           keysAsserts.assertKeySource(expectedKeySource);
 
-          keysPageObject.saveChanges();
+          keysPageObject.commitChanges();
 
           browser.refresh();
           keysPageObject.waitForPageToLoad(keyToEditFullPath);
@@ -180,7 +180,7 @@ describe('edit keys', () => {
             const key = `${consts_path}/number_type`;
             goToKey(key);
             browser.setValue(`${const_selector} input`, '30')
-            keysPageObject.saveChanges();
+            keysPageObject.commitChanges();
             tweekApiClient.waitForKeyToEqual(key, 30);
         });
 
@@ -188,7 +188,7 @@ describe('edit keys', () => {
             const key = `${consts_path}/string_type`;
             goToKey(key);
             browser.setValue(`${const_selector} input`, 'world')
-            keysPageObject.saveChanges();
+            keysPageObject.commitChanges();
             tweekApiClient.waitForKeyToEqual(key, 'world');
         });
 
@@ -196,7 +196,7 @@ describe('edit keys', () => {
             const key = `${consts_path}/object_type`;
             goToKey(key);
             browser.click(`${const_selector} .jsonValue input[type=checkbox]`);
-            keysPageObject.saveChanges();
+            keysPageObject.commitChanges();
             tweekApiClient.waitForKeyToEqual(key, {boolProp: false});
         });
       });

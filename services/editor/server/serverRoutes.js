@@ -5,6 +5,7 @@ import * as TagsRoutes from './api/tags';
 import * as ContextRoutes from './api/context';
 import * as SearchRoutes from './api/search';
 import * as SchemaRoutes from './api/schema';
+import * as Registration from './api/registration';
 import requestErrorHandlingWrapper from './utils/request-error-handling-wrapper';
 
 export default (config) => {
@@ -31,6 +32,7 @@ export default (config) => {
     .put(addConfig(KeysRoutes.saveKey))
     .delete(addConfig(KeysRoutes.deleteKey));
 
+  app.get('/revision', addConfig(KeysRoutes.getRevision));
   app.get('/revision-history/*', addConfig(KeysRoutes.getKeyRevisionHistory));
 
   app.get('/manifests', addConfig(KeysRoutes.getAllManifests));
@@ -40,6 +42,9 @@ export default (config) => {
   app.get('/search', addConfig(SearchRoutes.search));
   app.get('/suggestions', addConfig(SearchRoutes.getSuggestions));
   app.route('/schema/:identityName').patch(addConfig(SchemaRoutes.patchIdentity));
+
+  app.get('/push-service/public-key', addConfig(Registration.getPublicKey));
+  app.post('/push-service/register', addConfig(Registration.register));
 
   app.use('/*', (req, res) => res.sendStatus(404));
 

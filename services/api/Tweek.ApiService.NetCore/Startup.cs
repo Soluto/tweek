@@ -18,6 +18,7 @@ using Scrutor;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Engine.Rules.Validation;
@@ -37,6 +38,8 @@ using static Engine.Core.Rules.Utils;
 using static LanguageExt.Prelude;
 using FSharpUtils.Newtonsoft;
 using Engine.DataTypes;
+using LanguageExt;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Newtonsoft.Json.Linq;
 
 namespace Tweek.ApiService.NetCore
@@ -88,14 +91,8 @@ namespace Tweek.ApiService.NetCore
                 {
                     opt.SerializerSettings.ContractResolver = tweekContactResolver;
                 });
-            services.AddCors(options =>
-            {
-                options.AddPolicy("All",
-                    builder => builder.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials());
-            });
+
+            services.SetupCors(Configuration);
 
             RegisterMetrics(services);
             services.AdaptSingletons<IDiagnosticsProvider, HealthCheck>(inner => new DiagnosticsProviderDecorator(inner));

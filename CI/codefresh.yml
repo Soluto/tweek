@@ -91,6 +91,12 @@ steps:
             - Redis__ConnectionString=tweek-redis:6379
             - Addons__Redis__ClassName=Tweek.Drivers.Redis.RedisServiceAddon
             - Addons__Redis__AssemblyName=Tweek.Drivers.Redis
+            - CorsPolicies__Keys__Origins=http://tweek-editor:3000,http://testorigin
+            - CorsPolicies__Keys__Methods=GET
+            - CorsPolicies__Keys__MaxPreflightAge=60
+            - CorsEnabled=true
+            - CorsPolicies__Keys__Headers=
+            - CorsPolicies__Keys__ExposedHeaders=
         tweek-editor:
           image: ${{BuildingEditor}}
           depends_on:
