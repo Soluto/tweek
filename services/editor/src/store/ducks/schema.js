@@ -39,7 +39,7 @@ export function upsertIdentityProperty(identity, prop, value) {
 }
 
 function createRemoteAndLocalStates(state) {
-  return { local: state, remote: state };
+  return { local: state, remote: state, isSaving: false };
 }
 
 function createSchemaState() {
