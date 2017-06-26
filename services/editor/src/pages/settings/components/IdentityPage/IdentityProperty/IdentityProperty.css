@@ -1,35 +1,13 @@
 .property-type-wrapper {
   display: flex;
+  align-items: center;
   flex-direction: row;
   height: auto;
   min-height: 30px;
   padding: 8px 4px 8px 16px;
 }
-.property-type-wrapper .property-type-name-label {
-  display: inline-block;
-  border: 0 none;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  height: 28px;
-  width: 150px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  margin-right: 10px;
-  font-size: 12px;
-  color: gray;
-}
-.property-type-wrapper .property-type-name-label:focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.property-type-wrapper .property-type-name-label:disabled {
-  border-color: #bcbcbc;
-}
 .property-type-wrapper button[data-comp=remove] {
+  margin-right: 2px;
   vertical-align: top;
   background-color: #00aeef;
   height: 28px;
@@ -85,11 +63,12 @@
   border-radius: 3px;
   background-color: #EFFFFF;
   display: flex;
+  align-items: center;
   flex-direction: row;
   height: auto;
   width: fit-content;
   min-height: 30px;
-  padding: 8px 4px 8px 16px;
+  padding: 8px 12px 8px 28px;
 }
 .new-identity-property input {
   margin-right: 10px;
