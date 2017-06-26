@@ -32,7 +32,7 @@
     "chai": "3.5.0",
     "chai-string": "^1.4.0",
     "chance": "1.0.3",
-    "deep-diff": "0.3.4",
+    "deep-diff": "0.3.8",
     "jsonwebtoken": "^7.4.0",
     "moment": "2.18.1",
     "nconf": "^0.8.4",
