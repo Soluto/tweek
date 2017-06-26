@@ -6,11 +6,6 @@ import * as TypesServices from '../../../../../services/types-service';
 import { compose, withState, withHandlers } from 'recompose';
 import R from 'ramda';
 
-const PropertyTypeName = ({ name }) =>
-  <span className="property-type-name-label">
-    {name}
-  </span>;
-
 const PropertyTypeSelector = ({ type, onUpdate }) => {
   const suggestions = [...Object.keys(TypesServices.types)];
   return (
@@ -26,15 +21,13 @@ const PropertyTypeSelector = ({ type, onUpdate }) => {
 
 export const IdentityPropertyItem = ({ name, def, onUpdate, onRemove }) =>
   <div className="property-type-wrapper">
-    <PropertyTypeName name={name} />
-    <PropertyTypeSelector type={def.type} onUpdate={type => onUpdate({ ...def, type })} />
     <button data-comp="remove" onClick={onRemove} />
+    <Input disabled value={name} />
+    <PropertyTypeSelector type={def.type} onUpdate={type => onUpdate({ ...def, type })} />
   </div>;
 
 const createUpdater = (propName, updateFn) => x => updateFn(R.assoc(propName, x));
-
 const EMPTY_IDENTITY = { propName: '', def: { type: 'string' } };
-
 export const NewIdentityProperty = compose(
   withState('state', 'setState', EMPTY_IDENTITY),
   withHandlers({
