@@ -2,6 +2,7 @@
 
 .property-type-wrapper {
   display: flex;
+  flex-direction: row;
   height: auto;
   min-height: 30px;
   padding: 8px 4px 8px 16px;
@@ -11,4 +12,26 @@
     font-size: 12px;
     color: gray;
   }
+  button[data-comp=remove]{
+      .small-close-circle-button;
+  }
+}
+.new-identity-property
+{
+    border: 1px #999999 dotted;
+    border-radius: 3px;
+    background-color: #EFFFFF;
+    display: flex;
+    flex-direction: row;
+    height: auto;
+    width: fit-content;
+    min-height: 30px;
+    padding: 8px 4px 8px 16px;
+    input{
+      margin-right: 10px;
+      font-size: 12px;
+    }
+    button[data-comp=add]{
+      .add-circle-button
+    }
 }

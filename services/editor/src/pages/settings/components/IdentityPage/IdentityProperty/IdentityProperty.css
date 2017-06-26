@@ -1,13 +1,14 @@
 .property-type-wrapper {
   display: flex;
+  flex-direction: row;
   height: auto;
   min-height: 30px;
   padding: 8px 4px 8px 16px;
 }
 .property-type-wrapper .property-type-name-label {
   display: inline-block;
-  border: 0;
-  border-style: none;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   height: 28px;
   width: 150px;
   padding: 0 4px;
@@ -15,7 +16,6 @@
   font-size: 13px;
   font-weight: 500;
   color: #515C66;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
@@ -28,4 +28,110 @@
 }
 .property-type-wrapper .property-type-name-label:disabled {
   border-color: #bcbcbc;
+}
+.property-type-wrapper button[data-comp=remove] {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  padding: 0 0 3px;
+  box-sizing: border-box;
+  width: 13px;
+  height: 13px;
+  font-size: 10px;
+  padding-bottom: 4px;
+  background-color: #bcbcbc;
+  font-size: 12px;
+  padding-top: 1px;
+}
+.property-type-wrapper button[data-comp=remove]:hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.property-type-wrapper button[data-comp=remove]:disabled {
+  background-color: gray;
+}
+.property-type-wrapper button[data-comp=remove]:disabled:hover,
+.property-type-wrapper button[data-comp=remove]:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.property-type-wrapper button[data-comp=remove]:hover {
+  background-color: #9c9c9c;
+}
+.property-type-wrapper button[data-comp=remove]:active {
+  background-color: #7b7b7b;
+}
+.property-type-wrapper button[data-comp=remove]:after {
+  font-family: 'tweekIcons';
+  content: '\E900';
+}
+.new-identity-property {
+  border: 1px #999999 dotted;
+  border-radius: 3px;
+  background-color: #EFFFFF;
+  display: flex;
+  flex-direction: row;
+  height: auto;
+  width: fit-content;
+  min-height: 30px;
+  padding: 8px 4px 8px 16px;
+}
+.new-identity-property input {
+  margin-right: 10px;
+  font-size: 12px;
+}
+.new-identity-property button[data-comp=add] {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  padding: 0 0 3px;
+  box-sizing: border-box;
+  font-size: 16px;
+  padding-top: 2px;
+}
+.new-identity-property button[data-comp=add]:hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.new-identity-property button[data-comp=add]:disabled {
+  background-color: gray;
+}
+.new-identity-property button[data-comp=add]:disabled:hover,
+.new-identity-property button[data-comp=add]:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.new-identity-property button[data-comp=add]:after {
+  font-family: 'tweekIcons';
+  content: '\E905';
 }
