@@ -109,7 +109,7 @@
     "react-autosize-textarea": "^0.4.3",
     "react-dom": "^15.5.4",
     "react-draggable": "^2.2.6",
-    "react-highlight-words": "^0.7.2",
+    "react-highlight-words": "0.8.0",
     "react-json": "^0.2.1",
     "react-monaco-editor": "^0.8.1",
     "react-notification-system": "^0.2.14",
