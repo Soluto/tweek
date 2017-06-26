@@ -64,7 +64,7 @@ const PropertyTypeSelector = ({ type, onUpdate }) => {
 };
 
 export const IdentityPropertyItem = ({ name, def, onUpdate, onRemove }) =>
-  <div className="property-type-wrapper">
+  <div data-comp="property-item">
     <button data-comp="remove" onClick={onRemove} />
     <Input disabled value={name} />
     <PropertyTypeSelector type={def.type} onUpdate={type => onUpdate({ ...def, type })} />
@@ -80,7 +80,7 @@ export const NewIdentityProperty = compose(
     clear: ({ setState }) => () => setState(() => EMPTY_IDENTITY),
   }),
 )(({ state, updateDef, updatePropName, onCreate, clear }) =>
-  <div className="new-identity-property">
+  <div data-comp="new-property-item">
     <Input placeholder="Add new property" value={state.propName} onChange={updatePropName} />
     <PropertyTypeSelector
       type={state.def.type}
