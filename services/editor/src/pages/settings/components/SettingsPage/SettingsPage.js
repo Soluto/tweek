@@ -6,6 +6,7 @@ import './SettingsPage.css';
 import { compose, lifecycle } from 'recompose';
 import withLoading from '../../../../hoc/with-loading';
 import { refreshSchema } from '../../../../services/context-service';
+import { refreshTypes } from '../../../../services/types-service';
 import { Link } from 'react-router-dom';
 
 const isNode = new Function('try {return this===global;}catch(e){return false;}');
@@ -21,14 +22,9 @@ export default compose(
   connect(state => ({}), { ...actions }),
   withLoading(
     () => null,
-    ({ loadSchema }) => (isNode() ? Promise.resolve() : refreshSchema().then(loadSchema)),
+    ({ loadSchema }) => Promise.all([refreshTypes(), refreshSchema()]).then(loadSchema),
   ),
   connect(state => ({ schema: state.schema })),
-  lifecycle({
-    componentDidMount() {
-      this.props.loadSchema();
-    },
-  }),
 )((props) => {
   const { schema, children } = props;
   return (
