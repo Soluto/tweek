@@ -20,7 +20,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "assert": "^1.4.1",
+    "assert": "1.4.1",
     "axios": "^0.16.1",
     "babel-cli": "6.5.1",
     "babel-core": "^6.18.2",
