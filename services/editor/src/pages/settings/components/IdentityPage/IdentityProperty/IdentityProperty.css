@@ -1,6 +1,5 @@
 .property-type-wrapper {
   display: flex;
-  align-items: center;
   flex-direction: row;
   height: auto;
   min-height: 30px;
@@ -35,6 +34,7 @@
   background-color: #bcbcbc;
   font-size: 12px;
   padding-top: 1px;
+  margin-top: 7px;
 }
 .property-type-wrapper button[data-comp=remove]:hover {
   background-color: #029CD5;
@@ -63,7 +63,6 @@
   border-radius: 3px;
   background-color: #EFFFFF;
   display: flex;
-  align-items: center;
   flex-direction: row;
   height: auto;
   width: fit-content;
@@ -97,6 +96,7 @@
   box-sizing: border-box;
   font-size: 16px;
   padding-top: 2px;
+  margin-top: 4px;
 }
 .new-identity-property button[data-comp=add]:hover {
   background-color: #029CD5;

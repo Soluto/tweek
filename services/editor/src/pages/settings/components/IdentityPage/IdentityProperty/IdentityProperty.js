@@ -5,33 +5,57 @@ import Input from '../../../../../components/common/Input/Input';
 import * as TypesServices from '../../../../../services/types-service';
 import { compose, withState, withHandlers } from 'recompose';
 import R from 'ramda';
+import { WithContext as ReactTags } from 'react-tag-input';
 
-const TypeCombobox = ({ type, onUpdate, allowedTypes }) => (
-    <ComboBox
-      value={type}
-      filterBy={() => true}
-      valueType="string"
-      onChange={propType => onUpdate(propType)}
-      suggestions={allowedTypes}
-    />
-  );
+const TypeCombobox = ({ type, onUpdate, allowedTypes }) =>
+  <ComboBox
+    value={type}
+    filterBy={() => true}
+    valueType="string"
+    onChange={propType => onUpdate(propType)}
+    suggestions={allowedTypes}
+  />;
 
 const SimpleTypeSelector = ({ type, onUpdate }) =>
   <TypeCombobox
     allowedTypes={['Custom', ...Object.keys(TypesServices.types)]}
     type={type}
-    onUpdate={type => onUpdate(type === 'Custom' ? { base: 'string' } : type)}
+    onUpdate={type => onUpdate(type === 'Custom' ? { base: 'string', allowedValues: [] } : type)}
   />;
 
 const AdvancedTypeSelector = ({ type, onUpdate }) =>
-  <div style={{ display: 'flex', flexDirection: 'row' }}>
+  <div style={{ display: 'column', flexDirection: 'row' }}>
     <SimpleTypeSelector type={'Custom'} onUpdate={type => onUpdate(type)} />
-    Base:<TypeCombobox
-      type={type.base}
-      allowedTypes={Object.keys(TypesServices.types)}
-      onUpdate={base => onUpdate({ ...type, base })}
-    />
-    AllowedValues: {(type.allowedValues || []).join(',')}
+    <div style={{ display: 'flex', flexDirection: 'row' }}>
+      <Input disabled value={'Base'} />
+      <TypeCombobox
+        type={type.base}
+        allowedTypes={Object.keys(TypesServices.types)}
+        onUpdate={base => onUpdate({ ...type, base })}
+      />
+    </div>
+    <div
+      data-comp="editable-list"
+      style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}
+    >
+      <Input disabled value={'Allowed Values'} />
+      <ReactTags
+        tags={type.allowedValues.map(v => ({ id: v, text: v })) || []}
+        handleAddition={newValue =>
+          onUpdate({ ...type, allowedValues: [...type.allowedValues, newValue] })}
+        handleDelete={index =>
+          onUpdate({ ...type, allowedValues: R.remove(index, 1, type.allowedValues) })}
+        placeholder="Add value"
+        allowDeleteFromEmptyInput
+        classNames={{
+          tags: 'tags-container',
+          tagInput: 'tag-input',
+          tag: 'tag',
+          remove: 'tag-delete-button',
+          suggestions: 'tags-suggestion',
+        }}
+      />
+    </div>
   </div>;
 
 const PropertyTypeSelector = ({ type, onUpdate }) => {
