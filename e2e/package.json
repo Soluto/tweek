@@ -42,6 +42,6 @@
     "webdriverio": "4.2.15"
   },
   "devDependencies": {
-    "wdio-selenium-standalone-service": "0.0.8"
+    "wdio-selenium-standalone-service": "0.0.9"
   }
 }
