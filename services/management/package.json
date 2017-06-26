@@ -31,6 +31,6 @@
     "recursive-readdir": "^2.0.0",
     "rxjs": "^5.3.0",
     "winston": "^2.2.0",
-    "winston-logzio": "^1.0.1"
+    "winston-logzio": "1.0.3"
   }
 }
