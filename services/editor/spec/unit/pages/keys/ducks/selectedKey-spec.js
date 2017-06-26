@@ -130,7 +130,7 @@ describe('selectedKey', async () => {
   describe('openKey', () => {
     beforeEach(() => {
       fetchMock.get('glob:*/api/tags', []);
-      fetchMock.get('glob:*/api/context-schema/', {});
+      fetchMock.get('glob:*/api/schema/', {});
     });
 
     it('should dispatch KEY_OPENED with blank payload for blank key name', async () => {
@@ -248,7 +248,7 @@ describe('selectedKey', async () => {
       // Arrange
       const expectedTags = [{ name: 'pita' }];
       fetchMock.restore();
-      fetchMock.get('glob:*/api/context-schema/', {});
+      fetchMock.get('glob:*/api/schema/', {});
       fetchMock.get('glob:*/api/tags', expectedTags);
 
       // Act
@@ -443,7 +443,10 @@ describe('selectedKey', async () => {
       expectedKeyValueTypeValidation.isShowingHint = true;
 
       const initializeState = generateState('some key', 'some new key');
-      initializeState.selectedKey.local.keyDef.source = JSON.stringify({ partitions: [], rules: [] });
+      initializeState.selectedKey.local.keyDef.source = JSON.stringify({
+        partitions: [],
+        rules: [],
+      });
       initializeState.keys = [];
 
       const expectedValidationPayload = {
