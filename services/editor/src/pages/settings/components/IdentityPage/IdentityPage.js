@@ -34,7 +34,7 @@ const IdentityPage = ({
       <SaveButton
         data-comp="save-button"
         hasChanges={hasChanges}
-        isSaving={false}
+        isSaving={identityProperties.isSaving}
         onClick={() => saveSchema(identityType)}
       />
       <h3 style={{ textTransform: 'capitalize' }}>{identityType}</h3>
