@@ -24,7 +24,7 @@
     "jszip": "^3.0.0",
     "lodash": "^4.11.1",
     "mkdirp": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.5.1.tgz",
-    "morgan": "^1.7.0",
+    "morgan": "1.8.2",
     "multer": "^1.1.0",
     "nconf": "^0.8.4",
     "nodegit": "0.14.1",
