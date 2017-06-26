@@ -6,18 +6,15 @@ import * as TypesServices from '../../../../../services/types-service';
 import { compose, withState, withHandlers } from 'recompose';
 import R from 'ramda';
 
-const TypeCombobox = ({ type, onUpdate, allowedTypes }) => {
-  const suggestions = [...Object.keys(TypesServices.types)];
-  return (
+const TypeCombobox = ({ type, onUpdate, allowedTypes }) => (
     <ComboBox
       value={type}
       filterBy={() => true}
       valueType="string"
       onChange={propType => onUpdate(propType)}
-      suggestions={suggestions}
+      suggestions={allowedTypes}
     />
   );
-};
 
 const SimpleTypeSelector = ({ type, onUpdate }) =>
   <TypeCombobox
