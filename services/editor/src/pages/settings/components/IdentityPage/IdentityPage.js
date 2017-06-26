@@ -7,19 +7,26 @@ import SaveButton from '../../../../components/common/SaveButton/SaveButton';
 import R from 'ramda';
 import * as schemaActions from '../../../../store/ducks/schema';
 
-const IdentityPropertiesEditor = ({ identityProperties, onPropertyUpdate }) =>
+const IdentityPropertiesEditor = ({ identityProperties, onPropertyUpdate, onPropertyRemove }) =>
   <div className="property-types-list">
     {R.toPairs(identityProperties).map(([name, def]) =>
       <IdentityPropertyItem
         name={name}
         onUpdate={newDef => onPropertyUpdate(name, newDef)}
+        onRemove={() => onPropertyRemove(name)}
         key={name}
         def={def}
       />,
     )}
   </div>;
 
-const IdentityPage = ({ identityType, identityProperties, updateIdentityProperty, saveSchema }) => {
+const IdentityPage = ({
+  identityType,
+  identityProperties,
+  upsertIdentityProperty,
+  removeIdentityProperty,
+  saveSchema,
+}) => {
   const hasChanges = !R.equals(identityProperties.local, identityProperties.remote);
 
   return (
@@ -37,11 +44,14 @@ const IdentityPage = ({ identityType, identityProperties, updateIdentityProperty
           <Tab disabled>Permissions</Tab>
         </TabList>
         <TabPanel>
-          <IdentityPropertiesEditor
-            identityProperties={identityProperties.local}
-            onPropertyUpdate={R.curryN(3, updateIdentityProperty)(identityType)}
-          />
-          <NewIdentityProperty onCreate={R.curryN(3, updateIdentityProperty)(identityType)} />
+          <div className="property-section">
+            <IdentityPropertiesEditor
+              identityProperties={identityProperties.local}
+              onPropertyUpdate={R.curryN(3, upsertIdentityProperty)(identityType)}
+              onPropertyRemove={R.curryN(2, removeIdentityProperty)(identityType)}
+            />
+            <NewIdentityProperty onCreate={R.curryN(3, upsertIdentityProperty)(identityType)} />
+          </div>
         </TabPanel>
       </Tabs>
     </div>

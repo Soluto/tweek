@@ -584,7 +584,15 @@
   border-bottom: 3px solid rgba(0, 122, 204, 0.5);
   background-color: white;
 }
-.property-types-list .empty-property-types-list-label {
+.identity-page .property-section {
+  display: flex;
+  flex-direction: column;
+}
+.identity-page .property-section .property-types-list {
+  display: flex;
+  flex-direction: column;
+}
+.identity-page .property-section .property-types-list .empty-property-types-list-label {
   color: #d0d0d0;
   font-style: italic;
   margin: 7px 35px 0;

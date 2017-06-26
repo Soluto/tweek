@@ -40,14 +40,21 @@
       }
    }
 
+   .property-section{
+     display: flex;
+     flex-direction: column;
+      .property-types-list {
+        display: flex;
+        flex-direction: column;
+        .empty-property-types-list-label {
+          color: #d0d0d0;
+          font-style: italic;
+          margin: 7px 35px 0;
+          letter-spacing: 2px;
+          cursor: default;
+        }
+      }
+   }
+
 }
 
-.property-types-list {
-  .empty-property-types-list-label {
-    color: #d0d0d0;
-    font-style: italic;
-    margin: 7px 35px 0;
-    letter-spacing: 2px;
-    cursor: default;
-  }
-}
