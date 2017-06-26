@@ -18,7 +18,7 @@ export default (config) => {
 
   app.get('/types', addConfig(TypesRoutes.getTypes));
 
-  app.get('/context-schema', addConfig(SchemaRoutes.getSchemas));
+  app.get('/schema', addConfig(SchemaRoutes.getSchemas));
 
   app
     .route('/context/:identityName/:identityId')

@@ -13,14 +13,14 @@ import chai, { assert, expect } from 'chai';
 chai.use(require('chai-things'));
 
 describe('context-service', () => {
-  const contextServiceApiMatcher = 'glob:*/api/context-schema/*';
+  const contextServiceApiMatcher = 'glob:*/api/schema/*';
 
   afterEach(() => {
     fetchMock.restore();
   });
 
   describe('refreshSchema', () => {
-    it('should fetch api/context-schema', async () => {
+    it('should fetch api/schema', async () => {
       // Arrange
       fetchMock.get(contextServiceApiMatcher, {});
 
@@ -29,7 +29,7 @@ describe('context-service', () => {
 
       // Assert
       const apiCalls = fetchMock.calls(contextServiceApiMatcher);
-      expect(apiCalls.length).to.equal(1, 'should fetch context-schema once');
+      expect(apiCalls.length).to.equal(1, 'should fetch schema once');
     });
   });
 
@@ -53,7 +53,10 @@ describe('context-service', () => {
       const actualIdentities = ContextService.getIdentities();
 
       // Assert
-      expect(actualIdentities).to.deep.equal(expectedIdentities, 'should return correct identities');
+      expect(actualIdentities).to.deep.equal(
+        expectedIdentities,
+        'should return correct identities',
+      );
     });
   });
 
@@ -112,7 +115,7 @@ describe('context-service', () => {
     });
 
     const runPropertyTypeTest = (property, expectedMeta) => {
-      it('should return correct meta for property:' + property, async () => {
+      it(`should return correct meta for property:${  property}`, async () => {
         // Arrange
         await refreshSchemaPromise;
 
