@@ -41,7 +41,6 @@ const IdentityPage = ({
       <Tabs>
         <TabList>
           <Tab selected>Properties</Tab>
-          <Tab disabled>Permissions</Tab>
         </TabList>
         <TabPanel>
           <div className="property-section">

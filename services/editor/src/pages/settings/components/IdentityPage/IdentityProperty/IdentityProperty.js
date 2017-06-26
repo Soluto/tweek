@@ -11,7 +11,6 @@ const TypeCombobox = ({ type, onUpdate, allowedTypes }) =>
   <ComboBox
     value={type}
     filterBy={() => true}
-    valueType="string"
     onChange={propType => onUpdate(propType)}
     suggestions={allowedTypes}
   />;
