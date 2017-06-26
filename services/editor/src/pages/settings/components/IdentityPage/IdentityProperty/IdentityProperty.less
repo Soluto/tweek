@@ -1,8 +1,8 @@
 @import (reference) "../../../../../styles/core/core.less";
+@import "../../../../../styles/core/tags.less";
 
 .property-type-wrapper {
   display: flex;
-  align-items: center;
   flex-direction: row;
   height: auto;
   min-height: 30px;
@@ -10,6 +10,7 @@
   button[data-comp=remove]{
       margin-right: 2px;
       .small-close-circle-button;
+      margin-top: 7px;
   }
 }
 .new-identity-property
@@ -18,7 +19,6 @@
     border-radius: 3px;
     background-color: #EFFFFF;
     display: flex;
-    align-items: center;
     flex-direction: row;
     height: auto;
     width: fit-content;
@@ -29,6 +29,7 @@
       font-size: 12px;
     }
     button[data-comp=add]{
-      .add-circle-button
+      .add-circle-button;
+      margin-top: 4px;
     }
 }
