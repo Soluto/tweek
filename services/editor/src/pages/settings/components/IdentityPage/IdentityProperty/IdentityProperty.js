@@ -6,7 +6,7 @@ import * as TypesServices from '../../../../../services/types-service';
 import { compose, withState, withHandlers } from 'recompose';
 import R from 'ramda';
 
-const PropertyTypeSelector = ({ type, onUpdate }) => {
+const TypeCombobox = ({ type, onUpdate, allowedTypes }) => {
   const suggestions = [...Object.keys(TypesServices.types)];
   return (
     <ComboBox
@@ -17,6 +17,29 @@ const PropertyTypeSelector = ({ type, onUpdate }) => {
       suggestions={suggestions}
     />
   );
+};
+
+const SimpleTypeSelector = ({ type, onUpdate }) =>
+  <TypeCombobox
+    allowedTypes={['Custom', ...Object.keys(TypesServices.types)]}
+    type={type}
+    onUpdate={type => onUpdate(type === 'Custom' ? { base: 'string' } : type)}
+  />;
+
+const AdvancedTypeSelector = ({ type, onUpdate }) =>
+  <div style={{ display: 'flex', flexDirection: 'row' }}>
+    <SimpleTypeSelector type={'Custom'} onUpdate={type => onUpdate(type)} />
+    Base:<TypeCombobox
+      type={type.base}
+      allowedTypes={Object.keys(TypesServices.types)}
+      onUpdate={base => onUpdate({ ...type, base })}
+    />
+    AllowedValues: {(type.allowedValues || []).join(',')}
+  </div>;
+
+const PropertyTypeSelector = ({ type, onUpdate }) => {
+  const TypeSelector = typeof type === 'object' ? AdvancedTypeSelector : SimpleTypeSelector;
+  return <TypeSelector type={type} onUpdate={onUpdate} />;
 };
 
 export const IdentityPropertyItem = ({ name, def, onUpdate, onRemove }) =>
