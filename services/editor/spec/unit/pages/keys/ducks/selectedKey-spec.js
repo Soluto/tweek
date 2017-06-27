@@ -7,22 +7,6 @@ jest.unmock('../../../../../src/store/ducks/ducks-utils/validations/key-value-ty
 jest.unmock('../../../../../src/services/types-service');
 jest.unmock('../../../../../src/services/context-service');
 jest.unmock('../../../../../src/store/ducks/ducks-utils/blankKeyDefinition');
-
-/*
-jest.mock('../../../../../modules/store/ducks/ducks-utils/blankKeyDefinition', () => {
-  return {
-    BLANK_KEY_NAME: 'some key name',
-    createBlankKey: () => ({
-      keyDef: 'some key def',
-      meta: 'some meta',
-    }),
-    createBlankKeyMeta: () => ({
-      metaProp: 'some value',
-      valueType: 'string',
-    }),
-  };
-});*/
-
 jest.mock('../../../../../src/store/ducks/alerts', () => {
   let result = true;
   const addAlert = dispatch => Promise.resolve({ result });

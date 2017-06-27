@@ -1,18 +1,7 @@
-import { UKNOWN_AUTHOR } from './unknownAuthor';
 import jsondiffpatch from 'jsondiffpatch';
 import R from 'ramda';
 import changeCase from 'change-case';
-
-function getAuthor(req) {
-  return (
-    (req.user &&
-    req.user.email && {
-      name: req.user.displayName || req.user.email,
-      email: req.user.email,
-    }) ||
-    UKNOWN_AUTHOR
-  );
-}
+import { getAuthor } from './utils/author';
 
 export async function getSchemas(req, res, { keysRepository }) {
   const prefix = `@tweek/schema`;
@@ -24,14 +13,16 @@ export async function getSchemas(req, res, { keysRepository }) {
   res.json(schemas);
 }
 
-export async function patchIdentity(req, res, { keysRepository }, { params: { identityName } }) {
+export async function patchIdentity(
+  req,
+  res,
+  { keysRepository, author = getAuthor(req) },
+  { params: { identityName } },
+) {
   try {
-    const author = getAuthor(req);
     const patch = req.body;
-    console.log(patch);
     const key = `@tweek/schema/${identityName}`;
     const manifest = await keysRepository.getKeyManifest(key);
-    console.log(manifest);
     const newManifest = R.assocPath(
       ['implementation', 'value'],
       jsondiffpatch.patch(manifest.implementation.value, patch),
