@@ -84,7 +84,6 @@ describe('context-service', () => {
         name: 'someProp',
         type: 'string',
         identity: 'user',
-        custom_type: undefined,
       });
     });
   });
@@ -98,8 +97,7 @@ describe('context-service', () => {
           type: 'string',
         },
         CustomPropertyType: {
-          type: 'custom',
-          custom_type: {
+          type: {
             base: 'string',
           },
         },
@@ -115,7 +113,7 @@ describe('context-service', () => {
     });
 
     const runPropertyTypeTest = (property, expectedMeta) => {
-      it(`should return correct meta for property:${  property}`, async () => {
+      it(`should return correct meta for property:${property}`, async () => {
         // Arrange
         await refreshSchemaPromise;
 
@@ -136,7 +134,7 @@ describe('context-service', () => {
     runPropertyTypeTest('@@key.something', { name: 'string' });
 
     runPropertyTypeTest('device.Name', { name: 'string' });
-    runPropertyTypeTest('device.CustomPropertyType', { name: 'custom', base: 'string' });
+    runPropertyTypeTest('device.CustomPropertyType', { base: 'string' });
 
     runPropertyTypeTest('device.UnknownProperty', { name: 'string' });
     runPropertyTypeTest('device.PropertyWithBadType', { name: 'string' });
