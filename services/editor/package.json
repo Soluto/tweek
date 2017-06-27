@@ -97,6 +97,7 @@
     "nconf": "^0.8.4",
     "node-getopt": "^0.2.3",
     "nodegit": "0.14.1",
+    "papp-polyfill": "1.1.0",
     "passport": "^0.3.2",
     "passport-azure-ad": "^3.0.6",
     "passport-google-oauth20": "^1.0.0",
