@@ -24,6 +24,7 @@ const KEY_SAVED = 'KEY_SAVED';
 const KEY_SAVING = 'KEY_SAVING';
 const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
 const KEY_REVISION_HISTORY = 'KEY_REVISION_HISTORY';
+const DEPENDENT_KEYS = 'DEPENDENT_KEYS';
 const KEY_VALIDATION_CHANGE = 'KEY_VALIDATION_CHANGE';
 const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
 const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
@@ -37,6 +38,23 @@ function updateRevisionHistory(keyName, revisionHistory) {
       dispatch({ type: KEY_REVISION_HISTORY, payload: { keyName, revisionHistory } });
     } catch (error) {
       dispatch(showError({ title: 'Failed to refresh revisionHistory', error }));
+    }
+  };
+}
+
+function updateDependentKeys(keyName, dependentKeys) {
+  return async function (dispatch) {
+    let dependentKeysResponse;
+    try {
+      dependentKeys =
+        dependentKeys ||
+        JSON.parse(
+          (dependentKeysResponse = await (await fetch(`/api/dependents/${keyName}`)).text()),
+        );
+      dispatch({ type: DEPENDENT_KEYS, payload: { keyName, dependentKeys } });
+    } catch (error) {
+      if (dependentKeysResponse && dependentKeysResponse.length !== 0)
+        dispatch(showError({ title: `Failed to enumerate keys dependent on ${keyName}`, error }));
     }
   };
 }
@@ -75,6 +93,7 @@ export function openKey(key, { revision } = {}) {
 
     await dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
     dispatch(updateRevisionHistory(key));
+    dispatch(updateDependentKeys(key));
   };
 }
 
@@ -206,6 +225,7 @@ export function saveKey() {
     if (!await performSave(dispatch, savedKey, local)) return;
 
     dispatch(updateRevisionHistory(savedKey));
+    dispatch(updateDependentKeys(savedKey));
 
     if (isNewKey) dispatch(addKeyToList(savedKey));
     const shouldOpenNewKey = isNewKey && getState().selectedKey.key === BLANK_KEY_NAME;
@@ -379,6 +399,14 @@ const handleKeyRevisionHistory = (state, { payload: { keyName, revisionHistory }
   };
 };
 
+const handleDependentKeys = (state, { payload: { keyName, dependentKeys } }) => {
+  if (state.key !== keyName) return state;
+  return {
+    ...state,
+    dependentKeys,
+  };
+};
+
 export default handleActions(
   {
     [KEY_OPENED]: handleKeyOpened,
@@ -392,6 +420,7 @@ export default handleActions(
     [KEY_VALUE_TYPE_CHANGE]: handleKeyValueTypeChange,
     [KEY_REVISION_HISTORY]: handleKeyRevisionHistory,
     [SHOW_KEY_VALIDATIONS]: handleShowKeyValidations,
+    [DEPENDENT_KEYS]: handleDependentKeys,
     [KEY_CLOSED]: () => null,
   },
   null,

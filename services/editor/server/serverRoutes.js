@@ -36,6 +36,7 @@ export default (config) => {
 
   app.get('/manifests', addConfig(KeysRoutes.getAllManifests));
   app.get('/manifests/*', addConfig(KeysRoutes.getKeyManifest));
+  app.get('/dependents/*', addConfig(KeysRoutes.getDependents));
 
   app.get('/search-index', addConfig(SearchRoutes.getSearchIndex));
   app.get('/search', addConfig(SearchRoutes.search));
