@@ -3,11 +3,11 @@ import { getSchema, refreshSchema } from '../../services/context-service';
 import R from 'ramda';
 import jsondiffpatch from 'jsondiffpatch';
 import { withJsonData } from '../../utils/http';
+import fetch from '../../utils/fetch';
 
 const SCHEMA_LOADED = 'SCHEMA_LOADED';
 const UPSERT_SCHEMA_PROPERTY = 'SCHEMA_UPSERT_PROPERTY';
 const REMOVE_SCHEMA_PROPERTY = 'SCHEMA_REMOVE_PROPERTY';
-const IDENTITY_SELECTED = 'IDENTITY_SELECTED';
 const SCHEMA_SAVED = 'SCHEMA_SAVED';
 const SAVING_SCHEMA = 'SAVING_SCHEMA';
 
@@ -21,7 +21,6 @@ export function saveSchema(identityType) {
     let patch = jsondiffpatch.diff(identityState.remote, identityState.local);
     dispatch({ type: SAVING_SCHEMA, value: { identity: identityType } });
     await fetch(`/api/schema/${identityType}`, {
-      credentials: 'same-origin',
       method: 'PATCH',
       ...withJsonData(patch),
     });
@@ -49,7 +48,6 @@ function createSchemaState() {
 export default handleActions(
   {
     [SCHEMA_LOADED]: (state, action) => createSchemaState(),
-    [IDENTITY_SELECTED]: (state, action) => ({ selectedIdentity: action.identity, ...state }),
     [REMOVE_SCHEMA_PROPERTY]: (state, { value: { identity, prop } }) =>
       R.dissocPath([identity, 'local', prop])(state),
     [UPSERT_SCHEMA_PROPERTY]: (state, { value: { identity, prop, value } }) =>
