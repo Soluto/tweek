@@ -36,7 +36,7 @@ const InputComponent = ({ value, allowedValues, onChange, ...props }) => {
 
 const InputWithIcon = ({ valueType, ...props }) =>
   <div className="typed-input-with-icon">
-    <i data-value-type={valueType.name || 'custom'} />
+    <i data-value-type={valueType.name || (valueType.base && 'custom')} />
     <InputComponent {...props} />
   </div>;
 
