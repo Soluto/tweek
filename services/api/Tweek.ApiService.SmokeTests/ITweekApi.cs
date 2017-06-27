@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using RestEase;
@@ -17,5 +18,8 @@ namespace Tweek.ApiService.SmokeTests
 
         [Get("/api/swagger.json")]
         Task<JToken> GetSwagger();
+
+        [Options("")]
+        Task<HttpResponseMessage> GetCorsPreflightResponse(string origin, string method);
     }
 }
