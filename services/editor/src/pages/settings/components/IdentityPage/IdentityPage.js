@@ -46,10 +46,10 @@ const IdentityPage = ({
           <div className="property-section">
             <IdentityPropertiesEditor
               identityProperties={identityProperties.local}
-              onPropertyUpdate={R.curryN(3, upsertIdentityProperty)(identityType)}
-              onPropertyRemove={R.curryN(2, removeIdentityProperty)(identityType)}
+              onPropertyUpdate={upsertIdentityProperty.papp(identityType)}
+              onPropertyRemove={removeIdentityProperty.papp(identityType)}
             />
-            <NewIdentityProperty onCreate={R.curryN(3, upsertIdentityProperty)(identityType)} />
+            <NewIdentityProperty onCreate={upsertIdentityProperty.papp(identityType)} />
           </div>
         </TabPanel>
       </Tabs>
