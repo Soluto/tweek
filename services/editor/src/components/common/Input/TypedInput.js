@@ -19,7 +19,6 @@ const getTypesService = getContext(typesServiceContextType);
 const valueToItem = value =>
   value === undefined || value === '' ? undefined : { label: changeCase.pascalCase(value), value };
 
-
 const InputComponent = ({ value, allowedValues, onChange, ...props }) => {
   if (allowedValues && allowedValues.length > 0) {
     return (
@@ -37,14 +36,14 @@ const InputComponent = ({ value, allowedValues, onChange, ...props }) => {
 
 const InputWithIcon = ({ valueType, ...props }) =>
   <div className="typed-input-with-icon">
-    <i data-value-type={valueType} />
+    <i data-value-type={valueType.name || 'custom'} />
     <InputComponent {...props} />
   </div>;
 
 const TypedInput = compose(
   getTypesService,
-  mapProps(({ safeConvertValue, types, valueType, onChange, customType, ...props }) => {
-    const typeDefinition = valueType === 'custom' ? customType : types[valueType];
+  mapProps(({ safeConvertValue, types, valueType, onChange, ...props }) => {
+    const typeDefinition = typeof valueType === 'string' ? types[valueType] : valueType;
     const allowedValues = typeDefinition && typeDefinition.allowedValues;
     const onChangeConvert = newValue => onChange && onChange(safeConvertValue(newValue, valueType));
 
@@ -54,10 +53,12 @@ const TypedInput = compose(
 
 TypedInput.propTypes = {
   placeholder: PropTypes.string,
-  valueType: PropTypes.object.isRequired,
+  valueType: PropTypes.oneOfType(
+    PropTypes.string,
+    PropTypes.shape({ base: PropTypes.string.isRequired }),
+  ).isRequired,
   onChange: PropTypes.func,
   value: PropTypes.any,
-  customType: PropTypes.object,
 };
 
 TypedInput.defaultProps = {
