@@ -4,13 +4,16 @@ import glob from 'glob-promise';
 
 const fs = require('promisify-node')('fs-extra');
 
-async function listFiles(repo) {
+async function listFiles(repo, filter = () => true) {
   let commit = await repo.getMasterCommit();
   let tree = await commit.getTree();
   let walker = tree.walk(true);
   return await new Promise((resolve, reject) => {
     let entries = [];
-    walker.on('entry', entry => entries.push(entry.path().replace(/\\/g, '/')));
+    walker.on('entry', (entry) => {
+      const path = entry.path().replace(/\\/g, '/');
+      if (filter(path)) return entries.push(path);
+    });
     walker.on('end', () => resolve(entries));
     walker.on('error', ex => reject(ex));
     walker.start();
@@ -48,10 +51,11 @@ export default class GitRepository {
     return new GitRepository(repo, operationSettings);
   }
 
-  async listFiles(directoryPath) {
-    return (await listFiles(this._repo))
-      .filter(x => x.startsWith(directoryPath))
-      .map(x => x.substring(`${directoryPath}/`.length));
+  async listFiles(directoryPath = '') {
+    const normalizedDirPath = `${path.normalize(`${directoryPath}/.`)}/`.replace(/\\/g, '/');
+    return (await listFiles(this._repo, path => path.startsWith(normalizedDirPath))).map(x =>
+      x.substring(normalizedDirPath.length),
+    );
   }
 
   async readFile(fileName, { revision } = {}) {
