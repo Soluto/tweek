@@ -6,6 +6,7 @@ import { promisify } from 'bluebird';
 const readFile = promisify(fs.readFile);
 
 let indexPromise;
+let dependentsPromise;
 
 async function refreshIndex(repoDir) {
   const indexFile = './searchIndex.json';
@@ -34,5 +35,23 @@ export default {
   get manifests() {
     return indexPromise && indexPromise.then(x => x.manifests);
   },
-  refreshIndex: (...args) => (indexPromise = refreshIndex(...args)),
+  get dependents() {
+    return dependentsPromise;
+  },
+  refreshIndex: (...args) => {
+    indexPromise = refreshIndex(...args);
+    dependentsPromise = indexPromise.then(x =>
+      x.manifests.reduce((acc, current) => {
+        if (current.dependencies && current.dependencies.length !== 0) {
+          current.dependencies.forEach((dependency) => {
+            acc[dependency] = acc[dependency] || new Set();
+            acc[dependency].add(current.key_path);
+          });
+        }
+        return acc;
+      }, {}),
+    );
+
+    return indexPromise;
+  },
 };
