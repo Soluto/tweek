@@ -7,7 +7,7 @@ export async function getSchemas(req, res, { keysRepository }) {
   const prefix = `@tweek/schema/`;
   const manifests = await keysRepository.getAllManifests(prefix);
   const schemas = manifests.reduce(
-    (acc, m) => ({ ...acc, [m.key_path.substring(prefix.length + 1)]: m.implementation.value }),
+    (acc, m) => ({ ...acc, [m.key_path.substring(prefix.length)]: m.implementation.value }),
     {},
   );
   res.json(schemas);
