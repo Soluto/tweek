@@ -28,7 +28,6 @@ export function getProperties() {
         identity,
         name: property,
         type: contextSchema[identity][property].type,
-        custom_type: contextSchema[identity][property].custom_type,
       })),
     ],
     Object.keys(contextSchema),
@@ -46,11 +45,9 @@ export function getPropertyTypeDetails(property) {
     return TypesService.types.string;
   }
 
-  if (propertyDetails.type === 'custom') {
-    return Object.assign({}, { name: 'custom' }, propertyDetails.custom_type);
-  }
-
-  const typeDetails = TypesService.types[propertyDetails.type];
+  const typeDetails = typeof propertyDetails.type === 'string'
+    ? TypesService.types[propertyDetails.type]
+    : propertyDetails.type;
 
   if (!typeDetails) {
     console.warn('Type details not found for type', propertyDetails.type, property);
