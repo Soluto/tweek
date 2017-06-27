@@ -2,6 +2,7 @@ import React from 'react';
 import './IdentityProperty.css';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import Input from '../../../../../components/common/Input/Input';
+import Label from '../../../../../components/common/Label/Label';
 import * as TypesServices from '../../../../../services/types-service';
 import { compose, withState, withHandlers } from 'recompose';
 import R from 'ramda';
@@ -26,7 +27,7 @@ const AdvancedTypeSelector = ({ type, onUpdate }) =>
   <div style={{ display: 'column', flexDirection: 'row' }}>
     <SimpleTypeSelector type={'Custom'} onUpdate={type => onUpdate(type)} />
     <div style={{ display: 'flex', flexDirection: 'row' }}>
-      <Input disabled value={'Base'} />
+      <Label text="Base" />
       <TypeCombobox
         type={type.base}
         allowedTypes={Object.keys(TypesServices.types)}
@@ -37,7 +38,7 @@ const AdvancedTypeSelector = ({ type, onUpdate }) =>
       data-comp="editable-list"
       style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}
     >
-      <Input disabled value={'Allowed Values'} />
+      <Label text="Allowed Values" />
       <ReactTags
         tags={type.allowedValues.map(v => ({ id: v, text: v })) || []}
         handleAddition={newValue =>
@@ -65,7 +66,7 @@ const PropertyTypeSelector = ({ type, onUpdate }) => {
 export const IdentityPropertyItem = ({ name, def, onUpdate, onRemove }) =>
   <div data-comp="property-item">
     <button data-comp="remove" onClick={onRemove} />
-    <Input disabled value={name} />
+    <Label text={name} />
     <PropertyTypeSelector type={def.type} onUpdate={type => onUpdate({ ...def, type })} />
   </div>;
 
