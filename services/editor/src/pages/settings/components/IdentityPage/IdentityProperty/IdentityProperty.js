@@ -71,13 +71,13 @@ export const IdentityPropertyItem = ({ name, def, onUpdate, onRemove }) =>
   </div>;
 
 const createUpdater = (propName, updateFn) => x => updateFn(R.assoc(propName, x));
-const EMPTY_IDENTITY = { propName: '', def: { type: 'string' } };
+const EMPTY_PROPERTY = { propName: '', def: { type: 'string' } };
 export const NewIdentityProperty = compose(
-  withState('state', 'setState', EMPTY_IDENTITY),
+  withState('state', 'setState', EMPTY_PROPERTY),
   withHandlers({
     updatePropName: ({ setState }) => createUpdater('propName', setState),
     updateDef: ({ setState }) => createUpdater('def', setState),
-    clear: ({ setState }) => () => setState(() => EMPTY_IDENTITY),
+    clear: ({ setState }) => () => setState(() => EMPTY_PROPERTY),
   }),
 )(({ state, updateDef, updatePropName, onCreate, clear }) =>
   <div data-comp="new-property-item">
