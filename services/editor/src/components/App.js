@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Route } from 'react-router';
 import Title from 'react-title-component';
 import { Observable } from 'rxjs/Rx';
-import { setObservableConfig } from 'recompose';
+import { setObservableConfig, compose } from 'recompose';
 import classNames from 'classnames';
 import * as TypesService from '../services/types-service';
 import Alerts from './alerts/Alerts';
@@ -11,6 +11,8 @@ import Notifications from './alerts/Notifications';
 import { withTypesService } from './common/Input/TypedInput';
 import logoSrc from './resources/logo.svg';
 import './App.css';
+import withLoading from '../hoc/with-loading';
+import { refreshSchema } from '../services/context-service';
 
 require('../styles/core/fonts/fonts.css');
 
@@ -33,7 +35,10 @@ const ListItemLink = ({ to, ...rest }) =>
       </li>}
   />;
 
-export default withTypesService(TypesService)(({ children }) =>
+export default compose(
+  withLoading(() => null, () => Promise.all([TypesService.refreshTypes(), refreshSchema()])),
+  withTypesService(TypesService),
+)(({ children }) =>
   <div className={'app'}>
     <div className={'header'}>
       <Title render="Tweek" />

@@ -1,15 +1,9 @@
 import React from 'react';
-import { Component } from 'react';
-import * as actions from '../../../../store/ducks/schema';
 import { connect } from 'react-redux';
 import './SettingsPage.css';
 import { compose, lifecycle } from 'recompose';
-import withLoading from '../../../../hoc/with-loading';
-import { refreshSchema } from '../../../../services/context-service';
-import { refreshTypes } from '../../../../services/types-service';
 import { Link } from 'react-router-dom';
-
-const isNode = new Function('try {return this===global;}catch(e){return false;}');
+import * as actions from '../../../../store/ducks/schema';
 
 const LinkMenuItem = ({ path, name }) =>
   <li key={path}>
@@ -20,10 +14,11 @@ const LinkMenuItem = ({ path, name }) =>
 
 export default compose(
   connect(state => ({}), { ...actions }),
-  withLoading(
-    () => null,
-    ({ loadSchema }) => Promise.all([refreshTypes(), refreshSchema()]).then(loadSchema),
-  ),
+  lifecycle({
+    componentWillMount() {
+      this.props.loadSchema();
+    },
+  }),
   connect(state => ({ schema: state.schema })),
 )((props) => {
   const { schema, children } = props;
