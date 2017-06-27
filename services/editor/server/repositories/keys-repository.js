@@ -107,9 +107,9 @@ export default class KeysRepository {
 
   getAllManifests(prefix = '') {
     return this._gitTransactionManager.with(async (gitRepo) => {
-      prefix = prefix === '' ? `meta` : `meta/${prefix}`;
-      const files = await gitRepo.listFiles(prefix);
-      const manifestFiles = files.map(path => `${prefix}/${path}`);
+      const normalizedPrefix = `${path.normalize(`meta/${prefix}/.`)}`.replace(/\\/g, '/');
+      const files = await gitRepo.listFiles(normalizedPrefix);
+      const manifestFiles = files.map(path => `${normalizedPrefix}/${path}`);
       const manifests = await Promise.all(
         manifestFiles.map(pathForManifest => gitRepo.readFile(pathForManifest)),
       );
@@ -146,15 +146,6 @@ export default class KeysRepository {
     return this._gitTransactionManager.write(async (gitRepo) => {
       await updateKey(gitRepo, keyPath, manifest, fileImplementation);
       await gitRepo.commitAndPush(`Editor - updating ${keyPath}`, author);
-    });
-  }
-
-  bulkUpdate(updates, message, author) {
-    return this._gitTransactionManager.write(async (gitRepo) => {
-      for (let { keyPath, manifest, fileImplementation } of updates) {
-        await updateKey(gitRepo, keyPath, manifest, fileImplementation);
-      }
-      await gitRepo.commitAndPush(`Editor - ${message}`, author);
     });
   }
 
