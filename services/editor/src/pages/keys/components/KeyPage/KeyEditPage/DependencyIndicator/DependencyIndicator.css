@@ -1,0 +1,24 @@
+.dependency-indicator-container {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  align-self: flex-end;
+  float: right;
+  color: #a5a5a5;
+  font-size: 14px;
+}
+.dependency-indicator-container .dependency-item {
+  list-style-type: none;
+  font-weight: 300;
+}
+.dependency-indicator-container .depends-on {
+  margin-top: 4px;
+}
+.dependency-indicator-container .depends-on li {
+  list-style-type: none;
+  font-weight: 300;
+}
+.dependency-indicator-container .used-by li {
+  list-style-type: none;
+  font-weight: 300;
+}
