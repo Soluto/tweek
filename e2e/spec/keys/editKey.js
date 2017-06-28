@@ -67,16 +67,15 @@ describe('edit keys', () => {
           addRuleAndAssertItsFocus(2);
           keysAsserts.assertKeyHasNumberOfRules(2);
 
-          keysPageObject.setConditionPropertyFromSuggestion(1, 1, 4);
-          keysPageObject.addRuleCondition(1);
-          keysPageObject.setConditionPropertyFromSuggestion(1, 2, 6);
-
-          keysPageObject.setConditionValue(1, 2, 'Banana');
+          keysPageObject.setConditionProperty(1, 1, 'AgentVersion');
           keysPageObject.setConditionValue(1, 1, '1.1.1');
 
           keysPageObject.addRuleCondition(1);
+          keysPageObject.setConditionProperty(1, 2, 'FavoriteFruit');
+          keysPageObject.setConditionValue(1, 2, 'Banana');
 
-          keysPageObject.setConditionPropertyFromSuggestionValuePrefix(1, 3, 'Birth');
+          keysPageObject.addRuleCondition(1);
+          keysPageObject.setConditionProperty(1, 3, 'BirthDate');
           keysPageObject.setConditionValue(1, 3, '3d');
 
           keysPageObject.removeRuleCondition(2, 0);

@@ -8,12 +8,7 @@ const deleteRuleAlert = {
 };
 
 export default class RulesList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      autofocusRuleIndex: undefined,
-    };
-  }
+  state = {};
 
   componentDidUpdate() {
     if (this.state.autofocusRuleIndex !== undefined) {
@@ -41,7 +36,7 @@ export default class RulesList extends React.Component {
         </button>
 
         {rules.map((rule, i) =>
-          <div className={'conditions-container'} disabled key={i}>
+          <div className={'conditions-container'} disabled key={rules.length - i}>
 
             <div className={'rule-control-wrapper'}>
               {i > 0

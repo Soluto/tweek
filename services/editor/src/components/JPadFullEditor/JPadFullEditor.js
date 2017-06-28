@@ -82,9 +82,6 @@ const KeyRulesEditor = ({
           {...{ source, isReadonly, setHasChanges }}
           onChange={x => onMutation(JSON.parse(x))}
         />
-        <pre className={'key-def-json'} style={{ display: 'none' }}>
-          {JSON.stringify(JSON.parse(source), null, 4)}
-        </pre>
       </TabPanel>
 
     </Tabs>
