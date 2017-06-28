@@ -1,9 +1,6 @@
 import React from 'react';
-import Chance from 'chance';
 import Rule from '../Rule/Rule';
 import './RulesList.css';
-
-const chance = new Chance();
 
 const deleteRuleAlert = {
   title: 'Warning',
@@ -25,7 +22,7 @@ export default class RulesList extends React.Component {
   }
 
   render() {
-    let { mutate, valueType } = this.props;
+    let { mutate, valueType, keyPath } = this.props;
     let { autofocusRuleIndex } = this.state;
 
     const rules = mutate.getValue();
@@ -77,6 +74,7 @@ export default class RulesList extends React.Component {
 
             <Rule
               key={rule.Id}
+              keyPath={keyPath}
               mutate={mutate.in(i)}
               rule={rule}
               valueType={valueType}
@@ -94,13 +92,7 @@ export default class RulesList extends React.Component {
   addMutatorRule() {
     let { mutate } = this.props;
 
-    mutate.prepend({ Id: chance.guid(), Matcher: { '': '' }, Value: '', Type: 'SingleVariant' });
-  }
-
-  addMutatorDefaultValue() {
-    let { mutate } = this.props;
-
-    mutate.append({ Id: chance.guid(), Matcher: {}, Value: '', Type: 'SingleVariant' });
+    mutate.prepend({ Matcher: { '': '' }, Value: '', Type: 'SingleVariant' });
   }
 
   async deleteRule(ruleIndex) {
