@@ -35,7 +35,7 @@ describe('add key', () => {
     assert(isKeyPathSuggestionsExists, 'should show key name suggestions on input focus');
 
     browser.setValue(keySelectors.KEY_NAME_INPUT, keyToAddFullPath);
-    browser.click(globalSelectors.BACKGROUND);
+    browser.leftClick(globalSelectors.BACKGROUND, 0, 0);
 
     browser.setValue(keySelectors.KEY_VALUE_TYPE_INPUT, 'String');
 

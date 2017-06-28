@@ -59,6 +59,7 @@ export default class KeysPageObject extends PageObject {
 
     this.browser.waitForVisible(keySelectors.KEY_NAME_INPUT, 5000);
     this.browser.setValue(keySelectors.KEY_NAME_INPUT, keyName);
+    browser.leftClick(globalSelectors.BACKGROUND, 0, 0);
     this.browser.setValue(keySelectors.KEY_VALUE_TYPE_INPUT, keyValueType);
 
     this.browser.click(keySelectors.SAVE_CHANGES_BUTTON);
@@ -152,7 +153,7 @@ export default class KeysPageObject extends PageObject {
     const conditionPropertyInputSelector = keySelectors.conditionPropertyName(ruleNumber, conditionNumber);
     const suggestionSelector = globalSelectors.typeaheadSuggestionByIndex(suggestionIndex);
 
-    this.browser.click(globalSelectors.BACKGROUND);
+    browser.leftClick(globalSelectors.BACKGROUND, 0, 0);
     this.browser.click(conditionPropertyInputSelector);
     this.browser.waitForVisible(suggestionSelector, 5000);
     this.browser.click(suggestionSelector);
@@ -175,7 +176,7 @@ export default class KeysPageObject extends PageObject {
     const ruleSelector = keySelectors.ruleContainer(ruleNumber);
     const addConditionButtonSelector = getRelativeSelector([ruleSelector, keySelectors.ADD_CONDITION_BUTTON]);
     this.browser.click(addConditionButtonSelector);
-    this.browser.click(globalSelectors.BACKGROUND);
+    browser.leftClick(globalSelectors.BACKGROUND, 0, 0);
   }
 
   removeRuleCondition(ruleNumber, conditionNumber) {
