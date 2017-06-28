@@ -9,7 +9,7 @@ function replaceNaN(fallbackValue) {
 }
 const parseNumericInput = inputValue => (inputValue === '' ? 0 : parseInt(inputValue, 10));
 
-export default ({
+const CustomSlider = ({
   data,
   onUpdate,
   sliderColors,
@@ -113,3 +113,5 @@ export default ({
     </div>
   );
 };
+
+export default CustomSlider;
