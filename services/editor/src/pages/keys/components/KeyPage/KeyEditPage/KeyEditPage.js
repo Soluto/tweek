@@ -217,9 +217,9 @@ const KeyFullHeader = (props) => {
             ? <RevisionHistory revision={revision} revisionHistory={revisionHistory} />
             : null}
 
-          <DependencyIndicator manifest={keyManifest} dependentKeys={dependentKeys} />
-
         </div>
+
+        <DependencyIndicator manifest={keyManifest} dependentKeys={dependentKeys} />
 
         <fieldset disabled={isReadonly} style={{ border: 'none' }}>
 
