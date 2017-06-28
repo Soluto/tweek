@@ -32,6 +32,7 @@ const MutatorFor = propName => Comp =>
   };
 
 const KeyRulesEditor = ({
+  keyPath,
   source,
   valueType,
   mutate,
@@ -72,7 +73,7 @@ const KeyRulesEditor = ({
       </TabList>
       <TabPanel className={'tab-content'}>
         <fieldset disabled={isReadonly} style={{ border: 'none' }}>
-          <JPadVisualEditor {...{ mutate, alerter, valueType }} jpadSource={source} />
+          <JPadVisualEditor {...{ mutate, alerter, valueType, keyPath }} jpadSource={source} />
         </fieldset>
 
       </TabPanel>

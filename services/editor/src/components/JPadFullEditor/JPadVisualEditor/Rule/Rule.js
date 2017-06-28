@@ -11,7 +11,7 @@ const ruleHasChanged = (props, nextProps) =>
   !R.equals(props.rule, nextProps.rule) ||
   !R.equals(props.mutate.path, nextProps.mutate.path);
 
-const Rule = ({ rule, valueType, mutate, autofocus }) => {
+const Rule = ({ rule, valueType, mutate, autofocus, keyPath }) => {
   const valueTitle = rule.Type === 'SingleVariant' ? 'Value' : 'Values';
   const identities = ContextService.getIdentities();
 
@@ -23,7 +23,7 @@ const Rule = ({ rule, valueType, mutate, autofocus }) => {
       </div>
       <div className={'values'}>
         <label className={'rule-partial-title'}>{valueTitle}</label>
-        <RuleValue {...{ rule, mutate, valueType, identities }} />
+        <RuleValue {...{ rule, mutate, valueType, identities, keyPath }} />
       </div>
     </div>
   );
