@@ -32,14 +32,13 @@ const NewPartitionPropertyValue = mapProps(
       value,
       onChange,
       placeholder: `${name} (${identity})`,
-      valueType: propertyTypeDetails.name,
-      customType: propertyTypeDetails,
+      valueType: propertyTypeDetails,
     };
   },
 )(TypedInput);
 
 class AddPartition extends React.Component {
-  state = { partition: {}, defaultValue: '' }
+  state = { partition: {}, defaultValue: '' };
 
   replaceState(state) {
     this.state = state;
@@ -95,7 +94,7 @@ const deletePartitionGroupAlert = {
 export default class PartitionsList extends React.Component {
   state = {
     activeItems: [],
-  }
+  };
 
   render() {
     const { partitions, mutate, valueType, alerter } = this.props;
