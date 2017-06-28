@@ -59,8 +59,6 @@ export default class KeysPageObject extends PageObject {
 
     this.browser.waitForVisible(keySelectors.KEY_NAME_INPUT, 5000);
     this.browser.setValue(keySelectors.KEY_NAME_INPUT, keyName);
-    browser.click(globalSelectors.BACKGROUND);
-
     this.browser.setValue(keySelectors.KEY_VALUE_TYPE_INPUT, keyValueType);
 
     this.browser.click(keySelectors.SAVE_CHANGES_BUTTON);
