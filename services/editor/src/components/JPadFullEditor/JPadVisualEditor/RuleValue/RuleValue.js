@@ -37,7 +37,7 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
       if ('Id' in ruleValue) {
         rule.in('Id').updateKey('Salt');
       } else if (!('Salt' in ruleValue)) {
-        rule.insert('Salt', keyPath);
+        rule.insert('Salt', chance.guid());
       }
 
       return m;
@@ -46,6 +46,7 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
   if (valueType === TypesService.types.boolean.name) {
     return (
       <button
+        data-comp="convert-to-multi-variant-button"
         className={'to-feature-flag-button'}
         onClick={() =>
           convertToMultiVariant({
@@ -60,6 +61,7 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
 
   return (
     <button
+      data-comp="convert-to-multi-variant-button"
       className={'add-variant-button'}
       onClick={() =>
         convertToMultiVariant({
@@ -101,6 +103,7 @@ const BernoulliTrial = ({ onUpdate, ratio }) =>
       <label>Open to</label>
       <input
         type="text"
+        data-comp="bernoulli-trial-input"
         className={'bernoulli-trial-input'}
         value={ratio * 100}
         onChange={(e) => {
@@ -200,6 +203,7 @@ const MultiVariantValue = ({
 
           {args === 1
             ? <button
+                data-comp="set-to-true-button"
                 className={'set-to-true-button'}
                 onClick={() =>
                   mutate.apply(m =>
