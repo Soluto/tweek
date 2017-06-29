@@ -21,24 +21,38 @@ export const InputValue = wrapWithClass(({ valueType }) => `inputValue input-typ
   TypedInput,
 );
 
-const MultiVariantConverter = ({ valueType, identities, mutate, value }) => {
+const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }) => {
+  const convertToMultiVariant = valueDistribution =>
+    mutate.apply((m) => {
+      m
+        .delete()
+        .in('Type')
+        .updateValue('MultiVariant')
+        .up()
+        .insert('OwnerType', identities[0])
+        .insert('ValueDistribution', valueDistribution);
+
+      const rule = m.up();
+      const ruleValue = rule.getValue();
+      if ('Id' in ruleValue) {
+        rule.in('Id').updateKey('Salt');
+      } else if (!('Salt' in ruleValue)) {
+        rule.insert('Salt', chance.guid());
+      }
+
+      return m;
+    });
+
   if (valueType === TypesService.types.boolean.name) {
     return (
       <button
+        data-comp="convert-to-multi-variant-button"
         className={'to-feature-flag-button'}
         onClick={() =>
-          mutate.apply(m =>
-            m
-              .delete()
-              .in('Type')
-              .updateValue('MultiVariant')
-              .up()
-              .insert('OwnerType', identities[0])
-              .insert('ValueDistribution', {
-                type: 'bernoulliTrial',
-                args: 0.1,
-              }),
-          )}
+          convertToMultiVariant({
+            type: 'bernoulliTrial',
+            args: 0.1,
+          })}
       >
         Gradual release
       </button>
@@ -47,33 +61,26 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value }) => {
 
   return (
     <button
+      data-comp="convert-to-multi-variant-button"
       className={'add-variant-button'}
       onClick={() =>
-        mutate.apply(m =>
-          m
-            .delete()
-            .in('Type')
-            .updateValue('MultiVariant')
-            .up()
-            .insert('OwnerType', identities[0])
-            .insert('ValueDistribution', {
-              type: 'weighted',
-              args: {
-                [value]: 50,
-                'New Varaint': 50,
-              },
-            }),
-        )}
+        convertToMultiVariant({
+          type: 'weighted',
+          args: {
+            [value]: 50,
+            'New Varaint': 50,
+          },
+        })}
     >
       Add Variant
     </button>
   );
 };
 
-const SingleVariantValue = ({ value, mutate, identities, autofocus, valueType }) =>
+const SingleVariantValue = ({ value, mutate, identities, autofocus, valueType, keyPath }) =>
   <div className={'rule-value-container'}>
     <InputValue {...{ value, valueType }} onChange={newValue => mutate.updateValue(newValue)} />
-    <MultiVariantConverter {...{ value, valueType, mutate, identities }} />
+    <MultiVariantConverter {...{ value, valueType, mutate, identities, keyPath }} />
   </div>;
 
 const multiVariantSliderColors = [
@@ -96,6 +103,7 @@ const BernoulliTrial = ({ onUpdate, ratio }) =>
       <label>Open to</label>
       <input
         type="text"
+        data-comp="bernoulli-trial-input"
         className={'bernoulli-trial-input'}
         value={ratio * 100}
         onChange={(e) => {
@@ -195,6 +203,7 @@ const MultiVariantValue = ({
 
           {args === 1
             ? <button
+                data-comp="set-to-true-button"
                 className={'set-to-true-button'}
                 onClick={() =>
                   mutate.apply(m =>
@@ -247,18 +256,18 @@ const MultiVariantValue = ({
   return null;
 };
 
-export default compose(
+const RuleValue = compose(
   mapProps(({ valueType, ...props }) => ({
     valueType: TypesService.types[valueType] ? valueType : 'string',
     ...props,
   })),
-)(({ rule, mutate, valueType, autofocus, identities }) => {
+)(({ rule, mutate, valueType, autofocus, identities, keyPath }) => {
   if (rule.Type === 'SingleVariant') {
     return (
       <SingleVariantValue
         mutate={mutate.in('Value')}
         value={rule.Value}
-        {...{ identities, autofocus, valueType }}
+        {...{ identities, autofocus, valueType, keyPath }}
       />
     );
   }
@@ -276,3 +285,7 @@ export default compose(
 
   return null;
 });
+
+RuleValue.displayName = 'RuleValue';
+
+export default RuleValue;
