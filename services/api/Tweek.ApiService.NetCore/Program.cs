@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Builder;
 
 namespace Tweek.ApiService.NetCore
 {
@@ -15,7 +10,6 @@ namespace Tweek.ApiService.NetCore
             var host = new WebHostBuilder()
                 .UseKestrel(opts=> opts.Limits.MaxRequestLineSize = 128 * 1024)
                 .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseApplicationInsights()
                 .UseStartup<Startup>()
                 .Build();
             
