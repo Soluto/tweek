@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.12
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.ApiService.NetCore", "services\api\Tweek.ApiService.NetCore\Tweek.ApiService.NetCore.csproj", "{F1F37A97-5937-4B3F-A342-EACC4D17BE19}"
 EndProject
@@ -42,7 +42,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonValueConverter.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.ApiService.Addons", "core\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj", "{2E921C38-5F30-456D-A78C-4902C0432959}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.UnitTests", "core\Engine\Engine.UnitTests\Engine.UnitTests.csproj", "{A7ABF431-D7D6-4476-8BF9-A4D2631897FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.UnitTests", "core\Engine\Engine.UnitTests\Engine.UnitTests.csproj", "{A7ABF431-D7D6-4476-8BF9-A4D2631897FF}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "deployments\dev\docker-compose.dcproj", "{7BFB4ED8-676D-4649-93EB-8B6014F91B88}"
 EndProject
@@ -54,7 +54,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Blob.Tests", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Context", "Context", "{BD1E6B57-18E1-46E9-B16F-B531E88FB9E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.Drivers.Redis", "addons\Context\Tweek.Drivers.Redis\Tweek.Drivers.Redis.csproj", "{70ACAF9B-A91A-46CB-A7EF-F4D2A0736510}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Redis", "addons\Context\Tweek.Drivers.Redis\Tweek.Drivers.Redis.csproj", "{70ACAF9B-A91A-46CB-A7EF-F4D2A0736510}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.Addons.ApplicationInsights", "addons\ApplicationInsights\Tweek.Addons.ApplicationInsights\Tweek.Addons.ApplicationInsights.csproj", "{90AD5C6D-668E-4703-BCE9-17AB584881EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -241,6 +243,18 @@ Global
 		{70ACAF9B-A91A-46CB-A7EF-F4D2A0736510}.Release|x64.Build.0 = Release|Any CPU
 		{70ACAF9B-A91A-46CB-A7EF-F4D2A0736510}.Release|x86.ActiveCfg = Release|Any CPU
 		{70ACAF9B-A91A-46CB-A7EF-F4D2A0736510}.Release|x86.Build.0 = Release|Any CPU
+		{90AD5C6D-668E-4703-BCE9-17AB584881EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90AD5C6D-668E-4703-BCE9-17AB584881EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90AD5C6D-668E-4703-BCE9-17AB584881EE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{90AD5C6D-668E-4703-BCE9-17AB584881EE}.Debug|x64.Build.0 = Debug|Any CPU
+		{90AD5C6D-668E-4703-BCE9-17AB584881EE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{90AD5C6D-668E-4703-BCE9-17AB584881EE}.Debug|x86.Build.0 = Debug|Any CPU
+		{90AD5C6D-668E-4703-BCE9-17AB584881EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90AD5C6D-668E-4703-BCE9-17AB584881EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90AD5C6D-668E-4703-BCE9-17AB584881EE}.Release|x64.ActiveCfg = Release|Any CPU
+		{90AD5C6D-668E-4703-BCE9-17AB584881EE}.Release|x64.Build.0 = Release|Any CPU
+		{90AD5C6D-668E-4703-BCE9-17AB584881EE}.Release|x86.ActiveCfg = Release|Any CPU
+		{90AD5C6D-668E-4703-BCE9-17AB584881EE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -269,5 +283,6 @@ Global
 		{7127F881-3A87-48F6-A04F-9EA5B74096F4} = {2407B11F-BCC6-46BC-85B0-CF64D74A441D}
 		{BD1E6B57-18E1-46E9-B16F-B531E88FB9E3} = {2407B11F-BCC6-46BC-85B0-CF64D74A441D}
 		{70ACAF9B-A91A-46CB-A7EF-F4D2A0736510} = {BD1E6B57-18E1-46E9-B16F-B531E88FB9E3}
+		{90AD5C6D-668E-4703-BCE9-17AB584881EE} = {2407B11F-BCC6-46BC-85B0-CF64D74A441D}
 	EndGlobalSection
 EndGlobal
