@@ -116,7 +116,7 @@ steps:
             driver: "none"
     composition_candidates:
       smoke-tests:
-        image: microsoft/aspnetcore-build:1.1.1
+        image: microsoft/aspnetcore-build:1.1.2
         depends_on: 
           - tweek-api
         volumes:
