@@ -1,13 +1,5 @@
 version: '1.0'
 steps:
-  NugetConfig:
-    title: Generate NuGet.config file
-    image: node:6.10.3-alpine
-    working_directory: ./CI
-    commands:
-      - npm install -g envsub
-      - envsub NuGet.Config.tmpl NuGet.Config
-
   BuildGitKeys:
     title: Building Git Keys Docker Image
     type: build
@@ -124,7 +116,7 @@ steps:
             driver: "none"
     composition_candidates:
       smoke-tests:
-        image: microsoft/aspnetcore-build:1.1.1
+        image: microsoft/aspnetcore-build:1.1.2
         depends_on: 
           - tweek-api
         volumes:
