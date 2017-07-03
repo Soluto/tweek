@@ -1,6 +1,6 @@
 import idbKeyval from 'idb-keyval';
 import { CACHE_NAME, urls } from './constants';
-import { testLogin } from './data-actions';
+import testLogin from './testLogin';
 import { search, getSuggestions } from './search';
 import getUrl from './getUrl';
 

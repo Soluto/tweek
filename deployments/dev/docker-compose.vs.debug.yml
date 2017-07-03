@@ -4,6 +4,8 @@ services:
   tweek-api:
     image: soluto/tweek-api:dev
     build:
+      context: ../../services/api/Tweek.ApiService.NetCore
+      dockerfile: Dockerfile
       args:
         source: ${DOCKER_BUILD_SOURCE}
     depends_on: 
