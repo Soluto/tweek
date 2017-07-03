@@ -1,6 +1,7 @@
 import path from 'path';
 import http from 'http';
 import express from 'express';
+import morgan from 'morgan';
 import nconf from 'nconf';
 import session from 'express-session';
 import Promise from 'bluebird';
@@ -112,10 +113,7 @@ const startServer = async () => {
   const app = express();
   const server = http.Server(app);
 
-  app.use((req, res, next) => {
-    console.log(req.method, req.originalUrl);
-    next();
-  });
+  app.use(morgan('tiny'));
 
   addDirectoryTraversalProtection(app);
   const cookieOptions = {
