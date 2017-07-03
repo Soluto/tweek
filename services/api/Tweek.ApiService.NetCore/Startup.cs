@@ -1,7 +1,5 @@
 ﻿using App.Metrics;
 using App.Metrics.Configuration;
-using App.Metrics.Extensions.Reporting.Graphite;
-using App.Metrics.Extensions.Reporting.Graphite.Client;
 using App.Metrics.Health;
 using Engine;
 using Engine.Core.Rules;
@@ -18,7 +16,6 @@ using Scrutor;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Engine.Rules.Validation;
@@ -35,12 +32,6 @@ using Tweek.JPad;
 using Tweek.JPad.Utils;
 using Engine.Rules.Creation;
 using static Engine.Core.Rules.Utils;
-using static LanguageExt.Prelude;
-using FSharpUtils.Newtonsoft;
-using Engine.DataTypes;
-using LanguageExt;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Newtonsoft.Json.Linq;
 
 namespace Tweek.ApiService.NetCore
 {
@@ -130,23 +121,6 @@ namespace Tweek.ApiService.NetCore
                     });
                 })
                 .AddJsonSerialization()
-                .AddReporting(factory =>
-                {
-                    var appMetricsReporters = Configuration.GetSection("AppMetricsReporters");
-                    foreach (var reporter in appMetricsReporters.GetChildren())
-                    {
-                        if (reporter.Key.Equals("graphite", StringComparison.OrdinalIgnoreCase))
-                        {
-                            factory.AddGraphite(new GraphiteReporterSettings
-                            {
-                                ConnectionType = ConnectionType.Tcp,
-                                Host = reporter.GetValue<string>("Url"),
-                                Port = reporter.GetValue("Port", 2003),
-                                NameFormatter = new DefaultGraphiteNameFormatter(reporter.GetValue("Prefix", "TweekApi") +  ".{type}.{tag:host}.{context}.{tag:route}.{nameWithUnit}.{tag:http_status_code}")
-                            });
-                        }
-                    }
-                })
                 .AddHealthChecks()
                 .AddMetricsMiddleware(Configuration.GetSection("AspNetMetrics"));
         }
