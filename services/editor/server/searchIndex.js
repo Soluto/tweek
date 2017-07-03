@@ -24,17 +24,14 @@ async function refreshIndex(repoDir) {
   const stringIndex = await readFile(indexFile);
   const obj = JSON.parse(stringIndex);
 
-  index = {
-    index: lunr.Index.load(obj.index),
-    manifests: obj.manifests,
-  };
+  index = lunr.Index.load(obj.index);
 
   return index;
 }
 
 export default {
   get indexPromise() {
-    return indexPromise && indexPromise.then(x => x.index);
+    return indexPromise;
   },
   get manifests() {
     return manifestPromise;
