@@ -38,6 +38,8 @@ services:
     build:
       context: ../../services/api/Tweek.ApiService.NetCore
       dockerfile: Dockerfile
+    depends_on:
+      - tweek-redis
     ports:
       - "4003:80"
     environment:
