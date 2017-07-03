@@ -8,9 +8,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.ci.build.yml" />
-    <None Include="docker-compose.circleci.yml">
-      <DependentUpon>docker-compose.e2e.yml</DependentUpon>
-    </None>
     <None Include="docker-compose.e2e.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
