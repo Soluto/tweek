@@ -1,24 +1,36 @@
-.dependency-indicator-container {
+.key-dependency-indicator-container {
   display: flex;
-  flex-grow: 1;
   flex-direction: column;
-  align-self: flex-end;
-  float: right;
+  flex-grow: 1;
   color: #a5a5a5;
   font-size: 14px;
+  margin-top: 10px;
 }
-.dependency-indicator-container .dependency-item {
+.dependency-item {
   list-style-type: none;
   font-weight: 300;
 }
-.dependency-indicator-container .depends-on {
-  margin-top: 4px;
+.depends-on {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  color: #a5a5a5;
+  font-size: 14px;
+  margin-top: 10px;
 }
-.dependency-indicator-container .depends-on li {
+.depends-on li {
   list-style-type: none;
   font-weight: 300;
 }
-.dependency-indicator-container .used-by li {
+.used-by {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  color: #a5a5a5;
+  font-size: 14px;
+  margin-top: 10px;
+}
+.used-by li {
   list-style-type: none;
   font-weight: 300;
 }

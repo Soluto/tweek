@@ -57,7 +57,7 @@ export async function getDependents(req, res, { keysRepository }, { params }) {
   try {
     const dependents = await searchIndex.dependents;
 
-    res.json(dependents[keyPath]);
+    res.json(dependents[keyPath] || []);
   } catch (exp) {
     res.sendStatus(404);
   }

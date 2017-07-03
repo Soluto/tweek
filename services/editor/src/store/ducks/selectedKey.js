@@ -44,18 +44,19 @@ function updateRevisionHistory(keyName, revisionHistory) {
 
 function updateDependentKeys(keyName, dependentKeys) {
   return async function (dispatch) {
-    let dependentKeysResponse;
+    let dependentKeys;
     try {
-      dependentKeys =
-        dependentKeys ||
-        JSON.parse(
-          (dependentKeysResponse = await (await fetch(`/api/dependents/${keyName}`)).text()),
-        );
-      dispatch({ type: DEPENDENT_KEYS, payload: { keyName, dependentKeys } });
+      dependentKeys = dependentKeys || (await (await fetch(`/api/dependents/${keyName}`)).json());
     } catch (error) {
-      if (dependentKeysResponse && dependentKeysResponse.length !== 0)
-        dispatch(showError({ title: `Failed to enumerate keys dependent on ${keyName}`, error }));
+      dependentKeys = [];
+      dispatch(
+        showError({
+          title: `Failed to enumerate keys dependent on ${keyName} ${dependentKeys} ${error}`,
+          error,
+        }),
+      );
     }
+    dispatch({ type: DEPENDENT_KEYS, payload: { keyName, dependentKeys } });
   };
 }
 

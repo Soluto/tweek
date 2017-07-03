@@ -137,13 +137,14 @@
           }
         }
         .key-description-and-tags-wrapper {
-          @description-and-tags-max-height: 100px;
+          @description-and-tags-max-height: 120px;
           display: flex;
           flex-direction: row;
           flex-grow: 1;
           margin-top: 10px;
           max-height: @description-and-tags-max-height;
           .key-description-wrapper {
+            overflow-y: auto;
             .description-input {
               resize: none;
               font-size: 14px;
