@@ -50,7 +50,13 @@ const PropertySuggestion = compose(
   }),
   withPropertyTypeDetails('typeDetails'),
 )(({ identity, propName, tooltipId, typeDetails, textToMark }) =>
-  <div data-tip data-for={tooltipId} className={'property-suggestion-wrapper'}>
+  <div
+    data-tip
+    data-for={tooltipId}
+    data-comp="property-suggestion"
+    data-value={propName}
+    className={'property-suggestion-wrapper'}
+  >
     <Avatar identity={identity} />
     <Highlighter
       highlightClassName={'suggestion-label'}

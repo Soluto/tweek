@@ -17,8 +17,8 @@ export default class ContextPageObject extends PageObject {
     browser.waitForVisible(contextSelectors.ADD_KEY_BUTTON, 5000);
     browser.waitForVisible(contextSelectors.CURRENT_CONTEXT_TYPE, 5000);
     browser.waitUntil(() => {
-        return this.browser.getText(contextSelectors.CURRENT_CONTEXT_TYPE).toLowerCase() == contextType.toLowerCase() &&
-          this.browser.getText(contextSelectors.CURRENT_CONTEXT_ID).toLowerCase() == contextId.toLowerCase();
+        return this.browser.getText(contextSelectors.CURRENT_CONTEXT_TYPE).toLowerCase() === contextType.toLowerCase() &&
+          this.browser.getText(contextSelectors.CURRENT_CONTEXT_ID).toLowerCase() === contextId.toLowerCase();
       }, 5000);
   }
 
@@ -52,10 +52,10 @@ export default class ContextPageObject extends PageObject {
     browser.waitUntil(() => !this.hasChanges() && !this.isSaving(), PageObject.GIT_TRANSACTION_TIMEOUT, "changes were not saved");
   }
 
-  addOverrideKey(key, value) {
+  addOverrideKey(key, value, valueType = typeof value) {
     const valueInputSelector = contextSelectors.keyValueInput(key);
-    browser.setValue(contextSelectors.keyNameInput(), key)
-    browser.waitForEnabled(valueInputSelector, 5000)
+    browser.setValue(contextSelectors.keyNameInput(), key);
+    browser.waitForEnabled(`${valueInputSelector}[data-comp= typed-input][data-value-type= "${valueType.toLowerCase()}"]`, 5000);
     browser.setValue(valueInputSelector, value);
   }
 }
