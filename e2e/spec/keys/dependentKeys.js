@@ -64,4 +64,35 @@ describe('dependent keys', () => {
     const errorText = browser.getText(globalSelectors.ERROR_NOTIFICATION_TITLE);
     expect(errorText).to.equal('Failed to save key');
   })
+
+  // TODO: unskip this test, when the search index refresh works reasonably fast
+  it.skip('should display dependency relations between keys', () => {
+    const keyWithoutDependency = keysPageObject.generateTestKeyName('key1');
+    const keyWithoutDependencyFullPath = `${testFolder}/${dependentKeysFolder}/${keyWithoutDependency}`;
+    keysPageObject.addEmptyKey(keyWithoutDependencyFullPath);
+
+    const keyWithDependency = keysPageObject.generateTestKeyName('key2');
+    const keyWithDependencyFullPath = `${testFolder}/${dependentKeysFolder}/${keyWithDependency}`;
+    keysPageObject.addEmptyKey(keyWithDependencyFullPath);
+
+    browser.click(keySelectors.ADD_RULE_BUTTON);
+
+    browser.setValue(conditionPropertyInputSelector, `keys.${keyWithoutDependencyFullPath}`);
+    keysPageObject.setConditionValue(1, 1, 'value');
+
+    keysPageObject.commitChanges();
+
+
+    // Verify used by
+    keysPageObject.goToKey(keyWithoutDependencyFullPath);
+    browser.waitForVisible(keySelectors.USED_BY, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
+    const usedBy = browser.getText(keySelectors.USED_BY);
+    expect(usedBy).to.equal('Used by:');
+
+    // Verify depends on
+    keysPageObject.goToKey(keyWithDependencyFullPath);
+    browser.waitForVisible(keySelectors.DEPENDS_ON, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
+    const dependsOn = browser.getText(keySelectors.DEPENDS_ON);
+    expect(dependsOn).to.equal('Depends on:');
+  });
 });

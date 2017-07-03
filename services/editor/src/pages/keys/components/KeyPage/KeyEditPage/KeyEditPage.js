@@ -16,7 +16,7 @@ import RevisionHistory from './RevisionHistory/RevisionHistory';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
 import alertIconSrc from './resources/alert-icon.svg';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
-import DependencyIndicator from './DependencyIndicator/DependencyIndicator';
+import { UsedBy, DependsOn } from './DependencyIndicator/DependencyIndicator';
 import './KeyEditPage.css';
 
 const ConstEditor = ({ value, valueType, onChange }) =>
@@ -222,8 +222,6 @@ const KeyFullHeader = (props) => {
 
         </div>
 
-        <DependencyIndicator manifest={keyManifest} dependentKeys={dependentKeys} />
-
         <fieldset disabled={isReadonly} style={{ border: 'none' }}>
 
           {!isInAddMode
@@ -243,6 +241,7 @@ const KeyFullHeader = (props) => {
                 classNames={{ input: 'description-input' }}
                 maxLength={400}
               />
+              <UsedBy dependentKeys={dependentKeys} />
             </div>
 
             <div className={'key-tags-wrapper'}>
@@ -250,7 +249,9 @@ const KeyFullHeader = (props) => {
                 onTagsChanged={newTags => onTagsChanged(newTags)}
                 tags={keyManifest.meta.tags || []}
               />
+              <DependsOn dependencies={keyManifest.dependencies} />
             </div>
+
           </div>
 
         </fieldset>

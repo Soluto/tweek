@@ -1,30 +1,30 @@
 @import (reference) "../../../../../../styles/core/core.less";
 @text-color: #a5a5a5;
 
-.dependency-indicator-container {
+.key-dependency-indicator-container {
   display: flex;
-  flex-grow: 1;
   flex-direction: column;
-  align-self: flex-end;
-  float: right;
+  flex-grow: 1;
   color: @text-color;
   font-size: 14px;
+  margin-top: 10px;
+}
 
-  .dependency-item {
-    list-style-type: none;
-    font-weight: 300;
+.dependency-item {
+  list-style-type: none;
+  font-weight: 300;
+}
+
+.depends-on {
+  .key-dependency-indicator-container;
+  li {
+    .dependency-item;
   }
+}
 
-  .depends-on {
-    margin-top: 4px;
-    li {
-      .dependency-item;
-    }
-  }
-
-  .used-by {
-    li {
-      .dependency-item;
-    }
+.used-by {
+  .key-dependency-indicator-container;
+  li {
+    .dependency-item;
   }
 }
