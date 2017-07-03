@@ -22,7 +22,6 @@ keySelectors.RULE_CONDITION = getSelectorByClassNames('condition-wrapper');
 keySelectors.TAB_ITEM_HEADER = getSelectorByClassNames('tab-header');
 keySelectors.RULES_TAB_ITEM = _getSelectorByIndex(keySelectors.TAB_ITEM_HEADER, 1);
 keySelectors.SOURCE_TAB_ITEM = _getSelectorByIndex(keySelectors.TAB_ITEM_HEADER, 2);
-keySelectors.KEY_SOURCE_TEXT = getSelectorByClassNames('key-def-json');
 keySelectors.KEY_VIEWER_CONTAINER = getSelectorByClassNames('key-viewer-container');
 keySelectors.KEY_PAGE = getSelectorByClassNames('key-page');
 keySelectors.TAGS_INPUT = getRelativeSelector([getSelectorByClassNames('key-description-and-tags-wrapper', 'tag-input'), 'input']);

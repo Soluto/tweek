@@ -54,7 +54,7 @@ describe('edit keys', () => {
 
         function addRuleAndAssertItsFocus(numberOfRules) {
 
-          for (var i = 0; i < numberOfRules; i++) {
+          for (let i = 0; i < numberOfRules; i++) {
             let ruleFirstConditionPropertyName = selectors.conditionPropertyName(i, 1);
             browser.click(selectors.ADD_RULE_BUTTON);
             assert(browser.hasFocus(ruleFirstConditionPropertyName), 'should focus the added rule first condition property name');
@@ -67,16 +67,15 @@ describe('edit keys', () => {
           addRuleAndAssertItsFocus(2);
           keysAsserts.assertKeyHasNumberOfRules(2);
 
-          keysPageObject.setConditionPropertyFromSuggestion(1, 1, 4);
-          keysPageObject.addRuleCondition(1);
-          keysPageObject.setConditionPropertyFromSuggestion(1, 2, 6);
-
-          keysPageObject.setConditionValue(1, 2, 'Banana');
+          keysPageObject.setConditionProperty(1, 1, 'AgentVersion');
           keysPageObject.setConditionValue(1, 1, '1.1.1');
 
           keysPageObject.addRuleCondition(1);
+          keysPageObject.setConditionProperty(1, 2, 'FavoriteFruit');
+          keysPageObject.setConditionValue(1, 2, 'Banana');
 
-          keysPageObject.setConditionPropertyFromSuggestionValuePrefix(1, 3, 'Birth');
+          keysPageObject.addRuleCondition(1);
+          keysPageObject.setConditionProperty(1, 3, 'BirthDate');
           keysPageObject.setConditionValue(1, 3, '3d');
 
           keysPageObject.removeRuleCondition(2, 0);
@@ -179,7 +178,7 @@ describe('edit keys', () => {
         it('should succeed editing key (valueType=number)', () => {
             const key = `${consts_path}/number_type`;
             goToKey(key);
-            browser.setValue(`${const_selector} input`, '30')
+            browser.setValue(`${const_selector} input`, '30');
             keysPageObject.commitChanges();
             tweekApiClient.waitForKeyToEqual(key, 30);
         });
@@ -187,17 +186,18 @@ describe('edit keys', () => {
         it('should succeed editing key (valueType=string)', () => {
             const key = `${consts_path}/string_type`;
             goToKey(key);
-            browser.setValue(`${const_selector} input`, 'world')
+            browser.setValue(`${const_selector} input`, 'world');
             keysPageObject.commitChanges();
             tweekApiClient.waitForKeyToEqual(key, 'world');
         });
 
         it('should succeed editing key (valueType=object)', () => {
             const key = `${consts_path}/object_type`;
+            const currentValue = tweekApiClient.get(key);
             goToKey(key);
             browser.click(`${const_selector} .jsonValue input[type=checkbox]`);
             keysPageObject.commitChanges();
-            tweekApiClient.waitForKeyToEqual(key, {boolProp: false});
+            tweekApiClient.waitForKeyToEqual(key, {boolProp: !currentValue.boolProp});
         });
       });
     });

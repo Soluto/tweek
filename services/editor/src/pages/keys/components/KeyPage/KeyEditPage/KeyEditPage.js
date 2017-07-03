@@ -27,6 +27,7 @@ const ConstEditor = ({ value, valueType, onChange }) =>
   </div>;
 
 const Editor = ({
+  keyPath,
   manifest,
   sourceFile,
   onManifestChange,
@@ -42,6 +43,7 @@ const Editor = ({
     }
     return (
       <FileEditor
+        keyPath={keyPath}
         alerter={alerter}
         source={sourceFile}
         onChange={onSourceFileChange}
@@ -153,6 +155,7 @@ class KeyEditPage extends Component {
 
             <div className={classNames('key-rules-editor', { sticky: isInStickyMode })}>
               <Editor
+                keyPath={key}
                 manifest={manifest}
                 sourceFile={keyDef.source}
                 onSourceFileChange={source => this.props.updateKeyDef({ source })}

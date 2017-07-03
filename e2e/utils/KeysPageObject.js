@@ -42,11 +42,20 @@ export default class KeysPageObject extends PageObject {
   }
 
   getKeySource() {
-    this.browser.waitForVisible(keySelectors.TAB_ITEM_HEADER, 2000);
-    this.browser.click(keySelectors.SOURCE_TAB_ITEM);
-    const keySourceCode = this.browser.getHTML(keySelectors.KEY_SOURCE_TEXT, false);
+    this.browser.clickWhenVisible(keySelectors.SOURCE_TAB_ITEM, 2000);
+    this.browser.waitForVisible('.monaco-editor', 5000);
+    const keySourceCode = this.browser.execute(function () {
+      return window.monaco.editor.getModels()[0].getValue();
+    });
     this.browser.click(keySelectors.RULES_TAB_ITEM);
-    return JSON.parse(keySourceCode);
+    return JSON.parse(keySourceCode.value);
+  }
+
+  setKeySource(source, timeout = 5000) {
+    this.browser.waitForVisible('.monaco-editor', timeout);
+    this.browser.execute(function (source) {
+      window.monaco.editor.getModels()[0].setValue(source);
+    }, source);
   }
 
   getNumberOfRules() {
@@ -150,20 +159,10 @@ export default class KeysPageObject extends PageObject {
     this.browser.clickIfVisible(keySelectors.ALERT_OK_BUTTON, 500);
   }
 
-  setConditionPropertyFromSuggestion(ruleNumber, conditionNumber, suggestionIndex) {
+  setConditionProperty(ruleNumber, conditionNumber, value) {
     const conditionPropertyInputSelector = keySelectors.conditionPropertyName(ruleNumber, conditionNumber);
-    const suggestionSelector = globalSelectors.typeaheadSuggestionByIndex(suggestionIndex);
-
-    this.browser.click(globalSelectors.BACKGROUND);
-    this.browser.click(conditionPropertyInputSelector);
-    this.browser.waitForVisible(suggestionSelector, 5000);
-    this.browser.click(suggestionSelector);
-  }
-
-  setConditionPropertyFromSuggestionValuePrefix(ruleNumber, conditionNumber, valuePrefix) {
-    const conditionPropertyInputSelector = keySelectors.conditionPropertyName(ruleNumber, conditionNumber);
-    this.browser.setValue(conditionPropertyInputSelector, valuePrefix);
-    const suggestionSelector = globalSelectors.typeaheadSuggestionByIndex(0);
+    this.browser.setValue(conditionPropertyInputSelector, value);
+    const suggestionSelector = `[data-comp= property-suggestion][data-value= "${value}"]`;
     this.browser.waitForVisible(suggestionSelector, 5000);
     this.browser.click(suggestionSelector);
   }
@@ -193,13 +192,6 @@ export default class KeysPageObject extends PageObject {
   addPartitionFromProperty(property) {
     this.browser.setValue(keySelectors.ADD_PARTITION_INPUT, property);
     this.browser.keys('\uE007');
-  }
-
-  setKeySource(source, timeout = 5000) {
-    this.browser.waitForVisible('.monaco-editor', timeout);
-    this.browser.execute(function (source) {
-      window.monaco.editor.getModels()[0].setValue(source);
-    }, source);
   }
 
   commitChanges(selector = keySelectors.SAVE_CHANGES_BUTTON) {

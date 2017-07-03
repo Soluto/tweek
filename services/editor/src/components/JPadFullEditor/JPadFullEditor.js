@@ -32,6 +32,7 @@ const MutatorFor = propName => Comp =>
   };
 
 const KeyRulesEditor = ({
+  keyPath,
   source,
   valueType,
   mutate,
@@ -72,7 +73,7 @@ const KeyRulesEditor = ({
       </TabList>
       <TabPanel className={'tab-content'}>
         <fieldset disabled={isReadonly} style={{ border: 'none' }}>
-          <JPadVisualEditor {...{ mutate, alerter, valueType }} jpadSource={source} />
+          <JPadVisualEditor {...{ mutate, alerter, valueType, keyPath }} jpadSource={source} />
         </fieldset>
 
       </TabPanel>
@@ -81,9 +82,6 @@ const KeyRulesEditor = ({
           {...{ source, isReadonly, setHasChanges }}
           onChange={x => onMutation(JSON.parse(x))}
         />
-        <pre className={'key-def-json'} style={{ display: 'none' }}>
-          {JSON.stringify(JSON.parse(source), null, 4)}
-        </pre>
       </TabPanel>
 
     </Tabs>

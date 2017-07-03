@@ -18,7 +18,6 @@ services:
       dockerfile: TweekApiDockerfile
     depends_on:
       - tweek-management
-      - tweek-redis
     environment:
       - Rules__Management__Url=http://tweek-management:3000
     labels:
