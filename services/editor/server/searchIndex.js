@@ -2,11 +2,14 @@ import fs from 'fs';
 import { execFile } from 'child_process';
 import lunr from 'lunr';
 import { promisify } from 'bluebird';
+import getManifestsFromFiles from './getManifestsFromFiles';
 
 const readFile = promisify(fs.readFile);
 
+let manifestPromise;
 let indexPromise;
 let dependentsPromise;
+let index;
 
 async function refreshIndex(repoDir) {
   const indexFile = './searchIndex.json';
@@ -22,24 +25,27 @@ async function refreshIndex(repoDir) {
   const stringIndex = await readFile(indexFile);
   const obj = JSON.parse(stringIndex);
 
-  return {
-    index: lunr.Index.load(obj.index),
-    manifests: obj.manifests,
-  };
+  index = lunr.Index.load(obj.index);
+
+  return index;
 }
 
 export default {
-  get index() {
-    return indexPromise && indexPromise.then(x => x.index);
+  get indexPromise() {
+    return indexPromise;
   },
   get manifests() {
-    return indexPromise && indexPromise.then(x => x.manifests);
+    return manifestPromise;
+  },
+  get index() {
+    return index;
   },
   get dependents() {
     return dependentsPromise;
   },
-  refreshIndex: (...args) => {
-    indexPromise = refreshIndex(...args);
+  refreshIndex: (repoDir) => {
+    manifestPromise = getManifestsFromFiles(repoDir);
+    indexPromise = refreshIndex(repoDir);
     dependentsPromise = indexPromise.then(x =>
       x.manifests.reduce((acc, current) => {
         if (current.dependencies && current.dependencies.length !== 0) {
