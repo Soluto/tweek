@@ -11,5 +11,7 @@ namespace Engine.DataTypes
             : base(type, id)
         {
         }
+
+        public static readonly Identity GlobalIdentity = new Identity("@global", "");
     }
 }
