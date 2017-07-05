@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Engine;
+using Engine.Context;
 using Engine.Core.Context;
 using Engine.DataTypes;
 using FSharpUtils.Newtonsoft;
@@ -15,20 +16,26 @@ namespace Tweek.ApiService.NetCore.Security
     
     public static class Authorization
     {
-        public static CheckReadConfigurationAccess CreateReadConfigurationAccessChecker(ITweek tweek)
+        public static CheckReadConfigurationAccess CreateReadConfigurationAccessChecker(ITweek tweek, TweekIdentityProvider identityProvider)
         {
             return (identity, path, tweekIdentities) =>
             {
                 if (path == "@tweek/_" || path.StartsWith("@tweek/auth")) return false;
 
                 return tweekIdentities.DefaultIfEmpty(Identity.GlobalIdentity)
-                    .All(tweekIdentity => CheckAuthenticationForKey(tweek, "read_configuration", identity, tweekIdentity));
+                    .All(tweekIdentity => CheckAuthenticationForKey(tweek, identityProvider, "read_configuration", identity, tweekIdentity));
             };
         }
 
-        public static bool CheckAuthenticationForKey(ITweek tweek, string permissionType, ClaimsPrincipal identity, Identity tweekIdentity){
+        public static bool CheckAuthenticationForKey(ITweek tweek, TweekIdentityProvider identityProvider, string permissionType, ClaimsPrincipal identity, Identity tweekIdentity){
             var identityType = tweekIdentity.Type;
             var key = $"@tweek/auth/{identityType}/{permissionType}";
+
+            bool IsKnownIdentity()
+            {
+                var knownIdentities = identityProvider.GetIdentities();
+                return knownIdentities.Contains(tweekIdentity.Type);
+            }
 
             return identity.IsTweekIdentity() ||
                 tweek.Calculate(key, new HashSet<Identity>(),
@@ -38,12 +45,12 @@ namespace Tweek.ApiService.NetCore.Security
                         .Match(x => match(x, 
                                 with("allow", _ => true),
                                 with("deny", _ => false),
-                                claim => Optional(identity.FindFirst(claim)).Match(c=> c.Value.Equals(tweekIdentity.Id,StringComparison.OrdinalIgnoreCase), ()=>false)), () => true);
+                                claim => Optional(identity.FindFirst(claim)).Match(c=> c.Value.Equals(tweekIdentity.Id,StringComparison.OrdinalIgnoreCase), ()=>false)), IsKnownIdentity);
         }
 
-        public static CheckWriteContextAccess CreateWriteContextAccessChecker(ITweek tweek)
+        public static CheckWriteContextAccess CreateWriteContextAccessChecker(ITweek tweek, TweekIdentityProvider identityProvider)
         {
-            return (identity, tweekIdentity) => CheckAuthenticationForKey(tweek, "write_context", identity, tweekIdentity);
+            return (identity, tweekIdentity) => CheckAuthenticationForKey(tweek, identityProvider, "write_context", identity, tweekIdentity);
         }
     }
 }
