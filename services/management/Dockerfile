@@ -2,7 +2,7 @@ FROM node:8.1.2
 
 COPY package.json npm-shrinkwrap.json /tmp/
 RUN cd /tmp && \
-    npm install && \
+    npm install --only=production && \
     mkdir -p /opt/app && \
     cp -a /tmp/node_modules /opt/app/
 
