@@ -1,10 +1,13 @@
-FROM node:6.10.3-slim
+FROM node:8.1.2
 
-ADD package.json /tmp/package.json
-RUN cd /tmp && npm install
-RUN mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/
+COPY package.json npm-shrinkwrap.json /tmp/
+RUN cd /tmp && \
+    npm install && \
+    mkdir -p /opt/app && \
+    cp -a /tmp/node_modules /opt/app/
+
 WORKDIR /opt/app
-ADD . /opt/app
+COPY . /opt/app
 
 EXPOSE 3000
 
