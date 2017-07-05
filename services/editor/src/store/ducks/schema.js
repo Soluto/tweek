@@ -10,6 +10,9 @@ const UPSERT_SCHEMA_PROPERTY = 'SCHEMA_UPSERT_PROPERTY';
 const REMOVE_SCHEMA_PROPERTY = 'SCHEMA_REMOVE_PROPERTY';
 const SCHEMA_SAVED = 'SCHEMA_SAVED';
 const SAVING_SCHEMA = 'SAVING_SCHEMA';
+const ADD_NEW_IDENTITY = 'ADD_NEW_IDENTITY';
+const DELETING_IDENTITY = 'DELETING_IDENTITY';
+const IDENTITY_DELETED = 'IDENTITY_DELETED';
 
 export function loadSchema() {
   return { type: SCHEMA_LOADED };
@@ -18,12 +21,19 @@ export function loadSchema() {
 export function saveSchema(identityType) {
   return async (dispatch, getState) => {
     let identityState = getState().schema[identityType];
-    let patch = jsondiffpatch.diff(identityState.remote, identityState.local);
     dispatch({ type: SAVING_SCHEMA, value: { identity: identityType } });
-    await fetch(`/api/schema/${identityType}`, {
-      method: 'PATCH',
-      ...withJsonData(patch),
-    });
+    if (identityState.remote === null) {
+      await fetch(`/api/schema/${identityType}`, {
+        method: 'POST',
+        ...withJsonData(identityState.local),
+      });
+    } else {
+      let patch = jsondiffpatch.diff(identityState.remote, identityState.local);
+      await fetch(`/api/schema/${identityType}`, {
+        method: 'PATCH',
+        ...withJsonData(patch),
+      });
+    }
     dispatch({ type: SCHEMA_SAVED, value: { identity: identityType } });
     await refreshSchema();
   };
@@ -35,6 +45,20 @@ export function removeIdentityProperty(identity, prop) {
 
 export function upsertIdentityProperty(identity, prop, value) {
   return { type: UPSERT_SCHEMA_PROPERTY, value: { identity, prop, value } };
+}
+
+export function addNewIdentity(identityType) {
+  return { type: ADD_NEW_IDENTITY, value: { identityType } };
+}
+
+export function deleteIdentity(identityType) {
+  return async (dispatch, getState) => {
+    dispatch({ type: DELETING_IDENTITY, value: { identityType } });
+    await fetch(`/api/schema/${identityType}`, {
+      method: 'DELETE',
+    });
+    dispatch({ type: IDENTITY_DELETED, value: { identityType } });
+  };
 }
 
 function createRemoteAndLocalStates(state) {
@@ -59,6 +83,12 @@ export default handleActions(
       )(state),
     [SAVING_SCHEMA]: (state, { value: { identity } }) =>
       R.assocPath([identity, 'isSaving'], true)(state),
+    [ADD_NEW_IDENTITY]: (state, { value: { identityType } }) =>
+      R.assocPath([identityType], {
+        local: {},
+        remote: null,
+        isSaving: false,
+      })(state),
   },
   [],
 );

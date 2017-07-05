@@ -13,15 +13,53 @@ export async function getSchemas(req, res, { keysRepository }) {
   res.json(schemas);
 }
 
+export async function deleteIdentity(
+  req,
+  res,
+  { keysRepository, author = getAuthor(req) },
+  { params: { identityType } },
+) {
+  const keyPath = `@tweek/schema/${identityType}`;
+  await keysRepository.deleteKey(keyPath, author);
+}
+
+export async function addIdentity(
+  req,
+  res,
+  { keysRepository, author = getAuthor(req) },
+  { params: { identityType } },
+) {
+  const key = `@tweek/schema/${identityType}`;
+  const manifest = {
+    key_path: key,
+    meta: {
+      name: key,
+      description: `The schema of a ${identityType}`,
+      tags: [],
+      readOnly: false,
+      archived: false,
+    },
+    implementation: {
+      type: 'const',
+      value: req.body,
+    },
+    valueType: 'object',
+    enabled: true,
+    dependencies: [],
+  };
+  await keysRepository.updateKey(key, manifest, null, author);
+  res.sendStatus(200);
+}
+
 export async function patchIdentity(
   req,
   res,
   { keysRepository, author = getAuthor(req) },
-  { params: { identityName } },
+  { params: { identityType } },
 ) {
   try {
     const patch = req.body;
-    const key = `@tweek/schema/${identityName}`;
+    const key = `@tweek/schema/${identityType}`;
     const manifest = await keysRepository.getKeyManifest(key);
     const newManifest = R.assocPath(
       ['implementation', 'value'],
@@ -31,6 +69,6 @@ export async function patchIdentity(
     res.sendStatus(200);
   } catch (ex) {
     console.log(ex);
-    res.sendStatus(404);
+    res.sendStatus(500);
   }
 }
