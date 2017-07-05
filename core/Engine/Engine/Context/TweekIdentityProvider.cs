@@ -9,31 +9,31 @@ namespace Engine.Context
 {
     public class TweekIdentityProvider
     {
-        private static readonly Regex IdentityRegex = new Regex(@"^@tweek\/context\/([^\/]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex IdentityWithAuthRegex = new Regex(@"^@tweek\/auth\/([^\/]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private HashSet<string> _identities;
-        private TweekIdentityProvider(IRulesDriver driver, HashSet<string> initialIdentities)
+        private HashSet<string> _identitiesWithAuth;
+        private TweekIdentityProvider(IRulesDriver driver, HashSet<string> initialIdentitiesWithAuth)
         {
-            _identities = initialIdentities;
+            _identitiesWithAuth = initialIdentitiesWithAuth;
 
             driver.OnRulesChange += (newRules) =>
             {
-                _identities = GetIdentities(newRules.Keys);
+                _identitiesWithAuth = ExtractIdentitiesWithAuth(newRules.Keys);
             };
         }
 
-        public HashSet<string> GetIdentities() => _identities;
+        public HashSet<string> GetIdentitiesWithAuth() => _identitiesWithAuth;
 
         public static async Task<TweekIdentityProvider> Create(IRulesDriver driver)
         {
             var allRules = await driver.GetAllRules();
-            var initialIdentities = GetIdentities(allRules.Keys);
+            var initialIdentities = ExtractIdentitiesWithAuth(allRules.Keys);
             return new TweekIdentityProvider(driver, initialIdentities);
         }
 
-        private static HashSet<string> GetIdentities(IEnumerable<string> keys)
+        private static HashSet<string> ExtractIdentitiesWithAuth(IEnumerable<string> keys)
         {
-            var identities = keys.Select(key => IdentityRegex.Match(key))
+            var identities = keys.Select(key => IdentityWithAuthRegex.Match(key))
                 .Select(x => x.Groups[1])
                 .Where(x => x.Success)
                 .Select(x => x.Value);
