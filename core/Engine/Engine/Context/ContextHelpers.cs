@@ -93,7 +93,7 @@ namespace Engine.Context
             return identitiesWithAuth.Contains(identity.Type);
         }
 
-        public static Identity ToAuthIdentityType(this Identity identity, TweekIdentityProvider identityProvider)
+        public static Identity ToAuthIdentity(this Identity identity, TweekIdentityProvider identityProvider)
         {
             return identity.IsIdentityDefinedWithAuth(identityProvider) ? identity : Identity.GlobalIdentity;
         }

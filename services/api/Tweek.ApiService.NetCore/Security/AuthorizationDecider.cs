@@ -23,7 +23,7 @@ namespace Tweek.ApiService.NetCore.Security
                 if (path == "@tweek/_" || path.StartsWith("@tweek/auth")) return false;
 
                 return tweekIdentities
-                    .Select(x => x.ToAuthIdentityType(identityProvider))
+                    .Select(x => x.ToAuthIdentity(identityProvider))
                     .Distinct()
                     .DefaultIfEmpty(Identity.GlobalIdentity)
                     .All(tweekIdentity => CheckAuthenticationForKey(tweek, "read_configuration", identity, tweekIdentity));
@@ -48,7 +48,7 @@ namespace Tweek.ApiService.NetCore.Security
 
         public static CheckWriteContextAccess CreateWriteContextAccessChecker(ITweek tweek, TweekIdentityProvider identityProvider)
         {
-            return (identity, tweekIdentity) => CheckAuthenticationForKey(tweek, "write_context", identity, tweekIdentity.ToAuthIdentityType(identityProvider));
+            return (identity, tweekIdentity) => CheckAuthenticationForKey(tweek, "write_context", identity, tweekIdentity.ToAuthIdentity(identityProvider));
         }
     }
 }
