@@ -616,6 +616,9 @@
     "qs": {
       "version": "6.4.0"
     },
+    "ramda": {
+      "version": "0.24.1"
+    },
     "range-parser": {
       "version": "1.2.0"
     },

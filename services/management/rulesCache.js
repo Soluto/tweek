@@ -1,14 +1,13 @@
-const Promise = require('bluebird');
 const fs = require('fs');
 const os = require('os');
 const Guid = require('guid');
-const Git = require("nodegit");
-const _ = require('lodash');
+const Git = require('nodegit');
 const nconf = require('nconf');
-const recursive = Promise.promisify(require('recursive-readdir'));
-const mkdirp = Promise.promisify(require('mkdirp'));
-const readFile = Promise.promisify(fs.readFile);
-const buildRulesArtifiact = require('./build-rules-artifiact')
+const promisify = require('util').promisify;
+const recursive = promisify(require('recursive-readdir'));
+const mkdirp = promisify(require('mkdirp'));
+const readFile = promisify(fs.readFile);
+const buildRulesArtifiact = require('./build-rules-artifiact');
 
 const logger = require('./logger');
 
@@ -21,65 +20,72 @@ const gitPublicKey = nconf.get('GIT_PUBLIC_KEY_PATH');
 const gitPrivateKey = nconf.get('GIT_PRIVATE_KEY_PATH');
 
 if (!gitUrl ||
-    !gitUser) {
-    throw 'missing rules repostiroy details';
+  !gitUser) {
+  throw 'missing rules repostiroy details';
 }
 
 const repoPath = `${process.env.RULES_DIR || os.tmpdir()}/tweek-rules-${Guid.raw()}`;
 
 logger.info('Repository path: ' + repoPath);
 
-var fetchOpts = {
-    callbacks: {
-        credentials: () => gitUrl.startsWith('ssh://') ? Git.Cred.sshKeyNew(gitUser, gitPublicKey, gitPrivateKey, '')
-                                                         : Git.Cred.userpassPlaintextNew(gitUser, gitPassword),
-    }
+const fetchOpts = {
+  callbacks: {
+    credentials: () => gitUrl.startsWith('ssh://') ? Git.Cred.sshKeyNew(gitUser, gitPublicKey, gitPrivateKey, '')
+      : Git.Cred.userpassPlaintextNew(gitUser, gitPassword),
+  },
 };
 
-var rulesCache = {
-    ruleset: null,
-    sha: null
+const rulesCache = {
+  ruleset: null,
+  sha: null,
 };
 
-function buildLocalCache() {
-    mkdirp(repoPath)
-        .then(() => Git.Clone.clone(gitUrl, repoPath, { fetchOpts: fetchOpts }))
-        .then(() => logger.info('Git repository ready'))
-        .then(() => updateLatestCache());
+function delay(timeInMilliseconds) {
+  return new Promise(resolve => setTimeout(resolve, timeInMilliseconds));
 }
 
-const updateLatestCache = Promise.coroutine(function* () {
-    while (true) {
-        try {
-            const repo = yield Git.Repository.open(repoPath);
-            yield repo.fetchAll(fetchOpts);
-            const oid = yield repo.mergeBranches('master', 'origin/master');
+async function buildLocalCache() {
+  await mkdirp(repoPath);
+  await Git.Clone.clone(gitUrl, repoPath, { fetchOpts: fetchOpts });
+  logger.info('Git repository ready');
+  return updateLatestCache();
+}
 
-            const newLatestSha = (yield repo.getMasterCommit()).sha();
+async function updateLatestCache() {
+  while (true) {
+    try {
+      const repo = await Git.Repository.open(repoPath);
+      await repo.fetchAll(fetchOpts);
+      await repo.mergeBranches('master', 'origin/master');
 
-            if (newLatestSha === rulesCache.sha) {
-                yield Promise.delay(5000);
-                continue;
-            }
-            console.log("change detected")
+      const newLatestSha = (await repo.getMasterCommit()).sha();
 
-            const fileNames = yield recursive(repoPath);
-            const fileHandlers = fileNames.map(file=> ({name:file.substr(repoPath.length+1), read: ()=>readFile(file, 'utf8')}));
-            const ruleset = yield buildRulesArtifiact(fileHandlers);
+      if (newLatestSha === rulesCache.sha) {
+        await delay(5000);
+        continue;
+      }
+      console.log('change detected');
 
-            rulesCache.sha = newLatestSha;
-            rulesCache.ruleset = ruleset;
-            logger.info('Rules Cache updated', { sha: newLatestSha });
-        }
-        catch (err) {
-            console.error(err);
-            yield Promise.delay(5000);
-        }
+      const fileNames = await recursive(repoPath);
+      const fileHandlers = fileNames.map(file => ({
+        name: file.substr(repoPath.length + 1),
+        read: () => readFile(file, 'utf8'),
+      }));
+      const ruleset = await buildRulesArtifiact(fileHandlers);
+
+      rulesCache.sha = newLatestSha;
+      rulesCache.ruleset = ruleset;
+      logger.info('Rules Cache updated', { sha: newLatestSha });
     }
-});
+    catch (err) {
+      console.error(err);
+      await delay(5000);
+    }
+  }
+}
 
 module.exports = {
-    buildLocalCache,
-    getLatestRules: () => rulesCache.ruleset,
-    getLatestRulesVersion: () => rulesCache.sha
+  buildLocalCache,
+  getLatestRules: () => rulesCache.ruleset,
+  getLatestRulesVersion: () => rulesCache.sha,
 };
