@@ -27,15 +27,12 @@ namespace Tweek.ApiService.NetCore.Security
             };
         }
 
-        public static bool CheckAuthenticationForKey(ITweek tweek, TweekIdentityProvider identityProvider, string permissionType, ClaimsPrincipal identity, Identity tweekIdentity){
-            var identityType = tweekIdentity.Type;
+        public static bool CheckAuthenticationForKey(ITweek tweek, TweekIdentityProvider identityProvider, string permissionType, ClaimsPrincipal identity, Identity tweekIdentity)
+        {
+            var identityType = identityProvider.IsIdentityDefinedWithAuth(tweekIdentity)
+                ? tweekIdentity.Type
+                : Identity.GlobalIdentityType;
             var key = $"@tweek/auth/{identityType}/{permissionType}";
-
-            bool IsKnownIdentity()
-            {
-                var knownIdentities = identityProvider.GetIdentities();
-                return knownIdentities.Contains(tweekIdentity.Type);
-            }
 
             return identity.IsTweekIdentity() ||
                 tweek.Calculate(key, new HashSet<Identity>(),
@@ -45,7 +42,7 @@ namespace Tweek.ApiService.NetCore.Security
                         .Match(x => match(x, 
                                 with("allow", _ => true),
                                 with("deny", _ => false),
-                                claim => Optional(identity.FindFirst(claim)).Match(c=> c.Value.Equals(tweekIdentity.Id,StringComparison.OrdinalIgnoreCase), ()=>false)), IsKnownIdentity);
+                                claim => Optional(identity.FindFirst(claim)).Match(c=> c.Value.Equals(tweekIdentity.Id,StringComparison.OrdinalIgnoreCase), ()=>false)), () => true);
         }
 
         public static CheckWriteContextAccess CreateWriteContextAccessChecker(ITweek tweek, TweekIdentityProvider identityProvider)

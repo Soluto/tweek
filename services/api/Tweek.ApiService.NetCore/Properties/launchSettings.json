@@ -18,7 +18,7 @@
     "Tweek.ApiService.NetCore": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/health",
+      "launchUrl": "health",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
