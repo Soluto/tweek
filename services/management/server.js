@@ -1,12 +1,10 @@
-'use strict';
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const morgan = require('morgan');
-const Promise = require('bluebird');
+const promisify = require('util').promisify;
 const fs = require('fs');
-const readFile = Promise.promisify(fs.readFile);
+const readFile = promisify(fs.readFile);
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const rulesCache = require('./rulesCache');
@@ -18,7 +16,7 @@ app.set('port', (process.env.PORT || 3000));
 
 app.post('/on-repo-change', upload.any(), (req, res) => {
 	logger.info("on-repo-change called");
-	var startTime = Date.now();
+	const startTime = Date.now();
 
 	readFile(req.files[0].path, 'binary')
 		.then(data => repoValidator(data))

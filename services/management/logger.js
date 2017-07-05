@@ -1,8 +1,8 @@
-var winston = require('winston');
-var LogzIO = require ('winston-logzio');
+const winston = require('winston');
+// const LogzIO = require('winston-logzio');
 
-var logger = new winston.Logger({
-    exitOnError: false
+const logger = new winston.Logger({
+  exitOnError: false,
 });
 
 logger.add(winston.transports.Console);
