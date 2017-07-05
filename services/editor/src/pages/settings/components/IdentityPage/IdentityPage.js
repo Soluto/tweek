@@ -25,6 +25,7 @@ const IdentityPage = ({
   identityProperties,
   upsertIdentityProperty,
   removeIdentityProperty,
+  deleteIdentity,
   saveSchema,
 }) => {
   const hasChanges = !R.equals(identityProperties.local, identityProperties.remote);
@@ -37,6 +38,7 @@ const IdentityPage = ({
         isSaving={identityProperties.isSaving}
         onClick={() => saveSchema(identityType)}
       />
+      <button onClick={() => deleteIdentity(identityType)}>Delete</button>
       <h3 style={{ textTransform: 'capitalize' }}>{identityType}</h3>
       <Tabs>
         <TabList>

@@ -44,7 +44,11 @@ export default (config) => {
   app.get('/search-index', addConfig(SearchRoutes.getSearchIndex));
   app.get('/search', addConfig(SearchRoutes.search));
   app.get('/suggestions', addConfig(SearchRoutes.getSuggestions));
-  app.route('/schema/:identityName').patch(addConfig(SchemaRoutes.patchIdentity));
+  app
+    .route('/schema/:identityType')
+    .patch(addConfig(SchemaRoutes.patchIdentity))
+    .post(addConfig(SchemaRoutes.addIdentity))
+    .delete(addConfig(SchemaRoutes.deleteIdentity));
 
   app.get('/push-service/public-key', addConfig(Registration.getPublicKey));
   app.post('/push-service/register', addConfig(Registration.register));
