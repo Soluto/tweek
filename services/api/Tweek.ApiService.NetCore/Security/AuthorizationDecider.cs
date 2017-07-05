@@ -22,16 +22,17 @@ namespace Tweek.ApiService.NetCore.Security
             {
                 if (path == "@tweek/_" || path.StartsWith("@tweek/auth")) return false;
 
-                return tweekIdentities.DefaultIfEmpty(Identity.GlobalIdentity)
-                    .All(tweekIdentity => CheckAuthenticationForKey(tweek, identityProvider, "read_configuration", identity, tweekIdentity));
+                return tweekIdentities
+                    .Select(x => x.ToAuthIdentityType(identityProvider))
+                    .Distinct()
+                    .DefaultIfEmpty(Identity.GlobalIdentity)
+                    .All(tweekIdentity => CheckAuthenticationForKey(tweek, "read_configuration", identity, tweekIdentity));
             };
         }
 
-        public static bool CheckAuthenticationForKey(ITweek tweek, TweekIdentityProvider identityProvider, string permissionType, ClaimsPrincipal identity, Identity tweekIdentity)
+        public static bool CheckAuthenticationForKey(ITweek tweek, string permissionType, ClaimsPrincipal identity, Identity tweekIdentity)
         {
-            var identityType = identityProvider.IsIdentityDefinedWithAuth(tweekIdentity)
-                ? tweekIdentity.Type
-                : Identity.GlobalIdentityType;
+            var identityType = tweekIdentity.Type;
             var key = $"@tweek/auth/{identityType}/{permissionType}";
 
             return identity.IsTweekIdentity() ||
@@ -47,7 +48,7 @@ namespace Tweek.ApiService.NetCore.Security
 
         public static CheckWriteContextAccess CreateWriteContextAccessChecker(ITweek tweek, TweekIdentityProvider identityProvider)
         {
-            return (identity, tweekIdentity) => CheckAuthenticationForKey(tweek, identityProvider, "write_context", identity, tweekIdentity);
+            return (identity, tweekIdentity) => CheckAuthenticationForKey(tweek, "write_context", identity, tweekIdentity.ToAuthIdentityType(identityProvider));
         }
     }
 }
