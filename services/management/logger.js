@@ -12,8 +12,8 @@ logger.add(LogzIO, {
     type: 'tweek-management'
 });*/
 
-process.on('uncaughtException', err => {
-    logger.error(err);
+process.on('uncaughtException', (err) => {
+  logger.error(err);
 });
 
 module.exports = logger;

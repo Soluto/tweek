@@ -19,8 +19,7 @@ const gitPassword = nconf.get('GIT_PASSWORD');
 const gitPublicKey = nconf.get('GIT_PUBLIC_KEY_PATH');
 const gitPrivateKey = nconf.get('GIT_PRIVATE_KEY_PATH');
 
-if (!gitUrl ||
-  !gitUser) {
+if (!gitUrl || !gitUser) {
   throw 'missing rules repostiroy details';
 }
 
@@ -30,8 +29,10 @@ logger.info('Repository path: ' + repoPath);
 
 const fetchOpts = {
   callbacks: {
-    credentials: () => gitUrl.startsWith('ssh://') ? Git.Cred.sshKeyNew(gitUser, gitPublicKey, gitPrivateKey, '')
-      : Git.Cred.userpassPlaintextNew(gitUser, gitPassword),
+    credentials: () =>
+      gitUrl.startsWith('ssh://')
+        ? Git.Cred.sshKeyNew(gitUser, gitPublicKey, gitPrivateKey, '')
+        : Git.Cred.userpassPlaintextNew(gitUser, gitPassword),
   },
 };
 
@@ -76,8 +77,7 @@ async function updateLatestCache() {
       rulesCache.sha = newLatestSha;
       rulesCache.ruleset = ruleset;
       logger.info('Rules Cache updated', { sha: newLatestSha });
-    }
-    catch (err) {
+    } catch (err) {
       console.error(err);
       await delay(5000);
     }
