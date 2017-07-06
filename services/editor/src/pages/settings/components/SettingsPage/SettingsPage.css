@@ -32,6 +32,9 @@
   color: #d8d8d8;
   text-decoration: none;
 }
+.schema-page-container .side-menu > li {
+  margin: 0;
+}
 .schema-page-container .side-menu [data-comp=AddNewIdentity] button {
   vertical-align: top;
   background-color: #00aeef;
