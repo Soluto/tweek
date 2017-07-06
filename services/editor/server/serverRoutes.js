@@ -5,6 +5,7 @@ import * as TagsRoutes from './api/tags';
 import * as ContextRoutes from './api/context';
 import * as SearchRoutes from './api/search';
 import * as Registration from './api/registration';
+import * as EditorConfiguration from './api/editorConfiguration';
 import requestErrorHandlingWrapper from './utils/request-error-handling-wrapper';
 
 export default (config) => {
@@ -30,6 +31,8 @@ export default (config) => {
     .get(addConfig(KeysRoutes.getKey))
     .put(addConfig(KeysRoutes.saveKey))
     .delete(addConfig(KeysRoutes.deleteKey));
+
+  app.get('/editor-configuration/*', addConfig(EditorConfiguration.getConfiguration));
 
   app.get('/revision', addConfig(KeysRoutes.getRevision));
   app.get('/revision-history/*', addConfig(KeysRoutes.getKeyRevisionHistory));

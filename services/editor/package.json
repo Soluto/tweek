@@ -4,7 +4,7 @@
   "private": true,
   "description": "",
   "engines": {
-    "node": ">=6.9.0"
+    "node": ">=8.1.3"
   },
   "scripts": {
     "start:service-worker": "webpack --config ./service-worker/webpack.config.js --watch",
@@ -93,9 +93,10 @@
     "lock-queue": "^1.0.1",
     "lunr": "^2.0.4",
     "moment": "^2.18.1",
+    "morgan": "^1.8.2",
     "nconf": "^0.8.4",
     "node-getopt": "^0.2.3",
-    "nodegit": "0.14.1",
+    "nodegit": "0.18.3",
     "passport": "^0.3.2",
     "passport-azure-ad": "^3.0.6",
     "passport-google-oauth20": "^1.0.0",
@@ -108,7 +109,7 @@
     "react-autosize-textarea": "^0.4.3",
     "react-dom": "^15.5.4",
     "react-draggable": "^2.2.6",
-    "react-highlight-words": "^0.7.2",
+    "react-highlight-words": "0.8.0",
     "react-json": "^0.2.1",
     "react-monaco-editor": "^0.8.1",
     "react-notification-system": "^0.2.14",

@@ -26,8 +26,8 @@ services:
       - "4002:3000"
     entrypoint:
       - node
-      - --debug=5858
-      - ./server.js
+      - --inspect=5858
+      - ./src/server.js
     environment:
       - GIT_USER=git
       - GIT_URL=ssh://git@tweek-git/tweek/repo
@@ -35,9 +35,8 @@ services:
       - GIT_PRIVATE_KEY_PATH=/keys/tweekgit
 
   tweek-api:
-    build:
-      context: ../../services/api/Tweek.ApiService.NetCore
-      dockerfile: Dockerfile
+    depends_on:
+      - tweek-redis
     ports:
       - "4003:80"
     environment:

@@ -1,7 +1,5 @@
 ﻿using App.Metrics;
 using App.Metrics.Configuration;
-using App.Metrics.Extensions.Reporting.Graphite;
-using App.Metrics.Extensions.Reporting.Graphite.Client;
 using App.Metrics.Health;
 using Engine;
 using Engine.Core.Rules;
@@ -18,9 +16,9 @@ using Scrutor;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Engine.Context;
 using Engine.Rules.Validation;
 using FSharpUtils.Newtonsoft;
 using Microsoft.Extensions.PlatformAbstractions;
@@ -35,12 +33,7 @@ using Tweek.JPad;
 using Tweek.JPad.Utils;
 using Engine.Rules.Creation;
 using static Engine.Core.Rules.Utils;
-using static LanguageExt.Prelude;
-using FSharpUtils.Newtonsoft;
-using Engine.DataTypes;
-using LanguageExt;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Newtonsoft.Json.Linq;
+using Tweek = Engine.Tweek;
 
 namespace Tweek.ApiService.NetCore
 {
@@ -77,9 +70,13 @@ namespace Tweek.ApiService.NetCore
                 var rulesDriver = provider.GetService<IRulesDriver>();
                 return Task.Run(async () => await Engine.Tweek.Create(rulesDriver, parserResolver)).Result;
             });
-
-            services.AddSingleton(provider => Authorization.CreateReadConfigurationAccessChecker(provider.GetService<ITweek>()));
-            services.AddSingleton(provider => Authorization.CreateWriteContextAccessChecker(provider.GetService<ITweek>()));
+            services.AddSingleton(provider =>
+            {
+                var rulesDriver = provider.GetService<IRulesDriver>();
+                return Task.Run(async () => await TweekIdentityProvider.Create(rulesDriver)).Result;
+            });
+            services.AddSingleton(provider => Authorization.CreateReadConfigurationAccessChecker(provider.GetService<ITweek>(), provider.GetService<TweekIdentityProvider>()));
+            services.AddSingleton(provider => Authorization.CreateWriteContextAccessChecker(provider.GetService<ITweek>(), provider.GetService<TweekIdentityProvider>()));
             services.AddSingleton(provider => Validator.GetValidationDelegate(provider.GetService<GetRuleParser>()));
 
             var tweekContactResolver = new TweekContractResolver();
@@ -130,23 +127,6 @@ namespace Tweek.ApiService.NetCore
                     });
                 })
                 .AddJsonSerialization()
-                .AddReporting(factory =>
-                {
-                    var appMetricsReporters = Configuration.GetSection("AppMetricsReporters");
-                    foreach (var reporter in appMetricsReporters.GetChildren())
-                    {
-                        if (reporter.Key.Equals("graphite", StringComparison.OrdinalIgnoreCase))
-                        {
-                            factory.AddGraphite(new GraphiteReporterSettings
-                            {
-                                ConnectionType = ConnectionType.Tcp,
-                                Host = reporter.GetValue<string>("Url"),
-                                Port = reporter.GetValue("Port", 2003),
-                                NameFormatter = new DefaultGraphiteNameFormatter(reporter.GetValue("Prefix", "TweekApi") +  ".{type}.{tag:host}.{context}.{tag:route}.{nameWithUnit}.{tag:http_status_code}")
-                            });
-                        }
-                    }
-                })
                 .AddHealthChecks()
                 .AddMetricsMiddleware(Configuration.GetSection("AspNetMetrics"));
         }

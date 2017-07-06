@@ -15,10 +15,14 @@ let store = configureStore({});
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.onmessage = ({ data: { type } }) => {
-    if (type === 'refresh') {
+    switch (type) {
+    case 'cache-cleared':
       refreshTypes();
       refreshSchema();
+      break;
+    case 'manifests':
       store.dispatch(getKeys());
+      break;
     }
   };
 }

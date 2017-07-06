@@ -14,8 +14,8 @@ namespace Engine.Core.Context
         {
             public FullKey(string identityType, string key) : base(identityType, key) { }
 
-            public string IdentityType { get { return Item1; } }
-            public string Key { get { return Item2; } }
+            public string IdentityType => Item1;
+            public string Key => Item2;
         }
 
         internal static Option<FullKey> SplitFullKey(string s)
@@ -35,7 +35,7 @@ namespace Engine.Core.Context
         internal static GetContextFixedConfigurationValue GetFixedConfigurationContext(GetContextValue getContextValue, string identityType)
         {
             return path =>
-                getContextValue(identityType + ".@fixed:" + path)
+                getContextValue($"{identityType}.@fixed:{path}")
                     .Select(x => new ConfigurationValue(x));
         }
 

@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="StackExchange.Redis" Version="1.2.3" />
-    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.1.6344.23786" />
+    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.0" />
     <PackageReference Include="System.Collections.Immutable" version="1.2.0" />
   </ItemGroup>
   <ItemGroup>

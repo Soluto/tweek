@@ -39,7 +39,7 @@ const NewPartitionPropertyValue = mapProps(
 )(TypedInput);
 
 class AddPartition extends React.Component {
-  state = { partition: {}, defaultValue: '' }
+  state = { partition: {}, defaultValue: '' };
 
   replaceState(state) {
     this.state = state;
@@ -95,10 +95,10 @@ const deletePartitionGroupAlert = {
 export default class PartitionsList extends React.Component {
   state = {
     activeItems: [],
-  }
+  };
 
   render() {
-    const { partitions, mutate, valueType, alerter } = this.props;
+    const { partitions, mutate, valueType, alerter, keyPath } = this.props;
 
     const rulesByPartitions = mutate.getValue();
     if (!rulesByPartitions) return <div />;
@@ -174,7 +174,7 @@ export default class PartitionsList extends React.Component {
                 titleClassName={'partitions-accordion-container-item-title'}
                 expandedClassName={'partitions-accordion-container-item-expanded'}
               >
-                <RulesList {...{ valueType, alerter }} mutate={partitionData.mutate} />
+                <RulesList {...{ valueType, alerter, keyPath }} mutate={partitionData.mutate} />
               </AccordionItem>
             );
           })}

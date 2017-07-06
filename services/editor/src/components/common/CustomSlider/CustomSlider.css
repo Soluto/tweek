@@ -113,7 +113,7 @@
 .custom-slider-container .legend-value-input:disabled {
   border-color: #bcbcbc;
 }
-.custom-slider-container .legend-precent-input {
+.custom-slider-container .legend-percent-input {
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
@@ -132,10 +132,10 @@
   margin-left: 4px;
   width: 30px;
 }
-.custom-slider-container .legend-precent-input:focus {
+.custom-slider-container .legend-percent-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.custom-slider-container .legend-precent-input:disabled {
+.custom-slider-container .legend-percent-input:disabled {
   border-color: #bcbcbc;
 }
 .custom-slider-container .add-variant-button {

@@ -14,7 +14,7 @@ const jwtOptions = {
   expiresIn: "15m"
 };
 
-var clientPromise =  (async function getAuthenticatedClient() {
+const clientPromise =  (async function getAuthenticatedClient() {
   const keyPath = nconf.get('GIT_PRIVATE_KEY_PATH');
   const authKey = await readFile(keyPath);
   const token = await jwtSign({}, authKey, jwtOptions);
@@ -42,20 +42,19 @@ class TweekApiClient{
       return this._get(`api/v1/context/${identityType}/${identityName}`);
     }
 
-    waitForKeyToEqual(key, target, timeout = 10000){
-        let start = new Date();
-        let value;
-        while (new Date() - start < timeout){
-            value = this.get(key);
-            try{
-              assert.deepEqual(value, target);
-            } catch (ex){
-              continue;
-            }
+    waitForKeyToEqual(key, target, timeout = 10000) {
+      let value = undefined;
+      browser.waitUntil(() => {
+        value = this.get(key);
+        try {
+          assert.deepEqual(value, target);
+          return true;
+        } catch (ex) {
+          return false;
         }
-        assert.deepEqual(value, target);
+      }, timeout);
+      assert.deepEqual(value, target);
     }
-
 }
 
 export default new TweekApiClient();

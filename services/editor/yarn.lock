@@ -1225,6 +1225,10 @@ base64url@2.0.0, base64url@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/base64url/-/base64url-2.0.0.tgz#eac16e03ea1438eff9423d69baa36262ed1f70bb"
 
+basic-auth@~1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/basic-auth/-/basic-auth-1.1.0.tgz#45221ee429f7ee1e5035be3f51533f1cdfd29884"
+
 batch@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/batch/-/batch-0.6.1.tgz#dc34314f4e679318093fc760272525f94bf25c16"
@@ -5008,6 +5012,16 @@ monaco-editor@~0.8.x:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.8.3.tgz#523bdf2d1524db2c2dfc3cae0a7b6edc48d6dea6"
 
+morgan@^1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/morgan/-/morgan-1.8.2.tgz#784ac7734e4a453a9c6e6e8680a9329275c8b687"
+  dependencies:
+    basic-auth "~1.1.0"
+    debug "2.6.8"
+    depd "~1.1.0"
+    on-finished "~2.3.0"
+    on-headers "~1.0.1"
+
 ms@0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.1.tgz#9cd13c03adbff25b65effde7ce864ee952017098"
@@ -5086,7 +5100,7 @@ node-getopt@^0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/node-getopt/-/node-getopt-0.2.3.tgz#69abbc7e5400600d1dacf00db8cb79b5487e924b"
 
-node-gyp@^3.3.1:
+node-gyp@^3.5.0:
   version "3.6.2"
   resolved "https://registry.yarnpkg.com/node-gyp/-/node-gyp-3.6.2.tgz#9bfbe54562286284838e750eac05295853fa1c60"
   dependencies:
@@ -5145,7 +5159,7 @@ node-notifier@^5.0.2:
     shellwords "^0.1.0"
     which "^1.2.12"
 
-node-pre-gyp@^0.6.29, node-pre-gyp@~0.6.15:
+node-pre-gyp@^0.6.29, node-pre-gyp@~0.6.32:
   version "0.6.36"
   resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.6.36.tgz#db604112cb74e0d477554e9b505b17abddfab786"
   dependencies:
@@ -5169,15 +5183,15 @@ nodegit-promise@~4.0.0:
   dependencies:
     asap "~2.0.3"
 
-nodegit@0.14.1:
-  version "0.14.1"
-  resolved "https://registry.yarnpkg.com/nodegit/-/nodegit-0.14.1.tgz#1458ee4dfa889df21a79e0072376b501d83a1cb8"
+nodegit@0.18.3:
+  version "0.18.3"
+  resolved "https://registry.yarnpkg.com/nodegit/-/nodegit-0.18.3.tgz#305b6a305ea485fe5f1679fe37e6224a669ae9fc"
   dependencies:
     fs-extra "~0.26.2"
     lodash "^4.13.1"
     nan "^2.2.0"
-    node-gyp "^3.3.1"
-    node-pre-gyp "~0.6.15"
+    node-gyp "^3.5.0"
+    node-pre-gyp "~0.6.32"
     promisify-node "~0.3.0"
 
 nodemon@^1.11.0:
@@ -6298,9 +6312,9 @@ react-error-overlay@^1.0.7:
     settle-promise "1.0.0"
     source-map "0.5.6"
 
-react-highlight-words@^0.7.2:
-  version "0.7.2"
-  resolved "https://registry.yarnpkg.com/react-highlight-words/-/react-highlight-words-0.7.2.tgz#ddd277770324ca1cb7ee9ff9bf869b46b7c6f8ee"
+react-highlight-words@0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/react-highlight-words/-/react-highlight-words-0.8.0.tgz#a83055378c1e5e46fe2061b663b0b37fde60bad6"
   dependencies:
     highlight-words-core "^1.0.2"
     prop-types "^15.5.8"

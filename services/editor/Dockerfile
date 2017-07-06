@@ -1,25 +1,26 @@
 # ---- Base ----
-FROM node:6.10.3-slim AS base
+FROM soluto/nodegit-alpine AS base
 
 COPY package.json yarn.lock /src/
+RUN ln -s /nodegit/node_modules /src/node_modules
 WORKDIR /src/
-RUN npm install --only=production
+RUN yarn --prod
 
 # ---- Build ----
 FROM base AS build
 
-RUN npm install --only=dev
+RUN yarn
 
 COPY . /src/
 RUN yarn test
 RUN yarn build
 
 # ---- Release ----
-FROM node:6.10.3-slim AS release
+FROM base AS release
 
 COPY --from=build /src/dist/ /opt/app/dist
 COPY --from=build /src/build/ /opt/app/dist/build
-COPY --from=base /src/node_modules/ /opt/app/node_modules
+RUN ln -s /src/node_modules /opt/app/node_modules
 COPY ./build-index/ /opt/app/build-index
 
 WORKDIR /opt/app/
