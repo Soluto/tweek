@@ -1,17 +1,16 @@
 /* global jest, before, beforeEach, describe, it, expect */
-jest.unmock('../../../modules/services/context-service');
-jest.mock('../../../modules/services/types-service', () => {
-  return {
-    types: {
-      string: { name: 'string' },
-      version: { name: 'version', base: 'string' }
-    },
-  };
-});
+jest.unmock('../../../src/services/context-service');
+jest.mock('../../../src/services/types-service', () => ({
+  types: {
+    string: { name: 'string' },
+    version: { name: 'version', base: 'string' },
+  },
+}));
 
 import fetchMock from 'fetch-mock';
-import * as ContextService from '../../../modules/services/context-service';
-import { assert, expect } from 'chai';
+import * as ContextService from '../../../src/services/context-service';
+import chai, { assert, expect } from 'chai';
+chai.use(require('chai-things'));
 
 describe('context-service', () => {
   const contextServiceApiMatcher = 'glob:*/api/context-schema/*';
@@ -40,9 +39,9 @@ describe('context-service', () => {
       const schema = {
         device: {
           someProp: {
-            type: 'string'
-          }
-        }
+            type: 'string',
+          },
+        },
       };
 
       const expectedIdentities = Object.keys(schema);
@@ -58,24 +57,53 @@ describe('context-service', () => {
     });
   });
 
+  describe('getProperties', () => {
+    it('should return schema properties and @@id property', async () => {
+      const schema = {
+        user: {
+          someProp: {
+            type: 'string',
+          },
+        },
+      };
+      fetchMock.get(contextServiceApiMatcher, schema);
+      await ContextService.refreshSchema();
+      const result = ContextService.getProperties();
+      expect(result.length).to.eql(2);
+      expect(result).to.include.something.that.deep.equal({
+        id: 'user.@@id',
+        name: 'Id',
+        type: 'string',
+        identity: 'user',
+      });
+      expect(result).to.include.something.that.deep.equal({
+        id: 'user.someProp',
+        name: 'someProp',
+        type: 'string',
+        identity: 'user',
+        custom_type: undefined,
+      });
+    });
+  });
+
   describe('getPropertyTypeDetails', () => {
     let refreshSchemaPromise;
 
     const initializeSchema = {
       device: {
         Name: {
-          type: 'string'
+          type: 'string',
         },
         CustomPropertyType: {
           type: 'custom',
           custom_type: {
-            base: 'string'
-          }
+            base: 'string',
+          },
         },
         PropertyWithBadType: {
-          type: 'i dunno lol'
-        }
-      }
+          type: 'i dunno lol',
+        },
+      },
     };
 
     beforeAll(() => {
@@ -92,19 +120,22 @@ describe('context-service', () => {
         const propertyTypeDetails = ContextService.getPropertyTypeDetails(property);
 
         // Assert
-        expect(propertyTypeDetails).to.deep.equal(expectedMeta, 'should return correct property meta');
+        expect(propertyTypeDetails).to.deep.equal(
+          expectedMeta,
+          'should return correct property meta',
+        );
       });
     };
 
-    runPropertyTypeTest(null, ({ name: 'empty' }));
-    runPropertyTypeTest(undefined, ({ name: 'empty' }));
-    runPropertyTypeTest('', ({ name: 'empty' }));
-    runPropertyTypeTest('@@key.something', ({ name: 'string' }));
+    runPropertyTypeTest(null, { name: 'empty' });
+    runPropertyTypeTest(undefined, { name: 'empty' });
+    runPropertyTypeTest('', { name: 'empty' });
+    runPropertyTypeTest('@@key.something', { name: 'string' });
 
-    runPropertyTypeTest('device.Name', ({ name: 'string' }));
-    runPropertyTypeTest('device.CustomPropertyType', ({ name: 'custom', base: 'string' }));
+    runPropertyTypeTest('device.Name', { name: 'string' });
+    runPropertyTypeTest('device.CustomPropertyType', { name: 'custom', base: 'string' });
 
-    runPropertyTypeTest('device.UnknownProperty', ({ name: 'string' }));
-    runPropertyTypeTest('device.PropertyWithBadType', ({ name: 'string' }));
+    runPropertyTypeTest('device.UnknownProperty', { name: 'string' });
+    runPropertyTypeTest('device.PropertyWithBadType', { name: 'string' });
   });
 });

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+  <PropertyGroup>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81</PackageTargetFallback>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="StackExchange.Redis" Version="1.2.3" />
+    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.0" />
+    <PackageReference Include="System.Collections.Immutable" version="1.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Engine\Engine.Drivers\Engine.Drivers.csproj" />
+    <ProjectReference Include="..\..\..\core\Engine\Engine.Core\Engine.Core.csproj" />
+    <ProjectReference Include="..\..\..\core\Engine\Engine.DataTypes\Engine.DataTypes.csproj" />
+    <ProjectReference Include="..\..\..\core\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,81 @@
+@import (reference) "../../../../styles/core/core.less";
+@import (reference) "../../../../styles/core/comboBox.less";
+.rule-value-button {
+  .small-metro-button;
+  margin: 7px;
+  opacity: .7;
+}
+
+.inputValue{
+  input, .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+    width: 150px;
+  }
+  .bootstrap-typeahead .dropdown-menu {
+    min-width: 150px;
+  }
+
+  .values-input {
+    resize: none;
+    display: inline-block;
+  }
+}
+
+.rule-value-container {
+  
+  .add-variant-button {
+    .rule-value-button;
+  }
+  .to-feature-flag-button {
+      .rule-value-button;
+  }
+}
+
+.identity-selection-container {
+  display: flex;
+  .identity-selection-title {
+    font-size: 12px;
+    color: darkgray;
+    display: flex;
+    margin-top: 7px;
+  }
+  .identity-selection-combobox-wrapper {
+    .combo-box-basic(150px, 150px);
+    display: inline-block;
+  }
+}
+
+.bernoulli-trial-container {
+  display: inline-block;
+  .bernoulli-trial-input-wrapper {
+    display: inline-block;
+    margin-top: 10px;
+    label {
+      font-size: 12px;
+    }
+    .bernoulli-trial-input {
+      .small-metro-textbox;
+      font-size: 14px;
+      width: 40px;
+    }
+  }
+  .bernoulli-trial-slider-wrapper {
+    display: inline-block;
+    position: relative;
+    bottom: -4px;
+    left: 10px;
+  }
+}
+
+.set-bernoulli-button {
+  .rule-value-button;
+  display: inline-block;
+  margin-left: 25px;
+}
+
+.set-to-true-button {
+  .set-bernoulli-button;
+}
+
+.set-to-false-button {
+  .set-bernoulli-button;
+}

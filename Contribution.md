@@ -26,34 +26,14 @@
    - On windows, open docker setting through traybar and your working drive as shared drive (under shared drives)
 3. Install node 6+ (https://nodejs.org/en/)
 
-## Add Appveyor nuget source
-1. Install nuget cli (mac:brew install nuget, windows: https://dist.nuget.org/index.html)
-2. dotnet restore`
-3. run `nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -UserName it@soluto.com -StorePasswordInClearText -Password <Password>`
-
-OR
-4. You can edit manuallty global NuGet.Config instead
-
 ## Running full environment
 1. clone:
    ```
    git clone https://github.com/Soluto/tweek.git
    cd tweek
    ```
-2. `dotnet restore`
-3.  if you're getting an error, run:
-- mac: 
-   ```
-   nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -UserName it@soluto.com -StorePasswordInClearText -ConfigFile ~/.nuget/NuGet/NuGet.Config -Password <Password>
-   ```
-   - windows:
-   ```
-   nuget sources add -Name solutoappveyor -Source https://ci.appveyor.com/nuget/soluto -UserName it@soluto.com -StorePasswordInClearText -Password <Password>
-   ```
-   
-4. `dotnet publish services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj -o ./obj/Docker/publish`  
-5. `docker-compose -f ./deployments/dev/docker-compose.yml build`
-6. `docker-compose -f ./deployments/dev/docker-compose.yml up -d`
+2. `docker-compose -f ./deployments/dev/docker-compose.yml build`
+3. `docker-compose -f ./deployments/dev/docker-compose.yml up -d`
 
 All tweek microservices should be run on ports 4001-4004:  
 4001 - Git server (ssh)  
@@ -74,7 +54,7 @@ VS 2017
 ### RUN
 1. If you haven't built the full environment before, pull management service: 
    ```
-   docker-compose -f ./deployments/dev/docker-compose.yml pull tweek-management
+   docker-compose -f ./deployments/dev/docker-compose.yml pull tweek-management tweek-git
    ```
 2. If you haven't ran the full environment before, run management service: 
    ```
@@ -101,28 +81,27 @@ mac: find . -wholename '*.Tests.csproj' -print0 | xargs -0 -n 1 dotnet test (onl
 2. run npm i/yarn
 
 ### environment
-- to get that latest environment version from the server:
+- if you didn't change anything in the environment, you can just pull it from the server using this command:
    ```
-   npm run pull-env
+   npm run docker-compose pull [SERVICES]
    ```
-- to build environment with local changes:
+- if you made any changes in the environment, build it using this command:
    ```
-   npm run build-env
+   npm run docker-compose build [SERVICES]
    ```
-- if you want to pull/build only part of the services and not all of them, add `-- [SERVICES]` at the end of the command.
-   The options are: `tweek-git` `tweek-management` `tweek-api` `tweek-backoffice`
+- the possible services are: `tweek-git` `tweek-management` `tweek-api`
    #### examples:
    - get latest management and api version from server: 
       ```
-      npm run pull-env -- tweek-management tweek-api
+      npm run pull-env tweek-management tweek-api
       ```
    - build local management version: 
       ```
-      npm run build-env -- tweek-management
+      npm run build-env tweek-management
       ```
 
 ### debug
-- if you haven't pulled or built the environment, run `npm run pull-env`
+- if you haven't pulled or built the environment, run `npm run docker-compose pull tweek-git tweek-management tweek-api`
 - run `npm run start:full-env`
 
 ### unit test
@@ -141,10 +120,15 @@ mac: find . -wholename '*.Tests.csproj' -print0 | xargs -0 -n 1 dotnet test (onl
    ```
    npm run test:full-env:rebuild
    ```
+- our e2e tests are using selenium. If you don't have it installed, and you don't want to install it, you can just run the tests in docker. To do so replace `full-env` with `docker`:
+   ```
+   npm run test:docker
+   npm run test:docker:rebuild
+   ```
 
 ## TEARDOWN
 ```
-docker-compose -f ./deployments/dev/docker-compose.yml down
+docker-compose -f ./deployments/dev/docker-compose.yml down --remove-orphans
 ```
 
 ## Contributing 

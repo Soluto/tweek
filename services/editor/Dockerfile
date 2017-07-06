@@ -1,17 +1,34 @@
-FROM node:6.10.3-slim
+# ---- Base ----
+FROM soluto/nodegit-alpine AS base
+
+COPY package.json yarn.lock /src/
+RUN ln -s /nodegit/node_modules /src/node_modules
+WORKDIR /src/
+RUN yarn --prod
+
+# ---- Build ----
+FROM base AS build
+
+RUN yarn
+
+COPY . /src/
+RUN yarn test
+RUN yarn build
+
+# ---- Release ----
+FROM base AS release
+
+COPY --from=build /src/dist/ /opt/app/dist
+COPY --from=build /src/build/ /opt/app/dist/build
+RUN ln -s /src/node_modules /opt/app/node_modules
+COPY ./build-index/ /opt/app/build-index
+
+WORKDIR /opt/app/
+VOLUME /opt/vapid/
 
 ENV NODE_ENV=production
-
-ADD package.json yarn.lock /tmp/
-WORKDIR /tmp
-RUN npm install --only=prod && mkdir -p /opt/app && cp -a node_modules /opt/app/node_modules && npm install --only=dev
-
-ADD . /tmp/
-RUN npm run test
-RUN npm run build-prod && mv .build /opt/app/.build && rm -rf /tmp
-
-WORKDIR /opt/app
+ENV PORT=3000
+ENV VAPID_KEYS=/opt/vapid/keys.json
 EXPOSE 3000
 
-ENV PORT=3000
-ENTRYPOINT ["node", "./.build/server.js"]
+ENTRYPOINT [ "node", "./dist/index.js" ]

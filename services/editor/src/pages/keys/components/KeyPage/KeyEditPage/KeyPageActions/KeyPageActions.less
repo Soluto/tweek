@@ -1,0 +1,22 @@
+@import (reference) "../../../../../../styles/core/core.less";
+.readonly-key-message {
+  float: left;
+  font-size: 22px;
+  color: #888
+}
+
+.key-action-buttons-wrapper {
+  float: right;
+  @key-action-button-width: 125px;
+  .save-button {
+    margin-left: 10px;
+    width: @key-action-button-width;
+    &[data-state-is-saving=true], &[data-state-is-saving=true]:disabled {
+      background-color: green;
+    }
+  }
+  .disable-button {
+    .transparent-metro-button;
+    width: @key-action-button-width;
+  }
+}

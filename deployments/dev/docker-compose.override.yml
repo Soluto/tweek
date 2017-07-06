@@ -1,0 +1,71 @@
+version: '2'
+
+services:
+  tweek-git:
+    image: soluto/tweek-bare-repo
+    build: ../../services/git-service/BareRepository
+    ports: 
+      - "4001:22"
+    environment:
+      - PUBLIC_KEY_PATH=/tweek/key.pub
+      - TWEEK_MANAGEMENT_URL=http://tweek-management:3000
+    volumes:
+      -  ../../services/git-service/ssh/tweekgit.pub:/tweek/key.pub
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
+ 
+  tweek-management:
+    depends_on:
+      - tweek-git
+    volumes:
+      - ../../services/git-service/ssh:/keys
+    expose:
+      - "5858"
+    ports:
+      - "5858:5858"
+      - "4002:3000"
+    entrypoint:
+      - node
+      - --inspect=5858
+      - ./src/server.js
+    environment:
+      - GIT_USER=git
+      - GIT_URL=ssh://git@tweek-git/tweek/repo
+      - GIT_PUBLIC_KEY_PATH=/keys/tweekgit.pub
+      - GIT_PRIVATE_KEY_PATH=/keys/tweekgit
+
+  tweek-api:
+    depends_on:
+      - tweek-redis
+    ports:
+      - "4003:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - PUBLIC_KEY_PATH=/keys/public_key.pfx
+      - ContextProvider=redis
+      - Redis__ConnectionString=tweek-redis:6379
+      - Addons__Redis__className=Tweek.Drivers.Redis.RedisServiceAddon
+      - Addons__Redis__assemblyName=Tweek.Drivers.Redis
+    volumes:
+      -  ../../services/git-service/ssh/tweekgit_public.pfx:/keys/public_key.pfx
+
+  tweek-editor:
+    depends_on: 
+      - tweek-git
+    ports:
+      - "4004:3000"
+    volumes: 
+      - ../../services/git-service/ssh:/keys
+      - ../../services/editor/vapid:/opt/vapid
+    environment:
+      - GIT_USER=git
+      - GIT_URL=ssh://git@tweek-git/tweek/repo
+      - GIT_PUBLIC_KEY_PATH=/keys/tweekgit.pub
+      - GIT_PRIVATE_KEY_PATH=/keys/tweekgit
+
+  tweek-redis:
+    image: redis:alpine
+    expose:
+      - "6379"
+    ports:
+      - "4005:6379"

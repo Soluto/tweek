@@ -4,7 +4,7 @@
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81</PackageTargetFallback>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Tweek.JPad" Version="0.5.6287.28670" />
+    <PackageReference Include="Tweek.JPad" Version="0.6.8" />
     <PackageReference Include="LanguageExt.Core" Version="1.9.7" />
   </ItemGroup>
   <ItemGroup>
