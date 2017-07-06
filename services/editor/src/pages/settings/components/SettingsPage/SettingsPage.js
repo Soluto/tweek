@@ -18,12 +18,13 @@ const AddIdentity = compose(
   withState('state', 'setState', { isEditing: false, value: '' }),
   withHandlers({
     toggleEdit: ({ setState }) => () => setState(state => ({ ...state, isEditing: true })),
-    change: ({ setState }) => value => setState(state => ({ ...state, value: value })),
+    change: ({ setState }) => value =>
+      setState(state => ({ ...state, value: value.toLowerCase() })),
     reset: ({ setState }) => () => setState(state => ({ ...state, value: '', isEditing: false })),
   }),
-)(
-  ({ state: { isEditing, value }, toggleEdit, change, reset, addNewIdentity }) =>
-    isEditing
+)(({ state: { isEditing, value }, toggleEdit, change, reset, addNewIdentity }) =>
+  <div data-comp="AddNewIdentity">
+    {isEditing
       ? <Input
           value={value}
           onChange={change}
@@ -33,7 +34,8 @@ const AddIdentity = compose(
             addNewIdentity(value);
           }}
         />
-      : <button onClick={toggleEdit}>+ Add New Identity</button>,
+      : <button onClick={toggleEdit}>Add New Identity</button>}
+  </div>,
 );
 
 export default compose(
@@ -50,11 +52,11 @@ export default compose(
     <div className="schema-page-container">
       <ul className="side-menu" key="SideMenu">
         <li>
-          <div>Identities</div>
+          <div data-comp="group">Identities</div>
           <ul>
             {Object.keys(schema).map(x => ({ path: `identities/${x}`, name: x })).map(LinkMenuItem)}
+            <li><AddIdentity /></li>
           </ul>
-          <AddIdentity />
         </li>
       </ul>
       <div style={{ display: 'flex', flexGrow: 1 }} key="Page">

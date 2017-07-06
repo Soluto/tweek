@@ -21,6 +21,7 @@ export async function deleteIdentity(
 ) {
   const keyPath = `@tweek/schema/${identityType}`;
   await keysRepository.deleteKey(keyPath, author);
+  res.sendStatus(200);
 }
 
 export async function addIdentity(

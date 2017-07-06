@@ -1,15 +1,15 @@
-*[data-comp=property-item] {
+.identity-page *[data-comp=property-item] {
   display: flex;
   flex-direction: row;
   height: auto;
   min-height: 30px;
   padding: 8px 4px 8px 16px;
 }
-*[data-comp=property-item] input {
+.identity-page *[data-comp=property-item] input {
   margin-right: 10px;
   font-size: 12px;
 }
-*[data-comp=property-item] button[data-comp=remove] {
+.identity-page *[data-comp=property-item] button[data-comp=remove] {
   margin-right: 2px;
   vertical-align: top;
   background-color: #00aeef;
@@ -40,29 +40,29 @@
   padding-top: 1px;
   margin-top: 7px;
 }
-*[data-comp=property-item] button[data-comp=remove]:hover {
+.identity-page *[data-comp=property-item] button[data-comp=remove]:hover {
   background-color: #029CD5;
   cursor: pointer;
 }
-*[data-comp=property-item] button[data-comp=remove]:disabled {
+.identity-page *[data-comp=property-item] button[data-comp=remove]:disabled {
   background-color: gray;
 }
-*[data-comp=property-item] button[data-comp=remove]:disabled:hover,
-*[data-comp=property-item] button[data-comp=remove]:disabled:active {
+.identity-page *[data-comp=property-item] button[data-comp=remove]:disabled:hover,
+.identity-page *[data-comp=property-item] button[data-comp=remove]:disabled:active {
   cursor: default;
   background-color: gray;
 }
-*[data-comp=property-item] button[data-comp=remove]:hover {
+.identity-page *[data-comp=property-item] button[data-comp=remove]:hover {
   background-color: #9c9c9c;
 }
-*[data-comp=property-item] button[data-comp=remove]:active {
+.identity-page *[data-comp=property-item] button[data-comp=remove]:active {
   background-color: #7b7b7b;
 }
-*[data-comp=property-item] button[data-comp=remove]:after {
+.identity-page *[data-comp=property-item] button[data-comp=remove]:after {
   font-family: 'tweekIcons';
   content: '\E900';
 }
-*[data-comp=new-property-item] {
+.identity-page *[data-comp=new-property-item] {
   display: flex;
   flex-direction: row;
   height: auto;
@@ -74,11 +74,11 @@
   width: fit-content;
   padding-left: 28px;
 }
-*[data-comp=new-property-item] input {
+.identity-page *[data-comp=new-property-item] input {
   margin-right: 10px;
   font-size: 12px;
 }
-*[data-comp=new-property-item] button[data-comp=add] {
+.identity-page *[data-comp=new-property-item] button[data-comp=add] {
   vertical-align: top;
   background-color: #00aeef;
   height: 28px;
@@ -103,19 +103,19 @@
   padding-top: 2px;
   margin-top: 4px;
 }
-*[data-comp=new-property-item] button[data-comp=add]:hover {
+.identity-page *[data-comp=new-property-item] button[data-comp=add]:hover {
   background-color: #029CD5;
   cursor: pointer;
 }
-*[data-comp=new-property-item] button[data-comp=add]:disabled {
+.identity-page *[data-comp=new-property-item] button[data-comp=add]:disabled {
   background-color: gray;
 }
-*[data-comp=new-property-item] button[data-comp=add]:disabled:hover,
-*[data-comp=new-property-item] button[data-comp=add]:disabled:active {
+.identity-page *[data-comp=new-property-item] button[data-comp=add]:disabled:hover,
+.identity-page *[data-comp=new-property-item] button[data-comp=add]:disabled:active {
   cursor: default;
   background-color: gray;
 }
-*[data-comp=new-property-item] button[data-comp=add]:after {
+.identity-page *[data-comp=new-property-item] button[data-comp=add]:after {
   font-family: 'tweekIcons';
   content: '\E905';
 }

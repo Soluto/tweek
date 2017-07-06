@@ -1,7 +1,6 @@
 @import (reference) "../../../../../styles/core/core.less";
 @import "../../../../../styles/core/tags.less";
 
-
 .property-row(){
   display: flex;
   flex-direction: row;
@@ -14,25 +13,28 @@
   }
 }
 
-*[data-comp=property-item] {
-  .property-row;
-  button[data-comp=remove]{
-      margin-right: 2px;
-      .small-close-circle-button;
-      margin-top: 7px;
-  }
-}
-
-*[data-comp=new-property-item]
-{
-    .property-row();
-    border: 1px #999999 dotted;
-    border-radius: 3px;
-    background-color: #EFFFFF;
-    width: fit-content;
-    padding-left: 28px;
-    button[data-comp=add]{
-      .add-circle-button;
-      margin-top: 4px;
+.identity-page {
+  *[data-comp=property-item] {
+    .property-row;
+    button[data-comp=remove]{
+        margin-right: 2px;
+        .small-close-circle-button;
+        margin-top: 7px;
     }
+  }
+
+
+  *[data-comp=new-property-item]
+  {
+      .property-row();
+      border: 1px #999999 dotted;
+      border-radius: 3px;
+      background-color: #EFFFFF;
+      width: fit-content;
+      padding-left: 28px;
+      button[data-comp=add]{
+        .add-circle-button;
+        margin-top: 4px;
+      }
+  }
 }

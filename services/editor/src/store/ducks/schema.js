@@ -4,6 +4,7 @@ import R from 'ramda';
 import jsondiffpatch from 'jsondiffpatch';
 import { withJsonData } from '../../utils/http';
 import fetch from '../../utils/fetch';
+import { push } from 'react-router-redux';
 
 const SCHEMA_LOADED = 'SCHEMA_LOADED';
 const UPSERT_SCHEMA_PROPERTY = 'SCHEMA_UPSERT_PROPERTY';
@@ -48,12 +49,16 @@ export function upsertIdentityProperty(identity, prop, value) {
 }
 
 export function addNewIdentity(identityType) {
-  return { type: ADD_NEW_IDENTITY, value: { identityType } };
+  return (dispatch, getState) => {
+    dispatch({ type: ADD_NEW_IDENTITY, value: { identityType } });
+    dispatch(push(`/settings/identities/${identityType}`));
+  };
 }
 
 export function deleteIdentity(identityType) {
   return async (dispatch, getState) => {
     dispatch({ type: DELETING_IDENTITY, value: { identityType } });
+    dispatch(push(`/settings`));
     await fetch(`/api/schema/${identityType}`, {
       method: 'DELETE',
     });
@@ -71,6 +76,8 @@ function createSchemaState() {
 
 export default handleActions(
   {
+    [DELETING_IDENTITY]: (state, { value: { identityType } }) =>
+      R.dissocPath([identityType])(state),
     [SCHEMA_LOADED]: (state, action) => createSchemaState(),
     [REMOVE_SCHEMA_PROPERTY]: (state, { value: { identity, prop } }) =>
       R.dissocPath([identity, 'local', prop])(state),
