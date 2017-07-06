@@ -27,7 +27,7 @@ services:
     entrypoint:
       - node
       - --inspect=5858
-      - ./server.js
+      - ./src/server.js
     environment:
       - GIT_USER=git
       - GIT_URL=ssh://git@tweek-git/tweek/repo
