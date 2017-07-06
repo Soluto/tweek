@@ -66,7 +66,7 @@ describe('dependent keys', () => {
   })
 
   // TODO: unskip this test, when the search index refresh works reasonably fast
-  it.skip('should display dependency relations between keys', () => {
+  it('should display dependency relations between keys', () => {
     const keyWithoutDependency = keysPageObject.generateTestKeyName('key1');
     const keyWithoutDependencyFullPath = `${testFolder}/${dependentKeysFolder}/${keyWithoutDependency}`;
     keysPageObject.addEmptyKey(keyWithoutDependencyFullPath);
@@ -82,17 +82,18 @@ describe('dependent keys', () => {
 
     keysPageObject.commitChanges();
 
-
-    // Verify used by
-    keysPageObject.goToKey(keyWithoutDependencyFullPath);
-    browser.waitForVisible(keySelectors.USED_BY, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
-    const usedBy = browser.getText(keySelectors.USED_BY);
-    expect(usedBy).to.equal('Used by:');
+    keysPageObject.wait(1000);
 
     // Verify depends on
     keysPageObject.goToKey(keyWithDependencyFullPath);
     browser.waitForVisible(keySelectors.DEPENDS_ON, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
     const dependsOn = browser.getText(keySelectors.DEPENDS_ON);
-    expect(dependsOn).to.equal('Depends on:');
+    expect(dependsOn).to.equal(`Depends on:\n${keyWithoutDependencyFullPath}`);
+
+    // Verify used by
+    keysPageObject.goToKey(keyWithoutDependencyFullPath);
+    browser.waitForVisible(keySelectors.USED_BY, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
+    const usedBy = browser.getText(keySelectors.USED_BY);
+    expect(usedBy).to.equal(`Used by:\n${keyWithDependencyFullPath}`);
   });
 });

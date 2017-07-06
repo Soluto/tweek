@@ -30,11 +30,10 @@ const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
 const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
 const KEY_CLOSED = 'KEY_CLOSED';
 
-function updateRevisionHistory(keyName, revisionHistory) {
+function updateRevisionHistory(keyName) {
   return async function (dispatch) {
     try {
-      revisionHistory =
-        revisionHistory || (await (await fetch(`/api/revision-history/${keyName}`)).json());
+      const revisionHistory = await (await fetch(`/api/revision-history/${keyName}`)).json();
       dispatch({ type: KEY_REVISION_HISTORY, payload: { keyName, revisionHistory } });
     } catch (error) {
       dispatch(showError({ title: 'Failed to refresh revisionHistory', error }));
@@ -42,16 +41,15 @@ function updateRevisionHistory(keyName, revisionHistory) {
   };
 }
 
-function updateDependentKeys(keyName, dependentKeys) {
+function updateDependentKeys(keyName) {
   return async function (dispatch) {
-    let dependentKeys;
+    let dependentKeys = [];
     try {
-      dependentKeys = dependentKeys || (await (await fetch(`/api/dependents/${keyName}`)).json());
+      dependentKeys = await (await fetch(`/api/dependents/${keyName}`)).json();
     } catch (error) {
-      dependentKeys = [];
       dispatch(
         showError({
-          title: `Failed to enumerate keys dependent on ${keyName} ${dependentKeys} ${error}`,
+          title: `Failed to enumerate keys dependent on ${keyName}`,
           error,
         }),
       );
