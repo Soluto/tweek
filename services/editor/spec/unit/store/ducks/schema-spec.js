@@ -6,9 +6,7 @@ import { push } from 'react-router-redux';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import R from 'ramda';
 import reducer, * as actions from '../../../../src/store/ducks/schema';
-import { expect as chaiExpect } from 'chai';
-const jestExpect = expect;
-expect = chaiExpect;
+import { expect } from 'chai';
 
 describe('schema duck', () => {
   let state, dispatch;
@@ -51,16 +49,15 @@ describe('schema duck', () => {
       dispatch(actions.upsertIdentityProperty('user', 'age', 30));
       expect(state).to.have.property('user').to.deep.include({ local: { age: 30 } });
       dispatch(actions.removeIdentityProperty('user', 'age'));
-      expect(state).to.have.property('user').to.not.deep.include({ local: { age: 30 } });
+      expect(state).to.have.property('user').with.property('local').to.not.have.property('age');
     });
   });
 
   describe('Remote Updates', () => {
     let originalFetch = global.fetch;
-    beforeEach((fetchArgs) => {
+    beforeEach(() => {
       global.fetch = jest.fn(async (url, fetchArgs) => {
         fetchArgs = fetchArgs || { method: 'get' };
-        console.log(url, fetchArgs);
         if (fetchArgs.url === '/api/schema' && fetchArgs.method.toUpperCase() === 'GET') {
           return { ok: true, json: async () => R.map(x => x.remote)(state) };
         }
@@ -70,19 +67,30 @@ describe('schema duck', () => {
     afterEach(() => {
       global.fetch = originalFetch;
     });
-    it.only('simple async test', async () => {
-      jestExpect.assertions(1);
-      await Promise.resolve();
-      jestExpect(true).toEqual(true);
-    });
 
     it('saving new identity', async () => {
-      jestExpect.assertions(1);
       dispatch(actions.addNewIdentity('user'));
       dispatch(actions.upsertIdentityProperty('user', 'age', 30));
-      const savePromise = Promise.resolve(); // dispatch(actions.saveSchema("user"));
+      const savePromise = dispatch(actions.saveSchema('user'));
+      expect(state).to.have.property('user').with.property('isSaving', true);
       await savePromise;
-      jestExpect(fetch.mock.calls).toHaveLength(2);
+      expect(state).to.have.property('user').with.property('isSaving', false);
+      let [url, { method, body }] = fetch.mock.calls[0];
+      expect(url.toLowerCase()).to.eq('/api/schema/user');
+      expect(method).to.eq('POST');
+      expect(JSON.parse(body)).to.deep.equal({ age: 30 });
+      expect(state).to.have.property('user').with.property('remote').deep.eq({ age: 30 });
+    });
+
+    it('updating existing identity', async () => {
+      dispatch(actions.addNewIdentity('user'));
+      dispatch(actions.upsertIdentityProperty('user', 'age', 30));
+      const savePromise = await dispatch(actions.saveSchema('user'));
+      await savePromise;
+      let [url, { method, body }] = fetch.mock.calls[0];
+      expect(url.toLowerCase()).to.eq('/api/schema/user');
+      expect(method).to.eq('POST');
+      expect(JSON.parse(body)).to.deep.equal({ age: 30 });
     });
   });
 });
