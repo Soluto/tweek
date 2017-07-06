@@ -87,6 +87,15 @@ namespace Engine.Context
             };
         }
 
+        public static bool IsIdentityDefinedWithAuth(this Identity identity, TweekIdentityProvider identityProvider)
+        {
+            var identitiesWithAuth = identityProvider.GetIdentitiesWithAuth();
+            return identitiesWithAuth.Contains(identity.Type);
+        }
 
+        public static Identity ToAuthIdentity(this Identity identity, TweekIdentityProvider identityProvider)
+        {
+            return identity.IsIdentityDefinedWithAuth(identityProvider) ? identity : Identity.GlobalIdentity;
+        }
     }
 }
