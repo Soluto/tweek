@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using FSharpUtils.Newtonsoft;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RestEase;
 using Tweek.Utils;
 using Xunit.Abstractions;
 
@@ -25,15 +26,35 @@ namespace Tweek.ApiService.SmokeTests
         public async Task AppendContext(string identityType, string identityId, Dictionary<string, JsonValue> context)
         {
             await _client.PostAsync(
-                $"/context/{identityType}/{identityId}", new StringContent(JsonConvert.SerializeObject(context, new JsonValueConverter()), Encoding.UTF8, "application/json"));
+                $"/api/v1/context/{identityType}/{identityId}", new StringContent(JsonConvert.SerializeObject(context, new JsonValueConverter()), Encoding.UTF8, "application/json"));
+        }
+
+        public async Task RemoveFromContext(string identityType, string identityId, string property)
+        {
+            await _client.DeleteAsync($"/api/v1/context/{identityType}/{identityId}/{property}");
+        }
+
+        public async Task<JToken> GetSwagger()
+        {
+            var stream = await _client.GetStreamAsync("/api/swagger.json");
+
+            return JToken.Load(new JsonTextReader(new StreamReader(stream)));
         }
 
         public async Task<JToken> GetConfigurations(string keyPath, IEnumerable<KeyValuePair<string, string>> context)
         {
             var stream = await _client.GetStreamAsync(
-                $"/configurations/{keyPath}?{string.Join("&", context.Select(x => string.Join("=", x.Key, x.Value)))}");
+                $"api/v1/keys/{keyPath}?{string.Join("&", context.Select(x => string.Join("=", x.Key, x.Value)))}");
 
             return JToken.Load(new JsonTextReader(new StreamReader(stream)));
+        }
+
+        public async Task<HttpResponseMessage> GetCorsPreflightResponse(string origin, string method)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Options, $"api/v1/keys/");
+            request.Headers.Add("Access-Control-Request-Method", method);
+            request.Headers.Add("Origin", origin);
+            return await _client.SendAsync(request);
         }
     }
 
@@ -41,7 +62,7 @@ namespace Tweek.ApiService.SmokeTests
     {
         public static ITweekApi GetTweekApiClient(ITestOutputHelper output)
         {
-            var baseUrl = Environment.GetEnvironmentVariable("TWEEK_API_URL") ?? "http://localhost:5000";
+            var baseUrl = Environment.GetEnvironmentVariable("TWEEK_API_URL") ?? "http://localhost:4003";
             output.WriteLine($"TWEEK_API_URL {baseUrl}");
 
             return new TweekApi(new HttpClient

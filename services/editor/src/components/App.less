@@ -1,0 +1,75 @@
+@import (reference) "../styles/core/core.less";
+
+.app {
+  @header-size: 70px;
+  .menu {
+    li {
+      list-style: none;
+    }
+    display: flex;
+    flex-grow: 1;
+    margin-right: 70px;
+    justify-content: flex-end;
+    .menu-item {
+      display: flex;
+      border-bottom: 4px solid transparent;
+      padding: 0 10px;
+      color: white;
+      height: 100%;
+      .transitioned();
+      span {
+        margin-right: 24px;
+        .transitioned();
+
+      }
+      &:visited, &:link {
+        display: flex;
+        flex-grow: 1;
+        justify-content: center;
+        align-items: center;
+        height: @header-size - 5;
+        text-decoration: none;
+        font-size: 22px;
+        font-weight: 300;
+
+        color: white;
+      }
+      &.selected-location-path {
+        border-bottom: 4px solid white;
+      }
+      &:hover {
+        cursor: pointer;
+        border-bottom: 4px solid white;
+        &.selected-location-path {
+          border-bottom: 4px solid white;
+        }
+      }
+      &:active {
+        border-bottom: 4px solid white;
+      }
+    }
+  }
+  .header {
+    top: 0;
+    left: 0;
+    right: 0;
+    height: @header-size;
+    display: flex;
+    position: fixed;
+    border-bottom: 1px solid lightgray;
+    align-items: center;
+    background-color: #009fda;
+    .logo {
+      margin: 5px 0 0 20px;
+      width: 140px;
+    }
+  }
+  .page {
+    position: absolute;
+    top: @header-size;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+  }
+}

@@ -1,0 +1,17 @@
+FROM microsoft/aspnetcore-build:1.1.2 as source
+COPY . .
+ARG VERSION_SUFFIX
+ENV VERSION_SUFFIX ${VERSION_SUFFIX:-dev}
+
+RUN dotnet restore ./Tweek.sln
+RUN dotnet build Tweek.sln -c Release --version-suffix "$VERSION_SUFFIX"
+RUN find . -regex '.*\.\(Unit\|Integration\|\)Tests\.csproj' -print0 | xargs -0 -n 1 dotnet test
+RUN dotnet publish ./services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj  -c Release -o ./obj/Docker/publish --version-suffix "$VERSION_SUFFIX"
+
+FROM microsoft/aspnetcore:1.1.2 as release
+WORKDIR /app
+EXPOSE 80
+COPY --from=source /services/api/Tweek.ApiService.NetCore/obj/Docker/publish .
+HEALTHCHECK --interval=15s --timeout=15s --retries=8 \
+      CMD curl -f http://localhost/health || exit 1
+ENTRYPOINT ["dotnet", "Tweek.ApiService.NetCore.dll"]

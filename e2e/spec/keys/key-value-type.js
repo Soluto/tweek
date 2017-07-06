@@ -1,10 +1,9 @@
-/* global describe, before, after it, browser */
+/* global describe, before, after, it, browser */
 
 import KeysAsserts from '../../KeysAsserts';
-import KeysPageObject from '../../KeysPageObject';
-import {selectors} from '../../selectors';
-
-const BLANK_KEY_NAME = '_blank';
+import KeysPageObject, { BLANK_KEY_NAME } from '../../utils/KeysPageObject';
+import keySelectors from '../../selectors/keySelectors';
+import globalSelectors from '../../selectors/globalSelectors';
 
 describe('key-value-type', () => {
   const keysPageObject = new KeysPageObject(browser);
@@ -13,23 +12,20 @@ describe('key-value-type', () => {
   before(() => {
     keysPageObject.goToBase();
     browser.windowHandleMaximize();
-    browser.click(selectors.ADD_KEY_BUTTON);
+    browser.click(keySelectors.ADD_KEY_BUTTON);
     keysAsserts.assertKeyOpened(BLANK_KEY_NAME);
-    browser.click(selectors.ADD_RULE_BUTTON);
-    browser.waitForExist(selectors.ruleContainer(0));
+    browser.click(keySelectors.ADD_RULE_BUTTON);
+    browser.waitForExist(keySelectors.ruleContainer(0));
     keysPageObject.removeRuleCondition(1, 0);
   });
 
   let setKeyValueAndType = function (keyValueType, value) {
-    browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, keyValueType);
-    const firstSuggestion = selectors.typeaheadSuggestionByIndex(0);
-    browser.click(firstSuggestion);
+    browser.setValue(keySelectors.KEY_VALUE_TYPE_INPUT, keyValueType);
 
     keysPageObject.acceptRodalIfRaised();
 
-    const ruleValueInputSelector = selectors.ruleValueInput(0, keyValueType == "Boolean");
+    const ruleValueInputSelector = keySelectors.ruleValueInput(0, keyValueType == "Boolean");
     browser.setValue(ruleValueInputSelector, value);
-    if (keyValueType == "Boolean") browser.click(firstSuggestion);
   };
 
   function assertKeySourceWithChanges(valueType, ruleValue) {

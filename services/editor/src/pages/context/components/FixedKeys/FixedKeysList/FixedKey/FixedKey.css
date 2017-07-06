@@ -1,0 +1,105 @@
+.fixed-key-container {
+  display: flex;
+  align-items: center;
+}
+.fixed-key-container .delete-button {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  padding: 0 0 3px;
+  box-sizing: border-box;
+  width: 13px;
+  height: 13px;
+  font-size: 10px;
+  padding-bottom: 4px;
+  background-color: #bcbcbc;
+  font-size: 12px;
+  padding-top: 1px;
+}
+.fixed-key-container .delete-button:hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.fixed-key-container .delete-button:disabled {
+  background-color: gray;
+}
+.fixed-key-container .delete-button:disabled:hover,
+.fixed-key-container .delete-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.fixed-key-container .delete-button:hover {
+  background-color: #9c9c9c;
+}
+.fixed-key-container .delete-button:active {
+  background-color: #7b7b7b;
+}
+.fixed-key-container .delete-button:after {
+  font-family: 'tweekIcons';
+  content: '\E900';
+}
+.fixed-key-container .editable-key-container {
+  display: flex;
+}
+.fixed-key-container .editable-key-container > div {
+  margin: 5px;
+}
+.fixed-key-container .editable-key-container.new-item input {
+  color: green;
+}
+.fixed-key-container .editable-key-container.removed {
+  text-decoration: line-through;
+}
+.fixed-key-container .editable-key-container .key-input .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+  width: 350px;
+}
+.fixed-key-container .editable-key-container .key-input .bootstrap-typeahead .dropdown-menu {
+  min-width: 350px;
+}
+.fixed-key-container .editable-key-container .value-input.has-changes {
+  color: green;
+}
+.fixed-key-container .editable-key-container .value-input.has-changes .bootstrap-typeahead-input-container {
+  color: green;
+}
+.fixed-key-container .editable-key-container .initial-value {
+  display: inline-block;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  height: 28px;
+  width: 150px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  opacity: 0.5;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  border-color: transparent;
+}
+.fixed-key-container .editable-key-container .initial-value:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.fixed-key-container .editable-key-container .initial-value:disabled {
+  border-color: #bcbcbc;
+}

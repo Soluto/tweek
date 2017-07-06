@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using LanguageExt;
@@ -19,7 +20,7 @@ using Microsoft.AspNetCore.Cors;
 
 namespace Tweek.ApiService.NetCore.Controllers
 {
-    [EnableCors("All")]
+    [EnableCors("Keys")]
     public class KeysController : Controller
     {
         private readonly ITweek _tweek;
@@ -56,7 +57,20 @@ namespace Tweek.ApiService.NetCore.Controllers
             return includePaths.Select(x=> ConfigurationPath.From(path.Location, x)).ToArray();
         }
 
+        /// <summary>
+        /// Returns the requested key given by path
+        /// </summary>
+        /// <remarks>
+        /// TODO: add example
+        /// </remarks>
+        /// <param name="path">Path of the key</param>
+        /// <returns>Value for the requested key</returns>
+        /// <response code="200">Value for the requested key</response>
+        /// <response code="403">Access denied</response>
         [HttpGet("api/v1/keys/{*path}")]
+        [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden)]
+        [Produces("application/json")]
         public async Task<ActionResult> GetAsync([FromRoute] string path)
         {
             var allParams = PartitionByKey(HttpContext.Request.Query.ToDictionary(x => x.Key, x => x.Value), x => x.StartsWith("$"));

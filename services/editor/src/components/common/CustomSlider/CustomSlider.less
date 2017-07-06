@@ -1,0 +1,153 @@
+@import (reference) "../../../styles/core/core.less";
+.custom-slider-container {
+  padding-top: 5px;
+  .legend-bar {
+    position: relative;
+    .variant-list {
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+  }
+  .legend-item {
+    display: flex;
+    padding-left: 3px;
+    height: 20px;
+  }
+  .delete-legend-button {
+    .small-close-circle-button;
+  }
+  .legend-input {
+    .small-metro-textbox;
+    margin-left: 4px;
+  }
+  .legend-value-input {
+    .legend-input;
+    width: 120px;
+  }
+  .legend-percent-input {
+    .legend-input;
+    width: 30px;
+  }
+  .add-variant-button {
+    .add-circle-button;
+    position: absolute;
+    bottom: 0;
+    margin-left: 10px;
+    margin-bottom: 20px;
+  }
+  .horizontal-variant-slider-wrapper {
+    display: flex;
+    .horizontal-variant-slider {
+      display: flex;
+      align-self: center;
+    }
+    .dragger {
+      margin-top: -16px;
+    }
+    .dragger .arrow {
+      width: 11px;
+      height: 10px;
+      position: absolute;
+      background-color: darkgray;
+      display: inline-block;
+      border-radius: 2px 2px 0 0;
+      color: #2e2e2e;
+      cursor: pointer;
+      margin-left: -6px;
+    }
+    .dragger .arrow:before {
+      top: 100%;
+      left: 50%;
+      border: solid transparent;
+      content: " ";
+      height: 0;
+      width: 0;
+      position: absolute;
+      pointer-events: none;
+      border-top-color: darkgray;
+      border-width: 6px;
+      margin-left: -6px;
+    }
+  }
+  .accent1 {
+    background-color: @accent-color1;
+    background-color: #ccf085;
+  }
+  .accent2 {
+    background-color: @accent-color2;
+    background-color: #bebebe;
+  }
+  .accent3 {
+    background-color: @accent-color3;
+    background-color: #c395f6;
+  }
+  .accent4 {
+    background-color: @accent-color4;
+    background-color: #ef7478;
+  }
+  .accent5 {
+    background-color: @accent-color5;
+    background-color: #5a8dc3;
+  }
+  .accent6 {
+    background-color: @accent-color6;
+    background-color: #6e6e6e;
+  }
+  .vertical-accent {
+    width: 16px;
+    height: 16px;
+    border-radius: 20%;
+    margin-left: 5px;
+  }
+  .vertical-accent1 {
+    .accent1;
+    .vertical-accent;
+  }
+  .vertical-accent2 {
+    .accent2;
+    .vertical-accent;
+  }
+  .vertical-accent3 {
+    .accent3;
+    .vertical-accent;
+  }
+  .vertical-accent4 {
+    .accent4;
+    .vertical-accent;
+  }
+  .vertical-accent5 {
+    .accent5;
+    .vertical-accent;
+  }
+  .vertical-accent6 {
+    .accent6;
+    .vertical-accent;
+  }
+  .horizontal-accent {
+    height: 6px;
+  }
+  .horizontal-accent1 {
+    .accent1;
+    .horizontal-accent;
+  }
+  .horizontal-accent2 {
+    .accent2;
+    .horizontal-accent;
+  }
+  .horizontal-accent3 {
+    .accent3;
+    .horizontal-accent;
+  }
+  .horizontal-accent4 {
+    .accent5;
+    .horizontal-accent;
+  }
+  .horizontal-accent5 {
+    .accent5;
+    .horizontal-accent;
+  }
+  .horizontal-accent6 {
+    .accent6;
+    .horizontal-accent;
+  }
+}
