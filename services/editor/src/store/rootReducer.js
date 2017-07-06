@@ -16,5 +16,5 @@ export default combineReducers({
   notifications: notificationsReducer,
   alerts: alertsReducer,
   context: contextReducer,
-  schema: schemaReducer
+  schema: schemaReducer,
 });
