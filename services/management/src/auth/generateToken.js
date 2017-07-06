@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const nconf = require('nconf');
 const fs = require('fs');
-const promisify = require('bluebird').promisify;
+const promisify = require('util').promisify;
 
 const jwtSign = promisify(jwt.sign);
 const readFile = promisify(fs.readFile);
@@ -20,9 +20,10 @@ function getAuthKey() {
   return readFile(keyPath);
 }
 
-var authKeyPromise;
+let authKeyPromise;
 
-module.exports = function generateToken() {
+module.exports = async function generateToken() {
   authKeyPromise = authKeyPromise || getAuthKey();
-  return authKeyPromise.then(authKey => jwtSign({}, authKey, jwtOptions));
+  const authKey = await authKeyPromise;
+  return jwtSign({}, authKey, jwtOptions);
 };
