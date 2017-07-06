@@ -55,9 +55,9 @@ export async function getKeyManifest(req, res, { keysRepository }, { params }) {
 export async function getDependents(req, res, { keysRepository }, { params }) {
   const keyPath = params[0];
   try {
-    const dependents = await searchIndex.dependents;
+    const dependents = await searchIndex.dependents(keyPath);
 
-    res.json(dependents[keyPath] || []);
+    res.json(dependents);
   } catch (exp) {
     res.sendStatus(404);
   }

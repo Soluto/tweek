@@ -15,7 +15,7 @@ const DependsOn = ({ dependencies }) =>
 const UsedBy = ({ dependentKeys }) =>
   <div className={classNames('used-by', 'dependency-indicator-container')} data-comp={'used-by'}>
     {Array.isArray(dependentKeys) && dependentKeys.length
-      ? <div>Used by :<br /><ul>{dependentKeys.map(dep => <li key={dep}>{dep}</li>)}</ul></div>
+      ? <div>Used by:<br /><ul>{dependentKeys.map(dep => <li key={dep}>{dep}</li>)}</ul></div>
       : <div />}
   </div>;
 

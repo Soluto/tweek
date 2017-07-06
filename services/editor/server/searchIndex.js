@@ -40,18 +40,18 @@ export default {
   get index() {
     return index;
   },
-  get dependents() {
-    return dependentsPromise;
+  dependents(key) {
+    return dependentsPromise.then(x => x[key] || []);
   },
   refreshIndex: (repoDir) => {
     manifestPromise = getManifestsFromFiles(repoDir);
     indexPromise = refreshIndex(repoDir);
-    dependentsPromise = indexPromise.then(x =>
-      x.manifests.reduce((acc, current) => {
+    dependentsPromise = manifestPromise.then(x =>
+      x.reduce((acc, current) => {
         if (current.dependencies && current.dependencies.length !== 0) {
           current.dependencies.forEach((dependency) => {
-            acc[dependency] = acc[dependency] || new Set();
-            acc[dependency].add(current.key_path);
+            acc[dependency] = acc[dependency] || [];
+            acc[dependency].push(current.key_path);
           });
         }
         return acc;
