@@ -1,7 +1,8 @@
 # ------- BASE -------
-FROM node:8.1.3 as base
+FROM soluto/nodegit-alpine as base
 
 COPY package.json yarn.lock /tmp/
+RUN ln -s /nodegit/node_modules /tmp/node_modules
 RUN cd /tmp && yarn --prod
 
 RUN mkdir -p /opt/app && ln -s /tmp/node_modules /opt/app/node_modules
