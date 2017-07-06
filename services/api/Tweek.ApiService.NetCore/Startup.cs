@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using Engine.Context;
 using Engine.Rules.Validation;
 using FSharpUtils.Newtonsoft;
 using Microsoft.Extensions.PlatformAbstractions;
@@ -32,6 +33,7 @@ using Tweek.JPad;
 using Tweek.JPad.Utils;
 using Engine.Rules.Creation;
 using static Engine.Core.Rules.Utils;
+using Tweek = Engine.Tweek;
 
 namespace Tweek.ApiService.NetCore
 {
@@ -68,9 +70,13 @@ namespace Tweek.ApiService.NetCore
                 var rulesDriver = provider.GetService<IRulesDriver>();
                 return Task.Run(async () => await Engine.Tweek.Create(rulesDriver, parserResolver)).Result;
             });
-
-            services.AddSingleton(provider => Authorization.CreateReadConfigurationAccessChecker(provider.GetService<ITweek>()));
-            services.AddSingleton(provider => Authorization.CreateWriteContextAccessChecker(provider.GetService<ITweek>()));
+            services.AddSingleton(provider =>
+            {
+                var rulesDriver = provider.GetService<IRulesDriver>();
+                return Task.Run(async () => await TweekIdentityProvider.Create(rulesDriver)).Result;
+            });
+            services.AddSingleton(provider => Authorization.CreateReadConfigurationAccessChecker(provider.GetService<ITweek>(), provider.GetService<TweekIdentityProvider>()));
+            services.AddSingleton(provider => Authorization.CreateWriteContextAccessChecker(provider.GetService<ITweek>(), provider.GetService<TweekIdentityProvider>()));
             services.AddSingleton(provider => Validator.GetValidationDelegate(provider.GetService<GetRuleParser>()));
 
             var tweekContactResolver = new TweekContractResolver();
