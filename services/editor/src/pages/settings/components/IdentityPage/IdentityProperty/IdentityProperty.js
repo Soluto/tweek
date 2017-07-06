@@ -18,7 +18,7 @@ const TypeCombobox = ({ type, onUpdate, allowedTypes }) =>
 
 const SimpleTypeSelector = ({ type, onUpdate }) =>
   <TypeCombobox
-    allowedTypes={['Custom', ...Object.keys(TypesServices.types)]}
+    allowedTypes={[...Object.keys(TypesServices.types), 'Custom']}
     type={type}
     onUpdate={type => onUpdate(type === 'Custom' ? { base: 'string', allowedValues: [] } : type)}
   />;
@@ -79,19 +79,19 @@ export const NewIdentityProperty = compose(
     updateDef: ({ setState }) => createUpdater('def', setState),
     clear: ({ setState }) => () => setState(() => EMPTY_PROPERTY),
   }),
-)(({ state, updateDef, updatePropName, onCreate, clear }) =>
-  <div data-comp="new-property-item">
-    <Input placeholder="Add new property" value={state.propName} onChange={updatePropName} />
-    <PropertyTypeSelector
-      type={state.def.type}
-      onUpdate={type => updateDef({ ...state.def, type })}
-    />
-    <button
-      data-comp="add"
-      onClick={() => {
-        onCreate(state.propName, state.def);
-        clear();
-      }}
-    />
-  </div>,
-);
+)(({ state, updateDef, updatePropName, onCreate, clear }) => {
+  let applyChange = () => {
+    onCreate(state.propName, state.def);
+    clear();
+  };
+  return (
+    <div data-comp="new-property-item" onKeyDownCapture={e => e.keyCode === 13 && applyChange()}>
+      <Input placeholder="Add new property" value={state.propName} onChange={updatePropName} />
+      <PropertyTypeSelector
+        type={state.def.type}
+        onUpdate={type => updateDef({ ...state.def, type })}
+      />
+      <button data-comp="add" onClick={applyChange} />
+    </div>
+  );
+});

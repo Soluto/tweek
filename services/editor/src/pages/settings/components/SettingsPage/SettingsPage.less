@@ -15,20 +15,34 @@
        display: flex;
        padding-left: 20px;
        flex-direction: column;
-       margin-top: 10px;
     }
     li {
-        > div{
+        > div[data-comp=group]{
           padding: 10px;
           background-color: #333b41;
         }
         flex-direction: column;
         background:#414b53;
+        margin: 6px 0;
         display: flex;
         a{
           font-size: 16px;
           color: #d8d8d8;
           text-decoration: none;
+        }
+    }
+    [data-comp=AddNewIdentity]{
+        button{
+          .metro-button;
+          font-size: 14px;
+          padding-left: 10px ;
+          padding-right: 10px ;
+          margin-left: -10px;
+        }
+        input{
+          color:#d8d8d8;
+          font-size: 16px;
+          color: #d8d8d8;
         }
     }
   }

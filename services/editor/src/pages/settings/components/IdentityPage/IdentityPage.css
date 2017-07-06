@@ -550,8 +550,59 @@
   margin: 20px;
   flex-grow: 1;
 }
-.identity-page *[data-comp=save-button] {
+.identity-page *[data-comp=action-bar] {
   float: right;
+  display: flex;
+  flex-direction: row-reverse;
+}
+.identity-page *[data-comp=action-bar] > * {
+  margin: 0 6px;
+}
+.identity-page *[data-comp=action-bar] button[data-comp=delete-identity] {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  text-decoration: underline;
+  background-color: transparent;
+  color: gray;
+  width: 125px;
+}
+.identity-page *[data-comp=action-bar] button[data-comp=delete-identity]:hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.identity-page *[data-comp=action-bar] button[data-comp=delete-identity]:disabled {
+  background-color: gray;
+}
+.identity-page *[data-comp=action-bar] button[data-comp=delete-identity]:disabled:hover,
+.identity-page *[data-comp=action-bar] button[data-comp=delete-identity]:disabled:active {
+  cursor: default;
+  background-color: gray;
+}
+.identity-page *[data-comp=action-bar] button[data-comp=delete-identity]:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.identity-page *[data-comp=action-bar] button[data-comp=delete-identity]:active {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+.identity-page *[data-comp=action-bar] button[data-comp=delete-identity]:disabled {
+  background-color: transparent;
+}
+.identity-page *[data-comp=action-bar] button[data-comp=delete-identity]:disabled:hover,
+.identity-page *[data-comp=action-bar] button[data-comp=delete-identity]:disabled:active {
+  cursor: default;
+  background-color: transparent;
 }
 .identity-page h3 {
   margin-bottom: 20px;

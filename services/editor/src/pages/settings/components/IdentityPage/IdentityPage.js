@@ -32,13 +32,18 @@ const IdentityPage = ({
 
   return (
     <div className="identity-page">
-      <SaveButton
-        data-comp="save-button"
-        hasChanges={hasChanges}
-        isSaving={identityProperties.isSaving}
-        onClick={() => saveSchema(identityType)}
-      />
-      <button onClick={() => deleteIdentity(identityType)}>Delete</button>
+      <div data-comp="action-bar">
+        <SaveButton
+          data-comp="save-button"
+          hasChanges={hasChanges}
+          isSaving={identityProperties.isSaving}
+          onClick={() => saveSchema(identityType)}
+        />
+        {identityProperties.remote != null &&
+          <button data-comp="delete-identity" onClick={() => deleteIdentity(identityType)}>
+            Delete
+          </button>}
+      </div>
       <h3 style={{ textTransform: 'capitalize' }}>{identityType}</h3>
       <Tabs>
         <TabList>

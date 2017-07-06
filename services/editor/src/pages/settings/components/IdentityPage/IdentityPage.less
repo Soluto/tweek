@@ -2,9 +2,19 @@
 @import "../../../../styles/core/tags.less";
 
 .identity-page {
-   *[data-comp=save-button]{
+   *[data-comp=action-bar]{
      float: right;
+     display: flex;
+     flex-direction: row-reverse;
+     > * {
+       margin: 0 6px;
+     }
+     button[data-comp=delete-identity]{
+      .transparent-metro-button;
+      width: 125px;
+     }
    }
+   
    margin: 20px;
    flex-grow: 1;
    h3{
