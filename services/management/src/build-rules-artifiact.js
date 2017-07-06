@@ -14,14 +14,18 @@ module.exports = function(files) {
         const keyDef = {
           dependencies: meta.dependencies,
         };
-        if (meta.implementation.type === 'file') {
-          let format = meta.implementation.format;
-          keyDef.format = format;
-          keyDef.payload = await index[`rules/${meta.key_path}.${format}`].read();
-        }
-        if (meta.implementation.type === 'const') {
-          keyDef.format = 'const';
-          keyDef.payload = JSON.stringify(meta.implementation.value);
+        switch (meta.implementation.type) {
+          case 'file': {
+            let format = meta.implementation.format;
+            keyDef.format = format;
+            keyDef.payload = await index[`rules/${meta.key_path}.${format}`].read();
+            break;
+          }
+          case 'const': {
+            keyDef.format = 'const';
+            keyDef.payload = JSON.stringify(meta.implementation.value);
+            break;
+          }
         }
         return [meta.key_path, keyDef];
       }),
