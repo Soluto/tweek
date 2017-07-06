@@ -2,7 +2,7 @@ import install from './install';
 import activate from './activate';
 import loadFromCache from './loadFromCache';
 import handleNotification from './handleNotification';
-import { refresh } from './data-actions';
+import refresh from './refresh';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(install());

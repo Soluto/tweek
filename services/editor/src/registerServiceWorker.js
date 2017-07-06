@@ -53,11 +53,23 @@ async function persistRegistration(subscription) {
 export default function register() {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', async () => {
+      const response = await fetch('/api/editor-configuration/service_worker/is_enabled');
+      const enabled = await response.json();
+
+      if (!enabled) {
+        console.log('service worker is disabled');
+        unregister();
+        return;
+      }
+
+      console.log('enabling service worker');
       const swUrl = `${process.env.PUBLIC_URL}/service-worker.bundle.js`;
       try {
-        const registration = await navigator.serviceWorker.register(swUrl);
+        await navigator.serviceWorker.register(swUrl);
 
         Notification.requestPermission();
+
+        const registration = await navigator.serviceWorker.ready;
 
         const subscription = await getSubscription(registration.pushManager);
         persistRegistration(subscription).catch(

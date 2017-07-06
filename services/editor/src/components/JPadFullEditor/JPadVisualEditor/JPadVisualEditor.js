@@ -50,7 +50,7 @@ function isEmptyRules(rules) {
   return isEmptyRules(rules['*']);
 }
 
-export default ({ valueType, mutate, alerter }) => {
+export default ({ valueType, mutate, alerter, keyPath }) => {
   if (!isBrowser) return <div>Loading rule...</div>;
 
   const partitions = mutate.in('partitions').getValue();
@@ -58,7 +58,11 @@ export default ({ valueType, mutate, alerter }) => {
 
   const handlePartitionAddition = async (newPartition) => {
     const rules = mutate.in('rules').getValue();
-    const testAutoPartition = RulesService.testAutoPartition(newPartition, rules, partitions.length);
+    const testAutoPartition = RulesService.testAutoPartition(
+      newPartition,
+      rules,
+      partitions.length,
+    );
 
     if (!testAutoPartition.isValid || isEmptyRules(mutate.in('rules').getValue())) {
       const newPartitions = partitions.concat(newPartition);
@@ -70,22 +74,22 @@ export default ({ valueType, mutate, alerter }) => {
       .result;
 
     switch (alertResult) {
-      case 'RESET':
-        mutate.apply(m =>
+    case 'RESET':
+      mutate.apply(m =>
           m
             .insert('rules', createPartitionedRules(partitions.length + 1))
             .in('partitions')
             .append(newPartition),
         );
-        break;
-      case 'OK':
-        mutate.apply(m =>
+      break;
+    case 'OK':
+      mutate.apply(m =>
           m
             .insert('rules', RulesService.addPartition(newPartition, rules, partitions.length))
             .in('partitions')
             .append(newPartition),
         );
-        break;
+      break;
     }
   };
   const handlePartitionDelete = async (index) => {
@@ -130,8 +134,11 @@ export default ({ valueType, mutate, alerter }) => {
       </div>
 
       {partitions && partitions.length > 0
-        ? <PartitionsList {...{ partitions, valueType, alerter }} mutate={mutate.in('rules')} />
-        : <RulesList {...{ valueType, alerter }} mutate={mutate.in('rules')} />}
+        ? <PartitionsList
+            {...{ partitions, valueType, alerter, keyPath }}
+            mutate={mutate.in('rules')}
+          />
+        : <RulesList {...{ valueType, alerter, keyPath }} mutate={mutate.in('rules')} />}
     </div>
   );
 };

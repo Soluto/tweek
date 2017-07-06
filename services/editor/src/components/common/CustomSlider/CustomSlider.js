@@ -9,7 +9,7 @@ function replaceNaN(fallbackValue) {
 }
 const parseNumericInput = inputValue => (inputValue === '' ? 0 : parseInt(inputValue, 10));
 
-export default ({
+const CustomSlider = ({
   data,
   onUpdate,
   sliderColors,
@@ -24,14 +24,15 @@ export default ({
 
   const mutator = Mutator.stateless(() => data, onUpdate);
   return (
-    <div className={'custom-slider-container'}>
+    <div data-comp="custom-slider" className="custom-slider-container">
       {displayLegend
-        ? <div className={'legend-bar'}>
+        ? <div data-comp="legend-bar" className="legend-bar">
             <div className={'variant-list'}>
               {items.map(({ value, weight, sliderColor }, i) =>
-                <div key={i} className={'legend-item'}>
+                <div key={i} data-comp="legend-item" className="legend-item">
                   <button
-                    className={'delete-legend-button'}
+                    data-comp="delete-legend-button"
+                    className="delete-legend-button"
                     title="Remove variant"
                     onClick={() =>
                       mutator.apply((m) => {
@@ -46,13 +47,15 @@ export default ({
                   <div className={'vertical-accent'} style={{ backgroundColor: sliderColor }} />
                   <input
                     type="text"
-                    className={'legend-value-input'}
+                    data-comp="legend-value-input"
+                    className="legend-value-input"
                     onChange={e => mutator.in(value).updateKey(e.target.value)}
                     value={value}
                   />
                   <input
                     type="text"
-                    className={'legend-precent-input'}
+                    data-comp="legend-percent-input"
+                    className="legend-percent-input"
                     onChange={({ target: { value: newWeight } }) =>
                       mutator
                         .in(value)
@@ -71,7 +74,8 @@ export default ({
             {items.length !== sliderColors.length
               ? <button
                   title="Add variant"
-                  className={'add-variant-button'}
+                  data-comp="add-variant-button"
+                  className="add-variant-button"
                   onClick={() => mutator.insert(`value #${items.length + 1}`, 0)}
                 />
               : null}
@@ -113,3 +117,5 @@ export default ({
     </div>
   );
 };
+
+export default CustomSlider;
