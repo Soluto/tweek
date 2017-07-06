@@ -1,13 +1,13 @@
 /* global jest, beforeEach, describe, it, expect */
-jest.unmock('../../../../../src/store/ducks/tags');
-jest.unmock('../../../../../src/store/ducks/selectedKey');
-jest.unmock('../../../../../src/utils/http');
-jest.unmock('../../../../../src/store/ducks/ducks-utils/validations/key-name-validations');
-jest.unmock('../../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations');
-jest.unmock('../../../../../src/services/types-service');
-jest.unmock('../../../../../src/services/context-service');
-jest.unmock('../../../../../src/store/ducks/ducks-utils/blankKeyDefinition');
-jest.mock('../../../../../src/store/ducks/alerts', () => {
+jest.unmock('../../../../src/store/ducks/tags');
+jest.unmock('../../../../src/store/ducks/selectedKey');
+jest.unmock('../../../../src/utils/http');
+jest.unmock('../../../../src/store/ducks/ducks-utils/validations/key-name-validations');
+jest.unmock('../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations');
+jest.unmock('../../../../src/services/types-service');
+jest.unmock('../../../../src/services/context-service');
+jest.unmock('../../../../src/store/ducks/ducks-utils/blankKeyDefinition');
+jest.mock('../../../../src/store/ducks/alerts', () => {
   let result = true;
   const addAlert = dispatch => Promise.resolve({ result });
   return {
@@ -23,18 +23,18 @@ import {
   saveKey,
   updateKeyValueType,
   updateKeyName,
-} from '../../../../../src/store/ducks/selectedKey';
+} from '../../../../src/store/ducks/selectedKey';
 import {
   createBlankJPadKey,
   createBlankKeyManifest,
   BLANK_KEY_NAME,
-} from '../../../../../src/store/ducks/ducks-utils/blankKeyDefinition';
+} from '../../../../src/store/ducks/ducks-utils/blankKeyDefinition';
 import { assert, expect } from 'chai';
 import fetchMock from 'fetch-mock';
-import keyNameValidations from '../../../../../src/store/ducks/ducks-utils/validations/key-name-validations';
-import keyValueTypeValidations from '../../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations';
+import keyNameValidations from '../../../../src/store/ducks/ducks-utils/validations/key-name-validations';
+import keyValueTypeValidations from '../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations';
 import R from 'ramda';
-import alerts from '../../../../../src/store/ducks/alerts';
+import alerts from '../../../../src/store/ducks/alerts';
 
 describe('selectedKey', async () => {
   const KEY_OPENED = 'KEY_OPENED';
