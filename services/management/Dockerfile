@@ -1,17 +1,29 @@
-FROM node:8.1.2
+# ------- BASE -------
+FROM node:8.1.3 as base
 
-COPY package.json npm-shrinkwrap.json /tmp/
-RUN cd /tmp && \
-    npm install --only=production && \
-    mkdir -p /opt/app && \
-    cp -a /tmp/node_modules /opt/app/
+COPY package.json yarn.lock /tmp/
+RUN cd /tmp && yarn --prod
+
+RUN mkdir -p /opt/app && ln -s /tmp/node_modules /opt/app/node_modules
+
+# ------- TEST -------
+FROM base as test
+RUN cd /tmp && yarn
 
 WORKDIR /opt/app
 COPY . /opt/app
+
+RUN yarn test
+
+# ------- RELEASE -------
+FROM base as release
+
+WORKDIR /opt/app
+COPY src/ /opt/app/src/
 
 EXPOSE 3000
 
 ENV PORT=3000
 HEALTHCHECK --interval=10s --timeout=10s --retries=8 \
       CMD curl -f http://localhost:3000/isalive || exit 1
-ENTRYPOINT ["node", "./server.js"]
+ENTRYPOINT ["node", "./src/server.js"]
