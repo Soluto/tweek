@@ -51,9 +51,8 @@
   user-select: none;
   transition: all 0.2s ease-in-out;
   font-size: 14px;
-  padding-left: 10px ;
-  padding-right: 10px ;
-  margin-left: -10px;
+  padding-left: 15px ;
+  padding-right: 15px ;
 }
 .schema-page-container .side-menu [data-comp=AddNewIdentity] button:hover {
   background-color: #029CD5;
