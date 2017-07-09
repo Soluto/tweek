@@ -10,7 +10,6 @@ export default class KeysAsserts {
   constructor(keysPageObject, browser) {
     this.keysPageObject = keysPageObject;
     this.browser = browser;
-    this.pageAsserts = new PageAsserts(keysPageObject);
   }
 
   assertKeyOpened(keyName) {
@@ -49,7 +48,7 @@ export default class KeysAsserts {
   }
 
   assertIsInKeyPage(expectedKey, message) {
-    this.pageAsserts.assertIsInPage(`${KeysPageObject.KEYS_PAGE_URL}/${expectedKey}`, message);
+    PageAsserts.assertIsInPage(`${KeysPageObject.KEYS_PAGE_URL}/${expectedKey}`, message);
   }
 
   assertIsKeyExistsAfterTransaction(keyName, isExisting, message) {

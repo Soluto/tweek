@@ -11,14 +11,14 @@ export default class KeysPageObject extends PageObject {
   static KEYS_PAGE_URL = 'keys';
 
   goToBase() {
-    this.browser.url(PageObject.BASE_URL);
+    this.browser.url("/");
     this.browser.acceptAlertIfPresent();
 
     this.browser.waitForVisible(keySelectors.ADD_KEY_BUTTON, PageObject.GIT_TRANSACTION_TIMEOUT);
   }
 
   goToKeyUrl(keyName) {
-    const goTo = `${PageObject.BASE_URL}${KeysPageObject.KEYS_PAGE_URL}/${keyName}`;
+    const goTo = `/${KeysPageObject.KEYS_PAGE_URL}/${keyName}`;
 
     this.browser.url(goTo);
 
@@ -37,7 +37,7 @@ export default class KeysPageObject extends PageObject {
   }
 
   goToKeysList() {
-    this.browser.url(`${PageObject.BASE_URL}keys`);
+    this.browser.url(`/keys`);
     this.browser.waitForVisible(keySelectors.KEY_LIST_FILTER, 10000);
   }
 
@@ -80,8 +80,8 @@ export default class KeysPageObject extends PageObject {
   }
 
   isInKeyPage(keyName) {
-    const location = this.getUrlLocation();
-    return location === `${KeysPageObject.KEYS_PAGE_URL}/${keyName}`;
+    const location = browser.getUrl();
+    return location.endsWith(`${KeysPageObject.KEYS_PAGE_URL}/${keyName}`);
   }
 
   isSaving() {
