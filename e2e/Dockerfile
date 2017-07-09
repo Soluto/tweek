@@ -1,4 +1,4 @@
-FROM node:6.10.3-slim
+FROM node:8.1.3
 
 ADD package.json yarn.lock /tmp/
 
