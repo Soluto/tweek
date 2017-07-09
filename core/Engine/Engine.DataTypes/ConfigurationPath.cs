@@ -13,13 +13,11 @@ namespace Engine.DataTypes
 
         public ConfigurationPath(string path)
         {
-            _path = path.ToLower().Trim('/');
-
+            _path = string.Join("/", path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries)).ToLower();
             var nameStart = _path.LastIndexOf('/');
             Name = _path.Substring(nameStart + 1);
-
             IsScan = Name.Equals(SCAN);
-            Location = IsScan ? _path.Substring(0, _path.Length - 1).TrimEnd('/') : _path;
+            Location = IsScan ? _path.Substring(0, _path.Length - 1) : _path;
         }
 
         public static ConfigurationPath From(params string[] fragments)
