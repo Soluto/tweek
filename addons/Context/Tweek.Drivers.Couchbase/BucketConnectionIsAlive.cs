@@ -28,9 +28,8 @@ namespace Tweek.Drivers.Couchbase
             {
                 _getBucket(_bucketName);
             }
-            catch (Exception e)
+            catch
             {
-                //Trace.TraceError("couchbase not alive", e);
                 return false;
             }
 
