@@ -17,7 +17,7 @@ namespace Engine.DataTypes
             var nameStart = _path.LastIndexOf('/');
             Name = _path.Substring(nameStart + 1);
             IsScan = Name.Equals(SCAN);
-            Location = IsScan ? _path.Substring(0, _path.Length - 1) : _path;
+            Folder = _path.Substring(0, _path.Length - 1).Trim('/');
         }
 
         public static ConfigurationPath From(params string[] fragments)
@@ -30,7 +30,7 @@ namespace Engine.DataTypes
             return new ConfigurationPath(path);
         }
 
-        public string Location { get; }
+        public string Folder { get; }
 
         public string Name { get; }
 
@@ -96,14 +96,13 @@ namespace Engine.DataTypes
         {
             if (!query.Contains(this)) throw new Exception($"{this} is not in: {query}");
 
-            return New(_path.Substring(query.Location.Length));
+            return New(_path.Substring(query.Folder.Length));
         }
 
         public bool Contains(ConfigurationPath other)
         {
-            if (_path.Equals(other._path)) return true;
-
-            return IsScan && other._path.StartsWith(Location);
+            if (_path == SCAN || _path.Equals(other._path)) return true;
+            return IsScan && other._path.StartsWith($"{Folder}/");
         }
     }
 }

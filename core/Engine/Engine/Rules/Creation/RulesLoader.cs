@@ -34,7 +34,20 @@ namespace Engine.Rules.Creation
 
             Option<IRule> RulesRepository(ConfigurationPath path) => tree.TryGetValue(path, out var rule) ? Option<IRule>.Some(rule) : Option<IRule>.None;
 
-            IEnumerable<ConfigurationPath> PathExpander(ConfigurationPath path) => tree.ListPrefix(path.Location).Select(c => c.key).Select(ConfigurationPath.New);
+            IEnumerable<ConfigurationPath> PathExpander(ConfigurationPath path)
+            {
+                if (path == ConfigurationPath.FullScan)
+                {
+                    return tree.AllKeys().Select(ConfigurationPath.New);
+                }
+
+                if (path.IsScan)
+                {
+                    return tree.ListPrefix($"{path.Folder}/").Select(c => c.key).Select(ConfigurationPath.New);
+                }
+
+                return new []{ path };
+            }
 
             return (RulesRepository, PathExpander);
         }
