@@ -81,8 +81,6 @@ describe('dependent keys', () => {
 
     keysPageObject.commitChanges();
 
-    keysPageObject.wait(1000);
-
     // Verify depends on
     keysPageObject.goToKey(keyWithDependencyFullPath);
     browser.waitForVisible(keySelectors.DEPENDS_ON, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
