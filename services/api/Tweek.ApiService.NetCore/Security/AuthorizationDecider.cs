@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Engine;
+using Engine.Context;
 using Engine.Core.Context;
 using Engine.DataTypes;
 using FSharpUtils.Newtonsoft;
@@ -15,18 +16,22 @@ namespace Tweek.ApiService.NetCore.Security
     
     public static class Authorization
     {
-        public static CheckReadConfigurationAccess CreateReadConfigurationAccessChecker(ITweek tweek)
+        public static CheckReadConfigurationAccess CreateReadConfigurationAccessChecker(ITweek tweek, TweekIdentityProvider identityProvider)
         {
             return (identity, path, tweekIdentities) =>
             {
                 if (path == "@tweek/_" || path.StartsWith("@tweek/auth")) return false;
 
-                return tweekIdentities.DefaultIfEmpty(Identity.GlobalIdentity)
+                return tweekIdentities
+                    .Select(x => x.ToAuthIdentity(identityProvider))
+                    .Distinct()
+                    .DefaultIfEmpty(Identity.GlobalIdentity)
                     .All(tweekIdentity => CheckAuthenticationForKey(tweek, "read_configuration", identity, tweekIdentity));
             };
         }
 
-        public static bool CheckAuthenticationForKey(ITweek tweek, string permissionType, ClaimsPrincipal identity, Identity tweekIdentity){
+        public static bool CheckAuthenticationForKey(ITweek tweek, string permissionType, ClaimsPrincipal identity, Identity tweekIdentity)
+        {
             var identityType = tweekIdentity.Type;
             var key = $"@tweek/auth/{identityType}/{permissionType}";
 
@@ -41,9 +46,9 @@ namespace Tweek.ApiService.NetCore.Security
                                 claim => Optional(identity.FindFirst(claim)).Match(c=> c.Value.Equals(tweekIdentity.Id,StringComparison.OrdinalIgnoreCase), ()=>false)), () => true);
         }
 
-        public static CheckWriteContextAccess CreateWriteContextAccessChecker(ITweek tweek)
+        public static CheckWriteContextAccess CreateWriteContextAccessChecker(ITweek tweek, TweekIdentityProvider identityProvider)
         {
-            return (identity, tweekIdentity) => CheckAuthenticationForKey(tweek, "write_context", identity, tweekIdentity);
+            return (identity, tweekIdentity) => CheckAuthenticationForKey(tweek, "write_context", identity, tweekIdentity.ToAuthIdentity(identityProvider));
         }
     }
 }

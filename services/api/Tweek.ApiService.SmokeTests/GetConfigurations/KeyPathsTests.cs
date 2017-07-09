@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -44,6 +45,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
 
             // Assert
             Assert.Equal(JTokenType.Object, response.Type);
+            Assert.Equal(2, response.Count());
             Assert.Equal("test", response.Value<string>("key1"));
             Assert.Equal("test", response.Value<string>("key2"));
         }
@@ -104,6 +106,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
 
             // Assert
             Assert.Equal(JTokenType.Object, response.Type);
+            Assert.Equal(0, response.Count());
             Assert.Equal("{}", response.ToString());
         }
     }
