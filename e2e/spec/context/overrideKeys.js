@@ -2,8 +2,7 @@
 
 import ContextPageObject from '../../utils/ContextPageObject';
 import contextSelectors from '../../selectors/contextSelectors';
-import { expect } from 'chai';
-import { diff } from 'deep-diff';
+import assert from 'assert';
 import Chance from 'chance';
 
 const chance = new Chance();
@@ -34,8 +33,7 @@ describe('override keys', () => {
     contextPageObject.saveChanges();
 
     let currentContext = contextPageObject.getOverrideKeys(contextType, contextId);
-    let diffs = diff(currentContext, fixedKeys);
-    expect(diffs).to.equal(undefined, 'contextData is not as expected. diffs are:' + JSON.stringify(diffs));
+    assert.deepEqual(currentContext, fixedKeys);
 
     const updatedKeys = {
       'some/key': 'newValue',
@@ -52,7 +50,6 @@ describe('override keys', () => {
     contextPageObject.saveChanges();
 
     currentContext = contextPageObject.getOverrideKeys(contextType, contextId);
-    diffs = diff(currentContext, updatedKeys);
-    expect(diffs).to.equal(undefined, 'contextData is not as expected. diffs are:' + JSON.stringify(diffs));
+    assert.deepEqual(currentContext, updatedKeys);
   });
 });

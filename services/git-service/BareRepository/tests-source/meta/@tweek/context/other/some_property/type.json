@@ -1,5 +1,5 @@
 {
-    "key_path": "@tweek/context/other/@@id/type",
+    "key_path": "@tweek/context/other/some_property/type",
     "meta": {
         "description": "",
         "readOnly": false,
