@@ -21,7 +21,7 @@ namespace Engine
     {
         private static readonly ConfigurationPath Root = ConfigurationPath.New("");
         public static Option<JsonValue> SingleKey(this IDictionary<ConfigurationPath, ConfigurationValue> results) => SingleKey(results, Root);
-        public static Option<JsonValue> SingleKey(this IDictionary<ConfigurationPath, ConfigurationValue> results, ConfigurationPath path )
+        public static Option<JsonValue> SingleKey(this IDictionary<ConfigurationPath, ConfigurationValue> results, ConfigurationPath path)
         {
             if (results.ContainsKey(path)) return Some(results[path].Value);
             return None;
@@ -33,31 +33,31 @@ namespace Engine
             IContextReader contextDriver,
             GetLoadedContextByIdentityType externalContext = null)
         {
-            return tweek.GetContextAndCalculate(new[] {pathQuery}, identities, contextDriver, externalContext);
+            return tweek.GetContextAndCalculate(new[] { pathQuery }, identities, contextDriver, externalContext);
         }
 
-        public static async Task<Dictionary<ConfigurationPath, ConfigurationValue>> GetContextAndCalculate(this ITweek tweek, 
+        public static async Task<Dictionary<ConfigurationPath, ConfigurationValue>> GetContextAndCalculate(this ITweek tweek,
             ICollection<ConfigurationPath> pathQuery,
             HashSet<Identity> identities,
             IContextReader contextDriver,
             GetLoadedContextByIdentityType externalContext = null)
         {
             var allContextData = (await Task.WhenAll(identities
-               .Select(async identity => new
-               {
-                   Identity = identity,
-                   Context = new Dictionary<string, JsonValue>(await contextDriver.GetContext(identity), StringComparer.OrdinalIgnoreCase)
-               })))
-               .ToDictionary(x => x.Identity, x => x.Context);
+                    .Select(async identity => new
+                    {
+                        Identity = identity,
+                        Context = new Dictionary<string, JsonValue>(await contextDriver.GetContext(identity), StringComparer.OrdinalIgnoreCase)
+                    })))
+                .ToDictionary(x => x.Identity, x => x.Context);
 
             externalContext = externalContext ?? ContextHelpers.EmptyContextByIdentityType;
 
             var loadedContexts = ContextHelpers.GetContextRetrieverByType(ContextHelpers.LoadContexts(allContextData), identities);
             var context = ContextHelpers.AddSystemContext(ContextHelpers.Fallback(externalContext, loadedContexts));
             var contextPaths = pathQuery.Any(x => x.IsScan) ? allContextData.Values.SelectMany(x => x.Keys)
-                    .Where(x => x.Contains("@fixed:"))
-                    .Select(x => x.Split(':')[1])
-                    .Select(ConfigurationPath.New).ToArray() : null;
+                .Where(x => x.Contains("@fixed:"))
+                .Select(x => x.Split(':')[1])
+                .Select(ConfigurationPath.New).ToArray() : null;
 
 
             return tweek.Calculate(pathQuery, identities, context, contextPaths);
@@ -77,13 +77,14 @@ namespace Engine
             ICollection<ConfigurationPath> pathQuery,
             HashSet<Identity> identities, GetLoadedContextByIdentityType context, ConfigurationPath[] includeFixedPaths = null);
     }
-    
+
+    public delegate IEnumerable<ConfigurationPath> PathExpander(ConfigurationPath path);
 
     public class TweekRunner : ITweek
     {
-        private readonly Func<IReadOnlyDictionary<string, IRule>> _rulesLoader;
+        private readonly Func<(RulesRepository, PathExpander)> _rulesLoader;
 
-        public TweekRunner(Func<IReadOnlyDictionary<string, IRule>> rulesLoader)
+        public TweekRunner(Func<(RulesRepository, PathExpander)> rulesLoader)
         {
             _rulesLoader = rulesLoader;
         }
@@ -91,17 +92,19 @@ namespace Engine
         public Dictionary<ConfigurationPath, ConfigurationValue> Calculate(
             ICollection<ConfigurationPath> pathQuery,
             HashSet<Identity> identities,
-            GetLoadedContextByIdentityType context, 
-            ConfigurationPath[] includePaths = null)
+            GetLoadedContextByIdentityType context,
+            ConfigurationPath[] includeFixedPaths = null)
         {
-            includePaths = includePaths ?? Array<ConfigurationPath>();
-            var allRules = _rulesLoader();
+            includeFixedPaths = includeFixedPaths ?? Array<ConfigurationPath>();
+            var (getRules, expandKey) = _rulesLoader();
 
-            var getRuleValue = EngineCore.GetRulesEvaluator(identities, context, (path) => allRules.TryGetValue(path));
+            var getRuleValue = EngineCore.GetRulesEvaluator(identities, context, getRules);
 
-            var paths = pathQuery.Any(x=>x.IsScan) ? includePaths.Concat(allRules.Keys.Select(ConfigurationPath.New))
-                .Where(path => pathQuery.Any(query => ConfigurationPath.Match(path: path, query: query)))
-                : pathQuery;
+            var scanItems = pathQuery.Where(s => s.IsScan).ToList();
+            var include = includeFixedPaths.Where(path => scanItems.Any(query => query.Contains(path)));
+            var expandItems = scanItems.SelectMany(path => expandKey(path));
+
+            var paths = include.Concat(expandItems).Concat(pathQuery.Where(t => !t.IsScan));
 
             return paths
                 .Distinct()
