@@ -47,13 +47,14 @@ namespace Engine.Core
         private static GetRuleValue Memoize(GetRuleValue getRuleValue)
         {
             var dict = new Dictionary<ConfigurationPath, Option<ConfigurationValue>>();
-            return (path) =>
+            return path =>
             {
-                if (!dict.ContainsKey(path))
+                if (!dict.TryGetValue(path, out var result))
                 {
-                    dict[path] = getRuleValue(path);
+                    result = getRuleValue(path);
+                    dict[path] = result;
                 }
-                return dict[path];
+                return result;
             };
         }
     }

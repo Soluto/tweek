@@ -53,8 +53,7 @@ namespace Tweek.ApiService.NetCore.Controllers
         private static ConfigurationPath[] GetQuery(ConfigurationPath path, string[] includePaths)
         {
             if (includePaths.Length == 0 || !path.IsScan) return new []{path};
-            if (path == ConfigurationPath.FullScan) return includePaths.Select(ConfigurationPath.New).ToArray();
-            return includePaths.Select(x=> ConfigurationPath.From(path.Location, x)).ToArray();
+            return includePaths.Select(x=> ConfigurationPath.From(path.Folder, x)).ToArray();
         }
 
         /// <summary>
