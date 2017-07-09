@@ -65,7 +65,6 @@ describe('dependent keys', () => {
     expect(errorText).to.equal('Failed to save key');
   })
 
-  // TODO: unskip this test, when the search index refresh works reasonably fast
   it('should display dependency relations between keys', () => {
     const keyWithoutDependency = keysPageObject.generateTestKeyName('key1');
     const keyWithoutDependencyFullPath = `${testFolder}/${dependentKeysFolder}/${keyWithoutDependency}`;

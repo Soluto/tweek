@@ -47,15 +47,15 @@ export default {
     manifestPromise = getManifestsFromFiles(repoDir);
     indexPromise = refreshIndex(repoDir);
     dependentsPromise = manifestPromise.then(x =>
-      x.reduce((acc, current) => {
-        if (current.dependencies && current.dependencies.length !== 0) {
+      x
+        .filter(current => current.dependencies && current.dependencies.length !== 0)
+        .reduce((acc, current) => {
           current.dependencies.forEach((dependency) => {
             acc[dependency] = acc[dependency] || [];
             acc[dependency].push(current.key_path);
           });
-        }
-        return acc;
-      }, {}),
+          return acc;
+        }, {}),
     );
 
     return indexPromise;
