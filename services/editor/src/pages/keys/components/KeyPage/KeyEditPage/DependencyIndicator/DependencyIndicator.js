@@ -31,11 +31,11 @@ DependsOn.propTypes = {
 };
 
 DependsOn.defaultProps = {
-  dependencies: PropTypes.array.isRequired,
+  dependencies: [],
 };
 
 UsedBy.propTypes = {
-  dependentKeys: [],
+  dependentKeys: PropTypes.array.isRequired,
 };
 
 UsedBy.defaultProps = {
