@@ -63,7 +63,7 @@ namespace Tweek.ApiService.NetCore.Security
                     {
                         jwtSecurityToken = (JwtSecurityToken)jwtSecurityTokenHandler.ReadToken(jwtString);
                     }
-                    catch (Exception e)
+                    catch
                     {
                         ctx.Response.StatusCode = 400;
                         return;
