@@ -33,7 +33,7 @@ class ComboBoxComponent extends Component {
     const selected = this.getSuggestion(index);
     onChange(getLabel(selected), selected);
     setFocus(false);
-  }
+  };
 
   onInputChange = (input) => {
     const { suggestions, getLabel, onChange, matchCase, setFocus } = this.props;
@@ -42,12 +42,12 @@ class ComboBoxComponent extends Component {
     const selected = suggestions.find(s => getLabelWithCase(s) === caseInput);
     onChange(input, selected);
     setFocus(true);
-  }
+  };
 
   getSuggestion = (index) => {
     const { suggestions } = this.props;
     return suggestions[Math.max(0, index)];
-  }
+  };
 
   get hint() {
     const { value, hasFocus, highlightedSuggestion, suggestions, getLabel, matchCase } = this.props;
@@ -81,38 +81,38 @@ class ComboBoxComponent extends Component {
     } = this.props;
 
     switch (e.keyCode) {
-      case keyCode.TAB:
-        if (suggestions.length > 0) {
-          const selected = this.getSuggestion(highlightedSuggestion);
-          if (getLabel(selected) !== value) {
-            this.onSuggestionSelected(highlightedSuggestion);
-            e.preventDefault();
-            break;
-          }
+    case keyCode.TAB:
+      if (suggestions.length > 0) {
+        const selected = this.getSuggestion(highlightedSuggestion);
+        if (getLabel(selected) !== value) {
+          this.onSuggestionSelected(highlightedSuggestion);
+          e.preventDefault();
+          break;
         }
-        setFocus(false);
-        break;
-      case keyCode.RIGHT:
-      case keyCode.ENTER:
-        if (suggestions.length > 0) this.onSuggestionSelected(highlightedSuggestion);
-        break;
-      case keyCode.DOWN:
-        if (highlightedSuggestion < suggestions.length - 1) {
-          onSuggestionHighlighted(highlightedSuggestion + 1);
-        } else onSuggestionHighlighted(-1);
-        e.preventDefault();
-        break;
-      case keyCode.UP:
-        if (highlightedSuggestion === -1) onSuggestionHighlighted(suggestions.length - 1);
-        else onSuggestionHighlighted(highlightedSuggestion - 1);
-        e.preventDefault();
-        break;
-      default:
-        break;
+      }
+      setFocus(false);
+      break;
+    case keyCode.RIGHT:
+    case keyCode.ENTER:
+      if (suggestions.length > 0) this.onSuggestionSelected(highlightedSuggestion);
+      break;
+    case keyCode.DOWN:
+      if (highlightedSuggestion < suggestions.length - 1) {
+        onSuggestionHighlighted(highlightedSuggestion + 1);
+      } else onSuggestionHighlighted(-1);
+      e.preventDefault();
+      break;
+    case keyCode.UP:
+      if (highlightedSuggestion === -1) onSuggestionHighlighted(suggestions.length - 1);
+      else onSuggestionHighlighted(highlightedSuggestion - 1);
+      e.preventDefault();
+      break;
+    default:
+      break;
     }
 
     if (onKeyDown) onKeyDown(e);
-  }
+  };
 
   render() {
     const {
@@ -141,6 +141,7 @@ class ComboBoxComponent extends Component {
       <ClickOutside
         className={classnames('combo-box-default-wrapper-theme-class', className)}
         onFocus={() => setFocus(true)}
+        data-comp="ComboBox"
         onClickOutside={() => setFocus(false)}
       >
         <div className="bootstrap-typeahead">
