@@ -1,7 +1,6 @@
 import promiseMiddleware from 'redux-promise';
 import thunk from 'redux-thunk';
-//import { getSchema, refreshSchema } from '../../services/context-service';
-//import fetch from '../../utils/fetch';
+import jsondiffpatch from 'jsondiffpatch';
 import { push } from 'react-router-redux';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import R from 'ramda';
@@ -85,12 +84,29 @@ describe('schema duck', () => {
     it('updating existing identity', async () => {
       dispatch(actions.addNewIdentity('user'));
       dispatch(actions.upsertIdentityProperty('user', 'age', 30));
-      const savePromise = await dispatch(actions.saveSchema('user'));
-      await savePromise;
-      let [url, { method, body }] = fetch.mock.calls[0];
+      await dispatch(actions.saveSchema('user'));
+      const oldUserState = R.clone(state.user.local);
+      dispatch(actions.upsertIdentityProperty('user', 'age', 40));
+      dispatch(actions.upsertIdentityProperty('user', 'gender', 'female'));
+      await dispatch(actions.saveSchema('user'));
+      const [_, { body }] = fetch.mock.calls.find(
+        ([url, { method }]) => method === 'PATCH' && url === '/api/schema/user',
+      );
+      const patch = JSON.parse(body);
+      const newUserState = R.clone(state.user.local);
+      expect(newUserState).to.deep.include({ age: 40, gender: 'female' });
+      const patchedState = jsondiffpatch.patch(oldUserState, patch);
+      expect(patchedState).to.deep.equal(newUserState);
+    });
+
+    it('delete existing identity', async () => {
+      dispatch(actions.addNewIdentity('user'));
+      dispatch(actions.upsertIdentityProperty('user', 'age', 30));
+      await dispatch(actions.deleteIdentity('user'));
+      let [url, { method }] = fetch.mock.calls[0];
       expect(url.toLowerCase()).to.eq('/api/schema/user');
-      expect(method).to.eq('POST');
-      expect(JSON.parse(body)).to.deep.equal({ age: 30 });
+      expect(method).to.eq('DELETE');
+      expect(state).to.not.have.property('user');
     });
   });
 });
