@@ -1,8 +1,8 @@
 /* global describe, before, beforeEach, after, it, browser */
 
 import KeysPageObject, { BLANK_KEY_NAME } from '../../utils/KeysPageObject';
+import assert from 'assert';
 import { expect } from 'chai';
-import { diff } from 'deep-diff';
 import selectors from '../../selectors/keySelectors';
 import { _getSelectorByIndex, getRelativeSelector } from '../../selectors/selectorUtils';
 
@@ -15,6 +15,8 @@ const sliderComp = (x, i) => getRelativeSelector([
   dataComp(x),
 ]);
 
+const identitySelector = dataComp('identity-selection');
+
 describe('MultiVariant value type', () => {
   const keysPageObject = new KeysPageObject(browser);
   beforeEach(() => {
@@ -26,7 +28,7 @@ describe('MultiVariant value type', () => {
     const expectedValue = {
       Matcher: {},
       Type: 'MultiVariant',
-      OwnerType: 'other',
+      OwnerType: 'user',
       ValueDistribution: {
         type: 'bernoulliTrial',
         args: 0.1,
@@ -37,6 +39,7 @@ describe('MultiVariant value type', () => {
     browser.click(selectors.ADD_RULE_BUTTON);
     keysPageObject.removeRuleCondition(1, 1);
     clickComp('convert-to-multi-variant-button');
+    browser.setValue(identitySelector, 'user');
 
     let value = keysPageObject.getKeySource().rules[0];
     expect(value).to.have.property('Salt');
@@ -45,8 +48,7 @@ describe('MultiVariant value type', () => {
     expect(salt).to.not.equal('');
     delete value.Salt;
 
-    let diffs = diff(expectedValue, value);
-    expect(diffs).to.equal(undefined, 'rule is not as expected. diffs are:' + JSON.stringify(diffs));
+    assert.deepEqual(value, expectedValue);
 
     browser.setValue(dataComp('bernoulli-trial-input'), 100);
     clickComp('set-to-true-button');
@@ -82,6 +84,7 @@ describe('MultiVariant value type', () => {
       browser.setValue(sliderComp('legend-value-input', i + 1), key);
       browser.setValue(sliderComp('legend-percent-input', i + 1), args[key]);
     });
+    browser.setValue(identitySelector, 'other');
 
     let value = keysPageObject.getKeySource().rules[0];
     expect(value).to.have.property('Salt');
@@ -90,8 +93,7 @@ describe('MultiVariant value type', () => {
     expect(salt).to.not.equal('');
 
     delete value.Salt;
-    let diffs = diff(expectedValue, value);
-    expect(diffs).to.equal(undefined, 'rule is not as expected. diffs are:' + JSON.stringify(diffs));
+    assert.deepEqual(value, expectedValue);
 
     browser.click(sliderComp('delete-legend-button', 1));
     browser.click(sliderComp('delete-legend-button', 1));

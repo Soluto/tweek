@@ -3,7 +3,6 @@ import KeysPageObject from './utils/KeysPageObject';
 import PageAsserts from './PageAsserts';
 import selectors from './selectors/keySelectors';
 import { expect } from 'chai';
-import { diff } from 'deep-diff';
 
 export default class KeysAsserts {
 
@@ -40,8 +39,7 @@ export default class KeysAsserts {
     deleteIds(keySourceObject.rules, keySourceObject.partitions.length);
     deleteIds(expectedSourceObject.rules, expectedSourceObject.partitions.length);
 
-    const diffs = diff(keySourceObject, expectedSourceObject);
-    expect(diffs).to.equal(undefined, message + '. diffs are:' + JSON.stringify(diffs));
+    assert.deepEqual(keySourceObject, expectedSourceObject);
   }
 
   assertKeyHasNumberOfRules(expectedNumberOfRules, message = 'should have correct ammount of rules') {
