@@ -19,6 +19,15 @@ services:
       - ~/clrdbg:/clrdbg:ro
     entrypoint: tail -f /dev/null
 
+  tweek-management:
+    build: {}
+
+  tweek-editor:
+    build: {}
+
+  tweek-git:
+    build: {}
+
   graphite:
     image: hopsoft/graphite-statsd
     ports:
