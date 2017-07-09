@@ -102,7 +102,7 @@ namespace Engine
 
             var scanItems = pathQuery.Where(s => s.IsScan).ToList();
             var include = includeFixedPaths
-                .Where(path => !path.Contains("@") && scanItems.Any(query => query.Contains(path)));
+                .Where(path => !path.IsHidden() && scanItems.Any(query => query.Contains(path)));
             var expandItems = scanItems.SelectMany(path => expandKey(path));
 
             var paths = include.Concat(expandItems).Concat(pathQuery.Where(t => !t.IsScan));
