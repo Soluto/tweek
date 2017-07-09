@@ -1,0 +1,71 @@
+/* global describe, it, before, after, beforeEach, afterEach */
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
+const buildRulesArtifact = require('../src/build-rules-artifiact');
+
+chai.use(chaiAsPromised);
+const expect = chai.expect;
+chai.should();
+
+function getFiles(filesToRead) {
+  return Object.keys(filesToRead).map(name => ({
+    name,
+    read: async () => JSON.stringify(filesToRead[name]),
+  }));
+}
+
+describe('build rules artifact', () => {
+  it('should succeed building artifact', () => {
+    const filesToRead = {
+      'meta/file/jpad': {
+        key_path: 'file/jpad',
+        dependencies: ['dependency'],
+        implementation: {
+          type: 'file',
+          format: 'jpad',
+        },
+      },
+      'rules/file/jpad.jpad': 'file-content',
+      'meta/const': {
+        key_path: 'const',
+        dependencies: [],
+        implementation: {
+          type: 'const',
+          value: 'some-value',
+        },
+      },
+    };
+    const files = getFiles(filesToRead);
+    const expectedArtifact = {
+      'file/jpad': {
+        format: 'jpad',
+        payload: JSON.stringify('file-content'),
+        dependencies: ['dependency'],
+      },
+      const: {
+        format: 'const',
+        payload: JSON.stringify('some-value'),
+        dependencies: [],
+      },
+    };
+    const artifacts = buildRulesArtifact(files);
+
+    return expect(artifacts).to.eventually.deep.equal(expectedArtifact);
+  });
+
+  it('should fail building artifact', async () => {
+    const filesToRead = {
+      'meta/file/jpad': {
+        key_path: 'file/jpad',
+        dependencies: [],
+        implementation: {
+          type: 'file',
+          format: 'jpad',
+        },
+      },
+    };
+    const files = getFiles(filesToRead);
+    const artifacts = buildRulesArtifact(files);
+    return artifacts.should.be.rejected;
+  });
+});
