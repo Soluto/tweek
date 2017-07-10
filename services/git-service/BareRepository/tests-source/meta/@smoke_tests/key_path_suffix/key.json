@@ -1,5 +1,5 @@
 {
-    "key_path": "@tests/keyPathKey",
+    "key_path": "@smoke_tests/key_path_suffix/key",
     "meta": {
         "description": "",
         "readOnly": false,

@@ -36,17 +36,13 @@ namespace Engine.Rules.Creation
 
             IEnumerable<ConfigurationPath> PathExpander(ConfigurationPath path)
             {
-                if (path == ConfigurationPath.FullScan)
-                {
-                    return tree.AllKeys().Select(ConfigurationPath.New);
-                }
+                if (!path.IsScan) return new[] { path };
 
-                if (path.IsScan)
-                {
-                    return tree.ListPrefix($"{path.Folder}/").Select(c => c.key).Select(ConfigurationPath.New);
-                }
+                var keys = path == ConfigurationPath.FullScan
+                    ? tree.AllKeys()
+                    : tree.ListPrefix($"{path.Folder}/").Select(c => c.key);
 
-                return new []{ path };
+                return keys.Select(ConfigurationPath.New).Where(x => !x.IsHidden(path.Folder));
             }
 
             return (RulesRepository, PathExpander);

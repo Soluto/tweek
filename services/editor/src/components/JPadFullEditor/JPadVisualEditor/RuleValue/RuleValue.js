@@ -137,6 +137,7 @@ const IdentitySelection = ({ identities, onChange, ownerType }) =>
   <div className={'identity-selection-container'}>
     <label className={'identity-selection-title'}>Identity: </label>
     <ComboBox
+      data-comp="identity-selection"
       className={'identity-selection-combobox-wrapper'}
       suggestions={identities}
       onChange={(_, e) => e && onChange(e)}
