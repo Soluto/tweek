@@ -42,8 +42,7 @@ namespace Engine.Rules.Creation
                     ? tree.AllKeys()
                     : tree.ListPrefix($"{path.Folder}/").Select(c => c.key);
 
-                var folderLength = path.Folder.Length;
-                return keys.Where(x => x.IndexOf("@", folderLength, StringComparison.Ordinal) < 0).Select(ConfigurationPath.New);
+                return keys.Select(ConfigurationPath.New).Where(x => !x.IsHidden(path.Folder));
             }
 
             return (RulesRepository, PathExpander);
