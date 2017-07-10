@@ -11,7 +11,11 @@ export const DependsOn = ({ dependencies }) =>
     {dependencies.length
       ? <div>
           Depends on:<br />
-          <ul>{dependencies.map(dep => <li key={dep}><a href={`/keys/${dep}`}>{dep}</a></li>)}</ul>
+          <ul>
+            {dependencies.map(dep =>
+              <li key={dep}><a title="Click to navigate" href={`/keys/${dep}`}>{dep}</a></li>,
+            )}
+          </ul>
         </div>
       : <div />}
   </div>;
@@ -21,7 +25,11 @@ export const UsedBy = ({ dependentKeys }) =>
     {dependentKeys.length
       ? <div>
           Used by:<br />
-          <ul>{dependentKeys.map(dep => <li key={dep}><a href={`/keys/${dep}`}>{dep}</a></li>)}</ul>
+          <ul>
+            {dependentKeys.map(dep =>
+              <li key={dep}><a title="Click to navigate" href={`/keys/${dep}`}>{dep}</a></li>,
+            )}
+          </ul>
         </div>
       : <div />}
   </div>;
