@@ -20,15 +20,9 @@ namespace Engine.DataTypes
             Folder = _path.Substring(0, _path.Length - 1).Trim('/');
         }
 
-        public static ConfigurationPath From(params string[] fragments)
-        {
-            return new ConfigurationPath(string.Join("/", fragments));
-        }
+        public static ConfigurationPath From(params string[] fragments) => new ConfigurationPath(string.Join("/", fragments));
 
-        public static ConfigurationPath New(string path)
-        {
-            return new ConfigurationPath(path);
-        }
+        public static ConfigurationPath New(string path) => new ConfigurationPath(path);
 
         public string Folder { get; }
 
@@ -46,55 +40,25 @@ namespace Engine.DataTypes
             return otherPath != null && Equals(otherPath);
         }
 
-        public bool Equals(ConfigurationPath other)
-        {
-            return Equals(other._path);
-        }
+        public bool Equals(ConfigurationPath other) => Equals(other._path);
 
-        public int CompareTo(ConfigurationPath other)
-        {
-            return CompareTo(other._path);
-        }
+        public int CompareTo(ConfigurationPath other) => CompareTo(other._path);
 
-        public bool Equals(string other)
-        {
-            return _path.Equals(other);
-        }
+        public bool Equals(string other) => _path.Equals(other);
 
-        public int CompareTo(string other)
-        {
-            return string.Compare(_path, other, StringComparison.Ordinal);
-        }
+        public int CompareTo(string other) => string.Compare(_path, other, StringComparison.Ordinal);
 
-        public override int GetHashCode()
-        {
-            return _path.GetHashCode();
-        }
+        public override int GetHashCode() => _path.GetHashCode();
 
-        public override string ToString()
-        {
-            return _path;
-        }
+        public override string ToString() => _path;
 
-        public static implicit operator string(ConfigurationPath path)
-        {
-            return path.ToString();
-        }
+        public static implicit operator string(ConfigurationPath path) => path.ToString();
 
-        public static implicit operator ConfigurationPath(string path)
-        {
-            return new ConfigurationPath(path);
-        }
+        public static implicit operator ConfigurationPath(string path) => new ConfigurationPath(path);
 
-        public static bool operator ==(ConfigurationPath p1, ConfigurationPath p2)
-        {
-            return p1.Equals(p2);
-        }
+        public static bool operator ==(ConfigurationPath p1, ConfigurationPath p2) => p1.Equals(p2);
 
-        public static bool operator !=(ConfigurationPath p1, ConfigurationPath p2)
-        {
-            return !p1.Equals(p2);
-        }
+        public static bool operator !=(ConfigurationPath p1, ConfigurationPath p2) => !p1.Equals(p2);
 
         public ConfigurationPath ToRelative(ConfigurationPath query)
         {
