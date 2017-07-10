@@ -1,5 +1,5 @@
 {
-    "key_path": "@tests/ruleBasedKeys/in",
+    "key_path": "@smoke_tests/rule_based_keys/multi_conditions",
     "meta": {
         "description": "",
         "readOnly": false,

@@ -101,7 +101,8 @@ namespace Engine
             var getRuleValue = EngineCore.GetRulesEvaluator(identities, context, getRules);
 
             var scanItems = pathQuery.Where(s => s.IsScan).ToList();
-            var include = includeFixedPaths.Where(path => scanItems.Any(query => query.Contains(path)));
+            var include = includeFixedPaths
+                .Where(path => !path.IsHidden() && scanItems.Any(query => query.Contains(path)));
             var expandItems = scanItems.SelectMany(path => expandKey(path));
 
             var paths = include.Concat(expandItems).Concat(pathQuery.Where(t => !t.IsScan));
