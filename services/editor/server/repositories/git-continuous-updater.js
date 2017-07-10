@@ -1,4 +1,5 @@
 import Rx from 'rxjs';
+import nconf from 'nconf';
 
 export default {
   onUpdate: gitTransactionManager =>
@@ -8,7 +9,7 @@ export default {
         return await gitTransactionManager.write(async gitRepo => await gitRepo.mergeMaster());
       })
       .do((_) => {}, err => console.error('Error pulling changes in git repo', err))
-      .delay(5000)
+      .delay(nconf.get('CONTINUOUS_UPDATER_INTERVAL') || 5000)
       .retry()
       .repeat()
       .distinctUntilChanged(),
