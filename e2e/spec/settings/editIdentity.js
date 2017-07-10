@@ -60,7 +60,20 @@ describe('edit identity schema', () => {
            goToIdentityPage("identitytest1");
            addTypedProperty("Age", "number");
            saveChanges();
-           tweekApiClient.waitForKeyToEqual("@tweek/schema/identitytest1", {"Age": {type:"number"}, "Group": {type: "string"}});
+           tweekApiClient.eventuallyExpectKey("@tweek/schema/identitytest1", result=>
+                expect(result).to.have.property("Age").that.deep.equal({type:'number'})
+           );
+                
+        });
+
+        it('add custom property and save', ()=>{
+           goToIdentityPage("identitytest1");
+           addTypedProperty("OsType", "custom");
+           saveChanges();
+           tweekApiClient.eventuallyExpectKey("@tweek/schema/identitytest1", result=>
+                expect(result).to.have.property("OsType").that.have.property("type")
+                    .that.deep.include({base:"string", allowedValues:[]})
+           );
         });
 
         it('delete property and save', ()=>{
