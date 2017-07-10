@@ -4,19 +4,23 @@ import tweekApiClient from '../../utils/tweekApiClient';
 import PageObject from '../../utils/PageObject';
 chai.use(require('chai-string'));
 
-function addStringProperty(browser, propertyName){
+function addStringProperty(propertyName){
     browser.setValue("*[data-comp=new-property-item] > input[type=text]:first-child", propertyName);
     browser.keys("Enter");
 }
 
-function addTypedProperty(browser, propertyName, propertyType){
+function addTypedProperty(propertyName, propertyType){
     browser.setValue("*[data-comp=new-property-item] > input[type=text]:first-child", propertyName);
-    browser.click("*[data-comp=ComboBox] > input");
-
-    browser.keys("Enter");
+    browser.click("*[data-comp=new-property-item] *[data-comp=ComboBox] input");
+    browser.click(`*[data-comp=new-property-item] *[data-label=${propertyType}] a`);
+    browser.click("*[data-comp=new-property-item] [data-comp=add]");
 }
 
-function addNewIdentity(browser, identityType){
+function deleteProperty(propertyName){
+    browser.click(`*[data-comp=property-item][data-property-name=${propertyName}] button[data-comp=remove]`);
+}
+
+function addNewIdentity(identityType){
     browser.url(`/settings`);
     browser.waitForVisible(".side-menu");
     browser.click("*[data-comp=AddNewIdentity] button");
@@ -24,49 +28,55 @@ function addNewIdentity(browser, identityType){
     browser.keys("Enter");
 }
 
-function saveChanges(browser){
+function saveChanges(){
     browser.click("*[data-comp=save-button]");
 }
 
-function deleteCurrentIdentity(browser){
+function deleteCurrentIdentity(){
     browser.click("*[data-comp=delete-identity]");
 }
 
-function goToIdentityPage(browser, identityType){
+function goToIdentityPage(identityType){
     browser.url(`/settings/identities/${identityType}`);
     browser.waitForVisible(".identity-page");
 }
 
-
 describe('edit identity schema', () => {
     
     it('add new identity with simple property', ()=>{
-        addNewIdentity(browser, "Device");
+        addNewIdentity("Device");
         expect(browser.getUrl()).to.endsWith("settings/identities/device");
-        addStringProperty(browser, "Model");
-        saveChanges(browser);
-        browser.pause(8000);
-        const schema = tweekApiClient.get("@tweek/schema/_");
-        expect(schema).to.have.property("device").with.property("Model").that.deep.include({type:"string"});
-        deleteCurrentIdentity(browser);
+        addStringProperty("Model");
+        saveChanges();
+        tweekApiClient.waitForKeyToEqual("@tweek/schema/device", {Model:{"type":"string"}});
+        deleteCurrentIdentity();
     });
 
     
     describe("editing existing identity", ()=>{
-        const identityType = "session";
-        beforeEach(function(){
-            addNewIdentity(browser, identityType);
-            addStringProperty(browser, "Group");
-            saveChanges(browser);
+        beforeEach(()=>{
+            addNewIdentity("session");
+            addStringProperty("Group");
+            saveChanges();
         })
 
-        afterEach(function(){
-          goToIdentityPage(browser, identityType);
-          deleteCurrentIdentity(browser);
+        afterEach(()=>{
+          goToIdentityPage("session");
+          deleteCurrentIdentity();
         });
 
         it('add simple property and save', ()=>{
-           //goToIdentityPage(browser, identityType);
+           goToIdentityPage("session");
+           addTypedProperty("Age", "number");
+           saveChanges();
+           tweekApiClient.waitForKeyToEqual("@tweek/schema/session", {"Age": {type:"number"}, "Group": {type: "string"}});
+        });
+
+        it('delete property and save', ()=>{
+           goToIdentityPage("session");
+           deleteProperty("Group");
+           saveChanges();
+           tweekApiClient.waitForKeyToEqual("@tweek/schema/session", {});
         });
     })
 });

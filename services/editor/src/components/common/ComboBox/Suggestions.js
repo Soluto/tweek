@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Highlighter from 'react-highlight-words';
 
-const SuggestionItem = ({ children, className, onSelect, active, disabled, ...props }) =>
+const SuggestionItem = ({ children, className, onSelect, active, label, disabled, ...props }) =>
   <li className={classnames(className, { active, disabled })} {...props}>
     <a
       role="button"
@@ -43,6 +43,7 @@ const Suggestions = ({
   <Container>
     {suggestions.map((x, i) =>
       <SuggestionItem
+        data-label={getLabel(x)}
         key={`${i}_${getLabel(x)}`}
         onSelect={() => onSuggestionSelected(i)}
         active={highlightedSuggestion === i}
