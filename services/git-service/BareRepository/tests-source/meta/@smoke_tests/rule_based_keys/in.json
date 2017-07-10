@@ -1,5 +1,5 @@
 {
-    "key_path": "@tests/valueDistribution/bernoulli",
+    "key_path": "@smoke_tests/rule_based_keys/in",
     "meta": {
         "description": "",
         "readOnly": false,

@@ -1,5 +1,5 @@
 {
-    "key_path": "@tests/valueDistribution/weighted_normalized",
+    "key_path": "@smoke_tests/rule_based_keys/simple",
     "meta": {
         "description": "",
         "readOnly": false,
