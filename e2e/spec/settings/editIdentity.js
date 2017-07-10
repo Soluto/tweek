@@ -61,7 +61,7 @@ describe('edit identity schema', () => {
            addTypedProperty("Age", "number");
            saveChanges();
            tweekApiClient.eventuallyExpectKey("@tweek/schema/identitytest1", result=>
-                expect(result).to.have.property("Age").that.deep.equal({type:'number'})
+                expect(result).to.have.property("Age").that.eql({type:'number'})
            );
                 
         });
@@ -71,8 +71,8 @@ describe('edit identity schema', () => {
            addTypedProperty("OsType", "custom");
            saveChanges();
            tweekApiClient.eventuallyExpectKey("@tweek/schema/identitytest1", result=>
-                expect(result).to.have.property("OsType").that.have.property("type")
-                    .that.deep.include({base:"string", allowedValues:[]})
+            expect(result).to.have.property("OsType").with.property("type")
+                    .that.eql({base:"string", allowedValues:[]})
            );
         });
 
