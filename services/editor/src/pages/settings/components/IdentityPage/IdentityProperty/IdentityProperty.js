@@ -64,7 +64,7 @@ const PropertyTypeSelector = ({ type, onUpdate }) => {
 };
 
 export const IdentityPropertyItem = ({ name, def, onUpdate, onRemove }) =>
-  <div data-comp="property-item">
+  <div data-comp="property-item" data-property-name={name}>
     <button data-comp="remove" onClick={onRemove} />
     <Label text={name} />
     <PropertyTypeSelector type={def.type} onUpdate={type => onUpdate({ ...def, type })} />

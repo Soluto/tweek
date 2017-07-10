@@ -141,10 +141,9 @@ class ComboBoxComponent extends Component {
       <ClickOutside
         className={classnames('combo-box-default-wrapper-theme-class', className)}
         onFocus={() => setFocus(true)}
-        data-comp="ComboBox"
         onClickOutside={() => setFocus(false)}
       >
-        <div className="bootstrap-typeahead">
+        <div data-comp="ComboBox" className="bootstrap-typeahead">
           <InputWithHint
             {...props}
             value={value}
