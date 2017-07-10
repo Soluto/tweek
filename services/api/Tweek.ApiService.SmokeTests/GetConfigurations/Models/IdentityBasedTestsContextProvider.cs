@@ -12,7 +12,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                 new TestContext
                 {
                     TestName = "Get key based on identity, should reutrn matching value",
-                    KeyName = "@tests/identityContext/key1",
+                    KeyName = "@smoke_tests/identity_context/color",
                     ExpectedValue = "yellow",
                     Context = new Dictionary<string, JsonValue>
                     {
@@ -24,7 +24,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                 new TestContext
                 {
                     TestName = "Get key based on identity with field override, should return matching value",
-                    KeyName = "@tests/identityContext/key1",
+                    KeyName = "@smoke_tests/identity_context/color",
                     ExpectedValue = "green",
                     Context = new Dictionary<string, JsonValue>
                     {
@@ -37,7 +37,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                 new TestContext
                 {
                     TestName = "Get key based on unknown identity, should return default value",
-                    KeyName = "@tests/identityContext/key1",
+                    KeyName = "@smoke_tests/identity_context/color",
                     ExpectedValue = "unknown",
                     Context = new Dictionary<string, JsonValue>
                     {
