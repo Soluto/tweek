@@ -29,6 +29,7 @@ const AddIdentity = compose(
           value={value}
           onChange={change}
           placeholder="Identity name"
+          onKeyUp={e => e.which === 27 && reset()}
           onEnterKeyPress={() => {
             reset();
             addNewIdentity(value);
@@ -54,7 +55,10 @@ export default compose(
         <li>
           <div data-comp="group">Identities</div>
           <ul>
-            {Object.keys(schema).map(x => ({ path: `identities/${x}`, name: x })).map(LinkMenuItem)}
+            {Object.entries(schema)
+              .filter(([_, { remote }]) => remote !== null)
+              .map(([type, _]) => ({ path: `identities/${type}`, name: type }))
+              .map(LinkMenuItem)}
             <li><AddIdentity /></li>
           </ul>
         </li>
