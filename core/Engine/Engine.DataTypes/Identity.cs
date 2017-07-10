@@ -8,7 +8,7 @@ namespace Engine.DataTypes
         public string Id => Item2;
 
         public Identity(string type, string id)
-            : base(type, id)
+            : base(type.ToLower(), id.ToLower())
         {
         }
 
