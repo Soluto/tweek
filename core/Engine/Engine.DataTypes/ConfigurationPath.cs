@@ -36,14 +36,10 @@ namespace Engine.DataTypes
 
         public bool IsScan { get; }
 
-        public bool IsHidden() {
-            return _path.Contains("@");
-        }
+        public bool IsHidden() => _path.Contains("@");
         
-        public bool IsHidden(string prefix) {
-            return _path.IndexOf("@", prefix.Length, StringComparison.Ordinal) >= 0;
-        }
-
+        public bool IsHidden(string prefix) => _path.IndexOf("@", prefix.Length, StringComparison.Ordinal) >= 0;
+        
         public override bool Equals(object obj)
         {
             var otherPath = obj as ConfigurationPath?;
