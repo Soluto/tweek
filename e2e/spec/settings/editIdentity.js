@@ -43,40 +43,31 @@ function goToIdentityPage(identityType){
 
 describe('edit identity schema', () => {
     
-    it('add new identity with simple property', ()=>{
+    it('add new identity with simple property and then delete', ()=>{
         addNewIdentity("Device");
         expect(browser.getUrl()).to.endsWith("settings/identities/device");
         addStringProperty("Model");
         saveChanges();
         tweekApiClient.waitForKeyToEqual("@tweek/schema/device", {Model:{"type":"string"}});
         deleteCurrentIdentity();
+        tweekApiClient.eventuallyExpectKey("@tweek/schema/_", (result)=>
+            expect(result).to.not.have.property("device")
+        );
     });
-
     
     describe("editing existing identity", ()=>{
-        beforeEach(()=>{
-            addNewIdentity("session");
-            addStringProperty("Group");
-            saveChanges();
-        })
-
-        afterEach(()=>{
-          goToIdentityPage("session");
-          deleteCurrentIdentity();
-        });
-
         it('add simple property and save', ()=>{
-           goToIdentityPage("session");
+           goToIdentityPage("identitytest1");
            addTypedProperty("Age", "number");
            saveChanges();
-           tweekApiClient.waitForKeyToEqual("@tweek/schema/session", {"Age": {type:"number"}, "Group": {type: "string"}});
+           tweekApiClient.waitForKeyToEqual("@tweek/schema/identitytest1", {"Age": {type:"number"}, "Group": {type: "string"}});
         });
 
         it('delete property and save', ()=>{
-           goToIdentityPage("session");
+           goToIdentityPage("identitytest2");
            deleteProperty("Group");
            saveChanges();
-           tweekApiClient.waitForKeyToEqual("@tweek/schema/session", {});
+           tweekApiClient.waitForKeyToEqual("@tweek/schema/identitytest2", {});
         });
     })
 });

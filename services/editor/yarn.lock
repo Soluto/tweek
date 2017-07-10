@@ -5189,7 +5189,7 @@ nodegit-promise@~4.0.0:
   dependencies:
     asap "~2.0.3"
 
-nodegit@0.18.3:
+nodegit@^0.18.3:
   version "0.18.3"
   resolved "https://registry.yarnpkg.com/nodegit/-/nodegit-0.18.3.tgz#305b6a305ea485fe5f1679fe37e6224a669ae9fc"
   dependencies:
