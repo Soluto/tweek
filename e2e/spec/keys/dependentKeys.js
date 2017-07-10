@@ -66,6 +66,7 @@ describe('dependent keys', () => {
   })
 
   it('should display dependency relations between keys', () => {
+    const FIVE_SECONDS = 5000;
     const keyWithoutDependency = keysPageObject.generateTestKeyName('key1');
     const keyWithoutDependencyFullPath = `${testFolder}/${dependentKeysFolder}/${keyWithoutDependency}`;
     keysPageObject.addEmptyKey(keyWithoutDependencyFullPath);
@@ -83,13 +84,13 @@ describe('dependent keys', () => {
 
     // Verify depends on
     keysPageObject.goToKey(keyWithDependencyFullPath);
-    browser.waitForVisible(keySelectors.DEPENDS_ON, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
+    browser.waitForVisible(keySelectors.DEPENDS_ON, FIVE_SECONDS);
     const dependsOn = browser.getText(keySelectors.DEPENDS_ON);
     expect(dependsOn).to.equal(`Depends on:\n${keyWithoutDependencyFullPath}`);
 
     // Verify used by
     keysPageObject.goToKey(keyWithoutDependencyFullPath);
-    browser.waitForVisible(keySelectors.USED_BY, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
+    browser.waitForVisible(keySelectors.USED_BY, FIVE_SECONDS);
     const usedBy = browser.getText(keySelectors.USED_BY);
     expect(usedBy).to.equal(`Used by:\n${keyWithDependencyFullPath}`);
   });
