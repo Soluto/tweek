@@ -22,6 +22,18 @@
   list-style-type: none;
   font-weight: 300;
 }
+.depends-on li a {
+  text-decoration: none;
+}
+.depends-on li a:hover {
+  color: #a5a5a5;
+}
+.depends-on li a:active {
+  color: #a5a5a5;
+}
+.depends-on li a:visited {
+  color: #a5a5a5;
+}
 .used-by {
   display: flex;
   flex-direction: column;
@@ -33,4 +45,16 @@
 .used-by li {
   list-style-type: none;
   font-weight: 300;
+}
+.used-by li a {
+  text-decoration: none;
+}
+.used-by li a:hover {
+  color: #a5a5a5;
+}
+.used-by li a:active {
+  color: #a5a5a5;
+}
+.used-by li a:visited {
+  color: #a5a5a5;
 }
