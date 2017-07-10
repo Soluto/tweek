@@ -1,5 +1,5 @@
 {
-    "key_path": "@tests/ruleBasedKeys/comparison",
+    "key_path": "@smoke_tests/identity_context/color",
     "meta": {
         "description": "",
         "readOnly": false,
