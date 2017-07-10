@@ -84,6 +84,8 @@ describe('dependent keys', () => {
 
     // Verify depends on
     keysPageObject.goToKey(keyWithDependencyFullPath);
+    keysPageObject.wait(FIVE_SECONDS);
+    browser.refresh();
     browser.waitForVisible(keySelectors.DEPENDS_ON, FIVE_SECONDS);
     const dependsOn = browser.getText(keySelectors.DEPENDS_ON);
     expect(dependsOn).to.equal(`Depends on:\n${keyWithoutDependencyFullPath}`);
