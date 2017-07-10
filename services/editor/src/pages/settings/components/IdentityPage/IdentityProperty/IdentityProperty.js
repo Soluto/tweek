@@ -18,14 +18,14 @@ const TypeCombobox = ({ type, onUpdate, allowedTypes }) =>
 
 const SimpleTypeSelector = ({ type, onUpdate }) =>
   <TypeCombobox
-    allowedTypes={[...Object.keys(TypesServices.types), 'Custom']}
+    allowedTypes={[...Object.keys(TypesServices.types), 'custom']}
     type={type}
-    onUpdate={type => onUpdate(type === 'Custom' ? { base: 'string', allowedValues: [] } : type)}
+    onUpdate={type => onUpdate(type === 'custom' ? { base: 'string', allowedValues: [] } : type)}
   />;
 
 const AdvancedTypeSelector = ({ type, onUpdate }) =>
   <div style={{ display: 'column', flexDirection: 'row' }}>
-    <SimpleTypeSelector type={'Custom'} onUpdate={type => onUpdate(type)} />
+    <SimpleTypeSelector type={'custom'} onUpdate={type => onUpdate(type)} />
     <div style={{ display: 'flex', flexDirection: 'row' }}>
       <Label text="Base" />
       <TypeCombobox
@@ -85,7 +85,15 @@ export const NewIdentityProperty = compose(
     clear();
   };
   return (
-    <div data-comp="new-property-item" onKeyDownCapture={e => e.keyCode === 13 && applyChange()}>
+    <div
+      data-comp="new-property-item"
+      onKeyDownCapture={(e) => {
+        if (e.keyCode !== 13) return;
+        if (state.propName === '') return;
+        if (typeof state.def.type === 'object') return;
+        applyChange();
+      }}
+    >
       <Input placeholder="Add new property" value={state.propName} onChange={updatePropName} />
       <PropertyTypeSelector
         type={state.def.type}
