@@ -61,11 +61,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
         public async Task GetKey_HiddenKey_ShouldReturnKey()
         {
             // Act
-            var response = await mTweekApi.GetConfigurations("@smoke_tests/not_hidden/@some_hidden_key", new List<KeyValuePair<string, string>>
-            {
-                new KeyValuePair<string, string>("$include", "_"),
-                new KeyValuePair<string, string>("$include", "@hidden/_")
-            });
+            var response = await mTweekApi.GetConfigurations("@smoke_tests/not_hidden/@some_hidden_key", new Dictionary<string, string>());
 
             // Assert
             Assert.Equal(JTokenType.String, response.Type);
