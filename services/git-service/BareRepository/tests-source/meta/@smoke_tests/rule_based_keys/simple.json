@@ -1,5 +1,5 @@
 {
-    "key_path": "@tests/test",
+    "key_path": "@smoke_tests/rule_based_keys/simple",
     "meta": {
         "description": "",
         "readOnly": false,
