@@ -1,5 +1,5 @@
 {
-    "key_path": "@tests/keyPath/key1",
+    "key_path": "@smoke_tests/identity_context/color",
     "meta": {
         "description": "",
         "readOnly": false,
