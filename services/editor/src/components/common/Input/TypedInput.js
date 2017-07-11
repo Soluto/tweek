@@ -34,29 +34,33 @@ const InputComponent = ({ value, allowedValues, onChange, ...props }) => {
   return <Input {...props} onChange={onChange} value={value} />;
 };
 
-const InputWithIcon = ({ valueType, ...props }) =>
+const InputWithIcon = ({ iconType, ...props }) =>
   <div className="typed-input-with-icon">
-    <i data-value-type={valueType} />
-    <InputComponent data-comp="typed-input" data-value-type={valueType} {...props} />
+    <i data-value-type={iconType} />
+    <InputComponent data-comp="typed-input" data-value-type={iconType} {...props} />
   </div>;
 
 const TypedInput = compose(
   getTypesService,
-  mapProps(({ safeConvertValue, types, valueType, onChange, customType, ...props }) => {
-    const typeDefinition = valueType === 'custom' ? customType : types[valueType];
+  mapProps(({ safeConvertValue, types, valueType, onChange, ...props }) => {
+    const typeDefinition = typeof valueType === 'string' ? types[valueType] : valueType;
+    const iconType =
+      (typeDefinition && (typeDefinition.name || (typeDefinition.base && 'custom'))) || 'unknown';
     const allowedValues = typeDefinition && typeDefinition.allowedValues;
     const onChangeConvert = newValue => onChange && onChange(safeConvertValue(newValue, valueType));
 
-    return { allowedValues, onChange: onChangeConvert, valueType, ...props };
+    return { allowedValues, onChange: onChangeConvert, iconType, ...props };
   }),
 )(InputWithIcon);
 
 TypedInput.propTypes = {
   placeholder: PropTypes.string,
-  valueType: PropTypes.string.isRequired,
+  valueType: PropTypes.oneOfType(
+    PropTypes.string,
+    PropTypes.shape({ base: PropTypes.string.isRequired }),
+  ).isRequired,
   onChange: PropTypes.func,
   value: PropTypes.any,
-  customType: PropTypes.object,
 };
 
 TypedInput.defaultProps = {

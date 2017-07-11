@@ -1,15 +1,15 @@
 const _createOperator = (label, operatorValue) => {
   let getValue;
   switch (operatorValue) {
-    case '$eq':
-      getValue = propertyValue => propertyValue;
-      break;
-    case '$in':
-      getValue = (propertyValue, propertyTypeDetails) =>
+  case '$eq':
+    getValue = propertyValue => propertyValue;
+    break;
+  case '$in':
+    getValue = (propertyValue, propertyTypeDetails) =>
         _toArrayValue(operatorValue, propertyValue, propertyTypeDetails);
-      break;
-    default:
-      getValue = (propertyValue, propertyTypeDetails) =>
+    break;
+  default:
+    getValue = (propertyValue, propertyTypeDetails) =>
         _toComplexValue(operatorValue, propertyValue, propertyTypeDetails);
   }
 
@@ -62,9 +62,7 @@ export const allOperators = [
 ];
 
 export const getPropertySupportedOperators = (propertyTypeDetails) => {
-  const type = propertyTypeDetails.name === 'custom'
-    ? propertyTypeDetails.base
-    : propertyTypeDetails.name;
+  const type = propertyTypeDetails.name || propertyTypeDetails.base;
 
   if (type === 'empty') {
     return [equal, notEqual, greaterEqualThan, greater, lessThan, lessEqualThan, inOp, within];

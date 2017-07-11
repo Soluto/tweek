@@ -4,7 +4,7 @@ const CACHE_NAME = 'v1';
 const urls = {
   IS_LOGGED_IN: '/api/logged-in',
   LOGIN: '/login',
-  CACHE: ['/api/keys', '/api/search-index', '/api/types', '/api/context-schema', '/api/tags'],
+  CACHE: ['/api/keys', '/api/search-index', '/api/types', '/api/schema', '/api/tags'],
 };
 const notificationTypes = {
   LOGIN: 'LOGIN',
