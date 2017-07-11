@@ -21,6 +21,11 @@ export default class Transactor {
     });
   }
 
+  async with(action) {
+    let context = await this._contextPromise;
+    return await action(context);
+  }
+
   async write(transactionAction) {
     let context = await this._contextPromise;
     return await this._lock.lock(async () => {

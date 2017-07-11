@@ -32,8 +32,7 @@ const NewPartitionPropertyValue = mapProps(
       value,
       onChange,
       placeholder: `${name} (${identity})`,
-      valueType: propertyTypeDetails.name,
-      customType: propertyTypeDetails,
+      valueType: propertyTypeDetails,
     };
   },
 )(TypedInput);

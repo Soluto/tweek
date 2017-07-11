@@ -1,0 +1,78 @@
+@import "../../../../styles/core/core.less";
+@import "../../../../styles/core/tags.less";
+
+.identity-page {
+   *[data-comp=action-bar]{
+     float: right;
+     display: flex;
+     flex-direction: row-reverse;
+     > * {
+       margin: 0 6px;
+     }
+     button[data-comp=delete-identity]{
+      .transparent-metro-button;
+      width: 125px;
+     }
+   }
+   
+   margin: 20px;
+   flex-grow: 1;
+   h3{
+     margin-bottom: 20px;
+   }
+   *[role=tablist]{
+     list-style: none;
+     display: flex;
+   }
+   *[role=tabpanel]{
+     padding: 10px;
+     background-color: white;
+     border:1px solid lightgray;
+     border-collapse: collapse;
+   }
+
+   *[role=tab]{
+     color: #515c66;
+      display: inline-block;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      padding: 12px 32px;
+      border-radius: 5px 5px 0 0;
+      border: 1px solid lightgray;
+      height: 46px;
+      font-size: 14px;
+      &:hover {
+       cursor: pointer;
+       }
+      
+      &[aria-selected=true]{
+        border-bottom: 3px solid rgba(0, 122, 204, 0.5);
+        background-color: white;
+      }
+   }
+
+   *[data-comp=editable-list]{
+     .metro-tags;
+     display:"flex";
+     flex-direction:"row";
+     align-items: "flex-end"
+   }
+
+   .property-section{
+     display: flex;
+     flex-direction: column;
+      .property-types-list {
+        display: flex;
+        flex-direction: column;
+        .empty-property-types-list-label {
+          color: #d0d0d0;
+          font-style: italic;
+          margin: 7px 35px 0;
+          letter-spacing: 2px;
+          cursor: default;
+        }
+      }
+   }
+
+}
+

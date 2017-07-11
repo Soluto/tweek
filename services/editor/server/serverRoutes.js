@@ -4,6 +4,7 @@ import * as TypesRoutes from './api/types';
 import * as TagsRoutes from './api/tags';
 import * as ContextRoutes from './api/context';
 import * as SearchRoutes from './api/search';
+import * as SchemaRoutes from './api/schema';
 import * as Registration from './api/registration';
 import * as EditorConfiguration from './api/editorConfiguration';
 import requestErrorHandlingWrapper from './utils/request-error-handling-wrapper';
@@ -18,7 +19,7 @@ export default (config) => {
 
   app.get('/types', addConfig(TypesRoutes.getTypes));
 
-  app.get('/context-schema', addConfig(ContextRoutes.getContextSchema));
+  app.get('/schema', addConfig(SchemaRoutes.getSchemas));
 
   app
     .route('/context/:identityName/:identityId')
@@ -44,6 +45,11 @@ export default (config) => {
   app.get('/search-index', addConfig(SearchRoutes.getSearchIndex));
   app.get('/search', addConfig(SearchRoutes.search));
   app.get('/suggestions', addConfig(SearchRoutes.getSuggestions));
+  app
+    .route('/schema/:identityType')
+    .patch(addConfig(SchemaRoutes.patchIdentity))
+    .post(addConfig(SchemaRoutes.addIdentity))
+    .delete(addConfig(SchemaRoutes.deleteIdentity));
 
   app.get('/push-service/public-key', addConfig(Registration.getPublicKey));
   app.post('/push-service/register', addConfig(Registration.register));

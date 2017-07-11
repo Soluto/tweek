@@ -6,6 +6,8 @@ import KeysPage from './pages/keys/components/KeysPage/KeysPage';
 import KeyPage from './pages/keys/components/KeyPage/KeyPage';
 import ContextPage from './pages/context/components/ContextPage/ContextPage';
 import IdentityDetails from './pages/context/components/IdentityDetails/IdentityDetails';
+import SettingsPage from './pages/settings/components/SettingsPage/SettingsPage';
+import IdentityPage from './pages/settings/components/IdentityPage/IdentityPage';
 import NoMatch from './components/NoMatch';
 import browserHistory from './store/browserHistory';
 import './styles/styles.css';
@@ -34,6 +36,14 @@ export default props =>
               <Route path={`${match.path}/:identityName/:identityId`} component={IdentityDetails} />
             </ContextPage>}
         />
+        <Route
+          path="/settings"
+          render={({ match }) =>
+            <SettingsPage {...match}>
+              <Route path={`${match.path}/identities/:identityType`} component={IdentityPage} />
+            </SettingsPage>}
+        />
+
         <Route component={NoMatch} />
       </Switch>
     </App>

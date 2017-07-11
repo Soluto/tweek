@@ -7,7 +7,7 @@
     "node": ">=6.9.0"
   },
   "scripts": {
-    "start": "npm run docker-compose -- up -d tweek-editor",
+    "start": "npm run docker-compose -- up --force-recreate -d tweek-editor",
     "test": "./node_modules/.bin/wdio wdio.conf.js",
     "rebuild": "npm run docker-compose -- build tweek-editor",
     "test:full-env": "npm run start && npm run test",
@@ -28,7 +28,7 @@
     "babel-preset-es2015": "6.5.0",
     "babel-preset-stage-0": "6.5.0",
     "bluebird": "^3.5.0",
-    "chai": "3.5.0",
+    "chai": "4.0.2",
     "chai-string": "^1.4.0",
     "chance": "1.0.3",
     "jsonwebtoken": "^7.4.0",

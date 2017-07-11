@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import {promisify} from 'bluebird';
 import assert from 'assert';
+import {expect} from 'chai';
 
 const jwtSign = promisify(jwt.sign);
 const readFile = promisify(fs.readFile);
@@ -42,18 +43,24 @@ class TweekApiClient{
       return this._get(`api/v1/context/${identityType}/${identityName}`);
     }
 
-    waitForKeyToEqual(key, target, timeout = 10000) {
+    waitForKeyToEqual(key, value){
+      this.eventuallyExpectKey(key, (result)=> 
+        expect(result).to.deep.equal(value)
+      );
+    }
+
+    eventuallyExpectKey(key, assertion) {
       let value = undefined;
       browser.waitUntil(() => {
         value = this.get(key);
         try {
-          assert.deepEqual(value, target);
+          assertion(value);
           return true;
         } catch (ex) {
           return false;
         }
-      }, timeout);
-      assert.deepEqual(value, target);
+      }, 10000);
+      assertion(value);
     }
 }
 
