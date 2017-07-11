@@ -3,7 +3,9 @@ import { getRelativeSelector, getSelectorByClassNames, _getSelectorByIndex, _get
 const keySelectors = {};
 
 keySelectors.DEPENDS_ON = '[data-comp=depends-on]';
+keySelectors.DEPENDS_ON_TOGGLE = '[data-comp=depends-on-toggle]';
 keySelectors.USED_BY = '[data-comp=used-by]';
+keySelectors.USED_BY_TOGGLE = '[data-comp=used-by-toggle]';
 keySelectors.SAVE_CHANGES_BUTTON = '[data-comp=save-changes-button]';
 keySelectors.ADD_KEY_BUTTON = getSelectorByClassNames('keys-page-container', 'add-key-button');
 keySelectors.KEY_NAME_INPUT = getSelectorByClassNames('key-main-input', 'auto-suggest', 'bootstrap-typeahead-input', 'input-main');

@@ -5,6 +5,7 @@
   color: #a5a5a5;
   font-size: 14px;
   margin-top: 10px;
+  padding-left: 4px;
 }
 .dependency-item {
   list-style-type: none;
@@ -17,6 +18,7 @@
   color: #a5a5a5;
   font-size: 14px;
   margin-top: 10px;
+  padding-left: 4px;
 }
 .depends-on li {
   list-style-type: none;
@@ -26,13 +28,13 @@
   text-decoration: none;
   color: #a5a5a5;
 }
-.depends-on li a:hover {
+.depends-on li a:visited {
   color: #a5a5a5;
+}
+.depends-on li a:hover {
+  color: #727272;
 }
 .depends-on li a:active {
-  color: #a5a5a5;
-}
-.depends-on li a:visited {
   color: #a5a5a5;
 }
 .used-by {
@@ -52,12 +54,12 @@
   text-decoration: none;
   color: #a5a5a5;
 }
-.used-by li a:hover {
+.used-by li a:visited {
   color: #a5a5a5;
+}
+.used-by li a:hover {
+  color: #727272;
 }
 .used-by li a:active {
-  color: #a5a5a5;
-}
-.used-by li a:visited {
   color: #a5a5a5;
 }

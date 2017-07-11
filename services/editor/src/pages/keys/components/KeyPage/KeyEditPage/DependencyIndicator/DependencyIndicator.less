@@ -8,6 +8,7 @@
   color: @text-color;
   font-size: 14px;
   margin-top: 10px;
+  padding-left: 4px;
 }
 
 .dependency-item {
@@ -22,13 +23,13 @@
     a {
       text-decoration: none;
       color: @text-color;
-      &:hover {
+      &:visited {
         color: @text-color;
+      }
+      &:hover {
+        color: darken(@text-color, 20%);
       }
       &:active {
-        color: @text-color;
-      }
-      &:visited {
         color: @text-color;
       }
     }
@@ -37,19 +38,18 @@
 
 .used-by {
   .key-dependency-indicator-container;
-  padding-left: 4px;
   li {
     .dependency-item;
     a {
       text-decoration: none;
       color: @text-color;
-      &:hover {
+      &:visited {
         color: @text-color;
+      }
+      &:hover {
+        color: darken(@text-color, 20%);
       }
       &:active {
-        color: @text-color;
-      }
-      &:visited {
         color: @text-color;
       }
     }
