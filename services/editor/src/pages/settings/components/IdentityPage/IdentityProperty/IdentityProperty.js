@@ -26,7 +26,7 @@ const SimpleTypeSelector = ({ type, onUpdate }) =>
 const AdvancedTypeSelector = ({ type, onUpdate }) =>
   <div style={{ display: 'column', flexDirection: 'row' }}>
     <SimpleTypeSelector type={'custom'} onUpdate={type => onUpdate(type)} />
-    <div style={{ display: 'flex', flexDirection: 'row' }}>
+    <div data-field="base" style={{ display: 'flex', flexDirection: 'row' }}>
       <Label text="Base" />
       <TypeCombobox
         type={type.base}
@@ -35,6 +35,7 @@ const AdvancedTypeSelector = ({ type, onUpdate }) =>
       />
     </div>
     <div
+      data-field="allowed-values"
       data-comp="editable-list"
       style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}
     >
@@ -58,16 +59,24 @@ const AdvancedTypeSelector = ({ type, onUpdate }) =>
     </div>
   </div>;
 
-const PropertyTypeSelector = ({ type, onUpdate }) => {
+const PropertyTypeSelector = ({ type, onUpdate, ...props }) => {
   const TypeSelector = typeof type === 'object' ? AdvancedTypeSelector : SimpleTypeSelector;
-  return <TypeSelector type={type} onUpdate={onUpdate} />;
+  return (
+    <div data-comp="PropertyTypeSelect" {...props}>
+      <TypeSelector type={type} onUpdate={onUpdate} />
+    </div>
+  );
 };
 
 export const IdentityPropertyItem = ({ name, def, onUpdate, onRemove }) =>
   <div data-comp="property-item" data-property-name={name}>
     <button data-comp="remove" onClick={onRemove} />
     <Label text={name} />
-    <PropertyTypeSelector type={def.type} onUpdate={type => onUpdate({ ...def, type })} />
+    <PropertyTypeSelector
+      data-field="property-type"
+      type={def.type}
+      onUpdate={type => onUpdate({ ...def, type })}
+    />
   </div>;
 
 const createUpdater = (propName, updateFn) => x => updateFn(R.assoc(propName, x));
@@ -87,15 +96,21 @@ export const NewIdentityProperty = compose(
   return (
     <div
       data-comp="new-property-item"
-      onKeyDownCapture={(e) => {
+      onKeyUpCapture={(e) => {
         if (e.keyCode !== 13) return;
         if (state.propName === '') return;
         if (typeof state.def.type === 'object') return;
         applyChange();
       }}
     >
-      <Input placeholder="Add new property" value={state.propName} onChange={updatePropName} />
+      <Input
+        data-field="property-name"
+        placeholder="Add new property"
+        value={state.propName}
+        onChange={updatePropName}
+      />
       <PropertyTypeSelector
+        data-field="property-type"
         type={state.def.type}
         onUpdate={type => updateDef({ ...state.def, type })}
       />
