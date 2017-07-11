@@ -1,29 +1,13 @@
 /* global jest, beforeEach, describe, it, expect */
-jest.unmock('../../../../../src/store/ducks/tags');
-jest.unmock('../../../../../src/store/ducks/selectedKey');
-jest.unmock('../../../../../src/utils/http');
-jest.unmock('../../../../../src/store/ducks/ducks-utils/validations/key-name-validations');
-jest.unmock('../../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations');
-jest.unmock('../../../../../src/services/types-service');
-jest.unmock('../../../../../src/services/context-service');
-jest.unmock('../../../../../src/store/ducks/ducks-utils/blankKeyDefinition');
-
-/*
-jest.mock('../../../../../modules/store/ducks/ducks-utils/blankKeyDefinition', () => {
-  return {
-    BLANK_KEY_NAME: 'some key name',
-    createBlankKey: () => ({
-      keyDef: 'some key def',
-      meta: 'some meta',
-    }),
-    createBlankKeyMeta: () => ({
-      metaProp: 'some value',
-      valueType: 'string',
-    }),
-  };
-});*/
-
-jest.mock('../../../../../src/store/ducks/alerts', () => {
+jest.unmock('../../../../src/store/ducks/tags');
+jest.unmock('../../../../src/store/ducks/selectedKey');
+jest.unmock('../../../../src/utils/http');
+jest.unmock('../../../../src/store/ducks/ducks-utils/validations/key-name-validations');
+jest.unmock('../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations');
+jest.unmock('../../../../src/services/types-service');
+jest.unmock('../../../../src/services/context-service');
+jest.unmock('../../../../src/store/ducks/ducks-utils/blankKeyDefinition');
+jest.mock('../../../../src/store/ducks/alerts', () => {
   let result = true;
   const addAlert = dispatch => Promise.resolve({ result });
   return {
@@ -39,18 +23,18 @@ import {
   saveKey,
   updateKeyValueType,
   updateKeyName,
-} from '../../../../../src/store/ducks/selectedKey';
+} from '../../../../src/store/ducks/selectedKey';
 import {
   createBlankJPadKey,
   createBlankKeyManifest,
   BLANK_KEY_NAME,
-} from '../../../../../src/store/ducks/ducks-utils/blankKeyDefinition';
+} from '../../../../src/store/ducks/ducks-utils/blankKeyDefinition';
 import { assert, expect } from 'chai';
 import fetchMock from 'fetch-mock';
-import keyNameValidations from '../../../../../src/store/ducks/ducks-utils/validations/key-name-validations';
-import keyValueTypeValidations from '../../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations';
+import keyNameValidations from '../../../../src/store/ducks/ducks-utils/validations/key-name-validations';
+import keyValueTypeValidations from '../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations';
 import R from 'ramda';
-import alerts from '../../../../../src/store/ducks/alerts';
+import alerts from '../../../../src/store/ducks/alerts';
 
 describe('selectedKey', async () => {
   const KEY_OPENED = 'KEY_OPENED';
@@ -130,7 +114,7 @@ describe('selectedKey', async () => {
   describe('openKey', () => {
     beforeEach(() => {
       fetchMock.get('glob:*/api/tags', []);
-      fetchMock.get('glob:*/api/context-schema/', {});
+      fetchMock.get('glob:*/api/schema/', {});
     });
 
     it('should dispatch KEY_OPENED with blank payload for blank key name', async () => {
@@ -248,7 +232,7 @@ describe('selectedKey', async () => {
       // Arrange
       const expectedTags = [{ name: 'pita' }];
       fetchMock.restore();
-      fetchMock.get('glob:*/api/context-schema/', {});
+      fetchMock.get('glob:*/api/schema/', {});
       fetchMock.get('glob:*/api/tags', expectedTags);
 
       // Act

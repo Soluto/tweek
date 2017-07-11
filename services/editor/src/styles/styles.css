@@ -14,3 +14,9 @@
   font-size: 28px;
   color: rgba(0, 122, 204, 0.6);
 }
+h3 {
+  font-size: 22px;
+  color: #515c66;
+  margin-left: 4px;
+  margin-bottom: 4px;
+}

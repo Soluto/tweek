@@ -1,25 +1,6 @@
 import searchIndex from '../searchIndex';
 import { convertMetaToNewFormat } from '../utils/meta-legacy';
-import { UKNOWN_AUTHOR } from './unknownAuthor';
-
-let injectAuthor = fn =>
-  function (req, res, deps, ...rest) {
-    return this::fn(
-      req,
-      res,
-      {
-        author:
-          (req.user &&
-          req.user.email && {
-            name: req.user.displayName || req.user.email,
-            email: req.user.email,
-          }) ||
-            UKNOWN_AUTHOR,
-        ...deps,
-      },
-      ...rest,
-    );
-  };
+import { getAuthor } from './utils/author';
 
 export async function getAllKeys(req, res, { keysRepository }) {
   const keys = await keysRepository.getAllKeys();
@@ -65,22 +46,31 @@ export async function getKeyRevisionHistory(req, res, { keysRepository }, { para
   res.json(revisionHistory);
 }
 
-export const saveKey = injectAuthor(async (req, res, { keysRepository, author }, { params }) => {
+export const saveKey = async (
+  req,
+  res,
+  { keysRepository, author = getAuthor(req) },
+  { params },
+) => {
   const keyPath = params[0];
 
   const keyRulesSource = req.body.keyDef.source;
   const manifest = { key_path: keyPath, ...req.body.manifest };
-  const manifestSource = JSON.stringify(manifest, null, 4);
-  await keysRepository.updateKey(keyPath, manifestSource, keyRulesSource, author);
+  await keysRepository.updateKey(keyPath, manifest, keyRulesSource, author);
 
   res.send('OK');
-});
+};
 
-export const deleteKey = injectAuthor(async (req, res, { keysRepository, author }, { params }) => {
+export const deleteKey = async (
+  req,
+  res,
+  { keysRepository, author = getAuthor(req) },
+  { params },
+) => {
   const keyPath = params[0];
   await keysRepository.deleteKey(keyPath, author);
   res.send('OK');
-});
+};
 
 export async function getRevision(req, res, { keysRepository }) {
   const commit = await keysRepository.getRevision();

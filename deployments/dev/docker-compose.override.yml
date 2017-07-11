@@ -39,6 +39,8 @@ services:
       - tweek-redis
     ports:
       - "4003:80"
+    depends_on:
+      - tweek-redis
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - PUBLIC_KEY_PATH=/keys/public_key.pfx

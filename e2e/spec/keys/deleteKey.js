@@ -17,7 +17,6 @@ describe('delete key', () => {
   const deleteKeyTestFolder = '@delete_key';
   let keyToDeleteFullPath;
 
-  const pageAsserts = new PageAsserts(keysPageObject);
   const keysAsserts = new KeysAsserts(keysPageObject, browser);
 
   beforeEach(() => {
@@ -69,7 +68,7 @@ describe('delete key', () => {
       browser.waitForVisible(keySelectors.ALERT_CANCEL_BUTTON, 1000);
       browser.leftClick(globalSelectors.ALERT_BACKGROUND, -200, -200);
 
-      pageAsserts.assertIsInPage(`${KeysPageObject.KEYS_PAGE_URL}/${keyToDeleteFullPath}`, 'should still be in key page');
+      PageAsserts.assertIsInPage(`${KeysPageObject.KEYS_PAGE_URL}/${keyToDeleteFullPath}`, 'should still be in key page');
       keysAsserts.assertIsKeyExistsAfterTransaction(keyToDeleteFullPath, true, 'key should exist after cancel delete');
     });
 
@@ -78,7 +77,7 @@ describe('delete key', () => {
       browser.waitForVisible(keySelectors.ALERT_CANCEL_BUTTON, 1000);
       browser.click(keySelectors.ALERT_CANCEL_BUTTON);
 
-      pageAsserts.assertIsInPage(`${KeysPageObject.KEYS_PAGE_URL}/${keyToDeleteFullPath}`, 'should still be in key page');
+      PageAsserts.assertIsInPage(`${KeysPageObject.KEYS_PAGE_URL}/${keyToDeleteFullPath}`, 'should still be in key page');
       keysAsserts.assertIsKeyExistsAfterTransaction(keyToDeleteFullPath, true, 'key should exist after cancel delete');
     });
 
@@ -87,7 +86,7 @@ describe('delete key', () => {
       browser.waitForVisible(keySelectors.ALERT_CANCEL_BUTTON, 1000);
       keysPageObject.acceptRodalIfRaised();
 
-      pageAsserts.assertIsInPage(KeysPageObject.KEYS_PAGE_URL, 'should moves to keys page url');
+      PageAsserts.assertIsInPage(KeysPageObject.KEYS_PAGE_URL, 'should moves to keys page url');
       keysAsserts.assertIsKeyExistsAfterTransaction(keyToDeleteFullPath, false, 'key should not exist after delete');
     });
   });

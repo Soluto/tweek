@@ -12,6 +12,9 @@ describe('keys-repository', () => {
     read(action) {
       return action(mockGitRepo);
     },
+    with(action) {
+      return action(mockGitRepo);
+    },
   };
   const target = new KeysRepository(mockTransactionManager);
 
@@ -39,7 +42,10 @@ describe('keys-repository', () => {
   });
 
   describe('updateKey', () => {
-    const testMetaSource = `{"key_path": "${testKeyPath}", "implementation": {"type" : "file", "format":"jpad"}}`;
+    const testManifest = {
+      key_path: testKeyPath,
+      implementation: { type: 'file', format: 'jpad' },
+    };
     const testRulesSource = 'rulesSource';
 
     beforeEach(() => {
@@ -50,7 +56,7 @@ describe('keys-repository', () => {
 
     it('should update files then commit and push', async () => {
       // Act
-      await target.updateKey(testKeyPath, testMetaSource, testRulesSource, testAuthor);
+      await target.updateKey(testKeyPath, testManifest, testRulesSource, testAuthor);
 
       // Assert
       expect(mockGitRepo.updateFile.mock.calls.length).toBe(2);
@@ -59,12 +65,13 @@ describe('keys-repository', () => {
 
     it('should update the jpad rule file and the meta details file', async () => {
       // Act
-      await target.updateKey(testKeyPath, testMetaSource, testRulesSource, testAuthor);
+      await target.updateKey(testKeyPath, testManifest, testRulesSource, testAuthor);
 
       // Assert
       expect(
         mockGitRepo.updateFile.mock.calls.some(
-          ([path, source]) => path === `meta/${testKeyPath}.json` && source === testMetaSource,
+          ([path, source]) =>
+            path === `meta/${testKeyPath}.json` && source === JSON.stringify(testManifest, null, 4),
         ),
       ).toBeTruthy();
       expect(
@@ -76,7 +83,7 @@ describe('keys-repository', () => {
 
     it('should commit and push with the author sent', async () => {
       // Act
-      await target.updateKey(testKeyPath, testMetaSource, testRulesSource, testAuthor);
+      await target.updateKey(testKeyPath, testManifest, testRulesSource, testAuthor);
 
       // Assert
       expect(mockGitRepo.commitAndPush.mock.calls[0][1]).toEqual(testAuthor);
@@ -104,10 +111,10 @@ describe('keys-repository', () => {
 
       // Assert
       expect(
-        mockGitRepo.deleteFile.mock.calls.some(([path]) => path == `meta/${testKeyPath}.json`),
+        mockGitRepo.deleteFile.mock.calls.some(([path]) => path === `meta/${testKeyPath}.json`),
       ).toBeTruthy();
       expect(
-        mockGitRepo.deleteFile.mock.calls.some(([path]) => path == `rules/${testKeyPath}.jpad`),
+        mockGitRepo.deleteFile.mock.calls.some(([path]) => path === `rules/${testKeyPath}.jpad`),
       ).toBeTruthy();
     });
 
