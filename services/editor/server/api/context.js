@@ -2,23 +2,6 @@ import changeCase from 'change-case';
 import R from 'ramda';
 import authenticatedClient from '../auth/authenticatedClient';
 
-const mapKeys = R.curry((fn, obj) => R.fromPairs(R.map(R.adjust(fn, 0), R.toPairs(obj))));
-
-export async function getContextSchema(req, res, { tweekApiHostname }) {
-  const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
-  const response = await tweekApiClient.get('/api/v1/keys/@tweek/context/_?$ignoreKeyTypes=false');
-  const schemaDetails = response.data;
-  const processedSchemaDetails = Object.keys(schemaDetails).reduce(
-    (result, identityName) => ({
-      ...result,
-      [identityName]: mapKeys(changeCase.pascalCase, schemaDetails[identityName]),
-    }),
-    {},
-  );
-
-  res.json(processedSchemaDetails);
-}
-
 export async function getContext(req, res, { tweekApiHostname }, { params }) {
   const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
   const response = await tweekApiClient.get(

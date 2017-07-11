@@ -11,14 +11,14 @@ export default class KeysPageObject extends PageObject {
   static KEYS_PAGE_URL = 'keys';
 
   goToBase() {
-    this.browser.url(PageObject.BASE_URL);
+    this.browser.url("/");
     this.browser.acceptAlertIfPresent();
 
     this.browser.waitForVisible(keySelectors.ADD_KEY_BUTTON, PageObject.GIT_TRANSACTION_TIMEOUT);
   }
 
   goToKeyUrl(keyName) {
-    const goTo = `${PageObject.BASE_URL}${KeysPageObject.KEYS_PAGE_URL}/${keyName}`;
+    const goTo = `/${KeysPageObject.KEYS_PAGE_URL}/${keyName}`;
 
     this.browser.url(goTo);
 
@@ -37,7 +37,7 @@ export default class KeysPageObject extends PageObject {
   }
 
   goToKeysList() {
-    this.browser.url(`${PageObject.BASE_URL}keys`);
+    this.browser.url(`/keys`);
     this.browser.waitForVisible(keySelectors.KEY_LIST_FILTER, 10000);
   }
 
@@ -68,8 +68,7 @@ export default class KeysPageObject extends PageObject {
 
     this.browser.waitForVisible(keySelectors.KEY_NAME_INPUT, 5000);
     this.browser.setValue(keySelectors.KEY_NAME_INPUT, keyName);
-    browser.click(globalSelectors.BACKGROUND);
-
+    browser.leftClick(globalSelectors.BACKGROUND, 0, 0);
     this.browser.setValue(keySelectors.KEY_VALUE_TYPE_INPUT, keyValueType);
 
     this.browser.click(keySelectors.SAVE_CHANGES_BUTTON);
@@ -81,8 +80,8 @@ export default class KeysPageObject extends PageObject {
   }
 
   isInKeyPage(keyName) {
-    const location = this.getUrlLocation();
-    return location === `${KeysPageObject.KEYS_PAGE_URL}/${keyName}`;
+    const location = browser.getUrl();
+    return location.endsWith(`${KeysPageObject.KEYS_PAGE_URL}/${keyName}`);
   }
 
   isSaving() {
@@ -176,7 +175,7 @@ export default class KeysPageObject extends PageObject {
     const ruleSelector = keySelectors.ruleContainer(ruleNumber);
     const addConditionButtonSelector = getRelativeSelector([ruleSelector, keySelectors.ADD_CONDITION_BUTTON]);
     this.browser.click(addConditionButtonSelector);
-    this.browser.click(globalSelectors.BACKGROUND);
+    browser.leftClick(globalSelectors.BACKGROUND, 0, 0);
   }
 
   removeRuleCondition(ruleNumber, conditionNumber) {

@@ -37,13 +37,20 @@ function getPathForManifest(keyName) {
   return `meta/${keyName}.json`;
 }
 
-function getPathForSourceFile(meta) {
-  return `rules/${meta.key_path}.${meta.implementation.format}`;
+function getPathForSourceFile(manifest) {
+  return `rules/${manifest.key_path}.${manifest.implementation.format}`;
 }
 
 function getKeyFromPath(keyPath) {
   const ext = path.extname(keyPath);
   return keyPath.substring(0, keyPath.length - ext.length);
+}
+
+async function updateKey(gitRepo, keyPath, manifest, fileImplementation) {
+  await gitRepo.updateFile(getPathForManifest(keyPath), JSON.stringify(manifest, null, 4));
+  if (manifest.implementation.type === 'file') {
+    await gitRepo.updateFile(getPathForSourceFile(manifest), fileImplementation);
+  }
 }
 
 async function getKeyDef(manifest, repo, revision) {
@@ -98,8 +105,20 @@ export default class KeysRepository {
     });
   }
 
+  getAllManifests(prefix = '') {
+    return this._gitTransactionManager.with(async (gitRepo) => {
+      const normalizedPrefix = `${path.normalize(`meta/${prefix}/.`)}`.replace(/\\/g, '/');
+      const files = await gitRepo.listFiles(normalizedPrefix);
+      const manifestFiles = files.map(path => `${normalizedPrefix}/${path}`);
+      const manifests = await Promise.all(
+        manifestFiles.map(pathForManifest => gitRepo.readFile(pathForManifest)),
+      );
+      return manifests.map(JSON.parse);
+    });
+  }
+
   getKeyDetails(keyPath, { revision } = {}) {
-    return this._gitTransactionManager.read(async (gitRepo) => {
+    return this._gitTransactionManager.with(async (gitRepo) => {
       const manifest = await getManifestFile(keyPath, gitRepo, revision);
       const keyDef = getKeyDef(manifest, gitRepo, revision);
       return {
@@ -110,7 +129,7 @@ export default class KeysRepository {
   }
 
   getKeyManifest(keyPath, { revision } = {}) {
-    return this._gitTransactionManager.read(async (gitRepo) => {
+    return this._gitTransactionManager.with(async (gitRepo) => {
       const pathForManifest = getPathForManifest(keyPath);
       return JSON.parse(await gitRepo.readFile(pathForManifest, { revision }));
     });
@@ -123,14 +142,9 @@ export default class KeysRepository {
     });
   }
 
-  updateKey(keyPath, manifestSource, keyRulesSource, author) {
+  updateKey(keyPath, manifest, fileImplementation, author) {
     return this._gitTransactionManager.write(async (gitRepo) => {
-      // if changing implementation type will be possible in the future, we'll might need better solution
-      await gitRepo.updateFile(getPathForManifest(keyPath), manifestSource);
-      const manifest = JSON.parse(manifestSource);
-      if (manifest.implementation.type === 'file') {
-        await gitRepo.updateFile(getPathForSourceFile(manifest), keyRulesSource);
-      }
+      await updateKey(gitRepo, keyPath, manifest, fileImplementation);
       await gitRepo.commitAndPush(`Editor - updating ${keyPath}`, author);
     });
   }

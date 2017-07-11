@@ -52,12 +52,7 @@ const PropertyValueComponent = ({
   }
 
   return (
-    <TypedInput
-      {...{ value, placeholder }}
-      valueType={propertyTypeDetails.name}
-      customType={propertyTypeDetails}
-      onChange={onUpdate}
-    />
+    <TypedInput {...{ value, placeholder }} valueType={propertyTypeDetails} onChange={onUpdate} />
   );
 };
 

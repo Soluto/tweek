@@ -6,10 +6,10 @@ import R from 'ramda';
 
 export default class ContextPageObject extends PageObject {
 
-  static CONTEXT_PAGE_URL = 'context';
+  static CONTEXT_PAGE_URL = '/context';
 
   goToBase() {
-    browser.url(PageObject.BASE_URL + ContextPageObject.CONTEXT_PAGE_URL)
+    browser.url(ContextPageObject.CONTEXT_PAGE_URL)
     browser.waitForVisible(contextSelectors.CONTEXT_TYPE_INPUT, 5000);
   }
 
