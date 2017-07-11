@@ -13,11 +13,23 @@ function addTypedProperty(propertyName, propertyType){
     browser.setValue("*[data-comp=new-property-item] > input[type=text]:first-child", propertyName);
     browser.click("*[data-comp=new-property-item] *[data-comp=ComboBox] input");
     browser.click(`*[data-comp=new-property-item] *[data-label=${propertyType}] a`);
-    browser.click("*[data-comp=new-property-item] [data-comp=add]");
+    browser.click("*[data-comp=new-property-item] button[data-comp=add]");
 }
 
 function deleteProperty(propertyName){
     browser.click(`*[data-comp=property-item][data-property-name=${propertyName}] button[data-comp=remove]`);
+}
+
+function updateExistingCustomProperty(propertyName, {base, allowedValues} = {}){
+    let baseSelector = `*[data-comp=property-item][data-property-name=${propertyName}] *[data-field=property-type]`;
+    if (base){
+            browser.click(`${baseSelector} *[data-field=base] *[data-comp=ComboBox] input`);
+            browser.click(`${baseSelector} *[data-field=base] *[data-label=${base}] a`);
+        }
+    if (allowedValues){
+        browser.setValue(`${baseSelector} *[data-field=allowed-values] input`, allowedValues.join("\n"));
+        browser.keys("Enter");
+    }
 }
 
 function addNewIdentity(identityType){
@@ -61,19 +73,24 @@ describe('edit identity schema', () => {
            addTypedProperty("Age", "number");
            saveChanges();
            tweekApiClient.eventuallyExpectKey("@tweek/schema/identitytest1", result=>
-                expect(result).to.have.property("Age").that.eql({type:'number'})
+                expect(result).to.have.property("Age").that.deep.include({type:'number'})
            );
                 
         });
 
-        it('add custom property and save', ()=>{
+        it('add and update custom property', ()=>{
            goToIdentityPage("identitytest1");
            addTypedProperty("OsType", "custom");
            saveChanges();
            tweekApiClient.eventuallyExpectKey("@tweek/schema/identitytest1", result=>
-            expect(result).to.have.property("OsType").with.property("type")
-                    .that.eql({base:"string", allowedValues:[]})
-           );
+           {
+            expect(result).to.have.property("OsType").that.deep.include({type:{base:"string", allowedValues:[]}})
+           });
+           updateExistingCustomProperty("OsType", {allowedValues:["Android", "iOS"]})
+           saveChanges();
+           tweekApiClient.eventuallyExpectKey("@tweek/schema/identitytest1", result=>{
+            expect(result).to.have.property("OsType").that.deep.include({type:{base:"string", allowedValues:["Android", "iOS"]}})
+           });
         });
 
         it('delete property and save', ()=>{
