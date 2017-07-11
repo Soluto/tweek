@@ -84,16 +84,16 @@ describe('dependent keys', () => {
 
     // Verify depends on
     keysPageObject.goToKey(keyWithDependencyFullPath);
-    keysPageObject.wait(FIVE_SECONDS);
-    browser.refresh();
-    browser.waitForVisible(keySelectors.DEPENDS_ON, FIVE_SECONDS);
+    browser.waitForVisible(keySelectors.DEPENDS_ON_TOGGLE, FIVE_SECONDS);
+    browser.click(keySelectors.DEPENDS_ON_TOGGLE);
     const dependsOn = browser.getText(keySelectors.DEPENDS_ON);
-    expect(dependsOn).to.equal(`Depends on:\n${keyWithoutDependencyFullPath}`);
+    expect(dependsOn).to.equal(`[-]Depends on:\n${keyWithoutDependencyFullPath}`);
 
     // Verify used by
     keysPageObject.goToKey(keyWithoutDependencyFullPath);
-    browser.waitForVisible(keySelectors.USED_BY, FIVE_SECONDS);
+    browser.waitForVisible(keySelectors.USED_BY_TOGGLE, FIVE_SECONDS);
+    browser.click(keySelectors.USED_BY_TOGGLE);
     const usedBy = browser.getText(keySelectors.USED_BY);
-    expect(usedBy).to.equal(`Used by:\n${keyWithDependencyFullPath}`);
+    expect(usedBy).to.equal(`[-]Used by:\n${keyWithDependencyFullPath}`);
   });
 });

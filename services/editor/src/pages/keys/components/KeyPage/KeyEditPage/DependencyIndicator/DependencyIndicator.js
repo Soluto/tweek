@@ -1,38 +1,64 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import AnimakitExpander from 'animakit-expander';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { withState } from 'recompose';
 import './DependencyIndicator.css';
 
-export const DependsOn = ({ dependencies }) =>
+const ExpanderToggle = ({ toggled, onToggle, dataComp }) =>
+  <span
+    data-comp={dataComp}
+    onClick={() => onToggle(current => !current)}
+    style={{ cursor: 'pointer', fontFamily: 'monospaced', color: '#a5a5a5' }}
+  >
+    {toggled ? '[-]' : '[+]'}
+  </span>;
+
+export const DependsOn = withState(
+  'toggled',
+  'onToggle',
+  false,
+)(({ dependencies, toggled, onToggle }) =>
   <div
     className={classNames('depends-on', 'dependency-indicator-container')}
     data-comp={'depends-on'}
   >
     {dependencies.length
       ? <div>
-          Depends on:<br />
-          <ul>
-            {dependencies.map(dep =>
-              <li key={dep}><a title="Click to navigate" href={`/keys/${dep}`}>{dep}</a></li>,
-            )}
-          </ul>
+          <ExpanderToggle
+            dataComp="depends-on-toggle"
+            toggled={toggled}
+            onToggle={onToggle}
+          />Depends on:<br />
+          <AnimakitExpander expanded={toggled} align="bottom">
+            <ul>
+              {dependencies.map(dep => <li key={dep}><Link to={`/keys/${dep}`}>{dep}</Link></li>)}
+            </ul>
+          </AnimakitExpander>
         </div>
       : <div />}
-  </div>;
+  </div>,
+);
 
-export const UsedBy = ({ dependentKeys }) =>
+export const UsedBy = withState(
+  'toggled',
+  'onToggle',
+  false,
+)(({ dependentKeys, toggled, onToggle }) =>
   <div className={classNames('used-by', 'dependency-indicator-container')} data-comp={'used-by'}>
     {dependentKeys.length
       ? <div>
-          Used by:<br />
-          <ul>
-            {dependentKeys.map(dep =>
-              <li key={dep}><a title="Click to navigate" href={`/keys/${dep}`}>{dep}</a></li>,
-            )}
-          </ul>
+          <ExpanderToggle dataComp="used-by-toggle" toggled={toggled} onToggle={onToggle} />Used by:<br />
+          <AnimakitExpander expanded={toggled} align="bottom">
+            <ul>
+              {dependentKeys.map(dep => <li key={dep}><Link to={`/keys/${dep}`}>{dep}</Link></li>)}
+            </ul>
+          </AnimakitExpander>
         </div>
       : <div />}
-  </div>;
+  </div>,
+);
 
 DependsOn.propTypes = {
   dependencies: PropTypes.array.isRequired,

@@ -242,6 +242,7 @@ const KeyFullHeader = (props) => {
                 maxLength={400}
               />
               <UsedBy dependentKeys={dependentKeys} />
+              <DependsOn dependencies={keyManifest.dependencies} />
             </div>
 
             <div className={'key-tags-wrapper'}>
@@ -249,7 +250,6 @@ const KeyFullHeader = (props) => {
                 onTagsChanged={newTags => onTagsChanged(newTags)}
                 tags={keyManifest.meta.tags || []}
               />
-              <DependsOn dependencies={keyManifest.dependencies} />
             </div>
 
           </div>
