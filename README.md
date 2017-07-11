@@ -26,7 +26,7 @@ The easiest way to start evaluating Tweek is to run it locally.
 #### Running Tweek
 
 #### Edit your first key
-- Open localhost:4004 in browser.
+- Open http://localhost:4004 in browser.
 - Go to keys page.
 - Click on "Add New Key"
 - Type my_app/sign_button/color
