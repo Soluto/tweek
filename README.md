@@ -6,10 +6,18 @@ Tweek is an open source feature management solution for changing and personalizi
 
 #### Features ####
 - Feature toggles and gradual release
-- Multi-variant a/b testing
+- Multi-variant experiments or a/b testing
+- Powerful editor with user friendly UI
+- Hierarchical configurations
 - Advanced segmentation of users
-- Flexible schema
+- Dependencies between features
+- Customizable schema/domain model
 - Auditing
-- Friendly UI
+- Integrated storage for saving context  
+- Container friendly
+- Integrated OAuth support
+- Pluggable storage backend
+- Simple RESTful api for fetching configurations 
+- Can work at scale
 
 ### Getting Started ###
