@@ -2,7 +2,7 @@
 
 ### What is Tweek?
 
-Tweek is an open source feature management solution for changing and personalizing applications and system behavior dynamically, remotely, and in runtime independently from deployment/release cycles.
+Tweek is an open source feature management solution for changing and personalizing applications and system behavior dynamically, remotely, and in realtime independently from deployment/release cycles.
 
 #### Features
 - Feature toggles and gradual release
