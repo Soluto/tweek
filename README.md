@@ -4,12 +4,14 @@
 
 Tweek is an open source feature management solution for customizing applications and system behavior without deploying new code.
 
+Tweek aims to be a complete open-source alternative to other industry feature/configuration/experiment management solutions such as Facebook's Gatekeeper, Firebase config, LaunchDarkly, Linkedin's XLNT, Dropbox's strormcrow, etc...
+
 #### Features
-- Feature toggles and gradual release
-- Multi-variant experiments or A/B testing
-- Powerful editor with user friendly UI
+- Feature toggles, gradual release
+- Multi-variant experiments, A/B testing
+- Built-in Editor with user friendly UI
 - Hierarchical configurations
-- Advanced segmentation of users
+- Advanced targeting of users/groups
 - Dependencies between features
 - Customizable schema/domain model
 - Auditing
@@ -17,7 +19,7 @@ Tweek is an open source feature management solution for customizing applications
 - Container friendly
 - Integrated OAuth support
 - Pluggable storage backend
-- Simple RESTful api for fetching configurations 
+- Simple RESTful api for fetching configurations
 - Scalable
 
 ### Getting Started
@@ -71,6 +73,7 @@ More on how multi-varaint keys work in Tweek. (link)
 Tweek is been used in large scale production deployment in Soluto.
 
 ### Related projects
-Tweek.JPad
+Tweek.JPad - Tweek's internal rules engine
 
 ### Additional Resources
+- https://martinfowler.com/articles/feature-toggles.html
