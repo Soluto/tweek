@@ -18,6 +18,6 @@ Tweek is an open source feature management solution for changing and personalizi
 - Integrated OAuth support
 - Pluggable storage backend
 - Simple RESTful api for fetching configurations 
-- Can work at scale
+- Scalable
 
 ### Getting Started ###
