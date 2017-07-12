@@ -8,7 +8,7 @@ const globAsync = promisify(glob);
 const readFile = _.wrapCallback(fs.readFile);
 
 export default async function (repoDir) {
-  const fileNames = await globAsync(path.join(repoDir, 'meta/**/*.json'));
+  const fileNames = await globAsync(path.join(repoDir, 'manifests/**/*.json'));
 
   return new Promise((resolve, reject) => {
     const manifests = [];

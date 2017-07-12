@@ -32,11 +32,11 @@ function getNewJpadFormatSourceIfNeeded(originalJpadSource) {
 }
 
 function getPathForManifest(keyName) {
-  return `meta/${keyName}.json`;
+  return `manifests/${keyName}.json`;
 }
 
 function getPathForSourceFile(manifest) {
-  return `rules/${manifest.key_path}.${manifest.implementation.format}`;
+  return `implementations/${manifest.key_path}.${manifest.implementation.format}`;
 }
 
 function getKeyFromPath(keyPath) {
@@ -100,7 +100,7 @@ export default class KeysRepository {
 
   getAllKeys() {
     return this._gitTransactionManager.read(async (gitRepo) => {
-      const keyFiles = await gitRepo.listFiles('meta');
+      const keyFiles = await gitRepo.listFiles('manifests');
 
       return keyFiles.map(getKeyFromPath);
     });
@@ -108,7 +108,7 @@ export default class KeysRepository {
 
   getAllManifests(prefix = '') {
     return this._gitTransactionManager.with(async (gitRepo) => {
-      const normalizedPrefix = `${path.normalize(`meta/${prefix}/.`)}`.replace(/\\/g, '/');
+      const normalizedPrefix = `${path.normalize(`manifests/${prefix}/.`)}`.replace(/\\/g, '/');
       const files = await gitRepo.listFiles(normalizedPrefix);
       const manifestFiles = files.map(path => `${normalizedPrefix}/${path}`);
       const manifests = await Promise.all(

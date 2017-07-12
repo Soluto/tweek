@@ -4,7 +4,7 @@ const { Observable } = require('rxjs');
 const indexByName = R.indexBy(R.prop('name'));
 
 module.exports = function(files) {
-  const metaFiles = files.filter(x => x.name.startsWith('meta'));
+  const metaFiles = files.filter(x => x.name.startsWith('manifests'));
   const index = indexByName(files);
   return Observable.from(metaFiles)
     .flatMap(file => Observable.defer(file.read))
@@ -18,7 +18,7 @@ module.exports = function(files) {
           case 'file': {
             let format = meta.implementation.format;
             keyDef.format = format;
-            keyDef.payload = await index[`rules/${meta.key_path}.${format}`].read();
+            keyDef.payload = await index[`implementations/${meta.key_path}.${format}`].read();
             break;
           }
           case 'const': {
