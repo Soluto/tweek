@@ -241,8 +241,8 @@ const KeyFullHeader = (props) => {
                 classNames={{ input: 'description-input' }}
                 maxLength={400}
               />
-              <UsedBy dependentKeys={dependentKeys} />
-              <DependsOn dependencies={keyManifest.dependencies} />
+              <UsedBy items={dependentKeys} />
+              <DependsOn items={keyManifest.dependencies} />
             </div>
 
             <div className={'key-tags-wrapper'}>
