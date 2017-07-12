@@ -237,7 +237,6 @@
   flex-direction: row;
   flex-grow: 1;
   margin-top: 10px;
-  max-height: 120px;
 }
 .key-viewer-container-form .key-viewer-container-fieldset .key-header .key-meta-container .key-description-and-tags-wrapper .key-description-wrapper .description-input {
   resize: none;
