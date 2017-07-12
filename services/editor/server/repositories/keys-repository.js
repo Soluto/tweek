@@ -1,5 +1,4 @@
 import path from 'path';
-import R from 'ramda';
 
 function generateEmptyManifest(keyPath) {
   return {
@@ -70,15 +69,19 @@ async function getKeyDef(manifest, repo, revision) {
 }
 
 async function getRevisionHistory(manifest, repo) {
-  const fileMeta = manifest.implementation.type === 'file'
-    ? repo.getHistory(`rules/${manifest.key_path}.${manifest.implementation.format}`)
-    : Promise.resolve([]);
+  const files = [
+    `meta/${manifest.key_path}.json`,
+    `manifests/${manifest.key_path}.json`,
+  ];
 
-  const uniqSort = R.pipe(R.uniqBy(R.prop('sha')), R.sort(R.descend(R.prop('date'))));
-  return uniqSort([
-    ...(await repo.getHistory(`meta/${manifest.key_path}.json`)),
-    ...(await fileMeta),
-  ]);
+  if (manifest.implementation.type === 'file') {
+    files.concat(
+      `rules/${manifest.key_path}.${manifest.implementation.format}`,
+      `implementations/${manifest.key_path}.${manifest.implementation.format}`
+    );
+  }
+
+  return await repo.getHistory(files);
 }
 
 async function getManifestFile(keyPath, gitRepo, revision) {

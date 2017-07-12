@@ -1,8 +1,7 @@
 import path from 'path';
 import Git from 'nodegit';
-import glob from 'glob-promise';
-
-const fs = require('promisify-node')('fs-extra');
+import fs from 'fs-extra';
+import R from 'ramda';
 
 async function listFiles(repo, filter = () => true) {
   let commit = await repo.getMasterCommit();
@@ -59,31 +58,32 @@ export default class GitRepository {
   }
 
   async readFile(fileName, { revision } = {}) {
-    const sha = revision || (await this._repo.getMasterCommit()).sha();
-    const commit = await this._repo.getCommit(sha);
+    const commit = await (revision ? this._repo.getCommit(revision) : this._repo.getMasterCommit());
     const entry = await commit.getEntry(fileName);
     return entry.isBlob() ? (await entry.getBlob()).toString() : undefined;
   }
 
-  async getHistory(fileName, { revision } = {}) {
+  async getHistory(fileNames, { revision } = {}) {
+    fileNames = Array.isArray(fileNames) ? fileNames : [fileNames];
+
     await this._repo.getRemote('origin');
-
     const sha = revision || (await this._repo.getMasterCommit()).sha();
-
     const walker = this._repo.createRevWalk();
     walker.push(sha);
     walker.sorting(Git.Revwalk.SORT.TIME);
 
-    const historyEntries = await walker.fileHistoryWalk(fileName, 5000);
-    if (historyEntries.length === 0) {
-      console.info('No recent history found for key');
-    }
-    return historyEntries.map(({ commit }) => ({
+    const historyEntries =  await Promise.all(fileNames.map(fileName => walker.fileHistoryWalk(fileName, 5000)));
+
+    const mapEntry = ({ commit }) => ({
       sha: commit.sha(),
-      author: `${commit.author().name()}`,
+      author: commit.author().name(),
       date: commit.date(),
       message: commit.message(),
-    }));
+    });
+
+    const uniqSort = R.pipe(R.chain(R.map(mapEntry)), R.uniqBy(R.prop('sha')), R.sort(R.descend(R.prop('date'))));
+
+    return uniqSort(historyEntries);
   }
 
   async updateFile(fileName, content) {
