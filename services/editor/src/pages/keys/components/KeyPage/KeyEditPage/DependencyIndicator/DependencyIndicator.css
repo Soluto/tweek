@@ -1,0 +1,65 @@
+.key-dependency-indicator-container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  color: #a5a5a5;
+  font-size: 14px;
+  margin-top: 10px;
+  padding-left: 4px;
+}
+.dependency-item {
+  list-style-type: none;
+  font-weight: 300;
+}
+.depends-on {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  color: #a5a5a5;
+  font-size: 14px;
+  margin-top: 10px;
+  padding-left: 4px;
+}
+.depends-on li {
+  list-style-type: none;
+  font-weight: 300;
+}
+.depends-on li a {
+  text-decoration: none;
+  color: #a5a5a5;
+}
+.depends-on li a:visited {
+  color: #a5a5a5;
+}
+.depends-on li a:hover {
+  color: #727272;
+}
+.depends-on li a:active {
+  color: #a5a5a5;
+}
+.used-by {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  color: #a5a5a5;
+  font-size: 14px;
+  margin-top: 10px;
+  padding-left: 4px;
+}
+.used-by li {
+  list-style-type: none;
+  font-weight: 300;
+}
+.used-by li a {
+  text-decoration: none;
+  color: #a5a5a5;
+}
+.used-by li a:visited {
+  color: #a5a5a5;
+}
+.used-by li a:hover {
+  color: #727272;
+}
+.used-by li a:active {
+  color: #a5a5a5;
+}

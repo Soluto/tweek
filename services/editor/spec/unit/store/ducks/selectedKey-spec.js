@@ -344,20 +344,19 @@ describe('selectedKey', async () => {
         currentState = generateState(BLANK_KEY_NAME, keyNameToSave);
 
         fetchMock.putOnce('glob:*/api/keys/*', {});
+        fetchMock.get('glob:*/api/dependents/*', []);
 
         // Act
         const func = saveKey();
         await func(dispatchMock, () => currentState);
 
-        assert(dispatchMock.mock.calls.length === 5, 'should call dispatch 5 times');
+        assert(
+          dispatchMock.mock.calls.length === 6,
+          `should call dispatch 6 times, instead called ${dispatchMock.mock.calls.length} times`,
+        );
 
-        const [
-          [_],
-          [__],
-          [___],
-          [keyAddedDispatchAction],
-          [pushDispatchAction],
-        ] = dispatchMock.mock.calls;
+        let keyAddedDispatchAction = dispatchMock.mock.calls[4][0];
+        let pushDispatchAction = dispatchMock.mock.calls[5][0];
         assertDispatchAction(keyAddedDispatchAction, { type: KEY_ADDED, payload: keyNameToSave });
 
         const expectedPushPayload = {

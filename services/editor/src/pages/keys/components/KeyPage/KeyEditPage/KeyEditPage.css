@@ -237,14 +237,13 @@
   flex-direction: row;
   flex-grow: 1;
   margin-top: 10px;
-  max-height: 100px;
 }
 .key-viewer-container-form .key-viewer-container-fieldset .key-header .key-meta-container .key-description-and-tags-wrapper .key-description-wrapper .description-input {
   resize: none;
   font-size: 14px;
   color: #515c66;
   min-width: 400px;
-  max-height: 100px;
+  max-height: 120px;
   outline: none;
   box-sizing: border-box;
 }
@@ -254,7 +253,7 @@
   flex-direction: column;
   position: relative;
   flex-grow: 1;
-  max-height: 100px;
+  max-height: 120px;
   overflow-y: auto;
   padding-top: 0;
   border-left: 1px solid lightgray;
