@@ -1,9 +1,10 @@
+import R from 'ramda';
 import searchIndex from '../searchIndex';
-import { convertMetaToNewFormat } from '../utils/meta-legacy';
 import { getAuthor } from './utils/author';
 
-export async function getAllKeys(req, res, { keysRepository }) {
-  const keys = await keysRepository.getAllKeys();
+export async function getAllKeys(req, res) {
+  const manifests = await searchIndex.manifests;
+  const keys = manifests.map(R.prop('key_path'));
   res.json(keys);
 }
 
@@ -16,7 +17,7 @@ export async function getKey(req, res, { keysRepository }, { params }) {
   const revision = req.query.revision;
   try {
     const keyDetails = await keysRepository.getKeyDetails(keyPath, { revision });
-    res.json({ ...keyDetails, manifest: convertMetaToNewFormat(keyPath, keyDetails) });
+    res.json(keyDetails);
   } catch (exp) {
     res.sendStatus(404);
   }

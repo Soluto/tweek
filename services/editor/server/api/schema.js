@@ -1,15 +1,17 @@
 import jsondiffpatch from 'jsondiffpatch';
 import R from 'ramda';
-import changeCase from 'change-case';
+import searchIndex from '../searchIndex';
 import { getAuthor } from './utils/author';
 
-export async function getSchemas(req, res, { keysRepository }) {
+export async function getSchemas(req, res) {
   const prefix = `@tweek/schema/`;
-  const manifests = await keysRepository.getAllManifests(prefix);
-  const schemas = manifests.reduce(
+  const allManifests = await searchIndex.manifests;
+  const schemaManifests = allManifests.filter(m => m.key_path.startsWith(prefix));
+  const schemas = schemaManifests.reduce(
     (acc, m) => ({ ...acc, [m.key_path.substring(prefix.length)]: m.implementation.value }),
     {},
   );
+
   res.json(schemas);
 }
 
