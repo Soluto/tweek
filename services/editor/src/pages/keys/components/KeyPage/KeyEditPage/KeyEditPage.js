@@ -16,6 +16,7 @@ import RevisionHistory from './RevisionHistory/RevisionHistory';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
 import alertIconSrc from './resources/alert-icon.svg';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
+import { UsedBy, DependsOn } from './DependencyIndicator/DependencyIndicator';
 import './KeyEditPage.css';
 
 const ConstEditor = ({ value, valueType, onChange }) =>
@@ -122,7 +123,7 @@ class KeyEditPage extends Component {
 
   render() {
     const { selectedKey, isInAddMode, isInStickyMode, alerter, revision } = this.props;
-    const { key, local: { manifest, keyDef }, revisionHistory } = selectedKey;
+    const { key, local: { manifest, keyDef }, revisionHistory, dependentKeys } = selectedKey;
     const isHistoricRevision = revisionHistory && revision && revisionHistory[0].sha !== revision;
     const isReadonly = manifest.meta.readOnly || manifest.meta.archived || isHistoricRevision;
 
@@ -149,6 +150,7 @@ class KeyEditPage extends Component {
               revision={revision}
               keyFullPath={key}
               isInStickyMode={isInStickyMode}
+              dependentKeys={dependentKeys}
             />
 
             <div className={classNames('key-rules-editor', { sticky: isInStickyMode })}>
@@ -201,6 +203,7 @@ const KeyFullHeader = (props) => {
     keyFullPath,
     revision,
     isHistoricRevision,
+    dependentKeys,
   } = props;
 
   return (
@@ -238,6 +241,8 @@ const KeyFullHeader = (props) => {
                 classNames={{ input: 'description-input' }}
                 maxLength={400}
               />
+              <UsedBy items={dependentKeys} />
+              <DependsOn items={keyManifest.dependencies} />
             </div>
 
             <div className={'key-tags-wrapper'}>
@@ -246,6 +251,7 @@ const KeyFullHeader = (props) => {
                 tags={keyManifest.meta.tags || []}
               />
             </div>
+
           </div>
 
         </fieldset>

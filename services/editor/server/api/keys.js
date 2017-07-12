@@ -33,6 +33,13 @@ export async function getKeyManifest(req, res, { keysRepository }, { params }) {
   }
 }
 
+export async function getDependents(req, res, { keysRepository }, { params }) {
+  const keyPath = params[0];
+  const dependents = await searchIndex.dependents(keyPath);
+
+  res.json(dependents);
+}
+
 export async function getKeyRevisionHistory(req, res, { keysRepository }, { params }) {
   const keyPath = params[0];
   const revisionHistory = await keysRepository.getKeyRevisionHistory(keyPath);

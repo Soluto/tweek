@@ -8,6 +8,7 @@ const readFile = promisify(fs.readFile);
 
 let manifestPromise;
 let indexPromise;
+let dependentsPromise;
 let index;
 
 async function refreshIndex(repoDir) {
@@ -39,8 +40,24 @@ export default {
   get index() {
     return index;
   },
+  dependents(key) {
+    return dependentsPromise.then(x => x[key] || []);
+  },
   refreshIndex: (repoDir) => {
     manifestPromise = getManifestsFromFiles(repoDir);
     indexPromise = refreshIndex(repoDir);
+    dependentsPromise = manifestPromise.then(x =>
+      x
+        .filter(current => current.dependencies && current.dependencies.length !== 0)
+        .reduce((acc, current) => {
+          current.dependencies.forEach((dependency) => {
+            acc[dependency] = acc[dependency] || [];
+            acc[dependency].push(current.key_path);
+          });
+          return acc;
+        }, {}),
+    );
+
+    return indexPromise;
   },
 };

@@ -63,7 +63,7 @@ export default compose(
           </ul>
         </li>
       </ul>
-      <div style={{ display: 'flex', flexGrow: 1 }} key="Page">
+      <div style={{ display: 'flex', flexGrow: 1, overflowY: "auto" }} key="Page">
         {children}
       </div>
     </div>
