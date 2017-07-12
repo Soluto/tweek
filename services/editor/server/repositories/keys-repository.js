@@ -1,6 +1,5 @@
 import path from 'path';
 import R from 'ramda';
-import { convertMetaToNewFormat } from '../utils/meta-legacy';
 
 function generateEmptyManifest(keyPath) {
   return {
@@ -85,8 +84,7 @@ async function getRevisionHistory(manifest, repo) {
 async function getManifestFile(keyPath, gitRepo, revision) {
   const pathForManifest = getPathForManifest(keyPath);
   try {
-    const manifest = JSON.parse(await gitRepo.readFile(pathForManifest, { revision }));
-    return manifest.meta ? manifest : convertMetaToNewFormat(keyPath, { manifest });
+    return JSON.parse(await gitRepo.readFile(pathForManifest, { revision }));
   } catch (exp) {
     return generateEmptyManifest(keyPath);
   }
