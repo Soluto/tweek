@@ -1,5 +1,11 @@
 version: '1.0'
 steps:
+  BuildGitKeys:
+    title: Building Git Keys Docker Image
+    type: build
+    image_name: soluto/git-keys
+    working_directory: ./services/git-service/ssh/
+
   BuildingGitRepository:
     title: Building Git Repository Docker Image
     type: build
@@ -37,39 +43,42 @@ steps:
     title: Tests - e2e & smoke
     type: composition
     composition:
-      version: '3.1'
+      version: '2'
       services:
+        keys:
+          image: ${{BuildGitKeys}}
         tweek-git:
           image: ${{BuildingGitRepository}}
+          volumes_from:
+            - keys
           environment:
-            - PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
+            - PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
             - TWEEK_MANAGEMENT_URL=http://tweek-management:3000
-          secrets:
-            - tweek_ssh_public_key
         tweek-management:
           image: ${{BuildingManagement}}
           depends_on:
             - tweek-git
+          volumes_from:
+            - keys
           logging:
             driver: "none"
           environment:
             - GIT_USER=git
             - GIT_URL=ssh://git@tweek-git/tweek/tests
-            - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
-            - GIT_PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
+            - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+            - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
             - VALIDATION_URL=http://tweek-api/validation
-          secrets:
-            - tweek_ssh_private_key
-            - tweek_ssh_public_key
         tweek-api:
           image: ${{BuildingApiImage}}
           depends_on:
             - tweek-management
             - tweek-redis
+          volumes_from:
+            - keys
           environment:
             - Rules__Management__Url=http://tweek-management:3000
             - Rules__Management__SampleIntervalInMs=500
-            - PUBLIC_KEY_PATH=/run/secrets/tweek_pfx_public_key
+            - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
             - ContextProvider=redis
             - Redis__ConnectionString=tweek-redis:6379
             - Addons__Redis__ClassName=Tweek.Drivers.Redis.RedisServiceAddon
@@ -80,24 +89,21 @@ steps:
             - CorsEnabled=true
             - CorsPolicies__Keys__Headers=
             - CorsPolicies__Keys__ExposedHeaders=
-          secrets:
-            - tweek_pfx_public_key
         tweek-editor:
           image: ${{BuildingEditor}}
           depends_on:
             - tweek-api
             - tweek-git
+          volumes_from:
+            - keys
           logging:
             driver: "none"
           environment:
             - GIT_USER=git
             - GIT_URL=ssh://git@tweek-git/tweek/tests
-            - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
-            - GIT_PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
+            - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+            - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
             - TWEEK_API_HOSTNAME=http://tweek-api
-          secrets:
-            - tweek_ssh_private_key
-            - tweek_ssh_public_key
         selenium:
           image: selenium/standalone-chrome
           logging:
@@ -108,13 +114,6 @@ steps:
             - "6379"
           logging:
             driver: "none"
-      secrets:
-        tweek_ssh_public_key:
-          file: ./services/git-service/ssh/tweekgit.pub
-        tweek_pfx_public_key:
-          file: ./services/git-service/ssh/tweekgit_public.pfx
-        tweek_ssh_private_key:
-          file: ./services/git-service/ssh/tweekgit
     composition_candidates:
       smoke-tests:
         image: microsoft/aspnetcore-build:1.1.2
@@ -128,6 +127,8 @@ steps:
         command: /bin/bash -c "dotnet restore services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release"
       backoffice-e2e:
         image: ${{BuildingTests}}
+        volumes_from:
+          - keys
         depends_on: 
           - selenium
           - tweek-editor
@@ -135,9 +136,7 @@ steps:
         environment:
           - EDITOR_URL=http://tweek-editor:3000/
           - TWEEK_API_URL=http://tweek-api/
-          - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
-        secrets:
-          - tweek_ssh_private_key
+          - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
         command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && yarn test -- --host selenium --port 4444"
     on_success:
       metadata:
