@@ -64,4 +64,36 @@ describe('dependent keys', () => {
     const errorText = browser.getText(globalSelectors.ERROR_NOTIFICATION_TITLE);
     expect(errorText).to.equal('Failed to save key');
   })
+
+  it('should display dependency relations between keys', () => {
+    const FIVE_SECONDS = 5000;
+    const keyWithoutDependency = keysPageObject.generateTestKeyName('key1');
+    const keyWithoutDependencyFullPath = `${testFolder}/${dependentKeysFolder}/${keyWithoutDependency}`;
+    keysPageObject.addEmptyKey(keyWithoutDependencyFullPath);
+
+    const keyWithDependency = keysPageObject.generateTestKeyName('key2');
+    const keyWithDependencyFullPath = `${testFolder}/${dependentKeysFolder}/${keyWithDependency}`;
+    keysPageObject.addEmptyKey(keyWithDependencyFullPath);
+
+    browser.click(keySelectors.ADD_RULE_BUTTON);
+
+    browser.setValue(conditionPropertyInputSelector, `keys.${keyWithoutDependencyFullPath}`);
+    keysPageObject.setConditionValue(1, 1, 'value');
+
+    keysPageObject.commitChanges();
+
+    // Verify depends on
+    keysPageObject.goToKey(keyWithDependencyFullPath);
+    browser.waitForVisibleWithRefresh(keySelectors.DEPENDS_ON_TOGGLE, FIVE_SECONDS);
+    browser.click(keySelectors.DEPENDS_ON_TOGGLE);
+    const dependsOn = browser.getText(keySelectors.DEPENDS_ON);
+    expect(dependsOn).to.equal(`[-]Depends on:\n${keyWithoutDependencyFullPath}`);
+
+    // Verify used by
+    keysPageObject.goToKey(keyWithoutDependencyFullPath);
+    browser.waitForVisibleWithRefresh(keySelectors.USED_BY_TOGGLE, FIVE_SECONDS);
+    browser.click(keySelectors.USED_BY_TOGGLE);
+    const usedBy = browser.getText(keySelectors.USED_BY);
+    expect(usedBy).to.equal(`[-]Used by:\n${keyWithDependencyFullPath}`);
+  });
 });
