@@ -83,7 +83,7 @@ describe('dependent keys', () => {
 
     // Verify depends on
     keysPageObject.goToKey(keyWithDependencyFullPath);
-    browser.waitForVisible(keySelectors.DEPENDS_ON_TOGGLE, 6000);
+    browser.waitForVisible(keySelectors.DEPENDS_ON_TOGGLE, 5000);
     browser.click(keySelectors.DEPENDS_ON_TOGGLE);
     browser.waitForVisible(`${keySelectors.DEPENDS_ON} a[href="/keys/${keyWithoutDependencyFullPath}"]`);
 
@@ -92,7 +92,7 @@ describe('dependent keys', () => {
       keysPageObject.goToKey(keyWithoutDependencyFullPath);
       browser.waitForExist(`${keySelectors.USED_BY}[data-loaded= true]`, 1000);
       return browser.isVisible(keySelectors.USED_BY_TOGGLE);
-    }, FIVE_SECONDS);
+    }, 5000);
     
     browser.click(keySelectors.USED_BY_TOGGLE);
     browser.waitForVisible(`${keySelectors.USED_BY} a[href="/keys/${keyWithDependencyFullPath}"]`);
