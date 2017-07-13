@@ -177,7 +177,7 @@ export default class KeysRepository {
 
   deleteKey(keyPath, author) {
     return this._gitTransactionManager.write(async (gitRepo) => {
-      const manifest = await getManifestFile(keyPath);
+      const manifest = await getManifestFile(keyPath, gitRepo);
       await gitRepo.deleteFile(getPathForManifest(keyPath));
       if (manifest.implementation.type === 'file') {
         await gitRepo.deleteFile(getPathForSourceFile(manifest));
