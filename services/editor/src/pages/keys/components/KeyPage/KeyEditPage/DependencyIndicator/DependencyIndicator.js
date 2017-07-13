@@ -23,6 +23,7 @@ const createDependenciesList = (componentName, caption) =>
     <div
       className={classNames(componentName, 'dependency-indicator-container')}
       data-comp={componentName}
+      data-item-count={items.length}
     >
       {(items || []).length
         ? <div>
