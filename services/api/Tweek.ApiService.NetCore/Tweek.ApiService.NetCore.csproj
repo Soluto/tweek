@@ -39,7 +39,6 @@
     <ProjectReference Include="..\..\..\addons\Context\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj" />
     <ProjectReference Include="..\..\..\addons\Context\Tweek.Drivers.Redis\Tweek.Drivers.Redis.csproj" />
     <ProjectReference Include="..\..\..\core\Utils\JsonValueConverter\JsonValueConverter.csproj" />
-    <ProjectReference Include="..\..\..\addons\Auth\Tweek.Addons.Auth.PingIdentity\Tweek.Addons.Auth.PingIdentity.csproj" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0-msbuild3-final" />
