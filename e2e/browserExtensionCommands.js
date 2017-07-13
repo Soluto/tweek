@@ -23,19 +23,4 @@ module.exports = function (browser) {
     this.waitForVisible(selector, timeout);
     this.click(selector);
   });
-
-  browser.addCommand('waitForVisibleWithRefresh', function (selector, timeout, retries = 3) {
-    let retiresLeft = retries;
-    let exception;
-    while (retiresLeft > 0) {
-      try {
-        this.waitForVisible(selector, timeout / retries);
-        break;
-      } catch (error) {
-        retiresLeft--;
-        exception = error;
-      }
-    }
-    if(!retiresLeft) throw exception;
-  });
 };
