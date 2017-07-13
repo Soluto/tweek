@@ -6,7 +6,7 @@
 
 Tweek is an open source feature management solution for customizing applications and system behavior without deploying new code.
 
-Tweek aims to be a complete open-source alternative to other industry feature/configuration/experiment management solutions such as Facebook's Gatekeeper, LinkedIn's XLNT, Dropbox's Strormcrow and other commercial SaaS solutions...
+Tweek aims to be a complete open-source alternative to other industry feature/configuration/experiment management solutions such as Facebook's Gatekeeper, LinkedIn's XLNT, Dropbox's Stormcrow and other commercial SaaS solutions...
 
 #### Features
 - Feature toggles, gradual release
