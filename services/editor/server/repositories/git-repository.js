@@ -72,10 +72,10 @@ export default class GitRepository {
     walker.push(sha);
     walker.sorting(Git.Revwalk.SORT.TIME);
 
-    const historyEntries = [];
+    let historyEntries = [];
     for(let i = 0; i < fileNames.length; i++) {
       const fileName = fileNames[i];
-      historyEntries.push(await walker.fileHistoryWalk(fileName, 5000));
+      historyEntries = [...historyEntries, ...(await walker.fileHistoryWalk(fileName, 5000))];
     }
 
     const mapEntry = ({ commit }) => ({
@@ -85,7 +85,7 @@ export default class GitRepository {
       message: commit.message(),
     });
 
-    const uniqSort = R.pipe(R.chain(R.map(mapEntry)), R.uniqBy(R.prop('sha')), R.sort(R.descend(R.prop('date'))));
+    const uniqSort = R.pipe(R.map(mapEntry), R.uniqBy(R.prop('sha')), R.sort(R.descend(R.prop('date'))));
 
     return uniqSort(historyEntries);
   }
