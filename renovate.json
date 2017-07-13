@@ -3,7 +3,7 @@
   "logFile": null,
   "logFileLevel": "debug",
   "packageFiles": [],
-  "depTypes": ["dependencies", "devDependencies", "optionalDependencies"],
+  "depTypes": ["dependencies"],
   "separateMajorReleases": true,
   "ignoreDeps": [],
   "ignoreFuture": true,
