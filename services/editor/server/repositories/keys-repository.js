@@ -31,6 +31,15 @@ function getNewJpadFormatSourceIfNeeded(originalJpadSource) {
   });
 }
 
+//todo remove legacy
+function getLegacyPathForManifest(keyName) {
+  return `meta/${keyName}.json`;
+}
+
+function getLegacyPathForSourceFile(manifest) {
+  return `rules/${manifest.key_path}.${manifest.implementation.format}`;
+}
+
 function getPathForManifest(keyName) {
   return `manifests/${keyName}.json`;
 }
@@ -52,31 +61,40 @@ async function updateKey(gitRepo, keyPath, manifest, fileImplementation) {
 }
 
 async function getKeyDef(manifest, repo, revision) {
-  if (manifest.implementation.type === 'file') {
+  switch (manifest.implementation.type) {
+  case 'file':
+    let source;
+    try {
+      source = await repo.readFile(getPathForSourceFile(manifest), { revision });
+    } catch (err) {
+      source = await repo.readFile(getLegacyPathForSourceFile(manifest), { revision });
+    }
     const keyDef = {
-      source: await repo.readFile(getPathForSourceFile(manifest), { revision }),
+      source,
       type: manifest.implementation.format,
     };
     if (manifest.implementation.format === 'jpad') {
       keyDef.source = getNewJpadFormatSourceIfNeeded(keyDef.source);
     }
     return keyDef;
-  }
-  if (manifest.implementation.type === 'const') {
+
+  case 'const':
     return { source: JSON.stringify(manifest.implementation.value), type: 'const' };
+
+  default:
+    throw new Error('unsupported type');
   }
-  throw new Error('unsupported type');
 }
 
 async function getRevisionHistory(manifest, repo) {
   const files = [
-    `meta/${manifest.key_path}.json`,
+    getLegacyPathForManifest(manifest.key_path),
     getPathForManifest(manifest.key_path),
   ];
 
   if (manifest.implementation.type === 'file') {
     files.concat(
-      `rules/${manifest.key_path}.${manifest.implementation.format}`,
+      getLegacyPathForSourceFile(manifest),
       getPathForSourceFile(manifest),
     );
   }
@@ -85,9 +103,16 @@ async function getRevisionHistory(manifest, repo) {
 }
 
 async function getManifestFile(keyPath, gitRepo, revision) {
-  const pathForManifest = getPathForManifest(keyPath);
   try {
-    return JSON.parse(await gitRepo.readFile(pathForManifest, { revision }));
+    let fileContent;
+    try {
+      const pathForManifest = getPathForManifest(keyPath);
+      fileContent = await gitRepo.readFile(pathForManifest, { revision });
+    } catch (exp) {
+      const pathForManifest = getLegacyPathForManifest(keyPath);
+      fileContent = await gitRepo.readFile(pathForManifest, { revision });
+    }
+    return JSON.parse(fileContent);
   } catch (exp) {
     return generateEmptyManifest(keyPath);
   }
