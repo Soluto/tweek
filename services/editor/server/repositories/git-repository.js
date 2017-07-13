@@ -87,9 +87,16 @@ export default class GitRepository {
   }
 
   async updateFile(fileName, content) {
-    const filePath = path.join(this._repo.workdir(), fileName);
+    const workdir = this._repo.workdir();
+    const filePath = path.join(workdir, fileName);
     await fs.ensureFile(filePath);
     await fs.writeFile(filePath, content);
+
+    const stats = await fs.lstat(filePath);
+    if (stats.isSymbolicLink()) {
+      const symlink = await fs.readlink(filePath);
+      fileName = path.relative(workdir, symlink);
+    }
 
     const repoIndex = await this._repo.index();
     await repoIndex.addByPath(fileName);
@@ -98,7 +105,14 @@ export default class GitRepository {
   }
 
   async deleteFile(fileName) {
-    const filePath = path.join(this._repo.workdir(), fileName);
+    const workdir = this._repo.workdir();
+    const filePath = path.join(workdir, fileName);
+
+    const stats = await fs.lstat(filePath);
+    if (stats.isSymbolicLink()) {
+      const symlink = await fs.readlink(filePath);
+      fileName = path.relative(workdir, symlink);
+    }
 
     await fs.remove(filePath);
 
