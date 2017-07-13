@@ -73,7 +73,7 @@ export default class GitRepository {
     walker.sorting(Git.Revwalk.SORT.TIME);
 
     let historyEntries = [];
-    for(let i = 0; i < fileNames.length; i++) {
+    for (let i = 0; i < fileNames.length; i++) {
       const fileName = fileNames[i];
       historyEntries = [...historyEntries, ...(await walker.fileHistoryWalk(fileName, 5000))];
     }
@@ -85,7 +85,11 @@ export default class GitRepository {
       message: commit.message(),
     });
 
-    const uniqSort = R.pipe(R.map(mapEntry), R.uniqBy(R.prop('sha')), R.sort(R.descend(R.prop('date'))));
+    const uniqSort = R.pipe(
+      R.map(mapEntry),
+      R.uniqBy(R.prop('sha')),
+      R.sort(R.descend(R.prop('date'))),
+    );
 
     return uniqSort(historyEntries);
   }
@@ -96,11 +100,8 @@ export default class GitRepository {
     await fs.ensureFile(filePath);
     await fs.writeFile(filePath, content);
 
-    const stats = await fs.lstat(filePath);
-    if (stats.isSymbolicLink()) {
-      const symlink = await fs.readlink(filePath);
-      fileName = path.relative(workdir, symlink);
-    }
+    const realPath = await fs.realpath(filePath);
+    fileName = path.relative(workdir, realPath);
 
     const repoIndex = await this._repo.index();
     await repoIndex.addByPath(fileName);
@@ -112,11 +113,8 @@ export default class GitRepository {
     const workdir = this._repo.workdir();
     const filePath = path.join(workdir, fileName);
 
-    const stats = await fs.lstat(filePath);
-    if (stats.isSymbolicLink()) {
-      const symlink = await fs.readlink(filePath);
-      fileName = path.relative(workdir, symlink);
-    }
+    const realPath = await fs.realpath(filePath);
+    fileName = path.relative(workdir, realPath);
 
     await fs.remove(filePath);
 
