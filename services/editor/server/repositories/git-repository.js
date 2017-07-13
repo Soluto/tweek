@@ -72,7 +72,11 @@ export default class GitRepository {
     walker.push(sha);
     walker.sorting(Git.Revwalk.SORT.TIME);
 
-    const historyEntries =  await Promise.all(fileNames.map(fileName => walker.fileHistoryWalk(fileName, 5000)));
+    const historyEntries = [];
+    for(let i = 0; i < fileNames.length; i++) {
+      const fileName = fileNames[i];
+      historyEntries.push(await walker.fileHistoryWalk(fileName, 5000));
+    }
 
     const mapEntry = ({ commit }) => ({
       sha: commit.sha(),
