@@ -30,8 +30,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.IntegrationTests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.JPad.Utils", "core\JPad\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj", "{DD417D22-0FD8-4A2C-8332-6AD358321070}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Addons.Auth.PingIdentity", "addons\Auth\Tweek.Addons.Auth.PingIdentity\Tweek.Addons.Auth.PingIdentity.csproj", "{4B102DE9-E471-465C-9DAE-8341A5ABBF52}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Couchbase", "addons\Context\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj", "{6BBFF719-3F6E-4296-8E08-7FE0B99A361E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utils", "utils", "{25C9E706-270D-498F-934A-18F9FC7A6129}"
