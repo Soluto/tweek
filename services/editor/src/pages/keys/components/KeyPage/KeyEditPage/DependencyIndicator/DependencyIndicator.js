@@ -19,13 +19,13 @@ const createDependenciesList = (componentName, caption) =>
   compose(
     withState('toggled', 'onToggle', false),
     setPropTypes({ items: PropTypes.array }),
-  )(({ items = [], toggled, onToggle }) =>
+  )(({ items, toggled, onToggle }) =>
     <div
       className={classNames(componentName, 'dependency-indicator-container')}
       data-comp={componentName}
-      data-item-count={items.length}
+      data-loaded={!!items}
     >
-      {items.length
+      {(items && items.length)
         ? <div>
             <ExpanderToggle
               dataComp={`${componentName}-toggle`}
