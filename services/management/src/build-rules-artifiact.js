@@ -18,7 +18,10 @@ module.exports = function(files) {
           case 'file': {
             let format = meta.implementation.format;
             keyDef.format = format;
-            keyDef.payload = await index[`implementations/${meta.key_path}.${format}`].read();
+            keyDef.payload = await index[
+              `implementations/${format}/${meta.key_path}.${meta.implementation.extension ||
+                format}`
+            ].read();
             break;
           }
           case 'const': {

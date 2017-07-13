@@ -25,7 +25,7 @@ describe('build rules artifact', () => {
           format: 'jpad',
         },
       },
-      'implementations/file/jpad.jpad': 'file-content',
+      'implementations/jpad/file/jpad.jpad': 'file-content',
       'manifests/const': {
         key_path: 'const',
         dependencies: [],

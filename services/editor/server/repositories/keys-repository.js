@@ -36,7 +36,7 @@ function getPathForManifest(keyName) {
 }
 
 function getPathForSourceFile(manifest) {
-  return `implementations/${manifest.key_path}.${manifest.implementation.format}`;
+  return `implementations/${manifest.implementation.format}/${manifest.key_path}.${manifest.implementation.extension || manifest.implementation.format}`;
 }
 
 function getKeyFromPath(keyPath) {
@@ -71,13 +71,13 @@ async function getKeyDef(manifest, repo, revision) {
 async function getRevisionHistory(manifest, repo) {
   const files = [
     `meta/${manifest.key_path}.json`,
-    `manifests/${manifest.key_path}.json`,
+    getPathForManifest(manifest.key_path),
   ];
 
   if (manifest.implementation.type === 'file') {
     files.concat(
       `rules/${manifest.key_path}.${manifest.implementation.format}`,
-      `implementations/${manifest.key_path}.${manifest.implementation.format}`
+      getPathForSourceFile(manifest),
     );
   }
 

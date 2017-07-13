@@ -76,7 +76,7 @@ describe('keys-repository', () => {
       ).toBeTruthy();
       expect(
         mockGitRepo.updateFile.mock.calls.some(
-          ([path, source]) => path === `implementations/${testKeyPath}.jpad` && source === testRulesSource,
+          ([path, source]) => path === `implementations/jpad/${testKeyPath}.jpad` && source === testRulesSource,
         ),
       ).toBeTruthy();
     });
@@ -114,7 +114,7 @@ describe('keys-repository', () => {
         mockGitRepo.deleteFile.mock.calls.some(([path]) => path === `manifests/${testKeyPath}.json`),
       ).toBeTruthy();
       expect(
-        mockGitRepo.deleteFile.mock.calls.some(([path]) => path === `implementations/${testKeyPath}.jpad`),
+        mockGitRepo.deleteFile.mock.calls.some(([path]) => path === `implementations/jpad/${testKeyPath}.jpad`),
       ).toBeTruthy();
     });
 
