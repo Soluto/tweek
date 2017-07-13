@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
   selenium:
-    image: selenium/standalone-chrome
+    image: selenium/standalone-chrome:3.4.0
     container_name: selenium
 
   backoffice-e2e:

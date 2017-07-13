@@ -105,7 +105,7 @@ steps:
             - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
             - TWEEK_API_HOSTNAME=http://tweek-api
         selenium:
-          image: selenium/standalone-chrome
+          image: selenium/standalone-chrome:3.4.0
           logging:
             driver: "none"
         tweek-redis:
