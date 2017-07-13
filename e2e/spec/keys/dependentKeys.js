@@ -84,16 +84,17 @@ describe('dependent keys', () => {
 
     // Verify depends on
     keysPageObject.goToKey(keyWithDependencyFullPath);
-    browser.waitForVisibleWithRefresh(keySelectors.DEPENDS_ON_TOGGLE, FIVE_SECONDS);
+    browser.waitForVisible(keySelectors.DEPENDS_ON_TOGGLE, FIVE_SECONDS);
     browser.click(keySelectors.DEPENDS_ON_TOGGLE);
-    const dependsOn = browser.getText(keySelectors.DEPENDS_ON);
-    expect(dependsOn).to.equal(`[-]Depends on:\n${keyWithoutDependencyFullPath}`);
+    browser.waitForVisible(`${keySelectors.DEPENDS_ON} a[href="/keys/${keyWithoutDependencyFullPath}"]`);
 
     // Verify used by
-    keysPageObject.goToKey(keyWithoutDependencyFullPath);
-    browser.waitForVisibleWithRefresh(keySelectors.USED_BY_TOGGLE, FIVE_SECONDS);
+    browser.waitUntil(() => {
+      keysPageObject.goToKey(keyWithoutDependencyFullPath);
+      browser.waitForExist(`${keySelectors.USED_BY}[data-loaded= true]`, 1000);
+      return browser.isVisible(keySelectors.USED_BY_TOGGLE);
+    }, FIVE_SECONDS);
     browser.click(keySelectors.USED_BY_TOGGLE);
-    const usedBy = browser.getText(keySelectors.USED_BY);
-    expect(usedBy).to.equal(`[-]Used by:\n${keyWithDependencyFullPath}`);
+    browser.waitForVisible(`${keySelectors.USED_BY} a[href="/keys/${keyWithDependencyFullPath}"]`);
   });
 });
