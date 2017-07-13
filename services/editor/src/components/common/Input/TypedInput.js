@@ -55,10 +55,10 @@ const TypedInput = compose(
 
 TypedInput.propTypes = {
   placeholder: PropTypes.string,
-  valueType: PropTypes.oneOfType(
+  valueType: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.shape({ base: PropTypes.string.isRequired }),
-  ).isRequired,
+  ]).isRequired,
   onChange: PropTypes.func,
   value: PropTypes.any,
 };
