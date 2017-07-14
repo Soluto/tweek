@@ -40,20 +40,20 @@ The easiest way to start evaluating Tweek is to run it locally on docker, make s
 - Add default value "red".
 - Save changes.
 - Click on "Add Rule"
-- Set Property to Age (user) and set ">" and 18 in the other fields.
+- Set Property to Country (user) and set "=" and "Canada" in the other fields.
 - In Rule value set the value "blue"
 
 #### Querying Tweek
 Use curl/postman/chrome to fire GET Request:
 - http://localhost:4003/api/v1/keys/my_app/sign_button/color -> expected to be "red"
-- http://localhost:4003/api/v1/keys/my_app/sign_button/color?user.Age=20 -> expected to be "blue"
-- http://localhost:4003/api/v1/keys/my_app/sign_button/_?user.Age=20 -> expected to be {"color":"blue"}
+- http://localhost:4003/api/v1/keys/my_app/sign_button/color?user.Country=canada -> expected to be "blue"
+- http://localhost:4003/api/v1/keys/my_app/sign_button/_?user.Country=canada -> expected to be {"color":"blue"}
 
 More on Tweek Rest api. (link)
 
 #### Adding context data
 Using the API, use curl/postman to fire POST Request:
-- http://localhost:4003/api/v1/context/user/john {"Age":21}
+- http://localhost:4003/api/v1/context/user/john {"Country":"Canada"}
 After that, we can query Tweek API with:
 - http://localhost:4003/api/v1/keys/my_app/sign_button/color?user=john -> expected to be "blue"
 
