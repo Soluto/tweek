@@ -53,7 +53,7 @@ More on Tweek Rest api. (link)
 
 #### Adding context data
 Using the API, use curl/postman to fire POST Request:
-- http://localhost:4003/api/v1/context/user/john {"Country":"Canada"}
+- http://localhost:4003/api/v1/context/user/john {"Country":"Canada"}  
 After that, we can query Tweek API with:
 - http://localhost:4003/api/v1/keys/my_app/sign_button/color?user=john -> expected to be "blue"
 
