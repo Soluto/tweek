@@ -33,14 +33,15 @@ The easiest way to start evaluating Tweek is to run it locally on docker, make s
 - run (``` docker-compose up ```) 
 
 #### Edit your first key
-- Open http://localhost:4004 in browser.
-- Go to keys page.
+- Open http://localhost:4004 in browser
+- Go to keys page
 - Click on "Add New Key"
 - Type my_app/sign_button/color
-- Add default value "red".
-- Save changes.
+- Set value type to String
+- Add default value "red"
+- Save changes
 - Click on "Add Rule"
-- Set Property to Country (user) and set "=" and "Canada" in the other fields.
+- Set Property to Country (user) and set "=" and "Canada" in the other fields
 - In Rule value set the value "blue"
 
 #### Querying Tweek
@@ -60,8 +61,8 @@ After that, we can query Tweek API with:
 More on Context. (link)
 
 #### Gradual Feature Release
-Create new key in the editor "my_app/sign_button/is_enabled" with value type "boolean"
-Add new rule, set the the rule value to gradual release with 50%.
+Create new key in the editor "my_app/sign_button/is_enabled" with value type "boolean" and default value False.  
+Add new rule, remove all conditions, set the the rule value to gradual release with 50%.
 Try querying configuration with different users and You'll have different results.
 - http://localhost:4003/api/v1/keys/my_app/sign_button/is_enabled?user=barny
 - http://localhost:4003/api/v1/keys/my_app/sign_button/is_enabled?user=robin
