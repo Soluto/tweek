@@ -135,4 +135,6 @@ docker-compose -f ./deployments/dev/docker-compose.yml down --remove-orphans
 Create branch with the format {issueNumber}_{someName}  
 Commit, push, create pull request
 
+# Reporting security issues and bugs
 
+Security issues and bugs should be reported privately, via email to tweek@soluto.com.
