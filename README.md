@@ -29,7 +29,7 @@ The easiest way to start evaluating Tweek is to run it locally on docker, make s
 #### Running Tweek
 - clone the repo (``` git clone https://github.com/Soluto/tweek.git ```)
 - go to deployments/dev (``` cd tweek/deployments/dev ```)
-- (optional) pull the images instead of building (docker-compose pull --parallel)
+- (optional) pull the images instead of building (```docker-compose pull --parallel```)
 - run (``` docker-compose up ```) 
 
 #### Edit your first key
