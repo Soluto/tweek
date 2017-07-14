@@ -27,9 +27,9 @@ Tweek aims to be a complete open-source alternative to other industry feature/co
 ### Getting Started
 The easiest way to start evaluating Tweek is to run it locally on docker, make sure you have the latest docker version (17-06+).
 #### Running Tweek
-- clone the repo
-- go to deployments/dev
-- run docker-compose up
+- clone the repo (``` git clone https://github.com/Soluto/tweek.git ```)
+- go to deployments/dev (``` cd tweek/deployments/dev ```)
+- run docker-compose (``` docker-compose up ```) 
 
 #### Edit your first key
 - Open http://localhost:4004 in browser.
