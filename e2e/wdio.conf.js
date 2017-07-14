@@ -1,11 +1,16 @@
 const nconf = require('nconf');
-nconf.argv().env().defaults({BACKOFFICE_URL: "http://localhost:4004/"});
+nconf.argv().env().defaults({EDITOR_URL: "http://localhost:4004/", TWEEK_API_URL: "http://localhost:4003/", GIT_PRIVATE_KEY_PATH: "../services/git-service/ssh/tweekgit"});
 const host = nconf.get('host');
+
+function removeTrailingSlashes(url){
+   return url.endsWith("/") ? 
+          removeTrailingSlashes(url.substring(0, url.length-1)) :
+          url;
+}
 
 exports.config = {
   specs: [
-    './spec/*.js',
-    './spec/*/*.js',
+    './spec/**/*.js',
   ],
   exclude: [
   ],
@@ -36,7 +41,7 @@ exports.config = {
   //
   // Set a base URL in order to shorten url command calls. If your url parameter starts
   // with "/", then the base url gets prepended.
-  //baseUrl: 'http://localhost:3000',
+  baseUrl: removeTrailingSlashes(nconf.get("EDITOR_URL")),
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,

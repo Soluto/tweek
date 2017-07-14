@@ -1,22 +1,20 @@
 import assert from 'assert';
-import KeysPageObject from './KeysPageObject';
+import KeysPageObject from './utils/KeysPageObject';
 import PageAsserts from './PageAsserts';
-import { selectors } from './selectors';
+import selectors from './selectors/keySelectors';
 import { expect } from 'chai';
-import { diff } from 'deep-diff';
 
 export default class KeysAsserts {
 
   constructor(keysPageObject, browser) {
     this.keysPageObject = keysPageObject;
     this.browser = browser;
-    this.pageAsserts = new PageAsserts(keysPageObject);
   }
 
   assertKeyOpened(keyName) {
     this.assertIsInKeyPage(keyName, `should be in ${keyName} key page`);
     browser.waitForVisible(selectors.KEY_VIEWER_CONTAINER, 4000);
-    assert(!this.keysPageObject.hasChanges(), 'should not has changes');
+    assert(!this.keysPageObject.hasChanges(), 'should not have changes');
     assert(!this.keysPageObject.isSaving(), 'should not be in saving state');
   }
 
@@ -40,8 +38,7 @@ export default class KeysAsserts {
     deleteIds(keySourceObject.rules, keySourceObject.partitions.length);
     deleteIds(expectedSourceObject.rules, expectedSourceObject.partitions.length);
 
-    const diffs = diff(keySourceObject, expectedSourceObject);
-    expect(diffs).to.equal(undefined, message + '. diffs are:' + JSON.stringify(diffs));
+    assert.deepEqual(keySourceObject, expectedSourceObject);
   }
 
   assertKeyHasNumberOfRules(expectedNumberOfRules, message = 'should have correct ammount of rules') {
@@ -49,7 +46,7 @@ export default class KeysAsserts {
   }
 
   assertIsInKeyPage(expectedKey, message) {
-    this.pageAsserts.assertIsInPage(`${KeysPageObject.KEYS_PAGE_URL}/${expectedKey}`, message);
+    PageAsserts.assertIsInPage(`${KeysPageObject.KEYS_PAGE_URL}/${expectedKey}`, message);
   }
 
   assertIsKeyExistsAfterTransaction(keyName, isExisting, message) {

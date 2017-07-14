@@ -27,7 +27,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                 new TestContext
                 {
                     TestName = COMPARISON_OPERATORS_TEST_NAME_4,
-                    KeyName = "@tests/ruleBasedKeys/comparison",
+                    KeyName = "@smoke_tests/rule_based_keys/comparison",
                     ExpectedValue = "value4",
                     Context = new Dictionary<string, JsonValue>
                     {
@@ -39,7 +39,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                 new TestContext
                 {
                     TestName = COMPARISON_OPERATORS_TEST_NAME_3,
-                    KeyName = "@tests/ruleBasedKeys/comparison",
+                    KeyName = "@smoke_tests/rule_based_keys/comparison",
                     ExpectedValue = "value3",
                     Context = new Dictionary<string, JsonValue>
                     {
@@ -51,7 +51,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                 new TestContext
                 {
                     TestName = COMPARISON_OPERATORS_TEST_NAME_2,
-                    KeyName = "@tests/ruleBasedKeys/comparison",
+                    KeyName = "@smoke_tests/rule_based_keys/comparison",
                     ExpectedValue = "value2",
                     Context = new Dictionary<string, JsonValue>
                     {
@@ -63,7 +63,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                 new TestContext
                 {
                     TestName = COMPARISON_OPERATORS_TEST_NAME_1,
-                    KeyName = "@tests/ruleBasedKeys/comparison",
+                    KeyName = "@smoke_tests/rule_based_keys/comparison",
                     ExpectedValue = "value1"
                 }};
         }
@@ -74,7 +74,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                 new TestContext
                 {
                     TestName = IN_OPERATOR_TEST_NAME_4,
-                    KeyName = "@tests/ruleBasedKeys/in",
+                    KeyName = "@smoke_tests/rule_based_keys/in",
                     ExpectedValue = "value4",
                     Context = new Dictionary<string, JsonValue>
                     {
@@ -86,7 +86,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                 new TestContext
                 {
                     TestName = IN_OPERATOR_TEST_NAME_3,
-                    KeyName = "@tests/ruleBasedKeys/in",
+                    KeyName = "@smoke_tests/rule_based_keys/in",
                     ExpectedValue = "value3",
                     Context = new Dictionary<string, JsonValue>
                     {
@@ -98,7 +98,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                 new TestContext
                 {
                     TestName = IN_OPERATOR_TEST_NAME_2,
-                    KeyName = "@tests/ruleBasedKeys/in",
+                    KeyName = "@smoke_tests/rule_based_keys/in",
                     ExpectedValue = "value2",
                     Context = new Dictionary<string, JsonValue>
                     {
@@ -110,7 +110,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                 new TestContext
                 {
                    TestName = IN_OPERATOR_TEST_NAME_1,
-                   KeyName = "@tests/ruleBasedKeys/in",
+                   KeyName = "@smoke_tests/rule_based_keys/in",
                    ExpectedValue = "value1"
                 }};
         }
@@ -121,7 +121,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                 new TestContext
                 {
                     TestName = MULTI_CONDITONS_TEST_NAME_4,
-                    KeyName = "@tests/ruleBasedKeys/multi_conditions",
+                    KeyName = "@smoke_tests/rule_based_keys/multi_conditions",
                     ExpectedValue = "value4",
                     Context = new Dictionary<string, JsonValue>
                     {
@@ -141,7 +141,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                 new TestContext
                 {
                     TestName = MULTI_CONDITONS_TEST_NAME_3,
-                    KeyName = "@tests/ruleBasedKeys/multi_conditions",
+                    KeyName = "@smoke_tests/rule_based_keys/multi_conditions",
                     ExpectedValue = "value3",
                     Context = new Dictionary<string, JsonValue>
                     {
@@ -155,7 +155,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                 new TestContext
                 {
                     TestName = MULTI_CONDITONS_TEST_NAME_2,
-                    KeyName = "@tests/ruleBasedKeys/multi_conditions",
+                    KeyName = "@smoke_tests/rule_based_keys/multi_conditions",
                     ExpectedValue = "value2",
                     Context = new Dictionary<string, JsonValue>
                     {
@@ -168,7 +168,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                 new TestContext
                 {
                     TestName = MULTI_CONDITONS_TEST_NAME_1,
-                    KeyName = "@tests/ruleBasedKeys/multi_conditions",
+                    KeyName = "@smoke_tests/rule_based_keys/multi_conditions",
                     ExpectedValue = "value1"
                 }};
         }

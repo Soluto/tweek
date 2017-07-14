@@ -1,0 +1,25 @@
+@text-color: #a5a5a5;
+
+.revision-history {
+  align-self: flex-start;
+}
+
+.modification-details-text {
+  color: @text-color;
+  font-size: 14px;
+  margin-left: 5px;
+  margin-bottom: 4px;
+  a {
+    color: @text-color;
+    text-decoration: none;
+    label {
+      cursor: pointer;
+    }
+    &:hover, &:active {
+      text-decoration: underline;
+    }
+    &:visited {
+      color: @text-color;
+    }
+  }
+}

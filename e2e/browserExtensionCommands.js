@@ -1,4 +1,6 @@
 module.exports = function (browser) {
+  browser.addCommand("runAsync", fn => fn());
+
   browser.addCommand('waitForAlert', function (timeout, timeoutMsg, interval) {
     return this.waitUntil(() => this.alertText(), timeout, timeoutMsg, interval);
   });

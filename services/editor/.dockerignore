@@ -1,8 +1,11 @@
+build/
+dist/
+rulesRepository/
 node_modules/
 .git/
 coverage-unit/
-.build/
 .typings/
+vapid/
 .env
 Dockerfile
 docker-compose*

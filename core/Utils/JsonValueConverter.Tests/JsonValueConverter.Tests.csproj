@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="LanguageExt.Core" version="1.9.7" />
-    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" version="0.1.6233.20455" />
+    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />

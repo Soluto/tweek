@@ -1,1 +1,0 @@
-envsubst < ./NuGet.Config.tmpl > NuGet.Config

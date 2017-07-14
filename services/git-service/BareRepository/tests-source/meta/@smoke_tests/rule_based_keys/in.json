@@ -1,0 +1,15 @@
+{
+    "key_path": "@smoke_tests/rule_based_keys/in",
+    "meta": {
+        "description": "",
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "file",
+        "format": "jpad"
+    },
+    "valueType": "string",
+    "enabled": true,
+    "dependencies": []
+}

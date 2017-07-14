@@ -24,7 +24,9 @@ namespace Engine.Tests.TestDrivers
             this.rules = rules;
         }
 
+#pragma warning disable 0067
         public event Action<IDictionary<string, RuleDefinition>> OnRulesChange;
+#pragma warning restore 0067
 
         public async Task<Dictionary<string, RuleDefinition>> GetAllRules()
         {

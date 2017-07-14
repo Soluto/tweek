@@ -1,0 +1,194 @@
+version: '1.0'
+steps:
+  BuildGitKeys:
+    title: Building Git Keys Docker Image
+    type: build
+    image_name: soluto/git-keys
+    working_directory: ./services/git-service/ssh/
+
+  BuildingGitRepository:
+    title: Building Git Repository Docker Image
+    type: build
+    image_name: soluto/tweek-bare-repo
+    working_directory: ./services/git-service/BareRepository/
+
+  BuildingApiImage:
+    title: Building Tweek Api Docker Image
+    type: build
+    image_name: soluto/tweek-api
+    working_directory: ${{main_clone}}
+    dockerfile: TweekApiDockerfile
+    build_arguments: 
+      - VERSION_SUFFIX=ci-${{CF_BUILD_ID}}-${{CF_SHORT_REVISION}}
+    
+  BuildingManagement:
+    title: Building Management Docker Image
+    type: build
+    image_name: soluto/tweek-management
+    working_directory: ./services/management/
+
+  BuildingEditor:
+    title: Building Editor Docker Image
+    type: build
+    image_name: soluto/tweek-editor
+    working_directory: ./services/editor/
+
+  BuildingTests:
+    title: Building E2E Tests Docker Image
+    type: build
+    image_name: soluto/backoffice-e2e
+    working_directory: ./e2e/
+
+  Tests:
+    title: Tests - e2e & smoke
+    type: composition
+    composition:
+      version: '2'
+      services:
+        keys:
+          image: ${{BuildGitKeys}}
+        tweek-git:
+          image: ${{BuildingGitRepository}}
+          volumes_from:
+            - keys
+          environment:
+            - PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
+            - TWEEK_MANAGEMENT_URL=http://tweek-management:3000
+        tweek-management:
+          image: ${{BuildingManagement}}
+          depends_on:
+            - tweek-git
+          volumes_from:
+            - keys
+          logging:
+            driver: "none"
+          environment:
+            - GIT_USER=git
+            - GIT_URL=ssh://git@tweek-git/tweek/tests
+            - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+            - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
+            - VALIDATION_URL=http://tweek-api/validation
+        tweek-api:
+          image: ${{BuildingApiImage}}
+          depends_on:
+            - tweek-management
+            - tweek-redis
+          volumes_from:
+            - keys
+          environment:
+            - Rules__Management__Url=http://tweek-management:3000
+            - Rules__Management__SampleIntervalInMs=500
+            - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
+            - ContextProvider=redis
+            - Redis__ConnectionString=tweek-redis:6379
+            - Addons__Redis__ClassName=Tweek.Drivers.Redis.RedisServiceAddon
+            - Addons__Redis__AssemblyName=Tweek.Drivers.Redis
+            - CorsPolicies__Keys__Origins=http://tweek-editor:3000,http://testorigin
+            - CorsPolicies__Keys__Methods=GET
+            - CorsPolicies__Keys__MaxPreflightAge=60
+            - CorsEnabled=true
+            - CorsPolicies__Keys__Headers=
+            - CorsPolicies__Keys__ExposedHeaders=
+        tweek-editor:
+          image: ${{BuildingEditor}}
+          depends_on:
+            - tweek-api
+            - tweek-git
+          volumes_from:
+            - keys
+          logging:
+            driver: "none"
+          environment:
+            - GIT_USER=git
+            - GIT_URL=ssh://git@tweek-git/tweek/tests
+            - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+            - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
+            - TWEEK_API_HOSTNAME=http://tweek-api
+        selenium:
+          image: selenium/standalone-chrome
+          logging:
+            driver: "none"
+        tweek-redis:
+          image: redis:alpine
+          expose:
+            - "6379"
+          logging:
+            driver: "none"
+    composition_candidates:
+      smoke-tests:
+        image: microsoft/aspnetcore-build:1.1.2
+        depends_on: 
+          - tweek-api
+        volumes:
+          - ${{CF_VOLUME}}:/repo
+        working_dir: /repo/tweek
+        environment: 
+          - TWEEK_API_URL=http://tweek-api/
+        command: /bin/bash -c "dotnet restore services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release"
+      backoffice-e2e:
+        image: ${{BuildingTests}}
+        volumes_from:
+          - keys
+        depends_on: 
+          - selenium
+          - tweek-editor
+          - tweek-api
+        environment:
+          - EDITOR_URL=http://tweek-editor:3000/
+          - TWEEK_API_URL=http://tweek-api/
+          - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && yarn test -- --host selenium --port 4444"
+    on_success:
+      metadata:
+        set:
+          - '${{BuildingApiImage.imageId}}':
+            - CF_QUALITY: true
+          - '${{BuildingManagement.imageId}}':
+            - CF_QUALITY: true
+          - '${{BuildingEditor.imageId}}':
+            - CF_QUALITY: true
+    on_fail:
+      metadata:
+        set:
+          - '${{BuildingApiImage.imageId}}':
+            - CF_QUALITY: false
+          - '${{BuildingManagement.imageId}}':
+            - CF_QUALITY: false
+          - '${{BuildingEditor.imageId}}':
+            - CF_QUALITY: false
+
+  PushApiImageMaster:
+    type: push
+    title: Push Tweek Api - lastest
+    when:
+      branch:
+        only:
+          - master
+    candidate: ${{BuildingApiImage}}
+
+  PushManagementImageMaster:
+    type: push
+    title: Push Management - lastest
+    when:
+      branch:
+        only:
+          - master
+    candidate: ${{BuildingManagement}}
+
+  PushEditorImageMaster:
+    type: push
+    title: Push Editor - latest
+    when:
+      branch:
+        only:
+          - master
+    candidate: ${{BuildingEditor}}
+
+  PushGitRepositoryMaster:
+    type: push
+    title: Push Git Repository - latest
+    when:
+      branch:
+        only:
+          - master
+    candidate: ${{BuildingGitRepository}}

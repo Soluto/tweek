@@ -1,0 +1,27 @@
+@import (reference) "../../../../styles/core/core.less";
+.rule-container {
+    display: flex;
+    padding: 10px;
+    width: 100%;
+    .transitioned();
+    &.default-value {
+        background-color: #ebebeb;
+    }
+    .rule-partial-title {
+        color: gray;
+        font-size: 13px;
+        margin-bottom: 5px;
+    }
+    .conditions {
+        flex-basis: 60%;
+        border-right: 1px solid lightgray;
+        padding-right: 5px;
+    }
+    .values {
+        margin-left: 10px;
+        margin-left: 10px;
+        display: flex;
+        flex-grow: 1;
+        flex-direction: column;
+    }
+}

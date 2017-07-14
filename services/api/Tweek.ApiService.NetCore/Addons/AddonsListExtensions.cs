@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using LanguageExt;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Tweek.ApiService.Addons;
-using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Tweek.ApiService.NetCore.Addons
 {
@@ -14,40 +16,52 @@ namespace Tweek.ApiService.NetCore.Addons
     {
         public static void InstallAddons(this IApplicationBuilder app, IConfiguration configuration)
         {
-            var selectedAddons = configuration.GetSection("Addons").GetChildren().ToDictionary(x=>x.Key, x=>x.Value);
+            ForEachAddon(configuration, addon => addon.Use(app, configuration));
+        }
+
+        public static void RegisterAddonServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            ForEachAddon(configuration, addon => addon.Configure(services, configuration));
+        }
+
+        private static void ForEachAddon(IConfiguration configuration, Action<ITweekAddon> action)
+        {
+            foreach (var tweekAddon in GetAddons(configuration))
+            {
+                action(tweekAddon);
+            }
+        }
+
+        private static IEnumerable<ITweekAddon> GetAddons(IConfiguration configuration)
+        {
+            if (mAddonsCache != null) return mAddonsCache;
+
+            var selectedAddons = new HashSet<string>(
+                configuration.GetSection("Addons")
+                .GetChildren()
+                .Select(x => Assembly.CreateQualifiedName(x["AssemblyName"], x["ClassName"]))
+            );
 
             var dependencies = DependencyContext.Default.RuntimeLibraries;
 
-            var assemblies = dependencies.SelectMany(dep =>
-            {
-                try
-                {
+            var assemblies = dependencies
+                .SelectMany(library => library.GetDefaultAssemblyNames(DependencyContext.Default).Select(Assembly.Load));
 
-                    return new[] { Assembly.Load(new AssemblyName(dep.Name)) };
-                }
-                catch (Exception ex)
-                {
-                    return new Assembly[] { };
-                }
-            }).ToArray();
+            var addonTypes = assemblies.Bind(x => x.GetTypes())
+                .Filter(x => x != typeof(ITweekAddon) && typeof(ITweekAddon).IsAssignableFrom(x));
 
-            var addonTypes = assemblies.Bind(x =>
-            {
-                try
-                {
-                    return x.GetTypes();
-                }
-                catch (Exception ex)
-                {
-                    return new Type[] {};
-                }
-            }).Filter(x => x != typeof(ITweekAddon) && typeof(ITweekAddon).IsAssignableFrom(x)).ToArray();
+            mAddonsCache = addonTypes.Filter(type => selectedAddons.Contains(type.AssemblyQualifiedNameWithoutVersion()))
+                .Map(t => (ITweekAddon)Activator.CreateInstance(t));
 
-            foreach  (ITweekAddon addon in addonTypes
-                .Filter(addonType=> selectedAddons.ContainsKey(addonType.FullName))
-                .Map(t => (ITweekAddon)Activator.CreateInstance(t))) {
-                addon.Install(app, configuration);
-            }
+            return mAddonsCache;
+        }
+
+        private static IEnumerable<ITweekAddon> mAddonsCache;
+
+        private static string AssemblyQualifiedNameWithoutVersion(this Type type)
+        {
+            return Assembly.CreateQualifiedName(type.GetTypeInfo().Assembly.GetName().Name, type.FullName);
         }
     }
+
 }

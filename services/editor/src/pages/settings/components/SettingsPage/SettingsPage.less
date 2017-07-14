@@ -1,0 +1,51 @@
+@import (reference) "../../../../styles/core/core.less";
+.schema-page-container {
+  display: flex;
+  flex-grow: 1;
+  background-color: #eee;
+  .side-menu{
+    color: #d8d8d8;
+    font-size: 16px;
+    text-decoration: none;
+    display: flex;
+    flex-basis: 400px;
+    flex-direction: column;
+    background:#414b53;
+    ul{
+       display: flex;
+       padding-left: 20px;
+       flex-direction: column;
+    }
+    li {
+        > div[data-comp=group]{
+          padding: 10px;
+          background-color: #333b41;
+        }
+        flex-direction: column;
+        background:#414b53;
+        margin: 6px 0;
+        display: flex;
+        a{
+          font-size: 16px;
+          color: #d8d8d8;
+          text-decoration: none;
+        }
+    }
+    >li{
+      margin: 0; 
+    }
+    [data-comp=AddNewIdentity]{
+        button{
+          .metro-button;
+          font-size: 14px;
+          padding-left: 15px ;
+          padding-right: 15px ;
+        }
+        input{
+          color:#d8d8d8;
+          font-size: 16px;
+          color: #d8d8d8;
+        }
+    }
+  }
+}

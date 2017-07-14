@@ -1,8 +1,14 @@
-.build
-.env
-lib
-rulesRepository/
-coverage-unit/
-node_modules/
-typings/
-config*.json
+# dependencies
+/node_modules
+
+# testing
+/coverage-unit
+
+# production
+/build
+/dist
+/rulesRepository
+/vapid
+*.bundle.js
+*.bundle.js.map
+searchIndex.json

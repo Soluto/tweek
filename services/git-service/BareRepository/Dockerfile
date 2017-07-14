@@ -24,12 +24,12 @@ RUN mkdir repo && cd repo && git init --bare
 RUN mkdir tests && cd tests && git init --bare
 RUN cd ./source && git init && git add . && git commit -m "init"  && git push ../repo master
 RUN cd ./tests-source && git init && git add . && git commit -m "init"  && git push ../tests master
-COPY pre-receive /tweek/repo/hooks/pre-receive
-COPY pre-receive /tweek/tests/hooks/pre-receive
+COPY pre-receive.sh /tweek/repo/hooks/pre-receive
+COPY pre-receive.sh /tweek/tests/hooks/pre-receive
 VOLUME /tweek/repo
 
 COPY sshd_config /etc/ssh/sshd_config
-COPY init init.sh
+COPY init.sh init.sh
 
 EXPOSE 22
 

@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Couchbase;
+using Couchbase.Configuration.Client;
 using Engine.DataTypes;
+using Engine.Drivers.Context;
 using Engine.Drivers.Rules;
 using Engine.Tests.Helpers;
 using Engine.Tests.TestDrivers;
-using Newtonsoft.Json;
-using Xunit;
-using Tweek.JPad.Generator;
-using MatcherData = System.Collections.Generic.Dictionary<string, object>;
-using Couchbase.Configuration.Client;
 using FSharpUtils.Newtonsoft;
+using Newtonsoft.Json;
+using Tweek.JPad.Generator;
 using Tweek.Utils;
+using Xunit;
+using MatcherData = System.Collections.Generic.Dictionary<string, object>;
 
-namespace Engine.Tests
+namespace Engine.IntegrationTests
 {
     public class CouchBaseFixture
     {
@@ -73,7 +74,7 @@ namespace Engine.Tests
             driver = fixture.Driver;
         }
 
-        async Task Run(Func<ITweek, Task> test)
+        async Task Run(Func<ITweek, IContextDriver, Task> test)
         {
             var scope = driver.SetTestEnviornment(contexts, paths, rules);
             await scope.Run(test);
@@ -89,15 +90,15 @@ namespace Engine.Tests
                 ["abc/somepath"] = JPadGenerator.New().AddSingleVariantRule(matcher: "{}", value: "SomeValue").Generate()
             };
 
-            await Run(async tweek =>
+            await Run(async (tweek, context) =>
             {
-                var val = await tweek.Calculate("_", NoIdentities);
+                var val = await tweek.GetContextAndCalculate("_", NoIdentities, context);
                 Assert.Equal("SomeValue", val["abc/somepath"].Value.AsString());
 
-                val = await tweek.Calculate("abc/_", NoIdentities);
+                val = await tweek.GetContextAndCalculate("abc/_", NoIdentities, context);
                 Assert.Equal( "SomeValue", val["abc/somepath"].Value.AsString());
 
-                val = await tweek.Calculate("abc/somepath", NoIdentities);
+                val = await tweek.GetContextAndCalculate("abc/somepath", NoIdentities, context);
                 Assert.Equal( "SomeValue", val["abc/somepath"].Value.AsString());
             });
         }
@@ -110,9 +111,9 @@ namespace Engine.Tests
             rules = paths.ToDictionary(x => x,
                 x => JPadGenerator.New().AddSingleVariantRule(matcher: "{}", value: "SomeValue").Generate());
 
-            await Run(async tweek =>
+            await Run(async (tweek, context) =>
             {
-                var val = await tweek.Calculate("abc/_", NoIdentities);
+                var val = await tweek.GetContextAndCalculate("abc/_", NoIdentities, context);
                 Assert.Equal(3, val.Count);
                 Assert.Equal("SomeValue",val["abc/somepath"].Value.AsString());
                 Assert.Equal("SomeValue",val["abc/otherpath"].Value.AsString());
@@ -128,9 +129,9 @@ namespace Engine.Tests
             rules = paths.ToDictionary(x => x,
                 x => JPadGenerator.New().AddSingleVariantRule(matcher: "{}", value: "SomeValue").Generate());
 
-            await Run(async tweek =>
+            await Run(async (tweek, context) =>
             {
-                var val = await tweek.Calculate(new List<ConfigurationPath>{"abc/_", "def/_"}, NoIdentities);
+                var val = await tweek.GetContextAndCalculate(new List<ConfigurationPath>{"abc/_", "def/_"}, NoIdentities, context);
                 Assert.Equal(4, val.Count);
                 Assert.Equal("SomeValue", val["abc/somepath"].Value.AsString());
                 Assert.Equal("SomeValue", val["abc/otherpath"].Value.AsString());
@@ -147,9 +148,9 @@ namespace Engine.Tests
             rules = paths.ToDictionary(x => x,
                 x => JPadGenerator.New().AddSingleVariantRule(matcher: "{}", value: "SomeValue").Generate());
 
-            await Run(async tweek =>
+            await Run(async (tweek, context) =>
             {
-                var val = await tweek.Calculate(new List<ConfigurationPath> { "abc/_", "abc/nested/_" }, NoIdentities);
+                var val = await tweek.GetContextAndCalculate(new List<ConfigurationPath> { "abc/_", "abc/nested/_" }, NoIdentities, context);
                 Assert.Equal(3, val.Count);
                 Assert.Equal("SomeValue", val["abc/somepath"].Value.AsString());
                 Assert.Equal("SomeValue", val["abc/otherpath"].Value.AsString());
@@ -173,15 +174,15 @@ namespace Engine.Tests
                         }), value: "SomeValue").Generate()
             };
 
-            await Run(async tweek =>
+            await Run(async (tweek, context) =>
             {
-                var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
+                var val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context);
                 Assert.Equal(0, val.Count);
 
-                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "2") });
+                val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "2") }, context);
                 Assert.Equal(0, val.Count);
 
-                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "3") });
+                val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "3") }, context);
                 Assert.Equal("SomeValue", val["abc/somepath"].Value.AsString());
             });
         }
@@ -202,15 +203,15 @@ namespace Engine.Tests
                 }), value: "SomeValue").Generate()
             };
 
-            await Run(async tweek =>
+            await Run(async (tweek, context) =>
             {
-                var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
+                var val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context);
                 Assert.Equal(0, val.Count);
                 
-                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("user", "1") });
+                val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("user", "1") }, context);
                 Assert.Equal(0, val.Count);
 
-                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1"), new Identity("user", "1") });
+                val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1"), new Identity("user", "1") }, context);
                 Assert.Equal("SomeValue", val["abc/somepath"].Value.AsString());
             });
         }
@@ -227,9 +228,9 @@ namespace Engine.Tests
                                                       .AddSingleVariantRule(matcher: "{}", value: "BadValue").Generate(),
             };
 
-            await Run(async tweek =>
+            await Run(async (tweek, context) =>
             {
-                var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
+                var val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context);
                 Assert.Equal( "SomeValue", val["abc/somepath"].Value.AsString());
             });
         }
@@ -253,9 +254,9 @@ namespace Engine.Tests
             };
 
 
-            await Run(async tweek =>
+            await Run(async (tweek, context) =>
             {
-                var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
+                var val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context);
                 Assert.Equal("SomeValue", val["abc/somepath"].Value.AsString());
             });
         }
@@ -279,15 +280,15 @@ namespace Engine.Tests
                                 }), ownerType: "device").Generate()
             };
             
-            await Run(async tweek =>
+            await Run(async (tweek, context) =>
             {
-                var val = await tweek.Calculate("abc/_", new HashSet<Identity> { });
+                var val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { }, context);
                 Assert.Equal(0, val.Count);
-                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1")});
+                val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1")}, context);
                 Assert.True(val["abc/somepath"].Value.AsString() == "true" || val["abc/somepath"].Value.AsString() == "false");
                 await Task.WhenAll(Enumerable.Range(0, 10).Select(async x =>
                 {
-                    Assert.Equal((await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }))["abc/somepath"].Value, val["abc/somepath"].Value);
+                    Assert.Equal((await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context))["abc/somepath"].Value, val["abc/somepath"].Value);
                 }));
             });
         }
@@ -307,9 +308,9 @@ namespace Engine.Tests
                         }), value: "true").Generate()
             };
 
-            await Run(async tweek =>
+            await Run(async (tweek, context) =>
             {
-                var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
+                var val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context);
                 Assert.Equal("true", val["abc/somepath"].Value.AsString());
             });
         }
@@ -337,61 +338,16 @@ namespace Engine.Tests
                         .Generate()
             };
 
-            await Run(async tweek =>
+            await Run(async (tweek, context) =>
             {
-                var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
+                var val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context);
                 Assert.Equal("true", val["abc/somepath"].Value.AsString());
 
-                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "2") });
+                val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "2") }, context);
                 Assert.Equal("false", val["abc/somepath"].Value.AsString());
 
             });
         }
-
-        /*
-        [Fact]
-        public async Task MultiVariantWithMultipleValueDistrubtion()
-        {
-            contexts = ContextCreator.Merge(
-                       ContextCreator.Create("device", "1", new[] { "@CreationDate", "05/05/05" }),
-                       ContextCreator.Create("device", "2", new[] { "@CreationDate", "07/07/07" }),
-                       ContextCreator.Create("device", "3", new[] { "@CreationDate", "09/09/09" }),
-                       ContextCreator.Create("user", "4", new[] { "@CreationDate", "09/09/09" }));
-
-            paths = new[] { "abc/somepath" };
-            rules = new Dictionary<string, RuleDefinition>()
-            {
-                ["abc/somepath"] = JPadGenerator.New().AddMultiVariantRule(matcher: "{}",
-                    valueDistrubtions: new Dictionary<DateTimeOffset, string>
-                    {
-                        [DateTimeOffset.Parse("06/06/06")] = JsonConvert.SerializeObject(new
-                        {
-                            type = "bernoulliTrial",
-                            args = 1
-                        }),
-                        [DateTimeOffset.Parse("08/08/08")] = JsonConvert.SerializeObject(new
-                        {
-                            type = "bernoulliTrial",
-                            args = 0
-                        })
-                    }, ownerType: "device").Generate()
-            };
-
-            await Run(async tweek =>
-            {
-                var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
-                Assert.Equal(0, val.Count);
-
-                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "2") });
-                Assert.Equal("true", val["somepath"].Value);
-
-                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "3") });
-                Assert.Equal("false", val["somepath"].Value);
-
-                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("user", "4") });
-                Assert.Equal(0, val.Count);
-            });
-        }*/
 
         [Fact]
         public async Task CalculateWithFixedValue()
@@ -410,15 +366,15 @@ namespace Engine.Tests
             };
 
 
-            await Run(async tweek =>
+            await Run(async (tweek, context) =>
             {
-                var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
+                var val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context);
                 Assert.Equal("FixedValue", val["abc/somepath"].Value.AsString());
 
-                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "2") });
+                val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "2") }, context);
                 Assert.Equal("RuleBasedValue", val["abc/somepath"].Value.AsString());
 
-                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "3") });
+                val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "3") }, context);
                 Assert.Equal("FixedValue", val["abc/somepath"].Value.AsString());
                 
             });
@@ -443,18 +399,18 @@ namespace Engine.Tests
                 ["abc/somepath"] = JPadGenerator.New().AddSingleVariantRule(matcher: JsonConvert.SerializeObject(new Dictionary<string, object>()
             {
                 {"@@key:abc/dep_path1", true},
-                {"@@key:abc/dep_path2", true}
+                {"keys.abc/dep_path2", true}
             }),
                 value: true).Generate()
             };
 
-            await Run(async tweek =>
+            await Run(async (tweek, context) =>
             {
-                var val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "1") });
+                var val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context);
                 Assert.Equal(1, val.Count);
                 Assert.Equal("true", val["abc/dep_path1"].Value.AsString());
 
-                val = await tweek.Calculate("abc/_", new HashSet<Identity> { new Identity("device", "2") });
+                val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "2") }, context);
                 Assert.Equal(3, val.Count);
                 Assert.Equal("true", val["abc/dep_path1"].Value.AsString());
                 Assert.Equal("true", val["abc/dep_path2"].Value.AsString());

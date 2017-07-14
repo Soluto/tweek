@@ -12,6 +12,7 @@ using Couchbase.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Dynamic;
+using Couchbase.IO;
 using FSharpUtils.Newtonsoft;
 
 namespace Tweek.Drivers.CouchbaseDriver
@@ -34,43 +35,34 @@ namespace Tweek.Drivers.CouchbaseDriver
             return _getBucket(_bucketName);
         }
 
-        public async Task InsertOrUpdate(string key,
-            Func<IDictionary<string, JsonValue>, IDictionary<string, JsonValue>> updateFn)
-        {
-            var bucket = GetOrOpenBucket();
-            IOperationResult<IDictionary<string, JsonValue>> result = null;
-            var cas = (ulong)0;
-            if (!await bucket.ExistsAsync(key))
-            {
-                var contextWithCreationDate = updateFn(new Dictionary<string, JsonValue>
-                {
-                    ["@CreationDate"] = JsonValue.NewString(DateTimeOffset.UtcNow.ToString())
-                });
-                result = await bucket.UpsertAsync(key, contextWithCreationDate, cas);
-            }
-            while (!(result?.Success ?? false) && cas != result?.Cas)
-            {
-                var doc = bucket.GetDocument<Dictionary<string, JsonValue>>(key);
-                var newData = updateFn(doc.Content ?? new Dictionary<string, JsonValue>());
-                cas = doc.Document.Cas;
-                result = await bucket.UpsertAsync(key, newData, cas);
-            }
-            if (!(result?.Success ?? false))
-            {
-                throw result?.Exception ?? new Exception("failed to update couchbase");
-            }
-        }
-
         public async Task RemoveFromContext(Identity identity, string key)
         {
-            var keyIdentity = GetKey(identity);
-            await InsertOrUpdate(keyIdentity, dictionary => dictionary.ToImmutableDictionary().Remove(key));
+            var identityKey = GetKey(identity);
+            var bucket = GetOrOpenBucket();
+            var mutator = bucket.MutateIn<dynamic>(identityKey);
+            var deleteResult = await mutator.Remove(key).ExecuteAsync();
+            if (!deleteResult.Success) throw deleteResult.Exception ?? new Exception("Error deleting context property") { Data = { { "Identity_Key", identityKey } ,{ "Property", key } } };
         }
 
         public async Task AppendContext(Identity identity, Dictionary<string, JsonValue> context)
         {
             var key = GetKey(identity);
-            await InsertOrUpdate(key, dictionary => dictionary.ToImmutableDictionary().SetItems(context));
+            var bucket = GetOrOpenBucket();
+            if (!await bucket.ExistsAsync(key))
+            {
+                var contextWithCreationDate = new Dictionary<string, JsonValue>(context)
+                {
+                    ["@CreationDate"] = JsonValue.NewString(DateTimeOffset.UtcNow.ToString())
+                };
+                var insertResult = await bucket.InsertAsync(key, contextWithCreationDate);
+                if (insertResult.Success) return;
+                if (insertResult.Status != ResponseStatus.KeyExists) {
+                    throw insertResult.Exception ?? new Exception("Error adding new identity context "){ Data ={ { "Identity_Key", key }}};
+                }
+            }
+            var mutator = context.Aggregate(bucket.MutateIn<dynamic>(key), (acc, next)=> acc.Upsert(next.Key, next.Value));
+            var updateResult = await mutator.ExecuteAsync();
+            if (!updateResult.Success) throw updateResult.Exception ?? new Exception("Error updating identity conext") { Data = { { "Identity_Key", key } } };
         }
 
         public async Task<Dictionary<string, JsonValue>> GetContext(Identity identity)
@@ -89,10 +81,10 @@ namespace Tweek.Drivers.CouchbaseDriver
             var bucket = GetOrOpenBucket();
             var document = await bucket.GetAsync<T>(key);
             if (document.Success) return document.Value;
-            if (document.Status == Couchbase.IO.ResponseStatus.KeyNotFound) return null;
+            if (document.Status == global::Couchbase.IO.ResponseStatus.KeyNotFound) return null;
             var replica = (await bucket.GetFromReplicaAsync<T>(key));
             if (replica.Success) return replica.Value;
-            if (replica.Status == Couchbase.IO.ResponseStatus.KeyNotFound) return null;
+            if (replica.Status == global::Couchbase.IO.ResponseStatus.KeyNotFound) return null;
             throw new AggregateException(document.Exception ?? new Exception(document.Message),
                                           replica.Exception ?? new Exception(replica.Message));
         }

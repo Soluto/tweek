@@ -1,61 +1,35 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Engine.Core.Rules;
 using Engine.Drivers.Rules;
+using Engine.Rules.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Tweek.ApiService.NetCore.Security;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
 
 namespace Tweek.ApiService.NetCore.Controllers
 {
     [Route("validation")]
     public class ValidationController : Controller
     {
-        private IRuleParser _parser;
-        // GET: api/values
-        public ValidationController(IRuleParser parser)
-        {
-            _parser = parser;
-        }
+        private readonly Validator.ValidationDelegate mValidateRules;
 
-        public bool IsParsable(string payload)
+        public ValidationController(Validator.ValidationDelegate validateRules)
         {
-            try
-            {
-                _parser.Parse(payload);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            mValidateRules = validateRules;
         }
 
         [HttpPost]
-        public async Task<ActionResult> Validate()
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<ActionResult> Validate([FromBody] Dictionary<string, RuleDefinition> ruleset)
         {
-            Dictionary<string, RuleDefinition> ruleset = null;
-            try
-            {
-                var raw = await (new StreamReader(HttpContext.Request.Body).ReadToEndAsync());
-                ruleset = JsonConvert.DeserializeObject<Dictionary<string, RuleDefinition>>(raw);
-            }
-            catch (Exception)
-            {
-                return BadRequest("invalid ruleset");
-            }
+            if (!User.IsTweekIdentity()) return Forbid();
 
-            var failures = ruleset
-                .Where(x => !IsParsable(x.Value.Payload))
-                .Select(x => x.Key);
-
-            if (failures.Any()) return BadRequest(failures);
-            return Content("true");
+            return await mValidateRules(ruleset) ? (ActionResult)Content("true") : BadRequest("invalid ruleset");
         }
     }
 }

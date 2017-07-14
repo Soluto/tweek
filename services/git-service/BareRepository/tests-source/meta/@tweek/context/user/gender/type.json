@@ -1,0 +1,15 @@
+{
+    "key_path": "@tweek/context/user/gender/type",
+    "meta": {
+        "description": "",
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "file",
+        "format": "jpad"
+    },
+    "valueType": "string",
+    "enabled": true,
+    "dependencies": []
+}

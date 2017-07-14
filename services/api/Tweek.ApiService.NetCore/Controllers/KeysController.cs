@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using LanguageExt;
@@ -11,6 +12,7 @@ using static FSharpUtils.Newtonsoft.JsonValue;
 using Engine.Core.Context;
 using Engine;
 using Engine.Core.Utils;
+using Engine.Drivers.Context;
 using Newtonsoft.Json;
 using Tweek.Utils;
 using Tweek.ApiService.NetCore.Security;
@@ -18,16 +20,18 @@ using Microsoft.AspNetCore.Cors;
 
 namespace Tweek.ApiService.NetCore.Controllers
 {
-    [EnableCors("All")]
+    [EnableCors("Keys")]
     public class KeysController : Controller
     {
-        private ITweek _tweek;
+        private readonly ITweek _tweek;
+        private readonly IContextDriver _contextDriver;
         private readonly CheckReadConfigurationAccess _checkAccess;
 
-        public KeysController(ITweek tweek, CheckReadConfigurationAccess checkAccess)
+        public KeysController(ITweek tweek, IContextDriver contextDriver, CheckReadConfigurationAccess checkAccess)
         {
             _tweek = tweek;
             _checkAccess = checkAccess;
+            _contextDriver = contextDriver;
         }
 
         public static Tuple<IReadOnlyDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>> PartitionByKey<TKey, TValue>(IDictionary<TKey, TValue> source,
@@ -49,11 +53,23 @@ namespace Tweek.ApiService.NetCore.Controllers
         private static ConfigurationPath[] GetQuery(ConfigurationPath path, string[] includePaths)
         {
             if (includePaths.Length == 0 || !path.IsScan) return new []{path};
-            if (path == ConfigurationPath.FullScan) return includePaths.Select(ConfigurationPath.New).ToArray();
-            return includePaths.Select(x=> ConfigurationPath.From(path.Prefix, x)).ToArray();
+            return includePaths.Select(x=> ConfigurationPath.From(path.Folder, x)).ToArray();
         }
 
+        /// <summary>
+        /// Returns the requested key given by path
+        /// </summary>
+        /// <remarks>
+        /// TODO: add example
+        /// </remarks>
+        /// <param name="path">Path of the key</param>
+        /// <returns>Value for the requested key</returns>
+        /// <response code="200">Value for the requested key</response>
+        /// <response code="403">Access denied</response>
         [HttpGet("api/v1/keys/{*path}")]
+        [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden)]
+        [Produces("application/json")]
         public async Task<ActionResult> GetAsync([FromRoute] string path)
         {
             var allParams = PartitionByKey(HttpContext.Request.Query.ToDictionary(x => x.Key, x => x.Value), x => x.StartsWith("$"));
@@ -76,7 +92,7 @@ namespace Tweek.ApiService.NetCore.Controllers
 
             var query = GetQuery(root, includePaths);
 
-            var data = await _tweek.Calculate(query, identities, contextProps);
+            var data = await _tweek.GetContextAndCalculate(query, identities, _contextDriver, contextProps);
 
             if (root.IsScan)
             {

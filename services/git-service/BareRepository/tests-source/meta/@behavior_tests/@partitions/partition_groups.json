@@ -1,8 +1,19 @@
 {
-    "displayName": "@behavior_tests/@partitions/partition_groups",
-    "description": "e2e partition tests",
-    "tags": [
-        "do not delete or change"
-    ],
-    "valueType": "string"
+    "key_path": "@behavior_tests/@partitions/partition_groups",
+    "meta": {
+        "name": "@behavior_tests/@partitions/partition_groups",
+        "description": "e2e partition tests",
+        "tags": [
+            "do not delete or change"
+        ],
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "file",
+        "format": "jpad"
+    },
+    "valueType": "string",
+    "enabled": true,
+    "dependencies": []
 }

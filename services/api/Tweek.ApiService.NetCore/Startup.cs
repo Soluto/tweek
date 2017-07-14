@@ -1,48 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using App.Metrics;
+using App.Metrics.Configuration;
+using App.Metrics.Health;
+using Engine;
+using Engine.Core.Rules;
+using Engine.Drivers.Context;
+using Engine.Drivers.Rules;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Couchbase;
-using Couchbase.Configuration.Client;
-using Tweek.Drivers.Blob;
-using Tweek.Drivers.Blob.WebClient;
 using Newtonsoft.Json;
-using Couchbase.Core.Serialization;
-using Newtonsoft.Json.Serialization;
-using FSharpUtils.Newtonsoft;
-using Tweek.Utils;
-using Tweek.Drivers.CouchbaseDriver;
-using Engine.Core.Rules;
-using Engine.Drivers.Context;
-using Tweek.JPad.Utils;
-using Tweek.JPad;
-using Tweek.ApiService.NetCore.Diagnostics;
+using Scrutor;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
-using Tweek.ApiService.NetCore.Security;
+using System.Threading.Tasks;
+using Engine.Context;
+using Engine.Rules.Validation;
+using FSharpUtils.Newtonsoft;
+using Microsoft.Extensions.PlatformAbstractions;
+using Swashbuckle.AspNetCore.Swagger;
+using Tweek.ApiService.Addons;
 using Tweek.ApiService.NetCore.Addons;
+using Tweek.ApiService.NetCore.Diagnostics;
+using Tweek.ApiService.NetCore.Metrics;
+using Tweek.ApiService.NetCore.Security;
+using Tweek.ApiService.NetCore.Utils;
+using Tweek.JPad;
+using Tweek.JPad.Utils;
+using Engine.Rules.Creation;
+using static Engine.Core.Rules.Utils;
+using Tweek = Engine.Tweek;
 
 namespace Tweek.ApiService.NetCore
 {
-
-    class TweekContractResolver : DefaultContractResolver
-    {
-        protected override JsonContract CreateContract(Type objectType)
-        {
-            var contract = base.CreateContract(objectType);
-
-            if (typeof(JsonValue).GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo()))
-            {
-                contract.Converter = new JsonValueConverter();
-            }
-
-            return contract;
-        }
-    }
-
     public class Startup
     {
         public Startup(IHostingEnvironment env)
@@ -61,45 +55,85 @@ namespace Tweek.ApiService.NetCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var contextBucketName = Configuration["Couchbase.BucketName"];
-            var contextBucketPassword = Configuration["Couchbase.Password"];
 
-            InitCouchbaseCluster(contextBucketName, contextBucketPassword);
-            var contextDriver = new CouchBaseDriver(ClusterHelper.GetBucket, contextBucketName);
-            var couchbaseDiagnosticsProvider = new BucketConnectionIsAlive(ClusterHelper.GetBucket, contextBucketName);
+            services.RegisterAddonServices(Configuration);
 
-            var rulesDriver = GetRulesDriver();
-            var rulesDiagnostics = new RulesDriverStatusService(rulesDriver);
+            services.Decorate<IContextDriver>((driver, provider) => new TimedContextDriver(driver, provider.GetService<IMetrics>()));
 
-            var parser = GetRulesParser();
-            var tweek = Task.Run(async () => await Engine.Tweek.Create(contextDriver, rulesDriver, parser)).Result;
+            //services.AddSingleton<IDiagnosticsProvider>(new RulesDriverStatusService(blobRulesDriver));
+            services.AddSingleton<IDiagnosticsProvider>(new EnvironmentDiagnosticsProvider());
 
-            services.AddSingleton(tweek);
-            services.AddSingleton<CheckReadConfigurationAccess>(Authorization.CreateReadConfigurationAccessChecker(tweek));
-            services.AddSingleton<CheckWriteContextAccess>(Authorization.CreateWriteContextAccessChecker(tweek));
-            services.AddSingleton<IContextDriver>(contextDriver);
-            services.AddSingleton(parser);
-            services.AddSingleton<IEnumerable<IDiagnosticsProvider>>(new IDiagnosticsProvider[] {rulesDiagnostics, couchbaseDiagnosticsProvider, new EnvironmentDiagnosticsProvider()});
+            services.AddSingleton(CreateParserResolver());
+            services.AddSingleton(provider =>
+            {
+                var parserResolver = provider.GetService<GetRuleParser>();
+                var rulesDriver = provider.GetService<IRulesDriver>();
+                return Task.Run(async () => await Engine.Tweek.Create(rulesDriver, parserResolver)).Result;
+            });
+            services.AddSingleton(provider =>
+            {
+                var rulesDriver = provider.GetService<IRulesDriver>();
+                return Task.Run(async () => await TweekIdentityProvider.Create(rulesDriver)).Result;
+            });
+            services.AddSingleton(provider => Authorization.CreateReadConfigurationAccessChecker(provider.GetService<ITweek>(), provider.GetService<TweekIdentityProvider>()));
+            services.AddSingleton(provider => Authorization.CreateWriteContextAccessChecker(provider.GetService<ITweek>(), provider.GetService<TweekIdentityProvider>()));
+            services.AddSingleton(provider => Validator.GetValidationDelegate(provider.GetService<GetRuleParser>()));
+
             var tweekContactResolver = new TweekContractResolver();
             var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };
+
             services.AddSingleton(jsonSerializer);
-            services.AddMvc()
+            services.AddMvc(options => options.AddMetricsResourceFilter())
                 .AddJsonOptions(opt =>
                 {
                     opt.SerializerSettings.ContractResolver = tweekContactResolver;
                 });
-            services.AddCors(options =>
+
+            services.SetupCors(Configuration);
+
+            RegisterMetrics(services);
+            services.AdaptSingletons<IDiagnosticsProvider, HealthCheck>(inner => new DiagnosticsProviderDecorator(inner));
+            services.AddSwaggerGen(options =>
             {
-                options.AddPolicy("All",
-                    builder => builder.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials());
+                options.SwaggerDoc("api", new Info
+                {
+                    Title = "Tweek Api",
+                    License = new License {Name = "MIT", Url = "https://github.com/Soluto/tweek/blob/master/LICENSE" },
+                    Version = Assembly.GetEntryAssembly()
+                        .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                        .InformationalVersion
+                });
+                // Generate Dictionary<string,JsonValue> as JSON object in Swagger
+                options.MapType(typeof(Dictionary<string,JsonValue>), () => new Schema {Type = "object"});
+
+                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                var xmlPath = Path.Combine(basePath, "Tweek.ApiService.NetCore.xml");
+                options.IncludeXmlComments(xmlPath);
+
             });
         }
 
+        private void RegisterMetrics(IServiceCollection services)
+        {
+            services
+                .AddMetrics(options =>
+                {
+                    options.WithGlobalTags((globalTags, envInfo) =>
+                    {
+                        globalTags.Add("host", envInfo.HostName);
+                        globalTags.Add("machine_name", envInfo.MachineName);
+                        globalTags.Add("app_name", envInfo.EntryAssemblyName);
+                        globalTags.Add("app_version", envInfo.EntryAssemblyVersion);
+                    });
+                })
+                .AddJsonSerialization()
+                .AddHealthChecks()
+                .AddMetricsMiddleware(Configuration.GetSection("AspNetMetrics"));
+        }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
+            IApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {
@@ -110,60 +144,42 @@ namespace Tweek.ApiService.NetCore
 
             app.UseAuthenticationProviders(Configuration, loggerFactory.CreateLogger("AuthenticationProviders"));
             app.InstallAddons(Configuration);
+            app.UseMetrics();
             app.UseMvc();
-        }
-
-        private void InitCouchbaseCluster(string bucketName, string bucketPassword)
-        {
-            var url = Configuration["Couchbase.Url"];
-
-            ClusterHelper.Initialize(new ClientConfiguration
+            app.UseMetricsReporting(lifetime);
+            app.UseSwagger(options =>
             {
-                Servers = new List<Uri> { new Uri(url) },
-                BucketConfigs = new Dictionary<string, BucketConfiguration>
+                options.RouteTemplate = "{documentName}/swagger.json";
+                options.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
                 {
-                    [bucketName] = new BucketConfiguration
-                    {
-                        BucketName = bucketName,
-                        Password = bucketPassword,
-                        PoolConfiguration = new PoolConfiguration()
-                        {
-                            MaxSize = 30,
-                            MinSize = 5
-                        }
-                    }
-                },
-                Serializer = () => new DefaultSerializer(
-                   new JsonSerializerSettings()
-                   {
-                       ContractResolver = new TweekContractResolver()
-                   },
-                   new JsonSerializerSettings()
-                   {
-                       ContractResolver = new TweekContractResolver()
-                   })
+                    swaggerDoc.Host = httpReq.Host.Value;
+                    swaggerDoc.Schemes = new[] {httpReq.Scheme};
+                });
             });
         }
 
-        private BlobRulesDriver GetRulesDriver()
-        {
-            return new BlobRulesDriver(new Uri(Configuration["RulesBlob.Url"]), new SystemWebClientFactory());
-        }
-
-        IRuleParser GetRulesParser()
-        {
-
-            return JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
+        private static IRuleParser CreateJPadParser() => JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
                 Comparers: Microsoft.FSharp.Core.FSharpOption<IDictionary<string, ComparerDelegate>>.Some(new Dictionary<string, ComparerDelegate>()
                 {
                     ["version"] = Version.Parse
-                }), Sha1Provider: Microsoft.FSharp.Core.FSharpOption<Sha1Provider>.Some((s)=>
+                }), sha1Provider: (s)=>
                 {
                     using (var sha1 = System.Security.Cryptography.SHA1.Create())
                     {
                         return sha1.ComputeHash(s);
                     }
-                }))));
+                })));
+
+        private static GetRuleParser CreateParserResolver()
+        {
+            var jpadParser = CreateJPadParser();
+
+            var dict = new Dictionary<string, IRuleParser>(StringComparer.OrdinalIgnoreCase){
+                ["jpad"] = jpadParser,
+                ["const"] = ConstValueParser
+            };
+
+            return x=>dict[x];
         }
     }
 }

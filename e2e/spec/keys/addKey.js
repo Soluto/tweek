@@ -1,11 +1,10 @@
-/* global describe, before, after it, browser */
+/* global describe, before, after, it, browser */
 
 import KeysAsserts from '../../KeysAsserts';
-import KeysPageObject from '../../KeysPageObject';
+import KeysPageObject, { BLANK_KEY_NAME } from '../../utils/KeysPageObject';
 import assert from 'assert';
-import { selectors } from '../../selectors';
-
-const BLANK_KEY_NAME = '_blank';
+import keySelectors from '../../selectors/keySelectors';
+import globalSelectors from '../../selectors/globalSelectors';
 
 describe('add key', () => {
   const keysPageObject = new KeysPageObject(browser);
@@ -22,38 +21,36 @@ describe('add key', () => {
   });
 
   it('should succeed adding key', () => {
-    browser.click(selectors.ADD_KEY_BUTTON);
+    browser.click(keySelectors.ADD_KEY_BUTTON);
     keysAsserts.assertKeyOpened(BLANK_KEY_NAME);
     browser.windowHandleMaximize();
 
-    let isKeyPathSuggestionsExists = browser.isExisting(selectors.KEY_PATH_SUGGESTIONS);
+    let isKeyPathSuggestionsExists = browser.isExisting(keySelectors.KEY_PATH_SUGGESTIONS);
     assert(!isKeyPathSuggestionsExists, 'should not show key name suggestions on start');
 
     keysAsserts.assertKeyHasNumberOfRules(0);
 
-    browser.click(selectors.KEY_NAME_INPUT);
-    isKeyPathSuggestionsExists = browser.isExisting(selectors.KEY_PATH_SUGGESTIONS);
+    browser.click(keySelectors.KEY_NAME_INPUT);
+    isKeyPathSuggestionsExists = browser.isExisting(keySelectors.KEY_PATH_SUGGESTIONS);
     assert(isKeyPathSuggestionsExists, 'should show key name suggestions on input focus');
 
-    browser.setValue(selectors.KEY_NAME_INPUT, keyToAddFullPath);
-    browser.click(selectors.BACKGROUND);
+    browser.setValue(keySelectors.KEY_NAME_INPUT, keyToAddFullPath);
+    browser.leftClick(globalSelectors.BACKGROUND, 0, 0);
 
-    browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, 'String');
-    const firstSuggestion = selectors.typeaheadSuggestionByIndex(0);
-    browser.click(firstSuggestion);
+    browser.setValue(keySelectors.KEY_VALUE_TYPE_INPUT, 'String');
 
     assert(keysPageObject.hasChanges(), 'should have changes');
 
-    browser.click(selectors.SAVE_CHANGES_BUTTON);
+    browser.click(keySelectors.SAVE_CHANGES_BUTTON);
     assert(keysPageObject.isSaving(), 'should be in saving state');
 
     browser.waitUntil(() =>
       keysPageObject.isInKeyPage(keyToAddFullPath),
       KeysPageObject.GIT_TRANSACTION_TIMEOUT);
 
-    browser.waitForVisible(selectors.DELETE_KEY_BUTTON, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
+    browser.waitForVisible(keySelectors.ARCHIVE_KEY_BUTTON, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
 
-    assert(browser.getText(selectors.KEY_DISPLAY_NAME),
+    assert(browser.getText(keySelectors.KEY_DISPLAY_NAME),
       keyToAddFullPath,
       'should set the key name correctly');
 

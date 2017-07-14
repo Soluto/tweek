@@ -1,0 +1,84 @@
+version: '3.1'
+
+services:
+  tweek-git:
+    image: soluto/tweek-bare-repo
+    build: ../../services/git-service/BareRepository
+    ports: 
+      - "4001:22"
+    environment:
+      - PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
+      - TWEEK_MANAGEMENT_URL=http://tweek-management:3000
+    secrets:
+      - tweek_ssh_public_key
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
+ 
+  tweek-management:
+    depends_on:
+      - tweek-git
+    expose:
+      - "5858"
+    ports:
+      - "5858:5858"
+      - "4002:3000"
+    entrypoint:
+      - node
+      - --inspect=5858
+      - ./src/server.js
+    environment:
+      - GIT_USER=git
+      - GIT_URL=ssh://git@tweek-git/tweek/repo
+      - GIT_PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
+      - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
+    secrets:
+      - tweek_ssh_public_key
+      - tweek_ssh_private_key
+
+  tweek-api:
+    depends_on:
+      - tweek-redis
+    ports:
+      - "4003:80"
+    depends_on:
+      - tweek-redis
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - PUBLIC_KEY_PATH=/run/secrets/tweek_pfx_public_key
+      - ContextProvider=redis
+      - Redis__ConnectionString=tweek-redis:6379
+      - Addons__Redis__className=Tweek.Drivers.Redis.RedisServiceAddon
+      - Addons__Redis__assemblyName=Tweek.Drivers.Redis
+    secrets:
+      - tweek_pfx_public_key
+
+  tweek-editor:
+    depends_on: 
+      - tweek-git
+    ports:
+      - "4004:3000"
+    volumes: 
+      - ../../services/editor/vapid:/opt/vapid
+    environment:
+      - GIT_USER=git
+      - GIT_URL=ssh://git@tweek-git/tweek/repo
+      - GIT_PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
+      - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
+    secrets:
+      - tweek_ssh_private_key
+      - tweek_ssh_public_key
+
+  tweek-redis:
+    image: redis:alpine
+    expose:
+      - "6379"
+    ports:
+      - "4005:6379"
+
+secrets:
+  tweek_ssh_public_key:
+    file: ../../services/git-service/ssh/tweekgit.pub
+  tweek_pfx_public_key:
+    file: ../../services/git-service/ssh/tweekgit_public.pfx
+  tweek_ssh_private_key:
+    file: ../../services/git-service/ssh/tweekgit

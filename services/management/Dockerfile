@@ -1,12 +1,30 @@
-FROM node:6.10.0-slim
+# ------- BASE -------
+FROM soluto/nodegit-alpine as base
 
-ADD package.json /tmp/package.json
-RUN cd /tmp && npm install
-RUN mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/
+COPY package.json yarn.lock /tmp/
+RUN ln -s /nodegit/node_modules /tmp/node_modules
+RUN cd /tmp && yarn --prod
+
+RUN mkdir -p /opt/app && ln -s /tmp/node_modules /opt/app/node_modules
+
+# ------- TEST -------
+FROM base as test
+RUN cd /tmp && yarn
+
 WORKDIR /opt/app
-ADD . /opt/app
+COPY . /opt/app
+
+RUN yarn test
+
+# ------- RELEASE -------
+FROM base as release
+
+WORKDIR /opt/app
+COPY src/ /opt/app/src/
 
 EXPOSE 3000
 
 ENV PORT=3000
-ENTRYPOINT ["node", "./server.js"]
+HEALTHCHECK --interval=10s --timeout=10s --retries=8 \
+      CMD curl -f http://localhost:3000/isalive || exit 1
+ENTRYPOINT ["node", "./src/server.js"]

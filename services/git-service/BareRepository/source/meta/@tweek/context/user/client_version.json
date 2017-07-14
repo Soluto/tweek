@@ -1,0 +1,19 @@
+{
+    "key_path": "@tweek/context/user/client_version",
+    "meta": {
+        "name": "@tweek/context/user/client_version",
+        "description": "The client version of the user",
+        "tags": [],
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "const",
+        "value": {
+			    "type": "version"
+		    }
+    },
+    "valueType": "object",
+    "enabled": true,
+    "dependencies": []
+}

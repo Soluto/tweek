@@ -1,0 +1,19 @@
+{
+    "key_path": "@tweek/context/user/country",
+    "meta": {
+        "name": "@tweek/context/user/country",
+        "description": "The country of the user",
+        "tags": [],
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "const",
+        "value": {
+			"type": "string"
+		}
+    },
+    "valueType": "object",
+    "enabled": true,
+    "dependencies": []
+}

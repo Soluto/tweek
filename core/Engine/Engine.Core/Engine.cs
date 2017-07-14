@@ -3,14 +3,12 @@ using System.Linq;
 using Engine.Core.Context;
 using Engine.Core.Rules;
 using LanguageExt;
-using Engine.Core.Utils;
 using Engine.DataTypes;
 using FSharpUtils.Newtonsoft;
 
 namespace Engine.Core
 {
     public delegate Option<IRule> RulesRepository(ConfigurationPath path);
-
 
     public static class EngineCore
     {
@@ -24,8 +22,11 @@ namespace Engine.Core
             GetRuleValue getRuleValue = null;
             GetContextValue recursiveContext = key =>
             {
-                if (!key.StartsWith("@@key")) return Option<JsonValue>.None;
-                var path = new ConfigurationPath(key.Split(':')[1]);
+                if (key.StartsWith("@@key:")){
+                    key = key.Replace("@@key:", "keys.");
+                }
+                if (!key.StartsWith("keys.")) return Option<JsonValue>.None;
+                var path = new ConfigurationPath(key.Split('.')[1]);
                 return getRuleValue(path).Map(x => x.Value);
             };
 
@@ -46,13 +47,14 @@ namespace Engine.Core
         private static GetRuleValue Memoize(GetRuleValue getRuleValue)
         {
             var dict = new Dictionary<ConfigurationPath, Option<ConfigurationValue>>();
-            return (path) =>
+            return path =>
             {
-                if (!dict.ContainsKey(path))
+                if (!dict.TryGetValue(path, out var result))
                 {
-                    dict[path] = getRuleValue(path);
+                    result = getRuleValue(path);
+                    dict[path] = result;
                 }
-                return dict[path];
+                return result;
             };
         }
     }

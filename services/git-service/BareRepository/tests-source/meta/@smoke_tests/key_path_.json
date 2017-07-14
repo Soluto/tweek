@@ -1,0 +1,15 @@
+{
+    "key_path": "@smoke_tests/key_path_",
+    "meta": {
+        "description": "",
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "const",
+        "value": "some value"
+    },
+    "valueType": "string",
+    "enabled": true,
+    "dependencies": []
+}

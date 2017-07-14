@@ -14,6 +14,7 @@ namespace Engine.Drivers.Rules
     {
         public string Format { get; set; }
         public string Payload { get; set; }
+        public string[] Dependencies { get; set; }
     }
 
     public class RuleDefinitionComparer : IEqualityComparer<RuleDefinition>

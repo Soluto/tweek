@@ -1,14 +1,16 @@
 /* global jest, beforeEach, afterEach, describe, it, expect */
 
-import GitRepository from '../../../modules/server/repositories/git-repository';
+import GitRepository from '../../../server/repositories/git-repository';
 import { expect } from 'chai';
 import { Repository, Remote, Signature, Clone } from 'nodegit';
 import os from 'os';
 import Chance from 'chance';
 import rimraf from 'rimraf';
 const fs = require('fs');
-const promisify = (fn, context) => (...args) => new Promise((resolve, reject) =>
-  fn.call(context, ...args.concat([(err, res) => !!(err) ? reject(err) : resolve(res)])));
+const promisify = (fn, context) => (...args) =>
+  new Promise((resolve, reject) =>
+    fn.call(context, ...args.concat([(err, res) => (!!err ? reject(err) : resolve(res))])),
+  );
 const rimrafAsync = promisify(rimraf);
 
 const createRandomDirectorySync = (prefix = '') => {
@@ -28,7 +30,7 @@ describe('GitRepository', () => {
     await rimrafAsync(tempFolder);
   }
 
-  beforeEach(async function () {
+  beforeEach(async () => {
     remoteFolder = createRandomDirectorySync('remote');
     testFolder = createRandomDirectorySync('test');
     const tempFolder = createRandomDirectorySync('local');
@@ -42,7 +44,7 @@ describe('GitRepository', () => {
       ['rules/path/to/someRule.jpad'],
       Signature.now('myuser', 'myuser@soluto.com'),
       Signature.now('myuser', 'myuser@soluto.com'),
-      'test'
+      'test',
     );
 
     const remote = Remote.create(localRepo, 'origin', remoteFolder);
@@ -50,7 +52,7 @@ describe('GitRepository', () => {
     await rimrafAsync(tempFolder);
   });
 
-  afterEach(async function () {
+  afterEach(async () => {
     // await rimrafAsync(remoteFolder);
     // await rimrafAsync(testFolder);
   });
@@ -81,19 +83,28 @@ describe('GitRepository', () => {
     const repo = GitRepository.init({ url: remoteFolder, localPath: testFolder });
     const key = await repo.readFile('rules/path/to/someRule.jpad');
     expect(key.fileContent).to.equals('[]');
-    await repo.updateFile('rules/path/to/someRule.jpad', '[{}]', { name: 'test', email: 'test@soluto.com' });
-    await checkRemoteRepository(async path => {
-      expect(fs.readFileSync(`${path}/rules/path/to/someRule.jpad`, { encoding: 'utf-8' })).to.equal('[{}]');
+    await repo.updateFile('rules/path/to/someRule.jpad', '[{}]', {
+      name: 'test',
+      email: 'test@soluto.com',
+    });
+    await checkRemoteRepository(async (path) => {
+      expect(fs.readFileSync(`${path}/rules/path/to/someRule.jpad`, { encoding: 'utf-8' })).to.equal(
+        '[{}]',
+      );
     });
   });
 
   it('should be able to add file when path contains non-existing folder', async function () {
     this.timeout(15000);
     const repo = GitRepository.init({ url: remoteFolder, localPath: testFolder });
-    await repo.updateFile('rules/path2/someRule.jpad', '[{}]', { name: 'test', email: 'test@soluto.com' });
-    await checkRemoteRepository(async path => {
-      expect(fs.readFileSync(`${path}/rules/path2/someRule.jpad`, { encoding: 'utf-8' })).to.equal('[{}]');
+    await repo.updateFile('rules/path2/someRule.jpad', '[{}]', {
+      name: 'test',
+      email: 'test@soluto.com',
+    });
+    await checkRemoteRepository(async (path) => {
+      expect(fs.readFileSync(`${path}/rules/path2/someRule.jpad`, { encoding: 'utf-8' })).to.equal(
+        '[{}]',
+      );
     });
   });
 });
-

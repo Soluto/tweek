@@ -25,8 +25,10 @@ namespace Tweek.ApiService.NetCore.Security
                             ValidateAudience = false,
                             IssuerSigningKey = new X509SecurityKey(new X509Certificate2(gitPublicKeyPath))
                         },
+                        AutomaticAuthenticate = false,
+                        AutomaticChallenge = false,
                         RequireHttpsMetadata = false,
-                        AuthenticationScheme = "tweekinternal"
+                        AuthenticationScheme = "JWT tweek"
                     });
                     logger.LogInformation("Tweek certificate was loaded successfully");
                 }

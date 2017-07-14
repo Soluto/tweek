@@ -25,7 +25,7 @@
                 }
             },
             "env": {
-                "RulesBlob.Url": "http://localhost:4002/ruleset/latest",
+                "Rules__Management__Url": "http://localhost:4002",
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "sourceFileMap": {
@@ -103,11 +103,23 @@
             ],
 			"preLaunchTask": "dev-env-e2e",
 			"env": {
-                "BACKOFFICE_URL": "http://localhost:4004/"
+                "EDITOR_URL": "http://localhost:4004/"
 			},
 			"externalConsole": false,
 			"sourceMaps": false,
 			"outDir": null
-		}
+		},
+        {
+            "name": "Attach Management",
+            "type": "node",
+            "request": "attach",
+            "port": 5858,
+            "address": "localhost",
+            "restart": false,
+            "sourceMaps": false,
+            "outDir": null,
+            "localRoot": "${workspaceRoot}/services/management/",
+            "remoteRoot": "/opt/app/"
+        }
     ]
 }

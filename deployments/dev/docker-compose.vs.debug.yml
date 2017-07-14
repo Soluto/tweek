@@ -1,0 +1,34 @@
+version: '3.1'
+
+services:
+  tweek-api:
+    image: soluto/tweek-api:dev
+    build:
+      context: ../../services/api/Tweek.ApiService.NetCore
+      dockerfile: Dockerfile
+      args:
+        source: ${DOCKER_BUILD_SOURCE}
+    depends_on: 
+      - graphite
+    environment:
+      - AppMetricsReporters__Graphite__Url=graphite
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+    volumes:
+      - ../../services/api/Tweek.ApiService.NetCore:/app
+      - ~/.nuget/packages:/root/.nuget/packages:ro
+      - ~/clrdbg:/clrdbg:ro
+    entrypoint: tail -f /dev/null
+
+  tweek-management:
+    build: {}
+
+  tweek-editor:
+    build: {}
+
+  tweek-git:
+    build: {}
+
+  graphite:
+    image: hopsoft/graphite-statsd
+    ports:
+      - "4006:80"

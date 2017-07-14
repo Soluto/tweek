@@ -1,62 +1,34 @@
-version: "2"
+version: '3.1'
 
 services:
-  tweek-git:
-    build: ../../services/git-service/BareRepository/.
-    container_name: tweek-git
-    ports:
-      - "4001:22"
-    environment:
-      - PUBLIC_KEY_PATH=/tweek/key.pub
-      - TWEEK_MANAGEMENT_URL=http://tweek-management:3000
-    volumes:
-      -  ../../services/git-service/ssh/tweekgit.pub:/tweek/key.pub
-
   tweek-management:
     image: soluto/tweek-management
-    build: ../../services/management
-    container_name: tweek-management
-    depends_on:
-      - tweek-git
-    volumes:
-      - ../../services/git-service/ssh:/keys
-    ports:
-      - "4002:3000"
+    build:
+      context: ../../services/management
+      dockerfile: Dockerfile
     environment:
-      - GIT_USER=git
-      - GIT_URL=ssh://git@tweek-git/tweek/repo
-      - GIT_PUBLIC_KEY_PATH=/keys/tweekgit.pub
-      - GIT_PRIVATE_KEY_PATH=/keys/tweekgit
       - VALIDATION_URL=http://tweek-api/validation
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
 
   tweek-api:
     image: soluto/tweek-api
-    build: ../../services/api/Tweek.ApiService.NetCore
-    container_name: tweek-api
+    build:
+      context: ../../
+      dockerfile: TweekApiDockerfile
     depends_on:
       - tweek-management
-    ports:
-      - "4003:80"
     environment:
-      - RulesBlobUrl=http://tweek-management:3000/ruleset/latest
-      - PUBLIC_KEY_PATH=/keys/public_key.pfx
-    volumes:
-      -  ../../services/git-service/ssh/tweekgit_public.pfx:/keys/public_key.pfx
+      - Rules__Management__Url=http://tweek-management:3000
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
 
-  tweek-backoffice:
-    image: soluto/tweek-back-office
-    build: ../../services/editor/
-    container_name: tweek-backoffice
-    depends_on:
+  tweek-editor:
+    image: soluto/tweek-editor
+    build: ../../services/editor
+    depends_on: 
       - tweek-api
-      - tweek-git
-    ports:
-      - "4004:3000"
-    volumes:
-      - ../../services/git-service/ssh:/keys
     environment:
-      - GIT_USER=git
-      - GIT_URL=ssh://git@tweek-git/tweek/repo
-      - GIT_PUBLIC_KEY_PATH=/keys/tweekgit.pub
-      - GIT_PRIVATE_KEY_PATH=/keys/tweekgit
       - TWEEK_API_HOSTNAME=http://tweek-api
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"

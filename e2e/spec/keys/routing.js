@@ -1,9 +1,7 @@
 /* global describe, before, after, beforeEach, it, browser */
 
-import KeysPageObject from '../../KeysPageObject';
-import { selectors } from '../../selectors';
-
-const BLANK_KEY_NAME = '_blank';
+import KeysPageObject, { BLANK_KEY_NAME } from '../../utils/KeysPageObject';
+import selectors from '../../selectors/keySelectors';
 
 describe('navigating from key with changes', () => {
   const keysPageObject = new KeysPageObject(browser);

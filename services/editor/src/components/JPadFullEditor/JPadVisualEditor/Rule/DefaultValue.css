@@ -1,0 +1,9 @@
+.default-value-container {
+  display: flex;
+  transition: all 0.2s ease-in-out;
+}
+.default-value-container .default-value-label {
+  font-size: 13px;
+  margin: 5px 5px 0 0;
+  color: gray;
+}
