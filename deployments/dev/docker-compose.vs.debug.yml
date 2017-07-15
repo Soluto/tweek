@@ -1,7 +1,7 @@
 version: '3.1'
 
 services:
-  tweek-api:
+  api:
     image: soluto/tweek-api:dev
     build:
       context: ../../services/api/Tweek.ApiService.NetCore
@@ -19,13 +19,13 @@ services:
       - ~/clrdbg:/clrdbg:ro
     entrypoint: tail -f /dev/null
 
-  tweek-management:
+  management:
     build: {}
 
-  tweek-editor:
+  editor:
     build: {}
 
-  tweek-git:
+  git:
     build: {}
 
   graphite:

@@ -19,19 +19,19 @@ services:
     secrets:
       - tweek_ssh_private_key
 
-  tweek-management:
+  management:
     environment: 
-      - GIT_URL=ssh://git@tweek-git/tweek/tests
+      - GIT_URL=ssh://git@git/tweek/tests
 
-  tweek-editor:
+  editor:
     environment: 
-      - GIT_URL=ssh://git@tweek-git/tweek/tests
+      - GIT_URL=ssh://git@git/tweek/tests
       - CONTINUOUS_UPDATER_INTERVAL=500
 
-  tweek-api:
+  api:
     environment:
       - Rules__Management__SampleIntervalInMs=500
-      - CorsPolicies__Keys__Origins=http://tweek-editor:3000,http://testorigin
+      - CorsPolicies__Keys__Origins=http://editor:3000,http://testorigin
       - CorsPolicies__Keys__Methods=GET
       - CorsPolicies__Keys__MaxPreflightAge=60
       - CorsPolicies__Keys__Headers=
