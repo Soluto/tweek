@@ -32,7 +32,7 @@ The easiest way to start evaluating Tweek is to run it locally on docker, make s
 - run docker-compose up
 
 #### Edit your first key
-- Open http://localhost:4004 in browser.
+- Open http://editor.dev.local.tweek.fm:4000 in browser.
 - Go to keys page.
 - Click on "Add New Key"
 - Type my_app/sign_button/color
@@ -44,17 +44,17 @@ The easiest way to start evaluating Tweek is to run it locally on docker, make s
 
 #### Querying Tweek
 Use curl/postman/chrome to fire GET Request:
-- http://localhost:4003/api/v1/keys/my_app/sign_button/color -> expected to be "red"
-- http://localhost:4003/api/v1/keys/my_app/sign_button/color?user.Age=20 -> expected to be "blue"
-- http://localhost:4003/api/v1/keys/my_app/sign_button/_?user.Age=20 -> expected to be {"color":"blue"}
+- http://api.dev.local.tweek.fm:4000/api/v1/keys/my_app/sign_button/color -> expected to be "red"
+- http://api.dev.local.tweek.fm:4000/api/v1/keys/my_app/sign_button/color?user.Age=20 -> expected to be "blue"
+- http://api.dev.local.tweek.fm:4000/api/v1/keys/my_app/sign_button/_?user.Age=20 -> expected to be {"color":"blue"}
 
 More on Tweek Rest api. (link)
 
 #### Adding context data
 Using the API, use curl/postman to fire POST Request:
-- http://localhost:4003/api/v1/context/user/john {"Age":21}
+- http://api.dev.local.tweek.fm:4000/api/v1/context/user/john {"Age":21}
 After that, we can query Tweek API with:
-- http://localhost:4003/api/v1/keys/my_app/sign_button/color?user=john -> expected to be "blue"
+- http://api.dev.local.tweek.fm:4000/api/v1/keys/my_app/sign_button/color?user=john -> expected to be "blue"
 
 More on Context. (link)
 
@@ -62,10 +62,10 @@ More on Context. (link)
 Create new key in the editor "my_app/sign_button/is_enabled" with value type "boolean"
 Add new rule, set the the rule value to gradual release with 50%.
 Try querying configuration with different users and You'll have different results.
-- http://localhost:4003/api/v1/keys/my_app/sign_button/is_enabled?user=barny
-- http://localhost:4003/api/v1/keys/my_app/sign_button/is_enabled?user=robin
-- http://localhost:4003/api/v1/keys/my_app/sign_button/is_enabled?user=ted
-- http://localhost:4003/api/v1/keys/my_app/sign_button/is_enabled?user=lily
+- http://api.dev.local.tweek.fm:4000/api/v1/keys/my_app/sign_button/is_enabled?user=barny
+- http://api.dev.local.tweek.fm:4000/v1/keys/my_app/sign_button/is_enabled?user=robin
+- http://api.dev.local.tweek.fm:4000/api/v1/keys/my_app/sign_button/is_enabled?user=ted
+- http://api.dev.local.tweek.fm:4000/api/v1/keys/my_app/sign_button/is_enabled?user=lily
 - etc...
 
 More on how multi-varaint keys work in Tweek. (link)
