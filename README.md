@@ -34,7 +34,7 @@ The easiest way to start evaluating Tweek is to run it locally on docker, make s
 - run (``` docker-compose up ```) 
 
 #### Edit your first key
-- Open http://editor.dev.local.tweek.fm:4000 in browser.
+- Open http://editor.dev.local.tweek.fm:81 in browser.
 - Go to keys page.
 - Click on "Add New Key"
 - Type my_app/sign_button/color
@@ -58,7 +58,7 @@ Using the API, use curl/postman to fire POST Request:
 - http://localhost:4003/api/v1/context/user/john {"Country":"Canada"}  
 
 After that, we can query Tweek API with:
-- http://api.dev.local.tweek.fm:4000/api/v1/keys/my_app/sign_button/color?user=john -> expected to be "blue"
+- http://api.dev.local.tweek.fm:81/api/v1/keys/my_app/sign_button/color?user=john -> expected to be "blue"
 
 More on Context. (link)
 
@@ -66,10 +66,10 @@ More on Context. (link)
 Create new key in the editor "my_app/sign_button/is_enabled" with value type "boolean" and default value False.  
 Add new rule, remove all conditions, set the the rule value to gradual release with 50%.
 Try querying configuration with different users and You'll have different results.
-- http://api.dev.local.tweek.fm:4000/api/v1/keys/my_app/sign_button/is_enabled?user=barny
-- http://api.dev.local.tweek.fm:4000/v1/keys/my_app/sign_button/is_enabled?user=robin
-- http://api.dev.local.tweek.fm:4000/api/v1/keys/my_app/sign_button/is_enabled?user=ted
-- http://api.dev.local.tweek.fm:4000/api/v1/keys/my_app/sign_button/is_enabled?user=lily
+- http://api.dev.local.tweek.fm:81/api/v1/keys/my_app/sign_button/is_enabled?user=barny
+- http://api.dev.local.tweek.fm:81/v1/keys/my_app/sign_button/is_enabled?user=robin
+- http://api.dev.local.tweek.fm:81/api/v1/keys/my_app/sign_button/is_enabled?user=ted
+- http://api.dev.local.tweek.fm:81/api/v1/keys/my_app/sign_button/is_enabled?user=lily
 - etc...
 
 More on how multi-varaint keys work in Tweek. (link)
