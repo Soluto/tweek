@@ -114,7 +114,7 @@ export default class GitRepository {
     const filePath = path.join(workdir, fileName);
 
     const realPath = await fs.realpath(filePath);
-    fileName = path.relative(workdir, realPath);
+    fileName = path.relative(workdir, realPath).replace(/\\/g, '/');
 
     await fs.remove(filePath);
 
