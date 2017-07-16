@@ -93,7 +93,7 @@ async function getRevisionHistory(manifest, repo) {
   ];
 
   if (manifest.implementation.type === 'file') {
-    files.concat(
+    files.push(
       getLegacyPathForSourceFile(manifest),
       getPathForSourceFile(manifest),
     );

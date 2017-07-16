@@ -2,6 +2,7 @@ import path from 'path';
 import Git from 'nodegit';
 import fs from 'fs-extra';
 import R from 'ramda';
+import { mapSeries } from 'bluebird';
 
 async function listFiles(repo, filter = () => true) {
   let commit = await repo.getMasterCommit();
@@ -68,15 +69,13 @@ export default class GitRepository {
 
     await this._repo.getRemote('origin');
     const sha = revision || (await this._repo.getMasterCommit()).sha();
-    const walker = this._repo.createRevWalk();
-    walker.push(sha);
-    walker.sorting(Git.Revwalk.SORT.TIME);
 
-    let historyEntries = [];
-    for (let i = 0; i < fileNames.length; i++) {
-      const fileName = fileNames[i];
-      historyEntries = [...historyEntries, ...(await walker.fileHistoryWalk(fileName, 5000))];
-    }
+    const historyEntries = await mapSeries(fileNames, async (fileName) => {
+      const walker = this._repo.createRevWalk();
+      walker.push(sha);
+      walker.sorting(Git.Revwalk.SORT.TIME);
+      return await walker.fileHistoryWalk(fileName, 5000);
+    });
 
     const mapEntry = ({ commit }) => ({
       sha: commit.sha(),
@@ -86,6 +85,7 @@ export default class GitRepository {
     });
 
     const uniqSort = R.pipe(
+      R.flatten,
       R.map(mapEntry),
       R.uniqBy(R.prop('sha')),
       R.sort(R.descend(R.prop('date'))),
@@ -101,7 +101,7 @@ export default class GitRepository {
     await fs.writeFile(filePath, content);
 
     const realPath = await fs.realpath(filePath);
-    fileName = path.relative(workdir, realPath);
+    fileName = path.relative(workdir, realPath).replace(/\\/g, '/');
 
     const repoIndex = await this._repo.index();
     await repoIndex.addByPath(fileName);
