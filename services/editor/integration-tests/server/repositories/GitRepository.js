@@ -36,12 +36,13 @@ describe('GitRepository', () => {
     const tempFolder = createRandomDirectorySync('local');
     await Repository.init(remoteFolder, 1);
     const localRepo = await Repository.init(tempFolder, 0);
-    fs.mkdirSync(`${tempFolder}/rules`);
-    fs.mkdirSync(`${tempFolder}/rules/path`);
-    fs.mkdirSync(`${tempFolder}/rules/path/to`);
-    fs.writeFileSync(`${tempFolder}/rules/path/to/someRule.jpad`, '[]');
+    fs.mkdirSync(`${tempFolder}/implementations`);
+    fs.mkdirSync(`${tempFolder}/implementations/jpad`);
+    fs.mkdirSync(`${tempFolder}/implementations/jpad/path`);
+    fs.mkdirSync(`${tempFolder}/implementations/jpad/path/to`);
+    fs.writeFileSync(`${tempFolder}/implementations/jpad/path/to/someRule.jpad`, '[]');
     await localRepo.createCommitOnHead(
-      ['rules/path/to/someRule.jpad'],
+      ['implementations/jpad/path/to/someRule.jpad'],
       Signature.now('myuser', 'myuser@soluto.com'),
       Signature.now('myuser', 'myuser@soluto.com'),
       'test',
@@ -67,7 +68,7 @@ describe('GitRepository', () => {
   it('should be able to read key data', async function () {
     this.timeout(15000);
     const repo = GitRepository.init({ url: remoteFolder, localPath: testFolder });
-    const key = await repo.readFile('rules/path/to/someRule.jpad');
+    const key = await repo.readFile('implementations/jpad/path/to/someRule.jpad');
 
     const expectedRule = {
       fileContent: '[]',
@@ -81,14 +82,14 @@ describe('GitRepository', () => {
   it('should be able to update key data', async function () {
     this.timeout(15000);
     const repo = GitRepository.init({ url: remoteFolder, localPath: testFolder });
-    const key = await repo.readFile('rules/path/to/someRule.jpad');
+    const key = await repo.readFile('implementations/jpad/path/to/someRule.jpad');
     expect(key.fileContent).to.equals('[]');
-    await repo.updateFile('rules/path/to/someRule.jpad', '[{}]', {
+    await repo.updateFile('implementations/jpad/path/to/someRule.jpad', '[{}]', {
       name: 'test',
       email: 'test@soluto.com',
     });
     await checkRemoteRepository(async (path) => {
-      expect(fs.readFileSync(`${path}/rules/path/to/someRule.jpad`, { encoding: 'utf-8' })).to.equal(
+      expect(fs.readFileSync(`${path}/implementations/jpad/path/to/someRule.jpad`, { encoding: 'utf-8' })).to.equal(
         '[{}]',
       );
     });
@@ -97,12 +98,12 @@ describe('GitRepository', () => {
   it('should be able to add file when path contains non-existing folder', async function () {
     this.timeout(15000);
     const repo = GitRepository.init({ url: remoteFolder, localPath: testFolder });
-    await repo.updateFile('rules/path2/someRule.jpad', '[{}]', {
+    await repo.updateFile('implementations/jpad/path2/someRule.jpad', '[{}]', {
       name: 'test',
       email: 'test@soluto.com',
     });
     await checkRemoteRepository(async (path) => {
-      expect(fs.readFileSync(`${path}/rules/path2/someRule.jpad`, { encoding: 'utf-8' })).to.equal(
+      expect(fs.readFileSync(`${path}/implementations/jpad/path2/someRule.jpad`, { encoding: 'utf-8' })).to.equal(
         '[{}]',
       );
     });
