@@ -1,5 +1,5 @@
 # ------- BASE -------
-FROM soluto/nodegit-alpine as base
+FROM soluto/nodegit-alpine:8.1.4 as base
 
 COPY package.json yarn.lock /tmp/
 RUN ln -s /nodegit/node_modules /tmp/node_modules
@@ -26,5 +26,5 @@ EXPOSE 3000
 
 ENV PORT=3000
 HEALTHCHECK --interval=10s --timeout=10s --retries=8 \
-      CMD curl -f http://localhost:3000/isalive || exit 1
+      CMD wget -O - http://localhost:3000/isalive || exit 1
 ENTRYPOINT ["node", "./src/server.js"]
