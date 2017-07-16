@@ -1,7 +1,7 @@
 version: '3.1'
 
 services:
-  tweek-api:
+  api:
     build:
       args:
         source: ${DOCKER_BUILD_SOURCE}
