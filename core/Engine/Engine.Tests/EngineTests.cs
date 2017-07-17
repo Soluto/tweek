@@ -23,39 +23,7 @@ namespace Engine.IntegrationTests
         public ITestDriver Driver { get; set; }
         public CouchBaseFixture()
         {
-            var bucketName = "tweek-tests";
-            var cluster = new Cluster(new ClientConfiguration
-            {
-                Servers = new List<Uri> { new Uri("http://couchbase-07cc5a45.b5501720.svc.dockerapp.io:8091/pools") },
-                BucketConfigs = new Dictionary<string, BucketConfiguration>
-                {
-                    [bucketName] = new BucketConfiguration
-                    {
-                        BucketName = bucketName,
-                        Password = "***REMOVED***"
-                    }
-                },
-                Serializer = () => new Couchbase.Core.Serialization.DefaultSerializer(
-                   new JsonSerializerSettings()
-                   {
-                       ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver(),
-                       Converters = 
-                       {
-                           new JsonValueConverter()
-                       }
-                       
-                   },
-                   new JsonSerializerSettings()
-                   {
-                       ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver(),
-                       Converters =
-                       {
-                           new JsonValueConverter()
-                       }
-                   })
-            });
-
-            Driver = new CouchbaseTestDriver(cluster, bucketName);
+            Driver = new InMemoryTestDriver();
         }
     }
 
