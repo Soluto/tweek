@@ -124,7 +124,7 @@ steps:
         working_dir: /repo/tweek
         environment: 
           - TWEEK_API_URL=http://api/
-        command: /bin/bash -c "dotnet restore services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release"
+        command: /bin/bash -c "dotnet restore services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release"
       e2e:
         image: ${{BuildingTests}}
         volumes_from:
