@@ -2,7 +2,6 @@ import path from 'path';
 import Git from 'nodegit';
 import fs from 'fs-extra';
 import R from 'ramda';
-import { mapSeries } from 'bluebird';
 
 async function listFiles(repo, filter = () => true) {
   let commit = await repo.getMasterCommit();
@@ -64,18 +63,18 @@ export default class GitRepository {
     return entry.isBlob() ? (await entry.getBlob()).toString() : undefined;
   }
 
-  async getHistory(fileNames, { revision } = {}) {
+  async getHistory(fileNames, { revision, maxCount = 1000 } = {}) {
     fileNames = Array.isArray(fileNames) ? fileNames : [fileNames];
 
     await this._repo.getRemote('origin');
     const sha = revision || (await this._repo.getMasterCommit()).sha();
 
-    const historyEntries = await mapSeries(fileNames, async (fileName) => {
+    const historyEntries = await Promise.all(fileNames.map((fileName) => {
       const walker = this._repo.createRevWalk();
       walker.push(sha);
       walker.sorting(Git.Revwalk.SORT.TIME);
-      return await walker.fileHistoryWalk(fileName, 5000);
-    });
+      return walker.fileHistoryWalk(fileName, maxCount);
+    }));
 
     const mapEntry = ({ commit }) => ({
       sha: commit.sha(),
