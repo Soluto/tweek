@@ -37,7 +37,7 @@ namespace Engine.Tests
         readonly HashSet<Identity> NoIdentities = new HashSet<Identity>();
         readonly Dictionary<Identity, Dictionary<string, JsonValue>> EmptyContexts = new Dictionary<Identity, Dictionary<string, JsonValue>>();
 
-        public EngineIntegrationTests(CouchBaseFixture fixture)
+        public EngineTests(TestDriverFixture fixture)
         {
             driver = fixture.Driver;
         }
