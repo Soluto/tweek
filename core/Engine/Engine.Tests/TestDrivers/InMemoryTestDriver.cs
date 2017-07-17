@@ -62,7 +62,6 @@ namespace Engine.Tests.TestDrivers
 
   class InMemoryTestDriver : ITestDriver
     {
-        public Func<Task> cleanup = async ()=> {};
         private Dictionary<Identity, Dictionary<string, JsonValue>> dictionary = new Dictionary<Identity, Dictionary<string, JsonValue>>();
 
         public IContextDriver Context => new InMemoryContextDriver(dictionary);
@@ -73,7 +72,6 @@ namespace Engine.Tests.TestDrivers
 
         async Task InsertContextRows(Dictionary<Identity, Dictionary<string, JsonValue>> contexts)
         {
-            cleanup = async () => contexts.Select(x => x.Key).Select(dictionary.Remove);
             foreach (var x in contexts){
                 dictionary.Add(x.Key, x.Value);
             }
@@ -81,7 +79,7 @@ namespace Engine.Tests.TestDrivers
        
         async Task Flush()
         {
-            await cleanup();
+            dictionary.Clear();
         }
 
         public TestScope SetTestEnviornment(Dictionary<Identity, Dictionary<string, JsonValue>> contexts, string[] keys, Dictionary<string, RuleDefinition> rules)
