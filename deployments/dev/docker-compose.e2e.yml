@@ -13,8 +13,8 @@ services:
     depends_on: 
       - selenium
     environment:
-      - EDITOR_URL=http://tweek-editor:3000/
-      - TWEEK_API_URL=http://tweek-api/
+      - EDITOR_URL=http://editor:3000/
+      - TWEEK_API_URL=http://api/
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
     secrets:
       - tweek_ssh_private_key
