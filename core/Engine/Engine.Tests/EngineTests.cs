@@ -16,7 +16,7 @@ using Tweek.Utils;
 using Xunit;
 using MatcherData = System.Collections.Generic.Dictionary<string, object>;
 
-namespace Engine.IntegrationTests
+namespace Engine.Tests
 {
     public class TestDriverFixture
     {
@@ -27,7 +27,7 @@ namespace Engine.IntegrationTests
         }
     }
 
-    public class EngineIntegrationTests : IClassFixture<TestDriverFixture>
+    public class EngineTests : IClassFixture<TestDriverFixture>
     {
         ITestDriver driver;
         Dictionary<Identity, Dictionary<string, JsonValue>> contexts;
