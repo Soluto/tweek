@@ -118,26 +118,26 @@ steps:
       smoke-tests:
         image: microsoft/aspnetcore-build:1.1.2
         depends_on: 
-          - api
+          - tweek-api
         volumes:
           - ${{CF_VOLUME}}:/repo
         working_dir: /repo/tweek
         environment: 
-          - TWEEK_API_URL=http://api/
-        command: /bin/bash -c "dotnet restore services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release"
+          - TWEEK_API_URL=http://tweek-api/
+        command: /bin/bash -c "dotnet restore services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release"
       backoffice-e2e:
         image: ${{BuildingTests}}
         volumes_from:
           - keys
         depends_on: 
           - selenium
-          - editor
-          - api
+          - tweek-editor
+          - tweek-api
         environment:
           - EDITOR_URL=http://tweek-editor:3000/
-          - TWEEK_API_URL=http://api/
+          - TWEEK_API_URL=http://tweek-api/
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test -- --host selenium --port 4444"
+        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && yarn test -- --host selenium --port 4444"
     on_success:
       metadata:
         set:
