@@ -23,6 +23,7 @@ describe('revision history', () => {
     changeValue(4);
 
     const values = browser.getText(`${revisionHistorySelector} option`);
+    // @tweek/editor/history/max_count === 3
     expect(values.length).to.equal(3);
 
     const revisionHistorySelect = browser.element(revisionHistorySelector);
