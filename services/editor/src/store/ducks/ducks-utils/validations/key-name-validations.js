@@ -16,8 +16,7 @@ const existingKeyValidation = {
 };
 
 const keyAsFolderNameValidation = {
-  rule: ({ value, keysList }) =>
-    !keysList.some(x => x.startsWith(`${value}/`) || x.indexOf(`/${value}/`) > -1),
+  rule: ({ value, keysList }) => !keysList.some(x => x.startsWith(`${value}/`)),
   hint: 'Key name similar to existing category',
 };
 
@@ -41,6 +40,6 @@ let keyNameValidations = [
 ];
 
 export default function (keyName, keysList) {
-  var failedRule = keyNameValidations.find(x => !x.rule({ value: keyName, keysList }));
+  let failedRule = keyNameValidations.find(x => !x.rule({ value: keyName, keysList }));
   return { isValid: !failedRule, hint: failedRule ? failedRule.hint : undefined };
 }

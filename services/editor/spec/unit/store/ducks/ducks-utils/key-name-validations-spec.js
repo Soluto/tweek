@@ -41,8 +41,14 @@ describe('key-name-validations', () => {
   setTestDefenition(true, 'key_');
   setTestDefenition(false, 'key@');
   setTestDefenition(true, '@key');
+  setTestDefenition(false, 'a');
+  setTestDefenition(false, 'a/b');
+  setTestDefenition(false, 'a/b/c');
+  setTestDefenition(true, 'b');
+  setTestDefenition(true, 'c');
 
   const existingKeyList = [
+    'a/b/c',
     'aa',
     'bb',
     'aa/bb',
@@ -57,7 +63,12 @@ describe('key-name-validations', () => {
       const validationResult = keyNameValidations(x.keyName, existingKeyList);
 
       // Assert
-      expect(validationResult.isValid).to.equal(x.expectedIsValid, 'should return value is invalid');
+      expect(validationResult.isValid).to.equal(
+        x.expectedIsValid,
+        `should return value is ${x.expectedIsValid
+          ? ''
+          : 'in'}valid (hint: ${validationResult.hint})`,
+      );
       if (!validationResult.isValid)
         assert(validationResult.hint.length > 0, 'should return an un empty hint');
     });
