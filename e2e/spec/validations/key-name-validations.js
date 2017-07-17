@@ -52,4 +52,10 @@ describe('key name validations', () => {
     assert(!keysPageObject.isSaving(), 'should not enter saving mode');
     assert(browser.isVisible(keySelectors.KEY_NAME_VALIDATION_ALERT_ICON), 'should show key name validation');
   });
+
+  it('should allow creating a key named "a/b/c" and also a key named "b"', ()=>{
+    keysPageObject.addEmptyKey("a/b/c");
+    browser.refresh();
+    keysPageObject.addEmptyKey("b");
+  });
 });
