@@ -1,6 +1,9 @@
 import R from 'ramda';
 import searchIndex from '../searchIndex';
+import authenticatedClient from '../auth/authenticatedClient';
 import { getAuthor } from './utils/author';
+
+const historyMaxCountConfig = 'history/max_count';
 
 export async function getAllKeys(req, res) {
   const manifests = await searchIndex.manifests;
@@ -41,9 +44,18 @@ export async function getDependents(req, res, { keysRepository }, { params }) {
   res.json(dependents);
 }
 
-export async function getKeyRevisionHistory(req, res, { keysRepository }, { params }) {
+export async function getKeyRevisionHistory(req, res, { keysRepository, tweekApiHostname }, { params }) {
   const keyPath = params[0];
-  const revisionHistory = await keysRepository.getKeyRevisionHistory(keyPath);
+
+  const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
+  const user = (req.user && req.user.email) || 'unknown';
+
+  const response = await tweekApiClient.get(
+    `/api/v1/keys/@tweek/editor/${historyMaxCountConfig}?tweek_editor_user=${user}`,
+  );
+  const maxCount = response.data;
+
+  const revisionHistory = await keysRepository.getKeyRevisionHistory(keyPath, { maxCount });
   res.json(revisionHistory);
 }
 
