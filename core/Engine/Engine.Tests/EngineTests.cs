@@ -18,16 +18,16 @@ using MatcherData = System.Collections.Generic.Dictionary<string, object>;
 
 namespace Engine.IntegrationTests
 {
-    public class CouchBaseFixture
+    public class TestDriverFixture
     {
         public ITestDriver Driver { get; set; }
-        public CouchBaseFixture()
+        public TestDriverFixture()
         {
             Driver = new InMemoryTestDriver();
         }
     }
 
-    public class EngineIntegrationTests : IClassFixture<CouchBaseFixture>
+    public class EngineIntegrationTests : IClassFixture<TestDriverFixture>
     {
         ITestDriver driver;
         Dictionary<Identity, Dictionary<string, JsonValue>> contexts;
