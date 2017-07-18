@@ -148,18 +148,18 @@
     "chai": "^4.0.1",
     "chai-things": "^0.2.0",
     "concurrently": "^3.4.0",
-    "eslint": "^3.19.0",
+    "eslint": "^4.0.0",
     "eslint-plugin-import": "^2.3.0",
-    "eslint-plugin-jsx-a11y": "^5.0.3",
+    "eslint-plugin-jsx-a11y": "^6.0.0",
     "fetch-mock": "^5.11.0",
-    "husky": "^0.13.4",
+    "husky": "^0.14.0",
     "jest-cli": "^20.0.4",
     "jest-css-modules": "^1.1.0",
-    "lint-staged": "^3.6.0",
+    "lint-staged": "^4.0.0",
     "nodemon": "^1.11.0",
     "prettier-eslint-cli": "^4.0.2",
-    "react-scripts": "1.0.7",
+    "react-scripts": "1.0.10",
     "rimraf": "^2.6.1",
-    "webpack": "2.6.1"
+    "webpack": "3.3.0"
   }
 }
