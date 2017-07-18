@@ -16,18 +16,18 @@ using Tweek.Utils;
 using Xunit;
 using MatcherData = System.Collections.Generic.Dictionary<string, object>;
 
-namespace Engine.IntegrationTests
+namespace Engine.Tests
 {
-    public class CouchBaseFixture
+    public class TestDriverFixture
     {
         public ITestDriver Driver { get; set; }
-        public CouchBaseFixture()
+        public TestDriverFixture()
         {
             Driver = new InMemoryTestDriver();
         }
     }
 
-    public class EngineIntegrationTests : IClassFixture<CouchBaseFixture>
+    public class EngineTests : IClassFixture<TestDriverFixture>
     {
         ITestDriver driver;
         Dictionary<Identity, Dictionary<string, JsonValue>> contexts;
@@ -37,7 +37,7 @@ namespace Engine.IntegrationTests
         readonly HashSet<Identity> NoIdentities = new HashSet<Identity>();
         readonly Dictionary<Identity, Dictionary<string, JsonValue>> EmptyContexts = new Dictionary<Identity, Dictionary<string, JsonValue>>();
 
-        public EngineIntegrationTests(CouchBaseFixture fixture)
+        public EngineTests(TestDriverFixture fixture)
         {
             driver = fixture.Driver;
         }
