@@ -6,6 +6,7 @@
   <ItemGroup>
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.0" />
     <PackageReference Include="LanguageExt.Core" version="1.9.7" />
+    <PackageReference Include="Soluto.Collections.RadixTree" Version="1.0.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine.DataTypes\Engine.DataTypes.csproj" />
