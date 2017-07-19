@@ -1,11 +1,10 @@
+**/*
+!addons/
+!core/
+!services/api/
+!Tweek.sln
 **/.vs/
 **/.vscode/
-/CI/
-/deployments/
-/e2e/
-/services/editor/
-/services/git-service/
 **/obj/
 **/bin/
 **/node_modules/
-TweekApiDockerfile
