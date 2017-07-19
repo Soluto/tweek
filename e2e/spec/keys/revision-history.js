@@ -10,9 +10,15 @@ describe('revision history', () => {
   const valueSelector = "[data-comp= ConstEditor] input";
 
   function changeValue(count) {
+    const currentCommitSelector = `${revisionHistorySelector} option:nth-of-type(1)`;
+    let prevCommit = browser.getValue(currentCommitSelector);
     for (let i = 0; i<count; i++) {
       browser.setValue(valueSelector, `value ${i}`);
       keysPageObject.commitChanges();
+      browser.waitUntil(() => {
+        const currentCommit = browser.getValue(currentCommitSelector);
+        return prevCommit !== currentCommit
+      }, 1000);
     }
   }
 
@@ -22,7 +28,7 @@ describe('revision history', () => {
 
     changeValue(4);
 
-    const values = browser.getText(`${revisionHistorySelector} option`);
+    const values = browser.getValue(`${revisionHistorySelector} option`);
     // @tweek/editor/history/max_count === 3
     expect(values.length).to.equal(3);
 

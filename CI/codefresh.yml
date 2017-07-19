@@ -3,7 +3,7 @@ steps:
   BuildGitKeys:
     title: Building Git Keys Docker Image
     type: build
-    image_name: soluto/git-keys
+    image_name: soluto/tweek-test-keys
     working_directory: ./services/git-service/ssh/
 
   BuildingGitRepository:
