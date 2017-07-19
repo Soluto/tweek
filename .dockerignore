@@ -1,7 +1,7 @@
 **/*
-!addons/
-!core/
-!services/api/
+!addons/**/*
+!core/**/*
+!services/api/**/*
 !Tweek.sln
 **/.vs/
 **/.vscode/
