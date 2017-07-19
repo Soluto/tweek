@@ -192,12 +192,3 @@ steps:
         only:
           - master
     candidate: ${{BuildingGitRepository}}
-
-  PushGitKeysMaster:
-    type: push
-    title: Push Git Test Keys - latest
-    when:
-      branch:
-        only:
-          - master
-    candidate: ${{BuildGitKeys}}
