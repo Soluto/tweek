@@ -1,30 +1,26 @@
 /* global describe, before, after, it, browser */
 
 import KeysAsserts from '../../KeysAsserts';
-import KeysPageObject, { BLANK_KEY_NAME } from '../../utils/KeysPageObject';
+import KeysPage, { BLANK_KEY_NAME } from '../../utils/KeysPage';
 import keySelectors from '../../selectors/keySelectors';
-import globalSelectors from '../../selectors/globalSelectors';
 
 describe('key-value-type', () => {
-  const keysPageObject = new KeysPageObject(browser);
-  const keysAsserts = new KeysAsserts(keysPageObject, browser);
-
   before(() => {
-    keysPageObject.goToBase();
+    KeysPage.goToBase();
     browser.windowHandleMaximize();
     browser.click(keySelectors.ADD_KEY_BUTTON);
-    keysAsserts.assertKeyOpened(BLANK_KEY_NAME);
+    KeysAsserts.assertKeyOpened(BLANK_KEY_NAME);
     browser.click(keySelectors.ADD_RULE_BUTTON);
     browser.waitForExist(keySelectors.ruleContainer(0));
-    keysPageObject.removeRuleCondition(1, 0);
+    KeysPage.removeRuleCondition(1, 0);
   });
 
   let setKeyValueAndType = function (keyValueType, value) {
     browser.setValue(keySelectors.KEY_VALUE_TYPE_INPUT, keyValueType);
 
-    keysPageObject.acceptRodalIfRaised();
+    KeysPage.acceptRodalIfRaised();
 
-    const ruleValueInputSelector = keySelectors.ruleValueInput(0, keyValueType == "Boolean");
+    const ruleValueInputSelector = keySelectors.ruleValueInput(0, keyValueType === "Boolean");
     browser.setValue(ruleValueInputSelector, value);
   };
 
@@ -40,7 +36,7 @@ describe('key-value-type', () => {
       }]
     };
 
-    keysAsserts.assertKeySource(expectedResult);
+    KeysAsserts.assertKeySource(expectedResult);
   }
 
   it('Should convert the value type of the jpad according to the key value type', () => {

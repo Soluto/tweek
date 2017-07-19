@@ -1,6 +1,6 @@
 /* global describe, before, beforeEach, after, it, browser */
 
-import KeysPageObject, { BLANK_KEY_NAME } from '../../utils/KeysPageObject';
+import KeysPage, { BLANK_KEY_NAME } from '../../utils/KeysPage';
 import assert from 'assert';
 import { expect } from 'chai';
 import selectors from '../../selectors/keySelectors';
@@ -18,10 +18,9 @@ const sliderComp = (x, i) => getRelativeSelector([
 const identitySelector = dataComp('identity-selection');
 
 describe('MultiVariant value type', () => {
-  const keysPageObject = new KeysPageObject(browser);
   beforeEach(() => {
-    keysPageObject.goToBase();
-    keysPageObject.goToKey(BLANK_KEY_NAME);
+    KeysPage.goToBase();
+    KeysPage.goToKey(BLANK_KEY_NAME);
   });
 
   it('should succeed editing boolean value type', () => {
@@ -37,11 +36,11 @@ describe('MultiVariant value type', () => {
 
     browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, 'boolean');
     browser.click(selectors.ADD_RULE_BUTTON);
-    keysPageObject.removeRuleCondition(1, 1);
+    KeysPage.removeRuleCondition(1, 1);
     clickComp('convert-to-multi-variant-button');
     browser.setValue(identitySelector, 'user');
 
-    let value = keysPageObject.getKeySource().rules[0];
+    let value = KeysPage.getKeySource().rules[0];
     expect(value).to.have.property('Salt');
 
     const salt = value.Salt;
@@ -54,7 +53,7 @@ describe('MultiVariant value type', () => {
     clickComp('set-to-true-button');
     clickComp('convert-to-multi-variant-button');
 
-    value = keysPageObject.getKeySource().rules[0];
+    value = KeysPage.getKeySource().rules[0];
     expect(value.Salt).to.equal(salt);
   });
 
@@ -76,7 +75,7 @@ describe('MultiVariant value type', () => {
 
     browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, 'string');
     browser.click(selectors.ADD_RULE_BUTTON);
-    keysPageObject.removeRuleCondition(1, 1);
+    KeysPage.removeRuleCondition(1, 1);
     clickComp('convert-to-multi-variant-button');
 
     Object.keys(args).forEach((key, i) => {
@@ -86,7 +85,7 @@ describe('MultiVariant value type', () => {
     });
     browser.setValue(identitySelector, 'other');
 
-    let value = keysPageObject.getKeySource().rules[0];
+    let value = KeysPage.getKeySource().rules[0];
     expect(value).to.have.property('Salt');
 
     const salt = value.Salt;
@@ -99,7 +98,7 @@ describe('MultiVariant value type', () => {
     browser.click(sliderComp('delete-legend-button', 1));
     clickComp('convert-to-multi-variant-button');
 
-    value = keysPageObject.getKeySource().rules[0];
+    value = KeysPage.getKeySource().rules[0];
     expect(value.Salt).to.equal(salt);
   });
 });

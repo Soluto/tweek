@@ -1,10 +1,9 @@
 /* global describe, before, after, it, browser */
 
 import { expect } from 'chai';
-import KeysPageObject from '../../utils/KeysPageObject';
+import KeysPage from '../../utils/KeysPage';
 
 describe('revision history', () => {
-  const keysPageObject = new KeysPageObject(browser);
   const keyName = '@behavior_tests/@revision_history/key';
   const revisionHistorySelector = '[data-comp= revision-history]';
   const valueSelector = '[data-comp= ConstEditor] input';
@@ -14,7 +13,7 @@ describe('revision history', () => {
     let prevCommit = browser.getValue(currentCommitSelector);
     for (let i = 0; i < count; i++) {
       browser.setValue(valueSelector, `value ${i}`);
-      keysPageObject.commitChanges();
+      KeysPage.commitChanges();
 
       let currentCommit = undefined;
       browser.waitUntil(() => {
@@ -26,7 +25,7 @@ describe('revision history', () => {
   }
 
   it('should display revision history', () => {
-    keysPageObject.goToKey(keyName);
+    KeysPage.goToKey(keyName);
     browser.waitForVisible(revisionHistorySelector, 1000);
 
     const changeCount = 4;
