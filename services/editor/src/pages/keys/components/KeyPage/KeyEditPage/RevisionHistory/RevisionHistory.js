@@ -8,6 +8,7 @@ const formatDate = date => `${moment(date).calendar(null, { sameElse: 'DD/MM/YYY
 
 const RevisionHistory = ({ revisionHistory, goToRevision, selectedKey, revision }) =>
   <select
+    data-comp="revision-history"
     className="revision-history"
     value={revision ? revision : revisionHistory[0]}
     onChange={e => goToRevision(selectedKey, e.target.value)}
