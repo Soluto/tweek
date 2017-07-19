@@ -17,10 +17,10 @@ namespace Tweek.Addons.ApplicationInsights
         {
             this.httpContextAccessor = httpContextAccessor;
         }
-
         public void Initialize(ITelemetry telemetry)
         {
-            if (httpContextAccessor.HttpContext.Request.Query.TryGetValue("x-api-client", out var values)){
+            if (httpContextAccessor.HttpContext == null) return;
+            if (httpContextAccessor.HttpContext.Request.Headers.TryGetValue("x-api-client", out var values)){
                 telemetry.Context.Properties["x-api-client"] = values.ToString();
             }
         }
