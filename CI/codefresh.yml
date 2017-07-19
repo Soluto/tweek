@@ -3,7 +3,7 @@ steps:
   BuildGitKeys:
     title: Building Git Keys Docker Image
     type: build
-    image_name: soluto/git-keys
+    image_name: soluto/tweek-test-keys
     working_directory: ./services/git-service/ssh/
 
   BuildingGitRepository:
@@ -192,3 +192,12 @@ steps:
         only:
           - master
     candidate: ${{BuildingGitRepository}}
+
+  PushGitKeysMaster:
+    type: push
+    title: Push Git Test Keys - latest
+    when:
+      branch:
+        only:
+          - master
+    candidate: ${{BuildGitKeys}}
