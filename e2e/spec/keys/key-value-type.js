@@ -21,6 +21,7 @@ describe('key-value-type', () => {
     KeysPage.acceptRodalIfRaised();
 
     const ruleValueInputSelector = keySelectors.ruleValueInput(0, keyValueType === "Boolean");
+    browser.waitForVisible(ruleValueInputSelector);
     browser.setValue(ruleValueInputSelector, value);
   };
 
