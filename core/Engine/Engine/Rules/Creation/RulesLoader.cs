@@ -7,6 +7,7 @@ using Engine.Core.Rules;
 using Engine.DataTypes;
 using Engine.Drivers.Rules;
 using LanguageExt;
+using Soluto.Collections;
 using static Engine.Core.Utils.TraceHelpers;
 
 namespace Engine.Rules.Creation
@@ -39,7 +40,7 @@ namespace Engine.Rules.Creation
                 if (!path.IsScan) return new[] { path };
 
                 var keys = path == ConfigurationPath.FullScan
-                    ? tree.AllKeys()
+                    ? tree.Keys
                     : tree.ListPrefix($"{path.Folder}/").Select(c => c.key);
 
                 return keys.Select(ConfigurationPath.New).Where(x => !x.IsHidden(path.Folder));

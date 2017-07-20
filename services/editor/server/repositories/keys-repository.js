@@ -86,7 +86,7 @@ async function getKeyDef(manifest, repo, revision) {
   }
 }
 
-async function getRevisionHistory(manifest, repo) {
+async function getRevisionHistory(manifest, repo, config) {
   const files = [
     getLegacyPathForManifest(manifest.key_path),
     getPathForManifest(manifest.key_path),
@@ -99,7 +99,7 @@ async function getRevisionHistory(manifest, repo) {
     );
   }
 
-  return await repo.getHistory(files);
+  return await repo.getHistory(files, config);
 }
 
 async function getManifestFile(keyPath, gitRepo, revision) {
@@ -161,10 +161,10 @@ export default class KeysRepository {
     });
   }
 
-  getKeyRevisionHistory(keyPath) {
-    return this._gitTransactionManager.read(async (gitRepo) => {
+  getKeyRevisionHistory(keyPath, config) {
+    return this._gitTransactionManager.with(async (gitRepo) => {
       const manifest = await getManifestFile(keyPath, gitRepo);
-      return getRevisionHistory(manifest, gitRepo);
+      return getRevisionHistory(manifest, gitRepo, config);
     });
   }
 
