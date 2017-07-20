@@ -11,6 +11,8 @@
   "scripts": {
     "test": "mocha",
     "start": "node ./src/server.js",
+    "start:dev": "nodemon --watch server src/server.js -- --GIT_USER git --GIT_URL ssh://git@localhost:4001/tweek/repo --GIT_PUBLIC_KEY_PATH ../git-service/ssh/tweekgit.pub --GIT_PRIVATE_KEY_PATH ../git-service/ssh/tweekgit",
+    "start:full-env": "npm run docker-compose up -- -d git && npm run start:dev",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml",
     "format": "prettier-eslint --trailing-comma all --print-width 100 --single-quote --write",
     "precommit": "lint-staged"
@@ -25,11 +27,16 @@
     }
   },
   "dependencies": {
+    "bluebird": "^3.5.0",
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
+    "fs-extra": "^4.0.0",
+    "lock-queue": "^1.0.1",
     "morgan": "^1.8.2",
     "nconf": "^0.8.4",
-    "nodegit": "^0.18.3"
+    "nodegit": "^0.18.3",
+    "ramda": "^0.24.1",
+    "rxjs": "^5.4.2"
   },
   "devDependencies": {
     "chai": "^4.1.0",
@@ -37,6 +44,7 @@
     "husky": "^0.14.3",
     "lint-staged": "^4.0.2",
     "mocha": "^3.4.2",
+    "nodemon": "^1.11.0",
     "prettier-eslint-cli": "^4.1.1"
   }
 }

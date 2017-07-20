@@ -37,7 +37,7 @@ const tweekApiHostname = nconf.get('TWEEK_API_HOSTNAME');
 
 const toFullPath = x => path.normalize(path.isAbsolute(x) ? x : `${process.cwd()}/${x}`);
 
-const gitRepostoryConfig = {
+const gitRepositoryConfig = {
   url: nconf.get('GIT_URL'),
   username: nconf.get('GIT_USER'),
   password: nconf.get('GIT_PASSWORD'),
@@ -46,13 +46,11 @@ const gitRepostoryConfig = {
   privateKey: toFullPath(nconf.get('GIT_PRIVATE_KEY_PATH') || ''),
 };
 
-const gitRepoCreationPromise = GitRepository.create(gitRepostoryConfig);
-const gitRepoCreationPromiseWithTimeout = new Promise((resolve) => {
-  gitRepoCreationPromise.then(() => resolve());
-})
+const gitRepoCreationPromise = GitRepository.create(gitRepositoryConfig);
+const gitRepoCreationPromiseWithTimeout = Promise.resolve(gitRepoCreationPromise)
   .timeout(gitCloneTimeoutInMinutes * 60 * 1000)
   .catch(Promise.TimeoutError, () => {
-    throw `git repository clonning timeout after ${gitCloneTimeoutInMinutes} minutes`;
+    throw `git repository cloning timeout after ${gitCloneTimeoutInMinutes} minutes`;
   });
 
 const gitTransactionManager = new Transactor(gitRepoCreationPromise, gitRepo => gitRepo.reset());
@@ -62,7 +60,7 @@ const tagsRepository = new TagsRepository(gitTransactionManager);
 GitContinuousUpdater.onUpdate(gitTransactionManager)
   .map(_ => Registration.notifyClients())
   .exhaustMap(_ =>
-    Rx.Observable.defer(async () => searchIndex.refreshIndex(gitRepostoryConfig.localPath)),
+    Rx.Observable.defer(async () => searchIndex.refreshIndex(gitRepositoryConfig.localPath)),
   )
   .do(_ => console.log('index was refreshed'), err => console.log('error refreshing index', err))
   .retry()

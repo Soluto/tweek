@@ -1,14 +1,48 @@
+const path = require('path');
+const Promise = require('bluebird');
 const express = require('express');
 const morgan = require('morgan');
-const nconf = require('nconf');
 const bodyParser = require('body-parser');
+
+const Transactor = require('./utils/transactor');
+const GitRepository = require('./repositories/git-repository');
+const KeysRepository = require('./repositories/keys-repository');
+const TagsRepository = require('./repositories/tags-repository');
+const GitContinuousUpdater = require('./repositories/git-continuous-updater');
+
 const routes = require('./routes');
 
-nconf.argv().env().defaults({
-  PORT: 3000,
-});
+const {
+  PORT,
+  GIT_URL,
+  GIT_USER,
+  GIT_PASSWORD,
+  GIT_PUBLIC_KEY_PATH,
+  GIT_PRIVATE_KEY_PATH,
+  GIT_CLONE_TIMEOUT_IN_MINUTES,
+} = require('./constants');
 
-const PORT = nconf.get('PORT');
+const toFullPath = x => path.normalize(path.isAbsolute(x) ? x : `${process.cwd()}/${x}`);
+
+const gitRepositoryConfig = {
+  url: GIT_URL,
+  username: GIT_USER,
+  password: GIT_PASSWORD,
+  localPath: `${process.cwd()}/rulesRepository`,
+  publicKey: toFullPath(GIT_PUBLIC_KEY_PATH),
+  privateKey: toFullPath(GIT_PRIVATE_KEY_PATH),
+};
+
+const gitRepoCreationPromise = GitRepository.create(gitRepositoryConfig);
+const gitRepoCreationPromiseWithTimeout = Promise.resolve(gitRepoCreationPromise)
+  .timeout(GIT_CLONE_TIMEOUT_IN_MINUTES * 60 * 1000)
+  .catch(Promise.TimeoutError, () => {
+    throw `git repository cloning timeout after ${GIT_CLONE_TIMEOUT_IN_MINUTES} minutes`;
+  });
+
+const gitTransactionManager = new Transactor(gitRepoCreationPromise, gitRepo => gitRepo.reset());
+const keysRepository = new KeysRepository(gitTransactionManager);
+const tagsRepository = new TagsRepository(gitTransactionManager);
 
 async function startServer() {
   const app = express();
@@ -16,7 +50,7 @@ async function startServer() {
   app.use(bodyParser.json()); // for parsing application/json
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-  app.use(routes({ }));
+  app.use(routes({ tagsRepository, keysRepository }));
   app.use('/*', (req, res) => res.sendStatus(404));
 
   app.use((err, req, res, next) => {
@@ -27,4 +61,12 @@ async function startServer() {
   app.listen(PORT, () => console.log('Listening on port', PORT));
 }
 
-startServer();
+GitContinuousUpdater.onUpdate(gitTransactionManager)
+  .retry()
+  .subscribe();
+
+gitRepoCreationPromiseWithTimeout
+  .then(() => startServer())
+  .catch((reason) => {
+    console.error(reason);
+  });
