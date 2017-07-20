@@ -8,8 +8,6 @@ services:
       dockerfile: Dockerfile
     environment:
       - VALIDATION_URL=http://api/validation
-    labels:
-      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
 
   api:
     image: soluto/tweek-api
@@ -20,8 +18,6 @@ services:
       - management
     environment:
       - Rules__Management__Url=http://management:3000
-    labels:
-      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
 
   authoring:
     image: soluto/tweek-authoring-api
@@ -34,5 +30,3 @@ services:
       - api
     environment:
       - TWEEK_API_HOSTNAME=http://api
-    labels:
-      - "com.microsoft.visualstudio.targetoperatingsystem=linux"

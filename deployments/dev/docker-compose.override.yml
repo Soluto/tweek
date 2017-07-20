@@ -11,8 +11,6 @@ services:
       - TWEEK_MANAGEMENT_URL=http://management:3000
     secrets:
       - tweek_ssh_public_key
-    labels:
-      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
  
   management:
     depends_on:
