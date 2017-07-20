@@ -26,7 +26,11 @@
             },
             "env": {
                 "Rules__Management__Url": "http://localhost:4002",
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "Addons__Redis__className": "Tweek.Drivers.Redis.RedisServiceAddon",
+                "Addons__Redis__assemblyName": "Tweek.Drivers.Redis",
+                "ContextProvider":"redis",
+                "Redis__ConnectionString": "localhost:4005"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceRoot}/Views"

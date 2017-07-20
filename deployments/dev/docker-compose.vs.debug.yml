@@ -8,27 +8,36 @@ services:
       dockerfile: Dockerfile
       args:
         source: ${DOCKER_BUILD_SOURCE}
-    depends_on: 
-      - graphite
     environment:
-      - AppMetricsReporters__Graphite__Url=graphite
       - DOTNET_USE_POLLING_FILE_WATCHER=1
     volumes:
       - ../../services/api/Tweek.ApiService.NetCore:/app
       - ~/.nuget/packages:/root/.nuget/packages:ro
       - ~/clrdbg:/clrdbg:ro
     entrypoint: tail -f /dev/null
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
+
+  redis:
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
+
+  gateway:
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
 
   management:
-    build: {}
+    build: {
+    }
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
 
   editor:
     build: {}
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
 
   git:
     build: {}
-
-  graphite:
-    image: hopsoft/graphite-statsd
-    ports:
-      - "4006:80"
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
