@@ -15,12 +15,29 @@ services:
       - ~/.nuget/packages:/root/.nuget/packages:ro
       - ~/clrdbg:/clrdbg:ro
     entrypoint: tail -f /dev/null
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
+
+  redis:
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
+
+  gateway:
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
 
   management:
-    build: {}
+    build: {
+    }
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
 
   editor:
     build: {}
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
 
   git:
     build: {}
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
