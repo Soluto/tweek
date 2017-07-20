@@ -14,7 +14,7 @@ namespace Tweek.Addons.ApplicationInsights
         }
         public void Initialize(ITelemetry telemetry)
         {
-            if (httpContextAccessor?.HttpContext.Request?.Headers.TryGetValue("x-api-client", out var apiClient) ?? false){
+            if (httpContextAccessor.HttpContext?.Request?.Headers.TryGetValue("x-api-client", out var apiClient) ?? false){
                 telemetry.Context.Properties["x-api-client"] = apiClient.ToString();
             }
         }
