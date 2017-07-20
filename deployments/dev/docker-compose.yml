@@ -23,6 +23,10 @@ services:
     labels:
       - "com.microsoft.visualstudio.targetoperatingsystem=linux"
 
+  authoring:
+    image: soluto/tweek-authoring-api
+    build: ../../services/authoring
+
   editor:
     image: soluto/tweek-editor
     build: ../../services/editor

@@ -28,6 +28,11 @@ services:
   git:
     build: {}
 
+  authoring:
+    build: {}
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
+
   graphite:
     image: hopsoft/graphite-statsd
     ports:

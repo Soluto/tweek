@@ -36,7 +36,7 @@ services:
       - tweek_ssh_private_key
     labels:
       - "traefik.port=3000"
-
+  
   api:
     ports:
       - "4003:80"
@@ -68,12 +68,26 @@ services:
       - tweek_ssh_private_key
       - tweek_ssh_public_key
 
+  authoring:
+    depends_on:
+      - git
+    ports:
+      - "4005:3000"
+    environment:
+      - GIT_USER=git
+      - GIT_URL=ssh://git@git/tweek/repo
+      - GIT_PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
+      - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
+    secrets:
+      - tweek_ssh_private_key
+      - tweek_ssh_public_key
+
   redis:
     image: redis:alpine
     expose:
       - "6379"
     ports:
-      - "4005:6379"
+      - "4006:6379"
   
   gateway:
     image: traefik:1.3.2
