@@ -2,6 +2,7 @@ import path from 'path';
 import Git from 'nodegit';
 import fs from 'fs-extra';
 import R from 'ramda';
+import { mapSeries, reduce } from 'bluebird';
 
 async function listFiles(repo, filter = () => true) {
   let commit = await repo.getMasterCommit();
@@ -66,15 +67,14 @@ export default class GitRepository {
   async getHistory(fileNames, { revision, maxCount = 1000 } = {}) {
     fileNames = Array.isArray(fileNames) ? fileNames : [fileNames];
 
-    await this._repo.getRemote('origin');
     const sha = revision || (await this._repo.getMasterCommit()).sha();
+    const walker = this._repo.createRevWalk();
+    walker.sorting(Git.Revwalk.SORT.TIME);
 
-    const historyEntries = await Promise.all(fileNames.map((fileName) => {
-      const walker = this._repo.createRevWalk();
+    const historyEntries = await mapSeries(fileNames, (fileName) => {
       walker.push(sha);
-      walker.sorting(Git.Revwalk.SORT.TIME);
       return walker.fileHistoryWalk(fileName, maxCount);
-    }));
+    });
 
     const mapEntry = ({ commit }) => ({
       sha: commit.sha(),
@@ -90,7 +90,30 @@ export default class GitRepository {
       R.sort(R.descend(R.prop('date'))),
     );
 
-    return uniqSort(historyEntries);
+    const history = uniqSort(historyEntries);
+
+    if (history.length === 0) {
+      const commit = await this._repo.getCommit(sha);
+      const tree = await commit.getTree();
+
+      const exists = await reduce(
+        fileNames,
+        async (exists, fileName) => {
+          if (exists) return true;
+          try {
+            await tree.getEntry(fileName);
+            return true;
+          } catch (err) {
+            return false;
+          }
+        },
+        false,
+      );
+
+      if (exists) return [mapEntry({ commit })];
+    }
+
+    return history;
   }
 
   async updateFile(fileName, content) {
