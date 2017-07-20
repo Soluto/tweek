@@ -32,13 +32,10 @@ async function refreshIndex(repoDir) {
 }
 
 const indexDependencies = R.pipe(
-  R.filter(manifest => !!manifest.dependencies),
-  R.chain(R.pipe(
-    R.props(['key_path', 'dependencies']),
-    ([keyPath, dependencies]) => dependencies.map(dependency => ({ dependency, keyPath })),
-  )),
-  R.groupBy(R.prop('dependency')),
-  R.map(R.map(R.prop('keyPath'))),
+  R.filter(manifest => manifest.dependencies),
+  R.chain(({ key_path, dependencies }) => dependencies.map(dependency => ([dependency, key_path]))),
+  R.groupBy(([dependency]) => dependency),
+  R.map(R.map(([, key_path]) => key_path)),
 );
 
 export default {
