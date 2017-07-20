@@ -26,7 +26,7 @@ const selectAuthenticationProviders = require('./auth/providerSelector')
 nconf.argv().env().defaults({
   PORT: 3001,
   GIT_CLONE_TIMEOUT_IN_MINUTES: 1,
-  TWEEK_API_HOSTNAME: 'https://api.playground.tweek.host',
+  TWEEK_API_HOSTNAME: 'http://api.dev.local.tweek.fm:81',
   VAPID_KEYS: './vapid/keys.json',
 });
 nconf.required(['GIT_URL', 'GIT_USER']);
