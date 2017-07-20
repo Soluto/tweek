@@ -1,11 +1,9 @@
-import fs from 'fs';
-import { execFile } from 'child_process';
-import { promisify } from 'util';
-import R from 'ramda';
-import lunr from 'lunr';
-import getManifestsFromFiles from './getManifestsFromFiles';
-
-const readFile = promisify(fs.readFile);
+const path = require('path');
+const { execFile } = require('child_process');
+const fs = require('fs-extra');
+const R = require('ramda');
+const lunr = require('lunr');
+const getManifests = require('./get-manifests');
 
 let manifestPromise;
 let indexPromise;
@@ -16,14 +14,14 @@ async function refreshIndex(repoDir) {
   const indexFile = './searchIndex.json';
 
   await new Promise((resolve, reject) => {
-    execFile('node', ['./build-index/cli.js', repoDir, indexFile], (error, stdout, stderr) => {
+    execFile('node', [path.join(__dirname, 'build/cli.js') , repoDir, indexFile], (error, stdout, stderr) => {
       console.log(stdout);
       if (error) reject(error);
       else resolve();
     });
   });
 
-  const stringIndex = await readFile(indexFile);
+  const stringIndex = await fs.readFile(indexFile);
   const obj = JSON.parse(stringIndex);
 
   index = lunr.Index.load(obj.index);
@@ -41,7 +39,7 @@ const indexDependencies = R.pipe(
   R.map(R.map(R.prop('keyPath'))),
 );
 
-export default {
+module.exports = {
   get indexPromise() {
     return indexPromise;
   },
@@ -56,7 +54,7 @@ export default {
   },
   refreshIndex: (repoDir) => {
     indexPromise = refreshIndex(repoDir);
-    manifestPromise = getManifestsFromFiles(repoDir);
+    manifestPromise = getManifests(repoDir);
     dependentsPromise = manifestPromise.then(indexDependencies);
 
     return indexPromise;

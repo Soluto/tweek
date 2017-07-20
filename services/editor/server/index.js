@@ -60,7 +60,7 @@ const tagsRepository = new TagsRepository(gitTransactionManager);
 GitContinuousUpdater.onUpdate(gitTransactionManager)
   .map(_ => Registration.notifyClients())
   .exhaustMap(_ =>
-    Rx.Observable.defer(async () => searchIndex.refreshIndex(gitRepositoryConfig.localPath)),
+    Rx.Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)),
   )
   .do(_ => console.log('index was refreshed'), err => console.log('error refreshing index', err))
   .retry()

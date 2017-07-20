@@ -3,12 +3,15 @@ const Promise = require('bluebird');
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const Rx = require('rxjs');
 
 const Transactor = require('./utils/transactor');
 const GitRepository = require('./repositories/git-repository');
 const KeysRepository = require('./repositories/keys-repository');
 const TagsRepository = require('./repositories/tags-repository');
 const GitContinuousUpdater = require('./repositories/git-continuous-updater');
+
+const searchIndex = require('./search-index');
 
 const routes = require('./routes');
 
@@ -62,6 +65,8 @@ async function startServer() {
 }
 
 GitContinuousUpdater.onUpdate(gitTransactionManager)
+  .switchMap(_ => Rx.Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)))
+  .do(()=>{}, err => console.error('Error refreshing index', err))
   .retry()
   .subscribe();
 

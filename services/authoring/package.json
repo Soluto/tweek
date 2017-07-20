@@ -31,9 +31,13 @@
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "fs-extra": "^4.0.0",
+    "glob": "^7.1.2",
+    "highland": "^2.11.1",
     "lock-queue": "^1.0.1",
+    "lunr": "^2.1.2",
     "morgan": "^1.8.2",
     "nconf": "^0.8.4",
+    "node-getopt": "^0.2.3",
     "nodegit": "^0.18.3",
     "ramda": "^0.24.1",
     "rxjs": "^5.4.2"

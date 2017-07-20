@@ -12,5 +12,6 @@ module.exports = {
       .delay(CONTINUOUS_UPDATER_INTERVAL)
       .retry()
       .repeat()
-      .distinctUntilChanged(),
+      .distinctUntilChanged()
+      .do(sha => console.log('Updated git repo', sha)),
 };
