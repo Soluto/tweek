@@ -1,12 +1,10 @@
 /* global describe, before, after, beforeEach, it, browser */
 
-import KeysPageObject, { BLANK_KEY_NAME } from '../../utils/KeysPageObject';
+import KeysPage, { BLANK_KEY_NAME } from '../../utils/KeysPage';
 import selectors from '../../selectors/keySelectors';
 
 describe('navigating from key with changes', () => {
-  const keysPageObject = new KeysPageObject(browser);
-
-  const testFolder = KeysPageObject.TEST_KEYS_FOLDER;
+  const testFolder = KeysPage.TEST_KEYS_FOLDER;
   const testKey1 = `test_key1`;
   const folderPath = `@routing`;
 
@@ -17,14 +15,14 @@ describe('navigating from key with changes', () => {
   });
 
   beforeEach(() => {
-    keysPageObject.goToKey(BLANK_KEY_NAME);
+    KeysPage.goToKey(BLANK_KEY_NAME);
   });
 
   it('should show confirm message if navigating to another key', () => {
     browser.click(selectors.ADD_RULE_BUTTON);
-    browser.waitUntil(() => keysPageObject.hasChanges(), 2000);
+    browser.waitUntil(() => KeysPage.hasChanges(), 2000);
 
-    keysPageObject.navigateToKey(testKey1FullPath);
+    KeysPage.navigateToKey(testKey1FullPath);
 
     browser.waitForAlert(1000, 'should show confirm message');
     browser.alertAccept();
@@ -32,7 +30,7 @@ describe('navigating from key with changes', () => {
 
   it('should show confirm message if refreshing', () => {
     browser.click(selectors.ADD_RULE_BUTTON);
-    browser.waitUntil(() => keysPageObject.hasChanges(), 2000);
+    browser.waitUntil(() => KeysPage.hasChanges(), 2000);
 
     browser.refresh();
 

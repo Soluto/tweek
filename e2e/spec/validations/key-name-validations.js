@@ -1,17 +1,13 @@
 /* global describe, before, after, it, browser */
 
 import KeysAsserts from '../../KeysAsserts';
-import KeysPageObject, { BLANK_KEY_NAME } from '../../utils/KeysPageObject';
+import KeysPage, { BLANK_KEY_NAME } from '../../utils/KeysPage';
 import { expect, assert } from 'chai';
 import keySelectors from '../../selectors/keySelectors';
-import globalSelectors from '../../selectors/globalSelectors';
 
 describe('key name validations', () => {
-  const keysPageObject = new KeysPageObject(browser);
-  const keysAsserts = new KeysAsserts(keysPageObject, browser);
-
   beforeEach(() => {
-    keysPageObject.goToBase();
+    KeysPage.goToBase();
   });
 
   const testDefenitions = [];
@@ -31,9 +27,7 @@ describe('key name validations', () => {
     testDefenitions.forEach(x => {
       const {keyName, isValid} = x;
       browser.setValue(keySelectors.KEY_NAME_INPUT, keyName);
-      keysPageObject.wait(1000, false);
-      expect(browser.isVisible(keySelectors.KEY_NAME_VALIDATION_ALERT_ICON))
-        .to.equal(!isValid, `should show key name validation for key name:${keyName}`);
+      browser.waitForVisible(keySelectors.KEY_NAME_VALIDATION_ALERT_ICON, 1000, isValid);
     });
 
     browser.setValue(keySelectors.KEY_NAME_INPUT, BLANK_KEY_NAME);
@@ -42,20 +36,20 @@ describe('key name validations', () => {
 
   it('should show validaton alert on clicking save without a value', () => {
     browser.click(keySelectors.ADD_KEY_BUTTON);
-    keysAsserts.assertKeyOpened(BLANK_KEY_NAME);
+    KeysAsserts.assertKeyOpened(BLANK_KEY_NAME);
 
     browser.setValue(keySelectors.KEY_VALUE_TYPE_INPUT, 'String'); // to make local changes
 
-    assert(!keysPageObject.isSaveButtonDisabled(), 'should not disable save button');
+    assert(!KeysPage.isSaveButtonDisabled(), 'should not disable save button');
     browser.click(keySelectors.SAVE_CHANGES_BUTTON);
 
-    assert(!keysPageObject.isSaving(), 'should not enter saving mode');
+    assert(!KeysPage.isSaving(), 'should not enter saving mode');
     assert(browser.isVisible(keySelectors.KEY_NAME_VALIDATION_ALERT_ICON), 'should show key name validation');
   });
 
   it('should allow creating a key named "a/b/c" and also a key named "b"', ()=>{
-    keysPageObject.addEmptyKey("a/b/c");
+    KeysPage.addEmptyKey("a/b/c");
     browser.refresh();
-    keysPageObject.addEmptyKey("b");
+    KeysPage.addEmptyKey("b");
   });
 });
