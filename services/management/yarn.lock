@@ -838,10 +838,6 @@ exit-hook@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/exit-hook/-/exit-hook-1.1.1.tgz#f05ca233b48c05d54fff07765df8507e95c02ff8"
 
-expres@0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/expres/-/expres-0.0.5.tgz#bf4484749f83920cb116d6baf6da230220d1fb9c"
-
 express@^4.13.4:
   version "4.15.3"
   resolved "https://registry.yarnpkg.com/express/-/express-4.15.3.tgz#bab65d0f03aa80c358408972fc700f916944b662"
