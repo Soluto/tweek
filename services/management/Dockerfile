@@ -23,7 +23,6 @@ FROM base as release
 
 WORKDIR /opt/app
 COPY src/ /opt/app/src/
-COPY src/ /opt/app/src/
 COPY --from=deps /tmp/node_modules /opt/app/node_modules
 
 EXPOSE 3000
