@@ -9,7 +9,7 @@
     },
     "implementation": {
         "type": "const",
-        "value": 3
+        "value": 1000
     },
     "valueType": "number",
     "enabled": true,

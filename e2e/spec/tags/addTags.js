@@ -1,16 +1,14 @@
 /* global describe, before, after, it, browser */
 
-import KeysPageObject from '../../utils/KeysPageObject';
+import KeysPage from '../../utils/KeysPage';
 import selectors from '../../selectors/keySelectors';
 import Chance from 'chance';
 
 describe('add tags', () => {
     const NUMBER_OF_TAGS_TO_ADD = 1;
 
-    const keysPageObject = new KeysPageObject(browser);
-
     const tagsTestKeyName = 'tags_test';
-    const testFolder = KeysPageObject.TEST_KEYS_FOLDER;
+    const testFolder = KeysPage.TEST_KEYS_FOLDER;
     const tagsTestFolder = '@tags';
     const tagsTestKeyFullPath = `${testFolder}/${tagsTestFolder}/${tagsTestKeyName}`;
 
@@ -20,10 +18,10 @@ describe('add tags', () => {
 
     before(() => {
         try {
-            keysPageObject.goToKey(tagsTestKeyFullPath);
+            KeysPage.goToKey(tagsTestKeyFullPath);
         }
         catch (exp) {
-            keysPageObject.addEmptyKey(tagsTestKeyFullPath);
+            KeysPage.addEmptyKey(tagsTestKeyFullPath);
         }
 
         browser.windowHandleMaximize();
@@ -55,7 +53,7 @@ describe('add tags', () => {
 
     it('should save the tag as a suggestion on submiting it without saving the key', () => {
         // Arrange
-        keysPageObject.goToKey(tagsTestKeyFullPath);
+        KeysPage.goToKey(tagsTestKeyFullPath);
 
         const tagsToAdd = [];
         for (let tagsIndex = 0; tagsIndex < NUMBER_OF_TAGS_TO_ADD; tagsIndex++) tagsToAdd.push(chance.guid());
@@ -63,13 +61,12 @@ describe('add tags', () => {
         // Act
         tagsToAdd.forEach(x => addTag(x));
 
-        keysPageObject.wait(10000, false);
         browser.refresh();
         browser.alertAccept();
 
-        browser.waitForVisible(selectors.TAGS_INPUT, KeysPageObject.GIT_TRANSACTION_TIMEOUT);
+        browser.waitForVisible(selectors.TAGS_INPUT, KeysPage.GIT_TRANSACTION_TIMEOUT);
 
         // Assert
-        tagsToAdd.forEach(x => browser.waitUntil(() => isTagExists(x), KeysPageObject.GIT_TRANSACTION_TIMEOUT));
+        tagsToAdd.forEach(x => browser.waitUntil(() => isTagExists(x), KeysPage.GIT_TRANSACTION_TIMEOUT));
     });
 });

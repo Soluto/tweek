@@ -1,7 +1,6 @@
 /* global describe, before, after, it, browser */
 import chai,{expect} from 'chai';
 import tweekApiClient from '../../utils/tweekApiClient';
-import PageObject from '../../utils/PageObject';
 chai.use(require('chai-string'));
 
 function addStringProperty(propertyName){

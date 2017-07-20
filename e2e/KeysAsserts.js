@@ -1,34 +1,28 @@
 import assert from 'assert';
-import KeysPageObject from './utils/KeysPageObject';
+import KeysPage from './utils/KeysPage';
 import PageAsserts from './PageAsserts';
 import selectors from './selectors/keySelectors';
 import { expect } from 'chai';
 
 export default class KeysAsserts {
-
-  constructor(keysPageObject, browser) {
-    this.keysPageObject = keysPageObject;
-    this.browser = browser;
-  }
-
-  assertKeyOpened(keyName) {
-    this.assertIsInKeyPage(keyName, `should be in ${keyName} key page`);
+  static assertKeyOpened(keyName) {
+    KeysAsserts.assertIsInKeyPage(keyName, `should be in ${keyName} key page`);
     browser.waitForVisible(selectors.KEY_VIEWER_CONTAINER, 4000);
-    assert(!this.keysPageObject.hasChanges(), 'should not have changes');
-    assert(!this.keysPageObject.isSaving(), 'should not be in saving state');
+    assert(!KeysPage.hasChanges(), 'should not have changes');
+    assert(!KeysPage.isSaving(), 'should not be in saving state');
   }
 
-  assertKeySource(expectedSourceObject, message = 'key source should be correct') {
+  static assertKeySource(expectedSourceObject) {
     let keySourceObject;
     try {
-      keySourceObject = this.keysPageObject.getKeySource();
+      keySourceObject = KeysPage.getKeySource();
     }
     catch (exp) {
       assert(false, 'failed read key source, ' + exp);
     }
 
     const deleteIds = (rulesObject, depth) => {
-      if (depth == 0) {
+      if (depth === 0) {
         rulesObject.forEach(matcher => { delete matcher['Id']; });
         return;
       }
@@ -41,24 +35,24 @@ export default class KeysAsserts {
     assert.deepEqual(keySourceObject, expectedSourceObject);
   }
 
-  assertKeyHasNumberOfRules(expectedNumberOfRules, message = 'should have correct ammount of rules') {
-    assert.equal(this.keysPageObject.getNumberOfRules(), expectedNumberOfRules, message);
+  static assertKeyHasNumberOfRules(expectedNumberOfRules, message = 'should have correct ammount of rules') {
+    assert.equal(KeysPage.getNumberOfRules(), expectedNumberOfRules, message);
   }
 
-  assertIsInKeyPage(expectedKey, message) {
-    PageAsserts.assertIsInPage(`${KeysPageObject.KEYS_PAGE_URL}/${expectedKey}`, message);
+  static assertIsInKeyPage(expectedKey, message) {
+    PageAsserts.assertIsInPage(`${KeysPage.KEYS_PAGE_URL}/${expectedKey}`, message);
   }
 
-  assertIsKeyExistsAfterTransaction(keyName, isExisting, message) {
-    if (!isExisting) this.keysPageObject.waitForKeyToBeDeleted(keyName);
-    const currentUrl = this.browser.getUrl();
+  static assertIsKeyExistsAfterTransaction(keyName, isExisting, message) {
+    if (!isExisting) KeysPage.waitForKeyToBeDeleted(keyName);
+    const currentUrl = browser.getUrl();
 
-    this.keysPageObject.goToKeyUrl(keyName);
-    assert(isExisting === this.browser.isExisting(selectors.KEY_VIEWER_CONTAINER), message);
+    KeysPage.goToKeyUrl(keyName);
+    assert(isExisting === browser.isExisting(selectors.KEY_VIEWER_CONTAINER), message);
 
-    if (currentUrl != this.browser.getUrl()) {
-      this.browser.url(currentUrl);
-      this.keysPageObject.waitForPageToLoad();
+    if (currentUrl !== browser.getUrl()) {
+      browser.url(currentUrl);
+      KeysPage.waitForPageToLoad();
     }
   }
 }
