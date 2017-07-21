@@ -78,7 +78,7 @@ More on how multi-varaint keys work in Tweek. (link)
 
 ### FAQ
 - Who's using Tweek?  
-Tweek is been used in large scale production deployment in Soluto.
+Tweek is been used in large scale production deployment at Soluto.
 
 ### Related projects
 [Tweek.JPad](https://github.com/soluto/tweek.jpad) - Tweek's internal rules engine
