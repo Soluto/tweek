@@ -16,6 +16,7 @@ describe('key-value-type', () => {
   });
 
   let setKeyValueAndType = function (keyValueType, value) {
+    browser.waitForEnabled(keySelectors.KEY_VALUE_TYPE_INPUT, 1000);
     browser.setValue(keySelectors.KEY_VALUE_TYPE_INPUT, keyValueType);
 
     KeysPage.acceptRodalIfRaised();

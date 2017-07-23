@@ -187,8 +187,7 @@ export default class KeysPage {
   }
 
   static addPartitionFromProperty(property) {
-    browser.setValue(keySelectors.ADD_PARTITION_INPUT, property);
-    browser.keys('\uE007');
+    browser.setValue(keySelectors.ADD_PARTITION_INPUT, `${property}\n`);
   }
 
   static commitChanges(selector = keySelectors.SAVE_CHANGES_BUTTON) {
