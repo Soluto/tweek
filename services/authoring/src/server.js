@@ -65,13 +65,19 @@ async function startServer() {
 }
 
 GitContinuousUpdater.onUpdate(gitTransactionManager)
-  .switchMap(_ => Rx.Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)))
-  .do(()=>{}, err => console.error('Error refreshing index', err))
+  .switchMap(_ =>
+    Rx.Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)),
+  )
+  .do(() => {}, err => console.error('Error refreshing index', err))
   .retry()
   .subscribe();
 
-gitRepoCreationPromiseWithTimeout
-  .then(() => startServer())
-  .catch((reason) => {
-    console.error(reason);
-  });
+//GitContinuousUpdater.onUpdate(gitTransactionManager)
+//  .switchMap(_ => Rx.Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)))
+//  .do(()=>{}, err => console.error('Error refersing apps index', err))
+//  .retry()
+//  .subscribe();
+
+gitRepoCreationPromiseWithTimeout.then(() => startServer()).catch((reason) => {
+  console.error(reason);
+});

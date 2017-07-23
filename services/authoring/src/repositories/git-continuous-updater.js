@@ -13,5 +13,6 @@ module.exports = {
       .retry()
       .repeat()
       .distinctUntilChanged()
-      .do(sha => console.log('Updated git repo', sha)),
+      .do(sha => console.log('Updated git repo', sha))
+      .share(),
 };
