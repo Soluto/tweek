@@ -77,7 +77,9 @@ async function updateLatestCache() {
 
       rulesCache.sha = newLatestSha;
       rulesCache.ruleset = ruleset;
+      const timer = logger.startTimer();
       rulesCache.formattedRuleset = JSON.stringify(ruleset);
+      timer.done("updateLatestCache:JSON.stringify")
       logger.info('Rules Cache updated', { sha: newLatestSha });
     } catch (err) {
       console.error(err);
