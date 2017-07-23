@@ -34,6 +34,7 @@
     "fs-extra": "^4.0.0",
     "glob": "^7.1.2",
     "highland": "^2.11.1",
+    "jsondiffpatch": "^0.2.4",
     "lock-queue": "^1.0.1",
     "lunr": "^2.1.2",
     "morgan": "^1.8.2",
