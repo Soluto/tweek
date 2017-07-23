@@ -38,6 +38,7 @@ const fetchOpts = {
 
 const rulesCache = {
   ruleset: null,
+  formattedRuleset: null,
   sha: null,
 };
 
@@ -76,6 +77,9 @@ async function updateLatestCache() {
 
       rulesCache.sha = newLatestSha;
       rulesCache.ruleset = ruleset;
+      const timer = logger.startTimer();
+      rulesCache.formattedRuleset = JSON.stringify(ruleset);
+      timer.done("updateLatestCache:JSON.stringify")
       logger.info('Rules Cache updated', { sha: newLatestSha });
     } catch (err) {
       console.error(err);
@@ -87,5 +91,6 @@ async function updateLatestCache() {
 module.exports = {
   buildLocalCache,
   getLatestRules: () => rulesCache.ruleset,
+  getLatestFormattedRules: () => rulesCache.formattedRuleset,
   getLatestRulesVersion: () => rulesCache.sha,
 };
