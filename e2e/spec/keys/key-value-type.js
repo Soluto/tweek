@@ -22,7 +22,7 @@ describe('key-value-type', () => {
     KeysPage.acceptRodalIfRaised();
 
     const ruleValueInputSelector = keySelectors.ruleValueInput(0, keyValueType === "Boolean");
-    browser.waitForVisible(ruleValueInputSelector);
+    browser.waitForEnabled(ruleValueInputSelector, 1000);
     browser.setValue(ruleValueInputSelector, value);
   };
 

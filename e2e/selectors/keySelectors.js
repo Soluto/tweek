@@ -91,7 +91,8 @@ keySelectors.ruleValueInput = (ruleIndex, isValueContainsSuggestions) => {
     return getRelativeSelector([
       keySelectors.ruleContainer(ruleIndex),
       getSelectorByClassNames('rule-value-container'),
-      getSelectorByClassNames('bootstrap-typeahead-input', 'input-main')]);
+      '[data-comp= typed-input]',
+    ]);
 
   return getRelativeSelector([
     keySelectors.ruleContainer(ruleIndex),
