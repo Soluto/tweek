@@ -2,15 +2,6 @@ const R = require('ramda');
 const crypto = require('crypto');
 const { promisify } = require('utils');
 
-const tweekApps = {
-  'tweek-editor': {
-    version: 1,
-    friendlyName: 'tweek-editor',
-    authType: 'jwt-signature',
-    permissions: '*',
-  },
-};
-
 const pbkdf2 = util.promisify(crypto.pbkdf2);
 
 let apps = {};
@@ -18,13 +9,12 @@ let apps = {};
 async function refreshApps(gitTransactionManager) {
   await gitTransactionManager.with(async (repo) => {
     const externalAppsFiles = await repo.listFiles('external_apps');
-    const externalApps = (await Promise.all(
+    const apps = (await Promise.all(
       externalAppsFiles.map(async appFile => ({
         name: appFile.split('.')[0],
         data: await repo.readFile('external_apps/{appFile}'),
       })),
     )).reduce((acc, { name, data }) => R.assocPath(name, data)(acc), {});
-    apps = R.merge(externalApps, tweekApps);
   });
 }
 
