@@ -16,13 +16,17 @@ async function getSchemas(req, res) {
   res.json(schemas);
 }
 
-async function deleteIdentity({ params: { identityType } }, res, { keysRepository, author }) {
+async function deleteIdentity(req, res, { keysRepository, author }) {
+  const { params: { identityType } } = req;
+
   const keyPath = schemaPrefix + identityType;
   await keysRepository.deleteKey(keyPath, author);
   res.sendStatus(200);
 }
 
-async function addIdentity({ params: { identityType } }, res, { keysRepository, author }) {
+async function addIdentity(req, res, { keysRepository, author }) {
+  const { params: { identityType }, body: value } = req;
+
   const key = schemaPrefix + identityType;
   const manifest = {
     key_path: key,
@@ -35,7 +39,7 @@ async function addIdentity({ params: { identityType } }, res, { keysRepository, 
     },
     implementation: {
       type: 'const',
-      value: req.body,
+      value,
     },
     valueType: 'object',
     enabled: true,
@@ -45,21 +49,16 @@ async function addIdentity({ params: { identityType } }, res, { keysRepository, 
   res.sendStatus(200);
 }
 
-async function patchIdentity({ params: { identityType } }, res, { keysRepository, author }) {
-  try {
-    const patch = req.body;
-    const key = schemaPrefix + identityType;
-    const manifest = await keysRepository.getKeyManifest(key);
-    const newManifest = R.assocPath(
-      ['implementation', 'value'],
-      jsondiffpatch.patch(manifest.implementation.value, patch),
-    )(manifest);
-    await keysRepository.updateKey(key, newManifest, null, author);
-    res.sendStatus(200);
-  } catch (ex) {
-    console.log(ex);
-    res.sendStatus(500);
-  }
+async function patchIdentity(req, res, { keysRepository, author }) {
+  const { params: { identityType }, body: patch } = req;
+  const key = schemaPrefix + identityType;
+  const manifest = await keysRepository.getKeyManifest(key);
+  const newManifest = R.assocPath(
+    ['implementation', 'value'],
+    jsondiffpatch.patch(manifest.implementation.value, patch),
+  )(manifest);
+  await keysRepository.updateKey(key, newManifest, null, author);
+  res.sendStatus(200);
 }
 
 module.exports = {

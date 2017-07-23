@@ -27,6 +27,12 @@ steps:
     image_name: soluto/tweek-management
     working_directory: ./services/management/
 
+  BuildAuthoring:
+    title: Building Authoring Api Image
+    type: build
+    image_name: soluto/tweek-authoring-api
+    working_directory: ./services/authoring
+
   BuildingEditor:
     title: Building Editor Docker Image
     type: build
@@ -89,10 +95,24 @@ steps:
             - CorsEnabled=true
             - CorsPolicies__Keys__Headers=
             - CorsPolicies__Keys__ExposedHeaders=
+        authoring:
+          image: ${{BuildAuthoring}}
+          depends_on:
+            - git
+          volumes_from:
+            - keys
+          logging:
+            driver: "none"
+          environment:
+            - GIT_USER=git
+            - GIT_URL=ssh://git@git/tweek/tests
+            - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+            - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
         editor:
           image: ${{BuildingEditor}}
           depends_on:
             - api
+            - authoring
             - git
           volumes_from:
             - keys
@@ -104,6 +124,7 @@ steps:
             - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
             - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
             - TWEEK_API_HOSTNAME=http://api
+            - AUTHORING_API_HOSTNAME=http://authoring:3000
         selenium:
           image: selenium/standalone-chrome:3.4.0
           logging:

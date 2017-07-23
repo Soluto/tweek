@@ -27,6 +27,7 @@ nconf.argv().env().defaults({
   PORT: 3001,
   GIT_CLONE_TIMEOUT_IN_MINUTES: 1,
   TWEEK_API_HOSTNAME: 'http://api.dev.local.tweek.fm:81',
+  AUTHORING_API_HOSTNAME: 'http://authoring.dev.local.tweek.fm:81',
   VAPID_KEYS: './vapid/keys.json',
 });
 nconf.required(['GIT_URL', 'GIT_USER']);
@@ -34,6 +35,7 @@ nconf.required(['GIT_URL', 'GIT_USER']);
 const PORT = nconf.get('PORT');
 const gitCloneTimeoutInMinutes = nconf.get('GIT_CLONE_TIMEOUT_IN_MINUTES');
 const tweekApiHostname = nconf.get('TWEEK_API_HOSTNAME');
+const authoringApiHostname = nconf.get('AUTHORING_API_HOSTNAME');
 
 const toFullPath = x => path.normalize(path.isAbsolute(x) ? x : `${process.cwd()}/${x}`);
 
@@ -125,7 +127,7 @@ const startServer = async () => {
   app.use(bodyParser.json()); // for parsing application/json
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-  app.use('/api', serverRoutes({ tagsRepository, keysRepository, tweekApiHostname }));
+  app.use('/api', serverRoutes({ tagsRepository, keysRepository, tweekApiHostname, authoringApiHostname }));
 
   app.use(express.static(path.join(__dirname, 'build')));
   app.get('/*', (req, res) => {
