@@ -68,7 +68,6 @@ export default class KeysPage {
 
     browser.waitForVisible(keySelectors.KEY_NAME_INPUT, 5000);
     browser.setValue(keySelectors.KEY_NAME_INPUT, keyName);
-    browser.leftClick(globalSelectors.BACKGROUND, 0, 0);
     browser.setValue(keySelectors.KEY_VALUE_TYPE_INPUT, keyValueType);
 
     browser.click(keySelectors.SAVE_CHANGES_BUTTON);
@@ -175,7 +174,6 @@ export default class KeysPage {
     const ruleSelector = keySelectors.ruleContainer(ruleNumber);
     const addConditionButtonSelector = getRelativeSelector([ruleSelector, keySelectors.ADD_CONDITION_BUTTON]);
     browser.click(addConditionButtonSelector);
-    browser.leftClick(globalSelectors.BACKGROUND, 0, 0);
   }
 
   static removeRuleCondition(ruleNumber, conditionNumber) {
