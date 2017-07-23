@@ -1,6 +1,11 @@
+.git/
+.idea/
+.typings/
 .vscode/
 node_modules/
-.git/
+obj/
+
 Dockerfile
 jsconfig.json
 npm-debug.log
+yarn-error.log

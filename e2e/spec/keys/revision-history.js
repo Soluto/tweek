@@ -36,7 +36,7 @@ describe('revision history', () => {
     const history = changeValue(changeCount);
 
     const values = browser.getValue(`${revisionHistorySelector} option`);
-    expect(values).to.deep.equal(history.map(x => x.commit));
+    expect(values).to.have.lengthOf(history.length);
 
     const revisionHistorySelect = browser.element(revisionHistorySelector);
     revisionHistorySelect.selectByValue(history[2].commit);
