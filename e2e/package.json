@@ -8,11 +8,11 @@
   },
   "scripts": {
     "start": "npm run docker-compose up -- --force-recreate -d editor",
-    "test": "./node_modules/.bin/wdio wdio.conf.js",
+    "test": "wdio wdio.conf.js",
     "rebuild": "npm run docker-compose build",
     "test:full-env": "npm run start && npm run test",
     "test:full-env:rebuild": "npm run rebuild && npm run test:full-env",
-    "test:docker": "npm run start && npm run docker-compose build backoffice-e2e && npm run docker-compose run -- --rm backoffice-e2e",
+    "test:docker": "npm run start && npm run rebuild backoffice-e2e && npm run docker-compose run -- --rm backoffice-e2e",
     "test:docker:rebuild": "npm run rebuild && npm run test:docker",
     "teardown": "npm run docker-compose down -- --remove-orphans",
     "docker-compose": "docker-compose -f ../deployments/dev/docker-compose.yml -f ../deployments/dev/docker-compose.override.yml -f ../deployments/dev/docker-compose.e2e.yml"
