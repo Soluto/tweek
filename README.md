@@ -78,7 +78,12 @@ More on how multi-varaint keys work in Tweek. (link)
 
 ### FAQ
 - Who's using Tweek?  
-Tweek is been used in large scale production deployment at Soluto.
+  Tweek is been used in large scale production deployment at Soluto.
+- How do I generate ssh keys and a pfx file for use in production?  
+  There's a script for this purpose in `utils/generate_keys.sh`
+- I found a security vulnerability, should I open an issue about it?  
+  No. Please send an email to `security@soluto.com`.
+
 
 ### Related projects
 [Tweek.JPad](https://github.com/soluto/tweek.jpad) - Tweek's internal rules engine
