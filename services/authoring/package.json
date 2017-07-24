@@ -42,7 +42,8 @@
     "node-getopt": "^0.2.3",
     "nodegit": "^0.18.3",
     "ramda": "^0.24.1",
-    "rxjs": "^5.4.2"
+    "rxjs": "^5.4.2",
+    "simple-git": "^1.74.1"
   },
   "devDependencies": {
     "chai": "^4.1.0",

@@ -88,13 +88,11 @@ async function getKeyDef(manifest, repo, revision) {
 
 async function getRevisionHistory(manifest, repo, config) {
   const files = [
-    getLegacyPathForManifest(manifest.key_path),
     getPathForManifest(manifest.key_path),
   ];
 
   if (manifest.implementation.type === 'file') {
     files.push(
-      getLegacyPathForSourceFile(manifest),
       getPathForSourceFile(manifest),
     );
   }
