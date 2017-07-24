@@ -9,8 +9,10 @@ class ExternalAppsCredentialsStrategy extends Strategy {
   }
 
   async validateKeys(keys, clientSecret) {
+    const secretBuf = Buffer.from(clientSecret, 'base64');
     for (const { salt, hash } of keys) {
-      const result = generateHash(clientSecret, salt);
+      const saltBuf = Buffer.from(salt, 'hex');
+      const result = generateHash(secretBuf, salt);
       if (result.toString('hex') === hash) return app;
     }
     throw { messge: 'mismatch client/secret', clientId };

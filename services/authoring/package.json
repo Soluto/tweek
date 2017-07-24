@@ -46,6 +46,7 @@
     "passport-strategy": "^1.0.0",
     "ramda": "^0.24.1",
     "rxjs": "^5.4.2",
+    "sshpk": "^1.13.1",
     "uuid": "^3.1.0"
   },
   "devDependencies": {

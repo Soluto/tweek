@@ -2,25 +2,24 @@ const uuid = require('uuid');
 const { promisify } = require('util');
 const crypto = require('crypto');
 const { generateHash } = require('../apps/apps-utils');
-
 const randomBytes = promisify(crypto.randomBytes);
 
 async function createSecretKey() {
-  const salt = await crypto.randomBytes(64).toString('hex');
+  const salt = await crypto.randomBytes(64);
   const secret = await crypto.randomBytes(128);
   const hash = await generateHash(secret, salt);
   const creationDate = new Date();
   return {
-    secret,
+    secret: secret.toString('base64'),
     key: {
-      salt,
+      salt: salt.toString('hex'),
       hash,
-      creationsate,
+      creationDate,
     },
   };
 }
 
-async function createNewAppManifest(appName, permissions) {
+function createNewAppManifest(appName, permissions) {
   return {
     version: '1',
     name: appName,
@@ -29,17 +28,23 @@ async function createNewAppManifest(appName, permissions) {
   };
 }
 
-async function createApp(req, res) {
-  const { name, permissions = [] } = req.body;
+async function createApp(req, res, { appRepository }) {
+  console.log('adding new app');
+  const { name: appName, permissions = [] } = req.body;
   //validate permissions
   const appId = uuid.v4();
   const newApp = createNewAppManifest(appName, permissions);
-  const { secret: appSecret, key } = createSecretKey();
+  const { secret: appSecret, key } = await createSecretKey();
+  console.log('adding secrets');
+  console.log(newApp);
+  console.log(key);
   newApp.secretKeys.push(key);
-  return {
+  await appRepository.save;
+
+  res.json({
     appId,
     appSecret,
-  };
+  });
 }
 
 module.exports = {

@@ -8,12 +8,14 @@ const Transactor = require('./utils/transactor');
 const GitRepository = require('./repositories/git-repository');
 const KeysRepository = require('./repositories/keys-repository');
 const TagsRepository = require('./repositories/tags-repository');
+const AppsRepository = require('./repositories/apps-repository');
 const GitContinuousUpdater = require('./repositories/git-continuous-updater');
 const passport = require('passport');
 const searchIndex = require('./search-index');
 const routes = require('./routes');
 const fs = require('fs-extra');
 const configurePassport = require('./security/configure-passport');
+const sshpk = require('sshpk');
 
 const {
   PORT,
@@ -46,19 +48,20 @@ const gitRepoCreationPromiseWithTimeout = Promise.resolve(gitRepoCreationPromise
 const gitTransactionManager = new Transactor(gitRepoCreationPromise, gitRepo => gitRepo.reset());
 const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
+const appsRepository = new AppsRepository(gitTransactionManager);
 
 async function startServer() {
+  await appsRepository.refresh();
   const app = express();
-  const publicKey = fs.readFile(gitRepositoryConfig.publicKey);
+  const publicKey = sshpk
+    .parseKey(await fs.readFile(gitRepositoryConfig.publicKey))
+    .toBuffer('pem');
   app.use(morgan('tiny'));
-  app.use(configurePassport(publicKey));
-
+  app.use(configurePassport(publicKey, appsRepository));
   app.use(bodyParser.json()); // for parsing application/json
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-
-  app.use(routes({ tagsRepository, keysRepository }));
+  app.use(routes({ tagsRepository, keysRepository, appsRepository }));
   app.use('/*', (req, res) => res.sendStatus(404));
-
   app.use((err, req, res, next) => {
     console.error(req.method, res.originalUrl, err);
     res.status(500).send(err.message);

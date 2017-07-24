@@ -46,7 +46,11 @@ function configureRoutes(config) {
 
   app.route('/tags').get(addConfig(TagsRoutes.getTags)).put(addConfig(TagsRoutes.saveTags));
 
-  app.post('/apps/new', passport.authenticate('tweek-internal'), AppsRoutes.createApp);
+  app.post(
+    '/apps/new',
+    passport.authenticate('tweek-internal', { session: false }),
+    addConfig(AppsRoutes.createApp),
+  );
 
   return app;
 }
