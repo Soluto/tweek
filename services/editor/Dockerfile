@@ -23,7 +23,6 @@ FROM base AS release
 COPY --from=build /src/dist/ /opt/app/dist
 COPY --from=build /src/build/ /opt/app/dist/build
 COPY --from=deps /src/node_modules /opt/app/node_modules
-COPY ./build-index/ /opt/app/build-index
 
 WORKDIR /opt/app/
 VOLUME /opt/vapid/
