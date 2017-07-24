@@ -2,11 +2,11 @@ const express = require('express');
 const { compose } = require('ramda');
 const requestErrorHandlingWrapper = require('../utils/request-error-handling-wrapper');
 const includeAuthor = require('../utils/include-author');
-
 const KeysRoutes = require('./keys');
 const SchemaRoutes = require('./schema');
 const TagsRoutes = require('./tags');
 const SearchRoutes = require('./search');
+const AppsRoutes = require('./apps');
 
 function configureRoutes(config) {
   const app = express();
@@ -42,10 +42,19 @@ function configureRoutes(config) {
   app.get('/search', addConfig(SearchRoutes.search));
   app.get('/suggestions', addConfig(SearchRoutes.getSuggestions));
 
-  app
-    .route('/tags')
-    .get(addConfig(TagsRoutes.getTags))
-    .put(addConfig(TagsRoutes.saveTags));
+  app.route('/tags').get(addConfig(TagsRoutes.getTags)).put(addConfig(TagsRoutes.saveTags));
+
+  app.post(
+    '/apps',
+    (req, res, next) => {
+      if (!req.user.isTweekService) {
+        res.send(401);
+        return;
+      }
+      next();
+    },
+    addConfig(AppsRoutes.createApp),
+  );
 
   return app;
 }

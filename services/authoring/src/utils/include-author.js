@@ -1,9 +1,9 @@
 function includeAuthor(handler) {
   return (req, res, config = {}) => {
-    const { name, email } = req.query;
+    const { 'author.name': name, 'author.email': email } = req.query;
 
     if (req.method.toLowerCase() !== 'get' && (!name || !email)) {
-      res.status(400).send("Missing name and/or email");
+      res.status(400).send('Missing name and/or email');
       return;
     }
 

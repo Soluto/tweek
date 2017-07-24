@@ -12,7 +12,7 @@ export default (config) => {
   const addConfig = fn =>
     requestErrorHandlingWrapper((req, res) => fn(req, res, config, { params: req.params }));
 
-  const authoringProxy = proxyRequest(config.authoringApiHostname);
+  const authoringProxy = proxyRequest(`${config.authoringApiHostname}/api`);
 
   app.route('/tags').get(authoringProxy).put(authoringProxy);
 

@@ -12,7 +12,7 @@
     "test": "mocha",
     "start": "node ./src/server.js",
     "start:dev": "nodemon --watch src src/server.js -- --GIT_USER git --GIT_URL ssh://git@localhost:4001/tweek/repo --GIT_PUBLIC_KEY_PATH ../git-service/ssh/tweekgit.pub --GIT_PRIVATE_KEY_PATH ../git-service/ssh/tweekgit",
-    "start:full-env": "npm run docker-compose up -- -d git && npm run start:dev",
+    "start:full-env": "npm run docker-compose up -- -d api git && npm run start:dev",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml",
     "teardown": "npm run docker-compose -- down --remove-orphans",
     "format": "prettier-eslint --trailing-comma all --print-width 100 --single-quote --write",
@@ -41,9 +41,14 @@
     "nconf": "^0.8.4",
     "node-getopt": "^0.2.3",
     "nodegit": "^0.18.3",
+    "passport": "^0.3.2",
+    "passport-jwt": "^2.2.1",
+    "passport-strategy": "^1.0.0",
     "ramda": "^0.24.1",
     "rxjs": "^5.4.2",
-    "simple-git": "^1.74.1"
+    "simple-git": "^1.74.1",
+    "sshpk": "^1.13.1",
+    "uuid": "^3.1.0"
   },
   "devDependencies": {
     "chai": "^4.1.0",
