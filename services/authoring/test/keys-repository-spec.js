@@ -71,8 +71,14 @@ describe('keys-repository', () => {
 
       // Assert
       const args = mockGitRepo.updateFile.calls.map(x => x.args);
-      expect(args).to.include.something.that.deep.equals([`manifests/${testKeyPath}.json`, JSON.stringify(testManifest, null, 4)]);
-      expect(args).to.include.something.that.deep.equals([`implementations/jpad/${testKeyPath}.jpad`, testRulesSource]);
+      expect(args).to.include.something.that.deep.equals([
+        `manifests/${testKeyPath}.json`,
+        JSON.stringify(testManifest, null, 4),
+      ]);
+      expect(args).to.include.something.that.deep.equals([
+        `implementations/jpad/${testKeyPath}.jpad`,
+        testRulesSource,
+      ]);
     });
 
     it('should commit and push with the author sent', async () => {
@@ -252,7 +258,7 @@ describe('keys-repository', () => {
       expect(keyDetails.keyDef).to.deep.include(expected);
     });
 
-    it('should return key definition with the key\'s revision history', async () => {
+    it("should return key definition with the key's revision history", async () => {
       // Act
       const revisionHistory = await target.getKeyRevisionHistory(testKeyPath);
       // Assert
