@@ -4,16 +4,16 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const Rx = require('rxjs');
-
 const Transactor = require('./utils/transactor');
 const GitRepository = require('./repositories/git-repository');
 const KeysRepository = require('./repositories/keys-repository');
 const TagsRepository = require('./repositories/tags-repository');
 const GitContinuousUpdater = require('./repositories/git-continuous-updater');
-
+const passport = require('passport');
 const searchIndex = require('./search-index');
-
 const routes = require('./routes');
+const fs = require('fs-extra');
+const configurePassport = require('./security/configure-passport');
 
 const {
   PORT,
@@ -49,7 +49,10 @@ const tagsRepository = new TagsRepository(gitTransactionManager);
 
 async function startServer() {
   const app = express();
+  const publicKey = fs.readFile(gitRepositoryConfig.publicKey);
   app.use(morgan('tiny'));
+  app.use(configurePassport(publicKey));
+
   app.use(bodyParser.json()); // for parsing application/json
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 

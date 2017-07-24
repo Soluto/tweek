@@ -1,7 +1,4 @@
-//addAuth (extract resouce path, permissionRequired,  )
-//
-
-function addAuthorization({ extractPath = R.identity, permissionRequired = [] }) {
+function authorize({ extractPath = R.identity, permissionRequired = [] }) {
   return function (req, res, next) {
     const path = extractPath(req);
     try {
@@ -11,3 +8,5 @@ function addAuthorization({ extractPath = R.identity, permissionRequired = [] })
     }
   };
 }
+
+export { authorize };
