@@ -24,6 +24,7 @@ namespace Tweek.Drivers.Rules.Management
   {
     public event Action<IDictionary<string, RuleDefinition>> OnRulesChange;
     private const string RULESET_PATH = "/ruleset/latest";
+    private const string RULESET_LATEST_VERSION_PATH = "/ruleset/latest/version";
     private IDisposable _subscrption;
     private readonly IConnectableObservable<Dictionary<string, RuleDefinition>> _pipeline;
     public string CurrentLabel { get; private set; }
@@ -73,15 +74,15 @@ namespace Tweek.Drivers.Rules.Management
         {
           while (!shouldStop)
           {
-            var response = await measuredGetter(RULESET_PATH);
-            var newVersion = response.GetRulesVersion();
+            var response = await measuredGetter(RULESET_LATEST_VERSION_PATH);
+            var newVersion = await response.Content.ReadAsStringAsync();
             LastCheckTime = DateTime.UtcNow;
             if (newVersion == CurrentLabel)
             {
               await Delay(settings.SampleInterval, scheduler);
               continue;
             }
-            var ruleset = await measuredDownloader(response);
+            var ruleset = await measuredDownloader(await getter(RULESET_PATH));
             sub.OnNext(ruleset);
             CurrentLabel = newVersion;
           }
