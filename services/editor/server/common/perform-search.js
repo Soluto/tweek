@@ -1,4 +1,5 @@
 import R from 'ramda';
+import lunr from 'lunr';
 
 export const separator = /(?:[_/]|\s|-)/;
 
@@ -12,8 +13,20 @@ export default function (query = '', { maxResults = 25, field, index }) {
     const searchResults = query
       .split(separator)
       .filter(s => s !== '')
-      .map(s => `${s} *${s}~1 *${s}*`)
-      .map(s => index.search(field ? `${field}:${s}` : s))
+      .map(s =>
+        index.query((query) => {
+          query.term(s, { field });
+          query.term(s, {
+            field,
+            wildcard: lunr.Query.wildcard.LEADING | lunr.Query.wildcard.TRAILING,
+          });
+          query.term(s, {
+            field,
+            wildcard: lunr.Query.wildcard.LEADING,
+            editDistance: 1,
+          });
+        }),
+      )
       .reduce((acc, results) => R.intersectionWith(R.eqBy(R.prop('ref')), acc, results));
 
     return R.pipe(R.sort(byScore), R.map(R.prop('ref')), R.slice(0, maxResults || 25))(
