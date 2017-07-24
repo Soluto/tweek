@@ -20,15 +20,6 @@ class TweekInternalStrategy extends JwtStrategy {
     );
     this.name = 'tweek-internal';
   }
-
-  authenticate(req, options) {
-    try {
-      return super.authenticate(req, options);
-    } catch (ex) {
-      console.log('errr');
-      console.log(ex);
-    }
-  }
 }
 
 module.exports = TweekInternalStrategy;

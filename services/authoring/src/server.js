@@ -50,6 +50,8 @@ const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
 const appsRepository = new AppsRepository(gitTransactionManager);
 
+const auth = passport.authenticate(['tweek-internal', 'apps-credentials'], { session: false });
+
 async function startServer() {
   await appsRepository.refresh();
   const app = express();
@@ -60,12 +62,14 @@ async function startServer() {
   app.use(configurePassport(publicKey, appsRepository));
   app.use(bodyParser.json()); // for parsing application/json
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-  app.use(routes({ tagsRepository, keysRepository, appsRepository }));
+  app.use('/api', auth, routes({ tagsRepository, keysRepository, appsRepository }));
   app.use('/*', (req, res) => res.sendStatus(404));
   app.use((err, req, res, next) => {
     console.error(req.method, res.originalUrl, err);
     res.status(500).send(err.message);
   });
+
+  const passport = require('passport');
 
   app.listen(PORT, () => console.log('Listening on port', PORT));
 }
