@@ -11,17 +11,17 @@
     "start:client": "react-scripts start",
     "start:server": "nodemon --watch server server/index.js --exec babel-node -- --GIT_USER git --GIT_URL ssh://git@localhost:4001/tweek/repo --GIT_PUBLIC_KEY_PATH ../git-service/ssh/tweekgit.pub --GIT_PRIVATE_KEY_PATH ../git-service/ssh/tweekgit --TWEEK_API_HOSTNAME http://localhost:4003 --AUTHORING_API_HOSTNAME http://localhost:4005",
     "start": "concurrently --kill-others \"yarn run start:service-worker\" \"yarn run start:client\" \"yarn run start:server\"",
-    "start:full-env": "npm run docker-compose -- up -d api authoring && npm run start",
+    "start:full-env": "yarn run docker-compose -- up -d api authoring && yarn run start",
     "build:service-worker": "webpack --config ./service-worker/webpack.config.js",
     "build:client": "react-scripts build",
-    "build:server": "babel server --out-dir dist",
+    "build:server": "babel server --out-dir dist && exit 0",
     "build": "concurrently --kill-others-on-fail \"yarn run build:service-worker && yarn run build:client\" \"yarn run build:server\"",
     "test": "jest",
     "eject": "react-scripts eject",
-    "teardown": "npm run docker-compose -- down --remove-orphans",
+    "teardown": "yarn run docker-compose -- down --remove-orphans",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml",
     "format": "prettier-eslint --trailing-comma all --print-width 100 --single-quote --write",
-    "format:all": "npm run format \"**/*.js\"",
+    "format:all": "yarn run format \"**/*.js\"",
     "precommit": "lint-staged",
     "compile-less": "find . -name \"*.less\" | grep -v node_modules | xargs -n1 | cut -f1-2 -d. | xargs -n1 -I name lessc name.less name.css"
   },
@@ -44,7 +44,7 @@
     "gitDir": "../../",
     "linters": {
       "**/editor/**/*.js": [
-        "npm run format",
+        "yarn run format",
         "git add"
       ]
     }
@@ -77,7 +77,6 @@
   "dependencies": {
     "animakit-expander": "^2.1.2",
     "axios": "^0.16.1",
-    "bluebird": "^3.5.0",
     "body-parser": "^1.17.2",
     "chance": "^1.0.9",
     "change-case": "^3.0.1",
@@ -85,28 +84,20 @@
     "crypto": "^0.0.3",
     "express": "^4.15.3",
     "express-session": "^1.15.3",
-    "fs-extra": "^4.0.0",
-    "glob": "^7.1.2",
-    "glob-promise": "^3.1.0",
-    "highland": "^2.10.5",
     "history": "^4.6.1",
     "idb-keyval": "^2.3.0",
     "jsondiffpatch": "0.2.4",
     "jsonwebtoken": "^7.4.1",
-    "lock-queue": "^1.0.1",
     "lunr": "^2.0.4",
     "moment": "^2.18.1",
     "morgan": "^1.8.2",
     "nconf": "^0.8.4",
-    "node-getopt": "^0.2.3",
-    "nodegit": "^0.18.3",
     "papp-polyfill": "1.1.0",
     "passport": "^0.3.2",
     "passport-azure-ad": "^3.0.6",
     "passport-google-oauth20": "^1.0.0",
     "passport-http": "^0.3.0",
     "passport-oauth2": "^1.4.0",
-    "promisify-node": "^0.4.0",
     "prop-types": "^15.5.10",
     "ramda": "^0.24.1",
     "react": "^15.5.4",
@@ -143,7 +134,7 @@
     "babel-eslint": "^7.2.3",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.23.0",
-    "babel-preset-env": "^1.5.1",
+    "babel-preset-env": "^1.6.0",
     "babel-preset-stage-0": "^6.24.1",
     "chai": "^4.0.1",
     "chai-things": "^0.2.0",
@@ -159,7 +150,6 @@
     "nodemon": "^1.11.0",
     "prettier-eslint-cli": "^4.0.2",
     "react-scripts": "1.0.7",
-    "rimraf": "^2.6.1",
-    "webpack": "2.6.1"
+    "rimraf": "^2.6.1"
   }
 }

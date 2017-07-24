@@ -25,7 +25,6 @@ services:
 
   editor:
     environment: 
-      - GIT_URL=ssh://git@git/tweek/tests
       - CONTINUOUS_UPDATER_INTERVAL=500
 
   authoring:

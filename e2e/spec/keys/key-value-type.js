@@ -16,12 +16,13 @@ describe('key-value-type', () => {
   });
 
   let setKeyValueAndType = function (keyValueType, value) {
+    browser.waitForEnabled(keySelectors.KEY_VALUE_TYPE_INPUT, 1000);
     browser.setValue(keySelectors.KEY_VALUE_TYPE_INPUT, keyValueType);
 
     KeysPage.acceptRodalIfRaised();
 
     const ruleValueInputSelector = keySelectors.ruleValueInput(0, keyValueType === "Boolean");
-    browser.waitForVisible(ruleValueInputSelector);
+    browser.waitForEnabled(ruleValueInputSelector, 1000);
     browser.setValue(ruleValueInputSelector, value);
   };
 

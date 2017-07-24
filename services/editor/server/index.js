@@ -4,17 +4,10 @@ import express from 'express';
 import morgan from 'morgan';
 import nconf from 'nconf';
 import session from 'express-session';
-import Promise from 'bluebird';
 import bodyParser from 'body-parser';
-import Rx from 'rxjs';
 import webpush from 'web-push';
 import serverRoutes from './serverRoutes';
-import GitRepository from './repositories/git-repository';
-import Transactor from './utils/transactor';
-import KeysRepository from './repositories/keys-repository';
-import TagsRepository from './repositories/tags-repository';
-import GitContinuousUpdater from './repositories/git-continuous-updater';
-import searchIndex from './searchIndex';
+import GitContinuousUpdater from './utils/continuous-updater';
 import * as Registration from './api/registration';
 import getVapidKeys from './getVapidKeys';
 
@@ -25,45 +18,17 @@ const selectAuthenticationProviders = require('./auth/providerSelector')
 
 nconf.argv().env().defaults({
   PORT: 3001,
-  GIT_CLONE_TIMEOUT_IN_MINUTES: 1,
   TWEEK_API_HOSTNAME: 'http://api.dev.local.tweek.fm:81',
   AUTHORING_API_HOSTNAME: 'http://authoring.dev.local.tweek.fm:81',
   VAPID_KEYS: './vapid/keys.json',
 });
-nconf.required(['GIT_URL', 'GIT_USER']);
 
 const PORT = nconf.get('PORT');
-const gitCloneTimeoutInMinutes = nconf.get('GIT_CLONE_TIMEOUT_IN_MINUTES');
 const tweekApiHostname = nconf.get('TWEEK_API_HOSTNAME');
 const authoringApiHostname = nconf.get('AUTHORING_API_HOSTNAME');
 
-const toFullPath = x => path.normalize(path.isAbsolute(x) ? x : `${process.cwd()}/${x}`);
-
-const gitRepositoryConfig = {
-  url: nconf.get('GIT_URL'),
-  username: nconf.get('GIT_USER'),
-  password: nconf.get('GIT_PASSWORD'),
-  localPath: `${process.cwd()}/rulesRepository`,
-  publicKey: toFullPath(nconf.get('GIT_PUBLIC_KEY_PATH') || ''),
-  privateKey: toFullPath(nconf.get('GIT_PRIVATE_KEY_PATH') || ''),
-};
-
-const gitRepoCreationPromise = GitRepository.create(gitRepositoryConfig);
-const gitRepoCreationPromiseWithTimeout = Promise.resolve(gitRepoCreationPromise)
-  .timeout(gitCloneTimeoutInMinutes * 60 * 1000)
-  .catch(Promise.TimeoutError, () => {
-    throw `git repository cloning timeout after ${gitCloneTimeoutInMinutes} minutes`;
-  });
-
-const gitTransactionManager = new Transactor(gitRepoCreationPromise, gitRepo => gitRepo.reset());
-const keysRepository = new KeysRepository(gitTransactionManager);
-const tagsRepository = new TagsRepository(gitTransactionManager);
-
-GitContinuousUpdater.onUpdate(gitTransactionManager)
+GitContinuousUpdater.onUpdate(authoringApiHostname)
   .map(_ => Registration.notifyClients())
-  .exhaustMap(_ =>
-    Rx.Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)),
-  )
   .do(_ => console.log('index was refreshed'), err => console.log('error refreshing index', err))
   .retry()
   .subscribe();
@@ -127,7 +92,7 @@ const startServer = async () => {
   app.use(bodyParser.json()); // for parsing application/json
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-  app.use('/api', serverRoutes({ tagsRepository, keysRepository, tweekApiHostname, authoringApiHostname }));
+  app.use('/api', serverRoutes({ tweekApiHostname, authoringApiHostname }));
 
   app.use(express.static(path.join(__dirname, 'build')));
   app.get('/*', (req, res) => {
@@ -142,9 +107,7 @@ const startServer = async () => {
   server.listen(PORT, () => console.log('Listening on port %d', server.address().port));
 };
 
-gitRepoCreationPromiseWithTimeout
-  .then(() => console.log('starting tweek server'))
-  .then(() => startServer())
+startServer()
   .catch((reason) => {
     console.error(reason);
     // process.exit();

@@ -19,7 +19,7 @@
     "gitDir": "../../",
     "linters": {
       "**/management/**/*.js": [
-        "npm run format",
+        "yarn run format",
         "git add"
       ]
     }

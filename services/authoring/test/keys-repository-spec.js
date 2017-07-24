@@ -1,7 +1,10 @@
-/* global jest, beforeEach, describe, it, expect */
-jest.unmock('../../../../server/repositories/keys-repository');
+/* global describe, it, before, after, beforeEach, afterEach */
+const chai = require('chai');
+const simple = require('simple-mock');
+const KeysRepository = require('../src/repositories/keys-repository');
 
-import KeysRepository from '../../../../server/repositories/keys-repository';
+chai.use(require('chai-things'));
+const expect = chai.expect;
 
 describe('keys-repository', () => {
   let mockGitRepo = {};
@@ -28,16 +31,15 @@ describe('keys-repository', () => {
   describe('getAllKeys', () => {
     it('Should return all rule files from git after removing base path and extensions', async () => {
       // Arrange
-      mockGitRepo.listFiles = jest.fn(() => ['test/key1.json', 'test/key2.json', 'key3.json']);
+      const expecetdKeys = ['test/key1.json', 'test/key2.json', 'key3.json'];
+      mockGitRepo.listFiles = simple.stub().returnWith(expecetdKeys);
 
       // Act
       const keys = await target.getAllKeys();
 
       // Assert
-      expect(mockGitRepo.listFiles.mock.calls[0][0]).toBe('manifests');
-      expect(keys).toContain('test/key1');
-      expect(keys).toContain('test/key2');
-      expect(keys).toContain('key3');
+      expect(mockGitRepo.listFiles.calls[0].arg).to.equal('manifests');
+      expect(keys).to.deep.equal(expecetdKeys.map(key => key.replace('.json', '')));
     });
   });
 
@@ -49,9 +51,9 @@ describe('keys-repository', () => {
     const testRulesSource = 'rulesSource';
 
     beforeEach(() => {
-      mockGitRepo.pull = jest.fn();
-      mockGitRepo.updateFile = jest.fn();
-      mockGitRepo.commitAndPush = jest.fn();
+      mockGitRepo.pull = simple.stub();
+      mockGitRepo.updateFile = simple.stub();
+      mockGitRepo.commitAndPush = simple.stub();
     });
 
     it('should update files then commit and push', async () => {
@@ -59,8 +61,8 @@ describe('keys-repository', () => {
       await target.updateKey(testKeyPath, testManifest, testRulesSource, testAuthor);
 
       // Assert
-      expect(mockGitRepo.updateFile.mock.calls.length).toBe(2);
-      expect(mockGitRepo.commitAndPush.mock.calls.length).toBe(1);
+      expect(mockGitRepo.updateFile.callCount).to.equal(2);
+      expect(mockGitRepo.commitAndPush.callCount).to.equal(1);
     });
 
     it('should update the jpad rule file and the manifest file', async () => {
@@ -68,17 +70,15 @@ describe('keys-repository', () => {
       await target.updateKey(testKeyPath, testManifest, testRulesSource, testAuthor);
 
       // Assert
-      expect(
-        mockGitRepo.updateFile.mock.calls.some(
-          ([path, source]) =>
-            path === `manifests/${testKeyPath}.json` && source === JSON.stringify(testManifest, null, 4),
-        ),
-      ).toBeTruthy();
-      expect(
-        mockGitRepo.updateFile.mock.calls.some(
-          ([path, source]) => path === `implementations/jpad/${testKeyPath}.jpad` && source === testRulesSource,
-        ),
-      ).toBeTruthy();
+      const args = mockGitRepo.updateFile.calls.map(x => x.args);
+      expect(args).to.include.something.that.deep.equals([
+        `manifests/${testKeyPath}.json`,
+        JSON.stringify(testManifest, null, 4),
+      ]);
+      expect(args).to.include.something.that.deep.equals([
+        `implementations/jpad/${testKeyPath}.jpad`,
+        testRulesSource,
+      ]);
     });
 
     it('should commit and push with the author sent', async () => {
@@ -86,14 +86,14 @@ describe('keys-repository', () => {
       await target.updateKey(testKeyPath, testManifest, testRulesSource, testAuthor);
 
       // Assert
-      expect(mockGitRepo.commitAndPush.mock.calls[0][1]).toEqual(testAuthor);
+      expect(mockGitRepo.commitAndPush.calls[0].args[1]).to.equal(testAuthor);
     });
   });
 
   describe('deleteKey', () => {
     beforeEach(() => {
-      mockGitRepo.deleteFile = jest.fn();
-      mockGitRepo.commitAndPush = jest.fn();
+      mockGitRepo.deleteFile = simple.stub();
+      mockGitRepo.commitAndPush = simple.stub();
     });
 
     it('should pull, delete files then commit and push', async () => {
@@ -101,8 +101,8 @@ describe('keys-repository', () => {
       await target.deleteKey(testKeyPath, testAuthor);
 
       // Assert
-      expect(mockGitRepo.deleteFile.mock.calls.length).toBe(2);
-      expect(mockGitRepo.commitAndPush.mock.calls.length).toBe(1);
+      expect(mockGitRepo.deleteFile.callCount).to.equal(2);
+      expect(mockGitRepo.commitAndPush.callCount).to.equal(1);
     });
 
     it('should delete the jpad rule file and the manifest file', async () => {
@@ -110,12 +110,9 @@ describe('keys-repository', () => {
       await target.deleteKey(testKeyPath, testAuthor);
 
       // Assert
-      expect(
-        mockGitRepo.deleteFile.mock.calls.some(([path]) => path === `manifests/${testKeyPath}.json`),
-      ).toBeTruthy();
-      expect(
-        mockGitRepo.deleteFile.mock.calls.some(([path]) => path === `implementations/jpad/${testKeyPath}.jpad`),
-      ).toBeTruthy();
+      const args = mockGitRepo.deleteFile.calls.map(x => x.arg);
+      expect(args).to.include(`manifests/${testKeyPath}.json`);
+      expect(args).to.include(`implementations/jpad/${testKeyPath}.jpad`);
     });
 
     it('should commit and push with the author sent', async () => {
@@ -123,7 +120,7 @@ describe('keys-repository', () => {
       await target.deleteKey(testKeyPath, testAuthor);
 
       // Assert
-      expect(mockGitRepo.commitAndPush.mock.calls[0][1]).toEqual(testAuthor);
+      expect(mockGitRepo.commitAndPush.calls[0].args[1]).to.equal(testAuthor);
     });
   });
 
@@ -227,10 +224,10 @@ describe('keys-repository', () => {
         .map(rev => ({ sha: rev }));
 
     beforeEach(() => {
-      mockGitRepo.getHistory = jest.fn((path, { revision = 'revision-3' } = {}) =>
+      mockGitRepo.getHistory = simple.spy((path, { revision = 'revision-3' } = {}) =>
         getKeyRevisions(revision),
       );
-      mockGitRepo.readFile = jest.fn((path, { revision = 'revision-3' } = {}) =>
+      mockGitRepo.readFile = simple.spy((path, { revision = 'revision-3' } = {}) =>
         JSON.stringify(
           path.startsWith('manifests') ? manifestRevisions[revision] : keyRevisions[revision],
         ),
@@ -242,8 +239,11 @@ describe('keys-repository', () => {
       const keyDetails = await target.getKeyDetails(testKeyPath);
 
       // Assert
-      expect(keyDetails.keyDef.source).toEqual(JSON.stringify(keyRevisions['revision-3']));
-      expect(keyDetails.keyDef.type).toEqual('jpad');
+      const expected = {
+        source: JSON.stringify(keyRevisions['revision-3']),
+        type: 'jpad',
+      };
+      expect(keyDetails.keyDef).to.deep.include(expected);
     });
 
     it('should return key definition with the source for the jpad for specified revision', async () => {
@@ -251,15 +251,18 @@ describe('keys-repository', () => {
       const keyDetails = await target.getKeyDetails(testKeyPath, { revision: 'revision-2' });
 
       // Assert
-      expect(keyDetails.keyDef.source).toEqual(JSON.stringify(keyRevisions['revision-2']));
-      expect(keyDetails.keyDef.type).toEqual('jpad');
+      const expected = {
+        source: JSON.stringify(keyRevisions['revision-2']),
+        type: 'jpad',
+      };
+      expect(keyDetails.keyDef).to.deep.include(expected);
     });
 
     it("should return key definition with the key's revision history", async () => {
       // Act
       const revisionHistory = await target.getKeyRevisionHistory(testKeyPath);
       // Assert
-      expect(revisionHistory).toEqual(getKeyRevisions('revision-3'));
+      expect(revisionHistory).to.deep.equal(getKeyRevisions('revision-3'));
     });
 
     it('should parse and return manifest as an object', async () => {
@@ -267,7 +270,7 @@ describe('keys-repository', () => {
       const keyDetails = await target.getKeyDetails(testKeyPath);
 
       // Assert
-      expect(keyDetails.manifest).toEqual(manifestRevisions['revision-3']);
+      expect(keyDetails.manifest).to.deep.equal(manifestRevisions['revision-3']);
     });
 
     it('should parse and return manifest as an object for specified revision', async () => {
@@ -275,7 +278,7 @@ describe('keys-repository', () => {
       const keyDetails = await target.getKeyDetails(testKeyPath, { revision: 'revision-2' });
 
       // Assert
-      expect(keyDetails.manifest).toEqual(manifestRevisions['revision-2']);
+      expect(keyDetails.manifest).to.deep.equal(manifestRevisions['revision-2']);
     });
 
     it('should convert old JPAD format to new format if needed', async () => {
@@ -309,7 +312,7 @@ describe('keys-repository', () => {
         rules: oldFormatJPAD,
       };
 
-      mockGitRepo.readFile = jest.fn(
+      mockGitRepo.readFile = simple.spy(
         path => (path.startsWith('manifests') ? metaSource : JSON.stringify(oldFormatJPAD)),
       );
 
@@ -317,7 +320,7 @@ describe('keys-repository', () => {
       const keyDetails = await target.getKeyDetails(testKeyPath);
 
       // Assert
-      expect(keyDetails.keyDef.source).toEqual(JSON.stringify(expectedJPAD));
+      expect(keyDetails.keyDef.source).to.equal(JSON.stringify(expectedJPAD));
     });
   });
 });

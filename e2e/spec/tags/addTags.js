@@ -14,32 +14,13 @@ describe('add tags', () => {
 
     const chance = new Chance();
 
-    const enterKeyCode = '\uE007';
-
     before(() => {
-        try {
-            KeysPage.goToKey(tagsTestKeyFullPath);
-        }
-        catch (exp) {
-            KeysPage.addEmptyKey(tagsTestKeyFullPath);
-        }
-
+        KeysPage.goToKey(tagsTestKeyFullPath);
         browser.windowHandleMaximize();
     });
 
     function addTag(tagName) {
-        browser.setValue(selectors.TAGS_INPUT, tagName);
-        browser.keys(enterKeyCode);
-    }
-
-    function getOpenedKeyTags() {
-        const tagsElements = browser.elements(selectors.TAG);
-
-        return tagsElements.value
-            .map(x => browser.elementIdText(x.ELEMENT))
-            .map(x => x.value)
-            .filter(x => !!x && x !== '×')
-            .map(x => x.slice(0, x.length - 2));
+        browser.setValue(selectors.TAGS_INPUT, `${tagName}\n`);
     }
 
     function isTagExists(tag) {
@@ -53,14 +34,11 @@ describe('add tags', () => {
 
     it('should save the tag as a suggestion on submiting it without saving the key', () => {
         // Arrange
-        KeysPage.goToKey(tagsTestKeyFullPath);
-
         const tagsToAdd = [];
         for (let tagsIndex = 0; tagsIndex < NUMBER_OF_TAGS_TO_ADD; tagsIndex++) tagsToAdd.push(chance.guid());
 
         // Act
         tagsToAdd.forEach(x => addTag(x));
-
         browser.refresh();
         browser.alertAccept();
 

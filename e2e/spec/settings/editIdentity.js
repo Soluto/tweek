@@ -4,8 +4,7 @@ import tweekApiClient from '../../utils/tweekApiClient';
 chai.use(require('chai-string'));
 
 function addStringProperty(propertyName){
-    browser.setValue("*[data-comp=new-property-item] > input[type=text]:first-child", propertyName);
-    browser.keys("Enter");
+    browser.setValue("*[data-comp=new-property-item] > input[type=text]:first-child", `${propertyName}\n`);
 }
 
 function addTypedProperty(propertyName, propertyType){
@@ -26,8 +25,7 @@ function updateExistingCustomProperty(propertyName, {base, allowedValues} = {}){
             browser.click(`${baseSelector} *[data-field=base] *[data-label=${base}] a`);
         }
     if (allowedValues){
-        browser.setValue(`${baseSelector} *[data-field=allowed-values] input`, allowedValues.join("\n"));
-        browser.keys("Enter");
+        browser.setValue(`${baseSelector} *[data-field=allowed-values] input`, allowedValues.join("\n") + '\n');
     }
 }
 
@@ -35,8 +33,7 @@ function addNewIdentity(identityType){
     browser.url(`/settings`);
     browser.waitForVisible(".side-menu");
     browser.click("*[data-comp=AddNewIdentity] button");
-    browser.setValue("*[data-comp=AddNewIdentity] input", identityType);
-    browser.keys("Enter");
+    browser.setValue("*[data-comp=AddNewIdentity] input", `${identityType}\n`);
 }
 
 function saveChanges(){

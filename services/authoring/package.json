@@ -51,11 +51,13 @@
   },
   "devDependencies": {
     "chai": "^4.1.0",
+    "chai-things": "^0.2.0",
     "eslint": "^4.2.0",
     "husky": "^0.14.3",
     "lint-staged": "^4.0.2",
     "mocha": "^3.4.2",
     "nodemon": "^1.11.0",
-    "prettier-eslint-cli": "^4.1.1"
+    "prettier-eslint-cli": "^4.1.1",
+    "simple-mock": "^0.8.0"
   }
 }
