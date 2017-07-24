@@ -113,16 +113,12 @@ steps:
           depends_on:
             - api
             - authoring
-            - git
           volumes_from:
             - keys
           logging:
             driver: "none"
           environment:
-            - GIT_USER=git
-            - GIT_URL=ssh://git@git/tweek/tests
             - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-            - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
             - TWEEK_API_HOSTNAME=http://api
             - AUTHORING_API_HOSTNAME=http://authoring:3000
         selenium:
