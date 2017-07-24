@@ -5,8 +5,8 @@ const { generateHash } = require('../apps/apps-utils');
 const randomBytes = promisify(crypto.randomBytes);
 
 async function createSecretKey() {
-  const salt = await crypto.randomBytes(64);
-  const secret = await crypto.randomBytes(128);
+  const salt = await randomBytes(64);
+  const secret = await randomBytes(128);
   const hash = await generateHash(secret, salt);
   const creationDate = new Date();
   return {
@@ -28,18 +28,14 @@ function createNewAppManifest(appName, permissions) {
   };
 }
 
-async function createApp(req, res, { appRepository }) {
-  console.log('adding new app');
+async function createApp(req, res, { appsRepository, author }) {
   const { name: appName, permissions = [] } = req.body;
   //validate permissions
   const appId = uuid.v4();
   const newApp = createNewAppManifest(appName, permissions);
   const { secret: appSecret, key } = await createSecretKey();
-  console.log('adding secrets');
-  console.log(newApp);
-  console.log(key);
   newApp.secretKeys.push(key);
-  await appRepository.save;
+  await appsRepository.saveApp(appId, newApp, author);
 
   res.json({
     appId,

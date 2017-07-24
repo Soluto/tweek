@@ -15,16 +15,16 @@ class AppsRepository {
       this.apps = (await Promise.all(
         externalAppsFiles.map(async appFile => ({
           name: appFile.split('.')[0],
-          data: await repo.readFile(`external_apps/${appFile}`),
+          data: JSON.parse(await repo.readFile(`external_apps/${appFile}`)),
         })),
-      )).reduce((acc, { name, data }) => R.assocPath(name, data)(acc), {});
+      )).reduce((acc, { name, data }) => R.assoc(name, data)(acc), {});
     });
   }
 
   async saveApp(appId, manifest, author) {
     await this._gitTransactionManager.write(async (repo) => {
-      await repo.updateFile(`external_apps/${appId}.json`, JSON.stringify(manifest));
-      await repo.commitAndPush(`created app ${appid}`, author);
+      await repo.updateFile(`external_apps/${appId}.json`, JSON.stringify(manifest, null, 4));
+      await repo.commitAndPush(`created app ${appId}`, author);
     });
   }
 }

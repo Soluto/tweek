@@ -78,11 +78,11 @@ GitContinuousUpdater.onUpdate(gitTransactionManager)
   .retry()
   .subscribe();
 
-//GitContinuousUpdater.onUpdate(gitTransactionManager)
-//  .switchMap(_ => Rx.Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)))
-//  .do(()=>{}, err => console.error('Error refersing apps index', err))
-//  .retry()
-//  .subscribe();
+GitContinuousUpdater.onUpdate(gitTransactionManager)
+  .switchMap(_ => Rx.Observable.defer(() => appsRepository.refresh()))
+  .do(() => {}, err => console.error('Error refersing apps index', err))
+  .retry()
+  .subscribe();
 
 gitRepoCreationPromiseWithTimeout.then(() => startServer()).catch((reason) => {
   console.error(reason);

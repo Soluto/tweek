@@ -8,7 +8,7 @@ const tweekApp = {
 };
 
 class TweekInternalStrategy extends JwtStrategy {
-  constructor(publicKey, appsRepo) {
+  constructor(publicKey) {
     super(
       {
         secretOrKey: publicKey,
@@ -21,26 +21,7 @@ class TweekInternalStrategy extends JwtStrategy {
     this.name = 'tweek-internal';
   }
 
-  success(e) {
-    console.log('success');
-    super.success(e);
-  }
-
-  error(e) {
-    console.log('error');
-    console.log(e);
-    super.error(e);
-  }
-
-  fail(er) {
-    console.log('failed auth');
-    console.log(er);
-    super.fail(er);
-  }
-
   authenticate(req, options) {
-    console.log('authenticating');
-    console.log(req.get('Authorization'));
     try {
       return super.authenticate(req, options);
     } catch (ex) {
