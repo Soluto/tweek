@@ -1,7 +1,10 @@
-/* global jest, beforeEach, describe, it, expect */
-jest.unmock('../../../../server/repositories/tags-repository');
+/* global describe, it, before, after, beforeEach, afterEach */
 
-import TagsRepository from '../../../../server/repositories/tags-repository';
+const chai = require('chai');
+const simple = require('simple-mock');
+const TagsRepository = require('../src/repositories/tags-repository');
+
+const expect = chai.expect;
 
 describe('TagsRepository', () => {
   let mockGitRepo = {};
@@ -26,67 +29,53 @@ describe('TagsRepository', () => {
   });
 
   describe('getTags', () => {
-    it('should parse and return tags as an array', async () => {
-      // Arrange
-      mockGitRepo.readFile = jest.fn(path => testTags);
+    beforeEach(() => {
+      mockGitRepo.readFile = simple.stub().returnWith(testTags);
+    });
 
+    it('should parse and return tags as an array', async () => {
       // Act
       let tags = await target.getTags();
 
       // Assert
-      expect(tags).toEqual([{ name: 'tag1' }, { name: 'tag2' }]);
+      expect(tags).to.deep.equal([{ name: 'tag1' }, { name: 'tag2' }]);
     });
 
     it('should read the tags from the tags.json file', async () => {
-      // Arrange
-      mockGitRepo.readFile = jest.fn(path => testTags);
-
       // Act
       let tags = await target.getTags();
 
       // Assert
-      expect(mockGitRepo.readFile.mock.calls[0][0]).toEqual('tags.json');
+      expect(mockGitRepo.readFile.calls[0].arg).to.equal('tags.json');
     });
   });
 
   describe('mergeTags', () => {
     beforeEach(() => {
-      mockGitRepo.readFile = jest.fn(path => testTags);
-      mockGitRepo.updateFile = jest.fn();
-      mockGitRepo.commitAndPush = jest.fn();
-      mockGitRepo.pull = jest.fn();
+      mockGitRepo.readFile = simple.stub().returnWith(testTags);
+      mockGitRepo.updateFile = simple.stub();
+      mockGitRepo.commitAndPush = simple.stub();
+      mockGitRepo.pull = simple.stub();
     });
 
     it('should merge new tags with the existing tags', async () => {
-      // Arrange
-
       // Act
       await target.mergeTags(['tag2', 'tag3'], testAuthor);
 
       // Assert
-      expect(mockGitRepo.updateFile.mock.calls[0][1]).toEqual(
+      const expected = [
+        'tags.json',
         JSON.stringify([{ name: 'tag1' }, { name: 'tag2' }, { name: 'tag3' }], null, 4),
-      );
-    });
-
-    it('should save the resulting tags into tags.json', async () => {
-      // Arrange
-
-      // Act
-      await target.mergeTags(['tag2', 'tag3'], testAuthor);
-
-      // Assert
-      expect(mockGitRepo.updateFile.mock.calls[0][0]).toEqual('tags.json');
+      ];
+      expect(mockGitRepo.updateFile.calls[0].args).to.deep.equal(expected);
     });
 
     it('should commit and push using the author sent', async () => {
-      // Arrange
-
       // Act
       await target.mergeTags(['tag2', 'tag3'], testAuthor);
 
       // Assert
-      expect(mockGitRepo.commitAndPush.mock.calls[0][1]).toEqual(testAuthor);
+      expect(mockGitRepo.commitAndPush.calls[0].args[1]).to.deep.equal(testAuthor);
     });
   });
 });

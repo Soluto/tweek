@@ -12,7 +12,6 @@ import serverRoutes from './serverRoutes';
 import GitRepository from './repositories/git-repository';
 import Transactor from './utils/transactor';
 import KeysRepository from './repositories/keys-repository';
-import TagsRepository from './repositories/tags-repository';
 import GitContinuousUpdater from './repositories/git-continuous-updater';
 import searchIndex from './searchIndex';
 import * as Registration from './api/registration';
@@ -57,7 +56,6 @@ const gitRepoCreationPromiseWithTimeout = Promise.resolve(gitRepoCreationPromise
 
 const gitTransactionManager = new Transactor(gitRepoCreationPromise, gitRepo => gitRepo.reset());
 const keysRepository = new KeysRepository(gitTransactionManager);
-const tagsRepository = new TagsRepository(gitTransactionManager);
 
 GitContinuousUpdater.onUpdate(gitTransactionManager)
   .map(_ => Registration.notifyClients())
@@ -127,7 +125,7 @@ const startServer = async () => {
   app.use(bodyParser.json()); // for parsing application/json
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-  app.use('/api', serverRoutes({ tagsRepository, keysRepository, tweekApiHostname, authoringApiHostname }));
+  app.use('/api', serverRoutes({ keysRepository, tweekApiHostname, authoringApiHostname }));
 
   app.use(express.static(path.join(__dirname, 'build')));
   app.get('/*', (req, res) => {
