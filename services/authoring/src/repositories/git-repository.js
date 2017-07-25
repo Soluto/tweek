@@ -66,23 +66,22 @@ class GitRepository {
     return entry.isBlob() ? (await entry.getBlob()).toString() : undefined;
   }
 
-  async getHistory(fileNames, { revision } = {}) {
+  async getHistory(fileNames, { revision, since } = {}) {
     fileNames = Array.isArray(fileNames) ? fileNames : [fileNames];
 
     const historyEntries = await Promise.all(fileNames.map(async (file) => {
-      console.time(file);
       const options = [
-        '--since="1 month ago"',
         `--follow`,
         file,
       ];
+      if (since) options.unshift(`--since="${since}"`);
+
       const history = await new Promise((resolve, reject) => {
         this._simpleRepo.log(options, (err, log) => {
           if (err) reject(err);
           else resolve(log);
         });
       });
-      console.timeEnd(file);
       return history.all;
     }));
 
@@ -106,9 +105,8 @@ class GitRepository {
       const commit = await (revision ? this._repo.getCommit(revision) : this._repo.getMasterCommit());
       const tree = await commit.getTree();
 
-      for (let i = 0; i < fileNames.length; i++) {
+      for (let fileName of fileNames) {
         try {
-          const fileName = fileNames[i];
           await tree.getEntry(fileName);
 
           return [{
