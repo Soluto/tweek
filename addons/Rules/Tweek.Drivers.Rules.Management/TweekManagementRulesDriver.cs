@@ -75,14 +75,14 @@ namespace Tweek.Drivers.Rules.Management
           while (!shouldStop)
           {
             var versionResponse = await measuredGetter(RULESET_LATEST_VERSION_PATH);
-            var newVersion = await versionResponse.Content.ReadAsStringAsync();
-            if (newVersion == CurrentLabel)
+            var latestVersion = await versionResponse.Content.ReadAsStringAsync();
+            if (latestVersion == CurrentLabel)
             {
               await Delay(settings.SampleInterval, scheduler);
               continue;
             }
             var rulesetResponse = await getter(RULESET_PATH);
-            newVersion = rulesetResponse.GetRulesVersion();
+            var newVersion = rulesetResponse.GetRulesVersion();
             LastCheckTime = DateTime.UtcNow;
             var ruleset = await measuredDownloader(rulesetResponse);
             sub.OnNext(ruleset);
