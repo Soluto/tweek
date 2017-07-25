@@ -26,7 +26,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.DataTypes", "core\En
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.Drivers", "core\Engine\Engine.Drivers\Engine.Drivers.csproj", "{6205DFFE-74F1-4167-A308-E9F8B95FE36C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.IntegrationTests", "core\Engine\Engine.Tests\Engine.IntegrationTests.csproj", "{AEA1BBA0-B3EF-41B0-94D7-84D1F2D2956E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.Tests", "core\Engine\Engine.Tests\Engine.Tests.csproj", "{AEA1BBA0-B3EF-41B0-94D7-84D1F2D2956E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.JPad.Utils", "core\JPad\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj", "{DD417D22-0FD8-4A2C-8332-6AD358321070}"
 EndProject

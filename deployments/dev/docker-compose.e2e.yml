@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
   selenium:
-    image: selenium/standalone-chrome
+    image: selenium/standalone-chrome:3.4.0
     container_name: selenium
 
   backoffice-e2e:
@@ -13,25 +13,25 @@ services:
     depends_on: 
       - selenium
     environment:
-      - EDITOR_URL=http://tweek-editor:3000/
-      - TWEEK_API_URL=http://tweek-api/
+      - EDITOR_URL=http://editor:3000/
+      - TWEEK_API_URL=http://api/
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
     secrets:
       - tweek_ssh_private_key
 
-  tweek-management:
+  management:
     environment: 
-      - GIT_URL=ssh://git@tweek-git/tweek/tests
+      - GIT_URL=ssh://git@git/tweek/tests
 
-  tweek-editor:
+  editor:
     environment: 
-      - GIT_URL=ssh://git@tweek-git/tweek/tests
+      - GIT_URL=ssh://git@git/tweek/tests
       - CONTINUOUS_UPDATER_INTERVAL=500
 
-  tweek-api:
+  api:
     environment:
       - Rules__Management__SampleIntervalInMs=500
-      - CorsPolicies__Keys__Origins=http://tweek-editor:3000,http://testorigin
+      - CorsPolicies__Keys__Origins=http://editor:3000,http://testorigin
       - CorsPolicies__Keys__Methods=GET
       - CorsPolicies__Keys__MaxPreflightAge=60
       - CorsPolicies__Keys__Headers=

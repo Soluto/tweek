@@ -34,7 +34,7 @@ describe('keys-repository', () => {
       const keys = await target.getAllKeys();
 
       // Assert
-      expect(mockGitRepo.listFiles.mock.calls[0][0]).toBe('meta');
+      expect(mockGitRepo.listFiles.mock.calls[0][0]).toBe('manifests');
       expect(keys).toContain('test/key1');
       expect(keys).toContain('test/key2');
       expect(keys).toContain('key3');
@@ -63,7 +63,7 @@ describe('keys-repository', () => {
       expect(mockGitRepo.commitAndPush.mock.calls.length).toBe(1);
     });
 
-    it('should update the jpad rule file and the meta details file', async () => {
+    it('should update the jpad rule file and the manifest file', async () => {
       // Act
       await target.updateKey(testKeyPath, testManifest, testRulesSource, testAuthor);
 
@@ -71,12 +71,12 @@ describe('keys-repository', () => {
       expect(
         mockGitRepo.updateFile.mock.calls.some(
           ([path, source]) =>
-            path === `meta/${testKeyPath}.json` && source === JSON.stringify(testManifest, null, 4),
+            path === `manifests/${testKeyPath}.json` && source === JSON.stringify(testManifest, null, 4),
         ),
       ).toBeTruthy();
       expect(
         mockGitRepo.updateFile.mock.calls.some(
-          ([path, source]) => path === `rules/${testKeyPath}.jpad` && source === testRulesSource,
+          ([path, source]) => path === `implementations/jpad/${testKeyPath}.jpad` && source === testRulesSource,
         ),
       ).toBeTruthy();
     });
@@ -105,16 +105,16 @@ describe('keys-repository', () => {
       expect(mockGitRepo.commitAndPush.mock.calls.length).toBe(1);
     });
 
-    it('should delete the jpad rule file and the meta details file', async () => {
+    it('should delete the jpad rule file and the manifest file', async () => {
       // Act
       await target.deleteKey(testKeyPath, testAuthor);
 
       // Assert
       expect(
-        mockGitRepo.deleteFile.mock.calls.some(([path]) => path === `meta/${testKeyPath}.json`),
+        mockGitRepo.deleteFile.mock.calls.some(([path]) => path === `manifests/${testKeyPath}.json`),
       ).toBeTruthy();
       expect(
-        mockGitRepo.deleteFile.mock.calls.some(([path]) => path === `rules/${testKeyPath}.jpad`),
+        mockGitRepo.deleteFile.mock.calls.some(([path]) => path === `implementations/jpad/${testKeyPath}.jpad`),
       ).toBeTruthy();
     });
 
@@ -186,7 +186,6 @@ describe('keys-repository', () => {
       'revision-1': {
         rules: [
           {
-            Id: 'test',
             Matcher: {},
             Value: 'test1',
             Type: 'SingleVariant',
@@ -199,7 +198,7 @@ describe('keys-repository', () => {
       'revision-2': {
         rules: [
           {
-            Id: 'test',
+            Salt: 'test',
             Matcher: {},
             Value: 'test2',
             Type: 'SingleVariant',
@@ -212,7 +211,6 @@ describe('keys-repository', () => {
       'revision-3': {
         rules: [
           {
-            Id: 'test',
             Matcher: {},
             Value: 'test3',
             Type: 'SingleVariant',
@@ -234,7 +232,7 @@ describe('keys-repository', () => {
       );
       mockGitRepo.readFile = jest.fn((path, { revision = 'revision-3' } = {}) =>
         JSON.stringify(
-          path.startsWith('meta') ? manifestRevisions[revision] : keyRevisions[revision],
+          path.startsWith('manifests') ? manifestRevisions[revision] : keyRevisions[revision],
         ),
       );
     });
@@ -312,7 +310,7 @@ describe('keys-repository', () => {
       };
 
       mockGitRepo.readFile = jest.fn(
-        path => (path.startsWith('meta') ? metaSource : JSON.stringify(oldFormatJPAD)),
+        path => (path.startsWith('manifests') ? metaSource : JSON.stringify(oldFormatJPAD)),
       );
 
       // Act

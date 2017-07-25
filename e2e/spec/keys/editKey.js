@@ -1,26 +1,24 @@
 /* global describe, before, after, it, browser */
 
 import KeysAsserts from '../../KeysAsserts';
-import KeysPageObject from '../../utils/KeysPageObject';
+import KeysPage from '../../utils/KeysPage';
 import assert from 'assert';
 import selectors from '../../selectors/keySelectors';
 import tweekApiClient from '../../utils/tweekApiClient';
 
 describe('edit keys', () => {
-    const keysPageObject = new KeysPageObject(browser);
-    const keysAsserts = new KeysAsserts(keysPageObject, browser);
     function goToKey(keyName){
-        keysPageObject.goToKey(keyName);
+        KeysPage.goToKey(keyName);
         browser.windowHandleMaximize();
-        keysAsserts.assertKeyOpened(keyName);
+        KeysAsserts.assertKeyOpened(keyName);
     }
 
     describe('edit JPad keys', () => {
-      const testFolder = KeysPageObject.TEST_KEYS_FOLDER;
+      const testFolder = KeysPage.TEST_KEYS_FOLDER;
       const editKeyTestFolder = '@edit_key';
 
       describe('visual editor', () => {
-        const keyToEdit = keysPageObject.generateTestKeyName('edit_key_test');
+        const keyToEdit = KeysPage.generateTestKeyName('edit_key_test');
         const keyToEditFullPath = `${testFolder}/${editKeyTestFolder}/${keyToEdit}`;
 
         const expectedKeySource = {
@@ -48,8 +46,8 @@ describe('edit keys', () => {
         };
 
         before(() => {
-          keysPageObject.goToBase();
-          keysPageObject.addEmptyKey(keyToEditFullPath);
+          KeysPage.goToBase();
+          KeysPage.addEmptyKey(keyToEditFullPath);
         });
 
         function addRuleAndAssertItsFocus(numberOfRules) {
@@ -65,42 +63,42 @@ describe('edit keys', () => {
           goToKey(keyToEditFullPath);
 
           addRuleAndAssertItsFocus(2);
-          keysAsserts.assertKeyHasNumberOfRules(2);
+          KeysAsserts.assertKeyHasNumberOfRules(2);
 
-          keysPageObject.setConditionProperty(1, 1, 'AgentVersion');
-          keysPageObject.setConditionValue(1, 1, '1.1.1');
+          KeysPage.setConditionProperty(1, 1, 'AgentVersion');
+          KeysPage.setConditionValue(1, 1, '1.1.1');
 
-          keysPageObject.addRuleCondition(1);
-          keysPageObject.setConditionProperty(1, 2, 'FavoriteFruit');
-          keysPageObject.setConditionValue(1, 2, 'Banana');
+          KeysPage.addRuleCondition(1);
+          KeysPage.setConditionProperty(1, 2, 'FavoriteFruit');
+          KeysPage.setConditionValue(1, 2, 'Banana');
 
-          keysPageObject.addRuleCondition(1);
-          keysPageObject.setConditionProperty(1, 3, 'BirthDate');
-          keysPageObject.setConditionValue(1, 3, '3d');
+          KeysPage.addRuleCondition(1);
+          KeysPage.setConditionProperty(1, 3, 'BirthDate');
+          KeysPage.setConditionValue(1, 3, '3d');
 
-          keysPageObject.removeRuleCondition(2, 0);
-          keysPageObject.setRuleValue(2, 'some value');
+          KeysPage.removeRuleCondition(2, 0);
+          KeysPage.setRuleValue(2, 'some value');
 
           browser.setValue(selectors.DEFAULT_VALUE_INPUT, 'some default value');
 
-          keysAsserts.assertKeySource(expectedKeySource);
+          KeysAsserts.assertKeySource(expectedKeySource);
 
-          keysPageObject.commitChanges();
+          KeysPage.commitChanges();
 
           browser.refresh();
-          keysPageObject.waitForPageToLoad(keyToEditFullPath);
+          KeysPage.waitForPageToLoad(keyToEditFullPath);
 
-          keysAsserts.assertKeySource(expectedKeySource);
+          KeysAsserts.assertKeySource(expectedKeySource);
         });
       });
 
       describe('text editor', () => {
         before(() => {
-          keysPageObject.goToBase();
+          KeysPage.goToBase();
 
-          const keyToEdit = keysPageObject.generateTestKeyName('edit_key_source_test');
+          const keyToEdit = KeysPage.generateTestKeyName('edit_key_source_test');
           const keyToEditFullPath = `${testFolder}/${editKeyTestFolder}/${keyToEdit}`;
-          keysPageObject.addEmptyKey(keyToEditFullPath);
+          KeysPage.addEmptyKey(keyToEditFullPath);
         });
 
         const expectedKeySource = {
@@ -132,7 +130,7 @@ describe('edit keys', () => {
           browser.click(selectors.SOURCE_TAB_ITEM);
 
           //set text
-          keysPageObject.setKeySource(JSON.stringify(expectedKeySource, null, 4));
+          KeysPage.setKeySource(JSON.stringify(expectedKeySource, null, 4));
 
           //try to change tab - rodal should appear
           browser.click(selectors.RULES_TAB_ITEM);
@@ -149,13 +147,13 @@ describe('edit keys', () => {
           browser.waitForVisible(selectors.ADD_RULE_BUTTON, 5000);
 
           //assert key
-          keysAsserts.assertKeySource(expectedKeySource);
+          KeysAsserts.assertKeySource(expectedKeySource);
 
           //go to source tab
           browser.click(selectors.SOURCE_TAB_ITEM);
 
           //set other text
-          keysPageObject.setKeySource("{}");
+          KeysPage.setKeySource("{}");
 
           //try to change tab - rodal should appear
           browser.click(selectors.RULES_TAB_ITEM);
@@ -166,7 +164,7 @@ describe('edit keys', () => {
           browser.waitForVisible(selectors.ADD_RULE_BUTTON, 5000);
 
           //assert key
-          keysAsserts.assertKeySource(expectedKeySource);
+          KeysAsserts.assertKeySource(expectedKeySource);
         })
       });
     });
@@ -179,7 +177,7 @@ describe('edit keys', () => {
             const key = `${consts_path}/number_type`;
             goToKey(key);
             browser.setValue(`${const_selector} input`, '30');
-            keysPageObject.commitChanges();
+          KeysPage.commitChanges();
             tweekApiClient.waitForKeyToEqual(key, 30);
         });
 
@@ -187,7 +185,7 @@ describe('edit keys', () => {
             const key = `${consts_path}/string_type`;
             goToKey(key);
             browser.setValue(`${const_selector} input`, 'world');
-            keysPageObject.commitChanges();
+          KeysPage.commitChanges();
             tweekApiClient.waitForKeyToEqual(key, 'world');
         });
 
@@ -196,7 +194,7 @@ describe('edit keys', () => {
             const currentValue = tweekApiClient.get(key);
             goToKey(key);
             browser.click(`${const_selector} .jsonValue input[type=checkbox]`);
-            keysPageObject.commitChanges();
+          KeysPage.commitChanges();
             tweekApiClient.waitForKeyToEqual(key, {boolProp: !currentValue.boolProp});
         });
       });

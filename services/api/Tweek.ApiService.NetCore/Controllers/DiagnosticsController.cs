@@ -21,9 +21,11 @@ namespace Tweek.ApiService.NetCore.Controllers
         }
 
         [HttpGet("isalive")]
-        [ProducesResponseType(typeof(Int32), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(Int32), (int)HttpStatusCode.ServiceUnavailable)]
-        public HttpStatusCode IsAlive() => _diagnosticsProviders.All(x => x.IsAlive()) ? HttpStatusCode.OK : HttpStatusCode.ServiceUnavailable;
+        [ProducesResponseType(typeof(Int32), (int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(Int32), (int) HttpStatusCode.ServiceUnavailable)]
+        public IActionResult IsAlive() => _diagnosticsProviders.All(x => x.IsAlive())
+            ? (IActionResult) Ok(HttpStatusCode.OK)
+            : StatusCode((int) HttpStatusCode.ServiceUnavailable);
 
         [HttpGet("status")]
         [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]

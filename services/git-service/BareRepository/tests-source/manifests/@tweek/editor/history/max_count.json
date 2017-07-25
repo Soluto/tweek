@@ -1,0 +1,17 @@
+{
+    "key_path": "@tweek/editor/history/max_count",
+    "meta": {
+        "name": "@tweek/editor/history/max_count",
+        "description": "Max number of commits to go back when getting revision history",
+        "tags": [],
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "const",
+        "value": 1000
+    },
+    "valueType": "number",
+    "enabled": true,
+    "dependencies": []
+}

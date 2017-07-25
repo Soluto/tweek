@@ -1,9 +1,13 @@
+import R from 'ramda';
 import searchIndex from '../searchIndex';
-import { convertMetaToNewFormat } from '../utils/meta-legacy';
+import authenticatedClient from '../auth/authenticatedClient';
 import { getAuthor } from './utils/author';
 
-export async function getAllKeys(req, res, { keysRepository }) {
-  const keys = await keysRepository.getAllKeys();
+const historyMaxCountConfig = 'history/max_count';
+
+export async function getAllKeys(req, res) {
+  const manifests = await searchIndex.manifests;
+  const keys = manifests.map(R.prop('key_path'));
   res.json(keys);
 }
 
@@ -16,7 +20,7 @@ export async function getKey(req, res, { keysRepository }, { params }) {
   const revision = req.query.revision;
   try {
     const keyDetails = await keysRepository.getKeyDetails(keyPath, { revision });
-    res.json({ ...keyDetails, manifest: convertMetaToNewFormat(keyPath, keyDetails) });
+    res.json(keyDetails);
   } catch (exp) {
     res.sendStatus(404);
   }
@@ -40,9 +44,18 @@ export async function getDependents(req, res, { keysRepository }, { params }) {
   res.json(dependents);
 }
 
-export async function getKeyRevisionHistory(req, res, { keysRepository }, { params }) {
+export async function getKeyRevisionHistory(req, res, { keysRepository, tweekApiHostname }, { params }) {
   const keyPath = params[0];
-  const revisionHistory = await keysRepository.getKeyRevisionHistory(keyPath);
+
+  const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
+  const user = (req.user && req.user.email) || 'unknown';
+
+  const response = await tweekApiClient.get(
+    `/api/v1/keys/@tweek/editor/${historyMaxCountConfig}?tweek_editor_user=${user}`,
+  );
+  const maxCount = response.data;
+
+  const revisionHistory = await keysRepository.getKeyRevisionHistory(keyPath, { maxCount });
   res.json(revisionHistory);
 }
 

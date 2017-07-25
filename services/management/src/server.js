@@ -48,7 +48,8 @@ app.get('/ruleset/latest', (req, res) => {
   }
 
   res.header('X-Rules-Version', rulesCache.getLatestRulesVersion());
-  res.json(rulesCache.getLatestRules());
+  res.contentType("application/json");
+  res.send(rulesCache.getLatestFormattedRules());
 });
 
 app.get('/isalive', bodyParser.json(), (req, res) => res.send('alive'));

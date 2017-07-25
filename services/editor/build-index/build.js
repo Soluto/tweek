@@ -19,7 +19,7 @@ module.exports = function createIndex(repoDir) {
   builder.field('tags');
   builder.field('name');
 
-  return globAsync(path.join(repoDir, 'meta/**/*.json')).catch(console.error).then(fileNames =>
+  return globAsync(path.join(repoDir, 'manifests/**/*.json')).catch(console.error).then(fileNames =>
     Rx.Observable
       .create((observer) => {
         _(fileNames)

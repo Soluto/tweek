@@ -17,7 +17,7 @@ function getFiles(filesToRead) {
 describe('build rules artifact', () => {
   it('should succeed building artifact', () => {
     const filesToRead = {
-      'meta/file/jpad': {
+      'manifests/file/jpad': {
         key_path: 'file/jpad',
         dependencies: ['dependency'],
         implementation: {
@@ -25,8 +25,8 @@ describe('build rules artifact', () => {
           format: 'jpad',
         },
       },
-      'rules/file/jpad.jpad': 'file-content',
-      'meta/const': {
+      'implementations/jpad/file/jpad.jpad': 'file-content',
+      'manifests/const': {
         key_path: 'const',
         dependencies: [],
         implementation: {
@@ -55,7 +55,7 @@ describe('build rules artifact', () => {
 
   it('should fail building artifact', async () => {
     const filesToRead = {
-      'meta/file/jpad': {
+      'manifests/file/jpad': {
         key_path: 'file/jpad',
         dependencies: [],
         implementation: {

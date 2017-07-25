@@ -1,6 +1,4 @@
 import path from 'path';
-import R from 'ramda';
-import { convertMetaToNewFormat } from '../utils/meta-legacy';
 
 function generateEmptyManifest(keyPath) {
   return {
@@ -33,12 +31,21 @@ function getNewJpadFormatSourceIfNeeded(originalJpadSource) {
   });
 }
 
-function getPathForManifest(keyName) {
+//todo remove legacy
+function getLegacyPathForManifest(keyName) {
   return `meta/${keyName}.json`;
 }
 
-function getPathForSourceFile(manifest) {
+function getLegacyPathForSourceFile(manifest) {
   return `rules/${manifest.key_path}.${manifest.implementation.format}`;
+}
+
+function getPathForManifest(keyName) {
+  return `manifests/${keyName}.json`;
+}
+
+function getPathForSourceFile(manifest) {
+  return `implementations/${manifest.implementation.format}/${manifest.key_path}.${manifest.implementation.extension || manifest.implementation.format}`;
 }
 
 function getKeyFromPath(keyPath) {
@@ -54,39 +61,58 @@ async function updateKey(gitRepo, keyPath, manifest, fileImplementation) {
 }
 
 async function getKeyDef(manifest, repo, revision) {
-  if (manifest.implementation.type === 'file') {
+  switch (manifest.implementation.type) {
+  case 'file':
+    let source;
+    try {
+      source = await repo.readFile(getPathForSourceFile(manifest), { revision });
+    } catch (err) {
+      source = await repo.readFile(getLegacyPathForSourceFile(manifest), { revision });
+    }
     const keyDef = {
-      source: await repo.readFile(getPathForSourceFile(manifest), { revision }),
+      source,
       type: manifest.implementation.format,
     };
     if (manifest.implementation.format === 'jpad') {
       keyDef.source = getNewJpadFormatSourceIfNeeded(keyDef.source);
     }
     return keyDef;
-  }
-  if (manifest.implementation.type === 'const') {
+
+  case 'const':
     return { source: JSON.stringify(manifest.implementation.value), type: 'const' };
+
+  default:
+    throw new Error('unsupported type');
   }
-  throw new Error('unsupported type');
 }
 
-async function getRevisionHistory(manifest, repo) {
-  const fileMeta = manifest.implementation.type === 'file'
-    ? repo.getHistory(`rules/${manifest.key_path}.${manifest.implementation.format}`)
-    : Promise.resolve([]);
+async function getRevisionHistory(manifest, repo, config) {
+  const files = [
+    getLegacyPathForManifest(manifest.key_path),
+    getPathForManifest(manifest.key_path),
+  ];
 
-  const uniqSort = R.pipe(R.uniqBy(R.prop('sha')), R.sort(R.descend(R.prop('date'))));
-  return uniqSort([
-    ...(await repo.getHistory(`meta/${manifest.key_path}.json`)),
-    ...(await fileMeta),
-  ]);
+  if (manifest.implementation.type === 'file') {
+    files.push(
+      getLegacyPathForSourceFile(manifest),
+      getPathForSourceFile(manifest),
+    );
+  }
+
+  return await repo.getHistory(files, config);
 }
 
 async function getManifestFile(keyPath, gitRepo, revision) {
-  const pathForManifest = getPathForManifest(keyPath);
   try {
-    const manifest = JSON.parse(await gitRepo.readFile(pathForManifest, { revision }));
-    return manifest.meta ? manifest : convertMetaToNewFormat(keyPath, { manifest });
+    let fileContent;
+    try {
+      const pathForManifest = getPathForManifest(keyPath);
+      fileContent = await gitRepo.readFile(pathForManifest, { revision });
+    } catch (exp) {
+      const pathForManifest = getLegacyPathForManifest(keyPath);
+      fileContent = await gitRepo.readFile(pathForManifest, { revision });
+    }
+    return JSON.parse(fileContent);
   } catch (exp) {
     return generateEmptyManifest(keyPath);
   }
@@ -99,7 +125,7 @@ export default class KeysRepository {
 
   getAllKeys() {
     return this._gitTransactionManager.read(async (gitRepo) => {
-      const keyFiles = await gitRepo.listFiles('meta');
+      const keyFiles = await gitRepo.listFiles('manifests');
 
       return keyFiles.map(getKeyFromPath);
     });
@@ -107,7 +133,7 @@ export default class KeysRepository {
 
   getAllManifests(prefix = '') {
     return this._gitTransactionManager.with(async (gitRepo) => {
-      const normalizedPrefix = `${path.normalize(`meta/${prefix}/.`)}`.replace(/\\/g, '/');
+      const normalizedPrefix = `${path.normalize(`manifests/${prefix}/.`)}`.replace(/\\/g, '/');
       const files = await gitRepo.listFiles(normalizedPrefix);
       const manifestFiles = files.map(path => `${normalizedPrefix}/${path}`);
       const manifests = await Promise.all(
@@ -135,10 +161,10 @@ export default class KeysRepository {
     });
   }
 
-  getKeyRevisionHistory(keyPath) {
-    return this._gitTransactionManager.read(async (gitRepo) => {
+  getKeyRevisionHistory(keyPath, config) {
+    return this._gitTransactionManager.with(async (gitRepo) => {
       const manifest = await getManifestFile(keyPath, gitRepo);
-      return getRevisionHistory(manifest, gitRepo);
+      return getRevisionHistory(manifest, gitRepo, config);
     });
   }
 

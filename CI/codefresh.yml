@@ -3,7 +3,7 @@ steps:
   BuildGitKeys:
     title: Building Git Keys Docker Image
     type: build
-    image_name: soluto/git-keys
+    image_name: soluto/tweek-test-keys
     working_directory: ./services/git-service/ssh/
 
   BuildingGitRepository:
@@ -47,68 +47,68 @@ steps:
       services:
         keys:
           image: ${{BuildGitKeys}}
-        tweek-git:
+        git:
           image: ${{BuildingGitRepository}}
           volumes_from:
             - keys
           environment:
             - PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
-            - TWEEK_MANAGEMENT_URL=http://tweek-management:3000
-        tweek-management:
+            - TWEEK_MANAGEMENT_URL=http://management:3000
+        management:
           image: ${{BuildingManagement}}
           depends_on:
-            - tweek-git
+            - git
           volumes_from:
             - keys
           logging:
             driver: "none"
           environment:
             - GIT_USER=git
-            - GIT_URL=ssh://git@tweek-git/tweek/tests
+            - GIT_URL=ssh://git@git/tweek/tests
             - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
             - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
-            - VALIDATION_URL=http://tweek-api/validation
-        tweek-api:
+            - VALIDATION_URL=http://api/validation
+        api:
           image: ${{BuildingApiImage}}
           depends_on:
-            - tweek-management
-            - tweek-redis
+            - management
+            - redis
           volumes_from:
             - keys
           environment:
-            - Rules__Management__Url=http://tweek-management:3000
+            - Rules__Management__Url=http://management:3000
             - Rules__Management__SampleIntervalInMs=500
             - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
             - ContextProvider=redis
-            - Redis__ConnectionString=tweek-redis:6379
+            - Redis__ConnectionString=redis:6379
             - Addons__Redis__ClassName=Tweek.Drivers.Redis.RedisServiceAddon
             - Addons__Redis__AssemblyName=Tweek.Drivers.Redis
-            - CorsPolicies__Keys__Origins=http://tweek-editor:3000,http://testorigin
+            - CorsPolicies__Keys__Origins=http://editor:3000,http://testorigin
             - CorsPolicies__Keys__Methods=GET
             - CorsPolicies__Keys__MaxPreflightAge=60
             - CorsEnabled=true
             - CorsPolicies__Keys__Headers=
             - CorsPolicies__Keys__ExposedHeaders=
-        tweek-editor:
+        editor:
           image: ${{BuildingEditor}}
           depends_on:
-            - tweek-api
-            - tweek-git
+            - api
+            - git
           volumes_from:
             - keys
           logging:
             driver: "none"
           environment:
             - GIT_USER=git
-            - GIT_URL=ssh://git@tweek-git/tweek/tests
+            - GIT_URL=ssh://git@git/tweek/tests
             - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
             - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
-            - TWEEK_API_HOSTNAME=http://tweek-api
+            - TWEEK_API_HOSTNAME=http://api
         selenium:
-          image: selenium/standalone-chrome
+          image: selenium/standalone-chrome:3.4.0
           logging:
             driver: "none"
-        tweek-redis:
+        redis:
           image: redis:alpine
           expose:
             - "6379"
@@ -118,26 +118,26 @@ steps:
       smoke-tests:
         image: microsoft/aspnetcore-build:1.1.2
         depends_on: 
-          - tweek-api
+          - api
         volumes:
           - ${{CF_VOLUME}}:/repo
         working_dir: /repo/tweek
         environment: 
-          - TWEEK_API_URL=http://tweek-api/
-        command: /bin/bash -c "dotnet restore services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release"
-      backoffice-e2e:
+          - TWEEK_API_URL=http://api/
+        command: /bin/bash -c "dotnet restore services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release"
+      e2e:
         image: ${{BuildingTests}}
         volumes_from:
           - keys
         depends_on: 
           - selenium
-          - tweek-editor
-          - tweek-api
+          - editor
+          - api
         environment:
-          - EDITOR_URL=http://tweek-editor:3000/
-          - TWEEK_API_URL=http://tweek-api/
+          - EDITOR_URL=http://editor:3000/
+          - TWEEK_API_URL=http://api/
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://tweek-api/status && yarn test -- --host selenium --port 4444"
+        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test -- --host selenium --port 4444"
     on_success:
       metadata:
         set:
