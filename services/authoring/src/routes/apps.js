@@ -13,7 +13,7 @@ async function createSecretKey() {
     secret: secret.toString('base64'),
     key: {
       salt: salt.toString('hex'),
-      hash,
+      hash: hash.toString('hex'),
       creationDate,
     },
   };

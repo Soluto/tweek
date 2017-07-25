@@ -1,5 +1,6 @@
 const Strategy = require('passport-strategy');
 const { generateHash } = require('../../apps/apps-utils');
+const crypto = require('crypto');
 
 class ExternalAppsCredentialsStrategy extends Strategy {
   constructor(appsRepo) {
@@ -12,8 +13,9 @@ class ExternalAppsCredentialsStrategy extends Strategy {
     const secretBuf = Buffer.from(clientSecret, 'base64');
     for (const { salt, hash } of keys) {
       const saltBuf = Buffer.from(salt, 'hex');
-      const result = await generateHash(secretBuf, saltBuf);
-      if (result === hash) return;
+      const resultBuf = await generateHash(secretBuf, saltBuf);
+      const hashBuf = Buffer.from(hash, 'hex');
+      if (crypto.timingSafeEqual(resultBuf, hashBuf)) return;
     }
     throw { messge: 'mismatch client/secret', clientId };
   }
