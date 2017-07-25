@@ -80,7 +80,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /dev/null:/traefik.toml
-    command: --web --docker --docker.domain=local.tweek.fm --logLevel=DEBUG
+    command: --web --docker --docker.domain=tweek.localtest.me --logLevel=DEBUG
 
 secrets:
   tweek_ssh_public_key:
