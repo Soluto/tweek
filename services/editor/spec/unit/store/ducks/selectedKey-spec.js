@@ -350,24 +350,21 @@ describe('selectedKey', async () => {
         const func = saveKey();
         await func(dispatchMock, () => currentState);
 
-        assert(
-          dispatchMock.mock.calls.length === 6,
-          `should call dispatch 6 times, instead called ${dispatchMock.mock.calls.length} times`,
-        );
+        const addedAction = dispatchMock.mock.calls.find(([action]) => action.type === KEY_ADDED);
+        expect(addedAction).to.exist;
+        assertDispatchAction(addedAction[0], { type: KEY_ADDED, payload: keyNameToSave });
 
-        let keyAddedDispatchAction = dispatchMock.mock.calls[4][0];
-        let pushDispatchAction = dispatchMock.mock.calls[5][0];
-        assertDispatchAction(keyAddedDispatchAction, { type: KEY_ADDED, payload: keyNameToSave });
+        const pushAction = dispatchMock.mock.calls.find(
+          ([action]) => action.type && action.type.startsWith('@@router'),
+        );
+        expect(pushAction).to.exist;
 
         const expectedPushPayload = {
           method: 'push',
           args: [`/keys/${keyNameToSave}`],
         };
 
-        expect(pushDispatchAction.payload).to.deep.equal(
-          expectedPushPayload,
-          'should deliver correct push dispatch action payload',
-        );
+        expect(pushAction[0]).to.deep.include({ payload: expectedPushPayload });
       });
 
       it('should not open the new saved key if there was key change while saving', async () => {

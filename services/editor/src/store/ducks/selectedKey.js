@@ -30,10 +30,18 @@ const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
 const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
 const KEY_CLOSED = 'KEY_CLOSED';
 
+let historySince;
+
 function updateRevisionHistory(keyName) {
   return async function (dispatch) {
     try {
-      const revisionHistory = await (await fetch(`/api/revision-history/${keyName}`)).json();
+      if (!historySince) {
+        const response = await fetch('/api/editor-configuration/history/since');
+        historySince = (await response.json()) || '1 month ago';
+      }
+      const revisionHistory = await (await fetch(
+        `/api/revision-history/${keyName}?since=${encodeURIComponent(historySince)}`,
+      )).json();
       dispatch({ type: KEY_REVISION_HISTORY, payload: { keyName, revisionHistory } });
     } catch (error) {
       dispatch(showError({ title: 'Failed to refresh revisionHistory', error }));
