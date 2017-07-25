@@ -48,8 +48,18 @@ app.get('/ruleset/latest', (req, res) => {
   }
 
   res.header('X-Rules-Version', rulesCache.getLatestRulesVersion());
-  res.contentType("application/json");
+  res.contentType('application/json');
   res.send(rulesCache.getLatestFormattedRules());
+});
+
+app.get('/ruleset/latest/version', (req, res) => {
+  if (!rulesCache.getLatestRulesVersion()) {
+    res.status(503).send('Git repository not ready yet');
+    return;
+  }
+
+  res.contentType('text/plain');
+  res.send(rulesCache.getLatestRulesVersion());
 });
 
 app.get('/isalive', bodyParser.json(), (req, res) => res.send('alive'));
