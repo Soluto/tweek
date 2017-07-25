@@ -1,12 +1,12 @@
 function authorize({ permission }) {
   return function (req, res, next) {
-    if (req.isTweekService) {
+    if (req.user.isTweekService) {
       return next();
     } else if (
       permission !== 'admin' &&
       req.user &&
       req.user.permissions &&
-      req.user.permissions.contain(permission)
+      req.user.permissions.includes(permission)
     ) {
       return next();
     }
