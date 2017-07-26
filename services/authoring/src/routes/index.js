@@ -19,7 +19,11 @@ function configureRoutes(config) {
     includeAuthor,
   );
 
-  app.get('/keys', authorize({ permission: 'keys-list' }), addConfig(KeysRoutes.getAllKeys));
+  app.get(
+    '/keys',
+    authorize({ permission: PERMISSIONS.KEYS_LIST }),
+    addConfig(KeysRoutes.getAllKeys),
+  );
   app
     .route('/keys/*')
     .get(authorize({ permission: PERMISSIONS.KEYS_READ }), addConfig(KeysRoutes.getKey))

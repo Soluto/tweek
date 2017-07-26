@@ -1,9 +1,12 @@
+const PERMISSIONS = require('./permissions/consts');
+
 function authorize({ permission }) {
   return function (req, res, next) {
     if (req.user.isTweekService) {
       return next();
-    } else if (
-      permission !== 'admin' &&
+    }
+    if (
+      permission !== PERMISSIONS.ADMIN &&
       req.user &&
       req.user.permissions &&
       req.user.permissions.includes(permission)
