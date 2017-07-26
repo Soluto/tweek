@@ -15,7 +15,7 @@
     "test:docker": "yarn run start && yarn run rebuild backoffice-e2e && yarn run docker-compose run -- --rm backoffice-e2e",
     "test:docker:rebuild": "yarn run rebuild && yarn run test:docker",
     "teardown": "yarn run docker-compose down -- --remove-orphans",
-    "docker-compose": "docker-compose -f ../deployments/dev/docker-compose.yml -f ../deployments/dev/docker-compose.override.yml -f ../deployments/dev/docker-compose.e2e.yml"
+    "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.e2e.yml"
   },
   "author": "",
   "license": "ISC",
