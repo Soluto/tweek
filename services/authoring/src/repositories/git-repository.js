@@ -99,27 +99,7 @@ class GitRepository {
       R.sort(R.descend(R.prop('date'))),
     );
 
-    const history = uniqSort(historyEntries);
-
-    if (history.length === 0) {
-      const commit = await (revision ? this._repo.getCommit(revision) : this._repo.getMasterCommit());
-      const tree = await commit.getTree();
-
-      for (let fileName of fileNames) {
-        try {
-          await tree.getEntry(fileName);
-
-          return [{
-            sha: commit.sha(),
-            author: commit.author().name(),
-            date: commit.date(),
-            message: commit.message(),
-          }];
-        } catch (err) {}
-      }
-    }
-
-    return history;
+    return uniqSort(historyEntries);
   }
 
   async updateFile(fileName, content) {
