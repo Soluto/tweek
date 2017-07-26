@@ -39,11 +39,11 @@ steps:
     image_name: soluto/tweek-editor
     working_directory: ./services/editor/
 
-  BuildingTests:
+  BuildingUITests:
     title: Building E2E Tests Docker Image
     type: build
-    image_name: soluto/backoffice-e2e
-    working_directory: ./e2e/
+    image_name: soluto/e2e-ui
+    working_directory: ./e2e/ui
 
   Tests:
     title: Tests - e2e & smoke
@@ -143,7 +143,7 @@ steps:
           - TWEEK_API_URL=http://api/
         command: /bin/bash -c "dotnet restore services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release"
       e2e:
-        image: ${{BuildingTests}}
+        image: ${{BuildingUITests}}
         volumes_from:
           - keys
         depends_on: 
