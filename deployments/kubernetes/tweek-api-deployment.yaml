@@ -12,7 +12,12 @@ spec:
       containers:
       - name: tweek-api
         image: soluto/tweek-api
-        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
         ports:
         - containerPort: 80
         env:

@@ -1,7 +1,6 @@
-Requirements - a kubernetes cluster
-prerequisites -
-  # authorization with docker hub (https://kubernetes.io/docs/concepts/containers/images/#creating-a-secret-with-a-docker-config)
-  # Building git-service (should be uploaded to docker hub)
+## Overview
+These files are intended to run Tweek in Kubernetes. The files include a very first configuration which is good for development. For production deployment some enhancements are needed.
 
-Steps -
-  # `kubectl apply -f deployments.yaml`
+## Deploying to Kubernetes
+  1. `kubectl apply -f tweek-secrets.yaml`
+  2. `kubectl apply -f .`
