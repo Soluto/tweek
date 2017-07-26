@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: tweek-redis
+spec:
+  selector:
+    app: tweek-redis
+  ports:
+    - port: 6379
+      targetPort: 6379

@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: tweek-api
+spec:
+  selector:
+    app: tweek-api
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80

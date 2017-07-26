@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: tweek-management
+spec:
+  selector:
+    app: tweek-management
+  ports:
+    - port: 3000
+      targetPort: 3000

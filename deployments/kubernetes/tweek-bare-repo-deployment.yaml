@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tweek-bare-repo
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: tweek-bare-repo
+    spec:
+      containers:
+      - name: tweek-bare-repo
+        image: soluto/tweek-bare-repo
+        ports:
+        - containerPort: 22
+        env:
+        - name: PUBLIC_KEY_PATH
+          value: /run/secrets/tweek-git/tweek_ssh_public_key
+        - name: TWEEK_MANAGEMENT_URL
+          value: http://tweek-management:3000
+        volumeMounts:
+        - name: git-keys
+          mountPath: /run/secrets/tweek-git
+      volumes:
+        - name: git-keys
+          secret:
+            secretName: tweek-git

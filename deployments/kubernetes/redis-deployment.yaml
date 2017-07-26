@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tweek-redis
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: tweek-redis
+    spec:
+      containers:
+      - name: tweek-redis
+        image: redis:alpine
+        ports:
+        - containerPort: 6379
