@@ -1,5 +1,6 @@
 const path = require('path');
 const git = require('nodegit');
+const simpleGit = require('simple-git');
 const fs = require('fs-extra');
 const R = require('ramda');
 const { mapSeries, reduce } = require('bluebird');
@@ -24,6 +25,7 @@ class GitRepository {
   constructor(repo, operationSettings) {
     this._repo = repo;
     this._operationSettings = operationSettings;
+    this._simpleRepo = simpleGit(repo.workdir());
   }
 
   static async create(settings) {
@@ -64,23 +66,29 @@ class GitRepository {
     return entry.isBlob() ? (await entry.getBlob()).toString() : undefined;
   }
 
-  async getHistory(fileNames, { revision, maxCount = 1000 } = {}) {
+  async getHistory(fileNames, { revision, since } = {}) {
     fileNames = Array.isArray(fileNames) ? fileNames : [fileNames];
 
-    const sha = revision || (await this._repo.getMasterCommit()).sha();
-    const walker = this._repo.createRevWalk();
-    walker.sorting(git.Revwalk.SORT.TIME);
+    const historyEntries = await Promise.all(
+      fileNames.map(async (file) => {
+        const options = [`--follow`, file];
+        if (since) options.unshift(`--since="${since}"`);
 
-    const historyEntries = await mapSeries(fileNames, (fileName) => {
-      walker.push(sha);
-      return walker.fileHistoryWalk(fileName, maxCount);
-    });
+        const history = await new Promise((resolve, reject) => {
+          this._simpleRepo.log(options, (err, log) => {
+            if (err) reject(err);
+            else resolve(log);
+          });
+        });
+        return history.all;
+      }),
+    );
 
-    const mapEntry = ({ commit }) => ({
-      sha: commit.sha(),
-      author: commit.author().name(),
-      date: commit.date(),
-      message: commit.message(),
+    const mapEntry = ({ hash, date, message, author_name }) => ({
+      sha: hash,
+      author: author_name,
+      date,
+      message,
     });
 
     const uniqSort = R.pipe(
@@ -93,24 +101,25 @@ class GitRepository {
     const history = uniqSort(historyEntries);
 
     if (history.length === 0) {
-      const commit = await this._repo.getCommit(sha);
+      const commit = await (revision
+        ? this._repo.getCommit(revision)
+        : this._repo.getMasterCommit());
       const tree = await commit.getTree();
 
-      const exists = await reduce(
-        fileNames,
-        async (exists, fileName) => {
-          if (exists) return true;
-          try {
-            await tree.getEntry(fileName);
-            return true;
-          } catch (err) {
-            return false;
-          }
-        },
-        false,
-      );
+      for (let fileName of fileNames) {
+        try {
+          await tree.getEntry(fileName);
 
-      if (exists) return [mapEntry({ commit })];
+          return [
+            {
+              sha: commit.sha(),
+              author: commit.author().name(),
+              date: commit.date(),
+              message: commit.message(),
+            },
+          ];
+        } catch (err) {}
+      }
     }
 
     return history;

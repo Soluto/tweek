@@ -45,7 +45,8 @@ function getPathForManifest(keyName) {
 }
 
 function getPathForSourceFile(manifest) {
-  return `implementations/${manifest.implementation.format}/${manifest.key_path}.${manifest.implementation.extension || manifest.implementation.format}`;
+  return `implementations/${manifest.implementation.format}/${manifest.key_path}.${manifest
+    .implementation.extension || manifest.implementation.format}`;
 }
 
 function getKeyFromPath(keyPath) {
@@ -87,16 +88,10 @@ async function getKeyDef(manifest, repo, revision) {
 }
 
 async function getRevisionHistory(manifest, repo, config) {
-  const files = [
-    getLegacyPathForManifest(manifest.key_path),
-    getPathForManifest(manifest.key_path),
-  ];
+  const files = [getPathForManifest(manifest.key_path)];
 
   if (manifest.implementation.type === 'file') {
-    files.push(
-      getLegacyPathForSourceFile(manifest),
-      getPathForSourceFile(manifest),
-    );
+    files.push(getPathForSourceFile(manifest));
   }
 
   return await repo.getHistory(files, config);

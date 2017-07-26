@@ -3,7 +3,7 @@ import { getAuthor } from './author';
 
 export default function (proxyUrl) {
   return async function (req, res) {
-    const client = await authenticatedClient({ baseURL: proxyUrl });
+    const client = await authenticatedClient({ baseURL: `${proxyUrl}/api` });
 
     const config = {
       url: req.originalUrl.replace(/^\/api|\?.*/g, ''),

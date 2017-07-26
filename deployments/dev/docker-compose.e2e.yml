@@ -5,8 +5,8 @@ services:
     image: selenium/standalone-chrome:3.4.0
     container_name: selenium
 
-  backoffice-e2e:
-    build: ../../e2e
+  e2e-ui:
+    build: ../../e2e/ui
     container_name: e2e
     links:
       - selenium

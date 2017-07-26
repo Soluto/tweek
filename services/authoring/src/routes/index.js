@@ -30,11 +30,7 @@ function configureRoutes(config) {
     .put(authorize({ permission: PERMISSIONS.KEYS_WRITE }), addConfig(KeysRoutes.updateKey))
     .delete(authorize({ permission: PERMISSIONS.KEYS_WRITE }), addConfig(KeysRoutes.deleteKey));
 
-  app.get(
-    '/revision',
-    authorize({ permission: PERMISSIONS.HISTORY }),
-    addConfig(KeysRoutes.getRevision),
-  );
+  app.get('/revision', addConfig(KeysRoutes.getRevision));
   app.get(
     '/revision-history/*',
     authorize({ permission: PERMISSIONS.HISTORY }),

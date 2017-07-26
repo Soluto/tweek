@@ -42,8 +42,8 @@ async function getDependents(req, res) {
 
 async function getKeyRevisionHistory(req, res, { keysRepository }) {
   const keyPath = req.params[0];
-
-  const revisionHistory = await keysRepository.getKeyRevisionHistory(keyPath, { maxCount: req.query.max_count || 1000 });
+  const { since } = req.query;
+  const revisionHistory = await keysRepository.getKeyRevisionHistory(keyPath, { since });
   res.json(revisionHistory);
 }
 
