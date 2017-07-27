@@ -20,7 +20,7 @@ const gitPublicKey = nconf.get('GIT_PUBLIC_KEY_PATH');
 const gitPrivateKey = nconf.get('GIT_PRIVATE_KEY_PATH');
 
 if (!gitUrl || !gitUser) {
-  throw 'missing rules repostiroy details';
+  throw 'missing rules repository details';
 }
 
 const repoPath = `${process.env.RULES_DIR || os.tmpdir()}/tweek-rules-${Guid.raw()}`;
@@ -79,7 +79,7 @@ async function updateLatestCache() {
       rulesCache.ruleset = ruleset;
       const timer = logger.startTimer();
       rulesCache.formattedRuleset = JSON.stringify(ruleset);
-      timer.done("updateLatestCache:JSON.stringify")
+      timer.done('updateLatestCache:JSON.stringify');
       logger.info('Rules Cache updated', { sha: newLatestSha });
     } catch (err) {
       console.error(err);

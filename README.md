@@ -1,6 +1,7 @@
 # <img src="https://soluto.github.io/docs.tweek.fm/assets/logo-with-background.png" width="400" />
 
-[![Codefresh build status]( https://g.codefresh.io/api/badges/build?repoOwner=Soluto&repoName=tweek&branch=master&pipelineName=tweek-all&accountName=soluto&key=eyJhbGciOiJIUzI1NiJ9.NTkwOTg1MmQ2ZDAxYjcwMDA2Yjc1ODBm.fODYFsnTAGVNVeEAA6lI0g-sTAfHjh5B9BWrOtDvSSE&type=cf-2)]( https://g.codefresh.io/repositories/Soluto/tweek/builds?filter=trigger:build;branch:master;service:590b2586eea36f000875f02e~tweek-all) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/containous/traefik/blob/master/LICENSE.md) [![Dependency Status](https://www.versioneye.com/user/projects/596654446725bd00487bd48e/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/596654446725bd00487bd48e)  
+[![Codefresh build status]( https://g.codefresh.io/api/badges/build?repoOwner=Soluto&repoName=tweek&branch=master&pipelineName=tweek-all&accountName=soluto&key=eyJhbGciOiJIUzI1NiJ9.NTkwOTg1MmQ2ZDAxYjcwMDA2Yjc1ODBm.fODYFsnTAGVNVeEAA6lI0g-sTAfHjh5B9BWrOtDvSSE&type=cf-2)]( https://g.codefresh.io/repositories/Soluto/tweek/builds?filter=trigger:build;branch:master;service:590b2586eea36f000875f02e~tweek-all) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/soluto/tweek/blob/master/LICENSE.md) [![Dependency Status](https://www.versioneye.com/user/projects/596654446725bd00487bd48e/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/596654446725bd00487bd48e)  [![Slack](https://slackin-jomduxcgga.now.sh/badge.svg)](https://slackin-jomduxcgga.now.sh)
+
 tweek@soluto.com  
 
 ### What is Tweek?
@@ -34,7 +35,7 @@ The easiest way to start evaluating Tweek is to run it locally on docker, make s
 - run (``` docker-compose up ```) 
 
 #### Edit your first key
-- Open http://editor.dev.local.tweek.fm:81 in browser.
+- Open http://editor.dev.tweek.localtest.me:81 in browser.
 - Go to keys page.
 - Click on "Add New Key"
 - Type my_app/sign_button/color
@@ -47,18 +48,18 @@ The easiest way to start evaluating Tweek is to run it locally on docker, make s
 
 #### Querying Tweek
 Use curl/postman/chrome to fire GET Request:
-- http://api.dev.local.tweek.fm:81/api/v1/keys/my_app/sign_button/color -> expected to be "red"
-- http://api.dev.local.tweek.fm:81/api/v1/keys/my_app/sign_button/color?user.Country=canada -> expected to be "blue"
-- http://api.dev.local.tweek.fm:81/api/v1/keys/my_app/sign_button/_?user.Country=canada -> expected to be {"color":"blue"}
+- http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/color -> expected to be "red"
+- http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/color?user.Country=canada -> expected to be "blue"
+- http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/_?user.Country=canada -> expected to be {"color":"blue"}
 
 More on Tweek Rest api. (link)
 
 #### Adding context data
 Using the API, use curl/postman to fire POST Request:
-- http://api.dev.local.tweek.fm:81/api/v1/context/user/john {"Country":"Canada"}  
+- http://api.dev.tweek.localtest.me:81/api/v1/context/user/john {"Country":"Canada"}  
 
 After that, we can query Tweek API with:
-- http://api.dev.local.tweek.fm:81/api/v1/keys/my_app/sign_button/color?user=john -> expected to be "blue"
+- http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/color?user=john -> expected to be "blue"
 
 More on [Context.](link)
 
@@ -66,10 +67,10 @@ More on [Context.](link)
 Create new key in the editor "my_app/sign_button/is_enabled" with value type "boolean" and default value False.  
 Add new rule, remove all conditions, set the the rule value to gradual release with 50%.
 Try querying configuration with different users and You'll have different results.
-- http://api.dev.local.tweek.fm:81/api/v1/keys/my_app/sign_button/is_enabled?user=barny
-- http://api.dev.local.tweek.fm:81/v1/keys/my_app/sign_button/is_enabled?user=robin
-- http://api.dev.local.tweek.fm:81/api/v1/keys/my_app/sign_button/is_enabled?user=ted
-- http://api.dev.local.tweek.fm:81/api/v1/keys/my_app/sign_button/is_enabled?user=lily
+- http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/is_enabled?user=barny
+- http://api.dev.tweek.localtest.me:81/v1/keys/my_app/sign_button/is_enabled?user=robin
+- http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/is_enabled?user=ted
+- http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/is_enabled?user=lily
 - etc...
 
 More on how multi-varaint keys work in Tweek. (link)
@@ -78,7 +79,12 @@ More on how multi-varaint keys work in Tweek. (link)
 
 ### FAQ
 - Who's using Tweek?  
-Tweek is been used in large scale production deployment at Soluto.
+  Tweek is been used in large scale production deployment at Soluto.
+- How do I generate ssh keys and a pfx file for use in production?  
+  There's a script for this purpose in `utils/generate_keys.sh`
+- I found a security vulnerability, should I open an issue about it?  
+  No. Please send an email to `security@soluto.com`.
+
 
 ### Related projects
 [Tweek.JPad](https://github.com/soluto/tweek.jpad) - Tweek's internal rules engine
