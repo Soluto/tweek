@@ -18,7 +18,7 @@ export default (config) => {
 
   app.get('/types', addConfig(TypesRoutes.getTypes));
 
-  app.get('/schema', authoringProxy);
+  app.get('/schemas', authoringProxy);
 
   app
     .route('/context/:identityName/:identityId')
@@ -45,7 +45,7 @@ export default (config) => {
   app.get('/search', authoringProxy);
   app.get('/suggestions', authoringProxy);
   app
-    .route('/schema/:identityType')
+    .route('/schemas/:identityType')
     .patch(authoringProxy)
     .post(authoringProxy)
     .delete(authoringProxy);

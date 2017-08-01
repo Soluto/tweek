@@ -61,30 +61,17 @@ async function updateKey(gitRepo, keyPath, manifest, fileImplementation) {
   }
 }
 
-async function getKeyDef(manifest, repo, revision) {
-  switch (manifest.implementation.type) {
-  case 'file':
-    let source;
-    try {
-      source = await repo.readFile(getPathForSourceFile(manifest), { revision });
-    } catch (err) {
-      source = await repo.readFile(getLegacyPathForSourceFile(manifest), { revision });
-    }
-    const keyDef = {
-      source,
-      type: manifest.implementation.format,
-    };
-    if (manifest.implementation.format === 'jpad') {
-      keyDef.source = getNewJpadFormatSourceIfNeeded(keyDef.source);
-    }
-    return keyDef;
-
-  case 'const':
-    return { source: JSON.stringify(manifest.implementation.value), type: 'const' };
-
-  default:
-    throw new Error('unsupported type');
+async function getFileImplementation(manifest, repo, revision) {
+  try {
+    source = await repo.readFile(getPathForSourceFile(manifest), { revision });
+  } catch (err) {
+    source = await repo.readFile(getLegacyPathForSourceFile(manifest), { revision });
   }
+
+  if (manifest.implementation.format === 'jpad') {
+    source = getNewJpadFormatSourceIfNeeded(source);
+  }
+  return source;
 }
 
 async function getRevisionHistory(manifest, repo, config) {
@@ -141,10 +128,12 @@ class KeysRepository {
   getKeyDetails(keyPath, { revision } = {}) {
     return this._gitTransactionManager.with(async (gitRepo) => {
       const manifest = await getManifestFile(keyPath, gitRepo, revision);
-      const keyDef = getKeyDef(manifest, gitRepo, revision);
       return {
-        keyDef: await keyDef,
         manifest,
+        implementation:
+          manifest.implementation.type === 'file'
+            ? await getFileImplementation(manifest, gitRepo, revision)
+            : undefined,
       };
     });
   }

@@ -54,7 +54,7 @@ describe('schema duck', () => {
     beforeEach(() => {
       global.fetch = jest.fn(async (url, fetchArgs) => {
         fetchArgs = fetchArgs || { method: 'get' };
-        if (fetchArgs.url === '/api/schema' && fetchArgs.method.toUpperCase() === 'GET') {
+        if (fetchArgs.url === '/api/schemas' && fetchArgs.method.toUpperCase() === 'GET') {
           return { ok: true, json: async () => R.map(x => x.remote)(schemaState) };
         }
         return { ok: true, json: async () => ({}) };
@@ -72,7 +72,7 @@ describe('schema duck', () => {
       await savePromise;
       expect(schemaState).to.have.property('user').with.property('isSaving', false);
       let [url, { method, body }] = fetch.mock.calls[0];
-      expect(url.toLowerCase()).to.eq('/api/schema/user');
+      expect(url.toLowerCase()).to.eq('/api/schemas/user');
       expect(method).to.eq('POST');
       expect(JSON.parse(body)).to.deep.equal({ age: 30 });
       expect(schemaState).to.have.property('user').with.property('remote').deep.eq({ age: 30 });
@@ -87,7 +87,7 @@ describe('schema duck', () => {
       dispatch(actions.upsertIdentityProperty('user', 'gender', 'female'));
       await dispatch(actions.saveSchema('user'));
       const [_, { body }] = fetch.mock.calls.find(
-        ([url, { method }]) => method === 'PATCH' && url === '/api/schema/user',
+        ([url, { method }]) => method === 'PATCH' && url === '/api/schemas/user',
       );
       const patch = JSON.parse(body);
       const newUserState = R.clone(schemaState.user.local);
@@ -101,7 +101,7 @@ describe('schema duck', () => {
       dispatch(actions.upsertIdentityProperty('user', 'age', 30));
       await dispatch(actions.deleteIdentity('user'));
       let [url, { method }] = fetch.mock.calls[0];
-      expect(url.toLowerCase()).to.eq('/api/schema/user');
+      expect(url.toLowerCase()).to.eq('/api/schemas/user');
       expect(method).to.eq('DELETE');
       expect(schemaState).to.not.have.property('user');
     });

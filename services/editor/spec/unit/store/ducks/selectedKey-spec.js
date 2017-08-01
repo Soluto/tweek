@@ -80,6 +80,12 @@ describe('selectedKey', async () => {
           keyDef: {
             source: '',
           },
+          manifest:{
+            implementation: {
+              type: "file",
+              format: "jpad",
+            },
+          },
         },
         validation: {
           isValid: true,
@@ -149,26 +155,32 @@ describe('selectedKey', async () => {
       // Arrange
       const keyName = 'category/some key';
 
-      const expectedKeyData = {
-        keyDef: {
-          source: 'some key def source',
-          type: 'cs',
-          valueType: 'string',
-        },
+      const expectedServerData = {
+        implementation: 'some key def source',
         manifest: {
-          name: '',
-          description: '',
-          valueType: '',
+          key_path:"test",
+          meta:{
+            name: '',
+            description: '',
+            valueType: '',
+          },
+          implementation:{
+            type: "file",
+            format: "jpad",
+          },
         },
       };
 
       const expectedPayload = {
         key: keyName,
-        manifest: expectedKeyData.manifest,
-        keyDef: expectedKeyData.keyDef,
+        keyDef: {
+          source: expectedServerData.implementation,
+          type: "jpad",
+        },
+        manifest: expectedServerData.manifest,
       };
 
-      fetchMock.get('glob:*/api/keys/*', expectedKeyData);
+      fetchMock.get('glob:*/api/keys/*', expectedServerData);
 
       // Act
       const func = openKey(keyName);
@@ -179,35 +191,6 @@ describe('selectedKey', async () => {
       assertDispatchAction(keyOpenedDispatchAction, { type: KEY_OPENED, payload: expectedPayload });
     });
 
-    it('should dispatch KEY_OPENED and create key meta if meta does not exists', async () => {
-      // Arrange
-      const keyName = 'category/some key';
-
-      const expectedKeyData = {
-        keyDef: {
-          source: 'some key def source',
-          type: 'cs',
-          valueType: 'string',
-        },
-      };
-
-      const expectedPayload = {
-        key: keyName,
-        manifest: createBlankKeyManifest(),
-        keyDef: expectedKeyData.keyDef,
-      };
-
-      fetchMock.get('glob:*/api/keys/*', expectedKeyData);
-
-      // Act
-      const func = openKey(keyName);
-      await func(dispatchMock);
-
-      // Assert
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
-      expect(keyOpenedDispatchAction.type).to.deep.equal(KEY_OPENED);
-      expect(keyOpenedDispatchAction.payload.manifest).to.deep.equal(createBlankKeyManifest());
-    });
 
     it('should dispatch KEY_OPENED with correct payload if GET failed', async () => {
       // Arrange

@@ -13,14 +13,14 @@ import chai, { assert, expect } from 'chai';
 chai.use(require('chai-things'));
 
 describe('context-service', () => {
-  const contextServiceApiMatcher = 'glob:*/api/schema/*';
+  const contextServiceApiMatcher = 'glob:*/api/schemas';
 
   afterEach(() => {
     fetchMock.restore();
   });
 
   describe('refreshSchema', () => {
-    it('should fetch api/schema', async () => {
+    it('should fetch api/schemas', async () => {
       // Arrange
       fetchMock.get(contextServiceApiMatcher, {});
 
