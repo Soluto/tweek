@@ -69,21 +69,20 @@ class GitRepository {
   async getHistory(fileNames, { revision, since } = {}) {
     fileNames = Array.isArray(fileNames) ? fileNames : [fileNames];
 
-    const historyEntries = await Promise.all(fileNames.map(async (file) => {
-      const options = [
-        `--follow`,
-        file,
-      ];
-      if (since) options.unshift(`--since="${since}"`);
+    const historyEntries = await Promise.all(
+      fileNames.map(async (file) => {
+        const options = [`--follow`, file];
+        if (since) options.unshift(`--since="${since}"`);
 
-      const history = await new Promise((resolve, reject) => {
-        this._simpleRepo.log(options, (err, log) => {
-          if (err) reject(err);
-          else resolve(log);
+        const history = await new Promise((resolve, reject) => {
+          this._simpleRepo.log(options, (err, log) => {
+            if (err) reject(err);
+            else resolve(log);
+          });
         });
-      });
-      return history.all;
-    }));
+        return history.all;
+      }),
+    );
 
     const mapEntry = ({ hash, date, message, author_name }) => ({
       sha: hash,
@@ -100,6 +99,13 @@ class GitRepository {
     );
 
     return uniqSort(historyEntries);
+  }
+
+  async updateFiles(files) {
+    for (let file of files) {
+      const content = await file.read();
+      await this.updateFile(file.name, content);
+    }
   }
 
   async updateFile(fileName, content) {

@@ -15,6 +15,8 @@
     "test:docker": "yarn run start && yarn run rebuild backoffice-e2e && yarn run docker-compose run -- --rm backoffice-e2e",
     "test:docker:rebuild": "yarn run rebuild && yarn run test:docker",
     "teardown": "yarn run docker-compose down -- --remove-orphans",
+    "test-authoring-api": "mocha spec/authoring-api/*test.js --recursive --timeout 60000",
+    "docker-test-authoring-api": "npm run docker-compose build authoring && npm run docker-compose up -- --force-recreate -d authoring api && sleep 5 && npm run test-authoring-api",
     "docker-compose": "docker-compose -f ../deployments/dev/docker-compose.yml -f ../deployments/dev/docker-compose.override.yml -f ../deployments/dev/docker-compose.e2e.yml"
   },
   "author": "",
@@ -40,6 +42,10 @@
     "webdriverio": "4.8.0"
   },
   "devDependencies": {
+    "chai": "^4.1.0",
+    "mocha": "^3.4.2",
+    "supertest": "^3.0.0",
+    "wait-promise": "^0.4.1",
     "wdio-selenium-standalone-service": "0.0.9"
   }
 }
