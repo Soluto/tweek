@@ -5,10 +5,15 @@ const fs = require('fs');
 const chai = require('chai');
 const Rx = require('rx');
 const nconf = require('nconf');
+nconf.defaults({
+  AUTHORING_URL: 'http://localhost:4005',
+  TWEEK_API_URL: 'http://localhost:4003',
+  GIT_PRIVATE_KEY_PATH: '../services/git-service/ssh/tweekgit'
+});
 
 let should = chai.should();
-const authoringApiRequest = supertest(nconf.get('AUTHORING_URL') || 'http://localhost:4005');
-const tweekApiRequest = supertest(nconf.get('TWEEK_API_URL') || 'http://localhost:4003');
+const authoringApiRequest = supertest(nconf.get('AUTHORING_URL'));
+const tweekApiRequest = supertest(nconf.get('TWEEK_API_URL'));
 const jwtSign = promisify(jwt.sign);
 const readFile = promisify(fs.readFile);
 
@@ -21,7 +26,7 @@ let token = {};
 
 describe('authoring api', () => {
   before(async () => {
-    const keyPath = nconf.get('GIT_PRIVATE_KEY_PATH') || '../services/git-service/ssh/tweekgit';
+    const keyPath = nconf.get('GIT_PRIVATE_KEY_PATH');
     const authKey = await readFile(keyPath);
     token = await jwtSign({}, authKey, jwtOptions);
   });
@@ -68,11 +73,9 @@ const pollTweekUntil = async (url, expectedResult, maxTimeout = 30000) => {
     }
     return false;
   }
-  return Rx.Observable
-  .interval(1000)
-  .concatMap(_ => getValueFromTweek())
-  .filter(x => x == true)
-  .first()
-  .timeout(maxTimeout, Rx.Observable.just(false))
-  .toPromise();
+  return Rx.Observable.defer(() => getValueFromTweek())
+    .repeat()
+    .first(x => x === true)
+    .timeout(maxTimeout)
+    .toPromise()
 }
