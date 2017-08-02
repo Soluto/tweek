@@ -3,7 +3,7 @@ const promisify = require('bluebird').promisify;
 const supertest = require('supertest');
 const fs = require('fs');
 const chai = require('chai');
-const wait = require('wait-promise');
+const Rx = require('rx');
 
 let should = chai.should();
 const authoringApiRequest = supertest('http://localhost:4005');
@@ -31,7 +31,7 @@ describe('authoring api', () => {
         .attach('bulk', './spec/authoring-api/test-data/bulk1.zip')
         .set('Authorization', `Bearer ${token}`);
       response.status.should.eql(200);
-      const result = await pollTweekUntil('/api/v1/keys/test_key1?user.Country=country&user.ClientVersion=1.0.0', true, 30000);
+      const result = await pollTweekUntil('/api/v1/keys/test_key1?user.Country=country&user.ClientVersion=1.0.0', true);
       result.should.eql(true);
     });
 
@@ -67,20 +67,11 @@ const pollTweekUntil = async (url, expectedResult, maxTimeout = 30000) => {
     }
     return false;
   }
-
-  return new Promise((resolve, reject) => {
-    const intervalHandle = setInterval(async () => {
-      const tweekValue = await getValueFromTweek();
-      if (tweekValue === true) {
-        clearInterval(intervalHandle);
-        clearTimeout(timeoutHandle);
-        resolve(true);
-      }
-    }, 1000);
-    const timeoutHandle = setTimeout(() => {
-      clearInterval(intervalHandle);
-      resolve(false);
-    }, maxTimeout);
-  });
+  return Rx.Observable
+  .interval(1000)
+  .concatMap(_ => getValueFromTweek())
+  .filter(x => x == true)
+  .first()
+  .timeout(maxTimeout, Rx.Observable.just(false))
+  .toPromise();
 }
-
