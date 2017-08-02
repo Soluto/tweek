@@ -172,7 +172,10 @@ class KeysRepository {
 
   updateBulkKeys(files, author, commitMessage = 'Bulk update through API') {
     return this._gitTransactionManager.write(async (gitRepo) => {
-      await gitRepo.updateFiles(files);
+      for (let file of files) {
+        const content = await file.read();
+        await gitRepo.updateFile(file.name, content);
+      }
       await gitRepo.commitAndPush(commitMessage, author);
     });
   }

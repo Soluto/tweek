@@ -101,13 +101,6 @@ class GitRepository {
     return uniqSort(historyEntries);
   }
 
-  async updateFiles(files) {
-    for (let file of files) {
-      const content = await file.read();
-      await this.updateFile(file.name, content);
-    }
-  }
-
   async updateFile(fileName, content) {
     const workdir = this._repo.workdir();
     const filePath = path.join(workdir, fileName);

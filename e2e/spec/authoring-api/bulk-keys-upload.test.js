@@ -14,37 +14,47 @@ const readFile = promisify(fs.readFile);
 const jwtOptions = {
   algorithm: 'RS256',
   issuer: 'tweek',
-  expiresIn: "15m"
+  expiresIn: '15m'
 };
 let token = {};
 
-describe("authoring api", () => {
+describe('authoring api', () => {
   before(async () => {
     const keyPath = '../services/git-service/ssh/tweekgit';
     const authKey = await readFile(keyPath);
     token = await jwtSign({}, authKey, jwtOptions);
   });
 
-  describe("/PUT /bulk-keys-upload", () => {
-    it("should accept a zip file and update rules", (done) => {
-      authoringApiRequest.put('/api/bulk-keys-upload?author.name=test&author.email=test@soluto.com')
+  describe('/PUT /bulk-keys-upload', () => {
+    it('should accept a zip file and update rules', async () => {
+      const response = await authoringApiRequest.put('/api/bulk-keys-upload?author.name=test&author.email=test@soluto.com')
         .attach('bulk', './spec/authoring-api/test-data/bulk1.zip')
-        .set("Authorization", `Bearer ${token}`)
-        .then((response) => {
-          response.status.should.eql(200);
-          pollTweekUntil('/api/v1/keys/test_key1?user.Country=country&user.ClientVersion=1.0.0', true, 30000)
-          .then((result) => {
-            result.should.eql(true);
-            done();
-          });
-        })
-        .catch(done);
+        .set('Authorization', `Bearer ${token}`);
+      response.status.should.eql(200);
+      const result = await pollTweekUntil('/api/v1/keys/test_key1?user.Country=country&user.ClientVersion=1.0.0', true, 30000);
+      result.should.eql(true);
     });
 
-    it("should not accept an input without a zip file named bulk", (done) => {
-      authoringApiRequest.put('/api/bulk-keys-upload?name=test&email=test@soluto.com')
-      .set("Authorization", `Bearer ${token}`)      
-      .expect(400, done);
+    it('should not accept an input without a zip file named bulk', async () => {
+      const response = await authoringApiRequest.put('/api/bulk-keys-upload?author.name=test&author.email=test@soluto.com')
+      .set('Authorization', `Bearer ${token}`)      
+      response.status.should.eql(400);
+      response.text.should.eql('Required file is missing: bulk');      
+    });
+
+    it('should not accept a corrupted zip file', async () => {
+      const response = await authoringApiRequest.put('/api/bulk-keys-upload?author.name=test&author.email=test@soluto.com')
+      .attach('bulk', './spec/authoring-api/test-data/notZip.zip')      
+      .set('Authorization', `Bearer ${token}`)
+      response.status.should.eql(400);
+      response.text.should.include('Zip is corrupted:');
+    });
+
+    it('should not accept a zip file with invalid rules', async () => {
+      const response = await authoringApiRequest.put('/api/bulk-keys-upload?author.name=test&author.email=test@soluto.com')
+      .attach('bulk', './spec/authoring-api/test-data/invalidRules.zip')      
+      .set('Authorization', `Bearer ${token}`)
+      response.status.should.eql(500);
     });
   });
 });
