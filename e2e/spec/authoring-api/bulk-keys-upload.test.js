@@ -5,7 +5,7 @@ const fs = require('fs');
 const chai = require('chai');
 const Rx = require('rx');
 const nconf = require('nconf');
-nconf.defaults({
+nconf.argv().env().defaults({
   AUTHORING_URL: 'http://localhost:4005',
   TWEEK_API_URL: 'http://localhost:4003',
   GIT_PRIVATE_KEY_PATH: '../services/git-service/ssh/tweekgit'
