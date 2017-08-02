@@ -34,16 +34,16 @@
     "chai-string": "^1.4.0",
     "chance": "1.0.10",
     "jsonwebtoken": "^7.4.0",
+    "mocha": "^3.4.2",
     "moment": "2.18.1",
     "nconf": "^0.8.4",
     "ramda": "^0.24.0",
+    "supertest": "^3.0.0",
     "wdio-mocha-framework": "0.5.10",
     "wdio-spec-reporter": "0.1.0",
     "webdriverio": "4.8.0"
   },
   "devDependencies": {
-    "mocha": "^3.4.2",
-    "supertest": "^3.0.0",
     "wait-promise": "^0.4.1",
     "wdio-selenium-standalone-service": "0.0.9"
   }
