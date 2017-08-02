@@ -22,7 +22,7 @@ async function bulkKeysUpload(req, res, { author, keysRepository }) {
       name: file.name,
       read: () => file.async('string'),
     })),
-    R.filter(file => supportedExtensions.find(extension => path.extname(file.name) === extension)),
+    R.filter(file => supportedExtensions.includes(path.extname(file.name))),
   );
   const fileEntries = transformIntoEntriesArray(zipRoot.files);
   await keysRepository.updateBulkKeys(fileEntries, author);

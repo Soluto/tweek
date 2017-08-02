@@ -161,6 +161,7 @@ steps:
           - keys
         depends_on:
           - authoring
+          - api
         environment:
           - AUTHORING_URL=http://authoring:3000/
           - TWEEK_API_URL=http://api/
