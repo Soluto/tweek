@@ -4,10 +4,11 @@ const supertest = require('supertest');
 const fs = require('fs');
 const chai = require('chai');
 const Rx = require('rx');
+const nconf = require('nconf');
 
 let should = chai.should();
-const authoringApiRequest = supertest('http://localhost:4005');
-const tweekApiRequest = supertest('http://localhost:4003');
+const authoringApiRequest = supertest(nconf.get('AUTHORING_URL'));
+const tweekApiRequest = supertest(nconf.get('TWEEK_API_URL'));
 const jwtSign = promisify(jwt.sign);
 const readFile = promisify(fs.readFile);
 
@@ -20,7 +21,7 @@ let token = {};
 
 describe('authoring api', () => {
   before(async () => {
-    const keyPath = '../services/git-service/ssh/tweekgit';
+    const keyPath = nconf.get('GIT_PRIVATE_KEY_PATH');
     const authKey = await readFile(keyPath);
     token = await jwtSign({}, authKey, jwtOptions);
   });
