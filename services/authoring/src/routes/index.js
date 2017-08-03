@@ -1,8 +1,11 @@
 const express = require('express');
 const { compose } = require('ramda');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 const requestErrorHandlingWrapper = require('../utils/request-error-handling-wrapper');
 const includeAuthor = require('../utils/include-author');
 const KeysRoutes = require('./keys');
+const BulkKeysRoutes = require('./bulk-keys-upload');
 const SchemaRoutes = require('./schema');
 const TagsRoutes = require('./tags');
 const SearchRoutes = require('./search');
@@ -23,6 +26,8 @@ function configureRoutes(config) {
     .get(addConfig(KeysRoutes.getKey))
     .put(addConfig(KeysRoutes.updateKey))
     .delete(addConfig(KeysRoutes.deleteKey));
+
+  app.put('/bulk-keys-upload', upload.any(), addConfig(BulkKeysRoutes.bulkKeysUpload));
 
   app.get('/revision', addConfig(KeysRoutes.getRevision));
   app.get('/revision-history/*', addConfig(KeysRoutes.getKeyRevisionHistory));
