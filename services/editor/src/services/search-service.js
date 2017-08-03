@@ -1,5 +1,6 @@
 /* global fetch */
 
+import fetch from '../utils/fetch';
 let maxResults;
 
 const createSearchFunction = endpoint =>
@@ -7,12 +8,16 @@ const createSearchFunction = endpoint =>
     if (!query || query === '') return [];
 
     if (!maxResults) {
-      const response = await fetch('/api/editor-configuration/search/max_results');
-      maxResults = (await response.json()) || 25;
+      try {
+        const response = await fetch('/api/editor-configuration/search/max_results');
+        maxResults = (await response.json()) || 25;
+      } catch (err) {
+        console.error("unable to get 'search/max_results' configuration", err);
+      }
     }
 
     const response = await fetch(
-      `/api/${endpoint}?q=${encodeURIComponent(query)}&count=${maxResults}`,
+      `/api/${endpoint}?q=${encodeURIComponent(query)}&count=${maxResults || 25}`,
       {
         credentials: 'same-origin',
       },
