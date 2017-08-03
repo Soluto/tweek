@@ -10,7 +10,7 @@ nconf.argv().env().defaults({
   TWEEK_API_URL: 'http://localhost:4003',
   GIT_PRIVATE_KEY_PATH: '../services/git-service/ssh/tweekgit'
 });
-console.log("authoring api url ", nconf.get(AUTHORING_URL));
+console.log("authoring api url ", nconf.get('AUTHORING_URL'));
 let should = chai.should();
 const authoringApiRequest = supertest(nconf.get('AUTHORING_URL'));
 const tweekApiRequest = supertest(nconf.get('TWEEK_API_URL'));
