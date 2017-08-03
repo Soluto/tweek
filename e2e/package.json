@@ -15,7 +15,7 @@
     "test:docker": "yarn run start && yarn run rebuild backoffice-e2e && yarn run docker-compose run -- --rm backoffice-e2e",
     "test:docker:rebuild": "yarn run rebuild && yarn run test:docker",
     "teardown": "yarn run docker-compose down -- --remove-orphans",
-    "test:authoring": "mocha spec/authoring-api/*test.js --recursive --timeout 60000",
+    "test:authoring": "mocha authoring-api/*test.js --recursive --timeout 60000",
     "start:full-env": "yarn run docker-compose up -- --force-recreate -d git && yarn run docker-compose up -- -d authoring api",
     "test:docker:authoring": "yarn run docker-compose build authoring backoffice-e2e && yarn run start:full-env && yarn run docker-compose run -- --rm backoffice-e2e yarn run test:authoring",
     "test:full-env:authoring": "yarn run docker-compose build authoring && yarn run start:full-env && sleep 5 && yarn run test:authoring",
