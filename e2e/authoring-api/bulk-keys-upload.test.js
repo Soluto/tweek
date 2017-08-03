@@ -34,7 +34,7 @@ describe('authoring api', () => {
   describe('/PUT /bulk-keys-upload', () => {
     it('should accept a zip file and update rules', async () => {
       const response = await authoringApiRequest.put('api/bulk-keys-upload?author.name=test&author.email=test@soluto.com')
-        .attach('bulk', './spec/authoring-api/test-data/bulk1.zip')
+        .attach('bulk', './authoring-api/test-data/bulk1.zip')
         .set('Authorization', `Bearer ${token}`);
       response.status.should.eql(200);
       const result = await pollTweekUntil('api/v1/keys/test_key1?user.Country=country&user.ClientVersion=1.0.0', true);
@@ -50,7 +50,7 @@ describe('authoring api', () => {
 
     it('should not accept a corrupted zip file', async () => {
       const response = await authoringApiRequest.put('api/bulk-keys-upload?author.name=test&author.email=test@soluto.com')
-      .attach('bulk', './spec/authoring-api/test-data/notZip.zip')      
+      .attach('bulk', './authoring-api/test-data/notZip.zip')      
       .set('Authorization', `Bearer ${token}`)
       response.status.should.eql(400);
       response.text.should.include('Zip is corrupted:');
@@ -58,7 +58,7 @@ describe('authoring api', () => {
 
     it('should not accept a zip file with invalid rules', async () => {
       const response = await authoringApiRequest.put('api/bulk-keys-upload?author.name=test&author.email=test@soluto.com')
-      .attach('bulk', './spec/authoring-api/test-data/invalidRules.zip')      
+      .attach('bulk', './authoring-api/test-data/invalidRules.zip')      
       .set('Authorization', `Bearer ${token}`)
       response.status.should.eql(500);
     });
