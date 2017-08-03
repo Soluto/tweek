@@ -38,35 +38,34 @@ namespace ContextDriversIntegrationTests
             .Concat(AnotherTestContext)
             .ToDictionary(pair => pair.Key, pair => pair.Value);
 
-        [Theory(DisplayName = "ContextAppended_PropertyDeleted_ResultsInCorrectContext")]
-        [ClassData(typeof(TestContexts))]
-        public async Task ContextAppended_PropertyDeleted_ResultsInCorrectContext(ITestableContextDriver driver)
+        protected ITestableContextDriver Driver;
+
+        [Fact(DisplayName = "ContextAppended_PropertyDeleted_ResultsInCorrectContext")]
+        public async Task ContextAppended_PropertyDeleted_ResultsInCorrectContext()
         {
-            await driver.ClearAllData();
-            await driver.AppendContext(TestIdentity, TestContext);
-            Assert.Equal(TestContext, await driver.GetContext(TestIdentity));
-            await driver.RemoveFromContext(TestIdentity, PROPERTY_TO_REMOVE);
-            Assert.Equal(TestContextAfterRemoval, await driver.GetContext(TestIdentity));
+            await Driver.ClearAllData();
+            await Driver.AppendContext(TestIdentity, TestContext);
+            Assert.Equal(TestContext, await Driver.GetContext(TestIdentity));
+            await Driver.RemoveFromContext(TestIdentity, PROPERTY_TO_REMOVE);
+            Assert.Equal(TestContextAfterRemoval, await Driver.GetContext(TestIdentity));
         }
 
-        [Theory(DisplayName = "ContextAppended_ThenAnotherAppended_ResultIsMerged")]
-        [ClassData(typeof(TestContexts))]
-        public async Task ContextAppended_ThenAnotherAppended_ResultIsMerged(ITestableContextDriver driver)
+        [Fact(DisplayName = "ContextAppended_ThenAnotherAppended_ResultIsMerged")]
+        public async Task ContextAppended_ThenAnotherAppended_ResultIsMerged()
         {
-            await driver.ClearAllData();
-            await driver.AppendContext(TestIdentity, TestContext);
-            await driver.AppendContext(TestIdentity, AnotherTestContext);
-            Assert.Equal(TestContextMergedWithAnotherTestContext, await driver.GetContext(TestIdentity));
+            await Driver.ClearAllData();
+            await Driver.AppendContext(TestIdentity, TestContext);
+            await Driver.AppendContext(TestIdentity, AnotherTestContext);
+            Assert.Equal(TestContextMergedWithAnotherTestContext, await Driver.GetContext(TestIdentity));
         }
 
-        [Theory(DisplayName = "ContextAppended_ThenSameContextAppended_ResultIsIdempotent")]
-        [ClassData(typeof(TestContexts))]
-        public async Task ContextAppended_ThenSameContextAppended_ResultIsIdempotent(ITestableContextDriver driver)
+        [Fact(DisplayName = "ContextAppended_ThenSameContextAppended_ResultIsIdempotent")]
+        public async Task ContextAppended_ThenSameContextAppended_ResultIsIdempotent()
         {
-            await driver.ClearAllData();
-            await driver.AppendContext(TestIdentity, TestContext);
-            await driver.AppendContext(TestIdentity, TestContext);
-            Assert.Equal(TestContext, await driver.GetContext(TestIdentity));
+            await Driver.ClearAllData();
+            await Driver.AppendContext(TestIdentity, TestContext);
+            await Driver.AppendContext(TestIdentity, TestContext);
+            Assert.Equal(TestContext, await Driver.GetContext(TestIdentity));
         }
     }
 }

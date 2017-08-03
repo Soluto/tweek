@@ -60,6 +60,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Addons.AppMetrics.Gra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContextDriversIntegrationTests", "addons\Context\ContextDriversIntegrationTests\ContextDriversIntegrationTests.csproj", "{B5070CC9-BBD8-483E-849F-2950A63C9FFE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Redis.ContextIntegrationTests", "addons\Context\Tweek.Drivers.Redis.ContextIntegrationTests\Tweek.Drivers.Redis.ContextIntegrationTests.csproj", "{03E847A8-5A6E-47A1-B07E-F6148FBC587D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -273,6 +275,18 @@ Global
 		{B5070CC9-BBD8-483E-849F-2950A63C9FFE}.Release|x64.Build.0 = Release|Any CPU
 		{B5070CC9-BBD8-483E-849F-2950A63C9FFE}.Release|x86.ActiveCfg = Release|Any CPU
 		{B5070CC9-BBD8-483E-849F-2950A63C9FFE}.Release|x86.Build.0 = Release|Any CPU
+		{03E847A8-5A6E-47A1-B07E-F6148FBC587D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03E847A8-5A6E-47A1-B07E-F6148FBC587D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03E847A8-5A6E-47A1-B07E-F6148FBC587D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{03E847A8-5A6E-47A1-B07E-F6148FBC587D}.Debug|x64.Build.0 = Debug|Any CPU
+		{03E847A8-5A6E-47A1-B07E-F6148FBC587D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{03E847A8-5A6E-47A1-B07E-F6148FBC587D}.Debug|x86.Build.0 = Debug|Any CPU
+		{03E847A8-5A6E-47A1-B07E-F6148FBC587D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03E847A8-5A6E-47A1-B07E-F6148FBC587D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03E847A8-5A6E-47A1-B07E-F6148FBC587D}.Release|x64.ActiveCfg = Release|Any CPU
+		{03E847A8-5A6E-47A1-B07E-F6148FBC587D}.Release|x64.Build.0 = Release|Any CPU
+		{03E847A8-5A6E-47A1-B07E-F6148FBC587D}.Release|x86.ActiveCfg = Release|Any CPU
+		{03E847A8-5A6E-47A1-B07E-F6148FBC587D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -303,5 +317,6 @@ Global
 		{90AD5C6D-668E-4703-BCE9-17AB584881EE} = {2407B11F-BCC6-46BC-85B0-CF64D74A441D}
 		{34154EAB-9A1B-4D59-A967-73DAFD05580D} = {2407B11F-BCC6-46BC-85B0-CF64D74A441D}
 		{B5070CC9-BBD8-483E-849F-2950A63C9FFE} = {BD1E6B57-18E1-46E9-B16F-B531E88FB9E3}
+		{03E847A8-5A6E-47A1-B07E-F6148FBC587D} = {BD1E6B57-18E1-46E9-B16F-B531E88FB9E3}
 	EndGlobalSection
 EndGlobal
