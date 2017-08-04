@@ -69,20 +69,21 @@ class GitRepository {
   async getHistory(fileNames, { revision, since } = {}) {
     fileNames = Array.isArray(fileNames) ? fileNames : [fileNames];
 
-    const historyEntries = await Promise.all(
-      fileNames.map(async (file) => {
-        const options = [`--follow`, file];
-        if (since) options.unshift(`--since="${since}"`);
+    const historyEntries = await Promise.all(fileNames.map(async (file) => {
+      const options = [
+        `--follow`,
+        file,
+      ];
+      if (since) options.unshift(`--since="${since}"`);
 
-        const history = await new Promise((resolve, reject) => {
-          this._simpleRepo.log(options, (err, log) => {
-            if (err) reject(err);
-            else resolve(log);
-          });
+      const history = await new Promise((resolve, reject) => {
+        this._simpleRepo.log(options, (err, log) => {
+          if (err) reject(err);
+          else resolve(log);
         });
-        return history.all;
-      }),
-    );
+      });
+      return history.all;
+    }));
 
     const mapEntry = ({ hash, date, message, author_name }) => ({
       sha: hash,
@@ -97,32 +98,8 @@ class GitRepository {
       R.uniqBy(R.prop('sha')),
       R.sort(R.descend(R.prop('date'))),
     );
-
-    const history = uniqSort(historyEntries);
-
-    if (history.length === 0) {
-      const commit = await (revision
-        ? this._repo.getCommit(revision)
-        : this._repo.getMasterCommit());
-      const tree = await commit.getTree();
-
-      for (let fileName of fileNames) {
-        try {
-          await tree.getEntry(fileName);
-
-          return [
-            {
-              sha: commit.sha(),
-              author: commit.author().name(),
-              date: commit.date(),
-              message: commit.message(),
-            },
-          ];
-        } catch (err) {}
-      }
-    }
-
-    return history;
+    
+    return uniqSort(historyEntries);
   }
 
   async updateFile(fileName, content) {

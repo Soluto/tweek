@@ -75,10 +75,14 @@ async function getFileImplementation(manifest, repo, revision) {
 }
 
 async function getRevisionHistory(manifest, repo, config) {
-  const files = [getPathForManifest(manifest.key_path)];
+  const files = [
+    getPathForManifest(manifest.key_path),
+  ];
 
   if (manifest.implementation.type === 'file') {
-    files.push(getPathForSourceFile(manifest));
+    files.push(
+      getPathForSourceFile(manifest),
+    );
   }
 
   return await repo.getHistory(files, config);
