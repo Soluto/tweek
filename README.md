@@ -61,7 +61,7 @@ Using the API, use curl/postman to fire POST Request:
 After that, we can query Tweek API with:
 - http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/color?user=john -> expected to be "blue"
 
-More on [Context.](link)
+More on [Context.](https://docs.tweek.fm/concepts/context/intro-to-context)
 
 #### Gradual Feature Release
 Create new key in the editor "my_app/sign_button/is_enabled" with value type "boolean" and default value False.  
