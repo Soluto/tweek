@@ -46,13 +46,15 @@ The easiest way to start evaluating Tweek is to run it locally on docker, make s
 - Set Property to Country (user) and set "=" and "Canada" in the other fields
 - In Rule value set the value "blue"
 
+More on [keys and paths](https://docs.tweek.fm/concepts/keys/keys-ands-paths)
+
 #### Querying Tweek
 Use curl/postman/chrome to fire GET Request:
 - http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/color -> expected to be "red"
 - http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/color?user.Country=canada -> expected to be "blue"
 - http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/_?user.Country=canada -> expected to be {"color":"blue"}
 
-More on Tweek Rest api. (link)
+More on Tweek [Rest api](https://docs.tweek.fm/api/rest-api).
 
 #### Adding context data
 Using the API, use curl/postman to fire POST Request:
