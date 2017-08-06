@@ -5,7 +5,6 @@ jobs:
       - image: microsoft/dotnet:1.1.2-sdk
         environment:
           - DOTNET_CLI_TELEMETRY_OUTPUT=1
-          - VersionSuffix=$CIRCLE_BUILD_NUM
       
     working_directory: /src
     steps:
@@ -13,6 +12,7 @@ jobs:
       - run:
           name: Build nugets
           command: |
+            export VersionSuffix=$CIRCLE_BUILD_NUM
             mkdir /nugets && \
             cd addons/Context/ContextDriversIntegrationTests/ && \
             dotnet restore && \
@@ -21,6 +21,7 @@ jobs:
       - deploy:
           name: Push nugets
           command: |
+            export VersionSuffix=$CIRCLE_BUILD_NUM
             #if [ "${CIRCLE_BRANCH}" == "master" ]; then
               dotnet nuget push /nugets/*.nupkg -s nuget.org -k $NUGET_APIKEY
             #else
