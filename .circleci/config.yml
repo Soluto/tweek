@@ -3,9 +3,9 @@ jobs:
   build:
     docker:
       - image: microsoft/dotnet:1.1.2-sdk
-      environment:
-        - DOTNET_CLI_TELEMETRY_OUTPUT=1
-        - VersionSuffix=$CIRCLE_BUILD_NUM
+        environment:
+          - DOTNET_CLI_TELEMETRY_OUTPUT=1
+          - VersionSuffix=$CIRCLE_BUILD_NUM
       
     working_directory: /src
     steps:
