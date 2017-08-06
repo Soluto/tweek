@@ -9,7 +9,7 @@ import './IdentityProperties.css';
 
 const getPropertyValueType = (identityName, property) => {
   const details = getPropertyTypeDetails(`${identityName}.${property}`);
-  return details.name;
+  return 'name' in details ? details.name : details;
 };
 
 const Property = ({ identityName, property, value }) =>
