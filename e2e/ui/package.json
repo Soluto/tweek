@@ -15,6 +15,10 @@
     "test:docker": "yarn run start && yarn run rebuild e2e-ui && yarn run docker-compose run -- --rm e2e-ui",
     "test:docker:rebuild": "yarn run rebuild && yarn run test:docker",
     "teardown": "yarn run docker-compose down -- --remove-orphans",
+    "test:authoring": "mocha authoring-api/*test.js --recursive --timeout 60000",
+    "start:full-env": "yarn run docker-compose up -- --force-recreate -d git && yarn run docker-compose up -- -d authoring api",
+    "test:docker:authoring": "yarn run docker-compose build authoring backoffice-e2e && yarn run start:full-env && yarn run docker-compose run -- --rm backoffice-e2e yarn run test:authoring",
+    "test:full-env:authoring": "yarn run docker-compose build authoring && yarn run start:full-env && sleep 5 && yarn run test:authoring",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.e2e.yml"
   },
   "author": "",
@@ -32,9 +36,12 @@
     "chai-string": "^1.4.0",
     "chance": "1.0.10",
     "jsonwebtoken": "^7.4.0",
+    "mocha": "^3.4.2",
     "moment": "2.18.1",
     "nconf": "^0.8.4",
     "ramda": "^0.24.0",
+    "rxjs": "^5.4.2",
+    "supertest": "^3.0.0",
     "wdio-mocha-framework": "0.5.10",
     "wdio-spec-reporter": "0.1.0",
     "webdriverio": "4.8.0"

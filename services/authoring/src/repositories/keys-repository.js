@@ -75,14 +75,10 @@ async function getFileImplementation(manifest, repo, revision) {
 }
 
 async function getRevisionHistory(manifest, repo, config) {
-  const files = [
-    getPathForManifest(manifest.key_path),
-  ];
+  const files = [getPathForManifest(manifest.key_path)];
 
   if (manifest.implementation.type === 'file') {
-    files.push(
-      getPathForSourceFile(manifest),
-    );
+    files.push(getPathForSourceFile(manifest));
   }
 
   return await repo.getHistory(files, config);
@@ -160,6 +156,16 @@ class KeysRepository {
     return this._gitTransactionManager.write(async (gitRepo) => {
       await updateKey(gitRepo, keyPath, manifest, fileImplementation);
       await gitRepo.commitAndPush(`Editor - updating ${keyPath}`, author);
+    });
+  }
+
+  updateBulkKeys(files, author, commitMessage = 'Bulk update through API') {
+    return this._gitTransactionManager.write(async (gitRepo) => {
+      for (let file of files) {
+        const content = await file.read();
+        await gitRepo.updateFile(file.name, content);
+      }
+      await gitRepo.commitAndPush(commitMessage, author);
     });
   }
 

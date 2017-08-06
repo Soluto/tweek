@@ -155,6 +155,18 @@ steps:
           - TWEEK_API_URL=http://api/
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
         command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test -- --host selenium --port 4444"
+      authoring-tests:
+        image: ${{BuildingTests}}
+        volumes_from:
+          - keys
+        depends_on:
+          - authoring
+          - api
+        environment:
+          - AUTHORING_URL=http://authoring:3000/
+          - TWEEK_API_URL=http://api/
+          - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn run test:authoring"
     on_success:
       metadata:
         set:
