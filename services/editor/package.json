@@ -93,7 +93,6 @@
     "highland": "^2.10.5",
     "history": "^4.6.1",
     "idb-keyval": "^2.3.0",
-    "jsondiffpatch": "0.2.4",
     "jsonwebtoken": "^7.4.1",
     "lock-queue": "^1.0.1",
     "lunr": "^2.0.4",

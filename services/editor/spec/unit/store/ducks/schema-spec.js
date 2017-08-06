@@ -1,6 +1,6 @@
 import promiseMiddleware from 'redux-promise';
 import thunk from 'redux-thunk';
-import jsondiffpatch from 'jsondiffpatch';
+import jsonpatch from 'fast-json-patch';
 import { push } from 'react-router-redux';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import R from 'ramda';
@@ -92,7 +92,7 @@ describe('schema duck', () => {
       const patch = JSON.parse(body);
       const newUserState = R.clone(schemaState.user.local);
       expect(newUserState).to.deep.include({ age: 40, gender: 'female' });
-      const patchedState = jsondiffpatch.patch(oldUserState, patch);
+      const patchedState = jsonpatch.applyPatch(oldUserState, patch).newDocument;
       expect(patchedState).to.deep.equal(newUserState);
     });
 

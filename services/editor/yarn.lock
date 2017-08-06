@@ -1583,7 +1583,7 @@ chain-function@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/chain-function/-/chain-function-1.0.0.tgz#0d4ab37e7e18ead0bdc47b920764118ce58733dc"
 
-chalk@0.5.1, chalk@^0.5.1:
+chalk@0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-0.5.1.tgz#663b3a648b68b55d04690d49167aa837858f2174"
   dependencies:
@@ -4466,12 +4466,6 @@ json3@^3.3.2:
 json5@^0.5.0, json5@^0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/json5/-/json5-0.5.1.tgz#1eade7acc012034ad84e2396767ead9fa5495821"
-
-jsondiffpatch@0.2.4:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/jsondiffpatch/-/jsondiffpatch-0.2.4.tgz#d4b6c53b3fc7da1b4b91c1c2aec8b932b7511d5c"
-  dependencies:
-    chalk "^0.5.1"
 
 jsonfile@^2.1.0:
   version "2.4.0"

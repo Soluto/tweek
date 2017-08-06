@@ -1,4 +1,4 @@
-import jsondiffpatch from 'jsondiffpatch';
+import jsonpatch from 'fast-json-patch';
 import R from 'ramda';
 import searchIndex from '../searchIndex';
 import { getAuthor } from './utils/author';
@@ -66,7 +66,7 @@ export async function patchIdentity(
     const manifest = await keysRepository.getKeyManifest(key);
     const newManifest = R.assocPath(
       ['implementation', 'value'],
-      jsondiffpatch.patch(manifest.implementation.value, patch),
+      jsonpatch.applyPatch(manifest.implementation.value, patch).newDocument,
     )(manifest);
     await keysRepository.updateKey(key, newManifest, null, author);
     res.sendStatus(200);
