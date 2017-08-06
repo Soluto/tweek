@@ -169,9 +169,9 @@ steps:
           - authoring
           - api
         environment:
-          - AUTHORING_URL=http://authoring:3000/
-          - TWEEK_API_URL=http://api/
-          - TWEEK_MANAGEMENT_URL=http://tweek-management:3000/
+          - AUTHORING_URL=http://authoring:3000
+          - API_URL=http://api
+          - MANAGEMENT_URL=http://tweek-management:3000
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
         command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test"
     on_success:

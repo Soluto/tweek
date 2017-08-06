@@ -6,7 +6,7 @@ const getAuthenticatedClient = require("../../utils/getAuthenticatedClient");
 
 nconf.argv().env().defaults({
   AUTHORING_URL: 'http://localhost:4005',
-  TWEEK_API_URL: 'http://localhost:4003',
+  API_URL: 'http://localhost:4003',
   GIT_PRIVATE_KEY_PATH: '../../services/git-service/ssh/tweekgit'
 });
 
@@ -16,7 +16,7 @@ let tweekApiRequest;
 describe('authoring api', () => {
   before(async () => {
     authoringApiRequest = await getAuthenticatedClient(nconf.get("GIT_PRIVATE_KEY_PATH"), nconf.get('AUTHORING_URL'));
-    tweekApiRequest = await getAuthenticatedClient(nconf.get("GIT_PRIVATE_KEY_PATH"), nconf.get('TWEEK_API_URL'));
+    tweekApiRequest = await getAuthenticatedClient(nconf.get("GIT_PRIVATE_KEY_PATH"), nconf.get('API_URL'));
   });
 
   describe('/PUT /bulk-keys-upload', () => {
