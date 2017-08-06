@@ -1,0 +1,26 @@
+{
+  "name": "integration",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "yarn run docker-compose up -- --force-recreate -d",
+    "test": "mocha ./spec/**/*.test.js",
+    "rebuild": "yarn run docker-compose build",
+    "test:full-env": "yarn run start && yarn run test --",
+    "test:full-env:rebuild": "yarn run rebuild && yarn run test:full-env",
+    "test:docker": "yarn run start && yarn run rebuild e2e-integration && yarn run docker-compose run -- --rm e2e-integration",
+    "test:docker:rebuild": "yarn run rebuild && yarn run test:docker",
+    "teardown": "yarn run docker-compose down -- --remove-orphans",
+    "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.e2e.yml"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^4.1.1",
+    "jsonwebtoken": "^7.4.2",
+    "mocha": "^3.5.0",
+    "nconf": "^0.8.4",
+    "rx": "^4.1.0",
+    "supertest": "^3.0.0"
+  }
+}

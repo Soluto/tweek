@@ -33,7 +33,12 @@ function configureRoutes(config) {
     .put(authorize({ permission: PERMISSIONS.KEYS_WRITE }), addConfig(KeysRoutes.updateKey))
     .delete(authorize({ permission: PERMISSIONS.KEYS_WRITE }), addConfig(KeysRoutes.deleteKey));
 
-  app.put('/bulk-keys-upload', upload.any(), addConfig(BulkKeysRoutes.bulkKeysUpload));
+  app.put(
+    '/bulk-keys-upload',
+    authorize({ permission: PERMISSIONS.KEYS_WRITE }),
+    upload.any(),
+    addConfig(BulkKeysRoutes.bulkKeysUpload),
+  );
 
   app.get('/revision', addConfig(KeysRoutes.getRevision));
   app.get(

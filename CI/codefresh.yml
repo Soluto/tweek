@@ -40,10 +40,16 @@ steps:
     working_directory: ./services/editor/
 
   BuildingUITests:
-    title: Building E2E Tests Docker Image
+    title: Building E2E UI Tests Docker Image
     type: build
     image_name: soluto/e2e-ui
     working_directory: ./e2e/ui
+
+  BuildingIntegrationTests:
+    title: Building E2E Integration Tests Docker Image
+    type: build
+    image_name: soluto/e2e-integration
+    working_directory: ./e2e/integration
 
   Tests:
     title: Tests - e2e & smoke
@@ -142,7 +148,7 @@ steps:
         environment: 
           - TWEEK_API_URL=http://api/
         command: /bin/bash -c "dotnet restore services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release"
-      e2e:
+      e2e-ui:
         image: ${{BuildingUITests}}
         volumes_from:
           - keys
@@ -155,8 +161,8 @@ steps:
           - TWEEK_API_URL=http://api/
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
         command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test -- --host selenium --port 4444"
-      authoring-tests:
-        image: ${{BuildingUITests}}
+      e2e-integration:
+        image: ${{BuildingIntegrationTests}}
         volumes_from:
           - keys
         depends_on:
@@ -165,8 +171,9 @@ steps:
         environment:
           - AUTHORING_URL=http://authoring:3000/
           - TWEEK_API_URL=http://api/
+          - TWEEK_MANAGEMENT_URL=http://tweek-management:3000/
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn run test:authoring"
+        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test"
     on_success:
       metadata:
         set:
