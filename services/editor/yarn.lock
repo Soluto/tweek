@@ -2236,6 +2236,10 @@ deep-eql@^2.0.1:
   dependencies:
     type-detect "^3.0.0"
 
+deep-equal@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.0.1.tgz#f5d260292b660e084eff4cdbc9f08ad3247448b5"
+
 deep-extend@~0.4.0:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/deep-extend/-/deep-extend-0.4.2.tgz#48b699c27e334bf89f10892be432f6e4c7d34a7f"
@@ -2985,6 +2989,12 @@ extsprintf@1.0.2:
 fast-deep-equal@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-1.0.0.tgz#96256a3bc975595eb36d82e9929d060d893439ff"
+
+fast-json-patch@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/fast-json-patch/-/fast-json-patch-2.0.4.tgz#6aa2b2918ff6f5a16daddf2745547a9ccf36a9fb"
+  dependencies:
+    deep-equal "^1.0.1"
 
 fast-levenshtein@~2.0.4:
   version "2.0.6"

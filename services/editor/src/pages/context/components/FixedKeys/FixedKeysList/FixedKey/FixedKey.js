@@ -9,11 +9,6 @@ import TypedInput from '../../../../../../components/common/Input/TypedInput';
 import AutoSuggest from '../../../../../../components/common/ComboBox/AutoSuggest';
 import './FixedKey.css';
 
-const configShape = {
-  key: PropTypes.string,
-  value: PropTypes.any,
-};
-
 const mapValueTypeToProps = (props$) => {
   const propsStream = props$.map(({ keyPath, ...props }) => props);
 
@@ -37,57 +32,59 @@ const mapValueTypeToProps = (props$) => {
 const OverrideValueInput = compose(mapPropsStream(mapValueTypeToProps), pure)(TypedInput);
 OverrideValueInput.displayName = 'OverrideValueInput';
 
-const EditableKey = ({ remote, local, onKeyChange, onValueChange, isRemoved }) =>
-  <div className={classNames('editable-key-container', { 'new-item': !remote, removed: isRemoved })}>
+const EditableKey = ({ keyPath, remote, local, onChange }) =>
+  <div
+    className={classNames('editable-key-container', {
+      'new-item': remote === undefined,
+      removed: local === undefined,
+    })}
+  >
     <AutoSuggest
-      className={'key-input'}
+      className="key-input"
       placeholder="Key"
-      value={local.key}
+      value={keyPath}
       getSuggestions={SearchService.getSuggestions}
-      onChange={onKeyChange}
-      disabled={isRemoved || !!remote}
+      onChange={keyPath => onChange({ keyPath, value: local })}
+      disabled={remote !== undefined}
     />
     <OverrideValueInput
-      keyPath={local.key}
+      keyPath={keyPath}
       className={classNames('value-input', {
-        'has-changes': remote && remote.value !== local.value,
+        'has-changes': remote !== local,
       })}
       placeholder="Value"
-      value={local.value}
-      onChange={onValueChange}
-      disabled={isRemoved}
+      value={local === undefined ? remote : local}
+      onChange={value => onChange({ keyPath, value })}
+      disabled={local === undefined}
     />
-    {remote && remote.value !== local.value
-      ? <div className={'initial-value'}>{remote.value}</div>
+    {remote !== undefined && remote !== local
+      ? <div className="initial-value">
+          {remote.length > 40 ? `${remote.substring(0, 37)}...` : remote}
+        </div>
       : null}
   </div>;
 
 EditableKey.propTypes = {
-  remote: PropTypes.shape(configShape),
-  local: PropTypes.shape(configShape).isRequired,
-  onKeyChange: PropTypes.func.isRequired,
-  onValueChange: PropTypes.func.isRequired,
+  keyPath: PropTypes.string.isRequired,
+  remote: PropTypes.any,
+  local: PropTypes.any,
+  onChange: PropTypes.func.isRequired,
 };
 
-const FixedKey = ({ remote, local, isRemoved, onChange }) =>
-  <div className={'fixed-key-container'} data-fixed-key={local.key}>
+const FixedKey = ({ toggleDelete, ...props, keyPath }) =>
+  <div className="fixed-key-container" data-fixed-key={keyPath}>
     <button
-      onClick={() => onChange(!isRemoved, local)}
-      className={'delete-button'}
+      onClick={toggleDelete}
+      className="delete-button"
+      data-comp="delete-key-button"
       title="Remove key"
     />
-    <EditableKey
-      {...{ remote, local, isRemoved }}
-      onKeyChange={key => onChange(isRemoved, { ...local, key })}
-      onValueChange={value => onChange(isRemoved, { ...local, value })}
-    />
+    <EditableKey {...props} />
   </div>;
 
 FixedKey.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  remote: PropTypes.shape(configShape),
-  local: PropTypes.shape(configShape).isRequired,
-  isRemoved: PropTypes.bool.isRequired,
+  ...EditableKey.propTypes,
+  toggleDelete: PropTypes.func.isRequired,
 };
 
 export default FixedKey;
