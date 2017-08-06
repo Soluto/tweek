@@ -26,3 +26,9 @@ jobs:
           #else
           #  echo "Will not push nuget from non-master branch"
           #fi
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
