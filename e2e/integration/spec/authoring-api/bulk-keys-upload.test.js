@@ -26,7 +26,7 @@ describe('authoring api', () => {
       response.status.should.eql(200);
       const result = await pollTweekUntil('/api/v1/keys/test_key1?user.Country=country&user.ClientVersion=1.0.0', true);
       result.should.eql(true);
-    });
+    }).timeout(5000);;
 
     it('should not accept an input without a zip file named bulk', async () => {
       const response = await authoringApiRequest.put('/api/bulk-keys-upload?author.name=test&author.email=test@soluto.com')    
