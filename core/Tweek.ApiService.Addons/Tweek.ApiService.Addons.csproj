@@ -1,6 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <IncludeSymbosl>True</IncludeSymbosl>
+    <Company>Soluto</Company>
+    <Description>Package for addon development for Tweek Api</Description>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/Soluto/tweek.git</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/Soluto/tweek/blob/master/LICENSE</PackageLicenseUrl>
+    <Version Condition="$(VersionSuffix)!=''">$(VersionSuffix)</Version>
+    <Version Condition="$(VersionSuffix)==''">0.0.1-development</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="App.Metrics" Version="1.2.0" />
