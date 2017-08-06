@@ -21,8 +21,8 @@ jobs:
       - deploy:
         name: Push nugets
         command: |
-          if [ "${CIRCLE_BRANCH}" == "master" ]; then
+          #if [ "${CIRCLE_BRANCH}" == "master" ]; then
             dotnet nuget push /nugets/*.nupkg -s nuget.org -k $NUGET_APIKEY
-          else
-            echo "Will not push nuget from non-master branch"
-          fi
+          #else
+          #  echo "Will not push nuget from non-master branch"
+          #fi
