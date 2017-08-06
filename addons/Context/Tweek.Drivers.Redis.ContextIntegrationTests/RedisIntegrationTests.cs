@@ -8,7 +8,7 @@ namespace Tweek.Drivers.Redis.ContextIntegrationTests
     {
         public RedisIntegrationTests()
         {
-            Driver = new TestableRedisContext();
+            Driver = new RedisDriver(Environment.GetEnvironmentVariable("REDIS_TEST_CONNECTION"));
         }
     }
 }

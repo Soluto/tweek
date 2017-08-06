@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Engine.DataTypes;
+using Engine.Drivers.Context;
 using Xunit;
 using FSharpUtils.Newtonsoft;
-using Newtonsoft.Json.Linq;
 
 namespace ContextDriversIntegrationTests
 {
@@ -38,12 +38,11 @@ namespace ContextDriversIntegrationTests
             .Concat(AnotherTestContext)
             .ToDictionary(pair => pair.Key, pair => pair.Value);
 
-        protected ITestableContextDriver Driver;
+        protected IContextDriver Driver;
 
         [Fact(DisplayName = "ContextAppended_PropertyDeleted_ResultsInCorrectContext")]
         public async Task ContextAppended_PropertyDeleted_ResultsInCorrectContext()
         {
-            await Driver.ClearAllData();
             await Driver.AppendContext(TestIdentity, TestContext);
             Assert.Equal(TestContext, await Driver.GetContext(TestIdentity));
             await Driver.RemoveFromContext(TestIdentity, PROPERTY_TO_REMOVE);
@@ -53,7 +52,6 @@ namespace ContextDriversIntegrationTests
         [Fact(DisplayName = "ContextAppended_ThenAnotherAppended_ResultIsMerged")]
         public async Task ContextAppended_ThenAnotherAppended_ResultIsMerged()
         {
-            await Driver.ClearAllData();
             await Driver.AppendContext(TestIdentity, TestContext);
             await Driver.AppendContext(TestIdentity, AnotherTestContext);
             Assert.Equal(TestContextMergedWithAnotherTestContext, await Driver.GetContext(TestIdentity));
@@ -62,7 +60,6 @@ namespace ContextDriversIntegrationTests
         [Fact(DisplayName = "ContextAppended_ThenSameContextAppended_ResultIsIdempotent")]
         public async Task ContextAppended_ThenSameContextAppended_ResultIsIdempotent()
         {
-            await Driver.ClearAllData();
             await Driver.AppendContext(TestIdentity, TestContext);
             await Driver.AppendContext(TestIdentity, TestContext);
             Assert.Equal(TestContext, await Driver.GetContext(TestIdentity));
