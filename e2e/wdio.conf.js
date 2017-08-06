@@ -10,7 +10,8 @@ function removeTrailingSlashes(url){
 
 exports.config = {
   specs: [
-    './spec/**/*.js',
+    // './spec/**/*.js',
+    './spec/context/overrideKeys.js'
   ],
   exclude: [
   ],

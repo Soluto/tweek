@@ -7,7 +7,7 @@
     "node": ">=6.9.0"
   },
   "scripts": {
-    "start": "npm run docker-compose up -- --force-recreate -d editor",
+    "start": "npm run docker-compose up -- --force-recreate -d git && npm run docker-compose up -- -d editor",
     "test": "wdio wdio.conf.js",
     "rebuild": "npm run docker-compose build",
     "test:full-env": "npm run start && npm run test",
