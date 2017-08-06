@@ -23,7 +23,7 @@ jobs:
           command: |
             export VersionSuffix=$CIRCLE_BUILD_NUM
             #if [ "${CIRCLE_BRANCH}" == "master" ]; then
-            dotnet nuget push /nugets/*.nupkg -s https://api.nuget.org/v3/index.json -k $NUGET_APIKEY
+            dotnet nuget push /nugets/*.nupkg -s https://api.nuget.org/v3/index.json -k $NUGET_APIKEY -n -d
             #else
             #  echo "Will not push nuget from non-master branch"
             #fi
