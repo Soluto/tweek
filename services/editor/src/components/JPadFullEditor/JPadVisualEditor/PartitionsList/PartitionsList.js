@@ -25,6 +25,9 @@ const extractPartitionToObject = (mutate, partitions) => {
   );
 };
 
+const sortPartitions = partitions =>
+  R.sortWith(partitions.map((_, i) => R.descend(R.pipe(R.prop('partitionsValues'), R.prop(i)))));
+
 const NewPartitionPropertyValue = mapProps(
   ({ value, onUpdate: onChange, name, identity, id: property }) => {
     const propertyTypeDetails = ContextService.getPropertyTypeDetails(property);
@@ -103,6 +106,7 @@ export default class PartitionsList extends React.Component {
     if (!rulesByPartitions) return <div />;
 
     let partitionsData = extractPartitionToObject(mutate, partitions);
+
     partitionsData = partitionsData.map((x, i) => ({
       ...x,
       valueType,
@@ -110,11 +114,12 @@ export default class PartitionsList extends React.Component {
       partitionsValues: partitions.map(partitionName => x[partitionName]),
     }));
 
+    partitionsData = sortPartitions(partitions)(partitionsData);
+
     const hasDefaultValue = Object.keys(rulesByPartitions).includes('*');
 
     return (
       <div className={'partitions-list-container'}>
-
         {!hasDefaultValue
           ? <button
               className={'add-default-partition-button'}
@@ -126,7 +131,7 @@ export default class PartitionsList extends React.Component {
 
         <AddPartition
           partitions={partitions}
-          handlePartitionAddition={this.addPartition.bind(this)}
+          handlePartitionAddition={this.addPartition}
           valueType={valueType}
         />
 
@@ -151,7 +156,9 @@ export default class PartitionsList extends React.Component {
                 title={
                   <div className={'partitions-accordion-container-item-title'}>
                     <div className={'expander-icon'}></div>
-                    <h3>{partitionGroupName}</h3>
+                    <h3>
+                      {partitionGroupName}
+                    </h3>
                     <div className={'partitions-accordion-container-item-title-details'}>
                       {isOnlyDefault ? `value: ${rules[0].Value}` : `rules: ${rules.length}`}
                     </div>
@@ -182,12 +189,11 @@ export default class PartitionsList extends React.Component {
     );
   }
 
-  addPartition({ partition: newPartition, defaultValue }) {
+  addPartition = ({ partition: newPartition, defaultValue }) => {
     console.log({ newPartition, defaultValue });
     const { mutate, partitions } = this.props;
-    const partitionDefaultValue = defaultValue === ''
-      ? []
-      : [{ Type: 'SingleVariant', Matcher: {}, Value: defaultValue }];
+    const partitionDefaultValue =
+      defaultValue === '' ? [] : [{ Type: 'SingleVariant', Matcher: {}, Value: defaultValue }];
     mutate.apply((m) => {
       partitions.forEach((partition, i) => {
         const partitionValue = newPartition[partition] || '*';
@@ -199,7 +205,7 @@ export default class PartitionsList extends React.Component {
 
       return m;
     });
-  }
+  };
 
   async deletePartition(partitionGroup) {
     const { mutate, alerter } = this.props;
