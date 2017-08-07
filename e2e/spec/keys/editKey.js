@@ -31,7 +31,11 @@ describe('edit keys', () => {
               "user.FavoriteFruit": "Banana",
               "user.BirthDate": {
                 "$withinTime": "3d"
-              }
+              },
+              "user.IsInGroup": false,
+              "user.NumberOfSiblings": {
+                "$ge" : 1
+              },
             },
             "Value": "",
             "Type": "SingleVariant"
@@ -75,6 +79,14 @@ describe('edit keys', () => {
           KeysPage.addRuleCondition(1);
           KeysPage.setConditionProperty(1, 3, 'BirthDate');
           KeysPage.setConditionValue(1, 3, '3d');
+
+          KeysPage.addRuleCondition(1);
+          KeysPage.setConditionProperty(1, 4, 'IsInGroup');
+          KeysPage.setConditionValue(1, 4, 'false');
+
+          KeysPage.addRuleCondition(1);
+          KeysPage.setConditionProperty(1, 5, 'NumberOfSiblings');
+          KeysPage.setConditionValue(1, 5, '1');
 
           KeysPage.removeRuleCondition(2, 0);
           KeysPage.setRuleValue(2, 'some value');
