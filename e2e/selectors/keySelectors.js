@@ -58,8 +58,8 @@ keySelectors.ruleContainer = (ruleIndex) => {
 keySelectors.conditionValue = (ruleNumber, conditionNumber) => {
   const conditionValueSelector = getRelativeSelector([
     _getSelectorByIndex(keySelectors.RULE_CONDITION, conditionNumber),
-    getSelectorByClassNames('property-value-wrapper'),
-    'input',
+    '[data-comp= property-value]',
+    '[data-comp= typed-input]',
   ]);
 
   return getRelativeSelector([keySelectors.ruleContainer(ruleNumber), conditionValueSelector]);

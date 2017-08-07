@@ -57,6 +57,6 @@ const PropertyValueComponent = ({
 };
 
 export default props =>
-  <div className={'property-value-wrapper'}>
+  <div data-comp="property-value">
     <PropertyValueComponent {...props} />
   </div>;
