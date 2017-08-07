@@ -12,7 +12,7 @@ jobs:
       - run:
           name: Build nugets
           command: |
-            export VersionSuffix=$CIRCLE_BUILD_NUM
+            export Version=$CIRCLE_BUILD_NUM
             mkdir /nugets && \
             cd addons/Context/ContextDriversIntegrationTests/ && \
             dotnet restore && \
@@ -21,7 +21,7 @@ jobs:
       - deploy:
           name: Push nugets
           command: |
-            export VersionSuffix=$CIRCLE_BUILD_NUM
+            export Version=$CIRCLE_BUILD_NUM
             #if [ "${CIRCLE_BRANCH}" == "master" ]; then
             dotnet nuget push /nugets/*.nupkg -s https://api.nuget.org/v3/index.json -k $NUGET_APIKEY -n -d
             #else
