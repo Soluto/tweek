@@ -3,6 +3,9 @@ FROM soluto/nodegit-alpine:8.1.4 AS base
 
 # ---- Deps ----
 FROM base AS deps
+
+RUN yarn global add less
+
 COPY package.json yarn.lock /src/
 RUN ln -s /nodegit/node_modules /src/node_modules
 WORKDIR /src/
@@ -15,6 +18,7 @@ RUN yarn
 
 COPY . /src/
 RUN yarn test
+RUN yarn run compile-less
 RUN yarn build
 
 # ---- Release ----
