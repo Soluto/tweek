@@ -32,7 +32,7 @@ The easiest way to start evaluating Tweek is to run it locally on docker, make s
 - clone the repo (``` git clone https://github.com/Soluto/tweek.git ```)
 - go to deployments/dev (``` cd tweek/deployments/dev ```)
 - (optional) pull the images instead of building (```docker-compose pull --parallel```)
-- run (``` docker-compose up ```) 
+- run (``` docker-compose up ```) - this might take a few minutes the first time
 
 #### Edit your first key
 After setting up our environment, we're going to create our first key.
@@ -41,7 +41,7 @@ Our first key, will be a key that responsible for the the color of a "sign up" b
 
 - Open http://editor.dev.tweek.localtest.me:81 in browser.
 - Go to keys page.
-- Click on "Add New Key"
+- Click on "Add Key"
 - Type my_app/sign_button/color
 - Set value type to String
 - Add default value "red"
@@ -49,6 +49,7 @@ Our first key, will be a key that responsible for the the color of a "sign up" b
 - Click on "Add Rule"
 - Set Property to Country (user) and set "=" and "Canada" in the other fields
 - In Rule value set the value "blue"
+- Click "Save changes"
 
 More on [keys and paths](https://docs.tweek.fm/concepts/keys/keys-ands-paths)
 
