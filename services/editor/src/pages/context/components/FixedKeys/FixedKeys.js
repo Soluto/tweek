@@ -8,6 +8,7 @@ import * as contextActions from '../../../../store/ducks/context';
 import { getFixedKeys, FIXED_PREFIX } from '../../../../services/context-service';
 import SaveButton from '../../../../components/common/SaveButton/SaveButton';
 import FixedKeysList from './FixedKeysList/FixedKeysList';
+import { NewFixedKey } from './FixedKeysList/FixedKey/FixedKey';
 import './FixedKeys.css';
 
 const mapWithProp = prop =>
@@ -52,7 +53,7 @@ const FixedKeys = ({
 
     <FixedKeysList {...{ keys, onChange, toggleDelete }} />
 
-    <button className={'add-key-button'} onClick={appendKey} />
+    <NewFixedKey appendKey={appendKey} />
   </div>;
 
 export default compose(
@@ -76,7 +77,8 @@ export default compose(
         return updateContext(extractObj(keys));
       },
       keys: formattedKeys,
-      appendKey: () => updateContext({ ...local, [FIXED_PREFIX]: '' }),
+      appendKey: ({ keyPath, value }) =>
+        updateContext({ ...local, [FIXED_PREFIX + keyPath]: value }),
       hasChanges: hasValues(localFixedKeys) && !deepEqual(remoteFixedKeys, localFixedKeys),
       saveContext: () => saveContext({ identityName, identityId }),
       ...props,

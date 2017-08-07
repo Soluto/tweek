@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { compose, mapPropsStream, pure } from 'recompose';
+import { compose, mapPropsStream, pure, withStateHandlers, mapProps } from 'recompose';
 import Rx from 'rxjs';
 import classNames from 'classnames';
 import * as SearchService from '../../../../../../services/search-service';
@@ -41,6 +41,7 @@ const EditableKey = ({ keyPath, remote, local, onChange }) =>
   >
     <AutoSuggest
       className="key-input"
+      data-comp="fixed-key-input"
       placeholder="Key"
       value={keyPath}
       getSuggestions={SearchService.getSuggestions}
@@ -48,6 +49,7 @@ const EditableKey = ({ keyPath, remote, local, onChange }) =>
       disabled={remote !== undefined}
     />
     <OverrideValueInput
+      data-comp="fixed-value-input"
       keyPath={keyPath}
       className={classNames('value-input', {
         'has-changes': remote !== local,
@@ -72,7 +74,7 @@ EditableKey.propTypes = {
 };
 
 const FixedKey = ({ toggleDelete, ...props, keyPath }) =>
-  <div className="fixed-key-container" data-fixed-key={keyPath}>
+  <div className="fixed-key-container" data-comp="fixed-key" data-fixed-key={keyPath}>
     <button
       onClick={toggleDelete}
       className="delete-button"
@@ -88,3 +90,33 @@ FixedKey.propTypes = {
 };
 
 export default FixedKey;
+
+const emptyKey = { keyPath: '', value: '' };
+
+const NewFixedKeyComponent = ({ appendKey, ...props, keyPath, value }) =>
+  <div className="new-fixed-key" data-comp="new-fixed-key">
+    <EditableKey {...props} />
+    <button
+      className="add-key-button"
+      data-comp="add-key-button"
+      title="Add key"
+      onClick={() => appendKey({ keyPath, value })}
+    />
+  </div>;
+
+export const NewFixedKey = compose(
+  withStateHandlers(emptyKey, {
+    onChange: () => newState => newState,
+    reset: _ => _ => emptyKey,
+  }),
+  mapProps(({ appendKey, reset, value: local, ...props, keyPath }) => ({
+    appendKey: () => {
+      appendKey({ keyPath, value: local });
+      reset();
+    },
+    local,
+    ...props,
+  })),
+)(NewFixedKeyComponent);
+
+NewFixedKey.displayName = 'NewFixedKey';

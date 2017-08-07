@@ -25,7 +25,6 @@ describe('override keys', () => {
     };
 
     for (const key in fixedKeys) {
-      browser.click(contextSelectors.ADD_KEY_BUTTON);
       ContextPage.addOverrideKey(key, fixedKeys[key]);
     }
 
@@ -43,7 +42,7 @@ describe('override keys', () => {
     const inputSelector = contextSelectors.keyValueInput('some/key');
     browser.waitForEnabled(inputSelector, 5000);
     browser.setValue(inputSelector, 'newValue');
-    browser.click(contextSelectors.ADD_KEY_BUTTON);
+
     ContextPage.addOverrideKey('some/new/key', 'anotherValue');
 
     ContextPage.saveChanges();

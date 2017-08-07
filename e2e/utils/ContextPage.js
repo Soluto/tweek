@@ -54,9 +54,10 @@ export default class ContextPage {
   }
 
   static addOverrideKey(key, value, valueType = typeof value) {
-    const valueInputSelector = contextSelectors.keyValueInput(key);
-    browser.setValue(contextSelectors.keyNameInput(), key);
-    browser.waitForEnabled(`${valueInputSelector}[data-comp= typed-input][data-value-type= "${valueType.toLowerCase()}"]`, 5000);
-    browser.setValue(valueInputSelector, value);
+    const newKey = dataComp => `[data-comp= new-fixed-key] [data-comp= ${dataComp}]`;
+    browser.setValue(newKey('fixed-key-input'), key);
+    browser.waitForEnabled(`${newKey('fixed-value-input')}[data-value-type= "${valueType.toLowerCase()}"]`, 5000);
+    browser.setValue(newKey('fixed-value-input'), value);
+    browser.click(contextSelectors.ADD_KEY_BUTTON);
   }
 }
