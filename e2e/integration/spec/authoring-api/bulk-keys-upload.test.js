@@ -1,7 +1,7 @@
 const chai = require('chai');
+const expect = chai.expect;
 chai.should();
 const {init:initClients} = require("../../utils/clients");
-
 const delay = (duration)=> new Promise(resolve=>setTimeout(resolve,duration));
 
 describe('authoring api', () => {
@@ -16,7 +16,7 @@ describe('authoring api', () => {
         .attach('bulk', './spec/authoring-api/test-data/bulk1.zip')
       response.status.should.eql(200);
       await pollUntil(()=> clients.api.get('/api/v1/keys/test_key1?user.Country=country&user.ClientVersion=1.0.0'), 
-                            res=>JSON.parse(res.body).should.eql(true))
+                            res=> expect(JSON.parse(res.body)).to.eql(true))
     }).timeout(5000);;
 
     it('should not accept an input without a zip file named bulk', async () => {

@@ -40,7 +40,11 @@ function configureRoutes(config) {
     addConfig(BulkKeysRoutes.bulkKeysUpload),
   );
 
-  app.get('/revision', addConfig(KeysRoutes.getRevision));
+  app.get(
+    '/revision',
+    authorize({ permission: PERMISSIONS.KEYS_READ }),
+    addConfig(KeysRoutes.getRevision),
+  );
   app.get(
     '/revision-history/*',
     authorize({ permission: PERMISSIONS.HISTORY }),
@@ -49,7 +53,7 @@ function configureRoutes(config) {
 
   app.get(
     '/manifests',
-    authorize({ permission: PERMISSIONS.KEYS_READ }),
+    authorize({ permission: PERMISSIONS.KEYS_LIST }),
     addConfig(KeysRoutes.getAllManifests),
   );
   app.get(
