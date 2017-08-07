@@ -1,3 +1,4 @@
+const nconf = require('nconf');
 const supertest = require('supertest');
 const getToken = require('./getToken');
 
@@ -12,7 +13,20 @@ const interceptAfter = (target, fn, methodNames)=>{
 
 const restMethods = ["post", "get", "put", "delete", "patch", "head"]
 
-module.exports = async function(privateKey, targetUrl){
-    const token = await getToken(privateKey);
+function createClient(targetUrl, token){
     return interceptAfter(supertest(targetUrl), (t)=>  t.set('Authorization', `Bearer ${token}`), ["request", ...restMethods]);
 };
+
+nconf.argv().env().defaults({
+  AUTHORING_URL: 'http://localhost:4005',
+  API_URL: 'http://localhost:4003',
+  GIT_PRIVATE_KEY_PATH: '../../services/git-service/ssh/tweekgit'
+});
+
+module.exports.init = async function(){
+    const token = await getToken(nconf.get("GIT_PRIVATE_KEY_PATH"));
+    return {
+        api: createClient(nconf.get("API_URL"), token),
+        authoring: createClient(nconf.get("AUTHORING_URL"), token)
+    } 
+}
