@@ -8,6 +8,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/Soluto/tweek.git</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Soluto/tweek/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageIconUrl>https://docs.tweek.fm/assets/tweek.png</PackageIconUrl>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="StackExchange.Redis" Version="1.2.3" />

@@ -10,7 +10,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Build nugets
+          name: Build integration tests nuget
           command: |
             export Version=0.0.$CIRCLE_BUILD_NUM
             mkdir /nugets && \
@@ -18,19 +18,46 @@ jobs:
             dotnet restore && \
             dotnet build -c release -o /nugets
 
+      - run:
+          name: Build redis driver nuget
+          command: |
+            export Version=0.0.$CIRCLE_BUILD_NUM
+            mkdir /nugets && \
+            cd addons/Context/Tweek.Drivers.Redis/ && \
+            dotnet restore && \
+            dotnet build -c release -o /nugets
+
+      - run:
+          name: Build couchbase driver nuget
+          command: |
+            export Version=0.0.$CIRCLE_BUILD_NUM
+            mkdir /nugets && \
+            cd addons/Context/Tweek.Drivers.Couchbase/ && \
+            dotnet restore && \
+            dotnet build -c release -o /nugets
+
+      - run:
+          name: Build Api Addons nuget
+          command: |
+            export Version=0.0.$CIRCLE_BUILD_NUM
+            mkdir /nugets && \
+            cd core/Tweek.ApiService.Addons/ && \
+            dotnet restore && \
+            dotnet build -c release -o /nugets
+
       - deploy:
           name: Push nugets
           command: |
             export Version=0.0.$CIRCLE_BUILD_NUM
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              if [[ $(git diff-tree --no-commit-id --name-only -r HEAD | grep -c "addons/Context") != "0" ]]; then
-                dotnet nuget push /nugets/*.nupkg -s https://api.nuget.org/v3/index.json -k $NUGET_APIKEY -n -d
+            #if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              if [[ $(git diff-tree --no-commit-id --name-only -r HEAD | grep -cP "addons\/Context|core\/Tweek.ApiService.Addons") != "0" ]]; then
+               dotnet nuget push /nugets/*.nupkg -s https://api.nuget.org/v3/index.json -k $NUGET_APIKEY -n -d
               else
                 echo "Code didn't change will not push the nuget"
               fi
-            else
-              echo "Will not push nuget from non-master branch"
-            fi
+            #else
+            #  echo "Will not push nuget from non-master branch"
+            #fi
 
 workflows:
   version: 2
