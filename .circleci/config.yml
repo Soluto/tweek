@@ -5,6 +5,7 @@ jobs:
       - image: microsoft/dotnet:1.1.2-sdk
         environment:
           - DOTNET_CLI_TELEMETRY_OUTPUT=1
+      - image: redis:alpine
       
     working_directory: /src
     steps:
@@ -44,6 +45,15 @@ jobs:
             cd core/Tweek.ApiService.Addons/ && \
             dotnet restore && \
             dotnet build -c release -o /nugets
+
+      - run:
+          name: Test redis driver
+          command: |
+            mkdir -p /nugets
+            export Version=0.0.$CIRCLE_BUILD_NUM
+            cd addons/Context/Tweek.Drivers.Redis.ContextIntegrationTests/ && \
+            dotnet restore && \
+            dotnet test
 
       - deploy:
           name: Push nugets
