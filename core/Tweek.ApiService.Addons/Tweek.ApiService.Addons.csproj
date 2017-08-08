@@ -36,6 +36,7 @@
       <NuspecProperties>$(NuspecProperties);projectUrl=$(PackageProjectUrl)</NuspecProperties>
       <NuspecProperties>$(NuspecProperties);licenseUrl=$(PackageLicenseUrl)</NuspecProperties>
       <NuspecProperties>$(NuspecProperties);repository=$(PackageProjectUrl)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);outputDir=$(OutputPath)</NuspecProperties>
     </PropertyGroup>
   </Target>
 
