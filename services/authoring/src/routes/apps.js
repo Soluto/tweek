@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const { generateHash } = require('../apps/apps-utils');
 const randomBytes = promisify(crypto.randomBytes);
 const PERMISSIONS = require('../security/permissions/consts');
+const R = require('ramda');
 
 async function createSecretKey() {
   const salt = await randomBytes(64);
@@ -38,7 +39,7 @@ async function createApp(req, res, { appsRepository, author }) {
   //validate permissions
   const appId = uuid.v4();
   const newApp = createNewAppManifest(appName, permissions);
-  if (hasValidPermissions(permissions)) {
+  if (!hasValidPermissions(permissions)) {
     res.status(400).send(`Invalid permissions: ${R.difference(permissions, allowedPermissions)}`);
     return;
   }

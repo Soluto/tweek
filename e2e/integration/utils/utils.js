@@ -8,7 +8,6 @@ module.exports.pollUntil = async (action, assert, delayDuration = 0) =>{
           break;
        }
        catch (ex){
-         console.error(ex);
        }
        await delay(delayDuration)
     }
