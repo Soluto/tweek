@@ -73,7 +73,7 @@ export const getPropertySupportedOperators = (propertyTypeDetails) => {
   }
 
   let operators = [];
-  if (type === 'boolean' || type === 'string' || type === 'version') {
+  if (type === 'boolean' || type === 'string' || type === 'version' || type === 'number') {
     operators = operators.concat([equal, notEqual]);
   }
   if (type === 'number' || type === 'version') {
