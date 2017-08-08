@@ -10,11 +10,9 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Create /nugets directory
-          command: mkdir /nugets
-      - run:
           name: Build integration tests nuget
           command: |
+            mkdir -p /nugets
             export Version=0.0.$CIRCLE_BUILD_NUM
             cd addons/Context/ContextDriversIntegrationTests/ && \
             dotnet restore && \
@@ -23,6 +21,7 @@ jobs:
       - run:
           name: Build redis driver nuget
           command: |
+            mkdir -p /nugets
             export Version=0.0.$CIRCLE_BUILD_NUM
             cd addons/Context/Tweek.Drivers.Redis/ && \
             dotnet restore && \
@@ -31,6 +30,7 @@ jobs:
       - run:
           name: Build couchbase driver nuget
           command: |
+            mkdir -p /nugets
             export Version=0.0.$CIRCLE_BUILD_NUM
             cd addons/Context/Tweek.Drivers.Couchbase/ && \
             dotnet restore && \
@@ -39,6 +39,7 @@ jobs:
       - run:
           name: Build Api Addons nuget
           command: |
+            mkdir -p /nugets
             export Version=0.0.$CIRCLE_BUILD_NUM
             cd core/Tweek.ApiService.Addons/ && \
             dotnet restore && \
