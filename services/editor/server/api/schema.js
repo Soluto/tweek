@@ -66,7 +66,7 @@ export async function patchIdentity(
     const manifest = await keysRepository.getKeyManifest(key);
     const newManifest = R.assocPath(
       ['implementation', 'value'],
-      jsonpatch.applyPatch(manifest.implementation.value, patch).newDocument,
+      jsonpatch.applyPatch(R.clone(manifest.implementation.value), patch).newDocument,
     )(manifest);
     await keysRepository.updateKey(key, newManifest, null, author);
     res.sendStatus(200);

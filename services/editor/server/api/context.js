@@ -23,14 +23,15 @@ export async function updateContext(req, res, { tweekApiHostname }, { params }) 
 
   const response = await tweekApiClient.get(contextUrl);
   const currentContext = response.data;
-  const newContext = jsonpatch.applyPatch(currentContext, patch).newDocument;
+  const newContext = jsonpatch.applyPatch(R.clone(currentContext), patch).newDocument;
 
   const keysToDelete = getDeletedKeys(currentContext, newContext);
   const deleteKeys = keysToDelete.map(key => tweekApiClient.delete(`${contextUrl}/${key}`));
 
   const getModifiedKeys = R.pipe(
-    R.useWith(R.difference, [R.toPairs, R.toPairs]),
+    R.useWith(R.symmetricDifference, [R.toPairs, R.toPairs]),
     R.filter(([key]) => !keysToDelete.includes(key)),
+    R.map(([key]) => key),
   );
 
   const modifiedKeys = getModifiedKeys(currentContext, newContext);

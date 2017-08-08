@@ -92,7 +92,7 @@ FixedKey.propTypes = {
 
 export default FixedKey;
 
-const emptyKey = { keyPath: '', value: '', autofocus: true };
+const emptyKey = { keyPath: '', value: '' };
 
 const NewFixedKeyComponent = ({ appendKey, ...props, keyPath, local: value }) =>
   <div
@@ -114,8 +114,8 @@ const NewFixedKeyComponent = ({ appendKey, ...props, keyPath, local: value }) =>
 
 export const NewFixedKey = compose(
   withStateHandlers(emptyKey, {
-    onChange: () => newState => ({ autofocus: false, ...newState }),
-    reset: _ => _ => emptyKey,
+    onChange: () => newState => newState,
+    reset: () => () => emptyKey,
   }),
   mapProps(({ appendKey, reset, value: local, ...props, keyPath }) => ({
     appendKey: () => {
