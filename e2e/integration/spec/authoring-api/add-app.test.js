@@ -16,13 +16,12 @@ describe('authoring api', () => {
       response.status.should.eql(200);
       let {appId, appSecret} = response.body;
 
-
-
-      const allowedRes = await clients.authoring.get('/api/keys/my_key')
+      const allowedRes = await clients.authoring.get('/api/keys/@integration_tests/some_key')
                                   .set({"x-client-id": appId, "x-client-secret": appSecret} )                      
                                   .unset("Authorization");
       
-      allowedRes.status.should.eql(404);
+      allowedRes.status.should.eql(200);
+
 
       const forbiddenRes = await clients.authoring.get('/api/keys')
                                   .set({"x-client-id": appId, "x-client-secret": appSecret} )                      

@@ -2,7 +2,7 @@ const chai = require('chai');
 const expect = chai.expect;
 chai.should();
 const {init:initClients} = require("../../utils/clients");
-const delay = (duration)=> new Promise(resolve=>setTimeout(resolve,duration));
+const {pollUntil} = require("../../utils/utils");
 
 describe('authoring api', () => {
   let clients;
@@ -40,16 +40,3 @@ describe('authoring api', () => {
   });
 });
 
-const pollUntil = async (action, assert, delayDuration = 0) =>{
-    while (true){
-       let result = await action();
-       try{
-          assert(result)
-          break;
-       }
-       catch (ex){
-         console.error(ex);
-       }
-       await delay(delayDuration)
-    }
-}

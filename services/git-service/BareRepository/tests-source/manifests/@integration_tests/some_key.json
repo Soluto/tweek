@@ -1,0 +1,16 @@
+{
+  "key_path": "@integration_tests/some_key",
+  "meta": {
+    "name": "@integration_tests/some_key",
+    "tags": [],
+    "description": "",
+    "archived": false
+  },
+  "implementation": {
+    "type": "const",
+    "value": 1
+  },
+  "valueType": "number",
+  "dependencies": [],
+  "enabled": true
+}
