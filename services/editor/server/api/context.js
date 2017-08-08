@@ -10,6 +10,8 @@ export async function getContext(req, res, { tweekApiHostname }, { params }) {
   res.json(response.data);
 }
 
+const getDeletedKeys = R.useWith(R.difference, [Object.keys, Object.keys]);
+
 export async function updateContext(req, res, { tweekApiHostname }, { params }) {
   const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
 
@@ -18,27 +20,26 @@ export async function updateContext(req, res, { tweekApiHostname }, { params }) 
   )}`;
 
   const patch = req.body;
-  const keysToModify = patch.map(({ op, path }) => ({
-    op,
-    key: path.replace(/^\//, '').replace(/~1/g, '/'),
-  }));
 
-  const deletedKeys = keysToModify
-    .filter(({ op }) => op === 'move' || op === 'remove')
-    .map(({ key }) => tweekApiClient.delete(`${contextUrl}/${key}`));
+  const response = await tweekApiClient.get(contextUrl);
+  const currentContext = response.data;
+  const newContext = jsonpatch.applyPatch(currentContext, patch).newDocument;
 
-  const modifiedKeys = keysToModify.filter(({ op }) => op !== 'remove').map(({ key }) => key);
+  const keysToDelete = getDeletedKeys(currentContext, newContext);
+  const deleteKeys = keysToDelete.map(key => tweekApiClient.delete(`${contextUrl}/${key}`));
+
+  const getModifiedKeys = R.pipe(
+    R.useWith(R.difference, [R.toPairs, R.toPairs]),
+    R.filter(([key]) => !keysToDelete.includes(key)),
+  );
+
+  const modifiedKeys = getModifiedKeys(currentContext, newContext);
 
   if (modifiedKeys.length > 0) {
-    const response = await tweekApiClient.get(contextUrl);
-
-    const currentContext = R.pickAll(modifiedKeys, response.data);
-    const newContext = jsonpatch.applyPatch(currentContext, patch).newDocument;
-
-    await tweekApiClient.post(contextUrl, newContext);
+    await tweekApiClient.post(contextUrl, R.pickAll(modifiedKeys, newContext));
   }
 
-  await Promise.all(deletedKeys);
+  await Promise.all(deleteKeys);
 
   res.sendStatus(200);
 }

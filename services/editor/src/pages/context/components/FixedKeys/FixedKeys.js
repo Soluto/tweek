@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { compose, mapProps } from 'recompose';
 import R from 'ramda';
 import classnames from 'classnames';
-import deepEqual from 'deep-equal';
 import * as contextActions from '../../../../store/ducks/context';
 import { getFixedKeys, FIXED_PREFIX } from '../../../../services/context-service';
 import SaveButton from '../../../../components/common/SaveButton/SaveButton';
@@ -33,7 +32,10 @@ const extractLocal = R.pipe(
   R.map(R.prop('local')),
 );
 
-const hasValues = R.pipe(Object.entries, R.all(R.all(x => x !== undefined && x !== '')));
+const hasValues = R.pipe(
+  Object.entries,
+  R.all(([key, value]) => key !== '' && value !== undefined && value !== ''),
+);
 
 const FixedKeys = ({
   className,
@@ -78,8 +80,8 @@ export default compose(
       },
       keys: formattedKeys,
       appendKey: ({ keyPath, value }) =>
-        updateContext({ ...local, [FIXED_PREFIX + keyPath]: value }),
-      hasChanges: hasValues(localFixedKeys) && !deepEqual(remoteFixedKeys, localFixedKeys),
+        updateContext(R.assoc(FIXED_PREFIX + keyPath, value, local)),
+      hasChanges: hasValues(localFixedKeys) && !R.equals(remoteFixedKeys, localFixedKeys),
       saveContext: () => saveContext({ identityName, identityId }),
       ...props,
     };

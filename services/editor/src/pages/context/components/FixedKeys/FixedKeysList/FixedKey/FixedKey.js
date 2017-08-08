@@ -32,7 +32,7 @@ const mapValueTypeToProps = (props$) => {
 const OverrideValueInput = compose(mapPropsStream(mapValueTypeToProps), pure)(TypedInput);
 OverrideValueInput.displayName = 'OverrideValueInput';
 
-const EditableKey = ({ keyPath, remote, local, onChange }) =>
+const EditableKey = ({ keyPath, remote, local, onChange, autofocus }) =>
   <div
     className={classNames('editable-key-container', {
       'new-item': remote === undefined,
@@ -47,6 +47,7 @@ const EditableKey = ({ keyPath, remote, local, onChange }) =>
       getSuggestions={SearchService.getSuggestions}
       onChange={keyPath => onChange({ keyPath, value: local })}
       disabled={remote !== undefined}
+      autofocus={autofocus}
     />
     <OverrideValueInput
       data-comp="fixed-value-input"
@@ -91,22 +92,29 @@ FixedKey.propTypes = {
 
 export default FixedKey;
 
-const emptyKey = { keyPath: '', value: '' };
+const emptyKey = { keyPath: '', value: '', autofocus: true };
 
-const NewFixedKeyComponent = ({ appendKey, ...props, keyPath, value }) =>
-  <div className="new-fixed-key" data-comp="new-fixed-key">
+const NewFixedKeyComponent = ({ appendKey, ...props, keyPath, local: value }) =>
+  <div
+    className="new-fixed-key"
+    data-comp="new-fixed-key"
+    onKeyUpCapture={(e) => {
+      if (e.keyCode !== 13 || keyPath === '' || value === '') return;
+      appendKey();
+    }}
+  >
     <EditableKey {...props} />
     <button
       className="add-key-button"
       data-comp="add-key-button"
       title="Add key"
-      onClick={() => appendKey({ keyPath, value })}
+      onClick={appendKey}
     />
   </div>;
 
 export const NewFixedKey = compose(
   withStateHandlers(emptyKey, {
-    onChange: () => newState => newState,
+    onChange: () => newState => ({ autofocus: false, ...newState }),
     reset: _ => _ => emptyKey,
   }),
   mapProps(({ appendKey, reset, value: local, ...props, keyPath }) => ({

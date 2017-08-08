@@ -83,7 +83,6 @@
     "change-case": "^3.0.1",
     "classnames": "^2.2.5",
     "crypto": "^0.0.3",
-    "deep-equal": "^1.0.1",
     "express": "^4.15.3",
     "express-session": "^1.15.3",
     "fast-json-patch": "^2.0.4",

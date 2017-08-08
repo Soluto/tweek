@@ -59,5 +59,6 @@ export default class ContextPage {
     browser.waitForEnabled(`${newKey('fixed-value-input')}[data-value-type= "${valueType.toLowerCase()}"]`, 5000);
     browser.setValue(newKey('fixed-value-input'), value);
     browser.click(contextSelectors.ADD_KEY_BUTTON);
+    browser.waitForVisible(`[data-comp= fixed-key][data-fixed-key= "${key}"]`);
   }
 }

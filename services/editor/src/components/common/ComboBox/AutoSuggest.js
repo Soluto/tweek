@@ -1,18 +1,14 @@
 import PropTypes from 'prop-types';
 import Rx from 'rxjs';
-import { createEventHandler, mapPropsStream } from 'recompose';
+import { mapPropsStream } from 'recompose';
 import ComboBox from './ComboBox';
 
 const mapSuggestionsToProps = mapPropsStream((props$) => {
-  const { handler: onSearch, stream: onSearch$ } = createEventHandler();
-
-  const query$ = onSearch$.map(x => x.trim()).startWith('').distinctUntilChanged().debounceTime(500);
-
-  const suggestions$ = Rx.Observable
-    .combineLatest(props$, query$)
-    .map(([{ getSuggestions }, query]) => ({ getSuggestions, query }))
-    .switchMap(({ getSuggestions, query }) =>
-      Rx.Observable.defer(() => Promise.resolve(getSuggestions(query))),
+  const suggestions$ = props$
+    .distinctUntilKeyChanged('value')
+    .debounce(({ value }) => Rx.Observable.interval(value === '' ? 1 : 500))
+    .switchMap(({ getSuggestions, value }) =>
+      Rx.Observable.defer(() => Promise.resolve(getSuggestions(value))),
     )
     .startWith([]);
 
@@ -21,10 +17,6 @@ const mapSuggestionsToProps = mapPropsStream((props$) => {
     .map(([{ getSuggestions, ...props }, suggestions]) => ({
       ...props,
       suggestions,
-      onChange: (txt, ...args) => {
-        onSearch(txt);
-        if (props.onChange) props.onChange(txt, ...args);
-      },
     }));
 });
 
@@ -33,5 +25,7 @@ const AutoSuggest = mapSuggestionsToProps(ComboBox);
 AutoSuggest.propTypes = {
   getSuggestions: PropTypes.func.isRequired,
 };
+
+AutoSuggest.displayName = 'AutoSuggest';
 
 export default AutoSuggest;
