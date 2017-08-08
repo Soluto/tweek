@@ -2,7 +2,6 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <IncludeSymbols>True</IncludeSymbols>
     <Authors>Soluto</Authors>
     <Description>Redis context driver for Tweek</Description>
     <RepositoryType>git</RepositoryType>
@@ -32,6 +31,7 @@
       <NuspecProperties>$(NuspecProperties);projectUrl=$(PackageProjectUrl)</NuspecProperties>
       <NuspecProperties>$(NuspecProperties);licenseUrl=$(PackageLicenseUrl)</NuspecProperties>
       <NuspecProperties>$(NuspecProperties);repository=$(PackageProjectUrl)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);outputDir=$(OutputPath)</NuspecProperties>
     </PropertyGroup>
   </Target>
 

@@ -17,6 +17,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\$config$\netstandard1.6\*.dll" target="lib\netstandard1.6\" />
+    <file src="$outputDir$\*.dll" target="lib\netstandard1.6\" />
   </files>
 </package>
