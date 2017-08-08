@@ -8,10 +8,10 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+    <PackageReference Include="Tweek.Addons.ContextDriversIntegrationTests" Version="0.0.1253'" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ContextDriversIntegrationTests\ContextDriversIntegrationTests.csproj" />
     <ProjectReference Include="..\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj" />
   </ItemGroup>
 
