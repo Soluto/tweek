@@ -11,7 +11,8 @@ namespace ContextDriversIntegrationTests
 {
     public class IntegrationTests
     {
-        private static readonly Identity TestIdentity = new Identity("@test_identity", "test_id");
+        private static Identity TestIdentity => new Identity("@test_identity", Guid.NewGuid().ToString());
+
         private static readonly Dictionary<string, JsonValue> TestContext = new Dictionary<string, JsonValue>
         {
             {"Fruit", JsonValue.NewString("apple")},
@@ -43,26 +44,29 @@ namespace ContextDriversIntegrationTests
         [Fact(DisplayName = "ContextAppended_PropertyDeleted_ResultsInCorrectContext")]
         public async Task ContextAppended_PropertyDeleted_ResultsInCorrectContext()
         {
-            await Driver.AppendContext(TestIdentity, TestContext);
-            Assert.Equal(TestContext, await Driver.GetContext(TestIdentity));
-            await Driver.RemoveFromContext(TestIdentity, PROPERTY_TO_REMOVE);
-            Assert.Equal(TestContextAfterRemoval, await Driver.GetContext(TestIdentity));
+            var testIdentity = TestIdentity;
+            await Driver.AppendContext(testIdentity, TestContext);
+            Assert.Equal(TestContext, await Driver.GetContext(testIdentity));
+            await Driver.RemoveFromContext(testIdentity, PROPERTY_TO_REMOVE);
+            Assert.Equal(TestContextAfterRemoval, await Driver.GetContext(testIdentity));
         }
 
         [Fact(DisplayName = "ContextAppended_ThenAnotherAppended_ResultIsMerged")]
         public async Task ContextAppended_ThenAnotherAppended_ResultIsMerged()
         {
-            await Driver.AppendContext(TestIdentity, TestContext);
-            await Driver.AppendContext(TestIdentity, AnotherTestContext);
-            Assert.Equal(TestContextMergedWithAnotherTestContext, await Driver.GetContext(TestIdentity));
+            var testIdentity = TestIdentity;
+            await Driver.AppendContext(testIdentity, TestContext);
+            await Driver.AppendContext(testIdentity, AnotherTestContext);
+            Assert.Equal(TestContextMergedWithAnotherTestContext, await Driver.GetContext(testIdentity));
         }
 
         [Fact(DisplayName = "ContextAppended_ThenSameContextAppended_ResultIsIdempotent")]
         public async Task ContextAppended_ThenSameContextAppended_ResultIsIdempotent()
         {
-            await Driver.AppendContext(TestIdentity, TestContext);
-            await Driver.AppendContext(TestIdentity, TestContext);
-            Assert.Equal(TestContext, await Driver.GetContext(TestIdentity));
+            var testIdentity = TestIdentity;
+            await Driver.AppendContext(testIdentity, TestContext);
+            await Driver.AppendContext(testIdentity, TestContext);
+            Assert.Equal(TestContext, await Driver.GetContext(testIdentity));
         }
     }
 }
