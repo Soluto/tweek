@@ -27,7 +27,7 @@ steps:
     image_name: soluto/tweek-management
     working_directory: ./services/management/
 
-  BuildAuthoring:
+  BuildingAuthoring:
     title: Building Authoring Api Image
     type: build
     image_name: soluto/tweek-authoring
@@ -102,7 +102,7 @@ steps:
             - CorsPolicies__Keys__Headers=
             - CorsPolicies__Keys__ExposedHeaders=
         authoring:
-          image: ${{BuildAuthoring}}
+          image: ${{BuildingAuthoring}}
           depends_on:
             - git
           volumes_from:
@@ -183,6 +183,8 @@ steps:
             - CF_QUALITY: true
           - '${{BuildingEditor.imageId}}':
             - CF_QUALITY: true
+          - '${{BuildingAuthoring.imageId}}':
+            - CF_QUALITY: true
     on_fail:
       metadata:
         set:
@@ -191,6 +193,8 @@ steps:
           - '${{BuildingManagement.imageId}}':
             - CF_QUALITY: false
           - '${{BuildingEditor.imageId}}':
+            - CF_QUALITY: false
+          - '${{BuildingAuthoring.imageId}}':
             - CF_QUALITY: false
 
   PushApiImageMaster:
@@ -218,7 +222,7 @@ steps:
       branch:
         only:
           - master
-    candidate: ${{BuildAuthoring}}
+    candidate: ${{BuildingAuthoring}}
 
   PushEditorImageMaster:
     type: push
