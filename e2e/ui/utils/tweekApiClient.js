@@ -39,8 +39,8 @@ class TweekApiClient{
       return this._get(`api/v1/keys/${key}`);
     }
     
-    getContext(identityType, identityName){
-      return this._get(`api/v1/context/${identityType}/${identityName}`);
+    getContext(identityType, identityId){
+      return this._get(`api/v1/context/${identityType}/${identityId}`);
     }
 
     waitForKeyToEqual(key, value){

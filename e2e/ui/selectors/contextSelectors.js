@@ -1,12 +1,12 @@
 import { getRelativeSelector, getSelectorByClassNames } from './selectorUtils';
 
 const contextSelectors = {};
-contextSelectors.CONTEXT_TYPE_INPUT = getSelectorByClassNames('context-search-container', 'context-type-container', 'bootstrap-typeahead-input', 'input-main');
-contextSelectors.CONTEXT_ID_INPUT = getRelativeSelector([getSelectorByClassNames('context-search-container', 'context-id-container'), 'input']);
+contextSelectors.CONTEXT_TYPE_INPUT = getSelectorByClassNames('context-search-container', 'identity-type-container', 'bootstrap-typeahead-input', 'input-main');
+contextSelectors.CONTEXT_ID_INPUT = getRelativeSelector([getSelectorByClassNames('context-search-container', 'identity-id-container'), 'input']);
 contextSelectors.OPEN_CONTEXT_BUTTON = getSelectorByClassNames('context-search-container', 'search-button');
 
-contextSelectors.CURRENT_CONTEXT_TYPE = getSelectorByClassNames('context-title', 'context-type');
-contextSelectors.CURRENT_CONTEXT_ID = getSelectorByClassNames('context-title', 'context-id');
+contextSelectors.CURRENT_CONTEXT_TYPE = getSelectorByClassNames('identity-title', 'identity-type');
+contextSelectors.CURRENT_CONTEXT_ID = getSelectorByClassNames('identity-title', 'identity-id');
 
 contextSelectors.ADD_KEY_BUTTON = getSelectorByClassNames('fixed-keys-container', 'add-key-button');
 contextSelectors.SAVE_CHANGES_BUTTON = getSelectorByClassNames('fixed-keys-container', 'save-button');

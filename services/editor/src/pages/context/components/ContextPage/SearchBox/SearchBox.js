@@ -12,7 +12,7 @@ class SearchBox extends Component {
     super(props);
 
     this.state = {
-      identityName: '',
+      identityType: '',
       identityId: '',
       inputValue: '',
       identities: [],
@@ -29,8 +29,8 @@ class SearchBox extends Component {
   }
 
   onIdentityChange = (inputValue, selected) => {
-    const identityName = selected ? selected.value : inputValue;
-    this.setState({ inputValue, identityName });
+    const identityType = selected ? selected.value : inputValue;
+    this.setState({ inputValue, identityType });
   }
 
   onIdentityIdChange = (identityId) => {
@@ -39,21 +39,21 @@ class SearchBox extends Component {
 
   onGetClick = () => {
     this.props.openContext({
-      identityName: this.state.identityName,
+      identityType: this.state.identityType,
       identityId: this.state.identityId,
     });
   }
 
   render() {
-    const { inputValue, identityName, identities, identityId } = this.state;
-    const identityText = identityName || 'identity';
+    const { inputValue, identityType, identities, identityId } = this.state;
+    const identityText = identityType || 'identity';
 
     return (
       <div className={'context-search-container'}>
 
-        <div className={'context-type-container'}>
+        <div className={'identity-type-container'}>
           <ComboBox
-            className={'context-type'}
+            className={'identity-type'}
             placeholder="Enter Identity Type"
             value={inputValue}
             suggestions={identities}
@@ -61,7 +61,7 @@ class SearchBox extends Component {
           />
         </div>
 
-        <div className={'context-id-container'}>
+        <div className={'identity-id-container'}>
           <Input
             placeholder={`Enter ${changeCase.pascalCase(identityText)} Id`}
             onEnterKeyPress={this.onGetClick}
@@ -74,7 +74,7 @@ class SearchBox extends Component {
           <button
             className={'search-button'}
             onClick={this.onGetClick}
-            disabled={!identityName || !identityId}
+            disabled={!identityType || !identityId}
           />
         </div>
       </div>

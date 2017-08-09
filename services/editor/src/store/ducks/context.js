@@ -12,15 +12,15 @@ const CONTEXT_SAVED = 'CONTEXT_SAVED';
 
 const UPDATE_CONTEXT = 'UPDATE_CONTEXT';
 
-export const openContext = ({ identityName, identityId }) =>
-  push(`/context/${identityName}/${identityId}`);
+export const openContext = ({ identityType, identityId }) =>
+  push(`/context/${identityType}/${identityId}`);
 
-export const getContext = ({ identityName, identityId }) =>
+export const getContext = ({ identityType, identityId }) =>
   async function (dispatch) {
     dispatch({ type: GET_CONTEXT });
     try {
       const response = await fetch(
-        `/api/context/${identityName}/${encodeURIComponent(identityId)}`,
+        `/api/context/${identityType}/${encodeURIComponent(identityId)}`,
       );
       const contextData = await response.json();
       dispatch({ type: CONTEXT_RECEIVED, payload: contextData });
@@ -32,7 +32,7 @@ export const getContext = ({ identityName, identityId }) =>
 
 export const updateContext = payload => ({ type: UPDATE_CONTEXT, payload });
 
-export const saveContext = ({ identityName, identityId }) =>
+export const saveContext = ({ identityType, identityId }) =>
   async function (dispatch, getState) {
     dispatch({ type: SAVE_CONTEXT });
     const context = getState().context;
@@ -40,7 +40,7 @@ export const saveContext = ({ identityName, identityId }) =>
 
     const contextPatch = jsonpatch.compare(context.remote, context.local);
     try {
-      await fetch(`/api/context/${identityName}/${encodedIdentityId}`, {
+      await fetch(`/api/context/${identityType}/${encodedIdentityId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(contextPatch),

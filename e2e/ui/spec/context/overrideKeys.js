@@ -8,8 +8,8 @@ import Chance from 'chance';
 const chance = new Chance();
 
 describe('override keys', () => {
-  const contextId = chance.guid();
-  const contextType = 'user';
+  const identityId = chance.guid();
+  const identityType = 'user';
   const typedKey = '@behavior_tests/@context/override_key';
 
   before(() => {
@@ -17,7 +17,7 @@ describe('override keys', () => {
   });
 
   it('should modify override keys', () => {
-    ContextPage.openContext(contextType, contextId);
+    ContextPage.openContext(identityType, identityId);
 
     const fixedKeys = {
       'some/key': 'someValue',
@@ -30,7 +30,7 @@ describe('override keys', () => {
 
     ContextPage.saveChanges();
 
-    let currentContext = ContextPage.getOverrideKeys(contextType, contextId);
+    let currentContext = ContextPage.getOverrideKeys(identityType, identityId);
     assert.deepEqual(currentContext, fixedKeys);
 
     const updatedKeys = {
@@ -47,7 +47,7 @@ describe('override keys', () => {
 
     ContextPage.saveChanges();
 
-    currentContext = ContextPage.getOverrideKeys(contextType, contextId);
+    currentContext = ContextPage.getOverrideKeys(identityType, identityId);
     assert.deepEqual(currentContext, updatedKeys);
 
     const elements = browser.elements('[data-comp= fixed-keys] [data-comp= delete-key-button]').value;
@@ -55,7 +55,7 @@ describe('override keys', () => {
 
     ContextPage.saveChanges();
 
-    currentContext = ContextPage.getOverrideKeys(contextType, contextId);
+    currentContext = ContextPage.getOverrideKeys(identityType, identityId);
     assert.deepEqual(currentContext, {});
   });
 });

@@ -11,27 +11,27 @@ export default class ContextPage {
     browser.waitForVisible(contextSelectors.CONTEXT_TYPE_INPUT, 5000);
   }
 
-  static waitForContext(contextType, contextId) {
+  static waitForContext(identityType, identityId) {
     browser.waitForVisible(contextSelectors.ADD_KEY_BUTTON, 5000);
     browser.waitForVisible(contextSelectors.CURRENT_CONTEXT_TYPE, 5000);
     browser.waitUntil(() => {
-      return browser.getText(contextSelectors.CURRENT_CONTEXT_TYPE).toLowerCase() === contextType.toLowerCase() &&
-        browser.getText(contextSelectors.CURRENT_CONTEXT_ID).toLowerCase() === contextId.toLowerCase();
+      return browser.getText(contextSelectors.CURRENT_CONTEXT_TYPE).toLowerCase() === identityType.toLowerCase() &&
+        browser.getText(contextSelectors.CURRENT_CONTEXT_ID).toLowerCase() === identityId.toLowerCase();
     }, 5000);
   }
 
-  static openContext(contextType, contextId) {
-    browser.setValue(contextSelectors.CONTEXT_TYPE_INPUT, contextType);
-    browser.setValue(contextSelectors.CONTEXT_ID_INPUT, contextId);
+  static openContext(identityType, identityId) {
+    browser.setValue(contextSelectors.CONTEXT_TYPE_INPUT, identityType);
+    browser.setValue(contextSelectors.CONTEXT_ID_INPUT, identityId);
     browser.click(contextSelectors.OPEN_CONTEXT_BUTTON);
 
-    ContextPage.waitForContext(contextType, contextId);
+    ContextPage.waitForContext(identityType, identityId);
   }
 
-  static getOverrideKeys(contextType, contextId) {
+  static getOverrideKeys(identityType, identityId) {
     const FIXED_KEY_PREFIX = '@fixed:';
 
-    const response = tweekApiClient.getContext(contextType, contextId);
+    const response = tweekApiClient.getContext(identityType, identityId);
     const fixedKeys = R.pickBy((_, prop) => prop.startsWith(FIXED_KEY_PREFIX), response);
 
     return Object.keys(fixedKeys).reduce((result, key) => ({

@@ -60,7 +60,7 @@ const FixedKeys = ({
 
 export default compose(
   connect(state => state.context, contextActions),
-  mapProps(({ identityName, identityId, local, remote, saveContext, updateContext, ...props }) => {
+  mapProps(({ identityType, identityId, local, remote, saveContext, updateContext, ...props }) => {
     const localFixedKeys = getFixedKeys(local);
     const remoteFixedKeys = getFixedKeys(remote);
     const formattedKeys = extractKeys(remoteFixedKeys, localFixedKeys);
@@ -82,7 +82,7 @@ export default compose(
       appendKey: ({ keyPath, value }) =>
         updateContext(R.assoc(FIXED_PREFIX + keyPath, value, local)),
       hasChanges: hasValues(localFixedKeys) && !R.equals(remoteFixedKeys, localFixedKeys),
-      saveContext: () => saveContext({ identityName, identityId }),
+      saveContext: () => saveContext({ identityType, identityId }),
       ...props,
     };
   }),
