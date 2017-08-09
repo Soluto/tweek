@@ -71,15 +71,15 @@ jobs:
           name: Push nugets
           command: |
             export Version=0.0.$CIRCLE_BUILD_NUM
-            #if [ "${CIRCLE_BRANCH}" == "master" ]; then
-            #  if [[ $(git diff-tree --no-commit-id --name-only -r HEAD | grep -cP "addons\/Context|core\/Tweek.ApiService.Addons") != "0" ]]; then
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              if [[ $(git diff-tree --no-commit-id --name-only -r HEAD | grep -cP "addons\/Context|core\/Tweek.ApiService.Addons") != "0" ]]; then
                 find /nugets -name "*.nupkg" | xargs -n1 dotnet nuget push -s nuget.org -k $NUGET_APIKEY -n -d
-            #  else
-            #    echo "Code didn't change will not push the nuget"
-            #  fi
-            #else
-            #  echo "Will not push nuget from non-master branch"
-            #fi
+              else
+                echo "Code didn't change will not push the nuget"
+              fi
+            else
+              echo "Will not push nuget from non-master branch"
+            fi
 
 workflows:
   version: 2
