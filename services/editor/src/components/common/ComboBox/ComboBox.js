@@ -285,4 +285,6 @@ ComboBox.defaultProps = {
   },
 };
 
+ComboBox.displayName = 'ComboBox';
+
 export default ComboBox;

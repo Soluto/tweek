@@ -26,7 +26,6 @@ describe('override keys', () => {
 
     for (const key in fixedKeys) {
       ContextPage.addOverrideKey(key, fixedKeys[key]);
-      browser.click(contextSelectors.ADD_KEY_BUTTON);
     }
 
     ContextPage.saveChanges();
@@ -43,12 +42,20 @@ describe('override keys', () => {
     const inputSelector = contextSelectors.keyValueInput('some/key');
     browser.waitForEnabled(inputSelector, 5000);
     browser.setValue(inputSelector, 'newValue');
-    browser.click(contextSelectors.ADD_KEY_BUTTON);
+
     ContextPage.addOverrideKey('some/new/key', 'anotherValue');
 
     ContextPage.saveChanges();
 
     currentContext = ContextPage.getOverrideKeys(contextType, contextId);
     assert.deepEqual(currentContext, updatedKeys);
+
+    const elements = browser.elements('[data-comp= fixed-keys] [data-comp= delete-key-button]').value;
+    elements.forEach(element => element.click());
+
+    ContextPage.saveChanges();
+
+    currentContext = ContextPage.getOverrideKeys(contextType, contextId);
+    assert.deepEqual(currentContext, {});
   });
 });

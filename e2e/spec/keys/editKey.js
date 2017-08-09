@@ -33,9 +33,7 @@ describe('edit keys', () => {
                 "$withinTime": "3d"
               },
               "user.IsInGroup": false,
-              "user.NumberOfSiblings": {
-                "$ge" : 1
-              },
+              "user.NumberOfSiblings": 1,
             },
             "Value": "",
             "Type": "SingleVariant"
