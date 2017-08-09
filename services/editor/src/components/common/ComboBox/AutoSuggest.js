@@ -6,7 +6,7 @@ import ComboBox from './ComboBox';
 const mapSuggestionsToProps = mapPropsStream((props$) => {
   const suggestions$ = props$
     .distinctUntilKeyChanged('value')
-    .debounce(({ value }) => Rx.Observable.interval(value === '' ? 1 : 500))
+    .debounce(({ value }) => Rx.Observable.empty().delay(value === '' ? 0 : 500))
     .switchMap(({ getSuggestions, value }) =>
       Rx.Observable.defer(() => Promise.resolve(getSuggestions(value))),
     )
