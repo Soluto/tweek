@@ -5,7 +5,7 @@
    - authoring (rest api for reading and editing keys definitions/manifests)
    - editor (admin ui for editing rules and managing Tweek)
    - management ("CI" and serving layer for new rules)
-   - git-service (stand along git rules repository for dev & testing)
+   - git-service (stand-alone git rules repository for bootstrap, dev & testing)
 - deployments
    - dev (docker compose files for devlopment)
 - core
