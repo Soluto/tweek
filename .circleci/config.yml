@@ -15,7 +15,7 @@ jobs:
           name: Build integration tests nuget
           command: |
             mkdir -p /nugets
-            export Version=0.0.$CIRCLE_BUILD_NUM
+            export Version=0.1.$CIRCLE_BUILD_NUM
             cd addons/Context/ContextDriversIntegrationTests/ && \
             dotnet restore && \
             dotnet build -c release -o /nugets
@@ -24,7 +24,7 @@ jobs:
           name: Build redis driver nuget
           command: |
             mkdir -p /nugets
-            export Version=0.0.$CIRCLE_BUILD_NUM
+            export Version=0.1.$CIRCLE_BUILD_NUM
             cd addons/Context/Tweek.Drivers.Redis/ && \
             dotnet restore && \
             dotnet build -c release -o /nugets
@@ -33,7 +33,7 @@ jobs:
           name: Build couchbase driver nuget
           command: |
             mkdir -p /nugets
-            export Version=0.0.$CIRCLE_BUILD_NUM
+            export Version=0.1.$CIRCLE_BUILD_NUM
             cd addons/Context/Tweek.Drivers.Couchbase/ && \
             dotnet restore && \
             dotnet build -c release -o /nugets
@@ -42,7 +42,7 @@ jobs:
           name: Build Api Addons nuget
           command: |
             mkdir -p /nugets
-            export Version=0.0.$CIRCLE_BUILD_NUM
+            export Version=0.1.$CIRCLE_BUILD_NUM
             cd core/Tweek.ApiService.Addons/ && \
             dotnet restore && \
             dotnet build -c release -o /nugets
@@ -51,7 +51,7 @@ jobs:
           name: Test redis driver
           command: |
             mkdir -p /nugets
-            export Version=0.0.$CIRCLE_BUILD_NUM
+            export Version=0.1.$CIRCLE_BUILD_NUM
             cd addons/Context/Tweek.Drivers.Redis.ContextIntegrationTests/ && \
             dotnet restore && \
             REDIS_TEST_CONNECTION="127.0.0.1:6379" dotnet test
@@ -62,7 +62,7 @@ jobs:
             mkdir -p /nugets
             curl --retry 3 --retry-max-time 10 -v http://127.0.0.1:8091/settings/web -d port=8091 -d username=Administrator -d password=password
             curl --retry 3 --retry-max-time 10 -v -u Administrator:password -X POST http://127.0.0.1:8091/pools/default/buckets -d authType=sasl -d name=testbucket -d ramQuotaMB=100 -d saslPassword=password
-            export Version=0.0.$CIRCLE_BUILD_NUM
+            export Version=0.1.$CIRCLE_BUILD_NUM
             cd addons/Context/Tweek.Drivers.Couchbase.ContextIntegrationTests/ && \
             dotnet restore && \
             COUCHBASE_TEST_URL="http://127.0.0.1:8091" dotnet test

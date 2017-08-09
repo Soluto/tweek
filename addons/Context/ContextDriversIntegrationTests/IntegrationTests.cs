@@ -9,7 +9,7 @@ using FSharpUtils.Newtonsoft;
 
 namespace ContextDriversIntegrationTests
 {
-    public class IntegrationTests
+    public abstract class IntegrationTests
     {
         private static Identity TestIdentity => new Identity("@test_identity", Guid.NewGuid().ToString());
 
@@ -39,7 +39,7 @@ namespace ContextDriversIntegrationTests
             .Concat(AnotherTestContext)
             .ToDictionary(pair => pair.Key, pair => pair.Value);
 
-        protected IContextDriver Driver;
+        protected abstract IContextDriver Driver {  get; set; }
 
         [Fact(DisplayName = "ContextAppended_PropertyDeleted_ResultsInCorrectContext")]
         public async Task ContextAppended_PropertyDeleted_ResultsInCorrectContext()

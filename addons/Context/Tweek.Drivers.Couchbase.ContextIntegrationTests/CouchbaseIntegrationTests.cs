@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
 using ContextDriversIntegrationTests;
 using Couchbase;
 using Couchbase.Configuration.Client;
 using Couchbase.Core.Serialization;
+using Engine.Drivers.Context;
 using Newtonsoft.Json;
 using Tweek.ApiService.Addons;
 using Tweek.Drivers.CouchbaseDriver;
-using Xunit;
 
 namespace Tweek.Drivers.Couchbase.ContextIntegrationTests
 {
@@ -49,7 +48,10 @@ namespace Tweek.Drivers.Couchbase.ContextIntegrationTests
                         })
                 });
             }
+
             Driver = new CouchBaseDriver(ClusterHelper.GetBucket, bucketName);
         }
+
+        protected sealed override IContextDriver Driver { get; set; }
     }
 }

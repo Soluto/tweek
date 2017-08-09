@@ -34,15 +34,12 @@ namespace Tweek.Drivers.Redis
         private ConfigurationOptions TranslateDnsToIP(ConfigurationOptions configurationOptions)
         {
             var dnsEndpoints = configurationOptions.EndPoints
-                .Select(endpoint => endpoint as DnsEndPoint)
-                .Where(endpoint => endpoint != null)
+                .OfType<DnsEndPoint>()
                 .SelectMany(endpoint =>
                     Dns.GetHostAddressesAsync(endpoint.Host).Result
                         .Select(ip => new IPEndPoint(ip, endpoint.Port))
                 );
-            var ipEndpoints = configurationOptions.EndPoints
-                .Select(endpoint => endpoint as IPEndPoint)
-                .Where(endpoint => endpoint != null);
+            var ipEndpoints = configurationOptions.EndPoints.OfType<IPEndPoint>();
             var endpoints = dnsEndpoints.Concat(ipEndpoints);
             var result = configurationOptions.Clone();
             result.EndPoints.Clear();

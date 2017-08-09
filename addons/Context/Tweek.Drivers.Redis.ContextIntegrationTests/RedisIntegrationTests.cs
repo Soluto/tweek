@@ -1,5 +1,6 @@
 using System;
 using ContextDriversIntegrationTests;
+using Engine.Drivers.Context;
 using Xunit;
 
 namespace Tweek.Drivers.Redis.ContextIntegrationTests
@@ -10,5 +11,7 @@ namespace Tweek.Drivers.Redis.ContextIntegrationTests
         {
             Driver = new RedisDriver(Environment.GetEnvironmentVariable("REDIS_TEST_CONNECTION"));
         }
+
+        protected sealed override IContextDriver Driver { get; set; }
     }
 }
