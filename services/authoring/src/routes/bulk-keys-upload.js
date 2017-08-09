@@ -3,7 +3,8 @@ const path = require('path');
 const R = require('ramda');
 const JSZip = require('jszip');
 
-const supportedExtensions = ['.jpad', '.json'];
+const supportedPaths = [/^manifests\/.+?\.json/, /^implementations\/.+\/.+?\./];
+const isValidPath = x => R.any(R.test(R.__, x))(supportedPaths);
 
 async function bulkKeysUpload(req, res, { author, keysRepository }) {
   if (!req.files) {
@@ -22,9 +23,13 @@ async function bulkKeysUpload(req, res, { author, keysRepository }) {
       name: file.name,
       read: () => file.async('string'),
     })),
-    R.filter(file => supportedExtensions.includes(path.extname(file.name))),
   );
   const fileEntries = transformIntoEntriesArray(zipRoot.files);
+
+  if (!R.all(isValidPath)(fileEntries)) {
+    return res.status(400).send(`invalid folder structure`);
+  }
+
   await keysRepository.updateBulkKeys(fileEntries, author);
   return res.sendStatus(200);
 }
