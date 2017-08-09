@@ -13,21 +13,30 @@ describe('authoring api', () => {
     it('allow creating new app with keys-read permission', async () => {
       const response = await clients.authoring.post('/api/apps?author.name=test&author.email=test@soluto.com')
                                               .send({ name: 'my-app', permissions: ['keys-read'] })
-      response.status.should.eql(200);
+                                              .expect(200);
+      
       let {appId, appSecret} = response.body;
 
-      const allowedRes = await clients.authoring.get('/api/keys/@integration_tests/some_key')
-                                  .set({"x-client-id": appId, "x-client-secret": appSecret} )                      
-                                  .unset("Authorization");
+      await clients.authoring.get('/api/keys/@integration_tests/some_key')
+                    .set({"x-client-id": appId, "x-client-secret": appSecret} )                      
+                    .unset("Authorization")
+                    .expect(200)
+
+      await clients.authoring.get('/api/keys')
+                            .set({"x-client-id": appId, "x-client-secret": appSecret} )                      
+                            .unset("Authorization")
+                            .expect(403)
+    });
+
+     it('allow creating new app with invalid permission', async () => {
+      await clients.authoring.post('/api/apps?author.name=test&author.email=test@soluto.com')
+                             .send({ name: 'my-app', permissions: ['admin'] })
+                             .expect(400);
+
+      await clients.authoring.post('/api/apps?author.name=test&author.email=test@soluto.com')
+                             .send({ name: 'my-app', permissions: ['my-permission'] })
+                             .expect(400);
       
-      allowedRes.status.should.eql(200);
-
-
-      const forbiddenRes = await clients.authoring.get('/api/keys')
-                                  .set({"x-client-id": appId, "x-client-secret": appSecret} )                      
-                                  .unset("Authorization");
-
-      forbiddenRes.status.should.eql(403);
     });
 
   });
