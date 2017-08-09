@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions';
 import { getSchema, refreshSchema } from '../../services/context-service';
 import R from 'ramda';
-import jsondiffpatch from 'jsondiffpatch';
+import jsonpatch from 'fast-json-patch';
 import { withJsonData } from '../../utils/http';
 import fetch from '../../utils/fetch';
 import { push } from 'react-router-redux';
@@ -40,7 +40,7 @@ export function saveSchema(identityType) {
         ...withJsonData(identityState.local),
       });
     } else {
-      let patch = jsondiffpatch.diff(identityState.remote, identityState.local);
+      let patch = jsonpatch.compare(identityState.remote, identityState.local);
       await fetch(`/api/schema/${identityType}`, {
         method: 'PATCH',
         ...withJsonData(patch),

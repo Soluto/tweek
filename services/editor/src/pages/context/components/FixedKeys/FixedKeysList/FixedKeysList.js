@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import FixedKey from './FixedKey/FixedKey';
 import './FixedKeysList.css';
 
-const FixedKeysList = ({ keys, onChange }) =>
+const FixedKeysList = ({ keys, onChange, toggleDelete }) =>
   <div className={'fixed-keys-container'}>
     {keys.map((key, index) =>
       <FixedKey
-        key={key.remote ? key.remote.key : index}
+        key={'remote' in key ? key.keyPath : index}
         {...key}
+        toggleDelete={() => toggleDelete(index)}
         onChange={(...args) => onChange(index, ...args)}
       />,
     )}
@@ -17,6 +18,7 @@ const FixedKeysList = ({ keys, onChange }) =>
 FixedKeysList.propTypes = {
   keys: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
+  toggleDelete: PropTypes.func.isRequired,
 };
 
 export default FixedKeysList;
