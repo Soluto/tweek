@@ -1,11 +1,10 @@
 import promiseMiddleware from 'redux-promise';
 import thunk from 'redux-thunk';
 import jsonpatch from 'fast-json-patch';
-import { push } from 'react-router-redux';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import R from 'ramda';
-import reducer, * as actions from '../../../../src/store/ducks/schema';
 import { expect } from 'chai';
+import reducer, * as actions from '../../../../src/store/ducks/schema';
 
 describe('schema duck', () => {
   let schemaState, dispatch;
@@ -87,7 +86,7 @@ describe('schema duck', () => {
       dispatch(actions.upsertIdentityProperty('user', 'gender', 'female'));
       await dispatch(actions.saveSchema('user'));
       const [_, { body }] = fetch.mock.calls.find(
-        ([url, { method }]) => method === 'PATCH' && url === '/api/schemas/user',
+        ([url, { method }]) => method === 'PATCH' && url === '/api/schema/user',
       );
       const patch = JSON.parse(body);
       const newUserState = R.clone(schemaState.user.local);
