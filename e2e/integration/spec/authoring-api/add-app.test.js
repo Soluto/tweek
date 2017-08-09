@@ -17,14 +17,15 @@ describe('authoring api', () => {
       
       let {appId, appSecret} = response.body;
 
-      await clients.authoring.get('/api/keys/@integration_tests/some_key')
-                    .set({"x-client-id": appId, "x-client-secret": appSecret} )                      
-                    .unset("Authorization")
+      let appClient = await clients.authoring.with(client =>
+                      client.set( {"x-client-id": appId, "x-client-secret": appSecret } )
+                            .unset("Authorization")
+                    );
+
+      await appClient.get('/api/keys/@integration_tests/some_key')
                     .expect(200)
 
-      await clients.authoring.get('/api/keys')
-                            .set({"x-client-id": appId, "x-client-secret": appSecret} )                      
-                            .unset("Authorization")
+      await appClient.get('/api/keys')
                             .expect(403)
     });
 

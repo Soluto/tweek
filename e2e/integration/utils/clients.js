@@ -8,13 +8,14 @@ const interceptAfter = (target, fn, methodNames)=>{
            return fn(target[m].call(target, ...args))
         }
     }),{});
+    proxy.with = (newFn)=> interceptAfter(target, newFn, methodNames);
     return proxy;
 };
 
 const restMethods = ["post", "get", "put", "delete", "patch", "head"]
 
-function createClient(targetUrl, token){
-    return interceptAfter(supertest(targetUrl), (t)=>  t.set('Authorization', `Bearer ${token}`), ["request", ...restMethods]);
+function createClient(targetUrl, intercept){
+    return interceptAfter(supertest(targetUrl), intercept, ["request", ...restMethods]);
 };
 
 nconf.argv().env().defaults({
@@ -25,8 +26,9 @@ nconf.argv().env().defaults({
 
 module.exports.init = async function(){
     const token = await getToken(nconf.get("GIT_PRIVATE_KEY_PATH"));
+    const setBearerToken = (t)=>  t.set('Authorization', `Bearer ${token}`)
     return {
-        api: createClient(nconf.get("API_URL"), token),
-        authoring: createClient(nconf.get("AUTHORING_URL"), token)
+        api: createClient(nconf.get("API_URL"), setBearerToken),
+        authoring: createClient(nconf.get("AUTHORING_URL"), setBearerToken)
     } 
 }
