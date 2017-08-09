@@ -66,6 +66,22 @@ function updateDependentKeys(keyName) {
   };
 }
 
+function createKeyDef({ manifest, implementation }){
+  if (manifest.implementation.type === "file"){
+    return {
+      source: implementation,
+      type: manifest.implementation.format,
+    };
+  }
+  if (manifest.implementation.type === "const"){
+    return {
+      source: manifest.implementation.value,
+      type: "const",
+    };
+  }
+
+}
+
 export function openKey(key, { revision } = {}) {
   return async function (dispatch) {
     dispatch(downloadTags());
@@ -92,9 +108,10 @@ export function openKey(key, { revision } = {}) {
     }
 
     const manifest = keyData.manifest || createBlankKeyManifest(key);
+    const keyDef = createKeyDef(keyData);
     const keyOpenedPayload = {
       key,
-      keyDef: keyData.keyDef,
+      keyDef,
       manifest,
     };
 
@@ -116,14 +133,17 @@ export function updateKeyManifest(manifest) {
   return { type: KEY_MANIFEST_UPDATED, payload: manifest };
 }
 
-async function performSave(dispatch, keyName, data) {
+async function performSave(dispatch, keyName, { manifest, keyDef }) {
   dispatch({ type: KEY_SAVING });
 
   let isSaveSucceeded;
   try {
     await fetch(`/api/keys/${keyName}`, {
       method: 'put',
-      ...withJsonData(data),
+      ...withJsonData({
+        manifest,
+        implementation: manifest.implementation.type === "file" ? keyDef.source : undefined,
+      }),
     });
     isSaveSucceeded = true;
   } catch (error) {

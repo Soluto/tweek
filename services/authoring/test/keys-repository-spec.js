@@ -237,25 +237,14 @@ describe('keys-repository', () => {
     it('should return key definition with the source for the jpad', async () => {
       // Act
       const keyDetails = await target.getKeyDetails(testKeyPath);
-
-      // Assert
-      const expected = {
-        source: JSON.stringify(keyRevisions['revision-3']),
-        type: 'jpad',
-      };
-      expect(keyDetails.keyDef).to.deep.include(expected);
+      expect(keyDetails.implementation).to.deep.include(JSON.stringify(keyRevisions['revision-3']));
     });
 
     it('should return key definition with the source for the jpad for specified revision', async () => {
       // Act
       const keyDetails = await target.getKeyDetails(testKeyPath, { revision: 'revision-2' });
 
-      // Assert
-      const expected = {
-        source: JSON.stringify(keyRevisions['revision-2']),
-        type: 'jpad',
-      };
-      expect(keyDetails.keyDef).to.deep.include(expected);
+      expect(keyDetails.implementation).to.deep.include(JSON.stringify(keyRevisions['revision-2']));
     });
 
     it("should return key definition with the key's revision history", async () => {
@@ -320,7 +309,7 @@ describe('keys-repository', () => {
       const keyDetails = await target.getKeyDetails(testKeyPath);
 
       // Assert
-      expect(keyDetails.keyDef.source).to.equal(JSON.stringify(expectedJPAD));
+      expect(keyDetails.implementation).to.equal(JSON.stringify(expectedJPAD));
     });
   });
 });

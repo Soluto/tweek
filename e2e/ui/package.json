@@ -12,14 +12,14 @@
     "rebuild": "yarn run docker-compose build",
     "test:full-env": "yarn run start && yarn run test",
     "test:full-env:rebuild": "yarn run rebuild && yarn run test:full-env",
-    "test:docker": "yarn run start && yarn run rebuild backoffice-e2e && yarn run docker-compose run -- --rm backoffice-e2e",
+    "test:docker": "yarn run start && yarn run rebuild e2e-ui && yarn run docker-compose run -- --rm e2e-ui",
     "test:docker:rebuild": "yarn run rebuild && yarn run test:docker",
     "teardown": "yarn run docker-compose down -- --remove-orphans",
     "test:authoring": "mocha authoring-api/*test.js --recursive --timeout 60000",
     "start:full-env": "yarn run docker-compose up -- --force-recreate -d git && yarn run docker-compose up -- -d authoring api",
     "test:docker:authoring": "yarn run docker-compose build authoring backoffice-e2e && yarn run start:full-env && yarn run docker-compose run -- --rm backoffice-e2e yarn run test:authoring",
     "test:full-env:authoring": "yarn run docker-compose build authoring && yarn run start:full-env && sleep 5 && yarn run test:authoring",
-    "docker-compose": "docker-compose -f ../deployments/dev/docker-compose.yml -f ../deployments/dev/docker-compose.override.yml -f ../deployments/dev/docker-compose.e2e.yml"
+    "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.e2e.yml"
   },
   "author": "",
   "license": "ISC",

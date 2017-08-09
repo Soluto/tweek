@@ -25,6 +25,7 @@ class AppsRepository {
     await this._gitTransactionManager.write(async (repo) => {
       await repo.updateFile(`external_apps/${appId}.json`, JSON.stringify(manifest, null, 4));
       await repo.commitAndPush(`created app ${appId}`, author);
+      await this.refresh();
     });
   }
 }

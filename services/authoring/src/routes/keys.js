@@ -50,9 +50,9 @@ async function getKeyRevisionHistory(req, res, { keysRepository }) {
 async function updateKey(req, res, { keysRepository, author }) {
   const keyPath = req.params[0];
 
-  const keyRulesSource = req.body.keyDef.source;
+  const implementation = req.body.implementation;
   const manifest = Object.assign({ key_path: keyPath }, req.body.manifest);
-  await keysRepository.updateKey(keyPath, manifest, keyRulesSource, author);
+  await keysRepository.updateKey(keyPath, manifest, implementation, author);
 
   res.send('OK');
 }

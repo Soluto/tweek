@@ -6,14 +6,14 @@ export default {
   onUpdate(authoringApiHostname) {
     const getRevision$ = Observable.defer(async () => {
       const client = await authenticatedClient({ baseURL: authoringApiHostname });
-      const result = await client.get('/revision');
+      const result = await client.get('/api/revision');
       return result.data;
     });
 
     const delay = nconf.get('CONTINUOUS_UPDATER_INTERVAL') || 5000;
 
     return getRevision$.concat(getRevision$.delay(delay).repeat())
-      .do((_) => {}, err => console.error('Error pulling changes in git repo', err))
+      .do((_) => {}, err => console.error('Error checking revision', err))
       .retryWhen(Observable.of(1).delay(delay))
       .distinctUntilChanged();
   },
