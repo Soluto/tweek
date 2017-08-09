@@ -2,6 +2,7 @@
 
 - services (all tweek microservices)
    - api (rest api for getting configurations and updating context)
+   - authoring (rest api for reading and editing keys definitions/manifests)
    - editor (admin ui for editing rules and managing Tweek)
    - management ("CI" and serving layer for new rules)
    - git-service (stand along git rules repository for dev & testing)
@@ -12,19 +13,19 @@
 - addons
    - Addons for Tweek api
 - e2e (full system tests)
+   - UI (full UI tests using selenium)
+   - Integration (api, service interactions tests)
 
 # Build & Run tweek environment
 
 ## Requirements 
 1. Docker compatible environment  (Windows 10/Mac/Linux)
-2. Docker hub account with access to Soluto team
 
-## Install runtime dependencis
+## Install runtime dependencies
 1. Install .Net core (https://www.microsoft.com/net/core)
 2. Install docker (https://www.docker.com/)
-   - Log in to Docker hub: `docker login -u <user> -p <password>`
    - On windows, open docker setting through traybar and your working drive as shared drive (under shared drives)
-3. Install node 6+ (https://nodejs.org/en/)
+3. Install node 8+ (https://nodejs.org/en/)
 
 ## Running full environment
 1. clone:
@@ -40,6 +41,7 @@ All tweek microservices should be run on ports 4001-4004:
 4002 - Management (http)  
 4003 - Api (http)  
 4004 - Editor (http)  
+4005 - Authoring (http)
 
 ## Debugging Tweek api
 
