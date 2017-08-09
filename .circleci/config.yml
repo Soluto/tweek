@@ -65,7 +65,7 @@ jobs:
             export Version=0.0.$CIRCLE_BUILD_NUM
             cd addons/Context/Tweek.Drivers.Couchbase.ContextIntegrationTests/ && \
             dotnet restore && \
-            COUCHBASE_TEST_URL="127.0.0.1:8091" dotnet test
+            COUCHBASE_TEST_URL="http://127.0.0.1:8091" dotnet test
 
       - deploy:
           name: Push nugets
