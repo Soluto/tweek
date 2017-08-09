@@ -57,7 +57,11 @@ namespace Tweek.Drivers.Redis
         {
             var db = mRedisConnection.GetDatabase();
             var id = GetKey(identity);
-            HashEntry[] redisContext = context.Select(item =>
+            var contextWithCreationDate = new Dictionary<string, JsonValue>(context)
+            {
+                ["@CreationDate"] = JsonValue.NewString(DateTimeOffset.UtcNow.ToString())
+            };
+            HashEntry[] redisContext = contextWithCreationDate.Select(item =>
                 new HashEntry(item.Key, JsonConvert.SerializeObject(item.Value, JSON_SERIALIZER_SETTINGS))
             ).ToArray();
 
@@ -73,7 +77,12 @@ namespace Tweek.Drivers.Redis
 
             foreach (var item in redisResult)
             {
-                result.Add(item.Name, JsonValue.Parse(item.Value));
+                var value = JsonValue.Parse(item.Value);
+                if (value.IsFloat)
+                {
+                    value = JsonValue.NewNumber(value.AsDecimal());
+                }
+                result.Add(item.Name, value);
             }
 
             return result;

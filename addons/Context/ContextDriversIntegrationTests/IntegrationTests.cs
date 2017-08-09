@@ -18,13 +18,13 @@ namespace ContextDriversIntegrationTests
             {"Fruit", JsonValue.NewString("apple")},
             {"Color", JsonValue.NewString("red")},
             {"Taste", JsonValue.NewString("sour")},
-            {"Weight", JsonValue.NewFloat(3.141)},
+            {"Weight", JsonValue.NewNumber((decimal) 3.141)},
         };
         private static readonly Dictionary<string, JsonValue> AnotherTestContext = new Dictionary<string, JsonValue>
         {
             {"Fruit", JsonValue.NewString("apple")},
             {"Color", JsonValue.NewString("yellow")},
-            {"Price", JsonValue.NewFloat(2.7)},
+            {"Price", JsonValue.NewNumber((decimal) 2.7)},
         };
 
         private const string PROPERTY_TO_REMOVE = "Weight";
@@ -46,9 +46,15 @@ namespace ContextDriversIntegrationTests
         {
             var testIdentity = TestIdentity;
             await Driver.AppendContext(testIdentity, TestContext);
-            Assert.Equal(TestContext, await Driver.GetContext(testIdentity));
+            var result = await Driver.GetContext(testIdentity);
+            Assert.Contains("@CreationDate", result.Keys);
+            result.Remove("@CreationDate");
+            Assert.Equal(TestContext, result);
             await Driver.RemoveFromContext(testIdentity, PROPERTY_TO_REMOVE);
-            Assert.Equal(TestContextAfterRemoval, await Driver.GetContext(testIdentity));
+            result = await Driver.GetContext(testIdentity);
+            Assert.Contains("@CreationDate", result.Keys);
+            result.Remove("@CreationDate");
+            Assert.Equal(TestContextAfterRemoval, result);
         }
 
         [Fact(DisplayName = "ContextAppended_ThenAnotherAppended_ResultIsMerged")]
@@ -57,7 +63,10 @@ namespace ContextDriversIntegrationTests
             var testIdentity = TestIdentity;
             await Driver.AppendContext(testIdentity, TestContext);
             await Driver.AppendContext(testIdentity, AnotherTestContext);
-            Assert.Equal(TestContextMergedWithAnotherTestContext, await Driver.GetContext(testIdentity));
+            var result = await Driver.GetContext(testIdentity);
+            Assert.Contains("@CreationDate", result.Keys);
+            result.Remove("@CreationDate");
+            Assert.Equal(TestContextMergedWithAnotherTestContext, result);
         }
 
         [Fact(DisplayName = "ContextAppended_ThenSameContextAppended_ResultIsIdempotent")]
@@ -66,7 +75,10 @@ namespace ContextDriversIntegrationTests
             var testIdentity = TestIdentity;
             await Driver.AppendContext(testIdentity, TestContext);
             await Driver.AppendContext(testIdentity, TestContext);
-            Assert.Equal(TestContext, await Driver.GetContext(testIdentity));
+            var result = await Driver.GetContext(testIdentity);
+            Assert.Contains("@CreationDate", result.Keys);
+            result.Remove("@CreationDate");
+            Assert.Equal(TestContext, result);
         }
     }
 }
