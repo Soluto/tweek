@@ -6,7 +6,7 @@ export const notificationTypes = {
 
 export const urls = {
   LOGIN: '/login',
-  CACHE: ['/api/types', '/api/schema', '/api/tags'],
+  CACHE: ['/api/types', '/api/schemas', '/api/tags'],
   MANIFESTS: '/api/manifests',
   SEARCH_INDEX: '/api/search-index',
   REVISION: '/api/revision',

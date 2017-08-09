@@ -30,10 +30,18 @@ const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
 const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
 const KEY_CLOSED = 'KEY_CLOSED';
 
+let historySince;
+
 function updateRevisionHistory(keyName) {
   return async function (dispatch) {
     try {
-      const revisionHistory = await (await fetch(`/api/revision-history/${keyName}`)).json();
+      if (!historySince) {
+        const response = await fetch('/api/editor-configuration/history/since');
+        historySince = (await response.json()) || '1 month ago';
+      }
+      const revisionHistory = await (await fetch(
+        `/api/revision-history/${keyName}?since=${encodeURIComponent(historySince)}`,
+      )).json();
       dispatch({ type: KEY_REVISION_HISTORY, payload: { keyName, revisionHistory } });
     } catch (error) {
       dispatch(showError({ title: 'Failed to refresh revisionHistory', error }));
@@ -56,6 +64,22 @@ function updateDependentKeys(keyName) {
     }
     dispatch({ type: DEPENDENT_KEYS, payload: { keyName, dependentKeys } });
   };
+}
+
+function createKeyDef({ manifest, implementation }){
+  if (manifest.implementation.type === "file"){
+    return {
+      source: implementation,
+      type: manifest.implementation.format,
+    };
+  }
+  if (manifest.implementation.type === "const"){
+    return {
+      source: manifest.implementation.value,
+      type: "const",
+    };
+  }
+
 }
 
 export function openKey(key, { revision } = {}) {
@@ -84,9 +108,10 @@ export function openKey(key, { revision } = {}) {
     }
 
     const manifest = keyData.manifest || createBlankKeyManifest(key);
+    const keyDef = createKeyDef(keyData);
     const keyOpenedPayload = {
       key,
-      keyDef: keyData.keyDef,
+      keyDef,
       manifest,
     };
 
@@ -108,14 +133,17 @@ export function updateKeyManifest(manifest) {
   return { type: KEY_MANIFEST_UPDATED, payload: manifest };
 }
 
-async function performSave(dispatch, keyName, data) {
+async function performSave(dispatch, keyName, { manifest, keyDef }) {
   dispatch({ type: KEY_SAVING });
 
   let isSaveSucceeded;
   try {
     await fetch(`/api/keys/${keyName}`, {
       method: 'put',
-      ...withJsonData(data),
+      ...withJsonData({
+        manifest,
+        implementation: manifest.implementation.type === "file" ? keyDef.source : undefined,
+      }),
     });
     isSaveSucceeded = true;
   } catch (error) {

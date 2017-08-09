@@ -35,13 +35,13 @@ export function saveSchema(identityType) {
     let identityState = getState().schema[identityType];
     dispatch({ type: SAVING_SCHEMA, value: { identity: identityType } });
     if (identityState.remote === null) {
-      await fetch(`/api/schema/${identityType}`, {
+      await fetch(`/api/schemas/${identityType}`, {
         method: 'POST',
         ...withJsonData(identityState.local),
       });
     } else {
       let patch = jsonpatch.compare(identityState.remote, identityState.local);
-      await fetch(`/api/schema/${identityType}`, {
+      await fetch(`/api/schemas/${identityType}`, {
         method: 'PATCH',
         ...withJsonData(patch),
       });
@@ -70,7 +70,7 @@ export function deleteIdentity(identityType) {
   return handleError(`Failed to delete identity ${identityType}`, async (dispatch, getState) => {
     dispatch({ type: DELETING_IDENTITY, value: { identityType } });
     dispatch(push(`/settings`));
-    await fetch(`/api/schema/${identityType}`, {
+    await fetch(`/api/schemas/${identityType}`, {
       method: 'DELETE',
     });
     dispatch({ type: IDENTITY_DELETED, value: { identityType } });
