@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Http;
-using App.Metrics;
 using Engine.Drivers.Rules;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -8,11 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Tweek.ApiService.Addons;
 using System.Linq;
-using App.Metrics.Health;
 using App.Metrics.Core.Abstractions;
-using LanguageExt;
-using static LanguageExt.Prelude;
-using LanguageExt.Trans.Linq;
 
 namespace Tweek.Drivers.Rules.Management
 {
@@ -31,8 +26,8 @@ namespace Tweek.Drivers.Rules.Management
                 BaseAddress = managementServiceUrl
             };
             var settings = new TweekManagementRulesDriverSettings();
-            configuration.GetValue<string>("Rules:Management:SampleIntervalInMs")?.Iter(x=> settings.SampleIntervalInMs = x);
-            configuration.GetValue<string>("Rules:Management:FailureDelayInMs")?.Iter(x=> settings.FailureDelayInMs = x);
+            settings.SampleIntervalInMs = configuration.GetValue<int>("Rules:Management:SampleIntervalInMs", 30000);
+            settings.FailureDelayInMs = configuration.GetValue<int>("Rules:Management:FailureDelayInMs", 60000);
 
             services.AddSingleton<IRulesDriver>(
                 ctx => 
