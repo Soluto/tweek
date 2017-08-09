@@ -1,8 +1,8 @@
 const R = require('ramda');
-const jsondiffpatch = require('jsondiffpatch');
+const jsonpatch = require('fast-json-patch');
 const searchIndex = require('../search-index');
 
-const schemaPrefix = `@tweek/schema/`;
+const schemaPrefix = '@tweek/schema/';
 const indexSchema = R.pipe(
   R.indexBy(manifest => manifest.key_path.substring(schemaPrefix.length)),
   R.map(R.path(['implementation', 'value'])),
@@ -55,7 +55,7 @@ async function patchIdentity(req, res, { keysRepository, author }) {
   const manifest = await keysRepository.getKeyManifest(key);
   const newManifest = R.assocPath(
     ['implementation', 'value'],
-    jsondiffpatch.patch(manifest.implementation.value, patch),
+    jsonpatch.applyPatch(R.clone(manifest.implementation.value), patch).newDocument,
   )(manifest);
   await keysRepository.updateKey(key, newManifest, null, author);
   res.sendStatus(200);

@@ -32,12 +32,16 @@ The easiest way to start evaluating Tweek is to run it locally on docker, make s
 - clone the repo (``` git clone https://github.com/Soluto/tweek.git ```)
 - go to deployments/dev (``` cd tweek/deployments/dev ```)
 - (optional) pull the images instead of building (```docker-compose pull --parallel```)
-- run (``` docker-compose up ```) 
+- run (``` docker-compose up ```) - this might take a few minutes the first time
 
 #### Edit your first key
+After setting up our environment, we're going to create our first key.
+Keys in tweek are the most basic building blocks and they reperesent a container for dynamic value that affect feature behaviors.
+Our first key, will be a key that responsible for the the color of a "sign up" button.
+
 - Open http://editor.dev.tweek.localtest.me:81 in browser.
 - Go to keys page.
-- Click on "Add New Key"
+- Click on "Add Key"
 - Type my_app/sign_button/color
 - Set value type to String
 - Add default value "red"
@@ -45,6 +49,9 @@ The easiest way to start evaluating Tweek is to run it locally on docker, make s
 - Click on "Add Rule"
 - Set Property to Country (user) and set "=" and "Canada" in the other fields
 - In Rule value set the value "blue"
+- Click "Save changes"
+
+More on [keys and paths](https://docs.tweek.fm/concepts/keys/keys-ands-paths)
 
 #### Querying Tweek
 Use curl/postman/chrome to fire GET Request:
@@ -52,23 +59,25 @@ Use curl/postman/chrome to fire GET Request:
 - http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/color?user.Country=canada -> expected to be "blue"
 - http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/_?user.Country=canada -> expected to be {"color":"blue"}
 
-More on Tweek Rest api. (link)
+Using the rest api, an application can query Tweek for getting the right set of values for each specific user.
+More on Tweek [Rest api](https://docs.tweek.fm/api/rest-api).
 
 #### Adding context data
+Tweek provide's REST api for saving context data. 
 Using the API, use curl/postman to fire POST Request:
 - http://api.dev.tweek.localtest.me:81/api/v1/context/user/john {"Country":"Canada"}  
 
 After that, we can query Tweek API with:
 - http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/color?user=john -> expected to be "blue"
 
-More on [Context.](link)
+More on [Context.](https://docs.tweek.fm/concepts/context/intro-to-context)
 
 #### Gradual Feature Release
 Create new key in the editor "my_app/sign_button/is_enabled" with value type "boolean" and default value False.  
 Add new rule, remove all conditions, set the the rule value to gradual release with 50%.
 Try querying configuration with different users and You'll have different results.
 - http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/is_enabled?user=barny
-- http://api.dev.tweek.localtest.me:81/v1/keys/my_app/sign_button/is_enabled?user=robin
+- http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/is_enabled?user=robin
 - http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/is_enabled?user=ted
 - http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/is_enabled?user=lily
 - etc...

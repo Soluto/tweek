@@ -1,3 +1,5 @@
+import jsonpatch from 'fast-json-patch';
+import R from 'ramda';
 import authenticatedClient from '../auth/authenticatedClient';
 
 export async function getContext(req, res, { tweekApiHostname }, { params }) {
@@ -8,6 +10,10 @@ export async function getContext(req, res, { tweekApiHostname }, { params }) {
   res.json(response.data);
 }
 
+const getDeletedKeys = R.pipe(R.unapply(R.map(R.keys)), R.apply(R.difference));
+
+const getModifiedKeys = R.pipe(R.unapply(R.map(R.toPairs)), R.apply(R.difference), R.pluck(0));
+
 export async function updateContext(req, res, { tweekApiHostname }, { params }) {
   const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
 
@@ -15,16 +21,22 @@ export async function updateContext(req, res, { tweekApiHostname }, { params }) 
     params.identityId,
   )}`;
 
+  const patch = req.body;
+
   const response = await tweekApiClient.get(contextUrl);
   const currentContext = response.data;
-  const newContext = req.body;
+  const newContext = jsonpatch.applyPatch(R.clone(currentContext), patch).newDocument;
 
-  const deletedKeys = Object.keys(currentContext)
-    .filter(key => key.includes('@fixed:'))
-    .filter(key => !newContext.hasOwnProperty(key))
-    .map(key => tweekApiClient.delete(`${contextUrl}/${key}`));
+  const keysToDelete = getDeletedKeys(currentContext, newContext);
+  const deleteKeys = keysToDelete.map(key => tweekApiClient.delete(`${contextUrl}/${key}`));
 
-  await Promise.all([...deletedKeys, tweekApiClient.post(contextUrl, newContext)]);
+  const modifiedKeys = getModifiedKeys(newContext, currentContext);
+
+  if (modifiedKeys.length > 0) {
+    await tweekApiClient.post(contextUrl, R.pickAll(modifiedKeys, newContext));
+  }
+
+  await Promise.all(deleteKeys);
 
   res.sendStatus(200);
 }

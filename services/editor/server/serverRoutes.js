@@ -23,7 +23,7 @@ export default (config) => {
   app
     .route('/context/:identityName/:identityId')
     .get(addConfig(ContextRoutes.getContext))
-    .post(addConfig(ContextRoutes.updateContext));
+    .patch(addConfig(ContextRoutes.updateContext));
 
   app.get('/keys', authoringProxy);
   app

@@ -7,7 +7,7 @@
     "node": ">=6.9.0"
   },
   "scripts": {
-    "start": "yarn run docker-compose up -- --force-recreate -d editor",
+    "start": "yarn run docker-compose up -- --force-recreate -d git && yarn run docker-compose up -- -d editor",
     "test": "wdio wdio.conf.js",
     "rebuild": "yarn run docker-compose build",
     "test:full-env": "yarn run start && yarn run test",
