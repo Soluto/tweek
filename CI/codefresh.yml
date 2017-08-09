@@ -30,7 +30,7 @@ steps:
   BuildAuthoring:
     title: Building Authoring Api Image
     type: build
-    image_name: soluto/tweek-authoring-api
+    image_name: soluto/tweek-authoring
     working_directory: ./services/authoring
 
   BuildingEditor:
@@ -210,6 +210,15 @@ steps:
         only:
           - master
     candidate: ${{BuildingManagement}}
+
+  PushAuthoringImageMaster:
+    type: push
+    title: Push Tweek Authoring - lastest
+    when:
+      branch:
+        only:
+          - master
+    candidate: ${{BuildAuthoring}}
 
   PushEditorImageMaster:
     type: push

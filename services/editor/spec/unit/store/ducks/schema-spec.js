@@ -86,7 +86,7 @@ describe('schema duck', () => {
       dispatch(actions.upsertIdentityProperty('user', 'gender', 'female'));
       await dispatch(actions.saveSchema('user'));
       const [_, { body }] = fetch.mock.calls.find(
-        ([url, { method }]) => method === 'PATCH' && url === '/api/schema/user',
+        ([url, { method }]) => method === 'PATCH' && url === '/api/schemas/user',
       );
       const patch = JSON.parse(body);
       const newUserState = R.clone(schemaState.user.local);

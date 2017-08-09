@@ -59,7 +59,7 @@ class TweekApiClient{
         } catch (ex) {
           return false;
         }
-      }, 10000);
+      }, 15000);
       assertion(value);
     }
 }

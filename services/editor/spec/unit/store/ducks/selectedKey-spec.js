@@ -120,7 +120,7 @@ describe('selectedKey', async () => {
   describe('openKey', () => {
     beforeEach(() => {
       fetchMock.get('glob:*/api/tags', []);
-      fetchMock.get('glob:*/api/schema/', {});
+      fetchMock.get('glob:*/api/schemas/', {});
     });
 
     it('should dispatch KEY_OPENED with blank payload for blank key name', async () => {
@@ -215,7 +215,7 @@ describe('selectedKey', async () => {
       // Arrange
       const expectedTags = [{ name: 'pita' }];
       fetchMock.restore();
-      fetchMock.get('glob:*/api/schema/', {});
+      fetchMock.get('glob:*/api/schemas/', {});
       fetchMock.get('glob:*/api/tags', expectedTags);
 
       // Act

@@ -8,10 +8,11 @@ function addStringProperty(propertyName){
 }
 
 function addTypedProperty(propertyName, propertyType){
-    browser.setValue("*[data-comp=new-property-item] > input[type=text]:first-child", propertyName);
-    browser.click("*[data-comp=new-property-item] *[data-comp=ComboBox] input");
-    browser.click(`*[data-comp=new-property-item] *[data-label=${propertyType}] a`);
-    browser.click("*[data-comp=new-property-item] button[data-comp=add]");
+    browser.setValue("[data-comp=new-property-item] > input[type=text]:first-child", propertyName);
+    browser.click("[data-comp=new-property-item] [data-comp=ComboBox] input");
+    browser.click(`[data-comp=new-property-item] [data-label=${propertyType}] a`);
+    browser.click("[data-comp=new-property-item] button[data-comp=add]");
+    browser.waitForVisible(`[data-comp= property-item][data-property-name= ${propertyName}]`)
 }
 
 function deleteProperty(propertyName){

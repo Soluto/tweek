@@ -41,7 +41,7 @@ export function saveSchema(identityType) {
       });
     } else {
       let patch = jsonpatch.compare(identityState.remote, identityState.local);
-      await fetch(`/api/schema/${identityType}`, {
+      await fetch(`/api/schemas/${identityType}`, {
         method: 'PATCH',
         ...withJsonData(patch),
       });

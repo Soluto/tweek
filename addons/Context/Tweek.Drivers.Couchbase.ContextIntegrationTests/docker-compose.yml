@@ -1,0 +1,17 @@
+version: '3.1'
+
+
+services:
+  couchbase:
+    image: couchbase:community-4.5.1
+    ports:
+      - "8091-8094:8091-8094"
+      - "11210:11210"
+
+  couchbase-setup:
+    image: joffotron/docker-net-tools
+    depends_on:
+      - couchbase 
+    volumes:
+      - ./setup-couchbase.sh:/opt/setup-couchbase.sh
+    command: /opt/setup-couchbase.sh
