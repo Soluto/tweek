@@ -1,3 +1,5 @@
+/* global browser */
+
 import moment from 'moment';
 import keySelectors from '../selectors/keySelectors';
 import globalSelectors from '../selectors/globalSelectors';
@@ -168,6 +170,7 @@ export default class KeysPage {
 
   static setConditionValue(ruleNumber, conditionNumber, value) {
     const conditionValueInputSelector = keySelectors.conditionValue(ruleNumber, conditionNumber);
+    browser.waitForEnabled(conditionValueInputSelector, 5000);
     browser.setValue(conditionValueInputSelector, value);
   }
 

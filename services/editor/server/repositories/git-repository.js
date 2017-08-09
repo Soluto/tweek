@@ -90,30 +90,7 @@ export default class GitRepository {
       R.sort(R.descend(R.prop('date'))),
     );
 
-    const history = uniqSort(historyEntries);
-
-    if (history.length === 0) {
-      const commit = await this._repo.getCommit(sha);
-      const tree = await commit.getTree();
-
-      const exists = await reduce(
-        fileNames,
-        async (exists, fileName) => {
-          if (exists) return true;
-          try {
-            await tree.getEntry(fileName);
-            return true;
-          } catch (err) {
-            return false;
-          }
-        },
-        false,
-      );
-
-      if (exists) return [mapEntry({ commit })];
-    }
-
-    return history;
+    return uniqSort(historyEntries);
   }
 
   async updateFile(fileName, content) {

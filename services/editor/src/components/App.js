@@ -49,7 +49,7 @@ export default compose(
           <span>Keys</span>
         </ListItemLink>
         <ListItemLink to="/context">
-          <img src={require('./resources/keys.svg')} />
+          <img src={require('./resources/context.svg')} />
           <span>Context</span>
         </ListItemLink>
         <ListItemLink to="/settings">
