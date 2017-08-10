@@ -32,6 +32,12 @@ describe('authoring api', () => {
       response.text.should.include('Zip is corrupted:');
     });
 
+    it('should not accept a zip file with invalid structure', async () => {
+      const response = await clients.authoring.put('/api/bulk-keys-upload?author.name=test&author.email=test@soluto.com')
+      .attach('bulk', './spec/authoring-api/test-data/invalidStructure.zip')      
+      response.status.should.eql(400);
+    });
+
     it('should not accept a zip file with invalid rules', async () => {
       const response = await clients.authoring.put('/api/bulk-keys-upload?author.name=test&author.email=test@soluto.com')
       .attach('bulk', './spec/authoring-api/test-data/invalidRules.zip')      

@@ -122,6 +122,20 @@
             "restart": false,
             "sourceMaps": false,
             "outDir": null,
+            "protocol": "inspector",
+            "localRoot": "${workspaceRoot}/services/management/",
+            "remoteRoot": "/opt/app/"
+        },
+        {
+            "name": "Attach Authoring",
+            "type": "node",
+            "request": "attach",
+            "port": 5859,
+            "address": "localhost",
+            "restart": false,
+            "sourceMaps": false,
+            "outDir": null,
+            "protocol": "inspector",
             "localRoot": "${workspaceRoot}/services/management/",
             "remoteRoot": "/opt/app/"
         }
