@@ -26,8 +26,10 @@ async function bulkKeysUpload(req, res, { author, keysRepository }) {
   );
   const fileEntries = transformIntoEntriesArray(zipRoot.files);
 
-  if (!R.all(isValidPath)(fileEntries)) {
-    return res.status(400).send(`invalid folder structure`);
+  if (!R.all(isValidPath, fileEntries.map(x => x.name))) {
+    return res
+      .status(400)
+      .send(`invalid folder structure:${fileEntries.map(x => x.name).join(',')}`);
   }
 
   await keysRepository.updateBulkKeys(fileEntries, author);
