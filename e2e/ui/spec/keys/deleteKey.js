@@ -1,15 +1,12 @@
 /* global describe, before, beforeEach, after, afterEach, it, browser */
 
-import chai, { expect } from 'chai';
-import chaiString from 'chai-string';
-import KeysAsserts from '../../utils/key-asserts';
-import PageAsserts from '../../utils/page-asserts';
+import { expect } from 'chai';
+import * as KeysAsserts from '../../utils/key-asserts';
+import { assertIsInPage } from '../../utils/page-asserts';
 import * as KeyUtils from '../../utils/KeysPage';
 import { alertButton } from '../../utils/selector-utils';
 import keySelectors from '../../selectors/keySelectors';
 import globalSelectors from '../../selectors/globalSelectors';
-
-chai.use(chaiString);
 
 describe('delete key', () => {
   const deleteKeyTestFolder = '@delete_key';
@@ -105,7 +102,7 @@ describe('delete key', () => {
       browser.click(keySelectors.DELETE_KEY_BUTTON);
       browser.clickWhenVisible(alertButton('ok'), 1000);
 
-      PageAsserts.assertIsInPage('keys', 'should moves to keys page url');
+      assertIsInPage('keys', 'should moves to keys page url');
       KeysAsserts.assertIsKeyExistsAfterTransaction(
         keyToDeleteFullPath,
         false,

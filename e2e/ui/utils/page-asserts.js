@@ -1,8 +1,5 @@
-import chai, { expect } from 'chai';
-chai.use(require('chai-string'));
+import { expect } from 'chai';
 
-export default class PageAsserts {
-  static assertIsInPage(expectedLocation, message = 'should be in correct page') {
-    expect(browser.getUrl()).to.endWith(expectedLocation);
-  }
+export function assertIsInPage(expectedLocation, message = 'should be in correct page') {
+  expect(browser.getUrl(), message).to.endWith(expectedLocation);
 }

@@ -1,6 +1,6 @@
-/* global describe, before, after, it, browser */
+/* global describe, before, beforeEach, after, it, browser */
 
-import KeysAsserts from '../../utils/key-asserts';
+import * as KeysAsserts from '../../utils/key-asserts';
 import { BLANK_KEY_NAME } from '../../utils/KeysPage';
 import * as KeyUtils from '../../utils/KeysPage';
 import { expect, assert } from 'chai';

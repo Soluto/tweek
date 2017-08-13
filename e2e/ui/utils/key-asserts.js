@@ -1,57 +1,44 @@
 import assert from 'assert';
-import * as KeyUtils from './KeysPage';
-import PageAsserts from './page-asserts';
-import selectors from '../selectors/keySelectors';
 import { expect } from 'chai';
+import * as KeyUtils from './KeysPage';
+import { assertIsInPage } from './page-asserts';
+import { dataComp } from './selector-utils';
 
-export default class KeysAsserts {
-  static assertKeyOpened(keyName) {
-    KeysAsserts.assertIsInKeyPage(keyName, `should be in ${keyName} key page`);
-    browser.waitForVisible(selectors.KEY_VIEWER_CONTAINER, 4000);
-    assert(!KeyUtils.hasChanges(), 'should not have changes');
-    assert(!KeyUtils.isSaving(), 'should not be in saving state');
+const keyEditPage = dataComp('key-edit-page');
+
+export function assertIsInKeyPage(expectedKey, message) {
+  assertIsInPage(`keys/${expectedKey}`, message);
+}
+
+export function assertKeyOpened(keyName, timeout = KeyUtils.defaultTimeout) {
+  assertIsInKeyPage(keyName, `should be in ${keyName} key page`);
+  browser.waitForVisible(keyEditPage, timeout);
+  assert.equal(KeyUtils.hasChanges(), false, 'should not have changes');
+  assert.equal(KeyUtils.isSaving(), false, 'should not be in saving state');
+}
+
+export function assertKeySource(expectedSourceObject) {
+  let keySourceObject;
+  try {
+    keySourceObject = KeyUtils.getKeySource();
+  } catch (exp) {
+    assert.fail('failed read key source, ' + exp);
   }
 
-  static assertKeySource(expectedSourceObject) {
-    let keySourceObject;
-    try {
-      keySourceObject = KeyUtils.getKeySource();
-    } catch (exp) {
-      assert(false, 'failed read key source, ' + exp);
-    }
+  assert.deepEqual(keySourceObject, expectedSourceObject);
+}
 
-    const deleteIds = (rulesObject, depth) => {
-      if (depth === 0) {
-        rulesObject.forEach(matcher => {
-          delete matcher['Id'];
-        });
-        return;
-      }
-      Object.keys(rulesObject).forEach(key => deleteIds(rulesObject[key], depth - 1));
-    };
+export function assertKeyHasNumberOfRules(
+  expectedNumberOfRules,
+  message = 'should have correct ammount of rules',
+) {
+  assert.equal(KeyUtils.getNumberOfRules(), expectedNumberOfRules, message);
+}
 
-    deleteIds(keySourceObject.rules, keySourceObject.partitions.length);
-    deleteIds(expectedSourceObject.rules, expectedSourceObject.partitions.length);
+export function assertIsKeyExistsAfterTransaction(keyName, isExisting, message) {
+  //todo use authoring
+  if (!isExisting) KeyUtils.waitForKeyToBeDeleted(keyName);
 
-    assert.deepEqual(keySourceObject, expectedSourceObject);
-  }
-
-  static assertKeyHasNumberOfRules(
-    expectedNumberOfRules,
-    message = 'should have correct ammount of rules',
-  ) {
-    assert.equal(KeyUtils.getNumberOfRules(), expectedNumberOfRules, message);
-  }
-
-  static assertIsInKeyPage(expectedKey, message) {
-    PageAsserts.assertIsInPage(`keys/${expectedKey}`, message);
-  }
-
-  static assertIsKeyExistsAfterTransaction(keyName, isExisting, message) {
-    //todo use authoring
-    if (!isExisting) KeyUtils.waitForKeyToBeDeleted(keyName);
-
-    KeyUtils.goToKey(keyName, 1000, false);
-    assert(isExisting === browser.isExisting(selectors.KEY_VIEWER_CONTAINER), message);
-  }
+  KeyUtils.goToKey(keyName, 1000, false);
+  assert.equal(browser.isExisting(keyEditPage), isExisting, message);
 }
