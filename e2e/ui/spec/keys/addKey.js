@@ -1,6 +1,6 @@
 /* global describe, before, after, it, browser */
 
-import KeysAsserts from '../../KeysAsserts';
+import KeysAsserts from '../../utils/key-asserts';
 import {
   goToKey,
   hasChanges,

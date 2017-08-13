@@ -2,10 +2,10 @@
 
 import chai, { expect } from 'chai';
 import chaiString from 'chai-string';
-import KeysAsserts from '../../KeysAsserts';
-import PageAsserts from '../../PageAsserts';
+import KeysAsserts from '../../utils/key-asserts';
+import PageAsserts from '../../utils/page-asserts';
 import * as KeyUtils from '../../utils/KeysPage';
-import { alertButton } from "../../utils/selector-utils"
+import { alertButton } from '../../utils/selector-utils';
 import keySelectors from '../../selectors/keySelectors';
 import globalSelectors from '../../selectors/globalSelectors';
 
@@ -25,12 +25,22 @@ describe('delete key', () => {
     it('should archive key', () => {
       KeyUtils.commitChanges(keySelectors.ARCHIVE_KEY_BUTTON);
 
-      expect(browser.isVisible(keySelectors.READONLY_KEY_MESSAGE), 'should show key is readonly message').to.be.true;
+      expect(
+        browser.isVisible(keySelectors.READONLY_KEY_MESSAGE),
+        'should show key is readonly message',
+      ).to.be.true;
       const displayText = browser.getText(keySelectors.KEY_DISPLAY_NAME);
       expect(displayText).to.startsWith('ARCHIVED: ');
-      expect(browser.isVisible(keySelectors.ARCHIVE_KEY_BUTTON), 'should not show archive key button').to.be.false;
-      expect(browser.isVisible(keySelectors.DELETE_KEY_BUTTON), 'should show delete key button').to.be.true;
-      expect(browser.isVisible(keySelectors.UNARCHIVE_KEY_BUTTON), 'should show unarchive key button').to.be.true;
+      expect(
+        browser.isVisible(keySelectors.ARCHIVE_KEY_BUTTON),
+        'should not show archive key button',
+      ).to.be.false;
+      expect(browser.isVisible(keySelectors.DELETE_KEY_BUTTON), 'should show delete key button').to
+        .be.true;
+      expect(
+        browser.isVisible(keySelectors.UNARCHIVE_KEY_BUTTON),
+        'should show unarchive key button',
+      ).to.be.true;
     });
   });
 
@@ -42,14 +52,22 @@ describe('delete key', () => {
     it('should unarchive key', () => {
       KeyUtils.commitChanges(keySelectors.UNARCHIVE_KEY_BUTTON);
 
-      expect(browser.isVisible(keySelectors.READONLY_KEY_MESSAGE), 'should not show key is readonly message').to.be.false;
+      expect(
+        browser.isVisible(keySelectors.READONLY_KEY_MESSAGE),
+        'should not show key is readonly message',
+      ).to.be.false;
       const displayText = browser.getText(keySelectors.KEY_DISPLAY_NAME);
       expect(displayText).to.not.startsWith('ARCHIVED: ');
 
-      expect(browser.isVisible(keySelectors.ARCHIVE_KEY_BUTTON), 'should show archive key button').to.be.true;
-      expect(browser.isVisible(keySelectors.DELETE_KEY_BUTTON), 'should not show delete key button').to.be.false;
-      expect(browser.isVisible(keySelectors.UNARCHIVE_KEY_BUTTON), 'should not show unarchive key button').to.be.false;
-    })
+      expect(browser.isVisible(keySelectors.ARCHIVE_KEY_BUTTON), 'should show archive key button')
+        .to.be.true;
+      expect(browser.isVisible(keySelectors.DELETE_KEY_BUTTON), 'should not show delete key button')
+        .to.be.false;
+      expect(
+        browser.isVisible(keySelectors.UNARCHIVE_KEY_BUTTON),
+        'should not show unarchive key button',
+      ).to.be.false;
+    });
   });
 
   describe('delete', () => {
@@ -63,7 +81,11 @@ describe('delete key', () => {
       browser.leftClick(globalSelectors.ALERT_BACKGROUND, -200, -200);
 
       KeysAsserts.assertIsInKeyPage(keyToDeleteFullPath, 'should still be in key page');
-      KeysAsserts.assertIsKeyExistsAfterTransaction(keyToDeleteFullPath, true, 'key should exist after cancel delete');
+      KeysAsserts.assertIsKeyExistsAfterTransaction(
+        keyToDeleteFullPath,
+        true,
+        'key should exist after cancel delete',
+      );
     });
 
     it('should not delete key if alert was canceled', () => {
@@ -72,7 +94,11 @@ describe('delete key', () => {
       browser.click(keySelectors.ALERT_CANCEL_BUTTON);
 
       KeysAsserts.assertIsInKeyPage(keyToDeleteFullPath, 'should still be in key page');
-      KeysAsserts.assertIsKeyExistsAfterTransaction(keyToDeleteFullPath, true, 'key should exist after cancel delete');
+      KeysAsserts.assertIsKeyExistsAfterTransaction(
+        keyToDeleteFullPath,
+        true,
+        'key should exist after cancel delete',
+      );
     });
 
     it('should succeed deleting key', () => {
@@ -80,8 +106,11 @@ describe('delete key', () => {
       browser.clickWhenVisible(alertButton('ok'), 1000);
 
       PageAsserts.assertIsInPage('keys', 'should moves to keys page url');
-      KeysAsserts.assertIsKeyExistsAfterTransaction(keyToDeleteFullPath, false, 'key should not exist after delete');
+      KeysAsserts.assertIsKeyExistsAfterTransaction(
+        keyToDeleteFullPath,
+        false,
+        'key should not exist after delete',
+      );
     });
   });
 });
-

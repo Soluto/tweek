@@ -1,7 +1,7 @@
 import assert from 'assert';
-import * as KeyUtils from './utils/KeysPage';
-import PageAsserts from './PageAsserts';
-import selectors from './selectors/keySelectors';
+import * as KeyUtils from './KeysPage';
+import PageAsserts from './page-asserts';
+import selectors from '../selectors/keySelectors';
 import { expect } from 'chai';
 
 export default class KeysAsserts {
@@ -16,17 +16,18 @@ export default class KeysAsserts {
     let keySourceObject;
     try {
       keySourceObject = KeyUtils.getKeySource();
-    }
-    catch (exp) {
+    } catch (exp) {
       assert(false, 'failed read key source, ' + exp);
     }
 
     const deleteIds = (rulesObject, depth) => {
       if (depth === 0) {
-        rulesObject.forEach(matcher => { delete matcher['Id']; });
+        rulesObject.forEach(matcher => {
+          delete matcher['Id'];
+        });
         return;
       }
-      Object.keys(rulesObject).forEach(key => deleteIds(rulesObject[key], depth -1));
+      Object.keys(rulesObject).forEach(key => deleteIds(rulesObject[key], depth - 1));
     };
 
     deleteIds(keySourceObject.rules, keySourceObject.partitions.length);
@@ -35,7 +36,10 @@ export default class KeysAsserts {
     assert.deepEqual(keySourceObject, expectedSourceObject);
   }
 
-  static assertKeyHasNumberOfRules(expectedNumberOfRules, message = 'should have correct ammount of rules') {
+  static assertKeyHasNumberOfRules(
+    expectedNumberOfRules,
+    message = 'should have correct ammount of rules',
+  ) {
     assert.equal(KeyUtils.getNumberOfRules(), expectedNumberOfRules, message);
   }
 

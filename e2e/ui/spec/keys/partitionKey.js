@@ -1,8 +1,8 @@
 /* global describe, before, beforeEach, after, it, browser */
 
-import KeysAsserts from '../../KeysAsserts';
+import KeysAsserts from '../../utils/key-asserts';
 import * as KeyUtils from '../../utils/KeysPage';
-import { dataComp } from "../../utils/selector-utils"
+import { dataComp } from '../../utils/selector-utils';
 import selectors from '../../selectors/keySelectors';
 
 function addPartition(property) {
@@ -16,7 +16,7 @@ describe('partition key', () => {
   beforeEach(() => {
     browser.refresh();
     browser.acceptAlertIfPresent();
-    KeyUtils.waitForKeyToLoad()
+    KeyUtils.waitForKeyToLoad();
   });
 
   describe('add partition', () => {
@@ -63,39 +63,39 @@ describe('partition key', () => {
         addPartition('user.FavoriteFruit');
         browser.clickWhenVisible(selectors.AUTO_PARTITION_BUTTON, 1000);
         KeysAsserts.assertKeySource({
-          partitions: ["user.FavoriteFruit"],
-          valueType: "string",
+          partitions: ['user.FavoriteFruit'],
+          valueType: 'string',
           rules: {
-            "*": [
+            '*': [
               {
                 Matcher: {
-                  "user.AgentVersion": {
-                    "$ge": "0.12.3",
-                    "$compare": "version"
-                  }
+                  'user.AgentVersion': {
+                    $ge: '0.12.3',
+                    $compare: 'version',
+                  },
                 },
-                Value: "agentValue",
-                Type: "SingleVariant"
+                Value: 'agentValue',
+                Type: 'SingleVariant',
               },
               {
-                Matcher: {"user.Gender": "female"},
-                Value: "femaleValue",
-                Type: "SingleVariant"
+                Matcher: { 'user.Gender': 'female' },
+                Value: 'femaleValue',
+                Type: 'SingleVariant',
               },
               {
                 Matcher: {},
-                Value: "defaultValue",
-                Type: "SingleVariant"
-              }
+                Value: 'defaultValue',
+                Type: 'SingleVariant',
+              },
             ],
-            "Apple": [
+            Apple: [
               {
                 Matcher: {},
-                Value: "appleValue",
-                Type: "SingleVariant"
-              }
-            ]
-          }
+                Value: 'appleValue',
+                Type: 'SingleVariant',
+              },
+            ],
+          },
         });
       });
 
@@ -107,9 +107,9 @@ describe('partition key', () => {
         browser.waitForVisible(selectors.RESET_PARTITIONS_BUTTON, 1000);
         browser.click(selectors.RESET_PARTITIONS_BUTTON);
         KeysAsserts.assertKeySource({
-          partitions: ["user.FavoriteFruit"],
-          valueType: "string",
-          rules: {}
+          partitions: ['user.FavoriteFruit'],
+          valueType: 'string',
+          rules: {},
         });
       });
     });
@@ -127,8 +127,8 @@ describe('partition key', () => {
       KeyUtils.acceptRodalIfRaised();
       KeysAsserts.assertKeySource({
         partitions: [],
-        valueType: "string",
-        rules: []
+        valueType: 'string',
+        rules: [],
       });
     });
   });
@@ -137,26 +137,26 @@ describe('partition key', () => {
     it('should add new partition group', () => {
       KeyUtils.goToKey(`${testFolder}/${partitionsTestFolder}/add_partition_group`);
       const newPartitionGroups = [['Banana'], ['Orange', 'Rick'], [false, 'Morty']];
-      newPartitionGroups.forEach((group) => {
+      newPartitionGroups.forEach(group => {
         group.forEach((value, i) => {
           if (value) browser.setValue(selectors.newPartitionGroupInput(i + 1), value);
         });
         browser.click(selectors.ADD_PARTITION_GROUP_BUTTON);
       });
       KeysAsserts.assertKeySource({
-        partitions: ["user.FavoriteFruit", "user.FatherName"],
-        valueType: "string",
+        partitions: ['user.FavoriteFruit', 'user.FatherName'],
+        valueType: 'string',
         rules: {
-          "Banana": {
-            "*": []
+          Banana: {
+            '*': [],
           },
-          "Orange": {
-            "Rick": []
+          Orange: {
+            Rick: [],
           },
-          "*": {
-            "Morty": []
-          }
-        }
+          '*': {
+            Morty: [],
+          },
+        },
       });
     });
 
@@ -166,29 +166,29 @@ describe('partition key', () => {
       browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
       KeyUtils.acceptRodalIfRaised();
       KeysAsserts.assertKeySource({
-        partitions: ["user.FavoriteFruit", "user.Gender"],
-        valueType: "string",
+        partitions: ['user.FavoriteFruit', 'user.Gender'],
+        valueType: 'string',
         rules: {
-          "Banana": {
-            "male": [
+          Banana: {
+            male: [
               {
                 Matcher: {},
-                Value: "someValue",
-                Type: "SingleVariant"
-              }
-            ]
+                Value: 'someValue',
+                Type: 'SingleVariant',
+              },
+            ],
           },
-          "*": {
-            "*": [
+          '*': {
+            '*': [
               {
                 Matcher: {},
-                Value: "otherDefaultValue",
-                Type: "SingleVariant"
-              }
-            ]
-          }
-        }
-      })
+                Value: 'otherDefaultValue',
+                Type: 'SingleVariant',
+              },
+            ],
+          },
+        },
+      });
     });
   });
 });

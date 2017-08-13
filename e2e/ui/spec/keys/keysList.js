@@ -1,6 +1,6 @@
 /* global describe, before, after, it, browser */
 
-import KeysAsserts from '../../KeysAsserts';
+import KeysAsserts from '../../utils/key-asserts';
 import * as KeyUtils from '../../utils/KeysPage';
 import selectors from '../../selectors/keySelectors';
 
@@ -16,14 +16,14 @@ describe('keys list and filter', () => {
     KeyUtils.goToKey();
   });
 
-  it("should be able to navigate to key by folders", () => {
+  it('should be able to navigate to key by folders', () => {
     KeyUtils.navigateToKey(greenAppleKeyFullPath);
 
     KeysAsserts.assertIsInKeyPage(greenAppleKeyFullPath);
   });
 
-  it("should display matching keys when filtering", () => {
-    KeyUtils.searchKey("apple");
+  it('should display matching keys when filtering', () => {
+    KeyUtils.searchKey('apple');
 
     browser.waitForVisible(selectors.keyLink(greenAppleKeyFullPath), 2000);
     browser.waitForVisible(selectors.keyLink(redAppleKeyFullPath), 2000);
