@@ -53,13 +53,25 @@ async function buildLocalCache() {
   return updateLatestCache();
 }
 
+async function syncRepo(repo) {
+  await repo.fetchAll(fetchOpts);
+  await repo.mergeBranches('master', 'origin/master');
+  
+  const remoteCommit = await repo.getBranchCommit('remotes/origin/master');
+  const localCommit = await repo.getBranchCommit('master');
+
+  if (remoteCommit.id().equal(localCommit.id()) === 1) return;
+
+  console.warn('Repo is not synced after pull');
+  await Git.Reset.reset(repo, remoteCommit, Git.Reset.TYPE.HARD);
+}
+
 async function updateLatestCache() {
   while (true) {
     try {
       const repo = await Git.Repository.open(repoPath);
-      await repo.fetchAll(fetchOpts);
-      await repo.mergeBranches('master', 'origin/master');
-
+      syncRepo(repo);
+      
       const newLatestSha = (await repo.getMasterCommit()).sha();
 
       if (newLatestSha === rulesCache.sha) {

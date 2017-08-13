@@ -10,6 +10,10 @@ obj/
 rulesRepository/
 vapid/
 
+.dockerignore
+.editorconfig
+.eslintrc
+.gitignore
 Dockerfile
 jsconfig.json
 npm-debug.log

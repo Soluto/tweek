@@ -7,7 +7,7 @@ export const KEYS_IDENTITY = 'keys.';
 let contextSchema = {};
 
 export async function refreshSchema() {
-  const response = await fetch('/api/schema/', { credentials: 'same-origin' });
+  const response = await fetch('/api/schemas', { credentials: 'same-origin' });
   contextSchema = await response.json();
 }
 
