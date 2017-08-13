@@ -26,7 +26,6 @@ describe('edit keys', () => {
         valueType: 'string',
         rules: [
           {
-            Id: '985627a1-d627-5516-89a9-79bc1b5515d0',
             Matcher: {
               'user.AgentVersion': '1.1.1',
               'user.FavoriteFruit': 'Banana',
@@ -40,7 +39,6 @@ describe('edit keys', () => {
             Type: 'SingleVariant',
           },
           {
-            Id: 'b74a6ea7-3ad6-58bd-9159-8460162b2e42',
             Matcher: {},
             Value: 'some value',
             Type: 'SingleVariant',
@@ -91,7 +89,6 @@ describe('edit keys', () => {
         valueType: 'string',
         rules: [
           {
-            Id: '985627a1-d627-5516-89a9-79bc1b5515d0',
             Matcher: {
               'user.AgentVersion': '1.1.1',
               'user.FavoriteFruit': 'Banana',
@@ -103,7 +100,6 @@ describe('edit keys', () => {
             Type: 'SingleVariant',
           },
           {
-            Id: 'b74a6ea7-3ad6-58bd-9159-8460162b2e42',
             Matcher: {},
             Value: 'some value',
             Type: 'SingleVariant',

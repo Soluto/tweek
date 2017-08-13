@@ -6,7 +6,6 @@
     "rules": {
         "Banana": [
             {
-                "Id": "dfcf2742-bdb5-537a-860c-b3e8e6824413",
                 "Matcher": {
                     "user.Gender": "female"
                 },
@@ -16,7 +15,6 @@
         ],
         "Orange": [
             {
-                "Id": "47da2ffb-f6eb-514b-9a31-4874918f3f2b",
                 "Matcher": {
                     "user.NumberOfSiblings": {
                         "$ge": "5"
@@ -26,7 +24,6 @@
                 "Value": "siblingsValue"
             },
             {
-                "Id": "08378b6f-b391-5f24-b862-9dece434f84f",
                 "Matcher": {},
                 "Value": "defaultValue",
                 "Type": "SingleVariant"
