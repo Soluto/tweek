@@ -6,12 +6,12 @@ import * as keysActions from '../../../../../../store/ducks/selectedKey';
 import SaveButton from '../../../../../../components/common/SaveButton/SaveButton';
 import './KeyPageActions.css';
 
-const disableButton = ({ text, id }) => props =>
-  <button id={id} className={'disable-button'} tabIndex="-1" {...props}>{text}</button>;
+const disableButton = ({ text, dataComp }) => props =>
+  <button data-comp={dataComp} className="disable-button" tabIndex="-1" {...props}>{text}</button>;
 
-const DeleteButton = disableButton({ text: 'Delete key', id: 'delete-key-button' });
-const ArchiveButton = disableButton({ text: 'Archive key', id: 'archive-key-button' });
-const UnarchiveButton = disableButton({ text: 'Restore key', id: 'unarchive-key-button' });
+const DeleteButton = disableButton({ text: 'Delete key', dataComp: 'delete-key' });
+const ArchiveButton = disableButton({ text: 'Archive key', dataComp: 'archive-key' });
+const UnarchiveButton = disableButton({ text: 'Restore key', dataComp: 'unarchive-key' });
 
 const KeyPageActions = compose(
   connect(state => ({ selectedKey: state.selectedKey }), keysActions),
@@ -38,11 +38,11 @@ const KeyPageActions = compose(
   }) =>
     <div>
       {isReadonly
-        ? <div className={'readonly-key-message'}>
+        ? <div className="readonly-key-message">
             {isHistoricRevision ? 'This is an old revision of this key' : 'This key is readonly'}
           </div>
         : null}
-      <div className={'key-action-buttons-wrapper'}>
+      <div className="key-action-buttons-wrapper">
         {extraButtons && archived ? <DeleteButton disabled={isSaving} onClick={deleteKey} /> : null}
         {extraButtons
           ? archived
@@ -52,7 +52,7 @@ const KeyPageActions = compose(
         <SaveButton
           {...{ isSaving, hasChanges }}
           tabIndex="-1"
-          data-comp="save-changes-button"
+          data-comp="save-changes"
           onClick={saveKey}
         />
       </div>

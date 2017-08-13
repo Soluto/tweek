@@ -10,10 +10,11 @@ import './KeysList.css';
 
 function KeysFilter({ onFilterChange }) {
   return (
-    <div className={'search-input-wrapper'}>
+    <div className="search-input-wrapper">
       <input
+        data-comp="search-key-input"
         type="text"
-        className={'search-input'}
+        className="search-input"
         placeholder="Search..."
         onKeyUp={e => onFilterChange(e.target.value)}
       />
@@ -24,7 +25,7 @@ function KeysFilter({ onFilterChange }) {
 const KeyItem = connect((state, props) => ({
   isActive: state.selectedKey && state.selectedKey.key && state.selectedKey.key === props.fullPath,
 }))(({ name, fullPath, depth, isActive }) =>
-  <div className={classNames('key-link-wrapper')}>
+  <div className={'key-link-wrapper'}>
     <Link
       className={classNames('key-link', { selected: isActive })}
       style={{ paddingLeft: (depth + 1) * 14 }}
@@ -47,7 +48,7 @@ const KeysList = componentFromStream((prop$) => {
     .switchMap(async filter => (filter === '' ? undefined : SearchService.search(filter)));
 
   return Observable.combineLatest(filteredKeys$, keyList$).map(([filteredKeys, keys]) =>
-    <div className={'keys-list-container'}>
+    <div className="keys-list-container">
       <KeysFilter onFilterChange={setFilter} />
       <DirectoryTreeView
         paths={filteredKeys || keys}

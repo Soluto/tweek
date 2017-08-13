@@ -24,9 +24,10 @@ export default class RulesList extends React.Component {
     if (!rules) return <div />;
 
     return (
-      <div className={'rule-item-container'}>
+      <div className="rule-item-container" data-comp="rules-list">
         <button
-          className={'add-rule-button'}
+          className="add-rule-button"
+          data-comp="add-rule"
           onClick={() => {
             this.addMutatorRule();
             this.setState({ autofocusRuleIndex: 0 });
@@ -36,12 +37,12 @@ export default class RulesList extends React.Component {
         </button>
 
         {rules.map((rule, i) =>
-          <div className={'conditions-container'} disabled key={rules.length - i}>
+          <div className="conditions-container" data-comp="rule" key={rules.length - i}>
 
-            <div className={'rule-control-wrapper'}>
+            <div className="rule-control-wrapper">
               {i > 0
                 ? <button
-                    className={'rule-order-button'}
+                    className="rule-order-button"
                     onClick={() => mutate.replaceKeys(i, i - 1)}
                     title="Move up"
                   >
@@ -50,7 +51,7 @@ export default class RulesList extends React.Component {
                 : null}
               {i < rules.length - 1
                 ? <button
-                    className={'rule-order-button'}
+                    className="rule-order-button"
                     onClick={() => mutate.replaceKeys(i, i + 1)}
                     title="Move down"
                   >
@@ -58,7 +59,8 @@ export default class RulesList extends React.Component {
                   </button>
                 : null}
               <button
-                className={'delete-rule-button'}
+                className="delete-rule-button"
+                data-comp="delete-rule"
                 onClick={() => {
                   this.deleteRule(i);
                   this.setState({ autofocusRuleIndex: undefined });

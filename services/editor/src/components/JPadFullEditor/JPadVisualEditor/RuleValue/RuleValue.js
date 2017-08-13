@@ -47,7 +47,7 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
     return (
       <button
         data-comp="convert-to-multi-variant-button"
-        className={'to-feature-flag-button'}
+        className="to-feature-flag-button"
         onClick={() =>
           convertToMultiVariant({
             type: 'bernoulliTrial',
@@ -62,7 +62,7 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
   return (
     <button
       data-comp="convert-to-multi-variant-button"
-      className={'add-variant-button'}
+      className="add-variant-button"
       onClick={() =>
         convertToMultiVariant({
           type: 'weighted',
@@ -78,8 +78,8 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
 };
 
 const SingleVariantValue = ({ value, mutate, identities, autofocus, valueType, keyPath }) =>
-  <div className={'rule-value-container'}>
-    <InputValue {...{ value, valueType }} onChange={newValue => mutate.updateValue(newValue)} />
+  <div className="rule-value-container">
+    <InputValue {...{ value, valueType }} data-comp="rule-value" onChange={newValue => mutate.updateValue(newValue)} />
     <MultiVariantConverter {...{ value, valueType, mutate, identities, keyPath }} />
   </div>;
 
@@ -98,13 +98,13 @@ const WeightedValues = ({ onUpdate, variants }) =>
 
 const bernouliTrialSliderColors = ['#007acc', 'lightGray'];
 const BernoulliTrial = ({ onUpdate, ratio }) =>
-  <div className={'bernoulli-trial-container'}>
-    <div className={'bernoulli-trial-input-wrapper'}>
+  <div className="bernoulli-trial-container">
+    <div className="bernoulli-trial-input-wrapper">
       <label>Open to</label>
       <input
         type="text"
         data-comp="bernoulli-trial-input"
-        className={'bernoulli-trial-input'}
+        className="bernoulli-trial-input"
         value={ratio * 100}
         onChange={(e) => {
           const newValue = e.target.value;
@@ -123,7 +123,7 @@ const BernoulliTrial = ({ onUpdate, ratio }) =>
       />
       <label>%</label>
     </div>
-    <div className={'bernoulli-trial-slider-wrapper'}>
+    <div className="bernoulli-trial-slider-wrapper">
       <CustomSlider
         displayLegend={false}
         sliderColors={bernouliTrialSliderColors}
@@ -134,11 +134,11 @@ const BernoulliTrial = ({ onUpdate, ratio }) =>
   </div>;
 
 const IdentitySelection = ({ identities, onChange, ownerType }) =>
-  <div className={'identity-selection-container'}>
-    <label className={'identity-selection-title'}>Identity: </label>
+  <div className="identity-selection-container">
+    <label className="identity-selection-title">Identity: </label>
     <ComboBox
       data-comp="identity-selection"
-      className={'identity-selection-combobox-wrapper'}
+      className="identity-selection-combobox-wrapper"
       suggestions={identities}
       onChange={(_, e) => e && onChange(e)}
       value={ownerType}
@@ -205,7 +205,7 @@ const MultiVariantValue = ({
           {args === 1
             ? <button
                 data-comp="set-to-true-button"
-                className={'set-to-true-button'}
+                className="set-to-true-button"
                 onClick={() =>
                   mutate.apply(m =>
                     m
@@ -228,7 +228,7 @@ const MultiVariantValue = ({
 
           {args === 0
             ? <button
-                className={'set-to-false-button'}
+                className="set-to-false-button"
                 onClick={() =>
                   mutate.apply(m =>
                     m

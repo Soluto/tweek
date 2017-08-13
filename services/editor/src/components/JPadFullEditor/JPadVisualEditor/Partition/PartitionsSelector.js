@@ -37,9 +37,9 @@ export default ({ partitions, handlePartitionAddition, handlePartitionDelete, al
   };
 
   return (
-    <div className={'partitions-selector-container'}>
-      <label className={'partitions-label'}>Partition by:</label>
-      <div className={'partition-tags-wrapper'}>
+    <div className="partitions-selector-container" data-comp="partition-selector">
+      <label className="partitions-label">Partition by:</label>
+      <div className="partition-tags-wrapper">
         <ReactTags
           tags={indexedTags}
           suggestions={indexedSuggestions}

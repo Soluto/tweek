@@ -79,7 +79,7 @@ const FixedKey = ({ toggleDelete, ...props, keyPath }) =>
     <button
       onClick={toggleDelete}
       className="delete-button"
-      data-comp="delete-key-button"
+      data-comp="delete-fixed-key"
       title="Remove key"
     />
     <EditableKey {...props} />
@@ -106,7 +106,7 @@ const NewFixedKeyComponent = ({ appendKey, ...props, keyPath, local: value }) =>
     <EditableKey {...props} />
     <button
       className="add-key-button"
-      data-comp="add-key-button"
+      data-comp="add-fixed-key"
       title="Add key"
       onClick={appendKey}
     />
