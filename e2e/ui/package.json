@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "description": "",
+  "author": "",
+  "license": "ISC",
   "engines": {
-    "node": ">=6.9.0"
+    "node": ">=8.1.0"
   },
   "scripts": {
     "start": "yarn run docker-compose up -- --force-recreate -d git && yarn run docker-compose up -- -d editor",
@@ -15,10 +17,18 @@
     "test:docker": "yarn run start && yarn run rebuild e2e-ui && yarn run docker-compose run -- --rm e2e-ui",
     "test:docker:rebuild": "yarn run rebuild && yarn run test:docker",
     "teardown": "yarn run docker-compose down -- --remove-orphans",
-    "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.e2e.yml"
+    "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.e2e.yml",
+    "precommit": "lint-staged"
   },
-  "author": "",
-  "license": "ISC",
+  "lint-staged": {
+    "gitDir": "../../",
+    "linters": {
+      "**/e2e/ui/**/*.js": [
+        "prettier --single-quote --trailing-comma all --no-bracket-spacing=false --write",
+        "git add"
+      ]
+    }
+  },
   "dependencies": {
     "axios": "^0.16.1",
     "babel-cli": "6.24.1",
@@ -43,6 +53,9 @@
     "webdriverio": "4.8.0"
   },
   "devDependencies": {
+    "husky": "^0.14.3",
+    "lint-staged": "^4.0.3",
+    "prettier": "^1.5.3",
     "wdio-selenium-standalone-service": "0.0.9"
   }
 }
