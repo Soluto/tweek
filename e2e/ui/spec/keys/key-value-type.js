@@ -5,58 +5,51 @@ import { BLANK_KEY_NAME } from '../../utils/KeysPage';
 import * as KeyUtils from '../../utils/KeysPage';
 import Rule from '../../utils/Rule';
 import keySelectors from '../../selectors/keySelectors';
+import { dataComp } from '../../utils/selector-utils';
 
 describe('key-value-type', () => {
+  let rule;
   before(() => {
     KeyUtils.goToKey();
     browser.windowHandleMaximize();
     browser.click(keySelectors.ADD_KEY_BUTTON);
     KeysAsserts.assertKeyOpened(BLANK_KEY_NAME);
-    Rule.add().removeCondition();
+    rule = Rule.add().removeCondition();
   });
 
-  let setKeyValueAndType = function(keyValueType, value) {
-    browser.waitForEnabled(keySelectors.KEY_VALUE_TYPE_INPUT, 1000);
-    browser.setValue(keySelectors.KEY_VALUE_TYPE_INPUT, keyValueType);
+  const expected = (valueType, Value) => ({
+    partitions: [],
+    valueType,
+    rules: [
+      {
+        Matcher: {},
+        Value,
+        Type: 'SingleVariant',
+      },
+    ],
+  });
+  const testCase = (valueType, value) => ({
+    valueType,
+    value,
+    expected: expected(valueType, value),
+  });
+  const testCases = [
+    testCase('string', 'someValue'),
+    testCase('number', 0),
+    testCase('number', 5),
+    testCase('boolean', true),
+    testCase('boolean', false),
+    testCase('version', '1.1.1'),
+  ];
 
-    KeyUtils.acceptRodalIfRaised();
+  testCases.forEach(({ valueType, value, expected }) => {
+    it(`should convert the type of the jpad to ${valueType}`, () => {
+      browser.setValue(dataComp('key-value-type-selector'), valueType);
+      KeyUtils.acceptRodalIfRaised();
 
-    const ruleValueInputSelector = keySelectors.ruleValueInput(0, keyValueType === 'Boolean');
-    browser.waitForEnabled(ruleValueInputSelector, 1000);
-    browser.setValue(ruleValueInputSelector, value);
-  };
+      rule.setValue(value, valueType);
 
-  function assertKeySourceWithChanges(valueType, ruleValue) {
-    let expectedResult = {
-      partitions: [],
-      valueType: valueType,
-      rules: [
-        {
-          Id: 'b74a6ea7-3ad6-58bd-9159-8460162b2e42',
-          Matcher: {},
-          Value: ruleValue,
-          Type: 'SingleVariant',
-        },
-      ],
-    };
-
-    KeysAsserts.assertKeySource(expectedResult);
-  }
-
-  it('Should convert the value type of the jpad according to the key value type', () => {
-    setKeyValueAndType('String', 'someValue');
-    assertKeySourceWithChanges('string', 'someValue');
-
-    setKeyValueAndType('Number', '5');
-    assertKeySourceWithChanges('number', 5);
-
-    setKeyValueAndType('Boolean', 'true');
-    assertKeySourceWithChanges('boolean', true);
-
-    setKeyValueAndType('Boolean', 'false');
-    assertKeySourceWithChanges('boolean', false);
-
-    setKeyValueAndType('Version', '1.1.1');
-    assertKeySourceWithChanges('version', '1.1.1');
+      KeysAsserts.assertKeySource(expected);
+    });
   });
 });
