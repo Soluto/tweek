@@ -1,200 +1,136 @@
 /* global browser */
 
+import assert from 'assert';
 import moment from 'moment';
-import keySelectors from '../selectors/keySelectors';
-import globalSelectors from '../selectors/globalSelectors';
-import { getRelativeSelector } from '../selectors/selectorUtils';
+import R from 'ramda';
+import { dataComp, dataField, alertButton, attributeSelector } from './selector-utils';
+
+const keyEditPage = dataComp('key-edit-page');
+const saveChangesButton = dataComp('save-changes');
+
+export const defaultTimeout = 5000;
 
 export const BLANK_KEY_NAME = '_blank';
 
-export default class KeysPage {
-  static TEST_KEYS_FOLDER = '@behavior_tests';
-  static GIT_TRANSACTION_TIMEOUT = 5000;
-  static KEYS_PAGE_URL = 'keys';
-
-  static goToBase() {
-    browser.url("/");
-    browser.acceptAlertIfPresent();
-
-    browser.waitForVisible(keySelectors.ADD_KEY_BUTTON, KeysPage.GIT_TRANSACTION_TIMEOUT);
+export function goToKey(keyName = '', timeout = defaultTimeout, waitToLoad = true) {
+  browser.url(`/keys/${keyName}`);
+  browser.acceptAlertIfPresent();
+  browser.waitForVisible(dataComp('key-page'), timeout);
+  browser.waitForVisible(dataComp('search-key-input'), timeout);
+  if (keyName !== '' && waitToLoad) {
+    waitForKeyToLoad(timeout);
   }
+}
 
-  static goToKeyUrl(keyName) {
-    const goTo = `/${KeysPage.KEYS_PAGE_URL}/${keyName}`;
+export function navigateToKey(keyFullPath, timeout = defaultTimeout) {
+  const directoryTreeView = dataComp('directory-tree-view');
+  const treeItem = (attribute, value) => `${directoryTreeView} ${attributeSelector(attribute, value)}`;
+  const extractFolders = R.pipe(
+    R.split('/'),
+    R.dropLast(1),
+    R.mapAccum((acc, value) => R.repeat(acc ? `${acc}/${value}` : value, 2), null),
+    R.prop(1),
+  );
 
-    browser.url(goTo);
+  const keyFolders = extractFolders(keyFullPath);
 
-    browser.acceptAlertIfPresent();
+  keyFolders.forEach(folder => browser.clickWhenVisible(treeItem('data-folder-name', folder)), timeout);
 
-    KeysPage.waitForPageToLoad();
-  }
+  const keyLinkSelector = treeItem('href', `/keys/${keyFullPath}`);
+  browser.clickWhenVisible(keyLinkSelector, timeout);
+}
 
-  static goToKey(keyName) {
-    KeysPage.goToKeyUrl(keyName);
+export function isInKeyPage(keyName) {
+  const location = browser.getUrl();
+  return location.endsWith(`keys/${keyName}`);
+}
 
-    const selectorToWaitFor = keyName.startsWith(BLANK_KEY_NAME) ?
-      keySelectors.KEY_NAME_INPUT : keySelectors.KEY_DISPLAY_NAME;
+export function addEmptyKey(keyName, keyValueType = 'String', timeout = defaultTimeout) {
+  goToKey();
+  browser.click(dataComp('add-new-key'));
 
-    browser.waitForVisible(selectorToWaitFor, KeysPage.GIT_TRANSACTION_TIMEOUT);
-  }
+  const keyNameInput = dataComp('new-key-name-input');
+  const keyValueTypeSelector = dataComp('key-value-type-selector');
 
-  static goToKeysList() {
-    browser.url(`/keys`);
-    browser.waitForVisible(keySelectors.KEY_LIST_FILTER, 10000);
-  }
+  browser.waitForVisible(keyNameInput, timeout);
+  browser.setValue(keyNameInput, keyName);
+  browser.setValue(keyValueTypeSelector, keyValueType);
 
-  static getKeySource() {
-    browser.clickWhenVisible(keySelectors.SOURCE_TAB_ITEM, 2000);
-    browser.waitForVisible('.monaco-editor', 5000);
-    const keySourceCode = browser.execute(function () {
-      return window.monaco.editor.getModels()[0].getValue();
-    });
-    browser.click(keySelectors.RULES_TAB_ITEM);
-    return JSON.parse(keySourceCode.value);
-  }
+  browser.click(saveChangesButton);
+  browser.waitUntil(() => isInKeyPage(keyName), timeout);
 
-  static setKeySource(source, timeout = 5000) {
-    browser.waitForVisible('.monaco-editor', timeout);
-    browser.execute(function (source) {
-      window.monaco.editor.getModels()[0].setValue(source);
-    }, source);
-  }
+  const keyNameField = `${dataComp('editable-text')} ${dataField('text')}`;
+  browser.waitForVisible(keyNameField, timeout);
+  assert.equal(browser.getText(keyNameField), keyName);
+}
 
-  static getNumberOfRules() {
-    return browser.elements(keySelectors.ruleContainer()).value.length;
-  }
+export function searchKey(filter, timeout = defaultTimeout) {
+  const searchKeyInput = dataComp('search-key-input');
 
-  static addEmptyKey(keyName, keyValueType = 'String') {
-    console.log('adding key', keyName);
-    KeysPage.goToKey(BLANK_KEY_NAME);
+  browser.waitForVisible(searchKeyInput, timeout);
+  browser.setValue(searchKeyInput, filter);
+}
 
-    browser.waitForVisible(keySelectors.KEY_NAME_INPUT, 5000);
-    browser.setValue(keySelectors.KEY_NAME_INPUT, keyName);
-    browser.setValue(keySelectors.KEY_VALUE_TYPE_INPUT, keyValueType);
+export function waitForKeyToLoad(timeout = defaultTimeout) {
+  browser.waitForVisible(keyEditPage, timeout);
+}
 
-    browser.click(keySelectors.SAVE_CHANGES_BUTTON);
-    browser.waitUntil(() =>
-        KeysPage.isInKeyPage(keyName),
-      KeysPage.GIT_TRANSACTION_TIMEOUT);
+export function isSaving() {
+  return browser.getAttribute(saveChangesButton, 'data-state-is-saving') === 'true';
+}
 
-    browser.waitForVisible(keySelectors.KEY_DISPLAY_NAME, KeysPage.GIT_TRANSACTION_TIMEOUT);
-  }
+export function hasChanges() {
+  return browser.getAttribute(saveChangesButton, 'data-state-has-changes') === 'true';
+}
 
-  static isInKeyPage(keyName) {
-    const location = browser.getUrl();
-    return location.endsWith(`${KeysPage.KEYS_PAGE_URL}/${keyName}`);
-  }
+export function commitChanges(selector = saveChangesButton, timeout = defaultTimeout) {
+  browser.click(selector);
+  browser.waitUntil(() => !hasChanges() && !isSaving(), timeout, "changes were not saved");
+}
 
-  static isSaving() {
-    return browser.getAttribute(keySelectors.SAVE_CHANGES_BUTTON, 'data-state-is-saving') === 'true';
-  }
+export function waitForKeyToBeDeleted(keyName, timeout = defaultTimeout) {
+  const notFoundMessage = dataComp('key-not-found');
+  browser.waitUntil(() => {
+    goToKey(keyName, timeout, false);
+    return browser.isExisting(notFoundMessage);
+  }, timeout, `key still not deleted after ${timeout}ms`);
+}
 
-  static hasChanges() {
-    return browser.getAttribute(keySelectors.SAVE_CHANGES_BUTTON, 'data-state-has-changes') === 'true';
-  }
+export function getKeySource(timeout = defaultTimeout) {
+  const rulesEditor = dataComp('key-rules-editor');
+  const tabHeader = attributeSelector('data-tab-header');
+  const sourceTab = `${rulesEditor} ${tabHeader('source')}`;
+  const rulesTab = `${rulesEditor} ${tabHeader('rules')}`;
 
-  static isSaveButtonDisabled() {
-    return browser.getAttribute(keySelectors.SAVE_CHANGES_BUTTON, 'disabled') === 'true';
-  }
+  browser.waitForVisible(rulesEditor, timeout);
 
-  static clickOnFolder(folderName) {
-    const folderSelector = keySelectors.folder(folderName);
+  browser.click(sourceTab);
+  browser.waitForVisible('.monaco-editor', 10000);
+  const keySourceCode = browser.execute(function () {
+    return window.monaco.editor.getModels()[0].getValue();
+  });
 
-    browser.waitForVisible(folderSelector, 2000);
-    browser.click(folderSelector);
-  }
+  browser.click(rulesTab);
+  return JSON.parse(keySourceCode.value);
+}
 
-  static clickOnKeyLink(keyName) {
-    const keyLinkSelector = keySelectors.keyLink(keyName);
+export function setKeySource(source, timeout = 10000) {
+  browser.waitForVisible('.monaco-editor', timeout);
+  browser.execute(function (source) {
+    window.monaco.editor.getModels()[0].setValue(source);
+  }, source);
+}
 
-    browser.waitForVisible(keyLinkSelector, 2000);
-    browser.click(keyLinkSelector);
-  }
+export function getNumberOfRules() {
+  return browser.elements(`${keyEditPage} ${dataComp('rule')}`).value.length;
+}
 
-  static navigateToKey(keyFullPath) {
-    const keyFolders = keyFullPath.split('/');
-    const keyName = keyFolders.pop();
+export function acceptRodalIfRaised() {
+  browser.clickIfVisible(alertButton('ok'), 500);
+}
 
-    let partialFolderPath = '';
-    keyFolders.forEach(folder => {
-      partialFolderPath += folder;
-      KeysPage.clickOnFolder(partialFolderPath);
-      partialFolderPath += '/';
-    });
-
-    KeysPage.clickOnKeyLink(partialFolderPath + keyName);
-  }
-
-  static enterFilterInKeysList(filter) {
-    const keyListFilterSelector = keySelectors.KEY_LIST_FILTER;
-
-    browser.waitForVisible(keyListFilterSelector, 1000);
-    browser.click(keyListFilterSelector);
-    browser.setValue(keyListFilterSelector, filter);
-  }
-
-  static waitForKeyToBeDeleted(keyName) {
-    const checkIsKeyWasDeleted = (keyName) => {
-      KeysPage.goToKeyUrl(keyName);
-      return browser.isExisting(keySelectors.NONE_EXISTING_KEY);
-    };
-
-    browser.waitUntil(() => checkIsKeyWasDeleted(keyName), KeysPage.GIT_TRANSACTION_TIMEOUT);
-  }
-
-  static waitForPageToLoad() {
-    browser.waitForVisible(keySelectors.KEY_PAGE, KeysPage.GIT_TRANSACTION_TIMEOUT);
-  }
-
-  static waitForKeyToLoad(timeout = 10000) {
-    browser.waitForVisible(keySelectors.SAVE_CHANGES_BUTTON, timeout);
-  }
-
-  static generateTestKeyName(prefix) {
-    const currentDate = new Date();
-    return `${prefix}_${moment(currentDate).format('DD_MM_YYYY_HH_mm_ss')}`;
-  }
-
-  static acceptRodalIfRaised() {
-    browser.clickIfVisible(keySelectors.ALERT_OK_BUTTON, 500);
-  }
-
-  static setConditionProperty(ruleNumber, conditionNumber, value) {
-    const conditionPropertyInputSelector = keySelectors.conditionPropertyName(ruleNumber, conditionNumber);
-    browser.setValue(conditionPropertyInputSelector, value);
-    const suggestionSelector = `[data-comp= property-suggestion][data-value= "${value}"]`;
-    browser.waitForVisible(suggestionSelector, 5000);
-    browser.click(suggestionSelector);
-  }
-
-  static setConditionValue(ruleNumber, conditionNumber, value) {
-    const conditionValueInputSelector = keySelectors.conditionValue(ruleNumber, conditionNumber);
-    browser.waitForEnabled(conditionValueInputSelector, 5000);
-    browser.setValue(conditionValueInputSelector, value);
-  }
-
-  static addRuleCondition(ruleNumber) {
-    const ruleSelector = keySelectors.ruleContainer(ruleNumber);
-    const addConditionButtonSelector = getRelativeSelector([ruleSelector, keySelectors.ADD_CONDITION_BUTTON]);
-    browser.click(addConditionButtonSelector);
-  }
-
-  static removeRuleCondition(ruleNumber, conditionNumber) {
-    const conditionDeleteButtonSelector = keySelectors.conditionDeleteButton(ruleNumber, conditionNumber);
-    browser.click(conditionDeleteButtonSelector);
-  }
-
-  static setRuleValue(ruleNumber, value, keyValueType) {
-    const ruleValueInputSelector = keySelectors.ruleValueInput(ruleNumber, keyValueType === "Boolean");
-    browser.setValue(ruleValueInputSelector, value);
-  }
-
-  static addPartitionFromProperty(property) {
-    browser.setValue(keySelectors.ADD_PARTITION_INPUT, `${property}\n`);
-  }
-
-  static commitChanges(selector = keySelectors.SAVE_CHANGES_BUTTON) {
-    browser.click(selector);
-    browser.waitUntil(() => !KeysPage.hasChanges() && !KeysPage.isSaving(), KeysPage.GIT_TRANSACTION_TIMEOUT, "changes were not saved");
-  }
+//todo delete
+export function generateTestKeyName(prefix) {
+  const currentDate = new Date();
+  return `${prefix}_${moment(currentDate).format('DD_MM_YYYY_HH_mm_ss')}`;
 }

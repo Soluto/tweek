@@ -50,7 +50,7 @@ describe('override keys', () => {
     currentContext = ContextPage.getOverrideKeys(identityType, identityId);
     assert.deepEqual(currentContext, updatedKeys);
 
-    const elements = browser.elements('[data-comp= fixed-keys] [data-comp= delete-key-button]').value;
+    const elements = browser.elements('[data-comp= fixed-keys] [data-comp= delete-fixed-key]').value;
     elements.forEach(element => element.click());
 
     ContextPage.saveChanges();

@@ -1,17 +1,22 @@
 /* global describe, before, beforeEach, after, it, browser */
 
 import KeysAsserts from '../../KeysAsserts';
-import KeysPage from '../../utils/KeysPage';
+import * as KeyUtils from '../../utils/KeysPage';
+import { dataComp } from "../../utils/selector-utils"
 import selectors from '../../selectors/keySelectors';
 
+function addPartition(property) {
+  browser.setValue(`${dataComp('partition-selector')} input`, `${property}\n`);
+}
+
 describe('partition key', () => {
-  const testFolder = KeysPage.TEST_KEYS_FOLDER;
+  const testFolder = '@behavior_tests';
   const partitionsTestFolder = '@partitions';
 
   beforeEach(() => {
     browser.refresh();
     browser.acceptAlertIfPresent();
-    KeysPage.waitForKeyToLoad()
+    KeyUtils.waitForKeyToLoad()
   });
 
   describe('add partition', () => {
@@ -22,19 +27,19 @@ describe('partition key', () => {
     describe('invalid partitions', () => {
       const emptyRulesKeyFullPath = `${testFolder}/${partitionsTestFolder}/empty_partition`;
       before(() => {
-        KeysPage.goToKey(emptyRulesKeyFullPath);
+        KeyUtils.goToKey(emptyRulesKeyFullPath);
       });
 
       it('should not allow invalid properties', () => {
-        KeysPage.addPartitionFromProperty('someInvalidValue');
+        addPartition('someInvalidValue');
         browser.waitForVisible(selectors.ALERT_OK_BUTTON, 1000);
         browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000, true);
       });
 
       it('should not allow duplicate properties', () => {
-        KeysPage.addPartitionFromProperty('user.FavoriteFruit');
+        addPartition('user.FavoriteFruit');
         browser.waitForVisible(selectors.ALERT_OK_BUTTON, 1000, true);
-        KeysPage.addPartitionFromProperty('user.FavoriteFruit');
+        addPartition('user.FavoriteFruit');
         browser.waitForVisible(selectors.ALERT_OK_BUTTON, 1000);
         browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000, true);
       });
@@ -43,19 +48,19 @@ describe('partition key', () => {
     describe('valid partitions', () => {
       const addPartitionKeyFullPath = `${testFolder}/${partitionsTestFolder}/add_partition`;
       before(() => {
-        KeysPage.goToKey(addPartitionKeyFullPath);
+        KeyUtils.goToKey(addPartitionKeyFullPath);
       });
 
       it('should not partition if canceled', () => {
-        const keySource = KeysPage.getKeySource();
-        KeysPage.addPartitionFromProperty('user.FavoriteFruit');
+        const keySource = KeyUtils.getKeySource();
+        addPartition('user.FavoriteFruit');
         browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
         browser.click(selectors.ALERT_CANCEL_BUTTON);
         KeysAsserts.assertKeySource(keySource);
       });
 
       it('should auto-partition correctly if auto-partition was selected', () => {
-        KeysPage.addPartitionFromProperty('user.FavoriteFruit');
+        addPartition('user.FavoriteFruit');
         browser.clickWhenVisible(selectors.AUTO_PARTITION_BUTTON, 1000);
         KeysAsserts.assertKeySource({
           partitions: ["user.FavoriteFruit"],
@@ -95,7 +100,7 @@ describe('partition key', () => {
       });
 
       it('should not allow auto-partition if matcher is invalid', () => {
-        KeysPage.addPartitionFromProperty('user.FavoriteFruit');
+        addPartition('user.FavoriteFruit');
         browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
         browser.waitForVisible(selectors.AUTO_PARTITION_BUTTON, 1000, false);
 
@@ -113,13 +118,13 @@ describe('partition key', () => {
   describe('delete partition', () => {
     const deletePartitionKeyFullPath = `${testFolder}/${partitionsTestFolder}/delete_partition`;
     before(() => {
-      KeysPage.goToKey(deletePartitionKeyFullPath);
+      KeyUtils.goToKey(deletePartitionKeyFullPath);
     });
 
     it('should clear rules after partition is deleted', () => {
       browser.click(selectors.partitionDeleteButton(1));
       browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
-      KeysPage.acceptRodalIfRaised();
+      KeyUtils.acceptRodalIfRaised();
       KeysAsserts.assertKeySource({
         partitions: [],
         valueType: "string",
@@ -130,7 +135,7 @@ describe('partition key', () => {
 
   describe('partition groups', () => {
     it('should add new partition group', () => {
-      KeysPage.goToKey(`${testFolder}/${partitionsTestFolder}/add_partition_group`);
+      KeyUtils.goToKey(`${testFolder}/${partitionsTestFolder}/add_partition_group`);
       const newPartitionGroups = [['Banana'], ['Orange', 'Rick'], [false, 'Morty']];
       newPartitionGroups.forEach((group) => {
         group.forEach((value, i) => {
@@ -156,10 +161,10 @@ describe('partition key', () => {
     });
 
     it('should delete group rules when deleting partition group', () => {
-      KeysPage.goToKey(`${testFolder}/${partitionsTestFolder}/partition_groups`);
+      KeyUtils.goToKey(`${testFolder}/${partitionsTestFolder}/partition_groups`);
       browser.click(selectors.partitionGroupDeleteButton(2));
       browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
-      KeysPage.acceptRodalIfRaised();
+      KeyUtils.acceptRodalIfRaised();
       KeysAsserts.assertKeySource({
         partitions: ["user.FavoriteFruit", "user.Gender"],
         valueType: "string",

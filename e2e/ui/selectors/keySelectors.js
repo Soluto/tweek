@@ -1,12 +1,13 @@
 import { getRelativeSelector, getSelectorByClassNames, _getSelectorByIndex, _getSelectorWithAttribute } from './selectorUtils';
+import { dataComp } from "../utils/selector-utils"
 
 const keySelectors = {};
 
-keySelectors.DEPENDS_ON = '[data-comp=depends-on]';
-keySelectors.DEPENDS_ON_TOGGLE = '[data-comp=depends-on-toggle]';
-keySelectors.USED_BY = '[data-comp=used-by]';
-keySelectors.USED_BY_TOGGLE = '[data-comp=used-by-toggle]';
-keySelectors.SAVE_CHANGES_BUTTON = '[data-comp=save-changes-button]';
+keySelectors.DEPENDS_ON = dataComp('depends-on');
+keySelectors.DEPENDS_ON_TOGGLE = dataComp('depends-on-toggle');
+keySelectors.USED_BY = dataComp('used-by');
+keySelectors.USED_BY_TOGGLE = dataComp('used-by-toggle');
+keySelectors.SAVE_CHANGES_BUTTON = dataComp('save-changes');
 keySelectors.ADD_KEY_BUTTON = getSelectorByClassNames('keys-page-container', 'add-key-button');
 keySelectors.KEY_NAME_INPUT = getSelectorByClassNames('key-main-input', 'auto-suggest', 'bootstrap-typeahead-input', 'input-main');
 keySelectors.KEY_DISPLAY_NAME = getSelectorByClassNames('display-name-text');
@@ -17,9 +18,9 @@ keySelectors.KEY_ACTUAL_PATH = getSelectorByClassNames('actual-path');
 keySelectors.KEY_FOLDER_NAME = getSelectorByClassNames('key-folder-name');
 keySelectors.KEY_LINK = getSelectorByClassNames('key-link');
 keySelectors.DEFAULT_VALUE_INPUT = getRelativeSelector([getSelectorByClassNames('default-value-container'), 'input']);
-keySelectors.ARCHIVE_KEY_BUTTON = '#archive-key-button';
-keySelectors.UNARCHIVE_KEY_BUTTON = '#unarchive-key-button';
-keySelectors.DELETE_KEY_BUTTON = '#delete-key-button';
+keySelectors.ARCHIVE_KEY_BUTTON = dataComp('archive-key');
+keySelectors.UNARCHIVE_KEY_BUTTON = dataComp('unarchive-key');
+keySelectors.DELETE_KEY_BUTTON = dataComp('delete-key');
 keySelectors.ADD_RULE_BUTTON = getSelectorByClassNames('add-rule-button');
 keySelectors.ADD_CONDITION_BUTTON = getSelectorByClassNames('add-condition-button');
 keySelectors.RULE_CONDITION = getSelectorByClassNames('condition-wrapper');

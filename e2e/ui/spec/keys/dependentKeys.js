@@ -1,93 +1,79 @@
 /* global describe, before, beforeEach, after, afterEach, it, browser */
 
-import KeysPage from '../../utils/KeysPage';
+import * as KeyUtils from '../../utils/KeysPage';
+import Rule from '../../utils/Rule';
 import keySelectors from '../../selectors/keySelectors';
 import globalSelectors from '../../selectors/globalSelectors';
 import { expect } from 'chai';
 
 describe('dependent keys', () => {
-  const testFolder = KeysPage.TEST_KEYS_FOLDER;
+  const testFolder = '@behavior_tests';
   const dependentKeysFolder = '@dependent_keys';
-  const conditionPropertyInputSelector = keySelectors.conditionPropertyName(1, 1);
 
   before(() => {
-    KeysPage.goToBase();
     browser.windowHandleMaximize();
   });
 
   it('should save when no circular dependencies', () => {
-    const keyWithoutDependency = KeysPage.generateTestKeyName('key1');
+    const keyWithoutDependency = KeyUtils.generateTestKeyName('key1');
     const keyWithoutDependencyFullPath = `${testFolder}/${dependentKeysFolder}/${keyWithoutDependency}`;
-    KeysPage.addEmptyKey(keyWithoutDependencyFullPath);
+    KeyUtils.addEmptyKey(keyWithoutDependencyFullPath);
 
-    const keyWithDependency = KeysPage.generateTestKeyName('key2');
+    const keyWithDependency = KeyUtils.generateTestKeyName('key2');
     const keyWithDependencyFullPath = `${testFolder}/${dependentKeysFolder}/${keyWithDependency}`;
-    KeysPage.addEmptyKey(keyWithDependencyFullPath);
+    KeyUtils.addEmptyKey(keyWithDependencyFullPath);
 
-    browser.click(keySelectors.ADD_RULE_BUTTON);
-
-    browser.setValue(conditionPropertyInputSelector, `keys.${keyWithoutDependencyFullPath}`);
-    KeysPage.setConditionValue(1, 1, 'value');
-
-    KeysPage.commitChanges();
+    Rule.add().withCondition(`keys.${keyWithoutDependencyFullPath}`, 'value');
+    KeyUtils.commitChanges();
   });
 
   it('should not save circular dependencies', () => {
-    const keyWithDependency1 = KeysPage.generateTestKeyName('key1');
+    const keyWithDependency1 = KeyUtils.generateTestKeyName('key1');
     const keyWithDependencyFullPath1 = `${testFolder}/${dependentKeysFolder}/${keyWithDependency1}`;
-    const keyWithDependency2 = KeysPage.generateTestKeyName('key2');
+    const keyWithDependency2 = KeyUtils.generateTestKeyName('key2');
     const keyWithDependencyFullPath2 = `${testFolder}/${dependentKeysFolder}/${keyWithDependency2}`;
-    const keyWithDependency3 = KeysPage.generateTestKeyName('key3');
+    const keyWithDependency3 = KeyUtils.generateTestKeyName('key3');
     const keyWithDependencyFullPath3 = `${testFolder}/${dependentKeysFolder}/${keyWithDependency3}`;
 
-    KeysPage.addEmptyKey(keyWithDependencyFullPath1);
-    browser.click(keySelectors.ADD_RULE_BUTTON);
-    browser.setValue(conditionPropertyInputSelector, `keys.${keyWithDependencyFullPath3}`);
-    KeysPage.setConditionValue(1, 1, 'value');
-    KeysPage.commitChanges();
+    KeyUtils.addEmptyKey(keyWithDependencyFullPath1);
+    Rule.add().withCondition(`keys.${keyWithDependencyFullPath3}`, 'value');
+    KeyUtils.commitChanges();
 
-    KeysPage.addEmptyKey(keyWithDependencyFullPath2);
-    browser.click(keySelectors.ADD_RULE_BUTTON);
-    browser.setValue(conditionPropertyInputSelector, `keys.${keyWithDependencyFullPath1}`);
-    KeysPage.setConditionValue(1, 1, 'value');
-    KeysPage.commitChanges();
+    KeyUtils.addEmptyKey(keyWithDependencyFullPath2);
+    Rule.add().withCondition(`keys.${keyWithDependencyFullPath1}`, 'value');
+    KeyUtils.commitChanges();
 
-    KeysPage.addEmptyKey(keyWithDependencyFullPath3);
-    browser.click(keySelectors.ADD_RULE_BUTTON);
-    browser.setValue(conditionPropertyInputSelector, `keys.${keyWithDependencyFullPath2}`);
-    KeysPage.setConditionValue(1, 1, 'value');
+    KeyUtils.addEmptyKey(keyWithDependencyFullPath3);
+    Rule.add().withCondition(`keys.${keyWithDependencyFullPath2}`, 'value');
     browser.click(keySelectors.SAVE_CHANGES_BUTTON);
 
-    browser.waitForVisible(globalSelectors.ERROR_NOTIFICATION_TITLE, KeysPage.GIT_TRANSACTION_TIMEOUT);
+    browser.waitForVisible(globalSelectors.ERROR_NOTIFICATION_TITLE, KeyUtils.defaultTimeout);
     const errorText = browser.getText(globalSelectors.ERROR_NOTIFICATION_TITLE);
     expect(errorText).to.equal('Failed to save key');
   })
 
   it('should display dependency relations between keys', () => {
-    const keyWithoutDependency = KeysPage.generateTestKeyName('key1');
+    const keyWithoutDependency = KeyUtils.generateTestKeyName('key1');
     const keyWithoutDependencyFullPath = `${testFolder}/${dependentKeysFolder}/${keyWithoutDependency}`;
-    KeysPage.addEmptyKey(keyWithoutDependencyFullPath);
+    KeyUtils.addEmptyKey(keyWithoutDependencyFullPath);
 
-    const keyWithDependency = KeysPage.generateTestKeyName('key2');
+    const keyWithDependency = KeyUtils.generateTestKeyName('key2');
     const keyWithDependencyFullPath = `${testFolder}/${dependentKeysFolder}/${keyWithDependency}`;
-    KeysPage.addEmptyKey(keyWithDependencyFullPath);
+    KeyUtils.addEmptyKey(keyWithDependencyFullPath);
 
-    browser.click(keySelectors.ADD_RULE_BUTTON);
+    Rule.add().withCondition(`keys.${keyWithoutDependencyFullPath}`, 'value');
 
-    browser.setValue(conditionPropertyInputSelector, `keys.${keyWithoutDependencyFullPath}`);
-    KeysPage.setConditionValue(1, 1, 'value');
-
-    KeysPage.commitChanges();
+    KeyUtils.commitChanges();
 
     // Verify depends on
-    KeysPage.goToKey(keyWithDependencyFullPath);
+    KeyUtils.goToKey(keyWithDependencyFullPath);
     browser.waitForVisible(keySelectors.DEPENDS_ON_TOGGLE, 5000);
     browser.click(keySelectors.DEPENDS_ON_TOGGLE);
     browser.waitForVisible(`${keySelectors.DEPENDS_ON} a[href="/keys/${keyWithoutDependencyFullPath}"]`);
 
     // Verify used by
     browser.waitUntil(() => {
-      KeysPage.goToKey(keyWithoutDependencyFullPath);
+      KeyUtils.goToKey(keyWithoutDependencyFullPath);
       browser.waitForExist(`${keySelectors.USED_BY}[data-loaded= true]`, 1000);
       return browser.isVisible(keySelectors.USED_BY_TOGGLE);
     }, 5000);

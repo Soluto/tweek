@@ -1,25 +1,25 @@
 /* global describe, before, after, it, browser */
 
 import KeysAsserts from '../../KeysAsserts';
-import KeysPage, { BLANK_KEY_NAME } from '../../utils/KeysPage';
+import { BLANK_KEY_NAME } from '../../utils/KeysPage';
+import * as KeyUtils from '../../utils/KeysPage';
+import Rule from '../../utils/Rule';
 import keySelectors from '../../selectors/keySelectors';
 
 describe('key-value-type', () => {
   before(() => {
-    KeysPage.goToBase();
+    KeyUtils.goToKey();
     browser.windowHandleMaximize();
     browser.click(keySelectors.ADD_KEY_BUTTON);
     KeysAsserts.assertKeyOpened(BLANK_KEY_NAME);
-    browser.click(keySelectors.ADD_RULE_BUTTON);
-    browser.waitForExist(keySelectors.ruleContainer(0));
-    KeysPage.removeRuleCondition(1, 0);
+    Rule.add().removeCondition();
   });
 
   let setKeyValueAndType = function (keyValueType, value) {
     browser.waitForEnabled(keySelectors.KEY_VALUE_TYPE_INPUT, 1000);
     browser.setValue(keySelectors.KEY_VALUE_TYPE_INPUT, keyValueType);
 
-    KeysPage.acceptRodalIfRaised();
+    KeyUtils.acceptRodalIfRaised();
 
     const ruleValueInputSelector = keySelectors.ruleValueInput(0, keyValueType === "Boolean");
     browser.waitForEnabled(ruleValueInputSelector, 1000);

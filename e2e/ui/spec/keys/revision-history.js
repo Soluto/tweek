@@ -1,7 +1,7 @@
 /* global describe, before, after, it, browser */
 
 import { expect } from 'chai';
-import KeysPage from '../../utils/KeysPage';
+import * as KeyUtils from '../../utils/KeysPage';
 
 describe('revision history', () => {
   const keyName = '@behavior_tests/@revision_history/key';
@@ -15,7 +15,7 @@ describe('revision history', () => {
     for (let i = 0; i < count; i++) {
       const value = `value ${i}`;
       browser.setValue(valueSelector, value);
-      KeysPage.commitChanges();
+      KeyUtils.commitChanges();
 
       let commit = undefined;
       browser.waitUntil(() => {
@@ -29,7 +29,7 @@ describe('revision history', () => {
   }
 
   it('should display revision history', () => {
-    KeysPage.goToKey(keyName);
+    KeyUtils.goToKey(keyName);
     browser.waitForVisible(revisionHistorySelector, 1000);
 
     const changeCount = 4;

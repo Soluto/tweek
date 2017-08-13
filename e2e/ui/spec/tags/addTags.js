@@ -1,6 +1,6 @@
 /* global describe, before, after, it, browser */
 
-import KeysPage from '../../utils/KeysPage';
+import * as KeyUtils from '../../utils/KeysPage';
 import selectors from '../../selectors/keySelectors';
 import Chance from 'chance';
 
@@ -8,14 +8,13 @@ describe('add tags', () => {
     const NUMBER_OF_TAGS_TO_ADD = 1;
 
     const tagsTestKeyName = 'tags_test';
-    const testFolder = KeysPage.TEST_KEYS_FOLDER;
     const tagsTestFolder = '@tags';
-    const tagsTestKeyFullPath = `${testFolder}/${tagsTestFolder}/${tagsTestKeyName}`;
+    const tagsTestKeyFullPath = `@behavior_tests/${tagsTestFolder}/${tagsTestKeyName}`;
 
     const chance = new Chance();
 
     before(() => {
-        KeysPage.goToKey(tagsTestKeyFullPath);
+      KeyUtils.goToKey(tagsTestKeyFullPath);
         browser.windowHandleMaximize();
     });
 
@@ -42,9 +41,9 @@ describe('add tags', () => {
         browser.refresh();
         browser.alertAccept();
 
-        browser.waitForVisible(selectors.TAGS_INPUT, KeysPage.GIT_TRANSACTION_TIMEOUT);
+        browser.waitForVisible(selectors.TAGS_INPUT, KeyUtils.defaultTimeout);
 
         // Assert
-        tagsToAdd.forEach(x => browser.waitUntil(() => isTagExists(x), KeysPage.GIT_TRANSACTION_TIMEOUT));
+        tagsToAdd.forEach(x => browser.waitUntil(() => isTagExists(x), KeyUtils.defaultTimeout));
     });
 });

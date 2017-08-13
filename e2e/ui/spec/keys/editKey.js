@@ -1,24 +1,24 @@
 /* global describe, before, after, it, browser */
 
 import KeysAsserts from '../../KeysAsserts';
-import KeysPage from '../../utils/KeysPage';
-import assert from 'assert';
+import * as KeyUtils from '../../utils/KeysPage';
+import Rule from '../../utils/Rule';
 import selectors from '../../selectors/keySelectors';
 import tweekApiClient from '../../utils/tweekApiClient';
 
 describe('edit keys', () => {
     function goToKey(keyName){
-        KeysPage.goToKey(keyName);
+      KeyUtils.goToKey(keyName);
         browser.windowHandleMaximize();
         KeysAsserts.assertKeyOpened(keyName);
     }
 
     describe('edit JPad keys', () => {
-      const testFolder = KeysPage.TEST_KEYS_FOLDER;
+      const testFolder = '@behavior_tests';
       const editKeyTestFolder = '@edit_key';
 
       describe('visual editor', () => {
-        const keyToEdit = KeysPage.generateTestKeyName('edit_key_test');
+        const keyToEdit = KeyUtils.generateTestKeyName('edit_key_test');
         const keyToEditFullPath = `${testFolder}/${editKeyTestFolder}/${keyToEdit}`;
 
         const expectedKeySource = {
@@ -48,55 +48,32 @@ describe('edit keys', () => {
         };
 
         before(() => {
-          KeysPage.goToBase();
-          KeysPage.addEmptyKey(keyToEditFullPath);
+          KeyUtils.addEmptyKey(keyToEditFullPath);
         });
-
-        function addRuleAndAssertItsFocus(numberOfRules) {
-
-          for (let i = 0; i < numberOfRules; i++) {
-            let ruleFirstConditionPropertyName = selectors.conditionPropertyName(i, 1);
-            browser.click(selectors.ADD_RULE_BUTTON);
-            assert(browser.hasFocus(ruleFirstConditionPropertyName), 'should focus the added rule first condition property name');
-          }
-        }
 
         it('should succeed editing JPad key', () => {
           goToKey(keyToEditFullPath);
 
-          addRuleAndAssertItsFocus(2);
-          KeysAsserts.assertKeyHasNumberOfRules(2);
-
-          KeysPage.setConditionProperty(1, 1, 'AgentVersion');
-          KeysPage.setConditionValue(1, 1, '1.1.1');
-
-          KeysPage.addRuleCondition(1);
-          KeysPage.setConditionProperty(1, 2, 'FavoriteFruit');
-          KeysPage.setConditionValue(1, 2, 'Banana');
-
-          KeysPage.addRuleCondition(1);
-          KeysPage.setConditionProperty(1, 3, 'BirthDate');
-          KeysPage.setConditionValue(1, 3, '3d');
-
-          KeysPage.addRuleCondition(1);
-          KeysPage.setConditionProperty(1, 4, 'IsInGroup');
-          KeysPage.setConditionValue(1, 4, 'false');
-
-          KeysPage.addRuleCondition(1);
-          KeysPage.setConditionProperty(1, 5, 'NumberOfSiblings');
-          KeysPage.setConditionValue(1, 5, '1');
-
-          KeysPage.removeRuleCondition(2, 0);
-          KeysPage.setRuleValue(2, 'some value');
-
           browser.setValue(selectors.DEFAULT_VALUE_INPUT, 'some default value');
+
+          Rule.add()
+            .removeCondition()
+            .setValue('some value');
+
+          Rule.add()
+            .withCondition('user.AgentVersion', '1.1.1')
+            .withCondition('user.FavoriteFruit', 'Banana')
+            .withCondition('user.BirthDate', '3d')
+            .withCondition('user.IsInGroup', 'false')
+            .withCondition('user.NumberOfSiblings', '1');
+
+          KeysAsserts.assertKeyHasNumberOfRules(2);
 
           KeysAsserts.assertKeySource(expectedKeySource);
 
-          KeysPage.commitChanges();
+          KeyUtils.commitChanges();
 
           browser.refresh();
-          KeysPage.waitForPageToLoad(keyToEditFullPath);
 
           KeysAsserts.assertKeySource(expectedKeySource);
         });
@@ -104,11 +81,9 @@ describe('edit keys', () => {
 
       describe('text editor', () => {
         before(() => {
-          KeysPage.goToBase();
-
-          const keyToEdit = KeysPage.generateTestKeyName('edit_key_source_test');
+          const keyToEdit = KeyUtils.generateTestKeyName('edit_key_source_test');
           const keyToEditFullPath = `${testFolder}/${editKeyTestFolder}/${keyToEdit}`;
-          KeysPage.addEmptyKey(keyToEditFullPath);
+          KeyUtils.addEmptyKey(keyToEditFullPath);
         });
 
         const expectedKeySource = {
@@ -140,7 +115,7 @@ describe('edit keys', () => {
           browser.click(selectors.SOURCE_TAB_ITEM);
 
           //set text
-          KeysPage.setKeySource(JSON.stringify(expectedKeySource, null, 4));
+          KeyUtils.setKeySource(JSON.stringify(expectedKeySource, null, 4));
 
           //try to change tab - rodal should appear
           browser.click(selectors.RULES_TAB_ITEM);
@@ -163,7 +138,7 @@ describe('edit keys', () => {
           browser.click(selectors.SOURCE_TAB_ITEM);
 
           //set other text
-          KeysPage.setKeySource("{}");
+          KeyUtils.setKeySource("{}");
 
           //try to change tab - rodal should appear
           browser.click(selectors.RULES_TAB_ITEM);
@@ -187,7 +162,7 @@ describe('edit keys', () => {
             const key = `${consts_path}/number_type`;
             goToKey(key);
             browser.setValue(`${const_selector} input`, '30');
-          KeysPage.commitChanges();
+          KeyUtils.commitChanges();
             tweekApiClient.waitForKeyToEqual(key, 30);
         });
 
@@ -195,7 +170,7 @@ describe('edit keys', () => {
             const key = `${consts_path}/string_type`;
             goToKey(key);
             browser.setValue(`${const_selector} input`, 'world');
-          KeysPage.commitChanges();
+          KeyUtils.commitChanges();
             tweekApiClient.waitForKeyToEqual(key, 'world');
         });
 
@@ -204,7 +179,7 @@ describe('edit keys', () => {
             const currentValue = tweekApiClient.get(key);
             goToKey(key);
             browser.click(`${const_selector} .jsonValue input[type=checkbox]`);
-          KeysPage.commitChanges();
+          KeyUtils.commitChanges();
             tweekApiClient.waitForKeyToEqual(key, {boolProp: !currentValue.boolProp});
         });
       });

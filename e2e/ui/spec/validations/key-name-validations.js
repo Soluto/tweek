@@ -1,13 +1,14 @@
 /* global describe, before, after, it, browser */
 
 import KeysAsserts from '../../KeysAsserts';
-import KeysPage, { BLANK_KEY_NAME } from '../../utils/KeysPage';
+import { BLANK_KEY_NAME } from '../../utils/KeysPage';
+import * as KeyUtils from '../../utils/KeysPage';
 import { expect, assert } from 'chai';
 import keySelectors from '../../selectors/keySelectors';
 
 describe('key name validations', () => {
   beforeEach(() => {
-    KeysPage.goToBase();
+    KeyUtils.goToKey();
   });
 
   const testDefenitions = [];
@@ -40,16 +41,16 @@ describe('key name validations', () => {
 
     browser.setValue(keySelectors.KEY_VALUE_TYPE_INPUT, 'String'); // to make local changes
 
-    assert(!KeysPage.isSaveButtonDisabled(), 'should not disable save button');
+    browser.waitForEnabled(keySelectors.SAVE_CHANGES_BUTTON, 1000);
     browser.click(keySelectors.SAVE_CHANGES_BUTTON);
 
-    assert(!KeysPage.isSaving(), 'should not enter saving mode');
+    assert(!KeyUtils.isSaving(), 'should not enter saving mode');
     assert(browser.isVisible(keySelectors.KEY_NAME_VALIDATION_ALERT_ICON), 'should show key name validation');
   });
 
   it('should allow creating a key named "a/b/c" and also a key named "b"', ()=>{
-    KeysPage.addEmptyKey("a/b/c");
+    KeyUtils.addEmptyKey("a/b/c");
     browser.refresh();
-    KeysPage.addEmptyKey("b");
+    KeyUtils.addEmptyKey("b");
   });
 });
