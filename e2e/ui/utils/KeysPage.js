@@ -24,7 +24,8 @@ export function goToKey(keyName = '', timeout = defaultTimeout, waitToLoad = tru
 
 export function navigateToKey(keyFullPath, timeout = defaultTimeout) {
   const directoryTreeView = dataComp('directory-tree-view');
-  const treeItem = (attribute, value) => `${directoryTreeView} ${attributeSelector(attribute, value)}`;
+  const treeItem = (attribute, value) =>
+    `${directoryTreeView} ${attributeSelector(attribute, value)}`;
   const extractFolders = R.pipe(
     R.split('/'),
     R.dropLast(1),
@@ -34,7 +35,10 @@ export function navigateToKey(keyFullPath, timeout = defaultTimeout) {
 
   const keyFolders = extractFolders(keyFullPath);
 
-  keyFolders.forEach(folder => browser.clickWhenVisible(treeItem('data-folder-name', folder)), timeout);
+  keyFolders.forEach(
+    folder => browser.clickWhenVisible(treeItem('data-folder-name', folder)),
+    timeout,
+  );
 
   const keyLinkSelector = treeItem('href', `/keys/${keyFullPath}`);
   browser.clickWhenVisible(keyLinkSelector, timeout);
@@ -49,7 +53,7 @@ export function addEmptyKey(keyName, keyValueType = 'String', timeout = defaultT
   goToKey();
   browser.click(dataComp('add-new-key'));
 
-  const keyNameInput = dataComp('new-key-name-input');
+  const keyNameInput = dataField('new-key-name-input');
   const keyValueTypeSelector = dataComp('key-value-type-selector');
 
   browser.waitForVisible(keyNameInput, timeout);
@@ -85,15 +89,19 @@ export function hasChanges() {
 
 export function commitChanges(selector = saveChangesButton, timeout = defaultTimeout) {
   browser.click(selector);
-  browser.waitUntil(() => !hasChanges() && !isSaving(), timeout, "changes were not saved");
+  browser.waitUntil(() => !hasChanges() && !isSaving(), timeout, 'changes were not saved');
 }
 
 export function waitForKeyToBeDeleted(keyName, timeout = defaultTimeout) {
   const notFoundMessage = dataComp('key-not-found');
-  browser.waitUntil(() => {
-    goToKey(keyName, timeout, false);
-    return browser.isExisting(notFoundMessage);
-  }, timeout, `key still not deleted after ${timeout}ms`);
+  browser.waitUntil(
+    () => {
+      goToKey(keyName, timeout, false);
+      return browser.isExisting(notFoundMessage);
+    },
+    timeout,
+    `key still not deleted after ${timeout}ms`,
+  );
 }
 
 export function getKeySource(timeout = defaultTimeout) {
@@ -106,7 +114,7 @@ export function getKeySource(timeout = defaultTimeout) {
 
   browser.click(sourceTab);
   browser.waitForVisible('.monaco-editor', 10000);
-  const keySourceCode = browser.execute(function () {
+  const keySourceCode = browser.execute(function() {
     return window.monaco.editor.getModels()[0].getValue();
   });
 
@@ -116,7 +124,7 @@ export function getKeySource(timeout = defaultTimeout) {
 
 export function setKeySource(source, timeout = 10000) {
   browser.waitForVisible('.monaco-editor', timeout);
-  browser.execute(function (source) {
+  browser.execute(function(source) {
     window.monaco.editor.getModels()[0].setValue(source);
   }, source);
 }

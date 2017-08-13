@@ -306,12 +306,12 @@ const NewKeyInput = compose(
 )(({ keysList, keyNameValidation, onKeyNameChanged, displayName }) => {
   const suggestions = getKeyNameSuggestions(keysList).map(x => ({ label: x, value: x }));
   return (
-    <div className="auto-suggest-wrapper" data-with-error={keyNameValidation.isShowingHint}>
+    <div data-comp="new-key-name" className="auto-suggest-wrapper" data-with-error={keyNameValidation.isShowingHint}>
       <div className="validation-icon-wrapper" data-is-shown={keyNameValidation.isShowingHint}>
         <img className="validation-icon" data-tip={keyNameValidation.hint} src={alertIconSrc} />
       </div>
       <ComboBox
-        data-comp="new-key-name-input"
+        data-field="new-key-name-input"
         className="auto-suggest"
         suggestions={suggestions}
         value={displayName}
