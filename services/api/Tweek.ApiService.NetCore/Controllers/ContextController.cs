@@ -29,6 +29,7 @@ namespace Tweek.ApiService.NetCore.Controllers
         public async Task<ActionResult> AppendContext([FromRoute] string identityType, [FromRoute] string identityId, [FromBody] Dictionary<string, JsonValue> data)
         {
             if (!_checkAccess(User, new Identity(identityType, identityId))) return Forbid();
+            if (data.Count == 0) return Ok();
 
             var identity = new Identity(identityType, identityId);
             await _contextDriver.AppendContext(identity, data);

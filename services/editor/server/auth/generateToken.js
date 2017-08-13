@@ -1,7 +1,7 @@
 import fs from 'fs';
+import { promisify } from 'util';
 import jwt from 'jsonwebtoken';
 import nconf from 'nconf';
-import { promisify } from 'bluebird';
 
 const jwtSign = promisify(jwt.sign);
 const readFile = promisify(fs.readFile);
