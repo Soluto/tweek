@@ -34,7 +34,7 @@ export default class Rule {
     return `${emptyCondition} ${dataComp('property-name')}`;
   }
 
-  withCondition(property, value, timeout = 1000) {
+  withCondition(property, value, timeout = 5000) {
     const condition = this._condition(property);
 
     if (!browser.isExisting(condition)) {

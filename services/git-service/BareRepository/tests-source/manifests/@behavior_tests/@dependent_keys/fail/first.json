@@ -1,0 +1,21 @@
+{
+    "key_path": "@behavior_tests/@dependent_keys/fail/first",
+    "meta": {
+        "name": "@behavior_tests/@dependent_keys/fail/first",
+        "description": "e2e dependent keys test",
+        "tags": [
+            "do not delete or change"
+        ],
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "file",
+        "format": "jpad"
+    },
+    "valueType": "string",
+    "enabled": true,
+    "dependencies": [
+      "@behavior_tests/@dependent_keys/fail/second"
+    ]
+}
