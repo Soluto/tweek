@@ -3,7 +3,7 @@
 import { expect } from 'chai';
 import * as KeysAsserts from '../../utils/key-asserts';
 import { assertIsInPage } from '../../utils/page-asserts';
-import { goToKey, commitChanges, displayName } from '../../utils/key-utils';
+import { goToKey, commitChanges, displayName, defaultTimeout } from '../../utils/key-utils';
 import { dataComp, alertButton } from '../../utils/selector-utils';
 import globalSelectors from '../../selectors/globalSelectors';
 
@@ -18,13 +18,13 @@ describe('delete key', () => {
       goToKey('behavior_tests/delete_key/archive');
       commitChanges(archiveKey);
 
-      browser.waitForVisible(keyMessage, 1000);
+      browser.waitForVisible(keyMessage, defaultTimeout);
       const displayText = browser.getText(displayName);
       expect(displayText).to.startsWith('ARCHIVED: ');
 
-      browser.waitForVisible(archiveKey, 1000, true);
-      browser.waitForVisible(unarchiveKey, 1000);
-      browser.waitForVisible(deleteKey, 1000);
+      browser.waitForVisible(archiveKey, defaultTimeout, true);
+      browser.waitForVisible(unarchiveKey, defaultTimeout);
+      browser.waitForVisible(deleteKey, defaultTimeout);
     });
   });
 
@@ -35,14 +35,14 @@ describe('delete key', () => {
 
       commitChanges(unarchiveKey);
 
-      browser.waitForVisible(keyMessage, 1000, true);
+      browser.waitForVisible(keyMessage, defaultTimeout, true);
 
       const displayText = browser.getText(displayName);
       expect(displayText).to.equal(keyName);
 
-      browser.waitForVisible(archiveKey, 1000);
-      browser.waitForVisible(unarchiveKey, 1000, true);
-      browser.waitForVisible(deleteKey, 1000, true);
+      browser.waitForVisible(archiveKey, defaultTimeout);
+      browser.waitForVisible(unarchiveKey, defaultTimeout, true);
+      browser.waitForVisible(deleteKey, defaultTimeout, true);
     });
   });
 
@@ -52,7 +52,7 @@ describe('delete key', () => {
       goToKey(keyName);
       browser.click(deleteKey);
 
-      browser.waitForVisible(alertButton('cancel'), 1000);
+      browser.waitForVisible(alertButton('cancel'), defaultTimeout);
       browser.leftClick(globalSelectors.ALERT_BACKGROUND, -200, -200);
 
       KeysAsserts.assertIsInKeyPage(keyName, 'should still be in key page');
@@ -68,7 +68,7 @@ describe('delete key', () => {
       goToKey(keyName);
       browser.click(deleteKey);
 
-      browser.clickWhenVisible(alertButton('cancel'), 1000);
+      browser.clickWhenVisible(alertButton('cancel'), defaultTimeout);
 
       KeysAsserts.assertIsInKeyPage(keyName, 'should still be in key page');
       KeysAsserts.assertIsKeyExistsAfterTransaction(
@@ -83,7 +83,7 @@ describe('delete key', () => {
       goToKey(keyName);
       browser.click(deleteKey);
 
-      browser.clickWhenVisible(alertButton('ok'), 1000);
+      browser.clickWhenVisible(alertButton('ok'), defaultTimeout);
 
       assertIsInPage('keys', 'should moves to keys page url');
       KeysAsserts.assertIsKeyExistsAfterTransaction(

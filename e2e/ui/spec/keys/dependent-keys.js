@@ -34,12 +34,12 @@ describe('dependent keys', () => {
 
     // Verify depends on
     goToKey(dependsOn);
-    browser.clickWhenVisible(dataComp('depends-on-toggle'), 5000);
+    browser.clickWhenVisible(dataComp('depends-on-toggle'), defaultTimeout);
     browser.waitForVisible(`${dataComp('depends-on')} a[href="/keys/${usedBy}"]`);
 
     // Verify used by
     goToKey(usedBy);
-    browser.clickWhenVisible(dataComp('used-by-toggle'), 5000);
+    browser.clickWhenVisible(dataComp('used-by-toggle'), defaultTimeout);
     browser.waitForVisible(`${dataComp('used-by')} a[href="/keys/${dependsOn}"]`);
   });
 });

@@ -1,7 +1,14 @@
 /* global describe, before, after, it, browser */
 
 import * as KeysAsserts from '../../utils/key-asserts';
-import { goToKey, commitChanges, setKeySource, sourceTab, rulesTab } from '../../utils/key-utils';
+import {
+  goToKey,
+  commitChanges,
+  setKeySource,
+  sourceTab,
+  rulesTab,
+  defaultTimeout,
+} from '../../utils/key-utils';
 import Rule from '../../utils/Rule';
 import { dataComp, alertButton } from '../../utils/selector-utils';
 import tweekApiClient from '../../utils/tweekApiClient';
@@ -67,7 +74,7 @@ describe('edit keys', () => {
         setKeySource(JSON.stringify(expectedKeySource, null, 4));
 
         browser.click(rulesTab);
-        browser.clickWhenVisible(alertButton('cancel'), 5000);
+        browser.clickWhenVisible(alertButton('cancel'), defaultTimeout);
 
         browser.click(dataComp('save-jpad-text'));
         browser.click(rulesTab);
@@ -79,7 +86,7 @@ describe('edit keys', () => {
         setKeySource('{}');
 
         browser.click(rulesTab);
-        browser.clickWhenVisible(alertButton('ok'), 5000);
+        browser.clickWhenVisible(alertButton('ok'), defaultTimeout);
 
         Rule.select().waitForVisible();
         KeysAsserts.assertKeySource(expectedKeySource);

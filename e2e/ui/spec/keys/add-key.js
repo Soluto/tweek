@@ -62,6 +62,10 @@ describe('add key', () => {
       'should set the key name correctly',
     );
 
-    browser.waitUntil(() => !hasChanges(), 4000, 'new key should not be in with-changes state');
+    browser.waitUntil(
+      () => !hasChanges(),
+      defaultTimeout,
+      'new key should not be in with-changes state',
+    );
   });
 });
