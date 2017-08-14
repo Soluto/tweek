@@ -20,7 +20,7 @@ const EditableText = withState(
     isReadonly,
     ...props
   }) =>
-    <div className={classNames('editable-text-container', classes.container)} data-comp="editable-text">
+    <div className={classNames('editable-text-container', classes.container)} data-comp="editable-text" {...props}>
       {isInEditMode
         ? <form
             data-field="form"

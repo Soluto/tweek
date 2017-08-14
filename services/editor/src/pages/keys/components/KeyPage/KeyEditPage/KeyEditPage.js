@@ -280,6 +280,7 @@ const HeaderMainInput = ({
           <KeyValueTypeSelector value={valueType} />
         </div>
       : <EditableText
+          data-comp="display-name"
           onTextChanged={text => onDisplayNameChanged(text)}
           placeHolder="Enter key display name"
           maxLength={80}

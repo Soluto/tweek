@@ -6,6 +6,8 @@ import {
   hasChanges,
   isSaving,
   isInKeyPage,
+  displayName,
+  saveChangesButton,
   defaultTimeout,
   BLANK_KEY_NAME,
 } from '../../utils/key-utils';
@@ -47,15 +49,15 @@ describe('add key', () => {
 
     assert(hasChanges(), 'should have changes');
 
-    browser.click(dataComp('save-changes'));
+    browser.click(saveChangesButton);
     assert(isSaving(), 'should be in saving state');
 
     browser.waitUntil(() => isInKeyPage(keyToAddFullPath), defaultTimeout);
 
     browser.waitForVisible(dataComp('archive-key'), defaultTimeout);
 
-    assert(
-      browser.getText(`${dataComp('editable-text')} ${dataField('text')}`),
+    assert.equal(
+      browser.getText(displayName),
       keyToAddFullPath,
       'should set the key name correctly',
     );

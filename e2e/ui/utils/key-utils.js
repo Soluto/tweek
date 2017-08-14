@@ -5,8 +5,9 @@ import moment from 'moment';
 import R from 'ramda';
 import { dataComp, dataField, alertButton, attributeSelector } from './selector-utils';
 
-const keyEditPage = dataComp('key-edit-page');
-const saveChangesButton = dataComp('save-changes');
+export const keyEditPage = dataComp('key-edit-page');
+export const saveChangesButton = dataComp('save-changes');
+export const displayName = `${dataComp('display-name')} ${dataField('text')}`;
 
 export const defaultTimeout = 5000;
 
@@ -63,9 +64,8 @@ export function addEmptyKey(keyName, keyValueType = 'String', timeout = defaultT
   browser.click(saveChangesButton);
   browser.waitUntil(() => isInKeyPage(keyName), timeout);
 
-  const keyNameField = `${dataComp('editable-text')} ${dataField('text')}`;
-  browser.waitForVisible(keyNameField, timeout);
-  assert.equal(browser.getText(keyNameField), keyName);
+  browser.waitForText(displayName, timeout);
+  assert.equal(browser.getText(displayName), keyName);
 }
 
 export function searchKey(filter, timeout = defaultTimeout) {

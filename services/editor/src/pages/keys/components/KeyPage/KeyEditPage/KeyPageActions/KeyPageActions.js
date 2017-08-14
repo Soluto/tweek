@@ -38,7 +38,7 @@ const KeyPageActions = compose(
   }) =>
     <div>
       {isReadonly
-        ? <div className="readonly-key-message">
+        ? <div className="readonly-key-message" data-comp="key-message">
             {isHistoricRevision ? 'This is an old revision of this key' : 'This key is readonly'}
           </div>
         : null}
