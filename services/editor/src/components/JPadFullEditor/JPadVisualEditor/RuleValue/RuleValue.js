@@ -46,7 +46,7 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
   if (valueType === TypesService.types.boolean.name) {
     return (
       <button
-        data-comp="convert-to-multi-variant-button"
+        data-comp="convert-to-multi-variant"
         className="to-feature-flag-button"
         onClick={() =>
           convertToMultiVariant({
@@ -61,7 +61,7 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
 
   return (
     <button
-      data-comp="convert-to-multi-variant-button"
+      data-comp="convert-to-multi-variant"
       className="add-variant-button"
       onClick={() =>
         convertToMultiVariant({
@@ -153,10 +153,14 @@ const MultiVariantValue = ({
   ownerType,
 }) => {
   const updateOwnerType = identity => mutate.up().in('OwnerType').updateValue(identity);
+  const wrapperProps = {
+    'data-type': type,
+    'data-comp': 'multi-variant-value',
+  };
 
   if (type === 'weighted') {
     return (
-      <div>
+      <div {...wrapperProps}>
         <IdentitySelection
           ownerType={ownerType}
           identities={identities}
@@ -192,7 +196,7 @@ const MultiVariantValue = ({
   }
   if (type === 'bernoulliTrial') {
     return (
-      <div>
+      <div {...wrapperProps}>
         <IdentitySelection
           ownerType={ownerType}
           identities={identities}
@@ -204,7 +208,7 @@ const MultiVariantValue = ({
 
           {args === 1
             ? <button
-                data-comp="set-to-true-button"
+                data-comp="set-to-true"
                 className="set-to-true-button"
                 onClick={() =>
                   mutate.apply(m =>

@@ -14,6 +14,9 @@ const tabHeader = attributeSelector('data-tab-header');
 export const sourceTab = `${rulesEditor} ${tabHeader('source')}`;
 export const rulesTab = `${rulesEditor} ${tabHeader('rules')}`;
 
+export const keyNameInput = dataField('new-key-name-input');
+export const keyValueTypeSelector = dataComp('key-value-type-selector');
+
 export const defaultTimeout = 5000;
 
 export const BLANK_KEY_NAME = '_blank';
@@ -58,9 +61,6 @@ export function isInKeyPage(keyName) {
 export function addEmptyKey(keyName, keyValueType = 'String', timeout = defaultTimeout) {
   goToKey();
   browser.click(dataComp('add-new-key'));
-
-  const keyNameInput = dataField('new-key-name-input');
-  const keyValueTypeSelector = dataComp('key-value-type-selector');
 
   browser.waitForVisible(keyNameInput, timeout);
   browser.setValue(keyNameInput, keyName);
@@ -129,16 +129,6 @@ export function setKeySource(source, timeout = 10000) {
   }, source);
 }
 
-export function getNumberOfRules() {
-  return browser.elements(`${keyEditPage} ${dataComp('rule')}`).value.length;
-}
-
 export function acceptRodalIfRaised() {
   browser.clickIfVisible(alertButton('ok'), 500);
-}
-
-//todo delete
-export function generateTestKeyName(prefix) {
-  const currentDate = new Date();
-  return `${prefix}_${moment(currentDate).format('DD_MM_YYYY_HH_mm_ss')}`;
 }

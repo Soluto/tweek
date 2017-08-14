@@ -1,8 +1,9 @@
 /* global describe, before, after, it, browser */
 
+import assert from 'assert';
 import * as KeysAsserts from '../../utils/key-asserts';
 import * as KeyUtils from '../../utils/key-utils';
-import assert from 'assert';
+import Rule from '../../utils/Rule';
 import selectors from '../../selectors/keySelectors';
 
 describe('readonly key', () => {
@@ -20,7 +21,7 @@ describe('readonly key', () => {
       'should show key is readonly message',
     );
 
-    const numberOfRules = KeyUtils.getNumberOfRules();
+    const numberOfRules = Rule.count();
     browser.click(selectors.ADD_RULE_BUTTON);
     browser.click(selectors.ADD_RULE_BUTTON);
     KeysAsserts.assertKeyHasNumberOfRules(numberOfRules);

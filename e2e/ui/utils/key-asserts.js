@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import * as KeyUtils from './key-utils';
 import { assertIsInPage } from './page-asserts';
 import { dataComp } from './selector-utils';
+import Rule from './Rule';
 
 const keyEditPage = dataComp('key-edit-page');
 
@@ -32,7 +33,7 @@ export function assertKeyHasNumberOfRules(
   expectedNumberOfRules,
   message = 'should have correct ammount of rules',
 ) {
-  assert.equal(KeyUtils.getNumberOfRules(), expectedNumberOfRules, message);
+  assert.equal(Rule.count(), expectedNumberOfRules, message);
 }
 
 export function assertIsKeyExistsAfterTransaction(keyName, isExisting, message) {

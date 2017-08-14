@@ -8,6 +8,7 @@ import {
   isInKeyPage,
   displayName,
   saveChangesButton,
+  keyNameInput,
   defaultTimeout,
   BLANK_KEY_NAME,
 } from '../../utils/key-utils';
@@ -18,7 +19,6 @@ describe('add key', () => {
   const keyToAddFullPath = `behavior_tests/add_key/add_key_test`;
   const newKeyName = field => `${dataComp('new-key-name')} ${dataField(field)}`;
   const keyPathSuggestions = newKeyName('suggestions');
-  const keyNameInput = newKeyName('new-key-name-input');
 
   before(() => {
     goToKey();
@@ -28,7 +28,6 @@ describe('add key', () => {
     browser.click(dataComp('add-new-key'));
 
     KeysAsserts.assertKeyOpened(BLANK_KEY_NAME);
-    browser.windowHandleMaximize();
 
     assert(
       !browser.isExisting(keyPathSuggestions),

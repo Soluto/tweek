@@ -21,8 +21,16 @@ export default class Rule {
     return newRule;
   }
 
+  static count() {
+    return browser.elements(dataComp('rule')).value.length;
+  }
+
   _ruleSelector(selector) {
     return `${this._rule} ${selector}`;
+  }
+
+  _ruleCompSelector(comp) {
+    return this._ruleSelector(dataComp(comp));
   }
 
   _condition(property = '') {
@@ -34,11 +42,17 @@ export default class Rule {
     return `${emptyCondition} ${dataComp('property-name')}`;
   }
 
+  _sliderComp(comp, i) {
+    return this._ruleSelector(
+      `${dataComp('custom-slider')} ${nthSelector(i, dataComp('legend-item'))} ${dataComp(comp)}`,
+    );
+  }
+
   withCondition(property, value, timeout = 5000) {
     const condition = this._condition(property);
 
     if (!browser.isExisting(condition)) {
-      const addButton = this._ruleSelector(dataComp('add-condition'));
+      const addButton = this._ruleCompSelector('add-condition');
       browser.click(addButton);
       browser.setValue(this._newPropertyInput(), property);
 
@@ -72,7 +86,57 @@ export default class Rule {
     return this;
   }
 
+  multiVariant() {
+    browser.click(this._ruleCompSelector('convert-to-multi-variant'));
+    browser.waitForVisible(this._ruleCompSelector('multi-variant-value'));
+
+    return this;
+  }
+
+  withIdentity(identityType) {
+    browser.setValue(this._ruleCompSelector('identity-selection'), identityType);
+
+    return this;
+  }
+
+  singleValue() {
+    const type = browser.getAttribute(this._ruleCompSelector('multi-variant-value'), 'data-type');
+    if (type === 'bernoulliTrial') {
+      browser.setValue(this._ruleCompSelector('bernoulli-trial-input'), 100);
+      browser.click(this._ruleCompSelector('set-to-true'));
+    } else if (type === 'weighted') {
+      const argsCount = browser.elements(`${dataComp('custom-slider')} ${dataComp('legend-item')}`)
+        .value.length;
+      for (let i = 1; i < argsCount; i++) {
+        browser.click(this._sliderComp('delete-legend-button', 1));
+      }
+    } else {
+      throw `unknown type ${type}`;
+    }
+
+    return this;
+  }
+
+  setValues(args) {
+    args = Object.entries(args);
+    const argsCount = browser.elements(`${dataComp('custom-slider')} ${dataComp('legend-item')}`)
+      .value.length;
+
+    for (let i = 0; i < args.length - argsCount; i++) {
+      browser.click(this._ruleCompSelector('add-variant-button'));
+    }
+
+    args.forEach(([arg, percent], i) => {
+      browser.setValue(this._sliderComp('legend-value', i + 1), arg);
+      browser.setValue(this._sliderComp('legend-percent', i + 1), percent);
+    });
+
+    return this;
+  }
+
   waitForVisible(timeout = 5000) {
     browser.waitForVisible(this._rule, timeout);
+
+    return this;
   }
 }
