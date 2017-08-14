@@ -9,6 +9,11 @@ export const keyEditPage = dataComp('key-edit-page');
 export const saveChangesButton = dataComp('save-changes');
 export const displayName = `${dataComp('display-name')} ${dataField('text')}`;
 
+export const rulesEditor = dataComp('key-rules-editor');
+const tabHeader = attributeSelector('data-tab-header');
+export const sourceTab = `${rulesEditor} ${tabHeader('source')}`;
+export const rulesTab = `${rulesEditor} ${tabHeader('rules')}`;
+
 export const defaultTimeout = 5000;
 
 export const BLANK_KEY_NAME = '_blank';
@@ -105,11 +110,6 @@ export function waitForKeyToBeDeleted(keyName, timeout = defaultTimeout) {
 }
 
 export function getKeySource(timeout = defaultTimeout) {
-  const rulesEditor = dataComp('key-rules-editor');
-  const tabHeader = attributeSelector('data-tab-header');
-  const sourceTab = `${rulesEditor} ${tabHeader('source')}`;
-  const rulesTab = `${rulesEditor} ${tabHeader('rules')}`;
-
   browser.waitForVisible(rulesEditor, timeout);
 
   browser.click(sourceTab);

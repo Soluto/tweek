@@ -1,60 +1,44 @@
 /* global describe, before, after, it, browser */
 
 import * as KeysAsserts from '../../utils/key-asserts';
-import * as KeyUtils from '../../utils/key-utils';
+import { goToKey, commitChanges, setKeySource, sourceTab, rulesTab } from '../../utils/key-utils';
 import Rule from '../../utils/Rule';
-import selectors from '../../selectors/keySelectors';
+import { dataComp, alertButton } from '../../utils/selector-utils';
 import tweekApiClient from '../../utils/tweekApiClient';
 
 describe('edit keys', () => {
-  function goToKey(keyName) {
-    KeyUtils.goToKey(keyName);
-    browser.windowHandleMaximize();
-    KeysAsserts.assertKeyOpened(keyName);
-  }
-
   describe('edit JPad keys', () => {
-    const testFolder = '@behavior_tests';
-    const editKeyTestFolder = '@edit_key';
+    const expectedKeySource = {
+      partitions: [],
+      valueType: 'string',
+      rules: [
+        {
+          Matcher: {
+            'user.AgentVersion': '1.1.1',
+            'user.FavoriteFruit': 'Banana',
+            'user.BirthDate': {
+              $withinTime: '3d',
+            },
+            'user.IsInGroup': false,
+            'user.NumberOfSiblings': 1,
+          },
+          Value: '',
+          Type: 'SingleVariant',
+        },
+        {
+          Matcher: {},
+          Value: 'some value',
+          Type: 'SingleVariant',
+        },
+      ],
+      defaultValue: 'some default value',
+    };
 
     describe('visual editor', () => {
-      const keyToEdit = KeyUtils.generateTestKeyName('edit_key_test');
-      const keyToEditFullPath = `${testFolder}/${editKeyTestFolder}/${keyToEdit}`;
-
-      const expectedKeySource = {
-        partitions: [],
-        valueType: 'string',
-        rules: [
-          {
-            Matcher: {
-              'user.AgentVersion': '1.1.1',
-              'user.FavoriteFruit': 'Banana',
-              'user.BirthDate': {
-                $withinTime: '3d',
-              },
-              'user.IsInGroup': false,
-              'user.NumberOfSiblings': 1,
-            },
-            Value: '',
-            Type: 'SingleVariant',
-          },
-          {
-            Matcher: {},
-            Value: 'some value',
-            Type: 'SingleVariant',
-          },
-        ],
-        defaultValue: 'some default value',
-      };
-
-      before(() => {
-        KeyUtils.addEmptyKey(keyToEditFullPath);
-      });
-
       it('should succeed editing JPad key', () => {
-        goToKey(keyToEditFullPath);
+        goToKey('behavior_tests/edit_key/visual/edit_test');
 
-        browser.setValue(selectors.DEFAULT_VALUE_INPUT, 'some default value');
+        browser.setValue(dataComp('default-value'), 'some default value');
 
         Rule.add().removeCondition().setValue('some value');
 
@@ -66,119 +50,69 @@ describe('edit keys', () => {
           .withCondition('user.NumberOfSiblings', '1');
 
         KeysAsserts.assertKeyHasNumberOfRules(2);
-
         KeysAsserts.assertKeySource(expectedKeySource);
 
-        KeyUtils.commitChanges();
+        commitChanges();
 
         browser.refresh();
-
         KeysAsserts.assertKeySource(expectedKeySource);
       });
     });
 
     describe('text editor', () => {
-      before(() => {
-        const keyToEdit = KeyUtils.generateTestKeyName('edit_key_source_test');
-        const keyToEditFullPath = `${testFolder}/${editKeyTestFolder}/${keyToEdit}`;
-        KeyUtils.addEmptyKey(keyToEditFullPath);
-      });
-
-      const expectedKeySource = {
-        partitions: [],
-        valueType: 'string',
-        rules: [
-          {
-            Matcher: {
-              'user.AgentVersion': '1.1.1',
-              'user.FavoriteFruit': 'Banana',
-              'user.BirthDate': {
-                $withinTime: '3d',
-              },
-            },
-            Value: '',
-            Type: 'SingleVariant',
-          },
-          {
-            Matcher: {},
-            Value: 'some value',
-            Type: 'SingleVariant',
-          },
-        ],
-        defaultValue: 'some default value',
-      };
-
       it('should succeed editing JPad source', () => {
-        //go to source tab
-        browser.click(selectors.SOURCE_TAB_ITEM);
+        goToKey('behavior_tests/edit_key/text/edit_test');
 
-        //set text
-        KeyUtils.setKeySource(JSON.stringify(expectedKeySource, null, 4));
+        browser.click(sourceTab);
+        setKeySource(JSON.stringify(expectedKeySource, null, 4));
 
-        //try to change tab - rodal should appear
-        browser.click(selectors.RULES_TAB_ITEM);
+        browser.click(rulesTab);
+        browser.clickWhenVisible(alertButton('cancel'), 5000);
 
-        //cancel rodal
-        browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 5000);
-        browser.click(selectors.ALERT_CANCEL_BUTTON);
+        browser.click(dataComp('save-jpad-text'));
+        browser.click(rulesTab);
 
-        //save
-        browser.click('.save-code-changes-button');
-
-        //go to visual tab
-        browser.click(selectors.RULES_TAB_ITEM);
-        browser.waitForVisible(selectors.ADD_RULE_BUTTON, 5000);
-
-        //assert key
+        Rule.select().waitForVisible();
         KeysAsserts.assertKeySource(expectedKeySource);
 
-        //go to source tab
-        browser.click(selectors.SOURCE_TAB_ITEM);
+        browser.click(sourceTab);
+        setKeySource('{}');
 
-        //set other text
-        KeyUtils.setKeySource('{}');
+        browser.click(rulesTab);
+        browser.clickWhenVisible(alertButton('ok'), 5000);
 
-        //try to change tab - rodal should appear
-        browser.click(selectors.RULES_TAB_ITEM);
-
-        //accept rodal
-        browser.waitForVisible(selectors.ALERT_OK_BUTTON, 5000);
-        browser.click(selectors.ALERT_OK_BUTTON);
-        browser.waitForVisible(selectors.ADD_RULE_BUTTON, 5000);
-
-        //assert key
+        Rule.select().waitForVisible();
         KeysAsserts.assertKeySource(expectedKeySource);
       });
     });
   });
 
   describe('edit const keys', () => {
-    const consts_path = '@behavior_tests/@const_keys';
-    const const_selector = '*[data-comp=ConstEditor]';
+    const constKeyFolder = 'behavior_tests/edit_key/visual/const';
+    const constEditor = dataComp('const-editor');
 
     it('should succeed editing key (valueType=number)', () => {
-      const key = `${consts_path}/number_type`;
-      goToKey(key);
-      browser.setValue(`${const_selector} input`, '30');
-      KeyUtils.commitChanges();
-      tweekApiClient.waitForKeyToEqual(key, 30);
+      const keyName = `${constKeyFolder}/number_type`;
+      goToKey(keyName);
+      browser.setValue(`${constEditor} input`, '30');
+      commitChanges();
+      tweekApiClient.waitForKeyToEqual(keyName, 30);
     });
 
     it('should succeed editing key (valueType=string)', () => {
-      const key = `${consts_path}/string_type`;
-      goToKey(key);
-      browser.setValue(`${const_selector} input`, 'world');
-      KeyUtils.commitChanges();
-      tweekApiClient.waitForKeyToEqual(key, 'world');
+      const keyName = `${constKeyFolder}/string_type`;
+      goToKey(keyName);
+      browser.setValue(`${constEditor} input`, 'world');
+      commitChanges();
+      tweekApiClient.waitForKeyToEqual(keyName, 'world');
     });
 
     it('should succeed editing key (valueType=object)', () => {
-      const key = `${consts_path}/object_type`;
-      const currentValue = tweekApiClient.get(key);
-      goToKey(key);
-      browser.click(`${const_selector} .jsonValue input[type=checkbox]`);
-      KeyUtils.commitChanges();
-      tweekApiClient.waitForKeyToEqual(key, { boolProp: !currentValue.boolProp });
+      const keyName = `${constKeyFolder}/object_type`;
+      goToKey(keyName);
+      browser.click(`${constEditor} .jsonValue input[type=checkbox]`);
+      commitChanges();
+      tweekApiClient.waitForKeyToEqual(keyName, { boolProp: false });
     });
   });
 });

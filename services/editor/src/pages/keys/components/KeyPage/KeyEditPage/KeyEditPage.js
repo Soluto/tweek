@@ -20,7 +20,7 @@ import { UsedBy, DependsOn } from './DependencyIndicator/DependencyIndicator';
 import './KeyEditPage.css';
 
 const ConstEditor = ({ value, valueType, onChange }) =>
-  <div data-comp="ConstEditor">
+  <div data-comp="const-editor">
     {valueType === 'object'
       ? <Json value={value} onChange={onChange} />
       : <TypedInput {...{ value, valueType, onChange }} />}

@@ -71,7 +71,8 @@ class JPadTextEditor extends Component {
               requireConfig={requireConfig}
             />
             <button
-              className={'save-code-changes-button'}
+              className="save-code-changes-button"
+              data-comp="save-jpad-text"
               onClick={() => this.save()}
               disabled={!this.state.allowSave}
             >

@@ -6,7 +6,7 @@ import * as KeyUtils from '../../utils/key-utils';
 describe('revision history', () => {
   const keyName = '@behavior_tests/@revision_history/key';
   const revisionHistorySelector = '[data-comp= revision-history]';
-  const valueSelector = '[data-comp= ConstEditor] input';
+  const valueSelector = '[data-comp= const-editor] input';
 
   function changeValue(count) {
     const currentCommitSelector = `${revisionHistorySelector} option:nth-of-type(1)`;

@@ -1,7 +1,7 @@
 {
-  "key_path": "@behavior_tests/@const_keys/string_type",
+  "key_path": "behavior_tests/edit_key/visual/const/string_type",
   "meta": {
-    "name": "@behavior_tests/@const_keys/string_type",
+    "name": "behavior_tests/edit_key/visual/const/string_type",
     "tags": [],
     "description": "",
     "archived": false

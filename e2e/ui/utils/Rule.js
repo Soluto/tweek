@@ -71,4 +71,8 @@ export default class Rule {
 
     return this;
   }
+
+  waitForVisible(timeout = 5000) {
+    browser.waitForVisible(this._rule, timeout);
+  }
 }
