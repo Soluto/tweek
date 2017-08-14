@@ -1,6 +1,6 @@
 import fs from 'fs';
+import { promisify } from 'util';
 import nconf from 'nconf';
-import { promisify } from 'bluebird';
 import webPush from 'web-push';
 
 const readFile = promisify(fs.readFile);

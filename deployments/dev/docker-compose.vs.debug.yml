@@ -41,3 +41,8 @@ services:
     build: {}
     labels:
       - "com.microsoft.visualstudio.targetoperatingsystem=linux"
+
+  authoring:
+    build: {}
+    labels:
+      - "com.microsoft.visualstudio.targetoperatingsystem=linux"

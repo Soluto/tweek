@@ -1,5 +1,5 @@
-import Promise from 'bluebird';
 import fetch from './utils/fetch';
+import delay from './utils/delay';
 
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -41,12 +41,12 @@ async function persistRegistration(subscription) {
       if (retryCount === maxRetryCount) throw error;
       retryCount++;
 
-      await Promise.delay(60 * 1000);
+      await delay(60 * 1000);
       continue;
     }
 
     retryCount = 0;
-    await Promise.delay(5 * 60 * 1000);
+    await delay(5 * 60 * 1000);
   }
 }
 

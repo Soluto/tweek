@@ -401,11 +401,15 @@ combined-stream@^1.0.5, combined-stream@~1.0.5:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@2.9.0, commander@^2.9.0:
+commander@2.9.0:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.9.0.tgz#9c99094176e12240cb22d6c5146098400fe0f7d4"
   dependencies:
     graceful-readlink ">= 1.0.0"
+
+commander@^2.9.0:
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.11.0.tgz#157152fd1e7a6c8d98a5b715cf376df928004563"
 
 common-tags@^1.4.0:
   version "1.4.0"
@@ -736,8 +740,8 @@ eslint@^3.19.0:
     user-home "^2.0.0"
 
 eslint@^4.1.1:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.4.0.tgz#a3e153e704b64f78290ef03592494eaba228d3bc"
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.3.0.tgz#fcd7c96376bbf34c85ee67ed0012a299642b108f"
   dependencies:
     ajv "^5.2.0"
     babel-code-frame "^6.22.0"
@@ -834,10 +838,6 @@ execa@^0.7.0:
 exit-hook@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/exit-hook/-/exit-hook-1.1.1.tgz#f05ca233b48c05d54fff07765df8507e95c02ff8"
-
-expres@0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/expres/-/expres-0.0.5.tgz#bf4484749f83920cb116d6baf6da230220d1fb9c"
 
 express@^4.13.4:
   version "4.15.3"
@@ -1761,13 +1761,13 @@ mimic-fn@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/mimic-fn/-/mimic-fn-1.1.0.tgz#e667783d92e89dbd342818b5230b9d62a672ad18"
 
-minimatch@3.0.3, minimatch@^3.0.0, minimatch@^3.0.2:
+minimatch@3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.3.tgz#2a4e4090b96b2db06a9d7df01055a62a77c9b774"
   dependencies:
     brace-expansion "^1.0.0"
 
-minimatch@^3.0.4:
+minimatch@^3.0.0, minimatch@^3.0.2, minimatch@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.4.tgz#5166e286457f03306064be5497e8dbb0c3d32083"
   dependencies:

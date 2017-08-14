@@ -33,12 +33,14 @@ namespace Tweek.Drivers.Redis
 
         private ConfigurationOptions TranslateDnsToIP(ConfigurationOptions configurationOptions)
         {
-            var endpoints = configurationOptions.EndPoints
-                .Select(endpoint => endpoint as DnsEndPoint)
+            var dnsEndpoints = configurationOptions.EndPoints
+                .OfType<DnsEndPoint>()
                 .SelectMany(endpoint =>
                     Dns.GetHostAddressesAsync(endpoint.Host).Result
                         .Select(ip => new IPEndPoint(ip, endpoint.Port))
                 );
+            var ipEndpoints = configurationOptions.EndPoints.OfType<IPEndPoint>();
+            var endpoints = dnsEndpoints.Concat(ipEndpoints);
             var result = configurationOptions.Clone();
             result.EndPoints.Clear();
             foreach (var endpoint in endpoints)
@@ -52,7 +54,11 @@ namespace Tweek.Drivers.Redis
         {
             var db = mRedisConnection.GetDatabase();
             var id = GetKey(identity);
-            HashEntry[] redisContext = context.Select(item =>
+            var contextWithCreationDate = new Dictionary<string, JsonValue>(context)
+            {
+                ["@CreationDate"] = JsonValue.NewString(DateTimeOffset.UtcNow.ToString())
+            };
+            HashEntry[] redisContext = contextWithCreationDate.Select(item =>
                 new HashEntry(item.Key, JsonConvert.SerializeObject(item.Value, JSON_SERIALIZER_SETTINGS))
             ).ToArray();
 
@@ -68,7 +74,12 @@ namespace Tweek.Drivers.Redis
 
             foreach (var item in redisResult)
             {
-                result.Add(item.Name, JsonValue.Parse(item.Value));
+                var value = JsonValue.Parse(item.Value);
+                if (value.IsFloat)
+                {
+                    value = JsonValue.NewNumber(value.AsDecimal());
+                }
+                result.Add(item.Name, value);
             }
 
             return result;

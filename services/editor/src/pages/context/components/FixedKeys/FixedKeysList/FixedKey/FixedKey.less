@@ -1,19 +1,34 @@
 @import (reference) "../../../../../../styles/core/core.less";
 @import (reference) "../../../../../../styles/core/comboBox.less";
+
+.editable-key() {
+  display: flex;
+
+  > div {
+    margin: 5px;
+  }
+
+  .key-input {
+    .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+      width: 350px;
+    }
+    .bootstrap-typeahead .dropdown-menu {
+      min-width: 350px;
+    }
+  }
+}
+
 .fixed-key-container {
   display: flex;
   align-items: center;
+  padding: 8px 4px 8px 16px;
 
   .delete-button {
     .small-close-circle-button;
   }
 
   .editable-key-container {
-    display: flex;
-
-    > div {
-      margin: 5px;
-    }
+    .editable-key();
 
     &.new-item {
       input {
@@ -25,15 +40,6 @@
       text-decoration: line-through;
     }
 
-    .key-input {
-      .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
-        width: 350px;
-      }
-      .bootstrap-typeahead .dropdown-menu {
-        min-width: 350px;
-      }
-    }
-
     .value-input {
       &.has-changes {
         color: green;
@@ -42,6 +48,7 @@
         }
       }
     }
+
     .initial-value {
       .metro-textbox;
       opacity: 0.5;
@@ -53,3 +60,21 @@
   }
 }
 
+.new-fixed-key {
+  display: flex;
+  align-items: center;
+
+  border: 1px #999999 dotted;
+  border-radius: 3px;
+  background-color: #EFFFFF;
+  width: fit-content;
+  padding: 8px 4px 8px 26px;
+
+  .editable-key-container {
+    .editable-key();
+  }
+
+  .add-key-button {
+    .add-circle-button;
+  }
+}

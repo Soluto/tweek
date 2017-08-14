@@ -80,6 +80,12 @@ describe('selectedKey', async () => {
           keyDef: {
             source: '',
           },
+          manifest:{
+            implementation: {
+              type: "file",
+              format: "jpad",
+            },
+          },
         },
         validation: {
           isValid: true,
@@ -114,7 +120,7 @@ describe('selectedKey', async () => {
   describe('openKey', () => {
     beforeEach(() => {
       fetchMock.get('glob:*/api/tags', []);
-      fetchMock.get('glob:*/api/schema/', {});
+      fetchMock.get('glob:*/api/schemas/', {});
     });
 
     it('should dispatch KEY_OPENED with blank payload for blank key name', async () => {
@@ -149,26 +155,32 @@ describe('selectedKey', async () => {
       // Arrange
       const keyName = 'category/some key';
 
-      const expectedKeyData = {
-        keyDef: {
-          source: 'some key def source',
-          type: 'cs',
-          valueType: 'string',
-        },
+      const expectedServerData = {
+        implementation: 'some key def source',
         manifest: {
-          name: '',
-          description: '',
-          valueType: '',
+          key_path:"test",
+          meta:{
+            name: '',
+            description: '',
+            valueType: '',
+          },
+          implementation:{
+            type: "file",
+            format: "jpad",
+          },
         },
       };
 
       const expectedPayload = {
         key: keyName,
-        manifest: expectedKeyData.manifest,
-        keyDef: expectedKeyData.keyDef,
+        keyDef: {
+          source: expectedServerData.implementation,
+          type: "jpad",
+        },
+        manifest: expectedServerData.manifest,
       };
 
-      fetchMock.get('glob:*/api/keys/*', expectedKeyData);
+      fetchMock.get('glob:*/api/keys/*', expectedServerData);
 
       // Act
       const func = openKey(keyName);
@@ -179,35 +191,6 @@ describe('selectedKey', async () => {
       assertDispatchAction(keyOpenedDispatchAction, { type: KEY_OPENED, payload: expectedPayload });
     });
 
-    it('should dispatch KEY_OPENED and create key meta if meta does not exists', async () => {
-      // Arrange
-      const keyName = 'category/some key';
-
-      const expectedKeyData = {
-        keyDef: {
-          source: 'some key def source',
-          type: 'cs',
-          valueType: 'string',
-        },
-      };
-
-      const expectedPayload = {
-        key: keyName,
-        manifest: createBlankKeyManifest(),
-        keyDef: expectedKeyData.keyDef,
-      };
-
-      fetchMock.get('glob:*/api/keys/*', expectedKeyData);
-
-      // Act
-      const func = openKey(keyName);
-      await func(dispatchMock);
-
-      // Assert
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
-      expect(keyOpenedDispatchAction.type).to.deep.equal(KEY_OPENED);
-      expect(keyOpenedDispatchAction.payload.manifest).to.deep.equal(createBlankKeyManifest());
-    });
 
     it('should dispatch KEY_OPENED with correct payload if GET failed', async () => {
       // Arrange
@@ -232,7 +215,7 @@ describe('selectedKey', async () => {
       // Arrange
       const expectedTags = [{ name: 'pita' }];
       fetchMock.restore();
-      fetchMock.get('glob:*/api/schema/', {});
+      fetchMock.get('glob:*/api/schemas/', {});
       fetchMock.get('glob:*/api/tags', expectedTags);
 
       // Act
@@ -350,24 +333,21 @@ describe('selectedKey', async () => {
         const func = saveKey();
         await func(dispatchMock, () => currentState);
 
-        assert(
-          dispatchMock.mock.calls.length === 6,
-          `should call dispatch 6 times, instead called ${dispatchMock.mock.calls.length} times`,
-        );
+        const addedAction = dispatchMock.mock.calls.find(([action]) => action.type === KEY_ADDED);
+        expect(addedAction).to.exist;
+        assertDispatchAction(addedAction[0], { type: KEY_ADDED, payload: keyNameToSave });
 
-        let keyAddedDispatchAction = dispatchMock.mock.calls[4][0];
-        let pushDispatchAction = dispatchMock.mock.calls[5][0];
-        assertDispatchAction(keyAddedDispatchAction, { type: KEY_ADDED, payload: keyNameToSave });
+        const pushAction = dispatchMock.mock.calls.find(
+          ([action]) => action.type && action.type.startsWith('@@router'),
+        );
+        expect(pushAction).to.exist;
 
         const expectedPushPayload = {
           method: 'push',
           args: [`/keys/${keyNameToSave}`],
         };
 
-        expect(pushDispatchAction.payload).to.deep.equal(
-          expectedPushPayload,
-          'should deliver correct push dispatch action payload',
-        );
+        expect(pushAction[0]).to.deep.include({ payload: expectedPushPayload });
       });
 
       it('should not open the new saved key if there was key change while saving', async () => {

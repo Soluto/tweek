@@ -29,21 +29,21 @@ export async function refreshTypes() {
 }
 
 export function convertValue(value, targetType) {
-  const type = types[targetType];
+  const type = typeof targetType === 'string' ? types[targetType] : targetType;
 
   if (!type) {
     throw new Error('Unknown type', targetType);
   }
 
   switch (type.base || type.name) {
-    case 'boolean':
-      return safeConvertToBaseType(value, 'boolean');
-    case 'number':
-      return safeConvertToBaseType(value, 'number');
-    case 'object':
-      return safeConvertToBaseType(value, 'object');
-    default:
-      return value.toString();
+  case 'boolean':
+    return safeConvertToBaseType(value, 'boolean');
+  case 'number':
+    return safeConvertToBaseType(value, 'number');
+  case 'object':
+    return safeConvertToBaseType(value, 'object');
+  default:
+    return value.toString();
   }
 }
 
