@@ -1,7 +1,7 @@
 /* global describe, before, after, it, browser */
 
 import * as KeysAsserts from '../../utils/key-asserts';
-import * as KeyUtils from '../../utils/KeysPage';
+import * as KeyUtils from '../../utils/key-utils';
 import Rule from '../../utils/Rule';
 import selectors from '../../selectors/keySelectors';
 import tweekApiClient from '../../utils/tweekApiClient';

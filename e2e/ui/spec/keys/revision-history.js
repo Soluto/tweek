@@ -1,7 +1,7 @@
 /* global describe, before, after, it, browser */
 
 import { expect } from 'chai';
-import * as KeyUtils from '../../utils/KeysPage';
+import * as KeyUtils from '../../utils/key-utils';
 
 describe('revision history', () => {
   const keyName = '@behavior_tests/@revision_history/key';

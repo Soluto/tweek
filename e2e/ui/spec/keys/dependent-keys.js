@@ -1,6 +1,6 @@
 /* global describe, before, beforeEach, after, afterEach, it, browser */
 
-import * as KeyUtils from '../../utils/KeysPage';
+import * as KeyUtils from '../../utils/key-utils';
 import Rule from '../../utils/Rule';
 import { dataComp } from '../../utils/selector-utils';
 import globalSelectors from '../../selectors/globalSelectors';

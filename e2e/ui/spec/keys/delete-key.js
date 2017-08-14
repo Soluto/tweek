@@ -3,7 +3,7 @@
 import { expect } from 'chai';
 import * as KeysAsserts from '../../utils/key-asserts';
 import { assertIsInPage } from '../../utils/page-asserts';
-import * as KeyUtils from '../../utils/KeysPage';
+import * as KeyUtils from '../../utils/key-utils';
 import { alertButton } from '../../utils/selector-utils';
 import keySelectors from '../../selectors/keySelectors';
 import globalSelectors from '../../selectors/globalSelectors';

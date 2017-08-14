@@ -1,7 +1,7 @@
 /* global describe, before, beforeEach, after, it, browser */
 
 import * as KeysAsserts from '../../utils/key-asserts';
-import * as KeyUtils from '../../utils/KeysPage';
+import * as KeyUtils from '../../utils/key-utils';
 import { dataComp } from '../../utils/selector-utils';
 import selectors from '../../selectors/keySelectors';
 

@@ -8,7 +8,7 @@ import {
   isInKeyPage,
   defaultTimeout,
   BLANK_KEY_NAME,
-} from '../../utils/KeysPage';
+} from '../../utils/key-utils';
 import { dataComp, dataField } from '../../utils/selector-utils';
 import assert from 'assert';
 

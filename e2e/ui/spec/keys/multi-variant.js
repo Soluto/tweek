@@ -1,7 +1,7 @@
 /* global describe, before, beforeEach, after, it, browser */
 
-import { BLANK_KEY_NAME } from '../../utils/KeysPage';
-import * as KeyUtils from '../../utils/KeysPage';
+import { BLANK_KEY_NAME } from '../../utils/key-utils';
+import * as KeyUtils from '../../utils/key-utils';
 import Rule from '../../utils/Rule';
 import assert from 'assert';
 import { expect } from 'chai';
@@ -11,11 +11,12 @@ import { _getSelectorByIndex, getRelativeSelector } from '../../selectors/select
 const dataComp = x => `[data-comp= "${x}"]`;
 const clickComp = x => browser.click(dataComp(x));
 
-const sliderComp = (x, i) => getRelativeSelector([
-  dataComp('custom-slider'),
-  _getSelectorByIndex(dataComp('legend-item'), i),
-  dataComp(x),
-]);
+const sliderComp = (x, i) =>
+  getRelativeSelector([
+    dataComp('custom-slider'),
+    _getSelectorByIndex(dataComp('legend-item'), i),
+    dataComp(x),
+  ]);
 
 const identitySelector = dataComp('identity-selection');
 

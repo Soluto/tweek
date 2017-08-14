@@ -1,8 +1,8 @@
 /* global describe, before, after, it, browser */
 
 import * as KeysAsserts from '../../utils/key-asserts';
-import { BLANK_KEY_NAME } from '../../utils/KeysPage';
-import * as KeyUtils from '../../utils/KeysPage';
+import { BLANK_KEY_NAME } from '../../utils/key-utils';
+import * as KeyUtils from '../../utils/key-utils';
 import Rule from '../../utils/Rule';
 import keySelectors from '../../selectors/keySelectors';
 import { dataComp } from '../../utils/selector-utils';

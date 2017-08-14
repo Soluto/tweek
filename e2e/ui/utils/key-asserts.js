@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { expect } from 'chai';
-import * as KeyUtils from './KeysPage';
+import * as KeyUtils from './key-utils';
 import { assertIsInPage } from './page-asserts';
 import { dataComp } from './selector-utils';
 

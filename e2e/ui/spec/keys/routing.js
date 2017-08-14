@@ -1,7 +1,7 @@
 /* global describe, before, after, beforeEach, it, browser */
 
-import { BLANK_KEY_NAME } from '../../utils/KeysPage';
-import * as KeyUtils from '../../utils/KeysPage';
+import { BLANK_KEY_NAME } from '../../utils/key-utils';
+import * as KeyUtils from '../../utils/key-utils';
 import selectors from '../../selectors/keySelectors';
 
 describe('navigating from key with changes', () => {
