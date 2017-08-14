@@ -25,7 +25,7 @@ function KeysFilter({ onFilterChange }) {
 const KeyItem = connect((state, props) => ({
   isActive: state.selectedKey && state.selectedKey.key && state.selectedKey.key === props.fullPath,
 }))(({ name, fullPath, depth, isActive }) =>
-  <div className={'key-link-wrapper'}>
+  <div className="key-link-wrapper" data-comp="key-link">
     <Link
       className={classNames('key-link', { selected: isActive })}
       style={{ paddingLeft: (depth + 1) * 14 }}

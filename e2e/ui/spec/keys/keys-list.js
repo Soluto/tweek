@@ -1,32 +1,34 @@
 /* global describe, before, after, it, browser */
 
 import * as KeysAsserts from '../../utils/key-asserts';
-import * as KeyUtils from '../../utils/key-utils';
-import selectors from '../../selectors/keySelectors';
+import { goToKey, navigateToKey, searchKey } from '../../utils/key-utils';
+import { attributeSelector, dataComp } from '../../utils/selector-utils';
 
 describe('keys list and filter', () => {
-  const testFolder = '@behavior_tests';
-  const keysListTestFolder = '@keys_list';
+  const keysListTestFolder = 'behavior_tests/keys_list';
 
-  const greenAppleKeyFullPath = `${testFolder}/${keysListTestFolder}/green_apple`;
-  const redAppleKeyFullPath = `${testFolder}/${keysListTestFolder}/red_apple`;
-  const bananaKeyFullPath = `${testFolder}/${keysListTestFolder}/banana`;
+  const greenAppleKeyFullPath = `${keysListTestFolder}/green_apple`;
+  const redAppleKeyFullPath = `${keysListTestFolder}/red_apple`;
+  const bananaKeyFullPath = `${keysListTestFolder}/banana`;
+
+  const keyLink = keyName =>
+    `${dataComp('key-link')} ${attributeSelector('href', `/keys/${keyName}`)}`;
 
   before(() => {
-    KeyUtils.goToKey();
+    goToKey();
   });
 
   it('should be able to navigate to key by folders', () => {
-    KeyUtils.navigateToKey(greenAppleKeyFullPath);
+    navigateToKey(greenAppleKeyFullPath);
 
     KeysAsserts.assertIsInKeyPage(greenAppleKeyFullPath);
   });
 
   it('should display matching keys when filtering', () => {
-    KeyUtils.searchKey('apple');
+    searchKey('apple');
 
-    browser.waitForVisible(selectors.keyLink(greenAppleKeyFullPath), 2000);
-    browser.waitForVisible(selectors.keyLink(redAppleKeyFullPath), 2000);
-    browser.waitForVisible(selectors.keyLink(bananaKeyFullPath), 2000, true);
+    browser.waitForVisible(keyLink(greenAppleKeyFullPath), 2000);
+    browser.waitForVisible(keyLink(redAppleKeyFullPath), 2000);
+    browser.waitForVisible(keyLink(bananaKeyFullPath), 2000, true);
   });
 });

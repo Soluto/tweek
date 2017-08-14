@@ -1,15 +1,15 @@
 {
-    "key_path": "@behavior_tests/@keys_list/banana",
+    "key_path": "behavior_tests/keys_list/red_apple",
     "meta": {
-        "name": "@behavior_tests/@keys_list/banana",
+        "name": "behavior_tests/keys_list/red_apple",
         "description": "",
         "tags": [],
         "readOnly": false,
         "archived": false
     },
     "implementation": {
-        "type": "file",
-        "format": "jpad"
+        "type": "const",
+        "value": "value"
     },
     "valueType": "string",
     "enabled": true,
