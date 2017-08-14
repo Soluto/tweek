@@ -52,29 +52,32 @@ namespace Tweek.Drivers.Rules.Management.Tests
             // Arrange
             var testScheduler = new TestScheduler();
 
-            mMockHttpGet.Rules = new Dictionary<string, RuleDefinition> {{"test_rule", new RuleDefinition()}};
             mDriver = TweekManagementRulesDriver.StartNew(
                 mMockHttpGet.HttpGet,
-                new TweekManagementRulesDriverSettings() {SampleIntervalInMs = 10},
+                new TweekManagementRulesDriverSettings {SampleIntervalInMs = 10},
                 null,
                 null,
                 testScheduler
             );
 
-            // Act
+            // Act/Assert
             mMockHttpGet.Version = 10001;
-            testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(11).Ticks);
-            await Task.Delay(10);
-            
-            mMockHttpGet.Version = 10002;
+            mMockHttpGet.Rules = new Dictionary<string, RuleDefinition> {{"test_rule1", new RuleDefinition()}};
             testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(11).Ticks);
             await Task.Delay(10);
             
             var result = await mDriver.GetAllRules();
+            Assert.Equal("10001", mDriver.CurrentLabel);
+            Assert.Equal("test_rule1", result.Keys.First());
             
-            // Assert
+            mMockHttpGet.Version = 10002;
+            mMockHttpGet.Rules = new Dictionary<string, RuleDefinition> {{"test_rule2", new RuleDefinition()}};
+            testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(11).Ticks);
+            await Task.Delay(10);
+            
+            result = await mDriver.GetAllRules();
             Assert.Equal("10002", mDriver.CurrentLabel);
-            Assert.Equal("test_rule", result.Keys.First());
+            Assert.Equal("test_rule2", result.Keys.First());
         }
         
         [Fact]

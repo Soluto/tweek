@@ -22,7 +22,7 @@ namespace Tweek.Drivers.Rules.Management.Tests
         {
             if (url == "/ruleset/latest/version")
             {
-                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                return Task.FromResult(new HttpResponseMessage
                 {
                     Content = new StringContent(Version.ToString())
                 });
