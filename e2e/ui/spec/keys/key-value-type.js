@@ -1,20 +1,14 @@
 /* global describe, before, after, it, browser */
 
 import * as KeysAsserts from '../../utils/key-asserts';
-import { BLANK_KEY_NAME } from '../../utils/key-utils';
-import * as KeyUtils from '../../utils/key-utils';
+import { goToKey, acceptRodalIfRaised, BLANK_KEY_NAME } from '../../utils/key-utils';
 import Rule from '../../utils/Rule';
-import keySelectors from '../../selectors/keySelectors';
 import { dataComp } from '../../utils/selector-utils';
 
 describe('key-value-type', () => {
-  let rule;
   before(() => {
-    KeyUtils.goToKey();
-    browser.windowHandleMaximize();
-    browser.click(keySelectors.ADD_KEY_BUTTON);
-    KeysAsserts.assertKeyOpened(BLANK_KEY_NAME);
-    rule = Rule.add().removeCondition();
+    goToKey(BLANK_KEY_NAME);
+    Rule.add().removeCondition();
   });
 
   const expected = (valueType, Value) => ({
@@ -45,9 +39,9 @@ describe('key-value-type', () => {
   testCases.forEach(({ valueType, value, expected }) => {
     it(`should convert the type of the jpad to ${valueType}`, () => {
       browser.setValue(dataComp('key-value-type-selector'), valueType);
-      KeyUtils.acceptRodalIfRaised();
+      acceptRodalIfRaised();
 
-      rule.setValue(value, valueType);
+      Rule.select().setValue(value, valueType);
 
       KeysAsserts.assertKeySource(expected);
     });
