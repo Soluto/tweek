@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -63,6 +63,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Couchbase", "addons\Context\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj", "{6BBFF719-3F6E-4296-8E08-7FE0B99A361E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Couchbase.ContextIntegrationTests", "addons\Context\Tweek.Drivers.Couchbase.ContextIntegrationTests\Tweek.Drivers.Couchbase.ContextIntegrationTests.csproj", "{B42A9284-DFA0-4C36-A683-DE0DAB05C3EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.Drivers.Rules.Management.Tests", "addons\Tweek.Drivers.Rules.Management.Tests\Tweek.Drivers.Rules.Management.Tests.csproj", "{D193121C-49C8-47C6-A366-735D9B014E81}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -301,6 +303,18 @@ Global
 		{B42A9284-DFA0-4C36-A683-DE0DAB05C3EF}.Release|x64.Build.0 = Release|Any CPU
 		{B42A9284-DFA0-4C36-A683-DE0DAB05C3EF}.Release|x86.ActiveCfg = Release|Any CPU
 		{B42A9284-DFA0-4C36-A683-DE0DAB05C3EF}.Release|x86.Build.0 = Release|Any CPU
+		{D193121C-49C8-47C6-A366-735D9B014E81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D193121C-49C8-47C6-A366-735D9B014E81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D193121C-49C8-47C6-A366-735D9B014E81}.Debug|x64.ActiveCfg = Debug|x64
+		{D193121C-49C8-47C6-A366-735D9B014E81}.Debug|x64.Build.0 = Debug|x64
+		{D193121C-49C8-47C6-A366-735D9B014E81}.Debug|x86.ActiveCfg = Debug|x86
+		{D193121C-49C8-47C6-A366-735D9B014E81}.Debug|x86.Build.0 = Debug|x86
+		{D193121C-49C8-47C6-A366-735D9B014E81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D193121C-49C8-47C6-A366-735D9B014E81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D193121C-49C8-47C6-A366-735D9B014E81}.Release|x64.ActiveCfg = Release|x64
+		{D193121C-49C8-47C6-A366-735D9B014E81}.Release|x64.Build.0 = Release|x64
+		{D193121C-49C8-47C6-A366-735D9B014E81}.Release|x86.ActiveCfg = Release|x86
+		{D193121C-49C8-47C6-A366-735D9B014E81}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -333,5 +347,6 @@ Global
 		{03E847A8-5A6E-47A1-B07E-F6148FBC587D} = {BD1E6B57-18E1-46E9-B16F-B531E88FB9E3}
 		{6BBFF719-3F6E-4296-8E08-7FE0B99A361E} = {BD1E6B57-18E1-46E9-B16F-B531E88FB9E3}
 		{B42A9284-DFA0-4C36-A683-DE0DAB05C3EF} = {BD1E6B57-18E1-46E9-B16F-B531E88FB9E3}
+		{D193121C-49C8-47C6-A366-735D9B014E81} = {2407B11F-BCC6-46BC-85B0-CF64D74A441D}
 	EndGlobalSection
 EndGlobal
