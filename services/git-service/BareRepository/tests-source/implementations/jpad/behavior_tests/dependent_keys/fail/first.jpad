@@ -4,7 +4,7 @@
     "rules": [
         {
             "Matcher": {
-                "keys.@behavior_tests/@dependent_keys/fail/second": "value"
+                "keys.behavior_tests/dependent_keys/fail/second": "value"
             },
             "Value": "value",
             "Type": "SingleVariant"

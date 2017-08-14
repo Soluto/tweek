@@ -12,14 +12,14 @@ describe('dependent keys', () => {
   });
 
   it('should save when no circular dependencies', () => {
-    KeyUtils.goToKey('@behavior_tests/@dependent_keys/pass/depends_on');
-    Rule.add().withCondition('keys.@behavior_tests/@dependent_keys/pass/used_by', 'value');
+    KeyUtils.goToKey('behavior_tests/dependent_keys/pass/depends_on');
+    Rule.add().withCondition('keys.behavior_tests/dependent_keys/pass/used_by', 'value');
     KeyUtils.commitChanges();
   });
 
   it('should not save circular dependencies', () => {
-    KeyUtils.goToKey('@behavior_tests/@dependent_keys/fail/third');
-    Rule.add().withCondition('keys.@behavior_tests/@dependent_keys/fail/first', 'value');
+    KeyUtils.goToKey('behavior_tests/dependent_keys/fail/third');
+    Rule.add().withCondition('keys.behavior_tests/dependent_keys/fail/first', 'value');
 
     browser.click(dataComp('save-changes'));
 
@@ -29,8 +29,8 @@ describe('dependent keys', () => {
   });
 
   it('should display dependency relations between keys', () => {
-    const dependsOn = '@behavior_tests/@dependent_keys/display/depends_on';
-    const usedBy = '@behavior_tests/@dependent_keys/display/used_by';
+    const dependsOn = 'behavior_tests/dependent_keys/display/depends_on';
+    const usedBy = 'behavior_tests/dependent_keys/display/used_by';
 
     // Verify depends on
     KeyUtils.goToKey(dependsOn);

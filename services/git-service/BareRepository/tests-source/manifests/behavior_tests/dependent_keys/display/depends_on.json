@@ -1,7 +1,7 @@
 {
-    "key_path": "@behavior_tests/@dependent_keys/display/used_by",
+    "key_path": "behavior_tests/dependent_keys/display/depends_on",
     "meta": {
-        "name": "@behavior_tests/@dependent_keys/display/used_by",
+        "name": "behavior_tests/dependent_keys/display/depends_on",
         "description": "e2e dependent keys test",
         "tags": [
             "do not delete or change"
@@ -15,5 +15,7 @@
     },
     "valueType": "string",
     "enabled": true,
-    "dependencies": []
+    "dependencies": [
+      "behavior_tests/dependent_keys/display/used_by"
+    ]
 }
