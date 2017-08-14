@@ -13,7 +13,7 @@ import { dataComp, dataField } from '../../utils/selector-utils';
 import assert from 'assert';
 
 describe('add key', () => {
-  const keyToAddFullPath = `@behavior_tests/@add_key/add_key_test`;
+  const keyToAddFullPath = `behavior_tests/add_key/add_key_test`;
   const newKeyName = field => `${dataComp('new-key-name')} ${dataField(field)}`;
   const keyPathSuggestions = newKeyName('suggestions');
   const keyNameInput = newKeyName('new-key-name-input');
