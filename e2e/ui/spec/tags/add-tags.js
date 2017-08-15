@@ -1,9 +1,10 @@
 /* global describe, before, after, it, browser */
 
-import * as KeyUtils from '../../utils/key-utils';
 import Key from '../../utils/Key';
 import selectors from '../../selectors/keySelectors';
 import Chance from 'chance';
+
+const timeout = 5000;
 
 describe('add tags', () => {
   const NUMBER_OF_TAGS_TO_ADD = 1;
@@ -16,7 +17,6 @@ describe('add tags', () => {
 
   before(() => {
     Key.open(tagsTestKeyFullPath);
-    browser.windowHandleMaximize();
   });
 
   function addTag(tagName) {
@@ -43,9 +43,9 @@ describe('add tags', () => {
     browser.refresh();
     browser.alertAccept();
 
-    browser.waitForVisible(selectors.TAGS_INPUT, KeyUtils.defaultTimeout);
+    browser.waitForVisible(selectors.TAGS_INPUT, timeout);
 
     // Assert
-    tagsToAdd.forEach(x => browser.waitUntil(() => isTagExists(x), KeyUtils.defaultTimeout));
+    tagsToAdd.forEach(x => browser.waitUntil(() => isTagExists(x), timeout));
   });
 });

@@ -1,9 +1,9 @@
 /* global describe, before, after, it, browser */
 
-import * as KeysAsserts from '../../utils/key-asserts';
-import { acceptRodalIfRaised } from '../../utils/key-utils';
+import { expect } from 'chai';
 import Key from '../../utils/Key';
 import Rule from '../../utils/Rule';
+import Alert from '../../utils/Alert';
 import { dataComp } from '../../utils/selector-utils';
 
 describe('key-value-type', () => {
@@ -40,11 +40,11 @@ describe('key-value-type', () => {
   testCases.forEach(({ valueType, value, expected }) => {
     it(`should convert the type of the jpad to ${valueType}`, () => {
       browser.setValue(dataComp('key-value-type-selector'), valueType);
-      acceptRodalIfRaised();
+      Alert.acceptIfRaised();
 
       Rule.select().setValue(value, valueType);
 
-      KeysAsserts.assertKeySource(expected);
+      expect(Key.source).to.deep.equal(expected);
     });
   });
 });

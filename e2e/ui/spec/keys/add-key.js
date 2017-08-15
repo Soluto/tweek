@@ -1,53 +1,35 @@
 /* global describe, before, after, it, browser */
 
-import * as KeysAsserts from '../../utils/key-asserts';
-import {
-  isInKeyPage,
-  saveChangesButton,
-  keyNameInput,
-  defaultTimeout,
-  BLANK_KEY_NAME,
-} from '../../utils/key-utils';
-import Key from '../../utils/Key';
+import { expect } from 'chai';
 import { dataComp, dataField } from '../../utils/selector-utils';
-import assert from 'assert';
+import Key from '../../utils/Key';
+import Rule from '../../utils/Rule';
+
+const timeout = 5000;
+
+const keyToAddFullPath = 'behavior_tests/add_key/add_key_test';
+const keyPathSuggestions = `${dataComp('new-key-name')} ${dataField('suggestions')}`;
 
 describe('add key', () => {
-  const keyToAddFullPath = `behavior_tests/add_key/add_key_test`;
-  const newKeyName = field => `${dataComp('new-key-name')} ${dataField(field)}`;
-  const keyPathSuggestions = newKeyName('suggestions');
-
   it('should succeed adding key', () => {
     Key.add();
 
-    KeysAsserts.assertKeyOpened(BLANK_KEY_NAME);
+    expect(Key.isCurrent(Key.BLANK_KEY_NAME)).to.be.true;
+    expect(browser.isExisting(keyPathSuggestions)).to.be.false;
+    expect(Rule.count()).to.equal(0);
 
-    assert(
-      !browser.isExisting(keyPathSuggestions),
-      'should not show key name suggestions on start',
-    );
+    Key.withName(keyToAddFullPath).withValueType('string');
 
-    KeysAsserts.assertKeyHasNumberOfRules(0);
+    expect(Key.hasChanges).to.be.true;
 
-    browser.click(keyNameInput);
-    assert(
-      browser.isExisting(keyPathSuggestions),
-      'should show key name suggestions on input focus',
-    );
+    Key.save();
 
-    Key.current.withName(keyToAddFullPath).withValueType('string');
+    expect(Key.isSaving).to.be.true;
 
-    assert(Key.hasChanges, 'should have changes');
+    browser.waitUntil(() => Key.isCurrent(keyToAddFullPath), timeout);
+    browser.waitForVisible(dataComp('archive-key'), timeout);
 
-    browser.click(saveChangesButton);
-    assert(Key.isSaving, 'should be in saving state');
-
-    browser.waitUntil(() => isInKeyPage(keyToAddFullPath), defaultTimeout);
-
-    browser.waitForVisible(dataComp('archive-key'), defaultTimeout);
-
-    assert.equal(Key.displayName, keyToAddFullPath, 'should set the key name correctly');
-
-    assert.equal(Key.hasChanges, false, 'should not have changes');
+    expect(Key.displayName).to.equal(keyToAddFullPath);
+    expect(Key.hasChanges).to.be.false;
   });
 });

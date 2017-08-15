@@ -1,7 +1,7 @@
 /* global describe, before, after, it, browser */
 
 import assert from 'assert';
-import * as KeysAsserts from '../../utils/key-asserts';
+import { expect } from 'chai';
 import Key from '../../utils/Key';
 import Rule from '../../utils/Rule';
 import selectors from '../../selectors/keySelectors';
@@ -24,6 +24,6 @@ describe('readonly key', () => {
     const numberOfRules = Rule.count();
     browser.click(selectors.ADD_RULE_BUTTON);
     browser.click(selectors.ADD_RULE_BUTTON);
-    KeysAsserts.assertKeyHasNumberOfRules(numberOfRules);
+    expect(Rule.count()).to.equal(numberOfRules);
   });
 });

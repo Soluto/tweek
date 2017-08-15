@@ -1,8 +1,8 @@
 /* global describe, before, beforeEach, after, it, browser */
 
-import * as KeysAsserts from '../../utils/key-asserts';
-import * as KeyUtils from '../../utils/key-utils';
+import { expect } from 'chai';
 import Key from '../../utils/Key';
+import Alert from '../../utils/Alert';
 import { dataComp } from '../../utils/selector-utils';
 import selectors from '../../selectors/keySelectors';
 
@@ -16,15 +16,10 @@ describe('partition key', () => {
 
   beforeEach(() => {
     browser.refresh();
-    browser.acceptAlertIfPresent();
-    Key.current.waitToLoad();
+    Key.waitToLoad();
   });
 
   describe('add partition', () => {
-    before(() => {
-      browser.windowHandleMaximize();
-    });
-
     describe('invalid partitions', () => {
       const emptyRulesKeyFullPath = `${testFolder}/${partitionsTestFolder}/empty_partition`;
       before(() => {
@@ -57,13 +52,14 @@ describe('partition key', () => {
         addPartition('user.FavoriteFruit');
         browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
         browser.click(selectors.ALERT_CANCEL_BUTTON);
-        KeysAsserts.assertKeySource(keySource);
+        expect(Key.source).to.deep.equal(keySource);
       });
 
       it('should auto-partition correctly if auto-partition was selected', () => {
         addPartition('user.FavoriteFruit');
         browser.clickWhenVisible(selectors.AUTO_PARTITION_BUTTON, 1000);
-        KeysAsserts.assertKeySource({
+
+        expect(Key.source).to.deep.equal({
           partitions: ['user.FavoriteFruit'],
           valueType: 'string',
           rules: {
@@ -107,7 +103,7 @@ describe('partition key', () => {
 
         browser.waitForVisible(selectors.RESET_PARTITIONS_BUTTON, 1000);
         browser.click(selectors.RESET_PARTITIONS_BUTTON);
-        KeysAsserts.assertKeySource({
+        expect(Key.source).to.deep.equal({
           partitions: ['user.FavoriteFruit'],
           valueType: 'string',
           rules: {},
@@ -118,15 +114,12 @@ describe('partition key', () => {
 
   describe('delete partition', () => {
     const deletePartitionKeyFullPath = `${testFolder}/${partitionsTestFolder}/delete_partition`;
-    before(() => {
-      Key.open(deletePartitionKeyFullPath);
-    });
 
     it('should clear rules after partition is deleted', () => {
+      Key.open(deletePartitionKeyFullPath);
       browser.click(selectors.partitionDeleteButton(1));
-      browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
-      KeyUtils.acceptRodalIfRaised();
-      KeysAsserts.assertKeySource({
+      Alert.ok();
+      expect(Key.source).to.deep.equal({
         partitions: [],
         valueType: 'string',
         rules: [],
@@ -144,7 +137,7 @@ describe('partition key', () => {
         });
         browser.click(selectors.ADD_PARTITION_GROUP_BUTTON);
       });
-      KeysAsserts.assertKeySource({
+      expect(Key.source).to.deep.equal({
         partitions: ['user.FavoriteFruit', 'user.FatherName'],
         valueType: 'string',
         rules: {
@@ -164,9 +157,8 @@ describe('partition key', () => {
     it('should delete group rules when deleting partition group', () => {
       Key.open(`${testFolder}/${partitionsTestFolder}/partition_groups`);
       browser.click(selectors.partitionGroupDeleteButton(2));
-      browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
-      KeyUtils.acceptRodalIfRaised();
-      KeysAsserts.assertKeySource({
+      Alert.ok();
+      expect(Key.source).to.deep.equal({
         partitions: ['user.FavoriteFruit', 'user.Gender'],
         valueType: 'string',
         rules: {

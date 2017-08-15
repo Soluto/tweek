@@ -1,10 +1,13 @@
+import assert from 'assert';
 import R from 'ramda';
+import { expect } from 'chai';
 import { dataComp, dataField, attributeSelector } from './selector-utils';
 
 const timeout = 5000;
 
 const keyEditPage = dataComp('key-edit-page');
 const keyNameInput = dataField('new-key-name-input');
+const keyPathSuggestions = `${dataComp('new-key-name')} ${dataField('suggestions')}`;
 const keyValueTypeSelector = dataComp('key-value-type-selector');
 const saveChangesButton = dataComp('save-changes');
 const displayName = `${dataComp('display-name')} ${dataField('text')}`;
@@ -24,21 +27,26 @@ const extractFolders = R.pipe(
   R.prop(1),
 );
 
-export default class Key {
-  static open(keyName = '', waitToLoad = true) {
+class Key {
+  BLANK_KEY_NAME = '_blank';
+
+  open(keyName = '', waitToLoad = true) {
     browser.url(`/keys/${keyName}`);
-    browser.acceptAlertIfPresent();
+    browser.windowHandleMaximize();
     browser.waitForVisible(dataComp('key-page'), timeout);
     browser.waitForVisible(searchKeyInput, timeout);
 
     if (keyName !== '' && waitToLoad) {
-      return new Key().waitToLoad();
+      this.waitToLoad();
+
+      expect(this.hasChanges, 'should not have changes').to.be.false;
+      expect(this.isSaving, 'should not be in saving state').to.be.false;
     }
 
-    return new Key();
+    return this;
   }
 
-  static navigate(keyName) {
+  navigate(keyName) {
     const keyFolders = extractFolders(keyName);
 
     keyFolders.forEach(
@@ -48,37 +56,40 @@ export default class Key {
 
     const keyLinkSelector = treeItem('href', `/keys/${keyName}`);
     browser.clickWhenVisible(keyLinkSelector, timeout);
+
+    return this;
   }
 
-  static add() {
-    const key = Key.open();
+  add() {
+    this.open();
     browser.click(dataComp('add-new-key'));
-    return key.waitToLoad();
+    return this.waitToLoad();
   }
 
-  static search(filter) {
+  search(filter) {
     browser.waitForVisible(searchKeyInput, timeout);
     browser.setValue(searchKeyInput, filter);
+    return this;
   }
 
-  static get current() {
-    return new Key();
-  }
-
-  static get hasChanges() {
+  get hasChanges() {
     return browser.getAttribute(saveChangesButton, 'data-state-has-changes') === 'true';
   }
 
-  static get isSaving() {
+  get isSaving() {
     return browser.getAttribute(saveChangesButton, 'data-state-is-saving') === 'true';
   }
 
-  static get displayName() {
+  get displayName() {
     browser.waitForText(displayName);
     return browser.getText(displayName);
   }
 
-  static get source() {
+  get exists() {
+    return browser.isExisting(keyEditPage);
+  }
+
+  get source() {
     browser.waitForVisible(rulesEditor, timeout);
 
     browser.click(sourceTab);
@@ -91,7 +102,7 @@ export default class Key {
     return JSON.parse(keySourceCode.value);
   }
 
-  static set source(value) {
+  set source(value) {
     browser.waitForVisible('.monaco-editor', 10000);
     browser.execute(function(source) {
       window.monaco.editor.getModels()[0].setValue(source);
@@ -103,8 +114,20 @@ export default class Key {
     return this;
   }
 
+  isCurrent(keyName) {
+    const location = browser.getUrl();
+    return location.endsWith(`keys/${keyName}`);
+  }
+
   withName(keyName) {
     browser.waitForVisible(keyNameInput, timeout);
+    browser.click(keyNameInput);
+
+    assert(
+      browser.isExisting(keyPathSuggestions),
+      'should show key name suggestions on input focus',
+    );
+
     browser.setValue(keyNameInput, keyName);
     return this;
   }
@@ -122,7 +145,24 @@ export default class Key {
 
   commitChanges(selector = saveChangesButton) {
     browser.click(selector);
-    browser.waitUntil(() => !Key.hasChanges && !Key.isSaving, timeout, 'changes were not saved');
+    browser.waitUntil(() => !this.hasChanges && !this.isSaving, timeout, 'changes were not saved');
+    return this;
+  }
+
+  save() {
+    browser.click(saveChangesButton);
+    return this;
+  }
+
+  sourceTab() {
+    browser.click(sourceTab);
+    return this;
+  }
+
+  rulesTab() {
+    browser.click(rulesTab);
     return this;
   }
 }
+
+export default new Key();

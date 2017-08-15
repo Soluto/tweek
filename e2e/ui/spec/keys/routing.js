@@ -9,8 +9,6 @@ describe('navigating from key with changes', () => {
 
   const testKey1FullPath = `@behavior_tests/${folderPath}/${testKey1}`;
 
-  before(() => browser.windowHandleMaximize());
-
   beforeEach(() => Key.add());
 
   it('should show confirm message if navigating to another key', () => {

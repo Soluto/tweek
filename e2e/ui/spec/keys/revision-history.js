@@ -1,7 +1,6 @@
 /* global describe, before, after, it, browser */
 
 import { expect } from 'chai';
-import * as KeyUtils from '../../utils/key-utils';
 import Key from '../../utils/Key';
 
 describe('revision history', () => {
@@ -16,7 +15,7 @@ describe('revision history', () => {
     for (let i = 0; i < count; i++) {
       const value = `value ${i}`;
       browser.setValue(valueSelector, value);
-      Key.current.commitChanges();
+      Key.commitChanges();
 
       let commit = undefined;
       browser.waitUntil(() => {

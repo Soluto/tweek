@@ -1,6 +1,6 @@
 /* global describe, before, after, it, browser */
 
-import * as KeysAsserts from '../../utils/key-asserts';
+import { expect } from 'chai';
 import Key from '../../utils/Key';
 import { attributeSelector, dataComp } from '../../utils/selector-utils';
 
@@ -21,7 +21,7 @@ describe('keys list and filter', () => {
   it('should be able to navigate to key by folders', () => {
     Key.navigate(greenAppleKeyFullPath);
 
-    KeysAsserts.assertIsInKeyPage(greenAppleKeyFullPath);
+    expect(Key.isCurrent(greenAppleKeyFullPath)).to.be.true;
   });
 
   it('should display matching keys when filtering', () => {

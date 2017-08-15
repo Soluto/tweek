@@ -19,7 +19,7 @@ describe('MultiVariant value type', () => {
       },
     };
 
-    Key.current.withValueType('boolean');
+    Key.withValueType('boolean');
 
     Rule.add().removeCondition().multiVariant().withIdentity('user');
 
@@ -54,7 +54,7 @@ describe('MultiVariant value type', () => {
       },
     };
 
-    Key.current.withValueType('string');
+    Key.withValueType('string');
 
     Rule.add().removeCondition().multiVariant().setValues(args).withIdentity('other');
 

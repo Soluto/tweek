@@ -1,10 +1,10 @@
 /* global describe, before, after, it, browser */
 
-import * as KeysAsserts from '../../utils/key-asserts';
-import { sourceTab, rulesTab, defaultTimeout } from '../../utils/key-utils';
+import { expect } from 'chai';
 import Key from '../../utils/Key';
 import Rule from '../../utils/Rule';
-import { dataComp, alertButton } from '../../utils/selector-utils';
+import Alert from '../../utils/Alert';
+import { dataComp } from '../../utils/selector-utils';
 import tweekApiClient from '../../utils/tweekApiClient';
 
 describe('edit keys', () => {
@@ -48,40 +48,38 @@ describe('edit keys', () => {
           .withCondition('user.IsInGroup', 'false')
           .withCondition('user.NumberOfSiblings', '1');
 
-        KeysAsserts.assertKeyHasNumberOfRules(2);
-        KeysAsserts.assertKeySource(expectedKeySource);
+        expect(Rule.count()).to.equal(2);
+        expect(Key.source).to.deep.equal(expectedKeySource);
 
-        Key.current.commitChanges();
+        Key.commitChanges();
 
         browser.refresh();
-        KeysAsserts.assertKeySource(expectedKeySource);
+        expect(Key.source).to.deep.equal(expectedKeySource);
       });
     });
 
     describe('text editor', () => {
       it('should succeed editing JPad source', () => {
-        Key.open('behavior_tests/edit_key/text/edit_test');
+        Key.open('behavior_tests/edit_key/text/edit_test').sourceTab();
 
-        browser.click(sourceTab);
         Key.source = JSON.stringify(expectedKeySource, null, 4);
 
-        browser.click(rulesTab);
-        browser.clickWhenVisible(alertButton('cancel'), defaultTimeout);
+        Key.rulesTab();
+        Alert.cancel();
 
         browser.click(dataComp('save-jpad-text'));
-        browser.click(rulesTab);
+        Key.rulesTab();
 
         Rule.select().waitForVisible();
-        KeysAsserts.assertKeySource(expectedKeySource);
+        expect(Key.source).to.deep.equal(expectedKeySource);
 
-        browser.click(sourceTab);
-        Key.source = '{}';
+        Key.sourceTab().source = '{}';
 
-        browser.click(rulesTab);
-        browser.clickWhenVisible(alertButton('ok'), defaultTimeout);
+        Key.rulesTab();
+        Alert.ok();
 
         Rule.select().waitForVisible();
-        KeysAsserts.assertKeySource(expectedKeySource);
+        expect(Key.source).to.deep.equal(expectedKeySource);
       });
     });
   });
@@ -94,7 +92,7 @@ describe('edit keys', () => {
       const keyName = `${constKeyFolder}/number_type`;
       Key.open(keyName);
       browser.setValue(`${constEditor} input`, '30');
-      Key.current.commitChanges();
+      Key.commitChanges();
       tweekApiClient.waitForKeyToEqual(keyName, 30);
     });
 
@@ -102,7 +100,7 @@ describe('edit keys', () => {
       const keyName = `${constKeyFolder}/string_type`;
       Key.open(keyName);
       browser.setValue(`${constEditor} input`, 'world');
-      Key.current.commitChanges();
+      Key.commitChanges();
       tweekApiClient.waitForKeyToEqual(keyName, 'world');
     });
 
@@ -110,7 +108,7 @@ describe('edit keys', () => {
       const keyName = `${constKeyFolder}/object_type`;
       Key.open(keyName);
       browser.click(`${constEditor} .jsonValue input[type=checkbox]`);
-      Key.current.commitChanges();
+      Key.commitChanges();
       tweekApiClient.waitForKeyToEqual(keyName, { boolProp: false });
     });
   });
