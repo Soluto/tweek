@@ -3,7 +3,7 @@ steps:
   VersionsToDeploy:
       description: Freestyle step..
       title: Free styling
-      image: alpine
+      image: alpine/git
       commands:
           - ./ci/versions_to_deploy.sh >> ${{CF_VOLUME_PATH}}/env_vars_to_export
 
