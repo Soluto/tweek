@@ -1,8 +1,13 @@
 import { alertButton } from './selector-utils';
+
 const timeout = 1000;
 const alertBackground = '.rodal-mask';
+const rodalDialog = '.rodal-dialog';
 
 function click(button) {
+  browser.waitForVisible(rodalDialog, timeout);
+  browser.getElementSize(rodalDialog);
+
   browser.clickWhenVisible(alertButton(button), timeout);
 }
 
