@@ -260,4 +260,14 @@ steps:
           - master
     candidate: ${{BuildingGitRepository}}
 
+  PushGitTags:
+    image: alpine/git
+    title: Push git tags
+    when:
+      branch:
+        only:
+          - master
+    commands:
+      - git push --tags
+
     
