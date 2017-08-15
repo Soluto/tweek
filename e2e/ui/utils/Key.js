@@ -85,6 +85,10 @@ class Key {
     return browser.getText(displayName);
   }
 
+  get defaultValue() {
+    return browser.getValue(dataComp('default-value'));
+  }
+
   get exists() {
     return browser.isExisting(keyEditPage);
   }
