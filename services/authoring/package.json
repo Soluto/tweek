@@ -1,5 +1,5 @@
 {
-  "name": "tweek-authoring-api",
+  "name": "tweek-authoring",
   "version": "0.1.2",
   "main": "src/server.js",
   "repository": "https://github.com/Soluto/tweek",
