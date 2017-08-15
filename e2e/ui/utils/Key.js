@@ -34,7 +34,6 @@ class Key {
     browser.url(`/keys/${keyName}`);
     browser.windowHandleMaximize();
     browser.waitForVisible(dataComp('key-page'), timeout);
-    browser.waitForVisible(searchKeyInput, timeout);
 
     if (keyName !== '' && waitToLoad) {
       this.waitToLoad();
@@ -86,7 +85,9 @@ class Key {
   }
 
   get defaultValue() {
-    return browser.getValue(dataComp('default-value'));
+    const defaultValue = dataComp('default-value');
+    browser.waitForEnabled(defaultValue, timeout);
+    return browser.getValue(defaultValue);
   }
 
   get exists() {
@@ -124,8 +125,7 @@ class Key {
   }
 
   withName(keyName) {
-    browser.waitForVisible(keyNameInput, timeout);
-    browser.click(keyNameInput);
+    browser.clickWhenVisible(keyNameInput, timeout);
 
     assert(
       browser.isExisting(keyPathSuggestions),
