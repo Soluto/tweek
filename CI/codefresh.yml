@@ -5,7 +5,7 @@ steps:
       title: Free styling
       image: alpine/git
       commands:
-          - ./ci/versions_to_deploy.sh >> ${{CF_VOLUME_PATH}}/env_vars_to_export
+          - ./ci/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
 
   BuildGitKeys:
     title: Building Git Keys Docker Image
