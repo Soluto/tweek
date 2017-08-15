@@ -2,10 +2,8 @@
     "key_path": "behavior_tests/dependent_keys/fail/second",
     "meta": {
         "name": "behavior_tests/dependent_keys/fail/second",
-        "description": "e2e dependent keys test",
-        "tags": [
-            "do not delete or change"
-        ],
+        "description": "",
+        "tags": [],
         "readOnly": false,
         "archived": false
     },

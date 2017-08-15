@@ -1,7 +1,7 @@
 {
-    "key_path": "behavior_tests/dependent_keys/fail/first",
+    "key_path": "behavior_tests/partitions/partition_groups",
     "meta": {
-        "name": "behavior_tests/dependent_keys/fail/first",
+        "name": "behavior_tests/partitions/partition_groups",
         "description": "",
         "tags": [],
         "readOnly": false,
@@ -13,7 +13,5 @@
     },
     "valueType": "string",
     "enabled": true,
-    "dependencies": [
-      "behavior_tests/dependent_keys/fail/second"
-    ]
+    "dependencies": []
 }

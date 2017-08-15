@@ -1,6 +1,5 @@
 /* global describe, before, beforeEach, after, it, browser */
 
-import assert from 'assert';
 import { expect } from 'chai';
 import Key from '../../utils/Key';
 import Rule from '../../utils/Rule';
@@ -30,7 +29,7 @@ describe('MultiVariant value type', () => {
     expect(salt).to.not.equal('');
     delete ruleSource.Salt;
 
-    assert.deepEqual(ruleSource, expectedValue);
+    expect(ruleSource).to.deep.equal(expectedValue);
 
     Rule.select().singleValue().multiVariant();
 
@@ -65,7 +64,7 @@ describe('MultiVariant value type', () => {
     expect(salt).to.not.equal('');
 
     delete value.Salt;
-    assert.deepEqual(value, expectedValue);
+    expect(value).to.deep.equal(expectedValue);
 
     Rule.select().singleValue().multiVariant();
 

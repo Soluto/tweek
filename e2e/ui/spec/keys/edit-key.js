@@ -67,8 +67,7 @@ describe('edit keys', () => {
         Key.rulesTab();
         Alert.cancel();
 
-        browser.click(dataComp('save-jpad-text'));
-        Key.rulesTab();
+        Key.insertSource().rulesTab();
 
         Rule.select().waitForVisible();
         expect(Key.source).to.deep.equal(expectedKeySource);

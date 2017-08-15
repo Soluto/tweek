@@ -4,7 +4,6 @@ import { expect } from 'chai';
 import Key from '../../utils/Key';
 import Rule from '../../utils/Rule';
 import Alert from '../../utils/Alert';
-import { dataComp } from '../../utils/selector-utils';
 
 describe('key-value-type', () => {
   before(() => {
@@ -39,7 +38,7 @@ describe('key-value-type', () => {
 
   testCases.forEach(({ valueType, value, expected }) => {
     it(`should convert the type of the jpad to ${valueType}`, () => {
-      browser.setValue(dataComp('key-value-type-selector'), valueType);
+      Key.withValueType(valueType);
       Alert.acceptIfRaised();
 
       Rule.select().setValue(value, valueType);

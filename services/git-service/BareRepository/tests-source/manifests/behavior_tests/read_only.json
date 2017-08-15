@@ -1,11 +1,9 @@
 {
-    "key_path": "@behavior_tests/@readonly/test_key",
+    "key_path": "behavior_tests/read_only",
     "meta": {
-        "name": "@behavior_tests/@readonly/test_key",
-        "description": "key for e2e",
-        "tags": [
-            "do not delete or change"
-        ],
+        "name": "behavior_tests/read_only",
+        "description": "",
+        "tags": [],
         "readOnly": true,
         "archived": false
     },

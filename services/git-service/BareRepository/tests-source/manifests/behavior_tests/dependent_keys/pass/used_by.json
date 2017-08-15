@@ -2,10 +2,8 @@
     "key_path": "behavior_tests/dependent_keys/pass/used_by",
     "meta": {
         "name": "behavior_tests/dependent_keys/pass/used_by",
-        "description": "e2e dependent keys test",
-        "tags": [
-            "do not delete or change"
-        ],
+        "description": "",
+        "tags": [],
         "readOnly": false,
         "archived": false
     },

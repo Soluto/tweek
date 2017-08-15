@@ -163,6 +163,11 @@ class Key {
     browser.click(rulesTab);
     return this;
   }
+
+  insertSource() {
+    browser.click(dataComp('save-jpad-text'));
+    return this;
+  }
 }
 
 export default new Key();
