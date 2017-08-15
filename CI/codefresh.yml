@@ -1,5 +1,12 @@
 version: '1.0'
 steps:
+  VersionsToDeploy:
+      description: Freestyle step..
+      title: Free styling
+      image: alpine
+      commands:
+          - ./version_to_deploy >> ${{CF_VOLUME_PATH}}/env_vars_to_export
+
   BuildGitKeys:
     title: Building Git Keys Docker Image
     type: build
@@ -196,7 +203,7 @@ steps:
             - CF_QUALITY: false
           - '${{BuildingAuthoring.imageId}}':
             - CF_QUALITY: false
-
+  
   PushApiImageMaster:
     type: push
     title: Push Tweek Api - lastest
@@ -241,3 +248,13 @@ steps:
         only:
           - master
     candidate: ${{BuildingGitRepository}}
+
+  ChceckForTweekApiPromotion:
+    image: alpine
+    title: Push Git Repository - latest
+    when:
+      branch:
+        only:
+          - master
+          
+    
