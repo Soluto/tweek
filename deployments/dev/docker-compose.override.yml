@@ -64,6 +64,7 @@ services:
     depends_on:
       - git
     ports:
+      - "5859:5858"
       - "4005:3000"
     environment:
       - GIT_USER=git
@@ -73,6 +74,12 @@ services:
     secrets:
       - tweek_ssh_private_key
       - tweek_ssh_public_key
+    entrypoint:
+      - node
+      - --inspect=5858
+      - ./src/server.js
+    labels:
+      - "traefik.port=3000"
 
   redis:
     image: redis:alpine
