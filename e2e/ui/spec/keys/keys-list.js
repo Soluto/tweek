@@ -1,7 +1,7 @@
 /* global describe, before, after, it, browser */
 
 import * as KeysAsserts from '../../utils/key-asserts';
-import { goToKey, navigateToKey, searchKey } from '../../utils/key-utils';
+import Key from '../../utils/Key';
 import { attributeSelector, dataComp } from '../../utils/selector-utils';
 
 describe('keys list and filter', () => {
@@ -15,17 +15,17 @@ describe('keys list and filter', () => {
     `${dataComp('key-link')} ${attributeSelector('href', `/keys/${keyName}`)}`;
 
   before(() => {
-    goToKey();
+    Key.open();
   });
 
   it('should be able to navigate to key by folders', () => {
-    navigateToKey(greenAppleKeyFullPath);
+    Key.navigate(greenAppleKeyFullPath);
 
     KeysAsserts.assertIsInKeyPage(greenAppleKeyFullPath);
   });
 
   it('should display matching keys when filtering', () => {
-    searchKey('apple');
+    Key.search('apple');
 
     browser.waitForVisible(keyLink(greenAppleKeyFullPath), 2000);
     browser.waitForVisible(keyLink(redAppleKeyFullPath), 2000);

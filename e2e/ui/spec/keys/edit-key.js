@@ -1,14 +1,8 @@
 /* global describe, before, after, it, browser */
 
 import * as KeysAsserts from '../../utils/key-asserts';
-import {
-  goToKey,
-  commitChanges,
-  setKeySource,
-  sourceTab,
-  rulesTab,
-  defaultTimeout,
-} from '../../utils/key-utils';
+import { sourceTab, rulesTab, defaultTimeout } from '../../utils/key-utils';
+import Key from '../../utils/Key';
 import Rule from '../../utils/Rule';
 import { dataComp, alertButton } from '../../utils/selector-utils';
 import tweekApiClient from '../../utils/tweekApiClient';
@@ -43,9 +37,7 @@ describe('edit keys', () => {
 
     describe('visual editor', () => {
       it('should succeed editing JPad key', () => {
-        goToKey('behavior_tests/edit_key/visual/edit_test');
-
-        browser.setValue(dataComp('default-value'), 'some default value');
+        Key.open('behavior_tests/edit_key/visual/edit_test').withDefaultValue('some default value');
 
         Rule.add().removeCondition().setValue('some value');
 
@@ -59,7 +51,7 @@ describe('edit keys', () => {
         KeysAsserts.assertKeyHasNumberOfRules(2);
         KeysAsserts.assertKeySource(expectedKeySource);
 
-        commitChanges();
+        Key.current.commitChanges();
 
         browser.refresh();
         KeysAsserts.assertKeySource(expectedKeySource);
@@ -68,10 +60,10 @@ describe('edit keys', () => {
 
     describe('text editor', () => {
       it('should succeed editing JPad source', () => {
-        goToKey('behavior_tests/edit_key/text/edit_test');
+        Key.open('behavior_tests/edit_key/text/edit_test');
 
         browser.click(sourceTab);
-        setKeySource(JSON.stringify(expectedKeySource, null, 4));
+        Key.source = JSON.stringify(expectedKeySource, null, 4);
 
         browser.click(rulesTab);
         browser.clickWhenVisible(alertButton('cancel'), defaultTimeout);
@@ -83,7 +75,7 @@ describe('edit keys', () => {
         KeysAsserts.assertKeySource(expectedKeySource);
 
         browser.click(sourceTab);
-        setKeySource('{}');
+        Key.source = '{}';
 
         browser.click(rulesTab);
         browser.clickWhenVisible(alertButton('ok'), defaultTimeout);
@@ -100,25 +92,25 @@ describe('edit keys', () => {
 
     it('should succeed editing key (valueType=number)', () => {
       const keyName = `${constKeyFolder}/number_type`;
-      goToKey(keyName);
+      Key.open(keyName);
       browser.setValue(`${constEditor} input`, '30');
-      commitChanges();
+      Key.current.commitChanges();
       tweekApiClient.waitForKeyToEqual(keyName, 30);
     });
 
     it('should succeed editing key (valueType=string)', () => {
       const keyName = `${constKeyFolder}/string_type`;
-      goToKey(keyName);
+      Key.open(keyName);
       browser.setValue(`${constEditor} input`, 'world');
-      commitChanges();
+      Key.current.commitChanges();
       tweekApiClient.waitForKeyToEqual(keyName, 'world');
     });
 
     it('should succeed editing key (valueType=object)', () => {
       const keyName = `${constKeyFolder}/object_type`;
-      goToKey(keyName);
+      Key.open(keyName);
       browser.click(`${constEditor} .jsonValue input[type=checkbox]`);
-      commitChanges();
+      Key.current.commitChanges();
       tweekApiClient.waitForKeyToEqual(keyName, { boolProp: false });
     });
   });

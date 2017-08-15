@@ -1,6 +1,7 @@
 /* global describe, before, beforeEach, after, afterEach, it, browser */
 
-import { goToKey, commitChanges, saveChangesButton, defaultTimeout } from '../../utils/key-utils';
+import { saveChangesButton, defaultTimeout } from '../../utils/key-utils';
+import Key from '../../utils/Key';
 import Rule from '../../utils/Rule';
 import { dataComp } from '../../utils/selector-utils';
 import globalSelectors from '../../selectors/globalSelectors';
@@ -12,13 +13,13 @@ describe('dependent keys', () => {
   });
 
   it('should save when no circular dependencies', () => {
-    goToKey('behavior_tests/dependent_keys/pass/depends_on');
+    Key.open('behavior_tests/dependent_keys/pass/depends_on');
     Rule.add().withCondition('keys.behavior_tests/dependent_keys/pass/used_by', 'value');
-    commitChanges();
+    Key.current.commitChanges();
   });
 
   it('should not save circular dependencies', () => {
-    goToKey('behavior_tests/dependent_keys/fail/third');
+    Key.open('behavior_tests/dependent_keys/fail/third');
     Rule.add().withCondition('keys.behavior_tests/dependent_keys/fail/first', 'value');
 
     browser.click(saveChangesButton);
@@ -33,12 +34,12 @@ describe('dependent keys', () => {
     const usedBy = 'behavior_tests/dependent_keys/display/used_by';
 
     // Verify depends on
-    goToKey(dependsOn);
+    Key.open(dependsOn);
     browser.clickWhenVisible(dataComp('depends-on-toggle'), defaultTimeout);
     browser.waitForVisible(`${dataComp('depends-on')} a[href="/keys/${usedBy}"]`);
 
     // Verify used by
-    goToKey(usedBy);
+    Key.open(usedBy);
     browser.clickWhenVisible(dataComp('used-by-toggle'), defaultTimeout);
     browser.waitForVisible(`${dataComp('used-by')} a[href="/keys/${dependsOn}"]`);
   });

@@ -1,14 +1,15 @@
 /* global describe, before, beforeEach, after, it, browser */
 
+import { expect, assert } from 'chai';
 import * as KeysAsserts from '../../utils/key-asserts';
 import { BLANK_KEY_NAME } from '../../utils/key-utils';
 import * as KeyUtils from '../../utils/key-utils';
-import { expect, assert } from 'chai';
+import Key from '../../utils/Key';
 import keySelectors from '../../selectors/keySelectors';
 
 describe('key name validations', () => {
   beforeEach(() => {
-    KeyUtils.goToKey();
+    Key.add();
   });
 
   const testDefenitions = [];
@@ -36,7 +37,6 @@ describe('key name validations', () => {
   validKeyNames.forEach(x => setTestDefenition(x, true));
 
   it('should check and show key name validation', () => {
-    browser.click(keySelectors.ADD_KEY_BUTTON);
     browser.click(keySelectors.KEY_NAME_INPUT);
 
     testDefenitions.forEach(x => {
@@ -61,7 +61,7 @@ describe('key name validations', () => {
     browser.waitForEnabled(keySelectors.SAVE_CHANGES_BUTTON, 1000);
     browser.click(keySelectors.SAVE_CHANGES_BUTTON);
 
-    assert(!KeyUtils.isSaving(), 'should not enter saving mode');
+    assert(!Key.isSaving, 'should not enter saving mode');
     assert(
       browser.isVisible(keySelectors.KEY_NAME_VALIDATION_ALERT_ICON),
       'should show key name validation',

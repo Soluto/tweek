@@ -2,16 +2,13 @@
 
 import * as KeysAsserts from '../../utils/key-asserts';
 import {
-  goToKey,
-  hasChanges,
-  isSaving,
   isInKeyPage,
-  displayName,
   saveChangesButton,
   keyNameInput,
   defaultTimeout,
   BLANK_KEY_NAME,
 } from '../../utils/key-utils';
+import Key from '../../utils/Key';
 import { dataComp, dataField } from '../../utils/selector-utils';
 import assert from 'assert';
 
@@ -20,12 +17,8 @@ describe('add key', () => {
   const newKeyName = field => `${dataComp('new-key-name')} ${dataField(field)}`;
   const keyPathSuggestions = newKeyName('suggestions');
 
-  before(() => {
-    goToKey();
-  });
-
   it('should succeed adding key', () => {
-    browser.click(dataComp('add-new-key'));
+    Key.add();
 
     KeysAsserts.assertKeyOpened(BLANK_KEY_NAME);
 
@@ -42,29 +35,19 @@ describe('add key', () => {
       'should show key name suggestions on input focus',
     );
 
-    browser.setValue(keyNameInput, keyToAddFullPath);
+    Key.current.withName(keyToAddFullPath).withValueType('string');
 
-    browser.setValue(dataComp('key-value-type-selector'), 'String');
-
-    assert(hasChanges(), 'should have changes');
+    assert(Key.hasChanges, 'should have changes');
 
     browser.click(saveChangesButton);
-    assert(isSaving(), 'should be in saving state');
+    assert(Key.isSaving, 'should be in saving state');
 
     browser.waitUntil(() => isInKeyPage(keyToAddFullPath), defaultTimeout);
 
     browser.waitForVisible(dataComp('archive-key'), defaultTimeout);
 
-    assert.equal(
-      browser.getText(displayName),
-      keyToAddFullPath,
-      'should set the key name correctly',
-    );
+    assert.equal(Key.displayName, keyToAddFullPath, 'should set the key name correctly');
 
-    browser.waitUntil(
-      () => !hasChanges(),
-      defaultTimeout,
-      'new key should not be in with-changes state',
-    );
+    assert.equal(Key.hasChanges, false, 'should not have changes');
   });
 });

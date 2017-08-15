@@ -2,12 +2,11 @@
 
 import assert from 'assert';
 import { expect } from 'chai';
-import * as KeyUtils from '../../utils/key-utils';
-import { keyValueTypeSelector, BLANK_KEY_NAME } from '../../utils/key-utils';
+import Key from '../../utils/Key';
 import Rule from '../../utils/Rule';
 
 describe('MultiVariant value type', () => {
-  beforeEach(() => KeyUtils.goToKey(BLANK_KEY_NAME));
+  beforeEach(() => Key.add());
 
   it('should succeed editing boolean value type', () => {
     const expectedValue = {
@@ -20,11 +19,11 @@ describe('MultiVariant value type', () => {
       },
     };
 
-    browser.setValue(keyValueTypeSelector, 'boolean');
+    Key.current.withValueType('boolean');
 
     Rule.add().removeCondition().multiVariant().withIdentity('user');
 
-    let ruleSource = KeyUtils.getKeySource().rules[0];
+    let ruleSource = Key.source.rules[0];
     expect(ruleSource).to.have.property('Salt');
 
     const salt = ruleSource.Salt;
@@ -35,7 +34,7 @@ describe('MultiVariant value type', () => {
 
     Rule.select().singleValue().multiVariant();
 
-    ruleSource = KeyUtils.getKeySource().rules[0];
+    ruleSource = Key.source.rules[0];
     expect(ruleSource.Salt).to.equal(salt);
   });
 
@@ -55,11 +54,11 @@ describe('MultiVariant value type', () => {
       },
     };
 
-    browser.setValue(keyValueTypeSelector, 'string');
+    Key.current.withValueType('string');
 
     Rule.add().removeCondition().multiVariant().setValues(args).withIdentity('other');
 
-    let value = KeyUtils.getKeySource().rules[0];
+    let value = Key.source.rules[0];
     expect(value).to.have.property('Salt');
 
     const salt = value.Salt;
@@ -70,7 +69,7 @@ describe('MultiVariant value type', () => {
 
     Rule.select().singleValue().multiVariant();
 
-    value = KeyUtils.getKeySource().rules[0];
+    value = Key.source.rules[0];
     expect(value.Salt).to.equal(salt);
   });
 });

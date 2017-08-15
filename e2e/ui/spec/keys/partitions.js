@@ -2,6 +2,7 @@
 
 import * as KeysAsserts from '../../utils/key-asserts';
 import * as KeyUtils from '../../utils/key-utils';
+import Key from '../../utils/Key';
 import { dataComp } from '../../utils/selector-utils';
 import selectors from '../../selectors/keySelectors';
 
@@ -16,7 +17,7 @@ describe('partition key', () => {
   beforeEach(() => {
     browser.refresh();
     browser.acceptAlertIfPresent();
-    KeyUtils.waitForKeyToLoad();
+    Key.current.waitToLoad();
   });
 
   describe('add partition', () => {
@@ -27,7 +28,7 @@ describe('partition key', () => {
     describe('invalid partitions', () => {
       const emptyRulesKeyFullPath = `${testFolder}/${partitionsTestFolder}/empty_partition`;
       before(() => {
-        KeyUtils.goToKey(emptyRulesKeyFullPath);
+        Key.open(emptyRulesKeyFullPath);
       });
 
       it('should not allow invalid properties', () => {
@@ -48,11 +49,11 @@ describe('partition key', () => {
     describe('valid partitions', () => {
       const addPartitionKeyFullPath = `${testFolder}/${partitionsTestFolder}/add_partition`;
       before(() => {
-        KeyUtils.goToKey(addPartitionKeyFullPath);
+        Key.open(addPartitionKeyFullPath);
       });
 
       it('should not partition if canceled', () => {
-        const keySource = KeyUtils.getKeySource();
+        const keySource = Key.source;
         addPartition('user.FavoriteFruit');
         browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
         browser.click(selectors.ALERT_CANCEL_BUTTON);
@@ -118,7 +119,7 @@ describe('partition key', () => {
   describe('delete partition', () => {
     const deletePartitionKeyFullPath = `${testFolder}/${partitionsTestFolder}/delete_partition`;
     before(() => {
-      KeyUtils.goToKey(deletePartitionKeyFullPath);
+      Key.open(deletePartitionKeyFullPath);
     });
 
     it('should clear rules after partition is deleted', () => {
@@ -135,7 +136,7 @@ describe('partition key', () => {
 
   describe('partition groups', () => {
     it('should add new partition group', () => {
-      KeyUtils.goToKey(`${testFolder}/${partitionsTestFolder}/add_partition_group`);
+      Key.open(`${testFolder}/${partitionsTestFolder}/add_partition_group`);
       const newPartitionGroups = [['Banana'], ['Orange', 'Rick'], [false, 'Morty']];
       newPartitionGroups.forEach(group => {
         group.forEach((value, i) => {
@@ -161,7 +162,7 @@ describe('partition key', () => {
     });
 
     it('should delete group rules when deleting partition group', () => {
-      KeyUtils.goToKey(`${testFolder}/${partitionsTestFolder}/partition_groups`);
+      Key.open(`${testFolder}/${partitionsTestFolder}/partition_groups`);
       browser.click(selectors.partitionGroupDeleteButton(2));
       browser.waitForVisible(selectors.ALERT_CANCEL_BUTTON, 1000);
       KeyUtils.acceptRodalIfRaised();

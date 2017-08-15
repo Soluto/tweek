@@ -1,13 +1,14 @@
 /* global describe, before, after, it, browser */
 
 import * as KeysAsserts from '../../utils/key-asserts';
-import { goToKey, acceptRodalIfRaised, BLANK_KEY_NAME } from '../../utils/key-utils';
+import { acceptRodalIfRaised } from '../../utils/key-utils';
+import Key from '../../utils/Key';
 import Rule from '../../utils/Rule';
 import { dataComp } from '../../utils/selector-utils';
 
 describe('key-value-type', () => {
   before(() => {
-    goToKey(BLANK_KEY_NAME);
+    Key.add();
     Rule.add().removeCondition();
   });
 

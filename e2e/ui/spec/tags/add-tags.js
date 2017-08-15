@@ -1,6 +1,7 @@
 /* global describe, before, after, it, browser */
 
 import * as KeyUtils from '../../utils/key-utils';
+import Key from '../../utils/Key';
 import selectors from '../../selectors/keySelectors';
 import Chance from 'chance';
 
@@ -14,7 +15,7 @@ describe('add tags', () => {
   const chance = new Chance();
 
   before(() => {
-    KeyUtils.goToKey(tagsTestKeyFullPath);
+    Key.open(tagsTestKeyFullPath);
     browser.windowHandleMaximize();
   });
 

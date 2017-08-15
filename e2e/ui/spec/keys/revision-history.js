@@ -2,6 +2,7 @@
 
 import { expect } from 'chai';
 import * as KeyUtils from '../../utils/key-utils';
+import Key from '../../utils/Key';
 
 describe('revision history', () => {
   const keyName = '@behavior_tests/@revision_history/key';
@@ -15,7 +16,7 @@ describe('revision history', () => {
     for (let i = 0; i < count; i++) {
       const value = `value ${i}`;
       browser.setValue(valueSelector, value);
-      KeyUtils.commitChanges();
+      Key.current.commitChanges();
 
       let commit = undefined;
       browser.waitUntil(() => {
@@ -29,7 +30,7 @@ describe('revision history', () => {
   }
 
   it('should display revision history', () => {
-    KeyUtils.goToKey(keyName);
+    Key.open(keyName);
     browser.waitForVisible(revisionHistorySelector, 1000);
 
     const changeCount = 4;
