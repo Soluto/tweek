@@ -7,6 +7,17 @@ steps:
       commands:
           - ./ci/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
 
+  Test:
+    title: Promote Tweek API
+    image: alpine
+    when:
+      condition:
+        all:
+          promoted: '${{TWEEK_API_SHOULD_UPDATE}} == true'
+          masterBranch: '"${{CF_BRANCH}}" == "master"'
+    commands:
+          - echo $TWEEK_API_VERSION
+
   BuildGitKeys:
     title: Building Git Keys Docker Image
     type: build
@@ -248,13 +259,5 @@ steps:
         only:
           - master
     candidate: ${{BuildingGitRepository}}
-
-  ChceckForTweekApiPromotion:
-    image: alpine
-    title: Push Git Repository - latest
-    when:
-      branch:
-        only:
-          - master
 
     
