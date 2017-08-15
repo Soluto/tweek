@@ -13,7 +13,7 @@ steps:
     when:
       condition:
         all:
-          promoted: "'${{TWEEK_API_SHOULD_UPDATE}}' == 'true'"
+          promoted: "'${{TWEEK_API_VERSION}}' == '0.1.32'"
           masterBranch: '"${{CF_BRANCH}}" == "538-versions-in-editor"'
     commands:
           - echo $TWEEK_API_VERSION
