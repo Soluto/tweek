@@ -34,7 +34,7 @@ echo  checking editor version
 TWEEK_EDITOR_VERSION=$(cat ./services/editor/package.json | grep -E "\"version\"" | grep -Eo [0-9.]*)
 TWEEK_EDITOR_TAG="tweek-editor-$TWEEK_EDITOR_VERSION"
 export TWEEK_DOCKER_TAG_EDITOR="latest"
-if [[ "$(git tag | grep -c $TWEEK_DOCKER_TAG_EDITOR)" == "0" ]]; then
+if [[ "$(git tag | grep -c $TWEEK_EDITOR_TAG)" == "0" ]]; then
     echo tagging $TWEEK_EDITOR_TAG
     git tag $TWEEK_EDITOR_TAG
     export TWEEK_DOCKER_TAG_EDITOR=$TWEEK_EDITOR_VERSION
