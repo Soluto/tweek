@@ -1,5 +1,5 @@
-const R = require('ramda');
-const searchIndex = require('../search-index');
+import R from 'ramda';
+import searchIndex from '../search-index';
 
 async function getAllKeys(req, res) {
   const manifests = await searchIndex.manifests;
@@ -69,7 +69,7 @@ async function getRevision(req, res, { keysRepository }) {
   res.json(commit.sha());
 }
 
-module.exports = {
+export = {
   getAllKeys,
   getAllManifests,
   getKey,

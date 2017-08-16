@@ -1,4 +1,4 @@
-const nconf = require('nconf');
+import * as nconf from 'nconf';
 
 nconf.argv().env().defaults({
   PORT: 3000,
@@ -18,4 +18,4 @@ const configs = [
   'CONTINUOUS_UPDATER_INTERVAL',
 ];
 
-module.exports = configs.reduce((constants, config) => Object.assign({}, constants, { [config]: nconf.get(config) }), {});
+export = (configs.reduce((constants, config) => Object.assign({}, constants, {[config]: nconf.get(config)}), {}));

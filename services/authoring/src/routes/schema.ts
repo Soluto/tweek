@@ -1,10 +1,10 @@
-const R = require('ramda');
-const jsonpatch = require('fast-json-patch');
-const searchIndex = require('../search-index');
+import * as R from 'ramda';
+import jsonpatch from 'fast-json-patch';
+import searchIndex from '../search-index';
 
 const schemaPrefix = '@tweek/schema/';
 const indexSchema = R.pipe(
-  R.indexBy(manifest => manifest.key_path.substring(schemaPrefix.length)),
+  R.indexBy((manifest: any) => manifest.key_path.substring(schemaPrefix.length)),
   R.map(R.path(['implementation', 'value'])),
 );
 
@@ -61,7 +61,7 @@ async function patchIdentity(req, res, { keysRepository, author }) {
   res.sendStatus(200);
 }
 
-module.exports = {
+export = {
   getSchemas,
   deleteIdentity,
   addIdentity,

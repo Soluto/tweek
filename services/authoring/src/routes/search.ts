@@ -1,6 +1,6 @@
-const R = require('ramda');
-const lunr = require('lunr');
-const searchIndex = require('../search-index');
+import R from 'ramda';
+import lunr from 'lunr';
+import searchIndex from '../search-index';
 
 const separator = /(?:[_/]|\s|-)/;
 
@@ -37,7 +37,7 @@ function performSearch(searchString = '', { maxResults = 25, field, index }) {
   }
 }
 
-const createSearchEndpoint = field => async (req, res) => {
+const createSearchEndpoint = (field?: string) => async (req, res) => {
   const index = searchIndex.index || (await searchIndex.indexPromise);
   const result = performSearch(req.query.q, {
     maxResults: req.query.count,

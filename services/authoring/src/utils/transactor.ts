@@ -1,9 +1,10 @@
-const Locker = require('lock-queue');
+import * as Locker from 'lock-queue';
 
-class Transactor {
-  constructor(contextPromise, cleanupAction) {
-    this._contextPromise = contextPromise;
-    this._cleanupAction = cleanupAction;
+export default class Transactor {
+  _lock: Locker;
+  constructor(private _contextPromise, private _cleanupAction) {
+    // this._contextPromise = contextPromise;
+    // this._cleanupAction = cleanupAction;
 
     this._lock = new Locker();
   }
@@ -29,5 +30,3 @@ class Transactor {
     });
   }
 }
-
-module.exports = Transactor;

@@ -1,38 +1,46 @@
-const path = require('path');
-const git = require('nodegit');
-const simpleGit = require('simple-git');
-const fs = require('fs-extra');
-const R = require('ramda');
-const { mapSeries, reduce } = require('bluebird');
+import path = require('path');
+import git = require('nodegit');
+import simpleGit = require('simple-git');
+import fs = require('fs-extra');
+import R = require('ramda');
+// import { mapSeries, reduce } from 'bluebird';
 
-async function listFiles(repo, filter = () => true) {
+
+async function listFiles(repo: git.Repository, filter: (path: string) => boolean = () => true) {
   let commit = await repo.getMasterCommit();
   let tree = await commit.getTree();
   let walker = tree.walk(true);
-  return await new Promise((resolve, reject) => {
-    let entries = [];
-    walker.on('entry', (entry) => {
+  return await new Promise<any>((resolve, reject) => {
+    let entries: string[] = [];
+    walker.on('entry', (entry: any) => {
       const path = entry.path().replace(/\\/g, '/');
       if (filter(path)) return entries.push(path);
+      return null;
     });
     walker.on('end', () => resolve(entries));
     walker.on('error', ex => reject(ex));
-    walker.start();
+    // walker.start();
   });
 }
 
-class GitRepository {
-  constructor(repo, operationSettings) {
-    this._repo = repo;
-    this._operationSettings = operationSettings;
-    this._simpleRepo = simpleGit(repo.workdir());
+export type OperationSettings = {
+  callbacks: {
+    credentials: () => git.Cred
+  }
+};
+
+export default class GitRepository {
+  _simpleRepo: any;
+
+  constructor(private _repo: git.Repository, private _operationSettings: OperationSettings) {
+    this._simpleRepo = simpleGit(_repo.workdir());
   }
 
-  static async create(settings) {
+  static async create(settings: {url: string, localPath: string, username: string, publicKey: string, privateKey: string, password: string}) {
     console.log('cleaning up current working folder');
     await fs.remove(settings.localPath);
 
-    const operationSettings = {
+    const operationSettings: OperationSettings = {
       callbacks: {
         credentials: () =>
           settings.url.startsWith('ssh://')
@@ -45,7 +53,7 @@ class GitRepository {
     const clonningOp = 'clonning end in';
     console.time(clonningOp);
 
-    const repo = await git.Clone(settings.url, settings.localPath, {
+    const repo = await git.Clone.clone(settings.url, settings.localPath, {
       fetchOpts: operationSettings,
     });
 
@@ -60,13 +68,13 @@ class GitRepository {
     );
   }
 
-  async readFile(fileName, { revision } = {}) {
+  async readFile(fileName: string, { revision }) {
     const commit = await (revision ? this._repo.getCommit(revision) : this._repo.getMasterCommit());
     const entry = await commit.getEntry(fileName);
     return entry.isBlob() ? (await entry.getBlob()).toString() : undefined;
   }
 
-  async getHistory(fileNames, { revision, since } = {}) {
+  async getHistory(fileNames: string | string[], { revision, since }) {
     fileNames = Array.isArray(fileNames) ? fileNames : [fileNames];
 
     const historyEntries = await Promise.all(
@@ -74,7 +82,7 @@ class GitRepository {
         const options = [`--follow`, file];
         if (since) options.unshift(`--since="${since}"`);
 
-        const history = await new Promise((resolve, reject) => {
+        const history = await new Promise<any>((resolve, reject) => {
           this._simpleRepo.log(options, (err, log) => {
             if (err) reject(err);
             else resolve(log);
@@ -140,11 +148,11 @@ class GitRepository {
   }
 
   async fetch() {
-    await this._repo.fetchAll(this._operationSettings);
+    await this._repo.fetchAll(this._operationSettings, undefined);
   }
 
-  async mergeMaster() {
-    let commitId = await this._repo.mergeBranches('master', 'origin/master');
+  async mergeMaster(): Promise<any> {
+    let commitId = await this._repo.mergeBranches('master', 'origin/master', undefined, undefined, undefined);
 
     const isSynced = await this.isSynced();
     if (!isSynced) {
@@ -155,9 +163,9 @@ class GitRepository {
     return commitId;
   }
 
-  async reset() {
+  async reset(): Promise<any> {
     const remoteCommit = await this._repo.getBranchCommit('remotes/origin/master');
-    await git.Reset.reset(this._repo, remoteCommit, 3);
+    await git.Reset.reset(this._repo, <any>remoteCommit, 3, undefined);
     return remoteCommit.id();
   }
 
@@ -168,15 +176,15 @@ class GitRepository {
     return remoteCommit.id().equal(localCommit.id()) === 1;
   }
 
-  getLastCommit(branch = 'master') {
+  getLastCommit(branch = 'master'): Promise<any> {
     return this._repo.getBranchCommit(branch);
   }
 
   async _pushRepositoryChanges(actionName) {
     console.log('pushing changes:', actionName);
 
-    const remote = await this._repo.getRemote('origin');
-    await remote.push(['refs/heads/master:refs/heads/master'], this._operationSettings);
+    const remote = await this._repo.getRemote('origin', undefined);
+    await remote.push(['refs/heads/master:refs/heads/master'], <any>this._operationSettings, undefined);
 
     const isSynced = await this.isSynced();
 
@@ -188,5 +196,3 @@ class GitRepository {
     }
   }
 }
-
-module.exports = GitRepository;

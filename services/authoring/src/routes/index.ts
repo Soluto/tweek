@@ -13,7 +13,7 @@ const AppsRoutes = require('./apps');
 const authorize = require('../security/authorize');
 const PERMISSIONS = require('../security/permissions/consts');
 
-function configureRoutes(config) {
+export default function configureRoutes(config) {
   const app = express();
 
   const addConfig = compose(
@@ -105,5 +105,3 @@ function configureRoutes(config) {
 
   return app;
 }
-
-module.exports = configureRoutes;

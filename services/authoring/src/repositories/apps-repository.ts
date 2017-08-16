@@ -1,8 +1,8 @@
-const R = require('ramda');
+import * as R from 'ramda';
 
-class AppsRepository {
-  constructor(gitTransactionManager) {
-    this._gitTransactionManager = gitTransactionManager;
+export default class AppsRepository {
+  apps: any;
+  constructor(private _gitTransactionManager) {
   }
 
   getApp(appId) {
@@ -29,5 +29,3 @@ class AppsRepository {
     });
   }
 }
-
-module.exports = AppsRepository;

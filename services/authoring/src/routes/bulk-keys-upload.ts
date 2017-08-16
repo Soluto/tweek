@@ -1,16 +1,15 @@
-const fs = require('fs');
-const path = require('path');
-const R = require('ramda');
-const JSZip = require('jszip');
+import fs from 'fs';
+import R from 'ramda';
+import JSZip from 'jszip';
 
 const supportedPaths = [/^manifests\/.+?\.json/, /^implementations\/.+\/.+?\./];
-const isValidPath = x => R.any(R.test(R.__, x))(supportedPaths);
+const isValidPath = x => R.any(<any>R.test((<any>R).__, x))(supportedPaths);
 
 async function bulkKeysUpload(req, res, { author, keysRepository }) {
   if (!req.files) {
     return res.status(400).send('Required file is missing: bulk');
   }
-  let zipRoot = {};
+  let zipRoot: any = {};
   try {
     zipRoot = await new JSZip().loadAsync(fs.readFileSync(req.files[0].path));
   } catch (err) {
@@ -18,8 +17,8 @@ async function bulkKeysUpload(req, res, { author, keysRepository }) {
   }
   const transformIntoEntriesArray = R.pipe(
     R.values,
-    R.filter(file => !file.dir),
-    R.map(file => ({
+    R.filter((file: any) => !file.dir),
+    R.map((file: any) => ({
       name: file.name,
       read: () => file.async('string'),
     })),
@@ -36,4 +35,4 @@ async function bulkKeysUpload(req, res, { author, keysRepository }) {
   return res.sendStatus(200);
 }
 
-module.exports = { bulkKeysUpload };
+export default { bulkKeysUpload };

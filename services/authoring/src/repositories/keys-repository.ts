@@ -1,4 +1,4 @@
-const path = require('path');
+import * as path from 'path';
 
 function generateEmptyManifest(keyPath) {
   return {
@@ -62,6 +62,7 @@ async function updateKey(gitRepo, keyPath, manifest, fileImplementation) {
 }
 
 async function getFileImplementation(manifest, repo, revision) {
+  let source: any;
   try {
     source = await repo.readFile(getPathForSourceFile(manifest), { revision });
   } catch (err) {
@@ -84,7 +85,7 @@ async function getRevisionHistory(manifest, repo, config) {
   return await repo.getHistory(files, config);
 }
 
-async function getManifestFile(keyPath, gitRepo, revision) {
+async function getManifestFile(keyPath: string, gitRepo, revision?: string) {
   try {
     let fileContent;
     try {
@@ -100,9 +101,8 @@ async function getManifestFile(keyPath, gitRepo, revision) {
   }
 }
 
-class KeysRepository {
-  constructor(gitTransactionManager) {
-    this._gitTransactionManager = gitTransactionManager;
+export default class KeysRepository {
+  constructor(private _gitTransactionManager) {
   }
 
   getAllKeys() {
@@ -121,11 +121,11 @@ class KeysRepository {
       const manifests = await Promise.all(
         manifestFiles.map(pathForManifest => gitRepo.readFile(pathForManifest)),
       );
-      return manifests.map(JSON.parse);
+      return manifests.map(<any>JSON.parse);
     });
   }
 
-  getKeyDetails(keyPath, { revision } = {}) {
+  getKeyDetails(keyPath, { revision }: any = {}) {
     return this._gitTransactionManager.with(async (gitRepo) => {
       const manifest = await getManifestFile(keyPath, gitRepo, revision);
       return {
@@ -138,7 +138,7 @@ class KeysRepository {
     });
   }
 
-  getKeyManifest(keyPath, { revision } = {}) {
+  getKeyManifest(keyPath, { revision }: any = {}) {
     return this._gitTransactionManager.with(async (gitRepo) => {
       const pathForManifest = getPathForManifest(keyPath);
       return JSON.parse(await gitRepo.readFile(pathForManifest, { revision }));
@@ -185,5 +185,3 @@ class KeysRepository {
     return this._gitTransactionManager.read(gitRepo => gitRepo.getLastCommit());
   }
 }
-
-module.exports = KeysRepository;
