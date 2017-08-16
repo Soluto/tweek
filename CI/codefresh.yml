@@ -37,7 +37,7 @@ steps:
           - 538-versions-in-editor
     tags: 
       - latest-exp
-      - ${TWEEK_API_DOCKER_TAG}
+      - ${TWEEK_DOCKER_TAG_API}
     candidate: ${{BuildingApiImage}}
     
   BuildingManagement:
