@@ -7,17 +7,6 @@ steps:
       commands:
           - ./ci/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
 
-  Test:
-    title: Promote Tweek API
-    image: alpine
-    when:
-      condition:
-        all:
-          promoted: "${{TWEEK_API_SHOULD_UPDATE}} == 'true'"
-          masterBranch: '"${{CF_BRANCH}}" == "538-versions-in-editor"'
-    commands:
-          - echo $TWEEK_API_VERSION
-
   BuildGitKeys:
     title: Building Git Keys Docker Image
     type: build
@@ -38,6 +27,16 @@ steps:
     dockerfile: TweekApiDockerfile
     build_arguments: 
       - VERSION_SUFFIX=ci-${{CF_BUILD_ID}}-${{CF_SHORT_REVISION}}
+
+  PushApiImageTests:
+    type: push
+    title: Push Tweek Api - lastest
+    when:
+      branch:
+        only:
+          - 538-versions-in-editor
+    tags: ${{TweekApiTags}}
+    candidate: ${{BuildingApiImage}}
     
   BuildingManagement:
     title: Building Management Docker Image
@@ -222,6 +221,7 @@ steps:
       branch:
         only:
           - master
+    tags: ${{TweekApiTags}}
     candidate: ${{BuildingApiImage}}
 
   PushManagementImageMaster:
@@ -260,14 +260,5 @@ steps:
           - master
     candidate: ${{BuildingGitRepository}}
 
-  PushGitTags:
-    image: alpine/git
-    title: Push git tags
-    when:
-      branch:
-        only:
-          - master
-    commands:
-      - git push --tags
 
     
