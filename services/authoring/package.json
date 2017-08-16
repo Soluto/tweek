@@ -26,6 +26,10 @@
       "**/authoring/**/*.js": [
         "npm run format",
         "git add"
+      ],
+      "**/authoring/**/*.ts": [
+        "npm run format",
+        "git add"
       ]
     }
   },
