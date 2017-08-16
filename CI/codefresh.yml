@@ -35,7 +35,7 @@ steps:
       branch:
         only:
           - 538-versions-in-editor
-    tags: [${{TweekApiTags}}]
+    tags: [ 'latest-exp', '${{TWEEK_API_DOCKER_TAG}}' ]
     candidate: ${{BuildingApiImage}}
     
   BuildingManagement:
