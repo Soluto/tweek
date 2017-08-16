@@ -35,9 +35,7 @@ steps:
       branch:
         only:
           - 538-versions-in-editor
-    tags: 
-      - 'latest-exp'
-      - '${TWEEK_API_DOCKER_TAG}'
+    tags: [ 'latest-exp', '${{TWEEK_API_DOCKER_TAG}}' ]
     candidate: ${{BuildingApiImage}}
     
   BuildingManagement:
@@ -215,16 +213,6 @@ steps:
             - CF_QUALITY: false
           - '${{BuildingAuthoring.imageId}}':
             - CF_QUALITY: false
-  
-  PushApiImageMaster:
-    type: push
-    title: Push Tweek Api - lastest
-    when:
-      branch:
-        only:
-          - master
-    tags: ${{TweekApiTags}}
-    candidate: ${{BuildingApiImage}}
 
   PushManagementImageMaster:
     type: push
