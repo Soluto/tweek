@@ -1,5 +1,12 @@
 version: '1.0'
 steps:
+  PrintSecret:
+    description: Freestyle step..
+    title: Free styling
+    image: alpine/git
+    commands:
+        - echo trying to print secret $SECRET
+        
   BuildGitKeys:
     title: Building Git Keys Docker Image
     type: build
