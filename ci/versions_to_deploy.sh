@@ -1,9 +1,9 @@
 echo checking api version
 TWEEK_API_VERSION=$(cat ./services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj | grep -E "VersionPrefix" | grep -Eo [0-9.]*)
 TWEEK_API_TAG="tweek-api-$TWEEK_API_VERSION"
-TWEEK_API_TAGS="['latest-exp']"
+TWEEK_API_TAGS="'latest-exp'"
 if [[ "$(git tag | grep -c $TWEEK_API_TAG)" == "0" ]]; then
-    TWEEK_API_TAGS="['latest-exp', '$TWEEK_API_VERSION-exp']"
+    TWEEK_API_TAGS="'latest-exp', '$TWEEK_API_VERSION-exp'"
 fi
 
 TWEEK_API_SHOULD_UPDATE=$([[ "$(git tag | grep -c $TWEEK_API_TAG)" == "0" ]] && echo "true" || echo "false")
