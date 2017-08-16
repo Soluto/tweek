@@ -35,7 +35,7 @@ export TWEEK_DOCKER_TAG_EDITOR="latest"
 if [[ "$(git tag | grep -c $TWEEK_DOCKER_TAG_EDITOR)" == "0" ]]; then
     echo tagging $TWEEK_EDITOR_TAG
     git tag $TWEEK_EDITOR_TAG
-    export TWEEK_DOCKER_TAG_AUTHORING=$TWEEK_EDITOR_VERSION
+    export TWEEK_DOCKER_TAG_EDITOR=$TWEEK_EDITOR_VERSION
 fi
 
 env | grep TWEEK_DOCKER_TAG >> $1
