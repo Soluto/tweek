@@ -7,12 +7,6 @@ steps:
       commands:
           - ./ci/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
 
-  PushGitTagsTests:
-    image: alpine/git
-    title: Push git tags
-    commands:
-      - git push --tags
-
   Test:
     title: Promote Tweek API
     image: alpine
