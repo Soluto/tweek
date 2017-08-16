@@ -5,6 +5,7 @@ TWEEK_API_DOCKER_TAG="latest-exp"
 if [[ "$(git tag | grep -c $TWEEK_API_TAG)" == "0" ]]; then
     TWEEK_API_DOCKER_TAG=$TWEEK_API_VERSION-exp
 fi
+echo $TWEEK_API_DOCKER_TAG
 
 TWEEK_API_SHOULD_UPDATE=$([[ "$(git tag | grep -c $TWEEK_API_TAG)" == "0" ]] && echo "true" || echo "false")
 if [ "$TWEEK_API_SHOULD_UPDATE" == 'true' ]; then
