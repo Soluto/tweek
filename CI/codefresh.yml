@@ -27,19 +27,7 @@ steps:
     dockerfile: TweekApiDockerfile
     build_arguments: 
       - VERSION_SUFFIX=ci-${{CF_BUILD_ID}}-${{CF_SHORT_REVISION}}
-
-  PushApiImageTests:
-    type: push
-    title: Push Tweek Api - lastest
-    when:
-      branch:
-        only:
-          - 538-versions-in-editor
-    tags: 
-      - latest-exp
-      - ${TWEEK_DOCKER_TAG_API}
-    candidate: ${{BuildingApiImage}}
-    
+  
   BuildingManagement:
     title: Building Management Docker Image
     type: build
@@ -216,6 +204,18 @@ steps:
           - '${{BuildingAuthoring.imageId}}':
             - CF_QUALITY: false
 
+  PushApiImageMaster:
+    type: push
+    title: Push Tweek Api - lastest
+    when:
+      branch:
+        only:
+          - master
+    candidate: ${{BuildingApiImage}}
+    tags:
+      - latest
+      - ${TWEEK_DOCKER_TAG_API}-exp
+
   PushManagementImageMaster:
     type: push
     title: Push Management - lastest
@@ -224,6 +224,9 @@ steps:
         only:
           - master
     candidate: ${{BuildingManagement}}
+    tags:
+      - latest
+      - ${TWEEK_DOCKER_TAG_MANAGEMENT}-exp
 
   PushAuthoringImageMaster:
     type: push
@@ -233,6 +236,9 @@ steps:
         only:
           - master
     candidate: ${{BuildingAuthoring}}
+    tags:
+      - latest
+      - ${TWEEK_DOCKER_TAG_AUTHORING}-exp
 
   PushEditorImageMaster:
     type: push
@@ -242,6 +248,9 @@ steps:
         only:
           - master
     candidate: ${{BuildingEditor}}
+    tags:
+      - latest
+      - ${TWEEK_DOCKER_TAG_EDITOR}-exp
 
   PushGitRepositoryMaster:
     type: push
@@ -251,6 +260,3 @@ steps:
         only:
           - master
     candidate: ${{BuildingGitRepository}}
-
-
-    
