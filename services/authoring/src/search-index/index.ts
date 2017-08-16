@@ -1,8 +1,8 @@
-import * as path from 'path';
+import path =require( 'path');
 import { execFile } from 'child_process';
-import * as fs from 'fs-extra';
-import * as R from 'ramda';
-import * as lunr from 'lunr';
+import fs = require('fs-extra');
+import R = require('ramda');
+import lunr = require('lunr');
 import { getManifests } from './get-manifests';
 
 let manifestPromise;

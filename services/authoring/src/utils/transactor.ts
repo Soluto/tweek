@@ -1,4 +1,4 @@
-import * as Locker from 'lock-queue';
+import Locker = require('lock-queue');
 
 export default class Transactor {
   _lock: Locker;

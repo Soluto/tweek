@@ -1,4 +1,4 @@
-import * as nconf from 'nconf';
+import nconf = require('nconf');
 
 nconf.argv().env().defaults({
   PORT: 3000,

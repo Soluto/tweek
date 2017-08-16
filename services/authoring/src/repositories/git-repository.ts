@@ -3,8 +3,6 @@ import git = require('nodegit');
 import simpleGit = require('simple-git');
 import fs = require('fs-extra');
 import R = require('ramda');
-// import { mapSeries, reduce } from 'bluebird';
-
 
 async function listFiles(repo: git.Repository, filter: (path: string) => boolean = () => true) {
   let commit = await repo.getMasterCommit();
@@ -19,7 +17,7 @@ async function listFiles(repo: git.Repository, filter: (path: string) => boolean
     });
     walker.on('end', () => resolve(entries));
     walker.on('error', ex => reject(ex));
-    // walker.start();
+    (<any>walker).start();
   });
 }
 
@@ -63,12 +61,12 @@ export default class GitRepository {
 
   async listFiles(directoryPath = '') {
     const normalizedDirPath = `${path.normalize(`${directoryPath}/.`)}/`.replace(/\\/g, '/');
-    return (await listFiles(this._repo, path => path.startsWith(normalizedDirPath))).map(x =>
+    return (await listFiles(this._repo, filePath => filePath.startsWith(normalizedDirPath))).map(x =>
       x.substring(normalizedDirPath.length),
     );
   }
 
-  async readFile(fileName: string, { revision }) {
+  async readFile(fileName: string, { revision }: any = {}) {
     const commit = await (revision ? this._repo.getCommit(revision) : this._repo.getMasterCommit());
     const entry = await commit.getEntry(fileName);
     return entry.isBlob() ? (await entry.getBlob()).toString() : undefined;

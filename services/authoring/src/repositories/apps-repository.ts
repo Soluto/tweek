@@ -1,4 +1,4 @@
-import * as R from 'ramda';
+import R = require('ramda');
 
 export default class AppsRepository {
   apps: any;
@@ -11,7 +11,7 @@ export default class AppsRepository {
 
   async refresh() {
     await this._gitTransactionManager.with(async (repo) => {
-      const externalAppsFiles = await repo.listFiles('external_apps');
+      const externalAppsFiles = await repo.listFiles('external_apps').catch(err=>console.error("ERROR", err));
       this.apps = (await Promise.all(
         externalAppsFiles.map(async appFile => ({
           name: appFile.split('.')[0],

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "yarn run docker-compose up -- --force-recreate -d git && yarn run docker-compose up -- -d",
+    "start": "yarn run docker-compose up -- --force-recreate -d git && yarn run docker-compose up -- -d api authoring",
     "test": "mocha ./spec/**/*.test.js --timeout 8000",
     "rebuild": "yarn run docker-compose build",
     "test:full-env": "yarn run start && yarn run test",

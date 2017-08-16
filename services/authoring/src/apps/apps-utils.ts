@@ -1,4 +1,4 @@
-import * as crypto from 'crypto';
+import crypto = require('crypto');
 import { promisify } from 'util';
 
 const pbkdf2 = promisify(crypto.pbkdf2);

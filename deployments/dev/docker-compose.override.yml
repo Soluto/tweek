@@ -77,7 +77,7 @@ services:
     entrypoint:
       - node
       - --inspect=5858
-      - ./src/server.js
+      - ./dist/server.js
     labels:
       - "traefik.port=3000"
 

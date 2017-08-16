@@ -1,5 +1,5 @@
-import R from 'ramda';
-import lunr from 'lunr';
+import R = require('ramda');
+import lunr = require('lunr');
 import searchIndex from '../search-index';
 
 const separator = /(?:[_/]|\s|-)/;
@@ -47,7 +47,7 @@ const createSearchEndpoint = (field?: string) => async (req, res) => {
   res.json(result);
 };
 
-module.exports = {
+export default {
   async getSearchIndex(req, res) {
     res.json(await searchIndex.indexPromise);
   },

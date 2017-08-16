@@ -1,6 +1,6 @@
-import fs from 'fs';
-import R from 'ramda';
-import JSZip from 'jszip';
+import fs = require('fs');
+import R = require('ramda');
+import JSZip = require('jszip');
 
 const supportedPaths = [/^manifests\/.+?\.json/, /^implementations\/.+\/.+?\./];
 const isValidPath = x => R.any(<any>R.test((<any>R).__, x))(supportedPaths);

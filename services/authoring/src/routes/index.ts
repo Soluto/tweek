@@ -1,19 +1,20 @@
-const express = require('express');
-const { compose } = require('ramda');
-const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
-const requestErrorHandlingWrapper = require('../utils/request-error-handling-wrapper');
-const includeAuthor = require('../utils/include-author');
-const KeysRoutes = require('./keys');
-const BulkKeysRoutes = require('./bulk-keys-upload');
-const SchemaRoutes = require('./schema');
-const TagsRoutes = require('./tags');
-const SearchRoutes = require('./search');
-const AppsRoutes = require('./apps');
-const authorize = require('../security/authorize');
-const PERMISSIONS = require('../security/permissions/consts');
+import express = require('express');
+import { compose } from 'ramda';
+import multer = require('multer');
+import requestErrorHandlingWrapper from '../utils/request-error-handling-wrapper';
+import includeAuthor from '../utils/include-author';
+import KeysRoutes from './keys';
+import BulkKeysRoutes from './bulk-keys-upload';
+import SchemaRoutes from './schema';
+import TagsRoutes from './tags';
+import SearchRoutes from './search';
+import AppsRoutes from './apps';
+import authorize from '../security/authorize';
+import PERMISSIONS from '../security/permissions/consts';
 
-export default function configureRoutes(config) {
+const upload = multer({ dest: 'uploads/' });
+
+export default function configureRoutes(config): any {
   const app = express();
 
   const addConfig = compose(

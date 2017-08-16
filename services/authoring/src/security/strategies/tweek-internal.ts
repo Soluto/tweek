@@ -7,7 +7,7 @@ const tweekApp = {
   permissions: '*',
 };
 
-export class TweekInternalStrategy extends JwtStrategy {
+export default class TweekInternalStrategy extends JwtStrategy {
   readonly name = 'tweek-internal';
   constructor(publicKey) {
     super(

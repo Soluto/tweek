@@ -1,4 +1,4 @@
-function requestErrorHandlingWrapper(handler) {
+export default function requestErrorHandlingWrapper(handler) {
   return async (req, res) => {
     try {
       await Promise.resolve(handler(req, res));
@@ -8,5 +8,3 @@ function requestErrorHandlingWrapper(handler) {
     }
   };
 }
-
-module.exports = requestErrorHandlingWrapper;

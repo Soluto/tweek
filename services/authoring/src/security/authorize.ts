@@ -1,6 +1,6 @@
-const PERMISSIONS = require('./permissions/consts');
+import PERMISSIONS from './permissions/consts';
 
-function authorize({ permission }) {
+export default function authorize({ permission }) {
   return function (req, res, next) {
     if (req.user.isTweekService) {
       return next();
@@ -13,8 +13,6 @@ function authorize({ permission }) {
     ) {
       return next();
     }
-    res.send(403);
+    res.sendStatus(403);
   };
 }
-
-module.exports = authorize;

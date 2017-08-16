@@ -1,23 +1,22 @@
-// import path = requier('path');
 import path = require('path');
 import BluebirdPromise = require('bluebird');
 import express = require('express');
 import morgan = require('morgan');
 import bodyParser = require('body-parser');
 import Rx = require('rxjs');
+import fs = require('fs-extra');
+import passport = require('passport');
 import Transactor from './utils/transactor';
 import GitRepository from './repositories/git-repository';
 import KeysRepository from './repositories/keys-repository';
 import TagsRepository from './repositories/tags-repository';
 import AppsRepository from './repositories/apps-repository';
 import GitContinuousUpdater from './repositories/git-continuous-updater';
-import * as passport from 'passport';
 import searchIndex from './search-index';
 import routes from './routes';
-import fs from 'fs-extra';
 import configurePassport from './security/configure-passport';
-import sshpk from 'sshpk';
-import { ErrorRequestHandler } from "express";
+import sshpk = require('sshpk');
+import { ErrorRequestHandler } from 'express';
 
 const {
   PORT,
@@ -89,6 +88,6 @@ GitContinuousUpdater.onUpdate(gitTransactionManager)
   .retry()
   .subscribe();
 
-gitRepoCreationPromiseWithTimeout.then(() => startServer()).catch((reason: any) => {
+gitRepoCreationPromiseWithTimeout.then(async () => await startServer()).catch((reason: any) => {
   console.error(reason);
 });

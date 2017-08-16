@@ -1,5 +1,5 @@
-import * as R from 'ramda';
-import jsonpatch from 'fast-json-patch';
+import R = require('ramda');
+import jsonpatch = require('fast-json-patch');
 import searchIndex from '../search-index';
 
 const schemaPrefix = '@tweek/schema/';
@@ -61,7 +61,7 @@ async function patchIdentity(req, res, { keysRepository, author }) {
   res.sendStatus(200);
 }
 
-export = {
+export default {
   getSchemas,
   deleteIdentity,
   addIdentity,

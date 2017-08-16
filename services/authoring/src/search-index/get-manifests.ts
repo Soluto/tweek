@@ -1,6 +1,6 @@
-import * as path from 'path';
+import path = require( 'path');
 import { promisify } from 'util';
-import * as _ from 'highland';
+import _ = require('highland');
 const glob = promisify(require('glob'));
 const readFile = _.wrapCallback(require('fs').readFile);
 

@@ -1,5 +1,5 @@
-const TweekInternalStrategy = require('./strategies/tweek-internal');
-const AppCredentialsStrategy = require('./strategies/app-credentials');
+import TweekInternalStrategy  from './strategies/tweek-internal';
+import AppCredentialsStrategy from './strategies/app-credentials';
 const passport = require('passport');
 
 export default function configurePassport(publickey, appsRepository) {

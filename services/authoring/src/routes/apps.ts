@@ -1,10 +1,10 @@
-import uuid from 'uuid';
+import uuid = require('uuid');
 import { promisify } from 'util';
-import * as crypto from 'crypto';
+import crypto = require('crypto');
 import { generateHash } from '../apps/apps-utils';
 const randomBytes = promisify(crypto.randomBytes);
-const PERMISSIONS = require('../security/permissions/consts');
-import * as R from 'ramda';
+import PERMISSIONS from '../security/permissions/consts';
+import R = require('ramda');
 
 async function createSecretKey() {
   const salt = await randomBytes(64);
@@ -30,7 +30,7 @@ function createNewAppManifest(appName, permissions) {
   };
 }
 
-const allowedPermissions = R.without(PERMISSIONS.ADMIN, R.values(PERMISSIONS));
+const allowedPermissions = R.without(<any>PERMISSIONS.ADMIN, R.values(PERMISSIONS));
 
 const hasValidPermissions = R.all(<any>R.contains((<any>R).__, allowedPermissions));
 

@@ -1,4 +1,4 @@
-import R from 'ramda';
+import R = require('ramda');
 import searchIndex from '../search-index';
 
 async function getAllKeys(req, res) {
@@ -69,7 +69,7 @@ async function getRevision(req, res, { keysRepository }) {
   res.json(commit.sha());
 }
 
-export = {
+export default {
   getAllKeys,
   getAllManifests,
   getKey,

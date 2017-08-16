@@ -1,4 +1,4 @@
-function includeAuthor(handler) {
+export default function includeAuthor(handler) {
   return (req, res, config = {}) => {
     const { 'author.name': name, 'author.email': email } = req.query;
 
@@ -12,5 +12,3 @@ function includeAuthor(handler) {
     return handler(req, res, Object.assign({ author }, config));
   };
 }
-
-module.exports = includeAuthor;

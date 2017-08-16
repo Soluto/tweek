@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   KEYS_LIST: 'keys-list',
   KEYS_READ: 'keys-read',
   KEYS_WRITE: 'keys-write',

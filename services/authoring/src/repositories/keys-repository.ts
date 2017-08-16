@@ -1,4 +1,4 @@
-import * as path from 'path';
+import path = require('path');
 
 function generateEmptyManifest(keyPath) {
   return {

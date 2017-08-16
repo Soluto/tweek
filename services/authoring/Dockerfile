@@ -9,12 +9,19 @@ RUN cd /tmp && yarn --prod
 
 RUN mkdir -p /opt/app && ln -s /tmp/node_modules /opt/app/node_modules
 
-# ------- TEST -------
-FROM deps as test
+# ------- BUILD -------
+FROM deps as build
 RUN cd /tmp && yarn
 
 WORKDIR /opt/app
 COPY . /opt/app
+
+RUN yarn build
+
+# ------- TEST -------
+FROM build as test
+
+WORKDIR /opt/app
 
 RUN yarn test
 
@@ -22,10 +29,10 @@ RUN yarn test
 FROM base as release
 
 WORKDIR /opt/app
-COPY src/ /opt/app/src/
+COPY --from=build /opt/app/dist/ /opt/app/dist/
 COPY --from=deps /tmp/node_modules /opt/app/node_modules
 
 EXPOSE 3000
 ENV PORT=3000
 
-ENTRYPOINT ["node", "./src/server.js"]
+ENTRYPOINT ["node", "./dist/server.js"]

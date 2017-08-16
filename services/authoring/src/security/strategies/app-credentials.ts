@@ -1,6 +1,6 @@
 import { Strategy } from 'passport-strategy';
 import { generateHash } from '../../apps/apps-utils';
-import crypto from 'crypto';
+import crypto = require('crypto');
 
 class ExternalAppsCredentialsStrategy extends Strategy {
   name: string;
