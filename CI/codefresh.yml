@@ -45,12 +45,6 @@ steps:
     image_name: soluto/e2e-ui
     working_directory: ./e2e/ui
 
-  BuildingIntegrationTests:
-    title: Building E2E Integration Tests Docker Image
-    type: build
-    image_name: soluto/e2e-integration
-    working_directory: ./e2e/integration
-
   Tests:
     title: Tests - e2e & smoke
     type: composition
@@ -161,19 +155,6 @@ steps:
           - TWEEK_API_URL=http://api/
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
         command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test -- --host selenium --port 4444"
-      e2e-integration:
-        image: ${{BuildingIntegrationTests}}
-        volumes_from:
-          - keys
-        depends_on:
-          - authoring
-          - api
-        environment:
-          - API_URL=http://api
-          - AUTHORING_URL=http://authoring:3000
-          - MANAGEMENT_URL=http://tweek-management:3000
-          - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test"
     on_success:
       metadata:
         set:
