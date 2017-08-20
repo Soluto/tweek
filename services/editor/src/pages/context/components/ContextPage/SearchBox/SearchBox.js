@@ -49,11 +49,12 @@ class SearchBox extends Component {
     const identityText = identityType || 'identity';
 
     return (
-      <div className={'context-search-container'}>
+      <div className="context-search-container" data-comp="search-identity">
 
-        <div className={'identity-type-container'}>
+        <div className="identity-type-container">
           <ComboBox
-            className={'identity-type'}
+            data-field="identity-type"
+            className="identity-type"
             placeholder="Enter Identity Type"
             value={inputValue}
             suggestions={identities}
@@ -61,8 +62,9 @@ class SearchBox extends Component {
           />
         </div>
 
-        <div className={'identity-id-container'}>
+        <div className="identity-id-container">
           <Input
+            data-field="identity-id"
             placeholder={`Enter ${changeCase.pascalCase(identityText)} Id`}
             onEnterKeyPress={this.onGetClick}
             onChange={this.onIdentityIdChange}
@@ -70,9 +72,10 @@ class SearchBox extends Component {
           />
         </div>
 
-        <div className={'search-button-container'}>
+        <div className="search-button-container">
           <button
-            className={'search-button'}
+            data-comp="search"
+            className="search-button"
             onClick={this.onGetClick}
             disabled={!identityType || !identityId}
           />

@@ -48,9 +48,9 @@ const FixedKeys = ({
   keys,
 }) =>
   <div className={classnames('fixed-keys-container', className)} data-comp="fixed-keys">
-    <div className={'override-keys-title'}>
+    <div className="override-keys-title">
       <div>Override Keys</div>
-      <SaveButton onClick={saveContext} hasChanges={hasChanges} isSaving={isSavingContext} />
+      <SaveButton data-comp="save-changes" onClick={saveContext} hasChanges={hasChanges} isSaving={isSavingContext} />
     </div>
 
     <FixedKeysList {...{ keys, onChange, toggleDelete }} />

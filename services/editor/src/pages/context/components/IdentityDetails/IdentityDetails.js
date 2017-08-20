@@ -8,20 +8,25 @@ import IdentityProperties from '../IdentityProperties/IdentityProperties';
 import './IdentityDetails.css';
 
 const IdentityDetails = ({ identityId, identityType, isGettingContext }) =>
-  <div className={'identity-details-container'}>
-    <div className={'identity-title'}>
-      <div className={'identity-id'}>
+  <div
+    className="identity-details-container"
+    data-comp="identity-details"
+    data-identity-id={identityId}
+    data-identity-type={identityType}
+  >
+    <div className="identity-title">
+      <div className="identity-id">
         {identityId}
       </div>
-      <div className={'identity-type'}>
+      <div className="identity-type">
         {changeCase.pascalCase(identityType)}
       </div>
     </div>
     {isGettingContext
       ? 'Loading...'
       : <div>
-          <IdentityProperties className={'section'} identityType={identityType} />
-          <FixedKeys className={'section'} {...{ identityType, identityId }} />
+          <IdentityProperties className="section" identityType={identityType} />
+          <FixedKeys className="section" {...{ identityType, identityId }} />
         </div>}
   </div>;
 

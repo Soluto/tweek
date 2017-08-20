@@ -1,14 +1,14 @@
 {
-  "key_path": "@behavior_tests/@context/override_key",
+  "key_path": "behavior_tests/context/override_key",
   "meta": {
-    "name": "@behavior_tests/@context/override_key",
+    "name": "behavior_tests/context/override_key",
     "tags": [],
     "description": "",
     "archived": false
   },
   "implementation": {
-    "type": "file",
-    "format": "jpad"
+    "type": "const",
+    "value": 0
   },
   "valueType": "number",
   "dependencies": [],

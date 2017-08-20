@@ -41,7 +41,7 @@ const EditableKey = ({ keyPath, remote, local, onChange, autofocus }) =>
   >
     <AutoSuggest
       className="key-input"
-      data-comp="fixed-key-input"
+      data-comp="fixed-key"
       placeholder="Key"
       value={keyPath}
       getSuggestions={SearchService.getSuggestions}
@@ -50,7 +50,7 @@ const EditableKey = ({ keyPath, remote, local, onChange, autofocus }) =>
       autofocus={autofocus}
     />
     <OverrideValueInput
-      data-comp="fixed-value-input"
+      data-comp="fixed-value"
       keyPath={keyPath}
       className={classNames('value-input', {
         'has-changes': remote !== local,

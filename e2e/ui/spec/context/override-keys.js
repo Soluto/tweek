@@ -1,62 +1,46 @@
 /* global describe, before, after, it, browser */
 
-import ContextPage from '../../utils/ContextPage';
-import contextSelectors from '../../selectors/contextSelectors';
+import Identity from '../../utils/Identity';
 import assert from 'assert';
-import Chance from 'chance';
-
-const chance = new Chance();
 
 describe('override keys', () => {
-  const identityId = chance.guid();
+  const identityId = 'awesome_user';
   const identityType = 'user';
-  const typedKey = '@behavior_tests/@context/override_key';
+  const typedKey = 'behavior_tests/context/override_key';
 
-  before(() => {
-    ContextPage.goToBase();
-  });
+  before(() => browser.url('/context'));
 
   it('should modify override keys', () => {
-    ContextPage.openContext(identityType, identityId);
+    const identity = Identity.open(identityType, identityId);
 
-    const fixedKeys = {
+    const overrideKeys = {
       'some/key': 'someValue',
       [typedKey]: 5,
     };
 
-    for (const key in fixedKeys) {
-      ContextPage.addOverrideKey(key, fixedKeys[key]);
+    for (const key in overrideKeys) {
+      identity.withOverrideKey(key, overrideKeys[key]);
     }
 
-    ContextPage.saveChanges();
+    identity.commitChanges();
 
-    let currentContext = ContextPage.getOverrideKeys(identityType, identityId);
-    assert.deepEqual(currentContext, fixedKeys);
+    assert.deepEqual(identity.overrideKeys, overrideKeys);
 
     const updatedKeys = {
       'some/key': 'newValue',
       'some/new/key': 'anotherValue',
     };
 
-    browser.click(contextSelectors.keyDeleteButton(typedKey));
-    const inputSelector = contextSelectors.keyValueInput('some/key');
-    browser.waitForEnabled(inputSelector, 5000);
-    browser.setValue(inputSelector, 'newValue');
+    identity.deleteOverrideKey(typedKey)
+      .updateKey('some/key', 'newValue')
+      .withOverrideKey('some/new/key', 'anotherValue')
+      .commitChanges();
 
-    ContextPage.addOverrideKey('some/new/key', 'anotherValue');
+    assert.deepEqual(identity.overrideKeys, updatedKeys);
 
-    ContextPage.saveChanges();
+    Object.keys(updatedKeys).forEach(key => identity.deleteOverrideKey(key));
+    identity.commitChanges();
 
-    currentContext = ContextPage.getOverrideKeys(identityType, identityId);
-    assert.deepEqual(currentContext, updatedKeys);
-
-    const elements = browser.elements('[data-comp= fixed-keys] [data-comp= delete-fixed-key]')
-      .value;
-    elements.forEach(element => element.click());
-
-    ContextPage.saveChanges();
-
-    currentContext = ContextPage.getOverrideKeys(identityType, identityId);
-    assert.deepEqual(currentContext, {});
+    assert.deepEqual(identity.overrideKeys, {});
   });
 });

@@ -27,7 +27,7 @@ describe('revision history', () => {
       }, 1000);
       prevCommit = commit;
 
-      history.push([{ commit, value }]);
+      history.push({ commit, value });
     }
     history.reverse();
     return history;
