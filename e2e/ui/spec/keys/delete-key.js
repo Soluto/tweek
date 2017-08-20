@@ -1,7 +1,6 @@
 /* global describe, before, beforeEach, after, afterEach, it, browser */
 
 import { expect } from 'chai';
-import { assertIsInPage } from '../../utils/page-asserts';
 import Key from '../../utils/Key';
 import Alert from '../../utils/Alert';
 import { dataComp } from '../../utils/selector-utils';
@@ -101,7 +100,8 @@ describe('delete key', () => {
 
       Alert.ok();
 
-      assertIsInPage('keys', 'should move to keys page url');
+      expect(browser.getUrl(), 'should move to keys page url').to.endWith('/keys');
+
       assertIsKeyExistsAfterTransaction(keyName, false, 'key should not exist after delete');
     });
   });
