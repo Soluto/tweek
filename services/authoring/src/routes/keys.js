@@ -54,14 +54,14 @@ async function updateKey(req, res, { keysRepository, author }) {
   const manifest = Object.assign({ key_path: keyPath }, req.body.manifest);
   await keysRepository.updateKey(keyPath, manifest, implementation, author);
 
-  res.send('OK');
+  res.sendStatus(200);
 }
 
 async function deleteKey(req, res, { keysRepository, author }) {
   const keyPath = req.params[0];
   await keysRepository.deleteKey(keyPath, author);
 
-  res.send('OK');
+  res.sendStatus(200);
 }
 
 async function getRevision(req, res, { keysRepository }) {

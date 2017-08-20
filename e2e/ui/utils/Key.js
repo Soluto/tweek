@@ -11,12 +11,14 @@ const keyPathSuggestions = `${dataComp('new-key-name')} ${dataField('suggestions
 const keyValueTypeSelector = dataComp('key-value-type-selector');
 const saveChangesButton = dataComp('save-changes');
 const displayName = `${dataComp('display-name')} ${dataField('text')}`;
+const defaultValue = dataComp('default-value');
 const rulesEditor = dataComp('key-rules-editor');
 const tabHeader = attributeSelector('data-tab-header');
 const sourceTab = `${rulesEditor} ${tabHeader('source')}`;
 const rulesTab = `${rulesEditor} ${tabHeader('rules')}`;
 const searchKeyInput = dataComp('search-key-input');
 const directoryTreeView = dataComp('directory-tree-view');
+
 const treeItem = (attribute, value) =>
   `${directoryTreeView} ${attributeSelector(attribute, value)}`;
 
@@ -85,7 +87,6 @@ class Key {
   }
 
   get defaultValue() {
-    const defaultValue = dataComp('default-value');
     browser.waitForEnabled(defaultValue, timeout);
     return browser.getValue(defaultValue);
   }
@@ -95,9 +96,7 @@ class Key {
   }
 
   get source() {
-    browser.waitForVisible(rulesEditor, timeout);
-
-    browser.click(sourceTab);
+    browser.clickWhenVisible(sourceTab, timeout);
     browser.waitForVisible('.monaco-editor', 10000);
     const keySourceCode = browser.execute(function() {
       return window.monaco.editor.getModels()[0].getValue();
@@ -142,8 +141,8 @@ class Key {
     return this;
   }
 
-  withDefaultValue(defaultValue) {
-    browser.setValue(dataComp('default-value'), defaultValue);
+  withDefaultValue(value) {
+    browser.setValue(defaultValue, value);
     return this;
   }
 
