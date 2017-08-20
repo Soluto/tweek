@@ -3,13 +3,21 @@
 import { expect } from 'chai';
 import Key from '../../utils/Key';
 import Alert from '../../utils/Alert';
-import { dataComp } from '../../utils/selector-utils';
-import selectors from '../../selectors/keySelectors';
+import { attributeSelector, dataComp, dataField, nthSelector } from '../../utils/selector-utils';
 
 function addPartition(property) {
   browser.setValue(`${dataComp('partition-selector')} input`, `${property}\n`);
 }
+
 const testFolder = 'behavior_tests/partitions';
+
+const partitionSelector = (className, index) =>
+  nthSelector(index, `${dataComp('partition-selector')} .${className}`);
+const newPartition = selector => `${dataComp('new-partition')} ${selector}`;
+const newPartitionPropertyValue = property => newPartition(dataField(property));
+const partitionGroup = partitionValues =>
+  dataComp('partition-group') +
+  attributeSelector('data-group', partitionValues.join(', ').toLowerCase());
 
 describe('partition key', () => {
   describe('add partition', () => {
@@ -90,13 +98,13 @@ describe('partition key', () => {
       });
 
       it('should not allow auto-partition if matcher is invalid', () => {
-        addPartition('user.FavoriteFruit');
+        addPartition('user.AgentVersion');
         Alert.waitFor('cancel');
-        Alert.waitFor('auto-partition', false);
+        Alert.waitFor('auto-partition', true);
 
-        Alert.click('reset');
+        Alert.click('ok');
         expect(Key.source).to.deep.equal({
-          partitions: ['user.FavoriteFruit'],
+          partitions: ['user.AgentVersion'],
           valueType: 'string',
           rules: {},
         });
@@ -107,8 +115,10 @@ describe('partition key', () => {
   describe('delete partition', () => {
     it('should clear rules after partition is deleted', () => {
       Key.open(`${testFolder}/delete_partition`);
-      browser.click(selectors.partitionDeleteButton(1));
+
+      browser.click(partitionSelector('tag-delete-button', 1));
       Alert.ok();
+
       expect(Key.source).to.deep.equal({
         partitions: [],
         valueType: 'string',
@@ -120,12 +130,22 @@ describe('partition key', () => {
   describe('partition groups', () => {
     it('should add new partition group', () => {
       Key.open(`${testFolder}/add_partition_group`);
-      const newPartitionGroups = [['Banana'], ['Orange', 'Rick'], [false, 'Morty']];
+
+      const newPartitionGroups = [
+        { 'user.FavoriteFruit': 'Banana' },
+        {
+          'user.FavoriteFruit': 'Orange',
+          'user.FatherName': 'Rick',
+        },
+        { 'user.FatherName': 'Morty' },
+      ];
+
       newPartitionGroups.forEach(group => {
-        group.forEach((value, i) => {
-          if (value) browser.setValue(selectors.newPartitionGroupInput(i + 1), value);
+        Object.entries(group).forEach(([property, value]) => {
+          $(newPartitionPropertyValue(property)).setValue(value);
         });
-        browser.click(selectors.ADD_PARTITION_GROUP_BUTTON);
+
+        browser.click(newPartition(dataComp('add-partition')));
       });
       expect(Key.source).to.deep.equal({
         partitions: ['user.FavoriteFruit', 'user.FatherName'],
@@ -146,8 +166,14 @@ describe('partition key', () => {
 
     it('should delete group rules when deleting partition group', () => {
       Key.open(`${testFolder}/partition_groups`);
-      browser.click(selectors.partitionGroupDeleteButton(2));
+
+      const deleteGroupButton = `${partitionGroup(['banana', 'default'])} ${dataComp(
+        'delete-partition-group',
+      )}`;
+      browser.click(deleteGroupButton);
+
       Alert.ok();
+
       expect(Key.source).to.deep.equal({
         partitions: ['user.FavoriteFruit', 'user.Gender'],
         valueType: 'string',

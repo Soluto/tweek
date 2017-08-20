@@ -20,15 +20,16 @@ describe('revision history', () => {
       const value = `value ${i}`;
       Key.withDefaultValue(value).commitChanges();
 
-      let commit = undefined;
+      let commit = null;
       browser.waitUntil(() => {
         commit = browser.getValue(currentCommit);
         return prevCommit !== commit;
       }, 1000);
       prevCommit = commit;
 
-      history = [{ commit, value }, ...history];
+      history.push([{ commit, value }]);
     }
+    history.reverse();
     return history;
   }
 
