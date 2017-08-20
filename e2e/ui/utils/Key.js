@@ -1,3 +1,5 @@
+/* global browser */
+
 import assert from 'assert';
 import R from 'ramda';
 import { expect } from 'chai';
@@ -87,7 +89,7 @@ class Key {
   }
 
   get defaultValue() {
-    browser.waitForEnabled(defaultValue, timeout);
+    browser.waitForVisible(defaultValue, timeout);
     return browser.getValue(defaultValue);
   }
 
