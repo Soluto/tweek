@@ -1,55 +1,67 @@
 /* global describe, before, after, it, browser */
 import { expect } from 'chai';
 import tweekApiClient from '../../utils/tweekApiClient';
+import { attributeSelector, dataComp, dataField } from "../../utils/selector-utils";
+
+const dataLabel = attributeSelector('data-label');
+const propertyItem = propertyName => dataComp('property-item') + attributeSelector('data-property-name', propertyName);
+const newPropertyItem = dataComp('new-property-item');
+const newPropertyName = `${newPropertyItem} ${dataField('property-name')}`;
 
 function addStringProperty(propertyName) {
-  browser.setValue(
-    '*[data-comp=new-property-item] > input[type=text]:first-child',
-    `${propertyName}\n`,
-  );
+  $(newPropertyName).setValue(`${propertyName}\n`);
 }
 
 function addTypedProperty(propertyName, propertyType) {
-  browser.setValue('[data-comp=new-property-item] > input[type=text]:first-child', propertyName);
-  browser.click('[data-comp=new-property-item] [data-comp=ComboBox] input');
-  browser.click(`[data-comp=new-property-item] [data-label=${propertyType}] a`);
-  browser.click('[data-comp=new-property-item] button[data-comp=add]');
-  browser.waitForVisible(`[data-comp= property-item][data-property-name= ${propertyName}]`);
+  $(newPropertyName).setValue(propertyName);
+
+  const propertyTypeSelector = `${newPropertyItem} ${dataComp('type-select')}`;
+  const suggestion = `${newPropertyItem} ${dataLabel(propertyType)} a`;
+  const addButton = `${newPropertyItem} ${dataComp('add')}`;
+
+  $(propertyTypeSelector).click();
+  $(suggestion).click();
+  $(addButton).click();
+
+  browser.waitForVisible(propertyItem(propertyName));
 }
 
 function deleteProperty(propertyName) {
-  browser.click(
-    `*[data-comp=property-item][data-property-name=${propertyName}] button[data-comp=remove]`,
-  );
+  const deleteButton = `${propertyItem(propertyName)} ${dataComp('remove')}`;
+  $(deleteButton).click();
 }
 
 function updateExistingCustomProperty(propertyName, { base, allowedValues } = {}) {
-  let baseSelector = `*[data-comp=property-item][data-property-name=${propertyName}] *[data-field=property-type]`;
+  const propertyType = `${propertyItem(propertyName)} ${dataField('property-type')}`;
   if (base) {
-    browser.click(`${baseSelector} *[data-field=base] *[data-comp=ComboBox] input`);
-    browser.click(`${baseSelector} *[data-field=base] *[data-label=${base}] a`);
+    const baseSelector = selector => `${propertyType} ${dataField('base')} ${selector}`;
+    const baseType = baseSelector(dataComp('type-select'));
+    const suggestion = baseSelector(`${dataLabel(base)} a`);
+
+    $(baseType).click();
+    $(suggestion).click();
   }
   if (allowedValues) {
-    browser.setValue(
-      `${baseSelector} *[data-field=allowed-values] input`,
-      allowedValues.join('\n') + '\n',
-    );
+    const allowedValuesInput = `${propertyType} ${dataField('allowed-values')} input`;
+    $(allowedValuesInput).setValue(`${allowedValues.join('\n')}\n`);
   }
 }
 
 function addNewIdentity(identityType) {
+  const addNewIdentityComp = selector => `${dataComp('add-new-identity')} ${selector}`;
+
   browser.url(`/settings`);
   browser.waitForVisible('.side-menu');
-  browser.click('*[data-comp=AddNewIdentity] button');
-  browser.setValue('*[data-comp=AddNewIdentity] input', `${identityType}\n`);
+  $(addNewIdentityComp('button')).click();
+  $(addNewIdentityComp('input')).setValue(`${identityType}\n`);
 }
 
 function saveChanges() {
-  browser.click('*[data-comp=save-button]');
+  $(dataComp('save-button')).click();
 }
 
 function deleteCurrentIdentity() {
-  browser.click('*[data-comp=delete-identity]');
+  $(dataComp('delete-identity')).click();
 }
 
 function goToIdentityPage(identityType) {
@@ -72,26 +84,26 @@ describe('edit identity schema', () => {
 
   describe('editing existing identity', () => {
     it('add simple property and save', () => {
-      goToIdentityPage('identitytest1');
+      goToIdentityPage('edit_properties_test');
       addTypedProperty('Age', 'number');
       saveChanges();
-      tweekApiClient.eventuallyExpectKey('@tweek/schema/identitytest1', result =>
+      tweekApiClient.eventuallyExpectKey('@tweek/schema/edit_properties_test', result =>
         expect(result).to.have.property('Age').that.deep.include({ type: 'number' }),
       );
     });
 
     it('add and update custom property', () => {
-      goToIdentityPage('identitytest1');
+      goToIdentityPage('edit_properties_test');
       addTypedProperty('OsType', 'custom');
       saveChanges();
-      tweekApiClient.eventuallyExpectKey('@tweek/schema/identitytest1', result => {
+      tweekApiClient.eventuallyExpectKey('@tweek/schema/edit_properties_test', result => {
         expect(result).to.have
           .property('OsType')
           .that.deep.include({ type: { base: 'string', allowedValues: [] } });
       });
       updateExistingCustomProperty('OsType', { allowedValues: ['Android', 'iOS'] });
       saveChanges();
-      tweekApiClient.eventuallyExpectKey('@tweek/schema/identitytest1', result => {
+      tweekApiClient.eventuallyExpectKey('@tweek/schema/edit_properties_test', result => {
         expect(result).to.have
           .property('OsType')
           .that.deep.include({ type: { base: 'string', allowedValues: ['Android', 'iOS'] } });
@@ -99,10 +111,10 @@ describe('edit identity schema', () => {
     });
 
     it('delete property and save', () => {
-      goToIdentityPage('identitytest2');
+      goToIdentityPage('delete_property_test');
       deleteProperty('Group');
       saveChanges();
-      tweekApiClient.waitForKeyToEqual('@tweek/schema/identitytest2', {});
+      tweekApiClient.waitForKeyToEqual('@tweek/schema/delete_property_test', {});
     });
   });
 });

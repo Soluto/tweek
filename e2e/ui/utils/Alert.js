@@ -1,8 +1,10 @@
-import { alertButton } from './selector-utils';
+import { attributeSelector } from './selector-utils';
 
 const timeout = 1000;
 const alertBackground = '.rodal-mask';
 const rodalDialog = '.rodal-dialog';
+
+const alertButton = button => `#alerts ${attributeSelector('data-alert-button', button)}`;
 
 function click(button) {
   browser.waitForVisible(rodalDialog, timeout);

@@ -1,5 +1,5 @@
 {
-    "key_path": "@tweek/schema/identitytest1",
+    "key_path": "@tweek/schema/delete_property_test",
     "meta": {
         "description": "",
         "readOnly": false,
