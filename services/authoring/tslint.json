@@ -20,11 +20,6 @@
     "member-access": [
       "check-accessor"
     ],
-    "member-ordering": [
-      "public-before-private",
-      "static-before-instance",
-      "variables-before-functions"
-    ],
     "no-angle-bracket-type-assertion": false,
     "no-any": false,
     "no-arg": true,
@@ -92,7 +87,9 @@
     "variable-name": [
       true,
       "check-format",
-      "ban-keywords"
+      "ban-keywords",
+      "allow-leading-underscore",
+      "allow-pascal-case"
     ]
   }
 }
