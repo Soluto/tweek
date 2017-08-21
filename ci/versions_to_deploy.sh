@@ -1,5 +1,3 @@
-git tag
-
 echo checking api version
 TWEEK_API_VERSION=$(cat ./services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj | grep -E "VersionPrefix" | grep -Eo [0-9.]*)
 TWEEK_API_TAG="tweek-api-$TWEEK_API_VERSION"

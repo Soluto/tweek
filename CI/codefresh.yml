@@ -210,11 +210,11 @@ steps:
     when:
       branch:
         only:
-          - 538-versions-in-editor
+          - master
     candidate: ${{BuildingApiImage}}
     tags:
-      - latest-exp
-      - ${TWEEK_DOCKER_TAG_API}-exp
+      - latest
+      - ${TWEEK_DOCKER_TAG_API}
 
   PushManagementImageMaster:
     type: push
@@ -222,11 +222,11 @@ steps:
     when:
       branch:
         only:
-          - 538-versions-in-editor
+          - master
     candidate: ${{BuildingManagement}}
     tags:
-      - latest-exp
-      - ${TWEEK_DOCKER_TAG_MANAGEMENT}-exp
+      - latest
+      - ${TWEEK_DOCKER_TAG_MANAGEMENT}
 
   PushAuthoringImageMaster:
     type: push
@@ -234,11 +234,11 @@ steps:
     when:
       branch:
         only:
-          - 538-versions-in-editor
+          - master
     candidate: ${{BuildingAuthoring}}
     tags:
-      - latest-exp
-      - ${TWEEK_DOCKER_TAG_AUTHORING}-exp
+      - latest
+      - ${TWEEK_DOCKER_TAG_AUTHORING}
 
   PushEditorImageMaster:
     type: push
@@ -246,11 +246,11 @@ steps:
     when:
       branch:
         only:
-          - 538-versions-in-editor
+          - master
     candidate: ${{BuildingEditor}}
     tags:
-      - latest-exp
-      - ${TWEEK_DOCKER_TAG_EDITOR}-exp
+      - latest
+      - ${TWEEK_DOCKER_TAG_EDITOR}
 
   PushGitRepositoryMaster:
     type: push
