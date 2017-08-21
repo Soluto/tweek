@@ -4,6 +4,7 @@ import { expect } from 'chai';
 import Key from '../../utils/Key';
 import Alert from '../../utils/Alert';
 import { dataComp } from '../../utils/selector-utils';
+import authoringClient from '../../clients/authoring-client';
 
 const timeout = 5000;
 
@@ -12,25 +13,12 @@ const unarchiveKey = dataComp('unarchive-key');
 const deleteKey = dataComp('delete-key');
 const keyMessage = dataComp('key-message');
 
-function waitForKeyToBeDeleted(keyName) {
-  const notFoundMessage = dataComp('key-not-found');
-  browser.waitUntil(
-    () => {
-      Key.open(keyName, false);
-      return browser.isExisting(notFoundMessage);
-    },
-    timeout,
-    `key still exists after ${timeout}ms`,
-  );
-}
+function assertKeyDeleted(keyName) {
+  authoringClient.waitForKeyToBeDeleted(keyName);
 
-function assertIsKeyExistsAfterTransaction(keyName, isExisting, message) {
-  //todo use authoring
-  if (!isExisting) waitForKeyToBeDeleted(keyName);
+  Key.open(keyName, false);
 
-  Key.open(keyName, isExisting);
-
-  expect(Key.exists, message).to.equal(isExisting);
+  expect(Key.exists, 'key should not exist after delete').to.equal(false);
 }
 
 describe('delete key', () => {
@@ -92,7 +80,7 @@ describe('delete key', () => {
       expect(Key.exists).to.be.true;
     });
 
-    it('should succeed deleting key', () => {
+    it.only('should succeed deleting key', () => {
       const keyName = 'behavior_tests/delete_key/delete/accepted';
 
       Key.open(keyName);
@@ -102,7 +90,7 @@ describe('delete key', () => {
 
       expect(browser.getUrl(), 'should move to keys page url').to.endWith('/keys');
 
-      assertIsKeyExistsAfterTransaction(keyName, false, 'key should not exist after delete');
+      assertKeyDeleted(keyName);
     });
   });
 });

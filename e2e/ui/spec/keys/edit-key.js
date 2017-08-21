@@ -6,6 +6,7 @@ import Rule from '../../utils/Rule';
 import Alert from '../../utils/Alert';
 import { dataComp } from '../../utils/selector-utils';
 import tweekApiClient from '../../clients/tweek-api-client';
+import authoringApi from '../../clients/authoring-client';
 
 describe('edit keys', () => {
   describe('edit JPad keys', () => {
@@ -37,7 +38,8 @@ describe('edit keys', () => {
 
     describe('visual editor', () => {
       it('should succeed editing JPad key', () => {
-        Key.open('behavior_tests/edit_key/visual/edit_test').withDefaultValue('some default value');
+        const keyName = 'behavior_tests/edit_key/visual/edit_test';
+        Key.open(keyName).withDefaultValue('some default value');
 
         Rule.add().removeCondition().setValue('some value');
 
@@ -53,8 +55,9 @@ describe('edit keys', () => {
 
         Key.commitChanges();
 
-        browser.refresh();
-        expect(Key.source).to.deep.equal(expectedKeySource);
+        authoringApi.eventuallyExpectKey(keyName, ({ implementation }) =>
+          expect(JSON.parse(implementation)).to.deep.equal(expectedKeySource),
+        );
       });
     });
 
