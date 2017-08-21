@@ -2,8 +2,7 @@ import nconf from 'nconf';
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
-import { promisify } from 'bluebird';
-import assert from 'assert';
+import { promisify } from 'util';
 import { expect } from 'chai';
 
 const jwtSign = promisify(jwt.sign);

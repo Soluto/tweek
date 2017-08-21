@@ -1,6 +1,6 @@
 import R from 'ramda';
-import tweekApiClient from './tweekApiClient';
-import { attributeSelector, dataComp, dataField } from "./selector-utils";
+import tweekApiClient from '../clients/tweek-api-client';
+import { attributeSelector, dataComp, dataField } from './selector-utils';
 
 const timeout = 5000;
 const FIXED_KEY_PREFIX = '@fixed:';
@@ -9,13 +9,12 @@ const searchIdentity = selector => `${dataComp('search-identity')} ${selector}`;
 const fixedKeys = selector => `${dataComp('fixed-keys')} ${selector}`;
 const saveChangesButton = fixedKeys(dataComp('save-changes'));
 
-const extractOverrideKeys =
-  R.pipe(
-    R.toPairs,
-    R.filter(R.pipe(R.prop(0), R.startsWith(FIXED_KEY_PREFIX))),
-    R.map(R.adjust(R.replace(FIXED_KEY_PREFIX, ''), 0)),
-    R.fromPairs,
-  );
+const extractOverrideKeys = R.pipe(
+  R.toPairs,
+  R.filter(R.pipe(R.prop(0), R.startsWith(FIXED_KEY_PREFIX))),
+  R.map(R.adjust(R.replace(FIXED_KEY_PREFIX, ''), 0)),
+  R.fromPairs,
+);
 
 export default class Identity {
   constructor(type, id) {
@@ -67,7 +66,8 @@ export default class Identity {
   withOverrideKey(key, value, valueType = typeof value) {
     const newKey = comp => `${dataComp('new-fixed-key')} ${dataComp(comp)}`;
     const keyInput = newKey('fixed-key');
-    const valueInput = newKey('fixed-value') + attributeSelector('data-value-type', valueType.toLowerCase());
+    const valueInput =
+      newKey('fixed-value') + attributeSelector('data-value-type', valueType.toLowerCase());
     const addButton = newKey('add-fixed-key');
 
     browser.waitForEnabled(keyInput, timeout);

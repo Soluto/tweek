@@ -1,10 +1,11 @@
 /* global describe, before, after, it, browser */
 import { expect } from 'chai';
-import tweekApiClient from '../../utils/tweekApiClient';
-import { attributeSelector, dataComp, dataField } from "../../utils/selector-utils";
+import tweekApiClient from '../../clients/tweek-api-client';
+import { attributeSelector, dataComp, dataField } from '../../utils/selector-utils';
 
 const dataLabel = attributeSelector('data-label');
-const propertyItem = propertyName => dataComp('property-item') + attributeSelector('data-property-name', propertyName);
+const propertyItem = propertyName =>
+  dataComp('property-item') + attributeSelector('data-property-name', propertyName);
 const newPropertyItem = dataComp('new-property-item');
 const newPropertyName = `${newPropertyItem} ${dataField('property-name')}`;
 

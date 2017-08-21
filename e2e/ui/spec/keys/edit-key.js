@@ -5,7 +5,7 @@ import Key from '../../utils/Key';
 import Rule from '../../utils/Rule';
 import Alert from '../../utils/Alert';
 import { dataComp } from '../../utils/selector-utils';
-import tweekApiClient from '../../utils/tweekApiClient';
+import tweekApiClient from '../../clients/tweek-api-client';
 
 describe('edit keys', () => {
   describe('edit JPad keys', () => {

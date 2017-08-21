@@ -11,7 +11,9 @@ function removeTrailingSlashes(url) {
 }
 
 exports.config = {
-  specs: ['./spec/**/*.js'],
+  specs: [
+    './spec/**/*.js'
+  ],
   exclude: [],
   maxInstances: 1,
   //
@@ -116,7 +118,7 @@ exports.config = {
     chai.use(require('chai-string'));
 
     workingDirectory = process.cwd().replace(/\\/g, '/');
-    require(workingDirectory + '/browserExtensionCommands')(browser);
+    require(workingDirectory + '/utils/browser-extension-commands')(browser);
   },
   //
   // Hook that gets executed before the suite starts
