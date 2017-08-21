@@ -162,6 +162,7 @@ steps:
         depends_on: 
           - selenium
           - editor
+          - authoring
           - api
         environment:
           - EDITOR_URL=http://editor:3000/
