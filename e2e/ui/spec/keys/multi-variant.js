@@ -18,9 +18,9 @@ describe('MultiVariant value type', () => {
       },
     };
 
-    Key.withValueType('boolean');
+    Key.setValueType('boolean');
 
-    Rule.add().removeCondition().multiVariant().withIdentity('user');
+    const rule = Rule.add().removeCondition().multiVariant().setIdentity('user');
 
     let ruleSource = Key.source.rules[0];
     expect(ruleSource).to.have.property('Salt');
@@ -31,7 +31,8 @@ describe('MultiVariant value type', () => {
 
     expect(ruleSource).to.deep.equal(expectedValue);
 
-    Rule.select().singleValue().multiVariant();
+    rule.singleValue();
+    rule.multiVariant();
 
     ruleSource = Key.source.rules[0];
     expect(ruleSource.Salt).to.equal(salt);
@@ -53,9 +54,9 @@ describe('MultiVariant value type', () => {
       },
     };
 
-    Key.withValueType('string');
+    Key.setValueType('string');
 
-    Rule.add().removeCondition().multiVariant().setValues(args).withIdentity('other');
+    Rule.add().removeCondition().multiVariant().setValues(args).setIdentity('other');
 
     let value = Key.source.rules[0];
     expect(value).to.have.property('Salt');

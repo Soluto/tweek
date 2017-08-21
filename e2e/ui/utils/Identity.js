@@ -63,7 +63,7 @@ export default class Identity {
     return this;
   }
 
-  withOverrideKey(key, value, valueType = typeof value) {
+  addOverrideKey(key, value, valueType = typeof value) {
     const newKey = comp => `${dataComp('new-fixed-key')} ${dataComp(comp)}`;
     const keyInput = newKey('fixed-key');
     const valueInput =
@@ -90,7 +90,7 @@ export default class Identity {
     return this;
   }
 
-  updateKey(key, value) {
+  updateOverrideKey(key, value) {
     const valueInput = `${this._fixedKey(key)} ${dataComp('fixed-value')}`;
 
     browser.waitForEnabled(valueInput, timeout);

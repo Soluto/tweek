@@ -48,7 +48,7 @@ export default class Rule {
     );
   }
 
-  withCondition(property, value, timeout = 5000) {
+  setCondition(property, value, timeout = 5000) {
     const condition = this._condition(property);
 
     if (!browser.isExisting(condition)) {
@@ -93,7 +93,7 @@ export default class Rule {
     return this;
   }
 
-  withIdentity(identityType) {
+  setIdentity(identityType) {
     browser.setValue(this._ruleCompSelector('identity-selection'), identityType);
 
     return this;

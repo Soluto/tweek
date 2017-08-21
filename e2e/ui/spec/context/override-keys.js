@@ -19,7 +19,7 @@ describe('override keys', () => {
     };
 
     for (const key in overrideKeys) {
-      identity.withOverrideKey(key, overrideKeys[key]);
+      identity.addOverrideKey(key, overrideKeys[key]);
     }
 
     identity.commitChanges();
@@ -31,9 +31,10 @@ describe('override keys', () => {
       'some/new/key': 'anotherValue',
     };
 
-    identity.deleteOverrideKey(typedKey)
-      .updateKey('some/key', 'newValue')
-      .withOverrideKey('some/new/key', 'anotherValue')
+    identity
+      .deleteOverrideKey(typedKey)
+      .updateOverrideKey('some/key', 'newValue')
+      .addOverrideKey('some/new/key', 'anotherValue')
       .commitChanges();
 
     assert.deepEqual(identity.overrideKeys, updatedKeys);

@@ -38,7 +38,7 @@ describe('key-value-type', () => {
 
   testCases.forEach(({ valueType, value, expected }) => {
     it(`should convert the type of the jpad to ${valueType}`, () => {
-      Key.withValueType(valueType);
+      Key.setValueType(valueType);
       Alert.acceptIfRaised();
 
       Rule.select().setValue(value, valueType);

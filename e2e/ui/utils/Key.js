@@ -125,7 +125,7 @@ class Key {
     return location.endsWith(`keys/${keyName}`);
   }
 
-  withName(keyName) {
+  setName(keyName) {
     browser.clickWhenVisible(keyNameInput, timeout);
 
     assert(
@@ -137,13 +137,13 @@ class Key {
     return this;
   }
 
-  withValueType(valueType) {
+  setValueType(valueType) {
     browser.waitForVisible(keyValueTypeSelector, timeout);
     browser.setValue(keyValueTypeSelector, valueType);
     return this;
   }
 
-  withDefaultValue(value) {
+  setDefaultValue(value) {
     browser.setValue(defaultValue, value);
     return this;
   }
@@ -154,17 +154,17 @@ class Key {
     return this;
   }
 
-  save() {
+  clickSave() {
     browser.click(saveChangesButton);
     return this;
   }
 
-  sourceTab() {
+  goToSourceTab() {
     browser.click(sourceTab);
     return this;
   }
 
-  rulesTab() {
+  goToRulesTab() {
     browser.click(rulesTab);
     return this;
   }

@@ -5,7 +5,7 @@ import Key from '../../utils/Key';
 import { dataComp, dataField } from '../../utils/selector-utils';
 
 function addEmptyKey(keyName, keyValueType = 'String') {
-  Key.add().withName(keyName).withValueType(keyValueType).commitChanges();
+  Key.add().setName(keyName).setValueType(keyValueType).commitChanges();
 }
 
 const keyNameValidation = `${dataComp('new-key-name')} ${dataField('validation')}`;
@@ -35,14 +35,14 @@ describe('key name validations', () => {
 
     invalidKeyNames.forEach(keyName => {
       it('should show validation icon for invalid key name', () => {
-        Key.withName(keyName);
+        Key.setName(keyName);
         browser.waitForVisible(keyNameValidation, 1000);
       });
     });
 
     validKeyNames.forEach(keyName => {
       it('should not show validation icon for valid key name', () => {
-        Key.withName(keyName);
+        Key.setName(keyName);
         browser.waitForVisible(keyNameValidation, 1000, true);
       });
     });
@@ -50,8 +50,8 @@ describe('key name validations', () => {
 
   it('should show validaton alert on clicking save without a value', () => {
     Key.add()
-      .withValueType('string') // to make local changes
-      .save();
+      .setValueType('string') // to make local changes
+      .clickSave();
 
     expect(Key.isSaving, 'should not enter saving mode').to.be.false;
     expect(browser.isVisible(keyNameValidation), 'should show key name validation').to.be.true;

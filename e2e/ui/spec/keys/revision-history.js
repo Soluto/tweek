@@ -18,7 +18,7 @@ describe('revision history', () => {
 
     for (let i = 0; i < count; i++) {
       const value = `value ${i}`;
-      Key.withDefaultValue(value).commitChanges();
+      Key.setDefaultValue(value).commitChanges();
 
       let commit = null;
       browser.waitUntil(() => {

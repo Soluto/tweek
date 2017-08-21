@@ -18,11 +18,11 @@ describe('add key', () => {
     expect(browser.isExisting(keyPathSuggestions)).to.be.false;
     expect(Rule.count()).to.equal(0);
 
-    Key.withName(keyToAddFullPath).withValueType('string');
+    Key.setName(keyToAddFullPath).setValueType('string');
 
     expect(Key.hasChanges).to.be.true;
 
-    Key.save();
+    Key.clickSave();
 
     expect(Key.isSaving).to.be.true;
 

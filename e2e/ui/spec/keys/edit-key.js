@@ -39,16 +39,16 @@ describe('edit keys', () => {
     describe('visual editor', () => {
       it('should succeed editing JPad key', () => {
         const keyName = 'behavior_tests/edit_key/visual/edit_test';
-        Key.open(keyName).withDefaultValue('some default value');
+        Key.open(keyName).setDefaultValue('some default value');
 
         Rule.add().removeCondition().setValue('some value');
 
         Rule.add()
-          .withCondition('user.AgentVersion', '1.1.1')
-          .withCondition('user.FavoriteFruit', 'Banana')
-          .withCondition('user.BirthDate', '3d')
-          .withCondition('user.IsInGroup', 'false')
-          .withCondition('user.NumberOfSiblings', '1');
+          .setCondition('user.AgentVersion', '1.1.1')
+          .setCondition('user.FavoriteFruit', 'Banana')
+          .setCondition('user.BirthDate', '3d')
+          .setCondition('user.IsInGroup', 'false')
+          .setCondition('user.NumberOfSiblings', '1');
 
         expect(Rule.count()).to.equal(2);
         expect(Key.source).to.deep.equal(expectedKeySource);
@@ -63,21 +63,21 @@ describe('edit keys', () => {
 
     describe('text editor', () => {
       it('should succeed editing JPad source', () => {
-        Key.open('behavior_tests/edit_key/text/edit_test').sourceTab();
+        Key.open('behavior_tests/edit_key/text/edit_test').goToSourceTab();
 
         Key.source = JSON.stringify(expectedKeySource, null, 4);
 
-        Key.rulesTab();
+        Key.goToRulesTab();
         Alert.cancel();
 
-        Key.insertSource().rulesTab();
+        Key.insertSource().goToRulesTab();
 
         Rule.select().waitForVisible();
         expect(Key.source).to.deep.equal(expectedKeySource);
 
-        Key.sourceTab().source = '{}';
+        Key.goToSourceTab().source = '{}';
 
-        Key.rulesTab();
+        Key.goToRulesTab();
         Alert.ok();
 
         Rule.select().waitForVisible();

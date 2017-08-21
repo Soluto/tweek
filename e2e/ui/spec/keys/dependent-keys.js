@@ -12,15 +12,15 @@ const errorNotification = '.notifications-br .notification-error .notification-t
 describe('dependent keys', () => {
   it('should save when no circular dependencies', () => {
     Key.open('behavior_tests/dependent_keys/pass/depends_on');
-    Rule.add().withCondition('keys.behavior_tests/dependent_keys/pass/used_by', 'value');
+    Rule.add().setCondition('keys.behavior_tests/dependent_keys/pass/used_by', 'value');
     Key.commitChanges();
   });
 
   it('should not save circular dependencies', () => {
     Key.open('behavior_tests/dependent_keys/fail/third');
-    Rule.add().withCondition('keys.behavior_tests/dependent_keys/fail/first', 'value');
+    Rule.add().setCondition('keys.behavior_tests/dependent_keys/fail/first', 'value');
 
-    Key.save();
+    Key.clickSave();
 
     browser.waitForText(errorNotification, timeout);
     const errorText = browser.getText(errorNotification);
