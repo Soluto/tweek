@@ -3643,6 +3643,12 @@ typescript-formatter@^5.2.0:
     commandpost "^1.0.0"
     editorconfig "^0.13.2"
 
+typescript-ioc@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/typescript-ioc/-/typescript-ioc-0.4.2.tgz#dcf7c972f3b1f5061739398acdcd1348030cbc54"
+  dependencies:
+    reflect-metadata "^0.1.10"
+
 typescript-rest@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/typescript-rest/-/typescript-rest-1.1.1.tgz#a76ec0a5a2f29ed0425ca272c472c871dc7a8394"

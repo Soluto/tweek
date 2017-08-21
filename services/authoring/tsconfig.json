@@ -17,7 +17,10 @@
       "skipLibCheck": true,
       "sourceMap": true,
       "strictNullChecks": false,
-      "target": "es2016"
+      "lib": [
+        "es2015"
+      ],
+      "target": "es5"
     },
     "include": [
       "src/**/*.ts"

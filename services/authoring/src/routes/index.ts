@@ -8,14 +8,26 @@ import BulkKeysRoutes from './bulk-keys-upload';
 import SchemaRoutes from './schema';
 import TagsRoutes from './tags';
 import SearchRoutes from './search';
-import AppsRoutes from './apps';
+import { AppsController } from './apps';
 import authorize from '../security/authorize';
 import PERMISSIONS from '../security/permissions/consts';
+import { RoutesConfig } from './config';
+import { Server } from 'typescript-rest';
+import { Container } from 'typescript-ioc';
+import AppsRepository from '../repositories/apps-repository';
+import KeysRepository from '../repositories/keys-repository';
+import TagsRepository from '../repositories/tags-repository';
 
 const upload = multer({ dest: 'uploads/' });
 
-export default function configureRoutes(config): any {
+Server.useIoC();
+
+export default function configureRoutes(config: RoutesConfig): any {
   const app = express();
+
+  Container.bind(AppsRepository).provider({ get: () => config.appsRepository });
+  Container.bind(KeysRepository).provider({ get: () => config.keysRepository });
+  Container.bind(TagsRepository).provider({ get: () => config.tagsRepository });
 
   const addConfig = compose(
     requestErrorHandlingWrapper,
@@ -76,14 +88,14 @@ export default function configureRoutes(config): any {
   app
     .route('/schemas/:identityType')
     .patch(
-      authorize({ permission: PERMISSIONS.SCHEMAS_WRITE }),
-      addConfig(SchemaRoutes.patchIdentity),
-    )
+    authorize({ permission: PERMISSIONS.SCHEMAS_WRITE }),
+    addConfig(SchemaRoutes.patchIdentity),
+  )
     .post(authorize({ permission: PERMISSIONS.SCHEMAS_WRITE }), addConfig(SchemaRoutes.addIdentity))
     .delete(
-      authorize({ permission: PERMISSIONS.SCHEMAS_WRITE }),
-      addConfig(SchemaRoutes.deleteIdentity),
-    );
+    authorize({ permission: PERMISSIONS.SCHEMAS_WRITE }),
+    addConfig(SchemaRoutes.deleteIdentity),
+  );
 
   app.get(
     '/search-index',
@@ -102,7 +114,7 @@ export default function configureRoutes(config): any {
     .get(authorize({ permission: PERMISSIONS.TAGS_READ }), addConfig(TagsRoutes.getTags))
     .put(authorize({ permission: PERMISSIONS.TAGS_WRITE }), addConfig(TagsRoutes.saveTags));
 
-  app.post('/apps', authorize({ permission: PERMISSIONS.ADMIN }), addConfig(AppsRoutes.createApp));
+  Server.buildServices(app, AppsController);
 
   return app;
 }

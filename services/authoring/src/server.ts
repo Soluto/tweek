@@ -43,7 +43,7 @@ const gitRepoCreationPromise = GitRepository.create(gitRepositoryConfig);
 const gitRepoCreationPromiseWithTimeout = BluebirdPromise.resolve(gitRepoCreationPromise)
   .timeout(GIT_CLONE_TIMEOUT_IN_MINUTES * 60 * 1000)
   .catch(BluebirdPromise.TimeoutError, () => {
-    throw `git repository cloning timeout after ${GIT_CLONE_TIMEOUT_IN_MINUTES} minutes`;
+    throw new Error(`git repository cloning timeout after ${GIT_CLONE_TIMEOUT_IN_MINUTES} minutes`);
   });
 
 const gitTransactionManager = new Transactor(gitRepoCreationPromise, gitRepo => gitRepo.reset());
@@ -52,6 +52,12 @@ const tagsRepository = new TagsRepository(gitTransactionManager);
 const appsRepository = new AppsRepository(gitTransactionManager);
 
 const auth = passport.authenticate(['tweek-internal', 'apps-credentials'], { session: false });
+// const auth: express.Handler = (req, res, next) => {
+//   req.user = { isTweekService: true, name: 'tweek'};
+//   let t: any = passport;
+//   t =1;
+//   return next();
+// };
 
 async function startServer() {
   await appsRepository.refresh();
@@ -67,7 +73,7 @@ async function startServer() {
   app.use('/*', (req, res) => res.sendStatus(404));
   const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     console.error(req.method, req.originalUrl, err);
-    res.status(500).send(err.message);
+    res.status(err.statusCode || 500).send(err.message);
   };
   app.use(errorHandler);
 
@@ -77,14 +83,14 @@ async function startServer() {
 GitContinuousUpdater.onUpdate(gitTransactionManager)
   .switchMap(_ =>
     Rx.Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)),
-  )
-  .do(() => {}, (err: any) => console.error('Error refreshing index', err))
+)
+  .do(() => { }, (err: any) => console.error('Error refreshing index', err))
   .retry()
   .subscribe();
 
 GitContinuousUpdater.onUpdate(gitTransactionManager)
   .switchMap(_ => Rx.Observable.defer(() => appsRepository.refresh()))
-  .do(() => {}, (err: any) => console.error('Error refersing apps index', err))
+  .do(() => { }, (err: any) => console.error('Error refersing apps index', err))
   .retry()
   .subscribe();
 
