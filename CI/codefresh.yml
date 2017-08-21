@@ -1,5 +1,12 @@
 version: '1.0'
 steps:
+  VersionsToDeploy:
+      description: Freestyle step..
+      title: Free styling
+      image: alpine/git
+      commands:
+          - ./ci/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
+
   BuildGitKeys:
     title: Building Git Keys Docker Image
     type: build
@@ -20,7 +27,7 @@ steps:
     dockerfile: TweekApiDockerfile
     build_arguments: 
       - VERSION_SUFFIX=ci-${{CF_BUILD_ID}}-${{CF_SHORT_REVISION}}
-    
+  
   BuildingManagement:
     title: Building Management Docker Image
     type: build
@@ -205,6 +212,9 @@ steps:
         only:
           - master
     candidate: ${{BuildingApiImage}}
+    tags:
+      - latest
+      - ${TWEEK_DOCKER_TAG_API}
 
   PushManagementImageMaster:
     type: push
@@ -214,6 +224,9 @@ steps:
         only:
           - master
     candidate: ${{BuildingManagement}}
+    tags:
+      - latest
+      - ${TWEEK_DOCKER_TAG_MANAGEMENT}
 
   PushAuthoringImageMaster:
     type: push
@@ -223,6 +236,9 @@ steps:
         only:
           - master
     candidate: ${{BuildingAuthoring}}
+    tags:
+      - latest
+      - ${TWEEK_DOCKER_TAG_AUTHORING}
 
   PushEditorImageMaster:
     type: push
@@ -232,6 +248,9 @@ steps:
         only:
           - master
     candidate: ${{BuildingEditor}}
+    tags:
+      - latest
+      - ${TWEEK_DOCKER_TAG_EDITOR}
 
   PushGitRepositoryMaster:
     type: push
