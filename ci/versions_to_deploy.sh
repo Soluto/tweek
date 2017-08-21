@@ -6,7 +6,6 @@ TWEEK_API_TAG="tweek-api-$TWEEK_API_VERSION"
 export TWEEK_DOCKER_TAG_API="latest"
 if [[ "$(git tag | grep -c $TWEEK_API_TAG)" == "0" ]]; then
     echo tagging $TWEEK_API_TAG
-    git tag $TWEEK_API_TAG-exp
     export TWEEK_DOCKER_TAG_API=$TWEEK_API_VERSION
 fi
 
@@ -16,7 +15,6 @@ TWEEK_MANAGEMENT_TAG="tweek-management-$TWEEK_MANAGEMENT_VERSION"
 export TWEEK_DOCKER_TAG_MANAGEMENT="latest"
 if [[ "$(git tag | grep -c $TWEEK_MANAGEMENT_TAG)" == "0" ]]; then
     echo tagging $TWEEK_MANAGEMENT_TAG
-    git tag $TWEEK_MANAGEMENT_TAG
     export TWEEK_DOCKER_TAG_MANAGEMENT=$TWEEK_MANAGEMENT_VERSION
 fi
 
@@ -26,7 +24,6 @@ TWEEK_AUTHORING_TAG="tweek-authoring-$TWEEK_AUTHORING_VERSION"
 export TWEEK_DOCKER_TAG_AUTHORING="latest"
 if [[ "$(git tag | grep -c $TWEEK_AUTHORING_TAG)" == "0" ]]; then
     echo tagging $TWEEK_AUTHORING_TAG
-    git tag $TWEEK_AUTHORING_TAG
     export TWEEK_DOCKER_TAG_AUTHORING=$TWEEK_AUTHORING_VERSION
 fi
 
@@ -36,7 +33,6 @@ TWEEK_EDITOR_TAG="tweek-editor-$TWEEK_EDITOR_VERSION"
 export TWEEK_DOCKER_TAG_EDITOR="latest"
 if [[ "$(git tag | grep -c $TWEEK_EDITOR_TAG)" == "0" ]]; then
     echo tagging $TWEEK_EDITOR_TAG
-    git tag $TWEEK_EDITOR_TAG
     export TWEEK_DOCKER_TAG_EDITOR=$TWEEK_EDITOR_VERSION
 fi
 
