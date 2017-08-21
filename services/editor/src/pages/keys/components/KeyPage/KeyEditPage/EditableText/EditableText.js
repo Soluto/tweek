@@ -20,9 +20,10 @@ const EditableText = withState(
     isReadonly,
     ...props
   }) =>
-    <div className={classNames('editable-text-container', classes.container)}>
+    <div className={classNames('editable-text-container', classes.container)} data-comp="editable-text" {...props}>
       {isInEditMode
         ? <form
+            data-field="form"
             onSubmit={(e) => {
               setIsInEditMode(false);
               e.preventDefault();
@@ -30,6 +31,7 @@ const EditableText = withState(
             className={classNames('editable-text-form', classes.form)}
           >
             <input
+              data-field="input"
               type="text"
               ref={input => input && input.focus()}
               className={classNames('editable-text-input', classes.input)}
@@ -41,6 +43,7 @@ const EditableText = withState(
             />
           </form>
         : <div
+            data-field="text"
             className={classNames('editable-text-value', classes.text)}
             onClick={() => isReadonly || setIsInEditMode(true)}
           >

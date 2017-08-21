@@ -13,7 +13,7 @@ function authorize({ permission }) {
     ) {
       return next();
     }
-    res.send(403);
+    res.sendStatus(403);
   };
 }
 

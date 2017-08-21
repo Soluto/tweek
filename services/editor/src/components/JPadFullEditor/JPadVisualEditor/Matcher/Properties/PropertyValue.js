@@ -34,29 +34,33 @@ const TagsPropertyValue = ({ onUpdate, value, suggestions }) => {
   );
 };
 
-const PropertyValueComponent = ({
+const PropertyValue = ({
   onUpdate,
   propertyTypeDetails,
-  value = '',
   selectedOperator,
-  placeholder = 'Value',
+  ...props
 }) => {
   if (selectedOperator === inOp.operatorValue) {
     return (
       <TagsPropertyValue
+        {...props}
         onUpdate={onUpdate}
-        value={value}
         suggestions={propertyTypeDetails.allowedValues || []}
       />
     );
   }
 
   return (
-    <TypedInput {...{ value, placeholder }} valueType={propertyTypeDetails} onChange={onUpdate} />
+    <TypedInput {...props} valueType={propertyTypeDetails} onChange={onUpdate} />
   );
 };
 
+PropertyValue.defaultProps = {
+  placeholder: 'Value',
+  value: '',
+};
+
 export default props =>
-  <div data-comp="property-value">
-    <PropertyValueComponent {...props} />
+  <div className="property-value-wrapper">
+    <PropertyValue data-comp="property-value" {...props} />
   </div>;

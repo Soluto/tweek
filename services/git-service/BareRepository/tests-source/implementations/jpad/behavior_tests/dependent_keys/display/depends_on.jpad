@@ -1,0 +1,13 @@
+{
+    "partitions": [],
+    "valueType": "string",
+    "rules": [
+        {
+            "Matcher": {
+                "keys.behavior_tests/dependent_keys/display/used_by": "value"
+            },
+            "Value": "value",
+            "Type": "SingleVariant"
+        }
+    ]
+}

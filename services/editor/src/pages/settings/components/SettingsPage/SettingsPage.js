@@ -23,7 +23,7 @@ const AddIdentity = compose(
     reset: ({ setState }) => () => setState(state => ({ ...state, value: '', isEditing: false })),
   }),
 )(({ state: { isEditing, value }, toggleEdit, change, reset, addNewIdentity }) =>
-  <div data-comp="AddNewIdentity">
+  <div data-comp="add-new-identity">
     {isEditing
       ? <Input
           value={value}

@@ -20,7 +20,7 @@ import { UsedBy, DependsOn } from './DependencyIndicator/DependencyIndicator';
 import './KeyEditPage.css';
 
 const ConstEditor = ({ value, valueType, onChange }) =>
-  <div data-comp="ConstEditor">
+  <div data-comp="const-editor">
     {valueType === 'object'
       ? <Json value={value} onChange={onChange} />
       : <TypedInput {...{ value, valueType, onChange }} />}
@@ -137,10 +137,10 @@ class KeyEditPage extends Component {
     };
 
     return (
-      <div id="key-viewer-container-form" className={'key-viewer-container-form'}>
-        <div className={'key-viewer-container-fieldset'}>
+      <div id="key-edit-page" className="key-edit-page" data-comp="key-edit-page">
+        <div className="key-viewer-container-fieldset">
 
-          <div className={'key-viewer-container'}>
+          <div className="key-viewer-container">
             {isInStickyMode ? <KeyStickyHeader {...commonHeadersProps} /> : null}
             <KeyFullHeader
               {...commonHeadersProps}
@@ -173,18 +173,18 @@ class KeyEditPage extends Component {
   }
 }
 
-export default compose(stickyHeaderIdentifier('key-viewer-container-form', 150), pure)(KeyEditPage);
+export default compose(stickyHeaderIdentifier('key-edit-page', 150), pure)(KeyEditPage);
 
 const KeyStickyHeader = (props) => {
   const { isInAddMode, isReadonly, isHistoricRevision } = props;
 
   return (
-    <div className={'sticky-key-header'} disabled={isReadonly}>
+    <div className="sticky-key-header" disabled={isReadonly}>
 
       <HeaderMainInput {...props} />
 
       {!isReadonly
-        ? <div className={'sticky-key-page-action-wrapper'}>
+        ? <div className="sticky-key-page-action-wrapper">
             <KeyPageActions {...{ isInAddMode, isReadonly, isHistoricRevision }} isInStickyMode />
           </div>
         : null}
@@ -207,13 +207,13 @@ const KeyFullHeader = (props) => {
   } = props;
 
   return (
-    <div className={'key-header'}>
+    <div className="key-header">
 
       <KeyPageActions {...{ isInAddMode, isReadonly, isHistoricRevision }} isInStickyMode={false} />
 
-      <div className={'key-meta-container'}>
+      <div className="key-meta-container">
 
-        <div className={'key-header-and-modification-wrapper'}>
+        <div className="key-header-and-modification-wrapper">
 
           <HeaderMainInput {...props} />
           {revisionHistory
@@ -225,14 +225,14 @@ const KeyFullHeader = (props) => {
         <fieldset disabled={isReadonly} style={{ border: 'none' }}>
 
           {!isInAddMode
-            ? <div className={'key-full-path'}>
+            ? <div className="key-full-path">
                 <label>Full path: </label>
-                <label className={'actual-path'}>{keyFullPath}</label>
+                <label className="actual-path">{keyFullPath}</label>
               </div>
             : null}
 
-          <div className={'key-description-and-tags-wrapper'}>
-            <div className={'key-description-wrapper'}>
+          <div className="key-description-and-tags-wrapper">
+            <div className="key-description-wrapper">
               <EditableTextArea
                 value={keyManifest.meta.description}
                 onTextChanged={text => onDescriptionChanged(text)}
@@ -245,7 +245,7 @@ const KeyFullHeader = (props) => {
               <DependsOn items={keyManifest.dependencies} />
             </div>
 
-            <div className={'key-tags-wrapper'}>
+            <div className="key-tags-wrapper">
               <KeyTags
                 onTagsChanged={newTags => onTagsChanged(newTags)}
                 tags={keyManifest.meta.tags || []}
@@ -269,17 +269,18 @@ const HeaderMainInput = ({
   keyManifest: { meta: { name: displayName, archived }, valueType },
   isReadonly,
 }) =>
-  <div className={'key-main-input'}>
+  <div className="key-main-input">
     {isInAddMode
-      ? <div className={'new-key-input-wrapper'}>
+      ? <div className="new-key-input-wrapper">
           <NewKeyInput
             onKeyNameChanged={name => onKeyNameChanged(name)}
             displayName={displayName}
           />
-          <div className={'vertical-separator'} />
+          <div className="vertical-separator" />
           <KeyValueTypeSelector value={valueType} />
         </div>
       : <EditableText
+          data-comp="display-name"
           onTextChanged={text => onDisplayNameChanged(text)}
           placeHolder="Enter key display name"
           maxLength={80}
@@ -306,12 +307,13 @@ const NewKeyInput = compose(
 )(({ keysList, keyNameValidation, onKeyNameChanged, displayName }) => {
   const suggestions = getKeyNameSuggestions(keysList).map(x => ({ label: x, value: x }));
   return (
-    <div className={'auto-suggest-wrapper'} data-with-error={keyNameValidation.isShowingHint}>
-      <div className={'validation-icon-wrapper'} data-is-shown={keyNameValidation.isShowingHint}>
-        <img className={'validation-icon'} data-tip={keyNameValidation.hint} src={alertIconSrc} />
+    <div data-comp="new-key-name" className="auto-suggest-wrapper" data-with-error={keyNameValidation.isShowingHint}>
+      <div className="validation-icon-wrapper" data-field="validation" data-is-shown={keyNameValidation.isShowingHint}>
+        <img className="validation-icon" data-tip={keyNameValidation.hint} src={alertIconSrc} />
       </div>
       <ComboBox
-        className={'auto-suggest'}
+        data-field="new-key-name-input"
+        className="auto-suggest"
         suggestions={suggestions}
         value={displayName}
         placeholder="Enter key full path"

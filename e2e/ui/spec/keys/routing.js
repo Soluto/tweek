@@ -1,40 +1,32 @@
 /* global describe, before, after, beforeEach, it, browser */
 
-import KeysPage, { BLANK_KEY_NAME } from '../../utils/KeysPage';
-import selectors from '../../selectors/keySelectors';
+import Key from '../../utils/Key';
+import Rule from '../../utils/Rule';
+
+const timeout = 1000;
 
 describe('navigating from key with changes', () => {
-  const testFolder = KeysPage.TEST_KEYS_FOLDER;
-  const testKey1 = `test_key1`;
-  const folderPath = `@routing`;
+  const keyName = 'behavior_tests/routing';
 
-  const testKey1FullPath = `${testFolder}/${folderPath}/${testKey1}`;
-
-  before(() => {
-    browser.windowHandleMaximize();
-  });
-
-  beforeEach(() => {
-    KeysPage.goToKey(BLANK_KEY_NAME);
-  });
+  beforeEach(() => Key.add());
 
   it('should show confirm message if navigating to another key', () => {
-    browser.click(selectors.ADD_RULE_BUTTON);
-    browser.waitUntil(() => KeysPage.hasChanges(), 2000);
+    Rule.add();
+    browser.waitUntil(() => Key.hasChanges, timeout);
 
-    KeysPage.navigateToKey(testKey1FullPath);
+    Key.navigate(keyName);
 
-    browser.waitForAlert(1000, 'should show confirm message');
+    browser.waitForAlert(timeout, 'should show confirm message');
     browser.alertAccept();
   });
 
   it('should show confirm message if refreshing', () => {
-    browser.click(selectors.ADD_RULE_BUTTON);
-    browser.waitUntil(() => KeysPage.hasChanges(), 2000);
+    Rule.add();
+    browser.waitUntil(() => Key.hasChanges, timeout);
 
     browser.refresh();
 
-    browser.waitForAlert(1000, 'should show confirm message');
+    browser.waitForAlert(timeout, 'should show confirm message');
     browser.alertAccept();
   });
 });

@@ -8,7 +8,6 @@ import registerServiceWorker from './registerServiceWorker';
 import { refreshTypes } from './services/types-service';
 import { refreshSchema } from './services/context-service';
 import { getKeys } from './store/ducks/keys';
-import fetch from './utils/fetch';
 require('papp-polyfill');
 
 injectTapEventPlugin();

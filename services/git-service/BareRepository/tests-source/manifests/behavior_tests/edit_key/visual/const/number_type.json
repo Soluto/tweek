@@ -1,0 +1,16 @@
+{
+  "key_path": "behavior_tests/edit_key/visual/const/number_type",
+  "meta": {
+    "name": "behavior_tests/edit_key/visual/const/number_type",
+    "tags": [],
+    "description": "",
+    "archived": false
+  },
+  "implementation": {
+    "type": "const",
+    "value": 10
+  },
+  "valueType": "number",
+  "dependencies": [],
+  "enabled": true
+}

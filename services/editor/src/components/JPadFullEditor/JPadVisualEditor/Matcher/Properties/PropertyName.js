@@ -19,7 +19,7 @@ const PropertyName = ({ mutate, ...props }) => {
     mutate.apply(m => m.updateKey(newProperty.value).updateValue(newValue));
   };
 
-  return <PropertyComboBox {...props} onPropertyChange={selectProperty} />;
+  return <PropertyComboBox data-comp="property-name" {...props} onPropertyChange={selectProperty} />;
 };
 
 export default PropertyName;

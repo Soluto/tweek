@@ -26,13 +26,14 @@ const KeyValueTypeSelector = compose(
 )(({ value, validation: { isShowingHint, hint }, updateKeyValueType: onChange }) => {
   const suggestions = getValueTypeSuggestions();
   return (
-    <div className={'key-value-type-selector-container'}>
-      <label className={'key-value-type-label'}>Key value type:</label>
-      <div className={'key-value-type-selector-wrapper'} data-with-error={isShowingHint}>
-        <div className={'validation-icon-wrapper'} data-is-shown={isShowingHint}>
-          <img data-tip={hint} className={'validation-icon'} src={alertIconSrc} />
+    <div className="key-value-type-selector-container">
+      <label className="key-value-type-label">Key value type:</label>
+      <div className="key-value-type-selector-wrapper" data-with-error={isShowingHint}>
+        <div className="validation-icon-wrapper" data-is-shown={isShowingHint}>
+          <img data-tip={hint} className="validation-icon" src={alertIconSrc} />
         </div>
         <ComboBox
+          data-comp="key-value-type-selector"
           suggestions={suggestions}
           placeholder="Select type"
           onChange={(_, item) => item && onChange(item.value)}

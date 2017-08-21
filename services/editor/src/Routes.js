@@ -33,7 +33,7 @@ export default props =>
           path="/context"
           render={({ match }) =>
             <ContextPage {...match}>
-              <Route path={`${match.path}/:identityName/:identityId`} component={IdentityDetails} />
+              <Route path={`${match.path}/:identityType/:identityId`} component={IdentityDetails} />
             </ContextPage>}
         />
         <Route

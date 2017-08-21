@@ -1,9 +1,7 @@
 FROM alpine:3.4
 
 RUN apk add --no-cache \
-# openssh=7.2_p2-r1 \
   openssh \
-# git=2.8.3-r0
   git \
   bash \
   curl

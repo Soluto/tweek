@@ -1,0 +1,33 @@
+{
+    "partitions": [
+        "user.FavoriteFruit"
+    ],
+    "valueType": "string",
+    "rules": {
+        "Banana": [
+            {
+                "Matcher": {
+                    "user.Gender": "female"
+                },
+                "Value": "someValue",
+                "Type": "SingleVariant"
+            }
+        ],
+        "Orange": [
+            {
+                "Matcher": {
+                    "user.NumberOfSiblings": {
+                        "$ge": "5"
+                    }
+                },
+                "Type": "SingleVariant",
+                "Value": "siblingsValue"
+            },
+            {
+                "Matcher": {},
+                "Value": "defaultValue",
+                "Type": "SingleVariant"
+            }
+        ]
+    }
+}

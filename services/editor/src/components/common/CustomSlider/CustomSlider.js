@@ -47,14 +47,14 @@ const CustomSlider = ({
                   <div className={'vertical-accent'} style={{ backgroundColor: sliderColor }} />
                   <input
                     type="text"
-                    data-comp="legend-value-input"
+                    data-comp="legend-value"
                     className="legend-value-input"
                     onChange={e => mutator.in(value).updateKey(e.target.value)}
                     value={value}
                   />
                   <input
                     type="text"
-                    data-comp="legend-percent-input"
+                    data-comp="legend-percent"
                     className="legend-percent-input"
                     onChange={({ target: { value: newWeight } }) =>
                       mutator

@@ -11,7 +11,7 @@ const getProperty = (suggestedValues, property) => {
   return result ? result.label : property;
 };
 
-const PropertyComboBox = ({ property, suggestedValues, onPropertyChange, autofocus }) => {
+const PropertyComboBox = ({ property, suggestedValues, onPropertyChange, ...props }) => {
   property = property.replace(/^@@key:/, ContextService.KEYS_IDENTITY);
   const [identity] = property.split('.');
 
@@ -19,6 +19,7 @@ const PropertyComboBox = ({ property, suggestedValues, onPropertyChange, autofoc
     <div className="property-combobox-container">
       <Avatar identity={identity} className="property-avatar" />
       <MultiSourceComboBox
+        {...props}
         getSuggestions={{
           Context: () => suggestedValues,
           Keys: (query) => {
@@ -45,8 +46,7 @@ const PropertyComboBox = ({ property, suggestedValues, onPropertyChange, autofoc
           option.value.toLowerCase().includes(currentInputValue.toLowerCase())}
         renderSuggestion={(suggestion, currentInputValue) =>
           <PropertySuggestion suggestion={suggestion} textToMark={currentInputValue} />}
-        autofocus={autofocus}
-        className={'property-name-wrapper'}
+        className="property-name-wrapper"
         showValueInOptions
       />
     </div>
