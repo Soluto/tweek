@@ -166,6 +166,7 @@ steps:
         environment:
           - EDITOR_URL=http://editor:3000/
           - TWEEK_API_URL=http://api/
+          - AUTHORING_URL=http://authoring:3000
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
         command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test -- --host selenium --port 4444"
       e2e-integration:
