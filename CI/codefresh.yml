@@ -1,8 +1,8 @@
 version: '1.0'
 steps:
   VersionsToDeploy:
-      description: Freestyle step..
-      title: Free styling
+      description: Check versions to deploy
+      title: Check versions to deploy
       image: alpine/git
       commands:
           - ./ci/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
