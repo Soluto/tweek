@@ -30,7 +30,7 @@
                 "Addons__Redis__className": "Tweek.Drivers.Redis.RedisServiceAddon",
                 "Addons__Redis__assemblyName": "Tweek.Drivers.Redis",
                 "ContextProvider":"redis",
-                "Redis__ConnectionString": "localhost:4005"
+                "Redis__ConnectionString": "localhost:4006"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceRoot}/Views"
