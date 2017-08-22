@@ -8,7 +8,7 @@ function addEmptyKey(keyName, keyValueType = 'String') {
   Key.add().setName(keyName).setValueType(keyValueType).commitChanges();
 }
 
-const keyNameValidation = `${dataComp('new-key-name')} ${dataField('validation')}`;
+const keyNameValidation = `${dataComp('new-key-name')} ${dataComp('validation-icon')}`;
 
 describe('key name validations', () => {
   describe('name validations', () => {

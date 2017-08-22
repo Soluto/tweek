@@ -4,17 +4,16 @@ import { connect } from 'react-redux';
 import R from 'ramda';
 import Json from 'react-json';
 import classNames from 'classnames';
-import ReactTooltip from 'react-tooltip';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import TypedInput from '../../../../../components/common/Input/TypedInput';
 import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEditor';
+import ValidationIcon from '../../../../../components/common/ValidationIcon';
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
 import KeyTags from './KeyTags/KeyTags';
 import EditableText from './EditableText/EditableText';
 import EditableTextArea from './EditableTextArea/EditableTextArea';
 import RevisionHistory from './RevisionHistory/RevisionHistory';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
-import alertIconSrc from './resources/alert-icon.svg';
 import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
 import { UsedBy, DependsOn } from './DependencyIndicator/DependencyIndicator';
 import './KeyEditPage.css';
@@ -139,7 +138,6 @@ class KeyEditPage extends Component {
     return (
       <div id="key-edit-page" className="key-edit-page" data-comp="key-edit-page">
         <div className="key-viewer-container-fieldset">
-
           <div className="key-viewer-container">
             {isInStickyMode ? <KeyStickyHeader {...commonHeadersProps} /> : null}
             <KeyFullHeader
@@ -166,7 +164,6 @@ class KeyEditPage extends Component {
               />
             </div>
           </div>
-
         </div>
       </div>
     );
@@ -180,7 +177,6 @@ const KeyStickyHeader = (props) => {
 
   return (
     <div className="sticky-key-header" disabled={isReadonly}>
-
       <HeaderMainInput {...props} />
 
       {!isReadonly
@@ -208,26 +204,23 @@ const KeyFullHeader = (props) => {
 
   return (
     <div className="key-header">
-
       <KeyPageActions {...{ isInAddMode, isReadonly, isHistoricRevision }} isInStickyMode={false} />
 
       <div className="key-meta-container">
-
         <div className="key-header-and-modification-wrapper">
-
           <HeaderMainInput {...props} />
           {revisionHistory
             ? <RevisionHistory revision={revision} revisionHistory={revisionHistory} />
             : null}
-
         </div>
 
         <fieldset disabled={isReadonly} style={{ border: 'none' }}>
-
           {!isInAddMode
             ? <div className="key-full-path">
                 <label>Full path: </label>
-                <label className="actual-path">{keyFullPath}</label>
+                <label className="actual-path">
+                  {keyFullPath}
+                </label>
               </div>
             : null}
 
@@ -251,13 +244,9 @@ const KeyFullHeader = (props) => {
                 tags={keyManifest.meta.tags || []}
               />
             </div>
-
           </div>
-
         </fieldset>
-
       </div>
-
     </div>
   );
 };
@@ -307,10 +296,12 @@ const NewKeyInput = compose(
 )(({ keysList, keyNameValidation, onKeyNameChanged, displayName }) => {
   const suggestions = getKeyNameSuggestions(keysList).map(x => ({ label: x, value: x }));
   return (
-    <div data-comp="new-key-name" className="auto-suggest-wrapper" data-with-error={keyNameValidation.isShowingHint}>
-      <div className="validation-icon-wrapper" data-field="validation" data-is-shown={keyNameValidation.isShowingHint}>
-        <img className="validation-icon" data-tip={keyNameValidation.hint} src={alertIconSrc} />
-      </div>
+    <div
+      data-comp="new-key-name"
+      className="auto-suggest-wrapper"
+      data-with-error={keyNameValidation.isShowingHint}
+    >
+      <ValidationIcon show={keyNameValidation.isShowingHint} hint={keyNameValidation.hint} />
       <ComboBox
         data-field="new-key-name-input"
         className="auto-suggest"
@@ -319,12 +310,6 @@ const NewKeyInput = compose(
         placeholder="Enter key full path"
         onChange={text => onKeyNameChanged(text)}
         showValueInOptions
-      />
-      <ReactTooltip
-        disable={!keyNameValidation.isShowingHint}
-        effect="solid"
-        place="top"
-        delayHide={500}
       />
     </div>
   );
