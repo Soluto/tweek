@@ -1,15 +1,33 @@
-export async function getTags(req, res, { tagsRepository }) {
-  const tags = await tagsRepository.getTags();
-  res.json(tags);
-}
+import { Path, GET, PUT, Context, ServiceContext } from 'typescript-rest';
+import { AutoWired, Inject } from 'typescript-ioc';
 
-export async function saveTags(req, res, { tagsRepository, author }) {
-  const tagsToSave = req.body;
-  await tagsRepository.mergeTags(tagsToSave, author);
-  res.sendStatus(200);
-}
+import PERMISSIONS from '../security/permissions/consts';
+import { Authorize } from '../security/authorize';
+import TagsRepository from '../repositories/tags-repository';
+import { AuthorProvider } from '../utils/include-author';
 
-export default {
-  getTags,
-  saveTags,
-};
+@AutoWired
+@Path('/tags')
+export class TagsController {
+  @Context
+  context: ServiceContext;
+
+  @Inject
+  tagsRepository: TagsRepository;
+
+  @Inject
+  authorProvider: AuthorProvider;
+
+  @Authorize({ permission: PERMISSIONS.TAGS_READ })
+  @GET
+  async getTags() {
+    return await this.tagsRepository.getTags();
+  }
+
+  @Authorize({ permission: PERMISSIONS.TAGS_WRITE })
+  @PUT
+  async saveTags(tagsToSave) {
+    const author = this.authorProvider.getAuthor(this.context);
+    await this.tagsRepository.mergeTags(tagsToSave, author);
+  }
+}

@@ -6,7 +6,7 @@ import includeAuthor from '../utils/include-author';
 import KeysRoutes from './keys';
 import BulkKeysRoutes from './bulk-keys-upload';
 import SchemaRoutes from './schema';
-import TagsRoutes from './tags';
+import /*TagsRoutes,*/ { TagsController } from './tags';
 import SearchRoutes from './search';
 import { AppsController } from './apps';
 import authorize from '../security/authorize';
@@ -109,12 +109,7 @@ export default function configureRoutes(config: RoutesConfig): any {
     addConfig(SearchRoutes.getSuggestions),
   );
 
-  app
-    .route('/tags')
-    .get(authorize({ permission: PERMISSIONS.TAGS_READ }), addConfig(TagsRoutes.getTags))
-    .put(authorize({ permission: PERMISSIONS.TAGS_WRITE }), addConfig(TagsRoutes.saveTags));
-
-  Server.buildServices(app, AppsController);
+  Server.buildServices(app, AppsController, TagsController);
 
   return app;
 }
