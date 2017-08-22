@@ -22,6 +22,7 @@ FROM base AS release
 COPY --from=build /src/dist/ /opt/app/dist
 COPY --from=build /src/build/ /opt/app/dist/build
 COPY --from=deps /src/node_modules /opt/app/node_modules
+COPY --from=deps /src/package.json /opt/app/package.json
 
 WORKDIR /opt/app/
 VOLUME /opt/vapid/
@@ -33,4 +34,4 @@ ENV PORT=3000
 ENV VAPID_KEYS=/opt/vapid/keys.json
 EXPOSE 3000
 
-ENTRYPOINT [ "node", "./dist/index.js" ]
+ENTRYPOINT [ "npm", "run", "start:release" ]
