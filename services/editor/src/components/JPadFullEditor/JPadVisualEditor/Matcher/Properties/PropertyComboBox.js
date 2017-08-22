@@ -1,5 +1,6 @@
 import React from 'react';
 import MultiSourceComboBox from '../../../../common/ComboBox/MultiSourceComboBox';
+import ValidationIcon from '../../../../common/ValidationIcon';
 import * as ContextService from '../../../../../services/context-service';
 import * as SearchService from '../../../../../services/search-service';
 import Avatar from './Avatar';
@@ -11,7 +12,7 @@ const getProperty = (suggestedValues, property) => {
   return result ? result.label : property;
 };
 
-const PropertyComboBox = ({ property, suggestedValues, onPropertyChange, ...props }) => {
+const PropertyComboBox = ({ property, suggestedValues, warning, ...props }) => {
   property = property.replace(/^@@key:/, ContextService.KEYS_IDENTITY);
   const [identity] = property.split('.');
 
@@ -35,12 +36,6 @@ const PropertyComboBox = ({ property, suggestedValues, onPropertyChange, ...prop
           },
         }}
         value={getProperty(suggestedValues, property)}
-        onChange={(input, selected) => {
-          if (selected) onPropertyChange(selected);
-          else if (input.startsWith('@@key:') || input.startsWith(ContextService.KEYS_IDENTITY)) {
-            onPropertyChange({ value: input.replace('@@key:', ContextService.KEYS_IDENTITY) });
-          }
-        }}
         placeholder="Property"
         filterBy={(currentInputValue, option) =>
           option.value.toLowerCase().includes(currentInputValue.toLowerCase())}
@@ -49,6 +44,7 @@ const PropertyComboBox = ({ property, suggestedValues, onPropertyChange, ...prop
         className="property-name-wrapper"
         showValueInOptions
       />
+      <ValidationIcon show={warning} hint="Unknown identity" />
     </div>
   );
 };
