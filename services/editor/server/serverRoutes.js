@@ -57,9 +57,11 @@ export default (config) => {
   app.post('/push-service/register', addConfig(Registration.register));
 
   app.get('/system/service-version', addConfig(async (req, res, { servicesAddresses } )=>{
-    res.json(await Observable.from(R.toPairs(servicesAddresses))
-              .flatMap(([key,value]) => Observable.defer(async ()=> ({ [key]: (await axios.get(`${value}/version`)).data })))
-              .reduce((acc,next)=>({ ...acc,...next }), {}).toPromise());
+    const services = await Observable.from(R.toPairs(servicesAddresses))
+    .flatMap(([key,value]) => Observable.defer(async ()=> ({ [key]: (await axios.get(`${value}/version`)).data })))
+    .reduce((acc,next)=>({ ...acc,...next }), {}).toPromise();
+
+    res.json({ editor: process.env.npm_package_version ,...services });
   }));
 
   app.use('/*', (req, res) => res.sendStatus(404));
