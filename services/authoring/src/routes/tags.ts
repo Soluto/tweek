@@ -1,7 +1,6 @@
 import { Path, GET, PUT, Context, ServiceContext } from 'typescript-rest';
 import { AutoWired, Inject } from 'typescript-ioc';
-
-import PERMISSIONS from '../security/permissions/consts';
+import { PERMISSIONS } from '../security/permissions/consts';
 import { Authorize } from '../security/authorize';
 import TagsRepository from '../repositories/tags-repository';
 import { AuthorProvider } from '../utils/include-author';

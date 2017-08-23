@@ -1,6 +1,10 @@
 import R = require('ramda');
 import lunr = require('lunr');
+import { GET, Path, QueryParam } from 'typescript-rest';
 import searchIndex from '../search-index';
+import { AutoWired } from 'typescript-ioc';
+import { Authorize } from '../security/authorize';
+import { PERMISSIONS } from '../security/permissions/consts';
 
 const separator = /(?:[_/]|\s|-)/;
 
@@ -19,6 +23,7 @@ function addTerm(query, term, field) {
 
 function performSearch(searchString = '', { maxResults = 25, field, index }) {
   searchString = searchString.trim();
+  // tslint:disable-next-line:curly
   if (!index || searchString === '') return [];
 
   try {
@@ -37,20 +42,37 @@ function performSearch(searchString = '', { maxResults = 25, field, index }) {
   }
 }
 
-const createSearchEndpoint = (field?: string) => async (req, res) => {
-  const index = searchIndex.index || (await searchIndex.indexPromise);
-  const result = performSearch(req.query.q, {
-    maxResults: req.query.count,
-    field,
-    index,
-  });
-  res.json(result);
-};
+@AutoWired
+export class SearchController {
 
-export default {
-  async getSearchIndex(req, res) {
-    res.json(await searchIndex.indexPromise);
-  },
-  getSuggestions: createSearchEndpoint('id'),
-  search: createSearchEndpoint(),
-};
+  @Authorize({ permission: PERMISSIONS.SEARCH_INDEX })
+  @GET
+  @Path('/search-index')
+  async getSearchIndex() {
+    return await searchIndex.indexPromise;
+  }
+
+  @Authorize({ permission: PERMISSIONS.SEARCH })
+  @GET
+  @Path('/search')
+  async search( @QueryParam('q') q: string, @QueryParam('count') count: number) {
+    return this.getSearchResult(q, count);
+  }
+
+  @Authorize({ permission: PERMISSIONS.SEARCH })
+  @GET
+  @Path('/suggestions')
+  async suggestions( @QueryParam('q') q: string, @QueryParam('count') count: number) {
+    return this.getSearchResult(q, count, 'id');
+  }
+
+  private async getSearchResult(q: string, count: number, field?: string) {
+    const index = searchIndex.index || (await searchIndex.indexPromise);
+    const result = performSearch(q, {
+      maxResults: count,
+      field,
+      index,
+    });
+    return result;
+  }
+}

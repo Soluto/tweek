@@ -1,82 +1,100 @@
 import R = require('ramda');
+import { GET, Path, DELETE, PathParam, ServiceContext, Context, PUT, QueryParam, Errors } from 'typescript-rest';
+import { AutoWired, Inject } from 'typescript-ioc';
 import searchIndex from '../search-index';
+import { Authorize } from '../security/authorize';
+import { PERMISSIONS } from '../security/permissions/consts';
+import KeysRepository from '../repositories/keys-repository';
+import { AuthorProvider } from '../utils/include-author';
 
-async function getAllKeys(req, res) {
-  const manifests = await searchIndex.manifests;
-  const keys = manifests.map(R.prop('key_path'));
-  res.json(keys);
-}
+@AutoWired
+export class KeysController {
+  @Inject
+  authorProvider: AuthorProvider;
 
-async function getAllManifests(req, res) {
-  res.json(await searchIndex.manifests);
-}
+  @Inject
+  keysRepository: KeysRepository;
 
-async function getKey(req, res, { keysRepository }) {
-  const keyPath = req.params[0];
-  const revision = req.query.revision;
-  try {
-    const keyDetails = await keysRepository.getKeyDetails(keyPath, { revision });
-    res.json(keyDetails);
-  } catch (exp) {
-    res.sendStatus(404);
+  @Context
+  context: ServiceContext;
+
+  @Authorize({ permission: PERMISSIONS.KEYS_LIST })
+  @GET
+  @Path('/keys')
+  async getAllKeys() {
+    const manifests = await searchIndex.manifests;
+    return manifests.map(R.prop('key_path'));
+  }
+
+  @Authorize({ permission: PERMISSIONS.KEYS_READ })
+  @GET
+  @Path('/keys/:keyPath*')
+  async getKey( @PathParam('keyPath') keyPath, @QueryParam('revision') revision) {
+    try {
+      return await this.keysRepository.getKeyDetails(keyPath, { revision });
+    } catch (exp) {
+      console.error(`Error retrieving key ${keyPath}`, exp);
+      throw new Errors.NotFoundError();
+    }
+  }
+
+  @Authorize({ permission: PERMISSIONS.KEYS_WRITE })
+  @PUT
+  @Path('/keys/:keyPath*')
+  async updateKey( @PathParam('keyPath') keyPath, { implementation, manifest }) {
+    manifest = Object.assign({ key_path: keyPath }, manifest);
+    await this.keysRepository.updateKey(keyPath, manifest, implementation, this.authorProvider.getAuthor(this.context));
+
+    return 'OK';
+  }
+
+  @Authorize({ permission: PERMISSIONS.KEYS_WRITE })
+  @Path('/keys/:keyPath*')
+  @DELETE
+  async deleteKey( @PathParam('keyPath') keyPath) {
+    await this.keysRepository.deleteKey(keyPath, this.authorProvider.getAuthor(this.context));
+
+    return 'OK';
+  }
+
+  @Authorize({ permission: PERMISSIONS.KEYS_READ })
+  @GET
+  @Path('/revision')
+  async getRevision() {
+    const commit = await this.keysRepository.getRevision();
+    return commit.sha();
+  }
+
+  @Authorize({ permission: PERMISSIONS.HISTORY })
+  @GET
+  @Path('/revision-history/:keyPath*')
+  async getKeyRevisionHistory( @PathParam('keyPath') keyPath, @QueryParam('since') since) {
+    return await this.keysRepository.getKeyRevisionHistory(keyPath, { since });
+  }
+
+  @Authorize({ permission: PERMISSIONS.KEYS_LIST })
+  @GET
+  @Path('/manifests')
+  async getAllManifests() {
+    return await searchIndex.manifests;
+  }
+
+  @Authorize({ permission: PERMISSIONS.KEYS_READ })
+  @GET
+  @Path('/manifests/:keyPath*')
+  async getManifest( @PathParam('keyPath') keyPath, @QueryParam('revision') revision) {
+    try {
+      const manifest = await this.keysRepository.getKeyManifest(keyPath, { revision });
+      return manifest;
+    } catch (exp) {
+      throw new Errors.NotFoundError();
+    }
+  }
+
+  @Authorize({ permission: PERMISSIONS.KEYS_READ })
+  @GET
+  @Path('/dependents/:keyPath*')
+  async getDependents( @PathParam('keyPath') keyPath) {
+    return await searchIndex.dependents(keyPath);
   }
 }
-
-async function getManifest(req, res, { keysRepository }) {
-  const keyPath = req.params[0];
-  const revision = req.query.revision;
-  try {
-    const manifest = await keysRepository.getKeyManifest(keyPath, { revision });
-    res.json(manifest);
-  } catch (exp) {
-    res.sendStatus(404);
-  }
-}
-
-async function getDependents(req, res) {
-  const keyPath = req.params[0];
-  const dependents = await searchIndex.dependents(keyPath);
-
-  res.json(dependents);
-}
-
-async function getKeyRevisionHistory(req, res, { keysRepository }) {
-  const keyPath = req.params[0];
-  const { since } = req.query;
-  const revisionHistory = await keysRepository.getKeyRevisionHistory(keyPath, { since });
-  res.json(revisionHistory);
-}
-
-async function updateKey(req, res, { keysRepository, author }) {
-  const keyPath = req.params[0];
-
-  const implementation = req.body.implementation;
-  const manifest = Object.assign({ key_path: keyPath }, req.body.manifest);
-  await keysRepository.updateKey(keyPath, manifest, implementation, author);
-
-  res.send('OK');
-}
-
-async function deleteKey(req, res, { keysRepository, author }) {
-  const keyPath = req.params[0];
-  await keysRepository.deleteKey(keyPath, author);
-
-  res.send('OK');
-}
-
-async function getRevision(req, res, { keysRepository }) {
-  const commit = await keysRepository.getRevision();
-  res.json(commit.sha());
-}
-
-export default {
-  getAllKeys,
-  getAllManifests,
-  getKey,
-  getManifest,
-  getDependents,
-  getKeyRevisionHistory,
-  updateKey,
-  deleteKey,
-  getRevision,
-};

@@ -1,15 +1,16 @@
 import uuid = require('uuid');
 import { promisify } from 'util';
 import crypto = require('crypto');
-const randomBytes = promisify(crypto.randomBytes);
-import PERMISSIONS from '../security/permissions/consts';
 import R = require('ramda');
-import { POST, Path, Errors, Context, ServiceContext } from 'typescript-rest';
 import { AutoWired, Inject } from 'typescript-ioc';
+import { POST, Path, Errors, Context, ServiceContext } from 'typescript-rest';
+import { PERMISSIONS } from '../security/permissions/consts';
 import { generateHash } from '../apps/apps-utils';
 import { Author, AuthorProvider } from '../utils/include-author';
 import { Authorize } from '../security/authorize';
 import AppsRepository from '../repositories/apps-repository';
+
+const randomBytes = promisify(crypto.randomBytes);
 
 async function createSecretKey() {
   const salt = await randomBytes(64);

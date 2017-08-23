@@ -14,7 +14,7 @@ describe('authoring api', () => {
     it('should accept a zip file and update rules', async () => {
       const response = await clients.authoring.put('/api/bulk-keys-upload?author.name=test&author.email=test@soluto.com')
         .attach('bulk', './spec/authoring-api/test-data/bulk1.zip')
-      response.status.should.eql(200);
+      response.status.should.eql(204);
       await pollUntil(()=> clients.api.get('/api/v1/keys/test_key1?user.Country=country&user.ClientVersion=1.0.0'), 
                             res=> expect(JSON.parse(res.body)).to.eql(true))
     }).timeout(10000);;
