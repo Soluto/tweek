@@ -24,8 +24,9 @@ FROM base as release
 WORKDIR /opt/app
 COPY src/ /opt/app/src/
 COPY --from=deps /tmp/node_modules /opt/app/node_modules
+COPY --from=deps /tmp/package.json /opt/app/package.json
 
 EXPOSE 3000
 ENV PORT=3000
 
-ENTRYPOINT ["node", "./src/server.js"]
+ENTRYPOINT ["npm", "start"]

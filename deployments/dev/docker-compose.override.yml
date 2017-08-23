@@ -21,9 +21,9 @@ services:
       - "5858:5858"
       - "4002:3000"
     entrypoint:
-      - node
-      - --inspect=5858
-      - ./src/server.js
+      - npm 
+      - run 
+      - start:debug
     environment:
       - GIT_USER=git
       - GIT_URL=ssh://git@git/tweek/repo
@@ -75,9 +75,9 @@ services:
       - tweek_ssh_private_key
       - tweek_ssh_public_key
     entrypoint:
-      - node
-      - --inspect=5858
-      - ./src/server.js
+      - npm 
+      - run 
+      - start:debug
     labels:
       - "traefik.port=3000"
 
