@@ -5,6 +5,9 @@ import * as Registration from './api/registration';
 import * as EditorConfiguration from './api/editorConfiguration';
 import proxyRequest from './api/utils/proxy-request';
 import requestErrorHandlingWrapper from './utils/request-error-handling-wrapper';
+import { Observable } from 'rx';
+import R from 'ramda';
+import axios from 'axios';
 
 export default (config) => {
   const app = express();
@@ -12,7 +15,7 @@ export default (config) => {
   const addConfig = fn =>
     requestErrorHandlingWrapper((req, res) => fn(req, res, config, { params: req.params }));
 
-  const authoringProxy = proxyRequest(`${config.authoringApiHostname}`);
+  const authoringProxy = proxyRequest(`${config.servicesAddresses.authoring}`);
 
   app.route('/tags').get(authoringProxy).put(authoringProxy);
 
@@ -52,6 +55,12 @@ export default (config) => {
 
   app.get('/push-service/public-key', addConfig(Registration.getPublicKey));
   app.post('/push-service/register', addConfig(Registration.register));
+
+  app.get('/system/service-version', addConfig(async (req, res, { servicesAddresses } )=>{
+    res.json(await Observable.from(R.toPairs(servicesAddresses))
+              .flatMap(([key,value]) => Observable.defer(async ()=> ({ [key]: (await axios.get(`${value}/version`)).data })))
+              .reduce((acc,next)=>({ ...acc,...next }), {}).toPromise());
+  }));
 
   app.use('/*', (req, res) => res.sendStatus(404));
 

@@ -9,7 +9,7 @@
   "scripts": {
     "start:service-worker": "webpack --config ./service-worker/webpack.config.js --watch",
     "start:client": "react-scripts start",
-    "start:server": "nodemon --watch server server/index.js --exec babel-node -- --GIT_USER git --GIT_URL ssh://git@localhost:4001/tweek/repo --GIT_PUBLIC_KEY_PATH ../git-service/ssh/tweekgit.pub --GIT_PRIVATE_KEY_PATH ../git-service/ssh/tweekgit --TWEEK_API_HOSTNAME http://localhost:4003 --AUTHORING_API_HOSTNAME http://localhost:4005",
+    "start:server": "nodemon --watch server server/index.js --exec babel-node -- --GIT_USER git --GIT_URL ssh://git@localhost:4001/tweek/repo --GIT_PUBLIC_KEY_PATH ../git-service/ssh/tweekgit.pub --GIT_PRIVATE_KEY_PATH ../git-service/ssh/tweekgit --TWEEK_API_HOSTNAME http://localhost:4003 --AUTHORING_API_HOSTNAME http://localhost:4005 --MANAGEMENT_HOSTNAME=http://localhost:4002",
     "start": "concurrently --kill-others \"yarn run start:service-worker\" \"yarn run start:client\" \"yarn run start:server\"",
     "start:full-env": "yarn run docker-compose -- up -d api authoring && yarn run start",
     "build:service-worker": "webpack --config ./service-worker/webpack.config.js",
