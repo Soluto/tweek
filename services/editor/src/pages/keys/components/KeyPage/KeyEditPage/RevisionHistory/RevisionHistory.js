@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import './RevisionHistory.css';
 
-const formatDate = date => `${moment(date).calendar(null, { sameElse: 'DD/MM/YYYY [at] HH:mm' })}`;
+const formatDate = date =>
+  `${moment(new Date(date)).calendar(null, { sameElse: 'DD/MM/YYYY [at] HH:mm' })}`;
 
 const RevisionHistory = ({ revisionHistory, goToRevision, selectedKey, revision }) =>
   revisionHistory.length === 0

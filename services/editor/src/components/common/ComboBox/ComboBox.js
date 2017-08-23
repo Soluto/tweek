@@ -128,6 +128,10 @@ class ComboBoxComponent extends Component {
       disabled,
       suggestionsContainer,
       renderSuggestion,
+
+      matchCase,
+      onChange,
+      onKeyDown,
       ...props
     } = this.props;
 
