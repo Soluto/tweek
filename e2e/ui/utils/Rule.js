@@ -48,23 +48,20 @@ export default class Rule {
     );
   }
 
-  setCondition(property, value, timeout = 5000) {
+  setCondition(property, value = '', timeout = 5000) {
     const condition = this._condition(property);
 
     if (!browser.isExisting(condition)) {
       const addButton = this._ruleCompSelector('add-condition');
       browser.click(addButton);
       browser.setValue(this._newPropertyInput(), property);
-
-      const suggestionSelector =
-        dataComp('property-suggestion') + attributeSelector('data-value', property);
-      browser.waitForVisible(suggestionSelector, timeout);
-      browser.click(suggestionSelector);
     }
 
-    const propertyValue = `${condition} ${dataComp('property-value')}`;
-    browser.waitForEnabled(propertyValue, timeout);
-    browser.setValue(propertyValue, value);
+    if (value !== '') {
+      const propertyValue = `${condition} ${dataComp('property-value')}`;
+      browser.waitForEnabled(propertyValue, timeout);
+      browser.setValue(propertyValue, value);
+    }
 
     return this;
   }

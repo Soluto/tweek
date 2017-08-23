@@ -57,7 +57,11 @@ TypedInput.propTypes = {
   placeholder: PropTypes.string,
   valueType: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.shape({ base: PropTypes.string.isRequired }),
+    PropTypes.shape({
+      name: PropTypes.string,
+      base: PropTypes.string,
+      allowedValues: PropTypes.array,
+    }),
   ]).isRequired,
   onChange: PropTypes.func,
   value: PropTypes.any,

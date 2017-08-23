@@ -168,7 +168,6 @@
 .key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .validation-icon-wrapper {
   flex-direction: row;
   width: 0;
-  opacity: 0;
   margin: 11px 0 0 0;
   position: absolute;
   z-index: 7;
@@ -177,7 +176,6 @@
 .key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .validation-icon-wrapper[data-is-shown="true"] {
   width: 16px;
   height: 16px;
-  opacity: 1;
   margin-top: 5px;
   padding: 3px 5px;
 }
