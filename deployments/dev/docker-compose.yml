@@ -27,6 +27,3 @@ services:
     depends_on: 
       - api
       - authoring
-    environment:
-      - TWEEK_API_HOSTNAME=http://api
-      - AUTHORING_API_HOSTNAME=http://authoring:3000

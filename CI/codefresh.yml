@@ -25,8 +25,6 @@ steps:
     image_name: soluto/tweek-api
     working_directory: ${{main_clone}}
     dockerfile: TweekApiDockerfile
-    build_arguments: 
-      - VERSION_SUFFIX=ci-${{CF_BUILD_ID}}-${{CF_SHORT_REVISION}}
   
   BuildingManagement:
     title: Building Management Docker Image
