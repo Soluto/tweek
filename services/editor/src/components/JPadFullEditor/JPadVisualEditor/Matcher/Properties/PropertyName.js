@@ -9,7 +9,7 @@ const ensureKeysIdentity = property => property.replace(/^@@key:/, ContextServic
 
 const PropertyName = compose(
   withState('hasFocus', 'onFocus', false),
-  mapProps(({ mutate, hasFocus, ...props, property }) => {
+  mapProps(({ mutate, hasFocus, property, ...props }) => {
     property = ensureKeysIdentity(property);
 
     const selectProperty = ({ value, defaultValue = '' }) => {
@@ -37,6 +37,7 @@ const PropertyName = compose(
     return {
       'data-comp': 'property-name',
       ...props,
+      property,
       onChange,
       warning:
         !hasFocus &&

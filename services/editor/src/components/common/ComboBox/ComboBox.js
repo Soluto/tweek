@@ -252,9 +252,9 @@ const ComboBox = compose(
         ) => ({
           ...props,
           hasFocus,
-          setFocus: (hasFocus) => {
-            setFocus(hasFocus);
-            onFocus && onFocus(hasFocus);
+          setFocus: (...args) => {
+            onFocus && onFocus(...args);
+            setFocus(...args);
           },
           suggestions,
           highlightedSuggestion,
