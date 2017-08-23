@@ -128,10 +128,6 @@ class ComboBoxComponent extends Component {
       disabled,
       suggestionsContainer,
       renderSuggestion,
-
-      matchCase,
-      onChange,
-      onKeyDown,
       ...props
     } = this.props;
 
@@ -241,18 +237,31 @@ const ComboBox = compose(
         highlighted$,
         onFocus$.startWith(false).distinctUntilChanged(),
       )
-      .map(([{ onChange, ...props }, suggestions, { index: highlightedSuggestion }, hasFocus]) => ({
-        ...props,
-        hasFocus,
-        setFocus,
-        suggestions,
-        highlightedSuggestion,
-        onChange: (input, selected) => {
-          onInputChanged(input);
-          onChange && onChange(input, selected);
-        },
-        onSuggestionHighlighted: index => onHighlighted({ index, suggestion: suggestions[index] }),
-      }))
+      .map(
+        (
+          [
+            { onChange, onFocus, ...props },
+            suggestions,
+            { index: highlightedSuggestion },
+            hasFocus,
+          ],
+        ) => ({
+          ...props,
+          hasFocus,
+          setFocus: (hasFocus) => {
+            setFocus(hasFocus);
+            onFocus && onFocus(hasFocus);
+          },
+          suggestions,
+          highlightedSuggestion,
+          onChange: (input, selected) => {
+            onInputChanged(input);
+            onChange && onChange(input, selected);
+          },
+          onSuggestionHighlighted: index =>
+            onHighlighted({ index, suggestion: suggestions[index] }),
+        }),
+      )
       .map(R.omit(['filterBy', 'showValueInOptions', 'suggestionsLimit']));
   }),
   pure,
