@@ -23,6 +23,7 @@ describe('edit keys', () => {
             },
             'user.IsInGroup': false,
             'user.NumberOfSiblings': 1,
+            'unknown.identity': 'value',
           },
           Value: '',
           Type: 'SingleVariant',
@@ -48,7 +49,8 @@ describe('edit keys', () => {
           .setCondition('user.FavoriteFruit', 'Banana')
           .setCondition('user.BirthDate', '3d')
           .setCondition('user.IsInGroup', 'false')
-          .setCondition('user.NumberOfSiblings', '1');
+          .setCondition('user.NumberOfSiblings', '1')
+          .setCondition('unknown.identity', 'value');
 
         expect(Rule.count()).to.equal(2);
         expect(Key.source).to.deep.equal(expectedKeySource);

@@ -36,8 +36,8 @@ const PropertyName = compose(
       onChange,
       warning:
         !hasFocus &&
-        property.includes('.') &&
-        !ContextService.getIdentities().includes(property.split('.')[0]),
+        (!property.includes('.') ||
+          !ContextService.getIdentities().includes(property.split('.')[0])),
     };
   }),
 )(PropertyComboBox);
