@@ -1,0 +1,43 @@
+{
+    "partitions": [
+        "user.FavoriteFruit",
+        "user.Gender"
+    ],
+    "valueType": "string",
+    "rules": {
+        "Banana": {
+            "male": [
+                {
+                    "Matcher": {},
+                    "Value": "someValue",
+                    "Type": "SingleVariant"
+                }
+            ],
+            "*": [
+                {
+                    "Matcher": {
+                        "user.BirthDate": {
+                            "$withinTime": "365d"
+                        }
+                    },
+                    "Value": "someAgeValue",
+                    "Type": "SingleVariant"
+                },
+                {
+                    "Matcher": {},
+                    "Value": "defaultValue",
+                    "Type": "SingleVariant"
+                }
+            ]
+        },
+        "*": {
+            "*": [
+                {
+                    "Matcher": {},
+                    "Value": "otherDefaultValue",
+                    "Type": "SingleVariant"
+                }
+            ]
+        }
+    }
+}

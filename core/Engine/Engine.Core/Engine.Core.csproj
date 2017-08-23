@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.0" />
-    <PackageReference Include="LanguageExt.Core" version="1.9.7" />
+    <PackageReference Include="LanguageExt.Core" Version="1.9.7" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine.DataTypes\Engine.DataTypes.csproj" />

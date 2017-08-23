@@ -41,7 +41,7 @@ const EditableKey = ({ keyPath, remote, local, onChange, autofocus }) =>
   >
     <AutoSuggest
       className="key-input"
-      data-comp="fixed-key-input"
+      data-comp="fixed-key"
       placeholder="Key"
       value={keyPath}
       getSuggestions={SearchService.getSuggestions}
@@ -50,7 +50,7 @@ const EditableKey = ({ keyPath, remote, local, onChange, autofocus }) =>
       autofocus={autofocus}
     />
     <OverrideValueInput
-      data-comp="fixed-value-input"
+      data-comp="fixed-value"
       keyPath={keyPath}
       className={classNames('value-input', {
         'has-changes': remote !== local,
@@ -79,7 +79,7 @@ const FixedKey = ({ toggleDelete, ...props, keyPath }) =>
     <button
       onClick={toggleDelete}
       className="delete-button"
-      data-comp="delete-key-button"
+      data-comp="delete-fixed-key"
       title="Remove key"
     />
     <EditableKey {...props} />
@@ -106,7 +106,7 @@ const NewFixedKeyComponent = ({ appendKey, ...props, keyPath, local: value }) =>
     <EditableKey {...props} />
     <button
       className="add-key-button"
-      data-comp="add-key-button"
+      data-comp="add-fixed-key"
       title="Add key"
       onClick={appendKey}
     />

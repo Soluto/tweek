@@ -77,6 +77,7 @@ Suggestions.defaultProps = {
     <div style={{ display: 'flex', position: 'relative' }}>
       <ul
         {...props}
+        data-field="suggestions"
         className="bootstrap-typeahead-menu dropdown-menu dropdown-menu-justify"
         style={{ display: 'block', overflow: 'auto', maxHeight: '300px' }}
       >

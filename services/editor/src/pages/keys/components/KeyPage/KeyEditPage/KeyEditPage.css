@@ -1,43 +1,43 @@
-.key-viewer-container-form {
+.key-edit-page {
   display: flex;
   flex-grow: 1;
   overflow-y: auto;
 }
-.key-viewer-container-form .key-viewer-container-fieldset {
+.key-edit-page .key-viewer-container-fieldset {
   display: flex;
   flex-grow: 1;
   border: none;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container {
   min-height: 100%;
   box-sizing: border-box;
   flex-direction: column;
   display: flex;
   flex-grow: 1;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input {
   display: flex;
   flex-grow: 1;
   flex-direction: column;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .new-key-input-wrapper {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .new-key-input-wrapper {
   display: flex;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .new-key-input-wrapper .vertical-separator {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .new-key-input-wrapper .vertical-separator {
   width: 1px;
   background-color: lightgray;
   height: 30px;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-container {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-container {
   min-height: 34px;
   display: flex;
   flex-grow: 1;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-form {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-form {
   display: flex;
   flex-grow: 1;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-input {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-input {
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
@@ -57,13 +57,13 @@
   display: flex;
   flex-grow: 1;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-input:focus {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-input:disabled {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-input:disabled {
   border-color: #bcbcbc;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .key-name-input {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .key-name-input {
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
@@ -83,31 +83,31 @@
   display: flex;
   flex-grow: 1;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .key-name-input:focus {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .key-name-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .key-name-input:disabled {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .key-name-input:disabled {
   border-color: #bcbcbc;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-text {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .display-name-text {
   font-size: 22px;
   display: flex;
   flex-grow: 1;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .validation-message {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .validation-message {
   font-size: 13px;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper {
   display: flex;
   flex-grow: 1;
   flex-direction: row;
   margin-bottom: 13px;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .bootstrap-typeahead-input-container {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .bootstrap-typeahead-input-container {
   display: flex;
   flex-grow: 1;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
@@ -128,17 +128,17 @@
   flex-grow: 1;
   padding-left: 0;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
   border-color: #bcbcbc;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] .bootstrap-typeahead-input-container {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] .bootstrap-typeahead-input-container {
   display: flex;
   flex-grow: 1;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
@@ -159,32 +159,30 @@
   flex-grow: 1;
   padding-left: 30px;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper[data-with-error="true"] .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
   border-color: #bcbcbc;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .validation-icon-wrapper {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .validation-icon-wrapper {
   flex-direction: row;
   width: 0;
-  opacity: 0;
   margin: 11px 0 0 0;
   position: absolute;
   z-index: 7;
   transition: all 0.2s ease-in-out;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .validation-icon-wrapper[data-is-shown="true"] {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .validation-icon-wrapper[data-is-shown="true"] {
   width: 16px;
   height: 16px;
-  opacity: 1;
   margin-top: 5px;
   padding: 3px 5px;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .auto-suggest {
+.key-edit-page .key-viewer-container-fieldset .key-viewer-container .key-main-input .auto-suggest-wrapper .auto-suggest {
   flex-grow: 1;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .sticky-key-header {
+.key-edit-page .key-viewer-container-fieldset .sticky-key-header {
   position: absolute;
   height: 72px;
   width: 100%;
@@ -196,14 +194,14 @@
   z-index: 2;
   box-sizing: border-box;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-header {
+.key-edit-page .key-viewer-container-fieldset .key-header {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   position: relative;
   margin: 16px;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-header .key-meta-container {
+.key-edit-page .key-viewer-container-fieldset .key-header .key-meta-container {
   background-color: white;
   border-radius: 5px;
   border: 1px solid lightgray;
@@ -211,13 +209,13 @@
   padding: 15px;
   box-sizing: border-box;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-header .key-meta-container .key-header-and-modification-wrapper {
+.key-edit-page .key-viewer-container-fieldset .key-header .key-meta-container .key-header-and-modification-wrapper {
   display: flex;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-header .key-meta-container .key-header-and-modification-wrapper .modification-data {
+.key-edit-page .key-viewer-container-fieldset .key-header .key-meta-container .key-header-and-modification-wrapper .modification-data {
   float: right;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-header .key-meta-container .key-full-path {
+.key-edit-page .key-viewer-container-fieldset .key-header .key-meta-container .key-full-path {
   color: #a5a5a5;
   font-size: 14px;
   margin-left: 5px;
@@ -226,19 +224,19 @@
   -webkit-user-select: none;
   user-select: none;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-header .key-meta-container .key-full-path .actual-path {
+.key-edit-page .key-viewer-container-fieldset .key-header .key-meta-container .key-full-path .actual-path {
   -moz-user-select: text;
   -ms-user-select: text;
   -webkit-user-select: text;
   user-select: text;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-header .key-meta-container .key-description-and-tags-wrapper {
+.key-edit-page .key-viewer-container-fieldset .key-header .key-meta-container .key-description-and-tags-wrapper {
   display: flex;
   flex-direction: row;
   flex-grow: 1;
   margin-top: 10px;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-header .key-meta-container .key-description-and-tags-wrapper .key-description-wrapper .description-input {
+.key-edit-page .key-viewer-container-fieldset .key-header .key-meta-container .key-description-and-tags-wrapper .key-description-wrapper .description-input {
   resize: none;
   font-size: 14px;
   color: #515c66;
@@ -247,7 +245,7 @@
   outline: none;
   box-sizing: border-box;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-header .key-meta-container .key-description-and-tags-wrapper .key-tags-wrapper {
+.key-edit-page .key-viewer-container-fieldset .key-header .key-meta-container .key-description-and-tags-wrapper .key-tags-wrapper {
   display: flex;
   width: 0;
   flex-direction: column;
@@ -260,12 +258,12 @@
   padding-left: 20px;
   margin-left: 20px;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-rules-editor {
+.key-edit-page .key-viewer-container-fieldset .key-rules-editor {
   display: flex;
   flex-grow: 1;
   margin: 16px;
   margin-top: 0;
 }
-.key-viewer-container-form .key-viewer-container-fieldset .key-rules-editor.sticky {
+.key-edit-page .key-viewer-container-fieldset .key-rules-editor.sticky {
   z-index: 1;
 }

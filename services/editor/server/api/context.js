@@ -5,7 +5,7 @@ import authenticatedClient from '../auth/authenticatedClient';
 export async function getContext(req, res, { tweekApiHostname }, { params }) {
   const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
   const response = await tweekApiClient.get(
-    `api/v1/context/${params.identityName}/${encodeURIComponent(params.identityId)}`,
+    `api/v1/context/${params.identityType}/${encodeURIComponent(params.identityId)}`,
   );
   res.json(response.data);
 }
@@ -17,7 +17,7 @@ const getModifiedKeys = R.pipe(R.unapply(R.map(R.toPairs)), R.apply(R.difference
 export async function updateContext(req, res, { tweekApiHostname }, { params }) {
   const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
 
-  const contextUrl = `api/v1/context/${params.identityName}/${encodeURIComponent(
+  const contextUrl = `api/v1/context/${params.identityType}/${encodeURIComponent(
     params.identityId,
   )}`;
 

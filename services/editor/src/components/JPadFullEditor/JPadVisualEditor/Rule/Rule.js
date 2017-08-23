@@ -16,13 +16,13 @@ const Rule = ({ rule, valueType, mutate, autofocus, keyPath }) => {
   const identities = ContextService.getIdentities();
 
   return (
-    <div className={'rule-container'}>
-      <div className={'conditions'}>
-        <label className={'rule-partial-title'}>Conditions</label>
+    <div className="rule-container">
+      <div className="conditions">
+        <label className="rule-partial-title">Conditions</label>
         <Matcher matcher={rule.Matcher} mutate={mutate.in('Matcher')} autofocus={autofocus} />
       </div>
-      <div className={'values'}>
-        <label className={'rule-partial-title'}>{valueTitle}</label>
+      <div className="values">
+        <label className="rule-partial-title">{valueTitle}</label>
         <RuleValue {...{ rule, mutate, valueType, identities, keyPath }} />
       </div>
     </div>

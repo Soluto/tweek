@@ -1,6 +1,6 @@
 {
   "name": "tweek-management",
-  "version": "1.0.0",
+  "version": "0.1.9",
   "description": "",
   "main": "src/server.js",
   "engines": {
@@ -11,6 +11,7 @@
   "scripts": {
     "test": "mocha",
     "start": "node ./src/server.js",
+    "start:debug": "node --inspect=5858 ./src/server.js",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml",
     "format": "prettier-eslint --trailing-comma all --print-width 100 --single-quote --write",
     "precommit": "lint-staged"

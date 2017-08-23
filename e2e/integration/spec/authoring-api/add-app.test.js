@@ -27,7 +27,7 @@ describe('authoring api', () => {
 
       await appClient.get('/api/keys')
                             .expect(403)
-    }).timeout(5000);
+    });
 
      it('allow creating new app with invalid permission', async () => {
       await clients.authoring.post('/api/apps?author.name=test&author.email=test@soluto.com')
@@ -38,7 +38,7 @@ describe('authoring api', () => {
                              .send({ name: 'my-app', permissions: ['my-permission'] })
                              .expect(400);
       
-    }).timeout(5000);
+    });
 
   });
 

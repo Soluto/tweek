@@ -48,9 +48,9 @@ const FixedKeys = ({
   keys,
 }) =>
   <div className={classnames('fixed-keys-container', className)} data-comp="fixed-keys">
-    <div className={'override-keys-title'}>
+    <div className="override-keys-title">
       <div>Override Keys</div>
-      <SaveButton onClick={saveContext} hasChanges={hasChanges} isSaving={isSavingContext} />
+      <SaveButton data-comp="save-changes" onClick={saveContext} hasChanges={hasChanges} isSaving={isSavingContext} />
     </div>
 
     <FixedKeysList {...{ keys, onChange, toggleDelete }} />
@@ -60,7 +60,7 @@ const FixedKeys = ({
 
 export default compose(
   connect(state => state.context, contextActions),
-  mapProps(({ identityName, identityId, local, remote, saveContext, updateContext, ...props }) => {
+  mapProps(({ identityType, identityId, local, remote, saveContext, updateContext, ...props }) => {
     const localFixedKeys = getFixedKeys(local);
     const remoteFixedKeys = getFixedKeys(remote);
     const formattedKeys = extractKeys(remoteFixedKeys, localFixedKeys);
@@ -82,7 +82,7 @@ export default compose(
       appendKey: ({ keyPath, value }) =>
         updateContext(R.assoc(FIXED_PREFIX + keyPath, value, local)),
       hasChanges: hasValues(localFixedKeys) && !R.equals(remoteFixedKeys, localFixedKeys),
-      saveContext: () => saveContext({ identityName, identityId }),
+      saveContext: () => saveContext({ identityType, identityId }),
       ...props,
     };
   }),

@@ -147,6 +147,7 @@ namespace Tweek.ApiService.NetCore
             app.UseMetrics();
             app.UseMvc();
             app.UseMetricsReporting(lifetime);
+            app.UseWhen((ctx)=>ctx.Request.Path == "/api/swagger.json", r=>r.UseCors(p=>p.AllowAnyHeader().AllowAnyOrigin().WithMethods("GET")));
             app.UseSwagger(options =>
             {
                 options.RouteTemplate = "{documentName}/swagger.json";
@@ -161,6 +162,7 @@ namespace Tweek.ApiService.NetCore
         private static IRuleParser CreateJPadParser() => JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
                 Comparers: Microsoft.FSharp.Core.FSharpOption<IDictionary<string, ComparerDelegate>>.Some(new Dictionary<string, ComparerDelegate>()
                 {
+
                     ["version"] = Version.Parse
                 }), sha1Provider: (s)=>
                 {

@@ -1,0 +1,16 @@
+{
+  "key_path": "behavior_tests/tags",
+  "meta": {
+    "name": "behavior_tests/tags",
+    "tags": [],
+    "description": "",
+    "archived": false
+  },
+  "implementation": {
+    "type": "const",
+    "value": "value"
+  },
+  "valueType": "string",
+  "dependencies": [],
+  "enabled": true
+}

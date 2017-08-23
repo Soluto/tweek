@@ -10,6 +10,7 @@ import { WithContext as ReactTags } from 'react-tag-input';
 
 const TypeCombobox = ({ type, onUpdate, allowedTypes }) =>
   <ComboBox
+    data-comp="type-select"
     value={type}
     filterBy={() => true}
     onChange={propType => onUpdate(propType)}

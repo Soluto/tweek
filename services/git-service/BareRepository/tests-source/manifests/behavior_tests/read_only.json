@@ -1,0 +1,17 @@
+{
+    "key_path": "behavior_tests/read_only",
+    "meta": {
+        "name": "behavior_tests/read_only",
+        "description": "",
+        "tags": [],
+        "readOnly": true,
+        "archived": false
+    },
+    "implementation": {
+        "type": "file",
+        "format": "jpad"
+    },
+    "valueType": "string",
+    "enabled": true,
+    "dependencies": []
+}
