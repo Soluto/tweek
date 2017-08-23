@@ -97,6 +97,8 @@ const startServer = async () => {
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
   app.use('/api', serverRoutes({ servicesAddresses }));
+  app.use("/health", (req, res)=> res.status(200).json({}));
+  app.get('/version', (req, res)=> res.send(process.env.npm_package_version));
 
   app.use(express.static(path.join(__dirname, 'build')));
   app.get('/*', (req, res) => {
@@ -108,6 +110,7 @@ const startServer = async () => {
     res.status(500).send(err.message);
   });
 
+  
   server.listen(PORT, () => console.log('Listening on port %d', server.address().port));
 };
 

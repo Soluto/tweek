@@ -24,10 +24,11 @@ FROM base as release
 WORKDIR /opt/app
 COPY src/ /opt/app/src/
 COPY --from=deps /tmp/node_modules /opt/app/node_modules
+COPY --from=deps /tmp/package.json /opt/app/package.json
 
 EXPOSE 3000
 
 ENV PORT=3000
 HEALTHCHECK --interval=10s --timeout=10s --retries=8 \
-      CMD wget -O - http://localhost:3000/isalive || exit 1
-ENTRYPOINT ["node", "./src/server.js"]
+      CMD wget -O - http://localhost:3000/health || exit 1
+ENTRYPOINT ["npm", "start"]

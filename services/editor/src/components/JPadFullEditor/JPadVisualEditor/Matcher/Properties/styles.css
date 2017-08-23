@@ -1139,3 +1139,14 @@
   height: 36px;
   margin: -3px;
 }
+.property-combobox-container .validation-icon-wrapper {
+  width: 16px;
+  height: 16px;
+  position: relative;
+  margin-top: 5px;
+  padding: 3px 5px;
+  margin-right: -25px;
+  right: 25px;
+  z-index: 1;
+  transition: all 0.2s ease-in-out;
+}
