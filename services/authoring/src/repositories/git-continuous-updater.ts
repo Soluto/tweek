@@ -10,7 +10,7 @@ export default {
 
     return updateRepo$
       .concat(updateRepo$.delay(CONTINUOUS_UPDATER_INTERVAL).repeat())
-      .do((x) => {}, err => console.error('Error pulling changes in git repo', err))
+      .do((x) => { }, err => console.error('Error pulling changes in git repo', err))
       .retryWhen(o => o.mergeMapTo(Observable.of(1).delay(CONTINUOUS_UPDATER_INTERVAL)))
       .distinctUntilChanged()
       .do(sha => console.log('Updated git repo', sha))

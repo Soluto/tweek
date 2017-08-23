@@ -34,7 +34,7 @@ export default class GitRepository {
     this._simpleRepo = simpleGit(_repo.workdir());
   }
 
-  static async create(settings: {url: string, localPath: string, username: string, publicKey: string, privateKey: string, password: string}) {
+  static async create(settings: { url: string, localPath: string, username: string, publicKey: string, privateKey: string, password: string }) {
     console.log('cleaning up current working folder');
     await fs.remove(settings.localPath);
 

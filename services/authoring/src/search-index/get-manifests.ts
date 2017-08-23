@@ -1,4 +1,4 @@
-import path = require( 'path');
+import path = require('path');
 import { promisify } from 'util';
 import _ = require('highland');
 const glob = promisify(require('glob'));

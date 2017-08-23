@@ -109,9 +109,9 @@ describe("app permissions test", () => {
 
             await Promise.all(relevantCases.map(x=> x.action(appClient)))
             
-            await Promise.all(forbiddenCases.map(x=> {
-                        x.action(appClient).then(()=>true, ex=> {
-                            expect(ex.message).to.contain("403");
+            await Promise.all(forbiddenCases.map(async x=> {
+                        await x.action(appClient).then(()=>true, ex=> {
+                            return expect(ex.message).to.contain("403");
                         })
                     }));
             

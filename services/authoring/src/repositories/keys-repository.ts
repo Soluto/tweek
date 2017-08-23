@@ -131,9 +131,9 @@ export default class KeysRepository {
       return {
         manifest,
         implementation:
-          manifest.implementation.type === 'file'
-            ? await getFileImplementation(manifest, gitRepo, revision)
-            : undefined,
+        manifest.implementation.type === 'file'
+          ? await getFileImplementation(manifest, gitRepo, revision)
+          : undefined,
       };
     });
   }

@@ -1,4 +1,4 @@
-import PERMISSIONS from './permissions/consts';
+import { PERMISSIONS } from './permissions/consts';
 import { Context, ServiceContext, Errors } from 'typescript-rest';
 
 export function Authorize({ permission }) {
@@ -22,25 +22,8 @@ export function Authorize({ permission }) {
       ) {
         return await next();
       }
-      throw new Errors.UnauthorizedError();
+      throw new Errors.ForbidenError();
     };
     return result;
-  };
-}
-
-export default function authorize({ permission }) {
-  return function(req, res, next) {
-    if (req.user.isTweekService) {
-      return next();
-    }
-    if (
-      permission !== PERMISSIONS.ADMIN &&
-      req.user &&
-      req.user.permissions &&
-      req.user.permissions.includes(permission)
-    ) {
-      return next();
-    }
-    res.sendStatus(403);
   };
 }

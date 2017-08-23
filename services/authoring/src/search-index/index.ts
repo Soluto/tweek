@@ -1,4 +1,4 @@
-import path =require( 'path');
+import path = require('path');
 import { execFile } from 'child_process';
 import fs = require('fs-extra');
 import R = require('ramda');
@@ -14,7 +14,7 @@ async function refreshIndex(repoDir) {
   const indexFile = './searchIndex.json';
 
   await new Promise((resolve, reject) => {
-    execFile('node', [path.join(__dirname, 'build/cli.js') , repoDir, indexFile], (error, stdout, stderr) => {
+    execFile('node', [path.join(__dirname, 'build/cli.js'), repoDir, indexFile], (error, stdout, stderr) => {
       console.log(stdout);
       if (error) reject(error);
       else resolve();

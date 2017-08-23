@@ -5,7 +5,7 @@ nconf.argv().env().defaults({
   GIT_CLONE_TIMEOUT_IN_MINUTES: 1,
   CONTINUOUS_UPDATER_INTERVAL: 5000,
 });
-nconf.required([ 'GIT_URL', 'GIT_USER', 'GIT_PUBLIC_KEY_PATH', 'GIT_PRIVATE_KEY_PATH' ]);
+nconf.required(['GIT_URL', 'GIT_USER', 'GIT_PUBLIC_KEY_PATH', 'GIT_PRIVATE_KEY_PATH']);
 
 const configs = [
   'PORT',
@@ -18,4 +18,4 @@ const configs = [
   'CONTINUOUS_UPDATER_INTERVAL',
 ];
 
-export = (configs.reduce((constants, config) => Object.assign({}, constants, {[config]: nconf.get(config)}), {}));
+export = (configs.reduce((constants, config) => Object.assign({}, constants, { [config]: nconf.get(config) }), {}));

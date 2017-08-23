@@ -1,4 +1,4 @@
-import TweekInternalStrategy  from './strategies/tweek-internal';
+import TweekInternalStrategy from './strategies/tweek-internal';
 import AppCredentialsStrategy from './strategies/app-credentials';
 const passport = require('passport');
 
