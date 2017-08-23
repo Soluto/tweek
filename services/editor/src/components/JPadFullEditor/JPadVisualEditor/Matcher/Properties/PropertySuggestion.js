@@ -54,12 +54,12 @@ const PropertySuggestion = compose(
     data-tip
     data-for={tooltipId}
     data-comp="property-suggestion"
-    data-value={propName}
-    className={'property-suggestion-wrapper'}
+    data-value={`${identity}.${propName}`}
+    className="property-suggestion-wrapper"
   >
     <Avatar identity={identity} />
     <Highlighter
-      highlightClassName={'suggestion-label'}
+      highlightClassName="suggestion-label"
       highlightStyle={HIGHLIGHTED_TEXT_INLINE_STYLE}
       searchWords={[textToMark]}
       textToHighlight={propName}

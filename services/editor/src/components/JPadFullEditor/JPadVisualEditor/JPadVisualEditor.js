@@ -25,16 +25,19 @@ const autoPartitionAlert = testAutoPartition => ({
       text: 'Auto-partition',
       value: 'OK',
       className: 'auto-partition-btn',
+      'data-alert-button': 'auto-partition',
     },
     {
       text: 'Reset',
       value: 'RESET',
       className: 'reset-partitions-btn',
+      'data-alert-button': 'reset',
     },
     {
       text: 'Cancel',
       value: 'CANCEL',
       className: 'rodal-cancel-btn',
+      'data-alert-button': 'cancel',
     },
   ],
 });

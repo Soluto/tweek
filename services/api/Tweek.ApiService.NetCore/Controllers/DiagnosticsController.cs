@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Threading.Tasks;
 using Engine.DataTypes;
 using Microsoft.AspNetCore.Mvc;
@@ -13,12 +14,16 @@ namespace Tweek.ApiService.NetCore.Controllers
 {
     public class DiagnosticsController : Controller
     {
+        private string _version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
         private IEnumerable<IDiagnosticsProvider> _diagnosticsProviders;
 
         public DiagnosticsController(IEnumerable<IDiagnosticsProvider> diagnosticsProviders)
         {
             _diagnosticsProviders = diagnosticsProviders;
         }
+
+        [HttpGet("version")]
+        public string Version()=> _version;
 
         [HttpGet("isalive")]
         [ProducesResponseType(typeof(Int32), (int) HttpStatusCode.OK)]

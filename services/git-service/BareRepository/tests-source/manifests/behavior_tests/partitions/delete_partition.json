@@ -1,0 +1,17 @@
+{
+    "key_path": "behavior_tests/partitions/delete_partition",
+    "meta": {
+        "name": "behavior_tests/partitions/delete_partition",
+        "description": "",
+        "tags": [],
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "file",
+        "format": "jpad"
+    },
+    "valueType": "string",
+    "enabled": true,
+    "dependencies": []
+}

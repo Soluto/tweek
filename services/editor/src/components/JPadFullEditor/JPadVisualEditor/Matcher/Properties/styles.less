@@ -14,7 +14,7 @@
   }
 }
 
-[data-comp= property-value] {
+.property-value-wrapper {
   .property-value-combo-box {
     .combo-box-basic(80px);
   }
@@ -149,5 +149,17 @@
       height: @imageSize;
       margin: -3px;
     }
+  }
+
+  .validation-icon-wrapper {
+    width: 16px;
+    height: 16px;
+    position: relative;
+    margin-top: 5px;
+    padding: 3px 5px;
+    margin-right: -25px;
+    right: 25px;
+    z-index: 1;
+    .transitioned();
   }
 }

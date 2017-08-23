@@ -62,12 +62,12 @@ const KeyPage = compose(
     showConfirm,
   };
   if (!selectedKey || !selectedKey.isLoaded) {
-    return <MessageKeyPage message="Loading..." />;
+    return <MessageKeyPage data-comp="loading-key" message="Loading..." />;
   }
 
   const { keyDef } = selectedKey.local;
   return !keyDef
-    ? <MessageKeyPage message="None existent key" />
+    ? <MessageKeyPage data-comp="key-not-found" message="None existent key" />
     : <KeyEditPage {...props} alerter={alerter} />;
 });
 

@@ -302,89 +302,16 @@
 .matcher-operator .bootstrap-typeahead-input-container input {
   text-align: center;
 }
-[data-comp=property-value] {
+.property-value-wrapper {
   display: inline-block;
 }
-[data-comp=property-value] .property-value-combo-box {
+.property-value-wrapper .property-value-combo-box {
   display: flex;
 }
-[data-comp=property-value] .property-value-combo-box .override-typeahead .override-input {
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-input {
   flex-grow: 1;
 }
-[data-comp=property-value] .property-value-combo-box .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
-  display: inline-block;
-  border: 0 none;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  height: 28px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  width: 150px;
-}
-[data-comp=property-value] .property-value-combo-box .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-[data-comp=property-value] .property-value-combo-box .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
-  border-color: #bcbcbc;
-}
-[data-comp=property-value] .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu {
-  position: absolute;
-  max-height: 350px;
-  min-width: 80px;
-  overflow-y: auto;
-  width: auto;
-  z-index: 5;
-}
-[data-comp=property-value] .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu li {
-  background-color: #f4f4f4;
-  min-height: 35px;
-  display: flex;
-  align-items: center;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-bottom-width: 0;
-  overflow-x: hidden;
-  transition: all 0.2s ease-in-out;
-}
-[data-comp=property-value] .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu li:last-child {
-  border-bottom-width: 1px;
-}
-[data-comp=property-value] .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu li:hover {
-  cursor: pointer;
-  background-color: #dfdfdf;
-}
-[data-comp=property-value] .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu li:active {
-  background-color: #d1d1d1;
-}
-[data-comp=property-value] .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu li a {
-  text-decoration: none;
-  color: gray;
-  font-size: 13px;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-  justify-content: center;
-}
-[data-comp=property-value] .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu li a:first-child {
-  padding: 10px;
-  padding-right: 30px;
-}
-[data-comp=property-value] .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu .disabled {
-  display: none;
-}
-[data-comp=property-value] .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu .active {
-  background-color: #dfdfdf;
-}
-[data-comp=property-value] .property-value-combo-box .override-typeahead .bootstrap-typeahead {
-  flex-grow: 1;
-}
-[data-comp=property-value] .property-value-combo-box .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
@@ -399,13 +326,13 @@
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-[data-comp=property-value] .property-value-combo-box .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-[data-comp=property-value] .property-value-combo-box .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
   border-color: #bcbcbc;
 }
-[data-comp=property-value] .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu {
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu {
   position: absolute;
   max-height: 350px;
   min-width: 80px;
@@ -413,7 +340,7 @@
   width: auto;
   z-index: 5;
 }
-[data-comp=property-value] .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu li {
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
@@ -423,17 +350,17 @@
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-[data-comp=property-value] .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu li:last-child {
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu li:last-child {
   border-bottom-width: 1px;
 }
-[data-comp=property-value] .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu li:hover {
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-[data-comp=property-value] .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu li:active {
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu li:active {
   background-color: #d1d1d1;
 }
-[data-comp=property-value] .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu li a {
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -444,20 +371,20 @@
   flex-direction: column;
   justify-content: center;
 }
-[data-comp=property-value] .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu li a:first-child {
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-[data-comp=property-value] .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu .disabled {
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu .disabled {
   display: none;
 }
-[data-comp=property-value] .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu .active {
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu .active {
   background-color: #dfdfdf;
 }
-[data-comp=property-value] .property-value-combo-box .override-input {
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead {
   flex-grow: 1;
 }
-[data-comp=property-value] .property-value-combo-box .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
@@ -472,13 +399,13 @@
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-[data-comp=property-value] .property-value-combo-box .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-[data-comp=property-value] .property-value-combo-box .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
   border-color: #bcbcbc;
 }
-[data-comp=property-value] .property-value-combo-box .override-dropdown .dropdown-menu {
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu {
   position: absolute;
   max-height: 350px;
   min-width: 80px;
@@ -486,7 +413,7 @@
   width: auto;
   z-index: 5;
 }
-[data-comp=property-value] .property-value-combo-box .override-dropdown .dropdown-menu li {
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
@@ -496,17 +423,17 @@
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-[data-comp=property-value] .property-value-combo-box .override-dropdown .dropdown-menu li:last-child {
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu li:last-child {
   border-bottom-width: 1px;
 }
-[data-comp=property-value] .property-value-combo-box .override-dropdown .dropdown-menu li:hover {
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-[data-comp=property-value] .property-value-combo-box .override-dropdown .dropdown-menu li:active {
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu li:active {
   background-color: #d1d1d1;
 }
-[data-comp=property-value] .property-value-combo-box .override-dropdown .dropdown-menu li a {
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -517,20 +444,20 @@
   flex-direction: column;
   justify-content: center;
 }
-[data-comp=property-value] .property-value-combo-box .override-dropdown .dropdown-menu li a:first-child {
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-[data-comp=property-value] .property-value-combo-box .override-dropdown .dropdown-menu .disabled {
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu .disabled {
   display: none;
 }
-[data-comp=property-value] .property-value-combo-box .override-dropdown .dropdown-menu .active {
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu .active {
   background-color: #dfdfdf;
 }
-[data-comp=property-value] .property-value-combo-box .bootstrap-typeahead {
+.property-value-wrapper .property-value-combo-box .override-input {
   flex-grow: 1;
 }
-[data-comp=property-value] .property-value-combo-box .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+.property-value-wrapper .property-value-combo-box .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
@@ -545,13 +472,13 @@
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-[data-comp=property-value] .property-value-combo-box .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+.property-value-wrapper .property-value-combo-box .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-[data-comp=property-value] .property-value-combo-box .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+.property-value-wrapper .property-value-combo-box .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
   border-color: #bcbcbc;
 }
-[data-comp=property-value] .property-value-combo-box .bootstrap-typeahead .dropdown-menu {
+.property-value-wrapper .property-value-combo-box .override-dropdown .dropdown-menu {
   position: absolute;
   max-height: 350px;
   min-width: 80px;
@@ -559,7 +486,7 @@
   width: auto;
   z-index: 5;
 }
-[data-comp=property-value] .property-value-combo-box .bootstrap-typeahead .dropdown-menu li {
+.property-value-wrapper .property-value-combo-box .override-dropdown .dropdown-menu li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
@@ -569,17 +496,17 @@
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-[data-comp=property-value] .property-value-combo-box .bootstrap-typeahead .dropdown-menu li:last-child {
+.property-value-wrapper .property-value-combo-box .override-dropdown .dropdown-menu li:last-child {
   border-bottom-width: 1px;
 }
-[data-comp=property-value] .property-value-combo-box .bootstrap-typeahead .dropdown-menu li:hover {
+.property-value-wrapper .property-value-combo-box .override-dropdown .dropdown-menu li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-[data-comp=property-value] .property-value-combo-box .bootstrap-typeahead .dropdown-menu li:active {
+.property-value-wrapper .property-value-combo-box .override-dropdown .dropdown-menu li:active {
   background-color: #d1d1d1;
 }
-[data-comp=property-value] .property-value-combo-box .bootstrap-typeahead .dropdown-menu li a {
+.property-value-wrapper .property-value-combo-box .override-dropdown .dropdown-menu li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -590,14 +517,87 @@
   flex-direction: column;
   justify-content: center;
 }
-[data-comp=property-value] .property-value-combo-box .bootstrap-typeahead .dropdown-menu li a:first-child {
+.property-value-wrapper .property-value-combo-box .override-dropdown .dropdown-menu li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-[data-comp=property-value] .property-value-combo-box .bootstrap-typeahead .dropdown-menu .disabled {
+.property-value-wrapper .property-value-combo-box .override-dropdown .dropdown-menu .disabled {
   display: none;
 }
-[data-comp=property-value] .property-value-combo-box .bootstrap-typeahead .dropdown-menu .active {
+.property-value-wrapper .property-value-combo-box .override-dropdown .dropdown-menu .active {
+  background-color: #dfdfdf;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead {
+  flex-grow: 1;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+  display: inline-block;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+  border-color: #bcbcbc;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .dropdown-menu {
+  position: absolute;
+  max-height: 350px;
+  min-width: 80px;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .dropdown-menu li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .dropdown-menu li:last-child {
+  border-bottom-width: 1px;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .dropdown-menu li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .dropdown-menu li:active {
+  background-color: #d1d1d1;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .dropdown-menu li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .dropdown-menu li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .dropdown-menu .disabled {
+  display: none;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .dropdown-menu .active {
   background-color: #dfdfdf;
 }
 .property-suggestion-wrapper {
@@ -1138,4 +1138,15 @@
   width: 36px;
   height: 36px;
   margin: -3px;
+}
+.property-combobox-container .validation-icon-wrapper {
+  width: 16px;
+  height: 16px;
+  position: relative;
+  margin-top: 5px;
+  padding: 3px 5px;
+  margin-right: -25px;
+  right: 25px;
+  z-index: 1;
+  transition: all 0.2s ease-in-out;
 }

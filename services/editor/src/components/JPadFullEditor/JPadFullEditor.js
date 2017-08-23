@@ -44,10 +44,10 @@ const KeyRulesEditor = ({
   hasChanges,
   setHasChanges,
 }) =>
-  <div className={'key-rules-editor-container'} disabled={isReadonly}>
+  <div className="key-rules-editor-container" data-comp="key-rules-editor" disabled={isReadonly}>
 
     <Tabs
-      className={'tab-container'}
+      className="tab-container"
       selectedIndex={selectedTab}
       onSelect={async (index, lastIndex) => {
         if (
@@ -62,22 +62,22 @@ const KeyRulesEditor = ({
     >
 
       <TabList>
-        <Tab className={'tab-header'}>
-          <label className={'key-definition-tab-icon'}> </label>
-          <label className={'tab-title'}>Rules</label>
+        <Tab className="tab-header">
+          <label className="key-definition-tab-icon"> </label>
+          <label className="tab-title" data-tab-header="rules">Rules</label>
         </Tab>
-        <Tab className={'tab-header'}>
-          <label className={'key-source-tab-icon'}> </label>
-          <label className={'tab-title'}>Source</label>
+        <Tab className="tab-header">
+          <label className="key-source-tab-icon"> </label>
+          <label className="tab-title" data-tab-header="source">Source</label>
         </Tab>
       </TabList>
-      <TabPanel className={'tab-content'}>
+      <TabPanel className="tab-content">
         <fieldset disabled={isReadonly} style={{ border: 'none' }}>
           <JPadVisualEditor {...{ mutate, alerter, valueType, keyPath }} jpadSource={source} />
         </fieldset>
 
       </TabPanel>
-      <TabPanel className={'tab-content'}>
+      <TabPanel className="tab-content">
         <JPadTextEditor
           {...{ source, isReadonly, setHasChanges }}
           onChange={x => onMutation(JSON.parse(x))}

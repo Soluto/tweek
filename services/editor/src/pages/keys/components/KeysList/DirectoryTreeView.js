@@ -10,7 +10,7 @@ const leaf = Symbol();
 export default function DirectoryTreeView({ paths, renderItem, expandByDefault }) {
   let pathTree = pathsToTree(paths);
   return (
-    <div className={'key-folder'}>
+    <div className="key-folder" data-comp="directory-tree-view">
       {Object.keys(pathTree).map(pathNode =>
         <TreeNode
           key={pathNode}
@@ -86,27 +86,27 @@ class TreeDirectory extends React.Component {
     let { isCollapsed } = this.state;
 
     return (
-      <div className={'key-folder'}>
+      <div className="key-folder">
 
         <div
           style={{ paddingLeft: (depth + 1) * 10 }}
-          className={'key-folder-name'}
+          className="key-folder-name"
           onClick={() => this.setState({ isCollapsed: !isCollapsed })}
           data-folder-name={fullPath}
         >
           <img
-            className={'key-folder-icon'}
+            className="key-folder-icon"
             src={isCollapsed ? closedFolderIconSrc : openedFolderIconSrc}
           />
           {name}
-          <label className={'number-of-folder-keys'}>{descendantsCount}</label>
+          <label className="number-of-folder-keys">{descendantsCount}</label>
         </div>
 
         <VelocityTransitionGroup enter={{ animation: 'slideDown' }} leave={{ animation: 'slideUp' }}>
           {isCollapsed
             ? undefined
-            : <ul className={'folder-items'}>
-                {children.map((child, i) => <li className={'sub-tree'} key={i}>{child}</li>)}
+            : <ul className="folder-items">
+                {children.map((child, i) => <li className="sub-tree" key={i}>{child}</li>)}
               </ul>}
         </VelocityTransitionGroup>
       </div>

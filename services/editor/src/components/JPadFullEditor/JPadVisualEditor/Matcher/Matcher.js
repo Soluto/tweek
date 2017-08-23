@@ -6,7 +6,7 @@ import PropertyName from './Properties/PropertyName';
 import PropertyPredicate from './Properties/PropertyPredicate';
 import './Matcher.css';
 
-const Property = ({
+const Condition = ({
   property,
   predicate,
   mutate,
@@ -14,10 +14,11 @@ const Property = ({
   canBeClosed = true,
   autofocus,
 }) =>
-  <div className={'condition-wrapper'}>
+  <div className="condition-wrapper" data-comp="condition" data-property={property}>
     <button
       onClick={mutate.delete}
-      className={'delete-condition-button'}
+      data-comp="delete-condition"
+      className="delete-condition-button"
       title="Remove condition"
       disabled={!canBeClosed}
     />
@@ -44,13 +45,13 @@ export default hasChanged(({ matcher, mutate, autofocus }) => {
     allSuggestions.filter(x => x.value === currentProp || ignoreActivePropsPropsPredicate(x.value));
 
   return (
-    <div className={'matcher'}>
+    <div className="matcher">
       {props.length === 0
-        ? <h3 className={'empty-matcher-watermark'}>Match all</h3>
+        ? <h3 className="empty-matcher-watermark">Match all</h3>
         : props.map(([property, predicate], i) => {
             const suggestedValues = filterActiveProps(property);
             return (
-              <Property
+              <Condition
                 key={i}
                 mutate={mutate.in(property)}
                 {...{ suggestedValues, property, predicate, autofocus }}
@@ -58,7 +59,8 @@ export default hasChanged(({ matcher, mutate, autofocus }) => {
             );
           })}
       <button
-        className={'add-condition-button'}
+        data-comp="add-condition"
+        className="add-condition-button"
         onClick={() => mutate.insert('', '')}
         title="Add condition"
       />

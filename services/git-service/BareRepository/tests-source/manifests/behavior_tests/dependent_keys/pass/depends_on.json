@@ -1,0 +1,17 @@
+{
+    "key_path": "behavior_tests/dependent_keys/pass/depends_on",
+    "meta": {
+        "name": "behavior_tests/dependent_keys/pass/depends_on",
+        "description": "",
+        "tags": [],
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "file",
+        "format": "jpad"
+    },
+    "valueType": "string",
+    "enabled": true,
+    "dependencies": []
+}

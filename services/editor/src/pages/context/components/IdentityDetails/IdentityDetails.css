@@ -1,20 +1,20 @@
-.context-details-container {
+.identity-details-container {
   min-width: 900px;
 }
-.context-details-container .context-title {
+.identity-details-container .identity-title {
   display: flex;
   flex-direction: column;
 }
-.context-details-container .context-title .context-id {
+.identity-details-container .identity-title .identity-id {
   font-size: 22px;
   color: #515c66;
 }
-.context-details-container .context-title .context-type {
+.identity-details-container .identity-title .identity-type {
   margin-top: 10px;
   color: #a5a5a5;
   font-size: 14px;
 }
-.context-details-container .section {
+.identity-details-container .section {
   box-shadow: 0 10px 9px -10px rgba(0, 0, 0, 0.2);
   border: 1px solid lightgray;
   padding: 15px;

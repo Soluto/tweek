@@ -69,6 +69,8 @@ async function startServer() {
   app.use(configurePassport(publicKey, appsRepository));
   app.use(bodyParser.json()); // for parsing application/json
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+  app.get('/version', (req, res) => res.send(process.env.npm_package_version));
+  app.get('/health', (req, res) => res.status(200).json({}));
   app.use('/api', auth, routes({ tagsRepository, keysRepository, appsRepository }));
   app.use('/*', (req, res) => res.sendStatus(404));
   const errorHandler: ErrorRequestHandler = (err, req, res, next) => {

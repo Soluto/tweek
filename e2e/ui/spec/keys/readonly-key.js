@@ -1,26 +1,26 @@
 /* global describe, before, after, it, browser */
 
-import KeysAsserts from '../../KeysAsserts';
-import KeysPage from '../../utils/KeysPage';
-import assert from 'assert';
-import selectors from '../../selectors/keySelectors';
+import { expect } from 'chai';
+import Key from '../../utils/Key';
+import Rule from '../../utils/Rule';
+import { dataComp } from '../../utils/selector-utils';
+
+const keyMessage = dataComp('key-message');
+const addRule = dataComp('add-rule');
 
 describe('readonly key', () => {
-  const testFolder = KeysPage.TEST_KEYS_FOLDER;
-  const testKey = `test_key`;
-  const folderPath = `@readonly`;
-
-  const testKeyFullPath = `${testFolder}/${folderPath}/${testKey}`;
+  const testKeyFullPath = 'behavior_tests/read_only';
 
   it('should open the key as readonly', () => {
-    KeysPage.goToKey(testKeyFullPath);
-    browser.waitUntil(() => browser.getText(selectors.KEY_DISPLAY_NAME) === testKeyFullPath, 5000);
+    Key.open(testKeyFullPath);
 
-    assert(browser.isVisible(selectors.READONLY_KEY_MESSAGE), 'should show key is readonly message');
+    browser.waitForVisible(keyMessage);
 
-    const numberOfRules = KeysPage.getNumberOfRules();
-    browser.click(selectors.ADD_RULE_BUTTON);
-    browser.click(selectors.ADD_RULE_BUTTON);
-    KeysAsserts.assertKeyHasNumberOfRules(numberOfRules);
+    const numberOfRules = Rule.count();
+
+    browser.click(addRule);
+    browser.click(addRule);
+
+    expect(Rule.count()).to.equal(numberOfRules);
   });
 });

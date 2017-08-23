@@ -7,35 +7,35 @@ import TypedInput from '../../../../components/common/Input/TypedInput';
 import { getContextProperties, getPropertyTypeDetails } from '../../../../services/context-service';
 import './IdentityProperties.css';
 
-const getPropertyValueType = (identityName, property) => {
-  const details = getPropertyTypeDetails(`${identityName}.${property}`);
+const getPropertyValueType = (identityType, property) => {
+  const details = getPropertyTypeDetails(`${identityType}.${property}`);
   return 'name' in details ? details.name : details;
 };
 
-const Property = ({ identityName, property, value }) =>
+const Property = ({ identityType, property, value }) =>
   <div className="property-wrapper" data-comp="identity-property">
     <Input className="property-input" data-comp="property" value={property} disabled />
     <TypedInput
       className="property-input"
       data-comp="value"
       value={value}
-      valueType={getPropertyValueType(identityName, property)}
+      valueType={getPropertyValueType(identityType, property)}
       placeholder="(no value)"
       disabled
     />
   </div>;
 
-const IdentityProperties = ({ className, identityName, properties }) =>
+const IdentityProperties = ({ className, identityType, properties }) =>
   <div
-    className={classnames('context-properties-container', className)}
+    className={classnames('identity-properties-container', className)}
     data-comp="identity-properties"
   >
-    <div className="context-properties-title">Properties</div>
+    <div className="identity-properties-title">Properties</div>
     <div className="property-list">
       {Object.keys(properties).map(prop =>
         <Property
           key={prop}
-          identityName={identityName}
+          identityType={identityType}
           property={prop}
           value={properties[prop]}
         />,
@@ -45,8 +45,8 @@ const IdentityProperties = ({ className, identityName, properties }) =>
 
 export default compose(
   connect(state => state.context),
-  mapProps(({ remote: context, ...props, identityName }) => ({
-    properties: getContextProperties(identityName, context),
+  mapProps(({ remote: context, ...props, identityType }) => ({
+    properties: getContextProperties(identityType, context),
     ...props,
   })),
 )(IdentityProperties);

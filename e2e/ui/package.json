@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "description": "",
+  "author": "",
+  "license": "ISC",
   "engines": {
-    "node": ">=6.9.0"
+    "node": ">=8.1.0"
   },
   "scripts": {
-    "start": "yarn run docker-compose up -- --force-recreate -d git && yarn run docker-compose up -- -d editor",
+    "start": "yarn run docker-compose up -- --force-recreate -d editor",
     "test": "wdio wdio.conf.js",
     "rebuild": "yarn run docker-compose build",
     "test:full-env": "yarn run start && yarn run test",
@@ -15,10 +17,19 @@
     "test:docker": "yarn run start && yarn run rebuild e2e-ui && yarn run docker-compose run -- --rm e2e-ui",
     "test:docker:rebuild": "yarn run rebuild && yarn run test:docker",
     "teardown": "yarn run docker-compose down -- --remove-orphans",
-    "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.e2e.yml"
+    "logs": "yarn run docker-compose logs --",
+    "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.e2e.yml",
+    "precommit": "lint-staged"
   },
-  "author": "",
-  "license": "ISC",
+  "lint-staged": {
+    "gitDir": "../../",
+    "linters": {
+      "**/e2e/ui/**/*.js": [
+        "prettier --print-width 100 --single-quote --trailing-comma all --no-bracket-spacing=false --write",
+        "git add"
+      ]
+    }
+  },
   "dependencies": {
     "axios": "^0.16.1",
     "babel-cli": "6.24.1",
@@ -27,7 +38,6 @@
     "babel-plugin-transform-runtime": "6.23.0",
     "babel-preset-es2015": "6.24.1",
     "babel-preset-stage-0": "6.24.1",
-    "bluebird": "^3.5.0",
     "chai": "4.1.0",
     "chai-string": "^1.4.0",
     "chance": "1.0.10",
@@ -43,6 +53,9 @@
     "webdriverio": "4.8.0"
   },
   "devDependencies": {
+    "husky": "^0.14.3",
+    "lint-staged": "^4.0.3",
+    "prettier": "^1.5.3",
     "wdio-selenium-standalone-service": "0.0.9"
   }
 }

@@ -21,7 +21,7 @@ export default (config) => {
   app.get('/schemas', authoringProxy);
 
   app
-    .route('/context/:identityName/:identityId')
+    .route('/context/:identityType/:identityId')
     .get(addConfig(ContextRoutes.getContext))
     .patch(addConfig(ContextRoutes.updateContext));
 

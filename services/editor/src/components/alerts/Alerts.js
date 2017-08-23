@@ -13,14 +13,14 @@ const Alert = ({ title, message, buttons, onClose, showCloseButton = false }) =>
     {title ? reactify(title, { className: 'rodal-header' }) : null}
     {reactify(message, { className: 'rodal-body' })}
     <div className={'rodal-button-container'}>
-      {buttons.map(({ text, className, ...props }, i) =>
-        <button key={i} className={className} {...props}>{text}</button>,
+      {buttons.map(({ text, ...props }, i) =>
+        <button key={i} {...props}>{text}</button>,
       )}
     </div>
   </Rodal>;
 
 export default connect(state => state)(({ alerts }) =>
-  <div>
+  <div id="alerts">
     {alerts.map(({ id: key, ...alert }) => <Alert key={key} {...alert} />)}
   </div>,
 );

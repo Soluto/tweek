@@ -10,11 +10,13 @@ const buttons = {
     text: 'OK',
     value: true,
     className: 'rodal-confirm-btn',
+    'data-alert-button': 'ok',
   },
   CANCEL: {
     text: 'Cancel',
     value: false,
     className: 'rodal-cancel-btn',
+    'data-alert-button': 'cancel',
   },
 };
 

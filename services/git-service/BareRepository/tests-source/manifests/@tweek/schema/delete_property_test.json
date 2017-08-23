@@ -1,0 +1,19 @@
+{
+    "key_path": "@tweek/schema/delete_property_test",
+    "meta": {
+        "description": "",
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "const",
+        "value":{
+            "Group":{
+              "type":"string"
+            }
+        }
+    },
+    "valueType": "object",
+    "enabled": true,
+    "dependencies": []
+}

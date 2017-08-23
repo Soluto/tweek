@@ -64,8 +64,21 @@ app.get('/ruleset/latest/version', (req, res) => {
 
 app.get('/isalive', bodyParser.json(), (req, res) => res.send('alive'));
 
+app.get('/version', (req, res)=> res.send(process.env.npm_package_version));
+app.get('/health', (req,res)=>{
+  var repoReady = !!rulesCache.getLatestRulesVersion();
+  res.status(repoReady ? 200 : 503);
+  res.json({
+    repoReady: repoReady,
+    rulesVersion: repoReady ? rulesCache.getLatestRulesVersion() : undefined,
+    healthy: repoReady
+  });
+});
+
 rulesCache.buildLocalCache();
 
 app.listen(app.get('port'), () =>
   logger.info('Server started: http://localhost:' + app.get('port') + '/'),
 );
+
+

@@ -35,7 +35,7 @@
 .schema-page-container .side-menu > li {
   margin: 0;
 }
-.schema-page-container .side-menu [data-comp=AddNewIdentity] button {
+.schema-page-container .side-menu [data-comp=add-new-identity] button {
   vertical-align: top;
   background-color: #00aeef;
   height: 28px;
@@ -54,19 +54,19 @@
   padding-left: 15px ;
   padding-right: 15px ;
 }
-.schema-page-container .side-menu [data-comp=AddNewIdentity] button:hover {
+.schema-page-container .side-menu [data-comp=add-new-identity] button:hover {
   background-color: #029CD5;
   cursor: pointer;
 }
-.schema-page-container .side-menu [data-comp=AddNewIdentity] button:disabled {
+.schema-page-container .side-menu [data-comp=add-new-identity] button:disabled {
   background-color: gray;
 }
-.schema-page-container .side-menu [data-comp=AddNewIdentity] button:disabled:hover,
-.schema-page-container .side-menu [data-comp=AddNewIdentity] button:disabled:active {
+.schema-page-container .side-menu [data-comp=add-new-identity] button:disabled:hover,
+.schema-page-container .side-menu [data-comp=add-new-identity] button:disabled:active {
   cursor: default;
   background-color: gray;
 }
-.schema-page-container .side-menu [data-comp=AddNewIdentity] input {
+.schema-page-container .side-menu [data-comp=add-new-identity] input {
   font-size: 16px;
   color: #d8d8d8;
 }
