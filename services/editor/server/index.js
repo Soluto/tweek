@@ -18,16 +18,20 @@ const selectAuthenticationProviders = require('./auth/providerSelector')
 
 nconf.argv().env().defaults({
   PORT: 3001,
-  TWEEK_API_HOSTNAME: 'http://api.dev.local.tweek.fm:81',
-  AUTHORING_API_HOSTNAME: 'http://authoring.dev.local.tweek.fm:81',
+  TWEEK_API_HOSTNAME: 'http://api',
+  AUTHORING_API_HOSTNAME: 'http://authoring:3000',
+  MANAGEMENT_HOSTNAME: 'http://management:3000',
   VAPID_KEYS: './vapid/keys.json',
 });
 
 const PORT = nconf.get('PORT');
-const tweekApiHostname = nconf.get('TWEEK_API_HOSTNAME');
-const authoringApiHostname = nconf.get('AUTHORING_API_HOSTNAME');
+const serviceEndpoints = {
+  api:  nconf.get('TWEEK_API_HOSTNAME'),
+  authoring: nconf.get('AUTHORING_API_HOSTNAME'),
+  management: nconf.get('MANAGEMENT_HOSTNAME'),
+};
 
-GitContinuousUpdater.onUpdate(authoringApiHostname)
+GitContinuousUpdater.onUpdate(serviceEndpoints.authoring)
   .map(_ => Registration.notifyClients())
   .do(_ => console.log('index was refreshed'), err => console.log('error refreshing index', err))
   .retry()
@@ -92,7 +96,7 @@ const startServer = async () => {
   app.use(bodyParser.json()); // for parsing application/json
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-  app.use('/api', serverRoutes({ tweekApiHostname, authoringApiHostname }));
+  app.use('/api', serverRoutes({ serviceEndpoints }));
   app.use("/health", (req, res)=> res.status(200).json({}));
   app.get('/version', (req, res)=> res.send(process.env.npm_package_version));
 

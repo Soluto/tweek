@@ -12,14 +12,12 @@ RUN dotnet restore ./src/Tweek.sln
 # ---- BUILD & TEST ----
 FROM nuget-cache as source
 COPY . /src
-ARG VERSION_SUFFIX
-ENV VERSION_SUFFIX ${VERSION_SUFFIX:-dev}
 WORKDIR /src
 
 RUN dotnet restore ./Tweek.sln
-RUN dotnet build Tweek.sln -c Release --version-suffix "$VERSION_SUFFIX"
+RUN dotnet build Tweek.sln -c Release
 RUN find . -regex '.*\.\(Unit\|Integration\|\)Tests\.csproj' -print0 | xargs -0 -n 1 -P 16 dotnet test -c=Release --no-build
-RUN dotnet publish ./services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj  -c Release -o ./obj/Docker/publish --version-suffix "$VERSION_SUFFIX"
+RUN dotnet publish ./services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj  -c Release -o ./obj/Docker/publish
 
 # ---- RELEASE ----
 FROM microsoft/aspnetcore:1.1.2 as release
