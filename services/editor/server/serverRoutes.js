@@ -5,7 +5,7 @@ import * as Registration from './api/registration';
 import * as EditorConfiguration from './api/editorConfiguration';
 import proxyRequest from './api/utils/proxy-request';
 import requestErrorHandlingWrapper from './utils/request-error-handling-wrapper';
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 import R from 'ramda';
 import axios from 'axios';
 
