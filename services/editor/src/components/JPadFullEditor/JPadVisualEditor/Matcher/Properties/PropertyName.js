@@ -5,9 +5,13 @@ import PropertyComboBox from './PropertyComboBox';
 
 const propertyTypeDetailsToComparer = ({ comparer: $compare }) => ($compare ? { $compare } : {});
 
+const ensureKeysIdentity = property => property.replace(/^@@key:/, ContextService.KEYS_IDENTITY);
+
 const PropertyName = compose(
   withState('hasFocus', 'onFocus', false),
   mapProps(({ mutate, hasFocus, ...props, property }) => {
+    property = ensureKeysIdentity(property);
+
     const selectProperty = ({ value, defaultValue = '' }) => {
       const propertyTypeDetails = ContextService.getPropertyTypeDetails(value);
       const supportedOperators = getPropertySupportedOperators(propertyTypeDetails);
@@ -26,7 +30,7 @@ const PropertyName = compose(
         return;
       }
 
-      input = input.replace('@@key:', ContextService.KEYS_IDENTITY);
+      input = ensureKeysIdentity(input);
       mutate.apply(m => m.updateKey(input).updateValue(''));
     };
 
@@ -36,6 +40,7 @@ const PropertyName = compose(
       onChange,
       warning:
         !hasFocus &&
+        !property.startsWith(ContextService.KEYS_IDENTITY) &&
         (!property.includes('.') ||
           !ContextService.getIdentities().includes(property.split('.')[0])),
     };

@@ -10,6 +10,7 @@ describe('matcher validations', () => {
     testCase('unknown.identity', false),
     testCase('not_a_property', false),
     testCase('user.FavoriteFruit', true),
+    testCase('keys.some_key', true),
   ];
 
   it('should show validation icon when identity is unknown', () => {
