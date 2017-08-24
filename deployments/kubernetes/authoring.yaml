@@ -1,17 +1,18 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: tweek-management
+  namespace: tweek
+  name: authoring
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: tweek-management
+        app: authoring
     spec:
       containers:
-      - name: tweek-management
-        image: soluto/tweek-management
+      - name: authoring
+        image: soluto/tweek-authoring
         ports:
         - containerPort: 3000
         env:
@@ -22,9 +23,7 @@ spec:
         - name: GIT_USER
           value: git
         - name: GIT_URL
-          value: ssh://git@tweek-git/tweek/repo
-        - name: VALIDATION_URL
-          value: http://tweek-api/validation  
+          value: ssh://git@git/tweek/repo
         volumeMounts:
         - name: git-keys
           mountPath: /run/secrets/tweek-git
@@ -33,3 +32,15 @@ spec:
           secret:
             secretName: tweek-git
             defaultMode: 0600
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: tweek
+  name: authoring
+spec:
+  selector:
+    app: authoring
+  ports:
+    - port: 3000
+      targetPort: 3000

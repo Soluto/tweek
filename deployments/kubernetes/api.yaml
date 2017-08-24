@@ -1,16 +1,17 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: tweek-api
+  namespace: tweek
+  name: api
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: tweek-api
+        app: api
     spec:
       containers:
-      - name: tweek-api
+      - name: api
         image: soluto/tweek-api
         livenessProbe:
           httpGet:
@@ -28,13 +29,13 @@ spec:
         - name: ContextProvider
           value: redis
         - name: Redis__ConnectionString
-          value: tweek-redis
+          value: redis
         - name: Addons__Redis__className
           value: Tweek.Drivers.Redis.RedisServiceAddon
         - name: Addons__Redis__assemblyName
           value: Tweek.Drivers.Redis
         - name: Rules__Management__Url
-          value: http://tweek-management:3000
+          value: http://management:3000
         volumeMounts:
         - name: git-keys
           mountPath: /run/secrets/tweek-git
@@ -43,3 +44,15 @@ spec:
           secret:
             secretName: tweek-git
             defaultMode: 0600
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: tweek
+  name: api
+spec:
+  selector:
+    app: api
+  ports:
+    - port: 80
+      targetPort: 80
