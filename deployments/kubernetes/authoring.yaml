@@ -45,4 +45,4 @@ spec:
   ports:
     - port: 3000
       targetPort: 3000
-      nodePort: 30006
+      nodePort: 30005
