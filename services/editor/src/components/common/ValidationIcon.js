@@ -30,14 +30,12 @@ export default class ValidationIcon extends Component {
           src={alertIconSrc}
           data-tip={hint}
           data-for={this.tooltipId}
+          data-tip-disable={!show || !hint}
+          data-delay-hide={500}
+          data-effect="solid"
+          data-place="top"
         />
-        <ReactTooltip
-          id={this.tooltipId}
-          disable={!show || !hint}
-          effect="solid"
-          place="top"
-          delayHide={500}
-        />
+        <ReactTooltip id={this.tooltipId} />
       </div>
     );
   }
