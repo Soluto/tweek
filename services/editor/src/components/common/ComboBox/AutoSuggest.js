@@ -8,10 +8,11 @@ const mapSuggestionsToProps = mapPropsStream((props$) => {
 
   const query$ = Rx.Observable.merge(onSearch$, props$.pluck('value'));
 
-  const suggestions$ = query$.withLatestFrom(props$, (value, { getSuggestions }) => ({ value, getSuggestions }))
-    .distinctUntilKeyChanged('value')
-    .debounce(({ value }) => Rx.Observable.empty().delay(value === '' ? 0 : 500))
-    .switchMap(({ getSuggestions, value }) =>
+  const suggestions$ = query$
+    .debounce(query => Rx.Observable.empty().delay(query === '' ? 0 : 500))
+    .distinctUntilChanged()
+    .withLatestFrom(props$.pluck('getSuggestions'), Array.of)
+    .switchMap(([value, getSuggestions]) =>
       Rx.Observable.defer(() => Promise.resolve(getSuggestions(value))),
     )
     .startWith([]);
