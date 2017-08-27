@@ -36,5 +36,5 @@ COPY --from=deps /tmp/package.json /opt/app/package.json
 EXPOSE 3000
 ENV PORT=3000
 
-ENTRYPOINT ["npm", "start:release"]
+ENTRYPOINT ["npm", "run", "start:release"]
 
