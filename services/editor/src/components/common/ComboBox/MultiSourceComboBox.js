@@ -31,13 +31,13 @@ const MultiSourceComboBox = mapPropsStream((props$) => {
 
   const query$ = Rx.Observable
     .merge(onSearch$, props$.pluck('value'))
-    .distinctUntilChanged()
-    .debounce(query => Rx.Observable.empty().delay(query === '' ? 0 : 500));
+    .debounce(query => Rx.Observable.empty().delay(query === '' ? 0 : 500))
+    .distinctUntilChanged();
 
   const sourceId$ = onSourceId$
     .startWith(undefined)
     .distinctUntilChanged()
-    .publishReplay(1)
+    .publishLast()
     .refCount();
 
   const suggestions$ = Rx.Observable
