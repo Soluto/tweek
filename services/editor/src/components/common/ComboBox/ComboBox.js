@@ -186,7 +186,7 @@ const ComboBox = compose(
       onInputChanged$,
     );
 
-    const focus$ = onFocus$.startWith(false).distinctUntilChanged().publishLast().refCount();
+    const focus$ = onFocus$.startWith(false).distinctUntilChanged().publishReplay(1).refCount();
 
     const propsWithValue$ = Rx.Observable
       .combineLatest(props$, value$)

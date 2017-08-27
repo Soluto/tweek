@@ -37,7 +37,7 @@ const MultiSourceComboBox = mapPropsStream((props$) => {
   const sourceId$ = onSourceId$
     .startWith(undefined)
     .distinctUntilChanged()
-    .publishLast()
+    .publishReplay(1)
     .refCount();
 
   const suggestions$ = Rx.Observable
