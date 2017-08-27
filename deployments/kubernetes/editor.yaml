@@ -20,6 +20,11 @@ spec:
           value: http://api
         - name: AUTHORING_API_HOSTNAME
           value: http://authoring:3000
+        - name: GIT_PRIVATE_KEY_PATH
+          value: /run/secrets/tweek-git/tweek_ssh_private_key
+        volumeMounts:
+        - name: git-keys
+          mountPath: /run/secrets/tweek-git
       volumes:
         - name: git-keys
           secret:
@@ -31,8 +36,10 @@ metadata:
   namespace: tweek
   name: editor
 spec:
+  type: NodePort
   selector:
     app: editor
   ports:
     - port: 3000
       targetPort: 3000
+      nodePort: 30004
