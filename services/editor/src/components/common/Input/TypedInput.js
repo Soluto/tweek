@@ -14,7 +14,7 @@ export const typesServiceContextType = {
 export const withTypesService = ({ safeConvertValue, types }) =>
   withContext(typesServiceContextType, () => ({ safeConvertValue, types }));
 
-const getTypesService = getContext(typesServiceContextType);
+export const getTypesService = getContext(typesServiceContextType);
 
 const valueToItem = value =>
   value === undefined || value === '' ? undefined : { label: changeCase.pascalCase(value), value };
