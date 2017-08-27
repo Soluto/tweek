@@ -1,0 +1,60 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: tweek
+  name: api
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: soluto/tweek-api
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        ports:
+        - containerPort: 80
+        env:
+        - name: PUBLIC_KEY_PATH
+          value: /run/secrets/tweek-git/tweek_pfx_public_key
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Development
+        - name: ContextProvider
+          value: redis
+        - name: Redis__ConnectionString
+          value: redis
+        - name: Addons__Redis__className
+          value: Tweek.Drivers.Redis.RedisServiceAddon
+        - name: Addons__Redis__assemblyName
+          value: Tweek.Drivers.Redis
+        - name: Rules__Management__Url
+          value: http://management:3000
+        volumeMounts:
+        - name: git-keys
+          mountPath: /run/secrets/tweek-git
+      volumes:
+        - name: git-keys
+          secret:
+            secretName: tweek-git
+            defaultMode: 0600
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: tweek
+  name: api
+spec:
+  type: NodePort
+  selector:
+    app: api
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30003
