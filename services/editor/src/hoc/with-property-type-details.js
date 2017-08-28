@@ -15,7 +15,8 @@ export default (propName = 'propertyTypeDetails') =>
           );
         }
         return ContextService.getPropertyTypeDetails(property);
-      });
+      })
+      .startWith({ name: 'empty' });
 
     return Rx.Observable
       .combineLatest(props$, typeDetails$)

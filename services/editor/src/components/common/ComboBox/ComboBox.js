@@ -186,6 +186,8 @@ const ComboBox = compose(
       onInputChanged$,
     );
 
+    const focus$ = onFocus$.startWith(false).distinctUntilChanged().publishReplay(1).refCount();
+
     const propsWithValue$ = Rx.Observable
       .combineLatest(props$, value$)
       .map(([props, value]) => ({ ...props, value }))
@@ -195,6 +197,12 @@ const ComboBox = compose(
       .distinctUntilChanged(
         compareBy('suggestions', 'value', 'showValueInOptions', 'matchCase', 'suggestionsLimit'),
       )
+      .combineLatest(focus$, Array.of)
+      .scan(([_, prevFocus], [props, nextFocus]) => {
+        if (nextFocus && !prevFocus) return [{ ...props, filterBy: () => true }, nextFocus];
+        return [props, nextFocus];
+      })
+      .pluck(0)
       .map(
         ({
           suggestions,
@@ -235,12 +243,7 @@ const ComboBox = compose(
       .map(R.prop('suggestions'));
 
     return Rx.Observable
-      .combineLatest(
-        propsWithValue$,
-        suggestions$,
-        highlighted$,
-        onFocus$.startWith(false).distinctUntilChanged(),
-      )
+      .combineLatest(propsWithValue$, suggestions$, highlighted$, focus$)
       .map(
         (
           [

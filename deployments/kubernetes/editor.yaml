@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: tweek
+  name: editor
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: editor
+    spec:
+      containers:
+      - name: editor
+        image: soluto/tweek-editor
+        ports:
+        - containerPort: 3000
+        env:
+        - name: TWEEK_API_HOSTNAME
+          value: http://api
+        - name: AUTHORING_API_HOSTNAME
+          value: http://authoring:3000
+        - name: GIT_PRIVATE_KEY_PATH
+          value: /run/secrets/tweek-git/tweek_ssh_private_key
+        volumeMounts:
+        - name: git-keys
+          mountPath: /run/secrets/tweek-git
+      volumes:
+        - name: git-keys
+          secret:
+            secretName: tweek-git
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: tweek
+  name: editor
+spec:
+  type: NodePort
+  selector:
+    app: editor
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 30004
