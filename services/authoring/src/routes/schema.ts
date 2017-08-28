@@ -40,7 +40,7 @@ export class SchemaController {
   async deleteIdentity( @PathParam('identityType') identityType: string) {
     const keyPath = schemaPrefix + identityType;
     await this.keysRepository.deleteKey(keyPath, this.authorProvider.getAuthor(this.context));
-    return '';
+    return 'OK';
   }
 
   @Authorize({ permission: PERMISSIONS.SCHEMAS_WRITE })
@@ -66,7 +66,7 @@ export class SchemaController {
       dependencies: [],
     };
     await this.keysRepository.updateKey(key, manifest, null, this.authorProvider.getAuthor(this.context));
-    return '';
+    return 'OK';
   }
 
   @Authorize({ permission: PERMISSIONS.SCHEMAS_WRITE })
@@ -80,6 +80,6 @@ export class SchemaController {
       jsonpatch.applyPatch(R.clone(manifest.implementation.value), patch).newDocument,
     )(manifest);
     await this.keysRepository.updateKey(key, newManifest, null, this.authorProvider.getAuthor(this.context));
-    return '';
+    return 'OK';
   }
 }

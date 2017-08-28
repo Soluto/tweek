@@ -10,7 +10,7 @@ class ExternalAppsCredentialsStrategy extends Strategy {
     this.name = 'apps-credentials';
   }
 
-  private async validateKeys(keys, clientSecret, clientId) {
+  async validateKeys(keys, clientSecret, clientId) {
     const secretBuf = Buffer.from(clientSecret, 'base64');
     for (const { salt, hash } of keys) {
       const saltBuf = Buffer.from(salt, 'hex');
