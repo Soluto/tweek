@@ -21,6 +21,21 @@ export default function configureRoutes(config: RoutesConfig): any {
   Container.bind(KeysRepository).provider({ get: () => config.keysRepository });
   Container.bind(TagsRepository).provider({ get: () => config.tagsRepository });
 
+  const prefixes = [
+    'keys',
+    'manifests',
+    'revision-history',
+    'dependents'
+  ];
+
+  prefixes.forEach(prefix =>
+    app.all(`/${prefix}/*`, (req, res, next) => {
+      req.url = `/${prefix}-by-path`;
+      req.query['keyPath'] = req.params[0];
+      next();
+    })
+  );
+
   Server.setFileDest('uploads/');
   Server.buildServices(app, AppsController, TagsController, SearchController, BulkKeysUpload, SchemaController, KeysController);
 
