@@ -30,7 +30,6 @@ export default function configureRoutes(config: RoutesConfig): any {
 
   prefixes.forEach(prefix =>
     app.all(`/${prefix}/*`, (req, res, next) => {
-      req.url = `/${prefix}-by-path`;
       req.query['keyPath'] = req.params[0];
       next();
     })

@@ -28,7 +28,7 @@ export class KeysController {
 
   @Authorize({ permission: PERMISSIONS.KEYS_READ })
   @GET
-  @Path('/keys-by-path')
+  @Path('/keys/*')
   async getKey( @QueryParam('keyPath') keyPath, @QueryParam('revision') revision) {
     try {
       return await this.keysRepository.getKeyDetails(keyPath, { revision });
@@ -40,7 +40,7 @@ export class KeysController {
 
   @Authorize({ permission: PERMISSIONS.KEYS_WRITE })
   @PUT
-  @Path('/keys-by-path')
+  @Path('/keys/*')
   async updateKey( @QueryParam('keyPath') keyPath, { implementation, manifest }) {
     manifest = Object.assign({ key_path: keyPath }, manifest);
     await this.keysRepository.updateKey(keyPath, manifest, implementation, this.authorProvider.getAuthor(this.context));
@@ -50,7 +50,7 @@ export class KeysController {
 
   @Authorize({ permission: PERMISSIONS.KEYS_WRITE })
   @DELETE
-  @Path('/keys-by-path')
+  @Path('/keys/*')
   async deleteKey( @QueryParam('keyPath') keyPath) {
     await this.keysRepository.deleteKey(keyPath, this.authorProvider.getAuthor(this.context));
 
@@ -67,7 +67,7 @@ export class KeysController {
 
   @Authorize({ permission: PERMISSIONS.HISTORY })
   @GET
-  @Path('/revision-history-by-path')
+  @Path('/revision/*')
   async getKeyRevisionHistory( @QueryParam('keyPath') keyPath, @QueryParam('since') since) {
     return await this.keysRepository.getKeyRevisionHistory(keyPath, { since });
   }
@@ -81,7 +81,7 @@ export class KeysController {
 
   @Authorize({ permission: PERMISSIONS.KEYS_READ })
   @GET
-  @Path('/manifests-by-path')
+  @Path('/manifests/*')
   async getManifest( @QueryParam('keyPath') keyPath, @QueryParam('revision') revision) {
     try {
       const manifest = await this.keysRepository.getKeyManifest(keyPath, { revision });
@@ -93,7 +93,7 @@ export class KeysController {
 
   @Authorize({ permission: PERMISSIONS.KEYS_READ })
   @GET
-  @Path('/dependents-by-path')
+  @Path('/dependents/*')
   async getDependents( @QueryParam('keyPath') keyPath) {
     return await searchIndex.dependents(keyPath);
   }
