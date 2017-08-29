@@ -67,7 +67,7 @@ export class KeysController {
 
   @Authorize({ permission: PERMISSIONS.HISTORY })
   @GET
-  @Path('/revision/*')
+  @Path('/revision-history/*')
   async getKeyRevisionHistory( @QueryParam('keyPath') keyPath, @QueryParam('since') since) {
     return await this.keysRepository.getKeyRevisionHistory(keyPath, { since });
   }
