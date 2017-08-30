@@ -11,7 +11,7 @@ const TagsPropertyValue = compose(
   getTypesService,
   mapProps(({ onChange, value, safeConvertValue, valueType }) => ({
     tags: value.map(x => ({ id: x, text: x.toString() })),
-    suggestions: valueType.allowedValues.map(x => x.toString()),
+    suggestions: valueType.allowedValues && valueType.allowedValues.map(x => x.toString()) || [],
     handleAddition: newValue => onChange([...value, safeConvertValue(newValue, valueType)]),
     handleDelete: valueIndex => onChange(R.remove(valueIndex, 1, value)),
   })),
