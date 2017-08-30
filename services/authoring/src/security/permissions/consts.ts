@@ -1,4 +1,4 @@
-module.exports = {
+export const PERMISSIONS = {
   KEYS_LIST: 'keys-list',
   KEYS_READ: 'keys-read',
   KEYS_WRITE: 'keys-write',
@@ -11,3 +11,5 @@ module.exports = {
   TAGS_READ: 'tags-read',
   TAGS_WRITE: 'tags-write',
 };
+
+// export default PERMISSIONS;

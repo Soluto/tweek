@@ -1,10 +1,9 @@
-const { uniqBy } = require('ramda');
+import { uniqBy } from 'ramda';
 
 const TagsFile = 'tags.json';
 
-class TagsRepository {
-  constructor(gitTransactionManager) {
-    this._gitTransactionManager = gitTransactionManager;
+export default class TagsRepository {
+  constructor(private _gitTransactionManager) {
   }
 
   async getTags() {
@@ -26,5 +25,3 @@ class TagsRepository {
     });
   }
 }
-
-module.exports = TagsRepository;

@@ -1,7 +1,7 @@
 /* global describe, it, before, after, beforeEach, afterEach */
 const chai = require('chai');
 const simple = require('simple-mock');
-const KeysRepository = require('../src/repositories/keys-repository');
+const KeysRepository = require('../src/repositories/keys-repository').default;
 
 chai.use(require('chai-things'));
 const expect = chai.expect;

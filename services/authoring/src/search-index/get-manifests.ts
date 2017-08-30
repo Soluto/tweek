@@ -1,10 +1,10 @@
-const path = require('path');
-const { promisify } = require('util');
-const _ = require('highland');
+import path = require('path');
+import { promisify } from 'util';
+import _ = require('highland');
 const glob = promisify(require('glob'));
 const readFile = _.wrapCallback(require('fs').readFile);
 
-async function getManifests(repoDir) {
+export async function getManifests(repoDir: string): Promise<any> {
   const fileNames = await glob(path.join(repoDir, 'manifests/**/*.json'));
 
   return new Promise((resolve, reject) => {
@@ -18,6 +18,4 @@ async function getManifests(repoDir) {
       .on('data', x => manifests.push(x))
       .on('end', () => resolve(manifests));
   });
-}
-
-module.exports = getManifests;
+};

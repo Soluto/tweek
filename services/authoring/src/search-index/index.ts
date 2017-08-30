@@ -1,9 +1,9 @@
-const path = require('path');
-const { execFile } = require('child_process');
-const fs = require('fs-extra');
-const R = require('ramda');
-const lunr = require('lunr');
-const getManifests = require('./get-manifests');
+import path = require('path');
+import { execFile } from 'child_process';
+import fs = require('fs-extra');
+import R = require('ramda');
+import lunr = require('lunr');
+import { getManifests } from './get-manifests';
 
 let manifestPromise;
 let indexPromise;
@@ -14,7 +14,7 @@ async function refreshIndex(repoDir) {
   const indexFile = './searchIndex.json';
 
   await new Promise((resolve, reject) => {
-    execFile('node', [path.join(__dirname, 'build/cli.js') , repoDir, indexFile], (error, stdout, stderr) => {
+    execFile('node', [path.join(__dirname, 'build/cli.js'), repoDir, indexFile], (error, stdout, stderr) => {
       console.log(stdout);
       if (error) reject(error);
       else resolve();
@@ -22,7 +22,7 @@ async function refreshIndex(repoDir) {
   });
 
   const stringIndex = await fs.readFile(indexFile);
-  const obj = JSON.parse(stringIndex);
+  const obj = JSON.parse(stringIndex.toString());
 
   index = lunr.Index.load(obj.index);
 
@@ -30,16 +30,16 @@ async function refreshIndex(repoDir) {
 }
 
 const indexDependencies = R.pipe(
-  R.filter(manifest => !!manifest.dependencies),
+  R.filter((manifest: any) => !!manifest.dependencies),
   R.chain(R.pipe(
     R.props(['key_path', 'dependencies']),
-    ([keyPath, dependencies]) => dependencies.map(dependency => ({ dependency, keyPath })),
+    ([keyPath, dependencies]: [any, any]) => dependencies.map(dependency => ({ dependency, keyPath })),
   )),
   R.groupBy(R.prop('dependency')),
-  R.map(R.map(R.prop('keyPath'))),
+  <any>R.map(R.map(R.prop('keyPath'))),
 );
 
-module.exports = {
+export default {
   get indexPromise() {
     return indexPromise;
   },
