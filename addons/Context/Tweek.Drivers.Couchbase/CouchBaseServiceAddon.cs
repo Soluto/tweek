@@ -10,13 +10,27 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Tweek.ApiService.Addons;
 using Tweek.Drivers.Couchbase;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Tweek.Drivers.CouchbaseDriver
 {
-    public class CouchBaseServiceAddon: ITweekAddon
+  public class StaticCouchbaseDisposer
+  {
+      public StaticCouchbaseDisposer(IApplicationLifetime lifetime, ILogger<StaticCouchbaseDisposer> logger){
+            lifetime.ApplicationStopped.Register(()=>{
+                logger.LogInformation("Closing Cluster");
+                ClusterHelper.Close();
+                logger.LogInformation("Cluster closed");
+            });
+      }
+  }
+
+  public class CouchBaseServiceAddon: ITweekAddon
     {
         public void Use(IApplicationBuilder builder, IConfiguration configuration)
         {
+            
         }
 
         public void Configure(IServiceCollection services, IConfiguration configuration)
@@ -30,9 +44,12 @@ namespace Tweek.Drivers.CouchbaseDriver
 
             var contextDriver = new CouchBaseDriver(ClusterHelper.GetBucket, contextBucketName);
             var couchbaseDiagnosticsProvider = new BucketConnectionIsAlive(ClusterHelper.GetBucket, contextBucketName);
-
             services.AddSingleton<IContextDriver>(contextDriver);
-            services.AddSingleton<IDiagnosticsProvider>(couchbaseDiagnosticsProvider);
+            services.AddSingleton<IDiagnosticsProvider>((ctx)=>{
+                ctx.GetService<StaticCouchbaseDisposable>();
+                return couchbaseDiagnosticsProvider;
+            });
+            services.AddSingleton<StaticCouchbaseDisposable>();
         }
 
         private void InitCouchbaseCluster(string bucketName, string bucketPassword, string url)
