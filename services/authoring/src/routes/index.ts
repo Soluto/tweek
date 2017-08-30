@@ -28,12 +28,18 @@ export default function configureRoutes(config: RoutesConfig): any {
     'dependents'
   ];
 
-  prefixes.forEach(prefix =>
+  prefixes.forEach(prefix => {
+    app.all(`/${prefix}/`, (req, res, next) => {
+      if (req.query['keyPath']) {
+        req.url = `/${prefix}/${decodeURIComponent(req.query['keyPath'])}`;
+      }
+      next();
+    });
     app.all(`/${prefix}/*`, (req, res, next) => {
       req.query['keyPath'] = req.params[0];
       next();
-    })
-  );
+    });
+  });
 
   Server.setFileDest('uploads/');
   Server.buildServices(app, AppsController, TagsController, SearchController, BulkKeysUpload, SchemaController, KeysController);
