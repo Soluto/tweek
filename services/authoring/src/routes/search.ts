@@ -43,6 +43,7 @@ function performSearch(searchString = '', { maxResults = 25, field, index }) {
 }
 
 @AutoWired
+@Path('/')
 export class SearchController {
 
   @Authorize({ permission: PERMISSIONS.SEARCH_INDEX })

@@ -13,6 +13,7 @@ const supportedPaths = [/^manifests\/.+?\.json/, /^implementations\/.+\/.+?\./];
 const isValidPath = x => R.any(<any>R.test((<any>R).__, x))(supportedPaths);
 
 @AutoWired
+@Path('/')
 export class BulkKeysUpload {
   @Context
   context: ServiceContext;

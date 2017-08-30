@@ -17,6 +17,7 @@ import routes from './routes';
 import configurePassport from './security/configure-passport';
 import sshpk = require('sshpk');
 import { ErrorRequestHandler } from 'express';
+import { Server } from 'typescript-rest';
 
 const {
   PORT,
@@ -66,6 +67,9 @@ async function startServer() {
   app.get('/version', (req, res) => res.send(process.env.npm_package_version));
   app.get('/health', (req, res) => res.status(200).json({}));
   app.use('/api', auth, routes({ tagsRepository, keysRepository, appsRepository }));
+
+  Server.swagger(app, './dist/swagger.json', 'swagger');
+
   app.use('/*', (req, res) => res.sendStatus(404));
   const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     console.error(req.method, req.originalUrl, err);

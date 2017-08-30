@@ -25,7 +25,7 @@ export class TagsController {
 
   @Authorize({ permission: PERMISSIONS.TAGS_WRITE })
   @PUT
-  async saveTags(tagsToSave) {
+  async saveTags(tagsToSave: any) {
     const author = this.authorProvider.getAuthor(this.context);
     await this.tagsRepository.mergeTags(tagsToSave, author);
   }

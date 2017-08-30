@@ -8,6 +8,7 @@ import KeysRepository from '../repositories/keys-repository';
 import { AuthorProvider } from '../utils/include-author';
 
 @AutoWired
+@Path('/')
 export class KeysController {
   @Inject
   authorProvider: AuthorProvider;
@@ -28,8 +29,8 @@ export class KeysController {
 
   @Authorize({ permission: PERMISSIONS.KEYS_READ })
   @GET
-  @Path('/keys/*')
-  async getKey( @QueryParam('keyPath') keyPath, @QueryParam('revision') revision) {
+  @Path('/key')
+  async getKey( @QueryParam('keyPath') keyPath: string, @QueryParam('revision') revision: string) {
     try {
       return await this.keysRepository.getKeyDetails(keyPath, { revision });
     } catch (exp) {
@@ -40,8 +41,8 @@ export class KeysController {
 
   @Authorize({ permission: PERMISSIONS.KEYS_WRITE })
   @PUT
-  @Path('/keys/*')
-  async updateKey( @QueryParam('keyPath') keyPath, { implementation, manifest }) {
+  @Path('/key')
+  async updateKey( @QueryParam('keyPath') keyPath: string, { implementation, manifest }: any) {
     manifest = Object.assign({ key_path: keyPath }, manifest);
     await this.keysRepository.updateKey(keyPath, manifest, implementation, this.authorProvider.getAuthor(this.context));
 
@@ -50,8 +51,8 @@ export class KeysController {
 
   @Authorize({ permission: PERMISSIONS.KEYS_WRITE })
   @DELETE
-  @Path('/keys/*')
-  async deleteKey( @QueryParam('keyPath') keyPath) {
+  @Path('/key')
+  async deleteKey( @QueryParam('keyPath') keyPath: string) {
     await this.keysRepository.deleteKey(keyPath, this.authorProvider.getAuthor(this.context));
 
     return 'OK';
@@ -67,8 +68,8 @@ export class KeysController {
 
   @Authorize({ permission: PERMISSIONS.HISTORY })
   @GET
-  @Path('/revision-history/*')
-  async getKeyRevisionHistory( @QueryParam('keyPath') keyPath, @QueryParam('since') since) {
+  @Path('/revision-history')
+  async getKeyRevisionHistory( @QueryParam('keyPath') keyPath: string, @QueryParam('since') since: string) {
     return await this.keysRepository.getKeyRevisionHistory(keyPath, { since });
   }
 
@@ -81,8 +82,8 @@ export class KeysController {
 
   @Authorize({ permission: PERMISSIONS.KEYS_READ })
   @GET
-  @Path('/manifests/*')
-  async getManifest( @QueryParam('keyPath') keyPath, @QueryParam('revision') revision) {
+  @Path('/manifest')
+  async getManifest( @QueryParam('keyPath') keyPath: string, @QueryParam('revision') revision: string) {
     try {
       const manifest = await this.keysRepository.getKeyManifest(keyPath, { revision });
       return manifest;
@@ -93,8 +94,8 @@ export class KeysController {
 
   @Authorize({ permission: PERMISSIONS.KEYS_READ })
   @GET
-  @Path('/dependents/*')
-  async getDependents( @QueryParam('keyPath') keyPath) {
+  @Path('/dependent')
+  async getDependents( @QueryParam('keyPath') keyPath: string) {
     return await searchIndex.dependents(keyPath);
   }
 }

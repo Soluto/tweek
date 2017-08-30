@@ -15,6 +15,7 @@ const indexSchema = R.pipe(
 );
 
 @AutoWired
+@Path('/')
 export class SchemaController {
   @Context
   context: ServiceContext;

@@ -10,7 +10,7 @@
   },
   "scripts": {
     "test": "mocha -r ts-node/register",
-    "build": "npm run clean && tsc && cpr ./src/search-index/build/ ./dist/search-index/build/ -o",
+    "build": "npm run clean && tsc && cpr ./src/search-index/build/ ./dist/search-index/build/ -o && npm run swagger",
     "clean": "rimraf dist",
     "start": "ts-node ./src/server.ts",
     "start:release": "node ./dist/server.js",
@@ -21,7 +21,8 @@
     "teardown": "npm run docker-compose -- down --remove-orphans",
     "format": "prettier-eslint --trailing-comma all --print-width 100 --single-quote --write",
     "format:ts": "tsfmt -r",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "swagger": "swaggerGen -c swagger.config.json"
   },
   "lint-staged": {
     "gitDir": "../../",
@@ -61,6 +62,7 @@
     "sshpk": "^1.13.1",
     "typescript-ioc": "^0.4.2",
     "typescript-rest": "^1.1.1",
+    "typescript-rest-swagger": "^0.0.10",
     "uuid": "^3.1.0"
   },
   "devDependencies": {
