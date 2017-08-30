@@ -46,10 +46,10 @@ namespace Tweek.Drivers.CouchbaseDriver
             var couchbaseDiagnosticsProvider = new BucketConnectionIsAlive(ClusterHelper.GetBucket, contextBucketName);
             services.AddSingleton<IContextDriver>(contextDriver);
             services.AddSingleton<IDiagnosticsProvider>((ctx)=>{
-                ctx.GetService<StaticCouchbaseDisposable>();
+                ctx.GetService<StaticCouchbaseDisposer>();
                 return couchbaseDiagnosticsProvider;
             });
-            services.AddSingleton<StaticCouchbaseDisposable>();
+            services.AddSingleton<StaticCouchbaseDisposer>();
         }
 
         private void InitCouchbaseCluster(string bucketName, string bucketPassword, string url)
