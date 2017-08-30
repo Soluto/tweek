@@ -16,6 +16,14 @@ describe("app permissions test", () => {
         }
     },
     {
+        name: "read_specific_key",
+        requirePermission: "keys-read",
+        action: async (client) => {
+            await client.get('/api/keys/?keyPath=%40integration_tests%2Fsome_key')
+                .expect(200)
+        }
+    },
+    {
         name: "read_manifests",
         requirePermission: "keys-read",
         action: async (client) => {
@@ -109,9 +117,9 @@ describe("app permissions test", () => {
 
             await Promise.all(relevantCases.map(x=> x.action(appClient)))
             
-            await Promise.all(forbiddenCases.map(x=> {
-                        x.action(appClient).then(()=>true, ex=> {
-                            expect(ex.message).to.contain("403");
+            await Promise.all(forbiddenCases.map(async x=> {
+                        await x.action(appClient).then(()=>true, ex=> {
+                            return expect(ex.message).to.contain("403");
                         })
                     }));
             

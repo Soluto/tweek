@@ -1,4 +1,4 @@
-const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 
 const tweekApp = {
   version: '1',
@@ -7,7 +7,8 @@ const tweekApp = {
   permissions: '*',
 };
 
-class TweekInternalStrategy extends JwtStrategy {
+export default class TweekInternalStrategy extends JwtStrategy {
+  readonly name = 'tweek-internal';
   constructor(publicKey) {
     super(
       {
@@ -18,8 +19,5 @@ class TweekInternalStrategy extends JwtStrategy {
       },
       (jwt_payload, done) => done(null, tweekApp),
     );
-    this.name = 'tweek-internal';
   }
 }
-
-module.exports = TweekInternalStrategy;

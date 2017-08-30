@@ -1,0 +1,28 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+      "declaration": true,
+      "allowSyntheticDefaultImports": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "module": "commonjs",
+      "newLine": "LF",
+      "noFallthroughCasesInSwitch": true,
+      "noImplicitAny": false,
+      "noImplicitReturns": true,
+      "noImplicitThis": false,
+      "noUnusedParameters": false,
+      "noUnusedLocals": true,
+      "outDir": "dist",
+      "skipLibCheck": true,
+      "sourceMap": true,
+      "strictNullChecks": false,
+      "lib": [
+        "es2015"
+      ],
+      "target": "es5"
+    },
+    "include": [
+      "src/**/*.ts"
+    ]
+  }

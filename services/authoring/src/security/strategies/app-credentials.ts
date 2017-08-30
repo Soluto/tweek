@@ -1,15 +1,16 @@
-const Strategy = require('passport-strategy');
-const { generateHash } = require('../../apps/apps-utils');
-const crypto = require('crypto');
+import { Strategy } from 'passport-strategy';
+import { generateHash } from '../../apps/apps-utils';
+import crypto = require('crypto');
 
 class ExternalAppsCredentialsStrategy extends Strategy {
-  constructor(appsRepo) {
+  name: string;
+
+  constructor(private _appsRepo) {
     super();
-    this._appsRepo = appsRepo;
     this.name = 'apps-credentials';
   }
 
-  async validateKeys(keys, clientSecret) {
+  async validateKeys(keys, clientSecret, clientId) {
     const secretBuf = Buffer.from(clientSecret, 'base64');
     for (const { salt, hash } of keys) {
       const saltBuf = Buffer.from(salt, 'hex');
@@ -24,15 +25,15 @@ class ExternalAppsCredentialsStrategy extends Strategy {
     const clientId = req.get('x-client-id');
     const clientSecret = req.get('x-client-secret');
     if (!clientId || !clientSecret) {
-      return this.fail();
+      return this.fail(401);
     }
     const app = this._appsRepo.getApp(clientId);
     if (!app) {
-      return this.fail('no matching app');
+      return this.fail('no matching app', 401);
     }
     const keys = app['secretKeys'];
-    this.validateKeys(keys, clientSecret).then(() => this.success(app)).catch(ex => this.error(ex));
+    this.validateKeys(keys, clientSecret, clientId).then(() => this.success(app, undefined)).catch(ex => this.error(ex));
   }
 }
 
-module.exports = ExternalAppsCredentialsStrategy;
+export default ExternalAppsCredentialsStrategy;

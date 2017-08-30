@@ -1,21 +1,22 @@
-const path = require('path');
-const Promise = require('bluebird');
-const express = require('express');
-const morgan = require('morgan');
-const bodyParser = require('body-parser');
-const Rx = require('rxjs');
-const Transactor = require('./utils/transactor');
-const GitRepository = require('./repositories/git-repository');
-const KeysRepository = require('./repositories/keys-repository');
-const TagsRepository = require('./repositories/tags-repository');
-const AppsRepository = require('./repositories/apps-repository');
-const GitContinuousUpdater = require('./repositories/git-continuous-updater');
-const passport = require('passport');
-const searchIndex = require('./search-index');
-const routes = require('./routes');
-const fs = require('fs-extra');
-const configurePassport = require('./security/configure-passport');
-const sshpk = require('sshpk');
+import path = require('path');
+import BluebirdPromise = require('bluebird');
+import express = require('express');
+import morgan = require('morgan');
+import bodyParser = require('body-parser');
+import Rx = require('rxjs');
+import fs = require('fs-extra');
+import passport = require('passport');
+import Transactor from './utils/transactor';
+import GitRepository from './repositories/git-repository';
+import KeysRepository from './repositories/keys-repository';
+import TagsRepository from './repositories/tags-repository';
+import AppsRepository from './repositories/apps-repository';
+import GitContinuousUpdater from './repositories/git-continuous-updater';
+import searchIndex from './search-index';
+import routes from './routes';
+import configurePassport from './security/configure-passport';
+import sshpk = require('sshpk');
+import { ErrorRequestHandler } from 'express';
 
 const {
   PORT,
@@ -27,7 +28,7 @@ const {
   GIT_CLONE_TIMEOUT_IN_MINUTES,
 } = require('./constants');
 
-const toFullPath = x => path.normalize(path.isAbsolute(x) ? x : `${process.cwd()}/${x}`);
+const toFullPath = (x: string) => path.normalize(path.isAbsolute(x) ? x : `${process.cwd()}/${x}`);
 
 const gitRepositoryConfig = {
   url: GIT_URL,
@@ -39,10 +40,10 @@ const gitRepositoryConfig = {
 };
 
 const gitRepoCreationPromise = GitRepository.create(gitRepositoryConfig);
-const gitRepoCreationPromiseWithTimeout = Promise.resolve(gitRepoCreationPromise)
+const gitRepoCreationPromiseWithTimeout = BluebirdPromise.resolve(gitRepoCreationPromise)
   .timeout(GIT_CLONE_TIMEOUT_IN_MINUTES * 60 * 1000)
-  .catch(Promise.TimeoutError, () => {
-    throw `git repository cloning timeout after ${GIT_CLONE_TIMEOUT_IN_MINUTES} minutes`;
+  .catch(BluebirdPromise.TimeoutError, () => {
+    throw new Error(`git repository cloning timeout after ${GIT_CLONE_TIMEOUT_IN_MINUTES} minutes`);
   });
 
 const gitTransactionManager = new Transactor(gitRepoCreationPromise, gitRepo => gitRepo.reset());
@@ -56,23 +57,21 @@ async function startServer() {
   await appsRepository.refresh();
   const app = express();
   const publicKey = sshpk
-    .parseKey(await fs.readFile(gitRepositoryConfig.publicKey))
+    .parseKey(await fs.readFile(gitRepositoryConfig.publicKey), 'auto')
     .toBuffer('pem');
   app.use(morgan('tiny'));
   app.use(configurePassport(publicKey, appsRepository));
   app.use(bodyParser.json()); // for parsing application/json
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-  app.use('/api', auth, routes({ tagsRepository, keysRepository, appsRepository }));
   app.get('/version', (req, res) => res.send(process.env.npm_package_version));
   app.get('/health', (req, res) => res.status(200).json({}));
-
+  app.use('/api', auth, routes({ tagsRepository, keysRepository, appsRepository }));
   app.use('/*', (req, res) => res.sendStatus(404));
-  app.use((err, req, res, next) => {
-    console.error(req.method, res.originalUrl, err);
-    res.status(500).send(err.message);
-  });
-
-  const passport = require('passport');
+  const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+    console.error(req.method, req.originalUrl, err);
+    res.status(err.statusCode || 500).send(err.message);
+  };
+  app.use(errorHandler);
 
   app.listen(PORT, () => console.log('Listening on port', PORT));
 }
@@ -80,17 +79,17 @@ async function startServer() {
 GitContinuousUpdater.onUpdate(gitTransactionManager)
   .switchMap(_ =>
     Rx.Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)),
-  )
-  .do(() => {}, err => console.error('Error refreshing index', err))
+)
+  .do(() => { }, (err: any) => console.error('Error refreshing index', err))
   .retry()
   .subscribe();
 
 GitContinuousUpdater.onUpdate(gitTransactionManager)
   .switchMap(_ => Rx.Observable.defer(() => appsRepository.refresh()))
-  .do(() => {}, err => console.error('Error refersing apps index', err))
+  .do(() => { }, (err: any) => console.error('Error refersing apps index', err))
   .retry()
   .subscribe();
 
-gitRepoCreationPromiseWithTimeout.then(() => startServer()).catch((reason) => {
+gitRepoCreationPromiseWithTimeout.then(async () => await startServer()).catch((reason: any) => {
   console.error(reason);
 });
