@@ -1,0 +1,9 @@
+{
+  "swagger": {
+    "outputDirectory": "./dist",
+    "entryFile": "./src/server.ts",
+    "basePath": "/api/",
+    "consumes": ["application/json"],
+    "produces": ["application/json"]
+  }
+}
