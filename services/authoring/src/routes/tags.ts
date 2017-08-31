@@ -1,11 +1,12 @@
-import { Path, GET, PUT, Context, ServiceContext } from 'typescript-rest';
+import { Path, GET, PUT, Context, ServiceContext, QueryParam } from 'typescript-rest';
 import { AutoWired, Inject } from 'typescript-ioc';
+import { Tags } from 'typescript-rest-swagger';
 import { PERMISSIONS } from '../security/permissions/consts';
 import { Authorize } from '../security/authorize';
 import TagsRepository from '../repositories/tags-repository';
-import { AuthorProvider } from '../utils/include-author';
 
 @AutoWired
+@Tags('tags')
 @Path('/tags')
 export class TagsController {
   @Context
@@ -14,19 +15,15 @@ export class TagsController {
   @Inject
   tagsRepository: TagsRepository;
 
-  @Inject
-  authorProvider: AuthorProvider;
-
   @Authorize({ permission: PERMISSIONS.TAGS_READ })
   @GET
-  async getTags() {
+  async getTags(): Promise<string[]> {
     return await this.tagsRepository.getTags();
   }
 
   @Authorize({ permission: PERMISSIONS.TAGS_WRITE })
   @PUT
-  async saveTags(tagsToSave: any) {
-    const author = this.authorProvider.getAuthor(this.context);
-    await this.tagsRepository.mergeTags(tagsToSave, author);
+  async saveTags( @QueryParam('author.name') name: string, @QueryParam('author.email') email: string, tagsToSave: any): Promise<void> {
+    await this.tagsRepository.mergeTags(tagsToSave, { name, email });
   }
 }

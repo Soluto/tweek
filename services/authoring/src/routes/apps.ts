@@ -3,10 +3,10 @@ import { promisify } from 'util';
 import crypto = require('crypto');
 import R = require('ramda');
 import { AutoWired, Inject } from 'typescript-ioc';
-import { POST, Path, Errors, Context, ServiceContext } from 'typescript-rest';
+import { Tags } from 'typescript-rest-swagger';
+import { POST, Path, Errors, Context, ServiceContext, QueryParam } from 'typescript-rest';
 import { PERMISSIONS } from '../security/permissions/consts';
 import { generateHash } from '../apps/apps-utils';
-import { Author, AuthorProvider } from '../utils/include-author';
 import { Authorize } from '../security/authorize';
 import AppsRepository from '../repositories/apps-repository';
 
@@ -40,12 +40,18 @@ const allowedPermissions = R.without(<any>PERMISSIONS.ADMIN, R.values(PERMISSION
 
 const hasValidPermissions = R.all(<any>R.contains((<any>R).__, allowedPermissions));
 
-export type AppCreationModel = {
+export type AppCreationRequestModel = {
   name: string,
   permissions: Array<string>,
 };
 
+export type AppCreationResponseModel = {
+  appId: string,
+  appSecret: string,
+};
+
 @AutoWired
+@Tags('apps')
 @Path('/apps')
 export class AppsController {
   @Context
@@ -54,14 +60,9 @@ export class AppsController {
   @Inject
   appsRepository: AppsRepository;
 
-  @Inject
-  authorProvider: AuthorProvider;
-
   @Authorize({ permission: PERMISSIONS.ADMIN })
   @POST
-  async createApp(newAppModel: AppCreationModel) {
-    const author: Author = this.authorProvider.getAuthor(this.context);
-
+  async createApp( @QueryParam('author.name') name: string, @QueryParam('author.email') email: string, newAppModel: AppCreationRequestModel): Promise<AppCreationResponseModel> {
     const appId = uuid.v4();
     const newApp = createNewAppManifest(newAppModel.name, newAppModel.permissions);
     // validate permissions
@@ -70,7 +71,7 @@ export class AppsController {
     }
     const { secret: appSecret, key } = await createSecretKey();
     newApp.secretKeys.push(key);
-    await this.appsRepository.saveApp(appId, newApp, author);
+    await this.appsRepository.saveApp(appId, newApp, { name, email });
 
     return ({
       appId,
