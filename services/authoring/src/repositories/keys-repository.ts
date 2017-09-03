@@ -1,4 +1,6 @@
 import path = require('path');
+import Transactor from "../utils/transactor";
+import GitRepository from "./git-repository";
 
 function generateEmptyManifest(keyPath) {
   return {
@@ -102,11 +104,11 @@ async function getManifestFile(keyPath: string, gitRepo, revision?: string) {
 }
 
 export default class KeysRepository {
-  constructor(private _gitTransactionManager) {
+  constructor(private _gitTransactionManager: Transactor<GitRepository>) {
   }
 
   getAllKeys() {
-    return this._gitTransactionManager.read(async (gitRepo) => {
+    return this._gitTransactionManager.with(async (gitRepo) => {
       const keyFiles = await gitRepo.listFiles('manifests');
 
       return keyFiles.map(getKeyFromPath);
@@ -182,6 +184,6 @@ export default class KeysRepository {
   }
 
   getRevision() {
-    return this._gitTransactionManager.read(gitRepo => gitRepo.getLastCommit());
+    return this._gitTransactionManager.with(gitRepo => gitRepo.getLastCommit());
   }
 }

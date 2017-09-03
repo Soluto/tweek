@@ -9,6 +9,9 @@ const expect = chai.expect;
 describe('TagsRepository', () => {
   let mockGitRepo = {};
   let mockTransactionManager = {
+    with: function (action) {
+      return action(mockGitRepo);
+    },
     write: function (action) {
       return action(mockGitRepo);
     },
