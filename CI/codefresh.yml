@@ -260,3 +260,21 @@ steps:
         only:
           - master
     candidate: ${{BuildingGitRepository}}
+
+  Swagger:
+    type: composition
+    title: Upload swagger
+    # when:
+    #   branch:
+    #     only:
+    #       - master
+    composition: tweek-all
+    composition_candidates:
+      api_swagger:
+        image: node:8.1.4
+        depends_on:
+          - api
+        volumes:
+          - ./ci:/app
+        working_dir: /app
+        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && ./update_swagger.sh http://api/api/swagger.json 'https://tweek-swagger-updater.azurewebsites.net/api/UpdateSwagger?code=${{UPDATE_SWAGGER_SECRET}}&name=api&version=${TWEEK_DOCKER_TAG_API}'"
