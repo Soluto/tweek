@@ -7,7 +7,7 @@ export default class TagsRepository {
   }
 
   async getTags() {
-    return await this._gitTransactionManager.read(async gitRepo =>
+    return await this._gitTransactionManager.with(async gitRepo =>
       JSON.parse(await gitRepo.readFile(TagsFile)),
     );
   }
