@@ -106,7 +106,7 @@ export default class KeysRepository {
   }
 
   getAllKeys() {
-    return this._gitTransactionManager.read(async (gitRepo) => {
+    return this._gitTransactionManager.with(async (gitRepo) => {
       const keyFiles = await gitRepo.listFiles('manifests');
 
       return keyFiles.map(getKeyFromPath);
@@ -182,6 +182,6 @@ export default class KeysRepository {
   }
 
   getRevision() {
-    return this._gitTransactionManager.read(gitRepo => gitRepo.getLastCommit());
+    return this._gitTransactionManager.with(gitRepo => gitRepo.getLastCommit());
   }
 }
