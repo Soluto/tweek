@@ -1,0 +1,28 @@
+{
+    "Number": {
+        "type": "number"
+    },
+    "BirthDate": {
+        "type": "date"
+    },
+    "SomeNumber": {
+        "type": "number"
+    },
+    "Country": {
+        "type": "string"
+    },
+
+    "AgentVersion": {
+        "type": "version"
+    },
+    "Gender": {
+        "type": {
+            "base": "string",
+            "allowedValues": [
+                "Male",
+                "Female",
+                "Other"
+            ]
+        }
+    }
+}

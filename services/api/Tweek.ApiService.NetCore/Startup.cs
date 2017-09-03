@@ -34,6 +34,10 @@ using Tweek.JPad.Utils;
 using Engine.Rules.Creation;
 using static Engine.Core.Rules.Utils;
 using Tweek = Engine.Tweek;
+using LanguageExt;
+using Engine.DataTypes;
+using ConfigurationPath = Engine.DataTypes.ConfigurationPath;
+using Tweek.Utils;
 
 namespace Tweek.ApiService.NetCore
 {
@@ -57,8 +61,10 @@ namespace Tweek.ApiService.NetCore
         {
 
             services.RegisterAddonServices(Configuration);
-
-            services.Decorate<IContextDriver>((driver, provider) => new TimedContextDriver(driver, provider.GetService<IMetrics>()));
+            services.Decorate<IContextDriver>((driver, provider) => {
+                var childDriver = CreateChildDriver(provider, driver);
+                return new TimedContextDriver(CreateChildDriver(provider, driver), provider.GetService<IMetrics>());
+                });
 
             //services.AddSingleton<IDiagnosticsProvider>(new RulesDriverStatusService(blobRulesDriver));
             services.AddSingleton<IDiagnosticsProvider>(new EnvironmentDiagnosticsProvider());
@@ -111,6 +117,75 @@ namespace Tweek.ApiService.NetCore
                 options.IncludeXmlComments(xmlPath);
 
             });
+        }
+
+        private IContextDriver CreateChildDriver(IServiceProvider provider, IContextDriver decoratedDriver)
+        {
+            InputValidationContextDriver DecoratorFactory(InputValidationContextDriver.Mode mode, bool reportOnly)
+            {
+                return new InputValidationContextDriver(
+                    decoratedDriver, 
+                    provider.GetService<ILogger<InputValidationContextDriver>>(),
+                    SchemaProvider(provider),
+                    CustomTypeDefinitionProvider(provider),
+                    mode,
+                    reportOnly
+                    );
+            }
+
+            var reportOnlyFromConfig = string.Equals(Configuration["Context:Validation:Error_Policy"], "BYPASS_LOG");
+            var modeRaw =  Configuration["Context:Validation:Mode"];
+            if (string.IsNullOrEmpty(modeRaw)){
+                modeRaw = "Off";
+            }
+            
+            switch(modeRaw){
+                case "Off":
+                    return decoratedDriver;
+                case "Flexible":
+                    return DecoratorFactory(InputValidationContextDriver.Mode.AllowUndefinedProperties, reportOnlyFromConfig);
+                case "Strict":
+                    return DecoratorFactory(InputValidationContextDriver.Mode.Strict, reportOnlyFromConfig);
+                default:
+                    throw new ArgumentException($"Invalid context validation mode ${modeRaw}");
+            }
+        }
+
+        private InputValidationContextDriver.CustomTypeDefinitionProvider CustomTypeDefinitionProvider(IServiceProvider provider)
+        {
+            var tweek = provider.GetService<ITweek>();
+
+            return typeName => {
+                var key = $"@tweek/custom_types/{typeName}";
+                var configuration = provider.GetService<ITweek>().Calculate(new [] { new ConfigurationPath(key)}, new System.Collections.Generic.HashSet<Identity>(),
+                 i => ContextHelpers.EmptyContext);
+
+                ConfigurationValue value;
+
+                var optionValue = configuration.TryGetValue(key, out value) ?
+                        Option<JsonValue>.Some(value.Value) :
+                        Option<JsonValue>.None;
+
+                return optionValue.Map(raw => JsonConvert.DeserializeObject<CustomTypeDefinition> (JsonConvert.SerializeObject(raw, new []{new JsonValueConverter()})));
+                    
+            };   
+        }
+        private InputValidationContextDriver.IdentitySchemaProvider SchemaProvider(IServiceProvider provider)
+        {
+            var tweek = provider.GetService<ITweek>();
+
+            return identityType => {
+                var key = $"@tweek/schema/{identityType}";
+                var configuration = provider.GetService<ITweek>().Calculate(new [] { new ConfigurationPath(key)}, new System.Collections.Generic.HashSet<Identity>(),
+                 i => ContextHelpers.EmptyContext);
+
+                ConfigurationValue value;
+
+                return 
+                    configuration.TryGetValue(key, out value) ?
+                        Option<JsonValue>.Some(value.Value) :
+                        Option<JsonValue>.None;
+            };
         }
 
         private void RegisterMetrics(IServiceCollection services)

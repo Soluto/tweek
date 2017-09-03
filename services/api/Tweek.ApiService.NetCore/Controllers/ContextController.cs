@@ -1,13 +1,19 @@
 ﻿using System;
+using Engine;
 using Engine.DataTypes;
 using Engine.Drivers.Context;
 using FSharpUtils.Newtonsoft;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Tweek.ApiService.NetCore.Security;
+using LanguageExt;
+using Engine.Context;
+using Tweek.Utils;
+using Microsoft.Extensions.Logging;
 
 namespace Tweek.ApiService.NetCore.Controllers
 {
@@ -16,11 +22,17 @@ namespace Tweek.ApiService.NetCore.Controllers
     {
         private readonly IContextDriver _contextDriver;
         private readonly CheckWriteContextAccess _checkAccess;
+        private readonly ILogger<ContextController> _logger;
 
-        public ContextController(IContextDriver contextDriver, JsonSerializer serializer, CheckWriteContextAccess checkAccess)
+        public ContextController(
+            IContextDriver contextDriver, 
+            JsonSerializer serializer, 
+            CheckWriteContextAccess checkAccess,
+            ILogger<ContextController> logger)
         {
             _contextDriver = contextDriver;
             _checkAccess =checkAccess;
+            this._logger = logger;
         }
 
         [HttpPost("{identityType}/{*identityId}")]
@@ -30,9 +42,18 @@ namespace Tweek.ApiService.NetCore.Controllers
         {
             if (!_checkAccess(User, new Identity(identityType, identityId))) return Forbid();
             if (data.Count == 0) return Ok();
-
             var identity = new Identity(identityType, identityId);
-            await _contextDriver.AppendContext(identity, data);
+
+            try{
+                await _contextDriver.AppendContext(identity, data);
+            }catch(ArgumentException e)
+            {
+                _logger.LogWarning(
+                    new EventId(9876, "InputValidationFailed"),
+                    e,
+                    "Input validation failed");
+                return BadRequest("Input validation failed");
+            }
             return Ok();
         }
 
