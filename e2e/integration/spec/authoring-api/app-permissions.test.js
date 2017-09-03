@@ -19,7 +19,7 @@ describe("app permissions test", () => {
         name: "read_specific_key",
         requirePermission: "keys-read",
         action: async (client) => {
-            await client.get('/api/keys/?keyPath=%40integration_tests%2Fsome_key')
+            await client.get('/api/key?keyPath=%40integration_tests%2Fsome_key')
                 .expect(200)
         }
     },

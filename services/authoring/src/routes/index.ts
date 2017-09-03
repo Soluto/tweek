@@ -22,21 +22,16 @@ export default function configureRoutes(config: RoutesConfig): any {
   Container.bind(TagsRepository).provider({ get: () => config.tagsRepository });
 
   const prefixes = [
-    'keys',
-    'manifests',
-    'revision-history',
-    'dependents'
+    { from: 'keys', to: 'key' },
+    { from: 'manifests', to: 'manifest' },
+    { from: 'revision-history', to: 'revision-history' },
+    { from: 'dependents', to: 'dependent' },
   ];
 
   prefixes.forEach(prefix => {
-    app.all(`/${prefix}/`, (req, res, next) => {
-      if (req.query['keyPath']) {
-        req.url = `/${prefix}/${decodeURIComponent(req.query['keyPath'])}`;
-      }
-      next();
-    });
-    app.all(`/${prefix}/*`, (req, res, next) => {
+    app.all(`/${prefix.from}/*`, (req, res, next) => {
       req.query['keyPath'] = req.params[0];
+      req.url = `/${prefix.to}`;
       next();
     });
   });

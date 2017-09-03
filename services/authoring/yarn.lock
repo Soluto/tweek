@@ -201,7 +201,7 @@ are-we-there-yet@~1.1.2:
     delegates "^1.0.0"
     readable-stream "^2.0.6"
 
-argparse@^1.0.7:
+argparse@^1.0.7, argparse@^1.0.9:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/argparse/-/argparse-1.0.9.tgz#73d83bc263f86e97f8cc4f6bae1b0e90a7d22c86"
   dependencies:
@@ -2251,6 +2251,10 @@ merge-descriptors@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/merge-descriptors/-/merge-descriptors-1.0.1.tgz#b00aaa556dd8b44568150ec9d1b953f3f90cbb61"
 
+merge@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/merge/-/merge-1.2.0.tgz#7531e39d4949c281a66b8c5a6e0265e8b05894da"
+
 messageformat-parser@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/messageformat-parser/-/messageformat-parser-1.1.0.tgz#13ba2250a76bbde8e0fca0dbb3475f95c594a90a"
@@ -3649,7 +3653,20 @@ typescript-ioc@^0.4.2:
   dependencies:
     reflect-metadata "^0.1.10"
 
-typescript-rest@^1.1.1:
+typescript-rest-swagger@^0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/typescript-rest-swagger/-/typescript-rest-swagger-0.0.10.tgz#2b4c1ded879d7f55d2fff03cb31d5725a8ba7b7d"
+  dependencies:
+    argparse "^1.0.9"
+    lodash "^4.17.4"
+    merge "^1.2.0"
+    mkdirp "^0.5.1"
+    path "^0.12.7"
+    typescript "^2.4.2"
+    typescript-rest "^1.1.0"
+    yamljs "^0.2.10"
+
+typescript-rest@^1.1.0, typescript-rest@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/typescript-rest/-/typescript-rest-1.1.1.tgz#a76ec0a5a2f29ed0425ca272c472c871dc7a8394"
   dependencies:

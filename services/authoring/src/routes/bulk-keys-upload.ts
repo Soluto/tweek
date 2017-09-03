@@ -2,9 +2,9 @@ import fs = require('fs');
 import R = require('ramda');
 import JSZip = require('jszip');
 import { AutoWired, Inject } from 'typescript-ioc';
-import { FileParam, Errors, ServiceContext, Context, PUT, Path } from 'typescript-rest';
+import { Tags } from 'typescript-rest-swagger';
+import { FileParam, Errors, ServiceContext, Context, PUT, Path, QueryParam } from 'typescript-rest';
 
-import { AuthorProvider } from '../utils/include-author';
 import { Authorize } from '../security/authorize';
 import { PERMISSIONS } from '../security/permissions/consts';
 import KeysRepository from '../repositories/keys-repository';
@@ -13,12 +13,11 @@ const supportedPaths = [/^manifests\/.+?\.json/, /^implementations\/.+\/.+?\./];
 const isValidPath = x => R.any(<any>R.test((<any>R).__, x))(supportedPaths);
 
 @AutoWired
+@Tags('bulk-keys-upload')
+@Path('/')
 export class BulkKeysUpload {
   @Context
   context: ServiceContext;
-
-  @Inject
-  authorProvider: AuthorProvider;
 
   @Inject
   keysRepository: KeysRepository;
@@ -26,7 +25,7 @@ export class BulkKeysUpload {
   @Authorize({ permission: PERMISSIONS.KEYS_WRITE })
   @PUT
   @Path('/bulk-keys-upload')
-  async bulkKeysUpload( @FileParam('bulk') zipFile: Express.Multer.File) {
+  async bulkKeysUpload( @QueryParam('author.name') name: string, @QueryParam('author.email') email: string, @FileParam('bulk') zipFile: Express.Multer.File) {
     if (!zipFile) {
       throw new Errors.BadRequestError('Required file is missing: bulk');
     }
@@ -50,6 +49,6 @@ export class BulkKeysUpload {
       throw new Errors.BadRequestError(`invalid folder structure:${fileEntries.map(x => x.name).join(',')}`);
     }
 
-    await this.keysRepository.updateBulkKeys(fileEntries, this.authorProvider.getAuthor(this.context));
+    await this.keysRepository.updateBulkKeys(fileEntries, { name, email });
   }
 }

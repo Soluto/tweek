@@ -1,12 +1,12 @@
 import R = require('ramda');
 import jsonpatch = require('fast-json-patch');
 import { AutoWired, Inject } from 'typescript-ioc';
-import { GET, PATCH, Path, DELETE, POST, PathParam, ServiceContext, Context } from 'typescript-rest';
+import { Tags } from 'typescript-rest-swagger';
+import { GET, PATCH, Path, DELETE, POST, PathParam, ServiceContext, Context, QueryParam } from 'typescript-rest';
 import searchIndex from '../search-index';
 import { Authorize } from '../security/authorize';
 import { PERMISSIONS } from '../security/permissions/consts';
 import KeysRepository from '../repositories/keys-repository';
-import { AuthorProvider } from '../utils/include-author';
 
 const schemaPrefix = '@tweek/schema/';
 const indexSchema = R.pipe(
@@ -15,12 +15,11 @@ const indexSchema = R.pipe(
 );
 
 @AutoWired
+@Tags('schema')
+@Path('/')
 export class SchemaController {
   @Context
   context: ServiceContext;
-
-  @Inject
-  authorProvider: AuthorProvider;
 
   @Inject
   keysRepository: KeysRepository;
@@ -28,7 +27,7 @@ export class SchemaController {
   @Authorize({ permission: PERMISSIONS.SCHEMAS_READ })
   @GET
   @Path('/schemas')
-  async getSchemas() {
+  async getSchemas(): Promise<any[]> {
     const allManifests = await searchIndex.manifests;
     const schemaManifests = allManifests.filter(m => m.key_path.startsWith(schemaPrefix));
     return indexSchema(schemaManifests);
@@ -37,16 +36,16 @@ export class SchemaController {
   @Authorize({ permission: PERMISSIONS.SCHEMAS_WRITE })
   @DELETE
   @Path('/schemas/:identityType')
-  async deleteIdentity( @PathParam('identityType') identityType: string) {
+  async deleteIdentity( @PathParam('identityType') identityType: string, @QueryParam('author.name') name: string, @QueryParam('author.email') email: string): Promise<string> {
     const keyPath = schemaPrefix + identityType;
-    await this.keysRepository.deleteKey(keyPath, this.authorProvider.getAuthor(this.context));
+    await this.keysRepository.deleteKey(keyPath, { name, email });
     return 'OK';
   }
 
   @Authorize({ permission: PERMISSIONS.SCHEMAS_WRITE })
   @POST
   @Path('/schemas/:identityType')
-  async addIdentity( @PathParam('identityType') identityType: string, value: any) {
+  async addIdentity( @PathParam('identityType') identityType: string, @QueryParam('author.name') name: string, @QueryParam('author.email') email: string, value: any): Promise<string> {
     const key = schemaPrefix + identityType;
     const manifest = {
       key_path: key,
@@ -65,21 +64,21 @@ export class SchemaController {
       enabled: true,
       dependencies: [],
     };
-    await this.keysRepository.updateKey(key, manifest, null, this.authorProvider.getAuthor(this.context));
+    await this.keysRepository.updateKey(key, manifest, null, { name, email });
     return 'OK';
   }
 
   @Authorize({ permission: PERMISSIONS.SCHEMAS_WRITE })
   @PATCH
   @Path('/schemas/:identityType')
-  async patchIdentity( @PathParam('identityType') identityType: string, patch: any) {
+  async patchIdentity( @PathParam('identityType') identityType: string, @QueryParam('author.name') name: string, @QueryParam('author.email') email: string, patch: any): Promise<string> {
     const key = schemaPrefix + identityType;
     const manifest = await this.keysRepository.getKeyManifest(key);
     const newManifest = R.assocPath(
       ['implementation', 'value'],
       jsonpatch.applyPatch(R.clone(manifest.implementation.value), patch).newDocument,
     )(manifest);
-    await this.keysRepository.updateKey(key, newManifest, null, this.authorProvider.getAuthor(this.context));
+    await this.keysRepository.updateKey(key, newManifest, null, { name, email });
     return 'OK';
   }
 }
