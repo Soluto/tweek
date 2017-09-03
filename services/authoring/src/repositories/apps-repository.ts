@@ -1,8 +1,9 @@
 import R = require('ramda');
+import Transactor from "../utils/transactor";
 
 export default class AppsRepository {
   apps: any;
-  constructor(private _gitTransactionManager) {
+  constructor(private _gitTransactionManager: Transactor) {
   }
 
   getApp(appId) {

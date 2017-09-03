@@ -1,4 +1,5 @@
 import path = require('path');
+import Transactor from "../utils/transactor";
 
 function generateEmptyManifest(keyPath) {
   return {
@@ -102,7 +103,7 @@ async function getManifestFile(keyPath: string, gitRepo, revision?: string) {
 }
 
 export default class KeysRepository {
-  constructor(private _gitTransactionManager) {
+  constructor(private _gitTransactionManager: Transactor) {
   }
 
   getAllKeys() {

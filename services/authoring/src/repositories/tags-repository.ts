@@ -1,9 +1,10 @@
 import { uniqBy } from 'ramda';
+import Transactor from "../utils/transactor";
 
 const TagsFile = 'tags.json';
 
 export default class TagsRepository {
-  constructor(private _gitTransactionManager) {
+  constructor(private _gitTransactionManager: Transactor) {
   }
 
   async getTags() {
