@@ -210,5 +210,5 @@ steps:
           - ${{CF_VOLUME}}:/repo
         working_dir: /repo/tweek/ci
         environment: 
-          - UPDATE_SWAGGER_SECRET
+          - UPDATE_SWAGGER_SECRET=${{UPDATE_SWAGGER_SECRET}}
         command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && ./update_swagger.sh api ${TWEEK_DOCKER_TAG_API} http://api/api/swagger.json"

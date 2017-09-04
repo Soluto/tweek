@@ -19,7 +19,7 @@ then
   exit 1
 fi
 
-curl --data "$SWAGGER" "$DESTINATION_URL"
+curl -f --data "$SWAGGER" "$DESTINATION_URL"
 if [[ $? != 0 ]]
 then
   echo "Updating swagger failed!"
