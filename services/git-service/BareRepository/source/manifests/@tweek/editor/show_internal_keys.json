@@ -1,0 +1,17 @@
+{
+    "key_path": "@tweek/editor/show_internal_keys",
+    "meta": {
+        "name": "@tweek/editor/show_internal_keys",
+        "description": "Toggle showing internal keys starting with '@tweek'",
+        "tags": [],
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "const",
+        "value": false
+    },
+    "valueType": "boolean",
+    "enabled": true,
+    "dependencies": []
+}

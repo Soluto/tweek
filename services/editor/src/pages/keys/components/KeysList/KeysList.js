@@ -2,9 +2,10 @@ import React from 'react';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { componentFromStream, createEventHandler } from 'recompose';
 import * as SearchService from '../../../../services/search-service';
+import fetch from '../../../../utils/fetch';
 import DirectoryTreeView from './DirectoryTreeView';
 import './KeysList.css';
 
@@ -36,7 +37,12 @@ const KeyItem = connect((state, props) => ({
   </div>,
 );
 
+const withoutInternal = list => (list ? list.filter(x => !/^@tweek\//.test(x)) : list);
+
 const KeysList = componentFromStream((prop$) => {
+  const showInternal$ = Observable.fromPromise(
+    fetch('/api/editor-configuration/show_internal_keys').then(response => response.json()),
+  );
   const keyList$ = prop$.map(x => x.keys).distinctUntilChanged();
 
   const { handler: setFilter, stream: filter$ } = createEventHandler();
@@ -47,16 +53,23 @@ const KeysList = componentFromStream((prop$) => {
     .startWith('')
     .switchMap(async filter => (filter === '' ? undefined : SearchService.search(filter)));
 
-  return Observable.combineLatest(filteredKeys$, keyList$).map(([filteredKeys, keys]) =>
-    <div className="keys-list-container">
-      <KeysFilter onFilterChange={setFilter} />
-      <DirectoryTreeView
-        paths={filteredKeys || keys}
-        renderItem={KeyItem}
-        expandByDefault={!!filteredKeys}
-      />
-    </div>,
-  );
+  return Observable.combineLatest(filteredKeys$, keyList$, showInternal$)
+    .map(
+      ([filteredKeys, keys, showInternal]) =>
+        showInternal
+          ? [filteredKeys, keys]
+          : [withoutInternal(filteredKeys), withoutInternal(keys)],
+    )
+    .map(([filteredKeys, keys]) =>
+      <div className="keys-list-container">
+        <KeysFilter onFilterChange={setFilter} />
+        <DirectoryTreeView
+          paths={filteredKeys || keys}
+          renderItem={KeyItem}
+          expandByDefault={!!filteredKeys}
+        />
+      </div>,
+    );
 });
 
 KeysList.displayName = 'KeysList';
