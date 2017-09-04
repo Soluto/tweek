@@ -59,89 +59,14 @@ steps:
   Tests:
     title: Tests - e2e & smoke
     type: composition
-    composition:
-      version: '2'
-      services:
-        keys:
-          image: ${{BuildGitKeys}}
-        git:
-          image: ${{BuildingGitRepository}}
-          volumes_from:
-            - keys
-          environment:
-            - PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
-            - TWEEK_MANAGEMENT_URL=http://management:3000
-        management:
-          image: ${{BuildingManagement}}
-          depends_on:
-            - git
-          volumes_from:
-            - keys
-          logging:
-            driver: "none"
-          environment:
-            - GIT_USER=git
-            - GIT_URL=ssh://git@git/tweek/tests
-            - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-            - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
-            - VALIDATION_URL=http://api/validation
-        api:
-          image: ${{BuildingApiImage}}
-          depends_on:
-            - management
-            - redis
-          volumes_from:
-            - keys
-          environment:
-            - Rules__Management__Url=http://management:3000
-            - Rules__Management__SampleIntervalInMs=500
-            - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
-            - ContextProvider=redis
-            - Redis__ConnectionString=redis:6379
-            - Addons__Redis__ClassName=Tweek.Drivers.Redis.RedisServiceAddon
-            - Addons__Redis__AssemblyName=Tweek.Drivers.Redis
-            - CorsPolicies__Keys__Origins=http://editor:3000,http://testorigin
-            - CorsPolicies__Keys__Methods=GET
-            - CorsPolicies__Keys__MaxPreflightAge=60
-            - CorsEnabled=true
-            - CorsPolicies__Keys__Headers=
-            - CorsPolicies__Keys__ExposedHeaders=
-        authoring:
-          image: ${{BuildingAuthoring}}
-          depends_on:
-            - git
-          volumes_from:
-            - keys
-          logging:
-            driver: "none"
-          environment:
-            - GIT_USER=git
-            - GIT_URL=ssh://git@git/tweek/tests
-            - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-            - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
-        editor:
-          image: ${{BuildingEditor}}
-          depends_on:
-            - api
-            - authoring
-          volumes_from:
-            - keys
-          logging:
-            driver: "none"
-          environment:
-            - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-            - TWEEK_API_HOSTNAME=http://api
-            - AUTHORING_API_HOSTNAME=http://authoring:3000
-        selenium:
-          image: selenium/standalone-chrome:3.4.0
-          logging:
-            driver: "none"
-        redis:
-          image: redis:alpine
-          expose:
-            - "6379"
-          logging:
-            driver: "none"
+    composition: tweek_test_composition
+    composition_variables:
+      - KEYS_IMAGE=${{BuildGitKeys}}
+      - REPOSITORY_IMAGE=${{BuildingGitRepository}}
+      - MANAGEMENT_IMAGE=${{BuildingManagement}}
+      - API_IMAGE=${{BuildingApiImage}}
+      - AUTHORING_IMAGE=${{BuildingAuthoring}}
+      - EDITOR_IMAGE=${{BuildingEditor}}
     composition_candidates:
       smoke-tests:
         image: microsoft/aspnetcore-build:1.1.2
@@ -260,3 +185,30 @@ steps:
         only:
           - master
     candidate: ${{BuildingGitRepository}}
+
+  Swagger:
+    type: composition
+    title: Upload swagger
+    when:
+      branch:
+        only:
+          - master
+    composition: tweek_test_composition
+    composition_variables:
+      - KEYS_IMAGE=${{BuildGitKeys}}
+      - REPOSITORY_IMAGE=${{BuildingGitRepository}}
+      - MANAGEMENT_IMAGE=${{BuildingManagement}}
+      - API_IMAGE=${{BuildingApiImage}}
+      - AUTHORING_IMAGE=${{BuildingAuthoring}}
+      - EDITOR_IMAGE=${{BuildingEditor}}
+    composition_candidates:
+      api_swagger:
+        image: node:8.1.4
+        depends_on:
+          - api
+        volumes:
+          - ${{CF_VOLUME}}:/repo
+        working_dir: /repo/tweek/ci
+        environment: 
+          - UPDATE_SWAGGER_SECRET=${{UPDATE_SWAGGER_SECRET}}
+        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && ./update_swagger.sh api ${TWEEK_DOCKER_TAG_API} http://api/api/swagger.json"
