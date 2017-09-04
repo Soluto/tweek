@@ -61,12 +61,12 @@ steps:
     type: composition
     composition: tweek_test_composition
     composition_variables:
-      - KEYS_IMAGE=${{BuildGitKeys.imageId}}
-      - REPOSITORY_IMAGE=${{BuildingGitRepository.imageId}}
-      - MANAGEMENT_IMAGE=${{BuildingManagement.imageId}}
-      - API_IMAGE=${{BuildingApiImage.imageId}}
-      - AUTHORING_IMAGE=${{BuildingAuthoring.imageId}}
-      - EDITOR_IMAGE=${{BuildingEditor.imageId}}
+      - KEYS_IMAGE=${{BuildGitKeys}}
+      - REPOSITORY_IMAGE=${{BuildingGitRepository}}
+      - MANAGEMENT_IMAGE=${{BuildingManagement}}
+      - API_IMAGE=${{BuildingApiImage}}
+      - AUTHORING_IMAGE=${{BuildingAuthoring}}
+      - EDITOR_IMAGE=${{BuildingEditor}}
     composition_candidates:
       smoke-tests:
         image: microsoft/aspnetcore-build:1.1.2
@@ -195,12 +195,12 @@ steps:
     #       - master
     composition: tweek_test_composition
     composition_variables:
-      - KEYS_IMAGE=${{BuildGitKeys.imageId}}
-      - REPOSITORY_IMAGE=${{BuildingGitRepository.imageId}}
-      - MANAGEMENT_IMAGE=${{BuildingManagement.imageId}}
-      - API_IMAGE=${{BuildingApiImage.imageId}}
-      - AUTHORING_IMAGE=${{BuildingAuthoring.imageId}}
-      - EDITOR_IMAGE=${{BuildingEditor.imageId}}
+      - KEYS_IMAGE=${{BuildGitKeys}}
+      - REPOSITORY_IMAGE=${{BuildingGitRepository}}
+      - MANAGEMENT_IMAGE=${{BuildingManagement}}
+      - API_IMAGE=${{BuildingApiImage}}
+      - AUTHORING_IMAGE=${{BuildingAuthoring}}
+      - EDITOR_IMAGE=${{BuildingEditor}}
     composition_candidates:
       api_swagger:
         image: node:8.1.4
