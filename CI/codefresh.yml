@@ -44,155 +44,155 @@ steps:
     image_name: soluto/tweek-editor
     working_directory: ./services/editor/
 
-  # BuildingUITests:
-  #   title: Building E2E UI Tests Docker Image
-  #   type: build
-  #   image_name: soluto/e2e-ui
-  #   working_directory: ./e2e/ui
+  BuildingUITests:
+    title: Building E2E UI Tests Docker Image
+    type: build
+    image_name: soluto/e2e-ui
+    working_directory: ./e2e/ui
 
-  # BuildingIntegrationTests:
-  #   title: Building E2E Integration Tests Docker Image
-  #   type: build
-  #   image_name: soluto/e2e-integration
-  #   working_directory: ./e2e/integration
+  BuildingIntegrationTests:
+    title: Building E2E Integration Tests Docker Image
+    type: build
+    image_name: soluto/e2e-integration
+    working_directory: ./e2e/integration
 
-  # Tests:
-  #   title: Tests - e2e & smoke
-  #   type: composition
-  #   composition: tweek_test_composition
-  #   composition_variables:
-  #     - KEYS_IMAGE=${{BuildGitKeys}}
-  #     - REPOSITORY_IMAGE=${{BuildingGitRepository}}
-  #     - MANAGEMENT_IMAGE=${{BuildingManagement}}
-  #     - API_IMAGE=${{BuildingApiImage}}
-  #     - AUTHORING_IMAGE=${{BuildingAuthoring}}
-  #     - EDITOR_IMAGE=${{BuildingEditor}}
-  #   composition_candidates:
-  #     smoke-tests:
-  #       image: microsoft/aspnetcore-build:1.1.2
-  #       depends_on: 
-  #         - api
-  #       volumes:
-  #         - ${{CF_VOLUME}}:/repo
-  #       working_dir: /repo/tweek
-  #       environment: 
-  #         - TWEEK_API_URL=http://api/
-  #       command: /bin/bash -c "dotnet restore services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release"
-  #     e2e-ui:
-  #       image: ${{BuildingUITests}}
-  #       volumes_from:
-  #         - keys
-  #       depends_on: 
-  #         - selenium
-  #         - editor
-  #         - authoring
-  #         - api
-  #       environment:
-  #         - EDITOR_URL=http://editor:3000/
-  #         - TWEEK_API_URL=http://api/
-  #         - AUTHORING_URL=http://authoring:3000
-  #         - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-  #       command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test -- --host selenium --port 4444"
-  #     e2e-integration:
-  #       image: ${{BuildingIntegrationTests}}
-  #       volumes_from:
-  #         - keys
-  #       depends_on:
-  #         - authoring
-  #         - api
-  #       environment:
-  #         - API_URL=http://api
-  #         - AUTHORING_URL=http://authoring:3000
-  #         - MANAGEMENT_URL=http://tweek-management:3000
-  #         - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-  #       command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test"
-  #   on_success:
-  #     metadata:
-  #       set:
-  #         - '${{BuildingApiImage.imageId}}':
-  #           - CF_QUALITY: true
-  #         - '${{BuildingManagement.imageId}}':
-  #           - CF_QUALITY: true
-  #         - '${{BuildingEditor.imageId}}':
-  #           - CF_QUALITY: true
-  #         - '${{BuildingAuthoring.imageId}}':
-  #           - CF_QUALITY: true
-  #   on_fail:
-  #     metadata:
-  #       set:
-  #         - '${{BuildingApiImage.imageId}}':
-  #           - CF_QUALITY: false
-  #         - '${{BuildingManagement.imageId}}':
-  #           - CF_QUALITY: false
-  #         - '${{BuildingEditor.imageId}}':
-  #           - CF_QUALITY: false
-  #         - '${{BuildingAuthoring.imageId}}':
-  #           - CF_QUALITY: false
+  Tests:
+    title: Tests - e2e & smoke
+    type: composition
+    composition: tweek_test_composition
+    composition_variables:
+      - KEYS_IMAGE=${{BuildGitKeys}}
+      - REPOSITORY_IMAGE=${{BuildingGitRepository}}
+      - MANAGEMENT_IMAGE=${{BuildingManagement}}
+      - API_IMAGE=${{BuildingApiImage}}
+      - AUTHORING_IMAGE=${{BuildingAuthoring}}
+      - EDITOR_IMAGE=${{BuildingEditor}}
+    composition_candidates:
+      smoke-tests:
+        image: microsoft/aspnetcore-build:1.1.2
+        depends_on: 
+          - api
+        volumes:
+          - ${{CF_VOLUME}}:/repo
+        working_dir: /repo/tweek
+        environment: 
+          - TWEEK_API_URL=http://api/
+        command: /bin/bash -c "dotnet restore services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release"
+      e2e-ui:
+        image: ${{BuildingUITests}}
+        volumes_from:
+          - keys
+        depends_on: 
+          - selenium
+          - editor
+          - authoring
+          - api
+        environment:
+          - EDITOR_URL=http://editor:3000/
+          - TWEEK_API_URL=http://api/
+          - AUTHORING_URL=http://authoring:3000
+          - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test -- --host selenium --port 4444"
+      e2e-integration:
+        image: ${{BuildingIntegrationTests}}
+        volumes_from:
+          - keys
+        depends_on:
+          - authoring
+          - api
+        environment:
+          - API_URL=http://api
+          - AUTHORING_URL=http://authoring:3000
+          - MANAGEMENT_URL=http://tweek-management:3000
+          - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test"
+    on_success:
+      metadata:
+        set:
+          - '${{BuildingApiImage.imageId}}':
+            - CF_QUALITY: true
+          - '${{BuildingManagement.imageId}}':
+            - CF_QUALITY: true
+          - '${{BuildingEditor.imageId}}':
+            - CF_QUALITY: true
+          - '${{BuildingAuthoring.imageId}}':
+            - CF_QUALITY: true
+    on_fail:
+      metadata:
+        set:
+          - '${{BuildingApiImage.imageId}}':
+            - CF_QUALITY: false
+          - '${{BuildingManagement.imageId}}':
+            - CF_QUALITY: false
+          - '${{BuildingEditor.imageId}}':
+            - CF_QUALITY: false
+          - '${{BuildingAuthoring.imageId}}':
+            - CF_QUALITY: false
 
-  # PushApiImageMaster:
-  #   type: push
-  #   title: Push Tweek Api - lastest
-  #   when:
-  #     branch:
-  #       only:
-  #         - master
-  #   candidate: ${{BuildingApiImage}}
-  #   tags:
-  #     - latest
-  #     - ${TWEEK_DOCKER_TAG_API}
+  PushApiImageMaster:
+    type: push
+    title: Push Tweek Api - lastest
+    when:
+      branch:
+        only:
+          - master
+    candidate: ${{BuildingApiImage}}
+    tags:
+      - latest
+      - ${TWEEK_DOCKER_TAG_API}
 
-  # PushManagementImageMaster:
-  #   type: push
-  #   title: Push Management - lastest
-  #   when:
-  #     branch:
-  #       only:
-  #         - master
-  #   candidate: ${{BuildingManagement}}
-  #   tags:
-  #     - latest
-  #     - ${TWEEK_DOCKER_TAG_MANAGEMENT}
+  PushManagementImageMaster:
+    type: push
+    title: Push Management - lastest
+    when:
+      branch:
+        only:
+          - master
+    candidate: ${{BuildingManagement}}
+    tags:
+      - latest
+      - ${TWEEK_DOCKER_TAG_MANAGEMENT}
 
-  # PushAuthoringImageMaster:
-  #   type: push
-  #   title: Push Tweek Authoring - lastest
-  #   when:
-  #     branch:
-  #       only:
-  #         - master
-  #   candidate: ${{BuildingAuthoring}}
-  #   tags:
-  #     - latest
-  #     - ${TWEEK_DOCKER_TAG_AUTHORING}
+  PushAuthoringImageMaster:
+    type: push
+    title: Push Tweek Authoring - lastest
+    when:
+      branch:
+        only:
+          - master
+    candidate: ${{BuildingAuthoring}}
+    tags:
+      - latest
+      - ${TWEEK_DOCKER_TAG_AUTHORING}
 
-  # PushEditorImageMaster:
-  #   type: push
-  #   title: Push Editor - latest
-  #   when:
-  #     branch:
-  #       only:
-  #         - master
-  #   candidate: ${{BuildingEditor}}
-  #   tags:
-  #     - latest
-  #     - ${TWEEK_DOCKER_TAG_EDITOR}
+  PushEditorImageMaster:
+    type: push
+    title: Push Editor - latest
+    when:
+      branch:
+        only:
+          - master
+    candidate: ${{BuildingEditor}}
+    tags:
+      - latest
+      - ${TWEEK_DOCKER_TAG_EDITOR}
 
-  # PushGitRepositoryMaster:
-  #   type: push
-  #   title: Push Git Repository - latest
-  #   when:
-  #     branch:
-  #       only:
-  #         - master
-  #   candidate: ${{BuildingGitRepository}}
+  PushGitRepositoryMaster:
+    type: push
+    title: Push Git Repository - latest
+    when:
+      branch:
+        only:
+          - master
+    candidate: ${{BuildingGitRepository}}
 
   Swagger:
     type: composition
     title: Upload swagger
-    # when:
-    #   branch:
-    #     only:
-    #       - master
+    when:
+      branch:
+        only:
+          - master
     composition: tweek_test_composition
     composition_variables:
       - KEYS_IMAGE=${{BuildGitKeys}}
