@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-SOURCE_URL=$1
-DESTINATION_URL=$2
+NAME=$1
+VERSION=$2
+SOURCE_URL=$3
+
+DESTINATION_URL="https://tweek-swagger-updater.azurewebsites.net/api/UpdateSwagger?code=$UPDATE_SWAGGER_SECRET&name=$NAME&version=$VERSION"
 
 SWAGGER=$(curl $SOURCE_URL 2>/dev/null)
 if [[ $? != 0 ]]
@@ -10,7 +13,7 @@ then
   exit 1
 fi
 
-curl --data "$SWAGGER" $DESTINATION_URL
+curl --data "$SWAGGER" "$DESTINATION_URL"
 if [[ $? != 0 ]]
 then
   echo "Updating swagger failed!"

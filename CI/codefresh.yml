@@ -209,4 +209,6 @@ steps:
         volumes:
           - ${{CF_VOLUME}}/ci:/app
         working_dir: /app
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && ./update_swagger.sh http://api/api/swagger.json 'https://tweek-swagger-updater.azurewebsites.net/api/UpdateSwagger?code=${{UPDATE_SWAGGER_SECRET}}&name=api&version=${TWEEK_DOCKER_TAG_API}'"
+        environment: 
+          - UPDATE_SWAGGER_SECRET
+        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && ./update_swagger.sh api ${TWEEK_API_VERSION} http://api/api/swagger.json"
