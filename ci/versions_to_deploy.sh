@@ -34,4 +34,4 @@ if [[ "$(git tag | grep -c $TWEEK_EDITOR_TAG)" == "0" ]]; then
     export TWEEK_DOCKER_TAG_EDITOR=$TWEEK_EDITOR_VERSION
 fi
 
-env | grep 'TWEEK_DOCKER_TAG|TWEEK_[A-Z]+_VERSION' >> $1
+env | grep TWEEK_ >> $1
