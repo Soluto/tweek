@@ -1,0 +1,16 @@
+{
+    "key_path": "@tweek/editor/google_tag_manager/enabled",
+    "meta": {
+        "name": "@tweek/editor/google_tag_manager/enabled",
+        "tags": [],
+        "description": "Determines whether Google Tag Manager is enabled",
+        "archived": false
+    },
+    "implementation": {
+        "type": "file",
+        "format": "jpad"
+    },
+    "valueType": "boolean",
+    "dependencies": [],
+    "enabled": true
+}

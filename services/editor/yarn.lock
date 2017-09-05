@@ -6347,6 +6347,10 @@ react-error-overlay@^1.0.7:
     settle-promise "1.0.0"
     source-map "0.5.6"
 
+react-google-tag-manager@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/react-google-tag-manager/-/react-google-tag-manager-2.1.0.tgz#3857792875a47dc9c4738e2bde34483c421d0369"
+
 react-highlight-words@0.8.0:
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/react-highlight-words/-/react-highlight-words-0.8.0.tgz#a83055378c1e5e46fe2061b663b0b37fde60bad6"
