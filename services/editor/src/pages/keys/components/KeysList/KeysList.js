@@ -40,7 +40,7 @@ const KeyItem = connect((state, props) => ({
 const withoutInternal = list => (list ? list.filter(x => !/^@tweek\//.test(x)) : list);
 
 const KeysList = componentFromStream((prop$) => {
-  const showInternal$ = Observable.fromPromise(
+  const showInternal$ = Observable.defer(() =>
     fetch('/api/editor-configuration/show_internal_keys').then(response => response.json()),
   );
 
