@@ -6,9 +6,7 @@ import { componentFromStream } from 'recompose';
 
 class GoogleTagManagerContainer extends React.Component {
   componentDidMount() {
-    const dataLayerName = this.props.dataLayerName || 'dataLayer';
-    const scriptId = this.props.scriptId || 'react-google-tag-manager-gtm';
-
+    const { dataLayerName, scriptId } = this.props;
     if (!window[dataLayerName]) {
       const gtmScriptNode = document.getElementById(scriptId);
 
@@ -19,36 +17,43 @@ class GoogleTagManagerContainer extends React.Component {
   render() {
     const gtm = gtmParts({
       id: this.props.gtmId,
-      dataLayerName: this.props.dataLayerName || 'dataLayer',
-      additionalEvents: this.props.additionalEvents || {},
-      previewVariables: this.props.previewVariables || false,
+      dataLayerName: this.props.dataLayerName,
+      additionalEvents: this.props.additionalEvents,
+      previewVariables: this.props.previewVariables,
     });
 
     return (
-      <div>
-        <div id={this.props.scriptId || 'react-google-tag-manager-gtm'}>
-          {gtm.scriptAsReact()}
-        </div>
+      <div id={this.props.scriptId}>
+        {gtm.scriptAsReact()}
       </div>
     );
   }
+
+  static propTypes = {
+    gtmId: PropTypes.string.isRequired,
+    dataLayerName: PropTypes.string,
+    additionalEvents: PropTypes.object,
+    previewVariables: PropTypes.string,
+    scriptId: PropTypes.string,
+  };
+
+  static defaultProps = {
+    dataLayerName: 'dataLayer',
+    additionalEvents: {},
+    previewVariables: false,
+    scriptId: 'react-google-tag-manager-gtm',
+  };
 }
 
-GoogleTagManagerContainer.propTypes = {
-  gtmId: PropTypes.string.isRequired,
-  dataLayerName: PropTypes.string,
-  additionalEvents: PropTypes.object,
-  previewVariables: PropTypes.string,
-  scriptId: PropTypes.string,
-};
-
 const GoogleTagManagerWithConfig = componentFromStream((prop$) => {
-  const isEnabled$ = Observable.defer(() =>
-    fetch('/api/editor-configuration/google_tag_manager/enabled').then(response => response.json()),
-  ).distinctUntilChanged();
-  const gtmId$ = Observable.defer(() =>
-    fetch('/api/editor-configuration/google_tag_manager/id').then(response => response.json()),
-  ).distinctUntilChanged();
+  const isEnabled$ = Observable.defer(async () => {
+    const response = await fetch('/api/editor-configuration/google_tag_manager/enabled');
+    return await response.json();
+  });
+  const gtmId$ = Observable.defer(async () => {
+    const response = await fetch('/api/editor-configuration/google_tag_manager/id');
+    return await response.json();
+  });
 
   return Observable.combineLatest(isEnabled$, gtmId$, prop$).map(
     ([isEnabled, gtmId, props]) =>
