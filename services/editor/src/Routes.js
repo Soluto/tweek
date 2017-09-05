@@ -10,6 +10,7 @@ import SettingsPage from './pages/settings/components/SettingsPage/SettingsPage'
 import IdentityPage from './pages/settings/components/IdentityPage/IdentityPage';
 import NoMatch from './components/NoMatch';
 import browserHistory from './store/browserHistory';
+import GoogleTagManager from './components/googleTagManager';
 import './styles/styles.css';
 
 const SelectKeyMessage = () => <div className={'select-key-message'}>Select key...</div>;
@@ -17,6 +18,7 @@ const SelectKeyMessage = () => <div className={'select-key-message'}>Select key.
 export default props =>
   <ConnectedRouter history={browserHistory}>
     <App>
+      <GoogleTagManager />
       <Switch>
         <Route path="/" exact render={() => <Redirect to="/keys" />} />
         <Route

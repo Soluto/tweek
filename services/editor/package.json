@@ -105,6 +105,7 @@
     "react-autosize-textarea": "^0.4.3",
     "react-dom": "^15.5.4",
     "react-draggable": "^2.2.6",
+    "react-google-tag-manager": "^2.1.0",
     "react-highlight-words": "0.8.0",
     "react-json": "^0.2.1",
     "react-monaco-editor": "^0.8.1",
