@@ -2,9 +2,10 @@ import React from 'react';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { componentFromStream, createEventHandler } from 'recompose';
 import * as SearchService from '../../../../services/search-service';
+import fetch from '../../../../utils/fetch';
 import DirectoryTreeView from './DirectoryTreeView';
 import './KeysList.css';
 
@@ -36,8 +37,17 @@ const KeyItem = connect((state, props) => ({
   </div>,
 );
 
+const withoutInternal = list => (list ? list.filter(x => !/^@tweek\//.test(x)) : list);
+
 const KeysList = componentFromStream((prop$) => {
-  const keyList$ = prop$.map(x => x.keys).distinctUntilChanged();
+  const showInternal$ = Observable.defer(() =>
+    fetch('/api/editor-configuration/show_internal_keys').then(response => response.json()),
+  );
+
+  const keyList$ = Observable.combineLatest(
+    prop$.map(x => x.keys).distinctUntilChanged(),
+    showInternal$,
+  ).map(([keys, show]) => (show ? keys : withoutInternal(keys)));
 
   const { handler: setFilter, stream: filter$ } = createEventHandler();
   const filteredKeys$ = filter$
