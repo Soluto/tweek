@@ -45,15 +45,14 @@ class GoogleTagManagerContainer extends React.Component {
   };
 }
 
+const getConfigValue = async (configName) => {
+  const response = await fetch(`/api/editor-configuration/google_tag_manager/${configName}`);
+  return await response.json();
+};
+
 const GoogleTagManagerWithConfig = componentFromStream((prop$) => {
-  const isEnabled$ = Observable.defer(async () => {
-    const response = await fetch('/api/editor-configuration/google_tag_manager/enabled');
-    return await response.json();
-  });
-  const gtmId$ = Observable.defer(async () => {
-    const response = await fetch('/api/editor-configuration/google_tag_manager/id');
-    return await response.json();
-  });
+  const isEnabled$ = Observable.defer(() => getConfigValue('enabled'));
+  const gtmId$ = Observable.defer(() => getConfigValue('id'));
 
   return Observable.combineLatest(isEnabled$, gtmId$, prop$).map(
     ([isEnabled, gtmId, props]) =>
