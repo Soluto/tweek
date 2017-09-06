@@ -2,80 +2,87 @@
 using System.Collections.Immutable;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using LanguageExt;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using static LanguageExt.Prelude;
-using LanguageExt.Trans.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Tweek.ApiService.NetCore.Security
 {
-     public class JwtAuthenticationProvider
+    public class JwtAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
-        private static string GetAuthToken(HttpContext ctx)
+        private readonly ImmutableHashSet<string> _authProviters;
+        public JwtAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, IConfiguration configuration, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
         {
-            var authorizationHeader = ctx.Request.Headers["Authorization"].ToString();
-            if (string.IsNullOrEmpty(authorizationHeader)) return null;
-
-            if (!authorizationHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)) return null;
-            var jwtString = authorizationHeader.Substring("Bearer ".Length).Trim();
-            if (string.IsNullOrEmpty(jwtString)) return null;
-            return jwtString;
+            _authProviters = configuration.GetSection("Security:Providers")
+                .GetChildren()
+                .Select(x => x["Issuer"])
+                .Append("tweek")
+                .ToImmutableHashSet();
         }
 
-        public void Install(IApplicationBuilder app, IConfiguration configuration, ILogger logger)
+        protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            var authProviders = configuration.GetSection("Security:Providers").GetChildren().ToArray();
-
-            authProviders.Iter(authProvider =>
+            var jwtString = GetAuthToken();
+            if (!string.IsNullOrEmpty(jwtString))
             {
-                app.UseJwtBearerAuthentication(new JwtBearerOptions
+                var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+                JwtSecurityToken jwtSecurityToken;
+                try
                 {
-                    TokenValidationParameters = new TokenValidationParameters
+                    jwtSecurityToken = (JwtSecurityToken) jwtSecurityTokenHandler.ReadToken(jwtString);
+                }
+                catch (Exception e)
+                {
+                    return AuthenticateResult.Fail(e);
+                }
+
+                var issuer = jwtSecurityToken.Issuer;
+
+                if (_authProviters.Contains(issuer))
+                {
+                    return await Context.AuthenticateAsync($"JWT {issuer}");
+                }
+            }
+            return AuthenticateResult.NoResult();
+        }
+
+        private string GetAuthToken()
+        {
+            var authorizationHeader = Request.Headers["Authorization"].ToString();
+            if (string.IsNullOrEmpty(authorizationHeader)) return null;
+
+            const string bearer = "Bearer ";
+            if (!authorizationHeader.StartsWith(bearer, StringComparison.OrdinalIgnoreCase)) return null;
+            return authorizationHeader.Substring(bearer.Length).Trim();
+        }
+    }
+
+    public class JwtAuthenticationProvider
+    {
+        public void Install(AuthenticationBuilder app, IConfiguration configuration, ILogger logger)
+        {
+            var authProviders = configuration.GetSection("Security:Providers").GetChildren();
+            authProviders.Aggregate(app, (builder, authProvider) =>
+            {
+                return builder.AddJwtBearer($"JWT {authProvider["Issuer"]}", options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidIssuer = authProvider["Issuer"],
                         ValidateAudience = false
-                    },
-                    RequireHttpsMetadata = false,
-                    Authority = authProvider["Authority"],
-                    AutomaticAuthenticate = false,
-                    AutomaticChallenge = false,
-                    AuthenticationScheme = $"JWT {authProvider["Issuer"]}"
+                    };
+                    options.Authority = authProvider["Authority"];
+                    options.RequireHttpsMetadata = false;
                 });
             });
 
-            var issuers = authProviders.Map(authProvider => authProvider["Issuer"])
-                .Append("tweek")
-                .ToImmutableHashSet();
-
-            app.Use( async (ctx, next) =>
-            {
-                var jwtString = GetAuthToken(ctx);
-                if (jwtString != null)
-                {
-                    var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-                    JwtSecurityToken jwtSecurityToken;
-                    try
-                    {
-                        jwtSecurityToken = (JwtSecurityToken)jwtSecurityTokenHandler.ReadToken(jwtString);
-                    }
-                    catch
-                    {
-                        ctx.Response.StatusCode = 400;
-                        return;
-                    }
-                    var issuer = jwtSecurityToken.Issuer;
-                    if (issuers.Contains(issuer)) {
-                        ctx.User = await ctx.Authentication.AuthenticateAsync($"JWT {issuer}");
-                    }
-                }
-
-                await next();
-            });
+            app.AddScheme<AuthenticationSchemeOptions, JwtAuthenticationHandler>(JwtBearerDefaults.AuthenticationScheme, _ => { });
         }
     }
 }
