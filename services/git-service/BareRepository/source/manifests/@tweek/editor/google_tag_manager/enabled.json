@@ -7,8 +7,8 @@
         "archived": false
     },
     "implementation": {
-        "type": "file",
-        "format": "jpad"
+        "type": "const",
+        "value": false
     },
     "valueType": "boolean",
     "dependencies": [],
