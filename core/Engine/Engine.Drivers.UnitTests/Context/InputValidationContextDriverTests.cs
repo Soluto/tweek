@@ -163,7 +163,7 @@ namespace Engine.Drivers.UnitTests.Context
             {
                 new Dictionary<string, JsonValue>
                 {
-                   {"Country", NewString("undefined")},
+                   ["Country"] = NewString("undefined"),
                 }
             };
 
@@ -171,7 +171,7 @@ namespace Engine.Drivers.UnitTests.Context
             {
                 new Dictionary<string, JsonValue>
                 {
-                    {"BirthDate", NewString("05/01/2017")}
+                    ["BirthDate"] = NewString("05/01/2017")
                 }
             };
 
@@ -179,7 +179,7 @@ namespace Engine.Drivers.UnitTests.Context
             {
                 new Dictionary<string, JsonValue>
                 {
-                    {"SomeNumber", NewNumber(5)}
+                    ["SomeNumber"] = NewNumber(5)
                 }
             };
 
@@ -187,7 +187,7 @@ namespace Engine.Drivers.UnitTests.Context
             {
                 new Dictionary<string, JsonValue>
                 {
-                    {"Gender", NewString("Male")}
+                    ["Gender"] = NewString("Male")
                 }
             };
 
@@ -195,7 +195,7 @@ namespace Engine.Drivers.UnitTests.Context
             {
                 new Dictionary<string, JsonValue>
                 {
-                    {"AgentVersion", NewString("1.34.6")}
+                    ["AgentVersion"] = NewString("1.34.6")
                 }
             };
         }
@@ -206,7 +206,7 @@ namespace Engine.Drivers.UnitTests.Context
             {
                 new Dictionary<string, JsonValue>
                 {
-                   {"Country", NewNumber(5)}
+                   ["Country"] = NewNumber(5)
                 }
             };
 
@@ -214,7 +214,7 @@ namespace Engine.Drivers.UnitTests.Context
             {
                 new Dictionary<string, JsonValue>
                 {
-                    {"BirthDate", NewString("sfsd17")}
+                    ["BirthDate"] = NewString("sfsd17")
                 }
             };
 
@@ -222,7 +222,7 @@ namespace Engine.Drivers.UnitTests.Context
             {
                 new Dictionary<string, JsonValue>
                 {
-                    {"SomeNumber", NewString("sfsd17")}
+                    ["SomeNumber"] = NewString("sfsd17")
                 }
             };
 
@@ -230,7 +230,7 @@ namespace Engine.Drivers.UnitTests.Context
             {
                 new Dictionary<string, JsonValue>
                 {
-                    {"Gender", NewString("Omer")}
+                    ["Gender"] = NewString("Omer")
                 }
             };
 
@@ -238,7 +238,7 @@ namespace Engine.Drivers.UnitTests.Context
             {
                 new Dictionary<string, JsonValue>
                 {
-                    {"AgentVersion", NewString("134.6")}
+                    ["AgentVersion"] = NewString("134.6")
                 }
             };
         }

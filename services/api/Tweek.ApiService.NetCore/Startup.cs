@@ -35,6 +35,7 @@ using Engine.Rules.Creation;
 using static Engine.Core.Rules.Utils;
 using Tweek = Engine.Tweek;
 using LanguageExt;
+using static LanguageExt.Prelude;
 using Engine.DataTypes;
 using ConfigurationPath = Engine.DataTypes.ConfigurationPath;
 using Tweek.Utils;
@@ -61,10 +62,10 @@ namespace Tweek.ApiService.NetCore
         {
 
             services.RegisterAddonServices(Configuration);
-            services.Decorate<IContextDriver>((driver, provider) => {
-                var childDriver = CreateChildDriver(provider, driver);
-                return new TimedContextDriver(CreateChildDriver(provider, driver), provider.GetService<IMetrics>());
-                });
+            services.Decorate<IContextDriver>((driver, provider) => 
+              new TimedContextDriver(driver, provider.GetService<IMetrics>()));
+
+            services.Decorate<IContextDriver>((driver, provider) => CreateInputValidationDriverDecorator(provider, driver));
 
             //services.AddSingleton<IDiagnosticsProvider>(new RulesDriverStatusService(blobRulesDriver));
             services.AddSingleton<IDiagnosticsProvider>(new EnvironmentDiagnosticsProvider());
@@ -119,8 +120,20 @@ namespace Tweek.ApiService.NetCore
             });
         }
 
-        private IContextDriver CreateChildDriver(IServiceProvider provider, IContextDriver decoratedDriver)
+        private IContextDriver CreateInputValidationDriverDecorator(IServiceProvider provider, IContextDriver decoratedDriver)
         {
+            InputValidationContextDriver.Mode ParseMode(string raw)
+            {
+                switch(raw){
+                  case "Flexible":
+                      return InputValidationContextDriver.Mode.AllowUndefinedProperties;
+                  case "Strict":
+                      return InputValidationContextDriver.Mode.Strict;
+                  default:
+                      throw new ArgumentException($"Invalid context validation mode ${raw}");
+                }
+            }
+
             InputValidationContextDriver DecoratorFactory(InputValidationContextDriver.Mode mode, bool reportOnly)
             {
                 return new InputValidationContextDriver(
@@ -135,20 +148,11 @@ namespace Tweek.ApiService.NetCore
 
             var reportOnlyFromConfig = string.Equals(Configuration["Context:Validation:Error_Policy"], "BYPASS_LOG");
             var modeRaw =  Configuration["Context:Validation:Mode"];
-            if (string.IsNullOrEmpty(modeRaw)){
-                modeRaw = "Off";
+            if (string.IsNullOrEmpty(modeRaw) || modeRaw == "Off"){
+                return decoratedDriver;
             }
-            
-            switch(modeRaw){
-                case "Off":
-                    return decoratedDriver;
-                case "Flexible":
-                    return DecoratorFactory(InputValidationContextDriver.Mode.AllowUndefinedProperties, reportOnlyFromConfig);
-                case "Strict":
-                    return DecoratorFactory(InputValidationContextDriver.Mode.Strict, reportOnlyFromConfig);
-                default:
-                    throw new ArgumentException($"Invalid context validation mode ${modeRaw}");
-            }
+
+            return DecoratorFactory(ParseMode(modeRaw), reportOnlyFromConfig);
         }
 
         private InputValidationContextDriver.CustomTypeDefinitionProvider CustomTypeDefinitionProvider(IServiceProvider provider)
@@ -157,17 +161,13 @@ namespace Tweek.ApiService.NetCore
 
             return typeName => {
                 var key = $"@tweek/custom_types/{typeName}";
-                var configuration = provider.GetService<ITweek>().Calculate(new [] { new ConfigurationPath(key)}, new System.Collections.Generic.HashSet<Identity>(),
+                var configuration = provider.GetService<ITweek>().Calculate(new [] { new ConfigurationPath(key)}, new HashSet<Identity>(),
                  i => ContextHelpers.EmptyContext);
 
-                ConfigurationValue value;
-
-                var optionValue = configuration.TryGetValue(key, out value) ?
-                        Option<JsonValue>.Some(value.Value) :
-                        Option<JsonValue>.None;
-
-                return optionValue.Map(raw => JsonConvert.DeserializeObject<CustomTypeDefinition> (JsonConvert.SerializeObject(raw, new []{new JsonValueConverter()})));
-                    
+                //ugly, but fix weird compilation issue
+                return (configuration as IDictionary<ConfigurationPath, ConfigurationValue>)
+                  .TryGetValue(key)
+                  .Map(raw => raw.Value.Deserialize<CustomTypeDefinition>());
             };   
         }
         private InputValidationContextDriver.IdentitySchemaProvider SchemaProvider(IServiceProvider provider)
@@ -178,13 +178,9 @@ namespace Tweek.ApiService.NetCore
                 var key = $"@tweek/schema/{identityType}";
                 var configuration = provider.GetService<ITweek>().Calculate(new [] { new ConfigurationPath(key)}, new System.Collections.Generic.HashSet<Identity>(),
                  i => ContextHelpers.EmptyContext);
-
-                ConfigurationValue value;
-
-                return 
-                    configuration.TryGetValue(key, out value) ?
-                        Option<JsonValue>.Some(value.Value) :
-                        Option<JsonValue>.None;
+                
+                //ugly, but fix weird compilation issue
+                return (configuration as IDictionary<ConfigurationPath, ConfigurationValue>).TryGetValue(key).Map(value => value.Value);
             };
         }
 

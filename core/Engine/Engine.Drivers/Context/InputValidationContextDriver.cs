@@ -19,8 +19,7 @@ namespace Engine.Drivers.Context
         public enum Mode
         {
             AllowUndefinedProperties,
-            Strict,
-            ReportOnly
+            Strict
         }
         public static readonly EventId ValidationFailedEventId = new EventId(6754, "ContextInputValidationFailed");
         public delegate Option<JsonValue> IdentitySchemaProvider(string identityType);
@@ -54,42 +53,54 @@ namespace Engine.Drivers.Context
             var result = 
                 _identitySchemaProvider(identity.Type)
                 .Map(schema => 
-                    context.Where(prop => !prop.Key.StartsWith("@fixed:"))
-                        .Select(item => ValidateSingleProperty(item, schema))
-                        .Aggregate(Create(true, ""), (aggregation, next) => next.Item1 ? aggregation : next)
-                )
-                .IfNone(Create(false, $"schema for identity type \"{identity.Type}\" not found"));
+                    {
+                      var errors = context.Where(prop => !prop.Key.StartsWith("@fixed:"))
+                        .Select(item => new {
+                          PropName = item.Key,
+                          ValidationResult = ValidateSingleProperty(item, schema)
+                          })
+                        .Where(item => !item.ValidationResult.isValid);
+                      
+                      if (!errors.Any()) {
+                        return (isValid: true, validationError: "");
+                      }
 
-            if (!result.Item1)
+                      var errorsAsString = string.Join(",", errors.Select(error => error.ValidationResult.validationError));
+
+                      _logger.LogWarning($"Validation failed for identity \"{identity.Type}\" with the following errors: {errorsAsString} ");
+
+                      var invalidProperties = string.Join(",", errors.Select(error => error.PropName));
+
+                      return (isValid: false, validationError: $"Validation for identity type \"{identity.Type}\" failed because the following properties are invalid: {invalidProperties}");
+                    }
+                )
+                .IfNone((isValid: false, validationError: $"schema for identity type \"{identity.Type}\" not found"));
+
+            if (!result.isValid)
             {
                 if (!_reportOnly)
                 {
-                    throw new ArgumentException(result.Item2);
+                    throw new ArgumentException(result.validationError);
                 }
                 else {
-                    _logger.LogWarning(result.Item2);
+                    _logger.LogWarning(result.validationError);
                 }
             }
             
             return _child.AppendContext(identity, context);
         }
 
-        private Tuple<bool, string> ValidateSingleProperty(KeyValuePair<string, JsonValue> item, JsonValue schema)
+        private (bool isValid, string validationError) ValidateSingleProperty(KeyValuePair<string, JsonValue> item, JsonValue schema)
         {
-            Tuple<bool, string> CustomTypeValidator(string customTypeName, JsonValue property)
+            (bool isValid, string validationError) CustomTypeValidator(string customTypeName, JsonValue property)
             {
                 return _customTypeDefinitionProvider(customTypeName)
                      .Map(type => ValidateCustomType(customTypeName, type, property))
-                     .IfNone(Create(false, $"Custom type \"{customTypeName}\" not exit"));
+                     .IfNone(() => (false, $"Custom type \"{customTypeName}\" not exit"));
             }
 
-            Option<T> ToOption<T>(FSharpOption<T> source)
-            {
-                return (source == null || source.Value == null) ?  None : Some(source.Value);
-            }
-
-            return ToOption(schema.TryGetProperty(item.Key))
-                            .Bind(propDefinition => ToOption(propDefinition.TryGetProperty("type")))
+            return schema.GetPropertyOption(item.Key)
+                            .Bind(propDefinition => propDefinition.GetPropertyOption("type"))
                             .Map(typeDefinition => new {
                                 typeDefinition,
                                 propName = item.Key,
@@ -99,56 +110,59 @@ namespace Engine.Drivers.Context
                                 switch(propToValidate.typeDefinition)
                                 {
                                     case JsonValue.String baseTypeName:
-                                        return ValidateBaseType(baseTypeName.AsString(), propToValidate.propValue)
-                                                .Map(validationResult => 
-                                                    validationResult ??
-                                                    CustomTypeValidator(baseTypeName.AsString(), propToValidate.propValue));
+                                        return NullableExtensions.ToOption(ValidateBaseType(baseTypeName.AsString(), propToValidate.propValue))
+                                                .IfNone(() => CustomTypeValidator(baseTypeName.AsString(), propToValidate.propValue));
                                     case JsonValue.Record customTypeRaw:
-                                        var customType = JsonConvert.DeserializeObject<CustomTypeDefinition> (JsonConvert.SerializeObject(customTypeRaw, new []{new JsonValueConverter()}));
-                                        return ValidateCustomType("inline", customType, propToValidate.propValue);
+                                        return ValidateCustomType("inline", customTypeRaw.Deserialize<CustomTypeDefinition>(), propToValidate.propValue);
                                     default:
-                                        return Create(false, "unknown type definition");
+                                        return (isValid: false, "unknown type definition");
                                 }
                             }).IfNone(() => _mode == Mode.AllowUndefinedProperties ? 
-                                 Create(true, "" ) :
-                                 Create(false, $"property \"{item.Key}\" not found in schema"));
+                                 (isValid: true, "" ) :
+                                 (isValid: false, $"property \"{item.Key}\" not found in schema"));
         }
 
-        private static Tuple<bool, string> ValidateBaseType(string type, JsonValue property)
+        private static (bool isValid, string validationError)? ValidateBaseType(string type, JsonValue property)
         {
             switch(type){
                 case "number":
-                    return property.IsNumber ? Create(true, "") : Create(false, "value is not a number");
+                    return property.IsNumber ? 
+                      (isValid: true, validationError: "") : 
+                      (isValid: false, validationError: "value is not a number");
                 case "date":
                     return DateTime.TryParse(property.AsString(), out var _) ?
-                            Create(true, "") : Create(false, "value is not a valid date");
+                            (isValid: true, validationError: "") : 
+                            (isValid: false, validationError: "value is not a valid date");
                 case "string":
-                    return property.IsString  ? Create(true, "") : Create(false, "value is not a string");;
+                    return property.IsString  ? 
+                      (isValid: true, validationError: "") : 
+                      (isValid: false, validationError: "value is not a string");;
                 default:
                     return null;
             }
         }
 
-        private Tuple<bool, string> ValidateCustomType(string typeName, CustomTypeDefinition typeDefinition, JsonValue property)
+        private (bool isValid, string validationError) ValidateCustomType(string typeName, CustomTypeDefinition typeDefinition, JsonValue property)
         { 
-            Func<JsonValue, Tuple<bool, string>> baseTypeValidation = 
+            Func<JsonValue, (bool isValid, string validationError) > baseTypeValidation = 
                 (p) => typeName.Equals(typeDefinition.Base, StringComparison.OrdinalIgnoreCase) ?
-                     Create(false, $"Base type cannot be from the current type \"{typeName}\"") :
-                      ValidateBaseType(typeDefinition.Base, p) ?? Create(false, "base type not exist");
-            Func<JsonValue, Tuple<bool, string>> allowedValuesValidation = 
+                     (isValid: false, $"Base type cannot be from the current type \"{typeName}\"") :
+                        ValidateBaseType(typeDefinition.Base, p) ?? 
+                        (isValid: false, validationError: "base type not exist");
+            Func<JsonValue, (bool isValid, string validationError) > allowedValuesValidation = 
                 (p) => (typeDefinition.AllowedValues.Any() ? Some(typeDefinition.AllowedValues) : None)
                             .Map(allowedValues => typeDefinition.Base == "string" && allowedValues.Contains(p.AsString()))
-                            .Map(r => r ? Create(true, "") : Create(false, "value not in the allowed values"))
-                            .IfNone(Create(true, ""));
-            Func<JsonValue, Tuple<bool, string>> regexValidation = 
+                            .Map(r => r ? (isValid: true, validationError: "") : (isValid: false, validationError: "value not in the allowed values"))
+                            .IfNone((isValid: true, validationError: ""));
+            Func<JsonValue, (bool isValid, string validationError) > regexValidation = 
                 (p) => NullableExtensions.ToOption(typeDefinition.Validation?.IsMatch(p.AsString()))
-                         .Map(r => r ? Create(true, "") : Create(false, "value does not match regex"))
-                         .IfNone(Create(true, ""));
+                         .Map(r => r ? (isValid: true, validationError: "") : (isValid: false, validationError: "value does not match regex"))
+                         .IfNone((isValid: true, validationError: ""));
 
             var results =  new [] {baseTypeValidation(property), allowedValuesValidation(property), regexValidation(property)};
 
             return results
-                .Aggregate(Create(true, ""), (aggregation, next) => {
+                .Aggregate((isValid: true, validationError: ""), (aggregation, next) => {
                     return next.Item1 ? aggregation : next;
                     });
         }

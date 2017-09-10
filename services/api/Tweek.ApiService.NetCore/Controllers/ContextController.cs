@@ -48,11 +48,7 @@ namespace Tweek.ApiService.NetCore.Controllers
                 await _contextDriver.AppendContext(identity, data);
             }catch(ArgumentException e)
             {
-                _logger.LogWarning(
-                    new EventId(9876, "InputValidationFailed"),
-                    e,
-                    "Input validation failed");
-                return BadRequest("Input validation failed");
+                return BadRequest(e.Message);
             }
             return Ok();
         }
