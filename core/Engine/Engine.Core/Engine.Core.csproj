@@ -4,7 +4,7 @@
     <NoWarn>1591, 1701, 1702, 1998</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.0" />
+    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
     <PackageReference Include="LanguageExt.Core" Version="2.1.21" />
   </ItemGroup>
   <ItemGroup>

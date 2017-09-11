@@ -11,15 +11,14 @@
     <NuspecFile>$([System.IO.Path]::Combine($(MSBuildProjectDirectory),$(MSBuildProjectName))).nuspec</NuspecFile>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
     <PackageReference Include="StackExchange.Redis" Version="1.2.3" />
-    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.0" />
     <PackageReference Include="System.Collections.Immutable" version="1.4.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj" />
     <ProjectReference Include="..\ContextDriversIntegrationTests\ContextDriversIntegrationTests.csproj" />
   </ItemGroup>
-
   <Target Name="SetNuspecProperties" BeforeTargets="GenerateNuspec">
     <PropertyGroup>
       <NuspecProperties>$(NuspecProperties);id=$(PackageId)</NuspecProperties>
@@ -34,5 +33,4 @@
       <NuspecProperties>$(NuspecProperties);outputDir=$(OutputPath)</NuspecProperties>
     </PropertyGroup>
   </Target>
-
 </Project>

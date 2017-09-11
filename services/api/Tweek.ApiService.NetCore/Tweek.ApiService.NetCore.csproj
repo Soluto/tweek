@@ -13,7 +13,7 @@
     <PackageReference Include="App.Metrics.Extensions.Middleware" Version="1.2.0" />
     <PackageReference Include="App.Metrics.Extensions.Mvc" Version="1.2.0" />
     <PackageReference Include="App.Metrics.Formatters.Json" Version="1.2.0" />
-    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.0" />
+    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
     <PackageReference Include="LanguageExt.Core" Version="2.1.21" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.0" />
@@ -23,7 +23,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.0" />
     <PackageReference Include="Scrutor" Version="2.1.2" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="1.0.0" />
-    <PackageReference Include="Tweek.JPad" Version="0.6.8" />
+    <PackageReference Include="Tweek.JPad" Version="0.6.18" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\addons\ApplicationInsights\Tweek.Addons.ApplicationInsights\Tweek.Addons.ApplicationInsights.csproj" />

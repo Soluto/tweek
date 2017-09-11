@@ -12,18 +12,17 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="App.Metrics" Version="1.2.0" />
+    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.0" />
-    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Utils\JsonValueConverter\JsonValueConverter.csproj" />
     <ProjectReference Include="..\Engine\Engine.Drivers\Engine.Drivers.csproj" />
   </ItemGroup>
-
   <Target Name="SetNuspecProperties" BeforeTargets="GenerateNuspec">
     <PropertyGroup>
       <NuspecProperties>$(NuspecProperties);id=$(PackageId)</NuspecProperties>
@@ -38,5 +37,4 @@
       <NuspecProperties>$(NuspecProperties);outputDir=$(OutputPath)</NuspecProperties>
     </PropertyGroup>
   </Target>
-
 </Project>
