@@ -14,18 +14,10 @@ const jwtOptions = {
 
 async function getAuthKey() {
   const keyPath = nconf.get('GIT_PRIVATE_KEY_PATH');
-  if (keyPath) {
-    if (fs.existsSync(keyPath)){
-      return await readFile(keyPath);
-    }
-    throw 'private key not found';
+  if (keyPath && fs.existsSync(keyPath) ) {
+    return await readFile(keyPath);
   }
-  if (!keyPath){
-    const keyFile = nconf.get('GIT_PRIVATE_KEY_INLINE');
-    return new Buffer(keyFile, "base64");
-  }
-
-  throw 'missing private key configuration';
+  throw 'private key not found';
 }
 
 let authKeyPromise;

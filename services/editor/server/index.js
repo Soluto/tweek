@@ -10,19 +10,29 @@ import serverRoutes from './serverRoutes';
 import GitContinuousUpdater from './utils/continuous-updater';
 import * as Registration from './api/registration';
 import getVapidKeys from './getVapidKeys';
-
+import fs from 'fs';
+import os from 'os';
 const crypto = require('crypto');
 const passport = require('passport');
 const selectAuthenticationProviders = require('./auth/providerSelector')
   .selectAuthenticationProviders;
 
-nconf.argv().env().defaults({
+nconf.use("memory").argv().env().defaults({
   PORT: 3001,
   TWEEK_API_HOSTNAME: 'http://api',
   AUTHORING_API_HOSTNAME: 'http://authoring:3000',
   MANAGEMENT_HOSTNAME: 'http://management:3000',
   VAPID_KEYS: './vapid/keys.json',
 });
+
+const tmpDir = os.tmpdir();
+if (nconf.get("GIT_PRIVATE_KEY_INLINE") && !nconf.get("GIT_PRIVATE_KEY_PATH")){
+  console.log("CREATING INLINE KEY");
+  const keyData = new Buffer(nconf.get("GIT_PRIVATE_KEY_INLINE"), "base64");
+  const newKeyPath = `${tmpDir}/tweek_rsa`;
+  fs.writeFileSync(newKeyPath, keyData);
+  nconf.set("GIT_PRIVATE_KEY_PATH", newKeyPath);
+}
 
 const PORT = nconf.get('PORT');
 const serviceEndpoints = {
@@ -31,10 +41,12 @@ const serviceEndpoints = {
   management: nconf.get('MANAGEMENT_HOSTNAME'),
 };
 
+
+
 GitContinuousUpdater.onUpdate(serviceEndpoints.authoring)
   .map(_ => Registration.notifyClients())
   .do(_ => console.log('index was refreshed'), err => console.log('error refreshing index', err))
-  .retry()
+  //.retry()
   .subscribe();
 
 function addDirectoryTraversalProtection(server) {
