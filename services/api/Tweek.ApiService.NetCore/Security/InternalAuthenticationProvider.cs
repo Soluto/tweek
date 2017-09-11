@@ -12,10 +12,16 @@ namespace Tweek.ApiService.NetCore.Security
     {
         public void Install(IApplicationBuilder app, IConfiguration configuration, ILogger logger)
         {
+            var keyPath = configuration.GetValue<string>("PUBLIC_KEY_PATH");
+            if (String.IsNullOrEmpty(keyPath) && !String.IsNullOrEmpty(configuration.GetValue<string>("PUBLIC_KEY_INLINE"))){
+                var inlineData = Convert.FromBase64String(configuration.GetValue<string>("PUBLIC_KEY_INLINE"));
+                keyPath = Path.Combine(Path.GetTempPath(), "tweek.pfx");
+                File.WriteAllBytes(keyPath, inlineData);
+            }
+
             try
             {
-                var gitPublicKeyPath = configuration.GetValue<string>("PUBLIC_KEY_PATH");
-                if (!string.IsNullOrEmpty(gitPublicKeyPath) && File.Exists(gitPublicKeyPath))
+                if (!string.IsNullOrEmpty(keyPath) && File.Exists(keyPath))
                 {
                     app.UseJwtBearerAuthentication(new JwtBearerOptions
                     {
@@ -23,7 +29,7 @@ namespace Tweek.ApiService.NetCore.Security
                         {
                             ValidIssuer = "tweek",
                             ValidateAudience = false,
-                            IssuerSigningKey = new X509SecurityKey(new X509Certificate2(gitPublicKeyPath))
+                            IssuerSigningKey = new X509SecurityKey(new X509Certificate2(keyPath))
                         },
                         AutomaticAuthenticate = false,
                         AutomaticChallenge = false,

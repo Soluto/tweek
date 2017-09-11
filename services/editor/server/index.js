@@ -10,13 +10,24 @@ import serverRoutes from './serverRoutes';
 import GitContinuousUpdater from './utils/continuous-updater';
 import * as Registration from './api/registration';
 import getVapidKeys from './getVapidKeys';
-
+import fs from 'fs';
+import os from 'os';
 const crypto = require('crypto');
 const passport = require('passport');
 const selectAuthenticationProviders = require('./auth/providerSelector')
   .selectAuthenticationProviders;
 
-nconf.argv().env().defaults({
+function useFileFromBase64EnvVariable(inlineKeyName, fileKeyName){
+  const tmpDir = os.tmpdir();
+  if (nconf.get(inlineKeyName) && !nconf.get(fileKeyName)){
+    const keyData = new Buffer(nconf.get(inlineKeyName), "base64");
+    const newKeyPath = `${tmpDir}/${fileKeyName}`;
+    fs.writeFileSync(newKeyPath, keyData);
+    nconf.set(fileKeyName, newKeyPath);
+  }
+}
+
+nconf.use("memory").argv().env().defaults({
   PORT: 3001,
   TWEEK_API_HOSTNAME: 'http://api',
   AUTHORING_API_HOSTNAME: 'http://authoring:3000',
@@ -24,12 +35,17 @@ nconf.argv().env().defaults({
   VAPID_KEYS: './vapid/keys.json',
 });
 
+useFileFromBase64EnvVariable("GIT_PRIVATE_KEY_INLINE", "GIT_PRIVATE_KEY_PATH");
+
+
 const PORT = nconf.get('PORT');
 const serviceEndpoints = {
   api:  nconf.get('TWEEK_API_HOSTNAME'),
   authoring: nconf.get('AUTHORING_API_HOSTNAME'),
   management: nconf.get('MANAGEMENT_HOSTNAME'),
 };
+
+
 
 GitContinuousUpdater.onUpdate(serviceEndpoints.authoring)
   .map(_ => Registration.notifyClients())

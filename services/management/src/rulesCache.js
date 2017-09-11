@@ -8,10 +8,20 @@ const recursive = promisify(require('recursive-readdir'));
 const mkdirp = promisify(require('mkdirp'));
 const readFile = promisify(fs.readFile);
 const buildRulesArtifiact = require('./build-rules-artifiact');
-
 const logger = require('./logger');
 
-nconf.argv().env().file({ file: `${process.cwd()}/config.json` });
+function useFileFromBase64EnvVariable(inlineKeyName, fileKeyName) {
+  const tmpDir = os.tmpdir();
+  if (nconf.get(inlineKeyName) && !nconf.get(fileKeyName)) {
+    const keyData = new Buffer(nconf.get(inlineKeyName), "base64");
+    const newKeyPath = `${tmpDir}/${fileKeyName}`;
+    fs.writeFileSync(newKeyPath, keyData);
+    nconf.set(fileKeyName, newKeyPath);
+  }
+}
+
+useFileFromBase64EnvVariable("GIT_PUBLIC_KEY_INLINE","GIT_PUBLIC_KEY_PATH");
+useFileFromBase64EnvVariable("GIT_PRIVATE_KEY_INLINE","GIT_PRIVATE_KEY_PATH");
 
 const gitUrl = nconf.get('GIT_URL');
 const gitUser = nconf.get('GIT_USER');
