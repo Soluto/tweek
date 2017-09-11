@@ -17,6 +17,16 @@ const passport = require('passport');
 const selectAuthenticationProviders = require('./auth/providerSelector')
   .selectAuthenticationProviders;
 
+function useFileFromBase64EnvVariable(inlineKeyName, fileKeyName){
+  const tmpDir = os.tmpdir();
+  if (nconf.get(inlineKeyName) && !nconf.get(fileKeyName)){
+    const keyData = new Buffer(nconf.get(inlineKeyName), "base64");
+    const newKeyPath = `${tmpDir}/tweek_rsa`;
+    fs.writeFileSync(newKeyPath, keyData);
+    nconf.set(fileKeyName, newKeyPath);
+  }
+}
+
 nconf.use("memory").argv().env().defaults({
   PORT: 3001,
   TWEEK_API_HOSTNAME: 'http://api',
@@ -25,14 +35,8 @@ nconf.use("memory").argv().env().defaults({
   VAPID_KEYS: './vapid/keys.json',
 });
 
-const tmpDir = os.tmpdir();
-if (nconf.get("GIT_PRIVATE_KEY_INLINE") && !nconf.get("GIT_PRIVATE_KEY_PATH")){
-  console.log("CREATING INLINE KEY");
-  const keyData = new Buffer(nconf.get("GIT_PRIVATE_KEY_INLINE"), "base64");
-  const newKeyPath = `${tmpDir}/tweek_rsa`;
-  fs.writeFileSync(newKeyPath, keyData);
-  nconf.set("GIT_PRIVATE_KEY_PATH", newKeyPath);
-}
+useFileFromBase64EnvVariable("GIT_PRIVATE_KEY_INLINE", "GIT_PRIVATE_KEY_PATH");
+
 
 const PORT = nconf.get('PORT');
 const serviceEndpoints = {
