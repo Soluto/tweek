@@ -1,15 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="App.Metrics" Version="1.2.0" />
+    <PackageReference Include="App.Metrics" Version="1.3.0" />
     <PackageReference Include="App.Metrics.Extensions.Reporting.Graphite" Version="1.3.0" />
   </ItemGroup>
 </Project>

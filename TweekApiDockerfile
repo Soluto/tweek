@@ -1,10 +1,10 @@
 # ---- *.csproj FILES ----
-FROM microsoft/aspnetcore-build:1.1.2 as csproj-files
+FROM microsoft/aspnetcore-build:2.0.0 as csproj-files
 COPY . /src
 RUN find /src -type f -not -name "*.csproj" -delete
 
 # ---- WARM UP NUGET ----
-FROM microsoft/aspnetcore-build:1.1.2 as nuget-cache
+FROM microsoft/aspnetcore-build:2.0.0 as nuget-cache
 COPY --from=csproj-files /src /src
 COPY ./Tweek.sln /src
 RUN dotnet restore ./src/Tweek.sln
@@ -20,7 +20,7 @@ RUN find . -regex '.*\.\(Unit\|Integration\|\)Tests\.csproj' -print0 | xargs -0 
 RUN dotnet publish ./services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj  -c Release -o ./obj/Docker/publish
 
 # ---- RELEASE ----
-FROM microsoft/aspnetcore:1.1.2 as release
+FROM microsoft/aspnetcore:2.0.0 as release
 WORKDIR /app
 EXPOSE 80
 COPY --from=source /src/services/api/Tweek.ApiService.NetCore/obj/Docker/publish .

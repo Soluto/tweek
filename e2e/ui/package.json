@@ -17,7 +17,7 @@
     "test:docker": "yarn run start && yarn run rebuild e2e-ui && yarn run docker-compose run -- --rm e2e-ui",
     "test:docker:rebuild": "yarn run rebuild && yarn run test:docker",
     "teardown": "yarn run docker-compose down -- --remove-orphans",
-    "logs": "yarn run docker-compose logs --",
+    "logs": "yarn run docker-compose logs",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.e2e.yml",
     "precommit": "lint-staged"
   },

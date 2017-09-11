@@ -5,6 +5,7 @@ using Engine.Core.Rules;
 using LanguageExt;
 using Engine.DataTypes;
 using FSharpUtils.Newtonsoft;
+using IdentityHashSet = System.Collections.Generic.HashSet<Engine.DataTypes.Identity>;
 
 namespace Engine.Core
 {
@@ -14,7 +15,7 @@ namespace Engine.Core
     {
         public delegate Option<ConfigurationValue> GetRuleValue(ConfigurationPath path);
 
-        public static GetRuleValue GetRulesEvaluator(HashSet<Identity> identities, GetLoadedContextByIdentityType contextByIdentity, RulesRepository rules)
+        public static GetRuleValue GetRulesEvaluator(IdentityHashSet identities, GetLoadedContextByIdentityType contextByIdentity, RulesRepository rules)
         {
             var identityTypes = identities.Select(x => x.Type).ToArray();
             var flattenContext = ContextHelpers.FlattenLoadedContext(contextByIdentity);

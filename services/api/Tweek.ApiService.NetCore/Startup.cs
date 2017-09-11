@@ -39,7 +39,8 @@ namespace Tweek.ApiService.NetCore
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        private ILoggerFactory loggerFactory;
+        public Startup(IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
@@ -48,6 +49,7 @@ namespace Tweek.ApiService.NetCore
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
+            this.loggerFactory = loggerFactory;
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -111,6 +113,7 @@ namespace Tweek.ApiService.NetCore
                 options.IncludeXmlComments(xmlPath);
 
             });
+            services.ConfigureAuthenticationProviders(Configuration,  loggerFactory.CreateLogger("AuthenticationProviders"));
         }
 
         private void RegisterMetrics(IServiceCollection services)
@@ -142,8 +145,8 @@ namespace Tweek.ApiService.NetCore
                 loggerFactory.AddDebug();
             }
 
-            app.UseAuthenticationProviders(Configuration, loggerFactory.CreateLogger("AuthenticationProviders"));
             app.InstallAddons(Configuration);
+            app.UseAuthentication();
             app.UseMetrics();
             app.UseMvc();
             app.UseMetricsReporting(lifetime);
