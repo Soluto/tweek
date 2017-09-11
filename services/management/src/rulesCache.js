@@ -14,7 +14,7 @@ function useFileFromBase64EnvVariable(inlineKeyName, fileKeyName) {
   const tmpDir = os.tmpdir();
   if (nconf.get(inlineKeyName) && !nconf.get(fileKeyName)) {
     const keyData = new Buffer(nconf.get(inlineKeyName), "base64");
-    const newKeyPath = `${tmpDir}/tweek_rsa`;
+    const newKeyPath = `${tmpDir}/${fileKeyName}`;
     fs.writeFileSync(newKeyPath, keyData);
     nconf.set(fileKeyName, newKeyPath);
   }
