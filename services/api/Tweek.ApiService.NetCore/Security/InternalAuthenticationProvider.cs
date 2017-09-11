@@ -32,6 +32,7 @@ namespace Tweek.ApiService.NetCore.Security
                             ValidateAudience = false,
                             IssuerSigningKey = new X509SecurityKey(new X509Certificate2(keyPath))
                         };
+                        options.RequireHttpsMetadata = false;
                     });
                     logger.LogInformation("Tweek certificate was loaded successfully");
                 }
