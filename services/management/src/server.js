@@ -7,10 +7,11 @@ const fs = require('fs');
 const readFile = promisify(fs.readFile);
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
+const nconf = require('nconf');
+nconf.use("memory").argv().env().file({ file: `${process.cwd()}/config.json` });
 const rulesCache = require('./rulesCache');
 const repoValidator = require('./repoValidator');
 const logger = require('./logger');
-
 app.use(morgan('dev'));
 app.set('port', process.env.PORT || 3000);
 
