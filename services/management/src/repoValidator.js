@@ -5,9 +5,6 @@ const nconf = require('nconf');
 const buildRulesArtifiact = require('./build-rules-artifiact');
 const getAuthenticatedClient = require('./auth/getAuthenticatedClient');
 
-nconf.argv().env().file({ file: `${process.cwd()}/config.json` });
-const validationUrl = nconf.get('VALIDATION_URL');
-
 async function getAllFileHandlers(data) {
   const root = await new JSZip().loadAsync(data);
   const files = R.values(root.files).filter(file => !file.dir);
@@ -18,6 +15,7 @@ async function getAllFileHandlers(data) {
 }
 
 module.exports = async function(data) {
+  const validationUrl = nconf.get('VALIDATION_URL');
   if (!validationUrl) {
     throw 'missing rules validation url';
   }

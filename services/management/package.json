@@ -1,6 +1,6 @@
 {
   "name": "tweek-management",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "",
   "main": "src/server.js",
   "engines": {
