@@ -36,7 +36,7 @@ namespace Tweek.ApiService.NetCore.Addons
         {
             if (mAddonsCache != null) return mAddonsCache;
 
-            var selectedAddons = new HashSet<string>(
+            var selectedAddons = new System.Collections.Generic.HashSet<string>(
                 configuration.GetSection("Addons")
                 .GetChildren()
                 .Select(x => Assembly.CreateQualifiedName(x["AssemblyName"], x["ClassName"]))

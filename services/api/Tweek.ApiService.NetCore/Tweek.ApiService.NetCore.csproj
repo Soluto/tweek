@@ -14,7 +14,7 @@
     <PackageReference Include="App.Metrics.Extensions.Mvc" Version="1.2.0" />
     <PackageReference Include="App.Metrics.Formatters.Json" Version="1.2.0" />
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.0" />
-    <PackageReference Include="LanguageExt.Core" Version="1.9.7" />
+    <PackageReference Include="LanguageExt.Core" Version="2.1.21" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.0.0" />

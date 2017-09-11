@@ -4,7 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Tweek.JPad" Version="0.6.8" />
-    <PackageReference Include="LanguageExt.Core" Version="1.9.7" />
+    <PackageReference Include="LanguageExt.Core" Version="2.1.21" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Engine.Core\Engine.Core.csproj" />

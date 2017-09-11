@@ -9,6 +9,7 @@ using Engine.DataTypes;
 using FSharpUtils.Newtonsoft;
 using LanguageExt;
 using static LanguageExt.Prelude;
+using IdentityHashSet = System.Collections.Generic.HashSet<Engine.DataTypes.Identity>;
 
 namespace Engine.Context
 {
@@ -51,7 +52,7 @@ namespace Engine.Context
             return key => key == "@@id" ? JsonValue.NewString(id) : Option<JsonValue>.None;
         }
 
-        internal static GetLoadedContextByIdentityType GetContextRetrieverByType(GetLoadedContextByIdentity getLoadedContexts, HashSet<Identity> identities)
+        internal static GetLoadedContextByIdentityType GetContextRetrieverByType(GetLoadedContextByIdentity getLoadedContexts, IdentityHashSet identities)
         {
             return type =>
             {

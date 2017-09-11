@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 using Tweek.Utils;
 using Tweek.ApiService.NetCore.Security;
 using Microsoft.AspNetCore.Cors;
+using IdentityHashSet = System.Collections.Generic.HashSet<Engine.DataTypes.Identity>;
 
 namespace Tweek.ApiService.NetCore.Controllers
 {
@@ -83,7 +84,7 @@ namespace Tweek.ApiService.NetCore.Controllers
             IReadOnlyDictionary<string, JsonValue> contextParams = allParams.Item2.ToDictionary(x => x.Key,
                 x => NewString(x.Value.ToString()), StringComparer.OrdinalIgnoreCase);
 
-            var identities = new HashSet<Identity>(contextParams.Where(x => !x.Key.Contains(".")).Select(x => new Identity(x.Key, x.Value.AsString())));
+            var identities = new IdentityHashSet(contextParams.Where(x => !x.Key.Contains(".")).Select(x => new Identity(x.Key, x.Value.AsString())));
             if (!_checkAccess(User, path, identities)) return Forbid();
             GetLoadedContextByIdentityType contextProps =
                 identityType => key => contextParams.TryGetValue($"{identityType}.{key}");
