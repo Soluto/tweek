@@ -11,7 +11,7 @@
     <NuspecFile>$([System.IO.Path]::Combine($(MSBuildProjectDirectory),$(MSBuildProjectName))).nuspec</NuspecFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="App.Metrics" Version="1.2.0" />
+    <PackageReference Include="App.Metrics" Version="1.3.0" />
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />

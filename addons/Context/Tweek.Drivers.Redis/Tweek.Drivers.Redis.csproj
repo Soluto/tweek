@@ -12,7 +12,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
-    <PackageReference Include="StackExchange.Redis" Version="1.2.3" />
+    <PackageReference Include="StackExchange.Redis" Version="1.2.6" />
     <PackageReference Include="System.Collections.Immutable" version="1.4.0" />
   </ItemGroup>
   <ItemGroup>
