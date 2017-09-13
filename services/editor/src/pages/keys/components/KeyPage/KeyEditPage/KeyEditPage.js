@@ -1,29 +1,16 @@
 import React, { Component } from 'react';
 import { compose, pure } from 'recompose';
-import { connect } from 'react-redux';
-import R from 'ramda';
-import Json from 'react-json';
 import classNames from 'classnames';
-import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
-import TypedInput from '../../../../../components/common/Input/TypedInput';
 import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEditor';
-import ValidationIcon from '../../../../../components/common/ValidationIcon';
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
+import ConstEditor from '../../../../../components/ConstEditor';
 import KeyTags from './KeyTags/KeyTags';
-import EditableText from './EditableText/EditableText';
 import EditableTextArea from './EditableTextArea/EditableTextArea';
 import RevisionHistory from './RevisionHistory/RevisionHistory';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
-import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
+import HeaderMainInput from './HeaderMainInput';
 import { UsedBy, DependsOn } from './DependencyIndicator/DependencyIndicator';
 import './KeyEditPage.css';
-
-const ConstEditor = ({ value, valueType, onChange }) =>
-  <div data-comp="const-editor">
-    {valueType === 'object'
-      ? <Json value={value} onChange={onChange} />
-      : <TypedInput {...{ value, valueType, onChange }} />}
-  </div>;
 
 const Editor = ({
   keyPath,
@@ -250,69 +237,3 @@ const KeyFullHeader = (props) => {
     </div>
   );
 };
-
-const HeaderMainInput = ({
-  isInAddMode,
-  onKeyNameChanged,
-  onDisplayNameChanged,
-  keyManifest: { meta: { name: displayName, archived }, valueType },
-  isReadonly,
-}) =>
-  <div className="key-main-input">
-    {isInAddMode
-      ? <div className="new-key-input-wrapper">
-          <NewKeyInput
-            onKeyNameChanged={name => onKeyNameChanged(name)}
-            displayName={displayName}
-          />
-          <div className="vertical-separator" />
-          <KeyValueTypeSelector value={valueType} />
-        </div>
-      : <EditableText
-          data-comp="display-name"
-          onTextChanged={text => onDisplayNameChanged(text)}
-          placeHolder="Enter key display name"
-          maxLength={80}
-          value={archived ? `ARCHIVED: ${displayName}` : displayName}
-          isReadonly={isReadonly}
-          classNames={{
-            container: 'display-name-container',
-            input: 'display-name-input',
-            text: 'display-name-text',
-            form: 'display-name-form',
-          }}
-        />}
-  </div>;
-
-const getKeyPrefix = path => R.slice(0, -1, path.split('/')).join('/');
-const getSugesstions = R.pipe(R.map(getKeyPrefix), R.uniq(), R.filter(x => x !== ''));
-
-function getKeyNameSuggestions(keysList) {
-  return getSugesstions(keysList).sort();
-}
-
-const NewKeyInput = compose(
-  connect(state => ({ keysList: state.keys, keyNameValidation: state.selectedKey.validation.key })),
-)(({ keysList, keyNameValidation, onKeyNameChanged, displayName }) => {
-  const suggestions = getKeyNameSuggestions(keysList).map(x => ({ label: x, value: x }));
-  return (
-    <div
-      data-comp="new-key-name"
-      className="auto-suggest-wrapper"
-      data-with-error={keyNameValidation.isShowingHint}
-    >
-      <ValidationIcon show={keyNameValidation.isShowingHint} hint={keyNameValidation.hint} />
-      <ComboBox
-        data-field="new-key-name-input"
-        className="auto-suggest"
-        suggestions={suggestions}
-        value={displayName}
-        placeholder="Enter key full path"
-        onChange={text => onKeyNameChanged(text)}
-        showValueInOptions
-      />
-    </div>
-  );
-});
-
-NewKeyInput.displayName = 'NewKeyInput';
