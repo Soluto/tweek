@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="LanguageExt.Core" version="1.9.7" />
-    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
+    <PackageReference Include="LanguageExt.Core" version="2.1.21" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
   </ItemGroup>

@@ -1,15 +1,17 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Tweek.ApiService.NetCore.Security
 {
     public static class AuthenticationProviderExtensions
     {
-        public static void UseAuthenticationProviders(this IApplicationBuilder app, IConfiguration configuration, ILogger logger)
+        public static void ConfigureAuthenticationProviders(this IServiceCollection app, IConfiguration configuration, ILogger logger)
         {
-            new InternalAuthenticationProvider().Install(app, configuration, logger);
-            new JwtAuthenticationProvider().Install(app, configuration, logger);
+            var builder = app.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
+            new InternalAuthenticationProvider().Install(builder, configuration, logger);
+            new JwtAuthenticationProvider().Install(builder, configuration, logger);
         }
     }
 }

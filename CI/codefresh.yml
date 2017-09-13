@@ -69,7 +69,7 @@ steps:
       - EDITOR_IMAGE=${{BuildingEditor}}
     composition_candidates:
       smoke-tests:
-        image: microsoft/aspnetcore-build:1.1.2
+        image: microsoft/aspnetcore-build:2.0.0
         depends_on: 
           - api
         volumes:

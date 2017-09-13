@@ -1,6 +1,7 @@
 {
     "key_path": "@tweek/custom_types/version",
     "meta": {
+        "name": "@tweek/custom_types/version",
         "description": "",
         "readOnly": false,
         "archived": false

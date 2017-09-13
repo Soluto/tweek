@@ -1,7 +1,8 @@
 {
-    "key_path": "@tweek/editor/auth/@global/read_configuration",
+    "key_path": "@tweek/auth/@global/write_context",
     "meta": {
-        "description": "This key determines, whether a user can read configuration",
+        "name": "@tweek/auth/@global/write_context",
+        "description": "This key determines, whether a user can write context",
         "readOnly": false,
         "archived": false
     },
