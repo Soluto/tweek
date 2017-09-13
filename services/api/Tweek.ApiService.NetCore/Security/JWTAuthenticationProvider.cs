@@ -14,17 +14,15 @@ using Microsoft.Extensions.Options;
 
 namespace Tweek.ApiService.NetCore.Security
 {
-    public class JwtAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+    public class JwtAuthenticationSchemeOptions : AuthenticationSchemeOptions {
+        public ImmutableHashSet<string> AuthProviders {get;set;}
+    }
+
+    public class JwtAuthenticationHandler : AuthenticationHandler<JwtAuthenticationSchemeOptions>
     {
-        private readonly ImmutableHashSet<string> _authProviters;
-        public JwtAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, IConfiguration configuration, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
-        {
-            _authProviters = configuration.GetSection("Security:Providers")
-                .GetChildren()
-                .Select(x => x["Issuer"])
-                .Append("tweek")
-                .ToImmutableHashSet();
-        }
+        public JwtAuthenticationHandler(IOptionsMonitor<JwtAuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) 
+            : base(options, logger, encoder, clock)
+        { }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
@@ -44,7 +42,7 @@ namespace Tweek.ApiService.NetCore.Security
 
                 var issuer = jwtSecurityToken.Issuer;
 
-                if (_authProviters.Contains(issuer))
+                if (Options.AuthProviders.Contains(issuer))
                 {
                     return await Context.AuthenticateAsync($"JWT {issuer}");
                 }
@@ -82,7 +80,11 @@ namespace Tweek.ApiService.NetCore.Security
                 });
             });
 
-            app.AddScheme<AuthenticationSchemeOptions, JwtAuthenticationHandler>(JwtBearerDefaults.AuthenticationScheme, _ => { });
+            var optionsAuthProvider = authProviders.Select(x => x["Issuer"])
+                .Append("tweek")
+                .ToImmutableHashSet();
+
+            app.AddScheme<JwtAuthenticationSchemeOptions, JwtAuthenticationHandler>(JwtBearerDefaults.AuthenticationScheme, options => options.AuthProviders = optionsAuthProvider);
         }
     }
 }
