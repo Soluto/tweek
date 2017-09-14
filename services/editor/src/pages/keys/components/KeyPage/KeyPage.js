@@ -8,6 +8,7 @@ import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefi
 import routeLeaveHook from '../../../../hoc/route-leave-hook';
 import MessageKeyPage from './MessageKeyPage/MessageKeyPage';
 import KeyEditPage from './KeyEditPage/KeyEditPage';
+import KeyAddPage from './KeyAddPage/KeyAddPage';
 import './KeyPage.css';
 
 const onRouteLeaveConfirmFunc = (props) => {
@@ -28,6 +29,7 @@ const KeyPage = compose(
         configKey,
         isInAddMode: configKey === BLANK_KEY_NAME,
         revision: location.query && location.query.revision,
+        formatSelected: state.selectedKey && state.selectedKey.formatSelected,
       };
     },
     { ...selectedKeyActions, ...alertActions },
@@ -54,7 +56,7 @@ const KeyPage = compose(
       this.props.closeKey();
     },
   }),
-)(({ showCustomAlert, showAlert, showConfirm, ...props }) => {
+)(({ showCustomAlert, showAlert, showConfirm, isInAddMode, formatSelected, ...props }) => {
   const { selectedKey } = props;
   const alerter = {
     showCustomAlert,
@@ -65,8 +67,18 @@ const KeyPage = compose(
     return <MessageKeyPage data-comp="loading-key" message="Loading..." />;
   }
 
-  const { keyDef } = selectedKey.local;
-  return !keyDef
+  if (isInAddMode && !formatSelected)
+    return (
+      <KeyAddPage
+        addKeyDetails={props.addKeyDetails}
+        updateKeyPath={props.updateKeyPath}
+        manifest={selectedKey.local.manifest}
+        updateImplementation={props.updateImplementation}
+      />
+    );
+
+  const { implementation } = selectedKey.local;
+  return !implementation
     ? <MessageKeyPage data-comp="key-not-found" message="None existent key" />
     : <KeyEditPage {...props} alerter={alerter} />;
 });

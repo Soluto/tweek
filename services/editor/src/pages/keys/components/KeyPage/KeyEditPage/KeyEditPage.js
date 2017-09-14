@@ -109,7 +109,12 @@ class KeyEditPage extends Component {
 
   render() {
     const { selectedKey, isInAddMode, isInStickyMode, alerter, revision } = this.props;
-    const { key, local: { manifest, keyDef }, revisionHistory, dependentKeys } = selectedKey;
+    const {
+      key,
+      local: { manifest, implementation },
+      revisionHistory,
+      dependentKeys,
+    } = selectedKey;
     const isHistoricRevision = revisionHistory && revision && revisionHistory[0].sha !== revision;
     const isReadonly = manifest.meta.readOnly || manifest.meta.archived || isHistoricRevision;
 
@@ -142,8 +147,8 @@ class KeyEditPage extends Component {
               <Editor
                 keyPath={key}
                 manifest={manifest}
-                sourceFile={keyDef.source}
-                onSourceFileChange={source => this.props.updateKeyDef({ source })}
+                sourceFile={implementation.source}
+                onSourceFileChange={source => this.props.updateImplementation({ source })}
                 onManifestChange={this.onSelectedKeyManifestChanged}
                 onDependencyChanged={this.onDependencyChanged}
                 isReadonly={isReadonly}

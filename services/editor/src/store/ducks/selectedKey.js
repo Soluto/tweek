@@ -16,6 +16,8 @@ import { showError } from './notifications';
 import { showConfirm } from './alerts';
 import { addKeyToList, removeKeyFromList } from './keys';
 
+const KEY_PATH_CHANGE = 'KEY_PATH_CHANGE';
+const KEY_ADDING_DETAILS = 'KEY_ADDING_DETAILS';
 const KEY_OPENED = 'KEY_OPENED';
 const KEY_OPENING = 'KEY_OPENING';
 const KEY_RULEDEF_UPDATED = 'KEY_RULEDEF_UPDATED';
@@ -66,20 +68,31 @@ function updateDependentKeys(keyName) {
   };
 }
 
-function createKeyDef({ manifest, implementation }){
-  if (manifest.implementation.type === "file"){
+function createImplementation({ manifest, implementation }) {
+  if (manifest.implementation.type === 'file') {
     return {
       source: implementation,
       type: manifest.implementation.format,
     };
   }
-  if (manifest.implementation.type === "const"){
+  if (manifest.implementation.type === 'const') {
     return {
       source: manifest.implementation.value,
-      type: "const",
+      type: 'const',
     };
   }
+}
 
+export function addKeyDetails() {
+  return async function (dispatch, getState) {
+    const currentState = getState();
+    if (!currentState.selectedKey.validation.isValid) {
+      dispatch({ type: SHOW_KEY_VALIDATIONS });
+      return;
+    }
+
+    dispatch({ type: KEY_ADDING_DETAILS });
+  };
 }
 
 export function openKey(key, { revision } = {}) {
@@ -108,10 +121,10 @@ export function openKey(key, { revision } = {}) {
     }
 
     const manifest = keyData.manifest || createBlankKeyManifest(key);
-    const keyDef = createKeyDef(keyData);
+    const implementation = createImplementation(keyData);
     const keyOpenedPayload = {
       key,
-      keyDef,
+      implementation,
       manifest,
     };
 
@@ -125,15 +138,15 @@ export function closeKey() {
   return { type: KEY_CLOSED };
 }
 
-export function updateKeyDef(keyDef) {
-  return { type: KEY_RULEDEF_UPDATED, payload: keyDef };
+export function updateImplementation(implementation) {
+  return { type: KEY_RULEDEF_UPDATED, payload: implementation };
 }
 
 export function updateKeyManifest(manifest) {
   return { type: KEY_MANIFEST_UPDATED, payload: manifest };
 }
 
-async function performSave(dispatch, keyName, { manifest, keyDef }) {
+async function performSave(dispatch, keyName, { manifest, implementation }) {
   dispatch({ type: KEY_SAVING });
 
   let isSaveSucceeded;
@@ -142,7 +155,7 @@ async function performSave(dispatch, keyName, { manifest, keyDef }) {
       method: 'put',
       ...withJsonData({
         manifest,
-        implementation: manifest.implementation.type === "file" ? keyDef.source : undefined,
+        implementation: manifest.implementation.type === 'file' ? implementation.source : undefined,
       }),
     });
     isSaveSucceeded = true;
@@ -193,7 +206,7 @@ const convertRuleValuesAlert = {
 
 export function updateKeyValueType(keyValueType) {
   return async function (dispatch, getState) {
-    const jpad = JSON.parse(getState().selectedKey.local.keyDef.source);
+    const jpad = JSON.parse(getState().selectedKey.local.implementation.source);
     const allRules = getAllRules({ jpad });
     const shouldShowAlert = allRules.some(
       x =>
@@ -217,6 +230,13 @@ export function updateKeyValueType(keyValueType) {
     };
 
     dispatch({ type: KEY_VALIDATION_CHANGE, payload: newValidation });
+  };
+}
+
+export function updateKeyPath(newKeyPath) {
+  return async function (dispatch, getState) {
+    await dispatch(updateKeyName(newKeyPath));
+    dispatch({ type: KEY_PATH_CHANGE, payload: newKeyPath });
   };
 }
 
@@ -304,10 +324,12 @@ const setValidationHintsVisibility = (validationState, isShown) => {
 
 const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
   let validation;
+  let formatSelected = false;
   if (key !== BLANK_KEY_NAME) {
     validation = {
       isValid: true,
     };
+    formatSelected = true;
   } else {
     validation = {
       key: keyNameValidations(key, []),
@@ -327,6 +349,7 @@ const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
     key,
     isLoaded: true,
     validation,
+    formatSelected,
   };
 };
 
@@ -339,7 +362,7 @@ const handleKeyRuleDefUpdated = (state, { payload }) => ({
   ...state,
   local: {
     ...state.local,
-    keyDef: { ...state.local.keyDef, ...payload },
+    implementation: { ...state.local.implementation, ...payload },
   },
 });
 
@@ -434,8 +457,40 @@ const handleDependentKeys = (state, { payload: { keyName, dependentKeys } }) => 
   };
 };
 
+const handleKeyAddingDetails = (state) => {
+  const implementation = {
+    type: state.local.manifest.implementation.type,
+    source: JSON.stringify(
+      {
+        partitions: [],
+        valueType: state.local.manifest.valueType,
+        rules: [],
+      },
+      null,
+      4,
+    ),
+  };
+  const oldLocal = state.local;
+
+  return {
+    ...state,
+    local: {
+      ...oldLocal,
+      implementation,
+    },
+    formatSelected: true,
+  };
+};
+
+const handleKeyPathChange = (state, { payload }) => ({
+  ...state,
+  key: payload,
+});
+
 export default handleActions(
   {
+    [KEY_PATH_CHANGE]: handleKeyPathChange,
+    [KEY_ADDING_DETAILS]: handleKeyAddingDetails,
     [KEY_OPENED]: handleKeyOpened,
     [KEY_OPENING]: handleKeyOpening,
     [KEY_RULEDEF_UPDATED]: handleKeyRuleDefUpdated,

@@ -77,13 +77,13 @@ describe('selectedKey', async () => {
         key: openedKeyName,
         local: {
           key: keyNameToAdd,
-          keyDef: {
+          implementation: {
             source: '',
           },
-          manifest:{
+          manifest: {
             implementation: {
-              type: "file",
-              format: "jpad",
+              type: 'file',
+              format: 'jpad',
             },
           },
         },
@@ -158,24 +158,24 @@ describe('selectedKey', async () => {
       const expectedServerData = {
         implementation: 'some key def source',
         manifest: {
-          key_path:"test",
-          meta:{
+          key_path: 'test',
+          meta: {
             name: '',
             description: '',
             valueType: '',
           },
-          implementation:{
-            type: "file",
-            format: "jpad",
+          implementation: {
+            type: 'file',
+            format: 'jpad',
           },
         },
       };
 
       const expectedPayload = {
         key: keyName,
-        keyDef: {
+        implementation: {
           source: expectedServerData.implementation,
-          type: "jpad",
+          type: 'jpad',
         },
         manifest: expectedServerData.manifest,
       };
@@ -190,7 +190,6 @@ describe('selectedKey', async () => {
       const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
       assertDispatchAction(keyOpenedDispatchAction, { type: KEY_OPENED, payload: expectedPayload });
     });
-
 
     it('should dispatch KEY_OPENED with correct payload if GET failed', async () => {
       // Arrange
@@ -406,7 +405,7 @@ describe('selectedKey', async () => {
       expectedKeyValueTypeValidation.isShowingHint = true;
 
       const initializeState = generateState('some key', 'some new key');
-      initializeState.selectedKey.local.keyDef.source = JSON.stringify({
+      initializeState.selectedKey.local.implementation.source = JSON.stringify({
         partitions: [],
         rules: [],
       });
@@ -445,7 +444,7 @@ describe('selectedKey', async () => {
       expectedKeyValueTypeValidation.isShowingHint = true;
 
       const initializeState = generateState('some key', 'some new key');
-      initializeState.selectedKey.local.keyDef.source = JSON.stringify({
+      initializeState.selectedKey.local.implementation.source = JSON.stringify({
         partitions: [],
         rules: [
           {

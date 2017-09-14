@@ -23,7 +23,7 @@ export function createBlankJPadKey() {
   };
 
   return {
-    keyDef: {
+    implementation: {
       source: JSON.stringify(keyDefSource, null, 4),
       type: 'jpad',
       valueType: '',
