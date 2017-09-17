@@ -164,7 +164,7 @@ namespace Tweek.ApiService.NetCore
 
             return typeName => {
                 var key = $"@tweek/custom_types/{typeName}";
-                var configuration = provider.GetService<ITweek>().Calculate(new [] { new ConfigurationPath(key)}, new HashSet<Identity>(),
+                var configuration = provider.GetService<ITweek>().Calculate(new [] { new ConfigurationPath(key)}, new System.Collections.Generic.HashSet<Identity>(),
                  i => ContextHelpers.EmptyContext);
 
                 //ugly, but fix weird compilation issue
