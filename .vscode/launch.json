@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "api-build",
-            "program": "${workspaceRoot}/services/api/Tweek.ApiService.NetCore/bin/Debug/netcoreapp1.1/Tweek.ApiService.NetCore.dll",
+            "program": "${workspaceRoot}/services/api/Tweek.ApiService.NetCore/bin/Debug/netcoreapp2.0/Tweek.ApiService.NetCore.dll",
             "args": [],
             "cwd": "${workspaceRoot}/services/api/Tweek.ApiService.NetCore",
             "stopAtEntry": false,
@@ -25,6 +25,7 @@
                 }
             },
             "env": {
+                "PUBLIC_KEY_PATH": "../../git-service/ssh/tweekgit_public.pfx",
                 "Rules__Management__Url": "http://localhost:4002",
                 "ASPNETCORE_ENVIRONMENT": "Development",
                 "Addons__Redis__className": "Tweek.Drivers.Redis.RedisServiceAddon",
