@@ -1,6 +1,6 @@
 {
   "name": "tweek-editor",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "private": true,
   "description": "",
   "engines": {
@@ -20,6 +20,7 @@
     "test": "jest",
     "eject": "react-scripts eject",
     "teardown": "yarn run docker-compose -- down --remove-orphans",
+    "logs": "yarn run docker-compose logs",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml",
     "format": "prettier-eslint --trailing-comma all --print-width 100 --single-quote --write",
     "format:all": "yarn run format \"**/*.js\"",
@@ -136,6 +137,7 @@
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-eslint": "^7.2.3",
+    "babel-loader": "^7.1.2",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.6.0",

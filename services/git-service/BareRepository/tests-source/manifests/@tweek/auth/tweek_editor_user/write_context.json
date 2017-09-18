@@ -1,7 +1,7 @@
 {
-    "key_path": "@tweek/editor/auth/tweek_editor_user/write_context",
+    "key_path": "@tweek/auth/tweek_editor_user/write_context",
     "meta": {
-        "name": "@tweek/editor/auth/tweek_editor_user/write_context",
+        "name": "@tweek/auth/tweek_editor_user/write_context",
         "description": "Determines permissions to write context",
         "tags": [],
         "readOnly": false,
