@@ -16,15 +16,17 @@ const KeyFormatSelector = compose(
     }).isRequired,
   }),
 )(({ format, validation, onFormatChanged }) =>
-  <div>
+  <div className="key-format-selector-container">
     <label className="key-format-label">Key format:</label>
-    <ValidationIcon show={validation.isShowingHint} hint={validation.hint} />
-    <ComboBox
-      suggestions={formatSuggestions}
-      value={format}
-      placeholder="Select Key Format"
-      onChange={(input, selected) => selected && onFormatChanged(selected.value)}
-    />
+    <div className="key-format-selector-wrapper" data-with-error={validation.isShowingHint}>
+      <ValidationIcon show={validation.isShowingHint} hint={validation.hint} />
+      <ComboBox
+        suggestions={formatSuggestions}
+        value={format}
+        placeholder="Select Key Format"
+        onChange={(input, selected) => selected && onFormatChanged(selected.value)}
+      />
+    </div>
   </div>,
 );
 

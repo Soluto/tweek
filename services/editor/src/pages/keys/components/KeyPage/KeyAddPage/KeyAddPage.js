@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import KeyValueTypeSelector from '../KeyEditPage/KeyValueTypeSelector/KeyValueTypeSelector';
 import NewKeyInput from '../KeyEditPage/NewKeyInput';
 import KeyFormatSelector from './KeyFormatSelector';
+import './KeyAddPage.css';
 
 const KeyAddPage = compose(
   setDisplayName('KeyAddPage'),
@@ -22,10 +23,15 @@ const KeyAddPage = compose(
       ? manifest.implementation.format
       : manifest.implementation.type;
   return (
-    <div>
-      <h1>Add new Key</h1>
-      <div className="new-key-input-wrapper">
-        <NewKeyInput onKeyNameChanged={name => updateKeyPath(name)} displayName={displayName} />
+    <div className="add-key-page">
+      <h3 className="heading-text">Add new Key</h3>
+      <div className="add-key-input-wrapper">
+        <label className="keypath-label">Keypath</label>
+        <div className="keypath-input">
+          <NewKeyInput onKeyNameChanged={name => updateKeyPath(name)} displayName={displayName} />
+        </div>
+      </div>
+      <div className="add-key-properties-wrapper">
         <KeyValueTypeSelector value={valueType} />
         <KeyFormatSelector
           format={format}
@@ -33,9 +39,12 @@ const KeyAddPage = compose(
           validation={validation.format}
         />
       </div>
-      <button className="add-key-button" data-comp="add-key-button" onClick={addKeyDetails}>
-        Add key
-      </button>
+      <div className="add-key-spacer" />
+      <div className="add-key-button-wrapper">
+        <button className="add-key-button" data-comp="add-key-button" onClick={addKeyDetails}>
+          Add key
+        </button>
+      </div>
     </div>
   );
 });

@@ -24,7 +24,9 @@
     "format": "prettier-eslint --trailing-comma all --print-width 100 --single-quote --write",
     "format:all": "yarn run format \"**/*.js\"",
     "precommit": "lint-staged",
-    "compile-less": "find . -name \"*.less\" | grep -v node_modules | xargs -n1 | cut -f1-2 -d. | xargs -n1 -I name lessc name.less name.css"
+    "build-less": "node-less-chokidar src/",
+    "watch-less": "npm run build-less && node-less-chokidar src/ -o src/ --watch --recursive",
+    "compile-less": "find . -name \"*.less\" | grep -v node_modules | xargs -n1 | cut -f1-2 -d. | xargs -P 10 -n1 -I name lessc name.less name.css"
   },
   "author": "",
   "proxy": {
@@ -149,6 +151,7 @@
     "jest-cli": "^20.0.4",
     "jest-css-modules": "^1.1.0",
     "lint-staged": "^3.6.0",
+    "node-less-chokidar": "^0.1.2",
     "nodemon": "^1.11.0",
     "prettier-eslint-cli": "^4.0.2",
     "react-scripts": "1.0.7",

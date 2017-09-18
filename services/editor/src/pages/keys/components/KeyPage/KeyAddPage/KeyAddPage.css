@@ -1,0 +1,120 @@
+.add-key-page {
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid lightgray;
+  padding: 15px;
+  box-sizing: content-box;
+  margin: 20px;
+  display: block;
+  margin-top: 72px;
+  margin-bottom: auto;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 0.5;
+}
+.add-key-page .add-key-input-wrapper {
+  display: flex;
+  flex-direction: row;
+  padding-left: 10px;
+}
+.add-key-page .add-key-input-wrapper .keypath-label {
+  font-size: 13px;
+  margin: 5px 5px 0 0;
+  color: gray;
+  display: flex;
+  flex-grow: 0;
+}
+.add-key-page .add-key-input-wrapper .keypath-input .auto-suggest-wrapper {
+  display: flex;
+}
+.add-key-page .add-key-input-wrapper .keypath-input .auto-suggest-wrapper[data-with-error="true"] .bootstrap-typeahead-input {
+  padding-left: 30px;
+}
+.add-key-page .add-key-input-wrapper .keypath-input .auto-suggest-wrapper .validation-icon-wrapper {
+  flex-direction: row;
+  width: 0;
+  margin: 11px 0 0 0;
+  position: absolute;
+  z-index: 7;
+  transition: all 0.2s ease-in-out;
+}
+.add-key-page .add-key-input-wrapper .keypath-input .auto-suggest-wrapper .validation-icon-wrapper[data-is-shown="true"] {
+  width: 16px;
+  height: 16px;
+  margin-top: 5px;
+  padding: 3px 5px;
+}
+.add-key-page .add-key-properties-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+}
+.add-key-page .add-key-properties-wrapper .key-format-selector-container {
+  display: flex;
+  flex-direction: row;
+  padding-left: 10px;
+}
+.add-key-page .add-key-properties-wrapper .key-format-selector-container .key-format-selector-wrapper {
+  display: flex;
+}
+.add-key-page .add-key-properties-wrapper .key-format-selector-container .key-format-selector-wrapper[data-with-error="true"] .bootstrap-typeahead-input {
+  padding-left: 30px;
+}
+.add-key-page .add-key-properties-wrapper .key-format-selector-container .key-format-selector-wrapper .validation-icon-wrapper {
+  flex-direction: row;
+  width: 0;
+  margin: 11px 0 0 0;
+  position: absolute;
+  z-index: 7;
+  transition: all 0.2s ease-in-out;
+}
+.add-key-page .add-key-properties-wrapper .key-format-selector-container .key-format-selector-wrapper .validation-icon-wrapper[data-is-shown="true"] {
+  width: 16px;
+  height: 16px;
+  margin-top: 5px;
+  padding: 3px 5px;
+}
+.add-key-page .add-key-properties-wrapper .key-format-selector-container .key-format-label {
+  font-size: 13px;
+  margin: 5px 5px 0 0;
+  color: gray;
+  display: flex;
+  flex-grow: 0;
+}
+.add-key-page .add-key-properties-wrapper .add-key-spacer {
+  margin-top: 36px;
+}
+.add-key-page .add-key-button-wrapper {
+  display: flex;
+  flex-direction: row-reverse;
+}
+.add-key-page .add-key-button-wrapper .add-key-button {
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+}
+.add-key-page .add-key-button-wrapper .add-key-button:hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+.add-key-page .add-key-button-wrapper .add-key-button:disabled {
+  background-color: gray;
+}
+.add-key-page .add-key-button-wrapper .add-key-button:disabled:hover,
+.add-key-page .add-key-button-wrapper .add-key-button:disabled:active {
+  cursor: default;
+  background-color: gray;
+}

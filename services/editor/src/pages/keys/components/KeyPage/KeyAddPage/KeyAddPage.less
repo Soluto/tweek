@@ -1,0 +1,86 @@
+@import (reference) "../../../../../styles/core/core.less";
+
+@text-padding: 10px;
+
+@with-validation-icon: {
+    &[data-with-error="true"] {
+        .bootstrap-typeahead-input {
+            padding-left: @text-padding * 3;
+        }
+    }
+    .validation-icon-wrapper {
+        flex-direction: row;
+        width: 0;
+        margin: 11px 0 0 0;
+        position: absolute;
+        z-index: 7;
+        .transitioned();
+        &[data-is-shown="true"] {
+            width: 16px;
+            height: 16px;
+            margin-top: 5px;
+            padding: 3px 5px;
+        }
+    }
+};
+
+.add-key-page {
+    .panel;
+    margin-top: 18px * 2 + 36px;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 0.5;
+    .add-key-input-wrapper {
+        display: flex;
+        flex-direction: row;
+        padding-left: @text-padding;
+        .keypath-label {
+            .label-text();
+        }
+        .keypath-input {
+            .auto-suggest-wrapper {
+                display: flex;
+                @with-validation-icon();
+            }
+        }
+    }
+    .add-key-properties-wrapper {
+        display: flex;
+        flex-direction: row;
+        flex-grow: 1;
+        .key-format-selector-container {
+            display: flex;
+            flex-direction: row;
+            padding-left: @text-padding;
+            .key-format-selector-wrapper {
+                display: flex;
+                @with-validation-icon();
+            }
+            .key-format-label{
+                .label-text;
+            }
+        }
+
+        .add-key-spacer {
+            margin-top: 36px;
+        }
+    }
+    .add-key-button-wrapper {
+        display: flex;
+        flex-direction: row-reverse;
+        .add-key-button {
+            .metro-button();
+        }
+    }
+}
+
+.label-text() {
+    font-size: 13px;
+    margin: 5px 5px 0 0;
+    color: gray;
+    display: flex;
+    flex-grow: 0;
+}
