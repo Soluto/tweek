@@ -15,22 +15,35 @@ export function createBlankKeyManifest(keyName, implementation = { type: 'file',
   };
 }
 
-export function createBlankJPadKey() {
-  const keyDefSource = {
-    partitions: [],
-    valueType: '',
-    rules: [],
-  };
+export function createSource(valueType = '', rules = [], partitions = []) {
+  return JSON.stringify({ valueType, rules, partitions }, null, 4);
+}
 
+export function createBlankJPadKey() {
   return {
     implementation: {
-      source: JSON.stringify(keyDefSource, null, 4),
+      source: createSource(),
       type: 'jpad',
       valueType: '',
     },
     manifest: createBlankKeyManifest('', {
       type: 'file',
       format: 'jpad',
+    }),
+    key: BLANK_KEY_NAME,
+  };
+}
+
+export function createBlankKey() {
+  return {
+    implementation: {
+      source: '',
+      type: '',
+      valueType: '',
+    },
+    manifest: createBlankKeyManifest('', {
+      type: '',
+      format: '',
     }),
     key: BLANK_KEY_NAME,
   };

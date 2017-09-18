@@ -10,19 +10,28 @@ const KeyAddPage = compose(
   setPropTypes({
     updateKeyPath: PropTypes.func.isRequired,
     addKeyDetails: PropTypes.func.isRequired,
-    updateImplementation: PropTypes.func.isRequired,
+    changeKeyFormat: PropTypes.func.isRequired,
     manifest: PropTypes.object.isRequired,
+    validation: PropTypes.object.isRequired,
   }),
-)(({ manifest, updateKeyPath, addKeyDetails, updateImplementation }) => {
+)(({ manifest, updateKeyPath, addKeyDetails, changeKeyFormat, validation }) => {
   const valueType = manifest.valueType;
   const displayName = manifest.meta.name;
+  const format =
+    manifest.implementation.type === 'file'
+      ? manifest.implementation.format
+      : manifest.implementation.type;
   return (
     <div>
       <h1>Add new Key</h1>
       <div className="new-key-input-wrapper">
         <NewKeyInput onKeyNameChanged={name => updateKeyPath(name)} displayName={displayName} />
         <KeyValueTypeSelector value={valueType} />
-        <KeyFormatSelector onFormatChanged={x => console.log('FROMAT', x)} />
+        <KeyFormatSelector
+          format={format}
+          onFormatChanged={changeKeyFormat}
+          validation={validation.format}
+        />
       </div>
       <button className="add-key-button" data-comp="add-key-button" onClick={addKeyDetails}>
         Add key

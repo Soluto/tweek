@@ -67,15 +67,17 @@ const KeyPage = compose(
     return <MessageKeyPage data-comp="loading-key" message="Loading..." />;
   }
 
-  if (isInAddMode && !formatSelected)
+  if (isInAddMode && !formatSelected) {
     return (
       <KeyAddPage
         addKeyDetails={props.addKeyDetails}
         updateKeyPath={props.updateKeyPath}
         manifest={selectedKey.local.manifest}
-        updateImplementation={props.updateImplementation}
+        changeKeyFormat={props.changeKeyFormat}
+        validation={selectedKey.validation}
       />
     );
+  }
 
   const { implementation } = selectedKey.local;
   return !implementation

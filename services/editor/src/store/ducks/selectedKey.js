@@ -5,17 +5,20 @@ import * as ContextService from '../../services/context-service';
 import fetch from '../../utils/fetch';
 import { withJsonData } from '../../utils/http';
 import {
-  createBlankJPadKey,
+  createBlankKey,
   createBlankKeyManifest,
+  createSource,
   BLANK_KEY_NAME,
 } from './ducks-utils/blankKeyDefinition';
 import keyNameValidations from './ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
+import keyFormatValidations from './ducks-utils/validations/key-format-validations';
 import { downloadTags } from './tags';
 import { showError } from './notifications';
 import { showConfirm } from './alerts';
 import { addKeyToList, removeKeyFromList } from './keys';
 
+const KEY_FORMAT_CHANGED = 'KEY_FORMAT_CHANGED';
 const KEY_PATH_CHANGE = 'KEY_PATH_CHANGE';
 const KEY_ADDING_DETAILS = 'KEY_ADDING_DETAILS';
 const KEY_OPENED = 'KEY_OPENED';
@@ -83,6 +86,19 @@ function createImplementation({ manifest, implementation }) {
   }
 }
 
+export function changeKeyFormat(newFormat) {
+  return async function (dispatch, getState) {
+    const currentValidationState = getState().selectedKey.validation;
+    const validations = {
+      ...currentValidationState,
+      format: keyFormatValidations(newFormat),
+    };
+    validations.format.isShowingHint = !validations.format.isValid;
+    dispatch({ type: KEY_VALIDATION_CHANGE, payload: validations });
+    dispatch({ type: KEY_FORMAT_CHANGED, payload: newFormat });
+  };
+}
+
 export function addKeyDetails() {
   return async function (dispatch, getState) {
     const currentState = getState();
@@ -105,7 +121,7 @@ export function openKey(key, { revision } = {}) {
     }
 
     if (key === BLANK_KEY_NAME) {
-      dispatch({ type: KEY_OPENED, payload: createBlankJPadKey() });
+      dispatch({ type: KEY_OPENED, payload: createBlankKey() });
       return;
     }
 
@@ -206,14 +222,18 @@ const convertRuleValuesAlert = {
 
 export function updateKeyValueType(keyValueType) {
   return async function (dispatch, getState) {
-    const jpad = JSON.parse(getState().selectedKey.local.implementation.source);
-    const allRules = getAllRules({ jpad });
-    const shouldShowAlert = allRules.some(
-      x =>
-        x.Type !== 'SingleVariant' || (x.Value !== null && x.Value !== undefined && x.Value !== ''),
-    );
+    const source = getState().selectedKey.local.implementation.source;
+    if (source) {
+      const jpad = JSON.parse(source);
+      const allRules = getAllRules({ jpad });
+      const shouldShowAlert = allRules.some(
+        x =>
+          x.Type !== 'SingleVariant' ||
+          (x.Value !== null && x.Value !== undefined && x.Value !== ''),
+      );
 
-    if (shouldShowAlert && !(await dispatch(showConfirm(convertRuleValuesAlert))).result) return;
+      if (shouldShowAlert && !(await dispatch(showConfirm(convertRuleValuesAlert))).result) return;
+    }
 
     const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
     keyValueTypeValidation.isShowingHint = !keyValueTypeValidation.isValid;
@@ -336,6 +356,7 @@ const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
       manifest: {
         valueType: keyValueTypeValidations(keyData.manifest.valueType),
       },
+      format: keyFormatValidations(),
       isValid: false,
     };
   }
@@ -487,8 +508,24 @@ const handleKeyPathChange = (state, { payload }) => ({
   key: payload,
 });
 
+const handleKeyFormatChange = (state, { payload }) => {
+  const value = payload === 'jpad' ? undefined : '';
+  const type = payload === 'jpad' ? 'file' : 'const';
+  const format = payload === 'const' ? undefined : payload;
+  const source = payload === 'const' ? null : createSource(state.local.manifest.valueType);
+  const patchState = R.compose(
+    R.assocPath(['local', 'manifest', 'implementation', 'type'], type),
+    R.assocPath(['local', 'manifest', 'implementation', 'format'], format),
+    R.assocPath(['local', 'manifest', 'implementation', 'value'], value),
+    R.assocPath(['local', 'implementation', 'type'], payload),
+    R.assocPath(['local', 'implementation', 'source'], source),
+  );
+  return patchState(state);
+};
+
 export default handleActions(
   {
+    [KEY_FORMAT_CHANGED]: handleKeyFormatChange,
     [KEY_PATH_CHANGE]: handleKeyPathChange,
     [KEY_ADDING_DETAILS]: handleKeyAddingDetails,
     [KEY_OPENED]: handleKeyOpened,
