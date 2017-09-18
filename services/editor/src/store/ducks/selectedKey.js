@@ -294,10 +294,8 @@ export function saveKey() {
     dispatch(updateRevisionHistory(savedKey));
     dispatch(updateDependentKeys(savedKey));
 
-    if (isNewKey) dispatch(addKeyToList(savedKey));
-    const shouldOpenNewKey = isNewKey && getState().selectedKey.key === BLANK_KEY_NAME;
-
-    if (shouldOpenNewKey) {
+    if (isNewKey) {
+      dispatch(addKeyToList(savedKey));
       dispatch(push(`/keys/${savedKey}`));
     }
   };
