@@ -6,11 +6,6 @@ import Rule from '../../utils/Rule';
 import Alert from '../../utils/Alert';
 
 describe('key-value-type', () => {
-  before(() => {
-    Key.add();
-    Rule.add().removeCondition();
-  });
-
   const expected = (valueType, Value) => ({
     partitions: [],
     valueType,
@@ -38,7 +33,12 @@ describe('key-value-type', () => {
 
   testCases.forEach(({ valueType, value, expected }) => {
     it(`should convert the type of the jpad to ${valueType}`, () => {
+      Key.add();
+      Key.setKeyFormat('jpad');
       Key.setValueType(valueType);
+      Key.setName('test');
+      Key.addDetails();
+      Rule.add().removeCondition();
       Alert.acceptIfRaised();
 
       Rule.select().setValue(value, valueType);

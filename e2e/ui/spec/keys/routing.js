@@ -8,7 +8,9 @@ const timeout = 1000;
 describe('navigating from key with changes', () => {
   const keyName = 'behavior_tests/routing';
 
-  beforeEach(() => Key.add());
+  beforeEach(() =>
+    Key.add().setValueType('boolean').setKeyFormat('jpad').setName('routing_test').addDetails(),
+  );
 
   it('should show confirm message if navigating to another key', () => {
     Rule.add();

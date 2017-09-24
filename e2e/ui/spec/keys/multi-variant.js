@@ -18,7 +18,7 @@ describe('MultiVariant value type', () => {
       },
     };
 
-    Key.setValueType('boolean');
+    Key.setValueType('boolean').setKeyFormat('jpad').setName('multi/boolean').addDetails();
 
     const rule = Rule.add().removeCondition().multiVariant().setIdentity('user');
 
@@ -54,7 +54,7 @@ describe('MultiVariant value type', () => {
       },
     };
 
-    Key.setValueType('string');
+    Key.setValueType('string').setKeyFormat('jpad').setName('multi/string').addDetails();
 
     Rule.add().removeCondition().multiVariant().setValues(args).setIdentity('other');
 

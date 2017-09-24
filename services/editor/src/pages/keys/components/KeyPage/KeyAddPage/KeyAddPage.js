@@ -23,7 +23,7 @@ const KeyAddPage = compose(
       ? manifest.implementation.format
       : manifest.implementation.type;
   return (
-    <div className="add-key-page">
+    <div id="add-key-page" className="add-key-page" data-comp="add-key-page">
       <h3 className="heading-text">Add new Key</h3>
       <div className="add-key-input-wrapper">
         <label className="keypath-label">Keypath</label>

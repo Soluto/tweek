@@ -21,6 +21,7 @@ const KeyFormatSelector = compose(
     <div className="key-format-selector-wrapper" data-with-error={validation.isShowingHint}>
       <ValidationIcon show={validation.isShowingHint} hint={validation.hint} />
       <ComboBox
+        data-comp="key-format-selector"
         suggestions={formatSuggestions}
         value={format}
         placeholder="Select Key Format"
