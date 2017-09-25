@@ -16,11 +16,11 @@ const UnarchiveButton = disableButton({ text: 'Restore key', dataComp: 'unarchiv
 const KeyPageActions = compose(
   connect(state => ({ selectedKey: state.selectedKey }), keysActions),
   mapProps(
-    ({ selectedKey: { key, local, remote, isSaving }, isInAddMode, isInStickyMode, ...props }) => ({
+    ({ selectedKey: { key, local, remote, isSaving }, isInStickyMode, ...props }) => ({
       ...props,
       hasChanges: !R.equals(local, remote),
       isSaving,
-      extraButtons: !isInAddMode && !isInStickyMode,
+      extraButtons: !isInStickyMode,
       archived: local && local.manifest.meta.archived,
     }),
   ),

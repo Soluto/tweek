@@ -27,7 +27,6 @@ const KeyPage = compose(
       return {
         selectedKey: state.selectedKey,
         configKey,
-        isInAddMode: configKey === BLANK_KEY_NAME,
         revision: location.query && location.query.revision,
         formatSelected: state.selectedKey && state.selectedKey.formatSelected,
       };
@@ -56,7 +55,7 @@ const KeyPage = compose(
       this.props.closeKey();
     },
   }),
-)(({ showCustomAlert, showAlert, showConfirm, isInAddMode, formatSelected, ...props }) => {
+)(({ showCustomAlert, showAlert, showConfirm, configKey, formatSelected, ...props }) => {
   const { selectedKey } = props;
   const alerter = {
     showCustomAlert,
@@ -67,7 +66,7 @@ const KeyPage = compose(
     return <MessageKeyPage data-comp="loading-key" message="Loading..." />;
   }
 
-  if (isInAddMode && !formatSelected) {
+  if ((configKey === BLANK_KEY_NAME) && !formatSelected) {
     return (
       <KeyAddPage
         addKeyDetails={props.addKeyDetails}
@@ -81,7 +80,7 @@ const KeyPage = compose(
 
   const { implementation } = selectedKey.local;
   return !implementation
-    ? <MessageKeyPage data-comp="key-not-found" message="None existent key" />
+    ? <MessageKeyPage data-comp="key-not-found" message="Non-existent key" />
     : <KeyEditPage {...props} alerter={alerter} />;
 });
 

@@ -108,7 +108,7 @@ class KeyEditPage extends Component {
   };
 
   render() {
-    const { selectedKey, isInAddMode, isInStickyMode, alerter, revision } = this.props;
+    const { selectedKey, isInStickyMode, alerter, revision } = this.props;
     const {
       key,
       local: { manifest, implementation },
@@ -121,7 +121,6 @@ class KeyEditPage extends Component {
     const commonHeadersProps = {
       onKeyNameChanged: this.onKeyNameChanged,
       onDisplayNameChanged: this.onDisplayNameChanged,
-      isInAddMode,
       isHistoricRevision,
       isReadonly,
       keyManifest: manifest,
@@ -165,7 +164,7 @@ class KeyEditPage extends Component {
 export default compose(stickyHeaderIdentifier('key-edit-page', 150), pure)(KeyEditPage);
 
 const KeyStickyHeader = (props) => {
-  const { isInAddMode, isReadonly, isHistoricRevision } = props;
+  const { isReadonly, isHistoricRevision } = props;
 
   return (
     <div className="sticky-key-header" disabled={isReadonly}>
@@ -173,7 +172,7 @@ const KeyStickyHeader = (props) => {
 
       {!isReadonly
         ? <div className="sticky-key-page-action-wrapper">
-            <KeyPageActions {...{ isInAddMode, isReadonly, isHistoricRevision }} isInStickyMode />
+            <KeyPageActions {...{ isReadonly, isHistoricRevision }} isInStickyMode />
           </div>
         : null}
     </div>
@@ -182,7 +181,6 @@ const KeyStickyHeader = (props) => {
 
 const KeyFullHeader = (props) => {
   const {
-    isInAddMode,
     isReadonly,
     revisionHistory,
     keyManifest,
@@ -196,7 +194,7 @@ const KeyFullHeader = (props) => {
 
   return (
     <div className="key-header">
-      <KeyPageActions {...{ isInAddMode, isReadonly, isHistoricRevision }} isInStickyMode={false} />
+      <KeyPageActions {...{ isReadonly, isHistoricRevision }} isInStickyMode={false} />
 
       <div className="key-meta-container">
         <div className="key-header-and-modification-wrapper">
@@ -207,14 +205,12 @@ const KeyFullHeader = (props) => {
         </div>
 
         <fieldset disabled={isReadonly} style={{ border: 'none' }}>
-          {!isInAddMode
-            ? <div className="key-full-path">
-                <label>Full path: </label>
-                <label className="actual-path">
-                  {keyFullPath}
-                </label>
-              </div>
-            : null}
+          <div className="key-full-path">
+            <label>Full path: </label>
+            <label className="actual-path">
+              {keyFullPath}
+            </label>
+          </div>
 
           <div className="key-description-and-tags-wrapper">
             <div className="key-description-wrapper">
