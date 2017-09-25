@@ -6,6 +6,7 @@
   box-sizing: content-box;
   margin: 20px;
   display: block;
+  padding: 35px;
   margin-top: 72px;
   margin-bottom: auto;
   margin-left: auto;
@@ -14,23 +15,37 @@
   flex-direction: column;
   flex-grow: 0.5;
 }
+.add-key-page h3 {
+  font-size: 22px;
+  padding-left: 10px;
+  margin: 0px 0px 58px 0px;
+}
 .add-key-page .add-key-input-wrapper {
   display: flex;
   flex-direction: row;
   padding-left: 10px;
+  margin-bottom: 41px;
 }
 .add-key-page .add-key-input-wrapper .keypath-label {
-  font-size: 13px;
-  margin: 5px 5px 0 0;
+  font-size: 16px;
+  margin: 0px 5px 0 0;
   color: gray;
   display: flex;
   flex-grow: 0;
 }
 .add-key-page .add-key-input-wrapper .keypath-input .auto-suggest-wrapper {
   display: flex;
+  align-items: stretch;
+}
+.add-key-page .add-key-input-wrapper .keypath-input .auto-suggest-wrapper .bootstrap-typeahead-input {
+  padding-left: 10px;
+  font-size: 15px;
+  height: auto;
 }
 .add-key-page .add-key-input-wrapper .keypath-input .auto-suggest-wrapper[data-with-error="true"] .bootstrap-typeahead-input {
   padding-left: 30px;
+  font-size: 15px;
+  height: auto;
 }
 .add-key-page .add-key-input-wrapper .keypath-input .auto-suggest-wrapper .validation-icon-wrapper {
   flex-direction: row;
@@ -59,8 +74,15 @@
 .add-key-page .add-key-properties-wrapper .key-format-selector-container .key-format-selector-wrapper {
   display: flex;
 }
+.add-key-page .add-key-properties-wrapper .key-format-selector-container .key-format-selector-wrapper .bootstrap-typeahead-input {
+  padding-left: 10px;
+  font-size: 15px;
+  height: auto;
+}
 .add-key-page .add-key-properties-wrapper .key-format-selector-container .key-format-selector-wrapper[data-with-error="true"] .bootstrap-typeahead-input {
   padding-left: 30px;
+  font-size: 15px;
+  height: auto;
 }
 .add-key-page .add-key-properties-wrapper .key-format-selector-container .key-format-selector-wrapper .validation-icon-wrapper {
   flex-direction: row;
@@ -77,13 +99,44 @@
   padding: 3px 5px;
 }
 .add-key-page .add-key-properties-wrapper .key-format-selector-container .key-format-label {
-  font-size: 13px;
-  margin: 5px 5px 0 0;
+  font-size: 16px;
+  margin: 0px 5px 0 0;
   color: gray;
   display: flex;
   flex-grow: 0;
 }
-.add-key-page .add-key-properties-wrapper .add-key-spacer {
+.add-key-page .key-value-type-selector-container .key-value-type-selector-wrapper .bootstrap-typeahead .bootstrap-typeahead-input {
+  padding-left: 10px;
+  font-size: 15px;
+  height: auto;
+}
+.add-key-page .key-value-type-selector-container .key-value-type-selector-wrapper .bootstrap-typeahead[data-with-error="true"] .bootstrap-typeahead-input {
+  padding-left: 30px;
+  font-size: 15px;
+  height: auto;
+}
+.add-key-page .key-value-type-selector-container .key-value-type-selector-wrapper .bootstrap-typeahead .validation-icon-wrapper {
+  flex-direction: row;
+  width: 0;
+  margin: 11px 0 0 0;
+  position: absolute;
+  z-index: 7;
+  transition: all 0.2s ease-in-out;
+}
+.add-key-page .key-value-type-selector-container .key-value-type-selector-wrapper .bootstrap-typeahead .validation-icon-wrapper[data-is-shown="true"] {
+  width: 16px;
+  height: 16px;
+  margin-top: 5px;
+  padding: 3px 5px;
+}
+.add-key-page .key-value-type-selector-container .key-value-type-label {
+  font-size: 16px;
+  margin: 0px 5px 0 0;
+  color: gray;
+  display: flex;
+  flex-grow: 0;
+}
+.add-key-page .add-key-spacer {
   margin-top: 36px;
 }
 .add-key-page .add-key-button-wrapper {
@@ -105,6 +158,10 @@
   -webkit-user-select: none;
   user-select: none;
   transition: all 0.2s ease-in-out;
+  font-size: 16px;
+  width: 200px;
+  height: 50px;
+  border-radius: 25px;
 }
 .add-key-page .add-key-button-wrapper .add-key-button:hover {
   background-color: #029CD5;

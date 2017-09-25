@@ -32,14 +32,14 @@ const KeyAddPage = compose(
         </div>
       </div>
       <div className="add-key-properties-wrapper">
-        <KeyValueTypeSelector value={valueType} />
         <KeyFormatSelector
           format={format}
           onFormatChanged={changeKeyFormat}
           validation={validation.format}
         />
+        <KeyValueTypeSelector value={valueType} />
       </div>
-      <div className="add-key-spacer" />
+      <div className="add-key-spacer">{' '}</div>
       <div className="add-key-button-wrapper">
         <button className="add-key-button" data-comp="add-key-button" onClick={addKeyDetails}>
           Add key

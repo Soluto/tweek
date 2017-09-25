@@ -1,11 +1,21 @@
 @import (reference) "../../../../../styles/core/core.less";
 
 @text-padding: 10px;
+@panel-padding: 35px;
+@small-font: 16px;
+@large-font: 22px;
 
 @with-validation-icon: {
+    .bootstrap-typeahead-input {
+        padding-left: @text-padding;
+        font-size: @small-font - 1px;
+        height: auto;
+    }
     &[data-with-error="true"] {
         .bootstrap-typeahead-input {
             padding-left: @text-padding * 3;
+            font-size: @small-font - 1px;
+            height: auto;
         }
     }
     .validation-icon-wrapper {
@@ -26,6 +36,7 @@
 
 .add-key-page {
     .panel;
+    padding: @panel-padding;
     margin-top: 18px * 2 + 36px;
     margin-bottom: auto;
     margin-left: auto;
@@ -33,16 +44,25 @@
     display: flex;
     flex-direction: column;
     flex-grow: 0.5;
+
+    h3 {
+        font-size: @large-font;
+        padding-left: @text-padding;
+        margin: 0px 0px 58px 0px;
+    }
+
     .add-key-input-wrapper {
         display: flex;
         flex-direction: row;
         padding-left: @text-padding;
+        margin-bottom: 41px;
         .keypath-label {
             .label-text();
         }
         .keypath-input {
             .auto-suggest-wrapper {
                 display: flex;
+                align-items: stretch;
                 @with-validation-icon();
             }
         }
@@ -60,26 +80,40 @@
                 @with-validation-icon();
             }
             .key-format-label{
-                .label-text;
+                .label-text();
             }
         }
-
-        .add-key-spacer {
-            margin-top: 36px;
+    }
+    .key-value-type-selector-container {
+        .key-value-type-selector-wrapper {
+            .bootstrap-typeahead {
+                @with-validation-icon();
+            }
         }
+        .key-value-type-label {
+            .label-text();
+        }
+    }
+
+    .add-key-spacer {
+        margin-top: 36px;
     }
     .add-key-button-wrapper {
         display: flex;
         flex-direction: row-reverse;
         .add-key-button {
             .metro-button();
+            font-size: @small-font;
+            width: 200px;
+            height: 50px;
+            border-radius: 25px;
         }
     }
 }
 
 .label-text() {
-    font-size: 13px;
-    margin: 5px 5px 0 0;
+    font-size: @small-font;
+    margin: 0px 5px 0 0;
     color: gray;
     display: flex;
     flex-grow: 0;

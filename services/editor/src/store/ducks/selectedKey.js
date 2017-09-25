@@ -122,6 +122,8 @@ export function openKey(key, { revision } = {}) {
 
     if (key === BLANK_KEY_NAME) {
       dispatch({ type: KEY_OPENED, payload: createBlankKey() });
+      dispatch(changeKeyFormat('jpad'));
+      dispatch(updateKeyValueType('string'));
       return;
     }
 
