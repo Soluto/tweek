@@ -8,13 +8,13 @@
   },
   "scripts": {
     "start:service-worker": "webpack --config ./service-worker/webpack.config.js --watch",
-    "start:client": "react-scripts start",
+    "start:client": "yarn run build-less && concurrently --kill-others \"yarn run watch-less\" \"react-scripts start\"",
     "start:server": "nodemon --watch server server/index.js --exec babel-node -- --GIT_USER git --GIT_URL ssh://git@localhost:4001/tweek/repo --GIT_PUBLIC_KEY_PATH ../git-service/ssh/tweekgit.pub --GIT_PRIVATE_KEY_PATH ../git-service/ssh/tweekgit --TWEEK_API_HOSTNAME http://localhost:4003 --AUTHORING_API_HOSTNAME http://localhost:4005 --MANAGEMENT_HOSTNAME=http://localhost:4002",
     "start": "concurrently --kill-others \"yarn run start:service-worker\" \"yarn run start:client\" \"yarn run start:server\"",
     "start:full-env": "yarn run docker-compose -- up -d api authoring && yarn run start",
     "start:release": "node ./dist/index.js",
     "build:service-worker": "webpack --config ./service-worker/webpack.config.js",
-    "build:client": "react-scripts build",
+    "build:client": "yarn run build-less && react-scripts build",
     "build:server": "babel server --out-dir dist && exit 0",
     "build": "concurrently --kill-others-on-fail \"yarn run build:service-worker && yarn run build:client\" \"yarn run build:server\"",
     "test": "jest",
@@ -26,8 +26,7 @@
     "format:all": "yarn run format \"**/*.js\"",
     "precommit": "lint-staged",
     "build-less": "node-less-chokidar src/",
-    "watch-less": "npm run build-less && node-less-chokidar src/ -o src/ --watch --recursive",
-    "compile-less": "find . -name \"*.less\" | grep -v node_modules | xargs -n1 | cut -f1-2 -d. | xargs -P 10 -n1 -I name lessc name.less name.css"
+    "watch-less": "npm run build-less && node-less-chokidar src/ -o src/ --watch --recursive"
   },
   "author": "",
   "proxy": {
