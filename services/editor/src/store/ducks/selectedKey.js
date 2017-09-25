@@ -4,6 +4,7 @@ import { push } from 'react-router-redux';
 import * as ContextService from '../../services/context-service';
 import fetch from '../../utils/fetch';
 import { withJsonData } from '../../utils/http';
+import { getManifestImplementationByFormat } from '../../utils/keyFormatHelpers';
 import {
   createBlankKey,
   createBlankKeyManifest,
@@ -509,10 +510,9 @@ const handleKeyPathChange = (state, { payload }) => ({
 });
 
 const handleKeyFormatChange = (state, { payload }) => {
-  const value = payload === 'jpad' ? undefined : '';
-  const type = payload === 'jpad' ? 'file' : 'const';
-  const format = payload === 'const' ? undefined : payload;
+  const { value, type, format } = getManifestImplementationByFormat(payload);
   const source = payload === 'const' ? null : createSource(state.local.manifest.valueType);
+
   const patchState = R.compose(
     R.assocPath(['local', 'manifest', 'implementation', 'type'], type),
     R.assocPath(['local', 'manifest', 'implementation', 'format'], format),
