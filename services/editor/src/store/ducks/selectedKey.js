@@ -100,6 +100,27 @@ export function changeKeyFormat(newFormat) {
   };
 }
 
+const confirmAddKeyAlert = {
+  title: 'Adding New Key',
+  message: 'Adding new key will discard all your changes.\nDo you want to continue?',
+};
+
+export const addKey = shouldShowConfirmationScreen =>
+  async function (dispatch, getState) {
+    let shouldContinue = true;
+    if(shouldShowConfirmationScreen(getState())) {
+      shouldContinue = (await dispatch(showConfirm(confirmAddKeyAlert))).result;
+    }
+    if(shouldContinue) {
+      // update the state to empty key in order to skip on leave hook
+      dispatch({ type: KEY_OPENED, payload: createBlankKey() });
+      // navigate and set defaults
+      dispatch(push('/keys/_blank'));
+      dispatch(changeKeyFormat('jpad'));
+      dispatch(updateKeyValueType('string'));
+    }
+  };
+
 export function addKeyDetails() {
   return async function (dispatch, getState) {
     const currentState = getState();

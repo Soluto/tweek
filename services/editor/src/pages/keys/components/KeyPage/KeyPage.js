@@ -1,22 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, lifecycle } from 'recompose';
-import R from 'ramda';
 import * as selectedKeyActions from '../../../../store/ducks/selectedKey';
 import * as alertActions from '../../../../store/ducks/alerts';
 import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefinition';
 import routeLeaveHook from '../../../../hoc/route-leave-hook';
+import hasUnsavedChanges from '../utils/hasUnsavedChanges';
 import MessageKeyPage from './MessageKeyPage/MessageKeyPage';
 import KeyEditPage from './KeyEditPage/KeyEditPage';
 import KeyAddPage from './KeyAddPage/KeyAddPage';
 import './KeyPage.css';
-
-const onRouteLeaveConfirmFunc = (props) => {
-  if (!props.selectedKey || props.selectedKey.isSaving) return false;
-
-  const { local, remote } = props.selectedKey;
-  return !R.equals(local, remote);
-};
 
 const KeyPage = compose(
   connect(
@@ -34,7 +27,7 @@ const KeyPage = compose(
     { ...selectedKeyActions, ...alertActions },
   ),
   routeLeaveHook(
-    onRouteLeaveConfirmFunc,
+    hasUnsavedChanges,
     'You have unsaved changes, are you sure you want to leave this page?',
     { className: 'key-page-wrapper' },
   ),
