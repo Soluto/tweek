@@ -225,8 +225,10 @@ const convertRuleValuesAlert = {
 
 export function updateKeyValueType(keyValueType) {
   return async function (dispatch, getState) {
-    const source = getState().selectedKey.local.implementation.source;
-    if (source) {
+    const local = getState().selectedKey.local;
+    const { type, format } = local.manifest.implementation;
+    if (type === 'file' && format === 'jpad') {
+      const source = local.implementation.source;
       const jpad = JSON.parse(source);
       const allRules = getAllRules({ jpad });
       const shouldShowAlert = allRules.some(
