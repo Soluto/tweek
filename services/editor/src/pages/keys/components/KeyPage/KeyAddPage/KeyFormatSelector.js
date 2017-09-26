@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { compose, setDisplayName, setPropTypes } from 'recompose';
 import ValidationIcon from '../../../../../components/common/ValidationIcon';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
-import { formatSuggestions } from '../../../../../utils/keyFormatHelpers';
+import { formatSuggestions, validKeyFormats } from '../../../../../utils/keyFormatHelpers';
 
 const KeyFormatSelector = compose(
   setDisplayName('KeyFormatSelector'),
   setPropTypes({
     onFormatChanged: PropTypes.func.isRequired,
-    format: PropTypes.oneOf(['const', 'jpad', '']),
+    format: PropTypes.oneOf([...validKeyFormats, '']),
     validation: PropTypes.shape({
       isShowingHint: PropTypes.bool,
       hint: PropTypes.string,
