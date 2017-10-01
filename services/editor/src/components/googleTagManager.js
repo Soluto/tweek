@@ -3,6 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import gtmParts from 'react-google-tag-manager';
 import { componentFromStream } from 'recompose';
+import fetch from '../utils/fetch';
 
 class GoogleTagManagerContainer extends React.Component {
   componentDidMount() {
@@ -46,8 +47,13 @@ class GoogleTagManagerContainer extends React.Component {
 }
 
 const getConfigValue = async (configName) => {
-  const response = await fetch(`/api/editor-configuration/google_tag_manager/${configName}`);
-  return await response.json();
+  try {
+    const response = await fetch(`/api/editor-configuration/google_tag_manager/${configName}`);
+    return await response.json();
+  } catch (err) {
+    console.warn('failed to retrieve configuration', configName, err);
+    return null;
+  }
 };
 
 const GoogleTagManagerWithConfig = componentFromStream((prop$) => {
