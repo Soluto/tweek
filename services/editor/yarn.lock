@@ -6932,9 +6932,9 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^2.0.0"
     inherits "^2.0.1"
 
-rodal@^1.5.1:
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/rodal/-/rodal-1.5.4.tgz#3af4f43762282a3bc3313f503093bebd9ddea9b8"
+rodal@^1.5.5:
+  version "1.5.5"
+  resolved "https://registry.yarnpkg.com/rodal/-/rodal-1.5.5.tgz#3cefe5dd03fee3d1da68ffa0e94150ca005ad766"
   dependencies:
     prop-types "^15.5.10"
     react "^15.5.4"
