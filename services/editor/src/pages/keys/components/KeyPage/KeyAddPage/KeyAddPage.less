@@ -47,10 +47,6 @@
     }
 };
 
-@with-combo-box: {
-    .combo-box-basic(@dropdown-min-width: 30vw, @input-width: 30vw, @font-size: @smaller-font);
-};
-
 .add-key-page {
     .panel;
     padding: @panel-padding;
@@ -142,8 +138,11 @@
         }
     }
 
-    .add-key-spacer {
+    .vspace {
         margin-top: 36px;
+    }
+    .hspace {
+        margin-left: 36px;
     }
     .add-key-button-wrapper {
         display: flex;

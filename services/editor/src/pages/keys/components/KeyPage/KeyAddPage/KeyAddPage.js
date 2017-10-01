@@ -37,9 +37,10 @@ const KeyAddPage = compose(
           onFormatChanged={changeKeyFormat}
           validation={validation.format}
         />
+        <div className="hspace" />
         <KeyValueTypeSelector value={valueType} />
       </div>
-      <div className="add-key-spacer">{' '}</div>
+      <div className="vspace" />
       <div className="add-key-button-wrapper">
         <button className="add-key-button" data-comp="add-key-button" onClick={addKeyDetails}>
           Continue

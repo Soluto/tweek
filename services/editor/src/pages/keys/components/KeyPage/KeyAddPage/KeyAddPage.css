@@ -1073,8 +1073,11 @@
   align-items: center;
   padding-bottom: 1px;
 }
-.add-key-page .add-key-spacer {
+.add-key-page .vspace {
   margin-top: 36px;
+}
+.add-key-page .hspace {
+  margin-left: 36px;
 }
 .add-key-page .add-key-button-wrapper {
   display: flex;
