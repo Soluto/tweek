@@ -34,13 +34,16 @@ namespace Tweek.ApiService.NetCore.Controllers
 
         [HttpGet("status")]
         [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public dynamic Status()
             => _diagnosticsProviders.ToDictionary(provider => provider.Name, provider => provider.GetDetails());
 
         [HttpGet("gc")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public bool GC() => System.Runtime.GCSettings.IsServerGC;
 
         [HttpGet("")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public void Default(){
             
         }
