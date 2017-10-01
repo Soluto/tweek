@@ -1150,3 +1150,9 @@
   z-index: 1;
   transition: all 0.2s ease-in-out;
 }
+.property-combobox-container .validation-icon-wrapper i {
+  background-image: url('../../../../../resources/alert-icon.svg');
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+}
