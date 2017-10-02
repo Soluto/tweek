@@ -461,6 +461,7 @@ const handleDependentKeys = (state, { payload: { keyName, dependentKeys } }) => 
 };
 
 const handleKeyAddingDetails = (state) => {
+  console.log('MANIFEST', state.local.manifest)
   const implementation = {
     type: state.local.manifest.implementation.type,
     source: JSON.stringify(
@@ -490,7 +491,7 @@ const handleKeyPathChange = (state, { payload }) => ({
   key: payload,
 });
 
-const handleKeyFormatChange = (state, { payload: { implementation } }) => R.assocPath(['local', 'manifest', 'implementation'], implementation, state);
+const handleKeyFormatChange = (state, { payload }) => R.assocPath(['local', 'manifest', 'implementation'], payload, state);
 
 export default handleActions(
   {
