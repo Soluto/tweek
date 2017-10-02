@@ -20,3 +20,9 @@ h3 {
   margin-left: 4px;
   margin-bottom: 4px;
 }
+.validation-icon-wrapper i {
+  background-image: url('../resources/alert-icon.svg');
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+}
