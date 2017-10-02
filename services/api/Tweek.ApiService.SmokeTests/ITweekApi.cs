@@ -16,6 +16,9 @@ namespace Tweek.ApiService.SmokeTests
 
         Task RemoveFromContext([Path] string identityType, [Path]string identityId, string property);
 
+        [Get("/api/v1/repo-version")]
+        Task<string> GetRepositoryVersion();
+
         [Get("/api/swagger.json")]
         Task<JToken> GetSwagger();
 
