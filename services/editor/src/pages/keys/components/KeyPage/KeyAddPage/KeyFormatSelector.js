@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose, setDisplayName, setPropTypes, withStateHandlers } from 'recompose';
-import ValidationIcon from '../../../../../components/common/ValidationIcon';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import { validKeyFormats, getManifestImplementationByFormat } from './../../utils/keyFormatHelpers';
 
@@ -24,11 +23,10 @@ const KeyFormatSelector = compose(
       };
     },
   }),
-)(({ format, validation, updateFormat }) =>
+)(({ format, updateFormat }) =>
   <div className="key-format-selector-container">
     <label className="key-format-label">Key format:</label>
-    <div className="key-format-selector-wrapper" data-with-error={!validation.isValid}>
-      <ValidationIcon show={!validation.isValid} hint={validation.hint} />
+    <div className="key-format-selector-wrapper" >
       <ComboBox
         data-comp="key-format-selector"
         suggestions={formatSuggestions}
