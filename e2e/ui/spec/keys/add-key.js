@@ -18,7 +18,8 @@ describe('add key', () => {
     expect(browser.isExisting(keyPathSuggestions)).to.be.false;
     expect(Rule.count()).to.equal(0);
 
-    Key.setName(keyToAddFullPath).setValueType('string');
+    Key.setName(keyToAddFullPath).setValueType('string').setKeyFormat('jpad');
+    Key.continueToDetails();
 
     expect(Key.hasChanges).to.be.true;
 

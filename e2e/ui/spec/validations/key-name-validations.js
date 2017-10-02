@@ -5,7 +5,12 @@ import Key from '../../utils/Key';
 import { dataComp, dataField } from '../../utils/selector-utils';
 
 function addEmptyKey(keyName, keyValueType = 'String') {
-  Key.add().setName(keyName).setValueType(keyValueType).commitChanges();
+  Key.add()
+    .setName(keyName)
+    .setValueType(keyValueType)
+    .setKeyFormat('jpad')
+    .continueToDetails()
+    .commitChanges();
 }
 
 const keyNameValidation = `${dataComp('new-key-name')} ${dataComp('validation-icon')}`;
@@ -48,12 +53,11 @@ describe('key name validations', () => {
     });
   });
 
-  it('should show validaton alert on clicking save without a value', () => {
+  it('should show validaton alert on clicking "Continue" without a value', () => {
     Key.add()
       .setValueType('string') // to make local changes
-      .clickSave();
+      .clickContinue();
 
-    expect(Key.isSaving, 'should not enter saving mode').to.be.false;
     expect(browser.isVisible(keyNameValidation), 'should show key name validation').to.be.true;
   });
 
