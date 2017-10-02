@@ -72,12 +72,12 @@ class Key {
     return this;
   }
 
-  clickAddDetails() {
+  clickContinue() {
     browser.click(dataComp('add-key-button'));
   }
 
-  addDetails() {
-    this.clickAddDetails();
+  continueToDetails() {
+    this.clickContinue();
     return this.waitToLoad();
   }
 

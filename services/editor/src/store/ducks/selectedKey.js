@@ -4,16 +4,14 @@ import { push } from 'react-router-redux';
 import * as ContextService from '../../services/context-service';
 import fetch from '../../utils/fetch';
 import { withJsonData } from '../../utils/http';
-import { getManifestImplementationByFormat } from '../../utils/keyFormatHelpers';
 import {
   createBlankKey,
   createBlankKeyManifest,
-  createSource,
   BLANK_KEY_NAME,
 } from './ducks-utils/blankKeyDefinition';
 import keyNameValidations from './ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
-import keyFormatValidations from './ducks-utils/validations/key-format-validations';
+import { continueGuard } from './ducks-utils/guards';
 import { downloadTags } from './tags';
 import { showError } from './notifications';
 import { showConfirm } from './alerts';
@@ -88,14 +86,7 @@ function createImplementation({ manifest, implementation }) {
 }
 
 export function changeKeyFormat(newFormat) {
-  return async function (dispatch, getState) {
-    const currentValidationState = getState().selectedKey.validation;
-    const validations = {
-      ...currentValidationState,
-      format: keyFormatValidations(newFormat),
-    };
-    validations.format.isShowingHint = !validations.format.isValid;
-    dispatch({ type: KEY_VALIDATION_CHANGE, payload: validations });
+  return function (dispatch) {
     dispatch({ type: KEY_FORMAT_CHANGED, payload: newFormat });
   };
 }
@@ -106,20 +97,13 @@ const confirmAddKeyAlert = {
 };
 
 export const addKey = shouldShowConfirmationScreen =>
-  async function (dispatch, getState) {
-    let shouldContinue = true;
-    if(shouldShowConfirmationScreen(getState())) {
-      shouldContinue = (await dispatch(showConfirm(confirmAddKeyAlert))).result;
-    }
-    if(shouldContinue) {
-      // update the state to empty key in order to skip on leave hook
-      dispatch({ type: KEY_OPENED, payload: createBlankKey() });
-      // navigate and set defaults
-      dispatch(push('/keys/_blank'));
-      dispatch(changeKeyFormat('jpad'));
-      dispatch(updateKeyValueType('string'));
-    }
-  };
+  continueGuard(shouldShowConfirmationScreen, confirmAddKeyAlert, (dispatch) => {
+    // update the state to empty key in order to skip on leave hook
+    dispatch({ type: KEY_OPENED, payload: createBlankKey() });
+    // navigate and set defaults
+    dispatch(push('/keys/_blank'));
+    dispatch(changeKeyValueType('string'));
+  });
 
 export function addKeyDetails() {
   return async function (dispatch, getState) {
@@ -144,8 +128,8 @@ export function openKey(key, { revision } = {}) {
 
     if (key === BLANK_KEY_NAME) {
       dispatch({ type: KEY_OPENED, payload: createBlankKey() });
-      dispatch(changeKeyFormat('jpad'));
-      dispatch(updateKeyValueType('string'));
+      // TODO: remove the code below
+      dispatch(changeKeyValueType('string'));
       return;
     }
 
@@ -233,34 +217,8 @@ export function archiveKey(archived) {
   };
 }
 
-function getAllRules({ jpad, rules = [jpad.rules], depth = jpad.partitions.length }) {
-  return depth === 0
-    ? R.flatten(rules)
-    : getAllRules({ rules: R.flatten(rules.map(x => Object.values(x))), depth: depth - 1 });
-}
-
-const convertRuleValuesAlert = {
-  title: 'Attention',
-  message: 'Rule values will try to be converted to new type.\nDo you want to continue?',
-};
-
-export function updateKeyValueType(keyValueType) {
+export function changeKeyValueType(keyValueType) {
   return async function (dispatch, getState) {
-    const local = getState().selectedKey.local;
-    const { type, format } = local.manifest.implementation;
-    if (type === 'file' && format === 'jpad') {
-      const source = local.implementation.source;
-      const jpad = JSON.parse(source);
-      const allRules = getAllRules({ jpad });
-      const shouldShowAlert = allRules.some(
-        x =>
-          x.Type !== 'SingleVariant' ||
-          (x.Value !== null && x.Value !== undefined && x.Value !== ''),
-      );
-
-      if (shouldShowAlert && !(await dispatch(showConfirm(convertRuleValuesAlert))).result) return;
-    }
-
     const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
     keyValueTypeValidation.isShowingHint = !keyValueTypeValidation.isValid;
 
@@ -368,19 +326,18 @@ const setValidationHintsVisibility = (validationState, isShown) => {
 
 const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
   let validation;
-  let formatSelected = false;
+  let detailsAdded = false;
   if (key !== BLANK_KEY_NAME) {
     validation = {
       isValid: true,
     };
-    formatSelected = true;
+    detailsAdded = true;
   } else {
     validation = {
       key: keyNameValidations(key, []),
       manifest: {
         valueType: keyValueTypeValidations(keyData.manifest.valueType),
       },
-      format: keyFormatValidations(),
       isValid: false,
     };
   }
@@ -394,7 +351,7 @@ const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
     key,
     isLoaded: true,
     validation,
-    formatSelected,
+    detailsAdded,
   };
 };
 
@@ -479,10 +436,11 @@ const handleKeyValueTypeChange = (
 });
 
 const handleShowKeyValidations = ({ validation, ...state }) => {
-  setValidationHintsVisibility(validation, true);
+  const newValidation = R.clone(validation);
+  setValidationHintsVisibility(newValidation, true);
   return {
     ...state,
-    validation,
+    validation: newValidation,
   };
 };
 
@@ -523,7 +481,7 @@ const handleKeyAddingDetails = (state) => {
       ...oldLocal,
       implementation,
     },
-    formatSelected: true,
+    detailsAdded: true,
   };
 };
 
@@ -533,15 +491,12 @@ const handleKeyPathChange = (state, { payload }) => ({
 });
 
 const handleKeyFormatChange = (state, { payload }) => {
-  const { value, type, format } = getManifestImplementationByFormat(payload);
-  const source = payload === 'const' ? null : createSource(state.local.manifest.valueType);
+  const { implementation: { value, type, format } } = payload;
 
   const patchState = R.compose(
     R.assocPath(['local', 'manifest', 'implementation', 'type'], type),
     R.assocPath(['local', 'manifest', 'implementation', 'format'], format),
     R.assocPath(['local', 'manifest', 'implementation', 'value'], value),
-    R.assocPath(['local', 'implementation', 'type'], payload),
-    R.assocPath(['local', 'implementation', 'source'], source),
   );
   return patchState(state);
 };

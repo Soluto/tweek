@@ -15,14 +15,14 @@ export function createBlankKeyManifest(keyName, implementation = { type: 'file',
   };
 }
 
-export function createSource(valueType = '', rules = [], partitions = []) {
+export function createJPadSource(valueType = '', rules = [], partitions = []) {
   return JSON.stringify({ valueType, rules, partitions }, null, 4);
 }
 
 export function createBlankJPadKey() {
   return {
     implementation: {
-      source: createSource(),
+      source: createJPadSource(),
       type: 'jpad',
       valueType: '',
     },

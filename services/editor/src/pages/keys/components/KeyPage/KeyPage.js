@@ -21,7 +21,7 @@ const KeyPage = compose(
         selectedKey: state.selectedKey,
         configKey,
         revision: location.query && location.query.revision,
-        formatSelected: state.selectedKey && state.selectedKey.formatSelected,
+        detailsAdded: state.selectedKey && state.selectedKey.detailsAdded,
       };
     },
     { ...selectedKeyActions, ...alertActions },
@@ -48,7 +48,7 @@ const KeyPage = compose(
       this.props.closeKey();
     },
   }),
-)(({ showCustomAlert, showAlert, showConfirm, configKey, formatSelected, ...props }) => {
+)(({ showCustomAlert, showAlert, showConfirm, configKey, detailsAdded, ...props }) => {
   const { selectedKey } = props;
   const alerter = {
     showCustomAlert,
@@ -59,16 +59,8 @@ const KeyPage = compose(
     return <MessageKeyPage data-comp="loading-key" message="Loading..." />;
   }
 
-  if ((configKey === BLANK_KEY_NAME) && !formatSelected) {
-    return (
-      <KeyAddPage
-        addKeyDetails={props.addKeyDetails}
-        updateKeyPath={props.updateKeyPath}
-        manifest={selectedKey.local.manifest}
-        changeKeyFormat={props.changeKeyFormat}
-        validation={selectedKey.validation}
-      />
-    );
+  if ((configKey === BLANK_KEY_NAME) && !detailsAdded) {
+    return (<KeyAddPage />);
   }
 
   const { implementation } = selectedKey.local;

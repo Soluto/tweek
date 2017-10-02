@@ -9,7 +9,7 @@ function addEmptyKey(keyName, keyValueType = 'String') {
     .setName(keyName)
     .setValueType(keyValueType)
     .setKeyFormat('jpad')
-    .addDetails()
+    .continueToDetails()
     .commitChanges();
 }
 
@@ -53,10 +53,10 @@ describe('key name validations', () => {
     });
   });
 
-  it('should show validaton alert on clicking save without a value', () => {
+  it('should show validaton alert on clicking "Continue" without a value', () => {
     Key.add()
       .setValueType('string') // to make local changes
-      .clickAddDetails();
+      .clickContinue();
 
     expect(browser.isVisible(keyNameValidation), 'should show key name validation').to.be.true;
   });

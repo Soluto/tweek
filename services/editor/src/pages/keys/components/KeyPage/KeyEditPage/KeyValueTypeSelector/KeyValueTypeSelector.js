@@ -5,7 +5,7 @@ import changeCase from 'change-case';
 import ComboBox from '../../../../../../components/common/ComboBox/ComboBox';
 import ValidationIcon from '../../../../../../components/common/ValidationIcon';
 import * as TypesServices from '../../../../../../services/types-service';
-import { updateKeyValueType } from '../../../../../../store/ducks/selectedKey';
+import { changeKeyValueType } from '../../../../../../store/ducks/selectedKey';
 import './KeyValueTypeSelector.css';
 
 const getValueTypeSuggestions = () =>
@@ -20,9 +20,9 @@ const KeyValueTypeSelector = compose(
       selectedKey: state.selectedKey,
       validation: state.selectedKey.validation.manifest.valueType,
     }),
-    { updateKeyValueType },
+    { changeKeyValueType },
   ),
-)(({ value, validation: { isShowingHint, hint }, updateKeyValueType: onChange }) => {
+)(({ value, validation: { isShowingHint, hint }, changeKeyValueType: onChange }) => {
   const suggestions = getValueTypeSuggestions();
   return (
     <div className="key-value-type-selector-container">

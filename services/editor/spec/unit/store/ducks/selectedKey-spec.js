@@ -21,7 +21,7 @@ jest.mock('../../../../src/store/ducks/alerts', () => {
 import {
   openKey,
   saveKey,
-  updateKeyValueType,
+  changeKeyValueType,
   updateKeyName,
 } from '../../../../src/store/ducks/selectedKey';
 import {
@@ -349,29 +349,6 @@ describe('selectedKey', async () => {
         expect(pushAction[0]).to.deep.include({ payload: expectedPushPayload });
       });
 
-      it.skip('should not open the new saved key if there was key change while saving', async () => {
-        // Arrange
-        const keyNameToSave = 'someCategory/someKeyName';
-
-        currentState = generateState(BLANK_KEY_NAME, keyNameToSave);
-
-        let fetchPutResolver;
-        const fetchPromise = new Promise((resolve, _) => {
-          fetchPutResolver = resolve;
-        });
-
-        fetchMock.putOnce('glob:*/api/keys/*', fetchPromise);
-
-        // Act
-        const func = saveKey();
-        const saveKeyPromise = func(dispatchMock, () => currentState);
-
-        currentState.selectedKey.key = 'some other key name';
-        fetchPutResolver({});
-        await saveKeyPromise;
-
-        assert(!doesDispatchPushTookAction(), 'should not open the new saved key');
-      });
     });
 
     describe('save existing key', () => {
@@ -397,7 +374,7 @@ describe('selectedKey', async () => {
     });
   });
 
-  describe('updateKeyValueType', () => {
+  describe('changeKeyValueType', () => {
     it('should dispatch actions correctly', async () => {
       // Arrange
       const keyValueType = 'pita';
@@ -420,7 +397,7 @@ describe('selectedKey', async () => {
       };
 
       // Act
-      const func = updateKeyValueType(keyValueType);
+      const func = changeKeyValueType(keyValueType);
       await func(dispatchMock, () => initializeState);
 
       // Assert
@@ -437,39 +414,6 @@ describe('selectedKey', async () => {
       });
     });
 
-    it('should show confirm if there are existing rules values and only dispatch for confirm', async () => {
-      // Arrange
-      const keyValueType = 'pita';
-      const expectedKeyValueTypeValidation = keyValueTypeValidations(keyValueType);
-      expectedKeyValueTypeValidation.isShowingHint = true;
-
-      const initializeState = generateState('some key', 'some new key');
-      initializeState.selectedKey.local.implementation.source = JSON.stringify({
-        partitions: [],
-        rules: [
-          {
-            Value: 'some rule value',
-          },
-        ],
-      });
-
-      initializeState.keys = [];
-
-      alerts.setResult(false);
-
-      // Act & Assert
-      const func1 = updateKeyValueType(keyValueType);
-      await func1(dispatchMock, () => initializeState);
-
-      expect(dispatchMock.mock.calls.length).to.equal(1, 'should call confirm once');
-
-      alerts.setResult(true);
-
-      const func2 = updateKeyValueType(keyValueType);
-      await func2(dispatchMock, () => initializeState);
-
-      expect(dispatchMock.mock.calls.length).to.equal(4, 'should call confirm once');
-    });
   });
 
   describe('updateKeyName', () => {
