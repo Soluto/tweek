@@ -490,16 +490,7 @@ const handleKeyPathChange = (state, { payload }) => ({
   key: payload,
 });
 
-const handleKeyFormatChange = (state, { payload }) => {
-  const { implementation: { value, type, format } } = payload;
-
-  const patchState = R.compose(
-    R.assocPath(['local', 'manifest', 'implementation', 'type'], type),
-    R.assocPath(['local', 'manifest', 'implementation', 'format'], format),
-    R.assocPath(['local', 'manifest', 'implementation', 'value'], value),
-  );
-  return patchState(state);
-};
+const handleKeyFormatChange = (state, { payload: { implementation } }) => R.assocPath(['local', 'manifest', 'implementation'], implementation, state);
 
 export default handleActions(
   {
