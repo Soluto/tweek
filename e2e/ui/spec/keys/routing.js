@@ -9,7 +9,11 @@ describe('navigating from key with changes', () => {
   const keyName = 'behavior_tests/routing';
 
   beforeEach(() =>
-    Key.add().setValueType('boolean').setKeyFormat('jpad').setName('routing_test').addDetails(),
+    Key.add()
+      .setValueType('boolean')
+      .setKeyFormat('jpad')
+      .setName('routing_test')
+      .continueToDetails(),
   );
 
   it('should show confirm message if navigating to another key', () => {

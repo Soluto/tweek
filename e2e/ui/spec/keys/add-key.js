@@ -19,7 +19,7 @@ describe('add key', () => {
     expect(Rule.count()).to.equal(0);
 
     Key.setName(keyToAddFullPath).setValueType('string').setKeyFormat('jpad');
-    Key.addDetails();
+    Key.continueToDetails();
 
     expect(Key.hasChanges).to.be.true;
 

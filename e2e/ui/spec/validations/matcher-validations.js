@@ -18,7 +18,7 @@ describe('matcher validations', () => {
       .setName('matcher/validation')
       .setValueType('string')
       .setKeyFormat('jpad')
-      .addDetails();
+      .continueToDetails();
     const rule = Rule.add();
 
     const validationIcon = property =>
