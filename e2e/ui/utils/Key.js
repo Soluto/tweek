@@ -7,10 +7,12 @@ import { dataComp, dataField, attributeSelector } from './selector-utils';
 
 const timeout = 5000;
 
+const addKeyPage = dataComp('add-key-page');
 const keyEditPage = dataComp('key-edit-page');
 const keyNameInput = dataField('new-key-name-input');
 const keyPathSuggestions = `${dataComp('new-key-name')} ${dataField('suggestions')}`;
 const keyValueTypeSelector = dataComp('key-value-type-selector');
+const keyFormatSelector = dataComp('key-format-selector');
 const saveChangesButton = dataComp('save-changes');
 const displayName = `${dataComp('display-name')} ${dataField('text')}`;
 const defaultValue = dataComp('default-value');
@@ -36,7 +38,7 @@ class Key {
 
   open(keyName = '', waitToLoad = true) {
     browser.url(`/keys/${keyName}`);
-    browser.windowHandleSize({width:1360,height:1020});
+    browser.windowHandleSize({ width: 1360, height: 1020 });
     browser.waitForVisible(dataComp('key-page'), timeout);
 
     if (keyName !== '' && waitToLoad) {
@@ -66,6 +68,16 @@ class Key {
   add() {
     this.open();
     browser.click(dataComp('add-new-key'));
+    browser.waitForVisible(addKeyPage, timeout);
+    return this;
+  }
+
+  clickContinue() {
+    browser.click(dataComp('add-key-button'));
+  }
+
+  continueToDetails() {
+    this.clickContinue();
     return this.waitToLoad();
   }
 
@@ -140,6 +152,12 @@ class Key {
   setValueType(valueType) {
     browser.waitForVisible(keyValueTypeSelector, timeout);
     browser.setValue(keyValueTypeSelector, valueType);
+    return this;
+  }
+
+  setKeyFormat(format) {
+    browser.waitForVisible(keyFormatSelector, timeout);
+    browser.setValue(keyFormatSelector, format);
     return this;
   }
 

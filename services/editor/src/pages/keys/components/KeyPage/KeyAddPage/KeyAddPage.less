@@ -1,0 +1,167 @@
+@import (reference) "../../../../../styles/core/core.less";
+@import (reference) "../../../../../styles/core/comboBox.less";
+
+@text-padding: 10px;
+@panel-padding: 35px;
+@small-font: 16px;
+@smaller-font: 15px;
+@large-font: 22px;
+
+@button-width: 100px;
+@button-height: 25px;
+
+@with-adjusted-combo-box-wrapper: {
+    .combo-box-default-wrapper-theme-class{
+            display: flex;
+            flex-grow: 1;
+            align-content: space-between;
+    }
+};
+
+@with-validation-icon: {
+    .bootstrap-typeahead-input {
+        padding-left: @text-padding;
+        font-size: @smaller-font;
+        height: auto;
+    }
+    &[data-with-error="true"] {
+        .bootstrap-typeahead-input {
+            padding-left: @text-padding * 3;
+            font-size: @smaller-font;
+            height: auto;
+        }
+    }
+    .validation-icon-wrapper {
+        flex-direction: row;
+        width: 0;
+        margin: 11px 0 0 0;
+        position: absolute;
+        z-index: 7;
+        .transitioned();
+        &[data-is-shown="true"] {
+            width: 16px;
+            height: 16px;
+            margin-top: 0px;
+            padding: 0px 5px 3px 5px;
+        }
+    }
+};
+
+.add-key-page {
+    .panel;
+    padding: @panel-padding;
+    border-width: 0;
+    box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.2);
+    margin-top: 18px * 2 + 36px;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 0.5;
+
+    h3 {
+        font-size: @large-font;
+        padding-left: @text-padding;
+        margin: 0px 0px 58px 0px;
+        font-weight: 400;
+    }
+
+    .add-key-input-wrapper {
+        display: flex;
+        flex-direction: row;
+        flex-grow: 1;
+        align-content: space-between;
+        padding-left: @text-padding;
+        padding-right: @button-width + @panel-padding;
+        margin-bottom: 41px;
+
+        .keypath-label {
+            .label-text();
+            align-items: center;
+            padding-bottom: 1px;
+        }
+
+        .keypath-input {
+            width: 100%;
+            .combo-box-basic(@dropdown-min-width: 100%, @input-width: 100%, @font-size: @smaller-font);
+            .auto-suggest-wrapper {
+                width: 100%;
+                display: flex;
+                @with-validation-icon();
+            }
+            @with-adjusted-combo-box-wrapper();
+        }
+    }
+    .add-key-properties-wrapper {
+        display: flex;
+        flex-direction: row;
+        flex-grow: 1;
+        align-content: space-between;
+        padding-right: @button-width + @panel-padding;
+        .key-format-selector-container {
+            .combo-box-basic(@dropdown-min-width: 100%, @input-width: 100%, @font-size: @smaller-font);
+            display: flex;
+            flex-grow: 1;
+            flex-direction: row;
+            padding-left: @text-padding;
+            .key-format-selector-wrapper {
+                display: flex;
+                flex-grow: 1;
+                align-items: stretch;
+                width: 100%;
+                @with-validation-icon();
+                @with-adjusted-combo-box-wrapper();
+            }
+            .key-format-label{
+                .label-text();
+                align-items: center;
+                padding-bottom: 1px;
+            }
+        }
+    }
+    .key-value-type-selector-container {
+        .combo-box-basic(@dropdown-min-width: 100%, @input-width: 100%, @font-size: @smaller-font);
+        display: flex;
+        flex-grow: 1;
+        flex-direction: row;
+        .key-value-type-selector-wrapper {
+            display: flex;
+            width: 100%;
+            @with-validation-icon();
+            @with-adjusted-combo-box-wrapper();
+        }
+        .key-value-type-label {
+            .label-text();
+            align-items: center;
+            padding-bottom: 1px;
+        }
+    }
+
+    .vspace {
+        margin-top: 36px;
+    }
+    .hspace {
+        margin-left: 36px;
+    }
+    .add-key-button-wrapper {
+        display: flex;
+        flex-direction: row-reverse;
+        .add-key-button {
+            .metro-button();
+            font-size: @small-font * 0.75;
+            width: @button-width;
+            height: @button-height;
+            border-radius: 12.5px;
+        }
+    }
+}
+
+.label-text() {
+    all: unset;
+    font-size: @small-font;
+    margin: 0px 5px 0 0;
+    color: gray;
+    display: flex;
+    white-space: nowrap;
+}

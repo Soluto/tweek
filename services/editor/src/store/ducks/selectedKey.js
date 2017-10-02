@@ -5,17 +5,21 @@ import * as ContextService from '../../services/context-service';
 import fetch from '../../utils/fetch';
 import { withJsonData } from '../../utils/http';
 import {
-  createBlankJPadKey,
+  createBlankKey,
   createBlankKeyManifest,
   BLANK_KEY_NAME,
 } from './ducks-utils/blankKeyDefinition';
 import keyNameValidations from './ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
+import { continueGuard } from './ducks-utils/guards';
 import { downloadTags } from './tags';
 import { showError } from './notifications';
 import { showConfirm } from './alerts';
 import { addKeyToList, removeKeyFromList } from './keys';
 
+const KEY_FORMAT_CHANGED = 'KEY_FORMAT_CHANGED';
+const KEY_PATH_CHANGE = 'KEY_PATH_CHANGE';
+const KEY_ADDING_DETAILS = 'KEY_ADDING_DETAILS';
 const KEY_OPENED = 'KEY_OPENED';
 const KEY_OPENING = 'KEY_OPENING';
 const KEY_RULEDEF_UPDATED = 'KEY_RULEDEF_UPDATED';
@@ -66,20 +70,51 @@ function updateDependentKeys(keyName) {
   };
 }
 
-function createKeyDef({ manifest, implementation }){
-  if (manifest.implementation.type === "file"){
+function createImplementation({ manifest, implementation }) {
+  if (manifest.implementation.type === 'file') {
     return {
       source: implementation,
       type: manifest.implementation.format,
     };
   }
-  if (manifest.implementation.type === "const"){
+  if (manifest.implementation.type === 'const') {
     return {
       source: manifest.implementation.value,
-      type: "const",
+      type: 'const',
     };
   }
+}
 
+export function changeKeyFormat(newFormat) {
+  return function (dispatch) {
+    dispatch({ type: KEY_FORMAT_CHANGED, payload: newFormat });
+  };
+}
+
+const confirmAddKeyAlert = {
+  title: 'Adding New Key',
+  message: 'Adding new key will discard all your changes.\nDo you want to continue?',
+};
+
+export const addKey = shouldShowConfirmationScreen =>
+  continueGuard(shouldShowConfirmationScreen, confirmAddKeyAlert, (dispatch) => {
+    // update the state to empty key in order to skip on leave hook
+    dispatch({ type: KEY_OPENED, payload: createBlankKey() });
+    // navigate and set defaults
+    dispatch(push('/keys/_blank'));
+    dispatch(changeKeyValueType('string'));
+  });
+
+export function addKeyDetails() {
+  return async function (dispatch, getState) {
+    const currentState = getState();
+    if (!currentState.selectedKey.validation.isValid) {
+      dispatch({ type: SHOW_KEY_VALIDATIONS });
+      return;
+    }
+
+    dispatch({ type: KEY_ADDING_DETAILS });
+  };
 }
 
 export function openKey(key, { revision } = {}) {
@@ -92,7 +127,9 @@ export function openKey(key, { revision } = {}) {
     }
 
     if (key === BLANK_KEY_NAME) {
-      dispatch({ type: KEY_OPENED, payload: createBlankJPadKey() });
+      dispatch({ type: KEY_OPENED, payload: createBlankKey() });
+      // TODO: remove the code below
+      dispatch(changeKeyValueType('string'));
       return;
     }
 
@@ -108,10 +145,10 @@ export function openKey(key, { revision } = {}) {
     }
 
     const manifest = keyData.manifest || createBlankKeyManifest(key);
-    const keyDef = createKeyDef(keyData);
+    const implementation = createImplementation(keyData);
     const keyOpenedPayload = {
       key,
-      keyDef,
+      implementation,
       manifest,
     };
 
@@ -125,15 +162,15 @@ export function closeKey() {
   return { type: KEY_CLOSED };
 }
 
-export function updateKeyDef(keyDef) {
-  return { type: KEY_RULEDEF_UPDATED, payload: keyDef };
+export function updateImplementation(implementation) {
+  return { type: KEY_RULEDEF_UPDATED, payload: implementation };
 }
 
 export function updateKeyManifest(manifest) {
   return { type: KEY_MANIFEST_UPDATED, payload: manifest };
 }
 
-async function performSave(dispatch, keyName, { manifest, keyDef }) {
+async function performSave(dispatch, keyName, { manifest, implementation }) {
   dispatch({ type: KEY_SAVING });
 
   let isSaveSucceeded;
@@ -142,7 +179,7 @@ async function performSave(dispatch, keyName, { manifest, keyDef }) {
       method: 'put',
       ...withJsonData({
         manifest,
-        implementation: manifest.implementation.type === "file" ? keyDef.source : undefined,
+        implementation: manifest.implementation.type === 'file' ? implementation.source : undefined,
       }),
     });
     isSaveSucceeded = true;
@@ -180,28 +217,8 @@ export function archiveKey(archived) {
   };
 }
 
-function getAllRules({ jpad, rules = [jpad.rules], depth = jpad.partitions.length }) {
-  return depth === 0
-    ? R.flatten(rules)
-    : getAllRules({ rules: R.flatten(rules.map(x => Object.values(x))), depth: depth - 1 });
-}
-
-const convertRuleValuesAlert = {
-  title: 'Attention',
-  message: 'Rule values will try to be converted to new type.\nDo you want to continue?',
-};
-
-export function updateKeyValueType(keyValueType) {
+export function changeKeyValueType(keyValueType) {
   return async function (dispatch, getState) {
-    const jpad = JSON.parse(getState().selectedKey.local.keyDef.source);
-    const allRules = getAllRules({ jpad });
-    const shouldShowAlert = allRules.some(
-      x =>
-        x.Type !== 'SingleVariant' || (x.Value !== null && x.Value !== undefined && x.Value !== ''),
-    );
-
-    if (shouldShowAlert && !(await dispatch(showConfirm(convertRuleValuesAlert))).result) return;
-
     const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
     keyValueTypeValidation.isShowingHint = !keyValueTypeValidation.isValid;
 
@@ -217,6 +234,13 @@ export function updateKeyValueType(keyValueType) {
     };
 
     dispatch({ type: KEY_VALIDATION_CHANGE, payload: newValidation });
+  };
+}
+
+export function updateKeyPath(newKeyPath) {
+  return async function (dispatch, getState) {
+    await dispatch(updateKeyName(newKeyPath));
+    dispatch({ type: KEY_PATH_CHANGE, payload: newKeyPath });
   };
 }
 
@@ -254,10 +278,8 @@ export function saveKey() {
     dispatch(updateRevisionHistory(savedKey));
     dispatch(updateDependentKeys(savedKey));
 
-    if (isNewKey) dispatch(addKeyToList(savedKey));
-    const shouldOpenNewKey = isNewKey && getState().selectedKey.key === BLANK_KEY_NAME;
-
-    if (shouldOpenNewKey) {
+    if (isNewKey) {
+      dispatch(addKeyToList(savedKey));
       dispatch(push(`/keys/${savedKey}`));
     }
   };
@@ -304,10 +326,12 @@ const setValidationHintsVisibility = (validationState, isShown) => {
 
 const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
   let validation;
+  let detailsAdded = false;
   if (key !== BLANK_KEY_NAME) {
     validation = {
       isValid: true,
     };
+    detailsAdded = true;
   } else {
     validation = {
       key: keyNameValidations(key, []),
@@ -327,6 +351,7 @@ const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
     key,
     isLoaded: true,
     validation,
+    detailsAdded,
   };
 };
 
@@ -339,7 +364,7 @@ const handleKeyRuleDefUpdated = (state, { payload }) => ({
   ...state,
   local: {
     ...state.local,
-    keyDef: { ...state.local.keyDef, ...payload },
+    implementation: { ...state.local.implementation, ...payload },
   },
 });
 
@@ -411,10 +436,11 @@ const handleKeyValueTypeChange = (
 });
 
 const handleShowKeyValidations = ({ validation, ...state }) => {
-  setValidationHintsVisibility(validation, true);
+  const newValidation = R.clone(validation);
+  setValidationHintsVisibility(newValidation, true);
   return {
     ...state,
-    validation,
+    validation: newValidation,
   };
 };
 
@@ -434,8 +460,44 @@ const handleDependentKeys = (state, { payload: { keyName, dependentKeys } }) => 
   };
 };
 
+const handleKeyAddingDetails = (state) => {
+  console.log('MANIFEST', state.local.manifest)
+  const implementation = {
+    type: state.local.manifest.implementation.type,
+    source: JSON.stringify(
+      {
+        partitions: [],
+        valueType: state.local.manifest.valueType,
+        rules: [],
+      },
+      null,
+      4,
+    ),
+  };
+  const oldLocal = state.local;
+
+  return {
+    ...state,
+    local: {
+      ...oldLocal,
+      implementation,
+    },
+    detailsAdded: true,
+  };
+};
+
+const handleKeyPathChange = (state, { payload }) => ({
+  ...state,
+  key: payload,
+});
+
+const handleKeyFormatChange = (state, { payload }) => R.assocPath(['local', 'manifest', 'implementation'], payload, state);
+
 export default handleActions(
   {
+    [KEY_FORMAT_CHANGED]: handleKeyFormatChange,
+    [KEY_PATH_CHANGE]: handleKeyPathChange,
+    [KEY_ADDING_DETAILS]: handleKeyAddingDetails,
     [KEY_OPENED]: handleKeyOpened,
     [KEY_OPENING]: handleKeyOpening,
     [KEY_RULEDEF_UPDATED]: handleKeyRuleDefUpdated,
