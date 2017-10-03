@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using LanguageExt;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,10 +9,19 @@ namespace Tweek.ApiService.NetCore.Security
     public static class CorsExtensions
     {
         public const string KEYS_POLICY_NAME = "Keys";
+        public const string ALLOW_ALL_POLICY_NAME = "AllowAll";
 
         public static void SetupCors(this IServiceCollection services, IConfiguration configuration)
         {
             if (!configuration.GetValue<bool>("CorsEnabled")) return;
+
+            services.AddCors(options => options.AddPolicy(ALLOW_ALL_POLICY_NAME,
+                builder => builder
+                    .AllowCredentials()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowAnyOrigin()
+            ));
 
             var corsPolicies = configuration.GetSection("CorsPolicies");
             if (corsPolicies.GetChildren().All(section => section.Key != KEYS_POLICY_NAME))

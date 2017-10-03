@@ -6,7 +6,7 @@ using Xunit;
 using Xunit.Abstractions;
 using static FSharpUtils.Newtonsoft.JsonValue;
 
-namespace Tweek.ApiService.SmokeTests.ContextTests
+namespace Tweek.ApiService.SmokeTests
 {
     public class ContextTests
     {

@@ -1,20 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Tweek.ApiService.SmokeTests.Swagger
+namespace Tweek.ApiService.SmokeTests
 {
-    public class Swagger
+    public class SwaggerTests
     {
-        private ITestOutputHelper mOutput;
-        private ITweekApi mTweekApi;
+        private readonly ITestOutputHelper mOutput;
+        private readonly ITweekApi mTweekApi;
 
-        public Swagger(ITestOutputHelper output)
+        public SwaggerTests(ITestOutputHelper output)
         {
-            mTweekApi = mTweekApi = TweekApiServiceFactory.GetTweekApiClient(output);
+            mTweekApi = TweekApiServiceFactory.GetTweekApiClient(output);
             mOutput = output;
         }
 
