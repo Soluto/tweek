@@ -1,0 +1,39 @@
+@import (reference) '../styles/core/core.less';
+
+.jsonEditor {
+  &:extend(.panel);
+
+  .jsonRemove {
+    color: red;
+  }
+
+  .jsonChildren{
+    .jsonField {
+      display: flex;
+      flex-direction: row;
+      .jsonName {
+        .name-text();
+      }
+      .jsonValue {
+        .value-text();
+      }
+    }
+  }
+}
+
+.name-text() {
+    all: unset;
+    font-size: 16px;
+    margin: 0px 5px 0 0;
+    color: #6d6d6d;
+    display: flex;
+    white-space: nowrap;
+}
+
+.value-text() {
+    all: unset;
+    font-size: 16px;
+    margin: 0px 5px 0 0;
+    color: #a5a5a5;
+    display: flex;
+}
