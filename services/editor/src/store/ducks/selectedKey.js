@@ -5,7 +5,7 @@ import * as ContextService from '../../services/context-service';
 import fetch from '../../utils/fetch';
 import { withJsonData } from '../../utils/http';
 import {
-  createBlankKey,
+  createBlankJPadKey,
   createBlankKeyManifest,
   BLANK_KEY_NAME,
 } from './ducks-utils/blankKeyDefinition';
@@ -99,7 +99,7 @@ const confirmAddKeyAlert = {
 export const addKey = shouldShowConfirmationScreen =>
   continueGuard(shouldShowConfirmationScreen, confirmAddKeyAlert, (dispatch) => {
     // update the state to empty key in order to skip on leave hook
-    dispatch({ type: KEY_OPENED, payload: createBlankKey() });
+    dispatch({ type: KEY_OPENED, payload: createBlankJPadKey() });
     // navigate and set defaults
     dispatch(push('/keys/_blank'));
     dispatch(changeKeyValueType('string'));
@@ -127,7 +127,7 @@ export function openKey(key, { revision } = {}) {
     }
 
     if (key === BLANK_KEY_NAME) {
-      dispatch({ type: KEY_OPENED, payload: createBlankKey() });
+      dispatch({ type: KEY_OPENED, payload: createBlankJPadKey() });
       // TODO: remove the code below
       dispatch(changeKeyValueType('string'));
       return;
@@ -461,7 +461,6 @@ const handleDependentKeys = (state, { payload: { keyName, dependentKeys } }) => 
 };
 
 const handleKeyAddingDetails = (state) => {
-  console.log('MANIFEST', state.local.manifest)
   const implementation = {
     type: state.local.manifest.implementation.type,
     source: JSON.stringify(
@@ -491,7 +490,8 @@ const handleKeyPathChange = (state, { payload }) => ({
   key: payload,
 });
 
-const handleKeyFormatChange = (state, { payload }) => R.assocPath(['local', 'manifest', 'implementation'], payload, state);
+const handleKeyFormatChange = (state, { payload }) =>
+  R.assocPath(['local', 'manifest', 'implementation'], payload, state);
 
 export default handleActions(
   {
