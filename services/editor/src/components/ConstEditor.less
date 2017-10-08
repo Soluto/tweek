@@ -3,8 +3,27 @@
 .jsonEditor {
   &:extend(.panel);
 
+  .jsonCompound {
+    > .jsonChildren {
+      visibility: hidden;
+    }
+    &.open {
+      > .jsonChildren {
+        visibility: visible;
+      }
+    }
+  }
+
+  .jsonAdd {
+    .value-text();
+    font-size: 11px;
+  }
+
   .jsonRemove {
+    all: unset;
     color: red;
+    text-align: center;
+    font-size: 13px;
   }
 
   .jsonChildren{
@@ -16,6 +35,9 @@
       }
       .jsonValue {
         .value-text();
+        > input {
+          align-self: center;
+        }
       }
     }
   }
