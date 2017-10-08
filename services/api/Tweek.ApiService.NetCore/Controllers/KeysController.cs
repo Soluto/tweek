@@ -18,13 +18,10 @@ using Tweek.Utils;
 using Tweek.ApiService.NetCore.Security;
 using Microsoft.AspNetCore.Cors;
 using IdentityHashSet = System.Collections.Generic.HashSet<Engine.DataTypes.Identity>;
-using Newtonsoft.Json.Serialization;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Tweek.ApiService.NetCore.Controllers
 {
-
-  [EnableCors("Keys")]
+    [EnableCors(CorsExtensions.KEYS_POLICY_NAME)]
     public class KeysController : Controller
     {
         private readonly ITweek _tweek;
@@ -67,7 +64,7 @@ namespace Tweek.ApiService.NetCore.Controllers
         /// <remarks>
         /// The main rest endpoint for interacting with Tweek, you can use "_" suffix in keypath for querying configuration subtrees.
         /// You can use api/v1/keys/{keypath} instead of passing keyPath as a paramater. (due to swagger limitation, we support keyPath param as well)
-        /// Context should be added to the request with dynamic query params, it can be set of identities and/or properties for example: user=john&amp;user.age=30&amp;user.source=ads<
+        /// Context should be added to the request with dynamic query params, it can be set of identities and/or properties for example: user=john&amp;user.age=30&amp;user.source=ads
         /// </remarks>
         /// <param name="keyPath">keyPath - the full path to the key. (path/to/key)</param>
         /// <param name="flatten">When using scan operations ("_"), use this flag to receive configuration as flatten list instead of a tree (default: false)</param>

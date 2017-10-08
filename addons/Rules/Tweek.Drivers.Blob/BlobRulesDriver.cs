@@ -37,6 +37,7 @@ namespace Tweek.Drivers.Blob
                 }))
                 .Switch()
                 .DistinctUntilChanged()
+                .Do(x => CurrentLabel = x.GetHashCode().ToString())
                 .Select(JsonConvert.DeserializeObject<Dictionary<string, RuleDefinition>>)
                 .DistinctUntilChanged(new DictionaryEqualityComparer<string, RuleDefinition>(new RuleDefinitionComparer()))
                 .Catch((Exception exception) =>
@@ -55,6 +56,8 @@ namespace Tweek.Drivers.Blob
         {
             return await _subject.FirstAsync();
         }
+
+        public string CurrentLabel { get; private set; }
 
         public void Dispose()
         {

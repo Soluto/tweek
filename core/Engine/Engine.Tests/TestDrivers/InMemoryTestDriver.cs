@@ -19,9 +19,10 @@ namespace Engine.Tests.TestDrivers
     {
         private Dictionary<string, RuleDefinition> rules;
 
-        public InMemoryRulesTestDriver(Dictionary<string, RuleDefinition> rules)
+        public InMemoryRulesTestDriver(Dictionary<string, RuleDefinition> rules, string label = null)
         {
             this.rules = rules;
+            CurrentLabel = label;
         }
 
 #pragma warning disable 0067
@@ -32,6 +33,8 @@ namespace Engine.Tests.TestDrivers
         {
             return rules;
         }
+
+        public string CurrentLabel { get; }
     }
 
   class InMemoryContextDriver : IContextDriver

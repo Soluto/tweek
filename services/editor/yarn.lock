@@ -6484,13 +6484,13 @@ react-router@^4.1.1:
     prop-types "^15.5.4"
     warning "^3.0.0"
 
-react-sanfona@^0.2.1:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/react-sanfona/-/react-sanfona-0.2.3.tgz#d859479c97d9e025439c9f386675acc161412ff4"
+react-sanfona@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/react-sanfona/-/react-sanfona-0.4.0.tgz#61b428709777b893f26893e1a1c5937217db0fa7"
   dependencies:
     classnames "2.2.5"
     prop-types "^15.5.8"
-    uuid "3.0.1"
+    uuid "3.1.0"
 
 react-scripts@1.0.7:
   version "1.0.7"
@@ -6969,9 +6969,9 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^2.0.0"
     inherits "^2.0.1"
 
-rodal@^1.5.1:
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/rodal/-/rodal-1.5.4.tgz#3af4f43762282a3bc3313f503093bebd9ddea9b8"
+rodal@^1.5.5:
+  version "1.5.5"
+  resolved "https://registry.yarnpkg.com/rodal/-/rodal-1.5.5.tgz#3cefe5dd03fee3d1da68ffa0e94150ca005ad766"
   dependencies:
     prop-types "^15.5.10"
     react "^15.5.4"
@@ -7904,13 +7904,17 @@ utils-merge@1.0.0, utils-merge@1.x.x:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.0.tgz#0294fb922bb9375153541c4f7096231f287c8af8"
 
-uuid@3.0.1, uuid@^3.0.0:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.1.tgz#6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1"
+uuid@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.1.0.tgz#3dd3d3e790abc24d7b0d3a034ffababe28ebbc04"
 
 uuid@^2.0.1, uuid@^2.0.2:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
+
+uuid@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.1.tgz#6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1"
 
 v8flags@^2.0.10:
   version "2.1.1"

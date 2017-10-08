@@ -34,6 +34,11 @@ namespace Tweek.ApiService.SmokeTests
             await _client.DeleteAsync($"/api/v1/context/{identityType}/{identityId}/{property}");
         }
 
+        public Task<string> GetRepositoryVersion()
+        {
+            return _client.GetStringAsync("api/v1/repo-version");
+        }
+
         public async Task<JToken> GetSwagger()
         {
             var stream = await _client.GetStreamAsync("/api/swagger.json");
