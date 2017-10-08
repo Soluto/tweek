@@ -25,8 +25,7 @@ import {
   updateKeyName,
 } from '../../../../src/store/ducks/selectedKey';
 import {
-  createBlankKey,
-  createBlankKeyManifest,
+  createBlankJPadKey,
   BLANK_KEY_NAME,
 } from '../../../../src/store/ducks/ducks-utils/blankKeyDefinition';
 import { assert, expect } from 'chai';
@@ -132,7 +131,7 @@ describe('selectedKey', async () => {
       const keyOpenedDispatchAction = dispatchMock.mock.calls[1][0];
       assertDispatchAction(keyOpenedDispatchAction, {
         type: KEY_OPENED,
-        payload: createBlankKey(),
+        payload: createBlankJPadKey(),
       });
     });
 
@@ -348,7 +347,6 @@ describe('selectedKey', async () => {
 
         expect(pushAction[0]).to.deep.include({ payload: expectedPushPayload });
       });
-
     });
 
     describe('save existing key', () => {
@@ -413,7 +411,6 @@ describe('selectedKey', async () => {
         payload: expectedValidationPayload,
       });
     });
-
   });
 
   describe('updateKeyName', () => {

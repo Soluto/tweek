@@ -22,7 +22,7 @@ export function createJPadSource(valueType = '', rules = [], partitions = []) {
 export function createBlankJPadKey() {
   return {
     implementation: {
-      source: createJPadSource(),
+      source: createJPadSource('string'),
       type: 'jpad',
       valueType: '',
     },
