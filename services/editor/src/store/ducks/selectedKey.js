@@ -5,7 +5,7 @@ import * as ContextService from '../../services/context-service';
 import fetch from '../../utils/fetch';
 import { withJsonData } from '../../utils/http';
 import {
-  createBlankKey,
+  createBlankJPadKey,
   createBlankKeyManifest,
   BLANK_KEY_NAME,
 } from './ducks-utils/blankKeyDefinition';
@@ -128,7 +128,6 @@ export function openKey(key, { revision } = {}) {
 
     if (key === BLANK_KEY_NAME) {
       dispatch({ type: KEY_OPENED, payload: createBlankJPadKey() });
-      dispatch({ type: KEY_OPENED, payload: createBlankKey() });
       // TODO: remove the code below
       dispatch(changeKeyValueType('string'));
       return;
@@ -490,7 +489,6 @@ const handleKeyPathChange = (state, { payload }) => ({
   ...state,
   key: payload,
 });
-
 
 const handleKeyFormatChange = (state, { payload }) =>
   R.assocPath(['local', 'manifest', 'implementation'], payload, state);

@@ -26,8 +26,6 @@ import {
 } from '../../../../src/store/ducks/selectedKey';
 import {
   createBlankJPadKey,
-  createBlankKey,
-  Manifest,
   BLANK_KEY_NAME,
 } from '../../../../src/store/ducks/ducks-utils/blankKeyDefinition';
 import { assert, expect } from 'chai';
@@ -133,7 +131,7 @@ describe('selectedKey', async () => {
       const keyOpenedDispatchAction = dispatchMock.mock.calls[1][0];
       assertDispatchAction(keyOpenedDispatchAction, {
         type: KEY_OPENED,
-        payload: createBlankKey(),
+        payload: createBlankJPadKey(),
       });
     });
 
