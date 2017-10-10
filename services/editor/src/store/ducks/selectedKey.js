@@ -217,6 +217,16 @@ export function archiveKey(archived) {
   };
 }
 
+export function changeConstKeyValidationState(newValidationState) {
+  return function (dispatch, getState) {
+    const currentValidationState = getState().selectedKey.validation;
+    if (R.path(['const', 'isValid'], currentValidationState) !== newValidationState) {
+      const payload = R.assocPath(['const', 'isValid'], newValidationState, currentValidationState);
+      dispatch({ type: KEY_VALIDATION_CHANGE, payload });
+    }
+  };
+}
+
 export function changeKeyValueType(keyValueType) {
   return async function (dispatch, getState) {
     const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
@@ -461,7 +471,6 @@ const handleDependentKeys = (state, { payload: { keyName, dependentKeys } }) => 
 };
 
 const handleKeyAddingDetails = (state) => {
-  console.log('MANIFEST', state.local.manifest)
   const implementation = {
     type: state.local.manifest.implementation.type,
     source: JSON.stringify(
@@ -491,7 +500,8 @@ const handleKeyPathChange = (state, { payload }) => ({
   key: payload,
 });
 
-const handleKeyFormatChange = (state, { payload }) => R.assocPath(['local', 'manifest', 'implementation'], payload, state);
+const handleKeyFormatChange = (state, { payload }) =>
+  R.assocPath(['local', 'manifest', 'implementation'], payload, state);
 
 export default handleActions(
   {

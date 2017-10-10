@@ -19,6 +19,7 @@ const Editor = ({
   onManifestChange,
   onSourceFileChange,
   onDependencyChanged,
+  onValidationChange,
   isReadonly,
   alerter,
 }) => {
@@ -47,6 +48,7 @@ const Editor = ({
         valueType={manifest.valueType}
         onChange={value =>
           onManifestChange({ ...manifest, implementation: { ...manifest.implementation, value } })}
+        onValidationChange={onValidationChange}
       />
     );
   }
@@ -150,6 +152,7 @@ class KeyEditPage extends Component {
                 onSourceFileChange={source => this.props.updateImplementation({ source })}
                 onManifestChange={this.onSelectedKeyManifestChanged}
                 onDependencyChanged={this.onDependencyChanged}
+                onValidationChange={this.props.changeConstKeyValidationState}
                 isReadonly={isReadonly}
                 alerter={alerter}
               />

@@ -1,12 +1,10 @@
 import React from 'react';
-import Json from 'react-json';
 import TypedInput from './common/Input/TypedInput';
+import { JsonEditor } from './JsonEditor';
 
-const ConstEditor = ({ value, valueType, onChange }) =>
-  <div data-comp="const-editor">
-    {valueType === 'object'
-      ? <Json value={value} onChange={onChange} />
-      : <TypedInput {...{ value, valueType, onChange }} />}
-  </div>;
+const ConstEditor = ({ value, valueType, onChange, onValidationChange }) =>
+  valueType === 'object'
+    ? <JsonEditor {...{ value, onChange, onValidationChange }} />
+    : <TypedInput data-comp="const-editor" {...{ value, valueType, onChange }} />;
 
 export default ConstEditor;
