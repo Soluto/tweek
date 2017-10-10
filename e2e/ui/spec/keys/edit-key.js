@@ -111,7 +111,8 @@ describe('edit keys', () => {
     it('should succeed editing key (valueType=object)', () => {
       const keyName = `${constKeyFolder}/object_type`;
       Key.open(keyName);
-      browser.click(`${constEditor} .jsonValue input[type=checkbox]`);
+      const originalSource = Key.constSource;
+      Key.constSource = JSON.stringify({ ...originalSource, boolProp: false });
       Key.commitChanges();
       tweekApiClient.waitForKeyToEqual(keyName, { boolProp: false });
     });

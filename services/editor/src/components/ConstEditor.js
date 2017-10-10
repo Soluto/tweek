@@ -5,6 +5,8 @@ import { JsonEditor } from './JsonEditor';
 const ConstEditor = ({ value, valueType, onChange, onValidationChange }) =>
   valueType === 'object'
     ? <JsonEditor {...{ value, onChange, onValidationChange }} />
-    : <TypedInput data-comp="const-editor" {...{ value, valueType, onChange }} />;
+    : <div data-comp="const-editor">
+        <TypedInput {...{ value, valueType, onChange }} />
+      </div>;
 
 export default ConstEditor;

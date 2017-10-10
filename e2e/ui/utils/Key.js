@@ -127,6 +127,20 @@ class Key {
     }, value);
   }
 
+  get constSource() {
+    browser.waitForVisible('.monaco-editor', 10000);
+    const keySourceCode = browser.execute(function() {
+      return window.monaco.editor.getModels()[0].getValue();
+    });
+
+    return JSON.parse(keySourceCode.value);
+  }
+
+  set constSource(value) {
+    this.source = value;
+  }
+
+
   waitToLoad() {
     browser.waitForVisible(keyEditPage, timeout);
     return this;

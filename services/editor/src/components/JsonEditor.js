@@ -19,7 +19,7 @@ const format = json => JSON.stringify(json, null, 4);
 export const JsonEditor = compose(
   setDisplayName('JsonEditor'),
   setPropTypes({
-    value: PropTypes.object.isRequired,
+    value: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
     onChange: PropTypes.func.isRequired,
     onValidationChange: PropTypes.func.isRequired,
   }),
