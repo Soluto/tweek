@@ -110,13 +110,11 @@ class Key {
   }
 
   get source() {
-    browser.clickWhenVisible(sourceTab, timeout);
     browser.waitForVisible('.monaco-editor', 10000);
     const keySourceCode = browser.execute(function() {
       return window.monaco.editor.getModels()[0].getValue();
     });
 
-    browser.click(rulesTab);
     return JSON.parse(keySourceCode.value);
   }
 
@@ -126,20 +124,6 @@ class Key {
       window.monaco.editor.getModels()[0].setValue(source);
     }, value);
   }
-
-  get constSource() {
-    browser.waitForVisible('.monaco-editor', 10000);
-    const keySourceCode = browser.execute(function() {
-      return window.monaco.editor.getModels()[0].getValue();
-    });
-
-    return JSON.parse(keySourceCode.value);
-  }
-
-  set constSource(value) {
-    this.source = value;
-  }
-
 
   waitToLoad() {
     browser.waitForVisible(keyEditPage, timeout);
@@ -192,12 +176,12 @@ class Key {
   }
 
   goToSourceTab() {
-    browser.click(sourceTab);
+    browser.clickWhenVisible(sourceTab, timeout);
     return this;
   }
 
   goToRulesTab() {
-    browser.click(rulesTab);
+    browser.clickWhenVisible(rulesTab, timeout);
     return this;
   }
 

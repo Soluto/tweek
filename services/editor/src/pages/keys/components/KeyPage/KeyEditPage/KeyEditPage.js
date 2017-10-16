@@ -152,7 +152,7 @@ class KeyEditPage extends Component {
                 onSourceFileChange={source => this.props.updateImplementation({ source })}
                 onManifestChange={this.onSelectedKeyManifestChanged}
                 onDependencyChanged={this.onDependencyChanged}
-                onValidationChange={this.props.changeConstKeyValidationState}
+                onValidationChange={this.props.changeKeyValidationState}
                 isReadonly={isReadonly}
                 alerter={alerter}
               />

@@ -217,7 +217,7 @@ export function archiveKey(archived) {
   };
 }
 
-export function changeConstKeyValidationState(newValidationState) {
+export function changeKeyValidationState(newValidationState) {
   return function (dispatch, getState) {
     const currentValidationState = getState().selectedKey.validation;
     if (R.path(['const', 'isValid'], currentValidationState) !== newValidationState) {

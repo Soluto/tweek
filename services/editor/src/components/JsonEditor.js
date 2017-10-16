@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { compose, withStateHandlers, setDisplayName, setPropTypes } from 'recompose';
+import { compose, withStateHandlers, setDisplayName, setPropTypes, lifecycle } from 'recompose';
 import R from 'ramda';
 import MonacoEditor from 'react-monaco-editor';
 import { AutoSizer } from 'react-virtualized';
@@ -26,23 +26,26 @@ export const JsonEditor = compose(
   withStateHandlers(
     ({ value }) => {
       const text = format(value);
-      return { text, isValid: false };
+      return { text, isValid: true };
     },
     {
       changeText: (state, props) => (newText) => {
         const parsedObject = R.tryCatch(parse, R.F)(newText);
         const newState = { text: newText, isValid: !!parsedObject };
-        if (state.isValid !== newState.isValid) {
-          props.onValidationChange(newState.isValid);
-        }
-        if (newState.isValid && state.text !== newState.text) {
-          props.onChange(parsedObject);
-        }
-
         return newState;
       },
     },
   ),
+  lifecycle({
+    componentWillReceiveProps(nextProps) {
+      if (this.props.isValid !== nextProps.isValid) {
+        this.props.onValidationChange(nextProps.isValid);
+      }
+      if (nextProps.isValid && this.props.text !== nextProps.text) {
+        this.props.onChange(parse(nextProps.text));
+      }
+    },
+  }),
 )(({ text, changeText, isValid }) =>
   <div className="json-editor-container" data-comp="json-editor">
     <AutoSizer>
