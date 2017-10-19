@@ -35,7 +35,7 @@ describe('revision history', () => {
 
   it('should display revision history', () => {
     Key.open(keyName);
-    browser.waitForVisible(revisionHistory, 1000);
+    browser.waitForVisible(revisionHistory, 5000);
 
     const changeCount = 4;
     const history = changeValue(changeCount);
