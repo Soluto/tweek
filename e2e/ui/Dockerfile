@@ -1,4 +1,4 @@
-FROM node:8.1.4
+FROM node:8.7.0
 
 WORKDIR /opt/app
 COPY package.json yarn.lock /opt/app/
