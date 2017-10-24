@@ -33,10 +33,9 @@ describe('revision history', () => {
     return history;
   }
 
-  // we need to figure out why it consistently fails on codefresh, but works locally
-  it.skip('should display revision history', () => {
+  it('should display revision history', () => {
     Key.open(keyName);
-    browser.waitForVisible(revisionHistory, 10000);
+    browser.waitForVisible(revisionHistory, 1000);
 
     const noChangesAttribute = browser.getAttribute(revisionHistory, 'data-no-changes');
     expect(noChangesAttribute).to.equal('true');
