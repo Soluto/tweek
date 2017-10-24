@@ -1,6 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "Tweek-api",
             "type": "coreclr",
@@ -115,7 +116,7 @@
 			"outDir": null
 		},
         {
-            "name": "Attach Management",
+            "name": "Attach Management (docker)",
             "type": "node",
             "request": "attach",
             "port": 5858,
@@ -128,7 +129,7 @@
             "remoteRoot": "/opt/app/"
         },
         {
-            "name": "Attach Authoring",
+            "name": "Attach Authoring (docker)",
             "type": "node",
             "request": "attach",
             "port": 5859,
@@ -139,6 +140,18 @@
             "protocol": "inspector",
             "localRoot": "${workspaceRoot}/services/management/",
             "remoteRoot": "/opt/app/"
+        }, 
+        {
+            "name": "Attach Authoring",
+            "type": "node",
+            "request": "attach",
+            "port": 5858,
+            "address": "localhost",
+            "restart": false,
+            "sourceMaps": false,
+            "outDir": null,
+            "protocol": "inspector",
+            "localRoot": "${workspaceRoot}/services/management/"
         }
     ]
 }

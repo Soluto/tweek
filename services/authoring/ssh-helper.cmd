@@ -1,0 +1,1 @@
+ssh -o StrictHostKeyChecking=no -i ../../git-service/ssh/tweekgit %*

@@ -7,7 +7,7 @@ import Rx = require('rxjs');
 import fs = require('fs-extra');
 import passport = require('passport');
 import Transactor from './utils/transactor';
-import GitRepository from './repositories/git-repository';
+import GitRepository, { RepoOutOfDateError } from './repositories/git-repository';
 import KeysRepository from './repositories/keys-repository';
 import TagsRepository from './repositories/tags-repository';
 import AppsRepository from './repositories/apps-repository';
@@ -18,7 +18,6 @@ import configurePassport from './security/configure-passport';
 import sshpk = require('sshpk');
 import { ErrorRequestHandler } from 'express';
 import { Server } from 'typescript-rest';
-
 const {
   PORT,
   GIT_URL,
@@ -47,7 +46,21 @@ const gitRepoCreationPromiseWithTimeout = BluebirdPromise.resolve(gitRepoCreatio
     throw new Error(`git repository cloning timeout after ${GIT_CLONE_TIMEOUT_IN_MINUTES} minutes`);
   });
 
-const gitTransactionManager = new Transactor(gitRepoCreationPromise, gitRepo => gitRepo.reset());
+const gitTransactionManager = new Transactor(gitRepoCreationPromise, async gitRepo => {
+  await gitRepo.reset();
+  await gitRepo.fetch();
+  await gitRepo.mergeMaster();
+}, (function() {
+  let retries = 2;
+  return async (error, context) => {
+    if (retries-- === 0) return false;
+    if (error instanceof RepoOutOfDateError) {
+      return true;
+    }
+    return false
+  }
+})());
+
 const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
 const appsRepository = new AppsRepository(gitTransactionManager);
