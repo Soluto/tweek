@@ -9,7 +9,7 @@ const formatDate = date =>
 
 const RevisionHistory = ({ revisionHistory, goToRevision, selectedKey, revision }) =>
   revisionHistory.length === 0
-    ? <div style={{ color: 'gray' }}>No recent changes found</div>
+    ? <div data-comp="revision-history" data-no-changes style={{ color: 'gray' }}>No recent changes found</div>
     : <select
         data-comp="revision-history"
         className="revision-history"
