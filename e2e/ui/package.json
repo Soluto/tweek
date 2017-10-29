@@ -6,7 +6,7 @@
   "author": "",
   "license": "ISC",
   "engines": {
-    "node": ">=8.1.0"
+    "node": ">=8.7.0"
   },
   "scripts": {
     "start": "yarn docker-compose up --force-recreate -d git redis && yarn docker-compose up -d editor",
@@ -31,31 +31,31 @@
     }
   },
   "dependencies": {
-    "axios": "^0.16.1",
-    "babel-cli": "6.24.1",
-    "babel-core": "^6.18.2",
-    "babel-eslint": "7.2.3",
+    "axios": "^0.17.0",
+    "babel-cli": "6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "8.0.1",
     "babel-plugin-transform-runtime": "6.23.0",
     "babel-preset-es2015": "6.24.1",
     "babel-preset-stage-0": "6.24.1",
-    "chai": "4.1.0",
+    "chai": "4.1.2",
     "chai-string": "^1.4.0",
-    "chance": "1.0.10",
-    "jsonwebtoken": "^7.4.0",
-    "mocha": "^3.4.2",
-    "moment": "2.18.1",
-    "nconf": "^0.8.4",
-    "ramda": "^0.24.0",
-    "rxjs": "^5.4.2",
+    "chance": "1.0.12",
+    "jsonwebtoken": "^8.1.0",
+    "mocha": "^4.0.1",
+    "moment": "2.19.1",
+    "nconf": "^0.8.5",
+    "ramda": "^0.25.0",
+    "rxjs": "^5.5.2",
     "supertest": "^3.0.0",
-    "wdio-mocha-framework": "0.5.10",
-    "wdio-spec-reporter": "0.1.0",
+    "wdio-mocha-framework": "0.5.11",
+    "wdio-spec-reporter": "0.1.2",
     "webdriverio": "4.8.0"
   },
   "devDependencies": {
     "husky": "^0.14.3",
-    "lint-staged": "^4.0.3",
-    "prettier": "^1.5.3",
+    "lint-staged": "^4.3.0",
+    "prettier": "^1.7.4",
     "wdio-selenium-standalone-service": "0.0.9"
   }
 }
