@@ -120,12 +120,12 @@ mac: find . -wholename '*.Tests.csproj' -print0 | xargs -0 -n 1 dotnet test (onl
    ```
 - to rebuild editor and then run tests:
    ```
-   npm run test:full-env:rebuild
+   npm run test:full-env:build
    ```
 - our e2e tests are using selenium. If you don't have it installed, and you don't want to install it, you can just run the tests in docker. To do so replace `full-env` with `docker`:
    ```
    npm run test:docker
-   npm run test:docker:rebuild
+   npm run test:docker:build
    ```
 
 ## TEARDOWN
