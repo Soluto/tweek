@@ -1,0 +1,11 @@
+.json-editor-container {
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid lightgray;
+  padding: 15px;
+  box-sizing: content-box;
+  margin: 20px;
+  display: block;
+  width: 100%;
+  margin: 0;
+}

@@ -53,7 +53,7 @@ describe('edit keys', () => {
           .setCondition('unknown.identity', 'value');
 
         expect(Rule.count()).to.equal(2);
-        expect(Key.source).to.deep.equal(expectedKeySource);
+        expect(Key.goToSourceTab().source).to.deep.equal(expectedKeySource);
 
         Key.commitChanges();
 
@@ -67,7 +67,7 @@ describe('edit keys', () => {
       it('should succeed editing JPad source', () => {
         Key.open('behavior_tests/edit_key/text/edit_test').goToSourceTab();
 
-        Key.source = JSON.stringify(expectedKeySource, null, 4);
+        Key.goToSourceTab().source = JSON.stringify(expectedKeySource, null, 4);
 
         Key.goToRulesTab();
         Alert.cancel();
@@ -75,7 +75,8 @@ describe('edit keys', () => {
         Key.insertSource().goToRulesTab();
 
         Rule.select().waitForVisible();
-        expect(Key.source).to.deep.equal(expectedKeySource);
+
+        expect(Key.goToSourceTab().source).to.deep.equal(expectedKeySource);
 
         Key.goToSourceTab().source = '{}';
 
@@ -83,7 +84,7 @@ describe('edit keys', () => {
         Alert.ok();
 
         Rule.select().waitForVisible();
-        expect(Key.source).to.deep.equal(expectedKeySource);
+        expect(Key.goToSourceTab().source).to.deep.equal(expectedKeySource);
       });
     });
   });
@@ -111,7 +112,8 @@ describe('edit keys', () => {
     it('should succeed editing key (valueType=object)', () => {
       const keyName = `${constKeyFolder}/object_type`;
       Key.open(keyName);
-      browser.click(`${constEditor} .jsonValue input[type=checkbox]`);
+      const originalSource = Key.source;
+      Key.source = JSON.stringify({ ...originalSource, boolProp: false });
       Key.commitChanges();
       tweekApiClient.waitForKeyToEqual(keyName, { boolProp: false });
     });

@@ -31,7 +31,7 @@
                 "ASPNETCORE_ENVIRONMENT": "Development",
                 "Addons__Redis__className": "Tweek.Drivers.Redis.RedisServiceAddon",
                 "Addons__Redis__assemblyName": "Tweek.Drivers.Redis",
-                "ContextProvider":"redis",
+                "ContextProvider": "redis",
                 "Redis__ConnectionString": "127.0.0.1:4006"
             },
             "sourceFileMap": {
@@ -39,119 +39,22 @@
             }
         },
         {
+            "name": "Attach Management",
+            "type": "node",
+            "request": "attach",
+            "port": 5858,
+            "address": "localhost",
+            "restart": false,
+            "sourceMaps": false,
+            "protocol": "inspector",
+            "localRoot": "${workspaceRoot}/services/management/",
+            "remoteRoot": "/opt/app/"
+        },
+        {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach",
             "processId": "${command:pickProcess}"
-        },
-        {
-			"name": "Editor",
-			"type": "node",
-			"request": "launch",
-			"program": "${workspaceRoot}/services/editor/node_modules/react-project/bin/react-project.js",
-			"stopOnEntry": false,
-			"args": [
-				"start"
-			],
-			"cwd": "${workspaceRoot}/services/editor",
-			"preLaunchTask": "dev-env-editor",
-			"runtimeExecutable": null,
-			"runtimeArgs": [
-				"--nolazy"
-			],
-			"env": {
-				"NODE_ENV": "development",
-				"AUTO_RELOAD": "hot",
-                "GIT_USER":"git",
-                "GIT_URL":"ssh://git@localhost:4001/tweek/repo",
-                "GIT_PUBLIC_KEY_PATH": "../git-service/ssh/tweekgit.pub",
-                "GIT_PRIVATE_KEY_PATH": "../git-service/ssh/tweekgit",
-                "TWEEK_API_HOSTNAME":"http://localhost:4003"
-			},
-			"externalConsole": false,
-			"sourceMaps": false,
-			"outDir": null
-		},
-        {
-			"name": "Editor (tests)",
-			"type": "node",
-			"request": "launch",
-			"stopOnEntry": false,
-            "program": "${workspaceRoot}/services/editor/node_modules/jest-cli/bin/jest.js",
-			"cwd": "${workspaceRoot}/services/editor",
-            "args": ["--runInBand"],
-            "runtimeArgs": [
-                "--nolazy"
-            ],
-			"env": {
-				"NODE_ENV": "development",
-				"AUTO_RELOAD": "hot",
-                "GIT_USER":"git",
-                "GIT_URL":"ssh://git@localhost:40/tweek/repo",
-                "GIT_PUBLIC_KEY_PATH": "../git-service/ssh/tweekgit.pub",
-                "GIT_PRIVATE_KEY_PATH": "../git-service/ssh/tweekgit",
-                "TWEEK_API_HOSTNAME":"http://localhost:4003"
-			},
-			"externalConsole": false,
-			"sourceMaps": false,
-			"outDir": null
-		},
-        {
-			"name": "E2E (tests)",
-			"type": "node",
-			"request": "launch",
-			"stopOnEntry": false,
-            "program": "${workspaceRoot}/e2e/node_modules/webdriverio/bin/wdio",
-			"cwd": "${workspaceRoot}/e2e",
-            "args": ["wdio.conf.js"],
-            "runtimeArgs": [
-                "--nolazy"
-            ],
-			"preLaunchTask": "dev-env-e2e",
-			"env": {
-                "EDITOR_URL": "http://localhost:4004/"
-			},
-			"externalConsole": false,
-			"sourceMaps": false,
-			"outDir": null
-		},
-        {
-            "name": "Attach Management (docker)",
-            "type": "node",
-            "request": "attach",
-            "port": 5858,
-            "address": "localhost",
-            "restart": false,
-            "sourceMaps": false,
-            "outDir": null,
-            "protocol": "inspector",
-            "localRoot": "${workspaceRoot}/services/management/",
-            "remoteRoot": "/opt/app/"
-        },
-        {
-            "name": "Attach Authoring (docker)",
-            "type": "node",
-            "request": "attach",
-            "port": 5859,
-            "address": "localhost",
-            "restart": false,
-            "sourceMaps": false,
-            "outDir": null,
-            "protocol": "inspector",
-            "localRoot": "${workspaceRoot}/services/management/",
-            "remoteRoot": "/opt/app/"
-        }, 
-        {
-            "name": "Attach Authoring",
-            "type": "node",
-            "request": "attach",
-            "port": 5858,
-            "address": "localhost",
-            "restart": false,
-            "sourceMaps": false,
-            "outDir": null,
-            "protocol": "inspector",
-            "localRoot": "${workspaceRoot}/services/management/"
         }
     ]
 }
