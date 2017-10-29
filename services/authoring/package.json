@@ -2,7 +2,7 @@
   "name": "tweek-authoring",
   "version": "0.2.2",
   "main": "src/server.js",
-  "repository": "https://github.com/Soluto/tweek",
+  "repository": "Soluto/tweek",
   "author": "Soluto",
   "license": "MIT",
   "engines": {
@@ -10,16 +10,16 @@
   },
   "scripts": {
     "test": "mocha -r ts-node/register",
-    "build": "npm run clean && tsc && cpr ./src/search-index/build/ ./dist/search-index/build/ -o && npm run swagger",
+    "build": "yarn clean && tsc && cpr ./src/search-index/build/ ./dist/search-index/build/ -o && yarn swagger",
     "clean": "rimraf dist",
     "start": "ts-node ./src/server.ts",
     "start:release": "node ./dist/server.js",
     "start:debug": "node --inspect=5858 ./dist/server.js",
     "start:dev": "nodemon --watch src --ext ts --exec 'ts-node src/server.ts --GIT_USER git --GIT_URL ssh://git@localhost:4001/tweek/repo --GIT_PUBLIC_KEY_PATH ../git-service/ssh/tweekgit.pub --GIT_PRIVATE_KEY_PATH ../git-service/ssh/tweekgit'",
-    "start:full-env": "npm run docker-compose up -- -d api git && npm run start:dev",
-    "logs": "yarn run docker-compose logs",
+    "start:full-env": "yarn docker-compose up -- -d api git && yarn start:dev",
+    "logs": "yarn docker-compose logs",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml",
-    "teardown": "npm run docker-compose -- down --remove-orphans",
+    "teardown": "yarn docker-compose -- down --remove-orphans",
     "format": "prettier-eslint --trailing-comma all --print-width 100 --single-quote --write",
     "format:ts": "tsfmt -r",
     "precommit": "lint-staged",
@@ -29,11 +29,11 @@
     "gitDir": "../../",
     "linters": {
       "**/authoring/**/*.js": [
-        "npm run format",
+        "yarn format",
         "git add"
       ],
       "**/authoring/**/*.ts": [
-        "npm run format:ts",
+        "yarn format:ts",
         "git add"
       ]
     }
