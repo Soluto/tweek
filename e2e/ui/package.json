@@ -11,24 +11,14 @@
   "scripts": {
     "start": "yarn docker-compose up --force-recreate -d git redis && yarn docker-compose up -d editor",
     "test": "wdio wdio.conf.js",
-    "rebuild": "yarn docker-compose build",
+    "build": "yarn docker-compose build",
     "test:full-env": "yarn start && yarn test",
-    "test:full-env:rebuild": "yarn rebuild && yarn test:full-env",
-    "test:docker": "yarn start && yarn rebuild e2e-ui && yarn docker-compose run --rm e2e-ui",
-    "test:docker:rebuild": "yarn rebuild && yarn test:docker",
+    "test:full-env:build": "yarn build && yarn test:full-env",
+    "test:docker": "yarn start && yarn build e2e-ui && yarn docker-compose run --rm e2e-ui",
+    "test:docker:build": "yarn build && yarn test:docker",
     "teardown": "yarn docker-compose down --remove-orphans",
     "logs": "yarn docker-compose logs",
-    "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.e2e.yml",
-    "precommit": "lint-staged"
-  },
-  "lint-staged": {
-    "gitDir": "../../",
-    "linters": {
-      "**/e2e/ui/**/*.js": [
-        "prettier --print-width 100 --single-quote --trailing-comma all --no-bracket-spacing=false --write",
-        "git add"
-      ]
-    }
+    "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.e2e.yml"
   },
   "dependencies": {
     "axios": "^0.17.0",
@@ -53,9 +43,6 @@
     "webdriverio": "4.8.0"
   },
   "devDependencies": {
-    "husky": "^0.14.3",
-    "lint-staged": "^4.3.0",
-    "prettier": "^1.7.4",
     "wdio-selenium-standalone-service": "0.0.9"
   }
 }

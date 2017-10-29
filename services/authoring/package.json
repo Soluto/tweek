@@ -20,23 +20,7 @@
     "logs": "yarn docker-compose logs",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml",
     "teardown": "yarn docker-compose -- down --remove-orphans",
-    "format": "prettier-eslint --trailing-comma all --print-width 100 --single-quote --write",
-    "format:ts": "tsfmt -r",
-    "precommit": "lint-staged",
     "swagger": "swaggerGen -c swagger.config.json"
-  },
-  "lint-staged": {
-    "gitDir": "../../",
-    "linters": {
-      "**/authoring/**/*.js": [
-        "yarn format",
-        "git add"
-      ],
-      "**/authoring/**/*.ts": [
-        "yarn format:ts",
-        "git add"
-      ]
-    }
   },
   "dependencies": {
     "bluebird": "^3.5.0",
@@ -81,16 +65,12 @@
     "chai-things": "^0.2.0",
     "cpr": "^2.2.0",
     "eslint": "^4.2.0",
-    "husky": "^0.14.3",
-    "lint-staged": "^4.0.2",
     "mocha": "^3.4.2",
     "nodemon": "^1.11.0",
-    "prettier-eslint-cli": "^4.1.1",
     "rimraf": "^2.6.1",
     "simple-mock": "^0.8.0",
     "ts-node": "^3.3.0",
     "tslint": "^5.6.0",
-    "typescript": "^2.4.2",
-    "typescript-formatter": "^5.2.0"
+    "typescript": "^2.4.2"
   }
 }

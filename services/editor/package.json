@@ -24,9 +24,6 @@
     "teardown": "yarn docker-compose down --remove-orphans",
     "logs": "yarn docker-compose logs",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml",
-    "format": "prettier-eslint --trailing-comma all --print-width 100 --single-quote --write",
-    "format:all": "yarn format \"**/*.js\"",
-    "precommit": "lint-staged",
     "build-less": "node-less-chokidar src/",
     "watch-less": "yarn build-less && node-less-chokidar src/ -o src/ --watch --recursive"
   },
@@ -42,15 +39,6 @@
     "/auth": {
       "target": "http://localhost:3001",
       "secure": false
-    }
-  },
-  "lint-staged": {
-    "gitDir": "../../",
-    "linters": {
-      "**/editor/**/*.js": [
-        "yarn format",
-        "git add"
-      ]
     }
   },
   "jest": {
@@ -147,13 +135,10 @@
     "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-jsx-a11y": "^5.0.3",
     "fetch-mock": "^5.11.0",
-    "husky": "^0.13.4",
     "jest-cli": "^20.0.4",
     "jest-css-modules": "^1.1.0",
-    "lint-staged": "^3.6.0",
     "node-less-chokidar": "^0.1.2",
     "nodemon": "^1.11.0",
-    "prettier-eslint-cli": "^4.0.2",
     "react-scripts": "1.0.7",
     "rimraf": "^2.6.1"
   }
