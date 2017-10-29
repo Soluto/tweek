@@ -1,5 +1,5 @@
 import React from 'react';
-import R from 'ramda';
+import * as R from 'ramda';
 import * as TypesService from '../../../services/types-service';
 import * as RulesService from '../rules-utils';
 import PartitionsSelector from './Partition/PartitionsSelector';
@@ -136,12 +136,14 @@ export default ({ valueType, mutate, alerter, keyPath }) => {
         />
       </div>
 
-      {partitions && partitions.length > 0
-        ? <PartitionsList
-            {...{ partitions, valueType, alerter, keyPath }}
-            mutate={mutate.in('rules')}
-          />
-        : <RulesList {...{ valueType, alerter, keyPath }} mutate={mutate.in('rules')} />}
+      {partitions && partitions.length > 0 ? (
+        <PartitionsList
+          {...{ partitions, valueType, alerter, keyPath }}
+          mutate={mutate.in('rules')}
+        />
+      ) : (
+        <RulesList {...{ valueType, alerter, keyPath }} mutate={mutate.in('rules')} />
+      )}
     </div>
   );
 };

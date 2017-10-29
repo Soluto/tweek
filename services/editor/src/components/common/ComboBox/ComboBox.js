@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Rx from 'rxjs';
-import R from 'ramda';
+import * as R from 'ramda';
 import { compose, pure, mapPropsStream, createEventHandler } from 'recompose';
 import classnames from 'classnames';
 import ClickOutside from './ClickOutside';
@@ -153,20 +153,20 @@ class ComboBoxComponent extends Component {
             hint={hint}
             onKeyDown={this.handleKeyDown}
           />
-          {hasFocus && !disabled
-            ? <Suggestions
-                {...{
-                  value,
-                  suggestions,
-                  getLabel,
-                  highlightedSuggestion,
-                  onSuggestionHighlighted,
-                  renderSuggestion,
-                  suggestionsContainer,
-                }}
-                onSuggestionSelected={this.onSuggestionSelected}
-              />
-            : null}
+          {hasFocus && !disabled ? (
+            <Suggestions
+              {...{
+                value,
+                suggestions,
+                getLabel,
+                highlightedSuggestion,
+                onSuggestionHighlighted,
+                renderSuggestion,
+                suggestionsContainer,
+              }}
+              onSuggestionSelected={this.onSuggestionSelected}
+            />
+          ) : null}
         </div>
       </ClickOutside>
     );
@@ -186,7 +186,11 @@ const ComboBox = compose(
       onInputChanged$,
     );
 
-    const focus$ = onFocus$.startWith(false).distinctUntilChanged().publishReplay(1).refCount();
+    const focus$ = onFocus$
+      .startWith(false)
+      .distinctUntilChanged()
+      .publishReplay(1)
+      .refCount();
 
     const propsWithValue$ = Rx.Observable
       .combineLatest(props$, value$)

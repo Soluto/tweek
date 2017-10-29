@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, mapProps } from 'recompose';
-import R from 'ramda';
+import * as R from 'ramda';
 import classnames from 'classnames';
 import * as contextActions from '../../../../store/ducks/context';
 import { getFixedKeys, FIXED_PREFIX } from '../../../../services/context-service';
@@ -46,17 +46,23 @@ const FixedKeys = ({
   onChange,
   toggleDelete,
   keys,
-}) =>
+}) => (
   <div className={classnames('fixed-keys-container', className)} data-comp="fixed-keys">
     <div className="override-keys-title">
       <div>Override Keys</div>
-      <SaveButton data-comp="save-changes" onClick={saveContext} hasChanges={hasChanges} isSaving={isSavingContext} />
+      <SaveButton
+        data-comp="save-changes"
+        onClick={saveContext}
+        hasChanges={hasChanges}
+        isSaving={isSavingContext}
+      />
     </div>
 
     <FixedKeysList {...{ keys, onChange, toggleDelete }} />
 
     <NewFixedKey appendKey={appendKey} />
-  </div>;
+  </div>
+);
 
 export default compose(
   connect(state => state.context, contextActions),

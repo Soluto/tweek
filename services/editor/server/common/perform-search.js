@@ -1,4 +1,4 @@
-import R from 'ramda';
+import * as R from 'ramda';
 import lunr from 'lunr';
 
 const separator = /(?:[_/]|\s|-)/;

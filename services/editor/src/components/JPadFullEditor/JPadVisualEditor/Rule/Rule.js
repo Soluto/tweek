@@ -1,5 +1,5 @@
 import React from 'react';
-import R from 'ramda';
+import * as R from 'ramda';
 import { shouldUpdate } from 'recompose';
 import Matcher from '../Matcher/Matcher';
 import RuleValue from '../RuleValue/RuleValue';

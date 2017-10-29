@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { compose, mapProps, pure } from 'recompose';
 import { connect } from 'react-redux';
-import R from 'ramda';
+import * as R from 'ramda';
 import { WithContext as ReactTags } from 'react-tag-input';
 import * as tagActions from '../../../../../../store/ducks/tags';
 import './KeyTags.css';
@@ -31,12 +31,12 @@ export default compose(
       this.props.onTagsChanged(newTags);
 
       saveNewTags([newTagText]);
-    }
+    };
 
     _onTagDeleted = (deletedTagIndex) => {
       const newTags = R.remove(deletedTagIndex, 1, this.props.tags);
       this.props.onTagsChanged(newTags.map(x => x.text));
-    }
+    };
 
     render() {
       const { tags, tagsSuggestions } = this.props;

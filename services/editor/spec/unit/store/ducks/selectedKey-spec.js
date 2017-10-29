@@ -1,4 +1,4 @@
-/* global jest, beforeEach, describe, it, expect */
+/* global jest, beforeEach, describe, it, afterEach, expect */
 jest.unmock('../../../../src/store/ducks/tags');
 jest.unmock('../../../../src/store/ducks/selectedKey');
 jest.unmock('../../../../src/utils/http');
@@ -32,8 +32,7 @@ import { assert, expect } from 'chai';
 import fetchMock from 'fetch-mock';
 import keyNameValidations from '../../../../src/store/ducks/ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from '../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations';
-import R from 'ramda';
-import alerts from '../../../../src/store/ducks/alerts';
+import * as R from 'ramda';
 
 describe('selectedKey', async () => {
   const KEY_OPENED = 'KEY_OPENED';
@@ -59,7 +58,10 @@ describe('selectedKey', async () => {
   beforeEach(() => {
     dispatchMock = jest.fn((action) => {
       if (isFunction(action)) {
-        return action(dispatchMock);
+        return action(
+          dispatchMock,
+          jest.fn().mockReturnValue({ selectedKey: { validation: { isValid: true } } }),
+        );
       }
       return action;
     });
@@ -70,7 +72,7 @@ describe('selectedKey', async () => {
     fetchMock.restore();
   });
 
-  const generateState = (openedKeyName, keyNameToAdd, keySource = '') => {
+  const generateState = (openedKeyName, keyNameToAdd) => {
     const state = {
       selectedKey: {
         key: openedKeyName,
@@ -119,7 +121,7 @@ describe('selectedKey', async () => {
   describe('openKey', () => {
     beforeEach(() => {
       fetchMock.get('glob:*/api/tags', []);
-      fetchMock.get('glob:*/api/schemas/', {});
+      fetchMock.get('glob:*/api/schemas', {});
     });
 
     it('should dispatch KEY_OPENED with blank payload for blank key name', async () => {
@@ -213,7 +215,7 @@ describe('selectedKey', async () => {
       // Arrange
       const expectedTags = [{ name: 'pita' }];
       fetchMock.restore();
-      fetchMock.get('glob:*/api/schemas/', {});
+      fetchMock.get('glob:*/api/schemas', {});
       fetchMock.get('glob:*/api/tags', expectedTags);
 
       // Act
