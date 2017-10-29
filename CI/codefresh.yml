@@ -203,7 +203,7 @@ steps:
       - EDITOR_IMAGE=${{BuildingEditor}}
     composition_candidates:
       api_swagger:
-        image: node:8.1.4
+        image: node:8.7.0
         depends_on:
           - api
         volumes:
