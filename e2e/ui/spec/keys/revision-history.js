@@ -33,7 +33,7 @@ describe('revision history', () => {
     return history;
   }
 
-  it('should display revision history', () => {
+  it.skip('should display revision history', () => {
     Key.open(keyName);
     browser.waitForVisible(revisionHistory, 1000);
 
