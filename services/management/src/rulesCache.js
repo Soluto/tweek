@@ -97,18 +97,17 @@ async function updateLatestCache() {
       }));
       const ruleset = await buildRulesArtifiact(fileHandlers);
 
-      rulesCache.sha = newLatestSha;
-      rulesCache.ruleset = ruleset;
-
       let timer = logger.startTimer();
       const formattedRuleset = JSON.stringify(ruleset);
       timer.done('updateLatestCache:JSON.stringify');
 
-      rulesCache.formattedRuleset = formattedRuleset;
-
       timer = logger.startTimer();
       await updateStorage(newLatestSha, formattedRuleset);
       timer.done('updateLatestCache:updateBucket');
+
+      rulesCache.sha = newLatestSha;
+      rulesCache.ruleset = ruleset;
+      rulesCache.formattedRuleset = formattedRuleset;
 
       logger.info('Rules Cache updated', { sha: newLatestSha });
     } catch (err) {
