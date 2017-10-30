@@ -55,4 +55,4 @@ services:
 
 secrets:
   tweek_ssh_private_key:
-    file: ../../services/git-service/ssh/tweekgit
+    file: ./ssh/tweekgit

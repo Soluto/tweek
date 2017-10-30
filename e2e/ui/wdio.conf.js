@@ -6,7 +6,7 @@ nconf
     EDITOR_URL: 'http://localhost:4004/',
     TWEEK_API_URL: 'http://localhost:4003/',
     AUTHORING_URL: 'http://localhost:4005/',
-    GIT_PRIVATE_KEY_PATH: '../../services/git-service/ssh/tweekgit',
+    GIT_PRIVATE_KEY_PATH: '../../deployments/dev/ssh/tweekgit',
   });
 const host = nconf.get('host');
 
