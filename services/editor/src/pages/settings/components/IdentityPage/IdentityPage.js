@@ -1,24 +1,25 @@
 import React from 'react';
 import './IdentityPage.css';
 import { connect } from 'react-redux';
-import { IdentityPropertyItem, NewIdentityProperty } from './IdentityProperty/IdentityProperty';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import * as R from 'ramda';
 import SaveButton from '../../../../components/common/SaveButton/SaveButton';
-import R from 'ramda';
 import * as schemaActions from '../../../../store/ducks/schema';
+import { IdentityPropertyItem, NewIdentityProperty } from './IdentityProperty/IdentityProperty';
 
-const IdentityPropertiesEditor = ({ identityProperties, onPropertyUpdate, onPropertyRemove }) =>
+const IdentityPropertiesEditor = ({ identityProperties, onPropertyUpdate, onPropertyRemove }) => (
   <div className="property-types-list">
-    {R.toPairs(identityProperties).map(([name, def]) =>
+    {R.toPairs(identityProperties).map(([name, def]) => (
       <IdentityPropertyItem
         name={name}
         onUpdate={newDef => onPropertyUpdate(name, newDef)}
         onRemove={() => onPropertyRemove(name)}
         key={name}
         def={def}
-      />,
-    )}
-  </div>;
+      />
+    ))}
+  </div>
+);
 
 const IdentityPage = ({
   identityType,
@@ -39,10 +40,11 @@ const IdentityPage = ({
           isSaving={identityProperties.isSaving}
           onClick={() => saveSchema(identityType)}
         />
-        {identityProperties.remote != null &&
+        {identityProperties.remote && (
           <button data-comp="delete-identity" onClick={() => deleteIdentity(identityType)}>
             Delete
-          </button>}
+          </button>
+        )}
       </div>
       <h3 style={{ textTransform: 'capitalize' }}>{identityType}</h3>
       <Tabs>

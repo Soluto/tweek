@@ -1,26 +1,30 @@
 {
   "name": "integration",
   "version": "1.0.0",
+  "private": true,
   "description": "",
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=8.7.0"
+  },
   "scripts": {
     "start": "yarn docker-compose up --force-recreate -d git redis && yarn docker-compose up -d",
     "test": "mocha ./spec/**/*.test.js --timeout 15000",
-    "rebuild": "yarn docker-compose build",
+    "build": "yarn docker-compose build",
     "test:full-env": "yarn start && yarn test",
-    "test:full-env:rebuild": "yarn rebuild && yarn test:full-env",
-    "test:docker": "yarn start && yarn rebuild e2e-integration && yarn docker-compose run --rm e2e-integration",
-    "test:docker:rebuild": "yarn rebuild && yarn test:docker",
+    "test:full-env:build": "yarn build && yarn test:full-env",
+    "test:docker": "yarn start && yarn build e2e-integration && yarn docker-compose run --rm e2e-integration",
+    "test:docker:build": "yarn build && yarn test:docker",
     "teardown": "yarn docker-compose down --remove-orphans",
     "logs": "yarn docker-compose logs",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.e2e.yml"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "chai": "^4.1.1",
-    "jsonwebtoken": "^7.4.2",
-    "mocha": "^3.5.0",
-    "nconf": "^0.8.4",
+    "chai": "^4.1.2",
+    "jsonwebtoken": "^8.1.0",
+    "mocha": "^4.0.1",
+    "nconf": "^0.8.5",
     "supertest": "^3.0.0"
   }
 }

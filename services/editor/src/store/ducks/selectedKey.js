@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions';
-import R from 'ramda';
+import * as R from 'ramda';
 import { push } from 'react-router-redux';
 import * as ContextService from '../../services/context-service';
 import fetch from '../../utils/fetch';
@@ -248,7 +248,7 @@ export function changeKeyValueType(keyValueType) {
 }
 
 export function updateKeyPath(newKeyPath) {
-  return async function (dispatch, getState) {
+  return async function (dispatch) {
     await dispatch(updateKeyName(newKeyPath));
     dispatch({ type: KEY_PATH_CHANGE, payload: newKeyPath });
   };
