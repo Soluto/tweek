@@ -22,6 +22,7 @@
     "guid": "0.0.12",
     "jsonwebtoken": "8.1.0",
     "jszip": "^3.1.4",
+    "minio": "^3.2.1",
     "mkdirp": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.5.1.tgz",
     "morgan": "^1.9.0",
     "multer": "^1.1.0",

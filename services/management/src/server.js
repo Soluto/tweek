@@ -8,7 +8,16 @@ const readFile = promisify(fs.readFile);
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const nconf = require('nconf');
-nconf.use("memory").argv().env().file({ file: `${process.cwd()}/config.json` });
+nconf
+  .use('memory')
+  .argv()
+  .env()
+  .file({ file: `${process.cwd()}/config.json` })
+  .defaults({
+    MINIO_SECURE: 'false',
+    MINIO_BUCKET: 'tweek-ruleset',
+    MINIO_REGION: 'us-east-1',
+  });
 const rulesCache = require('./rulesCache');
 const repoValidator = require('./repoValidator');
 const logger = require('./logger');
@@ -21,7 +30,7 @@ app.post('/on-repo-change', upload.any(), (req, res) => {
 
   readFile(req.files[0].path, 'binary')
     .then(data => repoValidator(data))
-    .then(result => {
+    .then((result) => {
       logger.info('on-repo-change completed', {
         timeSinceStart: Date.now() - startTime,
         isSuccessful: result === true,
@@ -32,7 +41,7 @@ app.post('/on-repo-change', upload.any(), (req, res) => {
         res.status(400).send(result);
       }
     })
-    .catch(err => {
+    .catch((err) => {
       logger.error(err);
       res.status(500).send(err.response.data);
     });
@@ -65,21 +74,19 @@ app.get('/ruleset/latest/version', (req, res) => {
 
 app.get('/isalive', bodyParser.json(), (req, res) => res.send('alive'));
 
-app.get('/version', (req, res)=> res.send(process.env.npm_package_version));
-app.get('/health', (req,res)=>{
-  var repoReady = !!rulesCache.getLatestRulesVersion();
+app.get('/version', (req, res) => res.send(process.env.npm_package_version));
+app.get('/health', (req, res) => {
+  const repoReady = !!rulesCache.getLatestRulesVersion();
   res.status(repoReady ? 200 : 503);
   res.json({
     repoReady: repoReady,
     rulesVersion: repoReady ? rulesCache.getLatestRulesVersion() : undefined,
-    healthy: repoReady
+    healthy: repoReady,
   });
 });
 
 rulesCache.buildLocalCache();
 
 app.listen(app.get('port'), () =>
-  logger.info('Server started: http://localhost:' + app.get('port') + '/'),
+  logger.info(`Server started: http://localhost:${app.get('port')}/`),
 );
-
-

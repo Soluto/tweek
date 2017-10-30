@@ -15,6 +15,7 @@ services:
   management:
     depends_on:
       - git
+      - minio
     expose:
       - "5858"
     ports:
@@ -29,9 +30,14 @@ services:
       - GIT_URL=ssh://git@git/tweek/repo
       - GIT_PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY_PATH=/run/secrets/minio_access_key
+      - MINIO_SECRET_KEY_PATH=/run/secrets/minio_secret_key
     secrets:
       - tweek_ssh_public_key
       - tweek_ssh_private_key
+      - minio_access_key
+      - minio_secret_key
     labels:
       - "traefik.port=3000"
   
