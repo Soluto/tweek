@@ -72,7 +72,7 @@ async function startServer() {
 
   app.use('/*', (req, res) => res.sendStatus(404));
   const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-    console.error(req.method, req.originalUrl, err);
+    console.error(req.method, req.originalUrl, err.message);
     res.status(err.statusCode || 500).send(err.message);
   };
   app.use(errorHandler);
