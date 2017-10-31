@@ -46,6 +46,7 @@ services:
       - "4003:80"
     depends_on:
       - redis
+      - minio
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - PUBLIC_KEY_PATH=/run/secrets/tweek_pfx_public_key
@@ -53,8 +54,15 @@ services:
       - Redis__ConnectionString=redis:6379
       - Addons__Redis__className=Tweek.Drivers.Redis.RedisServiceAddon
       - Addons__Redis__assemblyName=Tweek.Drivers.Redis
+      - Addons__Minio__className=Tweek.Drivers.Rules.Minio.RulesMinioAddon
+      - Addons__Minio__assemblyName=Tweek.Drivers.Rules.Minio
+      - Rules__Minio__Endpoint=minio:9000
+      - Rules__Minio__AccessKeyPath=/run/secrets/minio_access_key
+      - Rules__Minio__SecretKeyPath=/run/secrets/minio_secret_key
     secrets:
       - tweek_pfx_public_key
+      - minio_access_key
+      - minio_secret_key
 
   editor:
     ports:
