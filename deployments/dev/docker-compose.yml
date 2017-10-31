@@ -4,13 +4,13 @@ services:
   management:
     image: soluto/tweek-management
     build: ../../services/management
-    depends_on:
-      - api
     environment:
       - VALIDATION_URL=http://api/validation
 
   api:
     image: soluto/tweek-api
+    depends_on:
+      - management
     build:
       context: ../../
       dockerfile: TweekApiDockerfile
