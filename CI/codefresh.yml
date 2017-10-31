@@ -59,7 +59,7 @@ steps:
   Tests:
     title: Tests - e2e & smoke
     type: composition
-    composition: tweek-composition
+    composition: .CI/test-composition.yml
     composition_variables:
       - KEYS_IMAGE=${{BuildGitKeys}}
       - REPOSITORY_IMAGE=${{BuildingGitRepository}}
