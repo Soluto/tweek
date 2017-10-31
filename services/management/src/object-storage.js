@@ -51,7 +51,7 @@ async function updateStorage(version, rules) {
   const prevVersions = await getObject('versions');
   if (prevVersions.latest === version) return;
 
-  await minioClient.putObject(minioBucket, version, rules);
+  await minioClient.putObject(minioBucket, version, rules, 'application/json');
   const versions = {
     latest: version,
     previous: prevVersions.latest,
