@@ -1,0 +1,108 @@
+version: '2'
+services:
+  keys:
+    image: $KEYS_IMAGE
+    
+  git:
+    image: $REPOSITORY_IMAGE
+    volumes_from:
+      - keys
+    environment:
+      - PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
+      - TWEEK_MANAGEMENT_URL=http://management:3000
+  
+  management:
+    image: $MANAGEMENT_IMAGE
+    depends_on:
+      - api
+      - git
+      - minio
+    volumes_from:
+      - keys
+    logging:
+      driver: "none"
+    environment:
+      - VALIDATION_URL=http://api/validation
+      - GIT_USER=git
+      - GIT_URL=ssh://git@git/tweek/tests
+      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+      - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
+      - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
+      - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      
+  api:
+    image: $API_IMAGE
+    depends_on:
+      - minio
+      - redis
+    volumes_from:
+      - keys
+    logging:
+      driver: "none"
+    environment:
+      - Rules__Minio__Endpoint=minio:9000
+      - Rules__Minio__AccessKeyPath=/run/secrets/minio_access_key
+      - Rules__Minio__SecretKeyPath=/run/secrets/minio_secret_key
+      - Rules__Minio__SampleIntervalInMs=500
+      - Addons__Minio__className=Tweek.Drivers.Rules.Minio.RulesMinioAddon
+      - Addons__Minio__assemblyName=Tweek.Drivers.Rules.Minio
+      - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
+      - ContextProvider=redis
+      - Redis__ConnectionString=redis:6379
+      - Addons__Redis__ClassName=Tweek.Drivers.Redis.RedisServiceAddon
+      - Addons__Redis__AssemblyName=Tweek.Drivers.Redis
+      - CorsPolicies__Keys__Origins=http://editor:3000,http://testorigin
+      - CorsPolicies__Keys__Methods=GET
+      - CorsPolicies__Keys__MaxPreflightAge=60
+      - CorsEnabled=true
+      - CorsPolicies__Keys__Headers=
+      - CorsPolicies__Keys__ExposedHeaders=
+      
+  authoring:
+    image: $AUTHORING_IMAGE
+    depends_on:
+      - git
+    volumes_from:
+      - keys
+    logging:
+      driver: "none"
+    environment:
+      - GIT_USER=git
+      - GIT_URL=ssh://git@git/tweek/tests
+      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+      - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
+      
+  editor:
+    image: $EDITOR_IMAGE
+    depends_on:
+      - api
+      - authoring
+    volumes_from:
+      - keys
+    logging:
+      driver: "none"
+    environment:
+      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+      - TWEEK_API_HOSTNAME=http://api
+      - AUTHORING_API_HOSTNAME=http://authoring:3000
+      
+  redis:
+    image: redis:alpine
+    expose:
+      - "6379"
+    logging:
+      driver: "none"
+
+  minio:
+    image: minio/minio
+    logging:
+      driver: "none"
+    command: server /data
+    environment:
+      - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
+      - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      
+  selenium:
+    image: selenium/standalone-chrome:3.4.0
+    logging:
+      driver: "none"
