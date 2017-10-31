@@ -18,8 +18,8 @@ nconf
     MINIO_BUCKET: 'tweek-ruleset',
     MINIO_REGION: 'us-east-1',
   });
-const rulesCache = require('./rulesCache');
-const repoValidator = require('./repoValidator');
+const rulesCache = require('./rules-cache');
+const repoValidator = require('./repo-validator');
 const logger = require('./logger');
 app.use(morgan('dev'));
 app.set('port', process.env.PORT || 3000);
