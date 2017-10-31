@@ -80,17 +80,17 @@ async function startServer() {
   app.listen(PORT, () => console.log('Listening on port', PORT));
 }
 
-GitContinuousUpdater.onUpdate(gitTransactionManager)
-  .switchMap(_ =>
-    Rx.Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)),
-)
-  .do(() => { }, (err: any) => console.error('Error refreshing index', err))
+const onUpdate$ = GitContinuousUpdater.onUpdate(gitTransactionManager).share();
+
+onUpdate$
+  .switchMapTo(Rx.Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)))
+  .do(null, (err: any) => console.error('Error refreshing index', err))
   .retry()
   .subscribe();
 
-GitContinuousUpdater.onUpdate(gitTransactionManager)
-  .switchMap(_ => Rx.Observable.defer(() => appsRepository.refresh()))
-  .do(() => { }, (err: any) => console.error('Error refersing apps index', err))
+onUpdate$
+  .switchMapTo(Rx.Observable.defer(() => appsRepository.refresh()))
+  .do(null, (err: any) => console.error('Error refersing apps index', err))
   .retry()
   .subscribe();
 
