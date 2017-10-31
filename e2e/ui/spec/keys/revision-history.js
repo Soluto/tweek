@@ -20,6 +20,7 @@ describe('revision history', () => {
     if (noChangesAttribute !== 'true') {
       prevCommit = browser.getValue(currentCommit);
       const commits = browser.getValue(revision).map(commit => ({ commit }));
+      commits.reverse();
       history.push(...commits);
     }
 
@@ -51,9 +52,8 @@ describe('revision history', () => {
     expect(values).to.deep.equal(history.map(x => x.commit));
 
     const revisionHistorySelect = browser.element(revisionHistory);
-    const testIndex = history.length - changeCount + 2;
-    revisionHistorySelect.selectByValue(history[testIndex].commit);
+    revisionHistorySelect.selectByValue(history[2].commit);
 
-    expect(Key.defaultValue).to.equal(history[testIndex].value);
+    expect(Key.defaultValue).to.equal(history[2].value);
   });
 });
