@@ -29,7 +29,7 @@ namespace Tweek.Drivers.Rules.Minio
                 .Switch()
                 .Do(x => CurrentLabel = x.version)
                 .Select(x => x.rules)
-                .Do(null, e => logger.LogError(e, "Error while getting rules"))
+                .Do(_ => {}, e => logger.LogError(e, "Error while getting rules"))
                 .OnErrorResumeNext(Observable.Empty<Dictionary<string, RuleDefinition>>().Delay(settings.SampleInterval))
                 .SubscribeOn(scheduler)
                 .Repeat()
