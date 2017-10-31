@@ -25,9 +25,6 @@ namespace Tweek.Drivers.Rules.Minio
                 FailureDelayInMs = minioConfiguration.GetValue("FailureDelayInMs", 60000),
             };
 
-            var accessKey = minioConfiguration.GetValue<string>("AccessKey");
-            if (string.IsNullOrEmpty(accessKey))
-
             services.AddSingleton(new TweekMinioClient(
                 minioConfiguration.GetValue("Bucket", "tweek-ruleset"),
                 minioConfiguration.GetValue<string>("Endpoint"),
@@ -36,7 +33,8 @@ namespace Tweek.Drivers.Rules.Minio
                 minioConfiguration.GetValue("Secure", false)
             ));
 
-            services.AddSingleton<IRulesDriver>(ctx => new MinioRulesDriver(ctx.GetService<TweekMinioClient>(), settings));
+            services.AddSingleton<IRulesDriver>(ctx => new MinioRulesDriver(ctx.GetService<TweekMinioClient>(),
+                settings, ctx.GetService<ILoggerFactory>().CreateLogger("RulesMinioDriver")));
         }
     }
 }
