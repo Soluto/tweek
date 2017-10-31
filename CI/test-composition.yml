@@ -19,8 +19,6 @@ services:
       - minio
     volumes_from:
       - keys
-    logging:
-      driver: "none"
     environment:
       - VALIDATION_URL=http://api/validation
       - GIT_USER=git
@@ -38,8 +36,6 @@ services:
       - redis
     volumes_from:
       - keys
-    logging:
-      driver: "none"
     environment:
       - Rules__Minio__Endpoint=minio:9000
       - Rules__Minio__AccessKeyPath=/run/secrets/minio_access_key
@@ -65,8 +61,6 @@ services:
       - git
     volumes_from:
       - keys
-    logging:
-      driver: "none"
     environment:
       - GIT_USER=git
       - GIT_URL=ssh://git@git/tweek/tests
@@ -80,8 +74,6 @@ services:
       - authoring
     volumes_from:
       - keys
-    logging:
-      driver: "none"
     environment:
       - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
       - TWEEK_API_HOSTNAME=http://api
