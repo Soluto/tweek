@@ -88,7 +88,7 @@ services:
       - AUTHORING_API_HOSTNAME=http://authoring:3000
       
   redis:
-    image: redis:alpine
+    image: redis:4.0.2-alpine
     expose:
       - "6379"
     logging:
