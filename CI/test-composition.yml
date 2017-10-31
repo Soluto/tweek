@@ -38,8 +38,8 @@ services:
       - keys
     environment:
       - Rules__Minio__Endpoint=minio:9000
-      - Rules__Minio__AccessKeyPath=/run/secrets/minio_access_key
-      - Rules__Minio__SecretKeyPath=/run/secrets/minio_secret_key
+      - Rules__Minio__AccessKey=AKIAIOSFODNN7EXAMPLE
+      - Rules__Minio__SecretKey=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
       - Rules__Minio__SampleIntervalInMs=500
       - Addons__Minio__className=Tweek.Drivers.Rules.Minio.RulesMinioAddon
       - Addons__Minio__assemblyName=Tweek.Drivers.Rules.Minio
