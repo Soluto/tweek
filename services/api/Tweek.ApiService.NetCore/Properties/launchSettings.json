@@ -14,7 +14,7 @@
       "launchUrl": "health",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "PUBLIC_KEY_PATH": "../../git-service/ssh/tweekgit_public.pfx",
+        "PUBLIC_KEY_PATH": "../../../deployments/dev/ssh/tweekgit_public.pfx",
         "Rules__Management__Url": "http://localhost:4002",
         "Addons__Redis__assemblyName": "Tweek.Drivers.Redis",
         "Addons__Redis__className": "Tweek.Drivers.Redis.RedisServiceAddon",

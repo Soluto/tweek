@@ -1,5 +1,5 @@
 import React from 'react';
-import R from 'ramda';
+import * as R from 'ramda';
 import { Accordion, AccordionItem } from 'react-sanfona';
 import { mapProps } from 'recompose';
 import RulesList from '../RulesList/RulesList';
@@ -67,7 +67,7 @@ class NewPartition extends React.Component {
     );
     return (
       <div className="new-partition-container" data-comp="new-partition">
-        {indexedPartitions.map(partition =>
+        {indexedPartitions.map(partition => (
           <div className="new-partition-item-container" key={partition.id}>
             <NewPartitionPropertyValue
               {...partition}
@@ -75,15 +75,19 @@ class NewPartition extends React.Component {
               onUpdate={value =>
                 this.setState({ partition: { ...this.state.partition, [partition.id]: value } })}
             />
-          </div>,
-        )}
+          </div>
+        ))}
         <InputValue
           value={this.state.defaultValue}
           valueType={valueType}
           onChange={defaultValue => this.setState({ defaultValue })}
           placeholder="Partition's default value"
         />
-        <button className="add-partition-button" data-comp="add-partition" onClick={this.addPartition.bind(this)} />
+        <button
+          className="add-partition-button"
+          data-comp="add-partition"
+          onClick={this.addPartition.bind(this)}
+        />
       </div>
     );
   }
@@ -121,14 +125,11 @@ export default class PartitionsList extends React.Component {
 
     return (
       <div className="partitions-list-container">
-        {!hasDefaultValue
-          ? <button
-              className="add-default-partition-button"
-              onClick={() => this.addPartition({})}
-            >
-              Add default partition
-            </button>
-          : null}
+        {!hasDefaultValue ? (
+          <button className="add-default-partition-button" onClick={() => this.addPartition({})}>
+            Add default partition
+          </button>
+        ) : null}
 
         <NewPartition
           partitions={partitions}
@@ -161,9 +162,7 @@ export default class PartitionsList extends React.Component {
                     data-group={partitionGroupName.toLowerCase()}
                   >
                     <div className="expander-icon"></div>
-                    <h3>
-                      {partitionGroupName}
-                    </h3>
+                    <h3>{partitionGroupName}</h3>
                     <div className="partitions-accordion-container-item-title-details">
                       {isOnlyDefault ? `value: ${rules[0].Value}` : `rules: ${rules.length}`}
                     </div>

@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions';
-import R from 'ramda';
+import * as R from 'ramda';
 import { withJsonData } from '../../utils/http';
 import fetch from '../../utils/fetch';
 import { showError } from './notifications';

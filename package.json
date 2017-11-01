@@ -1,0 +1,44 @@
+{
+  "name": "tweek",
+  "repository": "Soluto/tweek",
+  "author": "Soluto",
+  "license": "MIT",
+  "scripts": {
+    "build": "yarn docker-compose build",
+    "build:e2e": "yarn docker-compose:e2e build",
+    "start": "yarn docker-compose up -d",
+    "start:e2e": "yarn docker-compose:e2e up --force-recreate -d git redis && yarn docker-compose:e2e up -d editor",
+    "test:ui": "cd e2e/ui && yarn test",
+    "test:integration": "cd e2e/integration && yarn test",
+    "test": "yarn test:integration && yarn test:ui",
+    "test:full-env": "yarn start:e2e && yarn test",
+    "test:full-env:build": "yarn build:e2e && yarn test:full-env",
+    "test:docker": "yarn build:e2e && yarn start:e2e && yarn docker-compose:e2e run --rm e2e-integration && yarn docker-compose:e2e run --rm e2e-ui",
+    "logs": "yarn docker-compose logs",
+    "teardown": "yarn docker-compose down --remove-orphans",
+    "docker-compose": "docker-compose -f ./deployments/dev/docker-compose.yml -f ./deployments/dev/docker-compose.override.yml",
+    "docker-compose:e2e": "yarn docker-compose -f ./deployments/dev/docker-compose.e2e.yml",
+    "format": "prettier-eslint --trailing-comma all --print-width 100 --single-quote --write",
+    "format:ts": "tsfmt -r",
+    "precommit": "lint-staged"
+  },
+  "devDependencies": {
+    "husky": "^0.14.3",
+    "lint-staged": "^4.3.0",
+    "prettier": "^1.7.4",
+    "prettier-eslint-cli": "^4.4.0",
+    "typescript-formatter": "^7.0.0"
+  },
+  "lint-staged": {
+    "linters": {
+      "**/*.js": [
+        "yarn format",
+        "git add"
+      ],
+      "**/*.ts": [
+        "yarn format:ts",
+        "git add"
+      ]
+    }
+  }
+}

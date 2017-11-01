@@ -1,7 +1,7 @@
 import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { compose, pure, lifecycle, mapProps, withState } from 'recompose';
-import R from 'ramda';
+import * as R from 'ramda';
 import Mutator from '../../utils/mutator';
 import * as TypesService from '../../services/types-service';
 import * as RulesService from './rules-utils';
@@ -43,9 +43,8 @@ const KeyRulesEditor = ({
   onTabSelected,
   hasChanges,
   setHasChanges,
-}) =>
+}) => (
   <div className="key-rules-editor-container" data-comp="key-rules-editor" disabled={isReadonly}>
-
     <Tabs
       className="tab-container"
       selectedIndex={selectedTab}
@@ -60,22 +59,24 @@ const KeyRulesEditor = ({
         onTabSelected(index);
       }}
     >
-
       <TabList>
         <Tab className="tab-header">
           <label className="key-definition-tab-icon"> </label>
-          <label className="tab-title" data-tab-header="rules">Rules</label>
+          <label className="tab-title" data-tab-header="rules">
+            Rules
+          </label>
         </Tab>
         <Tab className="tab-header">
           <label className="key-source-tab-icon"> </label>
-          <label className="tab-title" data-tab-header="source">Source</label>
+          <label className="tab-title" data-tab-header="source">
+            Source
+          </label>
         </Tab>
       </TabList>
       <TabPanel className="tab-content">
         <fieldset disabled={isReadonly} style={{ border: 'none' }}>
           <JPadVisualEditor {...{ mutate, alerter, valueType, keyPath }} jpadSource={source} />
         </fieldset>
-
       </TabPanel>
       <TabPanel className="tab-content">
         <JPadTextEditor
@@ -83,10 +84,9 @@ const KeyRulesEditor = ({
           onChange={x => onMutation(JSON.parse(x))}
         />
       </TabPanel>
-
     </Tabs>
-
-  </div>;
+  </div>
+);
 
 function getTypedValue(value, valueType) {
   try {
@@ -109,9 +109,8 @@ function changeValueType(valueType, rulesMutate, depth) {
         break;
       }
 
-      const valueToConvert = valueDistrubtion.type === 'weighted'
-        ? Object.keys(valueDistrubtion.args)[0]
-        : '';
+      const valueToConvert =
+        valueDistrubtion.type === 'weighted' ? Object.keys(valueDistrubtion.args)[0] : '';
       const convertedValue = getTypedValue(valueToConvert, valueType);
 
       ruleMutate

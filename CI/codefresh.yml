@@ -5,13 +5,13 @@ steps:
       title: Check versions to deploy
       image: alpine/git
       commands:
-          - ./ci/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
+          - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
 
   BuildGitKeys:
     title: Building Git Keys Docker Image
     type: build
     image_name: soluto/tweek-test-keys
-    working_directory: ./services/git-service/ssh/
+    working_directory: ./deployments/dev/ssh/
 
   BuildingGitRepository:
     title: Building Git Repository Docker Image
@@ -203,12 +203,12 @@ steps:
       - EDITOR_IMAGE=${{BuildingEditor}}
     composition_candidates:
       api_swagger:
-        image: node:8.1.4
+        image: node:8.7.0
         depends_on:
           - api
         volumes:
           - ${{CF_VOLUME}}:/repo
-        working_dir: /repo/tweek/ci
+        working_dir: /repo/tweek/CI
         environment: 
           - UPDATE_SWAGGER_SECRET=${{UPDATE_SWAGGER_SECRET}}
         command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && ./update_swagger.sh api ${TWEEK_DOCKER_TAG_API} http://api/api/swagger.json"

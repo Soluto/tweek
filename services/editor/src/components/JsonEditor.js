@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose, withStateHandlers, setDisplayName, setPropTypes, lifecycle } from 'recompose';
-import R from 'ramda';
+import * as R from 'ramda';
 import MonacoEditor from 'react-monaco-editor';
 import { AutoSizer } from 'react-virtualized';
 import './JsonEditor.css';
@@ -31,8 +31,7 @@ export const JsonEditor = compose(
     {
       changeText: (state, props) => (newText) => {
         const parsedObject = R.tryCatch(parse, R.F)(newText);
-        const newState = { text: newText, isValid: !!parsedObject };
-        return newState;
+        return { text: newText, isValid: !!parsedObject };
       },
     },
   ),
@@ -46,10 +45,10 @@ export const JsonEditor = compose(
       }
     },
   }),
-)(({ text, changeText, isValid }) =>
+)(({ text, changeText, isValid }) => (
   <div className="json-editor-container" data-comp="json-editor">
     <AutoSizer>
-      {({ height, width }) =>
+      {({ height, width }) => (
         <MonacoEditor
           height={height}
           width={width}
@@ -58,7 +57,8 @@ export const JsonEditor = compose(
           options={{ scrollBeyondLastLine: false, readOnly: false }}
           requireConfig={requireConfig}
           onChange={newSource => changeText(newSource)}
-        />}
+        />
+      )}
     </AutoSizer>
-  </div>,
-);
+  </div>
+));

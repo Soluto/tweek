@@ -1,10 +1,10 @@
 import { handleActions } from 'redux-actions';
-import { getSchema, refreshSchema } from '../../services/context-service';
-import R from 'ramda';
+import { push } from 'react-router-redux';
+import * as R from 'ramda';
 import jsonpatch from 'fast-json-patch';
+import { getSchema, refreshSchema } from '../../services/context-service';
 import { withJsonData } from '../../utils/http';
 import fetch from '../../utils/fetch';
-import { push } from 'react-router-redux';
 import { showError } from './notifications';
 
 const SCHEMA_LOADED = 'SCHEMA_LOADED';
@@ -60,14 +60,14 @@ export function upsertIdentityProperty(identity, prop, value) {
 }
 
 export function addNewIdentity(identityType) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({ type: ADD_NEW_IDENTITY, value: { identityType } });
     dispatch(push(`/settings/identities/${identityType}`));
   };
 }
 
 export function deleteIdentity(identityType) {
-  return handleError(`Failed to delete identity ${identityType}`, async (dispatch, getState) => {
+  return handleError(`Failed to delete identity ${identityType}`, async (dispatch) => {
     dispatch({ type: DELETING_IDENTITY, value: { identityType } });
     dispatch(push(`/settings`));
     await fetch(`/api/schemas/${identityType}`, {
