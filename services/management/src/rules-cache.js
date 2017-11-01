@@ -9,7 +9,7 @@ const mkdirp = promisify(require('mkdirp'));
 const readFile = promisify(fs.readFile);
 const buildRulesArtifiact = require('./build-rules-artifiact');
 const logger = require('./logger');
-const { initStorage, updateStorage } = require('./object-storage');
+const initStorage = require('./object-storage');
 
 function useFileFromBase64EnvVariable(inlineKeyName, fileKeyName) {
   const tmpDir = os.tmpdir();
@@ -58,9 +58,9 @@ async function buildLocalCache() {
   await Git.Clone.clone(gitUrl, repoPath, { fetchOpts: fetchOpts });
   logger.info('Git repository ready');
 
-  await initStorage();
+  const updateStorage = await initStorage();
 
-  return updateLatestCache();
+  return updateLatestCache(updateStorage);
 }
 
 async function syncRepo(repo) {
@@ -76,7 +76,7 @@ async function syncRepo(repo) {
   await Git.Reset.reset(repo, remoteCommit, Git.Reset.TYPE.HARD);
 }
 
-async function updateLatestCache() {
+async function updateLatestCache(updateStorage) {
   while (true) {
     try {
       const repo = await Git.Repository.open(repoPath);
