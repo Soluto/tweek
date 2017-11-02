@@ -19,10 +19,12 @@ describe('revision history', () => {
     const noChangesAttribute = browser.getAttribute(revisionHistory, 'data-no-changes');
     if (noChangesAttribute !== 'true') {
       prevCommit = browser.getValue(currentCommit);
-      const options = browser.elements(revision);
-      const commits = options.map(x => x.getValue()).map(commit => ({ commit }));
+      let options = browser.getValue(revision);
+      if (!Array.isArray(options)) {
+        options = [options];
+      }
+      const commits = options.map(commit => ({ commit }));
       commits.reverse();
-      console.log('commits', commits);
       history.push(...commits);
     }
 
