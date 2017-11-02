@@ -30,14 +30,13 @@ namespace Tweek.Drivers.Rules.Minio
                         {
                             var latestVersion = await minioClient.GetVersion(ct);
                             LastCheckTime = scheduler.Now.UtcDateTime;
-                            if (latestVersion == CurrentLabel)
+                            if (latestVersion != CurrentLabel)
                             {
-                                await Observable.Return(Unit.Default).Delay(settings.SampleInterval, scheduler);
-                                continue;
+                                var ruleset = await minioClient.GetRuleset(latestVersion, ct);
+                                sub.OnNext(ruleset);
+                                CurrentLabel = latestVersion;
                             }
-                            var ruleset = await minioClient.GetRuleset(latestVersion, ct);
-                            sub.OnNext(ruleset);
-                            CurrentLabel = latestVersion;
+                            await Observable.Return(Unit.Default).Delay(settings.SampleInterval, scheduler);
                         }
                     }
                     catch (Exception ex)
