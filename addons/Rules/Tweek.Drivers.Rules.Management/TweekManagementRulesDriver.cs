@@ -25,7 +25,7 @@ namespace Tweek.Drivers.Rules.Management
     public event Action<IDictionary<string, RuleDefinition>> OnRulesChange;
     private const string RULESET_PATH = "/ruleset/latest";
     private const string RULESET_LATEST_VERSION_PATH = "/ruleset/latest/version";
-    private IDisposable _subscrption;
+    private IDisposable _subscription;
     private readonly IConnectableObservable<Dictionary<string, RuleDefinition>> _pipeline;
     public string CurrentLabel { get; private set; }
     public DateTime LastCheckTime = DateTime.UtcNow;
@@ -108,7 +108,7 @@ namespace Tweek.Drivers.Rules.Management
           .Replay(1);
     }
 
-    private void Start() => _subscrption = new CompositeDisposable(_pipeline.Subscribe(rules => OnRulesChange?.Invoke(rules)), _pipeline.Connect());
+    private void Start() => _subscription = new CompositeDisposable(_pipeline.Subscribe(rules => OnRulesChange?.Invoke(rules)), _pipeline.Connect());
 
     public static TweekManagementRulesDriver StartNew(HttpGet getter, TweekManagementRulesDriverSettings settings, ILogger logger = null,
         IMeasureMetrics metrics = null, IScheduler scheduler = null)
@@ -123,7 +123,7 @@ namespace Tweek.Drivers.Rules.Management
 
     public void Dispose()
     {
-      _subscrption.Dispose();
+      _subscription?.Dispose();
     }
   }
 }

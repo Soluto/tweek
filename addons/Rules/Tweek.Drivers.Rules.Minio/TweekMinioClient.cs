@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Tweek.Drivers.Rules.Minio
 {
-    public class TweekMinioClient
+    public class TweekMinioClient : IMinioClient
     {
         private readonly MinioClient _client;
         private readonly string _bucket;
