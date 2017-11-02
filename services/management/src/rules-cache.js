@@ -58,9 +58,9 @@ async function buildLocalCache() {
   await Git.Clone.clone(gitUrl, repoPath, { fetchOpts: fetchOpts });
   logger.info('Git repository ready');
 
-  const updateStorage = await initStorage();
+  const storage = await initStorage();
 
-  return updateLatestCache(updateStorage);
+  return updateLatestCache(storage);
 }
 
 async function syncRepo(repo) {
@@ -76,7 +76,7 @@ async function syncRepo(repo) {
   await Git.Reset.reset(repo, remoteCommit, Git.Reset.TYPE.HARD);
 }
 
-async function updateLatestCache(updateStorage) {
+async function updateLatestCache({ updateStorage } = {}) {
   while (true) {
     try {
       const repo = await Git.Repository.open(repoPath);
@@ -101,9 +101,11 @@ async function updateLatestCache(updateStorage) {
       const formattedRuleset = JSON.stringify(ruleset);
       timer.done('updateLatestCache:JSON.stringify');
 
-      timer = logger.startTimer();
-      await updateStorage(newLatestSha, formattedRuleset);
-      timer.done('updateLatestCache:updateBucket');
+      if (updateStorage) {
+        timer = logger.startTimer();
+        await updateStorage(newLatestSha, formattedRuleset);
+        timer.done('updateLatestCache:updateBucket');
+      }
 
       rulesCache.sha = newLatestSha;
       rulesCache.ruleset = ruleset;

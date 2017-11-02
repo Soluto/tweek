@@ -11,40 +11,14 @@ function useStringFromFileEnvVariable(inlineSecretName, fileSecretName) {
 }
 
 const minioEndpoint = nconf.get('MINIO_ENDPOINT');
-const minioBucket = nconf.get('MINIO_BUCKET');
 if (minioEndpoint) {
   useStringFromFileEnvVariable('MINIO_ACCESS_KEY', 'MINIO_ACCESS_KEY_PATH');
   useStringFromFileEnvVariable('MINIO_SECRET_KEY', 'MINIO_SECRET_KEY_PATH');
   nconf.required(['MINIO_ACCESS_KEY', 'MINIO_SECRET_KEY']);
 }
 
-async function getObject(minioClient, objectName) {
-  return new Promise(async (resolve, reject) => {
-    const stream = await minioClient.getObject(minioBucket, objectName);
-    let result = '';
-    stream.on('data', chunk => (result += chunk));
-    stream.on('end', () => resolve(JSON.parse(result)));
-    stream.on('error', reject);
-  });
-}
-
-async function cleanStorage(minioClient, allowed) {
-  const objects$ = Observable.create((observer) => {
-    const stream = minioClient.listObjects(minioBucket);
-    stream.on('data', x => observer.next(x));
-    stream.on('error', err => observer.error(err));
-    stream.on('end', () => observer.complete());
-  });
-
-  return objects$
-    .pluck('name')
-    .filter(name => !allowed.includes(name))
-    .mergeMap(name => Observable.fromPromise(minioClient.removeObject(minioBucket, name)))
-    .toPromise();
-}
-
 module.exports = async function initStorage() {
-  if (!minioEndpoint) return () => Promise.resolve();
+  if (!minioEndpoint) return;
 
   const [minioHost, minioPort] = minioEndpoint.split(':');
   const minioClient = new Minio.Client({
@@ -55,6 +29,8 @@ module.exports = async function initStorage() {
     secretKey: nconf.get('MINIO_SECRET_KEY'),
   });
 
+  const minioBucket = nconf.get('MINIO_BUCKET');
+
   try {
     await minioClient.bucketExists(minioBucket);
   } catch (err) {
@@ -63,8 +39,33 @@ module.exports = async function initStorage() {
     await minioClient.putObject(minioBucket, 'versions', '{}');
   }
 
-  return async function updateStorage(version, rules) {
-    const prevVersions = await getObject(minioClient, 'versions');
+  async function getObject(objectName) {
+    return new Promise(async (resolve, reject) => {
+      const stream = await minioClient.getObject(minioBucket, objectName);
+      let result = '';
+      stream.on('data', chunk => (result += chunk));
+      stream.on('end', () => resolve(JSON.parse(result)));
+      stream.on('error', reject);
+    });
+  }
+
+  async function cleanStorage(allowed) {
+    const objects$ = Observable.create((observer) => {
+      const stream = minioClient.listObjects(minioBucket);
+      stream.on('data', x => observer.next(x));
+      stream.on('error', err => observer.error(err));
+      stream.on('end', () => observer.complete());
+    });
+
+    return objects$
+      .pluck('name')
+      .filter(name => !allowed.includes(name))
+      .mergeMap(name => Observable.fromPromise(minioClient.removeObject(minioBucket, name)))
+      .toPromise();
+  }
+
+  async function updateStorage(version, rules) {
+    const prevVersions = await getObject('versions');
     if (prevVersions.latest === version) return;
 
     await minioClient.putObject(minioBucket, version, rules, 'application/json');
@@ -72,7 +73,17 @@ module.exports = async function initStorage() {
       latest: version,
       previous: prevVersions.latest,
     };
-    await minioClient.putObject(minioBucket, 'versions', JSON.stringify(versions));
-    await cleanStorage(minioClient, Object.values(versions).concat('versions'));
+    await minioClient.putObject(
+      minioBucket,
+      'versions',
+      JSON.stringify(versions),
+      'application/json',
+    );
+    await cleanStorage(Object.values(versions).concat('versions'));
+  }
+
+  return {
+    getObject,
+    updateStorage,
   };
 };
