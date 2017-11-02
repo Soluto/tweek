@@ -59,7 +59,7 @@ namespace Tweek.Drivers.Rules.Minio.Tests
 
             var result = await driver.GetAllRules();
             Assert.Equal("10001", driver.CurrentLabel);
-            Assert.Equal("test_rule1", result.Keys.First());
+            Assert.Equal("test_rule1", result.Keys.Single());
 
             clientMock.Setup(x => x.GetVersion(It.IsAny<CancellationToken>())).Returns(Task.FromResult("10002"));
             clientMock.Setup(x => x.GetRuleset(It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -71,7 +71,7 @@ namespace Tweek.Drivers.Rules.Minio.Tests
 
             result = await driver.GetAllRules();
             Assert.Equal("10002", driver.CurrentLabel);
-            Assert.Equal("test_rule2", result.Keys.First());
+            Assert.Equal("test_rule2", result.Keys.Single());
         }
 
         [Fact]
@@ -99,7 +99,7 @@ namespace Tweek.Drivers.Rules.Minio.Tests
 
             // Assert
             Assert.Equal("10001", driver.CurrentLabel);
-            Assert.Equal("test_rule", result.Keys.First());
+            Assert.Equal("test_rule", result.Keys.Single());
             Assert.Equal(startTime.Hour + 1, driver.LastCheckTime.Hour);
         }
 
@@ -124,7 +124,7 @@ namespace Tweek.Drivers.Rules.Minio.Tests
             // Act
             clientMock.Setup(x => x.GetVersion(It.IsAny<CancellationToken>())).Returns(Task.FromResult("10001"));
             testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(11).Ticks);
-            await driver.GetAllRules(); //wait for first set of rules
+            await Task.Delay(10);
             clientMock.Setup(x => x.GetVersion(It.IsAny<CancellationToken>())).Returns(Task.FromResult("10002"));
             testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(11).Ticks);
             await Task.Delay(10);

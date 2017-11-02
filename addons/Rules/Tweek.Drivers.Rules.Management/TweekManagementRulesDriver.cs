@@ -5,16 +5,13 @@ using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Text;
 using System.Threading.Tasks;
 using App.Metrics;
 using App.Metrics.Core.Abstractions;
 using App.Metrics.Core.Options;
 using Engine.Drivers.Rules;
-using LanguageExt;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Newtonsoft.Json;
 using static LanguageExt.Prelude;
 using Unit = App.Metrics.Unit;
 
@@ -46,7 +43,7 @@ namespace Tweek.Drivers.Rules.Management
     {
       return Optional(metrics)
           .Match(someMetrics =>
-              async (T t) =>
+              async t =>
               {
                 using (someMetrics.Timer.Time(GetTimerOptions(name)))
                 {
@@ -69,10 +66,9 @@ namespace Tweek.Drivers.Rules.Management
 
       _pipeline = Observable.Create<Dictionary<string, RuleDefinition>>(async (sub, ct) =>
       {
-        var shouldStop = false;
         try
         {
-          while (!shouldStop)
+          while (!ct.IsCancellationRequested)
           {
             var versionResponse = await measuredGetter(RULESET_LATEST_VERSION_PATH);
             var latestVersion = await versionResponse.Content.ReadAsStringAsync();
@@ -92,15 +88,12 @@ namespace Tweek.Drivers.Rules.Management
         catch (Exception ex)
         {
           sub.OnError(ex);
-          shouldStop = true;
         }
-        ct.Register(() => shouldStop = true);
-        return () => shouldStop = true;
       })
           .SubscribeOn(scheduler)
           .Catch((Exception exception) =>
           {
-            logger.LogWarning($"Failed to update rules: \r\n{exception}");
+            logger.LogWarning(exception, "Failed to update rules");
             return Observable.Empty<Dictionary<string, RuleDefinition>>()
                       .Delay(settings.FailureDelay);
           })

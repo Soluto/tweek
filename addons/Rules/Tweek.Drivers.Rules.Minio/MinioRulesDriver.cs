@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -21,19 +22,37 @@ namespace Tweek.Drivers.Rules.Minio
             logger = logger ?? NullLogger.Instance;
             scheduler = scheduler ?? DefaultScheduler.Instance;
 
-            _pipeline = Observable.Timer(TimeSpan.Zero, settings.SampleInterval)
-                .SelectMany(_ => Observable.FromAsync(minioClient.GetVersion))
-                .Do(_ => LastCheckTime = scheduler.Now.UtcDateTime)
-                .DistinctUntilChanged()
-                .Do(x => logger.LogInformation($"New rules version detected {x}"))
-                .Select(version => Observable.FromAsync(ct => minioClient.GetRuleset(version, ct)).Select(rules => new { version, rules }))
-                .Switch()
-                .Do(x => CurrentLabel = x.version)
-                .Select(x => x.rules)
-                .Do(_ => {}, e => logger.LogError(e, "Error while getting rules"))
-                .OnErrorResumeNext(Observable.Empty<Dictionary<string, RuleDefinition>>().Delay(settings.FailureDelay))
-                .Repeat()
+            _pipeline = Observable.Create<Dictionary<string, RuleDefinition>>(async (sub, ct) =>
+                {
+                    try
+                    {
+                        while (!ct.IsCancellationRequested)
+                        {
+                            var latestVersion = await minioClient.GetVersion(ct);
+                            LastCheckTime = scheduler.Now.UtcDateTime;
+                            if (latestVersion == CurrentLabel)
+                            {
+                                await Observable.Return(Unit.Default).Delay(settings.SampleInterval, scheduler);
+                                continue;
+                            }
+                            var ruleset = await minioClient.GetRuleset(latestVersion, ct);
+                            sub.OnNext(ruleset);
+                            CurrentLabel = latestVersion;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        sub.OnError(ex);
+                    }
+                })
                 .SubscribeOn(scheduler)
+                .Catch((Exception exception) =>
+                {
+                    logger.LogWarning(exception, "Failed to update rules");
+                    return Observable.Empty<Dictionary<string, RuleDefinition>>()
+                        .Delay(settings.FailureDelay);
+                })
+                .Repeat()
                 .Replay(1);
 
             _subscription = new CompositeDisposable(
@@ -48,7 +67,7 @@ namespace Tweek.Drivers.Rules.Minio
 
         public string CurrentLabel { get; private set; }
 
-        public DateTime LastCheckTime = DateTime.UtcNow;
+        public DateTime LastCheckTime = DateTime.MinValue;
         
         public void Dispose()
         {
