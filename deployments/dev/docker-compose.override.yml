@@ -22,8 +22,7 @@ services:
       - "5858:5858"
       - "4002:3000"
     entrypoint:
-      - npm 
-      - run 
+      - yarn 
       - start:debug
     environment:
       - GIT_USER=git
@@ -59,6 +58,9 @@ services:
       - Rules__Minio__Endpoint=minio:9000
       - Rules__Minio__AccessKeyPath=/run/secrets/minio_access_key
       - Rules__Minio__SecretKeyPath=/run/secrets/minio_secret_key
+      # - Addons__Management__className=Tweek.Drivers.Rules.Management.RulesManagementAddon
+      # - Addons__Management__assemblyName=Tweek.Drivers.Rules.Management
+      # - Rules__Management__Url=http://management:3000
     secrets:
       - tweek_pfx_public_key
       - minio_access_key
@@ -88,9 +90,8 @@ services:
     secrets:
       - tweek_ssh_private_key
       - tweek_ssh_public_key
-    entrypoint:
-      - npm 
-      - run 
+    command:
+      - yarn 
       - start:debug
     labels:
       - "traefik.port=3000"
