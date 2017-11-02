@@ -73,6 +73,7 @@
     "express": "^4.16.2",
     "express-session": "^1.15.6",
     "fast-json-patch": "^2.0.6",
+    "helmet": "^3.9.0",
     "history": "^4.7.2",
     "idb-keyval": "^2.3.0",
     "jsonwebtoken": "^8.1.0",
