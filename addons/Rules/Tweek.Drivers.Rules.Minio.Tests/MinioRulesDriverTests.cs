@@ -124,7 +124,7 @@ namespace Tweek.Drivers.Rules.Minio.Tests
             // Act
             clientMock.Setup(x => x.GetVersion(It.IsAny<CancellationToken>())).Returns(Task.FromResult("10001"));
             testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(11).Ticks);
-            await Task.Delay(50);
+            await driver.GetAllRules(); //wait for first set of rules
             clientMock.Setup(x => x.GetVersion(It.IsAny<CancellationToken>())).Returns(Task.FromResult("10002"));
             testScheduler.AdvanceBy(TimeSpan.FromMilliseconds(11).Ticks);
             await Task.Delay(10);
