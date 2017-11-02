@@ -8,4 +8,10 @@ set -e
 
 yarn test -- --host selenium --port 4444 --proxy http://zap-e2e:8090
 
-# todo: get alerts from Zap
+ruby /usr/bin/glue/bin/glue \
+   -t zap \
+   --zap-host http://zap-e2e --zap-port 8090 --zap-passive-mode \
+   -f text \
+   --exit-on-warn 0 \
+   http://editor \
+   --finding-file-path /usr/src/wrk/glue_editor.json

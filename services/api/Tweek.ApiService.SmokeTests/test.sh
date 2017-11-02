@@ -8,4 +8,10 @@ set -e
 
 dotnet test
 
-#todo: get alerts from Zap
+ruby /usr/bin/glue/bin/glue \
+  -t zap \
+  --zap-host http://zap --zap-port 8090 --zap-passive-mode \
+  -f text \
+  --exit-on-warn 0 \
+  http://api \
+  --finding-file-path /usr/src/wrk/glue.json \
