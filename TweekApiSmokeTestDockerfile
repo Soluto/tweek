@@ -1,0 +1,15 @@
+# ---- *.csproj FILES ----
+FROM microsoft/aspnetcore-build:2.0.0
+
+COPY . /src
+WORKDIR /src
+
+RUN dotnet restore ./Tweek.sln && \
+  dotnet build Tweek.sln -c Release && \
+  chmod +x /src/services/api/Tweek.ApiService.SmokeTests/test.sh
+
+WORKDIR /src/services/api/Tweek.ApiService.SmokeTests
+
+RUN chmod +x test.sh && \
+    wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && \
+    chmod +x wait-for-it.sh

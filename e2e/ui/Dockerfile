@@ -6,4 +6,8 @@ RUN yarn install --production
 
 COPY . ./
 
-CMD ["yarn", "test", "--host", "selenium", "--port", "4444"]
+RUN chmod +x test.sh && \
+    wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && \
+    chmod +x wait-for-it.sh
+
+CMD ["./test.sh"]
