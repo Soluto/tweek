@@ -49,7 +49,7 @@ module.exports = async function initStorage() {
     });
   }
 
-  async function cleanStorage(allowed) {
+  async function cleanStorage(exclude) {
     const objects$ = Observable.create((observer) => {
       const stream = minioClient.listObjects(minioBucket);
       stream.on('data', x => observer.next(x));
@@ -59,7 +59,7 @@ module.exports = async function initStorage() {
 
     return objects$
       .pluck('name')
-      .filter(name => !allowed.includes(name))
+      .filter(name => !exclude.includes(name))
       .mergeMap(name => Observable.fromPromise(minioClient.removeObject(minioBucket, name)))
       .toPromise();
   }
