@@ -5,7 +5,7 @@ using Engine.Drivers.Rules;
 
 namespace Tweek.Drivers.Rules.Minio
 {
-    public interface IMinioClient
+    public interface IRulesClient
     {
         Task<string> GetVersion(CancellationToken cancellationToken = default(CancellationToken));
 

@@ -19,7 +19,7 @@ namespace Tweek.Drivers.Rules.Minio.Tests
             var testScheduler = new TestScheduler();
             testScheduler.Stop();
 
-            var clientMock = new Mock<IMinioClient>();
+            var clientMock = new Mock<IRulesClient>();
 
             var driver = new MinioRulesDriver(clientMock.Object, new MinioRulesDriverSettings(), null, testScheduler);
 
@@ -43,7 +43,7 @@ namespace Tweek.Drivers.Rules.Minio.Tests
             var testScheduler = new TestScheduler();
             testScheduler.Stop();
 
-            var clientMock = new Mock<IMinioClient>();
+            var clientMock = new Mock<IRulesClient>();
 
             var settings = new MinioRulesDriverSettings {SampleIntervalInMs = 10};
             var driver = new MinioRulesDriver(clientMock.Object, settings, null, testScheduler);
@@ -82,7 +82,7 @@ namespace Tweek.Drivers.Rules.Minio.Tests
             var startTime = DateTime.Parse("2017-08-13T11:10:00Z").ToUniversalTime();
             testScheduler.AdvanceTo(startTime.Ticks);
 
-            var clientMock = new Mock<IMinioClient>();
+            var clientMock = new Mock<IRulesClient>();
 
             var settings =
                 new MinioRulesDriverSettings {SampleIntervalInMs = (int) TimeSpan.FromHours(0.9).TotalMilliseconds};
@@ -112,7 +112,7 @@ namespace Tweek.Drivers.Rules.Minio.Tests
 
             var timesCalled = 0;
 
-            var clientMock = new Mock<IMinioClient>();
+            var clientMock = new Mock<IRulesClient>();
 
             var settings = new MinioRulesDriverSettings {SampleIntervalInMs = 10};
             var driver = new MinioRulesDriver(clientMock.Object, settings, null, testScheduler);

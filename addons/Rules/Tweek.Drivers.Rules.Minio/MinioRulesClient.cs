@@ -9,11 +9,11 @@ using Newtonsoft.Json.Linq;
 
 namespace Tweek.Drivers.Rules.Minio
 {
-    public class TweekMinioClient : IMinioClient
+    public class MinioRulesClient : IRulesClient
     {
         private readonly MinioClient _client;
         private readonly string _bucket;
-        public TweekMinioClient(string bucket, string endpoint, string accessKey, string secretKey, bool isSecure)
+        public MinioRulesClient(string bucket, string endpoint, string accessKey, string secretKey, bool isSecure)
         {
             _bucket = bucket;
             _client = new MinioClient(endpoint, accessKey, secretKey);

@@ -17,7 +17,7 @@ namespace Tweek.Drivers.Rules.Minio
         private readonly IDisposable _subscription;
         private readonly IConnectableObservable<Dictionary<string, RuleDefinition>> _pipeline;
 
-        public MinioRulesDriver(IMinioClient minioClient, MinioRulesDriverSettings settings, ILogger logger = null, IScheduler scheduler = null)
+        public MinioRulesDriver(IRulesClient rulesClient, MinioRulesDriverSettings settings, ILogger logger = null, IScheduler scheduler = null)
         {
             logger = logger ?? NullLogger.Instance;
             scheduler = scheduler ?? DefaultScheduler.Instance;
@@ -28,11 +28,11 @@ namespace Tweek.Drivers.Rules.Minio
                     {
                         while (!ct.IsCancellationRequested)
                         {
-                            var latestVersion = await minioClient.GetVersion(ct);
+                            var latestVersion = await rulesClient.GetVersion(ct);
                             LastCheckTime = scheduler.Now.UtcDateTime;
                             if (latestVersion != CurrentLabel)
                             {
-                                var ruleset = await minioClient.GetRuleset(latestVersion, ct);
+                                var ruleset = await rulesClient.GetRuleset(latestVersion, ct);
                                 sub.OnNext(ruleset);
                                 CurrentLabel = latestVersion;
                             }
