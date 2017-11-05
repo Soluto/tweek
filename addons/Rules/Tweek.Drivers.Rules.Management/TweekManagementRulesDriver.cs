@@ -25,7 +25,7 @@ namespace Tweek.Drivers.Rules.Management
     private IDisposable _subscription;
     private readonly IConnectableObservable<Dictionary<string, RuleDefinition>> _pipeline;
     public string CurrentLabel { get; private set; }
-    public DateTime LastCheckTime = DateTime.UtcNow;
+    public DateTime LastCheckTime { get; private set; } = DateTime.UtcNow;
 
     private static TimerOptions GetTimerOptions(string name)
     {

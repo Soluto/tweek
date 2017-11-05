@@ -66,7 +66,7 @@ namespace Tweek.Drivers.Rules.Minio
 
         public string CurrentLabel { get; private set; }
 
-        public DateTime LastCheckTime = DateTime.MinValue;
+        public DateTime LastCheckTime { get; private set; } = DateTime.MinValue;
         
         public void Dispose()
         {
