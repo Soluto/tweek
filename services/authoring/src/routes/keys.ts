@@ -46,7 +46,9 @@ export class KeysController {
   @PUT
   @Path('/key')
   async updateKey( @QueryParam('keyPath') keyPath: string, @QueryParam('author.name') name: string, @QueryParam('author.email') email: string,
-    { implementation, manifest }: KeyUpdateModel): Promise<string> {
+    newKeyModel: KeyUpdateModel): Promise<string> {
+    const { implementation } = newKeyModel;
+    let { manifest } = newKeyModel;
     manifest = Object.assign({ key_path: keyPath }, manifest);
     await this.keysRepository.updateKey(keyPath, manifest, implementation, { name, email });
 
