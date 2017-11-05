@@ -67,8 +67,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Rules.Minio",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.Drivers.Rules.Minio.Tests", "addons\Rules\Tweek.Drivers.Rules.Minio.Tests\Tweek.Drivers.Rules.Minio.Tests.csproj", "{7E34F52C-1AF7-4D4F-8A2B-441C35E1C824}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.Drivers.Rules.Diagnostics", "addons\Rules\Tweek.Drivers.Rules.Diagnostics\Tweek.Drivers.Rules.Diagnostics.csproj", "{429D5463-85FB-41E2-AEC8-7B62D8A34985}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -311,18 +309,6 @@ Global
 		{7E34F52C-1AF7-4D4F-8A2B-441C35E1C824}.Release|x64.Build.0 = Release|x64
 		{7E34F52C-1AF7-4D4F-8A2B-441C35E1C824}.Release|x86.ActiveCfg = Release|x86
 		{7E34F52C-1AF7-4D4F-8A2B-441C35E1C824}.Release|x86.Build.0 = Release|x86
-		{429D5463-85FB-41E2-AEC8-7B62D8A34985}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{429D5463-85FB-41E2-AEC8-7B62D8A34985}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{429D5463-85FB-41E2-AEC8-7B62D8A34985}.Debug|x64.ActiveCfg = Debug|x64
-		{429D5463-85FB-41E2-AEC8-7B62D8A34985}.Debug|x64.Build.0 = Debug|x64
-		{429D5463-85FB-41E2-AEC8-7B62D8A34985}.Debug|x86.ActiveCfg = Debug|x86
-		{429D5463-85FB-41E2-AEC8-7B62D8A34985}.Debug|x86.Build.0 = Debug|x86
-		{429D5463-85FB-41E2-AEC8-7B62D8A34985}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{429D5463-85FB-41E2-AEC8-7B62D8A34985}.Release|Any CPU.Build.0 = Release|Any CPU
-		{429D5463-85FB-41E2-AEC8-7B62D8A34985}.Release|x64.ActiveCfg = Release|x64
-		{429D5463-85FB-41E2-AEC8-7B62D8A34985}.Release|x64.Build.0 = Release|x64
-		{429D5463-85FB-41E2-AEC8-7B62D8A34985}.Release|x86.ActiveCfg = Release|x86
-		{429D5463-85FB-41E2-AEC8-7B62D8A34985}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -357,7 +343,6 @@ Global
 		{EC243F60-6EE3-4022-B254-F8F7BB40AAA1} = {2407B11F-BCC6-46BC-85B0-CF64D74A441D}
 		{5374D25F-84B6-4ACA-B92E-21902410BE84} = {EC243F60-6EE3-4022-B254-F8F7BB40AAA1}
 		{7E34F52C-1AF7-4D4F-8A2B-441C35E1C824} = {EC243F60-6EE3-4022-B254-F8F7BB40AAA1}
-		{429D5463-85FB-41E2-AEC8-7B62D8A34985} = {EC243F60-6EE3-4022-B254-F8F7BB40AAA1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {520A2949-0926-487E-A33C-C1615B159589}

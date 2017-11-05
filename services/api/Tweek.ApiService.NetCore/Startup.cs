@@ -16,6 +16,7 @@ using Scrutor;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Engine.Context;
@@ -62,7 +63,7 @@ namespace Tweek.ApiService.NetCore
 
             services.Decorate<IContextDriver>((driver, provider) => new TimedContextDriver(driver, provider.GetService<IMetrics>()));
 
-            //services.AddSingleton<IDiagnosticsProvider>(new RulesDriverStatusService(blobRulesDriver));
+            services.AddSingleton<IDiagnosticsProvider>(ctx => new RulesDriverDiagnosticsProvider(ctx.GetServices<IRulesDriver>().Single()));
             services.AddSingleton<IDiagnosticsProvider>(new EnvironmentDiagnosticsProvider());
 
             services.AddSingleton(CreateParserResolver());

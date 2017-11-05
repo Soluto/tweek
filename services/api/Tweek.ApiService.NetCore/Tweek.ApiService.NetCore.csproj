@@ -28,7 +28,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\addons\ApplicationInsights\Tweek.Addons.ApplicationInsights\Tweek.Addons.ApplicationInsights.csproj" />
     <ProjectReference Include="..\..\..\addons\AppMetrics\Tweek.Addons.AppMetrics.GraphiteReporter\Tweek.Addons.AppMetrics.GraphiteReporter.csproj" />
-    <ProjectReference Include="..\..\..\addons\Rules\Tweek.Drivers.Rules.Diagnostics\Tweek.Drivers.Rules.Diagnostics.csproj" />
     <ProjectReference Include="..\..\..\addons\Rules\Tweek.Drivers.Rules.Management\Tweek.Drivers.Rules.Management.csproj" />
     <ProjectReference Include="..\..\..\addons\Rules\Tweek.Drivers.Rules.Minio\Tweek.Drivers.Rules.Minio.csproj" />
     <ProjectReference Include="..\..\..\core\Engine\Engine.Core\Engine.Core.csproj" />

@@ -2,13 +2,13 @@
 using Engine.Drivers.Rules;
 using Tweek.ApiService.Addons;
 
-namespace Tweek.Drivers.Rules.Diagnostics
+namespace Tweek.ApiService.NetCore.Diagnostics
 {
-    public class RulesDriverHealthCheck : IDiagnosticsProvider
+    public class RulesDriverDiagnosticsProvider : IDiagnosticsProvider
     {
         private readonly IRulesDriver _driver;
 
-        public RulesDriverHealthCheck(IRulesDriver driver)
+        public RulesDriverDiagnosticsProvider(IRulesDriver driver)
         {
             _driver = driver;
         }

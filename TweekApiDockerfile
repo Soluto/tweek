@@ -1,5 +1,5 @@
 # ---- *.csproj FILES ----
-FROM microsoft/aspnetcore-build:2.0.0 as csproj-files
+FROM alpine as csproj-files
 COPY . /src
 RUN find /src -type f -not -name "*.csproj" -delete
 
