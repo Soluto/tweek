@@ -4,8 +4,8 @@ export type AsyncFunc<T, U> = (context: T) => Promise<U>;
 
 export interface TransactionObject<T, U> {
   action: AsyncFunc<T, U>;
-  rollback?: (context: T) => Promise<void>
-  shouldRetry?: (error: any, context: T) => Promise<boolean>
+  rollback?: (context: T) => Promise<void>;
+  shouldRetry?: (error: any, context: T) => Promise<boolean>;
 }
 
 export default class Transactor<T> {
@@ -26,9 +26,9 @@ export default class Transactor<T> {
     return await action(context);
   }
 
-  async write<U>(transaction: AsyncFunc<T, U> | TransactionObject<T, U>): Promise<U> {
+  async write<U>(transaction: AsyncFunc<T, U>): Promise<U> {
     const context = await this._contextPromise;
-    const transactionObject = (typeof (transaction) === "function") ?
+    const transactionObject = (typeof (transaction) === 'function') ?
       { action: transaction } :
       transaction;
 
@@ -37,9 +37,9 @@ export default class Transactor<T> {
         try {
           return await transactionObject.action(context);
         } catch (ex) {
-          console.log("failed transaction, rolling back");
-          await (transactionObject.rollback || this._rollbackAction)(context);
-          if (!await (transactionObject.shouldRetry || this._shouldRetry)(ex, context)) throw ex;
+          console.warn('failed transaction, rolling back');
+          await this._rollbackAction(context);
+          if (!await this._shouldRetry(ex, context)) { throw ex; }
           continue;
         }
       }

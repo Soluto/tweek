@@ -18,6 +18,8 @@ import configurePassport from './security/configure-passport';
 import sshpk = require('sshpk');
 import { ErrorRequestHandler } from 'express';
 import { Server } from 'typescript-rest';
+import { getErrorStatusCode } from './utils/error-utils';
+
 const {
   PORT,
   GIT_URL,
@@ -85,8 +87,9 @@ async function startServer() {
 
   app.use('/*', (req, res) => res.sendStatus(404));
   const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+    if (!err) { return next(); }
     console.error(req.method, req.originalUrl, err);
-    res.status(err.statusCode || 500).send(err.message);
+    res.status(getErrorStatusCode(err)).send(err.message);
   };
   app.use(errorHandler);
 

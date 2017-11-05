@@ -9,7 +9,7 @@
     "node": ">=8.1.4"
   },
   "scripts": {
-    "test": "mocha -r ts-node/register",
+    "test": "mocha -r ts-node/register test/**/*.ts",
     "build": "npm run clean && tsc && cpr ./src/search-index/build/ ./dist/search-index/build/ -o && npm run swagger",
     "clean": "rimraf dist",
     "start": "ts-node ./src/server.ts",
@@ -67,7 +67,9 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
+    "@types/mocha": "^2.2.44",
     "@types/bluebird": "^3.5.8",
+    "@types/chai": "^4.0.4",
     "@types/fs-extra": "^4.0.0",
     "@types/morgan": "^1.7.32",
     "@types/nconf": "^0.0.34",

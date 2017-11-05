@@ -35,6 +35,7 @@ COPY --from=deps /tmp/package.json /opt/app/package.json
 
 EXPOSE 3000
 ENV PORT=3000
+ENV GIT_SSH=/opt/app/ssl-helper
 
 ENTRYPOINT ["npm", "run", "start:release"]
 

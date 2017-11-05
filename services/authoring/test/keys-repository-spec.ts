@@ -1,13 +1,15 @@
 /* global describe, it, before, after, beforeEach, afterEach */
+import * as Mocha from 'mocha';
+import KeysRepository from '../src/repositories/keys-repository';
+
 const chai = require('chai');
 const simple = require('simple-mock');
-const KeysRepository = require('../src/repositories/keys-repository').default;
 
 chai.use(require('chai-things'));
 const expect = chai.expect;
 
 describe('keys-repository', () => {
-  let mockGitRepo = {};
+  let mockGitRepo = <any>{};
   const mockTransactionManager = {
     write(action) {
       return action(mockGitRepo);
@@ -19,13 +21,13 @@ describe('keys-repository', () => {
       return action(mockGitRepo);
     },
   };
-  const target = new KeysRepository(mockTransactionManager);
+  const target = new KeysRepository(<any>mockTransactionManager);
 
   const testAuthor = { name: 'some name', email: 'some email' };
   const testKeyPath = 'tests/key';
 
   beforeEach(() => {
-    mockGitRepo = {};
+    mockGitRepo = <any>{};
   });
 
   describe('getAllKeys', () => {
@@ -249,7 +251,7 @@ describe('keys-repository', () => {
 
     it("should return key definition with the key's revision history", async () => {
       // Act
-      const revisionHistory = await target.getKeyRevisionHistory(testKeyPath);
+      const revisionHistory = await target.getKeyRevisionHistory(testKeyPath, {});
       // Assert
       expect(revisionHistory).to.deep.equal(getKeyRevisions('revision-3'));
     });

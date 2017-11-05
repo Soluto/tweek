@@ -1,25 +1,25 @@
 /* global describe, it, before, after, beforeEach, afterEach */
-
+import * as Mocha from 'mocha';
+import TagsRepository from '../src/repositories/tags-repository';
 const chai = require('chai');
 const simple = require('simple-mock');
-const TagsRepository = require('../src/repositories/tags-repository').default;
 
 const expect = chai.expect;
 
 describe('TagsRepository', () => {
-  let mockGitRepo = {};
-  let mockTransactionManager = {
-    with: function (action) {
+  let mockGitRepo = <any>{};
+  const mockTransactionManager = {
+    with: function(action) {
       return action(mockGitRepo);
     },
-    write: function (action) {
+    write: function(action) {
       return action(mockGitRepo);
     },
-    read: function (action) {
+    read: function(action) {
       return action(mockGitRepo);
     },
   };
-  let target = new TagsRepository(mockTransactionManager);
+  const target = new TagsRepository(<any>mockTransactionManager);
 
   const testAuthor = { name: 'some name', email: 'some email' };
   const testTags = `[
@@ -28,7 +28,7 @@ describe('TagsRepository', () => {
   ]`;
 
   beforeEach(() => {
-    mockGitRepo = {};
+    mockGitRepo = <any>{};
   });
 
   describe('getTags', () => {
@@ -38,7 +38,7 @@ describe('TagsRepository', () => {
 
     it('should parse and return tags as an array', async () => {
       // Act
-      let tags = await target.getTags();
+      const tags = await target.getTags();
 
       // Assert
       expect(tags).to.deep.equal([{ name: 'tag1' }, { name: 'tag2' }]);
@@ -46,7 +46,7 @@ describe('TagsRepository', () => {
 
     it('should read the tags from the tags.json file', async () => {
       // Act
-      let tags = await target.getTags();
+      await target.getTags();
 
       // Assert
       expect(mockGitRepo.readFile.calls[0].arg).to.equal('tags.json');
