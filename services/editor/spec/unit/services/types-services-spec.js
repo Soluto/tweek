@@ -45,7 +45,7 @@ describe('types-service', () => {
 
     let shouldFailResult = function (value, type) {
       it('should convert values correctly', () => {
-        expect(() => TypesService.convertValue(value, type), 'Should fail converting').toThrow();
+        expect(() => TypesService.convertValue(value, type)).toThrow();
       });
     };
 

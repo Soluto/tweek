@@ -26,7 +26,7 @@
                 }
             },
             "env": {
-                "PUBLIC_KEY_PATH": "../../git-service/ssh/tweekgit_public.pfx",
+                "PUBLIC_KEY_PATH": "../../../deployments/dev/ssh/tweekgit_public.pfx",
                 "Rules__Management__Url": "http://localhost:4002",
                 "ASPNETCORE_ENVIRONMENT": "Development",
                 "Addons__Redis__className": "Tweek.Drivers.Redis.RedisServiceAddon",

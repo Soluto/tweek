@@ -1,5 +1,5 @@
 import React from 'react';
-import R from 'ramda';
+import * as R from 'ramda';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
