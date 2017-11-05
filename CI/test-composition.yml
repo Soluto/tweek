@@ -14,6 +14,7 @@ services:
   management:
     image: $MANAGEMENT_IMAGE
     depends_on:
+      - api
       - git
       - minio
     volumes_from:
@@ -35,7 +36,6 @@ services:
     depends_on:
       - minio
       - redis
-      - management
     volumes_from:
       - keys
     logging:

@@ -12,6 +12,10 @@ services:
       - selenium
     depends_on: 
       - selenium
+      - api
+      - authoring
+      - management
+      - editor
     environment:
       - EDITOR_URL=http://editor:3000/
       - TWEEK_API_URL=http://api/
@@ -23,6 +27,10 @@ services:
   e2e-integration:
     build: ../../e2e/integration
     container_name: e2e-integration
+    depends_on: 
+      - api
+      - authoring
+      - management
     environment:
       - API_URL=http://api
       - AUTHORING_URL=http://authoring:3000

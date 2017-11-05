@@ -86,6 +86,7 @@ steps:
           - editor
           - authoring
           - api
+          - management
         environment:
           - EDITOR_URL=http://editor:3000/
           - TWEEK_API_URL=http://api/
@@ -99,6 +100,7 @@ steps:
         depends_on:
           - authoring
           - api
+          - management
         environment:
           - API_URL=http://api
           - AUTHORING_URL=http://authoring:3000
