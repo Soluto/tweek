@@ -14,7 +14,7 @@ async function getAllFileHandlers(data) {
   }));
 }
 
-module.exports = async function(data) {
+module.exports = async function (data) {
   const validationUrl = nconf.get('VALIDATION_URL');
   if (!validationUrl) {
     throw 'missing rules validation url';

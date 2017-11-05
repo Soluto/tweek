@@ -9,7 +9,7 @@
     "node": ">=8.7.0"
   },
   "scripts": {
-    "start": "yarn docker-compose up --force-recreate -d git redis && yarn docker-compose up -d editor",
+    "start": "yarn docker-compose up --force-recreate -d git redis && yarn docker-compose up -d editor management",
     "test": "wdio wdio.conf.js",
     "build": "yarn docker-compose build",
     "test:full-env": "yarn start && yarn test",

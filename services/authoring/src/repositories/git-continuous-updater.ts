@@ -9,11 +9,11 @@ export default {
     });
 
     return updateRepo$
-      .concat(updateRepo$.delay(CONTINUOUS_UPDATER_INTERVAL).repeat())
-      .do((x) => { }, err => console.error('Error pulling changes in git repo', err))
-      .retryWhen(o => o.mergeMapTo(Observable.of(1).delay(CONTINUOUS_UPDATER_INTERVAL)))
+      .do(null, err => console.error('Error pulling changes in git repo', err))
+      .catch(_ => Observable.empty())
+      .concat(Observable.empty().delay(CONTINUOUS_UPDATER_INTERVAL))
+      .repeat()
       .distinctUntilChanged()
-      .do(sha => console.log('Updated git repo', sha))
-      .share();
+      .do(sha => console.log('Updated git repo', sha));
   },
 };

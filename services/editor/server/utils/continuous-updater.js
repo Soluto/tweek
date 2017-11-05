@@ -12,9 +12,11 @@ export default {
 
     const delay = nconf.get('CONTINUOUS_UPDATER_INTERVAL') || 5000;
 
-    return getRevision$.concat(getRevision$.delay(delay).repeat())
-      .do((_) => {}, err => console.error('Error checking revision', err))
-      .retryWhen(Observable.of(1).delay(delay))
+    return getRevision$
+      .do(null, err => console.error('Error checking revision:', err.message))
+      .catch(_ => Observable.empty())
+      .concat(Observable.empty().delay(delay))
+      .repeat()
       .distinctUntilChanged();
   },
 };

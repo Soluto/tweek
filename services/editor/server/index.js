@@ -123,7 +123,7 @@ const startServer = async () => {
   });
 
   app.use((err, req, res, next) => {
-    console.error(req.method, res.originalUrl, err);
+    console.error(req.method, res.originalUrl, err.message);
     res.status(500).send(err.message);
   });
 

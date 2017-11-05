@@ -3,39 +3,36 @@ const os = require('os');
 const Guid = require('guid');
 const Git = require('nodegit');
 const nconf = require('nconf');
-const promisify = require('util').promisify;
+const { promisify } = require('util');
 const recursive = promisify(require('recursive-readdir'));
 const mkdirp = promisify(require('mkdirp'));
 const readFile = promisify(fs.readFile);
 const buildRulesArtifiact = require('./build-rules-artifiact');
 const logger = require('./logger');
+const initStorage = require('./object-storage');
 
 function useFileFromBase64EnvVariable(inlineKeyName, fileKeyName) {
   const tmpDir = os.tmpdir();
   if (nconf.get(inlineKeyName) && !nconf.get(fileKeyName)) {
-    const keyData = new Buffer(nconf.get(inlineKeyName), "base64");
+    const keyData = new Buffer(nconf.get(inlineKeyName), 'base64');
     const newKeyPath = `${tmpDir}/${fileKeyName}`;
     fs.writeFileSync(newKeyPath, keyData);
     nconf.set(fileKeyName, newKeyPath);
   }
 }
 
-useFileFromBase64EnvVariable("GIT_PUBLIC_KEY_INLINE","GIT_PUBLIC_KEY_PATH");
-useFileFromBase64EnvVariable("GIT_PRIVATE_KEY_INLINE","GIT_PRIVATE_KEY_PATH");
+useFileFromBase64EnvVariable('GIT_PUBLIC_KEY_INLINE', 'GIT_PUBLIC_KEY_PATH');
+useFileFromBase64EnvVariable('GIT_PRIVATE_KEY_INLINE', 'GIT_PRIVATE_KEY_PATH');
+nconf.required(['GIT_URL', 'GIT_USER']);
 
 const gitUrl = nconf.get('GIT_URL');
 const gitUser = nconf.get('GIT_USER');
 const gitPassword = nconf.get('GIT_PASSWORD');
 const gitPublicKey = nconf.get('GIT_PUBLIC_KEY_PATH');
 const gitPrivateKey = nconf.get('GIT_PRIVATE_KEY_PATH');
-
-if (!gitUrl || !gitUser) {
-  throw 'missing rules repository details';
-}
-
 const repoPath = `${process.env.RULES_DIR || os.tmpdir()}/tweek-rules-${Guid.raw()}`;
 
-logger.info('Repository path: ' + repoPath);
+logger.info(`Repository path: ${repoPath}`);
 
 const fetchOpts = {
   callbacks: {
@@ -60,13 +57,16 @@ async function buildLocalCache() {
   await mkdirp(repoPath);
   await Git.Clone.clone(gitUrl, repoPath, { fetchOpts: fetchOpts });
   logger.info('Git repository ready');
-  return updateLatestCache();
+
+  const storage = await initStorage();
+
+  return updateLatestCache(storage);
 }
 
 async function syncRepo(repo) {
   await repo.fetchAll(fetchOpts);
   await repo.mergeBranches('master', 'origin/master');
-  
+
   const remoteCommit = await repo.getBranchCommit('remotes/origin/master');
   const localCommit = await repo.getBranchCommit('master');
 
@@ -76,12 +76,12 @@ async function syncRepo(repo) {
   await Git.Reset.reset(repo, remoteCommit, Git.Reset.TYPE.HARD);
 }
 
-async function updateLatestCache() {
+async function updateLatestCache({ updateStorage } = {}) {
   while (true) {
     try {
       const repo = await Git.Repository.open(repoPath);
-      syncRepo(repo);
-      
+      await syncRepo(repo);
+
       const newLatestSha = (await repo.getMasterCommit()).sha();
 
       if (newLatestSha === rulesCache.sha) {
@@ -97,11 +97,20 @@ async function updateLatestCache() {
       }));
       const ruleset = await buildRulesArtifiact(fileHandlers);
 
+      let timer = logger.startTimer();
+      const formattedRuleset = JSON.stringify(ruleset);
+      timer.done('updateLatestCache:JSON.stringify');
+
+      if (updateStorage) {
+        timer = logger.startTimer();
+        await updateStorage(newLatestSha, formattedRuleset);
+        timer.done('updateLatestCache:updateBucket');
+      }
+
       rulesCache.sha = newLatestSha;
       rulesCache.ruleset = ruleset;
-      const timer = logger.startTimer();
-      rulesCache.formattedRuleset = JSON.stringify(ruleset);
-      timer.done('updateLatestCache:JSON.stringify');
+      rulesCache.formattedRuleset = formattedRuleset;
+
       logger.info('Rules Cache updated', { sha: newLatestSha });
     } catch (err) {
       console.error(err);
