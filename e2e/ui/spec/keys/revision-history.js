@@ -16,6 +16,18 @@ describe('revision history', () => {
     let prevCommit;
     const history = [];
 
+    const noChangesAttribute = browser.getAttribute(revisionHistory, 'data-no-changes');
+    if (noChangesAttribute !== 'true') {
+      prevCommit = browser.getValue(currentCommit);
+      let options = browser.getValue(revision);
+      if (!Array.isArray(options)) {
+        options = [options];
+      }
+      const commits = options.map(commit => ({ commit }));
+      commits.reverse();
+      history.push(...commits);
+    }
+
     for (let i = 0; i < count; i++) {
       const value = `value ${i}`;
       Key.setDefaultValue(value).commitChanges();
@@ -33,12 +45,9 @@ describe('revision history', () => {
     return history;
   }
 
-  it.skip('should display revision history', () => {
+  it('should display revision history', () => {
     Key.open(keyName);
     browser.waitForVisible(revisionHistory, 1000);
-
-    const noChangesAttribute = browser.getAttribute(revisionHistory, 'data-no-changes');
-    expect(noChangesAttribute).to.equal('true');
 
     const changeCount = 4;
     const history = changeValue(changeCount);

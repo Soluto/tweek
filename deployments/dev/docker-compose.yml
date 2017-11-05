@@ -4,6 +4,8 @@ services:
   management:
     image: soluto/tweek-management
     build: ../../services/management
+    depends_on:
+      - api
     environment:
       - VALIDATION_URL=http://api/validation
 
@@ -12,10 +14,6 @@ services:
     build:
       context: ../../
       dockerfile: TweekApiDockerfile
-    depends_on:
-      - management
-    environment:
-      - Rules__Management__Url=http://management:3000
 
   authoring:
     image: soluto/tweek-authoring
