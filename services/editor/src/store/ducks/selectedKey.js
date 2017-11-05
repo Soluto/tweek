@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions';
-import R from 'ramda';
+import * as R from 'ramda';
 import { push } from 'react-router-redux';
 import * as ContextService from '../../services/context-service';
 import fetch from '../../utils/fetch';
@@ -217,6 +217,16 @@ export function archiveKey(archived) {
   };
 }
 
+export function changeKeyValidationState(newValidationState) {
+  return function (dispatch, getState) {
+    const currentValidationState = getState().selectedKey.validation;
+    if (R.path(['const', 'isValid'], currentValidationState) !== newValidationState) {
+      const payload = R.assocPath(['const', 'isValid'], newValidationState, currentValidationState);
+      dispatch({ type: KEY_VALIDATION_CHANGE, payload });
+    }
+  };
+}
+
 export function changeKeyValueType(keyValueType) {
   return async function (dispatch, getState) {
     const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
@@ -238,7 +248,7 @@ export function changeKeyValueType(keyValueType) {
 }
 
 export function updateKeyPath(newKeyPath) {
-  return async function (dispatch, getState) {
+  return async function (dispatch) {
     await dispatch(updateKeyName(newKeyPath));
     dispatch({ type: KEY_PATH_CHANGE, payload: newKeyPath });
   };

@@ -13,8 +13,8 @@ describe('revision history', () => {
   function changeValue(count) {
     const currentCommit = nthSelector(1, revision);
 
-    let prevCommit = browser.getValue(currentCommit);
-    let history = [{ commit: prevCommit, value: Key.defaultValue }];
+    let prevCommit;
+    const history = [];
 
     for (let i = 0; i < count; i++) {
       const value = `value ${i}`;
@@ -33,9 +33,12 @@ describe('revision history', () => {
     return history;
   }
 
-  it('should display revision history', () => {
+  it.skip('should display revision history', () => {
     Key.open(keyName);
     browser.waitForVisible(revisionHistory, 1000);
+
+    const noChangesAttribute = browser.getAttribute(revisionHistory, 'data-no-changes');
+    expect(noChangesAttribute).to.equal('true');
 
     const changeCount = 4;
     const history = changeValue(changeCount);

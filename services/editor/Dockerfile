@@ -1,10 +1,11 @@
 # ---- Base ----
-FROM node:8.2.1-alpine AS base
+FROM node:8.7.0-alpine AS base
 
 # ---- Deps ----
 FROM base AS deps
-COPY package.json yarn.lock /src/
+
 WORKDIR /src/
+COPY package.json yarn.lock ./
 RUN yarn --prod
 
 # ---- Build ----
@@ -12,26 +13,23 @@ FROM deps AS build
 
 RUN yarn
 
-COPY . /src/
-RUN yarn test
-RUN yarn build
+COPY . ./
+RUN yarn test && yarn build
 
 # ---- Release ----
 FROM base AS release
-
-COPY --from=build /src/dist/ /opt/app/dist
-COPY --from=build /src/build/ /opt/app/dist/build
-COPY --from=deps /src/node_modules /opt/app/node_modules
-COPY --from=deps /src/package.json /opt/app/package.json
-
-WORKDIR /opt/app/
-VOLUME /opt/vapid/
-
-RUN yarn cache clean
 
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV VAPID_KEYS=/opt/vapid/keys.json
 EXPOSE 3000
 
-ENTRYPOINT [ "npm", "run", "start:release" ]
+WORKDIR /opt/app/
+VOLUME /opt/vapid/
+
+COPY --from=build /src/dist/ ./dist
+COPY --from=build /src/build/ ./dist/build
+COPY --from=deps /src/node_modules ./node_modules
+COPY --from=deps /src/package.json ./package.json
+
+CMD [ "yarn", "start:release" ]

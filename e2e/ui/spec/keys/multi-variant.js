@@ -22,7 +22,7 @@ describe('MultiVariant value type', () => {
 
     const rule = Rule.add().removeCondition().multiVariant().setIdentity('user');
 
-    let ruleSource = Key.source.rules[0];
+    let ruleSource = Key.goToSourceTab().source.rules[0];
     expect(ruleSource).to.have.property('Salt');
 
     const salt = ruleSource.Salt;
@@ -31,10 +31,11 @@ describe('MultiVariant value type', () => {
 
     expect(ruleSource).to.deep.equal(expectedValue);
 
+    Key.goToRulesTab();
     rule.singleValue();
     rule.multiVariant();
 
-    ruleSource = Key.source.rules[0];
+    ruleSource = Key.goToSourceTab().source.rules[0];
     expect(ruleSource.Salt).to.equal(salt);
   });
 
@@ -58,7 +59,7 @@ describe('MultiVariant value type', () => {
 
     Rule.add().removeCondition().multiVariant().setValues(args).setIdentity('other');
 
-    let value = Key.source.rules[0];
+    let value = Key.goToSourceTab().source.rules[0];
     expect(value).to.have.property('Salt');
 
     const salt = value.Salt;
@@ -67,9 +68,10 @@ describe('MultiVariant value type', () => {
     delete value.Salt;
     expect(value).to.deep.equal(expectedValue);
 
+    Key.goToRulesTab();
     Rule.select().singleValue().multiVariant();
 
-    value = Key.source.rules[0];
+    value = Key.goToSourceTab().source.rules[0];
     expect(value.Salt).to.equal(salt);
   });
 });

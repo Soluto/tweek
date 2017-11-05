@@ -1,4 +1,4 @@
-import R from 'ramda';
+import * as R from 'ramda';
 
 const hasUnsavedChanges = ({ selectedKey }) => {
   if (!selectedKey || selectedKey.isSaving) return false;

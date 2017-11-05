@@ -1,21 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Rx from 'rxjs';
-import R from 'ramda';
+import * as R from 'ramda';
 import { createEventHandler, mapPropsStream } from 'recompose';
 import classnames from 'classnames';
 import ComboBox from './ComboBox';
 
 import './MultiSourceComboBox.css';
 
-const SourceTitle = ({ id, onSourceId, sourceId }) =>
+const SourceTitle = ({ id, onSourceId, sourceId }) => (
   <div
     onClick={() => onSourceId(id)}
     disabled={id === sourceId}
     className={classnames('source-item', { active: id === sourceId })}
   >
     {id === undefined ? 'All' : id}
-  </div>;
+  </div>
+);
 
 function getAllSuggestions(getSuggestions) {
   return function (...args) {
@@ -60,13 +61,13 @@ const MultiSourceComboBox = mapPropsStream((props$) => {
         onSearch(txt);
         if (onChange) onChange(txt, ...args);
       },
-      suggestionsContainer: ({ children }) =>
+      suggestionsContainer: ({ children }) => (
         <div className={'multi-source-combo-box-suggestions'}>
           <div className={'source-select'}>
             <SourceTitle {...{ sourceId, onSourceId }} />
-            {Object.keys(getSuggestions).map(key =>
-              <SourceTitle id={key} {...{ key, sourceId, onSourceId }} />,
-            )}
+            {Object.keys(getSuggestions).map(key => (
+              <SourceTitle id={key} {...{ key, sourceId, onSourceId }} />
+            ))}
           </div>
           <ul
             className="bootstrap-typeahead-menu dropdown-menu dropdown-menu-justify"
@@ -74,7 +75,8 @@ const MultiSourceComboBox = mapPropsStream((props$) => {
           >
             {children.length > 0 ? children : 'Not found...'}
           </ul>
-        </div>,
+        </div>
+      ),
     }));
 })(ComboBox);
 
