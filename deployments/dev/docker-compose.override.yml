@@ -70,14 +70,14 @@ services:
       - GIT_USER=git
       - GIT_URL=ssh://git@git/tweek/repo
       - GIT_PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
-      - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
+      - GIT_PRIVATE_KEY_PATH=/tmp/tweek_ssh_private_key
     secrets:
       - tweek_ssh_private_key
       - tweek_ssh_public_key
     entrypoint:
-      - npm 
-      - run 
-      - start:debug
+      - /bin/sh
+      - -c
+      - "cp /run/secrets/tweek_ssh_private_key /tmp/tweek_ssh_private_key && chmod 0600 /tmp/tweek_ssh_private_key && yarn run start:debug" 
     labels:
       - "traefik.port=3000"
 
