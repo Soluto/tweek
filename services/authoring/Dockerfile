@@ -28,4 +28,7 @@ EXPOSE 3000
 ENV PORT=3000
 ENV GIT_SSH=/opt/app/ssh-helper
 
+HEALTHCHECK --interval=10s --timeout=10s --retries=8 \
+      CMD wget -O - http://localhost:3000/health || exit 1
+
 CMD ["yarn", "start:release"]

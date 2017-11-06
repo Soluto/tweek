@@ -1,0 +1,87 @@
+version: '2'
+services:
+  keys:
+    image: soluto/tweek-test-keys
+    build: ../deployments/dev/ssh
+    
+  git:
+    image: soluto/tweek-bare-repo
+    build: ../services/git-service/BareRepository
+    ports: 
+      - "5001:22"
+  
+  management:
+    image: soluto/tweek-management
+    build: ../services/management
+    logging:
+      driver: "json-file"
+    ports:
+      - "5002:3000"
+
+  api:
+    image: soluto/tweek-api
+    build:
+      context: ../
+      dockerfile: TweekApiDockerfile
+    logging:
+      driver: "json-file"
+    ports:
+      - "5003:80"
+      
+  authoring:
+    image: soluto/tweek-authoring
+    build: ../services/authoring
+    logging:
+      driver: "json-file"
+    ports:
+      - "5005:3000"
+      
+  editor:
+    image: soluto/tweek-editor
+    build: ../services/editor
+    logging:
+      driver: "json-file"
+    ports:
+      - "5004:3000"
+
+  smoke-tests:
+    image: microsoft/aspnetcore-build:2.0.0
+    volumes:
+      - ../:/repo/tweek
+    working_dir: /repo/tweek
+    depends_on: 
+      - api
+      - management
+    environment: 
+      - TWEEK_API_URL=http://api/
+    command: /bin/bash -c "dotnet restore services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release"
+
+  e2e-ui:
+    build: ../e2e/ui
+    volumes_from:
+      - keys
+    depends_on: 
+      - selenium
+      - editor
+      - authoring
+      - api
+      - management
+    environment:
+      - EDITOR_URL=http://editor:3000/
+      - TWEEK_API_URL=http://api/
+      - AUTHORING_URL=http://authoring:3000
+      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+
+  e2e-integration:
+    build: ../e2e/integration
+    volumes_from:
+      - keys
+    depends_on: 
+      - authoring
+      - api
+      - management
+    environment:
+      - API_URL=http://api
+      - AUTHORING_URL=http://authoring:3000
+      - MANAGEMENT_URL=http://tweek-management:3000
+      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
