@@ -58,7 +58,7 @@ steps:
   Tests:
     title: Tests - e2e & smoke
     type: composition
-    composition: ./CI/test-composition.yml
+    composition: ./CI/docker-compose.yml
     composition_variables:
       - KEYS_IMAGE=${{BuildGitKeys}}
       - REPOSITORY_IMAGE=${{BuildingGitRepository}}
@@ -93,7 +93,6 @@ steps:
           - TWEEK_API_URL=http://api/
           - AUTHORING_URL=http://authoring:3000
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test --host selenium --port 4444"
       e2e-integration:
         image: ${{BuildingIntegrationTests}}
         volumes_from:
@@ -107,7 +106,6 @@ steps:
           - AUTHORING_URL=http://authoring:3000
           - MANAGEMENT_URL=http://tweek-management:3000
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test"
     on_success:
       metadata:
         set:
@@ -195,7 +193,7 @@ steps:
       branch:
         only:
           - master
-    composition: ./CI/test-composition.yml
+    composition: ./CI/docker-compose.yml
     composition_variables:
       - KEYS_IMAGE=${{BuildGitKeys}}
       - REPOSITORY_IMAGE=${{BuildingGitRepository}}

@@ -115,12 +115,17 @@ exports.config = {
   //
   // Gets executed before test execution begins. At this point you can access all global
   // variables, such as `browser`. It is the perfect place to define custom commands.
-  before: function() {
+  before: async function() {
     const chai = require('chai');
     chai.use(require('chai-string'));
 
-    workingDirectory = process.cwd().replace(/\\/g, '/');
-    require(workingDirectory + '/utils/browser-extension-commands')(browser);
+    const workingDirectory = process.cwd().replace(/\\/g, '/');
+    const browserExtentionCommands = require(workingDirectory +
+      '/utils/browser-extension-commands');
+    browserExtentionCommands(browser);
+
+    const { waitForAllClients } = require(workingDirectory + '/utils/client-utils.js');
+    await waitForAllClients();
   },
   //
   // Hook that gets executed before the suite starts
