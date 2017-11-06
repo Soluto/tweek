@@ -71,6 +71,7 @@ steps:
         image: microsoft/aspnetcore-build:2.0.0
         depends_on: 
           - api
+          - management
         volumes:
           - ${{CF_VOLUME}}:/repo
         working_dir: /repo/tweek
@@ -92,7 +93,7 @@ steps:
           - TWEEK_API_URL=http://api/
           - AUTHORING_URL=http://authoring:3000
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test -- --host selenium --port 4444"
+        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test --host selenium --port 4444"
       e2e-integration:
         image: ${{BuildingIntegrationTests}}
         volumes_from:
@@ -194,7 +195,7 @@ steps:
       branch:
         only:
           - master
-    composition: tweek_test_composition
+    composition: ./CI/test-composition.yml
     composition_variables:
       - KEYS_IMAGE=${{BuildGitKeys}}
       - REPOSITORY_IMAGE=${{BuildingGitRepository}}
