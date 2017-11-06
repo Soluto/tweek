@@ -7,7 +7,7 @@
     "build": "yarn docker-compose build",
     "build:e2e": "yarn docker-compose:e2e build",
     "start": "yarn docker-compose up -d",
-    "start:e2e": "yarn docker-compose:e2e up --force-recreate -d git redis && yarn docker-compose:e2e up -d editor",
+    "start:e2e": "yarn docker-compose:e2e up --force-recreate -d git redis && yarn docker-compose:e2e up -d editor management",
     "test:ui": "cd e2e/ui && yarn test",
     "test:integration": "cd e2e/integration && yarn test",
     "test": "yarn test:integration && yarn test:ui",
