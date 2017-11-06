@@ -1,1 +1,1 @@
-ssh -o StrictHostKeyChecking=no -i ../../git-service/ssh/tweekgit %*
+ssh -o StrictHostKeyChecking=no -i %GIT_CLI_SSH_PRIVATE_KEY% %*
