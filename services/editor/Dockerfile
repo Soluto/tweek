@@ -32,4 +32,6 @@ COPY --from=build /src/build/ ./dist/build
 COPY --from=deps /src/node_modules ./node_modules
 COPY --from=deps /src/package.json ./package.json
 
+HEALTHCHECK --interval=10s --timeout=10s --retries=8 \
+      CMD wget -O - http://localhost:3000/health || exit 1
 CMD [ "yarn", "start:release" ]
