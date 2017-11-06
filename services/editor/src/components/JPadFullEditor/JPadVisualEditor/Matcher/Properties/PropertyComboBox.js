@@ -1,5 +1,6 @@
 import React from 'react';
 import MultiSourceComboBox from '../../../../common/ComboBox/MultiSourceComboBox';
+import ValidationIcon from '../../../../common/ValidationIcon';
 import * as ContextService from '../../../../../services/context-service';
 import * as SearchService from '../../../../../services/search-service';
 import Avatar from './Avatar';
@@ -11,7 +12,7 @@ const getProperty = (suggestedValues, property) => {
   return result ? result.label : property;
 };
 
-const PropertyComboBox = ({ property, suggestedValues, onPropertyChange, autofocus }) => {
+const PropertyComboBox = ({ property, suggestedValues, warning, ...props }) => {
   property = property.replace(/^@@key:/, ContextService.KEYS_IDENTITY);
   const [identity] = property.split('.');
 
@@ -19,6 +20,7 @@ const PropertyComboBox = ({ property, suggestedValues, onPropertyChange, autofoc
     <div className="property-combobox-container">
       <Avatar identity={identity} className="property-avatar" />
       <MultiSourceComboBox
+        {...props}
         getSuggestions={{
           Context: () => suggestedValues,
           Keys: (query) => {
@@ -34,21 +36,15 @@ const PropertyComboBox = ({ property, suggestedValues, onPropertyChange, autofoc
           },
         }}
         value={getProperty(suggestedValues, property)}
-        onChange={(input, selected) => {
-          if (selected) onPropertyChange(selected);
-          else if (input.startsWith('@@key:') || input.startsWith(ContextService.KEYS_IDENTITY)) {
-            onPropertyChange({ value: input.replace('@@key:', ContextService.KEYS_IDENTITY) });
-          }
-        }}
         placeholder="Property"
         filterBy={(currentInputValue, option) =>
           option.value.toLowerCase().includes(currentInputValue.toLowerCase())}
         renderSuggestion={(suggestion, currentInputValue) =>
           <PropertySuggestion suggestion={suggestion} textToMark={currentInputValue} />}
-        autofocus={autofocus}
-        className={'property-name-wrapper'}
+        className="property-name-wrapper"
         showValueInOptions
       />
+      <ValidationIcon show={warning} hint="Unknown identity" />
     </div>
   );
 };

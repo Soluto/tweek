@@ -7,7 +7,7 @@
     }
   },
   "parser": "babel-eslint",
-  "extends": ["react-app", "plugin:jsx-a11y/recommended", "plugin:import/errors", "plugin:import/warnings"],
+  "extends": ["plugin:jsx-a11y/recommended", "plugin:import/errors", "plugin:import/warnings"],
   "plugins": ["jsx-a11y", "import"],
   "rules": {
     "arrow-body-style": ["error", "as-needed"],
@@ -27,6 +27,7 @@
     "jsx-a11y/no-onchange": "warn",
     "jsx-a11y/no-static-element-interactions": "off",
     "no-var": "error",
+    "no-undef": "warn",
     "prefer-arrow-callback": "warn",
     "prefer-template": "error",
     "semi": "error",

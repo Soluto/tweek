@@ -39,10 +39,10 @@ const PropertyPredicate = ({
         )}
     />
     <PropertyValue
-      propertyTypeDetails={propertyTypeDetails}
+      valueType={propertyTypeDetails}
       value={predicateValue}
       selectedOperator={selectedOperator.operatorValue}
-      onUpdate={newPropertyValue =>
+      onChange={newPropertyValue =>
         mutate.updateValue(
           selectedOperator.getValue(
             newPropertyValue,

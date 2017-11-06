@@ -1,0 +1,16 @@
+{
+    "key_path": "@tweek/auth/@global/write_context",
+    "meta": {
+        "name": "@tweek/auth/@global/write_context",
+        "description": "This key determines, whether a user can write context",
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "file",
+        "format": "jpad"
+    },
+    "valueType": "string",
+    "enabled": true,
+    "dependencies": []
+}

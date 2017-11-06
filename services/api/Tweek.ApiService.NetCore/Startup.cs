@@ -16,6 +16,7 @@ using Scrutor;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Engine.Context;
@@ -39,7 +40,8 @@ namespace Tweek.ApiService.NetCore
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        private ILoggerFactory loggerFactory;
+        public Startup(IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
@@ -48,6 +50,7 @@ namespace Tweek.ApiService.NetCore
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
+            this.loggerFactory = loggerFactory;
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -60,7 +63,7 @@ namespace Tweek.ApiService.NetCore
 
             services.Decorate<IContextDriver>((driver, provider) => new TimedContextDriver(driver, provider.GetService<IMetrics>()));
 
-            //services.AddSingleton<IDiagnosticsProvider>(new RulesDriverStatusService(blobRulesDriver));
+            services.AddSingleton<IDiagnosticsProvider>(ctx => new RulesDriverDiagnosticsProvider(ctx.GetServices<IRulesDriver>().Single()));
             services.AddSingleton<IDiagnosticsProvider>(new EnvironmentDiagnosticsProvider());
 
             services.AddSingleton(CreateParserResolver());
@@ -111,6 +114,7 @@ namespace Tweek.ApiService.NetCore
                 options.IncludeXmlComments(xmlPath);
 
             });
+            services.ConfigureAuthenticationProviders(Configuration,  loggerFactory.CreateLogger("AuthenticationProviders"));
         }
 
         private void RegisterMetrics(IServiceCollection services)
@@ -142,11 +146,12 @@ namespace Tweek.ApiService.NetCore
                 loggerFactory.AddDebug();
             }
 
-            app.UseAuthenticationProviders(Configuration, loggerFactory.CreateLogger("AuthenticationProviders"));
             app.InstallAddons(Configuration);
+            app.UseAuthentication();
             app.UseMetrics();
             app.UseMvc();
             app.UseMetricsReporting(lifetime);
+            app.UseWhen((ctx)=>ctx.Request.Path == "/api/swagger.json", r=>r.UseCors(p=>p.AllowAnyHeader().AllowAnyOrigin().WithMethods("GET")));
             app.UseSwagger(options =>
             {
                 options.RouteTemplate = "{documentName}/swagger.json";
@@ -161,6 +166,7 @@ namespace Tweek.ApiService.NetCore
         private static IRuleParser CreateJPadParser() => JPadRulesParserAdapter.Convert(new JPadParser(new ParserSettings(
                 Comparers: Microsoft.FSharp.Core.FSharpOption<IDictionary<string, ComparerDelegate>>.Some(new Dictionary<string, ComparerDelegate>()
                 {
+
                     ["version"] = Version.Parse
                 }), sha1Provider: (s)=>
                 {

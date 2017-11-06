@@ -1,4 +1,4 @@
-import R from 'ramda';
+import * as R from 'ramda';
 
 class StatelessMutator {
   constructor(getMutator, onMutation) {
@@ -6,14 +6,14 @@ class StatelessMutator {
     this.onMutation = onMutation;
   }
 
-  in = innerPath => new StatelessMutator(() => this.getMutator().in(innerPath), this.onMutation)
+  in = innerPath => new StatelessMutator(() => this.getMutator().in(innerPath), this.onMutation);
 
-  up = () => new StatelessMutator(() => this.getMutator().up(), this.onMutation)
+  up = () => new StatelessMutator(() => this.getMutator().up(), this.onMutation);
 
   apply = (mutation) => {
     const mutated = mutation(this.getMutator());
     this.onMutation(mutated.target);
-  }
+  };
 
   get path() {
     return this.getMutator().path;
@@ -26,7 +26,7 @@ class StatelessMutator {
   }
 
   _liftMutation = mutationFactory => (...params) =>
-    this.apply(mutator => mutationFactory(mutator)(...params))
+    this.apply(mutator => mutationFactory(mutator)(...params));
 
   get updateValue() {
     return this._liftMutation(m => m.updateValue);
@@ -64,22 +64,23 @@ class Mutator {
   }
 
   static stateless = (getTarget, onMutation) =>
-    new StatelessMutator(() => new Mutator(R.clone(getTarget())), onMutation)
+    new StatelessMutator(() => new Mutator(R.clone(getTarget())), onMutation);
 
-  getValue = () => R.reduce((acc, x) => acc[x], this.target, this.path)
+  getValue = () => R.reduce((acc, x) => acc[x], this.target, this.path);
 
   setPath = path => new Mutator(this.target, path);
 
-  in = innerPath => this.setPath([...this.path, innerPath.toString()])
+  in = innerPath => this.setPath([...this.path, innerPath.toString()]);
 
-  up = () => this.setPath(R.splitAt(-1, this.path)[0])
+  up = () => this.setPath(R.splitAt(-1, this.path)[0]);
 
   updateValue = (newValue) => {
     const [innerPath, [key]] = R.splitAt(-1, this.path);
     const container = R.reduce((acc, x) => acc[x], this.target, innerPath);
     container[key] = newValue;
     return new Mutator(this.target, this.path);
-  }
+  };
+
   updateKey = (newKey) => {
     const [innerPath, [key]] = R.splitAt(-1, this.path);
     if (newKey === key) return this;
@@ -94,25 +95,25 @@ class Mutator {
     }
 
     return new Mutator(this.target, [...innerPath, newKey]);
-  }
+  };
 
   prepend = (value) => {
     const container = R.reduce((acc, x) => acc[x], this.target, this.path);
     container.unshift(value);
     return new Mutator(this.target, this.path);
-  }
+  };
 
   append = (value) => {
     const container = R.reduce((acc, x) => acc[x], this.target, this.path);
     container.push(value);
     return new Mutator(this.target, this.path);
-  }
+  };
 
   replaceKeys = (key1, key2) => {
-    const container = R.reduce((acc, x) => acc[x], this.target, this.path)
-    ;[container[key1], container[key2]] = [container[key2], container[key1]];
+    const container = R.reduce((acc, x) => acc[x], this.target, this.path);
+    [container[key1], container[key2]] = [container[key2], container[key1]];
     return new Mutator(this.target, this.path);
-  }
+  };
 
   delete = () => {
     const [innerPath, [key]] = R.splitAt(-1, this.path);
@@ -123,12 +124,12 @@ class Mutator {
       delete container[key];
     }
     return new Mutator(this.target, R.slice(0, -1, this.path));
-  }
+  };
 
   insert = (key, value) => {
     R.reduce((acc, x) => acc[x], this.target, this.path)[key] = value;
     return new Mutator(this.target, this.path);
-  }
+  };
 }
 
 export default Mutator;

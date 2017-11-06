@@ -2,9 +2,10 @@
 
 - services (all tweek microservices)
    - api (rest api for getting configurations and updating context)
+   - authoring (rest api for reading and editing keys definitions/manifests)
    - editor (admin ui for editing rules and managing Tweek)
    - management ("CI" and serving layer for new rules)
-   - git-service (stand along git rules repository for dev & testing)
+   - git-service (stand-alone git rules repository for bootstrap, dev & testing)
 - deployments
    - dev (docker compose files for devlopment)
 - core
@@ -12,19 +13,19 @@
 - addons
    - Addons for Tweek api
 - e2e (full system tests)
+   - UI (full UI tests using selenium)
+   - Integration (api, service interactions tests)
 
 # Build & Run tweek environment
 
 ## Requirements 
 1. Docker compatible environment  (Windows 10/Mac/Linux)
-2. Docker hub account with access to Soluto team
 
-## Install runtime dependencis
+## Install runtime dependencies
 1. Install .Net core (https://www.microsoft.com/net/core)
 2. Install docker (https://www.docker.com/)
-   - Log in to Docker hub: `docker login -u <user> -p <password>`
    - On windows, open docker setting through traybar and your working drive as shared drive (under shared drives)
-3. Install node 6+ (https://nodejs.org/en/)
+3. Install node 8+ (https://nodejs.org/en/)
 
 ## Running full environment
 1. clone:
@@ -40,6 +41,7 @@ All tweek microservices should be run on ports 4001-4004:
 4002 - Management (http)  
 4003 - Api (http)  
 4004 - Editor (http)  
+4005 - Authoring (http)
 
 ## Debugging Tweek api
 
@@ -118,12 +120,12 @@ mac: find . -wholename '*.Tests.csproj' -print0 | xargs -0 -n 1 dotnet test (onl
    ```
 - to rebuild editor and then run tests:
    ```
-   npm run test:full-env:rebuild
+   npm run test:full-env:build
    ```
 - our e2e tests are using selenium. If you don't have it installed, and you don't want to install it, you can just run the tests in docker. To do so replace `full-env` with `docker`:
    ```
    npm run test:docker
-   npm run test:docker:rebuild
+   npm run test:docker:build
    ```
 
 ## TEARDOWN

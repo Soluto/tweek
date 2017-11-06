@@ -1,26 +1,37 @@
-import R from 'ramda';
+import * as R from 'ramda';
+import lunr from 'lunr';
 
-export const separator = /(?:[_/]|\s|-)/;
+const separator = /(?:[_/]|\s|-)/;
 
-const byScore = R.descend(R.prop('score'));
+function addTerm(query, term, field) {
+  query.term(term, { field });
+  query.term(term, {
+    field,
+    wildcard: lunr.Query.wildcard.LEADING | lunr.Query.wildcard.TRAILING,
+  });
+  query.term(term, {
+    field,
+    wildcard: lunr.Query.wildcard.LEADING,
+    editDistance: 1,
+  });
+}
 
-export default function (query = '', { maxResults = 25, field, index }) {
-  query = query.trim();
-  if (!index || query === '') return [];
+export default function (searchString = '', { maxResults = 25, field, index }) {
+  searchString = searchString.trim();
+  if (!index || searchString === '') return [];
 
   try {
-    const searchResults = query
-      .split(separator)
-      .filter(s => s !== '')
-      .map(s => `${s} *${s}~1 *${s}*`)
-      .map(s => index.search(field ? `${field}:${s}` : s))
-      .reduce((acc, results) => R.intersectionWith(R.eqBy(R.prop('ref')), acc, results));
+    const searchResults = index.query((query) => {
+      searchString
+        .split(separator)
+        .filter(s => s !== '')
+        .forEach(term => addTerm(query, term, field));
+    });
 
-    return R.pipe(R.sort(byScore), R.map(R.prop('ref')), R.slice(0, maxResults || 25))(
-      searchResults,
-    );
+    const trimResults = R.pipe(R.slice(0, maxResults || 25), R.map(R.prop('ref')));
+    return trimResults(searchResults);
   } catch (error) {
-    console.error(`error searching for '${query}'`, error);
+    console.error(`error searching for '${searchString}'`, error);
     return [];
   }
 }

@@ -1,34 +1,35 @@
 # ---- Base ----
-FROM soluto/nodegit-alpine:8.1.4 AS base
+FROM node:8.7.0-alpine AS base
 
-COPY package.json yarn.lock /src/
-RUN ln -s /nodegit/node_modules /src/node_modules
+# ---- Deps ----
+FROM base AS deps
+
 WORKDIR /src/
+COPY package.json yarn.lock ./
 RUN yarn --prod
 
 # ---- Build ----
-FROM base AS build
+FROM deps AS build
 
 RUN yarn
 
-COPY . /src/
-RUN yarn test
-RUN yarn build
+COPY . ./
+RUN yarn test && yarn build
 
 # ---- Release ----
 FROM base AS release
-
-COPY --from=build /src/dist/ /opt/app/dist
-COPY --from=build /src/build/ /opt/app/dist/build
-RUN ln -s /src/node_modules /opt/app/node_modules
-COPY ./build-index/ /opt/app/build-index
-
-WORKDIR /opt/app/
-VOLUME /opt/vapid/
 
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV VAPID_KEYS=/opt/vapid/keys.json
 EXPOSE 3000
 
-ENTRYPOINT [ "node", "./dist/index.js" ]
+WORKDIR /opt/app/
+VOLUME /opt/vapid/
+
+COPY --from=build /src/dist/ ./dist
+COPY --from=build /src/build/ ./dist/build
+COPY --from=deps /src/node_modules ./node_modules
+COPY --from=deps /src/package.json ./package.json
+
+CMD [ "yarn", "start:release" ]

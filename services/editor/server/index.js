@@ -4,66 +4,52 @@ import express from 'express';
 import morgan from 'morgan';
 import nconf from 'nconf';
 import session from 'express-session';
-import Promise from 'bluebird';
 import bodyParser from 'body-parser';
-import Rx from 'rxjs';
 import webpush from 'web-push';
 import serverRoutes from './serverRoutes';
-import GitRepository from './repositories/git-repository';
-import Transactor from './utils/transactor';
-import KeysRepository from './repositories/keys-repository';
-import TagsRepository from './repositories/tags-repository';
-import GitContinuousUpdater from './repositories/git-continuous-updater';
-import searchIndex from './searchIndex';
+import GitContinuousUpdater from './utils/continuous-updater';
 import * as Registration from './api/registration';
 import getVapidKeys from './getVapidKeys';
-
+import fs from 'fs';
+import os from 'os';
 const crypto = require('crypto');
 const passport = require('passport');
 const selectAuthenticationProviders = require('./auth/providerSelector')
   .selectAuthenticationProviders;
 
-nconf.argv().env().defaults({
-  PORT: 3001,
-  GIT_CLONE_TIMEOUT_IN_MINUTES: 1,
-  TWEEK_API_HOSTNAME: 'https://api.playground.tweek.host',
-  VAPID_KEYS: './vapid/keys.json',
-});
-nconf.required(['GIT_URL', 'GIT_USER']);
+function useFileFromBase64EnvVariable(inlineKeyName, fileKeyName) {
+  const tmpDir = os.tmpdir();
+  if (nconf.get(inlineKeyName) && !nconf.get(fileKeyName)) {
+    const keyData = new Buffer(nconf.get(inlineKeyName), 'base64');
+    const newKeyPath = `${tmpDir}/${fileKeyName}`;
+    fs.writeFileSync(newKeyPath, keyData);
+    nconf.set(fileKeyName, newKeyPath);
+  }
+}
 
-const PORT = nconf.get('PORT');
-const gitCloneTimeoutInMinutes = nconf.get('GIT_CLONE_TIMEOUT_IN_MINUTES');
-const tweekApiHostname = nconf.get('TWEEK_API_HOSTNAME');
-
-const toFullPath = x => path.normalize(path.isAbsolute(x) ? x : `${process.cwd()}/${x}`);
-
-const gitRepostoryConfig = {
-  url: nconf.get('GIT_URL'),
-  username: nconf.get('GIT_USER'),
-  password: nconf.get('GIT_PASSWORD'),
-  localPath: `${process.cwd()}/rulesRepository`,
-  publicKey: toFullPath(nconf.get('GIT_PUBLIC_KEY_PATH') || ''),
-  privateKey: toFullPath(nconf.get('GIT_PRIVATE_KEY_PATH') || ''),
-};
-
-const gitRepoCreationPromise = GitRepository.create(gitRepostoryConfig);
-const gitRepoCreationPromiseWithTimeout = new Promise((resolve) => {
-  gitRepoCreationPromise.then(() => resolve());
-})
-  .timeout(gitCloneTimeoutInMinutes * 60 * 1000)
-  .catch(Promise.TimeoutError, () => {
-    throw `git repository clonning timeout after ${gitCloneTimeoutInMinutes} minutes`;
+nconf
+  .use('memory')
+  .argv()
+  .env()
+  .defaults({
+    PORT: 3001,
+    TWEEK_API_HOSTNAME: 'http://api',
+    AUTHORING_API_HOSTNAME: 'http://authoring:3000',
+    MANAGEMENT_HOSTNAME: 'http://management:3000',
+    VAPID_KEYS: './vapid/keys.json',
   });
 
-const gitTransactionManager = new Transactor(gitRepoCreationPromise, gitRepo => gitRepo.reset());
-const keysRepository = new KeysRepository(gitTransactionManager);
-const tagsRepository = new TagsRepository(gitTransactionManager);
+useFileFromBase64EnvVariable('GIT_PRIVATE_KEY_INLINE', 'GIT_PRIVATE_KEY_PATH');
 
-GitContinuousUpdater.onUpdate(gitTransactionManager)
+const PORT = nconf.get('PORT');
+const serviceEndpoints = {
+  api: nconf.get('TWEEK_API_HOSTNAME'),
+  authoring: nconf.get('AUTHORING_API_HOSTNAME'),
+  management: nconf.get('MANAGEMENT_HOSTNAME'),
+};
+
+GitContinuousUpdater.onUpdate(serviceEndpoints.authoring)
   .map(_ => Registration.notifyClients())
-  .exhaustMap(_ =>
-    Rx.Observable.defer(async () => searchIndex.refreshIndex(gitRepostoryConfig.localPath)),
-  )
   .do(_ => console.log('index was refreshed'), err => console.log('error refreshing index', err))
   .retry()
   .subscribe();
@@ -127,7 +113,9 @@ const startServer = async () => {
   app.use(bodyParser.json()); // for parsing application/json
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-  app.use('/api', serverRoutes({ tagsRepository, keysRepository, tweekApiHostname }));
+  app.use('/api', serverRoutes({ serviceEndpoints }));
+  app.use('/health', (req, res) => res.status(200).json({}));
+  app.get('/version', (req, res) => res.send(process.env.npm_package_version));
 
   app.use(express.static(path.join(__dirname, 'build')));
   app.get('/*', (req, res) => {
@@ -135,17 +123,14 @@ const startServer = async () => {
   });
 
   app.use((err, req, res, next) => {
-    console.error(req.method, res.originalUrl, err);
+    console.error(req.method, res.originalUrl, err.message);
     res.status(500).send(err.message);
   });
 
   server.listen(PORT, () => console.log('Listening on port %d', server.address().port));
 };
 
-gitRepoCreationPromiseWithTimeout
-  .then(() => console.log('starting tweek server'))
-  .then(() => startServer())
-  .catch((reason) => {
-    console.error(reason);
-    // process.exit();
-  });
+startServer().catch((reason) => {
+  console.error(reason);
+  // process.exit();
+});

@@ -1,5 +1,5 @@
 /* global fetch */
-import R from 'ramda';
+import * as R from 'ramda';
 import * as TypesService from './types-service';
 
 export const KEYS_IDENTITY = 'keys.';
@@ -7,7 +7,7 @@ export const KEYS_IDENTITY = 'keys.';
 let contextSchema = {};
 
 export async function refreshSchema() {
-  const response = await fetch('/api/schema/', { credentials: 'same-origin' });
+  const response = await fetch('/api/schemas', { credentials: 'same-origin' });
   contextSchema = await response.json();
 }
 
@@ -45,9 +45,10 @@ export function getPropertyTypeDetails(property) {
     return TypesService.types.string;
   }
 
-  const typeDetails = typeof propertyDetails.type === 'string'
-    ? TypesService.types[propertyDetails.type]
-    : propertyDetails.type;
+  const typeDetails =
+    typeof propertyDetails.type === 'string'
+      ? TypesService.types[propertyDetails.type]
+      : propertyDetails.type;
 
   if (!typeDetails) {
     console.warn('Type details not found for type', propertyDetails.type, property);

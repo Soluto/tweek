@@ -1,0 +1,16 @@
+{
+  "key_path": "behavior_tests/delete_key/delete/not_accepted",
+  "meta": {
+    "name": "behavior_tests/delete_key/delete/not_accepted",
+    "tags": [],
+    "description": "",
+    "archived": true
+  },
+  "implementation": {
+    "type": "const",
+    "value": "value"
+  },
+  "valueType": "string",
+  "dependencies": [],
+  "enabled": true
+}

@@ -1,32 +1,47 @@
-import changeCase from 'change-case';
-import R from 'ramda';
+import jsonpatch from 'fast-json-patch';
+import * as R from 'ramda';
 import authenticatedClient from '../auth/authenticatedClient';
 
-export async function getContext(req, res, { tweekApiHostname }, { params }) {
-  const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
+export async function getContext(req, res, { serviceEndpoints: { api: apiAddress } }, { params }) {
+  const tweekApiClient = await authenticatedClient({ baseURL: apiAddress });
   const response = await tweekApiClient.get(
-    `api/v1/context/${params.identityName}/${encodeURIComponent(params.identityId)}`,
+    `api/v1/context/${params.identityType}/${encodeURIComponent(params.identityId)}`,
   );
   res.json(response.data);
 }
 
-export async function updateContext(req, res, { tweekApiHostname }, { params }) {
-  const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
+const getDeletedKeys = R.pipe(R.unapply(R.map(R.keys)), R.apply(R.difference));
 
-  const contextUrl = `api/v1/context/${params.identityName}/${encodeURIComponent(
+const getModifiedKeys = R.pipe(R.unapply(R.map(R.toPairs)), R.apply(R.difference), R.pluck(0));
+
+export async function updateContext(
+  req,
+  res,
+  { serviceEndpoints: { api: apiAddress } },
+  { params },
+) {
+  const tweekApiClient = await authenticatedClient({ baseURL: apiAddress });
+
+  const contextUrl = `api/v1/context/${params.identityType}/${encodeURIComponent(
     params.identityId,
   )}`;
 
+  const patch = req.body;
+
   const response = await tweekApiClient.get(contextUrl);
   const currentContext = response.data;
-  const newContext = req.body;
+  const newContext = jsonpatch.applyPatch(R.clone(currentContext), patch).newDocument;
 
-  const deletedKeys = Object.keys(currentContext)
-    .filter(key => key.includes('@fixed:'))
-    .filter(key => !newContext.hasOwnProperty(key))
-    .map(key => tweekApiClient.delete(`${contextUrl}/${key}`));
+  const keysToDelete = getDeletedKeys(currentContext, newContext);
+  const deleteKeys = keysToDelete.map(key => tweekApiClient.delete(`${contextUrl}/${key}`));
 
-  await Promise.all([...deletedKeys, tweekApiClient.post(contextUrl, newContext)]);
+  const modifiedKeys = getModifiedKeys(newContext, currentContext);
+
+  if (modifiedKeys.length > 0) {
+    await tweekApiClient.post(contextUrl, R.pickAll(modifiedKeys, newContext));
+  }
+
+  await Promise.all(deleteKeys);
 
   res.sendStatus(200);
 }

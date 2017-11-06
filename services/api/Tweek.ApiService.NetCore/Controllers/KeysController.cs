@@ -17,10 +17,11 @@ using Newtonsoft.Json;
 using Tweek.Utils;
 using Tweek.ApiService.NetCore.Security;
 using Microsoft.AspNetCore.Cors;
+using IdentityHashSet = System.Collections.Generic.HashSet<Engine.DataTypes.Identity>;
 
 namespace Tweek.ApiService.NetCore.Controllers
 {
-    [EnableCors("Keys")]
+    [EnableCors(CorsExtensions.KEYS_POLICY_NAME)]
     public class KeysController : Controller
     {
         private readonly ITweek _tweek;
@@ -56,20 +57,38 @@ namespace Tweek.ApiService.NetCore.Controllers
             return includePaths.Select(x=> ConfigurationPath.From(path.Folder, x)).ToArray();
         }
 
+
         /// <summary>
-        /// Returns the requested key given by path
+        /// Query tweek for calculating key/s value/s
         /// </summary>
         /// <remarks>
-        /// TODO: add example
+        /// The main rest endpoint for interacting with Tweek, you can use "_" suffix in keypath for querying configuration subtrees.
+        /// You can use api/v1/keys/{keypath} instead of passing keyPath as a paramater. (due to swagger limitation, we support keyPath param as well)
+        /// Context should be added to the request with dynamic query params, it can be set of identities and/or properties for example: user=john&amp;user.age=30&amp;user.source=ads
         /// </remarks>
-        /// <param name="path">Path of the key</param>
-        /// <returns>Value for the requested key</returns>
-        /// <response code="200">Value for the requested key</response>
+        /// <param name="keyPath">keyPath - the full path to the key. (path/to/key)</param>
+        /// <param name="flatten">When using scan operations ("_"), use this flag to receive configuration as flatten list instead of a tree (default: false)</param>
+        /// <param name="includeKeys">When using scan operations ("_"), use this options to request only subset of the scan subtrees  (default: [])</param>
+        /// <returns>Value for the requested key, or a subtree of keys/values</returns>
+        /// <response code="200">Success</response>
         /// <response code="403">Access denied</response>
+        [HttpGet("api/v1/keys")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden)]
+        public async Task<ActionResult> GetAsyncSwagger([FromQuery] string keyPath, 
+                    [FromQuery( Name = "$flatten")] bool flatten = false, 
+                    [FromQuery( Name = "$include")] List<string> includeKeys = null)
+        {
+            if (System.String.IsNullOrWhiteSpace(keyPath)) return BadRequest("Missing key path");
+            return await GetAsync(keyPath);
+        }
+
         [HttpGet("api/v1/keys/{*path}")]
         [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden)]
         [Produces("application/json")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult> GetAsync([FromRoute] string path)
         {
             var allParams = PartitionByKey(HttpContext.Request.Query.ToDictionary(x => x.Key, x => x.Value), x => x.StartsWith("$"));
@@ -83,7 +102,7 @@ namespace Tweek.ApiService.NetCore.Controllers
             IReadOnlyDictionary<string, JsonValue> contextParams = allParams.Item2.ToDictionary(x => x.Key,
                 x => NewString(x.Value.ToString()), StringComparer.OrdinalIgnoreCase);
 
-            var identities = new HashSet<Identity>(contextParams.Where(x => !x.Key.Contains(".")).Select(x => new Identity(x.Key, x.Value.AsString())));
+            var identities = new IdentityHashSet(contextParams.Where(x => !x.Key.Contains(".")).Select(x => new Identity(x.Key, x.Value.AsString())));
             if (!_checkAccess(User, path, identities)) return Forbid();
             GetLoadedContextByIdentityType contextProps =
                 identityType => key => contextParams.TryGetValue($"{identityType}.{key}");

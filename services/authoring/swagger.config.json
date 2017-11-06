@@ -1,0 +1,11 @@
+{
+  "swagger": {
+    "name": "Authoring API",
+    "description": "API used to query and manipulate Tweek data in git",
+    "outputDirectory": "./dist",
+    "entryFile": "./src/server.ts",
+    "basePath": "/api/",
+    "consumes": ["application/json"],
+    "produces": ["application/json"]
+  }
+}

@@ -8,6 +8,8 @@ namespace Engine.Drivers.Rules
     {
         event Action<IDictionary<string, RuleDefinition>> OnRulesChange;
         Task<Dictionary<string, RuleDefinition>> GetAllRules();
+        string CurrentLabel { get; }
+        DateTime LastCheckTime { get; }
     }
 
     public class RuleDefinition

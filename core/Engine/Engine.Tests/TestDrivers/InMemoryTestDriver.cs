@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Engine.DataTypes;
 using Engine.Drivers.Context;
 using Engine.Drivers.Rules;
-using Couchbase;
-using Tweek.Drivers.CouchbaseDriver;
-using System.IO;
-using Couchbase.Core;
 using FSharpUtils.Newtonsoft;
-using LanguageExt;
 
 namespace Engine.Tests.TestDrivers
 {
@@ -19,9 +12,10 @@ namespace Engine.Tests.TestDrivers
     {
         private Dictionary<string, RuleDefinition> rules;
 
-        public InMemoryRulesTestDriver(Dictionary<string, RuleDefinition> rules)
+        public InMemoryRulesTestDriver(Dictionary<string, RuleDefinition> rules, string label = null)
         {
             this.rules = rules;
+            CurrentLabel = label;
         }
 
 #pragma warning disable 0067
@@ -32,6 +26,10 @@ namespace Engine.Tests.TestDrivers
         {
             return rules;
         }
+
+        public string CurrentLabel { get; }
+
+        public DateTime LastCheckTime => DateTime.UtcNow;
     }
 
   class InMemoryContextDriver : IContextDriver

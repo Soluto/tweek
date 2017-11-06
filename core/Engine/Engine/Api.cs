@@ -14,6 +14,7 @@ using FSharpUtils.Newtonsoft;
 using ContextHelpers = Engine.Context.ContextHelpers;
 using LanguageExt;
 using static LanguageExt.Prelude;
+using IdentityHashSet = System.Collections.Generic.HashSet<Engine.DataTypes.Identity>;
 
 namespace Engine
 {
@@ -29,7 +30,7 @@ namespace Engine
 
         public static Task<Dictionary<ConfigurationPath, ConfigurationValue>> GetContextAndCalculate(this ITweek tweek,
             ConfigurationPath pathQuery,
-            HashSet<Identity> identities,
+            IdentityHashSet identities,
             IContextReader contextDriver,
             GetLoadedContextByIdentityType externalContext = null)
         {
@@ -38,7 +39,7 @@ namespace Engine
 
         public static async Task<Dictionary<ConfigurationPath, ConfigurationValue>> GetContextAndCalculate(this ITweek tweek,
             ICollection<ConfigurationPath> pathQuery,
-            HashSet<Identity> identities,
+            IdentityHashSet identities,
             IContextReader contextDriver,
             GetLoadedContextByIdentityType externalContext = null)
         {
@@ -65,7 +66,7 @@ namespace Engine
 
         public static Dictionary<ConfigurationPath, ConfigurationValue> Calculate(this ITweek tweek,
             ConfigurationPath pathQuery,
-            HashSet<Identity> identities, GetLoadedContextByIdentityType context, ConfigurationPath[] includeFixedPaths = null)
+            IdentityHashSet identities, GetLoadedContextByIdentityType context, ConfigurationPath[] includeFixedPaths = null)
         {
             return tweek.Calculate(new[] { pathQuery }, identities, context, includeFixedPaths);
         }
@@ -75,7 +76,7 @@ namespace Engine
     {
         Dictionary<ConfigurationPath, ConfigurationValue> Calculate(
             ICollection<ConfigurationPath> pathQuery,
-            HashSet<Identity> identities, GetLoadedContextByIdentityType context, ConfigurationPath[] includeFixedPaths = null);
+            IdentityHashSet identities, GetLoadedContextByIdentityType context, ConfigurationPath[] includeFixedPaths = null);
     }
 
     public delegate IEnumerable<ConfigurationPath> PathExpander(ConfigurationPath path);
@@ -91,11 +92,11 @@ namespace Engine
 
         public Dictionary<ConfigurationPath, ConfigurationValue> Calculate(
             ICollection<ConfigurationPath> pathQuery,
-            HashSet<Identity> identities,
+            IdentityHashSet identities,
             GetLoadedContextByIdentityType context,
             ConfigurationPath[] includeFixedPaths = null)
         {
-            includeFixedPaths = includeFixedPaths ?? Array<ConfigurationPath>();
+            includeFixedPaths = includeFixedPaths ?? new ConfigurationPath[0];
             var (getRules, expandKey) = _rulesLoader();
 
             var getRuleValue = EngineCore.GetRulesEvaluator(identities, context, getRules);

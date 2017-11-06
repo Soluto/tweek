@@ -6,24 +6,25 @@ import ComboBox from './ComboBox';
 const mapSuggestionsToProps = mapPropsStream((props$) => {
   const { handler: onSearch, stream: onSearch$ } = createEventHandler();
 
-  const query$ = onSearch$.map(x => x.trim()).startWith('').distinctUntilChanged().debounceTime(500);
+  const query$ = Rx.Observable.merge(onSearch$, props$.pluck('value'));
 
-  const suggestions$ = Rx.Observable
-    .combineLatest(props$, query$)
-    .map(([{ getSuggestions }, query]) => ({ getSuggestions, query }))
-    .switchMap(({ getSuggestions, query }) =>
-      Rx.Observable.defer(() => Promise.resolve(getSuggestions(query))),
+  const suggestions$ = query$
+    .debounce(query => Rx.Observable.empty().delay(query === '' ? 0 : 500))
+    .distinctUntilChanged()
+    .withLatestFrom(props$.pluck('getSuggestions'), Array.of)
+    .switchMap(([value, getSuggestions]) =>
+      Rx.Observable.defer(() => Promise.resolve(getSuggestions(value))),
     )
     .startWith([]);
 
   return Rx.Observable
     .combineLatest(props$, suggestions$)
-    .map(([{ getSuggestions, ...props }, suggestions]) => ({
+    .map(([{ getSuggestions, onChange, ...props }, suggestions]) => ({
       ...props,
       suggestions,
       onChange: (txt, ...args) => {
         onSearch(txt);
-        if (props.onChange) props.onChange(txt, ...args);
+        if (onChange) onChange(txt, ...args);
       },
     }));
 });
@@ -33,5 +34,7 @@ const AutoSuggest = mapSuggestionsToProps(ComboBox);
 AutoSuggest.propTypes = {
   getSuggestions: PropTypes.func.isRequired,
 };
+
+AutoSuggest.displayName = 'AutoSuggest';
 
 export default AutoSuggest;

@@ -1,7 +1,7 @@
 import fs from 'fs';
+import { promisify } from 'util';
 import jwt from 'jsonwebtoken';
 import nconf from 'nconf';
-import { promisify } from 'bluebird';
 
 const jwtSign = promisify(jwt.sign);
 const readFile = promisify(fs.readFile);
@@ -14,11 +14,10 @@ const jwtOptions = {
 
 async function getAuthKey() {
   const keyPath = nconf.get('GIT_PRIVATE_KEY_PATH');
-  if (!keyPath || !fs.existsSync(keyPath)) {
-    console.warn('private key not found');
-    return undefined;
+  if (keyPath && fs.existsSync(keyPath)) {
+    return await readFile(keyPath);
   }
-  return await readFile(keyPath);
+  throw 'private key not found';
 }
 
 let authKeyPromise;

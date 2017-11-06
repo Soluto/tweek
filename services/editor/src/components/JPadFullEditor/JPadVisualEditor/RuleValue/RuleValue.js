@@ -1,5 +1,5 @@
 import React from 'react';
-import R from 'ramda';
+import * as R from 'ramda';
 import { compose, mapProps } from 'recompose';
 import Chance from 'chance';
 import CustomSlider from '../../../../components/common/CustomSlider/CustomSlider';
@@ -14,8 +14,11 @@ function replaceNaN(fallbackValue) {
   return isNaN(this) ? fallbackValue : this;
 }
 const parseNumericInput = inputValue => (inputValue === '' ? 0 : parseInt(inputValue, 10));
-const wrapWithClass = propToClassNameFn => Comp => props =>
-  <div className={propToClassNameFn(props)}><Comp {...props} /></div>;
+const wrapWithClass = propToClassNameFn => Comp => props => (
+  <div className={propToClassNameFn(props)}>
+    <Comp {...props} />
+  </div>
+);
 
 export const InputValue = wrapWithClass(({ valueType }) => `inputValue input-type-${valueType}`)(
   TypedInput,
@@ -46,8 +49,8 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
   if (valueType === TypesService.types.boolean.name) {
     return (
       <button
-        data-comp="convert-to-multi-variant-button"
-        className={'to-feature-flag-button'}
+        data-comp="convert-to-multi-variant"
+        className="to-feature-flag-button"
         onClick={() =>
           convertToMultiVariant({
             type: 'bernoulliTrial',
@@ -61,8 +64,8 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
 
   return (
     <button
-      data-comp="convert-to-multi-variant-button"
-      className={'add-variant-button'}
+      data-comp="convert-to-multi-variant"
+      className="add-variant-button"
       onClick={() =>
         convertToMultiVariant({
           type: 'weighted',
@@ -77,34 +80,40 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
   );
 };
 
-const SingleVariantValue = ({ value, mutate, identities, autofocus, valueType, keyPath }) =>
-  <div className={'rule-value-container'}>
-    <InputValue {...{ value, valueType }} onChange={newValue => mutate.updateValue(newValue)} />
+const SingleVariantValue = ({ value, mutate, identities, autofocus, valueType, keyPath }) => (
+  <div className="rule-value-container">
+    <InputValue
+      {...{ value, valueType }}
+      data-comp="rule-value"
+      onChange={newValue => mutate.updateValue(newValue)}
+    />
     <MultiVariantConverter {...{ value, valueType, mutate, identities, keyPath }} />
-  </div>;
+  </div>
+);
 
 const multiVariantSliderColors = [
   ...['#ccf085', '#bebebe', '#c395f6', '#ef7478', '#5a8dc3', '#6e6e6e'],
   ...R.range(1, 30).map(_ => chance.color()),
 ];
 
-const WeightedValues = ({ onUpdate, variants }) =>
+const WeightedValues = ({ onUpdate, variants }) => (
   <CustomSlider
     data={variants}
     onUpdate={onUpdate}
     displaySliderDragger={false}
     sliderColors={multiVariantSliderColors}
-  />;
+  />
+);
 
 const bernouliTrialSliderColors = ['#007acc', 'lightGray'];
-const BernoulliTrial = ({ onUpdate, ratio }) =>
-  <div className={'bernoulli-trial-container'}>
-    <div className={'bernoulli-trial-input-wrapper'}>
+const BernoulliTrial = ({ onUpdate, ratio }) => (
+  <div className="bernoulli-trial-container">
+    <div className="bernoulli-trial-input-wrapper">
       <label>Open to</label>
       <input
         type="text"
         data-comp="bernoulli-trial-input"
-        className={'bernoulli-trial-input'}
+        className="bernoulli-trial-input"
         value={ratio * 100}
         onChange={(e) => {
           const newValue = e.target.value;
@@ -123,7 +132,7 @@ const BernoulliTrial = ({ onUpdate, ratio }) =>
       />
       <label>%</label>
     </div>
-    <div className={'bernoulli-trial-slider-wrapper'}>
+    <div className="bernoulli-trial-slider-wrapper">
       <CustomSlider
         displayLegend={false}
         sliderColors={bernouliTrialSliderColors}
@@ -131,32 +140,36 @@ const BernoulliTrial = ({ onUpdate, ratio }) =>
         onUpdate={x => onUpdate(x.true / 100)}
       />
     </div>
-  </div>;
+  </div>
+);
 
-const IdentitySelection = ({ identities, onChange, ownerType }) =>
-  <div className={'identity-selection-container'}>
-    <label className={'identity-selection-title'}>Identity: </label>
+const IdentitySelection = ({ identities, onChange, ownerType }) => (
+  <div className="identity-selection-container">
+    <label className="identity-selection-title">Identity: </label>
     <ComboBox
       data-comp="identity-selection"
-      className={'identity-selection-combobox-wrapper'}
+      className="identity-selection-combobox-wrapper"
       suggestions={identities}
       onChange={(_, e) => e && onChange(e)}
       value={ownerType}
     />
-  </div>;
+  </div>
+);
 
-const MultiVariantValue = ({
-  valueDistrubtion: { type, args },
-  mutate,
-  identities,
-  valueType,
-  ownerType,
-}) => {
-  const updateOwnerType = identity => mutate.up().in('OwnerType').updateValue(identity);
+const MultiVariantValue = ({ valueDistrubtion: { type, args }, mutate, identities, ownerType }) => {
+  const updateOwnerType = identity =>
+    mutate
+      .up()
+      .in('OwnerType')
+      .updateValue(identity);
+  const wrapperProps = {
+    'data-type': type,
+    'data-comp': 'multi-variant-value',
+  };
 
   if (type === 'weighted') {
     return (
-      <div>
+      <div {...wrapperProps}>
         <IdentitySelection
           ownerType={ownerType}
           identities={identities}
@@ -192,7 +205,7 @@ const MultiVariantValue = ({
   }
   if (type === 'bernoulliTrial') {
     return (
-      <div>
+      <div {...wrapperProps}>
         <IdentitySelection
           ownerType={ownerType}
           identities={identities}
@@ -202,55 +215,53 @@ const MultiVariantValue = ({
         <div style={{ marginTop: 5 }}>
           <BernoulliTrial onUpdate={mutate.in('args').updateValue} ratio={args} />
 
-          {args === 1
-            ? <button
-                data-comp="set-to-true-button"
-                className={'set-to-true-button'}
-                onClick={() =>
-                  mutate.apply(m =>
-                    m
-                      .up()
-                      .in('Value')
-                      .updateValue('true')
-                      .up()
-                      .in('Type')
-                      .updateValue('SingleVariant')
-                      .up()
-                      .in('ValueDistribution')
-                      .delete()
-                      .in('OwnerType')
-                      .delete(),
-                  )}
-              >
-                Set to true
-              </button>
-            : null}
+          {args === 1 ? (
+            <button
+              data-comp="set-to-true"
+              className="set-to-true-button"
+              onClick={() =>
+                mutate.apply(m =>
+                  m
+                    .up()
+                    .in('Value')
+                    .updateValue('true')
+                    .up()
+                    .in('Type')
+                    .updateValue('SingleVariant')
+                    .up()
+                    .in('ValueDistribution')
+                    .delete()
+                    .in('OwnerType')
+                    .delete(),
+                )}
+            >
+              Set to true
+            </button>
+          ) : null}
 
-          {args === 0
-            ? <button
-                className={'set-to-false-button'}
-                onClick={() =>
-                  mutate.apply(m =>
-                    m
-                      .up()
-                      .in('Value')
-                      .updateValue('false')
-                      .up()
-                      .in('Type')
-                      .updateValue('SingleVariant')
-                      .up()
-                      .in('ValueDistribution')
-                      .delete()
-                      .in('OwnerType')
-                      .delete(),
-                  )}
-              >
-                Set to false
-              </button>
-            : null}
-
+          {args === 0 ? (
+            <button
+              className="set-to-false-button"
+              onClick={() =>
+                mutate.apply(m =>
+                  m
+                    .up()
+                    .in('Value')
+                    .updateValue('false')
+                    .up()
+                    .in('Type')
+                    .updateValue('SingleVariant')
+                    .up()
+                    .in('ValueDistribution')
+                    .delete()
+                    .in('OwnerType')
+                    .delete(),
+                )}
+            >
+              Set to false
+            </button>
+          ) : null}
         </div>
-
       </div>
     );
   }

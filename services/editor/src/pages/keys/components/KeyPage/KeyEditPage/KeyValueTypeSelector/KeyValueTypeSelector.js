@@ -1,12 +1,11 @@
 import React from 'react';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
-import ReactTooltip from 'react-tooltip';
 import changeCase from 'change-case';
 import ComboBox from '../../../../../../components/common/ComboBox/ComboBox';
+import ValidationIcon from '../../../../../../components/common/ValidationIcon';
 import * as TypesServices from '../../../../../../services/types-service';
-import { updateKeyValueType } from '../../../../../../store/ducks/selectedKey';
-import alertIconSrc from '../resources/alert-icon.svg';
+import { changeKeyValueType } from '../../../../../../store/ducks/selectedKey';
 import './KeyValueTypeSelector.css';
 
 const getValueTypeSuggestions = () =>
@@ -21,24 +20,22 @@ const KeyValueTypeSelector = compose(
       selectedKey: state.selectedKey,
       validation: state.selectedKey.validation.manifest.valueType,
     }),
-    { updateKeyValueType },
+    { changeKeyValueType },
   ),
-)(({ value, validation: { isShowingHint, hint }, updateKeyValueType: onChange }) => {
+)(({ value, validation: { isShowingHint, hint }, changeKeyValueType: onChange }) => {
   const suggestions = getValueTypeSuggestions();
   return (
-    <div className={'key-value-type-selector-container'}>
-      <label className={'key-value-type-label'}>Key value type:</label>
-      <div className={'key-value-type-selector-wrapper'} data-with-error={isShowingHint}>
-        <div className={'validation-icon-wrapper'} data-is-shown={isShowingHint}>
-          <img data-tip={hint} className={'validation-icon'} src={alertIconSrc} />
-        </div>
+    <div className="key-value-type-selector-container">
+      <label className="key-value-type-label">Key value type:</label>
+      <div className="key-value-type-selector-wrapper" data-with-error={isShowingHint}>
+        <ValidationIcon show={isShowingHint} hint={hint} />
         <ComboBox
+          data-comp="key-value-type-selector"
           suggestions={suggestions}
           placeholder="Select type"
           onChange={(_, item) => item && onChange(item.value)}
           value={changeCase.titleCase(value)}
         />
-        <ReactTooltip disable={!isShowingHint} effect="solid" place="top" delayHide={500} />
       </div>
     </div>
   );

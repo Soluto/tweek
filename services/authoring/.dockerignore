@@ -1,0 +1,13 @@
+.git/
+.idea/
+.typings/
+.vscode/
+
+coverage-unit/
+node_modules/
+rulesRepository/
+
+.dockerignore
+Dockerfile
+npm-debug.log
+yarn-error.log

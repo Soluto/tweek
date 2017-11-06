@@ -1,138 +1,95 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import R from 'ramda';
+import React from 'react';
+import { connect } from 'react-redux';
+import { compose, mapProps } from 'recompose';
+import * as R from 'ramda';
 import classnames from 'classnames';
+import * as contextActions from '../../../../store/ducks/context';
+import { getFixedKeys, FIXED_PREFIX } from '../../../../services/context-service';
 import SaveButton from '../../../../components/common/SaveButton/SaveButton';
 import FixedKeysList from './FixedKeysList/FixedKeysList';
+import { NewFixedKey } from './FixedKeysList/FixedKey/FixedKey';
 import './FixedKeys.css';
 
-function calculateKeys(fixedKeys) {
-  const result = Object.entries(fixedKeys).map(([key, value]) => ({
-    remote: { key, value },
-    local: { key, value },
-    isRemoved: false,
-  }));
+const mapWithProp = prop =>
+  R.pipe(Object.entries, R.map(([keyPath, value]) => ({ keyPath, [prop]: value })));
 
-  if (result.length === 0) {
-    return [
-      {
-        local: { key: '', value: '' },
-        isRemoved: false,
+function extractKeys(remote, local) {
+  return R.pipe(
+    R.mapObjIndexed((items, prop) => mapWithProp(prop)(items)),
+    R.values,
+    R.flatten,
+    R.groupBy(R.prop('keyPath')),
+    R.map(R.mergeAll),
+    R.values,
+  )({ remote, local });
+}
+
+const getProperties = R.pickBy((_, prop) => !prop.startsWith(FIXED_PREFIX));
+
+const extractLocal = R.pipe(
+  R.filter(({ local }) => local !== undefined),
+  R.indexBy(({ keyPath }) => FIXED_PREFIX + keyPath),
+  R.map(R.prop('local')),
+);
+
+const hasValues = R.pipe(
+  Object.entries,
+  R.all(([key, value]) => key !== '' && value !== undefined && value !== ''),
+);
+
+const FixedKeys = ({
+  className,
+  isSavingContext,
+  appendKey,
+  hasChanges,
+  saveContext,
+  onChange,
+  toggleDelete,
+  keys,
+}) => (
+  <div className={classnames('fixed-keys-container', className)} data-comp="fixed-keys">
+    <div className="override-keys-title">
+      <div>Override Keys</div>
+      <SaveButton
+        data-comp="save-changes"
+        onClick={saveContext}
+        hasChanges={hasChanges}
+        isSaving={isSavingContext}
+      />
+    </div>
+
+    <FixedKeysList {...{ keys, onChange, toggleDelete }} />
+
+    <NewFixedKey appendKey={appendKey} />
+  </div>
+);
+
+export default compose(
+  connect(state => state.context, contextActions),
+  mapProps(({ identityType, identityId, local, remote, saveContext, updateContext, ...props }) => {
+    const localFixedKeys = getFixedKeys(local);
+    const remoteFixedKeys = getFixedKeys(remote);
+    const formattedKeys = extractKeys(remoteFixedKeys, localFixedKeys);
+    const extractObj = keys => ({ ...getProperties(remote), ...extractLocal(keys) });
+    return {
+      onChange: (index, { keyPath, value: local }) => {
+        const keys = R.adjust(R.merge(R.__, { keyPath, local }), index, formattedKeys);
+        return updateContext(extractObj(keys));
       },
-    ];
-  }
-
-  return result;
-}
-
-function exists(obj) {
-  return obj !== undefined && obj.toString() !== '';
-}
-
-class FixedKeys extends Component {
-  constructor(props) {
-    super(props);
-
-    const keys = calculateKeys(props.fixedKeys);
-    this.state = {
-      keys,
-      hasChanges: false,
+      toggleDelete: (index) => {
+        const keys = R.adjust(
+          R.ifElse(R.has('local'), R.dissoc('local'), item => R.assoc('local', item.remote, item)),
+          index,
+          formattedKeys,
+        );
+        return updateContext(extractObj(keys));
+      },
+      keys: formattedKeys,
+      appendKey: ({ keyPath, value }) =>
+        updateContext(R.assoc(FIXED_PREFIX + keyPath, value, local)),
+      hasChanges: hasValues(localFixedKeys) && !R.equals(remoteFixedKeys, localFixedKeys),
+      saveContext: () => saveContext({ identityType, identityId }),
+      ...props,
     };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (!R.equals(this.props.fixedKeys, nextProps.fixedKeys)) {
-      const keys = calculateKeys(nextProps.fixedKeys);
-      this.setState({
-        keys,
-        hasChanges: false,
-      });
-    }
-  }
-
-  onChange(index, isRemoved, local) {
-    const keys = this.state.keys.slice();
-
-    if (isRemoved && !keys[index].remote) {
-      keys.splice(index, 1);
-    } else {
-      keys[index] = {
-        ...keys[index],
-        local,
-        isRemoved,
-      };
-    }
-
-    this.setState({
-      keys,
-      hasChanges: true,
-    });
-  }
-
-  onSave() {
-    const updatedConfiguration = this.state.keys
-      .filter(x => !x.isRemoved && exists(x.local.key))
-      .reduce((result, x) => ({ ...result, [x.local.key]: x.local.value }), {});
-
-    this.props.updateFixedKeys(updatedConfiguration);
-  }
-
-  get canSave() {
-    const { hasChanges, keys } = this.state;
-
-    if (!hasChanges) return false;
-
-    const existingKeys = keys.filter(x => !x.isRemoved);
-
-    return (
-      existingKeys.length === R.uniq(existingKeys.map(k => k.local.key)).length &&
-      existingKeys
-        .map(x => ({ key: exists(x.local.key), value: exists(x.local.value) }))
-        .every(x => (x.key && x.value) || (!x.key && !x.value))
-    );
-  }
-
-  appendKey() {
-    const keys = this.state.keys.concat({
-      local: { key: '', value: '' },
-      isRemoved: false,
-    });
-    this.setState({ keys });
-  }
-
-  render() {
-    const { className, isUpdatingContext } = this.props;
-
-    return (
-      <div className={classnames('fixed-keys-container', className)}>
-        <div className={'override-keys-title'}>
-          <div>Override Keys</div>
-          <SaveButton
-            onClick={this.onSave.bind(this)}
-            hasChanges={this.canSave}
-            isSaving={isUpdatingContext}
-          />
-        </div>
-
-        <FixedKeysList keys={this.state.keys} onChange={this.onChange.bind(this)} />
-
-        <button className={'add-key-button'} onClick={this.appendKey.bind(this)} />
-      </div>
-    );
-  }
-}
-
-FixedKeys.propTypes = {
-  fixedKeys: PropTypes.object,
-  updateFixedKeys: PropTypes.func.isRequired,
-  isUpdatingContext: PropTypes.bool,
-  className: PropTypes.string,
-};
-
-FixedKeys.defaultProps = {
-  fixedKeys: {},
-  isUpdatingContext: false,
-  className: undefined,
-};
-
-export default FixedKeys;
+  }),
+)(FixedKeys);

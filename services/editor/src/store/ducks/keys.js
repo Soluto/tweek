@@ -1,19 +1,11 @@
 import { handleActions } from 'redux-actions';
-import R from 'ramda';
-import { push } from 'react-router-redux';
+import * as R from 'ramda';
 import fetch from '../../utils/fetch';
 import { showError } from './notifications';
 
 const KEYS_UPDATED = 'KEYS_UPDATED';
-const KEY_ADDING = 'KEY_ADDING';
 const KEY_ADDED = 'KEY_ADDED';
 const KEY_REMOVED = 'KEY_REMOVED';
-
-export const addKey = key =>
-  async function (dispatch) {
-    dispatch(push('/keys/_blank'));
-    dispatch({ type: KEY_ADDING, payload: key });
-  };
 
 export function addKeyToList(key) {
   return { type: KEY_ADDED, payload: key };

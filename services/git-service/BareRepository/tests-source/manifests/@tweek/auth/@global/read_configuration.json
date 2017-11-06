@@ -1,0 +1,16 @@
+{
+    "key_path": "@tweek/auth/@global/read_configuration",
+    "meta": {
+        "name": "@tweek/auth/@global/read_configuration",
+        "description": "This key determines, whether a user can read configuration",
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "file",
+        "format": "jpad"
+    },
+    "valueType": "string",
+    "enabled": true,
+    "dependencies": []
+}

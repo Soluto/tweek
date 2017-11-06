@@ -1,29 +1,32 @@
 import React from 'react';
-import './IdentityProperty.css';
+import { compose, withState, withHandlers } from 'recompose';
+import * as R from 'ramda';
+import { WithContext as ReactTags } from 'react-tag-input';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import Input from '../../../../../components/common/Input/Input';
 import Label from '../../../../../components/common/Label/Label';
 import * as TypesServices from '../../../../../services/types-service';
-import { compose, withState, withHandlers } from 'recompose';
-import R from 'ramda';
-import { WithContext as ReactTags } from 'react-tag-input';
+import './IdentityProperty.css';
 
-const TypeCombobox = ({ type, onUpdate, allowedTypes }) =>
+const TypeCombobox = ({ type, onUpdate, allowedTypes }) => (
   <ComboBox
+    data-comp="type-select"
     value={type}
     filterBy={() => true}
     onChange={propType => onUpdate(propType)}
     suggestions={allowedTypes}
-  />;
+  />
+);
 
-const SimpleTypeSelector = ({ type, onUpdate }) =>
+const SimpleTypeSelector = ({ type, onUpdate }) => (
   <TypeCombobox
     allowedTypes={[...Object.keys(TypesServices.types), 'custom']}
     type={type}
     onUpdate={type => onUpdate(type === 'custom' ? { base: 'string', allowedValues: [] } : type)}
-  />;
+  />
+);
 
-const AdvancedTypeSelector = ({ type, onUpdate }) =>
+const AdvancedTypeSelector = ({ type, onUpdate }) => (
   <div style={{ display: 'column', flexDirection: 'row' }}>
     <SimpleTypeSelector type={'custom'} onUpdate={type => onUpdate(type)} />
     <div data-field="base" style={{ display: 'flex', flexDirection: 'row' }}>
@@ -57,7 +60,8 @@ const AdvancedTypeSelector = ({ type, onUpdate }) =>
         }}
       />
     </div>
-  </div>;
+  </div>
+);
 
 const PropertyTypeSelector = ({ type, onUpdate, ...props }) => {
   const TypeSelector = typeof type === 'object' ? AdvancedTypeSelector : SimpleTypeSelector;
@@ -68,7 +72,7 @@ const PropertyTypeSelector = ({ type, onUpdate, ...props }) => {
   );
 };
 
-export const IdentityPropertyItem = ({ name, def, onUpdate, onRemove }) =>
+export const IdentityPropertyItem = ({ name, def, onUpdate, onRemove }) => (
   <div data-comp="property-item" data-property-name={name}>
     <button data-comp="remove" onClick={onRemove} />
     <Label text={name} />
@@ -77,7 +81,8 @@ export const IdentityPropertyItem = ({ name, def, onUpdate, onRemove }) =>
       type={def.type}
       onUpdate={type => onUpdate({ ...def, type })}
     />
-  </div>;
+  </div>
+);
 
 const createUpdater = (propName, updateFn) => x => updateFn(R.assoc(propName, x));
 const EMPTY_PROPERTY = { propName: '', def: { type: 'string' } };

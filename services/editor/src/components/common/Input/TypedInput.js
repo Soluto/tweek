@@ -14,7 +14,7 @@ export const typesServiceContextType = {
 export const withTypesService = ({ safeConvertValue, types }) =>
   withContext(typesServiceContextType, () => ({ safeConvertValue, types }));
 
-const getTypesService = getContext(typesServiceContextType);
+export const getTypesService = getContext(typesServiceContextType);
 
 const valueToItem = value =>
   value === undefined || value === '' ? undefined : { label: changeCase.pascalCase(value), value };
@@ -57,7 +57,11 @@ TypedInput.propTypes = {
   placeholder: PropTypes.string,
   valueType: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.shape({ base: PropTypes.string.isRequired }),
+    PropTypes.shape({
+      name: PropTypes.string,
+      base: PropTypes.string,
+      allowedValues: PropTypes.array,
+    }),
   ]).isRequired,
   onChange: PropTypes.func,
   value: PropTypes.any,

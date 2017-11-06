@@ -7,37 +7,35 @@ import FixedKeys from '../FixedKeys/FixedKeys';
 import IdentityProperties from '../IdentityProperties/IdentityProperties';
 import './IdentityDetails.css';
 
-const IdentityDetails = ({
-  identityId,
-  identityName,
-  isGettingContext,
-  updateFixedKeys,
-  fixedKeys,
-  isUpdatingContext,
-  properties,
-}) =>
-  <div className={'context-details-container'}>
-    <div className={'context-title'}>
-      <div className={'context-id'}>{identityId}</div>
-      <div className={'context-type'}>{changeCase.pascalCase(identityName)}</div>
+const IdentityDetails = ({ identityId, identityType, isGettingContext }) =>
+  <div
+    className="identity-details-container"
+    data-comp="identity-details"
+    data-identity-id={identityId}
+    data-identity-type={identityType}
+  >
+    <div className="identity-title">
+      <div className="identity-id">
+        {identityId}
+      </div>
+      <div className="identity-type">
+        {changeCase.pascalCase(identityType)}
+      </div>
     </div>
     {isGettingContext
       ? 'Loading...'
       : <div>
-          <IdentityProperties className={'section'} {...{ identityName, properties }} />
-          <FixedKeys className={'section'} {...{ updateFixedKeys, fixedKeys, isUpdatingContext }} />
+          <IdentityProperties className="section" identityType={identityType} />
+          <FixedKeys className="section" {...{ identityType, identityId }} />
         </div>}
   </div>;
 
 export default compose(
   mapProps(props => props.match.params),
   connect(state => state.context, contextActions),
-  mapProps(({ getContext, updateFixedKeys, identityName, identityId, ...props }) => ({
+  mapProps(({ getContext, ...props, identityType, identityId }) => ({
     ...props,
-    identityName,
-    identityId,
-    getContext: () => getContext({ identityName, identityId }),
-    updateFixedKeys: fixedKeys => updateFixedKeys({ identityName, identityId, fixedKeys }),
+    getContext: () => getContext({ identityType, identityId }),
   })),
   lifecycle({
     componentWillMount() {
@@ -47,7 +45,7 @@ export default compose(
       const { props } = this;
       if (
         props.identityId !== nextProps.identityId ||
-        props.identityName !== nextProps.identityName
+        props.identityType !== nextProps.identityType
       ) {
         nextProps.getContext();
       }

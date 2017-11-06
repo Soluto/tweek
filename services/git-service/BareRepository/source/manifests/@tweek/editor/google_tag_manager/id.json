@@ -1,0 +1,16 @@
+{
+    "key_path": "@tweek/editor/google_tag_manager/id",
+    "meta": {
+        "name": "@tweek/editor/google_tag_manager/id",
+        "tags": [],
+        "description": "ID of Google Tag Manager",
+        "archived": false
+    },
+    "implementation": {
+        "type": "const",
+        "value": ""
+    },
+    "valueType": "string",
+    "dependencies": [],
+    "enabled": true
+}

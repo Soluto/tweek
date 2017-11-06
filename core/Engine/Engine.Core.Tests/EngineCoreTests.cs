@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Engine.Core.Context;
 using Engine.DataTypes;
 using FSharpUtils.Newtonsoft;
 using LanguageExt;
 using Xunit;
+using IdentityHashSet = System.Collections.Generic.HashSet<Engine.DataTypes.Identity>;
 
 namespace Engine.Core.Tests
 {
@@ -22,7 +22,7 @@ namespace Engine.Core.Tests
         public void PathWithSimpleRule()
         {
             var identity = new Identity("device", "1");
-            var identities = new HashSet<Identity> {identity};
+            var identities = new IdentityHashSet {identity};
             var context = CreateContext(identity);
             var rulesRepo = RulesRepositoryHelpers.With("path/to/key", FakeRule.Create(ctx => new ConfigurationValue(JsonValue.NewString("SomeValue"))));
                 
@@ -37,7 +37,7 @@ namespace Engine.Core.Tests
             var context = CreateContext(identity);
             var rulesRepo = RulesRepositoryHelpers.With("path/to/key", FakeRule.Create(ctx => new ConfigurationValue(JsonValue.NewString("SomeValue"))));
 
-            var missingValue = EngineCore.GetRulesEvaluator(new HashSet<Identity> {identity}, context,rulesRepo)("path/to/key2");
+            var missingValue = EngineCore.GetRulesEvaluator(new IdentityHashSet {identity}, context,rulesRepo)("path/to/key2");
 
             Assert.True(missingValue.IsNone);
         }
@@ -49,7 +49,7 @@ namespace Engine.Core.Tests
             var context = CreateContext(identity, new Tuple<string, JsonValue>("@fixed:path/to/key", JsonValue.NewString("SomeValue")));
             var rulesRepo = RulesRepositoryHelpers.Empty();
 
-            var value = EngineCore.GetRulesEvaluator(new HashSet<Identity> { identity }, context, rulesRepo)("path/to/key").Map(x => x.Value);
+            var value = EngineCore.GetRulesEvaluator(new IdentityHashSet { identity }, context, rulesRepo)("path/to/key").Map(x => x.Value);
 
             Assert.Equal(JsonValue.NewString("SomeValue"), value);
         }
@@ -62,7 +62,7 @@ namespace Engine.Core.Tests
             var rulesRepo = RulesRepositoryHelpers.With("path/to/key2", FakeRule.Create(ctx => new ConfigurationValue(JsonValue.NewString("SomeValue"))))
                                                   .With("path/to/key", FakeRule.Create(ctx => ctx("@@key:path/to/key2").Map(x=>new ConfigurationValue(x))));
 
-            var value = EngineCore.GetRulesEvaluator(new HashSet<Identity> { identity }, context, rulesRepo)("path/to/key").Map(x => x.Value);
+            var value = EngineCore.GetRulesEvaluator(new IdentityHashSet { identity }, context, rulesRepo)("path/to/key").Map(x => x.Value);
 
             Assert.Equal(JsonValue.NewString("SomeValue"), value);
         }
@@ -76,19 +76,19 @@ namespace Engine.Core.Tests
             var rulesRepo = RulesRepositoryHelpers
                 .With("path/to/key", FakeRule.Create(ctx => ctx("device.PartnerBrand") == JsonValue.NewString("ABC") ? new ConfigurationValue(JsonValue.NewString("SomeValue")) : Option<ConfigurationValue>.None));
 
-            var value = EngineCore.GetRulesEvaluator(new HashSet<Identity> { identity }, context, rulesRepo)("path/to/key").Map(x => x.Value);
+            var value = EngineCore.GetRulesEvaluator(new IdentityHashSet { identity }, context, rulesRepo)("path/to/key").Map(x => x.Value);
             Assert.Equal(JsonValue.NewString("SomeValue"), value);
 
             rulesRepo = rulesRepo
                 .With("path/to/other/key", FakeRule.Create(ctx => ctx("device.OtherProp") == JsonValue.NewString("DEF") ? new ConfigurationValue(JsonValue.NewString("SomeValue")) : Option<ConfigurationValue>.None));
 
-            value = EngineCore.GetRulesEvaluator(new HashSet<Identity> { identity }, context, rulesRepo)("path/to/other/key").Map(x => x.Value);
+            value = EngineCore.GetRulesEvaluator(new IdentityHashSet { identity }, context, rulesRepo)("path/to/other/key").Map(x => x.Value);
             Assert.True(value.IsNone);
 
             rulesRepo = rulesRepo
                 .With("path/to/other/key", FakeRule.Create(ctx => ctx("device.PartnerBrand") == JsonValue.NewString("ABC") ? new ConfigurationValue(JsonValue.NewString("SomeValue")) : Option<ConfigurationValue>.None));
 
-            value = EngineCore.GetRulesEvaluator(new HashSet<Identity> { identity }, context, rulesRepo)("path/to/other/key").Map(x => x.Value);
+            value = EngineCore.GetRulesEvaluator(new IdentityHashSet { identity }, context, rulesRepo)("path/to/other/key").Map(x => x.Value);
 
             Assert.Equal(JsonValue.NewString("SomeValue"), value);
         }

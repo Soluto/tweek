@@ -11,37 +11,41 @@ services:
       - TWEEK_MANAGEMENT_URL=http://management:3000
     secrets:
       - tweek_ssh_public_key
-    labels:
-      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
  
   management:
     depends_on:
       - git
+      - minio
     expose:
       - "5858"
     ports:
       - "5858:5858"
       - "4002:3000"
     entrypoint:
-      - node
-      - --inspect=5858
-      - ./src/server.js
+      - yarn 
+      - start:debug
     environment:
       - GIT_USER=git
       - GIT_URL=ssh://git@git/tweek/repo
       - GIT_PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY_PATH=/run/secrets/minio_access_key
+      - MINIO_SECRET_KEY_PATH=/run/secrets/minio_secret_key
     secrets:
       - tweek_ssh_public_key
       - tweek_ssh_private_key
+      - minio_access_key
+      - minio_secret_key
     labels:
       - "traefik.port=3000"
-
+  
   api:
     ports:
       - "4003:80"
     depends_on:
       - redis
+      - minio
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - PUBLIC_KEY_PATH=/run/secrets/tweek_pfx_public_key
@@ -49,16 +53,35 @@ services:
       - Redis__ConnectionString=redis:6379
       - Addons__Redis__className=Tweek.Drivers.Redis.RedisServiceAddon
       - Addons__Redis__assemblyName=Tweek.Drivers.Redis
+      - Addons__Minio__className=Tweek.Drivers.Rules.Minio.RulesMinioAddon
+      - Addons__Minio__assemblyName=Tweek.Drivers.Rules.Minio
+      - Rules__Minio__Endpoint=minio:9000
+      - Rules__Minio__AccessKeyPath=/run/secrets/minio_access_key
+      - Rules__Minio__SecretKeyPath=/run/secrets/minio_secret_key
+      # - Addons__Management__className=Tweek.Drivers.Rules.Management.RulesManagementAddon
+      # - Addons__Management__assemblyName=Tweek.Drivers.Rules.Management
+      # - Rules__Management__Url=http://management:3000
     secrets:
       - tweek_pfx_public_key
+      - minio_access_key
+      - minio_secret_key
 
   editor:
-    depends_on: 
-      - git
     ports:
       - "4004:3000"
     volumes: 
       - ../../services/editor/vapid:/opt/vapid
+    environment:
+      - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
+    secrets:
+      - tweek_ssh_private_key
+
+  authoring:
+    depends_on:
+      - git
+    ports:
+      - "5859:5858"
+      - "4005:3000"
     environment:
       - GIT_USER=git
       - GIT_URL=ssh://git@git/tweek/repo
@@ -67,27 +90,48 @@ services:
     secrets:
       - tweek_ssh_private_key
       - tweek_ssh_public_key
+    command:
+      - yarn 
+      - start:debug
+    labels:
+      - "traefik.port=3000"
 
   redis:
-    image: redis:alpine
+    image: redis:4.0.2-alpine
     expose:
       - "6379"
     ports:
-      - "4005:6379"
+      - "4006:6379"
   
+  minio:
+    image: minio/minio
+    ports:
+      - "4007:9000"
+    command: server /data
+    secrets:
+      - source: minio_access_key
+        target: access_key
+      - source: minio_secret_key
+        target: secret_key
+
   gateway:
     image: traefik:1.3.2
     ports:
       - "${TWEEK_GATEWAY_PORT:-81}:80"
+      - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /dev/null:/traefik.toml
-    command: --web --docker --docker.domain=local.tweek.fm --logLevel=DEBUG
+    command: --web --docker --docker.domain=tweek.localtest.me --logLevel=DEBUG
 
 secrets:
   tweek_ssh_public_key:
-    file: ../../services/git-service/ssh/tweekgit.pub
+    file: ./ssh/tweekgit.pub
   tweek_pfx_public_key:
-    file: ../../services/git-service/ssh/tweekgit_public.pfx
+    file: ./ssh/tweekgit_public.pfx
   tweek_ssh_private_key:
-    file: ../../services/git-service/ssh/tweekgit
+    file: ./ssh/tweekgit
+  minio_access_key:
+    file: ./minio/access_key
+  minio_secret_key:
+    file: ./minio/secret_key

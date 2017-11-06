@@ -1,5 +1,5 @@
 import React from 'react';
-import R from 'ramda';
+import * as R from 'ramda';
 import * as TypesService from '../../../services/types-service';
 import * as RulesService from '../rules-utils';
 import PartitionsSelector from './Partition/PartitionsSelector';
@@ -25,16 +25,19 @@ const autoPartitionAlert = testAutoPartition => ({
       text: 'Auto-partition',
       value: 'OK',
       className: 'auto-partition-btn',
+      'data-alert-button': 'auto-partition',
     },
     {
       text: 'Reset',
       value: 'RESET',
       className: 'reset-partitions-btn',
+      'data-alert-button': 'reset',
     },
     {
       text: 'Cancel',
       value: 'CANCEL',
       className: 'rodal-cancel-btn',
+      'data-alert-button': 'cancel',
     },
   ],
 });
@@ -133,12 +136,14 @@ export default ({ valueType, mutate, alerter, keyPath }) => {
         />
       </div>
 
-      {partitions && partitions.length > 0
-        ? <PartitionsList
-            {...{ partitions, valueType, alerter, keyPath }}
-            mutate={mutate.in('rules')}
-          />
-        : <RulesList {...{ valueType, alerter, keyPath }} mutate={mutate.in('rules')} />}
+      {partitions && partitions.length > 0 ? (
+        <PartitionsList
+          {...{ partitions, valueType, alerter, keyPath }}
+          mutate={mutate.in('rules')}
+        />
+      ) : (
+        <RulesList {...{ valueType, alerter, keyPath }} mutate={mutate.in('rules')} />
+      )}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import R from 'ramda';
+import * as R from 'ramda';
 import { KEYS_IDENTITY } from '../../services/context-service';
 
 export function testAutoPartition(partition, rules, depth) {
@@ -36,14 +36,12 @@ export function addPartition(partition, rules, depth) {
   if (depth === 0) {
     if (rules.length === 0) return { '*': [] };
 
-    const byPartition = R.groupBy(rule => rule.Matcher[partition] || '*');
-    const partitioned = byPartition(rules);
-    Object.keys(partitioned).forEach((key) => {
-      partitioned[key].forEach((rule) => {
-        delete rule.Matcher[partition];
-      });
-    });
-    return partitioned;
+    const removePartitionMatcher = R.map(R.dissocPath(['Matcher', partition]));
+    const performPartition = R.pipe(
+      R.groupBy(rule => rule.Matcher[partition] || '*'),
+      R.map(removePartitionMatcher),
+    );
+    return performPartition(rules);
   }
 
   return Object.keys(rules).reduce(

@@ -2,18 +2,20 @@ import React from 'react';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { componentFromStream, createEventHandler } from 'recompose';
 import * as SearchService from '../../../../services/search-service';
+import fetch from '../../../../utils/fetch';
 import DirectoryTreeView from './DirectoryTreeView';
 import './KeysList.css';
 
 function KeysFilter({ onFilterChange }) {
   return (
-    <div className={'search-input-wrapper'}>
+    <div className="search-input-wrapper">
       <input
+        data-comp="search-key-input"
         type="text"
-        className={'search-input'}
+        className="search-input"
         placeholder="Search..."
         onKeyUp={e => onFilterChange(e.target.value)}
       />
@@ -24,7 +26,7 @@ function KeysFilter({ onFilterChange }) {
 const KeyItem = connect((state, props) => ({
   isActive: state.selectedKey && state.selectedKey.key && state.selectedKey.key === props.fullPath,
 }))(({ name, fullPath, depth, isActive }) =>
-  <div className={classNames('key-link-wrapper')}>
+  <div className="key-link-wrapper" data-comp="key-link">
     <Link
       className={classNames('key-link', { selected: isActive })}
       style={{ paddingLeft: (depth + 1) * 14 }}
@@ -35,8 +37,17 @@ const KeyItem = connect((state, props) => ({
   </div>,
 );
 
+const withoutInternal = list => (list ? list.filter(x => !/^@tweek\//.test(x)) : list);
+
 const KeysList = componentFromStream((prop$) => {
-  const keyList$ = prop$.map(x => x.keys).distinctUntilChanged();
+  const showInternal$ = Observable.defer(() =>
+    fetch('/api/editor-configuration/show_internal_keys').then(response => response.json()),
+  );
+
+  const keyList$ = Observable.combineLatest(
+    prop$.map(x => x.keys).distinctUntilChanged(),
+    showInternal$,
+  ).map(([keys, show]) => (show ? keys : withoutInternal(keys)));
 
   const { handler: setFilter, stream: filter$ } = createEventHandler();
   const filteredKeys$ = filter$
@@ -47,7 +58,7 @@ const KeysList = componentFromStream((prop$) => {
     .switchMap(async filter => (filter === '' ? undefined : SearchService.search(filter)));
 
   return Observable.combineLatest(filteredKeys$, keyList$).map(([filteredKeys, keys]) =>
-    <div className={'keys-list-container'}>
+    <div className="keys-list-container">
       <KeysFilter onFilterChange={setFilter} />
       <DirectoryTreeView
         paths={filteredKeys || keys}

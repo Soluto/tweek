@@ -1,0 +1,6 @@
+{
+    "partitions": [],
+    "valueType": "string",
+    "rules": [],
+    "defaultValue": "allow"
+}

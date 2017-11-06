@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import R from 'ramda';
+import * as R from 'ramda';
 import MonacoEditor from 'react-monaco-editor';
 import { AutoSizer } from 'react-virtualized';
 import './JPadTextEditor.css';
@@ -60,7 +60,7 @@ class JPadTextEditor extends Component {
 
     return (
       <AutoSizer disableWidth>
-        {({ height }) =>
+        {({ height }) => (
           <div style={{ height: height - 20 }}>
             <MonacoEditor
               height={height - 20}
@@ -71,13 +71,15 @@ class JPadTextEditor extends Component {
               requireConfig={requireConfig}
             />
             <button
-              className={'save-code-changes-button'}
+              className="save-code-changes-button"
+              data-comp="save-jpad-text"
               onClick={() => this.save()}
               disabled={!this.state.allowSave}
             >
               Insert Changes
             </button>
-          </div>}
+          </div>
+        )}
       </AutoSizer>
     );
   }

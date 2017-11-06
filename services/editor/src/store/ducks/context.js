@@ -1,55 +1,54 @@
 import { handleActions } from 'redux-actions';
 import { push } from 'react-router-redux';
+import jsonpatch from 'fast-json-patch';
 import fetch from '../../utils/fetch';
-import { FIXED_PREFIX, getFixedKeys, getContextProperties } from '../../services/context-service';
 import { showError } from './notifications';
 
 const GET_CONTEXT = 'GET_CONTEXT';
 const CONTEXT_RECEIVED = 'CONTEXT_RECEIVED';
 
+const SAVE_CONTEXT = 'SAVE_CONTEXT';
+const CONTEXT_SAVED = 'CONTEXT_SAVED';
+
 const UPDATE_CONTEXT = 'UPDATE_CONTEXT';
-const FIXED_KEYS_UPDATED = 'FIXED_KEYS_UPDATED';
 
-export const openContext = ({ identityName, identityId }) =>
-  push(`/context/${identityName}/${identityId}`);
+export const openContext = ({ identityType, identityId }) =>
+  push(`/context/${identityType}/${identityId}`);
 
-export const getContext = ({ identityName, identityId }) =>
+export const getContext = ({ identityType, identityId }) =>
   async function (dispatch) {
     dispatch({ type: GET_CONTEXT });
     try {
       const response = await fetch(
-        `/api/context/${identityName}/${encodeURIComponent(identityId)}`,
+        `/api/context/${identityType}/${encodeURIComponent(identityId)}`,
       );
       const contextData = await response.json();
-      const fixedKeys = getFixedKeys(contextData);
-      const properties = getContextProperties(identityName, contextData);
-      dispatch({ type: CONTEXT_RECEIVED, payload: { fixedKeys, properties } });
+      dispatch({ type: CONTEXT_RECEIVED, payload: contextData });
     } catch (error) {
       dispatch(showError({ title: 'Failed to retrieve context', error }));
       dispatch({ type: CONTEXT_RECEIVED });
     }
   };
 
-export const updateFixedKeys = ({ identityName, identityId, fixedKeys }) =>
-  async function (dispatch) {
-    dispatch({ type: UPDATE_CONTEXT });
+export const updateContext = payload => ({ type: UPDATE_CONTEXT, payload });
 
+export const saveContext = ({ identityType, identityId }) =>
+  async function (dispatch, getState) {
+    dispatch({ type: SAVE_CONTEXT });
+    const context = getState().context;
     const encodedIdentityId = encodeURIComponent(identityId);
-    const fixedKeysWithPrefix = Object.keys(fixedKeys).reduce(
-      (result, key) => ({ ...result, [FIXED_PREFIX + key.trim()]: fixedKeys[key] }),
-      {},
-    );
 
+    const contextPatch = jsonpatch.compare(context.remote, context.local);
     try {
-      await fetch(`/api/context/${identityName}/${encodedIdentityId}`, {
-        method: 'POST',
+      await fetch(`/api/context/${identityType}/${encodedIdentityId}`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(fixedKeysWithPrefix),
+        body: JSON.stringify(contextPatch),
       });
-      dispatch({ type: FIXED_KEYS_UPDATED, payload: { fixedKeys } });
+      dispatch({ type: CONTEXT_SAVED, success: true });
     } catch (error) {
       dispatch(showError({ title: 'Failed to update context', error }));
-      dispatch({ type: FIXED_KEYS_UPDATED });
+      dispatch({ type: CONTEXT_SAVED, success: false });
     }
   };
 
@@ -59,28 +58,34 @@ export default handleActions(
       ...state,
       isGettingContext: true,
     }),
+
     [CONTEXT_RECEIVED]: (state, action) => ({
       ...state,
-      properties: action.payload ? action.payload.properties : state.properties,
-      fixedKeys: action.payload ? action.payload.fixedKeys : state.fixedKeys,
+      local: action.payload,
+      remote: action.payload,
       isGettingContext: false,
     }),
 
-    [UPDATE_CONTEXT]: state => ({
+    [UPDATE_CONTEXT]: (state, action) => ({
       ...state,
-      isUpdatingContext: true,
+      local: action.payload,
     }),
 
-    [FIXED_KEYS_UPDATED]: (state, action) => ({
+    [SAVE_CONTEXT]: state => ({
       ...state,
-      fixedKeys: action.payload ? action.payload.fixedKeys : state.fixedKeys,
-      isUpdatingContext: false,
+      isSavingContext: true,
+    }),
+
+    [CONTEXT_SAVED]: (state, action) => ({
+      ...state,
+      remote: action.success ? state.local : state.remote,
+      isSavingContext: false,
     }),
   },
   {
     isGettingContext: false,
-    fixedKeys: {},
-    properties: {},
-    isUpdatingContext: false,
+    local: null,
+    remote: null,
+    isSavingContext: false,
   },
 );

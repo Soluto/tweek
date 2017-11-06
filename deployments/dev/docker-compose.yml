@@ -3,32 +3,25 @@ version: '3.1'
 services:
   management:
     image: soluto/tweek-management
-    build:
-      context: ../../services/management
-      dockerfile: Dockerfile
+    build: ../../services/management
+    depends_on:
+      - api
     environment:
       - VALIDATION_URL=http://api/validation
-    labels:
-      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
 
   api:
     image: soluto/tweek-api
     build:
       context: ../../
       dockerfile: TweekApiDockerfile
-    depends_on:
-      - management
-    environment:
-      - Rules__Management__Url=http://management:3000
-    labels:
-      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
+
+  authoring:
+    image: soluto/tweek-authoring
+    build: ../../services/authoring
 
   editor:
     image: soluto/tweek-editor
     build: ../../services/editor
     depends_on: 
       - api
-    environment:
-      - TWEEK_API_HOSTNAME=http://api
-    labels:
-      - "com.microsoft.visualstudio.targetoperatingsystem=linux"
+      - authoring

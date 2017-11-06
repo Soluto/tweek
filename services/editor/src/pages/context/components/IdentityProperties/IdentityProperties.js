@@ -1,35 +1,41 @@
 import React from 'react';
 import classnames from 'classnames';
+import { connect } from 'react-redux';
+import { compose, mapProps } from 'recompose';
 import Input from '../../../../components/common/Input/Input';
 import TypedInput from '../../../../components/common/Input/TypedInput';
-import { getPropertyTypeDetails } from '../../../../services/context-service';
+import { getContextProperties, getPropertyTypeDetails } from '../../../../services/context-service';
 import './IdentityProperties.css';
 
-const getPropertyValueType = (identityName, property) => {
-  const details = getPropertyTypeDetails(`${identityName}.${property}`);
-  return details.name;
+const getPropertyValueType = (identityType, property) => {
+  const details = getPropertyTypeDetails(`${identityType}.${property}`);
+  return 'name' in details ? details.name : details;
 };
 
-const Property = ({ identityName, property, value }) =>
-  <div className={'property-wrapper'}>
-    <Input className={'property-input'} value={property} disabled />
+const Property = ({ identityType, property, value }) =>
+  <div className="property-wrapper" data-comp="identity-property">
+    <Input className="property-input" data-comp="property" value={property} disabled />
     <TypedInput
-      className={'property-input'}
+      className="property-input"
+      data-comp="value"
       value={value}
-      valueType={getPropertyValueType(identityName, property)}
+      valueType={getPropertyValueType(identityType, property)}
       placeholder="(no value)"
       disabled
     />
   </div>;
 
-const IdentityProperties = ({ className, identityName, properties }) =>
-  <div className={classnames('context-properties-container', className)}>
-    <div className={'context-properties-title'}>Properties</div>
-    <div className={'property-list'}>
+const IdentityProperties = ({ className, identityType, properties }) =>
+  <div
+    className={classnames('identity-properties-container', className)}
+    data-comp="identity-properties"
+  >
+    <div className="identity-properties-title">Properties</div>
+    <div className="property-list">
       {Object.keys(properties).map(prop =>
         <Property
           key={prop}
-          identityName={identityName}
+          identityType={identityType}
           property={prop}
           value={properties[prop]}
         />,
@@ -37,4 +43,10 @@ const IdentityProperties = ({ className, identityName, properties }) =>
     </div>
   </div>;
 
-export default IdentityProperties;
+export default compose(
+  connect(state => state.context),
+  mapProps(({ remote: context, ...props, identityType }) => ({
+    properties: getContextProperties(identityType, context),
+    ...props,
+  })),
+)(IdentityProperties);
