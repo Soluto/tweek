@@ -7,24 +7,42 @@ services:
   git:
     image: soluto/tweek-bare-repo
     build: ../services/git-service/BareRepository
+    ports: 
+      - "5001:22"
   
   management:
     image: soluto/tweek-management
     build: ../services/management
-      
+    logging:
+      driver: "json-file"
+    ports:
+      - "5002:3000"
+
   api:
     image: soluto/tweek-api
     build:
       context: ../
       dockerfile: TweekApiDockerfile
+    logging:
+      driver: "json-file"
+    ports:
+      - "5003:80"
       
   authoring:
     image: soluto/tweek-authoring
     build: ../services/authoring
+    logging:
+      driver: "json-file"
+    ports:
+      - "5005:3000"
       
   editor:
     image: soluto/tweek-editor
     build: ../services/editor
+    logging:
+      driver: "json-file"
+    ports:
+      - "5004:3000"
 
   smoke-tests:
     image: microsoft/aspnetcore-build:2.0.0
