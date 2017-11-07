@@ -41,9 +41,6 @@ const gitRepositoryConfig = {
   privateKey: toFullPath(GIT_PRIVATE_KEY_PATH),
 };
 
-process.env['GIT_CLI_SSH_PRIVATE_KEY'] = gitRepositoryConfig.privateKey;
-fs.lchmodSync(gitRepositoryConfig.privateKey, 0o0600);
-
 const gitRepoCreationPromise = GitRepository.create(gitRepositoryConfig);
 const gitRepoCreationPromiseWithTimeout = BluebirdPromise.resolve(gitRepoCreationPromise)
   .timeout(GIT_CLONE_TIMEOUT_IN_MINUTES * 60 * 1000)

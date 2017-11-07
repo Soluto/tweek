@@ -1,5 +1,5 @@
 import nconf = require('nconf');
-import fs = require('fs');
+import fs = require('fs-extra');
 import os = require('os');
 
 function useFileFromBase64EnvVariable(inlineKeyName, fileKeyName) {
@@ -19,6 +19,18 @@ nconf.use("memory").argv().env().defaults({
 });
 useFileFromBase64EnvVariable("GIT_PUBLIC_KEY_INLINE", "GIT_PUBLIC_KEY_PATH");
 useFileFromBase64EnvVariable("GIT_PRIVATE_KEY_INLINE", "GIT_PRIVATE_KEY_PATH");
+
+const privateKeyPath = nconf.get("GIT_PRIVATE_KEY_PATH");
+const privateKeyForCliPath = os.tmpdir() + "/tweek-authoring-ssh-key-for-cli";
+fs.copySync(privateKeyPath, privateKeyForCliPath);
+fs.chmodSync(privateKeyForCliPath, 0o0600);
+process.env['GIT_CLI_SSH_PRIVATE_KEY'] = privateKeyForCliPath;
+process.on("beforeExit", ()=>{
+  console.trace("removing cli temp key...");
+  fs.removeSync(privateKeyForCliPath);
+  console.trace("removing cli temp key - done");
+}) 
+
 nconf.required(['GIT_URL', 'GIT_USER', 'GIT_PUBLIC_KEY_PATH', 'GIT_PRIVATE_KEY_PATH']);
 
 const configs = [
