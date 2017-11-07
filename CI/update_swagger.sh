@@ -10,6 +10,8 @@ then
   exit 0
 fi
 
+echo "Updating swagger for $VERSION version"
+
 DESTINATION_URL="https://tweek-swagger-updater.azurewebsites.net/api/UpdateSwagger?code=$UPDATE_SWAGGER_SECRET&name=$NAME&version=$VERSION"
 
 SWAGGER=$(curl $SOURCE_URL 2>/dev/null)
