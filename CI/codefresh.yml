@@ -6,6 +6,13 @@ steps:
       image: alpine/git
       commands:
           - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
+          
+  DebugEnvVars:
+      description: Debug env vars
+      title: Debug env vars
+      image: alpine
+      commands:
+          - env | grep TWEEK_DOCKER_TAG
 
   BuildGitKeys:
     title: Building Git Keys Docker Image
@@ -129,6 +136,13 @@ steps:
           - '${{BuildingAuthoring.imageId}}':
             - CF_QUALITY: false
 
+  DebugEnvVarsBeforePush:
+      description: Debug env vars
+      title: Debug env vars
+      image: alpine
+      commands:
+          - env | grep TWEEK_DOCKER_TAG
+          
   PushApiImageMaster:
     type: push
     title: Push Tweek Api - lastest
@@ -139,7 +153,7 @@ steps:
     candidate: ${{BuildingApiImage}}
     tags:
       - latest
-      - ${TWEEK_DOCKER_TAG_API}
+      - ${{TWEEK_DOCKER_TAG_API}}
 
   PushManagementImageMaster:
     type: push
@@ -151,7 +165,7 @@ steps:
     candidate: ${{BuildingManagement}}
     tags:
       - latest
-      - ${TWEEK_DOCKER_TAG_MANAGEMENT}
+      - ${{TWEEK_DOCKER_TAG_MANAGEMENT}}
 
   PushAuthoringImageMaster:
     type: push
@@ -163,7 +177,7 @@ steps:
     candidate: ${{BuildingAuthoring}}
     tags:
       - latest
-      - ${TWEEK_DOCKER_TAG_AUTHORING}
+      - ${{TWEEK_DOCKER_TAG_AUTHORING}}
 
   PushEditorImageMaster:
     type: push
@@ -175,7 +189,7 @@ steps:
     candidate: ${{BuildingEditor}}
     tags:
       - latest
-      - ${TWEEK_DOCKER_TAG_EDITOR}
+      - ${{TWEEK_DOCKER_TAG_EDITOR}}
 
   PushGitRepositoryMaster:
     type: push
