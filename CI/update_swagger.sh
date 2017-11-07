@@ -4,11 +4,11 @@ NAME=$1
 VERSION=$2
 SOURCE_URL=$3
 
-if [[ "$VERSION" == "latest" ]]
-then
-  echo "No need to update swagger"
-  exit 0
-fi
+# if [[ "$VERSION" == "latest" ]]
+# then
+#   echo "No need to update swagger"
+#   exit 0
+# fi
 
 echo "Updating swagger for $VERSION version"
 
