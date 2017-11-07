@@ -6,6 +6,13 @@ steps:
       image: alpine/git
       commands:
           - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
+          
+  DebugEnvVars:
+      description: Debug env vars
+      title: Debug env vars
+      image: alpine
+      commands:
+          - env | grep TWEEK_DOCKER_TAG
 
   BuildGitKeys:
     title: Building Git Keys Docker Image
@@ -129,6 +136,13 @@ steps:
           - '${{BuildingAuthoring.imageId}}':
             - CF_QUALITY: false
 
+  DebugEnvVarsBeforePush:
+      description: Debug env vars
+      title: Debug env vars
+      image: alpine
+      commands:
+          - env | grep TWEEK_DOCKER_TAG
+          
   PushApiImageMaster:
     type: push
     title: Push Tweek Api - lastest
