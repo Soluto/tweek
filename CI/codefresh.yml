@@ -153,7 +153,7 @@ steps:
     candidate: ${{BuildingApiImage}}
     tags:
       - latest
-      - ${TWEEK_DOCKER_TAG_API}
+      - ${{TWEEK_DOCKER_TAG_API}}
 
   PushManagementImageMaster:
     type: push
@@ -165,7 +165,7 @@ steps:
     candidate: ${{BuildingManagement}}
     tags:
       - latest
-      - ${TWEEK_DOCKER_TAG_MANAGEMENT}
+      - ${{TWEEK_DOCKER_TAG_MANAGEMENT}}
 
   PushAuthoringImageMaster:
     type: push
@@ -177,7 +177,7 @@ steps:
     candidate: ${{BuildingAuthoring}}
     tags:
       - latest
-      - ${TWEEK_DOCKER_TAG_AUTHORING}
+      - ${{TWEEK_DOCKER_TAG_AUTHORING}}
 
   PushEditorImageMaster:
     type: push
@@ -189,7 +189,7 @@ steps:
     candidate: ${{BuildingEditor}}
     tags:
       - latest
-      - ${TWEEK_DOCKER_TAG_EDITOR}
+      - ${{TWEEK_DOCKER_TAG_EDITOR}}
 
   PushGitRepositoryMaster:
     type: push
