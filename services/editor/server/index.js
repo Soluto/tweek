@@ -10,6 +10,7 @@ import serverRoutes from './serverRoutes';
 import GitContinuousUpdater from './utils/continuous-updater';
 import * as Registration from './api/registration';
 import getVapidKeys from './getVapidKeys';
+import helmet from 'helmet';
 import fs from 'fs';
 import os from 'os';
 const crypto = require('crypto');
@@ -98,13 +99,18 @@ const startServer = async () => {
 
   const app = express();
   const server = http.Server(app);
+  app.use(helmet());
+  app.disable('x-powered-by');
 
   app.use(morgan('tiny'));
 
   addDirectoryTraversalProtection(app);
   const cookieOptions = {
     secret: nconf.get('SESSION_COOKIE_SECRET_KEY') || crypto.randomBytes(20).toString('base64'),
-    cookie: { httpOnly: true },
+    cookie: {
+      httpOnly: true,
+      sameSite: 'lax',
+    },
   };
   app.use(session(cookieOptions));
   if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true') {

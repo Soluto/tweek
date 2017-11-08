@@ -7,13 +7,6 @@ steps:
       commands:
           - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
           
-  DebugEnvVars:
-      description: Debug env vars
-      title: Debug env vars
-      image: alpine
-      commands:
-          - env | grep TWEEK_DOCKER_TAG
-
   BuildGitKeys:
     title: Building Git Keys Docker Image
     type: build
@@ -61,6 +54,13 @@ steps:
     type: build
     image_name: soluto/e2e-integration
     working_directory: ./e2e/integration
+  
+  BuildingApiSmokeTestImage:
+    title: Building Tweek Api Smoke Test Docker Image
+    type: build
+    image_name: soluto/tweek-api-smoke-tests
+    working_directory: ${{main_clone}}
+    dockerfile: TweekApiSmokeTestDockerfile
 
   Tests:
     title: Tests - e2e & smoke
@@ -75,16 +75,17 @@ steps:
       - EDITOR_IMAGE=${{BuildingEditor}}
     composition_candidates:
       smoke-tests:
-        image: microsoft/aspnetcore-build:2.0.0
+        image: ${{BuildingApiSmokeTestImage}}
         depends_on: 
           - api
           - management
+          - zap
         volumes:
           - ${{CF_VOLUME}}:/repo
-        working_dir: /repo/tweek
         environment: 
           - TWEEK_API_URL=http://api/
-        command: /bin/bash -c "dotnet restore services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release"
+          - PROXY_URL=http://zap:8090
+        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && ./test.sh"
       e2e-ui:
         image: ${{BuildingUITests}}
         volumes_from:
@@ -95,6 +96,7 @@ steps:
           - authoring
           - api
           - management
+          - zap
         environment:
           - EDITOR_URL=http://editor:3000/
           - TWEEK_API_URL=http://api/
@@ -112,7 +114,7 @@ steps:
           - API_URL=http://api
           - AUTHORING_URL=http://authoring:3000
           - MANAGEMENT_URL=http://tweek-management:3000
-          - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+          - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit      
     on_success:
       metadata:
         set:
@@ -136,13 +138,6 @@ steps:
           - '${{BuildingAuthoring.imageId}}':
             - CF_QUALITY: false
 
-  DebugEnvVarsBeforePush:
-      description: Debug env vars
-      title: Debug env vars
-      image: alpine
-      commands:
-          - env | grep TWEEK_DOCKER_TAG
-          
   PushApiImageMaster:
     type: push
     title: Push Tweek Api - lastest
@@ -225,4 +220,4 @@ steps:
         working_dir: /repo/tweek/CI
         environment: 
           - UPDATE_SWAGGER_SECRET=${{UPDATE_SWAGGER_SECRET}}
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && ./update_swagger.sh api ${TWEEK_DOCKER_TAG_API} http://api/api/swagger.json"
+        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && ./update_swagger.sh api ${{TWEEK_DOCKER_TAG_API}} http://api/api/swagger.json"

@@ -9,6 +9,7 @@ nconf
     GIT_PRIVATE_KEY_PATH: '../../deployments/dev/ssh/tweekgit',
   });
 const host = nconf.get('host');
+const proxy = nconf.get('proxy');
 
 function removeTrailingSlashes(url) {
   return url.endsWith('/') ? removeTrailingSlashes(url.substring(0, url.length - 1)) : url;
@@ -30,6 +31,13 @@ exports.config = {
       // 5 instance gets started at a time.
       // maxInstances: 5,
       //
+      proxy: {
+        httpProxy: proxy,
+        sslProxy: proxy,
+        ftpProxy: proxy,
+        proxyType: proxy == null ? 'SYSTEM' : 'MANUAL',
+        autodetect: false,
+      },
       browserName: 'chrome',
       chromeOptions: { args: ['--no-sandbox'] },
       unexpectedAlertBehaviour: 'accept',
@@ -41,7 +49,7 @@ exports.config = {
   logLevel: 'error',
   coloredLogs: true,
   // Saves a screenshot to a given path if a command fails.
-  // screenshotPath: './errorShots/',
+  //screenshotPath: '/mnt/errorShots',
   //
   // Set a base URL in order to shorten url command calls. If your url parameter starts
   // with "/", then the base url gets prepended.
