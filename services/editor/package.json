@@ -1,6 +1,6 @@
 {
   "name": "tweek-editor",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "main": "dist/index.js",
   "repository": "Soluto/tweek",
   "author": "Soluto",
