@@ -1,0 +1,4 @@
+{
+  "ZAPhttp://api/api/v1/repo-versionHash Disclosure - SHA-1": "ignore",
+  "ZAPhttp://api/api/swagger.jsonBase64 Disclosure": "ignore"
+}

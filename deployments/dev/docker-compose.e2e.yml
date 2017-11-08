@@ -16,6 +16,7 @@ services:
       - authoring
       - management
       - editor
+      - zap
     environment:
       - EDITOR_URL=http://editor:3000/
       - TWEEK_API_URL=http://api/
@@ -23,6 +24,8 @@ services:
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
     secrets:
       - tweek_ssh_private_key
+    volumes:
+      - $PWD:/usr/src/wrk
 
   e2e-integration:
     build: ../../e2e/integration
@@ -37,7 +40,7 @@ services:
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
     secrets:
       - tweek_ssh_private_key
-
+    
   management:
     environment: 
       - GIT_URL=ssh://git@git/tweek/tests
@@ -61,6 +64,25 @@ services:
       - CorsPolicies__Keys__Headers=
       - CorsPolicies__Keys__ExposedHeaders=
       - CorsEnabled=true
+  
+  zap:
+    image: owasp/zap2docker-bare
+    command: zap.sh -daemon -host 0.0.0.0 -port 8090 -config api.disablekey=true -config database.recoverylog=false -config connection.timeoutInSecs=120 -addonupdate -addoninstall pscanrulesAlpha -addoninstall pscanrulesBeta -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true
+
+  zap-e2e:
+    image: owasp/zap2docker-bare
+    command: zap.sh -daemon -host 0.0.0.0 -port 8090 -config api.disablekey=true -config database.recoverylog=false -config connection.timeoutInSecs=120 -addonupdate -addoninstall pscanrulesAlpha -addoninstall pscanrulesBeta -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true
+
+  smoke-tests:
+    build:
+      context: ../../
+      dockerfile: TweekApiSmokeTestDockerfile
+    depends_on: 
+      - api
+    environment: 
+      - TWEEK_API_URL=http://api/
+      - PROXY_URL=http://zap:8090
+    command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && /src/services/api/Tweek.ApiService.SmokeTests/test.sh"
 
 secrets:
   tweek_ssh_private_key:
