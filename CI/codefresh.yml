@@ -7,13 +7,6 @@ steps:
       commands:
           - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
           
-  DebugEnvVars:
-      description: Debug env vars
-      title: Debug env vars
-      image: alpine
-      commands:
-          - env | grep TWEEK_DOCKER_TAG
-
   BuildGitKeys:
     title: Building Git Keys Docker Image
     type: build
@@ -145,13 +138,6 @@ steps:
           - '${{BuildingAuthoring.imageId}}':
             - CF_QUALITY: false
 
-  DebugEnvVarsBeforePush:
-      description: Debug env vars
-      title: Debug env vars
-      image: alpine
-      commands:
-          - env | grep TWEEK_DOCKER_TAG
-          
   PushApiImageMaster:
     type: push
     title: Push Tweek Api - lastest
@@ -234,4 +220,4 @@ steps:
         working_dir: /repo/tweek/CI
         environment: 
           - UPDATE_SWAGGER_SECRET=${{UPDATE_SWAGGER_SECRET}}
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && ./update_swagger.sh api ${TWEEK_DOCKER_TAG_API} http://api/api/swagger.json"
+        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && ./update_swagger.sh api ${{TWEEK_DOCKER_TAG_API}} http://api/api/swagger.json"
