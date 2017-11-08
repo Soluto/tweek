@@ -71,7 +71,11 @@ function addAuthSupport(server) {
 
   const authProviders = selectAuthenticationProviders(server, nconf);
   server.use('/login', (req, res) => {
-    res.send(authProviders.map(x => `<a href="${x.url}">login with ${x.name}</a>`).join('<br/>'));
+    res.send(
+      authProviders
+        .map(x => `<a href="${x.url}" style="color:red" >login with ${x.name}</a>`)
+        .join('<br/>'),
+    );
   });
 
   passport.serializeUser((user, done) => {
@@ -108,8 +112,7 @@ const startServer = async () => {
   const cookieOptions = {
     secret: nconf.get('SESSION_COOKIE_SECRET_KEY') || crypto.randomBytes(20).toString('base64'),
     cookie: {
-      httpOnly: true,
-      sameSite: 'lax',
+      httpOnly: false,
     },
   };
   app.use(session(cookieOptions));
