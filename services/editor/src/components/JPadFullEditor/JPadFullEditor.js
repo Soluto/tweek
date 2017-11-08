@@ -5,6 +5,7 @@ import * as R from 'ramda';
 import Mutator from '../../utils/mutator';
 import * as TypesService from '../../services/types-service';
 import * as RulesService from './rules-utils';
+import ErrorHandler from '../common/ErrorHandler';
 import JPadVisualEditor from './JPadVisualEditor/JPadVisualEditor';
 import JPadTextEditor from './JPadTextEditor/JPadTextEditor';
 import './JPadFullEditor.css';
@@ -74,9 +75,11 @@ const KeyRulesEditor = ({
         </Tab>
       </TabList>
       <TabPanel className="tab-content">
-        <fieldset disabled={isReadonly} style={{ border: 'none' }}>
-          <JPadVisualEditor {...{ mutate, alerter, valueType, keyPath }} jpadSource={source} />
-        </fieldset>
+        <ErrorHandler errorMessage="Rules Editor does not support this format yet, please use Source instead">
+          <fieldset disabled={isReadonly} style={{ border: 'none' }}>
+            <JPadVisualEditor {...{ mutate, alerter, valueType, keyPath }} jpadSource={source} />
+          </fieldset>
+        </ErrorHandler>
       </TabPanel>
       <TabPanel className="tab-content">
         <JPadTextEditor
