@@ -6,7 +6,7 @@ steps:
       image: alpine/git
       commands:
           - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
-
+          
   BuildGitKeys:
     title: Building Git Keys Docker Image
     type: build
@@ -23,7 +23,6 @@ steps:
     title: Building Tweek Api Docker Image
     type: build
     image_name: soluto/tweek-api
-    working_directory: ${{main_clone}}
     dockerfile: TweekApiDockerfile
   
   BuildingManagement:
@@ -55,11 +54,18 @@ steps:
     type: build
     image_name: soluto/e2e-integration
     working_directory: ./e2e/integration
+  
+  BuildingApiSmokeTestImage:
+    title: Building Tweek Api Smoke Test Docker Image
+    type: build
+    image_name: soluto/tweek-api-smoke-tests
+    working_directory: ${{main_clone}}
+    dockerfile: TweekApiSmokeTestDockerfile
 
   Tests:
     title: Tests - e2e & smoke
     type: composition
-    composition: tweek_test_composition
+    composition: ./CI/docker-compose.yml
     composition_variables:
       - KEYS_IMAGE=${{BuildGitKeys}}
       - REPOSITORY_IMAGE=${{BuildingGitRepository}}
@@ -69,15 +75,17 @@ steps:
       - EDITOR_IMAGE=${{BuildingEditor}}
     composition_candidates:
       smoke-tests:
-        image: microsoft/aspnetcore-build:2.0.0
+        image: ${{BuildingApiSmokeTestImage}}
         depends_on: 
           - api
+          - management
+          - zap
         volumes:
           - ${{CF_VOLUME}}:/repo
-        working_dir: /repo/tweek
         environment: 
           - TWEEK_API_URL=http://api/
-        command: /bin/bash -c "dotnet restore services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release"
+          - PROXY_URL=http://zap:8090
+        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && ./test.sh"
       e2e-ui:
         image: ${{BuildingUITests}}
         volumes_from:
@@ -87,12 +95,13 @@ steps:
           - editor
           - authoring
           - api
+          - management
+          - zap
         environment:
           - EDITOR_URL=http://editor:3000/
           - TWEEK_API_URL=http://api/
           - AUTHORING_URL=http://authoring:3000
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test -- --host selenium --port 4444"
       e2e-integration:
         image: ${{BuildingIntegrationTests}}
         volumes_from:
@@ -100,12 +109,12 @@ steps:
         depends_on:
           - authoring
           - api
+          - management
         environment:
           - API_URL=http://api
           - AUTHORING_URL=http://authoring:3000
           - MANAGEMENT_URL=http://tweek-management:3000
-          - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test"
+          - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit      
     on_success:
       metadata:
         set:
@@ -139,7 +148,7 @@ steps:
     candidate: ${{BuildingApiImage}}
     tags:
       - latest
-      - ${TWEEK_DOCKER_TAG_API}
+      - ${{TWEEK_DOCKER_TAG_API}}
 
   PushManagementImageMaster:
     type: push
@@ -151,7 +160,7 @@ steps:
     candidate: ${{BuildingManagement}}
     tags:
       - latest
-      - ${TWEEK_DOCKER_TAG_MANAGEMENT}
+      - ${{TWEEK_DOCKER_TAG_MANAGEMENT}}
 
   PushAuthoringImageMaster:
     type: push
@@ -163,7 +172,7 @@ steps:
     candidate: ${{BuildingAuthoring}}
     tags:
       - latest
-      - ${TWEEK_DOCKER_TAG_AUTHORING}
+      - ${{TWEEK_DOCKER_TAG_AUTHORING}}
 
   PushEditorImageMaster:
     type: push
@@ -175,7 +184,7 @@ steps:
     candidate: ${{BuildingEditor}}
     tags:
       - latest
-      - ${TWEEK_DOCKER_TAG_EDITOR}
+      - ${{TWEEK_DOCKER_TAG_EDITOR}}
 
   PushGitRepositoryMaster:
     type: push
@@ -193,7 +202,7 @@ steps:
       branch:
         only:
           - master
-    composition: tweek_test_composition
+    composition: ./CI/docker-compose.yml
     composition_variables:
       - KEYS_IMAGE=${{BuildGitKeys}}
       - REPOSITORY_IMAGE=${{BuildingGitRepository}}
@@ -211,4 +220,4 @@ steps:
         working_dir: /repo/tweek/CI
         environment: 
           - UPDATE_SWAGGER_SECRET=${{UPDATE_SWAGGER_SECRET}}
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && ./update_swagger.sh api ${TWEEK_DOCKER_TAG_API} http://api/api/swagger.json"
+        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && ./update_swagger.sh api ${{TWEEK_DOCKER_TAG_API}} http://api/api/swagger.json"

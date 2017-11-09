@@ -24,5 +24,6 @@ COPY --from=deps /opt/app/package.json ./package.json
 
 EXPOSE 3000
 ENV PORT=3000
-
+HEALTHCHECK --interval=10s --timeout=10s --retries=8 \
+      CMD wget -O - http://localhost:3000/health || exit 1
 CMD ["yarn", "start:release"]

@@ -1,6 +1,6 @@
 {
   "name": "tweek-authoring",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "main": "src/server.js",
   "repository": "Soluto/tweek",
   "author": "Soluto",
@@ -10,16 +10,16 @@
   },
   "scripts": {
     "test": "mocha -r ts-node/register",
-    "build": "yarn clean && tsc && cpr ./src/search-index/build/ ./dist/search-index/build/ -o && yarn swagger",
+    "build": "yarn run clean && tsc && cpr ./src/search-index/build/ ./dist/search-index/build/ -o && yarn swagger",
     "clean": "rimraf dist",
     "start": "ts-node ./src/server.ts",
     "start:release": "node ./dist/server.js",
     "start:debug": "node --inspect=5858 ./dist/server.js",
-    "start:dev": "nodemon --watch src --ext ts --exec 'ts-node src/server.ts --GIT_USER git --GIT_URL ssh://git@localhost:4001/tweek/repo --GIT_PUBLIC_KEY_PATH ../../deployments/dev/ssh/tweekgit.pub --GIT_PRIVATE_KEY_PATH ../../deployments/dev/ssh/tweekgit'",
-    "start:full-env": "yarn docker-compose up -- -d api git && yarn start:dev",
+    "start:dev": "nodemon --watch src --ext ts --exec yarn -- start --GIT_USER git --GIT_URL ssh://git@localhost:4001/tweek/repo --GIT_PUBLIC_KEY_PATH ../../deployments/dev/ssh/tweekgit.pub --GIT_PRIVATE_KEY_PATH ../../deployments/dev/ssh/tweekgit",
+    "start:full-env": "yarn docker-compose up -d api management git && yarn start:dev",
     "logs": "yarn docker-compose logs",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml",
-    "teardown": "yarn docker-compose -- down --remove-orphans",
+    "teardown": "yarn docker-compose down --remove-orphans",
     "swagger": "swaggerGen -c swagger.config.json"
   },
   "dependencies": {
@@ -47,7 +47,7 @@
     "sshpk": "^1.13.1",
     "typescript-ioc": "^1.0.2",
     "typescript-rest": "^1.1.2",
-    "typescript-rest-swagger": "^0.0.11",
+    "typescript-rest-swagger": "^0.0.12",
     "uuid": "^3.1.0"
   },
   "devDependencies": {

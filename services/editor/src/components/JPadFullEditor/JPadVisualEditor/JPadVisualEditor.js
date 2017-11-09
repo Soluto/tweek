@@ -8,8 +8,6 @@ import DefaultValue from './Rule/DefaultValue';
 import PartitionsList from './PartitionsList/PartitionsList';
 import './JPadVisualEditor.css';
 
-const isBrowser = typeof window === 'object';
-
 const resetPartitionsAlert = {
   title: 'Warning',
   message: 'If you change the partitions the rules will be reset.\nDo you want to continue?',
@@ -54,8 +52,6 @@ function isEmptyRules(rules) {
 }
 
 export default ({ valueType, mutate, alerter, keyPath }) => {
-  if (!isBrowser) return <div>Loading rule...</div>;
-
   const partitions = mutate.in('partitions').getValue();
   const defaultValueMutate = mutate.in('defaultValue');
 
@@ -79,19 +75,19 @@ export default ({ valueType, mutate, alerter, keyPath }) => {
     switch (alertResult) {
     case 'RESET':
       mutate.apply(m =>
-          m
-            .insert('rules', createPartitionedRules(partitions.length + 1))
-            .in('partitions')
-            .append(newPartition),
-        );
+        m
+          .insert('rules', createPartitionedRules(partitions.length + 1))
+          .in('partitions')
+          .append(newPartition),
+      );
       break;
     case 'OK':
       mutate.apply(m =>
-          m
-            .insert('rules', RulesService.addPartition(newPartition, rules, partitions.length))
-            .in('partitions')
-            .append(newPartition),
-        );
+        m
+          .insert('rules', RulesService.addPartition(newPartition, rules, partitions.length))
+          .in('partitions')
+          .append(newPartition),
+      );
       break;
     }
   };

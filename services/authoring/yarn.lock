@@ -3111,9 +3111,9 @@ typescript-ioc@^1.0.2:
     reflect-metadata "^0.1.10"
     require-glob "^3.2.0"
 
-typescript-rest-swagger@^0.0.11:
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/typescript-rest-swagger/-/typescript-rest-swagger-0.0.11.tgz#12785c9aa1ee9abde0e1fd6875edef024d1a5ac0"
+typescript-rest-swagger@^0.0.12:
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/typescript-rest-swagger/-/typescript-rest-swagger-0.0.12.tgz#dcbbc19407293dbaa11d6d9afca6712149bec286"
   dependencies:
     argparse "^1.0.9"
     lodash "^4.17.4"

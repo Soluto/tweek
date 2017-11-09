@@ -11,6 +11,7 @@ import requestErrorHandlingWrapper from './utils/request-error-handling-wrapper'
 
 export default (config) => {
   const app = express();
+  app.disable('x-powered-by');
 
   const addConfig = fn =>
     requestErrorHandlingWrapper((req, res) => fn(req, res, config, { params: req.params }));
