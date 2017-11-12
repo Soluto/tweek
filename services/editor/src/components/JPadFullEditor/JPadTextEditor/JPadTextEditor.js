@@ -12,6 +12,14 @@ const requireConfig = {
   },
 };
 
+const monacoOptions = {
+  autoIndent: true,
+  automaticLayout: true,
+  formatOnPaste: true,
+  formatOnType: true,
+  scrollBeyondLastLine: false,
+};
+
 class JPadTextEditor extends Component {
   constructor(props) {
     super(props);
@@ -63,10 +71,9 @@ class JPadTextEditor extends Component {
         {({ height }) => (
           <div style={{ height: height - 20 }}>
             <MonacoEditor
-              height={height - 20}
               language="json"
               value={currentSource}
-              options={{ scrollBeyondLastLine: false, readOnly: isReadonly }}
+              options={{ ...monacoOptions, readOnly: isReadonly }}
               onChange={newSource => this.onChange(newSource)}
               requireConfig={requireConfig}
             />
