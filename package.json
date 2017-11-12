@@ -13,7 +13,7 @@
     "test": "yarn test:integration && yarn test:ui",
     "test:full-env": "yarn start:e2e && yarn test",
     "test:full-env:build": "yarn build:e2e && yarn test:full-env",
-    "test:docker": "yarn build:e2e && yarn start:e2e && yarn docker-compose:e2e run --rm e2e-integration && yarn docker-compose:e2e run --rm e2e-ui",
+    "test:docker": "yarn build:e2e && yarn start:e2e && yarn docker-compose:e2e run --rm smoke-tests && yarn docker-compose:e2e run --rm e2e-integration && yarn docker-compose:e2e run --rm e2e-ui && yarn docker-compose:e2e run --rm glue",
     "logs": "yarn docker-compose logs",
     "teardown": "yarn docker-compose down --remove-orphans",
     "docker-compose": "docker-compose -f ./deployments/dev/docker-compose.yml -f ./deployments/dev/docker-compose.override.yml",

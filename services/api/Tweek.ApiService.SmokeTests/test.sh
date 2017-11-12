@@ -2,25 +2,17 @@
 
 # Abort script on error
 set -e
+wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status
 
-./wait-for-it.sh api:80 -t 4000
-./wait-for-it.sh zap:8090 -t 4000
+ZAP_URL=$(echo $PROXY_URL | sed -e 's/https\?:\/\///')
+/wait-for-it.sh $ZAP_URL -t 120
 
-# Disable X-Content-Type scanner - not relevant for API
-curl --fail http://zap:8090/JSON/pscan/action/disableScanners/?zapapiformat=JSON\&formMethod=GET\&ids=10021
+curl --fail $PROXY_URL/JSON/core/action/newSession/?name=smoke-tests\&overwrite=true
+curl --fail $PROXY_URL/JSON/pscan/action/enableAllScanners
+curl --fail $PROXY_URL/JSON/core/action/clearExcludedFromProxy
 
-#Disable Cache control scanner - not relevant for this API
-curl --fail http://zap:8090/JSON/pscan/action/disableScanners/?zapapiformat=JSON\&formMethod=GET\&ids=10049
+# Disable X-Content-Type and Cache control scanners - not relevant for this API
+curl --fail $PROXY_URL/JSON/pscan/action/disableScanners/?ids=10021,10049
 
+echo PROXY_URL $PROXY_URL
 dotnet test
-
-mkdir /usr/src/wrk/
-cp glue.json /usr/src/wrk/
-
-ruby /usr/bin/glue/bin/glue \
-  -t zap \
-  --zap-host http://zap --zap-port 8090 --zap-passive-mode \
-  -f text \
-  --exit-on-warn 0 \
-  http://api \
-  --finding-file-path /usr/src/wrk/glue.json \

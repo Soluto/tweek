@@ -1,46 +1,6 @@
 version: '3.1'
 
 services:
-  selenium:
-    image: selenium/standalone-chrome:3.4.0
-    container_name: selenium
-
-  e2e-ui:
-    build: ../../e2e/ui
-    container_name: e2e-ui
-    links:
-      - selenium
-    depends_on: 
-      - selenium
-      - api
-      - authoring
-      - management
-      - editor
-      - zap
-    environment:
-      - EDITOR_URL=http://editor:3000/
-      - TWEEK_API_URL=http://api/
-      - AUTHORING_URL=http://authoring:3000/
-      - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
-    secrets:
-      - tweek_ssh_private_key
-    volumes:
-      - $PWD:/usr/src/wrk
-
-  e2e-integration:
-    build: ../../e2e/integration
-    container_name: e2e-integration
-    depends_on: 
-      - api
-      - authoring
-      - management
-    environment:
-      - API_URL=http://api
-      - AUTHORING_URL=http://authoring:3000
-      - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
-    secrets:
-      - tweek_ssh_private_key
-    
   management:
     environment: 
       - GIT_URL=ssh://git@git/tweek/tests
@@ -68,21 +28,71 @@ services:
   zap:
     image: owasp/zap2docker-bare
     command: zap.sh -daemon -host 0.0.0.0 -port 8090 -config api.disablekey=true -config database.recoverylog=false -config connection.timeoutInSecs=120 -addonupdate -addoninstall pscanrulesAlpha -addoninstall pscanrulesBeta -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true
+    user: root
+    volumes:
+      - ./zap/session:/root/.ZAP/session/
 
-  zap-e2e:
-    image: owasp/zap2docker-bare
-    command: zap.sh -daemon -host 0.0.0.0 -port 8090 -config api.disablekey=true -config database.recoverylog=false -config connection.timeoutInSecs=120 -addonupdate -addoninstall pscanrulesAlpha -addoninstall pscanrulesBeta -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true
+  glue:
+    build: ./zap/glue
+    working_dir: /glue/data
+    command: ./test.sh
+    environment:
+      - ZAP_HOST=http://zap
+      - ZAP_PORT=8090
+    volumes:
+      - ./zap/glue:/glue/data
+
+  selenium:
+    image: selenium/standalone-chrome:3.4.0
+    container_name: selenium
+
+  e2e-ui:
+    build: ../../e2e/ui
+    container_name: e2e-ui
+    links:
+      - selenium
+    depends_on: 
+      - selenium
+      - api
+      - authoring
+      - management
+      - editor
+      - zap
+    environment:
+      - EDITOR_URL=http://editor:3000/
+      - TWEEK_API_URL=http://api/
+      - AUTHORING_URL=http://authoring:3000/
+      - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
+      - PROXY_URL=http://zap:8090
+    secrets:
+      - tweek_ssh_private_key
+
+  e2e-integration:
+    build: ../../e2e/integration
+    container_name: e2e-integration
+    depends_on: 
+      - api
+      - authoring
+      - management
+    environment:
+      - API_URL=http://api
+      - AUTHORING_URL=http://authoring:3000
+      - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
+    secrets:
+      - tweek_ssh_private_key
 
   smoke-tests:
     build:
       context: ../../
       dockerfile: TweekApiSmokeTestDockerfile
+    container_name: smoke-tests
     depends_on: 
       - api
+      - management
+      - zap
     environment: 
       - TWEEK_API_URL=http://api/
       - PROXY_URL=http://zap:8090
-    command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && /src/services/api/Tweek.ApiService.SmokeTests/test.sh"
 
 secrets:
   tweek_ssh_private_key:
