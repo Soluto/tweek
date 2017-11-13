@@ -16,27 +16,27 @@
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml"
   },
   "dependencies": {
-    "axios": "0.17.0",
+    "axios": "^0.17.1",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
-    "guid": "0.0.12",
-    "jsonwebtoken": "8.1.0",
-    "jszip": "^3.1.4",
-    "minio": "^3.2.1",
-    "mkdirp": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.5.1.tgz",
+    "jsonwebtoken": "^8.1.0",
+    "jszip": "^3.1.5",
+    "minio": "^3.2.2",
+    "mkdirp": "^0.5.1",
     "morgan": "^1.9.0",
     "multer": "^1.1.0",
-    "nconf": "^0.8.5",
+    "nconf": "^0.9.1",
     "nodegit": "0.18.3",
     "ramda": "^0.25.0",
     "recursive-readdir": "^2.0.0",
     "rxjs": "^5.5.2",
+    "uuid": "^3.1.0",
     "winston": "^2.4.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^4.10.0",
+    "eslint": "^4.11.0",
     "mocha": "^4.0.1"
   }
 }

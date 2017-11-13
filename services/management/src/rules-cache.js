@@ -1,6 +1,6 @@
 const fs = require('fs');
 const os = require('os');
-const Guid = require('guid');
+const uuid = require('uuid/v4');
 const Git = require('nodegit');
 const nconf = require('nconf');
 const { promisify } = require('util');
@@ -30,7 +30,7 @@ const gitUser = nconf.get('GIT_USER');
 const gitPassword = nconf.get('GIT_PASSWORD');
 const gitPublicKey = nconf.get('GIT_PUBLIC_KEY_PATH');
 const gitPrivateKey = nconf.get('GIT_PRIVATE_KEY_PATH');
-const repoPath = `${process.env.RULES_DIR || os.tmpdir()}/tweek-rules-${Guid.raw()}`;
+const repoPath = `${process.env.RULES_DIR || os.tmpdir()}/tweek-rules-${uuid()}`;
 
 logger.info(`Repository path: ${repoPath}`);
 
