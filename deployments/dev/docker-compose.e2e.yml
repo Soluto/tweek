@@ -25,23 +25,6 @@ services:
       - CorsPolicies__Keys__ExposedHeaders=
       - CorsEnabled=true
   
-  zap:
-    image: owasp/zap2docker-bare
-    command: zap.sh -daemon -host 0.0.0.0 -port 8090 -config api.disablekey=true -config database.recoverylog=false -config connection.timeoutInSecs=120 -addonupdate -addoninstall pscanrulesAlpha -addoninstall pscanrulesBeta -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true
-    user: root
-    volumes:
-      - ./zap/session:/root/.ZAP/session/
-
-  glue:
-    build: ./zap/glue
-    working_dir: /glue/data
-    command: ./test.sh
-    environment:
-      - ZAP_HOST=http://zap
-      - ZAP_PORT=8090
-    volumes:
-      - ./zap/glue:/glue/data
-
   selenium:
     image: selenium/standalone-chrome:3.4.0
     container_name: selenium
@@ -57,13 +40,11 @@ services:
       - authoring
       - management
       - editor
-      - zap
     environment:
       - EDITOR_URL=http://editor:3000/
       - TWEEK_API_URL=http://api/
       - AUTHORING_URL=http://authoring:3000/
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
-      - PROXY_URL=http://zap:8090
     secrets:
       - tweek_ssh_private_key
 
@@ -89,10 +70,8 @@ services:
     depends_on: 
       - api
       - management
-      - zap
     environment: 
       - TWEEK_API_URL=http://api/
-      - PROXY_URL=http://zap:8090
 
 secrets:
   tweek_ssh_private_key:

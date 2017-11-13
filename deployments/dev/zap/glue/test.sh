@@ -6,7 +6,7 @@ PROXY_URL="$ZAP_HOST:$ZAP_PORT"
 ZAP_URL=$(echo $PROXY_URL | sed -e 's/https\?:\/\///')
 /wait-for-it.sh $ZAP_URL -t 120
 
-curl --fail $PROXY_URL/JSON/core/action/loadSession/?name=smoke-tests
+curl --fail $PROXY_URL/JSON/core/action/loadSession/?name=smoke%2Ftests
 
 ruby /glue/bin/glue -t zap \
   --zap-host $ZAP_HOST --zap-port $ZAP_PORT --zap-passive-mode \
@@ -15,7 +15,7 @@ ruby /glue/bin/glue -t zap \
   http://api \
   --finding-file-path ./glue_api.json
 
-curl --fail $PROXY_URL/JSON/core/action/loadSession/?name=e2e-tests
+curl --fail $PROXY_URL/JSON/core/action/loadSession/?name=e2e%2Ftests
 
 ruby /glue/bin/glue \
    -t zap \

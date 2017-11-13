@@ -10,6 +10,5 @@ COPY package.json yarn.lock ./
 RUN yarn install --production
 
 COPY . ./
-RUN chmod +x test.sh
 
 CMD ["./test.sh"]
