@@ -249,6 +249,8 @@ steps:
       - API_IMAGE=${{BuildingApiImage}}
       - AUTHORING_IMAGE=${{BuildingAuthoring}}
       - EDITOR_IMAGE=${{BuildingEditor}}
+      - ZAP_IMAGE=${{BuildingZapImage}}
+      - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
     composition_candidates:
       api_swagger:
         image: node:8.7.0
