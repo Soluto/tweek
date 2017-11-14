@@ -1,7 +1,7 @@
 FROM node:8.7.0
 
-RUN mkdir -p /opt/app && \
-    cd /opt/app && \
+RUN apt-get update && \
+    apt-get install -y jq && \
     wget https://raw.githubusercontent.com/vishnubob/wait-for-it/8ed92e8cab83cfed76ff012ed4a36cef74b28096/wait-for-it.sh && \
     chmod +x wait-for-it.sh
 
