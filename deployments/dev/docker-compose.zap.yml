@@ -1,0 +1,30 @@
+version: '3.1'
+
+services:
+  zap:
+    build: ./zap
+    user: root
+    volumes:
+      - ./zap/session:/root/.ZAP/session/
+
+  glue:
+    build: ./zap/glue
+    working_dir: /glue/data
+    command: ./test.sh
+    environment:
+      - ZAP_HOST=http://zap
+      - ZAP_PORT=8090
+    volumes:
+      - ./zap/glue:/glue/data
+
+  e2e-ui:
+    depends_on:
+      - zap
+    environment:
+      - PROXY_URL=http://zap:8090
+  
+  smoke-tests:
+    depends_on:
+      - zap
+    environment:
+      - PROXY_URL=http://zap:8090
