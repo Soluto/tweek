@@ -10,6 +10,8 @@ docker-compose -f docker-compose.zap.yml build &
 docker-compose down --remove-orphans &
 wait 
 
+sudo rm -rf ../deployments/dev/zap/session/
+
 # run tests
 echo 'running tests'
 docker-compose up smoke-tests e2e-ui e2e-integration
