@@ -17,6 +17,7 @@ services:
       - api
       - git
       - minio
+      - nats
     volumes_from:
       - keys
     logging:
@@ -27,9 +28,11 @@ services:
       - GIT_URL=ssh://git@git/tweek/tests
       - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
       - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
+      - GIT_SAMPLE_INTERVAL=500
       - MINIO_ENDPOINT=minio:9000
       - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
       - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      - NATS_ENDPOINT=nats://nats:4222
       
   api:
     image: $API_IMAGE
@@ -103,6 +106,9 @@ services:
       - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
       - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
       
+  nats:
+    image: nats:1.0.4-linux
+
   selenium:
     image: selenium/standalone-chrome:3.4.0
     logging:
