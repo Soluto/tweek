@@ -1,6 +1,8 @@
 const axios = require('axios');
 const nconf = require('nconf');
 
+const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout));
+
 async function waitUntil(action, timeout = 15000, delayDuration = 25) {
   let shouldStop = false;
   const timeoutRef = setTimeout(() => (shouldStop = true), timeout);

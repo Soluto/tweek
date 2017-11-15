@@ -3,24 +3,31 @@
 # Abort script on error
 set -e
 
-./wait-for-it.sh api:80 -t 4000
-./wait-for-it.sh zap:8090 -t 4000
+function run_tests()
+{
+  wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status
+  dotnet test
+}
 
-# Disable X-Content-Type scanner - not relevant for API
-curl --fail http://zap:8090/JSON/pscan/action/disableScanners/?zapapiformat=JSON\&formMethod=GET\&ids=10021
+if [ -z "$PROXY_URL" ]
+then
+  echo "PROXY_URL is not set, not running security checks"
+  run_tests
+else
+  ZAP_URL=$(echo $PROXY_URL | sed -e 's/https\?:\/\///')
+  /wait-for-it.sh $ZAP_URL -t 120
 
-#Disable Cache control scanner - not relevant for this API
-curl --fail http://zap:8090/JSON/pscan/action/disableScanners/?zapapiformat=JSON\&formMethod=GET\&ids=10049
+  trap "curl $PROXY_URL/JSON/core/action/newSession 2> /dev/null" EXIT
 
-dotnet test
+  curl --fail $PROXY_URL/JSON/core/action/newSession/?name=smoke%2Ftests\&overwrite=true 2> /dev/null
+  curl --fail $PROXY_URL/JSON/pscan/action/enableAllScanners 2> /dev/null
+  curl --fail $PROXY_URL/JSON/core/action/clearExcludedFromProxy 2> /dev/null
 
-mkdir /usr/src/wrk/
-cp glue.json /usr/src/wrk/
+  # Disable X-Content-Type and Cache control scanners - not relevant for this API
+  curl --fail $PROXY_URL/JSON/pscan/action/disableScanners/?ids=10021,10049 2> /dev/null
 
-ruby /usr/bin/glue/bin/glue \
-  -t zap \
-  --zap-host http://zap --zap-port 8090 --zap-passive-mode \
-  -f text \
-  --exit-on-warn 0 \
-  http://api \
-  --finding-file-path /usr/src/wrk/glue.json \
+  run_tests
+
+  echo "waiting for zap to finish scanning"
+  while [ "$(curl --fail $PROXY_URL/JSON/pscan/view/recordsToScan 2> /dev/null | jq '.recordsToScan')" != '"0"' ]; do sleep 1; done
+fi
