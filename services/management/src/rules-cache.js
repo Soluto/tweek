@@ -6,6 +6,7 @@ const nconf = require('nconf');
 const { promisify } = require('util');
 const recursive = promisify(require('recursive-readdir'));
 const mkdirp = promisify(require('mkdirp'));
+const NATS = require('nats');
 const readFile = promisify(fs.readFile);
 const buildRulesArtifiact = require('./build-rules-artifiact');
 const logger = require('./logger');
@@ -30,6 +31,7 @@ const gitUser = nconf.get('GIT_USER');
 const gitPassword = nconf.get('GIT_PASSWORD');
 const gitPublicKey = nconf.get('GIT_PUBLIC_KEY_PATH');
 const gitPrivateKey = nconf.get('GIT_PRIVATE_KEY_PATH');
+const gitSampleInterval = +nconf.get('GIT_SAMPLE_INTERVAL');
 const repoPath = `${process.env.RULES_DIR || os.tmpdir()}/tweek-rules-${uuid()}`;
 
 logger.info(`Repository path: ${repoPath}`);
@@ -77,6 +79,13 @@ async function syncRepo(repo) {
 }
 
 async function updateLatestCache({ updateStorage } = {}) {
+  let nats;
+  const natsEndpoint = nconf.get('NATS_ENDPOINT');
+  if (natsEndpoint) {
+    nats = NATS.connect(nconf.get('NATS_ENDPOINT'));
+    nats.on('error', e => console.error('nats error', e));
+  }
+
   while (true) {
     try {
       const repo = await Git.Repository.open(repoPath);
@@ -85,7 +94,8 @@ async function updateLatestCache({ updateStorage } = {}) {
       const newLatestSha = (await repo.getMasterCommit()).sha();
 
       if (newLatestSha === rulesCache.sha) {
-        await delay(5000);
+        nats && nats.publish('version', newLatestSha);
+        await delay(gitSampleInterval);
         continue;
       }
       console.log('change detected');
@@ -112,9 +122,11 @@ async function updateLatestCache({ updateStorage } = {}) {
       rulesCache.formattedRuleset = formattedRuleset;
 
       logger.info('Rules Cache updated', { sha: newLatestSha });
+
+      nats && nats.publish('version', newLatestSha);
     } catch (err) {
       console.error(err);
-      await delay(5000);
+      await delay(gitSampleInterval);
     }
   }
 }

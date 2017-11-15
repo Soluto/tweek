@@ -4,6 +4,7 @@ services:
   management:
     environment: 
       - GIT_URL=ssh://git@git/tweek/tests
+      - GIT_SAMPLE_INTERVAL=500
 
   editor:
     environment: 
