@@ -1,6 +1,8 @@
 FROM ruby:2.4.2
 
-RUN wget https://raw.githubusercontent.com/vishnubob/wait-for-it/8ed92e8cab83cfed76ff012ed4a36cef74b28096/wait-for-it.sh && \
+RUN apt-get update && \
+    apt-get install -y jq && \
+    wget https://raw.githubusercontent.com/vishnubob/wait-for-it/8ed92e8cab83cfed76ff012ed4a36cef74b28096/wait-for-it.sh && \
     chmod +x wait-for-it.sh
 
 ARG GLUE_REPO=omerlh
@@ -12,5 +14,3 @@ RUN mkdir /glue && \
     tar -zxvf $GLUE_BRACNH.tar.gz --strip-components=1 && \
     rm -rf $GLUE_BRACNH.tar.gz && \
     bundle install
-
-# ENTRYPOINT [ "ruby", "/glue/bin/glue" ]
