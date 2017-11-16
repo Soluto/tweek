@@ -1,9 +1,5 @@
 version: '2'
 services:
-  keys:
-    image: soluto/tweek-test-keys
-    build: ../deployments/dev/ssh
-    
   git:
     image: soluto/tweek-bare-repo
     build: ../services/git-service/BareRepository
@@ -74,8 +70,8 @@ services:
 
   e2e-ui:
     build: ../e2e/ui
-    volumes_from:
-      - keys
+    volumes:
+      - ../deployments/dev/ssh:/gitkeys
     depends_on: 
       - selenium
       - editor
@@ -92,8 +88,8 @@ services:
 
   e2e-integration:
     build: ../e2e/integration
-    volumes_from:
-      - keys
+    volumes:
+      - ../deployments/dev/ssh:/gitkeys
     depends_on: 
       - authoring
       - api

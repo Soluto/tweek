@@ -7,12 +7,6 @@ steps:
       commands:
           - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
           
-  BuildGitKeys:
-    title: Building Git Keys Docker Image
-    type: build
-    image_name: soluto/tweek-test-keys
-    working_directory: ./deployments/dev/ssh/
-
   BuildingGitRepository:
     title: Building Git Repository Docker Image
     type: build
@@ -72,7 +66,6 @@ steps:
     type: composition
     composition: ./CI/docker-compose.yml
     composition_variables:
-      - KEYS_IMAGE=${{BuildGitKeys}}
       - REPOSITORY_IMAGE=${{BuildingGitRepository}}
       - MANAGEMENT_IMAGE=${{BuildingManagement}}
       - API_IMAGE=${{BuildingApiImage}}
@@ -94,8 +87,8 @@ steps:
           - PROXY_URL=http://zap-smoke:8090
       e2e-ui:
         image: ${{BuildingUITests}}
-        volumes_from:
-          - keys
+        volumes:
+          - ../deployments/dev/ssh:/gitkeys
         depends_on: 
           - selenium
           - editor
@@ -111,8 +104,8 @@ steps:
           - PROXY_URL=http://zap-e2e:8090
       e2e-integration:
         image: ${{BuildingIntegrationTests}}
-        volumes_from:
-          - keys
+        volumes:
+          - ../deployments/dev/ssh:/gitkeys
         depends_on:
           - authoring
           - api

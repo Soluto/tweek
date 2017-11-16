@@ -1,12 +1,9 @@
 version: '2'
-services:
-  keys:
-    image: $KEYS_IMAGE
-    
+services:    
   git:
     image: $REPOSITORY_IMAGE
-    volumes_from:
-      - keys
+    volumes:
+      - ../deployments/dev/ssh:/gitkeys
     environment:
       - PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
       - TWEEK_MANAGEMENT_URL=http://management:3000
@@ -17,8 +14,8 @@ services:
       - api
       - git
       - minio
-    volumes_from:
-      - keys
+    volumes:
+      - ../deployments/dev/ssh:/gitkeys
     logging:
       driver: "none"
     environment:
@@ -36,8 +33,8 @@ services:
     depends_on:
       - minio
       - redis
-    volumes_from:
-      - keys
+    volumes:
+      - ../deployments/dev/ssh:/gitkeys
     logging:
       driver: "none"
     environment:
@@ -63,8 +60,8 @@ services:
     image: $AUTHORING_IMAGE
     depends_on:
       - git
-    volumes_from:
-      - keys
+    volumes:
+      - ../deployments/dev/ssh:/gitkeys
     logging:
       driver: "none"
     environment:
@@ -78,8 +75,10 @@ services:
     depends_on:
       - api
       - authoring
-    volumes_from:
-      - keys
+    volumes:
+      - ../deployments/dev/ssh:/gitkeys
+    ports:
+      - 4004:3000
     logging:
       driver: "none"
     environment:
