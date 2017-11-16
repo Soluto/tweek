@@ -31,9 +31,7 @@ Tweek aims to be a complete open-source alternative to other industry feature/co
 The easiest way to start evaluating Tweek is to run it locally on docker, make sure you have the latest [docker (for windows/mac/etc..)](https://www.docker.com/get-docker) version installed (17-06+).
 #### Running Tweek
 - clone the repo (``` git clone https://github.com/Soluto/tweek.git ```)
-- go to deployments/dev (``` cd tweek/deployments/dev ```)
-- (optional) pull the images instead of building (```docker-compose pull --parallel```)
-- run (``` docker-compose up ```) - this might take a few minutes the first time
+- run (``` yarn start ```) - this might take a few minutes for the first time
 
 #### Edit your first key
 After setting up our environment, we're going to create our first key.
