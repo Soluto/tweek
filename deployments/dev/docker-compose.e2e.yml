@@ -17,8 +17,7 @@ services:
 
   api:
     environment:
-      - Rules__Minio__SampleIntervalInMs=500
-      # - Rules__Management__SampleIntervalInMs=500
+      - Rules__Management__SampleIntervalInMs=500
       - CorsPolicies__Keys__Origins=http://editor:3000,http://testorigin
       - CorsPolicies__Keys__Methods=GET
       - CorsPolicies__Keys__MaxPreflightAge=60

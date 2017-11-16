@@ -24,16 +24,12 @@ namespace Tweek.Drivers.Rules.Management
             {
                 BaseAddress = managementServiceUrl
             };
-            var settings = new TweekManagementRulesDriverSettings
+            var settings = new ManagementSettings
             {
                 SampleIntervalInMs = configuration.GetValue("Rules:Management:SampleIntervalInMs", 30000),
-                FailureDelayInMs = configuration.GetValue("Rules:Management:FailureDelayInMs", 60000)
             };
 
-            services.AddSingleton<IRulesDriver>(
-                ctx => 
-                TweekManagementRulesDriver.StartNew(httpClient.GetAsync, settings, ctx.GetService<ILoggerFactory>().CreateLogger("RulesManagementDriver"), 
-                ctx.GetService<IMeasureMetrics>()));                
+            services.AddSingleton<IRulesProvider>(ctx => new ManagementRulesProvider(httpClient.GetAsync, settings, ctx.GetService<IMeasureMetrics>()));
         }
     }
 }
