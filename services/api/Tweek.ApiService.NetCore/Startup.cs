@@ -58,7 +58,6 @@ namespace Tweek.ApiService.NetCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.RegisterAddonServices(Configuration);
 
             services.Decorate<IContextDriver>((driver, provider) => new TimedContextDriver(driver, provider.GetService<IMetrics>()));
@@ -67,6 +66,9 @@ namespace Tweek.ApiService.NetCore
             services.AddSingleton<IDiagnosticsProvider>(new EnvironmentDiagnosticsProvider());
 
             services.AddSingleton(CreateParserResolver());
+            services.AddSingleton<IRulesDriver>(provider => new RulesDriver(provider.GetService<IRulesProvider>(),
+                TimeSpan.FromMilliseconds(Configuration.GetValue("Rules:FailureDelayInMs", 60000)), 
+                provider.GetService<ILoggerFactory>().CreateLogger("RulesDriver")));
             services.AddSingleton(provider =>
             {
                 var parserResolver = provider.GetService<GetRuleParser>();

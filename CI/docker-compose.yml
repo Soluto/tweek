@@ -39,6 +39,7 @@ services:
     depends_on:
       - minio
       - redis
+      - nats
     volumes_from:
       - keys
     logging:
@@ -47,7 +48,7 @@ services:
       - Rules__Minio__Endpoint=minio:9000
       - Rules__Minio__AccessKey=AKIAIOSFODNN7EXAMPLE
       - Rules__Minio__SecretKey=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-      - Rules__Minio__SampleIntervalInMs=500
+      - Rules__Nats__Endpoint=nats://nats:4222
       - Addons__Minio__className=Tweek.Drivers.Rules.Minio.RulesMinioAddon
       - Addons__Minio__assemblyName=Tweek.Drivers.Rules.Minio
       - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
