@@ -108,14 +108,18 @@ services:
     logging:
       driver: "none"
 
-  zap:
-    image: owasp/zap2docker-bare
-    command: zap.sh -daemon -host 0.0.0.0 -port 8090 -config api.disablekey=true -config database.recoverylog=false -config connection.timeoutInSecs=120 -addonupdate -addoninstall pscanrulesAlpha -addoninstall pscanrulesBeta -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true
+  zap-smoke:
+    image: $ZAP_IMAGE
     logging:
       driver: "none"
+    user: root
+    volumes:
+      - ${CF_VOLUME_PATH}/tweek/deployments/dev/zap/session/smoke:/root/.ZAP/session/smoke
 
   zap-e2e:
-    image: owasp/zap2docker-bare
-    command: zap.sh -daemon -host 0.0.0.0 -port 8090 -config api.disablekey=true -config database.recoverylog=false -config connection.timeoutInSecs=120 -addonupdate -addoninstall pscanrulesAlpha -addoninstall pscanrulesBeta -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true
+    image: $ZAP_IMAGE
     logging:
       driver: "none"
+    user: root
+    volumes:
+      - ${CF_VOLUME_PATH}/tweek/deployments/dev/zap/session/e2e:/root/.ZAP/session/e2e
