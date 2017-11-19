@@ -1,10 +1,10 @@
-version: '2'
+version: '2.1'
 services:
   keys:
-    image: $KEYS_IMAGE
+    image: ${KEYS_IMAGE:-soluto/tweek-test-keys}
     
   git:
-    image: $REPOSITORY_IMAGE
+    image: ${REPOSITORY_IMAGE:-soluto/tweek-bare-repo}
     volumes_from:
       - keys
     environment:
@@ -12,7 +12,7 @@ services:
       - TWEEK_MANAGEMENT_URL=http://management:3000
   
   management:
-    image: $MANAGEMENT_IMAGE
+    image: ${MANAGEMENT_IMAGE:-soluto/tweek-management}
     depends_on:
       - api
       - git
@@ -35,7 +35,7 @@ services:
       - NATS_ENDPOINT=nats://nats:4222
       
   api:
-    image: $API_IMAGE
+    image: ${API_IMAGE:-soluto/tweek-api}
     depends_on:
       - minio
       - redis
@@ -64,7 +64,7 @@ services:
       - CorsPolicies__Keys__ExposedHeaders=
       
   authoring:
-    image: $AUTHORING_IMAGE
+    image: ${AUTHORING_IMAGE:-soluto/tweek-authoring}
     depends_on:
       - git
     volumes_from:
@@ -78,7 +78,7 @@ services:
       - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
       
   editor:
-    image: $EDITOR_IMAGE
+    image: ${EDITOR_IMAGE:-soluto/tweek-editor}
     depends_on:
       - api
       - authoring
@@ -116,17 +116,17 @@ services:
       driver: "none"
 
   zap-smoke:
-    image: $ZAP_IMAGE
+    image: ${ZAP_IMAGE:-soluto/zap}
     logging:
       driver: "none"
     user: root
     volumes:
-      - ${CF_VOLUME_PATH}/tweek/deployments/dev/zap/session/smoke:/root/.ZAP/session/smoke
+      - ${CF_VOLUME_PATH:-../..}/tweek/deployments/dev/zap/session/smoke:/root/.ZAP/session/smoke
 
   zap-e2e:
-    image: $ZAP_IMAGE
+    image: ${ZAP_IMAGE:-soluto/zap}
     logging:
       driver: "none"
     user: root
     volumes:
-      - ${CF_VOLUME_PATH}/tweek/deployments/dev/zap/session/e2e:/root/.ZAP/session/e2e
+      - ${CF_VOLUME_PATH:-../..}/tweek/deployments/dev/zap/session/e2e:/root/.ZAP/session/e2e

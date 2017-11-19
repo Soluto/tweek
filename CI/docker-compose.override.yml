@@ -1,17 +1,14 @@
-version: '2'
+version: '2.1'
 services:
   keys:
-    image: soluto/tweek-test-keys
     build: ../deployments/dev/ssh
     
   git:
-    image: soluto/tweek-bare-repo
     build: ../services/git-service/BareRepository
     ports: 
       - "5001:22"
   
   management:
-    image: soluto/tweek-management
     build: ../services/management
     logging:
       driver: "json-file"
@@ -19,7 +16,6 @@ services:
       - "5002:3000"
 
   api:
-    image: soluto/tweek-api
     build:
       context: ../
       dockerfile: TweekApiDockerfile
@@ -29,7 +25,6 @@ services:
       - "5003:80"
       
   authoring:
-    image: soluto/tweek-authoring
     build: ../services/authoring
     logging:
       driver: "json-file"
@@ -37,7 +32,6 @@ services:
       - "5005:3000"
       
   editor:
-    image: soluto/tweek-editor
     build: ../services/editor
     logging:
       driver: "json-file"
@@ -45,20 +39,14 @@ services:
       - "5004:3000"
 
   zap-smoke:
-    image: soluto/zap
     build: ../deployments/dev/zap
     logging:
       driver: "json-file"
-    volumes:
-      - ../deployments/dev/zap/session/smoke:/root/.ZAP/session/smoke
 
   zap-e2e:
-    image: soluto/zap
     build: ../deployments/dev/zap
     logging:
       driver: "json-file"
-    volumes:
-      - ../deployments/dev/zap/session/e2e:/root/.ZAP/session/e2e
 
   smoke-tests:
     build:
