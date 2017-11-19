@@ -8,11 +8,11 @@ using FSharpUtils.Newtonsoft;
 
 namespace Engine.Tests.TestDrivers
 {
-    class InMemoryRulesTestDriver : IRulesDriver
+    class InMemoryRulesRepository : IRulesRepository
     {
         private Dictionary<string, RuleDefinition> rules;
 
-        public InMemoryRulesTestDriver(Dictionary<string, RuleDefinition> rules, string label = null)
+        public InMemoryRulesRepository(Dictionary<string, RuleDefinition> rules, string label = null)
         {
             this.rules = rules;
             CurrentLabel = label;
@@ -82,7 +82,7 @@ namespace Engine.Tests.TestDrivers
 
         public TestScope SetTestEnviornment(Dictionary<Identity, Dictionary<string, JsonValue>> contexts, string[] keys, Dictionary<string, RuleDefinition> rules)
         {
-            return new TestScope(rules: new InMemoryRulesTestDriver(rules), context: Context, 
+            return new TestScope(rules: new InMemoryRulesRepository(rules), context: Context, 
                 init: () => InsertContextRows(contexts),
                 dispose: Flush);
         }

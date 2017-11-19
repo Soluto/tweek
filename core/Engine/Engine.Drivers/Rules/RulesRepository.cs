@@ -10,21 +10,21 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Engine.Drivers.Rules
 {
-    public class RulesDriver : IRulesDriver, IDisposable
+    public class RulesRepository : IRulesRepository, IDisposable
     {
         private readonly IDisposable _subscription;
         private readonly IConnectableObservable<Dictionary<string, RuleDefinition>> _pipeline;
 
-        public RulesDriver(IRulesProvider rulesProvider, TimeSpan failureDelay,
+        public RulesRepository(IRulesDriver rulesDriver, TimeSpan failureDelay,
             ILogger logger = null, IScheduler scheduler = null)
         {
             logger = logger ?? NullLogger.Instance;
             scheduler = scheduler ?? DefaultScheduler.Instance;
 
-            _pipeline = Observable.Defer(rulesProvider.OnVersion)
+            _pipeline = Observable.Defer(rulesDriver.OnVersion)
                 .Do(_ => LastCheckTime = scheduler.Now.UtcDateTime)
                 .DistinctUntilChanged()
-                .Select(version => Observable.FromAsync(ct => rulesProvider.GetRuleset(version, ct)).Do(_ => CurrentLabel = version))
+                .Select(version => Observable.FromAsync(ct => rulesDriver.GetRuleset(version, ct)).Do(_ => CurrentLabel = version))
                 .Switch()
                 .SubscribeOn(scheduler)
                 .Catch((Exception exception) =>

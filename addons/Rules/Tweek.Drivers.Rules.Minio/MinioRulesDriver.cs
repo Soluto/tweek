@@ -13,13 +13,13 @@ using Newtonsoft.Json.Linq;
 
 namespace Tweek.Drivers.Rules.Minio
 {
-    public class MinioRulesProvider : IRulesProvider, IDisposable
+    public class MinioRulesDriver : IRulesDriver, IDisposable
     {
         private readonly MinioClient _client;
         private readonly string _bucket;
         private readonly IConnection _nats;
 
-        public MinioRulesProvider(MinioSettings minioSettings, string natsEndpoint)
+        public MinioRulesDriver(MinioSettings minioSettings, string natsEndpoint)
         {
             _bucket = minioSettings.Bucket;
             _client = new MinioClient(minioSettings.Endpoint, minioSettings.AccessKey, minioSettings.SecretKey);
