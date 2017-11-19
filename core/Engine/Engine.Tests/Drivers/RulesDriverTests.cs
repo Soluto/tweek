@@ -8,7 +8,7 @@ using Engine.Drivers.Rules;
 using Moq;
 using Xunit;
 
-namespace Engine.Tests
+namespace Engine.Tests.Drivers
 {
     public class RulesDriverTests
     {
