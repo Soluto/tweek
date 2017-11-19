@@ -58,24 +58,26 @@ namespace Tweek.ApiService.NetCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.RegisterAddonServices(Configuration);
 
             services.Decorate<IContextDriver>((driver, provider) => new TimedContextDriver(driver, provider.GetService<IMetrics>()));
 
-            services.AddSingleton<IDiagnosticsProvider>(ctx => new RulesDriverDiagnosticsProvider(ctx.GetServices<IRulesDriver>().Single()));
+            services.AddSingleton<IDiagnosticsProvider>(ctx => new RulesRepositoryDiagnosticsProvider(ctx.GetServices<IRulesRepository>().Single()));
             services.AddSingleton<IDiagnosticsProvider>(new EnvironmentDiagnosticsProvider());
 
             services.AddSingleton(CreateParserResolver());
+            services.AddSingleton<IRulesRepository>(provider => new RulesRepository(provider.GetService<IRulesDriver>(),
+                TimeSpan.FromMilliseconds(Configuration.GetValue("Rules:FailureDelayInMs", 60000)), 
+                provider.GetService<ILoggerFactory>().CreateLogger("RulesRepository")));
             services.AddSingleton(provider =>
             {
                 var parserResolver = provider.GetService<GetRuleParser>();
-                var rulesDriver = provider.GetService<IRulesDriver>();
+                var rulesDriver = provider.GetService<IRulesRepository>();
                 return Task.Run(async () => await Engine.Tweek.Create(rulesDriver, parserResolver)).Result;
             });
             services.AddSingleton(provider =>
             {
-                var rulesDriver = provider.GetService<IRulesDriver>();
+                var rulesDriver = provider.GetService<IRulesRepository>();
                 return Task.Run(async () => await TweekIdentityProvider.Create(rulesDriver)).Result;
             });
             services.AddSingleton(provider => Authorization.CreateReadConfigurationAccessChecker(provider.GetService<ITweek>(), provider.GetService<TweekIdentityProvider>()));

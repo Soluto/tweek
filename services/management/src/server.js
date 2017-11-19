@@ -17,6 +17,7 @@ nconf
     MINIO_SECURE: 'false',
     MINIO_BUCKET: 'tweek-ruleset',
     MINIO_REGION: 'us-east-1',
+    GIT_SAMPLE_INTERVAL: 5000,
   });
 const rulesCache = require('./rules-cache');
 const repoValidator = require('./repo-validator');

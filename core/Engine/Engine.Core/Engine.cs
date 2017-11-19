@@ -9,13 +9,13 @@ using IdentityHashSet = System.Collections.Generic.HashSet<Engine.DataTypes.Iden
 
 namespace Engine.Core
 {
-    public delegate Option<IRule> RulesRepository(ConfigurationPath path);
+    public delegate Option<IRule> GetRule(ConfigurationPath path);
 
     public static class EngineCore
     {
         public delegate Option<ConfigurationValue> GetRuleValue(ConfigurationPath path);
 
-        public static GetRuleValue GetRulesEvaluator(IdentityHashSet identities, GetLoadedContextByIdentityType contextByIdentity, RulesRepository rules)
+        public static GetRuleValue GetRulesEvaluator(IdentityHashSet identities, GetLoadedContextByIdentityType contextByIdentity, GetRule getRule)
         {
             var identityTypes = identities.Select(x => x.Type).ToArray();
             var flattenContext = ContextHelpers.FlattenLoadedContext(contextByIdentity);
@@ -40,7 +40,7 @@ namespace Engine.Core
                     var fixedResult = ContextHelpers.GetFixedConfigurationContext(context, identity)(path);
                     if (fixedResult.IsSome) return fixedResult;
                 }
-                return rules(path).Bind(x => x.GetValue(context));
+                return getRule(path).Bind(x => x.GetValue(context));
             });
             return getRuleValue;
         }

@@ -1,76 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reactive;
-using System.Reactive.Concurrency;
-using System.Reactive.Disposables;
+using System.IO;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Engine.Drivers.Rules;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
+using Minio;
+using NATS.Client;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Tweek.Drivers.Rules.Minio
 {
     public class MinioRulesDriver : IRulesDriver, IDisposable
     {
-        private readonly IDisposable _subscription;
-        private readonly IConnectableObservable<Dictionary<string, RuleDefinition>> _pipeline;
+        private readonly MinioClient _client;
+        private readonly string _bucket;
+        private readonly IConnection _nats;
 
-        public MinioRulesDriver(IRulesClient rulesClient, MinioRulesDriverSettings settings, ILogger logger = null, IScheduler scheduler = null)
+        public MinioRulesDriver(MinioSettings minioSettings, string natsEndpoint)
         {
-            logger = logger ?? NullLogger.Instance;
-            scheduler = scheduler ?? DefaultScheduler.Instance;
+            _bucket = minioSettings.Bucket;
+            _client = new MinioClient(minioSettings.Endpoint, minioSettings.AccessKey, minioSettings.SecretKey);
+            if (minioSettings.IsSecure)
+            {
+                _client = _client.WithSSL();
+            }
 
-            _pipeline = Observable.Create<Dictionary<string, RuleDefinition>>(async (sub, ct) =>
-                {
-                    try
-                    {
-                        while (!ct.IsCancellationRequested)
-                        {
-                            var latestVersion = await rulesClient.GetVersion(ct);
-                            LastCheckTime = scheduler.Now.UtcDateTime;
-                            if (latestVersion != CurrentLabel)
-                            {
-                                var ruleset = await rulesClient.GetRuleset(latestVersion, ct);
-                                sub.OnNext(ruleset);
-                                CurrentLabel = latestVersion;
-                            }
-                            await Observable.Return(Unit.Default).Delay(settings.SampleInterval, scheduler);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        sub.OnError(ex);
-                    }
-                })
-                .SubscribeOn(scheduler)
-                .Catch((Exception exception) =>
-                {
-                    logger.LogWarning(exception, "Failed to update rules");
-                    return Observable.Empty<Dictionary<string, RuleDefinition>>()
-                        .Delay(settings.FailureDelay);
-                })
-                .Repeat()
-                .Replay(1);
-
-            _subscription = new CompositeDisposable(
-                _pipeline.Subscribe(rules => OnRulesChange?.Invoke(rules)), 
-                _pipeline.Connect()
-                );
+            _nats = new ConnectionFactory().CreateConnection(natsEndpoint);
         }
 
-        public event Action<IDictionary<string, RuleDefinition>> OnRulesChange;
-
-        public async Task<Dictionary<string, RuleDefinition>> GetAllRules() => await _pipeline.FirstAsync();
-
-        public string CurrentLabel { get; private set; }
-
-        public DateTime LastCheckTime { get; private set; } = DateTime.MinValue;
+        public IObservable<string> OnVersion()
+        {
+            return Observable.FromAsync(GetVersion)
+                .Concat(Observable.Create<string>(obs => _nats.SubscribeAsync("version",
+                    (_, e) => obs.OnNext(Encoding.UTF8.GetString(e.Message.Data)))));
+        }
         
-        public void Dispose()
+
+        public async Task<Dictionary<string, RuleDefinition>> GetRuleset(string version,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
-            _subscription.Dispose();
+            var json = await GetObject(version, cancellationToken);
+            return JsonConvert.DeserializeObject<Dictionary<string, RuleDefinition>>(json);
         }
+
+        public async Task<string> GetVersion(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var json = await GetObject("versions", cancellationToken);
+            var versions = JObject.Parse(json);
+            return versions["latest"].Value<string>();
+        }
+
+        private async Task<string> GetObject(string objectName, CancellationToken cancellationToken)
+        {
+            var json = "";
+            await _client.GetObjectAsync(_bucket, objectName, stream =>
+            {
+                using (var streamReader = new StreamReader(stream))
+                {
+                    json = streamReader.ReadToEnd();
+                }
+            }, cancellationToken);
+            return json;
+        }
+
+        public void Dispose() => _nats.Dispose();
     }
 }

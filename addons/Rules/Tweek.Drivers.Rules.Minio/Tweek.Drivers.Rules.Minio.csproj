@@ -3,6 +3,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="NATS.Client" Version="0.8.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="Minio.NetCore" Version="1.0.2" />
     <PackageReference Include="System.Reactive" Version="3.1.1" />

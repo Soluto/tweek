@@ -16,10 +16,10 @@ namespace Engine.Rules.Creation
 
     public static class RulesLoader
     {
-        public static async Task<Func<(RulesRepository, PathExpander)>> Factory(IRulesDriver driver, GetRuleParser parserResolver)
+        public static async Task<Func<(GetRule, PathExpander)>> Factory(IRulesRepository repository, GetRuleParser parserResolver)
         {
-            var instance = Parse(await driver.GetAllRules(), parserResolver);
-            driver.OnRulesChange += (newRules) =>
+            var instance = Parse(await repository.GetAllRules(), parserResolver);
+            repository.OnRulesChange += (newRules) =>
             {
                 using (TraceTime("loading new rules"))
                 {
@@ -29,7 +29,7 @@ namespace Engine.Rules.Creation
             return () => instance;
         }
 
-        public static (RulesRepository, PathExpander) Parse(IDictionary<string, RuleDefinition> rules, GetRuleParser parserResolver)
+        public static (GetRule, PathExpander) Parse(IDictionary<string, RuleDefinition> rules, GetRuleParser parserResolver)
         {
             var tree = new RadixTree<IRule>(rules.ToDictionary(x => x.Key.ToLower(), x => parserResolver(x.Value.Format).Parse(x.Value.Payload)));
 

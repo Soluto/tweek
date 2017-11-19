@@ -83,9 +83,9 @@ namespace Engine
 
     public class TweekRunner : ITweek
     {
-        private readonly Func<(RulesRepository, PathExpander)> _rulesLoader;
+        private readonly Func<(GetRule, PathExpander)> _rulesLoader;
 
-        public TweekRunner(Func<(RulesRepository, PathExpander)> rulesLoader)
+        public TweekRunner(Func<(GetRule, PathExpander)> rulesLoader)
         {
             _rulesLoader = rulesLoader;
         }
@@ -118,9 +118,9 @@ namespace Engine
 
     public static class Tweek
     {
-        public static async Task<ITweek> Create(IRulesDriver rulesDriver, GetRuleParser parserResolver)
+        public static async Task<ITweek> Create(IRulesRepository rulesRepository, GetRuleParser parserResolver)
         {
-            var rulesLoader = await RulesLoader.Factory(rulesDriver, parserResolver);
+            var rulesLoader = await RulesLoader.Factory(rulesRepository, parserResolver);
             return new TweekRunner(rulesLoader);
         }
     }

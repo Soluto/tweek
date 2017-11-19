@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
 using Engine.Drivers.Rules;
 using Engine.Rules.Validation;
 using Xunit;
 
-namespace Engine.UnitTests
+namespace Engine.Tests
 {
     public class DependencyCheckerTests
     {
