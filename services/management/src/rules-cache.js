@@ -117,13 +117,13 @@ async function updateLatestCache({ updateStorage } = {}) {
         timer.done('updateLatestCache:updateBucket');
       }
 
-      nats && nats.publish('version', newLatestSha);
-
       rulesCache.sha = newLatestSha;
       rulesCache.ruleset = ruleset;
       rulesCache.formattedRuleset = formattedRuleset;
 
       logger.info('Rules Cache updated', { sha: newLatestSha });
+
+      nats && nats.publish('version', newLatestSha);
     } catch (err) {
       console.error(err);
       await delay(gitSampleInterval);
