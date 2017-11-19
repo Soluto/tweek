@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +12,7 @@ using static LanguageExt.Prelude;
 
 namespace Tweek.Drivers.Rules.Management
 {
-    public class ManagementRulesProvider : IRulesProvider
+    public class ManagementRulesDriver : IRulesDriver
     {
         private const string RULESET_PATH = "/ruleset/latest";
         private const string RULESET_LATEST_VERSION_PATH = "/ruleset/latest/version";
@@ -23,7 +22,7 @@ namespace Tweek.Drivers.Rules.Management
         private readonly Func<string, Task<HttpResponseMessage>> _measuredGetter;
         private readonly Func<HttpResponseMessage, Task<Dictionary<string, RuleDefinition>>> _measuredDownloader;
 
-        public ManagementRulesProvider(HttpGet getter, ManagementSettings settings, IMeasureMetrics metrics = null)
+        public ManagementRulesDriver(HttpGet getter, ManagementSettings settings, IMeasureMetrics metrics = null)
         {
             _settings = settings;
             _getter = getter;

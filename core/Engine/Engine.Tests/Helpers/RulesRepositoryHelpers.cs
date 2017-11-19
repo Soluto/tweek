@@ -37,22 +37,22 @@ namespace Engine.Tests.Helpers
                 None: () => r);
         }
 
-        public static RulesRepository Empty()
+        public static GetRule Empty()
         {
             return fnPath => None;
         }
 
-        public static RulesRepository With(string path, IRule rule)
+        public static GetRule With(string path, IRule rule)
         {
             return fnPath => path == fnPath ? Some(rule) : None;
         }
 
-        public static RulesRepository Merge(RulesRepository l, RulesRepository r)
+        public static GetRule Merge(GetRule l, GetRule r)
         {
             return fnPath => GetOneOrMerge(l(fnPath), r(fnPath), (lRule, rRule) => new RuleSet(new[] { lRule, rRule }));
         }
 
-        public static RulesRepository With(this RulesRepository target, string path, IRule rule)
+        public static GetRule With(this GetRule target, string path, IRule rule)
         {
             return Merge(target, With(path, rule));
         }

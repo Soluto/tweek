@@ -12,11 +12,11 @@ namespace Engine.Context
         private static readonly Regex IdentityWithAuthRegex = new Regex(@"^@tweek\/auth\/([^\/]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private HashSet<string> _identitiesWithAuth;
-        private TweekIdentityProvider(IRulesDriver driver, HashSet<string> initialIdentitiesWithAuth)
+        private TweekIdentityProvider(IRulesRepository repository, HashSet<string> initialIdentitiesWithAuth)
         {
             _identitiesWithAuth = initialIdentitiesWithAuth;
 
-            driver.OnRulesChange += (newRules) =>
+            repository.OnRulesChange += (newRules) =>
             {
                 _identitiesWithAuth = ExtractIdentitiesWithAuth(newRules.Keys);
             };
@@ -24,11 +24,11 @@ namespace Engine.Context
 
         public HashSet<string> GetIdentitiesWithAuth() => _identitiesWithAuth;
 
-        public static async Task<TweekIdentityProvider> Create(IRulesDriver driver)
+        public static async Task<TweekIdentityProvider> Create(IRulesRepository repository)
         {
-            var allRules = await driver.GetAllRules();
+            var allRules = await repository.GetAllRules();
             var initialIdentities = ExtractIdentitiesWithAuth(allRules.Keys);
-            return new TweekIdentityProvider(driver, initialIdentities);
+            return new TweekIdentityProvider(repository, initialIdentities);
         }
 
         private static HashSet<string> ExtractIdentitiesWithAuth(IEnumerable<string> keys)

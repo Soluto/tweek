@@ -13,13 +13,13 @@ namespace Engine.Tests.TestDrivers
     public class TestScope
     {
         private readonly Func<Task> _dispose;
-        private readonly IRulesDriver _rulesDriver;
+        private readonly IRulesRepository mRulesRepository;
         private readonly IContextDriver _contextDriver;
         private readonly Func<Task> _init;
 
-        public TestScope(IRulesDriver rules, IContextDriver context, Func<Task> init, Func<Task> dispose)
+        public TestScope(IRulesRepository rules, IContextDriver context, Func<Task> init, Func<Task> dispose)
         {
-            _rulesDriver = rules;
+            mRulesRepository = rules;
             _contextDriver = context;
             _init = init;
             _dispose = dispose;
@@ -40,7 +40,7 @@ namespace Engine.Tests.TestDrivers
                 },FSharpOption<IDictionary<string, ComparerDelegate>>.Some(new Dictionary<string, ComparerDelegate>())
                     
                 );
-                var tweek = await Tweek.Create(_rulesDriver, (any)=> JPadRulesParserAdapter.Convert(new JPadParser(parserSettings)));
+                var tweek = await Tweek.Create(mRulesRepository, (any)=> JPadRulesParserAdapter.Convert(new JPadParser(parserSettings)));
                 await test(tweek, _contextDriver);
             }
             catch (Exception ex)

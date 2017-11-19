@@ -62,22 +62,22 @@ namespace Tweek.ApiService.NetCore
 
             services.Decorate<IContextDriver>((driver, provider) => new TimedContextDriver(driver, provider.GetService<IMetrics>()));
 
-            services.AddSingleton<IDiagnosticsProvider>(ctx => new RulesDriverDiagnosticsProvider(ctx.GetServices<IRulesDriver>().Single()));
+            services.AddSingleton<IDiagnosticsProvider>(ctx => new RulesRepositoryDiagnosticsProvider(ctx.GetServices<IRulesRepository>().Single()));
             services.AddSingleton<IDiagnosticsProvider>(new EnvironmentDiagnosticsProvider());
 
             services.AddSingleton(CreateParserResolver());
-            services.AddSingleton<IRulesDriver>(provider => new RulesDriver(provider.GetService<IRulesProvider>(),
+            services.AddSingleton<IRulesRepository>(provider => new RulesRepository(provider.GetService<IRulesDriver>(),
                 TimeSpan.FromMilliseconds(Configuration.GetValue("Rules:FailureDelayInMs", 60000)), 
-                provider.GetService<ILoggerFactory>().CreateLogger("RulesDriver")));
+                provider.GetService<ILoggerFactory>().CreateLogger("RulesRepository")));
             services.AddSingleton(provider =>
             {
                 var parserResolver = provider.GetService<GetRuleParser>();
-                var rulesDriver = provider.GetService<IRulesDriver>();
+                var rulesDriver = provider.GetService<IRulesRepository>();
                 return Task.Run(async () => await Engine.Tweek.Create(rulesDriver, parserResolver)).Result;
             });
             services.AddSingleton(provider =>
             {
-                var rulesDriver = provider.GetService<IRulesDriver>();
+                var rulesDriver = provider.GetService<IRulesRepository>();
                 return Task.Run(async () => await TweekIdentityProvider.Create(rulesDriver)).Result;
             });
             services.AddSingleton(provider => Authorization.CreateReadConfigurationAccessChecker(provider.GetService<ITweek>(), provider.GetService<TweekIdentityProvider>()));

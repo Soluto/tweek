@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Engine.Tests.Drivers
 {
-    public class RulesDriverTests
+    public class RulesRepositoryTests
     {
         [Fact]
         public async Task WhenGivenEmptyRules_ShouldReturnExpectedVersionAndEmptyRules()
@@ -19,12 +19,12 @@ namespace Engine.Tests.Drivers
             var versions = new ReplaySubject<string>(1);
             versions.OnNext("10001");
 
-            var clientMock = new Mock<IRulesProvider>();
+            var clientMock = new Mock<IRulesDriver>();
             clientMock.Setup(x => x.OnVersion()).Returns(versions);
             clientMock.Setup(x => x.GetRuleset(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(new Dictionary<string, RuleDefinition>()));
 
-            var driver = new RulesDriver(clientMock.Object, TimeSpan.Zero);
+            var driver = new RulesRepository(clientMock.Object, TimeSpan.Zero);
 
             // Act
             var result = await driver.GetAllRules();
@@ -40,10 +40,10 @@ namespace Engine.Tests.Drivers
             // Arrange
             var versions = new ReplaySubject<string>(1);
 
-            var clientMock = new Mock<IRulesProvider>();
+            var clientMock = new Mock<IRulesDriver>();
             clientMock.Setup(x => x.OnVersion()).Returns(versions);
 
-            var driver = new RulesDriver(clientMock.Object, TimeSpan.Zero);
+            var driver = new RulesRepository(clientMock.Object, TimeSpan.Zero);
 
             // Act/Assert
             clientMock.Setup(x => x.GetRuleset(It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -74,12 +74,12 @@ namespace Engine.Tests.Drivers
 
             var versions = new ReplaySubject<string>(1);
 
-            var clientMock = new Mock<IRulesProvider>();
+            var clientMock = new Mock<IRulesDriver>();
             clientMock.Setup(x => x.OnVersion()).Returns(versions);
             clientMock.Setup(x => x.GetRuleset(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(new Dictionary<string, RuleDefinition>()));
 
-            var driver = new RulesDriver(clientMock.Object, TimeSpan.Zero);
+            var driver = new RulesRepository(clientMock.Object, TimeSpan.Zero);
             driver.OnRulesChange += rules => Interlocked.Increment(ref timesCalled);
 
             // Act
@@ -102,12 +102,12 @@ namespace Engine.Tests.Drivers
         {
             var versions = new ReplaySubject<string>(1);
 
-            var clientMock = new Mock<IRulesProvider>();
+            var clientMock = new Mock<IRulesDriver>();
             clientMock.Setup(x => x.OnVersion()).Returns(versions);
             clientMock.Setup(x => x.GetRuleset(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(new Dictionary<string, RuleDefinition>()));
 
-            var driver = new RulesDriver(clientMock.Object, TimeSpan.Zero);
+            var driver = new RulesRepository(clientMock.Object, TimeSpan.Zero);
 
             // Act
             versions.OnNext("10001");

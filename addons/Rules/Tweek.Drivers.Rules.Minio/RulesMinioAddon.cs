@@ -25,7 +25,7 @@ namespace Tweek.Drivers.Rules.Minio
                 IsSecure = minioConfiguration.GetValue("Secure", false),
             };
 
-            services.AddSingleton<IRulesProvider>(new MinioRulesProvider(minioSettings, configuration.GetValue<string>("Rules:Nats:Endpoint")));
+            services.AddSingleton<IRulesDriver>(new MinioRulesDriver(minioSettings, configuration.GetValue<string>("Rules:Nats:Endpoint")));
         }
     }
 }

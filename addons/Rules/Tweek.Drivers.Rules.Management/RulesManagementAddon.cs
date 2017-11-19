@@ -5,7 +5,6 @@ using Engine.Drivers.Rules;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Tweek.ApiService.Addons;
 
 namespace Tweek.Drivers.Rules.Management
@@ -29,7 +28,7 @@ namespace Tweek.Drivers.Rules.Management
                 SampleIntervalInMs = configuration.GetValue("Rules:Management:SampleIntervalInMs", 30000),
             };
 
-            services.AddSingleton<IRulesProvider>(ctx => new ManagementRulesProvider(httpClient.GetAsync, settings, ctx.GetService<IMeasureMetrics>()));
+            services.AddSingleton<IRulesDriver>(ctx => new ManagementRulesDriver(httpClient.GetAsync, settings, ctx.GetService<IMeasureMetrics>()));
         }
     }
 }

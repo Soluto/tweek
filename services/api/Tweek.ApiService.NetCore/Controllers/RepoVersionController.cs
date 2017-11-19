@@ -8,14 +8,14 @@ namespace Tweek.ApiService.NetCore.Controllers
     [EnableCors(CorsExtensions.ALLOW_ALL_POLICY_NAME)]
     public class RepoVersionController : Controller
     {
-        private readonly IRulesDriver _rulesDriver;
+        private readonly IRulesRepository mRulesRepository;
 
-        public RepoVersionController(IRulesDriver rulesDriver)
+        public RepoVersionController(IRulesRepository rulesRepository)
         {
-            _rulesDriver = rulesDriver;
+            mRulesRepository = rulesRepository;
         }
 
         [HttpGet("api/v1/repo-version")]
-        public string Get() => _rulesDriver.CurrentLabel;
+        public string Get() => mRulesRepository.CurrentLabel;
     }
 }
