@@ -1,11 +1,12 @@
 ﻿using System;
+using Engine.Core;
 using Engine.Core.Context;
 using Engine.Core.Rules;
 using Engine.DataTypes;
 using LanguageExt;
 using static LanguageExt.Prelude;
 
-namespace Engine.Core.Tests
+namespace Engine.Tests.Helpers
 {
     public class FakeRule : IRule
     {
@@ -31,9 +32,9 @@ namespace Engine.Core.Tests
     {
         private static Option<T> GetOneOrMerge<T>(Option<T> l, Option<T> r, Func<T, T, T> merge)
         {
-            return match(l, 
-                Some: (lvalue) => match(r, Some: (rvalue) => merge(lvalue, rvalue), None: ()=>lvalue),
-                None: ()=>r);
+            return match(l,
+                Some: (lvalue) => match(r, Some: (rvalue) => merge(lvalue, rvalue), None: () => lvalue),
+                None: () => r);
         }
 
         public static RulesRepository Empty()
@@ -43,12 +44,12 @@ namespace Engine.Core.Tests
 
         public static RulesRepository With(string path, IRule rule)
         {
-            return fnPath => path == fnPath ? Some (rule) : None;
+            return fnPath => path == fnPath ? Some(rule) : None;
         }
 
         public static RulesRepository Merge(RulesRepository l, RulesRepository r)
         {
-            return fnPath => GetOneOrMerge(l(fnPath), r(fnPath), (lRule,rRule)=> new RuleSet(new [] { lRule, rRule}));
+            return fnPath => GetOneOrMerge(l(fnPath), r(fnPath), (lRule, rRule) => new RuleSet(new[] { lRule, rRule }));
         }
 
         public static RulesRepository With(this RulesRepository target, string path, IRule rule)
@@ -56,5 +57,4 @@ namespace Engine.Core.Tests
             return Merge(target, With(path, rule));
         }
     }
-    
 }

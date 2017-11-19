@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Linq;
+using Engine.Core;
 using Engine.Core.Context;
 using Engine.DataTypes;
+using Engine.Tests.Helpers;
 using FSharpUtils.Newtonsoft;
 using LanguageExt;
 using Xunit;
 using IdentityHashSet = System.Collections.Generic.HashSet<Engine.DataTypes.Identity>;
 
-namespace Engine.Core.Tests
+namespace Engine.Tests.Core
 {
     public class EngineCoreTests
     {
-
         public static GetLoadedContextByIdentityType CreateContext(Identity identity, params Tuple<string, JsonValue>[] tuples)
         {
             var data = tuples.ToDictionary(x => x.Item1, x => x.Item2);
@@ -92,7 +93,5 @@ namespace Engine.Core.Tests
 
             Assert.Equal(JsonValue.NewString("SomeValue"), value);
         }
-
-        
     }
 }
