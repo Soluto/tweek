@@ -28,6 +28,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\addons\ApplicationInsights\Tweek.Addons.ApplicationInsights\Tweek.Addons.ApplicationInsights.csproj" />
     <ProjectReference Include="..\..\..\addons\AppMetrics\Tweek.Addons.AppMetrics.GraphiteReporter\Tweek.Addons.AppMetrics.GraphiteReporter.csproj" />
+    <ProjectReference Include="..\..\..\addons\Context\Tweek.Drivers.Context.Couchbase\Tweek.Drivers.Context.Couchbase.csproj" />
+    <ProjectReference Include="..\..\..\addons\Context\Tweek.Drivers.Context.Redis\Tweek.Drivers.Context.Redis.csproj" />
     <ProjectReference Include="..\..\..\addons\Rules\Tweek.Drivers.Rules.Management\Tweek.Drivers.Rules.Management.csproj" />
     <ProjectReference Include="..\..\..\addons\Rules\Tweek.Drivers.Rules.Minio\Tweek.Drivers.Rules.Minio.csproj" />
     <ProjectReference Include="..\..\..\core\Engine\Tweek.Engine.Core\Tweek.Engine.Core.csproj" />
@@ -36,8 +38,6 @@
     <ProjectReference Include="..\..\..\core\Engine\Tweek.Engine\Tweek.Engine.csproj" />
     <ProjectReference Include="..\..\..\core\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj" />
     <ProjectReference Include="..\..\..\core\JPad\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj" />
-    <ProjectReference Include="..\..\..\addons\Context\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj" />
-    <ProjectReference Include="..\..\..\addons\Context\Tweek.Drivers.Redis\Tweek.Drivers.Redis.csproj" />
     <ProjectReference Include="..\..\..\core\Utils\JsonValueConverter\JsonValueConverter.csproj" />
   </ItemGroup>
   <ItemGroup>

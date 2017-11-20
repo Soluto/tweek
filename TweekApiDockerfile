@@ -13,7 +13,7 @@ RUN dotnet restore ./Tweek.sln
 
 COPY . .
 RUN dotnet build Tweek.sln -c Release && \
-    find . -regex '.*\.\(Unit\|Integration\|\)Tests\.csproj' -print0 | xargs -0 -n 1 -P 16 dotnet test -c=Release --no-build && \
+    find . -regex '.*\.Tests\.csproj' -print0 | xargs -0 -n 1 -P 16 dotnet test -c=Release --no-build && \
     dotnet publish ./services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj  -c Release -o ./obj/Docker/publish
 
 # ---- RELEASE ----

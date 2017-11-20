@@ -41,19 +41,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Rules.Managem
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Context", "Context", "{BD1E6B57-18E1-46E9-B16F-B531E88FB9E3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Redis", "addons\Context\Tweek.Drivers.Redis\Tweek.Drivers.Redis.csproj", "{70ACAF9B-A91A-46CB-A7EF-F4D2A0736510}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Context.Redis", "addons\Context\Tweek.Drivers.Context.Redis\Tweek.Drivers.Context.Redis.csproj", "{70ACAF9B-A91A-46CB-A7EF-F4D2A0736510}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Addons.ApplicationInsights", "addons\ApplicationInsights\Tweek.Addons.ApplicationInsights\Tweek.Addons.ApplicationInsights.csproj", "{90AD5C6D-668E-4703-BCE9-17AB584881EE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Addons.AppMetrics.GraphiteReporter", "addons\AppMetrics\Tweek.Addons.AppMetrics.GraphiteReporter\Tweek.Addons.AppMetrics.GraphiteReporter.csproj", "{34154EAB-9A1B-4D59-A967-73DAFD05580D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContextDriversIntegrationTests", "addons\Context\ContextDriversIntegrationTests\ContextDriversIntegrationTests.csproj", "{B5070CC9-BBD8-483E-849F-2950A63C9FFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.ContextIntegrationTests", "addons\Context\Tweek.Drivers.ContextIntegrationTests\Tweek.Drivers.ContextIntegrationTests.csproj", "{B5070CC9-BBD8-483E-849F-2950A63C9FFE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Redis.ContextIntegrationTests", "addons\Context\Tweek.Drivers.Redis.ContextIntegrationTests\Tweek.Drivers.Redis.ContextIntegrationTests.csproj", "{03E847A8-5A6E-47A1-B07E-F6148FBC587D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Context.Redis.IntegrationTests", "addons\Context\Tweek.Drivers.Context.Redis.IntegrationTests\Tweek.Drivers.Context.Redis.IntegrationTests.csproj", "{03E847A8-5A6E-47A1-B07E-F6148FBC587D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Couchbase", "addons\Context\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj", "{6BBFF719-3F6E-4296-8E08-7FE0B99A361E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Context.Couchbase", "addons\Context\Tweek.Drivers.Context.Couchbase\Tweek.Drivers.Context.Couchbase.csproj", "{6BBFF719-3F6E-4296-8E08-7FE0B99A361E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Couchbase.ContextIntegrationTests", "addons\Context\Tweek.Drivers.Couchbase.ContextIntegrationTests\Tweek.Drivers.Couchbase.ContextIntegrationTests.csproj", "{B42A9284-DFA0-4C36-A683-DE0DAB05C3EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Context.Couchbase.IntegrationTests", "addons\Context\Tweek.Drivers.Context.Couchbase.IntegrationTests\Tweek.Drivers.Context.Couchbase.IntegrationTests.csproj", "{B42A9284-DFA0-4C36-A683-DE0DAB05C3EF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rules", "Rules", "{EC243F60-6EE3-4022-B254-F8F7BB40AAA1}"
 EndProject
