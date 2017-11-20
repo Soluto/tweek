@@ -3,13 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using Tweek.Engine;
 using Tweek.Engine.Drivers.Context;
 using Tweek.Engine.Drivers.Rules;
 using Tweek.JPad;
 using Tweek.JPad.Utils;
 
-namespace Engine.Tests.TestDrivers
+namespace Tweek.Engine.Tests.TestDrivers
 {
     public class TestScope
     {
@@ -41,7 +40,7 @@ namespace Engine.Tests.TestDrivers
                 },FSharpOption<IDictionary<string, ComparerDelegate>>.Some(new Dictionary<string, ComparerDelegate>())
                     
                 );
-                var tweek = await Tweek.Engine.Tweek.Create(mRulesRepository, (any)=> JPadRulesParserAdapter.Convert(new JPadParser(parserSettings)));
+                var tweek = await global::Tweek.Engine.Tweek.Create(mRulesRepository, (any)=> JPadRulesParserAdapter.Convert(new JPadParser(parserSettings)));
                 await test(tweek, _contextDriver);
             }
             catch (Exception ex)

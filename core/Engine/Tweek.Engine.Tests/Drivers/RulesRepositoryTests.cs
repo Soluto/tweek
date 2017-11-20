@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Tweek.Engine.Drivers.Rules;
 using Xunit;
 
-namespace Engine.Tests.Drivers
+namespace Tweek.Engine.Tests.Drivers
 {
     public class RulesRepositoryTests
     {

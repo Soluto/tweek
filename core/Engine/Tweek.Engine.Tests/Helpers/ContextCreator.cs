@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Tweek.Engine.DataTypes;
 
-namespace Engine.Tests.Helpers
+namespace Tweek.Engine.Tests.Helpers
 {
     public static class ContextCreator
     {

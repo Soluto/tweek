@@ -1,20 +1,19 @@
-﻿using Engine.Tests.Helpers;
-using Engine.Tests.TestDrivers;
-using FSharpUtils.Newtonsoft;
+﻿using FSharpUtils.Newtonsoft;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Tweek.Engine;
 using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Context;
 using Tweek.Engine.Drivers.Rules;
+using Tweek.Engine.Tests.Helpers;
+using Tweek.Engine.Tests.TestDrivers;
 using Tweek.JPad.Generator;
 using Xunit;
 using MatcherData = System.Collections.Generic.Dictionary<string, object>;
 
-namespace Engine.Tests
+namespace Tweek.Engine.Tests
 {
     public class TestDriverFixture
     {

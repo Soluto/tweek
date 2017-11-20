@@ -3,7 +3,7 @@ using Tweek.Engine.Drivers.Rules;
 using Tweek.Engine.Rules.Validation;
 using Xunit;
 
-namespace Engine.Tests
+namespace Tweek.Engine.Tests
 {
     public class DependencyCheckerTests
     {
