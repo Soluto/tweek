@@ -75,6 +75,7 @@
     "ramda": "0.25.0",
     "react": "^16.0.0",
     "react-autosize-textarea": "^0.4.9",
+    "react-document-title": "2.0.3",
     "react-dom": "^16.0.0",
     "react-draggable": "^3.0.3",
     "react-google-tag-manager": "^2.2.1",
