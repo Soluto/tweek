@@ -1,13 +1,13 @@
-﻿using Engine.Core.Context;
-using Engine.Core.Rules;
-using FSharpUtils.Newtonsoft;
+﻿using FSharpUtils.Newtonsoft;
 using LanguageExt;
 using System.Collections.Generic;
 using System.Linq;
+using Tweek.Engine.Core.Context;
+using Tweek.Engine.Core.Rules;
 using Tweek.Engine.DataTypes;
 using IdentityHashSet = System.Collections.Generic.HashSet<Tweek.Engine.DataTypes.Identity>;
 
-namespace Engine.Core
+namespace Tweek.Engine.Core
 {
     public delegate Option<IRule> GetRule(ConfigurationPath path);
 

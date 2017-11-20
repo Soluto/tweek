@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reactive.Disposables;
 
-namespace Engine.Core.Utils
+namespace Tweek.Engine.Core.Utils
 {
     public static class TraceHelpers
     {

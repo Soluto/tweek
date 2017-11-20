@@ -1,9 +1,8 @@
-﻿using Engine.Core.Context;
-using LanguageExt;
+﻿using LanguageExt;
+using Tweek.Engine.Core.Context;
 using Tweek.Engine.DataTypes;
-using static LanguageExt.Prelude;
 
-namespace Engine.Core.Rules
+namespace Tweek.Engine.Core.Rules
 {
     public class RuleSet:IRule
     {
@@ -21,7 +20,7 @@ namespace Engine.Core.Rules
                 var contextValue = rule.GetValue(fullContext);
                 if (contextValue.IsSome) return contextValue;
             }
-            return None;
+            return Prelude.None;
         }
     }
 }

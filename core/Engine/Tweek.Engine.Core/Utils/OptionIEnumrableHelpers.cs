@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using LanguageExt;
-using LanguageExt.SomeHelp;
-using static LanguageExt.Prelude;
+using System.Collections.Generic;
 
-namespace Engine.Core.Utils
+namespace Tweek.Engine.Core.Utils
 {
     public static class OptionIEnumrableHelpers
     {
@@ -21,9 +17,9 @@ namespace Engine.Core.Utils
         {
             foreach (var item in it)
             {
-                return Some(item);
+                return Prelude.Some(item);
             }
-            return None;
+            return Prelude.None;
         }
     }
 }

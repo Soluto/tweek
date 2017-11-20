@@ -2,7 +2,7 @@
 using LanguageExt;
 using Tweek.Engine.DataTypes;
 
-namespace Engine.Core.Context
+namespace Tweek.Engine.Core.Context
 {
     public delegate Option<JsonValue> GetContextValue(string key);
 

@@ -1,8 +1,8 @@
-﻿using Engine.Core.Context;
-using LanguageExt;
+﻿using LanguageExt;
+using Tweek.Engine.Core.Context;
 using Tweek.Engine.DataTypes;
 
-namespace Engine.Core.Rules
+namespace Tweek.Engine.Core.Rules
 {
     public interface IRule
     {
