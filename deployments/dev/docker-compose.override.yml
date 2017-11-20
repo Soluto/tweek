@@ -54,8 +54,8 @@ services:
       - PUBLIC_KEY_PATH=/run/secrets/tweek_pfx_public_key
       - ContextProvider=redis
       - Redis__ConnectionString=redis:6379
-      - Addons__Redis__className=Tweek.Drivers.Redis.RedisServiceAddon
-      - Addons__Redis__assemblyName=Tweek.Drivers.Redis
+      - Addons__Redis__className=Tweek.Drivers.Context.Redis.RedisServiceAddon
+      - Addons__Redis__assemblyName=Tweek.Drivers.Context.Redis
       - Addons__Minio__className=Tweek.Drivers.Rules.Minio.RulesMinioAddon
       - Addons__Minio__assemblyName=Tweek.Drivers.Rules.Minio
       - Rules__Minio__Endpoint=minio:9000

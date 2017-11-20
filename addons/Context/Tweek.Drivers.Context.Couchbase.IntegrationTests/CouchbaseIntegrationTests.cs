@@ -1,4 +1,3 @@
-using ContextDriversIntegrationTests;
 using Couchbase;
 using Couchbase.Configuration.Client;
 using Couchbase.Core.Serialization;
@@ -6,12 +5,11 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using Tweek.ApiService.Addons;
-using Tweek.Drivers.CouchbaseDriver;
 using Tweek.Engine.Drivers.Context;
 
-namespace Tweek.Drivers.Couchbase.ContextIntegrationTests
+namespace Tweek.Drivers.Context.Couchbase.IntegrationTests
 {
-    public class CouchbaseIntegrationTests: IntegrationTests
+    public class CouchbaseIntegrationTests: ContextIntegrationTests.IntegrationTests
     {
         public CouchbaseIntegrationTests()
         {

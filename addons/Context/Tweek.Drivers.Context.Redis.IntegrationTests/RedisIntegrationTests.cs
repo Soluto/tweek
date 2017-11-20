@@ -1,10 +1,9 @@
-using ContextDriversIntegrationTests;
 using System;
 using Tweek.Engine.Drivers.Context;
 
-namespace Tweek.Drivers.Redis.ContextIntegrationTests
+namespace Tweek.Drivers.Context.Redis.IntegrationTests
 {
-    public class RedisIntegrationTests: IntegrationTests
+    public class RedisIntegrationTests: ContextIntegrationTests.IntegrationTests
     {
         public RedisIntegrationTests()
         {

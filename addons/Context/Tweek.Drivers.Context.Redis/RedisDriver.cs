@@ -10,7 +10,7 @@ using Tweek.ApiService.Addons;
 using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Context;
 
-namespace Tweek.Drivers.Redis
+namespace Tweek.Drivers.Context.Redis
 {
     public class RedisDriver : IContextDriver
     {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Context;
 
-namespace Tweek.Drivers.CouchbaseDriver
+namespace Tweek.Drivers.Context.Couchbase
 {
     public class CouchBaseDriver : IContextDriver
     {

@@ -10,27 +10,27 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using Tweek.ApiService.Addons;
-using Tweek.Drivers.Couchbase;
 using Tweek.Engine.Drivers.Context;
 
-namespace Tweek.Drivers.CouchbaseDriver
+namespace Tweek.Drivers.Context.Couchbase
 {
     public class StaticCouchbaseDisposer
-  {
-      public StaticCouchbaseDisposer(IApplicationLifetime lifetime, ILogger<StaticCouchbaseDisposer> logger){
-            lifetime.ApplicationStopped.Register(()=>{
+    {
+        public StaticCouchbaseDisposer(IApplicationLifetime lifetime, ILogger<StaticCouchbaseDisposer> logger)
+        {
+            lifetime.ApplicationStopped.Register(() =>
+            {
                 logger.LogInformation("Closing Cluster");
                 ClusterHelper.Close();
                 logger.LogInformation("Cluster closed");
             });
-      }
-  }
+        }
+    }
 
-  public class CouchBaseServiceAddon: ITweekAddon
+    public class CouchBaseServiceAddon : ITweekAddon
     {
         public void Use(IApplicationBuilder builder, IConfiguration configuration)
         {
-            
         }
 
         public void Configure(IServiceCollection services, IConfiguration configuration)
@@ -45,7 +45,8 @@ namespace Tweek.Drivers.CouchbaseDriver
             var contextDriver = new CouchBaseDriver(ClusterHelper.GetBucket, contextBucketName);
             var couchbaseDiagnosticsProvider = new BucketConnectionIsAlive(ClusterHelper.GetBucket, contextBucketName);
             services.AddSingleton<IContextDriver>(contextDriver);
-            services.AddSingleton<IDiagnosticsProvider>((ctx)=>{
+            services.AddSingleton<IDiagnosticsProvider>((ctx) =>
+            {
                 ctx.GetService<StaticCouchbaseDisposer>();
                 return couchbaseDiagnosticsProvider;
             });
@@ -54,10 +55,9 @@ namespace Tweek.Drivers.CouchbaseDriver
 
         private void InitCouchbaseCluster(string bucketName, string bucketPassword, string url)
         {
-
             ClusterHelper.Initialize(new ClientConfiguration
             {
-                Servers = new List<Uri> { new Uri(url) },
+                Servers = new List<Uri> {new Uri(url)},
                 BucketConfigs = new Dictionary<string, BucketConfiguration>
                 {
                     [bucketName] = new BucketConfiguration
@@ -82,6 +82,5 @@ namespace Tweek.Drivers.CouchbaseDriver
                     })
             });
         }
-
     }
 }

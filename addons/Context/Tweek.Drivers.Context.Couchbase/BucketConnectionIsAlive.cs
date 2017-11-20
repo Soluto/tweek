@@ -1,8 +1,8 @@
-﻿using System;
-using Couchbase.Core;
+﻿using Couchbase.Core;
+using System;
 using Tweek.ApiService.Addons;
 
-namespace Tweek.Drivers.Couchbase
+namespace Tweek.Drivers.Context.Couchbase
 {
     public class BucketConnectionIsAlive : IDiagnosticsProvider
     {

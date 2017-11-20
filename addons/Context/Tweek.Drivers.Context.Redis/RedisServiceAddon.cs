@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Tweek.ApiService.Addons;
 using Tweek.Engine.Drivers.Context;
 
-namespace Tweek.Drivers.Redis
+namespace Tweek.Drivers.Context.Redis
 {
     public class RedisServiceAddon: ITweekAddon
     {

@@ -7,7 +7,7 @@ using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Context;
 using Xunit;
 
-namespace ContextDriversIntegrationTests
+namespace Tweek.Drivers.ContextIntegrationTests
 {
     public abstract class IntegrationTests
     {

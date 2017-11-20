@@ -54,8 +54,8 @@ services:
       - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
       - ContextProvider=redis
       - Redis__ConnectionString=redis:6379
-      - Addons__Redis__ClassName=Tweek.Drivers.Redis.RedisServiceAddon
-      - Addons__Redis__AssemblyName=Tweek.Drivers.Redis
+      - Addons__Redis__ClassName=Tweek.Drivers.Context.Redis.RedisServiceAddon
+      - Addons__Redis__AssemblyName=Tweek.Drivers.Context.Redis
       - CorsPolicies__Keys__Origins=http://editor:3000,http://testorigin
       - CorsPolicies__Keys__Methods=GET
       - CorsPolicies__Keys__MaxPreflightAge=60

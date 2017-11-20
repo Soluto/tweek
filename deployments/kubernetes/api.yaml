@@ -31,9 +31,9 @@ spec:
         - name: Redis__ConnectionString
           value: redis
         - name: Addons__Redis__className
-          value: Tweek.Drivers.Redis.RedisServiceAddon
+          value: Tweek.Drivers.Context.Redis.RedisServiceAddon
         - name: Addons__Redis__assemblyName
-          value: Tweek.Drivers.Redis
+          value: Tweek.Drivers.Context.Redis
         - name: Rules__Management__Url
           value: http://management:3000
         volumeMounts:
