@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "Tweek.ApiService.NetCore": {
+    "Tweek.ApiService": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "health",

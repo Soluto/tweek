@@ -14,13 +14,13 @@ RUN dotnet restore ./Tweek.sln
 COPY . .
 RUN dotnet build Tweek.sln -c Release && \
     find . -regex '.*\.Tests\.csproj' -print0 | xargs -0 -n 1 -P 16 dotnet test -c=Release --no-build && \
-    dotnet publish ./services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj  -c Release -o ./obj/Docker/publish
+    dotnet publish ./services/api/Tweek.ApiService/Tweek.ApiService.csproj  -c Release -o ./obj/Docker/publish
 
 # ---- RELEASE ----
 FROM microsoft/aspnetcore:2.0.0 as release
 WORKDIR /app
 EXPOSE 80
-COPY --from=source /src/services/api/Tweek.ApiService.NetCore/obj/Docker/publish .
+COPY --from=source /src/services/api/Tweek.ApiService/obj/Docker/publish .
 HEALTHCHECK --interval=15s --timeout=15s --retries=8 \
       CMD curl -f http://localhost/health || exit 1
-ENTRYPOINT ["dotnet", "Tweek.ApiService.NetCore.dll"]
+ENTRYPOINT ["dotnet", "Tweek.ApiService.dll"]

@@ -25,7 +25,7 @@
             "taskName": "api-build",
             "command": "dotnet",
             "isShellCommand": true,
-            "args": ["build", "services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj"],
+            "args": ["build", "services/api/Tweek.ApiService/Tweek.ApiService.csproj"],
             "isBuildCommand": true,
             "showOutput": "always",
             "problemMatcher": "$msCompile"

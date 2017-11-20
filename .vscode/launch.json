@@ -6,9 +6,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "api-build",
-            "program": "${workspaceRoot}/services/api/Tweek.ApiService.NetCore/bin/Debug/netcoreapp2.0/Tweek.ApiService.NetCore.dll",
+            "program": "${workspaceRoot}/services/api/Tweek.ApiService/bin/Debug/netcoreapp2.0/Tweek.ApiService.dll",
             "args": [],
-            "cwd": "${workspaceRoot}/services/api/Tweek.ApiService.NetCore",
+            "cwd": "${workspaceRoot}/services/api/Tweek.ApiService",
             "stopAtEntry": false,
             "launchBrowser": {
                 "enabled": true,

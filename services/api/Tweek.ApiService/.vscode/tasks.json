@@ -7,7 +7,7 @@
         {
             "taskName": "build",
             "args": [
-                "${workspaceRoot}\\Tweek.ApiService.NetCore.csproj"
+                "${workspaceRoot}\\Tweek.ApiService.csproj"
             ],
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"

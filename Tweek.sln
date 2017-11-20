@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.ApiService.NetCore", "services\api\Tweek.ApiService.NetCore\Tweek.ApiService.NetCore.csproj", "{F1F37A97-5937-4B3F-A342-EACC4D17BE19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.ApiService", "services\api\Tweek.ApiService\Tweek.ApiService.csproj", "{F1F37A97-5937-4B3F-A342-EACC4D17BE19}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "services", "{5D38988E-77E0-4016-B48C-272B5D34E558}"
 EndProject
