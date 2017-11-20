@@ -49,13 +49,9 @@ services:
       - Rules__Minio__AccessKey=AKIAIOSFODNN7EXAMPLE
       - Rules__Minio__SecretKey=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
       - Rules__Nats__Endpoint=nats://nats:4222
-      - Addons__Minio__className=Tweek.Drivers.Rules.Minio.RulesMinioAddon
-      - Addons__Minio__assemblyName=Tweek.Drivers.Rules.Minio
+      - UseAddon__Rules=MinioRules
       - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
-      - ContextProvider=redis
       - Redis__ConnectionString=redis:6379
-      - Addons__Redis__ClassName=Tweek.Drivers.Context.Redis.RedisServiceAddon
-      - Addons__Redis__AssemblyName=Tweek.Drivers.Context.Redis
       - CorsPolicies__Keys__Origins=http://editor:3000,http://testorigin
       - CorsPolicies__Keys__Methods=GET
       - CorsPolicies__Keys__MaxPreflightAge=60

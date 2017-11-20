@@ -29,13 +29,21 @@ namespace Tweek.ApiService.Addons
             }
         }
 
+        private static IEnumerable<ITweekAddon> _addonsCache;
+
         private static IEnumerable<ITweekAddon> GetAddons(IConfiguration configuration)
         {
-            if (mAddonsCache != null) return mAddonsCache;
+            if (_addonsCache != null) return _addonsCache;
 
-            var selectedAddons = new System.Collections.Generic.HashSet<string>(
-                configuration.GetSection("Addons")
+            var addonConfiguration = configuration.GetSection("Addons");
+
+            var selectedAddons = new HashSet<string>(
+                configuration.GetSection("UseAddon")
                     .GetChildren()
+                    .SelectMany(x => x.Value.Split(';'))
+                    .Select(x => x.Trim())
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .Select(addon => addonConfiguration.GetSection(addon))
                     .Select(x => Assembly.CreateQualifiedName(x["AssemblyName"], x["ClassName"]))
             );
 
@@ -48,18 +56,14 @@ namespace Tweek.ApiService.Addons
             var addonTypes = assemblies.Bind(x => x.GetTypes())
                 .Filter(x => x != typeof(ITweekAddon) && typeof(ITweekAddon).IsAssignableFrom(x));
 
-            mAddonsCache = addonTypes
+            _addonsCache = addonTypes
                 .Filter(type => selectedAddons.Contains(type.AssemblyQualifiedNameWithoutVersion()))
                 .Map(t => (ITweekAddon) Activator.CreateInstance(t));
 
-            return mAddonsCache;
+            return _addonsCache;
         }
 
-        private static IEnumerable<ITweekAddon> mAddonsCache;
-
-        private static string AssemblyQualifiedNameWithoutVersion(this Type type)
-        {
-            return Assembly.CreateQualifiedName(type.GetTypeInfo().Assembly.GetName().Name, type.FullName);
-        }
+        private static string AssemblyQualifiedNameWithoutVersion(this Type type) =>
+            Assembly.CreateQualifiedName(type.GetTypeInfo().Assembly.GetName().Name, type.FullName);
     }
 }

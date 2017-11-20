@@ -26,14 +26,8 @@ spec:
           value: /run/secrets/tweek-git/tweek_pfx_public_key
         - name: ASPNETCORE_ENVIRONMENT
           value: Development
-        - name: ContextProvider
-          value: redis
         - name: Redis__ConnectionString
           value: redis
-        - name: Addons__Redis__className
-          value: Tweek.Drivers.Context.Redis.RedisServiceAddon
-        - name: Addons__Redis__assemblyName
-          value: Tweek.Drivers.Context.Redis
         - name: Rules__Management__Url
           value: http://management:3000
         volumeMounts:

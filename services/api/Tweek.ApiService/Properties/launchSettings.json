@@ -15,15 +15,12 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "PUBLIC_KEY_PATH": "../../../deployments/dev/ssh/tweekgit_public.pfx",
-        "Addons__Redis__assemblyName": "Tweek.Drivers.Context.Redis",
-        "Addons__Redis__className": "Tweek.Drivers.Context.Redis.RedisServiceAddon",
-        "ContextProvider": "redis",
         "Redis__ConnectionString": "127.0.0.1:4006",
-        "Addons__Minio__className": "Tweek.Drivers.Rules.Minio.RulesMinioAddon",
-        "Addons__Minio__assemblyName": "Tweek.Drivers.Rules.Minio",
+        "UseAddon__Rules": "MinioRules",
         "Rules__Minio__Endpoint": "localhost:4007",
         "Rules__Minio__AccessKeyPath": "../../../deployments/dev/minio/access_key",
-        "Rules__Minio__SecretKeyPath": "../../../deployments/dev/minio/secret_key"  
+        "Rules__Minio__SecretKeyPath": "../../../deployments/dev/minio/secret_key",
+        "Rules__Nats__Endpoint": "nats://localhost:4222"
       },
       "applicationUrl": "http://localhost:54070"
     }

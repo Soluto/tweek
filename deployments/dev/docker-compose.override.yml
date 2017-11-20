@@ -52,19 +52,13 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - PUBLIC_KEY_PATH=/run/secrets/tweek_pfx_public_key
-      - ContextProvider=redis
       - Redis__ConnectionString=redis:6379
-      - Addons__Redis__className=Tweek.Drivers.Context.Redis.RedisServiceAddon
-      - Addons__Redis__assemblyName=Tweek.Drivers.Context.Redis
-      - Addons__Minio__className=Tweek.Drivers.Rules.Minio.RulesMinioAddon
-      - Addons__Minio__assemblyName=Tweek.Drivers.Rules.Minio
       - Rules__Minio__Endpoint=minio:9000
       - Rules__Minio__AccessKeyPath=/run/secrets/minio_access_key
       - Rules__Minio__SecretKeyPath=/run/secrets/minio_secret_key
       - Rules__Nats__Endpoint=nats://nats:4222
-      # - Addons__Management__className=Tweek.Drivers.Rules.Management.RulesManagementAddon
-      # - Addons__Management__assemblyName=Tweek.Drivers.Rules.Management
-      # - Rules__Management__Url=http://management:3000
+      - Rules__Management__Url=http://management:3000
+      - UseAddon__Rules=MinioRules
     secrets:
       - tweek_pfx_public_key
       - minio_access_key
