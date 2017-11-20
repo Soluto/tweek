@@ -1,6 +1,6 @@
 using FSharpUtils.Newtonsoft;
 
-namespace Engine.DataTypes
+namespace Tweek.Engine.DataTypes
 {
     public struct ConfigurationValue
     {

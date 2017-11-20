@@ -1,6 +1,6 @@
 using System;
 
-namespace Engine.DataTypes
+namespace Tweek.Engine.DataTypes
 {
     public struct ConfigurationPath :
         IEquatable<ConfigurationPath>, IComparable<ConfigurationPath>,

@@ -1,14 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Threading.Tasks;
-using Engine.DataTypes;
-using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using Tweek.ApiService.Addons;
-using Tweek.ApiService.NetCore.Diagnostics;
 
 namespace Tweek.ApiService.NetCore.Controllers
 {
