@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import DocumentTitle from 'react-document-title';
 import './SettingsPage.css';
 import { compose, lifecycle, withState, withHandlers } from 'recompose';
 import Input from '../../../../components/common/Input/Input';
@@ -51,6 +52,7 @@ export default compose(
 )((props) => {
   const { schema, children } = props;
   return (
+  <DocumentTitle title="Tweek - Settings">
     <div className="schema-page-container">
       <div style={{ display:"flex", flexDirection: "column", flexBasis:400 }}>
         <ul style={{ flexGrow:1 }} className="side-menu" key="SideMenu">
@@ -71,5 +73,6 @@ export default compose(
         {children}
       </div>
     </div>
+  </DocumentTitle>
   );
 });
