@@ -11,5 +11,5 @@ export function getErrorStatusCode(error) {
   for (const [errorType, errorCode] of errorMapping) {
     if (error instanceof errorType) { return errorCode; }
   }
-  return 500;
+  return error.statusCode || 500;
 }
