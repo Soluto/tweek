@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Tweek.ApiService.NetCore.Security;
+using Tweek.ApiService.Security;
 using Tweek.Engine.Drivers.Rules;
 
-namespace Tweek.ApiService.NetCore.Controllers
+namespace Tweek.ApiService.Controllers
 {
     [EnableCors(CorsExtensions.ALLOW_ALL_POLICY_NAME)]
     public class RepoVersionController : Controller

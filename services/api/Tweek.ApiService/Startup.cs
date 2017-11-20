@@ -18,11 +18,10 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Tweek.ApiService.Addons;
-using Tweek.ApiService.NetCore.Addons;
-using Tweek.ApiService.NetCore.Diagnostics;
-using Tweek.ApiService.NetCore.Metrics;
-using Tweek.ApiService.NetCore.Security;
-using Tweek.ApiService.NetCore.Utils;
+using Tweek.ApiService.Diagnostics;
+using Tweek.ApiService.Metrics;
+using Tweek.ApiService.Security;
+using Tweek.ApiService.Utils;
 using Tweek.Engine;
 using Tweek.Engine.Context;
 using Tweek.Engine.Core.Rules;
@@ -32,9 +31,8 @@ using Tweek.Engine.Rules.Creation;
 using Tweek.Engine.Rules.Validation;
 using Tweek.JPad;
 using Tweek.JPad.Utils;
-using static Tweek.Engine.Core.Rules.Utils;
 
-namespace Tweek.ApiService.NetCore
+namespace Tweek.ApiService
 {
     public class Startup
     {
@@ -110,7 +108,7 @@ namespace Tweek.ApiService.NetCore
                 options.MapType(typeof(Dictionary<string,JsonValue>), () => new Schema {Type = "object"});
 
                 var basePath = PlatformServices.Default.Application.ApplicationBasePath;
-                var xmlPath = Path.Combine(basePath, "Tweek.ApiService.NetCore.xml");
+                var xmlPath = Path.Combine(basePath, "Tweek.ApiService.xml");
                 options.IncludeXmlComments(xmlPath);
 
             });
@@ -182,7 +180,7 @@ namespace Tweek.ApiService.NetCore
 
             var dict = new Dictionary<string, IRuleParser>(StringComparer.OrdinalIgnoreCase){
                 ["jpad"] = jpadParser,
-                ["const"] = ConstValueParser
+                ["const"] = Engine.Core.Rules.Utils.ConstValueParser
             };
 
             return x=>dict[x];

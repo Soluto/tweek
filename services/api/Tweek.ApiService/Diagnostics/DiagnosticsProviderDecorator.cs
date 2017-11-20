@@ -1,9 +1,9 @@
-﻿using System.Threading;
+﻿using App.Metrics.Health;
+using System.Threading;
 using System.Threading.Tasks;
-using App.Metrics.Health;
 using Tweek.ApiService.Addons;
 
-namespace Tweek.ApiService.NetCore.Diagnostics
+namespace Tweek.ApiService.Diagnostics
 {
     public class DiagnosticsProviderDecorator: HealthCheck
     {

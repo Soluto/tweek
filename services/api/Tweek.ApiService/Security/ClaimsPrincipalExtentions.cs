@@ -1,13 +1,13 @@
-﻿using System.Security.Claims;
-using static LanguageExt.Prelude;
+﻿using LanguageExt;
+using System.Security.Claims;
 
-namespace Tweek.ApiService.NetCore.Security
+namespace Tweek.ApiService.Security
 {
     public static class ClaimsPrincipalExtentions
     {
         public static bool IsTweekIdentity(this ClaimsPrincipal identity)
         {
-            return Optional(identity.FindFirst("iss")).Match(c => c.Value.Equals("tweek"), () => false);
+            return Prelude.Optional(identity.FindFirst("iss")).Match(c => c.Value.Equals("tweek"), () => false);
         }
     }
 }

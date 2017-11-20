@@ -2,7 +2,7 @@
 using Tweek.ApiService.Addons;
 using Tweek.Engine.Drivers.Rules;
 
-namespace Tweek.ApiService.NetCore.Diagnostics
+namespace Tweek.ApiService.Diagnostics
 {
     public class RulesRepositoryDiagnosticsProvider : IDiagnosticsProvider
     {

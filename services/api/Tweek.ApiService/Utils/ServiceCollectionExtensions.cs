@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace Tweek.ApiService.NetCore.Utils
+namespace Tweek.ApiService.Utils
 {
     public static class ServiceCollectionExtensions
     {

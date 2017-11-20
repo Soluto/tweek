@@ -1,15 +1,15 @@
-﻿using FSharpUtils.Newtonsoft;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using FSharpUtils.Newtonsoft;
 using Tweek.Engine;
 using Tweek.Engine.Context;
 using Tweek.Engine.Core.Context;
 using Tweek.Engine.DataTypes;
 using static LanguageExt.Prelude;
 
-namespace Tweek.ApiService.NetCore.Security
+namespace Tweek.ApiService.Security
 {
     public delegate bool CheckReadConfigurationAccess(ClaimsPrincipal identity, string path, ICollection<Identity> tweekIdentities);
     public delegate bool CheckWriteContextAccess(ClaimsPrincipal identity, Identity tweekIdentity);

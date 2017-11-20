@@ -7,7 +7,7 @@ using System.Linq;
 using Tweek.Engine.Drivers.Rules;
 using Tweek.Utils;
 
-namespace Tweek.JPad.Generator
+namespace Tweek.JPad.Utils
 {
     public class JPadGenerator
     {

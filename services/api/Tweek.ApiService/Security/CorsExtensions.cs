@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Cors.Infrastructure;
+﻿using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Linq;
 
-namespace Tweek.ApiService.NetCore.Security
+namespace Tweek.ApiService.Security
 {
     public static class CorsExtensions
     {

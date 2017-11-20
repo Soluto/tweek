@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Tweek.ApiService.NetCore.Security;
+using Tweek.ApiService.Security;
 using Tweek.Engine.Drivers.Rules;
 using Tweek.Engine.Rules.Validation;
 
-namespace Tweek.ApiService.NetCore.Controllers
+namespace Tweek.ApiService.Controllers
 {
     [Route("validation")]
     public class ValidationController : Controller

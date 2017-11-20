@@ -1,13 +1,13 @@
-﻿using System;
-using System.IO;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.IO;
+using System.Security.Cryptography.X509Certificates;
 
-namespace Tweek.ApiService.NetCore.Security
+namespace Tweek.ApiService.Security
 {
     public class InternalAuthenticationProvider
     {

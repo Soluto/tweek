@@ -1,7 +1,7 @@
-﻿using System.IO;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
-namespace Tweek.ApiService.NetCore
+namespace Tweek.ApiService
 {
     public class Program
     {

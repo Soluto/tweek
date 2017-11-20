@@ -4,11 +4,11 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using Tweek.ApiService.NetCore.Security;
+using Tweek.ApiService.Security;
 using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Context;
 
-namespace Tweek.ApiService.NetCore.Controllers
+namespace Tweek.ApiService.Controllers
 {
     [Route("api/v1/context")]
     public class ContextController : Controller

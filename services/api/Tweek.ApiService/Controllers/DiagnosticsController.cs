@@ -6,7 +6,7 @@ using System.Net;
 using System.Reflection;
 using Tweek.ApiService.Addons;
 
-namespace Tweek.ApiService.NetCore.Controllers
+namespace Tweek.ApiService.Controllers
 {
     public class DiagnosticsController : Controller
     {

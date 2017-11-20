@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Context;
 
-namespace Tweek.ApiService.NetCore.Metrics
+namespace Tweek.ApiService.Metrics
 {
     public class TimedContextDriver : IContextDriver
     {

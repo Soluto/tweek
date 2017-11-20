@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using LanguageExt;
-using System.Linq;
-using Microsoft.AspNetCore.Builder;
-using Tweek.ApiService.Addons;
-using Microsoft.Extensions.DependencyModel;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyModel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
-namespace Tweek.ApiService.NetCore.Addons
+namespace Tweek.ApiService.Addons
 {
     public static class AddonsListExtensions
     {
@@ -38,20 +35,22 @@ namespace Tweek.ApiService.NetCore.Addons
 
             var selectedAddons = new System.Collections.Generic.HashSet<string>(
                 configuration.GetSection("Addons")
-                .GetChildren()
-                .Select(x => Assembly.CreateQualifiedName(x["AssemblyName"], x["ClassName"]))
+                    .GetChildren()
+                    .Select(x => Assembly.CreateQualifiedName(x["AssemblyName"], x["ClassName"]))
             );
 
             var dependencies = DependencyContext.Default.RuntimeLibraries;
 
             var assemblies = dependencies
-                .SelectMany(library => library.GetDefaultAssemblyNames(DependencyContext.Default).Select(Assembly.Load));
+                .SelectMany(library =>
+                    library.GetDefaultAssemblyNames(DependencyContext.Default).Select(Assembly.Load));
 
             var addonTypes = assemblies.Bind(x => x.GetTypes())
                 .Filter(x => x != typeof(ITweekAddon) && typeof(ITweekAddon).IsAssignableFrom(x));
 
-            mAddonsCache = addonTypes.Filter(type => selectedAddons.Contains(type.AssemblyQualifiedNameWithoutVersion()))
-                .Map(t => (ITweekAddon)Activator.CreateInstance(t));
+            mAddonsCache = addonTypes
+                .Filter(type => selectedAddons.Contains(type.AssemblyQualifiedNameWithoutVersion()))
+                .Map(t => (ITweekAddon) Activator.CreateInstance(t));
 
             return mAddonsCache;
         }
@@ -63,5 +62,4 @@ namespace Tweek.ApiService.NetCore.Addons
             return Assembly.CreateQualifiedName(type.GetTypeInfo().Assembly.GetName().Name, type.FullName);
         }
     }
-
 }

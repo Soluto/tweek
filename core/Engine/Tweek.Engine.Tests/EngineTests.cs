@@ -9,7 +9,7 @@ using Tweek.Engine.Drivers.Context;
 using Tweek.Engine.Drivers.Rules;
 using Tweek.Engine.Tests.Helpers;
 using Tweek.Engine.Tests.TestDrivers;
-using Tweek.JPad.Generator;
+using Tweek.JPad.Utils;
 using Xunit;
 using MatcherData = System.Collections.Generic.Dictionary<string, object>;
 

@@ -1,16 +1,16 @@
-﻿using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Tweek.ApiService.Addons;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
 using System.Text.Encodings.Web;
-using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
+using Tweek.ApiService.Addons;
 
-namespace Tweek.ApiService.NetCore.Security
+namespace Tweek.ApiService.Security
 {
     public class TweekLegacyHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {

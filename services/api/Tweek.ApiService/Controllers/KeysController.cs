@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Tweek.ApiService.NetCore.Security;
+using Tweek.ApiService.Security;
 using Tweek.ApiService.Utils;
 using Tweek.Engine;
 using Tweek.Engine.Core.Context;
@@ -16,10 +16,9 @@ using Tweek.Engine.Core.Utils;
 using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Context;
 using Tweek.Utils;
-using static FSharpUtils.Newtonsoft.JsonValue;
 using IdentityHashSet = System.Collections.Generic.HashSet<Tweek.Engine.DataTypes.Identity>;
 
-namespace Tweek.ApiService.NetCore.Controllers
+namespace Tweek.ApiService.Controllers
 {
     [EnableCors(CorsExtensions.KEYS_POLICY_NAME)]
     public class KeysController : Controller
@@ -100,7 +99,7 @@ namespace Tweek.ApiService.NetCore.Controllers
             var translateValue = ignoreKeyTypes ? (TranslateValue)TranslateValueToString : (x => x.Value);
 
             IReadOnlyDictionary<string, JsonValue> contextParams = allParams.Item2.ToDictionary(x => x.Key,
-                x => NewString(x.Value.ToString()), StringComparer.OrdinalIgnoreCase);
+                x => JsonValue.NewString(x.Value.ToString()), StringComparer.OrdinalIgnoreCase);
 
             var identities = new IdentityHashSet(contextParams.Where(x => !x.Key.Contains(".")).Select(x => new Identity(x.Key, x.Value.AsString())));
             if (!_checkAccess(User, path, identities)) return Forbid();
