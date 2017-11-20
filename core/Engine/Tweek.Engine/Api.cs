@@ -1,6 +1,4 @@
-﻿using Engine.Drivers.Context;
-using Engine.Drivers.Rules;
-using FSharpUtils.Newtonsoft;
+﻿using FSharpUtils.Newtonsoft;
 using LanguageExt;
 using System;
 using System.Collections.Generic;
@@ -10,6 +8,8 @@ using Tweek.Engine.Core;
 using Tweek.Engine.Core.Context;
 using Tweek.Engine.Core.Utils;
 using Tweek.Engine.DataTypes;
+using Tweek.Engine.Drivers.Context;
+using Tweek.Engine.Drivers.Rules;
 using Tweek.Engine.Rules.Creation;
 using ContextHelpers = Tweek.Engine.Context.ContextHelpers;
 using IdentityHashSet = System.Collections.Generic.HashSet<Tweek.Engine.DataTypes.Identity>;

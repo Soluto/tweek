@@ -1,21 +1,21 @@
-using System;
-using System.Collections.Generic;
 using Couchbase;
 using Couchbase.Configuration.Client;
 using Couchbase.Core.Serialization;
-using Engine.Drivers.Context;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using Tweek.ApiService.Addons;
 using Tweek.Drivers.Couchbase;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Logging;
+using Tweek.Engine.Drivers.Context;
 
 namespace Tweek.Drivers.CouchbaseDriver
 {
-  public class StaticCouchbaseDisposer
+    public class StaticCouchbaseDisposer
   {
       public StaticCouchbaseDisposer(IApplicationLifetime lifetime, ILogger<StaticCouchbaseDisposer> logger){
             lifetime.ApplicationStopped.Register(()=>{

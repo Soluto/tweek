@@ -1,7 +1,6 @@
-using System;
 using ContextDriversIntegrationTests;
-using Engine.Drivers.Context;
-using Xunit;
+using System;
+using Tweek.Engine.Drivers.Context;
 
 namespace Tweek.Drivers.Redis.ContextIntegrationTests
 {

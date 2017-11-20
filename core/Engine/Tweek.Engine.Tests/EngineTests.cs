@@ -1,6 +1,4 @@
-﻿using Engine.Drivers.Context;
-using Engine.Drivers.Rules;
-using Engine.Tests.Helpers;
+﻿using Engine.Tests.Helpers;
 using Engine.Tests.TestDrivers;
 using FSharpUtils.Newtonsoft;
 using Newtonsoft.Json;
@@ -10,6 +8,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Tweek.Engine;
 using Tweek.Engine.DataTypes;
+using Tweek.Engine.Drivers.Context;
+using Tweek.Engine.Drivers.Rules;
 using Tweek.JPad.Generator;
 using Xunit;
 using MatcherData = System.Collections.Generic.Dictionary<string, object>;

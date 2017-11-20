@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Engine.Drivers.Rules
+namespace Tweek.Engine.Drivers.Rules
 {
     public interface IRulesRepository
     {
