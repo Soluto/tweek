@@ -14,12 +14,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\addons\Context\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj" />
-    <ProjectReference Include="..\Engine.Core\Engine.Core.csproj" />
-    <ProjectReference Include="..\Engine.DataTypes\Engine.DataTypes.csproj" />
-    <ProjectReference Include="..\Engine.Drivers\Engine.Drivers.csproj" />
-    <ProjectReference Include="..\Engine\Engine.csproj" />
+    <ProjectReference Include="..\Tweek.Engine.Core\Tweek.Engine.Core.csproj" />
+    <ProjectReference Include="..\Tweek.Engine.DataTypes\Tweek.Engine.DataTypes.csproj" />
     <ProjectReference Include="..\..\JPad\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj" />
     <ProjectReference Include="..\..\Utils\JsonValueConverter\JsonValueConverter.csproj" />
+    <ProjectReference Include="..\Tweek.Engine.Drivers\Tweek.Engine.Drivers.csproj" />
+    <ProjectReference Include="..\Tweek.Engine\Tweek.Engine.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />

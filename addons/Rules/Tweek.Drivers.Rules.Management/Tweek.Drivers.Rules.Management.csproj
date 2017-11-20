@@ -9,9 +9,9 @@
     <PackageReference Include="System.Reactive.PlatformServices" Version="3.1.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\core\Engine\Engine.Drivers\Engine.Drivers.csproj" />
-    <ProjectReference Include="..\..\..\core\Engine\Engine.Core\Engine.Core.csproj" />
-    <ProjectReference Include="..\..\..\core\Engine\Engine.DataTypes\Engine.DataTypes.csproj" />
+    <ProjectReference Include="..\..\..\core\Engine\Tweek.Engine.Core\Tweek.Engine.Core.csproj" />
+    <ProjectReference Include="..\..\..\core\Engine\Tweek.Engine.DataTypes\Tweek.Engine.DataTypes.csproj" />
+    <ProjectReference Include="..\..\..\core\Engine\Tweek.Engine.Drivers\Tweek.Engine.Drivers.csproj" />
     <ProjectReference Include="..\..\..\core\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj" />
   </ItemGroup>
 </Project>

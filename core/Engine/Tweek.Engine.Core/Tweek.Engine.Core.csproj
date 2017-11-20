@@ -8,6 +8,6 @@
     <PackageReference Include="LanguageExt.Core" Version="2.1.21" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Engine.DataTypes\Engine.DataTypes.csproj" />
+    <ProjectReference Include="..\Tweek.Engine.DataTypes\Tweek.Engine.DataTypes.csproj" />
   </ItemGroup>
 </Project>

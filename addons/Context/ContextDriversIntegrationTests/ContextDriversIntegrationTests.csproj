@@ -17,10 +17,6 @@
     <PackageReference Include="xunit" Version="2.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\core\Engine\Engine.Drivers\Engine.Drivers.csproj" />
-  </ItemGroup>
-
   <Target Name="SetNuspecProperties" BeforeTargets="GenerateNuspec">
     <PropertyGroup>
       <NuspecProperties>$(NuspecProperties);id=$(PackageId)</NuspecProperties>
@@ -35,6 +31,10 @@
       <NuspecProperties>$(NuspecProperties);outputDir=$(OutputPath)</NuspecProperties>
     </PropertyGroup>
   </Target>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Engine\Tweek.Engine.Drivers\Tweek.Engine.Drivers.csproj" />
+  </ItemGroup>
 
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />

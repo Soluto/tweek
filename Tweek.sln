@@ -17,15 +17,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.ApiService.SmokeTests
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "engine", "engine", "{8EFA86FC-0FA7-4525-B952-71652A93B2E5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine", "core\Engine\Engine\Engine.csproj", "{65DFAD3F-29A6-40E3-9360-B8CE6D818037}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Engine", "core\Engine\Tweek.Engine\Tweek.Engine.csproj", "{65DFAD3F-29A6-40E3-9360-B8CE6D818037}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.Core", "core\Engine\Engine.Core\Engine.Core.csproj", "{AD91D584-0E5D-4E36-9AA7-A477806BBC50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Engine.Core", "core\Engine\Tweek.Engine.Core\Tweek.Engine.Core.csproj", "{AD91D584-0E5D-4E36-9AA7-A477806BBC50}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.DataTypes", "core\Engine\Engine.DataTypes\Engine.DataTypes.csproj", "{0AF63015-FA47-46FA-9DD7-4FE42BFBBB74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Engine.DataTypes", "core\Engine\Tweek.Engine.DataTypes\Tweek.Engine.DataTypes.csproj", "{0AF63015-FA47-46FA-9DD7-4FE42BFBBB74}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.Drivers", "core\Engine\Engine.Drivers\Engine.Drivers.csproj", "{6205DFFE-74F1-4167-A308-E9F8B95FE36C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Engine.Drivers", "core\Engine\Tweek.Engine.Drivers\Tweek.Engine.Drivers.csproj", "{6205DFFE-74F1-4167-A308-E9F8B95FE36C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.Tests", "core\Engine\Engine.Tests\Engine.Tests.csproj", "{AEA1BBA0-B3EF-41B0-94D7-84D1F2D2956E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Engine.Tests", "core\Engine\Tweek.Engine.Tests\Tweek.Engine.Tests.csproj", "{AEA1BBA0-B3EF-41B0-94D7-84D1F2D2956E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.JPad.Utils", "core\JPad\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj", "{DD417D22-0FD8-4A2C-8332-6AD358321070}"
 EndProject
