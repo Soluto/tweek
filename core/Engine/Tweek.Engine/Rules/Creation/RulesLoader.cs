@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Engine.Core;
+﻿using Engine.Core;
 using Engine.Core.Rules;
+using Engine.Core.Utils;
 using Engine.DataTypes;
 using Engine.Drivers.Rules;
 using LanguageExt;
 using Soluto.Collections;
-using static Engine.Core.Utils.TraceHelpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Engine.Rules.Creation
+namespace Tweek.Engine.Rules.Creation
 {
     public delegate IRuleParser GetRuleParser(string format);
 
@@ -21,7 +21,7 @@ namespace Engine.Rules.Creation
             var instance = Parse(await repository.GetAllRules(), parserResolver);
             repository.OnRulesChange += (newRules) =>
             {
-                using (TraceTime("loading new rules"))
+                using (TraceHelpers.TraceTime("loading new rules"))
                 {
                     instance = Parse(newRules, parserResolver);
                 }

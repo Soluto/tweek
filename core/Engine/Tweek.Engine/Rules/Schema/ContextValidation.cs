@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Engine.Core.Context;
+﻿using Engine.Core.Context;
 
-namespace Engine.Rules.Schema
+namespace Tweek.Engine.Rules.Schema
 {
     public delegate GetContextValue ValidateContext(GetContextValue origin);
     public class ContextValidation

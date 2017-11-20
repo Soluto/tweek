@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Engine.Core.Context;
+﻿using Engine.Core.Context;
 using Engine.Core.Rules;
 using Engine.Core.Utils;
 using Engine.DataTypes;
 using LanguageExt;
 
-namespace Tweek.JPad.Rules
+namespace Tweek.Engine
 {
     public class FallbackRule:IRule
     {

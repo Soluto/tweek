@@ -1,11 +1,10 @@
-﻿using System;
+﻿using Engine.Drivers.Rules;
+using System;
 using System.Collections.Generic;
-using Engine.Drivers.Rules;
-using Engine.Core.Rules;
-using Engine.Rules.Creation;
 using System.Threading.Tasks;
+using Tweek.Engine.Rules.Creation;
 
-namespace Engine.Rules.Validation
+namespace Tweek.Engine.Rules.Validation
 {
     public static class Validator
     {

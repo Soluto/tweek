@@ -1,15 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
 using Engine.Drivers.Rules;
-using Engine.Rules.Validation;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Tweek.ApiService.NetCore.Security;
-
-
+using Tweek.Engine.Rules.Validation;
 
 namespace Tweek.ApiService.NetCore.Controllers
 {
@@ -33,4 +27,3 @@ namespace Tweek.ApiService.NetCore.Controllers
         }
     }
 }
-

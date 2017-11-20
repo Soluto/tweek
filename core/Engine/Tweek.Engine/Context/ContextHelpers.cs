@@ -1,24 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Threading.Tasks;
 using Engine.Core.Context;
 using Engine.Core.Utils;
 using Engine.DataTypes;
 using FSharpUtils.Newtonsoft;
 using LanguageExt;
-using static LanguageExt.Prelude;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using IdentityHashSet = System.Collections.Generic.HashSet<Engine.DataTypes.Identity>;
 
-namespace Engine.Context
+namespace Tweek.Engine.Context
 {
     public delegate Task<GetContextValue> GetContextByIdentity(Identity identity);
 
     public static class ContextHelpers
     {
-        public static readonly GetContextValue EmptyContext = key => None;
-        public static readonly GetLoadedContextByIdentityType EmptyContextByIdentityType =  identity => key => None;
+        public static readonly GetContextValue EmptyContext = key => Prelude.None;
+        public static readonly GetLoadedContextByIdentityType EmptyContextByIdentityType =  identity => key => Prelude.None;
 
         public static GetLoadedContextByIdentityType Fallback(params GetLoadedContextByIdentityType[] list)
         {
@@ -59,7 +57,7 @@ namespace Engine.Context
                 return
                     identities.Where(x => x.Type.Equals(type, StringComparison.OrdinalIgnoreCase))
                         .FirstOrNone()
-                        .Map(identity => Core.Context.ContextHelpers.Merge(getLoadedContexts(identity), ContextValueForId(identity.Id)))
+                        .Map(identity => global::Engine.Core.Context.ContextHelpers.Merge(getLoadedContexts(identity), ContextValueForId(identity.Id)))
                         .IfNone(EmptyContext);
             };
         }
@@ -82,7 +80,7 @@ namespace Engine.Context
             {
                 if (!list.ContainsKey(t))
                 {
-                    list[t] = Core.Context.ContextHelpers.Memoize(c(t));
+                    list[t] = global::Engine.Core.Context.ContextHelpers.Memoize(c(t));
                 }
                 return list[t];
             };

@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using Engine.DataTypes;
 using Engine.Drivers.Context;
 using Engine.Drivers.Rules;
-using Engine.Rules.Creation;
 using FSharpUtils.Newtonsoft;
+using System.Collections.Generic;
 
 namespace Engine.Tests.TestDrivers
 {
