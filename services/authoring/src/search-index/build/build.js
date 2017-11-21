@@ -6,6 +6,7 @@ module.exports = function createIndex(repoDir) {
   const _ = require('highland');
   const readFile = _.wrapCallback(require('fs').readFile);
   const lunr = require('lunr');
+  const R = require('ramda');
 
   const builder = new lunr.Builder();
   builder.pipeline.add(lunr.trimmer, lunr.stemmer);
@@ -17,6 +18,10 @@ module.exports = function createIndex(repoDir) {
   builder.field('description');
   builder.field('tags');
   builder.field('name');
+
+  function mapToLower(obj) {
+    return R.map(R.ifElse(R.is(String), R.toLower, mapToLower))(obj);
+  }
 
   return glob(path.join(repoDir, 'manifests/**/*.json')).catch(console.error).then(fileNames =>
     Rx.Observable
@@ -30,7 +35,9 @@ module.exports = function createIndex(repoDir) {
           .on('data', x => observer.next(x))
           .on('end', () => observer.complete());
       })
-      .do(({ key_path: id, meta }) => builder.add(Object.assign({}, meta, { id })))
+      .map(({ key_path: id, meta }) => Object.assign({}, meta, { id }))
+      .map(mapToLower)
+      .do((obj) => builder.add(obj))
       .toArray()
       .map(manifests => ({ manifests, index: builder.build() }))
       .toPromise()

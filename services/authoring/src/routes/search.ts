@@ -23,7 +23,7 @@ function addTerm(query, term, field) {
 }
 
 function performSearch(searchString = '', { maxResults = 25, field, index }): string[] {
-  searchString = searchString.trim();
+  searchString = searchString.toLowerCase().trim();
   // tslint:disable-next-line:curly
   if (!index || searchString === '') return [];
 
