@@ -32,5 +32,5 @@ module.exports.waitForAllClients = async function() {
     nconf.get('AUTHORING_URL'),
   ];
 
-  await Promise.all(services.map(waitForClient));
+  await Promise.all(services.map(s => waitForClient(s)));
 };
