@@ -57,7 +57,7 @@ namespace Tweek.ApiService
             services.RegisterAddonServices(Configuration);
 
             services.Decorate<IContextDriver>((driver, provider) => new TimedContextDriver(driver, provider.GetService<IMetrics>()));
-            services.Decorate<IRulesDriver>((driver, provider) => new TimedRulesDriver(driver, provider.GetService<IMetrics>()));
+            services.Decorate<IRulesDriver>((driver, provider) => new TimedRulesDriver(driver, provider.GetService<IMetrics>));
 
             services.AddSingleton<IDiagnosticsProvider>(ctx => new RulesRepositoryDiagnosticsProvider(ctx.GetServices<IRulesRepository>().Single()));
             services.AddSingleton<IDiagnosticsProvider>(new EnvironmentDiagnosticsProvider());
