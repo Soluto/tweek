@@ -1,11 +1,11 @@
 version: '1.0'
 steps:
   VersionsToDeploy:
-      description: Check versions to deploy
-      title: Check versions to deploy
-      image: alpine/git
-      commands:
-          - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
+    description: Check versions to deploy
+    title: Check versions to deploy
+    image: alpine/git
+    commands:
+      - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
           
   BuildGitKeys:
     title: Building Git Keys Docker Image
@@ -121,7 +121,16 @@ steps:
           - API_URL=http://api
           - AUTHORING_URL=http://authoring:3000
           - MANAGEMENT_URL=http://tweek-management:3000
-          - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit      
+          - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+      api-swagger:
+        image: node:slim
+        depends_on:
+          - api
+          - management
+        volumes:
+          - ${{CF_VOLUME}}:/repo
+        working_dir: /repo/tweek/CI
+        command: wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused -O api-swagger.json http://api/api/swagger.json
     on_success:
       metadata:
         set:
@@ -235,30 +244,15 @@ steps:
     candidate: ${{BuildingGitRepository}}
 
   Swagger:
-    type: composition
     title: Upload swagger
     when:
-      branch:
-        only:
-          - master
-    composition: ./CI/docker-compose.yml
-    composition_variables:
-      - KEYS_IMAGE=${{BuildGitKeys}}
-      - REPOSITORY_IMAGE=${{BuildingGitRepository}}
-      - MANAGEMENT_IMAGE=${{BuildingManagement}}
-      - API_IMAGE=${{BuildingApiImage}}
-      - AUTHORING_IMAGE=${{BuildingAuthoring}}
-      - EDITOR_IMAGE=${{BuildingEditor}}
-      - ZAP_IMAGE=${{BuildingZapImage}}
-      - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
-    composition_candidates:
-      api_swagger:
-        image: node:8.7.0
-        depends_on:
-          - api
-        volumes:
-          - ${{CF_VOLUME}}:/repo
-        working_dir: /repo/tweek/CI
-        environment: 
-          - UPDATE_SWAGGER_SECRET=${{UPDATE_SWAGGER_SECRET}}
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && ./update_swagger.sh api ${{TWEEK_DOCKER_TAG_API}} http://api/api/swagger.json"
+      condition:
+        all:
+          executeForMasterBranch: "'${{CF_BRANCH}}' == 'master'"
+          executeForNewVersions: "'${{TWEEK_DOCKER_TAG_API}}' != 'latest'"
+    image: node:slim
+    working_dir: ./CI
+    environment: 
+      - UPDATE_SWAGGER_SECRET=${{UPDATE_SWAGGER_SECRET}}
+    commands:
+      - ./update_swagger.sh api $TWEEK_DOCKER_TAG_API ./api-swagger.json

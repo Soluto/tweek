@@ -2,7 +2,7 @@
 
 NAME=$1
 VERSION=$2
-SOURCE_URL=$3
+SWAGGER_FILE=$3
 
 if [[ "$VERSION" == "latest" ]]
 then
@@ -10,16 +10,10 @@ then
   exit 0
 fi
 
-echo "Updating swagger for $VERSION version"
+echo "Updating swagger for $NAME:$VERSION"
 
 DESTINATION_URL="https://tweek-swagger-updater.azurewebsites.net/api/UpdateSwagger?code=$UPDATE_SWAGGER_SECRET&name=$NAME&version=$VERSION"
-
-SWAGGER=$(curl $SOURCE_URL 2>/dev/null)
-if [[ $? != 0 ]]
-then
-  echo "Fetching swagger failed!"
-  exit 1
-fi
+SWAGGER=$(<$SWAGGER_FILE)
 
 curl -f --data "$SWAGGER" "$DESTINATION_URL"
 if [[ $? != 0 ]]
