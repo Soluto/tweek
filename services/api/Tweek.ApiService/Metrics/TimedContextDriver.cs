@@ -3,6 +3,7 @@ using App.Metrics.Core.Options;
 using FSharpUtils.Newtonsoft;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Tweek.ApiService.Utils;
 using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Context;
 
@@ -13,19 +14,17 @@ namespace Tweek.ApiService.Metrics
         private readonly IContextDriver _contextDriver;
         private readonly IMetrics _metrics;
 
-        private readonly string _timerContext;
         private readonly TimerOptions _getContextTimer;
         private readonly TimerOptions _appendContextTimer;
         private readonly TimerOptions _removeContextTimer;
 
-        public TimedContextDriver(IContextDriver contextDriver, IMetrics metrics, string label = "ContextDriver")
+        public TimedContextDriver(IContextDriver contextDriver, IMetrics metrics, string timerContext = "ContextDriver")
         {
             _contextDriver = contextDriver;
             _metrics = metrics;
-            _timerContext = label;
-            _getContextTimer = GetTimer("Get");
-            _appendContextTimer = GetTimer("Append");
-            _removeContextTimer = GetTimer("Remove");
+            _getContextTimer = timerContext.GetTimer("Get");
+            _appendContextTimer = timerContext.GetTimer("Append");
+            _removeContextTimer = timerContext.GetTimer("Remove");
         }
 
         public async Task<Dictionary<string, JsonValue>> GetContext(Identity identity)
@@ -50,18 +49,6 @@ namespace Tweek.ApiService.Metrics
             {
                 await _contextDriver.RemoveFromContext(identity, key);
             }
-        }
-
-        private TimerOptions GetTimer(string name)
-        {
-            return new TimerOptions
-            {
-                Context = _timerContext,
-                Name = name,
-                MeasurementUnit = Unit.None,
-                DurationUnit = TimeUnit.Milliseconds,
-                RateUnit = TimeUnit.Seconds,
-            };
         }
     }
 }
