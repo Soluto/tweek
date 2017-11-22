@@ -62,7 +62,21 @@ namespace Tweek.ApiService
             services.AddSingleton<IDiagnosticsProvider>(new EnvironmentDiagnosticsProvider());
 
             services.AddSingleton(CreateParserResolver());
+
+            var rulesetVersionProvider = Configuration.GetValue("RulesetVersionProvider", "SampleVersionProvider");
+            services.AddSingleton<IRulesetVersionProvider>(provider =>
+            {
+                switch (rulesetVersionProvider)
+                {
+                    case "NatsVersionProvider":
+                        return new NatsVersionProvider();
+                    default:
+                        return new SampleVersionProvider();
+                }
+            });
+
             services.AddSingleton<IRulesRepository>(provider => new RulesRepository(provider.GetService<IRulesDriver>(),
+                provider.GetService<IRulesetVersionProvider>(),
                 TimeSpan.FromMilliseconds(Configuration.GetValue("Rules:FailureDelayInMs", 60000)), 
                 provider.GetService<ILoggerFactory>().CreateLogger("RulesRepository")));
             services.AddSingleton(provider =>

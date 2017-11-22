@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Tweek.Engine.Drivers.Rules;
 
 namespace Tweek.Drivers.Rules.Management
 {
-    public delegate Task<HttpResponseMessage> HttpGet(string url);
+    public delegate Task<HttpResponseMessage> HttpGet(string url, CancellationToken ct);
 
     static class HttpUtils
     {

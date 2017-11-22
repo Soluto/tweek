@@ -1,25 +1,20 @@
 ﻿using Minio;
-using NATS.Client;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reactive.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Tweek.Engine.Drivers.Rules;
 
 namespace Tweek.Drivers.Rules.Minio
 {
-    public class MinioRulesDriver : IRulesDriver, IDisposable
+    public class MinioRulesDriver : IRulesDriver
     {
         private readonly MinioClient _client;
         private readonly string _bucket;
-        private readonly IConnection _nats;
 
-        public MinioRulesDriver(MinioSettings minioSettings, string natsEndpoint)
+        public MinioRulesDriver(MinioSettings minioSettings)
         {
             _bucket = minioSettings.Bucket;
             _client = new MinioClient(minioSettings.Endpoint, minioSettings.AccessKey, minioSettings.SecretKey);
@@ -27,17 +22,7 @@ namespace Tweek.Drivers.Rules.Minio
             {
                 _client = _client.WithSSL();
             }
-
-            _nats = new ConnectionFactory().CreateConnection(natsEndpoint);
         }
-
-        public IObservable<string> OnVersion()
-        {
-            return Observable.FromAsync(GetVersion)
-                .Concat(Observable.Create<string>(obs => _nats.SubscribeAsync("version",
-                    (_, e) => obs.OnNext(Encoding.UTF8.GetString(e.Message.Data)))));
-        }
-        
 
         public async Task<Dictionary<string, RuleDefinition>> GetRuleset(string version,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -65,7 +50,5 @@ namespace Tweek.Drivers.Rules.Minio
             }, cancellationToken);
             return json;
         }
-
-        public void Dispose() => _nats.Dispose();
     }
 }

@@ -1,5 +1,4 @@
-﻿using App.Metrics.Core.Abstractions;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -23,12 +22,8 @@ namespace Tweek.Drivers.Rules.Management
             {
                 BaseAddress = managementServiceUrl
             };
-            var settings = new ManagementSettings
-            {
-                SampleIntervalInMs = configuration.GetValue("Rules:Management:SampleIntervalInMs", 30000),
-            };
 
-            services.AddSingleton<IRulesDriver>(ctx => new ManagementRulesDriver(httpClient.GetAsync, settings, ctx.GetService<IMeasureMetrics>()));
+            services.AddSingleton<IRulesDriver>(ctx => new ManagementRulesDriver(httpClient.GetAsync));
         }
     }
 }

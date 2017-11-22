@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tweek.Drivers.Rules.Minio
+﻿namespace Tweek.Drivers.Rules.Minio
 {
     public class MinioSettings
     {

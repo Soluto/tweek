@@ -29,6 +29,7 @@
                 "PUBLIC_KEY_PATH": "../../../deployments/dev/ssh/tweekgit_public.pfx",
                 "Redis__ConnectionString": "127.0.0.1:4006",
                 "UseAddon__Rules": "MinioRules",
+                "RulesetVersionProvider": "NatsVersionProvider",
                 "Rules__Minio__Endpoint": "localhost:4007",
                 "Rules__Minio__AccessKeyPath": "../../../deployments/dev/minio/access_key",
                 "Rules__Minio__SecretKeyPath": "../../../deployments/dev/minio/secret_key",

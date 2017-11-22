@@ -15,13 +15,13 @@ namespace Tweek.Engine.Drivers.Rules
         private readonly IDisposable _subscription;
         private readonly IConnectableObservable<Dictionary<string, RuleDefinition>> _pipeline;
 
-        public RulesRepository(IRulesDriver rulesDriver, TimeSpan failureDelay,
+        public RulesRepository(IRulesDriver rulesDriver, IRulesetVersionProvider versionProvider, TimeSpan failureDelay,
             ILogger logger = null, IScheduler scheduler = null)
         {
             logger = logger ?? NullLogger.Instance;
             scheduler = scheduler ?? DefaultScheduler.Instance;
 
-            _pipeline = Observable.Defer(rulesDriver.OnVersion)
+            _pipeline = Observable.Defer(versionProvider.OnVersion)
                 .Do(_ => LastCheckTime = scheduler.Now.UtcDateTime)
                 .DistinctUntilChanged()
                 .Select(version => Observable.FromAsync(ct => rulesDriver.GetRuleset(version, ct)).Do(_ => CurrentLabel = version))

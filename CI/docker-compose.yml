@@ -50,6 +50,7 @@ services:
       - Rules__Minio__SecretKey=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
       - Rules__Nats__Endpoint=nats://nats:4222
       - UseAddon__Rules=MinioRules
+      - RulesetVersionProvider=NatsVersionProvider
       - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
       - Redis__ConnectionString=redis:6379
       - CorsPolicies__Keys__Origins=http://editor:3000,http://testorigin
