@@ -69,9 +69,9 @@ namespace Tweek.ApiService
                 switch (rulesetVersionProvider)
                 {
                     case "NatsVersionProvider":
-                        return new NatsVersionProvider();
+                        return new NatsVersionProvider(provider.GetService<IRulesDriver>(), Configuration.GetValue<string>("Rules:Nats:Endpoint"));
                     default:
-                        return new SampleVersionProvider();
+                        return new SampleVersionProvider(provider.GetService<IRulesDriver>(), TimeSpan.FromMilliseconds(Configuration.GetValue("Rules:SampleIntervalInMs", 30000)));
                 }
             });
 
