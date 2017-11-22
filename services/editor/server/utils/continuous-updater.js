@@ -13,7 +13,6 @@ export default {
     const delay = nconf.get('CONTINUOUS_UPDATER_INTERVAL') || 5000;
 
     return getRevision$
-      .do(null, err => console.error('Error checking revision:', err.message))
       .catch(_ => Observable.empty())
       .concat(Observable.empty().delay(delay))
       .repeat()
