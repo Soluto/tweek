@@ -11,6 +11,7 @@ const readFile = promisify(fs.readFile);
 const buildRulesArtifiact = require('./build-rules-artifiact');
 const logger = require('./logger');
 const initStorage = require('./object-storage');
+const NatsClient = require('./nats-client');
 
 function useFileFromBase64EnvVariable(inlineKeyName, fileKeyName) {
   const tmpDir = os.tmpdir();
@@ -82,8 +83,8 @@ async function updateLatestCache({ updateStorage } = {}) {
   let nats;
   const natsEndpoint = nconf.get('NATS_ENDPOINT');
   if (natsEndpoint) {
-    nats = NATS.connect(nconf.get('NATS_ENDPOINT'));
-    nats.on('error', e => console.error('nats error', e));
+    nats = NatsClient(natsEndpoint);
+    nats.connect();
   }
 
   while (true) {

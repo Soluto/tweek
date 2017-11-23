@@ -9,9 +9,10 @@
     "node": ">=8.1.4"
   },
   "scripts": {
-    "test": "mocha",
     "start": "node ./src/server.js",
     "start:debug": "node --inspect=5858 ./src/server.js",
+    "start:full-env": "yarn docker-compose up -d git minio nats && yarn start:debug --GIT_USER git --GIT_URL ssh://git@localhost:4001/tweek/repo --GIT_PUBLIC_KEY_PATH ../../deployments/dev/ssh/tweekgit.pub --GIT_PRIVATE_KEY_PATH ../../deployments/dev/ssh/tweekgit --MINIO_ENDPOINT localhost:4007 --MINIO_ACCESS_KEY_PATH ../../deployments/dev/minio/access_key --MINIO_SECRET_KEY_PATH ../../deployments/dev/minio/secret_key --NATS_ENDPOINT nats://localhost:4222",
+    "test": "mocha",
     "logs": "yarn docker-compose logs",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml"
   },
