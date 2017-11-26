@@ -70,15 +70,19 @@ namespace Tweek.ApiService
                 switch (rulesetVersionProvider)
                 {
                     case "NatsVersionProvider":
-                        return new NatsVersionProvider(provider.GetService<IRulesDriver>(), Configuration.GetValue<string>("Rules:Nats:Endpoint"));
+                        return new NatsVersionProvider(provider.GetService<IRulesDriver>(),
+                            Configuration.GetValue<string>("Rules:Nats:Endpoint"),
+                            provider.GetService<ILoggerFactory>().CreateLogger("NatsVersionProvider"));
                     default:
-                        return new SampleVersionProvider(provider.GetService<IRulesDriver>(), TimeSpan.FromMilliseconds(Configuration.GetValue("Rules:SampleIntervalInMs", 30000)));
+                        return new SampleVersionProvider(provider.GetService<IRulesDriver>(),
+                            TimeSpan.FromMilliseconds(Configuration.GetValue("Rules:SampleIntervalInMs", 30000)));
                 }
             });
 
             services.AddSingleton<IRulesRepository>(provider => new RulesRepository(provider.GetService<IRulesDriver>(),
                 provider.GetService<IRulesetVersionProvider>(),
-                TimeSpan.FromMilliseconds(Configuration.GetValue("Rules:FailureDelayInMs", 60000)), 
+                TimeSpan.FromMilliseconds(Configuration.GetValue("Rules:FailureDelayInMs", 60000)),
+                TimeSpan.FromMilliseconds(Configuration.GetValue("Rules:MaxWaitTimeoutInMs", 180000)),
                 provider.GetService<ILoggerFactory>().CreateLogger("RulesRepository")));
             services.AddSingleton(provider =>
             {

@@ -40,7 +40,7 @@ namespace Tweek.Drivers.Rules.Minio
 
         private async Task<string> GetObject(string objectName, CancellationToken cancellationToken)
         {
-            var json = "";
+            string json = null;
             await _client.GetObjectAsync(_bucket, objectName, stream =>
             {
                 using (var streamReader = new StreamReader(stream))
