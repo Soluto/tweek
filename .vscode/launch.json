@@ -15,7 +15,7 @@
                 "args": "${auto-detect-url}",
                 "windows": {
                     "command": "cmd.exe",
-                    "args": "/C start ${auto-detect-url}/status"
+                    "args": "/C start ${auto-detect-url}/health"
                 },
                 "osx": {
                     "command": "open"

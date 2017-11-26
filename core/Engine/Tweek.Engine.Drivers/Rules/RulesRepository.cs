@@ -25,8 +25,10 @@ namespace Tweek.Engine.Drivers.Rules
                 .Timeout(maxWaitTimeout)
                 .Do(_ => LastCheckTime = scheduler.Now.UtcDateTime)
                 .DistinctUntilChanged()
+                .Do(version => logger.LogInformation($"Detected new rules version: {version}"))
                 .Select(version => Observable.FromAsync(ct => rulesDriver.GetRuleset(version, ct)).Do(_ => CurrentLabel = version))
                 .Switch()
+                .Do(_ => logger.LogInformation("Updated rules"))
                 .SubscribeOn(scheduler)
                 .Catch((Exception exception) =>
                 {

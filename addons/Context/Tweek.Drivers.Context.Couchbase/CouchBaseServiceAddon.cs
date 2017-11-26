@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using App.Metrics.Health;
 using Couchbase;
 using Couchbase.Configuration.Client;
 using Couchbase.Core.Serialization;
@@ -7,8 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using Tweek.ApiService.Addons;
 using Tweek.Engine.Drivers.Context;
 
@@ -43,12 +44,11 @@ namespace Tweek.Drivers.Context.Couchbase
             InitCouchbaseCluster(contextBucketName, contextBucketPassword, url);
 
             var contextDriver = new CouchBaseDriver(ClusterHelper.GetBucket, contextBucketName);
-            var couchbaseDiagnosticsProvider = new BucketConnectionIsAlive(ClusterHelper.GetBucket, contextBucketName);
             services.AddSingleton<IContextDriver>(contextDriver);
-            services.AddSingleton<IDiagnosticsProvider>((ctx) =>
+            services.AddSingleton<HealthCheck>(ctx =>
             {
                 ctx.GetService<StaticCouchbaseDisposer>();
-                return couchbaseDiagnosticsProvider;
+                return new BucketConnectionHealthCheck(ClusterHelper.GetBucket, contextBucketName);
             });
             services.AddSingleton<StaticCouchbaseDisposer>();
         }
@@ -64,7 +64,7 @@ namespace Tweek.Drivers.Context.Couchbase
                     {
                         BucketName = bucketName,
                         Password = bucketPassword,
-                        PoolConfiguration = new PoolConfiguration()
+                        PoolConfiguration = new PoolConfiguration
                         {
                             MaxSize = 30,
                             MinSize = 5
@@ -72,11 +72,11 @@ namespace Tweek.Drivers.Context.Couchbase
                     }
                 },
                 Serializer = () => new DefaultSerializer(
-                    new JsonSerializerSettings()
+                    new JsonSerializerSettings
                     {
                         ContractResolver = new TweekContractResolver()
                     },
-                    new JsonSerializerSettings()
+                    new JsonSerializerSettings
                     {
                         ContractResolver = new TweekContractResolver()
                     })

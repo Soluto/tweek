@@ -30,7 +30,7 @@ namespace Tweek.Drivers.Rules.Management
             var newVersion = rulesetResponse.GetRulesVersion();
             if (!version.Equals(newVersion))
             {
-                throw new Exception($"Version mismatch.\nExpected: ${version}\nBut was: ${newVersion}");
+                throw new Exception($"Version mismatch.\nExpected: {version}\nBut was: {newVersion}");
             }
             return await rulesetResponse.ExtractRules();
         }

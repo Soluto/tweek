@@ -29,7 +29,7 @@ namespace Tweek.Engine.Drivers.Rules
                 options.Name = "Tweek API";
                 options.AsyncErrorEventHandler += (s, args) =>
                 {
-                    _logger.LogError($"[NATS] connection error: ${args.Error}");
+                    _logger.LogError($"[NATS] connection error: {args.Error}");
                     observer.OnError(new Exception(args.Error));
                 };
                 options.ClosedEventHandler += (s, a) =>

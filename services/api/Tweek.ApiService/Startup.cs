@@ -14,7 +14,6 @@ using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Tweek.ApiService.Addons;
@@ -59,8 +58,8 @@ namespace Tweek.ApiService
             services.Decorate<IContextDriver>((driver, provider) => new TimedContextDriver(driver, provider.GetService<IMetrics>()));
             services.Decorate<IRulesDriver>((driver, provider) => new TimedRulesDriver(driver, provider.GetService<IMetrics>));
 
-            services.AddSingleton<IDiagnosticsProvider>(ctx => new RulesRepositoryDiagnosticsProvider(ctx.GetServices<IRulesRepository>().Single()));
-            services.AddSingleton<IDiagnosticsProvider>(new EnvironmentDiagnosticsProvider());
+            services.AddSingleton<HealthCheck, RulesRepositoryHealthCheck>();
+            services.AddSingleton<HealthCheck, EnvironmentHealthCheck>();
 
             services.AddSingleton(CreateParserResolver());
 
@@ -112,7 +111,6 @@ namespace Tweek.ApiService
             services.SetupCors(Configuration);
 
             RegisterMetrics(services);
-            services.AdaptSingletons<IDiagnosticsProvider, HealthCheck>(inner => new DiagnosticsProviderDecorator(inner));
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("api", new Info
