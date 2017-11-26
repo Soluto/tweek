@@ -14,13 +14,14 @@ namespace Tweek.Drivers.Context.Couchbase
         private readonly Func<string, IBucket> _getBucket;
 
         public BucketConnectionHealthCheck(Func<string, IBucket> getBucket, string bucketNameToCheck)
-            :base("CouchbaseConnection")
+            : base("CouchbaseConnection")
         {
             _getBucket = getBucket;
             _bucketName = bucketNameToCheck;
         }
 
-        protected override async Task<HealthCheckResult> CheckAsync(CancellationToken cancellationToken = new CancellationToken())
+        protected override async Task<HealthCheckResult> CheckAsync(
+            CancellationToken cancellationToken = new CancellationToken())
         {
             if (DateTime.UtcNow - _lastSuccessCheck > TimeSpan.FromSeconds(30))
             {
@@ -28,12 +29,10 @@ namespace Tweek.Drivers.Context.Couchbase
                 {
                     _getBucket(_bucketName);
                     _lastSuccessCheck = DateTime.UtcNow;
-
                 }
                 catch
                 {
-                    var message = $"Unavailable since {_lastSuccessCheck}";
-                    return DateTime.UtcNow - _lastSuccessCheck > TimeSpan.FromMinutes(5) ? HealthCheckResult.Unhealthy(message) : HealthCheckResult.Degraded(message);
+                    return HealthCheckResult.Unhealthy($"Unavailable since {_lastSuccessCheck}");
                 }
             }
 
