@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { Observable } from 'rxjs';
 import { componentFromStream, createEventHandler } from 'recompose';
 import * as SearchService from '../../../../services/search-service';
-import fetch from '../../../../utils/fetch';
 import DirectoryTreeView from './DirectoryTreeView';
 import './KeysList.css';
 

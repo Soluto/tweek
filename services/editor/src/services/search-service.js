@@ -16,7 +16,6 @@ const shouldShowInternalKeys = async () => {
       console.error("unable to get 'show_internal_keys' configuration", err);
     }
   }
-
   return showInternalKeys;
 };
 
@@ -39,12 +38,11 @@ const createSearchFunction = endpoint =>
         credentials: 'same-origin',
       },
     );
-
-    const results = await response.json();
-
-    return endpoint === 'search' ? results : filterInternalKeys(results);
+    return await response.json();
   };
 
-export const getSuggestions = createSearchFunction('suggestions');
+const suggestionFn = createSearchFunction('suggestions');
+
+export const getSuggestions = async query => filterInternalKeys(await suggestionFn(query));
 
 export const search = createSearchFunction('search');
