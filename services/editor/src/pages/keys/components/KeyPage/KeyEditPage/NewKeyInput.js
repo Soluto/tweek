@@ -1,7 +1,9 @@
 import React from 'react';
 import * as R from 'ramda';
 import { connect } from 'react-redux';
-import { compose } from 'recompose';
+import { Observable } from 'rxjs';
+import { compose, mapPropsStream } from 'recompose';
+import * as SearchService from '../../../../../services/search-service';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import ValidationIcon from '../../../../../components/common/ValidationIcon';
 
@@ -14,6 +16,17 @@ function getKeyNameSuggestions(keysList) {
 
 const NewKeyInput = compose(
   connect(state => ({ keysList: state.keys, keyNameValidation: state.selectedKey.validation.key })),
+  mapPropsStream((prop$) => {
+    const keysList$ = prop$
+      .map(x => x.keysList)
+      .distinctUntilChanged()
+      .switchMap(SearchService.filterInternalKeys);
+
+    return Observable.combineLatest(prop$, keysList$, (props, keysList) => ({
+      ...props,
+      keysList,
+    }));
+  }),
 )(({ keysList, keyNameValidation, onKeyNameChanged, displayName }) => {
   const suggestions = getKeyNameSuggestions(keysList).map(x => ({ label: x, value: x }));
   return (

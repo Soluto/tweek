@@ -25,7 +25,7 @@ function KeysFilter({ onFilterChange }) {
 
 const KeyItem = connect((state, props) => ({
   isActive: state.selectedKey && state.selectedKey.key && state.selectedKey.key === props.fullPath,
-}))(({ name, fullPath, depth, isActive }) =>
+}))(({ name, fullPath, depth, isActive }) => (
   <div className="key-link-wrapper" data-comp="key-link">
     <Link
       className={classNames('key-link', { selected: isActive })}
@@ -34,20 +34,14 @@ const KeyItem = connect((state, props) => ({
     >
       {name}
     </Link>
-  </div>,
-);
-
-const withoutInternal = list => (list ? list.filter(x => !/^@tweek\//.test(x)) : list);
+  </div>
+));
 
 const KeysList = componentFromStream((prop$) => {
-  const showInternal$ = Observable.defer(() =>
-    fetch('/api/editor-configuration/show_internal_keys').then(response => response.json()),
-  );
-
-  const keyList$ = Observable.combineLatest(
-    prop$.map(x => x.keys).distinctUntilChanged(),
-    showInternal$,
-  ).map(([keys, show]) => (show ? keys : withoutInternal(keys)));
+  const keyList$ = prop$
+    .map(x => x.keys)
+    .distinctUntilChanged()
+    .switchMap(SearchService.filterInternalKeys);
 
   const { handler: setFilter, stream: filter$ } = createEventHandler();
   const filteredKeys$ = filter$
@@ -57,7 +51,7 @@ const KeysList = componentFromStream((prop$) => {
     .startWith('')
     .switchMap(async filter => (filter === '' ? undefined : SearchService.search(filter)));
 
-  return Observable.combineLatest(filteredKeys$, keyList$).map(([filteredKeys, keys]) =>
+  return Observable.combineLatest(filteredKeys$, keyList$).map(([filteredKeys, keys]) => (
     <div className="keys-list-container">
       <KeysFilter onFilterChange={setFilter} />
       <DirectoryTreeView
@@ -65,8 +59,8 @@ const KeysList = componentFromStream((prop$) => {
         renderItem={KeyItem}
         expandByDefault={!!filteredKeys}
       />
-    </div>,
-  );
+    </div>
+  ));
 });
 
 KeysList.displayName = 'KeysList';
