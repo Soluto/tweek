@@ -58,6 +58,7 @@ namespace Tweek.ApiService
             services.Decorate<IContextDriver>((driver, provider) => new TimedContextDriver(driver, provider.GetService<IMetrics>()));
             services.Decorate<IRulesDriver>((driver, provider) => new TimedRulesDriver(driver, provider.GetService<IMetrics>));
 
+            services.AddSingleton<HealthCheck, RulesRepositoryHealthCheck>();
             services.AddSingleton<HealthCheck, EnvironmentHealthCheck>();
 
             services.AddSingleton(CreateParserResolver());
@@ -83,9 +84,6 @@ namespace Tweek.ApiService
                 TimeSpan.FromMilliseconds(failureDelayInMs),
                 TimeSpan.FromMilliseconds(failureDelayInMs * 3),
                 provider.GetService<ILoggerFactory>().CreateLogger("RulesRepository")));
-            services.AddSingleton<HealthCheck>(provider => new RulesRepositoryHealthCheck(provider.GetService<IRulesRepository>(), 
-                TimeSpan.FromMilliseconds(failureDelayInMs * 5),
-                TimeSpan.FromMilliseconds(failureDelayInMs * 60)));
             services.AddSingleton(provider =>
             {
                 var parserResolver = provider.GetService<GetRuleParser>();

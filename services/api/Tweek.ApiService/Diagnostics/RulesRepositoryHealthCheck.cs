@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using App.Metrics.Health;
+using Microsoft.Extensions.Configuration;
 using Tweek.Engine.Drivers.Rules;
 
 namespace Tweek.ApiService.Diagnostics
@@ -12,12 +13,13 @@ namespace Tweek.ApiService.Diagnostics
         private readonly TimeSpan _unhelthyTimeout;
         private readonly TimeSpan _degradedTimeout;
 
-        public RulesRepositoryHealthCheck(IRulesRepository repository, TimeSpan degradedTimeout, TimeSpan unhelthyTimeout)
+        public RulesRepositoryHealthCheck(IRulesRepository repository, IConfiguration config)
             : base("RulesRepository")
         {
             _repository = repository;
-            _degradedTimeout = degradedTimeout;
-            _unhelthyTimeout = unhelthyTimeout;
+            var failureDelayInMs = config.GetValue("Rules:FailureDelayInMs", 60000);
+            _degradedTimeout = TimeSpan.FromMilliseconds(failureDelayInMs * 5);
+            _unhelthyTimeout = TimeSpan.FromMilliseconds(failureDelayInMs * 60);
         }
 
         protected override async Task<HealthCheckResult> CheckAsync(
