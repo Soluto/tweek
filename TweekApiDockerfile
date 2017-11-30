@@ -1,7 +1,7 @@
 # ---- *.csproj FILES ----
-FROM alpine as csproj-files
+FROM debian:stretch-slim as csproj-files
 COPY . /src
-RUN find /src -type f -not -name "*.csproj" -delete
+RUN find /src -type f -not -name "*.csproj" -delete && find /src -type d -empty -delete
 
 # ---- BUILD & TEST ----
 FROM microsoft/aspnetcore-build:2.0.0 as source
