@@ -29,11 +29,11 @@ namespace Tweek.ApiService.Diagnostics
             }
             if (DateTime.UtcNow - _repository.LastCheckTime > _unhelthyTimeout)
             {
-                return HealthCheckResult.Unhealthy("Rules version was not checked in over 10 minutes");
+                return HealthCheckResult.Unhealthy($"Rules version was last checked at ${_repository.LastCheckTime}. CurrentLabel = {_repository.CurrentLabel}");
             }
             if (DateTime.UtcNow - _repository.LastCheckTime > _degradedTimeout)
             {
-                return HealthCheckResult.Degraded("Rules version was not checked in over 5 minutes");
+                return HealthCheckResult.Degraded($"Rules version was last checked at ${_repository.LastCheckTime}. CurrentLabel = {_repository.CurrentLabel}");
             }
             return HealthCheckResult.Healthy(
                 $"CurrentLabel = {_repository.CurrentLabel}, LastCheckTime = {_repository.LastCheckTime}");
