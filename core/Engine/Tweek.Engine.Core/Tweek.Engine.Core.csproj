@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <NoWarn>1591, 1701, 1702, 1998</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
+    <PackageReference Include="LanguageExt.Core" Version="2.1.21" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Tweek.Engine.DataTypes\Tweek.Engine.DataTypes.csproj" />
+  </ItemGroup>
+</Project>

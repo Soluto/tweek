@@ -87,8 +87,6 @@ steps:
           - api
           - management
           - zap-smoke
-        volumes:
-          - ${{CF_VOLUME}}:/repo
         environment: 
           - TWEEK_API_URL=http://api/
           - PROXY_URL=http://zap-smoke:8090

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Net.Http;
-using App.Metrics.Core.Abstractions;
-using Engine.Drivers.Rules;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using System;
+using System.Net.Http;
 using Tweek.ApiService.Addons;
+using Tweek.Engine.Drivers.Rules;
 
 namespace Tweek.Drivers.Rules.Management
 {
@@ -24,16 +22,8 @@ namespace Tweek.Drivers.Rules.Management
             {
                 BaseAddress = managementServiceUrl
             };
-            var settings = new TweekManagementRulesDriverSettings
-            {
-                SampleIntervalInMs = configuration.GetValue("Rules:Management:SampleIntervalInMs", 30000),
-                FailureDelayInMs = configuration.GetValue("Rules:Management:FailureDelayInMs", 60000)
-            };
 
-            services.AddSingleton<IRulesDriver>(
-                ctx => 
-                TweekManagementRulesDriver.StartNew(httpClient.GetAsync, settings, ctx.GetService<ILoggerFactory>().CreateLogger("RulesManagementDriver"), 
-                ctx.GetService<IMeasureMetrics>()));                
+            services.AddSingleton<IRulesDriver>(ctx => new ManagementRulesDriver(httpClient.GetAsync));
         }
     }
 }
