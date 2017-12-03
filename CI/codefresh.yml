@@ -184,6 +184,20 @@ steps:
         volumes:
           - ${{CF_VOLUME}}:/repo
 
+  Swagger:
+    title: Upload swagger
+    when:
+      condition:
+        all:
+          executeForMasterBranch: "'${{CF_BRANCH}}' == 'master'"
+          executeForNewVersions: "'${{TWEEK_DOCKER_TAG_API}}' != 'latest'"
+    image: node:slim
+    working_dir: ./CI
+    environment: 
+      - UPDATE_SWAGGER_SECRET=${{UPDATE_SWAGGER_SECRET}}
+    commands:
+      - ./update_swagger.sh api $TWEEK_DOCKER_TAG_API ./api-swagger.json
+
   PushApiImageMaster:
     type: push
     title: Push Tweek Api - lastest
@@ -240,17 +254,3 @@ steps:
         only:
           - master
     candidate: ${{BuildingGitRepository}}
-
-  Swagger:
-    title: Upload swagger
-    when:
-      condition:
-        all:
-          executeForMasterBranch: "'${{CF_BRANCH}}' == 'master'"
-          executeForNewVersions: "'${{TWEEK_DOCKER_TAG_API}}' != 'latest'"
-    image: node:slim
-    working_dir: ./CI
-    environment: 
-      - UPDATE_SWAGGER_SECRET=${{UPDATE_SWAGGER_SECRET}}
-    commands:
-      - ./update_swagger.sh api $TWEEK_DOCKER_TAG_API ./api-swagger.json
