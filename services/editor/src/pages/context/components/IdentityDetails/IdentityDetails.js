@@ -7,7 +7,7 @@ import FixedKeys from '../FixedKeys/FixedKeys';
 import IdentityProperties from '../IdentityProperties/IdentityProperties';
 import './IdentityDetails.css';
 
-const IdentityDetails = ({ identityId, identityType, isGettingContext }) =>
+const IdentityDetails = ({ identityId, identityType, isGettingContext }) => (
   <div
     className="identity-details-container"
     data-comp="identity-details"
@@ -15,26 +15,27 @@ const IdentityDetails = ({ identityId, identityType, isGettingContext }) =>
     data-identity-type={identityType}
   >
     <div className="identity-title">
-      <div className="identity-id">
-        {identityId}
-      </div>
-      <div className="identity-type">
-        {changeCase.pascalCase(identityType)}
-      </div>
+      <div className="identity-id">{identityId}</div>
+      <div className="identity-type">{changeCase.pascalCase(identityType)}</div>
     </div>
-    {isGettingContext
-      ? 'Loading...'
-      : <div>
-          <IdentityProperties className="section" identityType={identityType} />
-          <FixedKeys className="section" {...{ identityType, identityId }} />
-        </div>}
-  </div>;
+    {isGettingContext ? (
+      'Loading...'
+    ) : (
+      <div>
+        <IdentityProperties className="section" identityType={identityType} />
+        <FixedKeys className="section" {...{ identityType, identityId }} />
+      </div>
+    )}
+  </div>
+);
 
 export default compose(
   mapProps(props => props.match.params),
   connect(state => state.context, contextActions),
-  mapProps(({ getContext, ...props, identityType, identityId }) => ({
+  mapProps(({ getContext, identityType, identityId, ...props }) => ({
     ...props,
+    identityType,
+    identityId,
     getContext: () => getContext({ identityType, identityId }),
   })),
   lifecycle({

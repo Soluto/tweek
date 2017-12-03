@@ -12,7 +12,7 @@ const getPropertyValueType = (identityType, property) => {
   return 'name' in details ? details.name : details;
 };
 
-const Property = ({ identityType, property, value }) =>
+const Property = ({ identityType, property, value }) => (
   <div className="property-wrapper" data-comp="identity-property">
     <Input className="property-input" data-comp="property" value={property} disabled />
     <TypedInput
@@ -23,30 +23,28 @@ const Property = ({ identityType, property, value }) =>
       placeholder="(no value)"
       disabled
     />
-  </div>;
+  </div>
+);
 
-const IdentityProperties = ({ className, identityType, properties }) =>
+const IdentityProperties = ({ className, identityType, properties }) => (
   <div
     className={classnames('identity-properties-container', className)}
     data-comp="identity-properties"
   >
     <div className="identity-properties-title">Properties</div>
     <div className="property-list">
-      {Object.keys(properties).map(prop =>
-        <Property
-          key={prop}
-          identityType={identityType}
-          property={prop}
-          value={properties[prop]}
-        />,
-      )}
+      {Object.keys(properties).map(prop => (
+        <Property key={prop} identityType={identityType} property={prop} value={properties[prop]} />
+      ))}
     </div>
-  </div>;
+  </div>
+);
 
 export default compose(
   connect(state => state.context),
-  mapProps(({ remote: context, ...props, identityType }) => ({
+  mapProps(({ remote: context, identityType, ...props }) => ({
     properties: getContextProperties(identityType, context),
+    identityType,
     ...props,
   })),
 )(IdentityProperties);
