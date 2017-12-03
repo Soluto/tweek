@@ -27,6 +27,8 @@ services:
       driver: "json-file"
     ports:
       - "5003:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
       
   authoring:
     image: soluto/tweek-authoring

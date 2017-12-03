@@ -4,12 +4,6 @@
   "author": "Soluto",
   "license": "MIT",
   "private": true,
-  "workspaces": [
-    "services/authoring",
-    "services/editor",
-    "services/management",
-    "e2e/*"
-  ],
   "scripts": {
     "build": "yarn docker-compose build",
     "build:e2e": "yarn docker-compose:e2e build",
