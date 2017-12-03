@@ -3,7 +3,7 @@ services:
   git:
     image: $REPOSITORY_IMAGE
     volumes:
-      - ../deployments/dev/ssh:/gitkeys
+      - ${CF_VOLUME_PATH}/tweek/deployments/dev/ssh:/gitkeys
     environment:
       - PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
       - TWEEK_MANAGEMENT_URL=http://management:3000
@@ -14,9 +14,9 @@ services:
       - api
       - git
       - minio
-    volumes:
-      - ../deployments/dev/ssh:/gitkeys
       - nats
+    volumes:
+      - ${CF_VOLUME_PATH}/tweek/deployments/dev/ssh:/gitkeys
     logging:
       driver: "none"
     environment:
@@ -36,9 +36,9 @@ services:
     depends_on:
       - minio
       - redis
-    volumes:
-      - ../deployments/dev/ssh:/gitkeys
       - nats
+    volumes:
+      - ${CF_VOLUME_PATH}/tweek/deployments/dev/ssh:/gitkeys
     logging:
       driver: "none"
     environment:
@@ -62,7 +62,7 @@ services:
     depends_on:
       - git
     volumes:
-      - ../deployments/dev/ssh:/gitkeys
+      - ${CF_VOLUME_PATH}/tweek/deployments/dev/ssh:/gitkeys
     logging:
       driver: "none"
     environment:
@@ -77,7 +77,7 @@ services:
       - api
       - authoring
     volumes:
-      - ../deployments/dev/ssh:/gitkeys
+      - ${CF_VOLUME_PATH}/tweek/deployments/dev/ssh:/gitkeys
     ports:
       - 4004:3000
     logging:
