@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.ApiService.NetCore", "services\api\Tweek.ApiService.NetCore\Tweek.ApiService.NetCore.csproj", "{F1F37A97-5937-4B3F-A342-EACC4D17BE19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.ApiService", "services\api\Tweek.ApiService\Tweek.ApiService.csproj", "{F1F37A97-5937-4B3F-A342-EACC4D17BE19}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "services", "{5D38988E-77E0-4016-B48C-272B5D34E558}"
 EndProject
@@ -17,17 +17,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.ApiService.SmokeTests
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "engine", "engine", "{8EFA86FC-0FA7-4525-B952-71652A93B2E5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine", "core\Engine\Engine\Engine.csproj", "{65DFAD3F-29A6-40E3-9360-B8CE6D818037}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Engine", "core\Engine\Tweek.Engine\Tweek.Engine.csproj", "{65DFAD3F-29A6-40E3-9360-B8CE6D818037}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.Core", "core\Engine\Engine.Core\Engine.Core.csproj", "{AD91D584-0E5D-4E36-9AA7-A477806BBC50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Engine.Core", "core\Engine\Tweek.Engine.Core\Tweek.Engine.Core.csproj", "{AD91D584-0E5D-4E36-9AA7-A477806BBC50}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.Core.Tests", "core\Engine\Engine.Core.Tests\Engine.Core.Tests.csproj", "{DD476780-1A59-4183-817C-61085677C5D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Engine.DataTypes", "core\Engine\Tweek.Engine.DataTypes\Tweek.Engine.DataTypes.csproj", "{0AF63015-FA47-46FA-9DD7-4FE42BFBBB74}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.DataTypes", "core\Engine\Engine.DataTypes\Engine.DataTypes.csproj", "{0AF63015-FA47-46FA-9DD7-4FE42BFBBB74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Engine.Drivers", "core\Engine\Tweek.Engine.Drivers\Tweek.Engine.Drivers.csproj", "{6205DFFE-74F1-4167-A308-E9F8B95FE36C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.Drivers", "core\Engine\Engine.Drivers\Engine.Drivers.csproj", "{6205DFFE-74F1-4167-A308-E9F8B95FE36C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.Tests", "core\Engine\Engine.Tests\Engine.Tests.csproj", "{AEA1BBA0-B3EF-41B0-94D7-84D1F2D2956E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Engine.Tests", "core\Engine\Tweek.Engine.Tests\Tweek.Engine.Tests.csproj", "{AEA1BBA0-B3EF-41B0-94D7-84D1F2D2956E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.JPad.Utils", "core\JPad\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj", "{DD417D22-0FD8-4A2C-8332-6AD358321070}"
 EndProject
@@ -39,33 +37,27 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonValueConverter.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.ApiService.Addons", "core\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj", "{2E921C38-5F30-456D-A78C-4902C0432959}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.UnitTests", "core\Engine\Engine.UnitTests\Engine.UnitTests.csproj", "{A7ABF431-D7D6-4476-8BF9-A4D2631897FF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Rules.Management", "addons\Rules\Tweek.Drivers.Rules.Management\Tweek.Drivers.Rules.Management.csproj", "{6F58A7FF-7F1F-40A4-BA62-35DCD8BE7E69}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Context", "Context", "{BD1E6B57-18E1-46E9-B16F-B531E88FB9E3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Redis", "addons\Context\Tweek.Drivers.Redis\Tweek.Drivers.Redis.csproj", "{70ACAF9B-A91A-46CB-A7EF-F4D2A0736510}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Context.Redis", "addons\Context\Tweek.Drivers.Context.Redis\Tweek.Drivers.Context.Redis.csproj", "{70ACAF9B-A91A-46CB-A7EF-F4D2A0736510}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Addons.ApplicationInsights", "addons\ApplicationInsights\Tweek.Addons.ApplicationInsights\Tweek.Addons.ApplicationInsights.csproj", "{90AD5C6D-668E-4703-BCE9-17AB584881EE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Addons.AppMetrics.GraphiteReporter", "addons\AppMetrics\Tweek.Addons.AppMetrics.GraphiteReporter\Tweek.Addons.AppMetrics.GraphiteReporter.csproj", "{34154EAB-9A1B-4D59-A967-73DAFD05580D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContextDriversIntegrationTests", "addons\Context\ContextDriversIntegrationTests\ContextDriversIntegrationTests.csproj", "{B5070CC9-BBD8-483E-849F-2950A63C9FFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.ContextIntegrationTests", "addons\Context\Tweek.Drivers.ContextIntegrationTests\Tweek.Drivers.ContextIntegrationTests.csproj", "{B5070CC9-BBD8-483E-849F-2950A63C9FFE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Redis.ContextIntegrationTests", "addons\Context\Tweek.Drivers.Redis.ContextIntegrationTests\Tweek.Drivers.Redis.ContextIntegrationTests.csproj", "{03E847A8-5A6E-47A1-B07E-F6148FBC587D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Context.Redis.IntegrationTests", "addons\Context\Tweek.Drivers.Context.Redis.IntegrationTests\Tweek.Drivers.Context.Redis.IntegrationTests.csproj", "{03E847A8-5A6E-47A1-B07E-F6148FBC587D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Couchbase", "addons\Context\Tweek.Drivers.Couchbase\Tweek.Drivers.Couchbase.csproj", "{6BBFF719-3F6E-4296-8E08-7FE0B99A361E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Context.Couchbase", "addons\Context\Tweek.Drivers.Context.Couchbase\Tweek.Drivers.Context.Couchbase.csproj", "{6BBFF719-3F6E-4296-8E08-7FE0B99A361E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Couchbase.ContextIntegrationTests", "addons\Context\Tweek.Drivers.Couchbase.ContextIntegrationTests\Tweek.Drivers.Couchbase.ContextIntegrationTests.csproj", "{B42A9284-DFA0-4C36-A683-DE0DAB05C3EF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Rules.Management.Tests", "addons\Rules\Tweek.Drivers.Rules.Management.Tests\Tweek.Drivers.Rules.Management.Tests.csproj", "{E97B4D11-EDAF-47CC-8436-2CCC1C21A20A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Context.Couchbase.IntegrationTests", "addons\Context\Tweek.Drivers.Context.Couchbase.IntegrationTests\Tweek.Drivers.Context.Couchbase.IntegrationTests.csproj", "{B42A9284-DFA0-4C36-A683-DE0DAB05C3EF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rules", "Rules", "{EC243F60-6EE3-4022-B254-F8F7BB40AAA1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Rules.Minio", "addons\Rules\Tweek.Drivers.Rules.Minio\Tweek.Drivers.Rules.Minio.csproj", "{5374D25F-84B6-4ACA-B92E-21902410BE84}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.Drivers.Rules.Minio.Tests", "addons\Rules\Tweek.Drivers.Rules.Minio.Tests\Tweek.Drivers.Rules.Minio.Tests.csproj", "{7E34F52C-1AF7-4D4F-8A2B-441C35E1C824}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -109,14 +101,6 @@ Global
 		{AD91D584-0E5D-4E36-9AA7-A477806BBC50}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AD91D584-0E5D-4E36-9AA7-A477806BBC50}.Release|x64.ActiveCfg = Release|Any CPU
 		{AD91D584-0E5D-4E36-9AA7-A477806BBC50}.Release|x86.ActiveCfg = Release|Any CPU
-		{DD476780-1A59-4183-817C-61085677C5D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DD476780-1A59-4183-817C-61085677C5D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DD476780-1A59-4183-817C-61085677C5D1}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{DD476780-1A59-4183-817C-61085677C5D1}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{DD476780-1A59-4183-817C-61085677C5D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DD476780-1A59-4183-817C-61085677C5D1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DD476780-1A59-4183-817C-61085677C5D1}.Release|x64.ActiveCfg = Release|Any CPU
-		{DD476780-1A59-4183-817C-61085677C5D1}.Release|x86.ActiveCfg = Release|Any CPU
 		{0AF63015-FA47-46FA-9DD7-4FE42BFBBB74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0AF63015-FA47-46FA-9DD7-4FE42BFBBB74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AF63015-FA47-46FA-9DD7-4FE42BFBBB74}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -173,14 +157,6 @@ Global
 		{2E921C38-5F30-456D-A78C-4902C0432959}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2E921C38-5F30-456D-A78C-4902C0432959}.Release|x64.ActiveCfg = Release|Any CPU
 		{2E921C38-5F30-456D-A78C-4902C0432959}.Release|x86.ActiveCfg = Release|Any CPU
-		{A7ABF431-D7D6-4476-8BF9-A4D2631897FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A7ABF431-D7D6-4476-8BF9-A4D2631897FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A7ABF431-D7D6-4476-8BF9-A4D2631897FF}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{A7ABF431-D7D6-4476-8BF9-A4D2631897FF}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{A7ABF431-D7D6-4476-8BF9-A4D2631897FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A7ABF431-D7D6-4476-8BF9-A4D2631897FF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A7ABF431-D7D6-4476-8BF9-A4D2631897FF}.Release|x64.ActiveCfg = Release|Any CPU
-		{A7ABF431-D7D6-4476-8BF9-A4D2631897FF}.Release|x86.ActiveCfg = Release|Any CPU
 		{6F58A7FF-7F1F-40A4-BA62-35DCD8BE7E69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6F58A7FF-7F1F-40A4-BA62-35DCD8BE7E69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F58A7FF-7F1F-40A4-BA62-35DCD8BE7E69}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -273,18 +249,6 @@ Global
 		{B42A9284-DFA0-4C36-A683-DE0DAB05C3EF}.Release|x64.Build.0 = Release|Any CPU
 		{B42A9284-DFA0-4C36-A683-DE0DAB05C3EF}.Release|x86.ActiveCfg = Release|Any CPU
 		{B42A9284-DFA0-4C36-A683-DE0DAB05C3EF}.Release|x86.Build.0 = Release|Any CPU
-		{E97B4D11-EDAF-47CC-8436-2CCC1C21A20A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E97B4D11-EDAF-47CC-8436-2CCC1C21A20A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E97B4D11-EDAF-47CC-8436-2CCC1C21A20A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{E97B4D11-EDAF-47CC-8436-2CCC1C21A20A}.Debug|x64.Build.0 = Debug|Any CPU
-		{E97B4D11-EDAF-47CC-8436-2CCC1C21A20A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{E97B4D11-EDAF-47CC-8436-2CCC1C21A20A}.Debug|x86.Build.0 = Debug|Any CPU
-		{E97B4D11-EDAF-47CC-8436-2CCC1C21A20A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E97B4D11-EDAF-47CC-8436-2CCC1C21A20A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E97B4D11-EDAF-47CC-8436-2CCC1C21A20A}.Release|x64.ActiveCfg = Release|Any CPU
-		{E97B4D11-EDAF-47CC-8436-2CCC1C21A20A}.Release|x64.Build.0 = Release|Any CPU
-		{E97B4D11-EDAF-47CC-8436-2CCC1C21A20A}.Release|x86.ActiveCfg = Release|Any CPU
-		{E97B4D11-EDAF-47CC-8436-2CCC1C21A20A}.Release|x86.Build.0 = Release|Any CPU
 		{5374D25F-84B6-4ACA-B92E-21902410BE84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5374D25F-84B6-4ACA-B92E-21902410BE84}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5374D25F-84B6-4ACA-B92E-21902410BE84}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -297,18 +261,6 @@ Global
 		{5374D25F-84B6-4ACA-B92E-21902410BE84}.Release|x64.Build.0 = Release|Any CPU
 		{5374D25F-84B6-4ACA-B92E-21902410BE84}.Release|x86.ActiveCfg = Release|Any CPU
 		{5374D25F-84B6-4ACA-B92E-21902410BE84}.Release|x86.Build.0 = Release|Any CPU
-		{7E34F52C-1AF7-4D4F-8A2B-441C35E1C824}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7E34F52C-1AF7-4D4F-8A2B-441C35E1C824}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7E34F52C-1AF7-4D4F-8A2B-441C35E1C824}.Debug|x64.ActiveCfg = Debug|x64
-		{7E34F52C-1AF7-4D4F-8A2B-441C35E1C824}.Debug|x64.Build.0 = Debug|x64
-		{7E34F52C-1AF7-4D4F-8A2B-441C35E1C824}.Debug|x86.ActiveCfg = Debug|x86
-		{7E34F52C-1AF7-4D4F-8A2B-441C35E1C824}.Debug|x86.Build.0 = Debug|x86
-		{7E34F52C-1AF7-4D4F-8A2B-441C35E1C824}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7E34F52C-1AF7-4D4F-8A2B-441C35E1C824}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7E34F52C-1AF7-4D4F-8A2B-441C35E1C824}.Release|x64.ActiveCfg = Release|x64
-		{7E34F52C-1AF7-4D4F-8A2B-441C35E1C824}.Release|x64.Build.0 = Release|x64
-		{7E34F52C-1AF7-4D4F-8A2B-441C35E1C824}.Release|x86.ActiveCfg = Release|x86
-		{7E34F52C-1AF7-4D4F-8A2B-441C35E1C824}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -320,7 +272,6 @@ Global
 		{8EFA86FC-0FA7-4525-B952-71652A93B2E5} = {8FC42FA8-4EE7-4C6E-B1A9-55C70FA52A5A}
 		{65DFAD3F-29A6-40E3-9360-B8CE6D818037} = {8EFA86FC-0FA7-4525-B952-71652A93B2E5}
 		{AD91D584-0E5D-4E36-9AA7-A477806BBC50} = {8EFA86FC-0FA7-4525-B952-71652A93B2E5}
-		{DD476780-1A59-4183-817C-61085677C5D1} = {8EFA86FC-0FA7-4525-B952-71652A93B2E5}
 		{0AF63015-FA47-46FA-9DD7-4FE42BFBBB74} = {8EFA86FC-0FA7-4525-B952-71652A93B2E5}
 		{6205DFFE-74F1-4167-A308-E9F8B95FE36C} = {8EFA86FC-0FA7-4525-B952-71652A93B2E5}
 		{AEA1BBA0-B3EF-41B0-94D7-84D1F2D2956E} = {8EFA86FC-0FA7-4525-B952-71652A93B2E5}
@@ -329,7 +280,6 @@ Global
 		{C8EB3D59-9582-4C34-AB07-98DB22B095A3} = {25C9E706-270D-498F-934A-18F9FC7A6129}
 		{92BA3225-2F06-4988-9F0E-DA097DAEDB0E} = {25C9E706-270D-498F-934A-18F9FC7A6129}
 		{2E921C38-5F30-456D-A78C-4902C0432959} = {8FC42FA8-4EE7-4C6E-B1A9-55C70FA52A5A}
-		{A7ABF431-D7D6-4476-8BF9-A4D2631897FF} = {8EFA86FC-0FA7-4525-B952-71652A93B2E5}
 		{6F58A7FF-7F1F-40A4-BA62-35DCD8BE7E69} = {EC243F60-6EE3-4022-B254-F8F7BB40AAA1}
 		{BD1E6B57-18E1-46E9-B16F-B531E88FB9E3} = {2407B11F-BCC6-46BC-85B0-CF64D74A441D}
 		{70ACAF9B-A91A-46CB-A7EF-F4D2A0736510} = {BD1E6B57-18E1-46E9-B16F-B531E88FB9E3}
@@ -339,10 +289,8 @@ Global
 		{03E847A8-5A6E-47A1-B07E-F6148FBC587D} = {BD1E6B57-18E1-46E9-B16F-B531E88FB9E3}
 		{6BBFF719-3F6E-4296-8E08-7FE0B99A361E} = {BD1E6B57-18E1-46E9-B16F-B531E88FB9E3}
 		{B42A9284-DFA0-4C36-A683-DE0DAB05C3EF} = {BD1E6B57-18E1-46E9-B16F-B531E88FB9E3}
-		{E97B4D11-EDAF-47CC-8436-2CCC1C21A20A} = {EC243F60-6EE3-4022-B254-F8F7BB40AAA1}
 		{EC243F60-6EE3-4022-B254-F8F7BB40AAA1} = {2407B11F-BCC6-46BC-85B0-CF64D74A441D}
 		{5374D25F-84B6-4ACA-B92E-21902410BE84} = {EC243F60-6EE3-4022-B254-F8F7BB40AAA1}
-		{7E34F52C-1AF7-4D4F-8A2B-441C35E1C824} = {EC243F60-6EE3-4022-B254-F8F7BB40AAA1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {520A2949-0926-487E-A33C-C1615B159589}

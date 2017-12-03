@@ -7,9 +7,9 @@
     <PackageReference Include="Tweek.JPad" Version="0.6.18" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Engine.Core\Engine.Core.csproj" />
-    <ProjectReference Include="..\..\Engine\Engine.DataTypes\Engine.DataTypes.csproj" />
-    <ProjectReference Include="..\..\Engine\Engine.Drivers\Engine.Drivers.csproj" />
+    <ProjectReference Include="..\..\Engine\Tweek.Engine.Core\Tweek.Engine.Core.csproj" />
+    <ProjectReference Include="..\..\Engine\Tweek.Engine.DataTypes\Tweek.Engine.DataTypes.csproj" />
+    <ProjectReference Include="..\..\Engine\Tweek.Engine.Drivers\Tweek.Engine.Drivers.csproj" />
     <ProjectReference Include="..\..\Utils\JsonValueConverter\JsonValueConverter.csproj" />
   </ItemGroup>
 </Project>

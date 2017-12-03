@@ -20,8 +20,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Engine\Tweek.Engine.Drivers\Tweek.Engine.Drivers.csproj" />
     <ProjectReference Include="..\Utils\JsonValueConverter\JsonValueConverter.csproj" />
-    <ProjectReference Include="..\Engine\Engine.Drivers\Engine.Drivers.csproj" />
   </ItemGroup>
   <Target Name="SetNuspecProperties" BeforeTargets="GenerateNuspec">
     <PropertyGroup>

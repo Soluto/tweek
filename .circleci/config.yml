@@ -16,7 +16,7 @@ jobs:
           command: |
             mkdir -p /nugets
             export Version=0.1.$CIRCLE_BUILD_NUM
-            cd addons/Context/ContextDriversIntegrationTests/ && \
+            cd addons/Context/Tweek.Drivers.ContextIntegrationTests/ && \
             dotnet restore && \
             dotnet build -c release -o /nugets
 
@@ -25,7 +25,7 @@ jobs:
           command: |
             mkdir -p /nugets
             export Version=0.1.$CIRCLE_BUILD_NUM
-            cd addons/Context/Tweek.Drivers.Redis/ && \
+            cd addons/Context/Tweek.Drivers.Context.Redis/ && \
             dotnet restore && \
             dotnet build -c release -o /nugets
 
@@ -34,7 +34,7 @@ jobs:
           command: |
             mkdir -p /nugets
             export Version=0.1.$CIRCLE_BUILD_NUM
-            cd addons/Context/Tweek.Drivers.Couchbase/ && \
+            cd addons/Context/Tweek.Drivers.Context.Couchbase/ && \
             dotnet restore && \
             dotnet build -c release -o /nugets
 
@@ -52,7 +52,7 @@ jobs:
           command: |
             mkdir -p /nugets
             export Version=0.1.$CIRCLE_BUILD_NUM
-            cd addons/Context/Tweek.Drivers.Redis.ContextIntegrationTests/ && \
+            cd addons/Context/Tweek.Drivers.Context.Redis.IntegrationTests/ && \
             dotnet restore && \
             REDIS_TEST_CONNECTION="127.0.0.1:6379" dotnet test
 
@@ -63,7 +63,7 @@ jobs:
             curl --retry 3 --retry-max-time 10 -v http://127.0.0.1:8091/settings/web -d port=8091 -d username=Administrator -d password=password
             curl --retry 3 --retry-max-time 10 -v -u Administrator:password -X POST http://127.0.0.1:8091/pools/default/buckets -d authType=sasl -d name=testbucket -d ramQuotaMB=100 -d saslPassword=password
             export Version=0.1.$CIRCLE_BUILD_NUM
-            cd addons/Context/Tweek.Drivers.Couchbase.ContextIntegrationTests/ && \
+            cd addons/Context/Tweek.Drivers.Context.Couchbase.IntegrationTests/ && \
             dotnet restore && \
             COUCHBASE_TEST_URL="http://127.0.0.1:8091" dotnet test
 

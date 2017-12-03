@@ -3,6 +3,13 @@
   "repository": "Soluto/tweek",
   "author": "Soluto",
   "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "services/authoring",
+    "services/editor",
+    "services/management",
+    "e2e/*"
+  ],
   "scripts": {
     "build": "yarn docker-compose build",
     "build:e2e": "yarn docker-compose:e2e build",
@@ -32,8 +39,8 @@
   },
   "devDependencies": {
     "husky": "^0.14.3",
-    "lint-staged": "^4.3.0",
-    "prettier": "^1.7.4",
+    "lint-staged": "^5.0.0",
+    "prettier": "^1.8.2",
     "prettier-eslint-cli": "^4.4.0",
     "typescript-formatter": "^7.0.0"
   },
