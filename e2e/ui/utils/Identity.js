@@ -7,7 +7,7 @@ const FIXED_KEY_PREFIX = '@fixed:';
 
 const searchIdentity = selector => `${dataComp('search-identity')} ${selector}`;
 const fixedKeys = selector => `${dataComp('fixed-keys')} ${selector}`;
-const saveChangesButton = fixedKeys(dataComp('save-changes'));
+const saveChangesButton = `${dataComp('identity-details')} ${dataComp('save-changes')}`;
 
 const extractOverrideKeys = R.pipe(
   R.toPairs,

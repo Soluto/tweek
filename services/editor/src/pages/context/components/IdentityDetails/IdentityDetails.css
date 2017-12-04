@@ -2,17 +2,24 @@
   min-width: 900px;
 }
 .identity-details-container .identity-title {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "identity-id save-changes" "identity-type save-changes";
 }
 .identity-details-container .identity-title .identity-id {
+  grid-area: identity-id;
   font-size: 22px;
   color: #515c66;
 }
 .identity-details-container .identity-title .identity-type {
+  grid-area: identity-type;
   margin-top: 10px;
   color: #a5a5a5;
   font-size: 14px;
+}
+.identity-details-container .identity-title .save-button {
+  grid-area: save-changes;
+  align-self: center;
 }
 .identity-details-container .section {
   box-shadow: 0 10px 9px -10px rgba(0, 0, 0, 0.2);

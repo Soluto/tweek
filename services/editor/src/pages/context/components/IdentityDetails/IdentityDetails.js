@@ -2,12 +2,21 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose, mapProps, lifecycle } from 'recompose';
 import changeCase from 'change-case';
-import * as contextActions from '../../../../store/ducks/context';
+import * as R from 'ramda';
+import { getContext, saveContext } from '../../../../store/ducks/context';
+import SaveButton from '../../../../components/common/SaveButton/SaveButton';
 import FixedKeys from '../FixedKeys/FixedKeys';
 import IdentityProperties from '../IdentityProperties/IdentityProperties';
 import './IdentityDetails.css';
 
-const IdentityDetails = ({ identityId, identityType, isGettingContext }) => (
+const IdentityDetails = ({
+  identityId,
+  identityType,
+  isGettingContext,
+  saveContext,
+  hasChanges,
+  isSavingContext,
+}) => (
   <div
     className="identity-details-container"
     data-comp="identity-details"
@@ -17,6 +26,12 @@ const IdentityDetails = ({ identityId, identityType, isGettingContext }) => (
     <div className="identity-title">
       <div className="identity-id">{identityId}</div>
       <div className="identity-type">{changeCase.pascalCase(identityType)}</div>
+      <SaveButton
+        data-comp="save-changes"
+        onClick={saveContext}
+        isSaving={isSavingContext}
+        hasChanges={hasChanges}
+      />
     </div>
     {isGettingContext ? (
       'Loading...'
@@ -31,12 +46,14 @@ const IdentityDetails = ({ identityId, identityType, isGettingContext }) => (
 
 export default compose(
   mapProps(props => props.match.params),
-  connect(state => state.context, contextActions),
-  mapProps(({ getContext, identityType, identityId, ...props }) => ({
+  connect(state => state.context, { getContext, saveContext }),
+  mapProps(({ getContext, saveContext, identityType, identityId, ...props }) => ({
     ...props,
     identityType,
     identityId,
+    hasChanges: !R.equals(props.remote, props.local),
     getContext: () => getContext({ identityType, identityId }),
+    saveContext: () => saveContext({ identityType, identityId }),
   })),
   lifecycle({
     componentWillMount() {

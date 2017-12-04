@@ -31,18 +31,18 @@ class SearchBox extends Component {
   onIdentityChange = (inputValue, selected) => {
     const identityType = selected ? selected.value : inputValue;
     this.setState({ inputValue, identityType });
-  }
+  };
 
   onIdentityIdChange = (identityId) => {
     this.setState({ identityId });
-  }
+  };
 
   onGetClick = () => {
     this.props.openContext({
       identityType: this.state.identityType,
       identityId: this.state.identityId,
     });
-  }
+  };
 
   render() {
     const { inputValue, identityType, identities, identityId } = this.state;
@@ -50,7 +50,6 @@ class SearchBox extends Component {
 
     return (
       <div className="context-search-container" data-comp="search-identity">
-
         <div className="identity-type-container">
           <ComboBox
             data-field="identity-type"
@@ -85,4 +84,4 @@ class SearchBox extends Component {
   }
 }
 
-export default connect(state => state, { openContext })(SearchBox);
+export default connect(() => {}, { openContext })(SearchBox);

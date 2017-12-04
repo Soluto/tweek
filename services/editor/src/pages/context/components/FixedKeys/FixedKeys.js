@@ -5,13 +5,12 @@ import * as R from 'ramda';
 import classnames from 'classnames';
 import * as contextActions from '../../../../store/ducks/context';
 import { getFixedKeys, FIXED_PREFIX } from '../../../../services/context-service';
-import SaveButton from '../../../../components/common/SaveButton/SaveButton';
 import FixedKeysList from './FixedKeysList/FixedKeysList';
 import { NewFixedKey } from './FixedKeysList/FixedKey/FixedKey';
 import './FixedKeys.css';
 
 const mapWithProp = prop =>
-  R.pipe(Object.entries, R.map(([keyPath, value]) => ({ keyPath, [prop]: value })));
+  R.pipe(R.toPairs, R.map(([keyPath, value]) => ({ keyPath, [prop]: value })));
 
 function extractKeys(remote, local) {
   return R.pipe(
@@ -32,31 +31,9 @@ const extractLocal = R.pipe(
   R.map(R.prop('local')),
 );
 
-const hasValues = R.pipe(
-  Object.entries,
-  R.all(([key, value]) => key !== '' && value !== undefined && value !== ''),
-);
-
-const FixedKeys = ({
-  className,
-  isSavingContext,
-  appendKey,
-  hasChanges,
-  saveContext,
-  onChange,
-  toggleDelete,
-  keys,
-}) => (
+const FixedKeys = ({ className, appendKey, onChange, toggleDelete, keys }) => (
   <div className={classnames('fixed-keys-container', className)} data-comp="fixed-keys">
-    <div className="override-keys-title">
-      <div>Override Keys</div>
-      <SaveButton
-        data-comp="save-changes"
-        onClick={saveContext}
-        hasChanges={hasChanges}
-        isSaving={isSavingContext}
-      />
-    </div>
+    <div className="override-keys-title">Override Keys</div>
 
     <FixedKeysList {...{ keys, onChange, toggleDelete }} />
 
@@ -66,7 +43,7 @@ const FixedKeys = ({
 
 export default compose(
   connect(state => state.context, contextActions),
-  mapProps(({ identityType, identityId, local, remote, saveContext, updateContext, ...props }) => {
+  mapProps(({ local, remote, updateContext, ...props }) => {
     const localFixedKeys = getFixedKeys(local);
     const remoteFixedKeys = getFixedKeys(remote);
     const formattedKeys = extractKeys(remoteFixedKeys, localFixedKeys);
@@ -87,8 +64,6 @@ export default compose(
       keys: formattedKeys,
       appendKey: ({ keyPath, value }) =>
         updateContext(R.assoc(FIXED_PREFIX + keyPath, value, local)),
-      hasChanges: hasValues(localFixedKeys) && !R.equals(remoteFixedKeys, localFixedKeys),
-      saveContext: () => saveContext({ identityType, identityId }),
       ...props,
     };
   }),
