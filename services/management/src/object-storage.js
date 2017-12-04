@@ -40,13 +40,13 @@ module.exports = async function initStorage() {
   }
 
   async function getObject(objectName) {
-    return new Promise(async (resolve, reject) => {
-      const stream = await minioClient.getObject(minioBucket, objectName);
-      let result = '';
-      stream.on('data', chunk => (result += chunk));
-      stream.on('end', () => resolve(JSON.parse(result)));
-      stream.on('error', reject);
-    });
+    return await minioClient.getObject(minioBucket, objectName).then(stream=>
+      new Promise((resolve, reject) => {
+        let result = '';
+        stream.on('data', chunk => (result += chunk));
+        stream.on('end', () => resolve(JSON.parse(result)));
+        stream.on('error', reject);
+      }));
   }
 
   async function cleanStorage(exclude) {
