@@ -61,8 +61,8 @@ const EditableKey = ({ keyPath, remote, local, onChange, autofocus }) => (
       disabled={local === undefined}
     />
     {remote !== undefined && remote !== local ? (
-      <div className="initial-value">
-        {remote.length > 40 ? `${remote.substring(0, 37)}...` : remote}
+      <div className="initial-value" title={remote}>
+        {remote}
       </div>
     ) : null}
   </div>

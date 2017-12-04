@@ -1,3 +1,5 @@
+@import (reference) "../../../../styles/core/core.less";
+
 .identity-details-container {
   min-width: 900px;
 
@@ -31,5 +33,29 @@
     padding: 15px;
     box-sizing: border-box;
     margin-top: 16px;
+
+    .value-input {
+      &.has-changes {
+        color: green;
+        .bootstrap-typeahead-input-container {
+          color: green;
+        }
+      }
+    }
+
+    .initial-value {
+      .metro-textbox;
+      width: 300px;
+      height: auto;
+      align-self: center;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      opacity: 0.5;
+      padding: 0;
+      border-color: transparent;
+    }
   }
 }

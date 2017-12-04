@@ -8,10 +8,14 @@
   flex-flow: row wrap;
 }
 .identity-properties-container .property-list .property-wrapper {
-  margin-right: 60px;
+  margin-right: 10px;
+  flex-grow: 1;
   display: flex;
 }
-.identity-properties-container .property-list .property-wrapper > input,
+.identity-properties-container .property-list .property-wrapper > label,
 .identity-properties-container .property-list .property-wrapper > div {
   margin: 5px;
+}
+.identity-properties-container .property-list .property-wrapper .initial-value {
+  max-width: 94px;
 }

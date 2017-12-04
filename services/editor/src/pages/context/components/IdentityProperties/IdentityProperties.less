@@ -9,11 +9,16 @@
     flex-flow: row wrap;
 
     .property-wrapper {
-      margin-right: 60px;
+      margin-right: 10px;
+      flex-grow: 1;
       display: flex;
 
-      > input, > div {
+      > label, > div {
         margin: 5px;
+      }
+
+      .initial-value {
+        max-width: 94px;
       }
     }
   }

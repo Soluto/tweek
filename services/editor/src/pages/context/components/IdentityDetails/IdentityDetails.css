@@ -28,3 +28,39 @@
   box-sizing: border-box;
   margin-top: 16px;
 }
+.identity-details-container .section .value-input.has-changes {
+  color: green;
+}
+.identity-details-container .section .value-input.has-changes .bootstrap-typeahead-input-container {
+  color: green;
+}
+.identity-details-container .section .initial-value {
+  display: inline-block;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  height: 28px;
+  width: 150px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  width: 300px;
+  height: auto;
+  align-self: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.5;
+  padding: 0;
+  border-color: transparent;
+}
+.identity-details-container .section .initial-value:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.identity-details-container .section .initial-value:disabled {
+  border-color: #bcbcbc;
+}
