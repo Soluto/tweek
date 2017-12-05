@@ -11,9 +11,9 @@ module.exports = function (server, config) {
   };
 
   const creds = new Map(
-          [...(givenUser ? [[givenUser, givenPassword]] : []),
-           ...(givenCreds || []).split(';').map(x=> x.split(":"))
-          ])
+    [...(givenUser ? [[givenUser, givenPassword]] : []),
+      ...(givenCreds || '').split(';').map(x=> x.split(":")),
+    ]);
 
   const validate = (user, done) => {
     if (creds.has(user)) {

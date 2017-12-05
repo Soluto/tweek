@@ -70,8 +70,12 @@ function addAuthSupport(server) {
   server.use(passport.session());
 
   const authProviders = selectAuthenticationProviders(server, nconf);
-  server.use('/login', (req, res) => {
-    res.send(authProviders.map(x => `<a href="${x.url}">login with ${x.name}</a>`).join('<br/>'));
+  server.use('/authProviders', (req, res) => {
+    res.json(authProviders.map(ap => ({ name: ap.name, url: ap.url })));
+  });
+
+  server.use('/isAuthenticated', (req, res) => {
+    res.json({ isAuthenticated: req.isAuthenticated() });
   });
 
   passport.serializeUser((user, done) => {

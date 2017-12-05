@@ -32,11 +32,15 @@
       "target": "http://localhost:3001",
       "secure": false
     },
-    "/login": {
+    "/auth": {
       "target": "http://localhost:3001",
       "secure": false
     },
-    "/auth": {
+    "/isAuthenticated": {
+      "target": "http://localhost:3001",
+      "secure": true
+    },
+    "/authProviders": {
       "target": "http://localhost:3001",
       "secure": false
     }
@@ -54,6 +58,7 @@
     "change-case": "^3.0.1",
     "classnames": "^2.2.5",
     "crypto": "^1.0.1",
+    "emotion": "8.0.12",
     "express": "^4.16.2",
     "express-session": "^1.15.6",
     "fast-json-patch": "^2.0.6",
@@ -78,6 +83,7 @@
     "react-document-title": "2.0.3",
     "react-dom": "^16.2.0",
     "react-draggable": "^3.0.4",
+    "react-emotion": "8.0.12",
     "react-google-tag-manager": "^2.2.1",
     "react-highlight-words": "^0.10.0",
     "react-monaco-editor": "^0.12.0",
