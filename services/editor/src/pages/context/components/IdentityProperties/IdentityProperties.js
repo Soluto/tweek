@@ -11,7 +11,7 @@ const getPropertyValueType = (identityType, property) => {
 
 const Property = ({ identityType, property, local, remote, onChange }) => (
   <div className="property-wrapper" data-comp="identity-property" data-property={property}>
-    <label className="text-input property-label">{property}</label>
+    <label className="property-label">{property}</label>
     <TypedInput
       data-field="value"
       className={classnames('value-input', {

@@ -56,7 +56,7 @@
   text-overflow: ellipsis;
   opacity: 0.5;
   padding: 0;
-  border-color: transparent;
+  border: none;
 }
 .identity-details-container .section .initial-value:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);

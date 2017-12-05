@@ -16,6 +16,31 @@
 .identity-properties-container .property-list .property-wrapper > div {
   margin: 5px;
 }
+.identity-properties-container .property-list .property-wrapper .property-label {
+  display: inline-block;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  height: 28px;
+  width: 150px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  border-color: #bcbcbc;
+  height: auto;
+  align-self: flex-end;
+  padding-bottom: 4px;
+}
+.identity-properties-container .property-list .property-wrapper .property-label:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.identity-properties-container .property-list .property-wrapper .property-label:disabled {
+  border-color: #bcbcbc;
+}
 .identity-properties-container .property-list .property-wrapper .initial-value {
   max-width: 94px;
 }

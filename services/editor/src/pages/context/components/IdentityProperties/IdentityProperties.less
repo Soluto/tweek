@@ -1,3 +1,5 @@
+@import (reference) "../../../../styles/core/core.less";
+
 .identity-properties-container {
   .identity-properties-title {
     font-size: 22px;
@@ -15,6 +17,14 @@
 
       > label, > div {
         margin: 5px;
+      }
+
+      .property-label {
+        .metro-textbox;
+        border-color: rgb(188, 188, 188);
+        height: auto;
+        align-self: flex-end;
+        padding-bottom: 4px;
       }
 
       .initial-value {
