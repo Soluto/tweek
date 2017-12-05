@@ -52,10 +52,10 @@ namespace Tweek.Drivers.Context.Redis
         {
             var db = mRedisConnection.GetDatabase();
             var id = GetKey(identity);
-            var contextWithCreationDate = new Dictionary<string, JsonValue>(context)
-            {
-                ["@CreationDate"] = JsonValue.NewString(DateTimeOffset.UtcNow.ToString())
-            };
+            var contextWithCreationDate = new Dictionary<string, JsonValue>(context);
+            if (!await db.KeyExistsAsync(id)) {
+                contextWithCreationDate.Add("@CreationDate", JsonValue.NewString(DateTimeOffset.UtcNow.ToString()));
+            }
             HashEntry[] redisContext = contextWithCreationDate.Select(item =>
                 new HashEntry(item.Key, JsonConvert.SerializeObject(item.Value, JSON_SERIALIZER_SETTINGS))
             ).ToArray();

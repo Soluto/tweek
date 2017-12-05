@@ -6,7 +6,6 @@ const timeout = 5000;
 const FIXED_KEY_PREFIX = '@fixed:';
 
 const searchIdentity = selector => `${dataComp('search-identity')} ${selector}`;
-const fixedKeys = selector => `${dataComp('fixed-keys')} ${selector}`;
 const saveChangesButton = `${dataComp('identity-details')} ${dataComp('save-changes')}`;
 
 const extractOverrideKeys = R.pipe(
@@ -15,6 +14,8 @@ const extractOverrideKeys = R.pipe(
   R.map(R.adjust(R.replace(FIXED_KEY_PREFIX, ''), 0)),
   R.fromPairs,
 );
+
+const extractProperties = R.pickBy((_, prop) => !prop.startsWith(FIXED_KEY_PREFIX));
 
 export default class Identity {
   constructor(type, id) {
@@ -57,6 +58,11 @@ export default class Identity {
     return extractOverrideKeys(response);
   }
 
+  get properties() {
+    const response = tweekApiClient.getContext(this._type, this._id);
+    return extractProperties(response);
+  }
+
   commitChanges(selector = saveChangesButton) {
     browser.click(selector);
     browser.waitUntil(() => !this.hasChanges && !this.isSaving, timeout, 'changes were not saved');
@@ -64,11 +70,12 @@ export default class Identity {
   }
 
   addOverrideKey(key, value, valueType = typeof value) {
-    const newKey = comp => `${dataComp('new-fixed-key')} ${dataComp(comp)}`;
-    const keyInput = newKey('fixed-key');
+    const newFixedKeyComponent = dataComp('new-fixed-key');
+    const newKey = field => `${newFixedKeyComponent} ${dataField(field)}`;
+    const keyInput = newKey('key');
     const valueInput =
-      newKey('fixed-value') + attributeSelector('data-value-type', valueType.toLowerCase());
-    const addButton = newKey('add-fixed-key');
+      newKey('value') + attributeSelector('data-value-type', valueType.toLowerCase());
+    const addButton = newKey('add');
 
     browser.waitForEnabled(keyInput, timeout);
 
@@ -91,7 +98,16 @@ export default class Identity {
   }
 
   updateOverrideKey(key, value) {
-    const valueInput = `${this._fixedKey(key)} ${dataComp('fixed-value')}`;
+    const valueInput = `${this._fixedKey(key)} ${dataField('value')}`;
+
+    browser.waitForEnabled(valueInput, timeout);
+    $(valueInput).setValue(value);
+
+    return this;
+  }
+
+  updateProperty(property, value) {
+    const valueInput = `${this._property(property)} ${dataField('value')}`;
 
     browser.waitForEnabled(valueInput, timeout);
     $(valueInput).setValue(value);
@@ -101,5 +117,9 @@ export default class Identity {
 
   _fixedKey(key) {
     return dataComp('fixed-key') + attributeSelector('data-fixed-key', key);
+  }
+
+  _property(prop) {
+    return dataComp('identity-property') + attributeSelector('data-property', prop);
   }
 }

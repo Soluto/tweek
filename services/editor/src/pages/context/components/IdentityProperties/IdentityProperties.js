@@ -10,12 +10,10 @@ const getPropertyValueType = (identityType, property) => {
 };
 
 const Property = ({ identityType, property, local, remote, onChange }) => (
-  <div className="property-wrapper" data-comp="identity-property">
-    <label className="text-input property-label" data-comp="property">
-      {property}
-    </label>
+  <div className="property-wrapper" data-comp="identity-property" data-property={property}>
+    <label className="text-input property-label">{property}</label>
     <TypedInput
-      data-comp="value"
+      data-field="value"
       className={classnames('value-input', {
         'has-changes': remote !== local,
       })}
