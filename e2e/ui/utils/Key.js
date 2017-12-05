@@ -165,6 +165,7 @@ class Key {
   }
 
   commitChanges(selector = saveChangesButton) {
+    if (selector === saveChangesButton) assert.ok(this.hasChanges, 'no changes to commit');
     browser.click(selector);
     browser.waitUntil(() => !this.hasChanges && !this.isSaving, timeout, 'changes were not saved');
     return this;

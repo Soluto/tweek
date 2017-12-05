@@ -1,3 +1,4 @@
+import assert from 'assert';
 import R from 'ramda';
 import tweekApiClient from '../clients/tweek-api-client';
 import { attributeSelector, dataComp, dataField } from './selector-utils';
@@ -66,6 +67,7 @@ export default class Identity {
   }
 
   commitChanges(selector = saveChangesButton) {
+    assert.ok(this.hasChanges, 'no changes to commit');
     browser.click(selector);
     browser.waitUntil(() => !this.hasChanges && !this.isSaving, timeout, 'changes were not saved');
     return this;

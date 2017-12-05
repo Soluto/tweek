@@ -74,7 +74,7 @@
     "prop-types": "^15.6.0",
     "ramda": "^0.25.0",
     "react": "^16.2.0",
-    "react-autosize-textarea": "^0.4.9",
+    "react-autosize-textarea": "^1.0.1",
     "react-dom": "^16.2.0",
     "react-draggable": "^3.0.4",
     "react-google-tag-manager": "^2.2.1",
@@ -120,7 +120,7 @@
     "jest-cli": "^21.2.1",
     "jest-css-modules": "^1.1.0",
     "node-less-chokidar": "^0.1.2",
-    "nodemon": "^1.12.1",
+    "nodemon": "^1.12.4",
     "react-scripts": "1.0.17",
     "react-test-renderer": "^16.2.0",
     "rimraf": "^2.6.2"
