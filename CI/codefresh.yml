@@ -192,7 +192,7 @@ steps:
           executeForMasterBranch: "'${{CF_BRANCH}}' == 'master'"
           executeForNewVersions: "'${{TWEEK_DOCKER_TAG_API}}' != 'latest'"
     image: node:slim
-    working_dir: ./CI
+    working_directory: ./CI
     environment: 
       - UPDATE_SWAGGER_SECRET=${{UPDATE_SWAGGER_SECRET}}
     commands:
