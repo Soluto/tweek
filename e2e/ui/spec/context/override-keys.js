@@ -12,7 +12,7 @@ describe('override keys', () => {
 
   it('should modify override keys', () => {
     const identity = Identity.open(identityType, identityId);
-    const properties = identity.properties;
+    const initialProperties = identity.properties;
 
     const overrideKeys = {
       'some/key': 'someValue',
@@ -44,6 +44,6 @@ describe('override keys', () => {
     identity.commitChanges();
 
     assert.deepEqual(identity.overrideKeys, {});
-    assert.deepEqual(identity.properties, properties);
+    assert.deepEqual(identity.properties, initialProperties);
   });
 });

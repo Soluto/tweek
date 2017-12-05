@@ -15,7 +15,9 @@ const extractOverrideKeys = R.pipe(
   R.fromPairs,
 );
 
-const extractProperties = R.pickBy((_, prop) => !prop.startsWith(FIXED_KEY_PREFIX));
+const extractProperties = R.pickBy(
+  (_, prop) => !prop.startsWith(FIXED_KEY_PREFIX) && prop !== '@CreationDate',
+);
 
 export default class Identity {
   constructor(type, id) {
@@ -110,7 +112,7 @@ export default class Identity {
     const valueInput = `${this._property(property)} ${dataField('value')}`;
 
     browser.waitForEnabled(valueInput, timeout);
-    $(valueInput).setValue(value);
+    $(valueInput).setValue(value.toString());
 
     return this;
   }
@@ -119,7 +121,7 @@ export default class Identity {
     return dataComp('fixed-key') + attributeSelector('data-fixed-key', key);
   }
 
-  _property(prop) {
-    return dataComp('identity-property') + attributeSelector('data-property', prop);
+  _property(property) {
+    return dataComp('identity-property') + attributeSelector('data-property', property);
   }
 }

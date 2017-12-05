@@ -84,4 +84,4 @@ class SearchBox extends Component {
   }
 }
 
-export default connect(() => {}, { openContext })(SearchBox);
+export default connect(() => ({}), { openContext })(SearchBox);
