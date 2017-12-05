@@ -1,5 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
+import * as R from 'ramda';
 import TypedInput from '../../../../components/common/Input/TypedInput';
 import { getPropertyTypeDetails } from '../../../../services/context-service';
 import './IdentityProperties.css';
@@ -43,7 +44,9 @@ const IdentityProperties = ({ className, identityType, local, remote, updateCont
           property={prop}
           local={local[prop]}
           remote={remote[prop]}
-          onChange={value => updateContext({ ...local, [prop]: value })}
+          onChange={value =>
+            updateContext(value === '' ? R.dissoc(prop, local) : R.assoc(prop, value, local))
+          }
         />
       ))}
     </div>
