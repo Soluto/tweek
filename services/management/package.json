@@ -31,14 +31,14 @@
     "nodegit": "0.18.3",
     "ramda": "^0.25.0",
     "recursive-readdir": "^2.0.0",
-    "rxjs": "^5.5.2",
+    "rxjs": "^5.5.3",
     "uuid": "^3.1.0",
     "winston": "^2.4.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^4.11.0",
+    "eslint": "^4.12.1",
     "mocha": "^4.0.1"
   }
 }

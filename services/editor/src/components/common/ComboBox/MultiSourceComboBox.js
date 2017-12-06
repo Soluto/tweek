@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Rx from 'rxjs';
+import { Observable } from 'rxjs';
 import * as R from 'ramda';
 import { createEventHandler, mapPropsStream } from 'recompose';
 import classnames from 'classnames';
@@ -30,9 +30,8 @@ const MultiSourceComboBox = mapPropsStream((props$) => {
   const { handler: onSearch, stream: onSearch$ } = createEventHandler();
   const { handler: onSourceId, stream: onSourceId$ } = createEventHandler();
 
-  const query$ = Rx.Observable
-    .merge(onSearch$, props$.pluck('value'))
-    .debounce(query => Rx.Observable.empty().delay(query === '' ? 0 : 500))
+  const query$ = Observable.merge(onSearch$, props$.pluck('value'))
+    .debounce(query => Observable.empty().delay(query === '' ? 0 : 500))
     .distinctUntilChanged();
 
   const sourceId$ = onSourceId$
@@ -41,20 +40,18 @@ const MultiSourceComboBox = mapPropsStream((props$) => {
     .publishReplay(1)
     .refCount();
 
-  const suggestions$ = Rx.Observable
-    .combineLatest(query$, sourceId$)
+  const suggestions$ = Observable.combineLatest(query$, sourceId$)
     .withLatestFrom(props$.pluck('getSuggestions'), ([query, sourceId], getSuggestions) => [
       query,
       getSuggestions[sourceId] || getAllSuggestions(getSuggestions),
     ])
     .switchMap(([query, getSuggestions]) =>
-      Rx.Observable.defer(() => Promise.resolve(getSuggestions(query))),
+      Observable.defer(() => Promise.resolve(getSuggestions(query))),
     )
     .startWith([]);
 
-  return Rx.Observable
-    .combineLatest(props$, sourceId$, suggestions$)
-    .map(([{ getSuggestions, onChange, ...props }, sourceId, suggestions]) => ({
+  return Observable.combineLatest(props$, sourceId$, suggestions$).map(
+    ([{ getSuggestions, onChange, ...props }, sourceId, suggestions]) => ({
       ...props,
       suggestions,
       onChange: (txt, ...args) => {
@@ -77,7 +74,8 @@ const MultiSourceComboBox = mapPropsStream((props$) => {
           </ul>
         </div>
       ),
-    }));
+    }),
+  );
 })(ComboBox);
 
 MultiSourceComboBox.displayName = 'MultiSourceComboBox';

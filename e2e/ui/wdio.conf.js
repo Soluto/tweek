@@ -11,6 +11,8 @@ nconf
 const host = nconf.get('host');
 const proxy = nconf.get('proxy');
 
+const workingDirectory = process.cwd().replace(/\\/g, '/');
+
 function removeTrailingSlashes(url) {
   return url.endsWith('/') ? removeTrailingSlashes(url.substring(0, url.length - 1)) : url;
 }
@@ -102,8 +104,11 @@ exports.config = {
     compilers: ['js:babel-register'],
     timeout: 99999999,
   },
-  onPrepare: () => {
-    console.log('prepare');
+  onPrepare: async () => {
+    const { waitForAllClients } = require(workingDirectory + '/utils/client-utils.js');
+    await waitForAllClients();
+
+    console.log('ready');
   },
   onComplete: () => {
     console.log('completed');
@@ -123,17 +128,13 @@ exports.config = {
   //
   // Gets executed before test execution begins. At this point you can access all global
   // variables, such as `browser`. It is the perfect place to define custom commands.
-  before: async function() {
+  before: function() {
     const chai = require('chai');
     chai.use(require('chai-string'));
 
-    const workingDirectory = process.cwd().replace(/\\/g, '/');
     const browserExtentionCommands = require(workingDirectory +
       '/utils/browser-extension-commands');
     browserExtentionCommands(browser);
-
-    const { waitForAllClients } = require(workingDirectory + '/utils/client-utils.js');
-    await waitForAllClients();
   },
   //
   // Hook that gets executed before the suite starts
