@@ -1,3 +1,4 @@
+import assert from 'assert';
 import R from 'ramda';
 import tweekApiClient from '../clients/tweek-api-client';
 import { attributeSelector, dataComp, dataField } from './selector-utils';
@@ -6,14 +7,17 @@ const timeout = 5000;
 const FIXED_KEY_PREFIX = '@fixed:';
 
 const searchIdentity = selector => `${dataComp('search-identity')} ${selector}`;
-const fixedKeys = selector => `${dataComp('fixed-keys')} ${selector}`;
-const saveChangesButton = fixedKeys(dataComp('save-changes'));
+const saveChangesButton = `${dataComp('identity-details')} ${dataComp('save-changes')}`;
 
 const extractOverrideKeys = R.pipe(
   R.toPairs,
   R.filter(R.pipe(R.prop(0), R.startsWith(FIXED_KEY_PREFIX))),
   R.map(R.adjust(R.replace(FIXED_KEY_PREFIX, ''), 0)),
   R.fromPairs,
+);
+
+const extractProperties = R.pickBy(
+  (_, prop) => !prop.startsWith(FIXED_KEY_PREFIX) && prop !== '@CreationDate',
 );
 
 export default class Identity {
@@ -57,18 +61,25 @@ export default class Identity {
     return extractOverrideKeys(response);
   }
 
+  get properties() {
+    const response = tweekApiClient.getContext(this._type, this._id);
+    return extractProperties(response);
+  }
+
   commitChanges(selector = saveChangesButton) {
+    assert.ok(this.hasChanges, 'no changes to commit');
     browser.click(selector);
     browser.waitUntil(() => !this.hasChanges && !this.isSaving, timeout, 'changes were not saved');
     return this;
   }
 
   addOverrideKey(key, value, valueType = typeof value) {
-    const newKey = comp => `${dataComp('new-fixed-key')} ${dataComp(comp)}`;
-    const keyInput = newKey('fixed-key');
+    const newFixedKeyComponent = dataComp('new-fixed-key');
+    const newKey = field => `${newFixedKeyComponent} ${dataField(field)}`;
+    const keyInput = newKey('key');
     const valueInput =
-      newKey('fixed-value') + attributeSelector('data-value-type', valueType.toLowerCase());
-    const addButton = newKey('add-fixed-key');
+      newKey('value') + attributeSelector('data-value-type', valueType.toLowerCase());
+    const addButton = newKey('add');
 
     browser.waitForEnabled(keyInput, timeout);
 
@@ -91,7 +102,7 @@ export default class Identity {
   }
 
   updateOverrideKey(key, value) {
-    const valueInput = `${this._fixedKey(key)} ${dataComp('fixed-value')}`;
+    const valueInput = `${this._fixedKey(key)} ${dataField('value')}`;
 
     browser.waitForEnabled(valueInput, timeout);
     $(valueInput).setValue(value);
@@ -99,7 +110,20 @@ export default class Identity {
     return this;
   }
 
+  updateProperty(property, value) {
+    const valueInput = `${this._property(property)} ${dataField('value')}`;
+
+    browser.waitForEnabled(valueInput, timeout);
+    $(valueInput).setValue(value.toString());
+
+    return this;
+  }
+
   _fixedKey(key) {
     return dataComp('fixed-key') + attributeSelector('data-fixed-key', key);
+  }
+
+  _property(property) {
+    return dataComp('identity-property') + attributeSelector('data-property', property);
   }
 }

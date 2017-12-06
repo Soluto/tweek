@@ -3,7 +3,7 @@ import BluebirdPromise = require('bluebird');
 import express = require('express');
 import morgan = require('morgan');
 import bodyParser = require('body-parser');
-import Rx = require('rxjs');
+import { Observable } from 'rxjs';
 import fs = require('fs-extra');
 import passport = require('passport');
 import Transactor from './utils/transactor';
@@ -83,13 +83,13 @@ async function startServer() {
 const onUpdate$ = GitContinuousUpdater.onUpdate(gitTransactionManager).share();
 
 onUpdate$
-  .switchMapTo(Rx.Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)))
+  .switchMapTo(Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)))
   .do(null, (err: any) => console.error('Error refreshing index', err))
   .retry()
   .subscribe();
 
 onUpdate$
-  .switchMapTo(Rx.Observable.defer(() => appsRepository.refresh()))
+  .switchMapTo(Observable.defer(() => appsRepository.refresh()))
   .do(null, (err: any) => console.error('Error refersing apps index', err))
   .retry()
   .subscribe();

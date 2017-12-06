@@ -28,6 +28,7 @@ namespace Tweek.Drivers.ContextIntegrationTests
         };
 
         private const string PROPERTY_TO_REMOVE = "Weight";
+        private const string CREATION_DATE = "@CreationDate";
 
         private static readonly Dictionary<string, JsonValue> TestContextAfterRemoval = TestContext
             .Where(pair => pair.Key != PROPERTY_TO_REMOVE)
@@ -47,13 +48,13 @@ namespace Tweek.Drivers.ContextIntegrationTests
             var testIdentity = TestIdentity;
             await Driver.AppendContext(testIdentity, TestContext);
             var result = await Driver.GetContext(testIdentity);
-            Assert.Contains("@CreationDate", result.Keys);
-            result.Remove("@CreationDate");
+            Assert.Contains(CREATION_DATE, result.Keys);
+            result.Remove(CREATION_DATE);
             Assert.Equal(TestContext, result);
             await Driver.RemoveFromContext(testIdentity, PROPERTY_TO_REMOVE);
             result = await Driver.GetContext(testIdentity);
-            Assert.Contains("@CreationDate", result.Keys);
-            result.Remove("@CreationDate");
+            Assert.Contains(CREATION_DATE, result.Keys);
+            result.Remove(CREATION_DATE);
             Assert.Equal(TestContextAfterRemoval, result);
         }
 
@@ -64,8 +65,8 @@ namespace Tweek.Drivers.ContextIntegrationTests
             await Driver.AppendContext(testIdentity, TestContext);
             await Driver.AppendContext(testIdentity, AnotherTestContext);
             var result = await Driver.GetContext(testIdentity);
-            Assert.Contains("@CreationDate", result.Keys);
-            result.Remove("@CreationDate");
+            Assert.Contains(CREATION_DATE, result.Keys);
+            result.Remove(CREATION_DATE);
             Assert.Equal(TestContextMergedWithAnotherTestContext, result);
         }
 
@@ -76,9 +77,24 @@ namespace Tweek.Drivers.ContextIntegrationTests
             await Driver.AppendContext(testIdentity, TestContext);
             await Driver.AppendContext(testIdentity, TestContext);
             var result = await Driver.GetContext(testIdentity);
-            Assert.Contains("@CreationDate", result.Keys);
-            result.Remove("@CreationDate");
+            Assert.Contains(CREATION_DATE, result.Keys);
+            result.Remove(CREATION_DATE);
             Assert.Equal(TestContext, result);
+        }
+
+        [Fact]
+        public async Task ContexctCreated_ThenContextAppended_CreationDateDoesntChange()
+        {
+            var testIdentity = TestIdentity;
+            await Driver.AppendContext(testIdentity, TestContext);
+            var result = await Driver.GetContext(testIdentity);
+            Assert.Contains(CREATION_DATE, result.Keys);
+            var creationDate = result[CREATION_DATE];
+            
+            await Driver.AppendContext(testIdentity, AnotherTestContext);
+            result = await Driver.GetContext(testIdentity);
+            Assert.Contains(CREATION_DATE, result.Keys);
+            Assert.Equal(creationDate, result[CREATION_DATE]);
         }
     }
 }
