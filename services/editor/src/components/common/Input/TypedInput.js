@@ -19,7 +19,7 @@ export const getTypesService = getContext(typesServiceContextType);
 const valueToItem = value =>
   value === undefined || value === '' ? undefined : { label: changeCase.pascalCase(value), value };
 
-const InputComponent = ({ value, valueType, allowedValues, onChange, ...props}) => {
+const InputComponent = ({ value, valueType, allowedValues, onChange, ...props }) => {
   if (allowedValues && allowedValues.length > 0) {
     return (
       <ComboBox
@@ -40,7 +40,7 @@ const InputComponent = ({ value, valueType, allowedValues, onChange, ...props}) 
 const InputWithIcon = ({ iconType, ...props }) =>
   <div className="typed-input-with-icon">
     <i data-value-type={iconType} />
-    <InputComponent data-comp="typed-input" data-value-type={iconType} {...props}/>
+    <InputComponent data-comp="typed-input" data-value-type={iconType} {...props} />
   </div>;
 
 const TypedInput = compose(
