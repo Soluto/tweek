@@ -8,18 +8,18 @@ import './TypedInput.css';
 
 export const typesServiceContextType = {
   types: PropTypes.object.isRequired,
-  safeConvertValue: PropTypes.func.isRequired,
+  convertValue: PropTypes.func.isRequired,
 };
 
-export const withTypesService = ({ safeConvertValue, types }) =>
-  withContext(typesServiceContextType, () => ({ safeConvertValue, types }));
+export const withTypesService = ({ convertValue, types }) =>
+  withContext(typesServiceContextType, () => ({ convertValue, types }));
 
 export const getTypesService = getContext(typesServiceContextType);
 
 const valueToItem = value =>
   value === undefined || value === '' ? undefined : { label: changeCase.pascalCase(value), value };
 
-const InputComponent = ({ value, allowedValues, onChange, ...props }) => {
+const InputComponent = ({ value, valueType, allowedValues, onChange, ...props}) => {
   if (allowedValues && allowedValues.length > 0) {
     return (
       <ComboBox
@@ -31,25 +31,36 @@ const InputComponent = ({ value, allowedValues, onChange, ...props }) => {
       />
     );
   }
+  if (valueType === 'object') {
+    return <Input {...props} onChange={onChange} value={JSON.stringify(value)} />;
+  }
   return <Input {...props} onChange={onChange} value={value} />;
 };
 
 const InputWithIcon = ({ iconType, ...props }) =>
   <div className="typed-input-with-icon">
     <i data-value-type={iconType} />
-    <InputComponent data-comp="typed-input" data-value-type={iconType} {...props} />
+    <InputComponent data-comp="typed-input" data-value-type={iconType} {...props}/>
   </div>;
 
 const TypedInput = compose(
   getTypesService,
-  mapProps(({ safeConvertValue, types, valueType, onChange, ...props }) => {
+  mapProps(({ convertValue, types, valueType, onChange, ...props }) => {
     const typeDefinition = typeof valueType === 'string' ? types[valueType] : valueType;
     const iconType =
       (typeDefinition && (typeDefinition.name || (typeDefinition.base && 'custom'))) || 'unknown';
     const allowedValues = typeDefinition && typeDefinition.allowedValues;
-    const onChangeConvert = newValue => onChange && onChange(safeConvertValue(newValue, valueType));
+    const onChangeConvert = (newValue) => {
+      if (newValue) {
+        try {
+          return onChange(convertValue(newValue, valueType));
+        }
+        catch (_) {
+        }
+      }
+    };
 
-    return { allowedValues, onChange: onChangeConvert, iconType, ...props };
+    return { allowedValues, onChange: onChangeConvert, iconType, valueType, ...props };
   }),
 )(InputWithIcon);
 

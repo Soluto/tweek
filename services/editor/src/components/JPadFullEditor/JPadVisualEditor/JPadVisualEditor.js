@@ -109,7 +109,7 @@ export default ({ valueType, mutate, alerter, keyPath }) => {
     }
   };
   const updateDefaultValue = (newValue) => {
-    const typedValue = newValue && TypesService.safeConvertValue(newValue, valueType);
+    const typedValue = newValue;
     if (typedValue === undefined || typedValue === '') {
       defaultValueMutate.delete();
     } else {

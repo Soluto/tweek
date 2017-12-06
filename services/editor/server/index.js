@@ -94,8 +94,8 @@ function addAuthSupport(server) {
 }
 
 const startServer = async () => {
-  const vapidKeys = await getVapidKeys();
-  webpush.setVapidDetails('http://tweek.host', vapidKeys.publicKey, vapidKeys.privateKey);
+  //const vapidKeys = await getVapidKeys();
+  //webpush.setVapidDetails('http://tweek.host', vapidKeys.publicKey, vapidKeys.privateKey);
 
   const app = express();
   const server = http.Server(app);
