@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose, mapPropsStream, pure, withStateHandlers, mapProps } from 'recompose';
-import Rx from 'rxjs';
+import { Observable } from 'rxjs';
 import classNames from 'classnames';
 import * as SearchService from '../../../../../../services/search-service';
 import * as TypesService from '../../../../../../services/types-service';
@@ -17,7 +17,7 @@ const mapValueTypeToProps = (props$) => {
     .debounceTime(500)
     .distinctUntilChanged()
     .switchMap(keyPath =>
-      Rx.Observable.fromPromise(TypesService.getValueTypeDefinition(keyPath)).map(x => x.name),
+      Observable.fromPromise(TypesService.getValueTypeDefinition(keyPath)).map(x => x.name),
     )
     .map(valueType => ({ disabled: false, valueType }))
     .startWith({ disabled: true, valueType: 'unknown' });
@@ -32,7 +32,7 @@ const mapValueTypeToProps = (props$) => {
 const OverrideValueInput = compose(mapPropsStream(mapValueTypeToProps), pure)(TypedInput);
 OverrideValueInput.displayName = 'OverrideValueInput';
 
-const EditableKey = ({ keyPath, remote, local, onChange, autofocus }) =>
+const EditableKey = ({ keyPath, remote, local, onChange, autofocus }) => (
   <div
     className={classNames('editable-key-container', {
       'new-item': remote === undefined,
@@ -41,7 +41,7 @@ const EditableKey = ({ keyPath, remote, local, onChange, autofocus }) =>
   >
     <AutoSuggest
       className="key-input"
-      data-comp="fixed-key"
+      data-field="key"
       placeholder="Key"
       value={keyPath}
       getSuggestions={SearchService.getSuggestions}
@@ -50,7 +50,7 @@ const EditableKey = ({ keyPath, remote, local, onChange, autofocus }) =>
       autofocus={autofocus}
     />
     <OverrideValueInput
-      data-comp="fixed-value"
+      data-field="value"
       keyPath={keyPath}
       className={classNames('value-input', {
         'has-changes': remote !== local,
@@ -60,12 +60,13 @@ const EditableKey = ({ keyPath, remote, local, onChange, autofocus }) =>
       onChange={value => onChange({ keyPath, value })}
       disabled={local === undefined}
     />
-    {remote !== undefined && remote !== local
-      ? <div className="initial-value">
-          {remote.length > 40 ? `${remote.substring(0, 37)}...` : remote}
-        </div>
-      : null}
-  </div>;
+    {remote !== undefined && remote !== local ? (
+      <div className="initial-value" title={remote}>
+        {remote}
+      </div>
+    ) : null}
+  </div>
+);
 
 EditableKey.propTypes = {
   keyPath: PropTypes.string.isRequired,
@@ -74,7 +75,7 @@ EditableKey.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-const FixedKey = ({ toggleDelete, ...props, keyPath }) =>
+const FixedKey = ({ toggleDelete, keyPath, ...props }) => (
   <div className="fixed-key-container" data-comp="fixed-key" data-fixed-key={keyPath}>
     <button
       onClick={toggleDelete}
@@ -82,8 +83,9 @@ const FixedKey = ({ toggleDelete, ...props, keyPath }) =>
       data-comp="delete-fixed-key"
       title="Remove key"
     />
-    <EditableKey {...props} />
-  </div>;
+    <EditableKey keyPath={keyPath} {...props} />
+  </div>
+);
 
 FixedKey.propTypes = {
   ...EditableKey.propTypes,
@@ -94,7 +96,7 @@ export default FixedKey;
 
 const emptyKey = { keyPath: '', value: '' };
 
-const NewFixedKeyComponent = ({ appendKey, ...props, keyPath, local: value }) =>
+const NewFixedKeyComponent = ({ appendKey, keyPath, local: value, ...props }) => (
   <div
     className="new-fixed-key"
     data-comp="new-fixed-key"
@@ -103,26 +105,23 @@ const NewFixedKeyComponent = ({ appendKey, ...props, keyPath, local: value }) =>
       appendKey();
     }}
   >
-    <EditableKey {...props} />
-    <button
-      className="add-key-button"
-      data-comp="add-fixed-key"
-      title="Add key"
-      onClick={appendKey}
-    />
-  </div>;
+    <EditableKey {...props} keyPath={keyPath} local={value} />
+    <button className="add-key-button" data-field="add" title="Add key" onClick={appendKey} />
+  </div>
+);
 
 export const NewFixedKey = compose(
   withStateHandlers(emptyKey, {
     onChange: () => newState => newState,
     reset: () => () => emptyKey,
   }),
-  mapProps(({ appendKey, reset, value: local, ...props, keyPath }) => ({
+  mapProps(({ appendKey, reset, value: local, keyPath, ...props }) => ({
     appendKey: () => {
       appendKey({ keyPath, value: local });
       reset();
     },
     local,
+    keyPath,
     ...props,
   })),
 )(NewFixedKeyComponent);

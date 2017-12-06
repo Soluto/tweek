@@ -1,0 +1,52 @@
+﻿<Project ToolsVersion="15.0" Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <VersionPrefix>0.4.1</VersionPrefix>
+    <DockerComposeProjectPath>..\..\..\deployments\docker-compose.dcproj</DockerComposeProjectPath>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>1591, 1701, 1702, 1998</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Properties\PublishProfiles\FileSystemProfile.pubxml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="App.Metrics.Extensions.Middleware" Version="1.2.0" />
+    <PackageReference Include="App.Metrics.Extensions.Mvc" Version="1.2.0" />
+    <PackageReference Include="App.Metrics.Formatters.Json" Version="1.2.0" />
+    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
+    <PackageReference Include="LanguageExt.Core" Version="2.1.21" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.ApplicationInsights.HostingStartup" Version="2.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Rewrite" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.0" />
+    <PackageReference Include="Scrutor" Version="2.1.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="1.0.0" />
+    <PackageReference Include="Tweek.JPad" Version="0.6.18" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\addons\ApplicationInsights\Tweek.Addons.ApplicationInsights\Tweek.Addons.ApplicationInsights.csproj" />
+    <ProjectReference Include="..\..\..\addons\AppMetrics\Tweek.Addons.AppMetrics.GraphiteReporter\Tweek.Addons.AppMetrics.GraphiteReporter.csproj" />
+    <ProjectReference Include="..\..\..\addons\Context\Tweek.Drivers.Context.Couchbase\Tweek.Drivers.Context.Couchbase.csproj" />
+    <ProjectReference Include="..\..\..\addons\Context\Tweek.Drivers.Context.Redis\Tweek.Drivers.Context.Redis.csproj" />
+    <ProjectReference Include="..\..\..\addons\Rules\Tweek.Drivers.Rules.Management\Tweek.Drivers.Rules.Management.csproj" />
+    <ProjectReference Include="..\..\..\addons\Rules\Tweek.Drivers.Rules.Minio\Tweek.Drivers.Rules.Minio.csproj" />
+    <ProjectReference Include="..\..\..\core\Engine\Tweek.Engine.Core\Tweek.Engine.Core.csproj" />
+    <ProjectReference Include="..\..\..\core\Engine\Tweek.Engine.DataTypes\Tweek.Engine.DataTypes.csproj" />
+    <ProjectReference Include="..\..\..\core\Engine\Tweek.Engine.Drivers\Tweek.Engine.Drivers.csproj" />
+    <ProjectReference Include="..\..\..\core\Engine\Tweek.Engine\Tweek.Engine.csproj" />
+    <ProjectReference Include="..\..\..\core\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj" />
+    <ProjectReference Include="..\..\..\core\JPad\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj" />
+    <ProjectReference Include="..\..\..\core\Utils\JsonValueConverter\JsonValueConverter.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0-msbuild3-final" />
+  </ItemGroup>
+  <Target Name="CopyDocumentationFile" AfterTargets="ComputeFilesToPublish">
+    <ItemGroup>
+      <ResolvedFileToPublish Include="@(FinalDocFile)" RelativePath="@(FinalDocFile->'%(Filename)%(Extension)')" />
+    </ItemGroup>
+  </Target>
+</Project>

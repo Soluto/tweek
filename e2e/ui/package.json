@@ -1,5 +1,5 @@
 {
-  "name": "e2e-tests",
+  "name": "e2e-ui-tests",
   "version": "1.0.0",
   "private": true,
   "description": "",
@@ -9,40 +9,39 @@
     "node": ">=8.7.0"
   },
   "scripts": {
-    "start": "yarn docker-compose up --force-recreate -d git redis && yarn docker-compose up -d editor management",
-    "test": "wdio wdio.conf.js",
     "build": "yarn docker-compose build",
-    "test:full-env": "yarn start && yarn test",
-    "test:full-env:build": "yarn build && yarn test:full-env",
-    "test:docker": "yarn start && yarn build e2e-ui && yarn docker-compose run --rm e2e-ui",
-    "test:docker:build": "yarn build && yarn test:docker",
-    "teardown": "yarn docker-compose down --remove-orphans",
+    "build:clean": "concurrently --kill-others-on-fail \"yarn build\" \"yarn teardown\"",
+    "test": "wdio wdio.conf.js",
+    "test:full-env": "yarn build:clean && yarn docker-compose up -d editor management && yarn test",
+    "test:docker": "yarn build:clean && yarn docker-compose up --exit-code-from e2e-ui e2e-ui",
     "logs": "yarn docker-compose logs",
+    "teardown": "yarn docker-compose down --remove-orphans",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.e2e.yml"
   },
   "dependencies": {
-    "axios": "^0.17.0",
-    "babel-cli": "6.26.0",
+    "axios": "^0.17.1",
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
-    "babel-eslint": "8.0.1",
-    "babel-plugin-transform-runtime": "6.23.0",
-    "babel-preset-es2015": "6.24.1",
-    "babel-preset-stage-0": "6.24.1",
-    "chai": "4.1.2",
+    "babel-eslint": "^8.0.2",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "chai": "^4.1.2",
     "chai-string": "^1.4.0",
-    "chance": "1.0.12",
+    "chance": "^1.0.12",
     "jsonwebtoken": "^8.1.0",
     "mocha": "^4.0.1",
-    "moment": "2.19.1",
-    "nconf": "^0.8.5",
+    "moment": "^2.19.3",
+    "nconf": "^0.9.1",
     "ramda": "^0.25.0",
-    "rxjs": "^5.5.2",
+    "rxjs": "^5.5.3",
     "supertest": "^3.0.0",
-    "wdio-mocha-framework": "0.5.11",
-    "wdio-spec-reporter": "0.1.2",
-    "webdriverio": "4.8.0"
+    "wdio-mocha-framework": "^0.5.11",
+    "wdio-spec-reporter": "^0.1.3",
+    "webdriverio": "^4.9.11"
   },
   "devDependencies": {
-    "wdio-selenium-standalone-service": "0.0.9"
+    "concurrently": "^3.5.1",
+    "wdio-selenium-standalone-service": "^0.0.9"
   }
 }
