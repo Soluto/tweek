@@ -69,15 +69,6 @@ function addAuthSupport(server) {
   server.use(passport.initialize());
   server.use(passport.session());
 
-  const authProviders = selectAuthenticationProviders(server, nconf);
-  server.use('/authProviders', (req, res) => {
-    res.json(authProviders.map(ap => ({ name: ap.name, url: ap.url })));
-  });
-
-  server.use('/isAuthenticated', (req, res) => {
-    res.json({ isAuthenticated: req.isAuthenticated() });
-  });
-
   passport.serializeUser((user, done) => {
     done(null, user);
   });
@@ -117,9 +108,25 @@ const startServer = async () => {
     },
   };
   app.use(session(cookieOptions));
+
+  const authProviders = selectAuthenticationProviders(server, nconf) || [];
+  app.get('/authProviders', (req, res) => {
+    res.json(authProviders.map(ap => ({ name: ap.name, url: ap.url })));
+  });
+
   if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true') {
+    app.get('/isAuthenticated', (req, res) => {
+      res.json({ isAuthenticated: req.isAuthenticated() });
+    });
+    console.log('AUTH');
     addAuthSupport(app);
+  } else {
+    console.log('NO_AUTH');
+    app.get('/isAuthenticated', (req, res) => {
+      res.json({ isAuthenticated: true });
+    });
   }
+
   app.use(bodyParser.json()); // for parsing application/json
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 

@@ -1,10 +1,16 @@
 export const isAuthenticated = async () => {
   const response = await fetch('/isAuthenticated', { credentials: 'include' });
-  const data = await response.json();
-  return data  && data.isAuthenticated;
+  if (response.ok) {
+    const data = await response.json();
+    return data && data.isAuthenticated;
+  }
+  return false;
 };
 
 export const getAuthProviders = async () => {
   const res = await fetch('/authProviders');
-  return await res.json();
+  if (res.ok) {
+    return await res.json();
+  }
+  return [];
 };

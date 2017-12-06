@@ -1,7 +1,8 @@
 const supportedAuthenticationSchemes = ['azuread', 'google', 'oauth2', 'httpDigest'];
 
 const selectAuthenticationProviders = function (server, config) {
-  const schemes = config.get('TWEEK_AUTH_SCHEMES').split(',');
+  const authSchemesStr = config.get('TWEEK_AUTH_SCHEMES');
+  const schemes = authSchemesStr ? authSchemesStr.split(',') : [];
   let goodSchemes = [];
   let badSchemes = [];
 
