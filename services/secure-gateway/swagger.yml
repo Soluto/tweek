@@ -1,0 +1,52 @@
+swagger: "2.0"
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - http
+  - https
+info:
+  title: Tweek
+  license:
+    name: MIT
+    url: https://github.com/Soluto/tweek/blob/master/LICENSE
+  version: 0.1.0
+basePath: /api/v2/
+paths:
+  /configuration:
+    get:
+      tags:
+        - "configuraiton"
+      responses:
+        200:
+          description: "Success"
+        400:
+          description: "Invalid Request"
+        403:
+          description: "Unauthorized"
+        404:
+          description: "Key not found"
+      parameters: 
+        - name: key
+          in: query
+          description: "Configuration key name"
+          type: string
+          required: true
+        - name: $include
+          in: query
+          description: "Include additional keys"
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: $flatten
+          in: query
+          description: "Return flat key/value JSON (no nesting)"
+          type: boolean
+
+  # /schemas
+  # /context
+  # /tags
+  # /configuration
+  # /policy
