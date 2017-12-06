@@ -27,7 +27,7 @@ export default compose(
     render() {
       const { keys, addKey, children, selectedKey } = this.props;
       return (
-        <DocumentTitle title={`Tweek - ${selectedKey && selectedKey.key || 'keys'}`}>
+        <DocumentTitle title={`Tweek - ${selectedKey && selectedKey.key || 'Keys'}`}>
           <div className="keys-page-container">
             <div key="KeysList" className="keys-list">
               <div className="keys-list-wrapper">

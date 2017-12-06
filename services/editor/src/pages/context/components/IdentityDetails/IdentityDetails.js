@@ -1,4 +1,5 @@
 import React from 'react';
+import DocumentTitle from 'react-document-title';
 import { connect } from 'react-redux';
 import { compose, mapProps, lifecycle } from 'recompose';
 import changeCase from 'change-case';
@@ -25,50 +26,52 @@ const IdentityDetails = ({
   local,
   remote,
 }) => (
-  <div
-    className="identity-details-container"
-    data-comp="identity-details"
-    data-identity-id={identityId}
-    data-identity-type={identityType}
-  >
-    <div className="identity-title">
-      <div className="identity-id">{identityId}</div>
-      <div className="identity-type">{changeCase.pascalCase(identityType)}</div>
-      <SaveButton
-        data-comp="save-changes"
-        onClick={saveContext}
-        isSaving={isSavingContext}
-        hasChanges={hasChanges}
-      />
-    </div>
-    {isGettingContext ? (
-      'Loading...'
-    ) : (
-      <div>
-        <IdentityProperties
-          className="section"
-          identityType={identityType}
-          local={getContextProperties(identityType, local, true)}
-          remote={getContextProperties(identityType, remote)}
-          updateContext={context =>
-            updateContext({ ...context, ...addFixedKeysPrefix(getFixedKeys(local)) })
-          }
-        />
-
-        <FixedKeys
-          className="section"
-          local={getFixedKeys(local)}
-          remote={getFixedKeys(remote)}
-          updateContext={fixedKeys =>
-            updateContext({
-              ...getContextProperties(identityType, local, true),
-              ...addFixedKeysPrefix(fixedKeys),
-            })
-          }
+  <DocumentTitle title={`Tweek - ${identityType} - ${identityId}`}>
+    <div
+      className="identity-details-container"
+      data-comp="identity-details"
+      data-identity-id={identityId}
+      data-identity-type={identityType}
+    >
+      <div className="identity-title">
+        <div className="identity-id">{identityId}</div>
+        <div className="identity-type">{changeCase.pascalCase(identityType)}</div>
+        <SaveButton
+          data-comp="save-changes"
+          onClick={saveContext}
+          isSaving={isSavingContext}
+          hasChanges={hasChanges}
         />
       </div>
-    )}
-  </div>
+      {isGettingContext ? (
+        'Loading...'
+      ) : (
+        <div>
+          <IdentityProperties
+            className="section"
+            identityType={identityType}
+            local={getContextProperties(identityType, local, true)}
+            remote={getContextProperties(identityType, remote)}
+            updateContext={context =>
+              updateContext({ ...context, ...addFixedKeysPrefix(getFixedKeys(local)) })
+            }
+          />
+
+          <FixedKeys
+            className="section"
+            local={getFixedKeys(local)}
+            remote={getFixedKeys(remote)}
+            updateContext={fixedKeys =>
+              updateContext({
+                ...getContextProperties(identityType, local, true),
+                ...addFixedKeysPrefix(fixedKeys),
+              })
+            }
+          />
+        </div>
+      )}
+    </div>
+  </DocumentTitle>
 );
 
 const addFixedKeysPrefix = R.pipe(
