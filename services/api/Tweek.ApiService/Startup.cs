@@ -79,10 +79,11 @@ namespace Tweek.ApiService
             });
 
             var failureDelayInMs = Configuration.GetValue("Rules:FailureDelayInMs", 60000);
+            var versionTimeoudInMs = Configuration.GetValue("Rules:VersionTimeoutInMs", failureDelayInMs * 3);
             services.AddSingleton<IRulesRepository>(provider => new RulesRepository(provider.GetService<IRulesDriver>(),
                 provider.GetService<IRulesetVersionProvider>(),
                 TimeSpan.FromMilliseconds(failureDelayInMs),
-                TimeSpan.FromMilliseconds(failureDelayInMs * 3),
+                TimeSpan.FromMilliseconds(versionTimeoudInMs),
                 provider.GetService<ILoggerFactory>().CreateLogger("RulesRepository")));
             services.AddSingleton(provider =>
             {
