@@ -68,9 +68,11 @@ export function getFixedKeys(contextData = {}) {
   );
 }
 
-export function getContextProperties(identity, contextData = {}) {
-  const identityScheme = R.map(_ => '', contextSchema[identity] || {});
+export function getContextProperties(identity, contextData = {}, excludeEmpty = false) {
   const properties = R.pickBy((_, prop) => !prop.startsWith(FIXED_PREFIX), contextData);
 
+  if (excludeEmpty) return properties;
+
+  const identityScheme = R.map(_ => '', contextSchema[identity] || {});
   return { ...identityScheme, ...properties };
 }

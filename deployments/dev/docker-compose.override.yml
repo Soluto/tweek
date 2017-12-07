@@ -58,6 +58,8 @@ services:
       - Rules__Minio__SecretKeyPath=/run/secrets/minio_secret_key
       - Rules__Nats__Endpoint=nats://nats:4222
       - Rules__Management__Url=http://management:3000
+      - Rules__FailureDelayInMs=50
+      - Rules__VersionTimeoutInMs=2000
       - UseAddon__Rules=MinioRules
       - RulesetVersionProvider=NatsVersionProvider
     secrets:

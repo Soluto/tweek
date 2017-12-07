@@ -1,5 +1,5 @@
 import { mapPropsStream } from 'recompose';
-import Rx from 'rxjs';
+import { Observable } from 'rxjs';
 import * as ContextService from '../services/context-service';
 import * as TypesService from '../services/types-service';
 
@@ -18,7 +18,8 @@ export default (propName = 'propertyTypeDetails') =>
       })
       .startWith({ name: 'empty' });
 
-    return Rx.Observable
-      .combineLatest(props$, typeDetails$)
-      .map(([props, propertyTypeDetails]) => ({ ...props, [propName]: propertyTypeDetails }));
+    return Observable.combineLatest(props$, typeDetails$).map(([props, propertyTypeDetails]) => ({
+      ...props,
+      [propName]: propertyTypeDetails,
+    }));
   });

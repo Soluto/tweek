@@ -72,38 +72,6 @@
 .fixed-key-container .editable-key-container.removed {
   text-decoration: line-through;
 }
-.fixed-key-container .editable-key-container .value-input.has-changes {
-  color: green;
-}
-.fixed-key-container .editable-key-container .value-input.has-changes .bootstrap-typeahead-input-container {
-  color: green;
-}
-.fixed-key-container .editable-key-container .initial-value {
-  display: inline-block;
-  border: 0 none;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  height: 28px;
-  width: 150px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
-  opacity: 0.5;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  border-color: transparent;
-}
-.fixed-key-container .editable-key-container .initial-value:focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.fixed-key-container .editable-key-container .initial-value:disabled {
-  border-color: #bcbcbc;
-}
 .new-fixed-key {
   display: flex;
   align-items: center;

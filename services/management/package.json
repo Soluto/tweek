@@ -1,6 +1,6 @@
 {
   "name": "tweek-management",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "src/server.js",
   "repository": "Soluto/tweek",
   "author": "Soluto",
@@ -14,6 +14,7 @@
     "start:full-env": "yarn docker-compose up -d git minio nats && yarn start:debug --GIT_USER git --GIT_URL ssh://git@localhost:4001/tweek/repo --GIT_PUBLIC_KEY_PATH ../../deployments/dev/ssh/tweekgit.pub --GIT_PRIVATE_KEY_PATH ../../deployments/dev/ssh/tweekgit --MINIO_ENDPOINT localhost:4007 --MINIO_ACCESS_KEY_PATH ../../deployments/dev/minio/access_key --MINIO_SECRET_KEY_PATH ../../deployments/dev/minio/secret_key --NATS_ENDPOINT nats://localhost:4222",
     "test": "mocha",
     "logs": "yarn docker-compose logs",
+    "teardown": "yarn docker-compose down --remove-orphans",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml"
   },
   "dependencies": {
@@ -31,14 +32,14 @@
     "nodegit": "0.18.3",
     "ramda": "^0.25.0",
     "recursive-readdir": "^2.0.0",
-    "rxjs": "^5.5.2",
+    "rxjs": "^5.5.3",
     "uuid": "^3.1.0",
     "winston": "^2.4.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^4.11.0",
+    "eslint": "^4.12.1",
     "mocha": "^4.0.1"
   }
 }

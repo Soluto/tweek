@@ -2,6 +2,7 @@ const fs = require('fs');
 const nconf = require('nconf');
 const Minio = require('minio');
 const { Observable } = require('rxjs');
+const logger = require('./logger');
 
 function useStringFromFileEnvVariable(inlineSecretName, fileSecretName) {
   if (nconf.get(fileSecretName) && !nconf.get(inlineSecretName)) {
@@ -20,6 +21,8 @@ if (minioEndpoint) {
 module.exports = async function initStorage() {
   if (!minioEndpoint) return;
 
+  logger.info('initializing minio');
+
   const [minioHost, minioPort] = minioEndpoint.split(':');
   const minioClient = new Minio.Client({
     endPoint: minioHost,
@@ -33,20 +36,32 @@ module.exports = async function initStorage() {
 
   try {
     await minioClient.bucketExists(minioBucket);
+    logger.info('minio bucket exists');
   } catch (err) {
     if (err.code !== 'NoSuchBucket') throw err;
+    logger.info('creating minio bucket');
     await minioClient.makeBucket(minioBucket, nconf.get('MINIO_REGION'));
+    logger.info('created minio bucket');
+  }
+
+  try {
+    await minioClient.statObject(minioBucket, 'versions');
+    logger.info(`minio versions file exists`);
+  } catch (err) {
+    if (err.code !== 'NotFound') throw err;
+    logger.info('creating minio versions file');
     await minioClient.putObject(minioBucket, 'versions', '{}');
+    logger.info('created minio versions file');
   }
 
   async function getObject(objectName) {
-    return new Promise(async (resolve, reject) => {
-      const stream = await minioClient.getObject(minioBucket, objectName);
-      let result = '';
-      stream.on('data', chunk => (result += chunk));
-      stream.on('end', () => resolve(JSON.parse(result)));
-      stream.on('error', reject);
-    });
+    return await minioClient.getObject(minioBucket, objectName).then(stream=>
+      new Promise((resolve, reject) => {
+        let result = '';
+        stream.on('data', chunk => (result += chunk));
+        stream.on('end', () => resolve(JSON.parse(result)));
+        stream.on('error', reject);
+      }));
   }
 
   async function cleanStorage(exclude) {
@@ -81,6 +96,8 @@ module.exports = async function initStorage() {
     );
     await cleanStorage(Object.values(versions).concat('versions'));
   }
+
+  logger.info('minio client is ready');
 
   return {
     getObject,
