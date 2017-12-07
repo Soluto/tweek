@@ -18,7 +18,7 @@ const MainComponent = styled('div')`
 `;
 
 const LeftPane = styled('div')`
-	flex: 35;
+  flex: 35;
   background-color: #00aeef;
   display: flex;
   flex-direction: column;
@@ -43,12 +43,11 @@ const WelcomeMessageSpan = styled('span')`
 `;
 
 const TweekLogo = styled('img')`
-  width: 65%
-
+  width: 65%;
 `;
 
-const LoginMessageSpan = styled('span')`ֿ
-  font-family: Roboto;
+const LoginMessageSpan = styled('span')`
+  ֿ: Roboto;
   font-size: 20px;
   font-weight: bold;
   color: #696969;
@@ -66,26 +65,29 @@ const LoginButton = styled('a')`
 
   color: #ffffff;
   font-family: Roboto;
-	font-size: 14.4px;
-	font-weight: bold;
+  font-size: 14.4px;
+  font-weight: bold;
 
   text-align: center;
   text-decoration: none;
 `;
 
-
-const LoginPage = ({ authProviders }) =>
-  (<MainComponent>
+const LoginPage = ({ authProviders }) => (
+  <MainComponent>
     <LeftPane>
       <WelcomeMessageSpan>Welcome to:</WelcomeMessageSpan>
-      <TweekLogo src={logoSrc} />
+      <TweekLogo data-comp="tweek-logo" src={logoSrc} />
     </LeftPane>
     <RightPane>
       <LoginMessageSpan>Login into Tweek using:</LoginMessageSpan>
-      {authProviders.map(ap => 
-        <LoginButton key={ap.name} href={ap.url}>{ap.name}</LoginButton>)}
+      {authProviders.map(ap => (
+        <LoginButton key={ap.name} href={ap.url} data-comp={ap.name}>
+          {ap.name}
+        </LoginButton>
+      ))}
     </RightPane>
-  </MainComponent>);
+  </MainComponent>
+);
 
 const enhancer = compose(
   withState('authProviders', 'setAuthProviders', []),
@@ -93,7 +95,7 @@ const enhancer = compose(
     componentWillMount() {
       getAuthProviders().then(res => this.props.setAuthProviders(res));
     },
-  })
+  }),
 );
 
 export default enhancer(LoginPage);

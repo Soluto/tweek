@@ -4,6 +4,7 @@ import assert from 'assert';
 import R from 'ramda';
 import { expect } from 'chai';
 import { dataComp, dataField, attributeSelector } from './selector-utils';
+import { loginAndGoto } from './auth-utils';
 
 const timeout = 5000;
 
@@ -37,7 +38,7 @@ class Key {
   BLANK_KEY_NAME = '_blank';
 
   open(keyName = '', waitToLoad = true) {
-    browser.url(`/keys/${keyName}`);
+    loginAndGoto(`/keys/${keyName}`);
     browser.windowHandleSize({ width: 1360, height: 1020 });
     browser.waitForVisible(dataComp('key-page'), timeout);
 

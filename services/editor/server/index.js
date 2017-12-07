@@ -13,10 +13,10 @@ import getVapidKeys from './getVapidKeys';
 import helmet from 'helmet';
 import fs from 'fs';
 import os from 'os';
+
+import { addAuthSupport, addNoAuthSupport } from './authSupport';
+
 const crypto = require('crypto');
-const passport = require('passport');
-const selectAuthenticationProviders = require('./auth/providerSelector')
-  .selectAuthenticationProviders;
 
 function useFileFromBase64EnvVariable(inlineKeyName, fileKeyName) {
   const tmpDir = os.tmpdir();
@@ -65,29 +65,6 @@ function addDirectoryTraversalProtection(server) {
   });
 }
 
-function addAuthSupport(server) {
-  server.use(passport.initialize());
-  server.use(passport.session());
-
-  passport.serializeUser((user, done) => {
-    done(null, user);
-  });
-
-  passport.deserializeUser((user, done) => {
-    done(null, user);
-  });
-
-  server.use('*', (req, res, next) => {
-    if (req.isAuthenticated() || req.path.startsWith('auth')) {
-      return next();
-    }
-    if (req.originalUrl.startsWith('/api/')) {
-      return res.sendStatus(403);
-    }
-    return res.redirect('/login');
-  });
-}
-
 const startServer = async () => {
   const vapidKeys = await getVapidKeys();
   webpush.setVapidDetails('http://tweek.host', vapidKeys.publicKey, vapidKeys.privateKey);
@@ -109,29 +86,17 @@ const startServer = async () => {
   };
   app.use(session(cookieOptions));
 
-  const authProviders = selectAuthenticationProviders(app, nconf) || [];
-  app.get('/authProviders', (req, res) => {
-    res.json(authProviders.map(ap => ({ name: ap.name, url: ap.url })));
-  });
-
+  app.use('/health', (req, res) => res.status(200).json({}));
   if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true') {
-    app.get('/isAuthenticated', (req, res) => {
-      res.json({ isAuthenticated: req.isAuthenticated() });
-    });
-    console.log('AUTH');
     addAuthSupport(app);
   } else {
-    console.log('NO_AUTH');
-    app.get('/isAuthenticated', (req, res) => {
-      res.json({ isAuthenticated: true });
-    });
+    addNoAuthSupport(app);
   }
 
   app.use(bodyParser.json()); // for parsing application/json
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
   app.use('/api', serverRoutes({ serviceEndpoints }));
-  app.use('/health', (req, res) => res.status(200).json({}));
   app.get('/version', (req, res) => res.send(process.env.npm_package_version));
 
   app.use(express.static(path.join(__dirname, 'build')));

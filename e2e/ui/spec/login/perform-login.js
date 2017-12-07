@@ -1,9 +1,20 @@
-import { expect } from 'chai';
+/* global describe, before, after, it, browser */
 
-describe.only('perform login', () => {
+import { expect } from 'chai';
+import { dataComp, dataField, attributeSelector } from '../../utils/selector-utils';
+
+const timeout = 5000;
+const tweekLogo = dataComp('tweek-logo');
+
+describe('perform login', () => {
   before(() => {
-    browser.url('/login').windowHandleSize({ width: 2000, height: 1000 });
+    browser.url('/login');
+    browser.windowHandleSize({ width: 2000, height: 1000 });
   });
 
-  it('should show all auth providers', () => {});
+  it('should show tweek logo', () => {
+    browser.waitForVisible(tweekLogo, timeout);
+  });
+
+  it('should show button for each auth provider', () => {});
 });

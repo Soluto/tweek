@@ -7,6 +7,8 @@ nconf
     TWEEK_API_URL: 'http://localhost:4003/',
     AUTHORING_URL: 'http://localhost:4005/',
     GIT_PRIVATE_KEY_PATH: '../../deployments/dev/ssh/tweekgit',
+    AUTH_DIGEST_CREDENTIALS: 'user:pwd',
+    AUTH_DIGEST_URL: 'auth/digest',
   });
 const host = nconf.get('host');
 const proxy = nconf.get('proxy');

@@ -2,6 +2,7 @@
 import { expect } from 'chai';
 import tweekApiClient from '../../clients/tweek-api-client';
 import { attributeSelector, dataComp, dataField } from '../../utils/selector-utils';
+import { loginAndGoto } from '../../utils/auth-utils';
 
 const dataLabel = attributeSelector('data-label');
 const propertyItem = propertyName =>
@@ -51,7 +52,7 @@ function updateExistingCustomProperty(propertyName, { base, allowedValues } = {}
 function addNewIdentity(identityType) {
   const addNewIdentityComp = selector => `${dataComp('add-new-identity')} ${selector}`;
 
-  browser.url(`/settings`);
+  loginAndGoto(`/settings`);
   browser.waitForVisible('.side-menu');
   $(addNewIdentityComp('button')).click();
   $(addNewIdentityComp('input')).setValue(`${identityType}\n`);
@@ -66,7 +67,7 @@ function deleteCurrentIdentity() {
 }
 
 function goToIdentityPage(identityType) {
-  browser.url(`/settings/identities/${identityType}`);
+  loginAndGoto(`/settings/identities/${identityType}`);
   browser.waitForVisible('.identity-page');
 }
 
@@ -89,7 +90,9 @@ describe('edit identity schema', () => {
       addTypedProperty('Age', 'number');
       saveChanges();
       tweekApiClient.eventuallyExpectKey('@tweek/schema/edit_properties_test', result =>
-        expect(result).to.have.property('Age').that.deep.include({ type: 'number' }),
+        expect(result)
+          .to.have.property('Age')
+          .that.deep.include({ type: 'number' }),
       );
     });
 
@@ -98,15 +101,15 @@ describe('edit identity schema', () => {
       addTypedProperty('OsType', 'custom');
       saveChanges();
       tweekApiClient.eventuallyExpectKey('@tweek/schema/edit_properties_test', result => {
-        expect(result).to.have
-          .property('OsType')
+        expect(result)
+          .to.have.property('OsType')
           .that.deep.include({ type: { base: 'string', allowedValues: [] } });
       });
       updateExistingCustomProperty('OsType', { allowedValues: ['Android', 'iOS'] });
       saveChanges();
       tweekApiClient.eventuallyExpectKey('@tweek/schema/edit_properties_test', result => {
-        expect(result).to.have
-          .property('OsType')
+        expect(result)
+          .to.have.property('OsType')
           .that.deep.include({ type: { base: 'string', allowedValues: ['Android', 'iOS'] } });
       });
     });
