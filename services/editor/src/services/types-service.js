@@ -1,4 +1,4 @@
-/* global fetch */
+import fetch from '../utils/fetch';
 
 export const types = {
   string: {
