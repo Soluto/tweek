@@ -109,7 +109,7 @@ const startServer = async () => {
   };
   app.use(session(cookieOptions));
 
-  const authProviders = selectAuthenticationProviders(server, nconf) || [];
+  const authProviders = selectAuthenticationProviders(app, nconf) || [];
   app.get('/authProviders', (req, res) => {
     res.json(authProviders.map(ap => ({ name: ap.name, url: ap.url })));
   });
