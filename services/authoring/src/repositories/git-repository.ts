@@ -77,7 +77,7 @@ export default class GitRepository {
 
     const historyEntries = await Promise.all(
       fileNames.map(async (file) => {
-        const options = [`--follow`, file];
+        const options = [file];
         if (since) options.unshift(`--since="${since}"`);
 
         const history = await new Promise<any>((resolve, reject) => {
