@@ -5,7 +5,7 @@ import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEdi
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
 import ConstEditor from '../../../../../components/ConstEditor';
 import KeyTags from './KeyTags/KeyTags';
-import EditableTextArea from './EditableTextArea/EditableTextArea';
+import EditableTextArea from '../../../../../components/common/EditableTextArea/EditableTextArea';
 import RevisionHistory from './RevisionHistory/RevisionHistory';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
 import HeaderMainInput from './HeaderMainInput';
@@ -47,7 +47,8 @@ const Editor = ({
         value={manifest.implementation.value}
         valueType={manifest.valueType}
         onChange={value =>
-          onManifestChange({ ...manifest, implementation: { ...manifest.implementation, value } })}
+          onManifestChange({ ...manifest, implementation: { ...manifest.implementation, value } })
+        }
         onValidationChange={onValidationChange}
       />
     );
@@ -173,11 +174,11 @@ const KeyStickyHeader = (props) => {
     <div className="sticky-key-header" disabled={isReadonly}>
       <HeaderMainInput {...props} />
 
-      {!isReadonly
-        ? <div className="sticky-key-page-action-wrapper">
-            <KeyPageActions {...{ isReadonly, isHistoricRevision }} isInStickyMode />
-          </div>
-        : null}
+      {!isReadonly ? (
+        <div className="sticky-key-page-action-wrapper">
+          <KeyPageActions {...{ isReadonly, isHistoricRevision }} isInStickyMode />
+        </div>
+      ) : null}
     </div>
   );
 };
@@ -202,17 +203,15 @@ const KeyFullHeader = (props) => {
       <div className="key-meta-container">
         <div className="key-header-and-modification-wrapper">
           <HeaderMainInput {...props} />
-          {revisionHistory
-            ? <RevisionHistory revision={revision} revisionHistory={revisionHistory} />
-            : null}
+          {revisionHistory ? (
+            <RevisionHistory revision={revision} revisionHistory={revisionHistory} />
+          ) : null}
         </div>
 
         <fieldset disabled={isReadonly} style={{ border: 'none' }}>
           <div className="key-full-path">
             <label>Full path: </label>
-            <label className="actual-path">
-              {keyFullPath}
-            </label>
+            <label className="actual-path">{keyFullPath}</label>
           </div>
 
           <div className="key-description-and-tags-wrapper">

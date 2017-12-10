@@ -2,16 +2,22 @@ import React from 'react';
 import { compose, setDisplayName, setPropTypes } from 'recompose';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import KeyValueTypeSelector from '../KeyEditPage/KeyValueTypeSelector/KeyValueTypeSelector';
-import NewKeyInput from '../KeyEditPage/NewKeyInput';
-import { addKeyDetails, updateKeyPath, changeKeyFormat } from '../../../../../store/ducks/selectedKey';
+import {
+  addKeyDetails,
+  updateKeyPath,
+  changeKeyFormat,
+} from '../../../../../store/ducks/selectedKey';
+import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
+import NewKeyInput from './NewKeyInput';
 import KeyFormatSelector from './KeyFormatSelector';
 import './KeyAddPage.css';
 
 const KeyAddPage = compose(
-  connect((state => ({ manifest: state.selectedKey.local.manifest })),
-    { addKeyDetails, updateKeyPath, changeKeyFormat }
-  ),
+  connect(state => ({ manifest: state.selectedKey.local.manifest }), {
+    addKeyDetails,
+    updateKeyPath,
+    changeKeyFormat,
+  }),
   setDisplayName('KeyAddPage'),
   setPropTypes({
     updateKeyPath: PropTypes.func.isRequired,
