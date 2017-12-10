@@ -145,6 +145,11 @@ export function openKey(key, { revision } = {}) {
     }
 
     const manifest = keyData.manifest || createBlankKeyManifest(key);
+    if (manifest.implementation.type === 'link') {
+      dispatch(push(`/keys/${manifest.implementation.key}`));
+      return;
+    }
+
     const implementation = createImplementation(keyData);
     const keyOpenedPayload = {
       key,
