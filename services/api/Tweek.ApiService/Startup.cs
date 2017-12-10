@@ -199,7 +199,8 @@ namespace Tweek.ApiService
 
             var dict = new Dictionary<string, IRuleParser>(StringComparer.OrdinalIgnoreCase){
                 ["jpad"] = jpadParser,
-                ["const"] = Engine.Core.Rules.Utils.ConstValueParser
+                ["const"] = Engine.Core.Rules.Utils.ConstValueParser,
+                ["link"] = Engine.Core.Rules.Utils.LinkedKeyParser,
             };
 
             return x=>dict[x];

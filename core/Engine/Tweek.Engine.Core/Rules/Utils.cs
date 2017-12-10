@@ -13,6 +13,8 @@ namespace Tweek.Engine.Core.Rules
             Prelude.map(JsonValue.From(JToken.Parse(str)),
                 (value) => new AnonymousRule(ctx => ConfigurationValue.New(value))));
 
+        public static IRuleParser LinkedKeyParser = new AnonymousParser(str => new AnonymousRule(ctx => ctx($"key.{str}").Map(ConfigurationValue.New)));
+
         public class AnonymousRule : IRule
         {
             private readonly Func<GetContextValue, Option<ConfigurationValue>> fn;
