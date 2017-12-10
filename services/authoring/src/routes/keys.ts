@@ -104,4 +104,11 @@ export class KeysController {
   async getDependents( @QueryParam('keyPath') keyPath: string): Promise<any> {
     return await searchIndex.dependents(keyPath);
   }
+
+  @Authorize({ permission: PERMISSIONS.KEYS_READ })
+  @GET
+  @Path('/links')
+  async getLinks( @QueryParam('keyPath') keyPath: string): Promise<any> {
+    return await searchIndex.links(keyPath);
+  }
 }
