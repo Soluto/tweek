@@ -1,13 +1,14 @@
 import React from 'react';
 import { Observable } from 'rxjs/Rx';
 import { setObservableConfig, compose } from 'recompose';
-import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import registerServiceWorker from '../registerServiceWorker';
 import withLoading from '../hoc/with-loading';
 import { isAuthenticated } from '../services/auth-service';
 import { refreshSchema } from '../services/context-service';
 import * as TypesService from '../services/types-service';
+import { redirectToLogin } from '../store/ducks/login';
 import AppHeader from './AppHeader';
 import AppPage from './AppPage';
 import GoogleTagManager from './googleTagManager';
@@ -20,27 +21,26 @@ setObservableConfig({
   fromESObservable: Observable.from,
 });
 
-
-const App = ({ children }) =>
-  (<div className={'app'}>
+const App = ({ children }) => (
+  <div className={'app'}>
     <GoogleTagManager />
     <AppHeader />
     <AppPage children={children} />
   </div>
-  );
+);
 
-const preload = async (props) => {
+const preload = async ({ redirectToLogin }) => {
   const res = await isAuthenticated();
-  if(res) {
+  if (res) {
     registerServiceWorker();
     return await Promise.all([TypesService.refreshTypes(), refreshSchema()]);
   }
-  props.history.push('/login');
+  redirectToLogin();
   return;
 };
 
 const enhance = compose(
-  withRouter,
+  connect(null, { redirectToLogin }),
   withLoading(() => null, preload),
   withTypesService(TypesService),
 );
