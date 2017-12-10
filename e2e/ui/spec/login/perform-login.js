@@ -18,10 +18,5 @@ describe('perform login', () => {
 
   it('should show button for each auth provider', () => {
     browser.waitForVisible(digestAuthLink, timeout);
-    //browser.click(digestAuthLink);
-    /*browser.keys(['u', 's', 'e', 'r']);
-    browser.keys('Tab');
-    browser.keys('p', 'w', 'd');
-    browser.keys('Enter');*/
   });
 });

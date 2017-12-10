@@ -47,8 +47,10 @@ const addNoAuthSupport = (server) => {
   });
 };
 
+const isAuthRequired = () => (nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true';
+
 export const authMiddleware = (req, res, next) => {
-  if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true') {
+  if (isAuthRequired()) {
     return req.isAuthenticated() ? next() : res.sendStatus(403);
   } else {
     return next();
@@ -56,7 +58,7 @@ export const authMiddleware = (req, res, next) => {
 };
 
 export const initAuth = (server) => {
-  if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true') {
+  if (isAuthRequired()) {
     addAuthSupport(server);
   } else {
     addNoAuthSupport(server);
