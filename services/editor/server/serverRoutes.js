@@ -47,6 +47,7 @@ export default (config) => {
   app.get('/manifests', authoringProxy);
   app.get('/manifests/*', authoringProxy);
   app.get('/dependents/*', authoringProxy);
+  app.get('/links/*', authoringProxy);
 
   app.get('/search-index', authoringProxy);
   app.get('/search', authoringProxy);

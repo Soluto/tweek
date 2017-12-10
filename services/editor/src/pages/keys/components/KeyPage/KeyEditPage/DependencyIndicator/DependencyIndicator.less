@@ -1,7 +1,8 @@
 @import (reference) "../../../../../../styles/core/core.less";
+
 @text-color: #a5a5a5;
 
-.key-dependency-indicator-container {
+.dependency-indicator-container {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -9,37 +10,12 @@
   font-size: 14px;
   margin-top: 10px;
   padding-left: 4px;
-}
 
-.dependency-item {
-  list-style-type: none;
-  font-weight: 300;
-}
+  .dependency-item {
+    list-style-type: none;
+    font-weight: 300;
+    color: @text-color;
 
-.depends-on {
-  .key-dependency-indicator-container;
-  li {
-    .dependency-item;
-    a {
-      text-decoration: none;
-      color: @text-color;
-      &:visited {
-        color: @text-color;
-      }
-      &:hover {
-        color: darken(@text-color, 20%);
-      }
-      &:active {
-        color: @text-color;
-      }
-    }
-  }
-}
-
-.used-by {
-  .key-dependency-indicator-container;
-  li {
-    .dependency-item;
     a {
       text-decoration: none;
       color: @text-color;
