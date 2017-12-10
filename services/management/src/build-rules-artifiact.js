@@ -3,40 +3,43 @@ const { Observable } = require('rxjs');
 
 const indexByName = R.indexBy(R.prop('name'));
 
-module.exports = function(files) {
-  //todo remove legacy support
-  files = files.map(file =>
-    Object.assign({}, file, {
-      name: file.name.replace(/^meta\//, 'manifests/').replace(/^rules\//, 'implementations/jpad/'),
-    }),
-  );
-
-  const metaFiles = files.filter(x => x.name.startsWith('manifests/'));
+module.exports = function (files) {
+  const manifestFiles = files.filter(x => x.name.startsWith('manifests/'));
   const index = indexByName(files);
-  return Observable.from(metaFiles)
+  return Observable.from(manifestFiles)
     .flatMap(file => Observable.defer(file.read))
-    .map(JSON.parse)
-    .map(meta =>
+    .map(x => JSON.parse(x))
+    .map(manifest =>
       Observable.defer(async () => {
         const keyDef = {
-          dependencies: meta.dependencies,
+          dependencies: manifest.dependencies,
         };
-        switch (meta.implementation.type) {
-          case 'file': {
-            const { format, extension } = meta.implementation;
-            keyDef.format = format;
-            keyDef.payload = await index[
-              `implementations/${format}/${meta.key_path}.${extension || format}`
-            ].read();
-            break;
-          }
-          case 'const': {
-            keyDef.format = 'const';
-            keyDef.payload = JSON.stringify(meta.implementation.value);
-            break;
-          }
+        switch (manifest.implementation.type) {
+        case 'file': {
+          const { format, extension } = manifest.implementation;
+          keyDef.format = format;
+          keyDef.payload = await index[
+            `implementations/${format}/${manifest.key_path}.${extension || format}`
+          ].read();
+          break;
         }
-        return [meta.key_path, keyDef];
+        case 'const': {
+          keyDef.format = 'const';
+          keyDef.payload = JSON.stringify(manifest.implementation.value);
+          break;
+        }
+        case 'link': {
+          keyDef.format = 'link';
+          keyDef.payload = manifest.implementation.key;
+
+          keyDef.dependencies = keyDef.dependencies || [];
+          if (!keyDef.dependencies.includes(manifest.implementation.key)) {
+            keyDef.dependencies.push(manifest.implementation.key);
+          }
+          break;
+        }
+        }
+        return [manifest.key_path, keyDef];
       }),
     )
     .mergeAll(10)
