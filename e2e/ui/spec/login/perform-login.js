@@ -5,16 +5,23 @@ import { dataComp, dataField, attributeSelector } from '../../utils/selector-uti
 
 const timeout = 5000;
 const tweekLogo = dataComp('tweek-logo');
+const digestAuthLink = dataComp('Username and password (Digest Authentication)');
 
 describe('perform login', () => {
   before(() => {
     browser.url('/login');
-    browser.windowHandleSize({ width: 2000, height: 1000 });
   });
 
   it('should show tweek logo', () => {
     browser.waitForVisible(tweekLogo, timeout);
   });
 
-  it('should show button for each auth provider', () => {});
+  it('should show button for each auth provider', () => {
+    browser.waitForVisible(digestAuthLink, timeout);
+    //browser.click(digestAuthLink);
+    /*browser.keys(['u', 's', 'e', 'r']);
+    browser.keys('Tab');
+    browser.keys('p', 'w', 'd');
+    browser.keys('Enter');*/
+  });
 });

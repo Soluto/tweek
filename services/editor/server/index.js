@@ -3,7 +3,6 @@ import http from 'http';
 import express from 'express';
 import morgan from 'morgan';
 import nconf from 'nconf';
-import session from 'express-session';
 import bodyParser from 'body-parser';
 import webpush from 'web-push';
 import serverRoutes from './serverRoutes';
@@ -14,9 +13,8 @@ import helmet from 'helmet';
 import fs from 'fs';
 import os from 'os';
 
-import { addAuthSupport, addNoAuthSupport } from './authSupport';
-
-const crypto = require('crypto');
+import { authMiddleware, initAuth } from './authSupport';
+import addDirectoryTraversalProtection from './directoryProtection';
 
 function useFileFromBase64EnvVariable(inlineKeyName, fileKeyName) {
   const tmpDir = os.tmpdir();
@@ -55,16 +53,6 @@ GitContinuousUpdater.onUpdate(serviceEndpoints.authoring)
   .retry()
   .subscribe();
 
-function addDirectoryTraversalProtection(server) {
-  const DANGEROUS_PATH_PATTERN = /(?:^|[\\/])\.\.(?:[\\/]|$)/;
-  server.use('*', (req, res, next) => {
-    if (req.path.includes('\0') || DANGEROUS_PATH_PATTERN.test(req.path)) {
-      return res.status(400).send({ error: 'Dangerous path' });
-    }
-    return next();
-  });
-}
-
 const startServer = async () => {
   const vapidKeys = await getVapidKeys();
   webpush.setVapidDetails('http://tweek.host', vapidKeys.publicKey, vapidKeys.privateKey);
@@ -77,27 +65,15 @@ const startServer = async () => {
   app.use(morgan('tiny'));
 
   addDirectoryTraversalProtection(app);
-  const cookieOptions = {
-    secret: nconf.get('SESSION_COOKIE_SECRET_KEY') || crypto.randomBytes(20).toString('base64'),
-    cookie: {
-      httpOnly: true,
-      sameSite: 'lax',
-    },
-  };
-  app.use(session(cookieOptions));
 
-  app.use('/health', (req, res) => res.status(200).json({}));
-  if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true') {
-    addAuthSupport(app);
-  } else {
-    addNoAuthSupport(app);
-  }
+  initAuth(app);
 
   app.use(bodyParser.json()); // for parsing application/json
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-  app.use('/api', serverRoutes({ serviceEndpoints }));
+  app.use('/api', authMiddleware, serverRoutes({ serviceEndpoints }));
   app.get('/version', (req, res) => res.send(process.env.npm_package_version));
+  app.use('/health', (req, res) => res.status(200).json({}));
 
   app.use(express.static(path.join(__dirname, 'build')));
   app.get('/*', (req, res) => {

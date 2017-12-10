@@ -2,13 +2,14 @@
 
 import Identity from '../../utils/Identity';
 import assert from 'assert';
+import { loginAndGoto } from '../../utils/auth-utils';
 
 describe('override keys', () => {
   const identityId = 'awesome_user';
   const identityType = 'user';
   const typedKey = 'behavior_tests/context/override_key';
 
-  before(() => browser.url('/context').windowHandleSize({ width: 1360, height: 1020 }));
+  before(() => loginAndGoto('/context'));
 
   it('should modify override keys', () => {
     const identity = Identity.open(identityType, identityId);

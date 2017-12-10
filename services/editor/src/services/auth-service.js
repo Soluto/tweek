@@ -1,5 +1,5 @@
 export const isAuthenticated = async () => {
-  const response = await fetch('/isAuthenticated', { credentials: 'include' });
+  const response = await fetch('/isAuthenticated', { credentials: 'same-origin' });
   if (response.ok) {
     const data = await response.json();
     return data && data.isAuthenticated;

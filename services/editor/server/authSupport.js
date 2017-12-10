@@ -1,10 +1,21 @@
 import nconf from 'nconf';
+import session from 'express-session';
 const passport = require('passport');
+const crypto = require('crypto');
 
 const selectAuthenticationProviders = require('./auth/providerSelector')
   .selectAuthenticationProviders;
 
-function addAuthSupport(server) {
+const addAuthSupport = (server) => {
+  const cookieOptions = {
+    secret: nconf.get('SESSION_COOKIE_SECRET_KEY') || crypto.randomBytes(20).toString('base64'),
+    cookie: {
+      httpOnly: true,
+      sameSite: 'lax',
+    },
+  };
+  server.use(session(cookieOptions));
+
   server.use(passport.initialize());
   server.use(passport.session());
 
@@ -24,16 +35,9 @@ function addAuthSupport(server) {
   passport.deserializeUser((user, done) => {
     done(null, user);
   });
+};
 
-  server.use('*', (req, res, next) => {
-    if (req.isAuthenticated() || req.baseUrl.startsWith('/auth/') || req.baseUrl === '/health') {
-      return next();
-    }
-    return res.sendStatus(403);
-  });
-}
-
-function addNoAuthSupport(server) {
+const addNoAuthSupport = (server) => {
   server.get('/isAuthenticated', (req, res) => {
     res.json({ isAuthenticated: true });
   });
@@ -41,9 +45,20 @@ function addNoAuthSupport(server) {
   server.get('/authProviders', (req, res) => {
     res.json([]);
   });
-}
+};
 
-module.exports = {
-  addAuthSupport,
-  addNoAuthSupport,
+export const authMiddleware = (req, res, next) => {
+  if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true') {
+    return req.isAuthenticated() ? next() : res.sendStatus(403);
+  } else {
+    return next();
+  }
+};
+
+export const initAuth = (server) => {
+  if ((nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true') {
+    addAuthSupport(server);
+  } else {
+    addNoAuthSupport(server);
+  }
 };

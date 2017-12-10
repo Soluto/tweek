@@ -10,7 +10,7 @@ describe('identity properties', () => {
 
   before(() => {
     loginAndGoto('/context');
-    browser.windowHandleSize({ width: 1360, height: 1020 });
+    //browser.windowHandleSize({ width: 1360, height: 1020 });
   });
 
   it('should modify identity properties', () => {
