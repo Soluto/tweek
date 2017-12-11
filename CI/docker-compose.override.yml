@@ -1,8 +1,11 @@
 version: '2'
+
 services:
   git:
     image: soluto/tweek-bare-repo
     build: ../services/git-service/BareRepository
+    volumes:
+      - ../:/repo/tweek/
     ports: 
       - "5001:22"
   
@@ -11,6 +14,8 @@ services:
     build: ../services/management
     logging:
       driver: "json-file"
+    volumes:
+      - ../:/repo/tweek/
     ports:
       - "5002:3000"
 
@@ -21,6 +26,8 @@ services:
       dockerfile: TweekApiDockerfile
     logging:
       driver: "json-file"
+    volumes:
+      - ../:/repo/tweek/
     ports:
       - "5003:80"
     environment:
@@ -29,6 +36,8 @@ services:
   authoring:
     image: soluto/tweek-authoring
     build: ../services/authoring
+    volumes:
+      - ../:/repo/tweek/
     logging:
       driver: "json-file"
     ports:
@@ -37,6 +46,8 @@ services:
   editor:
     image: soluto/tweek-editor
     build: ../services/editor
+    volumes:
+      - ../:/repo/tweek/
     logging:
       driver: "json-file"
     ports:

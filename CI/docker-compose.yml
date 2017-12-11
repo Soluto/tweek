@@ -1,4 +1,5 @@
 version: '2'
+
 services:    
   git:
     image: $REPOSITORY_IMAGE
@@ -6,7 +7,7 @@ services:
     volumes:
       - ${CF_VOLUME}:/repo
     environment:
-      - PUBLIC_KEY_PATH=/repo/tweek/deployments/dev/tweekgit.pub
+      - PUBLIC_KEY_PATH=/repo/tweek/deployments/dev/ssh/tweekgit.pub
       - TWEEK_MANAGEMENT_URL=http://management:3000
   
   management:
@@ -25,8 +26,8 @@ services:
       - VALIDATION_URL=http://api/validation
       - GIT_USER=git
       - GIT_URL=ssh://git@git/tweek/tests
-      - GIT_PRIVATE_KEY_PATH=/repo/tweek/deployments/dev/tweekgit
-      - GIT_PUBLIC_KEY_PATH=/repo/tweek/deployments/dev/tweekgit.pub
+      - GIT_PRIVATE_KEY_PATH=/repo/tweek/deployments/dev/ssh/tweekgit
+      - GIT_PUBLIC_KEY_PATH=/repo/tweek/deployments/dev/ssh/tweekgit.pub
       - GIT_SAMPLE_INTERVAL=500
       - MINIO_ENDPOINT=minio:9000
       - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
@@ -53,7 +54,7 @@ services:
       - Rules__VersionTimeoutInMs=2000
       - UseAddon__Rules=MinioRules
       - RulesetVersionProvider=NatsVersionProvider
-      - PUBLIC_KEY_PATH=/repo/tweek/deployments/dev/tweekgit_public.pfx
+      - PUBLIC_KEY_PATH=/repo/tweek/deployments/dev/ssh/tweekgit_public.pfx
       - Redis__ConnectionString=redis:6379
       - CorsPolicies__Keys__Origins=http://editor:3000,http://testorigin
       - CorsPolicies__Keys__Methods=GET
@@ -74,8 +75,8 @@ services:
     environment:
       - GIT_USER=git
       - GIT_URL=ssh://git@git/tweek/tests
-      - GIT_PRIVATE_KEY_PATH=/repo/tweek/deployments/dev/tweekgit
-      - GIT_PUBLIC_KEY_PATH=/repo/tweek/deployments/dev/tweekgit.pub
+      - GIT_PRIVATE_KEY_PATH=/repo/tweek/deployments/dev/ssh/tweekgit
+      - GIT_PUBLIC_KEY_PATH=/repo/tweek/deployments/dev/ssh/tweekgit.pub
       
   editor:
     image: $EDITOR_IMAGE
@@ -90,7 +91,7 @@ services:
     logging:
       driver: "none"
     environment:
-      - GIT_PRIVATE_KEY_PATH=/repo/tweek/deployments/dev/tweekgit
+      - GIT_PRIVATE_KEY_PATH=/repo/tweek/deployments/dev/ssh/tweekgit
       - TWEEK_API_HOSTNAME=http://api
       - AUTHORING_API_HOSTNAME=http://authoring:3000
       
@@ -114,7 +115,9 @@ services:
     image: nats:1.0.4-linux
 
   selenium:
-    image: selenium/standalone-chrome:3.4.0
+    image: selenium/standalone-chrome:3.8.1
+    volumes:
+      - /dev/shm:/dev/shm
     logging:
       driver: "none"
 
