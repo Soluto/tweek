@@ -36,13 +36,22 @@
       "target": "http://localhost:3001",
       "secure": false
     },
-    "/isAuthenticated": {
-      "target": "http://localhost:3001",
-      "secure": true
-    },
     "/authProviders": {
       "target": "http://localhost:3001",
       "secure": false
+    },
+
+    "/keys": {
+      "target": "http://localhost:3001",
+      "secure": true
+    },
+    "/settings": {
+      "target": "http://localhost:3001",
+      "secure": true
+    },
+    "/context": {
+      "target": "http://localhost:3001",
+      "secure": true
     }
   },
   "jest": {

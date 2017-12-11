@@ -1,6 +1,6 @@
 const supportedAuthenticationSchemes = ['azuread', 'google', 'oauth2', 'httpDigest'];
 
-const selectAuthenticationProviders = function (server, config) {
+const selectAuthenticationProviders = (server, config) => {
   const authSchemesStr = config.get('TWEEK_AUTH_SCHEMES');
   const schemes = authSchemesStr ? authSchemesStr.split(',') : [];
   let goodSchemes = [];
@@ -22,4 +22,4 @@ const selectAuthenticationProviders = function (server, config) {
   return goodSchemes;
 };
 
-module.exports.selectAuthenticationProviders = selectAuthenticationProviders;
+export default selectAuthenticationProviders;

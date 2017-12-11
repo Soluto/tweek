@@ -1,10 +1,10 @@
 import nconf from 'nconf';
 import session from 'express-session';
-const passport = require('passport');
-const crypto = require('crypto');
 
-const selectAuthenticationProviders = require('./auth/providerSelector')
-  .selectAuthenticationProviders;
+import selectAuthenticationProviders from './auth/providerSelector';
+
+const crypto = require('crypto');
+const passport = require('passport');
 
 const addAuthSupport = (server) => {
   const cookieOptions = {
@@ -19,15 +19,6 @@ const addAuthSupport = (server) => {
   server.use(passport.initialize());
   server.use(passport.session());
 
-  server.get('/isAuthenticated', (req, res) => {
-    res.json({ isAuthenticated: req.isAuthenticated() });
-  });
-
-  const authProviders = selectAuthenticationProviders(server, nconf) || [];
-  server.get('/authProviders', (req, res) => {
-    res.json(authProviders.map(ap => ({ name: ap.name, url: ap.url })));
-  });
-
   passport.serializeUser((user, done) => {
     done(null, user);
   });
@@ -37,17 +28,7 @@ const addAuthSupport = (server) => {
   });
 };
 
-const addNoAuthSupport = (server) => {
-  server.get('/isAuthenticated', (req, res) => {
-    res.json({ isAuthenticated: true });
-  });
-
-  server.get('/authProviders', (req, res) => {
-    res.json([]);
-  });
-};
-
-const isAuthRequired = () => (nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true';
+export const isAuthRequired = () => (nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true';
 
 export const authMiddleware = (req, res, next) => {
   if (isAuthRequired()) {
@@ -60,7 +41,9 @@ export const authMiddleware = (req, res, next) => {
 export const initAuth = (server) => {
   if (isAuthRequired()) {
     addAuthSupport(server);
-  } else {
-    addNoAuthSupport(server);
   }
+  const authProviders = selectAuthenticationProviders(server, nconf) || [];
+  server.get('/authProviders', (req, res) => {
+    res.json(authProviders.map(ap => ({ name: ap.name, url: ap.url })));
+  });
 };

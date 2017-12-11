@@ -1,22 +1,19 @@
 /* global describe, before, after, it, browser */
 
 import { expect } from 'chai';
+import url from 'url';
 import { dataComp, dataField, attributeSelector } from '../../utils/selector-utils';
 
 const timeout = 5000;
 const tweekLogo = dataComp('tweek-logo');
 const digestAuthLink = dataComp('Username and password (Digest Authentication)');
 
-describe('perform login', () => {
-  before(() => {
-    browser.url('/login');
-  });
-
-  it('should show tweek logo', () => {
+describe('redirect to login page', () => {
+  it('should navigate to login page', () => {
+    browser.url('/');
+    const newPath = url.parse(browser.getUrl()).pathname;
+    expect(newPath).to.equal('/login');
     browser.waitForVisible(tweekLogo, timeout);
-  });
-
-  it('should show button for each auth provider', () => {
     browser.waitForVisible(digestAuthLink, timeout);
   });
 });

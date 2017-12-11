@@ -48,7 +48,6 @@ services:
       - TWEEK_API_URL=http://api/
       - AUTHORING_URL=http://authoring:3000/
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
-      - AUTH_DIGEST_URL=auth/digest
       - AUTH_DIGEST_CREDENTIALS=user:pwd
     secrets:
       - tweek_ssh_private_key

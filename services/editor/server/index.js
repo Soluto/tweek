@@ -13,10 +13,10 @@ import helmet from 'helmet';
 import fs from 'fs';
 import os from 'os';
 
-import { authMiddleware, initAuth } from './authSupport';
+import { authMiddleware, initAuth, isAuthRequired } from './authSupport';
 import addDirectoryTraversalProtection from './directoryProtection';
 
-function useFileFromBase64EnvVariable(inlineKeyName, fileKeyName) {
+const useFileFromBase64EnvVariable = (inlineKeyName, fileKeyName) => {
   const tmpDir = os.tmpdir();
   if (nconf.get(inlineKeyName) && !nconf.get(fileKeyName)) {
     const keyData = new Buffer(nconf.get(inlineKeyName), 'base64');
@@ -24,7 +24,7 @@ function useFileFromBase64EnvVariable(inlineKeyName, fileKeyName) {
     fs.writeFileSync(newKeyPath, keyData);
     nconf.set(fileKeyName, newKeyPath);
   }
-}
+};
 
 nconf
   .use('memory')
@@ -76,8 +76,15 @@ const startServer = async () => {
   app.use('/health', (req, res) => res.status(200).json({}));
 
   app.use(express.static(path.join(__dirname, 'build')));
-  app.get('/*', (req, res) => {
+  app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  });
+  app.get('/*', (req, res) => {
+    if (!isAuthRequired() || req.isAuthenticated()) {
+      res.sendFile(path.join(__dirname, 'build', 'index.html'));
+      return;
+    }
+    res.redirect(301, '/login');
   });
 
   app.use((err, req, res, next) => {
