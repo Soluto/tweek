@@ -52,6 +52,10 @@
     "/context": {
       "target": "http://localhost:3001",
       "secure": true
+    },
+    "/[^a-zA-Z0-9_]*": {
+      "target": "http://localhost:3001",
+      "secure": true
     }
   },
   "jest": {

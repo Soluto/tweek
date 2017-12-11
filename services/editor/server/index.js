@@ -76,6 +76,7 @@ const startServer = async () => {
   app.use('/health', (req, res) => res.status(200).json({}));
 
   app.use(express.static(path.join(__dirname, 'build')));
+  app.get('/', (req, res) => res.redirect(302, '/keys'));
   app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
   });
@@ -84,7 +85,7 @@ const startServer = async () => {
       res.sendFile(path.join(__dirname, 'build', 'index.html'));
       return;
     }
-    res.redirect(301, '/login');
+    res.redirect(302, '/login');
   });
 
   app.use((err, req, res, next) => {
