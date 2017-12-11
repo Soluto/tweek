@@ -4,15 +4,21 @@ import (
 	"net/http"
 
 	"github.com/Soluto/tweek/services/secure-gateway/transformation"
+	"github.com/urfave/negroni"
 )
 
 func main() {
-	router := transformation.NewRouter()
+	upstreams := &transformation.UpstreamsConfig{
+		APIUpstream: "http://localhost:8090/",
+	}
 
-	// that's it! our reverse proxy is ready!
+	router := transformation.New(upstreams)
+	app := negroni.New(negroni.NewRecovery())
+	app.UseHandler(router)
+
 	s := &http.Server{
 		Addr:    ":9090",
-		Handler: router,
+		Handler: app,
 	}
 	s.ListenAndServe()
 }

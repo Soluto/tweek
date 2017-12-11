@@ -2,12 +2,6 @@
 
 
 [[projects]]
-  branch = "master"
-  name = "github.com/codahale/hdrhistogram"
-  packages = ["."]
-  revision = "3a0bb77429bd3a61596f5e8a3172445844342120"
-
-[[projects]]
   name = "github.com/gorilla/context"
   packages = ["."]
   revision = "1ea25387ff6f684839d82767c1733ff4d4d15d0a"
@@ -20,46 +14,22 @@
   version = "v1.6.0"
 
 [[projects]]
-  name = "github.com/gravitational/trace"
-  packages = ["."]
-  revision = "0bd13642feb8f57acc0d8e3a568edc34e05a74b9"
-  version = "1.1.3"
-
-[[projects]]
-  name = "github.com/jonboulle/clockwork"
-  packages = ["."]
-  revision = "2eee05ed794112d45db504eb05aa693efd2b8b09"
-  version = "v0.1.0"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/mailgun/multibuf"
-  packages = ["."]
-  revision = "565402cd71fbd9c12aa7e295324ea357e970a61e"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/mailgun/timetools"
-  packages = ["."]
-  revision = "f3a7b8ffff474320c4f5cc564c9abb2c52ded8bc"
-
-[[projects]]
   name = "github.com/sirupsen/logrus"
   packages = ["."]
   revision = "d682213848ed68c0a260ca37d6dd5ace8423f5ba"
   version = "v1.0.4"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/vulcand/oxy"
-  packages = ["buffer","forward","memmetrics","roundrobin","utils"]
-  revision = "5dfac9992dbefb4a2fc6ca201bbcb791bf32654c"
+  name = "github.com/urfave/negroni"
+  packages = ["."]
+  revision = "5dbbc83f748fc3ad38585842b0aedab546d0ea1e"
+  version = "v0.3.0"
 
 [[projects]]
-  name = "github.com/vulcand/predicate"
-  packages = ["."]
-  revision = "939c094524d124c55fa8afe0e077701db4a865e2"
-  version = "v1.0.0"
+  branch = "master"
+  name = "github.com/vulcand/oxy"
+  packages = ["forward","utils"]
+  revision = "5dfac9992dbefb4a2fc6ca201bbcb791bf32654c"
 
 [[projects]]
   branch = "master"
@@ -69,25 +39,13 @@
 
 [[projects]]
   branch = "master"
-  name = "golang.org/x/net"
-  packages = ["context"]
-  revision = "a8b9294777976932365dabb6640cf1468d95c70f"
-
-[[projects]]
-  branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
   revision = "8b4580aae2a0dd0c231a45d3ccb8434ff533b840"
 
-[[projects]]
-  branch = "v2"
-  name = "gopkg.in/mgo.v2"
-  packages = ["bson","internal/json"]
-  revision = "3f83fa5005286a7fe593b055f0d7771a7dce4655"
-
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5651f9b5d763ffa37ce6126dd418c5c226b6e893314971c7769c4812882633ee"
+  inputs-digest = "475e6b41373b6072998786eb1c489390022627c066cdfbf5daafe3f62030f8f7"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -1,50 +1,52 @@
 package transformation
 
 import (
-	"fmt"
 	"net/http"
 	"net/url"
 	"path"
 	"strings"
 
+	"github.com/Soluto/tweek/services/secure-gateway/proxy"
 	"github.com/gorilla/mux"
-	"github.com/vulcand/oxy/forward"
 )
 
-func init() {
+// Transformation holds the transformation configuration
+type Transformation struct {
+	router *mux.Router
 }
 
-// NewRouter Returns router, which transforms v2 requests into v1
-func NewRouter() *mux.Router {
-	// Forwards incoming requests to whatever location URL points to, adds proper forwarding headers
+// UpstreamsConfig is the list of upstrem URLs.
+type UpstreamsConfig struct {
+	APIUpstream          string
+	AuthoringUpstream    string
+	ManagementUpstream   string
+	EditorServerUpstream string
+}
 
-	fwd, _ := forward.New()
+// New creates a new transformation middleware
+func New(upstreams *UpstreamsConfig) *Transformation {
+	router := mux.NewRouter()
+	basePathRouter := router.PathPrefix("/api/v2/").Subrouter()
+	apiURL, err := url.Parse(upstreams.APIUpstream)
+	if err != nil {
+		panic("Invalid upstream " + upstreams.APIUpstream)
+	}
 
-	url, _ := url.Parse("http://localhost:8090/")
-
-	r := mux.NewRouter()
-	baseRouter := r.PathPrefix("/api/v2/").Subrouter()
-
-	baseRouter.Methods("GET").Subrouter().HandleFunc("/configuration", func(res http.ResponseWriter, req *http.Request) {
-		newURL := getConfigurationURLByRequest(url, req)
-		// transformedRequest, err := http.NewRequest("GET", newURL.String(), req.Body)
-		transformedRequest := *req
-		// if err != nil {
-		// 	panic("Failed to create a new request")
-		// }
-
-		transformedRequest.URL = newURL
-		transformedRequest.RequestURI = newURL.String()
-
-		fmt.Printf("new url: %s\n", newURL.String())
-		fmt.Printf("original request: %v\n", req)
-		fmt.Printf("transformed request: %v\n", transformedRequest)
-
-		fwd.ServeHTTP(res, &transformedRequest)
-		// fwd.ServeHTTP(res, req)
+	apiForwarder := proxy.New(apiURL)
+	route := basePathRouter.Methods("GET").Path("/configuration")
+	route.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		newURL := getConfigurationURLByRequest(apiURL, r)
+		r.URL = newURL
+		apiForwarder.ServeHTTP(rw, r, nil)
 	})
 
-	return r
+	return &Transformation{
+		router: router,
+	}
+}
+
+func (t *Transformation) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+	t.router.ServeHTTP(rw, r)
 }
 
 func getConfigurationURLByRequest(upstream *url.URL, req *http.Request) *url.URL {
@@ -52,7 +54,6 @@ func getConfigurationURLByRequest(upstream *url.URL, req *http.Request) *url.URL
 	newURL.Path = path.Join("/api/v1/keys/", req.URL.Query().Get("key"))
 	includes := req.URL.Query()["$include"]
 	flatten := strings.ToLower(req.URL.Query().Get("$flatten"))
-	// newQuery["$include"] = includes
 	newQuery := &url.Values{
 		"$include": includes,
 	}
@@ -62,7 +63,5 @@ func getConfigurationURLByRequest(upstream *url.URL, req *http.Request) *url.URL
 	}
 
 	newURL.RawQuery = newQuery.Encode()
-	// fmt.Printf("RAW QUERY: %v\nINCLUDES: %v\nFLATTEN: %v\nORIGINAL QUERY: %v\n", newURL.RawQuery, includes, flatten, req.URL.Query())
-	fmt.Printf("MODIFIED URL: %v\nAS STRING: %v\n", newURL, newURL.String())
 	return &newURL
 }
