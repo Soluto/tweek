@@ -20,7 +20,7 @@
     "logs": "yarn docker-compose logs",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.e2e.yml"
   },
-  "dependencies": {
+  "devDependencies": {
     "chai": "^4.1.2",
     "jsonwebtoken": "^8.1.0",
     "mocha": "^4.0.1",
