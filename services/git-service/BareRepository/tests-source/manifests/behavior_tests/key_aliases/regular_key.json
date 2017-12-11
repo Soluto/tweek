@@ -1,0 +1,16 @@
+{
+  "key_path": "behavior_tests/key_aliases/regular_key",
+  "meta": {
+    "name": "behavior_tests/key_aliases/regular_key",
+    "tags": [],
+    "description": "",
+    "archived": false
+  },
+  "implementation": {
+    "type": "const",
+    "value": "hello"
+  },
+  "valueType": "string",
+  "dependencies": [],
+  "enabled": true
+}

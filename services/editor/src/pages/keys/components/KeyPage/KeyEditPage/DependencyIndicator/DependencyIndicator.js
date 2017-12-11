@@ -36,7 +36,7 @@ const createDependenciesList = (componentName, caption, readonly) =>
             <AnimakitExpander expanded={toggled} align="bottom">
               <ul>
                 {items.map(dep => (
-                  <li key={dep} className="dependency-item">
+                  <li key={dep} className="dependency-item" data-dependency={dep}>
                     {readonly ? dep : <Link to={`/keys/${dep}`}>{dep}</Link>}
                   </li>
                 ))}
