@@ -34,11 +34,11 @@ describe('build rules artifact', () => {
           value: 'some-value',
         },
       },
-      'manifests/link': {
-        key_path: 'link',
+      'manifests/alias': {
+        key_path: 'alias',
         dependencies: ['wrong_dep'],
         implementation: {
-          type: 'link',
+          type: 'alias',
           key: 'some_key',
         },
       },
@@ -55,8 +55,8 @@ describe('build rules artifact', () => {
         payload: JSON.stringify('some-value'),
         dependencies: [],
       },
-      link: {
-        format: 'link',
+      alias: {
+        format: 'alias',
         payload: 'some_key',
         dependencies: ['some_key'],
       },

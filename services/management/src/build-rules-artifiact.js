@@ -13,23 +13,21 @@ module.exports = function (files) {
       Observable.defer(async () => {
         const keyDef = {
           dependencies: manifest.dependencies,
+          format: manifest.implementation.format || manifest.implementation.type,
         };
         switch (manifest.implementation.type) {
         case 'file': {
           const { format, extension } = manifest.implementation;
-          keyDef.format = format;
           keyDef.payload = await index[
             `implementations/${format}/${manifest.key_path}.${extension || format}`
           ].read();
           break;
         }
         case 'const': {
-          keyDef.format = 'const';
           keyDef.payload = JSON.stringify(manifest.implementation.value);
           break;
         }
-        case 'link': {
-          keyDef.format = 'link';
+        case 'alias': {
           keyDef.payload = manifest.implementation.key;
           keyDef.dependencies = [manifest.implementation.key];
           break;

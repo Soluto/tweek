@@ -107,8 +107,8 @@ export class KeysController {
 
   @Authorize({ permission: PERMISSIONS.KEYS_READ })
   @GET
-  @Path('/links')
+  @Path('/aliases')
   async getLinks( @QueryParam('keyPath') keyPath: string): Promise<any> {
-    return await searchIndex.links(keyPath);
+    return await searchIndex.aliases(keyPath);
   }
 }

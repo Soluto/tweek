@@ -1,5 +1,4 @@
 import React from 'react';
-import { compose } from 'recompose';
 import { connect } from 'react-redux';
 import changeCase from 'change-case';
 import ComboBox from '../../../../../../components/common/ComboBox/ComboBox';
@@ -14,14 +13,12 @@ const getValueTypeSuggestions = () =>
     value: x,
   }));
 
-const KeyValueTypeSelector = compose(
-  connect(
-    state => ({
-      selectedKey: state.selectedKey,
-      validation: state.selectedKey.validation.manifest.valueType,
-    }),
-    { changeKeyValueType },
-  ),
+const KeyValueTypeSelector = connect(
+  state => ({
+    selectedKey: state.selectedKey,
+    validation: state.selectedKey.validation.manifest.valueType,
+  }),
+  { changeKeyValueType },
 )(({ value, validation: { isShowingHint, hint }, changeKeyValueType: onChange }) => {
   const suggestions = getValueTypeSuggestions();
   return (

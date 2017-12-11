@@ -54,4 +54,4 @@ export const DependsOn = createDependenciesList('depends-on', 'Depends on:');
 
 export const UsedBy = createDependenciesList('used-by', 'Used by:');
 
-export const Links = createDependenciesList('links', 'Links:', true);
+export const Aliases = createDependenciesList('aliases', 'Aliases:', true);

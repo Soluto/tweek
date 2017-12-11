@@ -29,7 +29,7 @@ const KEY_SAVING = 'KEY_SAVING';
 const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
 const KEY_REVISION_HISTORY = 'KEY_REVISION_HISTORY';
 const DEPENDENT_KEYS = 'DEPENDENT_KEYS';
-const LINKED_KEYS = 'LINKED_KEYS';
+const KEY_ALIASES = 'KEY_ALIASES';
 const KEY_VALIDATION_CHANGE = 'KEY_VALIDATION_CHANGE';
 const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
 const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
@@ -71,20 +71,20 @@ function updateDependentKeys(keyName) {
   };
 }
 
-function updateLinkedKeys(keyName) {
+function updateKeyAliases(keyName) {
   return async function (dispatch) {
-    let linkedKeys = [];
+    let aliases = [];
     try {
-      linkedKeys = await (await fetch(`/api/links/${keyName}`)).json();
+      aliases = await (await fetch(`/api/aliases/${keyName}`)).json();
     } catch (error) {
       dispatch(
         showError({
-          title: `Failed to enumerate links for on ${keyName}`,
+          title: `Failed to enumerate aliases for on ${keyName}`,
           error,
         }),
       );
     }
-    dispatch({ type: LINKED_KEYS, payload: { keyName, linkedKeys } });
+    dispatch({ type: KEY_ALIASES, payload: { keyName, aliases } });
   };
 }
 
@@ -163,7 +163,7 @@ export function openKey(key, { revision } = {}) {
     }
 
     const manifest = keyData.manifest || createBlankKeyManifest(key);
-    if (manifest.implementation.type === 'link') {
+    if (manifest.implementation.type === 'alias') {
       dispatch(push(`/keys/${manifest.implementation.key}`));
       return;
     }
@@ -178,7 +178,7 @@ export function openKey(key, { revision } = {}) {
     await dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
     dispatch(updateRevisionHistory(key));
     dispatch(updateDependentKeys(key));
-    dispatch(updateLinkedKeys(key));
+    dispatch(updateKeyAliases(key));
   };
 }
 
@@ -311,7 +311,7 @@ export function saveKey() {
 
     dispatch(updateRevisionHistory(savedKey));
     dispatch(updateDependentKeys(savedKey));
-    dispatch(updateLinkedKeys(savedKey));
+    dispatch(updateKeyAliases(savedKey));
 
     if (isNewKey) {
       dispatch(addKeyToList(savedKey));
@@ -495,11 +495,11 @@ const handleDependentKeys = (state, { payload: { keyName, dependentKeys } }) => 
   };
 };
 
-const handleLinkedKeys = (state, { payload: { keyName, linkedKeys } }) => {
+const handleKeyAliases = (state, { payload: { keyName, aliases } }) => {
   if (state.key !== keyName) return state;
   return {
     ...state,
-    linkedKeys,
+    aliases,
   };
 };
 
@@ -553,7 +553,7 @@ export default handleActions(
     [KEY_REVISION_HISTORY]: handleKeyRevisionHistory,
     [SHOW_KEY_VALIDATIONS]: handleShowKeyValidations,
     [DEPENDENT_KEYS]: handleDependentKeys,
-    [LINKED_KEYS]: handleLinkedKeys,
+    [KEY_ALIASES]: handleKeyAliases,
     [KEY_CLOSED]: () => null,
   },
   null,

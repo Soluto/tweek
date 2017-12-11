@@ -8,7 +8,7 @@ import { getManifests } from './get-manifests';
 let manifestPromise;
 let indexPromise;
 let dependentsPromise;
-let linksPromise;
+let aliasesPromise;
 let index;
 
 async function refreshIndex(repoDir) {
@@ -31,7 +31,7 @@ async function refreshIndex(repoDir) {
 }
 
 const indexDependencies = R.pipe(
-  R.filter((manifest: any) => !!manifest.dependencies && manifest.implementation.type !== 'link'),
+  R.filter((manifest: any) => !!manifest.dependencies && manifest.implementation.type !== 'alias'),
   R.chain(R.pipe(
     R.props(['key_path', 'dependencies']),
     ([keyPath, dependencies]: [any, any]) => dependencies.map(dependency => ({ dependency, keyPath })),
@@ -40,8 +40,8 @@ const indexDependencies = R.pipe(
   <any>R.map(R.map(R.prop('keyPath'))),
 );
 
-function indexLinks(manifests) {
-  const links = manifests.filter((manifest: any) => manifest.implementation.type === 'link')
+function indexAliases(manifests) {
+  const links = manifests.filter((manifest: any) => manifest.implementation.type === 'alias')
     .reduce((acc, manifest) => ({ ...acc, [manifest.key_path]: manifest.implementation.key }), {});
 
   const getKey = key => key in links ? getKey(links[key]) : key;
@@ -67,14 +67,14 @@ export default {
   dependents(key) {
     return dependentsPromise.then(x => x[key] || []);
   },
-  links(key) {
-    return linksPromise.then(x => x[key] || []);
+  aliases(key) {
+    return aliasesPromise.then(x => x[key] || []);
   },
   refreshIndex: (repoDir) => {
     indexPromise = refreshIndex(repoDir);
     manifestPromise = getManifests(repoDir);
     dependentsPromise = manifestPromise.then(indexDependencies);
-    linksPromise = manifestPromise.then(indexLinks);
+    aliasesPromise = manifestPromise.then(indexAliases);
 
     return indexPromise;
   },

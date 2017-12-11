@@ -9,7 +9,7 @@ import EditableTextArea from '../../../../../components/common/EditableTextArea/
 import RevisionHistory from './RevisionHistory/RevisionHistory';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
 import HeaderMainInput from './HeaderMainInput';
-import { UsedBy, DependsOn, Links } from './DependencyIndicator/DependencyIndicator';
+import { UsedBy, DependsOn, Aliases } from './DependencyIndicator/DependencyIndicator';
 import './KeyEditPage.css';
 
 const Editor = ({
@@ -117,7 +117,7 @@ class KeyEditPage extends Component {
       local: { manifest, implementation },
       revisionHistory,
       dependentKeys,
-      linkedKeys,
+      aliases,
     } = selectedKey;
     const isHistoricRevision = revisionHistory && revision && revisionHistory[0].sha !== revision;
     const isReadonly = manifest.meta.readOnly || manifest.meta.archived || isHistoricRevision;
@@ -144,7 +144,7 @@ class KeyEditPage extends Component {
               keyFullPath={key}
               isInStickyMode={isInStickyMode}
               dependentKeys={dependentKeys}
-              linkedKeys={linkedKeys}
+              aliases={aliases}
             />
 
             <div className={classNames('key-rules-editor', { sticky: isInStickyMode })}>
@@ -196,7 +196,7 @@ const KeyFullHeader = (props) => {
     revision,
     isHistoricRevision,
     dependentKeys,
-    linkedKeys,
+    aliases,
   } = props;
 
   return (
@@ -229,7 +229,7 @@ const KeyFullHeader = (props) => {
               />
               <UsedBy items={dependentKeys} />
               <DependsOn items={keyManifest.dependencies} />
-              <Links items={linkedKeys} />
+              <Aliases items={aliases} />
             </div>
 
             <div className="key-tags-wrapper">
