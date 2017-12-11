@@ -86,7 +86,7 @@ steps:
       e2e-ui:
         image: ${{BuildingUITests}}
         volumes:
-          - ../deployments/dev/ssh:/gitkeys
+          - ${CF_VOLUME_PATH}/tweek/deployments/dev/ssh:/gitkeys
         depends_on: 
           - selenium
           - editor
@@ -103,7 +103,7 @@ steps:
       e2e-integration:
         image: ${{BuildingIntegrationTests}}
         volumes:
-          - ../deployments/dev/ssh:/gitkeys
+          - ${CF_VOLUME_PATH}/tweek/deployments/dev/ssh:/gitkeys
         depends_on:
           - authoring
           - api
