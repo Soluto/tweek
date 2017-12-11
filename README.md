@@ -95,6 +95,7 @@ More on how multi-varaint keys work in Tweek. (link)
 
 
 ### Related projects
+[Tweek-Clients](https://github.com/Soluto/tweek-clients) - Tweek REST clients  
 [Tweek.JPad](https://github.com/soluto/tweek.jpad) - Tweek's internal rules engine
 
 ### Additional Resources
