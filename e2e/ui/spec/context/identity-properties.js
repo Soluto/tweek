@@ -7,7 +7,7 @@ describe('identity properties', () => {
   const identityId = 'awesome_user';
   const identityType = 'user';
 
-  before(() => browser.url('/context').windowHandleSize({ width: 1360, height: 1020 }));
+  before(() => browser.url('/context'));
 
   it('should modify identity properties', () => {
     const identity = Identity.open(identityType, identityId);

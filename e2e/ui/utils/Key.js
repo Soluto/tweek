@@ -38,7 +38,6 @@ class Key {
 
   open(keyName = '', waitToLoad = true) {
     browser.url(`/keys/${keyName}`);
-    browser.windowHandleSize({ width: 1360, height: 1020 });
     browser.waitForVisible(dataComp('key-page'), timeout);
 
     if (keyName !== '' && waitToLoad) {
@@ -73,6 +72,7 @@ class Key {
   }
 
   clickContinue() {
+    browser.waitForEnabled(dataComp('add-key-button'));
     browser.click(dataComp('add-key-button'));
   }
 

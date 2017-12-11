@@ -8,7 +8,7 @@ describe('override keys', () => {
   const identityType = 'user';
   const typedKey = 'behavior_tests/context/override_key';
 
-  before(() => browser.url('/context').windowHandleSize({ width: 1360, height: 1020 }));
+  before(() => browser.url('/context'));
 
   it('should modify override keys', () => {
     const identity = Identity.open(identityType, identityId);
