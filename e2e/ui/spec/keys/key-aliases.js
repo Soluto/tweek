@@ -9,6 +9,10 @@ const timeout = 5000;
 describe('key aliases', () => {
   const originalKeyPath = 'behavior_tests/key_aliases/regular_key';
   const aliasKeyPath = 'behavior_tests/key_aliases/alias_key';
+  const aliasToAliasKeyPath = 'behavior_tests/key_aliases/alias_to_alias';
+
+  const waitForAlias = alias =>
+    browser.waitForVisible(`${dataComp('aliases')} ${attributeSelector('data-dependency', alias)}`);
 
   it('should redirect to original key and show aliases', () => {
     Key.open().navigate(aliasKeyPath);
@@ -16,8 +20,8 @@ describe('key aliases', () => {
     browser.waitUntil(() => Key.isCurrent(originalKeyPath), timeout);
 
     browser.clickWhenVisible(dataComp('aliases-toggle'), timeout);
-    browser.waitForVisible(
-      `${dataComp('aliases')} ${attributeSelector('data-dependency', aliasKeyPath)}`,
-    );
+
+    waitForAlias(aliasKeyPath);
+    waitForAlias(aliasToAliasKeyPath);
   });
 });
