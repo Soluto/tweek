@@ -116,7 +116,7 @@ class KeyEditPage extends Component {
       key,
       local: { manifest, implementation },
       revisionHistory,
-      dependentKeys,
+      usedBy,
       aliases,
     } = selectedKey;
     const isHistoricRevision = revisionHistory && revision && revisionHistory[0].sha !== revision;
@@ -143,7 +143,7 @@ class KeyEditPage extends Component {
               revision={revision}
               keyFullPath={key}
               isInStickyMode={isInStickyMode}
-              dependentKeys={dependentKeys}
+              usedBy={usedBy}
               aliases={aliases}
             />
 
@@ -195,7 +195,7 @@ const KeyFullHeader = (props) => {
     keyFullPath,
     revision,
     isHistoricRevision,
-    dependentKeys,
+    usedBy,
     aliases,
   } = props;
 
@@ -227,7 +227,7 @@ const KeyFullHeader = (props) => {
                 classNames={{ input: 'description-input' }}
                 maxLength={400}
               />
-              <UsedBy items={dependentKeys} />
+              <UsedBy items={usedBy} />
               <DependsOn items={keyManifest.dependencies} />
               <Aliases items={aliases} />
             </div>

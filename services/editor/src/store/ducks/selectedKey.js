@@ -28,8 +28,7 @@ const KEY_SAVED = 'KEY_SAVED';
 const KEY_SAVING = 'KEY_SAVING';
 const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
 const KEY_REVISION_HISTORY = 'KEY_REVISION_HISTORY';
-const DEPENDENT_KEYS = 'DEPENDENT_KEYS';
-const KEY_ALIASES = 'KEY_ALIASES';
+const KEY_DEPENDENTS = 'KEY_DEPENDENTS';
 const KEY_VALIDATION_CHANGE = 'KEY_VALIDATION_CHANGE';
 const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
 const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
@@ -54,37 +53,20 @@ function updateRevisionHistory(keyName) {
   };
 }
 
-function updateDependentKeys(keyName) {
+function updateKeyDependents(keyName) {
   return async function (dispatch) {
-    let dependentKeys = [];
+    let dependents = {};
     try {
-      dependentKeys = await (await fetch(`/api/dependents/${keyName}`)).json();
+      dependents = await (await fetch(`/api/dependents/${keyName}`)).json();
     } catch (error) {
       dispatch(
         showError({
-          title: `Failed to enumerate keys dependent on ${keyName}`,
+          title: `Failed to enumerate key dependents on ${keyName}`,
           error,
         }),
       );
     }
-    dispatch({ type: DEPENDENT_KEYS, payload: { keyName, dependentKeys } });
-  };
-}
-
-function updateKeyAliases(keyName) {
-  return async function (dispatch) {
-    let aliases = [];
-    try {
-      aliases = await (await fetch(`/api/aliases/${keyName}`)).json();
-    } catch (error) {
-      dispatch(
-        showError({
-          title: `Failed to enumerate aliases for on ${keyName}`,
-          error,
-        }),
-      );
-    }
-    dispatch({ type: KEY_ALIASES, payload: { keyName, aliases } });
+    dispatch({ type: KEY_DEPENDENTS, payload: { keyName, ...dependents } });
   };
 }
 
@@ -177,8 +159,7 @@ export function openKey(key, { revision } = {}) {
 
     await dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
     dispatch(updateRevisionHistory(key));
-    dispatch(updateDependentKeys(key));
-    dispatch(updateKeyAliases(key));
+    dispatch(updateKeyDependents(key));
   };
 }
 
@@ -310,8 +291,7 @@ export function saveKey() {
     if (!await performSave(dispatch, savedKey, local)) return;
 
     dispatch(updateRevisionHistory(savedKey));
-    dispatch(updateDependentKeys(savedKey));
-    dispatch(updateKeyAliases(savedKey));
+    dispatch(updateKeyDependents(savedKey));
 
     if (isNewKey) {
       dispatch(addKeyToList(savedKey));
@@ -487,18 +467,11 @@ const handleKeyRevisionHistory = (state, { payload: { keyName, revisionHistory }
   };
 };
 
-const handleDependentKeys = (state, { payload: { keyName, dependentKeys } }) => {
+const handleKeyDependents = (state, { payload: { keyName, usedBy, aliases } }) => {
   if (state.key !== keyName) return state;
   return {
     ...state,
-    dependentKeys,
-  };
-};
-
-const handleKeyAliases = (state, { payload: { keyName, aliases } }) => {
-  if (state.key !== keyName) return state;
-  return {
-    ...state,
+    usedBy,
     aliases,
   };
 };
@@ -552,8 +525,7 @@ export default handleActions(
     [KEY_VALUE_TYPE_CHANGE]: handleKeyValueTypeChange,
     [KEY_REVISION_HISTORY]: handleKeyRevisionHistory,
     [SHOW_KEY_VALIDATIONS]: handleShowKeyValidations,
-    [DEPENDENT_KEYS]: handleDependentKeys,
-    [KEY_ALIASES]: handleKeyAliases,
+    [KEY_DEPENDENTS]: handleKeyDependents,
     [KEY_CLOSED]: () => null,
   },
   null,

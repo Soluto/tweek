@@ -8,7 +8,6 @@ import { getManifests } from './get-manifests';
 let manifestPromise;
 let indexPromise;
 let dependentsPromise;
-let aliasesPromise;
 let index;
 
 async function refreshIndex(repoDir) {
@@ -30,28 +29,33 @@ async function refreshIndex(repoDir) {
   return index;
 }
 
-const indexDependencies = R.pipe(
-  R.filter((manifest: any) => !!manifest.dependencies && manifest.implementation.type !== 'alias'),
-  R.chain(R.pipe(
-    R.props(['key_path', 'dependencies']),
-    ([keyPath, dependencies]: [any, any]) => dependencies.map(dependency => ({ dependency, keyPath })),
-  )),
-  R.groupBy(R.prop('dependency')),
-  <any>R.map(R.map(R.prop('keyPath'))),
-);
-
-function indexAliases(manifests) {
-  const links = manifests.filter((manifest: any) => manifest.implementation.type === 'alias')
+function createDependencyIndexes(manifests) {
+  const aliases = manifests.filter((manifest: any) => manifest.implementation.type === 'alias')
     .reduce((acc, manifest) => ({ ...acc, [manifest.key_path]: manifest.implementation.key }), {});
 
-  const getKey = key => key in links ? getKey(links[key]) : key;
+  const getKey = key => key in aliases ? getKey(aliases[key]) : key;
 
-  const createIndex = R.pipe(
+  const createAliasIndex = R.pipe(
     R.map(getKey),
     R.invert,
   );
 
-  return createIndex(links);
+  const aliasIndex = createAliasIndex(aliases);
+
+  const indexDependencies = R.pipe(
+    R.filter((manifest: any) => !!manifest.dependencies && manifest.implementation.type !== 'alias'),
+    R.chain(R.pipe(
+      R.props(['key_path', 'dependencies']),
+      ([keyPath, dependencies]: [any, any]) => dependencies.map(dependency => ({ dependency: getKey(dependency), keyPath })),
+    )),
+    R.groupBy(R.prop('dependency')),
+    <any>R.map(R.map(R.prop('keyPath'))),
+    R.map(R.uniq),
+  );
+
+  const dependencyIndex = indexDependencies(manifests);
+
+  return { aliasIndex, dependencyIndex };
 }
 
 export default {
@@ -65,16 +69,12 @@ export default {
     return index;
   },
   dependents(key) {
-    return dependentsPromise.then(x => x[key] || []);
-  },
-  aliases(key) {
-    return aliasesPromise.then(x => x[key] || []);
+    return dependentsPromise.then(({ aliasIndex, dependencyIndex }) => ({ usedBy: dependencyIndex[key] || [], aliases: aliasIndex[key] || [] }));
   },
   refreshIndex: (repoDir) => {
     indexPromise = refreshIndex(repoDir);
     manifestPromise = getManifests(repoDir);
-    dependentsPromise = manifestPromise.then(indexDependencies);
-    aliasesPromise = manifestPromise.then(indexAliases);
+    dependentsPromise = manifestPromise.then(createDependencyIndexes);
 
     return indexPromise;
   },
