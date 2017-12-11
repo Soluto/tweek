@@ -31,11 +31,7 @@ module.exports = function (files) {
         case 'link': {
           keyDef.format = 'link';
           keyDef.payload = manifest.implementation.key;
-
-          keyDef.dependencies = keyDef.dependencies || [];
-          if (!keyDef.dependencies.includes(manifest.implementation.key)) {
-            keyDef.dependencies.push(manifest.implementation.key);
-          }
+          keyDef.dependencies = [manifest.implementation.key];
           break;
         }
         }
