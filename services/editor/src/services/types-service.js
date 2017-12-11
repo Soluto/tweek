@@ -69,8 +69,13 @@ export async function getValueTypeDefinition(key) {
   if (!key || key.length === 0) return types.string;
   try {
     const response = await fetch(`/api/manifests/${key}`, { credentials: 'same-origin' });
-    const meta = await response.json();
-    return types[meta.valueType] || types.string;
+    const manifest = await response.json();
+
+    if (manifest.implementation.type === 'alias') {
+      return getValueTypeDefinition(manifest.implementation.key);
+    }
+
+    return types[manifest.valueType] || types.string;
   } catch (err) {
     return types.string;
   }
