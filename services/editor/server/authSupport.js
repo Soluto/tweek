@@ -6,7 +6,7 @@ import selectAuthenticationProviders from './auth/providerSelector';
 const crypto = require('crypto');
 const passport = require('passport');
 
-const addAuthSupport = (server) => {
+const initPassport = (server) => {
   const cookieOptions = {
     secret: nconf.get('SESSION_COOKIE_SECRET_KEY') || crypto.randomBytes(20).toString('base64'),
     cookie: {
@@ -28,7 +28,7 @@ const addAuthSupport = (server) => {
   });
 };
 
-export const isAuthRequired = () => (nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true';
+const isAuthRequired = () => (nconf.get('REQUIRE_AUTH') || '').toLowerCase() === 'true';
 
 export const authMiddleware = (req, res, next) => {
   if (isAuthRequired()) {
@@ -38,9 +38,19 @@ export const authMiddleware = (req, res, next) => {
   }
 };
 
+export const addLoginRedirect = (server, handler, routePath, loginPath) => {
+  server.get(loginPath, handler);
+  server.get(routePath, (req, res) => {
+    if (!isAuthRequired() || req.isAuthenticated()) {
+      return handler(req, res);
+    }
+    return res.redirect(302, loginPath);
+  });
+};
+
 export const initAuth = (server) => {
   if (isAuthRequired()) {
-    addAuthSupport(server);
+    initPassport(server);
   }
   const authProviders = selectAuthenticationProviders(server, nconf) || [];
   server.get('/authProviders', (req, res) => {

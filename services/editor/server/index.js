@@ -13,7 +13,7 @@ import helmet from 'helmet';
 import fs from 'fs';
 import os from 'os';
 
-import { authMiddleware, initAuth, isAuthRequired } from './authSupport';
+import { authMiddleware, initAuth, addLoginRedirect } from './authSupport';
 import addDirectoryTraversalProtection from './directoryProtection';
 
 const useFileFromBase64EnvVariable = (inlineKeyName, fileKeyName) => {
@@ -75,18 +75,10 @@ const startServer = async () => {
   app.get('/version', (req, res) => res.send(process.env.npm_package_version));
   app.use('/health', (req, res) => res.status(200).json({}));
 
+  const sendBundle = (req, res) => res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  addLoginRedirect(app, sendBundle, '/', '/login');
   app.use(express.static(path.join(__dirname, 'build')));
-  app.get('/', (req, res) => res.redirect(302, '/keys'));
-  app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
-  });
-  app.get('/*', (req, res) => {
-    if (!isAuthRequired() || req.isAuthenticated()) {
-      res.sendFile(path.join(__dirname, 'build', 'index.html'));
-      return;
-    }
-    res.redirect(302, '/login');
-  });
+  addLoginRedirect(app, sendBundle, '*', '/login');
 
   app.use((err, req, res, next) => {
     console.error(req.method, res.originalUrl, err.message);
