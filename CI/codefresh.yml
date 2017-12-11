@@ -86,7 +86,7 @@ steps:
       e2e-ui:
         image: ${{BuildingUITests}}
         volumes:
-          - ${CF_VOLUME}:/repo
+          - ${{CF_VOLUME}}:/repo
         depends_on: 
           - selenium
           - editor
@@ -103,7 +103,7 @@ steps:
       e2e-integration:
         image: ${{BuildingIntegrationTests}}
         volumes:
-          - ${CF_VOLUME}:/repo
+          - ${{CF_VOLUME}}:/repo
         depends_on:
           - authoring
           - api
