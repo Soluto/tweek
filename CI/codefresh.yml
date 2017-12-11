@@ -73,6 +73,7 @@ steps:
       - EDITOR_IMAGE=${{BuildingEditor}}
       - ZAP_IMAGE=${{BuildingZapImage}}
       - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
+      - CF_VOLUME=${{CF_VOLUME}}
     composition_candidates:
       smoke-tests:
         image: ${{BuildingApiSmokeTestImage}}
