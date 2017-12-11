@@ -1,26 +1,26 @@
 const chai = require('chai');
 const expect = chai.expect;
 chai.should();
-const {init:initClients} = require("../../utils/clients");
+const { init: initClients } = require('../../utils/clients');
 
-const createManifestForJPadKey = (key_path)=>({
-    "key_path": `${key_path}`,
-    "meta": {
-        "name": "aaaaaaa",
-        "tags": [],
-        "description": "",
-        "archived": false
-    },
-    "implementation": {
-        "type": "file",
-        "format": "jpad"
-    },
-    "valueType": "number",
-    "dependencies": [],
-    "enabled": true
-})
+const createManifestForJPadKey = key_path => ({
+  key_path: `${key_path}`,
+  meta: {
+    name: 'aaaaaaa',
+    tags: [],
+    description: '',
+    archived: false,
+  },
+  implementation: {
+    type: 'file',
+    format: 'jpad',
+  },
+  valueType: 'number',
+  dependencies: [],
+  enabled: true,
+});
 
-describe.only('authoring api', () => {
+describe('authoring api', () => {
   let clients;
   before(async () => {
     clients = await initClients();
@@ -28,19 +28,39 @@ describe.only('authoring api', () => {
 
   describe('/PUT /key', () => {
     it('should accept a valid key', async () => {
-      let key = "@tests/integration/new_valid_key";
-      await clients.authoring.put('/api/keys/@tests/integration/new_valid_key?author.name=test&author.email=test@soluto.com')
-                   .send({ manifest: createManifestForJPadKey(key), implementation: JSON.stringify({partitions:[], defaultValue:"test", valueType:"string", rules:[]})})
-                   .expect(200);
-
+      let key = '@tests/integration/new_valid_key';
+      await clients.authoring
+        .put(
+          '/api/keys/@tests/integration/new_valid_key?author.name=test&author.email=test@soluto.com',
+        )
+        .send({
+          manifest: createManifestForJPadKey(key),
+          implementation: JSON.stringify({
+            partitions: [],
+            defaultValue: 'test',
+            valueType: 'string',
+            rules: [],
+          }),
+        })
+        .expect(200);
     });
 
     it('should reject an invalid key with 400 error', async () => {
-      let key = "@tests/integration/new_invalid_key";
-      await clients.authoring.put('/api/keys/@tests/integration/new_invalid_key?author.name=test&author.email=test@soluto.com')
-      .send({ manifest: createManifestForJPadKey(key), implementation: JSON.stringify({partitins:[], defaultalue:"test", valuType:"string", ruls:[]}) })
-      .expect(400);
+      let key = '@tests/integration/new_invalid_key';
+      await clients.authoring
+        .put(
+          '/api/keys/@tests/integration/new_invalid_key?author.name=test&author.email=test@soluto.com',
+        )
+        .send({
+          manifest: createManifestForJPadKey(key),
+          implementation: JSON.stringify({
+            partitins: [],
+            defaultalue: 'test',
+            valuType: 'string',
+            ruls: [],
+          }),
+        })
+        .expect(400);
     });
-
   });
 });

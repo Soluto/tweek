@@ -80,7 +80,7 @@ describe('delete key', () => {
       expect(Key.exists).to.be.true;
     });
 
-    it.only('should succeed deleting key', () => {
+    it('should succeed deleting key', () => {
       const keyName = 'behavior_tests/delete_key/delete/accepted';
 
       Key.open(keyName);
