@@ -85,6 +85,7 @@ describe('delete key', () => {
 
     it.only('should succeed deleting key', () => {
       const keyName = 'behavior_tests/delete_key/delete/accepted';
+      const aliasKey = 'behavior_tests/delete_key/delete/alias';
 
       Key.open(keyName);
       browser.click(deleteKey);
@@ -94,6 +95,7 @@ describe('delete key', () => {
       expect(browser.getUrl(), 'should move to keys page url').to.endWith('/keys');
 
       assertKeyDeleted(keyName);
+      assertKeyDeleted(aliasKey);
     });
   });
 });

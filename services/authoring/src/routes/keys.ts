@@ -58,8 +58,8 @@ export class KeysController {
   @Authorize({ permission: PERMISSIONS.KEYS_WRITE })
   @DELETE
   @Path('/key')
-  async deleteKey( @QueryParam('keyPath') keyPath: string, @QueryParam('author.name') name: string, @QueryParam('author.email') email: string): Promise<string> {
-    await this.keysRepository.deleteKey(keyPath, { name, email });
+  async deleteKey( @QueryParam('keyPath') keyPath: string, @QueryParam('author.name') name: string, @QueryParam('author.email') email: string, additionalKeys: string[] = []): Promise<string> {
+    await this.keysRepository.deleteKeys([keyPath].concat(additionalKeys), { name, email });
 
     return 'OK';
   }

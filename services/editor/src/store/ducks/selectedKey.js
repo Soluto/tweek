@@ -219,6 +219,7 @@ export function archiveKey(archived) {
       dispatch(addKeyToList(key));
     }
     dispatch(updateRevisionHistory(key));
+    dispatch(updateKeyDependents(key));
   };
 }
 
@@ -300,24 +301,28 @@ export function saveKey() {
   };
 }
 
-const deleteKeyAlert = key => ({
+const deleteKeyAlert = (key, aliases = []) => ({
   title: 'Warning',
-  message: `Are you sure you want to delete '${key}' key?`,
+  message: `Are you sure you want to delete '${key}' key?${
+    aliases.length ? `\nAll aliases will also be deleted:\n${aliases.join('\n')}` : ''
+  }`,
 });
 
 export function deleteKey() {
   return async function (dispatch, getState) {
-    const { selectedKey: { key } } = getState();
+    const { selectedKey: { key, aliases } } = getState();
 
-    if (!(await dispatch(showConfirm(deleteKeyAlert(key)))).result) return;
+    if (!(await dispatch(showConfirm(deleteKeyAlert(key, aliases)))).result) return;
 
     dispatch(push('/keys'));
     try {
       await fetch(`/api/keys/${key}`, {
         method: 'delete',
+        ...withJsonData(aliases),
       });
 
       dispatch(removeKeyFromList(key));
+      aliases.forEach(alias => dispatch(removeKeyFromList(alias)));
     } catch (error) {
       dispatch(showError({ title: 'Failed to delete key!', error }));
     }

@@ -1,6 +1,6 @@
 import path = require('path');
-import Transactor from "../utils/transactor";
-import GitRepository from "./git-repository";
+import Transactor from '../utils/transactor';
+import GitRepository from './git-repository';
 
 function generateEmptyManifest(keyPath) {
   return {
@@ -24,22 +24,15 @@ function generateEmptyManifest(keyPath) {
 
 function getNewJpadFormatSourceIfNeeded(originalJpadSource) {
   const parsedJpad = JSON.parse(originalJpadSource);
-  if (!Array.isArray(parsedJpad)) return originalJpadSource;
+  if (!Array.isArray(parsedJpad)) {
+    return originalJpadSource;
+  }
 
   return JSON.stringify({
     partitions: [],
     valueType: 'string',
     rules: parsedJpad,
   });
-}
-
-//todo remove legacy
-function getLegacyPathForManifest(keyName) {
-  return `meta/${keyName}.json`;
-}
-
-function getLegacyPathForSourceFile(manifest) {
-  return `rules/${manifest.key_path}.${manifest.implementation.format}`;
 }
 
 function getPathForManifest(keyName) {
@@ -64,12 +57,7 @@ async function updateKey(gitRepo, keyPath, manifest, fileImplementation) {
 }
 
 async function getFileImplementation(manifest, repo, revision) {
-  let source: any;
-  try {
-    source = await repo.readFile(getPathForSourceFile(manifest), { revision });
-  } catch (err) {
-    source = await repo.readFile(getLegacyPathForSourceFile(manifest), { revision });
-  }
+  let source = await repo.readFile(getPathForSourceFile(manifest), { revision });
 
   if (manifest.implementation.format === 'jpad') {
     source = getNewJpadFormatSourceIfNeeded(source);
@@ -89,14 +77,8 @@ async function getRevisionHistory(manifest, repo, config) {
 
 async function getManifestFile(keyPath: string, gitRepo, revision?: string) {
   try {
-    let fileContent;
-    try {
-      const pathForManifest = getPathForManifest(keyPath);
-      fileContent = await gitRepo.readFile(pathForManifest, { revision });
-    } catch (exp) {
-      const pathForManifest = getLegacyPathForManifest(keyPath);
-      fileContent = await gitRepo.readFile(pathForManifest, { revision });
-    }
+    const pathForManifest = getPathForManifest(keyPath);
+    const fileContent = await gitRepo.readFile(pathForManifest, { revision });
     return JSON.parse(fileContent);
   } catch (exp) {
     return generateEmptyManifest(keyPath);
@@ -119,7 +101,7 @@ export default class KeysRepository {
     return this._gitTransactionManager.with(async (gitRepo) => {
       const normalizedPrefix = `${path.normalize(`manifests/${prefix}/.`)}`.replace(/\\/g, '/');
       const files = await gitRepo.listFiles(normalizedPrefix);
-      const manifestFiles = files.map(path => `${normalizedPrefix}/${path}`);
+      const manifestFiles = files.map(keyPath => `${normalizedPrefix}/${keyPath}`);
       const manifests = await Promise.all(
         manifestFiles.map(pathForManifest => gitRepo.readFile(pathForManifest)),
       );
@@ -133,9 +115,9 @@ export default class KeysRepository {
       return {
         manifest,
         implementation:
-        manifest.implementation.type === 'file'
-          ? await getFileImplementation(manifest, gitRepo, revision)
-          : undefined,
+          manifest.implementation.type === 'file'
+            ? await getFileImplementation(manifest, gitRepo, revision)
+            : undefined,
       };
     });
   }
@@ -163,7 +145,7 @@ export default class KeysRepository {
 
   updateBulkKeys(files, author, commitMessage = 'Bulk update through API') {
     return this._gitTransactionManager.write(async (gitRepo) => {
-      for (let file of files) {
+      for (const file of files) {
         const content = await file.read();
         await gitRepo.updateFile(file.name, content);
       }
@@ -171,15 +153,16 @@ export default class KeysRepository {
     });
   }
 
-  deleteKey(keyPath, author) {
+  deleteKeys(keys: string[], author) {
     return this._gitTransactionManager.write(async (gitRepo) => {
-      const manifest = await getManifestFile(keyPath, gitRepo);
-      await gitRepo.deleteFile(getPathForManifest(keyPath));
-      if (manifest.implementation.type === 'file') {
-        await gitRepo.deleteFile(getPathForSourceFile(manifest));
+      for (const keyPath of keys) {
+        const manifest = await getManifestFile(keyPath, gitRepo);
+        await gitRepo.deleteFile(getPathForManifest(keyPath));
+        if (manifest.implementation.type === 'file') {
+          await gitRepo.deleteFile(getPathForSourceFile(manifest));
+        }
       }
-
-      await gitRepo.commitAndPush(`Editor - deleting ${keyPath}`, author);
+      await gitRepo.commitAndPush(`Editor - deleting keys: ${keys.join(', ')}`, author);
     });
   }
 
