@@ -7,8 +7,11 @@ import Alert from '../../utils/Alert';
 import { dataComp } from '../../utils/selector-utils';
 import tweekApiClient from '../../clients/tweek-api-client';
 import authoringApi from '../../clients/authoring-client';
+import { login } from '../../utils/auth-utils';
 
 describe('edit keys', () => {
+  before(() => login());
+
   describe('edit JPad keys', () => {
     const expectedKeySource = {
       partitions: [],
@@ -42,7 +45,9 @@ describe('edit keys', () => {
         const keyName = 'behavior_tests/edit_key/visual/edit_test';
         Key.open(keyName).setDefaultValue('some default value');
 
-        Rule.add().removeCondition().setValue('some value');
+        Rule.add()
+          .removeCondition()
+          .setValue('some value');
 
         Rule.add()
           .setCondition('user.AgentVersion', '1.1.1')

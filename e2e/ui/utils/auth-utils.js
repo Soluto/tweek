@@ -7,7 +7,6 @@ const editorUrlWithCredentials = nconf
   .get('EDITOR_URL')
   .replace('http://', `http://${nconf.get('AUTH_DIGEST_CREDENTIALS')}@`);
 
-export const loginAndGoto = url => {
+export const login = () => {
   browser.url(`${editorUrlWithCredentials}${AUTH_DIGEST_URL}`);
-  browser.url(url);
 };

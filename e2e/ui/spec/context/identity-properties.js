@@ -2,15 +2,15 @@
 
 import Identity from '../../utils/Identity';
 import assert from 'assert';
-import { loginAndGoto } from '../../utils/auth-utils';
+import { login } from '../../utils/auth-utils';
 
 describe('identity properties', () => {
   const identityId = 'awesome_user';
   const identityType = 'user';
 
   before(() => {
-    loginAndGoto('/context');
-    browser.windowHandleSize({ width: 1360, height: 1020 });
+    login();
+    browser.url('/context');
   });
 
   it('should modify identity properties', () => {
