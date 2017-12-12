@@ -1,5 +1,13 @@
 version: '1.0'
 steps:
+
+  VersionsToDeploy:
+    description: Check versions to deploy
+    title: Check versions to deploy
+    image: alpine/git
+    commands:
+      - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
+
   CompositionTests:
     title: Tests - composition
     type: composition
@@ -11,14 +19,7 @@ steps:
         image: alpine
         volumes:
           - ${CF_VOLUME_PATH}:/repo
-        command: ls repo
-
-  VersionsToDeploy:
-    description: Check versions to deploy
-    title: Check versions to deploy
-    image: alpine/git
-    commands:
-      - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
+        command: ls repo/tweek/deployments/dev/ssh
           
   BuildingGitRepository:
     title: Building Git Repository Docker Image
