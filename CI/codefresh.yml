@@ -6,6 +6,13 @@ steps:
     composition: ./CI/docker-compose-test.yml
     composition_variables:
       - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
+    composition_candidates:
+      test-candidate:
+        image: alpine
+        volumes:
+          - ${CF_VOLUME_PATH}:/repo
+        command: ls repo
+
 
   VersionsToDeploy:
     description: Check versions to deploy
