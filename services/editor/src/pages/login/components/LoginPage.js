@@ -59,7 +59,7 @@ const LoginButton = styled('a')`
   padding-top: 14px;
   padding-bottom: 17px;
   margin: 40px;
-  width: 80%;
+  width: 40%;
   background-color: #00aeef;
   border-radius: 25px;
 
