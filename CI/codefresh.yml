@@ -3,7 +3,7 @@ steps:
   CompositionTests:
     title: Tests - composition
     type: composition
-    composition: ./CI/docker-compose-cf-volume.yml
+    composition: ./CI/docker-compose-tests.yml
     composition_variables:
       - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
     composition_candidates:
