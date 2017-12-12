@@ -1,19 +1,6 @@
 version: '1.0'
 steps:
 
-  CompositionTestsBeforeEnvVar:
-    title: Tests - composition
-    type: composition
-    composition: ./CI/docker-compose-tests.yml
-    composition_variables:
-      - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
-    composition_candidates:
-      test-candidate:
-        image: alpine
-        volumes:
-          - ${CF_VOLUME_PATH}:/repo
-        command: ls -a /repo/tweek
-
   VersionsToDeploy:
     description: Check versions to deploy
     title: Check versions to deploy
@@ -21,18 +8,11 @@ steps:
     commands:
       - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
 
-  CompositionTests:
-    title: Tests - composition
-    type: composition
-    composition: ./CI/docker-compose-tests.yml
-    composition_variables:
-      - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
-    composition_candidates:
-      test-candidate:
-        image: alpine
-        volumes:
-          - ${CF_VOLUME_PATH}:/repo
-        command: ls repo/tweek/deployments/dev/ssh
+  BuildGitKeys:
+    title: Building Git Keys Docker Image
+    type: build
+    image_name: soluto/tweek-test-keys
+    working_directory: ./deployments/dev/ssh/
           
   BuildingGitRepository:
     title: Building Git Repository Docker Image

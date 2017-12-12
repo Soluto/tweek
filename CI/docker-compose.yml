@@ -1,33 +1,33 @@
 version: '2'
-
-services:    
+services:
+  keys:
+    image: $KEYS_IMAGE
+    
   git:
     image: $REPOSITORY_IMAGE
-    user: root
-    volumes:
-      - ${CF_VOLUME}:/repo
+    volumes_from:
+      - keys
     environment:
-      - PUBLIC_KEY_PATH=/repo/tweek/deployments/dev/ssh/tweekgit.pub
+      - PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
       - TWEEK_MANAGEMENT_URL=http://management:3000
   
   management:
     image: $MANAGEMENT_IMAGE
-    user: root
     depends_on:
       - api
       - git
       - minio
       - nats
-    volumes:
-      - ${CF_VOLUME}:/repo
+    volumes_from:
+      - keys
     logging:
       driver: "none"
     environment:
       - VALIDATION_URL=http://api/validation
       - GIT_USER=git
       - GIT_URL=ssh://git@git/tweek/tests
-      - GIT_PRIVATE_KEY_PATH=/repo/tweek/deployments/dev/ssh/tweekgit
-      - GIT_PUBLIC_KEY_PATH=/repo/tweek/deployments/dev/ssh/tweekgit.pub
+      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+      - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
       - GIT_SAMPLE_INTERVAL=500
       - MINIO_ENDPOINT=minio:9000
       - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
@@ -36,13 +36,12 @@ services:
       
   api:
     image: $API_IMAGE
-    user: root
     depends_on:
       - minio
       - redis
       - nats
-    volumes:
-      - ${CF_VOLUME}:/repo
+    volumes_from:
+      - keys
     logging:
       driver: "none"
     environment:
@@ -54,7 +53,7 @@ services:
       - Rules__VersionTimeoutInMs=2000
       - UseAddon__Rules=MinioRules
       - RulesetVersionProvider=NatsVersionProvider
-      - PUBLIC_KEY_PATH=/repo/tweek/deployments/dev/ssh/tweekgit_public.pfx
+      - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
       - Redis__ConnectionString=redis:6379
       - CorsPolicies__Keys__Origins=http://editor:3000,http://testorigin
       - CorsPolicies__Keys__Methods=GET
@@ -65,36 +64,34 @@ services:
       
   authoring:
     image: $AUTHORING_IMAGE
-    user: root
     depends_on:
       - git
-    volumes:
-      - ${CF_VOLUME}:/repo
+    volumes_from:
+      - keys
     logging:
       driver: "none"
     environment:
       - GIT_USER=git
       - GIT_URL=ssh://git@git/tweek/tests
-      - GIT_PRIVATE_KEY_PATH=/repo/tweek/deployments/dev/ssh/tweekgit
-      - GIT_PUBLIC_KEY_PATH=/repo/tweek/deployments/dev/ssh/tweekgit.pub
+      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+      - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
       
   editor:
     image: $EDITOR_IMAGE
-    user: root
     depends_on:
       - api
       - authoring
-    volumes:
-      - ${CF_VOLUME}:/repo
-    ports:
-      - 4004:3000
+    volumes_from:
+      - keys
     logging:
       driver: "none"
     environment:
-      - GIT_PRIVATE_KEY_PATH=/repo/tweek/deployments/dev/ssh/tweekgit
+      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
       - TWEEK_API_HOSTNAME=http://api
       - AUTHORING_API_HOSTNAME=http://authoring:3000
-      
+      - REQUIRE_AUTH=true
+      - TWEEK_AUTH_SCHEMES=httpDigest
+      - AUTH_DIGEST_CREDENTIALS=user:pwd
   redis:
     image: redis:4.0.2-alpine
     expose:
@@ -115,9 +112,7 @@ services:
     image: nats:1.0.4-linux
 
   selenium:
-    image: selenium/standalone-chrome:3.8.1
-    volumes:
-      - /dev/shm:/dev/shm
+    image: selenium/standalone-chrome:3.4.0
     logging:
       driver: "none"
 
