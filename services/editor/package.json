@@ -73,6 +73,7 @@
     "passport-http": "^0.3.0",
     "passport-oauth2": "^1.4.0",
     "prop-types": "^15.6.0",
+    "query-string": "5.0.1",
     "ramda": "^0.25.0",
     "react": "^16.2.0",
     "react-autosize-textarea": "^1.0.2",

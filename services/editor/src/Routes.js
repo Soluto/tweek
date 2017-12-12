@@ -15,53 +15,43 @@ import './styles/styles.css';
 
 const SelectKeyMessage = () => <div className={'select-key-message'}>Select key...</div>;
 
+const renderKeyRoutes = ({ match: { path } }) => (
+  <KeysPage>
+    <Switch>
+      <Route exact path={path} component={SelectKeyMessage} />
+      <Route component={KeyPage} />
+    </Switch>
+  </KeysPage>
+);
+
+const renderContextRoutes = ({ match }) => (
+  <ContextPage {...match}>
+    <Route path={`${match.path}/:identityType/:identityId`} component={IdentityDetails} />
+  </ContextPage>
+);
+
+const renderSettingsRoutes = ({ match }) => (
+  <SettingsPage {...match}>
+    <Route path={`${match.path}/identities/:identityType`} component={IdentityPage} />
+  </SettingsPage>
+);
+
+const renderAppRoutes = () => (
+  <App>
+    <Switch>
+      <Route path="/" exact render={() => <Redirect to="/keys" />} />
+      <Route path="/keys" render={renderKeyRoutes} />
+      <Route path="/context" render={renderContextRoutes} />
+      <Route path="/settings" render={renderSettingsRoutes} />
+    </Switch>
+  </App>
+);
+
 export default props => (
   <ConnectedRouter history={browserHistory}>
     <Switch>
       <Route path="/login" component={LoginPage} />
-      <Route
-        path="/"
-        render={() => (
-          <App>
-            <Switch>
-              <Route path="/" exact render={() => <Redirect to="/keys" />} />
-              <Route
-                path="/keys"
-                render={({ match: { path } }) => (
-                  <KeysPage>
-                    <Switch>
-                      <Route exact path={path} component={SelectKeyMessage} />
-                      <Route component={KeyPage} />
-                    </Switch>
-                  </KeysPage>
-                )}
-              />
-              <Route
-                path="/context"
-                render={({ match }) => (
-                  <ContextPage {...match}>
-                    <Route
-                      path={`${match.path}/:identityType/:identityId`}
-                      component={IdentityDetails}
-                    />
-                  </ContextPage>
-                )}
-              />
-              <Route
-                path="/settings"
-                render={({ match }) => (
-                  <SettingsPage {...match}>
-                    <Route
-                      path={`${match.path}/identities/:identityType`}
-                      component={IdentityPage}
-                    />
-                  </SettingsPage>
-                )}
-              />
-            </Switch>
-          </App>
-        )}
-      />
+      <Route path="/" render={renderAppRoutes} />
       <Route component={NoMatch} />
     </Switch>
   </ConnectedRouter>
