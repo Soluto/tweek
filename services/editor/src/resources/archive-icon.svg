@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Tweek-icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Archived" stroke="#6D6D6D" stroke-width="2">
+            <g id="Group" transform="translate(11.000000, 13.000000)">
+                <path d="M4,6.01147461 L4,18 C4,19.1045695 4.8954305,20 6,20 L20,20 C21.1045695,20 22,19.1045695 22,18 L22,6.01147461 L4,6.01147461 Z" id="Rectangle"></path>
+                <rect id="Rectangle-2" x="1" y="1" width="24" height="5" rx="2"></rect>
+            </g>
+            <path d="M21.5,23.5 L26.5,23.5" id="Line" stroke-linecap="round"></path>
+        </g>
+    </g>
+</svg>
