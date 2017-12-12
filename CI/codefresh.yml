@@ -1,6 +1,19 @@
 version: '1.0'
 steps:
 
+  CompositionTestsBeforeEnvVar:
+    title: Tests - composition
+    type: composition
+    composition: ./CI/docker-compose-tests.yml
+    composition_variables:
+      - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
+    composition_candidates:
+      test-candidate:
+        image: alpine
+        volumes:
+          - ${CF_VOLUME_PATH}:/repo
+        command: ls repo/tweek/deployments/dev/ssh
+
   VersionsToDeploy:
     description: Check versions to deploy
     title: Check versions to deploy
