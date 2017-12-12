@@ -3,7 +3,7 @@ steps:
   CompositionTests:
     title: Tests - composition
     type: composition
-    composition: ./CI/docker-compose-test.yml
+    composition: ./CI/docker-compose-cf-volume.yml
     composition_variables:
       - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
     composition_candidates:
@@ -12,7 +12,6 @@ steps:
         volumes:
           - ${CF_VOLUME_PATH}:/repo
         command: ls repo
-
 
   VersionsToDeploy:
     description: Check versions to deploy
