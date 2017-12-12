@@ -16,7 +16,7 @@ const Versions = mapPropsStream(prop$ =>
     ) : (
       <ul>
         {R.toPairs(services).map(([name, version]) => (
-          <li>
+          <li key={name}>
             {name}: {version}
           </li>
         ))}

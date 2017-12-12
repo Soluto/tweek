@@ -2,6 +2,7 @@
 import { expect } from 'chai';
 import tweekApiClient from '../../clients/tweek-api-client';
 import { attributeSelector, dataComp, dataField } from '../../utils/selector-utils';
+import { login } from '../../utils/auth-utils';
 
 const dataLabel = attributeSelector('data-label');
 const propertyItem = propertyName =>
@@ -9,11 +10,11 @@ const propertyItem = propertyName =>
 const newPropertyItem = dataComp('new-property-item');
 const newPropertyName = `${newPropertyItem} ${dataField('property-name')}`;
 
-function addStringProperty(propertyName) {
+const addStringProperty = propertyName => {
   $(newPropertyName).setValue(`${propertyName}\n`);
-}
+};
 
-function addTypedProperty(propertyName, propertyType) {
+const addTypedProperty = (propertyName, propertyType) => {
   $(newPropertyName).setValue(propertyName);
 
   const propertyTypeSelector = `${newPropertyItem} ${dataComp('type-select')}`;
@@ -25,14 +26,14 @@ function addTypedProperty(propertyName, propertyType) {
   $(addButton).click();
 
   browser.waitForVisible(propertyItem(propertyName));
-}
+};
 
-function deleteProperty(propertyName) {
+const deleteProperty = propertyName => {
   const deleteButton = `${propertyItem(propertyName)} ${dataComp('remove')}`;
   $(deleteButton).click();
-}
+};
 
-function updateExistingCustomProperty(propertyName, { base, allowedValues } = {}) {
+const updateExistingCustomProperty = (propertyName, { base, allowedValues } = {}) => {
   const propertyType = `${propertyItem(propertyName)} ${dataField('property-type')}`;
   if (base) {
     const baseSelector = selector => `${propertyType} ${dataField('base')} ${selector}`;
@@ -46,31 +47,33 @@ function updateExistingCustomProperty(propertyName, { base, allowedValues } = {}
     const allowedValuesInput = `${propertyType} ${dataField('allowed-values')} input`;
     $(allowedValuesInput).setValue(`${allowedValues.join('\n')}\n`);
   }
-}
+};
 
-function addNewIdentity(identityType) {
+const addNewIdentity = identityType => {
   const addNewIdentityComp = selector => `${dataComp('add-new-identity')} ${selector}`;
 
   browser.url(`/settings`);
   browser.waitForVisible('.side-menu');
   $(addNewIdentityComp('button')).click();
   $(addNewIdentityComp('input')).setValue(`${identityType}\n`);
-}
+};
 
-function saveChanges() {
+const saveChanges = () => {
   $(dataComp('save-button')).click();
-}
+};
 
-function deleteCurrentIdentity() {
+const deleteCurrentIdentity = () => {
   $(dataComp('delete-identity')).click();
-}
+};
 
-function goToIdentityPage(identityType) {
+const goToIdentityPage = identityType => {
   browser.url(`/settings/identities/${identityType}`);
   browser.waitForVisible('.identity-page');
-}
+};
 
 describe('edit identity schema', () => {
+  before(() => login());
+
   it('add new identity with simple property and then delete', () => {
     addNewIdentity('Device');
     expect(browser.getUrl()).to.endsWith('settings/identities/device');
@@ -89,7 +92,9 @@ describe('edit identity schema', () => {
       addTypedProperty('Age', 'number');
       saveChanges();
       tweekApiClient.eventuallyExpectKey('@tweek/schema/edit_properties_test', result =>
-        expect(result).to.have.property('Age').that.deep.include({ type: 'number' }),
+        expect(result)
+          .to.have.property('Age')
+          .that.deep.include({ type: 'number' }),
       );
     });
 
@@ -98,15 +103,15 @@ describe('edit identity schema', () => {
       addTypedProperty('OsType', 'custom');
       saveChanges();
       tweekApiClient.eventuallyExpectKey('@tweek/schema/edit_properties_test', result => {
-        expect(result).to.have
-          .property('OsType')
+        expect(result)
+          .to.have.property('OsType')
           .that.deep.include({ type: { base: 'string', allowedValues: [] } });
       });
       updateExistingCustomProperty('OsType', { allowedValues: ['Android', 'iOS'] });
       saveChanges();
       tweekApiClient.eventuallyExpectKey('@tweek/schema/edit_properties_test', result => {
-        expect(result).to.have
-          .property('OsType')
+        expect(result)
+          .to.have.property('OsType')
           .that.deep.include({ type: { base: 'string', allowedValues: ['Android', 'iOS'] } });
       });
     });

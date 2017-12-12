@@ -3,6 +3,7 @@
 import { expect } from 'chai';
 import Key from '../../utils/Key';
 import { attributeSelector, dataComp } from '../../utils/selector-utils';
+import { login } from '../../utils/auth-utils';
 
 describe('keys list and filter', () => {
   const keysListTestFolder = 'behavior_tests/keys_list';
@@ -15,6 +16,7 @@ describe('keys list and filter', () => {
     `${dataComp('key-link')} ${attributeSelector('href', `/keys/${keyName}`)}`;
 
   before(() => {
+    login();
     Key.open();
   });
 

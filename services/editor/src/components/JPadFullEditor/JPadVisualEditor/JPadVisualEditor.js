@@ -89,7 +89,10 @@ export default ({ valueType, mutate, alerter, keyPath }) => {
           .append(newPartition),
       );
       break;
+    default:
+      break;
     }
+    
   };
   const handlePartitionDelete = async (index) => {
     if (partitions.length === 0) return;

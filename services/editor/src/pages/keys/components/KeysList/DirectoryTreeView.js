@@ -38,21 +38,21 @@ function TreeNode({ node, name, fullPath, depth, renderItem, expandByDefault }) 
   return node === leaf
     ? <LeafElement {...{ name, fullPath, depth }} />
     : <TreeDirectory
-        descendantsCount={countLeafsInTree(node)}
-        {...{ name, fullPath, depth, expandByDefault }}
-      >
-        {Object.keys(node).map(childPath =>
-          <TreeNode
-            key={childPath}
-            name={childPath}
-            node={node[childPath]}
-            fullPath={`${fullPath}/${childPath}`}
-            depth={depth + 1}
-            renderItem={renderItem}
-            expandByDefault={expandByDefault}
-          />,
-        )}
-      </TreeDirectory>;
+      descendantsCount={countLeafsInTree(node)}
+      {...{ name, fullPath, depth, expandByDefault }}
+    >
+      {Object.keys(node).map(childPath =>
+        <TreeNode
+          key={childPath}
+          name={childPath}
+          node={node[childPath]}
+          fullPath={`${fullPath}/${childPath}`}
+          depth={depth + 1}
+          renderItem={renderItem}
+          expandByDefault={expandByDefault}
+        />,
+      )}
+    </TreeDirectory>;
 }
 
 TreeNode.propTypes = {
@@ -97,6 +97,7 @@ class TreeDirectory extends React.Component {
           <img
             className="key-folder-icon"
             src={isCollapsed ? closedFolderIconSrc : openedFolderIconSrc}
+            alt={''}
           />
           {name}
           <label className="number-of-folder-keys">{descendantsCount}</label>
@@ -106,8 +107,8 @@ class TreeDirectory extends React.Component {
           {isCollapsed
             ? undefined
             : <ul className="folder-items">
-                {children.map((child, i) => <li className="sub-tree" key={i}>{child}</li>)}
-              </ul>}
+              {children.map((child, i) => <li className="sub-tree" key={i}>{child}</li>)}
+            </ul>}
         </VelocityTransitionGroup>
       </div>
     );

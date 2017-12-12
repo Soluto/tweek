@@ -4,10 +4,11 @@ import { expect } from 'chai';
 import Key from '../../utils/Key';
 import Alert from '../../utils/Alert';
 import { attributeSelector, dataComp, dataField, nthSelector } from '../../utils/selector-utils';
+import { login } from '../../utils/auth-utils';
 
-function addPartition(property) {
+const addPartition = property => {
   browser.setValue(`${dataComp('partition-selector')} input`, `${property}\n`);
-}
+};
 
 const testFolder = 'behavior_tests/partitions';
 
@@ -20,6 +21,8 @@ const partitionGroup = partitionValues =>
   attributeSelector('data-group', partitionValues.join(', ').toLowerCase());
 
 describe('partition key', () => {
+  before(() => login());
+
   describe('add partition', () => {
     describe('invalid partitions', () => {
       beforeEach(() => {

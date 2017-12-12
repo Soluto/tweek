@@ -2,11 +2,14 @@
 
 import Key from '../../utils/Key';
 import Rule from '../../utils/Rule';
+import { login } from '../../utils/auth-utils';
 
 const timeout = 1000;
 
 describe('navigating from key with changes', () => {
   const keyName = 'behavior_tests/routing';
+
+  before(() => login());
 
   beforeEach(() =>
     Key.add()

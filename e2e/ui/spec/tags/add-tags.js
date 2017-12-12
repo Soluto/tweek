@@ -3,6 +3,7 @@
 import Key from '../../utils/Key';
 import Chance from 'chance';
 import { dataComp } from '../../utils/selector-utils';
+import { login } from '../../utils/auth-utils';
 
 const chance = new Chance();
 
@@ -18,21 +19,22 @@ describe('add tags', () => {
   const tagsTestKeyFullPath = 'behavior_tests/tags';
 
   before(() => {
+    login();
     Key.open(tagsTestKeyFullPath);
   });
 
-  function addTag(tagName) {
+  const addTag = tagName => {
     browser.setValue(tagsInput, `${tagName}\n`);
-  }
+  };
 
-  function isTagExists(tag) {
+  const isTagExists = tag => {
     const partialTag = tag.slice(0, tag.length - 1);
     browser.setValue(tagsInput, partialTag);
 
     browser.waitForVisible(suggestion, timeout);
     const tagsSuggestions = browser.elements(suggestion);
     return tagsSuggestions.value.length === 1;
-  }
+  };
 
   it('should save the tag as a suggestion on submitting it without saving the key', () => {
     // Arrange

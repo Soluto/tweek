@@ -5,6 +5,7 @@ import Key from '../../utils/Key';
 import Alert from '../../utils/Alert';
 import { dataComp } from '../../utils/selector-utils';
 import authoringClient from '../../clients/authoring-client';
+import { login } from '../../utils/auth-utils';
 
 const timeout = 5000;
 
@@ -13,15 +14,17 @@ const unarchiveKey = dataComp('unarchive-key');
 const deleteKey = dataComp('delete-key');
 const keyMessage = dataComp('key-message');
 
-function assertKeyDeleted(keyName) {
+const assertKeyDeleted = keyName => {
   authoringClient.waitForKeyToBeDeleted(keyName);
 
   Key.open(keyName, false);
 
   expect(Key.exists, 'key should not exist after delete').to.equal(false);
-}
+};
 
 describe('delete key', () => {
+  before(() => login());
+
   describe('archive', () => {
     it('should archive key', () => {
       const keyName = 'behavior_tests/delete_key/archive';
