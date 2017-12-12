@@ -12,7 +12,7 @@ steps:
         image: alpine
         volumes:
           - ${CF_VOLUME_PATH}:/repo
-        command: ls repo/tweek/deployments/dev/ssh
+        command: ls -a /repo/tweek
 
   VersionsToDeploy:
     description: Check versions to deploy

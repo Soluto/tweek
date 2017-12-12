@@ -5,4 +5,4 @@ services:
     image: alpine
     volumes:
       - ${CF_VOLUME_PATH}:/repo
-    command: ls repo/tweek
+    command: ls -a /repo/tweek/deployments/dev/ssh
