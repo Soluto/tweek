@@ -1,4 +1,4 @@
-import { BLANK_KEY_NAME } from '../blankKeyDefinition';
+import { BLANK_KEY_NAME } from '../../../../../store/ducks/ducks-utils/blankKeyDefinition';
 
 const lengthValidation = {
   rule: ({ value }) => value.length > 0,
@@ -41,5 +41,5 @@ let keyNameValidations = [
 
 export default function (keyName, keysList) {
   let failedRule = keyNameValidations.find(x => !x.rule({ value: keyName, keysList }));
-  return { isValid: !failedRule, hint: failedRule ? failedRule.hint : undefined };
+  return { isValid: !failedRule, hint: failedRule && failedRule.hint };
 }

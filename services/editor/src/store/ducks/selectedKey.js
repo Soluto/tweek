@@ -9,7 +9,6 @@ import {
   createBlankKeyManifest,
   BLANK_KEY_NAME,
 } from './ducks-utils/blankKeyDefinition';
-import keyNameValidations from './ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
 import { continueGuard } from './ducks-utils/guards';
 import { downloadTags } from './tags';
@@ -253,28 +252,22 @@ export function changeKeyValueType(keyValueType) {
   };
 }
 
-export function updateKeyPath(newKeyPath) {
-  return async function (dispatch) {
-    await dispatch(updateKeyName(newKeyPath));
+export function updateKeyPath(newKeyPath, validation) {
+  return async function (dispatch, getState) {
+    const currentValidationState = getState().selectedKey.validation;
+    const newValidation = {
+      ...currentValidationState,
+      key: validation,
+    };
+
+    dispatch({ type: KEY_VALIDATION_CHANGE, payload: newValidation });
     dispatch({ type: KEY_PATH_CHANGE, payload: newKeyPath });
+    dispatch(updateKeyName(newKeyPath));
   };
 }
 
 export function updateKeyName(newKeyName) {
-  return async function (dispatch, getState) {
-    const keyNameValidation = keyNameValidations(newKeyName, getState().keys);
-    keyNameValidation.isShowingHint = !keyNameValidation.isValid;
-
-    dispatch({ type: KEY_NAME_CHANGE, payload: newKeyName });
-
-    const currentValidationState = getState().selectedKey.validation;
-    const newValidation = {
-      ...currentValidationState,
-      key: keyNameValidation,
-    };
-
-    dispatch({ type: KEY_VALIDATION_CHANGE, payload: newValidation });
-  };
+  return { type: KEY_NAME_CHANGE, payload: newKeyName };
 }
 
 export function saveKey() {
@@ -330,8 +323,7 @@ export function deleteKey() {
 }
 
 const setValidationHintsVisibility = (validationState, isShown) => {
-  Object.keys(validationState)
-    .map(x => validationState[x])
+  Object.values(validationState)
     .filter(x => typeof x === 'object')
     .map((x) => {
       setValidationHintsVisibility(x, isShown);
@@ -354,7 +346,6 @@ const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
     detailsAdded = true;
   } else {
     validation = {
-      key: keyNameValidations(key, []),
       manifest: {
         valueType: keyValueTypeValidations(keyData.manifest.valueType),
       },
@@ -425,8 +416,7 @@ const handleKeyNameChange = ({ local: { key, ...localData }, ...otherState }, { 
 });
 
 const isStateInvalid = validationState =>
-  Object.keys(validationState)
-    .map(x => validationState[x])
+  Object.values(validationState)
     .filter(x => typeof x === 'object')
     .some(x => x.isValid === false || isStateInvalid(x));
 

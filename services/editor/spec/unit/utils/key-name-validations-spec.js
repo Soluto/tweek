@@ -1,10 +1,10 @@
 /* global jest, beforeEach, describe, it, expect */
-jest.unmock('../../../../../src/store/ducks/ducks-utils/validations/key-name-validations');
+jest.unmock('../../../src/pages/keys/components/KeyPage/KeyAddPage/key-name-validations');
 jest.unmock('chance');
 
 import { assert, expect } from 'chai';
-import keyNameValidations from '../../../../../src/store/ducks/ducks-utils/validations/key-name-validations';
-import { BLANK_KEY_NAME } from '../../../../../src/store/ducks/ducks-utils/blankKeyDefinition';
+import keyNameValidations from '../../../src/pages/keys/components/KeyPage/KeyAddPage/key-name-validations';
+import { BLANK_KEY_NAME } from '../../../src/store/ducks/ducks-utils/blankKeyDefinition';
 
 describe('key-name-validations', () => {
   const categoryName1 = 'someCategoryName1';
@@ -65,9 +65,9 @@ describe('key-name-validations', () => {
       // Assert
       expect(validationResult.isValid).to.equal(
         x.expectedIsValid,
-        `should return value is ${x.expectedIsValid
-          ? ''
-          : 'in'}valid (hint: ${validationResult.hint})`,
+        `should return value is ${x.expectedIsValid ? '' : 'in'}valid (hint: ${
+          validationResult.hint
+        })`,
       );
       if (!validationResult.isValid)
         assert(validationResult.hint.length > 0, 'should return an un empty hint');

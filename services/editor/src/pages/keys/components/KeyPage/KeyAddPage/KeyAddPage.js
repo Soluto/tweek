@@ -13,11 +13,17 @@ import KeyFormatSelector from './KeyFormatSelector';
 import './KeyAddPage.css';
 
 const KeyAddPage = compose(
-  connect(state => ({ manifest: state.selectedKey.local.manifest }), {
-    addKeyDetails,
-    updateKeyPath,
-    changeKeyFormat,
-  }),
+  connect(
+    ({ selectedKey: { local: { manifest }, validation: { key: keyValidation } } }) => ({
+      manifest,
+      keyValidation,
+    }),
+    {
+      addKeyDetails,
+      updateKeyPath,
+      changeKeyFormat,
+    },
+  ),
   setDisplayName('KeyAddPage'),
   setPropTypes({
     updateKeyPath: PropTypes.func.isRequired,
@@ -25,7 +31,7 @@ const KeyAddPage = compose(
     changeKeyFormat: PropTypes.func.isRequired,
     manifest: PropTypes.object.isRequired,
   }),
-)(({ manifest, updateKeyPath, addKeyDetails, changeKeyFormat }) => {
+)(({ manifest, updateKeyPath, addKeyDetails, changeKeyFormat, keyValidation }) => {
   const valueType = manifest.valueType;
   const displayName = manifest.meta.name;
   return (
@@ -34,7 +40,11 @@ const KeyAddPage = compose(
       <div className="add-key-input-wrapper">
         <label className="keypath-label">Keypath:</label>
         <div className="keypath-input">
-          <NewKeyInput onKeyNameChanged={name => updateKeyPath(name)} displayName={displayName} />
+          <NewKeyInput
+            onChange={updateKeyPath}
+            displayName={displayName}
+            validation={keyValidation}
+          />
         </div>
       </div>
       <div className="add-key-properties-wrapper">
