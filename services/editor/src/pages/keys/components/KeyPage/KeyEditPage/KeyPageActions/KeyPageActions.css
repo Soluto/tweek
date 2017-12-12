@@ -19,8 +19,8 @@
 .key-action-buttons-wrapper .icon-button {
   background-color: #bcbcbc;
   margin-left: 10px;
-  width: 48px;
-  height: 48px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   border: none;
 }
@@ -32,4 +32,7 @@
 }
 .key-action-buttons-wrapper .icon-button:not(:disabled) {
   cursor: pointer;
+}
+.key-action-buttons-wrapper .icon-button img {
+  width: 28px;
 }

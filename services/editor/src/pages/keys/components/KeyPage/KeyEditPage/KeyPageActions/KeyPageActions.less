@@ -11,7 +11,7 @@
   float: right;
   @key-action-button-width: 125px;
   @button-margin: 10px;
-  @icon-size: 48px;
+  @icon-size: 28px;
 
   .save-button {
     margin-left: @button-margin;
@@ -29,6 +29,9 @@
     border: none;
     &:not(:disabled) {
       cursor: pointer;
+    }
+    img {
+      width: @icon-size;
     }
   }
 }
