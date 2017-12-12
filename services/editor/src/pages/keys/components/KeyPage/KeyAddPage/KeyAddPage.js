@@ -39,13 +39,11 @@ const KeyAddPage = compose(
       <h3 className="heading-text">Add new Key</h3>
       <div className="add-key-input-wrapper">
         <label className="keypath-label">Keypath:</label>
-        <div className="keypath-input">
-          <NewKeyInput
-            onChange={updateKeyPath}
-            displayName={displayName}
-            validation={keyValidation}
-          />
-        </div>
+        <NewKeyInput
+          onChange={updateKeyPath}
+          displayName={displayName}
+          validation={keyValidation}
+        />
       </div>
       <div className="add-key-properties-wrapper">
         <KeyFormatSelector onFormatChanged={changeKeyFormat} />
