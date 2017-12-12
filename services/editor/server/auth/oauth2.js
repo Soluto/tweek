@@ -2,7 +2,9 @@ import passport from 'passport';
 import OAuth2Strategy from 'passport-oauth2';
 import jwt from 'jsonwebtoken';
 
-module.exports = function (server, config, redirectHandler) {
+const redirectHandler = (req, res) => res.redirect(req.query.state || '/');
+
+module.exports = function (server, config) {
   const oauth2Strategy = new OAuth2Strategy(
     {
       scope: 'profile email',

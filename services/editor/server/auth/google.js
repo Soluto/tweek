@@ -1,7 +1,7 @@
 import passport from 'passport';
 import GoogleOauth2Strategy from 'passport-google-oauth20';
 
-module.exports = function (server, config, redirectHandler) {
+module.exports = function (server, config) {
   const strategyParams = {
     clientID: config.get('AUTH_GOOGLE_CLIENT_ID'),
     clientSecret: config.get('AUTH_GOOGLE_CLIENT_SECRET'),
@@ -37,12 +37,19 @@ module.exports = function (server, config, redirectHandler) {
 
   passport.use(new GoogleOauth2Strategy(strategyParams, verify));
 
-  server.get('/auth/google', passport.authenticate('google', { scope, hostedDomain }));
+  const passportAuthenticateWithStateHandler = (req, res, next) => {
+    const state = req.query.redirectUrl;
+    return passport.authenticate('google', { scope, hostedDomain, state })(req, res, next);
+  };
+  server.get('/auth/google', passportAuthenticateWithStateHandler);
 
+  const passportAuthenticateCallbackHandler = (req, res, next) => {
+    res.redirect(req.query.state || '/');
+  };
   server.get(
     '/auth/google/callback',
     passport.authenticate('google', { scope, hostedDomain }),
-    redirectHandler,
+    passportAuthenticateCallbackHandler,
   );
 
   return {
