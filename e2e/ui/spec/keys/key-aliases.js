@@ -3,6 +3,7 @@
 import { expect } from 'chai';
 import Key from '../../utils/Key';
 import { dataComp, attributeSelector } from '../../utils/selector-utils';
+import { login } from '../../utils/auth-utils';
 
 const timeout = 5000;
 
@@ -10,6 +11,8 @@ describe('key aliases', () => {
   const originalKeyPath = 'behavior_tests/key_aliases/regular_key';
   const aliasKeyPath = 'behavior_tests/key_aliases/alias_key';
   const aliasToAliasKeyPath = 'behavior_tests/key_aliases/alias_to_alias';
+
+  before(login);
 
   const waitForAlias = alias =>
     browser.waitForVisible(`${dataComp('aliases')} ${attributeSelector('data-dependency', alias)}`);
