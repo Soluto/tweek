@@ -89,7 +89,9 @@ services:
       - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
       - TWEEK_API_HOSTNAME=http://api
       - AUTHORING_API_HOSTNAME=http://authoring:3000
-      
+      - REQUIRE_AUTH=true
+      - TWEEK_AUTH_SCHEMES=httpDigest
+      - AUTH_DIGEST_CREDENTIALS=user:pwd
   redis:
     image: redis:4.0.2-alpine
     expose:

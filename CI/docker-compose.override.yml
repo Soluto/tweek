@@ -91,6 +91,7 @@ services:
       - AUTHORING_URL=http://authoring:3000
       - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
       - PROXY_URL=http://zap-e2e:8090
+      - AUTH_DIGEST_CREDENTIALS=user:pwd
 
   e2e-integration:
     build: ../e2e/integration
