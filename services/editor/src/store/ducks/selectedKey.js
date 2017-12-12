@@ -120,7 +120,7 @@ export function openKey(key, { revision } = {}) {
   return async function (dispatch) {
     dispatch(downloadTags());
     try {
-      ContextService.refreshSchema();
+      await ContextService.refreshSchema();
     } catch (error) {
       dispatch(showError({ title: 'Failed to refresh schema', error }));
     }
@@ -319,6 +319,30 @@ export function deleteKey() {
     } catch (error) {
       dispatch(showError({ title: 'Failed to delete key!', error }));
     }
+  };
+}
+
+export function addAlias(alias) {
+  return async function (dispatch, getState) {
+    const { selectedKey: { key, usedBy, aliases } } = getState();
+
+    const manifest = createBlankKeyManifest(alias, { type: 'alias', key });
+
+    try {
+      await fetch(`/api/keys/${alias}`, {
+        method: 'put',
+        ...withJsonData({ manifest }),
+      });
+    } catch (error) {
+      dispatch(showError({ title: 'Failed to add alias', error }));
+      return;
+    }
+
+    dispatch(addKeyToList(alias));
+    dispatch({
+      type: KEY_DEPENDENTS,
+      payload: { keyName: key, usedBy, aliases: aliases.concat(alias) },
+    });
   };
 }
 
