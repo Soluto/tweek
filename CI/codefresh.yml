@@ -68,7 +68,7 @@ steps:
     image_name: soluto/zap
     working_directory: ./deployments/dev/zap
   
-    Tests:
+  Tests:
     title: Tests - e2e & smoke
     type: composition
     composition: ./CI/docker-compose.yml
