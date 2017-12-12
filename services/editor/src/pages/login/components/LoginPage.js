@@ -51,14 +51,14 @@ const LoginMessageSpan = styled('span')`
   font-size: 20px;
   font-weight: bold;
   color: #696969;
-  margin-bottom: 3px;
+  margin-bottom: 20px;
   margin-top: 250px;
 `;
 
 const LoginButton = styled('a')`
   padding-top: 14px;
   padding-bottom: 17px;
-  margin: 40px;
+  margin: 15px;
   width: 40%;
   background-color: #00aeef;
   border-radius: 25px;
