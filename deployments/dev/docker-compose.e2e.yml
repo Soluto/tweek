@@ -26,8 +26,10 @@ services:
       - CorsEnabled=true
   
   selenium:
-    image: selenium/standalone-chrome:3.4.0
+    image: selenium/standalone-chrome:3.8.1
     container_name: selenium
+    volumes:
+      - /dev/shm:/dev/shm
 
   e2e-ui:
     build: ../../e2e/ui

@@ -74,6 +74,7 @@ steps:
     composition: ./CI/docker-compose.yml
     composition_variables:
       - REPOSITORY_IMAGE=${{BuildingGitRepository}}
+      - KEY_IMAGE=${{BuildGitKeys}}
       - MANAGEMENT_IMAGE=${{BuildingManagement}}
       - API_IMAGE=${{BuildingApiImage}}
       - AUTHORING_IMAGE=${{BuildingAuthoring}}
