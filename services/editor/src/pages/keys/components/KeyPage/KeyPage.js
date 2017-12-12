@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, lifecycle } from 'recompose';
+import querystring from 'query-string';
 import * as selectedKeyActions from '../../../../store/ducks/selectedKey';
 import * as alertActions from '../../../../store/ducks/alerts';
 import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefinition';
@@ -45,12 +46,12 @@ const mapStateToProps = (state, { match, location }) => {
   const configKey = location.pathname.substring(
     match.path.endsWith('/') ? match.path.length : match.path.length + 1,
   );
-  const revision = location.search && location.search.match(/^\?revision=(.*)/)[1];
+  const query = location.search && querystring.parse(location.search);
 
   return {
     selectedKey: state.selectedKey,
     configKey,
-    revision,
+    revision: query.revision,
     detailsAdded: state.selectedKey && state.selectedKey.detailsAdded,
   };
 };
