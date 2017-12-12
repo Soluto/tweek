@@ -1,5 +1,12 @@
 version: '1.0'
 steps:
+  CompositionTests:
+    title: Tests - composition
+    type: composition
+    composition: ./CI/docker-compose-test.yml
+    composition_variables:
+      - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
+
   VersionsToDeploy:
     description: Check versions to deploy
     title: Check versions to deploy

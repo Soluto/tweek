@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  test:
+    image: alpine
+    volumes:
+      - ${CF_VOLUME_PATH}:/repo
+    command: ls repo
