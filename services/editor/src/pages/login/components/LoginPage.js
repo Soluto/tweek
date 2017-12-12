@@ -72,7 +72,7 @@ const LoginButton = styled('a')`
   text-decoration: none;
 `;
 
-const LoginPage = ({ authProviders }) => (
+const LoginPage = ({ authProviders, location }) => (
   <MainComponent>
     <LeftPane>
       <WelcomeMessageSpan>Welcome to:</WelcomeMessageSpan>
@@ -81,7 +81,7 @@ const LoginPage = ({ authProviders }) => (
     <RightPane>
       <LoginMessageSpan>Login into Tweek using:</LoginMessageSpan>
       {authProviders.map(ap => (
-        <LoginButton key={ap.name} href={ap.url} data-comp={ap.name}>
+        <LoginButton key={ap.name} href={`${ap.url}${location.search}`} data-comp={ap.name}>
           {ap.name}
         </LoginButton>
       ))}

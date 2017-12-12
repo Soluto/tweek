@@ -2,7 +2,7 @@ import passport from 'passport';
 import OAuth2Strategy from 'passport-oauth2';
 import jwt from 'jsonwebtoken';
 
-module.exports = function (server, config) {
+module.exports = function (server, config, redirectHandler) {
   const oauth2Strategy = new OAuth2Strategy(
     {
       scope: 'profile email',
@@ -34,9 +34,7 @@ module.exports = function (server, config) {
   });
 
   server.get('/auth/oauth2', passport.authenticate('oauth2'));
-  server.get('/auth/oauth2/callback', passport.authenticate('oauth2'), (req, res) => {
-    res.redirect('/');
-  });
+  server.get('/auth/oauth2/callback', passport.authenticate('oauth2'), redirectHandler);
 
   passport.use(oauth2Strategy);
   passport.serializeUser((user, done) => {

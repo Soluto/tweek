@@ -1,7 +1,7 @@
 import passport from 'passport';
 import GoogleOauth2Strategy from 'passport-google-oauth20';
 
-module.exports = function (server, config) {
+module.exports = function (server, config, redirectHandler) {
   const strategyParams = {
     clientID: config.get('AUTH_GOOGLE_CLIENT_ID'),
     clientSecret: config.get('AUTH_GOOGLE_CLIENT_SECRET'),
@@ -42,7 +42,7 @@ module.exports = function (server, config) {
   server.get(
     '/auth/google/callback',
     passport.authenticate('google', { scope, hostedDomain }),
-    (req, res) => res.redirect('/'),
+    redirectHandler,
   );
 
   return {

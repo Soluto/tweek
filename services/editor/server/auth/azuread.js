@@ -1,7 +1,7 @@
 import passport from 'passport';
 const OIDCStrategy = require('passport-azure-ad').OIDCStrategy;
 
-module.exports = function (server, config) {
+module.exports = function (server, config, redirectHandler) {
   const oidcStrategy = new OIDCStrategy(
     {
       identityMetadata: 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
@@ -34,9 +34,7 @@ module.exports = function (server, config) {
   server.get(
     '/auth/openid/callback',
     passport.authenticate('azuread-openidconnect'),
-    (req, res) => {
-      res.redirect('/');
-    },
+    redirectHandler,
   );
 
   passport.use(oidcStrategy);

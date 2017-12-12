@@ -32,9 +32,7 @@ module.exports = function(server, config) {
 
   passport.use(new DigestStrategy(strategyParams, validate));
 
-  server.get('/auth/digest', passport.authenticate('digest', { session: true }), (req, res) =>
-    res.redirect('/'),
-  );
+  server.get('/auth/digest', passport.authenticate('digest', { session: true }), redirectHandler);
 
   return {
     url: '/auth/digest',
