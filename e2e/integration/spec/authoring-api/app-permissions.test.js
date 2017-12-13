@@ -13,7 +13,7 @@ const permissions = [
 ];
 const { expect } = require('chai');
 
-describe('app permissions test', () => {
+describe('authoring api - app permissions', () => {
   let clients;
   before(async () => {
     clients = await initClients();
