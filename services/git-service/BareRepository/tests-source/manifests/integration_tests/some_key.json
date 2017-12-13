@@ -1,7 +1,7 @@
 {
-  "key_path": "@integration_tests/some_key",
+  "key_path": "integration_tests/some_key",
   "meta": {
-    "name": "@integration_tests/some_key",
+    "name": "integration_tests/some_key",
     "tags": [],
     "description": "",
     "archived": false
