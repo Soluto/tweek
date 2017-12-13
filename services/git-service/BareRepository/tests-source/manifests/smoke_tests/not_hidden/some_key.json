@@ -1,5 +1,5 @@
 {
-    "key_path": "@smoke_tests/not_hidden/some_key",
+    "key_path": "smoke_tests/not_hidden/some_key",
     "meta": {
         "description": "",
         "readOnly": false,

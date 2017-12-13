@@ -36,7 +36,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
 
             // Act
             var keyRequests = Enumerable.Range(0, numberOfAttempts)
-                .Select(async i => await mTweekApi.GetConfigurations("@smoke_tests/value_distribution/bernoulli", new Dictionary<string, string> { { "device", Guid.NewGuid().ToString() } }));
+                .Select(async i => await mTweekApi.GetConfigurations("smoke_tests/value_distribution/bernoulli", new Dictionary<string, string> { { "device", Guid.NewGuid().ToString() } }));
 
             var results = await Task.WhenAll(keyRequests);
             var returnedValues = results.Where(x => x.Type == JTokenType.String).Select(x => x.ToString()).ToList();
@@ -60,7 +60,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
 
             // Act
             var keyRequests = Enumerable.Range(0, numberOfAttempts)
-                .Select(async i => await mTweekApi.GetConfigurations("@smoke_tests/value_distribution/weighted_normalized", new Dictionary<string, string> { { "device", Guid.NewGuid().ToString() } }));
+                .Select(async i => await mTweekApi.GetConfigurations("smoke_tests/value_distribution/weighted_normalized", new Dictionary<string, string> { { "device", Guid.NewGuid().ToString() } }));
 
             var results = await Task.WhenAll(keyRequests);
             var returnedValues = results.Where(x => x.Type == JTokenType.String).Select(x => x.ToString()).ToList();

@@ -1,5 +1,5 @@
 {
-    "key_path": "@smoke_tests/key_path_suffix/key",
+    "key_path": "smoke_tests/not_hidden/@hidden/visible_key",
     "meta": {
         "description": "",
         "readOnly": false,
@@ -7,7 +7,7 @@
     },
     "implementation": {
         "type": "const",
-        "value": "some value"
+        "value": "visible value"
     },
     "valueType": "string",
     "enabled": true,

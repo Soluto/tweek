@@ -1,5 +1,5 @@
 {
-    "key_path": "@smoke_tests/value_distribution/weighted_normalized",
+    "key_path": "smoke_tests/value_distribution/weighted_normalized",
     "meta": {
         "description": "",
         "readOnly": false,

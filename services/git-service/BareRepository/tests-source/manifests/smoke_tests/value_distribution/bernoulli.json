@@ -1,5 +1,5 @@
 {
-    "key_path": "@smoke_tests/value_distribution/bernoulli",
+    "key_path": "smoke_tests/value_distribution/bernoulli",
     "meta": {
         "description": "",
         "readOnly": false,

@@ -1,13 +1,13 @@
 {
-    "key_path": "@smoke_tests/key_path/key2",
+    "key_path": "smoke_tests/identity_context/color",
     "meta": {
         "description": "",
         "readOnly": false,
         "archived": false
     },
     "implementation": {
-        "type": "const",
-        "value": "test"
+        "type": "file",
+        "format": "jpad"
     },
     "valueType": "string",
     "enabled": true,
