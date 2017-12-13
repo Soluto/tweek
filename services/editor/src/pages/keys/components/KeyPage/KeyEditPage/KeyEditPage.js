@@ -111,7 +111,7 @@ class KeyEditPage extends Component {
   };
 
   render() {
-    const { selectedKey, isInStickyMode, alerter, revision } = this.props;
+    const { selectedKey, isInStickyMode, alerter, revision, deleteAlias } = this.props;
     const {
       key,
       local: { manifest, implementation },
@@ -145,6 +145,7 @@ class KeyEditPage extends Component {
               isInStickyMode={isInStickyMode}
               usedBy={usedBy}
               aliases={aliases}
+              deleteAlias={deleteAlias}
             />
 
             <div className={classNames('key-rules-editor', { sticky: isInStickyMode })}>
@@ -197,6 +198,7 @@ const KeyFullHeader = (props) => {
     isHistoricRevision,
     usedBy,
     aliases,
+    deleteAlias,
   } = props;
 
   return (
@@ -229,7 +231,7 @@ const KeyFullHeader = (props) => {
               />
               <UsedBy items={usedBy} />
               <DependsOn items={keyManifest.dependencies} />
-              <Aliases items={aliases} />
+              <Aliases items={aliases} deleteAlias={deleteAlias} />
             </div>
 
             <div className="key-tags-wrapper">

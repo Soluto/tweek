@@ -296,7 +296,7 @@ export function saveKey() {
 
 const deleteKeyAlert = (key, aliases = []) => ({
   title: 'Warning',
-  message: `Are you sure you want to delete '${key}' key?${
+  message: `Are you sure you want to delete '${key}'?${
     aliases.length ? `\nAll aliases will also be deleted:\n${aliases.join('\n')}` : ''
   }`,
 });
@@ -324,7 +324,7 @@ export function deleteKey() {
 
 export function addAlias(alias) {
   return async function (dispatch, getState) {
-    const { selectedKey: { key, usedBy, aliases } } = getState();
+    const { selectedKey: { key } } = getState();
 
     const manifest = createBlankKeyManifest(alias, { type: 'alias', key });
 
@@ -339,10 +339,34 @@ export function addAlias(alias) {
     }
 
     dispatch(addKeyToList(alias));
+
+    const { selectedKey: { usedBy, aliases } } = getState();
     dispatch({
       type: KEY_DEPENDENTS,
       payload: { keyName: key, usedBy, aliases: aliases.concat(alias) },
     });
+  };
+}
+
+export function deleteAlias(alias) {
+  return async function (dispatch, getState) {
+    if (!(await dispatch(showConfirm(deleteKeyAlert(alias)))).result) return;
+
+    try {
+      await fetch(`/api/keys/${alias}`, { method: 'delete' });
+
+      dispatch(removeKeyFromList(alias));
+      const { selectedKey: { key, usedBy, aliases } } = getState();
+      const aliasIndex = aliases.indexOf(alias);
+      if (aliasIndex >= 0) {
+        dispatch({
+          type: KEY_DEPENDENTS,
+          payload: { keyName: key, usedBy, aliases: R.remove(aliasIndex, 1, aliases) },
+        });
+      }
+    } catch (error) {
+      dispatch(showError({ title: 'Failed to delete alias!', error }));
+    }
   };
 }
 

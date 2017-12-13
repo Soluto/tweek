@@ -8,7 +8,6 @@ import { login } from '../../utils/auth-utils';
 
 const timeout = 5000;
 const addAliasButton = dataComp('add-alias');
-const toggleButton = dataComp('aliases-toggle');
 
 describe('key aliases', () => {
   const originalKeyPath = 'behavior_tests/key_aliases/regular_key';
@@ -29,14 +28,13 @@ describe('key aliases', () => {
     Key.setName(newAliasKeyPath);
     Alert.ok();
 
-    browser.clickWhenVisible(toggleButton, timeout);
-
+    Key.toggle('aliases');
     waitForAlias(newAliasKeyPath);
     Key.navigate(newAliasKeyPath);
 
     browser.waitUntil(() => Key.isCurrent(originalKeyPath), timeout);
 
-    browser.clickWhenVisible(toggleButton, timeout);
+    Key.toggle('aliases');
 
     waitForAlias(newAliasKeyPath);
     waitForAlias(aliasKeyPath);

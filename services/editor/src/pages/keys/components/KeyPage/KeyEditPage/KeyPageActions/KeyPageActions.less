@@ -27,8 +27,9 @@
     height: @icon-size;
     border-radius: 50%;
     border: none;
-    &:not(:disabled) {
-      cursor: pointer;
+    cursor: pointer;
+    &:disabled {
+      cursor: default;
     }
     img {
       width: @icon-size;

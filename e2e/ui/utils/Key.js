@@ -25,6 +25,7 @@ const directoryTreeView = dataComp('directory-tree-view');
 
 const treeItem = (attribute, value) =>
   `${directoryTreeView} ${attributeSelector(attribute, value)}`;
+const toggleButton = comp => `${dataComp(comp)} ${dataComp('expander-toggle')}`;
 
 const extractFolders = R.pipe(
   R.split('/'),
@@ -187,6 +188,11 @@ class Key {
 
   insertSource() {
     browser.click(dataComp('save-jpad-text'));
+    return this;
+  }
+
+  toggle(section) {
+    browser.clickWhenVisible(toggleButton(section), timeout);
     return this;
   }
 }

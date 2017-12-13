@@ -29,5 +29,24 @@
         color: @text-color;
       }
     }
+
+    [data-comp= "delete-alias"] {
+      @icon-size: 22px;
+      width: @icon-size;
+      height: @icon-size;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      background: none;
+      &:disabled {
+        cursor: default;
+      }
+      &:hover:not(:disabled) {
+        background: rgba(215, 215, 215, 0.49);
+      }
+      img {
+        width: @icon-size;
+      }
+    }
   }
 }

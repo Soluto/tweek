@@ -25,3 +25,20 @@
 .dependency-indicator-container .dependency-item a:active {
   color: #a5a5a5;
 }
+.dependency-indicator-container .dependency-item [data-comp="delete-alias"] {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: none;
+}
+.dependency-indicator-container .dependency-item [data-comp="delete-alias"]:disabled {
+  cursor: default;
+}
+.dependency-indicator-container .dependency-item [data-comp="delete-alias"]:hover:not(:disabled) {
+  background: rgba(215, 215, 215, 0.49);
+}
+.dependency-indicator-container .dependency-item [data-comp="delete-alias"] img {
+  width: 22px;
+}

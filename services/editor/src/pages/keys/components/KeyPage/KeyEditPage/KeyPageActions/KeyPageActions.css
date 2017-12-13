@@ -23,6 +23,7 @@
   height: 28px;
   border-radius: 50%;
   border: none;
+  cursor: pointer;
 }
 .key-action-buttons-wrapper .icon-button:hover {
   background-color: #9c9c9c;
@@ -30,8 +31,8 @@
 .key-action-buttons-wrapper .icon-button:active {
   background-color: #7b7b7b;
 }
-.key-action-buttons-wrapper .icon-button:not(:disabled) {
-  cursor: pointer;
+.key-action-buttons-wrapper .icon-button:disabled {
+  cursor: default;
 }
 .key-action-buttons-wrapper .icon-button img {
   width: 28px;
