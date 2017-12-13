@@ -1,24 +1,30 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 
+	"github.com/Soluto/tweek/services/secure-gateway/config"
 	"github.com/Soluto/tweek/services/secure-gateway/transformation"
 	"github.com/urfave/negroni"
 )
 
 func main() {
-	upstreams := &transformation.UpstreamsConfig{
-		APIUpstream: "http://localhost:8090/",
-	}
+	configuration := config.LoadFromFile("gateway.json")
 
-	router := transformation.New(upstreams)
+	router := transformation.New(configuration.Upstreams)
 	app := negroni.New(negroni.NewRecovery())
 	app.UseHandler(router)
 
 	s := &http.Server{
-		Addr:    ":9090",
+		Addr:    fmt.Sprintf(":%v", configuration.Server.Port),
 		Handler: app,
 	}
-	s.ListenAndServe()
+
+	log.Printf("Secure Gateway is listening on port %v", configuration.Server.Port)
+	err := s.ListenAndServe()
+	if err != nil {
+		panic(err)
+	}
 }

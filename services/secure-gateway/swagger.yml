@@ -14,7 +14,7 @@ info:
   version: 0.1.0
 basePath: /api/v2/
 paths:
-  /configuration:
+  /values:
     get:
       tags:
         - "configuraiton"
@@ -28,7 +28,7 @@ paths:
         404:
           description: "Key not found"
       parameters: 
-        - name: key
+        - name: keyName
           in: query
           description: "Configuration key name"
           type: string

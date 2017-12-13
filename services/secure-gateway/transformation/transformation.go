@@ -1,11 +1,12 @@
 package transformation
 
 import (
+	"log"
 	"net/http"
 	"net/url"
-	"path"
-	"strings"
+	"regexp"
 
+	"github.com/Soluto/tweek/services/secure-gateway/config"
 	"github.com/Soluto/tweek/services/secure-gateway/proxy"
 	"github.com/gorilla/mux"
 )
@@ -15,27 +16,19 @@ type Transformation struct {
 	router *mux.Router
 }
 
-// UpstreamsConfig is the list of upstrem URLs.
-type UpstreamsConfig struct {
-	APIUpstream          string
-	AuthoringUpstream    string
-	ManagementUpstream   string
-	EditorServerUpstream string
-}
-
 // New creates a new transformation middleware
-func New(upstreams *UpstreamsConfig) *Transformation {
+func New(upstreams *config.Upstreams) *Transformation {
 	router := mux.NewRouter()
 	basePathRouter := router.PathPrefix("/api/v2/").Subrouter()
-	apiURL, err := url.Parse(upstreams.APIUpstream)
+	apiURL, err := url.Parse(upstreams.API)
 	if err != nil {
-		panic("Invalid upstream " + upstreams.APIUpstream)
+		panic("Invalid upstream " + upstreams.API)
 	}
 
 	apiForwarder := proxy.New(apiURL)
-	route := basePathRouter.Methods("GET").Path("/configuration")
+	route := basePathRouter.Methods("GET").PathPrefix("/values")
 	route.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		newURL := getConfigurationURLByRequest(apiURL, r)
+		newURL := getValuesURLByRequest(apiURL, r)
 		r.URL = newURL
 		apiForwarder.ServeHTTP(rw, r, nil)
 	})
@@ -49,19 +42,20 @@ func (t *Transformation) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	t.router.ServeHTTP(rw, r)
 }
 
-func getConfigurationURLByRequest(upstream *url.URL, req *http.Request) *url.URL {
-	newURL := *upstream
-	newURL.Path = path.Join("/api/v1/keys/", req.URL.Query().Get("key"))
-	includes := req.URL.Query()["$include"]
-	flatten := strings.ToLower(req.URL.Query().Get("$flatten"))
-	newQuery := &url.Values{
-		"$include": includes,
+func getValuesURLByRequest(upstream *url.URL, req *http.Request) *url.URL {
+	original := req.URL.String()
+	newURL := valuesURLRegexp.ReplaceAllString(original, upstream.String()+`/api/v1/keys/$1$2`)
+
+	result, err := url.Parse(newURL)
+	if err != nil {
+		log.Panicln("Failed converting values URL", err)
 	}
 
-	if flatten == "true" {
-		(*newQuery)["$flatten"] = []string{"true"}
-	}
+	return result
+}
 
-	newURL.RawQuery = newQuery.Encode()
-	return &newURL
+var valuesURLRegexp *regexp.Regexp
+
+func init() {
+	valuesURLRegexp = regexp.MustCompile(`^https?://[\w\d\.][\w\d\.-]*/api/v2/values/([^\?]+)(.*)$`)
 }

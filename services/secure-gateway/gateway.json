@@ -1,0 +1,7 @@
+{
+    "upstreams": {
+        "api": "http://localhost:4003",
+        "authoring": "http://localhost:4005",
+        "management": "http://localhost:4002"
+    }
+}
