@@ -3,6 +3,7 @@
 import { expect } from 'chai';
 import Key from '../../utils/Key';
 import Alert from '../../utils/Alert';
+import KeysList from '../../utils/KeysList';
 import { dataComp } from '../../utils/selector-utils';
 import authoringClient from '../../clients/authoring-client';
 import { login } from '../../utils/auth-utils';
@@ -15,6 +16,8 @@ const deleteKey = dataComp('delete-key');
 const keyMessage = dataComp('key-message');
 
 const assertKeyDeleted = keyName => {
+  KeysList.assertInList(keyName, true);
+
   authoringClient.waitForKeyToBeDeleted(keyName);
 
   Key.open(keyName, false);
@@ -36,6 +39,8 @@ describe('delete key', () => {
       browser.waitForVisible(archiveKey, timeout, true);
       browser.waitForVisible(unarchiveKey, timeout);
       browser.waitForVisible(deleteKey, timeout);
+
+      KeysList.assertInList(keyName, true);
     });
   });
 
@@ -51,6 +56,8 @@ describe('delete key', () => {
       browser.waitForVisible(archiveKey, timeout);
       browser.waitForVisible(unarchiveKey, timeout, true);
       browser.waitForVisible(deleteKey, timeout, true);
+
+      KeysList.assertInList(keyName);
     });
   });
 
@@ -83,7 +90,7 @@ describe('delete key', () => {
       expect(Key.exists).to.be.true;
     });
 
-    it.only('should succeed deleting key', () => {
+    it('should succeed deleting key', () => {
       const keyName = 'behavior_tests/delete_key/delete/accepted';
       const aliasKey = 'behavior_tests/delete_key/delete/alias';
 

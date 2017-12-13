@@ -5,6 +5,7 @@ import { dataComp, dataField } from '../../utils/selector-utils';
 import Key from '../../utils/Key';
 import Rule from '../../utils/Rule';
 import { login } from '../../utils/auth-utils';
+import KeysList from '../../utils/KeysList';
 
 const timeout = 5000;
 
@@ -38,6 +39,7 @@ describe('add key', () => {
 
     expect(Key.displayName).to.equal(keyToAddFullPath);
     expect(Key.hasChanges).to.be.false;
+    KeysList.assertInList(keyToAddFullPath);
   });
 
   it('should succeed adding key by entering key path only', () => {
@@ -56,5 +58,6 @@ describe('add key', () => {
 
     expect(Key.displayName).to.equal(keyWithDefaultsToAddFullPath);
     expect(Key.hasChanges).to.be.false;
+    KeysList.assertInList(keyWithDefaultsToAddFullPath);
   });
 });

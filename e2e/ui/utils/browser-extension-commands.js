@@ -5,11 +5,13 @@ module.exports = function(browser) {
     return this.waitUntil(() => this.alertText(), timeout, timeoutMsg, interval);
   });
 
-  browser.addCommand('clickIfVisible', function(selector, timeout) {
+  browser.addCommand('clickIfVisible', function(selector, timeout, reverse) {
     try {
-      this.waitForVisible(selector, timeout);
+      this.waitForVisible(selector, timeout, reverse);
       this.pause(50);
-      this.click(selector);
+      if (!reverse) {
+        this.click(selector);
+      }
     } catch (_) {}
   });
 
