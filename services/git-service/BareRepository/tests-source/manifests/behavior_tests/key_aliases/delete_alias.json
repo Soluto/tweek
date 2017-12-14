@@ -1,15 +1,10 @@
 {
   "key_path": "behavior_tests/key_aliases/delete_alias",
   "meta": {
-      "name": "behavior_tests/key_aliases/delete_alias",
-      "description": "",
-      "tags": [],
-      "readOnly": false,
       "archived": false
   },
   "implementation": {
       "type": "alias",
       "key": "behavior_tests/key_aliases/regular_key"
-  },
-  "enabled": true
+  }
 }

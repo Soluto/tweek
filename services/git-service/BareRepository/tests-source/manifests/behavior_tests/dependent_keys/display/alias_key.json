@@ -1,15 +1,10 @@
 {
   "key_path": "behavior_tests/dependent_keys/display/alias_key",
   "meta": {
-      "name": "behavior_tests/dependent_keys/display/alias_key",
-      "description": "",
-      "tags": [],
-      "readOnly": false,
       "archived": false
   },
   "implementation": {
       "type": "alias",
       "key": "behavior_tests/dependent_keys/display/used_by"
-  },
-  "enabled": true
+  }
 }

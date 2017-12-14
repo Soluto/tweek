@@ -1,6 +1,7 @@
 ﻿using LanguageExt;
 using Tweek.Engine.Core.Context;
 using Xunit;
+using static LanguageExt.Prelude;
 
 namespace Tweek.Engine.Tests.Core
 {
@@ -17,14 +18,14 @@ namespace Tweek.Engine.Tests.Core
             var getContextValue = new GetContextValue(key =>
             {
                 requestedContext = key;
-                return Prelude.None;
+                return None;
             });
 
             // Act
             var result = parser.Parse(ORIGINAL_KEY).GetValue(getContextValue);
             
             // Assert
-            Assert.Equal(result, Prelude.None);
+            Assert.Equal(result, None);
             Assert.Equal(requestedContext, $"keys.{ORIGINAL_KEY}");
         }
     }

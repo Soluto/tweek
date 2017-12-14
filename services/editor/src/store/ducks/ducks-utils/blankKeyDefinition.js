@@ -3,18 +3,20 @@ export const BLANK_KEY_NAME = '_blank';
 export function createBlankKeyManifest(keyName, implementation = { type: 'file', format: 'jpad' }) {
   const manifest = {
     meta: {
-      name: keyName,
-      description: '',
-      tags: [],
       archived: false,
     },
     implementation,
-    enabled: true,
   };
 
   if (implementation.type !== 'alias') {
     manifest.valueType = 'string';
     manifest.dependencies = [];
+    manifest.meta = {
+      ...manifest.meta,
+      name: keyName,
+      description: '',
+      tags: [],
+    };
   }
 
   return manifest;
@@ -34,21 +36,6 @@ export function createBlankJPadKey() {
     manifest: createBlankKeyManifest('', {
       type: 'file',
       format: 'jpad',
-    }),
-    key: BLANK_KEY_NAME,
-  };
-}
-
-export function createBlankKey() {
-  return {
-    implementation: {
-      source: '',
-      type: '',
-      valueType: '',
-    },
-    manifest: createBlankKeyManifest('', {
-      type: '',
-      format: '',
     }),
     key: BLANK_KEY_NAME,
   };

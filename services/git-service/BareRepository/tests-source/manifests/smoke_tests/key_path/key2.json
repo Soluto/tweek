@@ -10,6 +10,5 @@
         "value": "test"
     },
     "valueType": "string",
-    "enabled": true,
     "dependencies": []
 }

@@ -10,6 +10,5 @@
         "value": "hidden value"
     },
     "valueType": "string",
-    "enabled": true,
     "dependencies": []
 }
