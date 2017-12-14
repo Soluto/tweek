@@ -32,16 +32,16 @@ describe('dependent keys', () => {
 
   it('should display dependency relations between keys', () => {
     const dependsOn = 'behavior_tests/dependent_keys/display/depends_on';
+    const dependsOnAlias = 'behavior_tests/dependent_keys/display/depends_on_alias';
     const usedBy = 'behavior_tests/dependent_keys/display/used_by';
 
     // Verify depends on
-    Key.open(dependsOn);
-    browser.clickWhenVisible(dataComp('depends-on-toggle'), timeout);
+    Key.open(dependsOn).toggle('depends-on');
     browser.waitForVisible(`${dataComp('depends-on')} a[href="/keys/${usedBy}"]`);
 
     // Verify used by
-    Key.open(usedBy);
-    browser.clickWhenVisible(dataComp('used-by-toggle'), timeout);
+    Key.open(usedBy).toggle('used-by');
     browser.waitForVisible(`${dataComp('used-by')} a[href="/keys/${dependsOn}"]`);
+    browser.waitForVisible(`${dataComp('used-by')} a[href="/keys/${dependsOnAlias}"]`);
   });
 });

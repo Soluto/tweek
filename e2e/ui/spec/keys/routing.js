@@ -1,6 +1,7 @@
 /* global describe, before, after, beforeEach, it, browser */
 
 import Key from '../../utils/Key';
+import KeysList from '../../utils/KeysList';
 import Rule from '../../utils/Rule';
 import { login } from '../../utils/auth-utils';
 
@@ -23,7 +24,7 @@ describe('navigating from key with changes', () => {
     Rule.add();
     browser.waitUntil(() => Key.hasChanges, timeout);
 
-    Key.navigate(keyName);
+    KeysList.navigate(keyName);
 
     browser.waitForAlert(timeout, 'should show confirm message');
     browser.alertAccept();

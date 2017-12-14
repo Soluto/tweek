@@ -1,3 +1,6 @@
+const chai = require('chai');
+chai.should();
+
 const { init: initClients } = require('../utils/clients');
 const { waitUntil } = require('../utils/utils');
 

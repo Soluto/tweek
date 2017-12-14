@@ -6,17 +6,33 @@
 }
 
 .key-action-buttons-wrapper {
+  display: flex;
+  align-items: center;
   float: right;
   @key-action-button-width: 125px;
+  @button-margin: 10px;
+  @icon-size: 28px;
+
   .save-button {
-    margin-left: 10px;
+    margin-left: @button-margin;
     width: @key-action-button-width;
     &[data-state-is-saving=true], &[data-state-is-saving=true]:disabled {
       background-color: green;
     }
   }
-  .disable-button {
-    .transparent-metro-button;
-    width: @key-action-button-width;
+  .icon-button {
+    .gray-button;
+    margin-left: @button-margin;
+    width: @icon-size;
+    height: @icon-size;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    &:disabled {
+      cursor: default;
+    }
+    img {
+      width: @icon-size;
+    }
   }
 }

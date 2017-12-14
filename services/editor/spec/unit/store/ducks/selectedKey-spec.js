@@ -2,7 +2,6 @@
 jest.unmock('../../../../src/store/ducks/tags');
 jest.unmock('../../../../src/store/ducks/selectedKey');
 jest.unmock('../../../../src/utils/http');
-jest.unmock('../../../../src/store/ducks/ducks-utils/validations/key-name-validations');
 jest.unmock('../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations');
 jest.unmock('../../../../src/services/types-service');
 jest.unmock('../../../../src/services/context-service');
@@ -22,7 +21,7 @@ import {
   openKey,
   saveKey,
   changeKeyValueType,
-  updateKeyName,
+  updateKeyPath,
 } from '../../../../src/store/ducks/selectedKey';
 import {
   createBlankJPadKey,
@@ -30,7 +29,6 @@ import {
 } from '../../../../src/store/ducks/ducks-utils/blankKeyDefinition';
 import { assert, expect } from 'chai';
 import fetchMock from 'fetch-mock';
-import keyNameValidations from '../../../../src/store/ducks/ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from '../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations';
 import * as R from 'ramda';
 
@@ -44,6 +42,7 @@ describe('selectedKey', async () => {
   const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
   const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
   const KEY_VALIDATION_CHANGE = 'KEY_VALIDATION_CHANGE';
+  const KEY_PATH_CHANGE = 'KEY_PATH_CHANGE';
   const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
   const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
 
@@ -415,7 +414,7 @@ describe('selectedKey', async () => {
     });
   });
 
-  describe('updateKeyName', () => {
+  describe('updateKeyPath', () => {
     it('should dispatch actions correctly', async () => {
       // Arrange
       const newKeyName = 'pita';
@@ -423,29 +422,33 @@ describe('selectedKey', async () => {
       const initializeState = generateState('some key', 'some new key');
       initializeState.keys = [];
 
-      const expectedKeyNameValidation = keyNameValidations(newKeyName, []);
-      expectedKeyNameValidation.isShowingHint = false;
-
+      const expectedKeyValidation = { isValid: true };
       const expectedValidationPayload = {
         ...initializeState.selectedKey.validation,
-        key: expectedKeyNameValidation,
+        key: expectedKeyValidation,
       };
 
       // Act
-      const func = updateKeyName(newKeyName);
+      const func = updateKeyPath(newKeyName, expectedKeyValidation);
       await func(dispatchMock, () => initializeState);
 
       // Assert
-      const keyNameChangeDispatchAction = dispatchMock.mock.calls[0][0];
-      assertDispatchAction(keyNameChangeDispatchAction, {
-        type: KEY_NAME_CHANGE,
-        payload: newKeyName,
-      });
-
-      const keyValidationChangeDispatchAction = dispatchMock.mock.calls[1][0];
+      const keyValidationChangeDispatchAction = dispatchMock.mock.calls[0][0];
       assertDispatchAction(keyValidationChangeDispatchAction, {
         type: KEY_VALIDATION_CHANGE,
         payload: expectedValidationPayload,
+      });
+
+      const keyPathChangeDispatchAction = dispatchMock.mock.calls[1][0];
+      assertDispatchAction(keyPathChangeDispatchAction, {
+        type: KEY_PATH_CHANGE,
+        payload: newKeyName,
+      });
+
+      const keyNameChangeDispatchAction = dispatchMock.mock.calls[2][0];
+      assertDispatchAction(keyNameChangeDispatchAction, {
+        type: KEY_NAME_CHANGE,
+        payload: newKeyName,
       });
     });
   });

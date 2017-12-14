@@ -9,9 +9,12 @@ namespace Tweek.Engine.Core.Rules
 {
     public static class Utils
     {
-        public static IRuleParser ConstValueParser = new AnonymousParser(str =>
+        public static readonly IRuleParser ConstValueParser = new AnonymousParser(str =>
             Prelude.map(JsonValue.From(JToken.Parse(str)),
                 (value) => new AnonymousRule(ctx => ConfigurationValue.New(value))));
+
+        public static readonly IRuleParser KeyAliasParser = new AnonymousParser(originalKey =>
+            new AnonymousRule(ctx => ctx($"keys.{originalKey}").Map(ConfigurationValue.New)));
 
         public class AnonymousRule : IRule
         {

@@ -2,6 +2,7 @@
 
 import { expect } from 'chai';
 import Key from '../../utils/Key';
+import KeysList from '../../utils/KeysList';
 import { attributeSelector, dataComp } from '../../utils/selector-utils';
 import { login } from '../../utils/auth-utils';
 
@@ -21,13 +22,13 @@ describe('keys list and filter', () => {
   });
 
   it('should be able to navigate to key by folders', () => {
-    Key.navigate(greenAppleKeyFullPath);
+    KeysList.navigate(greenAppleKeyFullPath);
 
     expect(Key.isCurrent(greenAppleKeyFullPath)).to.be.true;
   });
 
   it('should display matching keys when filtering', () => {
-    Key.search('apple');
+    KeysList.search('apple');
 
     browser.waitForVisible(keyLink(greenAppleKeyFullPath), 2000);
     browser.waitForVisible(keyLink(redAppleKeyFullPath), 2000);

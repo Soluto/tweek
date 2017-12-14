@@ -15,6 +15,5 @@
         "format": "jpad"
     },
     "valueType": "boolean",
-    "enabled": true,
     "dependencies": []
 }

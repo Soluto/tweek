@@ -11,6 +11,5 @@
         "format": "jpad"
     },
     "valueType": "string",
-    "dependencies": [],
-    "enabled": true
+    "dependencies": []
 }
