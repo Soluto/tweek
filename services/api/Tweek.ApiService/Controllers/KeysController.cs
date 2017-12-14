@@ -118,7 +118,7 @@ namespace Tweek.ApiService.Controllers
                 return Json(!isFlatten ? (TreeResult.From(relativeData, translateValue)) : relativeData.ToDictionary(x => x.Key.ToString(), x => translateValue(x.Value)));
             }
 
-            return data.Select(x => ignoreKeyTypes ? (object) x.Value.Value.AsString() : x.Value.Value)
+            return data.Select(x => ignoreKeyTypes ? TranslateValueToString(x.Value) : x.Value.Value)
                     .FirstOrNone()
                     .Match(x => Json(x), () => Json(null));
         }
