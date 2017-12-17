@@ -1,5 +1,5 @@
 # ---- Base ----
-FROM node:8.9.1-alpine AS base
+FROM node:8.9.3-alpine AS base
 
 # ---- Deps ----
 FROM base AS deps
