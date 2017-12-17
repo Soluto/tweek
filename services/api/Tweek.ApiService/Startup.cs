@@ -147,7 +147,9 @@ namespace Tweek.ApiService
                         globalTags.Add("app_version", envInfo.EntryAssemblyVersion);
                     });
                 })
-                .AddJsonSerialization()
+                .AddPrometheusPlainTextSerialization()
+                .AddPrometheusProtobufSerialization()
+                .AddJsonHealthSerialization()
                 .AddHealthChecks()
                 .AddMetricsMiddleware(Configuration.GetSection("AspNetMetrics"));
         }
