@@ -11,7 +11,7 @@ RUN update-ca-certificates \
     && chmod +x /usr/local/bin/dep \
     && dep ensure -v \
     && CGO_ENABLED=0 go build -a -installsuffix cgo -o entry \
-    && go test ./...
+    && go test -v ./...
 
 # -------- IMAGE -------- #
 FROM scratch

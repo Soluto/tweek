@@ -7,6 +7,8 @@ import (
 	"testing"
 )
 
+func noopHandler(rw http.ResponseWriter, r *http.Request) {}
+
 func TestAuthorizationMiddleware(t *testing.T) {
 	mw := AuthorizationMiddleware("./testdata/policy.conf", "./testdata/model.csv")
 	type args struct {
@@ -15,30 +17,27 @@ func TestAuthorizationMiddleware(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want bool
+		want int
 	}{
 		{
 			name: "Allow",
 			args: args{request: createRequest("GET", "/target", "allow@security.test")},
-			want: true,
+			want: http.StatusOK,
 		},
 		{
 			name: "Deny",
 			args: args{request: createRequest("GET", "/target", "deny@security.test")},
-			want: false,
+			want: http.StatusUnauthorized,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			recorder := httptest.NewRecorder()
-			got := false
-			next := http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-				got = true
-			})
+			next := noopHandler
 
 			mw.ServeHTTP(recorder, tt.args.request, next)
-			if got != tt.want {
-				t.Errorf("AuthorizationMiddleware() = %v, want %v", got, tt.want)
+			if code := recorder.Result().StatusCode; code != tt.want {
+				t.Errorf("AuthorizationMiddleware() = %v, want %v", code, tt.want)
 			}
 		})
 	}
