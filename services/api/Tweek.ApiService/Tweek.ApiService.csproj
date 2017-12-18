@@ -1,7 +1,7 @@
 ﻿<Project ToolsVersion="15.0" Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <VersionPrefix>0.4.1</VersionPrefix>
+    <VersionPrefix>0.5.1</VersionPrefix>
     <DockerComposeProjectPath>..\..\..\deployments\docker-compose.dcproj</DockerComposeProjectPath>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>1591, 1701, 1702, 1998</NoWarn>
@@ -13,6 +13,7 @@
     <PackageReference Include="App.Metrics.Extensions.Middleware" Version="1.2.0" />
     <PackageReference Include="App.Metrics.Extensions.Mvc" Version="1.2.0" />
     <PackageReference Include="App.Metrics.Formatters.Json" Version="1.2.0" />
+    <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="1.1.2" />
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
     <PackageReference Include="LanguageExt.Core" Version="2.1.21" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.0.0" />

@@ -33,7 +33,7 @@ async function refreshManifests() {
 
 export default async function refresh() {
   const response = await fetch(urls.REVISION, { credentials: 'include' });
-  const revision = await response.json();
+  const revision = await response.text();
   if (revision === currentRevision || revision === revisionInProgress) return;
 
   console.log('refreshing cached items...');

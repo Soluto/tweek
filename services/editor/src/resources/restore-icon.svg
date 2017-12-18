@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" fill="none" stroke="#515151" stroke-width="2" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <g id="Group" transform="translate(14.000000, 16.000000)">
+        <path d="M2,1.23486328 C1.44771525,1.23486328 1,1.68257853 1,2.23486328 L1,15 C1,16.1045695 1.8954305,17 3,17 L17,17 C18.1045695,17 19,16.1045695 19,15 L19,2.22839355 C19,1.67968194 18.5551813,1.23486328 18.0064697,1.23486328 L16.4833102,1.23486328 L14.3260836,3.84082031 L5.74623971,3.84082031 L3.73598581,1.23486328 L2,1.23486328 Z" />
+    </g>
+    <path d="M21.5,23.5 L26.5,23.5" stroke-linecap="round" />
+    <polyline stroke-linecap="round" stroke-linejoin="round" points="29 7 32.3720703 9.98510742 29.3481445 12.9702148" />
+    <path d="M24,16.0932617 C24.0732422,12.0311366 26.222168,10.0000575 30.4467773,10.0000246" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

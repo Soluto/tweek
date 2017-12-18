@@ -3,19 +3,22 @@
 import { expect } from 'chai';
 import Key from '../../utils/Key';
 import { dataComp, dataField } from '../../utils/selector-utils';
+import { login } from '../../utils/auth-utils';
 
-function addEmptyKey(keyName, keyValueType = 'String') {
+const addEmptyKey = (keyName, keyValueType = 'String') => {
   Key.add()
     .setName(keyName)
     .setValueType(keyValueType)
     .setKeyFormat('jpad')
     .continueToDetails()
     .commitChanges();
-}
+};
 
 const keyNameValidation = `${dataComp('new-key-name')} ${dataComp('validation-icon')}`;
 
 describe('key name validations', () => {
+  before(() => login());
+
   describe('name validations', () => {
     const invalidKeyNames = [
       'key name',

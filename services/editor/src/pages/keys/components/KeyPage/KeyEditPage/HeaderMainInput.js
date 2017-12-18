@@ -1,12 +1,12 @@
 import React from 'react';
-import EditableText from './EditableText/EditableText';
+import EditableText from '../../../../../components/common/EditableText/EditableText';
 
 const HeaderMainInput = ({
   onKeyNameChanged,
   onDisplayNameChanged,
   keyManifest: { meta: { name: displayName, archived }, valueType },
   isReadonly,
-}) =>
+}) => (
   <div className="key-main-input">
     <EditableText
       data-comp="display-name"
@@ -22,6 +22,7 @@ const HeaderMainInput = ({
         form: 'display-name-form',
       }}
     />
-  </div>;
+  </div>
+);
 
 export default HeaderMainInput;

@@ -58,8 +58,14 @@ export class KeysController {
   @Authorize({ permission: PERMISSIONS.KEYS_WRITE })
   @DELETE
   @Path('/key')
-  async deleteKey( @QueryParam('keyPath') keyPath: string, @QueryParam('author.name') name: string, @QueryParam('author.email') email: string): Promise<string> {
-    await this.keysRepository.deleteKey(keyPath, { name, email });
+  async deleteKey( @QueryParam('keyPath') keyPath: string, @QueryParam('author.name') name: string, @QueryParam('author.email') email: string, additionalKeys?: string[]): Promise<string> {
+    let keysToDelete = [keyPath];
+    if (additionalKeys && Array.isArray(additionalKeys)) {
+      keysToDelete = keysToDelete.concat(additionalKeys);
+    }
+
+    console.log('keys to delete', keysToDelete);
+    await this.keysRepository.deleteKeys(keysToDelete, { name, email });
 
     return 'OK';
   }
@@ -91,8 +97,7 @@ export class KeysController {
   @Path('/manifest')
   async getManifest( @QueryParam('keyPath') keyPath: string, @QueryParam('revision') revision?: string): Promise<any> {
     try {
-      const manifest = await this.keysRepository.getKeyManifest(keyPath, { revision });
-      return manifest;
+      return await this.keysRepository.getKeyManifest(keyPath, { revision });
     } catch (exp) {
       throw new Errors.NotFoundError();
     }

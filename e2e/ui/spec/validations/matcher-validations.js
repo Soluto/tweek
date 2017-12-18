@@ -3,6 +3,7 @@
 import Key from '../../utils/Key';
 import Rule from '../../utils/Rule';
 import { dataComp } from '../../utils/selector-utils';
+import { login } from '../../utils/auth-utils';
 
 describe('matcher validations', () => {
   const testCase = (property, isValid) => ({ property, isValid });
@@ -12,6 +13,8 @@ describe('matcher validations', () => {
     testCase('user.FavoriteFruit', true),
     testCase('keys.some_key', true),
   ];
+
+  before(() => login());
 
   it('should show validation icon when identity is unknown', () => {
     Key.add()

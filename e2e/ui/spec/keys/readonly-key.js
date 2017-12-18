@@ -4,12 +4,15 @@ import { expect } from 'chai';
 import Key from '../../utils/Key';
 import Rule from '../../utils/Rule';
 import { dataComp } from '../../utils/selector-utils';
+import { login } from '../../utils/auth-utils';
 
 const keyMessage = dataComp('key-message');
 const addRule = dataComp('add-rule');
 
 describe('readonly key', () => {
   const testKeyFullPath = 'behavior_tests/read_only';
+
+  before(() => login());
 
   it('should open the key as readonly', () => {
     Key.open(testKeyFullPath);

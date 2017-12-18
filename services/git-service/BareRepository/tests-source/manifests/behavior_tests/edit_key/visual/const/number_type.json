@@ -11,6 +11,5 @@
     "value": 10
   },
   "valueType": "number",
-  "dependencies": [],
-  "enabled": true
+  "dependencies": []
 }

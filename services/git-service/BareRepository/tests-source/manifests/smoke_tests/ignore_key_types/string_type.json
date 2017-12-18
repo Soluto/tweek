@@ -1,0 +1,14 @@
+{
+  "key_path": "smoke_tests/ignore_key_types/string_type",
+  "meta": {
+    "description": "",
+    "readOnly": false,
+    "archived": false
+  },
+  "implementation": {
+    "type": "const",
+    "value": "hello"
+  },
+  "valueType": "string",
+  "dependencies": []
+}

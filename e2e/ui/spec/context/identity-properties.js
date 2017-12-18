@@ -2,12 +2,16 @@
 
 import Identity from '../../utils/Identity';
 import assert from 'assert';
+import { login } from '../../utils/auth-utils';
 
 describe('identity properties', () => {
   const identityId = 'awesome_user';
   const identityType = 'user';
 
-  before(() => browser.url('/context'));
+  before(() => {
+    login();
+    browser.url('/context');
+  });
 
   it('should modify identity properties', () => {
     const identity = Identity.open(identityType, identityId);

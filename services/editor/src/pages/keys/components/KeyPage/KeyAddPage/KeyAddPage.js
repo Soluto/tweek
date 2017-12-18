@@ -2,15 +2,27 @@ import React from 'react';
 import { compose, setDisplayName, setPropTypes } from 'recompose';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import KeyValueTypeSelector from '../KeyEditPage/KeyValueTypeSelector/KeyValueTypeSelector';
-import NewKeyInput from '../KeyEditPage/NewKeyInput';
-import { addKeyDetails, updateKeyPath, changeKeyFormat } from '../../../../../store/ducks/selectedKey';
+import {
+  addKeyDetails,
+  updateKeyPath,
+  changeKeyFormat,
+} from '../../../../../store/ducks/selectedKey';
+import KeyValueTypeSelector from './KeyValueTypeSelector/KeyValueTypeSelector';
+import NewKeyInput from './NewKeyInput';
 import KeyFormatSelector from './KeyFormatSelector';
 import './KeyAddPage.css';
 
 const KeyAddPage = compose(
-  connect((state => ({ manifest: state.selectedKey.local.manifest })),
-    { addKeyDetails, updateKeyPath, changeKeyFormat }
+  connect(
+    ({ selectedKey: { local: { manifest }, validation: { key: keyValidation } } }) => ({
+      manifest,
+      keyValidation,
+    }),
+    {
+      addKeyDetails,
+      updateKeyPath,
+      changeKeyFormat,
+    },
   ),
   setDisplayName('KeyAddPage'),
   setPropTypes({
@@ -19,7 +31,7 @@ const KeyAddPage = compose(
     changeKeyFormat: PropTypes.func.isRequired,
     manifest: PropTypes.object.isRequired,
   }),
-)(({ manifest, updateKeyPath, addKeyDetails, changeKeyFormat }) => {
+)(({ manifest, updateKeyPath, addKeyDetails, changeKeyFormat, keyValidation }) => {
   const valueType = manifest.valueType;
   const displayName = manifest.meta.name;
   return (
@@ -27,9 +39,11 @@ const KeyAddPage = compose(
       <h3 className="heading-text">Add new Key</h3>
       <div className="add-key-input-wrapper">
         <label className="keypath-label">Keypath:</label>
-        <div className="keypath-input">
-          <NewKeyInput onKeyNameChanged={name => updateKeyPath(name)} displayName={displayName} />
-        </div>
+        <NewKeyInput
+          onChange={updateKeyPath}
+          displayName={displayName}
+          validation={keyValidation}
+        />
       </div>
       <div className="add-key-properties-wrapper">
         <KeyFormatSelector onFormatChanged={changeKeyFormat} />

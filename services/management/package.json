@@ -1,6 +1,6 @@
 {
   "name": "tweek-management",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "main": "src/server.js",
   "repository": "Soluto/tweek",
   "author": "Soluto",

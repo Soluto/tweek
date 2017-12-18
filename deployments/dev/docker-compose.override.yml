@@ -30,6 +30,7 @@ services:
       - GIT_URL=ssh://git@git/tweek/repo
       - GIT_PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
+      - GIT_SAMPLE_INTERVAL=500
       - MINIO_ENDPOINT=minio:9000
       - MINIO_ACCESS_KEY_PATH=/run/secrets/minio_access_key
       - MINIO_SECRET_KEY_PATH=/run/secrets/minio_secret_key
@@ -58,6 +59,7 @@ services:
       - Rules__Minio__SecretKeyPath=/run/secrets/minio_secret_key
       - Rules__Nats__Endpoint=nats://nats:4222
       - Rules__Management__Url=http://management:3000
+      - Rules__SampleIntervalInMs=500
       - Rules__FailureDelayInMs=50
       - Rules__VersionTimeoutInMs=2000
       - UseAddon__Rules=MinioRules

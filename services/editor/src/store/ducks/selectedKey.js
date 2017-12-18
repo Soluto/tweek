@@ -9,7 +9,6 @@ import {
   createBlankKeyManifest,
   BLANK_KEY_NAME,
 } from './ducks-utils/blankKeyDefinition';
-import keyNameValidations from './ducks-utils/validations/key-name-validations';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
 import { continueGuard } from './ducks-utils/guards';
 import { downloadTags } from './tags';
@@ -28,7 +27,7 @@ const KEY_SAVED = 'KEY_SAVED';
 const KEY_SAVING = 'KEY_SAVING';
 const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
 const KEY_REVISION_HISTORY = 'KEY_REVISION_HISTORY';
-const DEPENDENT_KEYS = 'DEPENDENT_KEYS';
+const KEY_DEPENDENTS = 'KEY_DEPENDENTS';
 const KEY_VALIDATION_CHANGE = 'KEY_VALIDATION_CHANGE';
 const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
 const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
@@ -37,7 +36,7 @@ const KEY_CLOSED = 'KEY_CLOSED';
 let historySince;
 
 function updateRevisionHistory(keyName) {
-  return async function (dispatch) {
+  return async function(dispatch) {
     try {
       if (!historySince) {
         const response = await fetch('/api/editor-configuration/history/since');
@@ -53,20 +52,20 @@ function updateRevisionHistory(keyName) {
   };
 }
 
-function updateDependentKeys(keyName) {
-  return async function (dispatch) {
-    let dependentKeys = [];
+function updateKeyDependents(keyName) {
+  return async function(dispatch) {
+    let dependents = {};
     try {
-      dependentKeys = await (await fetch(`/api/dependents/${keyName}`)).json();
+      dependents = await (await fetch(`/api/dependents/${keyName}`)).json();
     } catch (error) {
       dispatch(
         showError({
-          title: `Failed to enumerate keys dependent on ${keyName}`,
+          title: `Failed to enumerate key dependents on ${keyName}`,
           error,
         }),
       );
     }
-    dispatch({ type: DEPENDENT_KEYS, payload: { keyName, dependentKeys } });
+    dispatch({ type: KEY_DEPENDENTS, payload: { keyName, ...dependents } });
   };
 }
 
@@ -86,7 +85,7 @@ function createImplementation({ manifest, implementation }) {
 }
 
 export function changeKeyFormat(newFormat) {
-  return function (dispatch) {
+  return function(dispatch) {
     dispatch({ type: KEY_FORMAT_CHANGED, payload: newFormat });
   };
 }
@@ -97,7 +96,7 @@ const confirmAddKeyAlert = {
 };
 
 export const addKey = shouldShowConfirmationScreen =>
-  continueGuard(shouldShowConfirmationScreen, confirmAddKeyAlert, (dispatch) => {
+  continueGuard(shouldShowConfirmationScreen, confirmAddKeyAlert, dispatch => {
     // update the state to empty key in order to skip on leave hook
     dispatch({ type: KEY_OPENED, payload: createBlankJPadKey() });
     // navigate and set defaults
@@ -106,7 +105,7 @@ export const addKey = shouldShowConfirmationScreen =>
   });
 
 export function addKeyDetails() {
-  return async function (dispatch, getState) {
+  return async function(dispatch, getState) {
     const currentState = getState();
     if (!currentState.selectedKey.validation.isValid) {
       dispatch({ type: SHOW_KEY_VALIDATIONS });
@@ -118,10 +117,10 @@ export function addKeyDetails() {
 }
 
 export function openKey(key, { revision } = {}) {
-  return async function (dispatch) {
+  return async function(dispatch) {
     dispatch(downloadTags());
     try {
-      ContextService.refreshSchema();
+      await ContextService.refreshSchema();
     } catch (error) {
       dispatch(showError({ title: 'Failed to refresh schema', error }));
     }
@@ -145,6 +144,11 @@ export function openKey(key, { revision } = {}) {
     }
 
     const manifest = keyData.manifest || createBlankKeyManifest(key);
+    if (manifest.implementation.type === 'alias') {
+      dispatch(push(`/keys/${manifest.implementation.key}`));
+      return;
+    }
+
     const implementation = createImplementation(keyData);
     const keyOpenedPayload = {
       key,
@@ -154,7 +158,7 @@ export function openKey(key, { revision } = {}) {
 
     await dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
     dispatch(updateRevisionHistory(key));
-    dispatch(updateDependentKeys(key));
+    dispatch(updateKeyDependents(key));
   };
 }
 
@@ -198,7 +202,7 @@ const confirmArchievAlert = {
 };
 
 export function archiveKey(archived) {
-  return async function (dispatch, getState) {
+  return async function(dispatch, getState) {
     const { selectedKey: { key, local, remote } } = getState();
 
     if (!R.equals(local, remote) && !(await dispatch(showConfirm(confirmArchievAlert))).result)
@@ -214,11 +218,12 @@ export function archiveKey(archived) {
       dispatch(addKeyToList(key));
     }
     dispatch(updateRevisionHistory(key));
+    dispatch(updateKeyDependents(key));
   };
 }
 
 export function changeKeyValidationState(newValidationState) {
-  return function (dispatch, getState) {
+  return function(dispatch, getState) {
     const currentValidationState = getState().selectedKey.validation;
     if (R.path(['const', 'isValid'], currentValidationState) !== newValidationState) {
       const payload = R.assocPath(['const', 'isValid'], newValidationState, currentValidationState);
@@ -228,7 +233,7 @@ export function changeKeyValidationState(newValidationState) {
 }
 
 export function changeKeyValueType(keyValueType) {
-  return async function (dispatch, getState) {
+  return async function(dispatch, getState) {
     const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
     keyValueTypeValidation.isShowingHint = !keyValueTypeValidation.isValid;
 
@@ -247,32 +252,26 @@ export function changeKeyValueType(keyValueType) {
   };
 }
 
-export function updateKeyPath(newKeyPath) {
-  return async function (dispatch) {
-    await dispatch(updateKeyName(newKeyPath));
+export function updateKeyPath(newKeyPath, validation) {
+  return async function(dispatch, getState) {
+    const currentValidationState = getState().selectedKey.validation;
+    const newValidation = {
+      ...currentValidationState,
+      key: validation,
+    };
+
+    dispatch({ type: KEY_VALIDATION_CHANGE, payload: newValidation });
     dispatch({ type: KEY_PATH_CHANGE, payload: newKeyPath });
+    dispatch(updateKeyName(newKeyPath));
   };
 }
 
 export function updateKeyName(newKeyName) {
-  return async function (dispatch, getState) {
-    const keyNameValidation = keyNameValidations(newKeyName, getState().keys);
-    keyNameValidation.isShowingHint = !keyNameValidation.isValid;
-
-    dispatch({ type: KEY_NAME_CHANGE, payload: newKeyName });
-
-    const currentValidationState = getState().selectedKey.validation;
-    const newValidation = {
-      ...currentValidationState,
-      key: keyNameValidation,
-    };
-
-    dispatch({ type: KEY_VALIDATION_CHANGE, payload: newValidation });
-  };
+  return { type: KEY_NAME_CHANGE, payload: newKeyName };
 }
 
 export function saveKey() {
-  return async function (dispatch, getState) {
+  return async function(dispatch, getState) {
     const currentState = getState();
     const { selectedKey: { local, key } } = currentState;
     const isNewKey = !!local.key;
@@ -286,7 +285,7 @@ export function saveKey() {
     if (!await performSave(dispatch, savedKey, local)) return;
 
     dispatch(updateRevisionHistory(savedKey));
-    dispatch(updateDependentKeys(savedKey));
+    dispatch(updateKeyDependents(savedKey));
 
     if (isNewKey) {
       dispatch(addKeyToList(savedKey));
@@ -295,40 +294,91 @@ export function saveKey() {
   };
 }
 
-const deleteKeyAlert = key => ({
+const deleteKeyAlert = (key, aliases = []) => ({
   title: 'Warning',
-  message: `Are you sure you want to delete '${key}' key?`,
+  message: `Are you sure you want to delete '${key}'?${
+    aliases.length ? `\nAll aliases will also be deleted:\n${aliases.join('\n')}` : ''
+  }`,
 });
 
 export function deleteKey() {
-  return async function (dispatch, getState) {
-    const { selectedKey: { key } } = getState();
+  return async function(dispatch, getState) {
+    const { selectedKey: { key, aliases } } = getState();
 
-    if (!(await dispatch(showConfirm(deleteKeyAlert(key)))).result) return;
+    if (!(await dispatch(showConfirm(deleteKeyAlert(key, aliases)))).result) return;
 
     dispatch(push('/keys'));
     try {
       await fetch(`/api/keys/${key}`, {
         method: 'delete',
+        ...withJsonData(aliases),
       });
 
       dispatch(removeKeyFromList(key));
+      aliases.forEach(alias => dispatch(removeKeyFromList(alias)));
     } catch (error) {
       dispatch(showError({ title: 'Failed to delete key!', error }));
     }
   };
 }
 
+export function addAlias(alias) {
+  return async function(dispatch, getState) {
+    const { selectedKey: { key } } = getState();
+
+    const manifest = createBlankKeyManifest(alias, { type: 'alias', key });
+
+    try {
+      await fetch(`/api/keys/${alias}`, {
+        method: 'put',
+        ...withJsonData({ manifest }),
+      });
+    } catch (error) {
+      dispatch(showError({ title: 'Failed to add alias', error }));
+      return;
+    }
+
+    dispatch(addKeyToList(alias));
+
+    const { selectedKey: { usedBy, aliases } } = getState();
+    dispatch({
+      type: KEY_DEPENDENTS,
+      payload: { keyName: key, usedBy, aliases: aliases.concat(alias) },
+    });
+  };
+}
+
+export function deleteAlias(alias) {
+  return async function(dispatch, getState) {
+    if (!(await dispatch(showConfirm(deleteKeyAlert(alias)))).result) return;
+
+    try {
+      await fetch(`/api/keys/${alias}`, { method: 'delete' });
+
+      dispatch(removeKeyFromList(alias));
+      const { selectedKey: { key, usedBy, aliases } } = getState();
+      const aliasIndex = aliases.indexOf(alias);
+      if (aliasIndex >= 0) {
+        dispatch({
+          type: KEY_DEPENDENTS,
+          payload: { keyName: key, usedBy, aliases: R.remove(aliasIndex, 1, aliases) },
+        });
+      }
+    } catch (error) {
+      dispatch(showError({ title: 'Failed to delete alias!', error }));
+    }
+  };
+}
+
 const setValidationHintsVisibility = (validationState, isShown) => {
-  Object.keys(validationState)
-    .map(x => validationState[x])
+  Object.values(validationState)
     .filter(x => typeof x === 'object')
-    .map((x) => {
+    .map(x => {
       setValidationHintsVisibility(x, isShown);
       return x;
     })
     .filter(x => x.isValid === false)
-    .forEach((x) => {
+    .forEach(x => {
       x.isShowingHint = isShown;
       setValidationHintsVisibility(x, isShown);
     });
@@ -344,7 +394,6 @@ const handleKeyOpened = (state, { payload: { key, ...keyData } }) => {
     detailsAdded = true;
   } else {
     validation = {
-      key: keyNameValidations(key, []),
       manifest: {
         valueType: keyValueTypeValidations(keyData.manifest.valueType),
       },
@@ -415,8 +464,7 @@ const handleKeyNameChange = ({ local: { key, ...localData }, ...otherState }, { 
 });
 
 const isStateInvalid = validationState =>
-  Object.keys(validationState)
-    .map(x => validationState[x])
+  Object.values(validationState)
     .filter(x => typeof x === 'object')
     .some(x => x.isValid === false || isStateInvalid(x));
 
@@ -462,15 +510,16 @@ const handleKeyRevisionHistory = (state, { payload: { keyName, revisionHistory }
   };
 };
 
-const handleDependentKeys = (state, { payload: { keyName, dependentKeys } }) => {
+const handleKeyDependents = (state, { payload: { keyName, usedBy, aliases } }) => {
   if (state.key !== keyName) return state;
   return {
     ...state,
-    dependentKeys,
+    usedBy,
+    aliases,
   };
 };
 
-const handleKeyAddingDetails = (state) => {
+const handleKeyAddingDetails = state => {
   const implementation = {
     type: state.local.manifest.implementation.type,
     source: JSON.stringify(
@@ -519,7 +568,7 @@ export default handleActions(
     [KEY_VALUE_TYPE_CHANGE]: handleKeyValueTypeChange,
     [KEY_REVISION_HISTORY]: handleKeyRevisionHistory,
     [SHOW_KEY_VALIDATIONS]: handleShowKeyValidations,
-    [DEPENDENT_KEYS]: handleDependentKeys,
+    [KEY_DEPENDENTS]: handleKeyDependents,
     [KEY_CLOSED]: () => null,
   },
   null,

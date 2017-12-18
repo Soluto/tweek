@@ -5,7 +5,7 @@ const chance = new Chance();
 const ADD_ALERT = 'ADD_ALERT';
 const REMOVE_ALERT = 'REMOVE_ALERT';
 
-const buttons = {
+export const buttons = {
   OK: {
     text: 'OK',
     value: true,
@@ -23,10 +23,10 @@ const buttons = {
 export function showCustomAlert({ buttons, ...alertProps }) {
   return dispatch =>
     dispatch(
-      new Promise((resolve) => {
+      new Promise(resolve => {
         const id = chance.guid();
-        const onClose = (result) => {
-          resolve({ type: REMOVE_ALERT, id, result });
+        const onClose = (result, data) => {
+          resolve({ type: REMOVE_ALERT, id, result, data });
         };
 
         const alert = {
@@ -35,7 +35,7 @@ export function showCustomAlert({ buttons, ...alertProps }) {
           onClose: () => onClose(),
           buttons: buttons.map(({ value, ...props }) => ({
             ...props,
-            onClick: () => onClose(value),
+            onClick: data => onClose(value, data),
           })),
         };
         dispatch({ type: ADD_ALERT, alert });

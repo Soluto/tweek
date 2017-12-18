@@ -147,7 +147,9 @@ namespace Tweek.ApiService
                         globalTags.Add("app_version", envInfo.EntryAssemblyVersion);
                     });
                 })
-                .AddJsonSerialization()
+                .AddPrometheusPlainTextSerialization()
+                .AddPrometheusProtobufSerialization()
+                .AddJsonHealthSerialization()
                 .AddHealthChecks()
                 .AddMetricsMiddleware(Configuration.GetSection("AspNetMetrics"));
         }
@@ -199,7 +201,8 @@ namespace Tweek.ApiService
 
             var dict = new Dictionary<string, IRuleParser>(StringComparer.OrdinalIgnoreCase){
                 ["jpad"] = jpadParser,
-                ["const"] = Engine.Core.Rules.Utils.ConstValueParser
+                ["const"] = Engine.Core.Rules.Utils.ConstValueParser,
+                ["alias"] = Engine.Core.Rules.Utils.KeyAliasParser,
             };
 
             return x=>dict[x];

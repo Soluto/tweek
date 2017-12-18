@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg">
-    <title>Key icon</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Tweek-icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Key-icon" stroke="#6D6D6D" stroke-width="2">
-            <g id="Key-Icon" transform="translate(20.000000, 14.000000)">
-                <path d="M8.3154,4.2252 C8.3154,6.4462 6.5144,8.2472 4.2934,8.2472 C2.0724,8.2472 0.2724,6.4462 0.2724,4.2252 C0.2724,2.0042 2.0724,0.2032 4.2934,0.2032 C6.5144,0.2032 8.3154,2.0042 8.3154,4.2252 L8.3154,4.2252 Z" id="Stroke-120"></path>
-                <path d="M4.2937,19.4447 L4.2937,9.2467" id="Stroke-122" stroke-linecap="round" stroke-linejoin="round"></path>
-                <path d="M6.8191,14.3295 L4.2941,14.3295" id="Stroke-124" stroke-linecap="round" stroke-linejoin="round"></path>
-                <path d="M8.5674,17.7611 L4.2934,17.7611" id="Stroke-126" stroke-linecap="round" stroke-linejoin="round"></path>
-            </g>
-        </g>
+<svg viewBox="0 0 48 48" stroke="#6D6D6D" stroke-width="2" fill="none" fill-rule="evenodd" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <g transform="translate(20.000000, 14.000000)">
+        <path d="M8.3154,4.2252 C8.3154,6.4462 6.5144,8.2472 4.2934,8.2472 C2.0724,8.2472 0.2724,6.4462 0.2724,4.2252 C0.2724,2.0042 2.0724,0.2032 4.2934,0.2032 C6.5144,0.2032 8.3154,2.0042 8.3154,4.2252 L8.3154,4.2252 Z" />
+        <path d="M4.2937,19.4447 L4.2937,9.2467" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M6.8191,14.3295 L4.2941,14.3295" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M8.5674,17.7611 L4.2934,17.7611" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
 </svg>

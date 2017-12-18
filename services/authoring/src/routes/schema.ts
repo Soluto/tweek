@@ -39,7 +39,7 @@ export class SchemaController {
   @Path('/schemas/:identityType')
   async deleteIdentity( @PathParam('identityType') identityType: string, @QueryParam('author.name') name: string, @QueryParam('author.email') email: string): Promise<string> {
     const keyPath = schemaPrefix + identityType;
-    await this.keysRepository.deleteKey(keyPath, { name, email });
+    await this.keysRepository.deleteKeys([keyPath], { name, email });
     return 'OK';
   }
 

@@ -5,11 +5,11 @@ import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEdi
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
 import ConstEditor from '../../../../../components/ConstEditor';
 import KeyTags from './KeyTags/KeyTags';
-import EditableTextArea from './EditableTextArea/EditableTextArea';
+import EditableTextArea from '../../../../../components/common/EditableTextArea/EditableTextArea';
 import RevisionHistory from './RevisionHistory/RevisionHistory';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
 import HeaderMainInput from './HeaderMainInput';
-import { UsedBy, DependsOn } from './DependencyIndicator/DependencyIndicator';
+import { UsedBy, DependsOn, Aliases } from './DependencyIndicator/DependencyIndicator';
 import './KeyEditPage.css';
 
 const Editor = ({
@@ -47,7 +47,8 @@ const Editor = ({
         value={manifest.implementation.value}
         valueType={manifest.valueType}
         onChange={value =>
-          onManifestChange({ ...manifest, implementation: { ...manifest.implementation, value } })}
+          onManifestChange({ ...manifest, implementation: { ...manifest.implementation, value } })
+        }
         onValidationChange={onValidationChange}
       />
     );
@@ -68,11 +69,11 @@ class KeyEditPage extends Component {
     this.onSelectedKeyManifestChanged(newManifest);
   }
 
-  onKeyNameChanged = (newKeyName) => {
+  onKeyNameChanged = newKeyName => {
     this.props.updateKeyName(newKeyName);
   };
 
-  onDisplayNameChanged = (newDisplayName) => {
+  onDisplayNameChanged = newDisplayName => {
     const oldManifest = this.props.selectedKey.local.manifest;
     const newManifest = {
       ...oldManifest,
@@ -96,11 +97,11 @@ class KeyEditPage extends Component {
     this.onSelectedKeyManifestChanged(newManifest);
   }
 
-  onSelectedKeyManifestChanged = (newManifest) => {
+  onSelectedKeyManifestChanged = newManifest => {
     this.props.updateKeyManifest(newManifest);
   };
 
-  onDependencyChanged = (dependencies) => {
+  onDependencyChanged = dependencies => {
     const oldManifest = this.props.selectedKey.local.manifest;
     const newManifest = {
       ...oldManifest,
@@ -110,12 +111,13 @@ class KeyEditPage extends Component {
   };
 
   render() {
-    const { selectedKey, isInStickyMode, alerter, revision } = this.props;
+    const { selectedKey, isInStickyMode, alerter, revision, deleteAlias } = this.props;
     const {
       key,
       local: { manifest, implementation },
       revisionHistory,
-      dependentKeys,
+      usedBy,
+      aliases,
     } = selectedKey;
     const isHistoricRevision = revisionHistory && revision && revisionHistory[0].sha !== revision;
     const isReadonly = manifest.meta.readOnly || manifest.meta.archived || isHistoricRevision;
@@ -141,7 +143,9 @@ class KeyEditPage extends Component {
               revision={revision}
               keyFullPath={key}
               isInStickyMode={isInStickyMode}
-              dependentKeys={dependentKeys}
+              usedBy={usedBy}
+              aliases={aliases}
+              deleteAlias={deleteAlias}
             />
 
             <div className={classNames('key-rules-editor', { sticky: isInStickyMode })}>
@@ -166,23 +170,23 @@ class KeyEditPage extends Component {
 
 export default compose(stickyHeaderIdentifier('key-edit-page', 150), pure)(KeyEditPage);
 
-const KeyStickyHeader = (props) => {
+const KeyStickyHeader = props => {
   const { isReadonly, isHistoricRevision } = props;
 
   return (
     <div className="sticky-key-header" disabled={isReadonly}>
       <HeaderMainInput {...props} />
 
-      {!isReadonly
-        ? <div className="sticky-key-page-action-wrapper">
-            <KeyPageActions {...{ isReadonly, isHistoricRevision }} isInStickyMode />
-          </div>
-        : null}
+      {!isReadonly ? (
+        <div className="sticky-key-page-action-wrapper">
+          <KeyPageActions {...{ isReadonly, isHistoricRevision }} isInStickyMode />
+        </div>
+      ) : null}
     </div>
   );
 };
 
-const KeyFullHeader = (props) => {
+const KeyFullHeader = props => {
   const {
     isReadonly,
     revisionHistory,
@@ -192,7 +196,9 @@ const KeyFullHeader = (props) => {
     keyFullPath,
     revision,
     isHistoricRevision,
-    dependentKeys,
+    usedBy,
+    aliases,
+    deleteAlias,
   } = props;
 
   return (
@@ -202,17 +208,15 @@ const KeyFullHeader = (props) => {
       <div className="key-meta-container">
         <div className="key-header-and-modification-wrapper">
           <HeaderMainInput {...props} />
-          {revisionHistory
-            ? <RevisionHistory revision={revision} revisionHistory={revisionHistory} />
-            : null}
+          {revisionHistory ? (
+            <RevisionHistory revision={revision} revisionHistory={revisionHistory} />
+          ) : null}
         </div>
 
         <fieldset disabled={isReadonly} style={{ border: 'none' }}>
           <div className="key-full-path">
             <label>Full path: </label>
-            <label className="actual-path">
-              {keyFullPath}
-            </label>
+            <label className="actual-path">{keyFullPath}</label>
           </div>
 
           <div className="key-description-and-tags-wrapper">
@@ -225,8 +229,9 @@ const KeyFullHeader = (props) => {
                 classNames={{ input: 'description-input' }}
                 maxLength={400}
               />
-              <UsedBy items={dependentKeys} />
+              <UsedBy items={usedBy} />
               <DependsOn items={keyManifest.dependencies} />
+              <Aliases items={aliases} deleteAlias={deleteAlias} />
             </div>
 
             <div className="key-tags-wrapper">

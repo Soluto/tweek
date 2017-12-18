@@ -100,7 +100,7 @@ describe('keys-repository', () => {
 
     it('should pull, delete files then commit and push', async () => {
       // Act
-      await target.deleteKey(testKeyPath, testAuthor);
+      await target.deleteKeys([testKeyPath], testAuthor);
 
       // Assert
       expect(mockGitRepo.deleteFile.callCount).to.equal(2);
@@ -109,7 +109,7 @@ describe('keys-repository', () => {
 
     it('should delete the jpad rule file and the manifest file', async () => {
       // Act
-      await target.deleteKey(testKeyPath, testAuthor);
+      await target.deleteKeys([testKeyPath], testAuthor);
 
       // Assert
       const args = mockGitRepo.deleteFile.calls.map(x => x.arg);
@@ -119,7 +119,7 @@ describe('keys-repository', () => {
 
     it('should commit and push with the author sent', async () => {
       // Act
-      await target.deleteKey(testKeyPath, testAuthor);
+      await target.deleteKeys([testKeyPath], testAuthor);
 
       // Assert
       expect(mockGitRepo.commitAndPush.calls[0].args[1]).to.equal(testAuthor);

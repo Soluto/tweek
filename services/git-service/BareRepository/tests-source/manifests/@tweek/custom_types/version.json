@@ -15,6 +15,5 @@
 		}
     },
     "valueType": "object",
-    "enabled": true,
     "dependencies": []
 }
