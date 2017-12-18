@@ -9,7 +9,7 @@ WORKDIR /go/src/github.com/Soluto/tweek/services/secure-gateway
 RUN update-ca-certificates \
     && curl -fsSL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 \
     && chmod +x /usr/local/bin/dep \
-    && dep ensure \
+    && dep ensure -v \
     && CGO_ENABLED=0 go build -a -installsuffix cgo -o entry \
     && go test ./...
 

@@ -6,7 +6,9 @@ import (
 	"net/http"
 
 	"github.com/Soluto/tweek/services/secure-gateway/config"
+	"github.com/Soluto/tweek/services/secure-gateway/security"
 	"github.com/Soluto/tweek/services/secure-gateway/transformation"
+
 	"github.com/urfave/negroni"
 )
 
@@ -14,7 +16,7 @@ func main() {
 	configuration := config.LoadFromFile("gateway.json")
 
 	router := transformation.New(configuration.Upstreams)
-	app := negroni.New(negroni.NewRecovery())
+	app := negroni.New(negroni.NewRecovery(), security.UserInfoMiddleware(configuration.Security))
 	app.UseHandler(router)
 
 	s := &http.Server{

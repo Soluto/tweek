@@ -14,10 +14,17 @@ type Server struct {
 	Port int `mapstructure:"port"`
 }
 
+// Security section hold security related configuration
+type Security struct {
+	AllowedIssuers []string `mapstructure:"allowed_issuers"`
+	AzureTenantID  string   `mapstructure:"azure_tenant_id"`
+}
+
 // Configuration is the root element of configuration for secure-gateway
 type Configuration struct {
 	Upstreams *Upstreams `mapstructure:"upstreams"`
 	Server    *Server    `mapstructure:"server"`
+	Security  *Security  `mapstructure:"security"`
 }
 
 // LoadFromFile the configuration from a file given by fileName

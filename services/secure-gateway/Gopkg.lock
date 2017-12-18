@@ -2,6 +2,24 @@
 
 
 [[projects]]
+  name = "github.com/Knetic/govaluate"
+  packages = ["."]
+  revision = "d216395917cc49052c7c7094cf57f09657ca08a8"
+  version = "v3.0.0"
+
+[[projects]]
+  name = "github.com/casbin/casbin"
+  packages = [".","config","file-adapter","model","persist","rbac","util"]
+  revision = "3b25a82bd1e3ce20dd037ba7ecb06140bd9acc5c"
+  version = "v1.2.0"
+
+[[projects]]
+  name = "github.com/dgrijalva/jwt-go"
+  packages = [".","request"]
+  revision = "dbeaa9332f19a944acb5736b4456cfcc02140e29"
+  version = "v3.1.0"
+
+[[projects]]
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
   revision = "629574ca2a5df945712d3079857300b5e4da0236"
@@ -26,6 +44,12 @@
   revision = "23c074d0eceb2b8a5bfdbb271ab780cde70f05a8"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/lestrrat/go-jwx"
+  packages = ["buffer","internal/emap","jwa","jwk"]
+  revision = "b0efd7d3a697d78d8a761ab1e7d8855edfbd0cf6"
+
+[[projects]]
   name = "github.com/magiconair/properties"
   packages = ["."]
   revision = "be5ece7dd465ab0765a9682137865547526d1dfb"
@@ -42,6 +66,12 @@
   packages = ["."]
   revision = "16398bac157da96aa88f98a2df640c7f32af1da2"
   version = "v1.0.1"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
 
 [[projects]]
   name = "github.com/sirupsen/logrus"
@@ -118,6 +148,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a3c451e55f32b08d828ab37a83ee62108d355e645f6bed1604e45751eb07b6f1"
+  inputs-digest = "f9c548c6fca31653c64692a92aff9729bc70ccd10503f54c48a386d25eb1e507"
   solver-name = "gps-cdcl"
   solver-version = 1

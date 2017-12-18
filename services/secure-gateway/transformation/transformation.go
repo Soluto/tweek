@@ -13,7 +13,8 @@ import (
 
 // Transformation holds the transformation configuration
 type Transformation struct {
-	router *mux.Router
+	router         *mux.Router
+	basePathRouter *mux.Router
 }
 
 // New creates a new transformation middleware
@@ -22,7 +23,7 @@ func New(upstreams *config.Upstreams) *Transformation {
 	basePathRouter := router.PathPrefix("/api/v2/").Subrouter()
 	apiURL, err := url.Parse(upstreams.API)
 	if err != nil {
-		panic("Invalid upstream " + upstreams.API)
+		log.Panicln("Invalid upstream", upstreams.API)
 	}
 
 	apiForwarder := proxy.New(apiURL)
@@ -37,6 +38,9 @@ func New(upstreams *config.Upstreams) *Transformation {
 		router: router,
 	}
 }
+
+// BasePathRouter - returns the mux router for the base path (`/api/v2/`)
+func (t *Transformation) BasePathRouter() *mux.Router { return t.basePathRouter }
 
 func (t *Transformation) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	t.router.ServeHTTP(rw, r)
