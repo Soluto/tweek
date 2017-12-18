@@ -22,11 +22,11 @@ FROM base as release
 COPY --from=build /opt/app/dist/ ./dist/
 COPY --from=deps /opt/app/node_modules ./node_modules
 COPY --from=deps /opt/app/package.json ./package.json
-COPY ./ssh-helper /opt/app/ssh-helper
+COPY ./ssh-helper.sh /opt/app/ssh-helper.sh
 
 EXPOSE 3000
 ENV PORT=3000
-ENV GIT_SSH=/opt/app/ssh-helper
+ENV GIT_SSH=/opt/app/ssh-helper.sh
 
 HEALTHCHECK --interval=10s --timeout=10s --retries=8 \
       CMD wget -O - http://localhost:3000/health || exit 1
