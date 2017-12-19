@@ -13,14 +13,14 @@ export class RepoOutOfDateError {
 }
 
 async function listFiles(repo: git.Repository, filter: (path: string) => boolean = () => true) {
-  let commit = await repo.getMasterCommit();
-  let tree = await commit.getTree();
-  let walker = tree.walk(true);
+  const commit = await repo.getMasterCommit();
+  const tree = await commit.getTree();
+  const walker = tree.walk(true);
   return await new Promise<any>((resolve, reject) => {
-    let entries: string[] = [];
+    const entries: string[] = [];
     walker.on('entry', (entry: any) => {
-      const path = entry.path().replace(/\\/g, '/');
-      if (filter(path)) return entries.push(path);
+      const entryPath = entry.path().replace(/\\/g, '/');
+      if (filter(entryPath)) return entries.push(entryPath);
       return null;
     });
     walker.on('end', () => resolve(entries));
@@ -196,10 +196,10 @@ export default class GitRepository {
       if (ex.includes("400 Bad Request")) {
         throw new ValidationError("failed validation:" + ex);
       }
-      if (ex.includes("Updates were rejected because the tip of your current branch is behind") || ex.includes("(e.g., 'git pull ...') before pushing again.")) {
+      if (ex.includes("Updates were rejected because the tip of your current branch is behind") || ex.includes('(e.g., \'git pull ...\') before pushing again.')) {
         throw new RepoOutOfDateError(ex);
       }
-      throw "unknown error";
+      throw 'unknown error';
     }
 
     const isSynced = await this.isSynced();
