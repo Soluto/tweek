@@ -22,7 +22,7 @@ services:
     ports:
       - "5858:5858"
       - "4002:3000"
-    entrypoint:
+    command:
       - yarn 
       - start:debug
     environment:
@@ -93,8 +93,8 @@ services:
     secrets:
       - tweek_ssh_private_key
       - tweek_ssh_public_key
-    entrypoint:
-      - yarn
+    command:
+      - yarn 
       - start:debug
     labels:
       - "traefik.port=3000"
