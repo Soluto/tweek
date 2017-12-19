@@ -8,7 +8,7 @@ const errorMapping = new WeakMap<Function, number>([
 
 export function getErrorStatusCode(error): number {
   if (errorMapping.has(error)) {
-    return errorMapping[error];
+    return errorMapping.get(error);
   }
   return error.statusCode || 500;
 }
