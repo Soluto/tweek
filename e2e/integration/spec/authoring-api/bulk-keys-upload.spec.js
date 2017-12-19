@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const { init: initClients } = require('../../utils/clients');
 const { pollUntil } = require('../../utils/utils');
 
-describe('authoring api - bulk keys upload', () => {
+describe('authoring api - /PUT /bulk-keys-upload', () => {
   let clients;
   before(async () => {
     clients = await initClients();
@@ -46,6 +46,6 @@ describe('authoring api - bulk keys upload', () => {
     const response = await clients.authoring
       .put('/api/bulk-keys-upload?author.name=test&author.email=test@soluto.com')
       .attach('bulk', './spec/authoring-api/test-data/invalidRules.zip');
-    response.status.should.eql(500);
+    response.status.should.eql(400);
   });
 });

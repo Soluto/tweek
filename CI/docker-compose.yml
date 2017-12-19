@@ -112,7 +112,7 @@ services:
     image: nats:1.0.4-linux
 
   selenium:
-    image: selenium/standalone-chrome:3.4.0
+    image: selenium/standalone-chrome:3.8.1
     logging:
       driver: "none"
 

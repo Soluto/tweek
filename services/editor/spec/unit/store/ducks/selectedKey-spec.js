@@ -55,7 +55,7 @@ describe('selectedKey', async () => {
   }
 
   beforeEach(() => {
-    dispatchMock = jest.fn((action) => {
+    dispatchMock = jest.fn(action => {
       if (isFunction(action)) {
         return action(
           dispatchMock,

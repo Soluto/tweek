@@ -21,9 +21,10 @@ function getAvatarText(identity) {
   return identity;
 }
 
-const Avatar = ({ identity, className, ...props }) =>
+const Avatar = ({ identity, className, ...props }) => (
   <div className={classnames('avatar-container', className)} {...props}>
     {identity === 'keys' ? <img src={keyIcon} alt={''} /> : getAvatarText(identity)}
-  </div>;
+  </div>
+);
 
 export default Avatar;

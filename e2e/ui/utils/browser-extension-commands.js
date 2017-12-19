@@ -2,7 +2,17 @@ module.exports = function(browser) {
   browser.addCommand('runAsync', fn => fn());
 
   browser.addCommand('waitForAlert', function(timeout, timeoutMsg, interval) {
-    return this.waitUntil(() => this.alertText(), timeout, timeoutMsg, interval);
+    return this.waitUntil(
+      () => {
+        this.alertText();
+        // designed to solved no custom message (empty string) when refreshing: https://www.chromestatus.com/feature/5349061406228480
+        // alertText should throw if there's no alert http://webdriver.io/api/protocol/alertText.html
+        return true;
+      },
+      timeout,
+      timeoutMsg,
+      interval,
+    );
   });
 
   browser.addCommand('clickIfVisible', function(selector, timeout, reverse) {

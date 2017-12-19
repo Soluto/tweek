@@ -18,7 +18,7 @@ function getKeyNameSuggestions(keysList) {
 
 const NewKeyInput = compose(
   connect(state => ({ keysList: state.keys })),
-  mapPropsStream((prop$) => {
+  mapPropsStream(prop$ => {
     const keysList$ = prop$
       .pluck('keysList')
       .distinctUntilChanged()
@@ -52,7 +52,7 @@ const NewKeyInput = compose(
           suggestions={suggestions}
           value={displayName}
           placeholder="Enter key full path"
-          onChange={(text) => {
+          onChange={text => {
             const validation = keyNameValidations(text, keysList);
             validation.isShowingHint = !validation.isValid;
             onChange(text, validation);

@@ -22,7 +22,7 @@ services:
     ports:
       - "5858:5858"
       - "4002:3000"
-    entrypoint:
+    command:
       - yarn 
       - start:debug
     environment:

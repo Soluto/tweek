@@ -23,7 +23,7 @@ export const buttons = {
 export function showCustomAlert({ buttons, ...alertProps }) {
   return dispatch =>
     dispatch(
-      new Promise((resolve) => {
+      new Promise(resolve => {
         const id = chance.guid();
         const onClose = (result, data) => {
           resolve({ type: REMOVE_ALERT, id, result, data });

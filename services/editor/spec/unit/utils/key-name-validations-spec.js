@@ -57,7 +57,7 @@ describe('key-name-validations', () => {
     `${categoryName1}/${categoryName2}/${keyName}`,
   ];
 
-  testDefenitions.forEach((x) => {
+  testDefenitions.forEach(x => {
     it(`should return validation ${x.expectedIsValid} for ${x.keyName}`, () => {
       // Act
       const validationResult = keyNameValidations(x.keyName, existingKeyList);

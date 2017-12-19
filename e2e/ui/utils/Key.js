@@ -47,6 +47,7 @@ class Key {
   }
 
   clickContinue() {
+    browser.waitForEnabled(dataComp('add-key-button'), timeout);
     browser.click(dataComp('add-key-button'));
   }
 

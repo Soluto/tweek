@@ -16,15 +16,15 @@ let store = configureStore({});
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.onmessage = ({ data: { type } }) => {
     switch (type) {
-    case 'cache-cleared':
-      refreshTypes();
-      refreshSchema();
-      break;
-    case 'manifests':
-      store.dispatch(getKeys());
-      break;
-    default:
-      break;
+      case 'cache-cleared':
+        refreshTypes();
+        refreshSchema();
+        break;
+      case 'manifests':
+        store.dispatch(getKeys());
+        break;
+      default:
+        break;
     }
   };
 }

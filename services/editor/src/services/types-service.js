@@ -36,14 +36,14 @@ export function convertValue(value, targetType) {
   }
 
   switch (type.base || type.name) {
-  case 'boolean':
-    return safeConvertToBaseType(value, 'boolean');
-  case 'number':
-    return safeConvertToBaseType(value, 'number');
-  case 'object':
-    return safeConvertToBaseType(value, 'object');
-  default:
-    return value.toString();
+    case 'boolean':
+      return safeConvertToBaseType(value, 'boolean');
+    case 'number':
+      return safeConvertToBaseType(value, 'number');
+    case 'object':
+      return safeConvertToBaseType(value, 'object');
+    default:
+      return value.toString();
   }
 }
 

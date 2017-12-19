@@ -63,3 +63,4 @@
 #*.RTF   diff=astextplain
 
 *.sh    text eol=lf
+services/authoring/ssh-helper   text eol=lf

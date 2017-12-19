@@ -5,11 +5,12 @@ import Notifications from './alerts/Notifications';
 import '../styles/core/fonts/fonts.css';
 import './App.css';
 
-const AppPage = ({ children }) =>
-  (<div className={'page'}>
+const AppPage = ({ children }) => (
+  <div className={'page'}>
     {children}
     <Alerts />
     <Notifications />
-  </div>);
+  </div>
+);
 
 export default AppPage;

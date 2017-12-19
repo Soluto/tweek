@@ -23,8 +23,8 @@ const ListItemLink = ({ to, ...rest }) => (
   />
 );
 
-const AppHeader = () => 
-  (<div className={'header'}>
+const AppHeader = () => (
+  <div className={'header'}>
     <Link to="/" replace>
       <img className={'logo'} src={logoSrc} alt={''} />
     </Link>
@@ -42,6 +42,7 @@ const AppHeader = () =>
         <span>Settings</span>
       </ListItemLink>
     </ul>
-  </div>);
+  </div>
+);
 
 export default AppHeader;

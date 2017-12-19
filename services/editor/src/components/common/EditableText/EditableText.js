@@ -24,7 +24,7 @@ const EditableText = withState('isInEditMode', 'setIsInEditMode', false)(
       {isInEditMode ? (
         <form
           data-field="form"
-          onSubmit={(e) => {
+          onSubmit={e => {
             setIsInEditMode(false);
             e.preventDefault();
           }}

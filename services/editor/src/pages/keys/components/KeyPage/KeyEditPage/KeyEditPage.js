@@ -69,11 +69,11 @@ class KeyEditPage extends Component {
     this.onSelectedKeyManifestChanged(newManifest);
   }
 
-  onKeyNameChanged = (newKeyName) => {
+  onKeyNameChanged = newKeyName => {
     this.props.updateKeyName(newKeyName);
   };
 
-  onDisplayNameChanged = (newDisplayName) => {
+  onDisplayNameChanged = newDisplayName => {
     const oldManifest = this.props.selectedKey.local.manifest;
     const newManifest = {
       ...oldManifest,
@@ -97,11 +97,11 @@ class KeyEditPage extends Component {
     this.onSelectedKeyManifestChanged(newManifest);
   }
 
-  onSelectedKeyManifestChanged = (newManifest) => {
+  onSelectedKeyManifestChanged = newManifest => {
     this.props.updateKeyManifest(newManifest);
   };
 
-  onDependencyChanged = (dependencies) => {
+  onDependencyChanged = dependencies => {
     const oldManifest = this.props.selectedKey.local.manifest;
     const newManifest = {
       ...oldManifest,
@@ -170,7 +170,7 @@ class KeyEditPage extends Component {
 
 export default compose(stickyHeaderIdentifier('key-edit-page', 150), pure)(KeyEditPage);
 
-const KeyStickyHeader = (props) => {
+const KeyStickyHeader = props => {
   const { isReadonly, isHistoricRevision } = props;
 
   return (
@@ -186,7 +186,7 @@ const KeyStickyHeader = (props) => {
   );
 };
 
-const KeyFullHeader = (props) => {
+const KeyFullHeader = props => {
   const {
     isReadonly,
     revisionHistory,

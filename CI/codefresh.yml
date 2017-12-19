@@ -1,18 +1,19 @@
 version: '1.0'
 steps:
+
   VersionsToDeploy:
     description: Check versions to deploy
     title: Check versions to deploy
     image: alpine/git
     commands:
       - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
-          
+
   BuildGitKeys:
     title: Building Git Keys Docker Image
     type: build
     image_name: soluto/tweek-test-keys
     working_directory: ./deployments/dev/ssh/
-
+          
   BuildingGitRepository:
     title: Building Git Repository Docker Image
     type: build

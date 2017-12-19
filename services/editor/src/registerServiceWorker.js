@@ -72,10 +72,7 @@ export default async function register() {
 
       const subscription = await getSubscription(registration.pushManager);
       persistRegistration(subscription).catch(
-        error => (
-          console.error('unregistering service worker', error),
-          registration.unregister()
-        ),
+        error => (console.error('unregistering service worker', error), registration.unregister()),
       );
     } catch (error) {
       console.error('Error during service worker registration:', error);
@@ -85,7 +82,7 @@ export default async function register() {
 
 export function unregister() {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.ready.then((registration) => {
+    navigator.serviceWorker.ready.then(registration => {
       registration.unregister();
     });
   }
