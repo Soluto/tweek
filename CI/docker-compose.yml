@@ -68,6 +68,8 @@ services:
       - git
     volumes_from:
       - keys
+    logging:
+      driver: "none"
     environment:
       - GIT_USER=git
       - GIT_URL=ssh://git@git/tweek/tests
