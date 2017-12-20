@@ -155,11 +155,6 @@ class Key {
     return this;
   }
 
-  insertSource() {
-    browser.click(dataComp('save-jpad-text'));
-    return this;
-  }
-
   toggle(section) {
     browser.clickWhenVisible(toggleButton(section), timeout);
     return this;

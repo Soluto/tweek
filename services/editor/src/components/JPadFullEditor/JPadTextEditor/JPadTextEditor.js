@@ -1,4 +1,13 @@
 import React, { Component } from 'react';
+import {
+  compose,
+  setDisplayName,
+  defaultProps,
+  mapProps,
+  withState,
+  withHandlers,
+  setPropTypes,
+} from 'recompose';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import MonacoEditor from 'react-monaco-editor';
@@ -20,86 +29,55 @@ const monacoOptions = {
   scrollBeyondLastLine: false,
 };
 
-class JPadTextEditor extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentSource: JSON.stringify(JSON.parse(props.source), null, 4),
-      allowSave: false,
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      currentSource: JSON.stringify(JSON.parse(nextProps.source), null, 4),
-      allowSave: false,
-    });
-  }
-
-  onChange(newSource) {
-    const { setHasChanges, source } = this.props;
-
-    let isValidJson = false;
-    let parsedSource;
-
-    try {
-      parsedSource = JSON.parse(newSource);
-      isValidJson = true;
-    } catch (e) {
-      isValidJson = false;
-    }
-
-    const hasChanges = !isValidJson || !R.equals(source, parsedSource);
-
-    setHasChanges(hasChanges);
-    this.setState({ currentSource: newSource, allowSave: isValidJson && hasChanges });
-  }
-
-  save() {
-    const { onChange, setHasChanges } = this.props;
-    setHasChanges(false);
-    onChange(this.state.currentSource);
-  }
-
-  render() {
-    const { currentSource } = this.state;
-    const { isReadonly } = this.props;
-
-    return (
-      <AutoSizer disableWidth>
-        {({ height }) => (
-          <div style={{ height: height - 20 }}>
-            <MonacoEditor
-              language="json"
-              value={currentSource}
-              options={{ ...monacoOptions, readOnly: isReadonly }}
-              onChange={newSource => this.onChange(newSource)}
-              requireConfig={requireConfig}
-            />
-            <button
-              className="save-code-changes-button"
-              data-comp="save-jpad-text"
-              onClick={() => this.save()}
-              disabled={!this.state.allowSave}
-            >
-              Insert Changes
-            </button>
-          </div>
-        )}
-      </AutoSizer>
-    );
-  }
-}
-
-JPadTextEditor.propTypes = {
-  source: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  isReadonly: PropTypes.bool,
-};
-
-JPadTextEditor.defaultProps = {
-  isReadonly: false,
-};
+const JPadTextEditor = compose(
+  setDisplayName('JPadTextEditor'),
+  setPropTypes({
+    source: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+    isReadonly: PropTypes.bool,
+    setHasChanges: PropTypes.func,
+  }),
+  defaultProps({
+    isReadonly: false,
+    setHasUnsavedChanges: () => {},
+  }),
+  mapProps(({ source, ...props }) => ({ parsedSource: JSON.parse(source), ...props })),
+  withState('currentSource', 'updateCurrentSource', ({ parsedSource }) =>
+    JSON.stringify(parsedSource, null, 4),
+  ),
+  withHandlers({
+    onChange: ({
+      updateCurrentSource,
+      onChange,
+      setHasUnsavedChanges,
+      parsedSource,
+    }) => (newSource) => {
+      updateCurrentSource(newSource);
+      try {
+        const newParsedSource = JSON.parse(newSource);
+        if (!R.equals(newParsedSource, parsedSource)) {
+          onChange(newSource);
+        }
+        setHasUnsavedChanges(false);
+      } catch (e) {
+        setHasUnsavedChanges(true);
+      }
+    },
+  }),
+)(({ currentSource, onChange, isReadonly }) => (
+  <AutoSizer disableWidth>
+    {({ height }) => (
+      <div style={{ height: height - 20 }}>
+        <MonacoEditor
+          language="json"
+          value={currentSource}
+          options={{ ...monacoOptions, readOnly: isReadonly }}
+          onChange={newSource => onChange(newSource)}
+          requireConfig={requireConfig}
+        />
+      </div>
+    )}
+  </AutoSizer>
+));
 
 export default JPadTextEditor;
