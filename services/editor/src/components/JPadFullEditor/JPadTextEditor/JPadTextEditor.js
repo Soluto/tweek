@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { compose, mapProps, withState, withHandlers } from 'recompose';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import MonacoEditor from 'react-monaco-editor';
@@ -20,6 +21,41 @@ const monacoOptions = {
   scrollBeyondLastLine: false,
 };
 
+const JPadTextEditor = compose(
+  mapProps(({ source, ...props }) => ({ parsedSource: JSON.parse(source), ...props })),
+  withState('currentSource', 'updateCurrentSource', ({ parsedSource }) =>
+    JSON.stringify(parsedSource, null, 4),
+  ),
+  withHandlers({
+    onChange: ({ updateCurrentSource, onChange, setHasChanges, parsedSource }) => (newSource) => {
+      updateCurrentSource(newSource);
+      setHasChanges(true);
+      try {
+        const newParsedSource = JSON.parse(newSource);
+        if (!R.equals(newParsedSource, parsedSource)) {
+          onChange(newSource);
+        }
+        setHasChanges(false);
+      } catch (e) {}
+    },
+  }),
+)(({ currentSource, onChange, isReadonly }) => (
+  <AutoSizer disableWidth>
+    {({ height }) => (
+      <div style={{ height: height - 20 }}>
+        <MonacoEditor
+          language="json"
+          value={currentSource}
+          options={{ ...monacoOptions, readOnly: isReadonly }}
+          onChange={newSource => onChange(newSource)}
+          requireConfig={requireConfig}
+        />
+      </div>
+    )}
+  </AutoSizer>
+));
+
+/*
 class JPadTextEditor extends Component {
   constructor(props) {
     super(props);
@@ -38,6 +74,12 @@ class JPadTextEditor extends Component {
   }
 
   onChange(newSource) {
+    try{
+      parsedSource = JSON.parse(newSource);
+    }
+    catch (ex){
+
+    }
     const { setHasChanges, source } = this.props;
 
     let isValidJson = false;
@@ -91,6 +133,7 @@ class JPadTextEditor extends Component {
     );
   }
 }
+*/
 
 JPadTextEditor.propTypes = {
   source: PropTypes.string.isRequired,

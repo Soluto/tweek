@@ -75,15 +75,12 @@ describe('edit keys', () => {
         Key.goToSourceTab().source = JSON.stringify(expectedKeySource, null, 4);
 
         Key.goToRulesTab();
-        Alert.cancel();
-
-        Key.insertSource().goToRulesTab();
 
         Rule.select().waitForVisible();
 
         expect(Key.goToSourceTab().source).to.deep.equal(expectedKeySource);
 
-        Key.goToSourceTab().source = '{}';
+        Key.goToSourceTab().source = 'invalid json';
 
         Key.goToRulesTab();
         Alert.ok();
