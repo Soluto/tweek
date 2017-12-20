@@ -24,6 +24,7 @@ func AuthorizationMiddleware(policy, model interface{}) negroni.HandlerFunc {
 		if err != nil {
 			log.Println("Failed to validate request", err)
 		}
+
 		if result {
 			next(rw, r)
 		} else {

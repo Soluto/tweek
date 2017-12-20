@@ -4,11 +4,11 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"regexp"
 
 	"github.com/Soluto/tweek/services/secure-gateway/config"
 	"github.com/Soluto/tweek/services/secure-gateway/proxy"
 	"github.com/gorilla/mux"
+	"github.com/urfave/negroni"
 )
 
 // Transformation holds the transformation configuration
@@ -27,12 +27,7 @@ func New(upstreams *config.Upstreams) *Transformation {
 	}
 
 	apiForwarder := proxy.New(apiURL)
-	route := basePathRouter.Methods("GET").PathPrefix("/values")
-	route.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		newURL := getValuesURLByRequest(apiURL, r)
-		r.URL = newURL
-		apiForwarder.ServeHTTP(rw, r, nil)
-	})
+	basePathRouter.Methods("GET").PathPrefix("/values").Handler(negroni.New(NewValuesGet(apiURL), apiForwarder))
 
 	return &Transformation{
 		router: router,
@@ -44,22 +39,4 @@ func (t *Transformation) BasePathRouter() *mux.Router { return t.basePathRouter 
 
 func (t *Transformation) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	t.router.ServeHTTP(rw, r)
-}
-
-func getValuesURLByRequest(upstream *url.URL, req *http.Request) *url.URL {
-	original := req.URL.String()
-	newURL := valuesURLRegexp.ReplaceAllString(original, upstream.String()+`/api/v1/keys/$1$2`)
-
-	result, err := url.Parse(newURL)
-	if err != nil {
-		log.Panicln("Failed converting values URL", err)
-	}
-
-	return result
-}
-
-var valuesURLRegexp *regexp.Regexp
-
-func init() {
-	valuesURLRegexp = regexp.MustCompile(`^https?://[\w\d\.][\w\d\.-]*/api/v2/values/([^\?]+)(.*)$`)
 }

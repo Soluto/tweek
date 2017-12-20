@@ -14,6 +14,12 @@
   version = "v1.2.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/casbin/json-adapter"
+  packages = ["."]
+  revision = "98e846eed4809e48e9ec11e8169400487d8a3029"
+
+[[projects]]
   name = "github.com/dgrijalva/jwt-go"
   packages = [".","request"]
   revision = "dbeaa9332f19a944acb5736b4456cfcc02140e29"
@@ -148,6 +154,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f9c548c6fca31653c64692a92aff9729bc70ccd10503f54c48a386d25eb1e507"
+  inputs-digest = "af984733b4013ec78fcc1fd5435bcfc7fdc4d4bb60d06805f70d9e000a873620"
   solver-name = "gps-cdcl"
   solver-version = 1
