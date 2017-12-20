@@ -39,23 +39,29 @@ const JPadTextEditor = compose(
   }),
   defaultProps({
     isReadonly: false,
-    setHasChanges: () => {},
+    setHasUnsavedChanges: () => {},
   }),
   mapProps(({ source, ...props }) => ({ parsedSource: JSON.parse(source), ...props })),
   withState('currentSource', 'updateCurrentSource', ({ parsedSource }) =>
     JSON.stringify(parsedSource, null, 4),
   ),
   withHandlers({
-    onChange: ({ updateCurrentSource, onChange, setHasChanges, parsedSource }) => (newSource) => {
+    onChange: ({
+      updateCurrentSource,
+      onChange,
+      setHasUnsavedChanges,
+      parsedSource,
+    }) => (newSource) => {
       updateCurrentSource(newSource);
-      setHasChanges(true);
       try {
         const newParsedSource = JSON.parse(newSource);
         if (!R.equals(newParsedSource, parsedSource)) {
           onChange(newSource);
         }
-        setHasChanges(false);
-      } catch (e) {}
+        setHasUnsavedChanges(false);
+      } catch (e) {
+        setHasUnsavedChanges(true);
+      }
     },
   }),
 )(({ currentSource, onChange, isReadonly }) => (

@@ -42,8 +42,8 @@ const KeyRulesEditor = ({
   isReadonly,
   selectedTab,
   onTabSelected,
-  hasChanges,
-  setHasChanges,
+  hasUnsavedChanges,
+  setHasUnsavedChanges,
 }) => (
   <div className="key-rules-editor-container" data-comp="key-rules-editor" disabled={isReadonly}>
     <Tabs
@@ -52,11 +52,11 @@ const KeyRulesEditor = ({
       onSelect={async (index, lastIndex) => {
         if (
           lastIndex === 1 &&
-          hasChanges &&
+          hasUnsavedChanges &&
           !(await alerter.showConfirm(confirmUnsavedAlert)).result
         )
           return true;
-        setHasChanges(false);
+        setHasUnsavedChanges(false);
         onTabSelected(index);
       }}
     >
@@ -83,7 +83,7 @@ const KeyRulesEditor = ({
       </TabPanel>
       <TabPanel className="tab-content">
         <JPadTextEditor
-          {...{ source, isReadonly, setHasChanges }}
+          {...{ source, isReadonly, setHasUnsavedChanges }}
           onChange={x => onMutation(JSON.parse(x))}
         />
       </TabPanel>
@@ -105,15 +105,15 @@ function changeValueType(valueType, rulesMutate, depth) {
     for (let i = 0; i < rules.length; i++) {
       const ruleMutate = rulesMutate.in(i);
 
-      const valueDistrubtion = ruleMutate.in('ValueDistribution').getValue();
-      if (!valueDistrubtion) {
+      const valueDistribution = ruleMutate.in('ValueDistribution').getValue();
+      if (!valueDistribution) {
         const currentRuleValue = ruleMutate.in('Value').getValue();
         ruleMutate.in('Value').updateValue(getTypedValue(currentRuleValue, valueType));
         break;
       }
 
       const valueToConvert =
-        valueDistrubtion.type === 'weighted' ? Object.keys(valueDistrubtion.args)[0] : '';
+        valueDistribution.type === 'weighted' ? Object.keys(valueDistribution.args)[0] : '';
       const convertedValue = getTypedValue(valueToConvert, valueType);
 
       ruleMutate
@@ -150,7 +150,7 @@ const JPadFullEditor = compose(
   })),
   MutatorFor('sourceTree'),
   withState('selectedTab', 'onTabSelected', 0),
-  withState('hasChanges', 'setHasChanges', false),
+  withState('hasUnsavedChanges', 'setHasUnsavedChanges', false),
   pure,
   lifecycle({
     componentWillReceiveProps({ valueType, mutate }) {
