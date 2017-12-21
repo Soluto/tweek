@@ -6,11 +6,11 @@ const _createOperator = (label, operatorValue) => {
     break;
   case '$in':
     getValue = (propertyValue, propertyTypeDetails) =>
-        _toArrayValue(operatorValue, propertyValue, propertyTypeDetails);
+      _toArrayValue(operatorValue, propertyValue, propertyTypeDetails);
     break;
   default:
     getValue = (propertyValue, propertyTypeDetails) =>
-        _toComplexValue(operatorValue, propertyValue, propertyTypeDetails);
+      _toComplexValue(operatorValue, propertyValue, propertyTypeDetails);
   }
 
   return {
@@ -69,14 +69,14 @@ export const getPropertySupportedOperators = (propertyTypeDetails) => {
   }
 
   if (type === 'date') {
-    return [within];
+    return [within, greaterEqualThan, lessEqualThan];
   }
 
   let operators = [];
   if (type === 'boolean' || type === 'string' || type === 'version' || type === 'number') {
     operators = operators.concat([equal, notEqual]);
   }
-  if (type === 'number' || type === 'version') {
+  if (type === 'number' || propertyTypeDetails.comparer) {
     operators = operators.concat([greaterEqualThan, greater, lessThan, lessEqualThan]);
   }
   if (type === 'string') {

@@ -23,6 +23,7 @@ describe('edit keys', () => {
             'user.FavoriteFruit': 'Banana',
             'user.BirthDate': {
               $withinTime: '3d',
+              $compare: 'date',
             },
             'user.IsInGroup': false,
             'user.NumberOfSiblings': 1,
