@@ -1,33 +1,18 @@
-<<<<<<< HEAD:services/api/Tweek.ApiService.NetCore/Controllers/ContextController.cs
-﻿using System;
-using Engine;
-using Engine.DataTypes;
-using Engine.Drivers.Context;
+using System;
 using FSharpUtils.Newtonsoft;
-=======
-﻿using FSharpUtils.Newtonsoft;
->>>>>>> master:services/api/Tweek.ApiService/Controllers/ContextController.cs
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-<<<<<<< HEAD:services/api/Tweek.ApiService.NetCore/Controllers/ContextController.cs
-using Tweek.ApiService.NetCore.Security;
-using LanguageExt;
-using Engine.Context;
-using Tweek.Utils;
 using Microsoft.Extensions.Logging;
-=======
 using Tweek.ApiService.Security;
 using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Context;
->>>>>>> master:services/api/Tweek.ApiService/Controllers/ContextController.cs
 
 namespace Tweek.ApiService.Controllers
 {
-    [Route("api/v1/context")]
+  [Route("api/v1/context")]
     public class ContextController : Controller
     {
         private readonly IContextDriver _contextDriver;

@@ -2,7 +2,7 @@ using System;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
-namespace Engine.DataTypes
+namespace Tweek.Engine.DataTypes
 {
     public class CustomTypeDefinition 
     {
