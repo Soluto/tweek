@@ -64,9 +64,7 @@ namespace Tweek.Engine.Drivers.Context
                         return (isValid: true, validationError: "");
                       }
 
-                      var errorsAsString = string.Join(",", errors.Select(error => error.ValidationResult.validationError));
-
-                      var invalidProperties = string.Join(",", errors.Select(error => error.PropName));
+                      var invalidProperties = string.Join(",", errors.Select(error => $"{error.PropName}:{error.ValidationResult}"));
 
                       return (isValid: false, validationError: $"Validation for identity type \"{identity.Type}\" failed because the following properties are invalid: {invalidProperties}");
                     }
@@ -137,22 +135,24 @@ namespace Tweek.Engine.Drivers.Context
             }
         }
 
+
         private (bool isValid, string validationError) ValidateCustomType(string typeName, CustomTypeDefinition typeDefinition, JsonValue property)
         { 
-            Func<JsonValue, (bool isValid, string validationError) > baseTypeValidation = 
-                (p) => typeName.Equals(typeDefinition.Base, StringComparison.OrdinalIgnoreCase) ?
+            var baseTypeValidation = fun(
+                (JsonValue p) => typeName.Equals(typeDefinition.Base, StringComparison.OrdinalIgnoreCase) ?
                      (isValid: false, $"Base type cannot be from the current type \"{typeName}\"") :
                         ValidateBaseType(typeDefinition.Base, p) ?? 
-                        (isValid: false, validationError: "base type not exist");
-            Func<JsonValue, (bool isValid, string validationError) > allowedValuesValidation = 
-                (p) => (typeDefinition.AllowedValues.Any() ? Some(typeDefinition.AllowedValues) : None)
+                        (isValid: false, validationError: "base type not exist"));
+
+            var allowedValuesValidation = fun(
+                (JsonValue p) => (typeDefinition.AllowedValues.Any() ? Some(typeDefinition.AllowedValues) : None)
                             .Map(allowedValues => typeDefinition.Base == "string" && allowedValues.Contains(p.AsString(), StringComparer.InvariantCultureIgnoreCase))
                             .Map(r => r ? (isValid: true, validationError: "") : (isValid: false, validationError: "value not in the allowed values"))
-                            .IfNone((isValid: true, validationError: ""));
-            Func<JsonValue, (bool isValid, string validationError) > regexValidation = 
-                (p) => NullableExtensions.ToOption(typeDefinition.Validation?.IsMatch(p.AsString()))
+                            .IfNone((isValid: true, validationError: "")));
+            var regexValidation = fun(
+                (JsonValue p) => NullableExtensions.ToOption(typeDefinition.Validation?.IsMatch(p.AsString()))
                          .Map(r => r ? (isValid: true, validationError: "") : (isValid: false, validationError: "value does not match regex"))
-                         .IfNone((isValid: true, validationError: ""));
+                         .IfNone((isValid: true, validationError: "")));
 
             var results =  new [] {baseTypeValidation(property), allowedValuesValidation(property), regexValidation(property)};
 
