@@ -3,7 +3,7 @@ import delay from './utils/delay';
 
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
-  const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
 
   const rawData = atob(base64);
   const outputArray = new Uint8Array(rawData.length);
@@ -50,38 +50,33 @@ async function persistRegistration(subscription) {
   }
 }
 
-export default function register() {
+export default async function register() {
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', async () => {
-      const response = await fetch('/api/editor-configuration/service_worker/is_enabled');
-      const enabled = await response.json();
+    const response = await fetch('/api/editor-configuration/service_worker/is_enabled');
+    const enabled = await response.json();
 
-      if (!enabled) {
-        console.log('service worker is disabled');
-        unregister();
-        return;
-      }
+    if (!enabled) {
+      console.log('service worker is disabled');
+      unregister();
+      return;
+    }
 
-      console.log('enabling service worker');
-      const swUrl = `${process.env.PUBLIC_URL}/service-worker.bundle.js`;
-      try {
-        await navigator.serviceWorker.register(swUrl);
+    console.log('enabling service worker');
+    const swUrl = `${process.env.PUBLIC_URL}/service-worker.bundle.js`;
+    try {
+      await navigator.serviceWorker.register(swUrl);
 
-        Notification.requestPermission();
+      Notification.requestPermission();
 
-        const registration = await navigator.serviceWorker.ready;
+      const registration = await navigator.serviceWorker.ready;
 
-        const subscription = await getSubscription(registration.pushManager);
-        persistRegistration(subscription).catch(
-          error => (
-            console.error('unregistering service worker', error),
-            registration.unregister()
-          ),
-        );
-      } catch (error) {
-        console.error('Error during service worker registration:', error);
-      }
-    });
+      const subscription = await getSubscription(registration.pushManager);
+      persistRegistration(subscription).catch(
+        error => (console.error('unregistering service worker', error), registration.unregister()),
+      );
+    } catch (error) {
+      console.error('Error during service worker registration:', error);
+    }
   }
 }
 

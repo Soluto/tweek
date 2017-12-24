@@ -1,5 +1,5 @@
-/* global fetch */
-import R from 'ramda';
+import * as R from 'ramda';
+import fetch from '../utils/fetch';
 import * as TypesService from './types-service';
 
 export const KEYS_IDENTITY = 'keys.';
@@ -7,7 +7,7 @@ export const KEYS_IDENTITY = 'keys.';
 let contextSchema = {};
 
 export async function refreshSchema() {
-  const response = await fetch('/api/schemas', { credentials: 'same-origin' });
+  const response = await fetch('/api/schemas');
   contextSchema = await response.json();
 }
 
@@ -45,9 +45,10 @@ export function getPropertyTypeDetails(property) {
     return TypesService.types.string;
   }
 
-  const typeDetails = typeof propertyDetails.type === 'string'
-    ? TypesService.types[propertyDetails.type]
-    : propertyDetails.type;
+  const typeDetails =
+    typeof propertyDetails.type === 'string'
+      ? TypesService.types[propertyDetails.type]
+      : propertyDetails.type;
 
   if (!typeDetails) {
     console.warn('Type details not found for type', propertyDetails.type, property);
@@ -67,9 +68,11 @@ export function getFixedKeys(contextData = {}) {
   );
 }
 
-export function getContextProperties(identity, contextData = {}) {
-  const identityScheme = R.map(_ => '', contextSchema[identity] || {});
+export function getContextProperties(identity, contextData = {}, excludeEmpty = false) {
   const properties = R.pickBy((_, prop) => !prop.startsWith(FIXED_PREFIX), contextData);
 
+  if (excludeEmpty) return properties;
+
+  const identityScheme = R.map(_ => '', contextSchema[identity] || {});
   return { ...identityScheme, ...properties };
 }

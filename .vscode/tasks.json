@@ -3,43 +3,29 @@
     // for the documentation about the tasks.json format
     "version": "0.1.0",
     "tasks": [
-         {
-            "taskName": "dev-env-e2e",
+        {
+            "taskName": "dev-env",
             "command": "docker-compose",
             "isShellCommand": true,
-            "args": ["-f", "./deployments/dev/docker-compose.yml", "-f", "./deployments/dev/docker-compose.e2e.yml", "up", "-d", "tweek-editor"]
+            "args": ["-f", "./deployments/dev/docker-compose.yml", "-f", "./deployments/dev/docker-compose.override.yml", "up", "-d"]
         },
         {
-            "taskName": "dev-env-api",
+            "taskName": "e2e-env",
             "command": "docker-compose",
             "isShellCommand": true,
-            "args": ["-f", "./deployments/dev/docker-compose.yml", "up", "-d", "tweek-management"]
+            "args": ["-f", "./deployments/dev/docker-compose.yml", "-f", "./deployments/dev/docker-compose.override.yml", "-f", "./deployments/dev/docker-compose.e2e.yml", "up", "-d"]
         },
         {
-            "taskName": "teardown-dev-env",
+            "taskName": "teardown-env",
             "command": "docker-compose",
             "isShellCommand": true,
-            "args": ["-f", "./deployments/dev/docker-compose.yml", "down"]
+            "args": ["-f", "./deployments/dev/docker-compose.yml", "down", "--remove-orphans"]
         },
         {
-            "taskName": "dev-env-editor",
-            "command": "docker-compose",
-            "isShellCommand": true,
-            "args": ["-f", "./deployments/dev/docker-compose.yml", "up", "-d", "tweek-api", "tweek-management"]
-        },
-        {
-            "command": "dotnet",
-            "isShellCommand": true,
-            "taskName": "api-publish-for-docker",
-            "args": ["publish", "services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj","-o", "./obj/Docker/publish"],
-            "showOutput": "always",
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "command": "dotnet",
-            "isShellCommand": true,
             "taskName": "api-build",
-            "args": ["build", "services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj"],
+            "command": "dotnet",
+            "isShellCommand": true,
+            "args": ["build", "services/api/Tweek.ApiService/Tweek.ApiService.csproj"],
             "isBuildCommand": true,
             "showOutput": "always",
             "problemMatcher": "$msCompile"

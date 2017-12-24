@@ -1,6 +1,7 @@
 # <img src="https://soluto.github.io/docs.tweek.fm/assets/logo-with-background.png" width="400" />
 
-[![Codefresh build status]( https://g.codefresh.io/api/badges/build?repoOwner=Soluto&repoName=tweek&branch=master&pipelineName=tweek-all&accountName=soluto&key=eyJhbGciOiJIUzI1NiJ9.NTkwOTg1MmQ2ZDAxYjcwMDA2Yjc1ODBm.fODYFsnTAGVNVeEAA6lI0g-sTAfHjh5B9BWrOtDvSSE&type=cf-2)]( https://g.codefresh.io/repositories/Soluto/tweek/builds?filter=trigger:build;branch:master;service:590b2586eea36f000875f02e~tweek-all) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/soluto/tweek/blob/master/LICENSE.md) [![Dependency Status](https://www.versioneye.com/user/projects/596654446725bd00487bd48e/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/596654446725bd00487bd48e)  [![Slack](https://tweek-slack.now.sh/badge.svg)](https://tweek-slack.now.sh) [![CircleCI](https://circleci.com/gh/Soluto/tweek/tree/master.svg?style=svg)](https://circleci.com/gh/Soluto/tweek/tree/master)
+[![Codefresh build status]( https://g.codefresh.io/api/badges/build?repoOwner=Soluto&repoName=tweek&branch=master&pipelineName=tweek-all&accountName=soluto&key=eyJhbGciOiJIUzI1NiJ9.NTkwOTg1MmQ2ZDAxYjcwMDA2Yjc1ODBm.fODYFsnTAGVNVeEAA6lI0g-sTAfHjh5B9BWrOtDvSSE&type=cf-2)]( https://g.codefresh.io/repositories/Soluto/tweek/builds?filter=trigger:build;branch:master;service:590b2586eea36f000875f02e~tweek-all) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/soluto/tweek/blob/master/LICENSE.md) [![Slack](https://tweek-slack.now.sh/badge.svg)](https://tweek-slack.now.sh) [![CircleCI](https://circleci.com/gh/Soluto/tweek/tree/master.svg?style=svg)](https://circleci.com/gh/Soluto/tweek/tree/master)
+
 
 tweek@soluto.com  
 
@@ -30,9 +31,7 @@ Tweek aims to be a complete open-source alternative to other industry feature/co
 The easiest way to start evaluating Tweek is to run it locally on docker, make sure you have the latest [docker (for windows/mac/etc..)](https://www.docker.com/get-docker) version installed (17-06+).
 #### Running Tweek
 - clone the repo (``` git clone https://github.com/Soluto/tweek.git ```)
-- go to deployments/dev (``` cd tweek/deployments/dev ```)
-- (optional) pull the images instead of building (```docker-compose pull --parallel```)
-- run (``` docker-compose up ```) - this might take a few minutes the first time
+- run (``` yarn start ```) - this might take a few minutes for the first time
 
 #### Edit your first key
 After setting up our environment, we're going to create our first key.
@@ -96,7 +95,9 @@ More on how multi-varaint keys work in Tweek. (link)
 
 
 ### Related projects
+[Tweek-Clients](https://github.com/Soluto/tweek-clients) - Tweek REST clients  
 [Tweek.JPad](https://github.com/soluto/tweek.jpad) - Tweek's internal rules engine
 
 ### Additional Resources
 - https://martinfowler.com/articles/feature-toggles.html
+- https://en.wikipedia.org/wiki/Feature_toggle

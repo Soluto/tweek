@@ -2,16 +2,21 @@
 
 import Identity from '../../utils/Identity';
 import assert from 'assert';
+import { login } from '../../utils/auth-utils';
 
 describe('override keys', () => {
   const identityId = 'awesome_user';
   const identityType = 'user';
   const typedKey = 'behavior_tests/context/override_key';
 
-  before(() => browser.url('/context'));
+  before(() => {
+    login();
+    browser.url('/context');
+  });
 
   it('should modify override keys', () => {
     const identity = Identity.open(identityType, identityId);
+    const initialProperties = identity.properties;
 
     const overrideKeys = {
       'some/key': 'someValue',
@@ -43,5 +48,6 @@ describe('override keys', () => {
     identity.commitChanges();
 
     assert.deepEqual(identity.overrideKeys, {});
+    assert.deepEqual(identity.properties, initialProperties);
   });
 });

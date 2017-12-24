@@ -1,23 +1,27 @@
 import express from 'express';
+import { Observable } from 'rxjs';
+import * as R from 'ramda';
+import axios from 'axios';
 import * as TypesRoutes from './api/types';
 import * as ContextRoutes from './api/context';
 import * as Registration from './api/registration';
 import * as EditorConfiguration from './api/editorConfiguration';
 import proxyRequest from './api/utils/proxy-request';
 import requestErrorHandlingWrapper from './utils/request-error-handling-wrapper';
-import { Observable } from 'rxjs';
-import R from 'ramda';
-import axios from 'axios';
 
 export default (config) => {
   const app = express();
+  app.disable('x-powered-by');
 
   const addConfig = fn =>
     requestErrorHandlingWrapper((req, res) => fn(req, res, config, { params: req.params }));
 
   const authoringProxy = proxyRequest(`${config.serviceEndpoints.authoring}`);
 
-  app.route('/tags').get(authoringProxy).put(authoringProxy);
+  app
+    .route('/tags')
+    .get(authoringProxy)
+    .put(authoringProxy);
 
   app.get('/types', addConfig(TypesRoutes.getTypes));
 
@@ -56,13 +60,21 @@ export default (config) => {
   app.get('/push-service/public-key', addConfig(Registration.getPublicKey));
   app.post('/push-service/register', addConfig(Registration.register));
 
-  app.get('/system/service-version', addConfig(async (req, res, { serviceEndpoints } )=>{
-    const services = await Observable.from(R.toPairs(serviceEndpoints))
-    .flatMap(([key,value]) => Observable.defer(async ()=> ({ [key]: await axios.get(`${value}/version`).then(r=>r.data, ex=> "error") })))
-    .reduce((acc,next)=>({ ...acc,...next }), {}).toPromise();
+  app.get(
+    '/system/service-version',
+    addConfig(async (req, res, { serviceEndpoints }) => {
+      const services = await Observable.from(R.toPairs(serviceEndpoints))
+        .flatMap(([key, value]) =>
+          Observable.defer(async () => ({
+            [key]: await axios.get(`${value}/version`).then(r => r.data, ex => 'error'),
+          })),
+        )
+        .reduce((acc, next) => ({ ...acc, ...next }), {})
+        .toPromise();
 
-    res.json({ editor: process.env.npm_package_version ,...services });
-  }));
+      res.json({ editor: process.env.npm_package_version, ...services });
+    }),
+  );
 
   app.use('/*', (req, res) => res.sendStatus(404));
 

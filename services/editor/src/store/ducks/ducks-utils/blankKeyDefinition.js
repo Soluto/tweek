@@ -1,30 +1,35 @@
 export const BLANK_KEY_NAME = '_blank';
 
 export function createBlankKeyManifest(keyName, implementation = { type: 'file', format: 'jpad' }) {
-  return {
+  const manifest = {
     meta: {
-      name: '',
-      tags: [],
-      description: '',
       archived: false,
     },
     implementation,
-    valueType: '',
-    dependencies: [],
-    enabled: true,
   };
+
+  if (implementation.type !== 'alias') {
+    manifest.valueType = 'string';
+    manifest.dependencies = [];
+    manifest.meta = {
+      ...manifest.meta,
+      name: keyName,
+      description: '',
+      tags: [],
+    };
+  }
+
+  return manifest;
+}
+
+export function createJPadSource(valueType = '', rules = [], partitions = []) {
+  return JSON.stringify({ valueType, rules, partitions }, null, 4);
 }
 
 export function createBlankJPadKey() {
-  const keyDefSource = {
-    partitions: [],
-    valueType: '',
-    rules: [],
-  };
-
   return {
-    keyDef: {
-      source: JSON.stringify(keyDefSource, null, 4),
+    implementation: {
+      source: createJPadSource('string'),
       type: 'jpad',
       valueType: '',
     },

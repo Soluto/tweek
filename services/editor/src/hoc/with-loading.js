@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose, lifecycle, pure, withState } from 'recompose';
+import { compose, lifecycle, withState } from 'recompose';
 
 const withLoading = (loadingRenderer, loadingPromiseFactory) => Comp =>
   compose(

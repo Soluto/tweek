@@ -7,8 +7,11 @@ import Alert from '../../utils/Alert';
 import { dataComp } from '../../utils/selector-utils';
 import tweekApiClient from '../../clients/tweek-api-client';
 import authoringApi from '../../clients/authoring-client';
+import { login } from '../../utils/auth-utils';
 
 describe('edit keys', () => {
+  before(() => login());
+
   describe('edit JPad keys', () => {
     const expectedKeySource = {
       partitions: [],
@@ -20,6 +23,7 @@ describe('edit keys', () => {
             'user.FavoriteFruit': 'Banana',
             'user.BirthDate': {
               $withinTime: '3d',
+              $compare: 'date',
             },
             'user.IsInGroup': false,
             'user.NumberOfSiblings': 1,
@@ -42,7 +46,9 @@ describe('edit keys', () => {
         const keyName = 'behavior_tests/edit_key/visual/edit_test';
         Key.open(keyName).setDefaultValue('some default value');
 
-        Rule.add().removeCondition().setValue('some value');
+        Rule.add()
+          .removeCondition()
+          .setValue('some value');
 
         Rule.add()
           .setCondition('user.AgentVersion', '1.1.1')
@@ -53,7 +59,7 @@ describe('edit keys', () => {
           .setCondition('unknown.identity', 'value');
 
         expect(Rule.count()).to.equal(2);
-        expect(Key.source).to.deep.equal(expectedKeySource);
+        expect(Key.goToSourceTab().source).to.deep.equal(expectedKeySource);
 
         Key.commitChanges();
 
@@ -67,23 +73,21 @@ describe('edit keys', () => {
       it('should succeed editing JPad source', () => {
         Key.open('behavior_tests/edit_key/text/edit_test').goToSourceTab();
 
-        Key.source = JSON.stringify(expectedKeySource, null, 4);
+        Key.goToSourceTab().source = JSON.stringify(expectedKeySource, null, 4);
 
         Key.goToRulesTab();
-        Alert.cancel();
-
-        Key.insertSource().goToRulesTab();
 
         Rule.select().waitForVisible();
-        expect(Key.source).to.deep.equal(expectedKeySource);
 
-        Key.goToSourceTab().source = '{}';
+        expect(Key.goToSourceTab().source).to.deep.equal(expectedKeySource);
+
+        Key.goToSourceTab().source = 'invalid json';
 
         Key.goToRulesTab();
         Alert.ok();
 
         Rule.select().waitForVisible();
-        expect(Key.source).to.deep.equal(expectedKeySource);
+        expect(Key.goToSourceTab().source).to.deep.equal(expectedKeySource);
       });
     });
   });
@@ -111,7 +115,8 @@ describe('edit keys', () => {
     it('should succeed editing key (valueType=object)', () => {
       const keyName = `${constKeyFolder}/object_type`;
       Key.open(keyName);
-      browser.click(`${constEditor} .jsonValue input[type=checkbox]`);
+      const originalSource = Key.source;
+      Key.source = JSON.stringify({ ...originalSource, boolProp: false });
       Key.commitChanges();
       tweekApiClient.waitForKeyToEqual(keyName, { boolProp: false });
     });

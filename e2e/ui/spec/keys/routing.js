@@ -1,20 +1,30 @@
 /* global describe, before, after, beforeEach, it, browser */
 
 import Key from '../../utils/Key';
+import KeysList from '../../utils/KeysList';
 import Rule from '../../utils/Rule';
+import { login } from '../../utils/auth-utils';
 
 const timeout = 1000;
 
 describe('navigating from key with changes', () => {
   const keyName = 'behavior_tests/routing';
 
-  beforeEach(() => Key.add());
+  before(() => login());
+
+  beforeEach(() =>
+    Key.add()
+      .setValueType('boolean')
+      .setKeyFormat('jpad')
+      .setName('routing_test')
+      .continueToDetails(),
+  );
 
   it('should show confirm message if navigating to another key', () => {
     Rule.add();
     browser.waitUntil(() => Key.hasChanges, timeout);
 
-    Key.navigate(keyName);
+    KeysList.navigate(keyName);
 
     browser.waitForAlert(timeout, 'should show confirm message');
     browser.alertAccept();

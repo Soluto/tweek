@@ -3,11 +3,11 @@ import BluebirdPromise = require('bluebird');
 import express = require('express');
 import morgan = require('morgan');
 import bodyParser = require('body-parser');
-import Rx = require('rxjs');
+import { Observable } from 'rxjs';
 import fs = require('fs-extra');
 import passport = require('passport');
 import Transactor from './utils/transactor';
-import GitRepository from './repositories/git-repository';
+import GitRepository, { RepoOutOfDateError } from './repositories/git-repository';
 import KeysRepository from './repositories/keys-repository';
 import TagsRepository from './repositories/tags-repository';
 import AppsRepository from './repositories/apps-repository';
@@ -18,6 +18,7 @@ import configurePassport from './security/configure-passport';
 import sshpk = require('sshpk');
 import { ErrorRequestHandler } from 'express';
 import { Server } from 'typescript-rest';
+import { getErrorStatusCode } from './utils/error-utils';
 
 const {
   PORT,
@@ -47,7 +48,21 @@ const gitRepoCreationPromiseWithTimeout = BluebirdPromise.resolve(gitRepoCreatio
     throw new Error(`git repository cloning timeout after ${GIT_CLONE_TIMEOUT_IN_MINUTES} minutes`);
   });
 
-const gitTransactionManager = new Transactor(gitRepoCreationPromise, gitRepo => gitRepo.reset());
+const gitTransactionManager = new Transactor(gitRepoCreationPromise, async gitRepo => {
+  await gitRepo.reset();
+  await gitRepo.fetch();
+  await gitRepo.mergeMaster();
+}, (function() {
+  let retries = 2;
+  return async (error, context) => {
+    if (retries-- === 0) return false;
+    if (error instanceof RepoOutOfDateError) {
+      return true;
+    }
+    return false
+  }
+})());
+
 const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
 const appsRepository = new AppsRepository(gitTransactionManager);
@@ -72,25 +87,26 @@ async function startServer() {
 
   app.use('/*', (req, res) => res.sendStatus(404));
   const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+    if (!err) { return next(); }
     console.error(req.method, req.originalUrl, err);
-    res.status(err.statusCode || 500).send(err.message);
+    res.status(getErrorStatusCode(err)).send(err.message);
   };
   app.use(errorHandler);
 
   app.listen(PORT, () => console.log('Listening on port', PORT));
 }
 
-GitContinuousUpdater.onUpdate(gitTransactionManager)
-  .switchMap(_ =>
-    Rx.Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)),
-)
-  .do(() => { }, (err: any) => console.error('Error refreshing index', err))
+const onUpdate$ = GitContinuousUpdater.onUpdate(gitTransactionManager).share();
+
+onUpdate$
+  .switchMapTo(Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)))
+  .do(null, (err: any) => console.error('Error refreshing index', err))
   .retry()
   .subscribe();
 
-GitContinuousUpdater.onUpdate(gitTransactionManager)
-  .switchMap(_ => Rx.Observable.defer(() => appsRepository.refresh()))
-  .do(() => { }, (err: any) => console.error('Error refersing apps index', err))
+onUpdate$
+  .switchMapTo(Observable.defer(() => appsRepository.refresh()))
+  .do(null, (err: any) => console.error('Error refersing apps index', err))
   .retry()
   .subscribe();
 

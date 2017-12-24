@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
+    <PackageReference Include="LanguageExt.Core" version="2.1.21" />
+    <PackageReference Include="Soluto.Collections.RadixTree" Version="1.0.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Tweek.Engine.Core\Tweek.Engine.Core.csproj" />
+    <ProjectReference Include="..\Tweek.Engine.DataTypes\Tweek.Engine.DataTypes.csproj" />
+    <ProjectReference Include="..\Tweek.Engine.Drivers\Tweek.Engine.Drivers.csproj" />
+  </ItemGroup>
+</Project>

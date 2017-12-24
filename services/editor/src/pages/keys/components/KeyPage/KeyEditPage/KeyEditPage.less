@@ -55,43 +55,6 @@
         .validation-message {
           font-size: 13px;
         }
-        .auto-suggest-wrapper {
-          display: flex;
-          flex-grow: 1;
-          flex-direction: row;
-          margin-bottom: 13px;
-          .override-typeahead(@text-padding) {
-            .bootstrap-typeahead-input-container {
-              display: flex;
-              flex-grow: 1;
-              .bootstrap-typeahead-input {
-                .key-name-input;
-                padding-left: @text-padding;
-              }
-            }
-          }
-          .override-typeahead(0);
-          &[data-with-error="true"] {
-            .override-typeahead(30px);
-          }
-          .validation-icon-wrapper {
-            flex-direction: row;
-            width: 0;
-            margin: 11px 0 0 0;
-            position: absolute;
-            z-index: 7;
-            .transitioned();
-            &[data-is-shown="true"] {
-              width: 16px;
-              height: 16px;
-              margin-top: 5px;
-              padding: 3px 5px;
-            }
-          }
-          .auto-suggest {
-            flex-grow: 1;
-          }
-        }
       }
     }
     .sticky-key-header {

@@ -1,0 +1,20 @@
+version: '2'
+services:
+  zap:
+    image: soluto/zap
+    build: ../deployments/dev/zap
+    user: root
+    volumes:
+      - ../deployments/dev/zap/session:/root/.ZAP/session
+
+  glue:
+    build: ../deployments/dev/zap/glue
+    working_dir: /glue/data
+    command: ./test.sh
+    depends_on: 
+      - zap
+    environment:
+      - ZAP_HOST=http://zap
+      - ZAP_PORT=8090
+    volumes:
+      - ../deployments/dev/zap/glue:/glue/data

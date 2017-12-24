@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <NoWarn>1591, 1701, 1702, 1998</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
+    <PackageReference Include="LanguageExt.Core" version="2.1.21" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
+    <PackageReference Include="Microsoft.Reactive.Testing" Version="3.1.1" />
+    <PackageReference Include="Moq" Version="4.7.142" />
+    <PackageReference Include="Tweek.JPad" Version="0.6.18" />
+    <PackageReference Include="xunit" Version="2.2.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\addons\Context\Tweek.Drivers.Context.Couchbase\Tweek.Drivers.Context.Couchbase.csproj" />
+    <ProjectReference Include="..\Tweek.Engine.Core\Tweek.Engine.Core.csproj" />
+    <ProjectReference Include="..\Tweek.Engine.DataTypes\Tweek.Engine.DataTypes.csproj" />
+    <ProjectReference Include="..\..\JPad\Tweek.JPad.Utils\Tweek.JPad.Utils.csproj" />
+    <ProjectReference Include="..\..\Utils\JsonValueConverter\JsonValueConverter.csproj" />
+    <ProjectReference Include="..\Tweek.Engine.Drivers\Tweek.Engine.Drivers.csproj" />
+    <ProjectReference Include="..\Tweek.Engine\Tweek.Engine.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+</Project>

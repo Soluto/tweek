@@ -1,4 +1,4 @@
-import R from 'ramda';
+import * as R from 'ramda';
 import { KEYS_IDENTITY } from '../../services/context-service';
 
 export function testAutoPartition(partition, rules, depth) {

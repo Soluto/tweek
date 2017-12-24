@@ -1,0 +1,133 @@
+version: '2'
+services:
+  keys:
+    image: $KEYS_IMAGE
+    
+  git:
+    image: $REPOSITORY_IMAGE
+    volumes_from:
+      - keys
+    environment:
+      - PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
+      - TWEEK_MANAGEMENT_URL=http://management:3000
+  
+  management:
+    image: $MANAGEMENT_IMAGE
+    depends_on:
+      - api
+      - git
+      - minio
+      - nats
+    volumes_from:
+      - keys
+    logging:
+      driver: "none"
+    environment:
+      - VALIDATION_URL=http://api/validation
+      - GIT_USER=git
+      - GIT_URL=ssh://git@git/tweek/tests
+      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+      - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
+      - GIT_SAMPLE_INTERVAL=500
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
+      - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      - NATS_ENDPOINT=nats://nats:4222
+      
+  api:
+    image: $API_IMAGE
+    depends_on:
+      - minio
+      - redis
+      - nats
+    volumes_from:
+      - keys
+    logging:
+      driver: "none"
+    environment:
+      - Rules__Minio__Endpoint=minio:9000
+      - Rules__Minio__AccessKey=AKIAIOSFODNN7EXAMPLE
+      - Rules__Minio__SecretKey=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      - Rules__Nats__Endpoint=nats://nats:4222
+      - Rules__FailureDelayInMs=50
+      - Rules__VersionTimeoutInMs=2000
+      - UseAddon__Rules=MinioRules
+      - RulesetVersionProvider=NatsVersionProvider
+      - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
+      - Redis__ConnectionString=redis:6379
+      - CorsPolicies__Keys__Origins=http://editor:3000,http://testorigin
+      - CorsPolicies__Keys__Methods=GET
+      - CorsPolicies__Keys__MaxPreflightAge=60
+      - CorsEnabled=true
+      - CorsPolicies__Keys__Headers=
+      - CorsPolicies__Keys__ExposedHeaders=
+      
+  authoring:
+    image: $AUTHORING_IMAGE
+    depends_on:
+      - git
+    volumes_from:
+      - keys
+    logging:
+      driver: "none"
+    environment:
+      - GIT_USER=git
+      - GIT_URL=ssh://git@git/tweek/tests
+      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+      - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
+      
+  editor:
+    image: $EDITOR_IMAGE
+    depends_on:
+      - api
+      - authoring
+    volumes_from:
+      - keys
+    logging:
+      driver: "none"
+    environment:
+      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+      - TWEEK_API_HOSTNAME=http://api
+      - AUTHORING_API_HOSTNAME=http://authoring:3000
+      - REQUIRE_AUTH=true
+      - TWEEK_AUTH_SCHEMES=httpDigest
+      - AUTH_DIGEST_CREDENTIALS=user:pwd
+  redis:
+    image: redis:4.0.2-alpine
+    expose:
+      - "6379"
+    logging:
+      driver: "none"
+
+  minio:
+    image: minio/minio
+    logging:
+      driver: "none"
+    command: server /data
+    environment:
+      - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
+      - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      
+  nats:
+    image: nats:1.0.4-linux
+
+  selenium:
+    image: selenium/standalone-chrome:3.8.1
+    logging:
+      driver: "none"
+
+  zap-smoke:
+    image: $ZAP_IMAGE
+    logging:
+      driver: "none"
+    user: root
+    volumes:
+      - ${CF_VOLUME_PATH}/tweek/deployments/dev/zap/session/smoke:/root/.ZAP/session/smoke
+
+  zap-e2e:
+    image: $ZAP_IMAGE
+    logging:
+      driver: "none"
+    user: root
+    volumes:
+      - ${CF_VOLUME_PATH}/tweek/deployments/dev/zap/session/e2e:/root/.ZAP/session/e2e

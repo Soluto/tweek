@@ -1,0 +1,109 @@
+version: '2'
+
+services:
+  keys:
+    image: soluto/tweek-test-keys
+    build: ../deployments/dev/ssh
+
+  git:
+    image: soluto/tweek-bare-repo
+    build: ../services/git-service/BareRepository
+    ports: 
+      - "5001:22"
+  
+  management:
+    image: soluto/tweek-management
+    build: ../services/management
+    logging:
+      driver: "json-file"
+    ports:
+      - "5002:3000"
+
+  api:
+    image: soluto/tweek-api
+    build:
+      context: ../
+      dockerfile: TweekApiDockerfile
+    logging:
+      driver: "json-file"
+    ports:
+      - "5003:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      
+  authoring:
+    image: soluto/tweek-authoring
+    build: ../services/authoring
+    logging:
+      driver: "json-file"
+    ports:
+      - "5005:3000"
+      
+  editor:
+    image: soluto/tweek-editor
+    build: ../services/editor
+    logging:
+      driver: "json-file"
+    ports:
+      - "5004:3000"
+
+  zap-smoke:
+    image: soluto/zap
+    build: ../deployments/dev/zap
+    logging:
+      driver: "json-file"
+    volumes:
+      - ../deployments/dev/zap/session/smoke:/root/.ZAP/session/smoke
+
+  zap-e2e:
+    image: soluto/zap
+    build: ../deployments/dev/zap
+    logging:
+      driver: "json-file"
+    volumes:
+      - ../deployments/dev/zap/session/e2e:/root/.ZAP/session/e2e
+
+  smoke-tests:
+    build:
+      context: ../
+      dockerfile: TweekApiSmokeTestDockerfile
+    depends_on: 
+      - api
+      - management
+      - zap-smoke
+    environment: 
+      - TWEEK_API_URL=http://api/
+      - PROXY_URL=http://zap-smoke:8090
+
+  e2e-ui:
+    build: ../e2e/ui
+    volumes_from:
+      - keys
+    depends_on: 
+      - selenium
+      - editor
+      - authoring
+      - api
+      - management
+      - zap-e2e
+    environment:
+      - EDITOR_URL=http://editor:3000/
+      - TWEEK_API_URL=http://api/
+      - AUTHORING_URL=http://authoring:3000
+      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+      - PROXY_URL=http://zap-e2e:8090
+      - AUTH_DIGEST_CREDENTIALS=user:pwd
+
+  e2e-integration:
+    build: ../e2e/integration
+    volumes_from:
+      - keys
+    depends_on: 
+      - authoring
+      - api
+      - management
+    environment:
+      - API_URL=http://api
+      - AUTHORING_URL=http://authoring:3000
+      - MANAGEMENT_URL=http://tweek-management:3000
+      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit

@@ -1,10 +1,11 @@
 import React from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { compose, pure, lifecycle, mapProps, withState } from 'recompose';
-import R from 'ramda';
+import * as R from 'ramda';
 import Mutator from '../../utils/mutator';
 import * as TypesService from '../../services/types-service';
 import * as RulesService from './rules-utils';
+import ErrorHandler from '../common/ErrorHandler';
 import JPadVisualEditor from './JPadVisualEditor/JPadVisualEditor';
 import JPadTextEditor from './JPadTextEditor/JPadTextEditor';
 import './JPadFullEditor.css';
@@ -41,52 +42,54 @@ const KeyRulesEditor = ({
   isReadonly,
   selectedTab,
   onTabSelected,
-  hasChanges,
-  setHasChanges,
-}) =>
+  hasUnsavedChanges,
+  setHasUnsavedChanges,
+}) => (
   <div className="key-rules-editor-container" data-comp="key-rules-editor" disabled={isReadonly}>
-
     <Tabs
       className="tab-container"
       selectedIndex={selectedTab}
       onSelect={async (index, lastIndex) => {
         if (
           lastIndex === 1 &&
-          hasChanges &&
+          hasUnsavedChanges &&
           !(await alerter.showConfirm(confirmUnsavedAlert)).result
         )
           return true;
-        setHasChanges(false);
+        setHasUnsavedChanges(false);
         onTabSelected(index);
       }}
     >
-
       <TabList>
         <Tab className="tab-header">
           <label className="key-definition-tab-icon"> </label>
-          <label className="tab-title" data-tab-header="rules">Rules</label>
+          <label className="tab-title" data-tab-header="rules">
+            Rules
+          </label>
         </Tab>
         <Tab className="tab-header">
           <label className="key-source-tab-icon"> </label>
-          <label className="tab-title" data-tab-header="source">Source</label>
+          <label className="tab-title" data-tab-header="source">
+            Source
+          </label>
         </Tab>
       </TabList>
       <TabPanel className="tab-content">
-        <fieldset disabled={isReadonly} style={{ border: 'none' }}>
-          <JPadVisualEditor {...{ mutate, alerter, valueType, keyPath }} jpadSource={source} />
-        </fieldset>
-
+        <ErrorHandler errorMessage="Rules Editor does not support this format yet, please use Source instead">
+          <fieldset disabled={isReadonly} style={{ border: 'none' }}>
+            <JPadVisualEditor {...{ mutate, alerter, valueType, keyPath }} jpadSource={source} />
+          </fieldset>
+        </ErrorHandler>
       </TabPanel>
       <TabPanel className="tab-content">
         <JPadTextEditor
-          {...{ source, isReadonly, setHasChanges }}
+          {...{ source, isReadonly, setHasUnsavedChanges }}
           onChange={x => onMutation(JSON.parse(x))}
         />
       </TabPanel>
-
     </Tabs>
-
-  </div>;
+  </div>
+);
 
 function getTypedValue(value, valueType) {
   try {
@@ -102,16 +105,15 @@ function changeValueType(valueType, rulesMutate, depth) {
     for (let i = 0; i < rules.length; i++) {
       const ruleMutate = rulesMutate.in(i);
 
-      const valueDistrubtion = ruleMutate.in('ValueDistribution').getValue();
-      if (!valueDistrubtion) {
+      const valueDistribution = ruleMutate.in('ValueDistribution').getValue();
+      if (!valueDistribution) {
         const currentRuleValue = ruleMutate.in('Value').getValue();
         ruleMutate.in('Value').updateValue(getTypedValue(currentRuleValue, valueType));
         break;
       }
 
-      const valueToConvert = valueDistrubtion.type === 'weighted'
-        ? Object.keys(valueDistrubtion.args)[0]
-        : '';
+      const valueToConvert =
+        valueDistribution.type === 'weighted' ? Object.keys(valueDistribution.args)[0] : '';
       const convertedValue = getTypedValue(valueToConvert, valueType);
 
       ruleMutate
@@ -148,7 +150,7 @@ const JPadFullEditor = compose(
   })),
   MutatorFor('sourceTree'),
   withState('selectedTab', 'onTabSelected', 0),
-  withState('hasChanges', 'setHasChanges', false),
+  withState('hasUnsavedChanges', 'setHasUnsavedChanges', false),
   pure,
   lifecycle({
     componentWillReceiveProps({ valueType, mutate }) {

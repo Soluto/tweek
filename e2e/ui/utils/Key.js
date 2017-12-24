@@ -1,16 +1,17 @@
 /* global browser */
 
 import assert from 'assert';
-import R from 'ramda';
 import { expect } from 'chai';
 import { dataComp, dataField, attributeSelector } from './selector-utils';
 
 const timeout = 5000;
 
+const addKeyPage = dataComp('add-key-page');
 const keyEditPage = dataComp('key-edit-page');
 const keyNameInput = dataField('new-key-name-input');
 const keyPathSuggestions = `${dataComp('new-key-name')} ${dataField('suggestions')}`;
 const keyValueTypeSelector = dataComp('key-value-type-selector');
+const keyFormatSelector = dataComp('key-format-selector');
 const saveChangesButton = dataComp('save-changes');
 const displayName = `${dataComp('display-name')} ${dataField('text')}`;
 const defaultValue = dataComp('default-value');
@@ -18,25 +19,14 @@ const rulesEditor = dataComp('key-rules-editor');
 const tabHeader = attributeSelector('data-tab-header');
 const sourceTab = `${rulesEditor} ${tabHeader('source')}`;
 const rulesTab = `${rulesEditor} ${tabHeader('rules')}`;
-const searchKeyInput = dataComp('search-key-input');
-const directoryTreeView = dataComp('directory-tree-view');
 
-const treeItem = (attribute, value) =>
-  `${directoryTreeView} ${attributeSelector(attribute, value)}`;
-
-const extractFolders = R.pipe(
-  R.split('/'),
-  R.dropLast(1),
-  R.mapAccum((acc, value) => R.repeat(acc ? `${acc}/${value}` : value, 2), null),
-  R.prop(1),
-);
+const toggleButton = comp => `${dataComp(comp)} ${dataComp('expander-toggle')}`;
 
 class Key {
   BLANK_KEY_NAME = '_blank';
 
   open(keyName = '', waitToLoad = true) {
     browser.url(`/keys/${keyName}`);
-    browser.windowHandleSize({width:1360,height:1020});
     browser.waitForVisible(dataComp('key-page'), timeout);
 
     if (keyName !== '' && waitToLoad) {
@@ -49,30 +39,21 @@ class Key {
     return this;
   }
 
-  navigate(keyName) {
-    const keyFolders = extractFolders(keyName);
-
-    keyFolders.forEach(
-      folder => browser.clickWhenVisible(treeItem('data-folder-name', folder)),
-      timeout,
-    );
-
-    const keyLinkSelector = treeItem('href', `/keys/${keyName}`);
-    browser.clickWhenVisible(keyLinkSelector, timeout);
-
-    return this;
-  }
-
   add() {
     this.open();
     browser.click(dataComp('add-new-key'));
-    return this.waitToLoad();
+    browser.waitForVisible(addKeyPage, timeout);
+    return this;
   }
 
-  search(filter) {
-    browser.waitForVisible(searchKeyInput, timeout);
-    browser.setValue(searchKeyInput, filter);
-    return this;
+  clickContinue() {
+    browser.waitForEnabled(dataComp('add-key-button'), timeout);
+    browser.click(dataComp('add-key-button'));
+  }
+
+  continueToDetails() {
+    this.clickContinue();
+    return this.waitToLoad();
   }
 
   get hasChanges() {
@@ -98,13 +79,11 @@ class Key {
   }
 
   get source() {
-    browser.clickWhenVisible(sourceTab, timeout);
     browser.waitForVisible('.monaco-editor', 10000);
     const keySourceCode = browser.execute(function() {
       return window.monaco.editor.getModels()[0].getValue();
     });
 
-    browser.click(rulesTab);
     return JSON.parse(keySourceCode.value);
   }
 
@@ -143,12 +122,19 @@ class Key {
     return this;
   }
 
+  setKeyFormat(format) {
+    browser.waitForVisible(keyFormatSelector, timeout);
+    browser.setValue(keyFormatSelector, format);
+    return this;
+  }
+
   setDefaultValue(value) {
     browser.setValue(defaultValue, value);
     return this;
   }
 
   commitChanges(selector = saveChangesButton) {
+    if (selector === saveChangesButton) assert.ok(this.hasChanges, 'no changes to commit');
     browser.click(selector);
     browser.waitUntil(() => !this.hasChanges && !this.isSaving, timeout, 'changes were not saved');
     return this;
@@ -160,17 +146,17 @@ class Key {
   }
 
   goToSourceTab() {
-    browser.click(sourceTab);
+    browser.clickWhenVisible(sourceTab, timeout);
     return this;
   }
 
   goToRulesTab() {
-    browser.click(rulesTab);
+    browser.clickWhenVisible(rulesTab, timeout);
     return this;
   }
 
-  insertSource() {
-    browser.click(dataComp('save-jpad-text'));
+  toggle(section) {
+    browser.clickWhenVisible(toggleButton(section), timeout);
     return this;
   }
 }

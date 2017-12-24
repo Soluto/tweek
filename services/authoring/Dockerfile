@@ -1,40 +1,34 @@
 # ------- BASE -------
 FROM soluto/nodegit-alpine:8.1.4 as base
+WORKDIR /opt/app
+RUN apk add --update openssh-client && rm -rf /var/cache/apk/*
 
 # ------- DEPS -------
 FROM base as deps
-COPY package.json yarn.lock /tmp/
-RUN ln -s /nodegit/node_modules /tmp/node_modules
-RUN cd /tmp && yarn --prod
-
-RUN mkdir -p /opt/app && ln -s /tmp/node_modules /opt/app/node_modules
+COPY package.json yarn.lock ./
+RUN ln -s /nodegit/node_modules ./node_modules && \
+    yarn --prod
 
 # ------- BUILD -------
 FROM deps as build
-RUN cd /tmp && yarn
 
-WORKDIR /opt/app
-COPY . /opt/app
-
-RUN yarn build
-
-# ------- TEST -------
-FROM build as test
-
-WORKDIR /opt/app
-
-RUN yarn test
+RUN yarn
+COPY . ./
+RUN yarn test && yarn build
 
 # ------- RELEASE -------
 FROM base as release
 
-WORKDIR /opt/app
-COPY --from=build /opt/app/dist/ /opt/app/dist/
-COPY --from=deps /tmp/node_modules /opt/app/node_modules
-COPY --from=deps /tmp/package.json /opt/app/package.json
+COPY --from=build /opt/app/dist/ ./dist/
+COPY --from=deps /opt/app/node_modules ./node_modules
+COPY --from=deps /opt/app/package.json ./package.json
+COPY ./ssh-helper.sh /opt/app/ssh-helper.sh
 
 EXPOSE 3000
 ENV PORT=3000
+ENV GIT_SSH=/opt/app/ssh-helper.sh
 
-ENTRYPOINT ["npm", "run", "start:release"]
+HEALTHCHECK --interval=10s --timeout=10s --retries=8 \
+      CMD wget -O - http://localhost:3000/health || exit 1
 
+CMD ["yarn", "start:release"]

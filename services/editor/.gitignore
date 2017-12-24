@@ -12,3 +12,4 @@
 *.bundle.js
 *.bundle.js.map
 searchIndex.json
+*.css.map

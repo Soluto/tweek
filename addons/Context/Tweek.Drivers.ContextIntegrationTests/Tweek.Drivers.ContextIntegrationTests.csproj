@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>Soluto</Authors>
+    <Description>Context drivers integration tests for Tweek</Description>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/Soluto/tweek.git</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/Soluto/tweek/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageId>Tweek.Addons.ContextDriversIntegrationTests</PackageId>
+    <PackageIconUrl>https://docs.tweek.fm/assets/tweek.png</PackageIconUrl>
+    <NuspecFile>$([System.IO.Path]::Combine($(MSBuildProjectDirectory),$(MSBuildProjectName))).nuspec</NuspecFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit" Version="2.2.0" />
+  </ItemGroup>
+
+  <Target Name="SetNuspecProperties" BeforeTargets="GenerateNuspec">
+    <PropertyGroup>
+      <NuspecProperties>$(NuspecProperties);id=$(PackageId)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);config=$(Configuration)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);version=$(Version)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);description=$(Description)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);authors=$(Authors)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);iconUrl=$(PackageIconUrl)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);projectUrl=$(PackageProjectUrl)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);licenseUrl=$(PackageLicenseUrl)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);repository=$(PackageProjectUrl)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);outputDir=$(OutputPath)</NuspecProperties>
+    </PropertyGroup>
+  </Target>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Engine\Tweek.Engine.Drivers\Tweek.Engine.Drivers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+
+</Project>

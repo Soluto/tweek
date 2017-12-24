@@ -1,18 +1,19 @@
 version: '1.0'
 steps:
+
   VersionsToDeploy:
-      description: Check versions to deploy
-      title: Check versions to deploy
-      image: alpine/git
-      commands:
-          - ./ci/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
+    description: Check versions to deploy
+    title: Check versions to deploy
+    image: alpine/git
+    commands:
+      - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
 
   BuildGitKeys:
     title: Building Git Keys Docker Image
     type: build
     image_name: soluto/tweek-test-keys
-    working_directory: ./services/git-service/ssh/
-
+    working_directory: ./deployments/dev/ssh/
+          
   BuildingGitRepository:
     title: Building Git Repository Docker Image
     type: build
@@ -23,7 +24,6 @@ steps:
     title: Building Tweek Api Docker Image
     type: build
     image_name: soluto/tweek-api
-    working_directory: ${{main_clone}}
     dockerfile: TweekApiDockerfile
   
   BuildingManagement:
@@ -55,11 +55,23 @@ steps:
     type: build
     image_name: soluto/e2e-integration
     working_directory: ./e2e/integration
+  
+  BuildingApiSmokeTestImage:
+    title: Building Tweek Api Smoke Test Docker Image
+    type: build
+    image_name: soluto/tweek-api-smoke-tests
+    dockerfile: TweekApiSmokeTestDockerfile
 
+  BuildingZapImage:
+    title: Building Zap Docker Image
+    type: build
+    image_name: soluto/zap
+    working_directory: ./deployments/dev/zap
+  
   Tests:
     title: Tests - e2e & smoke
     type: composition
-    composition: tweek_test_composition
+    composition: ./CI/docker-compose.yml
     composition_variables:
       - KEYS_IMAGE=${{BuildGitKeys}}
       - REPOSITORY_IMAGE=${{BuildingGitRepository}}
@@ -67,17 +79,18 @@ steps:
       - API_IMAGE=${{BuildingApiImage}}
       - AUTHORING_IMAGE=${{BuildingAuthoring}}
       - EDITOR_IMAGE=${{BuildingEditor}}
+      - ZAP_IMAGE=${{BuildingZapImage}}
+      - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
     composition_candidates:
       smoke-tests:
-        image: microsoft/aspnetcore-build:2.0.0
+        image: ${{BuildingApiSmokeTestImage}}
         depends_on: 
           - api
-        volumes:
-          - ${{CF_VOLUME}}:/repo
-        working_dir: /repo/tweek
+          - management
+          - zap-smoke
         environment: 
           - TWEEK_API_URL=http://api/
-        command: /bin/bash -c "dotnet restore services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release"
+          - PROXY_URL=http://zap-smoke:8090
       e2e-ui:
         image: ${{BuildingUITests}}
         volumes_from:
@@ -87,12 +100,15 @@ steps:
           - editor
           - authoring
           - api
+          - management
+          - zap-e2e
         environment:
           - EDITOR_URL=http://editor:3000/
           - TWEEK_API_URL=http://api/
           - AUTHORING_URL=http://authoring:3000
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test -- --host selenium --port 4444"
+          - PROXY_URL=http://zap-e2e:8090
+          - AUTH_DIGEST_CREDENTIALS=user:pwd
       e2e-integration:
         image: ${{BuildingIntegrationTests}}
         volumes_from:
@@ -100,12 +116,21 @@ steps:
         depends_on:
           - authoring
           - api
+          - management
         environment:
           - API_URL=http://api
           - AUTHORING_URL=http://authoring:3000
           - MANAGEMENT_URL=http://tweek-management:3000
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test"
+      api-swagger:
+        image: node:slim
+        depends_on:
+          - api
+          - management
+        volumes:
+          - ${{CF_VOLUME}}:/repo
+        working_dir: /repo/tweek/CI
+        command: wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused -O api-swagger.json http://api/api/swagger.json
     on_success:
       metadata:
         set:
@@ -129,6 +154,52 @@ steps:
           - '${{BuildingAuthoring.imageId}}':
             - CF_QUALITY: false
 
+  BuildGlueCli:
+    title: Building Glue CLI
+    type: build
+    image_name: soluto/glue-cli
+    working_directory: ./deployments/dev/zap/glue
+
+  SecurityTests:
+    title: Tests - security
+    type: composition
+    composition:
+      version: '2'
+      services:
+        zap:
+          image: ${{BuildingZapImage}}
+          user: root
+          volumes:
+            - ${CF_VOLUME_PATH}/tweek/deployments/dev/zap/session:/root/.ZAP/session/
+    composition_variables:
+      - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
+    composition_candidates:
+      glue:
+        image: ${{BuildGlueCli}}
+        working_dir: /repo/tweek/deployments/dev/zap/glue
+        command: ./test.sh
+        depends_on: 
+          - zap
+        environment:
+          - ZAP_HOST=http://zap
+          - ZAP_PORT=8090
+        volumes:
+          - ${{CF_VOLUME}}:/repo
+
+  Swagger:
+    title: Upload swagger
+    when:
+      condition:
+        all:
+          executeForMasterBranch: "'${{CF_BRANCH}}' == 'master'"
+          executeForNewVersions: "'${{TWEEK_DOCKER_TAG_API}}' != 'latest'"
+    image: node:slim
+    working_directory: ./CI
+    environment: 
+      - UPDATE_SWAGGER_SECRET=${{UPDATE_SWAGGER_SECRET}}
+    commands:
+      - ./update_swagger.sh api $TWEEK_DOCKER_TAG_API ./api-swagger.json
+
   PushApiImageMaster:
     type: push
     title: Push Tweek Api - lastest
@@ -139,7 +210,7 @@ steps:
     candidate: ${{BuildingApiImage}}
     tags:
       - latest
-      - ${TWEEK_DOCKER_TAG_API}
+      - ${{TWEEK_DOCKER_TAG_API}}
 
   PushManagementImageMaster:
     type: push
@@ -151,7 +222,7 @@ steps:
     candidate: ${{BuildingManagement}}
     tags:
       - latest
-      - ${TWEEK_DOCKER_TAG_MANAGEMENT}
+      - ${{TWEEK_DOCKER_TAG_MANAGEMENT}}
 
   PushAuthoringImageMaster:
     type: push
@@ -163,7 +234,7 @@ steps:
     candidate: ${{BuildingAuthoring}}
     tags:
       - latest
-      - ${TWEEK_DOCKER_TAG_AUTHORING}
+      - ${{TWEEK_DOCKER_TAG_AUTHORING}}
 
   PushEditorImageMaster:
     type: push
@@ -175,7 +246,7 @@ steps:
     candidate: ${{BuildingEditor}}
     tags:
       - latest
-      - ${TWEEK_DOCKER_TAG_EDITOR}
+      - ${{TWEEK_DOCKER_TAG_EDITOR}}
 
   PushGitRepositoryMaster:
     type: push
@@ -185,30 +256,3 @@ steps:
         only:
           - master
     candidate: ${{BuildingGitRepository}}
-
-  Swagger:
-    type: composition
-    title: Upload swagger
-    when:
-      branch:
-        only:
-          - master
-    composition: tweek_test_composition
-    composition_variables:
-      - KEYS_IMAGE=${{BuildGitKeys}}
-      - REPOSITORY_IMAGE=${{BuildingGitRepository}}
-      - MANAGEMENT_IMAGE=${{BuildingManagement}}
-      - API_IMAGE=${{BuildingApiImage}}
-      - AUTHORING_IMAGE=${{BuildingAuthoring}}
-      - EDITOR_IMAGE=${{BuildingEditor}}
-    composition_candidates:
-      api_swagger:
-        image: node:8.1.4
-        depends_on:
-          - api
-        volumes:
-          - ${{CF_VOLUME}}:/repo
-        working_dir: /repo/tweek/ci
-        environment: 
-          - UPDATE_SWAGGER_SECRET=${{UPDATE_SWAGGER_SECRET}}
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && ./update_swagger.sh api ${TWEEK_DOCKER_TAG_API} http://api/api/swagger.json"

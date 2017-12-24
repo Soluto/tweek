@@ -1,0 +1,14 @@
+{
+    "key_path": "smoke_tests/value_distribution/bernoulli",
+    "meta": {
+        "description": "",
+        "readOnly": false,
+        "archived": false
+    },
+    "implementation": {
+        "type": "file",
+        "format": "jpad"
+    },
+    "valueType": "string",
+    "dependencies": []
+}

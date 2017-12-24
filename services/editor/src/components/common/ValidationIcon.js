@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import Chance from 'chance';
-import alertIconSrc from '../../resources/alert-icon.svg';
 
 const chance = new Chance();
 
@@ -25,9 +24,8 @@ export default class ValidationIcon extends Component {
         data-is-shown={show}
         style={{ opacity: show ? 1 : 0 }}
       >
-        <img
+        <i
           className="validation-icon"
-          src={alertIconSrc}
           data-tip={hint}
           data-for={this.tooltipId}
           data-tip-disable={!show || !hint}

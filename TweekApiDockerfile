@@ -1,29 +1,26 @@
 # ---- *.csproj FILES ----
-FROM microsoft/aspnetcore-build:2.0.0 as csproj-files
+FROM debian:stretch-slim as csproj-files
 COPY . /src
-RUN find /src -type f -not -name "*.csproj" -delete
-
-# ---- WARM UP NUGET ----
-FROM microsoft/aspnetcore-build:2.0.0 as nuget-cache
-COPY --from=csproj-files /src /src
-COPY ./Tweek.sln /src
-RUN dotnet restore ./src/Tweek.sln
+RUN find /src -type f -not -name "*.csproj" -delete && find /src -type d -empty -delete
 
 # ---- BUILD & TEST ----
-FROM nuget-cache as source
-COPY . /src
-WORKDIR /src
+FROM microsoft/aspnetcore-build:2.0.0 as source
 
+WORKDIR /src
+COPY --from=csproj-files /src .
+COPY ./Tweek.sln .
 RUN dotnet restore ./Tweek.sln
-RUN dotnet build Tweek.sln -c Release
-RUN find . -regex '.*\.\(Unit\|Integration\|\)Tests\.csproj' -print0 | xargs -0 -n 1 -P 16 dotnet test -c=Release --no-build
-RUN dotnet publish ./services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj  -c Release -o ./obj/Docker/publish
+
+COPY . .
+RUN dotnet build Tweek.sln -c Release && \
+    find . -regex '.*\.Tests\.csproj' -print0 | xargs -0 -n 1 -P 16 dotnet test -c=Release --no-build && \
+    dotnet publish ./services/api/Tweek.ApiService/Tweek.ApiService.csproj  -c Release -o ./obj/Docker/publish
 
 # ---- RELEASE ----
 FROM microsoft/aspnetcore:2.0.0 as release
 WORKDIR /app
 EXPOSE 80
-COPY --from=source /src/services/api/Tweek.ApiService.NetCore/obj/Docker/publish .
+COPY --from=source /src/services/api/Tweek.ApiService/obj/Docker/publish .
 HEALTHCHECK --interval=15s --timeout=15s --retries=8 \
       CMD curl -f http://localhost/health || exit 1
-ENTRYPOINT ["dotnet", "Tweek.ApiService.NetCore.dll"]
+ENTRYPOINT ["dotnet", "Tweek.ApiService.dll"]

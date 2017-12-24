@@ -3,6 +3,7 @@
 import { expect } from 'chai';
 import Key from '../../utils/Key';
 import { dataComp, nthSelector } from '../../utils/selector-utils';
+import { login } from '../../utils/auth-utils';
 
 const revisionHistory = dataComp('revision-history');
 const revision = `${revisionHistory} option`;
@@ -10,11 +11,23 @@ const revision = `${revisionHistory} option`;
 describe('revision history', () => {
   const keyName = 'behavior_tests/revision_history';
 
-  function changeValue(count) {
+  const changeValue = count => {
     const currentCommit = nthSelector(1, revision);
 
-    let prevCommit = browser.getValue(currentCommit);
-    let history = [{ commit: prevCommit, value: Key.defaultValue }];
+    let prevCommit;
+    const history = [];
+
+    const noChangesAttribute = browser.getAttribute(revisionHistory, 'data-no-changes');
+    if (noChangesAttribute !== 'true') {
+      prevCommit = browser.getValue(currentCommit);
+      let options = browser.getValue(revision);
+      if (!Array.isArray(options)) {
+        options = [options];
+      }
+      const commits = options.map(commit => ({ commit }));
+      commits.reverse();
+      history.push(...commits);
+    }
 
     for (let i = 0; i < count; i++) {
       const value = `value ${i}`;
@@ -31,7 +44,9 @@ describe('revision history', () => {
     }
     history.reverse();
     return history;
-  }
+  };
+
+  before(() => login());
 
   it('should display revision history', () => {
     Key.open(keyName);

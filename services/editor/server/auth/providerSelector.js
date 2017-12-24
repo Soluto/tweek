@@ -1,13 +1,14 @@
 const supportedAuthenticationSchemes = ['azuread', 'google', 'oauth2', 'httpDigest'];
 
-const selectAuthenticationProviders = function (server, config) {
-  const schemes = config.get('TWEEK_AUTH_SCHEMES').split(',');
+const selectAuthenticationProviders = (server, config) => {
+  const authSchemesStr = config.get('TWEEK_AUTH_SCHEMES');
+  const schemes = authSchemesStr ? authSchemesStr.split(',') : [];
   let goodSchemes = [];
   let badSchemes = [];
 
   schemes.forEach((scheme) => {
     if (supportedAuthenticationSchemes.includes(scheme)) {
-      const provider = require('./' + scheme);
+      const provider = require(`./${scheme}`);
       goodSchemes.push(provider(server, config));
     } else {
       badSchemes.push(scheme);
@@ -21,4 +22,4 @@ const selectAuthenticationProviders = function (server, config) {
   return goodSchemes;
 };
 
-module.exports.selectAuthenticationProviders = selectAuthenticationProviders;
+export default selectAuthenticationProviders;

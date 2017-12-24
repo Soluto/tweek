@@ -4,10 +4,11 @@ import { expect } from 'chai';
 import Key from '../../utils/Key';
 import Alert from '../../utils/Alert';
 import { attributeSelector, dataComp, dataField, nthSelector } from '../../utils/selector-utils';
+import { login } from '../../utils/auth-utils';
 
-function addPartition(property) {
+const addPartition = property => {
   browser.setValue(`${dataComp('partition-selector')} input`, `${property}\n`);
-}
+};
 
 const testFolder = 'behavior_tests/partitions';
 
@@ -20,6 +21,8 @@ const partitionGroup = partitionValues =>
   attributeSelector('data-group', partitionValues.join(', ').toLowerCase());
 
 describe('partition key', () => {
+  before(() => login());
+
   describe('add partition', () => {
     describe('invalid partitions', () => {
       beforeEach(() => {
@@ -50,17 +53,18 @@ describe('partition key', () => {
       });
 
       it('should not partition if canceled', () => {
-        const keySource = Key.source;
+        const keySource = Key.goToSourceTab().source;
+        Key.goToRulesTab();
         addPartition('user.FavoriteFruit');
         Alert.cancel();
-        expect(Key.source).to.deep.equal(keySource);
+        expect(Key.goToSourceTab().source).to.deep.equal(keySource);
       });
 
       it('should auto-partition correctly if auto-partition was selected', () => {
         addPartition('user.FavoriteFruit');
         Alert.click('auto-partition');
 
-        expect(Key.source).to.deep.equal({
+        expect(Key.goToSourceTab().source).to.deep.equal({
           partitions: ['user.FavoriteFruit'],
           valueType: 'string',
           rules: {
@@ -103,7 +107,7 @@ describe('partition key', () => {
         Alert.waitFor('auto-partition', true);
 
         Alert.click('ok');
-        expect(Key.source).to.deep.equal({
+        expect(Key.goToSourceTab().source).to.deep.equal({
           partitions: ['user.AgentVersion'],
           valueType: 'string',
           rules: {},
@@ -119,7 +123,7 @@ describe('partition key', () => {
       browser.click(partitionSelector('tag-delete-button', 1));
       Alert.ok();
 
-      expect(Key.source).to.deep.equal({
+      expect(Key.goToSourceTab().source).to.deep.equal({
         partitions: [],
         valueType: 'string',
         rules: [],
@@ -147,7 +151,7 @@ describe('partition key', () => {
 
         browser.click(newPartition(dataComp('add-partition')));
       });
-      expect(Key.source).to.deep.equal({
+      expect(Key.goToSourceTab().source).to.deep.equal({
         partitions: ['user.FavoriteFruit', 'user.FatherName'],
         valueType: 'string',
         rules: {
@@ -174,7 +178,7 @@ describe('partition key', () => {
 
       Alert.ok();
 
-      expect(Key.source).to.deep.equal({
+      expect(Key.goToSourceTab().source).to.deep.equal({
         partitions: ['user.FavoriteFruit', 'user.Gender'],
         valueType: 'string',
         rules: {
