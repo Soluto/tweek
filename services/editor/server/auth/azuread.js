@@ -1,5 +1,5 @@
 import passport from 'passport';
-const OIDCStrategy = require('passport-azure-ad').OIDCStrategy;
+import { OIDCStrategy } from 'passport-azure-ad';
 
 module.exports = function (server, config) {
   const oidcStrategy = new OIDCStrategy(
@@ -37,7 +37,7 @@ module.exports = function (server, config) {
   server.get('/auth/openid', passportAuthenticateWithStateHandler);
 
   const passportAuthenticateCallbackHandler = (req, res, next) => {
-    res.redirect(req.query.customState || '/');
+    res.redirect(req.query.state || '/');
   };
   server.get(
     '/auth/openid/callback',

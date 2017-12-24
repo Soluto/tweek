@@ -1,7 +1,9 @@
 import passport from 'passport';
 import { DigestStrategy } from 'passport-http';
 
-module.exports = function(server, config) {
+const redirectHandler = (req, res) => res.redirect(req.query.redirectUrl || '/');
+
+module.exports = function (server, config) {
   const givenUser = config.get('AUTH_DIGEST_USER');
   const givenPassword = config.get('AUTH_DIGEST_PASSWORD');
   const givenCreds = config.get('AUTH_DIGEST_CREDENTIALS');
