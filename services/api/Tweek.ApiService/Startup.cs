@@ -178,15 +178,18 @@ namespace Tweek.ApiService
 
         private InputValidationContextDriver.CustomTypeDefinitionProvider CustomTypeDefinitionProvider(IServiceProvider provider)
         {
+            var logger = provider.GetService<ILogger<InputValidationContextDriver>>(); 
             var tweek = provider.GetService<ITweek>();
-
+            var key = $"@tweek/custom_types/_";
+            IDictionary<ConfigurationPath, ConfigurationValue> customTypes = new Dictionary<ConfigurationPath, ConfigurationValue>();
+            var repo = provider.GetService<IRulesRepository>();
+            repo.OnRulesChange += (rules) => {
+                logger.LogInformation("updated custom types");
+                customTypes = provider.GetService<ITweek>().Calculate(new [] { new ConfigurationPath(key)}, new System.Collections.Generic.HashSet<Identity>(),i => ContextHelpers.EmptyContext);
+            };
+            
             return typeName => {
-                var key = $"@tweek/custom_types/{typeName}";
-                var configuration = provider.GetService<ITweek>().Calculate(new [] { new ConfigurationPath(key)}, new System.Collections.Generic.HashSet<Identity>(),
-                 i => ContextHelpers.EmptyContext);
-
-                //ugly, but fix weird compilation issue
-                return (configuration as IDictionary<ConfigurationPath, ConfigurationValue>)
+                return customTypes
                   .TryGetValue(key)
                   .Map(raw => raw.Value.Deserialize<CustomTypeDefinition>());
             };   
