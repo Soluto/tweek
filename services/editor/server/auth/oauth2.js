@@ -2,8 +2,6 @@ import passport from 'passport';
 import OAuth2Strategy from 'passport-oauth2';
 import jwt from 'jsonwebtoken';
 
-const redirectHandler = (req, res) => res.redirect(req.query.state || '/');
-
 module.exports = function (server, config) {
   const oauth2Strategy = new OAuth2Strategy(
     {
@@ -35,8 +33,20 @@ module.exports = function (server, config) {
     resource: config.get('AUTH_OAUTH2_RESOURCE_ID'),
   });
 
-  server.get('/auth/oauth2', passport.authenticate('oauth2'));
-  server.get('/auth/oauth2/callback', passport.authenticate('oauth2'), redirectHandler);
+  const passportAuthenticateWithStateHandler = (req, res, next) => {
+    const state = req.query.redirectUrl;
+    return passport.authenticate('oauth2', { state })(req, res, next);
+  };
+  server.get('/auth/oauth2', passportAuthenticateWithStateHandler);
+
+  const passportAuthenticateCallbackHandler = (req, res, next) => {
+    res.redirect(req.query.state || '/');
+  };
+  server.get(
+    '/auth/oauth2/callback',
+    passport.authenticate('oauth2'),
+    passportAuthenticateCallbackHandler,
+  );
 
   passport.use(oauth2Strategy);
   passport.serializeUser((user, done) => {
