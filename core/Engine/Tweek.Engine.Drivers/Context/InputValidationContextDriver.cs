@@ -146,7 +146,7 @@ namespace Tweek.Engine.Drivers.Context
                         (isValid: false, validationError: "base type not exist");
             Func<JsonValue, (bool isValid, string validationError) > allowedValuesValidation = 
                 (p) => (typeDefinition.AllowedValues.Any() ? Some(typeDefinition.AllowedValues) : None)
-                            .Map(allowedValues => typeDefinition.Base == "string" && allowedValues.Contains(p.AsString()))
+                            .Map(allowedValues => typeDefinition.Base == "string" && allowedValues.Contains(p.AsString(), StringComparer.InvariantCultureIgnoreCase))
                             .Map(r => r ? (isValid: true, validationError: "") : (isValid: false, validationError: "value not in the allowed values"))
                             .IfNone((isValid: true, validationError: ""));
             Func<JsonValue, (bool isValid, string validationError) > regexValidation = 
