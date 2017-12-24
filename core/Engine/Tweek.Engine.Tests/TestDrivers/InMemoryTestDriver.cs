@@ -40,6 +40,7 @@ namespace Tweek.Engine.Tests.TestDrivers
 
         public async Task AppendContext(Identity identity, Dictionary<string, JsonValue> context)
         {
+            if (!_dictionary.ContainsKey(identity)) {_dictionary[identity] = new Dictionary<string,JsonValue>();}
             var currentContext = _dictionary[identity];
             foreach (var item in context)
             {

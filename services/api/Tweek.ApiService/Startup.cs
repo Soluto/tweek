@@ -155,14 +155,16 @@ namespace Tweek.ApiService
 
             InputValidationContextDriver DecoratorFactory(InputValidationContextDriver.Mode mode, bool reportOnly)
             {
-                return new InputValidationContextDriver(
+                var logger = provider.GetService<ILogger<InputValidationContextDriver>>(); 
+                var driver = new InputValidationContextDriver(
                     decoratedDriver, 
-                    provider.GetService<ILogger<InputValidationContextDriver>>(),
                     SchemaProvider(provider),
                     CustomTypeDefinitionProvider(provider),
                     mode,
                     reportOnly
                     );
+                driver.OnValidationFailed += (sender, message)=>logger.LogWarning(message);
+                return driver;
             }
 
             var reportOnlyFromConfig = string.Equals(Configuration["Context:Validation:Error_Policy"], "BYPASS_LOG");

@@ -25,9 +25,9 @@ namespace Tweek.Engine.Drivers.Context
         public static readonly EventId ValidationFailedEventId = new EventId(6754, "ContextInputValidationFailed");
         public delegate Option<JsonValue> IdentitySchemaProvider(string identityType);
         public delegate Option<CustomTypeDefinition> CustomTypeDefinitionProvider(string typeName);
+        public event EventHandler<string> OnValidationFailed = (o, s) => {};
 
         private readonly IContextDriver _child;
-        private readonly ILogger<InputValidationContextDriver> _logger;
         private readonly IdentitySchemaProvider _identitySchemaProvider;
         private readonly CustomTypeDefinitionProvider _customTypeDefinitionProvider;
         private readonly Mode _mode;
@@ -35,16 +35,14 @@ namespace Tweek.Engine.Drivers.Context
 
         public InputValidationContextDriver(
             IContextDriver child, 
-            ILogger<InputValidationContextDriver> logger,
             IdentitySchemaProvider identitySchemaProvider, 
             CustomTypeDefinitionProvider customTypeDefinitionProvider, 
             Mode mode = Mode.Strict,
             bool reportOnly = false)
         {
             this._child = child;
-            this._logger = logger;
             this._identitySchemaProvider = identitySchemaProvider;
-            this._customTypeDefinitionProvider = customTypeDefinitionProvider;
+            this._customTypeDefinitionProvider = customTypeDefinitionProvider ?? (x=> None);
             this._mode = mode;
             this._reportOnly = reportOnly;
         }
@@ -68,8 +66,6 @@ namespace Tweek.Engine.Drivers.Context
 
                       var errorsAsString = string.Join(",", errors.Select(error => error.ValidationResult.validationError));
 
-                      _logger.LogWarning($"Validation failed for identity \"{identity.Type}\" with the following errors: {errorsAsString} ");
-
                       var invalidProperties = string.Join(",", errors.Select(error => error.PropName));
 
                       return (isValid: false, validationError: $"Validation for identity type \"{identity.Type}\" failed because the following properties are invalid: {invalidProperties}");
@@ -79,12 +75,10 @@ namespace Tweek.Engine.Drivers.Context
 
             if (!result.isValid)
             {
+                OnValidationFailed(this, result.validationError);
                 if (!_reportOnly)
                 {
                     throw new ArgumentException(result.validationError);
-                }
-                else {
-                    _logger.LogWarning(result.validationError);
                 }
             }
             
