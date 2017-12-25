@@ -52,9 +52,9 @@ describe('MultiVariant value type', () => {
 
   it('should succeed editing other value types', () => {
     const args = {
-      val1: 20,
-      val2: 35,
-      val3: 45,
+      value_one: 15,
+      value_two: 25,
+      value_thee: 60,
     };
     const expectedValue = {
       Matcher: {},

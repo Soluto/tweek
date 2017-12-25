@@ -33,10 +33,20 @@ module.exports = function (server, config) {
     resource: config.get('AUTH_OAUTH2_RESOURCE_ID'),
   });
 
-  server.get('/auth/oauth2', passport.authenticate('oauth2'));
-  server.get('/auth/oauth2/callback', passport.authenticate('oauth2'), (req, res) => {
-    res.redirect('/');
-  });
+  const passportAuthenticateWithStateHandler = (req, res, next) => {
+    const state = req.query.redirectUrl;
+    return passport.authenticate('oauth2', { state })(req, res, next);
+  };
+  server.get('/auth/oauth2', passportAuthenticateWithStateHandler);
+
+  const passportAuthenticateCallbackHandler = (req, res, next) => {
+    res.redirect(req.query.state || '/');
+  };
+  server.get(
+    '/auth/oauth2/callback',
+    passport.authenticate('oauth2'),
+    passportAuthenticateCallbackHandler,
+  );
 
   passport.use(oauth2Strategy);
   passport.serializeUser((user, done) => {
