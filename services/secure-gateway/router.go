@@ -36,7 +36,7 @@ func NewRouter(upstreams *config.Upstreams, enforcer *casbin.SyncedEnforcer) Rou
 	}
 	apiForwarder := proxy.New(apiURL)
 
-	v1Router := mainRouter.PathPrefix("/api/v1").Subrouter()
+	v1Router := mainRouter.PathPrefix("/api/v1/").Subrouter()
 	v1Router.Methods("GET").Handler(negroni.New(apiForwarder))
 
 	v2Router := mainRouter.PathPrefix("/api/v2/").Subrouter()
