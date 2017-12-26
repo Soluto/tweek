@@ -22,10 +22,7 @@ func Mount(upstreams *config.Upstreams, middleware *negroni.Negroni, router *mux
 	// managementForwarder := proxy.New(t.management)
 
 	// Mounting handlers
-	router.Methods("GET").PathPrefix("/keys").Handler(middleware.With(apiForwarder))
-
-	// router.Methods("GET").PathPrefix("/tags").Handler(middleware.With(NewTagsGet(authoring), authoringForwarder))
-	// router.Methods("PUT").PathPrefix("/tags").Handler(middleware.With(NewTagsSave(authoring), authoringForwarder))
+	router.Host("tweek-api.mysoluto.com").Handler(middleware.With(apiForwarder))
 }
 
 func parseUpstreamOrPanic(u string) *url.URL {
