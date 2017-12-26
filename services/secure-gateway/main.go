@@ -8,6 +8,7 @@ import (
 	"github.com/Soluto/tweek/services/secure-gateway/config"
 	"github.com/Soluto/tweek/services/secure-gateway/security"
 	"github.com/Soluto/tweek/services/secure-gateway/transformation"
+	"github.com/casbin/casbin"
 
 	"github.com/urfave/negroni"
 )
@@ -15,9 +16,7 @@ import (
 func main() {
 	configuration := config.LoadFromFile("gateway.json")
 
-	router := transformation.New(configuration.Upstreams)
-	app := negroni.New(negroni.NewRecovery(), security.UserInfoMiddleware(configuration.Security))
-	app.UseHandler(router)
+	app := NewApp(configuration)
 
 	s := &http.Server{
 		Addr:    fmt.Sprintf(":%v", configuration.Server.Port),
@@ -29,4 +28,20 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+// NewApp creates a new app
+func NewApp(config *config.Configuration) http.Handler {
+	enforcer := casbin.NewSyncedEnforcer(config.Security.CasbinPolicy, config.Security.CasbinModel)
+	router := NewRouter(config.Upstreams, enforcer)
+	// transformation := transformation.New(config.Upstreams, negroni.New(negroni.NewRecovery(), security.AuthorizationMiddleware(enforcer)), router.BasePathRouter())
+	transformation.Mount(config.Upstreams, negroni.New(negroni.NewRecovery(), security.AuthorizationMiddleware(enforcer)), router.V2Router())
+
+	// transformation.SetupRoutes(router.BasePathRouter())
+
+	// router.BasePathRouter().Handle("/api/v2", transformation.SetupRoutes())
+	app := negroni.New(negroni.NewRecovery(), security.UserInfoMiddleware(config.Security))
+	app.UseHandler(router)
+
+	return app
 }

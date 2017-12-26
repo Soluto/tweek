@@ -10,13 +10,16 @@ import (
 )
 
 // AuthorizationMiddleware enforces authorization policies of incoming requests
-func AuthorizationMiddleware(policy, model interface{}) negroni.HandlerFunc {
-	enforcer := casbin.NewSyncedEnforcer(policy, model)
+func AuthorizationMiddleware(enforcer *casbin.SyncedEnforcer) negroni.HandlerFunc {
 	return negroni.HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-		userInfo := r.Context().Value(userInfoKey).(UserInfo)
+		user, ok := r.Context().Value(UserInfoKey).(UserInfo)
+		if !ok {
+			http.Error(rw, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
 
 		// this is work in progress
-		subject := userInfo.Email()
+		subject := user.Email()
 		object := r.RequestURI
 		action := r.Method
 

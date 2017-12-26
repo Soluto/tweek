@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/Soluto/tweek/services/secure-gateway/config"
-	"github.com/dgrijalva/jwt-go"
+	jwt "github.com/dgrijalva/jwt-go" // jwt types
 	"github.com/dgrijalva/jwt-go/request"
 	"github.com/lestrrat/go-jwx/jwk"
 
@@ -18,20 +18,24 @@ import (
 
 type userInfoKeyType string
 
-const userInfoKey userInfoKeyType = "UserInfo"
+// UserInfoKey is used to store and fetch user info from the context
+const UserInfoKey userInfoKeyType = "UserInfo"
 
 type userInfo struct {
 	email string `json:"email"`
+	name  string `json:"name"`
 	jwt.StandardClaims
 }
 
 // UserInfo struct hold the information regarding the user
 type UserInfo interface {
 	Email() string
+	Name() string
 	Claims() jwt.StandardClaims
 }
 
 func (u *userInfo) Email() string              { return u.email }
+func (u *userInfo) Name() string               { return u.name }
 func (u *userInfo) Claims() jwt.StandardClaims { return u.StandardClaims }
 
 // UserInfoFromRequest return the user information from request
@@ -60,9 +64,10 @@ func UserInfoMiddleware(configuration *config.Security) negroni.HandlerFunc {
 		if err != nil {
 			log.Println("Error extracting the user from the request", err)
 			next(rw, r)
+			return
 		}
 
-		ctx := context.WithValue(r.Context(), userInfoKey, info)
+		ctx := context.WithValue(r.Context(), UserInfoKey, info)
 		newRequest := r.WithContext(ctx)
 		next(rw, newRequest)
 	})

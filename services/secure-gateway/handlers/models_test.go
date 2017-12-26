@@ -13,7 +13,7 @@ import (
 )
 
 func TestNewModelsRead(t *testing.T) {
-	enforcer := casbin.NewEnforcer("../security/testdata/policy.conf", "../security/testdata/model.csv")
+	enforcer := casbin.NewSyncedEnforcer("../security/testdata/policy.conf", "../security/testdata/model.csv")
 	type args struct {
 		request *http.Request
 	}
@@ -57,24 +57,34 @@ func TestNewModelsWrite(t *testing.T) {
 		action   string
 	}
 	tests := []struct {
-		name      string
-		args      args
-		enforcer  *casbin.Enforcer
-		want      int
-		wantAllow bool
+		name     string
+		args     args
+		enforcer *casbin.SyncedEnforcer
+		want     bool
 	}{
 		{
-			name: "Write",
+			name: "Write allowed",
 			args: args{
 				request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"p","V0":"allow1@security.test","V1":"/target","V2":"GET","V3":"allow","V4":"","V5":""}]`)),
 				user:     "allow1@security.test",
 				resource: "/target",
 				action:   "GET",
 			},
-			enforcer:  casbin.NewEnforcer("../security/testdata/policy.conf", "../security/testdata/model.csv"),
-			want:      200,
-			wantAllow: true,
+			enforcer: casbin.NewSyncedEnforcer("../security/testdata/policy.conf", "../security/testdata/model.csv"),
+			want:     true,
 		},
+		// Work in progress - need to fix it
+		// {
+		// 	name: "Write denied",
+		// 	args: args{
+		// 		request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"p","V0":"allow1@security.test","V1":"/target","V2":"GET","V3":"allow","V4":"","V5":""}]`)),
+		// 		user:     "allow1@security.test",
+		// 		resource: "/target",
+		// 		action:   "GET",
+		// 	},
+		// 	enforcer: casbin.NewSyncedEnforcer("../security/testdata/policy.conf", "../security/testdata/model.csv"),
+		// 	want:     false,
+		// },
 	}
 
 	for _, tt := range tests {
@@ -83,12 +93,8 @@ func TestNewModelsWrite(t *testing.T) {
 			recorder := httptest.NewRecorder()
 			server.ServeHTTP(recorder, tt.args.request)
 
-			if got := recorder.Code; got != tt.want {
-				t.Errorf("NewModelsWrite() = %v, want %v", got, tt.want)
-			}
-
-			if got := tt.enforcer.Enforce(tt.args.user, tt.args.resource, tt.args.action); got != tt.wantAllow {
-				t.Errorf(".enforcer.Enforce(%v, %v, %v) = %v, wantAllow %v", tt.args.user, tt.args.resource, tt.args.action, got, tt.wantAllow)
+			if got := tt.enforcer.Enforce(tt.args.user, tt.args.resource, tt.args.action); got != tt.want {
+				t.Errorf(".enforcer.Enforce(%v, %v, %v) = %v, want %v", tt.args.user, tt.args.resource, tt.args.action, got, tt.want)
 			}
 		})
 	}

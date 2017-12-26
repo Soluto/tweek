@@ -18,6 +18,8 @@ type Server struct {
 type Security struct {
 	AllowedIssuers []string `mapstructure:"allowed_issuers"`
 	AzureTenantID  string   `mapstructure:"azure_tenant_id"`
+	CasbinPolicy   string   `mapstructure:"casbin_policy"`
+	CasbinModel    string   `mapstructure:"casbin_model"`
 }
 
 // Configuration is the root element of configuration for secure-gateway

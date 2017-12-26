@@ -13,7 +13,7 @@ import (
 )
 
 // NewModelsRead is a handler for reading policies
-func NewModelsRead(enforcer *casbin.Enforcer) negroni.Handler {
+func NewModelsRead(enforcer *casbin.SyncedEnforcer) negroni.Handler {
 	return negroni.WrapFunc(func(rw http.ResponseWriter, r *http.Request) {
 		model := enforcer.GetModel()
 		buffer := []byte{}
@@ -33,7 +33,7 @@ func NewModelsRead(enforcer *casbin.Enforcer) negroni.Handler {
 }
 
 // NewModelsWrite is a handler for reading policies
-func NewModelsWrite(enforcer *casbin.Enforcer) negroni.Handler {
+func NewModelsWrite(enforcer *casbin.SyncedEnforcer) negroni.Handler {
 	return negroni.WrapFunc(func(rw http.ResponseWriter, r *http.Request) {
 		buffer, err := ioutil.ReadAll(r.Body)
 		if err != nil {

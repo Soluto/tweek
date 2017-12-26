@@ -5,12 +5,15 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/casbin/casbin"
 )
 
 func noopHandler(rw http.ResponseWriter, r *http.Request) {}
 
 func TestAuthorizationMiddleware(t *testing.T) {
-	mw := AuthorizationMiddleware("./testdata/policy.conf", "./testdata/model.csv")
+	enforcer := casbin.NewSyncedEnforcer("./testdata/policy.conf", "./testdata/model.csv")
+	server := AuthorizationMiddleware(enforcer)
 	type args struct {
 		request *http.Request
 	}
@@ -35,7 +38,7 @@ func TestAuthorizationMiddleware(t *testing.T) {
 			recorder := httptest.NewRecorder()
 			next := noopHandler
 
-			mw.ServeHTTP(recorder, tt.args.request, next)
+			server.ServeHTTP(recorder, tt.args.request, next)
 			if code := recorder.Result().StatusCode; code != tt.want {
 				t.Errorf("AuthorizationMiddleware() = %v, want %v", code, tt.want)
 			}
@@ -49,6 +52,6 @@ func createRequest(method, target, username string) *http.Request {
 	}
 
 	r := httptest.NewRequest(method, target, nil)
-	ctx := context.WithValue(r.Context(), userInfoKey, info)
+	ctx := context.WithValue(r.Context(), UserInfoKey, info)
 	return r.WithContext(ctx)
 }

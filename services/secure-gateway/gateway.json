@@ -3,5 +3,9 @@
         "api": "http://localhost:4003",
         "authoring": "http://localhost:4005",
         "management": "http://localhost:4002"
+    },
+    "security": {
+        "casbin_policy": "",
+        "casbin_model": ""
     }
 }
