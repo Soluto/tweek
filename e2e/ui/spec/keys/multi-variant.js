@@ -3,9 +3,14 @@
 import { expect } from 'chai';
 import Key from '../../utils/Key';
 import Rule from '../../utils/Rule';
+import { login } from '../../utils/auth-utils';
 
 describe('MultiVariant value type', () => {
-  beforeEach(() => Key.add());
+  before(() => login());
+
+  beforeEach(() => {
+    Key.add();
+  });
 
   it('should succeed editing boolean value type', () => {
     const expectedValue = {
@@ -18,9 +23,15 @@ describe('MultiVariant value type', () => {
       },
     };
 
-    Key.setValueType('boolean').setKeyFormat('jpad').setName('multi/boolean').continueToDetails();
+    Key.setValueType('boolean')
+      .setKeyFormat('jpad')
+      .setName('multi/boolean')
+      .continueToDetails();
 
-    const rule = Rule.add().removeCondition().multiVariant().setIdentity('user');
+    const rule = Rule.add()
+      .removeCondition()
+      .multiVariant()
+      .setIdentity('user');
 
     let ruleSource = Key.goToSourceTab().source.rules[0];
     expect(ruleSource).to.have.property('Salt');
@@ -41,9 +52,9 @@ describe('MultiVariant value type', () => {
 
   it('should succeed editing other value types', () => {
     const args = {
-      val1: 20,
-      val2: 35,
-      val3: 45,
+      value_one: 15,
+      value_two: 25,
+      value_thee: 60,
     };
     const expectedValue = {
       Matcher: {},
@@ -55,9 +66,16 @@ describe('MultiVariant value type', () => {
       },
     };
 
-    Key.setValueType('string').setKeyFormat('jpad').setName('multi/string').continueToDetails();
+    Key.setValueType('string')
+      .setKeyFormat('jpad')
+      .setName('multi/string')
+      .continueToDetails();
 
-    Rule.add().removeCondition().multiVariant().setValues(args).setIdentity('other');
+    Rule.add()
+      .removeCondition()
+      .multiVariant()
+      .setValues(args)
+      .setIdentity('other');
 
     let value = Key.goToSourceTab().source.rules[0];
     expect(value).to.have.property('Salt');
@@ -69,7 +87,9 @@ describe('MultiVariant value type', () => {
     expect(value).to.deep.equal(expectedValue);
 
     Key.goToRulesTab();
-    Rule.select().singleValue().multiVariant();
+    Rule.select()
+      .singleValue()
+      .multiVariant();
 
     value = Key.goToSourceTab().source.rules[0];
     expect(value.Salt).to.equal(salt);

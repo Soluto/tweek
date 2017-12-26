@@ -25,7 +25,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
         public async Task GetSingleKey_BySimpleRules_ShouldReturnMatchingKeyValue(string osType, string expectedResult)
         {
             // Act
-            var response = await mTweekApi.GetConfigurations("@smoke_tests/rule_based_keys/simple", new Dictionary<string, string> { { "device.DeviceOsType", osType } });
+            var response = await mTweekApi.GetConfigurations("smoke_tests/rule_based_keys/simple", new Dictionary<string, string> { { "device.DeviceOsType", osType } });
 
             // Assert
             Assert.Equal(JTokenType.String, response.Type);

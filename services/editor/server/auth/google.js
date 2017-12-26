@@ -37,12 +37,19 @@ module.exports = function (server, config) {
 
   passport.use(new GoogleOauth2Strategy(strategyParams, verify));
 
-  server.get('/auth/google', passport.authenticate('google', { scope, hostedDomain }));
+  const passportAuthenticateWithStateHandler = (req, res, next) => {
+    const state = req.query.redirectUrl;
+    return passport.authenticate('google', { scope, hostedDomain, state })(req, res, next);
+  };
+  server.get('/auth/google', passportAuthenticateWithStateHandler);
 
+  const passportAuthenticateCallbackHandler = (req, res, next) => {
+    res.redirect(req.query.state || '/');
+  };
   server.get(
     '/auth/google/callback',
     passport.authenticate('google', { scope, hostedDomain }),
-    (req, res) => res.redirect('/'),
+    passportAuthenticateCallbackHandler,
   );
 
   return {

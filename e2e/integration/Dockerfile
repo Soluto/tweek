@@ -1,8 +1,8 @@
-FROM node:8.7.0
+FROM node:8.9.3
 
 WORKDIR /opt/app
 COPY package.json yarn.lock ./
-RUN yarn install --production
+RUN yarn install
 
 COPY . ./
 

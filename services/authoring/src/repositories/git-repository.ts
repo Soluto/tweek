@@ -4,15 +4,23 @@ import simpleGit = require('simple-git');
 import fs = require('fs-extra');
 import R = require('ramda');
 
+export class ValidationError {
+  constructor(public message) { }
+}
+
+export class RepoOutOfDateError {
+  constructor(public message) { }
+}
+
 async function listFiles(repo: git.Repository, filter: (path: string) => boolean = () => true) {
-  let commit = await repo.getMasterCommit();
-  let tree = await commit.getTree();
-  let walker = tree.walk(true);
+  const commit = await repo.getMasterCommit();
+  const tree = await commit.getTree();
+  const walker = tree.walk(true);
   return await new Promise<any>((resolve, reject) => {
-    let entries: string[] = [];
+    const entries: string[] = [];
     walker.on('entry', (entry: any) => {
-      const path = entry.path().replace(/\\/g, '/');
-      if (filter(path)) return entries.push(path);
+      const entryPath = entry.path().replace(/\\/g, '/');
+      if (filter(entryPath)) return entries.push(entryPath);
       return null;
     });
     walker.on('end', () => resolve(entries));
@@ -50,11 +58,9 @@ export default class GitRepository {
     console.log('clonning rules repository');
     const clonningOp = 'clonning end in';
     console.time(clonningOp);
-
     const repo = await git.Clone.clone(settings.url, settings.localPath, {
       fetchOpts: operationSettings,
     });
-
     console.timeEnd(clonningOp);
     return new GitRepository(repo, operationSettings);
   }
@@ -77,7 +83,7 @@ export default class GitRepository {
 
     const historyEntries = await Promise.all(
       fileNames.map(async (file) => {
-        const options = [`--follow`, file];
+        const options = [file];
         if (since) options.unshift(`--since="${since}"`);
 
         const history = await new Promise<any>((resolve, reject) => {
@@ -141,7 +147,6 @@ export default class GitRepository {
     const author = git.Signature.now(name, email);
     const pusher = git.Signature.now('tweek-editor', 'tweek-editor@tweek');
     await this._repo.createCommitOnHead([], author, pusher, message);
-
     await this._pushRepositoryChanges(message);
   }
 
@@ -179,17 +184,27 @@ export default class GitRepository {
   }
 
   async _pushRepositoryChanges(actionName) {
-    console.log('pushing changes:', actionName);
-
-    const remote = await this._repo.getRemote('origin', undefined);
-    await remote.push(['refs/heads/master:refs/heads/master'], <any>this._operationSettings, undefined);
+    try {
+      await new Promise((resolve, reject) => this._simpleRepo.push('origin', 'master', (err) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve();
+      }));
+    }
+    catch (ex) {
+      if (ex.includes("400 Bad Request")) {
+        throw new ValidationError("failed validation:" + ex);
+      }
+      if (ex.includes("Updates were rejected because the tip of your current branch is behind") || ex.includes('(e.g., \'git pull ...\') before pushing again.')) {
+        throw new RepoOutOfDateError(ex);
+      }
+      throw 'unknown error';
+    }
 
     const isSynced = await this.isSynced();
-
     if (!isSynced) {
       console.warn('Not synced after Push, attempting to reset');
-      await this.reset();
-
       throw new Error('Repo was not in sync after push');
     }
   }

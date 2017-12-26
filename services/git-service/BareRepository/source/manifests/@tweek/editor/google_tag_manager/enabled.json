@@ -11,6 +11,5 @@
         "value": false
     },
     "valueType": "boolean",
-    "dependencies": [],
-    "enabled": true
+    "dependencies": []
 }

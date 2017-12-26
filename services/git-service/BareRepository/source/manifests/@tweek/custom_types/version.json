@@ -11,10 +11,9 @@
         "value": {
 			"base":"string",
 			"comparer":"version",
-			"validation":"/[0-9.]/"
+			"validation":"/[0-9]*.\\.[0-9.]*.\\.[0-9.]*./"
 		}
     },
     "valueType": "object",
-    "enabled": true,
     "dependencies": []
 }

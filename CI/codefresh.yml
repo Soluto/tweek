@@ -1,18 +1,19 @@
 version: '1.0'
 steps:
+
   VersionsToDeploy:
     description: Check versions to deploy
     title: Check versions to deploy
     image: alpine/git
     commands:
       - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
-          
+
   BuildGitKeys:
     title: Building Git Keys Docker Image
     type: build
     image_name: soluto/tweek-test-keys
     working_directory: ./deployments/dev/ssh/
-
+          
   BuildingGitRepository:
     title: Building Git Repository Docker Image
     type: build
@@ -87,8 +88,6 @@ steps:
           - api
           - management
           - zap-smoke
-        volumes:
-          - ${{CF_VOLUME}}:/repo
         environment: 
           - TWEEK_API_URL=http://api/
           - PROXY_URL=http://zap-smoke:8090
@@ -109,6 +108,7 @@ steps:
           - AUTHORING_URL=http://authoring:3000
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
           - PROXY_URL=http://zap-e2e:8090
+          - AUTH_DIGEST_CREDENTIALS=user:pwd
       e2e-integration:
         image: ${{BuildingIntegrationTests}}
         volumes_from:
@@ -186,6 +186,20 @@ steps:
         volumes:
           - ${{CF_VOLUME}}:/repo
 
+  Swagger:
+    title: Upload swagger
+    when:
+      condition:
+        all:
+          executeForMasterBranch: "'${{CF_BRANCH}}' == 'master'"
+          executeForNewVersions: "'${{TWEEK_DOCKER_TAG_API}}' != 'latest'"
+    image: node:slim
+    working_directory: ./CI
+    environment: 
+      - UPDATE_SWAGGER_SECRET=${{UPDATE_SWAGGER_SECRET}}
+    commands:
+      - ./update_swagger.sh api $TWEEK_DOCKER_TAG_API ./api-swagger.json
+
   PushApiImageMaster:
     type: push
     title: Push Tweek Api - lastest
@@ -242,17 +256,3 @@ steps:
         only:
           - master
     candidate: ${{BuildingGitRepository}}
-
-  Swagger:
-    title: Upload swagger
-    when:
-      condition:
-        all:
-          executeForMasterBranch: "'${{CF_BRANCH}}' == 'master'"
-          executeForNewVersions: "'${{TWEEK_DOCKER_TAG_API}}' != 'latest'"
-    image: node:slim
-    working_dir: ./CI
-    environment: 
-      - UPDATE_SWAGGER_SECRET=${{UPDATE_SWAGGER_SECRET}}
-    commands:
-      - ./update_swagger.sh api $TWEEK_DOCKER_TAG_API ./api-swagger.json

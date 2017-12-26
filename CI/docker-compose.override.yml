@@ -1,9 +1,10 @@
 version: '2'
+
 services:
   keys:
     image: soluto/tweek-test-keys
     build: ../deployments/dev/ssh
-    
+
   git:
     image: soluto/tweek-bare-repo
     build: ../services/git-service/BareRepository
@@ -27,6 +28,8 @@ services:
       driver: "json-file"
     ports:
       - "5003:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
       
   authoring:
     image: soluto/tweek-authoring
@@ -89,6 +92,7 @@ services:
       - AUTHORING_URL=http://authoring:3000
       - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
       - PROXY_URL=http://zap-e2e:8090
+      - AUTH_DIGEST_CREDENTIALS=user:pwd
 
   e2e-integration:
     build: ../e2e/integration

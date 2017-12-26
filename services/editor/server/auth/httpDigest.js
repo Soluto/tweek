@@ -1,6 +1,8 @@
 import passport from 'passport';
 import { DigestStrategy } from 'passport-http';
 
+const redirectHandler = (req, res) => res.redirect(req.query.redirectUrl || '/');
+
 module.exports = function (server, config) {
   const givenUser = config.get('AUTH_DIGEST_USER');
   const givenPassword = config.get('AUTH_DIGEST_PASSWORD');
@@ -10,10 +12,10 @@ module.exports = function (server, config) {
     qop: 'auth', // Reference: https://github.com/jaredhanson/passport-http/blob/f66dfce9538a302e8c4706c77dd82374c5bfac22/lib/passport-http/strategies/digest.js#L31
   };
 
-  const creds = new Map(
-          [...(givenUser ? [[givenUser, givenPassword]] : []),
-           ...(givenCreds || []).split(';').map(x=> x.split(":"))
-          ])
+  const creds = new Map([
+    ...(givenUser ? [[givenUser, givenPassword]] : []),
+    ...(givenCreds || '').split(';').map(x => x.split(':')),
+  ]);
 
   const validate = (user, done) => {
     if (creds.has(user)) {
@@ -32,9 +34,7 @@ module.exports = function (server, config) {
 
   passport.use(new DigestStrategy(strategyParams, validate));
 
-  server.get('/auth/digest', passport.authenticate('digest', { session: true }), (req, res) =>
-    res.redirect('/'),
-  );
+  server.get('/auth/digest', passport.authenticate('digest', { session: true }), redirectHandler);
 
   return {
     url: '/auth/digest',

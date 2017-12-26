@@ -8,6 +8,9 @@ services:
   editor:
     environment: 
       - CONTINUOUS_UPDATER_INTERVAL=500
+      - REQUIRE_AUTH=true
+      - TWEEK_AUTH_SCHEMES=httpDigest
+      - AUTH_DIGEST_CREDENTIALS=user:pwd
 
   authoring:
     environment: 
@@ -16,8 +19,6 @@ services:
 
   api:
     environment:
-      - Rules__Minio__SampleIntervalInMs=500
-      # - Rules__Management__SampleIntervalInMs=500
       - CorsPolicies__Keys__Origins=http://editor:3000,http://testorigin
       - CorsPolicies__Keys__Methods=GET
       - CorsPolicies__Keys__MaxPreflightAge=60
@@ -26,8 +27,10 @@ services:
       - CorsEnabled=true
   
   selenium:
-    image: selenium/standalone-chrome:3.4.0
+    image: selenium/standalone-chrome:3.8.1
     container_name: selenium
+    volumes:
+      - /dev/shm:/dev/shm
 
   e2e-ui:
     build: ../../e2e/ui
@@ -45,6 +48,7 @@ services:
       - TWEEK_API_URL=http://api/
       - AUTHORING_URL=http://authoring:3000/
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
+      - AUTH_DIGEST_CREDENTIALS=user:pwd
     secrets:
       - tweek_ssh_private_key
 

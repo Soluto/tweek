@@ -3,19 +3,22 @@
 import { expect } from 'chai';
 import Key from '../../utils/Key';
 import { dataComp, dataField } from '../../utils/selector-utils';
+import { login } from '../../utils/auth-utils';
 
-function addEmptyKey(keyName, keyValueType = 'String') {
+const addEmptyKey = (keyName, keyValueType = 'String') => {
   Key.add()
     .setName(keyName)
     .setValueType(keyValueType)
     .setKeyFormat('jpad')
     .continueToDetails()
     .commitChanges();
-}
+};
 
 const keyNameValidation = `${dataComp('new-key-name')} ${dataComp('validation-icon')}`;
 
 describe('key name validations', () => {
+  before(() => login());
+
   describe('name validations', () => {
     const invalidKeyNames = [
       'key name',
@@ -58,7 +61,7 @@ describe('key name validations', () => {
       .setValueType('string') // to make local changes
       .clickContinue();
 
-    expect(browser.isVisible(keyNameValidation), 'should show key name validation').to.be.true;
+    browser.waitForVisible(keyNameValidation, 2000);
   });
 
   it('should allow creating a key named "a/b/c" and also a key named "b"', () => {

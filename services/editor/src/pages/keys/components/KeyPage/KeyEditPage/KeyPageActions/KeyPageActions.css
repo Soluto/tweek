@@ -4,6 +4,8 @@
   color: #888;
 }
 .key-action-buttons-wrapper {
+  display: flex;
+  align-items: center;
   float: right;
 }
 .key-action-buttons-wrapper .save-button {
@@ -14,49 +16,24 @@
 .key-action-buttons-wrapper .save-button[data-state-is-saving=true]:disabled {
   background-color: green;
 }
-.key-action-buttons-wrapper .disable-button {
-  vertical-align: top;
-  background-color: #00aeef;
+.key-action-buttons-wrapper .icon-button {
+  background-color: #bcbcbc;
+  margin-left: 10px;
+  width: 28px;
   height: 28px;
-  border: 0;
-  padding: 0 20px;
-  color: white;
-  outline: 0;
-  padding-bottom: 2px;
-  border-radius: 14px;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  transition: all 0.2s ease-in-out;
-  text-decoration: underline;
-  background-color: transparent;
-  color: gray;
-  width: 125px;
-}
-.key-action-buttons-wrapper .disable-button:hover {
-  background-color: #029CD5;
+  border-radius: 50%;
+  border: none;
   cursor: pointer;
 }
-.key-action-buttons-wrapper .disable-button:disabled {
-  background-color: gray;
+.key-action-buttons-wrapper .icon-button:hover {
+  background-color: #9c9c9c;
 }
-.key-action-buttons-wrapper .disable-button:disabled:hover,
-.key-action-buttons-wrapper .disable-button:disabled:active {
+.key-action-buttons-wrapper .icon-button:active {
+  background-color: #7b7b7b;
+}
+.key-action-buttons-wrapper .icon-button:disabled {
   cursor: default;
-  background-color: gray;
 }
-.key-action-buttons-wrapper .disable-button:hover {
-  background-color: rgba(0, 0, 0, 0.1);
-}
-.key-action-buttons-wrapper .disable-button:active {
-  background-color: rgba(0, 0, 0, 0.2);
-}
-.key-action-buttons-wrapper .disable-button:disabled {
-  background-color: transparent;
-}
-.key-action-buttons-wrapper .disable-button:disabled:hover,
-.key-action-buttons-wrapper .disable-button:disabled:active {
-  cursor: default;
-  background-color: transparent;
+.key-action-buttons-wrapper .icon-button img {
+  width: 28px;
 }

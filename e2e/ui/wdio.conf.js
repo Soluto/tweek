@@ -7,9 +7,12 @@ nconf
     TWEEK_API_URL: 'http://localhost:4003/',
     AUTHORING_URL: 'http://localhost:4005/',
     GIT_PRIVATE_KEY_PATH: '../../deployments/dev/ssh/tweekgit',
+    AUTH_DIGEST_CREDENTIALS: 'user:pwd',
   });
 const host = nconf.get('host');
 const proxy = nconf.get('proxy');
+
+const workingDirectory = process.cwd().replace(/\\/g, '/');
 
 function removeTrailingSlashes(url) {
   return url.endsWith('/') ? removeTrailingSlashes(url.substring(0, url.length - 1)) : url;
@@ -39,7 +42,7 @@ exports.config = {
         autodetect: false,
       },
       browserName: 'chrome',
-      chromeOptions: { args: ['--no-sandbox'] },
+      chromeOptions: { args: ['--no-sandbox', '--start-maximized'] },
       unexpectedAlertBehaviour: 'accept',
     },
   ], // host: 'http://localhost',
@@ -102,8 +105,11 @@ exports.config = {
     compilers: ['js:babel-register'],
     timeout: 99999999,
   },
-  onPrepare: () => {
-    console.log('prepare');
+  onPrepare: async () => {
+    const { waitForAllClients } = require(workingDirectory + '/utils/client-utils.js');
+    await waitForAllClients();
+
+    console.log('ready');
   },
   onComplete: () => {
     console.log('completed');
@@ -123,17 +129,13 @@ exports.config = {
   //
   // Gets executed before test execution begins. At this point you can access all global
   // variables, such as `browser`. It is the perfect place to define custom commands.
-  before: async function() {
+  before: function() {
     const chai = require('chai');
     chai.use(require('chai-string'));
 
-    const workingDirectory = process.cwd().replace(/\\/g, '/');
     const browserExtentionCommands = require(workingDirectory +
       '/utils/browser-extension-commands');
     browserExtentionCommands(browser);
-
-    const { waitForAllClients } = require(workingDirectory + '/utils/client-utils.js');
-    await waitForAllClients();
   },
   //
   // Hook that gets executed before the suite starts

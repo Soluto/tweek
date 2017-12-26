@@ -12,7 +12,6 @@
         "format": "jpad"
     },
     "valueType": "string",
-    "enabled": true,
     "dependencies": [
       "behavior_tests/dependent_keys/fail/second"
     ]

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Rx from 'rxjs';
+import { Observable } from 'rxjs';
 import * as R from 'ramda';
 import { compose, pure, mapPropsStream, createEventHandler } from 'recompose';
 import classnames from 'classnames';
@@ -181,7 +181,7 @@ const ComboBox = compose(
 
     const highlighted$ = onHighlighted$.startWith({ index: -1 }).distinctUntilChanged();
 
-    const value$ = Rx.Observable.merge(
+    const value$ = Observable.merge(
       props$.map(R.prop('value')).distinctUntilChanged(),
       onInputChanged$,
     );
@@ -192,8 +192,7 @@ const ComboBox = compose(
       .publishReplay(1)
       .refCount();
 
-    const propsWithValue$ = Rx.Observable
-      .combineLatest(props$, value$)
+    const propsWithValue$ = Observable.combineLatest(props$, value$)
       .map(([props, value]) => ({ ...props, value }))
       .share();
 
@@ -246,8 +245,7 @@ const ComboBox = compose(
       })
       .map(R.prop('suggestions'));
 
-    return Rx.Observable
-      .combineLatest(propsWithValue$, suggestions$, highlighted$, focus$)
+    return Observable.combineLatest(propsWithValue$, suggestions$, highlighted$, focus$)
       .map(
         (
           [

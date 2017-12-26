@@ -1,0 +1,12 @@
+@import (reference) "./KeyAddPage.less";
+
+.keypath-input-wrapper {
+  width: 100%;
+  .combo-box-basic(@dropdown-min-width: 100%, @input-width: 100%, @font-size: @smaller-font);
+  .keypath-input-container {
+    width: 100%;
+    display: flex;
+    @with-validation-icon();
+  }
+  @with-adjusted-combo-box-wrapper();
+}

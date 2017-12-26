@@ -17,6 +17,7 @@ nconf
     MINIO_SECURE: 'false',
     MINIO_BUCKET: 'tweek-ruleset',
     MINIO_REGION: 'us-east-1',
+    GIT_SAMPLE_INTERVAL: 5000,
   });
 const rulesCache = require('./rules-cache');
 const repoValidator = require('./repo-validator');
@@ -43,7 +44,7 @@ app.post('/on-repo-change', upload.any(), (req, res) => {
     })
     .catch((err) => {
       logger.error(err);
-      res.status(500).send(err.response.data);
+      res.status(err.response.status).send(err.response.data);
     });
 });
 

@@ -34,6 +34,14 @@ describe('build rules artifact', () => {
           value: 'some-value',
         },
       },
+      'manifests/alias': {
+        key_path: 'alias',
+        dependencies: ['wrong_dep'],
+        implementation: {
+          type: 'alias',
+          key: 'some_key',
+        },
+      },
     };
     const files = getFiles(filesToRead);
     const expectedArtifact = {
@@ -46,6 +54,11 @@ describe('build rules artifact', () => {
         format: 'const',
         payload: JSON.stringify('some-value'),
         dependencies: [],
+      },
+      alias: {
+        format: 'alias',
+        payload: 'some_key',
+        dependencies: ['some_key'],
       },
     };
     const artifacts = buildRulesArtifact(files);
