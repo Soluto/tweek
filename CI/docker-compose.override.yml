@@ -47,6 +47,15 @@ services:
     ports:
       - "5004:3000"
 
+  gateway:
+    image: soluto/tweek-secure-gateway
+    build: ../services/secure-gateway
+    logging:
+      driver: "json-file"
+    ports:
+      - "8080:9090"
+      - "80:9090"
+
   zap-smoke:
     image: soluto/zap
     build: ../deployments/dev/zap

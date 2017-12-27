@@ -92,6 +92,13 @@ services:
       - REQUIRE_AUTH=true
       - TWEEK_AUTH_SCHEMES=httpDigest
       - AUTH_DIGEST_CREDENTIALS=user:pwd
+
+  gateway:
+    image: $SECUREGATEWAY_IMAGE
+    ports:
+      - "8080:9090"
+      - "80:9090"
+
   redis:
     image: redis:4.0.2-alpine
     expose:

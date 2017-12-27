@@ -17,6 +17,9 @@ RUN update-ca-certificates \
 FROM scratch
 
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=build /go/src/github.com/Soluto/tweek/services/secure-gateway/gateway.json /gateway.json
+COPY --from=build /go/src/github.com/Soluto/tweek/services/secure-gateway/model.csv /model.csv
+COPY --from=build /go/src/github.com/Soluto/tweek/services/secure-gateway/policy.conf /policy.conf
 COPY --from=build /go/src/github.com/Soluto/tweek/services/secure-gateway/entry /entry
 
 ENTRYPOINT [ "/entry" ]

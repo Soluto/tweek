@@ -13,6 +13,12 @@ steps:
     type: build
     image_name: soluto/tweek-test-keys
     working_directory: ./deployments/dev/ssh/
+
+  BuildSecureGateway:
+    title: Building Secure Gateway
+    type: build
+    image_name: soluto/tweek-secure-gateway
+    working_directory: ./services/secure-gateway/
           
   BuildingGitRepository:
     title: Building Git Repository Docker Image
@@ -74,6 +80,7 @@ steps:
     composition: ./CI/docker-compose.yml
     composition_variables:
       - KEYS_IMAGE=${{BuildGitKeys}}
+      - SECUREGATEWAY_IMAGE=${{BuildSecureGateway}}
       - REPOSITORY_IMAGE=${{BuildingGitRepository}}
       - MANAGEMENT_IMAGE=${{BuildingManagement}}
       - API_IMAGE=${{BuildingApiImage}}

@@ -25,3 +25,10 @@ services:
     depends_on: 
       - api
       - authoring
+
+  gateway:
+    image: soluto/tweek-secure-gateway
+    build: ../../services/secure-gateway
+    ports:
+      - "8080:9090"
+      - "80:9090"

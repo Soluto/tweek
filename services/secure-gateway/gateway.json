@@ -5,7 +5,7 @@
         "management": "http://localhost:4002"
     },
     "security": {
-        "casbin_policy": "",
-        "casbin_model": ""
+        "casbin_policy": "./policy.conf",
+        "casbin_model": "./model.csv"
     }
 }
