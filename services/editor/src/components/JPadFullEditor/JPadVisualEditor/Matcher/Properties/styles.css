@@ -1128,6 +1128,7 @@
   margin-right: 8px;
   display: inline-block;
   align-self: center;
+  z-index: 2;
 }
 .property-combobox-container .avatar-container.property-avatar {
   zoom: 75%;
