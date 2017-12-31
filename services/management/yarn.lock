@@ -1137,6 +1137,10 @@ jsonify@~0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/jsonify/-/jsonify-0.0.0.tgz#2c74b6ee41d93ca51b7b5aaee8f503631d252a73"
 
+jsonminify@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/jsonminify/-/jsonminify-0.4.1.tgz#805dafbb39395188cee9ab582c81ef959d7e710c"
+
 jsonwebtoken@^8.1.0:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/jsonwebtoken/-/jsonwebtoken-8.1.0.tgz#c6397cd2e5fd583d65c007a83dc7bb78e6982b83"
