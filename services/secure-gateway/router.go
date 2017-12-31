@@ -14,16 +14,19 @@ import (
 	"github.com/urfave/negroni"
 )
 
+// Router struct contains all subrouters
 type Router interface {
 	http.Handler
+	MonitoringRouter() *mux.Router
 	V1Router() *mux.Router
 	V2Router() *mux.Router
 }
 
 type router struct {
-	router   *mux.Router
-	v1Router *mux.Router
-	v2Router *mux.Router
+	router           *mux.Router
+	monitoringRouter *mux.Router
+	v1Router         *mux.Router
+	v2Router         *mux.Router
 }
 
 // NewRouter creates a new transformation middleware
@@ -36,6 +39,8 @@ func NewRouter(upstreams *config.Upstreams, enforcer *casbin.SyncedEnforcer) Rou
 	}
 	apiForwarder := proxy.New(apiURL)
 
+	monitoringRouter := mainRouter.PathPrefix("/api/monitoring/").Subrouter()
+
 	v1Router := mainRouter.PathPrefix("/api/v1/").Subrouter()
 	v1Router.Methods("GET").Handler(negroni.New(apiForwarder))
 
@@ -45,11 +50,14 @@ func NewRouter(upstreams *config.Upstreams, enforcer *casbin.SyncedEnforcer) Rou
 	v2Router.Methods("POST").PathPrefix("/models").Handler(negroni.New(handlers.NewModelsWrite(enforcer), apiForwarder))
 
 	return &router{
-		router:   mainRouter,
-		v1Router: v1Router,
-		v2Router: v2Router,
+		router:           mainRouter,
+		monitoringRouter: monitoringRouter,
+		v1Router:         v1Router,
+		v2Router:         v2Router,
 	}
 }
+
+func (t *router) MonitoringRouter() *mux.Router { return t.monitoringRouter }
 
 func (t *router) V1Router() *mux.Router { return t.v1Router }
 
