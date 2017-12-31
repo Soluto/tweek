@@ -39,7 +39,7 @@ func NewApp(config *config.Configuration) http.Handler {
 	router := NewRouter(config.Upstreams)
 
 	router.MonitoringRouter().HandleFunc("/isAlive", monitoring.IsAlive)
-	modelManagement.Mount(router.ModelManagementRouter(), enforcer)
+	modelManagement.Mount(enforcer, negroni.New(negroni.NewRecovery(), security.AuthorizationMiddleware(enforcer)), router.ModelManagementRouter())
 	goThrough.Mount(config.Upstreams, negroni.New(negroni.NewRecovery(), security.AuthorizationMiddleware(enforcer)), router.V1Router())
 	transformation.Mount(config.Upstreams, negroni.New(negroni.NewRecovery(), security.AuthorizationMiddleware(enforcer)), router.V2Router())
 

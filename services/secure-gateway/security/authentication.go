@@ -42,8 +42,8 @@ func (u *userInfo) Claims() jwt.StandardClaims { return u.StandardClaims }
 func UserInfoFromRequest(req *http.Request, configuration *config.Security) (UserInfo, error) {
 	info := &userInfo{}
 	token, err := request.ParseFromRequest(req, request.OAuth2Extractor, func(t *jwt.Token) (interface{}, error) {
-		issuer := t.Claims.(jwt.MapClaims)["iss"].(string)
-		keyID := t.Header["kid"].(string)
+		issuer := "AA" //t.Claims.(jwt.MapClaims)["iss"].(string)
+		keyID := "BB"  // t.Header["kid"].(string)
 		return getKeyByIssuer(issuer, keyID, configuration)
 	})
 
