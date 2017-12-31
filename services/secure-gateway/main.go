@@ -7,6 +7,7 @@ import (
 
 	"github.com/Soluto/tweek/services/secure-gateway/config"
 	"github.com/Soluto/tweek/services/secure-gateway/goThrough"
+	"github.com/Soluto/tweek/services/secure-gateway/modelManagement"
 	"github.com/Soluto/tweek/services/secure-gateway/monitoring"
 	"github.com/Soluto/tweek/services/secure-gateway/security"
 	"github.com/Soluto/tweek/services/secure-gateway/transformation"
@@ -35,15 +36,13 @@ func main() {
 // NewApp creates a new app
 func NewApp(config *config.Configuration) http.Handler {
 	enforcer := casbin.NewSyncedEnforcer(config.Security.CasbinPolicy, config.Security.CasbinModel)
-	router := NewRouter(config.Upstreams, enforcer)
+	router := NewRouter(config.Upstreams)
 
 	router.MonitoringRouter().HandleFunc("/isAlive", monitoring.IsAlive)
+	modelManagement.Mount(router.ModelManagementRouter(), enforcer)
 	goThrough.Mount(config.Upstreams, negroni.New(negroni.NewRecovery(), security.AuthorizationMiddleware(enforcer)), router.V1Router())
 	transformation.Mount(config.Upstreams, negroni.New(negroni.NewRecovery(), security.AuthorizationMiddleware(enforcer)), router.V2Router())
 
-	// transformation.SetupRoutes(router.BasePathRouter())
-
-	// router.BasePathRouter().Handle("/api/v2", transformation.SetupRoutes())
 	app := negroni.New(negroni.NewRecovery(), security.UserInfoMiddleware(config.Security))
 	app.UseHandler(router)
 
