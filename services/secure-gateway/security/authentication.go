@@ -42,9 +42,14 @@ func (u *userInfo) Claims() jwt.StandardClaims { return u.StandardClaims }
 func UserInfoFromRequest(req *http.Request, configuration *config.Security) (UserInfo, error) {
 	info := &userInfo{}
 	token, err := request.ParseFromRequest(req, request.OAuth2Extractor, func(t *jwt.Token) (interface{}, error) {
-		issuer := "AA" //t.Claims.(jwt.MapClaims)["iss"].(string)
-		keyID := "BB"  // t.Header["kid"].(string)
-		return getKeyByIssuer(issuer, keyID, configuration)
+		claims := t.Claims.(jwt.MapClaims)
+		if issuer, ok := claims["iss"].(string); ok {
+			if keyID, ok := t.Header["kid"].(string); ok {
+				return getKeyByIssuer(issuer, keyID, configuration)
+			}
+			return nil, fmt.Errorf("No keyId in header")
+		}
+		return nil, fmt.Errorf("No issuer in claims")
 	})
 
 	if err != nil {
