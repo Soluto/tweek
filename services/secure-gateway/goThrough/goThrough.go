@@ -11,7 +11,7 @@ import (
 )
 
 // Mount - mounts the request goThrough handlers and middleware
-func Mount(upstreams *config.Upstreams, middleware *negroni.Negroni, router *mux.Router) {
+func Mount(upstreams *config.Upstreams, v1Hosts *config.V1Hosts, middleware *negroni.Negroni, router *mux.Router) {
 	// URLs
 	api := parseUpstreamOrPanic(upstreams.API)
 	authoring := parseUpstreamOrPanic(upstreams.Authoring)
@@ -23,9 +23,15 @@ func Mount(upstreams *config.Upstreams, middleware *negroni.Negroni, router *mux
 	managementForwarder := proxy.New(management)
 
 	// Mounting handlers
-	router.Host("tweek-api.mysoluto.com").Handler(middleware.With(apiForwarder))
-	router.Host("tweek-authoring.mysoluto.com").Handler(middleware.With(authoringForwarder))
-	router.Host("tweek-management.mysoluto.com").Handler(middleware.With(managementForwarder))
+	for _, host := range v1Hosts.API {
+		router.Host(host).Handler(middleware.With(apiForwarder))
+	}
+	for _, host := range v1Hosts.Authoring {
+		router.Host(host).Handler(middleware.With(authoringForwarder))
+	}
+	for _, host := range v1Hosts.Management {
+		router.Host(host).Handler(middleware.With(managementForwarder))
+	}
 }
 
 func parseUpstreamOrPanic(u string) *url.URL {

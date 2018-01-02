@@ -7,5 +7,17 @@
     "security": {
         "casbin_policy": "./policy.conf",
         "casbin_model": "./model.csv"
+    },
+    "v1Hosts": {
+        "api": [
+            "tweek-api.mysoluto.com"
+        ],
+        "authoring": [
+            "tweek-authoring.mysoluto.com"
+        ],
+        "management": [
+            "tweek-management.mysoluto.com"
+
+        ]
     }
 }

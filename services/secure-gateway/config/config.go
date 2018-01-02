@@ -9,6 +9,13 @@ type Upstreams struct {
 	Management string `mapstructure:"management"`
 }
 
+// V1Hosts is the list of v1 hosts
+type V1Hosts struct {
+	API        []string
+	Authoring  []string
+	Management []string
+}
+
 // Server section holds the server related configuration
 type Server struct {
 	Port int `mapstructure:"port"`
@@ -25,6 +32,7 @@ type Security struct {
 // Configuration is the root element of configuration for secure-gateway
 type Configuration struct {
 	Upstreams *Upstreams `mapstructure:"upstreams"`
+	V1Hosts   *V1Hosts   `mapstructure:"v1Hosts"`
 	Server    *Server    `mapstructure:"server"`
 	Security  *Security  `mapstructure:"security"`
 }

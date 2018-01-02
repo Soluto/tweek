@@ -100,6 +100,61 @@ paths:
           required: true
           schema:
             type: object
+  /context/{identityType}/{identityId}:
+    get:
+      operationId: GetContext
+      parameters:
+        - name: identityType
+          in: path
+          description: the type of the identity - for example user
+          type: string
+          required: true
+        - name: identityId
+          in: path
+          description: the identifier of the identity - for example jaime
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Ok
+      produces:
+        - application/json
+    post:
+      parameters:
+        - name: identityType
+          in: path
+          description: the type of the identity - for example user
+          type: string
+          required: true
+        - name: identityId
+          in: path
+          description: the identifier of the identity - for example jaime
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Ok
+  /context/{identityType}/{identityId}/{prop}:
+    delete:
+      parameters: 
+        - name: identityType
+          in: path
+          description: the type of the identity - for example user
+          type: string
+          required: true
+        - name: identityId
+          in: path
+          description: the identifier of the identity - for example jaime
+          type: string
+          required: true
+        - name: prop
+          in: path
+          description: the property to delete, for example age
+          type: string
+          required: true
+      responses:
+        200:
+          description: OK
   /schemas:
     get:
       operationId: GetSchemas
