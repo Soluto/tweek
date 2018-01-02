@@ -25,3 +25,9 @@ services:
     depends_on: 
       - api
       - authoring
+  
+  publishing:
+    image: soluto/tweek-publishing
+    depends_on:
+      - management
+

@@ -8,9 +8,27 @@ services:
       - "4001:22"
     environment:
       - PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
-      - TWEEK_MANAGEMENT_URL=http://management:3000
     secrets:
       - tweek_ssh_public_key
+  
+  publishing:
+    image: soluto/tweek-publishing
+    build: ../../services/publishing
+    ports:
+      - "4009:22"
+      - "4010:80"
+    depends_on:
+      - git
+    volumes:
+      - ../../services/publishing/hooks:/tweek/hooks/:ro
+    environment:
+      - GIT_PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
+      - GIT_SERVER_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
+      - TWEEK_MANAGEMENT_URL=http://management:3000
+      - GIT_UPSTREAM_URI=ssh://git@git/tweek/repo
+    secrets:
+      - tweek_ssh_public_key
+      - tweek_ssh_private_key
  
   management:
     depends_on:
@@ -81,13 +99,13 @@ services:
 
   authoring:
     depends_on:
-      - git
+      - publishing
     ports:
       - "5859:5858"
       - "4005:3000"
     environment:
       - GIT_USER=git
-      - GIT_URL=ssh://git@git/tweek/repo
+      - GIT_URL=ssh://git@publishing/tweek/repo
       - GIT_PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
     secrets:
@@ -131,6 +149,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /dev/null:/traefik.toml
+    logging:
+      driver: none
     command: --web --docker --docker.domain=tweek.localtest.me --logLevel=DEBUG
 
 secrets:
