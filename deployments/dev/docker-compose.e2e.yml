@@ -31,6 +31,10 @@ services:
     container_name: selenium
     volumes:
       - /dev/shm:/dev/shm
+    links:
+      - gateway:api
+      - gateway:management
+      - gateway:authoring
 
   e2e-ui:
     build: ../../e2e/ui
@@ -51,6 +55,10 @@ services:
       - AUTH_DIGEST_CREDENTIALS=user:pwd
     secrets:
       - tweek_ssh_private_key
+    links:
+      - gateway:api
+      - gateway:management
+      - gateway:authoring
 
   e2e-integration:
     build: ../../e2e/integration
@@ -65,6 +73,10 @@ services:
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
     secrets:
       - tweek_ssh_private_key
+    links:
+      - gateway:api
+      - gateway:management
+      - gateway:authoring
 
   smoke-tests:
     build:
@@ -76,6 +88,9 @@ services:
       - management
     environment: 
       - TWEEK_API_URL=http://api/
+    links:
+      - gateway:api
+      - gateway:management
 
 secrets:
   tweek_ssh_private_key:

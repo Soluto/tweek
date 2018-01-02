@@ -1,5 +1,5 @@
 # -------- BUILDER -------- #
-FROM golang:1.9 as build
+FROM golang:1.9.2 as build
 
 ARG DEP_VERSION=0.3.2
 

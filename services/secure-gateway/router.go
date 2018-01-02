@@ -14,6 +14,7 @@ type Router interface {
 	ModelManagementRouter() *mux.Router
 	V1Router() *mux.Router
 	V2Router() *mux.Router
+	SetupHealthHandler(handler http.Handler)
 }
 
 type router struct {
@@ -52,6 +53,10 @@ func (t *router) V1Router() *mux.Router { return t.v1Router }
 
 // V2Router - returns the mux router for the base path (`/api/v2/`)
 func (t *router) V2Router() *mux.Router { return t.v2Router }
+
+func (t *router) SetupHealthHandler(handler http.Handler) {
+	t.router.Path("/health").Handler(handler)
+}
 
 func (t *router) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	t.router.ServeHTTP(rw, r)

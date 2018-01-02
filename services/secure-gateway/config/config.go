@@ -18,13 +18,14 @@ type V1Hosts struct {
 
 // Server section holds the server related configuration
 type Server struct {
-	Port int `mapstructure:"port"`
+	Ports []int `mapstructure:"ports"`
 }
 
 // Security section hold security related configuration
 type Security struct {
 	AllowedIssuers []string `mapstructure:"allowed_issuers"`
 	AzureTenantID  string   `mapstructure:"azure_tenant_id"`
+	Enforce        bool     `mapstructure:"enforce"`
 	CasbinPolicy   string   `mapstructure:"casbin_policy"`
 	CasbinModel    string   `mapstructure:"casbin_model"`
 }
@@ -40,10 +41,10 @@ type Configuration struct {
 // LoadFromFile the configuration from a file given by fileName
 func LoadFromFile(fileName string) *Configuration {
 	// setup
-	configuration := &Configuration{Upstreams: &Upstreams{}}
+	configuration := &Configuration{}
 	configReader := viper.New()
 	configReader.SetConfigFile("gateway.json")
-	configReader.SetDefault("server.port", 9090)
+	configReader.SetDefault("server.ports", []int{9090})
 
 	// load
 	configReader.ReadInConfig()

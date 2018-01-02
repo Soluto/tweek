@@ -123,6 +123,12 @@ services:
       - "4008:8222"
       - "4222:4222"
 
+  gateway:
+    ports:
+      - "80:9090"
+    environment:
+      - TWEEK_TESTING=1
+
 secrets:
   tweek_ssh_public_key:
     file: ./ssh/tweekgit.pub

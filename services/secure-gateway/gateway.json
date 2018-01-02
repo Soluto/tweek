@@ -1,23 +1,29 @@
 {
     "upstreams": {
-        "api": "http://localhost:4003",
-        "authoring": "http://localhost:4005",
-        "management": "http://localhost:4002"
+        "api": "http://api",
+        "authoring": "http://authoring:3000",
+        "management": "http://management:3000"
     },
     "security": {
+        "enforce": false,
         "casbin_policy": "./policy.conf",
         "casbin_model": "./model.csv"
     },
     "v1Hosts": {
         "api": [
-            "tweek-api.mysoluto.com"
+            "api"
         ],
         "authoring": [
-            "tweek-authoring.mysoluto.com"
+            "authoring"
         ],
         "management": [
-            "tweek-management.mysoluto.com"
-
+            "management"
+        ]
+    },
+    "server": {
+        "ports": [
+            3000,
+            80
         ]
     }
 }
