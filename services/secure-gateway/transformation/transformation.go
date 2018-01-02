@@ -42,6 +42,8 @@ func Mount(upstreams *config.Upstreams, middleware *negroni.Negroni, router *mux
 	router.Methods("PUT").PathPrefix("/tags").Handler(middleware.With(NewTagsSave(authoring), authoringForwarder))
 
 	router.Methods("GET", "POST", "DELETE").PathPrefix("/context").Handler(middleware.With(TransformContextRequest(api), apiForwarder))
+
+	router.Methods("GET", "POST", "DELETE", "PATCH").PathPrefix("/schemas").Handler(middleware.With(TransformSchemasRequest(authoring), authoringForwarder))
 }
 
 func parseUpstreamOrPanic(u string) *url.URL {

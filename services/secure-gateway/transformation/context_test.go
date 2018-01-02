@@ -14,7 +14,7 @@ func Test_getContextURLByRequest(t *testing.T) {
 		req      *http.Request
 	}
 
-	apiURL := parseURL(t, "http://api")
+	apiURL := parseContextURL(t, "http://api")
 
 	tests := []struct {
 		name string
@@ -25,17 +25,17 @@ func Test_getContextURLByRequest(t *testing.T) {
 			name: "GetContext request",
 			args: args{
 				apiURL,
-				makeRequest(t, "GET", "http://gateway/api/v2/context/IdnType/IdnId", nil),
+				makeContextRequest(t, "GET", "http://gateway/api/v2/context/IdnType/IdnId", nil),
 			},
-			want: parseURL(t, "http://api/api/v1/context/IdnType/IdnId"),
+			want: parseContextURL(t, "http://api/api/v1/context/IdnType/IdnId"),
 		},
 		{
 			name: "DeleteContext request",
 			args: args{
 				apiURL,
-				makeRequest(t, "DELETE", "http://gateway/api/v2/context/IdnType/IdnId/prop", nil),
+				makeContextRequest(t, "DELETE", "http://gateway/api/v2/context/IdnType/IdnId/prop", nil),
 			},
-			want: parseURL(t, "http://api/api/v1/context/IdnType/IdnId/prop"),
+			want: parseContextURL(t, "http://api/api/v1/context/IdnType/IdnId/prop"),
 		},
 	}
 	for _, tt := range tests {
