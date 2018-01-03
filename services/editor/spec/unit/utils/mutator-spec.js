@@ -16,7 +16,12 @@ describe('mutator tests', () => {
       newMutator((target, mutator) => {
         target.prop1 = { prop2: 10 };
         expect(mutator.in('prop1').getValue().prop2).toEqual(10);
-        expect(mutator.in('prop1').in('prop2').getValue()).toEqual(10);
+        expect(
+          mutator
+            .in('prop1')
+            .in('prop2')
+            .getValue(),
+        ).toEqual(10);
       }),
     );
 
@@ -24,7 +29,13 @@ describe('mutator tests', () => {
       'up should allow navigating in object',
       newMutator((target, mutator) => {
         target.prop1 = { prop2: 10 };
-        expect(mutator.in('prop1').in('prop2').up().getValue().prop2).toEqual(10);
+        expect(
+          mutator
+            .in('prop1')
+            .in('prop2')
+            .up()
+            .getValue().prop2,
+        ).toEqual(10);
       }),
     );
 
@@ -32,8 +43,19 @@ describe('mutator tests', () => {
       'in & up shoul work with arrays',
       newMutator((target, mutator) => {
         target.propArray = [5, 10];
-        expect(mutator.in('propArray').in(1).getValue()).toEqual(10);
-        expect(mutator.in('propArray').in(1).up().getValue()[1]).toEqual(10);
+        expect(
+          mutator
+            .in('propArray')
+            .in(1)
+            .getValue(),
+        ).toEqual(10);
+        expect(
+          mutator
+            .in('propArray')
+            .in(1)
+            .up()
+            .getValue()[1],
+        ).toEqual(10);
       }),
     );
   });
@@ -50,7 +72,10 @@ describe('mutator tests', () => {
     it(
       'should be able to add a nested field',
       newMutator((target, mutator) => {
-        mutator.insert('someField', {}).in('someField').insert('nested', 10);
+        mutator
+          .insert('someField', {})
+          .in('someField')
+          .insert('nested', 10);
         expect(target.someField.nested).toEqual(10);
       }),
     );
@@ -58,7 +83,11 @@ describe('mutator tests', () => {
     it(
       'should be able to add item to an array at index',
       newMutator((target, mutator) => {
-        mutator.insert('someFieldArray', []).in('someFieldArray').insert(0, 5).insert(1, 10);
+        mutator
+          .insert('someFieldArray', [])
+          .in('someFieldArray')
+          .insert(0, 5)
+          .insert(1, 10);
         expect(target.someFieldArray[0]).toEqual(5);
         expect(target.someFieldArray[1]).toEqual(10);
       }),
@@ -80,7 +109,10 @@ describe('mutator tests', () => {
       newMutator((target, mutator) => {
         target.someKey = { a: 10 };
         expect(Object.keys(target.someKey).length).toEqual(1);
-        mutator.in('someKey').in('a').delete();
+        mutator
+          .in('someKey')
+          .in('a')
+          .delete();
         expect(Object.keys(target.someKey).length).toEqual(0);
       }),
     );
@@ -100,7 +132,33 @@ describe('mutator tests', () => {
       'should be able to update a value in array',
       newMutator((target, mutator) => {
         target.someArray = [10, 20];
-        mutator.in('someArray').in(1).updateValue(30);
+        mutator
+          .in('someArray')
+          .in(1)
+          .updateValue(30);
+        expect(target.someArray[1]).toEqual(30);
+      }),
+    );
+  });
+
+  describe('adjust value', () => {
+    it(
+      'should be able to adjust a field value',
+      newMutator((target, mutator) => {
+        target.someKey = 5;
+        mutator.in('someKey').adjustValue(x => x + 5);
+        expect(target.someKey).toEqual(10);
+      }),
+    );
+
+    it(
+      'should be able to adjust a value in array',
+      newMutator((target, mutator) => {
+        target.someArray = [10, 20];
+        mutator
+          .in('someArray')
+          .in(1)
+          .adjustValue(x => x + 10);
         expect(target.someArray[1]).toEqual(30);
       }),
     );
@@ -120,7 +178,10 @@ describe('mutator tests', () => {
       'should update the mutator path after key is updated',
       newMutator((target, mutator) => {
         target.someKey = 5;
-        mutator.in('someKey').updateKey('newKey').updateValue(10);
+        mutator
+          .in('someKey')
+          .updateKey('newKey')
+          .updateValue(10);
         expect(target.newKey).toEqual(10);
       }),
     );
@@ -128,7 +189,10 @@ describe('mutator tests', () => {
       'should preserve order in object',
       newMutator((target, mutator) => {
         target.largeObj = { a: 5, b: 10, c: 30, d: 40 };
-        mutator.in('largeObj').in('c').updateKey('e');
+        mutator
+          .in('largeObj')
+          .in('c')
+          .updateKey('e');
         expect(Object.keys(target.largeObj)).toEqual(['a', 'b', 'e', 'd']);
       }),
     );
@@ -203,7 +267,14 @@ describe('mutator tests', () => {
       mutator.in('a').updateValue(1);
       mutator.in('b').updateValue(1);
       expect(mock.mock.calls.length).toEqual(2);
-      mutator.apply(m => m.in('a').updateValue(2).up().in('b').updateValue(2));
+      mutator.apply(m =>
+        m
+          .in('a')
+          .updateValue(2)
+          .up()
+          .in('b')
+          .updateValue(2),
+      );
       expect(mock.mock.calls.length).toEqual(3);
       const applyMutation = mock.mock.calls[2][0];
       expect(applyMutation.a).toEqual(2);
