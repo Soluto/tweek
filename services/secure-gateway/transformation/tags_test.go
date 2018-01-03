@@ -18,45 +18,7 @@ import (
 	"github.com/urfave/negroni"
 )
 
-func TestNewTagsGet(t *testing.T) {
-	type args struct {
-		upstream *url.URL
-		request  *http.Request
-		response http.ResponseWriter
-	}
-	tests := []struct {
-		name string
-		args args
-		want string
-	}{
-		{
-			name: "Get Tags",
-			args: args{
-				upstream: parseURL(t, "http://authoring/"),
-				request:  httptest.NewRequest("GET", "http://tweek-authoring/api/v2/tags", nil),
-				response: httptest.NewRecorder(),
-			},
-			want: "http://authoring/api/v1/tags",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			var got string
-			next := http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-				got = r.URL.String()
-			})
-
-			server := negroni.New(NewTagsGet(tt.args.upstream), negroni.WrapFunc(next))
-			server.ServeHTTP(tt.args.response, tt.args.request)
-
-			if got != tt.want {
-				t.Errorf("NewTagsGet() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestNewTagsSave(t *testing.T) {
+func TestTransformTagsSaveRequest(t *testing.T) {
 	tagsBody := makeTagsBody("tag1", "tag2")
 	userInfo := makeUserInfo("John Doe", "john.doe@tweek.test")
 	userInfo.Claims()
@@ -74,7 +36,7 @@ func TestNewTagsSave(t *testing.T) {
 		{
 			name: "Get Tags",
 			args: args{
-				upstream: parseURL(t, "http://authoring/"),
+				upstream: parseURL(t, "http://authoring"),
 				request:  makeRequestWithUserInfo("PUT", "http://tweek-authoring/api/v2/tags", tagsBody, makeUserInfo("name", "email")),
 				response: httptest.NewRecorder(),
 			},
@@ -96,16 +58,16 @@ func TestNewTagsSave(t *testing.T) {
 				gotBody = string(body)
 			})
 
-			server := negroni.New(NewTagsSave(tt.args.upstream), negroni.WrapFunc(next))
+			server := negroni.New(TransformTagsSaveRequest(tt.args.upstream), negroni.WrapFunc(next))
 			// makeRequest
 			server.ServeHTTP(tt.args.response, tt.args.request)
 
 			if gotURL != tt.wantURL {
-				t.Errorf("NewTagsSave() = %v, wantURL %v", gotURL, tt.wantURL)
+				t.Errorf("TransformTagsSaveRequest() = %v, wantURL %v", gotURL, tt.wantURL)
 			}
 
 			if gotBody != tt.wantBody {
-				t.Errorf("NewTagsSave() = %v, wantBody %v", gotBody, tt.wantBody)
+				t.Errorf("TransformTagsSaveRequest() = %v, wantBody %v", gotBody, tt.wantBody)
 			}
 		})
 	}
