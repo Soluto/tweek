@@ -50,13 +50,14 @@ func NewApp(config *config.Configuration) http.Handler {
 	enforcer := casbin.NewSyncedEnforcer(config.Security.CasbinPolicy, config.Security.CasbinModel)
 	enforcer.EnableEnforce(config.Security.Enforce)
 
-	router := NewRouter(config.Upstreams)
+	router := NewRouter(config)
 
 	router.MonitoringRouter().HandleFunc("/isAlive", monitoring.IsAlive)
-	router.SetupHealthHandler(transformation.NewHealthHandler(config.Upstreams, negroni.New(negroni.NewRecovery())))
 	modelManagement.Mount(enforcer, negroni.New(negroni.NewRecovery(), security.AuthorizationMiddleware(enforcer)), router.ModelManagementRouter())
 	goThrough.Mount(config.Upstreams, config.V1Hosts, negroni.New(negroni.NewRecovery(), security.AuthorizationMiddleware(enforcer)), router.V1Router())
 	transformation.Mount(config.Upstreams, negroni.New(negroni.NewRecovery(), security.AuthorizationMiddleware(enforcer)), router.V2Router())
+
+	goThrough.Mount(config.Upstreams, config.V1Hosts, negroni.New(negroni.NewRecovery()), router.LegacyNonV1Router())
 
 	app := negroni.New(negroni.NewRecovery(), security.UserInfoMiddleware(config.Security))
 	app.UseHandler(router)
