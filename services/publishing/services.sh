@@ -18,10 +18,6 @@ function sshd_not_running() {
     fi
 }
 
-touch /tweek/repo.log
-chown git:git /tweek/repo.log
-tail -f /tweek/repo.log 2>&1 &
-
 # polling loop
 while true
 do

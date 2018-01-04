@@ -1,7 +1,17 @@
 {
     "version": "0.2.0",
     "configurations": [
-
+        {
+            "name": "Publishing - verifier",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "publishing-verifier-build",
+            "program": "${workspaceRoot}/services/publishing/Tweek.Publishing.Verifier/bin/Debug/netcoreapp2.0/Tweek.Publishing.Verifier.dll",
+            "args": [],
+            "cwd": "${workspaceRoot}",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        },
         {
             "name": "Tweek-api",
             "type": "coreclr",

@@ -1,0 +1,14 @@
+#!/bin/bash
+echo `pwd` >> /tweek/repo.log
+result=$(cat | dotnet /tweek/Tweek.Publishing.Verifier/bin/Release/netcoreapp2.0/publish/Tweek.Publishing.Verifier.dll 2>&1)
+exitCode=$? 
+echo $result >> /tweek/repo.log
+echo "finished" >> /tweek/repo.log
+echo $exitCode >> /tweek/repo.log
+
+if [ $exitCode != 0 ] 
+then
+  >&2 echo 400 Bad Request
+  >&2 echo result
+  exit 1
+fi

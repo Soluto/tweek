@@ -20,11 +20,16 @@ else
     exit 1
 fi
 
+touch /tweek/repo.log
+chown git:git /tweek/repo.log
+tail -f /tweek/repo.log 2>&1 &
+
+echo "init log" >> /tweek/repo.log
+
 # clone the source repository and apply hooks
 # set -e
 git clone --bare $GIT_UPSTREAM_URI /tweek/repo
-cp /tweek/tmp-hooks/* /tweek/repo/hooks/
-rm -rf tmp-hooks
+cp /tweek/hooks/* /tweek/repo/hooks/
 # set +e
 
 # Checking permissions and fixing SGID bit in repos folder
