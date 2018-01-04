@@ -14,7 +14,7 @@ func AuthorizationMiddleware(enforcer *casbin.SyncedEnforcer) negroni.HandlerFun
 	return negroni.HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 
 		obj, sub, act, err := ExtractFromRequest(r)
-		if err != "" {
+		if err != nil {
 			log.Println("Failed to extract from request", err)
 			http.Error(rw, "Bad request", http.StatusBadRequest)
 		} else {

@@ -1,2 +1,2 @@
-p, allow@security.test, /target, GET, allow
-p, deny@security.test, /target, GET, deny
+p, allow@security.test, /target, read, allow
+p, deny@security.test, /target, read, deny
