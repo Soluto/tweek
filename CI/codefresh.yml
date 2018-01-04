@@ -98,6 +98,9 @@ steps:
         environment: 
           - TWEEK_API_URL=http://api/
           - PROXY_URL=http://zap-smoke:8090
+        links:
+          - gateway:api
+          - gateway:management
       e2e-ui:
         image: ${{BuildingUITests}}
         volumes_from:
@@ -116,6 +119,10 @@ steps:
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
           - PROXY_URL=http://zap-e2e:8090
           - AUTH_DIGEST_CREDENTIALS=user:pwd
+        links:
+          - gateway:api
+          - gateway:management
+          - gateway:authoring
       e2e-integration:
         image: ${{BuildingIntegrationTests}}
         volumes_from:
@@ -129,6 +136,10 @@ steps:
           - AUTHORING_URL=http://authoring:3000
           - MANAGEMENT_URL=http://tweek-management:3000
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+        links:
+          - gateway:api
+          - gateway:management
+          - gateway:authoring
       api-swagger:
         image: node:slim
         depends_on:

@@ -52,9 +52,8 @@ services:
     build: ../services/secure-gateway
     logging:
       driver: "json-file"
-    ports:
-      - "8080:9090"
-      - "80:9090"
+    environment:
+      - TWEEK_TESTING=1
 
   zap-smoke:
     image: soluto/zap
@@ -63,6 +62,10 @@ services:
       driver: "json-file"
     volumes:
       - ../deployments/dev/zap/session/smoke:/root/.ZAP/session/smoke
+    links:
+      - gateway:api
+      - gateway:management
+      - gateway:authoring
 
   zap-e2e:
     image: soluto/zap
@@ -71,6 +74,10 @@ services:
       driver: "json-file"
     volumes:
       - ../deployments/dev/zap/session/e2e:/root/.ZAP/session/e2e
+    links:
+      - gateway:api
+      - gateway:management
+      - gateway:authoring
 
   smoke-tests:
     build:

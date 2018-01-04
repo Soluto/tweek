@@ -37,6 +37,7 @@ services:
   api:
     image: $API_IMAGE
     depends_on:
+      - gateway
       - minio
       - redis
       - nats
