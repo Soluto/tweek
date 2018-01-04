@@ -6,6 +6,7 @@ import CustomSlider from '../../../../components/common/CustomSlider/CustomSlide
 import TypedInput from '../../../../components/common/Input/TypedInput';
 import ComboBox from '../../../../components/common/ComboBox/ComboBox';
 import * as TypesService from '../../../../services/types-service';
+import { convertWeightedArgsToArray } from '../../rules-utils';
 import './RuleValue.css';
 
 const chance = new Chance();
@@ -55,7 +56,8 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
           convertToMultiVariant({
             type: 'bernoulliTrial',
             args: 0.1,
-          })}
+          })
+        }
       >
         Gradual release
       </button>
@@ -69,11 +71,18 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
       onClick={() =>
         convertToMultiVariant({
           type: 'weighted',
-          args: {
-            [value]: 50,
-            'New Varaint': 50,
-          },
-        })}
+          args: [
+            {
+              value,
+              weight: 50,
+            },
+            {
+              value: 'New Variant',
+              weight: 50,
+            },
+          ],
+        })
+      }
     >
       Add Variant
     </button>
@@ -96,12 +105,13 @@ const multiVariantSliderColors = [
   ...R.range(1, 30).map(_ => chance.color()),
 ];
 
-const WeightedValues = ({ onUpdate, variants }) => (
+const WeightedValues = ({ onUpdate, variants, valueType }) => (
   <CustomSlider
-    data={variants}
+    data={convertWeightedArgsToArray(variants, valueType)}
     onUpdate={onUpdate}
     displaySliderDragger={false}
     sliderColors={multiVariantSliderColors}
+    valueType={valueType}
   />
 );
 
@@ -114,7 +124,7 @@ const BernoulliTrial = ({ onUpdate, ratio }) => (
         type="text"
         data-comp="bernoulli-trial-input"
         className="bernoulli-trial-input"
-        value={ratio * 100}
+        value={+(ratio * 100).toFixed(2)}
         onChange={(e) => {
           const newValue = e.target.value;
           if (newValue < 0 || newValue > 100) {
@@ -125,9 +135,9 @@ const BernoulliTrial = ({ onUpdate, ratio }) => (
         }}
         onWheel={({ deltaY, target }) => {
           const currentValue = parseNumericInput(target.value);
-          const newValue = deltaY < 0 ? currentValue + 1 : currentValue - 1;
-          if (newValue < 0 || newValue > 100) return;
-          onUpdate(newValue * 0.01);
+          let newValue = deltaY < 0 ? currentValue + 1 : currentValue - 1;
+          newValue = Math.max(0, Math.min(100, newValue));
+          onUpdate(newValue / 100);
         }}
       />
       <label>%</label>
@@ -136,8 +146,12 @@ const BernoulliTrial = ({ onUpdate, ratio }) => (
       <CustomSlider
         displayLegend={false}
         sliderColors={bernouliTrialSliderColors}
-        data={{ true: 1000 * ratio / 10, false: 100 - 1000 * ratio / 10 }}
-        onUpdate={x => onUpdate(x.true / 100)}
+        data={[
+          { value: true, weight: 1000 * ratio / 10 },
+          { value: false, weight: 100 - 1000 * ratio / 10 },
+        ]}
+        onUpdate={x => onUpdate(x[0].weight / 100)}
+        valueType="boolean"
       />
     </div>
   </div>
@@ -156,7 +170,13 @@ const IdentitySelection = ({ identities, onChange, ownerType }) => (
   </div>
 );
 
-const MultiVariantValue = ({ valueDistrubtion: { type, args }, mutate, identities, ownerType }) => {
+const MultiVariantValue = ({
+  ValueDistribution: { type, args },
+  mutate,
+  identities,
+  ownerType,
+  valueType,
+}) => {
   const updateOwnerType = identity =>
     mutate
       .up()
@@ -177,13 +197,14 @@ const MultiVariantValue = ({ valueDistrubtion: { type, args }, mutate, identitie
         />
         <WeightedValues
           variants={args}
+          valueType={valueType}
           onUpdate={(variants) => {
-            if (Object.keys(variants).length !== 1) {
+            if (variants.length !== 1) {
               mutate.in('args').updateValue(variants);
               return;
             }
 
-            const newValue = Object.keys(variants)[0];
+            const newValue = variants[0].value;
             mutate.apply(m =>
               m
                 .up()
@@ -233,7 +254,8 @@ const MultiVariantValue = ({ valueDistrubtion: { type, args }, mutate, identitie
                     .delete()
                     .in('OwnerType')
                     .delete(),
-                )}
+                )
+              }
             >
               Set to true
             </button>
@@ -256,7 +278,8 @@ const MultiVariantValue = ({ valueDistrubtion: { type, args }, mutate, identitie
                     .delete()
                     .in('OwnerType')
                     .delete(),
-                )}
+                )
+              }
             >
               Set to false
             </button>
@@ -288,7 +311,7 @@ const RuleValue = compose(
     return (
       <MultiVariantValue
         mutate={mutate.in('ValueDistribution')}
-        valueDistrubtion={rule.ValueDistribution}
+        ValueDistribution={rule.ValueDistribution}
         ownerType={rule.OwnerType}
         {...{ identities, valueType }}
       />
