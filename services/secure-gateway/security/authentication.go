@@ -63,8 +63,8 @@ func UserInfoFromRequest(req *http.Request, configuration *config.Security) (Use
 	return info, nil
 }
 
-// UserInfoMiddleware enriches the request's context with the user info from JWT
-func UserInfoMiddleware(configuration *config.Security) negroni.HandlerFunc {
+// AuthenticationMiddleware enriches the request's context with the user info from JWT
+func AuthenticationMiddleware(configuration *config.Security) negroni.HandlerFunc {
 	if _, testing := os.LookupEnv("TWEEK_TESTING"); !configuration.Enforce && testing {
 		info := &userInfo{email: "test@test.test", name: "test"}
 		return negroni.HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {

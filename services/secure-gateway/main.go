@@ -51,15 +51,19 @@ func NewApp(config *config.Configuration) http.Handler {
 	enforcer.EnableEnforce(config.Security.Enforce)
 
 	router := NewRouter(config)
+	authenticationMiddleware := security.AuthenticationMiddleware(config.Security)
+	authorizationMiddleware := security.AuthorizationMiddleware(enforcer)
+
+	middleware := negroni.New(negroni.NewRecovery(), authorizationMiddleware)
 
 	router.MonitoringRouter().HandleFunc("/isAlive", monitoring.IsAlive)
-	modelManagement.Mount(enforcer, negroni.New(negroni.NewRecovery(), security.AuthorizationMiddleware(enforcer)), router.ModelManagementRouter())
-	goThrough.Mount(config.Upstreams, config.V1Hosts, negroni.New(negroni.NewRecovery(), security.AuthorizationMiddleware(enforcer)), router.V1Router())
-	transformation.Mount(config.Upstreams, negroni.New(negroni.NewRecovery(), security.AuthorizationMiddleware(enforcer)), router.V2Router())
+	modelManagement.Mount(enforcer, middleware, router.ModelManagementRouter())
+	goThrough.Mount(config.Upstreams, config.V1Hosts, middleware, router.V1Router())
+	transformation.Mount(config.Upstreams, middleware, router.V2Router())
 
 	goThrough.Mount(config.Upstreams, config.V1Hosts, negroni.New(negroni.NewRecovery()), router.LegacyNonV1Router())
 
-	app := negroni.New(negroni.NewRecovery(), security.UserInfoMiddleware(config.Security))
+	app := negroni.New(negroni.NewRecovery(), authenticationMiddleware)
 	app.UseHandler(router)
 
 	return app
