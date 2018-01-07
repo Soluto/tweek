@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Soluto/tweek/services/secure-gateway/jwtCreator"
+
 	"github.com/Soluto/tweek/services/secure-gateway/config"
 	"github.com/Soluto/tweek/services/secure-gateway/goThrough"
 	"github.com/Soluto/tweek/services/secure-gateway/modelManagement"
@@ -18,7 +20,9 @@ import (
 
 func main() {
 	configuration := config.LoadFromFile("gateway.json")
-	app := NewApp(configuration)
+
+	token := jwtCreator.InitJWT()
+	app := NewApp(configuration, token)
 
 	if len(configuration.Server.Ports) > 1 {
 		for _, port := range configuration.Server.Ports[1:] {
@@ -46,7 +50,7 @@ func main() {
 }
 
 // NewApp creates a new app
-func NewApp(config *config.Configuration) http.Handler {
+func NewApp(config *config.Configuration, token *jwtCreator.JWTToken) http.Handler {
 	enforcer := casbin.NewSyncedEnforcer(config.Security.CasbinPolicy, config.Security.CasbinModel)
 	enforcer.EnableEnforce(config.Security.Enforce)
 
@@ -58,10 +62,10 @@ func NewApp(config *config.Configuration) http.Handler {
 
 	router.MonitoringRouter().HandleFunc("/isAlive", monitoring.IsAlive)
 	modelManagement.Mount(enforcer, middleware, router.ModelManagementRouter())
-	goThrough.Mount(config.Upstreams, config.V1Hosts, middleware, router.V1Router())
-	transformation.Mount(config.Upstreams, middleware, router.V2Router())
+	goThrough.Mount(config.Upstreams, config.V1Hosts, token, middleware, router.V1Router())
+	transformation.Mount(config.Upstreams, token, middleware, router.V2Router())
 
-	goThrough.Mount(config.Upstreams, config.V1Hosts, negroni.New(negroni.NewRecovery()), router.LegacyNonV1Router())
+	goThrough.Mount(config.Upstreams, config.V1Hosts, token, negroni.New(negroni.NewRecovery()), router.LegacyNonV1Router())
 
 	app := negroni.New(negroni.NewRecovery(), authenticationMiddleware)
 	app.UseHandler(router)
