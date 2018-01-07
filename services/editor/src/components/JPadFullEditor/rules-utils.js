@@ -116,12 +116,10 @@ export function getDependencies(...args) {
   return R.uniq(calculateDependencies(...args)).filter(x => x.length > 0);
 }
 
-export const convertWeightedArgsToArray = (data, valueType) =>
-  R.ifElse(
-    R.is(Array),
-    R.identity,
-    R.pipe(
-      R.toPairs,
-      R.map(([value, weight]) => ({ value: safeConvertValue(value, valueType), weight })),
-    ),
-  )(data);
+export function convertWeightedArgsToArray(data, valueType) {
+  if (Array.isArray(data)) return data;
+  return Object.entries(data).map(([value, weight]) => ({
+    value: safeConvertValue(value, valueType),
+    weight,
+  }));
+}

@@ -116,6 +116,18 @@ describe('mutator tests', () => {
         expect(Object.keys(target.someKey).length).toEqual(0);
       }),
     );
+
+    it(
+      'should be able to delete an item from array',
+      newMutator((target, mutator) => {
+        target.someKey = [0, 1, 2];
+        mutator
+          .in('someKey')
+          .in(1)
+          .delete();
+        expect(target.someKey).toEqual([0, 2]);
+      }),
+    );
   });
 
   describe('update value', () => {
