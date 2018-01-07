@@ -73,18 +73,17 @@ func TestNewModelsWrite(t *testing.T) {
 			enforcer: casbin.NewSyncedEnforcer("../security/testdata/policy.conf", "../security/testdata/model.csv"),
 			want:     true,
 		},
-		// Work in progress - need to fix it
-		// {
-		// 	name: "Write denied",
-		// 	args: args{
-		// 		request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"p","V0":"allow1@security.test","V1":"/target","V2":"GET","V3":"allow","V4":"","V5":""}]`)),
-		// 		user:     "allow1@security.test",
-		// 		resource: "/target",
-		// 		action:   "GET",
-		// 	},
-		// 	enforcer: casbin.NewSyncedEnforcer("../security/testdata/policy.conf", "../security/testdata/model.csv"),
-		// 	want:     false,
-		// },
+		{
+			name: "Write denied",
+			args: args{
+				request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"p","V0":"allow1@security.test","V1":"/target","V2":"GET","V3":"deny","V4":"","V5":""}]`)),
+				user:     "allow1@security.test",
+				resource: "/target",
+				action:   "GET",
+			},
+			enforcer: casbin.NewSyncedEnforcer("../security/testdata/policy.conf", "../security/testdata/model.csv"),
+			want:     false,
+		},
 	}
 
 	for _, tt := range tests {
