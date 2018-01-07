@@ -7,8 +7,6 @@ import (
 	"net/url"
 	"regexp"
 
-	"github.com/Soluto/tweek/services/secure-gateway/jwtCreator"
-
 	"github.com/Soluto/tweek/services/secure-gateway/config"
 	"github.com/Soluto/tweek/services/secure-gateway/proxy"
 	"github.com/Soluto/tweek/services/secure-gateway/security"
@@ -30,7 +28,7 @@ import (
 // }
 
 // Mount - mounts the request transformation handlers and middleware
-func Mount(upstreams *config.Upstreams, token *jwtCreator.JWTToken, middleware *negroni.Negroni, router *mux.Router) {
+func Mount(upstreams *config.Upstreams, token *security.JWTToken, middleware *negroni.Negroni, router *mux.Router) {
 	// URLs
 	api := parseUpstreamOrPanic(upstreams.API)
 	authoring := parseUpstreamOrPanic(upstreams.Authoring)

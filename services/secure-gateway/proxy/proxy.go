@@ -5,14 +5,14 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/Soluto/tweek/services/secure-gateway/jwtCreator"
+	"github.com/Soluto/tweek/services/secure-gateway/security"
 
 	"github.com/urfave/negroni"
 	"github.com/vulcand/oxy/forward"
 )
 
 // New creates a new Proxy Middleware to forward the requests
-func New(upstream *url.URL, token *jwtCreator.JWTToken) negroni.HandlerFunc {
+func New(upstream *url.URL, token *security.JWTToken) negroni.HandlerFunc {
 	fwd, _ := forward.New()
 	return func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		patchUpstream(r, upstream)
@@ -25,7 +25,7 @@ func New(upstream *url.URL, token *jwtCreator.JWTToken) negroni.HandlerFunc {
 }
 
 // FromStringURL create a new Proxy Middleware to forward the requests
-func FromStringURL(upstream string, token *jwtCreator.JWTToken) negroni.HandlerFunc {
+func FromStringURL(upstream string, token *security.JWTToken) negroni.HandlerFunc {
 	newURL, err := url.Parse(upstream)
 	if err != nil {
 		panic(err)

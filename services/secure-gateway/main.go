@@ -5,8 +5,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Soluto/tweek/services/secure-gateway/jwtCreator"
-
 	"github.com/Soluto/tweek/services/secure-gateway/config"
 	"github.com/Soluto/tweek/services/secure-gateway/goThrough"
 	"github.com/Soluto/tweek/services/secure-gateway/modelManagement"
@@ -21,7 +19,7 @@ import (
 func main() {
 	configuration := config.LoadFromFile("gateway.json")
 
-	token := jwtCreator.InitJWT()
+	token := security.InitJWT()
 	app := NewApp(configuration, token)
 
 	if len(configuration.Server.Ports) > 1 {
@@ -50,7 +48,7 @@ func main() {
 }
 
 // NewApp creates a new app
-func NewApp(config *config.Configuration, token *jwtCreator.JWTToken) http.Handler {
+func NewApp(config *config.Configuration, token *security.JWTToken) http.Handler {
 	enforcer := casbin.NewSyncedEnforcer(config.Security.CasbinPolicy, config.Security.CasbinModel)
 	enforcer.EnableEnforce(config.Security.Enforce)
 

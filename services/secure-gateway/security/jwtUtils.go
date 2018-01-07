@@ -1,4 +1,4 @@
-package jwtCreator
+package security
 
 import (
 	"os"

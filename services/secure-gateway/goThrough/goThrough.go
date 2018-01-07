@@ -4,16 +4,15 @@ import (
 	"log"
 	"net/url"
 
-	"github.com/Soluto/tweek/services/secure-gateway/jwtCreator"
-
 	"github.com/Soluto/tweek/services/secure-gateway/config"
 	"github.com/Soluto/tweek/services/secure-gateway/proxy"
+	"github.com/Soluto/tweek/services/secure-gateway/security"
 	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"
 )
 
 // Mount - mounts the request goThrough handlers and middleware
-func Mount(upstreams *config.Upstreams, v1Hosts *config.V1Hosts, token *jwtCreator.JWTToken, middleware *negroni.Negroni, router *mux.Router) {
+func Mount(upstreams *config.Upstreams, v1Hosts *config.V1Hosts, token *security.JWTToken, middleware *negroni.Negroni, router *mux.Router) {
 	// URLs
 	api := parseUpstreamOrPanic(upstreams.API)
 	authoring := parseUpstreamOrPanic(upstreams.Authoring)
