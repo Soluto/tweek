@@ -23,11 +23,18 @@ type Server struct {
 
 // Security section hold security related configuration
 type Security struct {
-	AllowedIssuers []string `mapstructure:"allowed_issuers"`
-	AzureTenantID  string   `mapstructure:"azure_tenant_id"`
-	Enforce        bool     `mapstructure:"enforce"`
-	CasbinPolicy   string   `mapstructure:"casbin_policy"`
-	CasbinModel    string   `mapstructure:"casbin_model"`
+	AllowedIssuers   []string         `mapstructure:"allowed_issuers"`
+	AzureTenantID    string           `mapstructure:"azure_tenant_id"`
+	Enforce          bool             `mapstructure:"enforce"`
+	PolicyRepository PolicyRepository `mapstructure:"policy_repository"`
+}
+
+// PolicyRepository section holds the git upstream repository url and secret key
+type PolicyRepository struct {
+	UpstreamURL  string `mapstructure:"upstream_url"`
+	SecretKey    string `mapstructure:"secret_key"`
+	CasbinPolicy string `mapstructure:"casbin_policy"`
+	CasbinModel  string `mapstructure:"casbin_model"`
 }
 
 // Configuration is the root element of configuration for secure-gateway

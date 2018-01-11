@@ -2,18 +2,26 @@ package handlers
 
 import (
 	"bytes"
+	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
+
+	"github.com/casbin/casbin/file-adapter"
+	"github.com/casbin/casbin/model"
+	"github.com/casbin/json-adapter"
 
 	"github.com/casbin/casbin"
 	"github.com/urfave/negroni"
 )
 
 func TestNewModelsRead(t *testing.T) {
-	enforcer := casbin.NewSyncedEnforcer("../security/testdata/policy.conf", "../security/testdata/model.csv")
+	enforcer := makeEnforcer()
 	type args struct {
 		request *http.Request
 	}
@@ -57,10 +65,9 @@ func TestNewModelsWrite(t *testing.T) {
 		action   string
 	}
 	tests := []struct {
-		name     string
-		args     args
-		enforcer *casbin.SyncedEnforcer
-		want     bool
+		name string
+		args args
+		want bool
 	}{
 		{
 			name: "Add user with allow permissions",
@@ -70,8 +77,7 @@ func TestNewModelsWrite(t *testing.T) {
 				resource: "/target",
 				action:   "GET",
 			},
-			enforcer: casbin.NewSyncedEnforcer("../security/testdata/policy.conf", "../security/testdata/model.csv"),
-			want:     true,
+			want: true,
 		},
 		{
 			name: "Add user with deny permissions",
@@ -81,31 +87,69 @@ func TestNewModelsWrite(t *testing.T) {
 				resource: "/target",
 				action:   "GET",
 			},
-			enforcer: casbin.NewSyncedEnforcer("../security/testdata/policy.conf", "../security/testdata/model.csv"),
-			want:     false,
+			want: false,
 		},
 		{
 			name: "Add user to group with allow permissions",
 			args: args{
-				request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"g","V0":"allow1@security.test","V1":"role_users","V2":"","V3":"","V4":"","V5":""},{"PType":"p","V0":"role_users","V1":"/target","V2":"GET","V3":"deny","V4":"","V5":""}]`)),
+				request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"g","V0":"allow1@security.test","V1":"role_users","V2":"","V3":"","V4":"","V5":""},{"PType":"p","V0":"role_users","V1":"/target","V2":"GET","V3":"allow","V4":"","V5":""}]`)),
 				user:     "allow1@security.test",
 				resource: "/target",
 				action:   "GET",
 			},
-			enforcer: casbin.NewSyncedEnforcer("../security/testdata/policy.conf", "../security/testdata/model.csv"),
-			want:     true,
+			want: true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			server := negroni.New(NewModelsWrite(tt.enforcer))
+			enforcer := makeEnforcer()
+			enforcer.EnableEnforce(true)
+			enforcer.EnableLog(false)
+
+			server := negroni.New(NewModelsWrite(enforcer))
 			recorder := httptest.NewRecorder()
 			server.ServeHTTP(recorder, tt.args.request)
 
-			if got := tt.enforcer.Enforce(tt.args.user, tt.args.resource, tt.args.action); got != tt.want {
-				t.Errorf(".enforcer.Enforce(%v, %v, %v) = %v, want %v", tt.args.user, tt.args.resource, tt.args.action, got, tt.want)
+			fmt.Printf("test: %v\nuser: %v\nresource: %v\naction: %v\n", tt.name, tt.args.user, tt.args.resource, tt.args.action)
+			if got := enforcer.Enforce(tt.args.user, tt.args.resource, tt.args.action); got != tt.want {
+				t.Errorf("Enforcer.Enforce(%v, %v, %v) = %v, want %v", tt.args.user, tt.args.resource, tt.args.action, got, tt.want)
 			}
 		})
 	}
+}
+
+func makeEnforcer() *casbin.SyncedEnforcer {
+	wd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("WORKING DIRECTORY:", wd)
+	empty := []byte("[]")
+	json := jsonadapter.NewAdapter(&empty)
+	file := fileadapter.NewAdapter("../security/testdata/model.csv")
+
+	var model model.Model
+	if modelText, err := ioutil.ReadFile("../security/testdata/policy.conf"); err != nil {
+		panic(err)
+	} else {
+		model = casbin.NewModel(string(modelText))
+	}
+
+	if err := file.LoadPolicy(model); err != nil {
+		panic(err)
+	}
+	if err := json.SavePolicy(model); err != nil {
+		panic(err)
+	}
+
+	return casbin.NewSyncedEnforcer("../security/testdata/policy.conf", json)
+}
+
+func debug(tag string, data interface{}) {
+	formatted, err := json.Marshal(data)
+	if err != nil {
+		panic(err)
+	}
+	log.Println(tag, string(formatted))
 }

@@ -2,8 +2,11 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/Soluto/tweek/services/secure-gateway/policyRepository"
 
 	"github.com/Soluto/tweek/services/secure-gateway/config"
 	"github.com/Soluto/tweek/services/secure-gateway/goThrough"
@@ -48,22 +51,34 @@ func main() {
 }
 
 // NewApp creates a new app
-func NewApp(config *config.Configuration, token *security.JWTToken) http.Handler {
-	enforcer := casbin.NewSyncedEnforcer(config.Security.CasbinPolicy, config.Security.CasbinModel)
-	enforcer.EnableEnforce(config.Security.Enforce)
+func NewApp(configuration *config.Configuration, token *security.JWTToken) http.Handler {
+	workDir, err := ioutil.TempDir("/tmp", "repo")
+	if err != nil {
+		log.Panicln("Error loading policies:", err)
+	}
 
-	router := NewRouter(config)
-	authenticationMiddleware := security.AuthenticationMiddleware(config.Security)
+	repo, err := policyRepository.New(workDir, &configuration.Security.PolicyRepository)
+	if err != nil {
+		log.Panicln("Error loading policies:", err)
+	}
+
+	model := configuration.Security.PolicyRepository.CasbinModel
+	enforcer := casbin.NewSyncedEnforcer(repo, model)
+	enforcer.EnableLog(false)
+	enforcer.EnableEnforce(configuration.Security.Enforce)
+
+	router := NewRouter(configuration)
+	authenticationMiddleware := security.AuthenticationMiddleware(configuration.Security)
 	authorizationMiddleware := security.AuthorizationMiddleware(enforcer)
 
 	middleware := negroni.New(negroni.NewRecovery(), authorizationMiddleware)
 
 	router.MonitoringRouter().HandleFunc("/isAlive", monitoring.IsAlive)
 	modelManagement.Mount(enforcer, middleware, router.ModelManagementRouter())
-	goThrough.Mount(config.Upstreams, config.V1Hosts, token, middleware, router.V1Router())
-	transformation.Mount(config.Upstreams, token, middleware, router.V2Router())
+	goThrough.Mount(configuration.Upstreams, configuration.V1Hosts, token, middleware, router.V1Router())
+	transformation.Mount(configuration.Upstreams, token, middleware, router.V2Router())
 
-	goThrough.Mount(config.Upstreams, config.V1Hosts, token, negroni.New(negroni.NewRecovery()), router.LegacyNonV1Router())
+	goThrough.Mount(configuration.Upstreams, configuration.V1Hosts, token, negroni.New(negroni.NewRecovery()), router.LegacyNonV1Router())
 
 	app := negroni.New(negroni.NewRecovery(), authenticationMiddleware)
 	app.UseHandler(router)

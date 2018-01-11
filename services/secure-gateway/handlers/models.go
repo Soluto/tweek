@@ -42,7 +42,20 @@ func NewModelsWrite(enforcer *casbin.SyncedEnforcer) negroni.Handler {
 		}
 
 		jsAdapter := jsonadapter.NewAdapter(&buffer)
+
+		// TODO: figure out how to make the following operartions atomic
+		enforcer.ClearPolicy()
 		jsAdapter.LoadPolicy(enforcer.GetModel())
+
+		if err := enforcer.SavePolicy(); err != nil {
+			log.Println("Error saving policy", err)
+			panic("Error saving policy")
+		}
+
+		if err := enforcer.LoadPolicy(); err != nil {
+			log.Println("Error loading policy", err)
+			panic("Error loading policy")
+		}
 
 		rw.WriteHeader(http.StatusOK)
 	})
