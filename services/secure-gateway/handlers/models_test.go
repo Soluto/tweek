@@ -3,12 +3,10 @@ package handlers
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"strings"
 	"testing"
 
@@ -111,7 +109,6 @@ func TestNewModelsWrite(t *testing.T) {
 			recorder := httptest.NewRecorder()
 			server.ServeHTTP(recorder, tt.args.request)
 
-			fmt.Printf("test: %v\nuser: %v\nresource: %v\naction: %v\n", tt.name, tt.args.user, tt.args.resource, tt.args.action)
 			if got := enforcer.Enforce(tt.args.user, tt.args.resource, tt.args.action); got != tt.want {
 				t.Errorf("Enforcer.Enforce(%v, %v, %v) = %v, want %v", tt.args.user, tt.args.resource, tt.args.action, got, tt.want)
 			}
@@ -120,11 +117,6 @@ func TestNewModelsWrite(t *testing.T) {
 }
 
 func makeEnforcer() *casbin.SyncedEnforcer {
-	wd, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("WORKING DIRECTORY:", wd)
 	empty := []byte("[]")
 	json := jsonadapter.NewAdapter(&empty)
 	file := fileadapter.NewAdapter("../security/testdata/model.csv")
