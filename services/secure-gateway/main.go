@@ -27,27 +27,12 @@ func main() {
 
 	if len(configuration.Server.Ports) > 1 {
 		for _, port := range configuration.Server.Ports[1:] {
-			p := port
-			s := &http.Server{
-				Addr:    fmt.Sprintf(":%v", p),
-				Handler: app,
-			}
-
-			log.Printf("Secure Gateway is listening on port %v", p)
-			go func() {
-				log.Fatalf("Server on port %v failed unexpectedly: %v", p, s.ListenAndServe())
-			}()
+			go runServer(port, app)
 		}
 	}
 
-	p := configuration.Server.Ports[0]
-	s := &http.Server{
-		Addr:    fmt.Sprintf(":%v", p),
-		Handler: app,
-	}
-
-	log.Printf("Secure Gateway is listening on port %v", p)
-	log.Fatalf("Server on port %v failed unexpectedly: %v", p, s.ListenAndServe())
+	port := configuration.Server.Ports[0]
+	runServer(port, app)
 }
 
 // NewApp creates a new app
@@ -84,4 +69,14 @@ func NewApp(configuration *config.Configuration, token *security.JWTToken) http.
 	app.UseHandler(router)
 
 	return app
+}
+
+func runServer(port int, handler http.Handler) {
+	server := &http.Server{
+		Addr:    fmt.Sprintf(":%v", port),
+		Handler: handler,
+	}
+
+	log.Printf("Secure Gateway is listening on port %v", port)
+	log.Fatalf("Server on port %v failed unexpectedly: %v", port, server.ListenAndServe())
 }

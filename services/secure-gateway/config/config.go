@@ -52,6 +52,7 @@ func LoadFromFile(fileName string) *Configuration {
 	configReader := viper.New()
 	configReader.SetConfigFile("gateway.json")
 	configReader.SetDefault("server.ports", []int{9090})
+	configReader.BindEnv("security.policy_repository.secret_key", "GIT_PRIVATE_KEY_PATH")
 
 	// load
 	configReader.ReadInConfig()

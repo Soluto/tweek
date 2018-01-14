@@ -96,6 +96,13 @@ services:
 
   gateway:
     image: $SECUREGATEWAY_IMAGE
+    logging:
+      driver: "json-file"
+    volumes_from:
+      - keys
+    environment:
+      - TWEEK_TESTING=1
+      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
 
   redis:
     image: redis:4.0.2-alpine

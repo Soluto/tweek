@@ -50,10 +50,6 @@ services:
   gateway:
     image: soluto/tweek-secure-gateway
     build: ../services/secure-gateway
-    logging:
-      driver: "json-file"
-    environment:
-      - TWEEK_TESTING=1
 
   zap-smoke:
     image: soluto/zap

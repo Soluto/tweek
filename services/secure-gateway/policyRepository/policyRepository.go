@@ -1,13 +1,20 @@
 package policyRepository
 
 import (
+	"crypto/x509"
+	"encoding/pem"
 	"errors"
+	"io/ioutil"
 	"path"
 	"sync"
 	"time"
 
+	"gopkg.in/src-d/go-git.v4/plumbing/transport"
+
+	"golang.org/x/crypto/ssh"
+
 	"gopkg.in/src-d/go-git.v4/plumbing/object"
-	"gopkg.in/src-d/go-git.v4/plumbing/transport/ssh"
+	gogitSSH "gopkg.in/src-d/go-git.v4/plumbing/transport/ssh"
 
 	"github.com/Soluto/tweek/services/secure-gateway/config"
 	"github.com/casbin/casbin/file-adapter"
@@ -111,7 +118,7 @@ func (a *gitCasbinAdapter) RemoveFilteredPolicy(sec string, ptype string, fieldI
 // New creates a git adapter for policy storage
 func New(workdir string, repoConfig *config.PolicyRepository) (result persist.Adapter, err error) {
 	result = nil
-	auth, err := ssh.NewPublicKeysFromFile("git", repoConfig.SecretKey, "")
+	auth, err := setupAuthentication(repoConfig.SecretKey)
 	if err != nil {
 		return
 	}
@@ -133,5 +140,33 @@ func New(workdir string, repoConfig *config.PolicyRepository) (result persist.Ad
 		workdir:     workdir,
 	}
 
+	return
+}
+
+func setupAuthentication(secretKeyFile string) (auth transport.AuthMethod, err error) {
+	pemFile, err := ioutil.ReadFile(secretKeyFile)
+	if err != nil {
+		return
+	}
+
+	signer, err := ssh.ParsePrivateKey(pemFile)
+	if err != nil {
+		var key interface{}
+		block, _ := pem.Decode(pemFile)
+		key, err = x509.ParsePKCS8PrivateKey(block.Bytes)
+		if err != nil {
+			key, err = x509.ParsePKCS1PrivateKey(block.Bytes)
+			if err != nil {
+				return
+			}
+		}
+
+		signer, err = ssh.NewSignerFromKey(key)
+		if err != nil {
+			return
+		}
+	}
+
+	auth = &gogitSSH.PublicKeys{User: "git", Signer: signer}
 	return
 }
