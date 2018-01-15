@@ -11,4 +11,8 @@
     <PackageReference Include="Tweek.JPad" Version="0.6.21" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Tweek.Publishing.Common\Tweek.Publishing.Common.csproj" />
+  </ItemGroup>
+
 </Project>

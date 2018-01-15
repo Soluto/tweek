@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.Publishing.Service", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.Publishing.Verifier", "Tweek.Publishing.Verifier\Tweek.Publishing.Verifier.csproj", "{1D6BA761-0375-4839-ACC1-01DD46E5D0E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.Publishing.Common", "Tweek.Publishing.Common\Tweek.Publishing.Common.csproj", "{279C81FB-1273-4FDF-91C6-410285955EEE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +46,17 @@ Global
 		{1D6BA761-0375-4839-ACC1-01DD46E5D0E0}.Release|x64.Build.0 = Release|x64
 		{1D6BA761-0375-4839-ACC1-01DD46E5D0E0}.Release|x86.ActiveCfg = Release|x86
 		{1D6BA761-0375-4839-ACC1-01DD46E5D0E0}.Release|x86.Build.0 = Release|x86
+		{279C81FB-1273-4FDF-91C6-410285955EEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{279C81FB-1273-4FDF-91C6-410285955EEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{279C81FB-1273-4FDF-91C6-410285955EEE}.Debug|x64.ActiveCfg = Debug|x64
+		{279C81FB-1273-4FDF-91C6-410285955EEE}.Debug|x64.Build.0 = Debug|x64
+		{279C81FB-1273-4FDF-91C6-410285955EEE}.Debug|x86.ActiveCfg = Debug|x86
+		{279C81FB-1273-4FDF-91C6-410285955EEE}.Debug|x86.Build.0 = Debug|x86
+		{279C81FB-1273-4FDF-91C6-410285955EEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{279C81FB-1273-4FDF-91C6-410285955EEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{279C81FB-1273-4FDF-91C6-410285955EEE}.Release|x64.ActiveCfg = Release|x64
+		{279C81FB-1273-4FDF-91C6-410285955EEE}.Release|x64.Build.0 = Release|x64
+		{279C81FB-1273-4FDF-91C6-410285955EEE}.Release|x86.ActiveCfg = Release|x86
+		{279C81FB-1273-4FDF-91C6-410285955EEE}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 EndGlobal
