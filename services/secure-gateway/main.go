@@ -58,7 +58,7 @@ func NewApp(configuration *config.Configuration, token security.JWTToken) http.H
 
 	middleware := negroni.New(negroni.NewRecovery(), authorizationMiddleware)
 
-	router.MonitoringRouter().HandleFunc("/isAlive", monitoring.IsAlive)
+	router.MonitoringRouter().HandleFunc("isAlive", monitoring.IsAlive)
 	modelManagement.Mount(enforcer, middleware, router.ModelManagementRouter())
 	goThrough.Mount(configuration.Upstreams, configuration.V1Hosts, token, middleware, router.V1Router())
 	transformation.Mount(configuration.Upstreams, token, middleware, router.V2Router())
