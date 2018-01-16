@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/Soluto/tweek/services/secure-gateway/audit"
 	"github.com/Soluto/tweek/services/secure-gateway/config"
 	jwt "github.com/dgrijalva/jwt-go" // jwt types
 	"github.com/dgrijalva/jwt-go/request"
@@ -48,6 +49,7 @@ func UserInfoFromRequest(req *http.Request, configuration *config.Security) (Use
 			if keyID, ok := t.Header["kid"].(string); ok {
 				return getKeyByIssuer(issuer, keyID, configuration)
 			}
+
 			return nil, fmt.Errorf("No keyId in header")
 		}
 		return nil, fmt.Errorf("No issuer in claims")
@@ -64,7 +66,7 @@ func UserInfoFromRequest(req *http.Request, configuration *config.Security) (Use
 }
 
 // AuthenticationMiddleware enriches the request's context with the user info from JWT
-func AuthenticationMiddleware(configuration *config.Security) negroni.HandlerFunc {
+func AuthenticationMiddleware(configuration *config.Security, auditor audit.Auditor) negroni.HandlerFunc {
 	if _, testing := os.LookupEnv("TWEEK_TESTING"); !configuration.Enforce && testing {
 		info := &userInfo{email: "test@test.test", name: "test"}
 		return negroni.HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
