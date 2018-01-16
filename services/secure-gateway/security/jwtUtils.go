@@ -2,6 +2,7 @@ package security
 
 import (
 	"os"
+	"sync"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go" // jwt types
@@ -12,17 +13,35 @@ type tweekClaims struct {
 	jwt.StandardClaims
 }
 
-// JWTToken struct that contains one field - signed jwt
-type JWTToken struct {
-	TokenStr string
+// JWTTokenData struct that contains one field - signed jwt
+type JWTTokenData struct {
+	tokenStr string
+	lock     sync.RWMutex
+}
+
+type JWTToken interface {
+	GetToken() string
+	SetToken(tokenStr string)
+}
+
+func (t *JWTTokenData) GetToken() string {
+	t.lock.RLock()
+	defer t.lock.RUnlock()
+	return t.tokenStr
+}
+
+func (t *JWTTokenData) SetToken(tokenStr string) {
+	t.lock.Lock()
+	defer t.lock.Unlock()
+	t.tokenStr = tokenStr
 }
 
 const expirationPeriod = 24
 
 // InitJWT - inits jwt
-func InitJWT() *JWTToken {
-	token := &JWTToken{
-		createNewJWT(),
+func InitJWT() JWTToken {
+	token := &JWTTokenData{
+		tokenStr: createNewJWT(),
 	}
 	go setExpirationTimer(token)
 	return token
@@ -48,11 +67,11 @@ func createNewJWT() string {
 	return tokenStr
 }
 
-func setExpirationTimer(token *JWTToken) {
+func setExpirationTimer(token *JWTTokenData) {
 	timer := time.Tick(expirationPeriod * time.Hour)
 
 	for range timer {
 		tokenStr := createNewJWT()
-		token.TokenStr = tokenStr
+		token.SetToken(tokenStr)
 	}
 }

@@ -12,7 +12,7 @@ import (
 )
 
 // NewHealthHandler return /health endpoint handler
-func NewHealthHandler(upstreams *config.Upstreams, token *security.JWTToken, middleware *negroni.Negroni) http.Handler {
+func NewHealthHandler(upstreams *config.Upstreams, token security.JWTToken, middleware *negroni.Negroni) http.Handler {
 	api := parseUpstreamOrPanic(upstreams.API)
 	authoring := parseUpstreamOrPanic(upstreams.Authoring)
 	management := parseUpstreamOrPanic(upstreams.Management)

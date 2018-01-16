@@ -12,11 +12,11 @@ import (
 )
 
 // New creates a new Proxy Middleware to forward the requests
-func New(upstream *url.URL, token *security.JWTToken) negroni.HandlerFunc {
+func New(upstream *url.URL, token security.JWTToken) negroni.HandlerFunc {
 	fwd, _ := forward.New()
 	return func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		patchUpstream(r, upstream)
-		setJwtToken(r, token.TokenStr)
+		setJwtToken(r, token.GetToken())
 		fwd.ServeHTTP(rw, r)
 		if next != nil {
 			next(rw, r)
@@ -25,7 +25,7 @@ func New(upstream *url.URL, token *security.JWTToken) negroni.HandlerFunc {
 }
 
 // FromStringURL create a new Proxy Middleware to forward the requests
-func FromStringURL(upstream string, token *security.JWTToken) negroni.HandlerFunc {
+func FromStringURL(upstream string, token security.JWTToken) negroni.HandlerFunc {
 	newURL, err := url.Parse(upstream)
 	if err != nil {
 		panic(err)

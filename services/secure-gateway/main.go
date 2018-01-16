@@ -36,15 +36,15 @@ func main() {
 }
 
 // NewApp creates a new app
-func NewApp(configuration *config.Configuration, token *security.JWTToken) http.Handler {
+func NewApp(configuration *config.Configuration, token security.JWTToken) http.Handler {
 	workDir, err := ioutil.TempDir("/tmp", "repo")
 	if err != nil {
-		log.Panicln("Error loading policies:", err)
+		log.Panicln("Error loading policies (prepare to create):", err)
 	}
 
 	repo, err := policyRepository.New(workDir, &configuration.Security.PolicyRepository)
 	if err != nil {
-		log.Panicln("Error loading policies:", err)
+		log.Panicln("Error loading policies (creating repository):", err)
 	}
 
 	model := configuration.Security.PolicyRepository.CasbinModel

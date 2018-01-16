@@ -12,7 +12,7 @@ import (
 )
 
 // Mount - mounts the request goThrough handlers and middleware
-func Mount(upstreams *config.Upstreams, v1Hosts *config.V1Hosts, token *security.JWTToken, middleware *negroni.Negroni, router *mux.Router) {
+func Mount(upstreams *config.Upstreams, v1Hosts *config.V1Hosts, token security.JWTToken, middleware *negroni.Negroni, router *mux.Router) {
 	// URLs
 	api := parseUpstreamOrPanic(upstreams.API)
 	authoring := parseUpstreamOrPanic(upstreams.Authoring)

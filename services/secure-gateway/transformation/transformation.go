@@ -28,7 +28,7 @@ import (
 // }
 
 // Mount - mounts the request transformation handlers and middleware
-func Mount(upstreams *config.Upstreams, token *security.JWTToken, middleware *negroni.Negroni, router *mux.Router) {
+func Mount(upstreams *config.Upstreams, token security.JWTToken, middleware *negroni.Negroni, router *mux.Router) {
 	// URLs
 	api := parseUpstreamOrPanic(upstreams.API)
 	authoring := parseUpstreamOrPanic(upstreams.Authoring)
