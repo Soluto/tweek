@@ -96,6 +96,8 @@ services:
 
   gateway:
     image: $SECUREGATEWAY_IMAGE
+    depends_on:
+      - git
     logging:
       driver: "json-file"
     volumes_from:

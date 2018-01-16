@@ -31,3 +31,6 @@ services:
   gateway:
     image: soluto/tweek-secure-gateway
     build: ../../services/secure-gateway
+    depends_on:
+      - git   
+      

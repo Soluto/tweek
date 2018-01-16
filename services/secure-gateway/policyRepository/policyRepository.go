@@ -5,6 +5,8 @@ import (
 	"encoding/pem"
 	"errors"
 	"io/ioutil"
+	"log"
+	"net"
 	"path"
 	"sync"
 	"time"
@@ -32,7 +34,7 @@ type gitCasbinAdapter struct {
 	repo        *git.Repository
 	fileadapter persist.Adapter
 	upstream    string
-	lock        *sync.RWMutex
+	lock        sync.RWMutex
 	workdir     string
 }
 
@@ -120,6 +122,7 @@ func New(workdir string, repoConfig *config.PolicyRepository) (result persist.Ad
 	result = nil
 	auth, err := setupAuthentication(repoConfig.SecretKey)
 	if err != nil {
+		log.Panic("Authentication setup failed", err)
 		return
 	}
 
@@ -128,6 +131,7 @@ func New(workdir string, repoConfig *config.PolicyRepository) (result persist.Ad
 		Auth: auth,
 	})
 	if err != nil {
+		log.Panic("git repo clone failed", err)
 		return
 	}
 
@@ -167,6 +171,19 @@ func setupAuthentication(secretKeyFile string) (auth transport.AuthMethod, err e
 		}
 	}
 
-	auth = &gogitSSH.PublicKeys{User: "git", Signer: signer}
+	hostKeyCallbackHelper := gogitSSH.HostKeyCallbackHelper{
+		HostKeyCallback: hostKeyCallback,
+	}
+
+	auth = &gogitSSH.PublicKeys{
+		User:                  "git",
+		Signer:                signer,
+		HostKeyCallbackHelper: hostKeyCallbackHelper,
+	}
+
 	return
+}
+
+func hostKeyCallback(hostname string, remote net.Addr, key ssh.PublicKey) error {
+	return nil
 }

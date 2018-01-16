@@ -48,7 +48,7 @@ func NewApp(configuration *config.Configuration, token security.JWTToken) http.H
 	}
 
 	model := configuration.Security.PolicyRepository.CasbinModel
-	enforcer := casbin.NewSyncedEnforcer(repo, model)
+	enforcer := casbin.NewSyncedEnforcer(model, repo)
 	enforcer.EnableLog(false)
 	enforcer.EnableEnforce(configuration.Security.Enforce)
 

@@ -125,9 +125,11 @@ services:
 
   gateway:
     ports:
-      - "80:9090"
-    environment:
-      - TWEEK_TESTING=1
+      - "80:9090"    
+    environment:      
+      - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
+    secrets:
+      - tweek_ssh_private_key
 
 secrets:
   tweek_ssh_public_key:

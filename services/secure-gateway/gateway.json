@@ -8,8 +8,8 @@
         "enforce": false,
         "policy_repository": {
             "upstream_url": "ssh://git@git/tweek/repo",
-            "casbin_policy": "./policy.conf",
-            "casbin_model": "./model.csv"
+            "casbin_policy": "./model.csv",
+            "casbin_model": "./policy.conf"
         }
     },
     "v1Hosts": {
