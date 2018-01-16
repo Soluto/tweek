@@ -35,9 +35,9 @@ COPY --from=build /go/src/github.com/Soluto/tweek/services/secure-gateway/gatewa
 COPY --from=build /go/src/github.com/Soluto/tweek/services/secure-gateway/model.csv /model.csv
 COPY --from=build /go/src/github.com/Soluto/tweek/services/secure-gateway/policy.conf /policy.conf
 COPY --from=build /go/src/github.com/Soluto/tweek/services/secure-gateway/entry /entry
-COPY --from=build /go/src/github.com/Soluto/tweek/services/secure-gateway/hcheck /hcheck
+COPY --from=build /go/src/github.com/Soluto/tweek/services/secure-gateway/hcheck /healthcheck
 COPY --from=dependencies /empty_tmp /tmp
 
-HEALTHCHECK --interval=5s --timeout=2s --retries=10 CMD ["/hcheck"]
+HEALTHCHECK --interval=5s --timeout=2s --retries=10 CMD ["/healthcheck"]
 
 ENTRYPOINT [ "/entry" ]
