@@ -28,7 +28,7 @@ nconf
   .defaults({
     AUTHORING_URL: 'http://localhost:4005',
     API_URL: 'http://localhost:4003',
-    GATEWAY_URL: 'http://localhost:80',
+    GATEWAY_URL: 'http://localhost:4006',
     GIT_PRIVATE_KEY_PATH: '../../deployments/dev/ssh/tweekgit',
   });
 
