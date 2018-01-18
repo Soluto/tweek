@@ -1,10 +1,9 @@
 using System.Threading.Tasks;
 using System;
-using Tweek.Publishing.Verifier.Validation;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
-namespace Tweek.Publishing.Verifier
+namespace Tweek.Publishing.Service.Validation
 {
   public class CircularDependencyValidator : IValidator
   {

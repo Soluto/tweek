@@ -41,7 +41,7 @@ namespace Tweek.Publishing.Service.Storage
       await tsc.Task;
     }
 
-    public async Task Put(string objectName, Func<Stream, CancellationToken, Task> writer, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task Put(string objectName, Func<Stream, CancellationToken, Task> writer, string mimeType, CancellationToken cancellationToken = default(CancellationToken))
     {
        var stream = new MemoryStream();
        await writer(stream, cancellationToken);

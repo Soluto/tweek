@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Tweek.Publishing.Verifier.Validation
+namespace Tweek.Publishing.Service.Validation
 {
     public interface IValidator
     {

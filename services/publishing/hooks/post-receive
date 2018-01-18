@@ -12,3 +12,4 @@ then
 fi
 
 echo "finished push" >> /tweek/repo.log
+curl "http://localhost/sync

@@ -35,7 +35,7 @@ namespace Tweek.Publishing.Service.Storage
                 {
                     await JToken.FromObject(value).WriteToAsync(jsonWriter, ct);
                 }
-            }, cancellationToken);
+            }, "application/json", cancellationToken);
         }
     }
 }

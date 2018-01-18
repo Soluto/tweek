@@ -1,30 +1,43 @@
+###########
 FROM microsoft/aspnetcore-build:2.0.3 as source
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        openssh-client openssh-server git \
-    && rm -rf /var/lib/apt/lists/* \
-    && adduser --disabled-password --shell /usr/bin/git-shell git \
-    && mkdir /home/git/.ssh \
-    && ssh-keygen -A \
-    && git config --global user.email "git@tweek" \
-    && git config --global user.name "git" 
+ARG target="Release"
 
-WORKDIR /tweek
+WORKDIR /src
 COPY ./Tweek.Publishing.sln ./Tweek.Publishing.sln
-COPY ./Tweek.Publishing.Verifier/Tweek.Publishing.Verifier.csproj ./Tweek.Publishing.Verifier/Tweek.Publishing.Verifier.csproj
 COPY ./Tweek.Publishing.Service/Tweek.Publishing.Service.csproj ./Tweek.Publishing.Service/Tweek.Publishing.Service.csproj
 RUN dotnet restore
 
 COPY . .
 
-RUN dotnet publish -c Release \
-    && chmod 700 ssh-helper.sh \
-    && mkdir -p /var/run/sshd \
-    && chown -R git:git /tweek
+RUN dotnet publish -c $target -o obj/docker/publish
 
-# add healthcheck
+RUN cp -r /src/scripts /tweek \
+    && cp -r /src/hooks /tweek/hooks \
+    && cp -r /src/Tweek.Publishing.Service/obj/docker/publish /tweek/Tweek.Publishing.Service
+
+FROM microsoft/aspnetcore:2.0.3
+ARG target="Release"
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       openssh-client openssh-server git  \
+       && rm -rf /var/lib/apt/lists/*
+
+RUN adduser --disabled-password --shell /usr/bin/git-shell git \
+    && mkdir /home/git/.ssh \
+    && ssh-keygen -A \
+    && git config --global user.email "git@tweek" \
+    && git config --global user.name "git" 
+
+RUN echo $target
+RUN [ $target = "Debug" ] && apt-get update && apt-get install unzip && rm -rf /var/lib/apt/lists/* && curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg
+
+COPY --from=source /tweek /tweek
 ENV GIT_SSH=/tweek/ssh-helper.sh
+RUN mkdir -p /var/run/sshd && chown -R git:git /tweek 
+RUN chmod u+x /tweek/*.sh
+WORKDIR /tweek
+
 EXPOSE 22
 EXPOSE 80
 
-ENTRYPOINT ["bash", "init.sh"]
+ENTRYPOINT ["bash", "-c", "/tweek/init-git.sh && dotnet /tweek/Tweek.Publishing.Service/Tweek.Publishing.Service.dll" ]

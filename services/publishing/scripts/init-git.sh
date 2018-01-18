@@ -43,5 +43,3 @@ echo export TWEEK_MANAGEMENT_URL=$TWEEK_MANAGEMENT_URL >> /home/git/.env
 echo export GIT_UPSTREAM_URI=$GIT_UPSTREAM_URI >> /home/git/.env
 echo export GIT_SSH=/tweek/ssh-helper.sh >> /home/git/.env
 chown git:git /home/git/.env
-
-dotnet /tweek/Tweek.Publishing.Service/bin/Release/netcoreapp2.0/publish/Tweek.Publishing.Service.dll

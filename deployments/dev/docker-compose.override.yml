@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.4'
 
 services:
   git:
@@ -13,7 +13,11 @@ services:
   
   publishing:
     image: soluto/tweek-publishing
-    build: ../../services/publishing
+    build: 
+      context: ../../services/publishing
+      args: 
+        target: Debug
+      
     ports:
       - "4009:22"
       - "4010:80"
@@ -24,11 +28,15 @@ services:
     environment:
       - GIT_PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
       - GIT_SERVER_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
-      - TWEEK_MANAGEMENT_URL=http://management:3000
       - GIT_UPSTREAM_URI=ssh://git@git/tweek/repo
+      - MINIO__Endpoint=minio:9000
+      - MINIO__AccessKey=AKIAIOSFODNN7EXAMPLE
+      - MINIO__SecretKeyPath=/run/secrets/minio_secret_key
+      - NATS__Endpoint=nats://nats:4222
     secrets:
       - tweek_ssh_public_key
       - tweek_ssh_private_key
+      - minio_secret_key
  
   management:
     depends_on:

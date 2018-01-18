@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -15,7 +16,10 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Tweek.Publishing.Common;
+using Minio;
+using Tweek.Publishing.Service.Storage;
+using Tweek.Publishing.Service.Utils;
+using Tweek.Publishing.Service.Validation;
 
 namespace Tweek.Publishing.Service
 {
@@ -62,6 +66,15 @@ namespace Tweek.Publishing.Service
         private readonly IConfigurationRoot configuration;
         private readonly ILoggerFactory loggerFactory;
         private readonly ILogger<Startup> logger;
+
+        private MinioClient CreateMinioClient(IConfiguration minioConfig){
+            var mc = new Minio.MinioClient(
+                endpoint: minioConfig.GetValue<string>("Endpoint"),
+                accessKey: minioConfig.GetValueInlineOrFile("AccessKey"),
+                secretKey: minioConfig.GetValueInlineOrFile("SecretKey")
+            );
+            return minioConfig.GetValue<bool>("UseSSL", false) ? mc.WithSSL() : mc;
+        }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
@@ -70,10 +83,24 @@ namespace Tweek.Publishing.Service
                 app.UseDeveloperExceptionPage();
             }
             var git = ShellHelper.CreateCommandExecutor("git");
+            var gitValidationFlow = new GitValidationFlow(){
+                Validators = {
+                    ("^manifests/.*\\.json", new CircularDependencyValidator()),
+                    ("^implementations/.*\\.jpad", new CompileJPadValidator())
+                }
+            };
+
+            var minioConfig = configuration.GetSection("Minio");
+
+            var storageClient = new MinioBucketStorage(CreateMinioClient(minioConfig),
+                                                      minioConfig.GetValue<string>("Bucket","tweek-ruleset"));
+
+            var repoSynchronizer = new RepoSynchronizer(storageClient);
 
             app.UseRouter(router=>{
                 router.MapGet("sync", async (req, res, routdata) => {
                     await git("git fetch origin '+refs/heads/*:refs/heads/*'");
+                    await repoSynchronizer.Sync();
                 });
 
                 router.MapGet("log", async (req, res, routdata) => {
@@ -85,7 +112,25 @@ namespace Tweek.Publishing.Service
                 });
 
                 router.MapGet("version", async (req, res, routdata)=> {
-                    
+                    await res.WriteAsync(Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion);
+                });
+
+                router.MapGet("validate", async (req, res, routdata)=> {
+                    var oldCommit = req.Query["oldrev"].ToString().Trim();
+                    var newCommit = req.Query["newrev"].ToString().Trim();
+                    var qurantinePath = req.Query["qurantinepath"];
+                    var gitExecutor = ShellHelper.CreateCommandExecutor("git", (pStart)=> {
+                        pStart.Environment["GIT_ALTERNATE_OBJECT_DIRECTORIES"] = "/tweek/repo/./objects";
+                        pStart.Environment["GIT_OBJECT_DIRECTORY"] = qurantinePath;
+                        pStart.WorkingDirectory = "/tweek/repo";
+                    });
+                    try{
+                        await gitValidationFlow.Validate(oldCommit, newCommit, gitExecutor);
+                    }
+                    catch (Exception ex){
+                        res.StatusCode = 400;
+                        await res.WriteAsync(ex.Message);
+                    }
                 });
 
             });

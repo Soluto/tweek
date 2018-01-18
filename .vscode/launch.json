@@ -67,6 +67,24 @@
             "type": "coreclr",
             "request": "attach",
             "processId": "${command:pickProcess}"
+        },
+        {
+            "name": "Attach publishing",
+            "type": "coreclr",
+            "request": "attach",
+            "processName": "dotnet",
+            "sourceFileMap": {
+                "/src/Tweek.Publishing.Service": "${workspaceRoot}/services/publishing/Tweek.Publishing.Service"
+            },
+            "pipeTransport": {
+                "pipeProgram": "docker",            
+                "pipeCwd": "${workspaceRoot}",
+                "pipeArgs": [
+                    "exec -i dev_publishing_1"
+                ],
+                "quoteArgs": false,
+                "debuggerPath": "/vsdbg/vsdbg"
+            }
         }
     ]
 }

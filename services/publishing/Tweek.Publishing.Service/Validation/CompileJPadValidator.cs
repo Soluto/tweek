@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tweek.JPad;
 
-namespace Tweek.Publishing.Verifier.Validation
+namespace Tweek.Publishing.Service.Validation
 {
   public class CompileJPadValidator : IValidator
   {
