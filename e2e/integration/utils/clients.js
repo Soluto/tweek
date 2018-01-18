@@ -28,6 +28,7 @@ nconf
   .defaults({
     AUTHORING_URL: 'http://localhost:4005',
     API_URL: 'http://localhost:4003',
+    GATEWAY_URL: 'http://localhost:80',
     GIT_PRIVATE_KEY_PATH: '../../deployments/dev/ssh/tweekgit',
   });
 
@@ -37,5 +38,6 @@ module.exports.init = async function() {
   return {
     api: createClient(nconf.get('API_URL'), setBearerToken),
     authoring: createClient(nconf.get('AUTHORING_URL'), setBearerToken),
+    gateway: createClient(nconf.get('GATEWAY_URL'), setBearerToken),
   };
 };
