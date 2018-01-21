@@ -62,11 +62,11 @@ namespace Tweek.Publishing.Service
         }
         using (var zip = new ZipArchive(ms, ZipArchiveMode.Read, false))
         {
-          var dir = zip.Entries.ToDictionary(x => x.FullName, x => fun(async () =>
+          var dir = zip.Entries.ToDictionary(x => x.FullName, x => fun(() =>
           {
             using (var sr = new StreamReader(x.Open()))
             {
-              return await sr.ReadToEndAsync();
+              return sr.ReadToEnd();
             }
           }));
 
