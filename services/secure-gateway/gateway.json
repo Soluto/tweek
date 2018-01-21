@@ -5,7 +5,7 @@
         "management": "http://management:3000"
     },
     "security": {
-        "enforce": false,
+        "enforce": true,
         "policy_repository": {
             "upstream_url": "ssh://git@git/tweek/repo",
             "casbin_policy": "./model.csv",

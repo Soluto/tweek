@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/Soluto/tweek/services/secure-gateway/config"
 	jwt "github.com/dgrijalva/jwt-go" // jwt types
@@ -46,6 +45,11 @@ func (u *userInfo) Claims() jwt.StandardClaims { return u.StandardClaims }
 
 // UserInfoFromRequest return the user information from request
 func UserInfoFromRequest(req *http.Request, configuration *config.Security) (UserInfo, error) {
+	if !configuration.Enforce {
+		info := &userInfo{email: "test@test.test", name: "test"}
+		return info, nil
+	}
+
 	info := &userInfo{}
 	token, err := request.ParseFromRequest(req, request.OAuth2Extractor, func(t *jwt.Token) (interface{}, error) {
 		claims := t.Claims.(jwt.MapClaims)
@@ -70,14 +74,6 @@ func UserInfoFromRequest(req *http.Request, configuration *config.Security) (Use
 
 // AuthenticationMiddleware enriches the request's context with the user info from JWT
 func AuthenticationMiddleware(configuration *config.Security) negroni.HandlerFunc {
-	if _, testing := os.LookupEnv("TWEEK_TESTING"); !configuration.Enforce && testing {
-		info := &userInfo{email: "test@test.test", name: "test"}
-		return negroni.HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-			newRequest := r.WithContext(context.WithValue(r.Context(), UserInfoKey, info))
-			next(rw, newRequest)
-			return
-		})
-	}
 	return negroni.HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 
 		info, err := UserInfoFromRequest(r, configuration)
