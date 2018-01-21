@@ -47,6 +47,7 @@ services:
       - authoring
       - management
       - editor
+      - gateway
     environment:
       - EDITOR_URL=http://editor:3000/
       - TWEEK_API_URL=http://api/
@@ -67,6 +68,7 @@ services:
       - api
       - authoring
       - management
+      - gateway
     environment:
       - API_URL=http://api
       - AUTHORING_URL=http://authoring:3000
@@ -86,6 +88,7 @@ services:
     depends_on: 
       - api
       - management
+      - gateway
     environment: 
       - TWEEK_API_URL=http://api/
     links:

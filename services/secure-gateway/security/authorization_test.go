@@ -11,9 +11,26 @@ import (
 
 func noopHandler(rw http.ResponseWriter, r *http.Request) {}
 
+type emptyAuditor struct{}
+
+func (a *emptyAuditor) Allowed(subject, object, action string) {
+}
+func (a *emptyAuditor) Denied(subject, object, action string) {
+}
+func (a *emptyAuditor) EnforcerError(subject, object, action string, err error) {
+}
+func (a *emptyAuditor) TokenError(err error) {
+}
+func (a *emptyAuditor) RunningInTestMode() {
+}
+func (a *emptyAuditor) EnforcerEnabled() {
+}
+func (a *emptyAuditor) EnforcerDisabled() {
+}
+
 func TestAuthorizationMiddleware(t *testing.T) {
 	enforcer := casbin.NewSyncedEnforcer("./testdata/policy.conf", "./testdata/model.csv")
-	server := AuthorizationMiddleware(enforcer)
+	server := AuthorizationMiddleware(enforcer, &emptyAuditor{})
 	type args struct {
 		request *http.Request
 	}

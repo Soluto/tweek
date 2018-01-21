@@ -5,6 +5,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+
+	"github.com/Soluto/tweek/services/secure-gateway/audit"
 
 	"github.com/Soluto/tweek/services/secure-gateway/passThrough"
 	"github.com/Soluto/tweek/services/secure-gateway/policyRepository"
@@ -52,12 +55,21 @@ func NewApp(configuration *config.Configuration, token security.JWTToken) http.H
 	enforcer.EnableLog(false)
 	enforcer.EnableEnforce(configuration.Security.Enforce)
 
-	router := NewRouter(configuration)
-	authenticationMiddleware := security.AuthenticationMiddleware(configuration.Security)
-	authorizationMiddleware := security.AuthorizationMiddleware(enforcer)
+	auditor, err := audit.New(os.Stdout)
+	if err != nil {
+		panic("Unable to create security auditing log")
+	}
+	if configuration.Security.Enforce {
+		auditor.EnforcerEnabled()
+	} else {
+		auditor.EnforcerDisabled()
+	}
 
+	authenticationMiddleware := security.AuthenticationMiddleware(configuration.Security, auditor)
+	authorizationMiddleware := security.AuthorizationMiddleware(enforcer, auditor)
 	middleware := negroni.New(negroni.NewRecovery(), authenticationMiddleware, authorizationMiddleware)
 
+	router := NewRouter(configuration)
 	router.MonitoringRouter().HandleFunc("isAlive", monitoring.IsAlive)
 
 	modelManagement.Mount(enforcer, middleware, router.ModelManagementRouter())

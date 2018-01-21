@@ -11,8 +11,9 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Soluto/tweek/services/secure-gateway/audit"
 	"github.com/Soluto/tweek/services/secure-gateway/config"
-	jwt "github.com/dgrijalva/jwt-go" // jwt types
+	"github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
 	"github.com/lestrrat/go-jwx/jwk"
 
@@ -57,6 +58,7 @@ func UserInfoFromRequest(req *http.Request, configuration *config.Security) (Use
 			if keyID, ok := t.Header["kid"].(string); ok {
 				return getKeyByIssuer(issuer, keyID, configuration)
 			}
+
 			return nil, fmt.Errorf("No keyId in header")
 		}
 		return nil, fmt.Errorf("No issuer in claims")
@@ -73,11 +75,11 @@ func UserInfoFromRequest(req *http.Request, configuration *config.Security) (Use
 }
 
 // AuthenticationMiddleware enriches the request's context with the user info from JWT
-func AuthenticationMiddleware(configuration *config.Security) negroni.HandlerFunc {
+func AuthenticationMiddleware(configuration *config.Security, auditor audit.Auditor) negroni.HandlerFunc {
 	return negroni.HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-
 		info, err := UserInfoFromRequest(r, configuration)
 		if err != nil {
+			auditor.TokenError(err)
 			log.Println("Error extracting the user from the request", err)
 			next(rw, r)
 			return
