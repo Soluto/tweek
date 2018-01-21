@@ -27,18 +27,27 @@ const InputComponent = ({ value, allowedValues, onChange, ...props }) => {
         value={value === undefined ? undefined : changeCase.pascalCase(value)}
         suggestions={allowedValues.map(valueToItem)}
         onChange={(input, selected) =>
-          selected && onChange(selected.value === undefined ? selected : selected.value)}
+          selected && onChange(selected.value === undefined ? selected : selected.value)
+        }
       />
     );
   }
   return <Input {...props} onChange={onChange} value={value} />;
 };
 
-const InputWithIcon = ({ iconType, ...props }) =>
-  <div className="typed-input-with-icon">
-    <i data-value-type={iconType} />
+const InputWithIcon = ({ hideIcon, iconType, ...props }) => {
+  const renderedInput = (
     <InputComponent data-comp="typed-input" data-value-type={iconType} {...props} />
-  </div>;
+  );
+  return hideIcon ? (
+    renderedInput
+  ) : (
+    <div className="typed-input-with-icon">
+      <i data-value-type={iconType} />
+      {renderedInput}
+    </div>
+  );
+};
 
 const TypedInput = compose(
   getTypesService,
@@ -65,10 +74,12 @@ TypedInput.propTypes = {
   ]).isRequired,
   onChange: PropTypes.func,
   value: PropTypes.any,
+  hideIcon: PropTypes.bool,
 };
 
 TypedInput.defaultProps = {
   placeholder: 'Enter Value Here',
+  hideIcon: false,
 };
 
 TypedInput.displayName = 'TypedInput';
