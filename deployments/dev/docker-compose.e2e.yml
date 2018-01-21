@@ -26,10 +26,6 @@ services:
       - CorsPolicies__Keys__ExposedHeaders=
       - CorsEnabled=true
   
-  gateway:
-    environment:
-      - TWEEK_TESTING=1
-  
   selenium:
     image: selenium/standalone-chrome:3.8.1
     container_name: selenium

@@ -2,7 +2,12 @@ package security
 
 import (
 	"context"
+	"crypto/rsa"
+	"crypto/x509"
+	"encoding/pem"
+	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -41,6 +46,11 @@ func (u *userInfo) Claims() jwt.StandardClaims { return u.StandardClaims }
 
 // UserInfoFromRequest return the user information from request
 func UserInfoFromRequest(req *http.Request, configuration *config.Security) (UserInfo, error) {
+	if !configuration.Enforce {
+		info := &userInfo{email: "test@test.test", name: "test"}
+		return info, nil
+	}
+
 	info := &userInfo{}
 	token, err := request.ParseFromRequest(req, request.OAuth2Extractor, func(t *jwt.Token) (interface{}, error) {
 		claims := t.Claims.(jwt.MapClaims)
@@ -96,6 +106,8 @@ func getKeyByIssuer(issuer, keyID string, configuration *config.Security) (inter
 		return getGoogleKey(keyID)
 	case fmt.Sprintf("https://sts.windows.net/%s/", configuration.AzureTenantID):
 		return getAzureADKey(configuration.AzureTenantID, keyID)
+	case "tweek":
+		return getGitKey(keyID, configuration.PolicyRepository.SecretKey)
 	default:
 		return nil, fmt.Errorf("Unknown issuer %s", issuer)
 	}
@@ -109,6 +121,23 @@ func getGoogleKey(keyID string) (interface{}, error) {
 func getAzureADKey(tenantID string, keyID string) (interface{}, error) {
 	endpoint := fmt.Sprintf("https://login.microsoftonline.com/%v/discovery/v2.0/keys", tenantID)
 	return getJWKByEndpoint(endpoint, keyID)
+}
+
+func getGitKey(keyID string, secretKeyFile string) (interface{}, error) {
+	pemFile, err := ioutil.ReadFile(secretKeyFile)
+	pemBlock, _ := pem.Decode(pemFile)
+	if pemBlock == nil {
+		return nil, errors.New("no PEM found")
+	}
+	key, err := x509.ParsePKIXPublicKey(pemBlock.Bytes)
+	if err != nil {
+		return nil, err
+	}
+	rsaPublicKey, ok := key.(*rsa.PublicKey)
+	if !ok {
+		return nil, errors.New("not an RSA public key")
+	}
+	return rsaPublicKey, nil
 }
 
 func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
