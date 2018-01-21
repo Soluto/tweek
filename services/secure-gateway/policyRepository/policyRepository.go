@@ -131,7 +131,7 @@ func New(workdir string, repoConfig *config.PolicyRepository) (result persist.Ad
 		Auth: auth,
 	})
 	if err != nil {
-		log.Panic("git repo clone failed", err)
+		log.Panic("Minio repo clone failed", err)
 		return
 	}
 
