@@ -32,6 +32,10 @@ class StatelessMutator {
     return this._liftMutation(m => m.updateValue);
   }
 
+  get adjustValue() {
+    return this._liftMutation(m => m.adjustValue);
+  }
+
   get updateKey() {
     return this._liftMutation(m => m.updateKey);
   }
@@ -78,6 +82,13 @@ class Mutator {
     const [innerPath, [key]] = R.splitAt(-1, this.path);
     const container = R.reduce((acc, x) => acc[x], this.target, innerPath);
     container[key] = newValue;
+    return new Mutator(this.target, this.path);
+  };
+
+  adjustValue = (mapFn) => {
+    const [innerPath, [key]] = R.splitAt(-1, this.path);
+    const container = R.reduce((acc, x) => acc[x], this.target, innerPath);
+    container[key] = mapFn(this.getValue());
     return new Mutator(this.target, this.path);
   };
 
