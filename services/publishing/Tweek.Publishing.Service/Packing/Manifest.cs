@@ -1,15 +1,17 @@
+using Newtonsoft.Json.Linq;
+
 namespace Tweek.Publishing.Service.Packing
 {
   public class Manifest{
-        public class Implemenation {
+        public class Implementation {
             public string format;
             public string type;
             public string extension;
-            public string value; 
+            public JToken value; 
             public string key;
         }
         public string[] dependencies;
-        public Implemenation implemenation;
+        public Implementation implementation;
         public  string key_path;
     }
 }

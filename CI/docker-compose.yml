@@ -9,12 +9,10 @@ services:
       - keys
     environment:
       - PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
-      - TWEEK_MANAGEMENT_URL=http://management:3000
   
-  management:
-    image: $MANAGEMENT_IMAGE
+  publishing:
+    image: $PUBLISHING_IMAGE
     depends_on:
-      - api
       - git
       - minio
       - nats
@@ -23,16 +21,14 @@ services:
     logging:
       driver: "none"
     environment:
-      - VALIDATION_URL=http://api/validation
-      - GIT_USER=git
-      - GIT_URL=ssh://git@git/tweek/tests
-      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+      environment:
       - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
-      - GIT_SAMPLE_INTERVAL=500
-      - MINIO_ENDPOINT=minio:9000
-      - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
-      - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-      - NATS_ENDPOINT=nats://nats:4222
+      - GIT_SERVER_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+      - GIT_UPSTREAM_URI=ssh://git@git/tweek/repo
+      - MINIO__Endpoint=minio:9000
+      - MINIO__AccessKey=AKIAIOSFODNN7EXAMPLE
+      - MINIO__SecretKey=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      - NATS__Endpoint=nats://nats:4222
       
   api:
     image: $API_IMAGE

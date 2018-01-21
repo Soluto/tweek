@@ -1,4 +1,12 @@
 #!/bin/bash
+if [ -d "/tweek/repo" ]; then
+    cd /tweek/repo
+    git fetch origin '+refs/heads/*:refs/heads/*'
+    exit $?
+fi
+
+echo export GIT_UPSTREAM_URI=$GIT_UPSTREAM_URI >> /home/git/.env
+echo export GIT_SSH=/tweek/ssh-helper.sh >> /home/git/.env
 
 # copy the contents of given public key to authorized_keys file to allow it to access the repo
 if [[ -f "$GIT_PUBLIC_KEY_PATH" ]]
@@ -20,12 +28,6 @@ else
     exit 1
 fi
 
-touch /tweek/repo.log
-chown git:git /tweek/repo.log
-tail -f /tweek/repo.log 2>&1 &
-
-echo "init log" >> /tweek/repo.log
-
 # clone the source repository and apply hooks
 # set -e
 git clone --bare $GIT_UPSTREAM_URI /tweek/repo
@@ -39,7 +41,4 @@ chmod -R ug+rwX .
 chmod g+s .
 chmod -R ug+x hooks
 
-echo export TWEEK_MANAGEMENT_URL=$TWEEK_MANAGEMENT_URL >> /home/git/.env
-echo export GIT_UPSTREAM_URI=$GIT_UPSTREAM_URI >> /home/git/.env
-echo export GIT_SSH=/tweek/ssh-helper.sh >> /home/git/.env
 chown git:git /home/git/.env

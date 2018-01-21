@@ -43,12 +43,22 @@ namespace Tweek.Publishing.Service.Storage
 
     public async Task Put(string objectName, Func<Stream, CancellationToken, Task> writer, string mimeType, CancellationToken cancellationToken = default(CancellationToken))
     {
-       var stream = new MemoryStream();
-       await writer(stream, cancellationToken);
-       if (cancellationToken.IsCancellationRequested) return;
-       var size = stream.Position;
-       stream.Position = 0;
-       await _client.PutObjectAsync(_bucketName, objectName, stream, size, cancellationToken: cancellationToken);
+       using (var input = new MemoryStream()){
+          await writer(input, cancellationToken);
+          if (cancellationToken.IsCancellationRequested) return;
+          var data = input.ToArray();
+          var size = data.Length;
+          using (var temp = new MemoryStream(data)){
+          await _client.PutObjectAsync(_bucketName, objectName, temp, size, cancellationToken: cancellationToken);
+        }
+       }
+    }
+
+    public static async Task<MinioBucketStorage> GetOrCreateBucket(MinioClient mc, string bucketName){
+       if (!await mc.BucketExistsAsync(bucketName)){
+         await mc.MakeBucketAsync(bucketName);
+       }
+       return new MinioBucketStorage(mc, bucketName);
     }
   }
 }

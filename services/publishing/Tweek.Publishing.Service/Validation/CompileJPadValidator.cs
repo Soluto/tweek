@@ -21,8 +21,8 @@ namespace Tweek.Publishing.Service.Validation
                 })); 
     public async Task Validate(string fileName, Func<string, Task<string>> reader)
     {
-      Console.WriteLine($"compiling {fileName}");
-      _parser.Parse.Invoke(await reader(fileName));
+      var source = await reader(fileName);
+      _parser.Parse.Invoke(source);
     }
   }
 }

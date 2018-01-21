@@ -17,7 +17,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Minio;
+using Tweek.Publishing.Service.Messaging;
 using Tweek.Publishing.Service.Storage;
+using Tweek.Publishing.Service.Sync;
 using Tweek.Publishing.Service.Utils;
 using Tweek.Publishing.Service.Validation;
 
@@ -25,9 +27,7 @@ namespace Tweek.Publishing.Service
 {
     public class Startup
     {
-        
-
-        public IDisposable RunSSHDeamon(){
+        public IDisposable RunSSHDeamon(ILogger logger){
             return ShellHelper.Exec("/usr/sbin/sshd", "-f /tweek/sshd_config")
                 .Retry()
                 .Select(x=> (data: Encoding.Default.GetString(x.data), x.outputType))
@@ -42,30 +42,17 @@ namespace Tweek.Publishing.Service
                     logger.LogError("error:" +ex.ToString());
                 });
             }
-
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRouting();
-            RunSSHDeamon();
         }
 
-        public Startup(IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public Startup(IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddEnvironmentVariables();
-
-            this.configuration = builder.Build();
-            this.loggerFactory = loggerFactory;
-            this.logger = loggerFactory.CreateLogger<Startup>();
+            Configuration = configuration;
         }
 
-        private readonly IConfigurationRoot configuration;
-        private readonly ILoggerFactory loggerFactory;
-        private readonly ILogger<Startup> logger;
+        private readonly IConfiguration Configuration;
 
         private MinioClient CreateMinioClient(IConfiguration minioConfig){
             var mc = new Minio.MinioClient(
@@ -76,35 +63,56 @@ namespace Tweek.Publishing.Service
             return minioConfig.GetValue<bool>("UseSSL", false) ? mc.WithSSL() : mc;
         }
         
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            var logger = loggerFactory.CreateLogger("Default");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            var git = ShellHelper.CreateCommandExecutor("git");
+            RunSSHDeamon(logger);
+
+            var git = ShellHelper.CreateCommandExecutor("git", (p)=>{
+                p.WorkingDirectory = "/tweek/repo";
+            });
             var gitValidationFlow = new GitValidationFlow(){
                 Validators = {
-                    ("^manifests/.*\\.json", new CircularDependencyValidator()),
-                    ("^implementations/.*\\.jpad", new CompileJPadValidator())
+                    ("^manifests/.*\\.json$", new CircularDependencyValidator()),
+                    ("^implementations/jpad/.*\\.jpad$", new CompileJPadValidator())
                 }
             };
 
-            var minioConfig = configuration.GetSection("Minio");
+            var minioConfig = Configuration.GetSection("Minio");
 
-            var storageClient = new MinioBucketStorage(CreateMinioClient(minioConfig),
-                                                      minioConfig.GetValue<string>("Bucket","tweek-ruleset"));
+            var storageClient = MinioBucketStorage.GetOrCreateBucket(CreateMinioClient(minioConfig),
+                                                      minioConfig.GetValue<string>("Bucket","tweek-ruleset")).Result;
 
-            var repoSynchronizer = new RepoSynchronizer(storageClient);
+            var natsClient = new NatsPublisher(Configuration.GetSection("Nats").GetValue<string>("Endpoint"), "version");
+
+            var repoSynchronizer = new RepoSynchronizer(git);
+            var storageSynchronizer = new StorageSynchronizer(storageClient);
+
+            storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result).Wait();
 
             app.UseRouter(router=>{
                 router.MapGet("sync", async (req, res, routdata) => {
-                    await git("git fetch origin '+refs/heads/*:refs/heads/*'");
-                    await repoSynchronizer.Sync();
+                    try{
+                        var commitId = await repoSynchronizer.SyncToLatest();
+                        await storageSynchronizer.Sync(commitId);
+                        await natsClient.Publish(commitId);
+                    }
+                    catch (Exception ex){
+                        logger.LogError("failed to sync repo with upstram", ex );
+                        logger.LogError(ex.ToString());
+                        res.StatusCode = 500;
+                        await res.WriteAsync(ex.ToString());
+                        return;
+                    }
+                    
                 });
 
                 router.MapGet("log", async (req, res, routdata) => {
-
+                    logger.LogInformation(req.Query["message"]);
                 });
 
                 router.MapGet("health", async (req, res, routdata)=> {

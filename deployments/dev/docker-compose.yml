@@ -1,14 +1,6 @@
 version: '3.4'
 
 services:
-  management:
-    image: soluto/tweek-management
-    build: ../../services/management
-    depends_on:
-      - api
-    environment:
-      - VALIDATION_URL=http://api/validation
-
   api:
     image: soluto/tweek-api
     build:
@@ -28,6 +20,5 @@ services:
   
   publishing:
     image: soluto/tweek-publishing
-    depends_on:
-      - management
+    build: ../../services/publishing
 
