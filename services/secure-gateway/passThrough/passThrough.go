@@ -1,4 +1,4 @@
-package goThrough
+package passThrough
 
 import (
 	"log"
@@ -11,7 +11,7 @@ import (
 	"github.com/urfave/negroni"
 )
 
-// Mount - mounts the request goThrough handlers and middleware
+// Mount - mounts the request passThrough handlers and middleware
 func Mount(upstreams *config.Upstreams, v1Hosts *config.V1Hosts, token security.JWTToken, middleware *negroni.Negroni, router *mux.Router) {
 	// URLs
 	api := parseUpstreamOrPanic(upstreams.API)

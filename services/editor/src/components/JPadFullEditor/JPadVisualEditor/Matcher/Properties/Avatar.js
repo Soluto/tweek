@@ -22,7 +22,7 @@ function getAvatarText(identity) {
 }
 
 const Avatar = ({ identity, className, ...props }) => (
-  <div className={classnames('avatar-container', className)} {...props}>
+  <div className={classnames('avatar-container', className)} title={identity} {...props}>
     {identity === 'keys' ? <img src={keyIcon} alt={''} /> : getAvatarText(identity)}
   </div>
 );

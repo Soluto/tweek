@@ -1,4 +1,4 @@
-package goThrough
+package passThrough
 
 /*
 import (

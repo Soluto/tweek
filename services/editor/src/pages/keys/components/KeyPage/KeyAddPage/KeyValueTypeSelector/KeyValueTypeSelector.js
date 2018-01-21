@@ -19,7 +19,7 @@ const KeyValueTypeSelector = connect(
     validation: state.selectedKey.validation.manifest.valueType,
   }),
   { changeKeyValueType },
-)(({ value, validation: { isShowingHint, hint }, changeKeyValueType: onChange }) => {
+)(({ value, validation: { isShowingHint = false, hint }, changeKeyValueType: onChange }) => {
   const suggestions = getValueTypeSuggestions();
   return (
     <div className="key-value-type-selector-container">
