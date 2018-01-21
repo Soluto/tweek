@@ -97,13 +97,14 @@ services:
   gateway:
     image: $SECUREGATEWAY_IMAGE
     depends_on:
-      - git
+      - minio
     logging:
       driver: "json-file"
-    volumes_from:
-      - keys
     environment:
-      - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
+      - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      
 
   redis:
     image: redis:4.0.2-alpine
