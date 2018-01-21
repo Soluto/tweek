@@ -103,7 +103,6 @@ services:
     volumes_from:
       - keys
     environment:
-      - TWEEK_TESTING=1
       - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
 
   redis:
