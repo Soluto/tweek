@@ -28,7 +28,7 @@
     "docker-compose:zap": "yarn docker-compose:e2e -f ./deployments/dev/docker-compose.zap.yml",
     "format": "prettier-eslint --trailing-comma all --print-width 100 --single-quote --write",
     "format:ts": "tsfmt -r",
-    "format:go": "go fmt ./services/secure-gateway",
+    "format:go": "go fmt",
     "precommit": "lint-staged"
   },
   "devDependencies": {
