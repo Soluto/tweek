@@ -6,10 +6,10 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Soluto/tweek/services/secure-gateway/passThrough"
 	"github.com/Soluto/tweek/services/secure-gateway/policyRepository"
 
 	"github.com/Soluto/tweek/services/secure-gateway/config"
-	"github.com/Soluto/tweek/services/secure-gateway/goThrough"
 	"github.com/Soluto/tweek/services/secure-gateway/modelManagement"
 	"github.com/Soluto/tweek/services/secure-gateway/monitoring"
 	"github.com/Soluto/tweek/services/secure-gateway/security"
@@ -56,16 +56,18 @@ func NewApp(configuration *config.Configuration, token security.JWTToken) http.H
 	authenticationMiddleware := security.AuthenticationMiddleware(configuration.Security)
 	authorizationMiddleware := security.AuthorizationMiddleware(enforcer)
 
-	middleware := negroni.New(negroni.NewRecovery(), authorizationMiddleware)
+	middleware := negroni.New(negroni.NewRecovery(), authenticationMiddleware, authorizationMiddleware)
 
 	router.MonitoringRouter().HandleFunc("isAlive", monitoring.IsAlive)
+
 	modelManagement.Mount(enforcer, middleware, router.ModelManagementRouter())
-	goThrough.Mount(configuration.Upstreams, configuration.V1Hosts, token, middleware, router.V1Router())
+
 	transformation.Mount(configuration.Upstreams, token, middleware, router.V2Router())
 
-	goThrough.Mount(configuration.Upstreams, configuration.V1Hosts, token, negroni.New(negroni.NewRecovery()), router.LegacyNonV1Router())
+	passThrough.Mount(configuration.Upstreams, configuration.V1Hosts, token, negroni.New(negroni.NewRecovery()), router.V1Router())
+	passThrough.Mount(configuration.Upstreams, configuration.V1Hosts, token, negroni.New(negroni.NewRecovery()), router.LegacyNonV1Router())
 
-	app := negroni.New(negroni.NewRecovery(), authenticationMiddleware)
+	app := negroni.New(negroni.NewRecovery())
 	app.UseHandler(router)
 
 	return app
