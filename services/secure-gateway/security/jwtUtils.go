@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	jwt "github.com/dgrijalva/jwt-go" // jwt types
+	"github.com/dgrijalva/jwt-go"
 )
 
 type tweekClaims struct {

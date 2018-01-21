@@ -57,10 +57,23 @@ func NewApp(configuration *config.Configuration, token security.JWTToken) http.H
 
 	auditor, err := audit.New(os.Stdout)
 	if err != nil {
-		panic("Unable to create audit log")
+		panic("Unable to create security auditing log")
 	}
-	authenticationMiddleware := security.AuthenticationMiddleware(configuration.Security, auditor)
-	authorizationMiddleware := security.AuthorizationMiddleware(enforcer)
+	if configuration.Security.Enforce {
+		auditor.EnforcerEnabled()
+	} else {
+		auditor.EnforcerDisabled()
+	}
+
+	var authenticationMiddleware negroni.HandlerFunc
+	if _, testing := os.LookupEnv("TWEEK_TESTING"); testing {
+		auditor.RunningInTestMode()
+		authenticationMiddleware = security.TestingAuthenticationMiddleware(configuration.Security, auditor)
+	} else {
+		authenticationMiddleware = security.AuthenticationMiddleware(configuration.Security, auditor)
+	}
+
+	authorizationMiddleware := security.AuthorizationMiddleware(enforcer, auditor)
 
 	middleware := negroni.New(negroni.NewRecovery(), authorizationMiddleware)
 

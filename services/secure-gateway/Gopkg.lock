@@ -55,6 +55,12 @@
   version = "v1.6.0"
 
 [[projects]]
+  name = "github.com/gravitational/trace"
+  packages = ["."]
+  revision = "0bd13642feb8f57acc0d8e3a568edc34e05a74b9"
+  version = "1.1.3"
+
+[[projects]]
   branch = "master"
   name = "github.com/hashicorp/hcl"
   packages = [
@@ -75,6 +81,12 @@
   name = "github.com/jbenet/go-context"
   packages = ["io"]
   revision = "d14ea06fba99483203c19d92cfcd13ebe73135f4"
+
+[[projects]]
+  name = "github.com/jonboulle/clockwork"
+  packages = ["."]
+  revision = "2eee05ed794112d45db504eb05aa693efd2b8b09"
+  version = "v0.1.0"
 
 [[projects]]
   name = "github.com/kevinburke/ssh_config"
@@ -98,6 +110,12 @@
   packages = ["."]
   revision = "be5ece7dd465ab0765a9682137865547526d1dfb"
   version = "v1.7.3"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/mailgun/multibuf"
+  packages = ["."]
+  revision = "565402cd71fbd9c12aa7e295324ea357e970a61e"
 
 [[projects]]
   branch = "master"
@@ -195,10 +213,17 @@
   branch = "master"
   name = "github.com/vulcand/oxy"
   packages = [
+    "buffer",
     "forward",
     "utils"
   ]
   revision = "5dfac9992dbefb4a2fc6ca201bbcb791bf32654c"
+
+[[projects]]
+  name = "github.com/vulcand/predicate"
+  packages = ["."]
+  revision = "939c094524d124c55fa8afe0e077701db4a865e2"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
@@ -329,6 +354,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "550eaad80c4a22875409175870ffa5dcd015e4856898739ce08bc84f43f20400"
+  inputs-digest = "982d25a22a3e953f1097ed5b11f24dc26247afe7fc95442e12c5eada43911c28"
   solver-name = "gps-cdcl"
   solver-version = 1

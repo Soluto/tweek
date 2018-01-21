@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/Soluto/tweek/services/secure-gateway/audit"
 	"github.com/Soluto/tweek/services/secure-gateway/config"
-	jwt "github.com/dgrijalva/jwt-go" // jwt types
+	"github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
 	"github.com/lestrrat/go-jwx/jwk"
 
@@ -67,18 +66,10 @@ func UserInfoFromRequest(req *http.Request, configuration *config.Security) (Use
 
 // AuthenticationMiddleware enriches the request's context with the user info from JWT
 func AuthenticationMiddleware(configuration *config.Security, auditor audit.Auditor) negroni.HandlerFunc {
-	if _, testing := os.LookupEnv("TWEEK_TESTING"); !configuration.Enforce && testing {
-		info := &userInfo{email: "test@test.test", name: "test"}
-		return negroni.HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-			newRequest := r.WithContext(context.WithValue(r.Context(), UserInfoKey, info))
-			next(rw, newRequest)
-			return
-		})
-	}
 	return negroni.HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-
 		info, err := UserInfoFromRequest(r, configuration)
 		if err != nil {
+			auditor.TokenError(err)
 			log.Println("Error extracting the user from the request", err)
 			next(rw, r)
 			return
@@ -86,6 +77,16 @@ func AuthenticationMiddleware(configuration *config.Security, auditor audit.Audi
 
 		newRequest := r.WithContext(context.WithValue(r.Context(), UserInfoKey, info))
 		next(rw, newRequest)
+	})
+}
+
+// TestingAuthenticationMiddleware enriches the request's context with the user info for testing
+func TestingAuthenticationMiddleware(configuration *config.Security, auditor audit.Auditor) negroni.HandlerFunc {
+	info := &userInfo{email: "test@test.test", name: "test"}
+	return negroni.HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+		newRequest := r.WithContext(context.WithValue(r.Context(), UserInfoKey, info))
+		next(rw, newRequest)
+		return
 	})
 }
 
