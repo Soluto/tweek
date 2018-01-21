@@ -90,16 +90,6 @@ func AuthenticationMiddleware(configuration *config.Security, auditor audit.Audi
 	})
 }
 
-// TestingAuthenticationMiddleware enriches the request's context with the user info for testing
-func TestingAuthenticationMiddleware(configuration *config.Security, auditor audit.Auditor) negroni.HandlerFunc {
-	info := &userInfo{email: "test@test.test", name: "test"}
-	return negroni.HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-		newRequest := r.WithContext(context.WithValue(r.Context(), UserInfoKey, info))
-		next(rw, newRequest)
-		return
-	})
-}
-
 func getKeyByIssuer(issuer, keyID string, configuration *config.Security) (interface{}, error) {
 	switch issuer {
 	case "https://accounts.google.com":
