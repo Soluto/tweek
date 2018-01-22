@@ -69,14 +69,7 @@ func (a *minioCasbinAdapter) LoadPolicy(model model.Model) error {
 }
 
 func (a *minioCasbinAdapter) SavePolicy(model model.Model) error {
-	filePath := path.Join(a.workDir, a.cfg.CasbinModel)
-	_, error := a.client.FPutObject(a.cfg.BucketName, a.cfg.CasbinModel, filePath, minio.PutObjectOptions{
-		ContentType: "application/csv",
-	})
-	if error != nil {
-		log.Panicln("Error retrieving casbin model from minio:", error)
-	}
-	return nil
+	return ErrUnsupportedOperation
 }
 
 func (a *minioCasbinAdapter) AddPolicy(sec string, ptype string, rule []string) error {
