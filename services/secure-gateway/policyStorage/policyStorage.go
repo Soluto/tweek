@@ -37,7 +37,7 @@ func (a *minioCasbinAdapter) LoadPolicy(model model.Model) error {
 
 func (a *minioCasbinAdapter) SavePolicy(model model.Model) error {
 	filePath := path.Join(a.workDir, a.cfg.CasbinModel)
-	n, error := a.client.FPutObject(a.cfg.BuckerName, a.cfg.CasbinModel, filePath, minio.PutObjectOptions{
+	_, error := a.client.FPutObject(a.cfg.BuckerName, a.cfg.CasbinModel, filePath, minio.PutObjectOptions{
 		ContentType: "application/csv",
 	})
 	if error != nil {
