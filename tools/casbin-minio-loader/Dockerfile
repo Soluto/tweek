@@ -12,10 +12,6 @@ RUN update-ca-certificates \
     && chmod +x /usr/local/bin/dep \
     && dep ensure -v -vendor-only
 
-# The scratch image, which we use in the end, neither has cmdline tools nor tmp directory
-# so we prepare it here, and copy later on
-RUN mkdir /empty_tmp && chmod 1777 /empty_tmp
-
 # -------- BUILDER -------- #
 FROM dependencies as build
 
@@ -29,6 +25,5 @@ FROM scratch
 
 COPY --from=build /go/src/github.com/Soluto/tweek/tools/casbin-minio-loader/model.csv /model.csv
 COPY --from=build /go/src/github.com/Soluto/tweek/tools/casbin-minio-loader/entry /entry
-COPY --from=dependencies /empty_tmp /tmp
 
 ENTRYPOINT [ "/entry" ]
