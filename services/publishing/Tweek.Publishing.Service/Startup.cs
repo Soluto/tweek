@@ -132,9 +132,13 @@ namespace Tweek.Publishing.Service
         {
           try
           {
-            var commitId = await repoSynchronizer.SyncToLatest();
-            await storageSynchronizer.Sync(commitId);
-            await natsClient.Publish(commitId);
+          await Policy.Handle<Exception>()
+            .WaitAndRetryAsync(3, (retryAttempt)=> TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+            .ExecuteAsync(async ()=>{
+              var commitId = await repoSynchronizer.SyncToLatest();
+              await storageSynchronizer.Sync(commitId);
+              await natsClient.Publish(commitId);
+            });
           }
           catch (Exception ex)
           {
