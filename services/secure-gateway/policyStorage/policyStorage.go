@@ -28,7 +28,7 @@ type minioCasbinAdapter struct {
 
 func (a *minioCasbinAdapter) LoadPolicy(model model.Model) error {
 	filePath := path.Join(a.workDir, a.cfg.CasbinModel)
-	error := a.client.FGetObject(a.cfg.BuckerName, a.cfg.CasbinModel, filePath, minio.GetObjectOptions{})
+	error := a.client.FGetObject(a.cfg.BucketName, a.cfg.CasbinModel, filePath, minio.GetObjectOptions{})
 	if error != nil {
 		log.Panicln("Error retrieving casbin model from minio:", error)
 	}
@@ -37,7 +37,7 @@ func (a *minioCasbinAdapter) LoadPolicy(model model.Model) error {
 
 func (a *minioCasbinAdapter) SavePolicy(model model.Model) error {
 	filePath := path.Join(a.workDir, a.cfg.CasbinModel)
-	_, error := a.client.FPutObject(a.cfg.BuckerName, a.cfg.CasbinModel, filePath, minio.PutObjectOptions{
+	_, error := a.client.FPutObject(a.cfg.BucketName, a.cfg.CasbinModel, filePath, minio.PutObjectOptions{
 		ContentType: "application/csv",
 	})
 	if error != nil {
@@ -65,20 +65,20 @@ func New(workDir string, minioConfig *config.PolicyStorage) (result persist.Adap
 		log.Panicln(err)
 	}
 
-	buckerExists, err := minioClient.BucketExists(minioConfig.BuckerName)
+	bucketExists, err := minioClient.BucketExists(minioConfig.BucketName)
 	if err != nil {
-		log.Panicln("Minio client failed to check bucket existanse :", err)
+		log.Panicln("Minio client failed to check bucket existence:", err)
 	}
 
-	if !buckerExists {
-		err := minioClient.MakeBucket(minioConfig.BuckerName, "us-east-1")
+	if !bucketExists {
+		err := minioClient.MakeBucket(minioConfig.BucketName, "us-east-1")
 		if err != nil {
 			log.Panicln("Minio client failed to create bucket :", err)
 		}
 	}
 
 	filePath := path.Join(workDir, minioConfig.CasbinModel)
-	error := minioClient.FGetObject(minioConfig.BuckerName, minioConfig.CasbinModel, filePath, minio.GetObjectOptions{})
+	error := minioClient.FGetObject(minioConfig.BucketName, minioConfig.CasbinModel, filePath, minio.GetObjectOptions{})
 	if error != nil {
 		log.Panicln("Error retrieving casbin model from minio:", error)
 	}

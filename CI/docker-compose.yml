@@ -104,7 +104,7 @@ services:
       - keys
     environment:
       - MINIO_ENDPOINT=minio:9000
-      - MINIO_BUCKET=tweek_casbin_policies
+      - MINIO_BUCKET=tweek-casbin-policies
       - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
       - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
       - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit

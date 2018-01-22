@@ -33,7 +33,7 @@ type Security struct {
 // PolicyStorage section holds the minio upstream and secret keys
 type PolicyStorage struct {
 	UpstreamURL  string `mapstructure:"upstream_url"`
-	BuckerName   string `mapstructure:"minio_bucker"`
+	BucketName   string `mapstructure:"minio_bucket"`
 	AccessKey    string `mapstructure:"access_key"`
 	SecretKey    string `mapstructure:"secret_key"`
 	UseSSL       bool   `mapstructure:"use_ssl"`
@@ -60,7 +60,7 @@ func LoadFromFile(fileName string) *Configuration {
 	configReader.BindEnv("security.tweek_secret_key_path", "TWEEK")
 
 	configReader.BindEnv("security.policy_storage.upstream_url", "MINIO_ENDPOINT")
-	configReader.BindEnv("security.policy_storage.minio_bucker", "MINIO_BUCKET")
+	configReader.BindEnv("security.policy_storage.minio_bucket", "MINIO_BUCKET")
 	configReader.BindEnv("security.policy_storage.access_key", "MINIO_ACCESS_KEY")
 	configReader.BindEnv("security.policy_storage.secret_key", "MINIO_SECRET_KEY")
 
