@@ -63,6 +63,7 @@ func LoadFromFile(fileName string) *Configuration {
 	configReader.BindEnv("security.policy_storage.minio_bucket", "MINIO_BUCKET")
 	configReader.BindEnv("security.policy_storage.access_key", "MINIO_ACCESS_KEY")
 	configReader.BindEnv("security.policy_storage.secret_key", "MINIO_SECRET_KEY")
+	configReader.BindEnv("security.policy_storage.use_ssl", "MINIO_SECURE")
 
 	// load
 	configReader.ReadInConfig()

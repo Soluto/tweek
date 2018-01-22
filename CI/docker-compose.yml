@@ -107,9 +107,8 @@ services:
       - MINIO_BUCKET=tweek-casbin-policies
       - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
       - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      - MINIO_SECURE=false
       - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-
-      
 
   redis:
     image: redis:4.0.2-alpine
@@ -129,6 +128,17 @@ services:
       
   nats:
     image: nats:1.0.4-linux
+  
+  casbin-minio-loader:
+    image: $CASBIN_MINIO_LOADER_IMAGE
+    depends_on:
+      - minio
+    environment:
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_BUCKET=tweek-casbin-policies
+      - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
+      - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      - MINIO_SECURE=false
 
   selenium:
     image: selenium/standalone-chrome:3.8.1
@@ -150,3 +160,4 @@ services:
     user: root
     volumes:
       - ${CF_VOLUME_PATH}/tweek/deployments/dev/zap/session/e2e:/root/.ZAP/session/e2e
+  

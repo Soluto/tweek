@@ -73,6 +73,12 @@ steps:
     type: build
     image_name: soluto/zap
     working_directory: ./deployments/dev/zap
+
+  BuildingCasbinMinioLoaderImage:
+    title: Building Casbin Minio Loader Image
+    type: build
+    image_name: soluto/casbin-minio-loader
+    working_directory: ../tools/casbin-minio-loader
   
   Tests:
     title: Tests - e2e & smoke
@@ -87,6 +93,7 @@ steps:
       - AUTHORING_IMAGE=${{BuildingAuthoring}}
       - EDITOR_IMAGE=${{BuildingEditor}}
       - ZAP_IMAGE=${{BuildingZapImage}}
+      - CASBIN_MINIO_LOADER_IMAGE=${{BuildingCasbinMinioLoaderImage}}
       - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
     composition_candidates:
       smoke-tests:
