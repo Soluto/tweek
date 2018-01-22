@@ -126,6 +126,6 @@ describe('authoring api - app permissions', () => {
           );
         }),
       );
-    }).timeout(6000);
+    });
   }
 });
