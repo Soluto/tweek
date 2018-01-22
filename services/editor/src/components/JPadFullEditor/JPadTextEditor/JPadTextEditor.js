@@ -17,7 +17,7 @@ import './JPadTextEditor.css';
 const requireConfig = {
   url: 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.1/require.min.js',
   paths: {
-    vs: 'https://unpkg.com/monaco-editor@0.8.2/min/vs',
+    vs: 'https://unpkg.com/monaco-editor@0.10.1/min/vs',
   },
 };
 
