@@ -21,17 +21,29 @@ var (
 type minioCasbinAdapter struct {
 	client      *minio.Client
 	fileadapter persist.Adapter
-	upstream    string
+	cfg         *config.PolicyStorage
 	lock        sync.RWMutex
-	workdir     string
+	workDir     string
 }
 
 func (a *minioCasbinAdapter) LoadPolicy(model model.Model) error {
-	return ErrUnsupportedOperation
+	filePath := path.Join(a.workDir, a.cfg.CasbinModel)
+	error := a.client.FGetObject(a.cfg.BuckerName, a.cfg.CasbinModel, filePath, minio.GetObjectOptions{})
+	if error != nil {
+		log.Panicln("Error retrieving casbin model from minio:", error)
+	}
+	return nil
 }
 
 func (a *minioCasbinAdapter) SavePolicy(model model.Model) error {
-	return ErrUnsupportedOperation
+	filePath := path.Join(a.workDir, a.cfg.CasbinModel)
+	n, error := a.client.FPutObject(a.cfg.BuckerName, a.cfg.CasbinModel, filePath, minio.PutObjectOptions{
+		ContentType: "application/csv",
+	})
+	if error != nil {
+		log.Panicln("Error retrieving casbin model from minio:", error)
+	}
+	return nil
 }
 
 func (a *minioCasbinAdapter) AddPolicy(sec string, ptype string, rule []string) error {
@@ -76,8 +88,8 @@ func New(workDir string, minioConfig *config.PolicyStorage) (result persist.Adap
 	result = &minioCasbinAdapter{
 		client:      minioClient,
 		fileadapter: adapter,
-		upstream:    minioConfig.UpstreamURL,
-		workdir:     workDir,
+		cfg:         minioConfig,
+		workDir:     workDir,
 	}
 
 	return

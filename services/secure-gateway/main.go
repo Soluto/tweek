@@ -40,7 +40,7 @@ func main() {
 
 // NewApp creates a new app
 func NewApp(configuration *config.Configuration, token security.JWTToken) http.Handler {
-	workDir, err := ioutil.TempDir("/tmp", "repo")
+	workDir, err := ioutil.TempDir("/tmp", "policyStorage")
 	if err != nil {
 		log.Panicln("Error loading policies (prepare to create):", err)
 	}
