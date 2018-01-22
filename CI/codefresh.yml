@@ -78,7 +78,7 @@ steps:
     title: Building Casbin Minio Loader Image
     type: build
     image_name: soluto/casbin-minio-loader
-    working_directory: ../tools/casbin-minio-loader
+    working_directory: ./tools/casbin-minio-loader
   
   Tests:
     title: Tests - e2e & smoke
