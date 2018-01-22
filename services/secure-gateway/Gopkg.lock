@@ -37,10 +37,22 @@
   version = "v3.1.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/dustin/go-humanize"
+  packages = ["."]
+  revision = "bb3d318650d48840a39aa21a027c6630e198e626"
+
+[[projects]]
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
   revision = "629574ca2a5df945712d3079857300b5e4da0236"
   version = "v1.4.2"
+
+[[projects]]
+  name = "github.com/go-ini/ini"
+  packages = ["."]
+  revision = "32e4c1e6bc4e7d0d8451aa6b75200d19e37a536a"
+  version = "v1.32.0"
 
 [[projects]]
   name = "github.com/gorilla/context"
@@ -112,6 +124,12 @@
   version = "v1.7.3"
 
 [[projects]]
+  name = "github.com/minio/minio-go"
+  packages = [".","pkg/credentials","pkg/encrypt","pkg/policy","pkg/s3signer","pkg/s3utils","pkg/set"]
+  revision = "14f1d472d115bac5ca4804094aa87484a72ced61"
+  version = "4.0.6"
+
+[[projects]]
   branch = "master"
   name = "github.com/mailgun/multibuf"
   packages = ["."]
@@ -130,12 +148,6 @@
   revision = "06020f85339e21b2478f756a78e295255ffa4d6a"
 
 [[projects]]
-  name = "github.com/pelletier/go-buffruneio"
-  packages = ["."]
-  revision = "c37440a7cf42ac63b919c752ca73a85067e05992"
-  version = "v0.2.0"
-
-[[projects]]
   name = "github.com/pelletier/go-toml"
   packages = ["."]
   revision = "16398bac157da96aa88f98a2df640c7f32af1da2"
@@ -146,12 +158,6 @@
   packages = ["."]
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/sergi/go-diff"
-  packages = ["diffmatchpatch"]
-  revision = "1744e2970ca51c86172c8190fadad617561ed6e7"
 
 [[projects]]
   name = "github.com/sirupsen/logrus"
@@ -227,12 +233,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/xanzy/ssh-agent"
-  packages = ["."]
-  revision = "ba9c9e33906f58169366275e3450db66139a31a9"
-
-[[projects]]
-  branch = "master"
   name = "golang.org/x/crypto"
   packages = [
     "cast5",
@@ -255,7 +255,7 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
-  packages = ["context"]
+  packages = ["idna","lex/httplex"]
   revision = "434ec0c7fe3742c984919a691b2018a6e9694425"
 
 [[projects]]
