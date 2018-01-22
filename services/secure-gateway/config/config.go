@@ -23,16 +23,20 @@ type Server struct {
 
 // Security section hold security related configuration
 type Security struct {
-	AllowedIssuers   []string         `mapstructure:"allowed_issuers"`
-	AzureTenantID    string           `mapstructure:"azure_tenant_id"`
-	Enforce          bool             `mapstructure:"enforce"`
-	PolicyRepository PolicyRepository `mapstructure:"policy_repository"`
+	AllowedIssuers     []string      `mapstructure:"allowed_issuers"`
+	AzureTenantID      string        `mapstructure:"azure_tenant_id"`
+	TweekSecretKeyPath string        `mapstructure:"tweek_secret_key_path"`
+	Enforce            bool          `mapstructure:"enforce"`
+	PolicyStorage      PolicyStorage `mapstructure:"policy_storage"`
 }
 
-// PolicyRepository section holds the git upstream repository url and secret key
-type PolicyRepository struct {
+// PolicyStorage section holds the minio upstream and secret keys
+type PolicyStorage struct {
 	UpstreamURL  string `mapstructure:"upstream_url"`
+	BucketName   string `mapstructure:"minio_bucket"`
+	AccessKey    string `mapstructure:"access_key"`
 	SecretKey    string `mapstructure:"secret_key"`
+	UseSSL       bool   `mapstructure:"use_ssl"`
 	CasbinPolicy string `mapstructure:"casbin_policy"`
 	CasbinModel  string `mapstructure:"casbin_model"`
 }
@@ -52,7 +56,14 @@ func LoadFromFile(fileName string) *Configuration {
 	configReader := viper.New()
 	configReader.SetConfigFile("gateway.json")
 	configReader.SetDefault("server.ports", []int{9090})
-	configReader.BindEnv("security.policy_repository.secret_key", "GIT_PRIVATE_KEY_PATH")
+
+	configReader.BindEnv("security.tweek_secret_key_path", "TWEEK")
+
+	configReader.BindEnv("security.policy_storage.upstream_url", "MINIO_ENDPOINT")
+	configReader.BindEnv("security.policy_storage.minio_bucket", "MINIO_BUCKET")
+	configReader.BindEnv("security.policy_storage.access_key", "MINIO_ACCESS_KEY")
+	configReader.BindEnv("security.policy_storage.secret_key", "MINIO_SECRET_KEY")
+	configReader.BindEnv("security.policy_storage.use_ssl", "MINIO_SECURE")
 
 	// load
 	configReader.ReadInConfig()

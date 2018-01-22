@@ -10,7 +10,7 @@ import (
 	"github.com/Soluto/tweek/services/secure-gateway/audit"
 
 	"github.com/Soluto/tweek/services/secure-gateway/passThrough"
-	"github.com/Soluto/tweek/services/secure-gateway/policyRepository"
+	"github.com/Soluto/tweek/services/secure-gateway/policyStorage"
 
 	"github.com/Soluto/tweek/services/secure-gateway/config"
 	"github.com/Soluto/tweek/services/secure-gateway/modelManagement"
@@ -40,18 +40,18 @@ func main() {
 
 // NewApp creates a new app
 func NewApp(configuration *config.Configuration, token security.JWTToken) http.Handler {
-	workDir, err := ioutil.TempDir("/tmp", "repo")
+	workDir, err := ioutil.TempDir("/tmp", "policyStorage")
 	if err != nil {
 		log.Panicln("Error loading policies (prepare to create):", err)
 	}
 
-	repo, err := policyRepository.New(workDir, &configuration.Security.PolicyRepository)
+	storage, err := policyStorage.New(workDir, &configuration.Security.PolicyStorage)
 	if err != nil {
-		log.Panicln("Error loading policies (creating repository):", err)
+		log.Panicln("Error loading policies from minio:", err)
 	}
 
-	model := configuration.Security.PolicyRepository.CasbinModel
-	enforcer := casbin.NewSyncedEnforcer(model, repo)
+	model := configuration.Security.PolicyStorage.CasbinModel
+	enforcer := casbin.NewSyncedEnforcer(model, storage)
 	enforcer.EnableLog(false)
 	enforcer.EnableEnforce(configuration.Security.Enforce)
 

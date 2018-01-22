@@ -97,7 +97,7 @@ func getKeyByIssuer(issuer, keyID string, configuration *config.Security) (inter
 	case fmt.Sprintf("https://sts.windows.net/%s/", configuration.AzureTenantID):
 		return getAzureADKey(configuration.AzureTenantID, keyID)
 	case "tweek":
-		return getGitKey(keyID, configuration.PolicyRepository.SecretKey)
+		return getGitKey(keyID, configuration.TweekSecretKeyPath)
 	default:
 		return nil, fmt.Errorf("Unknown issuer %s", issuer)
 	}

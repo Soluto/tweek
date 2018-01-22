@@ -126,10 +126,15 @@ services:
   gateway:
     ports:
       - "80:9090"    
-    environment:      
+    environment:
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_BUCKET=tweek-casbin-policies
+      - MINIO_ACCESS_KEY_PATH=/run/secrets/minio_access_key
+      - MINIO_SECRET_KEY_PATH=/run/secrets/minio_secret_key
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
     secrets:
       - tweek_ssh_private_key
+      - minio_access_key
 
 secrets:
   tweek_ssh_public_key:
