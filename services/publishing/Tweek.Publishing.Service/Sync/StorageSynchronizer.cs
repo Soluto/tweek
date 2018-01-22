@@ -12,6 +12,8 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Tweek.Publishing.Service.Packing;
+using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 
 namespace Tweek.Publishing.Service
 {
@@ -46,12 +48,13 @@ namespace Tweek.Publishing.Service
 
       var packer = new Packer();
 
-      var p = ShellHelper.ExecProcess("git", $"archive --format=zip {commitId}", (pStart) => pStart.WorkingDirectory = "/tweek/repo");
+      var (p, exited) = ShellHelper.ExecProcess("git", $"archive --format=zip {commitId}", (pStart) => pStart.WorkingDirectory = "/tweek/repo");
       using (var ms = new MemoryStream())
       {
         await p.StandardOutput.BaseStream.CopyToAsync(ms);
         ms.Position = 0;
-        p.WaitForExit();
+        await exited;
+        
         if (p.ExitCode != 0){
           throw new Exception("Git archive failed"){
             Data = {

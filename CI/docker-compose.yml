@@ -21,10 +21,9 @@ services:
     logging:
       driver: "none"
     environment:
-      environment:
       - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
       - GIT_SERVER_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-      - GIT_UPSTREAM_URI=ssh://git@git/tweek/repo
+      - GIT_UPSTREAM_URI=ssh://git@git/tweek/tests
       - MINIO__Endpoint=minio:9000
       - MINIO__AccessKey=AKIAIOSFODNN7EXAMPLE
       - MINIO__SecretKey=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
@@ -68,7 +67,7 @@ services:
       driver: "none"
     environment:
       - GIT_USER=git
-      - GIT_URL=ssh://git@git/tweek/tests
+      - GIT_URL=ssh://git@publishing/tweek/repo
       - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
       - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
       

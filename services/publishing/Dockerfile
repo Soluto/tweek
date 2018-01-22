@@ -28,8 +28,7 @@ RUN adduser --disabled-password --shell /usr/bin/git-shell git \
     && git config --global user.email "git@tweek" \
     && git config --global user.name "git" 
 
-RUN echo $target
-RUN [ $target = "Debug" ] && apt-get update && apt-get install unzip && rm -rf /var/lib/apt/lists/* && curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg
+RUN if [ $target = "Debug" ]; then apt-get update && apt-get install unzip && rm -rf /var/lib/apt/lists/* && curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg; fi
 
 COPY --from=source /tweek /tweek
 ENV GIT_SSH=/tweek/ssh-helper.sh

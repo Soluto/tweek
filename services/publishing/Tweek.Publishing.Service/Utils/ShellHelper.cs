@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using static LanguageExt.Prelude;
 using Tweek.Publishing.Service.Utils;
+using System.Reactive.Threading.Tasks;
 
 namespace Tweek.Publishing.Service.Utils
 {
@@ -23,15 +24,8 @@ namespace Tweek.Publishing.Service.Utils
 
   internal static class ObservableExtentions
   {
-    public static IObservable<T> After<T>(this IObservable<T> @this, Action action ) =>
-    @this.Concat(Observable.Defer<T>(()=>{
-       try{
-            action();
-            return Observable.Empty<T>();
-       } catch (Exception ex){
-           return Observable.Throw<T>(ex);
-       }
-       }));
+    public static IObservable<T> With<T,U>(this IObservable<T> @this, IObservable<U> other) =>
+      @this.Merge(other.IgnoreElements().Select(x=>default(T)));
    }
 
   internal static class StreamExtentions
@@ -60,7 +54,7 @@ namespace Tweek.Publishing.Service.Utils
   public class ShellHelper
   {
 
-    public static Process ExecProcess(string command, string args, Action<ProcessStartInfo> paramsInit = null)
+    public static (Process, Task) ExecProcess(string command, string args, Action<ProcessStartInfo> paramsInit = null)
     {
       //paramsInit = paramsInit ??(p) => { };
       var escapedArgs = args.Replace("\"", "\\\"");
@@ -76,21 +70,26 @@ namespace Tweek.Publishing.Service.Utils
       paramsInit?.Invoke(startInfo);
       var process = new Process()
       {
+        EnableRaisingEvents = true,
         StartInfo = startInfo,
       };
+
+      var exited = Observable.FromEventPattern(
+          x => process.Exited += x, x=> process.Exited -= x).Take(1).ToTask();
+
 
       if (!process.Start())
       {
         throw new Exception("failed to start process");
       };
-      return process;
+      return (process, exited);
     }
 
     public static IObservable<(byte[] data, OutputType outputType)> Exec(string command, string args, Action<ProcessStartInfo> paramsInit = null)
     {
       return Observable.Defer(() =>
       {
-        var process = ExecProcess(command, args, paramsInit);
+        var (process, exited) = ExecProcess(command, args, paramsInit);
         var sbErr = new StringBuilder();
         
         return Observable
@@ -102,7 +101,7 @@ namespace Tweek.Publishing.Service.Utils
                       return (data, OutputType.StdErr);
                     })
             )
-            .After(() => {
+            .With(exited.ToObservable().Do(_ =>{ 
                 if (process.ExitCode != 0) throw new Exception($"proccess failed")
                 {
                   Data ={
@@ -110,7 +109,7 @@ namespace Tweek.Publishing.Service.Utils
                                     ["StdErr"] = sbErr.ToString(),
                         }
                 };
-            })
+            }))
             .Publish().RefCount();
       });
 

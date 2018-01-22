@@ -23,7 +23,7 @@ namespace Tweek.Publishing.Service.Packing
                    .Select(manifest => {
                        var keyDef = new KeyDef(){
                            format = manifest.implementation.format ?? manifest.implementation.type,
-                           dependencies = manifest.dependencies
+                           dependencies = manifest.GetDependencies()
                        };
                        
                        switch (manifest.implementation.type){
@@ -35,7 +35,6 @@ namespace Tweek.Publishing.Service.Packing
                                break;
                            case "alias":
                                keyDef.payload = manifest.implementation.key;
-                               keyDef.dependencies = new string[]{manifest.implementation.key};
                                break;
                        }
                        return (keyPath:manifest.key_path, keyDef: keyDef);

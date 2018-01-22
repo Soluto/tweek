@@ -2,6 +2,8 @@ using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using Tweek.Publishing.Service.Packing;
 
 namespace Tweek.Publishing.Service.Validation
 {
@@ -30,9 +32,10 @@ namespace Tweek.Publishing.Service.Validation
         {
           continue;
         }
-        var json = JObject.Parse(content);
-        string[] dependencies = json["dependencies"].ToObject<string[]>() ?? Array.Empty<string>();
-        foreach (var dep in dependencies)
+        var manifest = JsonConvert.DeserializeObject<Manifest>(content);
+        var deps = manifest.GetDependencies();
+        
+        foreach (var dep in deps)
         {
           queue.Enqueue($"manifests/{dep}.json");
         }
