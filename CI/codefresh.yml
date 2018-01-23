@@ -68,8 +68,8 @@ steps:
     image_name: soluto/zap
     working_directory: ./deployments/dev/zap
   
-  Tests:
-    title: Tests - e2e & smoke
+  IntegrationTests:
+    title: Tests - integration & smoke
     type: composition
     composition: ./CI/docker-compose.yml
     composition_variables:
@@ -91,24 +91,6 @@ steps:
         environment: 
           - TWEEK_API_URL=http://api/
           - PROXY_URL=http://zap-smoke:8090
-      e2e-ui:
-        image: ${{BuildingUITests}}
-        volumes_from:
-          - keys
-        depends_on: 
-          - selenium
-          - editor
-          - authoring
-          - api
-          - publishing
-          - zap-e2e
-        environment:
-          - EDITOR_URL=http://editor:3000/
-          - TWEEK_API_URL=http://api/
-          - AUTHORING_URL=http://authoring:3000
-          - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-          - PROXY_URL=http://zap-e2e:8090
-          - AUTH_DIGEST_CREDENTIALS=user:pwd
       e2e-integration:
         image: ${{BuildingIntegrationTests}}
         volumes_from:
@@ -138,8 +120,6 @@ steps:
             - CF_QUALITY: true
           - '${{BuildingPublishing.imageId}}':
             - CF_QUALITY: true
-          - '${{BuildingEditor.imageId}}':
-            - CF_QUALITY: true
           - '${{BuildingAuthoring.imageId}}':
             - CF_QUALITY: true
     on_fail:
@@ -149,11 +129,52 @@ steps:
             - CF_QUALITY: false
           - '${{BuildingPublishing.imageId}}':
             - CF_QUALITY: false
-          - '${{BuildingEditor.imageId}}':
-            - CF_QUALITY: false
           - '${{BuildingAuthoring.imageId}}':
             - CF_QUALITY: false
 
+  UiTests:
+    title: UI tests
+    type: composition
+    composition: ./CI/docker-compose.yml
+    composition_variables:
+      - KEYS_IMAGE=${{BuildGitKeys}}
+      - REPOSITORY_IMAGE=${{BuildingGitRepository}}
+      - PUBLISHING_IMAGE=${{BuildingPublishing}}
+      - API_IMAGE=${{BuildingApiImage}}
+      - AUTHORING_IMAGE=${{BuildingAuthoring}}
+      - EDITOR_IMAGE=${{BuildingEditor}}
+      - ZAP_IMAGE=${{BuildingZapImage}}
+      - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
+    composition_candidates:
+      e2e-ui:
+        image: ${{BuildingUITests}}
+        volumes_from:
+          - keys
+        depends_on: 
+          - selenium
+          - editor
+          - authoring
+          - api
+          - publishing
+          - zap-e2e
+        environment:
+          - EDITOR_URL=http://editor:3000/
+          - TWEEK_API_URL=http://api/
+          - AUTHORING_URL=http://authoring:3000
+          - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
+          - PROXY_URL=http://zap-e2e:8090
+          - AUTH_DIGEST_CREDENTIALS=user:pwd
+    on_success:
+      metadata:
+        set:
+          - '${{BuildingEditor.imageId}}':
+            - CF_QUALITY: true
+    on_fail:
+      metadata:
+        set:
+          - '${{BuildingEditor.imageId}}':
+            - CF_QUALITY: false
+            
   BuildGlueCli:
     title: Building Glue CLI
     type: build
