@@ -6,13 +6,6 @@ import MonacoEditor from 'react-monaco-editor';
 import { AutoSizer } from 'react-virtualized';
 import './JsonEditor.css';
 
-const requireConfig = {
-  url: 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.1/require.min.js',
-  paths: {
-    vs: 'https://unpkg.com/monaco-editor@0.8.2/min/vs',
-  },
-};
-
 const parse = str => JSON.parse(str);
 const format = json => JSON.stringify(json, null, 4);
 
@@ -55,7 +48,6 @@ export const JsonEditor = compose(
           language="json"
           value={text}
           options={{ scrollBeyondLastLine: false, readOnly: false }}
-          requireConfig={requireConfig}
           onChange={newSource => changeText(newSource)}
         />
       )}
