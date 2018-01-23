@@ -111,9 +111,11 @@ namespace Tweek.Publishing.Service
       var repoSynchronizer = new RepoSynchronizer(git);
       var storageSynchronizer = new StorageSynchronizer(storageClient);
       var intervalPublisher = new IntervalPublisher(natsClient);
-      var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () =>
-          await repoSynchronizer.CurrentHead()
-      );
+      var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () => {
+          var commitId = await repoSynchronizer.CurrentHead();
+          logger.LogInformation("Nats:SyncVersion:" + commitId);
+          return commitId;
+      });
       lifetime.ApplicationStopping.Register(job.Dispose);
 
       storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result).Wait();
