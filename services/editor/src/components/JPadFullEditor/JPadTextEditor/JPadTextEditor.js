@@ -14,13 +14,6 @@ import MonacoEditor from 'react-monaco-editor';
 import { AutoSizer } from 'react-virtualized';
 import './JPadTextEditor.css';
 
-const requireConfig = {
-  url: 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.1/require.min.js',
-  paths: {
-    vs: 'https://unpkg.com/monaco-editor@0.10.1/min/vs',
-  },
-};
-
 const monacoOptions = {
   autoIndent: true,
   automaticLayout: true,
@@ -73,7 +66,6 @@ const JPadTextEditor = compose(
           value={currentSource}
           options={{ ...monacoOptions, readOnly: isReadonly }}
           onChange={newSource => onChange(newSource)}
-          requireConfig={requireConfig}
         />
       </div>
     )}
