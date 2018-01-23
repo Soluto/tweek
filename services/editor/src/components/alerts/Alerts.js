@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withState, setDisplayName, compose } from 'recompose';
 import Rodal from 'rodal';
 import './Alerts.css';
+import './Rodal.css';
 
 const addState = compose(setDisplayName('Alert'), withState('componentData', 'setComponentData'));
 
