@@ -113,7 +113,7 @@ namespace Tweek.Publishing.Service
       var intervalPublisher = new IntervalPublisher(natsClient);
       var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () => {
           var commitId = await repoSynchronizer.CurrentHead();
-          logger.LogInformation("Nats:SyncVersion:" + commitId);
+          logger.LogInformation($"Nats:SyncVersion:{commitId}");
           return commitId;
       });
       lifetime.ApplicationStopping.Register(job.Dispose);
@@ -133,6 +133,7 @@ namespace Tweek.Publishing.Service
               var commitId = await repoSynchronizer.SyncToLatest();
               await storageSynchronizer.Sync(commitId);
               await natsClient.Publish(commitId);
+              logger.LogInformation($"Sync:Commit:{commitId}");
             });
           }
           catch (Exception ex)
