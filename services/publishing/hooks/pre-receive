@@ -1,7 +1,7 @@
 #!/bin/bash
 while read oldrev newrev refname
 do
-	curl -i -f "http://localhost/validate?oldrev=$oldrev&newRev=$newrev&qurantinepath=$GIT_QUARANTINE_PATH"
+	curl -i -f "http://localhost/validate?oldrev=$oldrev&newRev=$newrev&quarantinepath=$GIT_QUARANTINE_PATH"
 	exitCode=$?
 	if [ $exitCode != 0 ]; then
 		exit exitCode

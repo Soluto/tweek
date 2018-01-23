@@ -20,6 +20,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Minio;
+using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
 using Tweek.Publishing.Service.Messaging;
@@ -157,7 +158,7 @@ namespace Tweek.Publishing.Service
 
         router.MapGet("health", async (req, res, routdata) =>
         {
-
+          await res.WriteAsync(JsonConvert.SerializeObject(new {}));
         });
 
         router.MapGet("version", async (req, res, routdata) =>
@@ -169,11 +170,11 @@ namespace Tweek.Publishing.Service
         {
           var oldCommit = req.Query["oldrev"].ToString().Trim();
           var newCommit = req.Query["newrev"].ToString().Trim();
-          var qurantinePath = req.Query["qurantinepath"];
+          var quarantinePath = req.Query["quarantinepath"];
           var gitExecutor = ShellHelper.CreateCommandExecutor("git", (pStart) =>
           {
             pStart.Environment["GIT_ALTERNATE_OBJECT_DIRECTORIES"] = "/tweek/repo/./objects";
-            pStart.Environment["GIT_OBJECT_DIRECTORY"] = qurantinePath;
+            pStart.Environment["GIT_OBJECT_DIRECTORY"] = quarantinePath;
             pStart.WorkingDirectory = "/tweek/repo";
           });
           try
