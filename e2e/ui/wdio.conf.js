@@ -42,9 +42,7 @@ exports.config = {
         autodetect: false,
       },
       browserName: 'chrome',
-      chromeOptions: {
-        args: ['--no-sandbox', '--headless', '--disable-gpu', '--window-size=1280,800'],
-      },
+      chromeOptions: { args: ['--no-sandbox', '--start-maximized'] },
       unexpectedAlertBehaviour: 'accept',
     },
   ], // host: 'http://localhost',
