@@ -20,6 +20,9 @@ const monacoOptions = {
   formatOnPaste: true,
   formatOnType: true,
   scrollBeyondLastLine: false,
+  minimap: {
+    enabled: false,
+  },
 };
 
 const JPadTextEditor = compose(

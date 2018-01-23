@@ -47,7 +47,13 @@ export const JsonEditor = compose(
           width={width}
           language="json"
           value={text}
-          options={{ scrollBeyondLastLine: false, readOnly: false }}
+          options={{
+            scrollBeyondLastLine: false,
+            minimap: {
+              enabled: false,
+            },
+            readOnly: false,
+          }}
           onChange={newSource => changeText(newSource)}
         />
       )}
