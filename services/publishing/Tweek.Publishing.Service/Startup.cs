@@ -76,20 +76,8 @@ namespace Tweek.Publishing.Service
       return minioConfig.GetValue<bool>("UseSSL", false) ? mc.WithSSL() : mc;
     }
 
-    public static Func<T1,T2,T3, Task> Synchronized<T1,T2,T3>(Func<T1,T2,T3, Task> fn, ILogger logger){
-        //var cq = new ConcurrentQueue<(Func<T1,T2,T3, Task>, TaskCompletionSource<Unit>)>();
-        AsyncLock _lock = new AsyncLock();
-        return async (t1,t2,t3)=>  {
-            using (await _lock){
-                logger.LogInformation("start");
-                await fn(t1,t2,t3);
-                logger.LogInformation("finished");
-                return;
-            };
-        };
-    }
-
-    public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+    public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
+    IApplicationLifetime lifetime)
     {
       var logger = loggerFactory.CreateLogger("Default");
       logger.LogInformation("Starting service");
@@ -120,9 +108,13 @@ namespace Tweek.Publishing.Service
                               .Result;
 
       var natsClient = new NatsPublisher(Configuration.GetSection("Nats").GetValue<string>("Endpoint"), "version");
-
       var repoSynchronizer = new RepoSynchronizer(git);
       var storageSynchronizer = new StorageSynchronizer(storageClient);
+      var intervalPublisher = new IntervalPublisher(natsClient);
+      var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () =>
+          await repoSynchronizer.CurrentHead()
+      );
+      lifetime.ApplicationStopping.Register(job.Dispose);
 
       storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result).Wait();
 

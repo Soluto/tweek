@@ -14,22 +14,28 @@ namespace Tweek.Publishing.Service.Messaging
 
         private string _subject { get; }
 
-        private Lazy<IConnection> _connectionInit;
+        private Lazy<IConnection>  _connection;
 
-        private IConnection Connection => _connectionInit.Value;
+        private Options _connectionOptions;
+
+        private IConnection Connection{
+            get {
+                if (_connection == null || _connection.Value.IsClosed()) {
+                    _connection = new Lazy<IConnection>(()=>new ConnectionFactory().CreateConnection(_connectionOptions));
+                }
+                return _connection.Value;
+            }
+        }
 
         public NatsPublisher(string natsEndpoint, string subject, ILogger logger = null){
             _logger = logger ?? NullLogger.Instance;
             _subject = subject;
-            var options = ConnectionFactory.GetDefaultOptions();
-            options.AllowReconnect = true;
-            options.Servers = new []{
+            _connectionOptions = ConnectionFactory.GetDefaultOptions();
+            _connectionOptions.AllowReconnect = true;
+            _connectionOptions.Servers = new []{
                 natsEndpoint
             };
-            options.Name = "Tweek Publishing";
-            _connectionInit = new Lazy<IConnection>( () => { 
-               return new ConnectionFactory().CreateConnection(options); 
-            });
+            _connectionOptions.Name = "Tweek Publishing";
         }
 
         public async Task Publish(string message){
