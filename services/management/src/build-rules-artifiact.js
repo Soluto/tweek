@@ -1,7 +1,6 @@
 const R = require('ramda');
 const { Observable } = require('rxjs');
-const jsonminify = require("jsonminify");
-
+const jsonminify = require('jsonminify');
 const indexByName = R.indexBy(R.prop('name'));
 
 module.exports = function (files) {
@@ -22,7 +21,7 @@ module.exports = function (files) {
           keyDef.payload = await index[
             `implementations/${format}/${manifest.key_path}.${extension || format}`
           ].read();
-          if (format === "jpad"){
+          if (format === 'jpad') {
             keyDef.payload = jsonminify(keyDef.payload);
           }
           break;

@@ -1,6 +1,7 @@
 import R = require('ramda');
 import Transactor from "../utils/transactor";
 import GitRepository from "./git-repository";
+import { Oid } from 'nodegit';
 
 export default class AppsRepository {
   apps: any;
@@ -24,10 +25,11 @@ export default class AppsRepository {
   }
 
   async saveApp(appId, manifest, author) {
-    await this._gitTransactionManager.write(async (repo) => {
+    return await this._gitTransactionManager.write(async (repo) => {
       await repo.updateFile(`external_apps/${appId}.json`, JSON.stringify(manifest, null, 4));
-      await repo.commitAndPush(`created app ${appId}`, author);
+      const commitId = await repo.commitAndPush(`created app ${appId}`, author);
       await this.refresh();
+      return commitId;
     });
   }
 }
