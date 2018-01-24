@@ -3,6 +3,7 @@ import git = require('nodegit');
 import simpleGit = require('simple-git');
 import fs = require('fs-extra');
 import R = require('ramda');
+import { Commit } from 'nodegit/commit';
 
 export class ValidationError {
   constructor(public message) { }
@@ -144,6 +145,11 @@ export default class GitRepository {
   }
 
   async commitAndPush(message, { name, email }) {
+    const head = await this.getLastCommit();
+    const diff = await git.Diff.treeToIndex(this._repo, await head.getTree(), null, null);
+    const patches = await diff.patches();
+    if (patches.length === 0) return;
+
     const author = git.Signature.now(name, email);
     const pusher = git.Signature.now('tweek-editor', 'tweek-editor@tweek');
     await this._repo.createCommitOnHead([], author, pusher, message);
@@ -179,7 +185,7 @@ export default class GitRepository {
     return remoteCommit.id().equal(localCommit.id()) === 1;
   }
 
-  getLastCommit(branch = 'master'): Promise<any> {
+  getLastCommit(branch = 'master'): Promise<Commit> {
     return this._repo.getBranchCommit(branch);
   }
 
