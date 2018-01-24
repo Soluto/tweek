@@ -128,20 +128,24 @@ services:
       - "80:9090"    
     environment:
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOENDPOINT=minio:9000
-      - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOBUCKET=tweek-casbin-policies
+      - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOBUCKETNAME=tweek-casbin-policies
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOACCESSKEY=AKIAIOSFODNN7EXAMPLE
-      - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECRETKEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECURE=false
-      - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
+      - TWEEKGATEWAY_SECURITY_TWEEKSECRETKEYPATH=/run/secrets/tweek_ssh_private_key
 
+  casbin-minio-loader:
+    image: casbin-minio-loader
+    build: ../../tools/casbin-minio-loader
+    depends_on:
+      - minio
+    environment:
       - MINIO_ENDPOINT=minio:9000
       - MINIO_BUCKET=tweek-casbin-policies
-      - MINIO_ACCESS_KEY_PATH=/run/secrets/minio_access_key
-      - MINIO_SECRET_KEY_PATH=/run/secrets/minio_secret_key
-      - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
-    secrets:
-      - tweek_ssh_private_key
-      - minio_access_key
+      - MINIO_SECURE=false
+      - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
+      - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+
 
 secrets:
   tweek_ssh_public_key:

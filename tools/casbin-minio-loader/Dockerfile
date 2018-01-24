@@ -23,7 +23,7 @@ RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o entry
 # -------- IMAGE -------- #
 FROM scratch
 
-COPY --from=build /go/src/github.com/Soluto/tweek/tools/casbin-minio-loader/model.csv /model.csv
+COPY --from=build /go/src/github.com/Soluto/tweek/tools/casbin-minio-loader/policy.csv /policy.csv
 COPY --from=build /go/src/github.com/Soluto/tweek/tools/casbin-minio-loader/entry /entry
 
 ENTRYPOINT [ "/entry" ]

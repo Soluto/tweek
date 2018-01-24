@@ -6,10 +6,9 @@
     },
     "security": {
         "enforce": true,
-        "policy_repository": {
-            "upstream_url": "ssh://git@git/tweek/repo",
-            "casbin_policy": "./model.csv",
-            "casbin_model": "./policy.conf"
+        "policyStorage": {
+            "casbinModel": "model.conf",
+            "casbinPolicy": "policy.csv"
         }
     },
     "v1Hosts": {

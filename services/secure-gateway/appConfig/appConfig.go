@@ -47,10 +47,10 @@ type PolicyStorage struct {
 
 // Configuration is the root element of configuration for secure-gateway
 type Configuration struct {
-	Upstreams *Upstreams `mapstructure:"upstreams"`
-	V1Hosts   *V1Hosts   `mapstructure:"v1Hosts"`
-	Server    *Server    `mapstructure:"server"`
-	Security  *Security  `mapstructure:"security"`
+	Upstreams Upstreams `mapstructure:"upstreams"`
+	V1Hosts   V1Hosts   `mapstructure:"v1Hosts"`
+	Server    Server    `mapstructure:"server"`
+	Security  Security  `mapstructure:"security"`
 }
 
 // InitConfig initializes the configuration
@@ -60,7 +60,7 @@ func InitConfig() *Configuration {
 	tweekConfigor := configor.New(&configor.Config{ENVPrefix: "TWEEKGATEWAY"})
 
 	// Loading default config file
-	tweekConfigor.Load(conf, "gateway.json")
+	tweekConfigor.Load(conf, "config/gateway.json")
 
 	// Loading provided config file
 	if configFilePath, exists := os.LookupEnv("TWEEK_GATEWAY_CONFIG_FILE_PATH"); exists {

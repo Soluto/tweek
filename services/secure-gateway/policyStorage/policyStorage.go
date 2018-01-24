@@ -51,8 +51,8 @@ func appendToCsv(filePath string, inlinePoliciesStr string) error {
 }
 
 func (a *minioCasbinAdapter) LoadPolicy(model model.Model) error {
-	filePath := path.Join(a.workDir, a.cfg.CasbinModel)
-	error := a.client.FGetObject(a.cfg.MinioBucketName, a.cfg.CasbinModel, filePath, minio.GetObjectOptions{})
+	filePath := path.Join(a.workDir, a.cfg.CasbinPolicy)
+	error := a.client.FGetObject(a.cfg.MinioBucketName, a.cfg.CasbinPolicy, filePath, minio.GetObjectOptions{})
 	if error != nil {
 		log.Panicln("Error retrieving casbin model from minio:", error)
 	}
@@ -100,8 +100,8 @@ func New(workDir string, config *appConfig.PolicyStorage) (result persist.Adapte
 		log.Panicln("Minio bucket with casbin policies doesn't exist")
 	}
 
-	filePath := path.Join(workDir, config.CasbinModel)
-	error := minioClient.FGetObject(config.MinioBucketName, config.CasbinModel, filePath, minio.GetObjectOptions{})
+	filePath := path.Join(workDir, config.CasbinPolicy)
+	error := minioClient.FGetObject(config.MinioBucketName, config.CasbinPolicy, filePath, minio.GetObjectOptions{})
 	if error != nil {
 		log.Panicln("Error retrieving casbin model from minio:", error)
 	}

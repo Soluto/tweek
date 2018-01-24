@@ -11,7 +11,7 @@ import (
 func main() {
 	endpoint := os.Getenv("MINIO_ENDPOINT")
 	accessKey := os.Getenv("MINIO_ACCESS_KEY")
-	secretKey := os.Getenv("MINIO_SECRET_KEY_PATH")
+	secretKey := os.Getenv("MINIO_SECRET_KEY")
 	useSSL, err := strconv.ParseBool(os.Getenv("MINIO_SECURE"))
 	if err != nil {
 		log.Panicln("Error getting MINIO_SECURE environment variable:", err)
@@ -35,7 +35,7 @@ func main() {
 		}
 	}
 
-	_, err = client.FPutObject(bucketName, "model.csv", "./model.csv", minio.PutObjectOptions{
+	_, err = client.FPutObject(bucketName, "policy.csv", "./policy.csv", minio.PutObjectOptions{
 		ContentType: "application/csv",
 	})
 	if err != nil {
