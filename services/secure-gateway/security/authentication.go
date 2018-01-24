@@ -97,7 +97,7 @@ func getKeyByIssuer(issuer, keyID string, configuration *appConfig.Security) (in
 	case fmt.Sprintf("https://sts.windows.net/%s/", configuration.AzureTenantID):
 		return getAzureADKey(configuration.AzureTenantID, keyID)
 	case "tweek":
-		return getGitKey(keyID, configuration.TweekSecretKeyPath)
+		return getGitKey(configuration.TweekSecretKeyPath)
 	default:
 		return nil, fmt.Errorf("Unknown issuer %s", issuer)
 	}
@@ -113,7 +113,7 @@ func getAzureADKey(tenantID string, keyID string) (interface{}, error) {
 	return getJWKByEndpoint(endpoint, keyID)
 }
 
-func getGitKey(keyID string, secretKeyFile string) (interface{}, error) {
+func getGitKey(secretKeyFile string) (interface{}, error) {
 	pemFile, err := ioutil.ReadFile(secretKeyFile)
 	pemBlock, _ := pem.Decode(pemFile)
 	if pemBlock == nil {

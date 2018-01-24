@@ -25,7 +25,7 @@ import (
 func main() {
 	configuration := appConfig.InitConfig()
 
-	token := security.InitJWT()
+	token := security.InitJWT(configuration.Security.TweekSecretKeyPath)
 	app := NewApp(configuration, token)
 
 	if len(configuration.Server.Ports) > 1 {

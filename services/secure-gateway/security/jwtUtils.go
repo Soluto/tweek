@@ -1,7 +1,10 @@
 package security
 
 import (
-	"os"
+	"crypto/x509"
+	"encoding/pem"
+	"io/ioutil"
+	"log"
 	"sync"
 	"time"
 
@@ -39,15 +42,21 @@ func (t *JWTTokenData) SetToken(tokenStr string) {
 const expirationPeriod = 24
 
 // InitJWT - inits jwt
-func InitJWT() JWTToken {
-	token := &JWTTokenData{
-		tokenStr: createNewJWT(),
+func InitJWT(keyPath string) JWTToken {
+	key, err := getPrivateKeyFromFile(keyPath)
+	if err != nil {
+		log.Panicln("Private key retrieving failed:", err)
 	}
-	go setExpirationTimer(token)
+
+	token := &JWTTokenData{
+		tokenStr: createNewJWT(key),
+	}
+
+	go setExpirationTimer(token, key)
 	return token
 }
 
-func createNewJWT() string {
+func createNewJWT(key interface{}) string {
 	numericTime := time.Now().Add(expirationPeriod * time.Hour).Unix()
 	claims := tweekClaims{
 		"tweek-internal",
@@ -61,17 +70,32 @@ func createNewJWT() string {
 	token.Header["typ"] = "JWT"
 	token.Header["alg"] = "RS256"
 
-	key := os.Getenv("jwt-key")
-
 	tokenStr, _ := token.SignedString(key)
 	return tokenStr
 }
 
-func setExpirationTimer(token *JWTTokenData) {
+func setExpirationTimer(token *JWTTokenData, key interface{}) {
 	timer := time.Tick(expirationPeriod * time.Hour)
 
 	for range timer {
-		tokenStr := createNewJWT()
+		tokenStr := createNewJWT(key)
 		token.SetToken(tokenStr)
 	}
+}
+
+func getPrivateKeyFromFile(filePath string) (interface{}, error) {
+	pemFile, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return nil, err
+	}
+
+	block, _ := pem.Decode(pemFile)
+	key, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+	if err != nil {
+		key, err = x509.ParsePKCS1PrivateKey(block.Bytes)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return key, nil
 }
