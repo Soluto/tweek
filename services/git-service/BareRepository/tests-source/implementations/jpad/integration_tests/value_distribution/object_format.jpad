@@ -1,0 +1,19 @@
+{
+    "partitions": [],
+    "valueType": "number",
+    "rules": [
+        {
+            "Matcher": {},
+            "Type": "MultiVariant",
+            "OwnerType": "user",
+            "ValueDistribution": {
+                "type": "weighted",
+                "args": {
+                    "15": 100,
+                    "30": 0
+                }
+            },
+            "Salt": "integration_tests/value_distribution/object_format"
+        }
+    ]
+}
