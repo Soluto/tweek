@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Soluto/tweek/services/secure-gateway/config"
+	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
 	"github.com/gorilla/mux"
 )
 
@@ -29,7 +29,7 @@ type router struct {
 }
 
 // NewRouter creates a new transformation middleware
-func NewRouter(configuration *config.Configuration) Router {
+func NewRouter(configuration *appConfig.Configuration) Router {
 	mainRouter := mux.NewRouter()
 
 	monitoringRouter := mainRouter.PathPrefix("/api/monitoring/").Subrouter()

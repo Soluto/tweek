@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/BurntSushi/toml"
+  packages = ["."]
+  revision = "b26d9c308763d68093482582cea63d69be07a0f0"
+  version = "v0.3.0"
+
+[[projects]]
   name = "github.com/Knetic/govaluate"
   packages = ["."]
   revision = "d216395917cc49052c7c7094cf57f09657ca08a8"
@@ -72,6 +78,12 @@
   name = "github.com/hashicorp/hcl"
   packages = [".","hcl/ast","hcl/parser","hcl/scanner","hcl/strconv","hcl/token","json/parser","json/scanner","json/token"]
   revision = "23c074d0eceb2b8a5bfdbb271ab780cde70f05a8"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/jinzhu/configor"
+  packages = ["."]
+  revision = "6ecfe629230f24c2e92c7894c6ab21b83b757a39"
 
 [[projects]]
   name = "github.com/jonboulle/clockwork"
@@ -185,7 +197,7 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "39efaea5da11abd5e2b90a435b1f338cdb94619c"
+  revision = "3d37316aaa6bd9929127ac9a527abf408178ea7b"
 
 [[projects]]
   branch = "master"
@@ -214,6 +226,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d175bdc5c0be37c8ad7977e36e0151ee34f778973881220036e05b2eafd75558"
+  inputs-digest = "ffa56bcf3cf7b8ae284ef5315d17fc4d4dc11e0903d8dff1cbd3aee2a894cf3f"
   solver-name = "gps-cdcl"
   solver-version = 1

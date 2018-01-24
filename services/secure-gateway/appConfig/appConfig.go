@@ -1,6 +1,10 @@
-package config
+package appConfig
 
-import "github.com/spf13/viper"
+import (
+	"os"
+
+	"github.com/jinzhu/configor"
+)
 
 // Upstreams is the list of upstrem URLs.
 type Upstreams struct {
@@ -32,13 +36,13 @@ type Security struct {
 
 // PolicyStorage section holds the minio upstream and secret keys
 type PolicyStorage struct {
-	UpstreamURL  string `mapstructure:"upstream_url"`
-	BucketName   string `mapstructure:"minio_bucket"`
-	AccessKey    string `mapstructure:"access_key"`
-	SecretKey    string `mapstructure:"secret_key"`
-	UseSSL       bool   `mapstructure:"use_ssl"`
-	CasbinPolicy string `mapstructure:"casbin_policy"`
-	CasbinModel  string `mapstructure:"casbin_model"`
+	MinioEndpoint   string `mapstructure:"upstream_url"`
+	MinioBucketName string `mapstructure:"minio_bucket"`
+	MinioAccessKey  string `mapstructure:"access_key"`
+	MinioSecretKey  string `mapstructure:"secret_key"`
+	MinioUseSSL     bool   `mapstructure:"use_ssl"`
+	CasbinPolicy    string `mapstructure:"casbin_policy"`
+	CasbinModel     string `mapstructure:"casbin_model"`
 }
 
 // Configuration is the root element of configuration for secure-gateway
@@ -49,13 +53,23 @@ type Configuration struct {
 	Security  *Security  `mapstructure:"security"`
 }
 
-// LoadFromFile the configuration from a file given by fileName
-func LoadFromFile(fileName string) *Configuration {
-	// setup
-	configuration := &Configuration{}
-	configReader := viper.New()
-	configReader.SetConfigFile("gateway.json")
-	configReader.SetDefault("server.ports", []int{9090})
+// InitConfig initializes the configuration
+func InitConfig() *Configuration {
+	conf := &Configuration{}
+
+	tweekConfigor := configor.New(&configor.Config{ENVPrefix: "TWEEKGATEWAY"})
+
+	// Loading default config file
+	tweekConfigor.Load(conf, "gateway.json")
+
+	// Loading provided config file
+	if configFilePath, exists := os.LookupEnv("TWEEK_GATEWAY_CONFIG_FILE_PATH"); exists {
+		if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
+			tweekConfigor.Load(conf, configFilePath)
+		}
+	}
+
+	/*configReader.SetDefault("server.ports", []int{9090})
 
 	configReader.BindEnv("security.tweek_secret_key_path", "TWEEK")
 
@@ -63,12 +77,7 @@ func LoadFromFile(fileName string) *Configuration {
 	configReader.BindEnv("security.policy_storage.minio_bucket", "MINIO_BUCKET")
 	configReader.BindEnv("security.policy_storage.access_key", "MINIO_ACCESS_KEY")
 	configReader.BindEnv("security.policy_storage.secret_key", "MINIO_SECRET_KEY")
-	configReader.BindEnv("security.policy_storage.use_ssl", "MINIO_SECURE")
+	configReader.BindEnv("security.policy_storage.use_ssl", "MINIO_SECURE")*/
 
-	// load
-	configReader.ReadInConfig()
-	configReader.Unmarshal(configuration)
-
-	// return
-	return configuration
+	return conf
 }

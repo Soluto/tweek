@@ -11,8 +11,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
 	"github.com/Soluto/tweek/services/secure-gateway/audit"
-	"github.com/Soluto/tweek/services/secure-gateway/config"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
 	"github.com/lestrrat/go-jwx/jwk"
@@ -45,7 +45,7 @@ func (u *userInfo) Name() string               { return u.name }
 func (u *userInfo) Claims() jwt.StandardClaims { return u.StandardClaims }
 
 // UserInfoFromRequest return the user information from request
-func UserInfoFromRequest(req *http.Request, configuration *config.Security) (UserInfo, error) {
+func UserInfoFromRequest(req *http.Request, configuration *appConfig.Security) (UserInfo, error) {
 	if !configuration.Enforce {
 		info := &userInfo{email: "test@test.test", name: "test"}
 		return info, nil
@@ -75,7 +75,7 @@ func UserInfoFromRequest(req *http.Request, configuration *config.Security) (Use
 }
 
 // AuthenticationMiddleware enriches the request's context with the user info from JWT
-func AuthenticationMiddleware(configuration *config.Security, auditor audit.Auditor) negroni.HandlerFunc {
+func AuthenticationMiddleware(configuration *appConfig.Security, auditor audit.Auditor) negroni.HandlerFunc {
 	return negroni.HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		info, err := UserInfoFromRequest(r, configuration)
 		if err != nil {
@@ -90,7 +90,7 @@ func AuthenticationMiddleware(configuration *config.Security, auditor audit.Audi
 	})
 }
 
-func getKeyByIssuer(issuer, keyID string, configuration *config.Security) (interface{}, error) {
+func getKeyByIssuer(issuer, keyID string, configuration *appConfig.Security) (interface{}, error) {
 	switch issuer {
 	case "https://accounts.google.com":
 		return getGoogleKey(keyID)
