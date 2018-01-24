@@ -9,7 +9,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/Soluto/tweek/services/secure-gateway/config"
+	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
 	"github.com/casbin/casbin/file-adapter"
 	"github.com/casbin/casbin/model"
 	"github.com/casbin/casbin/persist"
@@ -24,7 +24,7 @@ var (
 type minioCasbinAdapter struct {
 	client      *minio.Client
 	fileadapter persist.Adapter
-	cfg         *config.PolicyStorage
+	cfg         *appConfig.PolicyStorage
 	lock        sync.RWMutex
 	workDir     string
 }
@@ -52,7 +52,7 @@ func appendToCsv(filePath string, inlinePoliciesStr string) error {
 
 func (a *minioCasbinAdapter) LoadPolicy(model model.Model) error {
 	filePath := path.Join(a.workDir, a.cfg.CasbinModel)
-	error := a.client.FGetObject(a.cfg.BucketName, a.cfg.CasbinModel, filePath, minio.GetObjectOptions{})
+	error := a.client.FGetObject(a.cfg.MinioBucketName, a.cfg.CasbinModel, filePath, minio.GetObjectOptions{})
 	if error != nil {
 		log.Panicln("Error retrieving casbin model from minio:", error)
 	}
@@ -85,14 +85,14 @@ func (a *minioCasbinAdapter) RemoveFilteredPolicy(sec string, ptype string, fiel
 }
 
 // New - fetches policy from minio and returns data for casbin initialization
-func New(workDir string, minioConfig *config.PolicyStorage) (result persist.Adapter, err error) {
+func New(workDir string, config *appConfig.PolicyStorage) (result persist.Adapter, err error) {
 
-	minioClient, err := minio.New(minioConfig.UpstreamURL, minioConfig.AccessKey, minioConfig.SecretKey, minioConfig.UseSSL)
+	minioClient, err := minio.New(config.MinioEndpoint, config.MinioAccessKey, config.MinioSecretKey, config.MinioUseSSL)
 	if err != nil {
 		log.Panicln(err)
 	}
 
-	bucketExists, err := minioClient.BucketExists(minioConfig.BucketName)
+	bucketExists, err := minioClient.BucketExists(config.MinioBucketName)
 	if err != nil {
 		log.Panicln("Minio client failed to check bucket existence:", err)
 	}
@@ -100,8 +100,8 @@ func New(workDir string, minioConfig *config.PolicyStorage) (result persist.Adap
 		log.Panicln("Minio bucket with casbin policies doesn't exist")
 	}
 
-	filePath := path.Join(workDir, minioConfig.CasbinModel)
-	error := minioClient.FGetObject(minioConfig.BucketName, minioConfig.CasbinModel, filePath, minio.GetObjectOptions{})
+	filePath := path.Join(workDir, config.CasbinModel)
+	error := minioClient.FGetObject(config.MinioBucketName, config.CasbinModel, filePath, minio.GetObjectOptions{})
 	if error != nil {
 		log.Panicln("Error retrieving casbin model from minio:", error)
 	}
@@ -111,7 +111,7 @@ func New(workDir string, minioConfig *config.PolicyStorage) (result persist.Adap
 	result = &minioCasbinAdapter{
 		client:      minioClient,
 		fileadapter: adapter,
-		cfg:         minioConfig,
+		cfg:         config,
 		workDir:     workDir,
 	}
 

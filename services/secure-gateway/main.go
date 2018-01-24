@@ -7,12 +7,12 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
 	"github.com/Soluto/tweek/services/secure-gateway/audit"
 
 	"github.com/Soluto/tweek/services/secure-gateway/passThrough"
 	"github.com/Soluto/tweek/services/secure-gateway/policyStorage"
 
-	"github.com/Soluto/tweek/services/secure-gateway/config"
 	"github.com/Soluto/tweek/services/secure-gateway/modelManagement"
 	"github.com/Soluto/tweek/services/secure-gateway/monitoring"
 	"github.com/Soluto/tweek/services/secure-gateway/security"
@@ -23,9 +23,9 @@ import (
 )
 
 func main() {
-	configuration := config.LoadFromFile("gateway.json")
+	configuration := appConfig.InitConfig()
 
-	token := security.InitJWT()
+	token := security.InitJWT(configuration.Security.TweekSecretKeyPath)
 	app := NewApp(configuration, token)
 
 	if len(configuration.Server.Ports) > 1 {
@@ -39,7 +39,7 @@ func main() {
 }
 
 // NewApp creates a new app
-func NewApp(configuration *config.Configuration, token security.JWTToken) http.Handler {
+func NewApp(configuration *appConfig.Configuration, token security.JWTToken) http.Handler {
 	workDir, err := ioutil.TempDir("/tmp", "policyStorage")
 	if err != nil {
 		log.Panicln("Error loading policies (prepare to create):", err)
