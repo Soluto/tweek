@@ -4,7 +4,7 @@ import assert from 'assert';
 import { expect } from 'chai';
 import { dataComp, dataField, attributeSelector } from './selector-utils';
 
-const timeout = 10000;
+const timeout = 15000;
 
 const addKeyPage = dataComp('add-key-page');
 const keyEditPage = dataComp('key-edit-page');
