@@ -62,5 +62,27 @@ describe('authoring api', () => {
         })
         .expect(400);
     });
+
+    it('should not create new commit for duplicate definition', async () => {
+      let key = '@tests/integration/duplicate';
+      async function saveKey() {
+        return await clients.authoring
+          .put(`/api/keys/${key}?author.name=test&author.email=test@soluto.com`)
+          .send({
+            manifest: createManifestForJPadKey(key),
+            implementation: JSON.stringify({
+              partitions: [],
+              defaultValue: 'test',
+              valueType: 'string',
+              rules: [],
+            }),
+          })
+          .expect(200);
+      }
+      let res = await saveKey();
+      expect(res.header).to.have.property('x-oid');
+      res = await saveKey();
+      expect(res.header).to.not.have.property('x-oid');
+    });
   });
 });
