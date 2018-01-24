@@ -1,7 +1,6 @@
 const R = require('ramda');
 const { Observable } = require('rxjs');
 const jsonminify = require('jsonminify');
-
 const indexByName = R.indexBy(R.prop('name'));
 
 module.exports = function (files) {
