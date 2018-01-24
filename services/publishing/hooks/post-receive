@@ -10,5 +10,4 @@ then
 else
   curl http://localhost/log?message=post-receive-hook-pushed-to-upstream
 fi
-curl "http://localhost/sync" &
-curl http://localhost/log?message=post-receive-hook-finished
+curl "http://localhost/sync" 1> /dev/null 2> /dev/null  &
