@@ -60,7 +60,7 @@ func InitConfig() *Configuration {
 	tweekConfigor := configor.New(&configor.Config{ENVPrefix: "TWEEKGATEWAY"})
 
 	// Loading default config file
-	tweekConfigor.Load(conf, "config/gateway.json")
+	tweekConfigor.Load(conf, "/config/gateway.json")
 
 	// Loading provided config file
 	if configFilePath, exists := os.LookupEnv("TWEEK_GATEWAY_CONFIG_FILE_PATH"); exists {
