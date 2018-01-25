@@ -7,7 +7,7 @@
     "security": {
         "enforce": true,
         "policyStorage": {
-            "casbinModel": "model.conf",
+            "casbinModel": "/model.conf",
             "casbinPolicy": "policy.csv"
         }
     },
