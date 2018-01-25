@@ -133,6 +133,8 @@ services:
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECRETKEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECURE=false
       - TWEEKGATEWAY_SECURITY_TWEEKSECRETKEYPATH=/run/secrets/tweek_ssh_private_key
+    secrets:
+      - tweek_ssh_private_key
 
   casbin-minio-loader:
     image: casbin-minio-loader
