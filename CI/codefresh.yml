@@ -99,9 +99,10 @@ steps:
       smoke-tests:
         image: ${{BuildingApiSmokeTestImage}}
         depends_on: 
-          - api
+          - gateway
           - management
           - zap-smoke
+          - casbin-minio-loader
         environment: 
           - TWEEK_API_URL=http://api/
           - PROXY_URL=http://zap-smoke:8090
@@ -115,8 +116,8 @@ steps:
         depends_on: 
           - selenium
           - editor
-          - authoring
-          - api
+          - gateway
+          - casbin-minio-loader
           - management
           - zap-e2e
         environment:
@@ -135,8 +136,8 @@ steps:
         volumes_from:
           - keys
         depends_on:
-          - authoring
-          - api
+          - gateway
+          - casbin-minio-loader
           - management
         environment:
           - API_URL=http://api

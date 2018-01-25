@@ -46,6 +46,7 @@ services:
       - management
       - editor
       - gateway
+      - casbin-minio-loader
     environment:
       - EDITOR_URL=http://editor:3000/
       - TWEEK_API_URL=http://api/
@@ -65,6 +66,7 @@ services:
     depends_on:
       - management
       - gateway
+      - casbin-minio-loader
     environment:
       - API_URL=http://api
       - AUTHORING_URL=http://authoring:3000
@@ -84,6 +86,7 @@ services:
     depends_on: 
       - management
       - gateway
+      - casbin-minio-loader
     environment: 
       - TWEEK_API_URL=http://api/
     links:
