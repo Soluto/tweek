@@ -35,7 +35,7 @@ func main() {
 		}
 	}
 
-	_, err = client.FPutObject(bucketName, "policy.csv", "./policy.csv", minio.PutObjectOptions{
+	_, err = client.FPutObject(bucketName, "policy.csv", "/policy.csv", minio.PutObjectOptions{
 		ContentType: "application/csv",
 	})
 	if err != nil {
