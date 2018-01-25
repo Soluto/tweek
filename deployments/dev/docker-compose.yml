@@ -23,8 +23,7 @@ services:
     image: soluto/tweek-editor
     build: ../../services/editor
     depends_on: 
-      - api
-      - authoring
+      - gateway
 
   gateway:
     image: soluto/tweek-secure-gateway

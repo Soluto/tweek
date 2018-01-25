@@ -80,8 +80,7 @@ services:
   editor:
     image: $EDITOR_IMAGE
     depends_on:
-      - api
-      - authoring
+      - gateway
     volumes_from:
       - keys
     logging:
