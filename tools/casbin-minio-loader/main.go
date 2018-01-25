@@ -41,4 +41,6 @@ func main() {
 	if err != nil {
 		log.Panicln("Failed save file to minio:", err)
 	}
+
+	log.Println("Casbin policy has been loaded to minio")
 }

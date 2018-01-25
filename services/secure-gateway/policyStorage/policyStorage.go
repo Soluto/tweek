@@ -8,6 +8,7 @@ import (
 	"path"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
 	"github.com/casbin/casbin/file-adapter"
@@ -103,7 +104,12 @@ func New(workDir string, config *appConfig.PolicyStorage) (result persist.Adapte
 	filePath := path.Join(workDir, config.CasbinPolicy)
 	error := minioClient.FGetObject(config.MinioBucketName, config.CasbinPolicy, filePath, minio.GetObjectOptions{})
 	if error != nil {
-		log.Panicln("Error retrieving casbin model from minio:", error)
+		log.Println("Load casbin policy from minio failed. Trying again")
+		time.Sleep(time.Second * 1)
+		error := minioClient.FGetObject(config.MinioBucketName, config.CasbinPolicy, filePath, minio.GetObjectOptions{})
+		if error != nil {
+			log.Panicln("Error retrieving casbin model from minio:", error)
+		}
 	}
 
 	adapter := fileadapter.NewAdapter(filePath)
