@@ -9,6 +9,7 @@ RUN dotnet restore
 
 COPY . .
 
+RUN dotnet test ./Tweek.Publishing.Tests
 RUN dotnet publish -c $target -o obj/docker/publish
 
 RUN cp -r /src/scripts /tweek \

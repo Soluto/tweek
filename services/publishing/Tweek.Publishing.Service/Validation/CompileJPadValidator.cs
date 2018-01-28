@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Tweek.JPad;
 
@@ -14,7 +15,7 @@ namespace Tweek.Publishing.Service.Validation
                     ["version"] = Version.Parse
                 }), sha1Provider: (s)=>
                 {
-                    using (var sha1 = System.Security.Cryptography.SHA1.Create())
+                    using (var sha1 = SHA1.Create())
                     {
                         return sha1.ComputeHash(s);
                     }

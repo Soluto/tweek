@@ -36,7 +36,7 @@ namespace Tweek.Publishing.Service
   {
     public IDisposable RunSSHDeamon(ILogger logger)
     {
-      return ShellHelper.Exec("/usr/sbin/sshd", "-f /tweek/sshd_config")
+      return ShellHelper.Executor.ExecObservable("/usr/sbin/sshd", "-f /tweek/sshd_config")
           .Retry()
           .Select(x => (data: Encoding.Default.GetString(x.data), x.outputType))
           .Subscribe(x =>
@@ -87,7 +87,7 @@ namespace Tweek.Publishing.Service
       }
       RunSSHDeamon(logger);
 
-      var git = ShellHelper.CreateCommandExecutor("git", (p) =>
+      var git = ShellHelper.Executor.CreateCommandExecutor("git", (p) =>
       {
         p.WorkingDirectory = "/tweek/repo";
       });
@@ -109,7 +109,7 @@ namespace Tweek.Publishing.Service
 
       var natsClient = new NatsPublisher(Configuration.GetSection("Nats").GetValue<string>("Endpoint"), "version");
       var repoSynchronizer = new RepoSynchronizer(git);
-      var storageSynchronizer = new StorageSynchronizer(storageClient);
+      var storageSynchronizer = new StorageSynchronizer(storageClient, ShellHelper.Executor, new Packing.Packer());
       var intervalPublisher = new IntervalPublisher(natsClient);
       var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () => {
           var commitId = await repoSynchronizer.CurrentHead();
@@ -166,7 +166,7 @@ namespace Tweek.Publishing.Service
           var oldCommit = req.Query["oldrev"].ToString().Trim();
           var newCommit = req.Query["newrev"].ToString().Trim();
           var quarantinePath = req.Query["quarantinepath"];
-          var gitExecutor = ShellHelper.CreateCommandExecutor("git", (pStart) =>
+          var gitExecutor = ShellHelper.Executor.CreateCommandExecutor("git", (pStart) =>
           {
             pStart.Environment["GIT_ALTERNATE_OBJECT_DIRECTORIES"] = "/tweek/repo/./objects";
             pStart.Environment["GIT_OBJECT_DIRECTORY"] = quarantinePath;

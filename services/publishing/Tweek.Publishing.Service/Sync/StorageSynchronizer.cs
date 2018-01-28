@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Tweek.Publishing.Service.Packing;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
+using static Tweek.Publishing.Service.Utils.ShellHelper;
 
 namespace Tweek.Publishing.Service
 {
@@ -21,9 +22,14 @@ namespace Tweek.Publishing.Service
   public class StorageSynchronizer
   {
     private readonly IObjectStorage _client;
-    public StorageSynchronizer(IObjectStorage storageClient)
+    private readonly Packer _packer;
+    private readonly ShellExecutor _shellExecutor;
+
+    public StorageSynchronizer(IObjectStorage storageClient, ShellExecutor shellExecutor, Packer packer)
     {
       this._client = storageClient;
+      this._packer = packer;
+      this._shellExecutor = shellExecutor;
     }
 
     public async Task Sync(string commitId)
@@ -48,7 +54,7 @@ namespace Tweek.Publishing.Service
 
       var packer = new Packer();
 
-      var (p, exited) = ShellHelper.ExecProcess("git", $"archive --format=zip {commitId}", (pStart) => pStart.WorkingDirectory = "/tweek/repo");
+      var (p, exited) = _shellExecutor("git", $"archive --format=zip {commitId}", (pStart) => pStart.WorkingDirectory = "/tweek/repo");
       using (var ms = new MemoryStream())
       {
         await p.StandardOutput.BaseStream.CopyToAsync(ms);

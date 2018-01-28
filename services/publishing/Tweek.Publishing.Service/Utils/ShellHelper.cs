@@ -51,8 +51,11 @@ namespace Tweek.Publishing.Service.Utils
     }
   }
 
-  public class ShellHelper
+  public static class ShellHelper
   {
+    public delegate (Process, Task) ShellExecutor(string command, string args, Action<ProcessStartInfo> paramsInit = null);
+
+    public static readonly ShellExecutor Executor = ExecProcess;
 
     public static (Process, Task) ExecProcess(string command, string args, Action<ProcessStartInfo> paramsInit = null)
     {
@@ -85,11 +88,11 @@ namespace Tweek.Publishing.Service.Utils
       return (process, exited);
     }
 
-    public static IObservable<(byte[] data, OutputType outputType)> Exec(string command, string args, Action<ProcessStartInfo> paramsInit = null)
+    public static IObservable<(byte[] data, OutputType outputType)> ExecObservable(this ShellExecutor shellExecutor, string command, string args, Action<ProcessStartInfo> paramsInit = null)
     {
       return Observable.Defer(() =>
       {
-        var (process, exited) = ExecProcess(command, args, paramsInit);
+        var (process, exited) = shellExecutor(command, args, paramsInit);
         var sbErr = new StringBuilder();
         
         return Observable
@@ -115,14 +118,14 @@ namespace Tweek.Publishing.Service.Utils
 
     }
 
-    public static async Task<string> ExecTask(string command, string args, Action<ProcessStartInfo> paramsInit = null)
+    public static async Task<string> ExecTask(this ShellExecutor shellExecutor, string command, string args, Action<ProcessStartInfo> paramsInit = null)
     {
-      return await Exec(command, args, paramsInit)
+      return await shellExecutor.ExecObservable(command, args, paramsInit)
               .Where(x => x.outputType == OutputType.StdOut)
               .Aggregate("", (acc, x) => acc + Encoding.Default.GetString(x.data));
     }
 
-    public static Func<string, Task<string>> CreateCommandExecutor(string command, Action<ProcessStartInfo> paramsInit = null) => (string args) =>
-               ExecTask(command, args, paramsInit);
+    public static Func<string, Task<string>> CreateCommandExecutor(this ShellExecutor shellExecutor, string command, Action<ProcessStartInfo> paramsInit = null) => (string args) =>
+               shellExecutor.ExecTask(command, args, paramsInit);
   }
 }

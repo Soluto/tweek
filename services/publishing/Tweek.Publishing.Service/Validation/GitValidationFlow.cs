@@ -16,7 +16,7 @@ namespace Tweek.Publishing.Service.Validation
                             .Split("\n")
                             .Where(x=> !String.IsNullOrWhiteSpace(x))
                             .Select(x=> {
-                                var fragments = x.Split("\t");
+                                var fragments = x.Trim().Split("\t");
                                 return (changeType: fragments[0], file: fragments[1]);
                              }) 
                             .Where(x=> x.changeType != "D")
