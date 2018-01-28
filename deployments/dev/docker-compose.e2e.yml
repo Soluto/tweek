@@ -41,6 +41,9 @@ services:
     container_name: e2e-ui
     links:
       - selenium
+      - gateway:api
+      - gateway:management
+      - gateway:authoring
     depends_on: 
       - selenium
       - management
@@ -54,11 +57,7 @@ services:
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
       - AUTH_DIGEST_CREDENTIALS=user:pwd
     secrets:
-      - tweek_ssh_private_key
-    links:
-      - gateway:api
-      - gateway:management
-      - gateway:authoring
+      - tweek_ssh_private_key      
 
   e2e-integration:
     build: ../../e2e/integration

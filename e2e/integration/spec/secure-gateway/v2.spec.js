@@ -10,7 +10,7 @@ describe('Secure Gateway', () => {
   });
 
   it('AAAAAAAAAAAAA', async () => {
-    const result = await clients.gateway.get(`/api/values/${key}`);
+    const result = await clients.gateway.get(`/api/v2/values/${key}`);
     console.log('RESULT', result);
   });
 });
