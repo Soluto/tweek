@@ -1,0 +1,10 @@
+{
+  "name": "tweek-gateway",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "go build",
+    "start": "CONFIGOR_ENV=local CONFIG_FILE_PATH=./config/gateway.json ./secure-gateway"
+  }
+}

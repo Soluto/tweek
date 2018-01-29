@@ -1,0 +1,19 @@
+{
+    "upstreams": {
+        "api": "http://localhost:4003",
+        "authoring": "http://localhost:4004",
+        "management": "http://localhost:4002"
+    },
+    "security": {
+        "tweekSecretKeyPath": "../../deployments/dev/ssh/tweekgit",
+        "policyStorage": {
+            "minioEndpoint": "localhost:4007",
+            "minioBucketName": "tweek-casbin-policies",
+            "minioAccessKey": "AKIAIOSFODNN7EXAMPLE",
+            "minioSecretKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+            "minioSecure": false,
+            "casbinModel": "./model.conf"
+        }
+    }
+}
+    

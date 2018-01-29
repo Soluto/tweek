@@ -1,6 +1,7 @@
 package appConfig
 
 import (
+	"log"
 	"os"
 
 	"github.com/jinzhu/configor"
@@ -57,10 +58,18 @@ type Configuration struct {
 func InitConfig() *Configuration {
 	conf := &Configuration{}
 
-	tweekConfigor := configor.New(&configor.Config{ENVPrefix: "TWEEKGATEWAY"})
+	tweekConfigor := configor.New(&configor.Config{ENVPrefix: "TWEEKGATEWAY", Verbose: true})
 
-	// Loading default config file
-	tweekConfigor.Load(conf, "/config/gateway.json")
+	// Loading default config file if exists
+	if configFilePath, exists := os.LookupEnv("CONFIG_FILE_PATH"); exists {
+		if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
+			tweekConfigor.Load(conf, configFilePath)
+		} else {
+			log.Panicln("Config file not found", err)
+		}
+	} else {
+		tweekConfigor.Load(conf)
+	}
 
 	// Loading provided config file
 	if configFilePath, exists := os.LookupEnv("TWEEK_GATEWAY_CONFIG_FILE_PATH"); exists {

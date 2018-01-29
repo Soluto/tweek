@@ -9,8 +9,8 @@ describe('Secure Gateway', () => {
     clients = await initClients();
   });
 
-  it('AAAAAAAAAAAAA', async () => {
+  it('V22222', async () => {
     const result = await clients.gateway.get(`/api/v2/values/${key}`);
-    console.log('RESULT', result);
+    console.log('RESULT', result.statusCode);
   });
 });
