@@ -57,8 +57,6 @@ namespace Tweek.Publishing.Service
         previous = versionsBlob?.latest
       };
 
-      var packer = new Packer();
-
       var (p, exited) = _shellExecutor("git", $"archive --format=zip {commitId}", (pStart) => pStart.WorkingDirectory = "/tweek/repo");
       using (var ms = new MemoryStream())
       {
@@ -77,7 +75,7 @@ namespace Tweek.Publishing.Service
         using (var zip = new ZipArchive(ms, ZipArchiveMode.Read, false))
         {
           var files = zip.Entries.Select(x=>x.FullName).ToList();
-          var bundle = packer.Pack(files, GetZipReader(zip));
+          var bundle = _packer.Pack(files, GetZipReader(zip));
           await _client.PutJSON(commitId, bundle);
         }
       }
