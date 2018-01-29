@@ -14,7 +14,7 @@ namespace Tweek.Publishing.Service.Messaging
 
         public IDisposable PublishEvery(TimeSpan interval, Func<Task<string>> GetMessage){
             return Observable.FromAsync(GetMessage)
-                .DelaySubscription(TimeSpan.FromSeconds(60))
+                .DelaySubscription(interval)
                 .Repeat()
                 .Retry()
                 .Subscribe();
