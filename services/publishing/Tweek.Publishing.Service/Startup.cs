@@ -94,8 +94,8 @@ namespace Tweek.Publishing.Service
       var gitValidationFlow = new GitValidationFlow()
       {
         Validators = {
-                    ("^manifests/.*\\.json$", new CircularDependencyValidator()),
-                    ("^implementations/jpad/.*\\.jpad$", new CompileJPadValidator())
+                    (Patterns.Manifests, new CircularDependencyValidator()),
+                    (Patterns.JPad, new CompileJPadValidator())
                 }
       };
 
