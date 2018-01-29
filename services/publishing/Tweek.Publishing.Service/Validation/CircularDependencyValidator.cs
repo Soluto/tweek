@@ -19,7 +19,7 @@ namespace Tweek.Publishing.Service.Validation
         var path = queue.Dequeue();
         if (visited.Contains(path))
         {
-          throw new Exception("circular deps");
+          throw new CircularValidationException(path);
         }
         Console.WriteLine($"checking dependencies for {path}");
         visited.Add(path);
