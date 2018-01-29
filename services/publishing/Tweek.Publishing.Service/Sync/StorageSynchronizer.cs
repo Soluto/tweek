@@ -77,7 +77,7 @@ namespace Tweek.Publishing.Service
         using (var zip = new ZipArchive(ms, ZipArchiveMode.Read, false))
         {
           var files = zip.Entries.Select(x=>x.FullName).ToList();
-          var bundle = await packer.Pack(files, GetZipReader(zip));
+          var bundle = packer.Pack(files, GetZipReader(zip));
           await _client.PutJSON(commitId, bundle);
         }
       }

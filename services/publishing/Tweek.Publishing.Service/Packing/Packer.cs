@@ -10,7 +10,7 @@ namespace Tweek.Publishing.Service.Packing
 {
     public class Packer
     {
-        public async Task<Dictionary<string,KeyDef>> Pack(ICollection<string> files, Func<string,string> readFn){
+        public Dictionary<string,KeyDef> Pack(ICollection<string> files, Func<string,string> readFn){
              return new Dictionary<string, KeyDef>(files.Where(x=> Regex.IsMatch(x, "^manifests/.*\\.json$"))
                    .Select(x =>{
                        try {
