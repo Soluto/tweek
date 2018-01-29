@@ -10,13 +10,13 @@ namespace Tweek.Publishing.Service.Packing
 {
     public class Packer
     {
-        public async Task<Dictionary<string,KeyDef>> Pack( Dictionary<string, Func<string>> source ){
-             return new Dictionary<string, KeyDef>(source.Where(x=> Regex.IsMatch(x.Key, "^manifests/.*\\.json$"))
+        public async Task<Dictionary<string,KeyDef>> Pack(ICollection<string> files, Func<string,string> readFn){
+             return new Dictionary<string, KeyDef>(files.Where(x=> Regex.IsMatch(x, "^manifests/.*\\.json$"))
                    .Select(x =>{
                        try {
-                            return JsonConvert.DeserializeObject<Manifest>(x.Value());
+                            return JsonConvert.DeserializeObject<Manifest>(readFn(x));
                        } catch (Exception ex){
-                           ex.Data["key"] = x.Key;
+                           ex.Data["key"] = x;
                            throw;
                        }
                    })
@@ -28,7 +28,7 @@ namespace Tweek.Publishing.Service.Packing
                        
                        switch (manifest.implementation.type){
                            case "file":
-                               keyDef.payload = source[$"implementations/{manifest.implementation.format}/{manifest.key_path}.{manifest.implementation.extension ?? manifest.implementation.format}"]();
+                               keyDef.payload = readFn($"implementations/{manifest.implementation.format}/{manifest.key_path}.{manifest.implementation.extension ?? manifest.implementation.format}");
                                break;
                            case "const":
                                keyDef.payload = JsonConvert.SerializeObject(manifest.implementation.value);

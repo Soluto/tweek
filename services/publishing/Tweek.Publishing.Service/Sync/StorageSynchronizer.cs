@@ -32,6 +32,11 @@ namespace Tweek.Publishing.Service
       this._shellExecutor = shellExecutor;
     }
 
+    private static Func<string,string> GetZipReader(ZipArchive zip)=> (string fileName)=>{
+        using (var sr = new StreamReader(zip.GetEntry(fileName).Open()))
+              return sr.ReadToEnd();
+    };
+
     public async Task Sync(string commitId)
     {
       VersionsBlob versionsBlob = null;
@@ -71,16 +76,8 @@ namespace Tweek.Publishing.Service
         }
         using (var zip = new ZipArchive(ms, ZipArchiveMode.Read, false))
         {
-          var dir = zip.Entries.ToDictionary(x => x.FullName, x => fun(() =>
-          {
-            using (var sr = new StreamReader(x.Open()))
-            {
-              return sr.ReadToEnd();
-            }
-          }));
-
-          var bundle = await packer.Pack(dir);
-
+          var files = zip.Entries.Select(x=>x.FullName).ToList();
+          var bundle = await packer.Pack(files, GetZipReader(zip));
           await _client.PutJSON(commitId, bundle);
         }
       }
