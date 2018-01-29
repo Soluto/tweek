@@ -37,7 +37,7 @@ func TestTransformTagsSaveRequest(t *testing.T) {
 			name: "Get Tags",
 			args: args{
 				upstream: parseURL(t, "http://authoring"),
-				request:  makeRequestWithUserInfo("PUT", "http://tweek-authoring/api/v2/tags", tagsBody, makeUserInfo("name", "email")),
+				request:  makeRequestWithUserInfo("PUT", "/api/v2/tags", tagsBody, makeUserInfo("name", "email")),
 				response: httptest.NewRecorder(),
 			},
 			wantURL:  "http://authoring/api/v1/tags",
@@ -58,7 +58,7 @@ func TestTransformTagsSaveRequest(t *testing.T) {
 				gotBody = string(body)
 			})
 
-			server := negroni.New(TransformTagsSaveRequest(tt.args.upstream), negroni.WrapFunc(next))
+			server := negroni.New(transformTagsSaveRequest(tt.args.upstream), negroni.WrapFunc(next))
 			// makeRequest
 			server.ServeHTTP(tt.args.response, tt.args.request)
 
