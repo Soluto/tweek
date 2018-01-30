@@ -25,10 +25,9 @@ namespace Tweek.Publishing.Service.Validation
         }
         var manifest = JsonConvert.DeserializeObject<Manifest>(content);
         var deps = manifest.GetDependencies();
-        
         foreach (var dep in deps)
         {
-          await ValidateRecursive("manifests/{dep}.json", reader, visited.Add(fileName));
+          await ValidateRecursive($"manifests/{dep}.json", reader, visited.Add(fileName));
         }
     }
 

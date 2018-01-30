@@ -5,6 +5,7 @@ ARG target="Release"
 WORKDIR /src
 COPY ./Tweek.Publishing.sln ./Tweek.Publishing.sln
 COPY ./Tweek.Publishing.Service/Tweek.Publishing.Service.csproj ./Tweek.Publishing.Service/Tweek.Publishing.Service.csproj
+COPY ./Tweek.Publishing.Tests/Tweek.Publishing.Tests.csproj ./Tweek.Publishing.Tests/Tweek.Publishing.Tests.csproj
 RUN dotnet restore
 
 COPY . .

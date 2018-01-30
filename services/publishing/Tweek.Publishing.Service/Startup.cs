@@ -114,6 +114,7 @@ namespace Tweek.Publishing.Service
       var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () => {
           var commitId = await repoSynchronizer.CurrentHead();
           logger.LogInformation($"Nats:SyncVersion:{commitId}");
+          await natsClient.Publish(commitId);
           return commitId;
       });
       lifetime.ApplicationStopping.Register(job.Dispose);

@@ -7,7 +7,7 @@ namespace Tweek.Publishing.Service.Packing
       public static string[] GetDependencies(this Manifest manifest) =>
           match(manifest.implementation.type,
             with("alias", (_)=> new[]{manifest.implementation.key}),
-            (_)=> manifest.dependencies
+            (_)=> manifest.dependencies ?? new string[]{}
             );
       
   }

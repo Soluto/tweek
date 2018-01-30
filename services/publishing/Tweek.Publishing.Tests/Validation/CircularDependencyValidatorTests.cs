@@ -119,8 +119,6 @@ namespace Tweek.Publishing.Tests.Validation
             };
 
             await validator.Validate("manifests/a.json", async x => files[x]);
-            //await Assert.
-            //await Assert.ThrowsAsync<CircularValidationException>(()=> validator.Validate("manifests/a.json", async x => files[x]));
         }
     }
 }
