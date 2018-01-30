@@ -33,7 +33,6 @@ services:
       - /dev/shm:/dev/shm
     links:
       - gateway:api
-      - gateway:management
       - gateway:authoring
 
   e2e-ui:
@@ -42,7 +41,6 @@ services:
     links:
       - selenium
       - gateway:api
-      - gateway:management
       - gateway:authoring
     depends_on: 
       - selenium
@@ -75,7 +73,6 @@ services:
       - tweek_ssh_private_key
     links:
       - gateway:api
-      - gateway:management
       - gateway:authoring
 
   smoke-tests:
@@ -91,7 +88,6 @@ services:
       - TWEEK_API_URL=http://api/
     links:
       - gateway:api
-      - gateway:management
 
 secrets:
   tweek_ssh_private_key:

@@ -108,7 +108,6 @@ steps:
           - PROXY_URL=http://zap-smoke:8090
         links:
           - gateway:api
-          - gateway:management
       e2e-ui:
         image: ${{BuildingUITests}}
         volumes_from:
@@ -129,7 +128,6 @@ steps:
           - AUTH_DIGEST_CREDENTIALS=user:pwd
         links:
           - gateway:api
-          - gateway:management
           - gateway:authoring
       e2e-integration:
         image: ${{BuildingIntegrationTests}}
@@ -147,7 +145,6 @@ steps:
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
         links:
           - gateway:api
-          - gateway:management
           - gateway:authoring
       api-swagger:
         image: node:slim
