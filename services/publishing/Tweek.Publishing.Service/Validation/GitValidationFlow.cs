@@ -22,7 +22,7 @@ namespace Tweek.Publishing.Service.Validation
                             .Where(x=> x.changeType != "D")
                             .Select(x=> x.file);
                             
-                var reader = fun((string s)=> git($"show {newCommit}:{s}"));
+                var reader = fun((string s)=> git($"show {newCommit}:\"{s}\""));
 
                 foreach (var file in files){
                     foreach (var (pattern, validator) in Validators){
