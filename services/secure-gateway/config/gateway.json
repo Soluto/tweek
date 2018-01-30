@@ -13,13 +13,16 @@
     },
     "v1Hosts": {
         "api": [
-            "api"
+            "api",
+            "api.localtest.me"
         ],
         "authoring": [
-            "authoring"
+            "authoring",
+            "authoring.localtest.me"
         ],
         "management": [
-            "management"
+            "management",
+            "management.localtest.me"
         ]
     },
     "server": {

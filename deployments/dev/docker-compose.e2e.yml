@@ -69,7 +69,7 @@ services:
     environment:
       - API_URL=http://api
       - AUTHORING_URL=http://authoring:3000
-      - GATEWAY_URL=http://gateway:9090
+      - GATEWAY_URL=http://gateway
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
     secrets:
       - tweek_ssh_private_key

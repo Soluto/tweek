@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const { init: initClients } = require('../../utils/clients');
 
-describe('Secure Gateway', () => {
+describe('Secure Gateway v2', () => {
   const key = 'integration_tests/some_key';
 
   let clients;
@@ -9,8 +9,7 @@ describe('Secure Gateway', () => {
     clients = await initClients();
   });
 
-  it('V22222', async () => {
-    const result = await clients.gateway.get(`/api/v2/values/${key}`);
-    console.log('RESULT', result.statusCode);
+  it('get key (proxy to api service)', async () => {
+    const result = await clients.gateway.get(`/api/v2/values/${key}`).expect(200, '1.0');
   });
 });
