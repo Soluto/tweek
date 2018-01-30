@@ -4,43 +4,37 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Tweek.Publishing.Service.Packing;
+using LanguageExt;
 
 namespace Tweek.Publishing.Service.Validation
 {
   public class CircularDependencyValidator : IValidator
-  {
-    public async Task Validate(string fileName, Func<string, Task<string>> reader)
-    {
-      var queue = new Queue<string>();
-      queue.Enqueue(fileName);
-      var visited = new HashSet<string>();
-      while (queue.Count > 0)
-      {
-        var path = queue.Dequeue();
-        if (visited.Contains(path))
+  { 
+    private async Task ValidateRecursive(string fileName, Func<string,Task<string>> reader, Set<string> visited){
+       if (visited.Contains(fileName)){
+         throw new CircularValidationException(fileName);
+       }
+       string content;
+       try
         {
-          throw new CircularValidationException(path);
-        }
-        Console.WriteLine($"checking dependencies for {path}");
-        visited.Add(path);
-        string content = null;
-        try
-        {
-          content = await reader(path);
+          content = await reader(fileName);
         }
         catch (Exception ex)
         {
-          continue;
+          return;
         }
         var manifest = JsonConvert.DeserializeObject<Manifest>(content);
         var deps = manifest.GetDependencies();
         
         foreach (var dep in deps)
         {
-          queue.Enqueue($"manifests/{dep}.json");
+          await ValidateRecursive("manifests/{dep}.json", reader, visited.Add(fileName));
         }
-      }
+    }
 
+    public async Task Validate(string fileName, Func<string, Task<string>> reader)
+    {
+      await ValidateRecursive(fileName, reader, Set<string>.Empty);
     }
 
   }

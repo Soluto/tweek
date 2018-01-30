@@ -84,5 +84,43 @@ namespace Tweek.Publishing.Tests.Validation
 
             await Assert.ThrowsAsync<CircularValidationException>(()=> validator.Validate("manifests/a.json", async x => files[x]));
         }
+
+        [Fact]
+        public async Task ShouldWorkWithMultipleDepTrees(){
+            var validator = new CircularDependencyValidator();
+            var files = new Dictionary<string,string>(){
+                ["manifests/a.json"]= JsonConvert.SerializeObject(new {
+                    dependencies = new string[]{"b", "c"},
+                    key_name = "a",
+                    implementation = new {
+                        type = "jpad"
+                    }
+                }),
+                ["manifests/b.json"]= JsonConvert.SerializeObject(new {
+                    key_name = "b",
+                    dependencies = new string[]{"d"},
+                    implementation = new {
+                        type = "jpad",
+                    }
+                }),
+                ["manifests/c.json"]= JsonConvert.SerializeObject(new {
+                    key_name = "c",
+                    dependencies = new string[]{"d"},
+                    implementation = new {
+                        type = "jpad",
+                    }
+                }),
+                ["manifests/d.json"]= JsonConvert.SerializeObject(new {
+                    key_name = "d",
+                    implementation = new {
+                        type = "jpad",
+                    }
+                })
+            };
+
+            await validator.Validate("manifests/a.json", async x => files[x]);
+            //await Assert.
+            //await Assert.ThrowsAsync<CircularValidationException>(()=> validator.Validate("manifests/a.json", async x => files[x]));
+        }
     }
 }
