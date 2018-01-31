@@ -22,6 +22,7 @@ func New(upstream *url.URL, token security.JWTToken) negroni.HandlerFunc {
 		panic(fmt.Sprintf("Failed to setup request forwarding %v", err))
 	}*/
 	return func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+		rw.Header().Set("X-GATEWAY", "true")
 		patchUpstream(r, upstream)
 		setJwtToken(r, token.GetToken())
 		fwd.ServeHTTP(rw, r)
