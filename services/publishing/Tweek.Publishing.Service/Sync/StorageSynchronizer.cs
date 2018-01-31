@@ -80,6 +80,9 @@ namespace Tweek.Publishing.Service
         }
       }
       await _client.PutJSON("versions", newVersionBlob);
+      if (versionsBlob.previous != null){
+        await _client.Delete(versionsBlob.previous);
+      }
     }
   }
 }

@@ -51,9 +51,6 @@ services:
       - Rules__Minio__AccessKeyPath=/run/secrets/minio_access_key
       - Rules__Minio__SecretKeyPath=/run/secrets/minio_secret_key
       - Rules__Nats__Endpoint=nats://nats:4222
-      - Rules__SampleIntervalInMs=500
-      - Rules__FailureDelayInMs=50
-      - Rules__VersionTimeoutInMs=2000
       - UseAddon__Rules=MinioRules
       - RulesetVersionProvider=NatsVersionProvider
     secrets:

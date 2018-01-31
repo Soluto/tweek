@@ -3,6 +3,7 @@ using System.IO;
 using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Reactive.Linq;
 using Minio;
 
 namespace Tweek.Publishing.Service.Storage
@@ -59,7 +60,6 @@ namespace Tweek.Publishing.Service.Storage
         }
       }
     }
-
     public static async Task<MinioBucketStorage> GetOrCreateBucket(MinioClient mc, string bucketName)
     {
       if (!await mc.BucketExistsAsync(bucketName))
@@ -67,6 +67,11 @@ namespace Tweek.Publishing.Service.Storage
         await mc.MakeBucketAsync(bucketName);
       }
       return new MinioBucketStorage(mc, bucketName);
+    }
+
+    public async Task Delete(string objectName, CancellationToken cancellationToken = default)
+    {
+      await _client.RemoveObjectAsync(_bucketName, objectName, cancellationToken);
     }
   }
 }
