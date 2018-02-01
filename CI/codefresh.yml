@@ -140,7 +140,7 @@ steps:
         environment:
           - API_URL=http://api
           - AUTHORING_URL=http://authoring:3000
-          - MANAGEMENT_URL=http://tweek-management:3000
+          - MANAGEMENT_URL=http://management:3000
           - GATEWAY_URL=http://gateway
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
         links:
