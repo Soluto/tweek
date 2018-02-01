@@ -9,9 +9,8 @@ describe('Secure Gateway v2', () => {
     clients = await initClients();
   });
 
-  it('get key (proxy to api service)', async () => {
-    const result = await clients.gateway.get(`/api/v2/values/${key}`).expect(200, '1.0');
-  });
+  it('get key (proxy to api service)', async () =>
+    await clients.gateway.get(`/api/v2/values/${key}`).expect(200, '1.0'));
 
   it('checks that the api calls are proxied through gateway', async () =>
     await clients.api
