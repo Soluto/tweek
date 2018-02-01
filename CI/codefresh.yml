@@ -146,6 +146,7 @@ steps:
         links:
           - gateway:api
           - gateway:authoring
+          - gateway:management
       api-swagger:
         image: node:slim
         depends_on:
