@@ -41,4 +41,7 @@ WORKDIR /tweek
 EXPOSE 22
 EXPOSE 80
 
+HEALTHCHECK --interval=15s --timeout=15s --retries=8 \
+      CMD curl -f http://localhost/health || exit 1
+      
 ENTRYPOINT ["bash", "-c", "/tweek/init-git.sh && dotnet /tweek/Tweek.Publishing.Service/Tweek.Publishing.Service.dll" ]

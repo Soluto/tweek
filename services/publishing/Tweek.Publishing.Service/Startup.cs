@@ -113,6 +113,7 @@ namespace Tweek.Publishing.Service
       var intervalPublisher = new IntervalPublisher(natsClient);
       var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () => {
           var commitId = await repoSynchronizer.CurrentHead();
+          await storageSynchronizer.Sync(commitId);
           logger.LogInformation($"Nats:SyncVersion:{commitId}");
           await natsClient.Publish(commitId);
           return commitId;
@@ -123,13 +124,18 @@ namespace Tweek.Publishing.Service
 
       app.UseRouter(router =>
       {
-          
         router.MapGet("sync", async (req, res, routdata) =>
         {
           try
           {
           await Policy.Handle<Exception>()
-            .WaitAndRetryAsync(3, (retryAttempt)=> TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+            .WaitAndRetryAsync(3, (int retryAttempt)=> {
+              return TimeSpan.FromSeconds(Math.Pow(2, retryAttempt));
+            }, async (ex,timespan)=>{
+              logger.LogWarning(ex.ToString());
+              logger.LogWarning($"Sync:CommitFailed:Retrying");
+              await Task.Delay(timespan);
+            })
             .ExecuteAsync(async ()=>{
               var commitId = await repoSynchronizer.SyncToLatest();
               await storageSynchronizer.Sync(commitId);

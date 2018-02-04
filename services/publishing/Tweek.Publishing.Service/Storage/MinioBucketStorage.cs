@@ -18,7 +18,7 @@ namespace Tweek.Publishing.Service.Storage
       _client = client;
       _bucketName = bucketName;
     }
-    public async Task Get(string objectName, Func<Stream, CancellationToken, Task> reader, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task Get(string objectName, Action<Stream> reader, CancellationToken cancellationToken = default(CancellationToken))
     {
       var tsc = new TaskCompletionSource<Unit>();
       await _client.GetObjectAsync(_bucketName, objectName, async (s) =>
@@ -30,7 +30,7 @@ namespace Tweek.Publishing.Service.Storage
             tsc.SetCanceled();
             return;
           }
-          await reader(s, cancellationToken);
+          reader(s);
           if (cancellationToken.IsCancellationRequested)
           {
             tsc.SetCanceled();
@@ -46,11 +46,11 @@ namespace Tweek.Publishing.Service.Storage
       await tsc.Task;
     }
 
-    public async Task Put(string objectName, Func<Stream, CancellationToken, Task> writer, string mimeType, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task Put(string objectName, Action<Stream> writer, string mimeType, CancellationToken cancellationToken = default(CancellationToken))
     {
       using (var input = new MemoryStream())
       {
-        await writer(input, cancellationToken);
+        writer(input);
         if (cancellationToken.IsCancellationRequested) return;
         var data = input.ToArray();
         var size = data.Length;
