@@ -105,7 +105,7 @@ func New(workDir string, config *appConfig.PolicyStorage) (result persist.Adapte
 	error := minioClient.FGetObject(config.MinioBucketName, config.CasbinPolicy, filePath, minio.GetObjectOptions{})
 	if error != nil {
 		log.Println("Load casbin policy from minio failed. Trying again")
-		time.Sleep(time.Second * 5)
+		time.Sleep(time.Minute * 1)
 		error := minioClient.FGetObject(config.MinioBucketName, config.CasbinPolicy, filePath, minio.GetObjectOptions{})
 		if error != nil {
 			log.Panicln("Error retrieving casbin model from minio:", error)
