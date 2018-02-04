@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/minio/minio-go"
+	"github.com/nats-io/go-nats"
 )
 
 func main() {
@@ -39,7 +40,19 @@ func main() {
 		ContentType: "application/csv",
 	})
 	if err != nil {
-		log.Panicln("Failed save file to minio:", err)
+		log.Panicln("Failed to save file to minio:", err)
+	}
+
+	natsEndpoint := os.Getenv("NATS_ENDPOINT")
+	nc, err := nats.Connect(natsEndpoint)
+	if err != nil {
+		log.Panicln("Failed to connect to Nats:", err)
+	}
+
+	natsSubject := os.Getenv("NATS_SUBJECT")
+	err = nc.Publish(natsSubject, []byte("policy.csv"))
+	if err != nil {
+		log.Panicln("Failed to publish to Nats:", err)
 	}
 
 	log.Println("Casbin policy has been loaded to minio")

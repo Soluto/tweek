@@ -26,6 +26,12 @@
   revision = "98e846eed4809e48e9ec11e8169400487d8a3029"
 
 [[projects]]
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  revision = "346938d642f2ec3594ed81d874461961cd0faa76"
+  version = "v1.1.0"
+
+[[projects]]
   name = "github.com/dgrijalva/jwt-go"
   packages = [".","request"]
   revision = "dbeaa9332f19a944acb5736b4456cfcc02140e29"
@@ -36,12 +42,6 @@
   name = "github.com/dustin/go-humanize"
   packages = ["."]
   revision = "bb3d318650d48840a39aa21a027c6630e198e626"
-
-[[projects]]
-  name = "github.com/fsnotify/fsnotify"
-  packages = ["."]
-  revision = "c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9"
-  version = "v1.4.7"
 
 [[projects]]
   name = "github.com/go-ini/ini"
@@ -68,46 +68,22 @@
   version = "v1.2.0"
 
 [[projects]]
-  name = "github.com/gravitational/trace"
-  packages = ["."]
-  revision = "0bd13642feb8f57acc0d8e3a568edc34e05a74b9"
-  version = "1.1.3"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/hashicorp/hcl"
-  packages = [".","hcl/ast","hcl/parser","hcl/scanner","hcl/strconv","hcl/token","json/parser","json/scanner","json/token"]
-  revision = "23c074d0eceb2b8a5bfdbb271ab780cde70f05a8"
-
-[[projects]]
   branch = "master"
   name = "github.com/jinzhu/configor"
   packages = ["."]
   revision = "6ecfe629230f24c2e92c7894c6ab21b83b757a39"
 
 [[projects]]
-  name = "github.com/jonboulle/clockwork"
-  packages = ["."]
-  revision = "2eee05ed794112d45db504eb05aa693efd2b8b09"
-  version = "v0.1.0"
-
-[[projects]]
   branch = "master"
   name = "github.com/lestrrat/go-jwx"
-  packages = ["buffer","internal/emap","jwa","jwk"]
-  revision = "b0efd7d3a697d78d8a761ab1e7d8855edfbd0cf6"
-
-[[projects]]
-  name = "github.com/magiconair/properties"
-  packages = ["."]
-  revision = "d419a98cdbed11a922bf76f257b7c4be79b50e73"
-  version = "v1.7.4"
+  packages = ["internal/base64","jwa","jwk"]
+  revision = "ab04a05344fe9d42821f15da668fd6ea279dd23e"
 
 [[projects]]
   branch = "master"
-  name = "github.com/mailgun/multibuf"
+  name = "github.com/lestrrat/go-pdebug"
   packages = ["."]
-  revision = "565402cd71fbd9c12aa7e295324ea357e970a61e"
+  revision = "2e6eaaa5717f81bda41d27070d3c966f40a1e75f"
 
 [[projects]]
   name = "github.com/minio/minio-go"
@@ -122,16 +98,16 @@
   revision = "b8bc1bf767474819792c23f32d8286a45736f1c6"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/mitchellh/mapstructure"
-  packages = ["."]
-  revision = "b4575eea38cca1123ec2dc90c26529b5c5acfcff"
+  name = "github.com/nats-io/go-nats"
+  packages = [".","encoders/builtin","util"]
+  revision = "d66cb54e6b7bdd93f0b28afc8450d84c780dfb68"
+  version = "v1.4.0"
 
 [[projects]]
-  name = "github.com/pelletier/go-toml"
+  name = "github.com/nats-io/nuid"
   packages = ["."]
-  revision = "acdc4509485b587f5e675510c4f2c63e90ff68a8"
-  version = "v1.1.0"
+  revision = "289cccf02c178dc782430d534e3c1f5b72af807f"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/pkg/errors"
@@ -146,36 +122,6 @@
   version = "v1.0.4"
 
 [[projects]]
-  name = "github.com/spf13/afero"
-  packages = [".","mem"]
-  revision = "bb8f1927f2a9d3ab41c9340aa034f6b803f4359c"
-  version = "v1.0.2"
-
-[[projects]]
-  name = "github.com/spf13/cast"
-  packages = ["."]
-  revision = "acbeb36b902d72a7a4c18e8f3241075e7ab763e4"
-  version = "v1.1.0"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/spf13/jwalterweatherman"
-  packages = ["."]
-  revision = "7c0cea34c8ece3fbeb2b27ab9b59511d360fb394"
-
-[[projects]]
-  name = "github.com/spf13/pflag"
-  packages = ["."]
-  revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
-  version = "v1.0.0"
-
-[[projects]]
-  name = "github.com/spf13/viper"
-  packages = ["."]
-  revision = "25b30aa063fc18e48662b86996252eabdcf2f0c7"
-  version = "v1.0.0"
-
-[[projects]]
   name = "github.com/urfave/negroni"
   packages = ["."]
   revision = "5dbbc83f748fc3ad38585842b0aedab546d0ea1e"
@@ -184,32 +130,26 @@
 [[projects]]
   branch = "master"
   name = "github.com/vulcand/oxy"
-  packages = ["buffer","forward","utils"]
+  packages = ["forward","utils"]
   revision = "092a2d70bb8859a9def2b1bb9a61cdc193ee55cc"
-
-[[projects]]
-  name = "github.com/vulcand/predicate"
-  packages = ["."]
-  revision = "939c094524d124c55fa8afe0e077701db4a865e2"
-  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "3d37316aaa6bd9929127ac9a527abf408178ea7b"
+  revision = "1875d0a70c90e57f11972aefd42276df65e895b9"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
-  packages = ["context","idna","lex/httplex"]
-  revision = "5ccada7d0a7ba9aeb5d3aca8d3501b4c2a509fec"
+  packages = ["idna","lex/httplex"]
+  revision = "2fb46b16b8dda405028c50f7c7f0f9dd1fa6bfb1"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "af50095a40f9041b3b38960738837185c26e9419"
+  revision = "37707fdb30a5b38865cfb95e5aab41707daec7fd"
 
 [[projects]]
   branch = "master"
@@ -226,6 +166,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ffa56bcf3cf7b8ae284ef5315d17fc4d4dc11e0903d8dff1cbd3aee2a894cf3f"
+  inputs-digest = "dbd736c6a4a33f42f0765b3d5acfaaac982818c4eda89bbbba67912cb212359a"
   solver-name = "gps-cdcl"
   solver-version = 1

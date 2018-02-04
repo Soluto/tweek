@@ -85,6 +85,22 @@ func (a *minioCasbinAdapter) RemoveFilteredPolicy(sec string, ptype string, fiel
 	return ErrUnsupportedOperation
 }
 
+func onCasbinPolicyUpdated(minioClient *minio.Client, workDir string, config *appConfig.PolicyStorage) {
+	bucketExists, err := minioClient.BucketExists(config.MinioBucketName)
+	if err != nil {
+		log.Panicln("Minio client failed to check bucket existence:", err)
+	}
+	if !bucketExists {
+		log.Panicln("Minio bucket with casbin policies doesn't exist")
+	}
+
+	filePath := path.Join(workDir, config.CasbinPolicy)
+	err = minioClient.FGetObject(config.MinioBucketName, config.CasbinPolicy, filePath, minio.GetObjectOptions{})
+	if err != nil {
+		log.Panicln("Error retrieving casbin model from minio:", err)
+	}
+}
+
 // New - fetches policy from minio and returns data for casbin initialization
 func New(workDir string, config *appConfig.PolicyStorage) (result persist.Adapter, err error) {
 
