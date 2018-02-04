@@ -22,6 +22,8 @@ services:
       - keys
     logging:
       driver: "none"
+    ports:
+      - "5002:3000"
     environment:
       - VALIDATION_URL=http://api/validation
       - GIT_USER=git
@@ -80,8 +82,7 @@ services:
   editor:
     image: $EDITOR_IMAGE
     depends_on:
-      - api
-      - authoring
+      - gateway
     volumes_from:
       - keys
     logging:
@@ -104,11 +105,13 @@ services:
       - keys
     environment:
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOENDPOINT=minio:9000
-      - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOBUCKET=tweek-casbin-policies
+      - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOBUCKETNAME=tweek-casbin-policies
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOACCESSKEY=AKIAIOSFODNN7EXAMPLE
-      - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECRETKEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECURE=false
+      - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_CASBINPOLICY=policy.csv
       - TWEEKGATEWAY_SECURITY_TWEEKSECRETKEYPATH=/gitkeys/tweekgit
+      - CONFIG_FILE_PATH=/config/gateway.json
 
   redis:
     image: redis:4.0.2-alpine

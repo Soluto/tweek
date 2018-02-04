@@ -65,7 +65,7 @@ func NewApp(configuration *appConfig.Configuration, token security.JWTToken) htt
 		auditor.EnforcerDisabled()
 	}
 
-	authenticationMiddleware := security.AuthenticationMiddleware(configuration.Security, auditor)
+	authenticationMiddleware := security.AuthenticationMiddleware(&configuration.Security, auditor)
 	authorizationMiddleware := security.AuthorizationMiddleware(enforcer, auditor)
 	middleware := negroni.New(negroni.NewRecovery(), authenticationMiddleware, authorizationMiddleware)
 
@@ -74,10 +74,10 @@ func NewApp(configuration *appConfig.Configuration, token security.JWTToken) htt
 
 	modelManagement.Mount(enforcer, middleware, router.ModelManagementRouter())
 
-	transformation.Mount(configuration.Upstreams, token, middleware, router.V2Router())
+	transformation.Mount(&configuration.Upstreams, token, middleware, router.V2Router())
 
-	passThrough.Mount(configuration.Upstreams, configuration.V1Hosts, token, negroni.New(negroni.NewRecovery()), router.V1Router())
-	passThrough.Mount(configuration.Upstreams, configuration.V1Hosts, token, negroni.New(negroni.NewRecovery()), router.LegacyNonV1Router())
+	passThrough.Mount(&configuration.Upstreams, &configuration.V1Hosts, negroni.New(negroni.NewRecovery()), router.V1Router())
+	passThrough.Mount(&configuration.Upstreams, &configuration.V1Hosts, negroni.New(negroni.NewRecovery()), router.LegacyNonV1Router())
 
 	app := negroni.New(negroni.NewRecovery())
 	app.UseHandler(router)

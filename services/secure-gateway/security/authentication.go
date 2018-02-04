@@ -2,7 +2,6 @@ package security
 
 import (
 	"context"
-	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
 	"errors"
@@ -16,8 +15,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
 	"github.com/lestrrat/go-jwx/jwk"
-
-	"github.com/mitchellh/mapstructure"
 
 	"github.com/urfave/negroni"
 )
@@ -51,7 +48,6 @@ func UserInfoFromRequest(req *http.Request, configuration *appConfig.Security) (
 		return info, nil
 	}
 
-	info := &userInfo{}
 	token, err := request.ParseFromRequest(req, request.OAuth2Extractor, func(t *jwt.Token) (interface{}, error) {
 		claims := t.Claims.(jwt.MapClaims)
 		if issuer, ok := claims["iss"].(string); ok {
@@ -69,7 +65,15 @@ func UserInfoFromRequest(req *http.Request, configuration *appConfig.Security) (
 	}
 
 	claims := token.Claims.(jwt.MapClaims)
-	mapstructure.Decode(info, claims)
+	info := &userInfo{
+		name:  claims["name"].(string),
+		email: claims["email"].(string),
+	}
+
+	/*err = mapstructure.Decode(claims, info)
+	if err != nil {
+		return nil, fmt.Errorf("Error while extracting data from jwt claims: %v", err)
+	}*/
 
 	return info, nil
 }
@@ -119,14 +123,11 @@ func getGitKey(secretKeyFile string) (interface{}, error) {
 	if pemBlock == nil {
 		return nil, errors.New("no PEM found")
 	}
-	key, err := x509.ParsePKIXPublicKey(pemBlock.Bytes)
+	key, err := x509.ParsePKCS1PrivateKey(pemBlock.Bytes)
 	if err != nil {
 		return nil, err
 	}
-	rsaPublicKey, ok := key.(*rsa.PublicKey)
-	if !ok {
-		return nil, errors.New("not an RSA public key")
-	}
+	rsaPublicKey := key.Public()
 	return rsaPublicKey, nil
 }
 

@@ -30,7 +30,7 @@ func Test_getURLForUpstream(t *testing.T) {
 			name: "Simple request",
 			args: args{
 				apiURL,
-				httptest.NewRequest("GET", "http://gateway/api/v2/values/a/b/c", nil),
+				httptest.NewRequest("GET", "/api/v2/values/a/b/c", nil),
 				valuesURLRegexp,
 				valuesUpstreamRoute,
 			},
@@ -40,7 +40,7 @@ func Test_getURLForUpstream(t *testing.T) {
 			name: "$flatten request",
 			args: args{
 				apiURL,
-				httptest.NewRequest("GET", "http://gateway/api/v2/values/d/e/f?%24flatten=true", nil),
+				httptest.NewRequest("GET", "/api/v2/values/d/e/f?%24flatten=true", nil),
 				valuesURLRegexp,
 				valuesUpstreamRoute,
 			},
@@ -50,7 +50,7 @@ func Test_getURLForUpstream(t *testing.T) {
 			name: "$include request",
 			args: args{
 				apiURL,
-				httptest.NewRequest("GET", "http://gateway/api/v2/values/u/v/r?%24flatten=true&%24include=/x/y/z", nil),
+				httptest.NewRequest("GET", "/api/v2/values/u/v/r?%24flatten=true&%24include=/x/y/z", nil),
 				valuesURLRegexp,
 				valuesUpstreamRoute,
 			},
@@ -61,7 +61,7 @@ func Test_getURLForUpstream(t *testing.T) {
 			name: "GetContext request",
 			args: args{
 				apiURL,
-				httptest.NewRequest("GET", "http://gateway/api/v2/context/IdnType/IdnId", nil),
+				httptest.NewRequest("GET", "/api/v2/context/IdnType/IdnId", nil),
 				contextURLRegexp,
 				contextUpstreamRoute,
 			},
@@ -71,7 +71,7 @@ func Test_getURLForUpstream(t *testing.T) {
 			name: "DeleteContext request",
 			args: args{
 				apiURL,
-				httptest.NewRequest("DELETE", "http://gateway/api/v2/context/IdnType/IdnId/prop", nil),
+				httptest.NewRequest("DELETE", "/api/v2/context/IdnType/IdnId/prop", nil),
 				contextURLRegexp,
 				contextUpstreamRoute,
 			},
@@ -81,7 +81,7 @@ func Test_getURLForUpstream(t *testing.T) {
 			name: "Get Tags",
 			args: args{
 				authoringURL,
-				httptest.NewRequest("GET", "http://tweek-authoring/api/v2/tags", nil),
+				httptest.NewRequest("GET", "/api/v2/tags", nil),
 				tagsURLRegexp,
 				tagsUpstreamRoute,
 			},
@@ -91,7 +91,7 @@ func Test_getURLForUpstream(t *testing.T) {
 			name: "GetSchemas request",
 			args: args{
 				authoringURL,
-				httptest.NewRequest("GET", "http://gateway/api/v2/schemas", nil),
+				httptest.NewRequest("GET", "/api/v2/schemas", nil),
 				schemasURLRegexp,
 				schemasUpstreamRoute,
 			},
@@ -101,7 +101,7 @@ func Test_getURLForUpstream(t *testing.T) {
 			name: "DeleteSchemas request",
 			args: args{
 				authoringURL,
-				httptest.NewRequest("DELETE", "http://gateway/api/v2/schemas/IdnType", nil),
+				httptest.NewRequest("DELETE", "/api/v2/schemas/IdnType", nil),
 				schemasURLRegexp,
 				schemasUpstreamRoute,
 			},
