@@ -76,8 +76,8 @@ func NewApp(configuration *appConfig.Configuration, token security.JWTToken) htt
 
 	transformation.Mount(&configuration.Upstreams, token, middleware, router.V2Router())
 
-	passThrough.Mount(&configuration.Upstreams, &configuration.V1Hosts, token, negroni.New(negroni.NewRecovery()), router.V1Router())
-	passThrough.Mount(&configuration.Upstreams, &configuration.V1Hosts, token, negroni.New(negroni.NewRecovery()), router.LegacyNonV1Router())
+	passThrough.Mount(&configuration.Upstreams, &configuration.V1Hosts, negroni.New(negroni.NewRecovery()), router.V1Router())
+	passThrough.Mount(&configuration.Upstreams, &configuration.V1Hosts, negroni.New(negroni.NewRecovery()), router.LegacyNonV1Router())
 
 	app := negroni.New(negroni.NewRecovery())
 	app.UseHandler(router)
