@@ -46,11 +46,8 @@ describe('authoring api', () => {
         .expect(200);
 
       await pollUntil(
-        () =>
-          clients.api.get(
-            '/api/keys/@tests/integration/new_valid_key?author.name=test&author.email=test@soluto.com',
-          ),
-        res => expect(JSON.parse(res.body)).to.eql('test'),
+        () => clients.api.get('/api/v1/keys/@tests/integration/new_valid_key'),
+        res => expect(res.body).to.eql('test'),
       );
     });
 
