@@ -45,7 +45,6 @@ services:
       - CorsEnabled=true
       - CorsPolicies__Keys__Headers=
       - CorsPolicies__Keys__ExposedHeaders=
-      - ASPNETCORE_ENVIRONMENT=Development
       
   authoring:
     image: $AUTHORING_IMAGE
