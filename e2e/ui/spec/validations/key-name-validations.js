@@ -59,6 +59,7 @@ describe('key name validations', () => {
   it('should allow creating a key named "a/b/c" and also a key named "b"', () => {
     addEmptyKey('a/b/c');
     browser.refresh();
+    browser.refresh();
     addEmptyKey('b');
   });
 
