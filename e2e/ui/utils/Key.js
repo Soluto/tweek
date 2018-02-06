@@ -57,7 +57,7 @@ class Key {
   }
 
   get hasChanges() {
-    browser.getAttribute(saveChangesButton, 'data-state-has-changes') === 'true';
+    return browser.getAttribute(saveChangesButton, 'data-state-has-changes') === 'true';
   }
 
   get isSaving() {
