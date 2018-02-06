@@ -2,6 +2,7 @@ const chai = require('chai');
 const expect = chai.expect;
 chai.should();
 const { init: initClients } = require('../../utils/clients');
+const { pollUntil } = require('../../utils/utils');
 
 const createManifestForJPadKey = key_path => ({
   key_path: `${key_path}`,
