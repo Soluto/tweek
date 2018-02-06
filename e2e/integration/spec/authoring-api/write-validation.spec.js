@@ -43,6 +43,14 @@ describe('authoring api', () => {
           }),
         })
         .expect(200);
+
+      await pollUntil(
+        () =>
+          clients.api.get(
+            '/api/keys/@tests/integration/new_valid_key?author.name=test&author.email=test@soluto.com',
+          ),
+        res => expect(JSON.parse(res.body)).to.eql('test'),
+      );
     });
 
     it('should reject an invalid key with 400 error', async () => {
