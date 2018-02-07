@@ -37,16 +37,17 @@ type Security struct {
 
 // PolicyStorage section holds the minio upstream and secret keys
 type PolicyStorage struct {
-	MinioEndpoint     string
-	MinioBucketName   string
-	MinioAccessKey    string
-	MinioSecretKey    string
-	MinioUseSSL       bool
-	NatsEndpoint      string
-	NatsInitSubject   string
-	NatsUpdateSubject string
-	CasbinPolicy      string
-	CasbinModel       string
+	MinioEndpoint         string
+	MinioBucketName       string
+	MinioAccessKey        string
+	MinioSecretKey        string
+	MinioUseSSL           bool
+	MinioPolicyObjectName string
+	NatsEndpoint          string
+	NatsInitSubject       string
+	NatsUpdateSubject     string
+	CasbinPolicy          string
+	CasbinModel           string
 }
 
 // Configuration is the root element of configuration for secure-gateway
