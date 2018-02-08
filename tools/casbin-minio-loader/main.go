@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	err := doMyStaff()
+	err := loadPolicyToMinio()
 	if err == nil {
 		return
 	}
@@ -20,7 +20,7 @@ func main() {
 	fmt.Print(err)
 	fmt.Println("Retrying...")
 	time.Sleep(time.Second * 5)
-	err = doMyStaff()
+	err = loadPolicyToMinio()
 	if err == nil {
 		return
 	}
@@ -28,7 +28,7 @@ func main() {
 	fmt.Print(err)
 	fmt.Println("Retrying...")
 	time.Sleep(time.Second * 5)
-	err = doMyStaff()
+	err = loadPolicyToMinio()
 	if err == nil {
 		return
 	}
@@ -37,7 +37,7 @@ func main() {
 	os.Exit(1)
 }
 
-func doMyStaff() error {
+func loadPolicyToMinio() error {
 	endpoint := os.Getenv("MINIO_ENDPOINT")
 	accessKey := os.Getenv("MINIO_ACCESS_KEY")
 	secretKey := os.Getenv("MINIO_SECRET_KEY")

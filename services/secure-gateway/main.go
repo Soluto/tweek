@@ -112,7 +112,7 @@ func initEnforcer(config *appConfig.Security) (*casbin.SyncedEnforcer, error) {
 
 type enforcerFactory func(*appConfig.Security) (*casbin.SyncedEnforcer, error)
 
-func withRetry(times int, wait time.Duration, todo enforcerFactory, arg *appConfig.Security) (*casbin.SyncedEnforcer, error) {
+func withRetry(times int, sleepDuration time.Duration, todo enforcerFactory, arg *appConfig.Security) (*casbin.SyncedEnforcer, error) {
 	var res *casbin.SyncedEnforcer
 	var err error
 	for i := 0; i < times; i++ {
@@ -121,6 +121,7 @@ func withRetry(times int, wait time.Duration, todo enforcerFactory, arg *appConf
 			return res, nil
 		}
 		log.Println("Error creating enforcer, retrying", err)
+		time.Sleep(sleepDuration)
 	}
 	return nil, err
 }
