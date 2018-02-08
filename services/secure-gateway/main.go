@@ -86,7 +86,7 @@ func initEnforcer(config *appConfig.Security) *casbin.SyncedEnforcer {
 	policyStorage := &config.PolicyStorage
 	model := policyStorage.CasbinModel
 
-	watcher, err := natswatcher.NewWatcher(policyStorage.NatsEndpoint, policyStorage.NatsUpdateSubject)
+	watcher, err := natswatcher.NewWatcher(policyStorage.NatsEndpoint, policyStorage.NatsSubject)
 	if err != nil {
 		log.Panicln("Error while creating Nats watcher:", err)
 	}

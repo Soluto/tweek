@@ -42,6 +42,7 @@ func main() {
 	if err != nil {
 		log.Panicln("Failed to save file to minio:", err)
 	}
+	log.Println("Casbin policy has been loaded to minio")
 
 	natsEndpoint := os.Getenv("NATS_ENDPOINT")
 	nc, err := nats.Connect(natsEndpoint)
@@ -54,6 +55,6 @@ func main() {
 	if err != nil {
 		log.Panicln("Failed to publish to Nats:", err)
 	}
+	log.Println("New data was published to Casbin policy Nats subject.")
 
-	log.Println("Casbin policy has been loaded to minio")
 }

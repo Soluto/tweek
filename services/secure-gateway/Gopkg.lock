@@ -14,6 +14,18 @@
   version = "v3.0.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/Soluto/casbin-minio-adapter"
+  packages = ["."]
+  revision = "5e9b36112196b6c88398d03dc5cfd2eeb543a7e0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/Soluto/casbin-nats-watcher"
+  packages = ["."]
+  revision = "ea7d2eff687d0b6b62c0ecc04d982685d0798831"
+
+[[projects]]
   name = "github.com/casbin/casbin"
   packages = [".","config","file-adapter","model","persist","rbac","util"]
   revision = "9566491e9fe1898000031bba3e2b354dd633904a"
@@ -166,6 +178,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "dbd736c6a4a33f42f0765b3d5acfaaac982818c4eda89bbbba67912cb212359a"
+  inputs-digest = "96cb1105734f4b68797b8315e1945b9e9c54cf04a1f058adff19c40082d500a8"
   solver-name = "gps-cdcl"
   solver-version = 1
