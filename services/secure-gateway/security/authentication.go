@@ -51,6 +51,10 @@ func UserInfoFromRequest(req *http.Request, configuration *appConfig.Security) (
 	token, err := request.ParseFromRequest(req, request.OAuth2Extractor, func(t *jwt.Token) (interface{}, error) {
 		claims := t.Claims.(jwt.MapClaims)
 		if issuer, ok := claims["iss"].(string); ok {
+			if issuer == "tweek" {
+				return getGitKey(configuration.TweekSecretKeyPath)
+			}
+
 			if keyID, ok := t.Header["kid"].(string); ok {
 				return getKeyByIssuer(issuer, keyID, configuration)
 			}
@@ -100,8 +104,6 @@ func getKeyByIssuer(issuer, keyID string, configuration *appConfig.Security) (in
 		return getGoogleKey(keyID)
 	case fmt.Sprintf("https://sts.windows.net/%s/", configuration.AzureTenantID):
 		return getAzureADKey(configuration.AzureTenantID, keyID)
-	case "tweek":
-		return getGitKey(configuration.TweekSecretKeyPath)
 	default:
 		return nil, fmt.Errorf("Unknown issuer %s", issuer)
 	}

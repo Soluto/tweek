@@ -8,7 +8,6 @@ const jwtOptions = {
   algorithm: 'RS256',
   issuer: 'tweek',
   expiresIn: '15m',
-  keyid: 'test-tweek-keyid',
 };
 const data = {
   name: 'tweek-test',
