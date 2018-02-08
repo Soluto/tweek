@@ -12,9 +12,10 @@
             "minioAccessKey": "AKIAIOSFODNN7EXAMPLE",
             "minioSecretKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
             "minioSecure": false,
-            "casbinModel": "./model.conf",
-            "casbinPolicy": "policy.csv"
+            "minioPolicyObjectName": "policy.csv",
+            "natsEndpoint": "nats://localhost:4222",
+            "natsSubject": "casbin-policy-subject",            
+            "casbinModel": "./model.conf"
         }
     }
 }
-    

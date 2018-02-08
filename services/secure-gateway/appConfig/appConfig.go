@@ -45,7 +45,6 @@ type PolicyStorage struct {
 	MinioPolicyObjectName string
 	NatsEndpoint          string
 	NatsSubject           string
-	CasbinPolicy          string
 	CasbinModel           string
 }
 
@@ -61,7 +60,7 @@ type Configuration struct {
 func InitConfig() *Configuration {
 	conf := &Configuration{}
 
-	tweekConfigor := configor.New(&configor.Config{ENVPrefix: "TWEEKGATEWAY", Verbose: true})
+	tweekConfigor := configor.New(&configor.Config{ENVPrefix: "TWEEKGATEWAY"})
 
 	// Loading default config file if exists
 	if configFilePath, exists := os.LookupEnv("CONFIG_FILE_PATH"); exists {

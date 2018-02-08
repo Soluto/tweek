@@ -85,7 +85,7 @@ func newApp(config *appConfig.Configuration) http.Handler {
 
 func initEnforcer(config *appConfig.Security) (*casbin.SyncedEnforcer, error) {
 	policyStorage := &config.PolicyStorage
-	model := policyStorage.CasbinModel
+	modelPath := policyStorage.CasbinModel
 
 	watcher, err := natswatcher.NewWatcher(policyStorage.NatsEndpoint, policyStorage.NatsSubject)
 	if err != nil {
@@ -102,8 +102,8 @@ func initEnforcer(config *appConfig.Security) (*casbin.SyncedEnforcer, error) {
 		return nil, fmt.Errorf("Error while creating Minio adapter %v", err)
 	}
 
-	enforcer := casbin.NewSyncedEnforcer(model, adapter)
-	enforcer.EnableLog(false)
+	enforcer := casbin.NewSyncedEnforcer(modelPath, adapter)
+	enforcer.EnableLog(true)
 	enforcer.EnableEnforce(config.Enforce)
 	enforcer.SetWatcher(watcher)
 
@@ -120,6 +120,7 @@ func withRetry(times int, wait time.Duration, todo enforcerFactory, arg *appConf
 		if err == nil {
 			return res, nil
 		}
+		log.Println("Error creating enforcer, retrying", err)
 	}
 	return nil, err
 }
