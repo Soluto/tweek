@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/Soluto/casbin-minio-adapter"
 
@@ -51,7 +52,7 @@ func runServer(port int, handler http.Handler) {
 func newApp(config *appConfig.Configuration) http.Handler {
 	token := security.InitJWT(config.Security.TweekSecretKeyPath)
 
-	enforcer := initEnforcer(&config.Security)
+	enforcer, err := withRetry(3, time.Second*5, initEnforcer, &config.Security)
 
 	auditor, err := audit.New(os.Stdout)
 	if err != nil {
@@ -82,13 +83,13 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	return app
 }
 
-func initEnforcer(config *appConfig.Security) *casbin.SyncedEnforcer {
+func initEnforcer(config *appConfig.Security) (*casbin.SyncedEnforcer, error) {
 	policyStorage := &config.PolicyStorage
 	model := policyStorage.CasbinModel
 
 	watcher, err := natswatcher.NewWatcher(policyStorage.NatsEndpoint, policyStorage.NatsSubject)
 	if err != nil {
-		log.Panicln("Error while creating Nats watcher:", err)
+		return nil, fmt.Errorf("Error while creating Nats watcher %v", err)
 	}
 
 	adapter, err := minioadapter.NewAdapter(policyStorage.MinioEndpoint,
@@ -97,11 +98,28 @@ func initEnforcer(config *appConfig.Security) *casbin.SyncedEnforcer {
 		policyStorage.MinioUseSSL,
 		policyStorage.MinioBucketName,
 		policyStorage.MinioPolicyObjectName)
+	if err != nil {
+		return nil, fmt.Errorf("Error while creating Minio adapter %v", err)
+	}
 
 	enforcer := casbin.NewSyncedEnforcer(model, adapter)
 	enforcer.EnableLog(false)
 	enforcer.EnableEnforce(config.Enforce)
 	enforcer.SetWatcher(watcher)
 
-	return enforcer
+	return enforcer, nil
+}
+
+type enforcerFactory func(*appConfig.Security) (*casbin.SyncedEnforcer, error)
+
+func withRetry(times int, wait time.Duration, todo enforcerFactory, arg *appConfig.Security) (*casbin.SyncedEnforcer, error) {
+	var res *casbin.SyncedEnforcer
+	var err error
+	for i := 0; i < times; i++ {
+		res, err = todo(arg)
+		if err == nil {
+			return res, nil
+		}
+	}
+	return nil, err
 }
