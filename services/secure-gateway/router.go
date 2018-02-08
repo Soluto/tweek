@@ -38,7 +38,7 @@ func NewRouter(configuration *appConfig.Configuration) Router {
 	legacyNonV1Router := mainRouter.MatcherFunc(func(r *http.Request, m *mux.RouteMatch) bool {
 		path := r.URL.EscapedPath()
 		host := strings.Split(r.Host, ":")[0]
-		result := strings.HasPrefix(path, "/health") || strings.HasPrefix(path, "/api/swagger.json") || anyString(host, configuration.V1Hosts.Authoring)
+		result := strings.HasPrefix(path, "/version") || strings.HasPrefix(path, "/health") || strings.HasPrefix(path, "/api/swagger.json") || anyString(host, configuration.V1Hosts.Authoring)
 
 		return result
 	}).Subrouter()

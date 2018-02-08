@@ -16,8 +16,6 @@ services:
     build: ../services/management
     logging:
       driver: "json-file"
-    ports:
-      - "5002:3000"
 
   api:
     image: soluto/tweek-api
@@ -117,5 +115,5 @@ services:
     environment:
       - API_URL=http://api
       - AUTHORING_URL=http://authoring:3000
-      - MANAGEMENT_URL=http://tweek-management:3000
+      - MANAGEMENT_URL=http://management:3000
       - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit

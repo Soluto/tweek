@@ -14,8 +14,6 @@ services:
     build:
       context: ../../
       dockerfile: TweekApiDockerfile
-    depends_on: 
-      - gateway
 
   authoring:
     image: soluto/tweek-authoring
@@ -25,12 +23,14 @@ services:
     image: soluto/tweek-editor
     build: ../../services/editor
     depends_on: 
-      - api
-      - authoring
+      - gateway
 
   gateway:
     image: soluto/tweek-secure-gateway
     build: ../../services/secure-gateway
     depends_on:
-      - minio   
-      
+      - minio
+      - nats
+      - api
+      - authoring
+      - management

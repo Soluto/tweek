@@ -8,7 +8,7 @@ import (
 
 // Format strings
 const (
-	actionAuditFmt = "%v : %q %q %q"
+	actionAuditFmt = "subj:%v obj:%v act:%v eff:%v"
 )
 
 type logAuditor struct {

@@ -99,15 +99,15 @@ steps:
       smoke-tests:
         image: ${{BuildingApiSmokeTestImage}}
         depends_on: 
-          - api
+          - gateway
           - management
           - zap-smoke
+          - casbin-minio-loader
         environment: 
           - TWEEK_API_URL=http://api/
           - PROXY_URL=http://zap-smoke:8090
         links:
           - gateway:api
-          - gateway:management
       e2e-ui:
         image: ${{BuildingUITests}}
         volumes_from:
@@ -115,8 +115,8 @@ steps:
         depends_on: 
           - selenium
           - editor
-          - authoring
-          - api
+          - gateway
+          - casbin-minio-loader
           - management
           - zap-e2e
         environment:
@@ -128,25 +128,25 @@ steps:
           - AUTH_DIGEST_CREDENTIALS=user:pwd
         links:
           - gateway:api
-          - gateway:management
           - gateway:authoring
       e2e-integration:
         image: ${{BuildingIntegrationTests}}
         volumes_from:
           - keys
         depends_on:
-          - authoring
-          - api
+          - gateway
+          - casbin-minio-loader
           - management
         environment:
           - API_URL=http://api
           - AUTHORING_URL=http://authoring:3000
-          - MANAGEMENT_URL=http://tweek-management:3000
+          - MANAGEMENT_URL=http://management:3000
+          - GATEWAY_URL=http://gateway
           - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
         links:
           - gateway:api
-          - gateway:management
           - gateway:authoring
+          - gateway:management
       api-swagger:
         image: node:slim
         depends_on:

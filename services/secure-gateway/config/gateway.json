@@ -6,21 +6,22 @@
     },
     "security": {
         "enforce": true,
-        "policy_repository": {
-            "upstream_url": "ssh://git@git/tweek/repo",
-            "casbin_policy": "./model.csv",
-            "casbin_model": "./policy.conf"
+        "policyStorage": {
+            "casbinModel": "/model.conf"
         }
     },
     "v1Hosts": {
         "api": [
-            "api"
+            "api",
+            "api.localtest.me"
         ],
         "authoring": [
-            "authoring"
+            "authoring",
+            "authoring.localtest.me"
         ],
         "management": [
-            "management"
+            "management",
+            "management.localtest.me"
         ]
     },
     "server": {

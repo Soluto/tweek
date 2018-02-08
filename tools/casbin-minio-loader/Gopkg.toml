@@ -24,3 +24,7 @@
 [[constraint]]
   name = "github.com/minio/minio-go"
   version = "4.0.6"
+
+[[constraint]]
+  name = "github.com/nats-io/go-nats"
+  version = "1.4.0"

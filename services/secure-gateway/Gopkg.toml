@@ -60,3 +60,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/vulcand/oxy"
+
+[[constraint]]
+  name = "github.com/nats-io/go-nats"
+  version = "1.4.0"
