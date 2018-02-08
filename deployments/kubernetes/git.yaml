@@ -18,8 +18,6 @@ spec:
         env:
         - name: PUBLIC_KEY_PATH
           value: /run/secrets/tweek-git/tweek_ssh_public_key
-        - name: TWEEK_MANAGEMENT_URL
-          value: http://management:3000
         volumeMounts:
         - name: git-keys
           mountPath: /run/secrets/tweek-git
