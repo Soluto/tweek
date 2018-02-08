@@ -87,11 +87,9 @@ namespace Tweek.Publishing.Service.Utils
         var sbErr = new StringBuilder();
         
         return process.StandardOutput.BaseStream.ToObservable().Select(data => (data, OutputType.StdOut))
-            .Merge(process.StandardError.BaseStream.ToObservable().Select(data =>
-                    {
-                      sbErr.Append(Encoding.Default.GetString(data));
-                      return (data, OutputType.StdErr);
-                    })
+            .Merge(process.StandardError.BaseStream.ToObservable()
+            .Do(data => sbErr.Append(Encoding.Default.GetString(data)))
+            .Select(data => (data, OutputType.StdErr))
             )
             .With(exited.ToObservable().Do(_ =>{ 
                 if (process.ExitCode != 0) throw new Exception($"proccess failed")

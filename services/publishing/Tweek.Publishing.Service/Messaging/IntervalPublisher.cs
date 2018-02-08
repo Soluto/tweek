@@ -13,7 +13,9 @@ namespace Tweek.Publishing.Service.Messaging
         }
 
         public IDisposable PublishEvery(TimeSpan interval, Func<Task<string>> GetMessage){
-            return Observable.FromAsync(GetMessage)
+            return Observable.FromAsync(async ()=>
+                    await _publisher.Publish(await GetMessage())
+                )
                 .DelaySubscription(interval)
                 .Repeat()
                 .Retry()
