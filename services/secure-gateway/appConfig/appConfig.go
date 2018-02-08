@@ -37,13 +37,15 @@ type Security struct {
 
 // PolicyStorage section holds the minio upstream and secret keys
 type PolicyStorage struct {
-	MinioEndpoint   string
-	MinioBucketName string
-	MinioAccessKey  string
-	MinioSecretKey  string
-	MinioUseSSL     bool
-	CasbinPolicy    string
-	CasbinModel     string
+	MinioEndpoint         string
+	MinioBucketName       string
+	MinioAccessKey        string
+	MinioSecretKey        string
+	MinioUseSSL           bool
+	MinioPolicyObjectName string
+	NatsEndpoint          string
+	NatsSubject           string
+	CasbinModel           string
 }
 
 // Configuration is the root element of configuration for secure-gateway
@@ -58,7 +60,7 @@ type Configuration struct {
 func InitConfig() *Configuration {
 	conf := &Configuration{}
 
-	tweekConfigor := configor.New(&configor.Config{ENVPrefix: "TWEEKGATEWAY", Verbose: true})
+	tweekConfigor := configor.New(&configor.Config{ENVPrefix: "TWEEKGATEWAY"})
 
 	// Loading default config file if exists
 	if configFilePath, exists := os.LookupEnv("CONFIG_FILE_PATH"); exists {

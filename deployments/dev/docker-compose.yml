@@ -30,6 +30,7 @@ services:
     build: ../../services/secure-gateway
     depends_on:
       - minio
+      - nats
       - api
-      - authoring 
-      
+      - authoring
+      - management
