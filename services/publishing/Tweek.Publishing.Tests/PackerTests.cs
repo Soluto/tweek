@@ -22,7 +22,8 @@ namespace Tweek.Publishing.Tests
         public void PackConstValue(string type, object value, string expected)
         {
             var packer = new Packer();
-            var dictionary = new Dictionary<string, string>(){
+            var dictionary = new Dictionary<string, string>
+            {
                 ["manifests/some/const.json"] = JsonConvert.SerializeObject(new {
                     key_path= "some/const",
                     dependencies = new string[]{},
@@ -32,15 +33,15 @@ namespace Tweek.Publishing.Tests
                     },
                     implementation = new {
                         type = "const",
-                        value = value
+                        value
                     }
                 })
             };
             var results = packer.Pack(dictionary.Keys, x=>dictionary[x]);
             var packedKey = results["some/const"];
-            Assert.Equal(packedKey.payload, expected);
-            Assert.Equal(packedKey.format, "const");
-            Assert.Empty(packedKey.dependencies);
+            Assert.Equal(packedKey.Payload, expected);
+            Assert.Equal(packedKey.Format, "const");
+            Assert.Empty(packedKey.Dependencies);
         }
 
         [Fact]
@@ -53,7 +54,8 @@ namespace Tweek.Publishing.Tests
                     valueType = "number",
                     defaultValue = 5
                 });
-            var dictionary = new Dictionary<string, string>(){
+            var dictionary = new Dictionary<string, string>
+            {
                 ["manifests/some/jpad_example.json"] = JsonConvert.SerializeObject(new {
                     key_path= "some/jpad_example",
                     dependencies = new string[]{},
@@ -70,9 +72,9 @@ namespace Tweek.Publishing.Tests
             };
             var results = packer.Pack(dictionary.Keys, x=>dictionary[x]);
             var packedKey = results["some/jpad_example"];
-            Assert.Equal(packedKey.payload, jpad);
-            Assert.Equal(packedKey.format, "jpad");
-            Assert.Empty(packedKey.dependencies);
+            Assert.Equal(packedKey.Payload, jpad);
+            Assert.Equal(packedKey.Format, "jpad");
+            Assert.Empty(packedKey.Dependencies);
         }
 
         [Fact]
@@ -85,7 +87,8 @@ namespace Tweek.Publishing.Tests
                     valueType = "number",
                     defaultValue = 5
                 });
-            var dictionary = new Dictionary<string, string>(){
+            var dictionary = new Dictionary<string, string>
+            {
                 ["manifests/some/alias.json"] = JsonConvert.SerializeObject(new {
                     key_path= "some/alias",
                     dependencies = new string[]{},
@@ -97,9 +100,9 @@ namespace Tweek.Publishing.Tests
             };
             var results = packer.Pack(dictionary.Keys, x=>dictionary[x]);
             var packedKey = results["some/alias"];
-            Assert.Equal(packedKey.payload, "some/other_key");
-            Assert.Equal(packedKey.format, "alias");
-            Assert.Contains(packedKey.dependencies, x=> x == "some/other_key");
+            Assert.Equal(packedKey.Payload, "some/other_key");
+            Assert.Equal(packedKey.Format, "alias");
+            Assert.Contains(packedKey.Dependencies, x=> x == "some/other_key");
         }
     }
 }

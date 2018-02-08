@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace Tweek.Publishing.Service.Packing
 {
@@ -21,23 +19,24 @@ namespace Tweek.Publishing.Service.Packing
                        }
                    })
                    .Select(manifest => {
-                       var keyDef = new KeyDef(){
-                           format = manifest.implementation.format ?? manifest.implementation.type,
-                           dependencies = manifest.GetDependencies()
+                       var keyDef = new KeyDef
+                       {
+                           Format = manifest.Implementation.Format ?? manifest.Implementation.Type,
+                           Dependencies = manifest.GetDependencies()
                        };
                        
-                       switch (manifest.implementation.type){
+                       switch (manifest.Implementation.Type){
                            case "file":
-                               keyDef.payload = readFn($"implementations/{manifest.implementation.format}/{manifest.key_path}.{manifest.implementation.extension ?? manifest.implementation.format}");
+                               keyDef.Payload = readFn($"implementations/{manifest.Implementation.Format}/{manifest.KeyPath}.{manifest.Implementation.Extension ?? manifest.Implementation.Format}");
                                break;
                            case "const":
-                               keyDef.payload = JsonConvert.SerializeObject(manifest.implementation.value);
+                               keyDef.Payload = JsonConvert.SerializeObject(manifest.Implementation.Value);
                                break;
                            case "alias":
-                               keyDef.payload = manifest.implementation.key;
+                               keyDef.Payload = manifest.Implementation.Key;
                                break;
                        }
-                       return (keyPath:manifest.key_path, keyDef: keyDef);
+                       return (keyPath:manifest.KeyPath, keyDef: keyDef);
                    })
                    .ToDictionary(x=>x.keyPath, x=>x.keyDef));
                    

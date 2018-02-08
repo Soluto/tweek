@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Microsoft.FSharp.Core;
 using Tweek.JPad;
 
 namespace Tweek.Publishing.Service.Validation
@@ -9,11 +10,11 @@ namespace Tweek.Publishing.Service.Validation
   public class CompileJPadValidator : IValidator
   {
     JPadParser _parser = new JPadParser(new ParserSettings(
-                Comparers: Microsoft.FSharp.Core.FSharpOption<IDictionary<string, ComparerDelegate>>.Some(new Dictionary<string, ComparerDelegate>()
+                Comparers: FSharpOption<IDictionary<string, ComparerDelegate>>.Some(new Dictionary<string, ComparerDelegate>
                 {
 
                     ["version"] = Version.Parse
-                }), sha1Provider: (s)=>
+                }), sha1Provider: s=>
                 {
                     using (var sha1 = SHA1.Create())
                     {

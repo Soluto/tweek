@@ -1,9 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Tweek.Publishing.Service.Utils;
-using System;
-using System.Linq;
 using static LanguageExt.Prelude;
 
 namespace Tweek.Publishing.Service.Validation

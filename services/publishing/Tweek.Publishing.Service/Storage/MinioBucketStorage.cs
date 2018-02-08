@@ -3,7 +3,6 @@ using System.IO;
 using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Reactive.Linq;
 using Minio;
 
 namespace Tweek.Publishing.Service.Storage
@@ -18,10 +17,11 @@ namespace Tweek.Publishing.Service.Storage
       _client = client;
       _bucketName = bucketName;
     }
-    public async Task Get(string objectName, Action<Stream> reader, CancellationToken cancellationToken = default(CancellationToken))
+    
+    public async Task Get(string objectName, Action<Stream> reader, CancellationToken cancellationToken = default)
     {
       var tsc = new TaskCompletionSource<Unit>();
-      await _client.GetObjectAsync(_bucketName, objectName, async (s) =>
+      await _client.GetObjectAsync(_bucketName, objectName, async s =>
       {
         try
         {
@@ -36,7 +36,7 @@ namespace Tweek.Publishing.Service.Storage
             tsc.SetCanceled();
             return;
           }
-          tsc.SetResult(System.Reactive.Unit.Default);
+          tsc.SetResult(Unit.Default);
         }
         catch (Exception ex)
         {
@@ -46,7 +46,7 @@ namespace Tweek.Publishing.Service.Storage
       await tsc.Task;
     }
 
-    public async Task Put(string objectName, Action<Stream> writer, string mimeType, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task Put(string objectName, Action<Stream> writer, string mimeType, CancellationToken cancellationToken = default)
     {
       using (var input = new MemoryStream())
       {

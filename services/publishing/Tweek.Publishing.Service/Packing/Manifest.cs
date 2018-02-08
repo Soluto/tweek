@@ -1,27 +1,39 @@
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using static LanguageExt.Prelude;
 
 namespace Tweek.Publishing.Service.Packing
 {
   public static class ManifestExtensions{
-      public static string[] GetDependencies(this Manifest manifest) =>
-          match(manifest.implementation.type,
-            with("alias", (_)=> new[]{manifest.implementation.key}),
-            (_)=> manifest.dependencies ?? new string[]{}
-            );
-      
+      public static string[] GetDependencies(this Manifest manifest)
+      {
+          switch (manifest.Implementation.Type)
+          {
+              case "alias":
+                  return new[] {manifest.Implementation.Key};
+              default:
+                  return manifest.Dependencies ?? new string[] { };
+          }
+      }
   }
 
   public class Manifest{
-        public class Implementation {
-            public string format;
-            public string type;
-            public string extension;
-            public JToken value; 
-            public string key;
+        public class MImplementation {
+            [JsonProperty("format")]
+            public string Format;
+            [JsonProperty("type")]
+            public string Type;
+            [JsonProperty("extension")]
+            public string Extension;
+            [JsonProperty("value")]
+            public JToken Value; 
+            [JsonProperty("key")]
+            public string Key;
         }
-        public string[] dependencies;
-        public Implementation implementation;
-        public  string key_path;
+        [JsonProperty("dependencies")]
+        public string[] Dependencies;
+        [JsonProperty("implementation")]
+        public MImplementation Implementation;
+        [JsonProperty("key_path")]
+        public  string KeyPath;
     }
 }

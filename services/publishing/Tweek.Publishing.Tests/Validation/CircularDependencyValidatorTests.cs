@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -12,16 +11,17 @@ namespace Tweek.Publishing.Tests.Validation
         [Fact]
         public async Task ValidatePassWhenNoCircularDependencies(){
             var validator = new CircularDependencyValidator();
-            var files = new Dictionary<string,string>(){
+            var files = new Dictionary<string,string>
+            {
                 ["manifests/a.json"]= JsonConvert.SerializeObject(new {
-                    dependencies = new string[]{"b"},
+                    dependencies = new[]{"b"},
                     key_name = "a",
                     implementation = new {
                         type = "jpad"
                     }
                 }),
                 ["manifests/b.json"]= JsonConvert.SerializeObject(new {
-                    dependencies = new string[]{"c"},
+                    dependencies = new[]{"c"},
                     key_name = "b",
                     implementation = new {
                         type = "jpad"
@@ -35,23 +35,24 @@ namespace Tweek.Publishing.Tests.Validation
         [Fact]
         public async Task ValidateShouldDetectCircularDependencies(){
             var validator = new CircularDependencyValidator();
-            var files = new Dictionary<string,string>(){
+            var files = new Dictionary<string,string>
+            {
                 ["manifests/a.json"]= JsonConvert.SerializeObject(new {
-                    dependencies = new string[]{"b"},
+                    dependencies = new[]{"b"},
                     key_name = "a",
                     implementation = new {
                         type = "jpad"
                     }
                 }),
                 ["manifests/b.json"]= JsonConvert.SerializeObject(new {
-                    dependencies = new string[]{"c"},
+                    dependencies = new[]{"c"},
                     key_name = "b",
                     implementation = new {
                         type = "jpad"
                     }
                 }),
                 ["manifests/c.json"]= JsonConvert.SerializeObject(new {
-                    dependencies = new string[]{"a"},
+                    dependencies = new[]{"a"},
                     key_name = "c",
                     implementation = new {
                         type = "jpad"
@@ -65,9 +66,10 @@ namespace Tweek.Publishing.Tests.Validation
         [Fact]
         public async Task ValidateShouldDetectCircularDependenciesCreatedByAliases(){
             var validator = new CircularDependencyValidator();
-            var files = new Dictionary<string,string>(){
+            var files = new Dictionary<string,string>
+            {
                 ["manifests/a.json"]= JsonConvert.SerializeObject(new {
-                    dependencies = new string[]{"b"},
+                    dependencies = new[]{"b"},
                     key_name = "a",
                     implementation = new {
                         type = "jpad"
@@ -88,9 +90,10 @@ namespace Tweek.Publishing.Tests.Validation
         [Fact]
         public async Task ShouldWorkWithMultipleDepTrees(){
             var validator = new CircularDependencyValidator();
-            var files = new Dictionary<string,string>(){
+            var files = new Dictionary<string,string>
+            {
                 ["manifests/a.json"]= JsonConvert.SerializeObject(new {
-                    dependencies = new string[]{"b", "c"},
+                    dependencies = new[]{"b", "c"},
                     key_name = "a",
                     implementation = new {
                         type = "jpad"
@@ -98,22 +101,22 @@ namespace Tweek.Publishing.Tests.Validation
                 }),
                 ["manifests/b.json"]= JsonConvert.SerializeObject(new {
                     key_name = "b",
-                    dependencies = new string[]{"d"},
+                    dependencies = new[]{"d"},
                     implementation = new {
-                        type = "jpad",
+                        type = "jpad"
                     }
                 }),
                 ["manifests/c.json"]= JsonConvert.SerializeObject(new {
                     key_name = "c",
-                    dependencies = new string[]{"d"},
+                    dependencies = new[]{"d"},
                     implementation = new {
-                        type = "jpad",
+                        type = "jpad"
                     }
                 }),
                 ["manifests/d.json"]= JsonConvert.SerializeObject(new {
                     key_name = "d",
                     implementation = new {
-                        type = "jpad",
+                        type = "jpad"
                     }
                 })
             };

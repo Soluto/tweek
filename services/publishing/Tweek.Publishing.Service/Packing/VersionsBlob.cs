@@ -1,8 +1,12 @@
+using Newtonsoft.Json;
+
 namespace Tweek.Publishing.Service.Packing
 {
   public class VersionsBlob
   {
-    public string latest;
-    public string previous;
+    [JsonProperty("latest")]
+    public string Latest;
+    [JsonProperty("previous")]
+    public string Previous;
   }
 }

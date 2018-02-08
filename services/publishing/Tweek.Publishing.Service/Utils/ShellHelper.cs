@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Reactive;
-using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using System.Text;
 using System.Threading.Tasks;
-using System.Linq;
-using System.IO.Compression;
-using System.Runtime.CompilerServices;
-using System.Collections.Generic;
-using static LanguageExt.Prelude;
-using Tweek.Publishing.Service.Utils;
-using System.Reactive.Threading.Tasks;
 
 namespace Tweek.Publishing.Service.Utils
 {
   public enum OutputType
   {
     StdOut,
-    StdErr,
+    StdErr
   }
 
   internal static class ObservableExtentions
@@ -39,7 +31,7 @@ namespace Tweek.Publishing.Service.Utils
     }
     public static IObservable<byte[]> ToObservable(this Stream @this, int bufferSize = 1024)
     {
-      return Observable.FromAsync(async (ct) =>
+      return Observable.FromAsync(async ct =>
       {
         var buffer = new byte[bufferSize];
         var read = await @this.ReadAsync(buffer, 0, bufferSize, ct);
@@ -67,13 +59,13 @@ namespace Tweek.Publishing.Service.Utils
         RedirectStandardOutput = true,
         RedirectStandardError = true,
         UseShellExecute = false,
-        CreateNoWindow = true,
+        CreateNoWindow = true
       };
       paramsInit?.Invoke(startInfo);
-      var process = new Process()
+      var process = new Process
       {
         EnableRaisingEvents = true,
-        StartInfo = startInfo,
+        StartInfo = startInfo
       };
 
       var exited = Observable.FromEventPattern(
@@ -94,10 +86,8 @@ namespace Tweek.Publishing.Service.Utils
         var (process, exited) = shellExecutor(command, args, paramsInit);
         var sbErr = new StringBuilder();
         
-        return Observable
-            .Merge(
-                    process.StandardOutput.BaseStream.ToObservable().Select(data => (data, OutputType.StdOut)),
-                    process.StandardError.BaseStream.ToObservable().Select(data =>
+        return process.StandardOutput.BaseStream.ToObservable().Select(data => (data, OutputType.StdOut))
+            .Merge(process.StandardError.BaseStream.ToObservable().Select(data =>
                     {
                       sbErr.Append(Encoding.Default.GetString(data));
                       return (data, OutputType.StdErr);
@@ -108,7 +98,7 @@ namespace Tweek.Publishing.Service.Utils
                 {
                   Data ={
                                     ["ExitCode"] = process.ExitCode,
-                                    ["StdErr"] = sbErr.ToString(),
+                                    ["StdErr"] = sbErr.ToString()
                         }
                 };
             }))
@@ -124,7 +114,7 @@ namespace Tweek.Publishing.Service.Utils
               .Aggregate("", (acc, x) => acc + Encoding.Default.GetString(x.data));
     }
 
-    public static Func<string, Task<string>> CreateCommandExecutor(this ShellExecutor shellExecutor, string command, Action<ProcessStartInfo> paramsInit = null) => (string args) =>
+    public static Func<string, Task<string>> CreateCommandExecutor(this ShellExecutor shellExecutor, string command, Action<ProcessStartInfo> paramsInit = null) => args =>
                shellExecutor.ExecTask(command, args, paramsInit);
   }
 }

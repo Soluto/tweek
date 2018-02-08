@@ -6,7 +6,7 @@ namespace Tweek.Publishing.Service.Validation
   {
       public CircularValidationException(string path):base("circular dependencies detected")
       {
-          this.Data["Path"] = path;
+          Data["Path"] = path;
       }
       
   }

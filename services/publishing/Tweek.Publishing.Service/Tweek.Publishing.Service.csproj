@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bmbsqd.AsyncLock" Version="0.2.2" />
     <PackageReference Include="LanguageExt.Core" Version="2.1.32" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
     <PackageReference Include="Minio.NetCore" Version="1.0.7" />

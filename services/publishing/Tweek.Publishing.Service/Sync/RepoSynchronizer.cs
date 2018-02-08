@@ -1,5 +1,5 @@
-using System.Threading.Tasks;
 using System;
+using System.Threading.Tasks;
 
 namespace Tweek.Publishing.Service.Sync
 {
@@ -8,7 +8,7 @@ namespace Tweek.Publishing.Service.Sync
         private readonly Func<string, Task<string>> _git;
         public RepoSynchronizer(Func<string, Task<string>> gitExecutor)
         {
-            this._git = gitExecutor;
+            _git = gitExecutor;
         }
 
         public async Task<string> SyncToLatest(){

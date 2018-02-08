@@ -1,38 +1,30 @@
 using System;
-using System.IO.Compression;
-using System.Threading.Tasks;
-using Minio;
-using RestSharp.Serializers;
-using Tweek.Publishing.Service.Storage;
-using System.Collections.Generic;
-using System.Linq;
-using Tweek.Publishing.Service.Utils;
-using static LanguageExt.Prelude;
 using System.IO;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
+using System.IO.Compression;
+using System.Linq;
+using System.Threading.Tasks;
+using Minio.Exceptions;
 using Tweek.Publishing.Service.Packing;
-using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
-using static Tweek.Publishing.Service.Utils.ShellHelper;
+using Tweek.Publishing.Service.Storage;
+using Tweek.Publishing.Service.Utils;
 
-namespace Tweek.Publishing.Service
+namespace Tweek.Publishing.Service.Sync
 {
 
   public class StorageSynchronizer
   {
     private readonly IObjectStorage _client;
     private readonly Packer _packer;
-    private readonly ShellExecutor _shellExecutor;
+    private readonly ShellHelper.ShellExecutor _shellExecutor;
 
-    public StorageSynchronizer(IObjectStorage storageClient, ShellExecutor shellExecutor, Packer packer)
+    public StorageSynchronizer(IObjectStorage storageClient, ShellHelper.ShellExecutor shellExecutor, Packer packer)
     {
-      this._client = storageClient;
-      this._packer = packer;
-      this._shellExecutor = shellExecutor;
+      _client = storageClient;
+      _packer = packer;
+      _shellExecutor = shellExecutor;
     }
 
-    private static Func<string,string> GetZipReader(ZipArchive zip)=> (string fileName)=>{
+    private static Func<string,string> GetZipReader(ZipArchive zip)=> fileName=>{
         using (var sr = new StreamReader(zip.GetEntry(fileName).Open()))
               return sr.ReadToEnd();
     };
@@ -44,20 +36,20 @@ namespace Tweek.Publishing.Service
       {
         versionsBlob = await _client.GetJSON<VersionsBlob>("versions");
       }
-      catch (Minio.Exceptions.ObjectNotFoundException ex)
+      catch (ObjectNotFoundException ex)
       {
 
       }
 
-      if (versionsBlob?.latest == commitId) return;
+      if (versionsBlob?.Latest == commitId) return;
 
-      var newVersionBlob = new VersionsBlob()
+      var newVersionBlob = new VersionsBlob
       {
-        latest = commitId,
-        previous = versionsBlob?.latest
+        Latest = commitId,
+        Previous = versionsBlob?.Latest
       };
 
-      var (p, exited) = _shellExecutor("git", $"archive --format=zip {commitId}", (pStart) => pStart.WorkingDirectory = "/tweek/repo");
+      var (p, exited) = _shellExecutor("git", $"archive --format=zip {commitId}", pStart => pStart.WorkingDirectory = "/tweek/repo");
       using (var ms = new MemoryStream())
       {
         await p.StandardOutput.BaseStream.CopyToAsync(ms);
@@ -80,8 +72,8 @@ namespace Tweek.Publishing.Service
         }
       }
       await _client.PutJSON("versions", newVersionBlob);
-      if (versionsBlob?.previous != null){
-        await _client.Delete(versionsBlob.previous);
+      if (versionsBlob?.Previous != null){
+        await _client.Delete(versionsBlob.Previous);
       }
     }
   }

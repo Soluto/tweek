@@ -1,10 +1,9 @@
 using System;
+using System.Threading.Tasks;
+using FakeItEasy;
 using Tweek.Publishing.Service.Validation;
 using Xunit;
-using FakeItEasy;
-using static LanguageExt.Prelude;
 using static FakeItEasy.Repeated;
-using System.Threading.Tasks;
 
 namespace Tweek.Publishing.Tests
 {
@@ -17,7 +16,7 @@ namespace Tweek.Publishing.Tests
             var fakeValidator = A.Fake<IValidator>();
             flow.Validators.Add(("manifests/.*",fakeValidator));
 
-            await flow.Validate("a", "b", async (s)=> {
+            await flow.Validate("a", "b", async s=> {
                 switch (s){
                     case var o when o.Contains("diff"):
                         return String.Join("\n",
@@ -41,7 +40,7 @@ namespace Tweek.Publishing.Tests
             var fakeValidator = A.Fake<IValidator>();
             flow.Validators.Add(("manifests/.*",fakeValidator));
 
-            await flow.Validate("a", "b", async (s)=> {
+            await flow.Validate("a", "b", async s=> {
                 switch (s){
                     case var o when o.Contains("diff"):
                         return String.Join("\n",
@@ -69,7 +68,7 @@ namespace Tweek.Publishing.Tests
             flow.Validators.Add((Patterns.Manifests,manifestValidator));
             flow.Validators.Add((Patterns.JPad,jpadValidator));
 
-            await flow.Validate("a", "b", async (s)=> {
+            await flow.Validate("a", "b", async s=> {
                 switch (s){
                     case var o when o.Contains("diff"):
                         return String.Join("\n",
