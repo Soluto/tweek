@@ -36,7 +36,7 @@ namespace Tweek.Publishing.Service.Sync
       {
         versionsBlob = await _client.GetJSON<VersionsBlob>("versions");
       }
-      catch (ObjectNotFoundException ex)
+      catch (ObjectNotFoundException)
       {
 
       }

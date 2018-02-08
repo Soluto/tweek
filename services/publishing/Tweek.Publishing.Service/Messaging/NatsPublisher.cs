@@ -19,11 +19,13 @@ namespace Tweek.Publishing.Service.Messaging
 
         private IConnection Connection{
             get {
+                var shouldCreateCreateConnection = false;
                 try{
-                    if (_connection == null || _connection.Value.IsClosed()) {
-                        throw new Exception("recreating connection");
-                    }
-                } catch (Exception ex){
+                    shouldCreateCreateConnection = _connection == null || _connection.Value.IsClosed();
+                } catch (Exception){
+                    shouldCreateCreateConnection = true;
+                }
+                if (shouldCreateCreateConnection){
                     _connection = new Lazy<IConnection>(()=>new ConnectionFactory().CreateConnection(_connectionOptions));
                 }
                 return _connection.Value;

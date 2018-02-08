@@ -17,7 +17,7 @@ namespace Tweek.Publishing.Service.Validation
         {
           content = await reader(fileName);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
           return;
         }

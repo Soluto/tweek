@@ -4,5 +4,8 @@
   "workbench.editor.enablePreview": false,
   "workbench.editor.enablePreviewFromQuickOpen": false,
   "jest.pathToJest": "./services/editor/node_modules/.bin/jest",
-  "eslint.enable": true
+  "eslint.enable": true,
+  "csharp.testsCodeLens.enabled": true,
+  "FSharp.fsacRuntime": "netcore",
+  "dotnet-test-explorer.showCodeLens": true
 }
