@@ -33,6 +33,17 @@ type Security struct {
 	TweekSecretKeyPath string
 	Enforce            bool
 	PolicyStorage      PolicyStorage
+	Cors               Cors
+}
+
+// Cors stores data for CORS support
+type Cors struct {
+	Enabled          string
+	MaxAge           string
+	AllowedOrigins   string
+	AllowedMethods   string
+	AllowedHeaders   string
+	AllowCredentials string
 }
 
 // PolicyStorage section holds the minio upstream and secret keys

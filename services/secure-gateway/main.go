@@ -14,10 +14,10 @@ import (
 	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
 	"github.com/Soluto/tweek/services/secure-gateway/audit"
 	"github.com/Soluto/tweek/services/secure-gateway/corsSupport"
+	"github.com/Soluto/tweek/services/secure-gateway/modelManagement"
 
 	"github.com/Soluto/tweek/services/secure-gateway/passThrough"
 
-	"github.com/Soluto/tweek/services/secure-gateway/modelManagement"
 	"github.com/Soluto/tweek/services/secure-gateway/monitoring"
 	"github.com/Soluto/tweek/services/secure-gateway/security"
 	"github.com/Soluto/tweek/services/secure-gateway/transformation"
@@ -64,9 +64,11 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	} else {
 		auditor.EnforcerDisabled()
 	}
+
+	corsSupportMiddleware := corsSupport.New(&config.Security.Cors)
 	authenticationMiddleware := security.AuthenticationMiddleware(&config.Security, auditor)
 	authorizationMiddleware := security.AuthorizationMiddleware(enforcer, auditor)
-	middleware := negroni.New(negroni.NewRecovery(), authenticationMiddleware, authorizationMiddleware)
+	middleware := negroni.New(negroni.NewRecovery(), corsSupportMiddleware, authenticationMiddleware, authorizationMiddleware)
 
 	router := NewRouter(config)
 	router.MonitoringRouter().HandleFunc("isAlive", monitoring.IsAlive)
@@ -78,10 +80,7 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	passThrough.Mount(&config.Upstreams, &config.V1Hosts, negroni.New(negroni.NewRecovery()), router.V1Router())
 	passThrough.Mount(&config.Upstreams, &config.V1Hosts, negroni.New(negroni.NewRecovery()), router.LegacyNonV1Router())
 
-	corsSupportMiddleware := corsSupport.New()
-
 	app := negroni.New(negroni.NewRecovery())
-	app.Use(corsSupportMiddleware)
 	app.UseHandler(router)
 
 	return app
