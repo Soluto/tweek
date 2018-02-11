@@ -11,6 +11,15 @@ import (
 
 // New creates and configures CORS support middlware
 func New(config *appConfig.Cors) negroni.Handler {
+
+	enabled, err := strconv.ParseBool(config.Enabled)
+	if err != nil {
+		enabled = false
+	}
+	if !enabled {
+		return nil
+	}
+
 	maxAge, err := strconv.Atoi(config.MaxAge)
 	if err != nil {
 		maxAge = 60

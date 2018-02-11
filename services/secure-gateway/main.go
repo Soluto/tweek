@@ -65,10 +65,15 @@ func newApp(config *appConfig.Configuration) http.Handler {
 		auditor.EnforcerDisabled()
 	}
 
-	corsSupportMiddleware := corsSupport.New(&config.Security.Cors)
 	authenticationMiddleware := security.AuthenticationMiddleware(&config.Security, auditor)
 	authorizationMiddleware := security.AuthorizationMiddleware(enforcer, auditor)
-	middleware := negroni.New(negroni.NewRecovery(), corsSupportMiddleware, authenticationMiddleware, authorizationMiddleware)
+
+	middleware := negroni.New(negroni.NewRecovery())
+	if corsSupportMiddleware := corsSupport.New(&config.Security.Cors); corsSupportMiddleware != nil {
+		middleware.Use(corsSupportMiddleware)
+	}
+	middleware.Use(authenticationMiddleware)
+	middleware.Use(authorizationMiddleware)
 
 	router := NewRouter(config)
 	router.MonitoringRouter().HandleFunc("isAlive", monitoring.IsAlive)
