@@ -11,6 +11,8 @@ namespace Tweek.Publishing.Service.Validation
     {
         public List<(string pattern, IValidator IValidator)> Validators = new List<(string pattern, IValidator IValidator)>();
         public async Task Validate(string prevCommit, string newCommit, Func<string,Task<string>> git){
+            Task<string> reader(string s) => git($"show {newCommit}:\"{s}\"");
+            
             var files = (await git($"diff --name-status {prevCommit} {newCommit}"))
                             .Split("\n")
                             .Where(x=> !String.IsNullOrWhiteSpace(x))
@@ -21,7 +23,6 @@ namespace Tweek.Publishing.Service.Validation
                             .Where(x=> x.changeType != "D")
                             .Select(x=> x.file);
                             
-                var reader = fun((string s)=> git($"show {newCommit}:\"{s}\""));
 
                 foreach (var file in files){
                     foreach (var (pattern, validator) in Validators){

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using Tweek.Publishing.Service.Validation;
 
 namespace Tweek.Publishing.Service.Packing
 {
     public class Packer
     {
         public Dictionary<string,KeyDef> Pack(ICollection<string> files, Func<string,string> readFn){
-             return new Dictionary<string, KeyDef>(files.Where(x=> Regex.IsMatch(x, "^manifests/.*\\.json$"))
+             return files.Where(x=> Regex.IsMatch(x, Patterns.Manifests))
                    .Select(x =>{
                        try {
                             return JsonConvert.DeserializeObject<Manifest>(readFn(x));
@@ -38,7 +39,7 @@ namespace Tweek.Publishing.Service.Packing
                        }
                        return (keyPath:manifest.KeyPath, keyDef: keyDef);
                    })
-                   .ToDictionary(x=>x.keyPath, x=>x.keyDef));
+                   .ToDictionary(x=>x.keyPath, x=>x.keyDef);
                    
 
         }

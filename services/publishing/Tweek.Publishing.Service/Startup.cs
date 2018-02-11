@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reactive.Linq;
 using System.Reflection;
-using System.Text;
+ using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -37,7 +37,7 @@ namespace Tweek.Publishing.Service
     {
       var sshdConfigLocation = Configuration.GetValue<string>("SSHD_CONFIG_LOCATION");
       var job = ShellHelper.Executor.ExecObservable("/usr/sbin/sshd", $"-f {sshdConfigLocation}")
-          .Retry()
+          .Retry(3)
           .Select(x => (data: Encoding.Default.GetString(x.data), x.outputType))
           .Subscribe(x =>
           {
@@ -52,6 +52,7 @@ namespace Tweek.Publishing.Service
           }, ex =>
           {
             logger.LogError("error:" + ex.ToString());
+            lifetime.StopApplication();
           });
       lifetime.ApplicationStopping.Register(job.Dispose);
     }

@@ -23,7 +23,7 @@ namespace Tweek.Publishing.Service.Utils
   internal static class StreamExtentions
   {
 
-    public static T[] Slice<T>(this T[] @this, int count)
+    private static T[] Slice<T>(this T[] @this, int count)
     {
       var slice = new T[count];
       Buffer.BlockCopy(@this, 0, slice, 0, count);
@@ -99,9 +99,9 @@ namespace Tweek.Publishing.Service.Utils
                                     ["StdErr"] = sbErr.ToString()
                         }
                 };
-            }))
-            .Publish().RefCount();
-      });
+            }));
+      }).Publish().RefCount();
+      ;
 
     }
 

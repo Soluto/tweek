@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using LanguageExt;
 using Newtonsoft.Json;
 using Tweek.Publishing.Service.Packing;
+using ImmutableSet=
 
 namespace Tweek.Publishing.Service.Validation
 {
@@ -25,7 +26,8 @@ namespace Tweek.Publishing.Service.Validation
         var deps = manifest.GetDependencies();
         foreach (var dep in deps)
         {
-          await ValidateRecursive($"manifests/{dep}.json", reader, visited.Add(fileName));
+          var newSet = visited.Add(fileName);
+          await ValidateRecursive($"manifests/{dep}.json", reader, newSet);
         }
     }
 
