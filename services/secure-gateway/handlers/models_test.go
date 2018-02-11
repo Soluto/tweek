@@ -32,7 +32,7 @@ func TestNewModelsRead(t *testing.T) {
 		{
 			name: "Read",
 			args: args{request: httptest.NewRequest("GET", "/api/v2/models", nil)},
-			want: `[{"PType":"p","V0":"allow@security.test","V1":"/target","V2":"read","V3":"allow","V4":"","V5":""},{"PType":"p","V0":"role_users","V1":"/target","V2":"read","V3":"allow","V4":"","V5":""},{"PType":"p","V0":"deny@security.test","V1":"/target","V2":"read","V3":"deny","V4":"","V5":""},{"PType":"g","V0":"allow@security.test","V1":"role_users","V2":"","V3":"","V4":"","V5":""},{"PType":"g","V0":"deny@security.test","V1":"role_users","V2":"","V3":"","V4":"","V5":""}]`,
+			want: `[{"PType":"p","V0":"allow@security.test","V1":"/target","V2":"read","V3":"allow","V4":"","V5":""},{"PType":"p","V0":"deny@security.test","V1":"/target","V2":"read","V3":"deny","V4":"","V5":""},{"PType":"p","V0":"role_users","V1":"/target","V2":"read","V3":"allow","V4":"","V5":""},{"PType":"p","V0":"admin","V1":".*:.*","V2":".*","V3":"allow","V4":"","V5":""},{"PType":"g","V0":"allow@security.test","V1":"role_users","V2":"","V3":"","V4":"","V5":""},{"PType":"g","V0":"deny@security.test","V1":"role_users","V2":"","V3":"","V4":"","V5":""}]`,
 		},
 	}
 

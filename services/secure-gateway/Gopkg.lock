@@ -27,7 +27,15 @@
 
 [[projects]]
   name = "github.com/casbin/casbin"
-  packages = [".","config","file-adapter","model","persist","rbac","util"]
+  packages = [
+    ".",
+    "config",
+    "file-adapter",
+    "model",
+    "persist",
+    "rbac",
+    "util"
+  ]
   revision = "9566491e9fe1898000031bba3e2b354dd633904a"
   version = "v1.3.0"
 
@@ -45,7 +53,10 @@
 
 [[projects]]
   name = "github.com/dgrijalva/jwt-go"
-  packages = [".","request"]
+  packages = [
+    ".",
+    "request"
+  ]
   revision = "dbeaa9332f19a944acb5736b4456cfcc02140e29"
   version = "v3.1.0"
 
@@ -88,7 +99,11 @@
 [[projects]]
   branch = "master"
   name = "github.com/lestrrat/go-jwx"
-  packages = ["internal/base64","jwa","jwk"]
+  packages = [
+    "internal/base64",
+    "jwa",
+    "jwk"
+  ]
   revision = "ab04a05344fe9d42821f15da668fd6ea279dd23e"
 
 [[projects]]
@@ -99,9 +114,17 @@
 
 [[projects]]
   name = "github.com/minio/minio-go"
-  packages = [".","pkg/credentials","pkg/encrypt","pkg/policy","pkg/s3signer","pkg/s3utils","pkg/set"]
-  revision = "14f1d472d115bac5ca4804094aa87484a72ced61"
-  version = "4.0.6"
+  packages = [
+    ".",
+    "pkg/credentials",
+    "pkg/encrypt",
+    "pkg/policy",
+    "pkg/s3signer",
+    "pkg/s3utils",
+    "pkg/set"
+  ]
+  revision = "706c81d3ee2a18cdd8239faf544de8a066e7e261"
+  version = "4.0.7"
 
 [[projects]]
   branch = "master"
@@ -111,7 +134,11 @@
 
 [[projects]]
   name = "github.com/nats-io/go-nats"
-  packages = [".","encoders/builtin","util"]
+  packages = [
+    ".",
+    "encoders/builtin",
+    "util"
+  ]
   revision = "d66cb54e6b7bdd93f0b28afc8450d84c780dfb68"
   version = "v1.4.0"
 
@@ -142,32 +169,56 @@
 [[projects]]
   branch = "master"
   name = "github.com/vulcand/oxy"
-  packages = ["forward","utils"]
+  packages = [
+    "forward",
+    "utils"
+  ]
   revision = "092a2d70bb8859a9def2b1bb9a61cdc193ee55cc"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "1875d0a70c90e57f11972aefd42276df65e895b9"
+  revision = "9334d73e5f05d728ee11a17c031f7eb9aed2c144"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
-  packages = ["idna","lex/httplex"]
-  revision = "2fb46b16b8dda405028c50f7c7f0f9dd1fa6bfb1"
+  packages = [
+    "idna",
+    "lex/httplex"
+  ]
+  revision = "f5dfe339be1d06f81b22525fe34671ee7d2c8904"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix","windows"]
+  packages = [
+    "unix",
+    "windows"
+  ]
   revision = "37707fdb30a5b38865cfb95e5aab41707daec7fd"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/text"
-  packages = ["collate","collate/build","internal/colltab","internal/gen","internal/tag","internal/triegen","internal/ucd","language","secure/bidirule","transform","unicode/bidi","unicode/cldr","unicode/norm","unicode/rangetable"]
-  revision = "e19ae1496984b1c655b8044a65c0300a3c878dd3"
+  packages = [
+    "collate",
+    "collate/build",
+    "internal/colltab",
+    "internal/gen",
+    "internal/tag",
+    "internal/triegen",
+    "internal/ucd",
+    "language",
+    "secure/bidirule",
+    "transform",
+    "unicode/bidi",
+    "unicode/cldr",
+    "unicode/norm",
+    "unicode/rangetable"
+  ]
+  revision = "4e4a3210bb54bb31f6ab2cdca2edcc0b50c420c1"
 
 [[projects]]
   branch = "v2"

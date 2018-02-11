@@ -68,7 +68,7 @@ func TestExtractFromRequest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotObj, gotSub, gotAct, gotErr := ExtractFromRequest(tt.args.r)
+			gotObj, gotSub, gotAct, _, gotErr := ExtractFromRequest(tt.args.r)
 			if gotObj != tt.wantObj {
 				t.Errorf("ExtractFromRequest() gotObj = %v, want %v", gotObj, tt.wantObj)
 			}
