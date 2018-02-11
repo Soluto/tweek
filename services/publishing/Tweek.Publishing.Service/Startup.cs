@@ -2,7 +2,6 @@
 using System.Reactive.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -13,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Minio;
 using Newtonsoft.Json;
 using Polly;
+using Tweek.Publishing.Service.Handlers;
 using Tweek.Publishing.Service.Messaging;
 using Tweek.Publishing.Service.Packing;
 using Tweek.Publishing.Service.Storage;
@@ -24,10 +24,19 @@ namespace Tweek.Publishing.Service
 {
   public class Startup
   {
-    public IDisposable RunSSHDeamon(ILogger logger)
+    private readonly IConfiguration Configuration;
+    private readonly ILogger logger;
+    
+    public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
+    {
+      Configuration = configuration;
+      logger = loggerFactory.CreateLogger("Default");
+    }
+    
+    private void RunSSHDeamon(IApplicationLifetime lifetime, ILogger logger)
     {
       var sshdConfigLocation = Configuration.GetValue<string>("SSHD_CONFIG_LOCATION");
-      return ShellHelper.Executor.ExecObservable("/usr/sbin/sshd", $"-f {sshdConfigLocation}")
+      var job = ShellHelper.Executor.ExecObservable("/usr/sbin/sshd", $"-f {sshdConfigLocation}")
           .Retry()
           .Select(x => (data: Encoding.Default.GetString(x.data), x.outputType))
           .Subscribe(x =>
@@ -44,20 +53,12 @@ namespace Tweek.Publishing.Service
           {
             logger.LogError("error:" + ex.ToString());
           });
+      lifetime.ApplicationStopping.Register(job.Dispose);
     }
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddRouting();
     }
-
-    public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
-    {
-      Configuration = configuration;
-      logger = loggerFactory.CreateLogger("Default");
-    }
-
-    private readonly IConfiguration Configuration;
-    private readonly ILogger logger;
 
     private MinioClient CreateMinioClient(IConfiguration minioConfig)
     {
@@ -69,13 +70,15 @@ namespace Tweek.Publishing.Service
       return minioConfig.GetValue("UseSSL", false) ? mc.WithSSL() : mc;
     }
 
-    private void StartIntervalPublisher(IApplicationLifetime lifetime, NatsPublisher publisher, RepoSynchronizer repoSynchronizer, StorageSynchronizer storageSynchronizer){
+    private void StartIntervalPublisher(IApplicationLifetime lifetime, NatsPublisher publisher, RepoSynchronizer repoSynchronizer, StorageSynchronizer storageSynchronizer)
+    {
       var intervalPublisher = new IntervalPublisher(publisher);
-      var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () => {
-          var commitId = await repoSynchronizer.CurrentHead();
-          await storageSynchronizer.Sync(commitId);
-          logger.LogInformation($"SyncVersion:{commitId}");
-          return commitId;
+      var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () =>
+      {
+        var commitId = await repoSynchronizer.CurrentHead();
+        await storageSynchronizer.Sync(commitId);
+        logger.LogInformation($"SyncVersion:{commitId}");
+        return commitId;
       });
       lifetime.ApplicationStopping.Register(job.Dispose);
     }
@@ -88,7 +91,7 @@ namespace Tweek.Publishing.Service
       {
         app.UseDeveloperExceptionPage();
       }
-      RunSSHDeamon(logger);
+      RunSSHDeamon(lifetime, logger);
 
       var executor = ShellHelper.Executor.WithWorkingDirectory(Configuration.GetValue<string>("REPO_LOCATION"));
       var git = executor.CreateCommandExecutor("git");
@@ -103,8 +106,8 @@ namespace Tweek.Publishing.Service
       var minioConfig = Configuration.GetSection("Minio");
 
       var storageClient = Policy.Handle<Exception>()
-                            .WaitAndRetryAsync(3, retryAttempt=> TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
-                            .ExecuteAsync(()=>
+                            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+                            .ExecuteAsync(() =>
                               MinioBucketStorage.GetOrCreateBucket(CreateMinioClient(minioConfig), minioConfig.GetValue("Bucket", "tweek-ruleset")))
                               .Result;
 
@@ -112,76 +115,16 @@ namespace Tweek.Publishing.Service
       var repoSynchronizer = new RepoSynchronizer(git);
       var storageSynchronizer = new StorageSynchronizer(storageClient, executor, new Packer());
 
-      
-
       storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result).Wait();
 
       app.UseRouter(router =>
       {
-        router.MapGet("sync", async (req, res, routdata) =>
-        {
-          try
-          {
-          await Policy.Handle<Exception>()
-            .WaitAndRetryAsync(3, retryAttempt=> {
-              return TimeSpan.FromSeconds(Math.Pow(2, retryAttempt));
-            }, async (ex,timespan)=>{
-              logger.LogWarning(ex.ToString());
-              logger.LogWarning($"Sync:CommitFailed:Retrying");
-              await Task.Delay(timespan);
-            })
-            .ExecuteAsync(async ()=>{
-              var commitId = await repoSynchronizer.SyncToLatest();
-              await storageSynchronizer.Sync(commitId);
-              await natsClient.Publish(commitId);
-              logger.LogInformation($"Sync:Commit:{commitId}");
-            });
-          }
-          catch (Exception ex)
-          {
-            logger.LogError("failed to sync repo with upstram", ex);
-            logger.LogError(ex.ToString());
-            res.StatusCode = 500;
-            await res.WriteAsync(ex.ToString());
-          }
-        });
+        router.MapGet("validate", ValidationHandler.Create(executor, gitValidationFlow));
+        router.MapGet("sync", SyncHandler.Create(storageSynchronizer, repoSynchronizer, natsClient, logger));
 
-        router.MapGet("log", async (req, res, routdata) =>
-        {
-          logger.LogInformation(req.Query["message"]);
-        });
-
-        router.MapGet("health", async (req, res, routdata) =>
-        {
-          await res.WriteAsync(JsonConvert.SerializeObject(new {}));
-        });
-
-        router.MapGet("version", async (req, res, routdata) =>
-        {
-          await res.WriteAsync(Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion);
-        });
-
-        router.MapGet("validate", async (req, res, routdata) =>
-        {
-          var oldCommit = req.Query["oldrev"].ToString().Trim();
-          var newCommit = req.Query["newrev"].ToString().Trim();
-          var quarantinePath = req.Query["quarantinepath"];
-          var gitExecutor = executor.CreateCommandExecutor("git", pStart =>
-          {
-            pStart.Environment["GIT_ALTERNATE_OBJECT_DIRECTORIES"] = "./objects";
-            pStart.Environment["GIT_OBJECT_DIRECTORY"] = quarantinePath;
-          });
-          try
-          {
-            await gitValidationFlow.Validate(oldCommit, newCommit, gitExecutor);
-          }
-          catch (Exception ex)
-          {
-            res.StatusCode = 400;
-            await res.WriteAsync(ex.Message);
-          }
-        });
-
+        router.MapGet("log", async (req, res, routedata) => logger.LogInformation(req.Query["message"]));
+        router.MapGet("health", async (req, res, routedata) => await res.WriteAsync(JsonConvert.SerializeObject(new { })));
+        router.MapGet("version", async (req, res, routedata) => await res.WriteAsync(Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion));
       });
     }
   }
