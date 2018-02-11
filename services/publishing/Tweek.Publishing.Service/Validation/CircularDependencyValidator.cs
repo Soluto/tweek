@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using LanguageExt;
 using Newtonsoft.Json;
 using Tweek.Publishing.Service.Packing;
-using ImmutableSet=
 
 namespace Tweek.Publishing.Service.Validation
 {
