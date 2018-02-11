@@ -26,7 +26,8 @@ namespace Tweek.Publishing.Service
   {
     public IDisposable RunSSHDeamon(ILogger logger)
     {
-      return ShellHelper.Executor.ExecObservable("/usr/sbin/sshd", "-f /tweek/sshd_config")
+      var sshdConfigLocation = Configuration.GetValue<string>("SSHD_CONFIG_LOCATION");
+      return ShellHelper.Executor.ExecObservable("/usr/sbin/sshd", $"-f {sshdConfigLocation}")
           .Retry()
           .Select(x => (data: Encoding.Default.GetString(x.data), x.outputType))
           .Subscribe(x =>
@@ -49,12 +50,14 @@ namespace Tweek.Publishing.Service
       services.AddRouting();
     }
 
-    public Startup(IConfiguration configuration)
+    public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
     {
       Configuration = configuration;
+      logger = loggerFactory.CreateLogger("Default");
     }
 
     private readonly IConfiguration Configuration;
+    private readonly ILogger logger;
 
     private MinioClient CreateMinioClient(IConfiguration minioConfig)
     {
@@ -66,10 +69,20 @@ namespace Tweek.Publishing.Service
       return minioConfig.GetValue("UseSSL", false) ? mc.WithSSL() : mc;
     }
 
+    private void StartIntervalPublisher(IApplicationLifetime lifetime, NatsPublisher publisher, RepoSynchronizer repoSynchronizer, StorageSynchronizer storageSynchronizer){
+      var intervalPublisher = new IntervalPublisher(publisher);
+      var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () => {
+          var commitId = await repoSynchronizer.CurrentHead();
+          await storageSynchronizer.Sync(commitId);
+          logger.LogInformation($"SyncVersion:{commitId}");
+          return commitId;
+      });
+      lifetime.ApplicationStopping.Register(job.Dispose);
+    }
+
     public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
     IApplicationLifetime lifetime)
     {
-      var logger = loggerFactory.CreateLogger("Default");
       logger.LogInformation("Starting service");
       if (env.IsDevelopment())
       {
@@ -77,10 +90,8 @@ namespace Tweek.Publishing.Service
       }
       RunSSHDeamon(logger);
 
-      var git = ShellHelper.Executor.CreateCommandExecutor("git", p =>
-      {
-        p.WorkingDirectory = "/tweek/repo";
-      });
+      var executor = ShellHelper.Executor.WithWorkingDirectory(Configuration.GetValue<string>("REPO_LOCATION"));
+      var git = executor.CreateCommandExecutor("git");
       var gitValidationFlow = new GitValidationFlow
       {
         Validators = {
@@ -99,15 +110,9 @@ namespace Tweek.Publishing.Service
 
       var natsClient = new NatsPublisher(Configuration.GetSection("Nats").GetValue<string>("Endpoint"), "version");
       var repoSynchronizer = new RepoSynchronizer(git);
-      var storageSynchronizer = new StorageSynchronizer(storageClient, ShellHelper.Executor, new Packer());
-      var intervalPublisher = new IntervalPublisher(natsClient);
-      var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () => {
-          var commitId = await repoSynchronizer.CurrentHead();
-          await storageSynchronizer.Sync(commitId);
-          logger.LogInformation($"SyncVersion:{commitId}");
-          return commitId;
-      });
-      lifetime.ApplicationStopping.Register(job.Dispose);
+      var storageSynchronizer = new StorageSynchronizer(storageClient, executor, new Packer());
+
+      
 
       storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result).Wait();
 
@@ -161,11 +166,10 @@ namespace Tweek.Publishing.Service
           var oldCommit = req.Query["oldrev"].ToString().Trim();
           var newCommit = req.Query["newrev"].ToString().Trim();
           var quarantinePath = req.Query["quarantinepath"];
-          var gitExecutor = ShellHelper.Executor.CreateCommandExecutor("git", pStart =>
+          var gitExecutor = executor.CreateCommandExecutor("git", pStart =>
           {
-            pStart.Environment["GIT_ALTERNATE_OBJECT_DIRECTORIES"] = "/tweek/repo/./objects";
+            pStart.Environment["GIT_ALTERNATE_OBJECT_DIRECTORIES"] = "./objects";
             pStart.Environment["GIT_OBJECT_DIRECTORY"] = quarantinePath;
-            pStart.WorkingDirectory = "/tweek/repo";
           });
           try
           {

@@ -33,7 +33,10 @@ RUN adduser --disabled-password --shell /usr/bin/git-shell git \
 RUN if [ $target = "Debug" ]; then apt-get update && apt-get install unzip && rm -rf /var/lib/apt/lists/* && curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg; fi
 
 COPY --from=source /tweek /tweek
-ENV GIT_SSH=/tweek/ssh-helper.sh
+ENV GIT_SSH=/tweek/ssh-helper.sh \
+    REPO_LOCATION=/tweek/repo \
+    SSHD_CONFIG_LOCATION=/tweek/sshd_config
+    
 RUN mkdir -p /var/run/sshd && chown -R git:git /tweek 
 RUN chmod u+x /tweek/*.sh
 WORKDIR /tweek

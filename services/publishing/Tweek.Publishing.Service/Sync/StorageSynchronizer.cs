@@ -49,7 +49,7 @@ namespace Tweek.Publishing.Service.Sync
         Previous = versionsBlob?.Latest
       };
 
-      var (p, exited) = _shellExecutor("git", $"archive --format=zip {commitId}", pStart => pStart.WorkingDirectory = "/tweek/repo");
+      var (p, exited) = _shellExecutor("git", $"archive --format=zip {commitId}");
       using (var ms = new MemoryStream())
       {
         await p.StandardOutput.BaseStream.CopyToAsync(ms);

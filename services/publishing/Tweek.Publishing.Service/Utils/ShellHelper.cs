@@ -114,5 +114,11 @@ namespace Tweek.Publishing.Service.Utils
 
     public static Func<string, Task<string>> CreateCommandExecutor(this ShellExecutor shellExecutor, string command, Action<ProcessStartInfo> paramsInit = null) => args =>
                shellExecutor.ExecTask(command, args, paramsInit);
+
+    public static ShellExecutor WithWorkingDirectory(this ShellExecutor shellExecutor, string directory) => (cmd, args, init) =>
+        shellExecutor(cmd, args, (p)=>{
+          p.WorkingDirectory = directory;
+          init?.Invoke(p);
+        });
   }
 }

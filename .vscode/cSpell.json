@@ -1,16 +1,25 @@
 {
+    
     "version": "0.1",
+    
     "language": "en",
+    
     "words": [
-        "soluto",
-        "Tweek",
+        "Couchbase",
+        "jpad",
         "Minio",
         "Nats",
         "repo",
         "sbin",
+        "soluto",
         "sshd",
-        "jpad"
+        "Tweek",
+        "guid",
+        "codegen",
+        "deserialize",
+        "multiplart"
     ],
+    
     "flagWords": [
         "hte"
     ]
