@@ -1,6 +1,11 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-  "editor.tabSize": 2,
+  "[javascript]":{
+    "editor.tabSize": 2
+  },
+  "[csharp]":{
+    "editor.tabSize": 4
+  },
   "workbench.editor.enablePreview": false,
   "workbench.editor.enablePreviewFromQuickOpen": false,
   "jest.pathToJest": "./services/editor/node_modules/.bin/jest",
