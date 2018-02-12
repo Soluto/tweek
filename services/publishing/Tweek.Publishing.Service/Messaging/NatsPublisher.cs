@@ -1,7 +1,6 @@
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging.Abstractions;
 using NATS.Client;
 
 namespace Tweek.Publishing.Service.Messaging
