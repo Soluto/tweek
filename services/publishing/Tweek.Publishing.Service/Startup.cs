@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reactive.Linq;
 using System.Reflection;
- using System.Text;
+using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -22,111 +22,116 @@ using Tweek.Publishing.Service.Validation;
 
 namespace Tweek.Publishing.Service
 {
-  public class Startup
-  {
-    private readonly IConfiguration Configuration;
-    private readonly ILogger logger;
-    
-    public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
+    public class Startup
     {
-      Configuration = configuration;
-      logger = loggerFactory.CreateLogger("Default");
-    }
-    
-    private void RunSSHDeamon(IApplicationLifetime lifetime, ILogger logger)
-    {
-      var sshdConfigLocation = Configuration.GetValue<string>("SSHD_CONFIG_LOCATION");
-      var job = ShellHelper.Executor.ExecObservable("/usr/sbin/sshd", $"-f {sshdConfigLocation}")
-          .Retry(3)
-          .Select(x => (data: Encoding.Default.GetString(x.data), x.outputType))
-          .Subscribe(x =>
-          {
-            if (x.outputType == OutputType.StdOut)
+        private readonly IConfiguration _configuration;
+        private readonly ILogger _logger;
+
+        public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
+        {
+            _configuration = configuration;
+            _logger = loggerFactory.CreateLogger("Default");
+        }
+
+        private void RunSSHDeamon(IApplicationLifetime lifetime, ILogger logger)
+        {
+            var sshdConfigLocation = _configuration.GetValue<string>("SSHD_CONFIG_LOCATION");
+            var job = ShellHelper.Executor.ExecObservable("/usr/sbin/sshd", $"-f {sshdConfigLocation}")
+                .Retry(3)
+                .Select(x => (data: Encoding.Default.GetString(x.data), x.outputType))
+                .Subscribe(x =>
+                {
+                    if (x.outputType == OutputType.StdOut)
+                    {
+                        logger.LogInformation(x.data);
+                    }
+                    if (x.outputType == OutputType.StdErr)
+                    {
+                        logger.LogWarning(x.data);
+                    }
+                }, ex =>
+                {
+                    logger.LogError("error:" + ex.ToString());
+                    lifetime.StopApplication();
+                });
+            lifetime.ApplicationStopping.Register(job.Dispose);
+        }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddRouting();
+        }
+
+        private MinioClient CreateMinioClient(IConfiguration minioConfig)
+        {
+            var mc = new MinioClient(
+                endpoint: minioConfig.GetValue<string>("Endpoint"),
+                accessKey: minioConfig.GetValueInlineOrFile("AccessKey"),
+                secretKey: minioConfig.GetValueInlineOrFile("SecretKey")
+            );
+            return minioConfig.GetValue("UseSSL", false) ? mc.WithSSL() : mc;
+        }
+
+        private void StartIntervalPublisher(IApplicationLifetime lifetime, NatsPublisher publisher,
+            RepoSynchronizer repoSynchronizer, StorageSynchronizer storageSynchronizer)
+        {
+            var intervalPublisher = new IntervalPublisher(publisher);
+            var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () =>
             {
-              logger.LogInformation(x.data);
-            }
-            if (x.outputType == OutputType.StdErr)
+                var commitId = await repoSynchronizer.CurrentHead();
+                await storageSynchronizer.Sync(commitId);
+                _logger.LogInformation($"SyncVersion:{commitId}");
+                return commitId;
+            });
+            lifetime.ApplicationStopping.Register(job.Dispose);
+        }
+
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
+            IApplicationLifetime lifetime)
+        {
+            _logger.LogInformation("Starting service");
+            if (env.IsDevelopment())
             {
-              logger.LogWarning(x.data);
+                app.UseDeveloperExceptionPage();
             }
-          }, ex =>
-          {
-            logger.LogError("error:" + ex.ToString());
-            lifetime.StopApplication();
-          });
-      lifetime.ApplicationStopping.Register(job.Dispose);
-    }
-    public void ConfigureServices(IServiceCollection services)
-    {
-      services.AddRouting();
-    }
+            RunSSHDeamon(lifetime, _logger);
 
-    private MinioClient CreateMinioClient(IConfiguration minioConfig)
-    {
-      var mc = new MinioClient(
-          endpoint: minioConfig.GetValue<string>("Endpoint"),
-          accessKey: minioConfig.GetValueInlineOrFile("AccessKey"),
-          secretKey: minioConfig.GetValueInlineOrFile("SecretKey")
-      );
-      return minioConfig.GetValue("UseSSL", false) ? mc.WithSSL() : mc;
-    }
-
-    private void StartIntervalPublisher(IApplicationLifetime lifetime, NatsPublisher publisher, RepoSynchronizer repoSynchronizer, StorageSynchronizer storageSynchronizer)
-    {
-      var intervalPublisher = new IntervalPublisher(publisher);
-      var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () =>
-      {
-        var commitId = await repoSynchronizer.CurrentHead();
-        await storageSynchronizer.Sync(commitId);
-        logger.LogInformation($"SyncVersion:{commitId}");
-        return commitId;
-      });
-      lifetime.ApplicationStopping.Register(job.Dispose);
-    }
-
-    public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
-    IApplicationLifetime lifetime)
-    {
-      logger.LogInformation("Starting service");
-      if (env.IsDevelopment())
-      {
-        app.UseDeveloperExceptionPage();
-      }
-      RunSSHDeamon(lifetime, logger);
-
-      var executor = ShellHelper.Executor.WithWorkingDirectory(Configuration.GetValue<string>("REPO_LOCATION"));
-      var git = executor.CreateCommandExecutor("git");
-      var gitValidationFlow = new GitValidationFlow
-      {
-        Validators = {
+            var executor = ShellHelper.Executor.WithWorkingDirectory(_configuration.GetValue<string>("REPO_LOCATION"));
+            var git = executor.CreateCommandExecutor("git");
+            var gitValidationFlow = new GitValidationFlow
+            {
+                Validators =
+                {
                     (Patterns.Manifests, new CircularDependencyValidator()),
                     (Patterns.JPad, new CompileJPadValidator())
                 }
-      };
+            };
 
-      var minioConfig = Configuration.GetSection("Minio");
+            var minioConfig = _configuration.GetSection("Minio");
 
-      var storageClient = Policy.Handle<Exception>()
-                            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
-                            .ExecuteAsync(() =>
-                              MinioBucketStorage.GetOrCreateBucket(CreateMinioClient(minioConfig), minioConfig.GetValue("Bucket", "tweek-ruleset")))
-                              .Result;
+            var storageClient = Policy.Handle<Exception>()
+                .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+                .ExecuteAsync(() =>
+                    MinioBucketStorage.GetOrCreateBucket(CreateMinioClient(minioConfig),
+                        minioConfig.GetValue("Bucket", "tweek-ruleset")))
+                .Result;
 
-      var natsClient = new NatsPublisher(Configuration.GetSection("Nats").GetValue<string>("Endpoint"), "version");
-      var repoSynchronizer = new RepoSynchronizer(git);
-      var storageSynchronizer = new StorageSynchronizer(storageClient, executor, new Packer());
+            var natsClient = new NatsPublisher(_configuration.GetSection("Nats").GetValue<string>("Endpoint"), "version");
+            var repoSynchronizer = new RepoSynchronizer(git);
+            var storageSynchronizer = new StorageSynchronizer(storageClient, executor, new Packer());
 
-      storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result).Wait();
+            storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result).Wait();
 
-      app.UseRouter(router =>
-      {
-        router.MapGet("validate", ValidationHandler.Create(executor, gitValidationFlow));
-        router.MapGet("sync", SyncHandler.Create(storageSynchronizer, repoSynchronizer, natsClient, logger));
+            app.UseRouter(router =>
+            {
+                router.MapGet("validate", ValidationHandler.Create(executor, gitValidationFlow));
+                router.MapGet("sync", SyncHandler.Create(storageSynchronizer, repoSynchronizer, natsClient, _logger));
 
-        router.MapGet("log", async (req, res, routedata) => logger.LogInformation(req.Query["message"]));
-        router.MapGet("health", async (req, res, routedata) => await res.WriteAsync(JsonConvert.SerializeObject(new { })));
-        router.MapGet("version", async (req, res, routedata) => await res.WriteAsync(Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion));
-      });
+                router.MapGet("log", async (req, res, routedata) => _logger.LogInformation(req.Query["message"]));
+                router.MapGet("health", async (req, res, routedata) => await res.WriteAsync(JsonConvert.SerializeObject(new { })));
+                router.MapGet("version", async (req, res, routedata) => await res.WriteAsync(Assembly.GetEntryAssembly()
+                        .GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion));
+            });
+        }
     }
-  }
 }

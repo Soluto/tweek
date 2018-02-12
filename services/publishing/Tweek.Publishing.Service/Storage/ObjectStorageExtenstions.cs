@@ -8,19 +8,20 @@ using static LanguageExt.Prelude;
 
 namespace Tweek.Publishing.Service.Storage
 {
-  public static class ObjectStorageExtenstions {
-
-        public static async Task<T> Get<T>(this IObjectStorage reader, string fileName, Func<Stream, T> readerFn, CancellationToken cancellationToken = default){
+    public static class ObjectStorageExtenstions
+    {
+        public static async Task<T> Get<T>(this IObjectStorage reader, string fileName, Func<Stream, T> readerFn, CancellationToken cancellationToken = default)
+        {
             var tsc = new TaskCompletionSource<T>();
-            var readerFnProxy =  act((Stream s)=> {
-                tsc.SetResult(readerFn(s));
-            });
+            var readerFnProxy = act((Stream s) => { tsc.SetResult(readerFn(s)); });
             await reader.Get(fileName, readerFnProxy, cancellationToken);
             return await tsc.Task;
         }
 
-        public static async Task<T> GetJSON<T>(this IObjectStorage reader, string fileName, CancellationToken cancellationToken = default){
-            return await reader.Get(fileName, stream=> {
+        public static async Task<T> GetJSON<T>(this IObjectStorage reader, string fileName, CancellationToken cancellationToken = default)
+        {
+            return await reader.Get(fileName, stream =>
+            {
                 using (var sr = new StreamReader(stream))
                 using (var jsonReader = new JsonTextReader(sr))
                 {
@@ -29,8 +30,10 @@ namespace Tweek.Publishing.Service.Storage
             }, cancellationToken);
         }
 
-        public static async Task PutJSON<T>(this IObjectStorage reader, string fileName, T value, CancellationToken cancellationToken = default){
-            await reader.Put(fileName, stream=> {
+        public static async Task PutJSON<T>(this IObjectStorage reader, string fileName, T value, CancellationToken cancellationToken = default)
+        {
+            await reader.Put(fileName, stream =>
+            {
                 using (var sr = new StreamWriter(stream))
                 using (var jsonWriter = new JsonTextWriter(sr))
                 {
