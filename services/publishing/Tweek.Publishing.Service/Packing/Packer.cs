@@ -9,9 +9,11 @@ namespace Tweek.Publishing.Service.Packing
 {
     public class Packer
     {
+        private static readonly Regex manifestRegex = new Regex(Patterns.Manifests, RegexOptions.Compiled);
+        
         public Dictionary<string, KeyDef> Pack(ICollection<string> files, Func<string, string> readFn)
         {
-            return files.Where(x => Regex.IsMatch(x, Patterns.Manifests))
+            return files.Where(x => manifestRegex.IsMatch(x))
                 .Select(x =>
                 {
                     try
@@ -31,7 +33,7 @@ namespace Tweek.Publishing.Service.Packing
                         Format = manifest.Implementation.Format ?? manifest.Implementation.Type,
                         Dependencies = manifest.GetDependencies()
                     };
-
+                  
                     switch (manifest.Implementation.Type)
                     {
                         case "file":
