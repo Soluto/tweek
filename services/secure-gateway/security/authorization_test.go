@@ -29,7 +29,7 @@ func (a *emptyAuditor) EnforcerDisabled() {
 }
 
 func TestAuthorizationMiddleware(t *testing.T) {
-	enforcer := casbin.NewSyncedEnforcer("./testdata/policy.conf", "./testdata/model.csv")
+	enforcer := casbin.NewSyncedEnforcer("./testdata/policy.conf", "./testdata/model2.csv")
 	server := AuthorizationMiddleware(enforcer, &emptyAuditor{})
 	type args struct {
 		request *http.Request
@@ -40,16 +40,42 @@ func TestAuthorizationMiddleware(t *testing.T) {
 		want int
 	}{
 		{
-			name: "Allow",
-			args: args{request: createRequest("GET", "/target", "allow@security.test")},
+			name: "Allow by user",
+			args: args{request: createRequest("GET", "/values/key1", "alice@security.test")},
 			want: http.StatusOK,
 		},
 		{
-			name: "Deny",
-			args: args{request: createRequest("GET", "/target", "deny@security.test")},
+			name: "Deny by user",
+			args: args{request: createRequest("GET", "/values/key1", "bob@security.test")},
 			want: http.StatusUnauthorized,
 		},
+		{
+			name: "Allow reading context for self",
+			args: args{request: createRequest("GET", "/context/user/alice2@security.test", "alice2@security.test")},
+			want: http.StatusOK,
+		},
+		{
+			name: "Allow writing context for self",
+			args: args{request: createRequest("POST", "/context/user/bob@security.test", "bob@security.test")},
+			want: http.StatusOK,
+		},
+		{
+			name: "Deny writing context for someone else",
+			args: args{request: createRequest("POST", "/context/user/bob@security.test", "alice@security.test")},
+			want: http.StatusUnauthorized,
+		},
+		{
+			name: "Deny deleting context property for someone else",
+			args: args{request: createRequest("DELETE", "/context/user/bob@security.test/prop", "alice@security.test")},
+			want: http.StatusUnauthorized,
+		},
+		{
+			name: "Deny deleting context property for self",
+			args: args{request: createRequest("DELETE", "/context/user/bob@security.test/prop", "bob@security.test")},
+			want: http.StatusOK,
+		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			recorder := httptest.NewRecorder()

@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
+	"sort"
 	"testing"
 )
 
@@ -89,4 +91,74 @@ func createTestRequest(method string, url string, userInfo UserInfo) *http.Reque
 	r := httptest.NewRequest(method, url, nil)
 	rc := r.WithContext(context.WithValue(r.Context(), UserInfoKey, userInfo))
 	return rc
+}
+
+func Test_extractContextsFromRequest(t *testing.T) {
+	type args struct {
+		r *http.Request
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantCtxs []string
+		wantErr  bool
+	}{
+		{
+			name: "Contexts for values request",
+			args: args{
+				r: createRequest("GET", "/values/key1?user=alice", "alice"),
+			},
+			wantCtxs: []string{"user=self"},
+			wantErr:  false,
+		},
+		{
+			name: "Contexts for values request, with multiple contexts",
+			args: args{
+				r: createRequest("GET", "/values/key1?user=alice&device=1234", "alice"),
+			},
+			wantCtxs: []string{"user=self", "device=1234"},
+			wantErr:  false,
+		},
+		{
+			name: "Contexts for context read request (GET)",
+			args: args{
+				r: createRequest("GET", "/context/user/alice", "alice"),
+			},
+			wantCtxs: []string{"user=self"},
+			wantErr:  false,
+		},
+		{
+			name: "Contexts for context write request (POST)",
+			args: args{
+				r: createRequest("POST", "/context/user/alice", "alice"),
+			},
+			wantCtxs: []string{"user=self"},
+			wantErr:  false,
+		},
+		{
+			name: "Contexts for context write request (DELETE)",
+			args: args{
+				r: createRequest("POST", "/context/user/alice", "alice"),
+			},
+			wantCtxs: []string{"user=self"},
+			wantErr:  false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotCtxs, err := extractContextsFromRequest(tt.args.r)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("extractContextsFromRequest() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			// sort the strings in-place to
+			sort.Strings(gotCtxs)
+			sort.Strings(tt.wantCtxs)
+
+			if !reflect.DeepEqual(gotCtxs, tt.wantCtxs) {
+				t.Errorf("extractContextsFromRequest() = %v, want %v", gotCtxs, tt.wantCtxs)
+			}
+		})
+	}
 }

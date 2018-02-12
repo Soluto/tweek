@@ -53,12 +53,17 @@ func extractContextsFromValuesRequest(r *http.Request) (ctxs []string, err error
 		return
 	}
 
+	user, ok := r.Context().Value(UserInfoKey).(UserInfo)
 	if strings.HasPrefix(uri.Path, "/values") {
 		ctxs = []string{}
 		for key, value := range uri.Query() {
 			// checking for special chars - these are not context identity names
 			if !strings.ContainsAny(key, "$.") {
-				ctxs = append(ctxs, fmt.Sprintf("%v=%v", url.PathEscape(key), url.PathEscape(value[0])))
+				identityID := url.PathEscape(value[0])
+				if ok && (user.Email() == identityID || user.Name() == identityID) {
+					identityID = "self"
+				}
+				ctxs = append(ctxs, fmt.Sprintf("%v=%v", url.PathEscape(key), identityID))
 			}
 		}
 	}
@@ -79,16 +84,21 @@ func extractContextFromContextRequest(r *http.Request) (ctx string, err error) {
 		return
 	}
 
-	segments := strings.Split(path, "/")
-	identityType, identityID := url.PathEscape(segments[contextIdentityType]), url.PathEscape(segments[contextIdentityID])
+	segments := strings.Split(path, "/")[1:] // skip the first entry, because it's empty
+	identityType, identityID := segments[contextIdentityType], segments[contextIdentityID]
 	method := strings.ToUpper(r.Method)
 	user, ok := r.Context().Value(UserInfoKey).(UserInfo)
-	if ok && (user.Email() == identityID || user.Name() == identityID) {
+	escapedEmail, escapedName := url.PathEscape(user.Email()), url.PathEscape(user.Name())
+	if ok && (escapedEmail == identityID || escapedName == identityID) {
 		identityID = "self"
 	}
 	switch method {
 	case "DELETE":
-		prop := url.PathEscape(segments[contextProp])
+		if len(segments) <= contextProp {
+			err = fmt.Errorf("ExtractContextFromContextRequest: missing property for context request")
+			return
+		}
+		prop := segments[contextProp]
 		ctx = fmt.Sprintf("%v=%v:%v", identityType, identityID, prop)
 	case "GET", "POST":
 		ctx = fmt.Sprintf("%v=%v", identityType, identityID)

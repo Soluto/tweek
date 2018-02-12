@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/Soluto/tweek/services/secure-gateway/audit"
 
@@ -21,22 +22,26 @@ func AuthorizationMiddleware(enforcer *casbin.SyncedEnforcer, auditor audit.Audi
 			auditor.EnforcerError(sub, obj, act, err)
 			http.Error(rw, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		} else {
-			objects := []string{obj}
-			for _, ctx := range ctxs {
-				objects = append(objects, fmt.Sprintf("%v:%v", ctx, obj))
+			objects := []string{}
+			if len(ctxs) != 0 {
+				for _, ctx := range ctxs {
+					objects = append(objects, fmt.Sprintf("%v:%v", ctx, obj))
+				}
+			} else {
+				objects = append(objects, obj)
 			}
 
-			for _, obj := range objects {
-				res, err := enforcer.EnforceSafe(sub, obj, act)
+			for _, object := range objects {
+				res, err := enforcer.EnforceSafe(sub, object, act)
 				if err != nil {
 					log.Println("Failed to validate request", err)
-					auditor.EnforcerError(sub, obj, act, err)
+					auditor.EnforcerError(sub, object, act, err)
 					http.Error(rw, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 					return
 				}
 
 				if !res {
-					auditor.Denied(sub, obj, act)
+					auditor.Denied(sub, object, act)
 					http.Error(rw, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 					return
 				}
@@ -46,4 +51,21 @@ func AuthorizationMiddleware(enforcer *casbin.SyncedEnforcer, auditor audit.Audi
 			next(rw, r)
 		}
 	})
+}
+
+func formatObject(fromRequest string, other []string) []string {
+	objects := []string{}
+	if len(other) != 0 {
+		for _, ctx := range other {
+			if strings.ContainsAny(ctx, ":") {
+				objects = append(objects, ctx)
+			} else {
+				objects = append(objects, fmt.Sprintf("%v:%v", ctx, fromRequest))
+			}
+		}
+	} else {
+		objects = append(objects, fromRequest)
+	}
+
+	return objects
 }

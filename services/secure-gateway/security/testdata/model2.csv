@@ -1,0 +1,9 @@
+p, alice@security.test, /values, read, allow
+p, bob@security.test, /values, read, deny
+p, role_users, user=self:/context/user/.*, read, allow
+p, bob@security.test, user=self:.*, write, allow
+p, admin, .*:.*, .*, allow
+
+g, alice@security.test, role_users
+g, bob@security.test, role_users
+g, alice2@security.test, role_users
