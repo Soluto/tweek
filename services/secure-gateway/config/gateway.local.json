@@ -21,9 +21,15 @@
             "Enabled": "true",
             "MaxAge": "60",
             "AllowedOrigins": "*",
-            "AllowedMethods": "*",
+            "AllowedMethods": "GET,POST,PUT,PATCH,DELETE",
             "AllowedHeaders": "*",
             "AllowCredentials": "true"
         }
+    },
+    "server": {
+        "ports": [
+            3000,
+            8080
+        ]
     }
 }
