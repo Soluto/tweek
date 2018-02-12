@@ -20,7 +20,9 @@ describe('Secure Gateway v2 CORS tests', () => {
         ['Access-Control-Request-Headers']: 'Origin,Accept,Content-Type',
       },
     });
+
     expect(res).to.exist;
+    expect(res.status).to.equal(200);
     expect(res.headers).to.exist;
     expect(res.headers.get('access-control-allow-credentials')).to.equal('true');
     expect(res.headers.get('access-control-allow-headers')).to.equal(
