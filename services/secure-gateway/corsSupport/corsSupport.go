@@ -30,12 +30,13 @@ func New(config *appConfig.Cors) negroni.Handler {
 		allowCredentials = true
 	}
 
-	corsSupportMiddleware := cors.New(cors.Options{
+	opts := cors.Options{
 		MaxAge:           maxAge,
 		AllowedOrigins:   strings.Split(config.AllowedOrigins, ","),
 		AllowedHeaders:   strings.Split(config.AllowedHeaders, ","),
 		AllowedMethods:   strings.Split(config.AllowedMethods, ","),
 		AllowCredentials: allowCredentials,
-	})
+	}
+	corsSupportMiddleware := cors.New(opts)
 	return corsSupportMiddleware
 }
