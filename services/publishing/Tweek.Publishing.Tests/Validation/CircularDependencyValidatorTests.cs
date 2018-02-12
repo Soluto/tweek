@@ -9,116 +9,144 @@ namespace Tweek.Publishing.Tests.Validation
     public class CircularDependencyValidatorTests
     {
         [Fact]
-        public async Task ValidatePassWhenNoCircularDependencies(){
+        public async Task ValidatePassWhenNoCircularDependencies()
+        {
             var validator = new CircularDependencyValidator();
-            var files = new Dictionary<string,string>
+            var files = new Dictionary<string, string>
             {
-                ["manifests/a.json"]= JsonConvert.SerializeObject(new {
-                    dependencies = new[]{"b"},
+                ["manifests/a.json"] = JsonConvert.SerializeObject(new
+                {
+                    dependencies = new[] {"b"},
                     key_name = "a",
-                    implementation = new {
-                        type = "jpad"
-                    }
+                    implementation = new
+                    {
+                        type = "jpad",
+                    },
                 }),
-                ["manifests/b.json"]= JsonConvert.SerializeObject(new {
-                    dependencies = new[]{"c"},
+                ["manifests/b.json"] = JsonConvert.SerializeObject(new
+                {
+                    dependencies = new[] {"c"},
                     key_name = "b",
-                    implementation = new {
-                        type = "jpad"
-                    }
-                })
+                    implementation = new
+                    {
+                        type = "jpad",
+                    },
+                }),
             };
 
             await validator.Validate("manifests/a.json", async x => files[x]);
         }
 
         [Fact]
-        public async Task ValidateShouldDetectCircularDependencies(){
+        public async Task ValidateShouldDetectCircularDependencies()
+        {
             var validator = new CircularDependencyValidator();
-            var files = new Dictionary<string,string>
+            var files = new Dictionary<string, string>
             {
-                ["manifests/a.json"]= JsonConvert.SerializeObject(new {
-                    dependencies = new[]{"b"},
+                ["manifests/a.json"] = JsonConvert.SerializeObject(new
+                {
+                    dependencies = new[] {"b"},
                     key_name = "a",
-                    implementation = new {
-                        type = "jpad"
-                    }
+                    implementation = new
+                    {
+                        type = "jpad",
+                    },
                 }),
-                ["manifests/b.json"]= JsonConvert.SerializeObject(new {
-                    dependencies = new[]{"c"},
+                ["manifests/b.json"] = JsonConvert.SerializeObject(new
+                {
+                    dependencies = new[] {"c"},
                     key_name = "b",
-                    implementation = new {
-                        type = "jpad"
-                    }
+                    implementation = new
+                    {
+                        type = "jpad",
+                    },
                 }),
-                ["manifests/c.json"]= JsonConvert.SerializeObject(new {
-                    dependencies = new[]{"a"},
+                ["manifests/c.json"] = JsonConvert.SerializeObject(new
+                {
+                    dependencies = new[] {"a"},
                     key_name = "c",
-                    implementation = new {
-                        type = "jpad"
-                    }
-                })
+                    implementation = new
+                    {
+                        type = "jpad",
+                    },
+                }),
             };
 
-            await Assert.ThrowsAsync<CircularValidationException>(()=> validator.Validate("manifests/a.json", async x => files[x]));
+            await Assert.ThrowsAsync<CircularValidationException>(() =>
+                validator.Validate("manifests/a.json", async x => files[x]));
         }
 
         [Fact]
-        public async Task ValidateShouldDetectCircularDependenciesCreatedByAliases(){
+        public async Task ValidateShouldDetectCircularDependenciesCreatedByAliases()
+        {
             var validator = new CircularDependencyValidator();
-            var files = new Dictionary<string,string>
+            var files = new Dictionary<string, string>
             {
-                ["manifests/a.json"]= JsonConvert.SerializeObject(new {
-                    dependencies = new[]{"b"},
+                ["manifests/a.json"] = JsonConvert.SerializeObject(new
+                {
+                    dependencies = new[] {"b"},
                     key_name = "a",
-                    implementation = new {
-                        type = "jpad"
-                    }
+                    implementation = new
+                    {
+                        type = "jpad",
+                    },
                 }),
-                ["manifests/b.json"]= JsonConvert.SerializeObject(new {
+                ["manifests/b.json"] = JsonConvert.SerializeObject(new
+                {
                     key_name = "b",
-                    implementation = new {
+                    implementation = new
+                    {
                         type = "alias",
-                        key = "a"
-                    }
-                })
+                        key = "a",
+                    },
+                }),
             };
 
-            await Assert.ThrowsAsync<CircularValidationException>(()=> validator.Validate("manifests/a.json", async x => files[x]));
+            await Assert.ThrowsAsync<CircularValidationException>(() =>
+                validator.Validate("manifests/a.json", async x => files[x]));
         }
 
         [Fact]
-        public async Task ShouldWorkWithMultipleDepTrees(){
+        public async Task ShouldWorkWithMultipleDepTrees()
+        {
             var validator = new CircularDependencyValidator();
-            var files = new Dictionary<string,string>
+            var files = new Dictionary<string, string>
             {
-                ["manifests/a.json"]= JsonConvert.SerializeObject(new {
-                    dependencies = new[]{"b", "c"},
+                ["manifests/a.json"] = JsonConvert.SerializeObject(new
+                {
+                    dependencies = new[] {"b", "c"},
                     key_name = "a",
-                    implementation = new {
-                        type = "jpad"
-                    }
+                    implementation = new
+                    {
+                        type = "jpad",
+                    },
                 }),
-                ["manifests/b.json"]= JsonConvert.SerializeObject(new {
+                ["manifests/b.json"] = JsonConvert.SerializeObject(new
+                {
                     key_name = "b",
-                    dependencies = new[]{"d"},
-                    implementation = new {
-                        type = "jpad"
-                    }
+                    dependencies = new[] {"d"},
+                    implementation = new
+                    {
+                        type = "jpad",
+                    },
                 }),
-                ["manifests/c.json"]= JsonConvert.SerializeObject(new {
+                ["manifests/c.json"] = JsonConvert.SerializeObject(new
+                {
                     key_name = "c",
-                    dependencies = new[]{"d"},
-                    implementation = new {
-                        type = "jpad"
-                    }
+                    dependencies = new[] {"d"},
+                    implementation = new
+                    {
+                        type = "jpad",
+                    },
                 }),
-                ["manifests/d.json"]= JsonConvert.SerializeObject(new {
+                ["manifests/d.json"] = JsonConvert.SerializeObject(new
+                {
                     key_name = "d",
-                    implementation = new {
-                        type = "jpad"
-                    }
-                })
+                    implementation = new
+                    {
+                        type = "jpad",
+                    },
+                }),
             };
 
             await validator.Validate("manifests/a.json", async x => files[x]);
