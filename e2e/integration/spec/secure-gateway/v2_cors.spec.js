@@ -1,6 +1,7 @@
 const { expect } = require('chai');
 const { init: initClients } = require('../../utils/clients');
 const fetch = require('node-fetch');
+const nconf = require('nconf');
 
 describe('Secure Gateway v2 CORS tests', () => {
   const key = 'integration_tests/some_key';
@@ -11,7 +12,7 @@ describe('Secure Gateway v2 CORS tests', () => {
   });
 
   it('Test GET request', async () => {
-    const res = await fetch(`http://localhost:8080/api/v2/values/${key}`, {
+    const res = await fetch(`${nconf.get('GATEWAY_URL')}/api/v2/values/${key}`, {
       method: 'OPTIONS',
       headers: {
         Origin: 'tweek.test.origin',
