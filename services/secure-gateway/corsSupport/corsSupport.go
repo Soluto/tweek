@@ -30,11 +30,24 @@ func New(config *appConfig.Cors) negroni.Handler {
 		allowCredentials = true
 	}
 
+	var allowedOrigins, allowedMethods, allowedHeaders []string
+	if len(config.AllowedOrigins) > 0 {
+		allowedOrigins = strings.Split(config.AllowedOrigins, ",")
+	}
+
+	if len(config.AllowedMethods) > 0 {
+		allowedMethods = strings.Split(config.AllowedMethods, ",")
+	}
+
+	if len(config.AllowedHeaders) > 0 {
+		allowedHeaders = strings.Split(config.AllowedHeaders, ",")
+	}
+
 	opts := cors.Options{
 		MaxAge:           maxAge,
-		AllowedOrigins:   strings.Split(config.AllowedOrigins, ","),
-		AllowedHeaders:   strings.Split(config.AllowedHeaders, ","),
-		AllowedMethods:   strings.Split(config.AllowedMethods, ","),
+		AllowedOrigins:   allowedOrigins,
+		AllowedHeaders:   allowedHeaders,
+		AllowedMethods:   allowedMethods,
 		AllowCredentials: allowCredentials,
 	}
 	corsSupportMiddleware := cors.New(opts)
