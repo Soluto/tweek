@@ -72,14 +72,24 @@ namespace Tweek.Publishing.Service
             return minioConfig.GetValue("UseSSL", false) ? mc.WithSSL() : mc;
         }
 
-        private void StartIntervalPublisher(IApplicationLifetime lifetime, NatsPublisher publisher,
+        private void RunIntervalPublisher(IApplicationLifetime lifetime, NatsPublisher publisher,
             RepoSynchronizer repoSynchronizer, StorageSynchronizer storageSynchronizer)
         {
             var intervalPublisher = new IntervalPublisher(publisher);
             var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () =>
             {
                 var commitId = await repoSynchronizer.CurrentHead();
-                await storageSynchronizer.Sync(commitId);
+                while (true){
+                    try 
+                    {
+                        await storageSynchronizer.Sync(commitId);
+                        break;
+                    }
+                    catch (StaleRevisionException ex)
+                    {
+                        await repoSynchronizer.SyncToLatest();
+                    }
+                }
                 _logger.LogInformation($"SyncVersion:{commitId}");
                 return commitId;
             });
@@ -108,7 +118,7 @@ namespace Tweek.Publishing.Service
             };
 
             var minioConfig = _configuration.GetSection("Minio");
-
+            
             var storageClient = Policy.Handle<Exception>()
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
                 .ExecuteAsync(() =>
@@ -119,8 +129,8 @@ namespace Tweek.Publishing.Service
             var natsClient = new NatsPublisher(_configuration.GetSection("Nats").GetValue<string>("Endpoint"), "version");
             var repoSynchronizer = new RepoSynchronizer(git);
             var storageSynchronizer = new StorageSynchronizer(storageClient, executor, new Packer());
-
-            storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result).Wait();
+            
+            RunIntervalPublisher(lifetime, natsClient, repoSynchronizer, storageSynchronizer);
 
             app.UseRouter(router =>
             {

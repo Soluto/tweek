@@ -45,8 +45,16 @@ namespace Tweek.Publishing.Service.Sync
             {
             }
 
-            if (versionsBlob?.Latest == commitId) return;
-
+            if (!String.IsNullOrWhiteSpace(versionsBlob?.Latest)){
+                if (versionsBlob.Latest == commitId) return;
+                try{
+                    await _shellExecutor.ExecTask("git", $"merge-base --is-ancestor {commitId} {versionsBlob.Latest}");
+                }
+                catch (Exception ex){
+                    throw new StaleRevisionException(commitId, versionsBlob.Latest);
+                }
+            };
+            
             var newVersionBlob = new VersionsBlob
             {
                 Latest = commitId,
