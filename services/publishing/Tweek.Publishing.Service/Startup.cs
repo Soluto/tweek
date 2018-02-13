@@ -80,8 +80,8 @@ namespace Tweek.Publishing.Service
             {
                 var commitId = await repoSynchronizer.CurrentHead();
                 await Policy.Handle<StaleRevisionException>()
-                    .RetryAsync(10, async (_,c)=> await repoSynchronizer.SyncToLatest()
-                    ).ExecuteAsync(async ()=> await storageSynchronizer.Sync(commitId));
+                    .RetryAsync(10, async (_,c)=> await repoSynchronizer.SyncToLatest())
+                    .ExecuteAsync(async ()=> await storageSynchronizer.Sync(commitId));
 
                 _logger.LogInformation($"SyncVersion:{commitId}");
                 return commitId;
