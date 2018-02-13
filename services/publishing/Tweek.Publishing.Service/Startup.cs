@@ -2,6 +2,7 @@
 using System.Reactive.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -129,7 +130,16 @@ namespace Tweek.Publishing.Service
             app.UseRouter(router =>
             {
                 router.MapGet("validate", ValidationHandler.Create(executor, gitValidationFlow));
-                router.MapGet("sync", SyncHandler.Create(storageSynchronizer, repoSynchronizer, natsClient, _logger));
+                router.MapGet("sync", SyncHandler.Create(storageSynchronizer, repoSynchronizer, natsClient,
+                Policy.Handle<Exception>()
+                        .WaitAndRetryAsync(3,
+                            retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                            async (ex, timespan) =>
+                            {
+                                _logger.LogWarning("Sync:Retrying");
+                                await Task.Delay(timespan);
+                            }),
+                 _logger));
 
                 router.MapGet("log", async (req, res, routedata) => _logger.LogInformation(req.Query["message"]));
                 router.MapGet("health", async (req, res, routedata) => await res.WriteAsync(JsonConvert.SerializeObject(new { })));

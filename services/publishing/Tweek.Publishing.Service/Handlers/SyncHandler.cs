@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Polly;
+using Polly.Retry;
 using Tweek.Publishing.Service.Messaging;
 using Tweek.Publishing.Service.Sync;
 
@@ -15,22 +16,16 @@ namespace Tweek.Publishing.Service.Handlers
         public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(StorageSynchronizer storageSynchronizer,
             RepoSynchronizer repoSynchronizer,
             NatsPublisher natsPublisher,
+            RetryPolicy retryPolicy,
             ILogger logger = null)
         {
             logger = logger ?? NullLogger.Instance;
+            retryPolicy = retryPolicy ?? Policy.Handle<Exception>().RetryAsync();
             return async (req, res, routedata) =>
             {
                 try
                 {
-                    await Policy.Handle<Exception>()
-                        .WaitAndRetryAsync(3,
-                            retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                            async (ex, timespan) =>
-                            {
-                                logger.LogWarning(ex.ToString());
-                                logger.LogWarning("Sync:CommitFailed:Retrying");
-                                await Task.Delay(timespan);
-                            })
+                    await retryPolicy
                         .ExecuteAsync(async () =>
                         {
                             var commitId = await repoSynchronizer.SyncToLatest();
