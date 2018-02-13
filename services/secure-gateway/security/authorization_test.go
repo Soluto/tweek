@@ -32,7 +32,7 @@ func TestAuthorizationMiddleware(t *testing.T) {
 	enforcer := casbin.NewSyncedEnforcer("./testdata/policy.conf", "./testdata/model2.csv")
 	server := AuthorizationMiddleware(enforcer, &emptyAuditor{})
 	type args struct {
-		request *http.Request
+		method, path, user string
 	}
 	tests := []struct {
 		name string
@@ -41,37 +41,37 @@ func TestAuthorizationMiddleware(t *testing.T) {
 	}{
 		{
 			name: "Allow by user",
-			args: args{request: createRequest("GET", "/values/key1", "alice@security.test")},
+			args: args{method: "GET", path: "/values/key1", user: "alice@security.test"},
 			want: http.StatusOK,
 		},
 		{
 			name: "Deny by user",
-			args: args{request: createRequest("GET", "/values/key1", "bob@security.test")},
+			args: args{method: "GET", path: "/values/key1", user: "bob@security.test"},
 			want: http.StatusUnauthorized,
 		},
 		{
 			name: "Allow reading context for self",
-			args: args{request: createRequest("GET", "/context/user/alice2@security.test", "alice2@security.test")},
+			args: args{method: "GET", path: "/context/user/alice2@security.test", user: "alice2@security.test"},
 			want: http.StatusOK,
 		},
 		{
 			name: "Allow writing context for self",
-			args: args{request: createRequest("POST", "/context/user/bob@security.test", "bob@security.test")},
+			args: args{method: "POST", path: "/context/user/bob@security.test", user: "bob@security.test"},
 			want: http.StatusOK,
 		},
 		{
 			name: "Deny writing context for someone else",
-			args: args{request: createRequest("POST", "/context/user/bob@security.test", "alice@security.test")},
+			args: args{method: "POST", path: "/context/user/bob@security.test", user: "alice@security.test"},
 			want: http.StatusUnauthorized,
 		},
 		{
 			name: "Deny deleting context property for someone else",
-			args: args{request: createRequest("DELETE", "/context/user/bob@security.test/prop", "alice@security.test")},
+			args: args{method: "DELETE", path: "/context/user/bob@security.test/prop", user: "alice@security.test"},
 			want: http.StatusUnauthorized,
 		},
 		{
 			name: "Deny deleting context property for self",
-			args: args{request: createRequest("DELETE", "/context/user/bob@security.test/prop", "bob@security.test")},
+			args: args{method: "DELETE", path: "/context/user/bob@security.test/prop", user: "bob@security.test"},
 			want: http.StatusOK,
 		},
 	}
@@ -80,8 +80,9 @@ func TestAuthorizationMiddleware(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			recorder := httptest.NewRecorder()
 			next := noopHandler
+			request := createRequest(tt.args.method, tt.args.path, tt.args.user)
 
-			server.ServeHTTP(recorder, tt.args.request, next)
+			server.ServeHTTP(recorder, request, next)
 			if code := recorder.Result().StatusCode; code != tt.want {
 				t.Errorf("AuthorizationMiddleware() = %v, want %v", code, tt.want)
 			}

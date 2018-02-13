@@ -22,14 +22,7 @@ func AuthorizationMiddleware(enforcer *casbin.SyncedEnforcer, auditor audit.Audi
 			auditor.EnforcerError(sub, obj, act, err)
 			http.Error(rw, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		} else {
-			objects := []string{}
-			if len(ctxs) != 0 {
-				for _, ctx := range ctxs {
-					objects = append(objects, fmt.Sprintf("%v:%v", ctx, obj))
-				}
-			} else {
-				objects = append(objects, obj)
-			}
+			objects := formatObjects(obj, ctxs)
 
 			for _, object := range objects {
 				res, err := enforcer.EnforceSafe(sub, object, act)
@@ -53,7 +46,7 @@ func AuthorizationMiddleware(enforcer *casbin.SyncedEnforcer, auditor audit.Audi
 	})
 }
 
-func formatObject(fromRequest string, other []string) []string {
+func formatObjects(fromRequest string, other []string) []string {
 	objects := []string{}
 	if len(other) != 0 {
 		for _, ctx := range other {
