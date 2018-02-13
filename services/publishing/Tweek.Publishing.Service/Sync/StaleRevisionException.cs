@@ -2,9 +2,9 @@ using System;
 
 namespace Tweek.Publishing.Service.Sync
 {
-    public class OutOfSyncRevisionException : System.Exception
+    public class StaleRevisionException : System.Exception
     {
-        public OldRevisionException(string currentCommit, string incomingCommit)
+        public StaleRevisionException(string currentCommit, string incomingCommit)
         {
             Data["CurrentCommit"] = currentCommit;
             Data["IncomingCommit"] = incomingCommit;

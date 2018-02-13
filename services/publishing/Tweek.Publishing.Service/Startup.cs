@@ -129,9 +129,10 @@ namespace Tweek.Publishing.Service
             var natsClient = new NatsPublisher(_configuration.GetSection("Nats").GetValue<string>("Endpoint"), "version");
             var repoSynchronizer = new RepoSynchronizer(git);
             var storageSynchronizer = new StorageSynchronizer(storageClient, executor, new Packer());
-            
-            RunIntervalPublisher(lifetime, natsClient, repoSynchronizer, storageSynchronizer);
 
+            storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result).Wait();
+            RunIntervalPublisher(lifetime, natsClient, repoSynchronizer, storageSynchronizer);
+            
             app.UseRouter(router =>
             {
                 router.MapGet("validate", ValidationHandler.Create(executor, gitValidationFlow));
