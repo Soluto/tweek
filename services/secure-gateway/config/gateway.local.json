@@ -18,12 +18,12 @@
             "casbinModel": "./model.conf"
         },
         "cors": {
-            "Enabled": "true",
-            "MaxAge": "60",
-            "AllowedOrigins": "*",
-            "AllowedMethods": "GET,POST,PUT,PATCH,DELETE",
-            "AllowedHeaders": "*",
-            "AllowCredentials": "true"
+            "Enabled": true,
+            "MaxAge": 60,
+            "AllowedOrigins": null,
+            "AllowedMethods": [ "GET", "POST", "PUT", "PATCH", "DELETE" ],
+            "AllowedHeaders": null,
+            "AllowCredentials": true
         }
     },
     "server": {
