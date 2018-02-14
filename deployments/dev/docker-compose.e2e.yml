@@ -48,7 +48,6 @@ services:
       - publishing
       - editor
       - gateway
-      - casbin-minio-loader
     environment:
       - EDITOR_URL=http://editor:3000/
       - TWEEK_API_URL=http://api/
@@ -63,12 +62,10 @@ services:
     container_name: e2e-integration
     depends_on:
       - gateway
-      - casbin-minio-loader
       - publishing
     environment:
       - API_URL=http://api
       - AUTHORING_URL=http://authoring:3000
-      - MANAGEMENT_URL=http://management:3000
       - GATEWAY_URL=http://gateway
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
     secrets:
@@ -76,7 +73,6 @@ services:
     links:
       - gateway:api
       - gateway:authoring
-      - gateway:management
 
   smoke-tests:
     build:
@@ -85,7 +81,6 @@ services:
     container_name: smoke-tests
     depends_on: 
       - gateway
-      - casbin-minio-loader
       - publishing
     environment: 
       - TWEEK_API_URL=http://api/

@@ -52,7 +52,6 @@ services:
       - ../deployments/dev/zap/session/smoke:/root/.ZAP/session/smoke
     links:
       - gateway:api
-      - gateway:management
       - gateway:authoring
 
   zap-e2e:
@@ -64,7 +63,6 @@ services:
       - ../deployments/dev/zap/session/e2e:/root/.ZAP/session/e2e
     links:
       - gateway:api
-      - gateway:management
       - gateway:authoring
 
   smoke-tests:
@@ -72,7 +70,7 @@ services:
       context: ../
       dockerfile: TweekApiSmokeTestDockerfile
     depends_on: 
-      - api
+      - gateway
       - publishing
       - zap-smoke
     environment: 
@@ -84,8 +82,7 @@ services:
     depends_on: 
       - selenium
       - editor
-      - authoring
-      - api
+      - gateway
       - publishing
       - zap-e2e
     environment:
@@ -99,8 +96,7 @@ services:
   e2e-integration:
     build: ../e2e/integration
     depends_on: 
-      - authoring
-      - api
+      - gateway
       - publishing
     environment:
       - API_URL=http://api

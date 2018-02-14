@@ -83,7 +83,6 @@ services:
       - nats
       - api
       - authoring
-      - management
     logging:
       driver: "json-file"
     volumes_from:
@@ -123,21 +122,7 @@ services:
       - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
       
   nats:
-    image: nats:1.0.4-linux
-  
-  casbin-minio-loader:
-    image: $CASBIN_MINIO_LOADER_IMAGE
-    depends_on:
-      - minio
-      - nats
-    environment:
-      - MINIO_ENDPOINT=minio:9000
-      - MINIO_BUCKET=tweek-casbin-policies
-      - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
-      - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-      - MINIO_SECURE=false
-      - NATS_ENDPOINT=nats://nats:4222
-      - NATS_SUBJECT=casbin-policy-subject
+    image: nats:1.0.4-linux 
 
   selenium:
     image: selenium/standalone-chrome:3.8.1

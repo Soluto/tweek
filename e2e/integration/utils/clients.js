@@ -29,10 +29,10 @@ nconf
   .argv()
   .env()
   .defaults({
-    AUTHORING_URL: 'http://authoring.localtest.me:4009',
-    API_URL: 'http://api.localtest.me:4009',
-    MANAGEMENT_URL: 'http://management.localtest.me:4009',
-    GATEWAY_URL: 'http://localhost:4009',
+    AUTHORING_URL: 'http://authoring.localtest.me:4099',
+    API_URL: 'http://api.localtest.me:4099',
+    PUBLISHING_URL: 'http://publishing.localtest.me:4099',
+    GATEWAY_URL: 'http://localhost:4099',
     GIT_PRIVATE_KEY_PATH: '../../deployments/dev/ssh/tweekgit',
   });
 
@@ -47,7 +47,7 @@ module.exports.init = async function() {
   return {
     api: createClient(nconf.get('API_URL'), setBearerToken),
     authoring: createClient(nconf.get('AUTHORING_URL'), setBearerToken),
-    management: createClient(nconf.get('MANAGEMENT_URL'), setBearerToken),
+    publishing: createClient(nconf.get('PUBLISHING_URL'), setBearerToken),
     gateway: createClient(nconf.get('GATEWAY_URL'), setBearerToken),
   };
 };
