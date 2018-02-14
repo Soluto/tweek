@@ -37,9 +37,8 @@ namespace Tweek.Publishing.Service.Handlers
                 catch (Exception ex)
                 {
                     logger.LogError("failed to sync repo with upstram", ex);
-                    logger.LogError(ex.ToString());
                     res.StatusCode = 500;
-                    await res.WriteAsync(ex.ToString());
+                    await res.WriteAsync(ex.Message);
                 }
             };
         }
