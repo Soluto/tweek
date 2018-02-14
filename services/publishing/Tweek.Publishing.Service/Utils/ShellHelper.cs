@@ -51,7 +51,6 @@ namespace Tweek.Publishing.Service.Utils
 
         public static (Process, Task) ExecProcess(string command, string args, Action<ProcessStartInfo> paramsInit = null)
         {
-            //var escapedArgs = args.Replace("\"", "\\\"");
             var startInfo = new ProcessStartInfo
             {
                 FileName = command,
