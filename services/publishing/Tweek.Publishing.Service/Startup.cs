@@ -100,8 +100,10 @@ namespace Tweek.Publishing.Service
             }
             RunSSHDeamon(lifetime, _logger);
 
-            var executor = ShellHelper.Executor.WithWorkingDirectory(_configuration.GetValue<string>("REPO_LOCATION"));
+            var executor = ShellHelper.Executor.WithWorkingDirectory(_configuration.GetValue<string>("REPO_LOCATION"))
+                                               .ForwardEnvVariable("GIT_SSH");
             var git = executor.CreateCommandExecutor("git");
+            
             var gitValidationFlow = new GitValidationFlow
             {
                 Validators =

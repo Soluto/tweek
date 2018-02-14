@@ -124,5 +124,13 @@ namespace Tweek.Publishing.Service.Utils
                     p.WorkingDirectory = directory;
                     init?.Invoke(p);
                 });
+        
+        public static ShellExecutor ForwardEnvVariable(this ShellExecutor shellExecutor, string variableName) =>
+            (cmd, args, init) =>
+                shellExecutor(cmd, args, (p) =>
+                {
+                    p.EnvironmentVariables[variableName] = Environment.GetEnvironmentVariable(variableName);
+                    init?.Invoke(p);
+                });
     }
 }
