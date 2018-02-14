@@ -8,6 +8,7 @@ import { Authorize } from '../security/authorize';
 import { PERMISSIONS } from '../security/permissions/consts';
 import KeysRepository from '../repositories/keys-repository';
 import { JsonValue } from '../utils/jsonValue';
+import { addOid } from '../utils/response-utils';
 
 const schemaPrefix = '@tweek/schema/';
 const indexSchema = R.pipe(
@@ -39,7 +40,8 @@ export class SchemaController {
   @Path('/schemas/:identityType')
   async deleteIdentity( @PathParam('identityType') identityType: string, @QueryParam('author.name') name: string, @QueryParam('author.email') email: string): Promise<string> {
     const keyPath = schemaPrefix + identityType;
-    await this.keysRepository.deleteKeys([keyPath], { name, email });
+    const oid = await this.keysRepository.deleteKeys([keyPath], { name, email });
+    addOid(this.context.response, oid);
     return 'OK';
   }
 
@@ -65,7 +67,8 @@ export class SchemaController {
       enabled: true,
       dependencies: [],
     };
-    await this.keysRepository.updateKey(key, manifest, null, { name, email });
+    const oid = await this.keysRepository.updateKey(key, manifest, null, { name, email });
+    addOid(this.context.response, oid);
     return 'OK';
   }
 
@@ -79,7 +82,8 @@ export class SchemaController {
       ['implementation', 'value'],
       jsonpatch.applyPatch(R.clone(manifest.implementation.value), <any>patch).newDocument,
     )(manifest);
-    await this.keysRepository.updateKey(key, newManifest, null, { name, email });
+    const oid = await this.keysRepository.updateKey(key, newManifest, null, { name, email });
+    addOid(this.context.response, oid);
     return 'OK';
   }
 }
