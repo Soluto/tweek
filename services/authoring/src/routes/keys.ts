@@ -6,6 +6,7 @@ import searchIndex from '../search-index';
 import { Authorize } from '../security/authorize';
 import { PERMISSIONS } from '../security/permissions/consts';
 import KeysRepository from '../repositories/keys-repository';
+import { addOid } from '../utils/response-utils';
 
 export type KeyUpdateModel = {
   implementation: any,
@@ -50,7 +51,8 @@ export class KeysController {
     const { implementation } = newKeyModel;
     let { manifest } = newKeyModel;
     manifest = Object.assign({ key_path: keyPath }, manifest);
-    await this.keysRepository.updateKey(keyPath, manifest, implementation, { name, email });
+    const oid = await this.keysRepository.updateKey(keyPath, manifest, implementation, { name, email });
+    addOid(this.context.response, oid);
 
     return 'OK';
   }
@@ -63,9 +65,8 @@ export class KeysController {
     if (additionalKeys && Array.isArray(additionalKeys)) {
       keysToDelete = keysToDelete.concat(additionalKeys);
     }
-
-    console.log('keys to delete', keysToDelete);
-    await this.keysRepository.deleteKeys(keysToDelete, { name, email });
+    const oid = await this.keysRepository.deleteKeys(keysToDelete, { name, email });
+    addOid(this.context.response, oid);
 
     return 'OK';
   }

@@ -1,6 +1,6 @@
 {
   "name": "tweek-authoring",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "main": "src/server.js",
   "repository": "Soluto/tweek",
   "author": "Soluto",
@@ -16,7 +16,7 @@
     "start:release": "node ./dist/server.js",
     "start:debug": "node --inspect=5858 ./dist/server.js",
     "start:dev": "cross-env GIT_SSH=../ssh-helper nodemon --watch src --ext ts --exec yarn -- start --GIT_USER git --GIT_URL ssh://git@localhost:4001/tweek/repo --GIT_PUBLIC_KEY_PATH ../../deployments/dev/ssh/tweekgit.pub --GIT_PRIVATE_KEY_PATH ../../deployments/dev/ssh/tweekgit",
-    "start:full-env": "yarn docker-compose up -d api management git && yarn start:dev",
+    "start:full-env": "yarn docker-compose up -d api publishing git && yarn start:dev",
     "logs": "yarn docker-compose logs",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml",
     "teardown": "yarn docker-compose down --remove-orphans",

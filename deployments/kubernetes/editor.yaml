@@ -21,14 +21,14 @@ spec:
         - name: AUTHORING_API_HOSTNAME
           value: http://authoring:3000
         - name: GIT_PRIVATE_KEY_PATH
-          value: /run/secrets/tweek-git/tweek_ssh_private_key
+          value: /run/secrets/tweek-secrets/tweek_ssh_private_key
         volumeMounts:
-        - name: git-keys
-          mountPath: /run/secrets/tweek-git
+        - name: tweek-secrets
+          mountPath: /run/secrets/tweek-secrets
       volumes:
-        - name: git-keys
+        - name: tweek-secrets
           secret:
-            secretName: tweek-git
+            secretName: tweek-secrets
 ---
 kind: Service
 apiVersion: v1

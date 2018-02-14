@@ -1,5 +1,8 @@
 const nconf = require('nconf');
 const supertest = require('supertest');
+const fs = require('fs');
+const { promisify } = require('util');
+const readFile = promisify(fs.readFile);
 const getToken = require('./getToken');
 
 const interceptAfter = (target, fn, methodNames) => {
@@ -34,7 +37,12 @@ nconf
   });
 
 module.exports.init = async function() {
-  const token = await getToken(nconf.get('GIT_PRIVATE_KEY_PATH'));
+  const inlineKey = nconf.get('GIT_PRIVATE_KEY_INLINE');
+  const key =
+    (inlineKey && new Buffer(inlineKey, 'base64')) ||
+    (await readFile(nconf.get('GIT_PRIVATE_KEY_PATH')));
+
+  const token = await getToken(key);
   const setBearerToken = t => t.set('Authorization', `Bearer ${token}`);
   return {
     api: createClient(nconf.get('API_URL'), setBearerToken),

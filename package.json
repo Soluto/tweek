@@ -16,7 +16,7 @@
     "test:ui": "cd e2e/ui && yarn test",
     "test:integration": "cd e2e/integration && yarn test",
     "test": "yarn test:integration && yarn test:ui",
-    "test:full-env": "yarn build:clean && yarn start:e2e editor management && yarn test",
+    "test:full-env": "yarn build:clean && yarn start:e2e editor publishing && yarn test",
     "test:docker": "yarn build:clean && yarn start:test smoke-tests smoke-tests && yarn start:test e2e-integration e2e-integration && yarn start:test e2e-ui e2e-ui",
     "test:docker:zap": "yarn build:clean && yarn start:test:zap smoke-tests smoke-tests && yarn start:test:zap e2e-integration e2e-integration && yarn start:test:zap e2e-ui e2e-ui && yarn start:test:zap glue glue",
     "logs": "yarn docker-compose logs",
