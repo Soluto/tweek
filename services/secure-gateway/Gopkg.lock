@@ -27,9 +27,9 @@
 
 [[projects]]
   name = "github.com/casbin/casbin"
-  packages = [".","config","file-adapter","model","persist","rbac","util"]
-  revision = "9566491e9fe1898000031bba3e2b354dd633904a"
-  version = "v1.3.0"
+  packages = [".","config","file-adapter","model","persist","rbac","rbac/default-role-manager","util"]
+  revision = "3a17f2855cc12ad36fd614c590b9d18f46dfd65d"
+  version = "v1.4.0"
 
 [[projects]]
   branch = "master"
@@ -100,8 +100,8 @@
 [[projects]]
   name = "github.com/minio/minio-go"
   packages = [".","pkg/credentials","pkg/encrypt","pkg/policy","pkg/s3signer","pkg/s3utils","pkg/set"]
-  revision = "14f1d472d115bac5ca4804094aa87484a72ced61"
-  version = "4.0.6"
+  revision = "706c81d3ee2a18cdd8239faf544de8a066e7e261"
+  version = "4.0.7"
 
 [[projects]]
   branch = "master"
@@ -128,6 +128,12 @@
   version = "v0.8.0"
 
 [[projects]]
+  name = "github.com/rs/cors"
+  packages = ["."]
+  revision = "7af7a1e09ba336d2ea14b1ce73bf693c6837dbf6"
+  version = "v1.2"
+
+[[projects]]
   name = "github.com/sirupsen/logrus"
   packages = ["."]
   revision = "d682213848ed68c0a260ca37d6dd5ace8423f5ba"
@@ -149,13 +155,13 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "1875d0a70c90e57f11972aefd42276df65e895b9"
+  revision = "5119cf507ed5294cc409c092980c7497ee5d6fd2"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
   packages = ["idna","lex/httplex"]
-  revision = "2fb46b16b8dda405028c50f7c7f0f9dd1fa6bfb1"
+  revision = "f5dfe339be1d06f81b22525fe34671ee7d2c8904"
 
 [[projects]]
   branch = "master"
@@ -167,7 +173,7 @@
   branch = "master"
   name = "golang.org/x/text"
   packages = ["collate","collate/build","internal/colltab","internal/gen","internal/tag","internal/triegen","internal/ucd","language","secure/bidirule","transform","unicode/bidi","unicode/cldr","unicode/norm","unicode/rangetable"]
-  revision = "e19ae1496984b1c655b8044a65c0300a3c878dd3"
+  revision = "4e4a3210bb54bb31f6ab2cdca2edcc0b50c420c1"
 
 [[projects]]
   branch = "v2"
@@ -178,6 +184,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "96cb1105734f4b68797b8315e1945b9e9c54cf04a1f058adff19c40082d500a8"
+  inputs-digest = "6d1662a690a9ac5a577a3a4c18de813940cbf6c556e13e32c1faaabb8f642382"
   solver-name = "gps-cdcl"
   solver-version = 1

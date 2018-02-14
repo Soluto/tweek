@@ -13,15 +13,16 @@ import (
 
 	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
 	"github.com/Soluto/tweek/services/secure-gateway/audit"
+	"github.com/Soluto/tweek/services/secure-gateway/corsSupport"
+	"github.com/Soluto/tweek/services/secure-gateway/modelManagement"
 
 	"github.com/Soluto/tweek/services/secure-gateway/passThrough"
 
-	"github.com/Soluto/tweek/services/secure-gateway/modelManagement"
 	"github.com/Soluto/tweek/services/secure-gateway/monitoring"
 	"github.com/Soluto/tweek/services/secure-gateway/security"
 	"github.com/Soluto/tweek/services/secure-gateway/transformation"
-	"github.com/casbin/casbin"
 
+	"github.com/casbin/casbin"
 	"github.com/urfave/negroni"
 )
 
@@ -63,9 +64,16 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	} else {
 		auditor.EnforcerDisabled()
 	}
+
 	authenticationMiddleware := security.AuthenticationMiddleware(&config.Security, auditor)
 	authorizationMiddleware := security.AuthorizationMiddleware(enforcer, auditor)
-	middleware := negroni.New(negroni.NewRecovery(), authenticationMiddleware, authorizationMiddleware)
+
+	middleware := negroni.New(negroni.NewRecovery())
+	if corsSupportMiddleware := corsSupport.New(&config.Security.Cors); corsSupportMiddleware != nil {
+		middleware.Use(corsSupportMiddleware)
+	}
+	middleware.Use(authenticationMiddleware)
+	middleware.Use(authorizationMiddleware)
 
 	router := NewRouter(config)
 	router.MonitoringRouter().HandleFunc("isAlive", monitoring.IsAlive)

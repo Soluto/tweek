@@ -26,6 +26,8 @@ func Mount(upstreams *appConfig.Upstreams, token security.JWTToken, middleware *
 	authoringForwarder := proxy.New(authoring, token)
 
 	// Mounting handlers
+	router.Methods("OPTIONS").Handler(middleware)
+
 	router.Methods("GET").PathPrefix("/values").Handler(middleware.With(transformValuesGetRequest(api), apiForwarder))
 
 	router.Methods("GET").PathPrefix("/tags").Handler(middleware.With(transformTagsGetRequest(authoring), authoringForwarder))
