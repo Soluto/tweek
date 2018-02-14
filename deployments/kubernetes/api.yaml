@@ -23,20 +23,33 @@ spec:
         - containerPort: 80
         env:
         - name: PUBLIC_KEY_PATH
-          value: /run/secrets/tweek-git/tweek_pfx_public_key
+          value: /run/secrets/tweek-secrets/tweek_pfx_public_key
         - name: ASPNETCORE_ENVIRONMENT
           value: Development
         - name: Redis__ConnectionString
           value: redis
-        - name: Rules__Management__Url
-          value: http://management:3000
+        - name: UseAddon__Rules
+          value: MinioRules
+        - name: RulesetVersionProvider
+          value: NatsVersionProvider
+        - name: Rules__Nats__Endpoint
+          value: nats://nats:4222
+        - name: Rules__Minio__Endpoint
+          value: minio:9000
+        - name: Rules__Minio__AccessKey
+          value: AKIAIOSFODNN7EXAMPLE
+        - name: Rules__Minio__SecretKey
+          valueFrom:
+            secretKeyRef:
+              name: tweek-secrets
+              key: minio_secret_key
         volumeMounts:
-        - name: git-keys
-          mountPath: /run/secrets/tweek-git
+        - name: tweek-secrets
+          mountPath: /run/secrets/tweek-secrets
       volumes:
-        - name: git-keys
+        - name: tweek-secrets
           secret:
-            secretName: tweek-git
+            secretName: tweek-secrets
             defaultMode: 0600
 ---
 kind: Service

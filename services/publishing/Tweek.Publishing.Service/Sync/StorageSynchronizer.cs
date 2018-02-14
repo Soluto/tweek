@@ -34,7 +34,7 @@ namespace Tweek.Publishing.Service.Sync
             };
         }
 
-        public async Task Sync(string commitId)
+        public async Task Sync(string commitId, bool checkForStaleRevision=true)
         {
             VersionsBlob versionsBlob = null;
             try
@@ -47,11 +47,14 @@ namespace Tweek.Publishing.Service.Sync
 
             if (!String.IsNullOrWhiteSpace(versionsBlob?.Latest)){
                 if (versionsBlob.Latest == commitId) return;
-                try{
-                    await _shellExecutor.ExecTask("git", $"merge-base --is-ancestor {versionsBlob.Latest} {commitId}");
-                }
-                catch (Exception ex){
-                    throw new StaleRevisionException(commitId, versionsBlob.Latest);
+                if (checkForStaleRevision)
+                {
+                    try{
+                        await _shellExecutor.ExecTask("git", $"merge-base --is-ancestor {versionsBlob.Latest} {commitId}");
+                    }
+                    catch (Exception ex){
+                        throw new StaleRevisionException(commitId, versionsBlob.Latest);
+                    }
                 }
             };
             

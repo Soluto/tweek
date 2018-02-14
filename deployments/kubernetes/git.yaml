@@ -17,14 +17,14 @@ spec:
         - containerPort: 22
         env:
         - name: PUBLIC_KEY_PATH
-          value: /run/secrets/tweek-git/tweek_ssh_public_key
+          value: /run/secrets/tweek-secrets/tweek_ssh_public_key
         volumeMounts:
-        - name: git-keys
-          mountPath: /run/secrets/tweek-git
+        - name: tweek-secrets
+          mountPath: /run/secrets/tweek-secrets
       volumes:
-        - name: git-keys
+        - name: tweek-secrets
           secret:
-            secretName: tweek-git
+            secretName: tweek-secrets
 ---
 kind: Service
 apiVersion: v1

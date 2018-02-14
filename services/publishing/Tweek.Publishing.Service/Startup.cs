@@ -124,7 +124,7 @@ namespace Tweek.Publishing.Service
             var repoSynchronizer = new RepoSynchronizer(git);
             var storageSynchronizer = new StorageSynchronizer(storageClient, executor, new Packer());
 
-            storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result).Wait();
+            storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result, checkForStaleRevision: false).Wait();
             RunIntervalPublisher(lifetime, natsClient, repoSynchronizer, storageSynchronizer);
             
             app.UseRouter(router =>
