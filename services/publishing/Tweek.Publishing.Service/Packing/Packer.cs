@@ -38,8 +38,7 @@ namespace Tweek.Publishing.Service.Packing
                     {
                         case "file":
                             keyDef.Payload =
-                                readFn(
-                                    $"implementations/{manifest.Implementation.Format}/{manifest.KeyPath}.{manifest.Implementation.Extension ?? manifest.Implementation.Format}");
+                                readFn(manifest.GetFileImplementionPath());
                             break;
                         case "const":
                             keyDef.Payload = JsonConvert.SerializeObject(manifest.Implementation.Value);

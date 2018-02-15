@@ -106,7 +106,7 @@ namespace Tweek.Publishing.Service.Utils
                                 }
                             };
                     }));
-            }).Publish().RefCount();
+            });
         }
 
         public static async Task<string> ExecTask(this ShellExecutor shellExecutor, string command, string args, Action<ProcessStartInfo> paramsInit = null)
