@@ -99,6 +99,8 @@ namespace Tweek.Publishing.Service.Utils
                             {
                                 Data =
                                 {
+                                    ["Command"] = command,
+                                    ["Args"] = args,
                                     ["ExitCode"] = process.ExitCode,
                                     ["StdErr"] = sbErr.ToString()
                                 }
