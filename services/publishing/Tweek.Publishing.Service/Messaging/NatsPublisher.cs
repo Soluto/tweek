@@ -7,7 +7,6 @@ namespace Tweek.Publishing.Service.Messaging
 {
     public class NatsPublisher
     {
-        private readonly string _subject;
         private readonly Options _connectionOptions;
         private Lazy<IConnection> _connection;
 
@@ -46,7 +45,7 @@ namespace Tweek.Publishing.Service.Messaging
 
         public async Task Publish(string subject, string message)
         {
-            await Task.Run(() => Connection.Publish(_subject, Encoding.UTF8.GetBytes(message)));
+            await Task.Run(() => Connection.Publish(subject, Encoding.UTF8.GetBytes(message)));
         }
     }
 }
