@@ -19,7 +19,6 @@ func Mount(upstreams *appConfig.Upstreams, token security.JWTToken, middleware *
 	// URLs
 	api := parseUpstreamOrPanic(upstreams.API)
 	authoring := parseUpstreamOrPanic(upstreams.Authoring)
-	// management := parseUpstreamOrPanic(upstreams.Management)
 
 	// Proxy forwarders
 	apiForwarder := proxy.New(api, token)

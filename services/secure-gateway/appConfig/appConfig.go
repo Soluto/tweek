@@ -11,7 +11,7 @@ import (
 type Upstreams struct {
 	API        string
 	Authoring  string
-	Management string
+	Publishing string
 }
 
 // V1Hosts is the list of v1 hosts

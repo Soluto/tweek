@@ -18,6 +18,7 @@ using Tweek.Publishing.Service.Messaging;
 using Tweek.Publishing.Service.Packing;
 using Tweek.Publishing.Service.Storage;
 using Tweek.Publishing.Service.Sync;
+using Tweek.Publishing.Service.Sync.Transferrers;
 using Tweek.Publishing.Service.Utils;
 using Tweek.Publishing.Service.Validation;
 
@@ -73,6 +74,19 @@ namespace Tweek.Publishing.Service
             return minioConfig.GetValue("UseSSL", false) ? mc.WithSSL() : mc;
         }
 
+        private StorageSynchronizer CreateStorageSynchronizer(IObjectStorage storageClient, ShellHelper.ShellExecutor executor)
+        {
+            var storageSynchronizer = new StorageSynchronizer(storageClient, executor)
+            {
+                Transferrers =
+                {
+                    new RulesTransferrer(storageClient, executor, new Packer()),
+                    new PolicyTransferrer(storageClient, executor),
+                }
+            };
+            return storageSynchronizer;
+        }
+
         private void RunIntervalPublisher(IApplicationLifetime lifetime, NatsPublisher publisher,
             RepoSynchronizer repoSynchronizer, StorageSynchronizer storageSynchronizer)
         {
@@ -89,6 +103,8 @@ namespace Tweek.Publishing.Service
             });
             lifetime.ApplicationStopping.Register(job.Dispose);
         }
+
+        private const string DEFAULT_MINIO_BUCKET_NAME = @"tweek-ruleset";
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
             IApplicationLifetime lifetime)
@@ -117,12 +133,12 @@ namespace Tweek.Publishing.Service
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
                 .ExecuteAsync(() =>
                     MinioBucketStorage.GetOrCreateBucket(CreateMinioClient(minioConfig),
-                        minioConfig.GetValue("Bucket", "tweek-ruleset")))
+                        minioConfig.GetValue("Bucket", DEFAULT_MINIO_BUCKET_NAME)))
                 .Result;
 
             var natsClient = new NatsPublisher(_configuration.GetSection("Nats").GetValue<string>("Endpoint"), "version");
             var repoSynchronizer = new RepoSynchronizer(git);
-            var storageSynchronizer = new StorageSynchronizer(storageClient, executor, new Packer());
+            var storageSynchronizer = CreateStorageSynchronizer(storageClient, executor);
 
             storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result, checkForStaleRevision: false).Wait();
             RunIntervalPublisher(lifetime, natsClient, repoSynchronizer, storageSynchronizer);

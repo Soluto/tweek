@@ -15,20 +15,20 @@ import (
 func NewHealthHandler(upstreams *appConfig.Upstreams, token security.JWTToken, middleware *negroni.Negroni) http.Handler {
 	api := parseUpstreamOrPanic(upstreams.API)
 	authoring := parseUpstreamOrPanic(upstreams.Authoring)
-	management := parseUpstreamOrPanic(upstreams.Management)
+	publishing := parseUpstreamOrPanic(upstreams.Publishing)
 
 	// Proxy forwarders
 	apiForwarder := middleware.With(proxy.New(api, token))
 	authoringForwarder := middleware.With(proxy.New(authoring, token))
-	managementForwarder := middleware.With(proxy.New(management, token))
+	publishingForwarder := middleware.With(proxy.New(publishing, token))
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		switch r.Host {
 		case "api":
 			apiForwarder.ServeHTTP(rw, r)
 		case "authoring":
 			authoringForwarder.ServeHTTP(rw, r)
-		case "management":
-			managementForwarder.ServeHTTP(rw, r)
+		case "publishing":
+			publishingForwarder.ServeHTTP(rw, r)
 		default:
 			rw.WriteHeader(http.StatusOK)
 			io.WriteString(rw, "OK")

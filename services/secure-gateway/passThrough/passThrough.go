@@ -15,12 +15,12 @@ func Mount(upstreams *appConfig.Upstreams, v1Hosts *appConfig.V1Hosts, middlewar
 	// URLs
 	api := parseUpstreamOrPanic(upstreams.API)
 	authoring := parseUpstreamOrPanic(upstreams.Authoring)
-	management := parseUpstreamOrPanic(upstreams.Management)
+	publishing := parseUpstreamOrPanic(upstreams.Publishing)
 
 	// Proxy forwarders
 	apiForwarder := proxy.New(api, nil)
 	authoringForwarder := proxy.New(authoring, nil)
-	managementForwarder := proxy.New(management, nil)
+	publishingForwarder := proxy.New(publishing, nil)
 
 	// Mounting handlers
 	for _, host := range v1Hosts.API {
@@ -30,7 +30,7 @@ func Mount(upstreams *appConfig.Upstreams, v1Hosts *appConfig.V1Hosts, middlewar
 		router.Host(host).Handler(middleware.With(authoringForwarder))
 	}
 	for _, host := range v1Hosts.Management {
-		router.Host(host).Handler(middleware.With(managementForwarder))
+		router.Host(host).Handler(middleware.With(publishingForwarder))
 	}
 }
 
