@@ -127,9 +127,10 @@ func ExtractFromRequest(r *http.Request) (obj string, sub string, act string, ct
 	if !ok {
 		err = errors.New("Authentication failed")
 	} else {
-		uri, err1 := url.Parse(r.RequestURI)
+		var uri *url.URL
+		uri, err = url.Parse(r.RequestURI)
 		if err != nil {
-			return "", "", "", []string{}, err1
+			return "", "", "", []string{}, err
 		}
 
 		sub = user.Email()
