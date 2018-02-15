@@ -76,7 +76,7 @@ namespace Tweek.Publishing.Service
         private void RunIntervalPublisher(IApplicationLifetime lifetime, NatsPublisher publisher,
             RepoSynchronizer repoSynchronizer, StorageSynchronizer storageSynchronizer)
         {
-            var intervalPublisher = new IntervalPublisher(publisher);
+            var intervalPublisher = new IntervalPublisher(publisher, "version");
             var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () =>
             {
                 var commitId = await repoSynchronizer.CurrentHead();
@@ -103,7 +103,7 @@ namespace Tweek.Publishing.Service
             var executor = ShellHelper.Executor.WithWorkingDirectory(_configuration.GetValue<string>("REPO_LOCATION"))
                                                .ForwardEnvVariable("GIT_SSH");
             var git = executor.CreateCommandExecutor("git");
-            
+
             var gitValidationFlow = new GitValidationFlow
             {
                 Validators =
@@ -122,7 +122,7 @@ namespace Tweek.Publishing.Service
                         minioConfig.GetValue("Bucket", "tweek-ruleset")))
                 .Result;
 
-            var natsClient = new NatsPublisher(_configuration.GetSection("Nats").GetValue<string>("Endpoint"), "version");
+            var natsClient = new NatsPublisher(_configuration.GetSection("Nats").GetValue<string>("Endpoint"));
             var repoSynchronizer = new RepoSynchronizer(git);
             var storageSynchronizer = new StorageSynchronizer(storageClient, executor, new Packer());
 
@@ -142,6 +142,7 @@ namespace Tweek.Publishing.Service
                                 await Task.Delay(timespan);
                             }),
                  _logger));
+                router.MapGet("push-failed", async (req, res, routedata) => await natsClient.Publish("push-failed", req.Query["commit"] ));
 
                 router.MapGet("log", async (req, res, routedata) => _logger.LogInformation(req.Query["message"]));
                 router.MapGet("health", async (req, res, routedata) => await res.WriteAsync(JsonConvert.SerializeObject(new { })));

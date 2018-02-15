@@ -33,9 +33,8 @@ namespace Tweek.Publishing.Service.Messaging
             }
         }
 
-        public NatsPublisher(string natsEndpoint, string subject)
+        public NatsPublisher(string natsEndpoint)
         {
-            _subject = subject;
             _connectionOptions = ConnectionFactory.GetDefaultOptions();
             _connectionOptions.AllowReconnect = true;
             _connectionOptions.Servers = new[]
@@ -45,7 +44,7 @@ namespace Tweek.Publishing.Service.Messaging
             _connectionOptions.Name = "Tweek Publishing";
         }
 
-        public async Task Publish(string message)
+        public async Task Publish(string subject, string message)
         {
             await Task.Run(() => Connection.Publish(_subject, Encoding.UTF8.GetBytes(message)));
         }
