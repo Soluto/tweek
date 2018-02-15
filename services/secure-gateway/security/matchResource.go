@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// MatchResources is used to register the matchResourcesFunc with casbin
+// MatchResources is used as a wrapper for matchResourcesFunc for casbin registration
 func MatchResources(requestResource interface{}, policyResource interface{}) (interface{}, error) {
 	rr, ok := requestResource.(map[string]string)
 	if !ok {
@@ -21,15 +21,14 @@ func MatchResources(requestResource interface{}, policyResource interface{}) (in
 	return matchResourcesFunc(rr, pr)
 }
 
-// matchResourcesFunc parses the policy resource and verifies that it matches what was given in the request
+// matchResourcesFunc parses the policy resource (pr) and verifies that it matches what was given in the request rr
 func matchResourcesFunc(rr map[string]string, pr string) (bool, error) {
 	parsedPolicyResource, err := parseResource(pr)
 	if err != nil {
 		return false, err
 	}
 
-	reflect.DeepEqual(parsedPolicyResource, rr)
-	return false, nil
+	return reflect.DeepEqual(parsedPolicyResource, rr), nil
 }
 
 func parseResource(resource string) (result map[string]string, err error) {
@@ -46,6 +45,9 @@ func parseResource(resource string) (result map[string]string, err error) {
 	case 1: // when we got input which has no `:`
 		result[""] = parts[0]
 	case 2: // when we got input which has single `:`
+		if parts[1] == "" {
+			return nil, makeError(resource)
+		}
 		ctxs = strings.Split(parts[0], "+")
 		result[""] = parts[1]
 	default: // when we got input which has multiple `:`
