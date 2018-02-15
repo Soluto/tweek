@@ -14,8 +14,22 @@
             "minioSecure": false,
             "minioPolicyObjectName": "policy.csv",
             "natsEndpoint": "nats://localhost:4222",
-            "natsSubject": "casbin-policy-subject",            
+            "natsSubject": "casbin-policy-subject",
             "casbinModel": "./model.conf"
+        },
+        "cors": {
+            "Enabled": true,
+            "MaxAge": 60,
+            "AllowedOrigins": null,
+            "AllowedMethods": [ "GET", "POST", "PUT", "PATCH", "DELETE" ],
+            "AllowedHeaders": null,
+            "AllowCredentials": true
         }
+    },
+    "server": {
+        "ports": [
+            3000,
+            8080
+        ]
     }
 }
