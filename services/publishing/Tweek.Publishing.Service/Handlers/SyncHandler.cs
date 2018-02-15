@@ -15,7 +15,7 @@ namespace Tweek.Publishing.Service.Handlers
     {
         public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(StorageSynchronizer storageSynchronizer,
             RepoSynchronizer repoSynchronizer,
-            NatsPublisher natsPublisher,
+            Func<string,Task> notifier,
             RetryPolicy retryPolicy,
             ILogger logger = null)
         {
@@ -30,9 +30,11 @@ namespace Tweek.Publishing.Service.Handlers
                         {
                             var commitId = await repoSynchronizer.SyncToLatest();
                             await storageSynchronizer.Sync(commitId);
-                            await natsPublisher.Publish(commitId);
+                            await notifier(commitId);
                             logger.LogInformation($"Sync:Commit:{commitId}");
                         });
+                    //hooks
+                                        
                 }
                 catch (Exception ex)
                 {

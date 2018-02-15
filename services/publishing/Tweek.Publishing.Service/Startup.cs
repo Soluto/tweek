@@ -73,10 +73,10 @@ namespace Tweek.Publishing.Service
             return minioConfig.GetValue("UseSSL", false) ? mc.WithSSL() : mc;
         }
 
-        private void RunIntervalPublisher(IApplicationLifetime lifetime, NatsPublisher publisher,
+        private void RunIntervalPublisher(IApplicationLifetime lifetime, Func<string,Task> publisher,
             RepoSynchronizer repoSynchronizer, StorageSynchronizer storageSynchronizer)
         {
-            var intervalPublisher = new IntervalPublisher(publisher, "version");
+            var intervalPublisher = new IntervalPublisher(publisher);
             var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () =>
             {
                 var commitId = await repoSynchronizer.CurrentHead();
@@ -123,16 +123,17 @@ namespace Tweek.Publishing.Service
                 .Result;
 
             var natsClient = new NatsPublisher(_configuration.GetSection("Nats").GetValue<string>("Endpoint"));
+            var versionPublisher = natsClient.GetSubjectPublisher("versions");
             var repoSynchronizer = new RepoSynchronizer(git);
             var storageSynchronizer = new StorageSynchronizer(storageClient, executor, new Packer());
 
             storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result, checkForStaleRevision: false).Wait();
-            RunIntervalPublisher(lifetime, natsClient, repoSynchronizer, storageSynchronizer);
+            RunIntervalPublisher(lifetime, versionPublisher, repoSynchronizer, storageSynchronizer);
             
             app.UseRouter(router =>
             {
                 router.MapGet("validate", ValidationHandler.Create(executor, gitValidationFlow));
-                router.MapGet("sync", SyncHandler.Create(storageSynchronizer, repoSynchronizer, natsClient,
+                router.MapGet("sync", SyncHandler.Create(storageSynchronizer, repoSynchronizer, versionPublisher,
                 Policy.Handle<Exception>()
                         .WaitAndRetryAsync(3,
                             retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
