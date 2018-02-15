@@ -137,11 +137,11 @@ func ExtractFromRequest(r *http.Request) (obj string, sub string, act string, ct
 		obj = uri.Path
 		act, err = extractActionFromRequest(r)
 		if err != nil {
-			return
+			return "", "", "", []string{}, err
 		}
 		ctxs, err = extractContextsFromRequest(r)
 		if err != nil && ctxs != nil && len(ctxs) != 0 {
-			return
+			return "", "", "", []string{}, err
 		}
 
 		err = nil
