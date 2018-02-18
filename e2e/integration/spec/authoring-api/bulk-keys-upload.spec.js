@@ -43,6 +43,7 @@ describe('authoring api - /PUT /bulk-keys-upload', () => {
       .put('/api/bulk-keys-upload?author.name=test&author.email=test@soluto.com')
       .attach('bulk', './spec/authoring-api/test-data/bulk1.zip');
     response.status.should.eql(204);
+    expect(response.header).to.have.property('x-oid');
     await pollUntil(
       () => clients.api.get('/api/v1/keys/test_key1?user.Country=country&user.ClientVersion=1.0.0'),
       res => expect(JSON.parse(res.body)).to.eql(true),
