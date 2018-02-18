@@ -81,9 +81,33 @@ var TestCases = []struct {
 		name:      "Error",
 		given:     "user=test:",
 		parsed:    map[string]string(nil),
-		resource:  map[string]string{"device": "test2", "": "/values/path/to/some/key"},
+		resource:  map[string]string{"user": "test", "": "/values/path/to/some/key"},
 		wantMatch: false,
 		wantError: true,
+	},
+	{
+		name:      "Regexp for any resource with given context",
+		given:     "user=test:.*",
+		parsed:    map[string]string{"user": "test", "": ".*"},
+		resource:  map[string]string{"user": "test", "": "/values/path/to/some/key"},
+		wantMatch: true,
+		wantError: false,
+	},
+	{
+		name:      "Regexp for context with the given key",
+		given:     "user=.*:/values/path/to/some/key",
+		parsed:    map[string]string{"user": ".*", "": "/values/path/to/some/key"},
+		resource:  map[string]string{"user": "test", "": "/values/path/to/some/key"},
+		wantMatch: true,
+		wantError: false,
+	},
+	{
+		name:      "Regexp for context and a key",
+		given:     "user=test|test2:/values/.*",
+		parsed:    map[string]string{"user": "test|test2", "": "/values/.*"},
+		resource:  map[string]string{"user": "test", "": "/values/path/to/some/key"},
+		wantMatch: true,
+		wantError: false,
 	},
 }
 
@@ -111,7 +135,6 @@ func Test_parseResource(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Logf("Testing: %#v", tt)
 			got, gotErr := parseResource(tt.args.resource)
 			if (gotErr != nil) != tt.wantErr {
 				t.Errorf("parseResource() error = %v, wantErr %v", gotErr, tt.wantErr)

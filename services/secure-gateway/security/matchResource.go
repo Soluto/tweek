@@ -2,7 +2,7 @@ package security
 
 import (
 	"fmt"
-	"reflect"
+	"regexp"
 	"strings"
 )
 
@@ -21,17 +21,38 @@ func MatchResources(requestResource interface{}, policyResource interface{}) (in
 	return matchResourcesFunc(rr, pr)
 }
 
-// matchResourcesFunc parses the policy resource (pr) and verifies that it matches what was given in the request rr
+// matchResourcesFunc parses the policy resource (pr) and verifies that it matches what was given in the request (rr)
 func matchResourcesFunc(rr map[string]string, pr string) (bool, error) {
 	parsedPolicyResource, err := parseResource(pr)
 	if err != nil {
 		return false, err
 	}
 
-	return reflect.DeepEqual(parsedPolicyResource, rr), nil
+	if len(parsedPolicyResource) != len(rr) {
+		return false, nil
+	}
+
+	// TODO: optimize this using cache for parsed policies and regexp
+	for key, value := range parsedPolicyResource {
+		r, err := regexp.Compile(value)
+		if err != nil {
+			return false, err
+		}
+
+		resourcePart, ok := rr[key]
+		if !ok { // some keys are missing from the request - no match
+			return false, nil
+		}
+		if !r.MatchString(resourcePart) {
+			return false, nil
+		}
+	}
+
+	return true, nil
 }
 
 func parseResource(resource string) (result map[string]string, err error) {
+	// split by `:`
 	parts := strings.Split(resource, ":")
 	result = make(map[string]string)
 

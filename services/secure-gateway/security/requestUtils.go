@@ -125,27 +125,28 @@ func extractContextsFromRequest(r *http.Request) (ctxs []string, err error) {
 func ExtractFromRequest(r *http.Request) (obj string, sub string, act string, ctxs []string, err error) {
 	user, ok := r.Context().Value(UserInfoKey).(UserInfo)
 	if !ok {
-		err = errors.New("Authentication failed")
-	} else {
-		var uri *url.URL
-		uri, err = url.Parse(r.RequestURI)
-		if err != nil {
-			return "", "", "", []string{}, err
-		}
-
-		sub = user.Email()
-		obj = uri.Path
-		act, err = extractActionFromRequest(r)
-		if err != nil {
-			return "", "", "", []string{}, err
-		}
-		ctxs, err = extractContextsFromRequest(r)
-		if err != nil && ctxs != nil && len(ctxs) != 0 {
-			return "", "", "", []string{}, err
-		}
-
-		err = nil
+		err = errors.New("Missing user information in request")
+		return
 	}
 
+	var uri *url.URL
+	uri, err = url.Parse(r.RequestURI)
+	if err != nil {
+		return "", "", "", []string{}, err
+	}
+
+	sub = user.Email()
+	obj = uri.Path
+	act, err = extractActionFromRequest(r)
+	if err != nil {
+		return "", "", "", []string{}, err
+	}
+
+	ctxs, err = extractContextsFromRequest(r)
+	if err != nil && ctxs != nil && len(ctxs) != 0 {
+		return "", "", "", []string{}, err
+	}
+
+	err = nil
 	return obj, sub, act, ctxs, err
 }
