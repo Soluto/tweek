@@ -9,7 +9,7 @@ fi
 
 echo checking publishing version
 TWEEK_PUBLISHING_VERSION=$(cat ./services/publishing/Tweek.Publishing.Service/Tweek.Publishing.Service.csproj | grep -E "VersionPrefix" | grep -Eo [0-9.]*)
-TWEEK_PUBLISHING_TAG="tweek-api-$TWEEK_PUBLISHING_VERSION"
+TWEEK_PUBLISHING_TAG="tweek-publishing-$TWEEK_PUBLISHING_VERSION"
 export TWEEK_DOCKER_TAG_PUBLISHING="latest"
 if [[ "$(git tag | grep -c $TWEEK_PUBLISHING_TAG)" == "0" ]]; then
     echo tagging $TWEEK_PUBLISHING_TAG
