@@ -123,7 +123,7 @@ namespace Tweek.Publishing.Service
                 .Result;
 
             var natsClient = new NatsPublisher(_configuration.GetSection("Nats").GetValue<string>("Endpoint"));
-            var versionPublisher = natsClient.GetSubjectPublisher("versions");
+            var versionPublisher = natsClient.GetSubjectPublisher("version");
             var repoSynchronizer = new RepoSynchronizer(git);
             var storageSynchronizer = new StorageSynchronizer(storageClient, executor, new Packer());
 
