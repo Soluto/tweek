@@ -1,7 +1,17 @@
 {
     "version": "0.2.0",
     "configurations": [
-
+        {
+            "name": "Publishing - verifier",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "publishing-verifier-build",
+            "program": "${workspaceRoot}/services/publishing/Tweek.Publishing.Verifier/bin/Debug/netcoreapp2.0/Tweek.Publishing.Verifier.dll",
+            "args": [],
+            "cwd": "${workspaceRoot}",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        },
         {
             "name": "Tweek-api",
             "type": "coreclr",
@@ -41,22 +51,28 @@
             }
         },
         {
-            "name": "Attach Management",
-            "type": "node",
-            "request": "attach",
-            "port": 5858,
-            "address": "localhost",
-            "restart": false,
-            "sourceMaps": false,
-            "protocol": "inspector",
-            "localRoot": "${workspaceRoot}/services/management/",
-            "remoteRoot": "/opt/app/"
-        },
-        {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach",
             "processId": "${command:pickProcess}"
+        },
+        {
+            "name": "Attach publishing",
+            "type": "coreclr",
+            "request": "attach",
+            "processName": "dotnet",
+            "sourceFileMap": {
+                "/src/Tweek.Publishing.Service": "${workspaceRoot}/services/publishing/Tweek.Publishing.Service"
+            },
+            "pipeTransport": {
+                "pipeProgram": "docker",            
+                "pipeCwd": "${workspaceRoot}",
+                "pipeArgs": [
+                    "exec -i dev_publishing_1"
+                ],
+                "quoteArgs": false,
+                "debuggerPath": "/vsdbg/vsdbg"
+            }
         }
     ]
 }

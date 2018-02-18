@@ -2,6 +2,7 @@ const chai = require('chai');
 const expect = chai.expect;
 chai.should();
 const { init: initClients } = require('../../utils/clients');
+const { pollUntil } = require('../../utils/utils');
 
 const createManifestForJPadKey = key_path => ({
   key_path: `${key_path}`,
@@ -43,6 +44,11 @@ describe('authoring api', () => {
           }),
         })
         .expect(200);
+
+      await pollUntil(
+        () => clients.api.get('/api/v1/keys/@tests/integration/new_valid_key'),
+        res => expect(res.body).to.eql('test'),
+      );
     });
 
     it('should reject an invalid key with 400 error', async () => {

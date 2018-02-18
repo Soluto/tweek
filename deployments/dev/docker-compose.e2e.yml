@@ -1,9 +1,9 @@
-version: '3.1'
+version: '3.4'
 
 services:
-  management:
+  publishing:
     environment: 
-      - GIT_URL=ssh://git@git/tweek/tests
+      - GIT_UPSTREAM_URI=ssh://git@git/tweek/tests
 
   editor:
     environment: 
@@ -14,10 +14,11 @@ services:
 
   authoring:
     environment: 
-      - GIT_URL=ssh://git@git/tweek/tests
       - CONTINUOUS_UPDATER_INTERVAL=500
 
   api:
+    depends_on:
+      - publishing
     environment:
       - CorsPolicies__Keys__Origins=http://editor:3000,http://testorigin
       - CorsPolicies__Keys__Methods=GET
@@ -41,7 +42,7 @@ services:
       - selenium
       - api
       - authoring
-      - management
+      - publishing
       - editor
     environment:
       - EDITOR_URL=http://editor:3000/
@@ -58,7 +59,7 @@ services:
     depends_on: 
       - api
       - authoring
-      - management
+      - publishing
     environment:
       - API_URL=http://api
       - AUTHORING_URL=http://authoring:3000
@@ -73,7 +74,7 @@ services:
     container_name: smoke-tests
     depends_on: 
       - api
-      - management
+      - publishing
     environment: 
       - TWEEK_API_URL=http://api/
 

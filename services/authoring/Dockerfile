@@ -20,9 +20,9 @@ RUN yarn test && yarn build
 FROM base as release
 
 COPY --from=build /opt/app/dist/ ./dist/
+COPY --from=build /opt/app/ssh-helper.sh ./ssh-helper.sh
 COPY --from=deps /opt/app/node_modules ./node_modules
 COPY --from=deps /opt/app/package.json ./package.json
-COPY ./ssh-helper.sh /opt/app/ssh-helper.sh
 
 EXPOSE 3000
 ENV PORT=3000

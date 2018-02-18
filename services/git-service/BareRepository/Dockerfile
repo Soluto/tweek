@@ -24,8 +24,6 @@ RUN cd ./source && \
     git init && git add . && git commit -m "init"  && git push ../tests master && \
     cd - && rm -rf tests-source
 
-COPY pre-receive.sh /tweek/repo/hooks/pre-receive
-COPY pre-receive.sh /tweek/tests/hooks/pre-receive
 VOLUME /tweek/repo
 
 EXPOSE 22

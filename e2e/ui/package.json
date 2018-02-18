@@ -12,7 +12,7 @@
     "build": "yarn docker-compose build",
     "build:clean": "concurrently --kill-others-on-fail \"yarn build\" \"yarn teardown\"",
     "test": "wdio wdio.conf.js",
-    "test:full-env": "yarn build:clean && yarn docker-compose up -d editor management && yarn test",
+    "test:full-env": "yarn build:clean && yarn docker-compose up -d editor publishing && yarn test",
     "test:docker": "yarn build:clean && yarn docker-compose up --exit-code-from e2e-ui e2e-ui",
     "logs": "yarn docker-compose logs",
     "teardown": "yarn docker-compose down --remove-orphans",
