@@ -16,10 +16,9 @@ COPY sshd_config /etc/ssh/sshd_config
 COPY init.sh init.sh
 COPY source ./source
 COPY tests-source ./tests-source
-COPY policy.csv ./
 
 RUN cd ./source && \
-    git init && git add . && git commit -m "init"  && git push ../repo master && \
+    git init && git add . && git status && git commit -m "init"  && git push ../repo master && \
     cd - && rm -rf source && \
     cd ./tests-source && \
     git init && git add . && git commit -m "init"  && git push ../tests master && \

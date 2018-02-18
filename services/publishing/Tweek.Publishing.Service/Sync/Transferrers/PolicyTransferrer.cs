@@ -22,7 +22,17 @@ namespace Tweek.Publishing.Service.Sync.Transferrers
 
         public async void Transfer(string commitId)
         {
-            var (p, exited) = _shellExecutor("git", $"show {commitId}");
+            var (s, zeu) = _shellExecutor("git", "ls-tree -r master --name-only");
+            await s.StandardOutput.BaseStream.CopyToAsync(Console.OpenStandardOutput());
+            await zeu;
+            if(s.ExitCode != 0)
+            {
+                throw new Exception("Git ls-tree failed");
+            }
+            
+
+
+            var (p, exited) = _shellExecutor("git", $"show {commitId}:policy.csv");
             using (var ms = new MemoryStream())
             {
                 await p.StandardOutput.BaseStream.CopyToAsync(ms);
@@ -41,12 +51,7 @@ namespace Tweek.Publishing.Service.Sync.Transferrers
                     };
                 }
 
-                // using (var zip = new ZipArchive(ms, ZipArchiveMode.Read, false))
-                // {
-                //     var files = zip.Entries.Select(x => x.FullName).ToList();
-                //     var bundle = _packer.Pack(files, GetZipReader(zip));
-                //     await _client.PutJSON(commitId, bundle);
-                // }
+                await _client.PutStream("policy.csv", ms, "application/csv");                
             }            
         }        
     }
