@@ -231,7 +231,7 @@ steps:
     candidate: ${{BuildingPublishing}}
     tags:
       - latest
-      - ${{TWEEK_DOCKER_TAG_Publishing}}
+      - ${{TWEEK_DOCKER_TAG_PUBLISHING}}
 
   PushAuthoringImageMaster:
     type: push
