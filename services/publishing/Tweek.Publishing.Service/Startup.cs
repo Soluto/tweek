@@ -77,7 +77,7 @@ namespace Tweek.Publishing.Service
             RepoSynchronizer repoSynchronizer, StorageSynchronizer storageSynchronizer)
         {
             var intervalPublisher = new IntervalPublisher(publisher);
-            var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () =>
+            var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(5), async () =>
             {
                 var commitId = await repoSynchronizer.CurrentHead();
                 await Policy.Handle<StaleRevisionException>()
