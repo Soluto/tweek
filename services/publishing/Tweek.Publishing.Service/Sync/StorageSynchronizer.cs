@@ -57,7 +57,7 @@ namespace Tweek.Publishing.Service.Sync
 
             foreach (var transferrer in Transferrers)
             {
-                transferrer.Transfer(commitId);
+                await transferrer.Transfer(commitId);
             }
 
             await _client.PutJSON("versions", newVersionBlob);

@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
+
 namespace Tweek.Publishing.Service.Sync.Transferrers
 {
     public interface ITransferrer
     {
-        void Transfer(string commitId);
+        Task Transfer(string commitId);
     }
 }

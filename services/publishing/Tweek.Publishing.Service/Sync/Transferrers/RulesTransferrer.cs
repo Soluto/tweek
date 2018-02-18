@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading.Tasks;
 using Tweek.Publishing.Service.Packing;
 using Tweek.Publishing.Service.Storage;
 using Tweek.Publishing.Service.Utils;
@@ -23,7 +24,7 @@ namespace Tweek.Publishing.Service.Sync.Transferrers
             _shellExecutor = shellExecutor;
         }
 
-        public async void Transfer(string commitId)
+        public async Task Transfer(string commitId)
         {
             var (p, exited) = _shellExecutor("git", $"archive --format=zip {commitId}");
             using (var ms = new MemoryStream())
