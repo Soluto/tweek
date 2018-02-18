@@ -104,7 +104,7 @@ namespace Tweek.Publishing.Service
             lifetime.ApplicationStopping.Register(job.Dispose);
         }
 
-        private const string DEFAULT_MINIO_BUCKET_NAME = @"tweek-ruleset";
+        private const string DEFAULT_MINIO_BUCKET_NAME = @"tweek-bucket";
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
             IApplicationLifetime lifetime)
