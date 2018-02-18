@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Minio.Exceptions;
 using Tweek.Publishing.Service.Packing;
 using Tweek.Publishing.Service.Storage;
-using Tweek.Publishing.Service.Sync.Transferrers;
+using Tweek.Publishing.Service.Sync.Uploaders;
 using Tweek.Publishing.Service.Utils;
 
 namespace Tweek.Publishing.Service.Sync
@@ -14,7 +14,7 @@ namespace Tweek.Publishing.Service.Sync
         private readonly IObjectStorage _client;
         private readonly ShellHelper.ShellExecutor _shellExecutor;
 
-        public List<ITransferrer> Transferrers = new List<ITransferrer>();
+        public List<IUploader> Uploaders = new List<IUploader>();
 
         public StorageSynchronizer(IObjectStorage storageClient, ShellHelper.ShellExecutor shellExecutor)
         {
@@ -55,9 +55,9 @@ namespace Tweek.Publishing.Service.Sync
                 Previous = versionsBlob?.Latest,
             };
 
-            foreach (var transferrer in Transferrers)
+            foreach (var uploader in Uploaders)
             {
-                await transferrer.Transfer(commitId);
+                await uploader.Upload(commitId);
             }
 
             await _client.PutJSON("versions", newVersionBlob);

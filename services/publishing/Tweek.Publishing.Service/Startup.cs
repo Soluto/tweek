@@ -18,7 +18,7 @@ using Tweek.Publishing.Service.Messaging;
 using Tweek.Publishing.Service.Packing;
 using Tweek.Publishing.Service.Storage;
 using Tweek.Publishing.Service.Sync;
-using Tweek.Publishing.Service.Sync.Transferrers;
+using Tweek.Publishing.Service.Sync.Uploaders;
 using Tweek.Publishing.Service.Utils;
 using Tweek.Publishing.Service.Validation;
 
@@ -78,10 +78,10 @@ namespace Tweek.Publishing.Service
         {
             var storageSynchronizer = new StorageSynchronizer(storageClient, executor)
             {
-                Transferrers =
+                Uploaders =
                 {
-                    new RulesTransferrer(storageClient, executor, new Packer()),
-                    new PolicyTransferrer(storageClient, executor),
+                    new RulesUploader(storageClient, executor, new Packer()),
+                    new PolicyUploader(storageClient, executor),
                 }
             };
             return storageSynchronizer;

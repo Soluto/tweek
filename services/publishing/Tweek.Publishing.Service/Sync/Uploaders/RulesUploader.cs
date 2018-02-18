@@ -9,22 +9,22 @@ using Tweek.Publishing.Service.Packing;
 using Tweek.Publishing.Service.Storage;
 using Tweek.Publishing.Service.Utils;
 
-namespace Tweek.Publishing.Service.Sync.Transferrers
+namespace Tweek.Publishing.Service.Sync.Uploaders
 {
-    public class RulesTransferrer : ITransferrer
+    public class RulesUploader : IUploader
     {
         private readonly IObjectStorage _client;
         private readonly Packer _packer;
         private readonly ShellHelper.ShellExecutor _shellExecutor;
 
-        public RulesTransferrer(IObjectStorage storageClient, ShellHelper.ShellExecutor shellExecutor, Packer packer)
+        public RulesUploader(IObjectStorage storageClient, ShellHelper.ShellExecutor shellExecutor, Packer packer)
         {
             _client = storageClient;
             _packer = packer;
             _shellExecutor = shellExecutor;
         }
 
-        public async Task Transfer(string commitId)
+        public async Task Upload(string commitId)
         {
             var (p, exited) = _shellExecutor("git", $"archive --format=zip {commitId}");
             using (var ms = new MemoryStream())

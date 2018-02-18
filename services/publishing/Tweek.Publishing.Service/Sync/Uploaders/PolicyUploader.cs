@@ -8,20 +8,20 @@ using System.Threading.Tasks;
 using Tweek.Publishing.Service.Storage;
 using Tweek.Publishing.Service.Utils;
 
-namespace Tweek.Publishing.Service.Sync.Transferrers
+namespace Tweek.Publishing.Service.Sync.Uploaders
 {
-    public class PolicyTransferrer : ITransferrer
+    public class PolicyUploader : IUploader
     {
         private readonly IObjectStorage _client;
         private readonly ShellHelper.ShellExecutor _shellExecutor;
 
-        public PolicyTransferrer(IObjectStorage storageClient, ShellHelper.ShellExecutor shellExecutor)
+        public PolicyUploader(IObjectStorage storageClient, ShellHelper.ShellExecutor shellExecutor)
         {
             _client = storageClient;
             _shellExecutor = shellExecutor;
         }
 
-        public async Task Transfer(string commitId)
+        public async Task Upload(string commitId)
         {
             var csv = await _shellExecutor.ExecTask("git", $"show {commitId}:policy.csv");
             await _client.PutString("policy.csv", csv, "application/csv");
