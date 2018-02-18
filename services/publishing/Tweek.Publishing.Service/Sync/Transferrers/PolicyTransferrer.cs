@@ -22,16 +22,6 @@ namespace Tweek.Publishing.Service.Sync.Transferrers
 
         public async void Transfer(string commitId)
         {
-            var (s, zeu) = _shellExecutor("git", "ls-tree -r master --name-only");
-            await s.StandardOutput.BaseStream.CopyToAsync(Console.OpenStandardOutput());
-            await zeu;
-            if(s.ExitCode != 0)
-            {
-                throw new Exception("Git ls-tree failed");
-            }
-            
-
-
             var (p, exited) = _shellExecutor("git", $"show {commitId}:policy.csv");
             using (var ms = new MemoryStream())
             {
