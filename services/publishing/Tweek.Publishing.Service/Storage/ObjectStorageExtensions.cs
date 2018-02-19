@@ -41,5 +41,17 @@ namespace Tweek.Publishing.Service.Storage
                 }
             }, "application/json", cancellationToken);
         }
+
+        public static async Task PutString(this IObjectStorage reader, string fileName, string value, string mimeType, CancellationToken cancellationToken = default)
+        {
+            await reader.Put(fileName, stream =>
+            {
+                using(var writer = new StreamWriter(stream))
+                {
+                    writer.Write(value);
+                }
+            }, mimeType, cancellationToken);
+        
+        }
     }
 }
