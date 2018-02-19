@@ -87,7 +87,7 @@ namespace Tweek.Publishing.Service
             return storageSynchronizer;
         }
 
-        private void RunIntervalPublisher(IApplicationLifetime lifetime, NatsPublisher publisher,
+        private void RunIntervalPublisher(IApplicationLifetime lifetime, Func<string,Task> publisher,
             RepoSynchronizer repoSynchronizer, StorageSynchronizer storageSynchronizer)
         {
             var intervalPublisher = new IntervalPublisher(publisher);
@@ -116,8 +116,10 @@ namespace Tweek.Publishing.Service
             }
             RunSSHDeamon(lifetime, _logger);
 
-            var executor = ShellHelper.Executor.WithWorkingDirectory(_configuration.GetValue<string>("REPO_LOCATION"));
+            var executor = ShellHelper.Executor.WithWorkingDirectory(_configuration.GetValue<string>("REPO_LOCATION"))
+                                               .ForwardEnvVariable("GIT_SSH");
             var git = executor.CreateCommandExecutor("git");
+
             var gitValidationFlow = new GitValidationFlow
             {
                 Validators =
@@ -136,17 +138,18 @@ namespace Tweek.Publishing.Service
                         minioConfig.GetValue("Bucket", DEFAULT_MINIO_BUCKET_NAME)))
                 .Result;
 
-            var natsClient = new NatsPublisher(_configuration.GetSection("Nats").GetValue<string>("Endpoint"), "version");
+            var natsClient = new NatsPublisher(_configuration.GetSection("Nats").GetValue<string>("Endpoint"));
+            var versionPublisher = natsClient.GetSubjectPublisher("version");
             var repoSynchronizer = new RepoSynchronizer(git);
-            var storageSynchronizer = CreateStorageSynchronizer(storageClient, executor);
+            var storageSynchronizer = new StorageSynchronizer(storageClient, executor);
 
             storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result, checkForStaleRevision: false).Wait();
-            RunIntervalPublisher(lifetime, natsClient, repoSynchronizer, storageSynchronizer);
+            RunIntervalPublisher(lifetime, versionPublisher, repoSynchronizer, storageSynchronizer);
             
             app.UseRouter(router =>
             {
                 router.MapGet("validate", ValidationHandler.Create(executor, gitValidationFlow));
-                router.MapGet("sync", SyncHandler.Create(storageSynchronizer, repoSynchronizer, natsClient,
+                router.MapGet("sync", SyncHandler.Create(storageSynchronizer, repoSynchronizer, versionPublisher,
                 Policy.Handle<Exception>()
                         .WaitAndRetryAsync(3,
                             retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
@@ -156,6 +159,7 @@ namespace Tweek.Publishing.Service
                                 await Task.Delay(timespan);
                             }),
                  _logger));
+                router.MapGet("push-failed", async (req, res, routedata) => await natsClient.Publish("push-failed", req.Query["commit"] ));
 
                 router.MapGet("log", async (req, res, routedata) => _logger.LogInformation(req.Query["message"]));
                 router.MapGet("health", async (req, res, routedata) => await res.WriteAsync(JsonConvert.SerializeObject(new { })));

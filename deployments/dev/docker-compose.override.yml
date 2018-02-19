@@ -30,7 +30,6 @@ services:
       - MINIO__Endpoint=minio:9000
       - MINIO__AccessKey=AKIAIOSFODNN7EXAMPLE
       - MINIO__SecretKeyPath=/run/secrets/minio_secret_key
-      - MINIO__Bucket=tweek-bucket
       - NATS__Endpoint=nats://nats:4222
     secrets:
       - tweek_ssh_public_key
@@ -115,8 +114,8 @@ services:
 
   gateway:
     ports:
-      - "80:80"
-      - "4099:3000"
+      - "${TWEEK_GATEWAY_PORT:-81}:80"
+      - "8080:8080"
     environment:
       - TWEEKGATEWAY_SECURITY_CORS_ENABLED=true
       - TWEEKGATEWAY_SECURITY_CORS_MAXAGE=60
@@ -135,7 +134,13 @@ services:
       - TWEEKGATEWAY_SECURITY_TWEEKSECRETKEYPATH=/run/secrets/tweek_ssh_private_key
       - CONFIG_FILE_PATH=/config/gateway.json
     secrets:
-      - tweek_ssh_private_key
+      - tweek_ssh_private_key      
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/null:/traefik.toml
+    logging:
+      driver: none
+    command: --web --docker --docker.domain=tweek.localtest.me --logLevel=DEBUG
 
 secrets:
   tweek_ssh_public_key:

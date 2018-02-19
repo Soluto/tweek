@@ -15,6 +15,9 @@ namespace Tweek.Publishing.Service.Packing
                     return manifest.Dependencies ?? new string[] { };
             }
         }
+
+        public static string GetFileImplementionPath(this Manifest manifest) => 
+            $"implementations/{manifest.Implementation.Format}/{manifest.KeyPath}.{manifest.Implementation.Extension ?? manifest.Implementation.Format}";
     }
 
     public class Manifest

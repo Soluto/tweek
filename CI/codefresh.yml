@@ -73,7 +73,6 @@ steps:
     type: build
     image_name: soluto/zap
     working_directory: ./deployments/dev/zap
-
   IntegrationTests:
     title: Tests - integration & smoke
     type: composition
@@ -125,6 +124,7 @@ steps:
         image: ${{BuildingIntegrationTests}}
         depends_on:
           - gateway
+          - publishing
         environment:
           - API_URL=http://api
           - AUTHORING_URL=http://authoring:3000
@@ -277,7 +277,7 @@ steps:
     candidate: ${{BuildingPublishing}}
     tags:
       - latest
-      - ${{TWEEK_DOCKER_TAG_Publishing}}
+      - ${{TWEEK_DOCKER_TAG_PUBLISHING}}
 
   PushAuthoringImageMaster:
     type: push

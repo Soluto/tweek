@@ -42,10 +42,12 @@
 
 All tweek microservices should be run on ports 4001-4004:
 4001 - Git server (ssh)
-4002 - Management (http)
 4003 - Api (http)
 4004 - Editor (http)
 4005 - Authoring (http)
+4009 - Publishing (git)
+4010 - Publishing (http)
+4099 - Gateway (http)
 
 ## Debugging Tweek api
 

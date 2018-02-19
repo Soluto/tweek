@@ -14,7 +14,7 @@ namespace Tweek.Publishing.Service.Sync
 
         public async Task<string> SyncToLatest()
         {
-            await _git("fetch origin '+refs/heads/*:refs/heads/*'");
+            await _git("fetch origin +refs/heads/*:refs/heads/*");
             return await CurrentHead();
         }
 

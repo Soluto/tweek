@@ -6,16 +6,16 @@ namespace Tweek.Publishing.Service.Messaging
 {
     public class IntervalPublisher
     {
-        private readonly NatsPublisher _publisher;
+        private readonly Func<string, Task> _publisher;
 
-        public IntervalPublisher(NatsPublisher publisher)
+        public IntervalPublisher(Func<string, Task> publisher)
         {
             _publisher = publisher;
         }
 
         public IDisposable PublishEvery(TimeSpan interval, Func<Task<string>> getMessage)
         {
-            return Observable.FromAsync(async () => await _publisher.Publish(await getMessage()))
+            return Observable.FromAsync(async () => await _publisher(await getMessage()))
                 .DelaySubscription(interval)
                 .Repeat()
                 .Retry()

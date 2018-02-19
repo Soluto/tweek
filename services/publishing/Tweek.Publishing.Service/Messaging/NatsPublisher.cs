@@ -5,9 +5,11 @@ using NATS.Client;
 
 namespace Tweek.Publishing.Service.Messaging
 {
+    public static class NatsPublisherExtensions{
+        public static Func<string,Task> GetSubjectPublisher(this NatsPublisher publisher, string subject) => (string message)=> publisher.Publish(subject,message);
+    }
     public class NatsPublisher
     {
-        private readonly string _subject;
         private readonly Options _connectionOptions;
         private Lazy<IConnection> _connection;
 
@@ -33,9 +35,8 @@ namespace Tweek.Publishing.Service.Messaging
             }
         }
 
-        public NatsPublisher(string natsEndpoint, string subject)
+        public NatsPublisher(string natsEndpoint)
         {
-            _subject = subject;
             _connectionOptions = ConnectionFactory.GetDefaultOptions();
             _connectionOptions.AllowReconnect = true;
             _connectionOptions.Servers = new[]
@@ -45,9 +46,9 @@ namespace Tweek.Publishing.Service.Messaging
             _connectionOptions.Name = "Tweek Publishing";
         }
 
-        public async Task Publish(string message)
+        public async Task Publish(string subject, string message)
         {
-            await Task.Run(() => Connection.Publish(_subject, Encoding.UTF8.GetBytes(message)));
+            await Task.Run(() => Connection.Publish(subject, Encoding.UTF8.GetBytes(message)));
         }
     }
 }

@@ -99,12 +99,14 @@ namespace Tweek.Publishing.Service.Utils
                             {
                                 Data =
                                 {
+                                    ["Command"] = command,
+                                    ["Args"] = args,
                                     ["ExitCode"] = process.ExitCode,
                                     ["StdErr"] = sbErr.ToString()
                                 }
                             };
                     }));
-            }).Publish().RefCount();
+            });
         }
 
         public static async Task<string> ExecTask(this ShellExecutor shellExecutor, string command, string args, Action<ProcessStartInfo> paramsInit = null)
@@ -122,6 +124,14 @@ namespace Tweek.Publishing.Service.Utils
                 shellExecutor(cmd, args, (p) =>
                 {
                     p.WorkingDirectory = directory;
+                    init?.Invoke(p);
+                });
+        
+        public static ShellExecutor ForwardEnvVariable(this ShellExecutor shellExecutor, string variableName) =>
+            (cmd, args, init) =>
+                shellExecutor(cmd, args, (p) =>
+                {
+                    p.EnvironmentVariables[variableName] = Environment.GetEnvironmentVariable(variableName);
                     init?.Invoke(p);
                 });
     }
