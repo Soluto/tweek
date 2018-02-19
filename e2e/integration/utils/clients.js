@@ -1,9 +1,8 @@
 const nconf = require('nconf');
 const supertest = require('supertest');
+const getToken = require('./getToken');
 const fs = require('fs');
 const { promisify } = require('util');
-const readFile = promisify(fs.readFile);
-const getToken = require('./getToken');
 
 const interceptAfter = (target, fn, methodNames) => {
   let proxy = methodNames.reduce(
@@ -34,14 +33,23 @@ nconf
     PUBLISHING_URL: 'http://publishing.localtest.me:4099',
     GATEWAY_URL: 'http://localhost:4099',
     GIT_PRIVATE_KEY_PATH: '../../deployments/dev/ssh/tweekgit',
+
+    MINIO_HOST: 'localhost',
+    MINIO_PORT: '4007',
+    MINIO_BUCKET: 'tweek-bucket',
   });
 
-module.exports.init = async function() {
-  const inlineKey = nconf.get('GIT_PRIVATE_KEY_INLINE');
-  const key =
-    (inlineKey && new Buffer(inlineKey, 'base64')) ||
-    (await readFile(nconf.get('GIT_PRIVATE_KEY_PATH')));
+const getEnv = varName => {
+  const inlineVar = nconf.get(`${varName}_INLINE`);
+  const varFilePath = nconf.get(`${varName}_PATH`);
+  const value =
+    (inlineVar && new Buffer(inlineVar, 'base64')) ||
+    (varFilePath && fs.existsSync(varFilePath) && fs.readFileSync(varFilePath, 'utf8'));
+  return value;
+};
 
+const init = async function() {
+  const key = getEnv('GIT_PRIVATE_KEY');
   const token = await getToken(key);
   const setBearerToken = t => t.set('Authorization', `Bearer ${token}`);
   return {
@@ -50,4 +58,9 @@ module.exports.init = async function() {
     publishing: createClient(nconf.get('PUBLISHING_URL'), setBearerToken),
     gateway: createClient(nconf.get('GATEWAY_URL'), setBearerToken),
   };
+};
+
+module.exports = {
+  init,
+  getEnv,
 };
