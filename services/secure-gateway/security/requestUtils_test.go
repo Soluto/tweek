@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"reflect"
-	"sort"
 	"testing"
 )
 
@@ -22,7 +21,7 @@ func TestExtractFromRequest(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		wantObj string
+		wantObj map[string]string
 		wantSub string
 		wantAct string
 		wantErr error
@@ -32,7 +31,7 @@ func TestExtractFromRequest(t *testing.T) {
 			args: args{
 				r: createTestRequest("POST", "https://gateway.tweek.com/keys", userInfo),
 			},
-			wantObj: "/keys",
+			wantObj: map[string]string{"": "/keys"},
 			wantSub: "a@b.com",
 			wantAct: "write",
 			wantErr: nil,
@@ -42,7 +41,7 @@ func TestExtractFromRequest(t *testing.T) {
 			args: args{
 				r: createTestRequest("GET", "https://gateway.tweek.com/values", userInfo),
 			},
-			wantObj: "/values",
+			wantObj: map[string]string{"": "/values"},
 			wantSub: "a@b.com",
 			wantAct: "read",
 			wantErr: nil,
@@ -52,7 +51,7 @@ func TestExtractFromRequest(t *testing.T) {
 			args: args{
 				r: createTestRequest("GET", "https://gateway.tweek.com/revision-history", userInfo),
 			},
-			wantObj: "/revision-history",
+			wantObj: map[string]string{"": "/revision-history"},
 			wantSub: "a@b.com",
 			wantAct: "history",
 			wantErr: nil,
@@ -62,7 +61,7 @@ func TestExtractFromRequest(t *testing.T) {
 			args: args{
 				r: createTestRequest("GET", "https://gateway.tweek.com/search-index", userInfo),
 			},
-			wantObj: "/search-index",
+			wantObj: map[string]string{"": "/search-index"},
 			wantSub: "a@b.com",
 			wantAct: "get search index",
 			wantErr: nil,
@@ -70,8 +69,8 @@ func TestExtractFromRequest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotObj, gotSub, gotAct, _, gotErr := ExtractFromRequest(tt.args.r)
-			if gotObj != tt.wantObj {
+			gotSub, gotAct, gotObj, gotErr := ExtractFromRequest(tt.args.r)
+			if !reflect.DeepEqual(gotObj, tt.wantObj) {
 				t.Errorf("ExtractFromRequest() gotObj = %v, want %v", gotObj, tt.wantObj)
 			}
 			if gotSub != tt.wantSub {
@@ -100,7 +99,7 @@ func Test_extractContextsFromRequest(t *testing.T) {
 	tests := []struct {
 		name     string
 		args     args
-		wantCtxs []string
+		wantCtxs map[string]string
 		wantErr  bool
 	}{
 		{
@@ -108,7 +107,7 @@ func Test_extractContextsFromRequest(t *testing.T) {
 			args: args{
 				r: createRequest("GET", "/values/key1?user=alice", "alice"),
 			},
-			wantCtxs: []string{"user=self"},
+			wantCtxs: map[string]string{"": "/values/key1", "user": "self"},
 			wantErr:  false,
 		},
 		{
@@ -116,7 +115,7 @@ func Test_extractContextsFromRequest(t *testing.T) {
 			args: args{
 				r: createRequest("GET", "/values/key1?user=alice&device=1234", "alice"),
 			},
-			wantCtxs: []string{"user=self", "device=1234"},
+			wantCtxs: map[string]string{"": "/values/key1", "user": "self", "device": "1234"},
 			wantErr:  false,
 		},
 		{
@@ -124,7 +123,7 @@ func Test_extractContextsFromRequest(t *testing.T) {
 			args: args{
 				r: createRequest("GET", "/context/user/alice", "alice"),
 			},
-			wantCtxs: []string{"user=self"},
+			wantCtxs: map[string]string{"user": "self"},
 			wantErr:  false,
 		},
 		{
@@ -132,7 +131,7 @@ func Test_extractContextsFromRequest(t *testing.T) {
 			args: args{
 				r: createRequest("POST", "/context/user/alice", "alice"),
 			},
-			wantCtxs: []string{"user=self"},
+			wantCtxs: map[string]string{"user": "self"},
 			wantErr:  false,
 		},
 		{
@@ -140,21 +139,18 @@ func Test_extractContextsFromRequest(t *testing.T) {
 			args: args{
 				r: createRequest("POST", "/context/user/alice", "alice"),
 			},
-			wantCtxs: []string{"user=self"},
+			wantCtxs: map[string]string{"user": "self"},
 			wantErr:  false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotCtxs, err := extractContextsFromRequest(tt.args.r)
+			userInfo, _ := tt.args.r.Context().Value(UserInfoKey).(UserInfo)
+			gotCtxs, err := extractContextsFromRequest(tt.args.r, userInfo)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("extractContextsFromRequest() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-
-			// sort the strings in-place to
-			sort.Strings(gotCtxs)
-			sort.Strings(tt.wantCtxs)
 
 			if !reflect.DeepEqual(gotCtxs, tt.wantCtxs) {
 				t.Errorf("extractContextsFromRequest() = %v, want %v", gotCtxs, tt.wantCtxs)

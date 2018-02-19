@@ -7,7 +7,9 @@ import (
 )
 
 // MatchResources is used as a wrapper for matchResourcesFunc for casbin registration
-func MatchResources(requestResource interface{}, policyResource interface{}) (interface{}, error) {
+func MatchResources(args ...interface{}) (interface{}, error) {
+	requestResource := args[0]
+	policyResource := args[1]
 	rr, ok := requestResource.(map[string]string)
 	if !ok {
 		return nil, fmt.Errorf("Expected map[string]string, but got %T (%v)", requestResource, requestResource)
@@ -32,7 +34,7 @@ func matchResourcesFunc(rr map[string]string, pr string) (bool, error) {
 		return false, nil
 	}
 
-	// TODO: optimize this using cache for parsed policies and regexp
+	// TODO: optimize this, probably using cache for parsed policies and regexp
 	for key, value := range parsedPolicyResource {
 		r, err := regexp.Compile(value)
 		if err != nil {

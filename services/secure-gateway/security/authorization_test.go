@@ -50,6 +50,11 @@ func TestAuthorizationMiddleware(t *testing.T) {
 			want: http.StatusUnauthorized,
 		},
 		{
+			name: "Allow calculating values with specific context",
+			args: args{method: "GET", path: "/values/key2?user=alice2@security.test", user: "alice2@security.test"},
+			want: http.StatusOK,
+		},
+		{
 			name: "Allow reading context for self",
 			args: args{method: "GET", path: "/context/user/alice2@security.test", user: "alice2@security.test"},
 			want: http.StatusOK,
@@ -76,7 +81,7 @@ func TestAuthorizationMiddleware(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
+	for _, tt := range tests[5:6] {
 		t.Run(tt.name, func(t *testing.T) {
 			recorder := httptest.NewRecorder()
 			next := noopHandler

@@ -47,37 +47,30 @@ func extractActionFromRequest(r *http.Request) (act string, err error) {
 	return
 }
 
-func extractContextsFromValuesRequest(r *http.Request) (ctxs []string, err error) {
-	uri, err := url.Parse(r.RequestURI)
-	if err != nil {
-		return
-	}
-
-	user, ok := r.Context().Value(UserInfoKey).(UserInfo)
-	if strings.HasPrefix(uri.Path, "/values") {
-		ctxs = []string{}
-		for key, value := range uri.Query() {
-			// checking for special chars - these are not context identity names
-			if !strings.ContainsAny(key, "$.") {
-				identityID := url.PathEscape(value[0])
-				if ok && (user.Email() == identityID || user.Name() == identityID) {
-					identityID = "self"
-				}
-				ctxs = append(ctxs, fmt.Sprintf("%v=%v", url.PathEscape(key), identityID))
-			}
-		}
-	}
-
-	return
-}
-
 const (
 	contextIdentityType = iota + 1
 	contextIdentityID
 	contextProp
 )
 
-func extractContextFromContextRequest(r *http.Request) (ctx string, err error) {
+func extractContextsFromValuesRequest(r *http.Request, u UserInfo) (ctxs map[string]string, err error) {
+	uri := r.URL
+
+	ctxs = make(map[string]string)
+	ctxs[""] = uri.EscapedPath()
+	for key, value := range uri.Query() {
+		// checking for special chars - these are not context identity names
+		if !strings.ContainsAny(key, "$.") {
+			identityID := normalizeIdentityID(url.PathEscape(value[0]), u)
+			ctxs[url.PathEscape(key)] = identityID
+		}
+	}
+
+	return
+}
+
+func extractContextFromContextRequest(r *http.Request, u UserInfo) (ctx map[string]string, err error) {
+	ctx = make(map[string]string)
 	path := r.URL.EscapedPath()
 	if !strings.HasPrefix(path, "/context") {
 		err = fmt.Errorf("ExtractContextFromContextRequest: expected context request, but got %v", path)
@@ -86,12 +79,9 @@ func extractContextFromContextRequest(r *http.Request) (ctx string, err error) {
 
 	segments := strings.Split(path, "/")[1:] // skip the first entry, because it's empty
 	identityType, identityID := segments[contextIdentityType], segments[contextIdentityID]
+	identityID = normalizeIdentityID(identityID, u)
 	method := strings.ToUpper(r.Method)
-	user, ok := r.Context().Value(UserInfoKey).(UserInfo)
-	escapedEmail, escapedName := url.PathEscape(user.Email()), url.PathEscape(user.Name())
-	if ok && (escapedEmail == identityID || escapedName == identityID) {
-		identityID = "self"
-	}
+
 	switch method {
 	case "DELETE":
 		if len(segments) <= contextProp {
@@ -99,9 +89,10 @@ func extractContextFromContextRequest(r *http.Request) (ctx string, err error) {
 			return
 		}
 		prop := segments[contextProp]
-		ctx = fmt.Sprintf("%v=%v:%v", identityType, identityID, prop)
+		ctx[""] = prop
+		ctx[identityType] = identityID
 	case "GET", "POST":
-		ctx = fmt.Sprintf("%v=%v", identityType, identityID)
+		ctx[identityType] = identityID
 	default:
 		err = fmt.Errorf("ExtractContextFromContextRequest: unexptected method %v", method)
 	}
@@ -109,44 +100,53 @@ func extractContextFromContextRequest(r *http.Request) (ctx string, err error) {
 	return
 }
 
-func extractContextsFromRequest(r *http.Request) (ctxs []string, err error) {
-	path := r.URL.EscapedPath()
-	if strings.HasPrefix(path, "/context") {
-		ctx, err := extractContextFromContextRequest(r)
-		return []string{ctx}, err
-	} else if strings.HasPrefix(path, "/values") {
-		return extractContextsFromValuesRequest(r)
+func normalizeIdentityID(id string, u UserInfo) string {
+	identityID := id
+	escapedEmail, escapedName := url.PathEscape(u.Email()), url.PathEscape(u.Name())
+	if escapedEmail == identityID || escapedName == identityID {
+		identityID = "self"
 	}
 
-	return nil, fmt.Errorf("Expected values request or context request, but got %v", r.RequestURI)
+	return identityID
+}
+
+func extractContextsFromOtherRequest(r *http.Request, u UserInfo) (ctxs map[string]string, err error) {
+	ctxs = make(map[string]string)
+	ctxs[""] = r.URL.EscapedPath()
+
+	return
+}
+
+func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs map[string]string, err error) {
+	path := r.URL.EscapedPath()
+	if strings.HasPrefix(path, "/context") {
+		return extractContextFromContextRequest(r, u)
+	} else if strings.HasPrefix(path, "/values") {
+		return extractContextsFromValuesRequest(r, u)
+	} else {
+		return extractContextsFromOtherRequest(r, u)
+	}
 }
 
 // ExtractFromRequest extracts object and action from request
-func ExtractFromRequest(r *http.Request) (obj string, sub string, act string, ctxs []string, err error) {
+func ExtractFromRequest(r *http.Request) (sub string, act string, obj map[string]string, err error) {
 	user, ok := r.Context().Value(UserInfoKey).(UserInfo)
 	if !ok {
 		err = errors.New("Missing user information in request")
 		return
 	}
 
-	var uri *url.URL
-	uri, err = url.Parse(r.RequestURI)
-	if err != nil {
-		return "", "", "", []string{}, err
-	}
-
 	sub = user.Email()
-	obj = uri.Path
 	act, err = extractActionFromRequest(r)
 	if err != nil {
-		return "", "", "", []string{}, err
+		return "", "", map[string]string{}, err
 	}
 
-	ctxs, err = extractContextsFromRequest(r)
-	if err != nil && ctxs != nil && len(ctxs) != 0 {
-		return "", "", "", []string{}, err
+	obj, err = extractContextsFromRequest(r, user)
+	if err != nil {
+		return "", "", map[string]string{}, err
 	}
 
 	err = nil
-	return obj, sub, act, ctxs, err
+	return sub, act, obj, err
 }
