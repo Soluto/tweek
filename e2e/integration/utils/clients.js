@@ -38,17 +38,18 @@ nconf
     MINIO_BUCKET: 'tweek-bucket',
   });
 
-const getEnv = varName => {
+const getEnv = (varName, base64) => {
   const inlineVar = nconf.get(`${varName}_INLINE`);
   const varFilePath = nconf.get(`${varName}_PATH`);
   const value =
-    (inlineVar && new Buffer(inlineVar, 'base64')) ||
+    (!base64 && inlineVar) ||
+    (base64 && inlineVar && new Buffer(inlineVar, 'base64')) ||
     (varFilePath && fs.existsSync(varFilePath) && fs.readFileSync(varFilePath, 'utf8'));
   return value;
 };
 
 const init = async function() {
-  const key = getEnv('GIT_PRIVATE_KEY');
+  const key = getEnv('GIT_PRIVATE_KEY', true);
   const token = await getToken(key);
   const setBearerToken = t => t.set('Authorization', `Bearer ${token}`);
   return {
