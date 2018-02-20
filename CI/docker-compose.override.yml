@@ -16,6 +16,8 @@ services:
     build: ../services/management
     logging:
       driver: "json-file"
+    ports:
+      - "5002:3000"
 
   api:
     image: soluto/tweek-api

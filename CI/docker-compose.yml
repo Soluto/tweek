@@ -22,8 +22,6 @@ services:
       - keys
     logging:
       driver: "none"
-    ports:
-      - "5002:3000"
     environment:
       - VALIDATION_URL=http://api/validation
       - GIT_USER=git
