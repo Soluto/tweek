@@ -16,6 +16,8 @@ describe('authoring api policy', () => {
       .send({ policy: expectedPolicy })
       .expect(200);
 
+    await new Promise(resolve => setTimeout(() => resolve(), 1000));
+
     const gotPolicy = await getObjectContentFromMinio('policy.csv');
 
     expect(gotPolicy).to.equal(expectedPolicy);
