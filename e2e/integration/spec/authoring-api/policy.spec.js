@@ -15,6 +15,8 @@ describe('authoring api policy', () => {
       .put('/api/policies?author.name=test&author.email=test@soluto.com')
       .send({ policy })
       .expect(200);
+
+    await new Promise(resolve => setTimeout(() => resolve(), 1000));
   });
 
   it('update policy', async () => {
