@@ -1,3 +1,4 @@
+const { expect } = require('chai');
 const { init: initClients } = require('../../utils/clients');
 const { getObjectContentFromMinio } = require('../../utils/minio');
 
@@ -14,8 +15,6 @@ describe('authoring api policy', () => {
       .put('/api/policies?author.name=test&author.email=test@soluto.com')
       .send({ policy: expectedPolicy })
       .expect(200);
-
-    await new Promise(resolve => setTimeout(resolve, 3000));
 
     const gotPolicy = await getObjectContentFromMinio('policy.csv');
 
