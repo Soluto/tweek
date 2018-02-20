@@ -13,10 +13,15 @@ describe('authoring api policy', () => {
 
     await clients.authoring
       .put('/api/policies?author.name=test&author.email=test@soluto.com')
-      .send({ policy })
+      .send({
+        policy,
+      })
       .expect(200);
 
-    await new Promise(resolve => setTimeout(() => resolve(), 1000));
+    await pollUntil(
+      () => getObjectContentFromMinio('policy.csv'),
+      res => expect(res).to.equal(policy),
+    );
   });
 
   it('update policy', async () => {
@@ -24,13 +29,14 @@ describe('authoring api policy', () => {
 
     await clients.authoring
       .put('/api/policies?author.name=test&author.email=test@soluto.com')
-      .send({ policy: expectedPolicy })
+      .send({
+        policy: expectedPolicy,
+      })
       .expect(200);
 
-    await new Promise(resolve => setTimeout(() => resolve(), 1000));
-
-    const gotPolicy = await getObjectContentFromMinio('policy.csv');
-
-    expect(gotPolicy).to.equal(expectedPolicy);
+    await pollUntil(
+      () => getObjectContentFromMinio('policy.csv'),
+      res => expect(res).to.equal(expectedPolicy),
+    );
   });
 });
