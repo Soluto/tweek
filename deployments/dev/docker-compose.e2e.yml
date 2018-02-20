@@ -42,7 +42,7 @@ services:
     links:
       - selenium
       - gateway:api
-      - gateway:authoring
+      - gateway:authoring      
     depends_on: 
       - selenium
       - publishing
@@ -66,6 +66,7 @@ services:
     environment:
       - API_URL=http://api
       - AUTHORING_URL=http://authoring:3000
+      - PUBLISHING_URL=http://publishing
       - GATEWAY_URL=http://gateway
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
       - MINIO_HOST=minio
@@ -80,6 +81,7 @@ services:
     links:
       - gateway:api
       - gateway:authoring
+      - publishing
 
   smoke-tests:
     build:

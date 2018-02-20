@@ -29,7 +29,7 @@ nconf
   .defaults({
     AUTHORING_URL: 'http://authoring.localtest.me:4099',
     API_URL: 'http://api.localtest.me:4099',
-    PUBLISHING_URL: 'http://publishing.localtest.me:4099',
+    PUBLISHING_URL: 'http://localhost:4010',
     GATEWAY_URL: 'http://localhost:4099',
     GIT_PRIVATE_KEY_PATH: '../../deployments/dev/ssh/tweekgit',
 
