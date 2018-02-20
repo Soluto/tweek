@@ -2,7 +2,6 @@ const nconf = require('nconf');
 const supertest = require('supertest');
 const fs = require('fs');
 const getToken = require('./getToken');
-const fs = require('fs');
 
 const interceptAfter = (target, fn, methodNames) => {
   let proxy = methodNames.reduce(
