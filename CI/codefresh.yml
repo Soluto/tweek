@@ -154,6 +154,8 @@ steps:
     type: composition
     composition: ./CI/docker-compose.yml
     composition_variables:
+      - KEYS_IMAGE=${{BuildGitKeys}}
+      - SECUREGATEWAY_IMAGE=${{BuildSecureGateway}}
       - REPOSITORY_IMAGE=${{BuildingGitRepository}}
       - PUBLISHING_IMAGE=${{BuildingPublishing}}
       - API_IMAGE=${{BuildingApiImage}}
