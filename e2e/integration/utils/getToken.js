@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const { promisify } = require('util');
 const jwtSign = promisify(jwt.sign);
+const readFile = promisify(fs.readFile);
 
 const jwtOptions = {
   algorithm: 'RS256',
