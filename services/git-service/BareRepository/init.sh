@@ -29,7 +29,5 @@ chmod -R ug+rwX .
 chmod g+s .
 chmod -R a+x hooks
 
-echo export TWEEK_MANAGEMENT_URL=$TWEEK_MANAGEMENT_URL >> /home/git/.bashrc
-
 # -D flag avoids executing sshd as a daemon
 /usr/sbin/sshd -D

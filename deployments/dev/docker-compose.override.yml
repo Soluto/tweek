@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.4'
 
 services:
   git:
@@ -8,41 +8,34 @@ services:
       - "4001:22"
     environment:
       - PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
-      - TWEEK_MANAGEMENT_URL=http://management:3000
     secrets:
       - tweek_ssh_public_key
- 
-  management:
+  
+  publishing:
+    image: soluto/tweek-publishing
+    build: 
+      args: 
+        target: Debug
+    ports:
+      - "4009:22"
+      - "4010:80"
     depends_on:
       - git
       - minio
       - nats
-    expose:
-      - "5858"
-    ports:
-      - "5858:5858"
-      - "4002:3000"
-    command:
-      - yarn 
-      - start:debug
     environment:
-      - GIT_USER=git
-      - GIT_URL=ssh://git@git/tweek/repo
       - GIT_PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
-      - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
-      - GIT_SAMPLE_INTERVAL=500
-      - MINIO_ENDPOINT=minio:9000
-      - MINIO_ACCESS_KEY_PATH=/run/secrets/minio_access_key
-      - MINIO_SECRET_KEY_PATH=/run/secrets/minio_secret_key
-      - NATS_ENDPOINT=nats://nats:4222
+      - GIT_SERVER_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
+      - GIT_UPSTREAM_URI=ssh://git@git/tweek/repo
+      - MINIO__Endpoint=minio:9000
+      - MINIO__AccessKey=AKIAIOSFODNN7EXAMPLE
+      - MINIO__SecretKeyPath=/run/secrets/minio_secret_key
+      - NATS__Endpoint=nats://nats:4222
     secrets:
       - tweek_ssh_public_key
       - tweek_ssh_private_key
-      - minio_access_key
       - minio_secret_key
-    labels:
-      - "traefik.port=3000"
-  
+ 
   api:
     ports:
       - "4003:80"
@@ -58,10 +51,6 @@ services:
       - Rules__Minio__AccessKeyPath=/run/secrets/minio_access_key
       - Rules__Minio__SecretKeyPath=/run/secrets/minio_secret_key
       - Rules__Nats__Endpoint=nats://nats:4222
-      - Rules__Management__Url=http://management:3000
-      - Rules__SampleIntervalInMs=500
-      - Rules__FailureDelayInMs=50
-      - Rules__VersionTimeoutInMs=2000
       - UseAddon__Rules=MinioRules
       - RulesetVersionProvider=NatsVersionProvider
     secrets:
@@ -81,13 +70,13 @@ services:
 
   authoring:
     depends_on:
-      - git
+      - publishing
     ports:
       - "5859:5858"
       - "4005:3000"
     environment:
       - GIT_USER=git
-      - GIT_URL=ssh://git@git/tweek/repo
+      - GIT_URL=ssh://git@publishing/tweek/repo
       - GIT_PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
     secrets:

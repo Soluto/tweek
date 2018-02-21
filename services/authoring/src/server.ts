@@ -48,7 +48,7 @@ const gitRepoCreationPromiseWithTimeout = BluebirdPromise.resolve(gitRepoCreatio
     throw new Error(`git repository cloning timeout after ${GIT_CLONE_TIMEOUT_IN_MINUTES} minutes`);
   });
 
-const gitTransactionManager = new Transactor(gitRepoCreationPromise, async gitRepo => {
+const gitTransactionManager = new Transactor<GitRepository>(gitRepoCreationPromise, async gitRepo => {
   await gitRepo.reset();
   await gitRepo.fetch();
   await gitRepo.mergeMaster();

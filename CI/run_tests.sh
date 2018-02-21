@@ -28,16 +28,17 @@ wait
 sudo rm -rf ../deployments/dev/zap/session/
 
 # run tests
-echo 'running tests'
-docker-compose up smoke-tests e2e-ui e2e-integration
+echo 'running integration tests'
+docker-compose up smoke-tests e2e-integration
 
 get_exit_code smoke-tests
 if [ $? -ne 0 ]; then exit $?; fi
 
-get_exit_code e2e-ui
+get_exit_code e2e-integration
 if [ $? -ne 0 ]; then exit $?; fi
 
-get_exit_code e2e-integration
+docker-compose up e2e-ui
+get_exit_code e2e-ui
 if [ $? -ne 0 ]; then exit $?; fi
 
 # run security test
