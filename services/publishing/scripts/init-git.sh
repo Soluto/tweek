@@ -1,10 +1,10 @@
 #!/bin/bash
-if [ -d "/tweek/repo" ]; then
-    cd /tweek/repo
-    git fetch origin '+refs/heads/*:refs/heads/*'
+if [[ -d "$REPO_LOCATION" && -d "/tmp/ssh_server" ]]; then
+    echo "using existing repo"
     exit $?
 fi
 
+echo export REPO_LOCATION=$REPO_LOCATION >> /home/git/.env
 echo export GIT_UPSTREAM_URI=$GIT_UPSTREAM_URI >> /home/git/.env
 echo export GIT_SSH=/tweek/ssh-helper.sh >> /home/git/.env
 
@@ -47,17 +47,19 @@ else
     exit 1
 fi
 
+mkdir -p $REPO_LOCATION
+chown git:git $REPO_LOCATION
+chown -R git:git /home/git
+cd $REPO_LOCATION
 # clone the source repository and apply hooks
 set -e
-git clone --bare $GIT_UPSTREAM_URI /tweek/repo
-cp /tweek/hooks/* /tweek/repo/hooks/
+su - git -s "/bin/bash" -c "cd `pwd` && source ~/.env && git clone --bare $GIT_UPSTREAM_URI ."
+cp /tweek/hooks/* $REPO_LOCATION/hooks/
 set +e
 
 # Checking permissions and fixing SGID bit in repos folder
-cd /tweek/repo
 chown -R git:git .
-chmod -R ug+rwX .
+chmod -R ug+rw .
 chmod g+s .
 chmod -R ug+x hooks
-
-chown git:git /home/git/.env
+git config core.sharedRepository group
