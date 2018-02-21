@@ -2,7 +2,6 @@ package security
 
 import (
 	"fmt"
-	"regexp"
 	"strings"
 )
 
@@ -34,23 +33,32 @@ func matchResourcesFunc(rr map[string]string, pr string) (bool, error) {
 		return false, nil
 	}
 
-	// TODO: optimize this, probably using cache for parsed policies and regexp
 	for key, value := range parsedPolicyResource {
-		r, err := regexp.Compile(value)
-		if err != nil {
-			return false, err
-		}
-
 		resourcePart, ok := rr[key]
 		if !ok { // some keys are missing from the request - no match
 			return false, nil
 		}
-		if !r.MatchString(resourcePart) {
+		if !matchWithWildcards(value, resourcePart) {
 			return false, nil
 		}
 	}
 
 	return true, nil
+}
+
+func matchWithWildcards(pattern, input string) bool {
+	// any
+	if pattern == "*" {
+		return true
+	}
+
+	// prefix
+	if strings.HasSuffix(pattern, "*") {
+		return strings.HasPrefix(input, pattern[0:len(pattern)-2])
+	}
+
+	// no wildcards
+	return pattern == input
 }
 
 func parseResource(resource string) (result map[string]string, err error) {
