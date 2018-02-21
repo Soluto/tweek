@@ -1,2 +1,2 @@
 
-p, test@tweek.com, /api/v2/values/*, *
+p, test@tweek.com, /api/v2/values/*, *, allow
