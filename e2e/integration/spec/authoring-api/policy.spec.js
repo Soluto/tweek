@@ -3,7 +3,7 @@ const { init: initClients } = require('../../utils/clients');
 const { pollUntil } = require('../../utils/utils');
 const { getObjectContentFromMinio } = require('../../utils/minio');
 
-describe('authoring api policy', () => {
+describe.skip('authoring api policy', () => {
   let clients;
   before(async () => {
     clients = await initClients();
