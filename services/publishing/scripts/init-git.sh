@@ -62,3 +62,4 @@ chown -R git:git .
 chmod -R ug+rw .
 chmod g+s .
 chmod -R ug+x hooks
+git config core.sharedRepository group
