@@ -1,6 +1,5 @@
 #!/bin/bash
 
-source ~/.env
 cd $(dirname $(dirname $0))
 curl http://localhost/log?message=post-receive-hook-starting
 curl "http://localhost/push?commit=$(git rev-parse --short HEAD)" 1> /dev/null 2> /dev/null  &
