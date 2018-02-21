@@ -1,5 +1,6 @@
 const { expect } = require('chai');
-const { init: initClients, pollUntil } = require('../../utils/clients');
+const { init: initClients } = require('../../utils/clients');
+const { pollUntil } = require('../../utils/utils');
 const { getObjectContentFromMinio } = require('../../utils/minio');
 
 describe('authoring api policy', () => {
