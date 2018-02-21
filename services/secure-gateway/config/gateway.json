@@ -1,7 +1,7 @@
 {
     "upstreams": {
         "api": "http://api",
-        "authoring": "http://authoring:3000",
+        "authoring": "http://authoring:3000"
     },
     "security": {
         "enforce": true,
