@@ -13,6 +13,10 @@ namespace Tweek.Publishing.Service.Sync
             _git = gitExecutor;
         }
 
+        public async Task PushToUpstream(string commitId){
+            await _git($"push origin {commitId}:master");
+        }
+
         public async Task<string> SyncToLatest()
         {
             // TEMP HACK - should be replaced in the future once corefx support running process as user

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Minio;
 using Newtonsoft.Json;
 using Polly;
+using Polly.Retry;
 using Tweek.Publishing.Service.Handlers;
 using Tweek.Publishing.Service.Messaging;
 using Tweek.Publishing.Service.Packing;
@@ -27,11 +28,21 @@ namespace Tweek.Publishing.Service
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
+        
+        private readonly RetryPolicy _syncPolicy;
 
         public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             _configuration = configuration;
             _logger = loggerFactory.CreateLogger("Default");
+            _syncPolicy = Policy.Handle<Exception>()
+                        .WaitAndRetryAsync(3,
+                            retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                            async (ex, timespan) =>
+                            {
+                                _logger.LogWarning("Sync:Retrying");
+                                await Task.Delay(timespan);
+                            });
         }
 
         private void RunSSHDeamon(IApplicationLifetime lifetime, ILogger logger)
@@ -132,18 +143,20 @@ namespace Tweek.Publishing.Service
             
             app.UseRouter(router =>
             {
+                var syncHandler = SyncHandler.Create(storageSynchronizer, repoSynchronizer, versionPublisher, _syncPolicy, _logger);
+
                 router.MapGet("validate", ValidationHandler.Create(executor, gitValidationFlow));
-                router.MapGet("sync", SyncHandler.Create(storageSynchronizer, repoSynchronizer, versionPublisher,
-                Policy.Handle<Exception>()
-                        .WaitAndRetryAsync(3,
-                            retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                            async (ex, timespan) =>
-                            {
-                                _logger.LogWarning("Sync:Retrying");
-                                await Task.Delay(timespan);
-                            }),
-                 _logger));
-                router.MapGet("push-failed", async (req, res, routedata) => await natsClient.Publish("push-failed", req.Query["commit"] ));
+                router.MapGet("sync", syncHandler);
+                router.MapGet("push", async (req, res, routedata) => {
+                    var commitId = req.Query["commit"].ToString();
+                    try {
+                        await repoSynchronizer.PushToUpstream(commitId);
+                    }
+                    catch (Exception ex){
+                        await natsClient.Publish("push-failed", commitId);
+                    }
+                    await syncHandler(req,res,routedata);
+                });
 
                 router.MapGet("log", async (req, res, routedata) => _logger.LogInformation(req.Query["message"]));
                 router.MapGet("health", async (req, res, routedata) => await res.WriteAsync(JsonConvert.SerializeObject(new { })));
