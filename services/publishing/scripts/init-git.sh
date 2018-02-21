@@ -57,9 +57,5 @@ su - git -s "/bin/bash" -c "cd `pwd` && source ~/.env && git clone --bare $GIT_U
 cp /tweek/hooks/* $REPO_LOCATION/hooks/
 set +e
 
-# Checking permissions and fixing SGID bit in repos folder
-# chown -R git:git .
-# chmod -R ug+rwX .
-# chmod g+s .
 chown -R git:git hooks
 chmod -R ug+x hooks
