@@ -1,6 +1,7 @@
 #!/bin/bash
-if [ -d "/tweek/repo" ]; then
-    cd /tweek/repo
+if [[ -d "$REPO_LOCATION" && -d "/tmp/ssh_server" ]]; then
+    echo "using existing repo"
+    cd $REPO_LOCATION
     git fetch origin '+refs/heads/*:refs/heads/*'
     exit $?
 fi
@@ -47,14 +48,15 @@ else
     exit 1
 fi
 
+mkdir -p $REPO_LOCATION
+cd $REPO_LOCATION
 # clone the source repository and apply hooks
 set -e
-git clone --bare $GIT_UPSTREAM_URI /tweek/repo
-cp /tweek/hooks/* /tweek/repo/hooks/
+git clone --bare $GIT_UPSTREAM_URI .
+cp /tweek/hooks/* $REPO_LOCATION/hooks/
 set +e
 
 # Checking permissions and fixing SGID bit in repos folder
-cd /tweek/repo
 chown -R git:git .
 chmod -R ug+rwX .
 chmod g+s .
