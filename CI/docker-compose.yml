@@ -83,7 +83,6 @@ services:
       - nats
       - api
       - authoring
-      - management
     logging:
       driver: "json-file"
     volumes_from:

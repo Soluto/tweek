@@ -52,7 +52,6 @@ services:
       - ../deployments/dev/zap/session/smoke:/root/.ZAP/session/smoke
     links:
       - gateway:api
-      - gateway:management
       - gateway:authoring
 
   zap-e2e:
@@ -64,7 +63,6 @@ services:
       - ../deployments/dev/zap/session/e2e:/root/.ZAP/session/e2e
     links:
       - gateway:api
-      - gateway:management
       - gateway:authoring
 
   smoke-tests:

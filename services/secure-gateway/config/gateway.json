@@ -2,7 +2,6 @@
     "upstreams": {
         "api": "http://api",
         "authoring": "http://authoring:3000",
-        "management": "http://management:3000"
     },
     "security": {
         "enforce": true,
@@ -18,11 +17,7 @@
         "authoring": [
             "authoring",
             "authoring.localtest.me"
-        ],
-        "management": [
-            "management",
-            "management.localtest.me"
-        ]
+        ]        
     },
     "server": {
         "ports": [
