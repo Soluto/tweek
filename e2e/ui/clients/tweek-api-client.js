@@ -20,7 +20,7 @@ class TweekApiClient extends AuthenticatedClient {
   }
 
   eventuallyExpectKey(key, assertion) {
-    browser.waitToPass(() => assertion(this.get(key)), 15000);
+    browser.waitToPass(() => assertion(this.get(key)), 20000);
   }
 }
 

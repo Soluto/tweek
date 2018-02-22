@@ -8,17 +8,6 @@ describe('authoring api - /PUT /bulk-keys-upload', () => {
     clients = await initClients();
   });
 
-  it('should accept a zip file and update rules', async () => {
-    const response = await clients.authoring
-      .put('/api/bulk-keys-upload?author.name=test&author.email=test@soluto.com')
-      .attach('bulk', './spec/authoring-api/test-data/bulk1.zip');
-    response.status.should.eql(204);
-    await pollUntil(
-      () => clients.api.get('/api/v1/keys/test_key1?user.Country=country&user.ClientVersion=1.0.0'),
-      res => expect(JSON.parse(res.body)).to.eql(true),
-    );
-  });
-
   it('should not accept an input without a zip file named bulk', async () => {
     const response = await clients.authoring.put(
       '/api/bulk-keys-upload?author.name=test&author.email=test@soluto.com',
@@ -47,5 +36,17 @@ describe('authoring api - /PUT /bulk-keys-upload', () => {
       .put('/api/bulk-keys-upload?author.name=test&author.email=test@soluto.com')
       .attach('bulk', './spec/authoring-api/test-data/invalidRules.zip');
     response.status.should.eql(400);
+  });
+
+  it('should accept a zip file and update rules', async () => {
+    const response = await clients.authoring
+      .put('/api/bulk-keys-upload?author.name=test&author.email=test@soluto.com')
+      .attach('bulk', './spec/authoring-api/test-data/bulk1.zip');
+    response.status.should.eql(204);
+    expect(response.header).to.have.property('x-oid');
+    await pollUntil(
+      () => clients.api.get('/api/v1/keys/test_key1?user.Country=country&user.ClientVersion=1.0.0'),
+      res => expect(JSON.parse(res.body)).to.eql(true),
+    );
   });
 });
