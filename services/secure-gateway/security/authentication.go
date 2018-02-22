@@ -52,7 +52,7 @@ func UserInfoFromRequest(req *http.Request, configuration *appConfig.Security) (
 		claims := t.Claims.(jwt.MapClaims)
 		if issuer, ok := claims["iss"].(string); ok {
 			if issuer == "tweek" {
-				return getGitKey(configuration.TweekSecretKeyPath)
+				return getGitKey(&configuration.TweekSecretKey)
 			}
 
 			if keyID, ok := t.Header["kid"].(string); ok {
@@ -119,8 +119,17 @@ func getAzureADKey(tenantID string, keyID string) (interface{}, error) {
 	return getJWKByEndpoint(endpoint, keyID)
 }
 
-func getGitKey(secretKeyFile string) (interface{}, error) {
-	pemFile, err := ioutil.ReadFile(secretKeyFile)
+func getGitKey(secretKey *appConfig.EnvInlineOrPath) (interface{}, error) {
+	var pemFile []byte
+	var err error
+	if len(secretKey.Inline) > 0 {
+		pemFile = []byte(secretKey.Inline)
+	} else {
+		pemFile, err = ioutil.ReadFile(secretKey.Path)
+		if err != nil {
+			return nil, err
+		}
+	}
 	pemBlock, _ := pem.Decode(pemFile)
 	if pemBlock == nil {
 		return nil, errors.New("no PEM found")

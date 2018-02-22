@@ -24,14 +24,20 @@ type Server struct {
 	Ports []int `mapstructure:"ports"`
 }
 
-// Security section hold security related configuration
+// EnvInlineOrPath is struct to contain value inline or path to file with content
+type EnvInlineOrPath struct {
+	Path   string
+	Inline string
+}
+
+// Security section holds security related configuration
 type Security struct {
-	AllowedIssuers     []string
-	AzureTenantID      string
-	TweekSecretKeyPath string
-	Enforce            bool
-	PolicyStorage      PolicyStorage
-	Cors               Cors
+	AllowedIssuers []string
+	AzureTenantID  string
+	TweekSecretKey EnvInlineOrPath
+	Enforce        bool
+	PolicyStorage  PolicyStorage
+	Cors           Cors
 }
 
 // Cors stores data for CORS support

@@ -51,7 +51,7 @@ func runServer(port int, handler http.Handler) {
 }
 
 func newApp(config *appConfig.Configuration) http.Handler {
-	token := security.InitJWT(config.Security.TweekSecretKeyPath)
+	token := security.InitJWT(&config.Security.TweekSecretKey)
 
 	enforcer, err := withRetry(3, time.Second*5, initEnforcer, &config.Security)
 

@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -27,12 +28,14 @@ type JWTToken interface {
 	SetToken(tokenStr string)
 }
 
+// GetToken gets token
 func (t *JWTTokenData) GetToken() string {
 	t.lock.RLock()
 	defer t.lock.RUnlock()
 	return t.tokenStr
 }
 
+// SetToken sets token
 func (t *JWTTokenData) SetToken(tokenStr string) {
 	t.lock.Lock()
 	defer t.lock.Unlock()
@@ -42,8 +45,8 @@ func (t *JWTTokenData) SetToken(tokenStr string) {
 const expirationPeriod = 24
 
 // InitJWT - inits jwt
-func InitJWT(keyPath string) JWTToken {
-	key, err := getPrivateKeyFromFile(keyPath)
+func InitJWT(keyEnv *appConfig.EnvInlineOrPath) JWTToken {
+	key, err := getPrivateKey(keyEnv)
 	if err != nil {
 		log.Panicln("Private key retrieving failed:", err)
 	}
@@ -83,10 +86,16 @@ func setExpirationTimer(token *JWTTokenData, key interface{}) {
 	}
 }
 
-func getPrivateKeyFromFile(filePath string) (interface{}, error) {
-	pemFile, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		return nil, err
+func getPrivateKey(keyEnv *appConfig.EnvInlineOrPath) (interface{}, error) {
+	var pemFile []byte
+	var err error
+	if len(keyEnv.Inline) > 0 {
+		pemFile = []byte(keyEnv.Inline)
+	} else {
+		pemFile, err = ioutil.ReadFile(keyEnv.Path)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	block, _ := pem.Decode(pemFile)

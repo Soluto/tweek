@@ -6,13 +6,7 @@ steps:
     title: Check versions to deploy
     image: alpine/git
     commands:
-      - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
-
-  BuildGitKeys:
-    title: Building Git Keys Docker Image
-    type: build
-    image_name: soluto/tweek-test-keys
-    working_directory: ./deployments/dev/ssh/
+      - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export  
 
   BuildSecureGateway:
     title: Building Secure Gateway
@@ -77,8 +71,7 @@ steps:
     title: Tests - integration & smoke
     type: composition
     composition: ./CI/docker-compose.yml
-    composition_variables:
-      - KEYS_IMAGE=${{BuildGitKeys}}
+    composition_variables:      
       - SECUREGATEWAY_IMAGE=${{BuildSecureGateway}}
       - REPOSITORY_IMAGE=${{BuildingGitRepository}}
       - PUBLISHING_IMAGE=${{BuildingPublishing}}
@@ -152,8 +145,7 @@ steps:
     title: UI tests
     type: composition
     composition: ./CI/docker-compose.yml
-    composition_variables:
-      - KEYS_IMAGE=${{BuildGitKeys}}
+    composition_variables:      
       - SECUREGATEWAY_IMAGE=${{BuildSecureGateway}}
       - REPOSITORY_IMAGE=${{BuildingGitRepository}}
       - PUBLISHING_IMAGE=${{BuildingPublishing}}
