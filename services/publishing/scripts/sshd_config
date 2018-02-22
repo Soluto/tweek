@@ -44,7 +44,7 @@
 #PermitRootLogin prohibit-password
 #StrictModes yes
 #MaxAuthTries 6
-#MaxSessions 10
+MaxSessions 150
 
 PubKeyAuthentication yes
 
