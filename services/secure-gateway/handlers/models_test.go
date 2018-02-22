@@ -34,7 +34,7 @@ func TestNewModelsRead(t *testing.T) {
 		{
 			name: "Read",
 			args: args{request: httptest.NewRequest("GET", "/api/v2/models", nil)},
-			want: `[{"PType":"p","V0":"allow@security.test","V1":"/target","V2":"read","V3":"allow","V4":"","V5":""},{"PType":"p","V0":"deny@security.test","V1":"/target","V2":"read","V3":"deny","V4":"","V5":""},{"PType":"p","V0":"role_users","V1":"/target","V2":"read","V3":"allow","V4":"","V5":""},{"PType":"p","V0":"admin","V1":".*:.*","V2":".*","V3":"allow","V4":"","V5":""},{"PType":"g","V0":"allow@security.test","V1":"role_users","V2":"","V3":"","V4":"","V5":""},{"PType":"g","V0":"deny@security.test","V1":"role_users","V2":"","V3":"","V4":"","V5":""}]`,
+			want: `[{"PType":"p","V0":"allow@security.test","V1":"/target","V2":"read","V3":"allow","V4":"","V5":""},{"PType":"p","V0":"deny@security.test","V1":"/target","V2":"read","V3":"deny","V4":"","V5":""},{"PType":"p","V0":"role_users","V1":"/target","V2":"read","V3":"allow","V4":"","V5":""},{"PType":"p","V0":"admin","V1":"*:*","V2":"*","V3":"allow","V4":"","V5":""},{"PType":"g","V0":"allow@security.test","V1":"role_users","V2":"","V3":"","V4":"","V5":""},{"PType":"g","V0":"deny@security.test","V1":"role_users","V2":"","V3":"","V4":"","V5":""}]`,
 		},
 	}
 
@@ -72,30 +72,30 @@ func TestNewModelsWrite(t *testing.T) {
 		{
 			name: "Add user with allow permissions",
 			args: args{
-				request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"p","V0":"allow1@security.test","V1":"/target","V2":"GET","V3":"allow","V4":"","V5":""}]`)),
+				request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"p","V0":"allow1@security.test","V1":"/target","V2":"read","V3":"allow","V4":"","V5":""}]`)),
 				user:     "allow1@security.test",
 				resource: map[string]string{"": "/target"},
-				action:   "GET",
+				action:   "read",
 			},
 			want: true,
 		},
 		{
 			name: "Add user with deny permissions",
 			args: args{
-				request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"p","V0":"allow1@security.test","V1":"/target","V2":"GET","V3":"deny","V4":"","V5":""}]`)),
+				request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"p","V0":"allow1@security.test","V1":"/target","V2":"read","V3":"deny","V4":"","V5":""}]`)),
 				user:     "allow1@security.test",
 				resource: map[string]string{"": "/target"},
-				action:   "GET",
+				action:   "read",
 			},
 			want: false,
 		},
 		{
 			name: "Add user to group with allow permissions",
 			args: args{
-				request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"g","V0":"allow1@security.test","V1":"role_users","V2":"","V3":"","V4":"","V5":""},{"PType":"p","V0":"role_users","V1":"/target","V2":"GET","V3":"allow","V4":"","V5":""}]`)),
+				request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"g","V0":"allow1@security.test","V1":"role_users","V2":"","V3":"","V4":"","V5":""},{"PType":"p","V0":"role_users","V1":"/target","V2":"read","V3":"allow","V4":"","V5":""}]`)),
 				user:     "allow1@security.test",
 				resource: map[string]string{"": "/target"},
-				action:   "GET",
+				action:   "read",
 			},
 			want: true,
 		},
@@ -104,7 +104,6 @@ func TestNewModelsWrite(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			enforcer := makeEnforcer()
-
 			server := negroni.New(NewModelsWrite(enforcer))
 			recorder := httptest.NewRecorder()
 			server.ServeHTTP(recorder, tt.args.request)

@@ -53,11 +53,14 @@ const (
 	contextProp
 )
 
+// KeyOrProperty is the name of the key in the map, which holds either key or property
+const KeyOrProperty = ""
+
 func extractContextsFromValuesRequest(r *http.Request, u UserInfo) (ctxs map[string]string, err error) {
 	uri := r.URL
 
 	ctxs = make(map[string]string)
-	ctxs[""] = uri.EscapedPath()
+	ctxs[KeyOrProperty] = uri.EscapedPath()
 	for key, value := range uri.Query() {
 		// checking for special chars - these are not context identity names
 		if !strings.ContainsAny(key, "$.") {
@@ -112,7 +115,7 @@ func normalizeIdentityID(id string, u UserInfo) string {
 
 func extractContextsFromOtherRequest(r *http.Request, u UserInfo) (ctxs map[string]string, err error) {
 	ctxs = make(map[string]string)
-	ctxs[""] = r.URL.EscapedPath()
+	ctxs[KeyOrProperty] = r.URL.EscapedPath()
 
 	return
 }

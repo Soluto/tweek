@@ -135,14 +135,17 @@ func Test_parseResource(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, gotErr := parseResource(tt.args.resource)
+			gotKeyOrProp, gotResource, gotErr := parseResource(tt.args.resource)
 			if (gotErr != nil) != tt.wantErr {
 				t.Errorf("parseResource() error = %v, wantErr %v", gotErr, tt.wantErr)
 				return
 			}
 
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("parseResource() = %#v, want %#v", got, tt.want)
+			if gotResource != nil && len(gotKeyOrProp) != 0 {
+				gotResource[KeyOrProperty] = gotKeyOrProp
+			}
+			if !reflect.DeepEqual(gotResource, tt.want) {
+				t.Errorf("parseResource() = %#v, want %#v", gotResource, tt.want)
 			}
 		})
 	}
