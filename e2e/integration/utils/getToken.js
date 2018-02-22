@@ -14,7 +14,4 @@ const data = {
   email: 'test@tweek.com',
 };
 
-module.exports = async function(privateKeyPath) {
-  const authKey = await readFile(privateKeyPath);
-  return await jwtSign(data, authKey, jwtOptions);
-};
+module.exports = async authKey => await jwtSign(data, authKey, jwtOptions);
