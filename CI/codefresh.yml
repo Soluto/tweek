@@ -157,12 +157,15 @@ steps:
     type: composition
     composition: ./CI/docker-compose.yml
     composition_variables:
+      - KEYS_IMAGE=${{BuildGitKeys}}
+      - SECUREGATEWAY_IMAGE=${{BuildSecureGateway}}
       - REPOSITORY_IMAGE=${{BuildingGitRepository}}
       - PUBLISHING_IMAGE=${{BuildingPublishing}}
       - API_IMAGE=${{BuildingApiImage}}
       - AUTHORING_IMAGE=${{BuildingAuthoring}}
       - EDITOR_IMAGE=${{BuildingEditor}}
       - ZAP_IMAGE=${{BuildingZapImage}}
+      - CASBIN_MINIO_LOADER_IMAGE=${{BuildingCasbinMinioLoaderImage}}
       - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
     composition_candidates:
       e2e-ui:
