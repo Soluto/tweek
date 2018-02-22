@@ -116,7 +116,7 @@ PasswordAuthentication no
 
 PidFile /var/run/sshd.pid
 
-#MaxStartups 10:30:100
+MaxStartups 100:30:200
 #PermitTunnel no
 #ChrootDirectory none
 #VersionAddendum none
