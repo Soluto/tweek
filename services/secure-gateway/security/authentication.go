@@ -6,7 +6,6 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -119,16 +118,10 @@ func getAzureADKey(tenantID string, keyID string) (interface{}, error) {
 	return getJWKByEndpoint(endpoint, keyID)
 }
 
-func getGitKey(secretKey *appConfig.EnvInlineOrPath) (interface{}, error) {
-	var pemFile []byte
-	var err error
-	if len(secretKey.Inline) > 0 {
-		pemFile = []byte(secretKey.Inline)
-	} else {
-		pemFile, err = ioutil.ReadFile(secretKey.Path)
-		if err != nil {
-			return nil, err
-		}
+func getGitKey(keyEnv *appConfig.EnvInlineOrPath) (interface{}, error) {
+	pemFile, err := appConfig.HandleEnvInlineOrPath(keyEnv)
+	if err != nil {
+		return nil, err
 	}
 	pemBlock, _ := pem.Decode(pemFile)
 	if pemBlock == nil {

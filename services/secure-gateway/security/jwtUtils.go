@@ -3,7 +3,6 @@ package security
 import (
 	"crypto/x509"
 	"encoding/pem"
-	"io/ioutil"
 	"log"
 	"sync"
 	"time"
@@ -87,15 +86,9 @@ func setExpirationTimer(token *JWTTokenData, key interface{}) {
 }
 
 func getPrivateKey(keyEnv *appConfig.EnvInlineOrPath) (interface{}, error) {
-	var pemFile []byte
-	var err error
-	if len(keyEnv.Inline) > 0 {
-		pemFile = []byte(keyEnv.Inline)
-	} else {
-		pemFile, err = ioutil.ReadFile(keyEnv.Path)
-		if err != nil {
-			return nil, err
-		}
+	pemFile, err := appConfig.HandleEnvInlineOrPath(keyEnv)
+	if err != nil {
+		return nil, err
 	}
 
 	block, _ := pem.Decode(pemFile)
