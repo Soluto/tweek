@@ -17,6 +17,7 @@
         "authoring": [
             "authoring",
             "authoring.localtest.me"
+        ]
     },
     "server": {
         "ports": [
