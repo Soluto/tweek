@@ -114,8 +114,8 @@ services:
 
   gateway:
     ports:
-      - "${TWEEK_GATEWAY_PORT:-4099}:80"
-      - "4100:3000"
+      - "80:80"
+      - "4099:3000"
     environment:
       - TWEEKGATEWAY_SECURITY_CORS_ENABLED=true
       - TWEEKGATEWAY_SECURITY_CORS_MAXAGE=60

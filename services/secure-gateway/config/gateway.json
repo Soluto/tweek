@@ -1,8 +1,7 @@
 {
     "upstreams": {
         "api": "http://api",
-        "authoring": "http://authoring:3000",
-        "publishing": "http://publishing"
+        "authoring": "http://authoring:3000"
     },
     "security": {
         "enforce": true,
@@ -18,11 +17,6 @@
         "authoring": [
             "authoring",
             "authoring.localtest.me"
-        ],
-        "publishing": [
-            "publishing",
-            "publishing.localtest.me"
-        ]
     },
     "server": {
         "ports": [

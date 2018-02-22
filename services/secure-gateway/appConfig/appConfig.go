@@ -15,9 +15,8 @@ type Upstreams struct {
 
 // V1Hosts is the list of v1 hosts
 type V1Hosts struct {
-	API        []string
-	Authoring  []string
-	Management []string
+	API       []string
+	Authoring []string
 }
 
 // Server section holds the server related configuration

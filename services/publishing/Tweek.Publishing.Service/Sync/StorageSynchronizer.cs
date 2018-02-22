@@ -23,7 +23,7 @@ namespace Tweek.Publishing.Service.Sync
         {
             _client = storageClient;
             _shellExecutor = shellExecutor;
-        }        
+        }
 
         public async Task Sync(string commitId, bool checkForStaleRevision=true)
         {
@@ -47,6 +47,7 @@ namespace Tweek.Publishing.Service.Sync
                     }
                     catch (Exception)
                     {
+            
                         throw new StaleRevisionException(commitId, versionsBlob.Latest);
                     }
                 }
@@ -61,6 +62,7 @@ namespace Tweek.Publishing.Service.Sync
             foreach (var uploader in Uploaders)
             {
                 await uploader.Upload(commitId);
+
             }
 
             await _client.PutJSON("versions", newVersionBlob);

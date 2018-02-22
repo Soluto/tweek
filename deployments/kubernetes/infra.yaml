@@ -80,19 +80,12 @@ metadata:
   namespace: tweek
   name: minio
 spec:
-<<<<<<< HEAD
-  selector:
-    app: minio
-  ports:
-    - port: 9000
-=======
   type: NodePort
   selector:
     app: minio
   ports:
     - nodePort: 30007
       port: 9000
->>>>>>> origin/master
       targetPort: 9000
 ---
 apiVersion: extensions/v1beta1

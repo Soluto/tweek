@@ -2,7 +2,6 @@
     "upstreams": {
         "api": "http://localhost:4003",
         "authoring": "http://localhost:4004",
-        "publishing": "http://publishing:4010"
     },
     "security": {
         "tweekSecretKeyPath": "../../deployments/dev/ssh/tweekgit",

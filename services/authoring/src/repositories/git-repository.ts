@@ -153,6 +153,7 @@ export default class GitRepository {
     const author = git.Signature.now(name, email);
     const pusher = git.Signature.now('tweek-editor', 'tweek-editor@tweek');
     const commitId = await this._repo.createCommitOnHead([], author, pusher, message);
+
     await this._pushRepositoryChanges(message);
     return commitId;
   }
