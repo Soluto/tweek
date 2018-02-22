@@ -28,6 +28,7 @@
     "docker-compose:zap": "yarn docker-compose:e2e -f ./deployments/dev/docker-compose.zap.yml",
     "format": "prettier-eslint --trailing-comma all --print-width 100 --single-quote --write",
     "format:ts": "tsfmt -r",
+    "format:go": "gofmt -l -w",
     "precommit": "lint-staged"
   },
   "devDependencies": {
@@ -46,6 +47,10 @@
       ],
       "**/*.ts": [
         "yarn format:ts",
+        "git add"
+      ],
+      "**/*.go": [
+        "yarn format:go",
         "git add"
       ]
     }

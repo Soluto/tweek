@@ -113,16 +113,44 @@ services:
       - "4222:4222"
 
   gateway:
-    image: traefik:1.3.2
     ports:
-      - "${TWEEK_GATEWAY_PORT:-81}:80"
-      - "8080:8080"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /dev/null:/traefik.toml
-    logging:
-      driver: none
-    command: --web --docker --docker.domain=tweek.localtest.me --logLevel=DEBUG
+      - "80:80"
+      - "4099:3000"
+    environment:
+      - TWEEKGATEWAY_SECURITY_CORS_ENABLED=true
+      - TWEEKGATEWAY_SECURITY_CORS_MAXAGE=60
+      - TWEEKGATEWAY_SECURITY_CORS_ALLOWEDORIGINS=null
+      - TWEEKGATEWAY_SECURITY_CORS_ALLOWEDMETHODS=['GET','POST','PUT','PATCH','DELETE']
+      - TWEEKGATEWAY_SECURITY_CORS_ALLOWEDHEADERS=null
+      - TWEEKGATEWAY_SECURITY_CORS_ALLOWCREDENTIALS=true
+      - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOENDPOINT=minio:9000
+      - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOBUCKETNAME=tweek-casbin-policies
+      - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOACCESSKEY=AKIAIOSFODNN7EXAMPLE
+      - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECRETKEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECURE=false
+      - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOPOLICYOBJECTNAME=policy.csv
+      - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_NATSENDPOINT=nats://nats:4222
+      - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_NATSSUBJECT=casbin-policy-subject
+      - TWEEKGATEWAY_SECURITY_TWEEKSECRETKEYPATH=/run/secrets/tweek_ssh_private_key
+      - CONFIG_FILE_PATH=/config/gateway.json
+    secrets:
+      - tweek_ssh_private_key
+
+  casbin-minio-loader:
+    image: casbin-minio-loader
+    build: ../../tools/casbin-minio-loader
+    depends_on:
+      - minio
+      - nats
+    environment:
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_BUCKET=tweek-casbin-policies
+      - MINIO_SECURE=false
+      - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
+      - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      - NATS_ENDPOINT=nats://nats:4222
+      - NATS_SUBJECT=casbin-policy-subject
+
 
 secrets:
   tweek_ssh_public_key:

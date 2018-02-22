@@ -88,7 +88,7 @@ const startServer = async () => {
   server.listen(PORT, () => console.log('Listening on port %d', server.address().port));
 };
 
-startServer().catch(reason => {
+startServer().catch((reason) => {
   console.error(reason);
   // process.exit();
 });

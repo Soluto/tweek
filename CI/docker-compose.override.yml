@@ -41,6 +41,10 @@ services:
     ports:
       - "5004:3000"
 
+  gateway:
+    image: soluto/tweek-secure-gateway
+    build: ../services/secure-gateway
+
   zap-smoke:
     image: soluto/zap
     build: ../deployments/dev/zap
@@ -48,6 +52,9 @@ services:
       driver: "json-file"
     volumes:
       - ../deployments/dev/zap/session/smoke:/root/.ZAP/session/smoke
+    links:
+      - gateway:api
+      - gateway:authoring
 
   zap-e2e:
     image: soluto/zap
@@ -56,6 +63,9 @@ services:
       driver: "json-file"
     volumes:
       - ../deployments/dev/zap/session/e2e:/root/.ZAP/session/e2e
+    links:
+      - gateway:api
+      - gateway:authoring
 
   smoke-tests:
     build:

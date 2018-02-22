@@ -15,6 +15,14 @@ services:
     image: soluto/tweek-editor
     build: ../../services/editor
     depends_on: 
+      - gateway
+
+  gateway:
+    image: soluto/tweek-secure-gateway
+    build: ../../services/secure-gateway
+    depends_on:
+      - minio
+      - nats
       - api
       - authoring
   

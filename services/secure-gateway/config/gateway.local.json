@@ -1,0 +1,34 @@
+{
+    "upstreams": {
+        "api": "http://localhost:4003",
+        "authoring": "http://localhost:4004"
+    },
+    "security": {
+        "tweekSecretKeyPath": "../../deployments/dev/ssh/tweekgit",
+        "policyStorage": {
+            "minioEndpoint": "localhost:4007",
+            "minioBucketName": "tweek-casbin-policies",
+            "minioAccessKey": "AKIAIOSFODNN7EXAMPLE",
+            "minioSecretKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+            "minioSecure": false,
+            "minioPolicyObjectName": "policy.csv",
+            "natsEndpoint": "nats://localhost:4222",
+            "natsSubject": "casbin-policy-subject",
+            "casbinModel": "./model.conf"
+        },
+        "cors": {
+            "Enabled": true,
+            "MaxAge": 60,
+            "AllowedOrigins": null,
+            "AllowedMethods": [ "GET", "POST", "PUT", "PATCH", "DELETE" ],
+            "AllowedHeaders": null,
+            "AllowCredentials": true
+        }
+    },
+    "server": {
+        "ports": [
+            3000,
+            8080
+        ]
+    }
+}

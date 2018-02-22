@@ -26,5 +26,8 @@
     "mocha": "^4.0.1",
     "nconf": "^0.9.1",
     "supertest": "^3.0.0"
+  },
+  "dependencies": {
+    "node-fetch": "^2.0.0"
   }
 }

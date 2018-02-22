@@ -1,0 +1,28 @@
+{
+    "upstreams": {
+        "api": "http://api",
+        "authoring": "http://authoring:3000"
+    },
+    "security": {
+        "enforce": true,
+        "policyStorage": {
+            "casbinModel": "/model.conf"
+        }
+    },
+    "v1Hosts": {
+        "api": [
+            "api",
+            "api.localtest.me"
+        ],
+        "authoring": [
+            "authoring",
+            "authoring.localtest.me"
+        ]        
+    },
+    "server": {
+        "ports": [
+            3000,
+            80
+        ]
+    }
+}
