@@ -1,5 +1,8 @@
 version: '2'
 services:
+  keys:
+    image: $KEYS_IMAGE
+
   git:
     image: $REPOSITORY_IMAGE
     environment:
