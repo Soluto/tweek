@@ -131,7 +131,7 @@ services:
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOPOLICYOBJECTNAME=policy.csv
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_NATSENDPOINT=nats://nats:4222
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_NATSSUBJECT=version
-      - TWEEKGATEWAY_SECURITY_TWEEKSECRETKEYPATH=/run/secrets/tweek_ssh_private_key
+      - TWEEKGATEWAY_SECURITY_TWEEKSECRETKEY_PATH=/run/secrets/tweek_ssh_private_key
       - CONFIG_FILE_PATH=/config/gateway.json
     secrets:
       - tweek_ssh_private_key
