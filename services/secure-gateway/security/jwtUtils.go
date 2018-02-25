@@ -3,11 +3,11 @@ package security
 import (
 	"crypto/x509"
 	"encoding/pem"
-	"io/ioutil"
 	"log"
 	"sync"
 	"time"
 
+	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -27,12 +27,14 @@ type JWTToken interface {
 	SetToken(tokenStr string)
 }
 
+// GetToken gets token
 func (t *JWTTokenData) GetToken() string {
 	t.lock.RLock()
 	defer t.lock.RUnlock()
 	return t.tokenStr
 }
 
+// SetToken sets token
 func (t *JWTTokenData) SetToken(tokenStr string) {
 	t.lock.Lock()
 	defer t.lock.Unlock()
@@ -42,8 +44,8 @@ func (t *JWTTokenData) SetToken(tokenStr string) {
 const expirationPeriod = 24
 
 // InitJWT - inits jwt
-func InitJWT(keyPath string) JWTToken {
-	key, err := getPrivateKeyFromFile(keyPath)
+func InitJWT(keyEnv *appConfig.EnvInlineOrPath) JWTToken {
+	key, err := getPrivateKey(keyEnv)
 	if err != nil {
 		log.Panicln("Private key retrieving failed:", err)
 	}
@@ -83,8 +85,8 @@ func setExpirationTimer(token *JWTTokenData, key interface{}) {
 	}
 }
 
-func getPrivateKeyFromFile(filePath string) (interface{}, error) {
-	pemFile, err := ioutil.ReadFile(filePath)
+func getPrivateKey(keyEnv *appConfig.EnvInlineOrPath) (interface{}, error) {
+	pemFile, err := appConfig.HandleEnvInlineOrPath(keyEnv)
 	if err != nil {
 		return nil, err
 	}

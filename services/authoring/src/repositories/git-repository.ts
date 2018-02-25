@@ -22,7 +22,7 @@ async function listFiles(repo: git.Repository, filter: (path: string) => boolean
     const entries: string[] = [];
     walker.on('entry', (entry: any) => {
       const entryPath = entry.path().replace(/\\/g, '/');
-      if (filter(entryPath)) return entries.push(entryPath);
+      if (filter(entryPath)) { return entries.push(entryPath); }
       return null;
     });
     walker.on('end', () => resolve(entries));
@@ -86,12 +86,11 @@ export default class GitRepository {
     const historyEntries = await Promise.all(
       fileNames.map(async (file) => {
         const options = [file];
-        if (since) options.unshift(`--since="${since}"`);
+        if (since) { options.unshift(`--since="${since}"`); }
 
         const history = await new Promise<any>((resolve, reject) => {
           this._simpleRepo.log(options, (err, log) => {
-            if (err) reject(err);
-            else resolve(log);
+            if (err) { reject(err); } else { resolve(log); }
           });
         });
         return history.all;
@@ -149,11 +148,12 @@ export default class GitRepository {
     const head = await this.getLastCommit();
     const diff = await git.Diff.treeToIndex(this._repo, await head.getTree(), null, null);
     const patches = await diff.patches();
-    if (patches.length === 0) return null;
+    if (patches.length === 0) { return null; }
 
     const author = git.Signature.now(name, email);
     const pusher = git.Signature.now('tweek-editor', 'tweek-editor@tweek');
-    var commitId = await this._repo.createCommitOnHead([], author, pusher, message);
+    const commitId = await this._repo.createCommitOnHead([], author, pusher, message);
+
     await this._pushRepositoryChanges(message);
     return commitId;
   }
@@ -199,15 +199,14 @@ export default class GitRepository {
         }
         resolve();
       }));
-    }
-    catch (ex) {
-      if (ex.includes("400 Bad Request")) {
-        throw new ValidationError("failed validation:" + ex);
+    } catch (ex) {
+      if (ex.includes('400 Bad Request')) {
+        throw new ValidationError('failed validation:' + ex);
       }
-      if (ex.includes("Updates were rejected because the tip of your current branch is behind") || ex.includes('(e.g., \'git pull ...\') before pushing again.')) {
+      if (ex.includes('Updates were rejected because the tip of your current branch is behind') || ex.includes('(e.g., \'git pull ...\') before pushing again.')) {
         throw new RepoOutOfDateError(ex);
       }
-      throw 'unknown error';
+      throw new Error('unknown error');
     }
 
     const isSynced = await this.isSynced();

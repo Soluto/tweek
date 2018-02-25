@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 using Minio.Exceptions;
 using Tweek.Publishing.Service.Packing;
 using Tweek.Publishing.Service.Storage;
+using Tweek.Publishing.Service.Sync.Uploaders;
 using Tweek.Publishing.Service.Utils;
 
 namespace Tweek.Publishing.Service.Sync
@@ -13,25 +15,14 @@ namespace Tweek.Publishing.Service.Sync
     public class StorageSynchronizer
     {
         private readonly IObjectStorage _client;
-        private readonly Packer _packer;
         private readonly ShellHelper.ShellExecutor _shellExecutor;
 
-        public StorageSynchronizer(IObjectStorage storageClient, ShellHelper.ShellExecutor shellExecutor, Packer packer)
+        public List<IUploader> Uploaders = new List<IUploader>();
+
+        public StorageSynchronizer(IObjectStorage storageClient, ShellHelper.ShellExecutor shellExecutor)
         {
             _client = storageClient;
-            _packer = packer;
             _shellExecutor = shellExecutor;
-        }
-
-        private static Func<string, string> GetZipReader(ZipArchive zip)
-        {
-            return fileName =>
-            {
-                using (var sr = new StreamReader(zip.GetEntry(fileName).Open()))
-                {
-                    return sr.ReadToEnd();
-                }
-            };
         }
 
         public async Task Sync(string commitId, bool checkForStaleRevision=true)
@@ -45,14 +36,18 @@ namespace Tweek.Publishing.Service.Sync
             {
             }
 
-            if (!String.IsNullOrWhiteSpace(versionsBlob?.Latest)){
+            if (!String.IsNullOrWhiteSpace(versionsBlob?.Latest))
+            {
                 if (versionsBlob.Latest == commitId) return;
                 if (checkForStaleRevision)
                 {
-                    try{
+                    try
+                    {
                         await _shellExecutor.ExecTask("git", $"merge-base --is-ancestor {versionsBlob.Latest} {commitId}");
                     }
-                    catch (Exception ex){
+                    catch (Exception)
+                    {
+            
                         throw new StaleRevisionException(commitId, versionsBlob.Latest);
                     }
                 }
@@ -64,31 +59,10 @@ namespace Tweek.Publishing.Service.Sync
                 Previous = versionsBlob?.Latest,
             };
 
-            var (p, exited) = _shellExecutor("git", $"archive --format=zip {commitId}");
-            using (var ms = new MemoryStream())
+            foreach (var uploader in Uploaders)
             {
-                await p.StandardOutput.BaseStream.CopyToAsync(ms);
-                ms.Position = 0;
-                await exited;
+                await uploader.Upload(commitId);
 
-                if (p.ExitCode != 0)
-                {
-                    throw new Exception("Git archive failed")
-                    {
-                        Data =
-                        {
-                            ["stderr"] = await p.StandardError.ReadToEndAsync(),
-                            ["code"] = p.ExitCode,
-                        },
-                    };
-                }
-
-                using (var zip = new ZipArchive(ms, ZipArchiveMode.Read, false))
-                {
-                    var files = zip.Entries.Select(x => x.FullName).ToList();
-                    var bundle = _packer.Pack(files, GetZipReader(zip));
-                    await _client.PutJSON(commitId, bundle);
-                }
             }
 
             await _client.PutJSON("versions", newVersionBlob);

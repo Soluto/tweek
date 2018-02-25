@@ -19,7 +19,7 @@ namespace Tweek.Drivers.Rules.Minio
             var minioSettings = new MinioSettings
             {
                 Endpoint = minioConfiguration.GetValue<string>("Endpoint"),
-                Bucket = minioConfiguration.GetValue("Bucket", "tweek-ruleset"),
+                Bucket = minioConfiguration.GetValue("Bucket", "tweek"),
                 AccessKey = minioConfiguration.GetValueFromEnvOrFile("AccessKey", "AccessKeyPath"),
                 SecretKey = minioConfiguration.GetValueFromEnvOrFile("SecretKey", "SecretKeyPath"),
                 IsSecure = minioConfiguration.GetValue("Secure", false),
