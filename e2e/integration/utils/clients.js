@@ -2,6 +2,10 @@ const nconf = require('nconf');
 const supertest = require('supertest');
 const fs = require('fs');
 const getToken = require('./getToken');
+const { promisify } = require('util');
+
+const exists = promisify(fs.exists);
+const readFile = promisify(fs.readFile);
 
 const interceptAfter = (target, fn, methodNames) => {
   let proxy = methodNames.reduce(
@@ -43,7 +47,7 @@ const getEnv = async (varName, base64) => {
   const value =
     (!base64 && inlineVar) ||
     (base64 && inlineVar && new Buffer(inlineVar, 'base64')) ||
-    (varFilePath && (await fs.exists(varFilePath)) && (await fs.readFile(varFilePath)));
+    (varFilePath && (await exists(varFilePath)) && (await readFile(varFilePath)));
   return value;
 };
 
