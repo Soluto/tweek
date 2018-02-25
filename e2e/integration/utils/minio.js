@@ -20,18 +20,18 @@ module.exports.getObjectContentFromMinio = async objectName => {
   return await new Promise((resolve, reject) =>
     mc.getObject(nconf.get('MINIO_BUCKET'), objectName, (err, stream) => {
       if (err) {
-        reject(err);
+        return reject(err);
       }
       if (!stream) {
-        reject('stream is null.');
+        return reject('stream is null.');
       }
       const contentChuncks = [];
       stream.on('data', chunk => contentChuncks.push(chunk));
       stream.on('end', () => {
-        resolve(contentChuncks.join(''));
+        return resolve(contentChuncks.join(''));
       });
       stream.on('error', err => {
-        reject(err);
+        return reject(err);
       });
     }),
   );
