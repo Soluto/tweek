@@ -21,7 +21,7 @@ func TestExtractFromRequest(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		wantObj map[string]string
+		wantObj PolicyResource
 		wantSub string
 		wantAct string
 		wantErr error
@@ -31,7 +31,7 @@ func TestExtractFromRequest(t *testing.T) {
 			args: args{
 				r: createTestRequest("POST", "https://gateway.tweek.com/keys", userInfo),
 			},
-			wantObj: map[string]string{"": "/keys"},
+			wantObj: PolicyResource{Item: "/keys", Contexts: map[string]string{}},
 			wantSub: "a@b.com",
 			wantAct: "write",
 			wantErr: nil,
@@ -41,7 +41,7 @@ func TestExtractFromRequest(t *testing.T) {
 			args: args{
 				r: createTestRequest("GET", "https://gateway.tweek.com/values", userInfo),
 			},
-			wantObj: map[string]string{"": "/values"},
+			wantObj: PolicyResource{Item: "/values", Contexts: map[string]string{}},
 			wantSub: "a@b.com",
 			wantAct: "read",
 			wantErr: nil,
@@ -51,7 +51,7 @@ func TestExtractFromRequest(t *testing.T) {
 			args: args{
 				r: createTestRequest("GET", "https://gateway.tweek.com/revision-history", userInfo),
 			},
-			wantObj: map[string]string{"": "/revision-history"},
+			wantObj: PolicyResource{Item: "/revision-history", Contexts: map[string]string{}},
 			wantSub: "a@b.com",
 			wantAct: "history",
 			wantErr: nil,
@@ -61,7 +61,7 @@ func TestExtractFromRequest(t *testing.T) {
 			args: args{
 				r: createTestRequest("GET", "https://gateway.tweek.com/search-index", userInfo),
 			},
-			wantObj: map[string]string{"": "/search-index"},
+			wantObj: PolicyResource{Item: "/search-index", Contexts: map[string]string{}},
 			wantSub: "a@b.com",
 			wantAct: "get search index",
 			wantErr: nil,
@@ -71,16 +71,16 @@ func TestExtractFromRequest(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			gotSub, gotAct, gotObj, gotErr := ExtractFromRequest(tt.args.r)
 			if !reflect.DeepEqual(gotObj, tt.wantObj) {
-				t.Errorf("ExtractFromRequest() gotObj = %v, want %v", gotObj, tt.wantObj)
+				t.Errorf("ExtractFromRequest() gotObj = %q, want %q", gotObj, tt.wantObj)
 			}
 			if gotSub != tt.wantSub {
-				t.Errorf("ExtractFromRequest() gotSub = %v, want %v", gotSub, tt.wantSub)
+				t.Errorf("ExtractFromRequest() gotSub = %q, want %q", gotSub, tt.wantSub)
 			}
 			if gotAct != tt.wantAct {
-				t.Errorf("ExtractFromRequest() gotAct = %v, want %v", gotAct, tt.wantAct)
+				t.Errorf("ExtractFromRequest() gotAct = %q, want %q", gotAct, tt.wantAct)
 			}
 			if gotErr != tt.wantErr {
-				t.Errorf("ExtractFromRequest() gotErr = %v, want %v", gotErr, tt.wantErr)
+				t.Errorf("ExtractFromRequest() gotErr = %q, want %q", gotErr, tt.wantErr)
 			}
 		})
 	}
@@ -99,7 +99,7 @@ func Test_extractContextsFromRequest(t *testing.T) {
 	tests := []struct {
 		name     string
 		args     args
-		wantCtxs map[string]string
+		wantCtxs PolicyResource
 		wantErr  bool
 	}{
 		{
@@ -107,7 +107,7 @@ func Test_extractContextsFromRequest(t *testing.T) {
 			args: args{
 				r: createRequest("GET", "/values/key1?user=alice", "alice"),
 			},
-			wantCtxs: map[string]string{"": "/values/key1", "user": "self"},
+			wantCtxs: PolicyResource{Item: "/values/key1", Contexts: map[string]string{"user": "self"}},
 			wantErr:  false,
 		},
 		{
@@ -115,7 +115,7 @@ func Test_extractContextsFromRequest(t *testing.T) {
 			args: args{
 				r: createRequest("GET", "/values/key1?user=alice&device=1234", "alice"),
 			},
-			wantCtxs: map[string]string{"": "/values/key1", "user": "self", "device": "1234"},
+			wantCtxs: PolicyResource{Item: "/values/key1", Contexts: map[string]string{"user": "self", "device": "1234"}},
 			wantErr:  false,
 		},
 		{
@@ -123,7 +123,7 @@ func Test_extractContextsFromRequest(t *testing.T) {
 			args: args{
 				r: createRequest("GET", "/context/user/alice", "alice"),
 			},
-			wantCtxs: map[string]string{"user": "self"},
+			wantCtxs: PolicyResource{Contexts: map[string]string{"user": "self"}},
 			wantErr:  false,
 		},
 		{
@@ -131,7 +131,7 @@ func Test_extractContextsFromRequest(t *testing.T) {
 			args: args{
 				r: createRequest("POST", "/context/user/alice", "alice"),
 			},
-			wantCtxs: map[string]string{"user": "self"},
+			wantCtxs: PolicyResource{Contexts: map[string]string{"user": "self"}},
 			wantErr:  false,
 		},
 		{
@@ -139,7 +139,7 @@ func Test_extractContextsFromRequest(t *testing.T) {
 			args: args{
 				r: createRequest("POST", "/context/user/alice", "alice"),
 			},
-			wantCtxs: map[string]string{"user": "self"},
+			wantCtxs: PolicyResource{Contexts: map[string]string{"user": "self"}},
 			wantErr:  false,
 		},
 	}

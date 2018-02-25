@@ -61,7 +61,7 @@ func TestNewModelsWrite(t *testing.T) {
 	type args struct {
 		request  *http.Request
 		user     string
-		resource map[string]string
+		resource security.PolicyResource
 		action   string
 	}
 	tests := []struct {
@@ -74,7 +74,7 @@ func TestNewModelsWrite(t *testing.T) {
 			args: args{
 				request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"p","V0":"allow1@security.test","V1":"/target","V2":"read","V3":"allow","V4":"","V5":""}]`)),
 				user:     "allow1@security.test",
-				resource: map[string]string{"": "/target"},
+				resource: security.PolicyResource{Contexts: map[string]string{}, Item: "/target"},
 				action:   "read",
 			},
 			want: true,
@@ -84,7 +84,7 @@ func TestNewModelsWrite(t *testing.T) {
 			args: args{
 				request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"p","V0":"allow1@security.test","V1":"/target","V2":"read","V3":"deny","V4":"","V5":""}]`)),
 				user:     "allow1@security.test",
-				resource: map[string]string{"": "/target"},
+				resource: security.PolicyResource{Contexts: map[string]string{}, Item: "/target"},
 				action:   "read",
 			},
 			want: false,
@@ -94,7 +94,7 @@ func TestNewModelsWrite(t *testing.T) {
 			args: args{
 				request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"g","V0":"allow1@security.test","V1":"role_users","V2":"","V3":"","V4":"","V5":""},{"PType":"p","V0":"role_users","V1":"/target","V2":"read","V3":"allow","V4":"","V5":""}]`)),
 				user:     "allow1@security.test",
-				resource: map[string]string{"": "/target"},
+				resource: security.PolicyResource{Contexts: map[string]string{}, Item: "/target"},
 				action:   "read",
 			},
 			want: true,

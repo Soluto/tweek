@@ -56,24 +56,24 @@ const (
 // KeyOrProperty is the name of the key in the map, which holds either key or property
 const KeyOrProperty = ""
 
-func extractContextsFromValuesRequest(r *http.Request, u UserInfo) (ctxs map[string]string, err error) {
+func extractContextsFromValuesRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
 	uri := r.URL
 
-	ctxs = make(map[string]string)
-	ctxs[KeyOrProperty] = uri.EscapedPath()
+	ctxs = PolicyResource{Contexts: map[string]string{}}
+	ctxs.Item = uri.EscapedPath()
 	for key, value := range uri.Query() {
 		// checking for special chars - these are not context identity names
 		if !strings.ContainsAny(key, "$.") {
 			identityID := normalizeIdentityID(url.PathEscape(value[0]), u)
-			ctxs[url.PathEscape(key)] = identityID
+			ctxs.Contexts[url.PathEscape(key)] = identityID
 		}
 	}
 
 	return
 }
 
-func extractContextFromContextRequest(r *http.Request, u UserInfo) (ctx map[string]string, err error) {
-	ctx = make(map[string]string)
+func extractContextFromContextRequest(r *http.Request, u UserInfo) (ctx PolicyResource, err error) {
+	ctx = PolicyResource{Contexts: map[string]string{}}
 	path := r.URL.EscapedPath()
 	if !strings.HasPrefix(path, "/context") {
 		err = fmt.Errorf("ExtractContextFromContextRequest: expected context request, but got %v", path)
@@ -92,10 +92,10 @@ func extractContextFromContextRequest(r *http.Request, u UserInfo) (ctx map[stri
 			return
 		}
 		prop := segments[contextProp]
-		ctx[""] = prop
-		ctx[identityType] = identityID
+		ctx.Item = prop
+		ctx.Contexts[identityType] = identityID
 	case "GET", "POST":
-		ctx[identityType] = identityID
+		ctx.Contexts[identityType] = identityID
 	default:
 		err = fmt.Errorf("ExtractContextFromContextRequest: unexptected method %v", method)
 	}
@@ -113,14 +113,14 @@ func normalizeIdentityID(id string, u UserInfo) string {
 	return identityID
 }
 
-func extractContextsFromOtherRequest(r *http.Request, u UserInfo) (ctxs map[string]string, err error) {
-	ctxs = make(map[string]string)
-	ctxs[KeyOrProperty] = r.URL.EscapedPath()
+func extractContextsFromOtherRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
+	ctxs = PolicyResource{Contexts: map[string]string{}}
+	ctxs.Item = r.URL.EscapedPath()
 
 	return
 }
 
-func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs map[string]string, err error) {
+func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
 	path := r.URL.EscapedPath()
 	if strings.HasPrefix(path, "/context") {
 		return extractContextFromContextRequest(r, u)
@@ -132,7 +132,7 @@ func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs map[string]st
 }
 
 // ExtractFromRequest extracts object and action from request
-func ExtractFromRequest(r *http.Request) (sub string, act string, obj map[string]string, err error) {
+func ExtractFromRequest(r *http.Request) (sub string, act string, obj PolicyResource, err error) {
 	user, ok := r.Context().Value(UserInfoKey).(UserInfo)
 	if !ok {
 		err = errors.New("Missing user information in request")
@@ -142,12 +142,12 @@ func ExtractFromRequest(r *http.Request) (sub string, act string, obj map[string
 	sub = user.Email()
 	act, err = extractActionFromRequest(r)
 	if err != nil {
-		return "", "", map[string]string{}, err
+		return "", "", PolicyResource{Contexts: map[string]string{}}, err
 	}
 
 	obj, err = extractContextsFromRequest(r, user)
 	if err != nil {
-		return "", "", map[string]string{}, err
+		return "", "", PolicyResource{Contexts: map[string]string{}}, err
 	}
 
 	err = nil

@@ -8,104 +8,105 @@ import (
 var TestCases = []struct {
 	name      string
 	given     string
-	parsed    map[string]string
-	resource  map[string]string
+	parsed    PolicyResource
+	resource  PolicyResource
 	wantMatch bool
 	wantError bool
 }{
 	{
 		name:      "Empty",
 		given:     "",
-		parsed:    map[string]string{},
-		resource:  map[string]string{},
-		wantMatch: true,
+		parsed:    PolicyResource{Contexts: map[string]string{}},
+		resource:  PolicyResource{},
+		wantMatch: false,
+		wantError: true,
 	},
 	{
 		name:      "Single Key",
 		given:     "/path/to/key",
-		parsed:    map[string]string{"": "/path/to/key"},
-		resource:  map[string]string{"": "/path/to/key"},
+		parsed:    PolicyResource{Contexts: map[string]string{}, Item: "/path/to/key"},
+		resource:  PolicyResource{Contexts: map[string]string{}, Item: "/path/to/key"},
 		wantMatch: true,
 	},
 	{
 		name:      "Single context property",
 		given:     "property",
-		parsed:    map[string]string{"": "property"},
-		resource:  map[string]string{"": "property"},
+		parsed:    PolicyResource{Contexts: map[string]string{}, Item: "property"},
+		resource:  PolicyResource{Contexts: map[string]string{}, Item: "property"},
 		wantMatch: true,
 	},
 	{
 		name:      "Single context with context property",
 		given:     "user=test:prop",
-		parsed:    map[string]string{"user": "test", "": "prop"},
-		resource:  map[string]string{"user": "test", "": "prop"},
+		parsed:    PolicyResource{Contexts: map[string]string{"user": "test"}, Item: "prop"},
+		resource:  PolicyResource{Contexts: map[string]string{"user": "test"}, Item: "prop"},
 		wantMatch: true,
 	},
 	{
 		name:      "Two contexts with context prop",
 		given:     "user=test+device=test2:prop",
-		parsed:    map[string]string{"user": "test", "device": "test2", "": "prop"},
-		resource:  map[string]string{"user": "test", "device": "test2", "": "prop"},
+		parsed:    PolicyResource{Contexts: map[string]string{"user": "test", "device": "test2"}, Item: "prop"},
+		resource:  PolicyResource{Contexts: map[string]string{"user": "test", "device": "test2"}, Item: "prop"},
 		wantMatch: true,
 	},
 	{
 		name:      "Multiple contexts with context prop",
 		given:     "user=test+device=test2+technician=test3:prop",
-		parsed:    map[string]string{"user": "test", "device": "test2", "technician": "test3", "": "prop"},
-		resource:  map[string]string{"user": "test", "device": "test2", "technician": "test3", "": "prop"},
+		parsed:    PolicyResource{Contexts: map[string]string{"user": "test", "device": "test2", "technician": "test3"}, Item: "prop"},
+		resource:  PolicyResource{Contexts: map[string]string{"user": "test", "device": "test2", "technician": "test3"}, Item: "prop"},
 		wantMatch: true,
 	},
 	{
 		name:      "Single context with values resource",
 		given:     "user=test:/values/path/to/some/key",
-		parsed:    map[string]string{"user": "test", "": "/values/path/to/some/key"},
-		resource:  map[string]string{"user": "test", "": "/values/path/to/some/key"},
+		parsed:    PolicyResource{Contexts: map[string]string{"user": "test"}, Item: "/values/path/to/some/key"},
+		resource:  PolicyResource{Contexts: map[string]string{"user": "test"}, Item: "/values/path/to/some/key"},
 		wantMatch: true,
 	},
 	{
 		name:      "Two contexts with values resource",
 		given:     "user=test+device=test2+technician=test3:/values/path/to/some/key",
-		parsed:    map[string]string{"user": "test", "device": "test2", "technician": "test3", "": "/values/path/to/some/key"},
-		resource:  map[string]string{"user": "test", "device": "test2", "technician": "test3", "": "/values/path/to/some/key"},
+		parsed:    PolicyResource{Contexts: map[string]string{"user": "test", "device": "test2", "technician": "test3"}, Item: "/values/path/to/some/key"},
+		resource:  PolicyResource{Contexts: map[string]string{"user": "test", "device": "test2", "technician": "test3"}, Item: "/values/path/to/some/key"},
 		wantMatch: true,
 	},
 	{
 		name:      "Mismatch",
 		given:     "user=test:/values/path/to/some/key",
-		parsed:    map[string]string{"user": "test", "": "/values/path/to/some/key"},
-		resource:  map[string]string{"device": "test2", "": "/values/path/to/some/key"},
+		parsed:    PolicyResource{Contexts: map[string]string{"user": "test"}, Item: "/values/path/to/some/key"},
+		resource:  PolicyResource{Contexts: map[string]string{"device": "test2"}, Item: "/values/path/to/some/key"},
 		wantMatch: false,
 		wantError: false,
 	},
 	{
 		name:      "Error",
 		given:     "user=test:",
-		parsed:    map[string]string(nil),
-		resource:  map[string]string{"user": "test", "": "/values/path/to/some/key"},
+		parsed:    PolicyResource{Contexts: map[string]string{}},
+		resource:  PolicyResource{Contexts: map[string]string{"user": "test"}, Item: "/values/path/to/some/key"},
 		wantMatch: false,
 		wantError: true,
 	},
 	{
 		name:      "Wildcard for any resource with given context",
 		given:     "user=test:*",
-		parsed:    map[string]string{"user": "test", "": "*"},
-		resource:  map[string]string{"user": "test", "": "/values/path/to/some/key"},
+		parsed:    PolicyResource{Contexts: map[string]string{"user": "test"}, Item: "*"},
+		resource:  PolicyResource{Contexts: map[string]string{"user": "test"}, Item: "/values/path/to/some/key"},
 		wantMatch: true,
 		wantError: false,
 	},
 	{
 		name:      "Wildcard for context with the given key",
 		given:     "user=*:/values/path/to/some/key",
-		parsed:    map[string]string{"user": "*", "": "/values/path/to/some/key"},
-		resource:  map[string]string{"user": "test", "": "/values/path/to/some/key"},
+		parsed:    PolicyResource{Contexts: map[string]string{"user": "*"}, Item: "/values/path/to/some/key"},
+		resource:  PolicyResource{Contexts: map[string]string{"user": "test"}, Item: "/values/path/to/some/key"},
 		wantMatch: true,
 		wantError: false,
 	},
 	{
 		name:      "Wildcard for context and a key",
 		given:     "user=*:/values/*",
-		parsed:    map[string]string{"user": "*", "": "/values/*"},
-		resource:  map[string]string{"user": "test", "": "/values/path/to/some/key"},
+		parsed:    PolicyResource{Contexts: map[string]string{"user": "*"}, Item: "/values/*"},
+		resource:  PolicyResource{Contexts: map[string]string{"user": "test"}, Item: "/values/path/to/some/key"},
 		wantMatch: true,
 		wantError: false,
 	},
@@ -118,7 +119,7 @@ func Test_parseResource(t *testing.T) {
 	type testcase struct {
 		name    string
 		args    args
-		want    map[string]string
+		want    PolicyResource
 		wantErr bool
 	}
 
@@ -135,17 +136,14 @@ func Test_parseResource(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotKeyOrProp, gotResource, gotErr := parseResource(tt.args.resource)
+			got, gotErr := parseResource(tt.args.resource)
 			if (gotErr != nil) != tt.wantErr {
 				t.Errorf("parseResource() error = %v, wantErr %v", gotErr, tt.wantErr)
 				return
 			}
 
-			if gotResource != nil && len(gotKeyOrProp) != 0 {
-				gotResource[KeyOrProperty] = gotKeyOrProp
-			}
-			if !reflect.DeepEqual(gotResource, tt.want) {
-				t.Errorf("parseResource() = %#v, want %#v", gotResource, tt.want)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("parseResource() = %#v, want %#v", got, tt.want)
 			}
 		})
 	}
@@ -153,7 +151,7 @@ func Test_parseResource(t *testing.T) {
 
 func Test_matchResourcesFunc(t *testing.T) {
 	type args struct {
-		rr map[string]string
+		rr PolicyResource
 		pr string
 	}
 	type testcase struct {
