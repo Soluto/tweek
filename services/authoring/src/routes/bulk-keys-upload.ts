@@ -8,6 +8,7 @@ import { FileParam, Errors, ServiceContext, Context, PUT, Path, QueryParam } fro
 import { Authorize } from '../security/authorize';
 import { PERMISSIONS } from '../security/permissions/consts';
 import KeysRepository from '../repositories/keys-repository';
+import { addOid } from '../utils/response-utils';
 
 const supportedPaths = [/^manifests\/.+?\.json/, /^implementations\/.+\/.+?\./];
 const isValidPath = x => R.any(<any>R.test((<any>R).__, x))(supportedPaths);
@@ -49,6 +50,7 @@ export class BulkKeysUpload {
       throw new Errors.BadRequestError(`invalid folder structure:${fileEntries.map(x => x.name).join(',')}`);
     }
 
-    await this.keysRepository.updateBulkKeys(fileEntries, { name, email });
+    const oid = await this.keysRepository.updateBulkKeys(fileEntries, { name, email });
+    addOid(this.context.response, oid);
   }
 }

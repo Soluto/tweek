@@ -29,6 +29,15 @@
             "isBuildCommand": true,
             "showOutput": "always",
             "problemMatcher": "$msCompile"
+        },
+        {
+            "taskName": "publishing-verifier-build",
+            "command": "dotnet",
+            "isShellCommand": true,
+            "args": ["build", "services/publishing/Tweek.Publishing.Verifier/Tweek.Publishing.Verifier.csproj"],
+            "isBuildCommand": true,
+            "showOutput": "always",
+            "problemMatcher": "$msCompile"
         }
     ]
 }

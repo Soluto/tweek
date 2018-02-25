@@ -23,10 +23,4 @@ describe('Secure Gateway v2', () => {
       .get('/version')
       .expect('X-GATEWAY', 'true')
       .expect(200));
-
-  it('checks that the management calls are proxied through gateway', async () =>
-    await clients.management
-      .get('/version')
-      .expect('X-GATEWAY', 'true')
-      .expect(200));
 });

@@ -1,5 +1,8 @@
 const nconf = require('nconf');
 const supertest = require('supertest');
+const fs = require('fs');
+const { promisify } = require('util');
+const readFile = promisify(fs.readFile);
 const getToken = require('./getToken');
 
 const interceptAfter = (target, fn, methodNames) => {
@@ -26,20 +29,23 @@ nconf
   .argv()
   .env()
   .defaults({
-    AUTHORING_URL: 'http://authoring.localtest.me:4009',
-    API_URL: 'http://api.localtest.me:4009',
-    MANAGEMENT_URL: 'http://management.localtest.me:4009',
-    GATEWAY_URL: 'http://localhost:4009',
+    AUTHORING_URL: 'http://authoring.localtest.me:4099',
+    API_URL: 'http://api.localtest.me:4099',
+    GATEWAY_URL: 'http://localhost:4099',
     GIT_PRIVATE_KEY_PATH: '../../deployments/dev/ssh/tweekgit',
   });
 
 module.exports.init = async function() {
-  const token = await getToken(nconf.get('GIT_PRIVATE_KEY_PATH'));
+  const inlineKey = nconf.get('GIT_PRIVATE_KEY_INLINE');
+  const key =
+    (inlineKey && new Buffer(inlineKey, 'base64')) ||
+    (await readFile(nconf.get('GIT_PRIVATE_KEY_PATH')));
+
+  const token = await getToken(key);
   const setBearerToken = t => t.set('Authorization', `Bearer ${token}`);
   return {
     api: createClient(nconf.get('API_URL'), setBearerToken),
     authoring: createClient(nconf.get('AUTHORING_URL'), setBearerToken),
-    management: createClient(nconf.get('MANAGEMENT_URL'), setBearerToken),
     gateway: createClient(nconf.get('GATEWAY_URL'), setBearerToken),
   };
 };

@@ -164,7 +164,6 @@ namespace Tweek.ApiService
                 loggerFactory.AddConsole(Configuration.GetSection("Logging"));
                 loggerFactory.AddDebug();
             }
-
             app.InstallAddons(Configuration);
             app.UseAuthentication();
             app.UseMetrics();

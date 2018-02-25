@@ -4,7 +4,7 @@ import assert from 'assert';
 import { expect } from 'chai';
 import { dataComp, dataField, attributeSelector } from './selector-utils';
 
-const timeout = 5000;
+const timeout = 15000;
 
 const addKeyPage = dataComp('add-key-page');
 const keyEditPage = dataComp('key-edit-page');
@@ -136,7 +136,17 @@ class Key {
   commitChanges(selector = saveChangesButton) {
     if (selector === saveChangesButton) assert.ok(this.hasChanges, 'no changes to commit');
     browser.click(selector);
-    browser.waitUntil(() => !this.hasChanges && !this.isSaving, timeout, 'changes were not saved');
+    browser.waitUntil(
+      () => {
+        try {
+          return !this.hasChanges && !this.isSaving;
+        } catch (ex) {
+          return false;
+        }
+      },
+      timeout,
+      'changes were not saved',
+    );
     return this;
   }
 

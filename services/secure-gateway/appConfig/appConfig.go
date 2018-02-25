@@ -9,16 +9,14 @@ import (
 
 // Upstreams is the list of upstrem URLs.
 type Upstreams struct {
-	API        string
-	Authoring  string
-	Management string
+	API       string
+	Authoring string
 }
 
 // V1Hosts is the list of v1 hosts
 type V1Hosts struct {
-	API        []string
-	Authoring  []string
-	Management []string
+	API       []string
+	Authoring []string
 }
 
 // Server section holds the server related configuration

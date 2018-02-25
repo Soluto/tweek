@@ -34,7 +34,7 @@ nconf
     PORT: 3001,
     TWEEK_API_HOSTNAME: 'http://api',
     AUTHORING_API_HOSTNAME: 'http://authoring:3000',
-    MANAGEMENT_HOSTNAME: 'http://management:3000',
+    PUBLISHING_HOSTNAME: 'http://publishing',
     VAPID_KEYS: './vapid/keys.json',
   });
 
@@ -44,7 +44,7 @@ const PORT = nconf.get('PORT');
 const serviceEndpoints = {
   api: nconf.get('TWEEK_API_HOSTNAME'),
   authoring: nconf.get('AUTHORING_API_HOSTNAME'),
-  management: nconf.get('MANAGEMENT_HOSTNAME'),
+  publishing: nconf.get('PUBLISHING_HOSTNAME'),
 };
 
 GitContinuousUpdater.onUpdate(serviceEndpoints.authoring)
@@ -88,7 +88,7 @@ const startServer = async () => {
   server.listen(PORT, () => console.log('Listening on port %d', server.address().port));
 };
 
-startServer().catch(reason => {
+startServer().catch((reason) => {
   console.error(reason);
   // process.exit();
 });
