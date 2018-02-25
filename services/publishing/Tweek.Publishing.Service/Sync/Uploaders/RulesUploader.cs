@@ -54,16 +54,15 @@ namespace Tweek.Publishing.Service.Sync.Uploaders
             }            
         }
 
-        private static Func<string, string> GetZipReader(ZipArchive zip)
-        {
-            return fileName =>
+        private static Func<string, string> GetZipReader(ZipArchive zip) => 
+            fileName => 
             {
                 using (var sr = new StreamReader(zip.GetEntry(fileName).Open()))
                 {
                     return sr.ReadToEnd();
                 }
             };
-        }
+            
     }
 }
 

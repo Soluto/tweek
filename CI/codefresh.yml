@@ -108,7 +108,7 @@ steps:
           - MINIO_PORT=9000
           - MINIO_ACCESS_KEY_INLINE=AKIAIOSFODNN7EXAMPLE
           - MINIO_SECRET_KEY_INLINE=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-          - MINIO_BUCKET=tweek-bucket
+          - MINIO_BUCKET=tweek
         links:
           - gateway:api
           - gateway:authoring

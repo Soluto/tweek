@@ -9,35 +9,26 @@ describe('authoring api policy', () => {
     clients = await initClients();
   });
 
-  after(async () => {
-    const policy = 'p, test@tweek.com, /api/v2/values/*, *';
-
-    await clients.authoring
-      .put('/api/policies?author.name=test&author.email=test@soluto.com')
-      .send({
-        policy,
-      })
-      .expect(200);
-
-    await pollUntil(
-      () => getObjectContentFromMinio('policy.csv'),
-      res => expect(res).to.equal(policy),
-    );
-  });
-
   it('update policy', async () => {
-    const expectedPolicy = 'p, test@soluto.com, /api/v2/values/*, *';
+    const originalPolicy = 'p, test@tweek.com, /api/v2/values/*, *';
+    const newPolicy =
+      'p, test@soluto.com, /api/v2/values/*, *\np, test@tweek.com, /api/v2/values/*, *';
+
+    await pollUntil(
+      () => getObjectContentFromMinio('policy.csv'),
+      res => expect(res).to.equal(originalPolicy),
+    );
 
     await clients.authoring
       .put('/api/policies?author.name=test&author.email=test@soluto.com')
       .send({
-        policy: expectedPolicy,
+        policy: newPolicy,
       })
       .expect(200);
 
     await pollUntil(
       () => getObjectContentFromMinio('policy.csv'),
-      res => expect(res).to.equal(expectedPolicy),
+      res => expect(res).to.equal(newPolicy),
     );
   });
 });

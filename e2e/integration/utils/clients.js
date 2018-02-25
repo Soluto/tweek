@@ -34,21 +34,21 @@ nconf
 
     MINIO_HOST: 'localhost',
     MINIO_PORT: '4007',
-    MINIO_BUCKET: 'tweek-bucket',
+    MINIO_BUCKET: 'tweek',
   });
 
-const getEnv = (varName, base64) => {
+const getEnv = async (varName, base64) => {
   const inlineVar = nconf.get(`${varName}_INLINE`);
   const varFilePath = nconf.get(`${varName}_PATH`);
   const value =
     (!base64 && inlineVar) ||
     (base64 && inlineVar && new Buffer(inlineVar, 'base64')) ||
-    (varFilePath && fs.existsSync(varFilePath) && fs.readFileSync(varFilePath, 'utf8'));
+    (varFilePath && (await fs.exists(varFilePath)) && (await fs.readFile(varFilePath)));
   return value;
 };
 
 const init = async function() {
-  const key = getEnv('GIT_PRIVATE_KEY', true);
+  const key = await getEnv('GIT_PRIVATE_KEY', true);
   const token = await getToken(key);
   const setBearerToken = t => t.set('Authorization', `Bearer ${token}`);
   return {

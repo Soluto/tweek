@@ -72,7 +72,7 @@ services:
       - MINIO_PORT=9000
       - MINIO_ACCESS_KEY_PATH=/run/secrets/minio_access_key
       - MINIO_SECRET_KEY_PATH=/run/secrets/minio_secret_key
-      - MINIO_BUCKET=tweek-bucket
+      - MINIO_BUCKET=tweek
     secrets:
       - tweek_ssh_private_key
       - minio_access_key

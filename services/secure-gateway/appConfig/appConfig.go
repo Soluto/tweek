@@ -61,7 +61,6 @@ type PolicyStorage struct {
 	MinioUseSSL           bool
 	MinioPolicyObjectName string
 	NatsEndpoint          string
-	NatsSubject           string
 	CasbinModel           string
 }
 
