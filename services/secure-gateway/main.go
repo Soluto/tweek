@@ -51,7 +51,7 @@ func runServer(port int, handler http.Handler) {
 }
 
 func newApp(config *appConfig.Configuration) http.Handler {
-	token := security.InitJWT(config.Security.TweekSecretKeyPath)
+	token := security.InitJWT(&config.Security.TweekSecretKey)
 
 	enforcer, err := withRetry(3, time.Second*5, initEnforcer, &config.Security)
 
@@ -95,7 +95,7 @@ func initEnforcer(config *appConfig.Security) (*casbin.SyncedEnforcer, error) {
 	policyStorage := &config.PolicyStorage
 	modelPath := policyStorage.CasbinModel
 
-	watcher, err := natswatcher.NewWatcher(policyStorage.NatsEndpoint, policyStorage.NatsSubject)
+	watcher, err := natswatcher.NewWatcher(policyStorage.NatsEndpoint, "version")
 	if err != nil {
 		return nil, fmt.Errorf("Error while creating Nats watcher %v", err)
 	}

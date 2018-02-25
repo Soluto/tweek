@@ -72,7 +72,7 @@ services:
       context: ../
       dockerfile: TweekApiSmokeTestDockerfile
     depends_on: 
-      - api
+      - gateway
       - publishing
       - zap-smoke
     environment: 
@@ -84,8 +84,7 @@ services:
     depends_on: 
       - selenium
       - editor
-      - authoring
-      - api
+      - gateway
       - publishing
       - zap-e2e
     environment:
@@ -99,8 +98,7 @@ services:
   e2e-integration:
     build: ../e2e/integration
     depends_on: 
-      - authoring
-      - api
+      - gateway
       - publishing
     environment:
       - API_URL=http://api

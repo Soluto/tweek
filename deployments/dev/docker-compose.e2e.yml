@@ -42,13 +42,12 @@ services:
     links:
       - selenium
       - gateway:api
-      - gateway:authoring
+      - gateway:authoring      
     depends_on: 
-      - selenium     
+      - selenium
       - publishing
       - editor
       - gateway
-      - casbin-minio-loader
     environment:
       - EDITOR_URL=http://editor:3000/
       - TWEEK_API_URL=http://api/
@@ -63,15 +62,21 @@ services:
     container_name: e2e-integration
     depends_on:
       - gateway
-      - casbin-minio-loader    
       - publishing
     environment:
       - API_URL=http://api
       - AUTHORING_URL=http://authoring:3000
       - GATEWAY_URL=http://gateway
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
+      - MINIO_HOST=minio
+      - MINIO_PORT=9000
+      - MINIO_ACCESS_KEY_PATH=/run/secrets/minio_access_key
+      - MINIO_SECRET_KEY_PATH=/run/secrets/minio_secret_key
+      - MINIO_BUCKET=tweek
     secrets:
       - tweek_ssh_private_key
+      - minio_access_key
+      - minio_secret_key
     links:
       - gateway:api
       - gateway:authoring
@@ -83,7 +88,6 @@ services:
     container_name: smoke-tests
     depends_on: 
       - gateway
-      - casbin-minio-loader
       - publishing
     environment: 
       - TWEEK_API_URL=http://api/
@@ -93,3 +97,7 @@ services:
 secrets:
   tweek_ssh_private_key:
     file: ./ssh/tweekgit
+  minio_access_key:
+    file: ./minio/access_key
+  minio_secret_key:
+    file: ./minio/secret_key

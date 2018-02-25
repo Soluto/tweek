@@ -1,6 +1,8 @@
 package appConfig
 
 import (
+	"encoding/base64"
+	"io/ioutil"
 	"log"
 	"os"
 
@@ -24,14 +26,20 @@ type Server struct {
 	Ports []int `mapstructure:"ports"`
 }
 
-// Security section hold security related configuration
+// EnvInlineOrPath is struct to contain value inline or path to file with content
+type EnvInlineOrPath struct {
+	Path   string
+	Inline string
+}
+
+// Security section holds security related configuration
 type Security struct {
-	AllowedIssuers     []string
-	AzureTenantID      string
-	TweekSecretKeyPath string
-	Enforce            bool
-	PolicyStorage      PolicyStorage
-	Cors               Cors
+	AllowedIssuers []string
+	AzureTenantID  string
+	TweekSecretKey EnvInlineOrPath
+	Enforce        bool
+	PolicyStorage  PolicyStorage
+	Cors           Cors
 }
 
 // Cors stores data for CORS support
@@ -53,7 +61,6 @@ type PolicyStorage struct {
 	MinioUseSSL           bool
 	MinioPolicyObjectName string
 	NatsEndpoint          string
-	NatsSubject           string
 	CasbinModel           string
 }
 
@@ -89,4 +96,22 @@ func InitConfig() *Configuration {
 		}
 	}
 	return conf
+}
+
+// HandleEnvInlineOrPath returns value of base64 inline environment variable or content of file which path is stored in environmental value
+func HandleEnvInlineOrPath(envValue *EnvInlineOrPath) ([]byte, error) {
+	var value []byte
+	var err error
+	if len(envValue.Inline) > 0 {
+		value, err = base64.StdEncoding.DecodeString(envValue.Inline)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		value, err = ioutil.ReadFile(envValue.Path)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return value, nil
 }

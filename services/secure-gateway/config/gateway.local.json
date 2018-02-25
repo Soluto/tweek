@@ -7,13 +7,12 @@
         "tweekSecretKeyPath": "../../deployments/dev/ssh/tweekgit",
         "policyStorage": {
             "minioEndpoint": "localhost:4007",
-            "minioBucketName": "tweek-casbin-policies",
+            "minioBucketName": "tweek",
             "minioAccessKey": "AKIAIOSFODNN7EXAMPLE",
             "minioSecretKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
             "minioSecure": false,
             "minioPolicyObjectName": "policy.csv",
             "natsEndpoint": "nats://localhost:4222",
-            "natsSubject": "casbin-policy-subject",
             "casbinModel": "./model.conf"
         },
         "cors": {

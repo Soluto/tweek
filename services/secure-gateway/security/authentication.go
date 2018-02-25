@@ -6,7 +6,6 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -52,7 +51,7 @@ func UserInfoFromRequest(req *http.Request, configuration *appConfig.Security) (
 		claims := t.Claims.(jwt.MapClaims)
 		if issuer, ok := claims["iss"].(string); ok {
 			if issuer == "tweek" {
-				return getGitKey(configuration.TweekSecretKeyPath)
+				return getGitKey(&configuration.TweekSecretKey)
 			}
 
 			if keyID, ok := t.Header["kid"].(string); ok {
@@ -119,8 +118,11 @@ func getAzureADKey(tenantID string, keyID string) (interface{}, error) {
 	return getJWKByEndpoint(endpoint, keyID)
 }
 
-func getGitKey(secretKeyFile string) (interface{}, error) {
-	pemFile, err := ioutil.ReadFile(secretKeyFile)
+func getGitKey(keyEnv *appConfig.EnvInlineOrPath) (interface{}, error) {
+	pemFile, err := appConfig.HandleEnvInlineOrPath(keyEnv)
+	if err != nil {
+		return nil, err
+	}
 	pemBlock, _ := pem.Decode(pemFile)
 	if pemBlock == nil {
 		return nil, errors.New("no PEM found")
