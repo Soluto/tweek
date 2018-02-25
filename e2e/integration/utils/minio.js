@@ -17,7 +17,7 @@ module.exports.getObjectContentFromMinio = async objectName => {
     secure: false,
   });
 
-  return new Promise((resolve, reject) =>
+  return await new Promise((resolve, reject) =>
     mc.getObject(nconf.get('MINIO_BUCKET'), objectName, (err, stream) => {
       if (err) {
         reject(err);
