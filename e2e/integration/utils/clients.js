@@ -47,7 +47,7 @@ const getEnv = async (varName, base64) => {
   const value =
     (!base64 && inlineVar) ||
     (base64 && inlineVar && new Buffer(inlineVar, 'base64')) ||
-    (varFilePath && (await exists(varFilePath)) && (await readFile(varFilePath)));
+    (varFilePath && (await exists(varFilePath)) && (await readFile(varFilePath, 'utf8')));
   return value;
 };
 
