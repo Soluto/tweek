@@ -81,7 +81,7 @@ func TestAuthorizationMiddleware(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests[5:6] {
+	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			recorder := httptest.NewRecorder()
 			next := noopHandler

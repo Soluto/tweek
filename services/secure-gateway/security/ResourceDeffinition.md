@@ -7,8 +7,7 @@ We'd like to be able to represent tweek resources in a form similar to URI or UR
 RESOURCE = CONTEXT_DEFFINITIONS ":" PROP_OR_KEY_DEFFINITION
 CONTEXT_DEFFINITIONS = CONTEXT_DEFFINITION | CONTEXT_DEFFINITIONS "+" CONTEXT_DEFFINITION
 CONTEXT_DEFFINITION = CONTEXT_TYPE "=" CONTEXT_ID
-PROP_OR_KEY_DEFFINITION = PROP_TYPE "." PROP_NAME | "keys." KEY_PATH
-PROP_TYPE = [a-zA-Z]
+PROP_OR_KEY_DEFFINITION = CONTEXT_TYPE "." PROP_NAME | "keys." KEY_PATH "*" ?
 PROP_NAME = [a-zA-Z]
 KEY_PATH = [a-z0-9_/]
 CONTEXT_TYPE = [a-z]
@@ -28,6 +27,11 @@ An example where values are requested for key named `/path/to/key` and device co
 An example where values are requested for key named `/user/specific/key` and user identified as `user@example.com`
 
 `user=user@example.com:keys.user/specific/key`
+
+### Whole context
+An example, which describes a whole context
+
+`device=self:device.*`
 
 ### Specific context property
 An example where specific context property is `device.OsType`

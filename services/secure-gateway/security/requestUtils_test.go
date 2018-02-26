@@ -123,7 +123,7 @@ func Test_extractContextsFromRequest(t *testing.T) {
 			args: args{
 				r: createRequest("GET", "/context/user/alice", "alice"),
 			},
-			wantCtxs: PolicyResource{Contexts: map[string]string{"user": "self"}},
+			wantCtxs: PolicyResource{Contexts: map[string]string{"user": "self"}, Item: "user.*"},
 			wantErr:  false,
 		},
 		{
@@ -131,15 +131,15 @@ func Test_extractContextsFromRequest(t *testing.T) {
 			args: args{
 				r: createRequest("POST", "/context/user/alice", "alice"),
 			},
-			wantCtxs: PolicyResource{Contexts: map[string]string{"user": "self"}},
+			wantCtxs: PolicyResource{Contexts: map[string]string{"user": "self"}, Item: "user.*"},
 			wantErr:  false,
 		},
 		{
 			name: "Contexts for context write request (DELETE)",
 			args: args{
-				r: createRequest("POST", "/context/user/alice", "alice"),
+				r: createRequest("DELETE", "/context/user/alice/property", "alice"),
 			},
-			wantCtxs: PolicyResource{Contexts: map[string]string{"user": "self"}},
+			wantCtxs: PolicyResource{Contexts: map[string]string{"user": "self"}, Item: "user.property"},
 			wantErr:  false,
 		},
 	}

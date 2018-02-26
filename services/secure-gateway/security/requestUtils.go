@@ -75,10 +75,6 @@ func extractContextsFromValuesRequest(r *http.Request, u UserInfo) (ctxs PolicyR
 func extractContextFromContextRequest(r *http.Request, u UserInfo) (ctx PolicyResource, err error) {
 	ctx = PolicyResource{Contexts: map[string]string{}}
 	path := r.URL.EscapedPath()
-	if !strings.HasPrefix(path, "/context") {
-		err = fmt.Errorf("ExtractContextFromContextRequest: expected context request, but got %v", path)
-		return
-	}
 
 	segments := strings.Split(path, "/")[1:] // skip the first entry, because it's empty
 	identityType, identityID := segments[contextIdentityType], segments[contextIdentityID]
@@ -92,10 +88,11 @@ func extractContextFromContextRequest(r *http.Request, u UserInfo) (ctx PolicyRe
 			return
 		}
 		prop := segments[contextProp]
-		ctx.Item = prop
+		ctx.Item = fmt.Sprintf("%v.%v", identityType, prop)
 		ctx.Contexts[identityType] = identityID
 	case "GET", "POST":
 		ctx.Contexts[identityType] = identityID
+		ctx.Item = fmt.Sprintf("%v.*", identityType)
 	default:
 		err = fmt.Errorf("ExtractContextFromContextRequest: unexptected method %v", method)
 	}
