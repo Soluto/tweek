@@ -13,33 +13,21 @@ namespace Tweek.Publishing.Service.Handlers
 {
     public class PushHandler
     {
-        public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(StorageSynchronizer storageSynchronizer,
-            RepoSynchronizer repoSynchronizer,
-            NatsPublisher  publisher,
-            ILogger logger = null)
+        public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(SyncActor syncActor)
         {
-            async Task FullSync(){
-                var upstreamCommit = await repoSynchronizer.SyncToLatest();
-                await storageSynchronizer.Sync(upstreamCommit);
-                await publisher.Publish("version",upstreamCommit);
-                logger.LogInformation($"Sync:Commit:{upstreamCommit}");
-            }
-            logger = logger ?? NullLogger.Instance;
             return async (req, res, routedata) =>
             {
                 var commitId = req.Query["commit"].ToString();
                 try
                 {
-                    await repoSynchronizer.PushToUpstream(commitId);
+                    await syncActor.PushToUpstream(commitId);
                 }
                 catch (Exception ex)
                 {
-                    await publisher.Publish("push-failed", commitId);
-                    logger.LogError("failed to sync repo with upstream", ex);
                     res.StatusCode = 500;
                     await res.WriteAsync(ex.Message);
                 }
-                FullSync();
+                syncActor.SyncToLatest();
             };
         }
     }

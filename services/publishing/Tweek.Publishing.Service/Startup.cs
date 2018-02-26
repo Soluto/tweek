@@ -140,12 +140,13 @@ namespace Tweek.Publishing.Service
 
             storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result, checkForStaleRevision: false).Wait();
             RunIntervalPublisher(lifetime, versionPublisher, repoSynchronizer, storageSynchronizer);
-            
+            var syncActor = SyncActor.Create(storageSynchronizer, repoSynchronizer, natsClient, _logger);
+
             app.UseRouter(router =>
             {
                 router.MapGet("validate", ValidationHandler.Create(executor, gitValidationFlow));
-                router.MapGet("sync", SyncHandler.Create(storageSynchronizer, repoSynchronizer, natsClient, _syncPolicy, _logger) );
-                router.MapGet("push", PushHandler.Create(storageSynchronizer, repoSynchronizer, natsClient, _logger) );
+                router.MapGet("sync", SyncHandler.Create(syncActor,_syncPolicy));
+                router.MapGet("push", PushHandler.Create(syncActor));
 
                 router.MapGet("log", async (req, res, routedata) => _logger.LogInformation(req.Query["message"]));
                 router.MapGet("health", async (req, res, routedata) => await res.WriteAsync(JsonConvert.SerializeObject(new { })));
