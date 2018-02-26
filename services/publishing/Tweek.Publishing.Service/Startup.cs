@@ -143,20 +143,9 @@ namespace Tweek.Publishing.Service
             
             app.UseRouter(router =>
             {
-                var syncHandler = SyncHandler.Create(storageSynchronizer, repoSynchronizer, versionPublisher, _syncPolicy, _logger);
-
                 router.MapGet("validate", ValidationHandler.Create(executor, gitValidationFlow));
-                router.MapGet("sync", syncHandler);
-                router.MapGet("push", async (req, res, routedata) => {
-                    var commitId = req.Query["commit"].ToString();
-                    try {
-                        await repoSynchronizer.PushToUpstream(commitId);
-                    }
-                    catch (Exception ex){
-                        await natsClient.Publish("push-failed", commitId);
-                    }
-                    await syncHandler(req,res,routedata);
-                });
+                router.MapGet("sync", SyncHandler.Create(storageSynchronizer, repoSynchronizer, natsClient, _syncPolicy, _logger) );
+                router.MapGet("push", PushHandler.Create(storageSynchronizer, repoSynchronizer, natsClient, _logger) );
 
                 router.MapGet("log", async (req, res, routedata) => _logger.LogInformation(req.Query["message"]));
                 router.MapGet("health", async (req, res, routedata) => await res.WriteAsync(JsonConvert.SerializeObject(new { })));

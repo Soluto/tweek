@@ -11,36 +11,35 @@ using Tweek.Publishing.Service.Sync;
 
 namespace Tweek.Publishing.Service.Handlers
 {
-    public class SyncHandler
+    public class PushHandler
     {
         public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(StorageSynchronizer storageSynchronizer,
             RepoSynchronizer repoSynchronizer,
             NatsPublisher  publisher,
-            RetryPolicy retryPolicy,
             ILogger logger = null)
         {
+            async Task FullSync(){
+                var upstreamCommit = await repoSynchronizer.SyncToLatest();
+                await storageSynchronizer.Sync(upstreamCommit);
+                await publisher.Publish("version",upstreamCommit);
+                logger.LogInformation($"Sync:Commit:{upstreamCommit}");
+            }
             logger = logger ?? NullLogger.Instance;
-            retryPolicy = retryPolicy ?? Policy.Handle<Exception>().RetryAsync();
             return async (req, res, routedata) =>
             {
+                var commitId = req.Query["commit"].ToString();
                 try
                 {
-                    await retryPolicy
-                        .ExecuteAsync(async () =>
-                        {
-                            var commitId = await repoSynchronizer.SyncToLatest();
-                            await storageSynchronizer.Sync(commitId);
-                            await publisher.Publish("version",commitId);
-                            logger.LogInformation($"Sync:Commit:{commitId}");
-                        });
-                                        
+                    await repoSynchronizer.PushToUpstream(commitId);
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError("failed to sync repo with upstram", ex);
+                    await publisher.Publish("push-failed", commitId);
+                    logger.LogError("failed to sync repo with upstream", ex);
                     res.StatusCode = 500;
                     await res.WriteAsync(ex.Message);
                 }
+                FullSync();
             };
         }
     }
