@@ -46,14 +46,14 @@ func (u *userInfo) Claims() jwt.StandardClaims { return u.StandardClaims }
 // UserInfoFromRequest return the user information from request
 func UserInfoFromRequest(req *http.Request, configuration *appConfig.Security) (UserInfo, error) {
 	if !configuration.Enforce {
-		info := &userInfo{email: "test@test.test", name: "test", issuer: "tweek"}
+		info := &userInfo{email: "test@test.test", name: "test", issuer: "tweek-internal"}
 		return info, nil
 	}
 
 	token, err := request.ParseFromRequest(req, request.OAuth2Extractor, func(t *jwt.Token) (interface{}, error) {
 		claims := t.Claims.(jwt.MapClaims)
 		if issuer, ok := claims["iss"].(string); ok {
-			if issuer == "tweek" {
+			if issuer == "tweek-internal" {
 				return getGitKey(&configuration.TweekSecretKey)
 			}
 

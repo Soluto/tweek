@@ -4,7 +4,7 @@ const jwtSign = promisify(jwt.sign);
 
 const jwtOptions = {
   algorithm: 'RS256',
-  issuer: 'tweek',
+  issuer: 'tweek-internal',
   expiresIn: '15m',
 };
 const data = {

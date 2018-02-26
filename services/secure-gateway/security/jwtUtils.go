@@ -63,7 +63,7 @@ func createNewJWT(key interface{}) string {
 	claims := tweekClaims{
 		"tweek-internal",
 		jwt.StandardClaims{
-			Issuer:    "tweek",
+			Issuer:    "tweek-internal",
 			ExpiresAt: numericTime,
 		},
 	}

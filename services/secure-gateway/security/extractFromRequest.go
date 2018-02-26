@@ -19,11 +19,8 @@ func ExtractFromRequest(r *http.Request) (obj string, sub string, act string, er
 		}
 
 		// this is work in progress
-		if user.Issuer() == "tweek" {
-			sub = "tweek"
-		} else {
-			sub = user.Email()
-		}
+		sub = user.Email()
+
 		switch {
 		case r.Method == "DELETE":
 			fallthrough
