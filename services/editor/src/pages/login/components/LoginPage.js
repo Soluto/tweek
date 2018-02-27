@@ -2,7 +2,7 @@ import React from 'react';
 import { compose, withState, lifecycle } from 'recompose';
 import styled from 'react-emotion';
 
-import { getAuthProviders } from '../../../services/auth-service';
+import { getAuthProviders, configureOidc, signinRequest } from '../../../services/auth-service';
 import logoSrc from '../../../components/resources/logo.svg';
 
 const MainComponent = styled('div')`
@@ -81,7 +81,11 @@ const LoginPage = ({ authProviders, location }) => (
     <RightPane>
       <LoginMessageSpan>Login into Tweek using:</LoginMessageSpan>
       {authProviders.map(ap => (
-        <LoginButton key={ap.name} href={`${ap.url}${location.search}`} data-comp={ap.name}>
+        <LoginButton
+          key={ap.id}
+          onClick={() => ap.action({ redirect: location.search })}
+          data-comp={ap.id}
+        >
           {ap.name}
         </LoginButton>
       ))}
@@ -93,7 +97,15 @@ const enhancer = compose(
   withState('authProviders', 'setAuthProviders', []),
   lifecycle({
     componentWillMount() {
-      getAuthProviders().then(res => this.props.setAuthProviders(res));
+      getAuthProviders().then((res) => {
+        const providers = Object.keys(res).map(key => ({
+          id: key,
+          name: res[key].name,
+          action: state =>
+            signinRequest(configureOidc(key, res[key].authority, res[key].clientId), state),
+        }));
+        this.props.setAuthProviders(providers);
+      });
     },
   }),
 );

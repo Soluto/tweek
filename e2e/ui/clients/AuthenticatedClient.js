@@ -14,13 +14,18 @@ const jwtOptions = {
   expiresIn: '15m',
 };
 
+const data = {
+  name: 'tweek-test',
+  email: 'test@tweek.com',
+};
+
 async function generateToken() {
   const inlineKey = nconf.get('GIT_PRIVATE_KEY_INLINE');
   const key =
     (inlineKey && new Buffer(inlineKey, 'base64')) ||
     (await readFile(nconf.get('GIT_PRIVATE_KEY_PATH')));
 
-  return await jwtSign({}, key, jwtOptions);
+  return await jwtSign(data, key, jwtOptions);
 }
 
 async function getAuthenticatedClient(baseURL) {

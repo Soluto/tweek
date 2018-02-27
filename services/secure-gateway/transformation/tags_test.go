@@ -83,8 +83,9 @@ func makeTagsBody(tags ...string) io.Reader {
 }
 
 type testUserInfo struct {
-	name  string
-	email string
+	name   string
+	email  string
+	issuer string
 }
 
 func (u *testUserInfo) Name() string {
@@ -95,12 +96,16 @@ func (u *testUserInfo) Email() string {
 	return u.email
 }
 
+func (u *testUserInfo) Issuer() string {
+	return u.issuer
+}
+
 func (u *testUserInfo) Claims() jwt.StandardClaims {
 	return jwt.StandardClaims{}
 }
 
 func makeUserInfo(name, email string) security.UserInfo {
-	return &testUserInfo{name: name, email: email}
+	return &testUserInfo{name: name, email: email, issuer: "google"}
 }
 
 func makeRequestWithUserInfo(method, target string, body io.Reader, uinfo security.UserInfo) *http.Request {

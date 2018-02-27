@@ -69,7 +69,8 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	authorizationMiddleware := security.AuthorizationMiddleware(enforcer, auditor)
 
 	middleware := negroni.New(negroni.NewRecovery())
-	if corsSupportMiddleware := corsSupport.New(&config.Security.Cors); corsSupportMiddleware != nil {
+	corsSupportMiddleware := corsSupport.New(&config.Security.Cors)
+	if corsSupportMiddleware != nil {
 		middleware.Use(corsSupportMiddleware)
 	}
 	middleware.Use(authenticationMiddleware)
@@ -84,6 +85,8 @@ func newApp(config *appConfig.Configuration) http.Handler {
 
 	passThrough.Mount(&config.Upstreams, &config.V1Hosts, negroni.New(negroni.NewRecovery()), router.V1Router())
 	passThrough.Mount(&config.Upstreams, &config.V1Hosts, negroni.New(negroni.NewRecovery()), router.LegacyNonV1Router())
+
+	security.MountAuth(config.Security.Auth.Providers, negroni.New(corsSupportMiddleware), router.AuthRouter())
 
 	app := negroni.New(negroni.NewRecovery())
 	app.UseHandler(router)

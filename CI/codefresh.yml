@@ -24,7 +24,7 @@ steps:
     title: Building Tweek Api Docker Image
     type: build
     image_name: soluto/tweek-api
-    dockerfile: TweekApiDockerfile
+    dockerfile: TweekApi.Dockerfile
   
   BuildingPublishing:
     title: Building Publishing Docker Image

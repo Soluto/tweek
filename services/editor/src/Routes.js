@@ -3,6 +3,7 @@ import { Switch, Route, Redirect } from 'react-router';
 import { ConnectedRouter } from 'react-router-redux';
 import App from './components/App';
 import LoginPage from './pages/login/components/LoginPage';
+import LoggedInPage from './pages/login/components/LoggedInPage';
 import KeysPage from './pages/keys/components/KeysPage/KeysPage';
 import KeyPage from './pages/keys/components/KeyPage/KeyPage';
 import ContextPage from './pages/context/components/ContextPage/ContextPage';
@@ -51,6 +52,7 @@ export default props => (
   <ConnectedRouter history={browserHistory}>
     <Switch>
       <Route path="/login" component={LoginPage} />
+      <Route path="/auth/:providerId" component={LoggedInPage} />
       <Route path="/" render={renderAppRoutes} />
       <Route component={NoMatch} />
     </Switch>

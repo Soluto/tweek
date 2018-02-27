@@ -7,6 +7,20 @@
         "enforce": true,
         "policyStorage": {
             "casbinModel": "/model.conf"
+        },
+        "auth": {
+            "providers": {
+                "google": {                    
+                    "name": "Google Account",
+                    "authority": "https://accounts.google.com",
+                    "clientId": ""
+                },
+                "azure": {                    
+                    "name": "Azure OpenId connect",
+                    "authority": "https://login.microsoftonline.com/common",
+                    "clientId": ""
+                }
+            }
         }
     },
     "v1Hosts": {

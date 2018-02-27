@@ -1,3 +1,4 @@
+/* global navigator atob Uint8Array Notification */
 import fetch from './utils/fetch';
 import delay from './utils/delay';
 
@@ -52,7 +53,16 @@ async function persistRegistration(subscription) {
 
 export default async function register() {
   if ('serviceWorker' in navigator) {
-    const response = await fetch('/api/editor-configuration/service_worker/is_enabled');
+    const response = await fetch(
+      'http://api.localtest.me:4099' +
+        '/api/v2/values/editor-configuration/service_worker/is_enabled',
+      {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      },
+    );
     const enabled = await response.json();
 
     if (!enabled) {
@@ -71,9 +81,10 @@ export default async function register() {
       const registration = await navigator.serviceWorker.ready;
 
       const subscription = await getSubscription(registration.pushManager);
-      persistRegistration(subscription).catch(
-        error => (console.error('unregistering service worker', error), registration.unregister()),
-      );
+      persistRegistration(subscription).catch((error) => {
+        console.error('unregistering service worker', error);
+        registration.unregister();
+      });
     } catch (error) {
       console.error('Error during service worker registration:', error);
     }
@@ -82,7 +93,7 @@ export default async function register() {
 
 export function unregister() {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.ready.then(registration => {
+    navigator.serviceWorker.ready.then((registration) => {
       registration.unregister();
     });
   }

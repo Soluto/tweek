@@ -32,6 +32,18 @@ type EnvInlineOrPath struct {
 	Inline string
 }
 
+// AuthProvider - configuration of each auth provider
+type AuthProvider struct {
+	Name      string `json:"name"`
+	Authority string `json:"authority"`
+	ClientID  string `json:"clientId"`
+}
+
+// Auth - struct with config related to authentication
+type Auth struct {
+	Providers map[string]AuthProvider
+}
+
 // Security section holds security related configuration
 type Security struct {
 	AllowedIssuers []string
@@ -40,6 +52,7 @@ type Security struct {
 	Enforce        bool
 	PolicyStorage  PolicyStorage
 	Cors           Cors
+	Auth           Auth
 }
 
 // Cors stores data for CORS support

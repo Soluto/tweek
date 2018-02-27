@@ -5,7 +5,7 @@ services:
     image: soluto/tweek-api
     build:
       context: ../../
-      dockerfile: TweekApiDockerfile
+      dockerfile: TweekApi.Dockerfile
 
   authoring:
     image: soluto/tweek-authoring

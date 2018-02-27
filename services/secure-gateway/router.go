@@ -17,6 +17,7 @@ type Router interface {
 	V2Router() *mux.Router
 	LegacyNonV1Router() *mux.Router
 	MainRouter() *mux.Router
+	AuthRouter() *mux.Router
 }
 
 type router struct {
@@ -26,6 +27,7 @@ type router struct {
 	v1Router              *mux.Router
 	v2Router              *mux.Router
 	legacyNonV1Router     *mux.Router
+	authRouter            *mux.Router
 }
 
 // NewRouter creates a new transformation middleware
@@ -47,6 +49,8 @@ func NewRouter(configuration *appConfig.Configuration) Router {
 
 	v2Router := mainRouter.PathPrefix("/api/v2/").Subrouter()
 
+	authRouter := mainRouter.PathPrefix("/auth").Subrouter()
+
 	return &router{
 		router:                mainRouter,
 		monitoringRouter:      monitoringRouter,
@@ -54,6 +58,7 @@ func NewRouter(configuration *appConfig.Configuration) Router {
 		v1Router:              v1Router,
 		v2Router:              v2Router,
 		legacyNonV1Router:     legacyNonV1Router,
+		authRouter:            authRouter,
 	}
 }
 
@@ -69,6 +74,8 @@ func (t *router) V1Router() *mux.Router { return t.v1Router }
 func (t *router) V2Router() *mux.Router { return t.v2Router }
 
 func (t *router) LegacyNonV1Router() *mux.Router { return t.legacyNonV1Router }
+
+func (t *router) AuthRouter() *mux.Router { return t.authRouter }
 
 func (t *router) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	t.router.ServeHTTP(rw, r)

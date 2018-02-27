@@ -1,3 +1,4 @@
+/* global document window console */
 import { Observable } from 'rxjs';
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -23,11 +24,7 @@ class GoogleTagManagerContainer extends React.Component {
       previewVariables: this.props.previewVariables,
     });
 
-    return (
-      <div id={this.props.scriptId}>
-        {gtm.scriptAsReact()}
-      </div>
-    );
+    return <div id={this.props.scriptId}>{gtm.scriptAsReact()}</div>;
   }
 
   static propTypes = {

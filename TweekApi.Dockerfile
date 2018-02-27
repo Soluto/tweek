@@ -4,7 +4,7 @@ COPY . /src
 RUN find /src -type f -not -name "*.csproj" -delete && find /src -type d -empty -delete
 
 # ---- BUILD & TEST ----
-FROM microsoft/aspnetcore-build:2.0.0 as source
+FROM microsoft/aspnetcore-build:2.0.5-2.1.4 as source
 
 WORKDIR /src
 COPY --from=csproj-files /src .
@@ -17,7 +17,7 @@ RUN dotnet build Tweek.sln -c Release && \
     dotnet publish ./services/api/Tweek.ApiService/Tweek.ApiService.csproj  -c Release -o ./obj/Docker/publish
 
 # ---- RELEASE ----
-FROM microsoft/aspnetcore:2.0.0 as release
+FROM microsoft/aspnetcore:2.0.5 as release
 WORKDIR /app
 EXPOSE 80
 COPY --from=source /src/services/api/Tweek.ApiService/obj/Docker/publish .
