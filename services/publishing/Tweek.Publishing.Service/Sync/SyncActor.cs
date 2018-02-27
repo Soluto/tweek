@@ -86,6 +86,7 @@ namespace Tweek.Publishing.Service.Sync
                 {
                     await _publisher.Publish("push-failed", commitId);
                     ex.Data["commitId"] = commitId;
+                    _logger.LogError($"push failed for commit: {commitId}", ex);
                     throw;
                 }
                 return null;
