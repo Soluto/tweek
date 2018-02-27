@@ -14,7 +14,7 @@ namespace Tweek.Publishing.Service.Sync
     {
         private readonly StorageSynchronizer _storageSynchronizer;
 
-        private readonly BlockingCollection<(Func<Task<object>>, TaskCompletionSource<object>)> _queue = new BlockingCollection<(Func<Task<object>>, TaskCompletionSource<object>)>();
+        private readonly BlockingCollection<(string, Func<Task<object>>, TaskCompletionSource<object>)> _queue = new BlockingCollection<(string, Func<Task<object>>, TaskCompletionSource<object>)>();
 
         public RepoSynchronizer _repoSynchronizer { get; }
 
@@ -39,13 +39,14 @@ namespace Tweek.Publishing.Service.Sync
             {
                 while (!token.IsCancellationRequested)
                 {
-                    var (action, tcs) = _queue.Take(token.Token);
+                    var (actionName, action, tcs) = _queue.Take(token.Token);
                     try
                     {
                         tcs.SetResult(await action());
                     }
                     catch (Exception ex)
                     {
+                        _logger.LogError($"failed handling {actionName}", ex);
                         tcs.SetException(ex);
                     }
                 }
@@ -53,16 +54,16 @@ namespace Tweek.Publishing.Service.Sync
             return Disposable.Create(() => token.Cancel());
         }
 
-        private TaskCompletionSource<object> AddAction(Func<Task<object>> action)
+        private TaskCompletionSource<object> AddAction(string actionName, Func<Task<object>> action)
         {
             var tcs = new TaskCompletionSource<object>();
-            _queue.Add((action, tcs));
+            _queue.Add((actionName, action, tcs));
             return tcs;
         }
 
         public async Task SyncToLatest()
         {
-            var tcs = AddAction(async () =>
+            var tcs = AddAction(nameof(SyncToLatest), async () =>
             {
                 var commitId = await _repoSynchronizer.SyncToLatest();
                 await _storageSynchronizer.Sync(commitId);
@@ -75,7 +76,7 @@ namespace Tweek.Publishing.Service.Sync
 
         public async Task PushToUpstream(string commitId)
         {
-            var tcs = AddAction(async () =>
+            var tcs = AddAction(nameof(PushToUpstream), async () =>
             {
                 try
                 {
@@ -84,7 +85,7 @@ namespace Tweek.Publishing.Service.Sync
                 catch (Exception ex)
                 {
                     await _publisher.Publish("push-failed", commitId);
-                    _logger.LogError("failed to sync repo with upstream", ex);
+                    ex.Data["commitId"] = commitId;
                     throw;
                 }
                 return null;
