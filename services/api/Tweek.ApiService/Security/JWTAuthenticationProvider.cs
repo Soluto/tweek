@@ -81,7 +81,7 @@ namespace Tweek.ApiService.Security
             });
 
             var optionsAuthProvider = authProviders.Select(x => x["Issuer"])
-                .Append("tweek")
+                .Append("tweek-internal")
                 .ToImmutableHashSet();
 
             app.AddScheme<JwtAuthenticationSchemeOptions, JwtAuthenticationHandler>(JwtBearerDefaults.AuthenticationScheme, options => options.AuthProviders = optionsAuthProvider);

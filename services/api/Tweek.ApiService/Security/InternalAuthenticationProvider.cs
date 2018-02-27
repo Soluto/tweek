@@ -28,7 +28,7 @@ namespace Tweek.ApiService.Security
                     {
                         options.TokenValidationParameters = new TokenValidationParameters
                         {
-                            ValidIssuer = "tweek",
+                            ValidIssuer = "tweek-internal",
                             ValidateAudience = false,
                             IssuerSigningKey = new X509SecurityKey(new X509Certificate2(keyPath))
                         };

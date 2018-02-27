@@ -7,7 +7,7 @@ namespace Tweek.ApiService.Security
     {
         public static bool IsTweekIdentity(this ClaimsPrincipal identity)
         {
-            return Prelude.Optional(identity.FindFirst("iss")).Match(c => c.Value.Equals("tweek"), () => false);
+            return Prelude.Optional(identity.FindFirst("iss")).Match(c => c.Value.Equals("tweek-internal"), () => false);
         }
     }
 }
