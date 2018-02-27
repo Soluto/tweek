@@ -1,6 +1,7 @@
 package security
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -13,26 +14,30 @@ import (
 
 // AuthorizationMiddleware enforces authorization policies of incoming requests
 func AuthorizationMiddleware(enforcer *casbin.SyncedEnforcer, auditor audit.Auditor) negroni.HandlerFunc {
+	enforcer.AddFunction("matchResources", MatchResources)
 	return negroni.HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-		obj, sub, act, err := ExtractFromRequest(r)
+		sub, act, ctxs, err := ExtractFromRequest(r)
 		if err != nil {
 			log.Println("Failed to extract from request", err)
-			auditor.EnforcerError(sub, obj, act, err)
+			auditor.EnforcerError(sub, fmt.Sprintf("%q", ctxs), act, err)
 			http.Error(rw, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		} else {
-			result, err := enforcer.EnforceSafe(sub, obj, act)
+			res, err := enforcer.EnforceSafe(sub, ctxs, act)
 			if err != nil {
 				log.Println("Failed to validate request", err)
-				auditor.EnforcerError(sub, obj, act, err)
+				auditor.EnforcerError(sub, fmt.Sprintf("%q", ctxs), act, err)
+				http.Error(rw, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+				return
 			}
 
-			if result {
-				auditor.Allowed(sub, obj, act)
-				next(rw, r)
-			} else {
-				auditor.Denied(sub, obj, act)
+			if !res {
+				auditor.Denied(sub, fmt.Sprintf("%q", ctxs), act)
 				http.Error(rw, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+				return
 			}
+
+			auditor.Allowed(sub, fmt.Sprintf("%q", ctxs), act)
+			next(rw, r)
 		}
 	})
 }

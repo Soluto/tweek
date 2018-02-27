@@ -4,7 +4,9 @@
         "authoring": "http://localhost:4004"
     },
     "security": {
-        "tweekSecretKeyPath": "../../deployments/dev/ssh/tweekgit",
+        "tweekSecretKey": {
+            "Path": "../../deployments/dev/ssh/tweekgit"
+        },
         "policyStorage": {
             "minioEndpoint": "localhost:4007",
             "minioBucketName": "tweek",

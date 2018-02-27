@@ -10,9 +10,9 @@ describe('authoring api policy', () => {
   });
 
   it('update policy', async () => {
-    const originalPolicy = 'p, test@tweek.com, /api/v2/values/*, *';
+    const originalPolicy = 'p, test@tweek.com, /api/v2/values/*, *, allow';
     const newPolicy =
-      'p, test@soluto.com, /api/v2/values/*, *\np, test@tweek.com, /api/v2/values/*, *';
+      'p, test@soluto.com, /api/v2/values/*, *, allow\np, test@tweek.com, /api/v2/values/*, *, allow';
 
     await pollUntil(
       () => getObjectContentFromMinio('policy.csv'),

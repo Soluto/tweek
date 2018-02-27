@@ -10,6 +10,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/Soluto/tweek/services/secure-gateway/security"
+
 	"github.com/casbin/casbin/file-adapter"
 	"github.com/casbin/casbin/model"
 	"github.com/casbin/json-adapter"
@@ -32,7 +34,7 @@ func TestNewModelsRead(t *testing.T) {
 		{
 			name: "Read",
 			args: args{request: httptest.NewRequest("GET", "/api/v2/models", nil)},
-			want: `[{"PType":"p","V0":"allow@security.test","V1":"/target","V2":"read","V3":"allow","V4":"","V5":""},{"PType":"p","V0":"role_users","V1":"/target","V2":"read","V3":"allow","V4":"","V5":""},{"PType":"p","V0":"deny@security.test","V1":"/target","V2":"read","V3":"deny","V4":"","V5":""},{"PType":"g","V0":"allow@security.test","V1":"role_users","V2":"","V3":"","V4":"","V5":""},{"PType":"g","V0":"deny@security.test","V1":"role_users","V2":"","V3":"","V4":"","V5":""}]`,
+			want: `[{"PType":"p","V0":"allow@security.test","V1":"/target","V2":"read","V3":"allow","V4":"","V5":""},{"PType":"p","V0":"deny@security.test","V1":"/target","V2":"read","V3":"deny","V4":"","V5":""},{"PType":"p","V0":"role_users","V1":"/target","V2":"read","V3":"allow","V4":"","V5":""},{"PType":"p","V0":"admin","V1":"*:*","V2":"*","V3":"allow","V4":"","V5":""},{"PType":"g","V0":"allow@security.test","V1":"role_users","V2":"","V3":"","V4":"","V5":""},{"PType":"g","V0":"deny@security.test","V1":"role_users","V2":"","V3":"","V4":"","V5":""}]`,
 		},
 	}
 
@@ -59,7 +61,7 @@ func TestNewModelsWrite(t *testing.T) {
 	type args struct {
 		request  *http.Request
 		user     string
-		resource string
+		resource security.PolicyResource
 		action   string
 	}
 	tests := []struct {
@@ -70,30 +72,30 @@ func TestNewModelsWrite(t *testing.T) {
 		{
 			name: "Add user with allow permissions",
 			args: args{
-				request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"p","V0":"allow1@security.test","V1":"/target","V2":"GET","V3":"allow","V4":"","V5":""}]`)),
+				request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"p","V0":"allow1@security.test","V1":"/target","V2":"read","V3":"allow","V4":"","V5":""}]`)),
 				user:     "allow1@security.test",
-				resource: "/target",
-				action:   "GET",
+				resource: security.PolicyResource{Contexts: map[string]string{}, Item: "/target"},
+				action:   "read",
 			},
 			want: true,
 		},
 		{
 			name: "Add user with deny permissions",
 			args: args{
-				request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"p","V0":"allow1@security.test","V1":"/target","V2":"GET","V3":"deny","V4":"","V5":""}]`)),
+				request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"p","V0":"allow1@security.test","V1":"/target","V2":"read","V3":"deny","V4":"","V5":""}]`)),
 				user:     "allow1@security.test",
-				resource: "/target",
-				action:   "GET",
+				resource: security.PolicyResource{Contexts: map[string]string{}, Item: "/target"},
+				action:   "read",
 			},
 			want: false,
 		},
 		{
 			name: "Add user to group with allow permissions",
 			args: args{
-				request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"g","V0":"allow1@security.test","V1":"role_users","V2":"","V3":"","V4":"","V5":""},{"PType":"p","V0":"role_users","V1":"/target","V2":"GET","V3":"allow","V4":"","V5":""}]`)),
+				request:  httptest.NewRequest("PUT", "/api/v2/models", bytes.NewBufferString(`[{"PType":"g","V0":"allow1@security.test","V1":"role_users","V2":"","V3":"","V4":"","V5":""},{"PType":"p","V0":"role_users","V1":"/target","V2":"read","V3":"allow","V4":"","V5":""}]`)),
 				user:     "allow1@security.test",
-				resource: "/target",
-				action:   "GET",
+				resource: security.PolicyResource{Contexts: map[string]string{}, Item: "/target"},
+				action:   "read",
 			},
 			want: true,
 		},
@@ -102,9 +104,6 @@ func TestNewModelsWrite(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			enforcer := makeEnforcer()
-			enforcer.EnableEnforce(true)
-			enforcer.EnableLog(false)
-
 			server := negroni.New(NewModelsWrite(enforcer))
 			recorder := httptest.NewRecorder()
 			server.ServeHTTP(recorder, tt.args.request)
@@ -135,7 +134,12 @@ func makeEnforcer() *casbin.SyncedEnforcer {
 		panic(err)
 	}
 
-	return casbin.NewSyncedEnforcer("../security/testdata/policy.conf", json)
+	enforcer := casbin.NewSyncedEnforcer("../security/testdata/policy.conf", json)
+	enforcer.EnableEnforce(true)
+	enforcer.EnableLog(false)
+	enforcer.AddFunction("matchResources", security.MatchResources)
+
+	return enforcer
 }
 
 func debug(tag string, data interface{}) {
