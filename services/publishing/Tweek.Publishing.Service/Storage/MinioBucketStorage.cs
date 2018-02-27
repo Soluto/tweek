@@ -4,6 +4,7 @@ using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
 using Minio;
+using Minio.Exceptions;
 
 namespace Tweek.Publishing.Service.Storage
 {
@@ -73,6 +74,16 @@ namespace Tweek.Publishing.Service.Storage
         public async Task Delete(string objectName, CancellationToken cancellationToken = default)
         {
             await _client.RemoveObjectAsync(_bucketName, objectName, cancellationToken);
+        }
+
+        public async Task<bool> Exists(string objectName, CancellationToken cancellationToken = default)
+        {
+            try{
+                await _client.StatObjectAsync(_bucketName, objectName, cancellationToken);
+                return true;
+            } catch (ObjectNotFoundException ex){
+                return false;
+            }
         }
     }
 }

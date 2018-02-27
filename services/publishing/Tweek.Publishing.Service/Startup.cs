@@ -140,7 +140,7 @@ namespace Tweek.Publishing.Service
 
             storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result, checkForStaleRevision: false).Wait();
             RunIntervalPublisher(lifetime, versionPublisher, repoSynchronizer, storageSynchronizer);
-            var syncActor = SyncActor.Create(storageSynchronizer, repoSynchronizer, natsClient, loggerFactory.CreateLogger("SyncActor"));
+            var syncActor = SyncActor.Create(storageSynchronizer, repoSynchronizer, natsClient, lifetime.ApplicationStopping, loggerFactory.CreateLogger("SyncActor"));
 
             app.UseRouter(router =>
             {
