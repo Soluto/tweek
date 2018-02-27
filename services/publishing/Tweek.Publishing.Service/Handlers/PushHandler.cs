@@ -11,26 +11,23 @@ using Tweek.Publishing.Service.Sync;
 
 namespace Tweek.Publishing.Service.Handlers
 {
-    public class SyncHandler
+    public class PushHandler
     {
-        public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(SyncActor syncActor,
-            RetryPolicy retryPolicy,
-            ILogger logger = null)
+        public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(SyncActor syncActor)
         {
-            retryPolicy = retryPolicy ?? Policy.Handle<Exception>().RetryAsync();
             return async (req, res, routedata) =>
             {
+                var commitId = req.Query["commit"].ToString();
                 try
                 {
-                    await retryPolicy
-                        .ExecuteAsync(syncActor.SyncToLatest);
-                                        
+                    await syncActor.PushToUpstream(commitId);
                 }
                 catch (Exception ex)
                 {
                     res.StatusCode = 500;
                     await res.WriteAsync(ex.Message);
                 }
+                syncActor.SyncToLatest();
             };
         }
     }
