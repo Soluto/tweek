@@ -4,7 +4,7 @@ do
 	curl -i -f "http://localhost/validate?oldrev=$oldrev&newRev=$newrev&quarantinepath=$GIT_QUARANTINE_PATH"
 	exitCode=$?
 	if [ $exitCode != 0 ]; then
-		exit exitCode
+		exit $exitCode
 	fi
 done
 curl http://localhost/log?message=completed-pre-receive-hook

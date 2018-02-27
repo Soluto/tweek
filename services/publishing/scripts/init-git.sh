@@ -1,7 +1,7 @@
 #!/bin/bash
 if [[ -d "$REPO_LOCATION" && -d "/tmp/ssh_server" ]]; then
     echo "using existing repo"
-    exit $?
+    exit 0
 fi
 
 echo export REPO_LOCATION=$REPO_LOCATION >> /home/git/.env

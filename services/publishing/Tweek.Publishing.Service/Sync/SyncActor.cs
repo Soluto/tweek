@@ -4,6 +4,7 @@ using System.Reactive.Disposables;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Polly.Retry;
 using Tweek.Publishing.Service.Messaging;
 
@@ -29,7 +30,7 @@ namespace Tweek.Publishing.Service.Sync
             this._storageSynchronizer = storageSynchronizer;
             this._repoSynchronizer = repoSynchronizer;
             this._publisher = publisher;
-            this._logger = logger;
+            this._logger = logger ?? NullLogger.Instance;
         }
 
         private IDisposable Start()
@@ -76,6 +77,7 @@ namespace Tweek.Publishing.Service.Sync
 
         public async Task PushToUpstream(string commitId)
         {
+            
             var tcs = AddAction(nameof(PushToUpstream), async () =>
             {
                 try
@@ -98,7 +100,7 @@ namespace Tweek.Publishing.Service.Sync
             NatsPublisher publisher,
             ILogger logger = null)
         {
-            var actor = new SyncActor(storageSynchronizer, repoSynchronizer, publisher);
+            var actor = new SyncActor(storageSynchronizer, repoSynchronizer, publisher, logger);
             actor.Start();
             return actor;
         }
