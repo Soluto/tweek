@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
-	"github.com/dgrijalva/jwt-go"
+	jwt "github.com/dgrijalva/jwt-go"
 )
 
 type TweekClaims struct {

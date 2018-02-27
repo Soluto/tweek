@@ -12,7 +12,7 @@ import (
 	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
 	"github.com/Soluto/tweek/services/secure-gateway/audit"
 	"github.com/Soluto/tweek/services/secure-gateway/externalApps"
-	"github.com/dgrijalva/jwt-go"
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
 	"github.com/lestrrat-go/jwx/jwk"
 
