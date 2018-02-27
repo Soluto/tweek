@@ -101,7 +101,7 @@ const NewFixedKeyComponent = ({ appendKey, keyPath, local: value, ...props }) =>
     className="new-fixed-key"
     data-comp="new-fixed-key"
     onKeyUpCapture={(e) => {
-      if (e.keyCode !== 13 || keyPath === '' || value === '') return;
+      if (e.keyCode !== 13) return;
       appendKey();
     }}
   >
@@ -117,6 +117,7 @@ export const NewFixedKey = compose(
   }),
   mapProps(({ appendKey, reset, value: local, keyPath, ...props }) => ({
     appendKey: () => {
+      if (keyPath === '' || local === '') return;
       appendKey({ keyPath, value: local });
       reset();
     },
