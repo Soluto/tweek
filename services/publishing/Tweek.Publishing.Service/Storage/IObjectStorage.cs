@@ -12,5 +12,7 @@ namespace Tweek.Publishing.Service.Storage
         Task Put(string objectName, Action<Stream> writer, string mimeType, CancellationToken cancellationToken = default);
 
         Task Delete(string objectName, CancellationToken cancellationToken = default);
+
+        Task<bool> Exists(string objectName, CancellationToken cancellationToken = default);
     }
 }
