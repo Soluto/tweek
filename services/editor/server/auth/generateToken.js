@@ -8,7 +8,7 @@ const readFile = promisify(fs.readFile);
 
 const jwtOptions = {
   algorithm: 'RS256',
-  issuer: 'tweek-internal',
+  issuer: 'tweek',
   expiresIn: '5m',
 };
 

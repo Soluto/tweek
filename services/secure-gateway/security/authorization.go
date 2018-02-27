@@ -20,9 +20,9 @@ func AuthorizationMiddleware(enforcer *casbin.SyncedEnforcer, auditor audit.Audi
 		if !ok {
 			log.Panic("Authentication failed")
 		}
-		if user.Issuer() == "tweek-internal" {
+		if user.Issuer() == "tweek" {
 			next(rw, r)
-			log.Print("Issuer is tweek-internal - ACCESS ALLOWED")
+			log.Print("Issuer is tweek - ACCESS ALLOWED")
 		} else {
 			sub, act, ctxs, err := ExtractFromRequest(r)
 			if err != nil {

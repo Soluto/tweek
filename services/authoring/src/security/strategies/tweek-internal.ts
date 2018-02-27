@@ -13,7 +13,7 @@ export default class TweekInternalStrategy extends JwtStrategy {
     super(
       {
         secretOrKey: publicKey,
-        issuer: 'tweek-internal',
+        issuer: 'tweek',
         algorithms: ['RS256'],
         jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
       },
