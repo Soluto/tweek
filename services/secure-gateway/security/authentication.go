@@ -24,8 +24,9 @@ type userInfoKeyType string
 const UserInfoKey userInfoKeyType = "UserInfo"
 
 type userInfo struct {
-	email string `json:"email"`
-	name  string `json:"name"`
+	email  string
+	name   string
+	issuer string
 	jwt.StandardClaims
 }
 
@@ -33,17 +34,19 @@ type userInfo struct {
 type UserInfo interface {
 	Email() string
 	Name() string
+	Issuer() string
 	Claims() jwt.StandardClaims
 }
 
 func (u *userInfo) Email() string              { return u.email }
 func (u *userInfo) Name() string               { return u.name }
+func (u *userInfo) Issuer() string             { return u.issuer }
 func (u *userInfo) Claims() jwt.StandardClaims { return u.StandardClaims }
 
 // UserInfoFromRequest return the user information from request
 func UserInfoFromRequest(req *http.Request, configuration *appConfig.Security) (UserInfo, error) {
 	if !configuration.Enforce {
-		info := &userInfo{email: "test@test.test", name: "test"}
+		info := &userInfo{email: "test@test.test", name: "test", issuer: "tweek"}
 		return info, nil
 	}
 
@@ -69,15 +72,10 @@ func UserInfoFromRequest(req *http.Request, configuration *appConfig.Security) (
 
 	claims := token.Claims.(jwt.MapClaims)
 	info := &userInfo{
-		name:  claims["name"].(string),
-		email: claims["email"].(string),
+		name:   claims["name"].(string),
+		email:  claims["email"].(string),
+		issuer: claims["iss"].(string),
 	}
-
-	/*err = mapstructure.Decode(claims, info)
-	if err != nil {
-		return nil, fmt.Errorf("Error while extracting data from jwt claims: %v", err)
-	}*/
-
 	return info, nil
 }
 

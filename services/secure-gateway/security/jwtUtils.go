@@ -61,7 +61,7 @@ func InitJWT(keyEnv *appConfig.EnvInlineOrPath) JWTToken {
 func createNewJWT(key interface{}) string {
 	numericTime := time.Now().Add(expirationPeriod * time.Hour).Unix()
 	claims := tweekClaims{
-		"tweek-internal",
+		"tweek",
 		jwt.StandardClaims{
 			Issuer:    "tweek",
 			ExpiresAt: numericTime,

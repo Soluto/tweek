@@ -12,6 +12,11 @@ const jwtOptions = {
   expiresIn: '5m',
 };
 
+const data = {
+  name: 'tweek-test',
+  email: 'test@tweek.com',
+};
+
 async function getAuthKey() {
   const keyPath = nconf.get('GIT_PRIVATE_KEY_PATH');
   if (keyPath && fs.existsSync(keyPath)) {
@@ -27,7 +32,7 @@ export default async function generateToken() {
   try {
     const authKey = await authKeyPromise;
     if (!authKey) return undefined;
-    return await jwtSign({}, authKey, jwtOptions);
+    return await jwtSign(data, authKey, jwtOptions);
   } catch (err) {
     console.error('failed to generate token', err);
   }
