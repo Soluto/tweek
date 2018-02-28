@@ -72,8 +72,8 @@ export default {
     return dependentsPromise.then(({ aliasIndex, dependencyIndex }) => ({ usedBy: dependencyIndex[key] || [], aliases: aliasIndex[key] || [] }));
   },
   refreshIndex: (repoDir) => {
-    indexPromise = refreshIndex(repoDir);
-    manifestPromise = getManifests(repoDir);
+    indexPromise = refreshIndex(repoDir).catch((x=>()=>x)(indexPromise));
+    manifestPromise = getManifests(repoDir).catch((x=>()=>x)(manifestPromise));
     dependentsPromise = manifestPromise.then(createDependencyIndexes);
 
     return indexPromise;
