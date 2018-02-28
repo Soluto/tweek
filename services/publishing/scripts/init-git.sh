@@ -1,5 +1,5 @@
 #!/bin/bash
-if [[ -d "$REPO_LOCATION" && -d "/tmp/ssh_server" ]]; then
+if [[ -d "$REPO_LOCATION" && -f "/tmp/ssh_server" ]]; then
     echo "using existing repo"
     exit 0
 fi
