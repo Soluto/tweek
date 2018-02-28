@@ -33,14 +33,13 @@ namespace Tweek.Publishing.Service.Sync
             this._logger = logger ?? NullLogger.Instance;
         }
 
-        private IDisposable Start()
+        private void Start(CancellationToken cancellationToken = default(CancellationToken))
         {
-            CancellationTokenSource token = new CancellationTokenSource();
             Task.Run(async () =>
             {
-                while (!token.IsCancellationRequested)
+                while (!cancellationToken.IsCancellationRequested)
                 {
-                    var (actionName, action, tcs) = _queue.Take(token.Token);
+                    var (actionName, action, tcs) = _queue.Take(cancellationToken);
                     try
                     {
                         tcs.SetResult(await action());
@@ -52,7 +51,6 @@ namespace Tweek.Publishing.Service.Sync
                     }
                 }
             });
-            return Disposable.Create(() => token.Cancel());
         }
 
         private TaskCompletionSource<object> AddAction(string actionName, Func<Task<object>> action)
@@ -88,6 +86,7 @@ namespace Tweek.Publishing.Service.Sync
                 {
                     await _publisher.Publish("push-failed", commitId);
                     ex.Data["commitId"] = commitId;
+                    _logger.LogError($"push failed for commit: {commitId}", ex);
                     throw;
                 }
                 return null;
@@ -98,11 +97,14 @@ namespace Tweek.Publishing.Service.Sync
         public static SyncActor Create(StorageSynchronizer storageSynchronizer,
             RepoSynchronizer repoSynchronizer,
             NatsPublisher publisher,
+            CancellationToken cancellationToken = default(CancellationToken),
             ILogger logger = null)
         {
             var actor = new SyncActor(storageSynchronizer, repoSynchronizer, publisher, logger);
-            actor.Start();
+            actor.Start(cancellationToken);
             return actor;
         }
+
+        
     }
 }

@@ -383,7 +383,25 @@ namespace Tweek.Engine.Tests
             });
         }
 
+        [Fact]
+        public async Task EmptyFixedKeyIsIgnoredInScan()
+        {
 
+            contexts = ContextCreator.Merge(ContextCreator.Create("device", "1", Tuple.Create("@fixed:", JsonValue.NewString("FixedValue"))));
+
+            paths = new[] { "abc/somepath" };
+            rules = rules = new Dictionary<string, RuleDefinition>
+            {
+                ["abc/somepath"] = JPadGenerator.New().AddSingleVariantRule(matcher: "{}", value: "SomeValue").Generate()
+            };
+
+
+            await Run(async (tweek, context) =>
+            {
+                var val = await tweek.GetContextAndCalculate("_", new HashSet<Identity> { new Identity("device", "1")}, context);
+                Assert.Equal("SomeValue", val["abc/somepath"].Value.AsString());
+            });
+        }
 
     }
 }
