@@ -48,24 +48,17 @@ namespace Tweek.Publishing.Service
         private void RunSSHDeamon(IApplicationLifetime lifetime, ILogger logger)
         {
             var sshdConfigLocation = _configuration.GetValue<string>("SSHD_CONFIG_LOCATION");
-            var job = ShellHelper.Executor.ExecObservable("/usr/sbin/sshd", $"-f {sshdConfigLocation}")
+            var job = ShellHelper.Executor.ExecObservable("/usr/sbin/sshd", $"-e -D -f {sshdConfigLocation}")
                 .Retry(3)
                 .Select(x => (data: Encoding.Default.GetString(x.data), x.outputType))
                 .Subscribe(x =>
                 {
-                    if (x.outputType == OutputType.StdOut)
-                    {
-                        logger.LogInformation(x.data);
-                    }
-                    if (x.outputType == OutputType.StdErr)
-                    {
-                        logger.LogWarning(x.data);
-                    }
+                    logger.LogInformation(x.data);
                 }, ex =>
                 {
                     logger.LogError("error:" + ex.ToString());
                     lifetime.StopApplication();
-                });
+                }, ()=> lifetime.StopApplication());
             lifetime.ApplicationStopping.Register(job.Dispose);
         }
 
@@ -109,7 +102,7 @@ namespace Tweek.Publishing.Service
             {
                 app.UseDeveloperExceptionPage();
             }
-            RunSSHDeamon(lifetime, _logger);
+            RunSSHDeamon(lifetime, loggerFactory.CreateLogger("sshd"));
 
             var executor = ShellHelper.Executor.WithWorkingDirectory(_configuration.GetValue<string>("REPO_LOCATION"))
                                                .ForwardEnvVariable("GIT_SSH");
