@@ -58,12 +58,6 @@ namespace Tweek.Publishing.Service.Sync
                 }
             };
             
-            var newVersionBlob = new VersionsBlob
-            {
-                Latest = commitId,
-                Previous = versionsBlob?.Latest,
-            };
-
             var (p, exited) = _shellExecutor("git", $"archive --format=zip {commitId}");
             using (var ms = new MemoryStream())
             {
@@ -91,11 +85,18 @@ namespace Tweek.Publishing.Service.Sync
                 }
             }
 
-            await _client.PutJSON("versions", newVersionBlob);
+            if (commitId != versionsBlob?.Latest){
+                var newVersionBlob = new VersionsBlob
+                {
+                    Latest = commitId,
+                    Previous = versionsBlob?.Latest,
+                };
+                await _client.PutJSON("versions", newVersionBlob);
 
-            if (versionsBlob?.Previous != null)
-            {
-                await _client.Delete(versionsBlob.Previous);
+                if (versionsBlob?.Previous != null)
+                {
+                    await _client.Delete(versionsBlob.Previous);
+                }
             }
         }
     }
