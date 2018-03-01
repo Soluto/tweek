@@ -6,22 +6,29 @@ import closedFolderIconSrc from './resources/Folder-icon-closed.svg';
 import './KeysList.css';
 
 const leaf = Symbol();
+const compsPathSorter = (l, r) => {
+  if (l.props.node === leaf && r.props.node !== leaf) return 1;
+  if (r.props.node === leaf && l.props.node !== leaf) return -1;
+  return l.props.name.localeCompare(r.props.name);
+};
 
 export default function DirectoryTreeView({ paths, renderItem, expandByDefault }) {
   let pathTree = pathsToTree(paths);
   return (
     <div className="key-folder" data-comp="directory-tree-view">
-      {Object.keys(pathTree).map(pathNode => (
-        <TreeNode
-          key={pathNode}
-          name={pathNode}
-          node={pathTree[pathNode]}
-          fullPath={pathNode}
-          depth={1}
-          expandByDefault={expandByDefault}
-          renderItem={renderItem}
-        />
-      ))}
+      {Object.keys(pathTree)
+        .map(pathNode => (
+          <TreeNode
+            key={pathNode}
+            name={pathNode}
+            node={pathTree[pathNode]}
+            fullPath={pathNode}
+            depth={1}
+            expandByDefault={expandByDefault}
+            renderItem={renderItem}
+          />
+        ))
+        .sort(compsPathSorter)}
     </div>
   );
 }
@@ -42,17 +49,19 @@ function TreeNode({ node, name, fullPath, depth, renderItem, expandByDefault }) 
       descendantsCount={countLeafsInTree(node)}
       {...{ name, fullPath, depth, expandByDefault }}
     >
-      {Object.keys(node).map(childPath => (
-        <TreeNode
-          key={childPath}
-          name={childPath}
-          node={node[childPath]}
-          fullPath={`${fullPath}/${childPath}`}
-          depth={depth + 1}
-          renderItem={renderItem}
-          expandByDefault={expandByDefault}
-        />
-      ))}
+      {Object.keys(node)
+        .map(childPath => (
+          <TreeNode
+            key={childPath}
+            name={childPath}
+            node={node[childPath]}
+            fullPath={`${fullPath}/${childPath}`}
+            depth={depth + 1}
+            renderItem={renderItem}
+            expandByDefault={expandByDefault}
+          />
+        ))
+        .sort(compsPathSorter)}
     </TreeDirectory>
   );
 }
@@ -135,7 +144,7 @@ class TreeDirectory extends React.Component {
 
 function pathsToTree(paths) {
   let tree = {};
-  paths.map(x => x.split('/')).forEach(fragments => {
+  paths.map(x => x.split('/')).forEach((fragments) => {
     const last = fragments.pop();
     fragments.reduce((node, frag) => (node[frag] = node[frag] || {}), tree)[last] = leaf;
   });
