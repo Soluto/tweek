@@ -43,7 +43,7 @@ else
     exit 1
 fi
 
-if [[ -d "$REPO_LOCATION" ]]; then
+if [[ -d "$REPO_LOCATION" && "$(ls -A $REPO_LOCATION)" ]]; then
     echo "using existing repo"
     exit 0
 fi
