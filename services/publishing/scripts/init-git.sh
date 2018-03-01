@@ -43,6 +43,7 @@ else
     exit 1
 fi
 
+# check if we already have git repo
 if [[ -d "$REPO_LOCATION" ]]; then
     echo "using existing repo"
     exit 0
