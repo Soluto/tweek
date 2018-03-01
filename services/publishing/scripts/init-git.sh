@@ -1,10 +1,6 @@
 #!/bin/bash
-if [[ -d "$REPO_LOCATION" && -f "/tmp/ssh_server" ]]; then
-    echo "using existing repo"
-    exit 0
-fi
 
-echo export REPO_LOCATION=$REPO_LOCATION >> /home/git/.env
+echo export REPO_LOCATION=$REPO_LOCATION > /home/git/.env
 echo export GIT_UPSTREAM_URI=$GIT_UPSTREAM_URI >> /home/git/.env
 echo export GIT_SSH=/tweek/ssh-helper.sh >> /home/git/.env
 
@@ -45,6 +41,11 @@ if [ -f /tmp/ssh_server ]; then
 else
     echo You must set either GIT_SERVER_PRIVATE_KEY_INLINE or GIT_SERVER_PRIVATE_KEY_PATH environment variable
     exit 1
+fi
+
+if [[ -d "$REPO_LOCATION" ]]; then
+    echo "using existing repo"
+    exit 0
 fi
 
 mkdir -p $REPO_LOCATION
