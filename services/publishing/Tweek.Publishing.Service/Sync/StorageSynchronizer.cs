@@ -46,7 +46,7 @@ namespace Tweek.Publishing.Service.Sync
             }
 
             if (!String.IsNullOrWhiteSpace(versionsBlob?.Latest)){
-                if (versionsBlob.Latest == commitId) return;
+                if (versionsBlob.Latest == commitId && await _client.Exists(commitId)) return;
                 if (checkForStaleRevision)
                 {
                     try{
