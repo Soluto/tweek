@@ -20,6 +20,7 @@ func New(upstream *url.URL, token security.JWTToken) negroni.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		rw.Header().Set("X-GATEWAY", "true")
 		patchUpstream(r, upstream)
+		r.Header.Del("Origin")
 		if token != nil {
 			setJwtToken(r, token.GetToken())
 		}

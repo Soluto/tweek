@@ -13,6 +13,9 @@ FROM deps AS build
 
 RUN yarn
 
+ARG REACT_APP_GATEWAY_URL
+ENV REACT_APP_GATEWAY_URL=${REACT_APP_GATEWAY_URL:-http://localhost:4099}
+
 COPY . ./
 RUN yarn test && yarn build
 
@@ -21,17 +24,15 @@ FROM base AS release
 
 ENV NODE_ENV=production
 ENV PORT=3000
-ENV VAPID_KEYS=/opt/vapid/keys.json
 EXPOSE 3000
 
 WORKDIR /opt/app/
-VOLUME /opt/vapid/
 
-COPY --from=build /src/dist/ ./dist
-COPY --from=build /src/build/ ./dist/build
+COPY --from=build /src/build/ ./build
 COPY --from=deps /src/node_modules ./node_modules
 COPY --from=deps /src/package.json ./package.json
+COPY --from=build /src/index.js ./index.js
 
 HEALTHCHECK --interval=10s --timeout=10s --retries=8 \
       CMD wget -O - http://localhost:3000/health || exit 1
-CMD [ "yarn", "start:release" ]
+CMD [ "node", "index.js" ]

@@ -1,7 +1,8 @@
-{
+{    
     "upstreams": {
         "api": "http://localhost:4003",
-        "authoring": "http://localhost:4004"
+        "authoring": "http://localhost:4005",
+        "publishing": "http://localhost:4010"
     },
     "security": {
         "tweekSecretKey": {

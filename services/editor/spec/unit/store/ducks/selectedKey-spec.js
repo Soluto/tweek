@@ -1,4 +1,9 @@
-/* global jest, beforeEach, describe, it, afterEach, expect */
+/* global jest, beforeEach, describe, it, afterEach, expect Promise process */
+/* eslint-disable import/first */
+import { assert, expect } from 'chai';
+import fetchMock from 'fetch-mock';
+import * as R from 'ramda';
+
 jest.unmock('../../../../src/store/ducks/tags');
 jest.unmock('../../../../src/store/ducks/selectedKey');
 jest.unmock('../../../../src/utils/http');
@@ -27,10 +32,7 @@ import {
   createBlankJPadKey,
   BLANK_KEY_NAME,
 } from '../../../../src/store/ducks/ducks-utils/blankKeyDefinition';
-import { assert, expect } from 'chai';
-import fetchMock from 'fetch-mock';
 import keyValueTypeValidations from '../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations';
-import * as R from 'ramda';
 
 describe('selectedKey', async () => {
   const KEY_OPENED = 'KEY_OPENED';
@@ -46,6 +48,8 @@ describe('selectedKey', async () => {
   const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
   const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
 
+  process.env.REACT_APP_GATEWAY_URL = 'http://gateway';
+
   let dispatchMock;
   let currentState;
 
@@ -55,7 +59,7 @@ describe('selectedKey', async () => {
   }
 
   beforeEach(() => {
-    dispatchMock = jest.fn(action => {
+    dispatchMock = jest.fn((action) => {
       if (isFunction(action)) {
         return action(
           dispatchMock,
@@ -119,8 +123,8 @@ describe('selectedKey', async () => {
 
   describe('openKey', () => {
     beforeEach(() => {
-      fetchMock.get('glob:*/api/tags', []);
-      fetchMock.get('glob:*/api/schemas', {});
+      fetchMock.get('glob:*/api/v2/tags', []);
+      fetchMock.get('glob:*/api/v2/schemas', {});
     });
 
     it('should dispatch KEY_OPENED with blank payload for blank key name', async () => {
@@ -180,7 +184,7 @@ describe('selectedKey', async () => {
         manifest: expectedServerData.manifest,
       };
 
-      fetchMock.get('glob:*/api/keys/*', expectedServerData);
+      fetchMock.get('glob:*/api/v2/keys/*', expectedServerData);
 
       // Act
       const func = openKey(keyName);
@@ -199,7 +203,7 @@ describe('selectedKey', async () => {
         key: keyName,
       };
 
-      fetchMock.get('glob:*/api/keys/*', { throws: 'some fetch exception' });
+      fetchMock.get('glob:*/api/v2/keys/*', { throws: 'some fetch exception' });
 
       // Act
       const func = openKey(keyName);
@@ -214,8 +218,8 @@ describe('selectedKey', async () => {
       // Arrange
       const expectedTags = [{ name: 'pita' }];
       fetchMock.restore();
-      fetchMock.get('glob:*/api/schemas', {});
-      fetchMock.get('glob:*/api/tags', expectedTags);
+      fetchMock.get('glob:*/api/v2/schemas', {});
+      fetchMock.get('glob:*/api/v2/tags', expectedTags);
 
       // Act
       const func = openKey('category/some key');
@@ -233,7 +237,9 @@ describe('selectedKey', async () => {
 
   describe('saveKey', () => {
     beforeEach(() => {
-      fetchMock.get('glob:*/api/revision-history/*', []);
+      fetchMock.get('glob:*/api/v2/revision-history/*', []);
+      fetchMock.get('glob:*/api/v2/dependents/*', []);
+      fetchMock.get('glob:*/api/v2/values/*', {});
     });
 
     const saveKeyCommonFlowTest = (isNewKey, shouldSaveSucceed) =>
@@ -243,7 +249,7 @@ describe('selectedKey', async () => {
         currentState = generateState(isNewKey ? BLANK_KEY_NAME : keyNameToSave, keyNameToSave);
 
         const fetchResponse = shouldSaveSucceed ? { status: 200 } : { status: 500 };
-        const matchName = 'glob:*/api/keys/*';
+        const matchName = 'glob:*/api/v2/keys/*';
         fetchMock.putOnce(matchName, fetchResponse);
 
         // Act
@@ -251,7 +257,7 @@ describe('selectedKey', async () => {
         await func(dispatchMock, () => currentState);
 
         // Assert
-        assert(fetchMock.done(matchName), 'should call fetch once');
+        assert(fetchMock.done(matchName, 'put'), 'should call fetch once');
 
         const fetchJsonDataString = fetchMock.lastOptions(matchName).body;
         assert(
@@ -303,7 +309,7 @@ describe('selectedKey', async () => {
         currentState = generateState(isNewKey ? BLANK_KEY_NAME : keyNameToSave, keyNameToSave);
         currentState.selectedKey.validation = stateValidation;
 
-        fetchMock.putOnce('glob:*/api/keys/*', {});
+        fetchMock.putOnce('glob:*/api/v2/keys/*', {});
 
         // Act
         const func = saveKey();
@@ -325,8 +331,7 @@ describe('selectedKey', async () => {
 
         currentState = generateState(BLANK_KEY_NAME, keyNameToSave);
 
-        fetchMock.putOnce('glob:*/api/keys/*', {});
-        fetchMock.get('glob:*/api/dependents/*', []);
+        fetchMock.putOnce('glob:*/api/v2/keys/*', {});
 
         // Act
         const func = saveKey();
@@ -361,7 +366,7 @@ describe('selectedKey', async () => {
 
         currentState = generateState(keyNameToSave);
 
-        fetchMock.putOnce('glob:*/api/keys/*', {});
+        fetchMock.putOnce('glob:*/api/v2/keys/*', {});
 
         // Act
         const func = saveKey();

@@ -12,8 +12,11 @@ services:
     build: ../../services/authoring
 
   editor:
-    image: soluto/tweek-editor
-    build: ../../services/editor
+    image: soluto/tweek-editor    
+    build:
+      context: ../../services/editor
+      args:
+        - REACT_APP_GATEWAY_URL=http://localhost:4099       
     depends_on: 
       - gateway
 
@@ -21,8 +24,6 @@ services:
     image: soluto/tweek-secure-gateway
     build: ../../services/secure-gateway
     depends_on:
-      - minio
-      - nats
       - api
       - authoring
   

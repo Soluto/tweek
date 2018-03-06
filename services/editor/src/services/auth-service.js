@@ -1,14 +1,45 @@
-/* global fetch console Headers localStorage window */
+/* global fetch console Headers localStorage window process */
 import Oidc from 'oidc-client';
+import { unAuthFetch } from '../utils/fetch';
+
+const store = {};
+let storage;
+
+if (typeof localStorage === 'undefined') {
+  storage = {
+    setItem: (itemKey, itemValue) => {
+      store[itemKey] = itemValue;
+    },
+    getItem: itemKey => store[itemKey],
+    removeItem: itemKey => delete store[itemKey],
+  };
+} else {
+  storage = localStorage;
+}
+
+export const storeIdToken = (idToken) => {
+  storage.setItem('id_token', idToken);
+};
+
+export const retrieveIdToken = () => storage.getItem('id_token');
+
+let oidcClient;
+const getOidcClient = (settings = basicOidcConfig) => oidcClient || new Oidc.UserManager(settings);
+
+const basicOidcConfig = {
+  response_type: 'token id_token',
+  filterProtocolClaims: true,
+  loadUserInfo: true,
+  automaticSilentRenew: true,
+  userStore: new Oidc.WebStorageStateStore({ store: storage }),
+  redirect_uri: `${window.location.origin}/auth/oidc`,
+  silent_redirect_uri: `${window.location.origin}/auth/silent`,
+  post_logout_redirect_uri: `${window.location.origin}/login`,
+  prompt: 'login',
+};
 
 export const getAuthProviders = async () => {
-  const res = await fetch('http://localhost:4099/auth/providers', {
-    method: 'GET',
-    headers: new Headers({
-      'content-type': 'application/json',
-    }),
-    mode: 'cors',
-  });
+  const res = await unAuthFetch(`/auth/providers`);
   if (res.ok) {
     const providers = await res.json();
     return providers;
@@ -16,26 +47,29 @@ export const getAuthProviders = async () => {
   return [];
 };
 
-export const configureOidc = (id, authority, client_id) => ({
+export const configureOidc = (authority, client_id, scope) => ({
+  ...basicOidcConfig,
   authority,
   client_id,
-  redirect_uri: `${window.location.origin}/auth/${id}/`,
-  silent_redirect_uri: `${window.location.origin}/auth/${id}/`,
-  post_logout_redirect_uri: `${window.location.origin}/login`,
-  response_type: 'id_token token',
-  filterProtocolClaims: true,
-  loadUserInfo: true,
+  scope,
 });
 
 export const signinRequest = (oidcSettings, state) => {
-  localStorage.setItem('oidcSettings', JSON.stringify(oidcSettings));
-  const oidcClient = new Oidc.UserManager(oidcSettings);
+  const oidcClient = getOidcClient(oidcSettings);
   return oidcClient.signinRedirect(state);
 };
 
 export const processSigninRedirectCallback = async () => {
-  const oidcSettings = JSON.parse(localStorage.getItem('oidcSettings'));
-  const oidcClient = new Oidc.UserManager(oidcSettings);
+  const oidcClient = getOidcClient();
+  oidcClient.events.addSilentRenewError(error => console.log('Error while renew token', error));
   const user = await oidcClient.signinRedirectCallback();
-  console.log('USER', user);
+  storeIdToken(user.id_token);
+  return user;
+};
+
+export const processSilentSigninCallback = async () => {
+  const oidcClient = getOidcClient();
+  const user = await oidcClient.signinSilentCallback();
+  storeIdToken(user.id_token);
+  return user;
 };

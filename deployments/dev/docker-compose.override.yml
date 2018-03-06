@@ -48,6 +48,7 @@ services:
       - PUBLIC_KEY_PATH=/run/secrets/tweek_pfx_public_key
       - Redis__ConnectionString=redis:6379
       - Rules__Minio__Endpoint=minio:9000
+      - Rules__Minio__Bucket=tweek
       - Rules__Minio__AccessKeyPath=/run/secrets/minio_access_key
       - Rules__Minio__SecretKeyPath=/run/secrets/minio_secret_key
       - Rules__Nats__Endpoint=nats://nats:4222
@@ -60,9 +61,7 @@ services:
 
   editor:
     ports:
-      - "4004:3000"
-    volumes: 
-      - ../../services/editor/vapid:/opt/vapid
+      - "4004:3000"    
     environment:
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
     secrets:
@@ -87,6 +86,17 @@ services:
       - start:debug
     labels:
       - "traefik.port=3000"
+
+  oidc-mock-server:
+    container_name: oidc-mock-server
+    build: ../../utils/oidc-server
+    ports:
+      - "4011:80"
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CLIENT_ID=tweek-openid-mock-client
+      - REDIRECT_URIS=http://localhost:3000/auth/oidc,http://localhost:4004/auth/oidc
+      - TEST_USER={"SubjectId":"1","Username":"User1","Password":"pwd"}
 
   redis:
     image: redis:4.0.2-alpine
@@ -116,12 +126,16 @@ services:
     ports:
       - "80:80"
       - "4099:3000"
+    depends_on: 
+      - minio
+      - nats
+      - oidc-mock-server
     environment:
       - TWEEKGATEWAY_SECURITY_CORS_ENABLED=true
       - TWEEKGATEWAY_SECURITY_CORS_MAXAGE=60
-      - TWEEKGATEWAY_SECURITY_CORS_ALLOWEDORIGINS=null
+      - TWEEKGATEWAY_SECURITY_CORS_ALLOWEDORIGINS=['*']
       - TWEEKGATEWAY_SECURITY_CORS_ALLOWEDMETHODS=['GET','POST','PUT','PATCH','DELETE']
-      - TWEEKGATEWAY_SECURITY_CORS_ALLOWEDHEADERS=null
+      - TWEEKGATEWAY_SECURITY_CORS_ALLOWEDHEADERS=['*']
       - TWEEKGATEWAY_SECURITY_CORS_ALLOWCREDENTIALS=true
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOENDPOINT=minio:9000
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOBUCKETNAME=tweek
@@ -131,9 +145,9 @@ services:
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOPOLICYOBJECTNAME=policy.csv
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_NATSENDPOINT=nats://nats:4222
       - TWEEKGATEWAY_SECURITY_TWEEKSECRETKEY_PATH=/run/secrets/tweek_ssh_private_key
-      - CONFIG_FILE_PATH=/config/gateway.json
+      - CONFIG_FILE_PATH=/config/gateway.json      
     secrets:
-      - tweek_ssh_private_key
+      - tweek_ssh_private_key    
 
 secrets:
   tweek_ssh_public_key:

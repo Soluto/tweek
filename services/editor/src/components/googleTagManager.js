@@ -45,7 +45,7 @@ class GoogleTagManagerContainer extends React.Component {
 
 const getConfigValue = async (configName) => {
   try {
-    const response = await fetch(`/api/editor-configuration/google_tag_manager/${configName}`);
+    const response = await fetch(`/values/@tweek/editor/google_tag_manager/${configName}`);
     return await response.json();
   } catch (err) {
     console.warn('failed to retrieve configuration', configName, err);

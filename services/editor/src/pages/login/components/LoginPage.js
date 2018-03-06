@@ -4,6 +4,7 @@ import styled from 'react-emotion';
 
 import { getAuthProviders, configureOidc, signinRequest } from '../../../services/auth-service';
 import logoSrc from '../../../components/resources/logo.svg';
+import BasicAuthLoginButton from './BasicAuthLoginButton';
 
 const MainComponent = styled('div')`
   display: flex;
@@ -55,7 +56,7 @@ const LoginMessageSpan = styled('span')`
   margin-top: 250px;
 `;
 
-const LoginButton = styled('a')`
+const LoginButton = styled('div')`
   padding-top: 14px;
   padding-bottom: 17px;
   margin: 15px;
@@ -72,7 +73,7 @@ const LoginButton = styled('a')`
   text-decoration: none;
 `;
 
-const LoginPage = ({ authProviders, location }) => (
+const LoginPage = ({ authProviders, location: { state = {} } }) => (
   <MainComponent>
     <LeftPane>
       <WelcomeMessageSpan>Welcome to:</WelcomeMessageSpan>
@@ -81,14 +82,11 @@ const LoginPage = ({ authProviders, location }) => (
     <RightPane>
       <LoginMessageSpan>Login into Tweek using:</LoginMessageSpan>
       {authProviders.map(ap => (
-        <LoginButton
-          key={ap.id}
-          onClick={() => ap.action({ redirect: location.search })}
-          data-comp={ap.id}
-        >
+        <LoginButton key={ap.id} onClick={() => ap.action({ state })} data-comp={ap.id}>
           {ap.name}
         </LoginButton>
       ))}
+      <BasicAuthLoginButton state={state} />
     </RightPane>
   </MainComponent>
 );
@@ -102,7 +100,10 @@ const enhancer = compose(
           id: key,
           name: res[key].name,
           action: state =>
-            signinRequest(configureOidc(key, res[key].authority, res[key].clientId), state),
+            signinRequest(
+              configureOidc(res[key].authority, res[key].client_id, res[key].scope),
+              state,
+            ),
         }));
         this.props.setAuthProviders(providers);
       });

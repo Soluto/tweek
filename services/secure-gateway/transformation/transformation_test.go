@@ -1,141 +1,152 @@
 package transformation
 
 import (
-	"io"
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"reflect"
 	"regexp"
 	"testing"
+
+	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
+	"github.com/Soluto/tweek/services/secure-gateway/security"
+	"github.com/gorilla/mux"
+	"github.com/urfave/negroni"
 )
 
-func Test_getURLForUpstream(t *testing.T) {
+func TestMount(t *testing.T) {
 	type args struct {
-		upstream          *url.URL
-		req               *http.Request
-		urlRegexp         *regexp.Regexp
-		replaceURLSegment string
+		upstreamConfig *appConfig.Upstreams
+		routesConfig   []appConfig.V2Route
+		token          security.JWTToken
+		middleware     *negroni.Negroni
+		router         *mux.Router
 	}
+	tests := []struct {
+		name string
+		args args
+	}{
+	// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			Mount(tt.args.upstreamConfig, tt.args.routesConfig, tt.args.token, tt.args.middleware, tt.args.router)
+		})
+	}
+}
 
-	apiURL, _ := url.Parse("http://api")
+func Test_mountRouteTransform(t *testing.T) {
+	type args struct {
+		router      *mux.Router
+		middleware  *negroni.Negroni
+		routeConfig appConfig.V2Route
+		upstreams   map[string]*url.URL
+		forwarders  map[string]negroni.HandlerFunc
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+	// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mountRouteTransform(tt.args.router, tt.args.middleware, tt.args.routeConfig, tt.args.upstreams, tt.args.forwarders)
+		})
+	}
+}
+
+func Test_createTransformMiddleware(t *testing.T) {
+	type args struct {
+		routeConfig appConfig.V2Route
+		upstreams   map[string]*url.URL
+	}
+	tests := []struct {
+		name string
+		args args
+		want negroni.HandlerFunc
+	}{
+	// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := createTransformMiddleware(tt.args.routeConfig, tt.args.upstreams); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("createTransformMiddleware() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_parseUpstreamOrPanic(t *testing.T) {
+	type args struct {
+		u string
+	}
+	tests := []struct {
+		name string
+		args args
+		want *url.URL
+	}{
+	// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := parseUpstreamOrPanic(tt.args.u); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("parseUpstreamOrPanic() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_getURLForUpstream(t *testing.T) {
 	authoringURL, _ := url.Parse("http://authoring")
 
+	type args struct {
+		upstream      *url.URL
+		req           *http.Request
+		urlRegexp     *regexp.Regexp
+		upstreamRoute string
+	}
 	tests := []struct {
 		name string
 		args args
 		want *url.URL
 	}{
 		{
-			name: "Simple request",
+			name: "Schemas transfrom",
 			args: args{
-				apiURL,
-				httptest.NewRequest("GET", "/api/v2/values/a/b/c", nil),
-				valuesURLRegexp,
-				valuesUpstreamRoute,
+				upstream:      authoringURL,
+				req:           httptest.NewRequest("GET", "/api/v2/schemas", nil),
+				urlRegexp:     regexp.MustCompile(`^/api/v2/schemas(.*)$`),
+				upstreamRoute: "/api/schemas$1",
 			},
-			want: parseURL(t, "http://api/api/v1/keys/a/b/c"),
-		},
-		{
-			name: "$flatten request",
-			args: args{
-				apiURL,
-				httptest.NewRequest("GET", "/api/v2/values/d/e/f?%24flatten=true", nil),
-				valuesURLRegexp,
-				valuesUpstreamRoute,
-			},
-			want: parseURL(t, "http://api/api/v1/keys/d/e/f?%24flatten=true"),
-		},
-		{
-			name: "$include request",
-			args: args{
-				apiURL,
-				httptest.NewRequest("GET", "/api/v2/values/u/v/r?%24flatten=true&%24include=/x/y/z", nil),
-				valuesURLRegexp,
-				valuesUpstreamRoute,
-			},
-			want: parseURL(t, "http://api/api/v1/keys/u/v/r?%24flatten=true&%24include=/x/y/z"),
-		},
-
-		{
-			name: "GetContext request",
-			args: args{
-				apiURL,
-				httptest.NewRequest("GET", "/api/v2/context/IdnType/IdnId", nil),
-				contextURLRegexp,
-				contextUpstreamRoute,
-			},
-			want: parseURL(t, "http://api/api/v1/context/IdnType/IdnId"),
-		},
-		{
-			name: "DeleteContext request",
-			args: args{
-				apiURL,
-				httptest.NewRequest("DELETE", "/api/v2/context/IdnType/IdnId/prop", nil),
-				contextURLRegexp,
-				contextUpstreamRoute,
-			},
-			want: parseURL(t, "http://api/api/v1/context/IdnType/IdnId/prop"),
-		},
-		{
-			name: "Get Tags",
-			args: args{
-				authoringURL,
-				httptest.NewRequest("GET", "/api/v2/tags", nil),
-				tagsURLRegexp,
-				tagsUpstreamRoute,
-			},
-			want: parseURL(t, "http://authoring/api/v1/tags"),
-		},
-		{
-			name: "GetSchemas request",
-			args: args{
-				authoringURL,
-				httptest.NewRequest("GET", "/api/v2/schemas", nil),
-				schemasURLRegexp,
-				schemasUpstreamRoute,
-			},
-			want: parseURL(t, "http://authoring/api/v1/schemas"),
-		},
-		{
-			name: "DeleteSchemas request",
-			args: args{
-				authoringURL,
-				httptest.NewRequest("DELETE", "/api/v2/schemas/IdnType", nil),
-				schemasURLRegexp,
-				schemasUpstreamRoute,
-			},
-			want: parseURL(t, "http://authoring/api/v1/schemas/IdnType"),
+			want: parseURL(t, "http://authoring/api/schemas"),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := getURLForUpstream(tt.args.upstream, tt.args.req, tt.args.urlRegexp, tt.args.replaceURLSegment); !reflect.DeepEqual(got, tt.want) {
+			if got := getURLForUpstream(tt.args.upstream, tt.args.req, tt.args.urlRegexp, tt.args.upstreamRoute); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("getURLForUpstream() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_makeRequest(t *testing.T) {
+func Test_setQueryParams(t *testing.T) {
 	type args struct {
-		t      *testing.T
-		method string
-		url    string
-		body   io.Reader
+		ctx context.Context
+		url *url.URL
+		key interface{}
 	}
 	tests := []struct {
 		name string
 		args args
-		want *http.Request
 	}{
 	// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := httptest.NewRequest(tt.args.method, tt.args.url, tt.args.body); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("makeRequest() = %v, want %v", got, tt.want)
-			}
+			setQueryParams(tt.args.ctx, tt.args.url, tt.args.key)
 		})
 	}
 }

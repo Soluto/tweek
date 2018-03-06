@@ -14,11 +14,11 @@ import (
 	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
 	"github.com/Soluto/tweek/services/secure-gateway/audit"
 	"github.com/Soluto/tweek/services/secure-gateway/corsSupport"
-	"github.com/Soluto/tweek/services/secure-gateway/modelManagement"
+	"github.com/Soluto/tweek/services/secure-gateway/externalApps"
+	"github.com/Soluto/tweek/services/secure-gateway/handlers"
 
 	"github.com/Soluto/tweek/services/secure-gateway/passThrough"
 
-	"github.com/Soluto/tweek/services/secure-gateway/monitoring"
 	"github.com/Soluto/tweek/services/secure-gateway/security"
 	"github.com/Soluto/tweek/services/secure-gateway/transformation"
 
@@ -28,6 +28,8 @@ import (
 
 func main() {
 	configuration := appConfig.InitConfig()
+	externalApps.Init(&configuration.Security.PolicyStorage)
+
 	app := newApp(configuration)
 
 	if len(configuration.Server.Ports) > 1 {
@@ -69,26 +71,27 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	authorizationMiddleware := security.AuthorizationMiddleware(enforcer, auditor)
 
 	middleware := negroni.New(negroni.NewRecovery())
-	corsSupportMiddleware := corsSupport.New(&config.Security.Cors)
-	if corsSupportMiddleware != nil {
-		middleware.Use(corsSupportMiddleware)
-	}
 	middleware.Use(authenticationMiddleware)
 	middleware.Use(authorizationMiddleware)
 
 	router := NewRouter(config)
-	router.MonitoringRouter().HandleFunc("isAlive", monitoring.IsAlive)
+	transformation.Mount(&config.Upstreams, config.V2Routes, token, middleware, router.V2Router())
 
-	modelManagement.Mount(enforcer, middleware, router.ModelManagementRouter())
+	noAuthMiddleware := negroni.New(negroni.NewRecovery())
+	passThrough.Mount(&config.Upstreams, &config.V1Hosts, noAuthMiddleware, router.V1Router())
+	passThrough.Mount(&config.Upstreams, &config.V1Hosts, noAuthMiddleware, router.LegacyNonV1Router())
 
-	transformation.Mount(&config.Upstreams, token, middleware, router.V2Router())
+	security.MountAuth(config.Security.Auth.Providers, &config.Security.TweekSecretKey, noAuthMiddleware, router.AuthRouter())
 
-	passThrough.Mount(&config.Upstreams, &config.V1Hosts, negroni.New(negroni.NewRecovery()), router.V1Router())
-	passThrough.Mount(&config.Upstreams, &config.V1Hosts, negroni.New(negroni.NewRecovery()), router.LegacyNonV1Router())
-
-	security.MountAuth(config.Security.Auth.Providers, negroni.New(corsSupportMiddleware), router.AuthRouter())
+	router.MainRouter().PathPrefix("/version").HandlerFunc(handlers.NewVersionHandler(&config.Upstreams, config.Version))
+	router.MainRouter().PathPrefix("/health").HandlerFunc(handlers.NewHealthHandler())
 
 	app := negroni.New(negroni.NewRecovery())
+
+	corsSupportMiddleware := corsSupport.New(&config.Security.Cors)
+	if corsSupportMiddleware != nil {
+		app.Use(corsSupportMiddleware)
+	}
 	app.UseHandler(router)
 
 	return app

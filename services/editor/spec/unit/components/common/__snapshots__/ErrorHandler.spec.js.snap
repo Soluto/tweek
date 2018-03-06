@@ -12,9 +12,9 @@ exports[`ErrorHandler component should render original component correctly 1`] =
 Array [
   <div>
     some element
-  </div>,
+</div>,
   <div>
     another element
-  </div>,
+</div>,
 ]
 `;

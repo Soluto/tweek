@@ -16,6 +16,7 @@ func TestExtractFromRequest(t *testing.T) {
 	userInfo := &userInfo{
 		name:  "A B",
 		email: "a@b.com",
+		sub:   "A b sub",
 	}
 
 	tests := []struct {
@@ -32,7 +33,7 @@ func TestExtractFromRequest(t *testing.T) {
 				r: createTestRequest("POST", "https://gateway.tweek.com/keys", userInfo),
 			},
 			wantObj: PolicyResource{Item: "/keys", Contexts: map[string]string{}},
-			wantSub: "a@b.com",
+			wantSub: "A b sub",
 			wantAct: "write",
 			wantErr: nil,
 		},
@@ -42,7 +43,7 @@ func TestExtractFromRequest(t *testing.T) {
 				r: createTestRequest("GET", "https://gateway.tweek.com/values", userInfo),
 			},
 			wantObj: PolicyResource{Item: "/values", Contexts: map[string]string{}},
-			wantSub: "a@b.com",
+			wantSub: "A b sub",
 			wantAct: "read",
 			wantErr: nil,
 		},
@@ -52,7 +53,7 @@ func TestExtractFromRequest(t *testing.T) {
 				r: createTestRequest("GET", "https://gateway.tweek.com/revision-history", userInfo),
 			},
 			wantObj: PolicyResource{Item: "/revision-history", Contexts: map[string]string{}},
-			wantSub: "a@b.com",
+			wantSub: "A b sub",
 			wantAct: "history",
 			wantErr: nil,
 		},
@@ -62,7 +63,7 @@ func TestExtractFromRequest(t *testing.T) {
 				r: createTestRequest("GET", "https://gateway.tweek.com/search-index", userInfo),
 			},
 			wantObj: PolicyResource{Item: "/search-index", Contexts: map[string]string{}},
-			wantSub: "a@b.com",
+			wantSub: "A b sub",
 			wantAct: "get search index",
 			wantErr: nil,
 		},

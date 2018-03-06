@@ -8,9 +8,6 @@ services:
   editor:
     environment: 
       - CONTINUOUS_UPDATER_INTERVAL=500
-      - REQUIRE_AUTH=true
-      - TWEEK_AUTH_SCHEMES=httpDigest
-      - AUTH_DIGEST_CREDENTIALS=user:pwd
 
   authoring:
     environment: 
@@ -26,6 +23,23 @@ services:
       - CorsPolicies__Keys__Headers=
       - CorsPolicies__Keys__ExposedHeaders=
       - CorsEnabled=true
+      
+  gateway:
+    depends_on:       
+      - minio
+      - nats
+      - oidc-mock-server
+
+  oidc-mock-server:
+    container_name: oidc-mock-server
+    build: ../../utils/oidc-server
+    ports:
+      - "4011:80"
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CLIENT_ID=tweek-openid-mock-client
+      - REDIRECT_URIS=http://localhost:3000/auth/oidc,http://localhost/auth/oidc
+      - TEST_USER={"SubjectId":"1","Username":"User1","Password":"pwd"}
   
   selenium:
     image: selenium/standalone-chrome:3.8.1
@@ -84,7 +98,7 @@ services:
   smoke-tests:
     build:
       context: ../../
-      dockerfile: TweekApiSmokeTestDockerfile
+      dockerfile: TweekApiSmokeTest.Dockerfile
     container_name: smoke-tests
     depends_on: 
       - gateway

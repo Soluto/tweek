@@ -11,14 +11,25 @@ import (
 
 // Upstreams is the list of upstrem URLs.
 type Upstreams struct {
-	API       string
-	Authoring string
+	API        string
+	Authoring  string
+	Publishing string
 }
 
 // V1Hosts is the list of v1 hosts
 type V1Hosts struct {
 	API       []string
 	Authoring []string
+}
+
+// V2Route stores all routes for v2 proxy
+type V2Route struct {
+	RoutePathPrefix string
+	RouteRegexp     string
+	UpstreamPath    string
+	Methods         []string
+	Service         string
+	UserInfo        bool
 }
 
 // Server section holds the server related configuration
@@ -34,9 +45,13 @@ type EnvInlineOrPath struct {
 
 // AuthProvider - configuration of each auth provider
 type AuthProvider struct {
-	Name      string `json:"name"`
-	Authority string `json:"authority"`
-	ClientID  string `json:"clientId"`
+	Name         string `json:"name"`
+	Issuer       string `json:"issuer"`
+	Authority    string `json:"authority"`
+	ClientID     string `json:"client_id"`
+	JWKSURL      string `json:"jwks_uri"`
+	Scope        string `json:"scope"`
+	ResponseType string `json:"response_type"`
 }
 
 // Auth - struct with config related to authentication
@@ -81,8 +96,10 @@ type PolicyStorage struct {
 type Configuration struct {
 	Upstreams Upstreams
 	V1Hosts   V1Hosts
+	V2Routes  []V2Route
 	Server    Server
 	Security  Security
+	Version   string
 }
 
 // InitConfig initializes the configuration

@@ -2,8 +2,11 @@ import React from 'react';
 import { Switch, Route, Redirect } from 'react-router';
 import { ConnectedRouter } from 'react-router-redux';
 import App from './components/App';
+import PrivateRoute from './PrivateRoute';
 import LoginPage from './pages/login/components/LoginPage';
 import LoggedInPage from './pages/login/components/LoggedInPage';
+import BasicAuthLoggedInPage from './pages/login/components/BasicAuthLoggedInPage';
+import SilentLoggedInPage from './pages/login/components/SilentLoggedInPage';
 import KeysPage from './pages/keys/components/KeysPage/KeysPage';
 import KeyPage from './pages/keys/components/KeyPage/KeyPage';
 import ContextPage from './pages/context/components/ContextPage/ContextPage';
@@ -19,21 +22,21 @@ const SelectKeyMessage = () => <div className={'select-key-message'}>Select key.
 const renderKeyRoutes = ({ match: { path } }) => (
   <KeysPage>
     <Switch>
-      <Route exact path={path} component={SelectKeyMessage} />
-      <Route component={KeyPage} />
+      <PrivateRoute exact path={path} component={SelectKeyMessage} />
+      <PrivateRoute component={KeyPage} />
     </Switch>
   </KeysPage>
 );
 
 const renderContextRoutes = ({ match }) => (
   <ContextPage {...match}>
-    <Route path={`${match.path}/:identityType/:identityId`} component={IdentityDetails} />
+    <PrivateRoute path={`${match.path}/:identityType/:identityId`} component={IdentityDetails} />
   </ContextPage>
 );
 
 const renderSettingsRoutes = ({ match }) => (
   <SettingsPage {...match}>
-    <Route path={`${match.path}/identities/:identityType`} component={IdentityPage} />
+    <PrivateRoute path={`${match.path}/identities/:identityType`} component={IdentityPage} />
   </SettingsPage>
 );
 
@@ -41,9 +44,9 @@ const renderAppRoutes = () => (
   <App>
     <Switch>
       <Route path="/" exact render={() => <Redirect to="/keys" />} />
-      <Route path="/keys" render={renderKeyRoutes} />
-      <Route path="/context" render={renderContextRoutes} />
-      <Route path="/settings" render={renderSettingsRoutes} />
+      <PrivateRoute path="/keys" render={renderKeyRoutes} />
+      <PrivateRoute path="/context" render={renderContextRoutes} />
+      <PrivateRoute path="/settings" render={renderSettingsRoutes} />
     </Switch>
   </App>
 );
@@ -52,8 +55,10 @@ export default props => (
   <ConnectedRouter history={browserHistory}>
     <Switch>
       <Route path="/login" component={LoginPage} />
-      <Route path="/auth/:providerId" component={LoggedInPage} />
-      <Route path="/" render={renderAppRoutes} />
+      <Route path="/auth/oidc" component={LoggedInPage} />
+      <Route path="/auth/basic" component={BasicAuthLoggedInPage} />
+      <Route path="/auth/silent" component={SilentLoggedInPage} />
+      <PrivateRoute path="/" render={renderAppRoutes} />
       <Route component={NoMatch} />
     </Switch>
   </ConnectedRouter>

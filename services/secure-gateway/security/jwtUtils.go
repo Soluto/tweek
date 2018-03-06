@@ -11,8 +11,9 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-type tweekClaims struct {
-	name string
+type TweekClaims struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
 	jwt.StandardClaims
 }
 
@@ -60,8 +61,9 @@ func InitJWT(keyEnv *appConfig.EnvInlineOrPath) JWTToken {
 
 func createNewJWT(key interface{}) string {
 	numericTime := time.Now().Add(expirationPeriod * time.Hour).Unix()
-	claims := tweekClaims{
+	claims := TweekClaims{
 		"tweek",
+		"tweek@soluto.com",
 		jwt.StandardClaims{
 			Issuer:    "tweek",
 			ExpiresAt: numericTime,

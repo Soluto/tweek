@@ -1,5 +1,5 @@
 # -------- DEPENDENCIES -------- #
-FROM golang:1.9.2 as dependencies
+FROM golang:1.10.0-stretch as dependencies
 
 ARG DEP_VERSION=0.3.2
 

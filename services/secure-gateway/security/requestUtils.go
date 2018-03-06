@@ -102,8 +102,8 @@ func extractContextFromContextRequest(r *http.Request, u UserInfo) (ctx PolicyRe
 
 func normalizeIdentityID(id string, u UserInfo) string {
 	identityID := id
-	escapedEmail, escapedName := url.PathEscape(u.Email()), url.PathEscape(u.Name())
-	if escapedEmail == identityID || escapedName == identityID {
+	escapedEmail, escapedName, escapedSub := url.PathEscape(u.Email()), url.PathEscape(u.Name()), url.PathEscape(u.Sub())
+	if escapedEmail == identityID || escapedName == identityID || escapedSub == identityID {
 		identityID = "self"
 	}
 
@@ -136,7 +136,7 @@ func ExtractFromRequest(r *http.Request) (sub string, act string, obj PolicyReso
 		return
 	}
 
-	sub = user.Email()
+	sub = user.Sub()
 	act, err = extractActionFromRequest(r)
 	if err != nil {
 		return "", "", PolicyResource{Contexts: map[string]string{}}, err
