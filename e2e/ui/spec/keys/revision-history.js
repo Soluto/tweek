@@ -54,6 +54,7 @@ describe('revision history', () => {
 
     const changeCount = 4;
     const history = changeValue(changeCount);
+    browser.waitForEnabled(revision, 1000);
 
     const values = browser.getValue(revision);
     expect(values).to.deep.equal(history.map(x => x.commit));
