@@ -18,11 +18,12 @@ function getKeyNameSuggestions(keysList) {
 
 const NewKeyInput = compose(
   connect(state => ({ keysList: state.keys })),
-  mapPropsStream(prop$ => {
+  mapPropsStream((prop$) => {
     const keysList$ = prop$
       .pluck('keysList')
       .distinctUntilChanged()
-      .switchMap(SearchService.filterInternalKeys);
+      .switchMap(SearchService.filterInternalKeys)
+      .map(dic => Object.keys(dic));
 
     return Observable.combineLatest(prop$, keysList$, (props, keysList) => ({
       ...props,
@@ -52,7 +53,7 @@ const NewKeyInput = compose(
           suggestions={suggestions}
           value={displayName}
           placeholder="Enter key full path"
-          onChange={text => {
+          onChange={(text) => {
             const validation = keyNameValidations(text, keysList);
             validation.isShowingHint = !validation.isValid;
             onChange(text, validation);

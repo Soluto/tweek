@@ -2,6 +2,7 @@ export const BLANK_KEY_NAME = '_blank';
 
 export function createBlankKeyManifest(keyName, implementation = { type: 'file', format: 'jpad' }) {
   const manifest = {
+    key_path: keyName,
     meta: {
       archived: false,
     },
