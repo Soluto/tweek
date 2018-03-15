@@ -20,7 +20,7 @@ export function getKeys() {
     try {
       const result = await await fetch('/api/manifests');
       const manifests = await result.json();
-      const payload = manifests.reduce((acc, key) => ({ ...acc, [key.key_path]: key }), {});
+      const payload = R.indexBy(R.prop('key_path'), manifests);
       dispatch({ type: KEYS_UPDATED, payload });
     } catch (error) {
       dispatch(showError({ title: 'Failed to retrieve keys!', error }));

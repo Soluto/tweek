@@ -24,6 +24,18 @@ function KeysFilter({ onFilterChange }) {
   );
 }
 
+const supportCardView = async () => {
+  try {
+    const response = await fetch(
+      `/api/editor-configuration/experimental/keys_search/display_cards_view`,
+    );
+    return await response.json();
+  } catch (err) {
+    console.warn('failed to retrieve configuration for display_cards_view', err);
+    return null;
+  }
+};
+
 const KeyItem = connect((state, props) => ({
   isActive: state.selectedKey && state.selectedKey.key && state.selectedKey.key === props.fullPath,
 }))(({ name, fullPath, depth, isActive }) => (
@@ -42,9 +54,10 @@ const CardItem = connect((state, props) => ({
   isActive: state.selectedKey && state.selectedKey.key && state.selectedKey.key === props.key_path,
 }))(({ key_path, meta: { name, tags, description }, valueType, isActive }) => (
   <div className={classNames('key-card', { selected: isActive })} data-comp="key-card">
-    <Link className="key-link" to={`/keys/${key_path}`}>
-      <div className="title">
-        {name} {(tags || []).map(x => <span className="tag">{x}</span>)}
+    <Link title={key_path} className="key-link" to={`/keys/${key_path}`}>
+      <div>
+        <div className="title">{name}</div>
+        <div>{(tags || []).map(x => <span className="tag">{x}</span>)}</div>
       </div>
       <div className="path">{key_path}</div>
       <div className="description">{description}</div>
@@ -53,6 +66,8 @@ const CardItem = connect((state, props) => ({
 ));
 
 const KeysList = componentFromStream((prop$) => {
+  const supportMultiResultsView$ = Observable.defer(supportCardView);
+
   const keyList$ = prop$
     .map(x => x.keys)
     .distinctUntilChanged()
@@ -62,6 +77,8 @@ const KeysList = componentFromStream((prop$) => {
     });
 
   const { handler: setFilter, stream: filter$ } = createEventHandler();
+  const { handler: setResultsView, stream: resultsView$ } = createEventHandler();
+
   const filteredKeys$ = filter$
     .map(x => x.trim())
     .distinctUntilChanged()
@@ -69,18 +86,41 @@ const KeysList = componentFromStream((prop$) => {
     .startWith('')
     .switchMap(async filter => (filter === '' ? undefined : SearchService.search(filter)));
 
-  return Observable.combineLatest(filteredKeys$, keyList$).map(
-    ([filteredKeys, { visibleKeys, keys }]) => (
-      <div className="keys-list-container">
-        <KeysFilter onFilterChange={setFilter} />
-        {filteredKeys ? (
-          <CardView items={filteredKeys.map(x => keys[x]).filter(x => x)} renderItem={CardItem} />
+  return Observable.combineLatest(
+    filteredKeys$,
+    keyList$,
+    supportMultiResultsView$,
+    resultsView$.startWith('cards'),
+  ).map(([filteredKeys, { visibleKeys, keys }, supportMultiResultsView, resultsView]) => (
+    <div className="keys-list-container">
+      <KeysFilter onFilterChange={setFilter} />
+      <div class="keys-nav">
+        {filteredKeys && supportMultiResultsView ? (
+          <div class="search-results">
+            <div class="view-selector">
+              <button onClick={() => setResultsView('cards')}>List</button>
+              <button onClick={() => setResultsView('tree')}>Tree</button>
+            </div>
+            {resultsView === 'cards' && (
+              <CardView
+                items={filteredKeys.map(x => keys[x]).filter(x => x)}
+                renderItem={CardItem}
+              />
+            )}
+            {resultsView === 'tree' && (
+              <DirectoryTreeView paths={filteredKeys} expandByDefault={true} renderItem={KeyItem} />
+            )}
+          </div>
         ) : (
-          <DirectoryTreeView paths={Object.keys(visibleKeys)} renderItem={KeyItem} />
+          <DirectoryTreeView
+            paths={filteredKeys || Object.keys(visibleKeys)}
+            expandByDefault={!!filteredKeys}
+            renderItem={KeyItem}
+          />
         )}
       </div>
-    ),
-  );
+    </div>
+  ));
 });
 
 KeysList.displayName = 'KeysList';

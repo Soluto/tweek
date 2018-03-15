@@ -1,11 +1,31 @@
 @import (reference) "../../../../styles/core/core.less";
 @sidebarBgColor: #414b53;
 
+.hideLongLine(){
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
 .keys-list-container {
   display: flex;
   color: #d8d8d8;
   flex-direction: column;
   background-color: transparent;
+
+  .search-results{
+    display: flex;
+    flex-direction: column;
+    .view-selector{
+      display: flex;
+      min-height: 30px;
+      button{
+        cursor: pointer;
+        flex: 1
+      }
+    }
+  }
 
   .search-input-wrapper {
     background-color: transparent;
@@ -55,7 +75,9 @@
     }
   }
 }
-.key-folder {
+
+.keys-nav{
+  display: flex;
   overflow-y: auto;
   &::-webkit-scrollbar {
     width: 12px;
@@ -72,6 +94,10 @@
   overflow-x: hidden;
   max-width: 400px;
   min-width: 400px;
+}
+
+.key-folder {
+  width: 100%;
   .key-folder-name {
     font-size: 16px;
     display: flex;
@@ -119,24 +145,10 @@
     flex-grow: 1;
   }
 }
-.key-search{
-  overflow-y: auto;
-  &::-webkit-scrollbar {
-    width: 12px;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 6px;
-    background-color: #bcbbbb;
-    border: 3px solid #3a3e41;
-  }
-  &::-webkit-scrollbar-track {
-    background-color: #3a3e41;
-    border-radius: 6px;
-  }
-  overflow-x: hidden;
-  max-width: 400px;
-  min-width: 400px;
 
+
+.search-results{
+  width: 100%;
   .key-card{
     border-radius: 7px;
     border: 2px solid grey;
@@ -154,15 +166,17 @@
     }
     .title{
       font-size:16px;
-      text-overflow: ellipsis;
-      overflow: hidden;
+      display: inline-block;
       color: #515c66;
+      .hideLongLine();
     }
     .tag{
       font-size: 10px;
       border-radius: 10px;
       background-color: green;
+      display: inline-block;
       padding: 4px;
+      margin: 0 2px;
       color: white;
       vertical-align: middle;
     }
@@ -170,6 +184,7 @@
       margin-top: 4px;
       font-size: 10px;
       color: #a5a5a5;
+      .hideLongLine();
     }
     .description{
       margin-top: 4px;
