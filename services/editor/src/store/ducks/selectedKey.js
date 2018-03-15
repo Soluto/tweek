@@ -215,7 +215,7 @@ export function archiveKey(archived) {
     if (archived) {
       dispatch(removeKeyFromList(key));
     } else {
-      dispatch(addKeyToList(remote.manifest));
+      dispatch(addKeyToList(keyToSave.manifest));
     }
     dispatch(updateRevisionHistory(key));
     dispatch(updateKeyDependents(key));
