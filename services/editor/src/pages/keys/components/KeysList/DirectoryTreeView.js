@@ -118,6 +118,7 @@ class TreeDirectory extends React.Component {
           className="key-folder-name"
           onClick={() => this.setState({ isCollapsed: !isCollapsed })}
           data-folder-name={fullPath}
+          data-is-collapsed={isCollapsed}
         >
           <img
             className="key-folder-icon"
