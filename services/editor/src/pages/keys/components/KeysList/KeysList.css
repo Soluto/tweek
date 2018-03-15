@@ -8,11 +8,11 @@
   display: flex;
   flex-direction: column;
 }
-.keys-list-container .search-results .view-selector {
+.keys-list-container .view-selector {
   display: flex;
   min-height: 30px;
 }
-.keys-list-container .search-results .view-selector button {
+.keys-list-container .view-selector button {
   cursor: pointer;
   flex: 1;
 }

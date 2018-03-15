@@ -27,12 +27,12 @@ function KeysFilter({ onFilterChange }) {
 const supportCardView = async () => {
   try {
     const response = await fetch(
-      `/api/editor-configuration/experimental/keys_search/display_cards_view`,
+      `/api/editor-configuration/experimental/keys_search/enable_cards_view`,
     );
     return await response.json();
   } catch (err) {
-    console.warn('failed to retrieve configuration for display_cards_view', err);
-    return null;
+    console.warn('failed to retrieve configuration for enable_cards_view', err);
+    return false;
   }
 };
 
@@ -94,30 +94,25 @@ const KeysList = componentFromStream((prop$) => {
   ).map(([filteredKeys, { visibleKeys, keys }, supportMultiResultsView, resultsView]) => (
     <div className="keys-list-container">
       <KeysFilter onFilterChange={setFilter} />
-      <div class="keys-nav">
-        {filteredKeys && supportMultiResultsView ? (
-          <div class="search-results">
-            <div class="view-selector">
-              <button onClick={() => setResultsView('cards')}>List</button>
-              <button onClick={() => setResultsView('tree')}>Tree</button>
-            </div>
-            {resultsView === 'cards' && (
-              <CardView
-                items={filteredKeys.map(x => keys[x]).filter(x => x)}
-                renderItem={CardItem}
-              />
-            )}
-            {resultsView === 'tree' && (
-              <DirectoryTreeView paths={filteredKeys} expandByDefault={true} renderItem={KeyItem} />
-            )}
+      {filteredKeys &&
+        supportMultiResultsView && (
+          <div class="view-selector">
+            <button onClick={() => setResultsView('cards')}>List</button>
+            <button onClick={() => setResultsView('tree')}>Tree</button>
           </div>
-        ) : (
-          <DirectoryTreeView
-            paths={filteredKeys || Object.keys(visibleKeys)}
-            expandByDefault={!!filteredKeys}
-            renderItem={KeyItem}
-          />
         )}
+      <div class="keys-nav">
+        <div class="search-results">
+          {filteredKeys && supportMultiResultsView && resultsView === 'cards' ? (
+            <CardView items={filteredKeys.map(x => keys[x]).filter(x => x)} renderItem={CardItem} />
+          ) : (
+            <DirectoryTreeView
+              paths={filteredKeys || Object.keys(visibleKeys)}
+              expandByDefault={!!filteredKeys}
+              renderItem={KeyItem}
+            />
+          )}
+        </div>
       </div>
     </div>
   ));
