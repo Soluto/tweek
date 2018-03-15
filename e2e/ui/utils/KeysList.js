@@ -20,7 +20,7 @@ class KeysList {
     const keyFolders = extractFolders(keyName);
 
     keyFolders.forEach(folder =>
-      browser.clickWhenVisible(
+      browser.clickIfVisible(
         treeItem('data-folder-name', folder) + '[data-is-collapsed=true]',
         timeout,
       ),
