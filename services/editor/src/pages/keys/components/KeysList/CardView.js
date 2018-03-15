@@ -1,9 +1,14 @@
 import React from 'react';
+import { pure } from 'recompose';
 import PropTypes from 'prop-types';
 
-export default function CardView({ items, renderItem, expandByDefault }) {
-  let Card = renderItem;
-  return <div className="card-results">{items.map(item => <Card {...item} />)}</div>;
+export default function CardView({ items, renderItem, selectedItem, itemSelector = x => x }) {
+  let Card = pure(renderItem);
+  return (
+    <div className="card-results">
+      {items.map(item => <Card selected={itemSelector(item) === selectedItem} {...item} />)}
+    </div>
+  );
 }
 
 CardView.propTypes = {

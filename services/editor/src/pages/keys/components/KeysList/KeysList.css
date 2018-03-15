@@ -55,6 +55,14 @@
 .keys-list-container .search-input-wrapper .search-input:focus {
   border: none;
 }
+.keys-list-container .search-input-wrapper .clear {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: 8px 0 ;
+  right: 10px;
+  cursor: pointer;
+}
 .keys-list-container .key-link-wrapper {
   display: flex;
   flex-grow: 1;
