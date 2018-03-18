@@ -43,7 +43,7 @@ class KeysList {
     }
 
     const keyLinkSelector = treeItem('href', `/keys/${keyName}`);
-    browser.waitForVisible(keyLinkSelector, 2000, reverse);
+    browser.waitForVisible(keyLinkSelector, 3000, reverse);
   }
 
   search(filter) {
