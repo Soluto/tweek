@@ -39,7 +39,6 @@ class KeysList {
       browser.clickIfVisible(
         treeItem('data-folder-name', folder + '[data-is-collapsed=true]'),
         1000,
-        reverse,
       );
     }
 
