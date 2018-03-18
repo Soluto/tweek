@@ -38,12 +38,12 @@ class KeysList {
     for (const folder of keyFolders) {
       browser.clickIfVisible(
         treeItem('data-folder-name', folder + '[data-is-collapsed=true]'),
-        1000,
+        timeout,
       );
     }
 
     const keyLinkSelector = treeItem('href', `/keys/${keyName}`);
-    browser.waitForVisible(keyLinkSelector, 4000, reverse);
+    browser.waitForVisible(keyLinkSelector, timeout, reverse);
   }
 
   search(filter) {

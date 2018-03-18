@@ -1,9 +1,11 @@
 import React from 'react';
+import R from 'ramda';
 import PropTypes from 'prop-types';
 import { VelocityTransitionGroup } from 'velocity-react';
 import openedFolderIconSrc from './resources/Folder-icon-opened.svg';
 import closedFolderIconSrc from './resources/Folder-icon-closed.svg';
 import { mapProps, compose, onlyUpdateForKeys, shallowEqual, shouldUpdate } from 'recompose';
+
 import './KeysList.css';
 
 const leaf = Symbol();
@@ -51,7 +53,7 @@ const TreeNode = compose(
   })),
   shouldUpdate(
     ({ selectedPath: _, ...oldProps }, { selectedPath: __, ...newProps }) =>
-      !shallowEqual(oldProps, newProps),
+      !R.equals(oldProps, newProps),
   ),
 )(({ node, name, fullPath, depth, renderItem, expandByDefault, selected, selectedPath }) => {
   let LeafElement = renderItem;
