@@ -36,7 +36,11 @@ class KeysList {
     const keyFolders = extractFolders(keyName);
 
     for (const folder of keyFolders) {
-      browser.clickIfVisible(treeItem('data-folder-name', folder), 1000, reverse);
+      browser.clickIfVisible(
+        treeItem('data-folder-name', folder + '[data-is-collapsed=true]'),
+        1000,
+        reverse,
+      );
     }
 
     const keyLinkSelector = treeItem('href', `/keys/${keyName}`);
