@@ -1,5 +1,5 @@
 import React from 'react';
-import R from 'ramda';
+import * as R from 'ramda';
 import PropTypes from 'prop-types';
 import { VelocityTransitionGroup } from 'velocity-react';
 import openedFolderIconSrc from './resources/Folder-icon-opened.svg';
