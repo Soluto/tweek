@@ -55,7 +55,7 @@ describe('selectedKey', async () => {
   }
 
   beforeEach(() => {
-    dispatchMock = jest.fn(action => {
+    dispatchMock = jest.fn((action) => {
       if (isFunction(action)) {
         return action(
           dispatchMock,
@@ -81,6 +81,7 @@ describe('selectedKey', async () => {
             source: '',
           },
           manifest: {
+            key_path: keyNameToAdd,
             implementation: {
               type: 'file',
               format: 'jpad',
@@ -334,7 +335,9 @@ describe('selectedKey', async () => {
 
         const addedAction = dispatchMock.mock.calls.find(([action]) => action.type === KEY_ADDED);
         expect(addedAction).to.exist;
-        assertDispatchAction(addedAction[0], { type: KEY_ADDED, payload: keyNameToSave });
+        const action = addedAction[0];
+        expect(action.type, KEY_ADDED);
+        expect(action.payload).to.have.property('key_path', keyNameToSave);
 
         const pushAction = dispatchMock.mock.calls.find(
           ([action]) => action.type && action.type.startsWith('@@router'),

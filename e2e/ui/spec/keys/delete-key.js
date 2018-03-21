@@ -16,9 +16,8 @@ const deleteKey = dataComp('delete-key');
 const keyMessage = dataComp('key-message');
 
 const assertKeyDeleted = keyName => {
-  KeysList.assertInList(keyName, true);
-
   authoringClient.waitForKeyToBeDeleted(keyName);
+  KeysList.assertInList(keyName, true);
 
   Key.open(keyName, false);
 
