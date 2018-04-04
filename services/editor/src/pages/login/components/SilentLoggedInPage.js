@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { replace } from 'react-router-redux';
 import { compose, lifecycle } from 'recompose';
 
-import { processSilentSigninCallback, storeIdToken } from '../../../services/auth-service';
+import { processSilentSigninCallback, storeToken } from '../../../services/auth-service';
 
 const mapDispatchToProps = dispatch => ({
   redirect: url => dispatch(replace(url)),
@@ -13,7 +13,7 @@ const enhance = compose(
   lifecycle({
     componentDidMount() {
       processSilentSigninCallback().then((user) => {
-        storeIdToken(user.id_token);
+        storeToken(user.access_token);
         this.props.redirect('/');
       });
     },

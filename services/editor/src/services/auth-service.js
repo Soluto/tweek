@@ -17,11 +17,11 @@ if (typeof localStorage === 'undefined') {
   storage = localStorage;
 }
 
-export const storeIdToken = (idToken) => {
-  storage.setItem('id_token', idToken);
+export const storeToken = (token) => {
+  storage.setItem('token', token);
 };
 
-export const retrieveIdToken = () => storage.getItem('id_token');
+export const retrieveToken = () => storage.getItem('token');
 
 let oidcClient;
 const getOidcClient = (settings = basicOidcConfig) => oidcClient || new Oidc.UserManager(settings);
@@ -63,13 +63,13 @@ export const processSigninRedirectCallback = async () => {
   const oidcClient = getOidcClient();
   oidcClient.events.addSilentRenewError(error => console.log('Error while renew token', error));
   const user = await oidcClient.signinRedirectCallback();
-  storeIdToken(user.id_token);
+  storeToken(user.access_token);
   return user;
 };
 
 export const processSilentSigninCallback = async () => {
   const oidcClient = getOidcClient();
   const user = await oidcClient.signinSilentCallback();
-  storeIdToken(user.id_token);
+  storeToken(user.access_token);
   return user;
 };

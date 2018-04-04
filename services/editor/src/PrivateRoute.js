@@ -2,7 +2,7 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router';
 import { withProps } from 'recompose';
-import { retrieveIdToken } from './services/auth-service';
+import { retrieveToken } from './services/auth-service';
 
 const PrivateRoute = ({ component: Component, render, isAuthenticated, location, ...rest }) => (
   <Route
@@ -26,7 +26,7 @@ const PrivateRoute = ({ component: Component, render, isAuthenticated, location,
   />
 );
 const enhance = withProps(() => ({
-  isAuthenticated: !!retrieveIdToken(),
+  isAuthenticated: !!retrieveToken(),
 }));
 
 export default enhance(PrivateRoute);
