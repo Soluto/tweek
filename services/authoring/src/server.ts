@@ -1,12 +1,12 @@
 import path = require('path');
 import BluebirdPromise = require('bluebird');
 import express = require('express');
-import morgan = require('morgan');
 import bodyParser = require('body-parser');
 import { Observable } from 'rxjs';
 import fs = require('fs-extra');
 import passport = require('passport');
 import Transactor from './utils/transactor';
+import morganJSON from './utils/jsonLogger';
 import GitRepository, { RepoOutOfDateError } from './repositories/git-repository';
 import KeysRepository from './repositories/keys-repository';
 import TagsRepository from './repositories/tags-repository';
@@ -75,7 +75,7 @@ async function startServer() {
   const publicKey = sshpk
     .parseKey(await fs.readFile(gitRepositoryConfig.publicKey), 'auto')
     .toBuffer('pem');
-  app.use(morgan('tiny'));
+  app.use(morganJSON);
   app.use(configurePassport(publicKey, appsRepository));
   app.use(bodyParser.json()); // for parsing application/json
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
