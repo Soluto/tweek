@@ -27,6 +27,7 @@ namespace Tweek.Publishing.Service
                     logging.AddConsole();
                 })
                 .UseStartup<Startup>()
+                .UseSerilog()
                 .Build();
     }
 }

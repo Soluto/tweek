@@ -97,6 +97,11 @@ namespace Tweek.Publishing.Service
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
             IApplicationLifetime lifetime)
         {
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(Configuration)
+                .WriteTo.Console(new JsonFormatter())
+                .CreateLogger();
+
             _logger.LogInformation("Starting service");
             if (env.IsDevelopment())
             {
