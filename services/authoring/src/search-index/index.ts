@@ -4,6 +4,7 @@ import fs = require('fs-extra');
 import R = require('ramda');
 import lunr = require('lunr');
 import { getManifests } from './get-manifests';
+import { logger } from '../utils/jsonLogger';
 
 let manifestPromise;
 let indexPromise;
@@ -15,7 +16,7 @@ async function refreshIndex(repoDir) {
 
   await new Promise((resolve, reject) => {
     execFile('node', [path.join(__dirname, 'build/cli.js'), repoDir, indexFile], (error, stdout, stderr) => {
-      console.log(stdout);
+      logger.log(stdout);
       if (error) reject(error);
       else resolve();
     });

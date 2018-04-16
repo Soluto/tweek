@@ -1,4 +1,5 @@
 import Locker = require('lock-queue');
+import { logger } from './jsonLogger';
 
 export type AsyncFunc<T, U> = (context: T) => Promise<U>;
 
@@ -37,7 +38,7 @@ export default class Transactor<T> {
         try {
           return await transactionObject.action(context);
         } catch (ex) {
-          console.warn('failed transaction, rolling back');
+          logger.warn('failed transaction, rolling back');
           await this._rollbackAction(context);
           if (!await this._shouldRetry(ex, context)) { throw ex; }
           continue;

@@ -7,6 +7,7 @@ import { Authorize } from '../security/authorize';
 import { PERMISSIONS } from '../security/permissions/consts';
 import KeysRepository from '../repositories/keys-repository';
 import { addOid } from '../utils/response-utils';
+import { logger } from '../utils/jsonLogger';
 
 export type KeyUpdateModel = {
   implementation: any,
@@ -38,7 +39,7 @@ export class KeysController {
     try {
       return await this.keysRepository.getKeyDetails(keyPath, { revision });
     } catch (exp) {
-      console.error(`Error retrieving key ${keyPath}`, exp);
+      logger.error(`Error retrieving key ${keyPath}`, exp);
       throw new Errors.NotFoundError();
     }
   }

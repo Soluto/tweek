@@ -5,6 +5,7 @@ import fs = require('fs-extra');
 import R = require('ramda');
 import { Commit } from 'nodegit/commit';
 import { Oid } from 'nodegit';
+import { logger } from '../utils/jsonLogger';
 
 export class ValidationError {
   constructor(public message) { }
@@ -45,7 +46,7 @@ export default class GitRepository {
   }
 
   static async create(settings: { url: string, localPath: string, username: string, publicKey: string, privateKey: string, password: string }) {
-    console.log('cleaning up current working folder');
+    logger.log('cleaning up current working folder');
     await fs.remove(settings.localPath);
 
     const operationSettings: OperationSettings = {
@@ -57,12 +58,14 @@ export default class GitRepository {
       },
     };
 
-    console.log('clonning rules repository');
+    logger.log('clonning rules repository');
     const clonningOp = 'clonning end in';
+    // FIXME: needs json logging
     console.time(clonningOp);
     const repo = await git.Clone.clone(settings.url, settings.localPath, {
       fetchOpts: operationSettings,
     });
+    // FIXME: needs json logging
     console.timeEnd(clonningOp);
     return new GitRepository(repo, operationSettings);
   }
@@ -167,7 +170,7 @@ export default class GitRepository {
 
     const isSynced = await this.isSynced();
     if (!isSynced) {
-      console.warn('Repo is not synced after pull');
+      logger.warn('Repo is not synced after pull');
       commitId = await this.reset();
     }
 
@@ -212,7 +215,7 @@ export default class GitRepository {
 
     const isSynced = await this.isSynced();
     if (!isSynced) {
-      console.warn('Not synced after Push, attempting to reset');
+      logger.warn('Not synced after Push, attempting to reset');
       throw new Error('Repo was not in sync after push');
     }
   }
