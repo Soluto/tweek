@@ -14,6 +14,9 @@ using Minio;
 using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
+using Serilog;
+using Serilog.Events;
+using Serilog.Formatting.Json;
 using Tweek.Publishing.Service.Handlers;
 using Tweek.Publishing.Service.Messaging;
 using Tweek.Publishing.Service.Packing;
@@ -21,6 +24,8 @@ using Tweek.Publishing.Service.Storage;
 using Tweek.Publishing.Service.Sync;
 using Tweek.Publishing.Service.Utils;
 using Tweek.Publishing.Service.Validation;
+
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Tweek.Publishing.Service
 {
@@ -98,7 +103,7 @@ namespace Tweek.Publishing.Service
             IApplicationLifetime lifetime)
         {
             Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(Configuration)
+                .ReadFrom.Configuration(_configuration)
                 .WriteTo.Console(new JsonFormatter())
                 .CreateLogger();
 
