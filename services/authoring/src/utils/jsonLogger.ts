@@ -38,10 +38,10 @@ export const morganJSON = morgan((tokens, req, res) => {
     const Method = tokens.method(req, res);
     const Url = tokens.url(req, res);
     const Status = tokens.status(req, res);
-    const ContentLength = tokens.res(req, res, 'content-length')
-    const ResponseTimeMs = tokens['response-time'](req, res)
+    const ContentLength = tokens.res(req, res, 'content-length');
+    const ResponseTimeMs = tokens['response-time'](req, res);
     const Message = `${Method} ${Url} ${Status} ${ContentLength} - :${ResponseTimeMs} ms`;
-    const Level = getLevelByStatus(Status)
+    const Level = getLevelByStatus(Status);
     return JSON.stringify({
         Level,
         Method,
