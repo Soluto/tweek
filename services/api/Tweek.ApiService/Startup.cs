@@ -169,8 +169,6 @@ namespace Tweek.ApiService
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-                loggerFactory.AddDebug();
             }
             app.InstallAddons(Configuration);
             app.UseAuthentication();
