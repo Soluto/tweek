@@ -61,6 +61,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tweek.Drivers.Rules.Minio",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.Drivers.Context.MongoDb", "addons\Context\Tweek.Drivers.Context.MongoDb\Tweek.Drivers.Context.MongoDb.csproj", "{9CC89787-72A3-4CE2-B418-498282873031}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.Drivers.Context.Redis.IntegrationTests", "addons\Context\Tweek.Drivers.Context.MongoDb.IntegrationTests\Tweek.Drivers.Context.Redis.IntegrationTests.csproj", "{B9683942-7103-47A2-9797-26FB0DF5B460}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -275,6 +277,18 @@ Global
 		{9CC89787-72A3-4CE2-B418-498282873031}.Release|x64.Build.0 = Release|x64
 		{9CC89787-72A3-4CE2-B418-498282873031}.Release|x86.ActiveCfg = Release|x86
 		{9CC89787-72A3-4CE2-B418-498282873031}.Release|x86.Build.0 = Release|x86
+		{B9683942-7103-47A2-9797-26FB0DF5B460}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9683942-7103-47A2-9797-26FB0DF5B460}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9683942-7103-47A2-9797-26FB0DF5B460}.Debug|x64.ActiveCfg = Debug|x64
+		{B9683942-7103-47A2-9797-26FB0DF5B460}.Debug|x64.Build.0 = Debug|x64
+		{B9683942-7103-47A2-9797-26FB0DF5B460}.Debug|x86.ActiveCfg = Debug|x86
+		{B9683942-7103-47A2-9797-26FB0DF5B460}.Debug|x86.Build.0 = Debug|x86
+		{B9683942-7103-47A2-9797-26FB0DF5B460}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9683942-7103-47A2-9797-26FB0DF5B460}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9683942-7103-47A2-9797-26FB0DF5B460}.Release|x64.ActiveCfg = Release|x64
+		{B9683942-7103-47A2-9797-26FB0DF5B460}.Release|x64.Build.0 = Release|x64
+		{B9683942-7103-47A2-9797-26FB0DF5B460}.Release|x86.ActiveCfg = Release|x86
+		{B9683942-7103-47A2-9797-26FB0DF5B460}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -306,6 +320,7 @@ Global
 		{EC243F60-6EE3-4022-B254-F8F7BB40AAA1} = {2407B11F-BCC6-46BC-85B0-CF64D74A441D}
 		{5374D25F-84B6-4ACA-B92E-21902410BE84} = {EC243F60-6EE3-4022-B254-F8F7BB40AAA1}
 		{9CC89787-72A3-4CE2-B418-498282873031} = {BD1E6B57-18E1-46E9-B16F-B531E88FB9E3}
+		{B9683942-7103-47A2-9797-26FB0DF5B460} = {BD1E6B57-18E1-46E9-B16F-B531E88FB9E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {520A2949-0926-487E-A33C-C1615B159589}
