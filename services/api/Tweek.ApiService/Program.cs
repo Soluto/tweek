@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Serilog;
 using System.IO;
 
 namespace Tweek.ApiService
@@ -11,6 +12,7 @@ namespace Tweek.ApiService
                 .UseKestrel(opts=> opts.Limits.MaxRequestLineSize = 128 * 1024)
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
+                .UseSerilog()
                 .Build();
             
             host.Run();
