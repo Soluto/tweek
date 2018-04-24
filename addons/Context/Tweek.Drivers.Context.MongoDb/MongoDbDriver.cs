@@ -22,8 +22,11 @@ namespace Tweek.Drivers.Context.MongoDb
     {
         private JsonSerializerSettings JSON_SERIALIZER_SETTINGS = new JsonSerializerSettings { ContractResolver = new TweekContractResolver() };
         private const string TWEEK_DB_NAME = "tweek";
-        private const string TWEEK_COLLECTION_NAME = "tweek-contexts";
         public string GetKey(Identity identity) => "identity_" + identity.Type + "_" + identity.Id;
+
+        public IMongoCollection<Dictionary<string, object>> GetCollection(Identity identity) =>
+            _db.GetCollection<Dictionary<string, object>>("identity_" + identity.Type);
+
         private MongoClient _client;
         private IMongoDatabase  _db;
 
@@ -41,7 +44,7 @@ namespace Tweek.Drivers.Context.MongoDb
         public async Task AppendContext(Identity identity, Dictionary<string, JsonValue> context)
         {
             var id = GetKey(identity);
-            var collection = _db.GetCollection<Dictionary<string, object>>(TWEEK_COLLECTION_NAME);
+            var collection = GetCollection(identity);
             var filter = Builders<Dictionary<string, object>>.Filter.Eq("_id", id);
 
             var existing = await (await collection.FindAsync(filter)).SingleOrDefaultAsync();
@@ -66,7 +69,7 @@ namespace Tweek.Drivers.Context.MongoDb
         public async Task<Dictionary<string, JsonValue>> GetContext(Identity identity)
         {
             var id = GetKey(identity);
-            var collection = _db.GetCollection<Dictionary<string, object>>(TWEEK_COLLECTION_NAME);
+            var collection = GetCollection(identity);
             var filter = Builders<Dictionary<string, object>>.Filter.Eq("_id", id);
             var result = await (await collection.FindAsync(filter)).SingleOrDefaultAsync();
             return ToJsonValues(result);
@@ -75,7 +78,7 @@ namespace Tweek.Drivers.Context.MongoDb
         public async Task RemoveFromContext(Identity identity, string key)
         {
             var id = GetKey(identity);
-            var collection = _db.GetCollection<Dictionary<string, object>>(TWEEK_COLLECTION_NAME);
+            var collection = GetCollection(identity);
             var filter = Builders<Dictionary<string, object>>.Filter.Eq("_id", id);
             var update = Builders<Dictionary<string, object>>.Update.Unset(key);
             await collection.FindOneAndUpdateAsync<Dictionary<string, object>>(filter, update);
