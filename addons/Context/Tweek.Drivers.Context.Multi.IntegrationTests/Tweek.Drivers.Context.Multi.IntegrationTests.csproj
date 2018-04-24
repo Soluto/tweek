@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tweek.Drivers.Context.Redis\Tweek.Drivers.Context.Redis.csproj" />
+    <ProjectReference Include="..\Tweek.Drivers.Context.Multi\Tweek.Drivers.Context.Multi.csproj" />
     <ProjectReference Include="..\Tweek.Drivers.ContextIntegrationTests\Tweek.Drivers.ContextIntegrationTests.csproj" />
   </ItemGroup>
 
