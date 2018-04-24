@@ -36,7 +36,6 @@ namespace Tweek.Drivers.Context.MongoDb
 
             _client = new MongoClient(connectionString);
             _db = _client.GetDatabase(TWEEK_DB_NAME);
-            // BsonSerializer.RegisterSerializer(new JsonValueSerializer());
         }
 
         public async Task AppendContext(Identity identity, Dictionary<string, JsonValue> context)
