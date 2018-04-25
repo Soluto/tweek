@@ -21,6 +21,15 @@ jobs:
             dotnet build -c release -o /nugets
 
       - run:
+          name: Build multi context driver nuget
+          command: |
+            mkdir -p /nugets
+            export Version=0.1.$CIRCLE_BUILD_NUM
+            cd addons/Context/Tweek.Drivers.Context.Multi/ && \
+            dotnet restore && \
+            dotnet build -c release -o /nugets
+
+      - run:
           name: Build redis driver nuget
           command: |
             mkdir -p /nugets
@@ -46,6 +55,15 @@ jobs:
             cd core/Tweek.ApiService.Addons/ && \
             dotnet restore && \
             dotnet build -c release -o /nugets
+
+      - run:
+          name: Test multi context driver
+          command: |
+            mkdir -p /nugets
+            export Version=0.1.$CIRCLE_BUILD_NUM
+            cd addons/Context/Tweek.Drivers.Context.Multi.IntegrationTests/ && \
+            dotnet restore && \
+            REDIS_TEST_CONNECTION="127.0.0.1:6379" COUCHBASE_TEST_URL="http://127.0.0.1:8091" dotnet test
 
       - run:
           name: Test redis driver
