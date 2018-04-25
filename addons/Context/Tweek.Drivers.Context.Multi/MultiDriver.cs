@@ -39,7 +39,7 @@ namespace Tweek.Drivers.Context.Multi
 
         public async Task<Dictionary<string, JsonValue>> GetContext(Identity identity)
         {
-            Exception lastException;
+            Exception lastException = null;
             foreach (var contextDriver in _readers)
             {
                 try

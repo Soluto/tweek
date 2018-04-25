@@ -28,6 +28,7 @@ namespace Tweek.Drivers.Context.Couchbase
         }
     }
 
+    [AddonName(Name="CouchBase")]
     public class CouchBaseServiceAddon : ITweekAddon
     {
         public void Use(IApplicationBuilder builder, IConfiguration configuration)
