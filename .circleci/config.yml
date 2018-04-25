@@ -60,6 +60,8 @@ jobs:
           name: Test multi context driver
           command: |
             mkdir -p /nugets
+            curl --retry 3 --retry-max-time 10 -v http://127.0.0.1:8091/settings/web -d port=8091 -d username=Administrator -d password=password
+            curl --retry 3 --retry-max-time 10 -v -u Administrator:password -X POST http://127.0.0.1:8091/pools/default/buckets -d authType=sasl -d name=testbucket -d ramQuotaMB=100 -d saslPassword=password
             export Version=0.1.$CIRCLE_BUILD_NUM
             cd addons/Context/Tweek.Drivers.Context.Multi.IntegrationTests/ && \
             dotnet restore && \
