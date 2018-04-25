@@ -34,7 +34,10 @@ namespace Tweek.Drivers.Context.Multi
 
         public async Task AppendContext(Identity identity, Dictionary<string, JsonValue> context)
         {
-          throw new NotImplementedException();
+            foreach (var contextDriver in _readers)
+            {
+                await contextDriver.AppendContext(identity, context);
+            }
         }
 
         public async Task<Dictionary<string, JsonValue>> GetContext(Identity identity)
@@ -57,7 +60,10 @@ namespace Tweek.Drivers.Context.Multi
 
         public async Task RemoveFromContext(Identity identity, string key)
         {
-          throw new NotImplementedException();
+            foreach (var contextDriver in _readers)
+            {
+                await contextDriver.RemoveFromContext(identity, key);
+            }
         }
     }
 }
