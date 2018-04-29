@@ -22,7 +22,7 @@ namespace Tweek.Drivers.Context.MongoDb
     {
         private JsonSerializerSettings JSON_SERIALIZER_SETTINGS = new JsonSerializerSettings { ContractResolver = new TweekContractResolver() };
         private const string TWEEK_DB_NAME = "tweek";
-        public string GetKey(Identity identity) => "identity_" + identity.Type + "_" + identity.Id;
+        public string GetKey(Identity identity) => identity.Id;
 
         public IMongoCollection<Dictionary<string, object>> GetCollection(Identity identity) =>
             _db.GetCollection<Dictionary<string, object>>("identity_" + identity.Type);
