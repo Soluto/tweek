@@ -24,8 +24,6 @@ COPY --from=build /opt/app/ssh-helper.sh ./ssh-helper.sh
 COPY --from=deps /opt/app/node_modules ./node_modules
 COPY --from=deps /opt/app/package.json ./package.json
 
-RUN apk add --update libgit2
-
 EXPOSE 3000
 ENV PORT=3000
 ENV GIT_SSH=/opt/app/ssh-helper.sh
