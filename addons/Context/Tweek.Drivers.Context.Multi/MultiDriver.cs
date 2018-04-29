@@ -34,10 +34,12 @@ namespace Tweek.Drivers.Context.Multi
 
         public async Task AppendContext(Identity identity, Dictionary<string, JsonValue> context)
         {
-            foreach (var contextDriver in _readers)
+            var tasks = new List<Task>(_writers.Length());
+            foreach (var contextDriver in _writers)
             {
-                await contextDriver.AppendContext(identity, context);
+                tasks.Add(contextDriver.AppendContext(identity, context));
             }
+            await Task.WhenAll(tasks);
         }
 
         public async Task<Dictionary<string, JsonValue>> GetContext(Identity identity)
@@ -60,10 +62,12 @@ namespace Tweek.Drivers.Context.Multi
 
         public async Task RemoveFromContext(Identity identity, string key)
         {
-            foreach (var contextDriver in _readers)
+            var tasks = new List<Task>(_writers.Length());
+            foreach (var contextDriver in _writers)
             {
-                await contextDriver.RemoveFromContext(identity, key);
+                tasks.Add(contextDriver.RemoveFromContext(identity, key));
             }
+            await Task.WhenAll(tasks);
         }
     }
 }
