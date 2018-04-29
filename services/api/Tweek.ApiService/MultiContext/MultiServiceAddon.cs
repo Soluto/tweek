@@ -9,7 +9,7 @@ using Tweek.Engine.Drivers.Context;
 
 namespace Tweek.Drivers.Context.Multi
 {
-    [AddonName(Name="Multi")]
+    [AddonName(Name="MultiContext")]
     public class MultiServiceAddon: ITweekAddon
     {
         public void Use(IApplicationBuilder builder, IConfiguration configuration)

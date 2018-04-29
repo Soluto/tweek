@@ -9,7 +9,7 @@ using Tweek.ApiService.Addons;
 using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Context;
 
-namespace Tweek.Drivers.Context.Multi
+namespace Tweek.ApiService.MultiContext
 {
     public class MultiDriver : IContextDriver
     {
