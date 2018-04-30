@@ -19,13 +19,6 @@ namespace Tweek.Publishing.Service.Sync.Converters
     {
         private static readonly Regex manifestRegex = new Regex(Patterns.Manifests, RegexOptions.Compiled);
 
-        private readonly IObjectStorage _client;
-
-        public RulesConverter(IObjectStorage storageClient)
-        {
-            _client = storageClient;
-        }
-
         public (string, string, string) Convert(string commitId, ICollection<string> files, Func<string, string> readFn)
         {            
             var result = files.Where(x => manifestRegex.IsMatch(x))

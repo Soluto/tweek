@@ -81,9 +81,9 @@ namespace Tweek.Publishing.Service
             {
                 Converters =
                 {
-                    new RulesConverter(storageClient),
-                    new ExternalAppsConverter(storageClient),
-                    new PolicyConverter(storageClient),
+                    new RulesConverter(),
+                    new ExternalAppsConverter(),
+                    new PolicyConverter(),
                 }
             };
             return storageSynchronizer;

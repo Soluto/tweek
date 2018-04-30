@@ -20,12 +20,6 @@ namespace Tweek.Publishing.Service.Sync.Converters
     public class ExternalAppsConverter : IConverter
     {
         private static readonly Regex externalAppRegex = new Regex(Patterns.ExternalApp, RegexOptions.Compiled);
-        private readonly IObjectStorage _client;
-
-        public ExternalAppsConverter(IObjectStorage storageClient)
-        {
-            _client = storageClient;
-        }
 
         public (string, string, string) Convert(string commitId, ICollection<string> files, Func<string, string> readFn)
         {
