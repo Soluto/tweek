@@ -11,12 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Tweek.Drivers.Context.MongoDb\Tweek.Drivers.Context.MongoDb.csproj" />
     <ProjectReference Include="..\Tweek.Drivers.ContextIntegrationTests\Tweek.Drivers.ContextIntegrationTests.csproj" />
-    <ProjectReference Include="..\Tweek.Drivers.Context.Couchbase\Tweek.Drivers.Context.Couchbase.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
-  
+
 </Project>

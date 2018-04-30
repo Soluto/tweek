@@ -7,6 +7,7 @@ jobs:
           - DOTNET_CLI_TELEMETRY_OUTPUT=1
       - image: redis:alpine
       - image: couchbase:community-4.5.1
+      - image: mongo:3.6-jessie
       
     working_directory: /src
     steps:
@@ -26,6 +27,15 @@ jobs:
             mkdir -p /nugets
             export Version=0.1.$CIRCLE_BUILD_NUM
             cd addons/Context/Tweek.Drivers.Context.Redis/ && \
+            dotnet restore && \
+            dotnet build -c release -o /nugets
+
+      - run:
+          name: Build MongoDB driver nuget
+          command: |
+            mkdir -p /nugets
+            export Version=0.1.$CIRCLE_BUILD_NUM
+            cd addons/Context/Tweek.Drivers.Context.MongoDb/ && \
             dotnet restore && \
             dotnet build -c release -o /nugets
 
@@ -55,6 +65,15 @@ jobs:
             cd addons/Context/Tweek.Drivers.Context.Redis.IntegrationTests/ && \
             dotnet restore && \
             REDIS_TEST_CONNECTION="127.0.0.1:6379" dotnet test
+
+      - run:
+          name: Test MongoDB driver
+          command: |
+            mkdir -p /nugets
+            export Version=0.1.$CIRCLE_BUILD_NUM
+            cd addons/Context/Tweek.Drivers.Context.MongoDb.IntegrationTests/ && \
+            dotnet restore && \
+            MONGODB_TEST_CONNECTION="mongodb://127.0.0.1:27017" dotnet test
 
       - run:
           name: Test couchbase driver
