@@ -1,11 +1,8 @@
 using FSharpUtils.Newtonsoft;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using Tweek.ApiService.Addons;
 using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Context;
 
@@ -13,9 +10,9 @@ namespace Tweek.ApiService.MultiContext
 {
     public class MultiDriver : IContextDriver
     {
-        private IEnumerable<IContextDriver> _readers;
-        private IEnumerable<IContextDriver> _writers;
-        // Need to think about it...
+        private readonly IEnumerable<IContextDriver> _readers;
+        private readonly IEnumerable<IContextDriver> _writers;
+
         public MultiDriver(IEnumerable<IContextDriver> readers, IEnumerable<IContextDriver> writers)
         {
             if (readers == null || !readers.Any())

@@ -5,7 +5,7 @@ using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Tweek.Engine.Drivers.Context;
 
-namespace Tweek.Drivers.Context.Multi
+namespace Tweek.ApiService.MultiContext
 {
     public static class DependencyExtensions
     {

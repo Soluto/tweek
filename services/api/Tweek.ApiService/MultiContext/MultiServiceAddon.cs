@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Tweek.ApiService.Addons;
+using Tweek.ApiService.MultiContext;
 using Tweek.Engine.Drivers.Context;
 
 namespace Tweek.Drivers.Context.Multi
 {
-    [AddonName(Name="MultiContext")]
     public class MultiServiceAddon: ITweekAddon
     {
         public void Use(IApplicationBuilder builder, IConfiguration configuration)
@@ -18,7 +18,7 @@ namespace Tweek.Drivers.Context.Multi
 
         public void Configure(IServiceCollection services, IConfiguration configuration)
         {
-            var drivers = services.GetAllContextDrivers();
+            var drivers = services.GetAllContextDrivers().ToArray();
             services.RemoveAllContextDrivers();
             var readersNames = configuration.GetValue<string>("MultiContext:Readers").Split(',').Select(n=>n.Trim());
             var writersNames = configuration.GetValue<string>("MultiContext:Writers").Split(',').Select(n=>n.Trim());
