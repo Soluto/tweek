@@ -15,27 +15,27 @@ namespace Tweek.ApiService.MultiContext
 
         public MultiDriver(IEnumerable<IContextDriver> readers, IEnumerable<IContextDriver> writers)
         {
-            if (readers == null || !readers.Any())
+            var readersArray = readers.ToArray();
+            var writersArray = writers.ToArray();
+
+            if (readers == null || !readersArray.Any())
             {
                 throw new ArgumentException("Missing readers", nameof(readers));
             }
 
-            if (writers == null || !writers.Any())
+            if (writers == null || !writersArray.Any())
             {
                 throw new ArgumentException("Missing writers", nameof(writers));
             }
 
-            _readers = readers;
-            _writers = writers;
+            _readers = readersArray;
+            _writers = writersArray;
         }
 
         public async Task AppendContext(Identity identity, Dictionary<string, JsonValue> context)
         {
             var tasks = new List<Task>(_writers.Length());
-            foreach (var contextDriver in _writers)
-            {
-                tasks.Add(contextDriver.AppendContext(identity, context));
-            }
+            tasks.AddRange(_writers.Select(contextDriver => contextDriver.AppendContext(identity, context)));
             await Task.WhenAll(tasks);
         }
 
@@ -60,10 +60,7 @@ namespace Tweek.ApiService.MultiContext
         public async Task RemoveFromContext(Identity identity, string key)
         {
             var tasks = new List<Task>(_writers.Length());
-            foreach (var contextDriver in _writers)
-            {
-                tasks.Add(contextDriver.RemoveFromContext(identity, key));
-            }
+            tasks.AddRange(_writers.Select(contextDriver => contextDriver.RemoveFromContext(identity, key)));
             await Task.WhenAll(tasks);
         }
     }

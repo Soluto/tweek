@@ -64,7 +64,7 @@ namespace Tweek.ApiService.Utils
             return _addonsCache;
         }
 
-        private static string AssemblyQualifiedNameWithoutVersion(this Type type) =>
+        public static string AssemblyQualifiedNameWithoutVersion(this Type type) =>
             Assembly.CreateQualifiedName(type.GetTypeInfo().Assembly.GetName().Name, type.FullName);
     }
 }

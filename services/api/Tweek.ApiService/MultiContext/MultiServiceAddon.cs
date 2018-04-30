@@ -18,10 +18,12 @@ namespace Tweek.Drivers.Context.Multi
 
         public void Configure(IServiceCollection services, IConfiguration configuration)
         {
-            var drivers = services.GetAllContextDrivers().ToArray();
+            var readersNames = configuration.GetValue<string>("MultiContext:Readers").Split(',').Select(n=>n.Trim()).ToArray();
+            var writersNames = configuration.GetValue<string>("MultiContext:Writers").Split(',').Select(n=>n.Trim()).ToArray();
+            
+            var drivers = services.GetAllContextDrivers(configuration, readersNames.Concat(writersNames)).ToArray();
             services.RemoveAllContextDrivers();
-            var readersNames = configuration.GetValue<string>("MultiContext:Readers").Split(',').Select(n=>n.Trim());
-            var writersNames = configuration.GetValue<string>("MultiContext:Writers").Split(',').Select(n=>n.Trim());
+            
             var readers = GetContextDrivers(drivers, readersNames);
             var writers = GetContextDrivers(drivers, writersNames);
             services.AddSingleton<IContextDriver>(new MultiDriver(readers, writers));
