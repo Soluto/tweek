@@ -62,6 +62,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.Drivers.Context.Multi", "addons\Context\Tweek.Drivers.Context.Multi\Tweek.Drivers.Context.Multi.csproj", "{B1605DA7-DDF1-468E-A9A8-A307A311EF16}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.Drivers.Context.Multi.IntegrationTests", "addons\Context\Tweek.Drivers.Context.Multi.IntegrationTests\Tweek.Drivers.Context.Multi.IntegrationTests.csproj", "{FA0ABF82-E630-4D32-800E-32479F8D91DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.Drivers.Context.MongoDb", "addons\Context\Tweek.Drivers.Context.MongoDb\Tweek.Drivers.Context.MongoDb.csproj", "{9CC89787-72A3-4CE2-B418-498282873031}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweek.Drivers.Context.MongoDb.IntegrationTests", "addons\Context\Tweek.Drivers.Context.MongoDb.IntegrationTests\Tweek.Drivers.Context.MongoDb.IntegrationTests.csproj", "{D89FC858-F9B5-4EBF-A30C-03BE6B292135}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -289,6 +292,30 @@ Global
 		{FA0ABF82-E630-4D32-800E-32479F8D91DA}.Release|x64.Build.0 = Release|x64
 		{FA0ABF82-E630-4D32-800E-32479F8D91DA}.Release|x86.ActiveCfg = Release|x86
 		{FA0ABF82-E630-4D32-800E-32479F8D91DA}.Release|x86.Build.0 = Release|x86
+		{9CC89787-72A3-4CE2-B418-498282873031}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CC89787-72A3-4CE2-B418-498282873031}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CC89787-72A3-4CE2-B418-498282873031}.Debug|x64.ActiveCfg = Debug|x64
+		{9CC89787-72A3-4CE2-B418-498282873031}.Debug|x64.Build.0 = Debug|x64
+		{9CC89787-72A3-4CE2-B418-498282873031}.Debug|x86.ActiveCfg = Debug|x86
+		{9CC89787-72A3-4CE2-B418-498282873031}.Debug|x86.Build.0 = Debug|x86
+		{9CC89787-72A3-4CE2-B418-498282873031}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CC89787-72A3-4CE2-B418-498282873031}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CC89787-72A3-4CE2-B418-498282873031}.Release|x64.ActiveCfg = Release|x64
+		{9CC89787-72A3-4CE2-B418-498282873031}.Release|x64.Build.0 = Release|x64
+		{9CC89787-72A3-4CE2-B418-498282873031}.Release|x86.ActiveCfg = Release|x86
+		{9CC89787-72A3-4CE2-B418-498282873031}.Release|x86.Build.0 = Release|x86
+		{D89FC858-F9B5-4EBF-A30C-03BE6B292135}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D89FC858-F9B5-4EBF-A30C-03BE6B292135}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D89FC858-F9B5-4EBF-A30C-03BE6B292135}.Debug|x64.ActiveCfg = Debug|x64
+		{D89FC858-F9B5-4EBF-A30C-03BE6B292135}.Debug|x64.Build.0 = Debug|x64
+		{D89FC858-F9B5-4EBF-A30C-03BE6B292135}.Debug|x86.ActiveCfg = Debug|x86
+		{D89FC858-F9B5-4EBF-A30C-03BE6B292135}.Debug|x86.Build.0 = Debug|x86
+		{D89FC858-F9B5-4EBF-A30C-03BE6B292135}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D89FC858-F9B5-4EBF-A30C-03BE6B292135}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D89FC858-F9B5-4EBF-A30C-03BE6B292135}.Release|x64.ActiveCfg = Release|x64
+		{D89FC858-F9B5-4EBF-A30C-03BE6B292135}.Release|x64.Build.0 = Release|x64
+		{D89FC858-F9B5-4EBF-A30C-03BE6B292135}.Release|x86.ActiveCfg = Release|x86
+		{D89FC858-F9B5-4EBF-A30C-03BE6B292135}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -321,6 +348,8 @@ Global
 		{5374D25F-84B6-4ACA-B92E-21902410BE84} = {EC243F60-6EE3-4022-B254-F8F7BB40AAA1}
 		{B1605DA7-DDF1-468E-A9A8-A307A311EF16} = {BD1E6B57-18E1-46E9-B16F-B531E88FB9E3}
 		{FA0ABF82-E630-4D32-800E-32479F8D91DA} = {BD1E6B57-18E1-46E9-B16F-B531E88FB9E3}
+		{9CC89787-72A3-4CE2-B418-498282873031} = {BD1E6B57-18E1-46E9-B16F-B531E88FB9E3}
+		{D89FC858-F9B5-4EBF-A30C-03BE6B292135} = {BD1E6B57-18E1-46E9-B16F-B531E88FB9E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {520A2949-0926-487E-A33C-C1615B159589}
