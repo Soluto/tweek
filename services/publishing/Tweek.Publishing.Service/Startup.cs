@@ -77,12 +77,13 @@ namespace Tweek.Publishing.Service
 
         private StorageSynchronizer CreateStorageSynchronizer(IObjectStorage storageClient, ShellHelper.ShellExecutor executor)
         {
+            var key = Environment.GetEnvironmentVariable("GIT_SERVER_PRIVATE_KEY_PATH");
             var storageSynchronizer = new StorageSynchronizer(storageClient, executor)
             {
                 Converters =
                 {
                     new RulesConverter(),
-                    new ExternalAppsConverter(),
+                    new ExternalAppsConverter(key),
                     new PolicyConverter(),
                 }
             };

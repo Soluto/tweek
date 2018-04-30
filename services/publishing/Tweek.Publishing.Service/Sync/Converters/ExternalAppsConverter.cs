@@ -1,18 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Newtonsoft.Json;
-using Tweek.Publishing.Service.Model;
 using Tweek.Publishing.Service.Model.ExternalApps;
-using Tweek.Publishing.Service.Storage;
-using Tweek.Publishing.Service.Utils;
 using Tweek.Publishing.Service.Validation;
 
 namespace Tweek.Publishing.Service.Sync.Converters
@@ -21,9 +15,16 @@ namespace Tweek.Publishing.Service.Sync.Converters
     {
         private static readonly Regex externalAppRegex = new Regex(Patterns.ExternalApp, RegexOptions.Compiled);
 
+        private readonly string _key;
+
+        public ExternalAppsConverter(string key)
+        {
+            _key = key;
+        }
+
         public (string, string, string) Convert(string commitId, ICollection<string> files, Func<string, string> readFn)
         {
-            var secretKey = CreateSecretKey();
+            var secretKey = CreateSecretKey(_key);
 
             var (appId, app) = CreateAdminApp(secretKey);
 
@@ -46,9 +47,8 @@ namespace Tweek.Publishing.Service.Sync.Converters
             return (@"external_apps.json", JsonConvert.SerializeObject(result), @"application/json");
         }
 
-        private static string CreateSecretKey()
-        {
-            var key = Environment.GetEnvironmentVariable("GIT_SERVER_PRIVATE_KEY_PATH");
+        private static string CreateSecretKey(string key)
+        {            
             MD5 md5 = System.Security.Cryptography.MD5.Create();
 
             byte[] inputBytes = Encoding.Default.GetBytes(key);
