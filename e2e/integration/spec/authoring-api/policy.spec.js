@@ -2,6 +2,9 @@ const { expect } = require('chai');
 const { init: initClients } = require('../../utils/clients');
 const { pollUntil } = require('../../utils/utils');
 const { getObjectContentFromMinio } = require('../../utils/minio');
+const fs = require('fs');
+const { promisify } = require('util');
+const readFileAsync = promisify(fs.readFile);
 
 describe('authoring api policy', () => {
   let clients;
@@ -10,7 +13,9 @@ describe('authoring api policy', () => {
   });
 
   it('update policy', async () => {
-    const originalPolicy = 'p, test@tweek.com, /api/v2/values/*, *, allow';
+    const buf = await readFileAsync('./spec/authoring-api/test-data/policy.csv');
+
+    const originalPolicy = buf.toString();
     const newPolicy =
       'p, test@soluto.com, /api/v2/values/*, *, allow\np, test@tweek.com, /api/v2/values/*, *, allow';
 
