@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Tweek.Publishing.Service.Validation;
+using Tweek.Publishing.Service.Utils;
+using LanguageExt.Core;
 
 namespace Tweek.Publishing.Service.Packing
 {
@@ -13,8 +15,10 @@ namespace Tweek.Publishing.Service.Packing
         
         public Dictionary<string, KeyDef> Pack(ICollection<string> files, Func<string, string> readFn)
         {
-            return files.Where(x => manifestRegex.IsMatch(x))
-                .Select(x =>
+            return files
+                .ToSeq()
+                .Filter(x => manifestRegex.IsMatch(x))
+                .Map(x =>
                 {
                     try
                     {
@@ -26,7 +30,7 @@ namespace Tweek.Publishing.Service.Packing
                         throw;
                     }
                 })
-                .Select(manifest =>
+                .Map(manifest =>
                 {
                     var keyDef = new KeyDef
                     {
@@ -49,7 +53,8 @@ namespace Tweek.Publishing.Service.Packing
                     }
                     return (keyPath:manifest.KeyPath, keyDef: keyDef);
                 })
-                .ToDictionary(x => x.keyPath, x => x.keyDef);
+                .Distinct(x=>x.keyPath.ToLower())
+                .ToDictionary(x => x.keyPath.ToLower(), x => x.keyDef);
         }
     }
 }
