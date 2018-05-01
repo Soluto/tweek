@@ -17,10 +17,6 @@ namespace Tweek.ApiService.UnitTests
         private IContextDriver someOtherFakeDriver;
         private readonly Identity fakeIdentity = new Identity("some_type", "1");
 
-        public MultiDriverTest()
-        {
-        }
-
         private void Setup()
         {
             someFakeDriver = A.Fake<IContextDriver>();

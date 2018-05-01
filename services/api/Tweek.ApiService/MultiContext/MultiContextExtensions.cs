@@ -29,7 +29,7 @@ namespace Tweek.ApiService.MultiContext
                     .Select(x => Assembly.CreateQualifiedName(x["AssemblyName"], x["ClassName"]))
             );
 
-            var addonTypes = assemblies.Bind(x => x.GetTypes())
+            var addonTypes = assemblies.Bind(x => x.GetExportedTypes())
                 .Filter(x => x != typeof(ITweekAddon) && typeof(ITweekAddon).IsAssignableFrom(x));
             var drivers = addonTypes
                 .Filter(type => selectedAddons.Contains(type.AssemblyQualifiedNameWithoutVersion()))
@@ -46,7 +46,7 @@ namespace Tweek.ApiService.MultiContext
 
         public static void RemoveAllContextDrivers(this IServiceCollection services)
         {
-            var serviceDescriptors = services.GetDescriptorsByType(typeof(IContextDriver));
+            var serviceDescriptors = services.GetDescriptorsByType(typeof(IContextDriver)).ToArray();
             foreach (var descriptor in serviceDescriptors)
             {
                 services.Remove(descriptor);

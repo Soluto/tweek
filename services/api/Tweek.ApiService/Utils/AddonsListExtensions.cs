@@ -54,7 +54,7 @@ namespace Tweek.ApiService.Utils
                 .SelectMany(library =>
                     library.GetDefaultAssemblyNames(DependencyContext.Default).Select(Assembly.Load));
 
-            var addonTypes = assemblies.Bind(x => x.GetTypes())
+            var addonTypes = assemblies.Bind(x => x.GetExportedTypes())
                 .Filter(x => x != typeof(ITweekAddon) && typeof(ITweekAddon).IsAssignableFrom(x));
 
             _addonsCache = addonTypes

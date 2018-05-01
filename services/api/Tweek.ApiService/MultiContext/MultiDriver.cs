@@ -15,8 +15,8 @@ namespace Tweek.ApiService.MultiContext
 
         public MultiDriver(IEnumerable<IContextDriver> readers, IEnumerable<IContextDriver> writers)
         {
-            var readersArray = readers.ToArray();
-            var writersArray = writers.ToArray();
+            var readersArray = readers?.ToArray();
+            var writersArray = writers?.ToArray();
 
             if (readers == null || !readersArray.Any())
             {
