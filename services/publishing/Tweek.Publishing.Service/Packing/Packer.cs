@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Tweek.Publishing.Service.Validation;
-using Tweek.Publishing.Service.Utils;
 using LanguageExt.Core;
 
 namespace Tweek.Publishing.Service.Packing
