@@ -30,7 +30,7 @@ namespace Tweek.Publishing.Service.Sync.Converters
 
             var result = files
                 .Where(x =>  externalAppRegex.IsMatch(x))
-                .ToDictionary(x => x, x =>
+                .ToDictionary(x => externalAppRegex.Match(x).Groups[1].Value, x =>
                 {
                     try
                     {
