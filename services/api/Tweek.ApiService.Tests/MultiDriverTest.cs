@@ -8,7 +8,7 @@ using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Context;
 using Xunit;
 
-namespace Tweek.ApiService.UnitTests
+namespace Tweek.ApiService.Tests
 {
     public class MultiDriverTest
     {

@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Tweek.ApiService.Addons;
 using Tweek.Engine.Drivers.Context;
 
-namespace Tweek.ApiService.UnitTests
+namespace Tweek.ApiService.Tests
 {
     public class InMemoryContextServiceAddon : ITweekAddon
     {

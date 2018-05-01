@@ -12,7 +12,7 @@ using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Context;
 using Xunit;
 
-namespace Tweek.ApiService.UnitTests
+namespace Tweek.ApiService.Tests
 {
     public class MultiServiceAddonTests
     {
@@ -33,8 +33,8 @@ namespace Tweek.ApiService.UnitTests
             _addon = new MultiServiceAddon();
             _configurationRoot = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string>
             {
-                {"Addons:InMemoryContext:ClassName", "Tweek.ApiService.UnitTests.InMemoryContextServiceAddon"},
-                {"Addons:InMemoryContext:AssemblyName", "Tweek.ApiService.UnitTests"},
+                {"Addons:InMemoryContext:ClassName", "Tweek.ApiService.Tests.InMemoryContextServiceAddon"},
+                {"Addons:InMemoryContext:AssemblyName", "Tweek.ApiService.Tests"},
 
                 {"Addons:MultiContext:ClassName", "Tweek.ApiService.MultiServiceAddon"},
                 {"Addons:MultiContext:AssemblyName", "Tweek.ApiService"},

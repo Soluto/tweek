@@ -6,7 +6,7 @@ using Tweek.ApiService.Addons;
 using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Context;
 
-namespace Tweek.ApiService.UnitTests
+namespace Tweek.ApiService.Tests
 {
     [AddonName(Name = "InMemoryContext")]
     public class InMemoryContext : IContextDriver
