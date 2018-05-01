@@ -8,7 +8,6 @@ using Tweek.Engine.Drivers.Context;
 
 namespace Tweek.ApiService.Tests
 {
-    [AddonName(Name = "InMemoryContext")]
     public class InMemoryContext : IContextDriver
     {
         private Dictionary<string, Dictionary<string, JsonValue>> _data;

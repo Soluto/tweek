@@ -6,7 +6,6 @@ using Tweek.Engine.Drivers.Context;
 
 namespace Tweek.Drivers.Context.Redis
 {
-    [AddonName(Name="RedisMultiContext")]
     public class RedisServiceAddon: ITweekAddon
     {
         public void Use(IApplicationBuilder builder, IConfiguration configuration)
