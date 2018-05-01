@@ -9,7 +9,7 @@
     "node": ">=8.1.4"
   },
   "scripts": {
-    "test": "mocha -r ts-node/register test/**/*.ts",
+    "test": "mocha -r ts-node/register test/**/*.ts --exit",
     "build": "yarn run clean && tsc && cpr ./src/search-index/build/ ./dist/search-index/build/ -o && yarn swagger",
     "clean": "rimraf dist",
     "start": "ts-node ./src/server.ts",
