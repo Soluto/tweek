@@ -22,23 +22,17 @@ namespace Tweek.Drivers.Context.Multi
             var readersNames = configuration.GetValue<string>("MultiContext:Readers").Split(',').Select(n=>n.Trim()).ToArray();
             var writersNames = configuration.GetValue<string>("MultiContext:Writers").Split(',').Select(n=>n.Trim()).ToArray();
             
-            var drivers = services.GetAllContextDrivers(configuration, readersNames.Concat(writersNames)).ToArray();
+            var drivers = services.SetupAllContextDrivers(configuration, readersNames.Concat(writersNames));
             services.RemoveAllContextDrivers();
             
-            var readers = GetContextDrivers(drivers, configuration, readersNames);
-            var writers = GetContextDrivers(drivers, configuration, writersNames);
+            var readers = GetContextDrivers(drivers, readersNames);
+            var writers = GetContextDrivers(drivers, writersNames);
             services.AddSingleton<IContextDriver>(new MultiDriver(readers, writers));
         }
 
-        private static IEnumerable<IContextDriver> GetContextDrivers(IEnumerable<IContextDriver> drivers, IConfiguration configuration, IEnumerable<string> names)
+        private static IEnumerable<IContextDriver> GetContextDrivers(IDictionary<string,IContextDriver> drivers, IEnumerable<string> names)
         {
-            var addons = configuration.GetSection("Addons").GetChildren();
-            var assemblyNamesToAddonName = addons.ToDictionary(addon => addon.GetValue<string>("AssemblyName"), addon => addon.Key);
-            return drivers.Where(d =>
-            {
-                var assemblyName = d.GetType().GetTypeInfo().Assembly.GetName().Name;
-                return names.Any(name => name == DictionaryKeyOrNull(assemblyNamesToAddonName, assemblyName));
-            });
+            return drivers.Where(kvPair => names.Contains(kvPair.Key)).Select(kvPair => kvPair.Value);
         }
 
         private static string DictionaryKeyOrNull(Dictionary<string, string> dictionary, string key)

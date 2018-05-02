@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
+using Couchbase.Search;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
@@ -14,7 +16,8 @@ namespace Tweek.ApiService.MultiContext
 {
     public static class MultiContextExtensions
     {
-        public static IEnumerable<IContextDriver> GetAllContextDrivers(this IServiceCollection services, IConfiguration configuration, IEnumerable<string> names)
+        public static IDictionary<string, IContextDriver> SetupAllContextDrivers(this IServiceCollection services,
+            IConfiguration configuration, IEnumerable<string> names)
         {
             var addonConfiguration = configuration.GetSection("Addons");
             var dependencies = DependencyContext.Default.RuntimeLibraries;
@@ -23,7 +26,7 @@ namespace Tweek.ApiService.MultiContext
                 .SelectMany(library =>
                     library.GetDefaultAssemblyNames(DependencyContext.Default).Select(Assembly.Load));
             var selectedAddons = new HashSet<string>(
-                    names
+                names
                     .Where(x => !string.IsNullOrEmpty(x))
                     .Select(addon => addonConfiguration.GetSection(addon))
                     .Select(x => Assembly.CreateQualifiedName(x["AssemblyName"], x["ClassName"]))
@@ -40,8 +43,19 @@ namespace Tweek.ApiService.MultiContext
                 driver.Configure(services, configuration);
             }
 
-            var serviceDescriptors = services.GetDescriptorsByType(typeof(IContextDriver));
-            return serviceDescriptors.Select(d => (IContextDriver) d.ImplementationInstance);
+            var serviceDescriptors = services.GetDescriptorsByType(typeof(IContextDriver)).ToArray();
+            var assemblyNamesToAddonName = addonConfiguration.GetChildren()
+                .ToDictionary(addon => addon.GetValue<string>("AssemblyName"), addon => addon.Key);
+
+            var result = new Dictionary<string, IContextDriver>(serviceDescriptors.Length);
+            foreach (var descriptor in serviceDescriptors)
+            {
+                var implementation = (IContextDriver) descriptor.ImplementationInstance;
+                var assemblyName = implementation.GetType().GetTypeInfo().Assembly.GetName().Name;
+                result.Add(assemblyNamesToAddonName[assemblyName], implementation);
+            }
+
+            return result;
         }
 
         public static void RemoveAllContextDrivers(this IServiceCollection services)
