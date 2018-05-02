@@ -37,6 +37,9 @@ COPY --from=build /go/src/github.com/Soluto/tweek/services/secure-gateway/entry 
 COPY --from=build /go/src/github.com/Soluto/tweek/services/secure-gateway/hcheck /healthcheck
 COPY --from=dependencies /empty_tmp /tmp
 
+ENV CONFIGOR_ENV=production
+ENV CONFIG_FILE_PATH=/config/gateway.json
+
 HEALTHCHECK --interval=5s --timeout=2s --retries=10 CMD ["/healthcheck"]
 
 ENTRYPOINT [ "/entry" ]

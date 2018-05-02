@@ -87,9 +87,9 @@ services:
     labels:
       - "traefik.port=3000"
 
-  oidc-mock-server:
-    container_name: oidc-mock-server
-    build: ../../utils/oidc-server
+  oidc-server-mock:
+    container_name: oidc-server-mock 
+    image: soluto/oidc-server-mock   
     ports:
       - "4011:80"
     environment: 
@@ -129,7 +129,7 @@ services:
     depends_on: 
       - minio
       - nats
-      - oidc-mock-server
+      - oidc-server-mock
     environment:
       - TWEEKGATEWAY_SECURITY_CORS_ENABLED=true
       - TWEEKGATEWAY_SECURITY_CORS_MAXAGE=60

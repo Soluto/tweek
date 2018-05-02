@@ -28,17 +28,19 @@ services:
     depends_on:       
       - minio
       - nats
-      - oidc-mock-server
+      - oidc-server-mock
+    environment:
+      - CONFIGOR_ENV=test
 
-  oidc-mock-server:
-    container_name: oidc-mock-server
-    build: ../../utils/oidc-server
+  oidc-server-mock:
+    container_name: oidc-server-mock 
+    image: soluto/oidc-server-mock   
     ports:
       - "4011:80"
     environment: 
       - ASPNETCORE_ENVIRONMENT=Development
       - CLIENT_ID=tweek-openid-mock-client
-      - REDIRECT_URIS=http://localhost:3000/auth/oidc,http://localhost/auth/oidc
+      - REDIRECT_URIS=http://localhost:3000/auth/oidc,http://localhost:4004/auth/oidc
       - TEST_USER={"SubjectId":"1","Username":"User1","Password":"pwd"}
   
   selenium:
