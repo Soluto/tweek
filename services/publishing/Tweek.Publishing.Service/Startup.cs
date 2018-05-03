@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Minio;
 using Newtonsoft.Json;
 using Polly;
+using Tweek.Publishing.Helpers;
 using Tweek.Publishing.Service.Handlers;
 using Tweek.Publishing.Service.Messaging;
 using Tweek.Publishing.Service.Model.ExternalApps;
@@ -77,7 +78,7 @@ namespace Tweek.Publishing.Service
 
         private StorageSynchronizer CreateStorageSynchronizer(IObjectStorage storageClient, ShellHelper.ShellExecutor executor)
         {
-            var key = Environment.GetEnvironmentVariable("GIT_SERVER_PRIVATE_KEY_PATH");
+            var key = GitKeyHelper.GetKeyFromEnvironment();
             var storageSynchronizer = new StorageSynchronizer(storageClient, executor)
             {
                 Converters =

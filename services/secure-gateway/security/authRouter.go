@@ -39,10 +39,10 @@ func authorizeByUserPassword(keyEnv *appConfig.EnvInlineOrPath) negroni.HandlerF
 		if username, password, ok := r.BasicAuth(); ok {
 			isValid, err := externalApps.ValidateCredentials(username, password)
 			if err != nil {
-				log.Panicln("", err)
+				log.Panicln("Credentials validation failed", err)
 			}
 			if !isValid {
-				http.Error(w, "Invalid credencials provided", http.StatusUnauthorized)
+				http.Error(w, "Invalid credentials provided", http.StatusUnauthorized)
 				return
 			}
 

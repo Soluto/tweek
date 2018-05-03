@@ -51,7 +51,7 @@ namespace Tweek.Publishing.Service.Sync.Converters
         {            
             MD5 md5 = System.Security.Cryptography.MD5.Create();
 
-            byte[] inputBytes = Encoding.Default.GetBytes(key);
+            byte[] inputBytes = Encoding.UTF8.GetBytes(key);
 
             byte[] hash = md5.ComputeHash(inputBytes);
             return System.Convert.ToBase64String(hash);
@@ -61,9 +61,8 @@ namespace Tweek.Publishing.Service.Sync.Converters
         {
             string appId = Guid.Empty.ToString();
             
-            
-            var salt = GenerateSalt();
-            var hash = (KeyDerivation.Pbkdf2(secretKey, salt,  KeyDerivationPrf.HMACSHA512, 100, 512));
+            var salt = GenerateSalt();            
+            var hash = KeyDerivation.Pbkdf2(secretKey, salt,  KeyDerivationPrf.HMACSHA512, 100, 512);
 
             ExternalApp app = new ExternalApp 
             {
