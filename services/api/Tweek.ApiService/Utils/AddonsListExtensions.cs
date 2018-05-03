@@ -48,23 +48,42 @@ namespace Tweek.ApiService.Utils
                     .Select(x => Assembly.CreateQualifiedName(x["AssemblyName"], x["ClassName"]))
             );
 
-            var dependencies = DependencyContext.Default.RuntimeLibraries;
-
-            var assemblies = dependencies
-                .SelectMany(library =>
-                    library.GetDefaultAssemblyNames(DependencyContext.Default).Select(Assembly.Load));
-
-            var addonTypes = assemblies.Bind(x => x.GetExportedTypes())
-                .Filter(x => x != typeof(ITweekAddon) && typeof(ITweekAddon).IsAssignableFrom(x));
-
-            _addonsCache = addonTypes
-                .Filter(type => selectedAddons.Contains(type.AssemblyQualifiedNameWithoutVersion()))
-                .Map(t => (ITweekAddon) Activator.CreateInstance(t));
+            _addonsCache = GetSelectedAddons(selectedAddons);
 
             return _addonsCache;
         }
 
-        public static string AssemblyQualifiedNameWithoutVersion(this Type type) =>
+        public static IEnumerable<ITweekAddon> GetSelectedAddons(HashSet<string> selectedAddons)
+        {
+            var assemblies = GetRuntimeAssemblies();
+
+            var addonTypes = GetAddonTypeFromAssemblies(assemblies);
+
+            return InstantiateSelectedAddonTypes(addonTypes, selectedAddons);
+        }
+
+        public static IEnumerable<Assembly> GetRuntimeAssemblies()
+        {
+            var dependencies = DependencyContext.Default.RuntimeLibraries;
+
+            return dependencies.SelectMany(library =>
+                library.GetDefaultAssemblyNames(DependencyContext.Default).Select(Assembly.Load));
+        }
+
+        private static IEnumerable<Type> GetAddonTypeFromAssemblies(IEnumerable<Assembly> assemblies)
+        {
+            return assemblies.Bind(x => x.GetExportedTypes())
+                .Filter(x => x != typeof(ITweekAddon) && typeof(ITweekAddon).IsAssignableFrom(x));
+        }
+
+        private static IEnumerable<ITweekAddon> InstantiateSelectedAddonTypes(IEnumerable<Type> addonTypes, HashSet<string> selectedAddons)
+        {
+            return addonTypes
+                .Filter(type => selectedAddons.Contains(type.AssemblyQualifiedNameWithoutVersion()))
+                .Map(t => (ITweekAddon) Activator.CreateInstance(t));
+        }
+
+        private static string AssemblyQualifiedNameWithoutVersion(this Type type) =>
             Assembly.CreateQualifiedName(type.GetTypeInfo().Assembly.GetName().Name, type.FullName);
     }
 }

@@ -20,11 +20,9 @@ namespace Tweek.ApiService.MultiContext
             IConfiguration configuration, IEnumerable<string> names)
         {
             var addonConfiguration = configuration.GetSection("Addons");
-            var dependencies = DependencyContext.Default.RuntimeLibraries;
 
-            var assemblies = dependencies
-                .SelectMany(library =>
-                    library.GetDefaultAssemblyNames(DependencyContext.Default).Select(Assembly.Load));
+            var assemblies = AddonsListExtensions.GetRuntimeAssemblies();
+
             var selectedAddons = new HashSet<string>(
                 names
                     .Where(x => !string.IsNullOrEmpty(x))
@@ -32,11 +30,7 @@ namespace Tweek.ApiService.MultiContext
                     .Select(x => Assembly.CreateQualifiedName(x["AssemblyName"], x["ClassName"]))
             );
 
-            var addonTypes = assemblies.Bind(x => x.GetExportedTypes())
-                .Filter(x => x != typeof(ITweekAddon) && typeof(ITweekAddon).IsAssignableFrom(x));
-            var drivers = addonTypes
-                .Filter(type => selectedAddons.Contains(type.AssemblyQualifiedNameWithoutVersion()))
-                .Map(t => (ITweekAddon) Activator.CreateInstance(t));
+            var drivers = AddonsListExtensions.GetSelectedAddons(selectedAddons);
 
             foreach (var driver in drivers)
             {
