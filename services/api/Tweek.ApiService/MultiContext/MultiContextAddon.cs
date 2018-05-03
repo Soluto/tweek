@@ -1,17 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Tweek.ApiService.Addons;
-using Tweek.ApiService.MultiContext;
-using Tweek.ApiService.Utils;
 using Tweek.Engine.Drivers.Context;
 
-namespace Tweek.Drivers.Context.Multi
+namespace Tweek.ApiService.MultiContext
 {
-    public class MultiServiceAddon: ITweekAddon
+    public class MultiContextAddon: ITweekAddon
     {
         public void Use(IApplicationBuilder builder, IConfiguration configuration)
         {

@@ -7,16 +7,15 @@ using Microsoft.AspNetCore.Builder.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Tweek.ApiService.MultiContext;
-using Tweek.Drivers.Context.Multi;
 using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Context;
 using Xunit;
 
 namespace Tweek.ApiService.Tests
 {
-    public class MultiServiceAddonTests
+    public class MultiContextAddonTests
     {
-        private MultiServiceAddon _addon;
+        private MultiContextAddon _addon;
         private IConfigurationRoot _configurationRoot;
         private IServiceCollection _serviceCollection;
 
@@ -30,7 +29,7 @@ namespace Tweek.ApiService.Tests
 
         public void Setup()
         {
-            _addon = new MultiServiceAddon();
+            _addon = new MultiContextAddon();
             _configurationRoot = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string>
             {
                 {"Addons:InMemoryContext:ClassName", "Tweek.ApiService.Tests.InMemoryContextServiceAddon"},
