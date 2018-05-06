@@ -8,12 +8,12 @@ using Tweek.Engine.Drivers.Context;
 
 namespace Tweek.ApiService.MultiContext
 {
-    public class MultiDriver : IContextDriver
+    public class MultiContextDriver : IContextDriver
     {
         private readonly IEnumerable<IContextDriver> _readers;
         private readonly IEnumerable<IContextDriver> _writers;
 
-        public MultiDriver(IEnumerable<IContextDriver> readers, IEnumerable<IContextDriver> writers)
+        public MultiContextDriver(IEnumerable<IContextDriver> readers, IEnumerable<IContextDriver> writers)
         {
             var readersArray = readers?.ToArray();
             var writersArray = writers?.ToArray();

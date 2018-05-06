@@ -24,7 +24,7 @@ namespace Tweek.ApiService.MultiContext
             
             var readers = GetContextDrivers(drivers, readersNames);
             var writers = GetContextDrivers(drivers, writersNames);
-            services.AddSingleton<IContextDriver>(new MultiDriver(readers, writers));
+            services.AddSingleton<IContextDriver>(new MultiContextDriver(readers, writers));
         }
 
         private static IEnumerable<IContextDriver> GetContextDrivers(IDictionary<string,IContextDriver> drivers, IEnumerable<string> names)
@@ -32,11 +32,5 @@ namespace Tweek.ApiService.MultiContext
             return drivers.Where(kvPair => names.Contains(kvPair.Key)).Select(kvPair => kvPair.Value);
         }
 
-        private static string DictionaryKeyOrNull(Dictionary<string, string> dictionary, string key)
-        {
-            string result = null;
-            dictionary.TryGetValue(key, out result);
-            return result;
-        }
     }
 }

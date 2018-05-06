@@ -19,15 +19,7 @@ namespace Tweek.ApiService.Tests
         private IConfigurationRoot _configurationRoot;
         private IServiceCollection _serviceCollection;
 
-        private readonly Dictionary<string, JsonValue> _expectedValue = new Dictionary<string, JsonValue>
-        {
-            {"id", JsonValue.NewString("1")},
-            {"key", JsonValue.NewString("value")},
-        };
-
-        private readonly Identity _identity = new Identity("some_identity", "1");
-
-        public void Setup()
+        private void Setup()
         {
             _addon = new MultiContextAddon();
             _configurationRoot = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string>
@@ -43,21 +35,28 @@ namespace Tweek.ApiService.Tests
             }).Build();
             _serviceCollection = new ServiceCollection();
         }
-        
+
         [Fact]
         public async Task RegistrationWorksAsExpected()
         {
+            var identity = new Identity("some_identity", "1");
+            var expectedValue = new Dictionary<string, JsonValue>
+            {
+                {"id", JsonValue.NewString("1")},
+                {"key", JsonValue.NewString("value")},
+            };
+            
             Setup();
             _addon.Configure(_serviceCollection, _configurationRoot);
             var driver = _serviceCollection.BuildServiceProvider().GetService(typeof(IContextDriver));
-            
-            Assert.IsType<MultiDriver>(driver);
-            
+
+            Assert.IsType<MultiContextDriver>(driver);
+
             var multiDriver = (IContextDriver) driver;
-            await multiDriver.AppendContext(_identity, _expectedValue);
-            var result = await multiDriver.GetContext(_identity);
-            
-            Assert.Equal(_expectedValue, result);
+            await multiDriver.AppendContext(identity, expectedValue);
+            var result = await multiDriver.GetContext(identity);
+
+            Assert.Equal(expectedValue, result);
         }
     }
 }

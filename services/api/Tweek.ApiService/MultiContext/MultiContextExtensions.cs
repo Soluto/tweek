@@ -21,8 +21,6 @@ namespace Tweek.ApiService.MultiContext
         {
             var addonConfiguration = configuration.GetSection("Addons");
 
-            var assemblies = AddonsListExtensions.GetRuntimeAssemblies();
-
             var selectedAddons = new HashSet<string>(
                 names
                     .Where(x => !string.IsNullOrEmpty(x))
