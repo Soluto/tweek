@@ -53,7 +53,7 @@ namespace Tweek.ApiService.Utils
             return _addonsCache;
         }
 
-        private static IEnumerable<ITweekAddon> GetSelectedAddons(HashSet<string> selectedAddons)
+        public static IEnumerable<ITweekAddon> GetSelectedAddons(HashSet<string> selectedAddons)
         {
             var assemblies = GetRuntimeAssemblies();
 
