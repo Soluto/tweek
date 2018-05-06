@@ -1,5 +1,6 @@
 /* global browser */
 import { dataComp, attributeSelector } from './selector-utils';
+const nconf = require('nconf');
 
 const timeout = 5000;
 
