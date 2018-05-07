@@ -4,7 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
-    <PackageReference Include="LanguageExt.Core" version="2.1.21" />
+    <PackageReference Include="LanguageExt.Core" Version="2.1.21" />
     <PackageReference Include="RestEase" Version="1.4.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
     <PackageReference Include="Tweek.JPad" Version="0.6.28" />
