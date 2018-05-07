@@ -35,26 +35,27 @@ namespace Tweek.ApiService.Tests
         }
         
         [Fact]
-        public void GivenMockReadersAndWriters_GetContextCalled_ReturnsExpectedResult()
+        public async Task GivenMockReadersAndWriters_GetContextCalled_ReturnsExpectedResult()
         {
             Setup();
-            var expectedResult = Task.FromResult(new Dictionary<string, JsonValue>
+            var expectedResult = new Dictionary<string, JsonValue>
             {
                 {"id", JsonValue.NewString("1")},
                 {"some_key", JsonValue.NewString("some_value")},
-            });
+            };
 
-            A.CallTo(() => _someFakeDriver.GetContext(A<Identity>.That.IsEqualTo(_fakeIdentity))).Throws<Exception>();
+            A.CallTo(() => _someFakeDriver.GetContext(A<Identity>.That.IsEqualTo(_fakeIdentity)))
+                .ThrowsAsync(new Exception());
             A.CallTo(() => _someOtherFakeDriver.GetContext(A<Identity>.That.IsEqualTo(_fakeIdentity))).Returns(expectedResult);
             
-            Assert.Equal(_multiContextDriver.GetContext(_fakeIdentity).Result, expectedResult.Result);
+            Assert.Equal(await _multiContextDriver.GetContext(_fakeIdentity), expectedResult);
 
             A.CallTo(() => _someFakeDriver.GetContext(A<Identity>.That.IsEqualTo(_fakeIdentity))).MustHaveHappened();
 
         }
         
         [Fact]
-        public void GivenMockReadersAndWriters_AppendContextCalled_DoesntThrow()
+        public async Task GivenMockReadersAndWriters_AppendContextCalled_DoesntThrow()
         {
             Setup();
             var context = new Dictionary<string, JsonValue>
@@ -63,16 +64,35 @@ namespace Tweek.ApiService.Tests
                 {"some_key", JsonValue.NewString("some_value")},
             };
             
-            _multiContextDriver.AppendContext(_fakeIdentity, context).Wait();
+            await _multiContextDriver.AppendContext(_fakeIdentity, context);
             A.CallTo(() => _someFakeDriver.AppendContext(A<Identity>.That.IsEqualTo(_fakeIdentity), A<Dictionary<string, JsonValue>>.That.IsEqualTo(context))).MustHaveHappened();
             A.CallTo(() => _someOtherFakeDriver.AppendContext(A<Identity>.That.IsEqualTo(_fakeIdentity), A<Dictionary<string, JsonValue>>.That.IsEqualTo(context))).MustHaveHappened();
         }
         
         [Fact]
-        public void GivenMockReadersAndWriters_RemoveFromContextCalled_DoesntThrow()
+        public async Task GivenMockReadersAndWriters_AppendContextCalled_ThrowsWhenOneOfThemThrows()
         {
             Setup();
-            _multiContextDriver.RemoveFromContext(_fakeIdentity, "some_key").Wait();
+            var context = new Dictionary<string, JsonValue>
+            {
+                {"id", JsonValue.NewString("1")},
+                {"some_key", JsonValue.NewString("some_value")},
+            };
+
+            A.CallTo(() => _someOtherFakeDriver.AppendContext(A<Identity>.That.IsEqualTo(_fakeIdentity),
+                A<Dictionary<string, JsonValue>>.That.IsEqualTo(context))).Throws<Exception>();
+
+            await Assert.ThrowsAsync<Exception>(async () => await _multiContextDriver.AppendContext(_fakeIdentity, context));
+
+            A.CallTo(() => _someFakeDriver.AppendContext(A<Identity>.That.IsEqualTo(_fakeIdentity), A<Dictionary<string, JsonValue>>.That.IsEqualTo(context))).MustHaveHappened();
+            A.CallTo(() => _someOtherFakeDriver.AppendContext(A<Identity>.That.IsEqualTo(_fakeIdentity), A<Dictionary<string, JsonValue>>.That.IsEqualTo(context))).MustHaveHappened();
+        }
+        
+        [Fact]
+        public async Task GivenMockReadersAndWriters_RemoveFromContextCalled_DoesntThrow()
+        {
+            Setup();
+            await _multiContextDriver.RemoveFromContext(_fakeIdentity, "some_key");
             A.CallTo(() => _someFakeDriver.RemoveFromContext(A<Identity>.That.IsEqualTo(_fakeIdentity), A<string>.That.IsEqualTo("some_key"))).MustHaveHappened();
             A.CallTo(() => _someOtherFakeDriver.RemoveFromContext(A<Identity>.That.IsEqualTo(_fakeIdentity), A<string>.That.IsEqualTo("some_key"))).MustHaveHappened();
         }
