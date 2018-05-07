@@ -57,10 +57,10 @@ namespace Tweek.Drivers.ContextIntegrationTests
             result = await Driver.GetContext(testIdentity);
             Assert.Contains(CREATION_DATE, result.Keys);
             result.Remove(CREATION_DATE);
-            Assert.Equal(TestContextAfterRemoval, result);
+            Assert.Equal(TestContext, result);
         }
 
-        [Fact(DisplayName = "ContextAppended_PropertyDeleted_ResultsInCorrectContext")]
+        [Fact]
         public async Task ContextAppended_PropertyDeleted_ResultsInCorrectContext()
         {
             var testIdentity = TestIdentity;
@@ -73,10 +73,10 @@ namespace Tweek.Drivers.ContextIntegrationTests
             result = await Driver.GetContext(testIdentity);
             Assert.Contains(CREATION_DATE, result.Keys);
             result.Remove(CREATION_DATE);
-            Assert.Equal(TestContext, result);
+            Assert.Equal(TestContextAfterRemoval, result);
         }
 
-        [Fact(DisplayName = "ContextAppended_ThenAnotherAppended_ResultIsMerged")]
+        [Fact]
         public async Task ContextAppended_ThenAnotherAppended_ResultIsMerged()
         {
             var testIdentity = TestIdentity;
@@ -88,7 +88,7 @@ namespace Tweek.Drivers.ContextIntegrationTests
             Assert.Equal(TestContextMergedWithAnotherTestContext, result);
         }
 
-        [Fact(DisplayName = "ContextAppended_ThenSameContextAppended_ResultIsIdempotent")]
+        [Fact]
         public async Task ContextAppended_ThenSameContextAppended_ResultIsIdempotent()
         {
             var testIdentity = TestIdentity;
