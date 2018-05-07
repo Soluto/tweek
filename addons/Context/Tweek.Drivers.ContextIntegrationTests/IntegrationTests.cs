@@ -28,6 +28,7 @@ namespace Tweek.Drivers.ContextIntegrationTests
         };
 
         private const string PROPERTY_TO_REMOVE = "Weight";
+        private const string NON_EXISTENT_PROPERTY_TO_REMOVE = "Length";
         private const string CREATION_DATE = "@CreationDate";
 
         private static readonly Dictionary<string, JsonValue> TestContextAfterRemoval = TestContext
@@ -42,6 +43,23 @@ namespace Tweek.Drivers.ContextIntegrationTests
 
         protected abstract IContextDriver Driver {  get; set; }
 
+
+        [Fact]
+        public async Task ContextAppended_NonExistentPropertyDeleted_NoErrorThrown()
+        {
+            var testIdentity = TestIdentity;
+            await Driver.AppendContext(testIdentity, TestContext);
+            var result = await Driver.GetContext(testIdentity);
+            Assert.Contains(CREATION_DATE, result.Keys);
+            result.Remove(CREATION_DATE);
+            Assert.Equal(TestContext, result);
+            await Driver.RemoveFromContext(testIdentity, NON_EXISTENT_PROPERTY_TO_REMOVE);
+            result = await Driver.GetContext(testIdentity);
+            Assert.Contains(CREATION_DATE, result.Keys);
+            result.Remove(CREATION_DATE);
+            Assert.Equal(TestContextAfterRemoval, result);
+        }
+
         [Fact(DisplayName = "ContextAppended_PropertyDeleted_ResultsInCorrectContext")]
         public async Task ContextAppended_PropertyDeleted_ResultsInCorrectContext()
         {
@@ -55,7 +73,7 @@ namespace Tweek.Drivers.ContextIntegrationTests
             result = await Driver.GetContext(testIdentity);
             Assert.Contains(CREATION_DATE, result.Keys);
             result.Remove(CREATION_DATE);
-            Assert.Equal(TestContextAfterRemoval, result);
+            Assert.Equal(TestContext, result);
         }
 
         [Fact(DisplayName = "ContextAppended_ThenAnotherAppended_ResultIsMerged")]
