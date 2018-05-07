@@ -39,15 +39,9 @@ namespace Tweek.ApiService.MultiContext
             var assemblyNamesToAddonName = addonConfiguration.GetChildren()
                 .ToDictionary(addon => addon.GetValue<string>("AssemblyName"), addon => addon.Key);
 
-            var result = new Dictionary<string, IContextDriver>(serviceDescriptors.Length);
-            foreach (var descriptor in serviceDescriptors)
-            {
-                var implementation = (IContextDriver) descriptor.ImplementationInstance;
-                var assemblyName = implementation.GetType().GetTypeInfo().Assembly.GetName().Name;
-                result.Add(assemblyNamesToAddonName[assemblyName], implementation);
-            }
-
-            return result;
+            return serviceDescriptors.ToDictionary(
+                descriptor => assemblyNamesToAddonName[descriptor.ImplementationInstance.GetType().GetTypeInfo().Assembly.GetName().Name],
+                descriptor => (IContextDriver) descriptor.ImplementationInstance);
         }
 
         public static void RemoveAllContextDrivers(this IServiceCollection services)
