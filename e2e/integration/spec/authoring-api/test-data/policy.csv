@@ -10,3 +10,14 @@ p, 1, /api/v2/dependents/*, *, allow
 p, 1, /api/v2/suggestions, *, allow
 p, 1, /api/v2/search, *, allow
 p, 1, /api/v2/context/*, *, allow
+
+p, 00000000-0000-0000-0000-000000000000, /api/v2/values/*, *, allow
+p, 00000000-0000-0000-0000-000000000000, /api/v2/keys/*, *, allow
+p, 00000000-0000-0000-0000-000000000000, /api/v2/schemas*, *, allow
+p, 00000000-0000-0000-0000-000000000000, /api/v2/manifests*, *, allow
+p, 00000000-0000-0000-0000-000000000000, /api/v2/tags, *, allow
+p, 00000000-0000-0000-0000-000000000000, /api/v2/revision-history/*, *, allow
+p, 00000000-0000-0000-0000-000000000000, /api/v2/dependents/*, *, allow
+p, 00000000-0000-0000-0000-000000000000, /api/v2/suggestions, *, allow
+p, 00000000-0000-0000-0000-000000000000, /api/v2/search, *, allow
+p, 00000000-0000-0000-0000-000000000000, /api/v2/context/*, *, allow
