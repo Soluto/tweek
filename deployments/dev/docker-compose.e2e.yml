@@ -8,6 +8,7 @@ services:
   editor:
     environment: 
       - CONTINUOUS_UPDATER_INTERVAL=500
+      - REACT_APP_GATEWAY_URL=http://gateway/
 
   authoring:
     environment: 
@@ -40,12 +41,14 @@ services:
     environment: 
       - ASPNETCORE_ENVIRONMENT=Development
       - CLIENT_ID=tweek-openid-mock-client
-      - REDIRECT_URIS=http://localhost:3000/auth/oidc,http://localhost:4004/auth/oidc
+      - REDIRECT_URIS=http://editor:3000/auth/oidc,http://localhost:3000/auth/oidc,http://localhost:4004/auth/oidc
       - TEST_USER={"SubjectId":"1","Username":"User1","Password":"pwd"}
   
   selenium:
-    image: selenium/standalone-chrome:3.8.1
+    image: selenium/standalone-chrome-debug:3.8.1
     container_name: selenium
+    ports:
+      - "5900:5900"
     volumes:
       - /dev/shm:/dev/shm
     links:
@@ -65,6 +68,7 @@ services:
       - editor
       - gateway
     environment:
+      - GATEWAY_URL=http://gateway/
       - EDITOR_URL=http://editor:3000/
       - TWEEK_API_URL=http://api/
       - AUTHORING_URL=http://authoring:3000/

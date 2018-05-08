@@ -4,8 +4,8 @@
             "providers": {
                 "mock": {
                     "name": "Mock OpenId Connect server",
-                    "issuer": "http://localhost:4011",
-                    "authority": "http://localhost:4011",
+                    "issuer": "http://oidc-server-mock",
+                    "authority": "http://oidc-server-mock",
                     "jwks_uri": "http://oidc-server-mock/.well-known/openid-configuration/jwks",
                     "client_id": "tweek-openid-mock-client",
                     "scope": "openid profile email",

@@ -16,7 +16,7 @@ services:
     build:
       context: ../../services/editor
       args:
-        - REACT_APP_GATEWAY_URL=http://localhost:4099       
+        - REACT_APP_GATEWAY_URL=http://gateway
     depends_on: 
       - gateway
 
