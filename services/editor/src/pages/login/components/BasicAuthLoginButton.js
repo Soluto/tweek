@@ -25,7 +25,9 @@ const buildAuthUrl = state =>
   }/auth/basic&state=${JSON.stringify(state)}`;
 
 const BasicAuthLoginButton = ({ state }) => (
-  <Button href={buildAuthUrl(state)}>Basic Auth Login</Button>
+  <Button data-comp="Basic Auth Login" href={buildAuthUrl(state)}>
+    Basic Auth Login
+  </Button>
 );
 
 export default BasicAuthLoginButton;

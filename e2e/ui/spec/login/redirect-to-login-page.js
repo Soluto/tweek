@@ -6,7 +6,7 @@ import { dataComp, dataField, attributeSelector } from '../../utils/selector-uti
 
 const timeout = 5000;
 const tweekLogo = dataComp('tweek-logo');
-const digestAuthLink = dataComp('Username and password (Digest Authentication)');
+const basicAuthLink = dataComp('Basic Auth Login');
 
 describe('redirect to login page', () => {
   it('should navigate to login page', () => {
@@ -14,6 +14,6 @@ describe('redirect to login page', () => {
     const newPath = url.parse(browser.getUrl()).pathname;
     expect(newPath).to.equal('/login');
     browser.waitForVisible(tweekLogo, timeout);
-    browser.waitForVisible(digestAuthLink, timeout);
+    browser.waitForVisible(basicAuthLink, timeout);
   });
 });
