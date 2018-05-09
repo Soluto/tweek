@@ -113,7 +113,7 @@ func initEnforcer(config *appConfig.Security) (*casbin.SyncedEnforcer, error) {
 		policyStorage.MinioBucketName,
 		policyStorage.MinioPolicyObjectName)
 	if err != nil {
-		return nil, fmt.Errorf("Error while creating Minio adapter %v", err)
+		return nil, fmt.Errorf("Error while creating Minio adapter:\n %v", err)
 	}
 
 	enforcer := casbin.NewSyncedEnforcer(modelPath, adapter)
@@ -134,7 +134,7 @@ func withRetry(times int, sleepDuration time.Duration, todo enforcerFactory, arg
 		if err == nil {
 			return res, nil
 		}
-		log.Println("Error creating enforcer, retrying", err)
+		log.Printf("Error creating enforcer, retrying...\n %v", err)
 		time.Sleep(sleepDuration)
 	}
 	return nil, err
