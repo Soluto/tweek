@@ -39,6 +39,8 @@ nconf
     MINIO_HOST: 'localhost',
     MINIO_PORT: '4007',
     MINIO_BUCKET: 'tweek',
+    MINIO_ACCESS_KEY: 'AKIAIOSFODNN7EXAMPLE',
+    MINIO_SECRET_KEY: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
   });
 
 const getEnv = async (varName, base64) => {
