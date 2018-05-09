@@ -117,8 +117,7 @@ services:
       - "4099:3000"
     depends_on: 
       - minio
-      - nats
-      - oidc-server-mock
+      - nats      
     environment:
       - TWEEKGATEWAY_SECURITY_CORS_ENABLED=true
       - TWEEKGATEWAY_SECURITY_CORS_MAXAGE=60
