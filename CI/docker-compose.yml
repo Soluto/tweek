@@ -74,6 +74,7 @@ services:
       - nats
       - api
       - authoring
+      - oidc-server-mock
     logging:
       driver: "json-file"    
     environment:
@@ -95,6 +96,8 @@ services:
 
   oidc-server-mock:
     image: soluto/oidc-server-mock
+    logging:
+      driver: "none"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - CLIENT_ID=tweek-openid-mock-client
