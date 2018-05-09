@@ -20,10 +20,10 @@ export const login = () => {
   browser.clickWhenVisible(mockAuth, timeout);
   browser.clickWhenVisible(usernameComp, timeout);
   browser.keys(username);
-  browser.click(passwordComp, timeout);
+  browser.clickWhenVisible(passwordComp, timeout);
   browser.keys(password);
-  browser.click(loginComp);
+  browser.clickWhenVisible(loginComp);
   browser.clickWhenVisible(rememberConsent, timeout);
-  browser.click(confirmComp, timeout);
+  browser.clickWhenVisible(confirmComp, timeout);
   browser.pause(1000);
 };
