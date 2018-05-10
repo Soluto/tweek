@@ -42,9 +42,7 @@ steps:
     title: Building Editor Docker Image
     type: build
     image_name: soluto/tweek-editor
-    working_directory: ./services/editor/    
-    build_arguments:
-      - REACT_APP_GATEWAY_URL=http://gateway      
+    working_directory: ./services/editor/
 
   BuildingUITests:
     title: Building E2E UI Tests Docker Image
