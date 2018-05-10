@@ -35,14 +35,13 @@ services:
       
   editor:
     image: soluto/tweek-editor
-    build:
-      context: ../services/editor
-      args:
-        - REACT_APP_GATEWAY_URL=http://gateway
+    build: ../services/editor      
     logging:
       driver: "json-file"
     ports:
       - "5004:3000"
+    volumes:
+      - ../deployments/dev/editor/local/config:/opt/app/build/config
 
   gateway:
     image: soluto/tweek-secure-gateway
