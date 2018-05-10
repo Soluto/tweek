@@ -61,11 +61,9 @@ services:
 
   editor:
     ports:
-      - "4004:3000"    
-    environment:
-      - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
-    secrets:
-      - tweek_ssh_private_key
+      - "4004:3000"
+    volumes:
+      - ./editor/local/config:/opt/app/build/config
 
   authoring:
     depends_on:

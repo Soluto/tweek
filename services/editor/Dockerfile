@@ -13,9 +13,6 @@ FROM deps AS build
 
 RUN yarn
 
-ARG REACT_APP_GATEWAY_URL
-ENV REACT_APP_GATEWAY_URL=${REACT_APP_GATEWAY_URL:-http://localhost:4099}
-
 COPY . ./
 RUN yarn test && yarn build
 
@@ -32,6 +29,8 @@ COPY --from=build /src/build/ ./build
 COPY --from=deps /src/node_modules ./node_modules
 COPY --from=deps /src/package.json ./package.json
 COPY --from=build /src/index.js ./index.js
+
+VOLUME [ "/opt/app/build/config" ]
 
 HEALTHCHECK --interval=10s --timeout=10s --retries=8 \
       CMD wget -O - http://localhost:3000/health || exit 1

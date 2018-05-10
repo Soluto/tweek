@@ -13,10 +13,7 @@ services:
 
   editor:
     image: soluto/tweek-editor    
-    build:
-      context: ../../services/editor
-      args:
-        - REACT_APP_GATEWAY_URL=http://gateway
+    build: ../../services/editor      
     depends_on: 
       - gateway
 

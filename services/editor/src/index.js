@@ -1,3 +1,4 @@
+/* global document */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -8,7 +9,7 @@ import 'papp-polyfill';
 
 injectTapEventPlugin();
 
-let store = configureStore({});
+const store = configureStore({});
 
 ReactDOM.render(
   <Provider store={store}>

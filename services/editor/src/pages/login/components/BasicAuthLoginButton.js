@@ -20,7 +20,7 @@ const Button = styled('a')`
 `;
 
 const buildAuthUrl = state =>
-  `${process.env.REACT_APP_GATEWAY_URL}/auth/basic?redirect_url=${
+  `${process.env.REACT_APP_GATEWAY_URL || window.REACT_APP_GATEWAY_URL}/auth/basic?redirect_url=${
     window.location.origin
   }/auth/basic&state=${JSON.stringify(state)}`;
 
