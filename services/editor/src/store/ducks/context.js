@@ -51,7 +51,7 @@ export const saveContext = ({ identityType, identityId }) =>
         await fetch(contextUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(R.pickAll(modifiedKeys, currentRemoteContext)),
+          body: JSON.stringify(R.pickAll(modifiedKeys, context.local)),
         });
       }
 
