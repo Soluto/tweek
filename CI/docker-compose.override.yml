@@ -40,12 +40,15 @@ services:
       driver: "json-file"
     ports:
       - "5004:3000"
-    volumes:
-      - ../deployments/dev/editor/local/config:/opt/app/build/config
 
   gateway:
     image: soluto/tweek-secure-gateway
     build: ../services/secure-gateway
+
+  selenium:
+    image: selenium/standalone-chrome-debug:3.8.1
+    ports:
+      - "5900:5900"
 
   zap-smoke:
     image: soluto/zap

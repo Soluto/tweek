@@ -65,7 +65,7 @@ services:
     logging:
       driver: "none"
     environment:
-      - REACT_APP_GATEWAY_URL=http://gateway/
+      - REACT_APP_GATEWAY_URL=http://gateway
 
   gateway:
     image: $SECUREGATEWAY_IMAGE
