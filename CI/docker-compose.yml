@@ -76,7 +76,7 @@ services:
       - authoring
       - oidc-server-mock
     logging:
-      driver: "json-file"    
+      driver: "none"
     environment:
       - TWEEKGATEWAY_SECURITY_CORS_ENABLED=true
       - TWEEKGATEWAY_SECURITY_CORS_MAXAGE=60
