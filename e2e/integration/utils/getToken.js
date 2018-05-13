@@ -6,6 +6,7 @@ const jwtOptions = {
   algorithm: 'RS256',
   issuer: 'tweek',
   expiresIn: '15m',
+  subject: 'integration-test',
 };
 const data = {
   name: 'tweek-test',

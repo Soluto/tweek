@@ -45,7 +45,6 @@ class NewPartition extends React.Component {
   state = { partition: {}, defaultValue: '' };
 
   replaceState(state) {
-    this.state = state;
     this.setState(state);
   }
 
@@ -73,7 +72,8 @@ class NewPartition extends React.Component {
               {...partition}
               value={this.state.partition[partition.id] || ''}
               onUpdate={value =>
-                this.setState({ partition: { ...this.state.partition, [partition.id]: value } })}
+                this.setState({ partition: { ...this.state.partition, [partition.id]: value } })
+              }
             />
           </div>
         ))}

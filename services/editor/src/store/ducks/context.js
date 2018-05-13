@@ -1,6 +1,7 @@
+/* global process Promise */
+import * as R from 'ramda';
 import { handleActions } from 'redux-actions';
 import { push } from 'react-router-redux';
-import jsonpatch from 'fast-json-patch';
 import fetch from '../../utils/fetch';
 import { showError } from './notifications';
 
@@ -19,10 +20,8 @@ export const getContext = ({ identityType, identityId }) =>
   async function (dispatch) {
     dispatch({ type: GET_CONTEXT });
     try {
-      const response = await fetch(
-        `/api/context/${identityType}/${encodeURIComponent(identityId)}`,
-      );
-      const contextData = await response.json();
+      const contextUrl = `/context/${identityType}/${encodeURIComponent(identityId)}`;
+      const contextData = await fetch(contextUrl).then(res => res.json());
       dispatch({ type: CONTEXT_RECEIVED, payload: contextData });
     } catch (error) {
       dispatch(showError({ title: 'Failed to retrieve context', error }));
@@ -36,15 +35,28 @@ export const saveContext = ({ identityType, identityId }) =>
   async function (dispatch, getState) {
     dispatch({ type: SAVE_CONTEXT });
     const context = getState().context;
-    const encodedIdentityId = encodeURIComponent(identityId);
 
-    const contextPatch = jsonpatch.compare(context.remote, context.local);
+    const contextUrl = `/context/${identityType}/${encodeURIComponent(identityId)}`;
+    const getDeletedKeys = R.pipe(R.unapply(R.map(R.keys)), R.apply(R.difference));
+    const getModifiedKeys = R.pipe(R.unapply(R.map(R.toPairs)), R.apply(R.difference), R.pluck(0));
+
+    const keysToDelete = getDeletedKeys(context.remote, context.local);
+    const keysToDeleteUrls = keysToDelete.map(key => `${contextUrl}/${key}`);
+    const modifiedKeys = getModifiedKeys(context.local, context.remote);
+
     try {
-      await fetch(`/api/context/${identityType}/${encodedIdentityId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(contextPatch),
-      });
+      if (modifiedKeys.length > 0) {
+        const currentRemoteContext = await fetch(contextUrl).then(res => res.json());
+
+        await fetch(contextUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(R.pickAll(modifiedKeys, context.local)),
+        });
+      }
+
+      await Promise.all(keysToDeleteUrls.map(k => fetch(k, { method: 'DELETE' })));
+
       dispatch({ type: CONTEXT_SAVED, success: true });
     } catch (error) {
       dispatch(showError({ title: 'Failed to update context', error }));

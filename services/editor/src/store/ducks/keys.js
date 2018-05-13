@@ -18,7 +18,7 @@ export function removeKeyFromList(key) {
 export function getKeys() {
   return async function (dispatch) {
     try {
-      const result = await await fetch('/api/manifests');
+      const result = await await fetch(`/manifests`);
       const manifests = await result.json();
       const payload = manifests.filter(m => !m.meta.archived).map(x => x.key_path);
       dispatch({ type: KEYS_UPDATED, payload });

@@ -13,7 +13,7 @@ import chai, { assert, expect } from 'chai';
 chai.use(require('chai-things'));
 
 describe('context-service', () => {
-  const contextServiceApiMatcher = 'glob:*/api/schemas';
+  const contextServiceApiMatcher = 'glob:*/api/v2/schemas';
 
   afterEach(() => {
     fetchMock.restore();

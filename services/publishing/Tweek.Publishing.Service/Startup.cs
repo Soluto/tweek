@@ -13,12 +13,14 @@ using Microsoft.Extensions.Logging;
 using Minio;
 using Newtonsoft.Json;
 using Polly;
+using Tweek.Publishing.Helpers;
 using Tweek.Publishing.Service.Handlers;
 using Tweek.Publishing.Service.Messaging;
-using Tweek.Publishing.Service.Packing;
+using Tweek.Publishing.Service.Model.ExternalApps;
+using Tweek.Publishing.Service.Model.Rules;
 using Tweek.Publishing.Service.Storage;
 using Tweek.Publishing.Service.Sync;
-using Tweek.Publishing.Service.Sync.Uploaders;
+using Tweek.Publishing.Service.Sync.Converters;
 using Tweek.Publishing.Service.Utils;
 using Tweek.Publishing.Service.Validation;
 
@@ -76,12 +78,14 @@ namespace Tweek.Publishing.Service
 
         private StorageSynchronizer CreateStorageSynchronizer(IObjectStorage storageClient, ShellHelper.ShellExecutor executor)
         {
+            var key = GitKeyHelper.GetKeyFromEnvironment();
             var storageSynchronizer = new StorageSynchronizer(storageClient, executor)
             {
-                Uploaders =
+                Converters =
                 {
-                    new RulesUploader(storageClient, executor, new Packer()),
-                    new PolicyUploader(storageClient, executor),
+                    new RulesConverter(),
+                    new ExternalAppsConverter(key),
+                    new PolicyConverter(),
                 }
             };
             return storageSynchronizer;
@@ -94,7 +98,7 @@ namespace Tweek.Publishing.Service
             var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () =>
             {
                 var commitId = await repoSynchronizer.CurrentHead();
-                await Policy.Handle<StaleRevisionException>()
+                await Polly.Policy.Handle<StaleRevisionException>()
                     .RetryAsync(10, async (_,c)=> await repoSynchronizer.SyncToLatest())
                     .ExecuteAsync(async ()=> await storageSynchronizer.Sync(commitId));
 
@@ -131,7 +135,7 @@ namespace Tweek.Publishing.Service
 
             var minioConfig = _configuration.GetSection("Minio");
             
-            var storageClient = Policy.Handle<Exception>()
+            var storageClient = Polly.Policy.Handle<Exception>()
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
                 .ExecuteAsync(() =>
                     MinioBucketStorage.GetOrCreateBucket(CreateMinioClient(minioConfig),
@@ -150,7 +154,7 @@ namespace Tweek.Publishing.Service
             {
                 router.MapGet("validate", ValidationHandler.Create(executor, gitValidationFlow));
                 router.MapGet("sync", SyncHandler.Create(storageSynchronizer, repoSynchronizer, versionPublisher,
-                Policy.Handle<Exception>()
+                Polly.Policy.Handle<Exception>()
                         .WaitAndRetryAsync(3,
                             retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                             async (ex, timespan) =>

@@ -1,9 +1,23 @@
-{
+{    
     "upstreams": {
         "api": "http://localhost:4003",
-        "authoring": "http://localhost:4004"
+        "authoring": "http://localhost:4005",
+        "publishing": "http://localhost:4010"
     },
     "security": {
+        "auth": {
+            "providers": {
+                "mock": {
+                    "name": "Mock OpenId Connect server",
+                    "issuer": "http://localhost:4011",
+                    "authority": "http://localhost:4011",
+                    "jwks_uri": "http://oidc-server-mock/.well-known/openid-configuration/jwks",
+                    "client_id": "tweek-openid-mock-client",
+                    "scope": "openid profile email",
+                    "response_type": "id_token"
+                }
+            }
+        },
         "tweekSecretKey": {
             "Path": "../../deployments/dev/ssh/tweekgit"
         },

@@ -97,7 +97,7 @@ func TestAuthorizationMiddleware(t *testing.T) {
 
 func createRequest(method, target, username string) *http.Request {
 	info := &userInfo{
-		email: username,
+		sub: username,
 	}
 
 	r := httptest.NewRequest(method, target, nil)

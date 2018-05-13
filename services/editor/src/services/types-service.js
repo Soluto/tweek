@@ -1,3 +1,4 @@
+/* global process */
 import fetch from '../utils/fetch';
 
 export const types = {
@@ -21,7 +22,7 @@ export const types = {
 };
 
 export async function refreshTypes() {
-  const data = await fetch('/api/types', { credentials: 'same-origin' });
+  const data = await fetch(`/values/@tweek/custom_types/_`);
   const loadedTypes = await data.json();
 
   for (const type of Object.keys(loadedTypes)) {
@@ -69,7 +70,7 @@ function safeConvertToBaseType(value, type) {
 export async function getValueTypeDefinition(key) {
   if (!key || key.length === 0) return types.string;
   try {
-    const response = await fetch(`/api/manifests/${key}`, { credentials: 'same-origin' });
+    const response = await fetch(`/manifests/${key}`);
     const manifest = await response.json();
 
     if (manifest.implementation.type === 'alias') {

@@ -7,10 +7,9 @@ services:
 
   editor:
     environment: 
-      - CONTINUOUS_UPDATER_INTERVAL=500
-      - REQUIRE_AUTH=true
-      - TWEEK_AUTH_SCHEMES=httpDigest
-      - AUTH_DIGEST_CREDENTIALS=user:pwd
+      - CONTINUOUS_UPDATER_INTERVAL=500      
+    volumes:
+      - ./editor/test/config:/opt/app/build/config
 
   authoring:
     environment: 
@@ -26,10 +25,31 @@ services:
       - CorsPolicies__Keys__Headers=
       - CorsPolicies__Keys__ExposedHeaders=
       - CorsEnabled=true
+      
+  gateway:
+    depends_on:       
+      - minio
+      - nats
+      - oidc-server-mock
+    environment:
+      - CONFIGOR_ENV=test
+
+  oidc-server-mock:
+    container_name: oidc-server-mock 
+    image: soluto/oidc-server-mock   
+    ports:
+      - "4011:80"
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CLIENT_ID=tweek-openid-mock-client
+      - REDIRECT_URIS=http://editor:3000/auth/oidc,http://localhost:3000/auth/oidc,http://localhost:4004/auth/oidc
+      - TEST_USER={"SubjectId":"1","Username":"User1","Password":"pwd"}
   
   selenium:
-    image: selenium/standalone-chrome:3.8.1
+    image: selenium/standalone-chrome-debug:3.8.1
     container_name: selenium
+    ports:
+      - "5900:5900"
     volumes:
       - /dev/shm:/dev/shm
     links:
@@ -49,6 +69,7 @@ services:
       - editor
       - gateway
     environment:
+      - GATEWAY_URL=http://gateway/
       - EDITOR_URL=http://editor:3000/
       - TWEEK_API_URL=http://api/
       - AUTHORING_URL=http://authoring:3000/
@@ -84,7 +105,7 @@ services:
   smoke-tests:
     build:
       context: ../../
-      dockerfile: TweekApiSmokeTestDockerfile
+      dockerfile: TweekApiSmokeTest.Dockerfile
     container_name: smoke-tests
     depends_on: 
       - gateway

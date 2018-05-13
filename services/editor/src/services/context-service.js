@@ -1,3 +1,4 @@
+/* global process */
 import * as R from 'ramda';
 import fetch from '../utils/fetch';
 import * as TypesService from './types-service';
@@ -7,7 +8,7 @@ export const KEYS_IDENTITY = 'keys.';
 let contextSchema = {};
 
 export async function refreshSchema() {
-  const response = await fetch('/api/schemas');
+  const response = await fetch(`/schemas`);
   contextSchema = await response.json();
 }
 

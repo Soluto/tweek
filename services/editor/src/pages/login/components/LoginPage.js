@@ -2,8 +2,9 @@ import React from 'react';
 import { compose, withState, lifecycle } from 'recompose';
 import styled from 'react-emotion';
 
-import { getAuthProviders } from '../../../services/auth-service';
+import { getAuthProviders, configureOidc, signinRequest } from '../../../services/auth-service';
 import logoSrc from '../../../components/resources/logo.svg';
+import BasicAuthLoginButton from './BasicAuthLoginButton';
 
 const MainComponent = styled('div')`
   display: flex;
@@ -55,7 +56,7 @@ const LoginMessageSpan = styled('span')`
   margin-top: 250px;
 `;
 
-const LoginButton = styled('a')`
+const LoginButton = styled('div')`
   padding-top: 14px;
   padding-bottom: 17px;
   margin: 15px;
@@ -72,7 +73,7 @@ const LoginButton = styled('a')`
   text-decoration: none;
 `;
 
-const LoginPage = ({ authProviders, location }) => (
+const LoginPage = ({ authProviders, location: { state = {} } }) => (
   <MainComponent>
     <LeftPane>
       <WelcomeMessageSpan>Welcome to:</WelcomeMessageSpan>
@@ -81,10 +82,11 @@ const LoginPage = ({ authProviders, location }) => (
     <RightPane>
       <LoginMessageSpan>Login into Tweek using:</LoginMessageSpan>
       {authProviders.map(ap => (
-        <LoginButton key={ap.name} href={`${ap.url}${location.search}`} data-comp={ap.name}>
+        <LoginButton key={ap.id} onClick={() => ap.action({ state })} data-comp={ap.id}>
           {ap.name}
         </LoginButton>
       ))}
+      <BasicAuthLoginButton state={state} />
     </RightPane>
   </MainComponent>
 );
@@ -93,7 +95,18 @@ const enhancer = compose(
   withState('authProviders', 'setAuthProviders', []),
   lifecycle({
     componentWillMount() {
-      getAuthProviders().then(res => this.props.setAuthProviders(res));
+      getAuthProviders().then((res) => {
+        const providers = Object.keys(res).map(key => ({
+          id: key,
+          name: res[key].name,
+          action: state =>
+            signinRequest(
+              configureOidc(res[key].authority, res[key].client_id, res[key].scope),
+              state,
+            ),
+        }));
+        this.props.setAuthProviders(providers);
+      });
     },
   }),
 );

@@ -1,4 +1,4 @@
-/* global fetch */
+/* global fetch process console */
 
 import fetch from '../utils/fetch';
 let maxResults;
@@ -10,7 +10,7 @@ export const filterInternalKeys = async list =>
 const shouldShowInternalKeys = async () => {
   if (showInternalKeys === undefined) {
     try {
-      const response = await fetch('/api/editor-configuration/show_internal_keys');
+      const response = await fetch(`/values/@tweek/editor/show_internal_keys`);
       showInternalKeys = await response.json();
     } catch (err) {
       console.error("unable to get 'show_internal_keys' configuration", err);
@@ -25,7 +25,7 @@ const createSearchFunction = endpoint =>
 
     if (!maxResults) {
       try {
-        const response = await fetch('/api/editor-configuration/search/max_results');
+        const response = await fetch(`/values/@tweek/editor/search/max_results`);
         maxResults = (await response.json()) || 25;
       } catch (err) {
         console.error("unable to get 'search/max_results' configuration", err);
@@ -33,10 +33,7 @@ const createSearchFunction = endpoint =>
     }
 
     const response = await fetch(
-      `/api/${endpoint}?q=${encodeURIComponent(query)}&count=${maxResults || 25}`,
-      {
-        credentials: 'same-origin',
-      },
+      `/${endpoint}?q=${encodeURIComponent(query)}&count=${maxResults || 25}`,
     );
     return await response.json();
   };

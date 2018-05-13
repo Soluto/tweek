@@ -1,3 +1,4 @@
+/* global process */
 import { handleActions } from 'redux-actions';
 import * as R from 'ramda';
 import { push } from 'react-router-redux';
@@ -36,15 +37,15 @@ const KEY_CLOSED = 'KEY_CLOSED';
 let historySince;
 
 function updateRevisionHistory(keyName) {
-  return async function(dispatch) {
+  return async function (dispatch) {
     try {
       if (!historySince) {
-        const response = await fetch('/api/editor-configuration/history/since');
+        const response = await fetch(`/values/@tweek/editor/history/since`);
         historySince = (await response.json()) || '1 month ago';
       }
-      const revisionHistory = await (await fetch(
-        `/api/revision-history/${keyName}?since=${encodeURIComponent(historySince)}`,
-      )).json();
+      const revisionHistory = await fetch(
+        `/revision-history/${keyName}?since=${encodeURIComponent(historySince)}`,
+      ).then(res => res.json());
       dispatch({ type: KEY_REVISION_HISTORY, payload: { keyName, revisionHistory } });
     } catch (error) {
       dispatch(showError({ title: 'Failed to refresh revisionHistory', error }));
@@ -53,10 +54,10 @@ function updateRevisionHistory(keyName) {
 }
 
 function updateKeyDependents(keyName) {
-  return async function(dispatch) {
+  return async function (dispatch) {
     let dependents = {};
     try {
-      dependents = await (await fetch(`/api/dependents/${keyName}`)).json();
+      dependents = await fetch(`/dependents/${keyName}`).then(res => res.json());
     } catch (error) {
       dispatch(
         showError({
@@ -85,7 +86,7 @@ function createImplementation({ manifest, implementation }) {
 }
 
 export function changeKeyFormat(newFormat) {
-  return function(dispatch) {
+  return function (dispatch) {
     dispatch({ type: KEY_FORMAT_CHANGED, payload: newFormat });
   };
 }
@@ -96,7 +97,7 @@ const confirmAddKeyAlert = {
 };
 
 export const addKey = shouldShowConfirmationScreen =>
-  continueGuard(shouldShowConfirmationScreen, confirmAddKeyAlert, dispatch => {
+  continueGuard(shouldShowConfirmationScreen, confirmAddKeyAlert, (dispatch) => {
     // update the state to empty key in order to skip on leave hook
     dispatch({ type: KEY_OPENED, payload: createBlankJPadKey() });
     // navigate and set defaults
@@ -105,7 +106,7 @@ export const addKey = shouldShowConfirmationScreen =>
   });
 
 export function addKeyDetails() {
-  return async function(dispatch, getState) {
+  return async function (dispatch, getState) {
     const currentState = getState();
     if (!currentState.selectedKey.validation.isValid) {
       dispatch({ type: SHOW_KEY_VALIDATIONS });
@@ -117,7 +118,7 @@ export function addKeyDetails() {
 }
 
 export function openKey(key, { revision } = {}) {
-  return async function(dispatch) {
+  return async function (dispatch) {
     dispatch(downloadTags());
     try {
       await ContextService.refreshSchema();
@@ -137,7 +138,7 @@ export function openKey(key, { revision } = {}) {
     let keyData;
     const search = revision ? `?revision=${revision}` : '';
     try {
-      keyData = await (await fetch(`/api/keys/${key}${search}`)).json();
+      keyData = await fetch(`/keys/${key}${search}`).then(res => res.json());
     } catch (exp) {
       dispatch({ type: KEY_OPENED, payload: { key } });
       return;
@@ -179,8 +180,8 @@ async function performSave(dispatch, keyName, { manifest, implementation }) {
 
   let isSaveSucceeded;
   try {
-    await fetch(`/api/keys/${keyName}`, {
-      method: 'put',
+    await fetch(`/keys/${keyName}`, {
+      method: 'PUT',
       ...withJsonData({
         manifest,
         implementation: manifest.implementation.type === 'file' ? implementation.source : undefined,
@@ -202,7 +203,7 @@ const confirmArchievAlert = {
 };
 
 export function archiveKey(archived) {
-  return async function(dispatch, getState) {
+  return async function (dispatch, getState) {
     const { selectedKey: { key, local, remote } } = getState();
 
     if (!R.equals(local, remote) && !(await dispatch(showConfirm(confirmArchievAlert))).result)
@@ -223,7 +224,7 @@ export function archiveKey(archived) {
 }
 
 export function changeKeyValidationState(newValidationState) {
-  return function(dispatch, getState) {
+  return function (dispatch, getState) {
     const currentValidationState = getState().selectedKey.validation;
     if (R.path(['const', 'isValid'], currentValidationState) !== newValidationState) {
       const payload = R.assocPath(['const', 'isValid'], newValidationState, currentValidationState);
@@ -233,7 +234,7 @@ export function changeKeyValidationState(newValidationState) {
 }
 
 export function changeKeyValueType(keyValueType) {
-  return async function(dispatch, getState) {
+  return async function (dispatch, getState) {
     const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
     keyValueTypeValidation.isShowingHint = !keyValueTypeValidation.isValid;
 
@@ -253,7 +254,7 @@ export function changeKeyValueType(keyValueType) {
 }
 
 export function updateKeyPath(newKeyPath, validation) {
-  return async function(dispatch, getState) {
+  return async function (dispatch, getState) {
     const currentValidationState = getState().selectedKey.validation;
     const newValidation = {
       ...currentValidationState,
@@ -271,7 +272,7 @@ export function updateKeyName(newKeyName) {
 }
 
 export function saveKey() {
-  return async function(dispatch, getState) {
+  return async function (dispatch, getState) {
     const currentState = getState();
     const { selectedKey: { local, key } } = currentState;
     const isNewKey = !!local.key;
@@ -302,14 +303,14 @@ const deleteKeyAlert = (key, aliases = []) => ({
 });
 
 export function deleteKey() {
-  return async function(dispatch, getState) {
+  return async function (dispatch, getState) {
     const { selectedKey: { key, aliases } } = getState();
 
     if (!(await dispatch(showConfirm(deleteKeyAlert(key, aliases)))).result) return;
 
     dispatch(push('/keys'));
     try {
-      await fetch(`/api/keys/${key}`, {
+      await fetch(`/keys/${key}`, {
         method: 'delete',
         ...withJsonData(aliases),
       });
@@ -323,14 +324,14 @@ export function deleteKey() {
 }
 
 export function addAlias(alias) {
-  return async function(dispatch, getState) {
+  return async function (dispatch, getState) {
     const { selectedKey: { key } } = getState();
 
     const manifest = createBlankKeyManifest(alias, { type: 'alias', key });
 
     try {
-      await fetch(`/api/keys/${alias}`, {
-        method: 'put',
+      await fetch(`/keys/${alias}`, {
+        method: 'PUT',
         ...withJsonData({ manifest }),
       });
     } catch (error) {
@@ -349,11 +350,13 @@ export function addAlias(alias) {
 }
 
 export function deleteAlias(alias) {
-  return async function(dispatch, getState) {
+  return async function (dispatch, getState) {
     if (!(await dispatch(showConfirm(deleteKeyAlert(alias)))).result) return;
 
     try {
-      await fetch(`/api/keys/${alias}`, { method: 'delete' });
+      await fetch(`/keys/${alias}`, {
+        method: 'delete',
+      });
 
       dispatch(removeKeyFromList(alias));
       const { selectedKey: { key, usedBy, aliases } } = getState();
@@ -373,12 +376,12 @@ export function deleteAlias(alias) {
 const setValidationHintsVisibility = (validationState, isShown) => {
   Object.values(validationState)
     .filter(x => typeof x === 'object')
-    .map(x => {
+    .map((x) => {
       setValidationHintsVisibility(x, isShown);
       return x;
     })
     .filter(x => x.isValid === false)
-    .forEach(x => {
+    .forEach((x) => {
       x.isShowingHint = isShown;
       setValidationHintsVisibility(x, isShown);
     });
@@ -519,7 +522,7 @@ const handleKeyDependents = (state, { payload: { keyName, usedBy, aliases } }) =
   };
 };
 
-const handleKeyAddingDetails = state => {
+const handleKeyAddingDetails = (state) => {
   const implementation = {
     type: state.local.manifest.implementation.type,
     source: JSON.stringify(

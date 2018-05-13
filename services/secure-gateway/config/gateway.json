@@ -1,12 +1,18 @@
 {
+    "version": "0.1.0",
     "upstreams": {
         "api": "http://api",
-        "authoring": "http://authoring:3000"
+        "authoring": "http://authoring:3000",
+        "publishing": "http://publishing"
     },
     "security": {
         "enforce": true,
         "policyStorage": {
             "casbinModel": "/model.conf"
+        },
+        "auth": {
+            "providers": {
+            }
         }
     },
     "v1Hosts": {
@@ -19,6 +25,111 @@
             "authoring.localtest.me"
         ]
     },
+    "v2Routes": [{
+        "routePathPrefix": "/values",
+        "routeRegexp": "^/api/v2/values/([^\\?]+)(.*)$",
+        "upstreamPath": "/api/v1/keys/$1$2",
+        "methods": ["GET"],
+        "service": "api",
+        "userInfo": false
+    },    
+    {
+        "routePathPrefix": "/context",
+        "routeRegexp": "^/api/v2/context/([^\\?]+)(.*)$",
+        "upstreamPath": "/api/v1/context/$1$2",
+        "methods": ["GET", "POST", "DELETE"],
+        "service": "api",
+        "userInfo": false
+    },    
+
+    {
+        "routePathPrefix": "/keys",
+        "routeRegexp": "^/api/v2/keys/([^\\?]+)(.*)$",
+        "upstreamPath": "/api/keys/$1$2",
+        "methods": ["GET"],
+        "service": "authoring",
+        "userInfo": false
+    },
+    {
+        "routePathPrefix": "/keys",
+        "routeRegexp": "^/api/v2/keys/([^\\?]+)(.*)$",
+        "upstreamPath": "/api/keys/$1$2",
+        "methods": ["PUT", "DELETE"],
+        "service": "authoring",
+        "userInfo": true
+    },
+    {
+        "routePathPrefix": "/tags",
+        "routeRegexp": "^/api/v2/tags$",
+        "upstreamPath": "/api/tags",
+        "methods": ["GET"],
+        "service": "authoring",
+        "userInfo": false
+    },
+    {
+        "routePathPrefix": "/tags",
+        "routeRegexp": "^/api/v2/tags$",
+        "upstreamPath": "/api/tags",
+        "methods": ["PUT"],
+        "service": "authoring",
+        "userInfo": true
+    },
+    {
+        "routePathPrefix": "/schemas",
+        "routeRegexp": "^/api/v2/schemas$",
+        "upstreamPath": "/api/schemas",
+        "methods": ["GET"],
+        "service": "authoring",
+        "userInfo": false
+    },
+    {
+        "routePathPrefix": "/schemas",
+        "routeRegexp": "^/api/v2/schemas([^\\?]+)(.*)$",
+        "upstreamPath": "/api/schemas$1$2",
+        "methods": ["POST", "PATCH", "DELETE"],
+        "service": "authoring",
+        "userInfo": true
+    },
+    {
+        "routePathPrefix": "/manifests",
+        "routeRegexp": "^/api/v2/manifests(.*)$",
+        "upstreamPath": "/api/manifests$1",
+        "methods": ["GET"],
+        "service": "authoring",
+        "userInfo": false
+    },
+    {
+        "routePathPrefix": "/suggestions",
+        "routeRegexp": "^/api/v2/suggestions(.*)$",
+        "upstreamPath": "/api/suggestions$1",
+        "methods": ["GET"],
+        "service": "authoring",
+        "userInfo": false
+    },
+    {
+        "routePathPrefix": "/search",
+        "routeRegexp": "^/api/v2/search(.*)$",
+        "upstreamPath": "/api/search$1",
+        "methods": ["GET"],
+        "service": "authoring",
+        "userInfo": false
+    },
+    {
+        "routePathPrefix": "/dependents",
+        "routeRegexp": "^/api/v2/dependents/([^\\?]+)(.*)$",
+        "upstreamPath": "/api/dependents/$1$2",
+        "methods": ["GET"],
+        "service": "authoring",
+        "userInfo": false
+    },
+    {
+        "routePathPrefix": "/revision-history",
+        "routeRegexp": "^/api/v2/revision-history/([^\\?]+)(.*)$",
+        "upstreamPath": "/api/revision-history/$1$2",
+        "methods": ["GET"],
+        "service": "authoring",
+        "userInfo": false
+    }],
     "server": {
         "ports": [
             3000,

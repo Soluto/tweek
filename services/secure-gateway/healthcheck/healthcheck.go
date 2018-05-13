@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	_, err := http.Get("http://localhost/api/monitoring/isAlive")
+	_, err := http.Get("http://localhost/health")
 	if err != nil {
 		os.Exit(1)
 	}

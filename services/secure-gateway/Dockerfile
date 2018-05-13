@@ -1,5 +1,5 @@
 # -------- DEPENDENCIES -------- #
-FROM golang:1.9.2 as dependencies
+FROM golang:1.10.0-stretch as dependencies
 
 ARG DEP_VERSION=0.3.2
 
@@ -36,6 +36,9 @@ COPY --from=build /go/src/github.com/Soluto/tweek/services/secure-gateway/model.
 COPY --from=build /go/src/github.com/Soluto/tweek/services/secure-gateway/entry /entry
 COPY --from=build /go/src/github.com/Soluto/tweek/services/secure-gateway/hcheck /healthcheck
 COPY --from=dependencies /empty_tmp /tmp
+
+ENV CONFIGOR_ENV=production
+ENV CONFIG_FILE_PATH=/config/gateway.json
 
 HEALTHCHECK --interval=5s --timeout=2s --retries=10 CMD ["/healthcheck"]
 

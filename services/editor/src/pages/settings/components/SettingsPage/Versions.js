@@ -2,10 +2,23 @@ import React from 'react';
 import { mapPropsStream } from 'recompose';
 import { Observable } from 'rxjs';
 import * as R from 'ramda';
-import fetch from '../../../../utils/fetch';
+import styled from 'react-emotion';
+import { unAuthFetch } from '../../../../utils/fetch';
+import { version } from '../../../../../package.json';
+
+const ServiceStatus = styled('span')`
+  height: 10px;
+  width: 10px;
+  background-color: ${({ status }) => (status === 'healthy' ? 'lime' : 'red')};
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+`;
+
+const ServiceVersion = styled('span')``;
 
 const Versions = mapPropsStream(prop$ =>
-  Observable.defer(() => fetch('/api/system/service-version').then(x => x.json()))
+  Observable.defer(() => unAuthFetch('/version').then(x => x.json()))
     .map(services => ({ services }))
     .catch(ex => Observable.of({ error: ex })),
 )(({ services, error }) => (
@@ -15,11 +28,18 @@ const Versions = mapPropsStream(prop$ =>
       'failed to retrieve version'
     ) : (
       <ul>
-        {R.toPairs(services).map(([name, version]) => (
+        {R.toPairs(services).map(([name, { version, status }]) => (
           <li key={name}>
-            {name}: {version}
+            <ServiceStatus status={status} />
+            <ServiceVersion>
+              {name}: {version}
+            </ServiceVersion>
           </li>
         ))}
+        <li key="editor">
+          <ServiceStatus status={'healthy'} />
+          <ServiceVersion>{`editor: ${version}`}</ServiceVersion>
+        </li>
       </ul>
     )}
   </div>
