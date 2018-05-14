@@ -14,7 +14,6 @@ import (
 	"github.com/Soluto/tweek/services/secure-gateway/externalApps"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
-	"github.com/lestrrat-go/jwx/jwk"
 
 	"github.com/urfave/negroni"
 )
@@ -159,19 +158,4 @@ func getGitKey(keyEnv *appConfig.EnvInlineOrPath) (interface{}, error) {
 	}
 	rsaPublicKey := key.Public()
 	return rsaPublicKey, nil
-}
-
-func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
-	keySet, err := jwk.FetchHTTP(endpoint)
-	if err != nil {
-		return nil, err
-	}
-	k := keySet.LookupKeyID(keyID)
-	if len(k) == 0 {
-		return nil, fmt.Errorf("Key %s not found at %s", keyID, endpoint)
-	}
-	if len(k) > 1 {
-		return nil, fmt.Errorf("Unexpected error, more than 1 key %s found at %s", keyID, endpoint)
-	}
-	return k[0].Materialize()
 }
