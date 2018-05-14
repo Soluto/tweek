@@ -12,6 +12,7 @@ import (
 type keysetWithExpiration struct {
 	Keyset     *jwk.Set
 	Expiration time.Time
+	Timer      *time.Timer
 }
 
 var jwkCache sync.Map
@@ -58,5 +59,27 @@ func refreshEndpointKeys(endpoint string) error {
 		Expiration: expires,
 	})
 
+	ensureBackgroundTimer(endpoint, expires)
+
 	return nil
+}
+
+func ensureBackgroundTimer(endpoint string, expires time.Time) {
+	durationToNext := time.Since(expires) - time.Since(time.Now()) - time.Minute
+	if durationToNext < 0 {
+		refreshEndpointKeys(endpoint)
+		return
+	}
+
+	if keyset, found := jwkCache.Load(endpoint); found {
+		keySet := keyset.(keysetWithExpiration)
+		if keySet.Timer == nil {
+			keySet.Timer = time.NewTimer(durationToNext)
+			go func() {
+				<-keySet.Timer.C
+				refreshEndpointKeys(endpoint)
+				keySet.Timer = nil
+			}()
+		}
+	}
 }
