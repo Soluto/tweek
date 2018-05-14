@@ -14,19 +14,18 @@ type keysetWithExpiration struct {
 	Expiration time.Time
 }
 
-type jwkCacheData map[string]*keysetWithExpiration
-
-var jwkCache jwkCacheData
-
-var cacheLock sync.RWMutex
+var jwkCache sync.Map
 
 func init() {
-	jwkCache = jwkCacheData{}
+	jwkCache = sync.Map{}
 }
 
 func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
-	refreshEndpointKeys(endpoint)
-	k := jwkCache[endpoint].Keyset.LookupKeyID(keyID)
+	if err := refreshEndpointKeys(endpoint); err != nil {
+		return nil, err
+	}
+	keys, _ := jwkCache.Load(endpoint)
+	k := keys.(keysetWithExpiration).Keyset.LookupKeyID(keyID)
 	if len(k) == 0 {
 		return nil, fmt.Errorf("Key %s not found at %s", keyID, endpoint)
 	}
@@ -37,15 +36,9 @@ func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
 }
 
 func refreshEndpointKeys(endpoint string) error {
-	cacheLock.RLock()
-	if _, found := jwkCache[endpoint]; found && jwkCache[endpoint].Expiration.After(time.Now()) {
-		cacheLock.RUnlock()
+	if keyset, found := jwkCache.Load(endpoint); found && keyset.(keysetWithExpiration).Expiration.After(time.Now()) {
 		return nil
 	}
-	cacheLock.RUnlock()
-
-	cacheLock.Lock()
-	defer cacheLock.Unlock()
 
 	response, err := http.Head(endpoint)
 	if err != nil {
@@ -60,10 +53,10 @@ func refreshEndpointKeys(endpoint string) error {
 		expires = time.Now().Add(time.Hour)
 	}
 
-	jwkCache[endpoint] = &keysetWithExpiration{
+	jwkCache.Store(endpoint, keysetWithExpiration{
 		Keyset:     keySet,
 		Expiration: expires,
-	}
+	})
 
 	return nil
 }
