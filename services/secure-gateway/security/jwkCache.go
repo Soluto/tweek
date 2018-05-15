@@ -9,24 +9,30 @@ import (
 	"github.com/lestrrat-go/jwx/jwk"
 )
 
-type keysetWithExpiration struct {
+type keysetWithExtra struct {
 	Keyset     *jwk.Set
 	Expiration time.Time
 	Timer      *time.Timer
+	Mutex      sync.Mutex
 }
 
-var jwkCache sync.Map
+var jwkCache map[string]keysetWithExtra
 
 func init() {
-	jwkCache = sync.Map{}
+	jwkCache = map[string]keysetWithExtra{}
 }
 
 func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
-	if err := refreshEndpointKeys(endpoint, keyID); err != nil {
+	err := refreshEndpointKeys(endpoint, keyID, func(s string) {
+		performRefresh(s)
+		ensureBackgroundTimer(s)
+	})
+	if err != nil {
 		return nil, err
 	}
-	keys, _ := jwkCache.Load(endpoint)
-	k := keys.(keysetWithExpiration).Keyset.LookupKeyID(keyID)
+
+	keys, _ := jwkCache[endpoint]
+	k := keys.Keyset.LookupKeyID(keyID)
 	if len(k) == 0 {
 		return nil, fmt.Errorf("Key %s not found at %s", keyID, endpoint)
 	}
@@ -36,21 +42,23 @@ func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
 	return k[0].Materialize()
 }
 
-func refreshEndpointKeys(endpoint string, kid string) error {
-	var keyset interface{}
+func refreshEndpointKeys(endpoint string, kid string, refresh func(string)) error {
+	var keyset keysetWithExtra
 	var found bool
-	if keyset, found = jwkCache.Load(endpoint); found && keyset.(keysetWithExpiration).Expiration.After(time.Now()) {
+	if keyset, found = jwkCache[endpoint]; found && keyset.Expiration.After(time.Now()) {
 		return nil
 	}
 	if !found {
-		performRefresh(endpoint)
-		ensureBackgroundTimer(endpoint)
+		keyset.Mutex.Lock()
+		refresh(endpoint)
+		keyset.Mutex.Unlock()
 		return nil
 	}
-	k := keyset.(keysetWithExpiration).Keyset.LookupKeyID(kid)
+	k := keyset.Keyset.LookupKeyID(kid)
 	if len(k) == 0 {
-		performRefresh(endpoint)
-		ensureBackgroundTimer(endpoint)
+		keyset.Mutex.Lock()
+		refresh(endpoint)
+		keyset.Mutex.Unlock()
 	}
 
 	return nil
@@ -70,27 +78,26 @@ func performRefresh(endpoint string) error {
 		expires = time.Now().Add(time.Hour)
 	}
 
-	jwkCache.Store(endpoint, keysetWithExpiration{
+	jwkCache[endpoint] = keysetWithExtra{
 		Keyset:     keySet,
 		Expiration: expires,
-	})
+	}
 	return nil
 }
 
 func ensureBackgroundTimer(endpoint string) {
-	if keyset, found := jwkCache.Load(endpoint); found {
-		keySet := keyset.(keysetWithExpiration)
-		durationToNext := time.Since(keySet.Expiration) - time.Since(time.Now()) - time.Minute
+	if keyset, found := jwkCache[endpoint]; found {
+		durationToNext := time.Since(keyset.Expiration) - time.Since(time.Now()) - time.Minute
 		if durationToNext < 0 {
 			performRefresh(endpoint)
 			return
 		}
-		if keySet.Timer == nil {
-			keySet.Timer = time.NewTimer(durationToNext)
+		if keyset.Timer == nil {
+			keyset.Timer = time.NewTimer(durationToNext)
 			go func() {
-				<-keySet.Timer.C
+				<-keyset.Timer.C
 				performRefresh(endpoint)
-				keySet.Timer = nil
+				keyset.Timer = nil
 			}()
 		}
 	}
