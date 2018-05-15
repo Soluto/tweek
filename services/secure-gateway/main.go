@@ -70,7 +70,9 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	authenticationMiddleware := security.AuthenticationMiddleware(&config.Security, auditor)
 	authorizationMiddleware := security.AuthorizationMiddleware(enforcer, auditor)
 
-	middleware := negroni.New(negroni.NewRecovery())
+	recovery := negroni.NewRecovery()
+	recovery.PrintStack = false
+	middleware := negroni.New(recovery)
 	middleware.Use(authenticationMiddleware)
 	middleware.Use(authorizationMiddleware)
 
