@@ -22,7 +22,7 @@ func init() {
 }
 
 func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
-	if err := refreshEndpointKeys(endpoint); err != nil {
+	if err := refreshEndpointKeys(endpoint, keyID); err != nil {
 		return nil, err
 	}
 	keys, _ := jwkCache.Load(endpoint)
@@ -36,11 +36,27 @@ func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
 	return k[0].Materialize()
 }
 
-func refreshEndpointKeys(endpoint string) error {
-	if keyset, found := jwkCache.Load(endpoint); found && keyset.(keysetWithExpiration).Expiration.After(time.Now()) {
+func refreshEndpointKeys(endpoint string, kid string) error {
+	var keyset interface{}
+	var found bool
+	if keyset, found = jwkCache.Load(endpoint); found && keyset.(keysetWithExpiration).Expiration.After(time.Now()) {
 		return nil
 	}
+	if !found {
+		performRefresh(endpoint)
+		ensureBackgroundTimer(endpoint)
+		return nil
+	}
+	k := keyset.(keysetWithExpiration).Keyset.LookupKeyID(kid)
+	if len(k) == 0 {
+		performRefresh(endpoint)
+		ensureBackgroundTimer(endpoint)
+	}
 
+	return nil
+}
+
+func performRefresh(endpoint string) error {
 	response, err := http.Head(endpoint)
 	if err != nil {
 		return err
@@ -58,26 +74,22 @@ func refreshEndpointKeys(endpoint string) error {
 		Keyset:     keySet,
 		Expiration: expires,
 	})
-
-	ensureBackgroundTimer(endpoint, expires)
-
 	return nil
 }
 
-func ensureBackgroundTimer(endpoint string, expires time.Time) {
-	durationToNext := time.Since(expires) - time.Since(time.Now()) - time.Minute
-	if durationToNext < 0 {
-		refreshEndpointKeys(endpoint)
-		return
-	}
-
+func ensureBackgroundTimer(endpoint string) {
 	if keyset, found := jwkCache.Load(endpoint); found {
 		keySet := keyset.(keysetWithExpiration)
+		durationToNext := time.Since(keySet.Expiration) - time.Since(time.Now()) - time.Minute
+		if durationToNext < 0 {
+			performRefresh(endpoint)
+			return
+		}
 		if keySet.Timer == nil {
 			keySet.Timer = time.NewTimer(durationToNext)
 			go func() {
 				<-keySet.Timer.C
-				refreshEndpointKeys(endpoint)
+				performRefresh(endpoint)
 				keySet.Timer = nil
 			}()
 		}
