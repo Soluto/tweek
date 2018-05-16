@@ -4,6 +4,7 @@ p, alice2@security.test, user=self:/api/v2/values/*, read, allow
 p, bob@security.test, /api/v2/values/*, read, deny
 p, role_users, user=self:user.*, *, allow
 p, bob@security.test, user=self:*, write, allow
+p, bob@security.test, user=self:user.prop, write, deny
 p, admin, *:*, *, allow
 
 g, alice@security.test, role_users

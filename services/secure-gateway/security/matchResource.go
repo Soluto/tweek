@@ -68,7 +68,8 @@ func matchWithWildcards(pattern, input string) bool {
 	}
 
 	// no wildcards
-	return pattern == input
+	result := pattern == input
+	return result
 }
 
 func parseResource(resource string) (result PolicyResource, err error) {

@@ -77,7 +77,7 @@ func TestAuthorizationMiddleware(t *testing.T) {
 		{
 			name: "Deny deleting context property for self",
 			args: args{method: "DELETE", path: "/api/v2/context/user/bob@security.test/prop", user: "bob@security.test"},
-			want: http.StatusOK,
+			want: http.StatusUnauthorized,
 		},
 	}
 
