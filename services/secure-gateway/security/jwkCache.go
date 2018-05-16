@@ -26,10 +26,15 @@ func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
 	return k[0].Materialize()
 }
 
-func loadAllEndpoints(endpoints []string) {
+// LoadAllEndpoints loads all the endpoints
+func LoadAllEndpoints(endpoints []string) {
 	for _, ep := range endpoints {
 		loadEndpoint(ep)
 	}
+}
+
+// RefreshEndpoints refreshes endpoints
+func RefreshEndpoints(endpoints []string) {
 	ticker := time.NewTicker(time.Hour * 24)
 	go func() {
 		for true {

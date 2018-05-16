@@ -52,7 +52,8 @@ func AuthenticationMiddleware(configuration *appConfig.Security, auditor audit.A
 	for _, issuer := range configuration.Auth.Providers {
 		jwksEndpoints = append(jwksEndpoints, issuer.JWKSURL)
 	}
-	loadAllEndpoints(jwksEndpoints)
+	LoadAllEndpoints(jwksEndpoints)
+	RefreshEndpoints(jwksEndpoints)
 	return negroni.HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		info, err := userInfoFromRequest(r, configuration)
 		if err != nil {
