@@ -48,6 +48,11 @@ func (u *userInfo) Claims() jwt.StandardClaims { return u.StandardClaims }
 
 // AuthenticationMiddleware enriches the request's context with the user info from JWT
 func AuthenticationMiddleware(configuration *appConfig.Security, auditor audit.Auditor) negroni.HandlerFunc {
+	var jwksEndpoints []string
+	for _, issuer := range configuration.Auth.Providers {
+		jwksEndpoints = append(jwksEndpoints, issuer.JWKSURL)
+	}
+	loadAllEndpoints(jwksEndpoints)
 	return negroni.HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		info, err := userInfoFromRequest(r, configuration)
 		if err != nil {
