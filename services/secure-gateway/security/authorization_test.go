@@ -41,42 +41,42 @@ func TestAuthorizationMiddleware(t *testing.T) {
 	}{
 		{
 			name: "Allow by user",
-			args: args{method: "GET", path: "/values/key1", user: "alice@security.test"},
+			args: args{method: "GET", path: "/api/v2/values/key1", user: "alice@security.test"},
 			want: http.StatusOK,
 		},
 		{
 			name: "Deny by user",
-			args: args{method: "GET", path: "/values/key1", user: "bob@security.test"},
+			args: args{method: "GET", path: "/api/v2/values/key1", user: "bob@security.test"},
 			want: http.StatusUnauthorized,
 		},
 		{
 			name: "Allow calculating values with specific context",
-			args: args{method: "GET", path: "/values/key2?user=alice2@security.test", user: "alice2@security.test"},
+			args: args{method: "GET", path: "/api/v2/values/key2?user=alice2@security.test", user: "alice2@security.test"},
 			want: http.StatusOK,
 		},
 		{
 			name: "Allow reading context for self",
-			args: args{method: "GET", path: "/context/user/alice2@security.test", user: "alice2@security.test"},
+			args: args{method: "GET", path: "/api/v2/context/user/alice2@security.test", user: "alice2@security.test"},
 			want: http.StatusOK,
 		},
 		{
 			name: "Allow writing context for self",
-			args: args{method: "POST", path: "/context/user/bob@security.test", user: "bob@security.test"},
+			args: args{method: "POST", path: "/api/v2/context/user/bob@security.test", user: "bob@security.test"},
 			want: http.StatusOK,
 		},
 		{
 			name: "Deny writing context for someone else",
-			args: args{method: "POST", path: "/context/user/bob@security.test", user: "alice@security.test"},
+			args: args{method: "POST", path: "/api/v2/context/user/bob@security.test", user: "alice@security.test"},
 			want: http.StatusUnauthorized,
 		},
 		{
 			name: "Deny deleting context property for someone else",
-			args: args{method: "DELETE", path: "/context/user/bob@security.test/prop", user: "alice@security.test"},
+			args: args{method: "DELETE", path: "/api/v2/context/user/bob@security.test/prop", user: "alice@security.test"},
 			want: http.StatusUnauthorized,
 		},
 		{
 			name: "Deny deleting context property for self",
-			args: args{method: "DELETE", path: "/context/user/bob@security.test/prop", user: "bob@security.test"},
+			args: args{method: "DELETE", path: "/api/v2/context/user/bob@security.test/prop", user: "bob@security.test"},
 			want: http.StatusOK,
 		},
 	}

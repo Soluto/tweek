@@ -24,20 +24,20 @@ func extractActionFromRequest(r *http.Request) (act string, err error) {
 	case r.Method == "PATCH":
 		act = "write"
 		break
-	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/manifests"):
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/manifests"):
 		fallthrough
-	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/keys"):
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/keys"):
 		act = "list"
 		break
-	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/search-index"):
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/search-index"):
 		act = "get search index"
 		break
-	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/search"):
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/search"):
 		fallthrough
-	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/suggestions"):
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/suggestions"):
 		act = "search"
 		break
-	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/revision-history"):
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/revision-history"):
 		act = "history"
 		break
 	default:
@@ -48,7 +48,7 @@ func extractActionFromRequest(r *http.Request) (act string, err error) {
 }
 
 const (
-	contextIdentityType = iota + 1
+	contextIdentityType = iota
 	contextIdentityID
 	contextProp
 )
@@ -76,7 +76,7 @@ func extractContextFromContextRequest(r *http.Request, u UserInfo) (ctx PolicyRe
 	ctx = PolicyResource{Contexts: map[string]string{}}
 	path := r.URL.EscapedPath()
 
-	segments := strings.Split(path, "/")[1:] // skip the first entry, because it's empty
+	segments := strings.Split(strings.Replace(path, "/api/v2/context/", "", 1), "/")
 	identityType, identityID := segments[contextIdentityType], segments[contextIdentityID]
 	identityID = normalizeIdentityID(identityID, u)
 	method := strings.ToUpper(r.Method)
@@ -119,9 +119,9 @@ func extractContextsFromOtherRequest(r *http.Request, u UserInfo) (ctxs PolicyRe
 
 func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
 	path := r.URL.EscapedPath()
-	if strings.HasPrefix(path, "/context") {
+	if strings.HasPrefix(path, "/api/v2/context") {
 		return extractContextFromContextRequest(r, u)
-	} else if strings.HasPrefix(path, "/values") {
+	} else if strings.HasPrefix(path, "/api/v2/values") {
 		return extractContextsFromValuesRequest(r, u)
 	} else {
 		return extractContextsFromOtherRequest(r, u)
