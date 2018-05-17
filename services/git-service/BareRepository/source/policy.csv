@@ -10,6 +10,10 @@ p, 1, /api/v2/dependents/*, *, allow
 p, 1, /api/v2/suggestions, *, allow
 p, 1, /api/v2/search, *, allow
 p, 1, /api/v2/context/*, *, allow
+p, 1, user=*:*, *, allow
+p, 1, other=*:*, *, allow
+p, 1, delete_property_test=*:*, *, allow
+p, 1, edit_property_test=*:*, *, allow
 
 p, 00000000-0000-0000-0000-000000000000, /api/v2/values/*, *, allow
 p, 00000000-0000-0000-0000-000000000000, /api/v2/keys/*, *, allow
@@ -20,4 +24,7 @@ p, 00000000-0000-0000-0000-000000000000, /api/v2/revision-history/*, *, allow
 p, 00000000-0000-0000-0000-000000000000, /api/v2/dependents/*, *, allow
 p, 00000000-0000-0000-0000-000000000000, /api/v2/suggestions, *, allow
 p, 00000000-0000-0000-0000-000000000000, /api/v2/search, *, allow
-p, 00000000-0000-0000-0000-000000000000, /api/v2/context/*, *, allow
+p, 00000000-0000-0000-0000-000000000000, user=*:*, *, allow
+p, 00000000-0000-0000-0000-000000000000, other=*:*, *, allow
+p, 00000000-0000-0000-0000-000000000000, delete_property_test=*:*, *, allow
+p, 00000000-0000-0000-0000-000000000000, edit_property_test=*:*, *, allow
