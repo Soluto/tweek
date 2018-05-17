@@ -26,7 +26,7 @@ func extractActionFromRequest(r *http.Request) (act string, err error) {
 		break
 	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/manifests"):
 		fallthrough
-	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/keys"):
+	case r.Method == "GET" && uri.Path == "/api/v2/keys":
 		act = "list"
 		break
 	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/search-index"):

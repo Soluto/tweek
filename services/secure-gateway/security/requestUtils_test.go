@@ -28,6 +28,26 @@ func TestExtractFromRequest(t *testing.T) {
 		wantErr error
 	}{
 		{
+			name: "List keys request",
+			args: args{
+				r: createTestRequest("GET", "https://gateway.tweek.com/api/v2/keys", userInfo),
+			},
+			wantObj: PolicyResource{Item: "/api/v2/keys", Contexts: map[string]string{}},
+			wantSub: "A b sub",
+			wantAct: "list",
+			wantErr: nil,
+		},
+		{
+			name: "Read some key request",
+			args: args{
+				r: createTestRequest("GET", "https://gateway.tweek.com/api/v2/keys/some/key", userInfo),
+			},
+			wantObj: PolicyResource{Item: "/api/v2/keys/some/key", Contexts: map[string]string{}},
+			wantSub: "A b sub",
+			wantAct: "read",
+			wantErr: nil,
+		},
+		{
 			name: "Write request",
 			args: args{
 				r: createTestRequest("POST", "https://gateway.tweek.com/api/v2/keys", userInfo),
