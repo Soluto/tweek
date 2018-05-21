@@ -7,7 +7,7 @@ We'd like to be able to represent tweek resources in a form similar to URI or UR
 RESOURCE = CONTEXT_DEFFINITIONS ":" PROP_OR_KEY_DEFFINITION
 CONTEXT_DEFFINITIONS = CONTEXT_DEFFINITION | CONTEXT_DEFFINITIONS "+" CONTEXT_DEFFINITION
 CONTEXT_DEFFINITION = CONTEXT_TYPE "=" CONTEXT_ID
-PROP_OR_KEY_DEFFINITION = CONTEXT_TYPE "." PROP_NAME | "keys." KEY_PATH "*" ? | "repo.keys/" KEY_PATH "*" ?
+PROP_OR_KEY_DEFFINITION = CONTEXT_TYPE "." PROP_NAME | "keys." KEY_PATH "*" ? | "repo.keys/" KEY_PATH "*" ? | "repo.tags" | "repo.schemas"
 PROP_NAME = [a-zA-Z]
 KEY_PATH = [a-z0-9_/]
 CONTEXT_TYPE = [a-z]
