@@ -3,6 +3,9 @@ p, test@tweek.com, /api/v2/values/*, *, allow
 p, 1, keys.*, *, allow
 p, 1, repo.keys/*, write, allow
 p, 1, repo, read, allow
+p, 1, repo, write, allow
+p, 1, repo.tags, write, allow
+p, 1, repo.schemas, write, allow
 p, 1, user=*:*, *, allow
 p, 1, other=*:*, *, allow
 p, 1, delete_property_test=*:*, *, allow
@@ -11,6 +14,7 @@ p, 1, edit_property_test=*:*, *, allow
 p, 00000000-0000-0000-0000-000000000000, keys.*, *, allow
 p, 00000000-0000-0000-0000-000000000000, repo.keys/*, write, allow
 p, 00000000-0000-0000-0000-000000000000, repo, read, allow
+p, 00000000-0000-0000-0000-000000000000, repo, write, allow
 p, 00000000-0000-0000-0000-000000000000, user=*:*, *, allow
 p, 00000000-0000-0000-0000-000000000000, other=*:*, *, allow
 p, 00000000-0000-0000-0000-000000000000, delete_property_test=*:*, *, allow

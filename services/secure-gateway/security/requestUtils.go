@@ -135,6 +135,28 @@ func extractContextsFromOtherRequest(r *http.Request, u UserInfo) (ctxs PolicyRe
 	return
 }
 
+func extractContextsFromTagsRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
+	ctxs = PolicyResource{Contexts: map[string]string{}}
+	if r.Method == "GET" {
+		ctxs.Item = "repo"
+	} else {
+		ctxs.Item = "repo.tags"
+	}
+
+	return
+}
+
+func extractContextsFromSchemasRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
+	ctxs = PolicyResource{Contexts: map[string]string{}}
+	if r.Method == "GET" {
+		ctxs.Item = "repo.schemas"
+	} else {
+		ctxs.Item = "repo"
+	}
+
+	return
+}
+
 func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
 	path := r.URL.EscapedPath()
 	if strings.HasPrefix(path, "/api/v2/context") {
@@ -154,7 +176,7 @@ func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs PolicyResourc
 	} else if strings.HasPrefix(path, "/api/v2/search-index") {
 		return extractContextsFromOtherRequest(r, u)
 	} else if strings.HasPrefix(path, "/api/v2/tags") {
-		return extractContextsFromOtherRequest(r, u)
+		return extractContextsFromTagsRequest(r, u)
 	} else if strings.HasPrefix(path, "/api/v2/revision-history") {
 		return extractContextsFromOtherRequest(r, u)
 	} else if strings.HasPrefix(path, "/api/v2/schemas") {
