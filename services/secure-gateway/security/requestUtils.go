@@ -38,6 +38,8 @@ func extractActionFromRequest(r *http.Request) (act string, err error) {
 		fallthrough
 	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/dependents"):
 		fallthrough
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/schemas"):
+		fallthrough
 	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/tags"):
 		fallthrough
 	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/revision-history"):
@@ -154,6 +156,8 @@ func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs PolicyResourc
 	} else if strings.HasPrefix(path, "/api/v2/tags") {
 		return extractContextsFromOtherRequest(r, u)
 	} else if strings.HasPrefix(path, "/api/v2/revision-history") {
+		return extractContextsFromOtherRequest(r, u)
+	} else if strings.HasPrefix(path, "/api/v2/schemas") {
 		return extractContextsFromOtherRequest(r, u)
 	}
 	err = fmt.Errorf("Invalid request path %s", path)
