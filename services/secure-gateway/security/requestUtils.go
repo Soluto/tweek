@@ -137,10 +137,10 @@ func extractContextsFromOtherRequest(r *http.Request, u UserInfo) (ctxs PolicyRe
 
 func extractContextsFromTagsRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
 	ctxs = PolicyResource{Contexts: map[string]string{}}
-	if r.Method == "GET" {
-		ctxs.Item = "repo"
-	} else {
+	if r.Method != "GET" {
 		ctxs.Item = "repo.tags"
+	} else {
+		ctxs.Item = "repo"
 	}
 
 	return
@@ -148,7 +148,7 @@ func extractContextsFromTagsRequest(r *http.Request, u UserInfo) (ctxs PolicyRes
 
 func extractContextsFromSchemasRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
 	ctxs = PolicyResource{Contexts: map[string]string{}}
-	if r.Method == "GET" {
+	if r.Method != "GET" {
 		ctxs.Item = "repo.schemas"
 	} else {
 		ctxs.Item = "repo"
@@ -180,7 +180,7 @@ func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs PolicyResourc
 	} else if strings.HasPrefix(path, "/api/v2/revision-history") {
 		return extractContextsFromOtherRequest(r, u)
 	} else if strings.HasPrefix(path, "/api/v2/schemas") {
-		return extractContextsFromOtherRequest(r, u)
+		return extractContextsFromSchemasRequest(r, u)
 	}
 	err = fmt.Errorf("Invalid request path %s", path)
 	return

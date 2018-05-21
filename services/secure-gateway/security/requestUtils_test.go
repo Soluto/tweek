@@ -134,6 +134,14 @@ func Test_extractContextsFromRequest(t *testing.T) {
 		wantErr  bool
 	}{
 		{
+			name: "Save schemas request",
+			args: args{
+				r: createRequest("POST", "/api/v2/schemas/device", "alice"),
+			},
+			wantCtxs: PolicyResource{Item: "repo.schemas", Contexts: map[string]string{}},
+			wantErr:  false,
+		},
+		{
 			name: "Contexts for values request",
 			args: args{
 				r: createRequest("GET", "/api/v2/values/key1?user=alice", "alice"),
