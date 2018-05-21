@@ -24,31 +24,36 @@ func extractActionFromRequest(r *http.Request) (act string, err error) {
 	case r.Method == "PATCH":
 		act = "write"
 		break
-	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/manifests"):
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/values"):
 		fallthrough
-	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/keys"):
-		act = "list"
-		break
-	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/search-index"):
-		act = "get search index"
-		break
-	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/search"):
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/keys"):
 		fallthrough
-	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/suggestions"):
-		act = "search"
-		break
-	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/revision-history"):
-		act = "history"
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/manifests"):
+		fallthrough
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/search-index"):
+		fallthrough
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/search"):
+		fallthrough
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/suggestions"):
+		fallthrough
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/dependents"):
+		fallthrough
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/schemas"):
+		fallthrough
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/tags"):
+		fallthrough
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/revision-history"):
+		act = "read"
 		break
 	default:
-		act = "read"
+		act = "invalid"
 		break
 	}
 	return
 }
 
 const (
-	contextIdentityType = iota + 1
+	contextIdentityType = iota
 	contextIdentityID
 	contextProp
 )
@@ -60,7 +65,7 @@ func extractContextsFromValuesRequest(r *http.Request, u UserInfo) (ctxs PolicyR
 	uri := r.URL
 
 	ctxs = PolicyResource{Contexts: map[string]string{}}
-	ctxs.Item = uri.EscapedPath()
+	ctxs.Item = strings.Replace(uri.EscapedPath(), "/api/v2/values/", "keys.", 1)
 	for key, value := range uri.Query() {
 		// checking for special chars - these are not context identity names
 		if !strings.ContainsAny(key, "$.") {
@@ -72,11 +77,24 @@ func extractContextsFromValuesRequest(r *http.Request, u UserInfo) (ctxs PolicyR
 	return
 }
 
+func extractContextsFromKeysRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
+	uri := r.URL
+
+	ctxs = PolicyResource{Contexts: map[string]string{}}
+	if r.Method == "GET" {
+		ctxs.Item = "repo"
+		return
+	}
+	ctxs.Item = strings.Replace(uri.EscapedPath(), "/api/v2/keys/", "repo.keys/", 1)
+
+	return
+}
+
 func extractContextFromContextRequest(r *http.Request, u UserInfo) (ctx PolicyResource, err error) {
 	ctx = PolicyResource{Contexts: map[string]string{}}
 	path := r.URL.EscapedPath()
 
-	segments := strings.Split(path, "/")[1:] // skip the first entry, because it's empty
+	segments := strings.Split(strings.Replace(path, "/api/v2/context/", "", 1), "/")
 	identityType, identityID := segments[contextIdentityType], segments[contextIdentityID]
 	identityID = normalizeIdentityID(identityID, u)
 	method := strings.ToUpper(r.Method)
@@ -112,20 +130,59 @@ func normalizeIdentityID(id string, u UserInfo) string {
 
 func extractContextsFromOtherRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
 	ctxs = PolicyResource{Contexts: map[string]string{}}
-	ctxs.Item = r.URL.EscapedPath()
+	ctxs.Item = "repo"
 
+	return
+}
+
+func extractResourceFromRepoRequest(r *http.Request, u UserInfo, kind string) (ctxs PolicyResource, err error) {
+	ctxs = PolicyResource{Contexts: map[string]string{}}
+	switch {
+	case r.Method == "GET":
+		ctxs.Item = "repo"
+		break
+	case r.Method == "POST":
+		fallthrough
+	case r.Method == "PUT":
+		fallthrough
+	case r.Method == "PATCH":
+		fallthrough
+	case r.Method == "DELETE":
+		ctxs.Item = "repo." + kind
+		break
+	default:
+		err = fmt.Errorf("Invalid method %s for %s", r.Method, kind)
+	}
 	return
 }
 
 func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
 	path := r.URL.EscapedPath()
-	if strings.HasPrefix(path, "/context") {
+	if strings.HasPrefix(path, "/api/v2/context") {
 		return extractContextFromContextRequest(r, u)
-	} else if strings.HasPrefix(path, "/values") {
+	} else if strings.HasPrefix(path, "/api/v2/values") {
 		return extractContextsFromValuesRequest(r, u)
-	} else {
+	} else if strings.HasPrefix(path, "/api/v2/keys") {
+		return extractContextsFromKeysRequest(r, u)
+	} else if strings.HasPrefix(path, "/api/v2/manifests") {
 		return extractContextsFromOtherRequest(r, u)
+	} else if strings.HasPrefix(path, "/api/v2/suggestions") {
+		return extractContextsFromOtherRequest(r, u)
+	} else if strings.HasPrefix(path, "/api/v2/dependents") {
+		return extractContextsFromOtherRequest(r, u)
+	} else if strings.HasPrefix(path, "/api/v2/search") {
+		return extractContextsFromOtherRequest(r, u)
+	} else if strings.HasPrefix(path, "/api/v2/search-index") {
+		return extractContextsFromOtherRequest(r, u)
+	} else if strings.HasPrefix(path, "/api/v2/tags") {
+		return extractResourceFromRepoRequest(r, u, "tags")
+	} else if strings.HasPrefix(path, "/api/v2/revision-history") {
+		return extractContextsFromOtherRequest(r, u)
+	} else if strings.HasPrefix(path, "/api/v2/schemas") {
+		return extractResourceFromRepoRequest(r, u, "schemas")
 	}
+	err = fmt.Errorf("Invalid request path %s", path)
+	return
 }
 
 // ExtractFromRequest extracts object and action from request

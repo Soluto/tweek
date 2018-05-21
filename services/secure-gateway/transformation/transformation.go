@@ -50,11 +50,6 @@ func createTransformMiddleware(routeConfig appConfig.V2Route, upstreams map[stri
 			setQueryParams(r.Context(), newURL, security.UserInfoKey)
 		}
 
-		log.Println("===========================================")
-		log.Printf("Incoming request: %s\n", r.URL)
-		log.Printf("Outgoing request: %s\n", newURL)
-		log.Println("===========================================")
-
 		r.URL = newURL
 		next(rw, r)
 	}

@@ -1,9 +1,10 @@
-p, alice@security.test, /values/*, read, allow
-p, alice@security.test, user=self:/values/*, read, allow
-p, alice2@security.test, user=self:/values/*, read, allow
-p, bob@security.test, /values/*, read, deny
+p, alice@security.test, keys.*, read, allow
+p, alice@security.test, user=self:keys.*, read, allow
+p, alice2@security.test, user=self:keys.*, read, allow
+p, bob@security.test, keys.*, read, deny
 p, role_users, user=self:user.*, *, allow
 p, bob@security.test, user=self:*, write, allow
+p, bob@security.test, user=self:user.prop, write, deny
 p, admin, *:*, *, allow
 
 g, alice@security.test, role_users
