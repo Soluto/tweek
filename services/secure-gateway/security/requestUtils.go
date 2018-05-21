@@ -135,25 +135,24 @@ func extractContextsFromOtherRequest(r *http.Request, u UserInfo) (ctxs PolicyRe
 	return
 }
 
-func extractContextsFromTagsRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
+func extractResourceFromRepoRequest(r *http.Request, u UserInfo, kind string) (ctxs PolicyResource, err error) {
 	ctxs = PolicyResource{Contexts: map[string]string{}}
-	if r.Method != "GET" {
-		ctxs.Item = "repo.tags"
-	} else {
+	switch {
+	case r.Method == "GET":
 		ctxs.Item = "repo"
+		break
+	case r.Method == "POST":
+		fallthrough
+	case r.Method == "PUT":
+		fallthrough
+	case r.Method == "PATCH":
+		fallthrough
+	case r.Method == "DELETE":
+		ctxs.Item = "repo." + kind
+		break
+	default:
+		err = fmt.Errorf("Invalid method %s for %s", r.Method, kind)
 	}
-
-	return
-}
-
-func extractContextsFromSchemasRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
-	ctxs = PolicyResource{Contexts: map[string]string{}}
-	if r.Method != "GET" {
-		ctxs.Item = "repo.schemas"
-	} else {
-		ctxs.Item = "repo"
-	}
-
 	return
 }
 
@@ -176,11 +175,11 @@ func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs PolicyResourc
 	} else if strings.HasPrefix(path, "/api/v2/search-index") {
 		return extractContextsFromOtherRequest(r, u)
 	} else if strings.HasPrefix(path, "/api/v2/tags") {
-		return extractContextsFromTagsRequest(r, u)
+		return extractResourceFromRepoRequest(r, u, "tags")
 	} else if strings.HasPrefix(path, "/api/v2/revision-history") {
 		return extractContextsFromOtherRequest(r, u)
 	} else if strings.HasPrefix(path, "/api/v2/schemas") {
-		return extractContextsFromSchemasRequest(r, u)
+		return extractResourceFromRepoRequest(r, u, "schemas")
 	}
 	err = fmt.Errorf("Invalid request path %s", path)
 	return
