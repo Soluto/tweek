@@ -2,7 +2,8 @@ const chai = require('chai');
 const expect = chai.expect;
 chai.should();
 const { init: initClients } = require('../../utils/clients');
-const { pollUntil, createManifestForJPadKey } = require('../../utils/utils');
+const { pollUntil } = require('../../utils/utils');
+const { createManifestForJPadKey } = require('../../manifest');
 
 describe('authoring api', () => {
   let clients;

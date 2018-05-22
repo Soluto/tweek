@@ -1,6 +1,7 @@
 const { expect } = require('chai');
 const { init: initClients } = require('../../utils/clients');
-const { pollUntil, createManifestForJPadKey } = require('../../utils/utils');
+const { pollUntil } = require('../../utils/utils');
+const { createManifestForJPadKey } = require('../../manifest');
 
 describe('Gateway v2 API', () => {
   const key = 'integration_tests/some_key';
