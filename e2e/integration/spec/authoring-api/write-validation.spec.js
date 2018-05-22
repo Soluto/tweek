@@ -3,7 +3,7 @@ const expect = chai.expect;
 chai.should();
 const { init: initClients } = require('../../utils/clients');
 const { pollUntil } = require('../../utils/utils');
-const { createManifestForJPadKey } = require('../../manifest');
+const { createManifestForJPadKey } = require('../../utils/manifest');
 
 describe('authoring api', () => {
   let clients;
@@ -13,7 +13,7 @@ describe('authoring api', () => {
 
   describe('/PUT /key', () => {
     it('should accept a valid key', async () => {
-      let key = '@tests/integration/new_valid_key';
+      const key = '@tests/integration/new_valid_key';
       await clients.authoring
         .put(
           '/api/keys/@tests/integration/new_valid_key?author.name=test&author.email=test@soluto.com',
@@ -36,7 +36,7 @@ describe('authoring api', () => {
     });
 
     it('should reject an invalid key with 400 error', async () => {
-      let key = '@tests/integration/new_invalid_key';
+      const key = '@tests/integration/new_invalid_key';
       await clients.authoring
         .put(
           '/api/keys/@tests/integration/new_invalid_key?author.name=test&author.email=test@soluto.com',
@@ -54,7 +54,7 @@ describe('authoring api', () => {
     });
 
     it('should not create new commit for duplicate definition', async () => {
-      let key = '@tests/integration/duplicate';
+      const key = '@tests/integration/duplicate';
       async function saveKey() {
         return await clients.authoring
           .put(`/api/keys/${key}?author.name=test&author.email=test@soluto.com`)
@@ -69,10 +69,10 @@ describe('authoring api', () => {
           })
           .expect(200);
       }
-      let res = await saveKey();
-      expect(res.header).to.have.property('x-oid');
-      res = await saveKey();
-      expect(res.header).to.not.have.property('x-oid');
+      const res1 = await saveKey();
+      expect(res1.header).to.have.property('x-oid');
+      const res2 = await saveKey();
+      expect(res2.header).to.not.have.property('x-oid');
     });
   });
 });
