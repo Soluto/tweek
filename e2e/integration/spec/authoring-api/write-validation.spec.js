@@ -2,24 +2,7 @@ const chai = require('chai');
 const expect = chai.expect;
 chai.should();
 const { init: initClients } = require('../../utils/clients');
-const { pollUntil } = require('../../utils/utils');
-
-const createManifestForJPadKey = key_path => ({
-  key_path: `${key_path}`,
-  meta: {
-    name: 'aaaaaaa',
-    tags: [],
-    description: '',
-    archived: false,
-  },
-  implementation: {
-    type: 'file',
-    format: 'jpad',
-  },
-  valueType: 'number',
-  dependencies: [],
-  enabled: true,
-});
+const { pollUntil, createManifestForJPadKey } = require('../../utils/utils');
 
 describe('authoring api', () => {
   let clients;
