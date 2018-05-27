@@ -118,3 +118,46 @@ spec:
   ports:
     - port: 4222
       targetPort: 4222
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: tweek
+  name: oidc-server-mock
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: oidc-server-mock
+    spec:
+      containers:
+      - name: oidc-mock
+        image: soluto/oidc-server-mock
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Development
+        - name: CLIENT_ID
+          value: tweek-openid-mock-client
+        - name: REDIRECT_URIS
+          value: http://192.168.99.100:30004/auth/oidc
+        - name: TEST_USER
+          value: '{"SubjectId":"00000000-0000-0000-0000-000000000000","Username":"User1","Password":"pwd"}'
+        ports:
+        - containerPort: 80
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: tweek
+  name: oidc-server-mock
+spec:
+  type: NodePort
+  selector:
+    app: oidc-server-mock
+  ports:
+    - port: 80
+      nodePort: 30088
+      targetPort: 80

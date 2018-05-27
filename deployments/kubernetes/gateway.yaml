@@ -54,7 +54,7 @@ spec:
         - name: CONFIG_FILE_PATH
           value: /config/gateway.json
         - name: CONFIGOR_ENV
-          value: test
+          value: k8s
 ---
 kind: Service
 apiVersion: v1
