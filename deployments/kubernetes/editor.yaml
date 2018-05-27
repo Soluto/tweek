@@ -13,6 +13,7 @@ spec:
       containers:
       - name: editor
         image: soluto/tweek-editor
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000
         env:

@@ -13,6 +13,7 @@ spec:
       containers:
       - name: authoring
         image: soluto/tweek-authoring
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000
         env:
