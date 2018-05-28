@@ -1,7 +1,7 @@
 package corsSupport
 
 import (
-	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
+	"github.com/Soluto/tweek/services/gateway/appConfig"
 	"github.com/rs/cors"
 	"github.com/urfave/negroni"
 )

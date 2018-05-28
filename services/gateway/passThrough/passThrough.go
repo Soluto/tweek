@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/url"
 
-	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
-	"github.com/Soluto/tweek/services/secure-gateway/proxy"
+	"github.com/Soluto/tweek/services/gateway/appConfig"
+	"github.com/Soluto/tweek/services/gateway/proxy"
 	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"
 )

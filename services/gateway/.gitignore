@@ -15,7 +15,7 @@
 vendor
 
 # output executable should not be committed
-secure-gateway
+gateway
 
 # macOS Finder creates these files
 .DS_Store

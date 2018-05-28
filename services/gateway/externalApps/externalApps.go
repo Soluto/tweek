@@ -9,7 +9,7 @@ import (
 	"log"
 	"runtime"
 
-	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
+	"github.com/Soluto/tweek/services/gateway/appConfig"
 	"github.com/minio/minio-go"
 	"github.com/nats-io/go-nats"
 	"golang.org/x/crypto/pbkdf2"

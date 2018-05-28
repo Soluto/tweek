@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
+	"github.com/Soluto/tweek/services/gateway/appConfig"
 )
 
 type serviceInfo struct {

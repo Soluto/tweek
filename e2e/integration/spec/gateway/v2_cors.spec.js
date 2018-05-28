@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const fetch = require('node-fetch');
 const nconf = require('nconf');
-describe('Secure Gateway v2 CORS tests', () => {
+describe('Gateway v2 CORS tests', () => {
   const key = 'integration_tests/some_key';
 
   it('Test GET request', async () => {

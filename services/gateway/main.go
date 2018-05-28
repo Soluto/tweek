@@ -11,16 +11,16 @@ import (
 
 	"github.com/Soluto/casbin-nats-watcher"
 
-	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
-	"github.com/Soluto/tweek/services/secure-gateway/audit"
-	"github.com/Soluto/tweek/services/secure-gateway/corsSupport"
-	"github.com/Soluto/tweek/services/secure-gateway/externalApps"
-	"github.com/Soluto/tweek/services/secure-gateway/handlers"
+	"github.com/Soluto/tweek/services/gateway/appConfig"
+	"github.com/Soluto/tweek/services/gateway/audit"
+	"github.com/Soluto/tweek/services/gateway/corsSupport"
+	"github.com/Soluto/tweek/services/gateway/externalApps"
+	"github.com/Soluto/tweek/services/gateway/handlers"
 
-	"github.com/Soluto/tweek/services/secure-gateway/passThrough"
+	"github.com/Soluto/tweek/services/gateway/passThrough"
 
-	"github.com/Soluto/tweek/services/secure-gateway/security"
-	"github.com/Soluto/tweek/services/secure-gateway/transformation"
+	"github.com/Soluto/tweek/services/gateway/security"
+	"github.com/Soluto/tweek/services/gateway/transformation"
 
 	"github.com/casbin/casbin"
 	"github.com/urfave/negroni"
@@ -48,7 +48,7 @@ func runServer(port int, handler http.Handler) {
 		Handler: handler,
 	}
 
-	log.Printf("Secure Gateway is listening on port %v", port)
+	log.Printf("Gateway is listening on port %v", port)
 	log.Fatalf("Server on port %v failed unexpectedly: %v", port, server.ListenAndServe())
 }
 

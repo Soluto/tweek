@@ -42,8 +42,8 @@ services:
       - "5004:3000"
 
   gateway:
-    image: soluto/tweek-secure-gateway
-    build: ../services/secure-gateway
+    image: soluto/tweek-gateway
+    build: ../services/gateway
 
   selenium:
     image: selenium/standalone-chrome-debug:3.8.1
