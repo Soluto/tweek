@@ -92,7 +92,7 @@ type PolicyStorage struct {
 	CasbinModel           string
 }
 
-// Configuration is the root element of configuration for secure-gateway
+// Configuration is the root element of configuration for gateway
 type Configuration struct {
 	Upstreams Upstreams
 	V1Hosts   V1Hosts

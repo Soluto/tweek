@@ -18,8 +18,8 @@ services:
       - gateway
 
   gateway:
-    image: soluto/tweek-secure-gateway
-    build: ../../services/secure-gateway
+    image: soluto/tweek-gateway
+    build: ../../services/gateway
     depends_on:
       - api
       - authoring

@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
-	"github.com/Soluto/tweek/services/secure-gateway/externalApps"
+	"github.com/Soluto/tweek/services/gateway/appConfig"
+	"github.com/Soluto/tweek/services/gateway/externalApps"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"

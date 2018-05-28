@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Soluto/tweek/services/secure-gateway/audit"
+	"github.com/Soluto/tweek/services/gateway/audit"
 
 	"github.com/casbin/casbin"
 

@@ -68,7 +68,7 @@ services:
       - REACT_APP_GATEWAY_URL=http://gateway
 
   gateway:
-    image: $SECUREGATEWAY_IMAGE
+    image: $GATEWAY_IMAGE
     depends_on:
       - minio
       - nats

@@ -9,9 +9,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Soluto/tweek/services/secure-gateway/appConfig"
-	"github.com/Soluto/tweek/services/secure-gateway/audit"
-	"github.com/Soluto/tweek/services/secure-gateway/externalApps"
+	"github.com/Soluto/tweek/services/gateway/appConfig"
+	"github.com/Soluto/tweek/services/gateway/audit"
+	"github.com/Soluto/tweek/services/gateway/externalApps"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
 

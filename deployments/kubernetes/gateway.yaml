@@ -12,7 +12,7 @@ spec:
     spec:
       containers:
       - name: gateway
-        image: soluto/tweek-secure-gateway
+        image: soluto/tweek-gateway
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -43,7 +43,7 @@ spec:
           value: AKIAIOSFODNN7EXAMPLE
         - name: TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECRETKEY
           value: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-        - name: WEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECURE
+        - name: TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECURE
           value: "false"
         - name: TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOPOLICYOBJECTNAME
           value: policy.csv
