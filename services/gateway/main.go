@@ -16,6 +16,7 @@ import (
 	"github.com/Soluto/tweek/services/gateway/corsSupport"
 	"github.com/Soluto/tweek/services/gateway/externalApps"
 	"github.com/Soluto/tweek/services/gateway/handlers"
+	"github.com/Soluto/tweek/services/gateway/metrics"
 
 	"github.com/Soluto/tweek/services/gateway/passThrough"
 
@@ -23,6 +24,7 @@ import (
 	"github.com/Soluto/tweek/services/gateway/transformation"
 
 	"github.com/casbin/casbin"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/urfave/negroni"
 )
 
@@ -79,14 +81,17 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	router := NewRouter(config)
 	transformation.Mount(&config.Upstreams, config.V2Routes, token, middleware, router.V2Router())
 
+	metricsVar := metrics.NewMetricsVar("passthrough")
 	noAuthMiddleware := negroni.New(negroni.NewRecovery())
-	passThrough.Mount(&config.Upstreams, &config.V1Hosts, noAuthMiddleware, router.V1Router())
-	passThrough.Mount(&config.Upstreams, &config.V1Hosts, noAuthMiddleware, router.LegacyNonV1Router())
+	passThrough.Mount(&config.Upstreams, &config.V1Hosts, noAuthMiddleware, metricsVar, router.V1Router())
+	passThrough.Mount(&config.Upstreams, &config.V1Hosts, noAuthMiddleware, metricsVar, router.LegacyNonV1Router())
 
 	security.MountAuth(config.Security.Auth.Providers, &config.Security.TweekSecretKey, noAuthMiddleware, router.AuthRouter())
 
 	router.MainRouter().PathPrefix("/version").HandlerFunc(handlers.NewVersionHandler(&config.Upstreams, config.Version))
 	router.MainRouter().PathPrefix("/health").HandlerFunc(handlers.NewHealthHandler())
+
+	router.MainRouter().PathPrefix("/metrics").Handler(prometheus.Handler())
 
 	app := negroni.New(negroni.NewRecovery())
 
