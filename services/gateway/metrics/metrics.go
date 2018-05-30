@@ -11,7 +11,6 @@ import (
 // NewMetricsVar creates the new metrics histogram
 func NewMetricsVar(subsystem string) *prometheus.SummaryVec {
 	var metrics = prometheus.NewSummaryVec(prometheus.SummaryOpts{
-		Namespace: "gateway",
 		Subsystem: subsystem,
 		Name:      "request_duration_seconds",
 		Help:      "Total time spent serving requests.",

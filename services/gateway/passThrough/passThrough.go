@@ -29,10 +29,10 @@ func Mount(upstreams *appConfig.Upstreams, v1Hosts *appConfig.V1Hosts, middlewar
 
 	// Mounting handlers
 	for _, host := range v1Hosts.API {
-		router.Host(host).Handler(middleware.With(apiMetricsMiddleware).With(apiForwarder))
+		router.Host(host).Handler(middleware.With(apiMetricsMiddleware, apiForwarder))
 	}
 	for _, host := range v1Hosts.Authoring {
-		router.Host(host).Handler(middleware.With(authoringMetricsMiddleware).With(authoringForwarder))
+		router.Host(host).Handler(middleware.With(authoringMetricsMiddleware, authoringForwarder))
 	}
 }
 
