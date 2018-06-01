@@ -12,18 +12,49 @@ module.exports = function (server, config) {
       clientSecret: config.get('AUTH_OAUTH2_CLIENT_SECRET'),
       callbackURL: config.get('AUTH_OAUTH2_CALLBACK_URL'),
     },
-    (accessToken, refreshToken, profile, cb) => {
-      const err = null;
-      const decodedToken = jwt.decode(accessToken) || profile;
+    (accessToken, refreshToken, params, profile, cb) => {
+      const decodedAccessToken = jwt.decode(accessToken) || profile;
+
       const user = {
-        id: decodedToken.upn,
-        sub: decodedToken.sub,
-        name: decodedToken.name,
-        email: decodedToken.upn,
-        displayName: decodedToken.displayName,
+        id: decodedAccessToken.upn,
+        sub: decodedAccessToken.sub,
+        name: decodedAccessToken.name,
+        email: decodedAccessToken.upn,
+        displayName: decodedAccessToken.displayName,
       };
       const info = accessToken;
-      return cb(err, user, info);
+      const allowedGroupsStr = config.get('AUTH_OAUTH2_ALLOWED_GROUPS');
+      const allowedGroups = allowedGroupsStr ? allowedGroupsStr.split(',') : undefined;
+      
+      if (allowedGroups) {
+        const idToken = params.id_token;
+        const decodedIdToken = jwt.decode(idToken);
+
+        if (!decodedIdToken) {
+          return cb(new Error(`Invalid ID token ${idToken}`));
+        }
+        
+        const groups = decodedIdToken.groups;
+
+        if (!groups) {
+          return cb(new Error('No groups defined in ID token'));
+        }
+
+        let inAllowedGroup = false;
+
+        for (let group of groups) {
+          if (allowedGroups.includes(group)) {
+            inAllowedGroup = true;
+            break;
+          }
+        }
+
+        if (!inAllowedGroup) {
+          return cb(new Error(`User not in one of the allowed groups: ${allowedGroups.join(', ')}`));
+        }
+      }
+
+      return cb(null, user, info);
     },
   );
 
