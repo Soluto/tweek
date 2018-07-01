@@ -1,5 +1,5 @@
 ###########
-FROM microsoft/aspnetcore-build:2.0.3 as source
+FROM microsoft/dotnet:2.1-sdk as source
 ARG target="Release"
 
 WORKDIR /src
@@ -17,7 +17,7 @@ RUN cp -r /src/scripts /tweek \
     && cp -r /src/hooks /tweek/hooks \
     && cp -r /src/Tweek.Publishing.Service/obj/docker/publish /tweek/Tweek.Publishing.Service
 
-FROM microsoft/aspnetcore:2.0.3
+FROM microsoft/dotnet:2.1-aspnetcore-runtime as release
 ARG target="Release"
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \

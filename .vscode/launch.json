@@ -73,6 +73,28 @@
                 "quoteArgs": false,
                 "debuggerPath": "/vsdbg/vsdbg"
             }
+        },
+        {
+            "name": "Attach API",
+
+            "type": "coreclr",
+            "logging": {
+                
+            },
+            "request": "attach",
+            "processName": "dotnet",
+            "sourceFileMap": {
+                "/app": "${workspaceRoot}/services/api/Tweek.ApiService"
+            },
+            "pipeTransport": {
+                "pipeProgram": "docker",            
+                "pipeCwd": "${workspaceRoot}",
+                "pipeArgs": [
+                    "run --rm -i --pid=container:dev_api_1 yshay/vsdbg"
+                ],                
+                "quoteArgs": false,
+                "debuggerPath": "/vsdbg"
+            }
         }
     ]
 }
