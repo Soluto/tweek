@@ -10,6 +10,7 @@ namespace Tweek.ApiService
         public static void Main(string[] args)
         {
             var host = WebHost.CreateDefaultBuilder(args)
+                .UseKestrel(opts=> opts.Limits.MaxRequestLineSize = 128 * 1024)
                 .UseStartup<Startup>()
                 .UseSerilog()
                 .Build();
