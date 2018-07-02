@@ -13,7 +13,7 @@ namespace Tweek.Engine.Drivers.Rules
     public class RulesRepository : IRulesRepository, IDisposable
     {
         private readonly IDisposable _subscription;
-        private readonly IConnectableObservable<Dictionary<string, RuleDefinition>> _pipeline;
+        private readonly IConnectableObservable<(string version, Dictionary<string, RuleDefinition> rules)> _pipeline;
 
         public RulesRepository(IRulesDriver rulesDriver, IRulesetVersionProvider versionProvider, TimeSpan failureDelay,
             TimeSpan maxWaitTimeout, ILogger logger = null, IScheduler scheduler = null)
@@ -26,32 +26,49 @@ namespace Tweek.Engine.Drivers.Rules
                 .Do(_ => LastCheckTime = scheduler.Now.UtcDateTime)
                 .DistinctUntilChanged()
                 .Do(version => logger.LogInformation($"Detected new rules version: {version}"))
-                .Select(version => Observable.FromAsync(ct => rulesDriver.GetRuleset(version, ct)).Do(_ => CurrentLabel = version))
+                .Select(version => Observable.FromAsync(ct => rulesDriver.GetRuleset(version, ct))
+                .Select(rules=> (version, rules)))
                 .Switch()
                 .Do(_ => logger.LogInformation("Updated rules"))
                 .SubscribeOn(scheduler)
                 .Catch((Exception exception) =>
                 {
                     logger.LogWarning(exception, "Failed to update rules");
-                    return Observable.Empty<Dictionary<string, RuleDefinition>>()
+                    return Observable.Empty<(string,Dictionary<string, RuleDefinition>)>()
                         .Delay(failureDelay);
                 })
                 .Repeat()
                 .Replay(1);
 
             _subscription = new CompositeDisposable(
-                _pipeline.Subscribe(rules => OnRulesChange?.Invoke(rules)),
+                _pipeline.Subscribe(set =>
+                {
+                    try
+                    {
+                        OnRulesChange?.Invoke(set.rules);
+                        CurrentLabel = set.version;
+                        IsLatest = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        IsLatest = false;
+                        logger.LogCritical("failed to updated ruleset: {version}, {error}", CurrentLabel, ex);
+                    }
+                }),
                 _pipeline.Connect()
             );
         }
 
         public event Action<IDictionary<string, RuleDefinition>> OnRulesChange;
 
-        public async Task<Dictionary<string, RuleDefinition>> GetAllRules() => await _pipeline.FirstAsync();
+        public async Task<Dictionary<string, RuleDefinition>> GetAllRules() => await _pipeline.Select(set=>set.rules).FirstAsync();
+
 
         public string CurrentLabel { get; private set; }
 
         public DateTime LastCheckTime { get; private set; } = DateTime.MinValue;
+
+        public bool IsLatest {get; private set;} = true;
 
         public void Dispose()
         {

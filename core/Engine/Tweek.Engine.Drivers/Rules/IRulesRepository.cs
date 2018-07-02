@@ -10,6 +10,7 @@ namespace Tweek.Engine.Drivers.Rules
         Task<Dictionary<string, RuleDefinition>> GetAllRules();
         string CurrentLabel { get; }
         DateTime LastCheckTime { get; }
+        bool IsLatest {get;}
     }
 
     public class RuleDefinition
