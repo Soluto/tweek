@@ -1,18 +1,15 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
-    <PackageReference Include="LanguageExt.Core" Version="3.0.17" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.2" />
-    <PackageReference Include="RestEase" Version="1.4.5" />
-    <PackageReference Include="Tweek.JPad" Version="0.6.28" />
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\core\Utils\JsonValueConverter\JsonValueConverter.csproj" />
+    <ProjectReference Include="..\Tweek.Drivers.Context.MongoDb\Tweek.Drivers.Context.MongoDb.csproj" />
+    <ProjectReference Include="..\Tweek.Drivers.ContextIntegrationTests\Tweek.Drivers.ContextIntegrationTests.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />

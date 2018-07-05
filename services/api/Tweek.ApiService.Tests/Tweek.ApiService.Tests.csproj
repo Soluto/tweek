@@ -2,17 +2,16 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <IsPackable>false</IsPackable>
-    <NoWarn>CS1998</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="fakeiteasy" Version="4.3.0" />
-    <PackageReference Include="LanguageExt.Core" Version="3.0.17" />
+    <PackageReference Include="FakeItEasy" Version="4.6.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.2" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tweek.Publishing.Service\Tweek.Publishing.Service.csproj" />
+    <ProjectReference Include="..\..\..\core\Engine\Tweek.Engine.Drivers\Tweek.Engine.Drivers.csproj" />
+    <ProjectReference Include="..\Tweek.ApiService\Tweek.ApiService.csproj" />
   </ItemGroup>
 </Project>

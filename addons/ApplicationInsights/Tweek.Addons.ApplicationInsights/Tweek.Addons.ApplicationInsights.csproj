@@ -6,6 +6,6 @@
     <ProjectReference Include="..\..\..\core\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.3.0" />
   </ItemGroup>
 </Project>

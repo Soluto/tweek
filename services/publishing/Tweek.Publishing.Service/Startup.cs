@@ -58,7 +58,6 @@ namespace Tweek.Publishing.Service
                 .Select(x => (data: Encoding.Default.GetString(x.data), x.outputType))
                 .Subscribe(x =>
                 {
-                    logger.LogInformation(x.data);
                 }, ex =>
                 {
                     logger.LogError("error:" + ex.ToString());
@@ -115,7 +114,9 @@ namespace Tweek.Publishing.Service
             RunSSHDeamon(lifetime, loggerFactory.CreateLogger("sshd"));
 
             var executor = ShellHelper.Executor.WithWorkingDirectory(_configuration.GetValue<string>("REPO_LOCATION"))
-                                               .ForwardEnvVariable("GIT_SSH");
+                                               .ForwardEnvVariable("GIT_SSH")
+                                               .WithUser("git");
+                                               
             var git = executor.CreateCommandExecutor("git");
 
             var gitValidationFlow = new GitValidationFlow

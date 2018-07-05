@@ -134,5 +134,13 @@ namespace Tweek.Publishing.Service.Utils
                     p.EnvironmentVariables[variableName] = Environment.GetEnvironmentVariable(variableName);
                     init?.Invoke(p);
                 });
+        
+        public static ShellExecutor WithUser(this ShellExecutor shellExecutor, string userName) =>
+            (cmd, args, init) =>
+                shellExecutor(cmd, args, (p) =>
+                {
+                    p.UserName = userName;
+                    init?.Invoke(p);
+                });
     }
 }

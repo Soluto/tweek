@@ -1,4 +1,4 @@
-FROM microsoft/aspnetcore-build:2.0.0
+FROM microsoft/dotnet:2.1-sdk as source
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends jq && \

@@ -27,6 +27,8 @@ namespace Tweek.Engine.Tests.TestDrivers
         public string CurrentLabel { get; }
 
         public DateTime LastCheckTime => DateTime.UtcNow;
+
+        public bool IsLatest => true;
     }
 
     internal class InMemoryContextDriver : IContextDriver
