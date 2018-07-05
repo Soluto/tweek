@@ -84,16 +84,16 @@
             "request": "attach",
             "processName": "dotnet",
             "sourceFileMap": {
-                "/app": "${workspaceRoot}/services/api/Tweek.ApiService"
+                "/src": "${workspaceRoot}"
             },
             "pipeTransport": {
                 "pipeProgram": "docker",            
                 "pipeCwd": "${workspaceRoot}",
                 "pipeArgs": [
-                    "run --rm -i --pid=container:dev_api_1 yshay/vsdbg"
+                    "exec -i dev_api_1"
                 ],                
                 "quoteArgs": false,
-                "debuggerPath": "/vsdbg"
+                "debuggerPath": "/vsdbg/vsdbg"
             }
         }
     ]
