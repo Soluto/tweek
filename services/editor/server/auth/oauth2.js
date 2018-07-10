@@ -15,11 +15,12 @@ module.exports = function (server, config) {
     (accessToken, refreshToken, profile, cb) => {
       const err = null;
       const decodedToken = jwt.decode(accessToken) || profile;
+      const upn = decodedToken.upn || decodedToken.user_principal_name;
       const user = {
-        id: decodedToken.upn,
+        id: upn,
         sub: decodedToken.sub,
         name: decodedToken.name,
-        email: decodedToken.upn,
+        email: upn,
         displayName: decodedToken.displayName,
       };
       const info = accessToken;
