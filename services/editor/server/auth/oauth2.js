@@ -5,23 +5,27 @@ import jwt from 'jsonwebtoken';
 module.exports = function (server, config) {
   const oauth2Strategy = new OAuth2Strategy(
     {
-      scope: 'profile email',
+      scope: 'profile email openid',
       authorizationURL: config.get('AUTH_OAUTH2_AUTHORIZATION_URL'),
       tokenURL: config.get('AUTH_OAUTH2_TOKEN_URL'),
       clientID: config.get('AUTH_OAUTH2_CLIENT_ID'),
       clientSecret: config.get('AUTH_OAUTH2_CLIENT_SECRET'),
       callbackURL: config.get('AUTH_OAUTH2_CALLBACK_URL'),
     },
-    (accessToken, refreshToken, profile, cb) => {
+    (accessToken, refreshToken, params, profile, cb) => {
       const err = null;
-      const decodedToken = jwt.decode(accessToken) || profile;
-      const upn = decodedToken.upn || decodedToken.user_principal_name;
+      const decodedAccessToken = jwt.decode(accessToken) || profile;
+      const decodedIdToken = jwt.decode(params.id_token);
+      const upn = decodedAccessToken.upn || decodedAccessToken.user_principal_name;
+      const name = decodedAccessToken.name || decodedIdToken.name;
+      const displayName = decodedAccessToken.displayName ||
+        (decodedIdToken && decodedIdToken.given_name && decodedIdToken.family_name) ? `${decodedIdToken.given_name} ${decodedIdToken.family_name}` : null
       const user = {
         id: upn,
-        sub: decodedToken.sub,
-        name: decodedToken.name,
+        sub: decodedAccessToken.sub || decodedIdToken.sub,
+        name,
         email: upn,
-        displayName: decodedToken.displayName,
+        displayName: displayName,
       };
       const info = accessToken;
       return cb(err, user, info);
