@@ -73,6 +73,28 @@
                 "quoteArgs": false,
                 "debuggerPath": "/vsdbg/vsdbg"
             }
+        },
+        {
+            "name": "Attach API",
+
+            "type": "coreclr",
+            "logging": {
+                
+            },
+            "request": "attach",
+            "processName": "dotnet",
+            "sourceFileMap": {
+                "/src": "${workspaceRoot}"
+            },
+            "pipeTransport": {
+                "pipeProgram": "docker",            
+                "pipeCwd": "${workspaceRoot}",
+                "pipeArgs": [
+                    "exec -i dev_api_1"
+                ],                
+                "quoteArgs": false,
+                "debuggerPath": "/vsdbg/vsdbg"
+            }
         }
     ]
 }

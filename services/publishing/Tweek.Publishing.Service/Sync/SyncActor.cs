@@ -46,7 +46,7 @@ namespace Tweek.Publishing.Service.Sync
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError($"failed handling {actionName}", ex);
+                        _logger.LogError(ex, $"failed handling {actionName}");
                         tcs.SetException(ex);
                     }
                 }
