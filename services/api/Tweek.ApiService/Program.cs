@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
 using Serilog;
 using System.IO;
 
@@ -8,9 +9,8 @@ namespace Tweek.ApiService
     {
         public static void Main(string[] args)
         {
-            var host = new WebHostBuilder()
+            var host = WebHost.CreateDefaultBuilder(args)
                 .UseKestrel(opts=> opts.Limits.MaxRequestLineSize = 128 * 1024)
-                .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
                 .UseSerilog()
                 .Build();
