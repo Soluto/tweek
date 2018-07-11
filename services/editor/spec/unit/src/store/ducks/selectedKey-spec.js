@@ -1,12 +1,12 @@
 /* global jest, beforeEach, describe, it, afterEach, expect */
-jest.unmock('../../../../src/store/ducks/tags');
-jest.unmock('../../../../src/store/ducks/selectedKey');
-jest.unmock('../../../../src/utils/http');
-jest.unmock('../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations');
-jest.unmock('../../../../src/services/types-service');
-jest.unmock('../../../../src/services/context-service');
-jest.unmock('../../../../src/store/ducks/ducks-utils/blankKeyDefinition');
-jest.mock('../../../../src/store/ducks/alerts', () => {
+jest.unmock('../../../../../src/store/ducks/tags');
+jest.unmock('../../../../../src/store/ducks/selectedKey');
+jest.unmock('../../../../../src/utils/http');
+jest.unmock('../../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations');
+jest.unmock('../../../../../src/services/types-service');
+jest.unmock('../../../../../src/services/context-service');
+jest.unmock('../../../../../src/store/ducks/ducks-utils/blankKeyDefinition');
+jest.mock('../../../../../src/store/ducks/alerts', () => {
   let result = true;
   const addAlert = dispatch => Promise.resolve({ result });
   return {
@@ -22,14 +22,14 @@ import {
   saveKey,
   changeKeyValueType,
   updateKeyPath,
-} from '../../../../src/store/ducks/selectedKey';
+} from '../../../../../src/store/ducks/selectedKey';
 import {
   createBlankJPadKey,
   BLANK_KEY_NAME,
-} from '../../../../src/store/ducks/ducks-utils/blankKeyDefinition';
+} from '../../../../../src/store/ducks/ducks-utils/blankKeyDefinition';
 import { assert, expect } from 'chai';
 import fetchMock from 'fetch-mock';
-import keyValueTypeValidations from '../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations';
+import keyValueTypeValidations from '../../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations';
 import * as R from 'ramda';
 
 describe('selectedKey', async () => {

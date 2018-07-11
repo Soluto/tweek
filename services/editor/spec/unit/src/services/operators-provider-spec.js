@@ -1,5 +1,5 @@
-import { types } from '../../../src/services/types-service';
-import * as opsProvider from '../../../src/services/operators-provider';
+import { types } from '../../../../src/services/types-service';
+import * as opsProvider from '../../../../src/services/operators-provider';
 import { expect } from 'chai';
 
 describe('operators-provider service', () => {

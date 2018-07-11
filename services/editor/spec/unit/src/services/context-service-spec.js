@@ -1,6 +1,6 @@
 /* global jest, before, beforeEach, describe, it, expect */
-jest.unmock('../../../src/services/context-service');
-jest.mock('../../../src/services/types-service', () => ({
+jest.unmock('../../../../src/services/context-service');
+jest.mock('../../../../src/services/types-service', () => ({
   types: {
     string: { name: 'string' },
     version: { name: 'version', base: 'string' },
@@ -8,7 +8,7 @@ jest.mock('../../../src/services/types-service', () => ({
 }));
 
 import fetchMock from 'fetch-mock';
-import * as ContextService from '../../../src/services/context-service';
+import * as ContextService from '../../../../src/services/context-service';
 import chai, { assert, expect } from 'chai';
 chai.use(require('chai-things'));
 

@@ -1,6 +1,6 @@
 import passport from 'passport';
 import OAuth2Strategy from 'passport-oauth2';
-import jwt from 'jsonwebtoken';
+import getOauth2User from '../utils/get-oauth2-user';
 
 module.exports = function (server, config) {
   const oauth2Strategy = new OAuth2Strategy(
@@ -14,19 +14,7 @@ module.exports = function (server, config) {
     },
     (accessToken, refreshToken, params, profile, cb) => {
       const err = null;
-      const decodedAccessToken = jwt.decode(accessToken) || profile || {};
-      const decodedIdToken = jwt.decode(params.id_token) || {};
-      const upn = decodedAccessToken.upn || decodedAccessToken.user_principal_name;
-      const name = decodedAccessToken.name || decodedIdToken.name;
-      const displayName = decodedAccessToken.displayName ||
-        (decodedIdToken && decodedIdToken.given_name && decodedIdToken.family_name) ? `${decodedIdToken.given_name} ${decodedIdToken.family_name}` : name
-      const user = {
-        id: upn,
-        sub: decodedAccessToken.sub || decodedIdToken.sub,
-        name,
-        email: upn,
-        displayName,
-      };
+      const user = getOauth2User(accessToken, params, profile);
       const info = accessToken;
       return cb(err, user, info);
     },
