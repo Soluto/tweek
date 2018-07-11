@@ -19,13 +19,13 @@ module.exports = function (server, config) {
       const upn = decodedAccessToken.upn || decodedAccessToken.user_principal_name;
       const name = decodedAccessToken.name || decodedIdToken.name;
       const displayName = decodedAccessToken.displayName ||
-        (decodedIdToken && decodedIdToken.given_name && decodedIdToken.family_name) ? `${decodedIdToken.given_name} ${decodedIdToken.family_name}` : null
+        (decodedIdToken && decodedIdToken.given_name && decodedIdToken.family_name) ? `${decodedIdToken.given_name} ${decodedIdToken.family_name}` : name
       const user = {
         id: upn,
         sub: decodedAccessToken.sub || decodedIdToken.sub,
         name,
         email: upn,
-        displayName: displayName,
+        displayName,
       };
       const info = accessToken;
       return cb(err, user, info);
