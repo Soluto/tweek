@@ -14,8 +14,8 @@ module.exports = function (server, config) {
     },
     (accessToken, refreshToken, params, profile, cb) => {
       const err = null;
-      const decodedAccessToken = jwt.decode(accessToken) || profile;
-      const decodedIdToken = jwt.decode(params.id_token);
+      const decodedAccessToken = jwt.decode(accessToken) || profile || {};
+      const decodedIdToken = jwt.decode(params.id_token) || {};
       const upn = decodedAccessToken.upn || decodedAccessToken.user_principal_name;
       const name = decodedAccessToken.name || decodedIdToken.name;
       const displayName = decodedAccessToken.displayName ||
