@@ -1,6 +1,6 @@
 /* global jest, beforeEach, describe, it, expect */
-jest.unmock('../../../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations');
-jest.mock('../../../../../../src/services/types-service', () => ({
+jest.unmock('../../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations');
+jest.mock('../../../../../src/services/types-service', () => ({
   types: {
     string: { name: 'string' },
     boolean: { name: 'boolean' },
@@ -9,7 +9,7 @@ jest.mock('../../../../../../src/services/types-service', () => ({
 }));
 
 import { assert } from 'chai';
-import keyValueTypeValidation from '../../../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations';
+import keyValueTypeValidation from '../../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations';
 
 describe('key-value-type-validations', () => {
   let checkTypeValidation = function (type, shouldBeValid) {

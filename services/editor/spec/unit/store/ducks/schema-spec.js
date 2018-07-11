@@ -5,7 +5,7 @@ import jsonpatch from 'fast-json-patch';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import * as R from 'ramda';
 import { expect } from 'chai';
-import reducer, * as actions from '../../../../../src/store/ducks/schema';
+import reducer, * as actions from '../../../../src/store/ducks/schema';
 
 describe('schema duck', () => {
   let schemaState, dispatch;

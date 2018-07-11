@@ -1,7 +1,7 @@
 /* global jest, before, beforeEach, describe, it, expect */
 import React from 'react';
 import renderer from 'react-test-renderer';
-import ErrorHandler from '../../../../../src/components/common/ErrorHandler';
+import ErrorHandler from '../../../../src/components/common/ErrorHandler';
 
 const ErrorComponent = () => {
   throw 'error';

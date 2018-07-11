@@ -1,7 +1,7 @@
 /* global jest, beforeEach, describe, it, expect */
-jest.unmock('../../../../src/utils/mutator');
+jest.unmock('../../../src/utils/mutator');
 
-import Mutator from '../../../../src/utils/mutator';
+import Mutator from '../../../src/utils/mutator';
 
 describe('mutator tests', () => {
   let newMutator = (fn) => {

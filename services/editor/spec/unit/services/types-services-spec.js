@@ -1,8 +1,8 @@
 /* global jest, before, beforeEach, describe, it, expect */
-jest.unmock('../../../../src/services/types-service');
+jest.unmock('../../../src/services/types-service');
 
 import fetchMock from 'fetch-mock';
-import * as TypesService from '../../../../src/services/types-service';
+import * as TypesService from '../../../src/services/types-service';
 
 describe('types-service', () => {
   afterEach(() => {

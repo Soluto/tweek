@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock';
 
-import * as AuthService from '../../../../src/services/auth-service';
+import * as AuthService from '../../../src/services/auth-service';
 
 import chai, { expect } from 'chai';
 import chaiThings from 'chai-things';
