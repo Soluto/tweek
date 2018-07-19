@@ -14,9 +14,7 @@ namespace Tweek.Publishing.Service.Handlers
     public class SyncHandler
     {
 
-        public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(SyncActor syncActor,
-            RepoSynchronizer repoSynchronizer,
-            Func<string,Task> publisher,
+        public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(SyncActor syncActor,               
             RetryPolicy retryPolicy,
             ILogger logger = null)
         {
