@@ -1,5 +1,5 @@
 ###########
-FROM microsoft/aspnetcore-build:2.0.5-2.1.4 as source
+FROM microsoft/dotnet:2.1-sdk as source
 ARG target="Release"
 
 WORKDIR /src
@@ -17,7 +17,7 @@ RUN cp -r /src/scripts /tweek \
     && cp -r /src/hooks /tweek/hooks \
     && cp -r /src/Tweek.Publishing.Service/obj/docker/publish /tweek/Tweek.Publishing.Service
 
-FROM microsoft/aspnetcore:2.0.5
+FROM microsoft/dotnet:2.1-aspnetcore-runtime as release
 ARG target="Release"
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -47,4 +47,4 @@ EXPOSE 80
 HEALTHCHECK --interval=15s --timeout=15s --retries=8 \
       CMD curl -f http://localhost/health || exit 1
       
-ENTRYPOINT ["bash", "-c", "/tweek/init-git.sh && dotnet /tweek/Tweek.Publishing.Service/Tweek.Publishing.Service.dll" ]
+ENTRYPOINT ["bash", "-c", "/tweek/init-git.sh && dotnet /tweek/Tweek.Publishing.Service/Tweek.Publishing.Service.dll 2>/dev/stderr 1>/dev/stdout & tail -f /dev/null" ]

@@ -13,31 +13,25 @@ namespace Tweek.Publishing.Service.Handlers
 {
     public class SyncHandler
     {
-        public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(StorageSynchronizer storageSynchronizer,
+
+        public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(SyncActor syncActor,
             RepoSynchronizer repoSynchronizer,
             Func<string,Task> publisher,
             RetryPolicy retryPolicy,
             ILogger logger = null)
         {
             logger = logger ?? NullLogger.Instance;
+
             retryPolicy = retryPolicy ?? Policy.Handle<Exception>().RetryAsync();
             return async (req, res, routedata) =>
             {
                 try
                 {
                     await retryPolicy
-                        .ExecuteAsync(async () =>
-                        {
-                            var commitId = await repoSynchronizer.SyncToLatest();
-                            await storageSynchronizer.Sync(commitId);
-                            await publisher(commitId);
-                            logger.LogInformation($"Sync:Commit:{commitId}");
-                        });
-                                        
+                        .ExecuteAsync(syncActor.SyncToLatest);
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError("failed to sync repo with upstram", ex);
                     res.StatusCode = 500;
                     await res.WriteAsync(ex.Message);
                 }

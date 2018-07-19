@@ -28,6 +28,7 @@ namespace Tweek.Drivers.ContextIntegrationTests
         };
 
         private const string PROPERTY_TO_REMOVE = "Weight";
+        private const string NON_EXISTENT_PROPERTY_TO_REMOVE = "Length";
         private const string CREATION_DATE = "@CreationDate";
 
         private static readonly Dictionary<string, JsonValue> TestContextAfterRemoval = TestContext
@@ -42,7 +43,24 @@ namespace Tweek.Drivers.ContextIntegrationTests
 
         protected abstract IContextDriver Driver {  get; set; }
 
-        [Fact(DisplayName = "ContextAppended_PropertyDeleted_ResultsInCorrectContext")]
+
+        [Fact]
+        public async Task ContextAppended_NonExistentPropertyDeleted_NoErrorThrown()
+        {
+            var testIdentity = TestIdentity;
+            await Driver.AppendContext(testIdentity, TestContext);
+            var result = await Driver.GetContext(testIdentity);
+            Assert.Contains(CREATION_DATE, result.Keys);
+            result.Remove(CREATION_DATE);
+            Assert.Equal(TestContext, result);
+            await Driver.RemoveFromContext(testIdentity, NON_EXISTENT_PROPERTY_TO_REMOVE);
+            result = await Driver.GetContext(testIdentity);
+            Assert.Contains(CREATION_DATE, result.Keys);
+            result.Remove(CREATION_DATE);
+            Assert.Equal(TestContext, result);
+        }
+
+        [Fact]
         public async Task ContextAppended_PropertyDeleted_ResultsInCorrectContext()
         {
             var testIdentity = TestIdentity;
@@ -58,7 +76,7 @@ namespace Tweek.Drivers.ContextIntegrationTests
             Assert.Equal(TestContextAfterRemoval, result);
         }
 
-        [Fact(DisplayName = "ContextAppended_ThenAnotherAppended_ResultIsMerged")]
+        [Fact]
         public async Task ContextAppended_ThenAnotherAppended_ResultIsMerged()
         {
             var testIdentity = TestIdentity;
@@ -70,7 +88,7 @@ namespace Tweek.Drivers.ContextIntegrationTests
             Assert.Equal(TestContextMergedWithAnotherTestContext, result);
         }
 
-        [Fact(DisplayName = "ContextAppended_ThenSameContextAppended_ResultIsIdempotent")]
+        [Fact]
         public async Task ContextAppended_ThenSameContextAppended_ResultIsIdempotent()
         {
             var testIdentity = TestIdentity;

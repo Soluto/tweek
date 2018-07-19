@@ -1,13 +1,5 @@
 #!/bin/bash
 
-source ~/.env
 cd $(dirname $(dirname $0))
 curl http://localhost/log?message=post-receive-hook-starting
-git push $GIT_UPSTREAM_URI
-if [ $? != "0" ]
-then
-  curl "http://localhost/push-failed?commit=$(git rev-parse --short HEAD)"
-else
-  curl http://localhost/log?message=post-receive-hook-pushed-to-upstream
-fi
-curl "http://localhost/sync" 1> /dev/null 2> /dev/null  &
+curl "http://localhost/push?commit=$(git rev-parse --short HEAD)" 1> /dev/null 2> /dev/null

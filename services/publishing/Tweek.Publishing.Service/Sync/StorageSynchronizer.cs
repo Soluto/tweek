@@ -17,6 +17,7 @@ namespace Tweek.Publishing.Service.Sync
     public class StorageSynchronizer
     {
         private readonly IObjectStorage _client;
+
         private readonly ShellHelper.ShellExecutor _shellExecutor;
 
         public List<IConverter> Converters = new List<IConverter>();
@@ -26,6 +27,7 @@ namespace Tweek.Publishing.Service.Sync
             _client = storageClient;
             _shellExecutor = shellExecutor;
         }
+
 
         public async Task Sync(string commitId, bool checkForStaleRevision=true)
         {
@@ -38,29 +40,27 @@ namespace Tweek.Publishing.Service.Sync
             {
             }
 
-            if (!String.IsNullOrWhiteSpace(versionsBlob?.Latest))
-            {
-                if (versionsBlob.Latest == commitId) return;
+            if (!String.IsNullOrWhiteSpace(versionsBlob?.Latest)){
+                if (versionsBlob.Latest == commitId && await _client.Exists(commitId)) return;
                 if (checkForStaleRevision)
                 {
-                    try
-                    {
+                    try{
                         await _shellExecutor.ExecTask("git", $"merge-base --is-ancestor {versionsBlob.Latest} {commitId}");
                     }
-                    catch (Exception)
-                    {
-            
+                    catch (Exception ex){
+
                         throw new StaleRevisionException(commitId, versionsBlob.Latest);
                     }
                 }
             };
-            
+
             var newVersionBlob = new VersionsBlob
             {
                 Latest = commitId,
                 Previous = versionsBlob?.Latest,
             };
             
+
             var (p, exited) = _shellExecutor("git", $"archive --format=zip {commitId}");
             using (var ms = new MemoryStream())
             {
@@ -117,5 +117,6 @@ namespace Tweek.Publishing.Service.Sync
 
 
         
+
     }
 }

@@ -14,11 +14,13 @@ namespace Tweek.Publishing.Service.Handlers
             {
                 var oldCommit = req.Query["oldrev"].ToString().Trim();
                 var newCommit = req.Query["newrev"].ToString().Trim();
-                var quarantinePath = req.Query["quarantinepath"];
+
+                var quarantinePath = req.Query["quarantinepath"].ToString();
+                var objectsDir = quarantinePath.Substring(quarantinePath.IndexOf("./objects"));
                 var gitExecutor = executor.CreateCommandExecutor("git", pStart =>
                 {
                     pStart.Environment["GIT_ALTERNATE_OBJECT_DIRECTORIES"] = "./objects";
-                    pStart.Environment["GIT_OBJECT_DIRECTORY"] = quarantinePath;
+                    pStart.Environment["GIT_OBJECT_DIRECTORY"] = objectsDir;
                 });
                 try
                 {

@@ -2,6 +2,10 @@ version: '3.4'
 
 services:
   publishing:
+    build: 
+      args: 
+        target: Release
+
     environment: 
       - GIT_UPSTREAM_URI=ssh://git@git/tweek/tests
 
@@ -16,6 +20,9 @@ services:
       - CONTINUOUS_UPDATER_INTERVAL=500
 
   api:
+    build: 
+      args: 
+        target: Release
     depends_on:
       - publishing
     environment:

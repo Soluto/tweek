@@ -3,7 +3,6 @@ import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import { promisify } from 'util';
-import { expect } from 'chai';
 
 const jwtSign = promisify(jwt.sign);
 const readFile = promisify(fs.readFile);

@@ -1,11 +1,13 @@
 /* global fetch process console */
-
+import * as R from 'ramda';
 import fetch from '../utils/fetch';
 let maxResults;
 let showInternalKeys;
 
 export const filterInternalKeys = async list =>
-  list && !await shouldShowInternalKeys() ? list.filter(x => !/^@tweek\//.test(x)) : list;
+  list && !await shouldShowInternalKeys()
+    ? R.filter(x => !/^@tweek\//.test(x.key_path), list)
+    : list;
 
 const shouldShowInternalKeys = async () => {
   if (showInternalKeys === undefined) {

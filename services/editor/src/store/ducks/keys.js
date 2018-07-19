@@ -20,7 +20,7 @@ export function getKeys() {
     try {
       const result = await await fetch(`/manifests`);
       const manifests = await result.json();
-      const payload = manifests.filter(m => !m.meta.archived).map(x => x.key_path);
+      const payload = R.indexBy(R.prop('key_path'), manifests);
       dispatch({ type: KEYS_UPDATED, payload });
     } catch (error) {
       dispatch(showError({ title: 'Failed to retrieve keys!', error }));
@@ -30,12 +30,9 @@ export function getKeys() {
 
 export default handleActions(
   {
-    [KEYS_UPDATED]: (state, action) => R.uniq(action.payload),
-    [KEY_ADDED]: (state, action) => R.uniq([...state, action.payload]),
-    [KEY_REMOVED]: (state, action) => {
-      const deletedKeyIndex = state.indexOf(action.payload);
-      return deletedKeyIndex < 0 ? state : R.remove(deletedKeyIndex, 1, state);
-    },
+    [KEYS_UPDATED]: (state, { payload }) => payload,
+    [KEY_ADDED]: (state, { payload }) => R.assoc(payload['key_path'], payload, state),
+    [KEY_REMOVED]: (state, { payload }) => R.dissoc(payload, state),
   },
   [],
 );

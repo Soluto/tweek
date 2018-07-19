@@ -20,7 +20,10 @@ class KeysList {
     const keyFolders = extractFolders(keyName);
 
     keyFolders.forEach(folder =>
-      browser.clickWhenVisible(treeItem('data-folder-name', folder), timeout),
+      browser.clickIfVisible(
+        treeItem('data-folder-name', folder) + '[data-is-collapsed=true]',
+        timeout,
+      ),
     );
 
     const keyLinkSelector = treeItem('href', `/keys/${keyName}`);
@@ -33,11 +36,14 @@ class KeysList {
     const keyFolders = extractFolders(keyName);
 
     for (const folder of keyFolders) {
-      browser.clickIfVisible(treeItem('data-folder-name', folder), 1000, reverse);
+      browser.clickIfVisible(
+        treeItem('data-folder-name', folder + '[data-is-collapsed=true]'),
+        timeout,
+      );
     }
 
     const keyLinkSelector = treeItem('href', `/keys/${keyName}`);
-    browser.waitForVisible(keyLinkSelector, 1000, reverse);
+    browser.waitForVisible(keyLinkSelector, timeout, reverse);
   }
 
   search(filter) {

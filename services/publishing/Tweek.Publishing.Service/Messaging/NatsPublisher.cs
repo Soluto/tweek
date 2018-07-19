@@ -9,7 +9,7 @@ namespace Tweek.Publishing.Service.Messaging
     {
         public static Func<string,Task> GetSubjectPublisher(this NatsPublisher publisher, string subject) => (string message) => publisher.Publish(subject, message);
     }
-    
+
     public class NatsPublisher
     {
         private readonly Options _connectionOptions;

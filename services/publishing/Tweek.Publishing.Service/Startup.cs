@@ -13,16 +13,19 @@ using Microsoft.Extensions.Logging;
 using Minio;
 using Newtonsoft.Json;
 using Polly;
-using Tweek.Publishing.Helpers;
+using Polly.Retry;
+using Serilog;
+using Serilog.Events;
+using Serilog.Formatting.Json;
 using Tweek.Publishing.Service.Handlers;
 using Tweek.Publishing.Service.Messaging;
-using Tweek.Publishing.Service.Model.ExternalApps;
-using Tweek.Publishing.Service.Model.Rules;
+using Tweek.Publishing.Service.Packing;
 using Tweek.Publishing.Service.Storage;
 using Tweek.Publishing.Service.Sync;
-using Tweek.Publishing.Service.Sync.Converters;
 using Tweek.Publishing.Service.Utils;
 using Tweek.Publishing.Service.Validation;
+
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Tweek.Publishing.Service
 {
@@ -30,17 +33,28 @@ namespace Tweek.Publishing.Service
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
+       
+        private readonly RetryPolicy _syncPolicy;
+
 
         public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             _configuration = configuration;
             _logger = loggerFactory.CreateLogger("Default");
+            _syncPolicy = Policy.Handle<Exception>()
+                        .WaitAndRetryAsync(3,
+                            retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                            async (ex, timespan) =>
+                            {
+                                _logger.LogWarning("Sync:Retrying");
+                                await Task.Delay(timespan);
+                            });
         }
 
         private void RunSSHDeamon(IApplicationLifetime lifetime, ILogger logger)
         {
             var sshdConfigLocation = _configuration.GetValue<string>("SSHD_CONFIG_LOCATION");
-            var job = ShellHelper.Executor.ExecObservable("/usr/sbin/sshd", $"-f {sshdConfigLocation}")
+            var job = ShellHelper.Executor.ExecObservable("/usr/sbin/sshd", $"-e -D -f {sshdConfigLocation}")
                 .Retry(3)
                 .Select(x => (data: Encoding.Default.GetString(x.data), x.outputType))
                 .Subscribe(x =>
@@ -57,7 +71,7 @@ namespace Tweek.Publishing.Service
                 {
                     logger.LogError("error:" + ex.ToString());
                     lifetime.StopApplication();
-                });
+                }, ()=> lifetime.StopApplication());
             lifetime.ApplicationStopping.Register(job.Dispose);
         }
 
@@ -91,6 +105,7 @@ namespace Tweek.Publishing.Service
             return storageSynchronizer;
         }
 
+
         private void RunIntervalPublisher(IApplicationLifetime lifetime, Func<string,Task> publisher,
             RepoSynchronizer repoSynchronizer, StorageSynchronizer storageSynchronizer)
         {
@@ -98,7 +113,8 @@ namespace Tweek.Publishing.Service
             var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () =>
             {
                 var commitId = await repoSynchronizer.CurrentHead();
-                await Polly.Policy.Handle<StaleRevisionException>()
+
+                await Policy.Handle<StaleRevisionException>()
                     .RetryAsync(10, async (_,c)=> await repoSynchronizer.SyncToLatest())
                     .ExecuteAsync(async ()=> await storageSynchronizer.Sync(commitId));
 
@@ -108,20 +124,30 @@ namespace Tweek.Publishing.Service
             lifetime.ApplicationStopping.Register(job.Dispose);
         }
 
+
         private const string DEFAULT_MINIO_BUCKET_NAME = @"tweek";
+
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
             IApplicationLifetime lifetime)
         {
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(_configuration)
+                .WriteTo.Console(new JsonFormatter())
+                .CreateLogger();
+
             _logger.LogInformation("Starting service");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            RunSSHDeamon(lifetime, _logger);
+
+            RunSSHDeamon(lifetime, loggerFactory.CreateLogger("sshd"));
 
             var executor = ShellHelper.Executor.WithWorkingDirectory(_configuration.GetValue<string>("REPO_LOCATION"))
-                                               .ForwardEnvVariable("GIT_SSH");
+                                               .ForwardEnvVariable("GIT_SSH")
+                                               .WithUser("git");
+                                               
             var git = executor.CreateCommandExecutor("git");
 
             var gitValidationFlow = new GitValidationFlow
@@ -134,7 +160,7 @@ namespace Tweek.Publishing.Service
             };
 
             var minioConfig = _configuration.GetSection("Minio");
-            
+
             var storageClient = Polly.Policy.Handle<Exception>()
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
                 .ExecuteAsync(() =>
@@ -145,26 +171,19 @@ namespace Tweek.Publishing.Service
             var natsClient = new NatsPublisher(_configuration.GetSection("Nats").GetValue<string>("Endpoint"));
             var versionPublisher = natsClient.GetSubjectPublisher("version");
             var repoSynchronizer = new RepoSynchronizer(git);
+
             var storageSynchronizer = CreateStorageSynchronizer(storageClient, executor);
 
             storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result, checkForStaleRevision: false).Wait();
             RunIntervalPublisher(lifetime, versionPublisher, repoSynchronizer, storageSynchronizer);
+
+            var syncActor = SyncActor.Create(storageSynchronizer, repoSynchronizer, natsClient, lifetime.ApplicationStopping, loggerFactory.CreateLogger("SyncActor"));
             
             app.UseRouter(router =>
             {
                 router.MapGet("validate", ValidationHandler.Create(executor, gitValidationFlow));
-                router.MapGet("sync", SyncHandler.Create(storageSynchronizer, repoSynchronizer, versionPublisher,
-                Polly.Policy.Handle<Exception>()
-                        .WaitAndRetryAsync(3,
-                            retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                            async (ex, timespan) =>
-                            {
-                                _logger.LogWarning("Sync:Retrying");
-                                await Task.Delay(timespan);
-                            }),
-                 _logger));
-                router.MapGet("push-failed", async (req, res, routedata) => await natsClient.Publish("push-failed", req.Query["commit"] ));
-
+                router.MapGet("sync", SyncHandler.Create(syncActor,_syncPolicy));
+                router.MapGet("push", PushHandler.Create(syncActor));
                 router.MapGet("log", async (req, res, routedata) => _logger.LogInformation(req.Query["message"]));
                 router.MapGet("health", async (req, res, routedata) => await res.WriteAsync(JsonConvert.SerializeObject(new { })));
                 router.MapGet("version", async (req, res, routedata) => await res.WriteAsync(Assembly.GetEntryAssembly()

@@ -1,12 +1,12 @@
 import path = require('path');
 import BluebirdPromise = require('bluebird');
 import express = require('express');
-import morgan = require('morgan');
 import bodyParser = require('body-parser');
 import { Observable } from 'rxjs';
 import fs = require('fs-extra');
 import passport = require('passport');
 import Transactor from './utils/transactor';
+import morganJSON, { logger } from './utils/jsonLogger';
 import GitRepository, { RepoOutOfDateError } from './repositories/git-repository';
 import KeysRepository from './repositories/keys-repository';
 import TagsRepository from './repositories/tags-repository';
@@ -77,7 +77,7 @@ async function startServer() {
   const publicKey = sshpk
     .parseKey(await fs.readFile(gitRepositoryConfig.publicKey), 'auto')
     .toBuffer('pem');
-  app.use(morgan('tiny'));
+  app.use(morganJSON);
   app.use(configurePassport(publicKey, appsRepository));
   app.use(bodyParser.json()); // for parsing application/json
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
@@ -89,29 +89,31 @@ async function startServer() {
 
   app.use('/*', (req, res) => res.sendStatus(404));
   const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-    if (!err) { return next(); }
-    console.error(req.method, req.originalUrl, err);
-    res.status(getErrorStatusCode(err)).send(err.message);
+    morganJSON(req, res, () => {
+      if (!err) { return next(); }
+      logger.error(`${err.message}`, { Method: req.method, Url: req.originalUrl, Error: err });
+      res.status(getErrorStatusCode(err)).send(err.message);
+    });
   };
   app.use(errorHandler);
 
-  app.listen(PORT, () => console.log('Listening on port', PORT));
+  app.listen(PORT, () => logger.log('Listening on port', PORT));
 }
 
 const onUpdate$ = GitContinuousUpdater.onUpdate(gitTransactionManager).share();
 
 onUpdate$
   .switchMapTo(Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)))
-  .do(null, (err: any) => console.error('Error refreshing index', err))
+  .do(null, (err: any) => logger.error('Error refreshing index', err))
   .retry()
   .subscribe();
 
 onUpdate$
   .switchMapTo(Observable.defer(() => appsRepository.refresh()))
-  .do(null, (err: any) => console.error('Error refersing apps index', err))
+  .do(null, (err: any) => logger.error('Error refersing apps index', err))
   .retry()
   .subscribe();
 
 gitRepoCreationPromiseWithTimeout.then(async () => await startServer()).catch((reason: any) => {
-  console.error(reason);
+  logger.error(reason);
 });
