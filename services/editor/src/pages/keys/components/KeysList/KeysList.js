@@ -10,7 +10,6 @@ import * as SearchService from '../../../../services/search-service';
 import DirectoryTreeView from './DirectoryTreeView';
 import CardView from './CardView';
 import './KeysList.css';
-import { relative } from 'path';
 
 const KeysFilter = withState('filter', 'setFilter', '')(({ onFilterChange, setFilter, filter }) => (
   <div className="search-input-wrapper">
@@ -44,7 +43,7 @@ const KeysFilter = withState('filter', 'setFilter', '')(({ onFilterChange, setFi
 const supportCardView = async () => {
   try {
     const response = await fetch(
-      `/api/editor-configuration/experimental/keys_search/enable_cards_view`,
+      `/values/@tweek/editor/experimental/keys_search/enable_cards_view`,
     );
     return await response.json();
   } catch (err) {
@@ -125,8 +124,8 @@ const KeysList = connect((state, props) => ({
               <button onClick={() => setResultsView('tree')}>Tree</button>
             </div>
           )}
-          <div class="keys-nav">
-            <div class="search-results">
+          <div className="keys-nav">
+            <div className="search-results">
               {filteredKeys && supportMultiResultsView && resultsView === 'cards' ? (
                 <CardView
                   itemSelector={x => x && x.key_path}
