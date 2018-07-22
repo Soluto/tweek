@@ -16,7 +16,7 @@
     "eject": "react-scripts eject",
     "teardown": "yarn docker-compose down --remove-orphans",
     "logs": "yarn docker-compose logs",
-    "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml",
+    "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.local-editor.yml",
     "build-less": "node-less-chokidar src/",
     "watch-less": "yarn build-less && node-less-chokidar src/ -o src/ --watch --recursive"
   },

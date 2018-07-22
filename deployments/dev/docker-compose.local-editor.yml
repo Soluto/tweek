@@ -1,0 +1,61 @@
+version: '3.4'
+
+services:
+  publishing:
+    build: 
+      args: 
+        target: Release
+
+    environment: 
+      - GIT_UPSTREAM_URI=ssh://git@git/tweek/tests
+
+  editor:
+    environment: 
+      - CONTINUOUS_UPDATER_INTERVAL=500      
+    volumes:
+      - ./editor/test/config:/opt/app/build/config
+
+  authoring:
+    environment: 
+      - CONTINUOUS_UPDATER_INTERVAL=500
+
+  api:
+    build: 
+      args: 
+        target: Release
+    depends_on:
+      - publishing
+    environment:
+      - CorsPolicies__Keys__Origins=http://localhost:3000
+      - CorsPolicies__Keys__Methods=GET
+      - CorsPolicies__Keys__MaxPreflightAge=60
+      - CorsPolicies__Keys__Headers=
+      - CorsPolicies__Keys__ExposedHeaders=
+      - CorsEnabled=true
+      
+  gateway:
+    depends_on:       
+      - minio
+      - nats
+      - oidc-server-mock
+    environment:
+      - CONFIGOR_ENV=local-editor
+
+  oidc-server-mock:
+    container_name: oidc-server-mock
+    image: soluto/oidc-server-mock 
+    ports:
+      - "4011:80"
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CLIENT_ID=tweek-openid-mock-client
+      - REDIRECT_URIS=http://localhost:3000/auth/oidc
+      - TEST_USER={"SubjectId":"00000000-0000-0000-0000-000000000000","Username":"User1","Password":"pwd"}
+
+secrets:
+  tweek_ssh_private_key:
+    file: ./ssh/tweekgit
+  minio_access_key:
+    file: ./minio/access_key
+  minio_secret_key:
+    file: ./minio/secret_key
