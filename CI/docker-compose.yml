@@ -74,9 +74,7 @@ services:
       - nats
       - api
       - authoring
-      - oidc-server-mock
-    logging:
-      driver: "none"
+      - oidc-server-mock    
     environment:
       - TWEEKGATEWAY_SECURITY_CORS_ENABLED=true
       - TWEEKGATEWAY_SECURITY_CORS_MAXAGE=60
