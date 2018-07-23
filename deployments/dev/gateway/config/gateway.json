@@ -1,0 +1,22 @@
+{
+    "upstreams": {
+        "api": "http://api",
+        "authoring": "http://authoring:3000",
+        "publishing": "http://publishing"
+    },
+    "security": {
+        "auth": {
+            "providers": {}
+        }
+    },
+    "v1Hosts": {
+        "api": [
+            "api",
+            "api.localtest.me"
+        ],
+        "authoring": [
+            "authoring",
+            "authoring.localtest.me"
+        ]
+    }
+}

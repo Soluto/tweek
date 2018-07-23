@@ -31,7 +31,7 @@ RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o hcheck "github.com/Soluto/tw
 FROM scratch
 
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/config /config
+COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/settings /settings
 COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/model.conf /model.conf
 COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/entry /entry
 COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/hcheck /healthcheck
@@ -39,6 +39,8 @@ COPY --from=dependencies /empty_tmp /tmp
 
 ENV CONFIGOR_ENV=production
 ENV CONFIG_FILE_PATH=/config/gateway.json
+
+VOLUME [ "/config" ]
 
 HEALTHCHECK --interval=5s --timeout=2s --retries=10 CMD ["/healthcheck"]
 

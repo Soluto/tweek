@@ -40,7 +40,7 @@ services:
       - oidc-server-mock
     environment:
       - CONFIGOR_ENV=local-editor
-
+    
   oidc-server-mock:
     container_name: oidc-server-mock
     image: soluto/oidc-server-mock 

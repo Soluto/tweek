@@ -108,23 +108,24 @@ func InitConfig() *Configuration {
 
 	tweekConfigor := configor.New(&configor.Config{ENVPrefix: "TWEEKGATEWAY"})
 
-	// Loading default config file if exists
+	configFilePath := "/settings/settings.json"
+	if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
+		tweekConfigor.Load(conf, configFilePath)
+	} else {
+		log.Panicln("Config file not found:", err)
+	}
+
+	// Loading config file if exists
 	if configFilePath, exists := os.LookupEnv("CONFIG_FILE_PATH"); exists {
 		if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
 			tweekConfigor.Load(conf, configFilePath)
 		} else {
-			log.Panicln("Config file not found", err)
+			log.Panicln("Config file not found:", err)
 		}
 	} else {
 		tweekConfigor.Load(conf)
 	}
 
-	// Loading provided config file
-	if configFilePath, exists := os.LookupEnv("TWEEK_GATEWAY_CONFIG_FILE_PATH"); exists {
-		if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
-			tweekConfigor.Load(conf, configFilePath)
-		}
-	}
 	return conf
 }
 
