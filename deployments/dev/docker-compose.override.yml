@@ -64,9 +64,7 @@ services:
 
   editor:
     ports:
-      - "4004:3000"
-    volumes:
-      - ./editor/local/config:/opt/app/build/config
+      - "4004:3000"    
 
   authoring:
     depends_on:

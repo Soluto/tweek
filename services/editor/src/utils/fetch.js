@@ -2,8 +2,7 @@
 import { retrieveToken } from '../services/auth-service';
 
 export default async function (relativeUrl, config = {}) {
-  const url = `${process.env.REACT_APP_GATEWAY_URL ||
-    window.REACT_APP_GATEWAY_URL}/api/v2${relativeUrl}`;
+  const url = `${process.env.REACT_APP_GATEWAY_URL}/api/v2${relativeUrl}`;
   const token = retrieveToken();
   const originHeaders = config.headers;
   const headers = token ? { ...originHeaders, Authorization: `Bearer ${token}` } : originHeaders;
@@ -16,7 +15,7 @@ export default async function (relativeUrl, config = {}) {
 }
 
 export const unAuthFetch = async (relativeUrl, config = {}) => {
-  const url = `${process.env.REACT_APP_GATEWAY_URL || window.REACT_APP_GATEWAY_URL}${relativeUrl}`;
+  const url = `${process.env.REACT_APP_GATEWAY_URL}${relativeUrl}`;
   const headers = config.headers;
   const mode = 'cors';
   const response = await fetch(url, { ...config, headers, mode });
@@ -26,5 +25,4 @@ export const unAuthFetch = async (relativeUrl, config = {}) => {
   return response;
 };
 
-export const toAbsoluteUrl = relativeUrl =>
-  `${process.env.REACT_APP_GATEWAY_URL || window.REACT_APP_GATEWAY_URL}${relativeUrl}`;
+export const toAbsoluteUrl = relativeUrl => `${process.env.REACT_APP_GATEWAY_URL}${relativeUrl}`;
