@@ -32,9 +32,7 @@ spec:
         - name: TWEEKGATEWAY_SECURITY_CORS_ALLOWEDMETHODS
           value: "['GET','POST','PUT','PATCH','DELETE']"
         - name: TWEEKGATEWAY_SECURITY_CORS_ALLOWEDHEADERS
-          value: "['*']"
-        - name: TWEEKGATEWAY_SECURITY_CORS_ALLOWCREDENTIALS
-          value: "true"
+          value: "['*']"        
         - name: TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOENDPOINT
           value: minio:9000
         - name: TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOBUCKETNAME
