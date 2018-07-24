@@ -93,7 +93,7 @@ services:
       - CONFIG_FILE_PATH=/config/gateway.json
       - CONFIGOR_ENV=test
     volumes:
-      - ${CF_VOLUME_PATH}/tweek/deployments/dev/gateway/config:/config
+      - /var/lib/docker/volumes/${{CF_VOLUME}}/_data/${{CF_REPO_NAME}}/deployments/dev/gateway/config:/config
 
   oidc-server-mock:
     image: soluto/oidc-server-mock
