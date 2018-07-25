@@ -82,14 +82,15 @@ type Cors struct {
 
 // PolicyStorage section holds the minio upstream and secret keys
 type PolicyStorage struct {
-	MinioEndpoint         string
-	MinioBucketName       string
-	MinioAccessKey        string
-	MinioSecretKey        string
-	MinioUseSSL           bool
-	MinioPolicyObjectName string
-	NatsEndpoint          string
-	CasbinModel           string
+	MinioEndpoint                  string
+	MinioBucketName                string
+	MinioAccessKey                 string
+	MinioSecretKey                 string
+	MinioUseSSL                    bool
+	MinioPolicyObjectName          string
+	MinioExtractionRulesObjectName string
+	NatsEndpoint                   string
+	CasbinModel                    string
 }
 
 // Configuration is the root element of configuration for gateway

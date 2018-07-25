@@ -47,7 +47,7 @@ func (u *userInfo) Issuer() string             { return u.issuer }
 func (u *userInfo) Claims() jwt.StandardClaims { return u.StandardClaims }
 
 // AuthenticationMiddleware enriches the request's context with the user info from JWT
-func AuthenticationMiddleware(configuration *appConfig.Security, auditor audit.Auditor) negroni.HandlerFunc {
+func AuthenticationMiddleware(configuration *appConfig.Security, extractor UserAndGroupExtractor, auditor audit.Auditor) negroni.HandlerFunc {
 	var jwksEndpoints []string
 	for _, issuer := range configuration.Auth.Providers {
 		jwksEndpoints = append(jwksEndpoints, issuer.JWKSURL)
@@ -55,7 +55,7 @@ func AuthenticationMiddleware(configuration *appConfig.Security, auditor audit.A
 	LoadAllEndpoints(jwksEndpoints)
 	RefreshEndpoints(jwksEndpoints)
 	return negroni.HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-		info, err := userInfoFromRequest(r, configuration)
+		info, err := userInfoFromRequest(r, configuration, extractor)
 		if err != nil {
 			auditor.TokenError(err)
 			log.Println("Error extracting the user from the request", err)
@@ -68,7 +68,7 @@ func AuthenticationMiddleware(configuration *appConfig.Security, auditor audit.A
 	})
 }
 
-func userInfoFromRequest(req *http.Request, configuration *appConfig.Security) (UserInfo, error) {
+func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, extractor UserAndGroupExtractor) (UserInfo, error) {
 	if !configuration.Enforce {
 		info := &userInfo{email: "test@test.test", name: "test", issuer: "tweek"}
 		return info, nil
@@ -101,8 +101,12 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security) (
 		}
 
 		claims := token.Claims.(jwt.MapClaims)
+		sub, err := extractor.ExtractUserAndGroup(req.Context(), claims)
+		if err != nil {
+			return nil, fmt.Errorf("Failed to extract user info from JWT claims")
+		}
 		info := &userInfo{
-			sub:    claims["sub"].(string),
+			sub:    sub,
 			issuer: claims["iss"].(string),
 			name:   name,
 			email:  email,
