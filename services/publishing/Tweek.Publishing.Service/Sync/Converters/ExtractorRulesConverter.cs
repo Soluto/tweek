@@ -21,8 +21,7 @@ namespace Tweek.Publishing.Service.Sync.Converters
         {           
             var result = files
                 .Where(x =>  extractorRulesRegex.IsMatch(x))
-                .ToDictionary(x => x, x =>
-                {
+                .Select(x=> {
                     try
                     {
                         return readFn(x);
@@ -32,8 +31,9 @@ namespace Tweek.Publishing.Service.Sync.Converters
                         ex.Data["key"] = x;
                         throw;
                     }
-                });
-            return ("rules.rego", result.Values.Single(), "text/plain");
+                })
+                .Single();
+            return ("rules.rego", result, "text/plain");
         }
     }
 }

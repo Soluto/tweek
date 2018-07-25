@@ -21,7 +21,7 @@ namespace Tweek.Publishing.Service.Sync.Converters
         {           
             var result = files
                 .Where(x =>  policyRegex.IsMatch(x))
-                .ToDictionary(x => x, x =>
+                .Select(x =>
                 {
                     try
                     {
@@ -32,8 +32,9 @@ namespace Tweek.Publishing.Service.Sync.Converters
                         ex.Data["key"] = x;
                         throw;
                     }
-                });
-            return ("policy.csv", result.Values.Single(), "application/csv");
+                })
+                .Single();
+            return ("policy.csv", result, "application/csv");
         }
     }
 }
