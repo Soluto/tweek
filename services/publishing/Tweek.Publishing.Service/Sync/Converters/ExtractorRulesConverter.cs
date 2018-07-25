@@ -33,7 +33,7 @@ namespace Tweek.Publishing.Service.Sync.Converters
                     }
                 })
                 .Single();
-            return ("rules.rego", result, "text/plain");
+            return ("security/rules.rego", result, "text/plain");
         }
     }
 }

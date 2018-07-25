@@ -128,7 +128,7 @@ func initEnforcer(config *appConfig.Security) (*casbin.SyncedEnforcer, error) {
 		policyStorage.MinioSecretKey,
 		policyStorage.MinioUseSSL,
 		policyStorage.MinioBucketName,
-		policyStorage.MinioPolicyObjectName)
+		"security/policy.csv")
 	if err != nil {
 		return nil, fmt.Errorf("Error while creating Minio adapter:\n %v", err)
 	}
@@ -206,7 +206,7 @@ func setupUserInfoExtractor(cfg appConfig.Security) (security.UserAndGroupExtrac
 		return nil, err
 	}
 
-	obj, err := client.GetObject(policyStorage.MinioBucketName, policyStorage.MinioExtractionRulesObjectName, minio.GetObjectOptions{})
+	obj, err := client.GetObject(policyStorage.MinioBucketName, "security/rules.rego", minio.GetObjectOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -215,5 +215,5 @@ func setupUserInfoExtractor(cfg appConfig.Security) (security.UserAndGroupExtrac
 	if err != nil {
 		return nil, err
 	}
-	return security.NewDefaultUserAndGroupExtractor(string(data), "rules", "get_user_and_group"), nil
+	return security.NewDefaultUserAndGroupExtractor(string(data), "rules", "subject"), nil
 }

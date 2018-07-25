@@ -57,7 +57,7 @@ func TestDefaultUserAndGroupExtractor_ExtractUserAndGroup(t *testing.T) {
 				t.Fatal("Unable to read rules file")
 			}
 
-			e := NewDefaultUserAndGroupExtractor(string(rules), "rules", "get_user_and_group")
+			e := NewDefaultUserAndGroupExtractor(string(rules), "rules", "subject")
 			got, err := e.ExtractUserAndGroup(ctx, tt.args.claims)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("DefaultUserAndGroupExtractor.ExtractUserAndGroup() error = %v, wantErr %v", err, tt.wantErr)
