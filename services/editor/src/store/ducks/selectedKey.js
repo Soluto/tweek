@@ -215,7 +215,7 @@ export function archiveKey(archived) {
     if (archived) {
       dispatch(removeKeyFromList(key));
     } else {
-      dispatch(addKeyToList(key));
+      dispatch(addKeyToList(keyToSave.manifest));
     }
     dispatch(updateRevisionHistory(key));
     dispatch(updateKeyDependents(key));
@@ -288,7 +288,7 @@ export function saveKey() {
     dispatch(updateKeyDependents(savedKey));
 
     if (isNewKey) {
-      dispatch(addKeyToList(savedKey));
+      dispatch(addKeyToList(local.manifest));
       dispatch(push(`/keys/${savedKey}`));
     }
   };
@@ -338,7 +338,7 @@ export function addAlias(alias) {
       return;
     }
 
-    dispatch(addKeyToList(alias));
+    dispatch(addKeyToList(manifest));
 
     const { selectedKey: { usedBy, aliases } } = getState();
     dispatch({
@@ -544,10 +544,8 @@ const handleKeyAddingDetails = (state) => {
   };
 };
 
-const handleKeyPathChange = (state, { payload }) => ({
-  ...state,
-  key: payload,
-});
+const handleKeyPathChange = (state, { payload }) =>
+  R.pipe(R.assoc('key', payload), R.assocPath(['local', 'manifest', 'key_path'], payload))(state);
 
 const handleKeyFormatChange = (state, { payload }) =>
   R.assocPath(['local', 'manifest', 'implementation'], payload, state);

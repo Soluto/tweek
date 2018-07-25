@@ -1,6 +1,7 @@
 import path = require('path');
 import Transactor from '../utils/transactor';
 import GitRepository from './git-repository';
+import { Oid, Commit } from 'nodegit';
 
 function generateEmptyManifest(keyPath) {
   return {
@@ -139,7 +140,7 @@ export default class KeysRepository {
   updateKey(keyPath, manifest, fileImplementation, author) {
     return this._gitTransactionManager.write(async (gitRepo) => {
       await updateKey(gitRepo, keyPath, manifest, fileImplementation);
-      await gitRepo.commitAndPush(`Editor - updating ${keyPath}`, author);
+      return await gitRepo.commitAndPush(`Editor - updating ${keyPath}`, author);
     });
   }
 
@@ -149,7 +150,7 @@ export default class KeysRepository {
         const content = await file.read();
         await gitRepo.updateFile(file.name, content);
       }
-      await gitRepo.commitAndPush(commitMessage, author);
+      return await gitRepo.commitAndPush(commitMessage, author);
     });
   }
 
@@ -162,7 +163,7 @@ export default class KeysRepository {
           await gitRepo.deleteFile(getPathForSourceFile(manifest));
         }
       }
-      await gitRepo.commitAndPush(`Editor - deleting keys: ${keys.join(', ')}`, author);
+      return await gitRepo.commitAndPush(`Editor - deleting keys: ${keys.join(', ')}`, author);
     });
   }
 

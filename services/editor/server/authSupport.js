@@ -44,7 +44,8 @@ export const addLoginRedirect = (server, handler, routePath, loginPath) => {
     if (!isAuthRequired() || req.isAuthenticated()) {
       return handler(req, res);
     }
-    return res.redirect(302, loginPath);
+    const redirectUrl = encodeURIComponent(req.originalUrl);
+    return res.redirect(302, `${loginPath}?redirectUrl=${redirectUrl}`);
   });
 };
 

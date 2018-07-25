@@ -15,9 +15,12 @@ const jwtOptions = {
 };
 
 async function generateToken() {
-  const keyPath = nconf.get('GIT_PRIVATE_KEY_PATH');
-  const authKey = await readFile(keyPath);
-  return await jwtSign({}, authKey, jwtOptions);
+  const inlineKey = nconf.get('GIT_PRIVATE_KEY_INLINE');
+  const key =
+    (inlineKey && new Buffer(inlineKey, 'base64')) ||
+    (await readFile(nconf.get('GIT_PRIVATE_KEY_PATH')));
+
+  return await jwtSign({}, key, jwtOptions);
 }
 
 async function getAuthenticatedClient(baseURL) {

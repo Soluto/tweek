@@ -1,6 +1,8 @@
 import passport from 'passport';
 import { DigestStrategy } from 'passport-http';
 
+const redirectHandler = (req, res) => res.redirect(req.query.redirectUrl || '/');
+
 module.exports = function (server, config) {
   const givenUser = config.get('AUTH_DIGEST_USER');
   const givenPassword = config.get('AUTH_DIGEST_PASSWORD');
@@ -32,9 +34,7 @@ module.exports = function (server, config) {
 
   passport.use(new DigestStrategy(strategyParams, validate));
 
-  server.get('/auth/digest', passport.authenticate('digest', { session: true }), (req, res) =>
-    res.redirect('/'),
-  );
+  server.get('/auth/digest', passport.authenticate('digest', { session: true }), redirectHandler);
 
   return {
     url: '/auth/digest',

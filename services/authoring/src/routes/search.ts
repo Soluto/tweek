@@ -6,6 +6,7 @@ import searchIndex from '../search-index';
 import { AutoWired } from 'typescript-ioc';
 import { Authorize } from '../security/authorize';
 import { PERMISSIONS } from '../security/permissions/consts';
+import { logger } from '../utils/jsonLogger';
 
 const separator = /(?:[_/]|\s|-)/;
 
@@ -38,7 +39,7 @@ function performSearch(searchString = '', { maxResults = 25, field, index }): st
     const trimResults = R.pipe(R.slice(0, maxResults || 25), R.map<{}, string>(R.prop<string>('ref')));
     return trimResults(searchResults);
   } catch (error) {
-    console.error(`error searching for '${searchString}'`, error);
+    logger.error(`error searching for '${searchString}'`, error);
     return [];
   }
 }

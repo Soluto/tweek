@@ -22,7 +22,8 @@ const NewKeyInput = compose(
     const keysList$ = prop$
       .pluck('keysList')
       .distinctUntilChanged()
-      .switchMap(SearchService.filterInternalKeys);
+      .switchMap(SearchService.filterInternalKeys)
+      .map(dic => Object.keys(dic));
 
     return Observable.combineLatest(prop$, keysList$, (props, keysList) => ({
       ...props,

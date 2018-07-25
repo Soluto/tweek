@@ -9,6 +9,7 @@ import { PERMISSIONS } from '../security/permissions/consts';
 import { generateHash } from '../apps/apps-utils';
 import { Authorize } from '../security/authorize';
 import AppsRepository from '../repositories/apps-repository';
+import { addOid } from '../utils/response-utils';
 
 const randomBytes = promisify(crypto.randomBytes);
 
@@ -71,7 +72,8 @@ export class AppsController {
     }
     const { secret: appSecret, key } = await createSecretKey();
     newApp.secretKeys.push(key);
-    await this.appsRepository.saveApp(appId, newApp, { name, email });
+    const oid = await this.appsRepository.saveApp(appId, newApp, { name, email });
+    addOid(this.context.response, oid)
 
     return ({
       appId,

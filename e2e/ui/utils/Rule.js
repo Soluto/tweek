@@ -115,7 +115,6 @@ export default class Rule {
   }
 
   setValues(args) {
-    args = Object.entries(args);
     const argsCount = browser.elements(`${dataComp('custom-slider')} ${dataComp('legend-item')}`)
       .value.length;
 
@@ -123,9 +122,9 @@ export default class Rule {
       browser.click(this._ruleCompSelector('add-variant-button'));
     }
 
-    args.forEach(([arg, percent], i) => {
-      browser.setValue(this._sliderComp('legend-value', i + 1), arg);
-      browser.setValue(this._sliderComp('legend-percent', i + 1), percent);
+    args.forEach(({ value, weight }, i) => {
+      browser.setValue(this._sliderComp('legend-value', i + 1), value);
+      browser.setValue(this._sliderComp('legend-percent', i + 1), weight);
     });
 
     return this;

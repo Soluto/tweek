@@ -18,15 +18,11 @@ namespace Tweek.Engine.Rules.Creation
     {
         public static async Task<Func<(GetRule, PathExpander)>> Factory(IRulesRepository repository, GetRuleParser parserResolver)
         {
-            var instance = Parse(await repository.GetAllRules(), parserResolver);
-            repository.OnRulesChange += (newRules) =>
-            {
-                using (TraceHelpers.TraceTime("loading new rules"))
-                {
-                    instance = Parse(newRules, parserResolver);
-                }
-            };
-            return () => instance;
+            (GetRule, PathExpander)? instance = null;
+            repository.OnRulesChange += (newRules) => instance = Parse(newRules, parserResolver);
+            var initRepo = Parse(await repository.GetAllRules(), parserResolver);
+            instance = instance ?? initRepo;
+            return () => instance.Value;
         }
 
         public static (GetRule, PathExpander) Parse(IDictionary<string, RuleDefinition> rules, GetRuleParser parserResolver)

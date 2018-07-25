@@ -3,6 +3,9 @@ import git = require('nodegit');
 import simpleGit = require('simple-git');
 import fs = require('fs-extra');
 import R = require('ramda');
+import { Commit } from 'nodegit/commit';
+import { Oid } from 'nodegit';
+import { logger } from '../utils/jsonLogger';
 
 export class ValidationError {
   constructor(public message) { }
@@ -43,7 +46,7 @@ export default class GitRepository {
   }
 
   static async create(settings: { url: string, localPath: string, username: string, publicKey: string, privateKey: string, password: string }) {
-    console.log('cleaning up current working folder');
+    logger.log('cleaning up current working folder');
     await fs.remove(settings.localPath);
 
     const operationSettings: OperationSettings = {
@@ -55,12 +58,14 @@ export default class GitRepository {
       },
     };
 
-    console.log('clonning rules repository');
+    logger.log('clonning rules repository');
     const clonningOp = 'clonning end in';
+    // FIXME: needs json logging
     console.time(clonningOp);
     const repo = await git.Clone.clone(settings.url, settings.localPath, {
       fetchOpts: operationSettings,
     });
+    // FIXME: needs json logging
     console.timeEnd(clonningOp);
     return new GitRepository(repo, operationSettings);
   }
@@ -143,11 +148,17 @@ export default class GitRepository {
     await repoIndex.writeTree();
   }
 
-  async commitAndPush(message, { name, email }) {
+  async commitAndPush(message, { name, email }): Promise<Oid | null> {
+    const head = await this.getLastCommit();
+    const diff = await git.Diff.treeToIndex(this._repo, await head.getTree(), null, null);
+    const patches = await diff.patches();
+    if (patches.length === 0) return null;
+
     const author = git.Signature.now(name, email);
     const pusher = git.Signature.now('tweek-editor', 'tweek-editor@tweek');
-    await this._repo.createCommitOnHead([], author, pusher, message);
+    var commitId = await this._repo.createCommitOnHead([], author, pusher, message);
     await this._pushRepositoryChanges(message);
+    return commitId;
   }
 
   async fetch() {
@@ -159,7 +170,7 @@ export default class GitRepository {
 
     const isSynced = await this.isSynced();
     if (!isSynced) {
-      console.warn('Repo is not synced after pull');
+      logger.warn('Repo is not synced after pull');
       commitId = await this.reset();
     }
 
@@ -179,7 +190,7 @@ export default class GitRepository {
     return remoteCommit.id().equal(localCommit.id()) === 1;
   }
 
-  getLastCommit(branch = 'master'): Promise<any> {
+  getLastCommit(branch = 'master'): Promise<Commit> {
     return this._repo.getBranchCommit(branch);
   }
 
@@ -204,7 +215,7 @@ export default class GitRepository {
 
     const isSynced = await this.isSynced();
     if (!isSynced) {
-      console.warn('Not synced after Push, attempting to reset');
+      logger.warn('Not synced after Push, attempting to reset');
       throw new Error('Repo was not in sync after push');
     }
   }

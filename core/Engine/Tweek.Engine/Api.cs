@@ -56,6 +56,7 @@ namespace Tweek.Engine
             var contextPaths = pathQuery.Any(x => x.IsScan) ? allContextData.Values.SelectMany(x => x.Keys)
                 .Where(x => x.Contains("@fixed:"))
                 .Select(x => x.Split(':')[1])
+                .Where(x=> !String.IsNullOrEmpty(x))
                 .Select(ConfigurationPath.New).ToArray() : null;
 
 

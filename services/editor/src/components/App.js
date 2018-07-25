@@ -4,7 +4,6 @@ import { setObservableConfig, compose } from 'recompose';
 
 import registerServiceWorker from '../registerServiceWorker';
 import withLoading from '../hoc/with-loading';
-import { isAuthenticated } from '../services/auth-service';
 import { refreshSchema } from '../services/context-service';
 import * as TypesService from '../services/types-service';
 import AppHeader from './AppHeader';
