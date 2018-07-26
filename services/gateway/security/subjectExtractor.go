@@ -11,24 +11,24 @@ import (
 	"github.com/open-policy-agent/opa/rego"
 )
 
-// UserAndGroupExtractor represents an interface used to extract user and group
-type UserAndGroupExtractor interface {
-	ExtractUserAndGroup(ctx context.Context, claims jwt.MapClaims) (string, error)
+// SubjectExtractor represents an interface used to extract user and group
+type SubjectExtractor interface {
+	ExtractSubject(ctx context.Context, claims jwt.MapClaims) (string, error)
 }
 
-// DefaultUserAndGroupExtractor is the default implementation of DefaultUserAndGroupExtractor
-type DefaultUserAndGroupExtractor struct {
+// DefaultSubjectExtractor is the default implementation of DefaultSubjectExtractor
+type DefaultSubjectExtractor struct {
 	partialResult *rego.PartialResult
 }
 
-// SynchronizedUserAndGroupExtractor is the synchronized implementation of extractor
-type SynchronizedUserAndGroupExtractor struct {
-	extractor UserAndGroupExtractor
+// SynchronizedSubjectExtractor is the synchronized implementation of extractor
+type SynchronizedSubjectExtractor struct {
+	extractor SubjectExtractor
 	lock      sync.RWMutex
 }
 
-// NewDefaultUserAndGroupExtractor is a constructor for DefaultUserAndGroupExtractor
-func NewDefaultUserAndGroupExtractor(rules, pkg, query string) *DefaultUserAndGroupExtractor {
+// NewDefaultSubjectExtractor is a constructor for DefaultSubjectExtractor
+func NewDefaultSubjectExtractor(rules, pkg, query string) *DefaultSubjectExtractor {
 	c := ast.NewCompiler()
 	module, err := ast.ParseModule("rules.rego", rules)
 	if err != nil {
@@ -52,13 +52,13 @@ func NewDefaultUserAndGroupExtractor(rules, pkg, query string) *DefaultUserAndGr
 		log.Panicln("Error loading Rego", err)
 	}
 
-	return &DefaultUserAndGroupExtractor{
+	return &DefaultSubjectExtractor{
 		partialResult: &partial,
 	}
 }
 
-// ExtractUserAndGroup extracts user and group from JWT claims in the form of `group:user`
-func (e *DefaultUserAndGroupExtractor) ExtractUserAndGroup(ctx context.Context, claims jwt.MapClaims) (string, error) {
+// ExtractSubject extracts user and group from JWT claims in the form of `group:user`
+func (e *DefaultSubjectExtractor) ExtractSubject(ctx context.Context, claims jwt.MapClaims) (string, error) {
 	rego := e.partialResult.Rego(
 		rego.Input(claims),
 	)
@@ -87,22 +87,22 @@ func (e *DefaultUserAndGroupExtractor) ExtractUserAndGroup(ctx context.Context, 
 	return fmt.Sprintf("%s:%s", group, user), nil
 }
 
-// NewSynchronizedUserAndGroupExtractor creates new synchronized user and group extractor
-func NewSynchronizedUserAndGroupExtractor(extractor UserAndGroupExtractor) *SynchronizedUserAndGroupExtractor {
-	return &SynchronizedUserAndGroupExtractor{
+// NewSynchronizedSubjectExtractor creates new synchronized user and group extractor
+func NewSynchronizedSubjectExtractor(extractor SubjectExtractor) *SynchronizedSubjectExtractor {
+	return &SynchronizedSubjectExtractor{
 		extractor: extractor,
 	}
 }
 
-// ExtractUserAndGroup implements extraction for SynchronizedUserAndGroupExtractor
-func (se *SynchronizedUserAndGroupExtractor) ExtractUserAndGroup(ctx context.Context, claims jwt.MapClaims) (string, error) {
+// ExtractSubject implements extraction for SynchronizedSubjectExtractor
+func (se *SynchronizedSubjectExtractor) ExtractSubject(ctx context.Context, claims jwt.MapClaims) (string, error) {
 	se.lock.RLock()
 	defer se.lock.RUnlock()
-	return se.extractor.ExtractUserAndGroup(ctx, claims)
+	return se.extractor.ExtractSubject(ctx, claims)
 }
 
-// UpdateExtractor updates the extractor used in SynchronizedUserAndGroupExtractor
-func (se *SynchronizedUserAndGroupExtractor) UpdateExtractor(extractor UserAndGroupExtractor) {
+// UpdateExtractor updates the extractor used in SynchronizedSubjectExtractor
+func (se *SynchronizedSubjectExtractor) UpdateExtractor(extractor SubjectExtractor) {
 	se.lock.Lock()
 	defer se.lock.Unlock()
 	se.extractor = extractor

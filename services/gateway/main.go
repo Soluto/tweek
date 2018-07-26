@@ -157,13 +157,13 @@ func withRetry(times int, sleepDuration time.Duration, todo enforcerFactory, arg
 	return nil, err
 }
 
-func setupUserInfoExtractorWithRefresh(config appConfig.Security) (security.UserAndGroupExtractor, error) {
+func setupUserInfoExtractorWithRefresh(config appConfig.Security) (security.SubjectExtractor, error) {
 	initial, err := setupUserInfoExtractor(config)
 	if err != nil {
 		return nil, err
 	}
 
-	synchronized := security.NewSynchronizedUserAndGroupExtractor(initial)
+	synchronized := security.NewSynchronizedSubjectExtractor(initial)
 
 	nc, err := nats.Connect(config.PolicyStorage.NatsEndpoint)
 	if err != nil {
@@ -182,7 +182,7 @@ func setupUserInfoExtractorWithRefresh(config appConfig.Security) (security.User
 	return synchronized, nil
 }
 
-func refreshExtractor(cfg appConfig.Security, extractor *security.SynchronizedUserAndGroupExtractor) nats.MsgHandler {
+func refreshExtractor(cfg appConfig.Security, extractor *security.SynchronizedSubjectExtractor) nats.MsgHandler {
 	return nats.MsgHandler(func(msg *nats.Msg) {
 		defer func() {
 			if r := recover(); r != nil {
@@ -199,7 +199,7 @@ func refreshExtractor(cfg appConfig.Security, extractor *security.SynchronizedUs
 	})
 }
 
-func setupUserInfoExtractor(cfg appConfig.Security) (security.UserAndGroupExtractor, error) {
+func setupUserInfoExtractor(cfg appConfig.Security) (security.SubjectExtractor, error) {
 	policyStorage := cfg.PolicyStorage
 	client, err := minio.New(policyStorage.MinioEndpoint, policyStorage.MinioAccessKey, policyStorage.MinioSecretKey, policyStorage.MinioUseSSL)
 	if err != nil {
@@ -215,5 +215,5 @@ func setupUserInfoExtractor(cfg appConfig.Security) (security.UserAndGroupExtrac
 	if err != nil {
 		return nil, err
 	}
-	return security.NewDefaultUserAndGroupExtractor(string(data), "rules", "subject"), nil
+	return security.NewDefaultSubjectExtractor(string(data), "rules", "subject"), nil
 }
