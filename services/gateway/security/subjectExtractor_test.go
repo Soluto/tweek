@@ -60,11 +60,11 @@ func TestDefaultSubjectExtractor_ExtractSubject(t *testing.T) {
 			e := NewDefaultSubjectExtractor(string(rules), "rules", "subject")
 			got, err := e.ExtractSubject(ctx, tt.args.claims)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("DefaultUserAndGroupExtractor.ExtractUserAndGroup() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("DefaultSubjectExtractor.ExtractSubject() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("DefaultUserAndGroupExtractor.ExtractUserAndGroup() = %v, want %v", got, tt.want)
+				t.Errorf("DefaultSubjectExtractor.ExtractSubject() = %v, want %v", got, tt.want)
 			}
 		})
 	}
