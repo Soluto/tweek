@@ -72,12 +72,11 @@ type Security struct {
 
 // Cors stores data for CORS support
 type Cors struct {
-	Enabled          bool
-	MaxAge           int
-	AllowedOrigins   []string
-	AllowedMethods   []string
-	AllowedHeaders   []string
-	AllowCredentials bool
+	Enabled        bool
+	MaxAge         int
+	AllowedOrigins []string
+	AllowedMethods []string
+	AllowedHeaders []string
 }
 
 // PolicyStorage section holds the minio upstream and secret keys
