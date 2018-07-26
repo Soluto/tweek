@@ -13,16 +13,15 @@ using Tweek.Publishing.Service.Validation;
 
 namespace Tweek.Publishing.Service.Sync.Converters
 {
-    public class PolicyConverter : IConverter
+    public class ExtractorRulesConverter : IConverter
     {
-        private static readonly Regex policyRegex = new Regex(Patterns.Policy, RegexOptions.Compiled);
+        private static readonly Regex extractorRulesRegex = new Regex(Patterns.ExtractorRules, RegexOptions.Compiled);
 
         public (string, string, string) Convert(string commitId, ICollection<string> files, Func<string, string> readFn)
         {           
             var result = files
-                .Where(x =>  policyRegex.IsMatch(x))
-                .Select(x =>
-                {
+                .Where(x =>  extractorRulesRegex.IsMatch(x))
+                .Select(x=> {
                     try
                     {
                         return readFn(x);
@@ -34,7 +33,7 @@ namespace Tweek.Publishing.Service.Sync.Converters
                     }
                 })
                 .Single();
-            return ("security/policy.csv", result, "application/csv");
+            return ("security/rules.rego", result, "text/plain");
         }
     }
 }

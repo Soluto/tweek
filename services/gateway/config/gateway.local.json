@@ -27,7 +27,6 @@
             "minioAccessKey": "AKIAIOSFODNN7EXAMPLE",
             "minioSecretKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
             "minioSecure": false,
-            "minioPolicyObjectName": "policy.csv",
             "natsEndpoint": "nats://localhost:4222",
             "casbinModel": "./model.conf"
         },
