@@ -33,7 +33,16 @@
 
 [[projects]]
   name = "github.com/casbin/casbin"
-  packages = [".","config","file-adapter","model","persist","rbac","rbac/default-role-manager","util"]
+  packages = [
+    ".",
+    "config",
+    "file-adapter",
+    "model",
+    "persist",
+    "rbac",
+    "rbac/default-role-manager",
+    "util"
+  ]
   revision = "3a17f2855cc12ad36fd614c590b9d18f46dfd65d"
   version = "v1.4.0"
 
@@ -44,8 +53,17 @@
   version = "v1.1.0"
 
 [[projects]]
+  name = "github.com/dchest/siphash"
+  packages = ["."]
+  revision = "4ebf1de738443ea7f45f02dc394c4df1942a126d"
+  version = "v1.1.0"
+
+[[projects]]
   name = "github.com/dgrijalva/jwt-go"
-  packages = [".","request"]
+  packages = [
+    ".",
+    "request"
+  ]
   revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
   version = "v3.2.0"
 
@@ -54,6 +72,12 @@
   name = "github.com/dustin/go-humanize"
   packages = ["."]
   revision = "bb3d318650d48840a39aa21a027c6630e198e626"
+
+[[projects]]
+  name = "github.com/ghodss/yaml"
+  packages = ["."]
+  revision = "0ca9ea5df5451ffdf184b4428c902747c2c11cd7"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/go-ini/ini"
@@ -94,7 +118,11 @@
 [[projects]]
   branch = "master"
   name = "github.com/lestrrat-go/jwx"
-  packages = ["internal/base64","jwa","jwk"]
+  packages = [
+    "internal/base64",
+    "jwa",
+    "jwk"
+  ]
   revision = "0cb38412795e7e5e18194ed3f1b363fc1cd88e06"
 
 [[projects]]
@@ -111,7 +139,15 @@
 
 [[projects]]
   name = "github.com/minio/minio-go"
-  packages = [".","pkg/credentials","pkg/encrypt","pkg/policy","pkg/s3signer","pkg/s3utils","pkg/set"]
+  packages = [
+    ".",
+    "pkg/credentials",
+    "pkg/encrypt",
+    "pkg/policy",
+    "pkg/s3signer",
+    "pkg/s3utils",
+    "pkg/set"
+  ]
   revision = "9e124ec59547551cb3f1324f73623bbb30650cf8"
   version = "4.0.9"
 
@@ -123,7 +159,11 @@
 
 [[projects]]
   name = "github.com/nats-io/go-nats"
-  packages = [".","encoders/builtin","util"]
+  packages = [
+    ".",
+    "encoders/builtin",
+    "util"
+  ]
   revision = "d66cb54e6b7bdd93f0b28afc8450d84c780dfb68"
   version = "v1.4.0"
 
@@ -132,6 +172,22 @@
   packages = ["."]
   revision = "289cccf02c178dc782430d534e3c1f5b72af807f"
   version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/open-policy-agent/opa"
+  packages = [
+    "ast",
+    "metrics",
+    "rego",
+    "storage",
+    "storage/inmem",
+    "topdown",
+    "topdown/builtins",
+    "types",
+    "util"
+  ]
+  revision = "877d39f035d1756b07a6ce8582bf793b7f2c1714"
+  version = "v0.8.2"
 
 [[projects]]
   name = "github.com/pkg/errors"
@@ -154,14 +210,29 @@
 [[projects]]
   branch = "master"
   name = "github.com/prometheus/common"
-  packages = ["expfmt","internal/bitbucket.org/ww/goautoneg","model"]
+  packages = [
+    "expfmt",
+    "internal/bitbucket.org/ww/goautoneg",
+    "model"
+  ]
   revision = "7600349dcfe1abd18d72d3a1770870d9800a7801"
 
 [[projects]]
   branch = "master"
   name = "github.com/prometheus/procfs"
-  packages = [".","internal/util","nfs","xfs"]
+  packages = [
+    ".",
+    "internal/util",
+    "nfs",
+    "xfs"
+  ]
   revision = "fe93d378a6b03758a2c1b65e86cf630bf78681c0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/rcrowley/go-metrics"
+  packages = ["."]
+  revision = "e2704e165165ec55d062f5919b4b29494e9fa790"
 
 [[projects]]
   name = "github.com/rs/cors"
@@ -184,30 +255,63 @@
 [[projects]]
   branch = "master"
   name = "github.com/vulcand/oxy"
-  packages = ["forward","utils"]
+  packages = [
+    "forward",
+    "utils"
+  ]
   revision = "9d9a6ff60150200c9ceddf08684bd4ab98cb7370"
 
 [[projects]]
   branch = "master"
+  name = "github.com/yashtewari/glob-intersection"
+  packages = ["."]
+  revision = "7af743e8ec8480fee1932a737a406f7ec817f910"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/crypto"
-  packages = ["pbkdf2","ssh/terminal"]
+  packages = [
+    "pbkdf2",
+    "ssh/terminal"
+  ]
   revision = "c3a3ad6d03f7a915c0f7e194b7152974bb73d287"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
-  packages = ["idna","lex/httplex"]
+  packages = [
+    "idna",
+    "lex/httplex"
+  ]
   revision = "24dd3780ca4f75fed9f321890729414a4b5d3f13"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix","windows"]
+  packages = [
+    "unix",
+    "windows"
+  ]
   revision = "01acb38716e021ed1fc03a602bdb5838e1358c5e"
 
 [[projects]]
   name = "golang.org/x/text"
-  packages = ["collate","collate/build","internal/colltab","internal/gen","internal/tag","internal/triegen","internal/ucd","language","secure/bidirule","transform","unicode/bidi","unicode/cldr","unicode/norm","unicode/rangetable"]
+  packages = [
+    "collate",
+    "collate/build",
+    "internal/colltab",
+    "internal/gen",
+    "internal/tag",
+    "internal/triegen",
+    "internal/ucd",
+    "language",
+    "secure/bidirule",
+    "transform",
+    "unicode/bidi",
+    "unicode/cldr",
+    "unicode/norm",
+    "unicode/rangetable"
+  ]
   revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
   version = "v0.3.0"
 
@@ -220,6 +324,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c96e253a58bbf158c36ce0856c23f1e27a106f3aab6edc4fc46cc857e467b071"
+  inputs-digest = "81776d46876a2287a6264280971aaaeeff17096fe67610dd248fde89b90c3187"
   solver-name = "gps-cdcl"
   solver-version = 1
