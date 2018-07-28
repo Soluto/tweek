@@ -102,6 +102,7 @@ namespace Tweek.Publishing.Service
                     new RulesConverter(),
                     new ExternalAppsConverter(key),
                     new PolicyConverter(),
+                    new ExtractorRulesConverter(),
                 }
             };
             return storageSynchronizer;

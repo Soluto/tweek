@@ -2,10 +2,15 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"runtime"
 	"time"
+
+	"github.com/minio/minio-go"
+	nats "github.com/nats-io/go-nats"
 
 	"github.com/Soluto/casbin-minio-adapter"
 
@@ -69,7 +74,12 @@ func newApp(config *appConfig.Configuration) http.Handler {
 		auditor.EnforcerDisabled()
 	}
 
-	authenticationMiddleware := security.AuthenticationMiddleware(&config.Security, auditor)
+	userInfoExtractor, err := setupUserInfoExtractorWithRefresh(config.Security)
+	if err != nil {
+		log.Panicln("Unable to setup user info extractor", err)
+	}
+
+	authenticationMiddleware := security.AuthenticationMiddleware(&config.Security, userInfoExtractor, auditor)
 	authorizationMiddleware := security.AuthorizationMiddleware(enforcer, auditor)
 
 	recovery := negroni.NewRecovery()
@@ -119,7 +129,7 @@ func initEnforcer(config *appConfig.Security) (*casbin.SyncedEnforcer, error) {
 		policyStorage.MinioSecretKey,
 		policyStorage.MinioUseSSL,
 		policyStorage.MinioBucketName,
-		policyStorage.MinioPolicyObjectName)
+		"security/policy.csv")
 	if err != nil {
 		return nil, fmt.Errorf("Error while creating Minio adapter:\n %v", err)
 	}
@@ -146,4 +156,65 @@ func withRetry(times int, sleepDuration time.Duration, todo enforcerFactory, arg
 		time.Sleep(sleepDuration)
 	}
 	return nil, err
+}
+
+func setupUserInfoExtractorWithRefresh(config appConfig.Security) (security.SubjectExtractor, error) {
+	initial, err := setupUserInfoExtractor(config)
+	if err != nil {
+		return nil, err
+	}
+
+	synchronized := security.NewSynchronizedSubjectExtractor(initial)
+
+	nc, err := nats.Connect(config.PolicyStorage.NatsEndpoint)
+	if err != nil {
+		return nil, err
+	}
+	subscription, err := nc.Subscribe("version", refreshExtractor(config, synchronized))
+	if err != nil {
+		return nil, err
+	}
+	runtime.SetFinalizer(synchronized, func(s interface{}) {
+		if subscription != nil && subscription.IsValid() {
+			subscription.Unsubscribe()
+		}
+	})
+
+	return synchronized, nil
+}
+
+func refreshExtractor(cfg appConfig.Security, extractor *security.SynchronizedSubjectExtractor) nats.MsgHandler {
+	return nats.MsgHandler(func(msg *nats.Msg) {
+		defer func() {
+			if r := recover(); r != nil {
+				log.Println("Failed to refresh user info extractor", r)
+			}
+		}()
+
+		newExtractor, err := setupUserInfoExtractor(cfg)
+		if err == nil {
+			extractor.UpdateExtractor(newExtractor)
+		} else {
+			log.Println("Error updating user info extractor", err)
+		}
+	})
+}
+
+func setupUserInfoExtractor(cfg appConfig.Security) (security.SubjectExtractor, error) {
+	policyStorage := cfg.PolicyStorage
+	client, err := minio.New(policyStorage.MinioEndpoint, policyStorage.MinioAccessKey, policyStorage.MinioSecretKey, policyStorage.MinioUseSSL)
+	if err != nil {
+		return nil, err
+	}
+
+	obj, err := client.GetObject(policyStorage.MinioBucketName, "security/rules.rego", minio.GetObjectOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := ioutil.ReadAll(obj)
+	if err != nil {
+		return nil, err
+	}
+	return security.NewDefaultSubjectExtractor(string(data), "rules", "subject"), nil
 }
