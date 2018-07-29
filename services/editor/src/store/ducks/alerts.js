@@ -18,12 +18,18 @@ export const buttons = {
     className: 'rodal-cancel-btn',
     'data-alert-button': 'cancel',
   },
+  SAVE: {
+    text: 'Save',
+    value: true,
+    className: 'rodal-save-btn',
+    'data-alert-button': 'save',
+  },
 };
 
 export function showCustomAlert({ buttons, ...alertProps }) {
   return dispatch =>
     dispatch(
-      new Promise(resolve => {
+      new Promise((resolve) => {
         const id = chance.guid();
         const onClose = (result, data) => {
           resolve({ type: REMOVE_ALERT, id, result, data });

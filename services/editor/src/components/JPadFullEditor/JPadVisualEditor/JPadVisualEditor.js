@@ -57,7 +57,7 @@ export default ({ valueType, mutate, alerter, keyPath }) => {
   const partitions = mutate.in('partitions').getValue();
   const defaultValueMutate = mutate.in('defaultValue');
 
-  const handlePartitionAddition = async newPartition => {
+  const handlePartitionAddition = async (newPartition) => {
     const rules = mutate.in('rules').getValue();
     const testAutoPartition = RulesService.testAutoPartition(
       newPartition,
@@ -75,32 +75,32 @@ export default ({ valueType, mutate, alerter, keyPath }) => {
       .result;
 
     switch (alertResult) {
-      case 'RESET':
-        mutate.apply(m =>
-          m
-            .insert('rules', createPartitionedRules(partitions.length + 1))
-            .in('partitions')
-            .append(newPartition),
-        );
-        break;
-      case 'OK':
-        mutate.apply(m =>
-          m
-            .insert('rules', RulesService.addPartition(newPartition, rules, partitions.length))
-            .in('partitions')
-            .append(newPartition),
-        );
-        break;
-      default:
-        break;
+    case 'RESET':
+      mutate.apply(m =>
+        m
+          .insert('rules', createPartitionedRules(partitions.length + 1))
+          .in('partitions')
+          .append(newPartition),
+      );
+      break;
+    case 'OK':
+      mutate.apply(m =>
+        m
+          .insert('rules', RulesService.addPartition(newPartition, rules, partitions.length))
+          .in('partitions')
+          .append(newPartition),
+      );
+      break;
+    default:
+      break;
     }
   };
-  const handlePartitionDelete = async index => {
+  const handlePartitionDelete = async (index) => {
     if (partitions.length === 0) return;
     const newPartitions = R.remove(index, 1, partitions);
     await clearPartitions(newPartitions);
   };
-  const clearPartitions = async newPartitions => {
+  const clearPartitions = async (newPartitions) => {
     if (
       isEmptyRules(mutate.in('rules').getValue()) ||
       (await alerter.showConfirm(resetPartitionsAlert)).result
@@ -112,12 +112,11 @@ export default ({ valueType, mutate, alerter, keyPath }) => {
       );
     }
   };
-  const updateDefaultValue = newValue => {
-    const typedValue = newValue && TypesService.safeConvertValue(newValue, valueType);
-    if (typedValue === undefined || typedValue === '') {
+  const updateDefaultValue = (newValue) => {
+    if (newValue === undefined || newValue === '') {
       defaultValueMutate.delete();
     } else {
-      defaultValueMutate.updateValue(typedValue);
+      defaultValueMutate.updateValue(newValue);
     }
   };
 

@@ -4,7 +4,10 @@ import { compose, mapProps, withContext, getContext } from 'recompose';
 import changeCase from 'change-case';
 import ComboBox from '../ComboBox/ComboBox';
 import Input from './Input';
+import { showCustomAlert, buttons } from '../../../store/ducks/alerts';
 import './TypedInput.css';
+import { connect } from 'react-redux';
+import { withJsonEditor } from './EditJSON';
 
 export const typesServiceContextType = {
   types: PropTypes.object.isRequired,
@@ -19,7 +22,7 @@ export const getTypesService = getContext(typesServiceContextType);
 const valueToItem = value =>
   value === undefined || value === '' ? undefined : { label: changeCase.pascalCase(value), value };
 
-const InputComponent = ({ value, allowedValues, onChange, ...props }) => {
+const InputComponent = ({ value, valueType, allowedValues, onChange, editJson, ...props }) => {
   if (allowedValues && allowedValues.length > 0) {
     return (
       <ComboBox
@@ -30,6 +33,19 @@ const InputComponent = ({ value, allowedValues, onChange, ...props }) => {
           selected && onChange(selected.value === undefined ? selected : selected.value)
         }
       />
+    );
+  }
+  if (valueType === 'object') {
+    return (
+      <div>
+        <Input
+          readOnly
+          {...props}
+          onChange={onChange}
+          value={value ? JSON.stringify(value) : value}
+        />
+        <button className="text-input object-type-expander" onClick={() => editJson(value)} />
+      </div>
     );
   }
   return <Input {...props} onChange={onChange} value={value} />;
@@ -50,16 +66,26 @@ const InputWithIcon = ({ hideIcon, iconType, ...props }) => {
 };
 
 const TypedInput = compose(
+  connect(null, {
+    showCustomAlert,
+  }),
   getTypesService,
-  mapProps(({ safeConvertValue, types, valueType, onChange, ...props }) => {
+  mapProps(({ safeConvertValue, types, valueType, onChange, showCustomAlert, ...props }) => {
     const typeDefinition = typeof valueType === 'string' ? types[valueType] : valueType;
     const iconType =
       (typeDefinition && (typeDefinition.name || (typeDefinition.base && 'custom'))) || 'unknown';
     const allowedValues = typeDefinition && typeDefinition.allowedValues;
-    const onChangeConvert = newValue => onChange && onChange(safeConvertValue(newValue, valueType));
+    const onChangeConvert = (newValue) => {
+      if (newValue) {
+        try {
+          return onChange(safeConvertValue(newValue, valueType));
+        } catch (_) {}
+      }
+    };
 
-    return { allowedValues, onChange: onChangeConvert, iconType, ...props };
+    return { allowedValues, onChange: onChangeConvert, iconType, valueType, ...props };
   }),
+  withJsonEditor,
 )(InputWithIcon);
 
 TypedInput.propTypes = {
