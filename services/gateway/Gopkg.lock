@@ -51,10 +51,7 @@
 
 [[projects]]
   name = "github.com/dgrijalva/jwt-go"
-  packages = [
-    ".",
-    "request"
-  ]
+  packages = [".","request"]
   revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
   version = "v3.2.0"
 
@@ -126,15 +123,7 @@
 
 [[projects]]
   name = "github.com/minio/minio-go"
-  packages = [
-    ".",
-    "pkg/credentials",
-    "pkg/encrypt",
-    "pkg/policy",
-    "pkg/s3signer",
-    "pkg/s3utils",
-    "pkg/set"
-  ]
+  packages = [".","pkg/credentials","pkg/encrypt","pkg/policy","pkg/s3signer","pkg/s3utils","pkg/set"]
   revision = "9e124ec59547551cb3f1324f73623bbb30650cf8"
   version = "4.0.9"
 
@@ -158,17 +147,7 @@
 
 [[projects]]
   name = "github.com/open-policy-agent/opa"
-  packages = [
-    "ast",
-    "metrics",
-    "rego",
-    "storage",
-    "storage/inmem",
-    "topdown",
-    "topdown/builtins",
-    "types",
-    "util"
-  ]
+  packages = ["ast","metrics","rego","storage","storage/inmem","topdown","topdown/builtins","types","util"]
   revision = "877d39f035d1756b07a6ce8582bf793b7f2c1714"
   version = "v0.8.2"
 
@@ -193,11 +172,7 @@
 [[projects]]
   branch = "master"
   name = "github.com/prometheus/common"
-  packages = [
-    "expfmt",
-    "internal/bitbucket.org/ww/goautoneg",
-    "model"
-  ]
+  packages = ["expfmt","internal/bitbucket.org/ww/goautoneg","model"]
   revision = "7600349dcfe1abd18d72d3a1770870d9800a7801"
 
 [[projects]]
@@ -262,24 +237,15 @@
 
 [[projects]]
   name = "golang.org/x/text"
-  packages = [
-    "collate",
-    "collate/build",
-    "internal/colltab",
-    "internal/gen",
-    "internal/tag",
-    "internal/triegen",
-    "internal/ucd",
-    "language",
-    "secure/bidirule",
-    "transform",
-    "unicode/bidi",
-    "unicode/cldr",
-    "unicode/norm",
-    "unicode/rangetable"
-  ]
+  packages = ["collate","collate/build","internal/colltab","internal/gen","internal/tag","internal/triegen","internal/ucd","language","secure/bidirule","transform","unicode/bidi","unicode/cldr","unicode/norm","unicode/rangetable"]
   revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
   version = "v0.3.0"
+
+[[projects]]
+  name = "gopkg.in/h2non/gock.v1"
+  packages = ["."]
+  revision = "4692cba4394f79372bfe85996501ad43db9d82e0"
+  version = "v1.0.9"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"
@@ -290,6 +256,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "81776d46876a2287a6264280971aaaeeff17096fe67610dd248fde89b90c3187"
+  inputs-digest = "3a685559eb3b1853b947bbb6c692d86b4603a36937b3885958c248609304a1e3"
   solver-name = "gps-cdcl"
   solver-version = 1
