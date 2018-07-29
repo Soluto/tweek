@@ -1,7 +1,7 @@
 /* global fetch window process */
 import { retrieveToken } from '../services/auth-service';
 
-export const getGatewayBaseUrl = () => process.env.REACT_APP_GATEWAY_URL || window.GATEWAY_URL;
+export const getGatewayBaseUrl = () => window.GATEWAY_URL;
 
 export default async function (relativeUrl, config = {}) {
   const url = `${getGatewayBaseUrl()}/api/v2${relativeUrl}`;

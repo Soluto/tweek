@@ -4,17 +4,12 @@ const fs = require('fs');
 const express = require('express');
 
 const indexFilePath = path.resolve(__dirname, 'build', 'index.html');
-const envVarsFilePath = path.resolve(__dirname, 'build', 'envVars.js');
 
-fs.writeFileSync(envVarsFilePath, `window.GATEWAY_URL='${process.env.REACT_APP_GATEWAY_URL}';`);
 const indexFileContent = fs.readFileSync(indexFilePath, 'utf8');
-const newIndexFileContent = indexFileContent.includes('envVars.js')
-  ? indexFileContent
-  : indexFileContent.replace(
-    '<div id="root"></div>',
-    '<div id="root"></div><script type="text/javascript" src="./envVars.js"></script>',
-  );
-
+const newIndexFileContent = indexFileContent.replace(
+  '%REACT_APP_GATEWAY_URL%',
+  process.env.REACT_APP_GATEWAY_URL,
+);
 fs.writeFileSync(indexFilePath, newIndexFileContent);
 
 const app = express();
