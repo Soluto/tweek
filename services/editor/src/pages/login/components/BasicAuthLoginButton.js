@@ -1,6 +1,7 @@
 /* global window process */
 import React from 'react';
 import styled from 'react-emotion';
+import { getGatewayBaseUrl } from '../../../utils/fetch';
 
 const Button = styled('a')`
   padding-top: 14px;
@@ -20,7 +21,7 @@ const Button = styled('a')`
 `;
 
 const buildAuthUrl = state =>
-  `${process.env.REACT_APP_GATEWAY_URL || window.REACT_APP_GATEWAY_URL}/auth/basic?redirect_url=${
+  `${getGatewayBaseUrl()}/auth/basic?redirect_url=${
     window.location.origin
   }/auth/basic&state=${JSON.stringify(state)}`;
 
