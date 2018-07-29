@@ -24,7 +24,10 @@ func NewStatusHandler(config *appConfig.Upstreams) http.HandlerFunc {
 		serviceStatuses := map[string]interface{}{}
 
 		for serviceName, serviceHost := range services {
-			go checkServiceStatus(serviceName, serviceHost, serviceStatuses, &wg)
+			go func(name, host string, statuses map[string]interface{}, wgroup *sync.WaitGroup) {
+				checkServiceStatus(name, host, statuses)
+				wgroup.Done()
+			}(serviceName, serviceHost, serviceStatuses, &wg)
 		}
 		wg.Wait()
 
@@ -38,10 +41,9 @@ func NewStatusHandler(config *appConfig.Upstreams) http.HandlerFunc {
 	}
 }
 
-func checkServiceStatus(serviceName string, serviceHost string, statuses map[string]interface{}, wg *sync.WaitGroup) {
-	defer wg.Done()
+func checkServiceStatus(serviceName string, serviceHost string, statuses map[string]interface{}) {
 	resp, err := http.Get(fmt.Sprintf("%s/health", serviceHost))
-	if err != nil || resp.StatusCode != http.StatusOK {
+	if err != nil || resp == nil {
 		fmt.Printf("Service health request for %s failed with error: %v\n", serviceName, err)
 		statuses[serviceName] = "Service health request failed"
 		return
