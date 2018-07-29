@@ -92,7 +92,7 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	transformation.Mount(&config.Upstreams, config.V2Routes, token, middleware, router.V2Router())
 
 	metricsVar := metrics.NewMetricsVar("passthrough")
-	noAuthMiddleware := negroni.New(negroni.NewRecovery())
+	noAuthMiddleware := negroni.New(recovery)
 	passThrough.Mount(&config.Upstreams, &config.V1Hosts, noAuthMiddleware, metricsVar, router.V1Router())
 	passThrough.Mount(&config.Upstreams, &config.V1Hosts, noAuthMiddleware, metricsVar, router.LegacyNonV1Router())
 
@@ -100,6 +100,7 @@ func newApp(config *appConfig.Configuration) http.Handler {
 
 	router.MainRouter().PathPrefix("/version").HandlerFunc(handlers.NewVersionHandler(&config.Upstreams, config.Version))
 	router.MainRouter().PathPrefix("/health").HandlerFunc(handlers.NewHealthHandler())
+	router.MainRouter().PathPrefix("/status").HandlerFunc(handlers.NewStatusHandler(&config.Upstreams))
 
 	router.MainRouter().PathPrefix("/metrics").Handler(prometheus.Handler())
 
