@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 
@@ -51,9 +50,6 @@ func Test_checkServiceStatus(t *testing.T) {
 			defer gock.Off()
 			statuses := map[string]interface{}{}
 			checkServiceStatus(tt.args.serviceName, HOST, statuses)
-
-			fmt.Printf("Received %#v\n", statuses)
-			fmt.Printf("Expected %#v\n", tt.args.expectedStatuses)
 
 			if !reflect.DeepEqual(statuses, tt.args.expectedStatuses) {
 				t.Fatal()
