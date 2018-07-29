@@ -44,7 +44,11 @@ const InputComponent = ({ value, valueType, allowedValues, onChange, editJson, .
           onChange={onChange}
           value={value ? JSON.stringify(value) : value}
         />
-        <button className="text-input object-type-expander" onClick={() => editJson(value)} />
+        <button
+          className="text-input object-type-expander"
+          data-comp="object-editor"
+          onClick={() => editJson(value)}
+        />
       </div>
     );
   }

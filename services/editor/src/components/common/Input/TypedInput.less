@@ -39,10 +39,18 @@
       background-image: @calendar_icon;
       background-size: 40px;
     }
+    &[data-value-type=object]{
+      background-image: @object_icon;
+      background-size: 55% 55%;
+    }
   }
-
 }
 
 .object-type-expander {
-  width: 16px
+  width: 20px;
+  height: 20px;
+  vertical-align: bottom;
+  padding-bottom: 27px;
+  background-image: @object_edit_icon;
+  background-size: 100% 100%;
 }

@@ -41,7 +41,7 @@
 .rodal-container .rodal-button-container .auto-partition-btn:disabled {
   background: #dddddd;
   border: 1px solid #cccccc;
-  color:#888888
+  color: #888888;
 }
 .rodal-container .rodal-button-container .rodal-cancel-btn,
 .rodal-container .rodal-button-container .reset-partitions-btn {
