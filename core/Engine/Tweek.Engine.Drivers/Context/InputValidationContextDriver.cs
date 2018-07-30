@@ -63,7 +63,7 @@ namespace Tweek.Engine.Drivers.Context
                             , ()=> _mode == Mode.AllowUndefinedProperties ? 
                                  Valid :
                                  Error($"property \"{prop.Key}\" not found in schema"))
-                        ).Apply((_)=>Unit.Default);
+                        ).Aggregate((a,b)=> a | b);
 
         public async Task AppendContext(Identity identity, Dictionary<string, JsonValue> context)
         {
@@ -130,7 +130,7 @@ namespace Tweek.Engine.Drivers.Context
                          .Map(r => r ? Valid : Error("value does not match regex"))
                          .IfNone(Valid);
 
-            return (allowedValuesValidation, regexValidation).Apply((_)=>Unit.Default);
+            return allowedValuesValidation | regexValidation;
         }
 
         public Task<Dictionary<string, JsonValue>> GetContext(Identity identity) => _child.GetContext(identity);
