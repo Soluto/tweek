@@ -166,7 +166,7 @@ namespace Tweek.ApiService
                     mode,
                     reportOnly
                     );
-                driver.OnValidationFailed += (sender, message)=>logger.LogWarning(message);
+                driver.OnValidationFailed += (message)=>logger.LogWarning(message);
                 return driver;
             }
 
