@@ -12,7 +12,7 @@ using Tweek.Publishing.Service.Sync;
 namespace Tweek.Publishing.Service.Handlers
 {
     public class PushHandler
-    {
+    {        
         public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(SyncActor syncActor)
         {
             return async (req, res, routedata) =>
@@ -27,7 +27,9 @@ namespace Tweek.Publishing.Service.Handlers
                     res.StatusCode = 500;
                     await res.WriteAsync(ex.Message);
                 }
+                #pragma warning disable CS4014                
                 syncActor.SyncToLatest();
+                #pragma warning restore CS4014
             };
         }
     }
