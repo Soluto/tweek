@@ -14,8 +14,14 @@ namespace Tweek.Publishing.Service.Validation
             {
                 var contents = await reader(fileName);
                 await File.WriteAllTextAsync(tempFilePath, contents);
-                var result = await ShellHelper.Executor.ExecTask("/tweek/opa", $"check {tempFilePath} -f json");
+                var opaPath = Environment.GetEnvironmentVariable("OPA_PATH");
+                var result = await ShellHelper.Executor.ExecTask(opaPath, $"check {tempFilePath} -f json");
 
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+                throw new SubjectExtractionRulesValidationException(e);
             }
             finally
             {
