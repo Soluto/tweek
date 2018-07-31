@@ -9,7 +9,7 @@ import tweekApiClient from '../../clients/tweek-api-client';
 import authoringApi from '../../clients/authoring-client';
 import { login } from '../../utils/auth-utils';
 
-describe('edit keys', () => {
+describe.only('edit keys', () => {
   before(() => login());
 
   describe('edit JPad keys', () => {
@@ -66,6 +66,22 @@ describe('edit keys', () => {
         authoringApi.eventuallyExpectKey(keyName, ({ implementation }) =>
           expect(JSON.parse(implementation)).to.deep.equal(expectedKeySource),
         );
+      });
+
+      it('should succeed in editing an object JPad key', () => {
+        const keyName = 'behavior_tests/edit_key/visual/edit_object_test';
+        const defaultValue = { value: 123 };
+        const expectedObjectKeySource = {
+          partitions: [],
+          valueType: 'object',
+          rules: [],
+          defaultValue: defaultValue,
+        };
+
+        Key.open(keyName).editObjectInEditor(JSON.stringify(defaultValue));
+        Alert.save();
+
+        expect(Key.goToSourceTab().source).to.deep.equal(expectedObjectKeySource);
       });
     });
 

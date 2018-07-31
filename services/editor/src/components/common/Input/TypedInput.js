@@ -80,7 +80,7 @@ const TypedInput = compose(
       (typeDefinition && (typeDefinition.name || (typeDefinition.base && 'custom'))) || 'unknown';
     const allowedValues = typeDefinition && typeDefinition.allowedValues;
     const onChangeConvert = (newValue) => {
-      if (newValue) {
+      if (onChange) {
         try {
           return onChange(safeConvertValue(newValue, valueType));
         } catch (_) {}
