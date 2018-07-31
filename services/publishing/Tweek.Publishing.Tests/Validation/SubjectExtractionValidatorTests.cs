@@ -15,16 +15,15 @@ namespace Tweek.Publishing.Tests.Validation
         [Fact]
         public async Task ValidatePassWhenValidOpaRules()
         {
-            var sb = new StringBuilder();
-            sb.AppendLine("package rules");
-            sb.AppendLine();
-            sb.AppendLine("default subject = { \"user\": null,\"group\": null }");
-            sb.AppendLine("subject = { \"user\": input.sub, \"group\": \"default\" }");
-
             var validator = new SubjectExtractionValidator();
             var files = new Dictionary<string, string>
             {
-                [subExtractionRulesFileName] = sb.ToString()
+                [subExtractionRulesFileName] = @"
+                    package rules
+
+                    default subject = { ""user"": null, ""group"": null }
+                    subject = { ""user"": input.sub, ""group"": ""default"" }
+                ",
             };
             await validator.Validate(subExtractionRulesFileName, async x => files[x]);
         }
@@ -32,14 +31,13 @@ namespace Tweek.Publishing.Tests.Validation
         [Fact]
         public async Task ValidateFailsWhenInvalidOpaRules()
         {
-            var sb = new StringBuilder();            
-            sb.AppendLine("default subject = { \"user\": null,\"group\": null }");
-            sb.AppendLine("subject = { \"user\": input.sub, \"group\": \"default\" }");
-
             var validator = new SubjectExtractionValidator();
             var files = new Dictionary<string, string>
             {
-                [subExtractionRulesFileName] = sb.ToString()
+                [subExtractionRulesFileName] = @"
+                    default subject = { ""user"": null, ""group"": null }
+                    subject = { ""user"": input.sub, ""group"": ""default"" }
+                ",
             };
             await Assert.ThrowsAsync<SubjectExtractionRulesValidationException>(() => validator.Validate(subExtractionRulesFileName, async x => files[x]));
         }

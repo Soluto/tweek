@@ -20,12 +20,11 @@ namespace Tweek.Publishing.Service.Validation
             }
             catch(Exception e)
             {
-                Console.WriteLine(e);
                 throw new SubjectExtractionRulesValidationException(e);
             }
             finally
             {
-                if (!string.IsNullOrEmpty(tempFilePath) && File.Exists(tempFilePath))
+                if (File.Exists(tempFilePath))
                 {
                     File.Delete(tempFilePath);
                 }
