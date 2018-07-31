@@ -13,7 +13,8 @@ using Microsoft.Extensions.Logging;
 using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers;
 using Unit = LanguageExt.Unit;
-using ValidationResult = LanguageExt.Validation<string,LanguageExt.Unit>;
+using ValidationResult = LanguageExt.Validation<string, LanguageExt.Unit>;
+using System.Text.RegularExpressions;
 
 namespace Tweek.Engine.Drivers.Context
 {
@@ -28,10 +29,10 @@ namespace Tweek.Engine.Drivers.Context
 
         public delegate Option<JsonValue> IdentitySchemaProvider(string identityType);
         public delegate Option<CustomTypeDefinition> CustomTypeDefinitionProvider(string typeName);
-        public Action<string> OnValidationFailed = (s) => {};
+        public Action<string> OnValidationFailed = (s) => { };
 
-        private static Validation<string,Unit> Valid = Success<string, Unit>(Unit.Default);
-        private static Validation<string,Unit> Error(string error) => Fail<string, Unit>(error);
+        private static Validation<string, Unit> Valid = Success<string, Unit>(Unit.Default);
+        private static Validation<string, Unit> Error(string error) => Fail<string, Unit>(error);
 
         private readonly IContextDriver _child;
         private readonly IdentitySchemaProvider _identitySchemaProvider;
@@ -40,64 +41,68 @@ namespace Tweek.Engine.Drivers.Context
         private readonly bool _reportOnly;
 
         public InputValidationContextDriver(
-            IContextDriver child, 
-            IdentitySchemaProvider identitySchemaProvider, 
-            CustomTypeDefinitionProvider customTypeDefinitionProvider, 
+            IContextDriver child,
+            IdentitySchemaProvider identitySchemaProvider,
+            CustomTypeDefinitionProvider customTypeDefinitionProvider,
             Mode mode = Mode.Strict,
             bool reportOnly = false)
         {
             _child = child;
             _identitySchemaProvider = identitySchemaProvider;
-            _customTypeDefinitionProvider = customTypeDefinitionProvider ?? (x=> None);
+            _customTypeDefinitionProvider = customTypeDefinitionProvider ?? (x => None);
             _mode = mode;
             _reportOnly = reportOnly;
         }
 
         private ValidationResult GetValidationErrors(
-            Dictionary<string, JsonValue> context, JsonValue schema) => 
-            context.Where(prop => !prop.Key.StartsWith("@fixed:"))
+            Dictionary<string, JsonValue> context, JsonValue schema) =>
+                 context.Where(prop => !prop.Key.StartsWith("@fixed:"))
                         .Select(prop =>
                             schema.GetPropertyOption(prop.Key).Match((propSchema) =>
                                 ValidateSingleProperty(prop.Value, propSchema)
-                                .Match(s=>s, (e) => Error($"{prop.Key}:{String.Join(",",e)}"))
-                            , ()=> _mode == Mode.AllowUndefinedProperties ? 
+                                .Match(s => s, (e) => Error($"{prop.Key}:{String.Join(",", e)}"))
+                            , () => _mode == Mode.AllowUndefinedProperties ?
                                  Valid :
                                  Error($"property \"{prop.Key}\" not found in schema"))
-                        ).Aggregate((a,b)=> a | b);
+                        ).Aggregate((a, b) => a | b);
 
         public async Task AppendContext(Identity identity, Dictionary<string, JsonValue> context)
         {
-            var result = 
+            var result =
                 _identitySchemaProvider(identity.Type)
                 .Map(schema => GetValidationErrors(context, schema))
-                .IfNone(()=>Error($"schema for identity type \"{identity.Type}\" not found"));
-            
-            if (result.IsFail){
-                string error = $"Invalid properties for {identity.Type}: " + String.Join(",",result.FailToSeq());
+                .IfNone(() => Error($"schema for identity type \"{identity.Type}\" not found"));
+
+            if (result.IsFail)
+            {
+                string error = $"Invalid properties for {identity.Type}: {String.Join(",", result.FailToSeq())}";
                 OnValidationFailed(error);
                 if (!_reportOnly)
                 {
                     throw new ArgumentException(error);
                 }
             }
-            await _child.AppendContext(identity,context);
+            await _child.AppendContext(identity, context);
         }
 
         private ValidationResult ValidateSingleProperty(JsonValue value, JsonValue property)
         {
             return property.GetPropertyOption("type")
-                            .Map(typeDefinition => {
-                                switch(typeDefinition)
+                            .Map(typeDefinition =>
+                            {
+                                switch (typeDefinition)
                                 {
                                     case JsonValue.String baseTypeName:
                                         var baseType = baseTypeName.Item;
-                                        switch (baseType){
+                                        switch (baseType)
+                                        {
                                             case "number": return ValidateNumber(baseType, value);
                                             case "date": return ValidateDate(baseType, value);
                                             case "string": return ValidateString(baseType, value);
-                                            default: return _customTypeDefinitionProvider(baseType)
-                                                    .Map(type => ValidateCustomType(type, value))
-                                                    .IfNone(() => Error($"Custom type \"{baseType}\" not exit"));
+                                            default:
+                                                return _customTypeDefinitionProvider(baseType)
+                                               .Map(type => ValidateCustomType(type, value))
+                                               .IfNone(() => Error($"custom type \"{baseType}\" not exit"));
                                         }
                                     case JsonValue.Record customTypeRaw:
                                         return ValidateCustomType(customTypeRaw.Deserialize<CustomTypeDefinition>(), value);
@@ -107,27 +112,27 @@ namespace Tweek.Engine.Drivers.Context
                             }).IfNone(() => Error($"invalid schema"));
         }
 
-        private static ValidationResult ValidateNumber(string type, JsonValue property) => 
+        private static ValidationResult ValidateNumber(string type, JsonValue property) =>
             property.IsNumber ? Valid : Error("value is not a number");
 
-        private static ValidationResult ValidateDate(string type, JsonValue property) => 
+        private static ValidationResult ValidateDate(string type, JsonValue property) =>
             DateTime.TryParse(property.AsString(), out var _) ?
-                            Valid : 
+                            Valid :
                             Error("value is not a valid date");
 
-        private static ValidationResult ValidateString(string type, JsonValue property) => 
-            property.IsString  ? Valid : 
+        private static ValidationResult ValidateString(string type, JsonValue property) =>
+            property.IsString ? Valid :
                                  Error("value is not a string");
 
         private ValidationResult ValidateCustomType(CustomTypeDefinition typeDefinition, JsonValue property)
-        { 
-            var allowedValuesValidation = (typeDefinition.AllowedValues.Any() ? Some(typeDefinition.AllowedValues) : None)
-                            .Map(allowedValues => typeDefinition.Base == "string" && allowedValues.Contains(property.AsString(), StringComparer.InvariantCultureIgnoreCase))
-                            .Map(r => r ? Valid : Error("value not in the allowed values"))
-                            .IfNone(Valid);
+        {
+            var allowedValuesValidation = !typeDefinition.AllowedValues.Any() || typeDefinition.AllowedValues.Exists(v => v == property) 
+                            ? Valid 
+                            : Error("value not in the allowed values");
 
-            var regexValidation = toOption(typeDefinition.Validation?.IsMatch(property.AsString()))
-                         .Map(r => r ? Valid : Error("value does not match regex"))
+            var regexValidation = Optional(typeDefinition.Validation)
+                         .Map(validation => validation.IsMatch(property.AsString()))
+                         .Map(result => result ? Valid : Error("value does not match regex"))
                          .IfNone(Valid);
 
             return allowedValuesValidation | regexValidation;

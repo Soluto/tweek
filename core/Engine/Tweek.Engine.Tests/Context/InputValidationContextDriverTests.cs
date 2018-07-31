@@ -123,6 +123,20 @@ namespace Engine.Drivers.UnitTests.Context
             Assert.Equal(result,data);
         }
 
+        [Theory(DisplayName = "When appending context, fixed keys should pass validation")]
+        [InlineData(Mode.Strict)]
+        [InlineData(Mode.AllowUndefinedProperties)]
+        public async Task AppendContext_AddingFixedKeys_ShouldPassValidation(Mode mode)
+        {
+            var identity = new Identity("dummy", "1");
+            var data = new Dictionary<string, JsonValue>();
+            data.Add("@fixed:my_key", NewString("undefined"));
+            var target = CreateTarget(schemaProvider:ExternalSchemaProvider, mode: mode);
+            await target.AppendContext(identity, data);
+            var result = await target.GetContext(identity);
+            Assert.Equal(result,data);
+        }
+
         public static IEnumerable<object[]> ValidContextData()
         {   
             yield return new object[]

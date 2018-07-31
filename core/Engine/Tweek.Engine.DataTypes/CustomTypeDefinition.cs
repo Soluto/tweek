@@ -1,5 +1,6 @@
 using System;
 using System.Text.RegularExpressions;
+using FSharpUtils.Newtonsoft;
 using Newtonsoft.Json;
 
 namespace Tweek.Engine.DataTypes
@@ -9,7 +10,7 @@ namespace Tweek.Engine.DataTypes
         [JsonProperty(Required = Required.Always)]
         public string Base { get; set; }
 
-        public string[] AllowedValues { get; set; } = new string[]{};
+        public JsonValue[] AllowedValues { get; set; } = new JsonValue[]{};
 
         public string Comparer { get; set; }
 
