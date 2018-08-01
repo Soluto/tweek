@@ -93,8 +93,8 @@ func withRetry(times int, sleepDuration time.Duration, action authorizerInitiali
 	return nil, err
 }
 
-func setupUserInfoExtractorWithRefresh(config appConfig.Security) (security.SubjectExtractor, error) {
-	initial, err := setupUserInfoExtractor(config)
+func setupSubjectExtractorWithRefresh(config appConfig.Security) (security.SubjectExtractor, error) {
+	initial, err := setupSubjectExtractor(config)
 	if err != nil {
 		return nil, err
 	}
@@ -126,7 +126,7 @@ func refreshExtractor(cfg appConfig.Security, extractor *security.SynchronizedSu
 			}
 		}()
 
-		newExtractor, err := setupUserInfoExtractor(cfg)
+		newExtractor, err := setupSubjectExtractor(cfg)
 		if err == nil {
 			extractor.UpdateExtractor(newExtractor)
 		} else {
@@ -135,7 +135,7 @@ func refreshExtractor(cfg appConfig.Security, extractor *security.SynchronizedSu
 	})
 }
 
-func setupUserInfoExtractor(cfg appConfig.Security) (security.SubjectExtractor, error) {
+func setupSubjectExtractor(cfg appConfig.Security) (security.SubjectExtractor, error) {
 	policyStorage := cfg.PolicyStorage
 	client, err := minio.New(policyStorage.MinioEndpoint, policyStorage.MinioAccessKey, policyStorage.MinioSecretKey, policyStorage.MinioUseSSL)
 	if err != nil {

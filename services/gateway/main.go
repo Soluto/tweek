@@ -59,7 +59,7 @@ func newApp(config *appConfig.Configuration) http.Handler {
 		panic("Unable to create security auditing log")
 	}
 
-	userInfoExtractor, err := setupUserInfoExtractorWithRefresh(config.Security)
+	userInfoExtractor, err := setupSubjectExtractorWithRefresh(config.Security)
 	if err != nil {
 		log.Panicln("Unable to setup user info extractor", err)
 	}
