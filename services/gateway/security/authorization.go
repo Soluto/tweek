@@ -24,24 +24,24 @@ func AuthorizationMiddleware(authorizer Authorizer, auditor audit.Auditor) negro
 			sub, act, ctxs, err := ExtractFromRequest(r)
 			if err != nil {
 				log.Println("Failed to extract from request", err)
-				auditor.AuthorizerError(sub, fmt.Sprintf("%q", ctxs), act, err)
+				auditor.AuthorizerError(sub.String(), fmt.Sprintf("%q", ctxs), act, err)
 				http.Error(rw, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			} else {
-				res, err := authorizer.Authorize(sub, ctxs, act, r.Context())
+				res, err := authorizer.Authorize(sub.String(), ctxs, act, r.Context())
 				if err != nil {
 					log.Println("Failed to validate request", err)
-					auditor.AuthorizerError(sub, fmt.Sprintf("%q", ctxs), act, err)
+					auditor.AuthorizerError(sub.String(), fmt.Sprintf("%q", ctxs), act, err)
 					http.Error(rw, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 					return
 				}
 
 				if !res {
-					auditor.Denied(sub, fmt.Sprintf("%q", ctxs), act)
+					auditor.Denied(sub.String(), fmt.Sprintf("%q", ctxs), act)
 					http.Error(rw, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 					return
 				}
 
-				auditor.Allowed(sub, fmt.Sprintf("%q", ctxs), act)
+				auditor.Allowed(sub.String(), fmt.Sprintf("%q", ctxs), act)
 				next(rw, r)
 			}
 		}

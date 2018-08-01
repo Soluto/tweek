@@ -15,7 +15,7 @@ func TestDefaultSubjectExtractor_ExtractSubject(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    string
+		want    *Subject
 		wantErr bool
 	}{
 		{
@@ -26,7 +26,7 @@ func TestDefaultSubjectExtractor_ExtractSubject(t *testing.T) {
 					"sub": "test",
 				},
 			},
-			want:    "google:test",
+			want:    &Subject{User: "test", Group: "google"},
 			wantErr: false,
 		},
 		{
@@ -37,7 +37,7 @@ func TestDefaultSubjectExtractor_ExtractSubject(t *testing.T) {
 					"sub": "test",
 				},
 			},
-			want:    "azure:test",
+			want:    &Subject{User: "test", Group: "azure"},
 			wantErr: false,
 		},
 		{
@@ -45,7 +45,7 @@ func TestDefaultSubjectExtractor_ExtractSubject(t *testing.T) {
 			args: args{
 				claims: jwt.MapClaims{},
 			},
-			want:    "",
+			want:    &Subject{},
 			wantErr: true,
 		},
 	}
@@ -63,7 +63,7 @@ func TestDefaultSubjectExtractor_ExtractSubject(t *testing.T) {
 				t.Errorf("DefaultSubjectExtractor.ExtractSubject() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if got != tt.want {
+			if *got != *tt.want {
 				t.Errorf("DefaultSubjectExtractor.ExtractSubject() = %v, want %v", got, tt.want)
 			}
 		})

@@ -127,15 +127,9 @@ func extractContextFromContextRequest(r *http.Request, u UserInfo) (ctx PolicyRe
 func normalizeIdentityID(id string, u UserInfo) string {
 	var user string
 	identityID := id
-	escapedEmail, escapedName, escapedSub := url.PathEscape(u.Email()), url.PathEscape(u.Name()), url.PathEscape(u.Sub())
-	userAndGroup := strings.Split(escapedSub, ":")
-	if len(userAndGroup) == 2 {
-		user = userAndGroup[1]
-	} else {
-		user = userAndGroup[0]
-	}
+	escapedEmail, escapedName, escapedUser := url.PathEscape(u.Email()), url.PathEscape(u.Name()), url.PathEscape(u.Sub().User)
 
-	if escapedEmail == identityID || escapedName == identityID || escapedSub == identityID || user == identityID {
+	if escapedEmail == identityID || escapedName == identityID || escapedUser == identityID || user == identityID {
 		identityID = "self"
 	}
 
@@ -200,7 +194,7 @@ func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs PolicyResourc
 }
 
 // ExtractFromRequest extracts object and action from request
-func ExtractFromRequest(r *http.Request) (sub string, act string, obj PolicyResource, err error) {
+func ExtractFromRequest(r *http.Request) (sub *Subject, act string, obj PolicyResource, err error) {
 	user, ok := r.Context().Value(UserInfoKey).(UserInfo)
 	if !ok {
 		err = errors.New("Missing user information in request")
@@ -210,12 +204,12 @@ func ExtractFromRequest(r *http.Request) (sub string, act string, obj PolicyReso
 	sub = user.Sub()
 	act, err = extractActionFromRequest(r)
 	if err != nil {
-		return "", "", PolicyResource{Contexts: map[string]string{}}, err
+		return &Subject{}, "", PolicyResource{Contexts: map[string]string{}}, err
 	}
 
 	obj, err = extractContextsFromRequest(r, user)
 	if err != nil {
-		return "", "", PolicyResource{Contexts: map[string]string{}}, err
+		return &Subject{}, "", PolicyResource{Contexts: map[string]string{}}, err
 	}
 
 	err = nil
