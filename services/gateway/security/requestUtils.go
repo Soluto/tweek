@@ -125,11 +125,10 @@ func extractContextFromContextRequest(r *http.Request, u UserInfo) (ctx PolicyRe
 }
 
 func normalizeIdentityID(id string, u UserInfo) string {
-	var user string
 	identityID := id
-	escapedEmail, escapedName, escapedUser := url.PathEscape(u.Email()), url.PathEscape(u.Name()), url.PathEscape(u.Sub().User)
+	escapedUser := url.PathEscape(u.Sub().User)
 
-	if escapedEmail == identityID || escapedName == identityID || escapedUser == identityID || user == identityID {
+	if escapedUser == identityID {
 		identityID = "self"
 	}
 
