@@ -40,46 +40,46 @@ func TestAuthorizationMiddleware(t *testing.T) {
 		args args
 		want int
 	}{
-		// {
-		// 	name: "Allow by user",
-		// 	args: args{method: "GET", path: "/api/v2/values/key1", user: "default:alice@security.test"},
-		// 	want: http.StatusOK,
-		// },
-		// {
-		// 	name: "Deny by user",
-		// 	args: args{method: "GET", path: "/api/v2/values/key1", user: "default:bob@security.test"},
-		// 	want: http.StatusUnauthorized,
-		// },
-		// {
-		// 	name: "Allow calculating values with specific context",
-		// 	args: args{method: "GET", path: "/api/v2/values/key2?user=alice2@security.test", user: "default:alice2@security.test"},
-		// 	want: http.StatusOK,
-		// },
+		{
+			name: "Allow by user",
+			args: args{method: "GET", path: "/api/v2/values/key1", user: "default:alice@security.test"},
+			want: http.StatusOK,
+		},
+		{
+			name: "Deny by user",
+			args: args{method: "GET", path: "/api/v2/values/key1", user: "default:bob@security.test"},
+			want: http.StatusUnauthorized,
+		},
+		{
+			name: "Allow calculating values with specific context",
+			args: args{method: "GET", path: "/api/v2/values/key2?user=alice2@security.test", user: "default:alice2@security.test"},
+			want: http.StatusOK,
+		},
 		{
 			name: "Allow reading context for self",
 			args: args{method: "GET", path: "/api/v2/context/user/alice2@security.test", user: "default:alice2@security.test"},
 			want: http.StatusOK,
 		},
-		// {
-		// 	name: "Allow writing context for self",
-		// 	args: args{method: "POST", path: "/api/v2/context/user/bob@security.test", user: "default:bob@security.test"},
-		// 	want: http.StatusOK,
-		// },
-		// {
-		// 	name: "Deny writing context for someone else",
-		// 	args: args{method: "POST", path: "/api/v2/context/user/bob@security.test", user: "default:alice@security.test"},
-		// 	want: http.StatusUnauthorized,
-		// },
-		// {
-		// 	name: "Deny deleting context property for someone else",
-		// 	args: args{method: "DELETE", path: "/api/v2/context/user/bob@security.test/prop", user: "default:alice@security.test"},
-		// 	want: http.StatusUnauthorized,
-		// },
-		// {
-		// 	name: "Deny deleting context property for self",
-		// 	args: args{method: "DELETE", path: "/api/v2/context/user/bob@security.test/prop", user: "default:bob@security.test"},
-		// 	want: http.StatusUnauthorized,
-		// },
+		{
+			name: "Allow writing context for self",
+			args: args{method: "POST", path: "/api/v2/context/user/bob@security.test", user: "default:bob@security.test"},
+			want: http.StatusOK,
+		},
+		{
+			name: "Deny writing context for someone else",
+			args: args{method: "POST", path: "/api/v2/context/user/bob@security.test", user: "default:alice@security.test"},
+			want: http.StatusUnauthorized,
+		},
+		{
+			name: "Deny deleting context property for someone else",
+			args: args{method: "DELETE", path: "/api/v2/context/user/bob@security.test/prop", user: "default:alice@security.test"},
+			want: http.StatusUnauthorized,
+		},
+		{
+			name: "Deny deleting context property for self",
+			args: args{method: "DELETE", path: "/api/v2/context/user/bob@security.test/prop", user: "default:bob@security.test"},
+			want: http.StatusUnauthorized,
+		},
 	}
 
 	for _, tt := range tests {
