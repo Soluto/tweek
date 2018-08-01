@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   publishing:
-    build: 
+    build:
       args: 
         target: Release
 
