@@ -28,7 +28,7 @@
             "minioSecretKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
             "minioSecure": false,
             "natsEndpoint": "nats://localhost:4222",
-            "casbinModel": "./model.conf"
+            "authorizationRules": "./authorization.rego"
         },
         "cors": {
             "Enabled": true,

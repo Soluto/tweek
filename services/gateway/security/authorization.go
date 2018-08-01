@@ -7,14 +7,11 @@ import (
 
 	"github.com/Soluto/tweek/services/gateway/audit"
 
-	"github.com/casbin/casbin"
-
 	"github.com/urfave/negroni"
 )
 
 // AuthorizationMiddleware enforces authorization policies of incoming requests
-func AuthorizationMiddleware(enforcer *casbin.SyncedEnforcer, auditor audit.Auditor) negroni.HandlerFunc {
-	enforcer.AddFunction("matchResources", MatchResources)
+func AuthorizationMiddleware(authorizer Authorizer, auditor audit.Auditor) negroni.HandlerFunc {
 	return negroni.HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		user, ok := r.Context().Value(UserInfoKey).(UserInfo)
 		if !ok {
@@ -27,13 +24,13 @@ func AuthorizationMiddleware(enforcer *casbin.SyncedEnforcer, auditor audit.Audi
 			sub, act, ctxs, err := ExtractFromRequest(r)
 			if err != nil {
 				log.Println("Failed to extract from request", err)
-				auditor.EnforcerError(sub, fmt.Sprintf("%q", ctxs), act, err)
+				auditor.AuthorizerError(sub, fmt.Sprintf("%q", ctxs), act, err)
 				http.Error(rw, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			} else {
-				res, err := enforcer.EnforceSafe(sub, ctxs, act)
+				res, err := authorizer.Authorize(sub, ctxs, act, r.Context())
 				if err != nil {
 					log.Println("Failed to validate request", err)
-					auditor.EnforcerError(sub, fmt.Sprintf("%q", ctxs), act, err)
+					auditor.AuthorizerError(sub, fmt.Sprintf("%q", ctxs), act, err)
 					http.Error(rw, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 					return
 				}

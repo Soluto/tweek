@@ -8,6 +8,12 @@ import (
 	"strings"
 )
 
+// PolicyResource describes policy resource with item and associated tweek contexts
+type PolicyResource struct {
+	Item     string
+	Contexts map[string]string
+}
+
 func extractActionFromRequest(r *http.Request) (act string, err error) {
 	uri, err := url.Parse(r.RequestURI)
 	if err != nil {
@@ -119,9 +125,17 @@ func extractContextFromContextRequest(r *http.Request, u UserInfo) (ctx PolicyRe
 }
 
 func normalizeIdentityID(id string, u UserInfo) string {
+	var user string
 	identityID := id
 	escapedEmail, escapedName, escapedSub := url.PathEscape(u.Email()), url.PathEscape(u.Name()), url.PathEscape(u.Sub())
-	if escapedEmail == identityID || escapedName == identityID || escapedSub == identityID {
+	userAndGroup := strings.Split(escapedSub, ":")
+	if len(userAndGroup) == 2 {
+		user = userAndGroup[1]
+	} else {
+		user = userAndGroup[0]
+	}
+
+	if escapedEmail == identityID || escapedName == identityID || escapedSub == identityID || user == identityID {
 		identityID = "self"
 	}
 

@@ -1,7 +1,0 @@
-p, allow@security.test, /target, read, allow
-p, deny@security.test, /target, read, deny
-p, role_users, /target, read, allow
-p, admin, *:*, *, allow
-
-g, allow@security.test, role_users
-g, deny@security.test, role_users
