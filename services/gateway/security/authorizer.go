@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"strings"
 	"sync"
 
 	"github.com/open-policy-agent/opa/storage/inmem"
@@ -16,7 +15,7 @@ import (
 
 // Authorizer is the interface which allows authorization
 type Authorizer interface {
-	Authorize(subject string, object PolicyResource, action string, ctx context.Context) (bool, error)
+	Authorize(subject *Subject, object PolicyResource, action string, ctx context.Context) (bool, error)
 }
 
 // DefaultAuthorizer is the default implementation of Authorizer
@@ -64,11 +63,10 @@ func NewDefaultAuthorizer(rules, data, pkg, query string) *DefaultAuthorizer {
 }
 
 // Authorize implements authorization for DefaultAuthorizer
-func (d *DefaultAuthorizer) Authorize(subject string, object PolicyResource, action string, ctx context.Context) (bool, error) {
-	userAndGroup := strings.Split(subject, ":")
+func (d *DefaultAuthorizer) Authorize(subject *Subject, object PolicyResource, action string, ctx context.Context) (bool, error) {
 	input := map[string]interface{}{
-		"group":    userAndGroup[0],
-		"user":     userAndGroup[1],
+		"group":    subject.Group,
+		"user":     subject.User,
 		"object":   object.Item,
 		"contexts": object.Contexts,
 		"action":   action,
@@ -105,7 +103,7 @@ func NewSynchronizedAuthorizer(a Authorizer) *SynchronizedAuthorizer {
 }
 
 // Authorize - synchronized version
-func (s *SynchronizedAuthorizer) Authorize(subject string, object PolicyResource, action string, ctx context.Context) (bool, error) {
+func (s *SynchronizedAuthorizer) Authorize(subject *Subject, object PolicyResource, action string, ctx context.Context) (bool, error) {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
 	return s.authorizer.Authorize(subject, object, action, ctx)
