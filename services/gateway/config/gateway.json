@@ -8,7 +8,7 @@
     "security": {
         "enforce": true,
         "policyStorage": {
-            "casbinModel": "/model.conf"
+            "authorizationRules": "/authorization.rego"
         },
         "auth": {
             "providers": {

@@ -27,12 +27,25 @@ RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o entry \
 
 RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o hcheck "github.com/Soluto/tweek/services/gateway/healthcheck"
 
+# ------ REGO TESTS ------ #
+FROM golang:1.10.0-stretch as regotests
+
+RUN curl -L -o opa https://github.com/open-policy-agent/opa/releases/download/v0.8.2/opa_linux_amd64
+RUN chmod u+x opa
+
+RUN mkdir /tmp/opatests
+COPY authorization.rego /tmp/opatests
+COPY ./testdata/policy.json /tmp/opatests
+COPY ./testdata/test_authorization.rego /tmp/opatests
+
+RUN ./opa test -v /tmp/opatests
+
 # -------- IMAGE -------- #
 FROM scratch
 
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/config /config
-COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/model.conf /model.conf
+COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/authorization.rego /authorization.rego
 COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/entry /entry
 COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/hcheck /healthcheck
 COPY --from=dependencies /empty_tmp /tmp

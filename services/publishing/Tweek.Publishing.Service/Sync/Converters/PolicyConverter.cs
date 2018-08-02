@@ -34,7 +34,7 @@ namespace Tweek.Publishing.Service.Sync.Converters
                     }
                 })
                 .Single();
-            return ("security/policy.csv", result, "application/csv");
+            return ("security/policy.json", result, "application/json");
         }
     }
 }

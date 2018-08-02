@@ -20,11 +20,20 @@ import (
 
 type userInfoKeyType string
 
+type Subject struct {
+	User  string
+	Group string
+}
+
+func (sub *Subject) String() string {
+	return fmt.Sprintf("%s:%s", sub.Group, sub.User)
+}
+
 // UserInfoKey is used to store and fetch user info from the context
 const UserInfoKey userInfoKeyType = "UserInfo"
 
 type userInfo struct {
-	sub    string
+	sub    *Subject
 	email  string
 	name   string
 	issuer string
@@ -33,14 +42,14 @@ type userInfo struct {
 
 // UserInfo struct hold the information regarding the user
 type UserInfo interface {
-	Sub() string
+	Sub() *Subject
 	Email() string
 	Name() string
 	Issuer() string
 	Claims() jwt.StandardClaims
 }
 
-func (u *userInfo) Sub() string                { return u.sub }
+func (u *userInfo) Sub() *Subject              { return u.sub }
 func (u *userInfo) Email() string              { return u.email }
 func (u *userInfo) Name() string               { return u.name }
 func (u *userInfo) Issuer() string             { return u.issuer }
@@ -132,7 +141,7 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, e
 	}
 
 	if ok {
-		return &userInfo{sub: clientID}, nil
+		return &userInfo{sub: &Subject{User: clientID, Group: "externalapps"}}, nil
 	}
 	return nil, errors.New("Neither access token nor credentials were provided")
 }

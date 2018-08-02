@@ -1,9 +1,0 @@
-p, default:00000000-0000-0000-0000-000000000000, keys.*, *, allow
-p, default:00000000-0000-0000-0000-000000000000, repo.keys/*, write, allow
-p, default:00000000-0000-0000-0000-000000000000, repo, read, allow
-p, default:00000000-0000-0000-0000-000000000000, repo.tags, write, allow
-p, default:00000000-0000-0000-0000-000000000000, repo.schemas, write, allow
-p, default:00000000-0000-0000-0000-000000000000, user=*:*, *, allow
-p, default:00000000-0000-0000-0000-000000000000, other=*:*, *, allow
-p, default:00000000-0000-0000-0000-000000000000, delete_property_test=*:*, *, allow
-p, default:00000000-0000-0000-0000-000000000000, edit_property_test=*:*, *, allow
