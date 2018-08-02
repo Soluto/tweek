@@ -28,11 +28,16 @@
       border: 1px solid #03a9f4;
     }
 
-    .rodal-confirm-btn, .auto-partition-btn {
+    .rodal-confirm-btn, .rodal-save-btn, .auto-partition-btn {
       color: #fff;
       background: #03a9f4;
       &:hover {
         background: #0098e3;
+      }
+      &:disabled{
+        background: #dddddd;
+        border: 1px solid #cccccc;
+        color:#888888;
       }
     }
 
