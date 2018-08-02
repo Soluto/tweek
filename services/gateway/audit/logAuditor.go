@@ -33,22 +33,10 @@ func (a *logAuditor) Denied(subject, object, action string) {
 	a.log.Printf(actionAuditFmt, subject, object, action, "ACCESS DENIED")
 }
 
-func (a *logAuditor) EnforcerError(subject, object, action string, err error) {
+func (a *logAuditor) AuthorizerError(subject, object, action string, err error) {
 	a.log.Printf(actionAuditFmt, subject, object, action, fmt.Sprintf("ERROR: %v", err))
 }
 
 func (a *logAuditor) TokenError(err error) {
 	a.log.Printf("TOKEN ERROR: %q", err)
-}
-
-func (a *logAuditor) EnforcerEnabled() {
-	a.log.Printf("ENFORCER ENABLED")
-}
-
-func (a *logAuditor) EnforcerDisabled() {
-	a.log.Printf("ENFORCER DISABLED")
-}
-
-func (a *logAuditor) RunningInTestMode() {
-	a.log.Printf("RUNNING IN TEST MODE")
 }

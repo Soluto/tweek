@@ -102,6 +102,7 @@ namespace Tweek.Publishing.Service
                     new RulesConverter(),
                     new ExternalAppsConverter(key),
                     new PolicyConverter(),
+                    new SubjectExtractionRulesConverter(),
                 }
             };
             return storageSynchronizer;
@@ -157,7 +158,8 @@ namespace Tweek.Publishing.Service
                 Validators =
                 {
                     (Patterns.Manifests, new CircularDependencyValidator()),
-                    (Patterns.JPad, new CompileJPadValidator())
+                    (Patterns.JPad, new CompileJPadValidator()),
+                    (Patterns.SubjectExtractionRules, new SubjectExtractionValidator())
                 }
             };
 

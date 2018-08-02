@@ -27,6 +27,19 @@ RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o entry \
 
 RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o hcheck "github.com/Soluto/tweek/services/gateway/healthcheck"
 
+# ------ REGO TESTS ------ #
+FROM golang:1.10.0-stretch as regotests
+
+RUN curl -L -o opa https://github.com/open-policy-agent/opa/releases/download/v0.8.2/opa_linux_amd64
+RUN chmod u+x opa
+
+RUN mkdir /tmp/opatests
+COPY authorization.rego /tmp/opatests
+COPY ./testdata/policy.json /tmp/opatests
+COPY ./testdata/test_authorization.rego /tmp/opatests
+
+RUN ./opa test -v /tmp/opatests
+
 # -------- IMAGE -------- #
 FROM scratch
 

@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   publishing:
-    build: 
+    build:
       args: 
         target: Release
 
@@ -11,9 +11,8 @@ services:
 
   editor:
     environment: 
-      - CONTINUOUS_UPDATER_INTERVAL=500      
-    volumes:
-      - ./editor/test/config:/opt/app/build/config
+      - CONTINUOUS_UPDATER_INTERVAL=500
+      - REACT_APP_GATEWAY_URL=http://gateway
 
   authoring:
     environment: 

@@ -1,11 +1,14 @@
 # Project structure
 
 - services (all tweek microservices)
-  - api (rest api for getting configurations and updating context)
-  - authoring (rest api for reading and editing keys definitions/manifests)
-  - editor (admin ui for editing rules and managing Tweek)
-  - publishing ("CI" and serving layer for new rules)
-  - git-service (stand-alone git rules repository for bootstrap, dev & testing)
+   - api (rest api for getting configurations and updating context)
+   - authoring (rest api for reading and editing keys definitions/manifests)
+   - editor (admin ui for editing rules and managing Tweek)
+   - publishing ("CI" and publishing bundles)
+- dependencies
+   - git-service (stand-alone git rules repository for bootstrap, dev & testing)
+   - minio (object storage) - rules storage
+   - redis/couchbase/mongo - context database
 - deployments
   - dev (docker compose files for devlopment)
 - core
@@ -45,7 +48,7 @@ All tweek microservices should be run on ports 4001-4004:
 4003 - Api (http)
 4004 - Editor (http)
 4005 - Authoring (http)
-4009 - Publishing (git)
+4009 - Publishing (ssh)
 4010 - Publishing (http)
 4099 - Gateway (http)
 

@@ -72,24 +72,22 @@ type Security struct {
 
 // Cors stores data for CORS support
 type Cors struct {
-	Enabled          bool
-	MaxAge           int
-	AllowedOrigins   []string
-	AllowedMethods   []string
-	AllowedHeaders   []string
-	AllowCredentials bool
+	Enabled        bool
+	MaxAge         int
+	AllowedOrigins []string
+	AllowedMethods []string
+	AllowedHeaders []string
 }
 
 // PolicyStorage section holds the minio upstream and secret keys
 type PolicyStorage struct {
-	MinioEndpoint         string
-	MinioBucketName       string
-	MinioAccessKey        string
-	MinioSecretKey        string
-	MinioUseSSL           bool
-	MinioPolicyObjectName string
-	NatsEndpoint          string
-	CasbinModel           string
+	MinioEndpoint      string
+	MinioBucketName    string
+	MinioAccessKey     string
+	MinioSecretKey     string
+	MinioUseSSL        bool
+	NatsEndpoint       string
+	AuthorizationRules string
 }
 
 // Configuration is the root element of configuration for gateway

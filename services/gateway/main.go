@@ -7,10 +7,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/Soluto/casbin-minio-adapter"
-
-	"github.com/Soluto/casbin-nats-watcher"
-
 	"github.com/Soluto/tweek/services/gateway/appConfig"
 	"github.com/Soluto/tweek/services/gateway/audit"
 	"github.com/Soluto/tweek/services/gateway/corsSupport"
@@ -23,7 +19,6 @@ import (
 	"github.com/Soluto/tweek/services/gateway/security"
 	"github.com/Soluto/tweek/services/gateway/transformation"
 
-	"github.com/casbin/casbin"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/urfave/negroni"
 )
@@ -57,20 +52,20 @@ func runServer(port int, handler http.Handler) {
 func newApp(config *appConfig.Configuration) http.Handler {
 	token := security.InitJWT(&config.Security.TweekSecretKey)
 
-	enforcer, err := withRetry(3, time.Second*5, initEnforcer, &config.Security)
+	authorizer, err := withRetry(3, time.Second*5, initAuthorizer, &config.Security)
 
 	auditor, err := audit.New(os.Stdout)
 	if err != nil {
 		panic("Unable to create security auditing log")
 	}
-	if config.Security.Enforce {
-		auditor.EnforcerEnabled()
-	} else {
-		auditor.EnforcerDisabled()
+
+	userInfoExtractor, err := setupSubjectExtractorWithRefresh(config.Security)
+	if err != nil {
+		log.Panicln("Unable to setup user info extractor", err)
 	}
 
-	authenticationMiddleware := security.AuthenticationMiddleware(&config.Security, auditor)
-	authorizationMiddleware := security.AuthorizationMiddleware(enforcer, auditor)
+	authenticationMiddleware := security.AuthenticationMiddleware(&config.Security, userInfoExtractor, auditor)
+	authorizationMiddleware := security.AuthorizationMiddleware(authorizer, auditor)
 
 	recovery := negroni.NewRecovery()
 	recovery.PrintStack = false
@@ -82,7 +77,7 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	transformation.Mount(&config.Upstreams, config.V2Routes, token, middleware, router.V2Router())
 
 	metricsVar := metrics.NewMetricsVar("passthrough")
-	noAuthMiddleware := negroni.New(negroni.NewRecovery())
+	noAuthMiddleware := negroni.New(recovery)
 	passThrough.Mount(&config.Upstreams, &config.V1Hosts, noAuthMiddleware, metricsVar, router.V1Router())
 	passThrough.Mount(&config.Upstreams, &config.V1Hosts, noAuthMiddleware, metricsVar, router.LegacyNonV1Router())
 
@@ -90,6 +85,7 @@ func newApp(config *appConfig.Configuration) http.Handler {
 
 	router.MainRouter().PathPrefix("/version").HandlerFunc(handlers.NewVersionHandler(&config.Upstreams, config.Version))
 	router.MainRouter().PathPrefix("/health").HandlerFunc(handlers.NewHealthHandler())
+	router.MainRouter().PathPrefix("/status").HandlerFunc(handlers.NewStatusHandler(&config.Upstreams))
 
 	router.MainRouter().PathPrefix("/metrics").Handler(prometheus.Handler())
 
@@ -102,47 +98,4 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	app.UseHandler(router)
 
 	return app
-}
-
-func initEnforcer(config *appConfig.Security) (*casbin.SyncedEnforcer, error) {
-	policyStorage := &config.PolicyStorage
-	modelPath := policyStorage.CasbinModel
-
-	watcher, err := natswatcher.NewWatcher(policyStorage.NatsEndpoint, "version")
-	if err != nil {
-		return nil, fmt.Errorf("Error while creating Nats watcher %v", err)
-	}
-
-	adapter, err := minioadapter.NewAdapter(policyStorage.MinioEndpoint,
-		policyStorage.MinioAccessKey,
-		policyStorage.MinioSecretKey,
-		policyStorage.MinioUseSSL,
-		policyStorage.MinioBucketName,
-		policyStorage.MinioPolicyObjectName)
-	if err != nil {
-		return nil, fmt.Errorf("Error while creating Minio adapter:\n %v", err)
-	}
-
-	enforcer := casbin.NewSyncedEnforcer(modelPath, adapter)
-	enforcer.EnableLog(true)
-	enforcer.EnableEnforce(config.Enforce)
-	enforcer.SetWatcher(watcher)
-
-	return enforcer, nil
-}
-
-type enforcerFactory func(*appConfig.Security) (*casbin.SyncedEnforcer, error)
-
-func withRetry(times int, sleepDuration time.Duration, todo enforcerFactory, arg *appConfig.Security) (*casbin.SyncedEnforcer, error) {
-	var res *casbin.SyncedEnforcer
-	var err error
-	for i := 0; i < times; i++ {
-		res, err = todo(arg)
-		if err == nil {
-			return res, nil
-		}
-		log.Printf("Error creating enforcer, retrying...\n %v", err)
-		time.Sleep(sleepDuration)
-	}
-	return nil, err
 }

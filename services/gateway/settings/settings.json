@@ -3,7 +3,7 @@
     "security": {
         "enforce": true,
         "policyStorage": {
-            "casbinModel": "/model.conf"
+            "authorizationRules": "/authorization.rego"
         }
     },    
     "v2Routes": [{

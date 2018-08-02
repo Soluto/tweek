@@ -18,6 +18,6 @@ func New(config *appConfig.Cors) negroni.Handler {
 		AllowedOrigins:   config.AllowedOrigins,
 		AllowedHeaders:   config.AllowedHeaders,
 		AllowedMethods:   config.AllowedMethods,
-		AllowCredentials: config.AllowCredentials,
+		AllowCredentials: true,
 	})
 }

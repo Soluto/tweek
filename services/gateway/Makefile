@@ -9,3 +9,6 @@ start:
 
 test:
 	go test ./...
+
+start-full-env:
+	docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml up -d api authoring && make start

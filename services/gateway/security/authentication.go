@@ -20,11 +20,20 @@ import (
 
 type userInfoKeyType string
 
+type Subject struct {
+	User  string
+	Group string
+}
+
+func (sub *Subject) String() string {
+	return fmt.Sprintf("%s:%s", sub.Group, sub.User)
+}
+
 // UserInfoKey is used to store and fetch user info from the context
 const UserInfoKey userInfoKeyType = "UserInfo"
 
 type userInfo struct {
-	sub    string
+	sub    *Subject
 	email  string
 	name   string
 	issuer string
@@ -33,21 +42,21 @@ type userInfo struct {
 
 // UserInfo struct hold the information regarding the user
 type UserInfo interface {
-	Sub() string
+	Sub() *Subject
 	Email() string
 	Name() string
 	Issuer() string
 	Claims() jwt.StandardClaims
 }
 
-func (u *userInfo) Sub() string                { return u.sub }
+func (u *userInfo) Sub() *Subject              { return u.sub }
 func (u *userInfo) Email() string              { return u.email }
 func (u *userInfo) Name() string               { return u.name }
 func (u *userInfo) Issuer() string             { return u.issuer }
 func (u *userInfo) Claims() jwt.StandardClaims { return u.StandardClaims }
 
 // AuthenticationMiddleware enriches the request's context with the user info from JWT
-func AuthenticationMiddleware(configuration *appConfig.Security, auditor audit.Auditor) negroni.HandlerFunc {
+func AuthenticationMiddleware(configuration *appConfig.Security, extractor SubjectExtractor, auditor audit.Auditor) negroni.HandlerFunc {
 	var jwksEndpoints []string
 	for _, issuer := range configuration.Auth.Providers {
 		jwksEndpoints = append(jwksEndpoints, issuer.JWKSURL)
@@ -55,7 +64,7 @@ func AuthenticationMiddleware(configuration *appConfig.Security, auditor audit.A
 	LoadAllEndpoints(jwksEndpoints)
 	RefreshEndpoints(jwksEndpoints)
 	return negroni.HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-		info, err := userInfoFromRequest(r, configuration)
+		info, err := userInfoFromRequest(r, configuration, extractor)
 		if err != nil {
 			auditor.TokenError(err)
 			log.Println("Error extracting the user from the request", err)
@@ -68,7 +77,7 @@ func AuthenticationMiddleware(configuration *appConfig.Security, auditor audit.A
 	})
 }
 
-func userInfoFromRequest(req *http.Request, configuration *appConfig.Security) (UserInfo, error) {
+func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, extractor SubjectExtractor) (UserInfo, error) {
 	if !configuration.Enforce {
 		info := &userInfo{email: "test@test.test", name: "test", issuer: "tweek"}
 		return info, nil
@@ -101,8 +110,12 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security) (
 		}
 
 		claims := token.Claims.(jwt.MapClaims)
+		sub, err := extractor.ExtractSubject(req.Context(), claims)
+		if err != nil {
+			return nil, fmt.Errorf("Failed to extract user info from JWT claims")
+		}
 		info := &userInfo{
-			sub:    claims["sub"].(string),
+			sub:    sub,
 			issuer: claims["iss"].(string),
 			name:   name,
 			email:  email,
@@ -128,7 +141,7 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security) (
 	}
 
 	if ok {
-		return &userInfo{sub: clientID}, nil
+		return &userInfo{sub: &Subject{User: clientID, Group: "externalapps"}}, nil
 	}
 	return nil, errors.New("Neither access token nor credentials were provided")
 }
