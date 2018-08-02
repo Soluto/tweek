@@ -18,12 +18,6 @@ export const buttons = {
     className: 'rodal-cancel-btn',
     'data-alert-button': 'cancel',
   },
-  SAVE: {
-    text: 'Save',
-    value: true,
-    className: 'rodal-save-btn',
-    'data-alert-button': 'save',
-  },
 };
 
 export function showCustomAlert({ buttons, ...alertProps }) {

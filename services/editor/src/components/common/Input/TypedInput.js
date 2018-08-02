@@ -79,13 +79,7 @@ const TypedInput = compose(
     const iconType =
       (typeDefinition && (typeDefinition.name || (typeDefinition.base && 'custom'))) || 'unknown';
     const allowedValues = typeDefinition && typeDefinition.allowedValues;
-    const onChangeConvert = (newValue) => {
-      if (onChange) {
-        try {
-          return onChange(safeConvertValue(newValue, valueType));
-        } catch (_) {}
-      }
-    };
+    const onChangeConvert = newValue => onChange && onChange(safeConvertValue(newValue, valueType));
 
     return { allowedValues, onChange: onChangeConvert, iconType, valueType, ...props };
   }),

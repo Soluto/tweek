@@ -9,7 +9,7 @@ import tweekApiClient from '../../clients/tweek-api-client';
 import authoringApi from '../../clients/authoring-client';
 import { login } from '../../utils/auth-utils';
 
-describe.only('edit keys', () => {
+describe('edit keys', () => {
   before(() => login());
 
   describe('edit JPad keys', () => {

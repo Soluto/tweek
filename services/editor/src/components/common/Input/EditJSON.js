@@ -24,7 +24,10 @@ export const withJsonEditor = compose(
   mapProps(({ onChange, showCustomAlert, ...props }) => {
     const editJson = async (currentSource) => {
       const saveButton = {
-        ...buttons.SAVE,
+        text: 'Save',
+        value: true,
+        className: 'rodal-save-btn',
+        'data-alert-button': 'save',
         validate: data => isStringValidJson(data),
       };
 
