@@ -96,10 +96,10 @@ namespace Tweek.Engine.Drivers.Context
                                         var baseType = baseTypeName.Item;
                                         switch (baseType)
                                         {
-                                            case "number": return ValidateNumber(baseType, value);
-                                            case "date": return ValidateDate(baseType, value);
-                                            case "string": return ValidateString(baseType, value);
-                                            case "boolean": return ValidateBoolean(baseType, value);
+                                            case "number": return ValidateNumber(value);
+                                            case "date": return ValidateDate(value);
+                                            case "string": return ValidateString(value);
+                                            case "boolean": return ValidateBoolean(value);
                                             default:
                                                 return _customTypeDefinitionProvider(baseType)
                                                .Map(type => ValidateCustomType(type, value))
