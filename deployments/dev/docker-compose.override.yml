@@ -56,7 +56,6 @@ services:
       - Rules__Nats__Endpoint=nats://nats:4222
       - UseAddon__Rules=MinioRules
       - RulesetVersionProvider=NatsVersionProvider
-      - Context__Validation__ErrorPolicy=throw
     secrets:
       - tweek_pfx_public_key
       - minio_access_key
