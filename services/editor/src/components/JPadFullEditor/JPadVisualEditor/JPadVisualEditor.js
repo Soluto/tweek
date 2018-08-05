@@ -113,11 +113,10 @@ export default ({ valueType, mutate, alerter, keyPath }) => {
     }
   };
   const updateDefaultValue = (newValue) => {
-    const typedValue = newValue && TypesService.safeConvertValue(newValue, valueType);
-    if (typedValue === undefined || typedValue === '') {
+    if (newValue === undefined || newValue === '') {
       defaultValueMutate.delete();
     } else {
-      defaultValueMutate.updateValue(typedValue);
+      defaultValueMutate.updateValue(newValue);
     }
   };
 
