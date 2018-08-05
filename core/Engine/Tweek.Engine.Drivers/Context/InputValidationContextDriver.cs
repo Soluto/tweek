@@ -99,6 +99,7 @@ namespace Tweek.Engine.Drivers.Context
                                             case "number": return ValidateNumber(baseType, value);
                                             case "date": return ValidateDate(baseType, value);
                                             case "string": return ValidateString(baseType, value);
+                                            case "boolean": return ValidateBoolean(baseType, value);
                                             default:
                                                 return _customTypeDefinitionProvider(baseType)
                                                .Map(type => ValidateCustomType(type, value))
@@ -112,17 +113,21 @@ namespace Tweek.Engine.Drivers.Context
                             }).IfNone(() => Error($"invalid schema"));
         }
 
-        private static ValidationResult ValidateNumber(string type, JsonValue property) =>
+        private static ValidationResult ValidateNumber(JsonValue property) =>
             property.IsNumber ? Valid : Error("value is not a number");
 
-        private static ValidationResult ValidateDate(string type, JsonValue property) =>
+        private static ValidationResult ValidateDate(JsonValue property) =>
             DateTime.TryParse(property.AsString(), out var _) ?
                             Valid :
                             Error("value is not a valid date");
 
-        private static ValidationResult ValidateString(string type, JsonValue property) =>
+        private static ValidationResult ValidateString(JsonValue property) =>
             property.IsString ? Valid :
                                  Error("value is not a string");
+
+        private static ValidationResult ValidateBoolean(JsonValue property) =>
+            property.IsBoolean ? Valid :
+                                 Error("value is not a boolean value");
 
         private ValidationResult ValidateCustomType(CustomTypeDefinition typeDefinition, JsonValue property)
         {
