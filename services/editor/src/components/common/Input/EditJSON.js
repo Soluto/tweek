@@ -46,13 +46,15 @@ export const withJsonEditor = compose(
                   onChange={newSource => onChange(newSource)}
                   editorDidMount={(editor) => {
                     setTimeout(() => {
-                      const lineCount = editor.viewModel.lines.getViewLineCount();
-                      const editLineNum = lineCount > 1 ? lineCount - 1 : lineCount;
-                      editor.setPosition({
-                        lineNumber: editLineNum,
-                        column: editor.getModel().getLineMaxColumn(editLineNum),
-                      });
-                      editor.revealLine(lineCount);
+                      if (editor.viewModel) {
+                        const lineCount = editor.viewModel.lines.getViewLineCount();
+                        const editLineNum = lineCount > 1 ? lineCount - 1 : lineCount;
+                        editor.setPosition({
+                          lineNumber: editLineNum,
+                          column: editor.getModel().getLineMaxColumn(editLineNum),
+                        });
+                        editor.revealLine(lineCount);
+                      }
                       editor.focus();
                     }, 500);
                   }}
