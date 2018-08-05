@@ -37,10 +37,11 @@ using LanguageExt;
 using ConfigurationPath = Tweek.Engine.DataTypes.ConfigurationPath;
 using Tweek.Utils;
 using Tweek.Engine.DataTypes;
+using static LanguageExt.Prelude;
 
 namespace Tweek.ApiService
 {
-  public class Startup
+    public class Startup
     {
         private ILoggerFactory loggerFactory;
         public Startup(IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -61,7 +62,7 @@ namespace Tweek.ApiService
         public void ConfigureServices(IServiceCollection services)
         {
             services.RegisterAddonServices(Configuration);
-            services.Decorate<IContextDriver>((driver, provider) => 
+            services.Decorate<IContextDriver>((driver, provider) =>
               new TimedContextDriver(driver, provider.GetService<IMetrics>()));
             services.Decorate<IContextDriver>((driver, provider) => CreateInputValidationDriverDecorator(provider, driver));
             services.Decorate<IRulesDriver>((driver, provider) => new TimedRulesDriver(driver, provider.GetService<IMetrics>));
@@ -126,86 +127,79 @@ namespace Tweek.ApiService
                 options.SwaggerDoc("api", new Info
                 {
                     Title = "Tweek Api",
-                    License = new License {Name = "MIT", Url = "https://github.com/Soluto/tweek/blob/master/LICENSE" },
+                    License = new License { Name = "MIT", Url = "https://github.com/Soluto/tweek/blob/master/LICENSE" },
                     Version = Assembly.GetEntryAssembly()
                         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                         .InformationalVersion
                 });
                 // Generate Dictionary<string,JsonValue> as JSON object in Swagger
-                options.MapType(typeof(Dictionary<string,JsonValue>), () => new Schema {Type = "object"});
+                options.MapType(typeof(Dictionary<string, JsonValue>), () => new Schema { Type = "object" });
 
                 var basePath = PlatformServices.Default.Application.ApplicationBasePath;
                 var xmlPath = Path.Combine(basePath, "Tweek.ApiService.xml");
                 options.IncludeXmlComments(xmlPath);
 
             });
-            services.ConfigureAuthenticationProviders(Configuration,  loggerFactory.CreateLogger("AuthenticationProviders"));
+            services.ConfigureAuthenticationProviders(Configuration, loggerFactory.CreateLogger("AuthenticationProviders"));
         }
 
         private IContextDriver CreateInputValidationDriverDecorator(IServiceProvider provider, IContextDriver decoratedDriver)
         {
-            InputValidationContextDriver.Mode ParseMode(string raw)
-            {
-                switch(raw){
-                  case "Flexible":
-                      return InputValidationContextDriver.Mode.AllowUndefinedProperties;
-                  case "Strict":
-                      return InputValidationContextDriver.Mode.Strict;
-                  default:
-                      throw new ArgumentException($"Invalid context validation mode ${raw}");
-                }
-            }
+            var mode = match((Configuration["Context:Validation:Mode"] ?? "").ToLower(),
+                with("flexible", (_) => Some(InputValidationContextDriver.Mode.AllowUndefinedProperties)),
+                with("strict", (_) => Some(InputValidationContextDriver.Mode.Strict)),
+                with("off", (_) => Option<InputValidationContextDriver.Mode>.None),
+                with("", (_) => Option<InputValidationContextDriver.Mode>.None),
+                (raw) => throw new ArgumentException($"Invalid context validation mode ${raw}")
+            );
 
-            InputValidationContextDriver DecoratorFactory(InputValidationContextDriver.Mode mode, bool reportOnly)
+            return match(mode, (m) =>
             {
-                var logger = provider.GetService<ILogger<InputValidationContextDriver>>(); 
+                var reportOnly = (Configuration["Context:Validation:Error_Policy"] ?? "").ToLower() == "bypass_log";
+                var logger = provider.GetService<ILogger<InputValidationContextDriver>>();
                 var driver = new InputValidationContextDriver(
-                    decoratedDriver, 
+                    decoratedDriver,
                     SchemaProvider(provider),
                     CustomTypeDefinitionProvider(provider),
-                    mode,
+                    m,
                     reportOnly
                     );
-                driver.OnValidationFailed += (message)=>logger.LogWarning(message);
+
+                driver.OnValidationFailed += (message) => logger.LogWarning(message);
                 return driver;
-            }
-
-            var reportOnlyFromConfig = string.Equals(Configuration["Context:Validation:Error_Policy"], "BYPASS_LOG");
-            var modeRaw =  Configuration["Context:Validation:Mode"];
-            if (string.IsNullOrEmpty(modeRaw) || modeRaw == "Off"){
-                return decoratedDriver;
-            }
-
-            return DecoratorFactory(ParseMode(modeRaw), reportOnlyFromConfig);
+            }, () => decoratedDriver);
         }
 
         private InputValidationContextDriver.CustomTypeDefinitionProvider CustomTypeDefinitionProvider(IServiceProvider provider)
         {
-            var logger = provider.GetService<ILogger<InputValidationContextDriver>>(); 
+            var logger = provider.GetService<ILogger<InputValidationContextDriver>>();
             var tweek = provider.GetService<ITweek>();
             var key = $"@tweek/custom_types/_";
             IDictionary<ConfigurationPath, ConfigurationValue> customTypes = new Dictionary<ConfigurationPath, ConfigurationValue>();
             var repo = provider.GetService<IRulesRepository>();
-            repo.OnRulesChange += (rules) => {
+            repo.OnRulesChange += (rules) =>
+            {
                 logger.LogInformation("updated custom types");
-                customTypes = provider.GetService<ITweek>().Calculate(new [] { new ConfigurationPath(key)}, new System.Collections.Generic.HashSet<Identity>(),i => ContextHelpers.EmptyContext);
+                customTypes = provider.GetService<ITweek>().Calculate(new[] { new ConfigurationPath(key) }, new System.Collections.Generic.HashSet<Identity>(), i => ContextHelpers.EmptyContext);
             };
-            
-            return typeName => {
+
+            return typeName =>
+            {
                 return customTypes
                   .TryGetValue(key)
                   .Map(raw => CustomTypeDefinition.FromJsonValue(raw.Value));
-            };   
+            };
         }
         private InputValidationContextDriver.IdentitySchemaProvider SchemaProvider(IServiceProvider provider)
         {
             var tweek = provider.GetService<ITweek>();
 
-            return identityType => {
+            return identityType =>
+            {
                 var key = $"@tweek/schema/{identityType}";
-                var configuration = provider.GetService<ITweek>().Calculate(new [] { new ConfigurationPath(key)}, new System.Collections.Generic.HashSet<Identity>(),
+                var configuration = provider.GetService<ITweek>().Calculate(new[] { new ConfigurationPath(key) }, new System.Collections.Generic.HashSet<Identity>(),
                  i => ContextHelpers.EmptyContext);
-                
+
                 //ugly, but fix weird compilation issue
                 return (configuration as IDictionary<ConfigurationPath, ConfigurationValue>).TryGetValue(key).Map(value => value.Value);
             };
@@ -249,14 +243,14 @@ namespace Tweek.ApiService
             app.UseMetrics();
             app.UseMvc();
             app.UseMetricsReporting(lifetime);
-            app.UseWhen((ctx)=>ctx.Request.Path == "/api/swagger.json", r=>r.UseCors(p=>p.AllowAnyHeader().AllowAnyOrigin().WithMethods("GET")));
+            app.UseWhen((ctx) => ctx.Request.Path == "/api/swagger.json", r => r.UseCors(p => p.AllowAnyHeader().AllowAnyOrigin().WithMethods("GET")));
             app.UseSwagger(options =>
             {
                 options.RouteTemplate = "{documentName}/swagger.json";
                 options.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
                 {
                     swaggerDoc.Host = httpReq.Host.Value;
-                    swaggerDoc.Schemes = new[] {httpReq.Scheme};
+                    swaggerDoc.Schemes = new[] { httpReq.Scheme };
                 });
             });
         }
@@ -266,7 +260,7 @@ namespace Tweek.ApiService
                 {
 
                     ["version"] = Version.Parse
-                }), sha1Provider: (s)=>
+                }), sha1Provider: (s) =>
                 {
                     using (var sha1 = System.Security.Cryptography.SHA1.Create())
                     {
@@ -278,13 +272,14 @@ namespace Tweek.ApiService
         {
             var jpadParser = CreateJPadParser();
 
-            var dict = new Dictionary<string, IRuleParser>(StringComparer.OrdinalIgnoreCase){
+            var dict = new Dictionary<string, IRuleParser>(StringComparer.OrdinalIgnoreCase)
+            {
                 ["jpad"] = jpadParser,
                 ["const"] = Engine.Core.Rules.Utils.ConstValueParser,
                 ["alias"] = Engine.Core.Rules.Utils.KeyAliasParser,
             };
 
-            return x=>dict[x];
+            return x => dict[x];
         }
     }
 }
