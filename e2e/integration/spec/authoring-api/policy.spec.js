@@ -12,29 +12,39 @@ describe('authoring api policy', () => {
     clients = await initClients();
   });
 
-  it.skip('update policy', async () => {
-    const buf = await readFileAsync('./spec/authoring-api/test-data/policy.csv');
+  it('update policy', async () => {
+    const buf = await readFileAsync('./spec/authoring-api/test-data/policy.json');
 
-    const originalPolicy = buf.toString();
-    const newPolicy =
-      originalPolicy +
-      '\np, test@soluto.com, /api/v2/values/*, *, allow\np, test@tweek.com, /api/v2/values/*, *, allow';
+    const originalPolicy = JSON.parse(buf.toString());
+    const newPolicy = {
+      policies: [
+        ...originalPolicy.policies,
+        {
+          group: 'default',
+          user: '00000000-0000-0000-0000-000000000000',
+          contexts: {
+            another_property_test: '*',
+          },
+          object: '*',
+          action: '*',
+          effect: 'allow',
+        },
+      ],
+    };
 
     await pollUntil(
-      () => getObjectContentFromMinio('policy.csv'),
-      res => expect(res).to.equal(originalPolicy),
+      () => getObjectContentFromMinio('security/policy.json'),
+      res => expect(JSON.parse(res)).to.deep.equal(originalPolicy),
     );
 
     await clients.authoring
       .put('/api/policies?author.name=test&author.email=test@soluto.com')
-      .send({
-        policy: newPolicy,
-      })
+      .send(newPolicy)
       .expect(200);
 
     await pollUntil(
-      () => getObjectContentFromMinio('policy.csv'),
-      res => expect(res).to.equal(newPolicy),
+      () => getObjectContentFromMinio('security/policy.json'),
+      res => expect(JSON.parse(res)).to.deep.equal(newPolicy),
     );
   });
 });
