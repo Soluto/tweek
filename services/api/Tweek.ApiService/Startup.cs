@@ -194,7 +194,7 @@ namespace Tweek.ApiService
             return typeName => {
                 return customTypes
                   .TryGetValue(key)
-                  .Map(raw => raw.Value.Deserialize<CustomTypeDefinition>());
+                  .Map(raw => CustomTypeDefinition.FromJsonValue(raw.Value));
             };   
         }
         private InputValidationContextDriver.IdentitySchemaProvider SchemaProvider(IServiceProvider provider)

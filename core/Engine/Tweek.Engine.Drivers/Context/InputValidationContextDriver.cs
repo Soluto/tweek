@@ -64,7 +64,7 @@ namespace Tweek.Engine.Drivers.Context
                             , () => _mode == Mode.AllowUndefinedProperties ?
                                  Valid :
                                  Error($"property \"{prop.Key}\" not found in schema"))
-                        ).Aggregate((a, b) => a | b);
+                        ).Aggregate(Valid, (a, b) => a | b);
 
         public async Task AppendContext(Identity identity, Dictionary<string, JsonValue> context)
         {
@@ -105,7 +105,7 @@ namespace Tweek.Engine.Drivers.Context
                                                .IfNone(() => Error($"custom type \"{baseType}\" not exit"));
                                         }
                                     case JsonValue.Record customTypeRaw:
-                                        return ValidateCustomType(customTypeRaw.Deserialize<CustomTypeDefinition>(), value);
+                                        return ValidateCustomType( CustomTypeDefinition.FromJsonValue(customTypeRaw), value);
                                     default:
                                         return Error("unknown type definition");
                                 }
@@ -126,7 +126,7 @@ namespace Tweek.Engine.Drivers.Context
 
         private ValidationResult ValidateCustomType(CustomTypeDefinition typeDefinition, JsonValue property)
         {
-            var allowedValuesValidation = !typeDefinition.AllowedValues.Any() || typeDefinition.AllowedValues.Exists(v => v == property) 
+            var allowedValuesValidation = !typeDefinition.AllowedValues.Any() || typeDefinition.AllowedValues.Any(v => v.Equals(property)) 
                             ? Valid 
                             : Error("value not in the allowed values");
 
