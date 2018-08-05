@@ -45,7 +45,7 @@ func setupAuthorizer(cfg *appConfig.Security) (security.Authorizer, error) {
 		return nil, err
 	}
 
-	rules, err := ioutil.ReadFile(cfg.PolicyStorage.AuthorizationRules)
+	rules, err := ioutil.ReadFile("./authorization.rego")
 	if err != nil {
 		return nil, err
 	}
