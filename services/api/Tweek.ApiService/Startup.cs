@@ -156,7 +156,7 @@ namespace Tweek.ApiService
             return match(mode, (m) =>
             {
                 var reportOnly = (Configuration["Context:Validation:ErrorPolicy"] ?? "").ToLower() == "bypass_log";
-                var logger = provider.GetService<ILogger<InputValidationContextDriver>>();
+                var logger = loggerFactory.CreateLogger<InputValidationContextDriver>();
                 var driver = new InputValidationContextDriver(
                     decoratedDriver,
                     SchemaProvider(provider),
