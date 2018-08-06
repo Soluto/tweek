@@ -38,6 +38,7 @@ using ConfigurationPath = Tweek.Engine.DataTypes.ConfigurationPath;
 using Tweek.Utils;
 using Tweek.Engine.DataTypes;
 using static LanguageExt.Prelude;
+using System.Linq;
 
 namespace Tweek.ApiService
 {
@@ -146,10 +147,10 @@ namespace Tweek.ApiService
         private IContextDriver CreateInputValidationDriverDecorator(IServiceProvider provider, IContextDriver decoratedDriver)
         {
             var mode = match((Configuration["Context:Validation:Mode"] ?? "").ToLower(),
-                with("flexible", (_) => Some(InputValidationContextDriver.Mode.AllowUndefinedProperties)),
-                with("strict", (_) => Some(InputValidationContextDriver.Mode.Strict)),
-                with("off", (_) => Option<InputValidationContextDriver.Mode>.None),
-                with("", (_) => Option<InputValidationContextDriver.Mode>.None),
+                with("flexible", (_) => Some(SchemaValidation.Mode.AllowUndefinedProperties)),
+                with("strict", (_) => Some(SchemaValidation.Mode.Strict)),
+                with("off", (_) => Option<SchemaValidation.Mode>.None),
+                with("", (_) => Option<SchemaValidation.Mode>.None),
                 (raw) => throw new ArgumentException($"Invalid context validation mode ${raw}")
             );
 
@@ -157,11 +158,11 @@ namespace Tweek.ApiService
             {
                 var reportOnly = (Configuration["Context:Validation:ErrorPolicy"] ?? "").ToLower() == "bypass_log";
                 var logger = loggerFactory.CreateLogger<InputValidationContextDriver>();
+                var tweek = provider.GetService<ITweek>();
+                var rulesRepository = provider.GetService<IRulesRepository>();
                 var driver = new InputValidationContextDriver(
                     decoratedDriver,
-                    SchemaProvider(provider),
-                    CustomTypeDefinitionProvider(provider),
-                    m,
+                    CreateSchemaProvider(tweek,rulesRepository, m),
                     reportOnly
                     );
 
@@ -170,39 +171,27 @@ namespace Tweek.ApiService
             }, () => decoratedDriver);
         }
 
-        private InputValidationContextDriver.CustomTypeDefinitionProvider CustomTypeDefinitionProvider(IServiceProvider provider)
+        private SchemaValidation.Provider CreateSchemaProvider(ITweek tweek,  IRulesRepository rulesProvider, SchemaValidation.Mode mode)
         {
-            var logger = provider.GetService<ILogger<InputValidationContextDriver>>();
-            var tweek = provider.GetService<ITweek>();
-            var key = $"@tweek/custom_types/_";
-            IDictionary<ConfigurationPath, ConfigurationValue> customTypes = new Dictionary<ConfigurationPath, ConfigurationValue>();
-            var repo = provider.GetService<IRulesRepository>();
-            repo.OnRulesChange += (rules) =>
-            {
-                logger.LogInformation("updated custom types");
-                customTypes = provider.GetService<ITweek>().Calculate(new[] { new ConfigurationPath(key) }, new System.Collections.Generic.HashSet<Identity>(), i => ContextHelpers.EmptyContext);
-            };
+            var logger = loggerFactory.CreateLogger("SchemaValidation.Provider");
+            SchemaValidation.Provider CreateValidationProvider(){
+                logger.LogInformation("updateing schema");
+                var schemaIdenetities = tweek.Calculate(new[] { new ConfigurationPath($"@tweek/schema/_") }, new System.Collections.Generic.HashSet<Identity>(),
+                 i => ContextHelpers.EmptyContext).ToDictionary(x=>x.Key.ToString(), x=> x.Value.Value);
 
-            return typeName =>
-            {
-                return customTypes
-                  .TryGetValue(key)
-                  .Map(raw => CustomTypeDefinition.FromJsonValue(raw.Value));
-            };
-        }
-        private InputValidationContextDriver.IdentitySchemaProvider SchemaProvider(IServiceProvider provider)
-        {
-            var tweek = provider.GetService<ITweek>();
+                var customTypes = tweek.Calculate(new[] { new ConfigurationPath($"@tweek/custom_types/_") }, new System.Collections.Generic.HashSet<Identity>(),
+                 i => ContextHelpers.EmptyContext).ToDictionary(x=>x.Key.ToString(), x=> CustomTypeDefinition.FromJsonValue(x.Value.Value));
 
-            return identityType =>
-            {
-                var key = $"@tweek/schema/{identityType}";
-                var configuration = provider.GetService<ITweek>().Calculate(new[] { new ConfigurationPath(key) }, new System.Collections.Generic.HashSet<Identity>(),
-                 i => ContextHelpers.EmptyContext);
+                return SchemaValidation.Create(schemaIdenetities, customTypes, mode);
+            }
 
-                //ugly, but fix weird compilation issue
-                return (configuration as IDictionary<ConfigurationPath, ConfigurationValue>).TryGetValue(key).Map(value => value.Value);
+            var validationProvider = CreateValidationProvider();
+            
+            rulesProvider.OnRulesChange += (_)=>{
+                validationProvider = CreateValidationProvider();
             };
+            
+            return (p)=>validationProvider(p);
         }
 
         private void RegisterMetrics(IServiceCollection services)

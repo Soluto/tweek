@@ -13,6 +13,7 @@ using static FSharpUtils.Newtonsoft.JsonValue;
 using static LanguageExt.Prelude;
 using static Tweek.Engine.Drivers.Context.InputValidationContextDriver;
 using Tweek.Engine.Tests.TestDrivers;
+using static Tweek.Engine.Drivers.Context.SchemaValidation;
 
 namespace Engine.Drivers.UnitTests.Context
 {
@@ -25,26 +26,29 @@ namespace Engine.Drivers.UnitTests.Context
             _child =  new InMemoryContextDriver(new Dictionary<Identity, Dictionary<string,JsonValue>>());
         }
 
-        private IdentitySchemaProvider ExternalSchemaProvider  => 
-            identityType => identityType == "dummy" ? Some(JsonValue.Parse(File.ReadAllText(@"Context/schema.json"))) : None; 
+        private Dictionary<string, JsonValue> ExternalSchemas  = new Dictionary<string, JsonValue>{
+            ["dummy"] = JsonValue.Parse(File.ReadAllText(@"Context/schema.json"))
+        };
 
-        private CustomTypeDefinitionProvider CustomTypeProviderWithVersion = x => x == "version" ? Some(new CustomTypeDefinition{
+        private Dictionary<string,CustomTypeDefinition> CustomTypesWithVersion = new Dictionary<string,CustomTypeDefinition>{
+            ["version"] =new CustomTypeDefinition{
                 Base = "string",
                 Validation = new Regex(@".*?\..*?.6")
-                }) : None;
+                }
+        };
 
-    private InputValidationContextDriver CreateTarget(IdentitySchemaProvider schemaProvider,
-        CustomTypeDefinitionProvider customTypesProvider = null,
-        InputValidationContextDriver.Mode mode = InputValidationContextDriver.Mode.Strict,
-        bool reportOnly = false) => new InputValidationContextDriver(_child, schemaProvider, customTypesProvider, mode, reportOnly);
+    private InputValidationContextDriver CreateTarget(Dictionary<string, JsonValue> schemas,
+        Dictionary<string, CustomTypeDefinition> customTypes = null,
+        SchemaValidation.Mode mode = SchemaValidation.Mode.Strict,
+        bool reportOnly = false) => new InputValidationContextDriver(_child, SchemaValidation.Create(schemas, customTypes, mode), reportOnly);
 
 
     [Fact(DisplayName = "When appending context, if the given identity type does not have schema it should throw")]
         public async Task AppendContext_MissingIdentityType_Throws()
         {
             var identity = new Identity("dummy", "1");
-            IdentitySchemaProvider schemaProvider = x => None; 
-            var target = CreateTarget(schemaProvider, mode:Mode.Strict);
+            var schemas = new Dictionary<string,JsonValue>(); //IdentitySchemaProvider schemaProvider = x => None; 
+            var target = CreateTarget(schemas, mode:Mode.Strict);
             await Assert.ThrowsAsync<ArgumentException>(() => target.AppendContext(identity, new Dictionary<string, JsonValue>()));
         }
 
@@ -55,7 +59,7 @@ namespace Engine.Drivers.UnitTests.Context
             var identity = new Identity("dummy", "1");
             var data = new Dictionary<string, JsonValue>();
             data.Add("BirthDate", NewString("undefined"));
-            var target = CreateTarget(schemaProvider:ExternalSchemaProvider, mode: Mode.Strict);
+            var target = CreateTarget(schemas:ExternalSchemas, mode: Mode.Strict);
 
             await Assert.ThrowsAsync<ArgumentException>(() => target.AppendContext(identity, data));
         }
@@ -67,7 +71,7 @@ namespace Engine.Drivers.UnitTests.Context
             var data = new Dictionary<string, JsonValue>();
             data.Add("Country", NewString("undefined"));
             data.Add("Invalid", NewString("undefined"));
-            var target = CreateTarget(schemaProvider:ExternalSchemaProvider, mode: Mode.Strict);
+            var target = CreateTarget(schemas:ExternalSchemas, mode: Mode.Strict);
 
             await Assert.ThrowsAsync<ArgumentException>(() => target.AppendContext(identity, data));
         }
@@ -77,7 +81,7 @@ namespace Engine.Drivers.UnitTests.Context
         public async Task AppendContext_PropertyValid_CallChildContext(Dictionary<string, JsonValue> data)
         {
             var identity = new Identity("dummy", "1");
-            var target = CreateTarget(schemaProvider:ExternalSchemaProvider, customTypesProvider:CustomTypeProviderWithVersion, mode: Mode.Strict);
+            var target = CreateTarget(schemas:ExternalSchemas, customTypes:CustomTypesWithVersion, mode: Mode.Strict);
             
             await target.AppendContext(identity, data);
             
@@ -90,7 +94,7 @@ namespace Engine.Drivers.UnitTests.Context
         public async Task AppendContext_PropertyInvalid_Throws(Dictionary<string, JsonValue> data)
         {
             var identity = new Identity("dummy", "1");
-            var target = CreateTarget(schemaProvider:ExternalSchemaProvider, customTypesProvider:CustomTypeProviderWithVersion, mode: Mode.Strict);
+            var target = CreateTarget(schemas:ExternalSchemas, customTypes:CustomTypesWithVersion, mode: Mode.Strict);
 
             await Assert.ThrowsAsync<ArgumentException>(() => target.AppendContext(identity, data));
         }
@@ -102,7 +106,7 @@ namespace Engine.Drivers.UnitTests.Context
             var data = new Dictionary<string, JsonValue>();
             data.Add("Country", NewString("undefined"));
             data.Add("Invalid", NewString("undefined"));
-            var target = CreateTarget(schemaProvider:ExternalSchemaProvider, mode: Mode.AllowUndefinedProperties);
+            var target = CreateTarget(schemas:ExternalSchemas, mode: Mode.AllowUndefinedProperties);
             
             await target.AppendContext(identity, data);
 
@@ -116,7 +120,7 @@ namespace Engine.Drivers.UnitTests.Context
         {
             var identity = new Identity("dummy", "1");
 
-            var target = CreateTarget(schemaProvider:ExternalSchemaProvider, mode: Mode.AllowUndefinedProperties, reportOnly:true);
+            var target = CreateTarget(schemas:ExternalSchemas, mode: Mode.AllowUndefinedProperties, reportOnly:true);
 
             await target.AppendContext(identity, data);
             var result = await target.GetContext(identity);
@@ -131,7 +135,7 @@ namespace Engine.Drivers.UnitTests.Context
             var identity = new Identity("dummy", "1");
             var data = new Dictionary<string, JsonValue>();
             data.Add("@fixed:my_key", NewString("undefined"));
-            var target = CreateTarget(schemaProvider:ExternalSchemaProvider, mode: mode);
+            var target = CreateTarget(schemas:ExternalSchemas, mode: mode);
             await target.AppendContext(identity, data);
             var result = await target.GetContext(identity);
             Assert.Equal(result,data);
