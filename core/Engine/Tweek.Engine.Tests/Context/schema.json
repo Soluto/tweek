@@ -11,7 +11,9 @@
     "Country": {
         "type": "string"
     },
-
+    "IsPremium": {
+        "type": "boolean"
+    },
     "AgentVersion": {
         "type": "version"
     },

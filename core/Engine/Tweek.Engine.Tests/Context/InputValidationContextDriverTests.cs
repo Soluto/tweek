@@ -167,6 +167,14 @@ namespace Engine.Drivers.UnitTests.Context
             {
                 new Dictionary<string, JsonValue>
                 {
+                    ["IsPremium"] = NewBoolean(true)
+                }
+            };
+
+            yield return new object[]
+            {
+                new Dictionary<string, JsonValue>
+                {
                     ["Gender"] = NewString("Male")
                 }
             };
@@ -211,6 +219,14 @@ namespace Engine.Drivers.UnitTests.Context
                 new Dictionary<string, JsonValue>
                 {
                     ["Gender"] = NewString("Omer")
+                }
+            };
+
+            yield return new object[]
+            {
+                new Dictionary<string, JsonValue>
+                {
+                    ["IsPremium"] = NewString("Hello")
                 }
             };
 
