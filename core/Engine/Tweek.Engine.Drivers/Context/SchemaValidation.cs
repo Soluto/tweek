@@ -53,12 +53,18 @@ namespace Tweek.Engine.Drivers.Context
             {
                 case JsonValue.String baseTypeName:
                     var baseType = baseTypeName.Item;
+                    
+                    var validator = fun((Func<JsonValue, bool> fn) => 
+                        new PropertyValidator(x=>  fn(x) ? Valid : Error($"value is not a {baseType}")));
+                    
                     switch (baseType)
                     {
-                        case "number": return ValidateNumber;
-                        case "date": return ValidateDate;
-                        case "string": return ValidateString;
-                        case "boolean": return ValidateBoolean;
+                        case "number":  return validator( x=>x.IsNumber);
+                        case "date": return validator(x=> DateTime.TryParse(x.AsString(), out var _));
+                        case "string": return validator(x => x.IsString);
+                        case "boolean": return validator(x=> x.IsBoolean);
+                        case "array": return validator(x=> x.IsArray);
+                        case "object": return validator(x=> x.IsRecord);
                         default:
                             return provider(baseType)
                            .Map(type => CreateCustomTypeValidator(type))
@@ -70,23 +76,6 @@ namespace Tweek.Engine.Drivers.Context
                     return (JsonValue _) => Error("unknown type definition");
             }
         }
-
-        private static ValidationResult ValidateNumber(JsonValue property) =>
-            property.IsNumber ? Valid : Error("value is not a number");
-
-        private static ValidationResult ValidateDate(JsonValue property) =>
-            DateTime.TryParse(property.AsString(), out var _) ?
-                            Valid :
-                            Error("value is not a valid date");
-
-        private static ValidationResult ValidateString(JsonValue property) =>
-            property.IsString ? Valid :
-                                 Error("value is not a string");
-
-        private static ValidationResult ValidateBoolean(JsonValue property) =>
-            property.IsBoolean ? Valid :
-                                 Error("value is not a boolean value");
-
 
         private static PropertyValidator CreateCustomTypeValidator(CustomTypeDefinition typeDefinition)
         {
