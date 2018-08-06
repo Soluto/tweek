@@ -26,12 +26,12 @@ type DefaultAuthorizer struct {
 // NewDefaultAuthorizer is the constructor for DefaultAuthorizer
 func NewDefaultAuthorizer(rules, data, pkg, query string) *DefaultAuthorizer {
 	c := ast.NewCompiler()
-	module, err := ast.ParseModule("rules.rego", rules)
+	module, err := ast.ParseModule("subject_extraction_rules.rego", rules)
 	if err != nil {
 		log.Panicln("Error parsing rules", err)
 	}
 	c.Compile(map[string]*ast.Module{
-		"rules.rego": module,
+		"subject_extraction_rules.rego": module,
 	})
 	if c.Failed() {
 		log.Panicln("Error compiling rules", c.Errors)

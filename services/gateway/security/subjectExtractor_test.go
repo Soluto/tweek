@@ -52,7 +52,7 @@ func TestDefaultSubjectExtractor_ExtractSubject(t *testing.T) {
 	for _, tt := range tests {
 		ctx := context.Background()
 		t.Run(tt.name, func(t *testing.T) {
-			rules, err := ioutil.ReadFile("./testdata/rules.rego")
+			rules, err := ioutil.ReadFile("./testdata/subject_extraction_rules.rego")
 			if err != nil {
 				t.Fatal("Unable to read rules file")
 			}
