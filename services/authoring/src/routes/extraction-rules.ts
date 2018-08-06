@@ -17,7 +17,6 @@ export class ExtractionRulesController {
   @Authorize({ permission: PERMISSIONS.ADMIN })
   @PUT
   async updatePolicy( @QueryParam('author.name') name: string, @QueryParam('author.email') email: string, content: { extraction_rules: string }): Promise<string> {
-    console.log('NEW RULES', content.extraction_rules);
     const oid = await this.extractionRulesRepository.updateExtractionRules(content.extraction_rules, { name, email });
     addOid(this.context.response, oid);
 
