@@ -10,7 +10,7 @@ namespace Tweek.Publishing.Tests.Validation
 {
     public class SubjectExtractionValidatorTests
     {
-        const string subExtractionRulesFileName = @"rules.rego";
+        const string subExtractionRulesFileName = @"subject_extraction_rules.rego";
 
         [Fact]
         public async Task ValidatePassWhenValidOpaRules()

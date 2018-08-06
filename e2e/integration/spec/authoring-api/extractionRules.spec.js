@@ -13,23 +13,23 @@ describe('authoring api extraction rules', () => {
   });
 
   it('update extraction rules', async () => {
-    const buf = await readFileAsync('./spec/authoring-api/test-data/rules.rego');
+    const buf = await readFileAsync('./spec/authoring-api/test-data/subject_extraction_rules.rego');
 
     const originalRules = buf.toString();
     const newRules = originalRules + '\n'; // only adding new line in order not to break the original rules
 
     await pollUntil(
-      () => getObjectContentFromMinio('security/rules.rego'),
+      () => getObjectContentFromMinio('security/subject_extraction_rules.rego'),
       res => expect(res).to.equal(originalRules),
     );
 
     await clients.authoring
-      .put('/api/extraction-rules?author.name=test&author.email=test@soluto.com')
-      .send({ extraction_rules: newRules })
+      .put('/api/subject-extraction-rules?author.name=test&author.email=test@soluto.com')
+      .send({ subject_extraction_rules: newRules })
       .expect(200);
 
     await pollUntil(
-      () => getObjectContentFromMinio('security/rules.rego'),
+      () => getObjectContentFromMinio('security/subject_extraction_rules.rego'),
       res => expect(res).to.equal(newRules),
     );
   });

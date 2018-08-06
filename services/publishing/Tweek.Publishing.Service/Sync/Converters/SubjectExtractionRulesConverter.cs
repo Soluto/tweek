@@ -28,7 +28,7 @@ namespace Tweek.Publishing.Service.Sync.Converters
                     }
                 })
                 .Single();
-            return ("security/rules.rego", result, "text/plain");
+            return ("security/subject_extraction_rules.rego", result, "text/plain");
         }
     }
 }

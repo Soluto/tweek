@@ -142,7 +142,7 @@ func setupSubjectExtractor(cfg appConfig.Security) (security.SubjectExtractor, e
 		return nil, err
 	}
 
-	obj, err := client.GetObject(policyStorage.MinioBucketName, "security/rules.rego", minio.GetObjectOptions{})
+	obj, err := client.GetObject(policyStorage.MinioBucketName, "security/subject_extraction_rules.rego", minio.GetObjectOptions{})
 	if err != nil {
 		return nil, err
 	}

@@ -30,12 +30,12 @@ type SynchronizedSubjectExtractor struct {
 // NewDefaultSubjectExtractor is a constructor for DefaultSubjectExtractor
 func NewDefaultSubjectExtractor(rules, pkg, query string) *DefaultSubjectExtractor {
 	c := ast.NewCompiler()
-	module, err := ast.ParseModule("rules.rego", rules)
+	module, err := ast.ParseModule("subject_extraction_rules.rego", rules)
 	if err != nil {
 		log.Panicln("Error parsing rules", err)
 	}
 	c.Compile(map[string]*ast.Module{
-		"rules.rego": module,
+		"subject_extraction_rules.rego": module,
 	})
 	if c.Failed() {
 		log.Panicln("Error compiling rules", c.Errors)

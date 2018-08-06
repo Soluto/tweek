@@ -6,6 +6,6 @@ namespace Tweek.Publishing.Service.Validation
         public static readonly string JPad = "^implementations/jpad/.*\\.jpad$";
         public static readonly string ExternalApp = "^external_apps/(.+)\\.json$";
         public static readonly string Policy = "^policy.json$";
-        public static readonly string SubjectExtractionRules = "^rules.rego$";
+        public static readonly string SubjectExtractionRules = "^subject_extraction_rules.rego$";
     }
 }
