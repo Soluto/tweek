@@ -177,10 +177,10 @@ namespace Tweek.ApiService
             SchemaValidation.Provider CreateValidationProvider(){
                 logger.LogInformation("updateing schema");
                 var schemaIdenetities = tweek.Calculate(new[] { new ConfigurationPath($"@tweek/schema/_") }, new System.Collections.Generic.HashSet<Identity>(),
-                 i => ContextHelpers.EmptyContext).ToDictionary(x=>x.Key.ToString(), x=> x.Value.Value);
+                 i => ContextHelpers.EmptyContext).ToDictionary(x=> x.Key.Name, x=> x.Value.Value);
 
                 var customTypes = tweek.Calculate(new[] { new ConfigurationPath($"@tweek/custom_types/_") }, new System.Collections.Generic.HashSet<Identity>(),
-                 i => ContextHelpers.EmptyContext).ToDictionary(x=>x.Key.ToString(), x=> CustomTypeDefinition.FromJsonValue(x.Value.Value));
+                 i => ContextHelpers.EmptyContext).ToDictionary(x=>x.Key.Name, x=> CustomTypeDefinition.FromJsonValue(x.Value.Value));
 
                 return SchemaValidation.Create(schemaIdenetities, customTypes, mode);
             }
