@@ -17,6 +17,12 @@
     "AgentVersion": {
         "type": "version"
     },
+    "Hobbies": {
+        "type": "array"
+    },
+    "Pets": {
+        "type": "object"
+    },
     "Gender": {
         "type": {
             "base": "string",

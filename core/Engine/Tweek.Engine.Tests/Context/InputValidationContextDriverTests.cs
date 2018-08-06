@@ -190,6 +190,22 @@ namespace Engine.Drivers.UnitTests.Context
                     ["AgentVersion"] = NewString("1.34.6")
                 }
             };
+
+            yield return new object[]
+            {
+                new Dictionary<string, JsonValue>
+                {
+                    ["Pets"] =  NewArray(new JsonValue[]{})
+                }
+            };
+
+            yield return new object[]
+            {
+                new Dictionary<string, JsonValue>
+                {
+                    ["Hobbies"] = NewBoolean(false)
+                }
+            };
         }
 
         public static IEnumerable<object[]> InvalidContextData()
@@ -239,6 +255,22 @@ namespace Engine.Drivers.UnitTests.Context
                 new Dictionary<string, JsonValue>
                 {
                     ["AgentVersion"] = NewString("134.6")
+                }
+            };
+
+            yield return new object[]
+            {
+                new Dictionary<string, JsonValue>
+                {
+                    ["Pets"] = NewRecord(new Tuple<string,JsonValue>[]{})
+                }
+            };
+
+            yield return new object[]
+            {
+                new Dictionary<string, JsonValue>
+                {
+                    ["Hobbies"] = NewArray(new JsonValue[]{})
                 }
             };
         }
