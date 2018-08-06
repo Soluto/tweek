@@ -195,7 +195,7 @@ namespace Engine.Drivers.UnitTests.Context
             {
                 new Dictionary<string, JsonValue>
                 {
-                    ["Pets"] =  NewArray(new JsonValue[]{})
+                    ["Pets"] = NewRecord(new Tuple<string,JsonValue>[]{})
                 }
             };
 
@@ -203,7 +203,7 @@ namespace Engine.Drivers.UnitTests.Context
             {
                 new Dictionary<string, JsonValue>
                 {
-                    ["Hobbies"] = NewBoolean(false)
+                    ["Hobbies"] = NewArray(new JsonValue[]{})
                 }
             };
         }
@@ -262,7 +262,7 @@ namespace Engine.Drivers.UnitTests.Context
             {
                 new Dictionary<string, JsonValue>
                 {
-                    ["Pets"] = NewRecord(new Tuple<string,JsonValue>[]{})
+                    ["Pets"] =  NewArray(new JsonValue[]{})
                 }
             };
 
@@ -270,7 +270,7 @@ namespace Engine.Drivers.UnitTests.Context
             {
                 new Dictionary<string, JsonValue>
                 {
-                    ["Hobbies"] = NewArray(new JsonValue[]{})
+                    ["Hobbies"] = NewBoolean(false)
                 }
             };
         }
