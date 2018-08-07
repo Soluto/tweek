@@ -44,7 +44,7 @@ namespace Tweek.Engine.Drivers.Context
 
             return new Validator((string propName, JsonValue propValue) =>
                  propValidators.TryGetValue(propName)
-                               .Match(validator => validator(propValue), () =>
+                               .Match(validator => validator(propValue).Match(x=>x, e=> Error($"error validating prop {propName}: {e}")) , () =>
                                mode == Mode.AllowUndefinedProperties ?
                                Valid :
                                Error($"property \"{propName}\" not found")));
@@ -85,14 +85,16 @@ namespace Tweek.Engine.Drivers.Context
             var validators = Enumerable.Empty<Func<JsonValue, ValidationResult>>();
             if (typeDefinition.AllowedValues.Any())
             {
-                validators = validators.Append((JsonValue property) => !typeDefinition.AllowedValues.Any(v => v.Equals(property)) ? Error("value not in the allowed values") : Valid);
+                validators = validators.Append((JsonValue property) => typeDefinition.AllowedValues.Any(v => 
+                    (v.IsString && property.IsString && v.AsString().ToLower() == property.AsString().ToLower() ) || 
+                        v.Equals(property)) ? Valid : Error($"value {property.ToString()} not in the allowed values"));
             }
             
             var regexValidation = Optional(typeDefinition.Validation)
                          .Map(validation => fun((JsonValue property) =>
                          {
                              var match = validation.IsMatch(property.AsString());
-                             return match ? Valid : Error("value does not match regex");
+                             return match ? Valid : Error($"value {property.ToString()} does not match regex");
                          }));
 
             validators = validators.Append(regexValidation);
