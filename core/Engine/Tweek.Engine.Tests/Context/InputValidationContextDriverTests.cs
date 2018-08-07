@@ -187,6 +187,14 @@ namespace Engine.Drivers.UnitTests.Context
             {
                 new Dictionary<string, JsonValue>
                 {
+                    ["Gender"] = NewString("male")
+                }
+            };
+
+            yield return new object[]
+            {
+                new Dictionary<string, JsonValue>
+                {
                     ["AgentVersion"] = NewString("1.34.6")
                 }
             };
@@ -204,6 +212,14 @@ namespace Engine.Drivers.UnitTests.Context
                 new Dictionary<string, JsonValue>
                 {
                     ["Hobbies"] = NewArray(new JsonValue[]{})
+                }
+            };
+
+            yield return new object[]
+            {
+                new Dictionary<string, JsonValue>
+                {
+                    ["LuckyNumber"] = NewNumber(7)
                 }
             };
         }
@@ -271,6 +287,22 @@ namespace Engine.Drivers.UnitTests.Context
                 new Dictionary<string, JsonValue>
                 {
                     ["Hobbies"] = NewBoolean(false)
+                }
+            };
+
+            yield return new object[]
+            {
+                new Dictionary<string, JsonValue>
+                {
+                    ["LuckyNumber"] = NewNumber(11)
+                }
+            };
+
+            yield return new object[]
+            {
+                new Dictionary<string, JsonValue>
+                {
+                    ["LuckyNumber"] = NewString("7")
                 }
             };
         }
