@@ -87,9 +87,9 @@ async function startServer() {
 
   app.use('/*', (req, res) => res.sendStatus(404));
   const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-    morganJSON(req, res, ()=> {
+    morganJSON(req, res, () => {
       if (!err) { return next(); }
-      logger.error(`${err.message}`, {Method: req.method, Url: req.originalUrl, Error: err});
+      logger.error(`${err.message}`, { Method: req.method, Url: req.originalUrl, Error: err });
       res.status(getErrorStatusCode(err)).send(err.message);
     });
   };

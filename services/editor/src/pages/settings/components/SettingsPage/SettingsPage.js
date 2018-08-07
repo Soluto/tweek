@@ -50,7 +50,7 @@ export default compose(
     },
   }),
   connect(state => ({ schema: state.schema })),
-)(props => {
+)((props) => {
   const { schema, children } = props;
   return (
     <DocumentTitle title="Tweek - Settings">
