@@ -60,7 +60,7 @@ describe('context-service', () => {
     });
   });
 
-  describe('getProperties', () => {
+  describe('getSchemaProperties', () => {
     it('should return schema properties and @@id property', async () => {
       const schema = {
         user: {
@@ -71,7 +71,7 @@ describe('context-service', () => {
       };
       fetchMock.get(contextServiceApiMatcher, schema);
       await ContextService.refreshSchema();
-      const result = ContextService.getProperties();
+      const result = ContextService.getSchemaProperties();
       expect(result.length).to.eql(2);
       expect(result).to.include.something.that.deep.equal({
         id: 'user.@@id',

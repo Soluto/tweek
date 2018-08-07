@@ -57,7 +57,7 @@ class NewPartition extends React.Component {
 
   render() {
     const { partitions, valueType } = this.props;
-    const allProperties = ContextService.getProperties();
+    const allProperties = ContextService.getSchemaProperties();
     const indexedPartitions = partitions.map(
       partition =>
         allProperties.find(property => property.id === partition) || {
