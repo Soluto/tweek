@@ -6,7 +6,7 @@ const selectAuthenticationProviders = (server, config) => {
   let goodSchemes = [];
   let badSchemes = [];
 
-  schemes.forEach(scheme => {
+  schemes.forEach((scheme) => {
     if (supportedAuthenticationSchemes.includes(scheme)) {
       const provider = require(`./${scheme}`);
       goodSchemes.push(provider(server, config));
