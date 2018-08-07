@@ -40,10 +40,12 @@ using Tweek.Engine.DataTypes;
 using static LanguageExt.Prelude;
 using System.Linq;
 
+
 namespace Tweek.ApiService
 {
     public class Startup
     {
+        private static System.Collections.Generic.HashSet<Identity> EmptyIdentitySet = new System.Collections.Generic.HashSet<Identity>();
         private ILoggerFactory loggerFactory;
         public Startup(IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
@@ -144,42 +146,44 @@ namespace Tweek.ApiService
             services.ConfigureAuthenticationProviders(Configuration, loggerFactory.CreateLogger("AuthenticationProviders"));
         }
 
-        private IContextDriver CreateInputValidationDriverDecorator(IServiceProvider provider, IContextDriver decoratedDriver)
+        private IContextDriver CreateInputValidationDriverDecorator(IServiceProvider provider, IContextDriver driver)
         {
-            var mode = match((Configuration["Context:Validation:Mode"] ?? "").ToLower(),
+            var mode = match(Configuration["Context:Validation:Mode"]?.ToLower(),
                 with("flexible", (_) => Some(SchemaValidation.Mode.AllowUndefinedProperties)),
                 with("strict", (_) => Some(SchemaValidation.Mode.Strict)),
                 with("off", (_) => Option<SchemaValidation.Mode>.None),
-                with("", (_) => Option<SchemaValidation.Mode>.None),
+                with((string)null, (_) => Option<SchemaValidation.Mode>.None),
                 (raw) => throw new ArgumentException($"Invalid context validation mode ${raw}")
             );
 
-            return match(mode, (m) =>
+
+            return match(mode, (Func<SchemaValidation.Mode, IContextDriver>)((m) =>
             {
-                var reportOnly = (Configuration["Context:Validation:ErrorPolicy"] ?? "").ToLower() == "bypass_log";
+                var reportOnly = Configuration["Context:Validation:ErrorPolicy"]?.ToLower() == "bypass_log";
                 var logger = loggerFactory.CreateLogger<InputValidationContextDriver>();
                 var tweek = provider.GetService<ITweek>();
                 var rulesRepository = provider.GetService<IRulesRepository>();
-                var driver = new InputValidationContextDriver(
-                    decoratedDriver,
-                    CreateSchemaProvider(tweek,rulesRepository, m),
+                var driverWithValidation = new InputValidationContextDriver(
+                    (IContextDriver)driver,
+                    CreateSchemaProvider(tweek, rulesRepository, m),
                     reportOnly
                     );
 
-                driver.OnValidationFailed += (message) => logger.LogWarning(message);
-                return driver;
-            }, () => decoratedDriver);
+                driverWithValidation.OnValidationFailed += (message) => logger.LogWarning(message);
+                return driverWithValidation;
+            }), () => driver);
         }
 
         private SchemaValidation.Provider CreateSchemaProvider(ITweek tweek,  IRulesRepository rulesProvider, SchemaValidation.Mode mode)
         {
             var logger = loggerFactory.CreateLogger("SchemaValidation.Provider");
+            
             SchemaValidation.Provider CreateValidationProvider(){
                 logger.LogInformation("updateing schema");
-                var schemaIdenetities = tweek.Calculate(new[] { new ConfigurationPath($"@tweek/schema/_") }, new System.Collections.Generic.HashSet<Identity>(),
+                var schemaIdenetities = tweek.Calculate(new[] { new ConfigurationPath($"@tweek/schema/_") }, EmptyIdentitySet,
                  i => ContextHelpers.EmptyContext).ToDictionary(x=> x.Key.Name, x=> x.Value.Value);
 
-                var customTypes = tweek.Calculate(new[] { new ConfigurationPath($"@tweek/custom_types/_") }, new System.Collections.Generic.HashSet<Identity>(),
+                var customTypes = tweek.Calculate(new[] { new ConfigurationPath($"@tweek/custom_types/_") }, EmptyIdentitySet,
                  i => ContextHelpers.EmptyContext).ToDictionary(x=>x.Key.Name, x=> CustomTypeDefinition.FromJsonValue(x.Value.Value));
 
                 return SchemaValidation.Create(schemaIdenetities, customTypes, mode);

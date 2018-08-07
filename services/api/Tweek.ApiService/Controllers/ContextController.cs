@@ -12,22 +12,19 @@ using Tweek.Engine.Drivers.Context;
 
 namespace Tweek.ApiService.Controllers
 {
-  [Route("api/v1/context")]
+    [Route("api/v1/context")]
     public class ContextController : Controller
     {
         private readonly IContextDriver _contextDriver;
         private readonly CheckWriteContextAccess _checkAccess;
-        private readonly ILogger<ContextController> _logger;
 
         public ContextController(
-            IContextDriver contextDriver, 
-            JsonSerializer serializer, 
-            CheckWriteContextAccess checkAccess,
-            ILogger<ContextController> logger)
+            IContextDriver contextDriver,
+            JsonSerializer serializer,
+            CheckWriteContextAccess checkAccess)
         {
             _contextDriver = contextDriver;
-            _checkAccess =checkAccess;
-            this._logger = logger;
+            _checkAccess = checkAccess;
         }
 
         /// <summary>
@@ -49,9 +46,11 @@ namespace Tweek.ApiService.Controllers
             if (data.Count == 0) return Ok();
             var identity = new Identity(identityType, identityId);
 
-            try{
+            try
+            {
                 await _contextDriver.AppendContext(identity, data);
-            }catch(ArgumentException e)
+            }
+            catch (ArgumentException e)
             {
                 return BadRequest(e.Message);
             }
