@@ -20,7 +20,7 @@ export function getSchema() {
 }
 
 export function getProperties() {
-  return R.chain(
+  return [...R.chain(
     identity => [
       { id: `${identity}.@@id`, name: 'Id', type: 'string', identity },
       ...Object.keys(contextSchema[identity]).map(property => ({
@@ -31,7 +31,7 @@ export function getProperties() {
       })),
     ],
     Object.keys(contextSchema),
-  );
+  ), {id: 'system.time_utc', identity: 'system', name: 'time_utc', type: 'date'}];
 }
 
 export function getPropertyTypeDetails(property) {
