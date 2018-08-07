@@ -1,22 +1,25 @@
-const _createOperator = (label, operatorValue) => {
+const _createOperator = (label, operatorValue, isArray) => {
   let getValue;
-  switch (operatorValue) {
-  case '$eq':
-    getValue = propertyValue => propertyValue;
-    break;
-  case '$in':
+
+  if (isArray) {
     getValue = (propertyValue, propertyTypeDetails) =>
       _toArrayValue(operatorValue, propertyValue, propertyTypeDetails);
-    break;
-  default:
-    getValue = (propertyValue, propertyTypeDetails) =>
-      _toComplexValue(operatorValue, propertyValue, propertyTypeDetails);
+  } else {
+    switch (operatorValue) {
+    case '$eq':
+      getValue = propertyValue => propertyValue;
+      break;
+    default:
+      getValue = (propertyValue, propertyTypeDetails) =>
+        _toComplexValue(operatorValue, propertyValue, propertyTypeDetails);
+    }
   }
 
   return {
     label,
     operatorValue,
     getValue,
+    isArray,
   };
 };
 
@@ -41,11 +44,12 @@ export const greaterEqualThan = _createOperator('>=', '$ge');
 export const greater = _createOperator('>', '$gt');
 export const lessThan = _createOperator('<', '$lt');
 export const lessEqualThan = _createOperator('<=', '$le');
-export const inOp = _createOperator('in', '$in');
+export const inOp = _createOperator('in', '$in', true);
 export const within = _createOperator('within', '$withinTime');
 export const startsWith = _createOperator('starts with', '$startsWith');
 export const endsWith = _createOperator('ends with', '$endsWith');
 export const contains = _createOperator('contains', '$contains');
+export const containsArray = _createOperator('contains', '$contains', true);
 
 export const allOperators = [
   equal,
@@ -59,6 +63,7 @@ export const allOperators = [
   startsWith,
   endsWith,
   contains,
+  containsArray,
 ];
 
 export const getPropertySupportedOperators = (propertyTypeDetails) => {
@@ -70,6 +75,10 @@ export const getPropertySupportedOperators = (propertyTypeDetails) => {
 
   if (type === 'date') {
     return [within, greaterEqualThan, lessEqualThan];
+  }
+
+  if (type === 'array') {
+    return [containsArray];
   }
 
   let operators = [];

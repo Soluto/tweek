@@ -18,6 +18,9 @@ export const types = {
   object: {
     name: 'object',
   },
+  array: {
+    name: 'array',
+  },
 };
 
 export async function refreshTypes() {

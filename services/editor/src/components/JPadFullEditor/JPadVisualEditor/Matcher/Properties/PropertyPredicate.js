@@ -3,7 +3,6 @@ import { compose, mapProps } from 'recompose';
 import withPropertyTypeDetails from '../../../../../hoc/with-property-type-details';
 import {
   equal,
-  inOp,
   allOperators,
   getPropertySupportedOperators,
 } from '../../../../../services/operators-provider';
@@ -11,8 +10,8 @@ import Operator from './Operator';
 import PropertyValue from './PropertyValue';
 
 const translateValue = (oldOperator, newOperator, value) => {
-  if (oldOperator.operatorValue === inOp.operatorValue) return value.length > 0 ? value[0] : '';
-  if (newOperator.operatorValue === inOp.operatorValue) return value ? [value] : [];
+  if (oldOperator.isArray) return value.length > 0 ? value[0] : '';
+  if (newOperator.isArray) return value ? [value] : [];
   return value;
 };
 
@@ -25,7 +24,7 @@ const PropertyPredicate = ({
   selectedOperator,
   propertyTypeDetails,
   predicateValue,
-}) =>
+}) => (
   <div style={{ display: 'flex' }}>
     <Operator
       supportedOperators={supportedOperators}
@@ -36,7 +35,8 @@ const PropertyPredicate = ({
             translateValue(selectedOperator, newOperator, predicateValue),
             propertyTypeDetailsToComparer(propertyTypeDetails),
           ),
-        )}
+        )
+      }
     />
     <PropertyValue
       valueType={propertyTypeDetails}
@@ -48,9 +48,11 @@ const PropertyPredicate = ({
             newPropertyValue,
             propertyTypeDetailsToComparer(propertyTypeDetails),
           ),
-        )}
+        )
+      }
     />
-  </div>;
+  </div>
+);
 
 export default compose(
   withPropertyTypeDetails(),

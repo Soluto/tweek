@@ -8,6 +8,8 @@ import { showCustomAlert, buttons } from '../../../store/ducks/alerts';
 import './TypedInput.css';
 import { connect } from 'react-redux';
 import { withJsonEditor } from './EditJSON';
+import * as R from 'ramda';
+import { WithContext as ReactTags } from 'react-tag-input';
 
 export const typesServiceContextType = {
   types: PropTypes.object.isRequired,
@@ -22,7 +24,28 @@ export const getTypesService = getContext(typesServiceContextType);
 const valueToItem = value =>
   value === undefined || value === '' ? undefined : { label: changeCase.pascalCase(value), value };
 
-const InputComponent = ({ value, valueType, allowedValues, onChange, editJson, ...props }) => {
+const InputComponent = ({
+  value,
+  valueType,
+  valueTypeName,
+  allowedValues,
+  onChange,
+  onChangeConvert,
+  isArray,
+  editJson,
+  ...props
+}) => {
+  if (isArray) {
+    return (
+      <TagsPropertyValue
+        data-comp="property-value"
+        value={value || []}
+        valueType={valueType}
+        onChange={onChange}
+        {...props}
+      />
+    );
+  }
   if (allowedValues && allowedValues.length > 0) {
     return (
       <ComboBox
@@ -30,18 +53,18 @@ const InputComponent = ({ value, valueType, allowedValues, onChange, editJson, .
         value={value === undefined ? undefined : changeCase.pascalCase(value)}
         suggestions={allowedValues.map(valueToItem)}
         onChange={(input, selected) =>
-          selected && onChange(selected.value === undefined ? selected : selected.value)
+          selected && onChangeConvert(selected.value === undefined ? selected : selected.value)
         }
       />
     );
   }
-  if (valueType === 'object') {
+  if (valueTypeName === 'object') {
     return (
       <div>
         <Input
           readOnly
           {...props}
-          onChange={onChange}
+          onChange={onChangeConvert}
           value={value ? JSON.stringify(value) : value}
         />
         <button
@@ -52,7 +75,7 @@ const InputComponent = ({ value, valueType, allowedValues, onChange, editJson, .
       </div>
     );
   }
-  return <Input {...props} onChange={onChange} value={value} />;
+  return <Input {...props} onChange={onChangeConvert} value={value} />;
 };
 
 const InputWithIcon = ({ hideIcon, iconType, ...props }) => {
@@ -74,15 +97,26 @@ const TypedInput = compose(
     showCustomAlert,
   }),
   getTypesService,
-  mapProps(({ safeConvertValue, types, valueType, onChange, showCustomAlert, ...props }) => {
-    const typeDefinition = typeof valueType === 'string' ? types[valueType] : valueType;
-    const iconType =
-      (typeDefinition && (typeDefinition.name || (typeDefinition.base && 'custom'))) || 'unknown';
-    const allowedValues = typeDefinition && typeDefinition.allowedValues;
-    const onChangeConvert = newValue => onChange && onChange(safeConvertValue(newValue, valueType));
+  mapProps(
+    ({ safeConvertValue, types, valueType, onChange, showCustomAlert, isArray, ...props }) => {
+      const iconType = (valueType && (valueType.name || (valueType.base && 'custom'))) || 'unknown';
+      const allowedValues = valueType && valueType.allowedValues;
+      const onChangeConvert = newValue =>
+        onChange && onChange(safeConvertValue(newValue, valueType));
 
-    return { allowedValues, onChange: onChangeConvert, iconType, valueType, ...props };
-  }),
+      const valueTypeName = valueType.name || 'custom';
+      return {
+        allowedValues,
+        onChange,
+        onChangeConvert,
+        iconType,
+        valueType,
+        valueTypeName,
+        isArray,
+        ...props,
+      };
+    },
+  ),
   withJsonEditor,
 )(InputWithIcon);
 
@@ -107,5 +141,53 @@ TypedInput.defaultProps = {
 };
 
 TypedInput.displayName = 'TypedInput';
+
+const TagsPropertyValue = compose(
+  getTypesService,
+  mapProps(({ onChange, value, safeConvertValue, valueType }) => {
+    const containsValue = (array, val) =>
+      array.some(item => item.toLowerCase() === val.toLowerCase());
+    return {
+      tags: (value && value.map(x => ({ id: x, text: x.toString() }))) || [],
+      suggestions:
+        (valueType.allowedValues && valueType.allowedValues.map(x => x.toString())) || [],
+      handleAddition: (newValue) => {
+        const convertedVal = safeConvertValue(newValue, valueType);
+        if (
+          onChange &&
+          !containsValue(value, convertedVal) &&
+          (!valueType.allowedValues ||
+            valueType.allowedValues.length == 0 ||
+            containsValue(valueType.allowedValues, convertedVal))
+        ) {
+          return onChange([...value, convertedVal]);
+        }
+      },
+      handleDelete: valueIndex => onChange && onChange(R.remove(valueIndex, 1, value)),
+      handleFilterSuggestions: (textInput, suggestions) =>
+        suggestions.filter(
+          item =>
+            !containsValue(value, item) && item.toLowerCase().includes(textInput.toLowerCase()),
+        ),
+    };
+  }),
+)(props => (
+  <div className="property-value-tags-wrapper">
+    <ReactTags
+      {...props}
+      placeholder="Add value"
+      minQueryLength={1}
+      allowDeleteFromEmptyInput
+      autocomplete
+      classNames={{
+        tags: 'tags-container',
+        tagInput: 'tag-input',
+        tag: 'tag',
+        remove: 'tag-delete-button',
+        suggestions: 'tags-suggestion',
+      }}
+    />
+  </div>
+));
 
 export default TypedInput;

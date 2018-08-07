@@ -18,17 +18,28 @@ const TypeCombobox = ({ type, onUpdate, allowedTypes }) => (
   />
 );
 
+const IdentityPropertyTypes = [
+  ...Object.keys(TypesServices.types),
+  { name: 'custom', base: 'string', allowedValues: [] },
+];
+
 const SimpleTypeSelector = ({ type, onUpdate }) => (
   <TypeCombobox
-    allowedTypes={[...Object.keys(TypesServices.types), 'custom']}
+    allowedTypes={IdentityPropertyTypes}
     type={type}
-    onUpdate={type => onUpdate(type === 'custom' ? { base: 'string', allowedValues: [] } : type)}
+    onUpdate={type =>
+      onUpdate(
+        type === 'custom' || type === 'array'
+          ? { name: type, base: 'string', allowedValues: [] }
+          : type,
+      )
+    }
   />
 );
 
 const AdvancedTypeSelector = ({ type, onUpdate }) => (
   <div style={{ display: 'column', flexDirection: 'row' }}>
-    <SimpleTypeSelector type={'custom'} onUpdate={type => onUpdate(type)} />
+    <SimpleTypeSelector type={type.name || 'custom'} onUpdate={type => onUpdate(type)} />
     <div data-field="base" style={{ display: 'flex', flexDirection: 'row' }}>
       <Label text="Base" />
       <TypeCombobox
@@ -46,9 +57,11 @@ const AdvancedTypeSelector = ({ type, onUpdate }) => (
       <ReactTags
         tags={type.allowedValues.map(v => ({ id: v, text: v })) || []}
         handleAddition={newValue =>
-          onUpdate({ ...type, allowedValues: [...type.allowedValues, newValue] })}
+          onUpdate({ ...type, allowedValues: [...type.allowedValues, newValue] })
+        }
         handleDelete={index =>
-          onUpdate({ ...type, allowedValues: R.remove(index, 1, type.allowedValues) })}
+          onUpdate({ ...type, allowedValues: R.remove(index, 1, type.allowedValues) })
+        }
         placeholder="Add value"
         allowDeleteFromEmptyInput
         classNames={{

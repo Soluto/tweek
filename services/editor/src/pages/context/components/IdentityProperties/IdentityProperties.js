@@ -5,30 +5,29 @@ import TypedInput from '../../../../components/common/Input/TypedInput';
 import { getPropertyTypeDetails } from '../../../../services/context-service';
 import './IdentityProperties.css';
 
-const getPropertyValueType = (identityType, property) => {
-  const details = getPropertyTypeDetails(`${identityType}.${property}`);
-  return 'name' in details ? details.name : details;
-};
-
-const Property = ({ identityType, property, local, remote, onChange }) => (
-  <div className="property-wrapper" data-comp="identity-property" data-property={property}>
-    <label className="property-label">{property}</label>
-    <TypedInput
-      data-field="value"
-      className={classnames('value-input', {
-        'has-changes': remote !== local,
-      })}
-      value={local}
-      onChange={onChange}
-      valueType={getPropertyValueType(identityType, property)}
-      placeholder="(no value)"
-      disabled={property.startsWith('@')}
-    />
-    <div className="initial-value" title={remote}>
-      {remote === local ? null : remote}
+const Property = ({ identityType, property, local, remote, onChange }) => {
+  const valueType = getPropertyTypeDetails(`${identityType}.${property}`);
+  return (
+    <div className="property-wrapper" data-comp="identity-property" data-property={property}>
+      <label className="property-label">{property}</label>
+      <TypedInput
+        data-field="value"
+        className={classnames('value-input', {
+          'has-changes': remote !== local,
+        })}
+        value={local}
+        onChange={onChange}
+        valueType={valueType}
+        isArray={valueType.name === 'array'}
+        placeholder="(no value)"
+        disabled={property.startsWith('@')}
+      />
+      <div className="initial-value" title={remote}>
+        {remote === local ? null : remote}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const IdentityProperties = ({ className, identityType, local, remote, updateContext }) => (
   <div
