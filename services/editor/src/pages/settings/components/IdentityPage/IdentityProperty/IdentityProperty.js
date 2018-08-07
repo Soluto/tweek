@@ -18,10 +18,7 @@ const TypeCombobox = ({ type, onUpdate, allowedTypes }) => (
   />
 );
 
-const IdentityPropertyTypes = [
-  ...Object.keys(TypesServices.types),
-  { name: 'custom', base: 'string', allowedValues: [] },
-];
+const IdentityPropertyTypes = [...Object.keys(TypesServices.types), 'custom'];
 
 const SimpleTypeSelector = ({ type, onUpdate }) => (
   <TypeCombobox

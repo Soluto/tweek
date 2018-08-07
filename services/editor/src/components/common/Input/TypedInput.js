@@ -146,13 +146,11 @@ TypedInput.displayName = 'TypedInput';
 const TagsPropertyValue = compose(
   getTypesService,
   mapProps(({ onChange, value, safeConvertValue, valueType }) => {
-    const containsValue = (array, val) =>
-      array.some(item => item.toLowerCase() === val.toLowerCase());
+    const containsValue = (array, val) => array.some(item => item.toString() === val.toString());
     value = (Array.isArray(value) ? value : [value]) || [];
     return {
       tags: value.map(x => ({ id: x, text: x.toString() })),
-      suggestions:
-        (valueType.allowedValues && valueType.allowedValues.map(x => x.toString())) || [],
+      suggestions: valueType.allowedValues || [],
       handleAddition: (newValue) => {
         const convertedVal = safeConvertValue(newValue, valueType);
         if (
@@ -167,10 +165,7 @@ const TagsPropertyValue = compose(
       },
       handleDelete: valueIndex => onChange && onChange(R.remove(valueIndex, 1, value)),
       handleFilterSuggestions: (textInput, suggestions) =>
-        suggestions.filter(
-          item =>
-            !containsValue(value, item) && item.toLowerCase().includes(textInput.toLowerCase()),
-        ),
+        suggestions.filter(item => !containsValue(value, item) && item.includes(textInput)),
     };
   }),
 )(props => (
