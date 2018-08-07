@@ -44,7 +44,7 @@ namespace Tweek.Engine.Drivers.Context
 
             return new Validator((string propName, JsonValue propValue) =>
                  propValidators.TryGetValue(propName)
-                               .Match(validator => validator(propValue).Match(x=>x, e=> Error($"error validating prop {propName}: {e}")) , () =>
+                               .Match(validator => validator(propValue).Match(x=>x, e=> Error($"error validating prop {propName}: {string.Join(",", e) }")) , () =>
                                mode == Mode.AllowUndefinedProperties ?
                                Valid :
                                Error($"property \"{propName}\" not found")));
