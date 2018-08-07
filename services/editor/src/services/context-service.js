@@ -19,8 +19,8 @@ export function getSchema() {
   return contextSchema;
 }
 
-export function getProperties() {
-  return [...R.chain(
+export function getSchemaProperties() {
+  return R.chain(
     identity => [
       { id: `${identity}.@@id`, name: 'Id', type: 'string', identity },
       ...Object.keys(contextSchema[identity]).map(property => ({
@@ -31,14 +31,22 @@ export function getProperties() {
       })),
     ],
     Object.keys(contextSchema),
-  ), {id: 'system.time_utc', identity: 'system', name: 'time_utc', type: 'date'}];
+  );
+}
+
+export function getSystemProperties() {
+  return [{ id: 'system.time_utc', identity: 'system', name: 'time_utc', type: 'date' }];
+}
+
+export function getAllProperties() {
+  return [...getSchemaProperties(), ...getSystemProperties()];
 }
 
 export function getPropertyTypeDetails(property) {
   if (!property) return { name: 'empty' };
   if (property.startsWith(KEYS_IDENTITY)) return TypesService.types.string;
 
-  const propertyDetails = getProperties().find(x => x.id === property);
+  const propertyDetails = getAllProperties().find(x => x.id === property);
 
   if (!propertyDetails) {
     console.warn('Property details not found', property);
