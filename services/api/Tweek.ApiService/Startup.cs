@@ -223,6 +223,7 @@ namespace Tweek.ApiService
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
                 .WriteTo.Console(new JsonFormatter())
+                .Enrich.FromLogContext()
                 .CreateLogger();
 
             if (env.IsDevelopment())
