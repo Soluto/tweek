@@ -18,7 +18,6 @@ const Property = ({ identityType, property, local, remote, onChange }) => {
         value={local}
         onChange={onChange}
         valueType={valueType}
-        isArray={valueType.name === 'array'}
         placeholder="(no value)"
         disabled={property.startsWith('@')}
       />

@@ -125,7 +125,7 @@ export default ({ valueType, mutate, alerter, keyPath }) => {
       <div className={'jpad-settings'}>
         <DefaultValue
           value={defaultValueMutate.getValue()}
-          valueType={valueType}
+          valueType={TypesService.types[valueType]}
           onChange={updateDefaultValue}
           className={'default-value'}
         />

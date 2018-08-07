@@ -99,6 +99,7 @@ const TypedInput = compose(
   getTypesService,
   mapProps(
     ({ safeConvertValue, types, valueType, onChange, showCustomAlert, isArray, ...props }) => {
+      isArray = isArray || valueType.name === 'array';
       const iconType = (valueType && (valueType.name || (valueType.base && 'custom'))) || 'unknown';
       const allowedValues = valueType && valueType.allowedValues;
       const onChangeConvert = newValue =>
@@ -147,8 +148,9 @@ const TagsPropertyValue = compose(
   mapProps(({ onChange, value, safeConvertValue, valueType }) => {
     const containsValue = (array, val) =>
       array.some(item => item.toLowerCase() === val.toLowerCase());
+    value = (Array.isArray(value) ? value : [value]) || [];
     return {
-      tags: (value && value.map(x => ({ id: x, text: x.toString() }))) || [],
+      tags: value.map(x => ({ id: x, text: x.toString() })),
       suggestions:
         (valueType.allowedValues && valueType.allowedValues.map(x => x.toString())) || [],
       handleAddition: (newValue) => {

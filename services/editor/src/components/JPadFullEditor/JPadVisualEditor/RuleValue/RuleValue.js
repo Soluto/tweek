@@ -21,9 +21,9 @@ const wrapWithClass = propToClassNameFn => Comp => props => (
   </div>
 );
 
-export const InputValue = wrapWithClass(({ valueType }) => `inputValue input-type-${valueType}`)(
-  TypedInput,
-);
+export const InputValue = wrapWithClass(
+  ({ valueType }) => `inputValue input-type-${valueType.name || 'custom'}`,
+)(TypedInput);
 
 const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }) => {
   const convertToMultiVariant = valueDistribution =>
@@ -89,16 +89,19 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
   );
 };
 
-const SingleVariantValue = ({ value, mutate, identities, autofocus, valueType, keyPath }) => (
-  <div className="rule-value-container">
-    <InputValue
-      {...{ value, valueType }}
-      data-comp="rule-value"
-      onChange={newValue => mutate.updateValue(newValue)}
-    />
-    <MultiVariantConverter {...{ value, valueType, mutate, identities, keyPath }} />
-  </div>
-);
+const SingleVariantValue = ({ value, mutate, identities, autofocus, valueType, keyPath }) => {
+  valueType = TypesService.types[valueType];
+  return (
+    <div className="rule-value-container">
+      <InputValue
+        {...{ value, valueType }}
+        data-comp="rule-value"
+        onChange={newValue => mutate.updateValue(newValue)}
+      />
+      <MultiVariantConverter {...{ value, valueType, mutate, identities, keyPath }} />
+    </div>
+  );
+};
 
 const multiVariantSliderColors = [
   ...['#ccf085', '#bebebe', '#c395f6', '#ef7478', '#5a8dc3', '#6e6e6e'],
