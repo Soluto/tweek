@@ -1,9 +1,11 @@
-﻿using FSharpUtils.Newtonsoft;
+using System;
+using FSharpUtils.Newtonsoft;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Tweek.ApiService.Security;
 using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Context;
@@ -16,10 +18,13 @@ namespace Tweek.ApiService.Controllers
         private readonly IContextDriver _contextDriver;
         private readonly CheckWriteContextAccess _checkAccess;
 
-        public ContextController(IContextDriver contextDriver, JsonSerializer serializer, CheckWriteContextAccess checkAccess)
+        public ContextController(
+            IContextDriver contextDriver,
+            JsonSerializer serializer,
+            CheckWriteContextAccess checkAccess)
         {
             _contextDriver = contextDriver;
-            _checkAccess =checkAccess;
+            _checkAccess = checkAccess;
         }
 
         /// <summary>
@@ -39,9 +44,16 @@ namespace Tweek.ApiService.Controllers
         {
             if (!_checkAccess(User, new Identity(identityType, identityId))) return Forbid();
             if (data.Count == 0) return Ok();
-
             var identity = new Identity(identityType, identityId);
-            await _contextDriver.AppendContext(identity, data);
+
+            try
+            {
+                await _contextDriver.AppendContext(identity, data);
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
             return Ok();
         }
 

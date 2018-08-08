@@ -46,9 +46,11 @@ const AdvancedTypeSelector = ({ type, onUpdate }) => (
       <ReactTags
         tags={type.allowedValues.map(v => ({ id: v, text: v })) || []}
         handleAddition={newValue =>
-          onUpdate({ ...type, allowedValues: [...type.allowedValues, newValue] })}
+          onUpdate({ ...type, allowedValues: [...type.allowedValues, newValue] })
+        }
         handleDelete={index =>
-          onUpdate({ ...type, allowedValues: R.remove(index, 1, type.allowedValues) })}
+          onUpdate({ ...type, allowedValues: R.remove(index, 1, type.allowedValues) })
+        }
         placeholder="Add value"
         allowDeleteFromEmptyInput
         classNames={{

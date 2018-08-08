@@ -74,12 +74,16 @@
   font-size: 12px;
   margin-left: 4px;
   width: 120px;
+  vertical-align: top;
 }
 .custom-slider-container .legend-percent-input {
   height: 16px;
   font-size: 12px;
   margin-left: 4px;
   width: 30px;
+}
+.custom-slider-container .object-type-expander {
+  height: 16px;
 }
 .custom-slider-container .add-variant-button {
   vertical-align: top;

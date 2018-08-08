@@ -33,9 +33,10 @@ services:
       - CorsPolicies__Keys__Headers=
       - CorsPolicies__Keys__ExposedHeaders=
       - CorsEnabled=true
+      - Context__Validation__ErrorPolicy=throw
   
   selenium:
-    image: selenium/standalone-chrome:3.8.1
+    image: selenium/standalone-chrome:3.13.0
     container_name: selenium
     volumes:
       - /dev/shm:/dev/shm

@@ -67,6 +67,22 @@ describe('edit keys', () => {
           expect(JSON.parse(implementation)).to.deep.equal(expectedKeySource),
         );
       });
+
+      it('should succeed in editing an object JPad key', () => {
+        const keyName = 'behavior_tests/edit_key/visual/edit_object_test';
+        const defaultValue = { value: 123 };
+        const expectedObjectKeySource = {
+          partitions: [],
+          valueType: 'object',
+          rules: [],
+          defaultValue: defaultValue,
+        };
+
+        Key.open(keyName).editObjectInEditor(JSON.stringify(defaultValue));
+        Alert.save();
+
+        expect(Key.goToSourceTab().source).to.deep.equal(expectedObjectKeySource);
+      });
     });
 
     describe('text editor', () => {
