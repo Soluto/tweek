@@ -169,7 +169,7 @@ const TagsPropertyValue = compose(
     };
   }),
 )(props => (
-  <div className="property-value-tags-wrapper">
+  <div className="text-input property-value-tags-wrapper">
     <ReactTags
       {...props}
       placeholder="Add value"

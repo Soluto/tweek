@@ -47,7 +47,7 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
       return m;
     });
 
-  if (valueType === TypesService.types.boolean.name) {
+  if (valueType.name === TypesService.types.boolean.name) {
     return (
       <button
         data-comp="convert-to-multi-variant"
@@ -89,19 +89,16 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
   );
 };
 
-const SingleVariantValue = ({ value, mutate, identities, autofocus, valueType, keyPath }) => {
-  valueType = TypesService.types[valueType];
-  return (
-    <div className="rule-value-container">
-      <InputValue
-        {...{ value, valueType }}
-        data-comp="rule-value"
-        onChange={newValue => mutate.updateValue(newValue)}
-      />
-      <MultiVariantConverter {...{ value, valueType, mutate, identities, keyPath }} />
-    </div>
-  );
-};
+const SingleVariantValue = ({ value, mutate, identities, autofocus, valueType, keyPath }) => (
+  <div className="rule-value-container">
+    <InputValue
+      {...{ value, valueType }}
+      data-comp="rule-value"
+      onChange={newValue => mutate.updateValue(newValue)}
+    />
+    <MultiVariantConverter {...{ value, valueType, mutate, identities, keyPath }} />
+  </div>
+);
 
 const multiVariantSliderColors = [
   ...['#ccf085', '#bebebe', '#c395f6', '#ef7478', '#5a8dc3', '#6e6e6e'],
@@ -154,7 +151,7 @@ const BernoulliTrial = ({ onUpdate, ratio }) => (
           { value: false, weight: 100 - 1000 * ratio / 10 },
         ]}
         onUpdate={x => onUpdate(x[0].weight / 100)}
-        valueType="boolean"
+        valueType={TypesService.types['boolean']}
       />
     </div>
   </div>
@@ -294,12 +291,7 @@ const MultiVariantValue = ({
   return null;
 };
 
-const RuleValue = compose(
-  mapProps(({ valueType, ...props }) => ({
-    valueType: TypesService.types[valueType] ? valueType : 'string',
-    ...props,
-  })),
-)(({ rule, mutate, valueType, autofocus, identities, keyPath }) => {
+const RuleValue = ({ rule, mutate, valueType, autofocus, identities, keyPath }) => {
   if (rule.Type === 'SingleVariant') {
     return (
       <SingleVariantValue
@@ -322,7 +314,7 @@ const RuleValue = compose(
   }
 
   return null;
-});
+};
 
 RuleValue.displayName = 'RuleValue';
 
