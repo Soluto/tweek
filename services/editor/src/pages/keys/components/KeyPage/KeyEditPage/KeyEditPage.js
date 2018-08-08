@@ -5,7 +5,7 @@ import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEdi
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
 import ConstEditor from '../../../../../components/ConstEditor';
 import KeyTags from './KeyTags/KeyTags';
-import EditableTextArea from '../../../../../components/common/EditableTextArea/EditableTextArea';
+import MarkdownEditor from '../../../../../components/common/MarkdownEditor/MarkdownEditor';
 import RevisionHistory from './RevisionHistory/RevisionHistory';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
 import HeaderMainInput from './HeaderMainInput';
@@ -217,7 +217,7 @@ const KeyFullHeader = (props) => {
 
           <div className="key-description-and-tags-wrapper">
             <div className="key-description-wrapper">
-              <EditableTextArea
+              <MarkdownEditor
                 value={keyManifest.meta.description}
                 onChange={onDescriptionChanged}
               />

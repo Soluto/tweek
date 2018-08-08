@@ -1,4 +1,4 @@
-import './EditableTextArea.css';
+import './MarkdownEditor.css';
 import React from 'react';
 import SimpleMDE from 'react-simplemde-editor';
 import 'simplemde/dist/simplemde.min.css';
