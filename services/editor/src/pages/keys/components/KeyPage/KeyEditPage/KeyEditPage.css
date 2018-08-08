@@ -151,15 +151,6 @@
   flex-grow: 1;
   margin-top: 10px;
 }
-.key-edit-page .key-viewer-container-fieldset .key-header .key-meta-container .key-description-and-tags-wrapper .key-description-wrapper .description-input {
-  resize: none;
-  font-size: 14px;
-  color: #515c66;
-  min-width: 400px;
-  max-height: 120px;
-  outline: none;
-  box-sizing: border-box;
-}
 .key-edit-page .key-viewer-container-fieldset .key-header .key-meta-container .key-description-and-tags-wrapper .key-tags-wrapper {
   display: flex;
   width: 0;

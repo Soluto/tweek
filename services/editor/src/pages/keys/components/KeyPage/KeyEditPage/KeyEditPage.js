@@ -23,13 +23,9 @@ const Editor = ({
   isReadonly,
   alerter,
 }) => {
-  if (manifest.implementation.type === 'file') {
-    let FileEditor = null;
-    if (manifest.implementation.format === 'jpad') {
-      FileEditor = JPadFullEditor;
-    }
+  if (manifest.implementation.type === 'file' && manifest.implementation.format === 'jpad') {
     return (
-      <FileEditor
+      <JPadFullEditor
         keyPath={keyPath}
         alerter={alerter}
         source={sourceFile}
@@ -69,11 +65,11 @@ class KeyEditPage extends Component {
     this.onSelectedKeyManifestChanged(newManifest);
   }
 
-  onKeyNameChanged = newKeyName => {
+  onKeyNameChanged = (newKeyName) => {
     this.props.updateKeyName(newKeyName);
   };
 
-  onDisplayNameChanged = newDisplayName => {
+  onDisplayNameChanged = (newDisplayName) => {
     const oldManifest = this.props.selectedKey.local.manifest;
     const newManifest = {
       ...oldManifest,
@@ -97,11 +93,11 @@ class KeyEditPage extends Component {
     this.onSelectedKeyManifestChanged(newManifest);
   }
 
-  onSelectedKeyManifestChanged = newManifest => {
+  onSelectedKeyManifestChanged = (newManifest) => {
     this.props.updateKeyManifest(newManifest);
   };
 
-  onDependencyChanged = dependencies => {
+  onDependencyChanged = (dependencies) => {
     const oldManifest = this.props.selectedKey.local.manifest;
     const newManifest = {
       ...oldManifest,
@@ -170,7 +166,7 @@ class KeyEditPage extends Component {
 
 export default compose(stickyHeaderIdentifier('key-edit-page', 150), pure)(KeyEditPage);
 
-const KeyStickyHeader = props => {
+const KeyStickyHeader = (props) => {
   const { isReadonly, isHistoricRevision } = props;
 
   return (
@@ -186,7 +182,7 @@ const KeyStickyHeader = props => {
   );
 };
 
-const KeyFullHeader = props => {
+const KeyFullHeader = (props) => {
   const {
     isReadonly,
     revisionHistory,
@@ -223,11 +219,7 @@ const KeyFullHeader = props => {
             <div className="key-description-wrapper">
               <EditableTextArea
                 value={keyManifest.meta.description}
-                onTextChanged={text => onDescriptionChanged(text)}
-                placeHolder="Write key description"
-                title="Click to edit description"
-                classNames={{ input: 'description-input' }}
-                maxLength={400}
+                onChange={onDescriptionChanged}
               />
               <UsedBy items={usedBy} />
               <DependsOn items={keyManifest.dependencies} />
