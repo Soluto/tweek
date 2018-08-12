@@ -129,6 +129,22 @@
         "methods": ["GET"],
         "service": "authoring",
         "userInfo": false
+    },
+    {
+        "routePathPrefix": "/policies",
+        "routeRegexp": "^/policies/v2/policies$",
+        "upstreamPath": "/api/policies",
+        "methods": ["GET"],
+        "service": "authoring",
+        "userInfo": true
+    },
+    {
+        "routePathPrefix": "/policies",
+        "routeRegexp": "^/policies/v2/policies?(.*)$",
+        "upstreamPath": "/api/policies?$1",
+        "methods": ["PUT", "PATCH"],
+        "service": "authoring",
+        "userInfo": true
     }],
     "server": {
         "ports": [
