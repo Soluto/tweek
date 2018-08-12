@@ -22,7 +22,7 @@ const wrapWithClass = propToClassNameFn => Comp => props => (
 );
 
 export const InputValue = wrapWithClass(
-  ({ valueType }) => `inputValue input-type-${valueType.name || 'custom'}`,
+  ({ valueType }) => `inputValue input-type-${valueType.name}`,
 )(TypedInput);
 
 const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }) => {

@@ -100,7 +100,7 @@ describe('edit identity schema', () => {
 
     it('add and update custom property', () => {
       goToIdentityPage('edit_properties_test');
-      addTypedProperty('OsType', 'custom');
+      addTypedProperty('OsType', 'string');
       saveChanges();
       tweekApiClient.eventuallyExpectKey('@tweek/schema/edit_properties_test', result => {
         expect(result)

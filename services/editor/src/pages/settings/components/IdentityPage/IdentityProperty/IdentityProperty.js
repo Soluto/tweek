@@ -18,31 +18,43 @@ const TypeCombobox = ({ type, onUpdate, allowedTypes }) => (
   />
 );
 
-const IdentityPropertyTypes = [...Object.keys(TypesServices.types), 'custom'];
+const IdentityPropertyTypes = [...Object.keys(TypesServices.types)];
 
 const SimpleTypeSelector = ({ type, onUpdate }) => (
-  <TypeCombobox
-    allowedTypes={IdentityPropertyTypes}
-    type={type}
-    onUpdate={type =>
-      onUpdate(
-        type === 'custom' || type === 'array'
-          ? { name: type, base: 'string', allowedValues: [] }
-          : type,
-      )
-    }
-  />
+  <div className={'simple-property'}>
+    <TypeCombobox
+      allowedTypes={IdentityPropertyTypes}
+      type={type}
+      onUpdate={newType => (newType !== type ? onUpdate(newType) : null)}
+    />
+    <button
+      data-comp="advanced"
+      onClick={() =>
+        onUpdate(
+          type === 'array'
+            ? { name: type, ofType: 'string', allowedValues: [] }
+            : { base: type, allowedValues: [] },
+        )
+      }
+    >
+      ...
+    </button>
+  </div>
 );
 
 const AdvancedTypeSelector = ({ type, onUpdate }) => (
   <div style={{ display: 'column', flexDirection: 'row' }}>
-    <SimpleTypeSelector type={type.name || 'custom'} onUpdate={type => onUpdate(type)} />
-    <div data-field="base" style={{ display: 'flex', flexDirection: 'row' }}>
-      <Label text="Base" />
+    <TypeCombobox
+      allowedTypes={IdentityPropertyTypes}
+      type={type.name || type.base}
+      onUpdate={type => onUpdate(type)}
+    />
+    <div data-field="base" style={{ display: type.ofType ? 'flex' : 'none', flexDirection: 'row' }}>
+      <Label text="Generic Type" />
       <TypeCombobox
-        type={type.base}
-        allowedTypes={Object.keys(TypesServices.types)}
-        onUpdate={base => onUpdate({ ...type, base })}
+        type={type.ofType}
+        allowedTypes={IdentityPropertyTypes}
+        onUpdate={ofType => onUpdate({ ...type, ofType })}
       />
     </div>
     <div

@@ -44,6 +44,10 @@ export function convertValue(value, targetType) {
     return safeConvertToBaseType(value, 'boolean');
   case 'number':
     return safeConvertToBaseType(value, 'number');
+  case 'array':
+    return Array.isArray(value)
+      ? [...value.map(item => convertValue(item, type.ofType))]
+      : convertValue(value, type.ofType);
   case 'object':
     return safeConvertToBaseType(value, 'object');
   default:

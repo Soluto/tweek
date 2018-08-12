@@ -100,12 +100,12 @@ const TypedInput = compose(
   mapProps(
     ({ safeConvertValue, types, valueType, onChange, showCustomAlert, isArray, ...props }) => {
       isArray = isArray || valueType.name === 'array';
-      const iconType = (valueType && (valueType.name || (valueType.base && 'custom'))) || 'unknown';
+      const iconType = (valueType && (valueType.name || valueType.base)) || 'unknown';
       const allowedValues = valueType && valueType.allowedValues;
       const onChangeConvert = newValue =>
         onChange && onChange(safeConvertValue(newValue, valueType));
 
-      const valueTypeName = valueType.name || 'custom';
+      const valueTypeName = valueType.name || valueType.base;
       return {
         allowedValues,
         onChange,
@@ -148,6 +148,7 @@ const TagsPropertyValue = compose(
   mapProps(({ onChange, value, safeConvertValue, valueType }) => {
     const containsValue = (array, val) => array.some(item => item.toString() === val.toString());
     value = (Array.isArray(value) ? value : [value]) || [];
+    valueType.ofType = valueType.ofType || 'string';
     return {
       tags: value.map(x => ({ id: x, text: x.toString() })),
       suggestions: valueType.allowedValues || [],
@@ -166,10 +167,15 @@ const TagsPropertyValue = compose(
       handleDelete: valueIndex => onChange && onChange(R.remove(valueIndex, 1, value)),
       handleFilterSuggestions: (textInput, suggestions) =>
         suggestions.filter(item => !containsValue(value, item) && item.includes(textInput)),
+      value,
     };
   }),
 )(props => (
-  <div className="text-input property-value-tags-wrapper">
+  <div
+    className={`text-input property-value-tags-wrapper ${
+      props.value && props.value.length > 0 ? 'has-tags' : ''
+    }`}
+  >
     <ReactTags
       {...props}
       placeholder="Add value"

@@ -633,7 +633,8 @@
   color: #515c66;
 }
 .property-value-tags-wrapper {
-  height: 100%;
+  width: auto;
+  border-bottom: none;
 }
 .property-value-tags-wrapper .tags-container:before {
   content: 'Tags';
@@ -749,13 +750,17 @@
   padding: 4px;
   box-sizing: border-box;
 }
+.property-value-tags-wrapper .tags-container > div,
+.property-value-tags-wrapper .tags-container .ReactTags__tagInputField {
+  min-height: 20px;
+}
 .property-value-tags-wrapper .tags-container:before {
   content: '';
   margin: 0;
 }
 .property-value-tags-wrapper .tags-container .tag {
   padding: 2px 3px 2px 3px;
-  margin: 0 5px 5px 0;
+  margin: 3px 5px 0 0;
 }
 .property-value-tags-wrapper .tags-container .tag-input {
   display: inline-block;
@@ -776,6 +781,9 @@
 }
 .property-value-tags-wrapper .tags-container {
   padding-left: 28px;
+}
+.has-tags .tags-container {
+  margin-top: -3px;
 }
 .property-combobox-container {
   display: flex;
