@@ -132,7 +132,7 @@
     },
     {
         "routePathPrefix": "/policies",
-        "routeRegexp": "^/policies/v2/policies$",
+        "routeRegexp": "^/api/v2/policies$",
         "upstreamPath": "/api/policies",
         "methods": ["GET"],
         "service": "authoring",
@@ -140,7 +140,7 @@
     },
     {
         "routePathPrefix": "/policies",
-        "routeRegexp": "^/policies/v2/policies?(.*)$",
+        "routeRegexp": "^/api/v2/policies?(.*)$",
         "upstreamPath": "/api/policies?$1",
         "methods": ["PUT", "PATCH"],
         "service": "authoring",
