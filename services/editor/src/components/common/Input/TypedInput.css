@@ -11,7 +11,7 @@
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  height: 28px;
+  min-height: 28px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
@@ -84,7 +84,7 @@
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  height: 28px;
+  min-height: 28px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
@@ -157,7 +157,7 @@
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  height: 28px;
+  min-height: 28px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
@@ -230,7 +230,7 @@
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  height: 28px;
+  min-height: 28px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 13px;
@@ -316,7 +316,7 @@
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  height: 28px;
+  min-height: 28px;
   width: 150px;
   padding: 0 4px;
   background-color: transparent;
@@ -390,7 +390,7 @@
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  height: 28px;
+  min-height: 28px;
   width: 150px;
   padding: 0 4px;
   background-color: transparent;
@@ -464,7 +464,7 @@
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  height: 28px;
+  min-height: 28px;
   width: 150px;
   padding: 0 4px;
   background-color: transparent;
@@ -538,7 +538,7 @@
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  height: 28px;
+  min-height: 28px;
   width: 150px;
   padding: 0 4px;
   background-color: transparent;
@@ -785,12 +785,16 @@
 .has-tags .tags-container {
   margin-top: -3px;
 }
+input {
+  min-height: 28px;
+}
 .property-combobox-container {
   display: flex;
 }
 .property-combobox-container .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input,
 .property-combobox-container input {
   padding-left: 28px;
+  align-self: flex-start;
 }
 .property-combobox-container .avatar-container {
   width: 30px;
@@ -836,7 +840,8 @@
 }
 .typed-input-with-icon .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input,
 .typed-input-with-icon input {
-  padding-left: 28px;
+  padding-left: 28px;    
+  align-self: flex-start;
 }
 .typed-input-with-icon i {
   display: inline-block;
@@ -881,7 +886,8 @@
 }
 .object-type-expander {
   width: 20px;
-  vertical-align: top;
+  height: 28px;
+  vertical-align: bottom;
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgNDggNDgiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQ4IDQ4OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4uc3Qwe2ZpbGw6IzAwQUVFRjt9PC9zdHlsZT48cGF0aCBjbGFzcz0ic3QwIiBkPSJNNiwzNC41VjQyaDcuNWwyMi4xLTIyLjFsLTcuNS03LjVMNiwzNC41eiBNNDEuNCwxNC4xYzAuOC0wLjgsMC44LTIuMSwwLTIuOGwtNC43LTQuN2MtMC44LTAuOC0yLTAuOC0yLjgsMGwtMy43LDMuN2w3LjUsNy41QzM3LjcsMTcuOCw0MS40LDE0LjEsNDEuNCwxNC4xeiIvPjwvc3ZnPg==);
   background-size: 100% 100%;
 }

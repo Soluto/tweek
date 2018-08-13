@@ -40,6 +40,7 @@
   background-color: #bcbcbc;
   font-size: 12px;
   padding-top: 1px;
+  align-self: center;
 }
 .custom-slider-container .delete-legend-button:hover {
   background-color: #029CD5;
@@ -80,9 +81,6 @@
   font-size: 12px;
   margin-left: 4px;
   width: 30px;
-}
-.custom-slider-container .object-type-expander {
-  height: 16px;
 }
 .custom-slider-container .tags-container {
   padding: 0px;
@@ -205,6 +203,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .vertical-accent1 {
   background-color: #007acc;
@@ -213,6 +212,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .vertical-accent2 {
   background-color: rgba(0, 122, 204, 0.8);
@@ -221,6 +221,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .vertical-accent3 {
   background-color: rgba(0, 122, 204, 0.6);
@@ -229,6 +230,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .vertical-accent4 {
   background-color: rgba(0, 122, 204, 0.5);
@@ -237,6 +239,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .vertical-accent5 {
   background-color: rgba(0, 122, 204, 0.4);
@@ -245,6 +248,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .vertical-accent6 {
   background-color: rgba(0, 122, 204, 0.2);
@@ -253,6 +257,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .horizontal-accent {
   height: 6px;

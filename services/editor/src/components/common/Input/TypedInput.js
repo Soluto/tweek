@@ -99,7 +99,8 @@ const TypedInput = compose(
   mapProps(
     ({ safeConvertValue, types, valueType, onChange, showCustomAlert, isArray, ...props }) => {
       isArray = isArray || valueType.name === 'array';
-      const iconType = (valueType && (valueType.name || valueType.base)) || 'unknown';
+      valueType = typeof valueType === 'string' ? { name: valueType } : valueType;
+      const iconType = valueType && (valueType.name || valueType.base);
       const allowedValues = valueType && valueType.allowedValues;
       const onChangeConvert = newValue =>
         onChange && onChange(safeConvertValue(newValue, valueType));

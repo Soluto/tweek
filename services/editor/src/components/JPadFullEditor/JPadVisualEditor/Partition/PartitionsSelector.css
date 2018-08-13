@@ -120,6 +120,10 @@
   padding: 4px;
   box-sizing: border-box;
 }
+.partitions-selector-container .partition-tags-wrapper .tags-container > div,
+.partitions-selector-container .partition-tags-wrapper .tags-container .ReactTags__tagInputField {
+  min-height: 20px;
+}
 .partitions-selector-container .partition-tags-wrapper .tags-container:before {
   content: '';
   margin: 0;

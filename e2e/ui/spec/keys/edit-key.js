@@ -130,11 +130,11 @@ describe('edit keys', () => {
 
     it('should succeed editing key (valueType=object)', () => {
       const keyName = `${constKeyFolder}/object_type`;
-      Key.open(keyName);
-      const originalSource = Key.source;
-      Key.source = JSON.stringify({ ...originalSource, boolProp: false });
+      const objectValue = { boolProp: false };
+      Key.open(keyName).editObjectInEditor(JSON.stringify(objectValue));
+      Alert.save();
       Key.commitChanges();
-      tweekApiClient.waitForKeyToEqual(keyName, { boolProp: false });
+      tweekApiClient.waitForKeyToEqual(keyName, objectValue);
     });
   });
 });

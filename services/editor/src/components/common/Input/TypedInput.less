@@ -71,11 +71,16 @@
    }
 }
 
+input {
+  min-height: 28px;
+}
+
 .property-combobox-container {
   display: flex;
 
   .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input, input {
     padding-left: 28px;
+    align-self: flex-start;
   }
 
   .avatar-container {
@@ -177,7 +182,8 @@
 
 .object-type-expander {
   width: 20px;
-  vertical-align: top;
+  height: 28px;
+  vertical-align: bottom;
   background-image: @object_edit_icon;
   background-size: 100% 100%;
 }
