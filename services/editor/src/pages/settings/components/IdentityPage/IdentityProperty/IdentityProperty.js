@@ -13,12 +13,13 @@ const TypeCombobox = ({ type, onUpdate, allowedTypes }) => (
     data-comp="type-select"
     value={type}
     filterBy={() => true}
-    onChange={propType => onUpdate(propType)}
+    onChange={propType => onUpdate(propType === 'array' ? CreateBaseArray() : propType)}
     suggestions={allowedTypes}
   />
 );
 
 const IdentityPropertyTypes = [...Object.keys(TypesServices.types)];
+const CreateBaseArray = () => ({ name: 'array', ofType: 'string', allowedValues: [] });
 
 const SimpleTypeSelector = ({ type, onUpdate }) => (
   <div className={'simple-property'}>
@@ -27,16 +28,7 @@ const SimpleTypeSelector = ({ type, onUpdate }) => (
       type={type}
       onUpdate={newType => (newType !== type ? onUpdate(newType) : null)}
     />
-    <button
-      data-comp="advanced"
-      onClick={() =>
-        onUpdate(
-          type === 'array'
-            ? { name: type, ofType: 'string', allowedValues: [] }
-            : { base: type, allowedValues: [] },
-        )
-      }
-    >
+    <button data-comp="advanced" onClick={() => onUpdate({ base: type, allowedValues: [] })}>
       ...
     </button>
   </div>
@@ -53,7 +45,7 @@ const AdvancedTypeSelector = ({ type, onUpdate }) => (
       <Label text="Generic Type" />
       <TypeCombobox
         type={type.ofType}
-        allowedTypes={IdentityPropertyTypes}
+        allowedTypes={R.reject(R.equals('array'), IdentityPropertyTypes)}
         onUpdate={ofType => onUpdate({ ...type, ofType })}
       />
     </div>

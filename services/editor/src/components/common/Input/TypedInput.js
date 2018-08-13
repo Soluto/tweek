@@ -30,7 +30,6 @@ const InputComponent = ({
   valueTypeName,
   allowedValues,
   onChange,
-  onChangeConvert,
   isArray,
   editJson,
   ...props
@@ -53,7 +52,7 @@ const InputComponent = ({
         value={value === undefined ? undefined : changeCase.pascalCase(value)}
         suggestions={allowedValues.map(valueToItem)}
         onChange={(input, selected) =>
-          selected && onChangeConvert(selected.value === undefined ? selected : selected.value)
+          selected && onChange(selected.value === undefined ? selected : selected.value)
         }
       />
     );
@@ -64,7 +63,7 @@ const InputComponent = ({
         <Input
           readOnly
           {...props}
-          onChange={onChangeConvert}
+          onChange={onChange}
           value={value ? JSON.stringify(value) : value}
         />
         <button
@@ -75,7 +74,7 @@ const InputComponent = ({
       </div>
     );
   }
-  return <Input {...props} onChange={onChangeConvert} value={value} />;
+  return <Input {...props} onChange={onChange} value={value} />;
 };
 
 const InputWithIcon = ({ hideIcon, iconType, ...props }) => {
@@ -108,8 +107,7 @@ const TypedInput = compose(
       const valueTypeName = valueType.name || valueType.base;
       return {
         allowedValues,
-        onChange,
-        onChangeConvert,
+        onChange: onChangeConvert,
         iconType,
         valueType,
         valueTypeName,
@@ -156,6 +154,7 @@ const TagsPropertyValue = compose(
         const convertedVal = safeConvertValue(newValue, valueType);
         if (
           onChange &&
+          convertedVal !== undefined &&
           !containsValue(value, convertedVal) &&
           (!valueType.allowedValues ||
             valueType.allowedValues.length == 0 ||

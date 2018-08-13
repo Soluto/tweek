@@ -59,7 +59,9 @@ export function safeConvertValue(value, targetType) {
   try {
     return convertValue(value, targetType);
   } catch (err) {
-    return targetType === types.boolean.name ? '' : `${value}`;
+    return (targetType.ofType || targetType.base || targetType.name) !== types.string.name
+      ? undefined
+      : `${value}`;
   }
 }
 

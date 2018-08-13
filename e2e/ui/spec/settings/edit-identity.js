@@ -14,15 +14,19 @@ const addStringProperty = propertyName => {
   $(newPropertyName).setValue(`${propertyName}\n`);
 };
 
-const addTypedProperty = (propertyName, propertyType) => {
+const addTypedProperty = (propertyName, propertyType, advanced) => {
   $(newPropertyName).setValue(propertyName);
 
   const propertyTypeSelector = `${newPropertyItem} ${dataComp('type-select')}`;
   const suggestion = `${newPropertyItem} ${dataLabel(propertyType)} a`;
   const addButton = `${newPropertyItem} ${dataComp('add')}`;
+  const advancedButton = `${newPropertyItem} ${dataComp('advanced')}`;
 
   $(propertyTypeSelector).click();
   $(suggestion).click();
+  if (advanced) {
+    $(advancedButton).click();
+  }
   $(addButton).click();
 
   browser.waitForVisible(propertyItem(propertyName));
@@ -100,7 +104,7 @@ describe('edit identity schema', () => {
 
     it('add and update custom property', () => {
       goToIdentityPage('edit_properties_test');
-      addTypedProperty('OsType', 'string');
+      addTypedProperty('OsType', 'string', true);
       saveChanges();
       tweekApiClient.eventuallyExpectKey('@tweek/schema/edit_properties_test', result => {
         expect(result)
