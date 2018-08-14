@@ -493,6 +493,41 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/Patch'
+  /apps:
+    post:
+      operationId: AppsCreateApp
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Ok
+          schema:
+              $ref: '#/definitions/AppCreationResponseModel'
+      description: ""
+      tags:
+        - apps
+      consumes:
+        - application/json
+      parameters:
+        -
+          description: ""
+          in: query
+          name: author.name
+          required: true
+          type: string
+        -
+          description: ""
+          in: query
+          name: author.email
+          required: true
+          type: string
+        -
+          description: ""
+          in: body
+          name: newAppModel
+          required: true
+          schema:
+            $ref: '#/definitions/AppCreationRequestModel'
 definitions:  
   # /schemas
   # /context

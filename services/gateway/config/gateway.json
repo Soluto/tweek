@@ -145,6 +145,14 @@
         "methods": ["PUT", "PATCH"],
         "service": "authoring",
         "userInfo": true
+    },
+    {
+        "routePathPrefix": "/apps",
+        "routeRegexp": "^/api/v2/apps?(.*)$",
+        "upstreamPath": "/api/apps?$1",
+        "methods": ["POST"],
+        "service": "authoring",
+        "userInfo": true
     }],
     "server": {
         "ports": [
