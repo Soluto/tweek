@@ -108,58 +108,107 @@ paths:
           description: OK
   /keys:
     get:
-      operationId: GetKeys
-      description: "Get all keys"
+      operationId: KeysGetKey
       produces:
-        - application/json
+          - application/json
       responses:
-        '200':
-          description: Ok
-          schema:
-            type: array
-            items:
-              type: string
+          '200':
+              description: Ok
+              schema:
+                  type: object
+      description: ""
       tags:
-        - tags
-      parameters: []
+        - keys
+      parameters:
+        -
+          description: ""
+          in: query
+          name: keyPath
+          required: true
+          type: string
+        -
+          description: ""
+          in: query
+          name: revision
+          required: false
+          type: string
     put:
       operationId: CreateKey
       description: "Save Key"
       produces:
-        - text/html
+          - text/html
       responses:
-        '204':
-          description: 'No content'
+        200:
+          description: Ok
+        schema:
+          type: string
       tags:
-        - tags
+          - keys
       consumes:
-        - application/json
+          - application/json
       parameters:
-        - description: "The tags that need saving"
-          in: body
-          name: tagsToSave
-          required: true
-          schema:
-            type: object
+          -
+            description: ""
+            in: query
+            name: keyPath
+            required: true
+            type: string
+          -
+            description: ""
+            in: query
+            name: author.name
+            required: true
+            type: string
+          -
+            description: ""
+            in: query
+            name: author.email
+            required: true
+            type: string
+          -
+            description: ""
+            in: body
+            name: newKeyModel
+            required: true
+            schema:
+                $ref: '#/definitions/KeyUpdateModel'
     delete:
-      operationId: DeleteKey
-      description: "Delete Key"
+      operationId: KeysDeleteKey
       produces:
         - text/html
       responses:
-        '204':
-          description: 'No content'
-      tags:
-        - tags
-      consumes:
-        - application/json
-      parameters:
-        - description: "The tags that need saving"
-          in: body
-          name: tagsToSave
-          required: true
+        200:
+          description: Ok
           schema:
-            type: object
+            type: string
+        description: ""
+        tags:
+          - keys
+        parameters:
+          -
+            description: ""
+            in: query
+            name: keyPath
+            required: true
+            type: string
+          -
+            description: ""
+            in: query
+            name: author.name
+            required: true
+            type: string
+          -
+            description: ""
+            in: query
+            name: author.email
+            required: true
+            type: string
+          -
+            description: ""
+            in: body
+            name: additionalKeys
+            required: false
+            type: array
   /tags:
     get:
       operationId: TagsGet
@@ -392,7 +441,19 @@ paths:
               type: object
       tags:
         - revision-history
-      parameters: []
+      parameters:
+        -
+          description: ""
+          in: query
+          name: keyPath
+          required: true
+          type: string
+        -
+          description: ""
+          in: query
+          name: since
+          required: true
+          type: string
   /policies:
     get:
       operationId: GetPolicies
@@ -450,3 +511,48 @@ definitions:
     type: array
     items:
       $ref: '#/definitions/PatchOperation'
+  KeyUpdateModel:
+    description: ""
+    properties:
+        implementation:
+            type: object
+            description: ""
+        manifest:
+            type: object
+            description: ""
+    type: object
+    required:
+        - implementation
+        - manifest
+  JsonValue:
+    description: ""
+    properties: {}
+    type: object
+  AppCreationResponseModel:
+      description: ""
+      properties:
+          appId:
+              type: string
+              description: ""
+          appSecret:
+              type: string
+              description: ""
+      type: object
+      required:
+          - appId
+          - appSecret
+  AppCreationRequestModel:
+      description: ""
+      properties:
+          name:
+              type: string
+              description: ""
+          permissions:
+              type: array
+              items:
+                  type: string
+              description: ""
+      type: object
+      required:
+          - name
+          - permissions
