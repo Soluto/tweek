@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { withJsonEditor } from './EditJSON';
 import * as R from 'ramda';
 import { WithContext as ReactTags } from 'react-tag-input';
+import * as TypesService from '../../../services/types-service';
 
 export const typesServiceContextType = {
   types: PropTypes.object.isRequired,
@@ -98,7 +99,7 @@ const TypedInput = compose(
   getTypesService,
   mapProps(
     ({ safeConvertValue, types, valueType, onChange, showCustomAlert, isArray, ...props }) => {
-      isArray = isArray || valueType.name === 'array';
+      isArray = isArray || valueType.name === TypesService.types.array.name;
       valueType = typeof valueType === 'string' ? { name: valueType } : valueType;
       const iconType = valueType && (valueType.name || valueType.base);
       const allowedValues = valueType && valueType.allowedValues;

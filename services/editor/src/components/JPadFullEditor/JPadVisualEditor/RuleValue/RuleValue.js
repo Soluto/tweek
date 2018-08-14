@@ -1,6 +1,5 @@
 import React from 'react';
 import * as R from 'ramda';
-import { compose, mapProps } from 'recompose';
 import Chance from 'chance';
 import CustomSlider from '../../../../components/common/CustomSlider/CustomSlider';
 import TypedInput from '../../../../components/common/Input/TypedInput';
@@ -77,7 +76,7 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
               weight: 50,
             },
             {
-              value: 'New Variant',
+              value: valueType.name === TypesService.types.array.name ? [] : 'New Variant',
               weight: 50,
             },
           ],
