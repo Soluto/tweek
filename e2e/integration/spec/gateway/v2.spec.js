@@ -146,4 +146,14 @@ describe('Gateway v2 API', () => {
     const res2 = await saveKey();
     expect(res2.header).to.not.have.property('x-oid');
   });
+
+  it('should create new app', async () => {
+    await clients.gateway
+      .post('/api/v2/apps?author.name=test&author.email=test@soluto.com')
+      .send({
+        name: 'test app',
+        permissions: [],
+      })
+      .expect(200);
+  });
 });
