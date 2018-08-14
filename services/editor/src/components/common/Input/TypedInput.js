@@ -144,7 +144,7 @@ TypedInput.displayName = 'TypedInput';
 
 const TagsPropertyValue = compose(
   getTypesService,
-  mapProps(({ onChange, value, safeConvertValue, valueType }) => {
+  mapProps(({ onChange, value, safeConvertValue, valueType, ...props }) => {
     const containsValue = (array, val) => array.some(item => item.toString() === val.toString());
     value = (Array.isArray(value) ? value : [value]) || [];
     valueType.ofType = valueType.ofType || 'string';
@@ -168,10 +168,14 @@ const TagsPropertyValue = compose(
       handleFilterSuggestions: (textInput, suggestions) =>
         suggestions.filter(item => !containsValue(value, item) && item.includes(textInput)),
       value,
+      dataComp: props['data-comp'],
+      dataValueType: props['data-value-type'],
     };
   }),
 )(props => (
   <div
+    data-comp={props.dataComp}
+    data-value-type={props.dataValueType}
     className={`text-input property-value-tags-wrapper ${
       props.value && props.value.length > 0 ? 'has-tags' : ''
     }`}
