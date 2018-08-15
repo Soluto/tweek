@@ -1,6 +1,7 @@
 const { expect } = require('chai');
 const jsonpatch = require('fast-json-patch');
 const nconf = require('nconf');
+const fetch = require('node-fetch');
 
 const { init: initClients } = require('../../utils/clients');
 const { pollUntil } = require('../../utils/utils');
