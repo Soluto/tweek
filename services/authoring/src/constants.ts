@@ -1,7 +1,7 @@
 import nconf = require('nconf');
 import fs = require('fs-extra');
 import os = require('os');
-import {logger} from './utils/jsonLogger';
+import { logger } from './utils/jsonLogger';
 
 function useFileFromBase64EnvVariable(inlineKeyName, fileKeyName) {
   const tmpDir = os.tmpdir();

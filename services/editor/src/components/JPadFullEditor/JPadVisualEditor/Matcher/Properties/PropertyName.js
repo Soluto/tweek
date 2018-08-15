@@ -42,6 +42,7 @@ const PropertyName = compose(
       warning:
         !hasFocus &&
         !property.startsWith(ContextService.KEYS_IDENTITY) &&
+        !property.startsWith('system') &&
         (!property.includes('.') ||
           !ContextService.getIdentities().includes(property.split('.')[0])),
     };

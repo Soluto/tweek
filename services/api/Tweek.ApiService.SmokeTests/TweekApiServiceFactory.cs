@@ -23,9 +23,9 @@ namespace Tweek.ApiService.SmokeTests
             _client = client;
         }
 
-        public async Task AppendContext(string identityType, string identityId, Dictionary<string, JsonValue> context)
+        public async Task<HttpResponseMessage> AppendContext(string identityType, string identityId, Dictionary<string, JsonValue> context)
         {
-            await _client.PostAsync(
+            return await _client.PostAsync(
                 $"/api/v1/context/{identityType}/{identityId}", new StringContent(JsonConvert.SerializeObject(context, new JsonValueConverter()), Encoding.UTF8, "application/json"));
         }
 
