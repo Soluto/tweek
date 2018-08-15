@@ -1,4 +1,5 @@
 const { expect } = require('chai');
+const jsonpatch = require('fast-json-patch');
 const { init: initClients } = require('../../utils/clients');
 const { pollUntil } = require('../../utils/utils');
 const { createManifestForJPadKey } = require('../../utils/manifest');
@@ -148,12 +149,42 @@ describe('Gateway v2 API', () => {
   });
 
   it('should create new app', async () => {
-    await clients.gateway
+    const res = await clients.gateway
       .post('/api/v2/apps?author.name=test&author.email=test@soluto.com')
       .send({
         name: 'test app',
         permissions: [],
       })
       .expect(200);
+
+    const body = res.body;
+    expect(body).hasOwnProperty('appId');
+    expect(body).hasOwnProperty('appSecret');
+
+    const policyRes = await clients.gateway.get('/api/v2/policies').expect(200);
+
+    const currentPolicy = policyRes.body;
+
+    const newPolicy = {
+      policies: [
+        ...currentPolicy.policies,
+        {
+          group: 'default',
+          user: body.appId,
+          contexts: {},
+          object: 'repo.keys/*',
+          action: 'write',
+          effect: 'allow',
+        },
+      ],
+    };
+
+    const patch = jsonpatch.compare(currentPolicy, newPolicy);
+    await clients.gateway
+      .patch('/api/v2/policies?author.name=test&author.email=test@soluto.com')
+      .send(patch)
+      .expect(200);
+
+    await clients.gateway.get('/api/v2/policies').expect(200, newPolicy);
   });
 });
