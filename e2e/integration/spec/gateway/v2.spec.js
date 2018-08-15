@@ -1,5 +1,7 @@
 const { expect } = require('chai');
 const jsonpatch = require('fast-json-patch');
+const nconf = require('nconf');
+
 const { init: initClients } = require('../../utils/clients');
 const { pollUntil } = require('../../utils/utils');
 const { createManifestForJPadKey } = require('../../utils/manifest');
@@ -157,9 +159,9 @@ describe('Gateway v2 API', () => {
       })
       .expect(200);
 
-    const body = res.body;
-    expect(body).hasOwnProperty('appId');
-    expect(body).hasOwnProperty('appSecret');
+    const app = res.body;
+    expect(app).hasOwnProperty('appId');
+    expect(app).hasOwnProperty('appSecret');
 
     const policyRes = await clients.gateway.get('/api/v2/policies').expect(200);
 
@@ -170,7 +172,7 @@ describe('Gateway v2 API', () => {
         ...currentPolicy.policies,
         {
           group: 'default',
-          user: body.appId,
+          user: app.appId,
           contexts: {},
           object: 'repo.keys/*',
           action: 'write',
@@ -186,5 +188,37 @@ describe('Gateway v2 API', () => {
       .expect(200);
 
     await clients.gateway.get('/api/v2/policies').expect(200, newPolicy);
+
+    const key = 'app_test_key';
+
+    const options = {
+      method: 'put',
+      headers: {
+        ['x-client-id']: app.appId,
+        ['x-client-secret']: app.appSecret,
+      },
+      body: {
+        manifest: createManifestForJPadKey(key),
+        implementation: JSON.stringify({
+          partitions: [],
+          defaultValue: 'test',
+          valueType: 'string',
+          rules: [],
+        }),
+      },
+    };
+
+    await fetch(
+      `${nconf.get(
+        'GATEWAY_URL',
+      )}/api/v2/keys/${key}?author.name=test&author.email=test@soluto.com`,
+      options,
+    );
+
+    const cleanup = jsonpatch.compare(newPolicy, currentPolicy);
+    await clients.gateway
+      .patch('/api/v2/policies?author.name=test&author.email=test@soluto.com')
+      .send(cleanup)
+      .expect(200);
   });
 });
