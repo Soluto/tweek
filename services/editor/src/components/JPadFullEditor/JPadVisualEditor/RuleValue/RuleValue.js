@@ -76,7 +76,7 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
               weight: 50,
             },
             {
-              value: valueType.name === TypesService.types.array.name ? [] : 'New Variant',
+              value: valueType.emptyValue || 'New Variant',
               weight: 50,
             },
           ],

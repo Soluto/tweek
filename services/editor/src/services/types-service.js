@@ -20,6 +20,7 @@ export const types = {
   },
   array: {
     name: 'array',
+    emptyValue: [],
   },
 };
 
@@ -55,13 +56,22 @@ export function convertValue(value, targetType) {
   }
 }
 
+export function isAllowedValue(valueType, value) {
+  return (
+    valueType &&
+    (!valueType.allowedValues ||
+      valueType.allowedValues.length == 0 ||
+      valueType.allowedValues.includes(value))
+  );
+}
+
 export function safeConvertValue(value, targetType) {
   try {
     return convertValue(value, targetType);
   } catch (err) {
     return (targetType.ofType || targetType.base || targetType.name) !== types.string.name
       ? undefined
-      : `${value}`;
+      : targetType.name === types.array.name ? [`${value}`] : `${value}`;
   }
 }
 

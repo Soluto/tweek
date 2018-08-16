@@ -89,7 +89,7 @@ export default class RulesList extends React.Component {
 
     mutate.prepend({
       Matcher: { '': '' },
-      Value: valueType.name === types.array.name ? [] : '',
+      Value: valueType.emptyValue || '',
       Type: 'SingleVariant',
     });
   }

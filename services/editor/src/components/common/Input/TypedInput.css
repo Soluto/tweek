@@ -19,6 +19,7 @@
   color: #515C66;
   outline: none;
   box-sizing: border-box;
+  align-self: flex-start;
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
@@ -92,6 +93,7 @@
   color: #515C66;
   outline: none;
   box-sizing: border-box;
+  align-self: flex-start;
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
@@ -165,6 +167,7 @@
   color: #515C66;
   outline: none;
   box-sizing: border-box;
+  align-self: flex-start;
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
@@ -238,6 +241,7 @@
   color: #515C66;
   outline: none;
   box-sizing: border-box;
+  align-self: flex-start;
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
@@ -325,6 +329,7 @@
   color: #515C66;
   outline: none;
   box-sizing: border-box;
+  align-self: flex-start;
   transition: all 0.2s ease-in-out;
   width: 250px;
 }
@@ -399,6 +404,7 @@
   color: #515C66;
   outline: none;
   box-sizing: border-box;
+  align-self: flex-start;
   transition: all 0.2s ease-in-out;
   width: 250px;
 }
@@ -473,6 +479,7 @@
   color: #515C66;
   outline: none;
   box-sizing: border-box;
+  align-self: flex-start;
   transition: all 0.2s ease-in-out;
   width: 250px;
 }
@@ -547,6 +554,7 @@
   color: #515C66;
   outline: none;
   box-sizing: border-box;
+  align-self: flex-start;
   transition: all 0.2s ease-in-out;
   width: 250px;
 }
@@ -840,8 +848,7 @@ input {
 }
 .typed-input-with-icon .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input,
 .typed-input-with-icon input {
-  padding-left: 28px;    
-  align-self: flex-start;
+  padding-left: 28px;
 }
 .typed-input-with-icon i {
   display: inline-block;

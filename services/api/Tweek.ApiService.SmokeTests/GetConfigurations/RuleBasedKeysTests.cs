@@ -54,6 +54,13 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
             await RunContextBasedTest(testContext);
         }
 
+        [Theory(DisplayName = "Get key with rules using array contains")]
+        [MemberData("ARRAY_CONTAINS_TEST_CONTEXTS", MemberType = typeof(RulesBasedTestsContextProvider))]
+        public async Task RulesBasedKey_UsingArrayContains_ShouldReturnMatchingKeyValue(TestContext testContext)
+        {
+            await RunContextBasedTest(testContext);
+        }
+
         private async Task RunContextBasedTest(TestContext context)
         {
             // Act

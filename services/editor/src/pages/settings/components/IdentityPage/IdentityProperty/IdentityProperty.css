@@ -155,9 +155,6 @@
   cursor: default;
   background-color: gray;
 }
-.identity-page .tags-container {
-  font-size: 12px;
-}
 .identity-page .simple-property {
   flex-direction: row;
   display: flex;

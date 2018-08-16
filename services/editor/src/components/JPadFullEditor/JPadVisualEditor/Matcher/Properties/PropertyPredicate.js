@@ -9,15 +9,6 @@ import {
 import Operator from './Operator';
 import PropertyValue from './PropertyValue';
 
-const translateValue = (oldOperator, newOperator, value) => {
-  if (oldOperator.isArray) return value.length > 0 ? value[0] : '';
-  if (newOperator.isArray) return value ? [value] : [];
-  return value;
-};
-
-const propertyTypeDetailsToComparer = propertyTypeDetails =>
-  propertyTypeDetails.comparer ? { $compare: propertyTypeDetails.comparer } : {};
-
 const PropertyPredicate = ({
   mutate,
   supportedOperators,
@@ -30,12 +21,7 @@ const PropertyPredicate = ({
       supportedOperators={supportedOperators}
       selectedOperator={selectedOperator}
       onUpdate={newOperator =>
-        mutate.updateValue(
-          newOperator.getValue(
-            translateValue(selectedOperator, newOperator, predicateValue),
-            propertyTypeDetailsToComparer(propertyTypeDetails),
-          ),
-        )
+        mutate.updateValue(newOperator.getValue(predicateValue, propertyTypeDetails))
       }
     />
     <PropertyValue
@@ -43,12 +29,7 @@ const PropertyPredicate = ({
       value={predicateValue}
       selectedOperator={selectedOperator.operatorValue}
       onChange={newPropertyValue =>
-        mutate.updateValue(
-          selectedOperator.getValue(
-            newPropertyValue,
-            propertyTypeDetailsToComparer(propertyTypeDetails),
-          ),
-        )
+        mutate.updateValue(selectedOperator.getValue(newPropertyValue, propertyTypeDetails))
       }
     />
   </div>
@@ -64,7 +45,7 @@ export default compose(
       selectedOperator = supportedOperators.indexOf(equal) >= 0 ? equal : supportedOperators[0];
       predicateValue = predicate;
     } else {
-      selectedOperator = allOperators.find(x =>
+      selectedOperator = supportedOperators.find(x =>
         Object.keys(predicate).find(predicateProperty => predicateProperty === x.operatorValue),
       );
       predicateValue = predicate[selectedOperator.operatorValue];

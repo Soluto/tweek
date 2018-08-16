@@ -4,21 +4,20 @@ import { compose, mapProps, withContext, getContext } from 'recompose';
 import changeCase from 'change-case';
 import ComboBox from '../ComboBox/ComboBox';
 import Input from './Input';
-import { showCustomAlert, buttons } from '../../../store/ducks/alerts';
-import './TypedInput.css';
+import { showCustomAlert } from '../../../store/ducks/alerts';
 import { connect } from 'react-redux';
 import { withJsonEditor } from './EditJSON';
-import * as R from 'ramda';
-import { WithContext as ReactTags } from 'react-tag-input';
-import * as TypesService from '../../../services/types-service';
+import TagsPropertyValue from './TagsPropertyValue';
+import './TypedInput.css';
 
 export const typesServiceContextType = {
   types: PropTypes.object.isRequired,
   safeConvertValue: PropTypes.func.isRequired,
+  isAllowedValue: PropTypes.func.isRequired,
 };
 
-export const withTypesService = ({ safeConvertValue, types }) =>
-  withContext(typesServiceContextType, () => ({ safeConvertValue, types }));
+export const withTypesService = ({ safeConvertValue, types, isAllowedValue }) =>
+  withContext(typesServiceContextType, () => ({ safeConvertValue, types, isAllowedValue }));
 
 export const getTypesService = getContext(typesServiceContextType);
 
@@ -31,15 +30,15 @@ const InputComponent = ({
   valueTypeName,
   allowedValues,
   onChange,
-  isArray,
   editJson,
+  types,
   ...props
 }) => {
-  if (isArray) {
+  if (valueType.name === types.array.name) {
     return (
       <TagsPropertyValue
         data-comp="property-value"
-        value={value || []}
+        value={value || valueType.emptyValue}
         valueType={valueType}
         onChange={onChange}
         {...props}
@@ -78,15 +77,20 @@ const InputComponent = ({
   return <Input {...props} onChange={onChange} value={value} />;
 };
 
-const InputWithIcon = ({ hideIcon, iconType, ...props }) => {
+const InputWithIcon = ({ hideIcon, valueTypeName, ...props }) => {
   const renderedInput = (
-    <InputComponent data-comp="typed-input" data-value-type={iconType} {...props} />
+    <InputComponent
+      data-comp="typed-input"
+      data-value-type={valueTypeName}
+      valueTypeName={valueTypeName}
+      {...props}
+    />
   );
   return hideIcon ? (
     renderedInput
   ) : (
     <div className="typed-input-with-icon">
-      <i data-value-type={iconType} />
+      <i data-value-type={valueTypeName} />
       {renderedInput}
     </div>
   );
@@ -98,22 +102,27 @@ const TypedInput = compose(
   }),
   getTypesService,
   mapProps(
-    ({ safeConvertValue, types, valueType, onChange, showCustomAlert, isArray, ...props }) => {
-      isArray = isArray || valueType.name === TypesService.types.array.name;
-      valueType = typeof valueType === 'string' ? { name: valueType } : valueType;
-      const iconType = valueType && (valueType.name || valueType.base);
-      const allowedValues = valueType && valueType.allowedValues;
+    ({
+      safeConvertValue,
+      types,
+      isAllowedValue,
+      valueType,
+      onChange,
+      showCustomAlert,
+      ...props
+    }) => {
+      valueType = (typeof valueType === 'string' ? types[valueType] : valueType) || {
+        name: 'unknown',
+      };
       const onChangeConvert = newValue =>
         onChange && onChange(safeConvertValue(newValue, valueType));
-
       const valueTypeName = valueType.name || valueType.base;
       return {
-        allowedValues,
+        allowedValues: valueType.allowedValues,
         onChange: onChangeConvert,
-        iconType,
         valueType,
         valueTypeName,
-        isArray,
+        types,
         ...props,
       };
     },
@@ -128,6 +137,7 @@ TypedInput.propTypes = {
     PropTypes.shape({
       name: PropTypes.string,
       base: PropTypes.string,
+      ofType: PropTypes.string,
       allowedValues: PropTypes.array,
     }),
   ]).isRequired,
@@ -142,60 +152,5 @@ TypedInput.defaultProps = {
 };
 
 TypedInput.displayName = 'TypedInput';
-
-const TagsPropertyValue = compose(
-  getTypesService,
-  mapProps(({ onChange, value, safeConvertValue, valueType, ...props }) => {
-    const containsValue = (array, val) => array.some(item => item.toString() === val.toString());
-    value = (Array.isArray(value) ? value : [value]) || [];
-    valueType.ofType = valueType.ofType || 'string';
-    return {
-      tags: value.map(x => ({ id: x, text: x.toString() })),
-      suggestions: valueType.allowedValues || [],
-      handleAddition: (newValue) => {
-        const convertedVal = safeConvertValue(newValue, valueType);
-        if (
-          onChange &&
-          convertedVal !== undefined &&
-          !containsValue(value, convertedVal) &&
-          (!valueType.allowedValues ||
-            valueType.allowedValues.length == 0 ||
-            containsValue(valueType.allowedValues, convertedVal))
-        ) {
-          return onChange([...value, convertedVal]);
-        }
-      },
-      handleDelete: valueIndex => onChange && onChange(R.remove(valueIndex, 1, value)),
-      handleFilterSuggestions: (textInput, suggestions) =>
-        suggestions.filter(item => !containsValue(value, item) && item.includes(textInput)),
-      value,
-      dataComp: props['data-comp'],
-      dataValueType: props['data-value-type'],
-    };
-  }),
-)(props => (
-  <div
-    data-comp={props.dataComp}
-    data-value-type={props.dataValueType}
-    className={`text-input property-value-tags-wrapper ${
-      props.value && props.value.length > 0 ? 'has-tags' : ''
-    }`}
-  >
-    <ReactTags
-      {...props}
-      placeholder="Add value"
-      minQueryLength={1}
-      allowDeleteFromEmptyInput
-      autocomplete
-      classNames={{
-        tags: 'tags-container',
-        tagInput: 'tag-input',
-        tag: 'tag',
-        remove: 'tag-delete-button',
-        suggestions: 'tags-suggestion',
-      }}
-    />
-  </div>
-));
 
 export default TypedInput;

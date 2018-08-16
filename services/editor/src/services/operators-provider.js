@@ -7,11 +7,11 @@ const _createOperator = (label, operatorValue, isArray) => {
   } else {
     switch (operatorValue) {
     case '$eq':
-      getValue = propertyValue => propertyValue;
+      getValue = propertyValue => _toValue(propertyValue);
       break;
     default:
       getValue = (propertyValue, propertyTypeDetails) =>
-        _toComplexValue(operatorValue, propertyValue, propertyTypeDetails);
+        _toComplexValue(operatorValue, _toValue(propertyValue), propertyTypeDetails);
     }
   }
 
@@ -19,10 +19,9 @@ const _createOperator = (label, operatorValue, isArray) => {
     label,
     operatorValue,
     getValue,
-    isArray,
   };
 };
-
+const propertyTypeDetailsToComparer = ({ comparer: $compare }) => ($compare ? { $compare } : {});
 const _toArrayValue = (operatorValue, propertyValue, propertyTypeDetails) => {
   if (!propertyValue) {
     return _toComplexValue(operatorValue, [], propertyTypeDetails);
@@ -35,8 +34,11 @@ const _toArrayValue = (operatorValue, propertyValue, propertyTypeDetails) => {
 
 const _toComplexValue = (operatorValue, propertyValue, propertyTypeDetails) => ({
   [operatorValue]: propertyValue,
-  ...propertyTypeDetails,
+  ...propertyTypeDetailsToComparer(propertyTypeDetails),
 });
+
+const _toValue = propertyValue =>
+  Array.isArray(propertyValue) && propertyValue.length > 0 ? propertyValue[0] : propertyValue;
 
 export const equal = _createOperator('=', '$eq');
 export const notEqual = _createOperator('!=', '$ne');
@@ -70,7 +72,17 @@ export const getPropertySupportedOperators = (propertyTypeDetails) => {
   const type = propertyTypeDetails.name || propertyTypeDetails.base;
 
   if (type === 'empty') {
-    return [equal, notEqual, greaterEqualThan, greater, lessThan, lessEqualThan, inOp, within];
+    return [
+      equal,
+      notEqual,
+      greaterEqualThan,
+      greater,
+      lessThan,
+      lessEqualThan,
+      inOp,
+      within,
+      contains,
+    ];
   }
 
   if (type === 'date') {

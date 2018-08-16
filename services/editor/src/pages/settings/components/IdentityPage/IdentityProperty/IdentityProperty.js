@@ -1,9 +1,9 @@
 import React from 'react';
 import { compose, withState, withHandlers } from 'recompose';
 import * as R from 'ramda';
-import { WithContext as ReactTags } from 'react-tag-input';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import Input from '../../../../../components/common/Input/Input';
+import TypedInput from '../../../../../components/common/Input/TypedInput';
 import Label from '../../../../../components/common/Label/Label';
 import * as TypesServices from '../../../../../services/types-service';
 import './IdentityProperty.css';
@@ -13,13 +13,19 @@ const TypeCombobox = ({ type, onUpdate, allowedTypes }) => (
     data-comp="type-select"
     value={type}
     filterBy={() => true}
-    onChange={propType => onUpdate(propType === 'array' ? CreateBaseArray() : propType)}
+    onChange={propType =>
+      onUpdate(propType === TypesServices.types.array.name ? CreateBaseArray() : propType)
+    }
     suggestions={allowedTypes}
   />
 );
 
 const IdentityPropertyTypes = [...Object.keys(TypesServices.types)];
-const CreateBaseArray = () => ({ name: 'array', ofType: 'string', allowedValues: [] });
+const CreateBaseArray = () => ({
+  name: TypesServices.types.array.name,
+  ofType: 'string',
+  allowedValues: [],
+});
 
 const SimpleTypeSelector = ({ type, onUpdate }) => (
   <div className={'simple-property'}>
@@ -45,7 +51,7 @@ const AdvancedTypeSelector = ({ type, onUpdate }) => (
       <Label text="Generic Type" />
       <TypeCombobox
         type={type.ofType}
-        allowedTypes={R.reject(R.equals('array'), IdentityPropertyTypes)}
+        allowedTypes={R.reject(R.contains(R.__, ['array', 'object']), IdentityPropertyTypes)}
         onUpdate={ofType => onUpdate({ ...type, ofType })}
       />
     </div>
@@ -55,23 +61,12 @@ const AdvancedTypeSelector = ({ type, onUpdate }) => (
       style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}
     >
       <Label text="Allowed Values" />
-      <ReactTags
-        tags={type.allowedValues.map(v => ({ id: v, text: v })) || []}
-        handleAddition={newValue =>
-          onUpdate({ ...type, allowedValues: [...type.allowedValues, newValue] })
-        }
-        handleDelete={index =>
-          onUpdate({ ...type, allowedValues: R.remove(index, 1, type.allowedValues) })
-        }
-        placeholder="Add value"
-        allowDeleteFromEmptyInput
-        classNames={{
-          tags: 'tags-container',
-          tagInput: 'tag-input',
-          tag: 'tag',
-          remove: 'tag-delete-button',
-          suggestions: 'tags-suggestion',
-        }}
+      <TypedInput
+        data-comp="property-value"
+        hideIcon
+        valueType={{ ...TypesServices.types.array, ofType: type.ofType || type.base }}
+        value={type.allowedValues}
+        onChange={allowedValues => onUpdate({ ...type, allowedValues: allowedValues })}
       />
     </div>
   </div>

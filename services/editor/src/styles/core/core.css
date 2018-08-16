@@ -124,6 +124,7 @@
   color: #515C66;
   outline: none;
   box-sizing: border-box;
+  align-self: flex-start;
   transition: all 0.2s ease-in-out;
   height: 16px;
   font-size: 12px;
