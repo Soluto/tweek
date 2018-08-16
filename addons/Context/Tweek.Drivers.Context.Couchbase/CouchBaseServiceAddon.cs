@@ -40,6 +40,7 @@ namespace Tweek.Drivers.Context.Couchbase
             var contextBucketName = couchbaseConfig["BucketName"];
             var contextBucketPassword = couchbaseConfig["Password"];
             var url = couchbaseConfig["Url"];
+            var maxLatencyMicroseconds = long.Parse(couchbaseConfig["MaxLatencyMicroseconds"] ?? "0");
 
             InitCouchbaseCluster(contextBucketName, contextBucketPassword, url);
 
@@ -48,7 +49,7 @@ namespace Tweek.Drivers.Context.Couchbase
             services.AddSingleton<HealthCheck>(ctx =>
             {
                 ctx.GetService<StaticCouchbaseDisposer>();
-                return new BucketConnectionHealthCheck(ClusterHelper.GetBucket, contextBucketName);
+                return new BucketConnectionHealthCheck(ClusterHelper.GetBucket, contextBucketName, maxLatencyMicroseconds);
             });
             services.AddSingleton<StaticCouchbaseDisposer>();
         }
