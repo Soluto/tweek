@@ -17,6 +17,7 @@
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  min-height: 28px;
   width: 150px;
   padding: 0 4px;
   background-color: transparent;
@@ -25,6 +26,7 @@
   color: #515C66;
   outline: none;
   box-sizing: border-box;
+  align-self: flex-start;
   transition: all 0.2s ease-in-out;
   width: 100px;
 }
@@ -90,6 +92,7 @@
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  min-height: 28px;
   width: 150px;
   padding: 0 4px;
   background-color: transparent;
@@ -98,6 +101,7 @@
   color: #515C66;
   outline: none;
   box-sizing: border-box;
+  align-self: flex-start;
   transition: all 0.2s ease-in-out;
   width: 100px;
 }
@@ -163,6 +167,7 @@
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  min-height: 28px;
   width: 150px;
   padding: 0 4px;
   background-color: transparent;
@@ -171,6 +176,7 @@
   color: #515C66;
   outline: none;
   box-sizing: border-box;
+  align-self: flex-start;
   transition: all 0.2s ease-in-out;
   width: 100px;
 }
@@ -236,6 +242,7 @@
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  min-height: 28px;
   width: 150px;
   padding: 0 4px;
   background-color: transparent;
@@ -244,6 +251,7 @@
   color: #515C66;
   outline: none;
   box-sizing: border-box;
+  align-self: flex-start;
   transition: all 0.2s ease-in-out;
   width: 100px;
 }
