@@ -38,23 +38,23 @@ type externalAppsRepo struct {
 var repo externalAppsRepo
 
 // ValidateCredentials - checks appID and secretKey are valid
-func ValidateCredentials(appID, appSecretKey string) (bool, error) {
+func ValidateCredentials(appID, appSecretKey string) error {
 	if appID == "" || appSecretKey == "" {
-		return false, errors.New("Invalid params")
+		return errors.New("Invalid params")
 	}
 
 	app, exists := repo.externalApps[appID]
 	if !exists {
-		return false, nil
+		return errors.New("The given appId does not exist")
 	}
 
 	for _, appKey := range app.SecretKeys {
 		if isValid := compareKeys(appKey, appSecretKey); isValid {
-			return true, nil
+			return nil
 		}
 	}
 
-	return false, nil
+	return errors.New("The given appSecretKey is invalid")
 }
 
 func compareKeys(appKey SecretKey, secretKey string) bool {

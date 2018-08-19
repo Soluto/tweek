@@ -135,15 +135,13 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, e
 		clientSecret = req.Header.Get("x-client-secret")
 	}
 
-	ok, err = externalApps.ValidateCredentials(clientID, clientSecret)
+	err = externalApps.ValidateCredentials(clientID, clientSecret)
 	if err != nil {
+		log.Printf("App %s wasn't validated: %v\n", clientID, err)
 		return nil, err
 	}
 
-	if ok {
-		return &userInfo{sub: &Subject{User: clientID, Group: "externalapps"}}, nil
-	}
-	return nil, errors.New("Neither access token nor credentials were provided")
+	return &userInfo{sub: &Subject{User: clientID, Group: "externalapps"}}, nil
 }
 
 func getKeyByIssuer(issuer, keyID string, providers map[string]appConfig.AuthProvider) (interface{}, error) {

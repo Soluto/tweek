@@ -37,12 +37,10 @@ func getAuthProviders(providers map[string]appConfig.AuthProvider) negroni.Handl
 func authorizeByUserPassword(keyEnv *appConfig.EnvInlineOrPath) negroni.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		if username, password, ok := r.BasicAuth(); ok {
-			isValid, err := externalApps.ValidateCredentials(username, password)
+			err := externalApps.ValidateCredentials(username, password)
 			if err != nil {
-				log.Panicln("Credentials validation failed", err)
-			}
-			if !isValid {
-				http.Error(w, "Invalid credentials provided", http.StatusUnauthorized)
+				log.Println("Credentials were not provided or are invalid", err)
+				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 				return
 			}
 
