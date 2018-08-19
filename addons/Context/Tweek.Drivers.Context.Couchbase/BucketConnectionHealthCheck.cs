@@ -1,6 +1,5 @@
 ﻿using Couchbase.Core;
 using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using App.Metrics.Health;
@@ -13,16 +12,16 @@ namespace Tweek.Drivers.Context.Couchbase
 
         private readonly string _bucketName;
         private readonly Func<string, IBucket> _getBucket;
-        private readonly long DEFAULT_MAX_LATENCY_MICROSECONDS = TimeSpan.FromSeconds(0.5).Milliseconds * 1000;
-        private readonly long _maxLatencyMicroseconds;
+        private readonly long DEFAULT_MAX_LATENCY_MILLISECONDS = TimeSpan.FromSeconds(0.5).Milliseconds;
+        private readonly long _maxLatencyMilliseconds;
 
-        public BucketConnectionHealthCheck(Func<string, IBucket> getBucket, string bucketNameToCheck, long maxLatencyMicroseconds)
+        public BucketConnectionHealthCheck(Func<string, IBucket> getBucket, string bucketNameToCheck, long maxLatencyMilliseconds)
             : base("CouchbaseConnection")
         {
             _getBucket = getBucket;
             _bucketName = bucketNameToCheck;
-            _maxLatencyMicroseconds =
-                maxLatencyMicroseconds == 0 ? DEFAULT_MAX_LATENCY_MICROSECONDS : maxLatencyMicroseconds;
+            _maxLatencyMilliseconds =
+                maxLatencyMilliseconds == 0 ? DEFAULT_MAX_LATENCY_MILLISECONDS : maxLatencyMilliseconds;
         }
 
         protected override async Task<HealthCheckResult> CheckAsync(
@@ -47,7 +46,9 @@ namespace Tweek.Drivers.Context.Couchbase
 
         private async Task TouchHealthcheckKey(IBucket bucket)
         {
-            if (!await bucket.ExistsAsync("healthcheck"))
+            var timeout = TimeSpan.FromMilliseconds(_maxLatencyMilliseconds);
+            var expiration = timeout;
+            if (!await bucket.ExistsAsync("healthcheck", timeout))
             {
                 var insertResult = await bucket.InsertAsync("healthcheck", "test");
                 if (!insertResult.Success)
@@ -56,8 +57,6 @@ namespace Tweek.Drivers.Context.Couchbase
                 }
             }
 
-            var timeout = TimeSpan.FromMilliseconds(_maxLatencyMicroseconds / 1000.0);
-            var expiration = timeout;
             var touchResult = await bucket.TouchAsync("healthcheck", expiration, timeout);
             if (!touchResult.Success)
             {
