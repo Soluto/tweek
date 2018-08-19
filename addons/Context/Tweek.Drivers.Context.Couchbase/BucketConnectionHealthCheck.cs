@@ -1,11 +1,9 @@
 ﻿using Couchbase.Core;
 using System;
-using System.Linq;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using App.Metrics.Health;
-using Couchbase;
-using Couchbase.Core.Monitoring;
 
 namespace Tweek.Drivers.Context.Couchbase
 {
@@ -34,16 +32,9 @@ namespace Tweek.Drivers.Context.Couchbase
             {
                 try
                 {
-                    _getBucket(_bucketName);
+                    var bucket = _getBucket(_bucketName);
+                    await TouchHealthcheckKey(bucket);
                     _lastSuccessCheck = DateTime.UtcNow;
-                    var latencies = ClusterHelper.Get().Diagnostics().Services.Values.SelectMany(svcs => svcs)
-                        .Filter(svc => svc.Type == ServiceType.KeyValue)
-                        .Select(svc => svc.Latency);
-
-                    if (latencies.Any(l => l > _maxLatencyMicroseconds))
-                    {
-                        throw new Exception("High latency");
-                    }
                 }
                 catch
                 {
@@ -52,6 +43,27 @@ namespace Tweek.Drivers.Context.Couchbase
             }
 
             return HealthCheckResult.Healthy();
+        }
+
+        private async Task TouchHealthcheckKey(IBucket bucket)
+        {
+            if (!await bucket.ExistsAsync("healthcheck"))
+            {
+                var insertResult = await bucket.InsertAsync("healthcheck", "test");
+                if (!insertResult.Success)
+                {
+                    throw insertResult.Exception ?? new Exception("Failed to create healthcheck key");
+                }
+            }
+
+            var timeout = TimeSpan.FromMilliseconds(_maxLatencyMicroseconds / 1000.0);
+            var expiration = timeout;
+            var touchResult = await bucket.TouchAsync("healthcheck", expiration, timeout);
+            if (!touchResult.Success)
+            {
+                throw touchResult.Exception ??
+                      new Exception($"Failed to touch healthcheck key within {timeout.TotalSeconds} seconds");
+            }
         }
     }
 }
