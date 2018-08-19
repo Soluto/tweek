@@ -3,6 +3,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using App.Metrics.Health;
+using Polly;
 
 namespace Tweek.Drivers.Context.Couchbase
 {
@@ -32,7 +33,7 @@ namespace Tweek.Drivers.Context.Couchbase
                 try
                 {
                     var bucket = _getBucket(_bucketName);
-                    await TouchHealthcheckKey(bucket);
+                    await UpsertHealthcheckKey(bucket);
                     _lastSuccessCheck = DateTime.UtcNow;
                 }
                 catch
@@ -44,25 +45,25 @@ namespace Tweek.Drivers.Context.Couchbase
             return HealthCheckResult.Healthy();
         }
 
-        private async Task TouchHealthcheckKey(IBucket bucket)
+        private async Task UpsertHealthcheckKey(IBucket bucket)
         {
             var timeout = TimeSpan.FromMilliseconds(_maxLatencyMilliseconds);
-            var expiration = timeout;
-            if (!await bucket.ExistsAsync("healthcheck", timeout))
-            {
-                var insertResult = await bucket.InsertAsync("healthcheck", "test");
-                if (!insertResult.Success)
-                {
-                    throw insertResult.Exception ?? new Exception("Failed to create healthcheck key");
-                }
-            }
+            await Policy.Handle<Exception>()
+                .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))).ExecuteAsync(
+                    async () =>
+                    {
+                        var upsertTask = bucket.UpsertAsync("healthcheck", "test");
+                        if (await Task.WhenAny(upsertTask, Task.Delay(timeout)) != upsertTask)
+                        {
+                            throw new Exception("Timeout upserting healthcheck key");
+                        }
 
-            var touchResult = await bucket.TouchAsync("healthcheck", expiration, timeout);
-            if (!touchResult.Success)
-            {
-                throw touchResult.Exception ??
-                      new Exception($"Failed to touch healthcheck key within {timeout.TotalSeconds} seconds");
-            }
+                        var upsertResult = await upsertTask;
+                        if (!upsertResult.Success)
+                        {
+                            throw upsertResult.Exception ?? new Exception("Failed to upsert healthcheck key");
+                        }
+                    });
         }
     }
 }
