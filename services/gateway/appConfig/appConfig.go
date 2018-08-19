@@ -81,13 +81,12 @@ type Cors struct {
 
 // PolicyStorage section holds the minio upstream and secret keys
 type PolicyStorage struct {
-	MinioEndpoint      string
-	MinioBucketName    string
-	MinioAccessKey     string
-	MinioSecretKey     string
-	MinioUseSSL        bool
-	NatsEndpoint       string
-	AuthorizationRules string
+	MinioEndpoint   string
+	MinioBucketName string
+	MinioAccessKey  string
+	MinioSecretKey  string
+	MinioUseSSL     bool
+	NatsEndpoint    string
 }
 
 // Configuration is the root element of configuration for gateway
@@ -111,17 +110,6 @@ func InitConfig() *Configuration {
 		tweekConfigor.Load(conf, configFilePath)
 	} else {
 		log.Panicln("Config file not found:", err)
-	}
-
-	// Loading config file if exists
-	if configFilePath, exists := os.LookupEnv("CONFIG_FILE_PATH"); exists {
-		if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
-			tweekConfigor.Load(conf, configFilePath)
-		} else {
-			log.Panicln("Config file not found:", err)
-		}
-	} else {
-		tweekConfigor.Load(conf)
 	}
 
 	return conf

@@ -28,6 +28,7 @@
     "supertest": "^3.0.0"
   },
   "dependencies": {
+    "fast-json-patch": "^2.0.6",
     "minio": "^4.0.0",
     "node-fetch": "^2.0.0"
   }

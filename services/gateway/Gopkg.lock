@@ -27,10 +27,7 @@
 
 [[projects]]
   name = "github.com/dgrijalva/jwt-go"
-  packages = [
-    ".",
-    "request"
-  ]
+  packages = [".","request"]
   revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
   version = "v3.2.0"
 
@@ -85,11 +82,7 @@
 [[projects]]
   branch = "master"
   name = "github.com/lestrrat-go/jwx"
-  packages = [
-    "internal/base64",
-    "jwa",
-    "jwk"
-  ]
+  packages = ["internal/base64","jwa","jwk"]
   revision = "0e3622ae3e832755f1b52f944b204bcd5309d7d7"
 
 [[projects]]
@@ -106,15 +99,7 @@
 
 [[projects]]
   name = "github.com/minio/minio-go"
-  packages = [
-    ".",
-    "pkg/credentials",
-    "pkg/encrypt",
-    "pkg/policy",
-    "pkg/s3signer",
-    "pkg/s3utils",
-    "pkg/set"
-  ]
+  packages = [".","pkg/credentials","pkg/encrypt","pkg/policy","pkg/s3signer","pkg/s3utils","pkg/set"]
   revision = "9e124ec59547551cb3f1324f73623bbb30650cf8"
   version = "4.0.9"
 
@@ -126,11 +111,7 @@
 
 [[projects]]
   name = "github.com/nats-io/go-nats"
-  packages = [
-    ".",
-    "encoders/builtin",
-    "util"
-  ]
+  packages = [".","encoders/builtin","util"]
   revision = "062418ea1c2181f52dc0f954f6204370519a868b"
   version = "v1.5.0"
 
@@ -142,17 +123,7 @@
 
 [[projects]]
   name = "github.com/open-policy-agent/opa"
-  packages = [
-    "ast",
-    "metrics",
-    "rego",
-    "storage",
-    "storage/inmem",
-    "topdown",
-    "topdown/builtins",
-    "types",
-    "util"
-  ]
+  packages = ["ast","metrics","rego","storage","storage/inmem","topdown","topdown/builtins","types","util"]
   revision = "877d39f035d1756b07a6ce8582bf793b7f2c1714"
   version = "v0.8.2"
 
@@ -177,22 +148,13 @@
 [[projects]]
   branch = "master"
   name = "github.com/prometheus/common"
-  packages = [
-    "expfmt",
-    "internal/bitbucket.org/ww/goautoneg",
-    "model"
-  ]
+  packages = ["expfmt","internal/bitbucket.org/ww/goautoneg","model"]
   revision = "7600349dcfe1abd18d72d3a1770870d9800a7801"
 
 [[projects]]
   branch = "master"
   name = "github.com/prometheus/procfs"
-  packages = [
-    ".",
-    "internal/util",
-    "nfs",
-    "xfs"
-  ]
+  packages = [".","internal/util","nfs","xfs"]
   revision = "ae68e2d4c00fed4943b5f6698d504a5fe083da8a"
 
 [[projects]]
@@ -222,10 +184,7 @@
 [[projects]]
   branch = "master"
   name = "github.com/vulcand/oxy"
-  packages = [
-    "forward",
-    "utils"
-  ]
+  packages = ["forward","utils"]
   revision = "a3ed5f65204f4ffccbb56d58cec466cdb7ab730b"
 
 [[projects]]
@@ -237,48 +196,24 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
-  packages = [
-    "pbkdf2",
-    "ssh/terminal"
-  ]
+  packages = ["pbkdf2","ssh/terminal"]
   revision = "c126467f60eb25f8f27e5a981f32a87e3965053f"
 
 [[projects]]
   branch = "release-branch.go1.10"
   name = "golang.org/x/net"
-  packages = [
-    "idna",
-    "lex/httplex"
-  ]
+  packages = ["idna","lex/httplex"]
   revision = "0ed95abb35c445290478a5348a7b38bb154135fd"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = [
-    "unix",
-    "windows"
-  ]
+  packages = ["unix","windows"]
   revision = "e072cadbbdc8dd3d3ffa82b8b4b9304c261d9311"
 
 [[projects]]
   name = "golang.org/x/text"
-  packages = [
-    "collate",
-    "collate/build",
-    "internal/colltab",
-    "internal/gen",
-    "internal/tag",
-    "internal/triegen",
-    "internal/ucd",
-    "language",
-    "secure/bidirule",
-    "transform",
-    "unicode/bidi",
-    "unicode/cldr",
-    "unicode/norm",
-    "unicode/rangetable"
-  ]
+  packages = ["collate","collate/build","internal/colltab","internal/gen","internal/tag","internal/triegen","internal/ucd","language","secure/bidirule","transform","unicode/bidi","unicode/cldr","unicode/norm","unicode/rangetable"]
   revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
   version = "v0.3.0"
 
@@ -297,6 +232,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "6cff6a03acc68e6d5a461fc249823163f7e4b8edd4e70c43b02704d018a82d36"
+  inputs-digest = "37d0e3ba2dec1b721f9a7d0e4a0d67678f05f23697f713e274b9d9eada768649"
   solver-name = "gps-cdcl"
   solver-version = 1
