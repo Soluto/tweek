@@ -34,14 +34,14 @@
             },
             "SiblingNames":{
               "type": {
-                "name": "array", 
+                "base": "array", 
                 "ofType": "string", 
                 "allowedValues": ["abe","mark","jon"] 
              }
             },
             "Identities":{
               "type": {
-                "name": "array", 
+                "base": "array", 
                 "ofType": "number", 
                 "allowedValues": [] 
              }

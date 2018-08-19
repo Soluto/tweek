@@ -34,7 +34,7 @@ const InputComponent = ({
   types,
   ...props
 }) => {
-  if (valueType.name === types.array.name) {
+  if (valueTypeName === types.array.name) {
     return (
       <TagsPropertyValue
         data-comp="property-value"

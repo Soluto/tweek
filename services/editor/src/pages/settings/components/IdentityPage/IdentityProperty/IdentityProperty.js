@@ -22,7 +22,7 @@ const TypeCombobox = ({ type, onUpdate, allowedTypes }) => (
 
 const IdentityPropertyTypes = [...Object.keys(TypesServices.types)];
 const CreateBaseArray = () => ({
-  name: TypesServices.types.array.name,
+  base: TypesServices.types.array.name,
   ofType: 'string',
   allowedValues: [],
 });

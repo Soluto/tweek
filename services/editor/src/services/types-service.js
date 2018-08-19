@@ -69,9 +69,10 @@ export function safeConvertValue(value, targetType) {
   try {
     return convertValue(value, targetType);
   } catch (err) {
-    return (targetType.ofType || targetType.base || targetType.name) !== types.string.name
+    const typeName = targetType.ofType || targetType.base || targetType.name;
+    return typeName !== types.string.name
       ? undefined
-      : targetType.name === types.array.name ? [`${value}`] : `${value}`;
+      : typeName === types.array.name ? [`${value}`] : `${value}`;
   }
 }
 
