@@ -66,9 +66,11 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
 
         private async Task RunContextBasedTest(TestContext context)
         {
+            // Prepare
             var configContext = context.Context.SelectMany(x=>
-            x.Value.IsArray ? x.Value.AsArray().Select(y=>KeyValuePair.Create(x.Key, y.AsString())) :
-            Seq.create(KeyValuePair.Create(x.Key, x.Value.AsString())));
+                x.Value.IsArray ? 
+                    x.Value.AsArray().Select(y=>KeyValuePair.Create(x.Key, y.AsString())) :
+                    Seq.create(KeyValuePair.Create(x.Key, x.Value.AsString())));
 
             // Act
             var response = await mTweekApi.GetConfigurations(context.KeyName, configContext);
