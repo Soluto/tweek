@@ -4,6 +4,7 @@ using App.Metrics.Health;
 using Couchbase;
 using Couchbase.Configuration.Client;
 using Couchbase.Core.Serialization;
+using LanguageExt;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Tweek.ApiService.Addons;
 using Tweek.Engine.Drivers.Context;
+using static LanguageExt.Prelude;
 
 namespace Tweek.Drivers.Context.Couchbase
 {
@@ -30,6 +32,7 @@ namespace Tweek.Drivers.Context.Couchbase
 
     public class CouchBaseServiceAddon : ITweekAddon
     {
+
         public void Use(IApplicationBuilder builder, IConfiguration configuration)
         {
         }
@@ -40,7 +43,8 @@ namespace Tweek.Drivers.Context.Couchbase
             var contextBucketName = couchbaseConfig["BucketName"];
             var contextBucketPassword = couchbaseConfig["Password"];
             var url = couchbaseConfig["Url"];
-            var maxLatencyMilliseconds = long.Parse(couchbaseConfig["maxLatencyMilliseconds"] ?? "0");
+            var healthCheckMaxLatencyMilliseconds = Optional(couchbaseConfig["HealthCheck:MaxLatencyMilliseconds"]).Map(x=> int.Parse(x)).IfNone(TimeSpan.FromSeconds(0.5).Milliseconds);
+            var healthCheckRetry = Optional(couchbaseConfig["HealthCheck:RetryCount"]).Map(x=> int.Parse(x)).IfNone(3);
 
             InitCouchbaseCluster(contextBucketName, contextBucketPassword, url);
 
@@ -49,7 +53,7 @@ namespace Tweek.Drivers.Context.Couchbase
             services.AddSingleton<HealthCheck>(ctx =>
             {
                 ctx.GetService<StaticCouchbaseDisposer>();
-                return new BucketConnectionHealthCheck(ClusterHelper.GetBucket, contextBucketName, maxLatencyMilliseconds);
+                return new BucketConnectionHealthCheck(ClusterHelper.GetBucket, contextBucketName, TimeSpan.FromMilliseconds(healthCheckMaxLatencyMilliseconds), healthCheckRetry, ctx.GetService<ILogger<CouchBaseDriver>>());
             });
             services.AddSingleton<StaticCouchbaseDisposer>();
         }
