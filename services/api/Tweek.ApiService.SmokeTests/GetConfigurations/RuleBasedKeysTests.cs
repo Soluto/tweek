@@ -2,8 +2,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FSharpUtils.Newtonsoft;
+using LanguageExt;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Tweek.ApiService.SmokeTests.GetConfigurations.Models;
+using Tweek.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -63,9 +66,13 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
 
         private async Task RunContextBasedTest(TestContext context)
         {
-            // Act
-            var response = await mTweekApi.GetConfigurations(context.KeyName, context.Context.ToDictionary(x=>x.Key, x=>x.Value.AsString()));
+            var configContext = context.Context.SelectMany(x=>
+            x.Value.IsArray ? x.Value.AsArray().Select(y=>KeyValuePair.Create(x.Key, y.AsString())) :
+            Seq.create(KeyValuePair.Create(x.Key, x.Value.AsString())));
 
+            // Act
+            var response = await mTweekApi.GetConfigurations(context.KeyName, configContext);
+            
             // Assert
             Assert.Equal(JTokenType.String, response.Type);
             Assert.Equal(context.ExpectedValue, response.ToString());
