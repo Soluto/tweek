@@ -112,6 +112,14 @@ func InitConfig() *Configuration {
 		log.Panicln("Config file not found:", err)
 	}
 
+	// Loading config file if exists
+	configFilePath = "/config/gateway.json"
+	if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
+		tweekConfigor.Load(conf, configFilePath)
+	} else {
+		log.Panicln("Config file not found:", err)
+	}
+
 	return conf
 }
 

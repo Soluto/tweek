@@ -51,7 +51,6 @@ COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/hcheck /healt
 COPY --from=dependencies /empty_tmp /tmp
 
 ENV CONFIGOR_ENV=production
-ENV CONFIG_FILE_PATH=/config/gateway.json
 
 VOLUME [ "/config" ]
 
