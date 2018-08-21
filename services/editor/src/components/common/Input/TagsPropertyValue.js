@@ -13,11 +13,12 @@ export const typesServiceContextType = {
 
 export const getTypesService = getContext(typesServiceContextType);
 
+const convertToArray = value => (value && (Array.isArray(value) ? value : [value])) || [];
+
 const TagsPropertyValue = compose(
   getTypesService,
   mapProps(({ onChange, value, safeConvertValue, isAllowedValue, valueType, ...props }) => {
-    value = (value && (Array.isArray(value) ? value : [value])) || valueType.emptyValue || [];
-    valueType.ofType = valueType.ofType || 'string';
+    value = convertToArray(value);
     return {
       tags: value.map(x => ({ id: x, text: x.toString() })),
       suggestions: (valueType.allowedValues || []).map(x => x.toString()),

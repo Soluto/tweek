@@ -39,7 +39,7 @@ const InputComponent = ({
       <TagsPropertyValue
         data-comp="property-value"
         value={value || valueType.emptyValue}
-        valueType={valueType}
+        valueType={valueType.ofType || { base: 'string' }}
         onChange={onChange}
         {...props}
       />
@@ -137,7 +137,6 @@ TypedInput.propTypes = {
     PropTypes.shape({
       name: PropTypes.string,
       base: PropTypes.string,
-      ofType: PropTypes.string,
       allowedValues: PropTypes.array,
     }),
   ]).isRequired,

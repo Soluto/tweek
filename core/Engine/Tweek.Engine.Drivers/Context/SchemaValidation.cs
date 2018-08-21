@@ -74,7 +74,10 @@ namespace Tweek.Engine.Drivers.Context
                            .IfNone(() => (JsonValue value) => Error($"custom type \"{type}\" not exists"));
                     }
                 case JsonValue.Record customTypeRaw:
-                    return CreateCustomTypeValidator(CustomTypeDefinition.FromJsonValue(customTypeRaw));
+                    return customTypeRaw.GetPropertyOption("name").Bind(x => customTypeRaw.GetPropertyOption("ofType")).Match(arrayType => {
+                        var arrayValidator = CreateSinglePropertyValidator(arrayType, provider);
+                        return (x => x.AsArray().Map(i => arrayValidator(i)).Reduce((a,b) => a | b));
+                    }, () => CreateCustomTypeValidator(CustomTypeDefinition.FromJsonValue(customTypeRaw)));
                 default:
                     return (JsonValue _) => Error("unknown type definition");
             }
@@ -85,13 +88,9 @@ namespace Tweek.Engine.Drivers.Context
             var validators = Enumerable.Empty<Func<JsonValue, ValidationResult>>();
             if (typeDefinition.AllowedValues.Any())
             {
-                validators = validators.Append((JsonValue property) => 
-                {
-                    var items = property.IsArray ? ((JsonValue.Array)property).elements : new JsonValue[] { property };
-                    return items.All(p => typeDefinition.AllowedValues.Any(v => 
-                    (v.IsString && p.IsString && v.AsString().ToLower() == p.AsString().ToLower() ) || 
-                        v.Equals(p))) ? Valid : Error($"value {property.ToString()} not in the allowed values");
-                });
+                validators = validators.Append((JsonValue property) => typeDefinition.AllowedValues.Any(v => 
+                    (v.IsString && property.IsString && v.AsString().ToLower() == property.AsString().ToLower() ) || 
+                        v.Equals(property)) ? Valid : Error($"value {property.ToString()} not in the allowed values"));
             }
             
             var regexValidation = Optional(typeDefinition.Validation)

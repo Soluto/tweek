@@ -8,19 +8,13 @@ const PropertyValue = ({ selectedOperator, valueType, ...props }) => (
   <div className="property-value-wrapper">
     <TypedInput
       data-comp="property-value"
-      valueType={GetValueType(selectedOperator, valueType)}
+      valueType={
+        selectedOperator === inOp.operatorValue ? { ...types.array, ofType: valueType } : valueType
+      }
       {...props}
     />
   </div>
 );
-
-const GetValueType = (selectedOperator, valueType) => {
-  if (selectedOperator === inOp.operatorValue) {
-    const { base, ...rest } = valueType;
-    return { ...rest, ...types.array, ofType: valueType.base || valueType.name };
-  }
-  return valueType;
-};
 
 PropertyValue.defaultProps = {
   placeholder: 'Value',

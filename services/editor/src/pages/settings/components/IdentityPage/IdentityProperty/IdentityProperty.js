@@ -22,9 +22,8 @@ const TypeCombobox = ({ type, onUpdate, allowedTypes }) => (
 
 const IdentityPropertyTypes = [...Object.keys(TypesServices.types)];
 const CreateBaseArray = () => ({
-  base: TypesServices.types.array.name,
-  ofType: 'string',
-  allowedValues: [],
+  name: TypesServices.types.array.name,
+  ofType: { base: TypesServices.types.string.name },
 });
 
 const SimpleTypeSelector = ({ type, onUpdate }) => (
@@ -47,14 +46,6 @@ const AdvancedTypeSelector = ({ type, onUpdate }) => (
       type={type.name || type.base}
       onUpdate={type => onUpdate(type)}
     />
-    <div data-field="base" style={{ display: type.ofType ? 'flex' : 'none', flexDirection: 'row' }}>
-      <Label text="Generic Type" />
-      <TypeCombobox
-        type={type.ofType}
-        allowedTypes={R.reject(R.contains(R.__, ['array', 'object']), IdentityPropertyTypes)}
-        onUpdate={ofType => onUpdate({ ...type, ofType })}
-      />
-    </div>
     <div
       data-field="allowed-values"
       data-comp="editable-list"
@@ -72,8 +63,48 @@ const AdvancedTypeSelector = ({ type, onUpdate }) => (
   </div>
 );
 
+const ArrayTypeSelector = ({ type, onUpdate }) => {
+  const { allowedValues, ...baseOfType } = type.ofType;
+  return (
+    <div style={{ display: 'column', flexDirection: 'row' }}>
+      <TypeCombobox
+        allowedTypes={IdentityPropertyTypes}
+        type={type.name || type.base}
+        onUpdate={type => onUpdate(type)}
+      />
+      <div data-field="base" style={{ display: 'flex', flexDirection: 'row' }}>
+        <Label text="Generic Type" />
+        <TypeCombobox
+          type={type.ofType.base}
+          allowedTypes={R.reject(R.contains(R.__, ['array', 'object']), IdentityPropertyTypes)}
+          onUpdate={ofType => onUpdate({ ...type, ofType: { base: ofType } })}
+        />
+      </div>
+      <div
+        data-field="allowed-values"
+        data-comp="editable-list"
+        style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}
+      >
+        <Label text="Allowed Values" />
+        <TypedInput
+          data-comp="property-value"
+          hideIcon
+          valueType={{ ...TypesServices.types.array, ofType: { ...baseOfType } }}
+          value={type.ofType.allowedValues}
+          onChange={allowedValues =>
+            onUpdate({ ...type, ofType: { ...type.ofType, allowedValues: allowedValues } })
+          }
+        />
+      </div>
+    </div>
+  );
+};
+
 const PropertyTypeSelector = ({ type, onUpdate, ...props }) => {
-  const TypeSelector = typeof type === 'object' ? AdvancedTypeSelector : SimpleTypeSelector;
+  const TypeSelector =
+    typeof type === 'object'
+      ? type.ofType ? ArrayTypeSelector : AdvancedTypeSelector
+      : SimpleTypeSelector;
   return (
     <div data-comp="PropertyTypeSelect" {...props}>
       <TypeSelector type={type} onUpdate={onUpdate} />

@@ -36,16 +36,20 @@
             },
             "SiblingNames":{
               "type": {
-                "base": "array", 
-                "ofType": "string", 
-                "allowedValues": ["abe","mark","jon"] 
+                "name": "array", 
+                "ofType": {
+                  "base": "string",
+                  "allowedValues": ["abe","mark","jon"] 
+                }
              }
             },
             "Identities":{
               "type": {
-                "base": "array", 
-                "ofType": "number", 
-                "allowedValues": [] 
+                "name": "array", 
+                "ofType": {
+                  "base": "number",
+                  "allowedValues": [] 
+                }
              }
             }
         }
