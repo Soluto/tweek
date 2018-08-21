@@ -130,9 +130,11 @@ services:
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECURE=false
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_NATSENDPOINT=nats://nats:4222
       - TWEEKGATEWAY_SECURITY_TWEEKSECRETKEY_PATH=/run/secrets/tweek_ssh_private_key
-      - CONFIG_FILE_PATH=/config/gateway.json      
+      - CONFIG_FILE_PATH=/config/gateway.json
+    volumes:
+      - ./gateway/config:/config
     secrets:
-      - tweek_ssh_private_key    
+      - tweek_ssh_private_key
 
 secrets:
   tweek_ssh_public_key:
