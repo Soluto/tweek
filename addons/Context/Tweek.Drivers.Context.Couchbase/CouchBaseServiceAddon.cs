@@ -43,7 +43,7 @@ namespace Tweek.Drivers.Context.Couchbase
             var contextBucketName = couchbaseConfig["BucketName"];
             var contextBucketPassword = couchbaseConfig["Password"];
             var url = couchbaseConfig["Url"];
-            var healthCheckMaxLatencyMilliseconds = Optional(couchbaseConfig["HealthCheck:MaxLatencyMilliseconds"]).Map(x=> int.Parse(x)).IfNone(TimeSpan.FromSeconds(0.5).Milliseconds);
+            var healthCheckMaxLatency = Optional(couchbaseConfig["HealthCheck:MaxLatencyMilliseconds"]).Map(x=> TimeSpan.FromMilliseconds(int.Parse(x))).IfNone(TimeSpan.FromSeconds(0.5));
             var healthCheckRetry = Optional(couchbaseConfig["HealthCheck:RetryCount"]).Map(x=> int.Parse(x)).IfNone(3);
 
             InitCouchbaseCluster(contextBucketName, contextBucketPassword, url);
@@ -53,7 +53,7 @@ namespace Tweek.Drivers.Context.Couchbase
             services.AddSingleton<HealthCheck>(ctx =>
             {
                 ctx.GetService<StaticCouchbaseDisposer>();
-                return new BucketConnectionHealthCheck(ClusterHelper.GetBucket, contextBucketName, TimeSpan.FromMilliseconds(healthCheckMaxLatencyMilliseconds), healthCheckRetry, ctx.GetService<ILogger<CouchBaseDriver>>());
+                return new BucketConnectionHealthCheck(ClusterHelper.GetBucket, contextBucketName, healthCheckMaxLatency, healthCheckRetry, ctx.GetService<ILogger<CouchBaseDriver>>());
             });
             services.AddSingleton<StaticCouchbaseDisposer>();
         }
