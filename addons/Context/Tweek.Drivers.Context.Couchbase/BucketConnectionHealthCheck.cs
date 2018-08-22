@@ -42,7 +42,7 @@ namespace Tweek.Drivers.Context.Couchbase
                     var bucket = _getBucket(_bucketName);
                     await UpsertHealthcheckKey(bucket);
                     _lastSuccessCheck = DateTime.UtcNow;
-                    if ( _state == HealthCheckResult.Unhealthy()){
+                    if ( _state.Status == HealthCheckStatus.Unhealthy){
                         _logger.LogInformation("Couchbase connection is healthy again");
                     }
                     failedRetries = 0;
