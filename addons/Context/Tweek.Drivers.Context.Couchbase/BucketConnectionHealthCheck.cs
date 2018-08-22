@@ -33,7 +33,7 @@ namespace Tweek.Drivers.Context.Couchbase
         protected override async Task<HealthCheckResult> CheckAsync(
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (DateTime.UtcNow - _lastSuccessCheck > TimeSpan.FromSeconds(30))
+            if (DateTime.UtcNow - _lastSuccessCheck > TimeSpan.FromSeconds(1))
             {
                 try
                 {
