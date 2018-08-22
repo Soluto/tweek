@@ -20,6 +20,8 @@ namespace Tweek.Drivers.Context.Couchbase
         private readonly int _retryCount;
         private int failedRetries = 0;
 
+        private HealthCheckResult _state = HealthCheckResult.Unhealthy();
+
         public BucketConnectionHealthCheck(Func<string, IBucket> getBucket, string bucketNameToCheck, TimeSpan timeout, int retryCount, ILogger logger)
             : base("CouchbaseConnection")
         {
@@ -40,21 +42,21 @@ namespace Tweek.Drivers.Context.Couchbase
                     var bucket = _getBucket(_bucketName);
                     await UpsertHealthcheckKey(bucket);
                     _lastSuccessCheck = DateTime.UtcNow;
-                    if (failedRetries > 0){
-                        failedRetries = 0;
-                        _logger.LogInformation("Couchbase connection is healthy");
+                    if ( _state.Status == HealthCheckStatus.Unhealthy){
+                        _logger.LogInformation("Couchbase connection is healthy again");
                     }
+                    failedRetries = 0;
+                    _state = HealthCheckResult.Healthy();
                 }
                 catch
                 {
                     _logger.LogWarning("Couchbase Healthcheck has failed for {RetryCount}", failedRetries);
                     if (++failedRetries > _retryCount){
-                        return HealthCheckResult.Unhealthy($"Unavailable since {_lastSuccessCheck}");
+                        _state =  HealthCheckResult.Unhealthy($"Unavailable since {_lastSuccessCheck}");
                     }
                 }
             }
-
-            return HealthCheckResult.Healthy();
+            return _state;
         }
 
         private async Task UpsertHealthcheckKey(IBucket bucket)
