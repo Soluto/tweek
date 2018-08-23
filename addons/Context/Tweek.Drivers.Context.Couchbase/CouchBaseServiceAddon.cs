@@ -50,6 +50,7 @@ namespace Tweek.Drivers.Context.Couchbase
 
             var contextDriver = new CouchBaseDriver(ClusterHelper.GetBucket, contextBucketName);
             services.AddSingleton<IContextDriver>(contextDriver);
+            
             services.AddSingleton<HealthCheck>(ctx =>
             {
                 ctx.GetService<StaticCouchbaseDisposer>();

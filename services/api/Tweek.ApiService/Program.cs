@@ -1,7 +1,13 @@
-﻿using Microsoft.AspNetCore;
+﻿using App.Metrics.AspNetCore;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Serilog;
+using System.Collections.Generic;
 using System.IO;
+using System;
+using System.Reflection;
+using App.Metrics.AspNetCore.Health;
+using App.Metrics.Formatters.Prometheus;
 
 namespace Tweek.ApiService
 {
@@ -10,6 +16,28 @@ namespace Tweek.ApiService
         public static void Main(string[] args)
         {
             var host = WebHost.CreateDefaultBuilder(args)
+                .ConfigureMetrics(
+                builder =>
+                {
+                    builder.Configuration.Configure(
+                        options =>
+                        {
+                            options.DefaultContextLabel = "Testing";
+                            options.Enabled = false;
+                            options.GlobalTags.Append( new Dictionary<string,string>(){
+                                ["host"] = Environment.MachineName,
+                                ["app_name"] = Assembly.GetEntryAssembly().FullName,
+                                ["app_version"] = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion
+                            });
+                        });
+                })
+                .UseHealth()
+                .UseMetrics(options => { 
+                    options.EndpointOptions = endpointsOptions => {
+                        endpointsOptions.MetricsEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
+                        endpointsOptions.MetricsTextEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
+                    };
+                })
                 .UseKestrel(opts=> opts.Limits.MaxRequestLineSize = 128 * 1024)
                 .UseStartup<Startup>()
                 .UseSerilog()

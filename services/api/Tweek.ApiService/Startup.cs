@@ -1,6 +1,4 @@
-﻿using App.Metrics;
-using App.Metrics.Configuration;
-using App.Metrics.Health;
+﻿using App.Metrics.Formatters.Json;
 using FSharpUtils.Newtonsoft;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -37,7 +35,8 @@ using ConfigurationPath = Tweek.Engine.DataTypes.ConfigurationPath;
 using Tweek.Engine.DataTypes;
 using static LanguageExt.Prelude;
 using System.Linq;
-
+using App.Metrics;
+using App.Metrics.Health;
 
 namespace Tweek.ApiService
 {
@@ -67,9 +66,6 @@ namespace Tweek.ApiService
               new TimedContextDriver(driver, provider.GetService<IMetrics>()));
             services.Decorate<IContextDriver>((driver, provider) => CreateInputValidationDriverDecorator(provider, driver));
             services.Decorate<IRulesDriver>((driver, provider) => new TimedRulesDriver(driver, provider.GetService<IMetrics>));
-
-            services.AddSingleton<HealthCheck, RulesRepositoryHealthCheck>();
-            services.AddSingleton<HealthCheck, EnvironmentHealthCheck>();
 
             services.AddSingleton(CreateParserResolver());
 
@@ -114,7 +110,8 @@ namespace Tweek.ApiService
             var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };
 
             services.AddSingleton(jsonSerializer);
-            services.AddMvc(options => options.AddMetricsResourceFilter())
+            services.AddMvc()
+                .AddMetrics()
                 .AddJsonOptions(opt =>
                 {
                     opt.SerializerSettings.ContractResolver = tweekContactResolver;
@@ -122,7 +119,6 @@ namespace Tweek.ApiService
 
             services.SetupCors(Configuration);
 
-            RegisterMetrics(services);
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("api", new Info
@@ -196,25 +192,6 @@ namespace Tweek.ApiService
             return (p)=>validationProvider(p);
         }
 
-        private void RegisterMetrics(IServiceCollection services)
-        {
-            services
-                .AddMetrics(options =>
-                {
-                    options.WithGlobalTags((globalTags, envInfo) =>
-                    {
-                        globalTags.Add("host", envInfo.HostName);
-                        globalTags.Add("machine_name", envInfo.MachineName);
-                        globalTags.Add("app_name", envInfo.EntryAssemblyName);
-                        globalTags.Add("app_version", envInfo.EntryAssemblyVersion);
-                    });
-                })
-                .AddPrometheusPlainTextSerialization()
-                .AddPrometheusProtobufSerialization()
-                .AddJsonHealthSerialization()
-                .AddHealthChecks()
-                .AddMetricsMiddleware(Configuration.GetSection("AspNetMetrics"));
-        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
@@ -232,9 +209,7 @@ namespace Tweek.ApiService
             }
             app.InstallAddons(Configuration);
             app.UseAuthentication();
-            app.UseMetrics();
             app.UseMvc();
-            app.UseMetricsReporting(lifetime);
             app.UseWhen((ctx) => ctx.Request.Path == "/api/swagger.json", r => r.UseCors(p => p.AllowAnyHeader().AllowAnyOrigin().WithMethods("GET")));
             app.UseSwagger(options =>
             {
