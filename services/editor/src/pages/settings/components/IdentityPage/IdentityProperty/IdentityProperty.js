@@ -41,7 +41,11 @@ const SimpleTypeSelector = ({ type, onUpdate }) => (
 
 const AdvancedTypeSelector = ({ type, onUpdate }) => (
   <div style={{ display: 'column', flexDirection: 'row' }}>
-    <AdvancedTypeComboBox {...{ type, onUpdate }} />
+    <TypeCombobox
+      allowedTypes={IdentityPropertyTypes}
+      type={type.name || type.base}
+      onUpdate={type => onUpdate(type)}
+    />
     <AllowedValuesSelector
       type={{ ...TypesServices.types.array, ofType: type.base }}
       allowedValues={type.allowedValues}
@@ -54,7 +58,11 @@ const ArrayTypeSelector = ({ type, onUpdate }) => {
   const { allowedValues, ...baseOfType } = type.ofType;
   return (
     <div style={{ display: 'column', flexDirection: 'row' }}>
-      <AdvancedTypeComboBox {...{ type, onUpdate }} />
+      <TypeCombobox
+        allowedTypes={IdentityPropertyTypes}
+        type={type.name || type.base}
+        onUpdate={type => onUpdate(type)}
+      />
       <div data-field="base" style={{ display: 'flex', flexDirection: 'row' }}>
         <Label text="Generic Type" />
         <TypeCombobox
@@ -89,14 +97,6 @@ const AllowedValuesSelector = ({ onUpdate, type, allowedValues }) => (
       onChange={onUpdate}
     />
   </div>
-);
-
-const AdvancedTypeComboBox = ({ type, onUpdate }) => (
-  <TypeCombobox
-    allowedTypes={IdentityPropertyTypes}
-    type={type.name || type.base}
-    onUpdate={type => onUpdate(type)}
-  />
 );
 
 const PropertyTypeSelector = ({ type, onUpdate, ...props }) => {
