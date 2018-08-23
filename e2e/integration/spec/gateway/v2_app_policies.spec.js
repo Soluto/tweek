@@ -109,18 +109,6 @@ describe('Gateway v2 - App Policies', () => {
     },
 
     {
-      name: 'post_schemas',
-      requirePermissionObject: 'repo/schemas',
-      requirePermissionAction: 'write',
-      action: async client => {
-        await client
-          .post('/api/v2/schemas/new_identity?author.name=test&author.email=test@tweek.com')
-          .send({ test: { type: 'string' } })
-          .expect(200);
-      },
-    },
-
-    {
       name: 'delete_schemas',
       requirePermissionObject: 'repo/schemas',
       requirePermissionAction: 'write',
