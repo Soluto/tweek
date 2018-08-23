@@ -44,6 +44,8 @@ services:
   gateway:
     image: soluto/tweek-gateway
     build: ../services/gateway
+    volumes:
+      - ../deployments/dev/gateway/config:/config
 
   selenium:
     image: selenium/standalone-chrome-debug:3.8.1

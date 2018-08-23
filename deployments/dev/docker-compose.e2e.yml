@@ -38,7 +38,7 @@ services:
       - nats
       - oidc-server-mock
     environment:
-      - CONFIGOR_ENV=test
+      - CONFIGOR_ENV=test    
 
   oidc-server-mock:
     container_name: oidc-server-mock 
