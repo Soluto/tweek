@@ -49,9 +49,7 @@ services:
   authoring:
     image: $AUTHORING_IMAGE
     depends_on:
-      - publishing
-    logging:
-      driver: "none"
+      - publishing    
     environment:
       - GIT_USER=git
       - GIT_URL=ssh://git@publishing/tweek/repo
