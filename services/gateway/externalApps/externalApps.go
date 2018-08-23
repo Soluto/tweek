@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"runtime"
@@ -75,8 +74,6 @@ func compareKeys(appKey SecretKey, secretKey string) bool {
 	hashBuf := pbkdf2.Key(secretKeyBuf, saltBuf, 100, 512, sha512.New)
 	hash := hex.EncodeToString(hashBuf)
 
-	fmt.Printf("GOT %s, STORED %s", hash, appKey.Hash)
-
 	return hash == appKey.Hash
 }
 
@@ -120,6 +117,7 @@ func refreshApps(cfg *appConfig.PolicyStorage) nats.MsgHandler {
 			log.Panic("Refresh app failed: deserialize object ")
 		}
 		repo.externalApps = extApps
+		log.Println("Done refreshing external apps.")
 	}
 }
 

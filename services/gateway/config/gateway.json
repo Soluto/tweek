@@ -32,7 +32,7 @@
         "methods": ["GET"],
         "service": "api",
         "userInfo": false
-    },    
+    },
     {
         "routePathPrefix": "/context",
         "routeRegexp": "^/api/v2/context/([^\\?]+)(.*)$",
@@ -40,12 +40,12 @@
         "methods": ["GET", "POST", "DELETE"],
         "service": "api",
         "userInfo": false
-    },    
+    },
 
     {
         "routePathPrefix": "/keys",
-        "routeRegexp": "^/api/v2/keys/([^\\?]+)(.*)$",
-        "upstreamPath": "/api/keys/$1$2",
+        "routeRegexp": "^/api/v2/keys([^\\?]*)(.*)$",
+        "upstreamPath": "/api/keys$1$2",
         "methods": ["GET"],
         "service": "authoring",
         "userInfo": false
@@ -89,7 +89,7 @@
         "methods": ["POST", "PATCH", "DELETE"],
         "service": "authoring",
         "userInfo": true
-    },
+    },   
     {
         "routePathPrefix": "/manifests",
         "routeRegexp": "^/api/v2/manifests(.*)$",
@@ -115,9 +115,25 @@
         "userInfo": false
     },
     {
+        "routePathPrefix": "/search-index",
+        "routeRegexp": "^/api/v2/search-index$",
+        "upstreamPath": "/api/search",
+        "methods": ["GET"],
+        "service": "authoring",
+        "userInfo": false
+    },
+    {
         "routePathPrefix": "/dependents",
         "routeRegexp": "^/api/v2/dependents/([^\\?]+)(.*)$",
         "upstreamPath": "/api/dependents/$1$2",
+        "methods": ["GET"],
+        "service": "authoring",
+        "userInfo": false
+    },
+    {
+        "routePathPrefix": "/revision",
+        "routeRegexp": "^/api/v2/revision-history/([^\\?]+)(.*)$",
+        "upstreamPath": "/api/revision-history/$1$2",
         "methods": ["GET"],
         "service": "authoring",
         "userInfo": false
@@ -140,16 +156,16 @@
     },
     {
         "routePathPrefix": "/policies",
-        "routeRegexp": "^/api/v2/policies?(.*)$",
-        "upstreamPath": "/api/policies?$1",
+        "routeRegexp": "^/api/v2/policies(.*)$",
+        "upstreamPath": "/api/policies$1",
         "methods": ["PUT", "PATCH"],
         "service": "authoring",
         "userInfo": true
     },
     {
         "routePathPrefix": "/apps",
-        "routeRegexp": "^/api/v2/apps?(.*)$",
-        "upstreamPath": "/api/apps?$1",
+        "routeRegexp": "^/api/v2/apps(.*)$",
+        "upstreamPath": "/api/apps$1",
         "methods": ["POST"],
         "service": "authoring",
         "userInfo": true

@@ -15,7 +15,7 @@ import (
 
 // Authorizer is the interface which allows authorization
 type Authorizer interface {
-	Authorize(subject *Subject, object PolicyResource, action string, ctx context.Context) (bool, error)
+	Authorize(ctx context.Context, subject *Subject, object PolicyResource, action string) (bool, error)
 }
 
 // DefaultAuthorizer is the default implementation of Authorizer
@@ -63,7 +63,7 @@ func NewDefaultAuthorizer(rules, data, pkg, query string) *DefaultAuthorizer {
 }
 
 // Authorize implements authorization for DefaultAuthorizer
-func (d *DefaultAuthorizer) Authorize(subject *Subject, object PolicyResource, action string, ctx context.Context) (bool, error) {
+func (d *DefaultAuthorizer) Authorize(ctx context.Context, subject *Subject, object PolicyResource, action string) (bool, error) {
 	input := map[string]interface{}{
 		"group":    subject.Group,
 		"user":     subject.User,
@@ -103,10 +103,10 @@ func NewSynchronizedAuthorizer(a Authorizer) *SynchronizedAuthorizer {
 }
 
 // Authorize - synchronized version
-func (s *SynchronizedAuthorizer) Authorize(subject *Subject, object PolicyResource, action string, ctx context.Context) (bool, error) {
+func (s *SynchronizedAuthorizer) Authorize(ctx context.Context, subject *Subject, object PolicyResource, action string) (bool, error) {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
-	return s.authorizer.Authorize(subject, object, action, ctx)
+	return s.authorizer.Authorize(ctx, subject, object, action)
 }
 
 // Update is used to update the underlying authorizer
@@ -114,4 +114,5 @@ func (s *SynchronizedAuthorizer) Update(a Authorizer) {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 	s.authorizer = a
+	log.Println("Authorization policy was updated")
 }

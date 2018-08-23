@@ -31,7 +31,7 @@ func AuthorizationMiddleware(authorizer Authorizer, auditor audit.Auditor) negro
 				auditor.AuthorizerError(sub.String(), fmt.Sprintf("%q", ctxs), act, err)
 				http.Error(rw, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			} else {
-				res, err := authorizer.Authorize(sub, ctxs, act, r.Context())
+				res, err := authorizer.Authorize(r.Context(), sub, ctxs, act)
 				if err != nil {
 					log.Println("Failed to validate request", err)
 					auditor.AuthorizerError(sub.String(), fmt.Sprintf("%q", ctxs), act, err)

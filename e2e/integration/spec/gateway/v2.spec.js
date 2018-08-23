@@ -172,7 +172,7 @@ describe('Gateway v2 API', () => {
       policies: [
         ...currentPolicy.policies,
         {
-          group: 'default',
+          group: 'externalapps',
           user: app.appId,
           contexts: {},
           object: 'repo.keys/*',

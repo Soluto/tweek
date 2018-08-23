@@ -8,7 +8,7 @@ import (
 
 // Format strings
 const (
-	actionAuditFmt = "subj:%v obj:%v act:%v eff:%v"
+	actionAuditFmt = "subj: %v obj: %#v act: %v eff: %v"
 )
 
 type logAuditor struct {
@@ -17,7 +17,7 @@ type logAuditor struct {
 
 // New creates a new Auditor, which logs to io.Writer, with prefix 'AUDIT'
 func New(out io.Writer) (Auditor, error) {
-	return NewLogger(log.New(out, "AUDIT", log.LstdFlags|log.LUTC))
+	return NewLogger(log.New(out, "AUDIT - ", log.LstdFlags|log.LUTC))
 }
 
 // NewLogger creates a new logger based Auditor

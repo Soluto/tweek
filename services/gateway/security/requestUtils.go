@@ -71,7 +71,7 @@ func extractContextsFromValuesRequest(r *http.Request, u UserInfo) (ctxs PolicyR
 	uri := r.URL
 
 	ctxs = PolicyResource{Contexts: map[string]string{}}
-	ctxs.Item = strings.Replace(uri.EscapedPath(), "/api/v2/values/", "keys.", 1)
+	ctxs.Item = strings.Replace(uri.EscapedPath(), "/api/v2/values/", "values/", 1)
 	for key, value := range uri.Query() {
 		// checking for special chars - these are not context identity names
 		if !strings.ContainsAny(key, "$.") {
@@ -91,7 +91,7 @@ func extractContextsFromKeysRequest(r *http.Request, u UserInfo) (ctxs PolicyRes
 		ctxs.Item = "repo"
 		return
 	}
-	ctxs.Item = strings.Replace(uri.EscapedPath(), "/api/v2/keys/", "repo.keys/", 1)
+	ctxs.Item = strings.Replace(uri.EscapedPath(), "/api/v2/keys/", "repo/keys/", 1)
 
 	return
 }
@@ -112,13 +112,13 @@ func extractContextFromContextRequest(r *http.Request, u UserInfo) (ctx PolicyRe
 			return
 		}
 		prop := segments[contextProp]
-		ctx.Item = fmt.Sprintf("%v.%v", identityType, prop)
+		ctx.Item = fmt.Sprintf("context/%v/%v", identityType, prop)
 		ctx.Contexts[identityType] = identityID
 	case "GET", "POST":
 		ctx.Contexts[identityType] = identityID
-		ctx.Item = fmt.Sprintf("%v.*", identityType)
+		ctx.Item = fmt.Sprintf("context/%v/*", identityType)
 	default:
-		err = fmt.Errorf("ExtractContextFromContextRequest: unexptected method %v", method)
+		err = fmt.Errorf("ExtractContextFromContextRequest: unexpected method %v", method)
 	}
 
 	return
@@ -155,7 +155,7 @@ func extractResourceFromRepoRequest(r *http.Request, u UserInfo, kind string) (c
 	case r.Method == "PATCH":
 		fallthrough
 	case r.Method == "DELETE":
-		ctxs.Item = "repo." + kind
+		ctxs.Item = "repo/" + kind
 		break
 	default:
 		err = fmt.Errorf("Invalid method %s for %s", r.Method, kind)
