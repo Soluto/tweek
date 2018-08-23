@@ -33,7 +33,7 @@ export async function refreshTypes() {
   }
 }
 
-function convertTypedValue(value, targetType) {
+export function convertValue(value, targetType) {
   const type = typeof targetType === 'string' ? types[targetType] : targetType;
 
   if (!type) {
@@ -54,20 +54,10 @@ function convertTypedValue(value, targetType) {
   }
 }
 
-export const convertValue = (value, type) => {
-  switch (type.base || type.name) {
-  case 'array':
-  case 'object':
-    return convertTypedValue(value, type);
-  default:
-    return convertCheckArray(value, type);
-  }
-};
-
 const convertCheckArray = (value, type) =>
   Array.isArray(value)
-    ? [...value.map(item => convertTypedValue(item, type))]
-    : convertTypedValue(value, type);
+    ? [...value.map(item => convertValue(item, type))]
+    : convertValue(value, type);
 
 export function isAllowedValue(valueType, value) {
   return (

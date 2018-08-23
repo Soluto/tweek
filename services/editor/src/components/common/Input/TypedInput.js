@@ -7,7 +7,7 @@ import Input from './Input';
 import { showCustomAlert } from '../../../store/ducks/alerts';
 import { connect } from 'react-redux';
 import { withJsonEditor } from './EditJSON';
-import TagsPropertyValue from './TagsPropertyValue';
+import ListTypedValue from './ListTypedValue';
 import './TypedInput.css';
 
 export const typesServiceContextType = {
@@ -36,7 +36,7 @@ const InputComponent = ({
 }) => {
   if (valueTypeName === types.array.name) {
     return (
-      <TagsPropertyValue
+      <ListTypedValue
         data-comp="property-value"
         value={value || valueType.emptyValue}
         valueType={valueType.ofType || { base: 'string' }}

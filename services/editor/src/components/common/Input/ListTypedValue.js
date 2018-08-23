@@ -15,7 +15,7 @@ export const getTypesService = getContext(typesServiceContextType);
 
 const convertToArray = value => (value && (Array.isArray(value) ? value : [value])) || [];
 
-const TagsPropertyValue = compose(
+const ListTypedValue = compose(
   getTypesService,
   mapProps(({ onChange, value, safeConvertValue, isAllowedValue, valueType, ...props }) => {
     value = convertToArray(value);
@@ -67,4 +67,4 @@ const TagsPropertyValue = compose(
   </div>
 ));
 
-export default TagsPropertyValue;
+export default ListTypedValue;

@@ -41,25 +41,12 @@ const SimpleTypeSelector = ({ type, onUpdate }) => (
 
 const AdvancedTypeSelector = ({ type, onUpdate }) => (
   <div style={{ display: 'column', flexDirection: 'row' }}>
-    <TypeCombobox
-      allowedTypes={IdentityPropertyTypes}
-      type={type.name || type.base}
-      onUpdate={type => onUpdate(type)}
+    <AdvancedTypeComboBox {...{ type, onUpdate }} />
+    <AllowedValuesSelector
+      type={{ ...TypesServices.types.array, ofType: type.base }}
+      allowedValues={type.allowedValues}
+      onUpdate={allowedValues => onUpdate({ ...type, allowedValues: allowedValues })}
     />
-    <div
-      data-field="allowed-values"
-      data-comp="editable-list"
-      style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}
-    >
-      <Label text="Allowed Values" />
-      <TypedInput
-        data-comp="property-value"
-        hideIcon
-        valueType={{ ...TypesServices.types.array, ofType: type.ofType || type.base }}
-        value={type.allowedValues}
-        onChange={allowedValues => onUpdate({ ...type, allowedValues: allowedValues })}
-      />
-    </div>
   </div>
 );
 
@@ -67,11 +54,7 @@ const ArrayTypeSelector = ({ type, onUpdate }) => {
   const { allowedValues, ...baseOfType } = type.ofType;
   return (
     <div style={{ display: 'column', flexDirection: 'row' }}>
-      <TypeCombobox
-        allowedTypes={IdentityPropertyTypes}
-        type={type.name || type.base}
-        onUpdate={type => onUpdate(type)}
-      />
+      <AdvancedTypeComboBox {...{ type, onUpdate }} />
       <div data-field="base" style={{ display: 'flex', flexDirection: 'row' }}>
         <Label text="Generic Type" />
         <TypeCombobox
@@ -80,31 +63,50 @@ const ArrayTypeSelector = ({ type, onUpdate }) => {
           onUpdate={ofType => onUpdate({ ...type, ofType: { base: ofType } })}
         />
       </div>
-      <div
-        data-field="allowed-values"
-        data-comp="editable-list"
-        style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}
-      >
-        <Label text="Allowed Values" />
-        <TypedInput
-          data-comp="property-value"
-          hideIcon
-          valueType={{ ...TypesServices.types.array, ofType: { ...baseOfType } }}
-          value={type.ofType.allowedValues}
-          onChange={allowedValues =>
-            onUpdate({ ...type, ofType: { ...type.ofType, allowedValues: allowedValues } })
-          }
-        />
-      </div>
+      <AllowedValuesSelector
+        type={{ ...TypesServices.types.array, ofType: { ...baseOfType } }}
+        allowedValues={type.ofType.allowedValues}
+        onUpdate={allowedValues =>
+          onUpdate({ ...type, ofType: { ...type.ofType, allowedValues: allowedValues } })
+        }
+      />
     </div>
   );
 };
 
+const AllowedValuesSelector = ({ onUpdate, type, allowedValues }) => (
+  <div
+    data-field="allowed-values"
+    data-comp="editable-list"
+    style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}
+  >
+    <Label text="Allowed Values" />
+    <TypedInput
+      data-comp="property-value"
+      hideIcon
+      valueType={{ ...TypesServices.types.array, ofType: type }}
+      value={allowedValues}
+      onChange={onUpdate}
+    />
+  </div>
+);
+
+const AdvancedTypeComboBox = ({ type, onUpdate }) => (
+  <TypeCombobox
+    allowedTypes={IdentityPropertyTypes}
+    type={type.name || type.base}
+    onUpdate={type => onUpdate(type)}
+  />
+);
+
 const PropertyTypeSelector = ({ type, onUpdate, ...props }) => {
-  const TypeSelector =
-    typeof type === 'object'
-      ? type.ofType ? ArrayTypeSelector : AdvancedTypeSelector
-      : SimpleTypeSelector;
+  let TypeSelector = SimpleTypeSelector;
+  if (typeof type === 'object') {
+    TypeSelector = AdvancedTypeSelector;
+    if (type.ofType) {
+      TypeSelector = ArrayTypeSelector;
+    }
+  }
   return (
     <div data-comp="PropertyTypeSelect" {...props}>
       <TypeSelector type={type} onUpdate={onUpdate} />
