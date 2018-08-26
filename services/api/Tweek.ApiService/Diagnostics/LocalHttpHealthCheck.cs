@@ -31,7 +31,7 @@ namespace Tweek.ApiService.Diagnostics
                     .HealthChecks.AddHttpGetCheck("local", new Uri(addresses
                     .First()
                     .Replace("[::]", "localhost")
-                    ), TimeSpan.FromSeconds(5))
+                    ), TimeSpan.FromSeconds(5), degradedOnError: true)
                     .Build()
                     .Checks.First();
             }
