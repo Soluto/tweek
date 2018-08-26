@@ -24,11 +24,10 @@ namespace Tweek.ApiService
                         {
                             options.DefaultContextLabel = "Testing";
                             options.Enabled = false;
-                            options.GlobalTags.Append( new Dictionary<string,string>(){
-                                ["host"] = Environment.MachineName,
-                                ["app_name"] = Assembly.GetEntryAssembly().FullName,
-                                ["app_version"] = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion
-                            });
+                            var tags = options.GlobalTags;
+                            tags["host"] = Environment.MachineName;
+                            tags["app_name"] = Assembly.GetEntryAssembly().GetName().Name;
+                            tags["app_version"] = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
                         });
                 })
                 .UseHealth()
