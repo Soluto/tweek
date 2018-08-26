@@ -107,13 +107,8 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, e
 	var issuer string
 
 	if err == request.ErrNoTokenInRequest {
-		var clientID, clientSecret string
-		var ok bool
-
-		if clientID, clientSecret, ok = req.BasicAuth(); !ok {
-			clientID = req.Header.Get("x-client-id")
-			clientSecret = req.Header.Get("x-client-secret")
-		}
+		clientID := req.Header.Get("x-client-id")
+		clientSecret := req.Header.Get("x-client-secret")
 
 		validateCredentialsErr := externalApps.ValidateCredentials(clientID, clientSecret)
 		if validateCredentialsErr != nil {

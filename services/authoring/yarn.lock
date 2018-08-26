@@ -293,15 +293,15 @@ are-we-there-yet@~1.1.2:
     delegates "^1.0.0"
     readable-stream "^2.0.6"
 
-argparse@^1.0.10:
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/argparse/-/argparse-1.0.10.tgz#bcd6791ea5ae09725e17e5ad988134cd40b3d911"
-  dependencies:
-    sprintf-js "~1.0.2"
-
 argparse@^1.0.7:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/argparse/-/argparse-1.0.9.tgz#73d83bc263f86e97f8cc4f6bae1b0e90a7d22c86"
+  dependencies:
+    sprintf-js "~1.0.2"
+
+argparse@^1.0.9:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/argparse/-/argparse-1.0.10.tgz#bcd6791ea5ae09725e17e5ad988134cd40b3d911"
   dependencies:
     sprintf-js "~1.0.2"
 
@@ -3485,17 +3485,40 @@ typescript-ioc@^1.0.2:
     reflect-metadata "^0.1.10"
     require-glob "^3.2.0"
 
-typescript-rest-swagger@^0.0.19:
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/typescript-rest-swagger/-/typescript-rest-swagger-0.0.19.tgz#ee2b4256986e05918dc06519589c0cb85eb3c12a"
+typescript-rest-swagger@^0.0.13:
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/typescript-rest-swagger/-/typescript-rest-swagger-0.0.13.tgz#784470984fcb60e3095254ce317faa399de512ba"
   dependencies:
-    argparse "^1.0.10"
-    lodash "^4.17.10"
+    argparse "^1.0.9"
+    lodash "^4.17.4"
     merge "^1.2.0"
     mkdirp "^0.5.1"
     path "^0.12.7"
-    typescript "^2.9.1"
-    typescript-rest "^1.5.3"
+    typescript "^2.4.2"
+    typescript-rest "^1.1.0"
+    yamljs "^0.2.10"
+
+typescript-rest@^1.1.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/typescript-rest/-/typescript-rest-1.7.0.tgz#27c067c8de1ace961f282e05368365b42f5120c8"
+  dependencies:
+    "@types/body-parser" "0.0.33"
+    "@types/cookie-parser" "^1.3.30"
+    "@types/express" "^4.16.0"
+    "@types/express-serve-static-core" "^4.16.0"
+    "@types/multer" "0.0.32"
+    "@types/serve-static" "^1.13.2"
+    body-parser "^1.18.3"
+    cookie-parser "^1.4.3"
+    cors "^2.8.4"
+    express "^4.16.3"
+    fs-extra "^2.1.2"
+    lodash "^4.17.10"
+    multer "^1.3.0"
+    path "^0.12.7"
+    reflect-metadata "^0.1.10"
+    require-glob "^3.2.0"
+    swagger-ui-express "^2.0.15"
     yamljs "^0.2.10"
 
 typescript-rest@^1.2.0:
@@ -3521,36 +3544,13 @@ typescript-rest@^1.2.0:
     swagger-ui-express "^2.0.8"
     yamljs "^0.2.10"
 
-typescript-rest@^1.5.3:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/typescript-rest/-/typescript-rest-1.7.0.tgz#27c067c8de1ace961f282e05368365b42f5120c8"
-  dependencies:
-    "@types/body-parser" "0.0.33"
-    "@types/cookie-parser" "^1.3.30"
-    "@types/express" "^4.16.0"
-    "@types/express-serve-static-core" "^4.16.0"
-    "@types/multer" "0.0.32"
-    "@types/serve-static" "^1.13.2"
-    body-parser "^1.18.3"
-    cookie-parser "^1.4.3"
-    cors "^2.8.4"
-    express "^4.16.3"
-    fs-extra "^2.1.2"
-    lodash "^4.17.10"
-    multer "^1.3.0"
-    path "^0.12.7"
-    reflect-metadata "^0.1.10"
-    require-glob "^3.2.0"
-    swagger-ui-express "^2.0.15"
-    yamljs "^0.2.10"
+typescript@^2.4.2:
+  version "2.9.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.9.2.tgz#1cbf61d05d6b96269244eb6a3bce4bd914e0f00c"
 
 typescript@^2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.6.2.tgz#3c5b6fd7f6de0914269027f03c0946758f7673a4"
-
-typescript@^2.9.1:
-  version "2.9.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.9.2.tgz#1cbf61d05d6b96269244eb6a3bce4bd914e0f00c"
 
 uid-number@^0.0.6:
   version "0.0.6"
