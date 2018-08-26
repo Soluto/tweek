@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Tweek.Drivers.Context.Couchbase
 {
-    public class BucketConnectionHealthCheck : HealthCheck
+    internal class BucketConnectionHealthCheck : HealthCheck
     {
         private DateTime _lastSuccessCheck;
 
@@ -22,7 +22,7 @@ namespace Tweek.Drivers.Context.Couchbase
 
         private HealthCheckResult _state = HealthCheckResult.Unhealthy();
 
-        public BucketConnectionHealthCheck(Func<string, IBucket> getBucket, string bucketNameToCheck, TimeSpan timeout, int retryCount, ILogger logger)
+        internal BucketConnectionHealthCheck(Func<string, IBucket> getBucket, string bucketNameToCheck, TimeSpan timeout, int retryCount, ILogger logger)
             : base("CouchbaseConnection")
         {
             _getBucket = getBucket;
@@ -32,7 +32,7 @@ namespace Tweek.Drivers.Context.Couchbase
             _logger = logger;
         }
 
-        protected override async Task<HealthCheckResult> CheckAsync(
+        protected override async ValueTask<HealthCheckResult> CheckAsync(
             CancellationToken cancellationToken = new CancellationToken())
         {
             if (DateTime.UtcNow - _lastSuccessCheck > TimeSpan.FromSeconds(1))

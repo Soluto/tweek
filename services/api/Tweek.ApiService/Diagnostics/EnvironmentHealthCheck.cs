@@ -10,8 +10,8 @@ namespace Tweek.ApiService.Diagnostics
     {
         public EnvironmentHealthCheck() : base("EnvironmentDetails") { }
 
-        protected override Task<HealthCheckResult> CheckAsync(CancellationToken cancellationToken = new CancellationToken()) => Task.FromResult(
-            HealthCheckResult.Healthy($"Host = {Environment.MachineName}, Version = {AppVersion}"));
+        protected async override ValueTask<HealthCheckResult> CheckAsync(CancellationToken cancellationToken = new CancellationToken()) =>  
+            HealthCheckResult.Healthy($"Host = {Environment.MachineName}, Version = {AppVersion}");
 
         public static readonly string AppVersion =
             Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()

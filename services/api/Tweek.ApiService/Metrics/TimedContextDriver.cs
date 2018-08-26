@@ -1,5 +1,5 @@
 ﻿using App.Metrics;
-using App.Metrics.Core.Options;
+using App.Metrics.Timer;
 using FSharpUtils.Newtonsoft;
 using System.Collections.Generic;
 using System.Threading.Tasks;

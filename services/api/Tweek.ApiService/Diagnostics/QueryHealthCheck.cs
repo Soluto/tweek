@@ -13,19 +13,18 @@ namespace Tweek.ApiService.Diagnostics
 {
     public class QueryHealthCheck : HealthCheck
     {
-        private readonly IServiceProvider _serviceProvider;
-
+        private readonly ITweek _tweek;
+        private readonly IContextDriver _contextDriver;
         private HealthCheckResult _state = HealthCheckResult.Unhealthy(); 
 
-        public QueryHealthCheck(IServiceProvider serviceProvider) : base("QueryHealthCheck"){
-            _serviceProvider = serviceProvider;
+        public QueryHealthCheck(ITweek tweek, IContextDriver contextDriver) : base("QueryHealthCheck"){
+             _tweek = tweek;
+             _contextDriver = contextDriver;
         }
 
-        protected async override Task<HealthCheckResult> CheckAsync(CancellationToken cancellationToken = default(CancellationToken)){
-            var driver = _serviceProvider.GetService<IContextDriver>();
-            var engine = _serviceProvider.GetService<ITweek>();
+        protected async override ValueTask<HealthCheckResult> CheckAsync(CancellationToken cancellationToken = default(CancellationToken)){
             try{
-                await engine.GetContextAndCalculate("@tweek/_", new System.Collections.Generic.HashSet<Identity> { new Identity("health_check", "test")  }, driver);
+                await _tweek.GetContextAndCalculate("@tweek/_", new System.Collections.Generic.HashSet<Identity> { new Identity("health_check", "test")  }, _contextDriver);
                 _state = HealthCheckResult.Healthy();
             } catch (Exception ex){
                 _state = HealthCheckResult.Unhealthy("Querying is not avilabile:" + ex.Message);
