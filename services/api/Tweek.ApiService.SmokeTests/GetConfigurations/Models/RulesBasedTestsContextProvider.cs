@@ -21,6 +21,12 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
         public const string MULTI_CONDITONS_TEST_NAME_3 = "Get single key from multi conditions rules (3)";
         public const string MULTI_CONDITONS_TEST_NAME_4 = "Get single key from multi conditions rules (4)";
 
+        public const string ARRAY_CONTAINS_TEST_NAME_1 = "Get single key from array contains rules (1)";
+        public const string ARRAY_CONTAINS_TEST_NAME_2 = "Get single key from array contains rules (2)";
+        public const string ARRAY_CONTAINS_TEST_NAME_3 = "Get single key from array contains rules (3)";
+        public const string ARRAY_CONTAINS_TEST_NAME_4 = "Get single key from array contains rules (4)";
+        public const string ARRAY_CONTAINS_TEST_NAME_5 = "Get single key from array contains rules (5)";
+
         public static IEnumerable<object[]> COMPARISON_OPERATORS_TEST_CONTEXTS()
         {
             yield return new object[]{
@@ -170,6 +176,65 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations.Models
                     TestName = MULTI_CONDITONS_TEST_NAME_1,
                     KeyName = "smoke_tests/rule_based_keys/multi_conditions",
                     ExpectedValue = "value1"
+                }};
+        }
+
+        public static IEnumerable<object[]> ARRAY_CONTAINS_TEST_CONTEXTS()
+        {
+            yield return new object[]{
+                new TestContext
+                {
+                    TestName = ARRAY_CONTAINS_TEST_NAME_1,
+                    KeyName = "smoke_tests/rule_based_keys/array_contains",
+                    ExpectedValue = "some value",
+                    Context = new Dictionary<string, JsonValue>
+                    {
+                        { "user.SiblingNames", NewArray(new JsonValue[] { NewString("abe"), NewString("mark") }) }
+                    }
+                }};
+
+            yield return new object[]{
+            new TestContext
+            {
+                TestName = ARRAY_CONTAINS_TEST_NAME_2,
+                KeyName = "smoke_tests/rule_based_keys/array_contains",
+                ExpectedValue = "some default value",
+                Context = new Dictionary<string, JsonValue>
+                {
+                    { "user.SiblingNames", NewArray(new JsonValue[] { NewString("asbe"), NewString("mark") }) }
+                }
+            }};
+
+            yield return new object[]{
+            new TestContext
+            {
+                TestName = ARRAY_CONTAINS_TEST_NAME_3,
+                KeyName = "smoke_tests/rule_based_keys/array_contains",
+                ExpectedValue = "some number value",
+                Context = new Dictionary<string, JsonValue>
+                {
+                    { "user.Identities", NewArray(new JsonValue[] { NewNumber(1), NewNumber(2), NewNumber(3) }) }
+                }
+            }};
+
+            yield return new object[]{
+            new TestContext
+            {
+                TestName = ARRAY_CONTAINS_TEST_NAME_4,
+                KeyName = "smoke_tests/rule_based_keys/array_contains",
+                ExpectedValue = "some default value",
+                Context = new Dictionary<string, JsonValue>
+                {
+                    { "user.Identities", NewArray(new JsonValue[] { NewNumber(4) }) }
+                }
+            }};
+
+            yield return new object[]{
+                new TestContext
+                {
+                    TestName = ARRAY_CONTAINS_TEST_NAME_5,
+                    KeyName = "smoke_tests/rule_based_keys/array_contains",
+                    ExpectedValue = "some default value"
                 }};
         }
     }

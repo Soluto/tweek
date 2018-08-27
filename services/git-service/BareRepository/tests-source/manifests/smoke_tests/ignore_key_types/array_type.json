@@ -1,0 +1,14 @@
+{
+  "key_path": "smoke_tests/ignore_key_types/array_type",
+  "meta": {
+    "description": "",
+    "readOnly": false,
+    "archived": false
+  },
+  "implementation": {
+    "type": "const",
+    "value": ["hello","world"]
+  },
+  "valueType": "array",
+  "dependencies": []
+}

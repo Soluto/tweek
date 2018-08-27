@@ -3,6 +3,7 @@
 import assert from 'assert';
 import { expect } from 'chai';
 import { dataComp, dataField, attributeSelector } from './selector-utils';
+import Input from './Input.js';
 
 const timeout = 15000;
 
@@ -179,6 +180,10 @@ class Key {
       window.monaco.editor.getModels()[0].setValue(source);
     }, value);
     return this;
+  }
+
+  addDefaultItem(item) {
+    return Input.addItem(defaultValue, item);
   }
 }
 

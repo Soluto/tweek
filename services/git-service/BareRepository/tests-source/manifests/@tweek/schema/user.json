@@ -31,6 +31,24 @@
             },
             "NumberOfSiblings":{
               "type":"number"
+            },
+            "SiblingNames":{
+              "type": {
+                "name": "array", 
+                "ofType": {
+                  "base": "string",
+                  "allowedValues": ["abe","mark","jon"] 
+                }
+             }
+            },
+            "Identities":{
+              "type": {
+                "name": "array", 
+                "ofType": {
+                  "base": "number",
+                  "allowedValues": [] 
+                }
+             }
             }
         }
     },
