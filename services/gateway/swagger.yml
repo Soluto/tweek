@@ -50,6 +50,8 @@ paths:
     get:
       operationId: GetContext
       description: "Get identity context"
+      tags:
+        - context
       parameters:
         - name: identityType
           in: path
@@ -69,6 +71,8 @@ paths:
     post:
       operationId: SaveContext
       description: "Save identity context"
+      tags:
+        - context
       parameters:
         - name: identityType
           in: path
@@ -87,6 +91,8 @@ paths:
     delete:
       operationId: DeleteContextProp
       description: "Delete identity context property"
+      tags:
+        - context
       parameters: 
         - name: identityType
           in: path
@@ -174,6 +180,8 @@ paths:
                 $ref: '#/definitions/KeyUpdateModel'
     delete:
       operationId: KeysDeleteKey
+      tags:
+        - keys
       produces:
         - text/html
       responses:
@@ -182,8 +190,6 @@ paths:
           schema:
             type: string
         description: ""
-        tags:
-          - keys
         parameters:
           -
             description: ""
@@ -559,10 +565,6 @@ definitions:
     required:
         - implementation
         - manifest
-  JsonValue:
-    description: ""
-    properties: {}
-    type: object
   AppCreationResponseModel:
       description: ""
       properties:
