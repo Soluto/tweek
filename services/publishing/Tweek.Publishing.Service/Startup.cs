@@ -114,10 +114,9 @@ namespace Tweek.Publishing.Service
             RunSSHDeamon(lifetime, loggerFactory.CreateLogger("sshd"));
 
             var executor = ShellHelper.Executor.WithWorkingDirectory(_configuration.GetValue<string>("REPO_LOCATION"))
-                                               .ForwardEnvVariable("GIT_SSH")
-                                               .WithUser("git");
+                                               .ForwardEnvVariable("GIT_SSH");
                                                
-            var git = executor.CreateCommandExecutor("git");
+            
 
             var gitValidationFlow = new GitValidationFlow
             {
@@ -139,8 +138,8 @@ namespace Tweek.Publishing.Service
 
             var natsClient = new NatsPublisher(_configuration.GetSection("Nats").GetValue<string>("Endpoint"));
             var versionPublisher = natsClient.GetSubjectPublisher("version");
-            var repoSynchronizer = new RepoSynchronizer(git);
-            var storageSynchronizer = new StorageSynchronizer(storageClient, executor, new Packer());
+            var repoSynchronizer = new RepoSynchronizer(executor.WithUser("git").CreateCommandExecutor("git"));
+            var storageSynchronizer = new StorageSynchronizer(storageClient, executor.WithUser("git") , new Packer());
 
             storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result, checkForStaleRevision: false).Wait();
             RunIntervalPublisher(lifetime, versionPublisher, repoSynchronizer, storageSynchronizer);
