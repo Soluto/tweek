@@ -99,7 +99,7 @@ namespace Tweek.ApiService.Controllers
             var translateValue = ignoreKeyTypes ? (TranslateValue)TranslateValueToString : (x => x.Value);
 
             IReadOnlyDictionary<string, JsonValue> contextParams = allParams.Item2.ToDictionary(x => x.Key,
-                x => JsonValue.NewString(x.Value.ToString()), StringComparer.OrdinalIgnoreCase);
+                x => x.Value.Count == 1 ? JsonValue.NewString(x.Value.ToString()) : JsonValue.NewArray(x.Value.Map(t=> JsonValue.NewString(t)).ToArray()), StringComparer.OrdinalIgnoreCase);
 
             var identities = new IdentityHashSet(contextParams.Where(x => !x.Key.Contains(".")).Select(x => new Identity(x.Key, x.Value.AsString())));
             if (!_checkAccess(User, path, identities)) return Forbid();

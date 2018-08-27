@@ -467,3 +467,7 @@
     -webkit-animation: rodal-door-leave both;
     animation: rodal-door-leave both;
 }
+
+.rodal-button-container>button:disabled {
+    background: #dddddd;
+}

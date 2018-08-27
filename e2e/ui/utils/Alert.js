@@ -17,6 +17,7 @@ export default {
   click,
   ok: () => click('ok'),
   cancel: () => click('cancel'),
+  save: () => click('save'),
   background() {
     browser.waitForVisible(alertBackground, timeout);
     browser.leftClick(alertBackground, -200, -200);

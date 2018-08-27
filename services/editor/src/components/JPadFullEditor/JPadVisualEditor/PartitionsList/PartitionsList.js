@@ -57,7 +57,7 @@ class NewPartition extends React.Component {
 
   render() {
     const { partitions, valueType } = this.props;
-    const allProperties = ContextService.getProperties();
+    const allProperties = ContextService.getSchemaProperties();
     const indexedPartitions = partitions.map(
       partition =>
         allProperties.find(property => property.id === partition) || {
@@ -73,7 +73,8 @@ class NewPartition extends React.Component {
               {...partition}
               value={this.state.partition[partition.id] || ''}
               onUpdate={value =>
-                this.setState({ partition: { ...this.state.partition, [partition.id]: value } })}
+                this.setState({ partition: { ...this.state.partition, [partition.id]: value } })
+              }
             />
           </div>
         ))}
@@ -164,7 +165,13 @@ export default class PartitionsList extends React.Component {
                     <div className="expander-icon"></div>
                     <h3>{partitionGroupName}</h3>
                     <div className="partitions-accordion-container-item-title-details">
-                      {isOnlyDefault ? `value: ${rules[0].Value}` : `rules: ${rules.length}`}
+                      {isOnlyDefault
+                        ? `value: ${
+                          valueType.name === 'object'
+                            ? JSON.stringify(rules[0].Value)
+                            : rules[0].Value
+                        }`
+                        : `rules: ${rules.length}`}
                     </div>
                     <div className="partitions-accordion-container-item-title-actions">
                       <button

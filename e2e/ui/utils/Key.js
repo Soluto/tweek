@@ -3,6 +3,7 @@
 import assert from 'assert';
 import { expect } from 'chai';
 import { dataComp, dataField, attributeSelector } from './selector-utils';
+import Input from './Input.js';
 
 const timeout = 15000;
 
@@ -19,6 +20,7 @@ const rulesEditor = dataComp('key-rules-editor');
 const tabHeader = attributeSelector('data-tab-header');
 const sourceTab = `${rulesEditor} ${tabHeader('source')}`;
 const rulesTab = `${rulesEditor} ${tabHeader('rules')}`;
+const editObjectButton = dataComp('object-editor');
 
 const toggleButton = comp => `${dataComp(comp)} ${dataComp('expander-toggle')}`;
 
@@ -129,6 +131,7 @@ class Key {
   }
 
   setDefaultValue(value) {
+    browser.waitForVisible(defaultValue, timeout);
     browser.setValue(defaultValue, value);
     return this;
   }
@@ -168,6 +171,19 @@ class Key {
   toggle(section) {
     browser.clickWhenVisible(toggleButton(section), timeout);
     return this;
+  }
+
+  editObjectInEditor(value) {
+    browser.clickWhenVisible(editObjectButton, timeout);
+    browser.waitForVisible('.monaco-editor', timeout);
+    browser.execute(source => {
+      window.monaco.editor.getModels()[0].setValue(source);
+    }, value);
+    return this;
+  }
+
+  addDefaultItem(item) {
+    return Input.addItem(defaultValue, item);
   }
 }
 

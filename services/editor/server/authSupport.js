@@ -6,7 +6,7 @@ import selectAuthenticationProviders from './auth/providerSelector';
 const crypto = require('crypto');
 const passport = require('passport');
 
-const initPassport = server => {
+const initPassport = (server) => {
   const cookieOptions = {
     secret: nconf.get('SESSION_COOKIE_SECRET_KEY') || crypto.randomBytes(20).toString('base64'),
     cookie: {
@@ -49,7 +49,7 @@ export const addLoginRedirect = (server, handler, routePath, loginPath) => {
   });
 };
 
-export const initAuth = server => {
+export const initAuth = (server) => {
   if (isAuthRequired()) {
     initPassport(server);
   }

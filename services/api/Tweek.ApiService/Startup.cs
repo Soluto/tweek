@@ -1,6 +1,4 @@
-﻿using App.Metrics;
-using App.Metrics.Configuration;
-using App.Metrics.Health;
+﻿using App.Metrics.Formatters.Json;
 using FSharpUtils.Newtonsoft;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,7 +10,6 @@ using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Swagger;
 using Serilog;
-using Serilog.Events;
 using Serilog.Formatting.Json;
 using System;
 using System.Collections.Generic;
@@ -33,11 +30,19 @@ using Tweek.Engine.Rules.Creation;
 using Tweek.Engine.Rules.Validation;
 using Tweek.JPad;
 using Tweek.JPad.Utils;
+using LanguageExt;
+using ConfigurationPath = Tweek.Engine.DataTypes.ConfigurationPath;
+using Tweek.Engine.DataTypes;
+using static LanguageExt.Prelude;
+using System.Linq;
+using App.Metrics;
+using App.Metrics.Health;
 
 namespace Tweek.ApiService
 {
     public class Startup
     {
+        private static System.Collections.Generic.HashSet<Identity> EmptyIdentitySet = new System.Collections.Generic.HashSet<Identity>();
         private ILoggerFactory loggerFactory;
         public Startup(IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
@@ -57,12 +62,10 @@ namespace Tweek.ApiService
         public void ConfigureServices(IServiceCollection services)
         {
             services.RegisterAddonServices(Configuration);
-
-            services.Decorate<IContextDriver>((driver, provider) => new TimedContextDriver(driver, provider.GetService<IMetrics>()));
+            services.Decorate<IContextDriver>((driver, provider) =>
+              new TimedContextDriver(driver, provider.GetService<IMetrics>()));
+            services.Decorate<IContextDriver>((driver, provider) => CreateInputValidationDriverDecorator(provider, driver));
             services.Decorate<IRulesDriver>((driver, provider) => new TimedRulesDriver(driver, provider.GetService<IMetrics>));
-
-            services.AddSingleton<HealthCheck, RulesRepositoryHealthCheck>();
-            services.AddSingleton<HealthCheck, EnvironmentHealthCheck>();
 
             services.AddSingleton(CreateParserResolver());
 
@@ -107,7 +110,8 @@ namespace Tweek.ApiService
             var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };
 
             services.AddSingleton(jsonSerializer);
-            services.AddMvc(options => options.AddMetricsResourceFilter())
+            services.AddMvc()
+                .AddMetrics()
                 .AddJsonOptions(opt =>
                 {
                     opt.SerializerSettings.ContractResolver = tweekContactResolver;
@@ -115,47 +119,79 @@ namespace Tweek.ApiService
 
             services.SetupCors(Configuration);
 
-            RegisterMetrics(services);
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("api", new Info
                 {
                     Title = "Tweek Api",
-                    License = new License {Name = "MIT", Url = "https://github.com/Soluto/tweek/blob/master/LICENSE" },
+                    License = new License { Name = "MIT", Url = "https://github.com/Soluto/tweek/blob/master/LICENSE" },
                     Version = Assembly.GetEntryAssembly()
                         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                         .InformationalVersion
                 });
                 // Generate Dictionary<string,JsonValue> as JSON object in Swagger
-                options.MapType(typeof(Dictionary<string,JsonValue>), () => new Schema {Type = "object"});
+                options.MapType(typeof(Dictionary<string, JsonValue>), () => new Schema { Type = "object" });
 
                 var basePath = PlatformServices.Default.Application.ApplicationBasePath;
                 var xmlPath = Path.Combine(basePath, "Tweek.ApiService.xml");
                 options.IncludeXmlComments(xmlPath);
 
             });
-            services.ConfigureAuthenticationProviders(Configuration,  loggerFactory.CreateLogger("AuthenticationProviders"));
+            services.ConfigureAuthenticationProviders(Configuration, loggerFactory.CreateLogger("AuthenticationProviders"));
         }
 
-        private void RegisterMetrics(IServiceCollection services)
+        private IContextDriver CreateInputValidationDriverDecorator(IServiceProvider provider, IContextDriver driver)
         {
-            services
-                .AddMetrics(options =>
-                {
-                    options.WithGlobalTags((globalTags, envInfo) =>
-                    {
-                        globalTags.Add("host", envInfo.HostName);
-                        globalTags.Add("machine_name", envInfo.MachineName);
-                        globalTags.Add("app_name", envInfo.EntryAssemblyName);
-                        globalTags.Add("app_version", envInfo.EntryAssemblyVersion);
-                    });
-                })
-                .AddPrometheusPlainTextSerialization()
-                .AddPrometheusProtobufSerialization()
-                .AddJsonHealthSerialization()
-                .AddHealthChecks()
-                .AddMetricsMiddleware(Configuration.GetSection("AspNetMetrics"));
+            var mode = match(Configuration["Context:Validation:Mode"]?.ToLower(),
+                with("flexible", (_) => Some(SchemaValidation.Mode.AllowUndefinedProperties)),
+                with("strict", (_) => Some(SchemaValidation.Mode.Strict)),
+                with("off", (_) => Option<SchemaValidation.Mode>.None),
+                with((string)null, (_) => Option<SchemaValidation.Mode>.None),
+                (raw) => throw new ArgumentException($"Invalid context validation mode ${raw}")
+            );
+
+
+            return match(mode, (Func<SchemaValidation.Mode, IContextDriver>)((m) =>
+            {
+                var reportOnly = Configuration["Context:Validation:ErrorPolicy"]?.ToLower() == "bypass_log";
+                var logger = loggerFactory.CreateLogger<InputValidationContextDriver>();
+                var tweek = provider.GetService<ITweek>();
+                var rulesRepository = provider.GetService<IRulesRepository>();
+                var driverWithValidation = new InputValidationContextDriver(
+                    (IContextDriver)driver,
+                    CreateSchemaProvider(tweek, rulesRepository, m),
+                    reportOnly
+                    );
+
+                driverWithValidation.OnValidationFailed += (message) => logger.LogWarning(message);
+                return driverWithValidation;
+            }), () => driver);
         }
+
+        private SchemaValidation.Provider CreateSchemaProvider(ITweek tweek,  IRulesRepository rulesProvider, SchemaValidation.Mode mode)
+        {
+            var logger = loggerFactory.CreateLogger("SchemaValidation.Provider");
+            
+            SchemaValidation.Provider CreateValidationProvider(){
+                logger.LogInformation("updateing schema");
+                var schemaIdenetities = tweek.Calculate(new[] { new ConfigurationPath($"@tweek/schema/_") }, EmptyIdentitySet,
+                 i => ContextHelpers.EmptyContext).ToDictionary(x=> x.Key.Name, x=> x.Value.Value);
+
+                var customTypes = tweek.Calculate(new[] { new ConfigurationPath($"@tweek/custom_types/_") }, EmptyIdentitySet,
+                 i => ContextHelpers.EmptyContext).ToDictionary(x=>x.Key.Name, x=> CustomTypeDefinition.FromJsonValue(x.Value.Value));
+
+                return SchemaValidation.Create(schemaIdenetities, customTypes, mode);
+            }
+
+            var validationProvider = CreateValidationProvider();
+            
+            rulesProvider.OnRulesChange += (_)=>{
+                validationProvider = CreateValidationProvider();
+            };
+            
+            return (p)=>validationProvider(p);
+        }
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
@@ -164,6 +200,7 @@ namespace Tweek.ApiService
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
                 .WriteTo.Console(new JsonFormatter())
+                .Enrich.FromLogContext()
                 .CreateLogger();
 
             if (env.IsDevelopment())
@@ -172,17 +209,15 @@ namespace Tweek.ApiService
             }
             app.InstallAddons(Configuration);
             app.UseAuthentication();
-            app.UseMetrics();
             app.UseMvc();
-            app.UseMetricsReporting(lifetime);
-            app.UseWhen((ctx)=>ctx.Request.Path == "/api/swagger.json", r=>r.UseCors(p=>p.AllowAnyHeader().AllowAnyOrigin().WithMethods("GET")));
+            app.UseWhen((ctx) => ctx.Request.Path == "/api/swagger.json", r => r.UseCors(p => p.AllowAnyHeader().AllowAnyOrigin().WithMethods("GET")));
             app.UseSwagger(options =>
             {
                 options.RouteTemplate = "{documentName}/swagger.json";
                 options.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
                 {
                     swaggerDoc.Host = httpReq.Host.Value;
-                    swaggerDoc.Schemes = new[] {httpReq.Scheme};
+                    swaggerDoc.Schemes = new[] { httpReq.Scheme };
                 });
             });
         }
@@ -192,7 +227,7 @@ namespace Tweek.ApiService
                 {
 
                     ["version"] = Version.Parse
-                }), sha1Provider: (s)=>
+                }), sha1Provider: (s) =>
                 {
                     using (var sha1 = System.Security.Cryptography.SHA1.Create())
                     {
@@ -204,13 +239,14 @@ namespace Tweek.ApiService
         {
             var jpadParser = CreateJPadParser();
 
-            var dict = new Dictionary<string, IRuleParser>(StringComparer.OrdinalIgnoreCase){
+            var dict = new Dictionary<string, IRuleParser>(StringComparer.OrdinalIgnoreCase)
+            {
                 ["jpad"] = jpadParser,
                 ["const"] = Engine.Core.Rules.Utils.ConstValueParser,
                 ["alias"] = Engine.Core.Rules.Utils.KeyAliasParser,
             };
 
-            return x=>dict[x];
+            return x => dict[x];
         }
     }
 }

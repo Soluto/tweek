@@ -12,21 +12,24 @@ const KeyFormatSelector = compose(
   setPropTypes({
     onFormatChanged: PropTypes.func.isRequired,
   }),
-  withStateHandlers({ format: 'jpad' }, {
-    updateFormat: (_, props) => (newFormat) => {
-      if(isValidFormat(newFormat)) {
-        const implementation = getManifestImplementationByFormat(newFormat);
-        props.onFormatChanged(implementation);
-      }
-      return {
-        format: newFormat,
-      };
+  withStateHandlers(
+    { format: 'jpad' },
+    {
+      updateFormat: (_, props) => (newFormat) => {
+        if (isValidFormat(newFormat)) {
+          const implementation = getManifestImplementationByFormat(newFormat);
+          props.onFormatChanged(implementation);
+        }
+        return {
+          format: newFormat,
+        };
+      },
     },
-  }),
-)(({ format, updateFormat }) =>
+  ),
+)(({ format, updateFormat }) => (
   <div className="key-format-selector-container">
     <label className="key-format-label">Key format:</label>
-    <div className="key-format-selector-wrapper" >
+    <div className="key-format-selector-wrapper">
       <ComboBox
         data-comp="key-format-selector"
         suggestions={formatSuggestions}
@@ -35,7 +38,7 @@ const KeyFormatSelector = compose(
         onChange={(input, selected) => selected && updateFormat(selected.value)}
       />
     </div>
-  </div>,
-);
+  </div>
+));
 
 export default KeyFormatSelector;

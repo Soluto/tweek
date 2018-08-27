@@ -14,6 +14,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
         private const string NUMBER_KEY = "smoke_tests/ignore_key_types/number_type";
         private const string BOOLEAN_KEY = "smoke_tests/ignore_key_types/boolean_type";
         private const string OBJECT_KEY = "smoke_tests/ignore_key_types/object_type";
+        private const string ARRAY_KEY = "smoke_tests/ignore_key_types/array_type";
 
         public IgnoreKeyTypesTests(ITestOutputHelper output)
         {
@@ -25,6 +26,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
         [InlineData(NUMBER_KEY, "15")]
         [InlineData(BOOLEAN_KEY, "true")]
         [InlineData(OBJECT_KEY, "{\"key\":\"value\"}")]
+        [InlineData(ARRAY_KEY, "[\"hello\",\"world\"]")]
         public async Task GetStringKey_IgnoreKeyTypesTrue_ReturnsString(string key, string value)
         {
             // Act
@@ -40,6 +42,7 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
         [InlineData(NUMBER_KEY, JTokenType.Float, "15")]
         [InlineData(BOOLEAN_KEY, JTokenType.Boolean, "true")]
         [InlineData(OBJECT_KEY, JTokenType.Object, "{\"key\":\"value\"}")]
+        [InlineData(ARRAY_KEY, JTokenType.Array, "[\"hello\",\"world\"]")]
         public async Task GetStringKey_IgnoreKeyTypesFalse_ReturnsString(string key, JTokenType type, string value)
         {
             // Act

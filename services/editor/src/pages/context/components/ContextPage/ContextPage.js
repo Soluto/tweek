@@ -6,7 +6,7 @@ import { refreshSchema } from '../../../../services/context-service';
 import SearchBox from './SearchBox/SearchBox';
 import './ContextPage.css';
 
-const ContextPage = ({ children, isExact, ...props }) =>
+const ContextPage = ({ children, isExact, ...props }) => (
   <DocumentTitle title="Tweek - Context">
     <div className={'context-page-container'}>
       <div className={'context-page'}>
@@ -15,7 +15,8 @@ const ContextPage = ({ children, isExact, ...props }) =>
         {children}
       </div>
     </div>
-  </DocumentTitle>;
+  </DocumentTitle>
+);
 
 export default compose(
   withLoading(() => null, refreshSchema),

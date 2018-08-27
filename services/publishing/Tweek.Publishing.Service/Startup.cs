@@ -104,6 +104,7 @@ namespace Tweek.Publishing.Service
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(_configuration)
                 .WriteTo.Console(new JsonFormatter())
+                .Enrich.FromLogContext()
                 .CreateLogger();
 
             _logger.LogInformation("Starting service");

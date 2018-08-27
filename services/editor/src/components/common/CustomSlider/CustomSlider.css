@@ -11,7 +11,6 @@
 .custom-slider-container .legend-item {
   display: flex;
   padding-left: 3px;
-  height: 20px;
 }
 .custom-slider-container .delete-legend-button {
   vertical-align: top;
@@ -41,6 +40,7 @@
   background-color: #bcbcbc;
   font-size: 12px;
   padding-top: 1px;
+  align-self: center;
 }
 .custom-slider-container .delete-legend-button:hover {
   background-color: #029CD5;
@@ -74,12 +74,27 @@
   font-size: 12px;
   margin-left: 4px;
   width: 120px;
+  vertical-align: top;
 }
 .custom-slider-container .legend-percent-input {
   height: 16px;
   font-size: 12px;
   margin-left: 4px;
   width: 30px;
+}
+.custom-slider-container .tags-container {
+  padding: 0px;
+  vertical-align: top;
+  max-width: 150px;
+}
+.custom-slider-container .tag {
+  padding: 0px 0px 0px 2px !important;
+  max-height: 14px;
+  min-height: 14px !important;
+}
+.custom-slider-container .property-value-tags-wrapper {
+  max-height: 16px;
+  display: inline-table;
 }
 .custom-slider-container .add-variant-button {
   vertical-align: top;
@@ -188,6 +203,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .vertical-accent1 {
   background-color: #007acc;
@@ -196,6 +212,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .vertical-accent2 {
   background-color: rgba(0, 122, 204, 0.8);
@@ -204,6 +221,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .vertical-accent3 {
   background-color: rgba(0, 122, 204, 0.6);
@@ -212,6 +230,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .vertical-accent4 {
   background-color: rgba(0, 122, 204, 0.5);
@@ -220,6 +239,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .vertical-accent5 {
   background-color: rgba(0, 122, 204, 0.4);
@@ -228,6 +248,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .vertical-accent6 {
   background-color: rgba(0, 122, 204, 0.2);
@@ -236,6 +257,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .horizontal-accent {
   height: 6px;

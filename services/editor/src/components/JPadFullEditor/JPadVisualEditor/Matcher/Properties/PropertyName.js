@@ -3,8 +3,6 @@ import * as ContextService from '../../../../../services/context-service';
 import { getPropertySupportedOperators } from '../../../../../services/operators-provider';
 import PropertyComboBox from './PropertyComboBox';
 
-const propertyTypeDetailsToComparer = ({ comparer: $compare }) => ($compare ? { $compare } : {});
-
 const ensureKeysIdentity = property => property.replace(/^@@key:/, ContextService.KEYS_IDENTITY);
 
 const PropertyName = compose(
@@ -17,10 +15,7 @@ const PropertyName = compose(
       const supportedOperators = getPropertySupportedOperators(propertyTypeDetails);
       const newOperator = supportedOperators[0];
 
-      const newValue = newOperator.getValue(
-        defaultValue,
-        propertyTypeDetailsToComparer(propertyTypeDetails),
-      );
+      const newValue = newOperator.getValue(defaultValue, propertyTypeDetails);
       mutate.apply(m => m.updateKey(value).updateValue(newValue));
     };
 
@@ -42,6 +37,7 @@ const PropertyName = compose(
       warning:
         !hasFocus &&
         !property.startsWith(ContextService.KEYS_IDENTITY) &&
+        !property.startsWith('system') &&
         (!property.includes('.') ||
           !ContextService.getIdentities().includes(property.split('.')[0])),
     };
