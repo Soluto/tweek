@@ -148,7 +148,7 @@ namespace Tweek.Publishing.Service
 
             app.UseRouter(router =>
             {
-                router.MapGet("validate", ValidationHandler.Create(executor, gitValidationFlow));
+                router.MapGet("validate", ValidationHandler.Create(executor, gitValidationFlow, loggerFactory.CreateLogger<ValidationHandler>() ));
                 router.MapGet("sync", SyncHandler.Create(syncActor,_syncPolicy));
                 router.MapGet("push", PushHandler.Create(syncActor));
 
