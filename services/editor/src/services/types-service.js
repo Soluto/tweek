@@ -46,7 +46,7 @@ export function convertValue(value, targetType) {
   case 'number':
     return safeConvertToBaseType(value, 'number');
   case 'array':
-    return convertCheckArray(value, type.ofType || types.string);
+    return convertCheckArray(value, type.ofType ? x => convertValue(x, type.ofType) : x => x);
   case 'object':
     return safeConvertToBaseType(value, 'object');
   default:
@@ -54,10 +54,8 @@ export function convertValue(value, targetType) {
   }
 }
 
-const convertCheckArray = (value, type) =>
-  Array.isArray(value)
-    ? [...value.map(item => convertValue(item, type))]
-    : convertValue(value, type);
+const convertCheckArray = (value, converter) =>
+  Array.isArray(value) ? [...value.map(converter)] : converter(value);
 
 export function isAllowedValue(valueType, value) {
   return (
@@ -89,13 +87,17 @@ function safeConvertToBaseType(value, type) {
   return jsonValue;
 }
 
-export function isStringValidJson(str) {
+export function isStringValidJson(str, targetType) {
   try {
-    JSON.parse(str);
+    const result = JSON.parse(str);
+    const resultType = Array.isArray(result) ? 'array' : typeof result;
+    if (targetType && resultType !== targetType.name && resultType !== targetType.base) {
+      return false;
+    }
+    return true;
   } catch (e) {
     return false;
   }
-  return true;
 }
 
 export async function getValueTypeDefinition(key) {
