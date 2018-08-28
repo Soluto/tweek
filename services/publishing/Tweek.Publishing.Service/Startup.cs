@@ -177,7 +177,7 @@ namespace Tweek.Publishing.Service
             var versionPublisher = natsClient.GetSubjectPublisher("version");
 
             var repoSynchronizer = new RepoSynchronizer(executor.WithUser("git").CreateCommandExecutor("git"));
-            var storageSynchronizer = new StorageSynchronizer(storageClient, executor.WithUser("git") , new Packer());
+            var storageSynchronizer = new StorageSynchronizer(storageClient, executor.WithUser("git"));
 
             storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result, checkForStaleRevision: false).Wait();
             RunIntervalPublisher(lifetime, versionPublisher, repoSynchronizer, storageSynchronizer);
