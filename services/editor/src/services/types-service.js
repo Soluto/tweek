@@ -67,6 +67,15 @@ function safeConvertToBaseType(value, type) {
   return jsonValue;
 }
 
+export function isStringValidJson(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
 export async function getValueTypeDefinition(key) {
   if (!key || key.length === 0) return types.string;
   try {

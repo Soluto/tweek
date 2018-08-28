@@ -4,7 +4,7 @@ import * as ContextService from '../../../../services/context-service';
 import './PartitionsSelector.css';
 
 export default ({ partitions, handlePartitionAddition, handlePartitionDelete, alerter }) => {
-  const allProperties = ContextService.getProperties().map(x => ({
+  const allProperties = ContextService.getSchemaProperties().map(x => ({
     id: x.id,
     text: `${x.name} (${x.identity})`,
   }));

@@ -46,6 +46,8 @@ services:
       - CorsEnabled=true
       - CorsPolicies__Keys__Headers=
       - CorsPolicies__Keys__ExposedHeaders=
+      - Context__Validation__ErrorPolicy=throw
+      
   authoring:
     image: $AUTHORING_IMAGE
     depends_on:
@@ -119,7 +121,7 @@ services:
       - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
       
   nats:
-    image: nats:1.0.4-linux 
+    image: nats:1.0.4-linux
 
   selenium:
     image: selenium/standalone-chrome:3.8.1
@@ -141,4 +143,3 @@ services:
     user: root
     volumes:
       - ${CF_VOLUME_PATH}/tweek/deployments/dev/zap/session/e2e:/root/.ZAP/session/e2e
-  

@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   publishing:
-    build:
+    build: 
       args: 
         target: Release
 
@@ -71,6 +71,8 @@ services:
       - gateway:authoring      
     depends_on: 
       - selenium
+      - api
+      - authoring
       - publishing
       - editor
       - gateway
@@ -82,12 +84,14 @@ services:
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
       - AUTH_DIGEST_CREDENTIALS=user:pwd
     secrets:
-      - tweek_ssh_private_key      
+      - tweek_ssh_private_key
 
   e2e-integration:
     build: ../../e2e/integration
     container_name: e2e-integration
-    depends_on:
+    depends_on: 
+      - api
+      - authoring
       - gateway
       - publishing
     environment:
@@ -114,8 +118,9 @@ services:
       dockerfile: TweekApiSmokeTest.Dockerfile
     container_name: smoke-tests
     depends_on: 
-      - gateway
+      - api
       - publishing
+      - gateway
     environment: 
       - TWEEK_API_URL=http://api/
     links:

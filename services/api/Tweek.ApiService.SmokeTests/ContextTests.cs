@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -73,6 +74,17 @@ namespace Tweek.ApiService.SmokeTests
             });
             
             Assert.Equal(JTokenType.Null, results.Type);
+        }
+
+        [Fact(DisplayName = "Append context with invalid property type should return 400 status code")]
+        public async Task AppendContextWithInvalidInput()
+        {
+            var response = await mTweekApi.AppendContext("user", "user-1", new Dictionary<string, FSharpUtils.Newtonsoft.JsonValue>()
+            {
+                ["AgentVersion"] = NewString("undefined")
+            });
+            
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
     }
 }
