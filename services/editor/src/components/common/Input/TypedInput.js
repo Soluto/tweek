@@ -50,7 +50,7 @@ const InputComponent = ({
   ...props
 }) => {
   if (valueTypeName === types.array.name) {
-    if (!valueType.ofType) {
+    if (!valueType.ofType || valueType.ofType === 'object') {
       return <CodeEditor onChange={onChange} valueType={valueType} value={value} {...props} />;
     }
     return (
