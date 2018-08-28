@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using App.Metrics;
-using App.Metrics.Core.Options;
+using App.Metrics.Timer;
 using Tweek.ApiService.Utils;
 using Tweek.Engine.Drivers.Rules;
 

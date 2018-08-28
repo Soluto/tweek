@@ -103,3 +103,8 @@
   cursor: pointer;
   background-color: #eeeeee;
 }
+.key-tags .tags-container .tag-input input,
+.key-tags .tags-container .tag-input input:focus {
+  padding: 0px 0px 0px 5px;
+  margin: 3px 0px 0px 0px;
+}

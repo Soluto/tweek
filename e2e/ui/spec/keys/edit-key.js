@@ -27,6 +27,12 @@ describe('edit keys', () => {
             },
             'user.IsInGroup': false,
             'user.NumberOfSiblings': 1,
+            'user.SiblingNames': {
+              $contains: ['mark'],
+            },
+            'user.Identities': {
+              $contains: [1, 2],
+            },
             'unknown.identity': 'value',
           },
           Value: '',
@@ -56,6 +62,8 @@ describe('edit keys', () => {
           .setCondition('user.BirthDate', '3d')
           .setCondition('user.IsInGroup', 'false')
           .setCondition('user.NumberOfSiblings', '1')
+          .setCondition('user.SiblingNames', ['mark', 'temp'])
+          .setCondition('user.Identities', [1, 'temp', 2])
           .setCondition('unknown.identity', 'value');
 
         expect(Rule.count()).to.equal(2);
@@ -80,6 +88,22 @@ describe('edit keys', () => {
 
         Key.open(keyName).editObjectInEditor(JSON.stringify(defaultValue));
         Alert.save();
+
+        expect(Key.goToSourceTab().source).to.deep.equal(expectedObjectKeySource);
+      });
+
+      it('should succeed in editing an array JPad key', () => {
+        const keyName = 'behavior_tests/edit_key/visual/edit_array_test';
+        const values = ['val', 'test'];
+        const expectedObjectKeySource = {
+          partitions: [],
+          valueType: 'array',
+          rules: [],
+          defaultValue: values,
+        };
+
+        Key.open(keyName);
+        values.forEach(item => Key.addDefaultItem(item));
 
         expect(Key.goToSourceTab().source).to.deep.equal(expectedObjectKeySource);
       });
@@ -130,11 +154,11 @@ describe('edit keys', () => {
 
     it('should succeed editing key (valueType=object)', () => {
       const keyName = `${constKeyFolder}/object_type`;
-      Key.open(keyName);
-      const originalSource = Key.source;
-      Key.source = JSON.stringify({ ...originalSource, boolProp: false });
+      const objectValue = { boolProp: false };
+      Key.open(keyName).editObjectInEditor(JSON.stringify(objectValue));
+      Alert.save();
       Key.commitChanges();
-      tweekApiClient.waitForKeyToEqual(keyName, { boolProp: false });
+      tweekApiClient.waitForKeyToEqual(keyName, objectValue);
     });
   });
 });

@@ -1,5 +1,6 @@
 import React from 'react';
 import Rule from '../Rule/Rule';
+import { types } from '../../../../services/types-service';
 import './RulesList.css';
 
 const deleteRuleAlert = {
@@ -29,35 +30,34 @@ export default class RulesList extends React.Component {
           className="add-rule-button"
           data-comp="add-rule"
           onClick={() => {
-            this.addMutatorRule();
+            this.addMutatorRule(valueType);
             this.setState({ autofocusRuleIndex: 0 });
           }}
         >
           Add Rule
         </button>
 
-        {rules.map((rule, i) =>
+        {rules.map((rule, i) => (
           <div className="conditions-container" data-comp="rule" key={rules.length - i}>
-
             <div className="rule-control-wrapper">
-              {i > 0
-                ? <button
-                    className="rule-order-button"
-                    onClick={() => mutate.replaceKeys(i, i - 1)}
-                    title="Move up"
-                  >
-                    
-                  </button>
-                : null}
-              {i < rules.length - 1
-                ? <button
-                    className="rule-order-button"
-                    onClick={() => mutate.replaceKeys(i, i + 1)}
-                    title="Move down"
-                  >
-                    
-                  </button>
-                : null}
+              {i > 0 ? (
+                <button
+                  className="rule-order-button"
+                  onClick={() => mutate.replaceKeys(i, i - 1)}
+                  title="Move up"
+                >
+                  
+                </button>
+              ) : null}
+              {i < rules.length - 1 ? (
+                <button
+                  className="rule-order-button"
+                  onClick={() => mutate.replaceKeys(i, i + 1)}
+                  title="Move down"
+                >
+                  
+                </button>
+              ) : null}
               <button
                 className="delete-rule-button"
                 data-comp="delete-rule"
@@ -78,18 +78,20 @@ export default class RulesList extends React.Component {
               ruleIndex={i}
               autofocus={i === autofocusRuleIndex}
             />
-
-          </div>,
-        )}
-
+          </div>
+        ))}
       </div>
     );
   }
 
-  addMutatorRule() {
+  addMutatorRule(valueType) {
     let { mutate } = this.props;
 
-    mutate.prepend({ Matcher: { '': '' }, Value: '', Type: 'SingleVariant' });
+    mutate.prepend({
+      Matcher: { '': '' },
+      Value: valueType.emptyValue || '',
+      Type: 'SingleVariant',
+    });
   }
 
   async deleteRule(ruleIndex) {

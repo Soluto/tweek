@@ -166,7 +166,9 @@ export default class PartitionsList extends React.Component {
                     <div className="partitions-accordion-container-item-title-details">
                       {isOnlyDefault
                         ? `value: ${
-                          valueType === 'object' ? JSON.stringify(rules[0].Value) : rules[0].Value
+                          valueType.name === 'object'
+                            ? JSON.stringify(rules[0].Value)
+                            : rules[0].Value
                         }`
                         : `rules: ${rules.length}`}
                     </div>

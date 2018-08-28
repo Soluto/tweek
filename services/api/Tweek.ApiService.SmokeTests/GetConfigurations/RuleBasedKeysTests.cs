@@ -2,8 +2,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FSharpUtils.Newtonsoft;
+using LanguageExt;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Tweek.ApiService.SmokeTests.GetConfigurations.Models;
+using Tweek.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -54,11 +57,24 @@ namespace Tweek.ApiService.SmokeTests.GetConfigurations
             await RunContextBasedTest(testContext);
         }
 
+        [Theory(DisplayName = "Get key with rules using array contains")]
+        [MemberData("ARRAY_CONTAINS_TEST_CONTEXTS", MemberType = typeof(RulesBasedTestsContextProvider))]
+        public async Task RulesBasedKey_UsingArrayContains_ShouldReturnMatchingKeyValue(TestContext testContext)
+        {
+            await RunContextBasedTest(testContext);
+        }
+
         private async Task RunContextBasedTest(TestContext context)
         {
-            // Act
-            var response = await mTweekApi.GetConfigurations(context.KeyName, context.Context.ToDictionary(x=>x.Key, x=>x.Value.AsString()));
+            // Prepare
+            var configContext = context.Context.SelectMany(x=>
+                x.Value.IsArray ? 
+                    x.Value.AsArray().Select(y=>KeyValuePair.Create(x.Key, y.AsString())) :
+                    Seq.create(KeyValuePair.Create(x.Key, x.Value.AsString())));
 
+            // Act
+            var response = await mTweekApi.GetConfigurations(context.KeyName, configContext);
+            
             // Assert
             Assert.Equal(JTokenType.String, response.Type);
             Assert.Equal(context.ExpectedValue, response.ToString());
