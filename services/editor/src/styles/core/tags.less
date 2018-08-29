@@ -92,19 +92,22 @@
     border-bottom: 1px solid @accent-color3;
     padding: 4px;
     box-sizing: border-box;
+    > div, .ReactTags__tagInputField {
+      min-height: 20px;
+    }
     &:before {
       content: '';
       margin: 0
     }
     .tag {
       padding: 2px 3px 2px 3px;
-      margin: 0 5px 0 0;
+      margin: 3px 5px 0 0;
     }
     .tag-input {
       display: inline-block;
       input, input:focus {
         background-color: transparent;
-        width: 100px;
+        width: 100px; //60px?
         border: none;
         outline: none;
         padding: 0;

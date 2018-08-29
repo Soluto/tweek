@@ -1,5 +1,6 @@
 import assert from 'assert';
 import { dataComp, attributeSelector, nthSelector } from './selector-utils';
+import Input from './Input.js';
 
 export default class Rule {
   constructor(ruleNumber) {
@@ -60,7 +61,10 @@ export default class Rule {
     if (value !== '') {
       const propertyValue = `${condition} ${dataComp('property-value')}`;
       browser.waitForEnabled(propertyValue, timeout);
-      browser.setValue(propertyValue, value);
+
+      !Array.isArray(value)
+        ? browser.setValue(propertyValue, value)
+        : value.forEach(item => Input.addItem(propertyValue, item));
     }
 
     return this;

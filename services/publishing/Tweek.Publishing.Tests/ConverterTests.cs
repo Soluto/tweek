@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Tweek.Publishing.Service.Packing;
+using Tweek.Publishing.Service.Sync.Converters;
 using Xunit;
 
 namespace Tweek.Publishing.Tests
@@ -26,7 +27,7 @@ namespace Tweek.Publishing.Tests
         [MemberData(nameof(GetConsts))]
         public void PackConstValue(string type, object value, string expected)
         {
-            var packer = new Packer();
+            var converter = new RulesConverter();
             var dictionary = new Dictionary<string, string>
             {
                 ["manifests/some/const.json"] = JsonConvert.SerializeObject(new
@@ -45,8 +46,8 @@ namespace Tweek.Publishing.Tests
                     },
                 }),
             };
-            var results = packer.Pack(dictionary.Keys, x => dictionary[x]);
-            var packedKey = results["some/const"];
+            var results = converter.Convert("id", dictionary.Keys, name => dictionary[name]);
+            var packedKey = JsonConvert.DeserializeObject<Dictionary<string,KeyDef>>(results.Item2)["some/const"];
             Assert.Equal(expected, packedKey.Payload);
             Assert.Equal("const", packedKey.Format);
             Assert.Empty(packedKey.Dependencies);
@@ -55,7 +56,7 @@ namespace Tweek.Publishing.Tests
         [Fact]
         public void PackJPad()
         {
-            var packer = new Packer();
+            var converter = new RulesConverter();
             var jpad = JsonConvert.SerializeObject(new
             {
                 partitions = new string[] { },
@@ -82,8 +83,8 @@ namespace Tweek.Publishing.Tests
                 }),
                 ["implementations/jpad/some/jpad_example.jpad"] = jpad,
             };
-            var results = packer.Pack(dictionary.Keys, x => dictionary[x]);
-            var packedKey = results["some/jpad_example"];
+            var results = converter.Convert("id", dictionary.Keys, name => dictionary[name]);
+            var packedKey = JsonConvert.DeserializeObject<Dictionary<string,KeyDef>>(results.Item2)["some/jpad_example"];
             Assert.Equal(jpad, packedKey.Payload);
             Assert.Equal("jpad", packedKey.Format);
             Assert.Empty(packedKey.Dependencies);
@@ -92,7 +93,7 @@ namespace Tweek.Publishing.Tests
         [Fact]
         public void PackAlias()
         {
-            var packer = new Packer();
+            var converter = new RulesConverter();
             var dictionary = new Dictionary<string, string>
             {
                 ["manifests/some/alias.json"] = JsonConvert.SerializeObject(new
@@ -106,8 +107,8 @@ namespace Tweek.Publishing.Tests
                     },
                 }),
             };
-            var results = packer.Pack(dictionary.Keys, x => dictionary[x]);
-            var packedKey = results["some/alias"];
+            var results = converter.Convert("id", dictionary.Keys, x => dictionary[x]);
+            var packedKey = JsonConvert.DeserializeObject<Dictionary<string, KeyDef>>(results.Item2)["some/alias"];
             Assert.Equal("some/other_key", packedKey.Payload);
             Assert.Equal("alias", packedKey.Format);
             Assert.Contains(packedKey.Dependencies, x => x == "some/other_key");

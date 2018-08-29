@@ -4,12 +4,13 @@ import classNames from 'classnames';
 import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEditor';
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
 import ConstEditor from '../../../../../components/ConstEditor';
-import KeyTags from './KeyTags/KeyTags';
 import EditableTextArea from '../../../../../components/common/EditableTextArea/EditableTextArea';
+import KeyTags from './KeyTags/KeyTags';
 import RevisionHistory from './RevisionHistory/RevisionHistory';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
 import HeaderMainInput from './HeaderMainInput';
 import { UsedBy, DependsOn, Aliases } from './DependencyIndicator/DependencyIndicator';
+import { types } from '../../../../../services/types-service';
 import './KeyEditPage.css';
 
 const Editor = ({
@@ -23,6 +24,7 @@ const Editor = ({
   isReadonly,
   alerter,
 }) => {
+  const valueType = types[manifest.valueType] || types['string'];
   if (manifest.implementation.type === 'file') {
     let FileEditor = null;
     if (manifest.implementation.format === 'jpad') {
@@ -37,7 +39,7 @@ const Editor = ({
         dependencies={manifest.dependencies}
         onDependencyChanged={onDependencyChanged}
         isReadonly={isReadonly}
-        valueType={manifest.valueType}
+        valueType={valueType}
       />
     );
   }
@@ -45,7 +47,7 @@ const Editor = ({
     return (
       <ConstEditor
         value={manifest.implementation.value}
-        valueType={manifest.valueType}
+        valueType={valueType}
         onChange={value =>
           onManifestChange({ ...manifest, implementation: { ...manifest.implementation, value } })
         }
@@ -69,11 +71,11 @@ class KeyEditPage extends Component {
     this.onSelectedKeyManifestChanged(newManifest);
   }
 
-  onKeyNameChanged = newKeyName => {
+  onKeyNameChanged = (newKeyName) => {
     this.props.updateKeyName(newKeyName);
   };
 
-  onDisplayNameChanged = newDisplayName => {
+  onDisplayNameChanged = (newDisplayName) => {
     const oldManifest = this.props.selectedKey.local.manifest;
     const newManifest = {
       ...oldManifest,
@@ -97,11 +99,11 @@ class KeyEditPage extends Component {
     this.onSelectedKeyManifestChanged(newManifest);
   }
 
-  onSelectedKeyManifestChanged = newManifest => {
+  onSelectedKeyManifestChanged = (newManifest) => {
     this.props.updateKeyManifest(newManifest);
   };
 
-  onDependencyChanged = dependencies => {
+  onDependencyChanged = (dependencies) => {
     const oldManifest = this.props.selectedKey.local.manifest;
     const newManifest = {
       ...oldManifest,
@@ -170,7 +172,7 @@ class KeyEditPage extends Component {
 
 export default compose(stickyHeaderIdentifier('key-edit-page', 150), pure)(KeyEditPage);
 
-const KeyStickyHeader = props => {
+const KeyStickyHeader = (props) => {
   const { isReadonly, isHistoricRevision } = props;
 
   return (
@@ -186,7 +188,7 @@ const KeyStickyHeader = props => {
   );
 };
 
-const KeyFullHeader = props => {
+const KeyFullHeader = (props) => {
   const {
     isReadonly,
     revisionHistory,

@@ -47,7 +47,13 @@ describe('Gateway v2 API', () => {
   });
 
   it('should read schemas', async () => {
-    expectedSchemas = ['delete_property_test', 'edit_properties_test', 'other', 'user'].sort();
+    expectedSchemas = [
+      'delete_property_test',
+      'edit_properties_test',
+      'other',
+      'test',
+      'user',
+    ].sort();
     await clients.gateway
       .get(`/api/v2/schemas`)
       .expect(200)

@@ -12,7 +12,7 @@ namespace Tweek.ApiService.SmokeTests
         [Get("api/v1/keys/{keyPath}")]
         Task<JToken> GetConfigurations([Path] string keyPath,[QueryMap] IEnumerable<KeyValuePair<string, string>> context);
 
-        Task AppendContext([Path] string identityType, [Path]string identityId, Dictionary<string, JsonValue> context);
+        Task<HttpResponseMessage> AppendContext([Path] string identityType, [Path]string identityId, Dictionary<string, JsonValue> context);
 
         Task RemoveFromContext([Path] string identityType, [Path]string identityId, string property);
 

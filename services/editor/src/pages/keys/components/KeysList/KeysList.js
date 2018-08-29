@@ -10,6 +10,7 @@ import * as SearchService from '../../../../services/search-service';
 import DirectoryTreeView from './DirectoryTreeView';
 import CardView from './CardView';
 import './KeysList.css';
+import { relative } from 'path';
 
 const KeysFilter = withState('filter', 'setFilter', '')(({ onFilterChange, setFilter, filter }) => (
   <div className="search-input-wrapper">
@@ -124,8 +125,8 @@ const KeysList = connect((state, props) => ({
               <button onClick={() => setResultsView('tree')}>Tree</button>
             </div>
           )}
-          <div className="keys-nav">
-            <div className="search-results">
+          <div class="keys-nav">
+            <div class="search-results">
               {filteredKeys && supportMultiResultsView && resultsView === 'cards' ? (
                 <CardView
                   itemSelector={x => x && x.key_path}

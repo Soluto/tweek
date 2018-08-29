@@ -19,6 +19,10 @@ export const types = {
   object: {
     name: 'object',
   },
+  array: {
+    name: 'array',
+    emptyValue: [],
+  },
 };
 
 export async function refreshTypes() {
@@ -42,6 +46,8 @@ export function convertValue(value, targetType) {
     return safeConvertToBaseType(value, 'boolean');
   case 'number':
     return safeConvertToBaseType(value, 'number');
+  case 'array':
+    return convertCheckArray(value, type.ofType || types.string);
   case 'object':
     return safeConvertToBaseType(value, 'object');
   default:
@@ -49,11 +55,28 @@ export function convertValue(value, targetType) {
   }
 }
 
+const convertCheckArray = (value, type) =>
+  Array.isArray(value)
+    ? [...value.map(item => convertValue(item, type))]
+    : convertValue(value, type);
+
+export function isAllowedValue(valueType, value) {
+  return (
+    valueType &&
+    (!valueType.allowedValues ||
+      valueType.allowedValues.length == 0 ||
+      valueType.allowedValues.includes(value))
+  );
+}
+
 export function safeConvertValue(value, targetType) {
   try {
     return convertValue(value, targetType);
   } catch (err) {
-    return targetType === types.boolean.name ? '' : `${value}`;
+    const typeName = targetType.ofType || targetType.base || targetType.name;
+    return typeName !== types.string.name
+      ? undefined
+      : typeName === types.array.name ? [`${value}`] : `${value}`;
   }
 }
 
@@ -65,6 +88,15 @@ function safeConvertToBaseType(value, type) {
   }
 
   return jsonValue;
+}
+
+export function isStringValidJson(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
 }
 
 export async function getValueTypeDefinition(key) {

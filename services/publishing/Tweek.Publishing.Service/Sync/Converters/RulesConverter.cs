@@ -21,7 +21,8 @@ namespace Tweek.Publishing.Service.Sync.Converters
 
         public (string, string, string) Convert(string commitId, ICollection<string> files, Func<string, string> readFn)
         {            
-            var result = files.Where(x => manifestRegex.IsMatch(x))
+            var result = files.ToSeq()
+                .Where(x => manifestRegex.IsMatch(x))
                 .Select(x =>
                 {
                     try
@@ -57,6 +58,7 @@ namespace Tweek.Publishing.Service.Sync.Converters
                     }
                     return (keyPath:manifest.KeyPath, keyDef: keyDef);
                 })
+                .Distinct(x=>x.keyPath.ToLower())
                 .ToDictionary(x => x.keyPath, x => x.keyDef);
 
             return (commitId, JsonConvert.SerializeObject(result), @"application/json");

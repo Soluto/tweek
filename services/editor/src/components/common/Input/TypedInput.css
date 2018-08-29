@@ -1,3 +1,848 @@
+.property-value-wrapper {
+  display: inline-block;
+}
+.property-value-wrapper .property-value-combo-box {
+  display: flex;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-input {
+  flex-grow: 1;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+  display: inline-block;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  min-height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  outline: none;
+  box-sizing: border-box;
+  align-self: flex-start;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+  border-color: #bcbcbc;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu {
+  position: absolute;
+  max-height: 350px;
+  min-width: 80px;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu li:last-child {
+  border-bottom-width: 1px;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu li:active {
+  background-color: #d1d1d1;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu .disabled {
+  display: none;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .override-dropdown .dropdown-menu .active {
+  background-color: #dfdfdf;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead {
+  flex-grow: 1;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+  display: inline-block;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  min-height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  outline: none;
+  box-sizing: border-box;
+  align-self: flex-start;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+  border-color: #bcbcbc;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu {
+  position: absolute;
+  max-height: 350px;
+  min-width: 80px;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu li:last-child {
+  border-bottom-width: 1px;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu li:active {
+  background-color: #d1d1d1;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu .disabled {
+  display: none;
+}
+.property-value-wrapper .property-value-combo-box .override-typeahead .bootstrap-typeahead .dropdown-menu .active {
+  background-color: #dfdfdf;
+}
+.property-value-wrapper .property-value-combo-box .override-input {
+  flex-grow: 1;
+}
+.property-value-wrapper .property-value-combo-box .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+  display: inline-block;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  min-height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  outline: none;
+  box-sizing: border-box;
+  align-self: flex-start;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.property-value-wrapper .property-value-combo-box .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-value-wrapper .property-value-combo-box .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+  border-color: #bcbcbc;
+}
+.property-value-wrapper .property-value-combo-box .override-dropdown .dropdown-menu {
+  position: absolute;
+  max-height: 350px;
+  min-width: 80px;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.property-value-wrapper .property-value-combo-box .override-dropdown .dropdown-menu li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.property-value-wrapper .property-value-combo-box .override-dropdown .dropdown-menu li:last-child {
+  border-bottom-width: 1px;
+}
+.property-value-wrapper .property-value-combo-box .override-dropdown .dropdown-menu li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.property-value-wrapper .property-value-combo-box .override-dropdown .dropdown-menu li:active {
+  background-color: #d1d1d1;
+}
+.property-value-wrapper .property-value-combo-box .override-dropdown .dropdown-menu li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.property-value-wrapper .property-value-combo-box .override-dropdown .dropdown-menu li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.property-value-wrapper .property-value-combo-box .override-dropdown .dropdown-menu .disabled {
+  display: none;
+}
+.property-value-wrapper .property-value-combo-box .override-dropdown .dropdown-menu .active {
+  background-color: #dfdfdf;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead {
+  flex-grow: 1;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+  display: inline-block;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  min-height: 28px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  outline: none;
+  box-sizing: border-box;
+  align-self: flex-start;
+  transition: all 0.2s ease-in-out;
+  width: 150px;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+  border-color: #bcbcbc;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .dropdown-menu {
+  position: absolute;
+  max-height: 350px;
+  min-width: 80px;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .dropdown-menu li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .dropdown-menu li:last-child {
+  border-bottom-width: 1px;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .dropdown-menu li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .dropdown-menu li:active {
+  background-color: #d1d1d1;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .dropdown-menu li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .dropdown-menu li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .dropdown-menu .disabled {
+  display: none;
+}
+.property-value-wrapper .property-value-combo-box .bootstrap-typeahead .dropdown-menu .active {
+  background-color: #dfdfdf;
+}
+.property-suggestion-wrapper {
+  padding: 8px 4px 8px 16px;
+  display: flex;
+  align-items: center;
+}
+.property-suggestion-wrapper .suggestion-identity {
+  margin-left: 10px;
+  font-size: 12px;
+  color: gray;
+}
+.property-name-wrapper {
+  display: flex;
+}
+.property-name-wrapper .override-typeahead .override-input {
+  flex-grow: 1;
+}
+.property-name-wrapper .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+  display: inline-block;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  min-height: 28px;
+  width: 150px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  outline: none;
+  box-sizing: border-box;
+  align-self: flex-start;
+  transition: all 0.2s ease-in-out;
+  width: 250px;
+}
+.property-name-wrapper .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-name-wrapper .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+  border-color: #bcbcbc;
+}
+.property-name-wrapper .override-typeahead .override-dropdown .dropdown-menu {
+  position: absolute;
+  max-height: 350px;
+  min-width: 250px;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.property-name-wrapper .override-typeahead .override-dropdown .dropdown-menu li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.property-name-wrapper .override-typeahead .override-dropdown .dropdown-menu li:last-child {
+  border-bottom-width: 1px;
+}
+.property-name-wrapper .override-typeahead .override-dropdown .dropdown-menu li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.property-name-wrapper .override-typeahead .override-dropdown .dropdown-menu li:active {
+  background-color: #d1d1d1;
+}
+.property-name-wrapper .override-typeahead .override-dropdown .dropdown-menu li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.property-name-wrapper .override-typeahead .override-dropdown .dropdown-menu li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.property-name-wrapper .override-typeahead .override-dropdown .dropdown-menu .disabled {
+  display: none;
+}
+.property-name-wrapper .override-typeahead .override-dropdown .dropdown-menu .active {
+  background-color: #dfdfdf;
+}
+.property-name-wrapper .override-typeahead .bootstrap-typeahead {
+  flex-grow: 1;
+}
+.property-name-wrapper .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+  display: inline-block;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  min-height: 28px;
+  width: 150px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  outline: none;
+  box-sizing: border-box;
+  align-self: flex-start;
+  transition: all 0.2s ease-in-out;
+  width: 250px;
+}
+.property-name-wrapper .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-name-wrapper .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+  border-color: #bcbcbc;
+}
+.property-name-wrapper .override-typeahead .bootstrap-typeahead .dropdown-menu {
+  position: absolute;
+  max-height: 350px;
+  min-width: 250px;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.property-name-wrapper .override-typeahead .bootstrap-typeahead .dropdown-menu li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.property-name-wrapper .override-typeahead .bootstrap-typeahead .dropdown-menu li:last-child {
+  border-bottom-width: 1px;
+}
+.property-name-wrapper .override-typeahead .bootstrap-typeahead .dropdown-menu li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.property-name-wrapper .override-typeahead .bootstrap-typeahead .dropdown-menu li:active {
+  background-color: #d1d1d1;
+}
+.property-name-wrapper .override-typeahead .bootstrap-typeahead .dropdown-menu li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.property-name-wrapper .override-typeahead .bootstrap-typeahead .dropdown-menu li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.property-name-wrapper .override-typeahead .bootstrap-typeahead .dropdown-menu .disabled {
+  display: none;
+}
+.property-name-wrapper .override-typeahead .bootstrap-typeahead .dropdown-menu .active {
+  background-color: #dfdfdf;
+}
+.property-name-wrapper .override-input {
+  flex-grow: 1;
+}
+.property-name-wrapper .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+  display: inline-block;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  min-height: 28px;
+  width: 150px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  outline: none;
+  box-sizing: border-box;
+  align-self: flex-start;
+  transition: all 0.2s ease-in-out;
+  width: 250px;
+}
+.property-name-wrapper .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-name-wrapper .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+  border-color: #bcbcbc;
+}
+.property-name-wrapper .override-dropdown .dropdown-menu {
+  position: absolute;
+  max-height: 350px;
+  min-width: 250px;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.property-name-wrapper .override-dropdown .dropdown-menu li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.property-name-wrapper .override-dropdown .dropdown-menu li:last-child {
+  border-bottom-width: 1px;
+}
+.property-name-wrapper .override-dropdown .dropdown-menu li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.property-name-wrapper .override-dropdown .dropdown-menu li:active {
+  background-color: #d1d1d1;
+}
+.property-name-wrapper .override-dropdown .dropdown-menu li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.property-name-wrapper .override-dropdown .dropdown-menu li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.property-name-wrapper .override-dropdown .dropdown-menu .disabled {
+  display: none;
+}
+.property-name-wrapper .override-dropdown .dropdown-menu .active {
+  background-color: #dfdfdf;
+}
+.property-name-wrapper .bootstrap-typeahead {
+  flex-grow: 1;
+}
+.property-name-wrapper .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+  display: inline-block;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  min-height: 28px;
+  width: 150px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: #515C66;
+  outline: none;
+  box-sizing: border-box;
+  align-self: flex-start;
+  transition: all 0.2s ease-in-out;
+  width: 250px;
+}
+.property-name-wrapper .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.property-name-wrapper .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+  border-color: #bcbcbc;
+}
+.property-name-wrapper .bootstrap-typeahead .dropdown-menu {
+  position: absolute;
+  max-height: 350px;
+  min-width: 250px;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.property-name-wrapper .bootstrap-typeahead .dropdown-menu li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.property-name-wrapper .bootstrap-typeahead .dropdown-menu li:last-child {
+  border-bottom-width: 1px;
+}
+.property-name-wrapper .bootstrap-typeahead .dropdown-menu li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.property-name-wrapper .bootstrap-typeahead .dropdown-menu li:active {
+  background-color: #d1d1d1;
+}
+.property-name-wrapper .bootstrap-typeahead .dropdown-menu li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.property-name-wrapper .bootstrap-typeahead .dropdown-menu li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.property-name-wrapper .bootstrap-typeahead .dropdown-menu .disabled {
+  display: none;
+}
+.property-name-wrapper .bootstrap-typeahead .dropdown-menu .active {
+  background-color: #dfdfdf;
+}
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) {
+  overflow-y: auto;
+  overflow-x: visible;
+  box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu)::-webkit-scrollbar {
+  width: 12px;
+}
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu)::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background-color: #d8d8d8;
+  border: 3px solid #f1f1f1;
+}
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu)::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+  border-radius: 6px;
+}
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li {
+  background: transparent;
+  border: none;
+}
+.property-name-wrapper :global(.bootstrap-typeahead) :global(.dropdown-menu) li a:first-child {
+  padding: 0;
+  color: #515c66;
+}
+.property-value-tags-wrapper {
+  width: auto;
+  border-bottom: none;
+}
+.property-value-tags-wrapper .tags-container:before {
+  content: 'Tags';
+  color: #a5a5a5;
+  font-size: 14px;
+  float: left;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+.property-value-tags-wrapper .tags-container .tag {
+  border: 1px solid #ddd;
+  background-color: #eeeeee;
+  font-size: 12px;
+  display: inline-block;
+  padding: 5px;
+  margin: 5px 5px 0 0;
+  border-radius: 2px;
+  color: #515c66;
+}
+.property-value-tags-wrapper .tags-container .tag .tag-delete-button {
+  display: block;
+  float: right;
+  margin-top: 1px;
+  color: #aaa;
+  margin-left: 6px;
+  padding-left: 1px;
+  padding-bottom: 4px;
+  width: 9px;
+  height: 9px;
+  transition: all 0.2s ease-in-out;
+}
+.property-value-tags-wrapper .tags-container .tag .tag-delete-button:hover {
+  cursor: pointer;
+  color: #939393;
+}
+.property-value-tags-wrapper .tags-container .tag-input {
+  display: inline-block;
+  font-size: 12px;
+}
+.property-value-tags-wrapper .tags-container .tag-input input,
+.property-value-tags-wrapper .tags-container .tag-input input:focus {
+  border: 1px solid #ddd;
+  background-color: #eeeeee;
+  font-size: 12px;
+  display: inline-block;
+  padding: 5px;
+  margin: 5px 5px 0 0;
+  border-radius: 2px;
+  color: #515c66;
+  outline: none;
+}
+.property-value-tags-wrapper .tags-container .tag-input input .tag-delete-button,
+.property-value-tags-wrapper .tags-container .tag-input input:focus .tag-delete-button {
+  display: block;
+  float: right;
+  margin-top: 1px;
+  color: #aaa;
+  margin-left: 6px;
+  padding-left: 1px;
+  padding-bottom: 4px;
+  width: 9px;
+  height: 9px;
+  transition: all 0.2s ease-in-out;
+}
+.property-value-tags-wrapper .tags-container .tag-input input .tag-delete-button:hover,
+.property-value-tags-wrapper .tags-container .tag-input input:focus .tag-delete-button:hover {
+  cursor: pointer;
+  color: #939393;
+}
+.property-value-tags-wrapper .tags-container .tags-suggestion {
+  position: fixed;
+  z-index: 1;
+}
+.property-value-tags-wrapper .tags-container .tags-suggestion ul {
+  list-style-type: none;
+  box-shadow: 0.05em 0.01em 0.5em rgba(0, 0, 0, 0.2);
+  background: white;
+  width: 200px;
+  position: fixed;
+  max-height: 300px;
+  overflow-y: auto;
+}
+.property-value-tags-wrapper .tags-container .tags-suggestion ul li {
+  border-bottom: 1px solid #ddd;
+  padding: 5px 10px;
+  margin: 0;
+  transition: all 0.2s ease-in-out;
+}
+.property-value-tags-wrapper .tags-container .tags-suggestion ul li mark {
+  text-decoration: underline;
+  background: none;
+  font-weight: 600;
+}
+.property-value-tags-wrapper .tags-container .tags-suggestion ul li:hover {
+  cursor: pointer;
+  background-color: #eeeeee;
+}
+.property-value-tags-wrapper .tags-container .tags-suggestion ul li:active,
+.property-value-tags-wrapper .tags-container .tags-suggestion ul li:global(.active):active {
+  cursor: pointer;
+  background-color: #d9d9d9;
+}
+.property-value-tags-wrapper .tags-container .tags-suggestion ul li:global(.active) {
+  cursor: pointer;
+  background-color: #eeeeee;
+}
+.property-value-tags-wrapper .tags-container {
+  display: flex;
+  max-width: 500px;
+  min-width: 150px;
+  overflow-y: auto;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.6);
+  padding: 4px;
+  box-sizing: border-box;
+}
+.property-value-tags-wrapper .tags-container > div,
+.property-value-tags-wrapper .tags-container .ReactTags__tagInputField {
+  min-height: 20px;
+}
+.property-value-tags-wrapper .tags-container:before {
+  content: '';
+  margin: 0;
+}
+.property-value-tags-wrapper .tags-container .tag {
+  padding: 2px 3px 2px 3px;
+  margin: 3px 5px 0 0;
+}
+.property-value-tags-wrapper .tags-container .tag-input {
+  display: inline-block;
+}
+.property-value-tags-wrapper .tags-container .tag-input input,
+.property-value-tags-wrapper .tags-container .tag-input input:focus {
+  background-color: transparent;
+  width: 100px;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+}
+.property-value-tags-wrapper .tags-container .tags-suggestion {
+  margin-top: 6px;
+}
+.property-value-tags-wrapper .tags-container {
+  padding-left: 28px;
+}
+.has-tags .tags-container {
+  margin-top: -3px;
+}
+input {
+  min-height: 28px;
+}
+.property-combobox-container {
+  display: flex;
+}
+.property-combobox-container .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input,
+.property-combobox-container input {
+  padding-left: 28px;
+  align-self: flex-start;
+}
+.property-combobox-container .avatar-container {
+  width: 30px;
+  height: 30px;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 30px;
+  font-family: Helvetica, Arial, sans-serif;
+  text-align: center;
+  text-transform: uppercase;
+  color: #6D6D6D;
+  background: rgba(215, 215, 215, 0.49) no-repeat center center;
+  border-radius: 50%;
+  margin-right: 8px;
+  margin-top: 3px;
+  display: inline-block;
+  align-self: start;
+  z-index: 2;
+}
+.property-combobox-container .avatar-container.property-avatar {
+  zoom: 75%;
+  margin-right: -32px;
+  margin-bottom: 3px;
+}
+.property-combobox-container .avatar-container img {
+  width: 36px;
+  height: 36px;
+  margin: -3px;
+}
+.property-combobox-container .validation-icon-wrapper {
+  width: 16px;
+  height: 16px;
+  position: relative;
+  margin-top: 5px;
+  padding: 3px 5px;
+  margin-right: -25px;
+  right: 25px;
+  z-index: 1;
+  transition: all 0.2s ease-in-out;
+}
 .typed-input-with-icon {
   display: flex;
 }
@@ -7,7 +852,7 @@
 }
 .typed-input-with-icon i {
   display: inline-block;
-  align-self: center;
+  align-self: start;
   background-size: 48px;
   background: rgba(215, 215, 215, 0.49) no-repeat center center;
   width: 32px;
@@ -16,6 +861,8 @@
   zoom: 75%;
   margin-right: -32px;
   margin-bottom: 3px;
+  margin-top: 3px;
+  flex: 0 0 32px;
 }
 .typed-input-with-icon i[data-value-type=boolean] {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyB3aWR0aD0iNDhweCIgaGVpZ2h0PSI0OHB4IiB2aWV3Qm94PSIwIDAgNDggNDgiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+ICAgICAgICA8dGl0bGU+Qm9vbGVhbiBpY29uPC90aXRsZT4gICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+ICAgIDxkZWZzPjwvZGVmcz4gICAgPGcgaWQ9IlR3ZWVrLWljb25zIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPiAgICAgICAgPGcgaWQ9IkJvb2xlYW4taWNvbiIgc3Ryb2tlPSIjNTE1QzY2Ij4gICAgICAgICAgICA8ZyBpZD0iUGFnZS0xIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMi4wMDAwMDAsIDE1LjAwMDAwMCkiPiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTYuMTYxNSw1Ljg0NDQgTDIzLjI0NDUsMTIuOTI3NCIgaWQ9IlN0cm9rZS0xIiBzdHJva2Utd2lkdGg9IjIiPjwvcGF0aD4gICAgICAgICAgICAgICAgPHBhdGggZD0iTTIzLjI0NDksNS44NDQ0IEwxNi4xNjE5LDEyLjkyNzQiIGlkPSJTdHJva2UtMyIgc3Ryb2tlLXdpZHRoPSIyIj48L3BhdGg+ICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMS44MzIzNjI3LDEuNSBMMTEuODMyMzYyNywxNi45NTE1NzQ1IiBpZD0iU3Ryb2tlLTUiPjwvcGF0aD4gICAgICAgICAgICAgICAgPHBhdGggZD0iTTAsMTAuMTIwNSBMMi40MzgsMTIuNTU4NSIgaWQ9IlN0cm9rZS03IiBzdHJva2Utd2lkdGg9IjIiPjwvcGF0aD4gICAgICAgICAgICAgICAgPHBhdGggZD0iTTguNDI0NSw0LjYxIEwyLjY2MTUsMTIuNzg3IiBpZD0iU3Ryb2tlLTkiIHN0cm9rZS13aWR0aD0iMiI+PC9wYXRoPiAgICAgICAgICAgIDwvZz4gICAgICAgIDwvZz4gICAgPC9nPjwvc3ZnPg==);
@@ -29,10 +876,25 @@
 .typed-input-with-icon i[data-value-type=custom] {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyB3aWR0aD0iNDhweCIgaGVpZ2h0PSI0OHB4IiB2aWV3Qm94PSIwIDAgNDggNDgiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+ICAgICAgICA8dGl0bGU+TGlzdCBpY29uPC90aXRsZT4gICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+ICAgIDxkZWZzPjwvZGVmcz4gICAgPGcgaWQ9IlR3ZWVrLWljb25zIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4gICAgICAgIDxnIGlkPSJMaXN0LWljb24iPiAgICAgICAgICAgIDxnIGlkPSJQYWdlLTEiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE1LjAwMDAwMCwgMTcuMDAwMDAwKSI+ICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0yLjc3NDEsMS4zODcgQzIuNzc0MSwyLjE1MyAyLjE1MzEsMi43NzQgMS4zODcxLDIuNzc0IEMwLjYyMTEsMi43NzQgMC4wMDAxLDIuMTUzIDAuMDAwMSwxLjM4NyBDMC4wMDAxLDAuNjIxIDAuNjIxMSwwIDEuMzg3MSwwIEMyLjE1MzEsMCAyLjc3NDEsMC42MjEgMi43NzQxLDEuMzg3IiBpZD0iRmlsbC0xIiBmaWxsPSIjNTE1QzY2Ij48L3BhdGg+ICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0yLjc3NDEsNy40MDI0IEMyLjc3NDEsOC4xNjg0IDIuMTUzMSw4Ljc4OTQgMS4zODcxLDguNzg5NCBDMC42MjExLDguNzg5NCAwLjAwMDEsOC4xNjg0IDAuMDAwMSw3LjQwMjQgQzAuMDAwMSw2LjYzNjQgMC42MjExLDYuMDE1NCAxLjM4NzEsNi4wMTU0IEMyLjE1MzEsNi4wMTU0IDIuNzc0MSw2LjYzNjQgMi43NzQxLDcuNDAyNCIgaWQ9IkZpbGwtMyIgZmlsbD0iIzUxNUM2NiI+PC9wYXRoPiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMi43NzQxLDEzLjQxNzggQzIuNzc0MSwxNC4xODM4IDIuMTUzMSwxNC44MDQ4IDEuMzg3MSwxNC44MDQ4IEMwLjYyMTEsMTQuODA0OCAwLjAwMDEsMTQuMTgzOCAwLjAwMDEsMTMuNDE3OCBDMC4wMDAxLDEyLjY1MTggMC42MjExLDEyLjAzMDggMS4zODcxLDEyLjAzMDggQzIuMTUzMSwxMi4wMzA4IDIuNzc0MSwxMi42NTE4IDIuNzc0MSwxMy40MTc4IiBpZD0iRmlsbC01IiBmaWxsPSIjNTE1QzY2Ij48L3BhdGg+ICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik01LjQxOTYsMS4zMDI4IEwxNy40NDY2LDEuMzAyOCIgaWQ9IlN0cm9rZS03IiBzdHJva2U9IiM1MTVDNjYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48L3BhdGg+ICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik01LjQxOTYsNy40MDI0IEwxNy40NDY2LDcuNDAyNCIgaWQ9IlN0cm9rZS05IiBzdHJva2U9IiM1MTVDNjYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48L3BhdGg+ICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik01LjQxOTYsMTMuNTAyIEwxNy40NDY2LDEzLjUwMiIgaWQ9IlN0cm9rZS0xMSIgc3Ryb2tlPSIjNTE1QzY2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PC9wYXRoPiAgICAgICAgICAgIDwvZz4gICAgICAgIDwvZz4gICAgPC9nPjwvc3ZnPg==);
 }
+.typed-input-with-icon i[data-value-type=array] {
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4OS41IDEyMSI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiM1MTVjNjU7fTwvc3R5bGU+PC9kZWZzPjx0aXRsZT5zb2dyYWltPC90aXRsZT48ZyBpZD0iTGF5ZXJfMiIgZGF0YS1uYW1lPSJMYXllciAyIj48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0zNy42MiwxMDIuNjRhMTAuMjEsMTAuMjEsMCwwLDEtLjQ4LDMuNzUsMS41MywxLjUzLDAsMCwxLTEuNCwxLjA3SDE5LjE5YTQuODYsNC44NiwwLDAsMS0xLjY2LS4yNywzLjQzLDMuNDMsMCwwLDEtMS4yOS0uOCwzLjkxLDMuOTEsMCwwLDEtLjg2LTEuMzksNS45NCw1Ljk0LDAsMCwxLS4zMi0yVjE4YTUuODEsNS44MSwwLDAsMSwuMzItMiw0LjI0LDQuMjQsMCwwLDEsLjg2LTEuNDIsMy4wOSwzLjA5LDAsMCwxLDEuMjktLjgsNS40MSw1LjQxLDAsMCwxLDEuNjYtLjI0SDM1Ljc0YTEuNDcsMS40NywwLDAsMSwuODEuMjQsMS43MiwxLjcyLDAsMCwxLC42MS44LDUuNDYsNS40NiwwLDAsMSwuMzUsMS40OCwyMC41NCwyMC41NCwwLDAsMSwuMTEsMi4zLDEwLjE4LDEwLjE4LDAsMCwxLS40OCwzLjc4LDEuNTEsMS41MSwwLDAsMS0xLjQsMUgyNy42NVY5Ny44Mmg4LjA5YTEuNjMsMS42MywwLDAsMSwuODEuMjEsMS41NCwxLjU0LDAsMCwxLC42MS44LDUuOTIsNS45MiwwLDAsMSwuMzUsMS41QTIwLjczLDIwLjczLDAsMCwxLDM3LjYyLDEwMi42NFoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NC40MywxMDNhNS4yOCw1LjI4LDAsMCwxLS4zNSwyLDQuMDksNC4wOSwwLDAsMS0uODgsMS4zOSwzLjQzLDMuNDMsMCwwLDEtMS4yOS44LDQuODYsNC44NiwwLDAsMS0xLjY2LjI3SDUzLjY1YTEuNTMsMS41MywwLDAsMS0xLjQtMS4wNywxMC4yMSwxMC4yMSwwLDAsMS0uNDgtMy43NSwxNi40LDE2LjQsMCwwLDEsLjEzLTIuMzEsNi44LDYuOCwwLDAsMSwuMzgtMS41LDEuNjIsMS42MiwwLDAsMSwuNTktLjgsMS40NywxLjQ3LDAsMCwxLC43OC0uMjFoOC4xNFYyMy4xOEg1My42NWExLjUxLDEuNTEsMCwwLDEtMS40LTEsMTAuMTgsMTAuMTgsMCwwLDEtLjQ4LTMuNzgsMTYuMjQsMTYuMjQsMCwwLDEsLjEzLTIuMyw2LjE5LDYuMTksMCwwLDEsLjM4LTEuNDgsMS44NCwxLjg0LDAsMCwxLC41OS0uOCwxLjMzLDEuMzMsMCwwLDEsLjc4LS4yNGgxNi42YTUuNDEsNS40MSwwLDAsMSwxLjY2LjI0LDMuMDksMy4wOSwwLDAsMSwxLjI5LjhBNC40NSw0LjQ1LDAsMCwxLDc0LjA4LDE2YTUuMTYsNS4xNiwwLDAsMSwuMzUsMloiLz48L2c+PC9zdmc+);
+  background-size: 70% 70%;
+}
 .typed-input-with-icon i[data-value-type=number] {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyB3aWR0aD0iNDhweCIgaGVpZ2h0PSI0OHB4IiB2aWV3Qm94PSIwIDAgNDggNDgiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+ICAgICAgICA8dGl0bGU+TnVtYmVyIGljb248L3RpdGxlPiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4gICAgPGRlZnM+PC9kZWZzPiAgICA8ZyBpZD0iVHdlZWstaWNvbnMiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+ICAgICAgICA8ZyBpZD0iTnVtYmVyLWljb24iIHN0cm9rZT0iIzUxNUM2NiIgc3Ryb2tlLXdpZHRoPSIyIj4gICAgICAgICAgICA8ZyBpZD0iUGFnZS0xIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxNi4wMDAwMDAsIDE2LjAwMDAwMCkiPiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNNy4wMzU3LDAgTDIuNTMzNywxNi4zOTciIGlkPSJTdHJva2UtMSI+PC9wYXRoPiAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTMuOTMzMywwLjA2OTggTDkuNDMxMywxNi40NjY4IiBpZD0iU3Ryb2tlLTMiPjwvcGF0aD4gICAgICAgICAgICAgICAgPHBhdGggZD0iTTIuMDY5NCw0LjQzMzQgTDE2LjQ2NjQsNC40MzM0IiBpZD0iU3Ryb2tlLTUiPjwvcGF0aD4gICAgICAgICAgICAgICAgPHBhdGggZD0iTTAsMTIuMDMzNCBMMTQuMzk3LDEyLjAzMzQiIGlkPSJTdHJva2UtNyI+PC9wYXRoPiAgICAgICAgICAgIDwvZz4gICAgICAgIDwvZz4gICAgPC9nPjwvc3ZnPg==);
 }
 .typed-input-with-icon i[data-value-type=date] {
   background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+IDxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+LnN0MHtmaWxsOiNGRkZGRkY7fS5zdDF7ZmlsbDpub25lO3N0cm9rZTojNTE1QzY2O3N0cm9rZS13aWR0aDoyO3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDt9LnN0MntmaWxsOiM1MTVDNjY7fTwvc3R5bGU+IDx0aXRsZT5EYXRlIGljb248L3RpdGxlPiA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4gPGc+ICA8dGl0bGU+YmFja2dyb3VuZDwvdGl0bGU+ICA8cmVjdCBmaWxsPSJub25lIiBpZD0iY2FudmFzX2JhY2tncm91bmQiIGhlaWdodD0iNDAyIiB3aWR0aD0iNTgyIiB5PSItMSIgeD0iLTEiLz4gPC9nPiA8Zz4gIDx0aXRsZT5MYXllciAxPC90aXRsZT4gIDxnIGlkPSJUd2Vlay1pY29ucyI+ICAgPGcgaWQ9IkRhdGUtaWNvbi0iPiAgICA8ZyBpZD0iR3JvdXAtNCI+ICAgICA8ZyBpZD0iR3JvdXAtMyI+ICAgICAgPGcgaWQ9IlBhZ2UtMS1Db3B5LTIiPiAgICAgICA8ZyBpZD0iR3JvdXAtMiI+ICAgICAgICA8cGF0aCBkPSJtMTkuOCwxOC43NjI0OTlsMCwtNCIgY2xhc3M9InN0MSIgaWQ9IlN0cm9rZS0zIi8+ICAgICAgICA8cGF0aCBkPSJtMjQsMTguNzYyNDk5bDAsLTQiIGNsYXNzPSJzdDEiIGlkPSJTdHJva2UtNSIvPiAgICAgICAgPHBhdGggZD0ibTI4LjIsMTguNzYyNDk5bDAsLTQiIGNsYXNzPSJzdDEiIGlkPSJTdHJva2UtNyIvPiAgICAgICA8L2c+ICAgICAgIDxnIGlkPSJDbGlwLTEwIi8+ICAgICAgPC9nPiAgICAgPC9nPiAgICA8L2c+ICAgPC9nPiAgPC9nPiAgPGcgaWQ9Ikdyb3VwIj4gICA8cGF0aCBkPSJtMjIuNSwyMi41NjI0OTljMCwwLjYgLTAuNCwxIC0xLDFjLTAuNSwwIC0xLC0wLjQgLTEsLTFzMC40LC0xIDEsLTFjMC41LDAgMSwwLjQgMSwxIiBjbGFzcz0ic3QyIiBpZD0iRmlsbC0xIi8+ICAgPHBhdGggZD0ibTIyLjUsMjUuMjYyNDk5YzAsMC42IC0wLjQsMSAtMSwxYy0wLjUsMCAtMSwtMC40IC0xLC0xczAuNCwtMSAxLC0xYzAuNSwwIDEsMC40IDEsMSIgY2xhc3M9InN0MiIgaWQ9IkZpbGwtMS1Db3B5LTQiLz4gICA8cGF0aCBkPSJtMjIuNSwyNy44NjI0OTljMCwwLjYgLTAuNCwxIC0xLDFjLTAuNSwwIC0xLC0wLjQgLTEsLTFjMCwtMC42IDAuNCwtMSAxLC0xYzAuNSwwIDEsMC41IDEsMSIgY2xhc3M9InN0MiIgaWQ9IkZpbGwtMS1Db3B5LTkiLz4gICA8cGF0aCBkPSJtMjIuNSwzMC41NjI0OTljMCwwLjYgLTAuNCwxIC0xLDFjLTAuNSwwIC0xLC0wLjQgLTEsLTFzMC40LC0xIDEsLTFjMC41LDAgMSwwLjQgMSwxIiBjbGFzcz0ic3QyIiBpZD0iRmlsbC0xLUNvcHktMTQiLz4gICA8cGF0aCBkPSJtMjUuMSwyMi41NjI0OTljMCwwLjYgLTAuNCwxIC0xLDFjLTAuNSwwIC0xLC0wLjQgLTEsLTFzMC40LC0xIDEsLTFjMC41LDAgMSwwLjQgMSwxIiBjbGFzcz0ic3QyIiBpZD0iRmlsbC0xLUNvcHkiLz4gICA8cGF0aCBkPSJtMjUuMSwyNS4yNjI0OTljMCwwLjYgLTAuNCwxIC0xLDFjLTAuNSwwIC0xLC0wLjQgLTEsLTFzMC40LC0xIDEsLTFjMC41LDAgMSwwLjQgMSwxIiBjbGFzcz0ic3QyIiBpZD0iRmlsbC0xLUNvcHktNSIvPiAgIDxwYXRoIGQ9Im0yNS4xLDI3Ljg2MjQ5OWMwLDAuNiAtMC40LDEgLTEsMWMtMC41LDAgLTEsLTAuNCAtMSwtMWMwLC0wLjYgMC40LC0xIDEsLTFjMC41LDAgMSwwLjUgMSwxIiBjbGFzcz0ic3QyIiBpZD0iRmlsbC0xLUNvcHktMTAiLz4gICA8cGF0aCBkPSJtMjUuMSwzMC41NjI0OTljMCwwLjYgLTAuNCwxIC0xLDFjLTAuNSwwIC0xLC0wLjQgLTEsLTFzMC40LC0xIDEsLTFjMC41LDAgMSwwLjQgMSwxIiBjbGFzcz0ic3QyIiBpZD0iRmlsbC0xLUNvcHktMTUiLz4gICA8cGF0aCBkPSJtMjcuNywyMi41NjI0OTljMCwwLjYgLTAuNCwxIC0xLDFzLTEsLTAuNCAtMSwtMXMwLjQsLTEgMSwtMXMxLDAuNCAxLDEiIGNsYXNzPSJzdDIiIGlkPSJGaWxsLTEtQ29weS0yIi8+ICAgPHBhdGggZD0ibTI3LjcsMjUuMjYyNDk5YzAsMC42IC0wLjQsMSAtMSwxcy0xLC0wLjQgLTEsLTFzMC40LC0xIDEsLTFzMSwwLjQgMSwxIiBjbGFzcz0ic3QyIiBpZD0iRmlsbC0xLUNvcHktNiIvPiAgIDxwYXRoIGQ9Im0yNy43LDI3Ljg2MjQ5OWMwLDAuNiAtMC40LDEgLTEsMXMtMSwtMC40IC0xLC0xYzAsLTAuNiAwLjQsLTEgMSwtMXMxLDAuNSAxLDEiIGNsYXNzPSJzdDIiIGlkPSJGaWxsLTEtQ29weS0xMSIvPiAgIDxwYXRoIGQ9Im0yNy43LDMwLjU2MjQ5OWMwLDAuNiAtMC40LDEgLTEsMXMtMSwtMC40IC0xLC0xczAuNCwtMSAxLC0xczEsMC40IDEsMSIgY2xhc3M9InN0MiIgaWQ9IkZpbGwtMS1Db3B5LTE2Ii8+ICAgPHBhdGggZD0ibTMwLjMsMjIuNTYyNDk5YzAsMC42IC0wLjQsMSAtMSwxYy0wLjUsMCAtMSwtMC40IC0xLC0xczAuNCwtMSAxLC0xYzAuNSwwIDEsMC40IDEsMSIgY2xhc3M9InN0MiIgaWQ9IkZpbGwtMS1Db3B5LTMiLz4gICA8cGF0aCBkPSJtMzAuMywyNS4yNjI0OTljMCwwLjYgLTAuNCwxIC0xLDFjLTAuNSwwIC0xLC0wLjQgLTEsLTFzMC40LC0xIDEsLTFjMC41LDAgMSwwLjQgMSwxIiBjbGFzcz0ic3QyIiBpZD0iRmlsbC0xLUNvcHktNyIvPiAgIDxwYXRoIGQ9Im0zMC4zLDI3Ljg2MjQ5OWMwLDAuNiAtMC40LDEgLTEsMWMtMC41LDAgLTEsLTAuNCAtMSwtMWMwLC0wLjYgMC40LC0xIDEsLTFjMC41LDAgMSwwLjUgMSwxIiBjbGFzcz0ic3QyIiBpZD0iRmlsbC0xLUNvcHktMTIiLz4gICA8cGF0aCBkPSJtMTkuOSwyNS4yNjI0OTljMCwwLjYgLTAuNCwxIC0xLDFzLTEsLTAuNCAtMSwtMXMwLjQsLTEgMSwtMXMxLDAuNCAxLDEiIGNsYXNzPSJzdDIiIGlkPSJGaWxsLTEtQ29weS04Ii8+ICAgPHBhdGggZD0ibTE5LjksMjcuODYyNDk5YzAsMC42IC0wLjQsMSAtMSwxcy0xLC0wLjQgLTEsLTFjMCwtMC42IDAuNCwtMSAxLC0xczEsMC41IDEsMSIgY2xhc3M9InN0MiIgaWQ9IkZpbGwtMS1Db3B5LTEzIi8+ICAgPHBhdGggZD0ibTE5LjksMzAuNTYyNDk5YzAsMC42IC0wLjQsMSAtMSwxcy0xLC0wLjQgLTEsLTFzMC40LC0xIDEsLTFzMSwwLjQgMSwxIiBjbGFzcz0ic3QyIiBpZD0iRmlsbC0xLUNvcHktMTgiLz4gIDwvZz4gIDxwYXRoIGQ9Im0zMywzMi44NjI0OTljMCwwLjkgLTAuNywxLjcgLTEuNiwxLjdsLTE0LjgsMGMtMC45LDAgLTEuNiwtMC44IC0xLjYsLTEuN2wwLC0xNC42YzAsLTAuOSAwLjcsLTEuNyAxLjYsLTEuN2wxNC43LDBjMC45LDAgMS42LDAuOCAxLjYsMS43bDAsMTQuNmwwLjEsMHoiIGNsYXNzPSJzdDEiIGlkPSJTdHJva2UtMSIvPiA8L2c+PC9zdmc+);
   background-size: 40px;
+}
+.typed-input-with-icon i[data-value-type=object] {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHBhdGggZmlsbD0iIzQ0NDQ0NCIgZD0iTTIuMSAzLjFjMC4yIDEuMyAwLjQgMS42IDAuNCAyLjkgMCAwLjgtMS41IDEuNS0xLjUgMS41djFjMCAwIDEuNSAwLjcgMS41IDEuNSAwIDEuMy0wLjIgMS42LTAuNCAyLjktMC4zIDIuMSAwLjggMy4xIDEuOCAzLjFzMi4xIDAgMi4xIDB2LTJjMCAwLTEuOCAwLjItMS44LTEgMC0wLjkgMC4yLTAuOSAwLjQtMi45IDAuMS0wLjktMC41LTEuNi0xLjEtMi4xIDAuNi0wLjUgMS4yLTEuMSAxLjEtMi0wLjMtMi0wLjQtMi0wLjQtMi45IDAtMS4yIDEuOC0xLjEgMS44LTEuMXYtMmMwIDAtMSAwLTIuMSAwcy0yLjEgMS0xLjggMy4xeiI+PC9wYXRoPjxwYXRoIGZpbGw9IiM0NDQ0NDQiIGQ9Ik0xMy45IDMuMWMtMC4yIDEuMy0wLjQgMS42LTAuNCAyLjkgMCAwLjggMS41IDEuNSAxLjUgMS41djFjMCAwLTEuNSAwLjctMS41IDEuNSAwIDEuMyAwLjIgMS42IDAuNCAyLjkgMC4zIDIuMS0wLjggMy4xLTEuOCAzLjFzLTIuMSAwLTIuMSAwdi0yYzAgMCAxLjggMC4yIDEuOC0xIDAtMC45LTAuMi0wLjktMC40LTIuOS0wLjEtMC45IDAuNS0xLjYgMS4xLTIuMS0wLjYtMC41LTEuMi0xLjEtMS4xLTIgMC4yLTIgMC40LTIgMC40LTIuOSAwLTEuMi0xLjgtMS4xLTEuOC0xLjF2LTJjMCAwIDEgMCAyLjEgMHMyLjEgMSAxLjggMy4xeiI+PC9wYXRoPjwvc3ZnPg==);
+  background-size: 55% 55%;
+}
+.object-type-expander {
+  width: 20px;
+  height: 28px;
+  vertical-align: bottom;
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgNDggNDgiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQ4IDQ4OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4uc3Qwe2ZpbGw6IzAwQUVFRjt9PC9zdHlsZT48cGF0aCBjbGFzcz0ic3QwIiBkPSJNNiwzNC41VjQyaDcuNWwyMi4xLTIyLjFsLTcuNS03LjVMNiwzNC41eiBNNDEuNCwxNC4xYzAuOC0wLjgsMC44LTIuMSwwLTIuOGwtNC43LTQuN2MtMC44LTAuOC0yLTAuOC0yLjgsMGwtMy43LDMuN2w3LjUsNy41QzM3LjcsMTcuOCw0MS40LDE0LjEsNDEuNCwxNC4xeiIvPjwvc3ZnPg==);
+  background-size: 100% 100%;
 }

@@ -17,7 +17,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "api-build",
-            "program": "${workspaceRoot}/services/api/Tweek.ApiService/bin/Debug/netcoreapp2.0/Tweek.ApiService.dll",
+            "program": "${workspaceRoot}/services/api/Tweek.ApiService/bin/Debug/netcoreapp2.1/Tweek.ApiService.dll",
             "args": [],
             "cwd": "${workspaceRoot}/services/api/Tweek.ApiService",
             "stopAtEntry": false,
