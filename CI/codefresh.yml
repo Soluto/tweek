@@ -8,7 +8,7 @@ steps:
     commands:
       - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export  
 
-  BuildGateway:
+  BuildingGateway:
     title: Building Gateway
     type: build
     image_name: soluto/tweek-gateway
@@ -72,7 +72,7 @@ steps:
     type: composition
     composition: ./CI/docker-compose.yml
     composition_variables:      
-      - GATEWAY_IMAGE=${{BuildGateway}}
+      - GATEWAY_IMAGE=${{BuildingGateway}}
       - REPOSITORY_IMAGE=${{BuildingGitRepository}}
       - PUBLISHING_IMAGE=${{BuildingPublishing}}
       - API_IMAGE=${{BuildingApiImage}}
@@ -146,7 +146,7 @@ steps:
     type: composition
     composition: ./CI/docker-compose.yml
     composition_variables:      
-      - GATEWAY_IMAGE=${{BuildGateway}}
+      - GATEWAY_IMAGE=${{BuildingGateway}}
       - REPOSITORY_IMAGE=${{BuildingGitRepository}}
       - PUBLISHING_IMAGE=${{BuildingPublishing}}
       - API_IMAGE=${{BuildingApiImage}}
@@ -243,6 +243,18 @@ steps:
       - latest
       - ${{TWEEK_DOCKER_TAG_API}}
 
+  PushApiImageGateway:
+    type: push
+    title: Push Tweek Api - gateway
+    when:
+      branch:
+        only:
+          - gateway
+    candidate: ${{BuildingApiImage}}
+    tags:
+      - latest-gateway
+      - ${{TWEEK_DOCKER_TAG_API}}-gateway
+
   PushPublishingImageMaster:
     type: push
     title: Push Publishing - lastest
@@ -254,6 +266,18 @@ steps:
     tags:
       - latest
       - ${{TWEEK_DOCKER_TAG_PUBLISHING}}
+
+  PushPublishingImageGateway:
+    type: push
+    title: Push Publishing - gateway
+    when:
+      branch:
+        only:
+          - gateway
+    candidate: ${{BuildingPublishing}}
+    tags:
+      - latest-gateway
+      - ${{TWEEK_DOCKER_TAG_PUBLISHING}}-gateway
 
   PushAuthoringImageMaster:
     type: push
@@ -267,6 +291,18 @@ steps:
       - latest
       - ${{TWEEK_DOCKER_TAG_AUTHORING}}
 
+  PushAuthoringImageGateway:
+    type: push
+    title: Push Tweek Authoring - gateway
+    when:
+      branch:
+        only:
+          - gateway
+    candidate: ${{BuildingAuthoring}}
+    tags:
+      - latest-gateway
+      - ${{TWEEK_DOCKER_TAG_AUTHORING}}-gateway
+
   PushEditorImageMaster:
     type: push
     title: Push Editor - latest
@@ -279,6 +315,18 @@ steps:
       - latest
       - ${{TWEEK_DOCKER_TAG_EDITOR}}
 
+  PushEditorImageGateway:
+    type: push
+    title: Push Editor - gateway
+    when:
+      branch:
+        only:
+          - gateway
+    candidate: ${{BuildingEditor}}
+    tags:
+      - latest-gateway
+      - ${{TWEEK_DOCKER_TAG_EDITOR}}-gateway
+
   PushGitRepositoryMaster:
     type: push
     title: Push Git Repository - latest
@@ -287,3 +335,15 @@ steps:
         only:
           - master
     candidate: ${{BuildingGitRepository}}
+
+  PushGatewayImageGateway:
+    type: push
+    title: Push Git Repository - latest
+    when:
+      branch:
+        only:
+          - gateway
+    candidate: ${{BuildingGateway}}
+    tags:
+      - latest-gateway
+      - ${{TWEEK_DOCKER_TAG_GATEWAY}}-gateway

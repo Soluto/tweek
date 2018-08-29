@@ -34,4 +34,13 @@ if [[ "$(git tag | grep -c $TWEEK_EDITOR_TAG)" == "0" ]]; then
     export TWEEK_DOCKER_TAG_EDITOR=$TWEEK_EDITOR_VERSION
 fi
 
+echo  checking gateway version
+TWEEK_GATEWAY_VERSION=$(cat ./services/gateway/version.go | grep -E "Version" | grep -Eo [0-9.]*)
+TWEEK_GATEWAY_TAG="tweek-gateway-$TWEEK_GATEWAY_VERSION"
+export TWEEK_DOCKER_TAG_GATEWAY="latest"
+if [[ "$(git tag | grep -c $TWEEK_GATEWAY_TAG)" == "0" ]]; then
+    echo tagging $TWEEK_GATEWAY_TAG
+    export TWEEK_DOCKER_TAG_GATEWAY=$TWEEK_GATEWAY_VERSION
+fi
+
 env | grep TWEEK_DOCKER_TAG > $1
