@@ -24,16 +24,45 @@ export const getTypesService = getContext(typesServiceContextType);
 const valueToItem = value =>
   value === undefined || value === '' ? undefined : { label: changeCase.pascalCase(value), value };
 
+const CodeEditor = withJsonEditor(({ editJson, onChange, value, valueType, ...props }) => (
+  <div>
+    <Input
+      onDoubleClick={() => editJson(value, valueType)}
+      readOnly
+      {...props}
+      onChange={onChange}
+      value={value ? JSON.stringify(value) : value}
+    />
+    <button
+      className="text-input object-type-expander"
+      data-comp="object-editor"
+      onClick={() => editJson(value, valueType)}
+    />
+  </div>
+));
+
 const InputComponent = ({
   value,
   valueType,
   valueTypeName,
   allowedValues,
   onChange,
-  editJson,
   types,
   ...props
 }) => {
+  if (
+    valueTypeName === types.object.name ||
+    (valueTypeName === types.array.name && !valueType.ofType)
+  ) {
+    return (
+      <CodeEditor
+        valueType={valueType}
+        onChange={x => onChange(JSON.parse(x))}
+        value={value}
+        {...props}
+      />
+    );
+  }
   if (valueTypeName === types.array.name) {
     return (
       <ListTypedValue
@@ -57,23 +86,7 @@ const InputComponent = ({
       />
     );
   }
-  if (valueTypeName === 'object') {
-    return (
-      <div>
-        <Input
-          readOnly
-          {...props}
-          onChange={onChange}
-          value={value ? JSON.stringify(value) : value}
-        />
-        <button
-          className="text-input object-type-expander"
-          data-comp="object-editor"
-          onClick={() => editJson(value)}
-        />
-      </div>
-    );
-  }
+
   return <Input {...props} onChange={onChange} value={value} />;
 };
 
@@ -127,7 +140,6 @@ const TypedInput = compose(
       };
     },
   ),
-  withJsonEditor,
 )(InputWithIcon);
 
 TypedInput.propTypes = {

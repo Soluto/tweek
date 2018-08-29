@@ -83,7 +83,7 @@ describe('edit keys', () => {
           partitions: [],
           valueType: 'object',
           rules: [],
-          defaultValue: defaultValue,
+          defaultValue,
         };
 
         Key.open(keyName).editObjectInEditor(JSON.stringify(defaultValue));
@@ -94,16 +94,16 @@ describe('edit keys', () => {
 
       it('should succeed in editing an array JPad key', () => {
         const keyName = 'behavior_tests/edit_key/visual/edit_array_test';
-        const values = ['val', 'test'];
+        const defaultValue = ['val', 'test'];
         const expectedObjectKeySource = {
           partitions: [],
           valueType: 'array',
           rules: [],
-          defaultValue: values,
+          defaultValue,
         };
 
-        Key.open(keyName);
-        values.forEach(item => Key.addDefaultItem(item));
+        Key.open(keyName).editObjectInEditor(JSON.stringify(defaultValue));
+        Alert.save();
 
         expect(Key.goToSourceTab().source).to.deep.equal(expectedObjectKeySource);
       });
