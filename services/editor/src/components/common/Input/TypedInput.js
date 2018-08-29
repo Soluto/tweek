@@ -49,10 +49,13 @@ const InputComponent = ({
   types,
   ...props
 }) => {
+  if (
+    valueTypeName === types.object.name ||
+    (valueTypeName === types.array.name && !valueType.ofType)
+  ) {
+    return <CodeEditor valueType={valueType} onChange={onChange} value={value} {...props} />;
+  }
   if (valueTypeName === types.array.name) {
-    if (!valueType.ofType || valueType.ofType === 'object') {
-      return <CodeEditor onChange={onChange} valueType={valueType} value={value} {...props} />;
-    }
     return (
       <ListTypedValue
         data-comp="property-value"
@@ -75,9 +78,7 @@ const InputComponent = ({
       />
     );
   }
-  if (valueTypeName === 'object') {
-    return <CodeEditor valueType={valueType} onChange={onChange} value={value} {...props} />;
-  }
+
   return <Input {...props} onChange={onChange} value={value} />;
 };
 
