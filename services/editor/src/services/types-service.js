@@ -35,7 +35,6 @@ export async function refreshTypes() {
 
 export function convertValue(value, targetType) {
   const type = typeof targetType === 'string' ? types[targetType] : targetType;
-
   if (!type) {
     throw new Error('Unknown type', targetType);
   }
@@ -48,6 +47,9 @@ export function convertValue(value, targetType) {
   case 'array':
     return convertCheckArray(value, type.ofType ? x => convertValue(x, type.ofType) : x => x);
   case 'object':
+    if (typeof value === types.object.name) {
+      return value;
+    }
     return safeConvertToBaseType(value, 'object');
   default:
     return value.toString();

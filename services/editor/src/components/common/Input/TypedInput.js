@@ -26,12 +26,7 @@ const valueToItem = value =>
 
 const CodeEditor = withJsonEditor(({ editJson, onChange, value, valueType, ...props }) => (
   <div>
-    <Input
-      readOnly
-      {...props}
-      onChange={x => onChange(JSON.parse(x))}
-      value={value ? JSON.stringify(value) : value}
-    />
+    <Input readOnly {...props} onChange={onChange} value={value ? JSON.stringify(value) : value} />
     <button
       className="text-input object-type-expander"
       data-comp="object-editor"
@@ -53,7 +48,14 @@ const InputComponent = ({
     valueTypeName === types.object.name ||
     (valueTypeName === types.array.name && !valueType.ofType)
   ) {
-    return <CodeEditor valueType={valueType} onChange={onChange} value={value} {...props} />;
+    return (
+      <CodeEditor
+        valueType={valueType}
+        onChange={x => onChange(JSON.parse(x))}
+        value={value}
+        {...props}
+      />
+    );
   }
   if (valueTypeName === types.array.name) {
     return (
