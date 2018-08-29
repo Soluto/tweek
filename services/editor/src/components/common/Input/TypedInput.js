@@ -26,7 +26,13 @@ const valueToItem = value =>
 
 const CodeEditor = withJsonEditor(({ editJson, onChange, value, valueType, ...props }) => (
   <div>
-    <Input readOnly {...props} onChange={onChange} value={value ? JSON.stringify(value) : value} />
+    <Input
+      onDoubleClick={() => editJson(value, valueType)}
+      readOnly
+      {...props}
+      onChange={onChange}
+      value={value ? JSON.stringify(value) : value}
+    />
     <button
       className="text-input object-type-expander"
       data-comp="object-editor"
