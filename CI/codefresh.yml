@@ -338,7 +338,7 @@ steps:
 
   PushGatewayImageGateway:
     type: push
-    title: Push Git Repository - latest
+    title: Push Gateway - gateway
     when:
       branch:
         only:
