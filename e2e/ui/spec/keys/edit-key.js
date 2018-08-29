@@ -103,6 +103,7 @@ describe('edit keys', () => {
         };
 
         Key.open(keyName).editObjectInEditor(JSON.stringify(defaultValue));
+        Alert.save();
 
         expect(Key.goToSourceTab().source).to.deep.equal(expectedObjectKeySource);
       });
