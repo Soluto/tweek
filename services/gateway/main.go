@@ -69,7 +69,10 @@ func newApp(config *appConfig.Configuration) http.Handler {
 
 	recovery := negroni.NewRecovery()
 	recovery.PrintStack = false
-	middleware := negroni.New(recovery)
+
+	logger := negroni.NewLogger()
+
+	middleware := negroni.New(recovery, logger)
 	middleware.Use(authenticationMiddleware)
 	middleware.Use(authorizationMiddleware)
 
