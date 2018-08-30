@@ -113,8 +113,8 @@
     },
     {
         "routePathPrefix": "/revision",
-        "routeRegexp": "^/api/v2/revision-history/([^\\?]+)(.*)$",
-        "upstreamPath": "/api/revision-history/$1$2",
+        "routeRegexp": "^/api/v2/revision$",
+        "upstreamPath": "/api/revision",
         "methods": ["GET"],
         "service": "authoring",
         "userInfo": false
