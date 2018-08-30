@@ -16,8 +16,10 @@ basePath: /api/v2/
 paths:
   /values:
     get:
+      operationId: "GetValue"
+      description: "Get tweek key value"
       tags:
-        - "configuraiton"
+        - configuraiton
       responses:
         200:
           description: "Success"
@@ -27,7 +29,7 @@ paths:
           description: "Unauthorized"
         404:
           description: "Key not found"
-      parameters: 
+      parameters:
         - name: keyName
           in: query
           description: "Configuration key name"
@@ -44,65 +46,12 @@ paths:
           in: query
           description: "Return flat key/value JSON (no nesting)"
           type: boolean
-  /models:
-    get:
-      tags:
-        - models
-      operationId: readModels
-      parameters: 
-        - name: body
-          in: body
-          description: description
-          schema:
-            $ref: '#/definitions/PermissionsModel'
-      responses:
-        '200':
-          description: Result
-    post:
-      tags:
-        - models
-      operationId: writeModels
-      responses:
-        '200':
-          description: Success
-  /tags:
-    get:
-      description: "Get all tags"
-      operationId: TagsGet
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: Ok
-          schema:
-            type: array
-            items:
-              type: string
-      tags:
-        - tags
-      parameters: []
-    put:
-      description: "Save tags"
-      operationId: TagsSave
-      produces:
-        - text/html
-      responses:
-        '204':
-          description: 'No content'
-      tags:
-        - tags
-      consumes:
-        - application/json
-      parameters:
-        - description: "The tags that need saving"
-          in: body
-          name: tagsToSave
-          required: true
-          schema:
-            type: object
   /context/{identityType}/{identityId}:
     get:
       operationId: GetContext
+      description: "Get identity context"
+      tags:
+        - context
       parameters:
         - name: identityType
           in: path
@@ -120,6 +69,10 @@ paths:
       produces:
         - application/json
     post:
+      operationId: SaveContext
+      description: "Save identity context"
+      tags:
+        - context
       parameters:
         - name: identityType
           in: path
@@ -136,6 +89,10 @@ paths:
           description: Ok
   /context/{identityType}/{identityId}/{prop}:
     delete:
+      operationId: DeleteContextProp
+      description: "Delete identity context property"
+      tags:
+        - context
       parameters: 
         - name: identityType
           in: path
@@ -155,9 +112,149 @@ paths:
       responses:
         200:
           description: OK
+  /keys:
+    get:
+      operationId: KeysGetKey
+      produces:
+          - application/json
+      responses:
+          '200':
+              description: Ok
+              schema:
+                  type: object
+      description: ""
+      tags:
+        - keys
+      parameters:
+        -
+          description: ""
+          in: query
+          name: keyPath
+          required: true
+          type: string
+        -
+          description: ""
+          in: query
+          name: revision
+          required: false
+          type: string
+    put:
+      operationId: CreateKey
+      description: "Save Key"
+      produces:
+          - text/html
+      responses:
+        200:
+          description: Ok
+        schema:
+          type: string
+      tags:
+          - keys
+      consumes:
+          - application/json
+      parameters:
+          -
+            description: ""
+            in: query
+            name: keyPath
+            required: true
+            type: string
+          -
+            description: ""
+            in: query
+            name: author.name
+            required: true
+            type: string
+          -
+            description: ""
+            in: query
+            name: author.email
+            required: true
+            type: string
+          -
+            description: ""
+            in: body
+            name: newKeyModel
+            required: true
+            schema:
+                $ref: '#/definitions/KeyUpdateModel'
+    delete:
+      operationId: KeysDeleteKey
+      tags:
+        - keys
+      produces:
+        - text/html
+      responses:
+        200:
+          description: Ok
+          schema:
+            type: string
+        description: ""
+        parameters:
+          -
+            description: ""
+            in: query
+            name: keyPath
+            required: true
+            type: string
+          -
+            description: ""
+            in: query
+            name: author.name
+            required: true
+            type: string
+          -
+            description: ""
+            in: query
+            name: author.email
+            required: true
+            type: string
+          -
+            description: ""
+            in: body
+            name: additionalKeys
+            required: false
+            type: array
+  /tags:
+    get:
+      operationId: TagsGet
+      description: "Get all tags"
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: array
+            items:
+              type: string
+      tags:
+        - tags
+      parameters: []
+    put:
+      operationId: SaveTag
+      description: "Save tags"
+      
+      produces:
+        - text/html
+      responses:
+        '204':
+          description: 'No content'
+      tags:
+        - tags
+      consumes:
+        - application/json
+      parameters:
+        - description: "The tags that need saving"
+          in: body
+          name: tagsToSave
+          required: true
+          schema:
+            type: object
   /schemas:
     get:
       operationId: GetSchemas
+      description: "Get query"
       produces:
         - application/json
       responses:
@@ -167,13 +264,13 @@ paths:
             type: array
             items:
               type: object
-      description: ""
       tags:
         - schema
       parameters: []
   /schemas/{identityType}:
     delete:
       operationId: DeleteIdentity
+      description: "Delete Schema"
       produces:
         - text/html
       responses:
@@ -189,18 +286,19 @@ paths:
           name: identityType
           required: true
           type: string
-        # - description: ""
-        #   in: query
-        #   name: author.name
-        #   required: true
-        #   type: string
-        # - description: ""
-        #   in: query
-        #   name: author.email
-        #   required: true
-        #   type: string
+        - description: ""
+          in: query
+          name: author.name
+          required: true
+          type: string
+        - description: ""
+          in: query
+          name: author.email
+          required: true
+          type: string
     post:
       operationId: SchemaAddIdentity
+      description: "Add identity"
       produces:
         - text/html
       responses:
@@ -208,7 +306,6 @@ paths:
           description: Ok
           schema:
             type: string
-      description: ""
       tags:
         - schema
       consumes:
@@ -219,16 +316,16 @@ paths:
           name: identityType
           required: true
           type: string
-        # - description: ""
-        #   in: query
-        #   name: author.name
-        #   required: true
-        #   type: string
-        # - description: ""
-        #   in: query
-        #   name: author.email
-        #   required: true
-        #   type: string
+        - description: ""
+          in: query
+          name: author.name
+          required: true
+          type: string
+        - description: ""
+          in: query
+          name: author.email
+          required: true
+          type: string
         - description: ""
           in: body
           name: value
@@ -237,6 +334,7 @@ paths:
             type: object
     patch:
       operationId: SchemaPatchIdentity
+      description: "Update identity"
       produces:
         - text/html
       responses:
@@ -254,54 +352,244 @@ paths:
           name: identityType
           required: true
           type: string
-        # - description: ""
-        #   in: query
-        #   name: author.name
-        #   required: true
-        #   type: string
-        # - description: ""
-        #   in: query
-        #   name: author.email
-        #   required: true
-        #   type: string
+        - description: ""
+          in: query
+          name: author.name
+          required: true
+          type: string
+        - description: ""
+          in: query
+          name: author.email
+          required: true
+          type: string
         - description: ""
           in: body
           name: patch
           required: true
           schema:
-            type: object
-definitions:
-  PermissionsModelItem:
-    type: object
-    additionalProperties: false
-    properties:
-      PType: { type: string }
-      V0: { type: string }
-      V1: { type: string }
-      V2: { type: string }
-      V3: { type: string }
-      V4: { type: string }
-      V5: { type: string }
-  PermissionsModel:
-    type: array
-    items:
-      $ref: '#/definitions/PermissionsModelItem'
-    example:
-    - PType: p
-      V0: allow@security.test
-      V1: /target
-      V2: GET
-      V3: allow
-      V4: ''
-      V5: ''
-    - PType: p
-      V0: deny@security.test
-      V1: /target
-      V2: GET
-      V3: deny
-      V4: ''
-      V5: ''
-
+            $ref: '#/definitions/Patch'
+  /manifests:
+    get:
+      operationId: GetManifests
+      description: "Get Manifests"
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: array
+            items:
+              type: object
+      tags:
+        - manifest
+      parameters: []
+  /suggestions:
+    get:
+      operationId: GetSuggestions
+      description: "Get Suggestions"
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: array
+            items:
+              type: object
+      tags:
+        - suggestions
+      parameters: []
+  /search:
+    get:
+      operationId: Search
+      description: "Search"
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: array
+            items:
+              type: object
+      tags:
+        - search
+      parameters: []
+  /dependents:
+    get:
+      operationId: GetDependents
+      description: "Get Dependents"
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: array
+            items:
+              type: object
+      tags:
+        - dependent
+      parameters: []
+  /revision-history:
+    get:
+      operationId: GetRevisionHistory
+      description: "Get Revision History"
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: array
+            items:
+              type: object
+      tags:
+        - revision-history
+      parameters:
+        -
+          description: ""
+          in: query
+          name: keyPath
+          required: true
+          type: string
+        -
+          description: ""
+          in: query
+          name: since
+          required: true
+          type: string
+  /policies:
+    get:
+      operationId: GetPolicies
+      description: "Get Policies"
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: array
+            items:
+              type: object
+      tags:
+        - policy
+      parameters: []
+    put:
+      operationId: ReplacePolicy
+      description: "Replace Policy"
+      responses:
+        '200':
+          description: OK
+      tags:
+        - policy
+      parameters: []
+    patch:
+      operationId: UpdatePolicy
+      description: "Update Policy"
+      responses:
+        '200':
+          description: OK
+      tags:
+        - policy
+      parameters:
+        - name: policyPatch
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Patch'
+  /apps:
+    post:
+      operationId: AppsCreateApp
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Ok
+          schema:
+              $ref: '#/definitions/AppCreationResponseModel'
+      description: ""
+      tags:
+        - apps
+      consumes:
+        - application/json
+      parameters:
+        -
+          description: ""
+          in: query
+          name: author.name
+          required: true
+          type: string
+        -
+          description: ""
+          in: query
+          name: author.email
+          required: true
+          type: string
+        -
+          description: ""
+          in: body
+          name: newAppModel
+          required: true
+          schema:
+            $ref: '#/definitions/AppCreationRequestModel'
+definitions:  
   # /schemas
   # /context
   # /configuration
+  
+  PatchOperation:
+    type: object
+    properties:
+      op:
+        type: string
+      path:
+        type: string
+      value:
+        type: object
+  Patch:
+    type: array
+    items:
+      $ref: '#/definitions/PatchOperation'
+  KeyUpdateModel:
+    description: ""
+    properties:
+        implementation:
+            type: object
+            description: ""
+        manifest:
+            type: object
+            description: ""
+    type: object
+    required:
+        - implementation
+        - manifest
+  AppCreationResponseModel:
+      description: ""
+      properties:
+          appId:
+              type: string
+              description: ""
+          appSecret:
+              type: string
+              description: ""
+      type: object
+      required:
+          - appId
+          - appSecret
+  AppCreationRequestModel:
+      description: ""
+      properties:
+          name:
+              type: string
+              description: ""
+          permissions:
+              type: array
+              items:
+                  type: string
+              description: ""
+      type: object
+      required:
+          - name
+          - permissions

@@ -52,7 +52,7 @@ func TestExtractFromRequest(t *testing.T) {
 			args: args{
 				r: createTestRequest("POST", "https://gateway.tweek.com/api/v2/keys/key1", userInfo),
 			},
-			wantObj: PolicyResource{Item: "repo.keys/key1", Contexts: map[string]string{}},
+			wantObj: PolicyResource{Item: "repo/keys/key1", Contexts: map[string]string{}},
 			wantSub: &Subject{User: "A b sub", Group: "default"},
 			wantAct: "write",
 			wantErr: nil,
@@ -62,7 +62,7 @@ func TestExtractFromRequest(t *testing.T) {
 			args: args{
 				r: createTestRequest("GET", "https://gateway.tweek.com/api/v2/values/value1", userInfo),
 			},
-			wantObj: PolicyResource{Item: "keys.value1", Contexts: map[string]string{}},
+			wantObj: PolicyResource{Item: "values/value1", Contexts: map[string]string{}},
 			wantSub: &Subject{User: "A b sub", Group: "default"},
 			wantAct: "read",
 			wantErr: nil,
@@ -138,7 +138,7 @@ func Test_extractContextsFromRequest(t *testing.T) {
 			args: args{
 				r: createRequest("POST", "/api/v2/schemas/device", "alice", "default"),
 			},
-			wantCtxs: PolicyResource{Item: "repo.schemas", Contexts: map[string]string{}},
+			wantCtxs: PolicyResource{Item: "repo/schemas", Contexts: map[string]string{}},
 			wantErr:  false,
 		},
 		{
@@ -146,7 +146,7 @@ func Test_extractContextsFromRequest(t *testing.T) {
 			args: args{
 				r: createRequest("GET", "/api/v2/values/key1?user=alice", "alice", "default"),
 			},
-			wantCtxs: PolicyResource{Item: "keys.key1", Contexts: map[string]string{"user": "self"}},
+			wantCtxs: PolicyResource{Item: "values/key1", Contexts: map[string]string{"user": "self"}},
 			wantErr:  false,
 		},
 		{
@@ -154,7 +154,7 @@ func Test_extractContextsFromRequest(t *testing.T) {
 			args: args{
 				r: createRequest("GET", "/api/v2/values/key1?user=alice&device=1234", "alice", "default"),
 			},
-			wantCtxs: PolicyResource{Item: "keys.key1", Contexts: map[string]string{"user": "self", "device": "1234"}},
+			wantCtxs: PolicyResource{Item: "values/key1", Contexts: map[string]string{"user": "self", "device": "1234"}},
 			wantErr:  false,
 		},
 		{
@@ -162,7 +162,7 @@ func Test_extractContextsFromRequest(t *testing.T) {
 			args: args{
 				r: createRequest("GET", "/api/v2/context/user/alice", "alice", "default"),
 			},
-			wantCtxs: PolicyResource{Contexts: map[string]string{"user": "self"}, Item: "user.*"},
+			wantCtxs: PolicyResource{Contexts: map[string]string{"user": "self"}, Item: "context/user/*"},
 			wantErr:  false,
 		},
 		{
@@ -170,7 +170,7 @@ func Test_extractContextsFromRequest(t *testing.T) {
 			args: args{
 				r: createRequest("POST", "/api/v2/context/user/alice", "alice", "default"),
 			},
-			wantCtxs: PolicyResource{Contexts: map[string]string{"user": "self"}, Item: "user.*"},
+			wantCtxs: PolicyResource{Contexts: map[string]string{"user": "self"}, Item: "context/user/*"},
 			wantErr:  false,
 		},
 		{
@@ -178,7 +178,7 @@ func Test_extractContextsFromRequest(t *testing.T) {
 			args: args{
 				r: createRequest("DELETE", "/api/v2/context/user/alice/property", "alice", "default"),
 			},
-			wantCtxs: PolicyResource{Contexts: map[string]string{"user": "self"}, Item: "user.property"},
+			wantCtxs: PolicyResource{Contexts: map[string]string{"user": "self"}, Item: "context/user/property"},
 			wantErr:  false,
 		},
 	}

@@ -48,7 +48,7 @@ func TestAuthorizationMiddleware(t *testing.T) {
 		{
 			name: "Deny by user",
 			args: args{method: "GET", path: "/api/v2/values/key1", user: "bob@security.test", group: "default"},
-			want: http.StatusUnauthorized,
+			want: http.StatusForbidden,
 		},
 		{
 			name: "Allow calculating values with specific context",
@@ -68,17 +68,17 @@ func TestAuthorizationMiddleware(t *testing.T) {
 		{
 			name: "Deny writing context for someone else",
 			args: args{method: "POST", path: "/api/v2/context/user/bob@security.test", user: "alice@security.test", group: "default"},
-			want: http.StatusUnauthorized,
+			want: http.StatusForbidden,
 		},
 		{
 			name: "Deny deleting context property for someone else",
 			args: args{method: "DELETE", path: "/api/v2/context/user/bob@security.test/prop", user: "alice@security.test", group: "default"},
-			want: http.StatusUnauthorized,
+			want: http.StatusForbidden,
 		},
 		{
 			name: "Deny deleting context property for self",
 			args: args{method: "DELETE", path: "/api/v2/context/user/bob@security.test/prop", user: "bob@security.test", group: "default"},
-			want: http.StatusUnauthorized,
+			want: http.StatusForbidden,
 		},
 	}
 

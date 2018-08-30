@@ -110,6 +110,12 @@
   revision = "3864e76763d94a6df2f9960b16a20a33da9f9a66"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/mwitkow/go-conntrack"
+  packages = ["."]
+  revision = "cc309e4a22231782e8893f3c35ced0967807a33e"
+
+[[projects]]
   name = "github.com/nats-io/go-nats"
   packages = [".","encoders/builtin","util"]
   revision = "062418ea1c2181f52dc0f954f6204370519a868b"
@@ -148,7 +154,7 @@
 [[projects]]
   branch = "master"
   name = "github.com/prometheus/common"
-  packages = ["expfmt","internal/bitbucket.org/ww/goautoneg","model"]
+  packages = ["config","expfmt","internal/bitbucket.org/ww/goautoneg","model"]
   revision = "7600349dcfe1abd18d72d3a1770870d9800a7801"
 
 [[projects]]
@@ -202,7 +208,7 @@
 [[projects]]
   branch = "release-branch.go1.10"
   name = "golang.org/x/net"
-  packages = ["idna","lex/httplex"]
+  packages = ["context","idna","internal/timeseries","lex/httplex","trace"]
   revision = "0ed95abb35c445290478a5348a7b38bb154135fd"
 
 [[projects]]
@@ -232,6 +238,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "37d0e3ba2dec1b721f9a7d0e4a0d67678f05f23697f713e274b9d9eada768649"
+  inputs-digest = "4d6f12fdc4769e6c59201ca3275413e78bf35782d3ca9c02a74fc4fd3ff14b18"
   solver-name = "gps-cdcl"
   solver-version = 1

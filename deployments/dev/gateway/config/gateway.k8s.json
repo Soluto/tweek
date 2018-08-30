@@ -11,6 +11,11 @@
                     "scope": "openid profile email",
                     "response_type": "id_token"
                 }
+            },
+            "basic_auth": {
+                "redirect_urls": [
+                    "http://editor"
+                ]
             }
         }
     }

@@ -3,7 +3,7 @@
         {
             "user": "alice@security.test",
             "group": "default",
-            "object": "keys.*",
+            "object": "values/*",
             "contexts": {},
             "action": "read",
             "effect": "allow"
@@ -14,7 +14,7 @@
             "contexts": {
                 "user": "self"
             },
-            "object": "keys.*",
+            "object": "values/*",
             "action": "read",
             "effect": "allow"
         },
@@ -24,7 +24,7 @@
             "contexts": {
                 "user": "self"
             },
-            "object": "keys.*",
+            "object": "values/*",
             "action": "read",
             "effect": "allow"
         },
@@ -34,7 +34,7 @@
             "contexts": {
                 "user": "self"
             },
-            "object": "user.*",
+            "object": "context/user/*",
             "action": "*",
             "effect": "allow"
         },
@@ -42,7 +42,7 @@
             "group": "default",
             "user": "bob@security.test",
             "contexts": {},
-            "object": "keys.*",
+            "object": "values/*",
             "action": "read",
             "effect": "deny"
         },
@@ -62,7 +62,7 @@
             "contexts": {
                 "user": "self"
             },
-            "object": "user.prop",
+            "object": "context/user/prop",
             "action": "write",
             "effect": "deny"
         }

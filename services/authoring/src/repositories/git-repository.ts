@@ -136,6 +136,10 @@ export default class GitRepository {
     const workdir = this._repo.workdir();
     const filePath = path.join(workdir, fileName);
 
+    const exists = await fs.existsSync(filePath);
+    if (!exists) {
+      return;
+    }
     const realPath = await fs.realpath(filePath);
     fileName = path.relative(workdir, realPath).replace(/\\/g, '/');
 

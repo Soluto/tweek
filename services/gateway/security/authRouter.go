@@ -5,21 +5,23 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/Soluto/tweek/services/gateway/appConfig"
 	"github.com/Soluto/tweek/services/gateway/externalApps"
+	"github.com/Soluto/tweek/services/gateway/utils"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"
 )
 
 // MountAuth -
-func MountAuth(providers map[string]appConfig.AuthProvider, keyEnv *appConfig.EnvInlineOrPath, middleware *negroni.Negroni, router *mux.Router) {
+func MountAuth(auth *appConfig.Auth, keyEnv *appConfig.EnvInlineOrPath, middleware *negroni.Negroni, router *mux.Router) {
 	router.Methods("OPTIONS").Handler(middleware)
 
-	router.Methods("GET").Path("/providers").Handler(middleware.With(getAuthProviders(providers)))
-	router.Methods("GET").Path("/basic").Handler(middleware.With(authorizeByUserPassword(keyEnv)))
+	router.Methods("GET").Path("/providers").Handler(middleware.With(getAuthProviders(auth.Providers)))
+	router.Methods("GET").Path("/basic").Handler(middleware.With(authorizeByUserPassword(keyEnv, &auth.BasicAuth)))
 }
 
 func getAuthProviders(providers map[string]appConfig.AuthProvider) negroni.HandlerFunc {
@@ -34,15 +36,13 @@ func getAuthProviders(providers map[string]appConfig.AuthProvider) negroni.Handl
 	}
 }
 
-func authorizeByUserPassword(keyEnv *appConfig.EnvInlineOrPath) negroni.HandlerFunc {
+func authorizeByUserPassword(keyEnv *appConfig.EnvInlineOrPath, basicAuthConfig *appConfig.BasicAuth) negroni.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		if username, password, ok := r.BasicAuth(); ok {
-			isValid, err := externalApps.ValidateCredentials(username, password)
+			err := externalApps.ValidateCredentials(username, password)
 			if err != nil {
-				log.Panicln("Credentials validation failed", err)
-			}
-			if !isValid {
-				http.Error(w, "Invalid credentials provided", http.StatusUnauthorized)
+				log.Println("Credentials were not provided or are invalid", err)
+				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 				return
 			}
 
@@ -51,7 +51,16 @@ func authorizeByUserPassword(keyEnv *appConfig.EnvInlineOrPath) negroni.HandlerF
 				log.Panicln("Private key retrieving failed:", err)
 			}
 			requestQuery := r.URL.Query()
-			redirectURL := requestQuery.Get("redirect_url")
+			redirectURLStr := requestQuery.Get("redirect_url")
+			redirectURL, errURL := url.Parse(redirectURLStr)
+			if errURL != nil {
+				http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+				return
+			}
+			if !utils.ContainsString(basicAuthConfig.RedirectURLs, redirectURL.Host) {
+				http.Error(w, "Redirect URL is invalid", http.StatusBadRequest)
+			}
+
 			state := requestQuery.Get("state")
 			email := requestQuery.Get("email")
 			token := createBasicAuthJWT(username, email, key)

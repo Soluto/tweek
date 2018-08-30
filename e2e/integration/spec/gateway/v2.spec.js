@@ -1,4 +1,8 @@
 const { expect } = require('chai');
+const jsonpatch = require('fast-json-patch');
+const nconf = require('nconf');
+const fetch = require('node-fetch');
+
 const { init: initClients } = require('../../utils/clients');
 const { pollUntil } = require('../../utils/utils');
 const { createManifestForJPadKey } = require('../../utils/manifest');
@@ -151,5 +155,77 @@ describe('Gateway v2 API', () => {
     expect(res1.header).to.have.property('x-oid');
     const res2 = await saveKey();
     expect(res2.header).to.not.have.property('x-oid');
+  });
+
+  it('should create new app', async () => {
+    const res = await clients.gateway
+      .post('/api/v2/apps?author.name=test&author.email=test@soluto.com')
+      .send({
+        name: 'test app',
+        permissions: [],
+      })
+      .expect(200);
+
+    const app = res.body;
+    expect(app).hasOwnProperty('appId');
+    expect(app).hasOwnProperty('appSecret');
+
+    const policyRes = await clients.gateway.get('/api/v2/policies').expect(200);
+
+    const currentPolicy = policyRes.body;
+
+    const newPolicy = {
+      policies: [
+        ...currentPolicy.policies,
+        {
+          group: 'externalapps',
+          user: app.appId,
+          contexts: {},
+          object: 'repo.keys/*',
+          action: 'write',
+          effect: 'allow',
+        },
+      ],
+    };
+
+    const patch = jsonpatch.compare(currentPolicy, newPolicy);
+    await clients.gateway
+      .patch('/api/v2/policies?author.name=test&author.email=test@soluto.com')
+      .send(patch)
+      .expect(200);
+
+    await clients.gateway.get('/api/v2/policies').expect(200, newPolicy);
+
+    const key = 'app_test_key';
+
+    const options = {
+      method: 'put',
+      headers: {
+        ['x-client-id']: app.appId,
+        ['x-client-secret']: app.appSecret,
+      },
+      body: {
+        manifest: createManifestForJPadKey(key),
+        implementation: JSON.stringify({
+          partitions: [],
+          defaultValue: 'test',
+          valueType: 'string',
+          rules: [],
+        }),
+      },
+    };
+
+    await fetch(
+      `${nconf.get(
+        'GATEWAY_URL',
+      )}/api/v2/keys/${key}?author.name=test&author.email=test@soluto.com`,
+      options,
+    );
+
+    const cleanup = jsonpatch.compare(newPolicy, currentPolicy);
+    await clients.gateway
+      .patch('/api/v2/policies?author.name=test&author.email=test@soluto.com')
+      .send(cleanup)
+      .expect(200);
   });
 });

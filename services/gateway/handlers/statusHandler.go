@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"sync"
 
@@ -44,21 +45,21 @@ func NewStatusHandler(config *appConfig.Upstreams) http.HandlerFunc {
 func checkServiceStatus(serviceName string, serviceHost string, statuses map[string]interface{}) {
 	resp, err := http.Get(fmt.Sprintf("%s/health", serviceHost))
 	if err != nil || resp == nil {
-		fmt.Printf("Service health request for %s failed with error: %v\n", serviceName, err)
+		log.Printf("Service health request for %s failed with error: %v\n", serviceName, err)
 		statuses[serviceName] = "Service health request failed"
 		return
 	}
 	defer resp.Body.Close()
 	contents, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Printf("Service health request for %s read failed with error: %v\n", serviceName, err)
+		log.Printf("Service health request for %s read failed with error: %v\n", serviceName, err)
 		statuses[serviceName] = "Service health request cannot be read"
 		return
 	}
 	var status map[string]interface{}
 	err = json.Unmarshal(contents, &status)
 	if err != nil {
-		fmt.Printf("Service health request for %s JSON parse failed with error: %v\n", serviceName, err)
+		log.Printf("Service health request for %s JSON parse failed with error: %v\n", serviceName, err)
 		statuses[serviceName] = "Service health request responded with bad format"
 		return
 	}

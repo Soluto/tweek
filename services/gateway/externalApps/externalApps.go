@@ -2,6 +2,7 @@ package externalApps
 
 import (
 	"crypto/sha512"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -38,23 +39,23 @@ type externalAppsRepo struct {
 var repo externalAppsRepo
 
 // ValidateCredentials - checks appID and secretKey are valid
-func ValidateCredentials(appID, appSecretKey string) (bool, error) {
+func ValidateCredentials(appID, appSecretKey string) error {
 	if appID == "" || appSecretKey == "" {
-		return false, errors.New("Invalid params")
+		return errors.New("Invalid params")
 	}
 
 	app, exists := repo.externalApps[appID]
 	if !exists {
-		return false, nil
+		return errors.New("The given appId does not exist")
 	}
 
 	for _, appKey := range app.SecretKeys {
 		if isValid := compareKeys(appKey, appSecretKey); isValid {
-			return true, nil
+			return nil
 		}
 	}
 
-	return false, nil
+	return errors.New("The given appSecretKey is invalid")
 }
 
 func compareKeys(appKey SecretKey, secretKey string) bool {
@@ -64,7 +65,13 @@ func compareKeys(appKey SecretKey, secretKey string) bool {
 		log.Panicln("Salt decode failed:", err)
 	}
 
-	hashBuf := pbkdf2.Key([]byte(secretKey), saltBuf, 100, 512, sha512.New)
+	secretKeyBuf, err := base64.StdEncoding.DecodeString(secretKey)
+	if err != nil {
+		log.Println("Invalid secretKeyFormat", err)
+		return false
+	}
+
+	hashBuf := pbkdf2.Key(secretKeyBuf, saltBuf, 100, 512, sha512.New)
 	hash := hex.EncodeToString(hashBuf)
 
 	return hash == appKey.Hash
@@ -110,6 +117,7 @@ func refreshApps(cfg *appConfig.PolicyStorage) nats.MsgHandler {
 			log.Panic("Refresh app failed: deserialize object ")
 		}
 		repo.externalApps = extApps
+		log.Println("Done refreshing external apps.")
 	}
 }
 

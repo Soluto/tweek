@@ -99,51 +99,53 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, e
 		return nil, fmt.Errorf("No issuer in claims")
 	})
 
-	if err == nil {
-		query := req.URL.Query()
-		var name, email string
-		if name = query.Get("name"); len(name) == 0 {
-			name = "anonymous"
-		}
-		if email = query.Get("email"); len(email) == 0 {
-			email = "anonymous"
+	if err != nil && err != request.ErrNoTokenInRequest {
+		return nil, err
+	}
+
+	var sub *Subject
+	var issuer string
+
+	if err == request.ErrNoTokenInRequest {
+		clientID := req.Header.Get("x-client-id")
+		clientSecret := req.Header.Get("x-client-secret")
+
+		validateCredentialsErr := externalApps.ValidateCredentials(clientID, clientSecret)
+		if validateCredentialsErr != nil {
+			log.Printf("App %s wasn't validated: %v\n", clientID, validateCredentialsErr)
+			return nil, validateCredentialsErr
 		}
 
+		sub = &Subject{User: clientID, Group: "externalapps"}
+		issuer = "tweek-externalapps"
+
+	} else {
+		var extractSubjectErr error
 		claims := token.Claims.(jwt.MapClaims)
-		sub, err := extractor.ExtractSubject(req.Context(), claims)
-		if err != nil {
+		sub, extractSubjectErr = extractor.ExtractSubject(req.Context(), claims)
+		if extractSubjectErr != nil {
+			log.Println("Failed to extract user info from JWT claims", extractSubjectErr)
 			return nil, fmt.Errorf("Failed to extract user info from JWT claims")
 		}
-		info := &userInfo{
-			sub:    sub,
-			issuer: claims["iss"].(string),
-			name:   name,
-			email:  email,
-		}
-		return info, nil
+		issuer = claims["iss"].(string)
 	}
 
-	if err != request.ErrNoTokenInRequest {
-		return nil, err
+	query := req.URL.Query()
+	var name, email string
+	if name = query.Get("author.name"); len(name) == 0 {
+		name = "anonymous"
+	}
+	if email = query.Get("author.email"); len(email) == 0 {
+		email = "anonymous"
 	}
 
-	var clientID, clientSecret string
-	var ok bool
-
-	if clientID, clientSecret, ok = req.BasicAuth(); !ok {
-		clientID = req.Header.Get("x-client-id")
-		clientSecret = req.Header.Get("x-client-secret")
+	info := &userInfo{
+		sub:    sub,
+		issuer: issuer,
+		name:   name,
+		email:  email,
 	}
-
-	ok, err = externalApps.ValidateCredentials(clientID, clientSecret)
-	if err != nil {
-		return nil, err
-	}
-
-	if ok {
-		return &userInfo{sub: &Subject{User: clientID, Group: "externalapps"}}, nil
-	}
-	return nil, errors.New("Neither access token nor credentials were provided")
+	return info, nil
 }
 
 func getKeyByIssuer(issuer, keyID string, providers map[string]appConfig.AuthProvider) (interface{}, error) {

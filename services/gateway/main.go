@@ -81,7 +81,7 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	passThrough.Mount(&config.Upstreams, &config.V1Hosts, noAuthMiddleware, metricsVar, router.V1Router())
 	passThrough.Mount(&config.Upstreams, &config.V1Hosts, noAuthMiddleware, metricsVar, router.LegacyNonV1Router())
 
-	security.MountAuth(config.Security.Auth.Providers, &config.Security.TweekSecretKey, noAuthMiddleware, router.AuthRouter())
+	security.MountAuth(&config.Security.Auth, &config.Security.TweekSecretKey, noAuthMiddleware, router.AuthRouter())
 
 	router.MainRouter().PathPrefix("/version").HandlerFunc(handlers.NewVersionHandler(&config.Upstreams, config.Version))
 	router.MainRouter().PathPrefix("/health").HandlerFunc(handlers.NewHealthHandler())

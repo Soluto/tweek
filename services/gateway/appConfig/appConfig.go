@@ -43,6 +43,11 @@ type EnvInlineOrPath struct {
 	Inline string
 }
 
+// BasicAuth - struct with config related to Basic Auth
+type BasicAuth struct {
+	RedirectURLs []string `json:"redirect_urls"`
+}
+
 // AuthProvider - configuration of each auth provider
 type AuthProvider struct {
 	Name         string `json:"name"`
@@ -57,6 +62,7 @@ type AuthProvider struct {
 // Auth - struct with config related to authentication
 type Auth struct {
 	Providers map[string]AuthProvider
+	BasicAuth BasicAuth `json:"basic_auth"`
 }
 
 // Security section holds security related configuration

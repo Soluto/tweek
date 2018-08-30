@@ -44,7 +44,7 @@ namespace Tweek.Publishing.Service.Sync.Converters
                 });
             result.Add(appId, app);
 
-            return (@"external_apps.json", JsonConvert.SerializeObject(result), @"application/json");
+            return (@"external_apps.json", JsonConvert.SerializeObject(result, Formatting.Indented), @"application/json");
         }
 
         private static string CreateSecretKey(string key)

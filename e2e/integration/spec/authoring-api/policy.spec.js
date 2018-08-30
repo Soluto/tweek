@@ -7,7 +7,7 @@ const { promisify } = require('util');
 const readFileAsync = promisify(fs.readFile);
 const jsonpatch = require('fast-json-patch');
 
-describe('authoring api policy', () => {
+describe.skip('authoring api policy', () => {
   let clients;
   before(async () => {
     clients = await initClients();

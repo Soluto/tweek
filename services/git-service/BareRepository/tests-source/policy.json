@@ -4,7 +4,7 @@
             "group": "default",
             "user": "00000000-0000-0000-0000-000000000000",
             "contexts": {},
-            "object": "keys.*",
+            "object": "values/*",
             "action": "*",
             "effect": "allow"
         },
@@ -12,7 +12,7 @@
             "group": "default",
             "user": "00000000-0000-0000-0000-000000000000",
             "contexts": {},
-            "object": "repo.keys/*",
+            "object": "repo/keys/*",
             "action": "write",
             "effect": "allow"
         },
@@ -28,7 +28,7 @@
             "group": "default",
             "user": "00000000-0000-0000-0000-000000000000",
             "contexts": {},
-            "object": "repo.tags",
+            "object": "repo/tags",
             "action": "write",
             "effect": "allow"
         },
@@ -36,7 +36,7 @@
             "group": "default",
             "user": "00000000-0000-0000-0000-000000000000",
             "contexts": {},
-            "object": "repo.schemas",
+            "object": "repo/schemas",
             "action": "write",
             "effect": "allow"
         },
