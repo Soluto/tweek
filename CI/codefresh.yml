@@ -336,6 +336,17 @@ steps:
           - master
     candidate: ${{BuildingGitRepository}}
 
+  PushGitRepositoryGateway:
+    type: push
+    title: Push Git Repository - latest
+    when:
+      branch:
+        only:
+          - gateway
+    candidate: ${{BuildingGitRepository}}
+    tags:
+      - latest-gateway
+
   PushGatewayImageGateway:
     type: push
     title: Push Gateway - gateway
