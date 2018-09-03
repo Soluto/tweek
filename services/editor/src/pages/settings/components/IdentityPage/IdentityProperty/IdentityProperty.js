@@ -20,16 +20,15 @@ const TypeCombobox = ({ type, onUpdate, allowedTypes }) => (
   />
 );
 
-const IdentityPropertyTypes = [...Object.keys(TypesServices.types)];
 const CreateBaseArray = () => ({
   name: TypesServices.types.array.name,
   ofType: { base: TypesServices.types.string.name },
 });
 
-const SimpleTypeSelector = ({ type, onUpdate }) => (
+const SimpleTypeSelector = ({ type, onUpdate, identityPropertyTypes }) => (
   <div className={'simple-property'}>
     <TypeCombobox
-      allowedTypes={IdentityPropertyTypes}
+      allowedTypes={identityPropertyTypes}
       type={type}
       onUpdate={newType => (newType !== type ? onUpdate(newType) : null)}
     />
@@ -39,10 +38,10 @@ const SimpleTypeSelector = ({ type, onUpdate }) => (
   </div>
 );
 
-const AdvancedTypeSelector = ({ type, onUpdate }) => (
+const AdvancedTypeSelector = ({ type, onUpdate, identityPropertyTypes }) => (
   <div style={{ display: 'column', flexDirection: 'row' }}>
     <TypeCombobox
-      allowedTypes={IdentityPropertyTypes}
+      allowedTypes={identityPropertyTypes}
       type={type.name || type.base}
       onUpdate={type => onUpdate(type)}
     />
@@ -54,12 +53,12 @@ const AdvancedTypeSelector = ({ type, onUpdate }) => (
   </div>
 );
 
-const ArrayTypeSelector = ({ type, onUpdate }) => {
+const ArrayTypeSelector = ({ type, onUpdate, identityPropertyTypes }) => {
   const { allowedValues, ...baseOfType } = type.ofType;
   return (
     <div style={{ display: 'column', flexDirection: 'row' }}>
       <TypeCombobox
-        allowedTypes={IdentityPropertyTypes}
+        allowedTypes={identityPropertyTypes}
         type={type.name || type.base}
         onUpdate={type => onUpdate(type)}
       />
@@ -67,7 +66,7 @@ const ArrayTypeSelector = ({ type, onUpdate }) => {
         <Label text="Generic Type" />
         <TypeCombobox
           type={type.ofType.base}
-          allowedTypes={R.reject(R.contains(R.__, ['array', 'object']), IdentityPropertyTypes)}
+          allowedTypes={R.reject(R.contains(R.__, ['array', 'object']), identityPropertyTypes)}
           onUpdate={ofType => onUpdate({ ...type, ofType: { base: ofType } })}
         />
       </div>
@@ -100,6 +99,8 @@ const AllowedValuesSelector = ({ onUpdate, type, allowedValues }) => (
 );
 
 const PropertyTypeSelector = ({ type, onUpdate, ...props }) => {
+  const identityPropertyTypes = [...Object.keys(TypesServices.types)];
+
   let TypeSelector = SimpleTypeSelector;
   if (typeof type === 'object') {
     TypeSelector = AdvancedTypeSelector;
@@ -109,7 +110,7 @@ const PropertyTypeSelector = ({ type, onUpdate, ...props }) => {
   }
   return (
     <div data-comp="PropertyTypeSelect" {...props}>
-      <TypeSelector type={type} onUpdate={onUpdate} />
+      <TypeSelector type={type} onUpdate={onUpdate} identityPropertyTypes={identityPropertyTypes} />
     </div>
   );
 };
