@@ -2,7 +2,6 @@ package externalApps
 
 import (
 	"crypto/sha512"
-	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -65,11 +64,7 @@ func compareKeys(appKey SecretKey, secretKey string) bool {
 		log.Panicln("Salt decode failed:", err)
 	}
 
-	secretKeyBuf, err := base64.StdEncoding.DecodeString(secretKey)
-	if err != nil {
-		log.Println("Invalid secretKeyFormat", err)
-		return false
-	}
+	secretKeyBuf := []byte(secretKey)
 
 	hashBuf := pbkdf2.Key(secretKeyBuf, saltBuf, 100, 512, sha512.New)
 	hash := hex.EncodeToString(hashBuf)
