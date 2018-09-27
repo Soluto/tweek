@@ -12,7 +12,7 @@
             "group": "default",
             "user": "00000000-0000-0000-0000-000000000000",
             "contexts": {},
-            "object": "repo.keys/*",
+            "object": "repo/keys/*",
             "action": "write",
             "effect": "allow"
         },

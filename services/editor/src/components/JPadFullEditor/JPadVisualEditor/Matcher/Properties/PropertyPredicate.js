@@ -48,6 +48,7 @@ export default compose(
       selectedOperator = supportedOperators.find(x =>
         Object.keys(predicate).find(predicateProperty => predicateProperty === x.operatorValue),
       );
+      selectedOperator = selectedOperator || { operatorValue: Object.keys(predicate)[0] };
       predicateValue = predicate[selectedOperator.operatorValue];
     }
     return { supportedOperators, selectedOperator, propertyTypeDetails, predicateValue, ...props };
