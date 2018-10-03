@@ -18,6 +18,11 @@ describe('Gateway v2 API', () => {
   it('should get key using v2 (proxy to api service)', async () =>
     await clients.gateway.get(`/api/v2/values/${key}`).expect(200, '1.0'));
 
+  it('should get key using v2 without authentication', async () => {
+    apiClient = await clients.gateway.with(client => client.unset('Authorization'));
+    await apiClient.get(`/api/v2/values/${key}`).expect(200, '1.0');
+  });
+
   it('checks that the authoring calls are proxied through gateway', async () =>
     await clients.authoring
       .get('/version')
