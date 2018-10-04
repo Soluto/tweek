@@ -14,7 +14,8 @@
             },
             "basic_auth": {
                 "redirect_urls": [
-                    "http://editor"
+                    "http://editor",
+                    "http://gateway"
                 ]
             }
         }

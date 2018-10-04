@@ -63,6 +63,7 @@ const LoginButton = styled('div')`
   width: 40%;
   background-color: #00aeef;
   border-radius: 25px;
+  cursor: pointer;
 
   color: #ffffff;
   font-family: Roboto;
