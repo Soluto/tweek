@@ -78,7 +78,6 @@ services:
       - gateway
     environment:
       - GATEWAY_URL=http://gateway/
-      - EDITOR_URL=http://editor:3000/
       - TWEEK_API_URL=http://api/
       - AUTHORING_URL=http://authoring:3000/
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
