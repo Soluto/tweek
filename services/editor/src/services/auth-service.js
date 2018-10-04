@@ -32,8 +32,8 @@ const basicOidcConfig = {
   loadUserInfo: true,
   automaticSilentRenew: true,
   userStore: new Oidc.WebStorageStateStore({ store: storage }),
-  redirect_uri: `${window.location.origin}/auth/oidc`,
-  silent_redirect_uri: `${window.location.origin}/auth/silent`,
+  redirect_uri: `${window.location.origin}/auth-result/oidc`,
+  silent_redirect_uri: `${window.location.origin}/auth-result/silent`,
   post_logout_redirect_uri: `${window.location.origin}/login`,
   prompt: 'login',
 };

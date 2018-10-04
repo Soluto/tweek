@@ -8,7 +8,7 @@ const indexFilePath = path.resolve(__dirname, 'build', 'index.html');
 const indexFileContent = fs.readFileSync(indexFilePath, 'utf8');
 const newIndexFileContent = indexFileContent.replace(
   '%REACT_APP_GATEWAY_URL%',
-  process.env.REACT_APP_GATEWAY_URL,
+  process.env.REACT_APP_GATEWAY_URL || '',
 );
 fs.writeFileSync(indexFilePath, newIndexFileContent);
 

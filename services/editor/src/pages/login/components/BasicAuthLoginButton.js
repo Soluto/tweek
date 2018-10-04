@@ -23,7 +23,7 @@ const Button = styled('a')`
 const buildAuthUrl = state =>
   `${getGatewayBaseUrl()}/auth/basic?redirect_url=${
     window.location.origin
-  }/auth/basic&state=${JSON.stringify(state)}`;
+  }/auth-result/basic&state=${JSON.stringify(state)}`;
 
 const BasicAuthLoginButton = ({ state }) => (
   <Button data-comp="Basic Auth Login" href={buildAuthUrl(state)}>
