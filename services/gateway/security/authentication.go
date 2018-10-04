@@ -110,14 +110,19 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, e
 		clientID := req.Header.Get("x-client-id")
 		clientSecret := req.Header.Get("x-client-secret")
 
-		validateCredentialsErr := externalApps.ValidateCredentials(clientID, clientSecret)
-		if validateCredentialsErr != nil {
-			log.Printf("App %s wasn't validated: %v\n", clientID, validateCredentialsErr)
-			return nil, validateCredentialsErr
-		}
+		if len(clientID) == 0 && len(clientSecret) == 0 {
+			sub = &Subject{User: "anonymous", Group: "anonymous"}
+			issuer = "none"
+		} else {
+			validateCredentialsErr := externalApps.ValidateCredentials(clientID, clientSecret)
+			if validateCredentialsErr != nil {
+				log.Printf("App %s wasn't validated: %v\n", clientID, validateCredentialsErr)
+				return nil, validateCredentialsErr
+			}
 
-		sub = &Subject{User: clientID, Group: "externalapps"}
-		issuer = "tweek-externalapps"
+			sub = &Subject{User: clientID, Group: "externalapps"}
+			issuer = "tweek-externalapps"
+		}
 
 	} else {
 		var extractSubjectErr error

@@ -1,8 +1,8 @@
 {
     "policies": [
         {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
+            "group": "*",
+            "user": "*",
             "contexts": {},
             "object": "values/*",
             "action": "*",
