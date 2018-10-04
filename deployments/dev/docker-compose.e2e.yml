@@ -30,6 +30,7 @@ services:
       - CorsPolicies__Keys__Headers=
       - CorsPolicies__Keys__ExposedHeaders=
       - CorsEnabled=true
+      - Context__Validation__ErrorPolicy=throw
       
   gateway:
     depends_on:       
