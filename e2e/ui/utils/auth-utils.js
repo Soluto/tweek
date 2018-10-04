@@ -4,7 +4,7 @@ const nconf = require('nconf');
 
 const timeout = 5000;
 
-const editorUrl = nconf.get('EDITOR_URL');
+const editorUrl = nconf.get('GATEWAY_URL');
 
 const mockAuth = dataComp('mock');
 const username = 'User1';

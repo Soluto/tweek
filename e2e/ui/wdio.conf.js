@@ -58,7 +58,7 @@ exports.config = {
   //
   // Set a base URL in order to shorten url command calls. If your url parameter starts
   // with "/", then the base url gets prepended.
-  baseUrl: removeTrailingSlashes(nconf.get('EDITOR_URL')),
+  baseUrl: removeTrailingSlashes(nconf.get('GATEWAY_URL')),
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,
