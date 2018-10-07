@@ -72,6 +72,12 @@
 .fixed-key-container .editable-key-container.removed {
   text-decoration: line-through;
 }
+.fixed-key-container .editable-key-container.removed input {
+  text-decoration: line-through;
+}
+.fixed-key-container .editable-key-container.removed .object-type-expander {
+  display: none;
+}
 .new-fixed-key {
   display: flex;
   align-items: center;

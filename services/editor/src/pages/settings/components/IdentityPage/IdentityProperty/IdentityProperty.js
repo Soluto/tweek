@@ -1,9 +1,9 @@
 import React from 'react';
 import { compose, withState, withHandlers } from 'recompose';
 import * as R from 'ramda';
-import { WithContext as ReactTags } from 'react-tag-input';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import Input from '../../../../../components/common/Input/Input';
+import TypedInput from '../../../../../components/common/Input/TypedInput';
 import Label from '../../../../../components/common/Label/Label';
 import * as TypesServices from '../../../../../services/types-service';
 import './IdentityProperty.css';
@@ -13,63 +13,104 @@ const TypeCombobox = ({ type, onUpdate, allowedTypes }) => (
     data-comp="type-select"
     value={type}
     filterBy={() => true}
-    onChange={propType => onUpdate(propType)}
+    onChange={propType =>
+      onUpdate(propType === TypesServices.types.array.name ? CreateBaseArray() : propType)
+    }
     suggestions={allowedTypes}
   />
 );
 
-const SimpleTypeSelector = ({ type, onUpdate }) => (
-  <TypeCombobox
-    allowedTypes={[...Object.keys(TypesServices.types), 'custom']}
-    type={type}
-    onUpdate={type => onUpdate(type === 'custom' ? { base: 'string', allowedValues: [] } : type)}
-  />
+const CreateBaseArray = () => ({
+  name: TypesServices.types.array.name,
+  ofType: { base: TypesServices.types.string.name },
+});
+
+const SimpleTypeSelector = ({ type, onUpdate, identityPropertyTypes }) => (
+  <div className={'simple-property'}>
+    <TypeCombobox
+      allowedTypes={identityPropertyTypes}
+      type={type}
+      onUpdate={newType => (newType !== type ? onUpdate(newType) : null)}
+    />
+    <button data-comp="advanced" onClick={() => onUpdate({ base: type, allowedValues: [] })}>
+      ...
+    </button>
+  </div>
 );
 
-const AdvancedTypeSelector = ({ type, onUpdate }) => (
+const AdvancedTypeSelector = ({ type, onUpdate, identityPropertyTypes }) => (
   <div style={{ display: 'column', flexDirection: 'row' }}>
-    <SimpleTypeSelector type={'custom'} onUpdate={type => onUpdate(type)} />
-    <div data-field="base" style={{ display: 'flex', flexDirection: 'row' }}>
-      <Label text="Base" />
+    <TypeCombobox
+      allowedTypes={identityPropertyTypes}
+      type={type.name || type.base}
+      onUpdate={type => onUpdate(type)}
+    />
+    <AllowedValuesSelector
+      type={{ ...TypesServices.types.array, ofType: type.base }}
+      allowedValues={type.allowedValues}
+      onUpdate={allowedValues => onUpdate({ ...type, allowedValues: allowedValues })}
+    />
+  </div>
+);
+
+const ArrayTypeSelector = ({ type, onUpdate, identityPropertyTypes }) => {
+  const { allowedValues, ...baseOfType } = type.ofType;
+  return (
+    <div style={{ display: 'column', flexDirection: 'row' }}>
       <TypeCombobox
-        type={type.base}
-        allowedTypes={Object.keys(TypesServices.types)}
-        onUpdate={base => onUpdate({ ...type, base })}
+        allowedTypes={identityPropertyTypes}
+        type={type.name || type.base}
+        onUpdate={type => onUpdate(type)}
+      />
+      <div data-field="base" style={{ display: 'flex', flexDirection: 'row' }}>
+        <Label text="Generic Type" />
+        <TypeCombobox
+          type={type.ofType.base}
+          allowedTypes={R.reject(R.contains(R.__, ['array', 'object']), identityPropertyTypes)}
+          onUpdate={ofType => onUpdate({ ...type, ofType: { base: ofType } })}
+        />
+      </div>
+      <AllowedValuesSelector
+        type={{ ...TypesServices.types.array, ofType: { ...baseOfType } }}
+        allowedValues={type.ofType.allowedValues}
+        onUpdate={allowedValues =>
+          onUpdate({ ...type, ofType: { ...type.ofType, allowedValues: allowedValues } })
+        }
       />
     </div>
-    <div
-      data-field="allowed-values"
-      data-comp="editable-list"
-      style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}
-    >
-      <Label text="Allowed Values" />
-      <ReactTags
-        tags={type.allowedValues.map(v => ({ id: v, text: v })) || []}
-        handleAddition={newValue =>
-          onUpdate({ ...type, allowedValues: [...type.allowedValues, newValue] })
-        }
-        handleDelete={index =>
-          onUpdate({ ...type, allowedValues: R.remove(index, 1, type.allowedValues) })
-        }
-        placeholder="Add value"
-        allowDeleteFromEmptyInput
-        classNames={{
-          tags: 'tags-container',
-          tagInput: 'tag-input',
-          tag: 'tag',
-          remove: 'tag-delete-button',
-          suggestions: 'tags-suggestion',
-        }}
-      />
-    </div>
+  );
+};
+
+const AllowedValuesSelector = ({ onUpdate, type, allowedValues }) => (
+  <div
+    data-field="allowed-values"
+    data-comp="editable-list"
+    style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}
+  >
+    <Label text="Allowed Values" />
+    <TypedInput
+      data-comp="property-value"
+      hideIcon
+      valueType={{ ...TypesServices.types.array, ofType: type }}
+      value={allowedValues}
+      onChange={onUpdate}
+    />
   </div>
 );
 
 const PropertyTypeSelector = ({ type, onUpdate, ...props }) => {
-  const TypeSelector = typeof type === 'object' ? AdvancedTypeSelector : SimpleTypeSelector;
+  const identityPropertyTypes = [...Object.keys(TypesServices.types)];
+
+  let TypeSelector = SimpleTypeSelector;
+  if (typeof type === 'object') {
+    TypeSelector = AdvancedTypeSelector;
+    if (type.ofType) {
+      TypeSelector = ArrayTypeSelector;
+    }
+  }
   return (
     <div data-comp="PropertyTypeSelect" {...props}>
-      <TypeSelector type={type} onUpdate={onUpdate} />
+      <TypeSelector type={type} onUpdate={onUpdate} identityPropertyTypes={identityPropertyTypes} />
     </div>
   );
 };

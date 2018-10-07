@@ -1,0 +1,30 @@
+{
+    "partitions": [],
+    "valueType": "string",
+    "rules": [
+        {
+            "Matcher": {
+                "user.SiblingNames": {
+                    "$contains": [
+                        "abe"
+                    ]
+                }
+            },
+            "Value": "some value",
+            "Type": "SingleVariant"
+        },
+        {
+            "Matcher": {
+                "user.Identities": {
+                    "$contains": [
+                        1,
+                        2
+                    ]
+                }
+            },
+            "Value": "some number value",
+            "Type": "SingleVariant"
+        }
+    ],
+    "defaultValue": "some default value"
+}

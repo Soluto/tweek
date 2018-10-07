@@ -1,5 +1,5 @@
 ﻿using App.Metrics;
-using App.Metrics.Core.Options;
+using App.Metrics.Timer;
 
 namespace Tweek.ApiService.Utils
 {

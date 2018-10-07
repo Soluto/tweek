@@ -25,7 +25,7 @@ namespace Tweek.ApiService.Diagnostics
             _serviceProvider = serviceProvider;
         }
 
-        protected override async Task<HealthCheckResult> CheckAsync(
+        protected override async ValueTask<HealthCheckResult> CheckAsync(
             CancellationToken cancellationToken = new CancellationToken())
         {
             try

@@ -1,7 +1,7 @@
 /* global describe, before, after, it, browser */
 
 import { expect } from 'chai';
-import { dataComp, dataField } from '../../utils/selector-utils';
+import { dataComp } from '../../utils/selector-utils';
 import Key from '../../utils/Key';
 import Rule from '../../utils/Rule';
 import { login } from '../../utils/auth-utils';
@@ -11,7 +11,6 @@ const timeout = 5000;
 
 const keyToAddFullPath = 'behavior_tests/add_key/add_key_test';
 const keyWithDefaultsToAddFullPath = 'behavior_tests/add_key/dafault_format_and_type';
-const keyPathSuggestions = `${dataComp('new-key-name')} ${dataField('suggestions')}`;
 
 describe('add key', () => {
   before(() => login());
@@ -20,7 +19,6 @@ describe('add key', () => {
     Key.add();
 
     expect(Key.isCurrent(Key.BLANK_KEY_NAME)).to.be.true;
-    expect(browser.isExisting(keyPathSuggestions)).to.be.false;
     expect(Rule.count()).to.equal(0);
 
     Key.setName(keyToAddFullPath)
