@@ -64,8 +64,6 @@ services:
       - gateway
     logging:
       driver: "none"
-    environment:
-      - REACT_APP_GATEWAY_URL=http://gateway
 
   gateway:
     image: $GATEWAY_IMAGE
@@ -125,19 +123,3 @@ services:
     image: selenium/standalone-chrome:3.8.1
     logging:
       driver: "none"
-
-  zap-smoke:
-    image: $ZAP_IMAGE
-    logging:
-      driver: "none"
-    user: root
-    volumes:
-      - ${CF_VOLUME_PATH}/tweek/deployments/dev/zap/session/smoke:/root/.ZAP/session/smoke
-
-  zap-e2e:
-    image: $ZAP_IMAGE
-    logging:
-      driver: "none"
-    user: root
-    volumes:
-      - ${CF_VOLUME_PATH}/tweek/deployments/dev/zap/session/e2e:/root/.ZAP/session/e2e
