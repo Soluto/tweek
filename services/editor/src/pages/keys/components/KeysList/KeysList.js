@@ -7,10 +7,9 @@ import { Observable } from 'rxjs';
 import { componentFromStream, createEventHandler, withState } from 'recompose';
 import fetch from '../../../../utils/fetch';
 import * as SearchService from '../../../../services/search-service';
-import DirectoryTreeView from './DirectoryTreeView';
+import DirectoryTreeView from './TreeView/DirectoryTreeView';
 import CardView from './CardView';
 import './KeysList.css';
-import { relative } from 'path';
 
 const KeysFilter = withState('filter', 'setFilter', '')(({ onFilterChange, setFilter, filter }) => (
   <div className="search-input-wrapper">

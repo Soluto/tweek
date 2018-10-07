@@ -27,14 +27,14 @@ export function createJPadSource(valueType = '', rules = [], partitions = []) {
   return JSON.stringify({ valueType, rules, partitions }, null, 4);
 }
 
-export function createBlankJPadKey() {
+export function createBlankJPadKey(keyPath) {
   return {
     implementation: {
       source: createJPadSource('string'),
       type: 'jpad',
       valueType: '',
     },
-    manifest: createBlankKeyManifest('', {
+    manifest: createBlankKeyManifest(keyPath || '', {
       type: 'file',
       format: 'jpad',
     }),

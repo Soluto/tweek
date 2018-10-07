@@ -72,7 +72,10 @@ const enhance = compose(
     },
     componentWillReceiveProps({ configKey, revision }) {
       const { openKey } = this.props;
-      if (configKey !== this.props.configKey || revision !== this.props.revision) {
+      if (
+        configKey !== BLANK_KEY_NAME &&
+        (configKey !== this.props.configKey || revision !== this.props.revision)
+      ) {
         openKey(configKey, { revision });
       }
     },
