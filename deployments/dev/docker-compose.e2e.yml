@@ -79,7 +79,7 @@ services:
     environment:
       - GATEWAY_URL=http://gateway/
       - TWEEK_API_URL=http://api/
-      - AUTHORING_URL=http://authoring:3000/
+      - AUTHORING_URL=http://authoring
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
       - AUTH_DIGEST_CREDENTIALS=user:pwd
     secrets:
@@ -95,7 +95,7 @@ services:
       - publishing
     environment:
       - API_URL=http://api
-      - AUTHORING_URL=http://authoring:3000
+      - AUTHORING_URL=http://authoring
       - GATEWAY_URL=http://gateway
       - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
       - MINIO_HOST=minio

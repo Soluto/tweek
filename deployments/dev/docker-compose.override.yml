@@ -112,8 +112,7 @@ services:
 
   gateway:
     ports:
-      - "80:80"
-      - "4099:3000"
+      - "4099:80"
     depends_on: 
       - minio
       - nats      
