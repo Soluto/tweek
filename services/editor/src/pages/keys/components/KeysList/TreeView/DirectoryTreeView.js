@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import TreeNode from './TreeNode';
-import { compsPathSorter, leaf } from './PathSorter';
+import { compsPathSorter, leaf } from './pathSorter';
 import './TreeView.css';
 
 export default function DirectoryTreeView({ paths, renderItem, selectedPath, expandByDefault }) {

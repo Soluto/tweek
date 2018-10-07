@@ -6,7 +6,7 @@ import { addKey } from '../../../../../store/ducks/selectedKey';
 import { connect } from 'react-redux';
 import { mapProps, compose, shouldUpdate } from 'recompose';
 import TreeDirectory from './TreeDirectory';
-import { compsPathSorter, leaf } from './PathSorter';
+import { compsPathSorter, leaf } from './pathSorter';
 
 const TreeNode = compose(
   connect(state => state, { ...keysActions, addKey }),

@@ -103,7 +103,7 @@ export const addKey = (shouldShowConfirmationScreen, keyPath) =>
     dispatch(push('/keys/_blank'));
     dispatch(changeKeyValueType('string'));
 
-    let validation = { isValid: false, hint: '', isShowingHint: false };
+    const validation = { isValid: false, hint: '', isShowingHint: false };
     setImmediate(() => dispatch(updateKeyPath(keyPath, validation)));
   });
 
