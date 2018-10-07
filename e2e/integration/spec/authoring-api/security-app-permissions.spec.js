@@ -22,79 +22,57 @@ describe('authoring api - app permissions', () => {
     {
       name: 'read_specific_key',
       requirePermission: 'keys-read',
-      action: async client => {
-        await client.get('/api/keys/integration_tests/some_key').expect(200);
-      },
+      action: client => client.get('/api/keys/integration_tests/some_key'),
     },
     {
       name: 'read_specific_key',
       requirePermission: 'keys-read',
-      action: async client => {
-        await client.get('/api/key?keyPath=integration_tests%2Fsome_key').expect(200);
-      },
+      action: client => client.get('/api/key?keyPath=integration_tests%2Fsome_key'),
     },
     {
       name: 'read_manifests',
       requirePermission: 'keys-read',
-      action: async client => {
-        await client.get('/api/manifests/integration_tests/some_key').expect(200);
-      },
+      action: client => client.get('/api/manifests/integration_tests/some_key'),
     },
     {
       name: 'list_keys',
       requirePermission: 'keys-list',
-      action: async client => {
-        await client.get('/api/keys').expect(200);
-      },
+      action: client => client.get('/api/keys'),
     },
     {
       name: 'list_manifests',
       requirePermission: 'keys-list',
-      action: async client => {
-        await client.get('/api/manifests').expect(200);
-      },
+      action: client => client.get('/api/manifests'),
     },
     {
       name: 'get_dependents',
       requirePermission: 'keys-read',
-      action: async client => {
-        await client.get('/api/dependents/integration_tests/some_key').expect(200);
-      },
+      action: client => client.get('/api/dependents/integration_tests/some_key'),
     },
     {
       name: 'get_dependents',
       requirePermission: 'keys-read',
-      action: async client => {
-        await client.get('/api/dependents/integration_tests/some_key').expect(200);
-      },
+      action: client => client.get('/api/dependents/integration_tests/some_key'),
     },
     {
       name: 'get_schemas',
-      requirePermission: 'schemas_read',
-      action: async client => {
-        await client.get('/api/schemas').expect(200);
-      },
+      requirePermission: 'schemas-read',
+      action: client => client.get('/api/schemas'),
     },
     {
       name: 'search',
       requirePermission: 'search',
-      action: async client => {
-        await client.get('/api/search').expect(200);
-      },
+      action: client => client.get('/api/search'),
     },
     {
       name: 'suggestions',
       requirePermission: 'search',
-      action: async client => {
-        await client.get('/api/suggestions').expect(200);
-      },
+      action: client => client.get('/api/suggestions'),
     },
     {
       name: 'search-index',
       requirePermission: 'search-index',
-      action: async client => {
-        await client.get('/api/search-index').expect(200);
-      },
+      action: client => client.get('/api/search-index'),
     },
   ];
 
@@ -114,16 +92,15 @@ describe('authoring api - app permissions', () => {
         client.set({ 'x-client-id': appId, 'x-client-secret': appSecret }).unset('Authorization'),
       );
 
-      await Promise.all(relevantCases.map(x => x.action(appClient)));
+      await Promise.all(relevantCases.map(x => x.action(appClient).expect(200)));
 
       await Promise.all(
         forbiddenCases.map(async x => {
-          await x.action(appClient).then(
-            () => true,
-            ex => {
-              return expect(ex.message).to.contain('403');
-            },
-          );
+          try {
+            await x.action(appClient).expect(403);
+          } catch (e) {
+            console.error(x);
+          }
         }),
       );
     });
