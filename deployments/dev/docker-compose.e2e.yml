@@ -24,7 +24,7 @@ services:
     depends_on:
       - publishing
     environment:
-      - CorsPolicies__Keys__Origins=http://editor:3000,http://testorigin
+      - CorsPolicies__Keys__Origins=http://editor,http://gateway,http://testorigin
       - CorsPolicies__Keys__Methods=GET
       - CorsPolicies__Keys__MaxPreflightAge=60
       - CorsPolicies__Keys__Headers=
@@ -48,7 +48,7 @@ services:
     environment: 
       - ASPNETCORE_ENVIRONMENT=Development
       - CLIENT_ID=tweek-openid-mock-client
-      - REDIRECT_URIS=http://editor:3000/auth-resut/oidc,http://localhost:3000/auth-result/oidc,http://localhost:4004/auth-result/oidc,http://gateway/auth-result/oidc,http://localhost:4099/auth-result/oidc 
+      - REDIRECT_URIS=http://gateway/auth-result/oidc
       - TEST_USER={"SubjectId":"00000000-0000-0000-0000-000000000000","Username":"User1","Password":"pwd"}
   
   selenium:

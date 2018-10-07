@@ -40,7 +40,7 @@ services:
       - RulesetVersionProvider=NatsVersionProvider
       - PUBLIC_KEY_INLINE=MIIElAIBAzCCBFoGCSqGSIb3DQEHAaCCBEsEggRHMIIEQzCCBD8GCSqGSIb3DQEHBqCCBDAwggQsAgEAMIIEJQYJKoZIhvcNAQcBMBwGCiqGSIb3DQEMAQYwDgQIQLuW21q/z3wCAggAgIID+HlU4K9+e3s0EmVWGpzX+MXQUdKV4Jk2SXsvXGoBoq/P2dpzkV9Uyq7ybjTv6dpesb9eikaRTsL4w6QW/79ScGUZBj9SogQIMfdxmqqjr6sTQExwZMecxbzWziCsWMfKb+kyH4zWmGpTcFYQFjw3o1Btky6hKchBamPEmhMSO9lFFG5JxSLVUj6i8NiQo9xcLYOAtnebNaXM+e3yEuWNBcIGBIwc8qufnxr3lJgQBeHX4z4D+pS0z8vs4sXtJr5/5bc07xPCLl0OkAMBFmux3BiPI96Me1YtUSax0q83JRxM8LHdtncec/f1v7Jx4jlEFY5hx0k9XUjH/TyLY/oLC95NbJg14vZbNxPpOxNeZST7srF1fybGNTgczrfcuKtPLb3O+gaad4b3oDFWuM7yExFx5KjqsrRikt/zCGTrcKHadJ/6eLqhzYDm6nlaFHViQo5E0Yj8SOCApD5lRqlN033fTD0S/vrgyESlRKS6hZl9YC5FCXnKX899CDiRfvMBCMPKs7dxl4LrfJtuIv3jgqp7+X44MSrrRDX6lgJqsYsYNHTcKUSKkp2JzRvbs8J7oa0cOKC96t1KHLcMk7iffx4qqqrSGEKlSzPWi4U4L8ZU8m0vzvddoovr6bQoXBeBOeAyBrzEoNWdQ4HAMRSe0w3fKpV1ygJeK8LdR3q3G2rdLs8obiQ+0I+tJg83+Jdz69nR7ljiygLhVexyFoZgj/kAMKT5rUrocMslSw9n+gzQXxX43Os2bsVok2i0Wt8P+PSsc0RYc8XJgc54tQNt4coeaJRCr+4i/Ga0zjelHY6Z5rDsouu88RPL3oOX1dmrjw/RN3Y7klxckYFAQJMRGDnMW5aM/QeSoAxxmMjlkxbvd2etXI8SqRIEUginvYmnh0fYZ7Vo4o72LVTWS8M4nhmqR1AMxr1BNXk9Uwlp50+Amr4lZHSnl/8HgoFnBYjex57ZjRAoAJ0+ffQXl87Bv31BU1MNi//jlzApCVkCZ5uoVDSBAaSyD/Hwd8uLyeJF1ugDZinfaHjpJaIXEgK+jyju/EhhtKMGeKXnMtKATL/O2Tl/4O8V6UGuk9lrojO9t7wHHbxt1SfpQpvW2aAKzxf9GFSdOob9J1LXnik0LKwWhXHsyYNtFm9WMgacc3xoTs/GkiTJHsyjVcSon8DmET5GMaTVlxGk2lZcgg4Sd6DKTciL2Q8WRybrvSeKcC/njUKw9fylD0dbp6fZ7GrxsvGULHROJfVKNIj05tcciDtXchwOY18OQp/sHRkbymfRufExjRxViu0S8STXMbxd4Cp0FWaaDL6jSvEVbkPdgPk6r7DWgk0Yetai9E1YDYv4jQ8wdlGNH+WXMDEwITAJBgUrDgMCGgUABBS0j+Z1HX5UVJrqbq2mqww5ZHHE9QQIKcY2oy1jhcsCAggA
       - Redis__ConnectionString=redis:6379
-      - CorsPolicies__Keys__Origins=http://editor:3000,http://testorigin
+      - CorsPolicies__Keys__Origins=http://editor,http://testorigin,http://gateway
       - CorsPolicies__Keys__Methods=GET
       - CorsPolicies__Keys__MaxPreflightAge=60
       - CorsEnabled=true
@@ -97,7 +97,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - CLIENT_ID=tweek-openid-mock-client
-      - REDIRECT_URIS=http://editor:3000/auth/oidc
+      - REDIRECT_URIS=http://gateway/auth-result/oidc
       - TEST_USER={"SubjectId":"00000000-0000-0000-0000-000000000000","Username":"User1","Password":"pwd"}
 
   redis:
@@ -123,3 +123,6 @@ services:
     image: selenium/standalone-chrome:3.8.1
     logging:
       driver: "none"
+    links:
+      - gateway:api
+      - gateway:authoring
