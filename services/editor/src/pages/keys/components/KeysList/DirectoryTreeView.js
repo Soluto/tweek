@@ -4,7 +4,11 @@ import PropTypes from 'prop-types';
 import { VelocityTransitionGroup } from 'velocity-react';
 import openedFolderIconSrc from './resources/Folder-icon-opened.svg';
 import closedFolderIconSrc from './resources/Folder-icon-closed.svg';
-import { mapProps, compose, onlyUpdateForKeys, shallowEqual, shouldUpdate } from 'recompose';
+import * as keysActions from '../../../../store/ducks/keys';
+import { addKey } from '../../../../store/ducks/selectedKey';
+import { connect } from 'react-redux';
+import { mapProps, compose, shouldUpdate } from 'recompose';
+import hasUnsavedChanges from '../utils/hasUnsavedChanges';
 
 import './KeysList.css';
 
@@ -44,6 +48,7 @@ DirectoryTreeView.propTypes = {
 };
 
 const TreeNode = compose(
+  connect(state => state, { ...keysActions, addKey }),
   mapProps(({ selectedPath, fullPath, ...props }) => ({
     selectedPath,
     fullPath,
@@ -55,33 +60,53 @@ const TreeNode = compose(
     ({ selectedPath: _, ...oldProps }, { selectedPath: __, ...newProps }) =>
       !R.equals(oldProps, newProps),
   ),
-)(({ node, name, fullPath, depth, renderItem, expandByDefault, selected, selectedPath }) => {
-  let LeafElement = renderItem;
+)(
+  ({
+    node,
+    name,
+    fullPath,
+    depth,
+    renderItem,
+    expandByDefault,
+    selected,
+    selectedPath,
+    addKey,
+  }) => {
+    let LeafElement = renderItem;
 
-  return node === leaf ? (
-    <LeafElement {...{ name, fullPath, depth, selected }} />
-  ) : (
-    <TreeDirectory
-      descendantsCount={countLeafsInTree(node)}
-      {...{ name, selectedPath, fullPath, depth, selected, expandByDefault: expandByDefault }}
-    >
-      {Object.keys(node)
-        .map(childPath => (
-          <TreeNode
-            key={childPath}
-            name={childPath}
-            selectedPath={selectedPath}
-            node={node[childPath]}
-            fullPath={`${fullPath}/${childPath}`}
-            depth={depth + 1}
-            renderItem={renderItem}
-            expandByDefault={expandByDefault}
-          />
-        ))
-        .sort(compsPathSorter)}
-    </TreeDirectory>
-  );
-});
+    return node === leaf ? (
+      <LeafElement {...{ name, fullPath, depth, selected }} />
+    ) : (
+      <TreeDirectory
+        descendantsCount={countLeafsInTree(node)}
+        {...{
+          name,
+          selectedPath,
+          fullPath,
+          depth,
+          selected,
+          expandByDefault: expandByDefault,
+          addKey,
+        }}
+      >
+        {Object.keys(node)
+          .map(childPath => (
+            <TreeNode
+              key={childPath}
+              name={childPath}
+              selectedPath={selectedPath}
+              node={node[childPath]}
+              fullPath={`${fullPath}/${childPath}`}
+              depth={depth + 1}
+              renderItem={renderItem}
+              expandByDefault={expandByDefault}
+            />
+          ))
+          .sort(compsPathSorter)}
+      </TreeDirectory>
+    );
+  },
+);
 
 TreeNode.propTypes = {
   node: PropTypes.oneOfType([PropTypes.object, PropTypes.symbol]).isRequired,
@@ -99,6 +124,7 @@ class TreeDirectory extends React.Component {
     depth: PropTypes.number.isRequired,
     children: PropTypes.arrayOf(PropTypes.node).isRequired,
     expandByDefault: PropTypes.bool,
+    addKey: PropTypes.func,
   };
 
   constructor(props) {
@@ -110,7 +136,7 @@ class TreeDirectory extends React.Component {
   }
 
   render() {
-    let { fullPath, name, depth, children, descendantsCount } = this.props;
+    let { fullPath, name, depth, children, descendantsCount, addKey } = this.props;
     let { isCollapsed } = this.state;
 
     return (
@@ -129,6 +155,11 @@ class TreeDirectory extends React.Component {
           />
           {name}
           <label className="number-of-folder-keys">{descendantsCount}</label>
+          <button
+            data-comp="add"
+            className="add-key"
+            onClick={event => this.addKeyAction(event, fullPath)}
+          />
         </div>
 
         <VelocityTransitionGroup
@@ -161,6 +192,11 @@ class TreeDirectory extends React.Component {
         isCollapsed: !nextProps.expandByDefault,
       });
     }
+  }
+
+  addKeyAction(event, fullPath) {
+    event.stopPropagation();
+    this.props.addKey(hasUnsavedChanges, `${fullPath  }/`);
   }
 }
 
