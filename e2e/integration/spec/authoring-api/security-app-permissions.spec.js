@@ -94,15 +94,7 @@ describe('authoring api - app permissions', () => {
 
       await Promise.all(relevantCases.map(x => x.action(appClient).expect(200)));
 
-      await Promise.all(
-        forbiddenCases.map(async x => {
-          try {
-            await x.action(appClient).expect(403);
-          } catch (e) {
-            console.error(x);
-          }
-        }),
-      );
+      await Promise.all(forbiddenCases.map(async x => await x.action(appClient).expect(403)));
     });
   }
 });
