@@ -54,7 +54,7 @@ chown -R git:git /home/git
 cd $REPO_LOCATION
 # clone the source repository and apply hooks
 set -e
-su - git -s "/bin/bash" -c "cd `pwd` && source ~/.env && git clone --bare $GIT_UPSTREAM_URI ."
+su - git -s "/bin/bash" -c "cd `pwd` && source ~/.env && git clone --bare $GIT_UPSTREAM_URI ."; wait
 cp /tweek/hooks/* $REPO_LOCATION/hooks/
 set +e
 
