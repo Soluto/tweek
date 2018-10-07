@@ -18,6 +18,10 @@ export const types = {
   object: {
     name: 'object',
   },
+  array: {
+    name: 'array',
+    emptyValue: [],
+  },
 };
 
 export async function refreshTypes() {
@@ -31,7 +35,6 @@ export async function refreshTypes() {
 
 export function convertValue(value, targetType) {
   const type = typeof targetType === 'string' ? types[targetType] : targetType;
-
   if (!type) {
     throw new Error('Unknown type', targetType);
   }
@@ -41,18 +44,38 @@ export function convertValue(value, targetType) {
     return safeConvertToBaseType(value, 'boolean');
   case 'number':
     return safeConvertToBaseType(value, 'number');
+  case 'array':
+    return convertCheckArray(value, type.ofType ? x => convertValue(x, type.ofType) : x => x);
   case 'object':
+    if (typeof value === types.object.name) {
+      return value;
+    }
     return safeConvertToBaseType(value, 'object');
   default:
     return value.toString();
   }
 }
 
+const convertCheckArray = (value, converter) =>
+  Array.isArray(value) ? [...value.map(converter)] : converter(value);
+
+export function isAllowedValue(valueType, value) {
+  return (
+    valueType &&
+    (!valueType.allowedValues ||
+      valueType.allowedValues.length == 0 ||
+      valueType.allowedValues.includes(value))
+  );
+}
+
 export function safeConvertValue(value, targetType) {
   try {
     return convertValue(value, targetType);
   } catch (err) {
-    return targetType === types.boolean.name ? '' : `${value}`;
+    const typeName = targetType.ofType || targetType.base || targetType.name;
+    return typeName !== types.string.name
+      ? undefined
+      : typeName === types.array.name ? [`${value}`] : `${value}`;
   }
 }
 
@@ -66,13 +89,17 @@ function safeConvertToBaseType(value, type) {
   return jsonValue;
 }
 
-export function isStringValidJson(str) {
+export function isStringValidJson(str, targetType) {
   try {
-    JSON.parse(str);
+    const result = JSON.parse(str);
+    const resultType = Array.isArray(result) ? 'array' : typeof result;
+    if (targetType && resultType !== targetType.name && resultType !== targetType.base) {
+      return false;
+    }
+    return true;
   } catch (e) {
     return false;
   }
-  return true;
 }
 
 export async function getValueTypeDefinition(key) {

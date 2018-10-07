@@ -155,17 +155,18 @@ const JPadFullEditor = compose(
   lifecycle({
     componentWillReceiveProps({ valueType, mutate }) {
       const currentValueType = mutate.in('valueType').getValue();
-      if (valueType === currentValueType) return;
+      const valueTypeName = valueType.name;
+      if (valueTypeName === currentValueType) return;
 
       const currentDefaultValue = mutate.in('defaultValue').getValue();
 
       mutate.apply((m) => {
-        m.in('valueType').updateValue(valueType);
+        m.in('valueType').updateValue(valueTypeName);
         if (currentDefaultValue !== undefined) {
-          const modifiedDefaultValue = getTypedValue(currentDefaultValue, valueType);
+          const modifiedDefaultValue = getTypedValue(currentDefaultValue, valueTypeName);
           m.in('defaultValue').updateValue(modifiedDefaultValue);
         }
-        changeValueType(valueType, m.in('rules'), m.in('partitions').getValue().length);
+        changeValueType(valueTypeName, m.in('rules'), m.in('partitions').getValue().length);
         return m;
       });
     },
