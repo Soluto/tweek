@@ -28,17 +28,18 @@ class DateInput extends Component {
 
   render() {
     const { onChange, value, ...props } = this.props;
+    const calendarDate = value ? new Date(value) : new Date();
     return (
       <div>
         <Input {...props} onChange={onChange} onFocus={this.onFocus} onBlur={this.onBlur} value={value} />
         {
-          this.state.showCalendar ?
+          this.state.showCalendar && !isNaN(calendarDate) ?
             (<div className="calendar wrapper">
               <div className="calendar container">
                 <Calendar
                   className="calendar"
                   onChange={newDate => onChange(moment(newDate).format("L"))}
-                  value={new Date(value || new Date())}
+                  value={calendarDate}
                 />
               </div>
             </div>) : null
