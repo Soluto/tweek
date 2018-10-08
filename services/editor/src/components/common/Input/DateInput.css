@@ -1,0 +1,11 @@
+.calendar {
+  border-radius: 5px;
+  background-color: white;
+  z-index: 1;
+}
+.calendar.wrapper {
+  position: relative;
+}
+.calendar.container {
+  position: absolute;
+}
