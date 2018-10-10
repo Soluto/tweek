@@ -1,17 +1,25 @@
 import React from 'react';
 import TypedInput from '../../../../../components/common/Input/TypedInput';
-import { inOp } from '../../../../../services/operators-provider';
+import { inOp, within } from '../../../../../services/operators-provider';
 import { types } from '../../../../../services/types-service';
 import './styles.css';
+
+const chooseValueTypeByOperator = (operator, valueType) => {
+  if(operator === inOp.operatorValue) {
+    return ({ ...types.array, ofType: valueType });
+  }
+  if(operator ===  within.operatorValue) {
+    return types.string;
+  }
+
+  return valueType;
+}
 
 const PropertyValue = ({ selectedOperator, valueType, ...props }) => (
   <div className="property-value-wrapper">
     <TypedInput
       data-comp="property-value"
-      valueType={
-        selectedOperator === inOp.operatorValue ? { ...types.array, ofType: valueType } : valueType
-      }
-      selectedOperator={selectedOperator}
+      valueType={chooseValueTypeByOperator(selectedOperator, valueType)}
       {...props}
     />
   </div>
