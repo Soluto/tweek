@@ -11,8 +11,10 @@ import './DateInput.css';
 const DateInput = compose(
   withState('showCalendar', 'setShowCalendar', false)
 )(({ onChange, value, showCalendar, setShowCalendar, ...props }) => {
-  // const { onChange, value, ...props } = this.props;
-  const calendarDate = value ? new Date(value) : new Date();
+  let calendarDate = value ? new Date(value) : new Date();
+  if(isNaN(calendarDate)) {
+    calendarDate = new Date();
+  }
 
   const onFocus = (evt) => {
     evt.preventDefault();
@@ -28,7 +30,7 @@ const DateInput = compose(
     <div>
       <Input {...props} onChange={onChange} onFocus={onFocus} onBlur={onBlur} value={value} />
       {
-        showCalendar && !isNaN(calendarDate) ?
+        showCalendar ?
           (<div className="calendar wrapper">
             <div className="calendar container">
               <Calendar
