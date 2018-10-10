@@ -47,6 +47,7 @@ const InputComponent = ({
   valueType,
   valueTypeName,
   allowedValues,
+  selectedOperator,
   onChange,
   types,
   ...props
@@ -88,7 +89,7 @@ const InputComponent = ({
     );
   }
 
-  if (valueTypeName === types.date.name) {
+  if (valueTypeName === types.date.name && selectedOperator != '$withinTime') {
     return <DateInput onChange={onChange} value={value} {...props} />;
   }
 
@@ -149,6 +150,7 @@ const TypedInput = compose(
 
 TypedInput.propTypes = {
   placeholder: PropTypes.string,
+  selectedOperator: PropTypes.string,
   valueType: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.shape({

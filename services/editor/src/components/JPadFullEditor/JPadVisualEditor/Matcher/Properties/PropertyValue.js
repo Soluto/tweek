@@ -11,6 +11,7 @@ const PropertyValue = ({ selectedOperator, valueType, ...props }) => (
       valueType={
         selectedOperator === inOp.operatorValue ? { ...types.array, ofType: valueType } : valueType
       }
+      selectedOperator={selectedOperator}
       {...props}
     />
   </div>
