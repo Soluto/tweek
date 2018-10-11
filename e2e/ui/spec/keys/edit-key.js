@@ -1,11 +1,10 @@
 /* global describe, before, after, it, browser */
 
 import { expect } from 'chai';
-import { moment } from 'moment';
 import Key from '../../utils/Key';
 import Rule from '../../utils/Rule';
 import Alert from '../../utils/Alert';
-import { dataComp } from '../../utils/selector-utils';
+import { dataComp, attributeSelector } from '../../utils/selector-utils';
 import tweekApiClient from '../../clients/tweek-api-client';
 import authoringApi from '../../clients/authoring-client';
 import { login } from '../../utils/auth-utils';
@@ -163,13 +162,14 @@ describe('edit keys', () => {
     });
 
     it('should succeed editing key (valueType=date)', () => {
-      const today = moment().format("Y-MM-DDT00:00:00Z");
+      const desiredDate = '2018-10-11T00:00:00.000';
+      const desiredDateFormatted = '10/11/2018 00:00:00'
       const keyName = `${constKeyFolder}/date_type`;
       Key.open(keyName);
       browser.click(`${constEditor} input`);
-      browser.click(`time[datetime="${today}"]`)
+      browser.clickWhenVisible(attributeSelector('datetime', desiredDate));
       Key.commitChanges();
-      tweekApiClient.waitForKeyToEqual(keyName, today);
+      tweekApiClient.waitForKeyToEqual(keyName, desiredDateFormatted);
     });
   });
 });
