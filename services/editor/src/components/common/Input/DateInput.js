@@ -36,7 +36,7 @@ const DateInput = compose(
             <div className="calendar container">
               <Calendar
                 className="calendar"
-                onChange={newDate => onChange(moment(newDate).format("L"))}
+                onChange={newDate => onChange(moment(newDate).utc().format())}
                 value={calendarDate}
               />
             </div>
