@@ -30,7 +30,7 @@ const DateInput = compose(
   };
 
   const changeDate = (newDate) => {
-    onChange(moment(newDate).utc().format());
+    onChange(moment(newDate).format("Y-MM-DDT00:00:00Z"));
     setShowCalendar(false);
   };
 
@@ -45,6 +45,7 @@ const DateInput = compose(
                 className="calendar"
                 onChange={changeDate}
                 value={calendarDate}
+                calendarType="ISO 8601"
               />
             </div>
           </div>) : null

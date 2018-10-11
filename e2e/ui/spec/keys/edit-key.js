@@ -1,6 +1,7 @@
 /* global describe, before, after, it, browser */
 
 import { expect } from 'chai';
+import { moment } from 'moment';
 import Key from '../../utils/Key';
 import Rule from '../../utils/Rule';
 import Alert from '../../utils/Alert';
@@ -159,6 +160,16 @@ describe('edit keys', () => {
       Alert.save();
       Key.commitChanges();
       tweekApiClient.waitForKeyToEqual(keyName, objectValue);
+    });
+
+    it('should succeed editing key (valueType=date)', () => {
+      const today = moment().format("Y-MM-DDT00:00:00Z");
+      const keyName = `${constKeyFolder}/date_type`;
+      Key.open(keyName);
+      browser.click(`${constEditor} input`);
+      browser.click(`time[datetime="${today}"]`)
+      Key.commitChanges();
+      tweekApiClient.waitForKeyToEqual(keyName, today);
     });
   });
 });

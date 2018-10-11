@@ -1,0 +1,15 @@
+{
+    "key_path": "behavior_tests/edit_key/visual/const/date_type",
+    "meta": {
+        "archived": false,
+        "name": "behavior_tests/edit_key/visual/const/date_type",
+        "description": "",
+        "tags": []
+    },
+    "implementation": {
+        "type": "const",
+        "value": "2018-10-11T00:00:00Z"
+    },
+    "valueType": "date",
+    "dependencies": []
+}
