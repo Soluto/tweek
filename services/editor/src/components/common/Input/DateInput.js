@@ -22,21 +22,28 @@ const DateInput = compose(
     setShowCalendar(true);
   };
   const onBlur = (evt) => {
-    evt.preventDefault();
-    // We need this timeout, when calendar is clicked, so it can call onChange
-    setTimeout(() => setShowCalendar(false), 100);
+    if(evt.relatedTarget === null || !evt.relatedTarget.className.includes('react-calendar')) {
+      evt.preventDefault();
+      // We need this timeout, when calendar is clicked, so it can call onChange
+      setTimeout(() => setShowCalendar(false), 100);
+    }
+  };
+
+  const changeDate = (newDate) => {
+    onChange(moment(newDate).utc().format());
+    setShowCalendar(false);
   };
 
   return (
-    <div>
-      <Input {...props} onChange={onChange} onFocus={onFocus} onBlur={onBlur} value={value} />
+    <div onBlur={onBlur} className="date-input" >
+      <Input {...props} onChange={onChange} onFocus={onFocus} value={value} />
       {
         showCalendar ?
           (<div className="calendar wrapper">
             <div className="calendar container">
               <Calendar
                 className="calendar"
-                onChange={newDate => onChange(moment(newDate).utc().format())}
+                onChange={changeDate}
                 value={calendarDate}
               />
             </div>
