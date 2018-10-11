@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Calendar from 'react-calendar';
+import Calendar from 'react-calendar/dist/entry.nostyle';
 import moment from 'moment';
 import { withState, compose } from 'recompose';
 import Input from './Input';
 
 import './DateInput.css';
+import './Calendar.css';
 
 
 const DateInput = compose(
