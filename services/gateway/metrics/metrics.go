@@ -11,9 +11,10 @@ import (
 // NewMetricsVar creates the new metrics histogram
 func NewMetricsVar(subsystem string) *prometheus.SummaryVec {
 	var metrics = prometheus.NewSummaryVec(prometheus.SummaryOpts{
-		Subsystem: subsystem,
-		Name:      "request_duration_seconds",
-		Help:      "Total time spent serving requests.",
+		Subsystem:  subsystem,
+		Name:       "request_duration_seconds",
+		Help:       "Total time spent serving requests.",
+		Objectives: map[float64]float64{0.5: 0.05, 0.75: 0.01, 0.9: 0.01, 0.95: 0.001, 0.99: 0.001},
 	}, []string{"upstream", "method"})
 
 	prometheus.MustRegister(metrics)
