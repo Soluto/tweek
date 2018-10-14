@@ -14,8 +14,8 @@ const enhance = compose(
     componentDidMount() {
       const { jwt, state } = qs.parse(this.props.location.search);
       storeToken(jwt);
-      const redirect = JSON.parse(state).redirect;
-      this.props.redirect(`${redirect.pathname}${redirect.hash || redirect.search}`);
+      const redirect = JSON.parse(state).redirect || { pathname: '/' };
+      this.props.redirect(`${redirect.pathname}${redirect.hash || redirect.search || ''}`);
     },
   }),
 );
