@@ -39,14 +39,16 @@ const DateInput = compose(
       <Input {...props} onChange={onChange} onFocus={onFocus} value={value} />
       {
         showCalendar ?
-          (<div className="calendar wrapper">
-            <div className="calendar container">
-              <Calendar
-                className="calendar"
-                onChange={changeDate}
-                value={calendarDate}
-                calendarType="ISO 8601"
-              />
+          (<div className="calendar">
+            <div className="wrapper">
+              <div className="container">
+                <Calendar
+                  className="calendar"
+                  onChange={changeDate}
+                  value={calendarDate}
+                  calendarType="ISO 8601"
+                />
+              </div>
             </div>
           </div>) : null
       }

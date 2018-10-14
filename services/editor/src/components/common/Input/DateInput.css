@@ -1,11 +1,11 @@
-.calendar {
+.date-input > .calendar {
   border-radius: 5px;
   background-color: white;
   z-index: 2;
 }
-.calendar.wrapper {
+.date-input > .calendar .wrapper {
   position: relative;
 }
-.calendar.container {
+.date-input > .calendar .container {
   position: absolute;
 }
