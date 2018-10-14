@@ -4,6 +4,10 @@ import { VelocityTransitionGroup } from 'velocity-react';
 import openedFolderIconSrc from '../resources/Folder-icon-opened.svg';
 import closedFolderIconSrc from '../resources/Folder-icon-closed.svg';
 import hasUnsavedChanges from '../../utils/hasUnsavedChanges';
+import ReactTooltip from 'react-tooltip';
+import Chance from 'chance';
+
+const chance = new Chance();
 
 export default class TreeDirectory extends React.Component {
   static propTypes = {
@@ -21,6 +25,10 @@ export default class TreeDirectory extends React.Component {
     this.state = {
       isCollapsed: !props.selected && !props.expandByDefault,
     };
+  }
+
+  componentWillMount() {
+    this.addKeyTooltipId = chance.guid();
   }
 
   render() {
@@ -46,8 +54,15 @@ export default class TreeDirectory extends React.Component {
           <button
             data-comp="add"
             className="add-key"
+            data-tip={'Add key in folder'}
+            data-for={this.addKeyTooltipId}
+            data-delay-hide={100}
+            data-delay-show={500}
+            data-effect="solid"
+            data-place="top"
             onClick={event => this.addKeyAction(event, fullPath)}
           />
+          <ReactTooltip id={this.addKeyTooltipId} />
         </div>
 
         <VelocityTransitionGroup
