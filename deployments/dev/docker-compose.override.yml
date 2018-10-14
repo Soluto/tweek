@@ -112,8 +112,7 @@ services:
 
   gateway:
     ports:
-      - "80:80"
-      - "4099:3000"
+      - "4099:80"
     depends_on: 
       - minio
       - nats      
@@ -130,6 +129,7 @@ services:
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECURE=false
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_NATSENDPOINT=nats://nats:4222
       - TWEEKGATEWAY_SECURITY_TWEEKSECRETKEY_PATH=/run/secrets/tweek_ssh_private_key
+      - TWEEKGATEWAY_SECURITY_AUTH_BASICAUTH_REDIRECTURLS=['http://localhost:4099']
       - CONFIG_FILE_PATH=/config/gateway.json
     volumes:
       - ./gateway/config:/config

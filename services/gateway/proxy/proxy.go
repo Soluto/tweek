@@ -8,6 +8,7 @@ import (
 	"github.com/Soluto/tweek/services/gateway/security"
 
 	"github.com/urfave/negroni"
+	"github.com/vulcand/oxy/buffer"
 	"github.com/vulcand/oxy/forward"
 )
 
@@ -17,6 +18,11 @@ func New(upstream *url.URL, token security.JWTToken) negroni.HandlerFunc {
 	if err != nil {
 		panic(fmt.Sprintf("Failed to setup request forwarding %v", err))
 	}
+	proxy, err := buffer.New(fwd, buffer.Retry(`IsNetworkError() && Attempts() <= 2`))
+	if err != nil {
+		panic(fmt.Sprintf("Failed to setup error handler %v", err))
+	}
+
 	return func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		rw.Header().Set("X-GATEWAY", "true")
 		patchUpstream(r, upstream)
@@ -24,7 +30,7 @@ func New(upstream *url.URL, token security.JWTToken) negroni.HandlerFunc {
 		if token != nil {
 			setJwtToken(r, token.GetToken())
 		}
-		fwd.ServeHTTP(rw, r)
+		proxy.ServeHTTP(rw, r)
 		if next != nil {
 			next(rw, r)
 		}

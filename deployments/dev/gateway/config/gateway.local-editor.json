@@ -14,7 +14,8 @@
             },
             "basic_auth": {
                 "redirect_urls": [
-                    "http://localhost:3000"
+                    "http://localhost:3000",
+                    "http://localhost:4099"
                 ]
             }
         }

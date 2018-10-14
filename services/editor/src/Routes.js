@@ -55,9 +55,9 @@ export default props => (
   <ConnectedRouter history={browserHistory}>
     <Switch>
       <Route path="/login" component={LoginPage} />
-      <Route path="/auth/oidc" component={LoggedInPage} />
-      <Route path="/auth/basic" component={BasicAuthLoggedInPage} />
-      <Route path="/auth/silent" component={SilentLoggedInPage} />
+      <Route path="/auth-result/oidc" component={LoggedInPage} />
+      <Route path="/auth-result/basic" component={BasicAuthLoggedInPage} />
+      <Route path="/auth-result/silent" component={SilentLoggedInPage} />
       <PrivateRoute path="/" render={renderAppRoutes} />
       <Route component={NoMatch} />
     </Switch>

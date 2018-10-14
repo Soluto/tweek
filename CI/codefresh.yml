@@ -1,72 +1,70 @@
 version: '1.0'
 steps:
+  build:
+    type: parallel
+    name: build
+    steps:
+      VersionsToDeploy:
+        description: Check versions to deploy
+        title: Check versions to deploy
+        image: alpine/git
+        commands:
+          - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export  
 
-  VersionsToDeploy:
-    description: Check versions to deploy
-    title: Check versions to deploy
-    image: alpine/git
-    commands:
-      - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export  
+      BuildingGateway:
+        title: Building Gateway
+        type: build
+        image_name: soluto/tweek-gateway
+        working_directory: ./services/gateway/
+              
+      BuildingGitRepository:
+        title: Building Git Repository Docker Image
+        type: build
+        image_name: soluto/tweek-bare-repo
+        working_directory: ./services/git-service/BareRepository/
 
-  BuildingGateway:
-    title: Building Gateway
-    type: build
-    image_name: soluto/tweek-gateway
-    working_directory: ./services/gateway/
-          
-  BuildingGitRepository:
-    title: Building Git Repository Docker Image
-    type: build
-    image_name: soluto/tweek-bare-repo
-    working_directory: ./services/git-service/BareRepository/
+      BuildingApiImage:
+        title: Building Tweek Api Docker Image
+        type: build
+        image_name: soluto/tweek-api
+        dockerfile: TweekApi.Dockerfile
+      
+      BuildingPublishing:
+        title: Building Publishing Docker Image
+        type: build
+        image_name: soluto/tweek-publishing
+        working_directory: ./services/publishing/
 
-  BuildingApiImage:
-    title: Building Tweek Api Docker Image
-    type: build
-    image_name: soluto/tweek-api
-    dockerfile: TweekApi.Dockerfile
-  
-  BuildingPublishing:
-    title: Building Publishing Docker Image
-    type: build
-    image_name: soluto/tweek-publishing
-    working_directory: ./services/publishing/
+      BuildingAuthoring:
+        title: Building Authoring Api Image
+        type: build
+        image_name: soluto/tweek-authoring
+        working_directory: ./services/authoring
 
-  BuildingAuthoring:
-    title: Building Authoring Api Image
-    type: build
-    image_name: soluto/tweek-authoring
-    working_directory: ./services/authoring
+      BuildingEditor:
+        title: Building Editor Docker Image
+        type: build
+        image_name: soluto/tweek-editor
+        working_directory: ./services/editor/
 
-  BuildingEditor:
-    title: Building Editor Docker Image
-    type: build
-    image_name: soluto/tweek-editor
-    working_directory: ./services/editor/
+      BuildingUITests:
+        title: Building E2E UI Tests Docker Image
+        type: build
+        image_name: soluto/e2e-ui
+        working_directory: ./e2e/ui
 
-  BuildingUITests:
-    title: Building E2E UI Tests Docker Image
-    type: build
-    image_name: soluto/e2e-ui
-    working_directory: ./e2e/ui
+      BuildingIntegrationTests:
+        title: Building E2E Integration Tests Docker Image
+        type: build
+        image_name: soluto/e2e-integration
+        working_directory: ./e2e/integration
+      
+      BuildingApiSmokeTestImage:
+        title: Building Tweek Api Smoke Test Docker Image
+        type: build
+        image_name: soluto/tweek-api-smoke-tests
+        dockerfile: TweekApiSmokeTest.Dockerfile
 
-  BuildingIntegrationTests:
-    title: Building E2E Integration Tests Docker Image
-    type: build
-    image_name: soluto/e2e-integration
-    working_directory: ./e2e/integration
-  
-  BuildingApiSmokeTestImage:
-    title: Building Tweek Api Smoke Test Docker Image
-    type: build
-    image_name: soluto/tweek-api-smoke-tests
-    dockerfile: TweekApiSmokeTest.Dockerfile
-
-  BuildingZapImage:
-    title: Building Zap Docker Image
-    type: build
-    image_name: soluto/zap
-    working_directory: ./deployments/dev/zap
   IntegrationTests:
     title: Tests - integration & smoke
     type: composition
@@ -78,7 +76,6 @@ steps:
       - API_IMAGE=${{BuildingApiImage}}
       - AUTHORING_IMAGE=${{BuildingAuthoring}}
       - EDITOR_IMAGE=${{BuildingEditor}}
-      - ZAP_IMAGE=${{BuildingZapImage}}
       - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
     composition_candidates:
       smoke-tests:
@@ -86,10 +83,8 @@ steps:
         depends_on: 
           - gateway
           - publishing
-          - zap-smoke
         environment: 
           - TWEEK_API_URL=http://api/
-          - PROXY_URL=http://zap-smoke:8090
         links:
           - gateway:api      
 
@@ -100,7 +95,7 @@ steps:
           - publishing
         environment:
           - API_URL=http://api
-          - AUTHORING_URL=http://authoring:3000
+          - AUTHORING_URL=http://authoring
           - PUBLISHING_URL=http://publishing
           - GATEWAY_URL=http://gateway
           - GIT_PRIVATE_KEY_INLINE=LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBeE1JdjB3QW9NTkhzc1J6OUhvanM2eUNla2w5RHI5RUt1WjUwZ3QveHk4Wk9DelFKCmVuWG9ub1N4clUrRTZrS01QWnFXOElQVWg3R2gvSkhtMUZXczFlVHdhM1oxK1VFRmtpM1E5ZURGSVBUTzM1bmEKcVYwcFVyWTJ3S0xUV24zczd2ZGhjQVNPWHZ1anN5cXZvbENQa0VxckFVdUlRV2c1d0cwSkR1cHhuLzB0UklvcQpPT0gxNmlmeFpZcjdEQzQvQkp2Z0g2anRrdTVuNVhNTDhBaXVnd3B3bFNTU0c4dnVldXZabW53VWRKZ3FPM0RVCkhMdVNwRnBRdTJKNkZ5djhkVWFZVDFWdHFYOWh4TGlIbUdFUktoTCs1a1BHNGQxM0JvZDVUWFZkbzZ4eGZDUGEKaGhVbnpsZE1lc0EwYi9WYVE4QWlRaGtvQ2NRaWJPYXJVNzAzUlFJREFRQUJBb0lCQVFDWmpOWVh1N0toenVJQgpvcGJpNG9iS1JDMmNHMTVPY2p3RmVlU0JVbFYzNnExelRzdnExdU9QK2d4VExaQ1Q1UlZlNmlyTFRvWm8wemFRClRpaXZJcUY4VjJ0TTRpalZPV29vbHpyUTkvVy9iMjJXMEpIMXhHK0FUaFZTcG45OHluTkNWcXFpNmR0Vnd0b1EKODhvWFNQbVE2TVNsZ1JXM3ZhZjhSTnRoMlpLTkFIOTdZOHBqVk1YL3FMTDFuWjk1YnFvclJJTFJ6ektHSmpxRwplN0VpeFQ0a0JaemxHWUF5a1dVeFFZZzBkdTlnQjc1U1o2MHNwZzVUQlh5a3RXdzVIWG1ZWlMvSHdCOVRKbG1XClRqeVZ0T2VWbGpPRmI4VmdIcE13d3UyTW9yN1ZQQVB3Z0RYdXFGTVd2RnpxVWJIY1VLclcwZ0JITGpYU1BtUzYKMEwxSTNjV0JBb0dCQVBPeHlxSmZ4cnpVQ1BuM3AzbVk2cjZnbHlYYi8rZWFYYTQ2N3NOWThNWnBWZGw1bVFKVgpuOEdRN3FYaklaa2pCU2E5YzZZQThxOFRLVHlJbEcvTDE1OFVSaFRqZldNSC9nandaem1oSmVkL0N6Lzg1Y2V4CmxRbDdsTi9SMjRUYjN3VTE2M21FeW5oR1JXNUt3cWNVNW9FQm1uOS9ZazhoaWJraTZoSTY0QWhsQW9HQkFNNngKcVBabi9uaHY4dSttT2U3Y3pTVjVMc3dmTTNTU3NuZlhnUVJXN3J6a2hrZnJRWjJlWHpFQ21oVk8vdUpWb01iVApoQS9tUXRYRzVuMk9QMndmSk1LVUNiVVZ2ZTJYNUQxU1VGYk03dWVHU3JlWExXdXJzaHdnN1p6VlpxVDYzUEJSCmpUa1FFNHJ1a1ZFSzNNMFVQOUlNVndzYURqMjgrY01RZk5ORmh0VmhBb0dBQ1Q5cStDUjRUendncHhPOTJFQjAKVUEyYURzYTlmRldBVHBkUDdqdld6MEM2RUVtc0E4bXFDVmR0cHYvcWkzd251dU9mbXVJWVU0cC9teHQzdnBKVwp1V08wa1NCYzVzQXI1THp5dmQ0ZXFSMUtHUUNJMjc0aWNMeXUxcHVKSUE2VDlRZXB5dSsrR3poWGRDc0VIZ0VPCkNrRThVckJMMDhMckRncUVKWEwwZzMwQ2dZQm0welVtR0FnZExEd2tBb0xSbEtDdDRzSm9JNkY2ZmJ3eEtGRnoKc2pla1d0OStpY2VqdlBUSU1lNHJhWmdkU3RIbjk3TzhJU1hncWNsaWJ0Q1lYa253VHFzaG5nWlZXM25kRThVSgoyWHVFVEdlQk84RUp6bW1WMnIrNmhPTkNjZFpWNjR3ZzlpRnl2VW9ua2dyVUx4MnN4aHpMVmhQOW5MUjMyUXp3CklhZDVJUUtCZ1FEWHBhU25seGcrbzMyV0FHd0dzQXhxNUNXK3JFcE84UENEbytSZWU2dmNGN25JZi95NHNSUHUKNDFpcFo2WHhZcHdnUkQ3em5aano5QWVWaEc4aUFBQUJORlUxSkZUaVhpZ1BEWi8wOFlFMHRnQ1ZiL0VPV2ZxVAptS0NBTUgrSjJZWUlwb3NLL3dyQmRXQ1RiUHYvYUI3RkVraFFLeGVJTXYxd0trd2tSaU5BQ0E9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
@@ -152,7 +147,6 @@ steps:
       - API_IMAGE=${{BuildingApiImage}}
       - AUTHORING_IMAGE=${{BuildingAuthoring}}
       - EDITOR_IMAGE=${{BuildingEditor}}
-      - ZAP_IMAGE=${{BuildingZapImage}}
       - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
     composition_candidates:
       e2e-ui:
@@ -162,13 +156,11 @@ steps:
           - editor
           - gateway
           - publishing
-          - zap-e2e
         environment:
-          - EDITOR_URL=http://editor:3000/
+          - GATEWAY_URL=http://gateway/
           - TWEEK_API_URL=http://api/
-          - AUTHORING_URL=http://authoring:3000
+          - AUTHORING_URL=http://authoring
           - GIT_PRIVATE_KEY_INLINE=LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBeE1JdjB3QW9NTkhzc1J6OUhvanM2eUNla2w5RHI5RUt1WjUwZ3QveHk4Wk9DelFKCmVuWG9ub1N4clUrRTZrS01QWnFXOElQVWg3R2gvSkhtMUZXczFlVHdhM1oxK1VFRmtpM1E5ZURGSVBUTzM1bmEKcVYwcFVyWTJ3S0xUV24zczd2ZGhjQVNPWHZ1anN5cXZvbENQa0VxckFVdUlRV2c1d0cwSkR1cHhuLzB0UklvcQpPT0gxNmlmeFpZcjdEQzQvQkp2Z0g2anRrdTVuNVhNTDhBaXVnd3B3bFNTU0c4dnVldXZabW53VWRKZ3FPM0RVCkhMdVNwRnBRdTJKNkZ5djhkVWFZVDFWdHFYOWh4TGlIbUdFUktoTCs1a1BHNGQxM0JvZDVUWFZkbzZ4eGZDUGEKaGhVbnpsZE1lc0EwYi9WYVE4QWlRaGtvQ2NRaWJPYXJVNzAzUlFJREFRQUJBb0lCQVFDWmpOWVh1N0toenVJQgpvcGJpNG9iS1JDMmNHMTVPY2p3RmVlU0JVbFYzNnExelRzdnExdU9QK2d4VExaQ1Q1UlZlNmlyTFRvWm8wemFRClRpaXZJcUY4VjJ0TTRpalZPV29vbHpyUTkvVy9iMjJXMEpIMXhHK0FUaFZTcG45OHluTkNWcXFpNmR0Vnd0b1EKODhvWFNQbVE2TVNsZ1JXM3ZhZjhSTnRoMlpLTkFIOTdZOHBqVk1YL3FMTDFuWjk1YnFvclJJTFJ6ektHSmpxRwplN0VpeFQ0a0JaemxHWUF5a1dVeFFZZzBkdTlnQjc1U1o2MHNwZzVUQlh5a3RXdzVIWG1ZWlMvSHdCOVRKbG1XClRqeVZ0T2VWbGpPRmI4VmdIcE13d3UyTW9yN1ZQQVB3Z0RYdXFGTVd2RnpxVWJIY1VLclcwZ0JITGpYU1BtUzYKMEwxSTNjV0JBb0dCQVBPeHlxSmZ4cnpVQ1BuM3AzbVk2cjZnbHlYYi8rZWFYYTQ2N3NOWThNWnBWZGw1bVFKVgpuOEdRN3FYaklaa2pCU2E5YzZZQThxOFRLVHlJbEcvTDE1OFVSaFRqZldNSC9nandaem1oSmVkL0N6Lzg1Y2V4CmxRbDdsTi9SMjRUYjN3VTE2M21FeW5oR1JXNUt3cWNVNW9FQm1uOS9ZazhoaWJraTZoSTY0QWhsQW9HQkFNNngKcVBabi9uaHY4dSttT2U3Y3pTVjVMc3dmTTNTU3NuZlhnUVJXN3J6a2hrZnJRWjJlWHpFQ21oVk8vdUpWb01iVApoQS9tUXRYRzVuMk9QMndmSk1LVUNiVVZ2ZTJYNUQxU1VGYk03dWVHU3JlWExXdXJzaHdnN1p6VlpxVDYzUEJSCmpUa1FFNHJ1a1ZFSzNNMFVQOUlNVndzYURqMjgrY01RZk5ORmh0VmhBb0dBQ1Q5cStDUjRUendncHhPOTJFQjAKVUEyYURzYTlmRldBVHBkUDdqdld6MEM2RUVtc0E4bXFDVmR0cHYvcWkzd251dU9mbXVJWVU0cC9teHQzdnBKVwp1V08wa1NCYzVzQXI1THp5dmQ0ZXFSMUtHUUNJMjc0aWNMeXUxcHVKSUE2VDlRZXB5dSsrR3poWGRDc0VIZ0VPCkNrRThVckJMMDhMckRncUVKWEwwZzMwQ2dZQm0welVtR0FnZExEd2tBb0xSbEtDdDRzSm9JNkY2ZmJ3eEtGRnoKc2pla1d0OStpY2VqdlBUSU1lNHJhWmdkU3RIbjk3TzhJU1hncWNsaWJ0Q1lYa253VHFzaG5nWlZXM25kRThVSgoyWHVFVEdlQk84RUp6bW1WMnIrNmhPTkNjZFpWNjR3ZzlpRnl2VW9ua2dyVUx4MnN4aHpMVmhQOW5MUjMyUXp3CklhZDVJUUtCZ1FEWHBhU25seGcrbzMyV0FHd0dzQXhxNUNXK3JFcE84UENEbytSZWU2dmNGN25JZi95NHNSUHUKNDFpcFo2WHhZcHdnUkQ3em5aano5QWVWaEc4aUFBQUJORlUxSkZUaVhpZ1BEWi8wOFlFMHRnQ1ZiL0VPV2ZxVAptS0NBTUgrSjJZWUlwb3NLL3dyQmRXQ1RiUHYvYUI3RkVraFFLeGVJTXYxd0trd2tSaU5BQ0E9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
-          - PROXY_URL=http://zap-e2e:8090
           - AUTH_DIGEST_CREDENTIALS=user:pwd        
         links:
           - gateway:api
@@ -185,38 +177,6 @@ steps:
           - '${{BuildingEditor.imageId}}':
             - CF_QUALITY: false
             
-  BuildGlueCli:
-    title: Building Glue CLI
-    type: build
-    image_name: soluto/glue-cli
-    working_directory: ./deployments/dev/zap/glue
-
-  SecurityTests:
-    title: Tests - security
-    type: composition
-    composition:
-      version: '2'
-      services:
-        zap:
-          image: ${{BuildingZapImage}}
-          user: root
-          volumes:
-            - ${CF_VOLUME_PATH}/tweek/deployments/dev/zap/session:/root/.ZAP/session/
-    composition_variables:
-      - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
-    composition_candidates:
-      glue:
-        image: ${{BuildGlueCli}}
-        working_dir: /repo/tweek/deployments/dev/zap/glue
-        command: ./test.sh
-        depends_on: 
-          - zap
-        environment:
-          - ZAP_HOST=http://zap
-          - ZAP_PORT=8090
-        volumes:
-          - ${{CF_VOLUME}}:/repo
-
   Swagger:
     title: Upload swagger
     when:

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"time"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/Soluto/tweek/services/gateway/externalApps"
 	"github.com/Soluto/tweek/services/gateway/handlers"
 	"github.com/Soluto/tweek/services/gateway/metrics"
+	"github.com/Soluto/tweek/services/gateway/proxy"
 
 	"github.com/Soluto/tweek/services/gateway/passThrough"
 
@@ -74,6 +76,7 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	middleware.Use(authorizationMiddleware)
 
 	router := NewRouter(config)
+
 	transformation.Mount(&config.Upstreams, config.V2Routes, token, middleware, router.V2Router())
 
 	metricsVar := metrics.NewMetricsVar("passthrough")
@@ -95,6 +98,13 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	if corsSupportMiddleware != nil {
 		app.Use(corsSupportMiddleware)
 	}
+
+	if &config.Upstreams.Editor != nil {
+		editorURL, _ := url.Parse(config.Upstreams.Editor)
+		editorForwarder := proxy.New(editorURL, nil)
+		router.MainRouter().Methods("GET").PathPrefix("/").Handler(negroni.New(editorForwarder))
+	}
+
 	app.UseHandler(router)
 
 	return app

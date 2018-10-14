@@ -12,8 +12,8 @@ const enhance = compose(
   connect(null, mapDispatchToProps),
   lifecycle({
     componentDidMount() {
-      processSigninRedirectCallback().then(({ state: { redirect } }) => {
-        this.props.redirect(`${redirect.pathname}${redirect.hash || redirect.search}`);
+      processSigninRedirectCallback().then(({ state: { redirect = { pathname: '/' } } }) => {
+        this.props.redirect(`${redirect.pathname}${redirect.hash || redirect.search || ''}`);
       });
     },
   }),

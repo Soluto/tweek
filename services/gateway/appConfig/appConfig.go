@@ -14,6 +14,7 @@ type Upstreams struct {
 	API        string
 	Authoring  string
 	Publishing string
+	Editor     string
 }
 
 // V1Hosts is the list of v1 hosts

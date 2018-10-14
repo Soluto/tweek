@@ -23,10 +23,15 @@ func NewStatusHandler(config *appConfig.Upstreams) http.HandlerFunc {
 		wg.Add(len(services))
 
 		serviceStatuses := map[string]interface{}{}
+		isHealthy := true
 
 		for serviceName, serviceHost := range services {
 			go func(name, host string, statuses map[string]interface{}, wgroup *sync.WaitGroup) {
-				checkServiceStatus(name, host, statuses)
+				serviceStatus, serviceIsHealthy := checkServiceStatus(name, host)
+				statuses[name] = serviceStatus
+				if !serviceIsHealthy {
+					isHealthy = false
+				}
 				wgroup.Done()
 			}(serviceName, serviceHost, serviceStatuses, &wg)
 		}
@@ -37,31 +42,36 @@ func NewStatusHandler(config *appConfig.Upstreams) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		if !isHealthy {
+			http.Error(w, "not all services are healthy", http.StatusServiceUnavailable)
+		}
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(js)
 	}
 }
 
-func checkServiceStatus(serviceName string, serviceHost string, statuses map[string]interface{}) {
+func checkServiceStatus(serviceName string, serviceHost string) (interface{}, bool) {
 	resp, err := http.Get(fmt.Sprintf("%s/health", serviceHost))
+
 	if err != nil || resp == nil {
 		log.Printf("Service health request for %s failed with error: %v\n", serviceName, err)
-		statuses[serviceName] = "Service health request failed"
-		return
+		return "Service health request failed", false
 	}
 	defer resp.Body.Close()
 	contents, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Printf("Service health request for %s read failed with error: %v\n", serviceName, err)
-		statuses[serviceName] = "Service health request cannot be read"
-		return
+		return "Service health request cannot be read", false
 	}
 	var status map[string]interface{}
 	err = json.Unmarshal(contents, &status)
 	if err != nil {
 		log.Printf("Service health request for %s JSON parse failed with error: %v\n", serviceName, err)
-		statuses[serviceName] = "Service health request responded with bad format"
-		return
+		return "Service health request responded with bad format", false
 	}
-	statuses[serviceName] = status
+	if resp.StatusCode > 400 {
+		return status, false
+	}
+	return status, true
 }

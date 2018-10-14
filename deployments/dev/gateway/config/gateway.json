@@ -2,7 +2,8 @@
     "upstreams": {
         "api": "http://api",
         "authoring": "http://authoring:3000",
-        "publishing": "http://publishing"
+        "publishing": "http://publishing",
+        "editor": "http://editor:3000"
     },
     "security": {
         "auth": {

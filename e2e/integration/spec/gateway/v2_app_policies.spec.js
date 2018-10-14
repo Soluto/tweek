@@ -23,100 +23,75 @@ describe('Gateway v2 - App Policies', () => {
       name: 'read_specific_key',
       requirePermissionObject: 'repo',
       requirePermissionAction: 'read',
-      action: async client => {
-        await client.get('/api/v2/keys/integration_tests/some_key').expect(200);
-      },
+      action: client => client.get('/api/v2/keys/integration_tests/some_key'),
     },
     {
       name: 'read_specific_key 2',
       requirePermissionObject: 'repo',
       requirePermissionAction: 'read',
-      action: async client => {
-        await client.get('/api/v2/keys?keyPath=integration_tests/some_key').expect(200);
-      },
+      action: client => client.get('/api/v2/keys?keyPath=integration_tests/some_key'),
     },
     {
       name: 'read_manifests',
       requirePermissionObject: 'repo',
       requirePermissionAction: 'read',
-      action: async client => {
-        await client.get('/api/v2/manifests/integration_tests/some_key').expect(200);
-      },
+      action: client => client.get('/api/v2/manifests/integration_tests/some_key'),
     },
     {
       name: 'list_keys',
       requirePermissionObject: 'repo',
       requirePermissionAction: 'read',
-      action: async client => {
-        await client.get('/api/v2/keys').expect(200);
-      },
+      action: client => client.get('/api/v2/keys'),
     },
     {
       name: 'list_manifests',
       requirePermissionObject: 'repo',
       requirePermissionAction: 'read',
-      action: async client => {
-        await client.get('/api/v2/manifests').expect(200);
-      },
+      action: client => client.get('/api/v2/manifests'),
     },
     {
       name: 'get_dependents',
       requirePermissionObject: 'repo',
       requirePermissionAction: 'read',
-      action: async client => {
-        await client.get('/api/v2/dependents/integration_tests/some_key').expect(200);
-      },
+      action: client => client.get('/api/v2/dependents/integration_tests/some_key'),
     },
     {
       name: 'get_schemas',
       requirePermissionObject: 'repo',
       requirePermissionAction: 'read',
-      action: async client => {
-        await client.get('/api/v2/schemas').expect(200);
-      },
+      action: client => client.get('/api/v2/schemas'),
     },
     {
       name: 'search',
       requirePermissionObject: 'repo',
       requirePermissionAction: 'read',
-      action: async client => {
-        await client.get('/api/v2/search').expect(200);
-      },
+      action: client => client.get('/api/v2/search'),
     },
     {
       name: 'suggestions',
       requirePermissionObject: 'repo',
       requirePermissionAction: 'read',
-      action: async client => {
-        await client.get('/api/v2/suggestions').expect(200);
-      },
+      action: client => client.get('/api/v2/suggestions'),
     },
     {
       name: 'search-index',
       requirePermissionObject: 'repo',
       requirePermissionAction: 'read',
-      action: async client => {
-        await client.get('/api/v2/search-index').expect(200);
-      },
+      action: client => client.get('/api/v2/search-index'),
     },
     {
       name: 'revision-history',
       requirePermissionObject: 'repo',
       requirePermissionAction: 'read',
-      action: async client => {
-        await client.get('/api/v2/revision-history/integration_tests/some_key').expect(200);
-      },
+      action: client => client.get('/api/v2/revision-history/integration_tests/some_key'),
     },
 
     {
       name: 'delete_schemas',
       requirePermissionObject: 'repo/schemas',
       requirePermissionAction: 'write',
-      action: async client => {
-        await client
+      action: client => client
           .delete('/api/v2/schemas/new_identity?author.name=test&author.email=test@tweek.com')
-          .expect(200);
-      },
     },
   ];
 
@@ -161,20 +136,12 @@ describe('Gateway v2 - App Policies', () => {
         client.set({ 'x-client-id': appId, 'x-client-secret': appSecret }).unset('Authorization'),
       );
 
-      await bluebird.delay(2000);
+      // should change to match {oid} with repo-version api
+      await bluebird.delay(3000);
 
-      await Promise.all(relevantCases.map(x => x.action(appClient)));
+      await Promise.all(relevantCases.map(x => x.action(appClient).expect(200)));
 
-      await Promise.all(
-        forbiddenCases.map(async x => {
-          await x.action(appClient).then(
-            () => true,
-            ex => {
-              return expect(ex.message).to.contain('403');
-            },
-          );
-        }),
-      );
+      await Promise.all(forbiddenCases.map(async x => await x.action(appClient).expect(403)));
     });
   }
 });
