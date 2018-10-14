@@ -90,11 +90,8 @@ describe('Gateway v2 - App Policies', () => {
       name: 'delete_schemas',
       requirePermissionObject: 'repo/schemas',
       requirePermissionAction: 'write',
-      action: async client => {
-        await client
+      action: client => client
           .delete('/api/v2/schemas/new_identity?author.name=test&author.email=test@tweek.com')
-          .expect(200);
-      },
     },
   ];
 
