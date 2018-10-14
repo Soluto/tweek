@@ -3,17 +3,25 @@ package proxy
 import (
 	"fmt"
 	"net/http"
-	"net/http/httputil"
 	"net/url"
 
 	"github.com/Soluto/tweek/services/gateway/security"
 
 	"github.com/urfave/negroni"
+	"github.com/vulcand/oxy/buffer"
+	"github.com/vulcand/oxy/forward"
 )
 
 // New creates a new Proxy Middleware to forward the requests
 func New(upstream *url.URL, token security.JWTToken) negroni.HandlerFunc {
-	proxy := httputil.NewSingleHostReverseProxy(upstream) // // net / http / httputil.NewSingleHostReverseProxy(upstream) //NewSingleHostReverseProxy(upstream)
+	fwd, err := forward.New()
+	if err != nil {
+		panic(fmt.Sprintf("Failed to setup request forwarding %v", err))
+	}
+	proxy, err := buffer.New(fwd, buffer.Retry(`IsNetworkError() && Attempts() <= 2`))
+	if err != nil {
+		panic(fmt.Sprintf("Failed to setup error handler %v", err))
+	}
 
 	return func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		rw.Header().Set("X-GATEWAY", "true")

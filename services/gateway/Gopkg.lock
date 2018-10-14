@@ -27,7 +27,10 @@
 
 [[projects]]
   name = "github.com/dgrijalva/jwt-go"
-  packages = [".","request"]
+  packages = [
+    ".",
+    "request"
+  ]
   revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
   version = "v3.2.0"
 
@@ -74,15 +77,31 @@
   version = "v1.2.0"
 
 [[projects]]
+  name = "github.com/gravitational/trace"
+  packages = ["."]
+  revision = "3318e711adee0b3f48d3399ebf5aaddf329a2b4f"
+  version = "1.1.5"
+
+[[projects]]
   branch = "master"
   name = "github.com/jinzhu/configor"
   packages = ["."]
   revision = "4edaf76fe18865e36de734d887f4c01bd05707af"
 
 [[projects]]
+  name = "github.com/jonboulle/clockwork"
+  packages = ["."]
+  revision = "2eee05ed794112d45db504eb05aa693efd2b8b09"
+  version = "v0.1.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/lestrrat-go/jwx"
-  packages = ["internal/base64","jwa","jwk"]
+  packages = [
+    "internal/base64",
+    "jwa",
+    "jwk"
+  ]
   revision = "0e3622ae3e832755f1b52f944b204bcd5309d7d7"
 
 [[projects]]
@@ -92,6 +111,12 @@
   revision = "39f9a71bcabe9432cbdfe4d3d33f41988acd2ce6"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/mailgun/multibuf"
+  packages = ["."]
+  revision = "565402cd71fbd9c12aa7e295324ea357e970a61e"
+
+[[projects]]
   name = "github.com/matttproud/golang_protobuf_extensions"
   packages = ["pbutil"]
   revision = "c12348ce28de40eed0136aa2b644d0ee0650e56c"
@@ -99,7 +124,15 @@
 
 [[projects]]
   name = "github.com/minio/minio-go"
-  packages = [".","pkg/credentials","pkg/encrypt","pkg/policy","pkg/s3signer","pkg/s3utils","pkg/set"]
+  packages = [
+    ".",
+    "pkg/credentials",
+    "pkg/encrypt",
+    "pkg/policy",
+    "pkg/s3signer",
+    "pkg/s3utils",
+    "pkg/set"
+  ]
   revision = "9e124ec59547551cb3f1324f73623bbb30650cf8"
   version = "4.0.9"
 
@@ -110,14 +143,12 @@
   revision = "3864e76763d94a6df2f9960b16a20a33da9f9a66"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/mwitkow/go-conntrack"
-  packages = ["."]
-  revision = "cc309e4a22231782e8893f3c35ced0967807a33e"
-
-[[projects]]
   name = "github.com/nats-io/go-nats"
-  packages = [".","encoders/builtin","util"]
+  packages = [
+    ".",
+    "encoders/builtin",
+    "util"
+  ]
   revision = "062418ea1c2181f52dc0f954f6204370519a868b"
   version = "v1.5.0"
 
@@ -129,7 +160,17 @@
 
 [[projects]]
   name = "github.com/open-policy-agent/opa"
-  packages = ["ast","metrics","rego","storage","storage/inmem","topdown","topdown/builtins","types","util"]
+  packages = [
+    "ast",
+    "metrics",
+    "rego",
+    "storage",
+    "storage/inmem",
+    "topdown",
+    "topdown/builtins",
+    "types",
+    "util"
+  ]
   revision = "877d39f035d1756b07a6ce8582bf793b7f2c1714"
   version = "v0.8.2"
 
@@ -154,13 +195,22 @@
 [[projects]]
   branch = "master"
   name = "github.com/prometheus/common"
-  packages = ["config","expfmt","internal/bitbucket.org/ww/goautoneg","model"]
+  packages = [
+    "expfmt",
+    "internal/bitbucket.org/ww/goautoneg",
+    "model"
+  ]
   revision = "7600349dcfe1abd18d72d3a1770870d9800a7801"
 
 [[projects]]
   branch = "master"
   name = "github.com/prometheus/procfs"
-  packages = [".","internal/util","nfs","xfs"]
+  packages = [
+    ".",
+    "internal/util",
+    "nfs",
+    "xfs"
+  ]
   revision = "ae68e2d4c00fed4943b5f6698d504a5fe083da8a"
 
 [[projects]]
@@ -190,8 +240,18 @@
 [[projects]]
   branch = "master"
   name = "github.com/vulcand/oxy"
-  packages = ["forward","utils"]
+  packages = [
+    "buffer",
+    "forward",
+    "utils"
+  ]
   revision = "a3ed5f65204f4ffccbb56d58cec466cdb7ab730b"
+
+[[projects]]
+  name = "github.com/vulcand/predicate"
+  packages = ["."]
+  revision = "8fbfb3ab0e94276b6b58bec378600829adc7a203"
+  version = "v1.1.0"
 
 [[projects]]
   branch = "master"
@@ -202,24 +262,49 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
-  packages = ["pbkdf2","ssh/terminal"]
+  packages = [
+    "pbkdf2",
+    "ssh/terminal"
+  ]
   revision = "c126467f60eb25f8f27e5a981f32a87e3965053f"
 
 [[projects]]
   branch = "release-branch.go1.10"
   name = "golang.org/x/net"
-  packages = ["context","idna","internal/timeseries","lex/httplex","trace"]
+  packages = [
+    "context",
+    "idna",
+    "lex/httplex"
+  ]
   revision = "0ed95abb35c445290478a5348a7b38bb154135fd"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix","windows"]
+  packages = [
+    "unix",
+    "windows"
+  ]
   revision = "e072cadbbdc8dd3d3ffa82b8b4b9304c261d9311"
 
 [[projects]]
   name = "golang.org/x/text"
-  packages = ["collate","collate/build","internal/colltab","internal/gen","internal/tag","internal/triegen","internal/ucd","language","secure/bidirule","transform","unicode/bidi","unicode/cldr","unicode/norm","unicode/rangetable"]
+  packages = [
+    "collate",
+    "collate/build",
+    "internal/colltab",
+    "internal/gen",
+    "internal/tag",
+    "internal/triegen",
+    "internal/ucd",
+    "language",
+    "secure/bidirule",
+    "transform",
+    "unicode/bidi",
+    "unicode/cldr",
+    "unicode/norm",
+    "unicode/rangetable"
+  ]
   revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
   version = "v0.3.0"
 
@@ -238,6 +323,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4d6f12fdc4769e6c59201ca3275413e78bf35782d3ca9c02a74fc4fd3ff14b18"
+  inputs-digest = "dd5b26eda8a5d1f86f5584bbd83a85668a5ab49ee73284808f9bbcd9a0226d6d"
   solver-name = "gps-cdcl"
   solver-version = 1
