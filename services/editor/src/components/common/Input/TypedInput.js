@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { withJsonEditor } from './EditJSON';
 import ListTypedValue from './ListTypedValue';
 import './TypedInput.css';
+import DateInput from './DateInput';
 
 export const typesServiceContextType = {
   types: PropTypes.object.isRequired,
@@ -86,6 +87,10 @@ const InputComponent = ({
         }
       />
     );
+  }
+
+  if (valueTypeName === types.date.name) {
+    return <DateInput onChange={onChange} value={value} {...props} />;
   }
 
   return <Input {...props} onChange={onChange} value={value} />;
