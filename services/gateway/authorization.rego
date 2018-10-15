@@ -15,6 +15,9 @@ context_items_count_mismatch(from_input,from_data) = true {
 match_contexts(from_input,from_data) = true {
     not context_items_mismatch(from_input, from_data)
     not context_items_count_mismatch(from_input, from_data)
+} else = true {
+    from_data[idx]
+    idx = "*"
 }
 
 match_wildcards(a,b) = true {

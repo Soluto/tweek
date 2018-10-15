@@ -99,3 +99,13 @@ test_authorize_deny_extra_context {
         "action": "read"
     }
 }
+
+test_authorize_allow_wildcard_context {
+    authorize with input as {
+        "user": "00000000-0000-0000-0000-000000000000",
+        "group": "default",
+        "contexts": {"user": "self", "device": "testdevice", "extra": "extra"},
+        "object": "keys.test/key_with_wildcard_context",
+        "action": "read"
+    }
+}
