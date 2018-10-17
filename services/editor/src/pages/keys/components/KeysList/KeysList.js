@@ -10,6 +10,7 @@ import * as SearchService from '../../../../services/search-service';
 import DirectoryTreeView from './TreeView/DirectoryTreeView';
 import CardView from './CardView';
 import './KeysList.css';
+import ReactTooltip from 'react-tooltip';
 
 const KeysFilter = withState('filter', 'setFilter', '')(({ onFilterChange, setFilter, filter }) => (
   <div className="search-input-wrapper">
@@ -52,22 +53,49 @@ const supportCardView = async () => {
   }
 };
 
-const KeyItem = ({ name, fullPath, depth, selected }) => (
-  <div className="key-link-wrapper" data-comp="key-link">
-    <Link
-      className={classNames('key-link', { selected })}
-      style={{ paddingLeft: (depth + 1) * 14 }}
-      to={`/keys/${fullPath}`}
-    >
-      {name}
-    </Link>
-  </div>
-);
+const getDataValueType = (archived, keyType, valueType) => {
+  if (archived) {
+    return 'archived';
+  } else if (keyType === 'alias') {
+    return 'alias';
+  }
+  return valueType || 'key';
+};
 
-const CardItem = ({ key_path, meta: { name, tags, description }, valueType, selected }) => (
+const KeyItem = ({ name, fullPath, depth, selected, item }) => {
+  const dataValueType = getDataValueType(
+    item.meta.archived,
+    item.implementation.type,
+    item.valueType,
+  );
+  return (
+    <div className="key-link-wrapper" data-comp="key-link">
+      <Link
+        className={classNames('key-link', { selected })}
+        style={{ paddingLeft: (depth + 1) * 14 }}
+        to={`/keys/${fullPath}`}
+      >
+        <div className={classNames('key-type', 'key-icon')} data-value-type={dataValueType} />
+        {name}
+      </Link>
+    </div>
+  );
+};
+
+const CardItem = ({
+  key_path,
+  meta: { archived, name, tags, description },
+  implementation: { keyType },
+  valueType,
+  selected,
+}) => (
   <div className={classNames('key-card', { selected })} data-comp="key-card">
     <Link title={key_path} className="key-link" to={`/keys/${key_path}`}>
       <div>
+        <div
+          className={classNames('key-type', 'card-icon')}
+          data-value-type={getDataValueType(archived, keyType, valueType)}
+        />
         <div className="title">{name}</div>
         <div>{(tags || []).map(x => <span className="tag">{x}</span>)}</div>
       </div>
@@ -137,6 +165,9 @@ const KeysList = connect((state, props) => ({
                 <DirectoryTreeView
                   selectedPath={selectedKey}
                   paths={filteredKeys || Object.keys(visibleKeys)}
+                  items={(filteredKeys || Object.keys(visibleKeys))
+                    .map(x => keys[x])
+                    .filter(x => x)}
                   expandByDefault={!!filteredKeys}
                   renderItem={KeyItem}
                 />

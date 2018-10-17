@@ -4,7 +4,13 @@ import TreeNode from './TreeNode';
 import { compsPathSorter, leaf } from './pathSorter';
 import './TreeView.css';
 
-export default function DirectoryTreeView({ paths, renderItem, selectedPath, expandByDefault }) {
+export default function DirectoryTreeView({
+  paths,
+  renderItem,
+  selectedPath,
+  expandByDefault,
+  items,
+}) {
   let pathTree = pathsToTree(paths);
   return (
     <div className="key-folder" data-comp="directory-tree-view">
@@ -16,6 +22,7 @@ export default function DirectoryTreeView({ paths, renderItem, selectedPath, exp
             node={pathTree[pathNode]}
             selectedPath={selectedPath}
             fullPath={pathNode}
+            itemExtractor={path => items && items.find(i => i.key_path === path)}
             depth={1}
             expandByDefault={expandByDefault}
             renderItem={renderItem}

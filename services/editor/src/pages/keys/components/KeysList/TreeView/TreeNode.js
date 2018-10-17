@@ -32,11 +32,11 @@ const TreeNode = compose(
     selected,
     selectedPath,
     addKey,
+    itemExtractor,
   }) => {
     let LeafElement = renderItem;
-
     return node === leaf ? (
-      <LeafElement {...{ name, fullPath, depth, selected }} />
+      <LeafElement {...{ name, fullPath, depth, selected, item: itemExtractor(fullPath) }} />
     ) : (
       <TreeDirectory
         descendantsCount={countLeafsInTree(node)}
@@ -61,6 +61,7 @@ const TreeNode = compose(
               depth={depth + 1}
               renderItem={renderItem}
               expandByDefault={expandByDefault}
+              itemExtractor={itemExtractor}
             />
           ))
           .sort(compsPathSorter)}
