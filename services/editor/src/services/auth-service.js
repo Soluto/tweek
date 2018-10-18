@@ -64,14 +64,14 @@ export const processSigninRedirectCallback = async () => {
   const oidcClient = getOidcClient();
   oidcClient.events.addSilentRenewError(error => console.log('Error while renew token', error));
   const user = await oidcClient.signinRedirectCallback();
-  storeToken(user.access_token);
+  storeToken(user.id_token);
   return user;
 };
 
 export const processSilentSigninCallback = async () => {
   const oidcClient = getOidcClient();
   const user = await oidcClient.signinSilentCallback();
-  storeToken(user.access_token);
+  storeToken(user.id_token);
   return user;
 };
 
