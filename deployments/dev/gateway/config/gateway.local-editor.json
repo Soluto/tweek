@@ -8,6 +8,7 @@
                     "authority": "http://localhost:4011",
                     "jwks_uri": "http://oidc-server-mock/.well-known/openid-configuration/jwks",
                     "client_id": "tweek-openid-mock-client",
+                    "login_type": "oidc",
                     "scope": "openid profile email",
                     "response_type": "id_token"
                 }
