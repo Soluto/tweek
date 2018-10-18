@@ -164,11 +164,8 @@ const KeysList = connect((state, props) => ({
                 <DirectoryTreeView
                   selectedPath={selectedKey}
                   paths={filteredKeys || Object.keys(visibleKeys)}
-                  items={(filteredKeys || Object.keys(visibleKeys))
-                    .map(x => keys[x])
-                    .filter(x => x)}
                   expandByDefault={!!filteredKeys}
-                  renderItem={KeyItem}
+                  renderItem={x => <KeyItem {...x} item={keys[x.fullPath]} />}
                 />
               )}
             </div>
