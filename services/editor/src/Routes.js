@@ -5,6 +5,7 @@ import App from './components/App';
 import PrivateRoute from './PrivateRoute';
 import LoginPage from './pages/login/components/LoginPage';
 import LoggedInPage from './pages/login/components/LoggedInPage';
+import AzureLoggedInPage from './pages/login/components/AzureLoggedInPage';
 import BasicAuthLoggedInPage from './pages/login/components/BasicAuthLoggedInPage';
 import SilentLoggedInPage from './pages/login/components/SilentLoggedInPage';
 import KeysPage from './pages/keys/components/KeysPage/KeysPage';
@@ -56,6 +57,7 @@ export default props => (
     <Switch>
       <Route path="/login" component={LoginPage} />
       <Route path="/auth-result/oidc" component={LoggedInPage} />
+      <Route path="/auth-result/azure" component={AzureLoggedInPage} />
       <Route path="/auth-result/basic" component={BasicAuthLoggedInPage} />
       <Route path="/auth-result/silent" component={SilentLoggedInPage} />
       <PrivateRoute path="/" render={renderAppRoutes} />

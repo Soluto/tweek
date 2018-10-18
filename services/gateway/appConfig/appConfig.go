@@ -51,13 +51,15 @@ type BasicAuth struct {
 
 // AuthProvider - configuration of each auth provider
 type AuthProvider struct {
-	Name         string `json:"name"`
-	Issuer       string `json:"issuer"`
-	Authority    string `json:"authority"`
-	ClientID     string `json:"client_id"`
-	JWKSURL      string `json:"jwks_uri"`
-	Scope        string `json:"scope"`
-	ResponseType string `json:"response_type"`
+	Name           string                 `json:"name"`
+	Issuer         string                 `json:"issuer"`
+	Authority      string                 `json:"authority"`
+	ClientID       string                 `json:"client_id"`
+	JWKSURL        string                 `json:"jwks_uri"`
+	LoginType      string                 `json:"login_type"`
+	AdditionalInfo map[string]interface{} `json:"additional_info"`
+	Scope          string                 `json:"scope"`
+	ResponseType   string                 `json:"response_type"`
 }
 
 // Auth - struct with config related to authentication

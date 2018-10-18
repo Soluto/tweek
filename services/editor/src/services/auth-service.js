@@ -1,5 +1,6 @@
 /* global fetch console Headers localStorage window process */
 import Oidc from 'oidc-client';
+import adal from 'adal-angular';
 import { unAuthFetch } from '../utils/fetch';
 
 const store = {};
@@ -72,4 +73,30 @@ export const processSilentSigninCallback = async () => {
   const user = await oidcClient.signinSilentCallback();
   storeToken(user.access_token);
   return user;
+};
+
+export const azureSignin = (resource, tenant, clientId) => {
+  const azureConfig = {
+    tenant,
+    clientId,
+    resource,
+    redirectUri: `${window.location.origin}/auth-result/azure`,
+  };
+  localStorage.setItem('azureConfig', JSON.stringify(azureConfig));
+  const authContext = new adal(azureConfig);
+  authContext.login();
+};
+
+export const getAzureToken = () => {
+  const azureConfig = JSON.parse(localStorage.getItem('azureConfig'));
+  const authContext = new adal(azureConfig);
+  authContext.handleWindowCallback();
+  authContext.acquireToken(azureConfig.resource, (errorDesc, token, error) => {
+    if (error) {
+      console.error('Authentication failed', errorDesc);
+      // should redirect to authentication error page
+      return;
+    }
+    storeToken(token);
+  });
 };
