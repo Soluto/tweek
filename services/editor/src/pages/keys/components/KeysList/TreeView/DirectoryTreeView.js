@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import TreeNode from './TreeNode';
 import { compsPathSorter, leaf } from './pathSorter';
 import './TreeView.css';
+import * as R from 'ramda';
 
 export default function DirectoryTreeView({
   paths,
@@ -12,6 +13,7 @@ export default function DirectoryTreeView({
   items,
 }) {
   let pathTree = pathsToTree(paths);
+  let itemsDictionary = items ? R.indexBy(R.prop('key_path'), items) : {};
   return (
     <div className="key-folder" data-comp="directory-tree-view">
       {Object.keys(pathTree)
@@ -22,7 +24,7 @@ export default function DirectoryTreeView({
             node={pathTree[pathNode]}
             selectedPath={selectedPath}
             fullPath={pathNode}
-            itemExtractor={path => items && items.find(i => i.key_path === path)}
+            itemExtractor={path => itemsDictionary[path]}
             depth={1}
             expandByDefault={expandByDefault}
             renderItem={renderItem}
