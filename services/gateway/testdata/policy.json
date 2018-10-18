@@ -80,6 +80,16 @@
             "object": "keys.denied/key",
             "action": "*",
             "effect": "deny"
+        },
+        {
+            "user": "00000000-0000-0000-0000-000000000000",
+            "group": "default",
+            "contexts": {
+                "*": "*"
+            },
+            "object": "keys.test/key_with_wildcard_context",
+            "action": "read",
+            "effect": "allow"
         }
     ]
 }
