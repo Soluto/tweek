@@ -10,7 +10,6 @@ import * as SearchService from '../../../../services/search-service';
 import DirectoryTreeView from './TreeView/DirectoryTreeView';
 import CardView from './CardView';
 import './KeysList.css';
-import ReactTooltip from 'react-tooltip';
 
 const KeysFilter = withState('filter', 'setFilter', '')(({ onFilterChange, setFilter, filter }) => (
   <div className="search-input-wrapper">
