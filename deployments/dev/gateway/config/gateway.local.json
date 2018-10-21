@@ -13,9 +13,11 @@
                     "authority": "http://localhost:4011",
                     "jwks_uri": "http://localhost:4011/.well-known/openid-configuration/jwks",
                     "client_id": "tweek-openid-mock-client",
-                    "login_type": "oidc",
-                    "scope": "openid profile email",
-                    "response_type": "id_token"
+                    "login_info": {
+                        "login_type": "oidc",
+                        "scope": "openid profile email",
+                        "response_type": "id_token"
+                    }
                 }
             }
         },

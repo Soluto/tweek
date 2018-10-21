@@ -106,14 +106,14 @@ const enhancer = compose(
           id: key,
           name: res[key].name,
           action: (state) => {
-            if (res[key].login_type === 'azure') {
+            if (res[key].login_info.login_type === 'azure') {
               // need to figure out what to do with the state here.
-              const params = res[key].additional_info;
+              const params = res[key].login_info.additional_info;
               return azureSignin(params.resource, params.tenant, res[key].client_id);
             }
-            if (res[key].login_type === 'oidc') {
+            if (res[key].login_info.login_type === 'oidc') {
               return signinRequest(
-                configureOidc(res[key].authority, res[key].client_id, res[key].scope),
+                configureOidc(res[key].authority, res[key].client_id, res[key].login_info.scope),
                 state,
               );
             }

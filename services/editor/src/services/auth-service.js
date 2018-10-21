@@ -75,11 +75,12 @@ export const processSilentSigninCallback = async () => {
   return user;
 };
 
-export const azureSignin = (resource, tenant, clientId) => {
+export const azureSignin = (resource, tenant, clientId, state) => {
   const azureConfig = {
     tenant,
     clientId,
     resource,
+    state,
     redirectUri: `${window.location.origin}/auth-result/azure`,
   };
   localStorage.setItem('azureConfig', JSON.stringify(azureConfig));
@@ -100,3 +101,5 @@ export const getAzureToken = () => {
     storeToken(token);
   });
 };
+
+export const getAzureState = () => localStorage.getItem('azureConfig').state;

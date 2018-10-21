@@ -49,17 +49,22 @@ type BasicAuth struct {
 	RedirectURLs []string `json:"redirect_urls"`
 }
 
-// AuthProvider - configuration of each auth provider
-type AuthProvider struct {
-	Name           string                 `json:"name"`
-	Issuer         string                 `json:"issuer"`
-	Authority      string                 `json:"authority"`
-	ClientID       string                 `json:"client_id"`
-	JWKSURL        string                 `json:"jwks_uri"`
+// AuthLogin - configuration of login information
+type AuthLogin struct {
 	LoginType      string                 `json:"login_type"`
 	AdditionalInfo map[string]interface{} `json:"additional_info"`
 	Scope          string                 `json:"scope"`
 	ResponseType   string                 `json:"response_type"`
+}
+
+// AuthProvider - configuration of each auth provider
+type AuthProvider struct {
+	Name      string    `json:"name"`
+	Issuer    string    `json:"issuer"`
+	Authority string    `json:"authority"`
+	ClientID  string    `json:"client_id"`
+	JWKSURL   string    `json:"jwks_uri"`
+	LoginInfo AuthLogin `json:"login_info"`
 }
 
 // Auth - struct with config related to authentication
