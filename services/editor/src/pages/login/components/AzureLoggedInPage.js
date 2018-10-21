@@ -12,7 +12,7 @@ const enhance = compose(
   connect(null, mapDispatchToProps),
   lifecycle({
     componentDidMount() {
-      const state = getAzureState();
+      const { state } = getAzureState();
       getAzureToken();
       const redirect = (state && state.redirect) || { pathname: '/' };
       this.props.redirect(`${redirect.pathname}${redirect.hash || redirect.search || ''}`);

@@ -24,6 +24,8 @@ export const storeToken = (token) => {
 
 export const retrieveToken = () => storage.getItem('token');
 
+export const isAuthenticated = () => !!retrieveToken();
+
 let oidcClient;
 const getOidcClient = (settings = basicOidcConfig) => oidcClient || new Oidc.UserManager(settings);
 
@@ -81,6 +83,7 @@ export const azureSignin = (resource, tenant, clientId, state) => {
     clientId,
     resource,
     state,
+    navigateToLoginRequestUrl: false,
     redirectUri: `${window.location.origin}/auth-result/azure`,
   };
   localStorage.setItem('azureConfig', JSON.stringify(azureConfig));
@@ -102,4 +105,4 @@ export const getAzureToken = () => {
   });
 };
 
-export const getAzureState = () => localStorage.getItem('azureConfig').state;
+export const getAzureState = () => JSON.parse(localStorage.getItem('azureConfig')).state;
