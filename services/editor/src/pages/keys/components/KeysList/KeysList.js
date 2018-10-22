@@ -119,13 +119,13 @@ const KeysList = connect((state, props) => ({
           <KeysFilter onFilterChange={setFilter} />
           {filteredKeys &&
             supportMultiResultsView && (
-            <div class="view-selector">
+            <div className="view-selector">
               <button onClick={() => setResultsView('cards')}>List</button>
               <button onClick={() => setResultsView('tree')}>Tree</button>
             </div>
           )}
-          <div class="keys-nav">
-            <div class="search-results">
+          <div className="keys-nav">
+            <div className="search-results">
               {filteredKeys && supportMultiResultsView && resultsView === 'cards' ? (
                 <CardView
                   itemSelector={x => x && x.key_path}

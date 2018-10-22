@@ -2,7 +2,12 @@ import React from 'react';
 import { compose, withState, lifecycle } from 'recompose';
 import styled from 'react-emotion';
 
-import { getAuthProviders, configureOidc, signinRequest } from '../../../services/auth-service';
+import {
+  getAuthProviders,
+  configureOidc,
+  signinRequest,
+  azureSignin,
+} from '../../../services/auth-service';
 import logoSrc from '../../../components/resources/logo.svg';
 import BasicAuthLoginButton from './BasicAuthLoginButton';
 
@@ -100,11 +105,19 @@ const enhancer = compose(
         const providers = Object.keys(res).map(key => ({
           id: key,
           name: res[key].name,
-          action: state =>
-            signinRequest(
-              configureOidc(res[key].authority, res[key].client_id, res[key].scope),
-              state,
-            ),
+          action: (state) => {
+            if (res[key].login_info.login_type === 'azure') {
+              // need to figure out what to do with the state here.
+              const params = res[key].login_info.additional_info;
+              return azureSignin(params.resource, params.tenant, res[key].client_id, state);
+            }
+            if (res[key].login_info.login_type === 'oidc') {
+              return signinRequest(
+                configureOidc(res[key].authority, res[key].client_id, res[key].login_info.scope),
+                state,
+              );
+            }
+          },
         }));
         this.props.setAuthProviders(providers);
       });

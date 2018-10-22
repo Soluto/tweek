@@ -92,7 +92,7 @@ func newApp(config *appConfig.Configuration) http.Handler {
 
 	router.MainRouter().PathPrefix("/metrics").Handler(prometheus.Handler())
 
-	app := negroni.New(negroni.NewRecovery())
+	app := negroni.New(recovery)
 
 	corsSupportMiddleware := corsSupport.New(&config.Security.Cors)
 	if corsSupportMiddleware != nil {

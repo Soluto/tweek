@@ -1,5 +1,6 @@
 /* global fetch console Headers localStorage window process */
 import Oidc from 'oidc-client';
+import adal from 'adal-angular';
 import { unAuthFetch } from '../utils/fetch';
 
 const store = {};
@@ -22,6 +23,8 @@ export const storeToken = (token) => {
 };
 
 export const retrieveToken = () => storage.getItem('token');
+
+export const isAuthenticated = () => !!retrieveToken();
 
 let oidcClient;
 const getOidcClient = (settings = basicOidcConfig) => oidcClient || new Oidc.UserManager(settings);
@@ -63,13 +66,43 @@ export const processSigninRedirectCallback = async () => {
   const oidcClient = getOidcClient();
   oidcClient.events.addSilentRenewError(error => console.log('Error while renew token', error));
   const user = await oidcClient.signinRedirectCallback();
-  storeToken(user.access_token);
+  storeToken(user.id_token);
   return user;
 };
 
 export const processSilentSigninCallback = async () => {
   const oidcClient = getOidcClient();
   const user = await oidcClient.signinSilentCallback();
-  storeToken(user.access_token);
+  storeToken(user.id_token);
   return user;
 };
+
+export const azureSignin = (resource, tenant, clientId, state) => {
+  const azureConfig = {
+    tenant,
+    clientId,
+    resource,
+    state,
+    navigateToLoginRequestUrl: false,
+    redirectUri: `${window.location.origin}/auth-result/azure`,
+  };
+  localStorage.setItem('azureConfig', JSON.stringify(azureConfig));
+  const authContext = new adal(azureConfig);
+  authContext.login();
+};
+
+export const getAzureToken = () => {
+  const azureConfig = JSON.parse(localStorage.getItem('azureConfig'));
+  const authContext = new adal(azureConfig);
+  authContext.handleWindowCallback();
+  authContext.acquireToken(azureConfig.resource, (errorDesc, token, error) => {
+    if (error) {
+      console.error('Authentication failed', errorDesc);
+      // should redirect to authentication error page
+      return;
+    }
+    storeToken(token);
+  });
+};
+
+export const getAzureState = () => JSON.parse(localStorage.getItem('azureConfig')).state;
