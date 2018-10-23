@@ -4,6 +4,7 @@ import { VelocityTransitionGroup } from 'velocity-react';
 import openedFolderIconSrc from '../resources/Folder-icon-opened.svg';
 import closedFolderIconSrc from '../resources/Folder-icon-closed.svg';
 import hasUnsavedChanges from '../../utils/hasUnsavedChanges';
+import ReactTooltip from 'react-tooltip';
 
 export default class TreeDirectory extends React.Component {
   static propTypes = {
@@ -46,8 +47,15 @@ export default class TreeDirectory extends React.Component {
           <button
             data-comp="add"
             className="add-key"
+            data-tip={'Add key in folder'}
+            data-for={fullPath}
+            data-delay-hide={100}
+            data-delay-show={500}
+            data-effect="solid"
+            data-place="top"
             onClick={event => this.addKeyAction(event, fullPath)}
           />
+          <ReactTooltip id={fullPath} />
         </div>
 
         <VelocityTransitionGroup
