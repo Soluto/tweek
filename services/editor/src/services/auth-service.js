@@ -1,6 +1,8 @@
 /* global fetch console Headers localStorage window process */
 import Oidc from 'oidc-client';
 import adal from 'adal-angular';
+import jwt_decode from 'jwt-decode';
+import moment from 'moment';
 import { unAuthFetch } from '../utils/fetch';
 
 const store = {};
@@ -24,7 +26,16 @@ export const storeToken = (token) => {
 
 export const retrieveToken = () => storage.getItem('token');
 
-export const isAuthenticated = () => !!retrieveToken();
+export const isAuthenticated = () => {
+  const token = retrieveToken();
+  if (token) {
+    const expiration = moment.unix(jwt_decode(token).exp);
+    if (moment().isBefore(expiration)) {
+      return true;
+    }
+  }
+  return false;
+};
 
 let oidcClient;
 const getOidcClient = (settings = basicOidcConfig) => oidcClient || new Oidc.UserManager(settings);

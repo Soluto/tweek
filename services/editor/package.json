@@ -36,6 +36,7 @@
     "fast-json-patch": "^2.0.6",
     "history": "^4.7.2",
     "idb-keyval": "^2.5.1",
+    "jwt-decode": "2.2.0",
     "lunr": "^2.1.6",
     "moment": "^2.22.0",
     "oidc-client": "1.4.1",
