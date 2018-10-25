@@ -2,6 +2,7 @@ package security
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -13,7 +14,8 @@ func NewUserInfoHandler(configuration *appConfig.Security, extractor SubjectExtr
 	return (func(rw http.ResponseWriter, r *http.Request) {
 		userInfo, err := userInfoFromRequest(r, configuration, extractor)
 		if err != nil {
-			log.Panicln("Error extracting user info", err)
+			http.Error(rw, fmt.Sprintf("Error extracting user info %v", err), http.StatusUnauthorized)
+			return
 		}
 
 		jsonUserInfo, err := json.Marshal(userInfo.Sub())

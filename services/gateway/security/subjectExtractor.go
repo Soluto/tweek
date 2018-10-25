@@ -81,7 +81,7 @@ func (e *DefaultSubjectExtractor) ExtractSubject(ctx context.Context, claims jwt
 		return &Subject{}, fmt.Errorf("Expected rego rules to produce user, but got %v", value)
 	}
 	if group == nil || user == nil {
-		return &Subject{}, fmt.Errorf("Expected rego rules to produce non nil user and group, but got")
+		return &Subject{}, fmt.Errorf("Expected rego rules to produce non nil user and group")
 	}
 
 	return &Subject{User: user.(string), Group: group.(string)}, nil
