@@ -92,7 +92,7 @@ func newApp(config *appConfig.Configuration) http.Handler {
 
 	router.MainRouter().PathPrefix("/metrics").Handler(prometheus.Handler())
 
-	router.MainRouter().PathPrefix("/user-info").HandlerFunc(security.NewUserInfoHandler(&config.Security, userInfoExtractor))
+	router.V2Router().PathPrefix("/user-info").HandlerFunc(security.NewUserInfoHandler(&config.Security, userInfoExtractor))
 
 	app := negroni.New(recovery)
 
