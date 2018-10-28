@@ -11,6 +11,7 @@ import (
 // Router struct contains all subrouters
 type Router interface {
 	http.Handler
+	Configurations() *mux.Router
 	V1Router() *mux.Router
 	V2Router() *mux.Router
 	LegacyNonV1Router() *mux.Router
@@ -20,6 +21,7 @@ type Router interface {
 
 type router struct {
 	router            *mux.Router
+	configurations    *mux.Router
 	v1Router          *mux.Router
 	v2Router          *mux.Router
 	legacyNonV1Router *mux.Router
@@ -38,6 +40,8 @@ func NewRouter(configuration *appConfig.Configuration) Router {
 		return result
 	}).Subrouter()
 
+	configurations := mainRouter.PathPrefix("/configurations/").Subrouter()
+
 	v1Router := mainRouter.PathPrefix("/api/v1/").Subrouter()
 
 	v2Router := mainRouter.PathPrefix("/api/v2/").Subrouter()
@@ -45,6 +49,7 @@ func NewRouter(configuration *appConfig.Configuration) Router {
 	authRouter := mainRouter.PathPrefix("/auth").Subrouter()
 
 	return &router{
+		configurations:    configurations,
 		router:            mainRouter,
 		v1Router:          v1Router,
 		v2Router:          v2Router,
@@ -54,6 +59,8 @@ func NewRouter(configuration *appConfig.Configuration) Router {
 }
 
 func (t *router) MainRouter() *mux.Router { return t.router }
+
+func (t *router) Configurations() *mux.Router { return t.configurations }
 
 func (t *router) V1Router() *mux.Router { return t.v1Router }
 

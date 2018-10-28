@@ -82,6 +82,7 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	metricsVar := metrics.NewMetricsVar("passthrough")
 	noAuthMiddleware := negroni.New(recovery)
 	passThrough.Mount(&config.Upstreams, &config.V1Hosts, noAuthMiddleware, metricsVar, router.V1Router())
+	passThrough.Mount(&config.Upstreams, &config.V1Hosts, noAuthMiddleware, metricsVar, router.Configurations())
 	passThrough.Mount(&config.Upstreams, &config.V1Hosts, noAuthMiddleware, metricsVar, router.LegacyNonV1Router())
 
 	security.MountAuth(&config.Security.Auth, &config.Security.TweekSecretKey, noAuthMiddleware, router.AuthRouter())
