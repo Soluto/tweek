@@ -78,7 +78,6 @@ type Security struct {
 	AllowedIssuers []string
 	AzureTenantID  string
 	TweekSecretKey EnvInlineOrPath
-	Enforce        bool
 	PolicyStorage  PolicyStorage
 	Cors           Cors
 	Auth           Auth
