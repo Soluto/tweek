@@ -8,7 +8,7 @@ export default class SubjectExtractionRulesRepository {
 
   updateSubjectExtractionRules(rules: string, author: { name: string, email: string }): Promise<Oid> {
     return this._gitTransactionManager.write(async (gitRepo) => {
-      await gitRepo.updateFile('subject_extraction_rules.rego', rules);
+      await gitRepo.updateFile('security/subject_extraction_rules.rego', rules);
       return await gitRepo.commitAndPush(`Updating subject extraction rules`, author);
     });
   }
