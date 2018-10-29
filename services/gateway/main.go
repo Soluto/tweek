@@ -82,10 +82,12 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	metricsVar := metrics.NewMetricsVar("passthrough")
 	noAuthMiddleware := negroni.New(recovery)
 
-	passThrough.Mount(&config.Upstreams, &config.V1Hosts, noAuthMiddleware, metricsVar, router.V1Router())
-	passThrough.Mount(&config.Upstreams, &config.V1Hosts, noAuthMiddleware, metricsVar, router.LegacyNonV1Router())
-	// This is /configurations/ path for legacy clients
-	passThrough.Mount(&config.Upstreams, &config.V1Hosts, noAuthMiddleware, metricsVar, router.MainRouter().PathPrefix("/configurations/").Subrouter())
+	passThrough.MountWithHosts(config.Upstreams.API, config.V1Hosts.API, "api", noAuthMiddleware, metricsVar, router.MainRouter())
+	passThrough.MountWithHosts(config.Upstreams.Authoring, config.V1Hosts.Authoring, "authoring", noAuthMiddleware, metricsVar, router.MainRouter())
+
+	passThrough.MountWithoutHost(config.Upstreams.API, "api", noAuthMiddleware, metricsVar, router.V1Router())
+	passThrough.MountWithoutHost(config.Upstreams.API, "api", noAuthMiddleware, metricsVar, router.MainRouter().PathPrefix("/configurations/").Subrouter())
+	passThrough.MountWithoutHost(config.Upstreams.Authoring, "authoring", noAuthMiddleware, metricsVar, router.LegacyNonV1Router())
 
 	security.MountAuth(&config.Security.Auth, &config.Security.TweekSecretKey, noAuthMiddleware, router.AuthRouter())
 

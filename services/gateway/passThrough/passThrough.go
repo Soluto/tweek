@@ -6,33 +6,39 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
 	"github.com/Soluto/tweek/services/gateway/metrics"
 	"github.com/Soluto/tweek/services/gateway/proxy"
 	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"
 )
 
-// Mount - mounts the request passThrough handlers and middleware
-func Mount(upstreams *appConfig.Upstreams, v1Hosts *appConfig.V1Hosts, middleware *negroni.Negroni, metricsVar *prometheus.SummaryVec, router *mux.Router) {
-	// URLs
-	api := parseUpstreamOrPanic(upstreams.API)
-	authoring := parseUpstreamOrPanic(upstreams.Authoring)
+// MountWithoutHost - mounts the request passThrough handlers and middleware
+func MountWithoutHost(upstream, metricsName string, middleware *negroni.Negroni, metricsVar *prometheus.SummaryVec, router *mux.Router) {
+	parsedUpstream := parseUpstreamOrPanic(upstream)
 
-	// Proxy forwarders
-	apiForwarder := proxy.New(api, nil)
-	authoringForwarder := proxy.New(authoring, nil)
+	// Proxy forwarder
+	forwarder := proxy.New(parsedUpstream, nil)
 
 	// metrics
-	apiMetricsMiddleware := metrics.NewMetricsMiddleware("api", metricsVar)
-	authoringMetricsMiddleware := metrics.NewMetricsMiddleware("authoring", metricsVar)
+	forwarderMetrics := metrics.NewMetricsMiddleware(metricsName, metricsVar)
 
-	// Mounting handlers
-	for _, host := range v1Hosts.API {
-		router.Host(host).Handler(middleware.With(apiMetricsMiddleware, apiForwarder))
-	}
-	for _, host := range v1Hosts.Authoring {
-		router.Host(host).Handler(middleware.With(authoringMetricsMiddleware, authoringForwarder))
+	// Mounting handler
+	router.Handle("/", middleware.With(forwarderMetrics, forwarder))
+}
+
+// MountWithHosts - mounts the request passThrough handlers and middleware
+func MountWithHosts(upstream string, hosts []string, metricsName string, middleware *negroni.Negroni, metricsVar *prometheus.SummaryVec, router *mux.Router) {
+	parsedUpstream := parseUpstreamOrPanic(upstream)
+
+	// Proxy forwarder
+	forwarder := proxy.New(parsedUpstream, nil)
+
+	// metrics
+	forwarderMetrics := metrics.NewMetricsMiddleware(metricsName, metricsVar)
+
+	// Mounting handler
+	for _, host := range hosts {
+		router.Host(host).Handler(middleware.With(forwarderMetrics, forwarder))
 	}
 }
 
