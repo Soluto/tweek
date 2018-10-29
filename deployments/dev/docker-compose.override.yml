@@ -131,6 +131,7 @@ services:
       - TWEEKGATEWAY_SECURITY_TWEEKSECRETKEY_PATH=/run/secrets/tweek_ssh_private_key
       - TWEEKGATEWAY_SECURITY_AUTH_BASICAUTH_REDIRECTURLS=['http://localhost:4099']
       - CONFIG_FILE_PATH=/config/gateway.json
+      - CONFIGOR_ENV=local-editor1
     volumes:
       - ./gateway/config:/config
     secrets:

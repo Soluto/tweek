@@ -10,14 +10,14 @@ export default class PolicyRepository {
 
   getPolicy(): Promise<JsonValue> {
     return this._gitTransactionManager.read(async (gitRepo) => {
-      const policyFileContent = await gitRepo.readFile('policy.json');
+      const policyFileContent = await gitRepo.readFile('security/policy.json');
       return JSON.parse(policyFileContent);
     });
   }
 
   replacePolicy(policy: JsonValue, author: { name: string, email: string }): Promise<Oid> {
     return this._gitTransactionManager.write(async (gitRepo) => {
-      await gitRepo.updateFile('policy.json', JSON.stringify(policy, null, 4));
+      await gitRepo.updateFile('security/policy.json', JSON.stringify(policy, null, 4));
       return await gitRepo.commitAndPush(`Updating policy`, author);
     });
   }

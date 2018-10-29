@@ -37,7 +37,7 @@ services:
       - nats
       - oidc-server-mock
     environment:
-      - CONFIGOR_ENV=local-editor
+      - CONFIGOR_ENV=local-editor1
     
   oidc-server-mock:
     container_name: oidc-server-mock
