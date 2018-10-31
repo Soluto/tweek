@@ -40,7 +40,7 @@ function updateRevisionHistory(keyName) {
   return async function (dispatch) {
     try {
       if (!historySince) {
-        const response = await getConfiguration(`editor/history/since`);
+        const response = await getConfiguration(`history/since`);
         historySince = (await response.json()) || '1 month ago';
       }
       const revisionHistory = await fetch(
