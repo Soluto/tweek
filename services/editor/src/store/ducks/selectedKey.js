@@ -3,7 +3,7 @@ import { handleActions } from 'redux-actions';
 import * as R from 'ramda';
 import { push } from 'react-router-redux';
 import * as ContextService from '../../services/context-service';
-import fetch from '../../utils/fetch';
+import fetch, { getConfiguration } from '../../utils/fetch';
 import { withJsonData } from '../../utils/http';
 import {
   createBlankJPadKey,
@@ -40,7 +40,7 @@ function updateRevisionHistory(keyName) {
   return async function (dispatch) {
     try {
       if (!historySince) {
-        const response = await fetch(`/values/@tweek/editor/history/since`);
+        const response = await getConfiguration(`editor/history/since`);
         historySince = (await response.json()) || '1 month ago';
       }
       const revisionHistory = await fetch(

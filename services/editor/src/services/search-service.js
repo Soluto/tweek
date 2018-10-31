@@ -1,6 +1,6 @@
 /* global fetch process console */
 import * as R from 'ramda';
-import fetch from '../utils/fetch';
+import fetch, { getConfiguration } from '../utils/fetch';
 let maxResults;
 let showInternalKeys;
 
@@ -12,7 +12,7 @@ export const filterInternalKeys = async list =>
 const shouldShowInternalKeys = async () => {
   if (showInternalKeys === undefined) {
     try {
-      const response = await fetch(`/values/@tweek/editor/show_internal_keys`);
+      const response = await getConfiguration(`show_internal_keys`);
       showInternalKeys = await response.json();
     } catch (err) {
       console.error("unable to get 'show_internal_keys' configuration", err);
@@ -27,7 +27,7 @@ const createSearchFunction = endpoint =>
 
     if (!maxResults) {
       try {
-        const response = await fetch(`/values/@tweek/editor/search/max_results`);
+        const response = await getConfiguration(`search/max_results`);
         maxResults = (await response.json()) || 25;
       } catch (err) {
         console.error("unable to get 'search/max_results' configuration", err);

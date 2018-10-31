@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Observable } from 'rxjs';
 import { componentFromStream, createEventHandler, withState } from 'recompose';
-import fetch from '../../../../utils/fetch';
+import { getConfiguration } from '../../../../utils/fetch';
 import * as SearchService from '../../../../services/search-service';
 import DirectoryTreeView from './TreeView/DirectoryTreeView';
 import CardView from './CardView';
@@ -42,9 +42,7 @@ const KeysFilter = withState('filter', 'setFilter', '')(({ onFilterChange, setFi
 
 const supportCardView = async () => {
   try {
-    const response = await fetch(
-      `/values/@tweek/editor/experimental/keys_search/enable_cards_view`,
-    );
+    const response = await getConfiguration(`experimental/keys_search/enable_cards_view`);
     return await response.json();
   } catch (err) {
     console.warn('failed to retrieve configuration for enable_cards_view', err);
