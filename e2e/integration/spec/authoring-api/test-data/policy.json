@@ -9,6 +9,16 @@
             "effect": "allow"
         },
         {
+            "group": "*",
+            "user": "*",
+            "contexts": {
+                "tweek_editor_user": "self"
+            },
+            "object": "values/*",
+            "action": "*",
+            "effect": "allow"
+        },
+        {
             "group": "default",
             "user": "00000000-0000-0000-0000-000000000000",
             "contexts": {},
