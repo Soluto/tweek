@@ -37,14 +37,15 @@ func NewStatusHandler(config *appConfig.Upstreams) http.HandlerFunc {
 		}
 		wg.Wait()
 
+		if !isHealthy {
+			serviceStatuses["message"] = "not all services are healthy"
+			w.WriteHeader(http.StatusServiceUnavailable)
+		}
+
 		js, err := json.Marshal(serviceStatuses)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
-		}
-
-		if !isHealthy {
-			http.Error(w, "not all services are healthy", http.StatusServiceUnavailable)
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(js)
