@@ -22,6 +22,7 @@ func NewStatusHandler(config *appConfig.Upstreams) http.HandlerFunc {
 		var wg sync.WaitGroup
 		wg.Add(len(services))
 
+		result := map[string]interface{}{}
 		serviceStatuses := map[string]interface{}{}
 		isHealthy := true
 
@@ -37,16 +38,22 @@ func NewStatusHandler(config *appConfig.Upstreams) http.HandlerFunc {
 		}
 		wg.Wait()
 
+		result["services"] = serviceStatuses
+
 		if !isHealthy {
-			serviceStatuses["message"] = "not all services are healthy"
-			w.WriteHeader(http.StatusServiceUnavailable)
+			result["message"] = "not all services are healthy"
 		}
 
-		js, err := json.Marshal(serviceStatuses)
+		js, err := json.Marshal(result)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		if !isHealthy {
+			w.WriteHeader(http.StatusServiceUnavailable)
+		}
+
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(js)
 	}
