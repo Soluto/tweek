@@ -4,7 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import gtmParts from 'react-google-tag-manager';
 import { componentFromStream } from 'recompose';
-import fetch from '../utils/fetch';
+import { getConfiguration } from '../utils/fetch';
 
 class GoogleTagManagerContainer extends React.Component {
   componentDidMount() {
@@ -45,7 +45,7 @@ class GoogleTagManagerContainer extends React.Component {
 
 const getConfigValue = async (configName) => {
   try {
-    const response = await fetch(`/values/@tweek/editor/google_tag_manager/${configName}`);
+    const response = await getConfiguration(`google_tag_manager/${configName}`);
     return await response.json();
   } catch (err) {
     console.warn('failed to retrieve configuration', configName, err);
