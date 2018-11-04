@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 
 	"github.com/Soluto/tweek/services/gateway/appConfig"
 	"github.com/Soluto/tweek/services/gateway/audit"
@@ -78,6 +79,7 @@ func AuthenticationMiddleware(configuration *appConfig.Security, extractor Subje
 }
 
 func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, extractor SubjectExtractor) (UserInfo, error) {
+	var claims jwt.MapClaims
 	token, err := request.ParseFromRequest(req, request.OAuth2Extractor, func(t *jwt.Token) (interface{}, error) {
 		claims := t.Claims.(jwt.MapClaims)
 		if issuer, ok := claims["iss"].(string); ok {
@@ -121,7 +123,7 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, e
 
 	} else {
 		var extractSubjectErr error
-		claims := token.Claims.(jwt.MapClaims)
+		claims = token.Claims.(jwt.MapClaims)
 		sub, extractSubjectErr = extractor.ExtractSubject(req.Context(), claims)
 		if extractSubjectErr != nil {
 			log.Println("Failed to extract user info from JWT claims", extractSubjectErr)
@@ -130,14 +132,7 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, e
 		issuer = claims["iss"].(string)
 	}
 
-	query := req.URL.Query()
-	var name, email string
-	if name = query.Get("author.name"); len(name) == 0 {
-		name = "anonymous"
-	}
-	if email = query.Get("author.email"); len(email) == 0 {
-		email = "anonymous"
-	}
+	var name, email string = getNameAndEmail(req.URL, claims)
 
 	info := &userInfo{
 		sub:    sub,
@@ -146,6 +141,35 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, e
 		email:  email,
 	}
 	return info, nil
+}
+
+func getNameAndEmail(url *url.URL, claims jwt.MapClaims) (name, email string) {
+	if claims["name"] != nil {
+		name = claims["name"].(string)
+	}
+	if claims["email"] != nil {
+		email = claims["email"].(string)
+	}
+
+	query := url.Query()
+
+	if len(query.Get("author.name")) == 0 {
+		if len(name) == 0 {
+			name = "anonymous"
+		}
+	} else {
+		name = query.Get("author.name")
+	}
+
+	if len(query.Get("author.email")) == 0 {
+		if len(email) == 0 {
+			email = "anonymous"
+		}
+	} else {
+		email = query.Get("author.email")
+	}
+
+	return name, email
 }
 
 func getKeyByIssuer(issuer, keyID string, providers map[string]appConfig.AuthProvider) (interface{}, error) {
