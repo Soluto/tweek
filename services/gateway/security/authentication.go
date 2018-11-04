@@ -132,7 +132,7 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, e
 		issuer = claims["iss"].(string)
 	}
 
-	var name, email string = getNameAndEmail(req.URL, claims)
+	var name, email string = getNameAndEmail(req.URL, claims, sub)
 
 	info := &userInfo{
 		sub:    sub,
@@ -143,7 +143,7 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, e
 	return info, nil
 }
 
-func getNameAndEmail(url *url.URL, claims jwt.MapClaims) (name, email string) {
+func getNameAndEmail(url *url.URL, claims jwt.MapClaims, subject *Subject) (name, email string) {
 	query := url.Query()
 
 	if len(query.Get("author.name")) != 0 {
@@ -153,7 +153,7 @@ func getNameAndEmail(url *url.URL, claims jwt.MapClaims) (name, email string) {
 			name = claims["name"].(string)
 		}
 		if len(name) == 0 {
-			name = "anonymous"
+			name = fmt.Sprintf("%s %s", subject.Group, subject.User)
 		}
 	}
 
@@ -164,7 +164,7 @@ func getNameAndEmail(url *url.URL, claims jwt.MapClaims) (name, email string) {
 			email = claims["email"].(string)
 		}
 		if len(email) == 0 {
-			email = "anonymous"
+			email = fmt.Sprintf("%s+%s@tweek", subject.Group, subject.User)
 		}
 	}
 
