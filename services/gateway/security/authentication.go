@@ -149,7 +149,9 @@ func getNameAndEmail(url *url.URL, claims jwt.MapClaims) (name, email string) {
 	if len(query.Get("author.name")) != 0 {
 		name = query.Get("author.name")
 	} else {
-		name = claims["name"].(string)
+		if claims["name"] != nil {
+			name = claims["name"].(string)
+		}
 		if len(name) == 0 {
 			name = "anonymous"
 		}
@@ -158,8 +160,10 @@ func getNameAndEmail(url *url.URL, claims jwt.MapClaims) (name, email string) {
 	if len(query.Get("author.email")) != 0 {
 		email = query.Get("author.email")
 	} else {
-		email = claims["email"].(string)
-		if len(name) == 0 {
+		if claims["email"] != nil {
+			email = claims["email"].(string)
+		}
+		if len(email) == 0 {
 			email = "anonymous"
 		}
 	}
