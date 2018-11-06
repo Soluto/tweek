@@ -115,11 +115,15 @@ namespace Tweek.Publishing.Service
             var intervalPublisher = new IntervalPublisher(publisher);
             var job = intervalPublisher.PublishEvery(TimeSpan.FromSeconds(60), async () =>
             {
-                var commitId = await repoSynchronizer.CurrentHead();
+                string commitId = "";
 
                 await Policy.Handle<StaleRevisionException>()
-                    .RetryAsync(10, async (_,c)=> await repoSynchronizer.SyncToLatest())
-                    .ExecuteAsync(async ()=> await storageSynchronizer.Sync(commitId));
+                    .RetryAsync(10, async (_, c) => await repoSynchronizer.SyncToLatest())
+                    .ExecuteAsync(async () =>
+                    {
+                        commitId = await repoSynchronizer.CurrentHead();
+                        await storageSynchronizer.Sync(commitId);
+                    });
 
                 _logger.LogInformation($"SyncVersion:{commitId}");
                 return commitId;
