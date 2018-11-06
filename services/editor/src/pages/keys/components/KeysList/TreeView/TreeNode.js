@@ -34,7 +34,6 @@ const TreeNode = compose(
     addKey,
   }) => {
     let LeafElement = renderItem;
-
     return node === leaf ? (
       <LeafElement {...{ name, fullPath, depth, selected }} />
     ) : (
