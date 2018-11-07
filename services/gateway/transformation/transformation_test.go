@@ -106,6 +106,7 @@ func Test_getURLForUpstream(t *testing.T) {
 		req           *http.Request
 		urlRegexp     *regexp.Regexp
 		upstreamRoute string
+		keyPath       bool
 	}
 	tests := []struct {
 		name string
@@ -119,13 +120,14 @@ func Test_getURLForUpstream(t *testing.T) {
 				req:           httptest.NewRequest("GET", "/api/v2/schemas", nil),
 				urlRegexp:     regexp.MustCompile(`^/api/v2/schemas(.*)$`),
 				upstreamRoute: "/api/schemas$1",
+				keyPath:       false,
 			},
 			want: parseURL(t, "http://authoring/api/schemas"),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := getURLForUpstream(tt.args.upstream, tt.args.req, tt.args.urlRegexp, tt.args.upstreamRoute); !reflect.DeepEqual(got, tt.want) {
+			if got := getURLForUpstream(tt.args.upstream, tt.args.req, tt.args.urlRegexp, tt.args.upstreamRoute, tt.args.keyPath); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("getURLForUpstream() = %v, want %v", got, tt.want)
 			}
 		})
