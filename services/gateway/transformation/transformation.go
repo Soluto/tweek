@@ -8,7 +8,6 @@ import (
 	"net/url"
 	"path"
 	"regexp"
-	"strings"
 
 	"github.com/Soluto/tweek/services/gateway/appConfig"
 	"github.com/Soluto/tweek/services/gateway/proxy"
@@ -82,23 +81,12 @@ func getURLForUpstream(upstream *url.URL, req *http.Request, urlRegexp *regexp.R
 }
 
 func replaceKeyPath(u *url.URL) string {
-	var resultSlice []string
 	path := path.Join(u.Path, u.Query().Get("keyPath"))
 	newQuery := u.Query()
 
 	newQuery.Del("keyPath")
 
-	if u.Scheme != "" && u.Host != "" {
-		resultSlice = append(resultSlice, fmt.Sprintf("%s://%s", u.Scheme, u.Host))
-	}
-
-	resultSlice = append(resultSlice, path, fmt.Sprintf("?%s", newQuery.Encode()))
-
-	if u.Fragment != "" {
-		resultSlice = append(resultSlice, fmt.Sprintf("#%s", u.Fragment))
-	}
-
-	return strings.Join(resultSlice, "")
+	return fmt.Sprintf("%s?%s", path, newQuery.Encode())
 }
 
 func setQueryParams(ctx context.Context, url *url.URL, key interface{}) {
