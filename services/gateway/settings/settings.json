@@ -12,7 +12,7 @@
         "methods": ["GET"],
         "service": "api",
         "userInfo": false,
-        "keyPath": true
+        "rewriteKeyPath": true
     },
     {
         "routePathPrefix": "/context",
@@ -21,7 +21,7 @@
         "methods": ["GET", "POST", "DELETE"],
         "service": "api",
         "userInfo": false,
-        "keyPath": false
+        "rewriteKeyPath": false
     },
 
     {
@@ -31,7 +31,7 @@
         "methods": ["GET"],
         "service": "authoring",
         "userInfo": false,
-        "keyPath": true
+        "rewriteKeyPath": true
     },
     {
         "routePathPrefix": "/keys",
@@ -40,7 +40,7 @@
         "methods": ["PUT", "DELETE"],
         "service": "authoring",
         "userInfo": true,
-        "keyPath": true
+        "rewriteKeyPath": true
     },
     {
         "routePathPrefix": "/tags",
@@ -49,7 +49,7 @@
         "methods": ["GET"],
         "service": "authoring",
         "userInfo": false,
-        "keyPath": false
+        "rewriteKeyPath": false
     },
     {
         "routePathPrefix": "/tags",
@@ -58,7 +58,7 @@
         "methods": ["PUT"],
         "service": "authoring",
         "userInfo": true,
-        "keyPath": false
+        "rewriteKeyPath": false
     },
     {
         "routePathPrefix": "/schemas",
@@ -67,7 +67,7 @@
         "methods": ["GET"],
         "service": "authoring",
         "userInfo": false,
-        "keyPath": false
+        "rewriteKeyPath": false
     },
     {
         "routePathPrefix": "/schemas",
@@ -76,7 +76,7 @@
         "methods": ["POST", "PATCH", "DELETE"],
         "service": "authoring",
         "userInfo": true,
-        "keyPath": false
+        "rewriteKeyPath": false
     },   
     {
         "routePathPrefix": "/manifests",
@@ -85,7 +85,7 @@
         "methods": ["GET"],
         "service": "authoring",
         "userInfo": false,
-        "keyPath": false
+        "rewriteKeyPath": false
     },
     {
         "routePathPrefix": "/suggestions",
@@ -94,7 +94,7 @@
         "methods": ["GET"],
         "service": "authoring",
         "userInfo": false,
-        "keyPath": false
+        "rewriteKeyPath": false
     },
     {
         "routePathPrefix": "/search",
@@ -103,7 +103,7 @@
         "methods": ["GET"],
         "service": "authoring",
         "userInfo": false,
-        "keyPath": false
+        "rewriteKeyPath": false
     },
     {
         "routePathPrefix": "/search-index",
@@ -112,7 +112,7 @@
         "methods": ["GET"],
         "service": "authoring",
         "userInfo": false,
-        "keyPath": false
+        "rewriteKeyPath": false
     },
     {
         "routePathPrefix": "/dependents",
@@ -121,7 +121,7 @@
         "methods": ["GET"],
         "service": "authoring",
         "userInfo": false,
-        "keyPath": true
+        "rewriteKeyPath": true
     },
     {
         "routePathPrefix": "/revision",
@@ -130,7 +130,7 @@
         "methods": ["GET"],
         "service": "authoring",
         "userInfo": false,
-        "keyPath": false
+        "rewriteKeyPath": false
     },
     {
         "routePathPrefix": "/revision-history",
@@ -139,7 +139,7 @@
         "methods": ["GET"],
         "service": "authoring",
         "userInfo": false,
-        "keyPath": false
+        "rewriteKeyPath": false
     },
     {
         "routePathPrefix": "/policies",
@@ -148,7 +148,7 @@
         "methods": ["GET"],
         "service": "authoring",
         "userInfo": true,
-        "keyPath": false
+        "rewriteKeyPath": false
     },
     {
         "routePathPrefix": "/policies",
@@ -157,7 +157,7 @@
         "methods": ["PUT", "PATCH"],
         "service": "authoring",
         "userInfo": true,
-        "keyPath": false
+        "rewriteKeyPath": false
     },
     {
         "routePathPrefix": "/apps",
@@ -166,7 +166,7 @@
         "methods": ["POST"],
         "service": "authoring",
         "userInfo": true,
-        "keyPath": false
+        "rewriteKeyPath": false
     }],
     "server": {
         "ports": [
