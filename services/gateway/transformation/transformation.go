@@ -46,7 +46,7 @@ func mountRouteTransform(router *mux.Router, middleware *negroni.Negroni, routeC
 func createTransformMiddleware(routeConfig appConfig.V2Route, upstreams map[string]*url.URL) negroni.HandlerFunc {
 	re := regexp.MustCompile(routeConfig.RouteRegexp)
 	return func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-		newURL := getURLForUpstream(upstreams[routeConfig.Service], r, re, routeConfig.UpstreamPath, routeConfig.KeyPath)
+		newURL := getURLForUpstream(upstreams[routeConfig.Service], r, re, routeConfig.UpstreamPath, routeConfig.RewriteKeyPath)
 		if routeConfig.UserInfo {
 			setQueryParams(r.Context(), newURL, security.UserInfoKey)
 		}

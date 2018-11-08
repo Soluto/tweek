@@ -31,7 +31,7 @@ type V2Route struct {
 	Methods         []string
 	Service         string
 	UserInfo        bool
-	KeyPath         bool
+	RewriteKeyPath  bool
 }
 
 // Server section holds the server related configuration
