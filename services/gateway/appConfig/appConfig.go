@@ -31,6 +31,7 @@ type V2Route struct {
 	Methods         []string
 	Service         string
 	UserInfo        bool
+	RewriteKeyPath  bool
 }
 
 // Server section holds the server related configuration
@@ -75,8 +76,6 @@ type Auth struct {
 
 // Security section holds security related configuration
 type Security struct {
-	AllowedIssuers []string
-	AzureTenantID  string
 	TweekSecretKey EnvInlineOrPath
 	PolicyStorage  PolicyStorage
 	Cors           Cors

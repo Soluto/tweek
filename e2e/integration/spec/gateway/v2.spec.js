@@ -18,6 +18,9 @@ describe('Gateway v2 API', () => {
   it('should get key using v2 (proxy to api service)', async () =>
     await clients.gateway.get(`/api/v2/values/${key}`).expect(200, '1.0'));
 
+  it('should get key using v2 with keyPath query', async () =>
+    await clients.gateway.get(`/api/v2/values?keyPath=${encodeURI(key)}`).expect(200, '1.0'));
+
   it('should get key using v2 without authentication', async () => {
     apiClient = await clients.gateway.with(client => client.unset('Authorization'));
     await apiClient.get(`/api/v2/values/${key}`).expect(200, '1.0');
@@ -91,6 +94,12 @@ describe('Gateway v2 API', () => {
     await clients.gateway.get('/api/v2/dependents/integration_tests/some_key').expect(200);
   });
 
+  it('should read dependents with keyPath', async () => {
+    await clients.gateway
+      .get('/api/v2/dependents/?keyPath=integration_tests%2Fsome_key')
+      .expect(200);
+  });
+
   it('should read manifests', async () => {
     await clients.gateway.get('/api/v2/manifests').expect(200);
   });
@@ -101,6 +110,16 @@ describe('Gateway v2 API', () => {
 
   it('should read revision history', async () => {
     await clients.gateway.get('/api/v2/revision-history/integration_tests/some_key').expect(200);
+  });
+
+  it('should return a key with keyPath', async () => {
+    const key = 'integration_tests/some_key';
+    await clients.gateway
+      .get(`/api/v2/keys?keyPath=${encodeURI(key)}?author.name=test&author.email=test@soluto.com`)
+      .expect(
+        200,
+        '{"manifest":{"key_path":"integration_tests/some_key","meta":{"name":"integration_tests/some_key","tags":[],"description":"","archived":false},"implementation":{"type":"const","value":1},"valueType":"number","dependencies":[]}}',
+      );
   });
 
   it('should accept a valid key', async () => {

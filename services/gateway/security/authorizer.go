@@ -114,5 +114,5 @@ func (s *SynchronizedAuthorizer) Update(a Authorizer) {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 	s.authorizer = a
-	log.Println("Authorization policy was updated")
+	log.Println("Authorization policy was refreshed")
 }

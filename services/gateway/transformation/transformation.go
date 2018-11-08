@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"path"
 	"regexp"
 
 	"github.com/Soluto/tweek/services/gateway/appConfig"
@@ -45,7 +46,7 @@ func mountRouteTransform(router *mux.Router, middleware *negroni.Negroni, routeC
 func createTransformMiddleware(routeConfig appConfig.V2Route, upstreams map[string]*url.URL) negroni.HandlerFunc {
 	re := regexp.MustCompile(routeConfig.RouteRegexp)
 	return func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-		newURL := getURLForUpstream(upstreams[routeConfig.Service], r, re, routeConfig.UpstreamPath)
+		newURL := getURLForUpstream(upstreams[routeConfig.Service], r, re, routeConfig.UpstreamPath, routeConfig.RewriteKeyPath)
 		if routeConfig.UserInfo {
 			setQueryParams(r.Context(), newURL, security.UserInfoKey)
 		}
@@ -63,14 +64,29 @@ func parseUpstreamOrPanic(u string) *url.URL {
 	return result
 }
 
-func getURLForUpstream(upstream *url.URL, req *http.Request, urlRegexp *regexp.Regexp, upstreamRoute string) *url.URL {
-	original := req.URL.String()
+func getURLForUpstream(upstream *url.URL, req *http.Request, urlRegexp *regexp.Regexp, upstreamRoute string, keyPath bool) *url.URL {
+	var original string
+	u := req.URL
+	if keyPath && u.Query().Get("keyPath") != "" {
+		original = replaceKeyPath(u)
+	} else {
+		original = u.String()
+	}
 	newURL := urlRegexp.ReplaceAllString(original, fmt.Sprintf("%v%v", upstream.String(), upstreamRoute))
 	result, err := url.Parse(newURL)
 	if err != nil {
 		log.Panicln("Failed converting context URL", err)
 	}
 	return result
+}
+
+func replaceKeyPath(u *url.URL) string {
+	path := path.Join(u.Path, u.Query().Get("keyPath"))
+	newQuery := u.Query()
+
+	newQuery.Del("keyPath")
+
+	return fmt.Sprintf("%s?%s", path, newQuery.Encode())
 }
 
 func setQueryParams(ctx context.Context, url *url.URL, key interface{}) {
