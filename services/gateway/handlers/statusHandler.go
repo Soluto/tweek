@@ -78,7 +78,7 @@ func SetupRevisionUpdater(natsEndpoint string) {
 	if err != nil {
 		log.Panicln("Failed to subscribe to subject 'version' on", natsEndpoint)
 	}
-	runtime.SetFinalizer(repoRevision, func(interface{}) {
+	runtime.SetFinalizer(&repoRevision, func(interface{}) {
 		if sub != nil && sub.IsValid() {
 			sub.Unsubscribe()
 		}
