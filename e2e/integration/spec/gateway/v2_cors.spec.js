@@ -22,7 +22,7 @@ describe('Gateway v2 CORS tests', () => {
       'Origin, Accept, Content-Type',
     );
     expect(res.headers.get('access-control-allow-methods')).to.equal('GET');
-    expect(res.headers.get('access-control-allow-origin')).to.equal('tweek.test.origin');
+    expect(res.headers.get('access-control-allow-origin')).to.equal('*');
     expect(res.headers.get('access-control-max-age')).to.equal('60');
   });
 });
