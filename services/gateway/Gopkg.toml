@@ -21,6 +21,13 @@
 #  version = "2.4.0"
 
 
+# fsnotify below is necessary due to a bug with dep and fsnotify https://github.com/golang/dep/issues/1799
+required = ["gopkg.in/fsnotify.v1"]
+
+[[constraint]]
+  name = "gopkg.in/fsnotify.v1"
+  source = "https://github.com/fsnotify/fsnotify.git"
+
 [[constraint]]
   name = "github.com/dgrijalva/jwt-go"
   version = "3.1.0"
@@ -48,3 +55,4 @@
 [[constraint]]
   name = "github.com/open-policy-agent/opa"
   version = "0.8.2"
+
