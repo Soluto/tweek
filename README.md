@@ -1,6 +1,6 @@
 # <img src="https://soluto.github.io/docs.tweek.fm/assets/logo-with-background.png" width="400" />
 
-[![Codefresh build status]( https://g.codefresh.io/api/badges/build?repoOwner=Soluto&repoName=tweek&branch=master&pipelineName=tweek-all&accountName=soluto&key=eyJhbGciOiJIUzI1NiJ9.NTkwOTg1MmQ2ZDAxYjcwMDA2Yjc1ODBm.fODYFsnTAGVNVeEAA6lI0g-sTAfHjh5B9BWrOtDvSSE&type=cf-2)]( https://g.codefresh.io/repositories/Soluto/tweek/builds?filter=trigger:build;branch:master;service:590b2586eea36f000875f02e~tweek-all) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/soluto/tweek/blob/master/LICENSE.md) [![Slack](https://tweek-slack.now.sh/badge.svg)](https://tweek-slack.now.sh) [![CircleCI](https://circleci.com/gh/Soluto/tweek/tree/master.svg?style=svg)](https://circleci.com/gh/Soluto/tweek/tree/master)[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+[![Codefresh build status]( https://g.codefresh.io/api/badges/pipeline/soluto/Soluto%2Ftweek%2Ftweek-all?type=cf-2)]( https://g.codefresh.io/public/accounts/soluto/pipelines/Soluto/tweek/tweek-all) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/soluto/tweek/blob/master/LICENSE.md) [![Slack](https://tweek-slack.now.sh/badge.svg)](https://tweek-slack.now.sh) [![CircleCI](https://circleci.com/gh/Soluto/tweek/tree/master.svg?style=svg)](https://circleci.com/gh/Soluto/tweek/tree/master)[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 tweek@soluto.com  
 
@@ -34,8 +34,8 @@ The easiest way to start evaluating Tweek is to run it locally on docker, make s
 
 #### Edit your first key
 After setting up our environment, we're going to create our first key.
-Keys in tweek are the most basic building blocks and they reperesent a container for dynamic value that affect feature behaviors.
-Our first key, will be a key that responsible for the the color of a "sign up" button.
+Keys in tweek are the most basic building blocks and they represent a container for dynamic value that affect feature behaviors.
+Our first key, will be a key that is responsible for the color of a "sign up" button.
 
 - Open http://editor.dev.tweek.localtest.me:81 in browser.
 - Go to keys page.
@@ -80,7 +80,7 @@ Try querying configuration with different users and You'll have different result
 - http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/is_enabled?user=lily
 - etc...
 
-More on how multi-varaint keys work in Tweek. (link)
+More on how multi-variant keys work in Tweek. (link)
 
 ### Deployment to production
 
