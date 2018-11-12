@@ -34,8 +34,8 @@ The easiest way to start evaluating Tweek is to run it locally on docker, make s
 
 #### Edit your first key
 After setting up our environment, we're going to create our first key.
-Keys in tweek are the most basic building blocks and they reperesent a container for dynamic value that affect feature behaviors.
-Our first key, will be a key that responsible for the the color of a "sign up" button.
+Keys in tweek are the most basic building blocks and they represent a container for dynamic value that affect feature behaviors.
+Our first key, will be a key that is responsible for the color of a "sign up" button.
 
 - Open http://editor.dev.tweek.localtest.me:81 in browser.
 - Go to keys page.
@@ -80,7 +80,7 @@ Try querying configuration with different users and You'll have different result
 - http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/is_enabled?user=lily
 - etc...
 
-More on how multi-varaint keys work in Tweek. (link)
+More on how multi-variant keys work in Tweek. (link)
 
 ### Deployment to production
 

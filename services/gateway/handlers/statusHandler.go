@@ -6,10 +6,15 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"runtime"
 	"sync"
+
+	"github.com/nats-io/go-nats"
 
 	"github.com/Soluto/tweek/services/gateway/appConfig"
 )
+
+var repoRevision string
 
 // NewStatusHandler - handler function that returns versions for all services
 func NewStatusHandler(config *appConfig.Upstreams) http.HandlerFunc {
@@ -39,6 +44,7 @@ func NewStatusHandler(config *appConfig.Upstreams) http.HandlerFunc {
 		wg.Wait()
 
 		result["services"] = serviceStatuses
+		result["repository revision"] = repoRevision
 
 		if !isHealthy {
 			result["message"] = "not all services are healthy"
@@ -57,6 +63,26 @@ func NewStatusHandler(config *appConfig.Upstreams) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(js)
 	}
+}
+
+// SetupRevisionUpdater creates revision updater
+func SetupRevisionUpdater(natsEndpoint string) {
+	nc, err := nats.Connect(natsEndpoint)
+	if err != nil {
+		log.Panicln("Failed to connect to nats on", natsEndpoint)
+	}
+
+	sub, err := nc.Subscribe("version", func(msg *nats.Msg) {
+		repoRevision = string(msg.Data)
+	})
+	if err != nil {
+		log.Panicln("Failed to subscribe to subject 'version' on", natsEndpoint)
+	}
+	runtime.SetFinalizer(&repoRevision, func(interface{}) {
+		if sub != nil && sub.IsValid() {
+			sub.Unsubscribe()
+		}
+	})
 }
 
 func checkServiceStatus(serviceName string, serviceHost string) (interface{}, bool) {

@@ -95,6 +95,8 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	router.MainRouter().PathPrefix("/health").HandlerFunc(handlers.NewHealthHandler())
 	router.MainRouter().PathPrefix("/status").HandlerFunc(handlers.NewStatusHandler(&config.Upstreams))
 
+	handlers.SetupRevisionUpdater(config.Security.PolicyStorage.NatsEndpoint)
+
 	router.MainRouter().PathPrefix("/metrics").Handler(prometheus.Handler())
 
 	router.V2Router().PathPrefix("/current-user").HandlerFunc(security.NewUserInfoHandler(&config.Security, userInfoExtractor))
