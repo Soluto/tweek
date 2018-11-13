@@ -64,7 +64,7 @@
     "jsonwebtoken": "^8.1.0",
     "lunr": "^2.1.5",
     "moment": "^2.19.4",
-    "morgan": "^1.9.0",
+    "morgan": "^1.9.1",
     "nconf": "^0.9.1",
     "papp-polyfill": "^1.1.0",
     "passport": "^0.4.0",
