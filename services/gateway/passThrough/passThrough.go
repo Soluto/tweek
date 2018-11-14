@@ -23,7 +23,7 @@ func MountWithoutHost(upstream, metricsName string, middleware *negroni.Negroni,
 	forwarderMetrics := metrics.NewMetricsMiddleware(metricsName, metricsVar)
 
 	// Mounting handler
-	router.Handle("/", middleware.With(forwarderMetrics, forwarder))
+	router.PathPrefix("/").Handler(middleware.With(forwarderMetrics, forwarder))
 }
 
 // MountWithHosts - mounts the request passThrough handlers and middleware
