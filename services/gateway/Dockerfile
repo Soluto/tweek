@@ -48,6 +48,7 @@ COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/settings /set
 COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/authorization.rego /authorization.rego
 COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/entry /entry
 COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/hcheck /healthcheck
+COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/swagger.yml /swagger/swagger.yml
 COPY --from=dependencies /empty_tmp /tmp
 
 ENV CONFIGOR_ENV=production

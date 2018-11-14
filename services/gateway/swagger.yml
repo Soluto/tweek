@@ -213,7 +213,7 @@ paths:
           description: ""
           in: body
           name: additionalKeys
-          required: true
+          required: false
           schema:
             type: array
             items:
