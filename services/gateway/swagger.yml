@@ -146,8 +146,8 @@ paths:
       responses:
         200:
           description: Ok
-        schema:
-          type: string
+          schema:
+            type: string
       tags:
           - keys
       consumes:
@@ -189,32 +189,35 @@ paths:
           description: Ok
           schema:
             type: string
-        description: ""
-        parameters:
-          -
-            description: ""
-            in: query
-            name: keyPath
-            required: true
-            type: string
-          -
-            description: ""
-            in: query
-            name: author.name
-            required: true
-            type: string
-          -
-            description: ""
-            in: query
-            name: author.email
-            required: true
-            type: string
-          -
-            description: ""
-            in: body
-            name: additionalKeys
-            required: false
+      description: ""
+      parameters:
+        - 
+          description: ""
+          in: query
+          name: keyPath
+          required: true
+          type: string
+        -
+          description: ""
+          in: query
+          name: author.name
+          required: true
+          type: string
+        -
+          description: ""
+          in: query
+          name: author.email
+          required: true
+          type: string
+        -
+          description: ""
+          in: body
+          name: additionalKeys
+          required: true
+          schema:
             type: array
+            items:
+              type: string
   /tags:
     get:
       operationId: TagsGet
@@ -535,9 +538,6 @@ paths:
           schema:
             $ref: '#/definitions/AppCreationRequestModel'
 definitions:  
-  # /schemas
-  # /context
-  # /configuration
   
   PatchOperation:
     type: object
