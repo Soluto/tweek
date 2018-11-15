@@ -22,6 +22,7 @@ const NewKeyInput = compose(
     const keysList$ = prop$
       .pluck('keysList')
       .distinctUntilChanged()
+      .map(keysList => R.filter(key => !key.meta.archived, keysList))
       .switchMap(SearchService.filterInternalKeys)
       .map(dic => Object.keys(dic));
 
