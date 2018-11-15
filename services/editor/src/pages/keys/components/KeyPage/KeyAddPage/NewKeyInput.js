@@ -50,6 +50,7 @@ const NewKeyInput = compose(
       >
         <ValidationIcon show={isShowingHint} hint={hint} />
         <ComboBox
+          autofocus
           data-field="new-key-name-input"
           suggestions={suggestions}
           value={displayName}
