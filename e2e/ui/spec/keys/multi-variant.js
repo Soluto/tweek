@@ -1,26 +1,15 @@
 /* global describe, before, beforeEach, after, it, browser */
 
-import KeysPage, { BLANK_KEY_NAME } from '../../utils/KeysPage';
-import assert from 'assert';
 import { expect } from 'chai';
-import selectors from '../../selectors/keySelectors';
-import { _getSelectorByIndex, getRelativeSelector } from '../../selectors/selectorUtils';
-
-const dataComp = x => `[data-comp= "${x}"]`;
-const clickComp = x => browser.click(dataComp(x));
-
-const sliderComp = (x, i) => getRelativeSelector([
-  dataComp('custom-slider'),
-  _getSelectorByIndex(dataComp('legend-item'), i),
-  dataComp(x),
-]);
-
-const identitySelector = dataComp('identity-selection');
+import Key from '../../utils/Key';
+import Rule from '../../utils/Rule';
+import { login } from '../../utils/auth-utils';
 
 describe('MultiVariant value type', () => {
+  before(() => login());
+
   beforeEach(() => {
-    KeysPage.goToBase();
-    KeysPage.goToKey(BLANK_KEY_NAME);
+    Key.add();
   });
 
   it('should succeed editing boolean value type', () => {
@@ -34,35 +23,48 @@ describe('MultiVariant value type', () => {
       },
     };
 
-    browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, 'boolean');
-    browser.click(selectors.ADD_RULE_BUTTON);
-    KeysPage.removeRuleCondition(1, 1);
-    clickComp('convert-to-multi-variant-button');
-    browser.setValue(identitySelector, 'user');
+    Key.setValueType('boolean')
+      .setKeyFormat('jpad')
+      .setName('multi/boolean')
+      .continueToDetails();
 
-    let value = KeysPage.getKeySource().rules[0];
-    expect(value).to.have.property('Salt');
+    const rule = Rule.add()
+      .removeCondition()
+      .multiVariant()
+      .setIdentity('user');
 
-    const salt = value.Salt;
+    let ruleSource = Key.goToSourceTab().source.rules[0];
+    expect(ruleSource).to.have.property('Salt');
+
+    const salt = ruleSource.Salt;
     expect(salt).to.not.equal('');
-    delete value.Salt;
+    delete ruleSource.Salt;
 
-    assert.deepEqual(value, expectedValue);
+    expect(ruleSource).to.deep.equal(expectedValue);
 
-    browser.setValue(dataComp('bernoulli-trial-input'), 100);
-    clickComp('set-to-true-button');
-    clickComp('convert-to-multi-variant-button');
+    Key.goToRulesTab();
+    rule.singleValue();
+    rule.multiVariant();
 
-    value = KeysPage.getKeySource().rules[0];
-    expect(value.Salt).to.equal(salt);
+    ruleSource = Key.goToSourceTab().source.rules[0];
+    expect(ruleSource.Salt).to.equal(salt);
   });
 
   it('should succeed editing other value types', () => {
-    const args = {
-      val1: 20,
-      val2: 35,
-      val3: 45,
-    };
+    const args = [
+      {
+        value: 'value_one',
+        weight: 15,
+      },
+      {
+        value: 'value_two',
+        weight: 25,
+      },
+      {
+        value: 'value_thee',
+        weight: 60,
+      },
+    ];
     const expectedValue = {
       Matcher: {},
       Type: 'MultiVariant',
@@ -73,32 +75,32 @@ describe('MultiVariant value type', () => {
       },
     };
 
-    browser.setValue(selectors.KEY_VALUE_TYPE_INPUT, 'string');
-    browser.click(selectors.ADD_RULE_BUTTON);
-    KeysPage.removeRuleCondition(1, 1);
-    clickComp('convert-to-multi-variant-button');
+    Key.setValueType('string')
+      .setKeyFormat('jpad')
+      .setName('multi/string')
+      .continueToDetails();
 
-    Object.keys(args).forEach((key, i) => {
-      if (i > 1) clickComp('add-variant-button');
-      browser.setValue(sliderComp('legend-value-input', i + 1), key);
-      browser.setValue(sliderComp('legend-percent-input', i + 1), args[key]);
-    });
-    browser.setValue(identitySelector, 'other');
+    Rule.add()
+      .removeCondition()
+      .multiVariant()
+      .setValues(args)
+      .setIdentity('other');
 
-    let value = KeysPage.getKeySource().rules[0];
+    let value = Key.goToSourceTab().source.rules[0];
     expect(value).to.have.property('Salt');
 
     const salt = value.Salt;
     expect(salt).to.not.equal('');
 
     delete value.Salt;
-    assert.deepEqual(value, expectedValue);
+    expect(value).to.deep.equal(expectedValue);
 
-    browser.click(sliderComp('delete-legend-button', 1));
-    browser.click(sliderComp('delete-legend-button', 1));
-    clickComp('convert-to-multi-variant-button');
+    Key.goToRulesTab();
+    Rule.select()
+      .singleValue()
+      .multiVariant();
 
-    value = KeysPage.getKeySource().rules[0];
+    value = Key.goToSourceTab().source.rules[0];
     expect(value.Salt).to.equal(salt);
   });
 });

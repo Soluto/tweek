@@ -1,5 +1,5 @@
-/* global fetch */
-import R from 'ramda';
+import * as R from 'ramda';
+import fetch from '../utils/fetch';
 import * as TypesService from './types-service';
 
 export const KEYS_IDENTITY = 'keys.';
@@ -7,7 +7,7 @@ export const KEYS_IDENTITY = 'keys.';
 let contextSchema = {};
 
 export async function refreshSchema() {
-  const response = await fetch('/api/schemas', { credentials: 'same-origin' });
+  const response = await fetch('/api/schemas');
   contextSchema = await response.json();
 }
 
@@ -19,7 +19,7 @@ export function getSchema() {
   return contextSchema;
 }
 
-export function getProperties() {
+export function getSchemaProperties() {
   return R.chain(
     identity => [
       { id: `${identity}.@@id`, name: 'Id', type: 'string', identity },
@@ -34,20 +34,29 @@ export function getProperties() {
   );
 }
 
+export function getSystemProperties() {
+  return [{ id: 'system.time_utc', identity: 'system', name: 'time_utc', type: 'date' }];
+}
+
+export function getAllProperties() {
+  return [...getSchemaProperties(), ...getSystemProperties()];
+}
+
 export function getPropertyTypeDetails(property) {
   if (!property) return { name: 'empty' };
   if (property.startsWith(KEYS_IDENTITY)) return TypesService.types.string;
 
-  const propertyDetails = getProperties().find(x => x.id === property);
+  const propertyDetails = getAllProperties().find(x => x.id === property);
 
   if (!propertyDetails) {
     console.warn('Property details not found', property);
     return TypesService.types.string;
   }
 
-  const typeDetails = typeof propertyDetails.type === 'string'
-    ? TypesService.types[propertyDetails.type]
-    : propertyDetails.type;
+  const typeDetails =
+    typeof propertyDetails.type === 'string'
+      ? TypesService.types[propertyDetails.type]
+      : propertyDetails.type;
 
   if (!typeDetails) {
     console.warn('Type details not found for type', propertyDetails.type, property);
@@ -67,9 +76,11 @@ export function getFixedKeys(contextData = {}) {
   );
 }
 
-export function getContextProperties(identity, contextData = {}) {
-  const identityScheme = R.map(_ => '', contextSchema[identity] || {});
+export function getContextProperties(identity, contextData = {}, excludeEmpty = false) {
   const properties = R.pickBy((_, prop) => !prop.startsWith(FIXED_PREFIX), contextData);
 
+  if (excludeEmpty) return properties;
+
+  const identityScheme = R.map(_ => '', contextSchema[identity] || {});
   return { ...identityScheme, ...properties };
 }

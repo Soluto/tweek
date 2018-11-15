@@ -1,5 +1,7 @@
-.context-properties-container {
-  .context-properties-title {
+@import (reference) "../../../../styles/core/core.less";
+
+.identity-properties-container {
+  .identity-properties-title {
     font-size: 22px;
     color: #a5a5a5;
     margin-bottom: 20px;
@@ -9,11 +11,24 @@
     flex-flow: row wrap;
 
     .property-wrapper {
-      margin-right: 60px;
+      margin-right: 10px;
+      flex-grow: 1;
       display: flex;
 
-      > input, > div {
+      > label, > div {
         margin: 5px;
+      }
+
+      .property-label {
+        .metro-textbox;
+        border-color: rgb(188, 188, 188);
+        height: auto;
+        align-self: flex-end;
+        padding-bottom: 4px;
+      }
+
+      .initial-value {
+        max-width: 94px;
       }
     }
   }

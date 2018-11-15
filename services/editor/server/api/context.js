@@ -1,11 +1,11 @@
 import jsonpatch from 'fast-json-patch';
-import R from 'ramda';
+import * as R from 'ramda';
 import authenticatedClient from '../auth/authenticatedClient';
 
-export async function getContext(req, res, { tweekApiHostname }, { params }) {
-  const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
+export async function getContext(req, res, { serviceEndpoints: { api: apiAddress } }, { params }) {
+  const tweekApiClient = await authenticatedClient({ baseURL: apiAddress });
   const response = await tweekApiClient.get(
-    `api/v1/context/${params.identityName}/${encodeURIComponent(params.identityId)}`,
+    `api/v1/context/${params.identityType}/${encodeURIComponent(params.identityId)}`,
   );
   res.json(response.data);
 }
@@ -14,10 +14,15 @@ const getDeletedKeys = R.pipe(R.unapply(R.map(R.keys)), R.apply(R.difference));
 
 const getModifiedKeys = R.pipe(R.unapply(R.map(R.toPairs)), R.apply(R.difference), R.pluck(0));
 
-export async function updateContext(req, res, { tweekApiHostname }, { params }) {
-  const tweekApiClient = await authenticatedClient({ baseURL: tweekApiHostname });
+export async function updateContext(
+  req,
+  res,
+  { serviceEndpoints: { api: apiAddress } },
+  { params },
+) {
+  const tweekApiClient = await authenticatedClient({ baseURL: apiAddress });
 
-  const contextUrl = `api/v1/context/${params.identityName}/${encodeURIComponent(
+  const contextUrl = `api/v1/context/${params.identityType}/${encodeURIComponent(
     params.identityId,
   )}`;
 

@@ -1,0 +1,10 @@
+{
+  "key_path": "behavior_tests/dependent_keys/display/alias_key",
+  "meta": {
+      "archived": false
+  },
+  "implementation": {
+      "type": "alias",
+      "key": "behavior_tests/dependent_keys/display/used_by"
+  }
+}

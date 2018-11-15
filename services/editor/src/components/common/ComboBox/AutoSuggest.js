@@ -1,23 +1,32 @@
 import PropTypes from 'prop-types';
-import Rx from 'rxjs';
-import { mapPropsStream } from 'recompose';
+import { Observable } from 'rxjs';
+import { createEventHandler, mapPropsStream } from 'recompose';
 import ComboBox from './ComboBox';
 
 const mapSuggestionsToProps = mapPropsStream((props$) => {
-  const suggestions$ = props$
-    .distinctUntilKeyChanged('value')
-    .debounce(({ value }) => Rx.Observable.empty().delay(value === '' ? 0 : 500))
-    .switchMap(({ getSuggestions, value }) =>
-      Rx.Observable.defer(() => Promise.resolve(getSuggestions(value))),
+  const { handler: onSearch, stream: onSearch$ } = createEventHandler();
+
+  const query$ = Observable.merge(onSearch$, props$.pluck('value'));
+
+  const suggestions$ = query$
+    .debounce(query => Observable.empty().delay(query === '' ? 0 : 500))
+    .distinctUntilChanged()
+    .withLatestFrom(props$.pluck('getSuggestions'), Array.of)
+    .switchMap(([value, getSuggestions]) =>
+      Observable.defer(() => Promise.resolve(getSuggestions(value))),
     )
     .startWith([]);
 
-  return Rx.Observable
-    .combineLatest(props$, suggestions$)
-    .map(([{ getSuggestions, ...props }, suggestions]) => ({
+  return Observable.combineLatest(props$, suggestions$).map(
+    ([{ getSuggestions, onChange, ...props }, suggestions]) => ({
       ...props,
       suggestions,
-    }));
+      onChange: (txt, ...args) => {
+        onSearch(txt);
+        if (onChange) onChange(txt, ...args);
+      },
+    }),
+  );
 });
 
 const AutoSuggest = mapSuggestionsToProps(ComboBox);

@@ -1,0 +1,35 @@
+{
+    "partitions": [],
+    "valueType": "string",
+    "rules": [
+        {
+            "Matcher": {
+                "user.AgentVersion": {
+                    "$ge": "0.12.3",
+                    "$compare": "version"
+                }
+            },
+            "Value": "agentValue",
+            "Type": "SingleVariant"
+        },
+        {
+            "Matcher": {
+                "user.Gender": "female"
+            },
+            "Value": "femaleValue",
+            "Type": "SingleVariant"
+        },
+        {
+            "Matcher": {
+                "user.FavoriteFruit": "Apple"
+            },
+            "Value": "appleValue",
+            "Type": "SingleVariant"
+        },
+        {
+            "Matcher": {},
+            "Value": "defaultValue",
+            "Type": "SingleVariant"
+        }
+    ]
+}

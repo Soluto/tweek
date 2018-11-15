@@ -1,19 +1,27 @@
 const nconf = require('nconf');
-nconf.argv().env().defaults({EDITOR_URL: "http://localhost:4004/", TWEEK_API_URL: "http://localhost:4003/", GIT_PRIVATE_KEY_PATH: "../services/git-service/ssh/tweekgit"});
-const host = nconf.get('host');
+nconf
+  .argv()
+  .env()
+  .defaults({
+    EDITOR_URL: 'http://localhost:4004/',
+    TWEEK_API_URL: 'http://localhost:4003/',
+    AUTHORING_URL: 'http://localhost:4005/',
+    GIT_PRIVATE_KEY_PATH: '../../deployments/dev/ssh/tweekgit',
+    AUTH_DIGEST_CREDENTIALS: 'user:pwd',
+  });
 
-function removeTrailingSlashes(url){
-   return url.endsWith("/") ? 
-          removeTrailingSlashes(url.substring(0, url.length-1)) :
-          url;
+const host = nconf.get('host');
+const proxy = nconf.get('proxy');
+
+const workingDirectory = process.cwd().replace(/\\/g, '/');
+
+function removeTrailingSlashes(url) {
+  return url.endsWith('/') ? removeTrailingSlashes(url.substring(0, url.length - 1)) : url;
 }
 
 exports.config = {
-  specs: [
-    './spec/**/*.js',
-  ],
-  exclude: [
-  ],
+  specs: ['./spec/**/*.js'],
+  exclude: [],
   maxInstances: 1,
   //
   // If you have trouble getting all important capabilities together, check out the
@@ -27,9 +35,17 @@ exports.config = {
       // 5 instance gets started at a time.
       // maxInstances: 5,
       //
+      proxy: {
+        httpProxy: proxy,
+        sslProxy: proxy,
+        ftpProxy: proxy,
+        proxyType: proxy == null ? 'SYSTEM' : 'MANUAL',
+        autodetect: false,
+      },
       browserName: 'chrome',
-      chromeOptions: { "args": ["--no-sandbox"] }
-    }
+      chromeOptions: { args: ['--no-sandbox', '--start-maximized'] },
+      unexpectedAlertBehaviour: 'accept',
+    },
   ], // host: 'http://localhost',
   // port: 8080,
   sync: true,
@@ -37,11 +53,11 @@ exports.config = {
   logLevel: 'error',
   coloredLogs: true,
   // Saves a screenshot to a given path if a command fails.
-  // screenshotPath: './errorShots/',
+  //screenshotPath: '/mnt/errorShots',
   //
   // Set a base URL in order to shorten url command calls. If your url parameter starts
   // with "/", then the base url gets prepended.
-  baseUrl: removeTrailingSlashes(nconf.get("EDITOR_URL")),
+  baseUrl: removeTrailingSlashes(nconf.get('EDITOR_URL')),
   //
   // Default timeout for all waitFor* commands.
   waitforTimeout: 10000,
@@ -90,8 +106,11 @@ exports.config = {
     compilers: ['js:babel-register'],
     timeout: 99999999,
   },
-  onPrepare: () => {
-    console.log('prepare');
+  onPrepare: async () => {
+    const { waitForAllClients } = require(workingDirectory + '/utils/client-utils.js');
+    await waitForAllClients();
+
+    console.log('ready');
   },
   onComplete: () => {
     console.log('completed');
@@ -111,9 +130,13 @@ exports.config = {
   //
   // Gets executed before test execution begins. At this point you can access all global
   // variables, such as `browser`. It is the perfect place to define custom commands.
-  before: function () {
-    workingDirectory = process.cwd().replace(/\\/g, '/');
-    require(workingDirectory + '/browserExtensionCommands')(browser);
+  before: function() {
+    const chai = require('chai');
+    chai.use(require('chai-string'));
+
+    const browserExtentionCommands = require(workingDirectory +
+      '/utils/browser-extension-commands');
+    browserExtentionCommands(browser);
   },
   //
   // Hook that gets executed before the suite starts

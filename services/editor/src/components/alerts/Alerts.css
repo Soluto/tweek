@@ -26,13 +26,22 @@
   border: 1px solid #03a9f4;
 }
 .rodal-container .rodal-button-container .rodal-confirm-btn,
+.rodal-container .rodal-button-container .rodal-save-btn,
 .rodal-container .rodal-button-container .auto-partition-btn {
   color: #fff;
   background: #03a9f4;
 }
 .rodal-container .rodal-button-container .rodal-confirm-btn:hover,
+.rodal-container .rodal-button-container .rodal-save-btn:hover,
 .rodal-container .rodal-button-container .auto-partition-btn:hover {
   background: #0098e3;
+}
+.rodal-container .rodal-button-container .rodal-confirm-btn:disabled,
+.rodal-container .rodal-button-container .rodal-save-btn:disabled,
+.rodal-container .rodal-button-container .auto-partition-btn:disabled {
+  background: #dddddd;
+  border: 1px solid #cccccc;
+  color: #888888;
 }
 .rodal-container .rodal-button-container .rodal-cancel-btn,
 .rodal-container .rodal-button-container .reset-partitions-btn {

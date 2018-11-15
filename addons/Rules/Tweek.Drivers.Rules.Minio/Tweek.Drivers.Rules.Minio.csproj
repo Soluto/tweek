@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Minio" Version="2.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\Engine\Tweek.Engine.Drivers\Tweek.Engine.Drivers.csproj" />
+    <ProjectReference Include="..\..\..\core\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj" />
+  </ItemGroup>
+</Project>

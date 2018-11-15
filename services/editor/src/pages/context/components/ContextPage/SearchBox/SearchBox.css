@@ -4,22 +4,22 @@
   align-items: flex-end;
   margin: -5px;
 }
-.context-search-container .context-type-container,
-.context-search-container .context-id-container,
+.context-search-container .identity-type-container,
+.context-search-container .identity-id-container,
 .context-search-container .search-button-container {
   padding: 5px;
 }
-.context-search-container .context-type-container .context-type {
+.context-search-container .identity-type-container .identity-type {
   display: flex;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .override-input {
+.context-search-container .identity-type-container .identity-type .override-typeahead .override-input {
   flex-grow: 1;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+.context-search-container .identity-type-container .identity-type .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  height: 28px;
+  min-height: 28px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 16px;
@@ -27,16 +27,17 @@
   color: #515C66;
   outline: none;
   box-sizing: border-box;
+  align-self: flex-start;
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+.context-search-container .identity-type-container .identity-type .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.context-search-container .context-type-container .context-type .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+.context-search-container .identity-type-container .identity-type .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
   border-color: #bcbcbc;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .override-dropdown .dropdown-menu {
+.context-search-container .identity-type-container .identity-type .override-typeahead .override-dropdown .dropdown-menu {
   position: absolute;
   max-height: 350px;
   min-width: 200px;
@@ -44,7 +45,7 @@
   width: auto;
   z-index: 5;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .override-dropdown .dropdown-menu li {
+.context-search-container .identity-type-container .identity-type .override-typeahead .override-dropdown .dropdown-menu li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
@@ -54,17 +55,17 @@
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .override-dropdown .dropdown-menu li:last-child {
+.context-search-container .identity-type-container .identity-type .override-typeahead .override-dropdown .dropdown-menu li:last-child {
   border-bottom-width: 1px;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .override-dropdown .dropdown-menu li:hover {
+.context-search-container .identity-type-container .identity-type .override-typeahead .override-dropdown .dropdown-menu li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .override-dropdown .dropdown-menu li:active {
+.context-search-container .identity-type-container .identity-type .override-typeahead .override-dropdown .dropdown-menu li:active {
   background-color: #d1d1d1;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .override-dropdown .dropdown-menu li a {
+.context-search-container .identity-type-container .identity-type .override-typeahead .override-dropdown .dropdown-menu li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -75,24 +76,24 @@
   flex-direction: column;
   justify-content: center;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .override-dropdown .dropdown-menu li a:first-child {
+.context-search-container .identity-type-container .identity-type .override-typeahead .override-dropdown .dropdown-menu li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .override-dropdown .dropdown-menu .disabled {
+.context-search-container .identity-type-container .identity-type .override-typeahead .override-dropdown .dropdown-menu .disabled {
   display: none;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .override-dropdown .dropdown-menu .active {
+.context-search-container .identity-type-container .identity-type .override-typeahead .override-dropdown .dropdown-menu .active {
   background-color: #dfdfdf;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .bootstrap-typeahead {
+.context-search-container .identity-type-container .identity-type .override-typeahead .bootstrap-typeahead {
   flex-grow: 1;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+.context-search-container .identity-type-container .identity-type .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  height: 28px;
+  min-height: 28px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 16px;
@@ -100,16 +101,17 @@
   color: #515C66;
   outline: none;
   box-sizing: border-box;
+  align-self: flex-start;
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+.context-search-container .identity-type-container .identity-type .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.context-search-container .context-type-container .context-type .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+.context-search-container .identity-type-container .identity-type .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
   border-color: #bcbcbc;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .bootstrap-typeahead .dropdown-menu {
+.context-search-container .identity-type-container .identity-type .override-typeahead .bootstrap-typeahead .dropdown-menu {
   position: absolute;
   max-height: 350px;
   min-width: 200px;
@@ -117,7 +119,7 @@
   width: auto;
   z-index: 5;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .bootstrap-typeahead .dropdown-menu li {
+.context-search-container .identity-type-container .identity-type .override-typeahead .bootstrap-typeahead .dropdown-menu li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
@@ -127,17 +129,17 @@
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .bootstrap-typeahead .dropdown-menu li:last-child {
+.context-search-container .identity-type-container .identity-type .override-typeahead .bootstrap-typeahead .dropdown-menu li:last-child {
   border-bottom-width: 1px;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .bootstrap-typeahead .dropdown-menu li:hover {
+.context-search-container .identity-type-container .identity-type .override-typeahead .bootstrap-typeahead .dropdown-menu li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .bootstrap-typeahead .dropdown-menu li:active {
+.context-search-container .identity-type-container .identity-type .override-typeahead .bootstrap-typeahead .dropdown-menu li:active {
   background-color: #d1d1d1;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .bootstrap-typeahead .dropdown-menu li a {
+.context-search-container .identity-type-container .identity-type .override-typeahead .bootstrap-typeahead .dropdown-menu li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -148,24 +150,24 @@
   flex-direction: column;
   justify-content: center;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .bootstrap-typeahead .dropdown-menu li a:first-child {
+.context-search-container .identity-type-container .identity-type .override-typeahead .bootstrap-typeahead .dropdown-menu li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .bootstrap-typeahead .dropdown-menu .disabled {
+.context-search-container .identity-type-container .identity-type .override-typeahead .bootstrap-typeahead .dropdown-menu .disabled {
   display: none;
 }
-.context-search-container .context-type-container .context-type .override-typeahead .bootstrap-typeahead .dropdown-menu .active {
+.context-search-container .identity-type-container .identity-type .override-typeahead .bootstrap-typeahead .dropdown-menu .active {
   background-color: #dfdfdf;
 }
-.context-search-container .context-type-container .context-type .override-input {
+.context-search-container .identity-type-container .identity-type .override-input {
   flex-grow: 1;
 }
-.context-search-container .context-type-container .context-type .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+.context-search-container .identity-type-container .identity-type .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  height: 28px;
+  min-height: 28px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 16px;
@@ -173,16 +175,17 @@
   color: #515C66;
   outline: none;
   box-sizing: border-box;
+  align-self: flex-start;
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.context-search-container .context-type-container .context-type .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+.context-search-container .identity-type-container .identity-type .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.context-search-container .context-type-container .context-type .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+.context-search-container .identity-type-container .identity-type .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
   border-color: #bcbcbc;
 }
-.context-search-container .context-type-container .context-type .override-dropdown .dropdown-menu {
+.context-search-container .identity-type-container .identity-type .override-dropdown .dropdown-menu {
   position: absolute;
   max-height: 350px;
   min-width: 200px;
@@ -190,7 +193,7 @@
   width: auto;
   z-index: 5;
 }
-.context-search-container .context-type-container .context-type .override-dropdown .dropdown-menu li {
+.context-search-container .identity-type-container .identity-type .override-dropdown .dropdown-menu li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
@@ -200,17 +203,17 @@
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-.context-search-container .context-type-container .context-type .override-dropdown .dropdown-menu li:last-child {
+.context-search-container .identity-type-container .identity-type .override-dropdown .dropdown-menu li:last-child {
   border-bottom-width: 1px;
 }
-.context-search-container .context-type-container .context-type .override-dropdown .dropdown-menu li:hover {
+.context-search-container .identity-type-container .identity-type .override-dropdown .dropdown-menu li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-.context-search-container .context-type-container .context-type .override-dropdown .dropdown-menu li:active {
+.context-search-container .identity-type-container .identity-type .override-dropdown .dropdown-menu li:active {
   background-color: #d1d1d1;
 }
-.context-search-container .context-type-container .context-type .override-dropdown .dropdown-menu li a {
+.context-search-container .identity-type-container .identity-type .override-dropdown .dropdown-menu li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -221,24 +224,24 @@
   flex-direction: column;
   justify-content: center;
 }
-.context-search-container .context-type-container .context-type .override-dropdown .dropdown-menu li a:first-child {
+.context-search-container .identity-type-container .identity-type .override-dropdown .dropdown-menu li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-.context-search-container .context-type-container .context-type .override-dropdown .dropdown-menu .disabled {
+.context-search-container .identity-type-container .identity-type .override-dropdown .dropdown-menu .disabled {
   display: none;
 }
-.context-search-container .context-type-container .context-type .override-dropdown .dropdown-menu .active {
+.context-search-container .identity-type-container .identity-type .override-dropdown .dropdown-menu .active {
   background-color: #dfdfdf;
 }
-.context-search-container .context-type-container .context-type .bootstrap-typeahead {
+.context-search-container .identity-type-container .identity-type .bootstrap-typeahead {
   flex-grow: 1;
 }
-.context-search-container .context-type-container .context-type .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+.context-search-container .identity-type-container .identity-type .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
   display: inline-block;
   border: 0 none;
   border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  height: 28px;
+  min-height: 28px;
   padding: 0 4px;
   background-color: transparent;
   font-size: 16px;
@@ -246,16 +249,17 @@
   color: #515C66;
   outline: none;
   box-sizing: border-box;
+  align-self: flex-start;
   transition: all 0.2s ease-in-out;
   width: 150px;
 }
-.context-search-container .context-type-container .context-type .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+.context-search-container .identity-type-container .identity-type .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
   border-bottom: 2px solid rgba(0, 122, 204, 0.8);
 }
-.context-search-container .context-type-container .context-type .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+.context-search-container .identity-type-container .identity-type .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
   border-color: #bcbcbc;
 }
-.context-search-container .context-type-container .context-type .bootstrap-typeahead .dropdown-menu {
+.context-search-container .identity-type-container .identity-type .bootstrap-typeahead .dropdown-menu {
   position: absolute;
   max-height: 350px;
   min-width: 200px;
@@ -263,7 +267,7 @@
   width: auto;
   z-index: 5;
 }
-.context-search-container .context-type-container .context-type .bootstrap-typeahead .dropdown-menu li {
+.context-search-container .identity-type-container .identity-type .bootstrap-typeahead .dropdown-menu li {
   background-color: #f4f4f4;
   min-height: 35px;
   display: flex;
@@ -273,17 +277,17 @@
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
-.context-search-container .context-type-container .context-type .bootstrap-typeahead .dropdown-menu li:last-child {
+.context-search-container .identity-type-container .identity-type .bootstrap-typeahead .dropdown-menu li:last-child {
   border-bottom-width: 1px;
 }
-.context-search-container .context-type-container .context-type .bootstrap-typeahead .dropdown-menu li:hover {
+.context-search-container .identity-type-container .identity-type .bootstrap-typeahead .dropdown-menu li:hover {
   cursor: pointer;
   background-color: #dfdfdf;
 }
-.context-search-container .context-type-container .context-type .bootstrap-typeahead .dropdown-menu li:active {
+.context-search-container .identity-type-container .identity-type .bootstrap-typeahead .dropdown-menu li:active {
   background-color: #d1d1d1;
 }
-.context-search-container .context-type-container .context-type .bootstrap-typeahead .dropdown-menu li a {
+.context-search-container .identity-type-container .identity-type .bootstrap-typeahead .dropdown-menu li a {
   text-decoration: none;
   color: gray;
   font-size: 13px;
@@ -294,17 +298,17 @@
   flex-direction: column;
   justify-content: center;
 }
-.context-search-container .context-type-container .context-type .bootstrap-typeahead .dropdown-menu li a:first-child {
+.context-search-container .identity-type-container .identity-type .bootstrap-typeahead .dropdown-menu li a:first-child {
   padding: 10px;
   padding-right: 30px;
 }
-.context-search-container .context-type-container .context-type .bootstrap-typeahead .dropdown-menu .disabled {
+.context-search-container .identity-type-container .identity-type .bootstrap-typeahead .dropdown-menu .disabled {
   display: none;
 }
-.context-search-container .context-type-container .context-type .bootstrap-typeahead .dropdown-menu .active {
+.context-search-container .identity-type-container .identity-type .bootstrap-typeahead .dropdown-menu .active {
   background-color: #dfdfdf;
 }
-.context-search-container .context-id-container input {
+.context-search-container .identity-id-container input {
   width: 350px;
   font-size: 16px;
 }

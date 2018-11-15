@@ -12,6 +12,5 @@
         "value": "1 month ago"
     },
     "valueType": "string",
-    "enabled": true,
     "dependencies": []
 }

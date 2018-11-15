@@ -3,21 +3,11 @@ import { compose, mapProps } from 'recompose';
 import withPropertyTypeDetails from '../../../../../hoc/with-property-type-details';
 import {
   equal,
-  inOp,
   allOperators,
   getPropertySupportedOperators,
 } from '../../../../../services/operators-provider';
 import Operator from './Operator';
 import PropertyValue from './PropertyValue';
-
-const translateValue = (oldOperator, newOperator, value) => {
-  if (oldOperator.operatorValue === inOp.operatorValue) return value.length > 0 ? value[0] : '';
-  if (newOperator.operatorValue === inOp.operatorValue) return value ? [value] : [];
-  return value;
-};
-
-const propertyTypeDetailsToComparer = propertyTypeDetails =>
-  propertyTypeDetails.comparer ? { $compare: propertyTypeDetails.comparer } : {};
 
 const PropertyPredicate = ({
   mutate,
@@ -25,32 +15,25 @@ const PropertyPredicate = ({
   selectedOperator,
   propertyTypeDetails,
   predicateValue,
-}) =>
+}) => (
   <div style={{ display: 'flex' }}>
     <Operator
       supportedOperators={supportedOperators}
       selectedOperator={selectedOperator}
       onUpdate={newOperator =>
-        mutate.updateValue(
-          newOperator.getValue(
-            translateValue(selectedOperator, newOperator, predicateValue),
-            propertyTypeDetailsToComparer(propertyTypeDetails),
-          ),
-        )}
+        mutate.updateValue(newOperator.getValue(predicateValue, propertyTypeDetails))
+      }
     />
     <PropertyValue
-      propertyTypeDetails={propertyTypeDetails}
+      valueType={propertyTypeDetails}
       value={predicateValue}
       selectedOperator={selectedOperator.operatorValue}
-      onUpdate={newPropertyValue =>
-        mutate.updateValue(
-          selectedOperator.getValue(
-            newPropertyValue,
-            propertyTypeDetailsToComparer(propertyTypeDetails),
-          ),
-        )}
+      onChange={newPropertyValue =>
+        mutate.updateValue(selectedOperator.getValue(newPropertyValue, propertyTypeDetails))
+      }
     />
-  </div>;
+  </div>
+);
 
 export default compose(
   withPropertyTypeDetails(),
@@ -62,9 +45,10 @@ export default compose(
       selectedOperator = supportedOperators.indexOf(equal) >= 0 ? equal : supportedOperators[0];
       predicateValue = predicate;
     } else {
-      selectedOperator = allOperators.find(x =>
+      selectedOperator = supportedOperators.find(x =>
         Object.keys(predicate).find(predicateProperty => predicateProperty === x.operatorValue),
       );
+      selectedOperator = selectedOperator || { operatorValue: Object.keys(predicate)[0] };
       predicateValue = predicate[selectedOperator.operatorValue];
     }
     return { supportedOperators, selectedOperator, propertyTypeDetails, predicateValue, ...props };

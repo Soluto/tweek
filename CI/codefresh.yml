@@ -1,11 +1,13 @@
 version: '1.0'
 steps:
-  BuildGitKeys:
-    title: Building Git Keys Docker Image
-    type: build
-    image_name: soluto/tweek-test-keys
-    working_directory: ./services/git-service/ssh/
 
+  VersionsToDeploy:
+    description: Check versions to deploy
+    title: Check versions to deploy
+    image: alpine/git
+    commands:
+      - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
+        
   BuildingGitRepository:
     title: Building Git Repository Docker Image
     type: build
@@ -16,16 +18,13 @@ steps:
     title: Building Tweek Api Docker Image
     type: build
     image_name: soluto/tweek-api
-    working_directory: ${{main_clone}}
     dockerfile: TweekApiDockerfile
-    build_arguments: 
-      - VERSION_SUFFIX=ci-${{CF_BUILD_ID}}-${{CF_SHORT_REVISION}}
-    
-  BuildingManagement:
-    title: Building Management Docker Image
+  
+  BuildingPublishing:
+    title: Building Publishing Docker Image
     type: build
-    image_name: soluto/tweek-management
-    working_directory: ./services/management/
+    image_name: soluto/tweek-publishing
+    working_directory: ./services/publishing/
 
   BuildingAuthoring:
     title: Building Authoring Api Image
@@ -50,138 +49,67 @@ steps:
     type: build
     image_name: soluto/e2e-integration
     working_directory: ./e2e/integration
+  
+  BuildingApiSmokeTestImage:
+    title: Building Tweek Api Smoke Test Docker Image
+    type: build
+    image_name: soluto/tweek-api-smoke-tests
+    dockerfile: TweekApiSmokeTestDockerfile
 
-  Tests:
-    title: Tests - e2e & smoke
+  BuildingZapImage:
+    title: Building Zap Docker Image
+    type: build
+    image_name: soluto/zap
+    working_directory: ./deployments/dev/zap
+  
+  IntegrationTests:
+    title: Tests - integration & smoke
     type: composition
-    composition:
-      version: '2'
-      services:
-        keys:
-          image: ${{BuildGitKeys}}
-        git:
-          image: ${{BuildingGitRepository}}
-          volumes_from:
-            - keys
-          environment:
-            - PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
-            - TWEEK_MANAGEMENT_URL=http://management:3000
-        management:
-          image: ${{BuildingManagement}}
-          depends_on:
-            - git
-          volumes_from:
-            - keys
-          logging:
-            driver: "none"
-          environment:
-            - GIT_USER=git
-            - GIT_URL=ssh://git@git/tweek/tests
-            - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-            - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
-            - VALIDATION_URL=http://api/validation
-        api:
-          image: ${{BuildingApiImage}}
-          depends_on:
-            - management
-            - redis
-          volumes_from:
-            - keys
-          environment:
-            - Rules__Management__Url=http://management:3000
-            - Rules__Management__SampleIntervalInMs=500
-            - PUBLIC_KEY_PATH=/gitkeys/tweekgit_public.pfx
-            - ContextProvider=redis
-            - Redis__ConnectionString=redis:6379
-            - Addons__Redis__ClassName=Tweek.Drivers.Redis.RedisServiceAddon
-            - Addons__Redis__AssemblyName=Tweek.Drivers.Redis
-            - CorsPolicies__Keys__Origins=http://editor:3000,http://testorigin
-            - CorsPolicies__Keys__Methods=GET
-            - CorsPolicies__Keys__MaxPreflightAge=60
-            - CorsEnabled=true
-            - CorsPolicies__Keys__Headers=
-            - CorsPolicies__Keys__ExposedHeaders=
-        authoring:
-          image: ${{BuildingAuthoring}}
-          depends_on:
-            - git
-          volumes_from:
-            - keys
-          logging:
-            driver: "none"
-          environment:
-            - GIT_USER=git
-            - GIT_URL=ssh://git@git/tweek/tests
-            - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-            - GIT_PUBLIC_KEY_PATH=/gitkeys/tweekgit.pub
-        editor:
-          image: ${{BuildingEditor}}
-          depends_on:
-            - api
-            - authoring
-          volumes_from:
-            - keys
-          logging:
-            driver: "none"
-          environment:
-            - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-            - TWEEK_API_HOSTNAME=http://api
-            - AUTHORING_API_HOSTNAME=http://authoring:3000
-        selenium:
-          image: selenium/standalone-chrome:3.4.0
-          logging:
-            driver: "none"
-        redis:
-          image: redis:alpine
-          expose:
-            - "6379"
-          logging:
-            driver: "none"
+    composition: ./CI/docker-compose.yml
+    composition_variables:
+      - REPOSITORY_IMAGE=${{BuildingGitRepository}}
+      - PUBLISHING_IMAGE=${{BuildingPublishing}}
+      - API_IMAGE=${{BuildingApiImage}}
+      - AUTHORING_IMAGE=${{BuildingAuthoring}}
+      - EDITOR_IMAGE=${{BuildingEditor}}
+      - ZAP_IMAGE=${{BuildingZapImage}}
+      - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
     composition_candidates:
       smoke-tests:
-        image: microsoft/aspnetcore-build:1.1.2
+        image: ${{BuildingApiSmokeTestImage}}
         depends_on: 
           - api
-        volumes:
-          - ${{CF_VOLUME}}:/repo
-        working_dir: /repo/tweek
+          - publishing
+          - zap-smoke
         environment: 
           - TWEEK_API_URL=http://api/
-        command: /bin/bash -c "dotnet restore services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj && wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release"
-      e2e-ui:
-        image: ${{BuildingUITests}}
-        volumes_from:
-          - keys
-        depends_on: 
-          - selenium
-          - editor
-          - api
-        environment:
-          - EDITOR_URL=http://editor:3000/
-          - TWEEK_API_URL=http://api/
-          - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test -- --host selenium --port 4444"
+          - PROXY_URL=http://zap-smoke:8090
       e2e-integration:
         image: ${{BuildingIntegrationTests}}
-        volumes_from:
-          - keys
         depends_on:
           - authoring
           - api
+          - publishing
         environment:
           - API_URL=http://api
           - AUTHORING_URL=http://authoring:3000
-          - MANAGEMENT_URL=http://tweek-management:3000
-          - GIT_PRIVATE_KEY_PATH=/gitkeys/tweekgit
-        command: /bin/bash -c "wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused http://api/status && yarn test"
+          - PUBLISHING_URL=http://publishing
+          - GIT_PRIVATE_KEY_INLINE=eWFybiBydW4gdjEuMy4yCiQgZG9ja2VyLWNvbXBvc2UgLWYgLi9kZXBsb3ltZW50cy9kZXYvZG9ja2VyLWNvbXBvc2UueW1sIC1mIC4vZGVwbG95bWVudHMvZGV2L2RvY2tlci1jb21wb3NlLm92ZXJyaWRlLnltbCBleGVjIHB1Ymxpc2hpbmcgY2F0IC90bXAvc3NoX3NlcnZlcgotLS0tLUJFR0lOIFJTQSBQUklWQVRFIEtFWS0tLS0tDQpNSUlFcEFJQkFBS0NBUUVBeE1JdjB3QW9NTkhzc1J6OUhvanM2eUNla2w5RHI5RUt1WjUwZ3QveHk4Wk9DelFKDQplblhvbm9TeHJVK0U2a0tNUFpxVzhJUFVoN0doL0pIbTFGV3MxZVR3YTNaMStVRUZraTNROWVERklQVE8zNW5hDQpxVjBwVXJZMndLTFRXbjNzN3ZkaGNBU09YdnVqc3lxdm9sQ1BrRXFyQVV1SVFXZzV3RzBKRHVweG4vMHRSSW9xDQpPT0gxNmlmeFpZcjdEQzQvQkp2Z0g2anRrdTVuNVhNTDhBaXVnd3B3bFNTU0c4dnVldXZabW53VWRKZ3FPM0RVDQpITHVTcEZwUXUySjZGeXY4ZFVhWVQxVnRxWDloeExpSG1HRVJLaEwrNWtQRzRkMTNCb2Q1VFhWZG82eHhmQ1BhDQpoaFVuemxkTWVzQTBiL1ZhUThBaVFoa29DY1FpYk9hclU3MDNSUUlEQVFBQkFvSUJBUUNaak5ZWHU3S2h6dUlCDQpvcGJpNG9iS1JDMmNHMTVPY2p3RmVlU0JVbFYzNnExelRzdnExdU9QK2d4VExaQ1Q1UlZlNmlyTFRvWm8wemFRDQpUaWl2SXFGOFYydE00aWpWT1dvb2x6clE5L1cvYjIyVzBKSDF4RytBVGhWU3BuOTh5bk5DVnFxaTZkdFZ3dG9RDQo4OG9YU1BtUTZNU2xnUlczdmFmOFJOdGgyWktOQUg5N1k4cGpWTVgvcUxMMW5aOTVicW9yUklMUnp6S0dKanFHDQplN0VpeFQ0a0JaemxHWUF5a1dVeFFZZzBkdTlnQjc1U1o2MHNwZzVUQlh5a3RXdzVIWG1ZWlMvSHdCOVRKbG1XDQpUanlWdE9lVmxqT0ZiOFZnSHBNd3d1Mk1vcjdWUEFQd2dEWHVxRk1XdkZ6cVViSGNVS3JXMGdCSExqWFNQbVM2DQowTDFJM2NXQkFvR0JBUE94eXFKZnhyelVDUG4zcDNtWTZyNmdseVhiLytlYVhhNDY3c05ZOE1acFZkbDVtUUpWDQpuOEdRN3FYaklaa2pCU2E5YzZZQThxOFRLVHlJbEcvTDE1OFVSaFRqZldNSC9nandaem1oSmVkL0N6Lzg1Y2V4DQpsUWw3bE4vUjI0VGIzd1UxNjNtRXluaEdSVzVLd3FjVTVvRUJtbjkvWWs4aGlia2k2aEk2NEFobEFvR0JBTTZ4DQpxUFpuL25odjh1K21PZTdjelNWNUxzd2ZNM1NTc25mWGdRUlc3cnpraGtmclFaMmVYekVDbWhWTy91SlZvTWJUDQpoQS9tUXRYRzVuMk9QMndmSk1LVUNiVVZ2ZTJYNUQxU1VGYk03dWVHU3JlWExXdXJzaHdnN1p6VlpxVDYzUEJSDQpqVGtRRTRydWtWRUszTTBVUDlJTVZ3c2FEajI4K2NNUWZOTkZodFZoQW9HQUNUOXErQ1I0VHp3Z3B4TzkyRUIwDQpVQTJhRHNhOWZGV0FUcGRQN2p2V3owQzZFRW1zQThtcUNWZHRwdi9xaTN3bnV1T2ZtdUlZVTRwL214dDN2cEpXDQp1V08wa1NCYzVzQXI1THp5dmQ0ZXFSMUtHUUNJMjc0aWNMeXUxcHVKSUE2VDlRZXB5dSsrR3poWGRDc0VIZ0VPDQpDa0U4VXJCTDA4THJEZ3FFSlhMMGczMENnWUJtMHpVbUdBZ2RMRHdrQW9MUmxLQ3Q0c0pvSTZGNmZid3hLRkZ6DQpzamVrV3Q5K2ljZWp2UFRJTWU0cmFaZ2RTdEhuOTdPOElTWGdxY2xpYnRDWVhrbndUcXNobmdaVlczbmRFOFVKDQoyWHVFVEdlQk84RUp6bW1WMnIrNmhPTkNjZFpWNjR3ZzlpRnl2VW9ua2dyVUx4MnN4aHpMVmhQOW5MUjMyUXp3DQpJYWQ1SVFLQmdRRFhwYVNubHhnK28zMldBR3dHc0F4cTVDVytyRXBPOFBDRG8rUmVlNnZjRjduSWYveTRzUlB1DQo0MWlwWjZYeFlwd2dSRDd6blpqejlBZVZoRzhpQUFBQk5GVTFKRlRpWGlnUERaLzA4WUUwdGdDVmIvRU9XZnFUDQptS0NBTUgrSjJZWUlwb3NLL3dyQmRXQ1RiUHYvYUI3RkVraFFLeGVJTXYxd0trd2tSaU5BQ0E9PQ0KLS0tLS1FTkQgUlNBIFBSSVZBVEUgS0VZLS0tLS0NCkRvbmUgaW4gMC42NHMuCg
+      api-swagger:
+        image: node:slim
+        depends_on:
+          - api
+          - publishing
+        volumes:
+          - ${{CF_VOLUME}}:/repo
+        working_dir: /repo/tweek/CI
+        command: wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused -O api-swagger.json http://api/api/swagger.json
     on_success:
       metadata:
         set:
           - '${{BuildingApiImage.imageId}}':
             - CF_QUALITY: true
-          - '${{BuildingManagement.imageId}}':
-            - CF_QUALITY: true
-          - '${{BuildingEditor.imageId}}':
+          - '${{BuildingPublishing.imageId}}':
             - CF_QUALITY: true
           - '${{BuildingAuthoring.imageId}}':
             - CF_QUALITY: true
@@ -190,12 +118,96 @@ steps:
         set:
           - '${{BuildingApiImage.imageId}}':
             - CF_QUALITY: false
-          - '${{BuildingManagement.imageId}}':
-            - CF_QUALITY: false
-          - '${{BuildingEditor.imageId}}':
+          - '${{BuildingPublishing.imageId}}':
             - CF_QUALITY: false
           - '${{BuildingAuthoring.imageId}}':
             - CF_QUALITY: false
+
+  UiTests:
+    title: UI tests
+    type: composition
+    composition: ./CI/docker-compose.yml
+    composition_variables:
+      - REPOSITORY_IMAGE=${{BuildingGitRepository}}
+      - PUBLISHING_IMAGE=${{BuildingPublishing}}
+      - API_IMAGE=${{BuildingApiImage}}
+      - AUTHORING_IMAGE=${{BuildingAuthoring}}
+      - EDITOR_IMAGE=${{BuildingEditor}}
+      - ZAP_IMAGE=${{BuildingZapImage}}
+      - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
+    composition_candidates:
+      e2e-ui:
+        image: ${{BuildingUITests}}
+        depends_on: 
+          - selenium
+          - editor
+          - authoring
+          - api
+          - publishing
+          - zap-e2e
+        environment:
+          - EDITOR_URL=http://editor:3000/
+          - TWEEK_API_URL=http://api/
+          - AUTHORING_URL=http://authoring:3000
+          - GIT_PRIVATE_KEY_INLINE=eWFybiBydW4gdjEuMy4yCiQgZG9ja2VyLWNvbXBvc2UgLWYgLi9kZXBsb3ltZW50cy9kZXYvZG9ja2VyLWNvbXBvc2UueW1sIC1mIC4vZGVwbG95bWVudHMvZGV2L2RvY2tlci1jb21wb3NlLm92ZXJyaWRlLnltbCBleGVjIHB1Ymxpc2hpbmcgY2F0IC90bXAvc3NoX3NlcnZlcgotLS0tLUJFR0lOIFJTQSBQUklWQVRFIEtFWS0tLS0tDQpNSUlFcEFJQkFBS0NBUUVBeE1JdjB3QW9NTkhzc1J6OUhvanM2eUNla2w5RHI5RUt1WjUwZ3QveHk4Wk9DelFKDQplblhvbm9TeHJVK0U2a0tNUFpxVzhJUFVoN0doL0pIbTFGV3MxZVR3YTNaMStVRUZraTNROWVERklQVE8zNW5hDQpxVjBwVXJZMndLTFRXbjNzN3ZkaGNBU09YdnVqc3lxdm9sQ1BrRXFyQVV1SVFXZzV3RzBKRHVweG4vMHRSSW9xDQpPT0gxNmlmeFpZcjdEQzQvQkp2Z0g2anRrdTVuNVhNTDhBaXVnd3B3bFNTU0c4dnVldXZabW53VWRKZ3FPM0RVDQpITHVTcEZwUXUySjZGeXY4ZFVhWVQxVnRxWDloeExpSG1HRVJLaEwrNWtQRzRkMTNCb2Q1VFhWZG82eHhmQ1BhDQpoaFVuemxkTWVzQTBiL1ZhUThBaVFoa29DY1FpYk9hclU3MDNSUUlEQVFBQkFvSUJBUUNaak5ZWHU3S2h6dUlCDQpvcGJpNG9iS1JDMmNHMTVPY2p3RmVlU0JVbFYzNnExelRzdnExdU9QK2d4VExaQ1Q1UlZlNmlyTFRvWm8wemFRDQpUaWl2SXFGOFYydE00aWpWT1dvb2x6clE5L1cvYjIyVzBKSDF4RytBVGhWU3BuOTh5bk5DVnFxaTZkdFZ3dG9RDQo4OG9YU1BtUTZNU2xnUlczdmFmOFJOdGgyWktOQUg5N1k4cGpWTVgvcUxMMW5aOTVicW9yUklMUnp6S0dKanFHDQplN0VpeFQ0a0JaemxHWUF5a1dVeFFZZzBkdTlnQjc1U1o2MHNwZzVUQlh5a3RXdzVIWG1ZWlMvSHdCOVRKbG1XDQpUanlWdE9lVmxqT0ZiOFZnSHBNd3d1Mk1vcjdWUEFQd2dEWHVxRk1XdkZ6cVViSGNVS3JXMGdCSExqWFNQbVM2DQowTDFJM2NXQkFvR0JBUE94eXFKZnhyelVDUG4zcDNtWTZyNmdseVhiLytlYVhhNDY3c05ZOE1acFZkbDVtUUpWDQpuOEdRN3FYaklaa2pCU2E5YzZZQThxOFRLVHlJbEcvTDE1OFVSaFRqZldNSC9nandaem1oSmVkL0N6Lzg1Y2V4DQpsUWw3bE4vUjI0VGIzd1UxNjNtRXluaEdSVzVLd3FjVTVvRUJtbjkvWWs4aGlia2k2aEk2NEFobEFvR0JBTTZ4DQpxUFpuL25odjh1K21PZTdjelNWNUxzd2ZNM1NTc25mWGdRUlc3cnpraGtmclFaMmVYekVDbWhWTy91SlZvTWJUDQpoQS9tUXRYRzVuMk9QMndmSk1LVUNiVVZ2ZTJYNUQxU1VGYk03dWVHU3JlWExXdXJzaHdnN1p6VlpxVDYzUEJSDQpqVGtRRTRydWtWRUszTTBVUDlJTVZ3c2FEajI4K2NNUWZOTkZodFZoQW9HQUNUOXErQ1I0VHp3Z3B4TzkyRUIwDQpVQTJhRHNhOWZGV0FUcGRQN2p2V3owQzZFRW1zQThtcUNWZHRwdi9xaTN3bnV1T2ZtdUlZVTRwL214dDN2cEpXDQp1V08wa1NCYzVzQXI1THp5dmQ0ZXFSMUtHUUNJMjc0aWNMeXUxcHVKSUE2VDlRZXB5dSsrR3poWGRDc0VIZ0VPDQpDa0U4VXJCTDA4THJEZ3FFSlhMMGczMENnWUJtMHpVbUdBZ2RMRHdrQW9MUmxLQ3Q0c0pvSTZGNmZid3hLRkZ6DQpzamVrV3Q5K2ljZWp2UFRJTWU0cmFaZ2RTdEhuOTdPOElTWGdxY2xpYnRDWVhrbndUcXNobmdaVlczbmRFOFVKDQoyWHVFVEdlQk84RUp6bW1WMnIrNmhPTkNjZFpWNjR3ZzlpRnl2VW9ua2dyVUx4MnN4aHpMVmhQOW5MUjMyUXp3DQpJYWQ1SVFLQmdRRFhwYVNubHhnK28zMldBR3dHc0F4cTVDVytyRXBPOFBDRG8rUmVlNnZjRjduSWYveTRzUlB1DQo0MWlwWjZYeFlwd2dSRDd6blpqejlBZVZoRzhpQUFBQk5GVTFKRlRpWGlnUERaLzA4WUUwdGdDVmIvRU9XZnFUDQptS0NBTUgrSjJZWUlwb3NLL3dyQmRXQ1RiUHYvYUI3RkVraFFLeGVJTXYxd0trd2tSaU5BQ0E9PQ0KLS0tLS1FTkQgUlNBIFBSSVZBVEUgS0VZLS0tLS0NCkRvbmUgaW4gMC42NHMuCg
+          - PROXY_URL=http://zap-e2e:8090
+          - AUTH_DIGEST_CREDENTIALS=user:pwd
+    on_success:
+      metadata:
+        set:
+          - '${{BuildingEditor.imageId}}':
+            - CF_QUALITY: true
+    on_fail:
+      metadata:
+        set:
+          - '${{BuildingEditor.imageId}}':
+            - CF_QUALITY: false
+            
+  BuildGlueCli:
+    title: Building Glue CLI
+    type: build
+    image_name: soluto/glue-cli
+    working_directory: ./deployments/dev/zap/glue
+
+  SecurityTests:
+    title: Tests - security
+    type: composition
+    composition:
+      version: '2'
+      services:
+        zap:
+          image: ${{BuildingZapImage}}
+          user: root
+          volumes:
+            - ${CF_VOLUME_PATH}/tweek/deployments/dev/zap/session:/root/.ZAP/session/
+    composition_variables:
+      - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
+    composition_candidates:
+      glue:
+        image: ${{BuildGlueCli}}
+        working_dir: /repo/tweek/deployments/dev/zap/glue
+        command: ./test.sh
+        depends_on: 
+          - zap
+        environment:
+          - ZAP_HOST=http://zap
+          - ZAP_PORT=8090
+        volumes:
+          - ${{CF_VOLUME}}:/repo
+
+  Swagger:
+    title: Upload swagger
+    when:
+      condition:
+        all:
+          executeForMasterBranch: "'${{CF_BRANCH}}' == 'master'"
+          executeForNewVersions: "'${{TWEEK_DOCKER_TAG_API}}' != 'latest'"
+    image: node:slim
+    working_directory: ./CI
+    environment: 
+      - UPDATE_SWAGGER_SECRET=${{UPDATE_SWAGGER_SECRET}}
+    commands:
+      - ./update_swagger.sh api $TWEEK_DOCKER_TAG_API ./api-swagger.json
 
   PushApiImageMaster:
     type: push
@@ -205,15 +217,21 @@ steps:
         only:
           - master
     candidate: ${{BuildingApiImage}}
+    tags:
+      - latest
+      - ${{TWEEK_DOCKER_TAG_API}}
 
-  PushManagementImageMaster:
+  PushPublishingImageMaster:
     type: push
-    title: Push Management - lastest
+    title: Push Publishing - lastest
     when:
       branch:
         only:
           - master
-    candidate: ${{BuildingManagement}}
+    candidate: ${{BuildingPublishing}}
+    tags:
+      - latest
+      - ${{TWEEK_DOCKER_TAG_PUBLISHING}}
 
   PushAuthoringImageMaster:
     type: push
@@ -223,6 +241,9 @@ steps:
         only:
           - master
     candidate: ${{BuildingAuthoring}}
+    tags:
+      - latest
+      - ${{TWEEK_DOCKER_TAG_AUTHORING}}
 
   PushEditorImageMaster:
     type: push
@@ -232,6 +253,9 @@ steps:
         only:
           - master
     candidate: ${{BuildingEditor}}
+    tags:
+      - latest
+      - ${{TWEEK_DOCKER_TAG_EDITOR}}
 
   PushGitRepositoryMaster:
     type: push

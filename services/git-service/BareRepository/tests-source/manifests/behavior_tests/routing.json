@@ -1,0 +1,15 @@
+{
+  "key_path": "behavior_tests/routing",
+  "meta": {
+    "name": "behavior_tests/routing",
+    "tags": [],
+    "description": "",
+    "archived": false
+  },
+  "implementation": {
+    "type": "const",
+    "value": "value"
+  },
+  "valueType": "string",
+  "dependencies": []
+}

@@ -1,52 +1,54 @@
 import React from 'react';
 import classnames from 'classnames';
-import { connect } from 'react-redux';
-import { compose, mapProps } from 'recompose';
-import Input from '../../../../components/common/Input/Input';
+import * as R from 'ramda';
 import TypedInput from '../../../../components/common/Input/TypedInput';
-import { getContextProperties, getPropertyTypeDetails } from '../../../../services/context-service';
+import { getPropertyTypeDetails } from '../../../../services/context-service';
 import './IdentityProperties.css';
 
-const getPropertyValueType = (identityName, property) => {
-  const details = getPropertyTypeDetails(`${identityName}.${property}`);
-  return 'name' in details ? details.name : details;
+const Property = ({ identityType, property, local, remote, onChange }) => {
+  const valueType = getPropertyTypeDetails(`${identityType}.${property}`);
+  return (
+    <div className="property-wrapper" data-comp="identity-property" data-property={property}>
+      <label className="property-label">{property}</label>
+      <TypedInput
+        data-field="value"
+        className={classnames('value-input', {
+          'has-changes': remote !== local,
+        })}
+        value={local}
+        onChange={onChange}
+        valueType={valueType}
+        placeholder="(no value)"
+        disabled={property.startsWith('@')}
+      />
+      <div className="initial-value" title={remote}>
+        {remote === local ? null : remote}
+      </div>
+    </div>
+  );
 };
 
-const Property = ({ identityName, property, value }) =>
-  <div className="property-wrapper" data-comp="identity-property">
-    <Input className="property-input" data-comp="property" value={property} disabled />
-    <TypedInput
-      className="property-input"
-      data-comp="value"
-      value={value}
-      valueType={getPropertyValueType(identityName, property)}
-      placeholder="(no value)"
-      disabled
-    />
-  </div>;
-
-const IdentityProperties = ({ className, identityName, properties }) =>
+const IdentityProperties = ({ className, identityType, local, remote, updateContext }) => (
   <div
-    className={classnames('context-properties-container', className)}
+    className={classnames('identity-properties-container', className)}
     data-comp="identity-properties"
   >
-    <div className="context-properties-title">Properties</div>
+    <div className="identity-properties-title">Properties</div>
     <div className="property-list">
-      {Object.keys(properties).map(prop =>
+      {Object.keys(remote).map(prop => (
         <Property
           key={prop}
-          identityName={identityName}
+          identityType={identityType}
           property={prop}
-          value={properties[prop]}
-        />,
-      )}
+          local={local[prop]}
+          remote={remote[prop]}
+          onChange={value =>
+            updateContext(value === '' ? R.dissoc(prop, local) : R.assoc(prop, value, local))
+          }
+        />
+      ))}
     </div>
-  </div>;
+  </div>
+);
 
-export default compose(
-  connect(state => state.context),
-  mapProps(({ remote: context, ...props, identityName }) => ({
-    properties: getContextProperties(identityName, context),
-    ...props,
-  })),
-)(IdentityProperties);
+export default IdentityProperties;

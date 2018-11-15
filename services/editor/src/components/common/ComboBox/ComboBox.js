@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Rx from 'rxjs';
-import R from 'ramda';
+import { Observable } from 'rxjs';
+import * as R from 'ramda';
 import { compose, pure, mapPropsStream, createEventHandler } from 'recompose';
 import classnames from 'classnames';
 import ClickOutside from './ClickOutside';
@@ -153,20 +153,20 @@ class ComboBoxComponent extends Component {
             hint={hint}
             onKeyDown={this.handleKeyDown}
           />
-          {hasFocus && !disabled
-            ? <Suggestions
-                {...{
-                  value,
-                  suggestions,
-                  getLabel,
-                  highlightedSuggestion,
-                  onSuggestionHighlighted,
-                  renderSuggestion,
-                  suggestionsContainer,
-                }}
-                onSuggestionSelected={this.onSuggestionSelected}
-              />
-            : null}
+          {hasFocus && !disabled ? (
+            <Suggestions
+              {...{
+                value,
+                suggestions,
+                getLabel,
+                highlightedSuggestion,
+                onSuggestionHighlighted,
+                renderSuggestion,
+                suggestionsContainer,
+              }}
+              onSuggestionSelected={this.onSuggestionSelected}
+            />
+          ) : null}
         </div>
       </ClickOutside>
     );
@@ -181,13 +181,18 @@ const ComboBox = compose(
 
     const highlighted$ = onHighlighted$.startWith({ index: -1 }).distinctUntilChanged();
 
-    const value$ = Rx.Observable.merge(
+    const value$ = Observable.merge(
       props$.map(R.prop('value')).distinctUntilChanged(),
       onInputChanged$,
     );
 
-    const propsWithValue$ = Rx.Observable
-      .combineLatest(props$, value$)
+    const focus$ = onFocus$
+      .startWith(false)
+      .distinctUntilChanged()
+      .publishReplay(1)
+      .refCount();
+
+    const propsWithValue$ = Observable.combineLatest(props$, value$)
       .map(([props, value]) => ({ ...props, value }))
       .share();
 
@@ -195,6 +200,12 @@ const ComboBox = compose(
       .distinctUntilChanged(
         compareBy('suggestions', 'value', 'showValueInOptions', 'matchCase', 'suggestionsLimit'),
       )
+      .combineLatest(focus$, Array.of)
+      .scan(([_, prevFocus], [props, nextFocus]) => {
+        if (nextFocus && !prevFocus) return [{ ...props, filterBy: () => true }, nextFocus];
+        return [props, nextFocus];
+      })
+      .pluck(0)
       .map(
         ({
           suggestions,
@@ -234,25 +245,32 @@ const ComboBox = compose(
       })
       .map(R.prop('suggestions'));
 
-    return Rx.Observable
-      .combineLatest(
-        propsWithValue$,
-        suggestions$,
-        highlighted$,
-        onFocus$.startWith(false).distinctUntilChanged(),
+    return Observable.combineLatest(propsWithValue$, suggestions$, highlighted$, focus$)
+      .map(
+        (
+          [
+            { onChange, onFocus, ...props },
+            suggestions,
+            { index: highlightedSuggestion },
+            hasFocus,
+          ],
+        ) => ({
+          ...props,
+          hasFocus,
+          setFocus: (...args) => {
+            onFocus && onFocus(...args);
+            setFocus(...args);
+          },
+          suggestions,
+          highlightedSuggestion,
+          onChange: (input, selected) => {
+            onInputChanged(input);
+            onChange && onChange(input, selected);
+          },
+          onSuggestionHighlighted: index =>
+            onHighlighted({ index, suggestion: suggestions[index] }),
+        }),
       )
-      .map(([{ onChange, ...props }, suggestions, { index: highlightedSuggestion }, hasFocus]) => ({
-        ...props,
-        hasFocus,
-        setFocus,
-        suggestions,
-        highlightedSuggestion,
-        onChange: (input, selected) => {
-          onInputChanged(input);
-          onChange && onChange(input, selected);
-        },
-        onSuggestionHighlighted: index => onHighlighted({ index, suggestion: suggestions[index] }),
-      }))
       .map(R.omit(['filterBy', 'showValueInOptions', 'suggestionsLimit']));
   }),
   pure,

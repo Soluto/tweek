@@ -10,28 +10,50 @@
     "implementation": {
         "type": "const",
         "value": {
-             "BirthDate": {
-               "type":"date"
-             },
-             "ClientVersion": {
-               "type":"version"
-             },
-             "Country": {
-               "type":"string"
-             },
-             "Gender":{
-               "type":{
-                 "base": "string",
-                  "allowedValues": [
-                    "Male",
-                    "Female",
-                    "Other"
-                  ]
-               }
+            "BirthDate": {
+              "type":"date"
+            },
+            "AgentVersion": {
+              "type":"version"
+            },
+            "FatherName": {
+              "type":"string"
+            },
+            "FavoriteFruit": {
+              "type": "string"
+            },
+            "Gender":{
+              "type": {
+                 "base":"string",
+                 "allowedValues": ["male","female","other"]
+              }
+            },
+            "IsInGroup":{
+              "type":"boolean"
+            },
+            "NumberOfSiblings":{
+              "type":"number"
+            },
+            "SiblingNames":{
+              "type": {
+                "name": "array", 
+                "ofType": {
+                  "base": "string",
+                  "allowedValues": ["abe","mark","jon"] 
+                }
              }
+            },
+            "Identities":{
+              "type": {
+                "name": "array", 
+                "ofType": {
+                  "base": "number",
+                  "allowedValues": [] 
+                }
+             }
+            }
         }
     },
     "valueType": "object",
-    "enabled": true,
     "dependencies": []
 }

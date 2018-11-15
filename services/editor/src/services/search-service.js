@@ -1,7 +1,25 @@
 /* global fetch */
-
+import * as R from 'ramda';
 import fetch from '../utils/fetch';
 let maxResults;
+let showInternalKeys;
+
+export const filterInternalKeys = async list =>
+  list && !await shouldShowInternalKeys()
+    ? R.filter(x => !/^@tweek\//.test(x.key_path), list)
+    : list;
+
+const shouldShowInternalKeys = async () => {
+  if (showInternalKeys === undefined) {
+    try {
+      const response = await fetch('/api/editor-configuration/show_internal_keys');
+      showInternalKeys = await response.json();
+    } catch (err) {
+      console.error("unable to get 'show_internal_keys' configuration", err);
+    }
+  }
+  return showInternalKeys;
+};
 
 const createSearchFunction = endpoint =>
   async function suggestions(query) {
@@ -25,6 +43,8 @@ const createSearchFunction = endpoint =>
     return await response.json();
   };
 
-export const getSuggestions = createSearchFunction('suggestions');
+const suggestionFn = createSearchFunction('suggestions');
+
+export const getSuggestions = async query => filterInternalKeys(await suggestionFn(query));
 
 export const search = createSearchFunction('search');

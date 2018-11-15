@@ -1,48 +1,66 @@
 /* global describe, before, after, it, browser */
 
 import { expect } from 'chai';
-import KeysPage from '../../utils/KeysPage';
+import Key from '../../utils/Key';
+import { dataComp, nthSelector } from '../../utils/selector-utils';
+import { login } from '../../utils/auth-utils';
+
+const revisionHistory = dataComp('revision-history');
+const revision = `${revisionHistory} option`;
 
 describe('revision history', () => {
-  const keyName = '@behavior_tests/@revision_history/key';
-  const revisionHistorySelector = '[data-comp= revision-history]';
-  const valueSelector = '[data-comp= ConstEditor] input';
+  const keyName = 'behavior_tests/revision_history';
 
-  function changeValue(count) {
-    const currentCommitSelector = `${revisionHistorySelector} option:nth-of-type(1)`;
-    let prevCommit = browser.getValue(currentCommitSelector);
-    let history = [{ commit: prevCommit, value: browser.getValue(valueSelector) }];
+  const changeValue = count => {
+    const currentCommit = nthSelector(1, revision);
+
+    let prevCommit;
+    const history = [];
+
+    const noChangesAttribute = browser.getAttribute(revisionHistory, 'data-no-changes');
+    if (noChangesAttribute !== 'true') {
+      prevCommit = browser.getValue(currentCommit);
+      let options = browser.getValue(revision);
+      if (!Array.isArray(options)) {
+        options = [options];
+      }
+      const commits = options.map(commit => ({ commit }));
+      commits.reverse();
+      history.push(...commits);
+    }
+
     for (let i = 0; i < count; i++) {
       const value = `value ${i}`;
-      browser.setValue(valueSelector, value);
-      KeysPage.commitChanges();
+      Key.setDefaultValue(value).commitChanges();
 
-      let commit = undefined;
+      let commit = null;
       browser.waitUntil(() => {
-        commit = browser.getValue(currentCommitSelector);
+        commit = browser.getValue(currentCommit);
         return prevCommit !== commit;
       }, 1000);
       prevCommit = commit;
-      history = [{ commit, value }, ...history];
+
+      history.push({ commit, value });
     }
+    history.reverse();
     return history;
-  }
+  };
+
+  before(() => login());
 
   it('should display revision history', () => {
-    KeysPage.goToKey(keyName);
-    browser.waitForVisible(revisionHistorySelector, 1000);
+    Key.open(keyName);
+    browser.waitForVisible(revisionHistory, 1000);
 
     const changeCount = 4;
     const history = changeValue(changeCount);
 
-    const values = browser.getValue(`${revisionHistorySelector} option`);
-    expect(values).to.have.lengthOf(history.length);
+    const values = browser.getValue(revision);
+    expect(values).to.deep.equal(history.map(x => x.commit));
 
-    const revisionHistorySelect = browser.element(revisionHistorySelector);
+    const revisionHistorySelect = browser.element(revisionHistory);
     revisionHistorySelect.selectByValue(history[2].commit);
 
-    browser.waitForVisible(valueSelector, 1000);
-    const keyValue = browser.getValue(valueSelector);
-    expect(keyValue).to.equal(history[2].value);
+    expect(Key.defaultValue).to.equal(history[2].value);
   });
 });

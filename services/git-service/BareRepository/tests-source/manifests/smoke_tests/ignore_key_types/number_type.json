@@ -1,0 +1,14 @@
+{
+  "key_path": "smoke_tests/ignore_key_types/number_type",
+  "meta": {
+    "description": "",
+    "readOnly": false,
+    "archived": false
+  },
+  "implementation": {
+    "type": "const",
+    "value": 15
+  },
+  "valueType": "number",
+  "dependencies": []
+}

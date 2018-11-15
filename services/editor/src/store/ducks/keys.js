@@ -1,19 +1,11 @@
 import { handleActions } from 'redux-actions';
-import R from 'ramda';
-import { push } from 'react-router-redux';
+import * as R from 'ramda';
 import fetch from '../../utils/fetch';
 import { showError } from './notifications';
 
 const KEYS_UPDATED = 'KEYS_UPDATED';
-const KEY_ADDING = 'KEY_ADDING';
 const KEY_ADDED = 'KEY_ADDED';
 const KEY_REMOVED = 'KEY_REMOVED';
-
-export const addKey = key =>
-  async function (dispatch) {
-    dispatch(push('/keys/_blank'));
-    dispatch({ type: KEY_ADDING, payload: key });
-  };
 
 export function addKeyToList(key) {
   return { type: KEY_ADDED, payload: key };
@@ -28,7 +20,7 @@ export function getKeys() {
     try {
       const result = await await fetch('/api/manifests');
       const manifests = await result.json();
-      const payload = manifests.filter(m => !m.meta.archived).map(x => x.key_path);
+      const payload = R.indexBy(R.prop('key_path'), manifests);
       dispatch({ type: KEYS_UPDATED, payload });
     } catch (error) {
       dispatch(showError({ title: 'Failed to retrieve keys!', error }));
@@ -38,12 +30,9 @@ export function getKeys() {
 
 export default handleActions(
   {
-    [KEYS_UPDATED]: (state, action) => R.uniq(action.payload),
-    [KEY_ADDED]: (state, action) => R.uniq([...state, action.payload]),
-    [KEY_REMOVED]: (state, action) => {
-      const deletedKeyIndex = state.indexOf(action.payload);
-      return deletedKeyIndex < 0 ? state : R.remove(deletedKeyIndex, 1, state);
-    },
+    [KEYS_UPDATED]: (state, { payload }) => payload,
+    [KEY_ADDED]: (state, { payload }) => R.assoc(payload['key_path'], payload, state),
+    [KEY_REMOVED]: (state, { payload }) => R.dissoc(payload, state),
   },
   [],
 );

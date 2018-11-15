@@ -1,5 +1,6 @@
-import R from 'ramda';
+import * as R from 'ramda';
 import { KEYS_IDENTITY } from '../../services/context-service';
+import { safeConvertValue } from '../../services/types-service';
 
 export function testAutoPartition(partition, rules, depth) {
   if (depth === 0) {
@@ -113,4 +114,12 @@ function calculateDependencies(rules, depth) {
 
 export function getDependencies(...args) {
   return R.uniq(calculateDependencies(...args)).filter(x => x.length > 0);
+}
+
+export function convertWeightedArgsToArray(data, valueType) {
+  if (Array.isArray(data)) return data;
+  return Object.entries(data).map(([value, weight]) => ({
+    value: safeConvertValue(value, valueType),
+    weight,
+  }));
 }

@@ -120,13 +120,17 @@
   padding: 4px;
   box-sizing: border-box;
 }
+.partitions-selector-container .partition-tags-wrapper .tags-container > div,
+.partitions-selector-container .partition-tags-wrapper .tags-container .ReactTags__tagInputField {
+  min-height: 20px;
+}
 .partitions-selector-container .partition-tags-wrapper .tags-container:before {
   content: '';
   margin: 0;
 }
 .partitions-selector-container .partition-tags-wrapper .tags-container .tag {
   padding: 2px 3px 2px 3px;
-  margin: 0 5px 0 0;
+  margin: 3px 5px 0 0;
 }
 .partitions-selector-container .partition-tags-wrapper .tags-container .tag-input {
   display: inline-block;

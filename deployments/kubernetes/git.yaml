@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: tweek
+  name: git
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: git
+    spec:
+      containers:
+      - name: tweek-bare-repo
+        image: soluto/tweek-bare-repo
+        ports:
+        - containerPort: 22
+        env:
+        - name: PUBLIC_KEY_PATH
+          value: /run/secrets/tweek-secrets/tweek_ssh_public_key
+        volumeMounts:
+        - name: tweek-secrets
+          mountPath: /run/secrets/tweek-secrets
+      volumes:
+        - name: tweek-secrets
+          secret:
+            secretName: tweek-secrets
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: tweek
+  name: git
+spec:
+  selector:
+    app: git
+  ports:
+    - protocol: TCP
+      port: 22
+      targetPort: 22

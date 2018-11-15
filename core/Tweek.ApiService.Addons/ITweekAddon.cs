@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using Microsoft.Extensions.Logging;
+using Tweek.Engine.Drivers.Context;
 
 namespace Tweek.ApiService.Addons
 {

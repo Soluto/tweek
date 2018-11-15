@@ -12,7 +12,7 @@ class SearchBox extends Component {
     super(props);
 
     this.state = {
-      identityName: '',
+      identityType: '',
       identityId: '',
       inputValue: '',
       identities: [],
@@ -29,31 +29,31 @@ class SearchBox extends Component {
   }
 
   onIdentityChange = (inputValue, selected) => {
-    const identityName = selected ? selected.value : inputValue;
-    this.setState({ inputValue, identityName });
-  }
+    const identityType = selected ? selected.value : inputValue;
+    this.setState({ inputValue, identityType });
+  };
 
   onIdentityIdChange = (identityId) => {
     this.setState({ identityId });
-  }
+  };
 
   onGetClick = () => {
     this.props.openContext({
-      identityName: this.state.identityName,
+      identityType: this.state.identityType,
       identityId: this.state.identityId,
     });
-  }
+  };
 
   render() {
-    const { inputValue, identityName, identities, identityId } = this.state;
-    const identityText = identityName || 'identity';
+    const { inputValue, identityType, identities, identityId } = this.state;
+    const identityText = identityType || 'identity';
 
     return (
-      <div className={'context-search-container'}>
-
-        <div className={'context-type-container'}>
+      <div className="context-search-container" data-comp="search-identity">
+        <div className="identity-type-container">
           <ComboBox
-            className={'context-type'}
+            data-field="identity-type"
+            className="identity-type"
             placeholder="Enter Identity Type"
             value={inputValue}
             suggestions={identities}
@@ -61,8 +61,9 @@ class SearchBox extends Component {
           />
         </div>
 
-        <div className={'context-id-container'}>
+        <div className="identity-id-container">
           <Input
+            data-field="identity-id"
             placeholder={`Enter ${changeCase.pascalCase(identityText)} Id`}
             onEnterKeyPress={this.onGetClick}
             onChange={this.onIdentityIdChange}
@@ -70,11 +71,12 @@ class SearchBox extends Component {
           />
         </div>
 
-        <div className={'search-button-container'}>
+        <div className="search-button-container">
           <button
-            className={'search-button'}
+            data-comp="search"
+            className="search-button"
             onClick={this.onGetClick}
-            disabled={!identityName || !identityId}
+            disabled={!identityType || !identityId}
           />
         </div>
       </div>
@@ -82,4 +84,4 @@ class SearchBox extends Component {
   }
 }
 
-export default connect(state => state, { openContext })(SearchBox);
+export default connect(() => ({}), { openContext })(SearchBox);

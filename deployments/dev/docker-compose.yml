@@ -1,21 +1,11 @@
-version: '3.1'
+version: '3.4'
 
 services:
-  management:
-    image: soluto/tweek-management
-    build: ../../services/management
-    environment:
-      - VALIDATION_URL=http://api/validation
-
   api:
     image: soluto/tweek-api
     build:
       context: ../../
       dockerfile: TweekApiDockerfile
-    depends_on:
-      - management
-    environment:
-      - Rules__Management__Url=http://management:3000
 
   authoring:
     image: soluto/tweek-authoring
@@ -27,6 +17,8 @@ services:
     depends_on: 
       - api
       - authoring
-    environment:
-      - TWEEK_API_HOSTNAME=http://api
-      - AUTHORING_API_HOSTNAME=http://authoring:3000
+  
+  publishing:
+    image: soluto/tweek-publishing
+    build: ../../services/publishing
+

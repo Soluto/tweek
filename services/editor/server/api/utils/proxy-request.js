@@ -3,7 +3,6 @@ import { getAuthor } from './author';
 
 export default function (proxyUrl) {
   return async function (req, res) {
-    console.log("proxying request");
     const client = await authenticatedClient({ baseURL: `${proxyUrl}/api` });
 
     const config = {
@@ -13,8 +12,6 @@ export default function (proxyUrl) {
       data: req.body,
       validateStatus: () => true,
     };
-
-    console.log(config);
 
     const result = await client.request(config);
 

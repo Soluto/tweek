@@ -4,8 +4,11 @@
    - api (rest api for getting configurations and updating context)
    - authoring (rest api for reading and editing keys definitions/manifests)
    - editor (admin ui for editing rules and managing Tweek)
-   - management ("CI" and serving layer for new rules)
+   - publishing ("CI" and publishing bundles)
+- dependencies
    - git-service (stand-alone git rules repository for bootstrap, dev & testing)
+   - minio (object storage) - rules storage
+   - redis/couchbase/mongo - context database
 - deployments
    - dev (docker compose files for devlopment)
 - core
@@ -38,10 +41,11 @@
 
 All tweek microservices should be run on ports 4001-4004:  
 4001 - Git server (ssh)  
-4002 - Management (http)  
 4003 - Api (http)  
 4004 - Editor (http)  
 4005 - Authoring (http)
+4009 - Publishing (ssh)  
+4010 - Publishing (http)  
 
 ## Debugging Tweek api
 
@@ -120,12 +124,12 @@ mac: find . -wholename '*.Tests.csproj' -print0 | xargs -0 -n 1 dotnet test (onl
    ```
 - to rebuild editor and then run tests:
    ```
-   npm run test:full-env:rebuild
+   npm run test:full-env:build
    ```
 - our e2e tests are using selenium. If you don't have it installed, and you don't want to install it, you can just run the tests in docker. To do so replace `full-env` with `docker`:
    ```
    npm run test:docker
-   npm run test:docker:rebuild
+   npm run test:docker:build
    ```
 
 ## TEARDOWN

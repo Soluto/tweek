@@ -5,16 +5,18 @@ const chance = new Chance();
 const ADD_ALERT = 'ADD_ALERT';
 const REMOVE_ALERT = 'REMOVE_ALERT';
 
-const buttons = {
+export const buttons = {
   OK: {
     text: 'OK',
     value: true,
     className: 'rodal-confirm-btn',
+    'data-alert-button': 'ok',
   },
   CANCEL: {
     text: 'Cancel',
     value: false,
     className: 'rodal-cancel-btn',
+    'data-alert-button': 'cancel',
   },
 };
 
@@ -23,8 +25,8 @@ export function showCustomAlert({ buttons, ...alertProps }) {
     dispatch(
       new Promise((resolve) => {
         const id = chance.guid();
-        const onClose = (result) => {
-          resolve({ type: REMOVE_ALERT, id, result });
+        const onClose = (result, data) => {
+          resolve({ type: REMOVE_ALERT, id, result, data });
         };
 
         const alert = {
@@ -33,7 +35,7 @@ export function showCustomAlert({ buttons, ...alertProps }) {
           onClose: () => onClose(),
           buttons: buttons.map(({ value, ...props }) => ({
             ...props,
-            onClick: () => onClose(value),
+            onClick: data => onClose(value, data),
           })),
         };
         dispatch({ type: ADD_ALERT, alert });

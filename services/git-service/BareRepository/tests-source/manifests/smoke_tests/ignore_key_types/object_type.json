@@ -1,0 +1,16 @@
+{
+  "key_path": "smoke_tests/ignore_key_types/object_type",
+  "meta": {
+    "description": "",
+    "readOnly": false,
+    "archived": false
+  },
+  "implementation": {
+    "type": "const",
+    "value": {
+      "key": "value"
+    }
+  },
+  "valueType": "object",
+  "dependencies": []
+}

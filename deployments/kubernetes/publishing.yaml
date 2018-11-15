@@ -1,0 +1,57 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: tweek
+  name: publishing
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: publishing
+    spec:
+      containers:
+      - name: publishing
+        image: soluto/tweek-publishing
+        ports:
+        - containerPort: 22
+        - containerPort: 80
+        env:
+        - name: GIT_PUBLIC_KEY_PATH
+          value: /run/secrets/tweek-secrets/tweek_ssh_public_key
+        - name: GIT_SERVER_PRIVATE_KEY_PATH
+          value: /run/secrets/tweek-secrets/tweek_ssh_private_key
+        - name: GIT_UPSTREAM_URI
+          value: ssh://git@git/tweek/repo
+        - name: MINIO__Endpoint
+          value: minio:9000
+        - name: MINIO__AccessKey
+          value: AKIAIOSFODNN7EXAMPLE
+        - name: MINIO__SecretKeyPath
+          value: /run/secrets/tweek-secrets/minio_secret_key
+        - name: NATS__Endpoint
+          value: nats://nats:4222
+        volumeMounts:
+        - name: tweek-secrets
+          mountPath: /run/secrets/tweek-secrets
+      volumes:
+        - name: tweek-secrets
+          secret:
+            secretName: tweek-secrets
+            defaultMode: 0600
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: tweek
+  name: publishing
+spec:
+  selector:
+    app: publishing
+  ports:
+    - name: ssh
+      port: 22
+      targetPort: 22
+    - name: control
+      port: 80
+      targetPort: 80

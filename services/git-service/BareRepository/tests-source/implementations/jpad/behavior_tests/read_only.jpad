@@ -1,0 +1,11 @@
+{
+    "partitions": [],
+    "valueType": "string",
+    "rules": [
+        {
+            "Matcher": {},
+            "Value": "",
+            "Type": "SingleVariant"
+        }
+    ]
+}

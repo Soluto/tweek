@@ -1,31 +1,31 @@
 # ---- *.csproj FILES ----
-FROM microsoft/aspnetcore-build:1.1.2 as csproj-files
+FROM debian:stretch-slim as csproj-files
 COPY . /src
-RUN find /src -type f -not -name "*.csproj" -delete
-
-# ---- WARM UP NUGET ----
-FROM microsoft/aspnetcore-build:1.1.2 as nuget-cache
-COPY --from=csproj-files /src /src
-COPY ./Tweek.sln /src
-RUN dotnet restore ./src/Tweek.sln
+RUN find /src -type f -not -name "*.csproj" -delete && find /src -type d -empty -delete
 
 # ---- BUILD & TEST ----
-FROM nuget-cache as source
-COPY . /src
-ARG VERSION_SUFFIX
-ENV VERSION_SUFFIX ${VERSION_SUFFIX:-dev}
+FROM microsoft/dotnet:2.1-sdk as source
+ARG target="Release"
 WORKDIR /src
-
+COPY --from=csproj-files /src .
+COPY ./Tweek.sln .
 RUN dotnet restore ./Tweek.sln
-RUN dotnet build Tweek.sln -c Release --version-suffix "$VERSION_SUFFIX"
-RUN find . -regex '.*\.\(Unit\|Integration\|\)Tests\.csproj' -print0 | xargs -0 -n 1 -P 16 dotnet test -c=Release --no-build
-RUN dotnet publish ./services/api/Tweek.ApiService.NetCore/Tweek.ApiService.NetCore.csproj  -c Release -o ./obj/Docker/publish --version-suffix "$VERSION_SUFFIX"
+
+COPY . .
+RUN dotnet build Tweek.sln -c $target && \
+    find . -regex '.*\.Tests\.csproj' -print0 | xargs -0 -n 1 -P 16 dotnet test -c $target --no-build && \
+    dotnet publish ./services/api/Tweek.ApiService/Tweek.ApiService.csproj -c $target -o ./obj/Docker/publish
 
 # ---- RELEASE ----
-FROM microsoft/aspnetcore:1.1.2 as release
+FROM microsoft/dotnet:2.1-aspnetcore-runtime as release
+ARG target="Release"
 WORKDIR /app
 EXPOSE 80
-COPY --from=source /src/services/api/Tweek.ApiService.NetCore/obj/Docker/publish .
+
+### ---- DEBUG ----
+ RUN if [ $target = "Debug" ]; then apt-get update && apt-get install unzip && rm -rf /var/lib/apt/lists/* && curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg; fi
+
+COPY --from=source /src/services/api/Tweek.ApiService/obj/Docker/publish .
 HEALTHCHECK --interval=15s --timeout=15s --retries=8 \
       CMD curl -f http://localhost/health || exit 1
-ENTRYPOINT ["dotnet", "Tweek.ApiService.NetCore.dll"]
+ENTRYPOINT ["dotnet", "Tweek.ApiService.dll"]

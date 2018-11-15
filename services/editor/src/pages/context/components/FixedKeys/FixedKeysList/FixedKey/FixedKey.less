@@ -38,24 +38,14 @@
 
     &.removed {
       text-decoration: line-through;
-    }
 
-    .value-input {
-      &.has-changes {
-        color: green;
-        .bootstrap-typeahead-input-container {
-          color: green;
-        }
+      input {
+        text-decoration: line-through;
       }
-    }
 
-    .initial-value {
-      .metro-textbox;
-      opacity: 0.5;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      border-color: transparent;
+      .object-type-expander {
+        display: none;
+      }
     }
   }
 }

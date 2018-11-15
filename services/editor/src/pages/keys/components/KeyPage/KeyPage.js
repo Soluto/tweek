@@ -1,39 +1,65 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, lifecycle } from 'recompose';
-import R from 'ramda';
+import querystring from 'query-string';
 import * as selectedKeyActions from '../../../../store/ducks/selectedKey';
 import * as alertActions from '../../../../store/ducks/alerts';
 import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefinition';
 import routeLeaveHook from '../../../../hoc/route-leave-hook';
+import hasUnsavedChanges from '../utils/hasUnsavedChanges';
 import MessageKeyPage from './MessageKeyPage/MessageKeyPage';
 import KeyEditPage from './KeyEditPage/KeyEditPage';
+import KeyAddPage from './KeyAddPage/KeyAddPage';
 import './KeyPage.css';
 
-const onRouteLeaveConfirmFunc = (props) => {
-  if (!props.selectedKey || props.selectedKey.isSaving) return false;
+const KeyPage = ({
+  showCustomAlert,
+  showAlert,
+  showConfirm,
+  configKey,
+  detailsAdded,
+  ...props
+}) => {
+  const { selectedKey } = props;
+  const alerter = {
+    showCustomAlert,
+    showAlert,
+    showConfirm,
+  };
+  if (!selectedKey || !selectedKey.isLoaded) {
+    return <MessageKeyPage data-comp="loading-key" message="Loading..." />;
+  }
 
-  const { local, remote } = props.selectedKey;
-  return !R.equals(local, remote);
+  if (configKey === BLANK_KEY_NAME && !detailsAdded) {
+    return <KeyAddPage />;
+  }
+
+  const { implementation } = selectedKey.local;
+  return !implementation ? (
+    <MessageKeyPage data-comp="key-not-found" message="Non-existent key" />
+  ) : (
+    <KeyEditPage {...props} alerter={alerter} />
+  );
 };
 
-const KeyPage = compose(
-  connect(
-    (state, { match, location }) => {
-      const configKey = location.pathname.substring(
-        match.path.endsWith('/') ? match.path.length : match.path.length + 1,
-      );
-      return {
-        selectedKey: state.selectedKey,
-        configKey,
-        isInAddMode: configKey === BLANK_KEY_NAME,
-        revision: location.query && location.query.revision,
-      };
-    },
-    { ...selectedKeyActions, ...alertActions },
-  ),
+const mapStateToProps = (state, { match, location }) => {
+  const configKey = location.pathname.substring(
+    match.path.endsWith('/') ? match.path.length : match.path.length + 1,
+  );
+  const query = location.search && querystring.parse(location.search);
+
+  return {
+    selectedKey: state.selectedKey,
+    configKey,
+    revision: query.revision,
+    detailsAdded: state.selectedKey && state.selectedKey.detailsAdded,
+  };
+};
+
+const enhance = compose(
+  connect(mapStateToProps, { ...selectedKeyActions, ...alertActions }),
   routeLeaveHook(
-    onRouteLeaveConfirmFunc,
+    hasUnsavedChanges,
     'You have unsaved changes, are you sure you want to leave this page?',
     { className: 'key-page-wrapper' },
   ),
@@ -46,7 +72,10 @@ const KeyPage = compose(
     },
     componentWillReceiveProps({ configKey, revision }) {
       const { openKey } = this.props;
-      if (configKey !== this.props.configKey || revision !== this.props.revision) {
+      if (
+        configKey !== BLANK_KEY_NAME &&
+        (configKey !== this.props.configKey || revision !== this.props.revision)
+      ) {
         openKey(configKey, { revision });
       }
     },
@@ -54,23 +83,8 @@ const KeyPage = compose(
       this.props.closeKey();
     },
   }),
-)(({ showCustomAlert, showAlert, showConfirm, ...props }) => {
-  const { selectedKey } = props;
-  const alerter = {
-    showCustomAlert,
-    showAlert,
-    showConfirm,
-  };
-  if (!selectedKey || !selectedKey.isLoaded) {
-    return <MessageKeyPage message="Loading..." />;
-  }
-
-  const { keyDef } = selectedKey.local;
-  return !keyDef
-    ? <MessageKeyPage message="None existent key" />
-    : <KeyEditPage {...props} alerter={alerter} />;
-});
+);
 
 KeyPage.displayName = 'KeyPage';
 
-export default KeyPage;
+export default enhance(KeyPage);

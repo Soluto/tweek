@@ -1,0 +1,337 @@
+.keypath-input-wrapper {
+  width: 100%;
+  display: flex;
+}
+.keypath-input-wrapper .override-typeahead .override-input {
+  flex-grow: 1;
+}
+.keypath-input-wrapper .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+  display: inline-block;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  min-height: 28px;
+  width: 150px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 15px;
+  font-weight: 500;
+  color: #515C66;
+  outline: none;
+  box-sizing: border-box;
+  align-self: flex-start;
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+}
+.keypath-input-wrapper .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.keypath-input-wrapper .override-typeahead .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+  border-color: #bcbcbc;
+}
+.keypath-input-wrapper .override-typeahead .override-dropdown .dropdown-menu {
+  position: absolute;
+  max-height: 350px;
+  min-width: 100%;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.keypath-input-wrapper .override-typeahead .override-dropdown .dropdown-menu li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.keypath-input-wrapper .override-typeahead .override-dropdown .dropdown-menu li:last-child {
+  border-bottom-width: 1px;
+}
+.keypath-input-wrapper .override-typeahead .override-dropdown .dropdown-menu li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.keypath-input-wrapper .override-typeahead .override-dropdown .dropdown-menu li:active {
+  background-color: #d1d1d1;
+}
+.keypath-input-wrapper .override-typeahead .override-dropdown .dropdown-menu li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.keypath-input-wrapper .override-typeahead .override-dropdown .dropdown-menu li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.keypath-input-wrapper .override-typeahead .override-dropdown .dropdown-menu .disabled {
+  display: none;
+}
+.keypath-input-wrapper .override-typeahead .override-dropdown .dropdown-menu .active {
+  background-color: #dfdfdf;
+}
+.keypath-input-wrapper .override-typeahead .bootstrap-typeahead {
+  flex-grow: 1;
+}
+.keypath-input-wrapper .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+  display: inline-block;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  min-height: 28px;
+  width: 150px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 15px;
+  font-weight: 500;
+  color: #515C66;
+  outline: none;
+  box-sizing: border-box;
+  align-self: flex-start;
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+}
+.keypath-input-wrapper .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.keypath-input-wrapper .override-typeahead .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+  border-color: #bcbcbc;
+}
+.keypath-input-wrapper .override-typeahead .bootstrap-typeahead .dropdown-menu {
+  position: absolute;
+  max-height: 350px;
+  min-width: 100%;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.keypath-input-wrapper .override-typeahead .bootstrap-typeahead .dropdown-menu li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.keypath-input-wrapper .override-typeahead .bootstrap-typeahead .dropdown-menu li:last-child {
+  border-bottom-width: 1px;
+}
+.keypath-input-wrapper .override-typeahead .bootstrap-typeahead .dropdown-menu li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.keypath-input-wrapper .override-typeahead .bootstrap-typeahead .dropdown-menu li:active {
+  background-color: #d1d1d1;
+}
+.keypath-input-wrapper .override-typeahead .bootstrap-typeahead .dropdown-menu li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.keypath-input-wrapper .override-typeahead .bootstrap-typeahead .dropdown-menu li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.keypath-input-wrapper .override-typeahead .bootstrap-typeahead .dropdown-menu .disabled {
+  display: none;
+}
+.keypath-input-wrapper .override-typeahead .bootstrap-typeahead .dropdown-menu .active {
+  background-color: #dfdfdf;
+}
+.keypath-input-wrapper .override-input {
+  flex-grow: 1;
+}
+.keypath-input-wrapper .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+  display: inline-block;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  min-height: 28px;
+  width: 150px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 15px;
+  font-weight: 500;
+  color: #515C66;
+  outline: none;
+  box-sizing: border-box;
+  align-self: flex-start;
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+}
+.keypath-input-wrapper .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.keypath-input-wrapper .override-input .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+  border-color: #bcbcbc;
+}
+.keypath-input-wrapper .override-dropdown .dropdown-menu {
+  position: absolute;
+  max-height: 350px;
+  min-width: 100%;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.keypath-input-wrapper .override-dropdown .dropdown-menu li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.keypath-input-wrapper .override-dropdown .dropdown-menu li:last-child {
+  border-bottom-width: 1px;
+}
+.keypath-input-wrapper .override-dropdown .dropdown-menu li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.keypath-input-wrapper .override-dropdown .dropdown-menu li:active {
+  background-color: #d1d1d1;
+}
+.keypath-input-wrapper .override-dropdown .dropdown-menu li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.keypath-input-wrapper .override-dropdown .dropdown-menu li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.keypath-input-wrapper .override-dropdown .dropdown-menu .disabled {
+  display: none;
+}
+.keypath-input-wrapper .override-dropdown .dropdown-menu .active {
+  background-color: #dfdfdf;
+}
+.keypath-input-wrapper .bootstrap-typeahead {
+  flex-grow: 1;
+}
+.keypath-input-wrapper .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input {
+  display: inline-block;
+  border: 0 none;
+  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
+  min-height: 28px;
+  width: 150px;
+  padding: 0 4px;
+  background-color: transparent;
+  font-size: 15px;
+  font-weight: 500;
+  color: #515C66;
+  outline: none;
+  box-sizing: border-box;
+  align-self: flex-start;
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+}
+.keypath-input-wrapper .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:focus {
+  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+}
+.keypath-input-wrapper .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input:disabled {
+  border-color: #bcbcbc;
+}
+.keypath-input-wrapper .bootstrap-typeahead .dropdown-menu {
+  position: absolute;
+  max-height: 350px;
+  min-width: 100%;
+  overflow-y: auto;
+  width: auto;
+  z-index: 5;
+}
+.keypath-input-wrapper .bootstrap-typeahead .dropdown-menu li {
+  background-color: #f4f4f4;
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom-width: 0;
+  overflow-x: hidden;
+  transition: all 0.2s ease-in-out;
+}
+.keypath-input-wrapper .bootstrap-typeahead .dropdown-menu li:last-child {
+  border-bottom-width: 1px;
+}
+.keypath-input-wrapper .bootstrap-typeahead .dropdown-menu li:hover {
+  cursor: pointer;
+  background-color: #dfdfdf;
+}
+.keypath-input-wrapper .bootstrap-typeahead .dropdown-menu li:active {
+  background-color: #d1d1d1;
+}
+.keypath-input-wrapper .bootstrap-typeahead .dropdown-menu li a {
+  text-decoration: none;
+  color: gray;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+.keypath-input-wrapper .bootstrap-typeahead .dropdown-menu li a:first-child {
+  padding: 10px;
+  padding-right: 30px;
+}
+.keypath-input-wrapper .bootstrap-typeahead .dropdown-menu .disabled {
+  display: none;
+}
+.keypath-input-wrapper .bootstrap-typeahead .dropdown-menu .active {
+  background-color: #dfdfdf;
+}
+.keypath-input-wrapper .keypath-input-container {
+  width: 100%;
+  display: flex;
+}
+.keypath-input-wrapper .keypath-input-container .bootstrap-typeahead-input {
+  padding-left: 10px;
+  font-size: 15px;
+  height: auto;
+}
+.keypath-input-wrapper .keypath-input-container[data-with-error="true"] .bootstrap-typeahead-input {
+  padding-left: 30px;
+  font-size: 15px;
+  height: auto;
+}
+.keypath-input-wrapper .keypath-input-container .validation-icon-wrapper {
+  flex-direction: row;
+  width: 0;
+  margin: 11px 0 0 0;
+  position: absolute;
+  z-index: 7;
+  transition: all 0.2s ease-in-out;
+}
+.keypath-input-wrapper .keypath-input-container .validation-icon-wrapper[data-is-shown="true"] {
+  width: 16px;
+  height: 16px;
+  margin-top: 0px;
+  padding: 0px 5px 3px 5px;
+}
+.keypath-input-wrapper .combo-box-default-wrapper-theme-class {
+  display: flex;
+  flex-grow: 1;
+  align-content: space-between;
+}

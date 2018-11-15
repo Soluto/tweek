@@ -1,18 +1,29 @@
-.context-details-container {
+@import (reference) "../../../../styles/core/core.less";
+
+.identity-details-container {
   min-width: 900px;
 
-  .context-title {
-    display: flex;
-    flex-direction: column;
+  .identity-title {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "identity-id save-changes"
+      "identity-type save-changes";
 
-    .context-id {
+    .identity-id {
+      grid-area: identity-id;
       font-size: 22px;
       color: #515c66;
     }
-    .context-type {
+    .identity-type {
+      grid-area: identity-type;
       margin-top: 10px;
       color: #a5a5a5;
       font-size: 14px;
+    }
+    .save-button {
+      grid-area: save-changes;
+      align-self: center;
     }
   }
 
@@ -22,5 +33,29 @@
     padding: 15px;
     box-sizing: border-box;
     margin-top: 16px;
+
+    .value-input {
+      &.has-changes {
+        color: green;
+        .bootstrap-typeahead-input-container {
+          color: green;
+        }
+      }
+    }
+
+    .initial-value {
+      .metro-textbox;
+      width: 300px;
+      height: auto;
+      align-self: center;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      opacity: 0.5;
+      padding: 0;
+      border: none;
+    }
   }
 }

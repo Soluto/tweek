@@ -11,7 +11,6 @@
 .custom-slider-container .legend-item {
   display: flex;
   padding-left: 3px;
-  height: 20px;
 }
 .custom-slider-container .delete-legend-button {
   vertical-align: top;
@@ -41,6 +40,7 @@
   background-color: #bcbcbc;
   font-size: 12px;
   padding-top: 1px;
+  align-self: center;
 }
 .custom-slider-container .delete-legend-button:hover {
   background-color: #029CD5;
@@ -65,78 +65,36 @@
   content: '\E900';
 }
 .custom-slider-container .legend-input {
-  display: inline-block;
-  border: 0 none;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  height: 28px;
-  width: 150px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
   height: 16px;
   font-size: 12px;
   margin-left: 4px;
 }
-.custom-slider-container .legend-input:focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.custom-slider-container .legend-input:disabled {
-  border-color: #bcbcbc;
-}
 .custom-slider-container .legend-value-input {
-  display: inline-block;
-  border: 0 none;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  height: 28px;
-  width: 150px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
   height: 16px;
   font-size: 12px;
   margin-left: 4px;
   width: 120px;
-}
-.custom-slider-container .legend-value-input:focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
-}
-.custom-slider-container .legend-value-input:disabled {
-  border-color: #bcbcbc;
+  vertical-align: top;
 }
 .custom-slider-container .legend-percent-input {
-  display: inline-block;
-  border: 0 none;
-  border-bottom: 1px solid rgba(0, 122, 204, 0.5);
-  height: 28px;
-  width: 150px;
-  padding: 0 4px;
-  background-color: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: #515C66;
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease-in-out;
   height: 16px;
   font-size: 12px;
   margin-left: 4px;
   width: 30px;
 }
-.custom-slider-container .legend-percent-input:focus {
-  border-bottom: 2px solid rgba(0, 122, 204, 0.8);
+.custom-slider-container .tags-container {
+  padding: 0px;
+  vertical-align: top;
+  max-width: 150px;
 }
-.custom-slider-container .legend-percent-input:disabled {
-  border-color: #bcbcbc;
+.custom-slider-container .tag {
+  padding: 0px 0px 0px 2px !important;
+  max-height: 14px;
+  min-height: 14px !important;
+}
+.custom-slider-container .property-value-tags-wrapper {
+  max-height: 16px;
+  display: inline-table;
 }
 .custom-slider-container .add-variant-button {
   vertical-align: top;
@@ -245,6 +203,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .vertical-accent1 {
   background-color: #007acc;
@@ -253,6 +212,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .vertical-accent2 {
   background-color: rgba(0, 122, 204, 0.8);
@@ -261,6 +221,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .vertical-accent3 {
   background-color: rgba(0, 122, 204, 0.6);
@@ -269,6 +230,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .vertical-accent4 {
   background-color: rgba(0, 122, 204, 0.5);
@@ -277,6 +239,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .vertical-accent5 {
   background-color: rgba(0, 122, 204, 0.4);
@@ -285,6 +248,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .vertical-accent6 {
   background-color: rgba(0, 122, 204, 0.2);
@@ -293,6 +257,7 @@
   height: 16px;
   border-radius: 20%;
   margin-left: 5px;
+  align-self: center;
 }
 .custom-slider-container .horizontal-accent {
   height: 6px;

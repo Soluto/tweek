@@ -1,11 +1,15 @@
-FROM node:8.1.4
+FROM node:8.9.3
 
-ADD package.json yarn.lock /tmp/
-
-RUN cd /tmp && yarn install --production
-RUN mkdir -p /opt/app && cd /opt/app && ln -s /tmp/node_modules 
-
-ADD . /opt/app
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends jq && \
+    apt-get clean && \
+    wget https://raw.githubusercontent.com/vishnubob/wait-for-it/8ed92e8cab83cfed76ff012ed4a36cef74b28096/wait-for-it.sh && \
+    chmod +x wait-for-it.sh
 
 WORKDIR /opt/app
-CMD ["yarn", "test", "--", "--host", "selenium", "--port", "4444"]
+COPY package.json yarn.lock ./
+RUN yarn install --production
+
+COPY . ./
+
+CMD ["./test.sh"]
