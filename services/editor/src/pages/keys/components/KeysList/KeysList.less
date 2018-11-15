@@ -1,3 +1,4 @@
+@import (reference) "../../../../styles/core/icons.less";
 @import (reference) "../../../../styles/core/core.less";
 @sidebarBgColor: #414b53;
 
@@ -63,6 +64,7 @@
     .key-link {
       color: white;
       font-size: 14px;
+      margin-left: -6px;
       padding-top: 6px;
       display: block;
       height: 25px;
@@ -82,6 +84,61 @@
         background-color: #686e74;
       }
     }
+  }
+
+  .key-icon {
+    filter: grayscale(1) brightness(2);
+    margin-top: -7px;
+  }
+
+  .card-icon { 
+    margin: -5px;
+  }
+
+  .key-type {
+    display: inline-block;
+    width: 27px;
+    height: 27px;
+    background: rgba(215, 215, 215, 0) no-repeat center center;
+    background-size: cover;
+    &[data-value-type=archived] {
+      background-image: @archived_icon;
+    }
+    &[data-value-type=alias] {
+      background-image: @link_icon;
+    }
+    &[data-value-type=key] {
+      background-image: @key_icon;
+    }
+    &[data-value-type=boolean] {
+      background-image: @bool_icon;
+    }
+    &[data-value-type=string] {
+      background-image: @string_icon;
+      background-size: 50px;
+    }
+    &[data-value-type=version] {
+      background-image: @version_icon;
+    }
+    &[data-value-type=custom] {
+      background-image: @custom_icon;
+    }
+    &[data-value-type=array] {
+      background-image: @array_icon;
+      background-size: 70% 70%;
+    }
+    &[data-value-type=number] {
+      background-image: @number_icon;
+    }
+    &[data-value-type=date] {
+      background-image: @calendar_icon;
+      background-size: 40px;
+    }
+    &[data-value-type=object]{
+      background-image: @object_icon;
+      background-size: 55% 55%;
+    }
+    background-position: 45% 45%;
   }
 }
 
@@ -104,57 +161,6 @@
   max-width: 400px;
   min-width: 400px;
 }
-
-.key-folder {
-  width: 100%;
-  .key-folder-name {
-    font-size: 16px;
-    display: flex;
-    flex-grow: 1;
-    height: 30px;
-    padding-left: 5px;
-    padding-top: 13px;
-    color: #d8d8d8;
-    background-color: transparent;
-    .transitioned();
-    &:hover {
-      cursor: pointer;
-      background-color: #363a3e;
-    }
-    &:active {
-      background-color: #363a3e;
-    }
-  }
-  .number-of-folder-keys {
-    font-size: 11px;
-    display: flex;
-    margin-left: 5px;
-    margin-top: 5px;
-    opacity: 0.7;
-    &:hover {
-      cursor: pointer;
-    }
-  }
-  .key-folder-icon {
-    width: 16px;
-    margin-right: 5px;
-    margin-bottom: 10px;
-    .user-select(none);
-    display: inline-block;
-    &:hover {
-      cursor: pointer;
-    }
-  }
-  .folder-items {
-    display: flex;
-    flex-grow: 1;
-  }
-  .sub-tree {
-    display: flex;
-    flex-grow: 1;
-  }
-}
-
 
 .search-results{
   width: 100%;
