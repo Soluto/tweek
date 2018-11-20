@@ -64,3 +64,4 @@
 
 *.sh    text eol=lf
 services/authoring/ssh-helper   text eol=lf
+services/publishing/hooks/**   text eol=lf
