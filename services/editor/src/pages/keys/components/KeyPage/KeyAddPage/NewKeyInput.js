@@ -10,37 +10,42 @@ import keyNameValidations from './key-name-validations';
 import './NewKeyInput.css';
 
 const getKeyPrefix = path => R.slice(0, -1, path.split('/')).join('/');
-const getSugesstions = R.pipe(R.map(getKeyPrefix), R.uniq(), R.filter(x => x !== ''));
+const getSugesstions = R.pipe(
+  R.filter(key => !key.meta.archived),  
+  R.keys(),
+  R.map(getKeyPrefix), 
+  R.uniq(), 
+  R.filter(x => x !== '')
+  );
 
-function getKeyNameSuggestions(keysList) {
-  return getSugesstions(keysList).sort();
+function getKeyNameSuggestions(keys) {
+  return getSugesstions(keys).sort();
 }
 
 const NewKeyInput = compose(
-  connect(state => ({ keysList: state.keys })),
+  connect(state => ({ keys: state.keys })),
   mapPropsStream((prop$) => {
-    const keysList$ = prop$
-      .pluck('keysList')
-      .distinctUntilChanged()
-      .map(keysList => R.filter(key => !key.meta.archived, keysList))
-      .switchMap(SearchService.filterInternalKeys)
-      .map(dic => Object.keys(dic));
+    const keys$ = prop$
+      .pluck('keys')
+      .distinctUntilChanged()      
+      .switchMap(SearchService.filterInternalKeys)      
 
-    return Observable.combineLatest(prop$, keysList$, (props, keysList) => ({
+    return Observable.combineLatest(prop$, keys$, (props, keys) => ({
       ...props,
-      keysList,
+      keys,
+      keysNames: Object.keys(keys)
     }));
   }),
   lifecycle({
     componentWillMount() {
-      const { displayName, keysList, onChange } = this.props;
-      let validation = keyNameValidations(displayName, keysList);
+      const { displayName, keysNames, onChange } = this.props;
+      let validation = keyNameValidations(displayName, keysNames);
       validation.isShowingHint = false;
       onChange(displayName, validation);
     },
   }),
-)(({ keysList, validation: { isShowingHint = false, hint } = {}, onChange, displayName }) => {
-  const suggestions = getKeyNameSuggestions(keysList).map(x => ({ label: x, value: x }));
+)(({ keys, keysNames, validation: { isShowingHint = false, hint } = {}, onChange, displayName }) => {
+  const suggestions = getKeyNameSuggestions(keys).map(x => ({ label: x, value: x }));
   return (
     <div className="keypath-input-wrapper">
       <div
@@ -56,7 +61,7 @@ const NewKeyInput = compose(
           value={displayName}
           placeholder="Enter key full path"
           onChange={(text) => {
-            const validation = keyNameValidations(text, keysList);
+            const validation = keyNameValidations(text, keysNames);
             validation.isShowingHint = !validation.isValid;
             onChange(text, validation);
           }}
