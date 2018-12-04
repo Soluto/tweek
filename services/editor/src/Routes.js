@@ -9,6 +9,7 @@ import AzureLoggedInPage from './pages/login/components/AzureLoggedInPage';
 import BasicAuthLoggedInPage from './pages/login/components/BasicAuthLoggedInPage';
 import SilentLoggedInPage from './pages/login/components/SilentLoggedInPage';
 import KeysPage from './pages/keys/components/KeysPage/KeysPage';
+import SecurityPage from './pages/security/components/SecurityPage';
 import KeyPage from './pages/keys/components/KeyPage/KeyPage';
 import ContextPage from './pages/context/components/ContextPage/ContextPage';
 import IdentityDetails from './pages/context/components/IdentityDetails/IdentityDetails';
@@ -27,6 +28,15 @@ const renderKeyRoutes = ({ match: { path } }) => (
       <PrivateRoute component={KeyPage} />
     </Switch>
   </KeysPage>
+);
+
+const renderSecurityRoutes = ({ match: { path } }) => (
+  <SecurityPage>
+    <Switch>
+      <PrivateRoute exact path={path} component={SelectKeyMessage} />
+      <PrivateRoute component={KeyPage} />
+    </Switch>
+  </SecurityPage>
 );
 
 const renderContextRoutes = ({ match }) => (
@@ -48,6 +58,7 @@ const renderAppRoutes = () => (
       <PrivateRoute path="/keys" render={renderKeyRoutes} />
       <PrivateRoute path="/context" render={renderContextRoutes} />
       <PrivateRoute path="/settings" render={renderSettingsRoutes} />
+      <PrivateRoute path="/security" render={renderSecurityRoutes} />
     </Switch>
   </App>
 );

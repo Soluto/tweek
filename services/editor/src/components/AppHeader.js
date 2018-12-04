@@ -37,6 +37,10 @@ const AppHeader = () => (
         <img src={require('./resources/context.svg')} alt={''} />
         <span>Context</span>
       </ListItemLink>
+      <ListItemLink to="/security">
+        <img src={require('./resources/settings.svg')} alt={''} />
+        <span>Security</span>
+      </ListItemLink>
       <ListItemLink to="/settings">
         <img src={require('./resources/settings.svg')} alt={''} />
         <span>Settings</span>

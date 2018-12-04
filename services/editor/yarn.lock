@@ -5020,6 +5020,12 @@ json5@^0.5.0, json5@^0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/json5/-/json5-0.5.1.tgz#1eade7acc012034ad84e2396767ead9fa5495821"
 
+jsoneditor-react@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/jsoneditor-react/-/jsoneditor-react-1.0.0.tgz#cf4f3725b3ca120a605eeb245823394f80838964"
+  dependencies:
+    prop-types "^15.6.0"
+
 jsonfile@^2.1.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/jsonfile/-/jsonfile-2.4.0.tgz#3736a2b428b87bbda0cc83b53fa3d633a35c2ae8"
