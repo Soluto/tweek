@@ -48,8 +48,11 @@ namespace Tweek.Publishing.Service.Sync
                         await _shellExecutor.ExecTask("git", $"merge-base --is-ancestor {versionsBlob.Latest} {commitId}");
                     }
                     catch (Exception ex){
-
-                        throw new StaleRevisionException(commitId, versionsBlob.Latest);
+                        // https://git-scm.com/docs/git-merge-base#git-merge-base---is-ancestor
+                        if ((int)ex.Data["ExitCode"] == 1)
+                        {
+                            throw new StaleRevisionException(commitId, versionsBlob.Latest);
+                        }
                     }
                 }
             };
