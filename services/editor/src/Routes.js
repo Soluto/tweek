@@ -30,13 +30,8 @@ const renderKeyRoutes = ({ match: { path } }) => (
   </KeysPage>
 );
 
-const renderSecurityRoutes = ({ match: { path } }) => (
-  <SecurityPage>
-    <Switch>
-      <PrivateRoute exact path={path} component={SelectKeyMessage} />
-      <PrivateRoute component={KeyPage} />
-    </Switch>
-  </SecurityPage>
+const renderSecurityRoutes = () => (
+  <SecurityPage />
 );
 
 const renderContextRoutes = ({ match }) => (

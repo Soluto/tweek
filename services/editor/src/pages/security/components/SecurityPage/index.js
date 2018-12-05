@@ -28,13 +28,13 @@ const resolvePromise = (key) => compose(
     const value$ = props$
       .distinctUntilKeyChanged(key)
       .flatMap(props => {
-				const value = props[key]
-				const futureValue = Rx.Observable.fromPromise(value)
-        return futureValue
+				const value = props[key];
+				const futureValue = Rx.Observable.fromPromise(value);
+        return futureValue;
       })
 
     return props$
-			.combineLatest(value$, (props, value) => ({...props, [key]: value}))
+			.combineLatest(value$, (props, value) => ({...props, [key]: value}));
 	})
 )
 
@@ -48,11 +48,11 @@ export default compose (
 	withState('isSavingChanges', 'updateIsSavingChanges', false),
 	withHandlers({
 		onSave: ({updatePolicies, unsavedPolicies, updateIsSavingChanges}) => async () => {
-			updateIsSavingChanges(true)
-			updatePolicies(unsavedPolicies)
-			await putPolicies(unsavedPolicies)
-			updateIsSavingChanges(false)
+			updateIsSavingChanges(true);
+			updatePolicies(unsavedPolicies);
+			await putPolicies(unsavedPolicies);
+			updateIsSavingChanges(false);
 		},
 		onEdit: ({updateUnsavedPolicies}) => newPolicies => updateUnsavedPolicies(newPolicies)
 	})
-)(SecurityPage)
+)(SecurityPage);
