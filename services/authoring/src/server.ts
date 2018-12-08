@@ -70,6 +70,21 @@ const appsRepository = new AppsRepository(gitTransactionManager);
 const auth = passport.authenticate(['tweek-internal', 'apps-credentials'], { session: false });
 
 async function startServer() {
+
+  const onUpdate$ = GitContinuousUpdater.onUpdate(gitTransactionManager).share();
+
+  onUpdate$
+    .switchMapTo(Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)))
+    .do(null, (err: any) => logger.error('Error refreshing index', err))
+    .retry()
+    .subscribe();
+
+  onUpdate$
+    .switchMapTo(Observable.defer(() => appsRepository.refresh()))
+    .do(null, (err: any) => logger.error('Error refersing apps index', err))
+    .retry()
+    .subscribe();
+
   await appsRepository.refresh();
   const app = express();
   const publicKey = sshpk
@@ -97,20 +112,6 @@ async function startServer() {
 
   app.listen(PORT, () => logger.log('Listening on port', PORT));
 }
-
-const onUpdate$ = GitContinuousUpdater.onUpdate(gitTransactionManager).share();
-
-onUpdate$
-  .switchMapTo(Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)))
-  .do(null, (err: any) => logger.error('Error refreshing index', err))
-  .retry()
-  .subscribe();
-
-onUpdate$
-  .switchMapTo(Observable.defer(() => appsRepository.refresh()))
-  .do(null, (err: any) => logger.error('Error refersing apps index', err))
-  .retry()
-  .subscribe();
 
 gitRepoCreationPromiseWithTimeout.then(async () => await startServer()).catch((reason: any) => {
   logger.error(reason);
