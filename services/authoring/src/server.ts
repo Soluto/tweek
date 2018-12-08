@@ -3,6 +3,7 @@ import BluebirdPromise = require('bluebird');
 import express = require('express');
 import bodyParser = require('body-parser');
 import { Observable } from 'rxjs';
+import { tap, delay } from 'rxjs/operators';
 import fs = require('fs-extra');
 import passport = require('passport');
 import Transactor from './utils/transactor';
@@ -41,7 +42,12 @@ const gitRepositoryConfig = {
   privateKey: toFullPath(GIT_PRIVATE_KEY_PATH),
 };
 
-const gitRepoCreationPromise = GitRepository.create(gitRepositoryConfig);
+const gitRepoCreationPromise = Observable.defer(() => GitRepository.create(gitRepositoryConfig))
+.retryWhen(errors => errors.pipe(
+  tap(err => logger.error('Error creating git repo', err)),
+  delay(5000)
+)).toPromise();
+
 const gitRepoCreationPromiseWithTimeout = BluebirdPromise.resolve(gitRepoCreationPromise)
   .timeout(GIT_CLONE_TIMEOUT_IN_MINUTES * 60 * 1000)
   .catch(BluebirdPromise.TimeoutError, () => {
