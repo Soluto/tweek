@@ -13,6 +13,22 @@
             "console": "internalConsole"
         },
         {
+            "name": "Authoring",
+            "type": "node",
+            "request": "launch",
+            "args": ["./src/server.ts"],
+            "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+            "sourceMaps": true,
+            "cwd": "${workspaceRoot}/services/authoring",
+            "protocol": "inspector",
+            "env": {
+                "GIT_USER": "git",
+                "GIT_URL": "ssh://git@localhost:4009/tweek/repo",
+                "GIT_PUBLIC_KEY_PATH": "../../deployments/dev/ssh/tweekgit.pub",
+                "GIT_PRIVATE_KEY_PATH": "../../deployments/dev/ssh/tweekgit",
+            },
+        },
+        {
             "name": "Tweek-api",
             "type": "coreclr",
             "request": "launch",
