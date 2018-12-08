@@ -52,9 +52,15 @@ mkdir -p $REPO_LOCATION
 chown git:git $REPO_LOCATION
 chown -R git:git /home/git
 cd $REPO_LOCATION
-# clone the source repository and apply hooks
+# Try 5 times to clone the source repository and apply hooks
 set -e
-su - git -s "/bin/bash" -c "cd `pwd` && source ~/.env && git clone --bare $GIT_UPSTREAM_URI ."
+
+for i in {1..5}
+do 
+    su - git -s "/bin/bash" -c "cd `pwd` && source ~/.env && git clone --bare $GIT_UPSTREAM_URI ." && wait && break
+    [[ $i -eq 5 ]] && exit 1 || sleep 10
+done
+
 cp /tweek/hooks/* $REPO_LOCATION/hooks/
 set +e
 
