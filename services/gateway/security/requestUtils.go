@@ -98,6 +98,12 @@ func extractContextsFromKeysRequest(r *http.Request, u UserInfo) (ctxs PolicyRes
 	return
 }
 
+func extractContextsFromPoliciesRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
+	ctxs.Item = "repo/policies"
+
+	return
+}
+
 func extractContextFromContextRequest(r *http.Request, u UserInfo) (ctx PolicyResource, err error) {
 	ctx = PolicyResource{Contexts: map[string]string{}}
 	path := r.URL.EscapedPath()
@@ -190,7 +196,7 @@ func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs PolicyResourc
 	} else if strings.HasPrefix(path, "/api/v2/schemas") {
 		return extractResourceFromRepoRequest(r, u, "schemas")
 	} else if strings.HasPrefix(path, "/api/v2/policies") {
-		return extractResourceFromRepoRequest(r, u, "policies")
+		return extractContextsFromPoliciesRequest(r, u)
 	}
 	err = fmt.Errorf("Invalid request path %s", path)
 	return

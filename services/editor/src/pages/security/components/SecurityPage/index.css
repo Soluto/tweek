@@ -10,6 +10,19 @@
   height: 100%;
 }
 
+.unauthorized {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: red;
+}
+
+.fetching-policies {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .action-bar {
   margin: 16px;
   direction: rtl;
