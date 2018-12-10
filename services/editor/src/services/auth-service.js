@@ -26,26 +26,43 @@ export const storeToken = (token) => {
 
 export const retrieveToken = () => storage.getItem('token');
 
-export const isAuthenticated = () => {
+const storeOidcSettings = (settings) => {
+  storage.setItem('oidc-settings', JSON.stringify(settings));
+};
+
+const retrieveOidcSettings = () => JSON.parse(storage.getItem('oidc-settings'));
+
+export const isAuthenticated = async () => {
   const token = retrieveToken();
   if (token) {
     const expiration = moment.unix(jwt_decode(token).exp);
     if (moment().isBefore(expiration)) {
       return true;
     }
+    const settings = retrieveOidcSettings();
+    await getOidcClient(settings)
+      .signinSilent()
+      .then((user) => {
+        storeToken(user.id_token);
+      });
+    return true;
   }
   return false;
 };
 
 let oidcClient;
-const getOidcClient = (settings = basicOidcConfig) => oidcClient || new Oidc.UserManager(settings);
+const getOidcClient = (settings = { ...basicOidcConfig }) =>
+  oidcClient ||
+  new Oidc.UserManager({
+    ...settings,
+    userStore: new Oidc.WebStorageStateStore({ store: storage }),
+  });
 
 const basicOidcConfig = {
   response_type: 'token id_token',
   filterProtocolClaims: true,
   loadUserInfo: true,
   automaticSilentRenew: true,
-  userStore: new Oidc.WebStorageStateStore({ store: storage }),
   redirect_uri: `${window.location.origin}/auth-result/oidc`,
   silent_redirect_uri: `${window.location.origin}/auth-result/silent`,
   post_logout_redirect_uri: `${window.location.origin}/login`,
@@ -64,12 +81,14 @@ export const getAuthProviders = async () => {
 export const configureOidc = (authority, client_id, scope) => ({
   ...basicOidcConfig,
   authority,
+  userStore: new Oidc.WebStorageStateStore({ store: storage }),
   client_id,
   scope,
 });
 
 export const signinRequest = (oidcSettings, state) => {
   const oidcClient = getOidcClient(oidcSettings);
+  storeOidcSettings(oidcSettings);
   return oidcClient.signinRedirect(state);
 };
 
@@ -82,7 +101,7 @@ export const processSigninRedirectCallback = async () => {
 };
 
 export const processSilentSigninCallback = async () => {
-  const oidcClient = getOidcClient();
+  const oidcClient = getOidcClient(retrieveOidcSettings());
   const user = await oidcClient.signinSilentCallback();
   storeToken(user.id_token);
   return user;

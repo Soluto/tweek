@@ -1149,7 +1149,7 @@ babel-plugin-transform-strict-mode@^6.24.1:
     babel-runtime "^6.22.0"
     babel-types "^6.24.1"
 
-babel-polyfill@^6.26.0:
+babel-polyfill@>=6.9.1, babel-polyfill@^6.26.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-polyfill/-/babel-polyfill-6.26.0.tgz#379937abc67d7895970adc621f284cd966cf2153"
   dependencies:
@@ -5045,9 +5045,9 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-jsrsasign@^5.0.7:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/jsrsasign/-/jsrsasign-5.1.0.tgz#2549d559674f6f8956b12bd7f3b5c066b4e0c6ba"
+jsrsasign@^8.0.12:
+  version "8.0.12"
+  resolved "https://registry.yarnpkg.com/jsrsasign/-/jsrsasign-8.0.12.tgz#22abb9656d34a30b9530436720835e89c2e5c316"
 
 jsx-ast-utils@^1.4.0:
   version "1.4.1"
@@ -5914,11 +5914,13 @@ obuf@^1.0.0, obuf@^1.1.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/obuf/-/obuf-1.1.2.tgz#09bea3343d41859ebd446292d11c9d4db619084e"
 
-oidc-client@1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/oidc-client/-/oidc-client-1.4.1.tgz#29a3456a85f1c48fe382fdd93a77537005f3256e"
+oidc-client@1.5.4:
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/oidc-client/-/oidc-client-1.5.4.tgz#5efb7464848e39926778ad96b155935282b9fe0b"
   dependencies:
-    jsrsasign "^5.0.7"
+    jsrsasign "^8.0.12"
+  optionalDependencies:
+    babel-polyfill ">=6.9.1"
 
 on-finished@~2.3.0:
   version "2.3.0"
