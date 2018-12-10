@@ -79,7 +79,7 @@ const LoginPage = ({ authProviders, location }) => (
       <TweekLogo data-comp="tweek-logo" src={logoSrc} />
     </LeftPane>
     <RightPane>
-      <LoginMessageSpan>Login into Tweek using:</LoginMessageSpan>
+      <LoginMessageSpan>Log into Tweek using:</LoginMessageSpan>
       {authProviders.map(ap => (
         <LoginButton key={ap.name} href={`${ap.url}${location.search}`} data-comp={ap.name}>
           {ap.name}
