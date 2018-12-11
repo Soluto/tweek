@@ -118,7 +118,7 @@ namespace Tweek.Publishing.Service
             {
                 string commitId = "";
 
-                await Policy.Handle<StaleRevisionException>()
+                await Policy.Handle<RevisionException>()
                     .RetryAsync(10, async (_, c) => await repoSynchronizer.SyncToLatest())
                     .ExecuteAsync(async () =>
                     {
