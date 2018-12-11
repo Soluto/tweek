@@ -23,8 +23,9 @@ namespace Tweek.Publishing.Service.Sync
         private readonly ShellHelper.ShellExecutor _shellExecutor;
 
         public List<IConverter> Converters = new List<IConverter>();
-        private IMetrics _metrics;
+        private readonly IMetrics _metrics;
         private readonly CounterOptions _staleRevision = new CounterOptions{Context = "publishing", Name = "stale_revision"};
+        private readonly CounterOptions _badRevision = new CounterOptions{Context = "publishing", Name = "bad_revision"};
         private readonly CounterOptions _archiveFailure = new CounterOptions {Context = "publishing", Name = "archive_failure"};
         private readonly CounterOptions _fileUpload = new CounterOptions{Context = "publishing", Name = "file_upload"};
         private readonly CounterOptions _deletePrevious = new CounterOptions{Context = "publishing", Name = "delete_previous"};
@@ -60,8 +61,11 @@ namespace Tweek.Publishing.Service.Sync
                         if ((int)ex.Data["ExitCode"] == 1)
                         {
                             _metrics.Measure.Counter.Increment(_staleRevision);
-                            throw new StaleRevisionException(commitId, versionsBlob.Latest);
+                            throw new RevisionException(commitId, versionsBlob.Latest, "Stale Revision");
                         }
+
+                        _metrics.Measure.Counter.Increment(_badRevision);
+                        throw new RevisionException(commitId, versionsBlob.Latest, "Bad Revision");
                     }
                 }
             };
