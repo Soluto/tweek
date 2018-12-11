@@ -35,7 +35,7 @@ func LoadAllEndpoints(endpoints []string) {
 
 // RefreshEndpoints refreshes endpoints
 func RefreshEndpoints(endpoints []string) {
-	ticker := time.NewTicker(time.Hour * 24)
+	ticker := time.NewTicker(time.Minute)
 	go func() {
 		for true {
 			<-ticker.C
