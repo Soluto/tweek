@@ -18,7 +18,12 @@ func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
 	keys := jwkCache[endpoint]
 	k := keys.LookupKeyID(keyID)
 	if len(k) == 0 {
-		return nil, fmt.Errorf("Key %s not found at %s", keyID, endpoint)
+		loadEndpoint(endpoint)
+		keys = jwkCache[endpoint]
+		k = keys.LookupKeyID(keyID)
+		if len(k) == 0 {
+			return nil, fmt.Errorf("Key %s not found at %s", keyID, endpoint)
+		}
 	}
 	if len(k) > 1 {
 		return nil, fmt.Errorf("Unexpected error, more than 1 key %s found at %s", keyID, endpoint)
@@ -35,7 +40,7 @@ func LoadAllEndpoints(endpoints []string) {
 
 // RefreshEndpoints refreshes endpoints
 func RefreshEndpoints(endpoints []string) {
-	ticker := time.NewTicker(time.Minute)
+	ticker := time.NewTicker(time.Hour * 24)
 	go func() {
 		for true {
 			<-ticker.C
