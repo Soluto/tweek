@@ -1,5 +1,4 @@
 import React from 'react';
-import 'jsoneditor-react/es/editor.min.css';
 import {
   compose,
   withState,
