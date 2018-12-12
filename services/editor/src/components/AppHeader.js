@@ -38,8 +38,8 @@ const AppHeader = () => (
         <span>Context</span>
       </ListItemLink>
       <ListItemLink to="/security">
-        <img src={require('./resources/settings.svg')} alt={''} />
-        <span>Security</span>
+        <img src={require('./resources/security.svg')} alt={''} />
+        <span style={{marginLeft: '10px'}}>Security</span>
       </ListItemLink>
       <ListItemLink to="/settings">
         <img src={require('./resources/settings.svg')} alt={''} />
