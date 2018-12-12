@@ -6,26 +6,68 @@
   background-color: #eee;
   overflow-y: auto;
 }
-.security-page div:last-child {
-  height: 100%;
-}
 
 .unauthorized {
   display: flex;
   justify-content: center;
   align-items: center;
   color: red;
+  height: 100%;
 }
 
 .fetching-policies {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100%;
 }
 
 .action-bar {
   margin: 16px;
   direction: rtl;
+}
+.add-policy-button {
+  direction: ltr;
+  vertical-align: top;
+  background-color: #00aeef;
+  height: 28px;
+  border: 0;
+  padding: 0 20px;
+  color: white;
+  outline: 0;
+  padding-bottom: 2px;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  width: 125px;
+  margin-right: 15px;
+}
+.delete-button-container {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+.delete-button {
+  direction: ltr;
+  vertical-align: top;
+  background-color: #ee1010;
+  height: 20px;
+  border: 0;
+  padding: 0 5px;
+  color: white;
+  outline: 0;
+  border-radius: 14px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  width: 20px;
 }
 .save-button {
   direction: ltr;
@@ -60,4 +102,13 @@
 .save-button[data-state-is-saving=true],
 .save-button[data-state-is-saving=true]:disabled {
   background-color: green;
+}
+
+.filter {
+  text-align: center;
+}
+.editable-cell {
+  height: 100%;
+  width: 100%;
+  text-align: center;
 }
