@@ -49,6 +49,8 @@ func extractActionFromRequest(r *http.Request) (act string, err error) {
 	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/tags"):
 		fallthrough
 	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/revision-history"):
+		fallthrough
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/context"):
 		act = "read"
 		break
 	default:
@@ -203,12 +205,14 @@ func ExtractFromRequest(r *http.Request) (sub *Subject, act string, obj PolicyRe
 	sub = user.Sub()
 	act, err = extractActionFromRequest(r)
 	if err != nil {
-		return &Subject{}, "", PolicyResource{Contexts: map[string]string{}}, err
+		fullErr := fmt.Errorf("Couldn't extract action from request: %v", err)
+		return &Subject{}, "", PolicyResource{Contexts: map[string]string{}}, fullErr
 	}
 
 	obj, err = extractContextsFromRequest(r, user)
 	if err != nil {
-		return &Subject{}, "", PolicyResource{Contexts: map[string]string{}}, err
+		fullErr := fmt.Errorf("Couldn't extract action from request: %v", err)
+		return &Subject{}, "", PolicyResource{Contexts: map[string]string{}}, fullErr
 	}
 
 	err = nil
