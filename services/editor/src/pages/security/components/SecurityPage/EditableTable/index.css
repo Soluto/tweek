@@ -1,0 +1,124 @@
+.ReactTable{
+	height:calc(100vh - 133px);
+}
+.delete-button-container .empty-delete-button-container-watermark {
+color: #d0d0d0;
+font-style: italic;
+margin: 7px 35px 0;
+letter-spacing: 2px;
+cursor: default;
+}
+.delete-button-container {
+display: flex;
+padding-left: 3px;
+height: auto;
+min-height: 30px;
+justify-content: center;
+align-items: center;
+display: flex;
+height: 100%;
+width: 100%;
+}
+.delete-button-container .delete-condition-button {
+vertical-align: top;
+background-color: #00aeef;
+height: 28px;
+border: 0;
+padding: 0 20px;
+color: white;
+outline: 0;
+padding-bottom: 2px;
+border-radius: 14px;
+-moz-user-select: none;
+-ms-user-select: none;
+-webkit-user-select: none;
+user-select: none;
+transition: all 0.2s ease-in-out;
+border-radius: 50%;
+width: 20px;
+height: 20px;
+line-height: 1;
+padding: 0 0 3px;
+box-sizing: border-box;
+width: 13px;
+height: 13px;
+font-size: 10px;
+padding-bottom: 4px;
+background-color: #bcbcbc;
+font-size: 12px;
+padding-top: 1px;
+margin-top: 10px;
+margin-right: 4px;
+}
+.delete-button-container .delete-condition-button:hover {
+background-color: #029CD5;
+cursor: pointer;
+}
+.delete-button-container .delete-condition-button:disabled {
+background-color: gray;
+}
+.delete-button-container .delete-condition-button:disabled:hover,
+.delete-button-container .delete-condition-button:disabled:active {
+cursor: default;
+background-color: gray;
+}
+.delete-button-container .delete-condition-button:hover {
+background-color: #9c9c9c;
+}
+.delete-button-container .delete-condition-button:active {
+background-color: #7b7b7b;
+}
+.delete-button-container .delete-condition-button:after {
+font-family: 'tweekIcons';
+content: '\E900';
+}
+.delete-button-container .delete-condition-button:disabled {
+visibility: hidden;
+}
+.delete-button-container .add-condition-button {
+vertical-align: top;
+background-color: #00aeef;
+height: 28px;
+border: 0;
+padding: 0 20px;
+color: white;
+outline: 0;
+padding-bottom: 2px;
+border-radius: 14px;
+-moz-user-select: none;
+-ms-user-select: none;
+-webkit-user-select: none;
+user-select: none;
+transition: all 0.2s ease-in-out;
+border-radius: 50%;
+width: 20px;
+height: 20px;
+line-height: 1;
+padding: 0 0 3px;
+font-size: 16px;
+padding-top: 2px;
+margin-top: 8px;
+box-sizing: border-box;
+}
+.delete-button-container .add-condition-button:hover {
+background-color: #029CD5;
+cursor: pointer;
+}
+.delete-button-container .add-condition-button:disabled {
+background-color: gray;
+}
+.delete-button-container .add-condition-button:disabled:hover,
+.delete-button-container .add-condition-button:disabled:active {
+cursor: default;
+background-color: gray;
+}
+.delete-button-container .add-condition-button:after {
+font-family: 'tweekIcons';
+content: '\E905';
+}
+.delete-button-container .default-value-message {
+display: inline-block;
+margin: 8px;
+margin-left: 30px;
+color: gray;
+}

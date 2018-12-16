@@ -45,6 +45,12 @@
   width: 125px;
   margin-right: 15px;
 }
+
+.add-policy-button:hover {
+  background-color: #029CD5;
+  cursor: pointer;
+}
+
 .delete-button-container {
   justify-content: center;
   align-items: center;

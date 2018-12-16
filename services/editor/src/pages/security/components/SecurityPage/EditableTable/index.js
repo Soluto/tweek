@@ -4,6 +4,7 @@ import ReactTable from 'react-table';
 import Cell from './Cell';
 import 'react-table/react-table.css';
 import '../index.css';
+import './index.css';
 
 const EditableTable = ({ columns, data }) => (
   <ReactTable
@@ -37,9 +38,12 @@ const FilterComponent = ({ filter, onChange, column }) => (
 
 const DeleteButton = ({ deleteRow }) => (
   <div className="delete-button-container">
-    <button className="delete-button" data-comp="delete" onClick={deleteRow}>
-      X
-    </button>
+    <button
+      className="delete-condition-button"
+      title="Remove policy"
+      data-comp="delete-condition"
+      onClick={deleteRow}
+    />
   </div>
 );
 
