@@ -122,7 +122,7 @@ export const azureSignin = (resource, tenant, clientId, state) => {
     navigateToLoginRequestUrl: false,
     redirectUri: `${window.location.origin}/auth-result/azure`,
   };
-  storage.setItem('azureConfig', JSON.stringify(azureConfig));
+  setAzureConfig(azureConfig);
   const authContext = new adal(azureConfig);
   authContext.login();
 };
