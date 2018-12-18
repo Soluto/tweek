@@ -1,4 +1,4 @@
-/* global fetch console Headers localStorage window process */
+/* global fetch console Headers localStorage window process location */
 import Oidc from 'oidc-client';
 import adal from 'adal-angular';
 import jwt_decode from 'jwt-decode';
@@ -39,12 +39,18 @@ export const isAuthenticated = async () => {
     if (moment().isBefore(expiration)) {
       return true;
     }
+    if (isAzure()) {
+      return false;
+    }
     const settings = retrieveOidcSettings();
-    await getOidcClient(settings)
-      .signinSilent()
-      .then((user) => {
-        storeToken(user.id_token);
-      });
+    const oidcClient = getOidcClient(settings);
+    try {
+      const user = await oidcClient.signinSilent();
+      storeToken(user.id_token);
+    } catch (error) {
+      console.error('Encountered error during silent signin', error);
+      signinRequest(settings, { state: { redirect: window.location.pathname } });
+    }
     return true;
   }
   return false;
@@ -116,13 +122,13 @@ export const azureSignin = (resource, tenant, clientId, state) => {
     navigateToLoginRequestUrl: false,
     redirectUri: `${window.location.origin}/auth-result/azure`,
   };
-  localStorage.setItem('azureConfig', JSON.stringify(azureConfig));
+  setAzureConfig(azureConfig);
   const authContext = new adal(azureConfig);
   authContext.login();
 };
 
 export const getAzureToken = () => {
-  const azureConfig = JSON.parse(localStorage.getItem('azureConfig'));
+  const azureConfig = getAzureConfig();
   const authContext = new adal(azureConfig);
   authContext.handleWindowCallback();
   authContext.acquireToken(azureConfig.resource, (errorDesc, token, error) => {
@@ -131,8 +137,18 @@ export const getAzureToken = () => {
       // should redirect to authentication error page
       return;
     }
+    const expiration = moment.unix(jwt_decode(token).exp);
+    if (moment().isAfter(expiration)) {
+      throw new Error('Expiration time is in the past');
+    }
     storeToken(token);
   });
 };
 
-export const getAzureState = () => JSON.parse(localStorage.getItem('azureConfig')).state;
+export const getAzureState = () => {
+  const config = getAzureConfig();
+  return config.state;
+};
+const getAzureConfig = () => JSON.parse(storage.getItem('azureConfig'));
+const setAzureConfig = config => storage.setItem('azureConfig', JSON.stringify(config));
+const isAzure = () => storage.getItem('azureConfig') !== null;
