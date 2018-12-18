@@ -150,4 +150,5 @@ export const getAzureState = () => {
   return config.state;
 };
 const getAzureConfig = () => JSON.parse(storage.getItem('azureConfig'));
+const setAzureConfig = config => storage.setItem('azureConfig', JSON.stringify(config));
 const isAzure = () => storage.getItem('azureConfig') !== null;
