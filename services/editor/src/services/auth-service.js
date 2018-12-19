@@ -49,7 +49,7 @@ export const isAuthenticated = async () => {
       storeToken(user.id_token);
     } catch (error) {
       console.error('Encountered error during silent signin', error);
-      signinRequest(settings, { state: { redirect: window.location.pathname } });
+      signinRequest(settings, { state: { redirect: { pathname: window.location.pathname } } });
     }
     return true;
   }
