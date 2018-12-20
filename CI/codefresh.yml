@@ -203,19 +203,6 @@ steps:
       - latest
       - ${{TWEEK_DOCKER_TAG_API}}
 
-  PushApiImageGateway:
-    type: push
-    title: Push Tweek Api - gateway
-    when:
-      branch:
-        only:
-          - gateway
-    candidate: ${{BuildingApiImage}}
-    tags:
-      - latest-gateway
-      - ${{TWEEK_DOCKER_TAG_API}}-gateway
-      - "gateway-${{CF_BUILD_ID}}"
-
   PushPublishingImageMaster:
     type: push
     title: Push Publishing - lastest
@@ -227,19 +214,6 @@ steps:
     tags:
       - latest
       - ${{TWEEK_DOCKER_TAG_PUBLISHING}}
-
-  PushPublishingImageGateway:
-    type: push
-    title: Push Publishing - gateway
-    when:
-      branch:
-        only:
-          - gateway
-    candidate: ${{BuildingPublishing}}
-    tags:
-      - latest-gateway
-      - ${{TWEEK_DOCKER_TAG_PUBLISHING}}-gateway
-      - "gateway-${{CF_BUILD_ID}}"
 
   PushAuthoringImageMaster:
     type: push
@@ -253,19 +227,6 @@ steps:
       - latest
       - ${{TWEEK_DOCKER_TAG_AUTHORING}}
 
-  PushAuthoringImageGateway:
-    type: push
-    title: Push Tweek Authoring - gateway
-    when:
-      branch:
-        only:
-          - gateway
-    candidate: ${{BuildingAuthoring}}
-    tags:
-      - latest-gateway
-      - ${{TWEEK_DOCKER_TAG_AUTHORING}}-gateway
-      - "gateway-${{CF_BUILD_ID}}"
-
   PushEditorImageMaster:
     type: push
     title: Push Editor - latest
@@ -278,19 +239,6 @@ steps:
       - latest
       - ${{TWEEK_DOCKER_TAG_EDITOR}}
 
-  PushEditorImageGateway:
-    type: push
-    title: Push Editor - gateway
-    when:
-      branch:
-        only:
-          - gateway
-    candidate: ${{BuildingEditor}}
-    tags:
-      - latest-gateway
-      - ${{TWEEK_DOCKER_TAG_EDITOR}}-gateway
-      - "gateway-${{CF_BUILD_ID}}"
-
   PushGitRepositoryMaster:
     type: push
     title: Push Git Repository - latest
@@ -300,27 +248,14 @@ steps:
           - master
     candidate: ${{BuildingGitRepository}}
 
-  PushGitRepositoryGateway:
+  PushGatewayImageMaster:
     type: push
-    title: Push Git Repository - gateway
+    title: Push Gateway - latest
     when:
       branch:
         only:
-          - gateway
-    candidate: ${{BuildingGitRepository}}
-    tags:
-      - latest-gateway
-      - "gateway-${{CF_BUILD_ID}}"
-
-  PushGatewayImageGateway:
-    type: push
-    title: Push Gateway - gateway
-    when:
-      branch:
-        only:
-          - gateway
+          - master
     candidate: ${{BuildingGateway}}
     tags:
-      - latest-gateway
-      - ${{TWEEK_DOCKER_TAG_GATEWAY}}-gateway
-      - "gateway-${{CF_BUILD_ID}}"
+      - latest
+      - ${{TWEEK_DOCKER_TAG_GATEWAY}}
