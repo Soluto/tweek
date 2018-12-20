@@ -13,6 +13,7 @@ spec:
       containers:
       - name: api
         image: soluto/tweek-api
+        imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
             path: /health

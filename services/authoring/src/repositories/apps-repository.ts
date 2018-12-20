@@ -1,6 +1,6 @@
 import R = require('ramda');
-import Transactor from "../utils/transactor";
-import GitRepository from "./git-repository";
+import Transactor from '../utils/transactor';
+import GitRepository from './git-repository';
 import { Oid } from 'nodegit';
 
 export default class AppsRepository {

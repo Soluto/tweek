@@ -13,15 +13,12 @@ spec:
       containers:
       - name: editor
         image: soluto/tweek-editor
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000
         env:
-        - name: TWEEK_API_HOSTNAME
-          value: http://api
-        - name: AUTHORING_API_HOSTNAME
-          value: http://authoring:3000
-        - name: GIT_PRIVATE_KEY_PATH
-          value: /run/secrets/tweek-secrets/tweek_ssh_private_key
+        - name: REACT_APP_GATEWAY_URL
+          value: http://192.168.99.100:30099
         volumeMounts:
         - name: tweek-secrets
           mountPath: /run/secrets/tweek-secrets

@@ -1,9 +1,10 @@
+/* global document window console */
 import { Observable } from 'rxjs';
 import React from 'react';
 import PropTypes from 'prop-types';
 import gtmParts from 'react-google-tag-manager';
 import { componentFromStream } from 'recompose';
-import fetch from '../utils/fetch';
+import { getConfiguration } from '../utils/fetch';
 
 class GoogleTagManagerContainer extends React.Component {
   componentDidMount() {
@@ -23,11 +24,7 @@ class GoogleTagManagerContainer extends React.Component {
       previewVariables: this.props.previewVariables,
     });
 
-    return (
-      <div id={this.props.scriptId}>
-        {gtm.scriptAsReact()}
-      </div>
-    );
+    return <div id={this.props.scriptId}>{gtm.scriptAsReact()}</div>;
   }
 
   static propTypes = {
@@ -48,7 +45,7 @@ class GoogleTagManagerContainer extends React.Component {
 
 const getConfigValue = async (configName) => {
   try {
-    const response = await fetch(`/api/editor-configuration/google_tag_manager/${configName}`);
+    const response = await getConfiguration(`google_tag_manager/${configName}`);
     return await response.json();
   } catch (err) {
     console.warn('failed to retrieve configuration', configName, err);

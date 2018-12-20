@@ -5,15 +5,15 @@ import { types } from '../../../../../services/types-service';
 import './styles.css';
 
 const chooseValueTypeByOperator = (operator, valueType) => {
-  if(operator === inOp.operatorValue) {
-    return ({ ...types.array, ofType: valueType });
+  if (operator === inOp.operatorValue) {
+    return { ...types.array, ofType: valueType };
   }
-  if(operator ===  within.operatorValue) {
+  if (operator === within.operatorValue) {
     return types.string;
   }
 
   return valueType;
-}
+};
 
 const PropertyValue = ({ selectedOperator, valueType, ...props }) => (
   <div className="property-value-wrapper">
