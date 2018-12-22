@@ -19,7 +19,9 @@
     "start:full-env": "yarn docker-compose up -d api publishing git && yarn start:dev",
     "logs": "yarn docker-compose logs",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml",
-    "teardown": "yarn docker-compose down --remove-orphans"
+    "teardown": "yarn docker-compose down --remove-orphans",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "bluebird": "^3.5.1",
@@ -47,7 +49,8 @@
     "typescript-ioc": "^1.0.2",
     "typescript-rest": "^1.2.0",
     "typescript-rest-swagger": "^0.0.13",
-    "uuid": "^3.1.0"
+    "uuid": "^3.1.0",
+    "snyk": "^1.118.2"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.44",
@@ -75,5 +78,6 @@
     "ts-node": "^3.3.0",
     "tslint": "^5.8.0",
     "typescript": "^2.6.2"
-  }
+  },
+  "snyk": true
 }
