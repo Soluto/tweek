@@ -1,8 +1,9 @@
+/* global process */
 import { handleActions } from 'redux-actions';
 import * as R from 'ramda';
 import { push } from 'react-router-redux';
 import * as ContextService from '../../services/context-service';
-import fetch from '../../utils/fetch';
+import fetch, { getConfiguration } from '../../utils/fetch';
 import { withJsonData } from '../../utils/http';
 import {
   createBlankJPadKey,
@@ -39,12 +40,12 @@ function updateRevisionHistory(keyName) {
   return async function (dispatch) {
     try {
       if (!historySince) {
-        const response = await fetch('/api/editor-configuration/history/since');
+        const response = await getConfiguration(`history/since`);
         historySince = (await response.json()) || '1 month ago';
       }
-      const revisionHistory = await (await fetch(
-        `/api/revision-history/${keyName}?since=${encodeURIComponent(historySince)}`,
-      )).json();
+      const revisionHistory = await fetch(
+        `/revision-history/${keyName}?since=${encodeURIComponent(historySince)}`,
+      ).then(res => res.json());
       dispatch({ type: KEY_REVISION_HISTORY, payload: { keyName, revisionHistory } });
     } catch (error) {
       dispatch(showError({ title: 'Failed to refresh revisionHistory', error }));
@@ -56,7 +57,7 @@ function updateKeyDependents(keyName) {
   return async function (dispatch) {
     let dependents = {};
     try {
-      dependents = await (await fetch(`/api/dependents/${keyName}`)).json();
+      dependents = await fetch(`/dependents/${keyName}`).then(res => res.json());
     } catch (error) {
       dispatch(
         showError({
@@ -140,7 +141,7 @@ export function openKey(key, { revision } = {}) {
     let keyData;
     const search = revision ? `?revision=${revision}` : '';
     try {
-      keyData = await (await fetch(`/api/keys/${key}${search}`)).json();
+      keyData = await fetch(`/keys/${key}${search}`).then(res => res.json());
     } catch (exp) {
       dispatch({ type: KEY_OPENED, payload: { key } });
       return;
@@ -182,8 +183,8 @@ async function performSave(dispatch, keyName, { manifest, implementation }) {
 
   let isSaveSucceeded;
   try {
-    await fetch(`/api/keys/${keyName}`, {
-      method: 'put',
+    await fetch(`/keys/${keyName}`, {
+      method: 'PUT',
       ...withJsonData({
         manifest,
         implementation: manifest.implementation.type === 'file' ? implementation.source : undefined,
@@ -312,7 +313,7 @@ export function deleteKey() {
 
     dispatch(push('/keys'));
     try {
-      await fetch(`/api/keys/${key}`, {
+      await fetch(`/keys/${key}`, {
         method: 'delete',
         ...withJsonData(aliases),
       });
@@ -332,8 +333,8 @@ export function addAlias(alias) {
     const manifest = createBlankKeyManifest(alias, { type: 'alias', key });
 
     try {
-      await fetch(`/api/keys/${alias}`, {
-        method: 'put',
+      await fetch(`/keys/${alias}`, {
+        method: 'PUT',
         ...withJsonData({ manifest }),
       });
     } catch (error) {
@@ -356,7 +357,9 @@ export function deleteAlias(alias) {
     if (!(await dispatch(showConfirm(deleteKeyAlert(alias)))).result) return;
 
     try {
-      await fetch(`/api/keys/${alias}`, { method: 'delete' });
+      await fetch(`/keys/${alias}`, {
+        method: 'delete',
+      });
 
       dispatch(removeKeyFromList(alias));
       const { selectedKey: { key, usedBy, aliases } } = getState();

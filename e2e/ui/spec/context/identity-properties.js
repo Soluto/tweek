@@ -29,6 +29,8 @@ describe('identity properties', () => {
 
     identity.commitChanges();
 
+    browser.pause(500);
+
     assert.deepEqual(identity.overrideKeys, initialOverrideKeys);
     assert.deepEqual(identity.properties, expectedProperties);
 

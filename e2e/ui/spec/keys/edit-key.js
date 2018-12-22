@@ -163,7 +163,7 @@ describe('edit keys', () => {
 
     it('should succeed editing key (valueType=date)', () => {
       const desiredDate = '2018-10-11T00:00:00.000';
-      const desiredDateFormatted = '10/11/2018 00:00:00'
+      const desiredDateFormatted = '10/11/2018 00:00:00';
       const keyName = `${constKeyFolder}/date_type`;
       Key.open(keyName);
       browser.click(`${constEditor} input`);

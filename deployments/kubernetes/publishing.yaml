@@ -13,6 +13,7 @@ spec:
       containers:
       - name: publishing
         image: soluto/tweek-publishing
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 22
         - containerPort: 80
