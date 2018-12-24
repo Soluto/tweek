@@ -3,7 +3,7 @@ import { Route } from 'react-router';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import {compose, lifecycle, withState} from 'recompose';
-import logoSrc from './resources/logo.png';
+import logoSrc from './resources/logo.svg';
 import withSecurityPageIsEnabled from '../pages/security/withSecurityPageIsEnabled';
 import '../styles/core/fonts/fonts.css';
 import '../pages/security/components/SecurityPage'
