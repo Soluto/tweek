@@ -1,7 +1,8 @@
 import React from 'react';
-import { compose, withHandlers, withState, withProps, withPropsOnChange } from 'recompose';
+import { compose, withHandlers } from 'recompose';
 import '../index.css';
 import { JsonTree } from 'react-editable-json-tree';
+import Switch from 'react-switch';
 
 class StringCell extends React.Component {
   constructor(props) {
@@ -38,15 +39,37 @@ class StringCell extends React.Component {
   }
 }
 
-export default ({ onEdit, data, cellType, cellPosition }) => {
+export default compose(
+  withHandlers({
+    onToggleChange: ({ onEdit, columnSpecificProps }) => checked =>
+      checked
+        ? onEdit(columnSpecificProps.toggleOnValue)
+        : onEdit(columnSpecificProps.toggleOffValue),
+  }),
+)(({ onEdit, data, cellType, cellPosition, onToggleChange, columnSpecificProps }) => {
   switch (cellType) {
   case 'string':
     return <StringCell onEdit={onEdit} data={data} cellPosition={cellPosition} />;
-  case 'yes-or-no':
-    return <StringCell onEdit={onEdit} data={data} />;
+  case 'toggle':
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100%',
+        }}
+      >
+        <Switch
+          onColor={'#009fda'}
+          onChange={onToggleChange}
+          checked={data === columnSpecificProps.toggleOnValue}
+        />
+      </div>
+    );
   case 'json':
     return <JsonTree onFullyUpdate={onEdit} data={data} />;
   default:
     return null;
   }
-};
+});

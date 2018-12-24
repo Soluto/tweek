@@ -2,8 +2,11 @@ import React from 'react';
 import { Route } from 'react-router';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
-import logoSrc from './resources/logo.svg';
+import {compose, lifecycle, withState} from 'recompose';
+import logoSrc from './resources/logo.png';
+import withSecurityPageIsEnabled from '../pages/security/withSecurityPageIsEnabled';
 import '../styles/core/fonts/fonts.css';
+import '../pages/security/components/SecurityPage'
 import './App.css';
 
 const ListItemLink = ({ to, ...rest }) => (
@@ -23,7 +26,7 @@ const ListItemLink = ({ to, ...rest }) => (
   />
 );
 
-const AppHeader = () => (
+const AppHeader = ({securityTabIsEnabled}) => (
   <div className={'header'}>
     <Link to="/" replace>
       <img className={'logo'} src={logoSrc} alt={''} />
@@ -37,10 +40,15 @@ const AppHeader = () => (
         <img src={require('./resources/context.svg')} alt={''} />
         <span>Context</span>
       </ListItemLink>
-      <ListItemLink to="/security">
-        <img src={require('./resources/security.svg')} alt={''} />
-        <span style={{marginLeft: '10px'}}>Security</span>
-      </ListItemLink>
+      { 
+        securityTabIsEnabled ?
+          <ListItemLink to="/security">
+            <img src={require('./resources/security.svg')} alt={''} />
+            <span style={{marginLeft: '10px'}}>Security</span>
+          </ListItemLink>
+          :
+          null
+      }
       <ListItemLink to="/settings">
         <img src={require('./resources/settings.svg')} alt={''} />
         <span>Settings</span>
@@ -49,4 +57,6 @@ const AppHeader = () => (
   </div>
 );
 
-export default AppHeader;
+export default compose(
+  withSecurityPageIsEnabled('securityTabIsEnabled'),
+)(AppHeader);

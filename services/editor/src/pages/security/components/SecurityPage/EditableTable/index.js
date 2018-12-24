@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose, withHandlers, withProps, withPropsOnChange } from 'recompose';
+import { compose, withHandlers, withProps } from 'recompose';
 import ReactTable from 'react-table';
 import Cell from './Cell';
 import 'react-table/react-table.css';
@@ -10,11 +10,12 @@ const EditableTable = ({ columns, data }) => (
   <ReactTable
     data={data}
     columns={columns}
-    defaultPageSize={10}
     filterable
     defaultFilterMethod={(filter, row) => row[filter.id].indexOf(filter.value) != -1}
     className="-striped -highlight"
     FilterComponent={FilterComponent}
+    minRows={20}
+    pageSizeOptions = {[20, 40, 60, 80, 100]}
   />
 );
 
@@ -73,8 +74,9 @@ export default compose(
           rowIndex: cellInfo.index,
           columnId: cellInfo.column.id,
         }}
-        cellType={columns[cellInfo.column.id]}
+        cellType={columns[cellInfo.column.id].type}
         data={data[cellInfo.index][cellInfo.column.id]}
+        columnSpecificProps={columns[cellInfo.column.id].columnSpecificProps}
       />
     ),
     connectedDeleteButton: ({ onEditTable, data }) => cellInfo => (

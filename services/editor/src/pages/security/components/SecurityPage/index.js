@@ -1,12 +1,10 @@
 import React from 'react';
 import {
   compose,
-  withState,
   mapPropsStream,
   withProps,
   withHandlers,
   branch,
-  setDisplayName,
 } from 'recompose';
 import Rx from 'rxjs';
 import { getPolicies, putPolicies } from '../../../../store/ducks/policies';
