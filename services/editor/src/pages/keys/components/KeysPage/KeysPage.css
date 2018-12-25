@@ -12,6 +12,7 @@
 .keys-page-container .keys-list .keys-list-wrapper {
   display: flex;
   flex-grow: 1;
+  min-height: 1px;
 }
 .keys-page-container .key-page {
   position: relative;
