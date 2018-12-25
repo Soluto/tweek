@@ -5,6 +5,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
+using App.Metrics;
+using App.Metrics.Counter;
 using Minio.Exceptions;
 using Tweek.Publishing.Service.Model;
 using Tweek.Publishing.Service.Model.Rules;
@@ -21,11 +23,18 @@ namespace Tweek.Publishing.Service.Sync
         private readonly ShellHelper.ShellExecutor _shellExecutor;
 
         public List<IConverter> Converters = new List<IConverter>();
+        private readonly IMetrics _metrics;
+        private readonly CounterOptions _staleRevision = new CounterOptions{Context = "publishing", Name = "stale_revision"};
+        private readonly CounterOptions _badRevision = new CounterOptions{Context = "publishing", Name = "bad_revision"};
+        private readonly CounterOptions _archiveFailure = new CounterOptions {Context = "publishing", Name = "archive_failure"};
+        private readonly CounterOptions _fileUpload = new CounterOptions{Context = "publishing", Name = "file_upload"};
+        private readonly CounterOptions _deletePrevious = new CounterOptions{Context = "publishing", Name = "delete_previous"};
 
-        public StorageSynchronizer(IObjectStorage storageClient, ShellHelper.ShellExecutor shellExecutor)
+        public StorageSynchronizer(IObjectStorage storageClient, ShellHelper.ShellExecutor shellExecutor, IMetrics metrics)
         {
             _client = storageClient;
             _shellExecutor = shellExecutor;
+            _metrics = metrics;
         }
 
 
@@ -51,8 +60,12 @@ namespace Tweek.Publishing.Service.Sync
                         // https://git-scm.com/docs/git-merge-base#git-merge-base---is-ancestor
                         if ((int)ex.Data["ExitCode"] == 1)
                         {
-                            throw new StaleRevisionException(commitId, versionsBlob.Latest);
+                            _metrics.Measure.Counter.Increment(_staleRevision);
+                            throw new RevisionException(commitId, versionsBlob.Latest, "Stale Revision");
                         }
+
+                        _metrics.Measure.Counter.Increment(_badRevision);
+                        throw new RevisionException(commitId, versionsBlob.Latest, "Bad Revision");
                     }
                 }
             };
@@ -85,20 +98,24 @@ namespace Tweek.Publishing.Service.Sync
                     {                        
                         var (fileName, fileContent, fileMimeType) = Converter.Convert(commitId, files, readFn);
                         await _client.PutString(fileName, fileContent, fileMimeType);
+                        _metrics.Measure.Counter.Increment(_fileUpload, new MetricTags("FileName", fileName));
                     }
                 }
             }
 
             await _client.PutJSON("versions", newVersionBlob);
+            _metrics.Measure.Counter.Increment(_fileUpload, new MetricTags("FileName", "versions"));
 
             if (versionsBlob?.Previous != null)
             {
                 await _client.Delete(versionsBlob.Previous);
+                _metrics.Measure.Counter.Increment(_deletePrevious);
             }        
         }
 
-        private static async Task HandleArchiveError(Process p)
+        private async Task HandleArchiveError(Process p)
         {            
+            _metrics.Measure.Counter.Increment(_archiveFailure);
             throw new Exception("Git archive failed")
             {
                 Data =

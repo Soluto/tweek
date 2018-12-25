@@ -1,7 +1,8 @@
 /* global process */
 import React from 'react';
 import { Route, Redirect } from 'react-router';
-import { withProps } from 'recompose';
+import { withProps, mapPropsStream } from 'recompose';
+import { Observable } from 'rxjs';
 import { isAuthenticated } from './services/auth-service';
 
 const PrivateRoute = ({ component: Component, render, isAuthenticated, location, ...rest }) => (
@@ -26,8 +27,11 @@ const PrivateRoute = ({ component: Component, render, isAuthenticated, location,
   />
 );
 
-const enhance = withProps(() => ({
-  isAuthenticated: isAuthenticated(),
-}));
+const enhance = mapPropsStream((props$) => {
+  const isAuthenticated$ = Observable.defer(() => isAuthenticated());
+  return props$.switchMap(props =>
+    isAuthenticated$.map(isAuthenticated => ({ ...props, isAuthenticated })),
+  );
+});
 
 export default enhance(PrivateRoute);

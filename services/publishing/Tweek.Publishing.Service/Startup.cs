@@ -3,6 +3,8 @@ using System.Reactive.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using App.Metrics;
+using App.Metrics.Formatters.Prometheus.Internal.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,12 +17,10 @@ using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
 using Serilog;
-using Serilog.Events;
 using Serilog.Formatting.Json;
 using Tweek.Publishing.Helpers;
 using Tweek.Publishing.Service.Handlers;
 using Tweek.Publishing.Service.Messaging;
-using Tweek.Publishing.Service.Packing;
 using Tweek.Publishing.Service.Storage;
 using Tweek.Publishing.Service.Sync;
 using Tweek.Publishing.Service.Sync.Converters;
@@ -80,6 +80,7 @@ namespace Tweek.Publishing.Service
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRouting();
+            services.AddMetrics();
         }
 
         private MinioClient CreateMinioClient(IConfiguration minioConfig)
@@ -92,10 +93,10 @@ namespace Tweek.Publishing.Service
             return minioConfig.GetValue("UseSSL", false) ? mc.WithSSL() : mc;
         }
 
-        private StorageSynchronizer CreateStorageSynchronizer(IObjectStorage storageClient, ShellHelper.ShellExecutor executor)
+        private StorageSynchronizer CreateStorageSynchronizer(IObjectStorage storageClient, ShellHelper.ShellExecutor executor, IMetrics metrics)
         {
             var key = GitKeyHelper.GetKeyFromEnvironment();
-            var storageSynchronizer = new StorageSynchronizer(storageClient, executor)
+            var storageSynchronizer = new StorageSynchronizer(storageClient, executor, metrics)
             {
                 Converters =
                 {
@@ -117,7 +118,7 @@ namespace Tweek.Publishing.Service
             {
                 string commitId = "";
 
-                await Policy.Handle<StaleRevisionException>()
+                await Policy.Handle<RevisionException>()
                     .RetryAsync(10, async (_, c) => await repoSynchronizer.SyncToLatest())
                     .ExecuteAsync(async () =>
                     {
@@ -181,7 +182,8 @@ namespace Tweek.Publishing.Service
             var versionPublisher = natsClient.GetSubjectPublisher("version");
 
             var repoSynchronizer = new RepoSynchronizer(executor.WithUser("git").CreateCommandExecutor("git"));
-            var storageSynchronizer = CreateStorageSynchronizer(storageClient, executor.WithUser("git"));
+            var storageSynchronizer = CreateStorageSynchronizer(storageClient, executor.WithUser("git"),
+                app.ApplicationServices.GetService<IMetrics>());
 
             storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result, checkForStaleRevision: false).Wait();
             RunIntervalPublisher(lifetime, versionPublisher, repoSynchronizer, storageSynchronizer);
@@ -190,9 +192,13 @@ namespace Tweek.Publishing.Service
             
             app.UseRouter(router =>
             {
-                router.MapGet("validate", ValidationHandler.Create(executor, gitValidationFlow, loggerFactory.CreateLogger<ValidationHandler>() ));
-                router.MapGet("sync", SyncHandler.Create(syncActor,_syncPolicy));
-                router.MapGet("push", PushHandler.Create(syncActor));
+                router.MapGet("validate",
+                    ValidationHandler.Create(executor, gitValidationFlow,
+                        loggerFactory.CreateLogger<ValidationHandler>(),
+                        app.ApplicationServices.GetService<IMetrics>()));
+                router.MapGet("sync",
+                    SyncHandler.Create(syncActor, _syncPolicy, app.ApplicationServices.GetService<IMetrics>()));
+                router.MapGet("push", PushHandler.Create(syncActor, app.ApplicationServices.GetService<IMetrics>()));
                 router.MapGet("log", async (req, res, routedata) => _logger.LogInformation(req.Query["message"]));
                 router.MapGet("health", async (req, res, routedata) => await res.WriteAsync(JsonConvert.SerializeObject(new { })));
                 router.MapGet("version", async (req, res, routedata) => await res.WriteAsync(Assembly.GetEntryAssembly()
