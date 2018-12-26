@@ -47,25 +47,25 @@ type EnvInlineOrPath struct {
 
 // BasicAuth - struct with config related to Basic Auth
 type BasicAuth struct {
-	RedirectURLs []string `json:"redirect_urls"`
+	RedirectURLs []string `json:"redirect_urls" yaml:"redirect_urls"`
 }
 
 // AuthLogin - configuration of login information
 type AuthLogin struct {
-	LoginType      string                 `json:"login_type"`
-	AdditionalInfo map[string]interface{} `json:"additional_info"`
-	Scope          string                 `json:"scope"`
-	ResponseType   string                 `json:"response_type"`
+	LoginType      string                 `json:"login_type" yaml:"login_type"`
+	AdditionalInfo map[string]interface{} `json:"additional_info" yaml:"additional_info"`
+	Scope          string                 `json:"scope" yaml:"scope"`
+	ResponseType   string                 `json:"response_type" yaml:"response_type"`
 }
 
 // AuthProvider - configuration of each auth provider
 type AuthProvider struct {
-	Name      string    `json:"name"`
-	Issuer    string    `json:"issuer"`
-	Authority string    `json:"authority"`
-	ClientID  string    `json:"client_id"`
-	JWKSURL   string    `json:"jwks_uri"`
-	LoginInfo AuthLogin `json:"login_info"`
+	Name      string    `json:"name" yaml:"name"`
+	Issuer    string    `json:"issuer" yaml:"issuer"`
+	Authority string    `json:"authority" yaml:"authority"`
+	ClientID  string    `json:"client_id" yaml:"client_id"`
+	JWKSURL   string    `json:"jwks_uri" yaml:"jwks_uri"`
+	LoginInfo AuthLogin `json:"login_info" yaml:"login_info"`
 }
 
 // Auth - struct with config related to authentication
@@ -108,7 +108,6 @@ type Configuration struct {
 	V2Routes  []V2Route
 	Server    Server
 	Security  Security
-	Version   string
 }
 
 // InitConfig initializes the configuration
@@ -119,7 +118,9 @@ func InitConfig() *Configuration {
 
 	configFilePath := "/settings/settings.json"
 	if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
-		tweekConfigor.Load(conf, configFilePath)
+		if err = tweekConfigor.Load(conf, configFilePath); err != nil {
+			log.Println("Configuration error", err)
+		}
 	} else {
 		log.Panicln("Config file not found:", err)
 	}
@@ -127,7 +128,9 @@ func InitConfig() *Configuration {
 	// Loading config file if exists
 	configFilePath = "/config/gateway.json"
 	if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
-		tweekConfigor.Load(conf, configFilePath)
+		if err = tweekConfigor.Load(conf, configFilePath); err != nil {
+			log.Println("Configuration error", err)
+		}
 	} else {
 		log.Println("Config file not found:", err)
 	}
