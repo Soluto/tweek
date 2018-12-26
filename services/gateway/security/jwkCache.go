@@ -16,6 +16,9 @@ func init() {
 
 func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
 	keys := jwkCache[endpoint]
+	if keys == nil {
+		return nil, fmt.Errorf("No keys found for endpoint %s", endpoint)
+	}
 	k := keys.LookupKeyID(keyID)
 	if len(k) == 0 {
 		loadEndpoint(endpoint)
