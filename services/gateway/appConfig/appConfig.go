@@ -129,7 +129,7 @@ func InitConfig() *Configuration {
 	if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
 		tweekConfigor.Load(conf, configFilePath)
 	} else {
-		log.Panicln("Config file not found:", err)
+		log.Println("Config file not found:", err)
 	}
 
 	return conf
