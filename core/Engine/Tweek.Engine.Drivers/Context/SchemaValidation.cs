@@ -74,7 +74,10 @@ namespace Tweek.Engine.Drivers.Context
                            .IfNone(() => (JsonValue value) => Error($"custom type \"{type}\" not exists"));
                     }
                 case JsonValue.Record customTypeRaw:
-                    return CreateCustomTypeValidator(CustomTypeDefinition.FromJsonValue(customTypeRaw));
+                    return customTypeRaw.GetPropertyOption("name").Bind(x => customTypeRaw.GetPropertyOption("ofType")).Match(arrayType => {
+                        var arrayValidator = CreateSinglePropertyValidator(arrayType, provider);
+                        return (x => x.AsArray().Map(i => arrayValidator(i)).Reduce((a,b) => a | b));
+                    }, () => CreateCustomTypeValidator(CustomTypeDefinition.FromJsonValue(customTypeRaw)));
                 default:
                     return (JsonValue _) => Error("unknown type definition");
             }

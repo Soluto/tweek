@@ -32,41 +32,47 @@ const mapValueTypeToProps = (props$) => {
 const OverrideValueInput = compose(mapPropsStream(mapValueTypeToProps), pure)(TypedInput);
 OverrideValueInput.displayName = 'OverrideValueInput';
 
-const EditableKey = ({ keyPath, remote, local, onChange, autofocus }) => (
-  <div
-    className={classNames('editable-key-container', {
-      'new-item': remote === undefined,
-      removed: local === undefined,
-    })}
-  >
-    <AutoSuggest
-      className="key-input"
-      data-field="key"
-      placeholder="Key"
-      value={keyPath}
-      getSuggestions={SearchService.getSuggestions}
-      onChange={keyPath => onChange({ keyPath, value: local })}
-      disabled={remote !== undefined}
-      autofocus={autofocus}
-    />
-    <OverrideValueInput
-      data-field="value"
-      keyPath={keyPath}
-      className={classNames('value-input', {
-        'has-changes': remote !== local,
+const EditableKey = ({ keyPath, remote, local, onChange, autofocus }) => {
+  const hasLocal = local !== undefined;
+  const hasRemote = remote !== undefined;
+  const hasChanges = remote !== local;
+  const remoteValue = hasRemote && typeof remote === 'object' ? JSON.stringify(remote) : remote;
+  return (
+    <div
+      className={classNames('editable-key-container', {
+        'new-item': !hasRemote,
+        removed: !hasLocal,
       })}
-      placeholder="Value"
-      value={local === undefined ? remote : local}
-      onChange={value => onChange({ keyPath, value })}
-      disabled={local === undefined}
-    />
-    {remote !== undefined && remote !== local ? (
-      <div className="initial-value" title={remote}>
-        {remote}
-      </div>
-    ) : null}
-  </div>
-);
+    >
+      <AutoSuggest
+        className="key-input"
+        data-field="key"
+        placeholder="Key"
+        value={keyPath}
+        getSuggestions={SearchService.getSuggestions}
+        onChange={keyPath => onChange({ keyPath, value: local })}
+        disabled={hasRemote}
+        autofocus={autofocus}
+      />
+      <OverrideValueInput
+        data-field="value"
+        keyPath={keyPath}
+        className={classNames('value-input', {
+          'has-changes': hasChanges,
+        })}
+        placeholder="Value"
+        value={!hasLocal ? remote : local}
+        onChange={value => onChange({ keyPath, value })}
+        disabled={!hasLocal}
+      />
+      {hasRemote && hasChanges ? (
+        <div className="initial-value" title={remoteValue}>
+          {remoteValue}
+        </div>
+      ) : null}
+    </div>
+  );
+};
 
 EditableKey.propTypes = {
   keyPath: PropTypes.string.isRequired,

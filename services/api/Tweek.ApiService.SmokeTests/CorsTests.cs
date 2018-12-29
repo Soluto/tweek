@@ -23,8 +23,6 @@ namespace Tweek.ApiService.SmokeTests
 
         [Theory(DisplayName = "CORS preflight request returns correct response")]
         [InlineData("http://testorigin", "GET", HttpStatusCode.OK, CorsHeaders.Present)]
-        [InlineData("http://testorigin", "SET", HttpStatusCode.NotFound, CorsHeaders.NotPresent)]
-        [InlineData("http://testorigin-bad", "GET", HttpStatusCode.OK, CorsHeaders.NotPresent)]
         public async Task WhenCorsPreflightRequestIsSent_ExpectedResponseIsReturned(string origin, string method, HttpStatusCode expectedStatus, CorsHeaders corsHeaders)
         {
             var response = await mTweekApi.GetCorsPreflightResponse(origin, method);

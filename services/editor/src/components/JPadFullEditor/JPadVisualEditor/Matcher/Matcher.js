@@ -34,7 +34,7 @@ const hasChanged = shouldUpdate(
 );
 
 export default hasChanged(({ matcher, mutate, autofocus }) => {
-  const [ops, props] = R.pipe(R.toPairs, R.partition(([prop]) => prop[0] === '$'))(matcher);
+  const [, props] = R.pipe(R.toPairs, R.partition(([prop]) => prop[0] === '$'))(matcher);
   const ignoreActivePropsPropsPredicate = R.compose(R.not, R.contains(R.__, R.map(R.head, props)));
 
   const allSuggestions = ContextService.getAllProperties().map(prop => ({

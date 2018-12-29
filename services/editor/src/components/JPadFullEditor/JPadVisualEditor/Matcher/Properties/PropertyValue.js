@@ -1,46 +1,27 @@
 import React from 'react';
-import { setDisplayName, mapProps, compose } from 'recompose';
-import * as R from 'ramda';
-import { WithContext as ReactTags } from 'react-tag-input';
-import TypedInput, { getTypesService } from '../../../../../components/common/Input/TypedInput';
-import { inOp } from '../../../../../services/operators-provider';
+import TypedInput from '../../../../../components/common/Input/TypedInput';
+import { inOp, within } from '../../../../../services/operators-provider';
+import { types } from '../../../../../services/types-service';
 import './styles.css';
 
-const TagsPropertyValue = compose(
-  setDisplayName('TagsPropertyValue'),
-  getTypesService,
-  mapProps(({ onChange, value, safeConvertValue, valueType }) => ({
-    tags: value.map(x => ({ id: x, text: x.toString() })),
-    suggestions: (valueType.allowedValues && valueType.allowedValues.map(x => x.toString())) || [],
-    handleAddition: newValue => onChange([...value, safeConvertValue(newValue, valueType)]),
-    handleDelete: valueIndex => onChange(R.remove(valueIndex, 1, value)),
-  })),
-)(props => (
-  <div className="property-value-tags-wrapper">
-    <ReactTags
-      {...props}
-      placeholder="Add value"
-      minQueryLength={1}
-      allowDeleteFromEmptyInput
-      autocomplete
-      classNames={{
-        tags: 'tags-container',
-        tagInput: 'tag-input',
-        tag: 'tag',
-        remove: 'tag-delete-button',
-        suggestions: 'tags-suggestion',
-      }}
-    />
-  </div>
-));
+const chooseValueTypeByOperator = (operator, valueType) => {
+  if (operator === inOp.operatorValue) {
+    return { ...types.array, ofType: valueType };
+  }
+  if (operator === within.operatorValue) {
+    return types.string;
+  }
 
-const PropertyValue = ({ selectedOperator, ...props }) => (
+  return valueType;
+};
+
+const PropertyValue = ({ selectedOperator, valueType, ...props }) => (
   <div className="property-value-wrapper">
-    {selectedOperator === inOp.operatorValue ? (
-      <TagsPropertyValue data-comp="property-value" {...props} />
-    ) : (
-      <TypedInput data-comp="property-value" {...props} />
-    )}
+    <TypedInput
+      data-comp="property-value"
+      valueType={chooseValueTypeByOperator(selectedOperator, valueType)}
+      {...props}
+    />
   </div>
 );
 

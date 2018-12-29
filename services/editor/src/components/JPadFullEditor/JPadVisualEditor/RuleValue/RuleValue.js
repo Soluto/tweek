@@ -1,6 +1,5 @@
 import React from 'react';
 import * as R from 'ramda';
-import { compose, mapProps } from 'recompose';
 import Chance from 'chance';
 import CustomSlider from '../../../../components/common/CustomSlider/CustomSlider';
 import TypedInput from '../../../../components/common/Input/TypedInput';
@@ -21,9 +20,9 @@ const wrapWithClass = propToClassNameFn => Comp => props => (
   </div>
 );
 
-export const InputValue = wrapWithClass(({ valueType }) => `inputValue input-type-${valueType}`)(
-  TypedInput,
-);
+export const InputValue = wrapWithClass(
+  ({ valueType }) => `inputValue input-type-${valueType.name}`,
+)(TypedInput);
 
 const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }) => {
   const convertToMultiVariant = valueDistribution =>
@@ -47,7 +46,7 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
       return m;
     });
 
-  if (valueType === TypesService.types.boolean.name) {
+  if (valueType.name === TypesService.types.boolean.name) {
     return (
       <button
         data-comp="convert-to-multi-variant"
@@ -77,7 +76,7 @@ const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }
               weight: 50,
             },
             {
-              value: 'New Variant',
+              value: valueType.emptyValue || 'New Variant',
               weight: 50,
             },
           ],
@@ -151,7 +150,7 @@ const BernoulliTrial = ({ onUpdate, ratio }) => (
           { value: false, weight: 100 - 1000 * ratio / 10 },
         ]}
         onUpdate={x => onUpdate(x[0].weight / 100)}
-        valueType="boolean"
+        valueType={TypesService.types['boolean']}
       />
     </div>
   </div>
@@ -291,12 +290,7 @@ const MultiVariantValue = ({
   return null;
 };
 
-const RuleValue = compose(
-  mapProps(({ valueType, ...props }) => ({
-    valueType: TypesService.types[valueType] ? valueType : 'string',
-    ...props,
-  })),
-)(({ rule, mutate, valueType, autofocus, identities, keyPath }) => {
+const RuleValue = ({ rule, mutate, valueType, autofocus, identities, keyPath }) => {
   if (rule.Type === 'SingleVariant') {
     return (
       <SingleVariantValue
@@ -319,7 +313,7 @@ const RuleValue = compose(
   }
 
   return null;
-});
+};
 
 RuleValue.displayName = 'RuleValue';
 

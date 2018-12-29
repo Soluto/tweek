@@ -73,7 +73,7 @@ export class AppsController {
     const { secret: appSecret, key } = await createSecretKey();
     newApp.secretKeys.push(key);
     const oid = await this.appsRepository.saveApp(appId, newApp, { name, email });
-    addOid(this.context.response, oid)
+    addOid(this.context.response, oid);
 
     return ({
       appId,

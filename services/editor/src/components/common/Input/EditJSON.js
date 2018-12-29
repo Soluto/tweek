@@ -1,9 +1,9 @@
 import React from 'react';
 import { compose, mapProps } from 'recompose';
-import { showCustomAlert, buttons } from '../../../store/ducks/alerts';
 import { connect } from 'react-redux';
 import MonacoEditor from 'react-monaco-editor';
 import { AutoSizer } from 'react-virtualized';
+import { showCustomAlert, buttons } from '../../../store/ducks/alerts';
 import { isStringValidJson } from '../../../services/types-service';
 
 const monacoOptions = {
@@ -17,18 +17,29 @@ const monacoOptions = {
   },
 };
 
+const getEmptyValue = (valueType) => {
+  let baseType = valueType.base || valueType.name;
+  if (baseType === 'array') {
+    return `[\n\t\n]`;
+  }
+  if (baseType === 'object') {
+    return `{\n\t\n}`;
+  }
+  return '';
+};
+
 export const withJsonEditor = compose(
   connect(null, {
     showCustomAlert,
   }),
   mapProps(({ onChange, showCustomAlert, ...props }) => {
-    const editJson = async (currentSource) => {
+    const editJson = async (currentSource, valueType) => {
       const saveButton = {
         text: 'Save',
         value: true,
         className: 'rodal-save-btn',
         'data-alert-button': 'save',
-        validate: data => isStringValidJson(data),
+        validate: data => isStringValidJson(data, valueType),
       };
 
       const editModal = {
@@ -40,7 +51,10 @@ export const withJsonEditor = compose(
                 <MonacoEditor
                   language="json"
                   value={
-                    data || (currentSource ? JSON.stringify(currentSource, null, 4) : `{\n\t\n}`)
+                    data ||
+                    (currentSource
+                      ? JSON.stringify(currentSource, null, 4)
+                      : getEmptyValue(valueType))
                   }
                   options={{ ...monacoOptions, readOnly: false }}
                   onChange={newSource => onChange(newSource)}

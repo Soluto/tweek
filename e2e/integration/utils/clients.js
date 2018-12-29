@@ -1,9 +1,11 @@
 const nconf = require('nconf');
 const supertest = require('supertest');
 const fs = require('fs');
-const { promisify } = require('util');
-const readFile = promisify(fs.readFile);
 const getToken = require('./getToken');
+const { promisify } = require('util');
+
+const exists = promisify(fs.exists);
+const readFile = promisify(fs.readFile);
 
 const interceptAfter = (target, fn, methodNames) => {
   let proxy = methodNames.reduce(
@@ -29,21 +31,40 @@ nconf
   .argv()
   .env()
   .defaults({
-    AUTHORING_URL: 'http://localhost:4005',
-    API_URL: 'http://localhost:4003',
+    AUTHORING_URL: 'http://authoring.localtest.me:4099',
+    API_URL: 'http://api.localtest.me:4099',
+    GATEWAY_URL: 'http://localhost:4099',
     GIT_PRIVATE_KEY_PATH: '../../deployments/dev/ssh/tweekgit',
+
+    MINIO_HOST: 'localhost',
+    MINIO_PORT: '4007',
+    MINIO_BUCKET: 'tweek',
+    MINIO_ACCESS_KEY: 'AKIAIOSFODNN7EXAMPLE',
+    MINIO_SECRET_KEY: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
   });
 
-module.exports.init = async function() {
-  const inlineKey = nconf.get('GIT_PRIVATE_KEY_INLINE');
-  const key =
-    (inlineKey && new Buffer(inlineKey, 'base64')) ||
-    (await readFile(nconf.get('GIT_PRIVATE_KEY_PATH')));
+const getEnv = async (varName, base64) => {
+  const inlineVar = nconf.get(`${varName}_INLINE`);
+  const varFilePath = nconf.get(`${varName}_PATH`);
+  const value =
+    (!base64 && inlineVar) ||
+    (base64 && inlineVar && new Buffer(inlineVar, 'base64')) ||
+    (varFilePath && (await exists(varFilePath)) && (await readFile(varFilePath, 'utf8')));
+  return value;
+};
 
+const init = async function() {
+  const key = await getEnv('GIT_PRIVATE_KEY', true);
   const token = await getToken(key);
   const setBearerToken = t => t.set('Authorization', `Bearer ${token}`);
   return {
     api: createClient(nconf.get('API_URL'), setBearerToken),
     authoring: createClient(nconf.get('AUTHORING_URL'), setBearerToken),
+    gateway: createClient(nconf.get('GATEWAY_URL'), setBearerToken),
   };
+};
+
+module.exports = {
+  init,
+  getEnv,
 };

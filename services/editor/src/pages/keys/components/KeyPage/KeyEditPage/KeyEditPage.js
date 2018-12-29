@@ -10,6 +10,7 @@ import RevisionHistory from './RevisionHistory/RevisionHistory';
 import KeyPageActions from './KeyPageActions/KeyPageActions';
 import HeaderMainInput from './HeaderMainInput';
 import { UsedBy, DependsOn, Aliases } from './DependencyIndicator/DependencyIndicator';
+import { types } from '../../../../../services/types-service';
 import './KeyEditPage.css';
 
 const Editor = ({
@@ -23,7 +24,13 @@ const Editor = ({
   isReadonly,
   alerter,
 }) => {
-  if (manifest.implementation.type === 'file' && manifest.implementation.format === 'jpad') {
+
+  const valueType = types[manifest.valueType] || types['string'];
+  if (manifest.implementation.type === 'file') {
+    let FileEditor = null;
+    if (manifest.implementation.format === 'jpad') {
+      FileEditor = JPadFullEditor;
+    }
     return (
       <JPadFullEditor
         keyPath={keyPath}
@@ -33,7 +40,7 @@ const Editor = ({
         dependencies={manifest.dependencies}
         onDependencyChanged={onDependencyChanged}
         isReadonly={isReadonly}
-        valueType={manifest.valueType}
+        valueType={valueType}
       />
     );
   }
@@ -41,7 +48,7 @@ const Editor = ({
     return (
       <ConstEditor
         value={manifest.implementation.value}
-        valueType={manifest.valueType}
+        valueType={valueType}
         onChange={value =>
           onManifestChange({ ...manifest, implementation: { ...manifest.implementation, value } })
         }

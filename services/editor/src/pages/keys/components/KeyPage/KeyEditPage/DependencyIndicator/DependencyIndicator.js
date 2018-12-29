@@ -33,7 +33,7 @@ const renderText = (dep, { deleteAlias }) => (
   <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
     <span style={{ marginRight: 5 }}>{dep}</span>
     <button data-comp="delete-alias" onClick={() => deleteAlias(dep)}>
-      <img src={trashIcon} />
+      <img src={trashIcon} alt={''} />
     </button>
   </div>
 );

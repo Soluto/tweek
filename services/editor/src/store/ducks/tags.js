@@ -1,3 +1,4 @@
+/* global process console */
 import { handleActions } from 'redux-actions';
 import * as R from 'ramda';
 import { withJsonData } from '../../utils/http';
@@ -9,7 +10,7 @@ const TAGS_SAVED = 'TAGS_SAVED';
 
 export async function downloadTags() {
   try {
-    const tags = await (await fetch('/api/tags')).json();
+    const tags = await fetch(`/tags`).then(res => res.json());
     return { type: TAGS_DOWNLOADED, payload: tags };
   } catch (error) {
     return showError({ title: 'Failed to download tags', error });
@@ -27,8 +28,8 @@ export const saveNewTags = tagsToSave =>
     }
 
     try {
-      await fetch('/api/tags', {
-        method: 'put',
+      await fetch(`/tags`, {
+        method: 'PUT',
         ...withJsonData(newTags),
       });
 

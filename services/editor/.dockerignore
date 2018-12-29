@@ -8,7 +8,6 @@ dist/
 node_modules/
 obj/
 rulesRepository/
-vapid/
 
 .dockerignore
 .editorconfig
