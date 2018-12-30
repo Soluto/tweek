@@ -1,42 +1,37 @@
 package audit
 
 import (
-	"fmt"
 	"io"
-	"log"
-)
 
-// Format strings
-const (
-	actionAuditFmt = "subj: %v obj: %#v act: %v eff: %v"
+	"github.com/sirupsen/logrus"
 )
 
 type logAuditor struct {
-	log *log.Logger
+	log *logrus.Entry
 }
 
 // New creates a new Auditor, which logs to io.Writer, with prefix 'AUDIT'
 func New(out io.Writer) (Auditor, error) {
-	return NewLogger(log.New(out, "AUDIT - ", log.LstdFlags|log.LUTC))
+	return NewLogger(logrus.WithField("type", "AUDIT"))
 }
 
 // NewLogger creates a new logger based Auditor
-func NewLogger(logger *log.Logger) (Auditor, error) {
+func NewLogger(logger *logrus.Entry) (Auditor, error) {
 	return &logAuditor{log: logger}, nil
 }
 
 func (a *logAuditor) Allowed(subject, object, action string) {
-	a.log.Printf(actionAuditFmt, subject, object, action, "ACCESS ALLOWED")
+	a.log.WithFields(logrus.Fields{"subject": subject, "object": object, "action": action}).Info("ACCESS ALLOWED")
 }
 
 func (a *logAuditor) Denied(subject, object, action string) {
-	a.log.Printf(actionAuditFmt, subject, object, action, "ACCESS DENIED")
+	a.log.WithFields(logrus.Fields{"subject": subject, "object": object, "action": action}).Info("ACCESS DENIED")
 }
 
 func (a *logAuditor) AuthorizerError(subject, object, action string, err error) {
-	a.log.Printf(actionAuditFmt, subject, object, action, fmt.Sprintf("ERROR: %v", err))
+	a.log.WithFields(logrus.Fields{"subject": subject, "object": object, "action": action}).WithError(err).Error("ERROR")
 }
 
 func (a *logAuditor) TokenError(err error) {
-	a.log.Printf("TOKEN ERROR: %q", err)
+	a.log.WithError(err).Error("TOKEN ERROR")
 }
