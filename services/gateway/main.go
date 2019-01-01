@@ -91,7 +91,7 @@ func newApp(config *appConfig.Configuration) http.Handler {
 
 	security.MountAuth(&config.Security.Auth, &config.Security.TweekSecretKey, noAuthMiddleware, router.AuthRouter())
 
-	router.MainRouter().PathPrefix("/version").HandlerFunc(handlers.NewVersionHandler(&config.Upstreams, config.Version))
+	router.MainRouter().PathPrefix("/version").HandlerFunc(handlers.NewVersionHandler(&config.Upstreams, Version))
 	router.MainRouter().PathPrefix("/health").HandlerFunc(handlers.NewHealthHandler())
 	router.MainRouter().PathPrefix("/status").HandlerFunc(handlers.NewStatusHandler(&config.Upstreams))
 
