@@ -23,14 +23,14 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "jsonwebtoken": "^8.1.0",
-    "mocha": "^4.0.1",
-    "nconf": "^0.9.1",
+    "mocha": "^5.2.0",
+    "nconf": "^0.10.0",
     "supertest": "^3.0.0"
   },
   "dependencies": {
     "bluebird": "^3.5.1",
     "fast-json-patch": "^2.0.6",
-    "minio": "^4.0.0",
+    "minio": "^7.0.2",
     "node-fetch": "^2.0.0"
   }
 }
