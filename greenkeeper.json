@@ -1,0 +1,13 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "e2e/integration/package.json",
+        "e2e/ui/package.json",
+        "package.json",
+        "services/authoring/package.json",
+        "services/editor/package.json"
+      ]
+    }
+  }
+}
