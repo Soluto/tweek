@@ -83,7 +83,6 @@ func Init(cfg *appConfig.PolicyStorage) {
 	log.Println("Initializing external apps...")
 	repo = externalAppsRepo{}
 
-	log.Println(cfg.MinioEndpoint, cfg.MinioAccessKey, cfg.MinioSecretKey, cfg.MinioUseSSL)
 	client, err := minio.New(cfg.MinioEndpoint, cfg.MinioAccessKey, cfg.MinioSecretKey, cfg.MinioUseSSL)
 	if err != nil {
 		log.Panic("External apps init error: ", err)
