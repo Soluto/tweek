@@ -1,11 +1,11 @@
 import React from 'react';
 import * as R from 'ramda';
-import fetch from '../../../../utils/fetch';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Observable } from 'rxjs';
 import { componentFromStream, createEventHandler, withState } from 'recompose';
+import { getConfiguration } from '../../../../utils/fetch';
 import * as SearchService from '../../../../services/search-service';
 import DirectoryTreeView from './TreeView/DirectoryTreeView';
 import CardView from './CardView';
@@ -42,9 +42,7 @@ const KeysFilter = withState('filter', 'setFilter', '')(({ onFilterChange, setFi
 
 const supportCardView = async () => {
   try {
-    const response = await fetch(
-      `/api/editor-configuration/experimental/keys_search/enable_cards_view`,
-    );
+    const response = await getConfiguration(`experimental/keys_search/enable_cards_view`);
     return await response.json();
   } catch (err) {
     console.warn('failed to retrieve configuration for enable_cards_view', err);
@@ -147,11 +145,11 @@ const KeysList = connect((state, props) => ({
           <KeysFilter onFilterChange={setFilter} />
           {filteredKeys &&
             supportMultiResultsView && (
-              <div className="view-selector">
-                <button onClick={() => setResultsView('cards')}>List</button>
-                <button onClick={() => setResultsView('tree')}>Tree</button>
-              </div>
-            )}
+            <div className="view-selector">
+              <button onClick={() => setResultsView('cards')}>List</button>
+              <button onClick={() => setResultsView('tree')}>Tree</button>
+            </div>
+          )}
           <div className="keys-nav">
             <div className="search-results">
               {filteredKeys && supportMultiResultsView && resultsView === 'cards' ? (

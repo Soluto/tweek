@@ -21,11 +21,9 @@ function get_exit_code() {
 # prepare
 echo 'building images'
 docker-compose build &
-docker-compose -f docker-compose.zap.yml build &
 docker-compose down --remove-orphans &
 wait 
 
-sudo rm -rf ../deployments/dev/zap/session/
 
 # run tests
 echo 'running integration tests'
@@ -40,7 +38,3 @@ if [ $? -ne 0 ]; then exit $?; fi
 docker-compose up e2e-ui
 get_exit_code e2e-ui
 if [ $? -ne 0 ]; then exit $?; fi
-
-# run security test
-echo 'running security tests'
-docker-compose -f docker-compose.zap.yml run --rm glue

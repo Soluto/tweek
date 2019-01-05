@@ -1,6 +1,6 @@
 {
   "name": "tweek-authoring",
-  "version": "0.3.3",
+  "version": "1.0.0-rc1",
   "main": "src/server.js",
   "repository": "Soluto/tweek",
   "author": "Soluto",
@@ -9,8 +9,8 @@
     "node": ">=8.1.4"
   },
   "scripts": {
-    "test": "mocha -r ts-node/register test/**/*.ts",
-    "build": "yarn run clean && tsc && cpr ./src/search-index/build/ ./dist/search-index/build/ -o && yarn swagger",
+    "test": "mocha -r ts-node/register test/**/*.ts --exit",
+    "build": "yarn run clean && tsc && cpr ./src/search-index/build/ ./dist/search-index/build/ -o",
     "clean": "rimraf dist",
     "start": "ts-node ./src/server.ts",
     "start:release": "node ./dist/server.js",
@@ -19,8 +19,7 @@
     "start:full-env": "yarn docker-compose up -d api publishing git && yarn start:dev",
     "logs": "yarn docker-compose logs",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml",
-    "teardown": "yarn docker-compose down --remove-orphans",
-    "swagger": "swaggerGen -c swagger.config.json"
+    "teardown": "yarn docker-compose down --remove-orphans"
   },
   "dependencies": {
     "bluebird": "^3.5.1",

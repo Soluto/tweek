@@ -2,8 +2,14 @@ import React from 'react';
 import { compose, withState, lifecycle } from 'recompose';
 import styled from 'react-emotion';
 
-import { getAuthProviders } from '../../../services/auth-service';
+import {
+  getAuthProviders,
+  configureOidc,
+  signinRequest,
+  azureSignin,
+} from '../../../services/auth-service';
 import logoSrc from '../../../components/resources/logo.svg';
+import BasicAuthLoginButton from './BasicAuthLoginButton';
 
 const MainComponent = styled('div')`
   display: flex;
@@ -55,13 +61,14 @@ const LoginMessageSpan = styled('span')`
   margin-top: 250px;
 `;
 
-const LoginButton = styled('a')`
+const LoginButton = styled('div')`
   padding-top: 14px;
   padding-bottom: 17px;
   margin: 15px;
   width: 40%;
   background-color: #00aeef;
   border-radius: 25px;
+  cursor: pointer;
 
   color: #ffffff;
   font-family: Roboto;
@@ -72,7 +79,7 @@ const LoginButton = styled('a')`
   text-decoration: none;
 `;
 
-const LoginPage = ({ authProviders, location }) => (
+const LoginPage = ({ authProviders, location: { state = {} } }) => (
   <MainComponent>
     <LeftPane>
       <WelcomeMessageSpan>Welcome to:</WelcomeMessageSpan>
@@ -81,10 +88,11 @@ const LoginPage = ({ authProviders, location }) => (
     <RightPane>
       <LoginMessageSpan>Log into Tweek using:</LoginMessageSpan>
       {authProviders.map(ap => (
-        <LoginButton key={ap.name} href={`${ap.url}${location.search}`} data-comp={ap.name}>
+        <LoginButton key={ap.id} onClick={() => ap.action({ state })} data-comp={ap.id}>
           {ap.name}
         </LoginButton>
       ))}
+      <BasicAuthLoginButton state={state} />
     </RightPane>
   </MainComponent>
 );
@@ -93,7 +101,26 @@ const enhancer = compose(
   withState('authProviders', 'setAuthProviders', []),
   lifecycle({
     componentWillMount() {
-      getAuthProviders().then(res => this.props.setAuthProviders(res));
+      getAuthProviders().then((res) => {
+        const providers = Object.keys(res).map(key => ({
+          id: key,
+          name: res[key].name,
+          action: (state) => {
+            if (res[key].login_info.login_type === 'azure') {
+              // need to figure out what to do with the state here.
+              const params = res[key].login_info.additional_info;
+              return azureSignin(params.resource, params.tenant, res[key].client_id, state);
+            }
+            if (res[key].login_info.login_type === 'oidc') {
+              return signinRequest(
+                configureOidc(res[key].authority, res[key].client_id, res[key].login_info.scope),
+                state,
+              );
+            }
+          },
+        }));
+        this.props.setAuthProviders(providers);
+      });
     },
   }),
 );

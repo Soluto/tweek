@@ -27,7 +27,7 @@ function waitForClient(baseURL, timeout = 60000, delayDuration = 1000) {
 
 module.exports.waitForAllClients = async function() {
   const services = [
-    nconf.get('EDITOR_URL'),
+    nconf.get('GATEWAY_URL'),
     nconf.get('TWEEK_API_URL'),
     nconf.get('AUTHORING_URL'),
   ];

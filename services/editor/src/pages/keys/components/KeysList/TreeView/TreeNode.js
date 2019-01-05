@@ -1,10 +1,10 @@
 import React from 'react';
 import * as R from 'ramda';
 import PropTypes from 'prop-types';
-import * as keysActions from '../../../../../store/ducks/keys';
-import { addKey } from '../../../../../store/ducks/selectedKey';
 import { connect } from 'react-redux';
 import { mapProps, compose, shouldUpdate } from 'recompose';
+import * as keysActions from '../../../../../store/ducks/keys';
+import { addKey } from '../../../../../store/ducks/selectedKey';
 import TreeDirectory from './TreeDirectory';
 import { compsPathSorter, leaf } from './pathSorter';
 
