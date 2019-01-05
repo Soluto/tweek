@@ -10,7 +10,8 @@ import (
 	"log"
 	"runtime"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
+	"tweek-gateway/appConfig"
+
 	"github.com/minio/minio-go"
 	"github.com/nats-io/go-nats"
 	"golang.org/x/crypto/pbkdf2"
@@ -82,6 +83,7 @@ func Init(cfg *appConfig.PolicyStorage) {
 	log.Println("Initializing external apps...")
 	repo = externalAppsRepo{}
 
+	log.Println(cfg.MinioEndpoint, cfg.MinioAccessKey, cfg.MinioSecretKey, cfg.MinioUseSSL)
 	client, err := minio.New(cfg.MinioEndpoint, cfg.MinioAccessKey, cfg.MinioSecretKey, cfg.MinioUseSSL)
 	if err != nil {
 		log.Panic("External apps init error: ", err)

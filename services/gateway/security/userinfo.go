@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
+	"tweek-gateway/appConfig"
 )
 
 // NewUserInfoHandler - returns user name and group for the token in question

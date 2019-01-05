@@ -7,9 +7,9 @@ import (
 
 	"github.com/urfave/negroni"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
-	"github.com/Soluto/tweek/services/gateway/proxy"
-	"github.com/Soluto/tweek/services/gateway/security"
+	"tweek-gateway/appConfig"
+	"tweek-gateway/proxy"
+	"tweek-gateway/security"
 )
 
 // NewHealthHandler return /health endpoint handler

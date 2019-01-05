@@ -6,8 +6,8 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
-	"github.com/Soluto/tweek/services/gateway/security"
+	"tweek-gateway/appConfig"
+	"tweek-gateway/security"
 	minio "github.com/minio/minio-go"
 	nats "github.com/nats-io/go-nats"
 )

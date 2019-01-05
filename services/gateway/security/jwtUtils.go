@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
+	"tweek-gateway/appConfig"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 

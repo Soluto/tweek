@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/Soluto/tweek/services/gateway/security"
+	"tweek-gateway/security"
 
 	"github.com/urfave/negroni"
 	"github.com/vulcand/oxy/buffer"

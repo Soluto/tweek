@@ -8,9 +8,9 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
-	"github.com/Soluto/tweek/services/gateway/externalApps"
-	"github.com/Soluto/tweek/services/gateway/utils"
+	"tweek-gateway/appConfig"
+	"tweek-gateway/externalApps"
+	"tweek-gateway/utils"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"

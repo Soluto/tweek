@@ -11,7 +11,7 @@ import (
 
 	"github.com/nats-io/go-nats"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
+	"tweek-gateway/appConfig"
 )
 
 var repoRevision string

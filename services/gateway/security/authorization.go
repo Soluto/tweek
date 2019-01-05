@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Soluto/tweek/services/gateway/audit"
+	"tweek-gateway/audit"
 
 	"github.com/urfave/negroni"
 )

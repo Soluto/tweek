@@ -9,9 +9,9 @@ import (
 )
 
 func swaggerHandler() http.HandlerFunc {
-	data, err := ioutil.ReadFile("/swagger/swagger.yml")
+	data, err := ioutil.ReadFile("./swagger/swagger.yml")
 	if err != nil {
-		log.Panicln("Couldn't load /swagger/swagger.yml")
+		log.Panicln("Couldn't load ./swagger/swagger.yml")
 	}
 	dataReader := bytes.NewReader(data)
 

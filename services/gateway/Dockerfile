@@ -1,16 +1,11 @@
 # -------- DEPENDENCIES -------- #
-FROM golang:1.10.0-stretch as dependencies
+FROM golang:1.11.4-stretch as dependencies
 
-ARG DEP_VERSION=0.3.2
+ADD go.mod /src/go.mod
+ADD go.sum /src/go.sum
+WORKDIR /src
 
-ADD Gopkg.toml /go/src/github.com/Soluto/tweek/services/gateway/Gopkg.toml
-ADD Gopkg.lock /go/src/github.com/Soluto/tweek/services/gateway/Gopkg.lock
-WORKDIR /go/src/github.com/Soluto/tweek/services/gateway
-
-RUN update-ca-certificates \
-    && curl -fsSL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 \
-    && chmod +x /usr/local/bin/dep \
-    && dep ensure -v -vendor-only
+RUN go build ./...
 
 # The scratch image, which we use in the end, neither has cmdline tools nor tmp directory
 # so we prepare it here, and copy later on
@@ -19,16 +14,16 @@ RUN mkdir /empty_tmp && chmod 1777 /empty_tmp
 # -------- BUILDER -------- #
 FROM dependencies as build
 
-ADD . /go/src/github.com/Soluto/tweek/services/gateway
-WORKDIR /go/src/github.com/Soluto/tweek/services/gateway
+ADD . /src
+WORKDIR /src
 
 RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o entry \
     && go test -cover -v ./...
 
-RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o hcheck "github.com/Soluto/tweek/services/gateway/healthcheck"
+RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o hcheck "tweek-gateway/healthcheck"
 
 # ------ REGO TESTS ------ #
-FROM golang:1.10.0-stretch as regotests
+FROM golang:1.11.4-stretch as regotests
 
 RUN curl -L -o opa https://github.com/open-policy-agent/opa/releases/download/v0.8.2/opa_linux_amd64
 RUN chmod u+x opa
@@ -44,11 +39,11 @@ RUN ./opa test -v /tmp/opatests
 FROM scratch
 
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/settings /settings
-COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/authorization.rego /authorization.rego
-COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/entry /entry
-COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/hcheck /healthcheck
-COPY --from=build /go/src/github.com/Soluto/tweek/services/gateway/swagger.yml /swagger/swagger.yml
+COPY --from=build /src/settings /settings
+COPY --from=build /src/authorization.rego /authorization.rego
+COPY --from=build /src/entry /entry
+COPY --from=build /src/hcheck /healthcheck
+COPY --from=build /src/swagger/swagger.yml /swagger/swagger.yml
 COPY --from=dependencies /empty_tmp /tmp
 
 ENV CONFIGOR_ENV=production
