@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/jinzhu/configor"
+	"github.com/sirupsen/logrus"
 )
 
 // Upstreams is the list of upstrem URLs.
@@ -116,28 +117,27 @@ func InitConfig() *Configuration {
 	conf := &Configuration{}
 
 	tweekConfigor := configor.New(&configor.Config{ENVPrefix: "TWEEKGATEWAY"})
-
 	const settingsFilePath = "./settings/settings.json"
 	if _, err := os.Stat(settingsFilePath); !os.IsNotExist(err) {
 		if err = tweekConfigor.Load(conf, settingsFilePath); err != nil {
-			log.Println("Settings error", err)
+			logrus.WithError(err).Error("Settings error", err)
 		}
 	} else {
-		log.Panicln("Settings file not found:", err)
+		logrus.WithField("error", err).Panic("Settings file not found:", err)
 	}
 
 	// Loading config file if exists
 	var configFilePath = conf.ConfigFilePath
 	if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
 		if err = tweekConfigor.Load(conf, configFilePath); err != nil {
-			log.Println("Configuration error", err)
+			logrus.WithError(err).Error("Configuration error")
 		}
 	} else if _, err := os.Stat("./config/gateway.json"); !os.IsNotExist(err) {
 		if err = tweekConfigor.Load(conf, configFilePath); err != nil {
 			log.Println("Configuration error", err)
 		}
 	} else {
-		log.Println("Config file not found:", err)
+		logrus.WithError(err).Error("Config file not found")
 	}
 
 	return conf

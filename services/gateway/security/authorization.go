@@ -3,11 +3,10 @@ package security
 import (
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
-
 	"tweek-gateway/audit"
 
+	"github.com/sirupsen/logrus"
 	"github.com/urfave/negroni"
 )
 
@@ -16,24 +15,24 @@ func AuthorizationMiddleware(authorizer Authorizer, auditor audit.Auditor) negro
 	return negroni.HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		user, ok := r.Context().Value(UserInfoKey).(UserInfo)
 		if !ok {
-			log.Print("Authentication failed")
+			logrus.Error("Authentication failed")
 			auditor.TokenError(errors.New("Authentication failed"))
 			http.Error(rw, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 			return
 		}
 		if user.Issuer() == "tweek" {
 			next(rw, r)
-			log.Print("Issuer is tweek - ACCESS ALLOWED")
+			auditor.Allowed("tweek issuer", "any", "any")
 		} else {
 			sub, act, ctxs, err := ExtractFromRequest(r)
 			if err != nil {
-				log.Println("Failed to extract from request", err)
+				logrus.WithError(err).Error("Failed to extract from request")
 				auditor.AuthorizerError(sub.String(), fmt.Sprintf("%q", ctxs), act, err)
 				http.Error(rw, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			} else {
 				res, err := authorizer.Authorize(r.Context(), sub, ctxs, act)
 				if err != nil {
-					log.Println("Failed to validate request", err)
+					logrus.WithError(err).Error("Failed to validate request")
 					auditor.AuthorizerError(sub.String(), fmt.Sprintf("%q", ctxs), act, err)
 					http.Error(rw, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 					return

@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"runtime"
 	"sync"
 
-	"github.com/nats-io/go-nats"
+	"github.com/sirupsen/logrus"
+
+	nats "github.com/nats-io/go-nats"
 
 	"tweek-gateway/appConfig"
 )
@@ -69,14 +70,14 @@ func NewStatusHandler(config *appConfig.Upstreams) http.HandlerFunc {
 func SetupRevisionUpdater(natsEndpoint string) {
 	nc, err := nats.Connect(natsEndpoint)
 	if err != nil {
-		log.Panicln("Failed to connect to nats on", natsEndpoint)
+		logrus.WithField("natsEndpoint", natsEndpoint).Panic("Failed to connect to nats")
 	}
 
 	sub, err := nc.Subscribe("version", func(msg *nats.Msg) {
 		repoRevision = string(msg.Data)
 	})
 	if err != nil {
-		log.Panicln("Failed to subscribe to subject 'version' on", natsEndpoint)
+		logrus.WithField("natsEndpoint", natsEndpoint).Panic("Failed to subscribe to subject 'version'")
 	}
 	runtime.SetFinalizer(&repoRevision, func(interface{}) {
 		if sub != nil && sub.IsValid() {
@@ -89,19 +90,19 @@ func checkServiceStatus(serviceName string, serviceHost string) (interface{}, bo
 	resp, err := http.Get(fmt.Sprintf("%s/health", serviceHost))
 
 	if err != nil || resp == nil {
-		log.Printf("Service health request for %s failed with error: %v\n", serviceName, err)
+		logrus.WithError(err).WithField("serviceName", serviceName).Error("Service health request failed")
 		return "Service health request failed", false
 	}
 	defer resp.Body.Close()
 	contents, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Printf("Service health request for %s read failed with error: %v\n", serviceName, err)
+		logrus.WithError(err).WithField("serviceName", serviceName).Error("Service health request: read failed")
 		return "Service health request cannot be read", false
 	}
 	var status map[string]interface{}
 	err = json.Unmarshal(contents, &status)
 	if err != nil {
-		log.Printf("Service health request for %s JSON parse failed with error: %v\n", serviceName, err)
+		logrus.WithError(err).WithField("serviceName", serviceName).Error("Service health request: JSON parse failed")
 		return "Service health request responded with bad format", false
 	}
 	if resp.StatusCode > 400 {

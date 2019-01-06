@@ -3,17 +3,16 @@ package transformation
 import (
 	"context"
 	"fmt"
-	"log"
+	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
+	"github.com/urfave/negroni"
 	"net/http"
 	"net/url"
 	"path"
 	"regexp"
-
 	"tweek-gateway/appConfig"
 	"tweek-gateway/proxy"
 	"tweek-gateway/security"
-	"github.com/gorilla/mux"
-	"github.com/urfave/negroni"
 )
 
 // Mount - mounts the request transformation handlers and middleware
@@ -59,7 +58,7 @@ func createTransformMiddleware(routeConfig appConfig.V2Route, upstreams map[stri
 func parseUpstreamOrPanic(u string) *url.URL {
 	result, err := url.Parse(u)
 	if err != nil {
-		log.Panicln("Invalid upstream", u)
+		logrus.WithError(err).WithField("upstream", u).Panic("Invalid upstream")
 	}
 	return result
 }
@@ -75,7 +74,7 @@ func getURLForUpstream(upstream *url.URL, req *http.Request, urlRegexp *regexp.R
 	newURL := urlRegexp.ReplaceAllString(original, fmt.Sprintf("%v%v", upstream.String(), upstreamRoute))
 	result, err := url.Parse(newURL)
 	if err != nil {
-		log.Panicln("Failed converting context URL", err)
+		logrus.WithError(err).Panic("Failed converting context URL")
 	}
 	return result
 }

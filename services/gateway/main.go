@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -23,9 +22,13 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/urfave/negroni"
+
+	joonix "github.com/joonix/log"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
+	logrus.SetFormatter(&joonix.FluentdFormatter{})
 	configuration := appConfig.InitConfig()
 	externalApps.Init(&configuration.Security.PolicyStorage)
 
@@ -47,8 +50,9 @@ func runServer(port int, handler http.Handler) {
 		Handler: handler,
 	}
 
-	log.Printf("Gateway is listening on port %v", port)
-	log.Fatalf("Server on port %v failed unexpectedly: %v", port, server.ListenAndServe())
+	logrus.WithField("port", port).Info("Gateway is listening")
+	err := server.ListenAndServe()
+	logrus.WithError(err).WithField("port", port).Fatal("Server failed unexpectedly")
 }
 
 func newApp(config *appConfig.Configuration) http.Handler {
@@ -63,7 +67,7 @@ func newApp(config *appConfig.Configuration) http.Handler {
 
 	userInfoExtractor, err := setupSubjectExtractorWithRefresh(config.Security)
 	if err != nil {
-		log.Panicln("Unable to setup user info extractor", err)
+		logrus.WithError(err).Panic("Unable to setup user info extractor")
 	}
 
 	authenticationMiddleware := security.AuthenticationMiddleware(&config.Security, userInfoExtractor, auditor)
