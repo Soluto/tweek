@@ -119,10 +119,10 @@ func InitConfig() *Configuration {
 	const settingsFilePath = "./settings/settings.json"
 	if _, err := os.Stat(settingsFilePath); !os.IsNotExist(err) {
 		if err = tweekConfigor.Load(conf, settingsFilePath); err != nil {
-			logrus.WithError(err).Error("Settings error", err)
+			logrus.WithError(err).Error("Settings error")
 		}
 	} else {
-		logrus.WithField("error", err).Panic("Settings file not found:", err)
+		logrus.WithField("error", err).Panic("Settings file not found:")
 	}
 
 	// Loading config file if exists
