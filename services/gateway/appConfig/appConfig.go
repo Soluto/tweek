@@ -3,7 +3,6 @@ package appConfig
 import (
 	"encoding/base64"
 	"io/ioutil"
-	"log"
 	"os"
 
 	"github.com/jinzhu/configor"
@@ -134,7 +133,7 @@ func InitConfig() *Configuration {
 		}
 	} else if _, err := os.Stat("./config/gateway.json"); !os.IsNotExist(err) {
 		if err = tweekConfigor.Load(conf, configFilePath); err != nil {
-			log.Println("Configuration error", err)
+			logrus.WithError(err).Error("Configuration error")
 		}
 	} else {
 		logrus.WithError(err).Error("Config file not found")
