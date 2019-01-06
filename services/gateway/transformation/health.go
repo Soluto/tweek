@@ -2,7 +2,6 @@ package transformation
 
 import (
 	"io"
-	"log"
 	"net/http"
 
 	"github.com/urfave/negroni"
@@ -10,6 +9,7 @@ import (
 	"github.com/Soluto/tweek/services/gateway/appConfig"
 	"github.com/Soluto/tweek/services/gateway/proxy"
 	"github.com/Soluto/tweek/services/gateway/security"
+	"github.com/sirupsen/logrus"
 )
 
 // NewHealthHandler return /health endpoint handler
@@ -21,16 +21,16 @@ func NewHealthHandler(upstreams *appConfig.Upstreams, token security.JWTToken, m
 	apiForwarder := middleware.With(proxy.New(api, token))
 	authoringForwarder := middleware.With(proxy.New(authoring, token))
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		log.Print("Health check")
+		logrus.Info("Health check")
 		switch r.Host {
 		case "api":
-			log.Print("API Health check")
+			logrus.Info("API Health check")
 			apiForwarder.ServeHTTP(rw, r)
 		case "authoring":
-			log.Print("Authoring Health check")
+			logrus.Info("Authoring Health check")
 			authoringForwarder.ServeHTTP(rw, r)
 		default:
-			log.Print("Gateway Health check")
+			logrus.Info("Gateway Health check")
 			rw.WriteHeader(http.StatusOK)
 			io.WriteString(rw, "OK")
 		}

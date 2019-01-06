@@ -3,10 +3,10 @@ package appConfig
 import (
 	"encoding/base64"
 	"io/ioutil"
-	"log"
 	"os"
 
 	"github.com/jinzhu/configor"
+	"github.com/sirupsen/logrus"
 )
 
 // Upstreams is the list of upstrem URLs.
@@ -119,20 +119,20 @@ func InitConfig() *Configuration {
 	configFilePath := "/settings/settings.json"
 	if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
 		if err = tweekConfigor.Load(conf, configFilePath); err != nil {
-			log.Println("Configuration error", err)
+			logrus.WithError(err).Error("Configuration error")
 		}
 	} else {
-		log.Panicln("Config file not found:", err)
+		logrus.WithField("error", err).Panic("Config file not found")
 	}
 
 	// Loading config file if exists
 	configFilePath = "/config/gateway.json"
 	if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
 		if err = tweekConfigor.Load(conf, configFilePath); err != nil {
-			log.Println("Configuration error", err)
+			logrus.WithError(err).Error("Configuration error")
 		}
 	} else {
-		log.Println("Config file not found:", err)
+		logrus.WithError(err).Error("Config file not found")
 	}
 
 	return conf
