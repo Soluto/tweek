@@ -1,0 +1,66 @@
+
+# Gopkg.toml example
+#
+# Refer to https://github.com/golang/dep/blob/master/docs/Gopkg.toml.md
+# for detailed Gopkg.toml documentation.
+#
+# required = ["github.com/user/thing/cmd/thing"]
+# ignored = ["github.com/user/project/pkgX", "bitbucket.org/user/project/pkgA/pkgY"]
+#
+# [[constraint]]
+#   name = "github.com/user/project"
+#   version = "1.0.0"
+#
+# [[constraint]]
+#   name = "github.com/user/project2"
+#   branch = "dev"
+#   source = "github.com/myfork/project2"
+#
+# [[override]]
+#  name = "github.com/x/y"
+#  version = "2.4.0"
+
+
+# fsnotify below is necessary due to a bug with dep and fsnotify https://github.com/golang/dep/issues/1799
+required = ["gopkg.in/fsnotify.v1"]
+
+[[constraint]]
+  name = "github.com/joonix/log"
+  branch = "master"
+
+[[constraint]]
+  name = "github.com/sirupsen/logrus"
+  version = "1.2.0"
+
+[[constraint]]
+  name = "gopkg.in/fsnotify.v1"
+  source = "https://github.com/fsnotify/fsnotify.git"
+
+[[constraint]]
+  name = "github.com/dgrijalva/jwt-go"
+  version = "3.1.0"
+
+[[constraint]]
+  name = "github.com/gorilla/mux"
+  version = "1.6.1"
+
+[[constraint]]
+  name = "github.com/minio/minio-go"
+  version = "4.0.6"
+
+[[constraint]]
+  name = "github.com/urfave/negroni"
+  version = "0.3.0"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/vulcand/oxy"
+
+[[constraint]]
+  name = "github.com/nats-io/go-nats"
+  version = "1.4.0"
+
+[[constraint]]
+  name = "github.com/open-policy-agent/opa"
+  version = "0.8.2"
+

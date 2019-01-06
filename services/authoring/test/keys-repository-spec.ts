@@ -25,6 +25,7 @@ describe('keys-repository', () => {
 
   const testAuthor = { name: 'some name', email: 'some email' };
   const testKeyPath = 'tests/key';
+  const nonExistingKey = 'tests/not_existing';
 
   beforeEach(() => {
     mockGitRepo = <any>{};
@@ -123,6 +124,12 @@ describe('keys-repository', () => {
 
       // Assert
       expect(mockGitRepo.commitAndPush.calls[0].args[1]).to.equal(testAuthor);
+    });
+
+    it('shouldn\'t throw exception when trying to delete non existing key', async () => {
+      // Act
+      await target.deleteKeys([nonExistingKey], testAuthor);
+      expect(mockGitRepo.deleteFile.callCount).to.equal(2);
     });
   });
 
@@ -249,7 +256,7 @@ describe('keys-repository', () => {
       expect(keyDetails.implementation).to.deep.include(JSON.stringify(keyRevisions['revision-2']));
     });
 
-    it("should return key definition with the key's revision history", async () => {
+    it('should return key definition with the key\'s revision history', async () => {
       // Act
       const revisionHistory = await target.getKeyRevisionHistory(testKeyPath, {});
       // Assert

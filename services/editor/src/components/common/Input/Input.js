@@ -5,7 +5,16 @@ import './Input.css';
 
 const isEnterKeyPressed = event => event.keyCode === 13 || event.which === 13;
 
-const Input = ({ onEnterKeyPress, onKeyPress, onChange, autofocus, className, onFocus, onBlur, ...props }) =>
+const Input = ({
+  onEnterKeyPress,
+  onKeyPress,
+  onChange,
+  autofocus,
+  className,
+  onFocus,
+  onBlur,
+  ...props
+}) => (
   <input
     onFocus={onFocus}
     onBlur={onBlur}
@@ -21,7 +30,8 @@ const Input = ({ onEnterKeyPress, onKeyPress, onChange, autofocus, className, on
     onChange={e => onChange && onChange(e.target.value)}
     ref={e => e && autofocus && e.focus()}
     {...props}
-  />;
+  />
+);
 
 Input.propTypes = {
   onEnterKeyPress: PropTypes.func,
@@ -38,8 +48,8 @@ Input.propTypes = {
 Input.defaultProps = {
   onEnterKeyPress: undefined,
   onChange: undefined,
-  onFocus: ()=>{},
-  onBlur: ()=>{},
+  onFocus: () => {},
+  onBlur: () => {},
   placeholder: '',
   className: undefined,
   type: 'text',

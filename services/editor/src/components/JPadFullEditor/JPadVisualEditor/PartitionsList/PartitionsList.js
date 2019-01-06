@@ -45,7 +45,6 @@ class NewPartition extends React.Component {
   state = { partition: {}, defaultValue: '' };
 
   replaceState(state) {
-    this.state = state;
     this.setState(state);
   }
 

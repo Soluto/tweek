@@ -1,8 +1,8 @@
+/* global Promise */
 import React from 'react';
 import { Observable } from 'rxjs/Rx';
 import { setObservableConfig, compose } from 'recompose';
 
-import registerServiceWorker from '../registerServiceWorker';
 import withLoading from '../hoc/with-loading';
 import { refreshSchema } from '../services/context-service';
 import * as TypesService from '../services/types-service';
@@ -26,10 +26,7 @@ const App = ({ children }) => (
   </div>
 );
 
-const preload = async () => {
-  registerServiceWorker();
-  return await Promise.all([TypesService.refreshTypes(), refreshSchema()]);
-};
+const preload = async () => await Promise.all([TypesService.refreshTypes(), refreshSchema()]);
 
 const enhance = compose(withLoading(() => null, preload), withTypesService(TypesService));
 

@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore;
+﻿using System.Linq;
+using App.Metrics;
+using App.Metrics.AspNetCore;
+using App.Metrics.Formatters.Prometheus;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -13,8 +17,13 @@ namespace Tweek.Publishing.Service
             BuildWebHost(args).Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+        public static IWebHost BuildWebHost(string[] args)
+        {
+            var metrics = AppMetrics.CreateDefaultBuilder()
+                .OutputMetrics.AsPrometheusPlainText()
+                .Build();
+
+            var webhost = WebHost.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     var env = hostingContext.HostingEnvironment;
@@ -27,8 +36,17 @@ namespace Tweek.Publishing.Service
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                     logging.AddConsole();
                 })
+                .ConfigureMetrics(metrics)
+                .UseMetricsEndpoints(options =>
+                {
+                    options.MetricsEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
+                    options.MetricsTextEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
+                })
                 .UseStartup<Startup>()
                 .UseSerilog()
                 .Build();
+
+            return webhost;
+        }
     }
 }

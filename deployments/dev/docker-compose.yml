@@ -5,16 +5,22 @@ services:
     image: soluto/tweek-api
     build:
       context: ../../
-      dockerfile: TweekApiDockerfile
+      dockerfile: TweekApi.Dockerfile
 
   authoring:
     image: soluto/tweek-authoring
     build: ../../services/authoring
 
   editor:
-    image: soluto/tweek-editor
-    build: ../../services/editor
+    image: soluto/tweek-editor    
+    build: ../../services/editor      
     depends_on: 
+      - gateway
+
+  gateway:
+    image: soluto/tweek-gateway
+    build: ../../services/gateway
+    depends_on:
       - api
       - authoring
   
