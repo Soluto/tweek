@@ -3,8 +3,9 @@ package security
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/Soluto/tweek/services/gateway/appConfig"
 )
@@ -20,7 +21,7 @@ func NewUserInfoHandler(configuration *appConfig.Security, extractor SubjectExtr
 
 		jsonUserInfo, err := json.Marshal(userInfo.Sub())
 		if err != nil {
-			log.Panicln("Error serializing user info", err)
+			logrus.WithError(err).Panic("Error serializing user info")
 		}
 
 		rw.Write(jsonUserInfo)

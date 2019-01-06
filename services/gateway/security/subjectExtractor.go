@@ -3,12 +3,12 @@ package security
 import (
 	"context"
 	"fmt"
-	"log"
 	"sync"
 
-	"github.com/dgrijalva/jwt-go"
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/open-policy-agent/opa/ast"
 	"github.com/open-policy-agent/opa/rego"
+	"github.com/sirupsen/logrus"
 )
 
 // SubjectExtractor represents an interface used to extract user and group
@@ -32,13 +32,13 @@ func NewDefaultSubjectExtractor(rules, pkg, query string) *DefaultSubjectExtract
 	c := ast.NewCompiler()
 	module, err := ast.ParseModule("subject_extraction_rules.rego", rules)
 	if err != nil {
-		log.Panicln("Error parsing rules", err)
+		logrus.WithError(err).Panic("Error parsing rules")
 	}
 	c.Compile(map[string]*ast.Module{
 		"subject_extraction_rules.rego": module,
 	})
 	if c.Failed() {
-		log.Panicln("Error compiling rules", c.Errors)
+		logrus.WithField("errors", c.Errors).Panic("Error compiling rules")
 	}
 
 	rego := rego.New(
@@ -49,7 +49,7 @@ func NewDefaultSubjectExtractor(rules, pkg, query string) *DefaultSubjectExtract
 
 	partial, err := rego.PartialEval(context.Background())
 	if err != nil {
-		log.Panicln("Error loading Rego", err)
+		logrus.WithError(err).Panic("Error loading Rego")
 	}
 
 	return &DefaultSubjectExtractor{

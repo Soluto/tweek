@@ -3,11 +3,12 @@ package transformation
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"path"
 	"regexp"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/Soluto/tweek/services/gateway/appConfig"
 	"github.com/Soluto/tweek/services/gateway/proxy"
@@ -59,7 +60,7 @@ func createTransformMiddleware(routeConfig appConfig.V2Route, upstreams map[stri
 func parseUpstreamOrPanic(u string) *url.URL {
 	result, err := url.Parse(u)
 	if err != nil {
-		log.Panicln("Invalid upstream", u)
+		logrus.WithError(err).WithField("upstream", u).Panic("Invalid upstream")
 	}
 	return result
 }
@@ -75,7 +76,7 @@ func getURLForUpstream(upstream *url.URL, req *http.Request, urlRegexp *regexp.R
 	newURL := urlRegexp.ReplaceAllString(original, fmt.Sprintf("%v%v", upstream.String(), upstreamRoute))
 	result, err := url.Parse(newURL)
 	if err != nil {
-		log.Panicln("Failed converting context URL", err)
+		logrus.WithError(err).Panic("Failed converting context URL")
 	}
 	return result
 }

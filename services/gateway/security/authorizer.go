@@ -4,13 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"sync"
 
 	"github.com/open-policy-agent/opa/storage/inmem"
 
 	"github.com/open-policy-agent/opa/ast"
 	"github.com/open-policy-agent/opa/rego"
+	"github.com/sirupsen/logrus"
 )
 
 // Authorizer is the interface which allows authorization
@@ -28,19 +28,19 @@ func NewDefaultAuthorizer(rules, data, pkg, query string) *DefaultAuthorizer {
 	c := ast.NewCompiler()
 	module, err := ast.ParseModule("subject_extraction_rules.rego", rules)
 	if err != nil {
-		log.Panicln("Error parsing rules", err)
+		logrus.WithError(err).Panic("Error parsing rules")
 	}
 	c.Compile(map[string]*ast.Module{
 		"subject_extraction_rules.rego": module,
 	})
 	if c.Failed() {
-		log.Panicln("Error compiling rules", c.Errors)
+		logrus.WithField("errors", c.Errors).Panic("Error compiling rules")
 	}
 
 	var actualData map[string]interface{}
 	err = json.Unmarshal([]byte(data), &actualData)
 	if err != nil {
-		log.Panicln("Error deserializing JSON data", c.Errors)
+		logrus.WithError(err).Panic("Error deserializing JSON data")
 	}
 
 	dataStore := inmem.NewFromObject(actualData)
@@ -54,7 +54,7 @@ func NewDefaultAuthorizer(rules, data, pkg, query string) *DefaultAuthorizer {
 
 	partial, err := rego.PartialEval(context.Background())
 	if err != nil {
-		log.Panicln("Error loading Rego", err)
+		logrus.WithError(err).Panic("Error loading Rego")
 	}
 
 	return &DefaultAuthorizer{
@@ -114,5 +114,5 @@ func (s *SynchronizedAuthorizer) Update(a Authorizer) {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 	s.authorizer = a
-	log.Println("Authorization policy was refreshed")
+	logrus.Info("Authorization policy was refreshed")
 }
