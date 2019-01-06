@@ -5,8 +5,6 @@ ADD go.mod /src/go.mod
 ADD go.sum /src/go.sum
 WORKDIR /src
 
-RUN go build ./...
-
 # The scratch image, which we use in the end, neither has cmdline tools nor tmp directory
 # so we prepare it here, and copy later on
 RUN mkdir /empty_tmp && chmod 1777 /empty_tmp

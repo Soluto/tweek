@@ -1,5 +1,5 @@
 build:
-	CGO_ENABLED=0 go build ./...
+	CGO_ENABLED=0 go build
 
 start: 
 	CONFIGOR_ENV=local TWEEKGATEWAY_CONFIGFILEPATH=../../deployments/dev/gateway/config/gateway.json ./tweek-gateway
