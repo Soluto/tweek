@@ -15,7 +15,7 @@
             "program": "${workspaceRoot}",
             "env": {
                 "CONFIGOR_ENV": "local",
-                "CONFIG_FILE_PATH": "./config/gateway.json"
+                "TWEEKGATEWAY_CONFIGFILEPATH": "../../deployments/dev/gateway/config/gateway.json"
             },
             "args": [],
             "showLog": true

@@ -9,11 +9,11 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
-	"github.com/Soluto/tweek/services/gateway/audit"
-	"github.com/Soluto/tweek/services/gateway/externalApps"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
+	"tweek-gateway/appConfig"
+	"tweek-gateway/audit"
+	"tweek-gateway/externalApps"
 
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/negroni"

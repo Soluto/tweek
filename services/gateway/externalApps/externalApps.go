@@ -8,8 +8,8 @@ import (
 	"errors"
 	"io/ioutil"
 	"runtime"
+	"tweek-gateway/appConfig"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
 	minio "github.com/minio/minio-go"
 	nats "github.com/nats-io/go-nats"
 	"golang.org/x/crypto/pbkdf2"

@@ -9,7 +9,7 @@
     "node": ">=8.7.0"
   },
   "scripts": {
-    "start": "yarn docker-compose up --force-recreate -d git redis && yarn docker-compose up -d api authoring publishing",
+    "start": "yarn docker-compose up --force-recreate -d git redis && yarn docker-compose up -d gateway api authoring publishing",
     "test": "mocha './spec/**/*.js' --timeout 30000 --exit",
     "build": "yarn docker-compose build",
     "test:full-env": "yarn start && yarn test",

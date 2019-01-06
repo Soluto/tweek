@@ -5,11 +5,11 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
-	"github.com/Soluto/tweek/services/gateway/security"
 	minio "github.com/minio/minio-go"
 	nats "github.com/nats-io/go-nats"
 	"github.com/sirupsen/logrus"
+	"tweek-gateway/appConfig"
+	"tweek-gateway/security"
 )
 
 type authorizerInitializer func(*appConfig.Security) (security.Authorizer, error)

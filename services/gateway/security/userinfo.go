@@ -4,10 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"tweek-gateway/appConfig"
 
 	"github.com/sirupsen/logrus"
-
-	"github.com/Soluto/tweek/services/gateway/appConfig"
 )
 
 // NewUserInfoHandler - returns user name and group for the token in question

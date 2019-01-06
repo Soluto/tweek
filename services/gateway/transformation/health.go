@@ -1,15 +1,13 @@
 package transformation
 
 import (
+	"github.com/sirupsen/logrus"
+	"github.com/urfave/negroni"
 	"io"
 	"net/http"
-
-	"github.com/urfave/negroni"
-
-	"github.com/Soluto/tweek/services/gateway/appConfig"
-	"github.com/Soluto/tweek/services/gateway/proxy"
-	"github.com/Soluto/tweek/services/gateway/security"
-	"github.com/sirupsen/logrus"
+	"tweek-gateway/appConfig"
+	"tweek-gateway/proxy"
+	"tweek-gateway/security"
 )
 
 // NewHealthHandler return /health endpoint handler

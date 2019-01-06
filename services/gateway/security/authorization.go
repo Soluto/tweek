@@ -4,11 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"tweek-gateway/audit"
 
 	"github.com/sirupsen/logrus"
-
-	"github.com/Soluto/tweek/services/gateway/audit"
-
 	"github.com/urfave/negroni"
 )
 
