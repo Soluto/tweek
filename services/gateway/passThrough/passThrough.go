@@ -1,8 +1,9 @@
 package passThrough
 
 import (
-	"log"
 	"net/url"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/prometheus/client_golang/prometheus"
 
@@ -45,7 +46,7 @@ func MountWithHosts(upstream string, hosts []string, metricsName string, middlew
 func parseUpstreamOrPanic(u string) *url.URL {
 	result, err := url.Parse(u)
 	if err != nil {
-		log.Panicln("Invalid upstream", u)
+		logrus.WithError(err).WithField("upstream", u).Panic("Invalid upstream")
 	}
 	return result
 }

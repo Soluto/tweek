@@ -125,6 +125,14 @@
   version = "v0.1.0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:67af90f6f6551eed6e14b16833c68ff9e6a3d1e11ea296df70693b24744c24d1"
+  name = "github.com/joonix/log"
+  packages = ["."]
+  pruneopts = ""
+  revision = "d2d3f2f4a80658c67a0bc44021dcac30f3017c06"
+
+[[projects]]
   digest = "1:6a874e3ddfb9db2b42bd8c85b6875407c702fa868eed20634ff489bc896ccfd3"
   name = "github.com/konsorten/go-windows-terminal-sequences"
   packages = ["."]
@@ -159,14 +167,6 @@
   packages = ["."]
   pruneopts = ""
   revision = "565402cd71fbd9c12aa7e295324ea357e970a61e"
-
-[[projects]]
-  digest = "1:82b912465c1da0668582a7d1117339c278e786c2536b3c3623029a0c7141c2d0"
-  name = "github.com/mattn/go-runewidth"
-  packages = ["."]
-  pruneopts = ""
-  revision = "ce7b0b5c7b45a81508558cd1dba6bb1e4ddb51bb"
-  version = "v0.0.3"
 
 [[projects]]
   digest = "1:63722a4b1e1717be7b98fc686e0b30d5e7f734b9e93d7dee86293b6deab7ea28"
@@ -221,56 +221,22 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:28a9131d18ac1b8761f41370e59b7e807148bbd24a926816233522fb64e593bf"
-  name = "github.com/olekukonko/tablewriter"
-  packages = ["."]
-  pruneopts = ""
-  revision = "e6d60cf7ba1f42d86d54cdf5508611c4aafb3970"
-  version = "v0.0.1"
-
-[[projects]]
   digest = "1:0fdb581368fd048ec772eddd6033c856712e2f8129b96d2ca70217b0e4e469ac"
   name = "github.com/open-policy-agent/opa"
   packages = [
     "ast",
-    "bundle",
-    "dependencies",
-    "format",
-    "loader",
     "metrics",
-    "plugins",
-    "plugins/bundle",
-    "plugins/logs",
-    "plugins/rest",
-    "plugins/status",
     "rego",
-    "repl",
-    "runtime",
-    "server",
-    "server/authorizer",
-    "server/identifier",
-    "server/types",
-    "server/writer",
     "storage",
     "storage/inmem",
     "topdown",
     "topdown/builtins",
     "types",
     "util",
-    "version",
-    "watch",
   ]
   pruneopts = ""
   revision = "877d39f035d1756b07a6ce8582bf793b7f2c1714"
   version = "v0.8.2"
-
-[[projects]]
-  digest = "1:4aee2a94909f9d05d53281e22268c629f6eba9ddc179fdbcd6466de5a998e01e"
-  name = "github.com/peterh/liner"
-  packages = ["."]
-  pruneopts = ""
-  revision = "5a0dfa99e2aa1d433a9642e863da51402e609376"
-  version = "v1.1.0"
 
 [[projects]]
   digest = "1:7365acd48986e205ccb8652cc746f09c8b7876030d53710ea6ef7d0bd0dcd7ca"
@@ -286,7 +252,6 @@
   packages = [
     "prometheus",
     "prometheus/internal",
-    "prometheus/promhttp",
   ]
   pruneopts = ""
   revision = "abad2d1bd44235a26707c172eab6bca5bf2dbad3"
@@ -475,15 +440,16 @@
     "github.com/dgrijalva/jwt-go/request",
     "github.com/gorilla/mux",
     "github.com/jinzhu/configor",
+    "github.com/joonix/log",
     "github.com/lestrrat-go/jwx/jwk",
     "github.com/minio/minio-go",
     "github.com/nats-io/go-nats",
     "github.com/open-policy-agent/opa/ast",
     "github.com/open-policy-agent/opa/rego",
-    "github.com/open-policy-agent/opa/runtime",
     "github.com/open-policy-agent/opa/storage/inmem",
     "github.com/prometheus/client_golang/prometheus",
     "github.com/rs/cors",
+    "github.com/sirupsen/logrus",
     "github.com/urfave/negroni",
     "github.com/vulcand/oxy/buffer",
     "github.com/vulcand/oxy/forward",
