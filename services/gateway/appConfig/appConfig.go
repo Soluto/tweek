@@ -132,7 +132,7 @@ func InitConfig() *Configuration {
 			logrus.WithError(err).Error("Configuration error")
 		}
 	} else if _, err := os.Stat("/config/gateway.json"); !os.IsNotExist(err) {
-		if err = tweekConfigor.Load(conf, configFilePath); err != nil {
+		if err = tweekConfigor.Load(conf, "/config/gateway.json"); err != nil {
 			logrus.WithError(err).Error("Configuration error")
 		}
 	} else {
