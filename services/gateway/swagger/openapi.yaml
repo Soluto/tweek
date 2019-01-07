@@ -30,7 +30,7 @@ paths:
             additionalProperties:
               type: string
         - name: keyName
-          in: path
+          in: query
           description: Context ids
           required: true
           schema:
@@ -134,7 +134,7 @@ paths:
         - keys
       parameters:
         - description: ''
-          in: path
+          in: query
           name: keyPath
           required: true
           schema:
