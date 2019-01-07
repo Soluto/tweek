@@ -31,7 +31,7 @@ paths:
           description: "Key not found"
       parameters:
         - name: keyName
-          in: query
+          in: path
           description: "Configuration key name"
           type: string
           required: true
@@ -128,7 +128,7 @@ paths:
       parameters:
         -
           description: ""
-          in: query
+          in: path
           name: keyPath
           required: true
           type: string
