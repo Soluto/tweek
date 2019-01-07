@@ -3,18 +3,16 @@ package transformation
 import (
 	"context"
 	"fmt"
+	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
+	"github.com/urfave/negroni"
 	"net/http"
 	"net/url"
 	"path"
 	"regexp"
-
-	"github.com/sirupsen/logrus"
-
-	"github.com/Soluto/tweek/services/gateway/appConfig"
-	"github.com/Soluto/tweek/services/gateway/proxy"
-	"github.com/Soluto/tweek/services/gateway/security"
-	"github.com/gorilla/mux"
-	"github.com/urfave/negroni"
+	"tweek-gateway/appConfig"
+	"tweek-gateway/proxy"
+	"tweek-gateway/security"
 )
 
 // Mount - mounts the request transformation handlers and middleware

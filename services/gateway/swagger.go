@@ -10,7 +10,7 @@ import (
 )
 
 func swaggerHandler() http.HandlerFunc {
-	data, err := ioutil.ReadFile("/swagger/swagger.yml")
+	data, err := ioutil.ReadFile("./swagger/swagger.yml")
 	if err != nil {
 		logrus.Panic("Couldn't load /swagger/swagger.yml")
 	}

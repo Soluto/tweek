@@ -103,11 +103,12 @@ type PolicyStorage struct {
 
 // Configuration is the root element of configuration for gateway
 type Configuration struct {
-	Upstreams Upstreams
-	V1Hosts   V1Hosts
-	V2Routes  []V2Route
-	Server    Server
-	Security  Security
+	Upstreams      Upstreams
+	V1Hosts        V1Hosts
+	V2Routes       []V2Route
+	Server         Server
+	Security       Security
+	ConfigFilePath string
 }
 
 // InitConfig initializes the configuration
@@ -115,20 +116,23 @@ func InitConfig() *Configuration {
 	conf := &Configuration{}
 
 	tweekConfigor := configor.New(&configor.Config{ENVPrefix: "TWEEKGATEWAY"})
+	const settingsFilePath = "./settings/settings.json"
+	if _, err := os.Stat(settingsFilePath); !os.IsNotExist(err) {
+		if err = tweekConfigor.Load(conf, settingsFilePath); err != nil {
+			logrus.WithError(err).Error("Settings error")
+		}
+	} else {
+		logrus.WithField("error", err).Panic("Settings file not found:")
+	}
 
-	configFilePath := "/settings/settings.json"
+	// Loading config file if exists
+	var configFilePath = conf.ConfigFilePath
 	if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
 		if err = tweekConfigor.Load(conf, configFilePath); err != nil {
 			logrus.WithError(err).Error("Configuration error")
 		}
-	} else {
-		logrus.WithField("error", err).Panic("Config file not found")
-	}
-
-	// Loading config file if exists
-	configFilePath = "/config/gateway.json"
-	if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
-		if err = tweekConfigor.Load(conf, configFilePath); err != nil {
+	} else if _, err := os.Stat("/config/gateway.json"); !os.IsNotExist(err) {
+		if err = tweekConfigor.Load(conf, "/config/gateway.json"); err != nil {
 			logrus.WithError(err).Error("Configuration error")
 		}
 	} else {
