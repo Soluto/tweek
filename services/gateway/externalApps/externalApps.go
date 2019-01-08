@@ -7,13 +7,14 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
-	"log"
 	"runtime"
+	"tweek-gateway/appConfig"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
-	"github.com/minio/minio-go"
-	"github.com/nats-io/go-nats"
+	minio "github.com/minio/minio-go"
+	nats "github.com/nats-io/go-nats"
 	"golang.org/x/crypto/pbkdf2"
+
+	"github.com/sirupsen/logrus"
 )
 
 // ExternalApp - type to store external app info
@@ -62,12 +63,12 @@ func compareKeys(appKey SecretKey, secretKey string) bool {
 
 	saltBuf, err := hex.DecodeString(appKey.Salt)
 	if err != nil {
-		log.Panicln("Salt decode failed:", err)
+		logrus.WithError(err).Panic("Salt decoding failed")
 	}
 
 	secretKeyBuf, err := base64.StdEncoding.DecodeString(secretKey)
 	if err != nil {
-		log.Println("Invalid secretKeyFormat", err)
+		logrus.WithError(err).Error("Invalid secret key format")
 		return false
 	}
 
@@ -79,18 +80,18 @@ func compareKeys(appKey SecretKey, secretKey string) bool {
 
 // Init - function to init external apps
 func Init(cfg *appConfig.PolicyStorage) {
-	log.Println("Initializing external apps...")
+	logrus.Info("Initializing external apps...")
 	repo = externalAppsRepo{}
 
 	client, err := minio.New(cfg.MinioEndpoint, cfg.MinioAccessKey, cfg.MinioSecretKey, cfg.MinioUseSSL)
 	if err != nil {
-		log.Panic("External apps init error: ", err)
+		logrus.WithError(err).Panic("External apps init error")
 	}
 	repo.minioClient = client
 
 	nc, err := nats.Connect(cfg.NatsEndpoint)
 	if err != nil {
-		log.Panic("External apps init error: ", err)
+		logrus.WithError(err).Panic("External apps init error")
 	}
 
 	subscription, err := nc.Subscribe("version", refreshApps(cfg))
@@ -102,22 +103,22 @@ func Init(cfg *appConfig.PolicyStorage) {
 
 func refreshApps(cfg *appConfig.PolicyStorage) nats.MsgHandler {
 	return func(msg *nats.Msg) {
-		log.Println("Refreshing external apps...")
+		logrus.Info("Refreshing external apps...")
 		obj, err := repo.minioClient.GetObject(cfg.MinioBucketName, "external_apps.json", minio.GetObjectOptions{})
 		if err != nil {
-			log.Panic("Get external apps from minio failed: ", err)
+			logrus.WithError(err).Panic("Get external apps from minio failed")
 		}
 		buf, err := ioutil.ReadAll(obj)
 		if err != nil {
-			log.Panic("Read external apps object failed:", err)
+			logrus.WithError(err).Panic("Read external apps object failed")
 		}
 		var extApps map[string]ExternalApp
 		err = json.Unmarshal(buf, &extApps)
 		if err != nil {
-			log.Panic("Refresh app failed: deserialize object ")
+			logrus.WithError(err).Panic("Refresh app failed: deserialize object")
 		}
 		repo.externalApps = extApps
-		log.Println("Done refreshing external apps.")
+		logrus.Info("Done refreshing external apps.")
 	}
 }
 

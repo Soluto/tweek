@@ -4,7 +4,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
+	"tweek-gateway/appConfig"
+
 	"github.com/gorilla/mux"
 )
 

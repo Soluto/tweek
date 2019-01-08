@@ -3,10 +3,10 @@ package appConfig
 import (
 	"encoding/base64"
 	"io/ioutil"
-	"log"
 	"os"
 
 	"github.com/jinzhu/configor"
+	"github.com/sirupsen/logrus"
 )
 
 // Upstreams is the list of upstrem URLs.
@@ -47,25 +47,25 @@ type EnvInlineOrPath struct {
 
 // BasicAuth - struct with config related to Basic Auth
 type BasicAuth struct {
-	RedirectURLs []string `json:"redirect_urls"`
+	RedirectURLs []string `json:"redirect_urls" yaml:"redirect_urls"`
 }
 
 // AuthLogin - configuration of login information
 type AuthLogin struct {
-	LoginType      string                 `json:"login_type"`
-	AdditionalInfo map[string]interface{} `json:"additional_info"`
-	Scope          string                 `json:"scope"`
-	ResponseType   string                 `json:"response_type"`
+	LoginType      string                 `json:"login_type" yaml:"login_type"`
+	AdditionalInfo map[string]interface{} `json:"additional_info" yaml:"additional_info"`
+	Scope          string                 `json:"scope" yaml:"scope"`
+	ResponseType   string                 `json:"response_type" yaml:"response_type"`
 }
 
 // AuthProvider - configuration of each auth provider
 type AuthProvider struct {
-	Name      string    `json:"name"`
-	Issuer    string    `json:"issuer"`
-	Authority string    `json:"authority"`
-	ClientID  string    `json:"client_id"`
-	JWKSURL   string    `json:"jwks_uri"`
-	LoginInfo AuthLogin `json:"login_info"`
+	Name      string    `json:"name" yaml:"name"`
+	Issuer    string    `json:"issuer" yaml:"issuer"`
+	Authority string    `json:"authority" yaml:"authority"`
+	ClientID  string    `json:"client_id" yaml:"client_id"`
+	JWKSURL   string    `json:"jwks_uri" yaml:"jwks_uri"`
+	LoginInfo AuthLogin `json:"login_info" yaml:"login_info"`
 }
 
 // Auth - struct with config related to authentication
@@ -103,12 +103,12 @@ type PolicyStorage struct {
 
 // Configuration is the root element of configuration for gateway
 type Configuration struct {
-	Upstreams Upstreams
-	V1Hosts   V1Hosts
-	V2Routes  []V2Route
-	Server    Server
-	Security  Security
-	Version   string
+	Upstreams      Upstreams
+	V1Hosts        V1Hosts
+	V2Routes       []V2Route
+	Server         Server
+	Security       Security
+	ConfigFilePath string
 }
 
 // InitConfig initializes the configuration
@@ -116,20 +116,27 @@ func InitConfig() *Configuration {
 	conf := &Configuration{}
 
 	tweekConfigor := configor.New(&configor.Config{ENVPrefix: "TWEEKGATEWAY"})
-
-	configFilePath := "/settings/settings.json"
-	if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
-		tweekConfigor.Load(conf, configFilePath)
+	const settingsFilePath = "./settings/settings.json"
+	if _, err := os.Stat(settingsFilePath); !os.IsNotExist(err) {
+		if err = tweekConfigor.Load(conf, settingsFilePath); err != nil {
+			logrus.WithError(err).Error("Settings error")
+		}
 	} else {
-		log.Panicln("Config file not found:", err)
+		logrus.WithField("error", err).Panic("Settings file not found:")
 	}
 
 	// Loading config file if exists
-	configFilePath = "/config/gateway.json"
+	var configFilePath = conf.ConfigFilePath
 	if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
-		tweekConfigor.Load(conf, configFilePath)
+		if err = tweekConfigor.Load(conf, configFilePath); err != nil {
+			logrus.WithError(err).Error("Configuration error")
+		}
+	} else if _, err := os.Stat("/config/gateway.json"); !os.IsNotExist(err) {
+		if err = tweekConfigor.Load(conf, "/config/gateway.json"); err != nil {
+			logrus.WithError(err).Error("Configuration error")
+		}
 	} else {
-		log.Panicln("Config file not found:", err)
+		logrus.WithError(err).Error("Config file not found")
 	}
 
 	return conf

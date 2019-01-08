@@ -3,12 +3,13 @@ package security
 import (
 	"crypto/x509"
 	"encoding/pem"
-	"log"
 	"sync"
 	"time"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
+	"tweek-gateway/appConfig"
+
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/sirupsen/logrus"
 )
 
 type TweekClaims struct {
@@ -48,7 +49,7 @@ const expirationPeriod = 24
 func InitJWT(keyEnv *appConfig.EnvInlineOrPath) JWTToken {
 	key, err := getPrivateKey(keyEnv)
 	if err != nil {
-		log.Panicln("Private key retrieving failed:", err)
+		logrus.WithError(err).Panic("Private key retrieving failed")
 	}
 
 	token := &JWTTokenData{

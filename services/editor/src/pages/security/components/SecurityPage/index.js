@@ -1,32 +1,9 @@
 import React from 'react';
-import {
-  compose,
-  mapPropsStream,
-  withProps,
-  withHandlers,
-  branch,
-} from 'recompose';
+import { compose, mapPropsStream, withProps, withHandlers, branch } from 'recompose';
 import Rx from 'rxjs';
 import { getPolicies, putPolicies } from '../../../../store/ducks/policies';
 import './index.css';
 import PoliciesEditor from './PoliciesEditor';
-
-const objects = [
-  'values',
-  'context',
-  'keys',
-  'tags',
-  'schemas',
-  'manifests',
-  'suggestions',
-  'search',
-  'dependents',
-  'revision-history',
-  'policies',
-  'apps',
-  'repo',
-  '*',
-];
 
 const mapDisplayPoliciesToPolicies = displayPolicies => ({ policies: displayPolicies });
 

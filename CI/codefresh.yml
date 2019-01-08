@@ -300,27 +300,14 @@ steps:
           - master
     candidate: ${{BuildingGitRepository}}
 
-  PushGitRepositoryGateway:
+  PushGatewayImageMaster:
     type: push
-    title: Push Git Repository - gateway
+    title: Push Gateway - latest
     when:
       branch:
         only:
-          - gateway
-    candidate: ${{BuildingGitRepository}}
-    tags:
-      - latest-gateway
-      - "gateway-${{CF_BUILD_ID}}"
-
-  PushGatewayImageGateway:
-    type: push
-    title: Push Gateway - gateway
-    when:
-      branch:
-        only:
-          - gateway
+          - master
     candidate: ${{BuildingGateway}}
     tags:
-      - latest-gateway
-      - ${{TWEEK_DOCKER_TAG_GATEWAY}}-gateway
-      - "gateway-${{CF_BUILD_ID}}"
+      - latest
+      - ${{TWEEK_DOCKER_TAG_GATEWAY}}

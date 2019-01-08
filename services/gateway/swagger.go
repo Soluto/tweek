@@ -4,14 +4,15 @@ import (
 	"bytes"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
+
+	"github.com/sirupsen/logrus"
 )
 
 func swaggerHandler() http.HandlerFunc {
-	data, err := ioutil.ReadFile("/swagger/swagger.yml")
+	data, err := ioutil.ReadFile("./swagger/swagger.yml")
 	if err != nil {
-		log.Panicln("Couldn't load /swagger/swagger.yml")
+		logrus.Panic("Couldn't load /swagger/swagger.yml")
 	}
 	dataReader := bytes.NewReader(data)
 
@@ -20,7 +21,7 @@ func swaggerHandler() http.HandlerFunc {
 		w.WriteHeader(http.StatusOK)
 		_, err = io.Copy(w, dataReader)
 		if err != nil {
-			log.Println("Failed to output swagger.yml")
+			logrus.Error("Failed to output swagger.yml")
 		}
 	}
 }

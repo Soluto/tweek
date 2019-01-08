@@ -2,10 +2,10 @@ package security
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/lestrrat-go/jwx/jwk"
+	"github.com/sirupsen/logrus"
 )
 
 var jwkCache map[string]*jwk.Set
@@ -16,6 +16,9 @@ func init() {
 
 func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
 	keys := jwkCache[endpoint]
+	if keys == nil {
+		return nil, fmt.Errorf("No keys found for endpoint %s", endpoint)
+	}
 	k := keys.LookupKeyID(keyID)
 	if len(k) == 0 {
 		loadEndpoint(endpoint)
@@ -54,7 +57,7 @@ func RefreshEndpoints(endpoints []string) {
 func loadEndpoint(endpoint string) {
 	keySet, err := jwk.FetchHTTP(endpoint)
 	if err != nil {
-		log.Printf("Unable to load endpoint %s", endpoint)
+		logrus.WithError(err).WithField("endpoint", endpoint).Error("Unable to load keys for endpoint")
 	}
 	jwkCache[endpoint] = keySet
 }

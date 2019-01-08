@@ -38,6 +38,22 @@
             "group": "default",
             "user": "00000000-0000-0000-0000-000000000000",
             "contexts": {},
+            "object": "repo/policies",
+            "action": "read",
+            "effect": "allow"
+        },
+        {
+            "group": "default",
+            "user": "00000000-0000-0000-0000-000000000000",
+            "contexts": {},
+            "object": "repo/policies",
+            "action": "write",
+            "effect": "allow"
+        },
+        {
+            "group": "default",
+            "user": "00000000-0000-0000-0000-000000000000",
+            "contexts": {},
             "object": "repo/tags",
             "action": "write",
             "effect": "allow"
