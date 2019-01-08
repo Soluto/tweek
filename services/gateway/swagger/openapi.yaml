@@ -5,6 +5,14 @@ info:
     name: MIT
     url: 'https://github.com/Soluto/tweek/blob/master/LICENSE'
   version: 0.1.0
+components:
+  securitySchemes:
+    bearerAuth:           
+      type: http
+      scheme: bearer
+      bearerFormat: JWT   
+security:
+  - bearerAuth: []         
 paths:
   /values:
     get:
@@ -121,7 +129,7 @@ paths:
           description: OK
   /keys:
     get:
-      operationId: KeysGetKey
+      operationId: GetKey
       responses:
         '200':
           description: Ok

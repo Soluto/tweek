@@ -27,9 +27,9 @@ func swaggerHandler() http.HandlerFunc {
 }
 
 func openapiHandler() http.HandlerFunc {
-	data, err := ioutil.ReadFile("./swagger/openApi.yaml")
+	data, err := ioutil.ReadFile("./swagger/openapi.yaml")
 	if err != nil {
-		logrus.Panic("Couldn't load /swagger/openApi.yaml")
+		logrus.Panic("Couldn't load /swagger/openapi.yaml")
 	}
 	dataReader := bytes.NewReader(data)
 
@@ -38,7 +38,7 @@ func openapiHandler() http.HandlerFunc {
 		w.WriteHeader(http.StatusOK)
 		_, err = io.Copy(w, dataReader)
 		if err != nil {
-			logrus.Error("Failed to output openApi.yaml")
+			logrus.Error("Failed to output openapi.yaml")
 		}
 	}
 }
