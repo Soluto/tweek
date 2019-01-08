@@ -6,10 +6,9 @@ import (
 	"sync"
 	"time"
 
-	"tweek-gateway/appConfig"
-
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/sirupsen/logrus"
+	"tweek-gateway/appConfig"
 )
 
 type TweekClaims struct {
