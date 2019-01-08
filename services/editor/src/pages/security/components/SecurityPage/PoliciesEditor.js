@@ -28,12 +28,15 @@ const PoliciesEditor = ({
       data={unsavedPolicies}
       onEditTable={onEdit}
       columns={{
-        user: 'string',
-        group: 'string',
-        contexts: 'json',
-        object: 'string',
-        action: 'string',
-        effect: 'yes-or-no',
+        user: { type: 'string' },
+        group: { type: 'string' },
+        contexts: { type: 'json' },
+        object: { type: 'string' },
+        action: { type: 'string' },
+        effect: {
+          type: 'toggle',
+          columnSpecificProps: { toggleOnValue: 'allow', toggleOffValue: 'deny' },
+        },
       }}
     />
   </div>
