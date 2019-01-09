@@ -2,14 +2,14 @@ package main
 
 import (
 	"io/ioutil"
-	"log"
 	"runtime"
 	"time"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
-	"github.com/Soluto/tweek/services/gateway/security"
 	minio "github.com/minio/minio-go"
 	nats "github.com/nats-io/go-nats"
+	"github.com/sirupsen/logrus"
+	"tweek-gateway/appConfig"
+	"tweek-gateway/security"
 )
 
 type authorizerInitializer func(*appConfig.Security) (security.Authorizer, error)
@@ -66,7 +66,7 @@ func refreshAuthorizer(cfg *appConfig.Security, authorizer *security.Synchronize
 	return nats.MsgHandler(func(msg *nats.Msg) {
 		defer func() {
 			if r := recover(); r != nil {
-				log.Println("Failed to refresh authorizer", r)
+				logrus.WithField(logrus.ErrorKey, r).Warning("Failed to refresh authorizer")
 			}
 		}()
 
@@ -74,7 +74,7 @@ func refreshAuthorizer(cfg *appConfig.Security, authorizer *security.Synchronize
 		if err == nil {
 			authorizer.Update(newAuthorizer)
 		} else {
-			log.Println("Error updating authorizer", err)
+			logrus.WithError(err).Error("Error updating authorizer")
 		}
 	})
 }
@@ -87,7 +87,7 @@ func withRetry(times int, sleepDuration time.Duration, action authorizerInitiali
 		if err == nil {
 			return res, nil
 		}
-		log.Printf("Error creating authorizer, retrying...\n %v", err)
+		logrus.WithError(err).Error("Error creating authorizer, retrying...")
 		time.Sleep(sleepDuration)
 	}
 	return nil, err
@@ -122,7 +122,7 @@ func refreshExtractor(cfg appConfig.Security, extractor *security.SynchronizedSu
 	return nats.MsgHandler(func(msg *nats.Msg) {
 		defer func() {
 			if r := recover(); r != nil {
-				log.Println("Failed to refresh user info extractor", r)
+				logrus.WithField(logrus.ErrorKey, r).Error("Failed to refresh user info extractor")
 			}
 		}()
 
@@ -130,7 +130,7 @@ func refreshExtractor(cfg appConfig.Security, extractor *security.SynchronizedSu
 		if err == nil {
 			extractor.UpdateExtractor(newExtractor)
 		} else {
-			log.Println("Error updating user info extractor", err)
+			logrus.WithError(err).Error("Error updating user info extractor")
 		}
 	})
 }

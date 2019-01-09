@@ -19,3 +19,6 @@ gateway
 
 # macOS Finder creates these files
 .DS_Store
+
+# gateway executable file
+tweek-gateway

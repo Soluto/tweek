@@ -3,10 +3,10 @@ package appConfig
 import (
 	"encoding/base64"
 	"io/ioutil"
-	"log"
 	"os"
 
 	"github.com/jinzhu/configor"
+	"github.com/sirupsen/logrus"
 )
 
 // Upstreams is the list of upstrem URLs.
@@ -103,11 +103,12 @@ type PolicyStorage struct {
 
 // Configuration is the root element of configuration for gateway
 type Configuration struct {
-	Upstreams Upstreams
-	V1Hosts   V1Hosts
-	V2Routes  []V2Route
-	Server    Server
-	Security  Security
+	Upstreams      Upstreams
+	V1Hosts        V1Hosts
+	V2Routes       []V2Route
+	Server         Server
+	Security       Security
+	ConfigFilePath string
 }
 
 // InitConfig initializes the configuration
@@ -115,24 +116,27 @@ func InitConfig() *Configuration {
 	conf := &Configuration{}
 
 	tweekConfigor := configor.New(&configor.Config{ENVPrefix: "TWEEKGATEWAY"})
-
-	configFilePath := "/settings/settings.json"
-	if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
-		if err = tweekConfigor.Load(conf, configFilePath); err != nil {
-			log.Println("Configuration error", err)
+	const settingsFilePath = "./settings/settings.json"
+	if _, err := os.Stat(settingsFilePath); !os.IsNotExist(err) {
+		if err = tweekConfigor.Load(conf, settingsFilePath); err != nil {
+			logrus.WithError(err).Error("Settings error")
 		}
 	} else {
-		log.Panicln("Config file not found:", err)
+		logrus.WithField("error", err).Panic("Settings file not found:")
 	}
 
 	// Loading config file if exists
-	configFilePath = "/config/gateway.json"
+	var configFilePath = conf.ConfigFilePath
 	if _, err := os.Stat(configFilePath); !os.IsNotExist(err) {
 		if err = tweekConfigor.Load(conf, configFilePath); err != nil {
-			log.Println("Configuration error", err)
+			logrus.WithError(err).Error("Configuration error")
+		}
+	} else if _, err := os.Stat("/config/gateway.json"); !os.IsNotExist(err) {
+		if err = tweekConfigor.Load(conf, "/config/gateway.json"); err != nil {
+			logrus.WithError(err).Error("Configuration error")
 		}
 	} else {
-		log.Println("Config file not found:", err)
+		logrus.WithError(err).Error("Config file not found")
 	}
 
 	return conf
