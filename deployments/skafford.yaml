@@ -1,0 +1,23 @@
+apiVersion: skaffold/v1alpha5
+kind: Config
+build:
+  artifacts:
+  - image: soluto/tweek-api
+    context: .
+    docker:
+      dockerfile: TweekApi.Dockerfile
+  - image: soluto/tweek-git
+    context: services/git-service/BareRepository
+  - image: soluto/tweek-authoring
+    context: services/authoring
+  - image: soluto/tweek-publishing
+    context: services/publishing
+  - image: soluto/tweek-gateway
+    context: services/gateway
+  - image: soluto/tweek-editor
+    context: services/editor
+
+deploy:
+  kubectl:
+    manifests:
+    - deployments/kubernetes/*.yaml
