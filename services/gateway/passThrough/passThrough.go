@@ -7,10 +7,10 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/Soluto/tweek/services/gateway/metrics"
-	"github.com/Soluto/tweek/services/gateway/proxy"
 	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"
+	"tweek-gateway/metrics"
+	"tweek-gateway/proxy"
 )
 
 // MountWithoutHost - mounts the request passThrough handlers and middleware

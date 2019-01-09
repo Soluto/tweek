@@ -9,8 +9,8 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
-	"github.com/Soluto/tweek/services/gateway/security"
+	"tweek-gateway/appConfig"
+	"tweek-gateway/security"
 	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"
 )

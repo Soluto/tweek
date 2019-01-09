@@ -7,18 +7,18 @@ import (
 	"os"
 	"time"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
-	"github.com/Soluto/tweek/services/gateway/audit"
-	"github.com/Soluto/tweek/services/gateway/corsSupport"
-	"github.com/Soluto/tweek/services/gateway/externalApps"
-	"github.com/Soluto/tweek/services/gateway/handlers"
-	"github.com/Soluto/tweek/services/gateway/metrics"
-	"github.com/Soluto/tweek/services/gateway/proxy"
+	"tweek-gateway/appConfig"
+	"tweek-gateway/audit"
+	"tweek-gateway/corsSupport"
+	"tweek-gateway/externalApps"
+	"tweek-gateway/handlers"
+	"tweek-gateway/metrics"
+	"tweek-gateway/proxy"
 
-	"github.com/Soluto/tweek/services/gateway/passThrough"
+	"tweek-gateway/passThrough"
 
-	"github.com/Soluto/tweek/services/gateway/security"
-	"github.com/Soluto/tweek/services/gateway/transformation"
+	"tweek-gateway/security"
+	"tweek-gateway/transformation"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/urfave/negroni"
@@ -106,6 +106,7 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	router.V2Router().PathPrefix("/current-user").HandlerFunc(security.NewUserInfoHandler(&config.Security, userInfoExtractor))
 
 	router.MainRouter().PathPrefix("/swagger.yml").HandlerFunc(swaggerHandler())
+	router.MainRouter().PathPrefix("/openapi.yaml").HandlerFunc(openapiHandler())
 
 	app := negroni.New(recovery)
 
