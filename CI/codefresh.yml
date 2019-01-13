@@ -117,16 +117,6 @@ steps:
             links:
               - gateway:api
               - gateway:authoring
-              
-          api-swagger:
-            image: node:slim
-            depends_on:
-              - api
-              - publishing
-            volumes:
-              - ${{CF_VOLUME}}:/repo
-            working_dir: /repo/tweek/CI
-            command: wget --tries 20 --timeout=15 --read-timeout=20 --waitretry=30 --retry-connrefused -O api-swagger.json http://api/api/swagger.json
         on_success:
           metadata:
             set:
@@ -136,6 +126,8 @@ steps:
                 - CF_QUALITY: true
               - '${{BuildingAuthoring.imageId}}':
                 - CF_QUALITY: true
+              - '${{BuildingGateway.imageId}}':
+                - CF_QUALITY: true
         on_fail:
           metadata:
             set:
@@ -144,6 +136,8 @@ steps:
               - '${{BuildingPublishing.imageId}}':
                 - CF_QUALITY: false
               - '${{BuildingAuthoring.imageId}}':
+                - CF_QUALITY: false
+              - '${{BuildingGateway.imageId}}':
                 - CF_QUALITY: false
 
       UiTests:
@@ -192,20 +186,6 @@ steps:
     name: release
     stage: release
     steps:
-      Swagger:
-        title: Upload swagger
-        when:
-          condition:
-            all:
-              executeForMasterBranch: "'${{CF_BRANCH}}' == 'master'"
-              executeForNewVersions: "'${{TWEEK_DOCKER_TAG_API}}' != 'latest'"
-        image: node:slim
-        working_directory: ./CI
-        environment: 
-          - UPDATE_SWAGGER_SECRET=${{UPDATE_SWAGGER_SECRET}}
-        commands:
-          - ./update_swagger.sh api $TWEEK_DOCKER_TAG_API ./api-swagger.json
-
       PushApiImageMaster:
         type: push
         title: Push Tweek Api - lastest
