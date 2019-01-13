@@ -1,4 +1,4 @@
-apiVersion: skaffold/v1alpha5
+apiVersion: skaffold/v1beta2
 kind: Config
 build:
   artifacts:
@@ -20,4 +20,17 @@ build:
 deploy:
   kubectl:
     manifests:
-    - deployments/kubernetes/*.yaml
+    - deployments/kubernetes/infra/tweek-secrets.yaml
+    - deployments/kubernetes/infra/gateway-config.yaml
+
+    - deployments/kubernetes/infra/minio.yaml
+    - deployments/kubernetes/infra/nats.yaml
+    - deployments/kubernetes/infra/redis.yaml
+    - deployments/kubernetes/infra/oidc-server-mock.yaml
+
+    - deployments/kubernetes/git.yaml
+    - deployments/kubernetes/publishing.yaml
+    - deployments/kubernetes/api.yaml
+    - deployments/kubernetes/authoring.yaml
+    - deployments/kubernetes/gateway.yaml
+    - deployments/kubernetes/editor.yaml
