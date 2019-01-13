@@ -15,7 +15,7 @@ Install [Skaffold](https://github.com/GoogleContainerTools/skaffold/releases).
 
 First of all, run the skaffold.
 ```
-skaffold dev -f ./deployments/skaffold.yaml
+skaffold dev -f ./deployments/kubernetes/skaffold.yaml
 ```
 Then, create port forwarding
 ```bash
