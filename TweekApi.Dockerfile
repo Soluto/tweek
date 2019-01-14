@@ -19,7 +19,7 @@ RUN dotnet build Tweek.sln -c $target && \
     dotnet publish ./services/api/Tweek.ApiService/Tweek.ApiService.csproj -c $target -o ./obj/Docker/publish
 
 # ---- RELEASE ----
-FROM microsoft/dotnet:2.1-aspnetcore-runtime as release
+FROM microsoft/dotnet:2.1.5-aspnetcore-runtime as release
 ARG target="Release"
 WORKDIR /app
 EXPOSE 80
