@@ -6,16 +6,16 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
-	"github.com/Soluto/tweek/services/gateway/audit"
-	"github.com/Soluto/tweek/services/gateway/externalApps"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
+	"tweek-gateway/appConfig"
+	"tweek-gateway/audit"
+	"tweek-gateway/externalApps"
 
+	"github.com/sirupsen/logrus"
 	"github.com/urfave/negroni"
 )
 
@@ -68,7 +68,7 @@ func AuthenticationMiddleware(configuration *appConfig.Security, extractor Subje
 		info, err := userInfoFromRequest(r, configuration, extractor)
 		if err != nil {
 			auditor.TokenError(err)
-			log.Println("Error extracting the user from the request", err)
+			logrus.WithError(err).Error("Error extracting the user from the request")
 			next(rw, r)
 			return
 		}
@@ -113,7 +113,7 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, e
 		} else {
 			validateCredentialsErr := externalApps.ValidateCredentials(clientID, clientSecret)
 			if validateCredentialsErr != nil {
-				log.Printf("App %s wasn't validated: %v\n", clientID, validateCredentialsErr)
+				logrus.WithError(validateCredentialsErr).WithField("clientID", clientID).Error("Couldn't validate app for clientID")
 				return nil, validateCredentialsErr
 			}
 
@@ -126,7 +126,7 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, e
 		claims = token.Claims.(jwt.MapClaims)
 		sub, extractSubjectErr = extractor.ExtractSubject(req.Context(), claims)
 		if extractSubjectErr != nil {
-			log.Println("Failed to extract user info from JWT claims", extractSubjectErr)
+			logrus.WithError(extractSubjectErr).Error("Failed to extract user info from JWT claims")
 			return nil, fmt.Errorf("Failed to extract user info from JWT claims")
 		}
 		issuer = claims["iss"].(string)

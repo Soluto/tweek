@@ -845,6 +845,7 @@ input {
   transition: all 0.2s ease-in-out;
 }
 .typed-input-with-icon {
+  position: relative;
   display: flex;
 }
 .typed-input-with-icon .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input,

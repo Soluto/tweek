@@ -1,15 +1,16 @@
 package passThrough
 
 import (
-	"log"
 	"net/url"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/Soluto/tweek/services/gateway/metrics"
-	"github.com/Soluto/tweek/services/gateway/proxy"
 	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"
+	"tweek-gateway/metrics"
+	"tweek-gateway/proxy"
 )
 
 // MountWithoutHost - mounts the request passThrough handlers and middleware
@@ -45,7 +46,7 @@ func MountWithHosts(upstream string, hosts []string, metricsName string, middlew
 func parseUpstreamOrPanic(u string) *url.URL {
 	result, err := url.Parse(u)
 	if err != nil {
-		log.Panicln("Invalid upstream", u)
+		logrus.WithError(err).WithField("upstream", u).Panic("Invalid upstream")
 	}
 	return result
 }
