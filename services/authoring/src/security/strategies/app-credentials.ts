@@ -16,7 +16,7 @@ class ExternalAppsCredentialsStrategy extends Strategy {
       const saltBuf = Buffer.from(salt, 'hex');
       const resultBuf = await generateHash(secretBuf, saltBuf);
       const hashBuf = Buffer.from(hash, 'hex');
-      if (crypto.timingSafeEqual(resultBuf, hashBuf)) return;
+      if (crypto.timingSafeEqual(resultBuf, hashBuf)) { return; }
     }
     throw { messge: 'mismatch client/secret', clientId };
   }

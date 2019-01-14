@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const fs = require('fs');
 const { promisify } = require('util');
 const jwtSign = promisify(jwt.sign);
 
@@ -7,9 +6,11 @@ const jwtOptions = {
   algorithm: 'RS256',
   issuer: 'tweek',
   expiresIn: '15m',
+  subject: 'integration-test',
 };
-let token = {};
+const data = {
+  name: 'tweek-test',
+  email: 'test@tweek.com',
+};
 
-module.exports = async function(pkey) {
-  return await jwtSign({}, pkey, jwtOptions);
-};
+module.exports = async authKey => await jwtSign(data, authKey, jwtOptions);

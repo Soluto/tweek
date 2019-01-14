@@ -1,4 +1,4 @@
-/* global describe, beforeEach, it, afterEach */
+/* global describe, beforeAll, beforeEach, it, afterEach process fetch jest */
 import promiseMiddleware from 'redux-promise';
 import thunk from 'redux-thunk';
 import jsonpatch from 'fast-json-patch';
@@ -6,9 +6,11 @@ import { createStore, applyMiddleware, combineReducers } from 'redux';
 import * as R from 'ramda';
 import { expect } from 'chai';
 import reducer, * as actions from '../../../../src/store/ducks/schema';
+import { toAbsoluteUrl } from '../../../../src/utils/fetch';
 
 describe('schema duck', () => {
   let schemaState, dispatch;
+
   beforeEach(() => {
     let store = createStore(
       combineReducers({ schema: reducer }),
@@ -82,7 +84,7 @@ describe('schema duck', () => {
         .to.have.property('user')
         .with.property('isSaving', false);
       let [url, { method, body }] = fetch.mock.calls[0];
-      expect(url.toLowerCase()).to.eq('/api/schemas/user');
+      expect(url.toLowerCase()).to.eq(toAbsoluteUrl('/api/v2/schemas/user'));
       expect(method).to.eq('POST');
       expect(JSON.parse(body)).to.deep.equal({ age: 30 });
       expect(schemaState)
@@ -100,7 +102,7 @@ describe('schema duck', () => {
       dispatch(actions.upsertIdentityProperty('user', 'gender', 'female'));
       await dispatch(actions.saveSchema('user'));
       const [_, { body }] = fetch.mock.calls.find(
-        ([url, { method }]) => method === 'PATCH' && url === '/api/schemas/user',
+        ([url, { method }]) => method === 'PATCH' && url === toAbsoluteUrl('/api/v2/schemas/user'),
       );
       const patch = JSON.parse(body);
       const newUserState = R.clone(schemaState.user.local);
@@ -114,7 +116,7 @@ describe('schema duck', () => {
       dispatch(actions.upsertIdentityProperty('user', 'age', 30));
       await dispatch(actions.deleteIdentity('user'));
       let [url, { method }] = fetch.mock.calls[0];
-      expect(url.toLowerCase()).to.eq('/api/schemas/user');
+      expect(url.toLowerCase()).to.eq(toAbsoluteUrl('/api/v2/schemas/user'));
       expect(method).to.eq('DELETE');
       expect(schemaState).to.not.have.property('user');
     });

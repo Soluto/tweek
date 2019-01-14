@@ -75,7 +75,7 @@ export class SchemaController {
   @Authorize({ permission: PERMISSIONS.SCHEMAS_WRITE })
   @PATCH
   @Path('/schemas/:identityType')
-  async patchIdentity( @PathParam('identityType') identityType: string, @QueryParam('author.name') name: string, @QueryParam('author.email') email: string, patch: JsonValue): Promise<string> {
+  async patchIdentity( @PathParam('identityType') identityType: string, @QueryParam('author.name') name: string, @QueryParam('author.email') email: string, patch: jsonpatch.Operation[]): Promise<string> {
     const key = schemaPrefix + identityType;
     const manifest = await this.keysRepository.getKeyManifest(key);
     const newManifest = R.assocPath(

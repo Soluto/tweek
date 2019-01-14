@@ -1,12 +1,29 @@
 /* global browser */
+import { dataComp, attributeSelector } from './selector-utils';
 const nconf = require('nconf');
 
-const AUTH_DIGEST_URL = 'auth/digest';
+const timeout = 5000;
 
-const editorUrlWithCredentials = nconf
-  .get('EDITOR_URL')
-  .replace('http://', `http://${nconf.get('AUTH_DIGEST_CREDENTIALS')}@`);
+const editorUrl = nconf.get('GATEWAY_URL');
+
+const mockAuth = dataComp('mock');
+const username = 'User1';
+const password = 'pwd';
+const usernameComp = '#Username';
+const passwordComp = '#Password';
+const loginComp = '[value = "login"]';
+const confirmComp = '[value = "yes"]';
+const rememberConsent = '#RememberConsent';
 
 export const login = () => {
-  browser.url(`${editorUrlWithCredentials}${AUTH_DIGEST_URL}`);
+  browser.url(editorUrl);
+  browser.clickWhenVisible(mockAuth, timeout);
+  browser.clickWhenVisible(usernameComp, timeout);
+  browser.keys(username);
+  browser.clickWhenVisible(passwordComp, timeout);
+  browser.keys(password);
+  browser.clickWhenVisible(loginComp);
+  browser.clickWhenVisible(rememberConsent, timeout);
+  browser.clickWhenVisible(confirmComp, timeout);
+  browser.pause(1000);
 };

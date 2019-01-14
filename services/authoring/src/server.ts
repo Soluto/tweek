@@ -11,14 +11,15 @@ import GitRepository, { RepoOutOfDateError } from './repositories/git-repository
 import KeysRepository from './repositories/keys-repository';
 import TagsRepository from './repositories/tags-repository';
 import AppsRepository from './repositories/apps-repository';
+import PolicyRepository from './repositories/policy-repository';
 import GitContinuousUpdater from './repositories/git-continuous-updater';
 import searchIndex from './search-index';
 import routes from './routes';
 import configurePassport from './security/configure-passport';
 import sshpk = require('sshpk');
 import { ErrorRequestHandler } from 'express';
-import { Server } from 'typescript-rest';
 import { getErrorStatusCode } from './utils/error-utils';
+import SubjectExtractionRulesRepository from './repositories/extraction-rules-repository';
 
 const {
   PORT,
@@ -55,17 +56,19 @@ const gitTransactionManager = new Transactor<GitRepository>(gitRepoCreationPromi
 }, (function() {
   let retries = 2;
   return async (error, context) => {
-    if (retries-- === 0) return false;
+    if (retries-- === 0) { return false; }
     if (error instanceof RepoOutOfDateError) {
       return true;
     }
-    return false
-  }
+    return false;
+  };
 })());
 
 const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
 const appsRepository = new AppsRepository(gitTransactionManager);
+const policyRepository = new PolicyRepository(gitTransactionManager);
+const subjectExtractionRulesRepository = new SubjectExtractionRulesRepository(gitTransactionManager);
 
 const auth = passport.authenticate(['tweek-internal', 'apps-credentials'], { session: false });
 
@@ -96,9 +99,7 @@ async function startServer() {
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
   app.get('/version', (req, res) => res.send(process.env.npm_package_version));
   app.get('/health', (req, res) => res.status(200).json({}));
-  app.use('/api', auth, routes({ tagsRepository, keysRepository, appsRepository }));
-
-  Server.swagger(app, './dist/swagger.json', 'swagger');
+  app.use('/api', auth, routes({ tagsRepository, keysRepository, appsRepository, policyRepository, subjectExtractionRulesRepository }));
 
   app.use('/*', (req, res) => res.sendStatus(404));
   const errorHandler: ErrorRequestHandler = (err, req, res, next) => {

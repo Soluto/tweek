@@ -1,0 +1,24 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# vendor directory should not be committed
+vendor
+
+# output executable should not be committed
+gateway
+
+# macOS Finder creates these files
+.DS_Store
+
+# gateway executable file
+tweek-gateway

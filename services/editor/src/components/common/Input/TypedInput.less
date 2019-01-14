@@ -102,9 +102,10 @@ input {
     z-index: 2;
 
     &.property-avatar {
-      zoom: 75%;
-      margin-right: -32px;
-      margin-bottom: 3px;
+      transform: scale(0.75);
+      position: absolute;
+      margin-top: -2px;
+      margin-left: -4px;
     }
 
     img {
@@ -129,6 +130,7 @@ input {
 }
 
 .typed-input-with-icon {
+  position: relative;
   display: flex;
 
   .bootstrap-typeahead .bootstrap-typeahead-input-container .bootstrap-typeahead-input, input {
@@ -143,11 +145,10 @@ input {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    zoom: 75%;
-    margin-right: -32px;
-    margin-bottom: 3px;
-    margin-top: 3px;
-    flex: 0 0 32px;
+    transform: scale(0.75);
+    position: absolute;
+    margin-top: -2px;
+    margin-left: -4px;
 
     &[data-value-type=boolean] {
       background-image: @bool_icon;
@@ -182,6 +183,7 @@ input {
 .object-type-expander {
   width: 20px;
   height: 28px;
+  cursor: pointer;
   vertical-align: bottom;
   background-image: @object_edit_icon;
   background-size: 100% 100%;

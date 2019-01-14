@@ -1,9 +1,9 @@
 import React from 'react';
 import { compose, mapProps } from 'recompose';
-import { showCustomAlert, buttons } from '../../../store/ducks/alerts';
 import { connect } from 'react-redux';
 import MonacoEditor from 'react-monaco-editor';
 import { AutoSizer } from 'react-virtualized';
+import { showCustomAlert, buttons } from '../../../store/ducks/alerts';
 import { isStringValidJson } from '../../../services/types-service';
 
 const monacoOptions = {

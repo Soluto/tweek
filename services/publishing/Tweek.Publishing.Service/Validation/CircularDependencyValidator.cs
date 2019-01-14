@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using LanguageExt;
 using Newtonsoft.Json;
-using Tweek.Publishing.Service.Packing;
+using Tweek.Publishing.Service.Model.Rules;
 
 namespace Tweek.Publishing.Service.Validation
 {

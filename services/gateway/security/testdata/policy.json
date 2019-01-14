@@ -1,0 +1,70 @@
+{
+    "policies": [
+        {
+            "user": "alice@security.test",
+            "group": "default",
+            "object": "values/*",
+            "contexts": {},
+            "action": "read",
+            "effect": "allow"
+        },
+        {
+            "group": "default",
+            "user": "alice@security.test",
+            "contexts": {
+                "user": "self"
+            },
+            "object": "values/*",
+            "action": "read",
+            "effect": "allow"
+        },
+        {
+            "group": "default",
+            "user": "alice2@security.test",
+            "contexts": {
+                "user": "self"
+            },
+            "object": "values/*",
+            "action": "read",
+            "effect": "allow"
+        },
+        {
+            "group": "default",
+            "user": "alice2@security.test",
+            "contexts": {
+                "user": "self"
+            },
+            "object": "context/user/*",
+            "action": "*",
+            "effect": "allow"
+        },
+        {
+            "group": "default",
+            "user": "bob@security.test",
+            "contexts": {},
+            "object": "values/*",
+            "action": "read",
+            "effect": "deny"
+        },
+        {
+            "group": "default",
+            "user": "bob@security.test",
+            "contexts": {
+                "user": "self"
+            },
+            "object": "*",
+            "action": "write",
+            "effect": "allow"
+        },
+        {
+            "group": "default",
+            "user": "bob@security.test",
+            "contexts": {
+                "user": "self"
+            },
+            "object": "context/user/prop",
+            "action": "write",
+            "effect": "deny"
+        }
+    ]
+}
