@@ -11,6 +11,7 @@ RUN mkdir /empty_tmp && chmod 1777 /empty_tmp
 
 # -------- BUILDER -------- #
 FROM dependencies as build
+RUN go mod download
 
 ADD . /src
 WORKDIR /src
