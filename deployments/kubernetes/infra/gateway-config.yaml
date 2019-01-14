@@ -5,15 +5,6 @@ metadata:
 data:
   gateway.json: |
     {
-        "security": {
-            "auth": {
-                "providers": {}
-            }
-        },
-        "v1Hosts": {}
-    }
-  gateway.k8s.json: |
-    {
         "upstreams": {
             "api": "http://api",
             "authoring": "http://authoring:3000",
