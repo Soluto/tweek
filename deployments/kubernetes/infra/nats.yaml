@@ -1,29 +1,27 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  namespace: tweek
-  name: redis
+  name: nats
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: redis
+        app: nats
     spec:
       containers:
-      - name: redis
-        image: redis:alpine
+      - name: nats
+        image: nats:1.0.4-linux
         ports:
-        - containerPort: 6379
+        - containerPort: 4222
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  namespace: tweek
-  name: redis
+  name: nats
 spec:
   selector:
-    app: redis
+    app: nats
   ports:
-    - port: 6379
-      targetPort: 6379
+    - port: 4222
+      targetPort: 4222
