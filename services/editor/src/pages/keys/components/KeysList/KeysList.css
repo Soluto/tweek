@@ -91,6 +91,11 @@
 .keys-list-container .key-link-wrapper .key-link.selected {
   background-color: #686e74;
 }
+.keys-list-container .key-link-wrapper .key-link span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .keys-list-container .key-icon {
   filter: grayscale(1) brightness(2);
   margin-top: -7px;

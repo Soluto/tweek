@@ -68,12 +68,13 @@ const KeyItem = ({ name, fullPath, depth, selected, item }) => {
   return (
     <div className="key-link-wrapper" data-comp="key-link">
       <Link
+        title={fullPath}
         className={classNames('key-link', { selected })}
         style={{ paddingLeft: (depth + 1) * 10 }}
         to={`/keys/${fullPath}`}
       >
         <div className={classNames('key-type', 'key-icon')} data-value-type={dataValueType} />
-        {name}
+        <span>{name}</span>
       </Link>
     </div>
   );

@@ -1,6 +1,6 @@
 {
   "name": "tweek-editor",
-  "version": "1.0.0-rc1",
+  "version": "1.0.0-rc3",
   "main": "dist/index.js",
   "repository": "Soluto/tweek",
   "author": "Soluto",
@@ -70,7 +70,6 @@
     "react-table": "6.8.6",
     "react-tabs": "^2.2.1",
     "react-tag-input": "^4.9.1",
-    "react-tap-event-plugin": "^3.0.2",
     "react-tooltip": "^3.4.0",
     "react-virtualized": "^9.18.5",
     "recompose": "^0.26.0",
