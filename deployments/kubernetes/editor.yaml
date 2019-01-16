@@ -1,7 +1,6 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  namespace: tweek
   name: editor
 spec:
   replicas: 1
@@ -16,9 +15,6 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000
-        env:
-        - name: REACT_APP_GATEWAY_URL
-          value: http://192.168.99.100:30099
         volumeMounts:
         - name: tweek-secrets
           mountPath: /run/secrets/tweek-secrets
@@ -30,7 +26,6 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  namespace: tweek
   name: editor
 spec:
   type: NodePort

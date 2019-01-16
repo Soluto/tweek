@@ -11,6 +11,7 @@ RUN mkdir /empty_tmp && chmod 1777 /empty_tmp
 
 # -------- BUILDER -------- #
 FROM dependencies as build
+RUN go mod download
 
 ADD . /src
 WORKDIR /src
@@ -42,6 +43,7 @@ COPY --from=build /src/authorization.rego /authorization.rego
 COPY --from=build /src/entry /entry
 COPY --from=build /src/hcheck /healthcheck
 COPY --from=build /src/swagger/swagger.yml /swagger/swagger.yml
+COPY --from=build /src/swagger/openapi.yaml /swagger/openapi.yaml
 COPY --from=dependencies /empty_tmp /tmp
 
 ENV CONFIGOR_ENV=production
