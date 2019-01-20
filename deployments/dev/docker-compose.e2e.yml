@@ -33,10 +33,6 @@ services:
       - Context__Validation__ErrorPolicy=throw
       
   gateway:
-    depends_on:       
-      - minio
-      - nats
-      - oidc-server-mock
     environment:
       - CONFIGOR_ENV=test    
 
@@ -46,10 +42,8 @@ services:
     ports:
       - "4011:80"
     environment: 
-      - ASPNETCORE_ENVIRONMENT=Development
-      - CLIENT_ID=tweek-openid-mock-client
       - REDIRECT_URIS=http://gateway/auth-result/oidc
-      - TEST_USER={"SubjectId":"00000000-0000-0000-0000-000000000000","Username":"User1","Password":"pwd"}
+  
   
   selenium:
     image: selenium/standalone-chrome-debug:3.8.1
