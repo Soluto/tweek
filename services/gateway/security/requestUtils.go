@@ -50,6 +50,8 @@ func extractActionFromRequest(r *http.Request) (act string, err error) {
 		fallthrough
 	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/revision-history"):
 		fallthrough
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/policies"):
+		fallthrough
 	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/context"):
 		act = "read"
 		break
@@ -94,6 +96,12 @@ func extractContextsFromKeysRequest(r *http.Request, u UserInfo) (ctxs PolicyRes
 		return
 	}
 	ctxs.Item = strings.Replace(uri.EscapedPath(), "/api/v2/keys/", "repo/keys/", 1)
+
+	return
+}
+
+func extractContextsFromPoliciesRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
+	ctxs.Item = "repo/policies"
 
 	return
 }
@@ -173,6 +181,8 @@ func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs PolicyResourc
 		return extractContextsFromValuesRequest(r, u)
 	} else if strings.HasPrefix(path, "/api/v2/keys") {
 		return extractContextsFromKeysRequest(r, u)
+	} else if strings.HasPrefix(path, "/api/v2/policies") {
+		return extractContextsFromPoliciesRequest(r, u)
 	} else if strings.HasPrefix(path, "/api/v2/manifests") {
 		return extractContextsFromOtherRequest(r, u)
 	} else if strings.HasPrefix(path, "/api/v2/suggestions") {
@@ -190,6 +200,7 @@ func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs PolicyResourc
 	} else if strings.HasPrefix(path, "/api/v2/schemas") {
 		return extractResourceFromRepoRequest(r, u, "schemas")
 	}
+
 	err = fmt.Errorf("Invalid request path %s", path)
 	return
 }

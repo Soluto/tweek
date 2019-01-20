@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-config
+data:
+  gateway.json: |
+    {
+        "upstreams": {
+            "api": "http://api",
+            "authoring": "http://authoring:3000",
+            "publishing": "http://publishing",
+            "editor": "http://editor:3000"
+        },
+        "security": {
+            "auth": {
+                "providers": {
+                    "mock": {
+                        "name": "Mock OpenId Connect server",
+                        "issuer": "http://localhost:8081",
+                        "authority": "http://localhost:8081",
+                        "jwks_uri": "http://oidc-server-mock/.well-known/openid-configuration/jwks",
+                        "client_id": "tweek-openid-mock-client",
+                        "login_info": {
+                            "login_type": "oidc",
+                            "scope": "openid profile email",
+                            "response_type": "id_token"
+                        }
+                    }
+                },
+                "basic_auth": {
+                    "redirect_urls": [
+                        "http://localhost:8080"
+                    ]
+                }
+            }
+        }
+    }

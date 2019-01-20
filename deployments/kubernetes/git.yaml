@@ -1,7 +1,6 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  namespace: tweek
   name: git
 spec:
   replicas: 1
@@ -30,7 +29,6 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  namespace: tweek
   name: git
 spec:
   selector:

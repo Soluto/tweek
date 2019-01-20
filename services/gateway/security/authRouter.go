@@ -3,17 +3,17 @@ package security
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"time"
 
-	"github.com/Soluto/tweek/services/gateway/appConfig"
-	"github.com/Soluto/tweek/services/gateway/externalApps"
-	"github.com/Soluto/tweek/services/gateway/utils"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 	"github.com/urfave/negroni"
+	"tweek-gateway/appConfig"
+	"tweek-gateway/externalApps"
+	"tweek-gateway/utils"
 )
 
 // MountAuth -
@@ -41,14 +41,14 @@ func authorizeByUserPassword(keyEnv *appConfig.EnvInlineOrPath, basicAuthConfig 
 		if username, password, ok := r.BasicAuth(); ok {
 			err := externalApps.ValidateCredentials(username, password)
 			if err != nil {
-				log.Println("Credentials were not provided or are invalid", err)
+				logrus.WithError(err).Error("Credentials were not provided or are invalid")
 				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 				return
 			}
 
 			key, err := getPrivateKey(keyEnv)
 			if err != nil {
-				log.Panicln("Private key retrieving failed:", err)
+				logrus.WithError(err).Panic("Private key retrieving failed")
 			}
 			requestQuery := r.URL.Query()
 			redirectURLStr := requestQuery.Get("redirect_url")
