@@ -45,10 +45,7 @@ services:
     ports:
       - "4011:80"
     environment: 
-      - ASPNETCORE_ENVIRONMENT=Development
-      - CLIENT_ID=tweek-openid-mock-client
       - REDIRECT_URIS=http://localhost:3000/auth-result/oidc
-      - TEST_USER={"SubjectId":"00000000-0000-0000-0000-000000000000","Username":"User1","Password":"pwd"}
 
 secrets:
   tweek_ssh_private_key:

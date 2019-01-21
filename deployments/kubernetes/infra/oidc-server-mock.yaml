@@ -20,7 +20,7 @@ spec:
         - name: REDIRECT_URIS
           value: http://localhost:8080/auth-result/oidc
         - name: TEST_USER
-          value: '{"SubjectId":"00000000-0000-0000-0000-000000000000","Username":"User1","Password":"pwd"}'
+          value: '{"SubjectId":"user","Username":"user","Password":"pwd"}'
         ports:
         - containerPort: 80
 ---
@@ -29,10 +29,10 @@ apiVersion: v1
 metadata:
   name: oidc-server-mock
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: oidc-server-mock
   ports:
-    - port: 80
-      nodePort: 30088
+    - port: 8081
       targetPort: 80
+---

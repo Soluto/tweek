@@ -15,23 +15,14 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000
-        volumeMounts:
-        - name: tweek-secrets
-          mountPath: /run/secrets/tweek-secrets
-      volumes:
-        - name: tweek-secrets
-          secret:
-            secretName: tweek-secrets
 ---
 kind: Service
 apiVersion: v1
 metadata:
   name: editor
 spec:
-  type: NodePort
   selector:
     app: editor
   ports:
     - port: 3000
       targetPort: 3000
-      nodePort: 30004
