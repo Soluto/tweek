@@ -6,8 +6,6 @@ FROM base AS deps
 WORKDIR /src/
 COPY package.json yarn.lock ./
 RUN yarn --prod
-ARG target=Release
-RUN if [ $target = "Debug" ]; then yarn; fi
 
 # ---- Build ----
 FROM deps AS build

@@ -13,6 +13,9 @@ spec:
       - name: editor
         image: soluto/tweek-editor
         imagePullPolicy: IfNotPresent
+        command:
+          - yarn
+          - start
         ports:
         - containerPort: 3000
 ---
