@@ -30,19 +30,19 @@ Tweek aims to be a complete open-source alternative to other industry feature/co
 The easiest way to start evaluating Tweek is to run it locally on docker, make sure you have the latest [docker (for windows/mac/etc..)](https://www.docker.com/get-docker) version installed (17-06+).
 #### Running Tweek
 
-- clone the repo (``` git clone https://github.com/Soluto/tweek.git ```)
-- [optional] pull images, run ```yarn docker-compose pull --parallel``` (optional for getting started fast with Tweek as it's skip build)
+- Clone the repo (``` git clone https://github.com/Soluto/tweek.git ```)
+- [optional] Pull images, run ```yarn docker-compose pull --parallel``` (optional for getting started fast with Tweek as it's skip build)
 
 ### Using Docker Compose
-- run (``` yarn start ```) - this might take a few minutes for the first time
+- Run (``` yarn start ```) - this might take a few minutes for the first time
 
 ### Using Kubernetes
 - Install Skaffold (https://github.com/GoogleContainerTools/skaffold)
-- Run skaffold dev
+- Run ```skaffold dev --port-forward=false```
 - Wait for environment to be stable (will take about 10m first time due to building all images, afterward it can take about 2m for environment to stabilize)
 
 ### Troubleshooting
-- run (``` yarn start --build```) to rebuild all images and start Tweek. 
+- Run (``` yarn start --build```) to rebuild all images and start Tweek. 
 
 #### Edit your first key
 After setting up our environment, we're going to create our first key.
@@ -52,7 +52,7 @@ Our first key, will be a key that is responsible for the color of a "sign up" bu
 - Open http://localhost:8080 in browser.
 - Login
     - User Basic auth (user: admin-app, password: 8v/iUG0vTH4BtVgkSn3Tng==)
-    - Can also use oidc mock server for testing OIDC (user: User, password: pwd)
+    - Can also use OIDC mock server login button for testing OIDC (user: User, password: pwd)
 - Go to keys page.
 - Click on "Add Key"
 - Type my_app/sign_button/color
