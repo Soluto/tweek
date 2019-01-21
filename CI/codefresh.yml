@@ -70,10 +70,11 @@ steps:
         image_name: soluto/tweek-api-smoke-tests
         dockerfile: TweekApiSmokeTest.Dockerfile
 
+  
   IntegrationTests:
     title: Tests - integration & smoke
-    type: composition
     stage: test
+    type: composition
     composition: ./CI/docker-compose.yml
     composition_variables:      
       - GATEWAY_IMAGE=${{BuildingGateway}}
@@ -130,16 +131,16 @@ steps:
           - '${{BuildingApiImage.imageId}}':
             - CF_QUALITY: false
           - '${{BuildingPublishing.imageId}}':
-          - CF_QUALITY: false
-        - '${{BuildingAuthoring.imageId}}':
-          - CF_QUALITY: false
-        - '${{BuildingGateway.imageId}}':
-          - CF_QUALITY: false
+            - CF_QUALITY: false
+          - '${{BuildingAuthoring.imageId}}':
+            - CF_QUALITY: false
+          - '${{BuildingGateway.imageId}}':
+            - CF_QUALITY: false
 
   UiTests:
     title: UI tests
-    type: composition
     stage: test
+    type: composition
     composition: ./CI/docker-compose.yml
     composition_variables:      
       - GATEWAY_IMAGE=${{BuildingGateway}}
