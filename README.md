@@ -68,20 +68,34 @@ More on [keys and paths](https://docs.tweek.fm/concepts/keys/keys-ands-paths)
 
 #### Querying Tweek
 Use curl/postman/chrome to fire GET Request:
-- http://localhost:8080/api/v1/keys/my_app/sign_button/color -> expected to be "red"
-- http://localhost:8080/api/v1/keys/my_app/sign_button/color?user.Country=canada -> expected to be "blue"
-- http://localhost:8080/api/v1/keys/my_app/sign_button/_?user.Country=canada -> expected to be {"color":"blue"}
+- http://localhost:8080/api/v2/values/my_app/sign_button/color -> expected to be "red"
+- http://localhost:8080/api/v2/values/my_app/sign_button/color?user.Country=canada -> expected to be "blue"
+- http://localhost:8080/api/v2/values/my_app/sign_button/_?user.Country=canada -> expected to be {"color":"blue"}
 
 Using the rest api, an application can query Tweek for getting the right set of values for each specific user.
 More on Tweek [Rest api](https://docs.tweek.fm/api/rest-api).
 
 #### Adding context data
-Tweek provide's REST api for saving context data. 
-Using the API, use curl/postman to fire POST Request:
-- http://localhost:8080/api/v1/context/user/john {"Country":"Canada"}  
+
+Tweek provide UI and rest api for editing context.
+
+- Go to context
+- Set Identity Type to User
+- Set User id to John
+- Click enter
+- Set value "Candada" for property Country
 
 After that, we can query Tweek API with:
 - http://localhost:8080/api/v1/keys/my_app/sign_button/color?user=john -> expected to be "blue"
+
+You can also use the api for updating Tweek context:
+- curl -X POST http://localhost:8080/api/v2/context/user/john \
+  -H 'content-type: application/json' \
+  -H 'x-client-id: admin-app' \
+  -H 'x-client-secret: 8v/iUG0vTH4BtVgkSn3Tng==' \
+  -d '{
+	"country": "Canada"
+  }'
 
 More on [Context.](https://docs.tweek.fm/concepts/context/intro-to-context)
 
