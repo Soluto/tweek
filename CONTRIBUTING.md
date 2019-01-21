@@ -43,6 +43,7 @@
    cd tweek
    ```
 2. Yarn start
+3. Go to http://localhost:8080/login and use basic auth with (user: admin-app, password: 8v/iUG0vTH4BtVgkSn3Tng==)
 
 Access Tweek gateway using localhost:8080.
 Tweek gateway route all traffic to other resources based on: https://github.com/Soluto/tweek/blob/master/services/gateway/settings/settings.json
@@ -50,6 +51,7 @@ The root path redirect to Tweek Editor UI
 
 If you use k8s (comes bundled with Docker for mac/pc, enable using UI), you can use Skaffold (https://github.com/GoogleContainerTools/skaffold).
 The main benefit of using Skaffold is that it provide watch, build  for all Tweek services (editor has also support for hot code reloading).
+Since Skaffold/k8s run all services and dependencies together, it can take few minutes to stabilize. (k8s will attempt to restart failed services)
 
 After installing Skaffold, use ```skaffold dev --port-forward=false```
 

@@ -49,7 +49,7 @@ After setting up our environment, we're going to create our first key.
 Keys in tweek are the most basic building blocks and they represent a container for dynamic value that affect feature behaviors.
 Our first key, will be a key that is responsible for the color of a "sign up" button.
 
-- Open http://localhost:8080 in browser.
+- Open http://localhost:8080/login in browser.
 - Login
     - User Basic auth (user: admin-app, password: 8v/iUG0vTH4BtVgkSn3Tng==)
     - Can also use OIDC mock server login button for testing OIDC (user: User, password: pwd)
