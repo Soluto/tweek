@@ -52,6 +52,7 @@ Our first key, will be a key that is responsible for the color of a "sign up" bu
 - Open http://localhost:8080 in browser.
 - Login
     - User Basic auth (user: admin-app, password: 8v/iUG0vTH4BtVgkSn3Tng==)
+    - Can also use oidc mock server for testing OID (user: User, password: pwd)
 - Go to keys page.
 - Click on "Add Key"
 - Type my_app/sign_button/color
