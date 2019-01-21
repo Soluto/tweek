@@ -59,6 +59,9 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	token := security.InitJWT(&config.Security.TweekSecretKey)
 
 	authorizer, err := withRetry(3, time.Second*5, initAuthorizer, &config.Security)
+	if err != nil {
+		panic("Unable to create Authorizer")
+	}
 
 	auditor, err := audit.New(os.Stdout)
 	if err != nil {
