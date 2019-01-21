@@ -29,5 +29,12 @@
             }
         }
     },
-    "v1Hosts": {}
+    "v1Hosts": {
+         "api": [	
+            "api"
+        ],	
+        "authoring": [	
+            "authoring"
+        ]
+    }
 }
