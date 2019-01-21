@@ -51,7 +51,7 @@ The root path redirect to Tweek Editor UI
 If you use k8s (comes bundled with Docker for mac/pc, enable using UI), you can use Skaffold (https://github.com/GoogleContainerTools/skaffold).
 The main benefit of using Skaffold is that it provide watch, build  for all Tweek services (editor has also support for hot code reloading).
 
-After installing Skaffold, use ```Skaffold dev --port-forward=false```
+After installing Skaffold, use ```skaffold dev --port-forward=false```
 
 ## Debugging Tweek editor
 
