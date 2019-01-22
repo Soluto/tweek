@@ -26,6 +26,8 @@ export const storeToken = (token) => {
 
 export const retrieveToken = () => storage.getItem('token');
 
+export const signOut = () => storage.removeItem('token');
+
 const storeOidcSettings = (settings) => {
   storage.setItem('oidc-settings', JSON.stringify(settings));
 };

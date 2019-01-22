@@ -1,5 +1,5 @@
 # -------- DEPENDENCIES -------- #
-FROM golang:1.11.4-stretch as dependencies
+FROM golang:1.11.4-stretch as build
 
 ADD go.mod /src/go.mod
 ADD go.sum /src/go.sum
@@ -9,8 +9,6 @@ WORKDIR /src
 # so we prepare it here, and copy later on
 RUN mkdir /empty_tmp && chmod 1777 /empty_tmp
 
-# -------- BUILDER -------- #
-FROM dependencies as build
 RUN go mod download
 
 ADD . /src
@@ -35,7 +33,7 @@ COPY ./testdata/test_authorization.rego /tmp/opatests
 RUN ./opa test -v /tmp/opatests
 
 # -------- IMAGE -------- #
-FROM scratch
+FROM gcr.io/distroless/base
 
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=build /src/settings /settings
@@ -44,7 +42,7 @@ COPY --from=build /src/entry /entry
 COPY --from=build /src/hcheck /healthcheck
 COPY --from=build /src/swagger/swagger.yml /swagger/swagger.yml
 COPY --from=build /src/swagger/openapi.yaml /swagger/openapi.yaml
-COPY --from=dependencies /empty_tmp /tmp
+COPY --from=build /empty_tmp /tmp
 
 ENV CONFIGOR_ENV=production
 
