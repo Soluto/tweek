@@ -2,5 +2,5 @@
     "partitions": [],
     "valueType": "string",
     "rules": [],
-    "defaultValue": "allow"
+    "defaultValue": "deny"
 }
