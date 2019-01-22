@@ -17,7 +17,7 @@ build:
   - image: soluto/tweek-editor
     context: services/editor
     sync:
-      'src/**/*.js': "src"
+      'src/**/*.*': "src"
     docker:
       dockerfile: debug.Dockerfile
 
