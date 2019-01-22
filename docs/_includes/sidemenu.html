@@ -1,0 +1,6 @@
+{% if page_paths %}
+      <nav class="side-menu">
+          {% assign sorted_pages = site.pages | sort: "path" %}
+          {% include _sidemenu_rec.html context="" pages=sorted_pages %}
+      </nav>
+    {% endif %}
