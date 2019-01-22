@@ -109,13 +109,25 @@ services:
     ports:
       - "4008:8222"
       - "4222:4222"
+  
+  oidc-server-mock:
+    container_name: oidc-server-mock 
+    image: soluto/oidc-server-mock   
+    ports:
+      - "4011:80"
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CLIENT_ID=tweek-openid-mock-client
+      - REDIRECT_URIS=http://localhost:8080/auth-result/oidc
+      - TEST_USER={"SubjectId":"user","Username":"user","Password":"pwd"}
 
   gateway:
     ports:
-      - "4099:80"
+      - "8080:80"
     depends_on: 
       - minio
-      - nats      
+      - nats    
+      - oidc-server-mock  
     environment:
       - TWEEKGATEWAY_SECURITY_CORS_ENABLED=true
       - TWEEKGATEWAY_SECURITY_CORS_MAXAGE=60
@@ -129,7 +141,7 @@ services:
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECURE=false
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_NATSENDPOINT=nats://nats:4222
       - TWEEKGATEWAY_SECURITY_TWEEKSECRETKEY_PATH=/run/secrets/tweek_ssh_private_key
-      - TWEEKGATEWAY_SECURITY_AUTH_BASICAUTH_REDIRECTURLS=['http://localhost:4099']
+      - TWEEKGATEWAY_SECURITY_AUTH_BASICAUTH_REDIRECTURLS=['http://localhost:8080']
       - TWEEKGATEWAY_CONFIGFILEPATH=/config/gateway.json
     volumes:
       - ./gateway/config:/config

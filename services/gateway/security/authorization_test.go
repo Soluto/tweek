@@ -22,7 +22,7 @@ func (a *emptyAuditor) TokenError(err error) {
 }
 
 func TestAuthorizationMiddleware(t *testing.T) {
-	authorization, err := ioutil.ReadFile("./testdata/authorization.rego")
+	authorization, err := ioutil.ReadFile("../authorization.rego")
 	if err != nil {
 		t.Fatal("Could not load rego file")
 	}

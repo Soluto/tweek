@@ -16,6 +16,10 @@ build:
     context: services/gateway
   - image: soluto/tweek-editor
     context: services/editor
+    sync:
+      'src/**/*.*': "src"
+    docker:
+      dockerfile: debug.Dockerfile
 
 deploy:
   kubectl:

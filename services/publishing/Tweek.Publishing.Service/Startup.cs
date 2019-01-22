@@ -66,8 +66,8 @@ namespace Tweek.Publishing.Service
                         logger.LogInformation(x.data);
                     }
                     if (x.outputType == OutputType.StdErr)
-                    {
-                        logger.LogWarning(x.data);
+                    { 
+                        logger.LogDebug(x.data);
                     }
                 }, ex =>
                 {

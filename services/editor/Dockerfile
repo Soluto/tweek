@@ -3,7 +3,6 @@ FROM node:10.15.0-alpine AS base
 
 # ---- Deps ----
 FROM base AS deps
-
 WORKDIR /src/
 COPY package.json yarn.lock ./
 RUN yarn --prod

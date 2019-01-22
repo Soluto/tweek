@@ -19,56 +19,56 @@
             "effect": "allow"
         },
         {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
+            "group": "externalapps",
+            "user": "admin-app",
             "contexts": {},
             "object": "repo/keys/*",
             "action": "write",
             "effect": "allow"
         },
         {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
+            "group": "externalapps",
+            "user": "admin-app",
             "contexts": {},
             "object": "repo",
             "action": "read",
             "effect": "allow"
         },
         {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
+            "group": "externalapps",
+            "user": "admin-app",
             "contexts": {},
             "object": "repo/policies",
             "action": "read",
             "effect": "allow"
         },
         {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
+            "group": "externalapps",
+            "user": "admin-app",
             "contexts": {},
             "object": "repo/policies",
             "action": "write",
             "effect": "allow"
         },
         {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
+            "group": "externalapps",
+            "user": "admin-app",
             "contexts": {},
             "object": "repo/tags",
             "action": "write",
             "effect": "allow"
         },
         {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
+            "group": "externalapps",
+            "user": "admin-app",
             "contexts": {},
             "object": "repo/schemas",
             "action": "write",
             "effect": "allow"
         },
         {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
+            "group": "externalapps",
+            "user": "admin-app",
             "contexts": {
                 "user": "*"
             },
@@ -77,8 +77,8 @@
             "effect": "allow"
         },
         {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
+            "group": "externalapps",
+            "user": "admin-app",
             "contexts": {
                 "other": "*"
             },
@@ -87,8 +87,8 @@
             "effect": "allow"
         },
         {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
+            "group": "externalapps",
+            "user": "admin-app",
             "contexts": {
                 "delete_property_test": "*"
             },
@@ -97,8 +97,8 @@
             "effect": "allow"
         },
         {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
+            "group": "externalapps",
+            "user": "admin-app",
             "contexts": {
                 "edit_property_test": "*"
             },

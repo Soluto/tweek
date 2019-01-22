@@ -9,7 +9,7 @@
     "node": ">=8.7.0"
   },
   "scripts": {
-    "start": "yarn build-less && concurrently --kill-others \"yarn watch-less\" \"REACT_APP_GATEWAY_URL=http://localhost:4099 react-app-rewired start\"",
+    "start": "yarn build-less && concurrently --kill-others \"yarn watch-less\" \"REACT_APP_GATEWAY_URL=http://localhost:8080 react-app-rewired start\"",
     "start:full-env": "yarn docker-compose up -d gateway publishing && yarn start",
     "build": "yarn build-less && react-app-rewired build",
     "test": "jest",

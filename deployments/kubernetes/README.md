@@ -17,9 +17,11 @@ First of all, run the skaffold.
 ```
 skaffold dev -f ./deployments/kubernetes/skaffold.yaml
 ```
-Then, create port forwarding
+
+If using Minikube create port forwarding:
 ```bash
 kubectl port-forward deployment/gateway 8080:80
 kubectl port-forward deployment/oidc-server-mock 8081:80
 ```
+
 Finally, open in browser [http://localhost:8080](http://localhost:8080).

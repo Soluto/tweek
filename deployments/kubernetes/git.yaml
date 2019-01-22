@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
       - name: tweek-bare-repo
-        image: soluto/tweek-bare-repo
+        image: soluto/tweek-git
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 22
