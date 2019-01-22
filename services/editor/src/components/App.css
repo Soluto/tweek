@@ -1,7 +1,7 @@
 .app .menu {
   display: flex;
   flex-grow: 1;
-  margin-right: 70px;
+  margin-right: 10px;
   justify-content: flex-end;
 }
 .app .menu li {
@@ -25,7 +25,7 @@
   flex-grow: 1;
   justify-content: center;
   align-items: center;
-  height: 65px;
+  height: 66px;
   text-decoration: none;
   font-size: 22px;
   font-weight: 300;
@@ -58,6 +58,17 @@
 .app .header .logo {
   margin: 5px 0 0 20px;
   width: 140px;
+}
+.app .header .user-bar {
+  display: flex;
+  position: absolute;
+  background-color: white;
+  right: 0;
+  top: 0;
+  border: 2px solid yellow;
+}
+.app .header .user-bar img {
+  display: block;
 }
 .app .page {
   position: absolute;

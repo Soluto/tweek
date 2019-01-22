@@ -17,6 +17,7 @@ import IdentityPage from './pages/settings/components/IdentityPage/IdentityPage'
 import NoMatch from './components/NoMatch';
 import browserHistory from './store/browserHistory';
 import './styles/styles.css';
+import { signOut } from './services/auth-service';
 
 const SelectKeyMessage = () => <div className={'select-key-message'}>Select key...</div>;
 
@@ -48,6 +49,11 @@ const renderAppRoutes = () => (
       <PrivateRoute path="/keys" render={renderKeyRoutes} />
       <PrivateRoute path="/context" render={renderContextRoutes} />
       <PrivateRoute path="/settings" render={renderSettingsRoutes} />
+      <Route path="/logout" exact render={() => 
+      {
+        signOut();
+        return <Redirect to="/keys" />;
+      }} />
     </Switch>
   </App>
 );
