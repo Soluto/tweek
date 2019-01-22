@@ -19,12 +19,12 @@ const Container = styled("div")`
     padding-right:10px;
   `;
 
-const withCurrentUser = mapPropsStream(props$=>
+const withCurrentUser = compose(setDisplayName("WithCurrentUser"),mapPropsStream(props$=>
   Observable.combineLatest(Observable.defer(()=>fetch("/current-user").then(x=>x.json()) ), 
     props$, (user,props)=> ({
       ...props,
       user,
-    })));
+    }))));
 
 const UserBar = setDisplayName("UserBar")(({ user })=>
   (
