@@ -52,7 +52,7 @@ const renderAppRoutes = () => (
       <Route path="/logout" exact render={() => 
       {
         signOut();
-        return <Redirect to="/keys" />;
+        return <Redirect to="/login" />;
       }} />
     </Switch>
   </App>
