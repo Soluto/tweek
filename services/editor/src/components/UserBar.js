@@ -1,10 +1,10 @@
 import React, { Fragment } from "react";
-import { mapPropsStream } from "recompose";
+import { mapPropsStream, setDisplayName, compose } from "recompose";
 import { Observable } from "rxjs";
-import fetch from "../utils/fetch";
 import md5 from "md5";
 import styled from "react-emotion";
 import { Link } from 'react-router-dom';
+import fetch from "../utils/fetch";
 
 const Container = styled("div")`
     display: flex;
@@ -19,12 +19,14 @@ const Container = styled("div")`
     padding-right:10px;
   `;
 
-export default mapPropsStream(props$=>
+const withCurrentUser = mapPropsStream(props$=>
   Observable.combineLatest(Observable.defer(()=>fetch("/current-user").then(x=>x.json()) ), 
     props$, (user,props)=> ({
       ...props,
       user,
-    })))( ({ user })=>
+    })));
+
+const UserBar = setDisplayName("UserBar")(({ user })=>
   (
     <Container>
       <div style={{ marginRight: 16, textAlign:"right" }}>
@@ -35,5 +37,6 @@ export default mapPropsStream(props$=>
         <img src={`https://www.gravatar.com/avatar/${md5(user.Email || user.User)}?s=45&d=identicon`} />
       </div>
     </Container>
-  )
-);
+  ));
+
+export default withCurrentUser(UserBar);
