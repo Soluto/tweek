@@ -6,8 +6,8 @@
     },    
     "v2Routes": [{
         "routePathPrefix": "/values",
-        "routeRegexp": "^/api/v2/values/([^\\?]+)(.*)$",
-        "upstreamPath": "/api/v1/keys/$1$2",
+        "routeRegexp": "^/api/v2/values([^\\?]+)(.*)$",
+        "upstreamPath": "/api/v1/keys$1$2",
         "methods": ["GET"],
         "service": "api",
         "userInfo": false,
@@ -34,8 +34,8 @@
     },
     {
         "routePathPrefix": "/keys",
-        "routeRegexp": "^/api/v2/keys/([^\\?]+)(.*)$",
-        "upstreamPath": "/api/keys/$1$2",
+        "routeRegexp": "^/api/v2/keys([^\\?]+)(.*)$",
+        "upstreamPath": "/api/keys$1$2",
         "methods": ["PUT", "DELETE"],
         "service": "authoring",
         "userInfo": true,
@@ -115,26 +115,17 @@
     },
     {
         "routePathPrefix": "/dependents",
-        "routeRegexp": "^/api/v2/dependents/([^\\?]+)(.*)$",
-        "upstreamPath": "/api/dependents/$1$2",
+        "routeRegexp": "^/api/v2/dependents([^\\?]+)(.*)$",
+        "upstreamPath": "/api/dependents$1$2",
         "methods": ["GET"],
         "service": "authoring",
         "userInfo": false,
         "rewriteKeyPath": true
     },
     {
-        "routePathPrefix": "/revision",
-        "routeRegexp": "^/api/v2/revision-history/([^\\?]+)(.*)$",
-        "upstreamPath": "/api/revision-history/$1$2",
-        "methods": ["GET"],
-        "service": "authoring",
-        "userInfo": false,
-        "rewriteKeyPath": false
-    },
-    {
         "routePathPrefix": "/revision-history",
-        "routeRegexp": "^/api/v2/revision-history/([^\\?]+)(.*)$",
-        "upstreamPath": "/api/revision-history/$1$2",
+        "routeRegexp": "^/api/v2/revision-history([^\\?]+)(.*)$",
+        "upstreamPath": "/api/revision-history$1$2",
         "methods": ["GET"],
         "service": "authoring",
         "userInfo": false,
