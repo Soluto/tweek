@@ -115,7 +115,7 @@ describe('Gateway v2 API', () => {
   it('should return a key with keyPath', async () => {
     const key = 'integration_tests/some_key';
     await clients.gateway
-      .get(`/api/v2/keys?keyPath=${encodeURI(key)}?author.name=test&author.email=test@soluto.com`)
+      .get(`/api/v2/keys?keyPath=${encodeURIComponent(key)}&author.name=test&author.email=test@soluto.com`)
       .expect(
         200,
         '{"manifest":{"key_path":"integration_tests/some_key","meta":{"name":"integration_tests/some_key","tags":[],"description":"","archived":false},"implementation":{"type":"const","value":1},"valueType":"number","dependencies":[]}}',
