@@ -2,7 +2,7 @@
 
 [![Codefresh build status]( https://g.codefresh.io/api/badges/pipeline/soluto/Soluto%2Ftweek%2Ftweek-all?type=cf-2&branch=master)]( https://g.codefresh.io/public/accounts/soluto/pipelines/Soluto/tweek/tweek-all) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/soluto/tweek/blob/master/LICENSE.md) [![Slack](https://tweek-slack.now.sh/badge.svg)](https://tweek-slack.now.sh) [![CircleCI](https://circleci.com/gh/Soluto/tweek/tree/master.svg?style=svg)](https://circleci.com/gh/Soluto/tweek/tree/master)[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
-tweek@soluto.com  
+tweek@soluto.com
 
 ### What is Tweek?
 
@@ -19,7 +19,7 @@ Tweek aims to be a complete open-source alternative to other industry feature/co
 - Dependencies between features
 - Customizable schema/domain model
 - Auditing
-- Integrated storage for saving context  
+- Integrated storage for saving context
 - Container friendly
 - Integrated OAuth support
 - Pluggable storage backend
@@ -42,7 +42,7 @@ The easiest way to start evaluating Tweek is to run it locally on docker, make s
 - Wait for environment to be stable (will take about 10m first time due to building all images, afterward it can take about 2m for environment to stabilize)
 
 ### Troubleshooting
-- Run (``` yarn start --build```) to rebuild all images and start Tweek. 
+- Run (``` yarn start --build```) to rebuild all images and start Tweek.
 
 
 #### Edit your first key
@@ -101,7 +101,7 @@ You can also use the api for updating Tweek context:
 More on [Context.](https://docs.tweek.fm/concepts/context/intro-to-context)
 
 #### Gradual Feature Release
-Create new key in the editor "my_app/sign_button/is_enabled" with value type "boolean" and default value False.  
+Create new key in the editor "my_app/sign_button/is_enabled" with value type "boolean" and default value False.
 Add new rule, remove all conditions, set the the rule value to gradual release with 50%.
 Try querying configuration with different users and You'll have different results.
 - http://localhost:8080/api/v2/values/my_app/sign_button/is_enabled?user=barny
@@ -115,16 +115,16 @@ More on how multi-variant keys work in Tweek. (link)
 ### Deployment to production
 
 ### FAQ
-- Who's using Tweek?  
+- Who's using Tweek?
   Tweek is been used in large scale production deployment at Soluto.
-- How do I generate ssh keys and a pfx file for use in production?  
+- How do I generate ssh keys and a pfx file for use in production?
   There's a script for this purpose in `utils/generate_keys.sh`
-- I found a security vulnerability, should I open an issue about it?  
+- I found a security vulnerability, should I open an issue about it?
   No. Please send an email to `security@soluto.com`.
 
 
 ### Related projects
-[Tweek-Clients](https://github.com/Soluto/tweek-clients) - Tweek REST clients  
+[Tweek-Clients](https://github.com/Soluto/tweek-clients) - Tweek REST clients
 [Tweek.JPad](https://github.com/soluto/tweek.jpad) - Tweek's internal rules engine
 
 ### Additional Resources
