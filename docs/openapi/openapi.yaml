@@ -562,11 +562,11 @@ components:
       scheme: bearer
       bearerFormat: JWT   
     apiClientId:
-      type: apiClientId
+      type: apiKey
       in: header
       name: X-CLIENT-ID
     apiClientSecret:
-      type: apiClientSecret
+      type: apiKey
       in: header
       name: X-CLIENT-SECRET
   requestBodies:
