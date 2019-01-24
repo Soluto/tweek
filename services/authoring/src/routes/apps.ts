@@ -65,7 +65,12 @@ export class AppsController {
   @POST
   async createApp( @QueryParam('author.name') name: string, @QueryParam('author.email') email: string, newAppModel: AppCreationRequestModel): Promise<AppCreationResponseModel> {
     const appId = uuid.v4();
+    if (newAppModel.name == null){
+      throw new Errors.BadRequestError(`App name is missing`);
+    }
+    newAppModel.permissions = newAppModel.permissions || []; //for gateway
     const newApp = createNewAppManifest(newAppModel.name, newAppModel.permissions);
+    
     // validate permissions
     if (!hasValidPermissions(newAppModel.permissions)) {
       throw new Errors.BadRequestError(`Invalid permissions: ${R.difference(newAppModel.permissions, allowedPermissions)}`);
