@@ -39,6 +39,7 @@ require (
 	github.com/vulcand/oxy v0.0.0-20181019102601-ac21a760928b
 	github.com/vulcand/predicate v1.1.0
 	github.com/yashtewari/glob-intersection v0.0.0-20180916065949-5c77d914dd0b
+	golang.org/x/arch v0.0.0-20181203225421-5a4828bb7045 // indirect
 	golang.org/x/crypto v0.0.0-20181106171534-e4dc69e5b2fd
 	golang.org/x/net v0.0.0-20180124060956-0ed95abb35c4
 	golang.org/x/sys v0.0.0-20181107165924-66b7b1311ac8

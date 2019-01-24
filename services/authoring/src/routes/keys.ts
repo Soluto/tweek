@@ -72,14 +72,6 @@ export class KeysController {
     return 'OK';
   }
 
-  @Authorize({ permission: PERMISSIONS.KEYS_READ })
-  @GET
-  @Path('/revision')
-  async getRevision(): Promise<string> {
-    const commit = await this.keysRepository.getRevision();
-    return commit.sha();
-  }
-
   @Authorize({ permission: PERMISSIONS.HISTORY })
   @GET
   @Path('/revision-history')

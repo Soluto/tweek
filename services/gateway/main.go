@@ -108,9 +108,6 @@ func newApp(config *appConfig.Configuration) http.Handler {
 
 	router.V2Router().PathPrefix("/current-user").HandlerFunc(security.NewUserInfoHandler(&config.Security, userInfoExtractor))
 
-	router.MainRouter().PathPrefix("/swagger.yml").HandlerFunc(swaggerHandler())
-	router.MainRouter().PathPrefix("/openapi.yaml").HandlerFunc(openapiHandler())
-
 	app := negroni.New(recovery)
 
 	corsSupportMiddleware := corsSupport.New(&config.Security.Cors)
