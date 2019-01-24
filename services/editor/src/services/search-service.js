@@ -1,6 +1,7 @@
 /* global fetch process console */
 import * as R from 'ramda';
-import fetch, { getConfiguration } from '../utils/fetch';
+import { getConfiguration } from '../utils/fetch';
+import { tweekManagementClient } from '../utils/tweekClients';
 let maxResults;
 let showInternalKeys;
 
@@ -21,27 +22,26 @@ const shouldShowInternalKeys = async () => {
   return showInternalKeys;
 };
 
-const createSearchFunction = endpoint =>
-  async function suggestions(query) {
-    if (!query || query === '') return [];
-
-    if (!maxResults) {
-      try {
-        const response = await getConfiguration(`search/max_results`);
-        maxResults = (await response.json()) || 25;
-      } catch (err) {
-        console.error("unable to get 'search/max_results' configuration", err);
-      }
+const getMaxResults = async () => {
+  if (!maxResults) {
+    try {
+      const response = await getConfiguration(`search/max_results`);
+      maxResults = (await response.json()) || 25;
+    } catch (err) {
+      console.error("unable to get 'search/max_results' configuration", err);
     }
+  }
 
-    const response = await fetch(
-      `/${endpoint}?q=${encodeURIComponent(query)}&count=${maxResults || 25}`,
-    );
-    return await response.json();
-  };
+  return maxResults || 25;
+};
 
-const suggestionFn = createSearchFunction('suggestions');
+export const getSuggestions = async (query) => {
+  const maxResults = await getMaxResults();
+  const suggestions = await tweekManagementClient.getSuggestions(query, maxResults);
+  return await filterInternalKeys(suggestions);
+};
 
-export const getSuggestions = async query => filterInternalKeys(await suggestionFn(query));
-
-export const search = createSearchFunction('search');
+export const search = async (query) => {
+  const maxResults = await getMaxResults();
+  return await tweekManagementClient.search(query, maxResults);
+};

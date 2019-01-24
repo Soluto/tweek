@@ -3,19 +3,6 @@ import { retrieveToken } from '../services/auth-service';
 
 export const getGatewayBaseUrl = () => window.GATEWAY_URL || '';
 
-export default async function (relativeUrl, config = {}) {
-  const url = `${getGatewayBaseUrl()}/api/v2${relativeUrl}`;
-  const token = retrieveToken();
-  const originHeaders = config.headers;
-  const headers = token ? { ...originHeaders, Authorization: `Bearer ${token}` } : originHeaders;
-  const mode = 'cors';
-  const response = await fetch(url, { ...config, headers, mode });
-  if (!response.ok) {
-    throw response;
-  }
-  return response;
-}
-
 export const getConfiguration = async (configName) => {
   const token = retrieveToken();
   const userGroupResponse = await unAuthFetch('/api/v2/current-user', {

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import md5 from 'md5';
 import styled from 'react-emotion';
 import { Link } from 'react-router-dom';
-import fetch from '../utils/fetch';
+import { tweekManagementClient } from '../utils/tweekClients';
 
 const Container = styled('div')`
   display: flex;
@@ -23,7 +23,7 @@ const withCurrentUser = compose(
   setDisplayName('WithCurrentUser'),
   mapPropsStream(props$ =>
     Observable.combineLatest(
-      Observable.defer(() => fetch('/current-user').then(x => x.json())),
+      Observable.defer(() => tweekManagementClient.currentUser()),
       props$,
       (user, props) => ({
         ...props,

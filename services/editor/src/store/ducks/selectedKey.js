@@ -3,8 +3,8 @@ import { handleActions } from 'redux-actions';
 import * as R from 'ramda';
 import { push } from 'react-router-redux';
 import * as ContextService from '../../services/context-service';
-import fetch, { getConfiguration } from '../../utils/fetch';
-import { withJsonData } from '../../utils/http';
+import { getConfiguration } from '../../utils/fetch';
+import { tweekManagementClient } from '../../utils/tweekClients';
 import {
   createBlankJPadKey,
   createBlankKeyManifest,
@@ -43,9 +43,10 @@ function updateRevisionHistory(keyName) {
         const response = await getConfiguration(`history/since`);
         historySince = (await response.json()) || '1 month ago';
       }
-      const revisionHistory = await fetch(
-        `/revision-history/${keyName}?since=${encodeURIComponent(historySince)}`,
-      ).then(res => res.json());
+      const revisionHistory = await tweekManagementClient.getKeyRevisionHistory(
+        keyName,
+        historySince,
+      );
       dispatch({ type: KEY_REVISION_HISTORY, payload: { keyName, revisionHistory } });
     } catch (error) {
       dispatch(showError({ title: 'Failed to refresh revisionHistory', error }));
@@ -57,7 +58,7 @@ function updateKeyDependents(keyName) {
   return async function (dispatch) {
     let dependents = {};
     try {
-      dependents = await fetch(`/dependents/${keyName}`).then(res => res.json());
+      dependents = await tweekManagementClient.getKeyDependents(keyName);
     } catch (error) {
       dispatch(
         showError({
@@ -139,9 +140,8 @@ export function openKey(key, { revision } = {}) {
     dispatch({ type: KEY_OPENING, payload: key });
 
     let keyData;
-    const search = revision ? `?revision=${revision}` : '';
     try {
-      keyData = await fetch(`/keys/${key}${search}`).then(res => res.json());
+      keyData = await tweekManagementClient.getKeyDefinition(key, revision);
     } catch (exp) {
       dispatch({ type: KEY_OPENED, payload: { key } });
       return;
@@ -183,12 +183,9 @@ async function performSave(dispatch, keyName, { manifest, implementation }) {
 
   let isSaveSucceeded;
   try {
-    await fetch(`/keys/${keyName}`, {
-      method: 'PUT',
-      ...withJsonData({
-        manifest,
-        implementation: manifest.implementation.type === 'file' ? implementation.source : undefined,
-      }),
+    await tweekManagementClient.saveKeyDefinition(keyName, {
+      manifest,
+      implementation: manifest.implementation.type === 'file' ? implementation.source : undefined,
     });
     isSaveSucceeded = true;
   } catch (error) {
@@ -313,10 +310,7 @@ export function deleteKey() {
 
     dispatch(push('/keys'));
     try {
-      await fetch(`/keys/${key}`, {
-        method: 'delete',
-        ...withJsonData(aliases),
-      });
+      await tweekManagementClient.deleteKey(key, aliases);
 
       dispatch(removeKeyFromList(key));
       aliases.forEach(alias => dispatch(removeKeyFromList(alias)));
@@ -333,10 +327,7 @@ export function addAlias(alias) {
     const manifest = createBlankKeyManifest(alias, { type: 'alias', key });
 
     try {
-      await fetch(`/keys/${alias}`, {
-        method: 'PUT',
-        ...withJsonData({ manifest }),
-      });
+      await tweekManagementClient.saveKeyDefinition(alias, { manifest });
     } catch (error) {
       dispatch(showError({ title: 'Failed to add alias', error }));
       return;
@@ -357,9 +348,7 @@ export function deleteAlias(alias) {
     if (!(await dispatch(showConfirm(deleteKeyAlert(alias)))).result) return;
 
     try {
-      await fetch(`/keys/${alias}`, {
-        method: 'delete',
-      });
+      await tweekManagementClient.deleteKey(alias);
 
       dispatch(removeKeyFromList(alias));
       const { selectedKey: { key, usedBy, aliases } } = getState();

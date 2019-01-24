@@ -1,8 +1,7 @@
 /* global process console */
 import { handleActions } from 'redux-actions';
 import * as R from 'ramda';
-import { withJsonData } from '../../utils/http';
-import fetch from '../../utils/fetch';
+import { tweekManagementClient } from '../../utils/tweekClients';
 import { showError } from './notifications';
 
 const TAGS_DOWNLOADED = 'TAGS_DOWNLOADED';
@@ -10,7 +9,7 @@ const TAGS_SAVED = 'TAGS_SAVED';
 
 export async function downloadTags() {
   try {
-    const tags = await fetch(`/tags`).then(res => res.json());
+    const tags = await tweekManagementClient.getAllTags();
     return { type: TAGS_DOWNLOADED, payload: tags };
   } catch (error) {
     return showError({ title: 'Failed to download tags', error });
@@ -28,10 +27,7 @@ export const saveNewTags = tagsToSave =>
     }
 
     try {
-      await fetch(`/tags`, {
-        method: 'PUT',
-        ...withJsonData(newTags),
-      });
+      await tweekManagementClient.appendTags(newTags);
 
       dispatch({ type: TAGS_SAVED, payload: newTags });
     } catch (error) {
