@@ -6,9 +6,6 @@ services:
       args: 
         target: Release
 
-    environment: 
-      - GIT_UPSTREAM_URI=ssh://git@git/tweek/tests
-
   editor:
     environment: 
       - CONTINUOUS_UPDATER_INTERVAL=500
