@@ -197,18 +197,6 @@ paths:
           required: true
           schema:
             type: string
-        - description: ''
-          in: query
-          name: author.name
-          required: true
-          schema:
-            type: string
-        - description: ''
-          in: query
-          name: author.email
-          required: true
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -231,18 +219,6 @@ paths:
         - description: ''
           in: query
           name: keyPath
-          required: true
-          schema:
-            type: string
-        - description: ''
-          in: query
-          name: author.name
-          required: true
-          schema:
-            type: string
-        - description: ''
-          in: query
-          name: author.email
           required: true
           schema:
             type: string
@@ -318,18 +294,6 @@ paths:
           required: true
           schema:
             type: string
-        - description: ''
-          in: query
-          name: author.name
-          required: true
-          schema:
-            type: string
-        - description: ''
-          in: query
-          name: author.email
-          required: true
-          schema:
-            type: string
     post:
       operationId: createNewIdentity
       summary: Create new identity
@@ -346,18 +310,6 @@ paths:
         - description: ''
           in: path
           name: identityType
-          required: true
-          schema:
-            type: string
-        - description: ''
-          in: query
-          name: author.name
-          required: true
-          schema:
-            type: string
-        - description: ''
-          in: query
-          name: author.email
           required: true
           schema:
             type: string
@@ -383,18 +335,6 @@ paths:
         - description: ''
           in: path
           name: identityType
-          required: true
-          schema:
-            type: string
-        - description: ''
-          in: query
-          name: author.name
-          required: true
-          schema:
-            type: string
-        - description: ''
-          in: query
-          name: author.email
           required: true
           schema:
             type: string
@@ -534,19 +474,6 @@ paths:
       summary: 'Create new app'
       tags:
         - apps
-      parameters:
-        - description: ''
-          in: query
-          name: author.name
-          required: true
-          schema:
-            type: string
-        - description: ''
-          in: query
-          name: author.email
-          required: true
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
