@@ -1,11 +1,12 @@
 /* global Promise */
 import React from 'react';
 import { Observable } from 'rxjs/Rx';
-import { setObservableConfig, compose, lifecycle } from 'recompose';
+import { setObservableConfig, compose } from 'recompose';
+import { TweekProvider } from '../contexts/Tweek';
+import { CurrentUserProvider } from '../contexts/CurrentUser';
 import withLoading from '../hoc/with-loading';
 import { refreshSchema } from '../services/context-service';
 import * as TypesService from '../services/types-service';
-import { tweekManagementClient, tweekRepository } from '../utils/tweekClients';
 import AppHeader from './AppHeader';
 import AppPage from './AppPage';
 import GoogleTagManager from './googleTagManager';
@@ -18,25 +19,19 @@ setObservableConfig({
 });
 
 const App = ({ children }) => (
-  <div className={'app'}>
-    <GoogleTagManager />
-    <AppHeader />
-    <AppPage children={children} />
-  </div>
+  <CurrentUserProvider>
+    <TweekProvider>
+      <div className={'app'}>
+        <GoogleTagManager />
+        <AppHeader />
+        <AppPage children={children} />
+      </div>
+    </TweekProvider>
+  </CurrentUserProvider>
 );
 
 const preload = async () => await Promise.all([TypesService.refreshTypes(), refreshSchema()]);
 
-const enhance = compose(
-  lifecycle({
-    async componentDidMount() {
-      const { User } = await tweekManagementClient.currentUser();
-      await tweekRepository._waitRefreshCycle();
-      tweekRepository.updateContext({ tweek_editor_user: User });
-    },
-  }),
-  withLoading(() => null, preload),
-  withTypesService(TypesService),
-);
+const enhance = compose(withLoading(() => null, preload), withTypesService(TypesService));
 
 export default enhance(App);

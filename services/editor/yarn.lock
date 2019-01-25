@@ -8602,9 +8602,10 @@ react-dom@16.2.0:
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
-react-dom@^16.3.0:
+react-dom@16.7.0:
   version "16.7.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.7.0.tgz#a17b2a7ca89ee7390bc1ed5eb81783c7461748b8"
+  integrity sha512-D0Ufv1ExCAmF38P2Uh1lwpminZFRXEINJe53zRAbm4KPwSyd6DY/uDoS0Blj9jvPpn1+wivKpZYc8aAAN/nAkg==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
@@ -8849,9 +8850,10 @@ react@16.2.0:
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
-react@^16.3.0:
+react@16.7.0:
   version "16.7.0"
   resolved "https://registry.yarnpkg.com/react/-/react-16.7.0.tgz#b674ec396b0a5715873b350446f7ea0802ab6381"
+  integrity sha512-StCz3QY8lxTb5cl2HJxjwLFOXPIFQp+p+hxQfc8WE0QiLfCtIlKj8/+5tjjKm8uSTlAW+fCPaavGFS06V9Ar3A==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
@@ -10325,16 +10327,16 @@ tweek-client@1.0.0-rc3:
     query-string "^6.2.0"
     zen-observable "^0.8.13"
 
-tweek-local-cache@0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/tweek-local-cache/-/tweek-local-cache-0.4.0.tgz#a1528a0a10407ce2dd9be77b42cebf8260dbc50f"
-  integrity sha512-+F6E0jX6WBI1i6aEzn+nI6Th0c/7gxFtl2u5MmlTRXyIg0u+WX7y78ZgOOR2KFQ1d0xi3ntrZP3ZGCdCVep2JQ==
+tweek-local-cache@0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/tweek-local-cache/-/tweek-local-cache-0.4.1.tgz#5f80d51b9d35e09debcf4aa8c47d9429e82c3698"
+  integrity sha512-AM2ax7z/WxnAGvFTeOQ7x2E4BzXUoCTXKDP7rjJIcwIgntkJg3TLNSKcU5i9P7pNNoTLMZ4V1mymEdfGH2kWlA==
   dependencies:
     change-emitter "^0.1.6"
     object.entries "^1.1.0"
     object.values "^1.1.0"
     symbol-observable "^1.0.4"
-    zen-observable "^0.8.11"
+    zen-observable "^0.8.13"
 
 tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
@@ -11177,7 +11179,7 @@ yargs@^11.0.0:
     y18n "^3.2.1"
     yargs-parser "^9.0.2"
 
-zen-observable@^0.8.11, zen-observable@^0.8.13:
+zen-observable@^0.8.13:
   version "0.8.13"
   resolved "https://registry.yarnpkg.com/zen-observable/-/zen-observable-0.8.13.tgz#a9f1b9dbdfd2d60a08761ceac6a861427d44ae2e"
   integrity sha512-fa+6aDUVvavYsefZw0zaZ/v3ckEtMgCFi30sn91SEZea4y/6jQp05E3omjkX91zV6RVdn15fqnFZ6RKjRGbp2g==

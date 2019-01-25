@@ -11,7 +11,7 @@ import {
   setDisplayName,
   withState,
 } from 'recompose';
-import { withTweekKeys } from '../../../../hoc/tweek-context';
+import { withTweekKeys } from '../../../../contexts/Tweek';
 import * as SearchService from '../../../../services/search-service';
 import DirectoryTreeView from './TreeView/DirectoryTreeView';
 import CardView from './CardView';
