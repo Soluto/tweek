@@ -1,9 +1,9 @@
-/* global fetch console Headers localStorage window process location */
+/* global console Headers localStorage window process location */
 import Oidc from 'oidc-client';
 import adal from 'adal-angular';
 import jwt_decode from 'jwt-decode';
 import moment from 'moment';
-import { unAuthFetch } from '../utils/fetch';
+import fetch from '../utils/fetch';
 
 const store = {};
 let storage;
@@ -78,12 +78,12 @@ const basicOidcConfig = {
 };
 
 export const getAuthProviders = async () => {
-  const res = await unAuthFetch(`/auth/providers`);
-  if (res.ok) {
-    const providers = await res.json();
-    return providers;
+  try {
+    const res = await fetch(`/auth/providers`);
+    return await res.json();
+  } catch (e) {
+    return [];
   }
-  return [];
 };
 
 export const configureOidc = (authority, client_id, scope) => ({

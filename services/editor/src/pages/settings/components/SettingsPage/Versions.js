@@ -3,7 +3,7 @@ import { mapPropsStream } from 'recompose';
 import { Observable } from 'rxjs';
 import * as R from 'ramda';
 import styled from 'react-emotion';
-import { unAuthFetch } from '../../../../utils/fetch';
+import fetch from '../../../../utils/fetch';
 import { version } from '../../../../../package.json';
 
 const ServiceStatus = styled('span')`
@@ -18,7 +18,7 @@ const ServiceStatus = styled('span')`
 const ServiceVersion = styled('span')``;
 
 const Versions = mapPropsStream(prop$ =>
-  Observable.defer(() => unAuthFetch('/version').then(x => x.json()))
+  Observable.defer(() => fetch('/version').then(x => x.json()))
     .map(services => ({ services }))
     .catch(ex => Observable.of({ error: ex })),
 )(({ services, error }) => (

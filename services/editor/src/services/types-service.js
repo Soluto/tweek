@@ -1,5 +1,5 @@
 /* global process */
-import { tweekClient, tweekManagementClient } from '../utils/tweekClients';
+import { tweekManagementClient, tweekRepository } from '../utils/tweekClients';
 
 export const types = {
   string: {
@@ -26,7 +26,7 @@ export const types = {
 };
 
 export async function refreshTypes() {
-  const loadedTypes = await tweekClient.getValues('@tweek/custom_types/_');
+  const loadedTypes = await tweekRepository.get('@tweek/custom_types/_');
 
   for (const type of Object.keys(loadedTypes)) {
     types[type] = Object.assign({}, { name: type }, loadedTypes[type]);

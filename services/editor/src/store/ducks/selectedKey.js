@@ -3,8 +3,7 @@ import { handleActions } from 'redux-actions';
 import * as R from 'ramda';
 import { push } from 'react-router-redux';
 import * as ContextService from '../../services/context-service';
-import { getConfiguration } from '../../utils/fetch';
-import { tweekManagementClient } from '../../utils/tweekClients';
+import { tweekManagementClient, tweekRepository } from '../../utils/tweekClients';
 import {
   createBlankJPadKey,
   createBlankKeyManifest,
@@ -34,15 +33,11 @@ const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
 const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
 const KEY_CLOSED = 'KEY_CLOSED';
 
-let historySince;
-
 function updateRevisionHistory(keyName) {
   return async function (dispatch) {
     try {
-      if (!historySince) {
-        const response = await getConfiguration(`history/since`);
-        historySince = (await response.json()) || '1 month ago';
-      }
+      const result = await tweekRepository.get('@tweek/editor/history/since');
+      const historySince = result.value || '1 month ago';
       const revisionHistory = await tweekManagementClient.getKeyRevisionHistory(
         keyName,
         historySince,

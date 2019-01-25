@@ -4,8 +4,14 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Observable } from 'rxjs';
-import { componentFromStream, createEventHandler, withState } from 'recompose';
-import { getConfiguration } from '../../../../utils/fetch';
+import {
+  componentFromStream,
+  compose,
+  createEventHandler,
+  setDisplayName,
+  withState,
+} from 'recompose';
+import { withTweekKeys } from '../../../../hoc/tweek-context';
 import * as SearchService from '../../../../services/search-service';
 import DirectoryTreeView from './TreeView/DirectoryTreeView';
 import CardView from './CardView';
@@ -39,16 +45,6 @@ const KeysFilter = withState('filter', 'setFilter', '')(({ onFilterChange, setFi
     </div>
   </div>
 ));
-
-const supportCardView = async () => {
-  try {
-    const response = await getConfiguration(`experimental/keys_search/enable_cards_view`);
-    return await response.json();
-  } catch (err) {
-    console.warn('failed to retrieve configuration for enable_cards_view', err);
-    return false;
-  }
-};
 
 const getDataValueType = (archived, keyType, valueType) => {
   if (archived) {
@@ -103,14 +99,20 @@ const CardItem = ({
   </div>
 );
 
-const KeysList = connect((state, props) => ({
-  selectedKey: state.selectedKey && state.selectedKey.key,
-}))(
+const enhance = compose(
+  connect(state => ({ selectedKey: state.selectedKey && state.selectedKey.key })),
+  withTweekKeys({
+    supportMultiResultsView: '@tweek/editor/experimental/keys_search/enable_cards_view',
+  }),
+  setDisplayName('KeysList'),
+);
+
+const KeysList = enhance(
   componentFromStream((prop$) => {
-    const supportMultiResultsView$ = Observable.defer(supportCardView);
+    const supportMultiResultsView$ = prop$.pluck('supportMultiResultsView').distinctUntilChanged();
 
     const keyList$ = prop$
-      .map(x => x.keys)
+      .pluck('keys')
       .distinctUntilChanged()
       .switchMap(async (allKeys) => {
         const unarchivedKeys = R.filter(key => !key.meta.archived, allKeys);
@@ -174,7 +176,5 @@ const KeysList = connect((state, props) => ({
     );
   }),
 );
-
-KeysList.displayName = 'KeysList';
 
 export default KeysList;
