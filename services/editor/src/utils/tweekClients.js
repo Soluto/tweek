@@ -1,6 +1,5 @@
 /* global window */
 import { createTweekClient, createTweekManagementClient } from 'tweek-client';
-import { TweekRepository } from 'tweek-local-cache';
 import { retrieveToken } from '../services/auth-service';
 
 export const getGatewayBaseUrl = () => window.GATEWAY_URL || '';
@@ -16,5 +15,3 @@ const config = {
 export const tweekManagementClient = createTweekManagementClient(config);
 
 export const tweekClient = createTweekClient(config);
-
-export const tweekRepository = new TweekRepository({ client: tweekClient });

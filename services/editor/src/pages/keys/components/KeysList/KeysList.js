@@ -103,6 +103,8 @@ const enhance = compose(
   connect(state => ({ selectedKey: state.selectedKey && state.selectedKey.key })),
   withTweekKeys({
     supportMultiResultsView: '@tweek/editor/experimental/keys_search/enable_cards_view',
+    maxSearchResults: '@tweek/editor/search/max_results',
+    showInternalKeys: '@tweek/editor/show_internal_keys',
   }),
   setDisplayName('KeysList'),
 );
@@ -114,11 +116,11 @@ const KeysList = enhance(
     const keyList$ = prop$
       .pluck('keys')
       .distinctUntilChanged()
-      .switchMap(async (allKeys) => {
+      .withLatestFrom(prop$.pluck('showInternalKeys'), (allKeys, showInternalKeys) => {
         const unarchivedKeys = R.filter(key => !key.meta.archived, allKeys);
         return {
           keys: allKeys,
-          visibleKeys: await SearchService.filterInternalKeys(unarchivedKeys),
+          visibleKeys: SearchService.filterInternalKeys(unarchivedKeys, showInternalKeys),
         };
       });
 
@@ -130,11 +132,15 @@ const KeysList = enhance(
       .distinctUntilChanged()
       .debounceTime(500)
       .startWith('')
-      .switchMap(async filter => (filter === '' ? undefined : SearchService.search(filter)));
+      .withLatestFrom(prop$.pluck('maxSearchResults'))
+      .switchMap(
+        async ([filter, maxResults]) =>
+          filter === '' ? undefined : SearchService.search(filter, maxResults),
+      )
+      .startWith(undefined);
 
     return Observable.combineLatest(
       prop$.map(x => x.selectedKey).distinctUntilChanged(),
-
       filteredKeys$,
       keyList$,
       supportMultiResultsView$,

@@ -3,7 +3,7 @@ import { handleActions } from 'redux-actions';
 import * as R from 'ramda';
 import { push } from 'react-router-redux';
 import * as ContextService from '../../services/context-service';
-import { tweekManagementClient, tweekRepository } from '../../utils/tweekClients';
+import { tweekManagementClient } from '../../utils/tweekClients';
 import {
   createBlankJPadKey,
   createBlankKeyManifest,
@@ -33,14 +33,12 @@ const KEY_VALUE_TYPE_CHANGE = 'KEY_VALUE_TYPE_CHANGE';
 const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
 const KEY_CLOSED = 'KEY_CLOSED';
 
-function updateRevisionHistory(keyName) {
+function updateRevisionHistory(keyName, since) {
   return async function (dispatch) {
     try {
-      const result = await tweekRepository.get('@tweek/editor/history/since');
-      const historySince = result.value || '1 month ago';
       const revisionHistory = await tweekManagementClient.getKeyRevisionHistory(
         keyName,
-        historySince,
+        since || '1 month ago',
       );
       dispatch({ type: KEY_REVISION_HISTORY, payload: { keyName, revisionHistory } });
     } catch (error) {
@@ -116,7 +114,7 @@ export function addKeyDetails() {
   };
 }
 
-export function openKey(key, { revision } = {}) {
+export function openKey(key, { revision, historySince } = {}) {
   return async function (dispatch) {
     dispatch(downloadTags());
     try {
@@ -156,7 +154,7 @@ export function openKey(key, { revision } = {}) {
     };
 
     await dispatch({ type: KEY_OPENED, payload: keyOpenedPayload });
-    dispatch(updateRevisionHistory(key));
+    dispatch(updateRevisionHistory(key, historySince));
     dispatch(updateKeyDependents(key));
   };
 }
@@ -197,7 +195,7 @@ const confirmArchievAlert = {
   message: 'Archiving the key will discard all your changes.\nDo you want to continue?',
 };
 
-export function archiveKey(archived) {
+export function archiveKey(archived, historySince) {
   return async function (dispatch, getState) {
     const { selectedKey: { key, local, remote } } = getState();
 
@@ -213,7 +211,7 @@ export function archiveKey(archived) {
     } else {
       dispatch(addKeyToList(keyToSave.manifest));
     }
-    dispatch(updateRevisionHistory(key));
+    dispatch(updateRevisionHistory(key, historySince));
     dispatch(updateKeyDependents(key));
   };
 }
@@ -266,7 +264,7 @@ export function updateKeyName(newKeyName) {
   return { type: KEY_NAME_CHANGE, payload: newKeyName };
 }
 
-export function saveKey() {
+export function saveKey(historySince) {
   return async function (dispatch, getState) {
     const currentState = getState();
     const { selectedKey: { local, key } } = currentState;
@@ -280,7 +278,7 @@ export function saveKey() {
 
     if (!await performSave(dispatch, savedKey, local)) return;
 
-    dispatch(updateRevisionHistory(savedKey));
+    dispatch(updateRevisionHistory(savedKey, historySince));
     dispatch(updateKeyDependents(savedKey));
 
     if (isNewKey) {
