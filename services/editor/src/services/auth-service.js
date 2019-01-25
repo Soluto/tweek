@@ -3,7 +3,6 @@ import Oidc from 'oidc-client';
 import adal from 'adal-angular';
 import jwt_decode from 'jwt-decode';
 import moment from 'moment';
-import fetch from '../utils/fetch';
 
 const store = {};
 let storage;
@@ -75,15 +74,6 @@ const basicOidcConfig = {
   silent_redirect_uri: `${window.location.origin}/auth-result/silent`,
   post_logout_redirect_uri: `${window.location.origin}/login`,
   prompt: 'login',
-};
-
-export const getAuthProviders = async () => {
-  try {
-    const res = await fetch(`/auth/providers`);
-    return await res.json();
-  } catch (e) {
-    return [];
-  }
 };
 
 export const configureOidc = (authority, client_id, scope) => ({
