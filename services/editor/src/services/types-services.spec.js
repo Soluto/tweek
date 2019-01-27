@@ -1,8 +1,6 @@
-/* global jest, before, beforeEach, describe, it, expect */
-jest.unmock('../../../src/services/types-service');
-
+/* global jest, before, beforeEach, afterEach, describe, it, expect */
 import fetchMock from 'fetch-mock';
-import * as TypesService from '../../../src/services/types-service';
+import * as TypesService from './types-service';
 
 describe('types-service', () => {
   afterEach(() => {
@@ -32,18 +30,18 @@ describe('types-service', () => {
   });
 
   describe('convertValue', () => {
-    TypesService['version'] = {
+    TypesService.types.version = {
       name: 'version',
       base: 'string',
     };
 
-    let checkConvertedValueResult = function (value, type, expectedResult) {
+    let checkConvertedValueResult = function(value, type, expectedResult) {
       it('should convert values correctly', () => {
         expect(TypesService.convertValue(value, type)).toEqual(expectedResult);
       });
     };
 
-    let shouldFailResult = function (value, type) {
+    let shouldFailResult = function(value, type) {
       it('should convert values correctly', () => {
         expect(() => TypesService.convertValue(value, type)).toThrow();
       });

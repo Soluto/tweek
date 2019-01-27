@@ -1,7 +1,5 @@
 /* global jest, beforeEach, describe, it, expect */
-jest.unmock('../../../src/utils/mutator');
-
-import Mutator from '../../../src/utils/mutator';
+import Mutator from './mutator';
 
 describe('mutator tests', () => {
   let newMutator = (fn) => {
@@ -158,7 +156,7 @@ describe('mutator tests', () => {
       'should be able to adjust a field value',
       newMutator((target, mutator) => {
         target.someKey = 5;
-        mutator.in('someKey').adjustValue(x => x + 5);
+        mutator.in('someKey').adjustValue((x) => x + 5);
         expect(target.someKey).toEqual(10);
       }),
     );
@@ -170,7 +168,7 @@ describe('mutator tests', () => {
         mutator
           .in('someArray')
           .in(1)
-          .adjustValue(x => x + 10);
+          .adjustValue((x) => x + 10);
         expect(target.someArray[1]).toEqual(30);
       }),
     );
@@ -279,7 +277,7 @@ describe('mutator tests', () => {
       mutator.in('a').updateValue(1);
       mutator.in('b').updateValue(1);
       expect(mock.mock.calls.length).toEqual(2);
-      mutator.apply(m =>
+      mutator.apply((m) =>
         m
           .in('a')
           .updateValue(2)

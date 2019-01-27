@@ -10,7 +10,7 @@ FROM dependencies AS build
 RUN yarn --prefer-offline
 
 COPY . .
-RUN yarn test && yarn build
+RUN CI=true yarn test && yarn build
 
 # ---- Release ----
 FROM dependencies AS release

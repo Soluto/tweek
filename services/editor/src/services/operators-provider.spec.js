@@ -1,6 +1,7 @@
-import { types } from '../../../src/services/types-service';
-import * as opsProvider from '../../../src/services/operators-provider';
+/* global describe, it */
 import { expect } from 'chai';
+import { types } from './types-service';
+import * as opsProvider from './operators-provider';
 
 describe('operators-provider service', () => {
   it('should contain the right operators for date', () => {
