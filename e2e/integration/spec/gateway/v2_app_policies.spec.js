@@ -93,6 +93,14 @@ describe('Gateway v2 - App Policies', () => {
       action: client => client
           .delete('/api/v2/schemas/new_identity?author.name=test&author.email=test@tweek.com')
     },
+
+    {
+      name: 'jwt_extraction_policy',
+      requirePermissionObject: 'repo/policies',
+      requirePermissionAction: 'read',
+      action: client => client
+          .get('/api/v2/jwt-extraction-policy')
+    },
   ];
 
   for (let policy of policies) {

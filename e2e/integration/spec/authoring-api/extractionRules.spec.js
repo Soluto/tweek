@@ -25,8 +25,14 @@ describe('authoring api extraction rules', () => {
 
     await clients.authoring
       .put('/api/subject-extraction-rules?author.name=test&author.email=test@soluto.com')
-      .send({ subject_extraction_rules: newRules })
+      .send({ data: newRules })
       .expect(200);
+
+    const res = await clients.authoring
+      .get('/api/subject-extraction-rules?author.name=test&author.email=test@soluto.com')
+      .expect(200);
+    
+    expect(res.body.data).to.equal(newRules);
 
     await pollUntil(
       () => getObjectContentFromMinio('security/subject_extraction_rules.rego'),

@@ -185,14 +185,19 @@ describe('Gateway v2 API', () => {
     const res = await clients.gateway
       .post('/api/v2/apps?author.name=test&author.email=test@soluto.com')
       .send({
-        name: 'test app',
-        permissions: [],
+        name: 'test app'
       })
       .expect(200);
 
     const app = res.body;
     expect(app).hasOwnProperty('appId');
     expect(app).hasOwnProperty('appSecret');
+
+    const appsRes = await clients.gateway
+                            .get('/api/v2/apps')
+                            .expect(200);
+
+    expect(appsRes.body).to.include({[app.appId] : 'test app' });
 
     const policyRes = await clients.gateway.get('/api/v2/policies').expect(200);
 

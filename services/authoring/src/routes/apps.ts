@@ -4,7 +4,7 @@ import crypto = require('crypto');
 import R = require('ramda');
 import { AutoWired, Inject } from 'typescript-ioc';
 import { Tags } from 'typescript-rest-swagger';
-import { POST, Path, Errors, Context, ServiceContext, QueryParam } from 'typescript-rest';
+import { POST, GET, Path, Errors, Context, ServiceContext, QueryParam } from 'typescript-rest';
 import { PERMISSIONS } from '../security/permissions/consts';
 import { generateHash } from '../apps/apps-utils';
 import { Authorize } from '../security/authorize';
@@ -51,6 +51,10 @@ export type AppCreationResponseModel = {
   appSecret: string,
 };
 
+export type AppsListResponseModel = {
+  [id: string]: string
+}
+
 @AutoWired
 @Tags('apps')
 @Path('/apps')
@@ -65,6 +69,7 @@ export class AppsController {
   @POST
   async createApp( @QueryParam('author.name') name: string, @QueryParam('author.email') email: string, newAppModel: AppCreationRequestModel): Promise<AppCreationResponseModel> {
     const appId = uuid.v4();
+    newAppModel.permissions = newAppModel.permissions || [];
     const newApp = createNewAppManifest(newAppModel.name, newAppModel.permissions);
     // validate permissions
     if (!hasValidPermissions(newAppModel.permissions)) {
@@ -79,5 +84,12 @@ export class AppsController {
       appId,
       appSecret,
     });
+  }
+
+  @Authorize({ permission: PERMISSIONS.ADMIN })
+  @GET
+  async getApps(): Promise<AppsListResponseModel> {
+    const apps = await this.appsRepository.getApps();
+    return <any>R.pluck("name")(<any>apps);
   }
 }

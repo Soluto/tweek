@@ -197,18 +197,6 @@ paths:
           required: true
           schema:
             type: string
-        - description: ''
-          in: query
-          name: author.name
-          required: true
-          schema:
-            type: string
-        - description: ''
-          in: query
-          name: author.email
-          required: true
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -231,18 +219,6 @@ paths:
         - description: ''
           in: query
           name: keyPath
-          required: true
-          schema:
-            type: string
-        - description: ''
-          in: query
-          name: author.name
-          required: true
-          schema:
-            type: string
-        - description: ''
-          in: query
-          name: author.email
           required: true
           schema:
             type: string
@@ -318,18 +294,6 @@ paths:
           required: true
           schema:
             type: string
-        - description: ''
-          in: query
-          name: author.name
-          required: true
-          schema:
-            type: string
-        - description: ''
-          in: query
-          name: author.email
-          required: true
-          schema:
-            type: string
     post:
       operationId: createNewIdentity
       summary: Create new identity
@@ -346,18 +310,6 @@ paths:
         - description: ''
           in: path
           name: identityType
-          required: true
-          schema:
-            type: string
-        - description: ''
-          in: query
-          name: author.name
-          required: true
-          schema:
-            type: string
-        - description: ''
-          in: query
-          name: author.email
           required: true
           schema:
             type: string
@@ -383,18 +335,6 @@ paths:
         - description: ''
           in: path
           name: identityType
-          required: true
-          schema:
-            type: string
-        - description: ''
-          in: query
-          name: author.name
-          required: true
-          schema:
-            type: string
-        - description: ''
-          in: query
-          name: author.email
           required: true
           schema:
             type: string
@@ -502,7 +442,7 @@ paths:
                 items:
                   type: object
       tags:
-        - policy
+        - policies
     put:
       operationId: putPoliciesList
       summary: Replace policies list
@@ -510,7 +450,7 @@ paths:
         '200':
           description: OK
       tags:
-        - policy
+        - policies
     patch:
       operationId: patchPoliciesList
       summary: Update Policies file
@@ -518,7 +458,7 @@ paths:
         '200':
           description: OK
       tags:
-        - policy
+        - policies
       requestBody:
         $ref: '#/components/requestBodies/Patch'
   /apps:
@@ -532,27 +472,83 @@ paths:
               schema:
                 $ref: '#/components/schemas/AppCreationResponseModel'
       summary: 'Create new app'
+      description: |
+        Create new app (credentials) for using Tweek.
+        Return login details for the new app.
+
+        require permission - write repo/apps 
       tags:
         - apps
-      parameters:
-        - description: ''
-          in: query
-          name: author.name
-          required: true
-          schema:
-            type: string
-        - description: ''
-          in: query
-          name: author.email
-          required: true
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/AppCreationRequestModel'
         required: true
+    get:
+      operationId: getApps
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema: 
+                type: object
+      summary: 'List apps'
+      description: |
+        List all applications created in Tweek.  
+        Return a map of appId->name.  
+
+        require permission - read repo/apps 
+      tags:
+        - apps
+  /jwt-extraction-policy:
+    post:
+      operationId: updateJWTExtractionPolicy
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppCreationResponseModel'
+      summary: 'Update JWT extraction policy'
+      description: |
+        Update JWT subject extraction policy with a new rego payload.
+
+        require permission - write repo/policies 
+      tags:
+        - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data: 
+                  type: string
+        required: true
+    get:
+      operationId: getJWTExtractionPolicy
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  data: 
+                    type: string
+
+      summary: 'Get JWT subject extraction policy'
+      description: |
+        Get current rego file data for JWT subject extraction.
+
+        require permission - read repo/policies
+      tags:
+        - policies
+  
 servers:
   - url: /api/v2/
 components:

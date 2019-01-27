@@ -151,8 +151,35 @@
     },
     {
         "routePathPrefix": "/apps",
-        "routeRegexp": "^/api/v2/apps(.*)$",
-        "upstreamPath": "/api/apps$1",
+        "routeRegexp": "^/api/v2/apps$",
+        "upstreamPath": "/api/apps",
+        "methods": ["GET"],
+        "service": "authoring",
+        "userInfo": true,
+        "rewriteKeyPath": false
+    },
+    {
+        "routePathPrefix": "/apps",
+        "routeRegexp": "^/api/v2/apps$",
+        "upstreamPath": "/api/apps",
+        "methods": ["POST"],
+        "service": "authoring",
+        "userInfo": true,
+        "rewriteKeyPath": false
+    },
+    {
+        "routePathPrefix": "/jwt-extraction-policy",
+        "routeRegexp": "^/api/v2/jwt-extraction-policy$",
+        "upstreamPath": "/api/subject-extraction-rules",
+        "methods": ["GET"],
+        "service": "authoring",
+        "userInfo": true,
+        "rewriteKeyPath": false
+    },
+    {
+        "routePathPrefix": "/jwt-extraction-policy",
+        "routeRegexp": "^/api/v2/jwt-extraction-policy$",
+        "upstreamPath": "/api/subject-extraction-rules",
         "methods": ["POST"],
         "service": "authoring",
         "userInfo": true,

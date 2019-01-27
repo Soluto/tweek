@@ -53,6 +53,8 @@ func extractActionFromRequest(r *http.Request) (act string, err error) {
 	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/policies"):
 		fallthrough
 	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/context"):
+		fallthrough
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/apps"):
 		act = "read"
 		break
 	default:
@@ -100,9 +102,13 @@ func extractContextsFromKeysRequest(r *http.Request, u UserInfo) (ctxs PolicyRes
 	return
 }
 
+func extractContextsFromAppsRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
+	ctxs.Item = "repo/apps"
+	return
+}
+
 func extractContextsFromPoliciesRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
 	ctxs.Item = "repo/policies"
-
 	return
 }
 
@@ -148,7 +154,6 @@ func normalizeIdentityID(id string, u UserInfo) string {
 func extractContextsFromOtherRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
 	ctxs = PolicyResource{Contexts: map[string]string{}}
 	ctxs.Item = "repo"
-
 	return
 }
 
@@ -181,7 +186,11 @@ func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs PolicyResourc
 		return extractContextsFromValuesRequest(r, u)
 	} else if strings.HasPrefix(path, "/api/v2/keys") {
 		return extractContextsFromKeysRequest(r, u)
+	} else if strings.HasPrefix(path, "/api/v2/apps") {
+		return extractContextsFromAppsRequest(r, u)
 	} else if strings.HasPrefix(path, "/api/v2/policies") {
+		return extractContextsFromPoliciesRequest(r, u)
+	} else if strings.HasPrefix(path, "/api/v2/jwt-extraction-policy") {
 		return extractContextsFromPoliciesRequest(r, u)
 	} else if strings.HasPrefix(path, "/api/v2/manifests") {
 		return extractContextsFromOtherRequest(r, u)
