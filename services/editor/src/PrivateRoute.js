@@ -1,7 +1,7 @@
 /* global process */
 import React from 'react';
 import { Route, Redirect } from 'react-router';
-import { withProps, mapPropsStream } from 'recompose';
+import { mapPropsStream } from 'recompose';
 import { Observable } from 'rxjs';
 import { isAuthenticated } from './services/auth-service';
 

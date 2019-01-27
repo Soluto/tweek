@@ -12,6 +12,7 @@ class GoogleTagManagerContainer extends React.Component {
     if (!window[dataLayerName]) {
       const gtmScriptNode = document.getElementById(scriptId);
 
+      // eslint-disable-next-line no-eval
       eval(gtmScriptNode.textContent);
     }
   }

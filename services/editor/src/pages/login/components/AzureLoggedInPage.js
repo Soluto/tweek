@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import { replace } from 'react-router-redux';
 import { compose, lifecycle } from 'recompose';
-import qs from 'query-string';
 import { getAzureToken, getAzureState } from '../../../services/auth-service';
 
 const mapDispatchToProps = dispatch => ({
