@@ -4,10 +4,9 @@ import { Observable } from 'rxjs';
 import * as R from 'ramda';
 import { compose, createEventHandler, mapPropsStream, setDisplayName } from 'recompose';
 import classnames from 'classnames';
+import withSearchConfig from '../../../hoc/with-search-config';
 import ComboBox from './ComboBox';
-
 import './MultiSourceComboBox.css';
-import { withTweekKeys } from '../../../contexts/Tweek';
 
 const SourceTitle = ({ id, onSourceId, sourceId }) => (
   <div
@@ -28,10 +27,7 @@ function getAllSuggestions(getSuggestions) {
 }
 
 const enhance = compose(
-  withTweekKeys({
-    maxSearchResults: '@tweek/editor/search/max_results',
-    showInternalKeys: '@tweek/editor/show_internal_keys',
-  }),
+  withSearchConfig,
   setDisplayName('MultiSourceComboBox'),
   mapPropsStream((props$) => {
     const { handler: onSearch, stream: onSearch$ } = createEventHandler();

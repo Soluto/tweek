@@ -101,11 +101,20 @@ const CardItem = ({
 
 const enhance = compose(
   connect(state => ({ selectedKey: state.selectedKey && state.selectedKey.key })),
-  withTweekKeys({
-    supportMultiResultsView: '@tweek/editor/experimental/keys_search/enable_cards_view',
-    maxSearchResults: '@tweek/editor/search/max_results',
-    showInternalKeys: '@tweek/editor/show_internal_keys',
-  }),
+  withTweekKeys(
+    {
+      supportMultiResultsView: '@tweek/editor/experimental/keys_search/enable_cards_view',
+      maxSearchResults: '@tweek/editor/search/max_results',
+      showInternalKeys: '@tweek/editor/show_internal_keys',
+    },
+    {
+      defaultValues: {
+        supportMultiResultsView: null,
+        maxSearchResults: null,
+        showInternalKeys: null,
+      },
+    },
+  ),
   setDisplayName('KeysList'),
 );
 

@@ -25,9 +25,14 @@ function getKeyNameSuggestions(keys) {
 
 const NewKeyInput = compose(
   connect(state => ({ keys: state.keys })),
-  withTweekKeys({
-    showInternalKeys: '@tweek/editor/show_internal_keys',
-  }),
+  withTweekKeys(
+    {
+      showInternalKeys: '@tweek/editor/show_internal_keys',
+    },
+    {
+      defaultValues: { showInternalKeys: null },
+    },
+  ),
   mapPropsStream((prop$) => {
     const keys$ = prop$
       .pluck('keys')

@@ -44,10 +44,15 @@ class GoogleTagManagerContainer extends React.Component {
 }
 
 const enhance = compose(
-  withTweekKeys({
-    isEnabled: '@tweek/editor/google_tag_manager/enabled',
-    gtmId$: '@tweek/editor/google_tag_manager/id',
-  }),
+  withTweekKeys(
+    {
+      isEnabled: '@tweek/editor/google_tag_manager/enabled',
+      gtmId$: '@tweek/editor/google_tag_manager/id',
+    },
+    {
+      defaultValues: { isEnabled: false, gtmId$: null },
+    },
+  ),
   branch(({ isEnabled }) => !isEnabled, renderNothing),
 );
 

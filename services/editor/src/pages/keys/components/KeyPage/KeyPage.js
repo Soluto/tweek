@@ -64,7 +64,10 @@ const enhance = compose(
     'You have unsaved changes, are you sure you want to leave this page?',
     { className: 'key-page-wrapper' },
   ),
-  withTweekKeys({ historySince: '@tweek/editor/history/since' }),
+  withTweekKeys(
+    { historySince: '@tweek/editor/history/since' },
+    { defaultValues: { historySince: null } },
+  ),
   lifecycle({
     componentDidMount() {
       const { configKey, selectedKey, openKey, revision, historySince } = this.props;

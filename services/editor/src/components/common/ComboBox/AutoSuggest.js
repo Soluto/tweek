@@ -1,14 +1,11 @@
 import PropTypes from 'prop-types';
 import { Observable } from 'rxjs';
 import { compose, createEventHandler, mapPropsStream } from 'recompose';
-import { withTweekKeys } from '../../../contexts/Tweek';
+import withSearchConfig from '../../../hoc/with-search-config';
 import ComboBox from './ComboBox';
 
 const mapSuggestionsToProps = compose(
-  withTweekKeys({
-    maxSearchResults: '@tweek/editor/search/max_results',
-    showInternalKeys: '@tweek/editor/show_internal_keys',
-  }),
+  withSearchConfig,
   mapPropsStream((props$) => {
     const { handler: onSearch, stream: onSearch$ } = createEventHandler();
 

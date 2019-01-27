@@ -3,10 +3,10 @@ import MultiSourceComboBox from '../../../../common/ComboBox/MultiSourceComboBox
 import ValidationIcon from '../../../../common/ValidationIcon';
 import * as ContextService from '../../../../../services/context-service';
 import * as SearchService from '../../../../../services/search-service';
+import withSearchConfig from '../../../../../hoc/with-search-config';
 import Avatar from './Avatar';
 import PropertySuggestion from './PropertySuggestion';
 import './styles.css';
-import { withTweekKeys } from '../../../../../contexts/Tweek';
 
 const getProperty = (suggestedValues, property) => {
   const result = suggestedValues.find(x => x.value === property);
@@ -62,9 +62,4 @@ const PropertyComboBox = ({
   );
 };
 
-const enhance = withTweekKeys({
-  maxSearchResults: '@tweek/editor/search/max_results',
-  showInternalKeys: '@tweek/editor/show_internal_keys',
-});
-
-export default enhance(PropertyComboBox);
+export default withSearchConfig(PropertyComboBox);

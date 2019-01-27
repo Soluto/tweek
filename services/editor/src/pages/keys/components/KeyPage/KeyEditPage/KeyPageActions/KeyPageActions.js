@@ -39,7 +39,10 @@ const enhance = compose(
     ...keysActions,
     showCustomAlert,
   }),
-  withTweekKeys({ historySince: '@tweek/editor/history/since' }),
+  withTweekKeys(
+    { historySince: '@tweek/editor/history/since' },
+    { defaultValues: { historySince: null } },
+  ),
   withHandlers({
     addAlias: ({ selectedKey: { key }, addAlias, showCustomAlert }) => async () => {
       const component = mapProps(
