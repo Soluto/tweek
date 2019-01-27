@@ -31,9 +31,9 @@ nconf
   .argv()
   .env()
   .defaults({
-    AUTHORING_URL: 'http://authoring.localtest.me:4099',
-    API_URL: 'http://api.localtest.me:4099',
-    GATEWAY_URL: 'http://localhost:4099',
+    AUTHORING_URL: 'http://localhost:8080',
+    API_URL: 'http://localhost:8080',
+    GATEWAY_URL: 'http://localhost:8080',
     GIT_PRIVATE_KEY_PATH: '../../deployments/dev/ssh/tweekgit',
 
     MINIO_HOST: 'localhost',

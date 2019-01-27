@@ -2,21 +2,21 @@ version: '3.4'
 
 services:
   publishing:
-    build: 
-      args: 
+    build:
+      args:
         target: Release
 
   editor:
-    environment: 
+    environment:
       - CONTINUOUS_UPDATER_INTERVAL=500
 
   authoring:
-    environment: 
+    environment:
       - CONTINUOUS_UPDATER_INTERVAL=500
 
   api:
-    build: 
-      args: 
+    build:
+      args:
         target: Release
     depends_on:
       - publishing
@@ -27,21 +27,21 @@ services:
       - CorsPolicies__Keys__Headers=
       - CorsPolicies__Keys__ExposedHeaders=
       - CorsEnabled=true
-      
+
   gateway:
-    depends_on:       
+    depends_on:
       - minio
       - nats
       - oidc-server-mock
     environment:
       - CONFIGOR_ENV=local-editor
-    
+
   oidc-server-mock:
     container_name: oidc-server-mock
-    image: soluto/oidc-server-mock 
+    image: soluto/oidc-server-mock
     ports:
-      - "4011:80"
-    environment: 
+      - "8081:80"
+    environment:
       - REDIRECT_URIS=http://localhost:3000/auth-result/oidc
 
 secrets:

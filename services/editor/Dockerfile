@@ -1,11 +1,11 @@
 # ---- Deps ----
-FROM node:10.15.0-alpine AS depsendencies
+FROM node:10.15.0-alpine AS dependencies
 WORKDIR /opt/app/
 COPY package.json yarn.lock ./
 RUN yarn --production
 
 # ---- Build ----
-FROM depsendencies AS build
+FROM dependencies AS build
 
 RUN yarn --prefer-offline
 
@@ -13,7 +13,7 @@ COPY . .
 RUN yarn test && yarn build
 
 # ---- Release ----
-FROM depsendencies AS release
+FROM dependencies AS release
 
 ENV NODE_ENV=production
 ENV PORT=3000

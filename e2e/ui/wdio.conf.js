@@ -3,7 +3,7 @@ nconf
   .argv()
   .env()
   .defaults({
-    GATEWAY_URL: 'http://localhost:4099',
+    GATEWAY_URL: 'http://localhost:8080',
     EDITOR_URL: 'http://localhost:4004/',
     TWEEK_API_URL: 'http://localhost:4003/',
     AUTHORING_URL: 'http://localhost:4005/',
