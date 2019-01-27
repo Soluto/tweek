@@ -18,3 +18,4 @@ jsconfig.json
 npm-debug.log
 searchIndex.json
 yarn-error.log
+*.css

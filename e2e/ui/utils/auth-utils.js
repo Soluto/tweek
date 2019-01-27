@@ -7,7 +7,7 @@ const timeout = 5000;
 const editorUrl = nconf.get('GATEWAY_URL');
 
 const mockAuth = dataComp('mock');
-const username = 'User1';
+const username = 'user';
 const password = 'pwd';
 const usernameComp = '#Username';
 const passwordComp = '#Password';
@@ -18,10 +18,9 @@ const rememberConsent = '#RememberConsent';
 export const login = () => {
   browser.url(editorUrl);
   browser.clickWhenVisible(mockAuth, timeout);
-  browser.clickWhenVisible(usernameComp, timeout);
-  browser.keys(username);
-  browser.clickWhenVisible(passwordComp, timeout);
-  browser.keys(password);
+  browser.waitForVisible(usernameComp, timeout);
+  browser.setValue(usernameComp, username);
+  browser.setValue(passwordComp, password);
   browser.clickWhenVisible(loginComp);
   browser.clickWhenVisible(rememberConsent, timeout);
   browser.clickWhenVisible(confirmComp, timeout);

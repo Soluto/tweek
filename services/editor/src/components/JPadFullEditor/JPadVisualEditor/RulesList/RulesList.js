@@ -1,6 +1,5 @@
 import React from 'react';
 import Rule from '../Rule/Rule';
-import { types } from '../../../../services/types-service';
 import './RulesList.css';
 
 const deleteRuleAlert = {

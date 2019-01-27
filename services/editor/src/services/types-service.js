@@ -37,7 +37,7 @@ export async function refreshTypes() {
 export function convertValue(value, targetType) {
   const type = typeof targetType === 'string' ? types[targetType] : targetType;
   if (!type) {
-    throw new Error('Unknown type', targetType);
+    throw new Error(`Unknown type ${targetType}`);
   }
 
   switch (type.base || type.name) {
@@ -64,7 +64,7 @@ export function isAllowedValue(valueType, value) {
   return (
     valueType &&
     (!valueType.allowedValues ||
-      valueType.allowedValues.length == 0 ||
+      valueType.allowedValues.length === 0 ||
       valueType.allowedValues.includes(value))
   );
 }

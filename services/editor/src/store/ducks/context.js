@@ -46,8 +46,6 @@ export const saveContext = ({ identityType, identityId }) =>
 
     try {
       if (modifiedKeys.length > 0) {
-        const currentRemoteContext = await fetch(contextUrl).then(res => res.json());
-
         await fetch(contextUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
