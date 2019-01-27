@@ -1,11 +1,7 @@
 import React from 'react';
 import { compose, mapProps } from 'recompose';
 import withPropertyTypeDetails from '../../../../../hoc/with-property-type-details';
-import {
-  equal,
-  allOperators,
-  getPropertySupportedOperators,
-} from '../../../../../services/operators-provider';
+import { equal, getPropertySupportedOperators } from '../../../../../services/operators-provider';
 import Operator from './Operator';
 import PropertyValue from './PropertyValue';
 

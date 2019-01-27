@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Calendar from 'react-calendar/dist/entry.nostyle';
 import moment from 'moment';

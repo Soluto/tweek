@@ -1,6 +1,5 @@
 import React from 'react';
 import * as R from 'ramda';
-import * as TypesService from '../../../services/types-service';
 import * as RulesService from '../rules-utils';
 import PartitionsSelector from './Partition/PartitionsSelector';
 import RulesList from './RulesList/RulesList';
