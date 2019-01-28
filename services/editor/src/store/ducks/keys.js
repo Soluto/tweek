@@ -1,6 +1,6 @@
 import { handleActions } from 'redux-actions';
 import * as R from 'ramda';
-import fetch from '../../utils/fetch';
+import { tweekManagementClient } from '../../utils/tweekClients';
 import { showError } from './notifications';
 
 const KEYS_UPDATED = 'KEYS_UPDATED';
@@ -18,8 +18,7 @@ export function removeKeyFromList(key) {
 export function getKeys() {
   return async function (dispatch) {
     try {
-      const result = await await fetch(`/manifests`);
-      const manifests = await result.json();
+      const manifests = await tweekManagementClient.getAllKeyManifests();
       const payload = R.indexBy(R.prop('key_path'), manifests);
       dispatch({ type: KEYS_UPDATED, payload });
     } catch (error) {

@@ -1,16 +1,14 @@
 /* global jest, before, beforeEach, afterEach, describe, it, expect */
-import fetchMock from 'fetch-mock';
+jest.mock('../utils/tweekClients');
+
+import { tweekClient } from '../utils/tweekClients';
 import * as TypesService from './types-service';
 
 describe('types-service', () => {
-  afterEach(() => {
-    fetchMock.restore();
-  });
-
   describe('refreshTypes', () => {
     it('should fetch api/types and save types with names', async () => {
       // Arrange
-      fetchMock.get('*', {
+      tweekClient.getValues.mockResolvedValue({
         version: {
           base: 'string',
           comparer: 'version',
