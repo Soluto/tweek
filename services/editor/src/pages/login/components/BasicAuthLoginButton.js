@@ -1,7 +1,7 @@
 /* global window process */
 import React from 'react';
 import styled from 'react-emotion';
-import { getGatewayBaseUrl } from '../../../utils/fetch';
+import { getGatewayBaseUrl } from '../../../utils/tweekClients';
 
 const Button = styled('a')`
   padding-top: 14px;

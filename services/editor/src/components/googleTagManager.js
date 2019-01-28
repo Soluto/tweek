@@ -1,10 +1,9 @@
 /* global document window console */
-import { Observable } from 'rxjs';
 import React from 'react';
 import PropTypes from 'prop-types';
 import gtmParts from 'react-google-tag-manager';
-import { componentFromStream } from 'recompose';
-import { getConfiguration } from '../utils/fetch';
+import { branch, compose, renderNothing } from 'recompose';
+import { withTweekKeys } from '../contexts/Tweek';
 
 class GoogleTagManagerContainer extends React.Component {
   componentDidMount() {
@@ -44,26 +43,17 @@ class GoogleTagManagerContainer extends React.Component {
   };
 }
 
-const getConfigValue = async (configName) => {
-  try {
-    const response = await getConfiguration(`google_tag_manager/${configName}`);
-    return await response.json();
-  } catch (err) {
-    console.warn('failed to retrieve configuration', configName, err);
-    return null;
-  }
-};
+const enhance = compose(
+  withTweekKeys(
+    {
+      isEnabled: '@tweek/editor/google_tag_manager/enabled',
+      gtmId$: '@tweek/editor/google_tag_manager/id',
+    },
+    {
+      defaultValues: { isEnabled: false, gtmId$: null },
+    },
+  ),
+  branch(({ isEnabled }) => !isEnabled, renderNothing),
+);
 
-const GoogleTagManagerWithConfig = componentFromStream((prop$) => {
-  const isEnabled$ = Observable.defer(() => getConfigValue('enabled'));
-  const gtmId$ = Observable.defer(() => getConfigValue('id'));
-
-  return Observable.combineLatest(isEnabled$, gtmId$, prop$).map(
-    ([isEnabled, gtmId, props]) =>
-      isEnabled ? <GoogleTagManagerContainer {...props} gtmId={gtmId} /> : null,
-  );
-});
-
-GoogleTagManagerWithConfig.displayName = 'GoogleTagManager';
-
-export default GoogleTagManagerWithConfig;
+export default enhance(GoogleTagManagerContainer);

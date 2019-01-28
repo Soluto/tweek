@@ -6,6 +6,7 @@ import * as selectedKeyActions from '../../../../store/ducks/selectedKey';
 import * as alertActions from '../../../../store/ducks/alerts';
 import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefinition';
 import routeLeaveHook from '../../../../hoc/route-leave-hook';
+import { withTweekKeys } from '../../../../contexts/Tweek';
 import hasUnsavedChanges from '../utils/hasUnsavedChanges';
 import MessageKeyPage from './MessageKeyPage/MessageKeyPage';
 import KeyEditPage from './KeyEditPage/KeyEditPage';
@@ -63,20 +64,24 @@ const enhance = compose(
     'You have unsaved changes, are you sure you want to leave this page?',
     { className: 'key-page-wrapper' },
   ),
+  withTweekKeys(
+    { historySince: '@tweek/editor/history/since' },
+    { defaultValues: { historySince: null } },
+  ),
   lifecycle({
     componentDidMount() {
-      const { configKey, selectedKey, openKey, revision } = this.props;
+      const { configKey, selectedKey, openKey, revision, historySince } = this.props;
       if (!configKey) return;
       if (selectedKey && selectedKey.key === configKey) return;
-      openKey(configKey, { revision });
+      openKey(configKey, { revision, historySince });
     },
-    componentWillReceiveProps({ configKey, revision }) {
+    componentWillReceiveProps({ configKey, revision, historySince }) {
       const { openKey } = this.props;
       if (
         configKey !== BLANK_KEY_NAME &&
         (configKey !== this.props.configKey || revision !== this.props.revision)
       ) {
-        openKey(configKey, { revision });
+        openKey(configKey, { revision, historySince });
       }
     },
     componentWillUnmount() {
