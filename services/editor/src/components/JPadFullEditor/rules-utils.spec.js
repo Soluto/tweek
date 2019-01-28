@@ -1,8 +1,6 @@
 /* global jest, before, beforeEach, describe, it, expect */
 import { assert, expect } from 'chai';
-import * as RulesUtils from '../../../../src/components/JPadFullEditor/rules-utils';
-
-jest.unmock('../../../../src/components/JPadFullEditor/rules-utils');
+import * as RulesUtils from './rules-utils';
 
 const toExplicitRule = (Value, ...matchers) => ({
   Matcher: matchers.reduce((result, matcher) => ({ ...result, [matcher]: 'matcherValue' }), {}),

@@ -1,38 +1,23 @@
 /* global jest, beforeEach, describe, it, afterEach, expect Promise process */
 /* eslint-disable import/first */
-import { assert, expect } from 'chai';
-import fetchMock from 'fetch-mock';
-import * as R from 'ramda';
 
-jest.unmock('../../../../src/store/ducks/tags');
-jest.unmock('../../../../src/store/ducks/selectedKey');
-jest.unmock('../../../../src/utils/http');
-jest.unmock('../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations');
-jest.unmock('../../../../src/services/types-service');
-jest.unmock('../../../../src/services/context-service');
-jest.unmock('../../../../src/store/ducks/ducks-utils/blankKeyDefinition');
-jest.mock('../../../../src/store/ducks/alerts', () => {
+jest.mock('./alerts', () => {
   let result = true;
-  const addAlert = dispatch => Promise.resolve({ result });
+  const addAlert = (dispatch) => Promise.resolve({ result });
   return {
-    setResult: r => (result = r),
+    setResult: (r) => (result = r),
     showCustomAlert: addAlert,
     showAlert: addAlert,
     showConfirm: addAlert,
   };
 });
 
-import {
-  openKey,
-  saveKey,
-  changeKeyValueType,
-  updateKeyPath,
-} from '../../../../src/store/ducks/selectedKey';
-import {
-  createBlankJPadKey,
-  BLANK_KEY_NAME,
-} from '../../../../src/store/ducks/ducks-utils/blankKeyDefinition';
-import keyValueTypeValidations from '../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations';
+import { assert, expect } from 'chai';
+import fetchMock from 'fetch-mock';
+import * as R from 'ramda';
+import { openKey, saveKey, changeKeyValueType, updateKeyPath } from './selectedKey';
+import { createBlankJPadKey, BLANK_KEY_NAME } from './ducks-utils/blankKeyDefinition';
+import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
 
 describe('selectedKey', async () => {
   const KEY_OPENED = 'KEY_OPENED';
@@ -104,11 +89,11 @@ describe('selectedKey', async () => {
 
   const doesDispatchPushTookAction = () =>
     dispatchMock.mock.calls
-      .map(x => x[0])
-      .some(x => x.payload && x.payload.method && x.payload.method === 'push');
+      .map((x) => x[0])
+      .some((x) => x.payload && x.payload.method && x.payload.method === 'push');
 
-  const doesSpecificDispatchTookAction = dispatchActionType =>
-    dispatchMock.mock.calls.map(x => x[0]).some(x => x.type === dispatchActionType);
+  const doesSpecificDispatchTookAction = (dispatchActionType) =>
+    dispatchMock.mock.calls.map((x) => x[0]).some((x) => x.type === dispatchActionType);
 
   const assertDispatchAction = (actualDispatchAction, expectedDispatchAction) => {
     expect(actualDispatchAction.type).to.deep.equal(
@@ -289,7 +274,7 @@ describe('selectedKey', async () => {
         });
       });
 
-    const saveKeyShouldShowValidationHints = isNewKey =>
+    const saveKeyShouldShowValidationHints = (isNewKey) =>
       it('should not save the key and show the validation hints if the validation state is invalid', async () => {
         // Arrang
         const keyNameToSave = 'someCategory/someKeyName';

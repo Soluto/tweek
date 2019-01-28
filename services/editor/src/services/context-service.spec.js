@@ -1,6 +1,6 @@
-/* global jest, before, beforeEach, describe, it, expect */
-jest.unmock('../../../src/services/context-service');
-jest.mock('../../../src/services/types-service', () => ({
+/* eslint-disable import/first */
+/* global jest, before, beforeEach, afterEach, describe, it, expect, require */
+jest.mock('./types-service', () => ({
   types: {
     string: { name: 'string' },
     version: { name: 'version', base: 'string' },
@@ -9,7 +9,8 @@ jest.mock('../../../src/services/types-service', () => ({
 
 import fetchMock from 'fetch-mock';
 import chai, { assert, expect } from 'chai';
-import * as ContextService from '../../../src/services/context-service';
+import * as ContextService from './context-service';
+
 chai.use(require('chai-things'));
 
 describe('context-service', () => {

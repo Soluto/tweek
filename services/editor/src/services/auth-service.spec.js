@@ -1,10 +1,8 @@
-/* global describe it afterEach */
+/* global describe, it, afterEach */
 import fetchMock from 'fetch-mock';
-
 import chai, { expect } from 'chai';
 import chaiThings from 'chai-things';
-
-import * as AuthService from '../../../src/services/auth-service';
+import * as AuthService from './auth-service';
 
 chai.use(chaiThings);
 
