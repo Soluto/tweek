@@ -7,19 +7,21 @@ import { showError } from './notifications';
 const TAGS_DOWNLOADED = 'TAGS_DOWNLOADED';
 const TAGS_SAVED = 'TAGS_SAVED';
 
-export async function downloadTags() {
-  try {
-    const tags = await tweekManagementClient.getAllTags();
-    return { type: TAGS_DOWNLOADED, payload: tags };
-  } catch (error) {
-    return showError({ title: 'Failed to download tags', error });
-  }
+export function downloadTags() {
+  return async (dispatch) => {
+    try {
+      const tags = await tweekManagementClient.getAllTags();
+      return dispatch({ type: TAGS_DOWNLOADED, payload: tags });
+    } catch (error) {
+      return dispatch(showError({ title: 'Failed to download tags', error }));
+    }
+  };
 }
 
-export const saveNewTags = tagsToSave =>
-  async function (dispatch, getState) {
-    const currentTags = getState().tags.map(x => x.name);
-    const newTags = R.difference(tagsToSave, currentTags).filter(x => x != null);
+export const saveNewTags = (tagsToSave) =>
+  async function(dispatch, getState) {
+    const currentTags = getState().tags.map((x) => x.name);
+    const newTags = R.difference(tagsToSave, currentTags).filter((x) => x != null);
 
     if (newTags.length < 1) {
       console.log('no new tags to save found');
@@ -38,7 +40,7 @@ export const saveNewTags = tagsToSave =>
 export default handleActions(
   {
     [TAGS_DOWNLOADED]: (state, { payload }) => payload,
-    [TAGS_SAVED]: (state, { payload }) => R.uniq([...state, ...payload.map(x => ({ name: x }))]),
+    [TAGS_SAVED]: (state, { payload }) => R.uniq([...state, ...payload.map((x) => ({ name: x }))]),
   },
   [],
 );

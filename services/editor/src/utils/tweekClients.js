@@ -4,8 +4,6 @@ import { retrieveToken } from '../services/auth-service';
 
 export const getGatewayBaseUrl = () => window.GATEWAY_URL || '';
 
-export const toAbsoluteUrl = relativeUrl => `${getGatewayBaseUrl()}${relativeUrl}`;
-
 const config = {
   baseServiceUrl: getGatewayBaseUrl(),
   getAuthenticationToken: retrieveToken,
