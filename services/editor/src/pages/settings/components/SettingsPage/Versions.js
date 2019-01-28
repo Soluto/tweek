@@ -3,8 +3,8 @@ import { mapPropsStream } from 'recompose';
 import { Observable } from 'rxjs';
 import * as R from 'ramda';
 import styled from 'react-emotion';
-import { unAuthFetch } from '../../../../utils/fetch';
 import { version } from '../../../../../package.json';
+import { tweekManagementClient } from '../../../../utils/tweekClients';
 
 const ServiceStatus = styled('span')`
   height: 10px;
@@ -18,7 +18,7 @@ const ServiceStatus = styled('span')`
 const ServiceVersion = styled('span')``;
 
 const Versions = mapPropsStream(prop$ =>
-  Observable.defer(() => unAuthFetch('/version').then(x => x.json()))
+  Observable.defer(() => tweekManagementClient.getServiceDetails())
     .map(services => ({ services }))
     .catch(ex => Observable.of({ error: ex })),
 )(({ services, error }) => (
