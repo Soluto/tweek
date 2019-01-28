@@ -1,10 +1,7 @@
 /* global jest, beforeEach, describe, it, expect */
-jest.unmock('../../../src/pages/keys/components/KeyPage/KeyAddPage/key-name-validations');
-jest.unmock('chance');
-
 import { assert, expect } from 'chai';
-import keyNameValidations from '../../../src/pages/keys/components/KeyPage/KeyAddPage/key-name-validations';
-import { BLANK_KEY_NAME } from '../../../src/store/ducks/ducks-utils/blankKeyDefinition';
+import { BLANK_KEY_NAME } from '../../../../../store/ducks/ducks-utils/blankKeyDefinition';
+import keyNameValidations from './key-name-validations';
 
 describe('key-name-validations', () => {
   const categoryName1 = 'someCategoryName1';

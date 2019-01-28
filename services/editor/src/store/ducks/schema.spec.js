@@ -5,8 +5,8 @@ import jsonpatch from 'fast-json-patch';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import * as R from 'ramda';
 import { expect } from 'chai';
-import reducer, * as actions from '../../../../src/store/ducks/schema';
-import { toAbsoluteUrl } from '../../../../src/utils/fetch';
+import { toAbsoluteUrl } from '../../utils/fetch';
+import reducer, * as actions from './schema';
 
 describe('schema duck', () => {
   let schemaState, dispatch;
@@ -63,7 +63,7 @@ describe('schema duck', () => {
       global.fetch = jest.fn(async (url, fetchArgs) => {
         fetchArgs = fetchArgs || { method: 'get' };
         if (fetchArgs.url === '/api/schemas' && fetchArgs.method.toUpperCase() === 'GET') {
-          return { ok: true, json: async () => R.map(x => x.remote)(schemaState) };
+          return { ok: true, json: async () => R.map((x) => x.remote)(schemaState) };
         }
         return { ok: true, json: async () => ({}) };
       });
