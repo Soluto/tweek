@@ -183,7 +183,7 @@ describe('Gateway v2 API', () => {
 
   it('should create new app', async () => {
     const res = await clients.gateway
-      .post('/api/v2/apps?author.name=test&author.email=test@soluto.com')
+      .post('/api/v2/apps')
       .send({
         name: 'test app'
       })

@@ -3,6 +3,11 @@ const supertest = require('supertest');
 const fs = require('fs');
 const getToken = require('./getToken');
 const { promisify } = require('util');
+const evilDns = require('evil-dns');
+
+//if (true){
+  //evilDns.add('authoring', '127.0.0.1');
+//}
 
 const exists = promisify(fs.exists);
 const readFile = promisify(fs.readFile);
@@ -24,14 +29,15 @@ const interceptAfter = (target, fn, methodNames) => {
 const restMethods = ['post', 'get', 'put', 'delete', 'patch', 'head'];
 
 function createClient(targetUrl, intercept) {
-  return interceptAfter(supertest(targetUrl), intercept, ['request', ...restMethods]);
+  const client = supertest(targetUrl);
+  return interceptAfter(client , intercept, ['request', ...restMethods]);
 }
 
 nconf
   .argv()
   .env()
   .defaults({
-    AUTHORING_URL: 'http://localhost:8080',
+    AUTHORING_URL: 'http://authoring:8080',
     API_URL: 'http://localhost:8080',
     GATEWAY_URL: 'http://localhost:8080',
     GIT_PRIVATE_KEY_PATH: '../../deployments/dev/ssh/tweekgit',

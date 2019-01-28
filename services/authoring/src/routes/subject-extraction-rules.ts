@@ -25,8 +25,8 @@ export class SubjectExtractionRulesController {
 
   @Authorize({ permission: PERMISSIONS.ADMIN })
   @GET
-  async get(): Promise<{content: string}> {
+  async get(): Promise<{data: string}> {
     const policy = await this.subjectExtractionRulesRepository.getSubjectExtractionRules();
-    return {content: policy};
+    return {data: policy};
   }
 }
