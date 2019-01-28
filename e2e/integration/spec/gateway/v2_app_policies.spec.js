@@ -99,6 +99,20 @@ describe('Gateway v2 - App Policies', () => {
       requirePermissionAction: 'read',
       action: client => client
           .get('/api/v2/jwt-extraction-policy')
+    },
+    {
+      name: 'policies',
+      requirePermissionObject: 'repo/policies',
+      requirePermissionAction: 'read',
+      action: client => client
+          .get('/api/v2/policies')
+    },
+    {
+      name: 'apps',
+      requirePermissionObject: 'repo/apps',
+      requirePermissionAction: 'read',
+      action: client => client
+          .get('/api/v2/apps')
     }
   ];
 
@@ -146,9 +160,17 @@ describe('Gateway v2 - App Policies', () => {
       // should change to match {oid} with repo-version api
       await bluebird.delay(3000);
 
-      await Promise.all(relevantCases.map(x => x.action(appClient).expect(200)));
+      await Promise.all(relevantCases.map(x => x.action(appClient).expect(200).catch((ex)=> {
+        console.log( x.name )
+        console.log(ex);
+        throw ex;
+      })));
 
-      await Promise.all(forbiddenCases.map(async x => await x.action(appClient).expect(403)));
+      await Promise.all(forbiddenCases.map(async x => x.action(appClient).expect(403).catch((ex)=> {
+        console.log( x.name )
+        console.log(ex);
+        throw ex;
+      })));
     });
   }
 });

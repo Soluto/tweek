@@ -29,7 +29,6 @@
   },
   "dependencies": {
     "bluebird": "^3.5.1",
-    "evil-dns": "^0.2.0",
     "fast-json-patch": "^2.0.6",
     "minio": "^4.0.0",
     "node-fetch": "^2.0.0"

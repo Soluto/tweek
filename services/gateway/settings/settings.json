@@ -171,18 +171,27 @@
         "routePathPrefix": "/jwt-extraction-policy",
         "routeRegexp": "^/api/v2/jwt-extraction-policy(\\?.*)?$",
         "upstreamPath": "/api/subject-extraction-rules$1",
-        "methods": ["POST"],
+        "methods": ["GET"],
         "service": "authoring",
-        "userInfo": true,
+        "userInfo": false,
         "rewriteKeyPath": false
     },
     {
         "routePathPrefix": "/jwt-extraction-policy",
         "routeRegexp": "^/api/v2/jwt-extraction-policy(\\?.*)?$",
         "upstreamPath": "/api/subject-extraction-rules$1",
-        "methods": ["GET"],
+        "methods": ["PUT"],
         "service": "authoring",
-        "userInfo": false,
+        "userInfo": true,
+        "rewriteKeyPath": false
+    },
+    {
+        "routePathPrefix": "/bulk-keys-upload",
+        "routeRegexp": "^/api/v2/bulk-keys-upload(\\?.*)?$",
+        "upstreamPath": "/api/bulk-keys-upload$1",
+        "methods": ["PUT"],
+        "service": "authoring",
+        "userInfo": true,
         "rewriteKeyPath": false
     }],
     "server": {

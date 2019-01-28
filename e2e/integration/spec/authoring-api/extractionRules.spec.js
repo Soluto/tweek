@@ -23,13 +23,13 @@ describe('authoring api extraction rules', () => {
       res => expect(res).to.contain(originalRules),
     );
 
-    await clients.authoring
-      .put('/api/subject-extraction-rules?author.name=test&author.email=test@soluto.com')
+    await clients.gateway
+      .put('/api/v2/jwt-extraction-policy')
       .send({ data: newRules })
       .expect(200);
 
-    const res = await clients.authoring
-      .get('/api/subject-extraction-rules?author.name=test&author.email=test@soluto.com')
+    const res = await clients.gateway
+      .get('/api/v2/jwt-extraction-policy')
       .expect(200);
     
     expect(res.body.data).to.equal(newRules);

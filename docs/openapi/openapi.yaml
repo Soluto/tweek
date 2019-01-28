@@ -154,7 +154,7 @@ paths:
           description: OK
   /keys:
     get:
-      operationId: GetKeys
+      operationId: getKeys
       responses:
         '200':
           description: Ok
@@ -179,7 +179,7 @@ paths:
           schema:
             type: string
     put:
-      operationId: SaveKey
+      operationId: saveKey
       summary: Save or replace key
       responses:
         '200':
@@ -204,7 +204,7 @@ paths:
               $ref: '#/components/schemas/KeyUpdateModel'
         required: true
     delete:
-      operationId: DeleteKey
+      operationId: deleteKey
       tags:
         - keys
       responses:
@@ -229,6 +229,26 @@ paths:
               type: array
               items:
                 type: string
+  /bulk-keys-upload:
+    put:
+      operationId: bulkKeysUpload
+      responses:
+        '200':
+          description: Ok
+      summary: 'Bulk key upload'
+      description: Upload zip file of keys
+      tags:
+        - keys
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                bulk: 
+                  type: string
+                  format: binary
+        required: true
   /tags:
     get:
       operationId: getAllTags
@@ -503,15 +523,11 @@ paths:
       tags:
         - apps
   /jwt-extraction-policy:
-    post:
+    put:
       operationId: updateJWTExtractionPolicy
       responses:
         '200':
           description: Ok
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AppCreationResponseModel'
       summary: 'Update JWT extraction policy'
       description: |
         Update JWT subject extraction policy with a new rego payload.

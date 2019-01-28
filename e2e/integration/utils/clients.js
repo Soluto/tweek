@@ -3,11 +3,6 @@ const supertest = require('supertest');
 const fs = require('fs');
 const getToken = require('./getToken');
 const { promisify } = require('util');
-const evilDns = require('evil-dns');
-
-//if (true){
-  //evilDns.add('authoring', '127.0.0.1');
-//}
 
 const exists = promisify(fs.exists);
 const readFile = promisify(fs.readFile);
@@ -37,8 +32,6 @@ nconf
   .argv()
   .env()
   .defaults({
-    AUTHORING_URL: 'http://authoring:8080',
-    API_URL: 'http://localhost:8080',
     GATEWAY_URL: 'http://localhost:8080',
     GIT_PRIVATE_KEY_PATH: '../../deployments/dev/ssh/tweekgit',
 
@@ -64,8 +57,6 @@ const init = async function() {
   const token = await getToken(key);
   const setBearerToken = t => t.set('Authorization', `Bearer ${token}`);
   return {
-    api: createClient(nconf.get('API_URL'), setBearerToken),
-    authoring: createClient(nconf.get('AUTHORING_URL'), setBearerToken),
     gateway: createClient(nconf.get('GATEWAY_URL'), setBearerToken),
   };
 };

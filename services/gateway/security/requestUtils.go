@@ -52,13 +52,15 @@ func extractActionFromRequest(r *http.Request) (act string, err error) {
 		fallthrough
 	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/policies"):
 		fallthrough
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/jwt-extraction-policy"):
+		fallthrough
 	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/context"):
 		fallthrough
 	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/apps"):
 		act = "read"
 		break
 	default:
-		act = "invalid"
+		err = fmt.Errorf("Invalid action method: %v %v", r.Method, uri.Path)
 		break
 	}
 	return
@@ -103,12 +105,17 @@ func extractContextsFromKeysRequest(r *http.Request, u UserInfo) (ctxs PolicyRes
 }
 
 func extractContextsFromAppsRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
-	ctxs.Item = "repo/apps"
+	ctxs = PolicyResource{Item: "repo/apps", Contexts: map[string]string{}}
 	return
 }
 
 func extractContextsFromPoliciesRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
-	ctxs.Item = "repo/policies"
+	ctxs = PolicyResource{Item: "repo/policies", Contexts: map[string]string{}}
+	return
+}
+
+func extractContextsFromBulkKeysUploadRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
+	ctxs = PolicyResource{Item: "repo/keys/_", Contexts: map[string]string{}}
 	return
 }
 
@@ -192,6 +199,8 @@ func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs PolicyResourc
 		return extractContextsFromPoliciesRequest(r, u)
 	} else if strings.HasPrefix(path, "/api/v2/jwt-extraction-policy") {
 		return extractContextsFromPoliciesRequest(r, u)
+	} else if strings.HasPrefix(path, "/api/v2/bulk-keys-upload") {
+		return extractContextsFromBulkKeysUploadRequest(r, u)
 	} else if strings.HasPrefix(path, "/api/v2/manifests") {
 		return extractContextsFromOtherRequest(r, u)
 	} else if strings.HasPrefix(path, "/api/v2/suggestions") {

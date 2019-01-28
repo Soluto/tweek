@@ -171,10 +171,6 @@ escape-string-regexp@1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
 
-evil-dns@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/evil-dns/-/evil-dns-0.2.0.tgz#6ff64bf9c99a18df465458e6878ac570ea15d9b9"
-
 extend@^3.0.0:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.2.tgz#f8b1136b4071fbd8eb140aff858b1019ec2915fa"

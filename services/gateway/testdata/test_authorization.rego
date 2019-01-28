@@ -109,3 +109,23 @@ test_authorize_allow_wildcard_context {
         "action": "read"
     }
 }
+
+test_authorize_allow_scoped_key_editing {
+    authorize with input as {
+        "user": "limited-editor",
+        "group": "default",
+        "contexts": {},
+        "object": "repo/keys/my_key",
+        "action": "write"
+    }
+}
+
+test_authorize_deny_scoped_bulk_keys_upload {
+    not authorize with input as {
+        "user": "limited-editor",
+        "group": "default",
+        "contexts": {},
+        "object": "repo/keys/_",
+        "action": "write"
+    }
+}
