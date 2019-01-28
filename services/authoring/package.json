@@ -1,6 +1,6 @@
 {
   "name": "tweek-authoring",
-  "version": "1.0.0-rc1",
+  "version": "1.0.0-rc2",
   "main": "src/server.js",
   "repository": "Soluto/tweek",
   "author": "Soluto",
