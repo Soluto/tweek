@@ -1,0 +1,16 @@
+{
+  "name": "e2e-ui-tests",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "chai": "^4.2.0",
+    "nconf": "^0.10.0",
+    "node-fetch": "^2.3.0",
+    "ramda": "^0.26.1",
+    "testcafe": "^0.23.3",
+    "tweek-client": "^1.0.0-rc3"
+  },
+  "scripts": {
+    "test": "testcafe chrome spec"
+  }
+}
