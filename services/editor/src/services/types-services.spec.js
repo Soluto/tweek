@@ -1,18 +1,14 @@
-/* global jest, before, beforeEach, describe, it, expect */
-jest.unmock('../../../src/services/types-service');
+/* global jest, before, beforeEach, afterEach, describe, it, expect */
+jest.mock('../utils/tweekClients');
 
-import fetchMock from 'fetch-mock';
-import * as TypesService from '../../../src/services/types-service';
+import { tweekClient } from '../utils/tweekClients';
+import * as TypesService from './types-service';
 
 describe('types-service', () => {
-  afterEach(() => {
-    fetchMock.restore();
-  });
-
   describe('refreshTypes', () => {
     it('should fetch api/types and save types with names', async () => {
       // Arrange
-      fetchMock.get('*', {
+      tweekClient.getValues.mockResolvedValue({
         version: {
           base: 'string',
           comparer: 'version',
@@ -32,18 +28,18 @@ describe('types-service', () => {
   });
 
   describe('convertValue', () => {
-    TypesService['version'] = {
+    TypesService.types.version = {
       name: 'version',
       base: 'string',
     };
 
-    let checkConvertedValueResult = function (value, type, expectedResult) {
+    let checkConvertedValueResult = function(value, type, expectedResult) {
       it('should convert values correctly', () => {
         expect(TypesService.convertValue(value, type)).toEqual(expectedResult);
       });
     };
 
-    let shouldFailResult = function (value, type) {
+    let shouldFailResult = function(value, type) {
       it('should convert values correctly', () => {
         expect(() => TypesService.convertValue(value, type)).toThrow();
       });

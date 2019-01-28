@@ -1,38 +1,24 @@
 /* global jest, beforeEach, describe, it, afterEach, expect Promise process */
 /* eslint-disable import/first */
-import { assert, expect } from 'chai';
-import fetchMock from 'fetch-mock';
-import * as R from 'ramda';
 
-jest.unmock('../../../../src/store/ducks/tags');
-jest.unmock('../../../../src/store/ducks/selectedKey');
-jest.unmock('../../../../src/utils/http');
-jest.unmock('../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations');
-jest.unmock('../../../../src/services/types-service');
-jest.unmock('../../../../src/services/context-service');
-jest.unmock('../../../../src/store/ducks/ducks-utils/blankKeyDefinition');
-jest.mock('../../../../src/store/ducks/alerts', () => {
+jest.mock('./alerts', () => {
   let result = true;
-  const addAlert = dispatch => Promise.resolve({ result });
+  const addAlert = (dispatch) => Promise.resolve({ result });
   return {
-    setResult: r => (result = r),
+    setResult: (r) => (result = r),
     showCustomAlert: addAlert,
     showAlert: addAlert,
     showConfirm: addAlert,
   };
 });
 
-import {
-  openKey,
-  saveKey,
-  changeKeyValueType,
-  updateKeyPath,
-} from '../../../../src/store/ducks/selectedKey';
-import {
-  createBlankJPadKey,
-  BLANK_KEY_NAME,
-} from '../../../../src/store/ducks/ducks-utils/blankKeyDefinition';
-import keyValueTypeValidations from '../../../../src/store/ducks/ducks-utils/validations/key-value-type-validations';
+jest.mock('../../utils/tweekClients');
+
+import * as R from 'ramda';
+import { tweekManagementClient } from '../../utils/tweekClients';
+import { openKey, saveKey, changeKeyValueType, updateKeyPath } from './selectedKey';
+import { createBlankJPadKey, BLANK_KEY_NAME } from './ducks-utils/blankKeyDefinition';
+import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
 
 describe('selectedKey', async () => {
   const KEY_OPENED = 'KEY_OPENED';
@@ -48,19 +34,24 @@ describe('selectedKey', async () => {
   const KEY_NAME_CHANGE = 'KEY_NAME_CHANGE';
   const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
 
+  const serverKeyDefinition = {
+    implementation: '',
+    manifest: {
+      implementation: {
+        type: 'file',
+        format: 'jpad',
+      },
+    },
+  };
+
   process.env.REACT_APP_GATEWAY_URL = 'http://gateway';
 
   let dispatchMock;
   let currentState;
 
-  function isFunction(functionToCheck) {
-    let getType = {};
-    return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
-  }
-
   beforeEach(() => {
     dispatchMock = jest.fn((action) => {
-      if (isFunction(action)) {
+      if (typeof action === 'function') {
         return action(
           dispatchMock,
           jest.fn().mockReturnValue({ selectedKey: { validation: { isValid: true } } }),
@@ -69,10 +60,9 @@ describe('selectedKey', async () => {
       return action;
     });
     currentState = {};
-  });
 
-  afterEach(() => {
-    fetchMock.restore();
+    tweekManagementClient.saveKeyDefinition.mockResolvedValue();
+    tweekManagementClient.getKeyDefinition.mockResolvedValue(serverKeyDefinition);
   });
 
   const generateState = (openedKeyName, keyNameToAdd) => {
@@ -102,40 +92,14 @@ describe('selectedKey', async () => {
     return state;
   };
 
-  const doesDispatchPushTookAction = () =>
-    dispatchMock.mock.calls
-      .map(x => x[0])
-      .some(x => x.payload && x.payload.method && x.payload.method === 'push');
-
-  const doesSpecificDispatchTookAction = dispatchActionType =>
-    dispatchMock.mock.calls.map(x => x[0]).some(x => x.type === dispatchActionType);
-
-  const assertDispatchAction = (actualDispatchAction, expectedDispatchAction) => {
-    expect(actualDispatchAction.type).to.deep.equal(
-      expectedDispatchAction.type,
-      'should dispatch correct action type',
-    );
-
-    expect(actualDispatchAction.payload).to.deep.equal(
-      expectedDispatchAction.payload,
-      'should dispatch correct action payload',
-    );
-  };
-
   describe('openKey', () => {
-    beforeEach(() => {
-      fetchMock.get('glob:*/api/v2/tags', []);
-      fetchMock.get('glob:*/api/v2/schemas', {});
-    });
-
     it('should dispatch KEY_OPENED with blank payload for blank key name', async () => {
       // Act
       const func = openKey(BLANK_KEY_NAME);
       await func(dispatchMock);
 
       // Assert
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[1][0];
-      assertDispatchAction(keyOpenedDispatchAction, {
+      expect(dispatchMock).toHaveBeenCalledWith({
         type: KEY_OPENED,
         payload: createBlankJPadKey(),
       });
@@ -150,10 +114,10 @@ describe('selectedKey', async () => {
       await func(dispatchMock);
 
       // Assert
-      assert(dispatchMock.mock.calls.length > 0, 'should call dispatch atleast once');
-
-      const keyOpeningdDispatchAction = dispatchMock.mock.calls[1][0];
-      assertDispatchAction(keyOpeningdDispatchAction, { type: KEY_OPENING, payload: keyName });
+      expect(dispatchMock).toHaveBeenCalledWith({
+        type: KEY_OPENING,
+        payload: keyName,
+      });
     });
 
     it('should dispatch KEY_OPENED with correct payload if GET succeeded', async () => {
@@ -185,15 +149,17 @@ describe('selectedKey', async () => {
         manifest: expectedServerData.manifest,
       };
 
-      fetchMock.get('glob:*/api/v2/keys/*', expectedServerData);
+      tweekManagementClient.getKeyDefinition.mockResolvedValue(expectedServerData);
 
       // Act
       const func = openKey(keyName);
       await func(dispatchMock);
 
       // Assert
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
-      assertDispatchAction(keyOpenedDispatchAction, { type: KEY_OPENED, payload: expectedPayload });
+      expect(dispatchMock).toHaveBeenCalledWith({
+        type: KEY_OPENED,
+        payload: expectedPayload,
+      });
     });
 
     it('should dispatch KEY_OPENED with correct payload if GET failed', async () => {
@@ -204,32 +170,30 @@ describe('selectedKey', async () => {
         key: keyName,
       };
 
-      fetchMock.get('glob:*/api/v2/keys/*', { throws: 'some fetch exception' });
+      tweekManagementClient.getKeyDefinition.mockRejectedValue(new Error());
 
       // Act
       const func = openKey(keyName);
       await func(dispatchMock);
 
       // Assert
-      const keyOpenedDispatchAction = dispatchMock.mock.calls[2][0];
-      assertDispatchAction(keyOpenedDispatchAction, { type: KEY_OPENED, payload: expectedPayload });
+      expect(dispatchMock).toHaveBeenCalledWith({
+        type: KEY_OPENED,
+        payload: expectedPayload,
+      });
     });
 
     it('should dispatch TAGS_DOWNLOADED', async () => {
       // Arrange
       const expectedTags = [{ name: 'pita' }];
-      fetchMock.restore();
-      fetchMock.get('glob:*/api/v2/schemas', {});
-      fetchMock.get('glob:*/api/v2/tags', expectedTags);
+      tweekManagementClient.getAllTags.mockResolvedValue(expectedTags);
 
       // Act
       const func = openKey('category/some key');
       await func(dispatchMock);
 
       // Assert
-      const asyncDownloadTagsDispatchActionPromise = dispatchMock.mock.calls[0][0];
-      const downloadTagsDispatchAction = await asyncDownloadTagsDispatchActionPromise;
-      assertDispatchAction(downloadTagsDispatchAction, {
+      expect(dispatchMock).toHaveBeenCalledWith({
         type: TAGS_DOWNLOADED,
         payload: expectedTags,
       });
@@ -237,50 +201,41 @@ describe('selectedKey', async () => {
   });
 
   describe('saveKey', () => {
-    beforeEach(() => {
-      fetchMock.get('glob:*/api/v2/revision-history/*', []);
-      fetchMock.get('glob:*/api/v2/dependents/*', []);
-      fetchMock.get('glob:*/api/v2/values/*', {});
-    });
-
     const saveKeyCommonFlowTest = (isNewKey, shouldSaveSucceed) =>
       it(`save succeess=${shouldSaveSucceed}, should dispatch KEY_SAVING, fetch PUT key and dispatch KEY_SAVED`, async () => {
         // Arrange
         const keyNameToSave = 'someCategory/someKeyName';
         currentState = generateState(isNewKey ? BLANK_KEY_NAME : keyNameToSave, keyNameToSave);
 
-        const fetchResponse = shouldSaveSucceed ? { status: 200 } : { status: 500 };
-        const matchName = 'glob:*/api/v2/keys/*';
-        fetchMock.putOnce(matchName, fetchResponse);
+        if (!shouldSaveSucceed) {
+          tweekManagementClient.saveKeyDefinition.mockRejectedValue(new Error());
+        } else {
+          tweekManagementClient.saveKeyDefinition.mockResolvedValue();
+        }
 
         // Act
         const func = saveKey();
         await func(dispatchMock, () => currentState);
 
         // Assert
-        assert(fetchMock.done(matchName, 'put'), 'should call fetch once');
+        expect(tweekManagementClient.saveKeyDefinition).toHaveBeenCalledWith(keyNameToSave, {
+          manifest: currentState.selectedKey.local.manifest,
+          implementation: '',
+        });
 
-        const fetchJsonDataString = fetchMock.lastOptions(matchName).body;
-        assert(
-          JSON.parse(fetchJsonDataString),
-          currentState.selectedKey.local,
-          'should pass correct data to fetch PUT',
-        );
-
-        let [[keySavingDispatchAction], [keySavedDispatchAction]] = dispatchMock.mock.calls;
-        assertDispatchAction(keySavingDispatchAction, { type: KEY_SAVING });
+        expect(dispatchMock).toHaveBeenCalledWith({
+          type: KEY_SAVING,
+        });
 
         if (!shouldSaveSucceed) {
-          const [_, [addNotificationDispatchAction]] = dispatchMock.mock.calls;
-          assert.equal(
-            ADD_NOTIFICATION,
-            addNotificationDispatchAction.type,
-            'should add error notification',
+          expect(dispatchMock).toHaveBeenCalledWith(
+            expect.objectContaining({
+              type: ADD_NOTIFICATION,
+            }),
           );
-          keySavedDispatchAction = dispatchMock.mock.calls[2][0];
         }
 
-        assertDispatchAction(keySavedDispatchAction, {
+        expect(dispatchMock).toHaveBeenCalledWith({
           type: KEY_SAVED,
           payload: {
             keyName: keyNameToSave,
@@ -289,7 +244,7 @@ describe('selectedKey', async () => {
         });
       });
 
-    const saveKeyShouldShowValidationHints = isNewKey =>
+    const saveKeyShouldShowValidationHints = (isNewKey) =>
       it('should not save the key and show the validation hints if the validation state is invalid', async () => {
         // Arrang
         const keyNameToSave = 'someCategory/someKeyName';
@@ -310,15 +265,12 @@ describe('selectedKey', async () => {
         currentState = generateState(isNewKey ? BLANK_KEY_NAME : keyNameToSave, keyNameToSave);
         currentState.selectedKey.validation = stateValidation;
 
-        fetchMock.putOnce('glob:*/api/v2/keys/*', {});
-
         // Act
         const func = saveKey();
         await func(dispatchMock, () => currentState);
 
         // Assert
-        const showKeyValiadtionHintsDispatchAction = dispatchMock.mock.calls[0][0];
-        assertDispatchAction(showKeyValiadtionHintsDispatchAction, { type: SHOW_KEY_VALIDATIONS });
+        expect(dispatchMock).toHaveBeenCalledWith({ type: SHOW_KEY_VALIDATIONS });
       });
 
     describe('save new key', () => {
@@ -332,29 +284,28 @@ describe('selectedKey', async () => {
 
         currentState = generateState(BLANK_KEY_NAME, keyNameToSave);
 
-        fetchMock.putOnce('glob:*/api/v2/keys/*', {});
-
         // Act
         const func = saveKey();
         await func(dispatchMock, () => currentState);
 
-        const addedAction = dispatchMock.mock.calls.find(([action]) => action.type === KEY_ADDED);
-        expect(addedAction).to.exist;
-        const action = addedAction[0];
-        expect(action.type, KEY_ADDED);
-        expect(action.payload).to.have.property('key_path', keyNameToSave);
-
-        const pushAction = dispatchMock.mock.calls.find(
-          ([action]) => action.type && action.type.startsWith('@@router'),
+        expect(dispatchMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            type: KEY_ADDED,
+            payload: expect.objectContaining({ key_path: keyNameToSave }),
+          }),
         );
-        expect(pushAction).to.exist;
 
         const expectedPushPayload = {
           method: 'push',
           args: [`/keys/${keyNameToSave}`],
         };
 
-        expect(pushAction[0]).to.deep.include({ payload: expectedPushPayload });
+        expect(dispatchMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            type: expect.stringMatching(/^@@router/),
+            payload: expectedPushPayload,
+          }),
+        );
       });
     });
 
@@ -369,14 +320,23 @@ describe('selectedKey', async () => {
 
         currentState = generateState(keyNameToSave);
 
-        fetchMock.putOnce('glob:*/api/v2/keys/*', {});
-
         // Act
         const func = saveKey();
         await func(dispatchMock, () => currentState);
 
-        assert(!doesDispatchPushTookAction(), 'should not open the new saved key');
-        assert(!doesSpecificDispatchTookAction(KEY_ADDED), 'should not dispatch KEY_ADDED');
+        expect(dispatchMock).not.toHaveBeenCalledWith(
+          expect.objectContaining({
+            payload: expect.objectContaining({
+              method: 'push',
+            }),
+          }),
+        );
+
+        expect(dispatchMock).not.toHaveBeenCalledWith(
+          expect.objectContaining({
+            type: KEY_ADDED,
+          }),
+        );
       });
     });
   });
@@ -408,14 +368,12 @@ describe('selectedKey', async () => {
       await func(dispatchMock, () => initializeState);
 
       // Assert
-      const keyValueTypeChangeDispatchAction = dispatchMock.mock.calls[0][0];
-      assertDispatchAction(keyValueTypeChangeDispatchAction, {
+      expect(dispatchMock).toHaveBeenCalledWith({
         type: KEY_VALUE_TYPE_CHANGE,
         payload: keyValueType,
       });
 
-      const keyValidationChangeDispatchAction = dispatchMock.mock.calls[1][0];
-      assertDispatchAction(keyValidationChangeDispatchAction, {
+      expect(dispatchMock).toHaveBeenCalledWith({
         type: KEY_VALIDATION_CHANGE,
         payload: expectedValidationPayload,
       });
@@ -441,20 +399,17 @@ describe('selectedKey', async () => {
       await func(dispatchMock, () => initializeState);
 
       // Assert
-      const keyValidationChangeDispatchAction = dispatchMock.mock.calls[0][0];
-      assertDispatchAction(keyValidationChangeDispatchAction, {
+      expect(dispatchMock).toHaveBeenCalledWith({
         type: KEY_VALIDATION_CHANGE,
         payload: expectedValidationPayload,
       });
 
-      const keyPathChangeDispatchAction = dispatchMock.mock.calls[1][0];
-      assertDispatchAction(keyPathChangeDispatchAction, {
+      expect(dispatchMock).toHaveBeenCalledWith({
         type: KEY_PATH_CHANGE,
         payload: newKeyName,
       });
 
-      const keyNameChangeDispatchAction = dispatchMock.mock.calls[2][0];
-      assertDispatchAction(keyNameChangeDispatchAction, {
+      expect(dispatchMock).toHaveBeenCalledWith({
         type: KEY_NAME_CHANGE,
         payload: newKeyName,
       });

@@ -1,35 +1,23 @@
-/* global jest, before, beforeEach, describe, it, expect */
-jest.unmock('../../../src/services/context-service');
-jest.mock('../../../src/services/types-service', () => ({
+/* global jest, before, beforeAll, afterEach, describe, it, expect, require */
+jest.mock('./types-service', () => ({
   types: {
     string: { name: 'string' },
     version: { name: 'version', base: 'string' },
   },
 }));
+jest.mock('../utils/tweekClients');
 
-import fetchMock from 'fetch-mock';
-import chai, { assert, expect } from 'chai';
-import * as ContextService from '../../../src/services/context-service';
-chai.use(require('chai-things'));
+import { tweekManagementClient } from '../utils/tweekClients';
+import * as ContextService from './context-service';
 
 describe('context-service', () => {
-  const contextServiceApiMatcher = 'glob:*/api/v2/schemas';
-
-  afterEach(() => {
-    fetchMock.restore();
-  });
-
   describe('refreshSchema', () => {
     it('should fetch api/schemas', async () => {
-      // Arrange
-      fetchMock.get(contextServiceApiMatcher, {});
-
       // Act
       await ContextService.refreshSchema();
 
       // Assert
-      const apiCalls = fetchMock.calls(contextServiceApiMatcher);
-      expect(apiCalls.length).to.equal(1, 'should fetch schema once');
+      expect(tweekManagementClient.getAllSchemas).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -46,22 +34,20 @@ describe('context-service', () => {
 
       const expectedIdentities = Object.keys(schema);
 
-      fetchMock.get(contextServiceApiMatcher, schema);
+      tweekManagementClient.getAllSchemas.mockResolvedValue(schema);
       await ContextService.refreshSchema();
 
       // Act
       const actualIdentities = ContextService.getIdentities();
 
       // Assert
-      expect(actualIdentities).to.deep.equal(
-        expectedIdentities,
-        'should return correct identities',
-      );
+      expect(actualIdentities).toEqual(expectedIdentities);
     });
   });
 
   describe('getSchemaProperties', () => {
     it('should return schema properties and @@id property', async () => {
+      // Arrange
       const schema = {
         user: {
           someProp: {
@@ -69,17 +55,22 @@ describe('context-service', () => {
           },
         },
       };
-      fetchMock.get(contextServiceApiMatcher, schema);
+
+      tweekManagementClient.getAllSchemas.mockResolvedValue(schema);
       await ContextService.refreshSchema();
+
+      // Act
       const result = ContextService.getSchemaProperties();
-      expect(result.length).to.eql(2);
-      expect(result).to.include.something.that.deep.equal({
+
+      // Assert
+      expect(result).toHaveLength(2);
+      expect(result).toContainEqual({
         id: 'user.@@id',
         name: 'Id',
         type: 'string',
         identity: 'user',
       });
-      expect(result).to.include.something.that.deep.equal({
+      expect(result).toContainEqual({
         id: 'user.someProp',
         name: 'someProp',
         type: 'string',
@@ -108,7 +99,7 @@ describe('context-service', () => {
     };
 
     beforeAll(() => {
-      fetchMock.get(contextServiceApiMatcher, initializeSchema);
+      tweekManagementClient.getAllSchemas.mockResolvedValue(initializeSchema);
       refreshSchemaPromise = ContextService.refreshSchema();
     });
 
@@ -121,10 +112,7 @@ describe('context-service', () => {
         const propertyTypeDetails = ContextService.getPropertyTypeDetails(property);
 
         // Assert
-        expect(propertyTypeDetails).to.deep.equal(
-          expectedMeta,
-          'should return correct property meta',
-        );
+        expect(propertyTypeDetails).toEqual(expectedMeta);
       });
     };
 
