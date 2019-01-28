@@ -115,6 +115,5 @@ onUpdate$
 
 gitRepoCreationPromiseWithTimeout.then(async () => await startServer()).catch((reason: any) => {
   logger.error(reason);
-  console.log('exit');
   process.exit(1);
 });
