@@ -55,6 +55,19 @@ cd $REPO_LOCATION
 # clone the source repository and apply hooks
 set -e
 su - git -s "/bin/bash" -c "cd `pwd` && source ~/.env && git clone --bare $GIT_UPSTREAM_URI ."
+# if the repository is completely empty - initialize it from base-repo
+if [[ "$(git rev-parse HEAD)" == "HEAD" ]]
+then
+    echo "Initializing base tweek repository"
+    cd /tweek/base-repo/
+    git init
+    git add .
+    git commit -m 'Tweek base repo initialized'
+    git remote add destination $REPO_LOCATION
+    git push destination master
+    cd -
+    git push origin master
+fi
 cp /tweek/hooks/* $REPO_LOCATION/hooks/
 set +e
 
