@@ -39,15 +39,15 @@
             "user": "admin-app",
             "contexts": {},
             "object": "repo/policies",
-            "action": "read",
+            "action": "*",
             "effect": "allow"
         },
         {
             "group": "externalapps",
             "user": "admin-app",
             "contexts": {},
-            "object": "repo/policies",
-            "action": "write",
+            "object": "repo/apps",
+            "action": "*",
             "effect": "allow"
         },
         {
