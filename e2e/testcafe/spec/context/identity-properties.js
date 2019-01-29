@@ -1,4 +1,4 @@
-import IdentityPage from '../../pages/Identity';
+import IdentityPage from '../../pages/IdentityPage';
 import { credentials, login } from '../../utils/auth-utils';
 import { editorUrl } from '../../utils/constants';
 import { waitFor } from '../../utils/assertion-utils';

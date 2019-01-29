@@ -32,7 +32,7 @@ const IdentityPage = ({
   const hasChanges = !R.equals(identityProperties.local, identityProperties.remote);
 
   return (
-    <div className="identity-page">
+    <div className="identity-page" data-identity-type={identityType}>
       <div data-comp="action-bar">
         <SaveButton
           data-comp="save-button"

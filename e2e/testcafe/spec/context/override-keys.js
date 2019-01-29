@@ -1,4 +1,4 @@
-import IdentityPage from '../../pages/Identity';
+import IdentityPage from '../../pages/IdentityPage';
 import { editorUrl } from '../../utils/constants';
 import { login, credentials } from '../../utils/auth-utils';
 import { assertFixedKeysEqual, getProperties } from '../../clients/identity-client';
