@@ -1,10 +1,10 @@
-import IdentityPage from '../../pages/IdentityPage';
+import ContextPage from '../../pages/Context';
 import { credentials, login } from '../../utils/auth-utils';
 import { editorUrl } from '../../utils/constants';
 import { waitFor } from '../../utils/assertion-utils';
 import { assertPropertiesEqual, getFixedKeys } from '../../clients/identity-client';
 
-const identityPage = new IdentityPage();
+const contextPage = new ContextPage();
 const identityId = 'awesome_user';
 const identityType = 'user';
 
@@ -13,7 +13,7 @@ fixture`Context Identity Properties`.page`${editorUrl}/context`
   .beforeEach(login);
 
 test('should modify identity properties', async (t) => {
-  await identityPage.open(identityType, identityId);
+  const identity = await contextPage.open(identityType, identityId);
   const initialOverrideKeys = await getFixedKeys(identityType, identityId);
 
   const expectedProperties = {
@@ -23,10 +23,10 @@ test('should modify identity properties', async (t) => {
   };
 
   for (const [property, value] of Object.entries(expectedProperties)) {
-    await identityPage.updateProperty(property, value);
+    await identity.property(property).update(value);
   }
 
-  await identityPage.commitChanges();
+  await identity.commitChanges();
 
   await waitFor(assertPropertiesEqual(identityType, identityId, expectedProperties));
   await t.expect(await getFixedKeys(identityType, identityId)).eql(initialOverrideKeys);
@@ -37,10 +37,10 @@ test('should modify identity properties', async (t) => {
   };
 
   for (const [property, value] of Object.entries(editedProperties)) {
-    await identityPage.updateProperty(property, value);
+    await identity.property(property).update(value);
   }
 
-  await identityPage.commitChanges();
+  await identity.commitChanges();
 
   await waitFor(
     assertPropertiesEqual(identityType, identityId, { ...expectedProperties, ...editedProperties }),

@@ -1,10 +1,10 @@
-import IdentityPage from '../../pages/IdentityPage';
+import ContextPage from '../../pages/Context';
 import { editorUrl } from '../../utils/constants';
 import { login, credentials } from '../../utils/auth-utils';
 import { assertFixedKeysEqual, getProperties } from '../../clients/identity-client';
 import { waitFor } from '../../utils/assertion-utils';
 
-const identityPage = new IdentityPage();
+const contextPage = new ContextPage();
 const identityId = 'awesome_user';
 const identityType = 'user';
 const typedKey = 'behavior_tests/context/override_key';
@@ -14,7 +14,7 @@ fixture`Context Identity Properties`.page`${editorUrl}/context`
   .beforeEach(login);
 
 test('should modify override keys', async (t) => {
-  await identityPage.open(identityType, identityId);
+  const identity = await contextPage.open(identityType, identityId);
   const initialProperties = await getProperties(identityType, identityId);
 
   const overrideKeys = {
@@ -23,10 +23,10 @@ test('should modify override keys', async (t) => {
   };
 
   for (const key in overrideKeys) {
-    await identityPage.addFixedKey(key, overrideKeys[key]);
+    await identity.newFixedKey.add(key, overrideKeys[key]);
   }
 
-  await identityPage.commitChanges();
+  await identity.commitChanges();
 
   await waitFor(assertFixedKeysEqual(identityType, identityId, overrideKeys));
 
@@ -35,18 +35,18 @@ test('should modify override keys', async (t) => {
     'some/new/key': 'anotherValue',
   };
 
-  await t.click(identityPage.fixedKeyDeleteButton(typedKey));
-  await identityPage.updateFixedKey('some/key', 'newValue');
-  await identityPage.addFixedKey('some/new/key', 'anotherValue');
-  await identityPage.commitChanges();
+  await t.click(identity.fixedKey(typedKey).deleteButton);
+  await identity.fixedKey('some/key').update('newValue');
+  await identity.newFixedKey.add('some/new/key', 'anotherValue');
+  await identity.commitChanges();
 
   await waitFor(assertFixedKeysEqual(identityType, identityId, updatedKeys));
 
   for (const key in updatedKeys) {
-    await t.click(identityPage.fixedKeyDeleteButton(key));
+    await t.click(identity.fixedKey(key).deleteButton);
   }
 
-  await identityPage.commitChanges();
+  await identity.commitChanges();
 
   await waitFor(assertFixedKeysEqual(identityType, identityId, {}));
   await t.expect(await getProperties(identityType, identityId)).eql(initialProperties);
