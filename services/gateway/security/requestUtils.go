@@ -104,21 +104,6 @@ func extractContextsFromKeysRequest(r *http.Request, u UserInfo) (ctxs PolicyRes
 	return
 }
 
-func extractContextsFromAppsRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
-	ctxs = PolicyResource{Item: "repo/apps", Contexts: map[string]string{}}
-	return
-}
-
-func extractContextsFromPoliciesRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
-	ctxs = PolicyResource{Item: "repo/policies", Contexts: map[string]string{}}
-	return
-}
-
-func extractContextsFromBulkKeysUploadRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
-	ctxs = PolicyResource{Item: "repo/keys/_", Contexts: map[string]string{}}
-	return
-}
-
 func extractContextFromContextRequest(r *http.Request, u UserInfo) (ctx PolicyResource, err error) {
 	ctx = PolicyResource{Contexts: map[string]string{}}
 	path := r.URL.EscapedPath()
@@ -158,12 +143,6 @@ func normalizeIdentityID(id string, u UserInfo) string {
 	return identityID
 }
 
-func extractContextsFromOtherRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
-	ctxs = PolicyResource{Contexts: map[string]string{}}
-	ctxs.Item = "repo"
-	return
-}
-
 func extractResourceFromRepoRequest(r *http.Request, u UserInfo, kind string) (ctxs PolicyResource, err error) {
 	ctxs = PolicyResource{Contexts: map[string]string{}}
 	switch {
@@ -187,35 +166,40 @@ func extractResourceFromRepoRequest(r *http.Request, u UserInfo, kind string) (c
 
 func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
 	path := r.URL.EscapedPath()
-	if strings.HasPrefix(path, "/api/v2/context") {
+	switch {
+	case strings.HasPrefix(path, "/api/v2/manifests"):
+		fallthrough
+	case strings.HasPrefix(path, "/api/v2/suggestions"):
+		fallthrough
+	case strings.HasPrefix(path, "/api/v2/dependents"):
+		fallthrough
+	case strings.HasPrefix(path, "/api/v2/search"):
+		fallthrough
+	case strings.HasPrefix(path, "/api/v2/revision-history"):
+		fallthrough
+	case strings.HasPrefix(path, "/api/v2/search-index"):
+		ctxs = PolicyResource{Item: "repo", Contexts: map[string]string{}}
+		return
+	case strings.HasPrefix(path, "/api/v2/apps"):
+		ctxs = PolicyResource{Item: "repo/apps", Contexts: map[string]string{}}
+		return
+	case strings.HasPrefix(path, "/api/v2/policies"):
+		fallthrough
+	case strings.HasPrefix(path, "/api/v2/jwt-extraction-policy"):
+		ctxs = PolicyResource{Item: "repo/policies", Contexts: map[string]string{}}
+		return
+	case strings.HasPrefix(path, "/api/v2/bulk-keys-upload"):
+		ctxs = PolicyResource{Item: "repo/keys/_", Contexts: map[string]string{}}
+		return
+	case strings.HasPrefix(path, "/api/v2/context"):
 		return extractContextFromContextRequest(r, u)
-	} else if strings.HasPrefix(path, "/api/v2/values") {
+	case strings.HasPrefix(path, "/api/v2/values"):
 		return extractContextsFromValuesRequest(r, u)
-	} else if strings.HasPrefix(path, "/api/v2/keys") {
+	case strings.HasPrefix(path, "/api/v2/keys"):
 		return extractContextsFromKeysRequest(r, u)
-	} else if strings.HasPrefix(path, "/api/v2/apps") {
-		return extractContextsFromAppsRequest(r, u)
-	} else if strings.HasPrefix(path, "/api/v2/policies") {
-		return extractContextsFromPoliciesRequest(r, u)
-	} else if strings.HasPrefix(path, "/api/v2/jwt-extraction-policy") {
-		return extractContextsFromPoliciesRequest(r, u)
-	} else if strings.HasPrefix(path, "/api/v2/bulk-keys-upload") {
-		return extractContextsFromBulkKeysUploadRequest(r, u)
-	} else if strings.HasPrefix(path, "/api/v2/manifests") {
-		return extractContextsFromOtherRequest(r, u)
-	} else if strings.HasPrefix(path, "/api/v2/suggestions") {
-		return extractContextsFromOtherRequest(r, u)
-	} else if strings.HasPrefix(path, "/api/v2/dependents") {
-		return extractContextsFromOtherRequest(r, u)
-	} else if strings.HasPrefix(path, "/api/v2/search") {
-		return extractContextsFromOtherRequest(r, u)
-	} else if strings.HasPrefix(path, "/api/v2/search-index") {
-		return extractContextsFromOtherRequest(r, u)
-	} else if strings.HasPrefix(path, "/api/v2/tags") {
+	case strings.HasPrefix(path, "/api/v2/tags"):
 		return extractResourceFromRepoRequest(r, u, "tags")
-	} else if strings.HasPrefix(path, "/api/v2/revision-history") {
-		return extractContextsFromOtherRequest(r, u)
-	} else if strings.HasPrefix(path, "/api/v2/schemas") {
+	case strings.HasPrefix(path, "/api/v2/schemas"):
 		return extractResourceFromRepoRequest(r, u, "schemas")
 	}
 

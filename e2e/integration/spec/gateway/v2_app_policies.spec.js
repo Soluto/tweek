@@ -160,17 +160,9 @@ describe('Gateway v2 - App Policies', () => {
       // should change to match {oid} with repo-version api
       await bluebird.delay(3000);
 
-      await Promise.all(relevantCases.map(x => x.action(appClient).expect(200).catch((ex)=> {
-        console.log( x.name )
-        console.log(ex);
-        throw ex;
-      })));
+      await Promise.all(relevantCases.map(x => x.action(appClient).expect(200)));
 
-      await Promise.all(forbiddenCases.map(async x => x.action(appClient).expect(403).catch((ex)=> {
-        console.log( x.name )
-        console.log(ex);
-        throw ex;
-      })));
+      await Promise.all(forbiddenCases.map(async x => x.action(appClient).expect(403)));
     });
   }
 });
