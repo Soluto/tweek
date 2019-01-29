@@ -93,6 +93,27 @@ describe('Gateway v2 - App Policies', () => {
       action: client => client
           .delete('/api/v2/schemas/new_identity?author.name=test&author.email=test@tweek.com')
     },
+    {
+      name: 'jwt_extraction_policy',
+      requirePermissionObject: 'repo/policies',
+      requirePermissionAction: 'read',
+      action: client => client
+          .get('/api/v2/jwt-extraction-policy')
+    },
+    {
+      name: 'policies',
+      requirePermissionObject: 'repo/policies',
+      requirePermissionAction: 'read',
+      action: client => client
+          .get('/api/v2/policies')
+    },
+    {
+      name: 'apps',
+      requirePermissionObject: 'repo/apps',
+      requirePermissionAction: 'read',
+      action: client => client
+          .get('/api/v2/apps')
+    }
   ];
 
   for (let policy of policies) {
@@ -109,14 +130,14 @@ describe('Gateway v2 - App Policies', () => {
       );
 
       const response = await clients.gateway
-        .post('/api/v2/apps?author.name=test&author.email=test@soluto.com')
+        .post('/api/v2/apps')
         .send({ name: 'my-app', permissions: [] })
         .expect(200);
 
       const { appId, appSecret } = response.body;
 
       await clients.gateway
-        .patch('/api/v2/policies?author.name=test&author.email=test@soluto.com')
+        .patch('/api/v2/policies')
         .send([
           {
             op: 'add',
@@ -141,7 +162,7 @@ describe('Gateway v2 - App Policies', () => {
 
       await Promise.all(relevantCases.map(x => x.action(appClient).expect(200)));
 
-      await Promise.all(forbiddenCases.map(async x => await x.action(appClient).expect(403)));
+      await Promise.all(forbiddenCases.map(async x => x.action(appClient).expect(403)));
     });
   }
 });

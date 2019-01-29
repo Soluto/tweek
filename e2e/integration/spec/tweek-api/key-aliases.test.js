@@ -11,8 +11,8 @@ describe('tweek api - key aliases', () => {
   });
 
   it('should have the same value as the original key', async () => {
-    const original = await clients.api.get(`/api/v1/keys/${originalKey}`);
-    const alias = await clients.api.get(`/api/v1/keys/${aliasKey}`);
+    const original = await clients.gateway.get(`/api/v2/values/${originalKey}`);
+    const alias = await clients.gateway.get(`/api/v2/values/${aliasKey}`);
 
     expect(JSON.parse(original.body)).to.equal(JSON.parse(alias.body));
   });

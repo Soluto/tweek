@@ -14,6 +14,10 @@ build:
     context: services/publishing
   - image: soluto/tweek-gateway
     context: services/gateway
+    sync:
+      "**/*.go": "src"
+    docker:
+      dockerfile: debug.Dockerfile
   - image: soluto/tweek-editor
     context: services/editor
     sync:

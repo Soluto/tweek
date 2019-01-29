@@ -11,12 +11,12 @@ describe('tweek api - value distribution', () => {
   });
 
   it('should get correct value - array format', async () => {
-    const result = await clients.api.get(`/api/v1/keys/${arrayFormatKey}?user=some_user`);
+    const result = await clients.gateway.get(`/api/v2/values/${arrayFormatKey}?user=some_user`);
     expect(JSON.parse(result.body)).to.equal(15);
   });
 
   it('should get correct value - object format', async () => {
-    const result = await clients.api.get(`/api/v1/keys/${objectFormatKey}?user=some_user`);
+    const result = await clients.gateway.get(`/api/v2/values/${objectFormatKey}?user=some_user`);
     expect(JSON.parse(result.body)).to.equal(15);
   });
 });
