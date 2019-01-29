@@ -3,14 +3,6 @@
         {
             "group": "*",
             "user": "*",
-            "contexts": {},
-            "object": "values/*",
-            "action": "*",
-            "effect": "allow"
-        },
-        {
-            "group": "*",
-            "user": "*",
             "contexts": {
                 "*": "*"
             },
