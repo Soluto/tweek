@@ -17,7 +17,7 @@ describe.skip('authoring api policy', () => {
     const buf = await readFileAsync('./spec/authoring-api/test-data/policy.json');
     const originalPolicy = JSON.parse(buf.toString());
 
-    await clients.authoring.get('/api/policies').expect(200, originalPolicy);
+    await clients.gateway.get('/api/v2/policies').expect(200, originalPolicy);
   });
 
   it('replace policy', async () => {
@@ -46,7 +46,7 @@ describe.skip('authoring api policy', () => {
     );
 
     await clients.authoring
-      .put('/api/policies?author.name=test&author.email=test@soluto.com')
+      .put('/api/v2/policies')
       .send(newPolicy)
       .expect(200);
 
@@ -82,8 +82,8 @@ describe.skip('authoring api policy', () => {
     );
 
     const policyPatch = jsonpatch.compare(policy, originalPolicy);
-    await clients.authoring
-      .patch('/api/policies?author.name=test&author.email=test@soluto.com')
+    await clients.gateway
+      .patch('/api/v2/policies')
       .send(policyPatch)
       .expect(200);
 

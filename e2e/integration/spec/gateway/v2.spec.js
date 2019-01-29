@@ -26,12 +26,6 @@ describe('Gateway v2 API', () => {
     await apiClient.get(`/api/v2/values/${key}`).expect(200, '1.0');
   });
 
-  it('checks that the authoring calls are proxied through gateway', async () =>
-    await clients.authoring
-      .get('/version')
-      .expect('X-GATEWAY', 'true')
-      .expect(200));
-
   it('should set and get context', async () => {
     const context = {
       FavoriteFruit: 'grape',
@@ -146,7 +140,7 @@ describe('Gateway v2 API', () => {
   it('should reject an invalid key with 400 error', async () => {
     const key = '@tests/integration/new_invalid_key_2';
     await clients.gateway
-      .put(`/api/v2/keys/${key}?author.name=test&author.email=test@soluto.com`)
+      .put(`/api/v2/keys/${key}`)
       .send({
         manifest: createManifestForJPadKey(key),
         implementation: JSON.stringify({
@@ -163,7 +157,7 @@ describe('Gateway v2 API', () => {
     const key = '@tests/integration/duplicate_2';
     async function saveKey() {
       return await clients.gateway
-        .put(`/api/v2/keys/${key}?author.name=test&author.email=test@soluto.com`)
+        .put(`/api/v2/keys/${key}`)
         .send({
           manifest: createManifestForJPadKey(key),
           implementation: JSON.stringify({
@@ -183,16 +177,21 @@ describe('Gateway v2 API', () => {
 
   it('should create new app', async () => {
     const res = await clients.gateway
-      .post('/api/v2/apps?author.name=test&author.email=test@soluto.com')
+      .post('/api/v2/apps')
       .send({
-        name: 'test app',
-        permissions: [],
+        name: 'test app'
       })
       .expect(200);
 
     const app = res.body;
     expect(app).hasOwnProperty('appId');
     expect(app).hasOwnProperty('appSecret');
+
+    const appsRes = await clients.gateway
+                            .get('/api/v2/apps')
+                            .expect(200);
+
+    expect(appsRes.body).to.include({[app.appId] : 'test app' });
 
     const policyRes = await clients.gateway.get('/api/v2/policies').expect(200);
 

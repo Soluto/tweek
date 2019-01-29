@@ -24,15 +24,14 @@ const interceptAfter = (target, fn, methodNames) => {
 const restMethods = ['post', 'get', 'put', 'delete', 'patch', 'head'];
 
 function createClient(targetUrl, intercept) {
-  return interceptAfter(supertest(targetUrl), intercept, ['request', ...restMethods]);
+  const client = supertest(targetUrl);
+  return interceptAfter(client , intercept, ['request', ...restMethods]);
 }
 
 nconf
   .argv()
   .env()
   .defaults({
-    AUTHORING_URL: 'http://localhost:8080',
-    API_URL: 'http://localhost:8080',
     GATEWAY_URL: 'http://localhost:8080',
     GIT_PRIVATE_KEY_PATH: '../../deployments/dev/ssh/tweekgit',
 
@@ -58,8 +57,6 @@ const init = async function() {
   const token = await getToken(key);
   const setBearerToken = t => t.set('Authorization', `Bearer ${token}`);
   return {
-    api: createClient(nconf.get('API_URL'), setBearerToken),
-    authoring: createClient(nconf.get('AUTHORING_URL'), setBearerToken),
     gateway: createClient(nconf.get('GATEWAY_URL'), setBearerToken),
   };
 };

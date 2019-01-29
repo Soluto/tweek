@@ -14,9 +14,9 @@ describe('authoring api', () => {
   describe('/PUT /key', () => {
     it('should accept a valid key', async () => {
       const key = '@tests/integration/new_valid_key';
-      await clients.authoring
+      await clients.gateway
         .put(
-          '/api/keys/@tests/integration/new_valid_key?author.name=test&author.email=test@soluto.com',
+          '/api/v2/keys/@tests/integration/new_valid_key?author.name=test&author.email=test@soluto.com',
         )
         .send({
           manifest: createManifestForJPadKey(key),
@@ -30,16 +30,16 @@ describe('authoring api', () => {
         .expect(200);
 
       await pollUntil(
-        () => clients.api.get('/api/v1/keys/@tests/integration/new_valid_key'),
+        () => clients.gateway.get('/api/v2/values/@tests/integration/new_valid_key'),
         res => expect(res.body).to.eql('test'),
       );
     });
 
     it('should reject an invalid key with 400 error', async () => {
       const key = '@tests/integration/new_invalid_key';
-      await clients.authoring
+      await clients.gateway
         .put(
-          '/api/keys/@tests/integration/new_invalid_key?author.name=test&author.email=test@soluto.com',
+          '/api/v2/keys/@tests/integration/new_invalid_key?author.name=test&author.email=test@soluto.com',
         )
         .send({
           manifest: createManifestForJPadKey(key),
@@ -56,8 +56,8 @@ describe('authoring api', () => {
     it('should not create new commit for duplicate definition', async () => {
       const key = '@tests/integration/duplicate';
       async function saveKey() {
-        return await clients.authoring
-          .put(`/api/keys/${key}?author.name=test&author.email=test@soluto.com`)
+        return await clients.gateway
+          .put(`/api/v2/keys/${key}`)
           .send({
             manifest: createManifestForJPadKey(key),
             implementation: JSON.stringify({

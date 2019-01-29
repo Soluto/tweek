@@ -133,8 +133,8 @@
     },
     {
         "routePathPrefix": "/policies",
-        "routeRegexp": "^/api/v2/policies$",
-        "upstreamPath": "/api/policies",
+        "routeRegexp": "^/api/v2/policies(\\?.*)?$",
+        "upstreamPath": "/api/policies$1",
         "methods": ["GET"],
         "service": "authoring",
         "userInfo": true,
@@ -151,9 +151,45 @@
     },
     {
         "routePathPrefix": "/apps",
-        "routeRegexp": "^/api/v2/apps(.*)$",
+        "routeRegexp": "^/api/v2/apps(\\?.*)?$",
         "upstreamPath": "/api/apps$1",
         "methods": ["POST"],
+        "service": "authoring",
+        "userInfo": true,
+        "rewriteKeyPath": false
+    },
+    {
+        "routePathPrefix": "/apps",
+        "routeRegexp": "^/api/v2/apps(\\?.*)?$",
+        "upstreamPath": "/api/apps$1",
+        "methods": ["GET"],
+        "service": "authoring",
+        "userInfo": false,
+        "rewriteKeyPath": false
+    },
+    {
+        "routePathPrefix": "/jwt-extraction-policy",
+        "routeRegexp": "^/api/v2/jwt-extraction-policy(\\?.*)?$",
+        "upstreamPath": "/api/subject-extraction-rules$1",
+        "methods": ["GET"],
+        "service": "authoring",
+        "userInfo": false,
+        "rewriteKeyPath": false
+    },
+    {
+        "routePathPrefix": "/jwt-extraction-policy",
+        "routeRegexp": "^/api/v2/jwt-extraction-policy(\\?.*)?$",
+        "upstreamPath": "/api/subject-extraction-rules$1",
+        "methods": ["PUT"],
+        "service": "authoring",
+        "userInfo": true,
+        "rewriteKeyPath": false
+    },
+    {
+        "routePathPrefix": "/bulk-keys-upload",
+        "routeRegexp": "^/api/v2/bulk-keys-upload(\\?.*)?$",
+        "upstreamPath": "/api/bulk-keys-upload$1",
+        "methods": ["PUT"],
         "service": "authoring",
         "userInfo": true,
         "rewriteKeyPath": false

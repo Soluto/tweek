@@ -107,6 +107,46 @@ func TestExtractFromRequest(t *testing.T) {
 			wantAct: "read",
 			wantErr: nil,
 		},
+		{
+			name: "Get apps",
+			args: args{
+				r: createTestRequest("GET", "https://gateway.tweek.com/api/v2/apps", userInfo),
+			},
+			wantObj: PolicyResource{Item: "repo/apps", Contexts: map[string]string{}},
+			wantSub: &Subject{User: "A b sub", Group: "default"},
+			wantAct: "read",
+			wantErr: nil,
+		},
+		{
+			name: "Get Policies",
+			args: args{
+				r: createTestRequest("GET", "https://gateway.tweek.com/api/v2/policies", userInfo),
+			},
+			wantObj: PolicyResource{Item: "repo/policies", Contexts: map[string]string{}},
+			wantSub: &Subject{User: "A b sub", Group: "default"},
+			wantAct: "read",
+			wantErr: nil,
+		},
+		{
+			name: "Get JWT extraction policy",
+			args: args{
+				r: createTestRequest("GET", "https://gateway.tweek.com/api/v2/jwt-extraction-policy", userInfo),
+			},
+			wantObj: PolicyResource{Item: "repo/policies", Contexts: map[string]string{}},
+			wantSub: &Subject{User: "A b sub", Group: "default"},
+			wantAct: "read",
+			wantErr: nil,
+		},
+		{
+			name: "Bulk keys upload",
+			args: args{
+				r: createTestRequest("PUT", "https://gateway.tweek.com/api/v2/bulk-keys-upload", userInfo),
+			},
+			wantObj: PolicyResource{Item: "repo/keys/_", Contexts: map[string]string{}},
+			wantSub: &Subject{User: "A b sub", Group: "default"},
+			wantAct: "write",
+			wantErr: nil,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
