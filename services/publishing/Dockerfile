@@ -20,6 +20,7 @@ RUN dotnet publish -c $target -o obj/docker/publish
 
 RUN cp -r /src/scripts /tweek \
     && cp -r /src/hooks /tweek/hooks \
+    && cp -r /src/base-repo /tweek/base-repo \
     && cp -r /src/Tweek.Publishing.Service/obj/docker/publish /tweek/Tweek.Publishing.Service
 
 # Stage 2: Release
