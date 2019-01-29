@@ -19,8 +19,8 @@ const SourceTitle = ({ id, onSourceId, sourceId }) => (
 );
 
 function getAllSuggestions(getSuggestions) {
-  return function (...args) {
-    const suggestionPromises = Object.values(getSuggestions).map(fn => fn(...args));
+  return function(...args) {
+    const suggestionPromises = Object.values(getSuggestions).map((fn) => fn(...args));
 
     return Promise.all(suggestionPromises).then(R.flatten);
   };
@@ -34,7 +34,7 @@ const enhance = compose(
     const { handler: onSourceId, stream: onSourceId$ } = createEventHandler();
 
     const query$ = Observable.merge(onSearch$, props$.pluck('value'))
-      .debounce(query => Observable.empty().delay(query === '' ? 0 : 500))
+      .debounce((query) => Observable.empty().delay(query === '' ? 0 : 500))
       .distinctUntilChanged();
 
     const sourceId$ = onSourceId$
@@ -59,7 +59,7 @@ const enhance = compose(
 
     return Observable.combineLatest(props$, sourceId$, suggestions$).map(
       ([{ getSuggestions, onChange, ...props }, sourceId, suggestions]) => ({
-        ...props,
+        ...R.omit(['maxSearchResults', 'showInternalKeys'], props),
         suggestions,
         onChange: (txt, ...args) => {
           onSearch(txt);
@@ -69,7 +69,7 @@ const enhance = compose(
           <div className={'multi-source-combo-box-suggestions'}>
             <div className={'source-select'}>
               <SourceTitle {...{ sourceId, onSourceId }} />
-              {Object.keys(getSuggestions).map(key => (
+              {Object.keys(getSuggestions).map((key) => (
                 <SourceTitle id={key} {...{ key, sourceId, onSourceId }} />
               ))}
             </div>

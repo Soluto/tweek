@@ -64,7 +64,7 @@ export default class Rule {
 
   constructor(ruleNumber = 0) {
     this.container = Rule.ruleContainer.nth(ruleNumber);
-    this.newCondition = this.condition();
+    this.newCondition = new Condition(this);
     this.value = this.container.find(dataComp('rule-value'));
     this.addConditionButton = this.container.find(dataComp('add-condition'));
     this.multiVariantButton = this.container.find(dataComp('convert-to-multi-variant'));
@@ -73,11 +73,14 @@ export default class Rule {
   async condition(property = '') {
     const condition = new Condition(this, property);
 
-    const exists = await condition.container.exists;
-    if (!exists) {
+    if (!(await condition.container.exists)) {
+      if (!(await this.newCondition.visible)) {
+        await t.click(this.addConditionButton);
+      }
+
       await t
-        .click(this.addConditionButton)
-        .typeText(this.newCondition.propertyNameInput, property);
+        .typeText(this.newCondition.propertyNameInput, property, { paste: true, replace: true })
+        .click(this.value);
     }
 
     return condition;

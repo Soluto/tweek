@@ -4,6 +4,8 @@ import { attributeSelector, dataComp } from '../../utils/selector-utils';
 import NewKey from './NewKey';
 import EditKey from './EditKey';
 
+export const BLANK_KEY_NAME = '_blank';
+
 const extractFolders = R.pipe(
   R.split('/'),
   R.dropLast(1),
