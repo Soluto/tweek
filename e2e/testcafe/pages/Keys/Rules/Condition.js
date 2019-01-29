@@ -1,6 +1,6 @@
 import { t } from 'testcafe';
 import { dataComp } from '../../../utils/selector-utils';
-import Input from '../Input';
+import TagInput from '../TagInput';
 
 export default class Condition {
   constructor(rule, property = '') {
@@ -19,7 +19,7 @@ export default class Condition {
     if (!Array.isArray(value)) {
       await t.typeText(this.propertyValueInput, value, { replace: true });
     } else {
-      await new Input(this.propertyValueInput).addMany(items);
+      await new TagInput(this.propertyValueInput).addMany(items);
     }
   }
 }

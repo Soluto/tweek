@@ -1,6 +1,7 @@
 import { Selector, t } from 'testcafe';
 import { dataComp, dataField } from '../../utils/selector-utils';
 import JPad from './JPad';
+import TagInput from './TagInput';
 
 class Dependencies {
   constructor(type) {
@@ -36,6 +37,12 @@ export default class EditKey {
   displayNameInput = this.container.find(dataComp('display-name')).find(dataField('text'));
 
   defaultValueInput = this.container.find(dataComp('default-value'));
+
+  tags = this.container.find(dataComp('key-tags'));
+
+  tagsInput = new TagInput(this.tags);
+
+  tagSuggestion = this.tags.find('.tags-suggestion ul li');
 
   dependsOn = new Expander(new Dependencies('depends-on'));
 
