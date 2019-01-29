@@ -65,7 +65,7 @@ then
     git commit -m 'Tweek base repo initialized'
     git remote add destination $REPO_LOCATION
     git push destination master
-    cd -
+    cd $REPO_LOCATION
     git push origin master
 fi
 cp /tweek/hooks/* $REPO_LOCATION/hooks/

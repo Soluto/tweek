@@ -31,54 +31,6 @@
         {
             "group": "externalapps",
             "user": "admin-app",
-            "contexts": {},
-            "object": "repo/keys/*",
-            "action": "write",
-            "effect": "allow"
-        },
-        {
-            "group": "externalapps",
-            "user": "admin-app",
-            "contexts": {},
-            "object": "repo",
-            "action": "read",
-            "effect": "allow"
-        },
-        {
-            "group": "externalapps",
-            "user": "admin-app",
-            "contexts": {},
-            "object": "repo/policies",
-            "action": "read",
-            "effect": "allow"
-        },
-        {
-            "group": "externalapps",
-            "user": "admin-app",
-            "contexts": {},
-            "object": "repo/policies",
-            "action": "write",
-            "effect": "allow"
-        },
-        {
-            "group": "externalapps",
-            "user": "admin-app",
-            "contexts": {},
-            "object": "repo/tags",
-            "action": "write",
-            "effect": "allow"
-        },
-        {
-            "group": "externalapps",
-            "user": "admin-app",
-            "contexts": {},
-            "object": "repo/schemas",
-            "action": "write",
-            "effect": "allow"
-        },
-        {
-            "group": "externalapps",
-            "user": "admin-app",
             "contexts": {
                 "*": "*"
             },
