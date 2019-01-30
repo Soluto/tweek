@@ -40,6 +40,20 @@ class Aliases extends Expander {
   }
 }
 
+class RevisionHistory {
+  container = Selector(dataComp('revision-history'));
+  revision = this.container.find('option');
+
+  async currentCommit() {
+    await t.expect(this.container.visible).ok();
+    if ((await this.container.getAttribute('data-no-changes')) === 'true') {
+      return null;
+    }
+
+    return await this.revision.nth(0).value;
+  }
+}
+
 export default class EditKey {
   container = Selector(dataComp('key-edit-page'));
 
@@ -55,6 +69,7 @@ export default class EditKey {
   unarchiveButton = this.container.find(dataComp('unarchive-key'));
   deleteButton = this.container.find(dataComp('delete-key'));
 
+  revisionHistory = new RevisionHistory();
   messageText = this.container.find(dataComp('key-message'));
   displayNameText = this.container.find(dataComp('display-name')).find(dataField('text'));
 
