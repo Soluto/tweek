@@ -17,7 +17,7 @@ const assertKeyDeleted = async (keyName) => {
   await waitForKeyToBeDeleted(keyName);
 
   const editKey = new EditKey();
-  const link = await keysPage.getKeyLink(keyName);
+  const link = await keysPage.navigateToLink(keyName);
 
   await t
     .expect(link.exists)
@@ -48,7 +48,7 @@ test('archive key', async (t) => {
     .expect(editKey.deleteButton.visible)
     .ok();
 
-  const link = await keysPage.getKeyLink(keyName);
+  const link = await keysPage.navigateToLink(keyName);
 
   await t.expect(link.exists).notOk();
 });
@@ -72,7 +72,7 @@ test('unarchive key', async (t) => {
     .expect(editKey.deleteButton.exists)
     .notOk();
 
-  const link = await keysPage.getKeyLink(keyName);
+  const link = await keysPage.navigateToLink(keyName);
 
   await t.expect(link.visible).ok();
 });

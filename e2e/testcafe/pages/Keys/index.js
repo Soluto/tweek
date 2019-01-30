@@ -20,7 +20,11 @@ export default class KeysPage {
 
   page = Selector(dataComp('key-page'));
 
-  async getKeyLink(keyName, force) {
+  link(keyName) {
+    return this.directoryTreeView.find(attributeSelector('href', `/keys/${keyName}`));
+  }
+
+  async navigateToLink(keyName, force) {
     const keyFolders = extractFolders(keyName);
 
     for (const folder of keyFolders) {
@@ -39,11 +43,11 @@ export default class KeysPage {
       }
     }
 
-    return this.directoryTreeView.find(attributeSelector('href', `/keys/${keyName}`));
+    return this.link(keyName);
   }
 
   async openKey(keyName) {
-    const link = await this.getKeyLink(keyName, true);
+    const link = await this.navigateToLink(keyName, true);
     const editKey = new EditKey();
 
     await t

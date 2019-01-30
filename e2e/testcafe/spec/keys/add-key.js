@@ -38,7 +38,7 @@ test('should succeed adding key', async (t) => {
     .expect(editKey.saveChangesButtonHasChanges.exists)
     .notOk();
 
-  const link = await keysPage.getKeyLink(keyToAddFullPath);
+  const link = await keysPage.navigateToLink(keyToAddFullPath);
 
   await t.expect(link.visible).ok();
 });
@@ -68,7 +68,7 @@ test('should succeed adding key by entering key path only', async (t) => {
     .expect(editKey.saveChangesButtonHasChanges.exists)
     .notOk();
 
-  const link = await keysPage.getKeyLink(keyWithDefaultsToAddFullPath);
+  const link = await keysPage.navigateToLink(keyWithDefaultsToAddFullPath);
 
   await t.expect(link.visible).ok();
 });

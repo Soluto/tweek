@@ -33,7 +33,7 @@ test('add alias', async (t) => {
     .expect(editKey.aliases.alias(newAliasKeyPath).container.visible)
     .ok();
 
-  const link = await keysPage.getKeyLink(newAliasKeyPath);
+  const link = await keysPage.navigateToLink(newAliasKeyPath);
 
   await t.expect(link.visible).ok();
 });
@@ -52,7 +52,7 @@ test('should delete alias', async (t) => {
     .expect(alias.container.exists)
     .notOk();
 
-  const link = await keysPage.getKeyLink(deleteAliasKeyPath);
+  const link = await keysPage.navigateToLink(deleteAliasKeyPath);
 
   await t.expect(link.exists).notOk();
 
