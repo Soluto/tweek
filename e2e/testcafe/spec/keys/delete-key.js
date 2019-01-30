@@ -3,7 +3,7 @@ import { editorUrl } from '../../utils/constants';
 import { credentials, login } from '../../utils/auth-utils';
 import { waitFor } from '../../utils/assertion-utils';
 import { getLocation } from '../../utils/location-utils';
-import { tweekManagementClient } from '../../clients/tweek-clients';
+import { waitForKeyToBeDeleted } from '../../clients/tweek-clients';
 import KeysPage from '../../pages/Keys';
 import EditKey from '../../pages/Keys/EditKey';
 import Alert from '../../pages/Alert';
@@ -14,14 +14,7 @@ const alert = new Alert();
 fixture`Delete Key`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
 
 const assertKeyDeleted = async (keyName) => {
-  await waitFor(async () => {
-    try {
-      await tweekManagementClient.getKeyDefinition(keyName);
-    } catch (e) {
-      return;
-    }
-    throw new Error(`key '${keyName}' still exists`);
-  });
+  await waitForKeyToBeDeleted(keyName);
 
   const editKey = new EditKey();
   const link = await keysPage.getKeyLink(keyName);

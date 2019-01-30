@@ -2,6 +2,7 @@ import { createTweekClient, createTweekManagementClient } from 'tweek-client';
 import fetch from 'node-fetch';
 import { gatewayUrl } from '../utils/constants';
 import { credentials } from '../utils/auth-utils';
+import { waitFor } from '../utils/assertion-utils';
 
 const options = {
   baseServiceUrl: gatewayUrl,
@@ -19,3 +20,14 @@ const options = {
 export const tweekClient = createTweekClient(options);
 
 export const tweekManagementClient = createTweekManagementClient(options);
+
+export const waitForKeyToBeDeleted = async (keyName) => {
+  await waitFor(async () => {
+    try {
+      await tweekManagementClient.getKeyDefinition(keyName);
+    } catch (e) {
+      return;
+    }
+    throw new Error(`key '${keyName}' still exists`);
+  });
+};

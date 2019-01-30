@@ -20,16 +20,22 @@ export default class KeysPage {
 
   page = Selector(dataComp('key-page'));
 
-  async getKeyLink(keyName) {
+  async getKeyLink(keyName, force) {
     const keyFolders = extractFolders(keyName);
 
     for (const folder of keyFolders) {
-      const collapesDirectory = this.directoryTreeView
-        .find(attributeSelector('data-folder-name', folder))
-        .withAttribute('data-is-collapsed', 'true');
+      const directory = this.directoryTreeView.find(attributeSelector('data-folder-name', folder));
+      if (force) {
+        await t.expect(directory.exists).ok();
+      }
 
-      if ((await collapesDirectory.exists) && (await collapesDirectory.visible)) {
-        await t.click(collapesDirectory);
+      const collapsedDirectory = directory.withAttribute('data-is-collapsed', 'true');
+      if (
+        (await directory.exists) &&
+        (await collapsedDirectory.exists) &&
+        (await collapsedDirectory.visible)
+      ) {
+        await t.click(collapsedDirectory);
       }
     }
 
@@ -37,7 +43,7 @@ export default class KeysPage {
   }
 
   async openKey(keyName) {
-    const link = await this.getKeyLink(keyName);
+    const link = await this.getKeyLink(keyName, true);
     const editKey = new EditKey();
 
     await t

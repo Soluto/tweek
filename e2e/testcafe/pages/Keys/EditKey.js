@@ -3,6 +3,7 @@ import { dataComp, dataField } from '../../utils/selector-utils';
 import JPad from './JPad';
 import TagInput from './TypedInput/TagInput';
 import ConstValue from './ConstValue';
+import { attributeSelector } from '../../../ui/utils/selector-utils';
 
 class Expander {
   constructor(component) {
@@ -22,9 +23,20 @@ class Dependencies extends Expander {
   }
 }
 
+class Alias {
+  constructor(container, alias) {
+    this.container = container.find(attributeSelector('data-dependency', alias));
+    this.deleteButton = this.container.find(dataComp('delete-alias'));
+  }
+}
+
 class Aliases extends Expander {
   constructor() {
     super('aliases');
+  }
+
+  alias(alias) {
+    return new Alias(this.container, alias);
   }
 }
 
@@ -38,6 +50,7 @@ export default class EditKey {
   );
   saveChangesButtonIsSaving = this.saveChangesButton.withAttribute('data-state-is-saving', 'true');
 
+  addAliasButton = this.container.find(dataComp('add-alias'));
   archiveButton = this.container.find(dataComp('archive-key'));
   unarchiveButton = this.container.find(dataComp('unarchive-key'));
   deleteButton = this.container.find(dataComp('delete-key'));
