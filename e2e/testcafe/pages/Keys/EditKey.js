@@ -36,7 +36,10 @@ export default class EditKey {
   saveChangesButtonIsSaving = this.saveChangesButton.withAttribute('data-state-is-saving', 'true');
 
   archiveButton = this.container.find(dataComp('archive-key'));
+  unarchiveButton = this.container.find(dataComp('unarchive-key'));
+  deleteButton = this.container.find(dataComp('delete-key'));
 
+  messageText = this.container.find(dataComp('key-message'));
   displayNameText = this.container.find(dataComp('display-name')).find(dataField('text'));
 
   tags = this.container.find(dataComp('key-tags'));

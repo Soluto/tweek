@@ -18,6 +18,8 @@ export default class KeysPage {
   directoryTreeView = Selector(dataComp('directory-tree-view'));
   addNewKeyButton = Selector(dataComp('add-new-key'));
 
+  page = Selector(dataComp('key-page'));
+
   async getKeyLink(keyName) {
     const keyFolders = extractFolders(keyName);
 
