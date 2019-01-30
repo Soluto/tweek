@@ -6,10 +6,8 @@ import { waitFor } from '../../utils/assertion-utils';
 import { attributeSelector } from '../../utils/selector-utils';
 import { tweekClient } from '../../clients/tweek-clients';
 import EditKey from '../../pages/Keys/EditKey';
-import Alert from '../../pages/Alert';
 
 const constKeyFolder = 'behavior_tests/edit_key/visual/const';
-const alert = new Alert();
 
 fixture`Edit Const Key`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
 
@@ -46,14 +44,14 @@ test('should succeed editing key (valueType=object)', async (t) => {
   const objectValue = { boolProp: false };
 
   const editKey = await EditKey.open(keyName);
-  const editor = await editKey.constValue.editObject();
+  const editor = await editKey.constValue.objectInput.editObject();
 
   await editor.setSource.with({ dependencies: { source: JSON.stringify(objectValue) } })();
 
   await t
-    .expect(alert.saveButton.disabled)
+    .expect(editKey.constValue.objectInput.alert.saveButton.disabled)
     .notOk()
-    .click(alert.saveButton);
+    .click(editKey.constValue.objectInput.alert.saveButton);
 
   await editKey.commitChanges();
 

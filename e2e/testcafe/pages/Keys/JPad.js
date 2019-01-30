@@ -3,13 +3,14 @@ import { Selector } from 'testcafe';
 import ObjectEditor from './ObjectEditor';
 import NewRule from './Rules/NewRule';
 import Rule from './Rules/Rule';
+import TypedInput from './TypedInput';
 
 const tabHeader = attributeSelector('data-tab-header');
 
 export default class JPad {
   container = Selector(dataComp('key-rules-editor'));
 
-  defaultValueInput = this.container.find(dataComp('default-value'));
+  defaultValue = new TypedInput(this.container.find(dataComp('default-value')));
 
   sourceTab = this.container.find(tabHeader('source'));
   rulesTab = this.container.find(tabHeader('rules'));
@@ -17,7 +18,7 @@ export default class JPad {
   sourceEditor = new ObjectEditor();
   newRule = new NewRule();
 
-  rule(i) {
+  rule(i = 0) {
     return new Rule(i);
   }
 

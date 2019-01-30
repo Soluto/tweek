@@ -9,7 +9,7 @@ export default class TagInput {
     await t
       .expect(this.input.visible)
       .ok()
-      .typeText(this.input, item)
+      .typeText(this.input, item.toString())
       .pressKey('enter');
   }
 

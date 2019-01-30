@@ -1,7 +1,7 @@
 import { ClientFunction, Selector } from 'testcafe';
 
 export default class ObjectEditor {
-  sourceEditor = Selector('.monaco-editor');
+  monaco = Selector('.monaco-editor');
 
   getSource = ClientFunction(() => {
     const value = window.monaco.editor.getModels()[0].getValue();

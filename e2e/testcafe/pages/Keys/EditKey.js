@@ -1,7 +1,7 @@
 import { Selector, t } from 'testcafe';
 import { dataComp, dataField } from '../../utils/selector-utils';
 import JPad from './JPad';
-import TagInput from './TagInput';
+import TagInput from './TypedInput/TagInput';
 import ConstValue from './ConstValue';
 
 class Expander {

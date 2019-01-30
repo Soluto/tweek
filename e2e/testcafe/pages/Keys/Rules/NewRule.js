@@ -11,7 +11,7 @@ export default class NewRule {
     const rule = new Rule();
 
     await t
-      .expect(new Condition(rule).propertyNameInput.focused)
+      .expect(new Condition(rule).propertyInput.focused)
       .ok('should focus the added rule first condition property name');
 
     return rule;

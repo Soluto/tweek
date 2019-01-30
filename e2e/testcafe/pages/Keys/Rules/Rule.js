@@ -79,7 +79,7 @@ export default class Rule {
       }
 
       await t
-        .typeText(this.newCondition.propertyNameInput, property, { paste: true, replace: true })
+        .typeText(this.newCondition.propertyInput, property, { paste: true, replace: true })
         .click(this.value);
     }
 
