@@ -5,7 +5,7 @@ import { assertPropertiesEqual, getFixedKeys } from '../../clients/identity-clie
 import ContextPage from '../../pages/Context';
 
 const contextPage = new ContextPage();
-const identityId = 'awesome_user';
+const identityId = 'identity_properties_user';
 const identityType = 'user';
 
 fixture`Context Identity Properties`.page`${editorUrl}/context`

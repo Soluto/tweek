@@ -5,7 +5,7 @@ import { assertFixedKeysEqual, getProperties } from '../../clients/identity-clie
 import ContextPage from '../../pages/Context';
 
 const contextPage = new ContextPage();
-const identityId = 'awesome_user';
+const identityId = 'override_keys_user';
 const identityType = 'user';
 const typedKey = 'behavior_tests/context/override_key';
 

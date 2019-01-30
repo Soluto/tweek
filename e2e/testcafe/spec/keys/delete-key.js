@@ -91,7 +91,7 @@ test('should not delete key if alert was not accepted', async (t) => {
 
   await t
     .click(editKey.deleteButton)
-    .click(alert.background, { offsetX: -200, offsetY: -200 })
+    .click(alert.background, { offsetX: -5, offsetY: -5 })
     .expect(alert.background.exists)
     .notOk()
     .expect(getLocation())
