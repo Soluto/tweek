@@ -97,7 +97,7 @@ const enhancer = compose(
   lifecycle({
     async componentWillMount() {
       const res = await tweekManagementClient.getAuthProviders();
-      const providers = Object.keys(res).map(key => ({
+      const providers = Object.keys(res).filter(key=> res[key].login_info).map(key => ({
         id: key,
         name: res[key].name,
         action: (state) => {
