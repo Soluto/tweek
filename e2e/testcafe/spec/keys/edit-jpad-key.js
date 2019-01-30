@@ -44,9 +44,7 @@ test('should succeed editing JPad key', async (t) => {
     .expect(editKey.jpad.rulesCount)
     .eql(2)
     .click(editKey.jpad.sourceTab)
-    .expect(editKey.jpad.sourceEditor.monaco.visible)
-    .ok()
-    .expect(editKey.jpad.sourceEditor.getSource())
+    .expect(await editKey.jpad.sourceEditor.getSource())
     .eql(expectedKeySource);
 
   await editKey.commitChanges();
@@ -69,16 +67,14 @@ test('should succeed in editing an object JPad key', async (t) => {
 
   const editKey = await EditKey.open(keyName);
   const editor = await editKey.jpad.defaultValue.objectInput.editObject();
-  await editor.setSource.with({ dependencies: { source: JSON.stringify(defaultValue) } })();
+  await editor.setSource(JSON.stringify(defaultValue));
 
   await t
     .expect(editKey.jpad.defaultValue.objectInput.alert.saveButton.disabled)
     .notOk()
     .click(editKey.jpad.defaultValue.objectInput.alert.saveButton)
     .click(editKey.jpad.sourceTab)
-    .expect(editKey.jpad.sourceEditor.monaco.visible)
-    .ok()
-    .expect(editKey.jpad.sourceEditor.getSource())
+    .expect(await editKey.jpad.sourceEditor.getSource())
     .eql(expectedObjectKeySource);
 });
 
@@ -94,16 +90,14 @@ test('should succeed in editing an array JPad key', async (t) => {
 
   const editKey = await EditKey.open(keyName);
   const editor = await editKey.jpad.defaultValue.objectInput.editObject();
-  await editor.setSource.with({ dependencies: { source: JSON.stringify(defaultValue) } })();
+  await editor.setSource(JSON.stringify(defaultValue));
 
   await t
     .expect(editKey.jpad.defaultValue.objectInput.alert.saveButton.disabled)
     .notOk()
     .click(editKey.jpad.defaultValue.objectInput.alert.saveButton)
     .click(editKey.jpad.sourceTab)
-    .expect(editKey.jpad.sourceEditor.monaco.visible)
-    .ok()
-    .expect(editKey.jpad.sourceEditor.getSource())
+    .expect(await editKey.jpad.sourceEditor.getSource())
     .eql(expectedObjectKeySource);
 });
 
@@ -115,21 +109,17 @@ test('should succeed editing JPad source', async (t) => {
     .expect(editKey.jpad.sourceEditor.monaco.visible)
     .ok();
 
-  await editKey.jpad.sourceEditor.setSource.with({
-    dependencies: { source: JSON.stringify(expectedKeySource, null, 4) },
-  })();
+  await editKey.jpad.sourceEditor.setSource(JSON.stringify(expectedKeySource, null, 4));
 
   await t
     .click(editKey.jpad.rulesTab)
     .expect(editKey.jpad.rule().container.visible)
     .ok()
     .click(editKey.jpad.sourceTab)
-    .expect(editKey.jpad.sourceEditor.monaco.visible)
-    .ok()
-    .expect(editKey.jpad.sourceEditor.getSource())
+    .expect(await editKey.jpad.sourceEditor.getSource())
     .eql(expectedKeySource);
 
-  await editKey.jpad.sourceEditor.setSource.with({ dependencies: { source: 'invalid json' } })();
+  await editKey.jpad.sourceEditor.setSource('invalid json');
 
   await t
     .click(editKey.jpad.rulesTab)
@@ -137,9 +127,7 @@ test('should succeed editing JPad source', async (t) => {
     .expect(editKey.jpad.rule().container.visible)
     .ok()
     .click(editKey.jpad.sourceTab)
-    .expect(editKey.jpad.sourceEditor.monaco.visible)
-    .ok()
-    .expect(editKey.jpad.sourceEditor.getSource())
+    .expect(await editKey.jpad.sourceEditor.getSource())
     .eql(expectedKeySource);
 });
 

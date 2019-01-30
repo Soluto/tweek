@@ -46,7 +46,7 @@ test('should succeed editing key (valueType=object)', async (t) => {
   const editKey = await EditKey.open(keyName);
   const editor = await editKey.constValue.objectInput.editObject();
 
-  await editor.setSource.with({ dependencies: { source: JSON.stringify(objectValue) } })();
+  await editor.setSource(JSON.stringify(objectValue));
 
   await t
     .expect(editKey.constValue.objectInput.alert.saveButton.disabled)

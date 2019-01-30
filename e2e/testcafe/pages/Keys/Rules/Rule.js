@@ -35,8 +35,8 @@ class MultiVariantValue {
       const { value, weight } = args[i];
 
       await t
-        .typeText(this.slider.valueInput.nth(i), value, { replace: true })
-        .typeText(this.slider.percentInput.nth(i), weight, { replace: true });
+        .typeText(this.slider.valueInput.nth(i), value.toString(), { replace: true })
+        .typeText(this.slider.percentInput.nth(i), weight.toString(), { replace: true });
     }
   }
 
@@ -45,7 +45,7 @@ class MultiVariantValue {
 
     if (type === 'bernoulliTrial') {
       await t
-        .typeText(this.bernoulliTrialInput, 100, { replace: true })
+        .typeText(this.bernoulliTrialInput, '100', { replace: true })
         .click(this.setToTrueButton);
     } else if (type === 'weighted') {
       const argsCount = await this.slider.legend.count;
