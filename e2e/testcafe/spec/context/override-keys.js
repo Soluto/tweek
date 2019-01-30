@@ -1,8 +1,8 @@
-import ContextPage from '../../pages/Context';
 import { editorUrl } from '../../utils/constants';
 import { login, credentials } from '../../utils/auth-utils';
-import { assertFixedKeysEqual, getProperties } from '../../clients/identity-client';
 import { waitFor } from '../../utils/assertion-utils';
+import { assertFixedKeysEqual, getProperties } from '../../clients/identity-client';
+import ContextPage from '../../pages/Context';
 
 const contextPage = new ContextPage();
 const identityId = 'awesome_user';

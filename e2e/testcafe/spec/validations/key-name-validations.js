@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { editorUrl } from '../../utils/constants';
 import { credentials, login } from '../../utils/auth-utils';
 import { getLocation } from '../../utils/location-utils';

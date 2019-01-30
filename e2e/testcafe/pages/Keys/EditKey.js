@@ -2,6 +2,7 @@ import { Selector, t } from 'testcafe';
 import { dataComp, dataField } from '../../utils/selector-utils';
 import JPad from './JPad';
 import TagInput from './TagInput';
+import ConstValue from './ConstValue';
 
 class Expander {
   constructor(component) {
@@ -53,6 +54,7 @@ export default class EditKey {
   aliases = new Aliases();
 
   jpad = new JPad();
+  constValue = new ConstValue();
 
   static async open(keyName) {
     const editKey = new EditKey();

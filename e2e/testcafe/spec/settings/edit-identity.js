@@ -2,10 +2,9 @@ import { expect } from 'chai';
 import { credentials, login } from '../../utils/auth-utils';
 import { editorUrl } from '../../utils/constants';
 import { getLocation } from '../../utils/location-utils';
-import { tweekClient } from '../../clients/tweek-clients';
 import { waitFor } from '../../utils/assertion-utils';
+import { tweekClient } from '../../clients/tweek-clients';
 import SettingsPage from '../../pages/Settings';
-import { Property } from '../../pages/Settings/Property';
 
 const settingsPage = new SettingsPage();
 

@@ -1,9 +1,9 @@
 import { t } from 'testcafe';
 import { editorUrl } from '../../utils/constants';
-import { tweekManagementClient } from '../../clients/tweek-clients';
 import { credentials, login } from '../../utils/auth-utils';
 import { waitFor } from '../../utils/assertion-utils';
 import { getLocation } from '../../utils/location-utils';
+import { tweekManagementClient } from '../../clients/tweek-clients';
 import KeysPage from '../../pages/Keys';
 import EditKey from '../../pages/Keys/EditKey';
 import Alert from '../../pages/Alert';
