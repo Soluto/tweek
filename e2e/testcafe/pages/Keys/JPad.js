@@ -8,6 +8,9 @@ const tabHeader = attributeSelector('data-tab-header');
 
 export default class JPad {
   container = Selector(dataComp('key-rules-editor'));
+
+  defaultValueInput = this.container.find(dataComp('default-value'));
+
   sourceTab = this.container.find(tabHeader('source'));
   rulesTab = this.container.find(tabHeader('rules'));
 

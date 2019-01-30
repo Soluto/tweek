@@ -26,16 +26,12 @@ export default class KeysPage {
         .find(attributeSelector('data-folder-name', folder))
         .withAttribute('data-is-collapsed', 'true');
 
-      if (await collapesDirectory.visible) {
+      if ((await collapesDirectory.exists) && (await collapesDirectory.visible)) {
         await t.click(collapesDirectory);
       }
     }
 
-    const link = this.directoryTreeView.find(attributeSelector('href', `/keys/${keyName}`));
-
-    await t.expect(link.visible).ok();
-
-    return link;
+    return this.directoryTreeView.find(attributeSelector('href', `/keys/${keyName}`));
   }
 
   async openKey(keyName) {
@@ -43,6 +39,8 @@ export default class KeysPage {
     const editKey = new EditKey();
 
     await t
+      .expect(link.visible)
+      .ok()
       .click(link)
       .expect(editKey.container.visible)
       .ok();
