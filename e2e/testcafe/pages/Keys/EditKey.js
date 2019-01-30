@@ -3,9 +3,16 @@ import { dataComp, dataField } from '../../utils/selector-utils';
 import JPad from './JPad';
 import TagInput from './TagInput';
 
-class Dependencies {
+class Expander {
+  constructor(component) {
+    this.container = Selector(dataComp(component));
+    this.toggleButton = this.container.find(dataComp('expander-toggle'));
+  }
+}
+
+class Dependencies extends Expander {
   constructor(type) {
-    this.container = Selector(dataComp(type));
+    super(type);
     this.link = this.container.find('a');
   }
 
@@ -14,14 +21,9 @@ class Dependencies {
   }
 }
 
-class Aliases {
-  container = Selector(dataComp('aliases'));
-}
-
-class Expander {
-  constructor(component) {
-    this.component = component;
-    this.toggleButton = this.component.container.find(dataComp('expander-toggle'));
+class Aliases extends Expander {
+  constructor() {
+    super('aliases');
   }
 }
 
@@ -46,9 +48,9 @@ export default class EditKey {
   tagsInput = new TagInput(this.tags);
   tagSuggestion = this.tags.find('.tags-suggestion ul li');
 
-  dependsOn = new Expander(new Dependencies('depends-on'));
-  usedBy = new Expander(new Dependencies('used-by'));
-  aliases = new Expander(new Aliases());
+  dependsOn = new Dependencies('depends-on');
+  usedBy = new Dependencies('used-by');
+  aliases = new Aliases();
 
   jpad = new JPad();
 
