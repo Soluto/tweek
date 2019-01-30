@@ -1,7 +1,6 @@
 import { t } from 'testcafe';
 import { editorUrl } from '../../utils/constants';
 import { credentials, login } from '../../utils/auth-utils';
-import { waitFor } from '../../utils/assertion-utils';
 import { getLocation } from '../../utils/location-utils';
 import { waitForKeyToBeDeleted } from '../../clients/tweek-clients';
 import KeysPage from '../../pages/Keys';
