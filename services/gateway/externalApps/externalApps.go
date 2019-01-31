@@ -94,10 +94,6 @@ func Init(cfg *appConfig.PolicyStorage) {
 		logrus.WithError(err).Panic("External apps init error")
 	}
 
-	subscription, err := nc.Subscribe("version", refreshApps(cfg))
-	repo.natsSubscription = subscription
-	runtime.SetFinalizer(&repo, finilizer)
-
 	for i := 0; ; i++ {
 		_, err := repo.minioClient.GetObject(cfg.MinioBucketName, "version.json", minio.GetObjectOptions{})
 		if err == nil {
@@ -109,6 +105,10 @@ func Init(cfg *appConfig.PolicyStorage) {
 			time.Sleep(2 * time.Second)
 		}
 	}
+
+	subscription, err := nc.Subscribe("version", refreshApps(cfg))
+	repo.natsSubscription = subscription
+	runtime.SetFinalizer(&repo, finilizer)
 
 	refreshApps(cfg)(&nats.Msg{})
 }
