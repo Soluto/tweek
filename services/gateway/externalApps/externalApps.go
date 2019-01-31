@@ -98,7 +98,7 @@ func Init(cfg *appConfig.PolicyStorage) {
 	repo.natsSubscription = subscription
 	runtime.SetFinalizer(&repo, finilizer)
 
-	refreshApps(cfg)
+	refreshApps(cfg)(&nats.Msg{})
 }
 
 func refreshApps(cfg *appConfig.PolicyStorage) nats.MsgHandler {
