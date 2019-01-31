@@ -95,12 +95,12 @@ func Init(cfg *appConfig.PolicyStorage) {
 	}
 
 	for i := 0; ; i++ {
-		obj, err := repo.minioClient.GetObject(cfg.MinioBucketName, "version.json", minio.GetObjectOptions{})
-		if err != nil {
+		obj, err := repo.minioClient.GetObject(cfg.MinioBucketName, "versions", minio.GetObjectOptions{})
+		if err == nil {
 			_, err = ioutil.ReadAll(obj)
 		}
 		if err == nil {
-			logrus.Infoln("version.json is available")
+			logrus.Infoln("versions file is available")
 			break
 		} else {
 			if i > 10 {
