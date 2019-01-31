@@ -93,8 +93,6 @@ test('should succeed editing other value types', async (t) => {
   } = await editKey.jpad.getSource();
   const { Salt: firstSalt, ...ruleSource } = firstRuleSource;
 
-  console.log('ruleSource', firstSalt, ruleSource);
-
   await t
     .expect(firstSalt)
     .ok()

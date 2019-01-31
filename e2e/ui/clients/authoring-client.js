@@ -1,27 +1,58 @@
-import nconf from 'nconf';
 import { expect } from 'chai';
-import AuthenticatedClient from './AuthenticatedClient';
+import { waitFor } from '../utils/assertion-utils';
+import { tweekManagementClient } from './tweek-clients';
 
-class AuthoringClient extends AuthenticatedClient {
-  constructor() {
-    super(nconf.get('AUTHORING_URL'));
-  }
+export const deleteKey = async (keyPath) => {
+  await tweekManagementClient.deleteKey(keyPath);
+  await waitForKeyToBeDeleted(keyPath);
+};
 
-  getKey(key) {
-    return this._get(`api/keys/${key}`);
-  }
+export const waitForKeyToBeDeleted = async (keyPath) => {
+  await waitFor(async () => {
+    try {
+      await tweekManagementClient.getKeyDefinition(keyPath);
+    } catch (e) {
+      return;
+    }
+    throw new Error(`key '${keyPath}' still exists`);
+  });
+};
 
-  waitForKeyToBeDeleted(key) {
-    const timeout = 5000;
-    browser.waitToPass(
-      () => expect(() => this.getKey(key), `key still exists after ${timeout}ms`).to.throw(),
-      timeout,
-    );
-  }
+export const emptyJpad = (valueType = 'string') => ({
+  partitions: [],
+  valueType,
+  rules: [],
+});
 
-  eventuallyExpectKey(key, assertion) {
-    browser.waitToPass(() => assertion(this.getKey(key)), 15000);
-  }
-}
+export const jpadManifest = (key_path, valueType = 'string') => ({
+  key_path,
+  valueType,
+  meta: {
+    name: key_path,
+    tags: [],
+    description: '',
+  },
+  implementation: {
+    type: 'file',
+    format: 'jpad',
+  },
+  dependencies: [],
+});
 
-export default new AuthoringClient();
+export const createEmptyKey = async (keyPath, valueType = 'string') => {
+  const implementation = emptyJpad(valueType);
+
+  await tweekManagementClient.saveKeyDefinition(keyPath, {
+    manifest: jpadManifest(keyPath, valueType),
+    implementation: JSON.stringify(implementation),
+  });
+
+  await waitForImplementation(keyPath, implementation);
+};
+
+export const waitForImplementation = async (keyPath, expected) => {
+  await waitFor(async () => {
+    const { implementation } = await tweekManagementClient.getKeyDefinition(keyPath);
+    expect(JSON.parse(implementation)).to.deep.equal(expected);
+  });
+};

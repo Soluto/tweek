@@ -1,15 +1,13 @@
-FROM node:8.9.3
+FROM testcafe/testcafe
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends jq && \
-    apt-get clean && \
-    wget https://raw.githubusercontent.com/vishnubob/wait-for-it/8ed92e8cab83cfed76ff012ed4a36cef74b28096/wait-for-it.sh && \
-    chmod +x wait-for-it.sh
+ENV SCREEN_WIDTH=1280
+ENV SCREEN_HEIGHT=720
+EXPOSE 1337 1338
 
-WORKDIR /opt/app
-COPY package.json yarn.lock ./
-RUN yarn install --production
+USER root
 
-COPY . ./
+COPY package.json yarn.lock /tests/
+RUN cd /tests && npm i --production
+COPY . /tests
 
-CMD ["./test.sh"]
+USER user

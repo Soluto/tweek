@@ -1,28 +1,10 @@
-/* global browser */
-import { dataComp, attributeSelector } from './selector-utils';
-const nconf = require('nconf');
+import { dataComp } from './selector-utils';
 
-const timeout = 5000;
+export const credentials = {
+  username: 'admin-app',
+  password: '8v/iUG0vTH4BtVgkSn3Tng==',
+};
 
-const editorUrl = nconf.get('GATEWAY_URL');
-
-const mockAuth = dataComp('mock');
-const username = 'user';
-const password = 'pwd';
-const usernameComp = '#Username';
-const passwordComp = '#Password';
-const loginComp = '[value = "login"]';
-const confirmComp = '[value = "yes"]';
-const rememberConsent = '#RememberConsent';
-
-export const login = () => {
-  browser.url(editorUrl);
-  browser.clickWhenVisible(mockAuth, timeout);
-  browser.waitForVisible(usernameComp, timeout);
-  browser.setValue(usernameComp, username);
-  browser.setValue(passwordComp, password);
-  browser.clickWhenVisible(loginComp);
-  browser.clickWhenVisible(rememberConsent, timeout);
-  browser.clickWhenVisible(confirmComp, timeout);
-  browser.pause(1000);
+export const login = async (t) => {
+  await t.click(dataComp('Basic Auth Login'));
 };
