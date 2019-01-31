@@ -8,13 +8,13 @@ import (
 	"errors"
 	"io/ioutil"
 	"runtime"
+	"time"
 	"tweek-gateway/appConfig"
 
 	minio "github.com/minio/minio-go"
 	nats "github.com/nats-io/go-nats"
-	"golang.org/x/crypto/pbkdf2"
-
 	"github.com/sirupsen/logrus"
+	"golang.org/x/crypto/pbkdf2"
 )
 
 // ExternalApp - type to store external app info
@@ -97,6 +97,18 @@ func Init(cfg *appConfig.PolicyStorage) {
 	subscription, err := nc.Subscribe("version", refreshApps(cfg))
 	repo.natsSubscription = subscription
 	runtime.SetFinalizer(&repo, finilizer)
+
+	for i := 0; ; i++ {
+		_, err := repo.minioClient.GetObject(cfg.MinioBucketName, "version.json", minio.GetObjectOptions{})
+		if err == nil {
+			break
+		} else {
+			if i > 10 {
+				logrus.WithError(err).Panic("no version.json in minio")
+			}
+			time.Sleep(2 * time.Second)
+		}
+	}
 
 	refreshApps(cfg)(&nats.Msg{})
 }
