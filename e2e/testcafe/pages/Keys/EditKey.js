@@ -1,9 +1,8 @@
 import { Selector, t } from 'testcafe';
-import { dataComp, dataField } from '../../utils/selector-utils';
+import { attributeSelector, dataComp, dataField } from '../../utils/selector-utils';
 import JPad from './JPad';
 import TagInput from './TypedInput/TagInput';
 import ConstValue from './ConstValue';
-import { attributeSelector } from '../../../ui/utils/selector-utils';
 
 class Expander {
   constructor(component) {

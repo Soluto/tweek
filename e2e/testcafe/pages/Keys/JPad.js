@@ -1,8 +1,8 @@
+import { Selector, t } from 'testcafe';
 import { attributeSelector, dataComp, dataField } from '../../utils/selector-utils';
-import { Selector } from 'testcafe';
-import ObjectEditor from './ObjectEditor';
 import NewRule from './Rules/NewRule';
 import Rule from './Rules/Rule';
+import ObjectEditor from './ObjectEditor';
 import TypedInput from './TypedInput';
 import TagInput from './TypedInput/TagInput';
 
@@ -47,6 +47,23 @@ export default class JPad {
 
   partitionGroup(values) {
     return new PartitionGroup(values);
+  }
+
+  async getSource(stayOnSourceTab) {
+    await t.click(this.sourceTab);
+    const source = await this.sourceEditor.getSource();
+    if (!stayOnSourceTab) {
+      await t.click(this.rulesTab);
+    }
+    return source;
+  }
+
+  async setSource(source, stayOnSourceTab) {
+    await t.click(this.sourceTab);
+    await this.sourceEditor.setSource(source);
+    if (!stayOnSourceTab) {
+      await t.click(this.rulesTab);
+    }
   }
 
   rulesCount = Rule.ruleContainer.count;

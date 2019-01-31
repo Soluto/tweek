@@ -1,7 +1,7 @@
 import { t } from 'testcafe';
 import { dataComp } from '../../../utils/selector-utils';
-import ObjectEditor from '../ObjectEditor';
 import Alert from '../../Alert';
+import ObjectEditor from '../ObjectEditor';
 
 export default class ObjectInput {
   constructor(container) {

@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { expect } from 'chai';
 import * as R from 'ramda';
 import { tweekManagementClient } from './tweek-clients';
 
@@ -24,7 +24,7 @@ export async function getFixedKeys(type, id) {
 export function assertFixedKeysEqual(identityType, identityId, expected) {
   return async () => {
     const fixedKeys = await getFixedKeys(identityType, identityId);
-    assert.deepStrictEqual(fixedKeys, expected);
+    expect(fixedKeys).to.deep.equal(expected);
   };
 }
 
@@ -36,6 +36,6 @@ export async function getProperties(type, id) {
 export function assertPropertiesEqual(identityType, identityId, expected) {
   return async () => {
     const properties = await getProperties(identityType, identityId);
-    assert.deepStrictEqual(properties, expected);
+    expect(properties).to.deep.equal(expected);
   };
 }

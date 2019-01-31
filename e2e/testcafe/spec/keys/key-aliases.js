@@ -2,7 +2,7 @@ import { editorUrl } from '../../utils/constants';
 import { credentials, login } from '../../utils/auth-utils';
 import { getLocation } from '../../utils/location-utils';
 import { dataField } from '../../utils/selector-utils';
-import { waitForKeyToBeDeleted } from '../../clients/tweek-clients';
+import { waitForKeyToBeDeleted } from '../../clients/authoring-client';
 import EditKey from '../../pages/Keys/EditKey';
 import Alert from '../../pages/Alert';
 import KeysPage from '../../pages/Keys';

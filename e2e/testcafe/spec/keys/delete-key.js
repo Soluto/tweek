@@ -2,7 +2,7 @@ import { t } from 'testcafe';
 import { editorUrl } from '../../utils/constants';
 import { credentials, login } from '../../utils/auth-utils';
 import { getLocation } from '../../utils/location-utils';
-import { waitForKeyToBeDeleted } from '../../clients/tweek-clients';
+import { waitForKeyToBeDeleted } from '../../clients/authoring-client';
 import KeysPage from '../../pages/Keys';
 import EditKey from '../../pages/Keys/EditKey';
 import Alert from '../../pages/Alert';
@@ -83,7 +83,7 @@ test('should not delete key if alert was not accepted', async (t) => {
 
   await t
     .click(editKey.deleteButton)
-    .click(alert.background, { offsetX: -5, offsetY: -5 })
+    .click(alert.background, { offsetX: -200, offsetY: -200 })
     .expect(alert.background.exists)
     .notOk()
     .expect(getLocation())

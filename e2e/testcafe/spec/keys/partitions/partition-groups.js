@@ -27,24 +27,21 @@ test('should add new partition group', async (t) => {
     await t.click(editKey.jpad.newPartition.addButton);
   }
 
-  await t
-    .click(editKey.jpad.sourceTab)
-    .expect(await editKey.jpad.sourceEditor.getSource())
-    .eql({
-      partitions: ['user.FavoriteFruit', 'user.FatherName'],
-      valueType: 'string',
-      rules: {
-        Banana: {
-          '*': [],
-        },
-        Orange: {
-          Rick: [],
-        },
-        '*': {
-          Morty: [],
-        },
+  await t.expect(await editKey.jpad.getSource(false)).eql({
+    partitions: ['user.FavoriteFruit', 'user.FatherName'],
+    valueType: 'string',
+    rules: {
+      Banana: {
+        '*': [],
       },
-    });
+      Orange: {
+        Rick: [],
+      },
+      '*': {
+        Morty: [],
+      },
+    },
+  });
 });
 
 test('should delete group rules when deleting partition group', async (t) => {
@@ -52,31 +49,30 @@ test('should delete group rules when deleting partition group', async (t) => {
 
   await t
     .click(editKey.jpad.partitionGroup(['banana', 'default']).deleteButton)
-    .click(alert.okButton)
-    .click(editKey.jpad.sourceTab)
-    .expect(await editKey.jpad.sourceEditor.getSource())
-    .eql({
-      partitions: ['user.FavoriteFruit', 'user.Gender'],
-      valueType: 'string',
-      rules: {
-        Banana: {
-          male: [
-            {
-              Matcher: {},
-              Value: 'someValue',
-              Type: 'SingleVariant',
-            },
-          ],
-        },
-        '*': {
-          '*': [
-            {
-              Matcher: {},
-              Value: 'otherDefaultValue',
-              Type: 'SingleVariant',
-            },
-          ],
-        },
+    .click(alert.okButton);
+
+  await t.expect(await editKey.jpad.getSource(false)).eql({
+    partitions: ['user.FavoriteFruit', 'user.Gender'],
+    valueType: 'string',
+    rules: {
+      Banana: {
+        male: [
+          {
+            Matcher: {},
+            Value: 'someValue',
+            Type: 'SingleVariant',
+          },
+        ],
       },
-    });
+      '*': {
+        '*': [
+          {
+            Matcher: {},
+            Value: 'otherDefaultValue',
+            Type: 'SingleVariant',
+          },
+        ],
+      },
+    },
+  });
 });

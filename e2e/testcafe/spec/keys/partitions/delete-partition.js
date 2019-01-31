@@ -14,14 +14,11 @@ fixture`Delete Partition`.page`${editorUrl}/keys/behavior_tests/partitions/delet
   });
 
 test('should clear rules after partition is deleted', async (t) => {
-  await t
-    .click(editKey.jpad.partitions.deleteButton.nth(0))
-    .click(alert.okButton)
-    .click(editKey.jpad.sourceTab)
-    .expect(await editKey.jpad.sourceEditor.getSource())
-    .eql({
-      partitions: [],
-      valueType: 'string',
-      rules: [],
-    });
+  await t.click(editKey.jpad.partitions.deleteButton.nth(0)).click(alert.okButton);
+
+  await t.expect(await editKey.jpad.getSource(false)).eql({
+    partitions: [],
+    valueType: 'string',
+    rules: [],
+  });
 });

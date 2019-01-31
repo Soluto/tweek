@@ -3,6 +3,8 @@ import { credentials, login } from '../../utils/auth-utils';
 import { editorUrl } from '../../utils/constants';
 import { getLocation } from '../../utils/location-utils';
 import { waitFor } from '../../utils/assertion-utils';
+import { waitForKeyToBeDeleted } from '../../clients/authoring-client';
+import { waitForValueToEqual } from '../../clients/api-client';
 import { tweekClient } from '../../clients/tweek-clients';
 import SettingsPage from '../../pages/Settings';
 
@@ -17,17 +19,11 @@ test('add new identity with simple property and then delete', async (t) => {
   await currentIdentity.newProperty.add('Model');
   await t.click(currentIdentity.saveButton);
 
-  await waitFor(async () => {
-    const result = await tweekClient.getValues('@tweek/schema/device');
-    expect(result).to.deep.equal({ Model: { type: 'string' } });
-  });
+  await waitForValueToEqual('@tweek/schema/device', { Model: { type: 'string' } });
 
   await t.click(currentIdentity.deleteButton);
 
-  await waitFor(async () => {
-    const result = await tweekClient.getValues('@tweek/schema/_');
-    expect(result).to.not.have.property('device');
-  });
+  await waitForKeyToBeDeleted('@tweek/schema/device');
 });
 
 test('add simple property and save', async (t) => {
@@ -71,8 +67,5 @@ test('delete property and save', async (t) => {
   await t.click(currentIdentity.property('Group').deleteButton);
   await t.click(currentIdentity.saveButton);
 
-  await waitFor(async () => {
-    const result = await tweekClient.getValues('@tweek/schema/delete_property_test');
-    expect(result).to.deep.equal({});
-  });
+  await waitForValueToEqual('@tweek/schema/delete_property_test', {});
 });

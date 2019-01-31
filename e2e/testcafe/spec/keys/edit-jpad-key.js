@@ -1,8 +1,7 @@
 import { expect } from 'chai';
 import { editorUrl } from '../../utils/constants';
 import { credentials, login } from '../../utils/auth-utils';
-import { waitFor } from '../../utils/assertion-utils';
-import { tweekManagementClient } from '../../clients/tweek-clients';
+import { createEmptyKey, waitForImplementation } from '../../clients/authoring-client';
 import EditKey from '../../pages/Keys/EditKey';
 import Alert from '../../pages/Alert';
 
@@ -12,6 +11,9 @@ const alert = new Alert();
 
 test('should succeed editing JPad key', async (t) => {
   const keyName = 'behavior_tests/edit_key/visual/edit_test';
+
+  await createEmptyKey(keyName);
+
   const defaultValue = 'some default value';
 
   const editKey = await EditKey.open(keyName);
@@ -40,19 +42,13 @@ test('should succeed editing JPad key', async (t) => {
   await setCondition('user.Identities', [1, 'temp', 2]);
   await setCondition('unknown.identity', 'value');
 
-  await t
-    .expect(editKey.jpad.rulesCount)
-    .eql(2)
-    .click(editKey.jpad.sourceTab)
-    .expect(await editKey.jpad.sourceEditor.getSource())
-    .eql(expectedKeySource);
+  await t.expect(editKey.jpad.rulesCount).eql(2);
+
+  await t.expect(await editKey.jpad.getSource(true)).eql(expectedKeySource);
 
   await editKey.commitChanges();
 
-  await waitFor(async () => {
-    const { implementation } = await tweekManagementClient.getKeyDefinition(keyName);
-    expect(JSON.parse(implementation)).to.deep.equal(expectedKeySource);
-  });
+  await waitForImplementation(keyName, expectedKeySource);
 });
 
 test('should succeed in editing an object JPad key', async (t) => {
@@ -72,10 +68,9 @@ test('should succeed in editing an object JPad key', async (t) => {
   await t
     .expect(editKey.jpad.defaultValue.objectInput.alert.saveButton.disabled)
     .notOk()
-    .click(editKey.jpad.defaultValue.objectInput.alert.saveButton)
-    .click(editKey.jpad.sourceTab)
-    .expect(await editKey.jpad.sourceEditor.getSource())
-    .eql(expectedObjectKeySource);
+    .click(editKey.jpad.defaultValue.objectInput.alert.saveButton);
+
+  await t.expect(await editKey.jpad.getSource(true)).eql(expectedObjectKeySource);
 });
 
 test('should succeed in editing an array JPad key', async (t) => {
@@ -95,40 +90,30 @@ test('should succeed in editing an array JPad key', async (t) => {
   await t
     .expect(editKey.jpad.defaultValue.objectInput.alert.saveButton.disabled)
     .notOk()
-    .click(editKey.jpad.defaultValue.objectInput.alert.saveButton)
-    .click(editKey.jpad.sourceTab)
-    .expect(await editKey.jpad.sourceEditor.getSource())
-    .eql(expectedObjectKeySource);
+    .click(editKey.jpad.defaultValue.objectInput.alert.saveButton);
+
+  await t.expect(await editKey.jpad.getSource(true)).eql(expectedObjectKeySource);
 });
 
 test('should succeed editing JPad source', async (t) => {
-  const editKey = await EditKey.open('behavior_tests/edit_key/text/edit_test');
+  const keyName = 'behavior_tests/edit_key/text/edit_test';
+
+  const editKey = await EditKey.open(keyName);
+
+  await editKey.jpad.setSource(JSON.stringify(expectedKeySource, null, 4));
+
+  await t.expect(editKey.jpad.rule().container.visible).ok();
+
+  await t.expect(await editKey.jpad.getSource(true)).eql(expectedKeySource);
+
+  await editKey.jpad.setSource('invalid json');
 
   await t
-    .click(editKey.jpad.sourceTab)
-    .expect(editKey.jpad.sourceEditor.monaco.visible)
-    .ok();
-
-  await editKey.jpad.sourceEditor.setSource(JSON.stringify(expectedKeySource, null, 4));
-
-  await t
-    .click(editKey.jpad.rulesTab)
-    .expect(editKey.jpad.rule().container.visible)
-    .ok()
-    .click(editKey.jpad.sourceTab)
-    .expect(await editKey.jpad.sourceEditor.getSource())
-    .eql(expectedKeySource);
-
-  await editKey.jpad.sourceEditor.setSource('invalid json');
-
-  await t
-    .click(editKey.jpad.rulesTab)
     .click(alert.okButton)
     .expect(editKey.jpad.rule().container.visible)
-    .ok()
-    .click(editKey.jpad.sourceTab)
-    .expect(await editKey.jpad.sourceEditor.getSource())
-    .eql(expectedKeySource);
+    .ok();
+
+  await t.expect(await editKey.jpad.getSource(true)).eql(expectedKeySource);
 });
 
 const expectedKeySource = {

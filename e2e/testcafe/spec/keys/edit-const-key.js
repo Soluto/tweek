@@ -6,6 +6,7 @@ import { waitFor } from '../../utils/assertion-utils';
 import { attributeSelector } from '../../utils/selector-utils';
 import { tweekClient } from '../../clients/tweek-clients';
 import EditKey from '../../pages/Keys/EditKey';
+import { waitForValueToEqual } from '../../clients/api-client';
 
 const constKeyFolder = 'behavior_tests/edit_key/visual/const';
 
@@ -19,10 +20,7 @@ test('should succeed editing key (valueType=number)', async (t) => {
 
   await editKey.commitChanges();
 
-  await waitFor(async () => {
-    const result = await tweekClient.getValues(keyName);
-    expect(result).to.equal(30);
-  });
+  await waitForValueToEqual(keyName, 30);
 });
 
 test('should succeed editing key (valueType=string)', async (t) => {
@@ -33,10 +31,7 @@ test('should succeed editing key (valueType=string)', async (t) => {
 
   await editKey.commitChanges();
 
-  await waitFor(async () => {
-    const result = await tweekClient.getValues(keyName);
-    expect(result).to.equal('world');
-  });
+  await waitForValueToEqual(keyName, 'world');
 });
 
 test('should succeed editing key (valueType=object)', async (t) => {
@@ -55,10 +50,7 @@ test('should succeed editing key (valueType=object)', async (t) => {
 
   await editKey.commitChanges();
 
-  await waitFor(async () => {
-    const result = await tweekClient.getValues(keyName);
-    expect(result).to.deep.equal(objectValue);
-  });
+  await waitForValueToEqual(keyName, objectValue);
 });
 
 test('should succeed editing key (valueType=date)', async (t) => {
@@ -76,8 +68,5 @@ test('should succeed editing key (valueType=date)', async (t) => {
 
   await editKey.commitChanges();
 
-  await waitFor(async () => {
-    const result = await tweekClient.getValues(keyName);
-    expect(result).to.equal(desiredDateFormatted);
-  });
+  await waitForValueToEqual(keyName, desiredDateFormatted);
 });

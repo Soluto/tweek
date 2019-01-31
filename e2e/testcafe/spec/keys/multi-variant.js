@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { editorUrl } from '../../utils/constants';
 import { credentials, login } from '../../utils/auth-utils';
 import KeysPage from '../../pages/Keys';
@@ -29,32 +28,27 @@ test('should succeed editing boolean value type', async (t) => {
   await t.click(rule.newCondition.deleteButton);
   const multiVariantValue = await rule.toMultiVariant();
 
-  await t
-    .typeText(multiVariantValue.identity, 'user', { replace: true })
-    .click(editKey.jpad.sourceTab);
+  await t.typeText(multiVariantValue.identity, 'user', { replace: true });
 
   const {
-    rules: [ruleSource],
-  } = await editKey.jpad.sourceEditor.getSource();
+    rules: [firstRuleSource],
+  } = await editKey.jpad.getSource();
+  const { Salt: firstSalt, ...ruleSource } = firstRuleSource;
 
-  expect(ruleSource).to.have.property('Salt');
-
-  const salt = ruleSource.Salt;
-  expect(salt).to.not.equal('');
-  delete ruleSource.Salt;
-
-  expect(ruleSource).to.deep.equal(expectedValue);
-
-  await t.click(editKey.jpad.rulesTab);
+  await t
+    .expect(firstSalt)
+    .ok()
+    .expect(ruleSource)
+    .eql(expectedValue);
 
   await multiVariantValue.toSingleValue();
   await rule.toMultiVariant();
 
-  await t.click(editKey.jpad.sourceTab);
   const {
-    rules: [newRuleSource],
-  } = await editKey.jpad.sourceEditor.getSource();
-  expect(newRuleSource.Salt).to.equal(salt);
+    rules: [{ Salt: newSalt }],
+  } = await editKey.jpad.getSource(true);
+
+  await t.expect(newSalt).eql(firstSalt);
 });
 
 test('should succeed editing other value types', async (t) => {
@@ -92,30 +86,27 @@ test('should succeed editing other value types', async (t) => {
   const multiVariantValue = await rule.toMultiVariant();
   await multiVariantValue.setValues(args);
 
-  await t
-    .typeText(multiVariantValue.identity, 'other', { replace: true })
-    .click(editKey.jpad.sourceTab);
+  await t.typeText(multiVariantValue.identity, 'other', { replace: true });
 
   const {
-    rules: [ruleSource],
-  } = await editKey.jpad.sourceEditor.getSource();
+    rules: [firstRuleSource],
+  } = await editKey.jpad.getSource();
+  const { Salt: firstSalt, ...ruleSource } = firstRuleSource;
 
-  expect(ruleSource).to.have.property('Salt');
+  console.log('ruleSource', firstSalt, ruleSource);
 
-  const salt = ruleSource.Salt;
-  expect(salt).to.not.equal('');
-  delete ruleSource.Salt;
-
-  expect(ruleSource).to.deep.equal(expectedValue);
-
-  await t.click(editKey.jpad.rulesTab);
+  await t
+    .expect(firstSalt)
+    .ok()
+    .expect(ruleSource)
+    .eql(expectedValue);
 
   await multiVariantValue.toSingleValue();
   await rule.toMultiVariant();
 
-  await t.click(editKey.jpad.sourceTab);
   const {
-    rules: [newRuleSource],
-  } = await editKey.jpad.sourceEditor.getSource();
-  expect(newRuleSource.Salt).to.equal(salt);
+    rules: [{ Salt: newSalt }],
+  } = await editKey.jpad.getSource(true);
+
+  await t.expect(newSalt).eql(firstSalt);
 });

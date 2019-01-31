@@ -14,62 +14,55 @@ fixture`Add Partition`.page`${editorUrl}/keys/behavior_tests/partitions/add_part
   });
 
 test('should not partition if canceled', async (t) => {
-  await t.click(editKey.jpad.sourceTab);
-
-  const keySource = await editKey.jpad.sourceEditor.getSource();
-
-  await t.click(editKey.jpad.rulesTab);
+  const keySource = await editKey.jpad.getSource();
 
   await editKey.jpad.partitions.add('user.FavoriteFruit');
 
-  await t
-    .click(alert.cancelButton)
-    .click(editKey.jpad.sourceTab)
-    .expect(await editKey.jpad.sourceEditor.getSource())
-    .eql(keySource);
+  await t.click(alert.cancelButton);
+
+  await t.expect(await editKey.jpad.getSource(false)).eql(keySource);
 });
 
 test('should auto-partition correctly if auto-partition was selected', async (t) => {
   await editKey.jpad.partitions.add('user.FavoriteFruit');
-  await t
-    .click(alert.button('auto-partition'))
-    .click(editKey.jpad.sourceTab)
-    .expect(await editKey.jpad.sourceEditor.getSource())
-    .eql({
-      partitions: ['user.FavoriteFruit'],
-      valueType: 'string',
-      rules: {
-        '*': [
-          {
-            Matcher: {
-              'user.AgentVersion': {
-                $ge: '0.12.3',
-                $compare: 'version',
-              },
+
+  await t.click(alert.button('auto-partition'));
+
+  await t.expect(await editKey.jpad.getSource(false)).eql({
+    partitions: ['user.FavoriteFruit'],
+    valueType: 'string',
+    rules: {
+      '*': [
+        {
+          Matcher: {
+            'user.AgentVersion': {
+              $ge: '0.12.3',
+              $compare: 'version',
             },
-            Value: 'agentValue',
-            Type: 'SingleVariant',
           },
-          {
-            Matcher: { 'user.Gender': 'female' },
-            Value: 'femaleValue',
-            Type: 'SingleVariant',
-          },
-          {
-            Matcher: {},
-            Value: 'defaultValue',
-            Type: 'SingleVariant',
-          },
-        ],
-        Apple: [
-          {
-            Matcher: {},
-            Value: 'appleValue',
-            Type: 'SingleVariant',
-          },
-        ],
-      },
-    });
+          Value: 'agentValue',
+          Type: 'SingleVariant',
+        },
+        {
+          Matcher: { 'user.Gender': 'female' },
+          Value: 'femaleValue',
+          Type: 'SingleVariant',
+        },
+        {
+          Matcher: {},
+          Value: 'defaultValue',
+          Type: 'SingleVariant',
+        },
+      ],
+      Apple: [
+        {
+          Matcher: {},
+          Value: 'appleValue',
+          Type: 'SingleVariant',
+        },
+      ],
+    },
+  });
 });
 
 test('should not allow auto-partition if matcher is invalid', async (t) => {
@@ -80,12 +73,11 @@ test('should not allow auto-partition if matcher is invalid', async (t) => {
     .ok()
     .expect(alert.button('auto-partition').exists)
     .notOk()
-    .click(alert.okButton)
-    .click(editKey.jpad.sourceTab)
-    .expect(await editKey.jpad.sourceEditor.getSource())
-    .eql({
-      partitions: ['user.AgentVersion'],
-      valueType: 'string',
-      rules: {},
-    });
+    .click(alert.okButton);
+
+  await t.expect(await editKey.jpad.getSource(false)).eql({
+    partitions: ['user.AgentVersion'],
+    valueType: 'string',
+    rules: {},
+  });
 });
