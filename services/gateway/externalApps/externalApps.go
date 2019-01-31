@@ -100,11 +100,13 @@ func Init(cfg *appConfig.PolicyStorage) {
 			_, err = ioutil.ReadAll(obj)
 		}
 		if err == nil {
+			logrus.Infoln("version.json is available")
 			break
 		} else {
 			if i > 10 {
 				logrus.WithError(err).Panic("error reading version.json")
 			}
+			logrus.WithError(err).Infoln("retrying to read version.json")
 			time.Sleep(2 * time.Second)
 		}
 	}
