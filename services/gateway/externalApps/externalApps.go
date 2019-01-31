@@ -95,18 +95,14 @@ func Init(cfg *appConfig.PolicyStorage) {
 	}
 
 	for i := 0; ; i++ {
-		obj, err := repo.minioClient.GetObject(cfg.MinioBucketName, "versions", minio.GetObjectOptions{})
-		if err == nil {
-			_, err = ioutil.ReadAll(obj)
-		}
-		if err == nil {
-			logrus.Infoln("minio versions file is available")
+		found, _ := repo.minioClient.BucketExists(cfg.MinioBucketName)
+		if found {
 			break
 		} else {
 			if i > 10 {
-				logrus.WithError(err).Panic("error reading versions file from Minito ")
+				logrus.Panic("Minio bucket not ready")
 			}
-			logrus.WithError(err).Infoln("retrying reading versions file")
+			logrus.Infoln("retrying getting Minio bucket")
 			time.Sleep(2 * time.Second)
 		}
 	}
