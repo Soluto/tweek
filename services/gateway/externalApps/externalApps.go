@@ -95,12 +95,15 @@ func Init(cfg *appConfig.PolicyStorage) {
 	}
 
 	for i := 0; ; i++ {
-		_, err := repo.minioClient.GetObject(cfg.MinioBucketName, "version.json", minio.GetObjectOptions{})
+		obj, err := repo.minioClient.GetObject(cfg.MinioBucketName, "version.json", minio.GetObjectOptions{})
+		if err != nil {
+			_, err = ioutil.ReadAll(obj)
+		}
 		if err == nil {
 			break
 		} else {
 			if i > 10 {
-				logrus.WithError(err).Panic("no version.json in minio")
+				logrus.WithError(err).Panic("error reading version.json")
 			}
 			time.Sleep(2 * time.Second)
 		}
