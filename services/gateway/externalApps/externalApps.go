@@ -100,20 +100,20 @@ func Init(cfg *appConfig.PolicyStorage) {
 			_, err = ioutil.ReadAll(obj)
 		}
 		if err == nil {
-			logrus.Infoln("versions file is available")
+			logrus.Infoln("minio versions file is available")
 			break
 		} else {
 			if i > 10 {
-				logrus.WithError(err).Panic("error reading version.json")
+				logrus.WithError(err).Panic("error reading versions file from Minito ")
 			}
-			logrus.WithError(err).Infoln("retrying to read version.json")
+			logrus.WithError(err).Infoln("retrying reading versions file")
 			time.Sleep(2 * time.Second)
 		}
 	}
 
 	subscription, err := nc.Subscribe("version", refreshApps(cfg))
 	repo.natsSubscription = subscription
-	runtime.SetFinalizer(&repo, finilizer)
+	runtime.SetFinalizer(&repo, finalizer)
 
 	refreshApps(cfg)(&nats.Msg{})
 }
@@ -139,7 +139,7 @@ func refreshApps(cfg *appConfig.PolicyStorage) nats.MsgHandler {
 	}
 }
 
-func finilizer(r *externalAppsRepo) {
+func finalizer(r *externalAppsRepo) {
 	if r.natsSubscription != nil && r.natsSubscription.IsValid() {
 		r.natsSubscription.Unsubscribe()
 	}
