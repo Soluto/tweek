@@ -76,6 +76,14 @@ namespace Tweek.Drivers.Context.MongoDb
             await collection.FindOneAndUpdateAsync<Dictionary<string, object>>(filter, update);
         }
 
+        public async Task DeleteContext(Identity identity)
+        {
+            var id = GetKey(identity);
+            var collection = GetCollection(identity);
+            var filter = Builders<Dictionary<string, object>>.Filter.Eq("_id", id);
+            collection.DeleteOne(filter);
+        }
+
         private static Dictionary<string, object> ToObjects(Dictionary<string, JsonValue> input)
         {
             var result = new Dictionary<string, object>(input.Count);
