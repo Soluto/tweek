@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "testcafe chrome spec"
+    "test": "testcafe -S -s screenshots chrome spec"
   },
   "dependencies": {
     "chai": "^4.2.0",

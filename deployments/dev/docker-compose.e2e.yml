@@ -47,6 +47,7 @@ services:
   e2e-ui:
     build: ../../e2e/ui
     container_name: e2e-ui
+    shm_size: 2g
     volumes:
       - ../../e2e/ui:/src
     depends_on:
@@ -55,6 +56,7 @@ services:
     environment:
       - GATEWAY_URL=http://gateway
       - EDITOR_URL=http://gateway
+      - AUTH_DIGEST_CREDENTIALS=user:pwd
     command: ["-S", "-s", "/src/screenshots", "-c", "4", "chromium --headless --window-size='1280,720' --no-sandbox", "/src/spec" ]
 
   e2e-integration:
