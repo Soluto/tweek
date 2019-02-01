@@ -42,7 +42,7 @@ namespace Tweek.Drivers.Context.Couchbase
         {
             var identityKey = GetKey(identity);
             var bucket = GetOrOpenBucket();
-            var result = bucket.Remove(identityKey);
+            var result = await bucket.RemoveAsync(identityKey);
             if (!result.Success && !(result.Exception is DocumentDoesNotExistException)) throw result.Exception ?? new Exception("Error deleting context") { Data = { { "Identity_Key", identityKey } } };
         }
 
