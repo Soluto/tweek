@@ -64,7 +64,7 @@ namespace Tweek.Drivers.Context.MongoDb
             var collection = GetCollection(identity);
             var filter = Builders<Dictionary<string, object>>.Filter.Eq("_id", id);
             var result = await (await collection.FindAsync(filter)).SingleOrDefaultAsync();
-            return ConversionUtils.ToJsonValues(result);
+            return result == null ? new Dictionary<string, JsonValue>() : ConversionUtils.ToJsonValues(result);
         }
 
         public async Task RemoveFromContext(Identity identity, string key)

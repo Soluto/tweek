@@ -122,11 +122,10 @@ namespace Tweek.Drivers.ContextIntegrationTests
             await Driver.AppendContext(testIdentity, TestContext);
             var result = await Driver.GetContext(testIdentity);
             Assert.Contains(CREATION_DATE, result.Keys);
-            var creationDate = result[CREATION_DATE];
 
             await Driver.DeleteContext(testIdentity);
             result = await Driver.GetContext(testIdentity);
-            Assert.Equal(result, null);
+            Assert.Equal(0, result.Count);
         }
 
          [Fact]
