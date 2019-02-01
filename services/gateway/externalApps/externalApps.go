@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"runtime"
 	"time"
@@ -95,14 +96,21 @@ func Init(cfg *appConfig.PolicyStorage) {
 	}
 
 	for i := 0; ; i++ {
-		found, _ := repo.minioClient.BucketExists(cfg.MinioBucketName)
-		if found {
+		found, err := repo.minioClient.BucketExists(cfg.MinioBucketName)
+		if err == nil && !found {
+			err = fmt.Errorf("Minio bucket doesn't not exist")
+		}
+		if err == nil {
+			_, err = repo.minioClient.StatObject(cfg.MinioBucketName, "versions", minio.StatObjectOptions{})
+		}
+		if err == nil {
+			logrus.Infoln("Minio bucket is available")
 			break
 		} else {
 			if i > 10 {
-				logrus.Panic("Minio bucket not ready")
+				logrus.WithError(err).Panic("Minio bucket not ready")
 			}
-			logrus.Infoln("retrying getting Minio bucket")
+			logrus.WithError(err).Infoln("retrying getting Minio bucket")
 			time.Sleep(2 * time.Second)
 		}
 	}
