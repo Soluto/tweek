@@ -9,8 +9,11 @@ const basicAuthLink = Selector(dataComp('Basic Auth Login'));
 fixture`Login Page`.page`${editorUrl}`;
 
 test('should navigate to login page', async (t) => {
-  await t.expect(getLocation()).eql(`${editorUrl}/login`);
-
-  await t.expect(tweekLogo.visible).ok();
-  await t.expect(basicAuthLink.visible).ok();
+  await t
+    .expect(getLocation())
+    .eql(`${editorUrl}/login`)
+    .expect(tweekLogo.visible)
+    .ok()
+    .expect(basicAuthLink.visible)
+    .ok();
 });

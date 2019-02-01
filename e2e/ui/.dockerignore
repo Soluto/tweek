@@ -1,5 +1,7 @@
 .git/
 node_modules
+screenshots
 
+.gitignore
 .dockerignore
 Dockerfile

@@ -30,7 +30,7 @@ export default class KeysPage {
     for (const folder of keyFolders) {
       const directory = this.directoryTreeView.find(attributeSelector('data-folder-name', folder));
       if (force) {
-        await t.expect(directory.exists).ok();
+        await t.expect(directory.exists).ok(`directory ${folder} is not visible`);
       }
 
       const collapsedDirectory = directory.withAttribute('data-is-collapsed', 'true');
@@ -52,10 +52,10 @@ export default class KeysPage {
 
     await t
       .expect(link.visible)
-      .ok()
+      .ok(`expected link to ${keyName} to be visible`)
       .click(link)
       .expect(editKey.container.visible)
-      .ok();
+      .ok(`expected edit key page ${keyName} to be visible`);
 
     return editKey;
   }
@@ -66,7 +66,7 @@ export default class KeysPage {
     await t
       .click(this.addNewKeyButton)
       .expect(newKey.container.visible)
-      .ok();
+      .ok('expected new key page to be visible');
 
     return newKey;
   }
@@ -74,7 +74,7 @@ export default class KeysPage {
   async search(filter) {
     await t
       .expect(this.searchKeyInput.visible)
-      .ok()
+      .ok('expected search key input to be visible')
       .typeText(this.searchKeyInput, filter, { replace: true });
   }
 }
