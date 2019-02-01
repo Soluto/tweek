@@ -37,6 +37,14 @@ namespace Tweek.Drivers.Context.Couchbase
             if (!deleteResult.Success && deleteResult.Message != "Status code: SubDocPathNotFound [192]") throw deleteResult.Exception ?? new Exception("Error deleting context property") { Data = { { "Identity_Key", identityKey } ,{ "Property", key } } };
         }
 
+        public async Task DeleteContext(Identity identity)
+        {
+            var identityKey = GetKey(identity);
+            var bucket = GetOrOpenBucket();
+            var result = bucket.Remove(identityKey);
+            if (!result.Success && result.Message != "Status code: SubDocPathNotFound [192]") throw result.Exception ?? new Exception("Error deleting context") { Data = { { "Identity_Key", identityKey } } };
+        }
+
         public async Task AppendContext(Identity identity, Dictionary<string, JsonValue> context)
         {
             var key = GetKey(identity);
