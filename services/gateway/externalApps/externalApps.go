@@ -79,14 +79,14 @@ func compareKeys(appKey SecretKey, secretKey string) bool {
 	return hash == appKey.Hash
 }
 
-func verifyMinioReadiness(){
+func verifyMinioReadiness(mc *minio.Client, bucket string) {
 	for i := 0; ; i++ {
-		found, err := repo.minioClient.BucketExists(cfg.MinioBucketName)
+		found, err := mc.BucketExists(bucket)
 		if err == nil && !found {
 			err = fmt.Errorf("Minio bucket doesn't not exist")
 		}
 		if err == nil {
-			_, err = repo.minioClient.StatObject(cfg.MinioBucketName, "versions", minio.StatObjectOptions{})
+			_, err = mc.StatObject(bucket, "versions", minio.StatObjectOptions{})
 		}
 		if err == nil {
 			logrus.Infoln("Minio bucket is ready")
@@ -117,7 +117,7 @@ func Init(cfg *appConfig.PolicyStorage) {
 		logrus.WithError(err).Panic("External apps init error")
 	}
 
-	verifyMinioReadiness()
+	verifyMinioReadiness(client, cfg.MinioBucketName)
 
 	subscription, err := nc.Subscribe("version", refreshApps(cfg))
 	repo.natsSubscription = subscription
