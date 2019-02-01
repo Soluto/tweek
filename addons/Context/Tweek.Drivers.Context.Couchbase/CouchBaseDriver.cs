@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Couchbase;
 using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Context;
 
@@ -35,6 +36,14 @@ namespace Tweek.Drivers.Context.Couchbase
             var mutator = bucket.MutateIn<dynamic>(identityKey);
             var deleteResult = await mutator.Remove(key).ExecuteAsync();
             if (!deleteResult.Success && deleteResult.Message != "Status code: SubDocPathNotFound [192]") throw deleteResult.Exception ?? new Exception("Error deleting context property") { Data = { { "Identity_Key", identityKey } ,{ "Property", key } } };
+        }
+
+        public async Task DeleteContext(Identity identity)
+        {
+            var identityKey = GetKey(identity);
+            var bucket = GetOrOpenBucket();
+            var result = await bucket.RemoveAsync(identityKey);
+            if (!result.Success && !(result.Exception is DocumentDoesNotExistException)) throw result.Exception ?? new Exception("Error deleting context") { Data = { { "Identity_Key", identityKey } } };
         }
 
         public async Task AppendContext(Identity identity, Dictionary<string, JsonValue> context)
@@ -81,12 +90,5 @@ namespace Tweek.Drivers.Context.Couchbase
             throw new AggregateException(document.Exception ?? new Exception(document.Message),
                                           replica.Exception ?? new Exception(replica.Message));
         }
-
-        public async Task RemoveIdentityContext(Identity identity)
-        {
-            await GetOrOpenBucket().RemoveAsync(GetKey(identity));
-        }
-
-
     }
 }
