@@ -104,7 +104,7 @@ func Init(cfg *appConfig.PolicyStorage) {
 			_, err = repo.minioClient.StatObject(cfg.MinioBucketName, "versions", minio.StatObjectOptions{})
 		}
 		if err == nil {
-			logrus.Infoln("Minio bucket is available")
+			logrus.Infoln("Minio bucket is ready")
 			break
 		} else {
 			if i > 10 {
