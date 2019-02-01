@@ -146,6 +146,7 @@ steps:
     composition_candidates:
       e2e-ui:
         image: ${{BuildingUITests}}
+        shm_size: 2g 
         depends_on: 
           - editor
           - gateway
