@@ -55,7 +55,7 @@ services:
     environment:
       - GATEWAY_URL=http://gateway
       - EDITOR_URL=http://gateway
-    command: ["-S", "-s", "/src/screenshots", "-c", "6", "chromium --headless --window-size='1280,720' -no-sandbox", "/src/spec" ]
+    command: ["-S", "-s", "/src/screenshots", "-c", "4", "chromium --headless --window-size='1280,720' --no-sandbox", "/src/spec" ]
 
   e2e-integration:
     build: ../../e2e/integration

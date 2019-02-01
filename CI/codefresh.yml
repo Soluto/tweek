@@ -153,7 +153,7 @@ steps:
         environment:
           - GATEWAY_URL=http://gateway
           - EDITOR_URL=http://gateway
-        command: [ "-c", "6", "chromium --headless --window-size='1280,720' -no-sandbox", "/src/spec" ]
+        command: [ "-c", "4", "chromium --headless --window-size='1280,720' --no-sandbox", "/src/spec" ]
 
     on_success:
       metadata:

@@ -2,8 +2,8 @@ FROM testcafe/testcafe
 
 USER root
 
-COPY package.json yarn.lock /tests/
-RUN cd /tests && npm i --production
-COPY . /tests
+COPY package.json yarn.lock /src/
+RUN cd /src && npm i --production
+COPY . /src
 
 USER user
