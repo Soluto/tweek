@@ -77,25 +77,6 @@ namespace Tweek.ApiService.Controllers
             return Ok();
         }
 
-        /// <summary>
-        /// Delete identity from context db
-        /// </summary>
-        /// <param name="identityType">the type of the identity - for example user</param>
-        /// <param name="identityId">the identifier of the identity to delete - for example jaime</param>
-        /// <returns>Result status</returns>
-        /// <response code="200">Success</response>
-        /// <response code="403">Access denied</response>
-        [HttpDelete("{identityType}/{identityId}")]
-        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden)]
-        public async Task<ActionResult> DeleteContext([FromRoute] string identityType, [FromRoute] string identityId)
-        {
-            if (!_checkAccess(User, new Identity(identityType, identityId))) return Forbid();
-            var identity = new Identity(identityType, identityId);
-            await _contextDriver.DeleteContext(identity);
-            return Ok();
-        }
-
         [HttpGet("{identityType}/{identityId}")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult> GetContext([FromRoute] string identityType, [FromRoute] string identityId)

@@ -57,11 +57,6 @@ namespace Tweek.Engine.Tests.TestDrivers
             var currentContext = _dictionary[identity];
             currentContext.Remove(key);
         }
-
-        public async Task DeleteContext(Identity identity)
-        {
-            _dictionary.Remove(identity);
-        }
     }
 
     internal class InMemoryTestDriver : ITestDriver

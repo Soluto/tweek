@@ -31,7 +31,6 @@
     "bluebird": "^3.5.1",
     "fast-json-patch": "^2.0.6",
     "minio": "^4.0.0",
-    "node-fetch": "^2.0.0",
-    "uuid": "^3.3.2"
+    "node-fetch": "^2.0.0"
   }
 }

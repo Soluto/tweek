@@ -43,12 +43,6 @@ namespace Tweek.ApiService.Tests
             return Task.CompletedTask;
         }
 
-        public Task DeleteContext(Identity identity)
-        {
-            _data.Remove(GetKey(identity));
-            return Task.CompletedTask;
-        }
-
         private static Dictionary<string, JsonValue> Merge(Dictionary<string, JsonValue> item, Dictionary<string, JsonValue> context)
         {
             var result = new Dictionary<string,JsonValue>();

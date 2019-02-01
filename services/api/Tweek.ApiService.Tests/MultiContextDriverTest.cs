@@ -97,13 +97,5 @@ namespace Tweek.ApiService.Tests
             A.CallTo(() => _someOtherFakeDriver.RemoveFromContext(A<Identity>.That.IsEqualTo(_fakeIdentity), A<string>.That.IsEqualTo("some_key"))).MustHaveHappened();
         }
         
-        [Fact]
-        public async Task GivenMockReadersAndWriters_DeleteContextCalled_DoesntThrow()
-        {
-            Setup();
-            await _multiContextDriver.DeleteContext(_fakeIdentity);
-            A.CallTo(() => _someFakeDriver.DeleteContext(A<Identity>.That.IsEqualTo(_fakeIdentity))).MustHaveHappened();
-            A.CallTo(() => _someOtherFakeDriver.DeleteContext(A<Identity>.That.IsEqualTo(_fakeIdentity))).MustHaveHappened();
-        }        
     }
 }

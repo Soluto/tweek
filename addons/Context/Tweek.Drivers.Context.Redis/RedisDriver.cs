@@ -89,12 +89,5 @@ namespace Tweek.Drivers.Context.Redis
             var id = GetKey(identity);
             await db.HashDeleteAsync(id, key);
         }
-
-        public async Task DeleteContext(Identity identity)
-        {
-            var db = mRedisConnection.GetDatabase();
-            var id = GetKey(identity);
-            await db.KeyDeleteAsync(id);
-        }
     }
 }

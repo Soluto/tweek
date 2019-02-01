@@ -59,10 +59,5 @@ namespace Tweek.ApiService.MultiContext
         {
             await Task.WhenAll(_writers.Select(contextDriver => contextDriver.RemoveFromContext(identity, key)));
         }
-
-        public async Task DeleteContext(Identity identity)
-        {
-            await Task.WhenAll(_writers.Select(contextDriver => contextDriver.DeleteContext(identity)));
-        }
     }
 }

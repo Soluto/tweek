@@ -17,7 +17,6 @@ namespace Tweek.ApiService.Metrics
         private readonly TimerOptions _getContextTimer;
         private readonly TimerOptions _appendContextTimer;
         private readonly TimerOptions _removeContextTimer;
-        private readonly TimerOptions _deleteTimer;
 
         public TimedContextDriver(IContextDriver contextDriver, IMetrics metrics, string timerContext = "ContextDriver")
         {
@@ -26,7 +25,6 @@ namespace Tweek.ApiService.Metrics
             _getContextTimer = timerContext.GetTimer("Get");
             _appendContextTimer = timerContext.GetTimer("Append");
             _removeContextTimer = timerContext.GetTimer("Remove");
-            _deleteTimer = timerContext.GetTimer("Delete");
         }
 
         public async Task<Dictionary<string, JsonValue>> GetContext(Identity identity)
@@ -50,14 +48,6 @@ namespace Tweek.ApiService.Metrics
             using (_metrics.Measure.Timer.Time(_removeContextTimer))
             {
                 await _contextDriver.RemoveFromContext(identity, key);
-            }
-        }
-
-        public async Task DeleteContext(Identity identity)
-        {
-            using (_metrics.Measure.Timer.Time(_deleteTimer))
-            {
-                await _contextDriver.DeleteContext(identity);
             }
         }
     }

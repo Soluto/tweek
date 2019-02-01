@@ -9,6 +9,5 @@ namespace Tweek.Engine.Drivers.Context
     {
         Task AppendContext(Identity identity, Dictionary<string, JsonValue> context);
         Task RemoveFromContext(Identity identity, string key);
-        Task DeleteContext(Identity identity);
     }
 }
