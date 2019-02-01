@@ -79,22 +79,7 @@ func compareKeys(appKey SecretKey, secretKey string) bool {
 	return hash == appKey.Hash
 }
 
-// Init - function to init external apps
-func Init(cfg *appConfig.PolicyStorage) {
-	logrus.Info("Initializing external apps...")
-	repo = externalAppsRepo{}
-
-	client, err := minio.New(cfg.MinioEndpoint, cfg.MinioAccessKey, cfg.MinioSecretKey, cfg.MinioUseSSL)
-	if err != nil {
-		logrus.WithError(err).Panic("External apps init error")
-	}
-	repo.minioClient = client
-
-	nc, err := nats.Connect(cfg.NatsEndpoint)
-	if err != nil {
-		logrus.WithError(err).Panic("External apps init error")
-	}
-
+func verifyMinioReadiness(){
 	for i := 0; ; i++ {
 		found, err := repo.minioClient.BucketExists(cfg.MinioBucketName)
 		if err == nil && !found {
@@ -114,6 +99,25 @@ func Init(cfg *appConfig.PolicyStorage) {
 			time.Sleep(2 * time.Second)
 		}
 	}
+}
+
+// Init - function to init external apps
+func Init(cfg *appConfig.PolicyStorage) {
+	logrus.Info("Initializing external apps...")
+	repo = externalAppsRepo{}
+
+	client, err := minio.New(cfg.MinioEndpoint, cfg.MinioAccessKey, cfg.MinioSecretKey, cfg.MinioUseSSL)
+	if err != nil {
+		logrus.WithError(err).Panic("External apps init error")
+	}
+	repo.minioClient = client
+
+	nc, err := nats.Connect(cfg.NatsEndpoint)
+	if err != nil {
+		logrus.WithError(err).Panic("External apps init error")
+	}
+
+	verifyMinioReadiness()
 
 	subscription, err := nc.Subscribe("version", refreshApps(cfg))
 	repo.natsSubscription = subscription
