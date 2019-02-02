@@ -1,9 +1,7 @@
 const nconf = require('nconf');
 const minio = require('minio');
-const { getEnv } = require('./clients');
-const fs = require('fs');
 
-module.exports.getObjectContentFromMinio = async objectName => {
+module.exports.getObjectContentFromMinio = async (objectName) => {
   nconf.required(['MINIO_HOST', 'MINIO_PORT', 'MINIO_BUCKET']);
 
   const mc = new minio.Client({
@@ -23,11 +21,11 @@ module.exports.getObjectContentFromMinio = async objectName => {
         return reject('stream is null.');
       }
       const contentChuncks = [];
-      stream.on('data', chunk => contentChuncks.push(chunk));
+      stream.on('data', (chunk) => contentChuncks.push(chunk));
       stream.on('end', () => {
         return resolve(contentChuncks.join(''));
       });
-      stream.on('error', err => {
+      stream.on('error', (err) => {
         return reject(err);
       });
     }),
