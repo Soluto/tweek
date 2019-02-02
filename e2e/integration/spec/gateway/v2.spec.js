@@ -1,7 +1,5 @@
 const { expect } = require('chai');
 const jsonpatch = require('fast-json-patch');
-const nconf = require('nconf');
-const fetch = require('node-fetch');
 
 const clients = require('../../utils/clients');
 const { pollUntil } = require('../../utils/utils');
@@ -242,13 +240,6 @@ describe('Gateway v2 API', () => {
         }),
       },
     };
-
-    await fetch(
-      `${nconf.get(
-        'GATEWAY_URL',
-      )}/api/v2/keys/${key}?author.name=test&author.email=test@soluto.com`,
-      options,
-    );
 
     const cleanup = jsonpatch.compare(newPolicy, currentPolicy);
     await clients.gateway

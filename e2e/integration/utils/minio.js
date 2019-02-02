@@ -9,7 +9,7 @@ module.exports.getObjectContentFromMinio = async (objectName) => {
     port: Number(nconf.get('MINIO_PORT')),
     accessKey: nconf.get('MINIO_ACCESS_KEY'),
     secretKey: nconf.get('MINIO_SECRET_KEY'),
-    secure: false,
+    useSSL: false,
   });
 
   return await new Promise((resolve, reject) =>
