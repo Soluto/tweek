@@ -21,8 +21,8 @@ func AuthorizationMiddleware(authorizer Authorizer, auditor audit.Auditor) negro
 			return
 		}
 		if user.Issuer() == "tweek" {
-			next(rw, r)
 			auditor.Allowed("tweek issuer", "any", "any")
+			next(rw, r)
 		} else {
 			sub, act, ctxs, err := ExtractFromRequest(r)
 			if err != nil {
