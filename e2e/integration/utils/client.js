@@ -41,4 +41,4 @@ const clientId = nconf.get('CLIENT_ID');
 const clientSecret = nconf.get('CLIENT_SECRET');
 const setCredentials = (t) => t.set('X-Client-Id', clientId).set('X-Client-Secret', clientSecret);
 
-module.exports.gateway = createClient(nconf.get('GATEWAY_URL'), setCredentials);
+module.exports = createClient(nconf.get('GATEWAY_URL'), setCredentials);

@@ -1,5 +1,5 @@
 const bluebird = require('bluebird');
-const clients = require('../../utils/clients');
+const client = require('../../utils/client');
 
 const policies = [
   {
@@ -121,14 +121,14 @@ describe('Gateway v2 - App Policies', () => {
           c.requirePermissionAction !== policy.action,
       );
 
-      const response = await clients.gateway
+      const response = await client
         .post('/api/v2/apps')
         .send({ name: 'my-app', permissions: [] })
         .expect(200);
 
       const { appId, appSecret } = response.body;
 
-      await clients.gateway
+      await client
         .patch('/api/v2/policies')
         .send([
           {
@@ -145,7 +145,7 @@ describe('Gateway v2 - App Policies', () => {
         ])
         .expect(200);
 
-      const appClient = await clients.gateway.with((client) =>
+      const appClient = await client.with((client) =>
         client.set({ 'x-client-id': appId, 'x-client-secret': appSecret }).unset('Authorization'),
       );
 

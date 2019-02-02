@@ -1,10 +1,10 @@
-const clients = require('../../utils/clients');
+const client = require('../../utils/client');
 
 describe('Gateway v2 CORS tests', () => {
   const key = 'integration_tests/some_key';
 
   it('Test GET request', async () => {
-    await clients.gateway
+    await client
       .options(`/api/v2/values/${key}`)
       .set('Origin', 'tweek.test.origin')
       .set('Access-Control-Request-Method', 'GET')

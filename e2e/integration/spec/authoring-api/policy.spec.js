@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const clients = require('../../utils/clients');
+const client = require('../../utils/client');
 const { pollUntil } = require('../../utils/utils');
 const { getObjectContentFromMinio } = require('../../utils/minio');
 const fs = require('fs');
@@ -12,7 +12,7 @@ describe.skip('authoring api policy', () => {
     const buf = await readFileAsync('./spec/authoring-api/test-data/policy.json');
     const originalPolicy = JSON.parse(buf.toString());
 
-    await clients.gateway.get('/api/v2/policies').expect(200, originalPolicy);
+    await client.get('/api/v2/policies').expect(200, originalPolicy);
   });
 
   it('replace policy', async () => {
@@ -40,7 +40,7 @@ describe.skip('authoring api policy', () => {
       (res) => expect(JSON.parse(res)).to.deep.equal(originalPolicy),
     );
 
-    await clients.authoring
+    await client.authoring
       .put('/api/v2/policies')
       .send(newPolicy)
       .expect(200);
@@ -77,7 +77,7 @@ describe.skip('authoring api policy', () => {
     );
 
     const policyPatch = jsonpatch.compare(policy, originalPolicy);
-    await clients.gateway
+    await client
       .patch('/api/v2/policies')
       .send(policyPatch)
       .expect(200);
