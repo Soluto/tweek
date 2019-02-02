@@ -57,7 +57,7 @@ services:
       - GATEWAY_URL=http://gateway
       - EDITOR_URL=http://gateway
       - AUTH_DIGEST_CREDENTIALS=user:pwd
-    command: ["-S", "-s", "/src/screenshots", "-c", "4", "chromium --headless --window-size='1280,720' --no-sandbox", "/src/spec" ]
+    command: ["-q", "-S", "-s", "/src/screenshots", "-c", "4", "chromium --headless --window-size='1280,720' --no-sandbox", "/src/spec" ]
 
   e2e-integration:
     build: ../../e2e/integration

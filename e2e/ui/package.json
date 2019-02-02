@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "yarn docker-compose build",
-    "test": "testcafe -S -s screenshots chrome spec",
+    "test": "testcafe -q -S -s screenshots chrome spec",
     "test:fll-env": "yarn docker-compose up --build -d editor && yarn test",
     "test:docker": "yarn build && yarn docker-compose run --rm e2e-ui",
     "logs": "yarn docker-compose logs",

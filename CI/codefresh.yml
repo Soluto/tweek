@@ -155,7 +155,7 @@ steps:
           - GATEWAY_URL=http://gateway
           - EDITOR_URL=http://gateway
           - AUTH_DIGEST_CREDENTIALS=user:pwd
-        command: [ "-c", "4", "chromium --headless --window-size='1280,720' --no-sandbox", "/src/spec" ]
+        command: [ "-q", "-c", "4", "chromium --headless --window-size='1280,720' --no-sandbox", "/src/spec" ]
 
     on_success:
       metadata:
