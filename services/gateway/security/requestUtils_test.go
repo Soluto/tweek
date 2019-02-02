@@ -226,6 +226,14 @@ func Test_extractContextsFromRequest(t *testing.T) {
 		{
 			name: "Contexts for context write request (DELETE)",
 			args: args{
+				r: createRequest("DELETE", "/api/v2/context/user/alice", "alice", "default"),
+			},
+			wantCtxs: PolicyResource{Contexts: map[string]string{"user": "self"}, Item: "context/user/*"},
+			wantErr:  false,
+		},
+		{
+			name: "Contexts for context write request (DELETE)",
+			args: args{
 				r: createRequest("DELETE", "/api/v2/context/user/alice/property", "alice", "default"),
 			},
 			wantCtxs: PolicyResource{Contexts: map[string]string{"user": "self"}, Item: "context/user/property"},
