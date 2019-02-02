@@ -1,5 +1,5 @@
-const bluebird = require('bluebird');
 const client = require('../../utils/client');
+const { delay } = require('../../utils/utils');
 
 const policies = [
   {
@@ -150,7 +150,7 @@ describe('Gateway v2 - App Policies', () => {
       );
 
       // should change to match {oid} with repo-version api
-      await bluebird.delay(3000);
+      await delay(3000);
 
       await Promise.all(relevantCases.map((x) => x.action(appClient).expect(200)));
 
