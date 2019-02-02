@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import * as R from 'ramda';
 import { tweekManagementClient } from './tweek-clients';
 
@@ -21,21 +20,7 @@ export async function getFixedKeys(type, id) {
   return extractOverrideKeysFromContext(response);
 }
 
-export function assertFixedKeysEqual(identityType, identityId, expected) {
-  return async () => {
-    const fixedKeys = await getFixedKeys(identityType, identityId);
-    expect(fixedKeys).to.deep.equal(expected);
-  };
-}
-
 export async function getProperties(type, id) {
   const response = await tweekManagementClient.getContext(type, id);
   return extractPropertiesFromContext(response);
-}
-
-export function assertPropertiesEqual(identityType, identityId, expected) {
-  return async () => {
-    const properties = await getProperties(identityType, identityId);
-    expect(properties).to.deep.equal(expected);
-  };
 }

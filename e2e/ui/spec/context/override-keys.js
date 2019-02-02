@@ -1,7 +1,7 @@
 import { editorUrl } from '../../utils/constants';
 import { login, credentials } from '../../utils/auth-utils';
-import { waitFor } from '../../utils/assertion-utils';
-import { assertFixedKeysEqual, getProperties } from '../../clients/identity-client';
+import { getFixedKeys, getProperties } from '../../clients/identity-client';
+import { tweekManagementClient } from '../../clients/tweek-clients';
 import ContextPage from '../../pages/Context';
 
 const contextPage = new ContextPage();
@@ -11,11 +11,13 @@ const typedKey = 'behavior_tests/context/override_key';
 
 fixture`Context Identity Properties`.page`${editorUrl}/context`
   .httpAuth(credentials)
+  .before(async () => {
+    await tweekManagementClient.deleteContext(identityType, identityId);
+  })
   .beforeEach(login);
 
 test('should modify override keys', async (t) => {
   const identity = await contextPage.open(identityType, identityId);
-  const initialProperties = await getProperties(identityType, identityId);
 
   const overrideKeys = {
     'some/key': 'someValue',
@@ -28,7 +30,7 @@ test('should modify override keys', async (t) => {
 
   await identity.commitChanges();
 
-  await waitFor(assertFixedKeysEqual(identityType, identityId, overrideKeys));
+  await t.expect(await getFixedKeys(identityType, identityId)).eql(overrideKeys);
 
   const updatedKeys = {
     'some/key': 'newValue',
@@ -40,7 +42,7 @@ test('should modify override keys', async (t) => {
   await identity.newFixedKey.add('some/new/key', 'anotherValue');
   await identity.commitChanges();
 
-  await waitFor(assertFixedKeysEqual(identityType, identityId, updatedKeys));
+  await t.expect(await getFixedKeys(identityType, identityId)).eql(updatedKeys);
 
   for (const key in updatedKeys) {
     await t.click(identity.fixedKey(key).deleteButton);
@@ -48,6 +50,9 @@ test('should modify override keys', async (t) => {
 
   await identity.commitChanges();
 
-  await waitFor(assertFixedKeysEqual(identityType, identityId, {}));
-  await t.expect(await getProperties(identityType, identityId)).eql(initialProperties);
+  await t
+    .expect(await getFixedKeys(identityType, identityId))
+    .eql({})
+    .expect(await getProperties(identityType, identityId))
+    .eql({});
 });

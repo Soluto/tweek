@@ -2,43 +2,49 @@ import { Selector } from 'testcafe';
 import { expect } from 'chai';
 import { editorUrl } from '../../utils/constants';
 import { credentials, login } from '../../utils/auth-utils';
-import { waitFor } from '../../utils/assertion-utils';
 import { attributeSelector } from '../../utils/selector-utils';
-import { tweekClient } from '../../clients/tweek-clients';
-import EditKey from '../../pages/Keys/EditKey';
 import { waitForValueToEqual } from '../../clients/api-client';
+import { createConstKey } from '../../clients/authoring-client';
+import EditKey from '../../pages/Keys/EditKey';
 
 const constKeyFolder = 'behavior_tests/edit_key/visual/const';
+const numberTypeKeyPath = `${constKeyFolder}/number_type`;
+const stringTypeKeyPath = `${constKeyFolder}/string_type`;
+const objectTypeKeyPath = `${constKeyFolder}/object_type`;
+const dateTypeKeyPath = `${constKeyFolder}/date_type`;
 
-fixture`Edit Const Key`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
+fixture`Edit Const Key`.page`${editorUrl}/keys`
+  .httpAuth(credentials)
+  .before(async () => {
+    await createConstKey(numberTypeKeyPath, 5);
+    await createConstKey(stringTypeKeyPath, 'hello');
+    await createConstKey(objectTypeKeyPath, { boolProp: true });
+    await createConstKey(dateTypeKeyPath, '10/10/2018 00:00:00', 'date');
+  })
+  .beforeEach(login);
 
 test('should succeed editing key (valueType=number)', async (t) => {
-  const keyName = `${constKeyFolder}/number_type`;
-
-  const editKey = await EditKey.open(keyName);
+  const editKey = await EditKey.open(numberTypeKeyPath);
   await t.typeText(editKey.constValue.input, '30', { replace: true });
 
   await editKey.commitChanges();
 
-  await waitForValueToEqual(keyName, 30);
+  await waitForValueToEqual(numberTypeKeyPath, 30);
 });
 
 test('should succeed editing key (valueType=string)', async (t) => {
-  const keyName = `${constKeyFolder}/string_type`;
-
-  const editKey = await EditKey.open(keyName);
+  const editKey = await EditKey.open(stringTypeKeyPath);
   await t.typeText(editKey.constValue.input, 'world', { replace: true });
 
   await editKey.commitChanges();
 
-  await waitForValueToEqual(keyName, 'world');
+  await waitForValueToEqual(stringTypeKeyPath, 'world');
 });
 
 test('should succeed editing key (valueType=object)', async (t) => {
-  const keyName = `${constKeyFolder}/object_type`;
   const objectValue = { boolProp: false };
 
-  const editKey = await EditKey.open(keyName);
+  const editKey = await EditKey.open(objectTypeKeyPath);
   const editor = await editKey.constValue.objectInput.editObject();
 
   await editor.setSource(JSON.stringify(objectValue));
@@ -50,15 +56,14 @@ test('should succeed editing key (valueType=object)', async (t) => {
 
   await editKey.commitChanges();
 
-  await waitForValueToEqual(keyName, objectValue);
+  await waitForValueToEqual(objectTypeKeyPath, objectValue);
 });
 
 test('should succeed editing key (valueType=date)', async (t) => {
   const desiredDate = Selector(attributeSelector('datetime', '2018-10-11T00:00:00.000'));
   const desiredDateFormatted = '10/11/2018 00:00:00';
-  const keyName = `${constKeyFolder}/date_type`;
 
-  const editKey = await EditKey.open(keyName);
+  const editKey = await EditKey.open(dateTypeKeyPath);
 
   await t
     .click(editKey.constValue.input)
@@ -68,5 +73,5 @@ test('should succeed editing key (valueType=date)', async (t) => {
 
   await editKey.commitChanges();
 
-  await waitForValueToEqual(keyName, desiredDateFormatted);
+  await waitForValueToEqual(dateTypeKeyPath, desiredDateFormatted);
 });

@@ -1,9 +1,15 @@
 import { Selector } from 'testcafe';
 import { editorUrl } from '../../utils/constants';
 import { credentials, login } from '../../utils/auth-utils';
+import { createEmptyJPadKey } from '../../clients/authoring-client';
 import EditKey from '../../pages/Keys/EditKey';
 
-fixture`Dependent Keys`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
+fixture`Dependent Keys`.page`${editorUrl}/keys`
+  .httpAuth(credentials)
+  .before(async () => {
+    await createEmptyJPadKey('behavior_tests/dependent_keys/pass/depends_on');
+  })
+  .beforeEach(login);
 
 test('save when no circular dependencies', async (t) => {
   const editKey = await EditKey.open('behavior_tests/dependent_keys/pass/depends_on');

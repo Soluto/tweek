@@ -1,7 +1,7 @@
 import { credentials, login } from '../../utils/auth-utils';
 import { editorUrl } from '../../utils/constants';
-import { waitFor } from '../../utils/assertion-utils';
-import { assertPropertiesEqual, getFixedKeys } from '../../clients/identity-client';
+import { getFixedKeys, getProperties } from '../../clients/identity-client';
+import { tweekManagementClient } from '../../clients/tweek-clients';
 import ContextPage from '../../pages/Context';
 
 const contextPage = new ContextPage();
@@ -10,11 +10,13 @@ const identityType = 'user';
 
 fixture`Context Identity Properties`.page`${editorUrl}/context`
   .httpAuth(credentials)
+  .before(async () => {
+    await tweekManagementClient.deleteContext(identityType, identityId);
+  })
   .beforeEach(login);
 
 test('should modify identity properties', async (t) => {
   const identity = await contextPage.open(identityType, identityId);
-  const initialOverrideKeys = await getFixedKeys(identityType, identityId);
 
   const expectedProperties = {
     FavoriteFruit: 'Tomato',
@@ -28,8 +30,11 @@ test('should modify identity properties', async (t) => {
 
   await identity.commitChanges();
 
-  await waitFor(assertPropertiesEqual(identityType, identityId, expectedProperties));
-  await t.expect(await getFixedKeys(identityType, identityId)).eql(initialOverrideKeys);
+  await t
+    .expect(await getProperties(identityType, identityId))
+    .eql(expectedProperties)
+    .expect(await getFixedKeys(identityType, identityId))
+    .eql({});
 
   const editedProperties = {
     Gender: 'female',
@@ -42,8 +47,9 @@ test('should modify identity properties', async (t) => {
 
   await identity.commitChanges();
 
-  await waitFor(
-    assertPropertiesEqual(identityType, identityId, { ...expectedProperties, ...editedProperties }),
-  );
-  await t.expect(await getFixedKeys(identityType, identityId)).eql(initialOverrideKeys);
+  await t
+    .expect(await getProperties(identityType, identityId))
+    .eql({ ...expectedProperties, ...editedProperties })
+    .expect(await getFixedKeys(identityType, identityId))
+    .eql({});
 });

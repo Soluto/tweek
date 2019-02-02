@@ -3,14 +3,20 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "testcafe -S -s screenshots chrome spec"
+    "build": "yarn docker-compose build",
+    "test": "testcafe -S -s screenshots chrome spec",
+    "test:fll-env": "yarn docker-compose up --build -d editor && yarn test",
+    "test:docker": "yarn build && yarn docker-compose run --rm e2e-ui",
+    "logs": "yarn docker-compose logs",
+    "teardown": "yarn docker-compose down --remove-orphans",
+    "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.e2e.yml"
   },
   "dependencies": {
     "chai": "^4.2.0",
     "nconf": "^0.10.0",
     "node-fetch": "^2.3.0",
     "ramda": "^0.26.1",
-    "tweek-client": "^1.0.0-rc3",
+    "tweek-client": "^1.0.0-rc4",
     "uuid": "^3.3.2"
   },
   "devDependencies": {

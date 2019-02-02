@@ -1,11 +1,18 @@
 import { editorUrl } from '../../utils/constants';
 import { credentials, login } from '../../utils/auth-utils';
 import { getLocation } from '../../utils/location-utils';
+import { tweekManagementClient } from '../../clients/tweek-clients';
 import KeysPage, { BLANK_KEY_NAME } from '../../pages/Keys';
 
 const keysPage = new KeysPage();
 
-fixture`Key Name Validations`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
+fixture`Key Name Validations`.page`${editorUrl}/keys`
+  .httpAuth(credentials)
+  .before(async () => {
+    await tweekManagementClient.deleteKey('a/b/c');
+    await tweekManagementClient.deleteKey('b');
+  })
+  .beforeEach(login);
 
 test('name validations', async (t) => {
   const invalidKeyNames = [

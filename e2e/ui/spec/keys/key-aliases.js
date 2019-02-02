@@ -2,7 +2,8 @@ import { editorUrl } from '../../utils/constants';
 import { credentials, login } from '../../utils/auth-utils';
 import { getLocation } from '../../utils/location-utils';
 import { dataField } from '../../utils/selector-utils';
-import { waitForKeyToBeDeleted } from '../../clients/authoring-client';
+import { createAlias, waitForKeyToBeDeleted } from '../../clients/authoring-client';
+import { tweekManagementClient } from '../../clients/tweek-clients';
 import EditKey from '../../pages/Keys/EditKey';
 import Alert from '../../pages/Alert';
 import KeysPage from '../../pages/Keys';
@@ -16,7 +17,13 @@ const deleteAliasKeyPath = 'behavior_tests/key_aliases/delete_alias';
 const alert = new Alert();
 const keysPage = new KeysPage();
 
-fixture`Key Aliases`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
+fixture`Key Aliases`.page`${editorUrl}/keys`
+  .httpAuth(credentials)
+  .before(async () => {
+    await tweekManagementClient.deleteKey(newAliasKeyPath);
+    await createAlias(originalKeyPath, deleteAliasKeyPath);
+  })
+  .beforeEach(login);
 
 test('add alias', async (t) => {
   const editKey = await EditKey.open(originalKeyPath);

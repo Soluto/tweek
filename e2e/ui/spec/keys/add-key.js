@@ -1,7 +1,7 @@
 import { editorUrl } from '../../utils/constants';
 import { credentials, login } from '../../utils/auth-utils';
 import { getLocation } from '../../utils/location-utils';
-import { deleteKey } from '../../clients/authoring-client';
+import { tweekManagementClient } from '../../clients/tweek-clients';
 import KeysPage, { BLANK_KEY_NAME } from '../../pages/Keys';
 
 const keysPage = new KeysPage();
@@ -9,11 +9,15 @@ const keysPage = new KeysPage();
 const keyToAddFullPath = 'behavior_tests/add_key/add_key_test';
 const keyWithDefaultsToAddFullPath = 'behavior_tests/add_key/default_format_and_type';
 
-fixture`Add Key`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
+fixture`Add Key`.page`${editorUrl}/keys`
+  .httpAuth(credentials)
+  .before(async () => {
+    await tweekManagementClient.deleteKey(keyToAddFullPath);
+    await tweekManagementClient.deleteKey(keyWithDefaultsToAddFullPath);
+  })
+  .beforeEach(login);
 
 test('should succeed adding key', async (t) => {
-  await deleteKey(keyToAddFullPath);
-
   const newKey = await keysPage.addNewKey();
 
   await t.expect(getLocation()).eql(`${editorUrl}/keys/${BLANK_KEY_NAME}`);
@@ -47,7 +51,6 @@ test('should succeed adding key', async (t) => {
 });
 
 test('should succeed adding key by entering key path only', async (t) => {
-  await deleteKey(keyWithDefaultsToAddFullPath);
   const newKey = await keysPage.addNewKey();
 
   await t.expect(getLocation()).eql(`${editorUrl}/keys/${BLANK_KEY_NAME}`);

@@ -1,22 +1,25 @@
 import { expect } from 'chai';
 import { editorUrl } from '../../utils/constants';
 import { credentials, login } from '../../utils/auth-utils';
-import { createEmptyKey, waitForImplementation } from '../../clients/authoring-client';
+import { createEmptyJPadKey, waitForImplementation } from '../../clients/authoring-client';
 import EditKey from '../../pages/Keys/EditKey';
 import Alert from '../../pages/Alert';
 
-fixture`Edit JPad Key`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
+const editJpadKeyPath = 'behavior_tests/edit_key/visual/edit_test';
+
+fixture`Edit JPad Key`.page`${editorUrl}/keys`
+  .httpAuth(credentials)
+  .before(async () => {
+    await createEmptyJPadKey(editJpadKeyPath);
+  })
+  .beforeEach(login);
 
 const alert = new Alert();
 
 test('should succeed editing JPad key', async (t) => {
-  const keyName = 'behavior_tests/edit_key/visual/edit_test';
-
-  await createEmptyKey(keyName);
-
   const defaultValue = 'some default value';
 
-  const editKey = await EditKey.open(keyName);
+  const editKey = await EditKey.open(editJpadKeyPath);
 
   await t.typeText(editKey.jpad.defaultValue.input, defaultValue, { replace: true });
 
@@ -48,7 +51,7 @@ test('should succeed editing JPad key', async (t) => {
 
   await editKey.commitChanges();
 
-  await waitForImplementation(keyName, expectedKeySource);
+  await waitForImplementation(editJpadKeyPath, expectedKeySource);
 });
 
 test('should succeed in editing an object JPad key', async (t) => {

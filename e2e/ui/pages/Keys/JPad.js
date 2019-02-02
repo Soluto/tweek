@@ -1,4 +1,4 @@
-import { Selector, t } from 'testcafe';
+import { ClientFunction, Selector, t } from 'testcafe';
 import { attributeSelector, dataComp, dataField } from '../../utils/selector-utils';
 import NewRule from './Rules/NewRule';
 import Rule from './Rules/Rule';
@@ -7,6 +7,9 @@ import TypedInput from './TypedInput';
 import TagInput from './TypedInput/TagInput';
 
 const tabHeader = attributeSelector('data-tab-header');
+const scrollToTop = ClientFunction(() => keyEditPage().scrollTo(0, 0), {
+  dependencies: { keyEditPage: Selector(dataComp('key-edit-page')) },
+});
 
 class PartitionGroup {
   constructor(values) {
@@ -50,6 +53,7 @@ export default class JPad {
   }
 
   async getSource(stayOnSourceTab) {
+    await scrollToTop();
     await t.click(this.sourceTab);
     const source = await this.sourceEditor.getSource();
     if (!stayOnSourceTab) {
@@ -59,6 +63,7 @@ export default class JPad {
   }
 
   async setSource(source, stayOnSourceTab) {
+    await scrollToTop();
     await t.click(this.sourceTab);
     await this.sourceEditor.setSource(source);
     if (!stayOnSourceTab) {

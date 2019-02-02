@@ -2,11 +2,6 @@ import { expect } from 'chai';
 import { waitFor } from '../utils/assertion-utils';
 import { tweekManagementClient } from './tweek-clients';
 
-export const deleteKey = async (keyPath) => {
-  await tweekManagementClient.deleteKey(keyPath);
-  await waitForKeyToBeDeleted(keyPath);
-};
-
 export const waitForKeyToBeDeleted = async (keyPath) => {
   await waitFor(async () => {
     try {
@@ -24,7 +19,7 @@ export const emptyJpad = (valueType = 'string') => ({
   rules: [],
 });
 
-export const jpadManifest = (key_path, valueType = 'string') => ({
+export const createManifest = (key_path, valueType, implementation, dependencies = []) => ({
   key_path,
   valueType,
   meta: {
@@ -32,27 +27,62 @@ export const jpadManifest = (key_path, valueType = 'string') => ({
     tags: [],
     description: '',
   },
-  implementation: {
-    type: 'file',
-    format: 'jpad',
-  },
-  dependencies: [],
+  implementation,
+  dependencies,
 });
 
-export const createEmptyKey = async (keyPath, valueType = 'string') => {
+export const jpadManifest = (key_path, valueType = 'string') =>
+  createManifest(key_path, valueType, {
+    type: 'file',
+    format: 'jpad',
+  });
+
+export const constManifest = (key_path, value, valueType = typeof value) =>
+  createManifest(key_path, valueType, {
+    type: 'const',
+    value,
+  });
+
+export const aliasManifest = (key_path, alias) => ({
+  key_path: alias,
+  meta: {
+    archived: false,
+  },
+  implementation: {
+    type: 'alias',
+    key: key_path,
+  },
+});
+
+export const archived = ({ meta, ...manifest }) => ({
+  ...manifest,
+  meta: { ...meta, archived: true },
+});
+
+export const createEmptyJPadKey = async (keyPath, valueType = 'string') => {
   const implementation = emptyJpad(valueType);
 
   await tweekManagementClient.saveKeyDefinition(keyPath, {
     manifest: jpadManifest(keyPath, valueType),
     implementation: JSON.stringify(implementation),
   });
-
-  await waitForImplementation(keyPath, implementation);
 };
 
 export const waitForImplementation = async (keyPath, expected) => {
   await waitFor(async () => {
     const { implementation } = await tweekManagementClient.getKeyDefinition(keyPath);
     expect(JSON.parse(implementation)).to.deep.equal(expected);
+  });
+};
+
+export const createConstKey = async (keyPath, value, valueType = typeof value) => {
+  await tweekManagementClient.saveKeyDefinition(keyPath, {
+    manifest: constManifest(keyPath, value, valueType),
+  });
+};
+
+export const createAlias = async (keyPath, alias) => {
+  await tweekManagementClient.saveKeyDefinition(alias, {
+    manifest: aliasManifest(keyPath, alias),
   });
 };
