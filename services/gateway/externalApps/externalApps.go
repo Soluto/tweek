@@ -129,11 +129,12 @@ func Init(cfg *appConfig.PolicyStorage) {
 func refreshApps(cfg *appConfig.PolicyStorage) nats.MsgHandler {
 	return func(msg *nats.Msg) {
 		logrus.Info("Refreshing external apps...")
-		obj, err := repo.minioClient.GetObject(cfg.MinioBucketName, "external_apps.json", minio.GetObjectOptions{})
+		reader, err := repo.minioClient.GetObject(cfg.MinioBucketName, "external_apps.json", minio.GetObjectOptions{})
 		if err != nil {
 			logrus.WithError(err).Panic("Get external apps from minio failed")
 		}
-		buf, err := ioutil.ReadAll(obj)
+		defer reader.Close()
+		buf, err := ioutil.ReadAll(reader)
 		if err != nil {
 			logrus.WithError(err).Panic("Read external apps object failed")
 		}
