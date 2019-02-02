@@ -5,7 +5,7 @@ const { init: initClients } = require('../../utils/clients');
 const { pollUntil } = require('../../utils/utils');
 const { createManifestForJPadKey } = require('../../utils/manifest');
 
-describe('authoring api', () => {
+describe('authoring api write validation', () => {
   let clients;
   before(async () => {
     clients = await initClients();
@@ -31,7 +31,7 @@ describe('authoring api', () => {
 
       await pollUntil(
         () => clients.gateway.get('/api/v2/values/@tests/integration/new_valid_key'),
-        res => expect(res.body).to.eql('test'),
+        (res) => expect(res.body).to.eql('test'),
       );
     });
 
@@ -55,6 +55,9 @@ describe('authoring api', () => {
 
     it('should not create new commit for duplicate definition', async () => {
       const key = '@tests/integration/duplicate';
+
+      await clients.gateway.delete(`/api/v2/keys/${key}`).expect(200);
+
       async function saveKey() {
         return await clients.gateway
           .put(`/api/v2/keys/${key}`)

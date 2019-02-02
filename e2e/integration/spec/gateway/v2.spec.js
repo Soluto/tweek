@@ -22,7 +22,7 @@ describe('Gateway v2 API', () => {
     await clients.gateway.get(`/api/v2/values?keyPath=${encodeURI(key)}`).expect(200, '1.0'));
 
   it('should get key using v2 without authentication', async () => {
-    apiClient = await clients.gateway.with(client => client.unset('Authorization'));
+    const apiClient = await clients.gateway.with((client) => client.unset('Authorization'));
     await apiClient.get(`/api/v2/values/${key}`).expect(200, '1.0');
   });
 
@@ -41,7 +41,7 @@ describe('Gateway v2 API', () => {
     await clients.gateway
       .get(`/api/v2/context/user/v2user`)
       .expect(200)
-      .then(r => {
+      .then((r) => {
         const result = r.body;
         delete result['@CreationDate'];
         expect(result).to.eql(context);
@@ -49,17 +49,20 @@ describe('Gateway v2 API', () => {
   });
 
   it('should read schemas', async () => {
-    expectedSchemas = [
+    await clients.gateway.delete(`/api/v2/schemas/test_schema`).expect(200);
+
+    const expectedSchemas = [
       'delete_property_test',
       'edit_properties_test',
       'other',
       'test',
       'user',
     ].sort();
+
     await clients.gateway
       .get(`/api/v2/schemas`)
       .expect(200)
-      .then(response => {
+      .then((response) => {
         expect(Object.keys(response.body).sort()).to.eql(expectedSchemas);
       });
   });
@@ -109,7 +112,11 @@ describe('Gateway v2 API', () => {
   it('should return a key with keyPath', async () => {
     const key = 'integration_tests/some_key';
     await clients.gateway
-      .get(`/api/v2/keys?keyPath=${encodeURIComponent(key)}&author.name=test&author.email=test@soluto.com`)
+      .get(
+        `/api/v2/keys?keyPath=${encodeURIComponent(
+          key,
+        )}&author.name=test&author.email=test@soluto.com`,
+      )
       .expect(
         200,
         '{"manifest":{"key_path":"integration_tests/some_key","meta":{"name":"integration_tests/some_key","tags":[],"description":"","archived":false},"implementation":{"type":"const","value":1},"valueType":"number","dependencies":[]}}',
@@ -133,7 +140,7 @@ describe('Gateway v2 API', () => {
 
     await pollUntil(
       () => clients.gateway.get(`/api/v2/values/${key}`),
-      res => expect(res.body).to.eql('test'),
+      (res) => expect(res.body).to.eql('test'),
     );
   });
 
@@ -155,6 +162,9 @@ describe('Gateway v2 API', () => {
 
   it('should not create new commit for duplicate definition', async () => {
     const key = '@tests/integration/duplicate_2';
+
+    await clients.gateway.delete(`/api/v2/keys/${key}`).expect(200);
+
     async function saveKey() {
       return await clients.gateway
         .put(`/api/v2/keys/${key}`)
@@ -169,8 +179,10 @@ describe('Gateway v2 API', () => {
         })
         .expect(200);
     }
+
     const res1 = await saveKey();
     expect(res1.header).to.have.property('x-oid');
+
     const res2 = await saveKey();
     expect(res2.header).to.not.have.property('x-oid');
   });
@@ -179,7 +191,7 @@ describe('Gateway v2 API', () => {
     const res = await clients.gateway
       .post('/api/v2/apps')
       .send({
-        name: 'test app'
+        name: 'test app',
       })
       .expect(200);
 
@@ -187,11 +199,9 @@ describe('Gateway v2 API', () => {
     expect(app).hasOwnProperty('appId');
     expect(app).hasOwnProperty('appSecret');
 
-    const appsRes = await clients.gateway
-                            .get('/api/v2/apps')
-                            .expect(200);
+    const appsRes = await clients.gateway.get('/api/v2/apps').expect(200);
 
-    expect(appsRes.body).to.include({[app.appId] : 'test app' });
+    expect(appsRes.body).to.include({ [app.appId]: 'test app' });
 
     const policyRes = await clients.gateway.get('/api/v2/policies').expect(200);
 

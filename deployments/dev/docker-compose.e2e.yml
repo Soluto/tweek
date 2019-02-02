@@ -82,11 +82,10 @@ services:
   e2e-integration:
     build: ../../e2e/integration
     container_name: e2e-integration
+    volumes:
+      - ../../e2e/integration:/opt/app
     depends_on: 
-      - api
-      - authoring
       - gateway
-      - publishing
     environment:
       - API_URL=http://api
       - AUTHORING_URL=http://authoring
@@ -101,9 +100,6 @@ services:
       - tweek_ssh_private_key
       - minio_access_key
       - minio_secret_key
-    links:
-      - gateway:api
-      - gateway:authoring
 
   smoke-tests:
     build:
