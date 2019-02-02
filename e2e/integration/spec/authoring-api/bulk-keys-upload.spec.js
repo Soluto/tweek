@@ -1,13 +1,8 @@
 const { expect } = require('chai');
-const { init: initClients } = require('../../utils/clients');
+const clients = require('../../utils/clients');
 const { pollUntil } = require('../../utils/utils');
 
 describe('authoring api - /PUT /bulk-keys-upload', () => {
-  let clients;
-  before(async () => {
-    clients = await initClients();
-  });
-
   it('should not accept an input without a zip file named bulk', async () => {
     await clients.gateway
       .put('/api/v2/bulk-keys-upload')

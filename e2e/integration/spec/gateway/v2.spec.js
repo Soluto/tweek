@@ -3,17 +3,12 @@ const jsonpatch = require('fast-json-patch');
 const nconf = require('nconf');
 const fetch = require('node-fetch');
 
-const { init: initClients } = require('../../utils/clients');
+const clients = require('../../utils/clients');
 const { pollUntil } = require('../../utils/utils');
 const { createManifestForJPadKey } = require('../../utils/manifest');
 
 describe('Gateway v2 API', () => {
   const key = 'integration_tests/some_key';
-
-  let clients;
-  before(async () => {
-    clients = await initClients();
-  });
 
   it('should get key using v2 (proxy to api service)', async () =>
     await clients.gateway.get(`/api/v2/values/${key}`).expect(200, '1.0'));
@@ -48,7 +43,7 @@ describe('Gateway v2 API', () => {
       });
   });
 
-  it('should read schemas', async () => {
+  it('should read, write, and delete schemas', async () => {
     await clients.gateway.delete(`/api/v2/schemas/test_schema`).expect(200);
 
     const expectedSchemas = [
@@ -65,14 +60,14 @@ describe('Gateway v2 API', () => {
       .then((response) => {
         expect(Object.keys(response.body).sort()).to.eql(expectedSchemas);
       });
-  });
 
-  it('should write schemas', async () => {
     const schema = { test: { type: 'string' } };
     await clients.gateway
       .post(`/api/v2/schemas/test_schema`)
       .send(schema)
       .expect(200);
+
+    await clients.gateway.delete(`/api/v2/schemas/test_schema`).expect(200);
   });
 
   it('should read search index', async () => {

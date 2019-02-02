@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { init: initClients } = require('../../utils/clients');
+const clients = require('../../utils/clients');
 const { pollUntil } = require('../../utils/utils');
 const { getObjectContentFromMinio } = require('../../utils/minio');
 const fs = require('fs');
@@ -8,11 +8,6 @@ const readFileAsync = promisify(fs.readFile);
 const jsonpatch = require('fast-json-patch');
 
 describe.skip('authoring api policy', () => {
-  let clients;
-  before(async () => {
-    clients = await initClients();
-  });
-
   it('get policy', async () => {
     const buf = await readFileAsync('./spec/authoring-api/test-data/policy.json');
     const originalPolicy = JSON.parse(buf.toString());
@@ -42,7 +37,7 @@ describe.skip('authoring api policy', () => {
 
     await pollUntil(
       () => getObjectContentFromMinio('security/policy.json'),
-      res => expect(JSON.parse(res)).to.deep.equal(originalPolicy),
+      (res) => expect(JSON.parse(res)).to.deep.equal(originalPolicy),
     );
 
     await clients.authoring
@@ -52,7 +47,7 @@ describe.skip('authoring api policy', () => {
 
     await pollUntil(
       () => getObjectContentFromMinio('security/policy.json'),
-      res => expect(JSON.parse(res)).to.deep.equal(newPolicy),
+      (res) => expect(JSON.parse(res)).to.deep.equal(newPolicy),
     );
   });
 
@@ -78,7 +73,7 @@ describe.skip('authoring api policy', () => {
 
     await pollUntil(
       () => getObjectContentFromMinio('security/policy.json'),
-      res => expect(JSON.parse(res)).to.deep.equal(policy),
+      (res) => expect(JSON.parse(res)).to.deep.equal(policy),
     );
 
     const policyPatch = jsonpatch.compare(policy, originalPolicy);
@@ -91,7 +86,7 @@ describe.skip('authoring api policy', () => {
 
     await pollUntil(
       () => getObjectContentFromMinio('security/policy.json'),
-      res => expect(JSON.parse(res)).to.deep.equal(newPolicy),
+      (res) => expect(JSON.parse(res)).to.deep.equal(newPolicy),
     );
   });
 });

@@ -1,16 +1,9 @@
-const chai = require('chai');
-const expect = chai.expect;
-chai.should();
-const { init: initClients } = require('../../utils/clients');
+const { expect } = require('chai');
+const clients = require('../../utils/clients');
 const { pollUntil } = require('../../utils/utils');
 const { createManifestForJPadKey } = require('../../utils/manifest');
 
 describe('authoring api write validation', () => {
-  let clients;
-  before(async () => {
-    clients = await initClients();
-  });
-
   describe('/PUT /key', () => {
     it('should accept a valid key', async () => {
       const key = '@tests/integration/new_valid_key';
