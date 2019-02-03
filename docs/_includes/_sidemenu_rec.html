@@ -1,8 +1,8 @@
 {% assign first_page = include.pages | first %}
 {% if include.context == first_page.url %}
-  <div class="page-item {% if page.url == first_page.url %}selected{% endif %}">
-      <a href="{{first_page.url}}"><i class="fa fa-file-alt"></i><span style="margin-left:8px">{{first_page.title}}</span></a>
-  </div>
+  <a class="page-item {% if page.url == first_page.url %}selected{% endif %}" href="{{first_page.url}}">
+      <i class="fa fa-file-alt"></i><span style="margin-left:8px">{{first_page.title}}</span></a>
+  </a>
 {% else %}
   <div data-folder="{{include.context}}" class="folder-container {% if page.url contains include.context %}open{% endif %}">
   {% if include.context != "" %}

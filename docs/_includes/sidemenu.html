@@ -10,10 +10,10 @@
 
           <div class="group-sep">Resources</div>
             <ul>
-            <li><a href="https://git.io/tweek" class="page-item"><i class="fab fa-github"></i> tweek</a></li>
-            <li><a href="https://github.com/soluto/tweek-clients" class="page-item" ><i class="fab fa-github"></i> tweek-clients </a></li>
-            <li><a href="https://github.com/soluto/tweek-deploy" class="page-item"><i class="fab fa-github"></i> tweek-deploy </a></li>
-            <li><a href="https://github.com/soluto/tweek-jpad" class="page-item"><i class="fab fa-github"></i> tweek.JPad </a></li>
+            <li><a href="https://git.io/tweek" class="page-item"><i class="fab fa-github"></i> Tweek</a></li>
+            <li><a href="https://github.com/soluto/tweek-clients" class="page-item" ><i class="fab fa-github"></i> Tweek-Clients </a></li>
+            <li><a href="https://github.com/soluto/tweek-deploy" class="page-item"><i class="fab fa-github"></i> Tweek-Deploy </a></li>
+            <li><a href="https://github.com/soluto/tweek.jpad" class="page-item"><i class="fab fa-github"></i> Tweek.JPad </a></li>
           </ul>
       </nav>
       <script>
@@ -35,14 +35,16 @@
           } else {
              folderState.add(folderPath);
           }
-          console.log(folderState);
           sessionStorage.setItem("folder-state",[...folderState] );
           target.classList.toggle('open');
         })
 
         folderState.forEach(x=>{
           document.querySelectorAll(`.folder-container[data-folder="${x}"]`).forEach(e=>{
+              e.classList.add('notransition'); //disable transitions
               e.classList.add("open");
+              e.offsetHeight; 
+              e.classList.remove('notransition');
           })
         })
 
