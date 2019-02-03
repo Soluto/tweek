@@ -27,7 +27,13 @@
 
         document.querySelector("nav.side-menu").addEventListener("click", function(e){
           e.stopPropagation();
+          if (e.srcElement.closest(".page-item") !== null ) {
+            return;
+          }
+
           let target = e.srcElement.closest(".folder-container");
+          
+
           if (target == null) return;
           let folderPath = target.getAttribute("data-folder");
           if ( target.classList.contains("open")){
