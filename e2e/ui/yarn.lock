@@ -1003,10 +1003,10 @@ core-util-is@~1.0.0:
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
   integrity sha1-tf1UIgqivFq1eqtxQMlAdUUDwac=
 
-cross-fetch@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.0.0.tgz#fb7fa6906f39c7233aa7ab8de1785e980532b899"
-  integrity sha512-P8HyKlMwT1ed9LqEWlJu+zfcxfn0KI4Nl4nxyvu1a8sg4vgtHdwhElZOgSNzoar44zQMdliZcve4QG/04AUi9Q==
+cross-fetch@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.0.1.tgz#3f207bbd829a76e9aa2a953348bd1f2a3cf388a7"
+  integrity sha512-qWtpgBAF8ioqBOddRD+pHhrdzm/UWOArkrlIU7c08DlNbOxo5GfUbSY2vr90ZypWf0raW+HNN1F38pi5CEOjiQ==
   dependencies:
     node-fetch "2.3.0"
     whatwg-fetch "3.0.0"
@@ -1581,7 +1581,7 @@ nconf@^0.10.0:
     secure-keys "^1.0.0"
     yargs "^3.19.0"
 
-node-fetch@2.3.0, node-fetch@^2.3.0:
+node-fetch@2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.3.0.tgz#1a1d940bbfb916a1d3e0219f037e89e71f8c5fa5"
   integrity sha512-MOd8pV3fxENbryESLgVIeaGKrdl+uaYhCSSVkjeOb/31/njTpcis5aWfdqgNlHIrKOLRbMnfPINPOML2CIFeXA==
@@ -2254,13 +2254,13 @@ tunnel-agent@0.6.0:
   dependencies:
     safe-buffer "^5.0.1"
 
-tweek-client@^1.0.0-rc4:
-  version "1.0.0-rc4"
-  resolved "https://registry.yarnpkg.com/tweek-client/-/tweek-client-1.0.0-rc4.tgz#64e80fca1182379875d357a8d57db87478d64c8a"
-  integrity sha512-IHLJbrBBJQxmalFVuKldRadCZiqMCVA7xEE6zJWvix3C04RM7Uwk8QG/b7NZhL3JRulKLfW1gAjfqQpCXeVEng==
+tweek-client@^1.0.0-rc5:
+  version "1.0.0-rc5"
+  resolved "https://registry.yarnpkg.com/tweek-client/-/tweek-client-1.0.0-rc5.tgz#9a30cf386e2c697ae934e81b8e5550747cff6d78"
+  integrity sha512-22lXDsGIoNHIjqg+BLOJ/qD/wRmy9/6B3NpME2tuWYTCb16O4akXkiOuwb8XIMCZwCon2jtwR6amuPI+rYPQng==
   dependencies:
     change-emitter "^0.1.6"
-    cross-fetch "^3.0.0"
+    cross-fetch "^3.0.1"
     lodash.chunk "^4.2.0"
     query-string "^6.2.0"
     zen-observable "^0.8.13"
