@@ -9,13 +9,7 @@ const keysPage = new KeysPage();
 const keyToAddFullPath = 'behavior_tests/add_key/add_key_test';
 const keyWithDefaultsToAddFullPath = 'behavior_tests/add_key/default_format_and_type';
 
-fixture`Add Key`.page`${editorUrl}/keys`
-  .httpAuth(credentials)
-  .before(async () => {
-    await tweekManagementClient.deleteKey(keyToAddFullPath);
-    await tweekManagementClient.deleteKey(keyWithDefaultsToAddFullPath);
-  })
-  .beforeEach(login);
+fixture`Add Key`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
 
 test('should succeed adding key', async (t) => {
   const newKey = await keysPage.addNewKey();
@@ -48,6 +42,9 @@ test('should succeed adding key', async (t) => {
   const link = await keysPage.navigateToLink(keyToAddFullPath);
 
   await t.expect(link.visible).ok();
+}).before(async (t) => {
+  await tweekManagementClient.deleteKey(keyToAddFullPath);
+  await login(t);
 });
 
 test('should succeed adding key by entering key path only', async (t) => {
@@ -78,4 +75,7 @@ test('should succeed adding key by entering key path only', async (t) => {
   const link = await keysPage.navigateToLink(keyWithDefaultsToAddFullPath);
 
   await t.expect(link.visible).ok();
+}).before(async (t) => {
+  await tweekManagementClient.deleteKey(keyWithDefaultsToAddFullPath);
+  await login(t);
 });

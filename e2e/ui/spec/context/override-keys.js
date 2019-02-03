@@ -11,9 +11,6 @@ const typedKey = 'behavior_tests/context/override_key';
 
 fixture`Context Identity Properties`.page`${editorUrl}/context`
   .httpAuth(credentials)
-  .before(async () => {
-    await tweekManagementClient.deleteContext(identityType, identityId);
-  })
   .beforeEach(login);
 
 test('should modify override keys', async (t) => {
@@ -55,4 +52,7 @@ test('should modify override keys', async (t) => {
     .eql({})
     .expect(await getProperties(identityType, identityId))
     .eql({});
+}).before(async (t) => {
+  await tweekManagementClient.deleteContext(identityType, identityId);
+  await login(t);
 });

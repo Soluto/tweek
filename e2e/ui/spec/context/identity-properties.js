@@ -10,9 +10,6 @@ const identityType = 'user';
 
 fixture`Context Identity Properties`.page`${editorUrl}/context`
   .httpAuth(credentials)
-  .before(async () => {
-    await tweekManagementClient.deleteContext(identityType, identityId);
-  })
   .beforeEach(login);
 
 test('should modify identity properties', async (t) => {
@@ -52,4 +49,7 @@ test('should modify identity properties', async (t) => {
     .eql({ ...expectedProperties, ...editedProperties })
     .expect(await getFixedKeys(identityType, identityId))
     .eql({});
+}).before(async (t) => {
+  await tweekManagementClient.deleteContext(identityType, identityId);
+  await login(t);
 });

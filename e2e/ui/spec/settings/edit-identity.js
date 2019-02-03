@@ -10,17 +10,7 @@ import SettingsPage from '../../pages/Settings';
 
 const settingsPage = new SettingsPage();
 
-fixture`Edit Identity`.page`${editorUrl}/settings`
-  .httpAuth(credentials)
-  .before(async () => {
-    await createConstKey('@tweek/schema/edit_properties_test', {});
-    await createConstKey('@tweek/schema/delete_property_test', {
-      Group: {
-        type: 'string',
-      },
-    });
-  })
-  .beforeEach(login);
+fixture`Edit Identity`.page`${editorUrl}/settings`.httpAuth(credentials).beforeEach(login);
 
 test('add new identity with simple property and then delete', async (t) => {
   const currentIdentity = await settingsPage.add('Device');
@@ -67,6 +57,9 @@ test('add property and save', async (t) => {
       OsType: { type: { base: 'string', allowedValues: ['Android', 'iOS'] } },
     });
   });
+}).before(async (t) => {
+  await createConstKey('@tweek/schema/edit_properties_test', {});
+  await login(t);
 });
 
 test('delete property and save', async (t) => {
@@ -75,4 +68,11 @@ test('delete property and save', async (t) => {
   await t.click(currentIdentity.saveButton);
 
   await waitForValueToEqual('@tweek/schema/delete_property_test', {});
+}).before(async (t) => {
+  await createConstKey('@tweek/schema/delete_property_test', {
+    Group: {
+      type: 'string',
+    },
+  });
+  await login(t);
 });

@@ -6,13 +6,7 @@ import KeysPage, { BLANK_KEY_NAME } from '../../pages/Keys';
 
 const keysPage = new KeysPage();
 
-fixture`Key Name Validations`.page`${editorUrl}/keys`
-  .httpAuth(credentials)
-  .before(async () => {
-    await tweekManagementClient.deleteKey('a/b/c');
-    await tweekManagementClient.deleteKey('b');
-  })
-  .beforeEach(login);
+fixture`Key Name Validations`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
 
 test('name validations', async (t) => {
   const invalidKeyNames = [
@@ -52,21 +46,22 @@ test('name validations', async (t) => {
 });
 
 test('should allow creating a key named "a/b/c" and also a key named "b"', async (t) => {
-  const addEmptyKey = async (keyName) => {
+  const addEmptyKey = async (keyPath) => {
     const newKey = await keysPage.addNewKey();
-    await t.typeText(newKey.nameInput, keyName, { replace: true });
+    await t.typeText(newKey.nameInput, keyPath, { replace: true });
 
     const editKey = await newKey.continue();
 
     await editKey.commitChanges();
-    await t.expect(getLocation()).eql(`${editorUrl}/keys/${keyName}`);
+    await t.expect(getLocation()).eql(`${editorUrl}/keys/${keyPath}`);
   };
 
   await addEmptyKey('a/b/c');
-
-  await t.navigateTo('/keys');
-
   await addEmptyKey('b');
+}).before(async (t) => {
+  await tweekManagementClient.deleteKey('a/b/c');
+  await tweekManagementClient.deleteKey('b');
+  await login(t);
 });
 
 test('should show validation alert on clicking "Continue" without a value', async (t) => {

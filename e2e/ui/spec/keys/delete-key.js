@@ -1,7 +1,7 @@
 import { t } from 'testcafe';
 import { editorUrl } from '../../utils/constants';
 import { credentials, login } from '../../utils/auth-utils';
-import { getLocation } from '../../utils/location-utils';
+import { getLocation, navigateToKey } from '../../utils/location-utils';
 import {
   archived,
   constManifest,
@@ -21,17 +21,7 @@ const deleteKeyAlias = 'behavior_tests/delete_key/delete_alias';
 const keysPage = new KeysPage();
 const alert = new Alert();
 
-fixture`Delete Key`.page`${editorUrl}/keys`
-  .httpAuth(credentials)
-  .before(async () => {
-    await createConstKey(archiveKeyPath, 'value');
-
-    await tweekManagementClient.saveKeyDefinition(deleteKeyPath, {
-      manifest: archived(constManifest(deleteKeyPath, 'value')),
-    });
-    await createAlias(deleteKeyPath, deleteKeyAlias);
-  })
-  .beforeEach(login);
+fixture`Delete Key`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
 
 const assertKeyDeleted = async (keyName) => {
   await waitForKeyToBeDeleted(keyName);
@@ -39,10 +29,11 @@ const assertKeyDeleted = async (keyName) => {
   const editKey = new EditKey();
   const link = await keysPage.navigateToLink(keyName);
 
+  await t.expect(link.exists).notOk();
+
+  await navigateToKey(keyName);
+
   await t
-    .expect(link.exists)
-    .notOk()
-    .navigateTo(`/keys/${keyName}`)
     .expect(keysPage.page.visible)
     .ok()
     .expect(editKey.container.exists)
@@ -99,6 +90,9 @@ test('archive key then unarchive', async (t) => {
   await keysPage.navigateToLink(archiveKeyPath);
 
   await t.expect(link.visible).ok();
+}).before(async (t) => {
+  await createConstKey(archiveKeyPath, 'value');
+  await login(t);
 });
 
 test('delete key flow', async (t) => {
@@ -132,4 +126,10 @@ test('delete key flow', async (t) => {
 
   await assertKeyDeleted(deleteKeyPath);
   await assertKeyDeleted(deleteKeyAlias);
+}).before(async (t) => {
+  await tweekManagementClient.saveKeyDefinition(deleteKeyPath, {
+    manifest: archived(constManifest(deleteKeyPath, 'value')),
+  });
+  await createAlias(deleteKeyPath, deleteKeyAlias);
+  await login(t);
 });

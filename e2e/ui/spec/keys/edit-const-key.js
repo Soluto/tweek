@@ -13,15 +13,7 @@ const stringTypeKeyPath = `${constKeyFolder}/string_type`;
 const objectTypeKeyPath = `${constKeyFolder}/object_type`;
 const dateTypeKeyPath = `${constKeyFolder}/date_type`;
 
-fixture`Edit Const Key`.page`${editorUrl}/keys`
-  .httpAuth(credentials)
-  .before(async () => {
-    await createConstKey(numberTypeKeyPath, 5);
-    await createConstKey(stringTypeKeyPath, 'hello');
-    await createConstKey(objectTypeKeyPath, { boolProp: true });
-    await createConstKey(dateTypeKeyPath, '10/10/2018 00:00:00', 'date');
-  })
-  .beforeEach(login);
+fixture`Edit Const Key`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
 
 test('should succeed editing key (valueType=number)', async (t) => {
   const editKey = await EditKey.open(numberTypeKeyPath);
@@ -30,6 +22,9 @@ test('should succeed editing key (valueType=number)', async (t) => {
   await editKey.commitChanges();
 
   await waitForValueToEqual(numberTypeKeyPath, 30);
+}).before(async (t) => {
+  await createConstKey(numberTypeKeyPath, 5);
+  await login(t);
 });
 
 test('should succeed editing key (valueType=string)', async (t) => {
@@ -39,6 +34,9 @@ test('should succeed editing key (valueType=string)', async (t) => {
   await editKey.commitChanges();
 
   await waitForValueToEqual(stringTypeKeyPath, 'world');
+}).before(async (t) => {
+  await createConstKey(stringTypeKeyPath, 'hello');
+  await login(t);
 });
 
 test('should succeed editing key (valueType=object)', async (t) => {
@@ -57,6 +55,9 @@ test('should succeed editing key (valueType=object)', async (t) => {
   await editKey.commitChanges();
 
   await waitForValueToEqual(objectTypeKeyPath, objectValue);
+}).before(async (t) => {
+  await createConstKey(objectTypeKeyPath, { boolProp: true });
+  await login(t);
 });
 
 test('should succeed editing key (valueType=date)', async (t) => {
@@ -74,4 +75,7 @@ test('should succeed editing key (valueType=date)', async (t) => {
   await editKey.commitChanges();
 
   await waitForValueToEqual(dateTypeKeyPath, desiredDateFormatted);
+}).before(async (t) => {
+  await createConstKey(dateTypeKeyPath, '10/10/2018 00:00:00', 'date');
+  await login(t);
 });

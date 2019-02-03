@@ -17,13 +17,7 @@ const deleteAliasKeyPath = 'behavior_tests/key_aliases/delete_alias';
 const alert = new Alert();
 const keysPage = new KeysPage();
 
-fixture`Key Aliases`.page`${editorUrl}/keys`
-  .httpAuth(credentials)
-  .before(async () => {
-    await tweekManagementClient.deleteKey(newAliasKeyPath);
-    await createAlias(originalKeyPath, deleteAliasKeyPath);
-  })
-  .beforeEach(login);
+fixture`Key Aliases`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
 
 test('add alias', async (t) => {
   const editKey = await EditKey.open(originalKeyPath);
@@ -43,6 +37,9 @@ test('add alias', async (t) => {
   const link = await keysPage.navigateToLink(newAliasKeyPath);
 
   await t.expect(link.visible).ok();
+}).before(async (t) => {
+  await tweekManagementClient.deleteKey(newAliasKeyPath);
+  await login(t);
 });
 
 test('should delete alias', async (t) => {
@@ -64,6 +61,9 @@ test('should delete alias', async (t) => {
   await t.expect(link.exists).notOk();
 
   await waitForKeyToBeDeleted(deleteAliasKeyPath);
+}).before(async (t) => {
+  await createAlias(originalKeyPath, deleteAliasKeyPath);
+  await login(t);
 });
 
 test('should redirect to key when navigating to alias', async (t) => {

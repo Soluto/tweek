@@ -1,5 +1,6 @@
 import { Selector, t } from 'testcafe';
 import { attributeSelector, dataComp, dataField } from '../../utils/selector-utils';
+import { navigateToKey } from '../../utils/location-utils';
 import JPad from './JPad';
 import TagInput from './TypedInput/TagInput';
 import ConstValue from './ConstValue';
@@ -83,11 +84,12 @@ export default class EditKey {
   jpad = new JPad();
   constValue = new ConstValue();
 
-  static async open(keyName) {
+  static async open(keyPath) {
+    await navigateToKey(keyPath);
+
     const editKey = new EditKey();
 
     await t
-      .navigateTo(`/keys/${keyName}`)
       .expect(editKey.container.visible)
       .ok()
       .expect(editKey.saveChangesButtonIsSaving.exists)

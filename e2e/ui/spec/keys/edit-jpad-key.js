@@ -7,12 +7,7 @@ import Alert from '../../pages/Alert';
 
 const editJpadKeyPath = 'behavior_tests/edit_key/visual/edit_test';
 
-fixture`Edit JPad Key`.page`${editorUrl}/keys`
-  .httpAuth(credentials)
-  .before(async () => {
-    await createEmptyJPadKey(editJpadKeyPath);
-  })
-  .beforeEach(login);
+fixture`Edit JPad Key`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
 
 const alert = new Alert();
 
@@ -52,6 +47,9 @@ test('should succeed editing JPad key', async (t) => {
   await editKey.commitChanges();
 
   await waitForImplementation(editJpadKeyPath, expectedKeySource);
+}).before(async (t) => {
+  await createEmptyJPadKey(editJpadKeyPath);
+  await login(t);
 });
 
 test('should succeed in editing an object JPad key', async (t) => {
