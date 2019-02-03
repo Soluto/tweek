@@ -72,9 +72,6 @@ const (
 	contextProp
 )
 
-// KeyOrProperty is the name of the key in the map, which holds either key or property
-const KeyOrProperty = ""
-
 func extractContextsFromValuesRequest(r *http.Request, u UserInfo) (ctxs PolicyResource, err error) {
 	uri := r.URL
 
@@ -115,11 +112,12 @@ func extractContextFromContextRequest(r *http.Request, u UserInfo) (ctx PolicyRe
 
 	switch method {
 	case "DELETE":
+		var prop string
 		if len(segments) <= contextProp {
-			err = fmt.Errorf("ExtractContextFromContextRequest: missing property for context request")
-			return
+			prop = "*"
+		} else {
+			prop = segments[contextProp]
 		}
-		prop := segments[contextProp]
 		ctx.Item = fmt.Sprintf("context/%v/%v", identityType, prop)
 		ctx.Contexts[identityType] = identityID
 	case "GET", "POST":

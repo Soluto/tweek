@@ -124,6 +124,31 @@ paths:
       responses:
         '200':
           description: Ok
+    delete:
+      operationId: deleteContext
+      summary: Delete identity context
+      description: |
+        require permissions:
+          - "context/{identityType}/*" (with limitation based on context policy and context identifier )
+      tags:
+        - context
+      parameters:
+        - name: identityType
+          in: path
+          description: the type of the identity - for example user
+          required: true
+          schema:
+            type: string
+        - name: identityId
+          in: path
+          description: the identifier of the identity - for example jaime
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+
   '/context/{identityType}/{identityId}/{prop}':
     delete:
       operationId: deleteContextProperty

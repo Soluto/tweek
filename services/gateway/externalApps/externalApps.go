@@ -6,15 +6,16 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"runtime"
+	"time"
 	"tweek-gateway/appConfig"
 
 	minio "github.com/minio/minio-go"
 	nats "github.com/nats-io/go-nats"
-	"golang.org/x/crypto/pbkdf2"
-
 	"github.com/sirupsen/logrus"
+	"golang.org/x/crypto/pbkdf2"
 )
 
 // ExternalApp - type to store external app info
@@ -78,6 +79,28 @@ func compareKeys(appKey SecretKey, secretKey string) bool {
 	return hash == appKey.Hash
 }
 
+func verifyMinioReadiness(mc *minio.Client, bucket string) {
+	for i := 0; ; i++ {
+		found, err := mc.BucketExists(bucket)
+		if err == nil && !found {
+			err = fmt.Errorf("Minio bucket doesn't not exist")
+		}
+		if err == nil {
+			_, err = mc.StatObject(bucket, "versions", minio.StatObjectOptions{})
+		}
+		if err == nil {
+			logrus.Infoln("Minio bucket is ready")
+			break
+		} else {
+			if i > 10 {
+				logrus.WithError(err).Panic("Minio bucket not ready")
+			}
+			logrus.WithError(err).Infoln("retrying getting Minio bucket")
+			time.Sleep(2 * time.Second)
+		}
+	}
+}
+
 // Init - function to init external apps
 func Init(cfg *appConfig.PolicyStorage) {
 	logrus.Info("Initializing external apps...")
@@ -94,21 +117,24 @@ func Init(cfg *appConfig.PolicyStorage) {
 		logrus.WithError(err).Panic("External apps init error")
 	}
 
+	verifyMinioReadiness(client, cfg.MinioBucketName)
+
 	subscription, err := nc.Subscribe("version", refreshApps(cfg))
 	repo.natsSubscription = subscription
-	runtime.SetFinalizer(&repo, finilizer)
+	runtime.SetFinalizer(&repo, finalizer)
 
-	refreshApps(cfg)
+	refreshApps(cfg)(&nats.Msg{})
 }
 
 func refreshApps(cfg *appConfig.PolicyStorage) nats.MsgHandler {
 	return func(msg *nats.Msg) {
 		logrus.Info("Refreshing external apps...")
-		obj, err := repo.minioClient.GetObject(cfg.MinioBucketName, "external_apps.json", minio.GetObjectOptions{})
+		reader, err := repo.minioClient.GetObject(cfg.MinioBucketName, "external_apps.json", minio.GetObjectOptions{})
 		if err != nil {
 			logrus.WithError(err).Panic("Get external apps from minio failed")
 		}
-		buf, err := ioutil.ReadAll(obj)
+		defer reader.Close()
+		buf, err := ioutil.ReadAll(reader)
 		if err != nil {
 			logrus.WithError(err).Panic("Read external apps object failed")
 		}
@@ -122,7 +148,7 @@ func refreshApps(cfg *appConfig.PolicyStorage) nats.MsgHandler {
 	}
 }
 
-func finilizer(r *externalAppsRepo) {
+func finalizer(r *externalAppsRepo) {
 	if r.natsSubscription != nil && r.natsSubscription.IsValid() {
 		r.natsSubscription.Unsubscribe()
 	}
