@@ -114,5 +114,26 @@ namespace Tweek.Drivers.ContextIntegrationTests
             Assert.Contains(CREATION_DATE, result.Keys);
             Assert.Equal(creationDate, result[CREATION_DATE]);
         }
+
+        [Fact]
+         public async Task ContextCreated_ThenContextDelete_IdentityDeleted()
+        {
+            var testIdentity = TestIdentity;
+            await Driver.AppendContext(testIdentity, TestContext);
+            var result = await Driver.GetContext(testIdentity);
+            Assert.Contains(CREATION_DATE, result.Keys);
+
+            await Driver.DeleteContext(testIdentity);
+            result = await Driver.GetContext(testIdentity);
+            Assert.Equal(0, result.Count);
+        }
+
+         [Fact]
+         public async Task ContextDoesntExist_DeleteContext_DoesntThrow()
+         {
+             var testIdentity = TestIdentity;
+             await Driver.DeleteContext(testIdentity);
+             await Driver.DeleteContext(testIdentity);
+         }
     }
 }

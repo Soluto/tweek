@@ -2,7 +2,7 @@
 import * as R from 'ramda';
 import { handleActions } from 'redux-actions';
 import { push } from 'react-router-redux';
-import fetch from '../../utils/fetch';
+import { tweekManagementClient } from '../../utils/tweekClients';
 import { showError } from './notifications';
 
 const GET_CONTEXT = 'GET_CONTEXT';
@@ -20,8 +20,7 @@ export const getContext = ({ identityType, identityId }) =>
   async function (dispatch) {
     dispatch({ type: GET_CONTEXT });
     try {
-      const contextUrl = `/context/${identityType}/${encodeURIComponent(identityId)}`;
-      const contextData = await fetch(contextUrl).then(res => res.json());
+      const contextData = await tweekManagementClient.getContext(identityType, identityId);
       dispatch({ type: CONTEXT_RECEIVED, payload: contextData });
     } catch (error) {
       dispatch(showError({ title: 'Failed to retrieve context', error }));
@@ -36,26 +35,24 @@ export const saveContext = ({ identityType, identityId }) =>
     dispatch({ type: SAVE_CONTEXT });
     const context = getState().context;
 
-    const contextUrl = `/context/${identityType}/${encodeURIComponent(identityId)}`;
     const getDeletedKeys = R.pipe(R.unapply(R.map(R.keys)), R.apply(R.difference));
     const getModifiedKeys = R.pipe(R.unapply(R.map(R.toPairs)), R.apply(R.difference), R.pluck(0));
 
     const keysToDelete = getDeletedKeys(context.remote, context.local);
-    const keysToDeleteUrls = keysToDelete.map(key => `${contextUrl}/${key}`);
     const modifiedKeys = getModifiedKeys(context.local, context.remote);
 
     try {
       if (modifiedKeys.length > 0) {
-        const currentRemoteContext = await fetch(contextUrl).then(res => res.json());
-
-        await fetch(contextUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(R.pickAll(modifiedKeys, context.local)),
-        });
+        await tweekManagementClient.appendContext(
+          identityType,
+          identityId,
+          R.pickAll(modifiedKeys, context.local),
+        );
       }
 
-      await Promise.all(keysToDeleteUrls.map(k => fetch(k, { method: 'DELETE' })));
+      await Promise.all(
+        keysToDelete.map(key => tweekManagementClient.deleteContext(identityType, identityId, key)),
+      );
 
       dispatch({ type: CONTEXT_SAVED, success: true });
     } catch (error) {

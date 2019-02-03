@@ -1,4 +1,4 @@
-{    
+{
     "upstreams": {
         "api": "http://localhost:4003",
         "authoring": "http://localhost:4005",
@@ -9,9 +9,9 @@
             "providers": {
                 "mock": {
                     "name": "Mock OpenId Connect server",
-                    "issuer": "http://localhost:4011",
-                    "authority": "http://localhost:4011",
-                    "jwks_uri": "http://localhost:4011/.well-known/openid-configuration/jwks",
+                    "issuer": "http://localhost:8081",
+                    "authority": "http://localhost:8081",
+                    "jwks_uri": "http://localhost:8081/.well-known/openid-configuration/jwks",
                     "client_id": "tweek-openid-mock-client",
                     "login_info": {
                         "login_type": "oidc",

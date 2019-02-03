@@ -22,7 +22,7 @@ func (a *emptyAuditor) TokenError(err error) {
 }
 
 func TestAuthorizationMiddleware(t *testing.T) {
-	authorization, err := ioutil.ReadFile("./testdata/authorization.rego")
+	authorization, err := ioutil.ReadFile("../authorization.rego")
 	if err != nil {
 		t.Fatal("Could not load rego file")
 	}
@@ -69,6 +69,16 @@ func TestAuthorizationMiddleware(t *testing.T) {
 			name: "Deny writing context for someone else",
 			args: args{method: "POST", path: "/api/v2/context/user/bob@security.test", user: "alice@security.test", group: "default"},
 			want: http.StatusForbidden,
+		},
+		{
+			name: "Deny deleting context for someone else",
+			args: args{method: "DELETE", path: "/api/v2/context/user/bob@security.test", user: "alice@security.test", group: "default"},
+			want: http.StatusForbidden,
+		},
+		{
+			name: "Allow deleting context for self",
+			args: args{method: "DELETE", path: "/api/v2/context/user/bob@security.test", user: "bob@security.test", group: "default"},
+			want: http.StatusOK,
 		},
 		{
 			name: "Deny deleting context property for someone else",

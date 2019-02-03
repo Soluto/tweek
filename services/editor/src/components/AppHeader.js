@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import logoSrc from './resources/logo.svg';
 import '../styles/core/fonts/fonts.css';
 import './App.css';
+import UserBar from './UserBar';
 
 const ListItemLink = ({ to, ...rest }) => (
   <Route
@@ -28,20 +29,26 @@ const AppHeader = () => (
     <Link to="/" replace>
       <img className={'logo'} src={logoSrc} alt={''} />
     </Link>
-    <ul className={'menu'}>
-      <ListItemLink to="/keys">
-        <img src={require('./resources/keys.svg')} alt={''} />
-        <span>Keys</span>
-      </ListItemLink>
-      <ListItemLink to="/context">
-        <img src={require('./resources/context.svg')} alt={''} />
-        <span>Context</span>
-      </ListItemLink>
-      <ListItemLink to="/settings">
-        <img src={require('./resources/settings.svg')} alt={''} />
-        <span>Settings</span>
-      </ListItemLink>
-    </ul>
+    
+    <div style={{ display:"flex", justifyContent: "flex-end", flexGrow: 1 }}>
+      <ul className={'menu'}>
+        <ListItemLink to="/keys">
+          <img src={require('./resources/keys.svg')} alt={''} />
+          <span>Keys</span>
+        </ListItemLink>
+        <ListItemLink to="/context">
+          <img src={require('./resources/context.svg')} alt={''} />
+          <span>Context</span>
+        </ListItemLink>
+        <ListItemLink to="/settings">
+          <img src={require('./resources/settings.svg')} alt={''} />
+          <span>Settings</span>
+        </ListItemLink>
+      </ul>
+      <div>
+        <UserBar/>
+      </div>
+    </div>
   </div>
 );
 

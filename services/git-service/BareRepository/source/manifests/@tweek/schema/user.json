@@ -43,6 +43,9 @@
                 }
              }
             },
+            "Country": {
+              "type": "string"
+            },
             "Identities":{
               "type": {
                 "name": "array", 

@@ -9,28 +9,26 @@
     "node": ">=8.7.0"
   },
   "scripts": {
-    "start": "yarn docker-compose up --force-recreate -d git redis && yarn docker-compose up -d gateway api authoring publishing",
+    "start": "yarn docker-compose up -d gateway",
+    "start:build": "yarn docker-compose up -d --build gateway",
     "test": "mocha './spec/**/*.js' --timeout 30000 --exit",
     "build": "yarn docker-compose build",
     "test:full-env": "yarn start && yarn test",
-    "test:full-env:build": "yarn build && yarn test:full-env",
-    "test:docker": "yarn start && yarn build e2e-integration && yarn docker-compose run --rm e2e-integration",
-    "test:docker:build": "yarn build && yarn test:docker",
+    "test:full-env:build": "yarn start:build && yarn test",
+    "test:docker": "yarn start:build && yarn docker-compose run --rm e2e-integration",
     "teardown": "yarn docker-compose down --remove-orphans",
     "logs": "yarn docker-compose logs",
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.e2e.yml"
   },
   "devDependencies": {
-    "chai": "^4.1.2",
-    "jsonwebtoken": "^8.1.0",
-    "mocha": "^4.0.1",
-    "nconf": "^0.9.1",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "nconf": "^0.10.0",
     "supertest": "^3.0.0"
   },
   "dependencies": {
-    "bluebird": "^3.5.1",
-    "fast-json-patch": "^2.0.6",
-    "minio": "^4.0.0",
-    "node-fetch": "^2.0.0"
+    "fast-json-patch": "^2.0.7",
+    "minio": "^7.0.5",
+    "uuid": "^3.3.2"
   }
 }

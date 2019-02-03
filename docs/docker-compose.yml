@@ -1,0 +1,6 @@
+tweek-docs:
+  image: starefossen/github-pages
+  volumes:
+    - ./:/usr/src/app
+  ports:
+    - 5000:4000

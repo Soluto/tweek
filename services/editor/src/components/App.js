@@ -2,7 +2,8 @@
 import React from 'react';
 import { Observable } from 'rxjs/Rx';
 import { setObservableConfig, compose } from 'recompose';
-
+import { TweekProvider } from '../contexts/Tweek';
+import { CurrentUserProvider } from '../contexts/CurrentUser';
 import withLoading from '../hoc/with-loading';
 import { refreshSchema } from '../services/context-service';
 import * as TypesService from '../services/types-service';
@@ -10,7 +11,6 @@ import AppHeader from './AppHeader';
 import AppPage from './AppPage';
 import ErrorPage from './ErrorPage';
 import GoogleTagManager from './googleTagManager';
-
 import { withTypesService } from './common/Input/TypedInput';
 import '../styles/core/fonts/fonts.css';
 import './App.css';
@@ -20,11 +20,15 @@ setObservableConfig({
 });
 
 const App = ({ children }) => (
-  <div className={'app'}>
-    <GoogleTagManager />
-    <AppHeader />
-    <AppPage children={children} />
-  </div>
+  <CurrentUserProvider>
+    <TweekProvider>
+      <div className={'app'}>
+        <GoogleTagManager />
+        <AppHeader />
+        <AppPage children={children} />
+      </div>
+    </TweekProvider>
+  </CurrentUserProvider>
 );
 
 const preload = async () => await Promise.all([TypesService.refreshTypes(), refreshSchema()]);

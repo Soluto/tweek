@@ -77,7 +77,7 @@ export default class GitRepository {
     );
   }
 
-  async readFile(fileName: string, { revision }: any = {}) {
+  async readFile(fileName: string, { revision }: any = {}) : Promise<string | undefined> {
     const commit = await (revision ? this._repo.getCommit(revision) : this._repo.getMasterCommit());
     const entry = await commit.getEntry(fileName);
     return entry.isBlob() ? (await entry.getBlob()).toString() : undefined;

@@ -1,18 +1,13 @@
 const { expect } = require('chai');
-const { init: initClients } = require('../../utils/clients');
+const client = require('../../utils/client');
 
 const originalKey = 'integration_tests/some_key';
 const aliasKey = 'integration_tests/alias_key';
 
 describe('tweek api - key aliases', () => {
-  let clients;
-  before(async () => {
-    clients = await initClients();
-  });
-
   it('should have the same value as the original key', async () => {
-    const original = await clients.api.get(`/api/v1/keys/${originalKey}`);
-    const alias = await clients.api.get(`/api/v1/keys/${aliasKey}`);
+    const original = await client.get(`/api/v2/values/${originalKey}`);
+    const alias = await client.get(`/api/v2/values/${aliasKey}`);
 
     expect(JSON.parse(original.body)).to.equal(JSON.parse(alias.body));
   });

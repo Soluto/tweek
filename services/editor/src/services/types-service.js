@@ -1,5 +1,5 @@
 /* global process */
-import fetch from '../utils/fetch';
+import { tweekClient, tweekManagementClient } from '../utils/tweekClients';
 
 export const types = {
   string: {
@@ -26,18 +26,17 @@ export const types = {
 };
 
 export async function refreshTypes() {
-  const data = await fetch(`/values/@tweek/custom_types/_`);
-  const loadedTypes = await data.json();
+  const loadedTypes = await tweekClient.getValues('@tweek/custom_types/_');
 
   for (const type of Object.keys(loadedTypes)) {
-    types[type] = Object.assign({}, { name: type }, loadedTypes[type]);
+    types[type] = Object.assign({ name: type }, loadedTypes[type]);
   }
 }
 
 export function convertValue(value, targetType) {
   const type = typeof targetType === 'string' ? types[targetType] : targetType;
   if (!type) {
-    throw new Error('Unknown type', targetType);
+    throw new Error(`Unknown type ${targetType}`);
   }
 
   switch (type.base || type.name) {
@@ -64,7 +63,7 @@ export function isAllowedValue(valueType, value) {
   return (
     valueType &&
     (!valueType.allowedValues ||
-      valueType.allowedValues.length == 0 ||
+      valueType.allowedValues.length === 0 ||
       valueType.allowedValues.includes(value))
   );
 }
@@ -106,8 +105,7 @@ export function isStringValidJson(str, targetType) {
 export async function getValueTypeDefinition(key) {
   if (!key || key.length === 0) return types.string;
   try {
-    const response = await fetch(`/manifests/${key}`);
-    const manifest = await response.json();
+    const manifest = await tweekManagementClient.getKeyManifest(key);
 
     if (manifest.implementation.type === 'alias') {
       return getValueTypeDefinition(manifest.implementation.key);

@@ -18,7 +18,13 @@ func NewUserInfoHandler(configuration *appConfig.Security, extractor SubjectExtr
 			return
 		}
 
-		jsonUserInfo, err := json.Marshal(userInfo.Sub())
+		jsonUserInfo, err := json.Marshal(map[string]interface{}{
+			"User":  userInfo.Sub().User,
+			"Group": userInfo.Sub().Group,
+			"Email": userInfo.Email(),
+			"Name":  userInfo.Name(),
+		})
+
 		if err != nil {
 			logrus.WithError(err).Panic("Error serializing user info")
 		}

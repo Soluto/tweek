@@ -1,0 +1,95 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+
+@import "minima";
+
+.site-header{
+		background-color: #009fda;
+		color:white;
+		border: none;
+		height: 70px;
+		min-height: 70px;
+		position: relative;
+		.logo{
+			    height: 70px;
+					width: 200px;
+					background-image: url(./logo.svg);
+					background-repeat: no-repeat;
+					background-position: center;
+					float: left;
+		}
+}
+
+body{
+	background-color:#eee;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-content {
+	overflow-y: auto;
+	flex-grow: 1;
+	padding: 20px;
+}
+
+.side-menu{
+		min-width: 350px;
+		background-color:#414b53;
+		ul{
+			margin: 0;
+		}
+		ul li{
+			list-style: none;
+			padding-left: 10px;
+		}
+	  .folder-container{
+		  .dir-item{
+			font-size: 16px;
+			height: 30px;
+			cursor: pointer;
+			padding-left: 28px;
+			padding-top: 10px;
+			color: #d8d8d8;
+			background-color: transparent;
+			font-size: 16px;
+			background-image: url('./folder-icon-closed.svg');
+			background-position: 0 50%;
+			background-repeat: no-repeat;
+			background-size: 20px;
+		  }
+		  ul{
+			  max-height: 0;
+ 			  transition: max-height 0.2s cubic-bezier(0,1,0,1);
+			  overflow: hidden;
+		  }
+		  &.open{
+			  	> .dir-item{
+				background-image: url('./folder-icon-opened.svg');
+				  }
+				> ul{
+ 			  		transition: max-height 0.2s cubic-bezier(1,0,1,0);
+					max-height: 9999px;
+				}
+			}
+	  }
+	 .page-item{
+			display: block;	 
+			font-size: 16px;
+			height: 30px;
+			padding-left: 20px;
+			padding-top: 8px;
+			color: #d8d8d8;
+			background-color: transparent;
+			a{
+				color:white;
+				text-decoration: none;
+			}
+			
+	 }
+}

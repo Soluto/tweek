@@ -8,7 +8,7 @@ const RevisionHistorySelect = styled('select')`
   align-self: flex-start;
 `;
 
-const formatDate = date =>
+const formatDate = (date) =>
   `${moment(new Date(date)).calendar(null, { sameElse: 'DD/MM/YYYY [at] HH:mm' })}`;
 
 const Revision = ({ sha, date, author }) => (
@@ -28,14 +28,22 @@ const RevisionHistory = ({ revisionHistory, goToRevision, selectedKey, revision 
     <RevisionHistorySelect
       data-comp="revision-history"
       value={revision || revisionHistory[0]}
-      onChange={e => goToRevision(selectedKey, e.target.value)}
+      onChange={(e) => goToRevision(selectedKey, revisionHistory, e.target.value)}
     >
-      {revisionHistory.map(item => <Revision key={item.sha} {...item} />)}
+      {revisionHistory.map((item) => (
+        <Revision key={item.sha} {...item} />
+      ))}
     </RevisionHistorySelect>
   );
 
-const goToRevision = (key, sha) => push({ pathname: `/keys/${key}`, search: `?revision=${sha}` });
+const goToRevision = (key, revisionHistory, sha) =>
+  sha === revisionHistory[0].sha
+    ? push({ pathname: `/keys/${key}` })
+    : push({ pathname: `/keys/${key}`, search: `?revision=${sha}` });
 
 const mapStateToProps = ({ selectedKey: { key: selectedKey } }) => ({ selectedKey });
 
-export default connect(mapStateToProps, { goToRevision })(RevisionHistory);
+export default connect(
+  mapStateToProps,
+  { goToRevision },
+)(RevisionHistory);

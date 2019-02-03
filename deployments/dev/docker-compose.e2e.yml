@@ -33,10 +33,6 @@ services:
       - Context__Validation__ErrorPolicy=throw
       
   gateway:
-    depends_on:       
-      - minio
-      - nats
-      - oidc-server-mock
     environment:
       - CONFIGOR_ENV=test    
 
@@ -44,12 +40,10 @@ services:
     container_name: oidc-server-mock 
     image: soluto/oidc-server-mock   
     ports:
-      - "4011:80"
+      - "8081:80"
     environment: 
-      - ASPNETCORE_ENVIRONMENT=Development
-      - CLIENT_ID=tweek-openid-mock-client
       - REDIRECT_URIS=http://gateway/auth-result/oidc
-      - TEST_USER={"SubjectId":"00000000-0000-0000-0000-000000000000","Username":"User1","Password":"pwd"}
+  
   
   selenium:
     image: selenium/standalone-chrome-debug:3.8.1
@@ -88,28 +82,20 @@ services:
   e2e-integration:
     build: ../../e2e/integration
     container_name: e2e-integration
+    volumes:
+      - ../../e2e/integration:/opt/app
     depends_on: 
-      - api
-      - authoring
       - gateway
-      - publishing
     environment:
-      - API_URL=http://api
-      - AUTHORING_URL=http://authoring
       - GATEWAY_URL=http://gateway
-      - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
       - MINIO_HOST=minio
       - MINIO_PORT=9000
       - MINIO_ACCESS_KEY_PATH=/run/secrets/minio_access_key
       - MINIO_SECRET_KEY_PATH=/run/secrets/minio_secret_key
       - MINIO_BUCKET=tweek
     secrets:
-      - tweek_ssh_private_key
       - minio_access_key
       - minio_secret_key
-    links:
-      - gateway:api
-      - gateway:authoring
 
   smoke-tests:
     build:

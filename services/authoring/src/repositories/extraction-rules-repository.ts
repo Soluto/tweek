@@ -12,4 +12,11 @@ export default class SubjectExtractionRulesRepository {
       return await gitRepo.commitAndPush(`Updating subject extraction rules`, author);
     });
   }
+
+  getSubjectExtractionRules(): Promise<string> {
+    return this._gitTransactionManager.with(async (gitRepo) => {
+      const ruleData = await gitRepo.readFile('security/subject_extraction_rules.rego');
+      return ruleData;
+    });
+  }
 }

@@ -1,4 +1,4 @@
-# <img src="https://soluto.github.io/docs.tweek.fm/assets/logo-with-background.png" width="400" />
+# <img src="https://docs.tweek.fm/assets/logo-with-background.png" width="400" />
 
 [![Codefresh build status]( https://g.codefresh.io/api/badges/pipeline/soluto/Soluto%2Ftweek%2Ftweek-all?type=cf-2&branch=master)]( https://g.codefresh.io/public/accounts/soluto/pipelines/Soluto/tweek/tweek-all) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/soluto/tweek/blob/master/LICENSE.md) [![Slack](https://tweek-slack.now.sh/badge.svg)](https://tweek-slack.now.sh) [![CircleCI](https://circleci.com/gh/Soluto/tweek/tree/master.svg?style=svg)](https://circleci.com/gh/Soluto/tweek/tree/master)[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
@@ -29,15 +29,31 @@ Tweek aims to be a complete open-source alternative to other industry feature/co
 ### Getting Started
 The easiest way to start evaluating Tweek is to run it locally on docker, make sure you have the latest [docker (for windows/mac/etc..)](https://www.docker.com/get-docker) version installed (17-06+).
 #### Running Tweek
-- clone the repo (``` git clone https://github.com/Soluto/tweek.git ```)
-- run (``` yarn start ```) - this might take a few minutes for the first time
+
+- Clone the repo (``` git clone https://github.com/Soluto/tweek.git ```)
+- [optional] Pull images, run ```yarn docker-compose pull --parallel``` (optional for getting started fast with Tweek as it's skip build)
+
+### Using Docker Compose
+- Run (``` yarn start ```) - this might take a few minutes for the first time
+
+### Using Kubernetes
+- Install Skaffold (https://github.com/GoogleContainerTools/skaffold)
+- Run ```skaffold dev --port-forward=false```
+- Wait for environment to be stable (will take about 10m first time due to building all images, afterward it can take about 2m for environment to stabilize)
+
+### Troubleshooting
+- Run (``` yarn start --build```) to rebuild all images and start Tweek. 
+
 
 #### Edit your first key
 After setting up our environment, we're going to create our first key.
 Keys in tweek are the most basic building blocks and they represent a container for dynamic value that affect feature behaviors.
 Our first key, will be a key that is responsible for the color of a "sign up" button.
 
-- Open http://editor.dev.tweek.localtest.me:81 in browser.
+- Open http://localhost:8080/login in browser.
+- Login
+    - User Basic auth (user: admin-app, password: 8v/iUG0vTH4BtVgkSn3Tng==)
+    - Can also use OIDC mock server login button for testing OIDC (user: User, password: pwd)
 - Go to keys page.
 - Click on "Add Key"
 - Type my_app/sign_button/color
@@ -53,20 +69,34 @@ More on [keys and paths](https://docs.tweek.fm/concepts/keys/keys-ands-paths)
 
 #### Querying Tweek
 Use curl/postman/chrome to fire GET Request:
-- http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/color -> expected to be "red"
-- http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/color?user.Country=canada -> expected to be "blue"
-- http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/_?user.Country=canada -> expected to be {"color":"blue"}
+- http://localhost:8080/api/v2/values/my_app/sign_button/color -> expected to be "red"
+- http://localhost:8080/api/v2/values/my_app/sign_button/color?user.Country=canada -> expected to be "blue"
+- http://localhost:8080/api/v2/values/my_app/sign_button/_?user.Country=canada -> expected to be {"color":"blue"}
 
 Using the rest api, an application can query Tweek for getting the right set of values for each specific user.
 More on Tweek [Rest api](https://docs.tweek.fm/api/rest-api).
 
 #### Adding context data
-Tweek provide's REST api for saving context data. 
-Using the API, use curl/postman to fire POST Request:
-- http://api.dev.tweek.localtest.me:81/api/v1/context/user/john {"Country":"Canada"}  
+
+Tweek provide UI and rest api for editing context.
+
+- Go to context
+- Set Identity Type to User
+- Set User id to John
+- Click enter
+- Set value "Candada" for property Country
 
 After that, we can query Tweek API with:
-- http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/color?user=john -> expected to be "blue"
+- http://localhost:8080/api/v2/values/my_app/sign_button/color?user=john -> expected to be "blue"
+
+You can also use the api for updating Tweek context:
+- curl -X POST http://localhost:8080/api/v2/context/user/john \
+  -H 'content-type: application/json' \
+  -H 'x-client-id: admin-app' \
+  -H 'x-client-secret: 8v/iUG0vTH4BtVgkSn3Tng==' \
+  -d '{
+	"country": "Canada"
+  }'
 
 More on [Context.](https://docs.tweek.fm/concepts/context/intro-to-context)
 
@@ -74,10 +104,10 @@ More on [Context.](https://docs.tweek.fm/concepts/context/intro-to-context)
 Create new key in the editor "my_app/sign_button/is_enabled" with value type "boolean" and default value False.  
 Add new rule, remove all conditions, set the the rule value to gradual release with 50%.
 Try querying configuration with different users and You'll have different results.
-- http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/is_enabled?user=barny
-- http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/is_enabled?user=robin
-- http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/is_enabled?user=ted
-- http://api.dev.tweek.localtest.me:81/api/v1/keys/my_app/sign_button/is_enabled?user=lily
+- http://localhost:8080/api/v2/values/my_app/sign_button/is_enabled?user=barny
+- http://localhost:8080/api/v2/values/my_app/sign_button/is_enabled?user=robin
+- http://localhost:8080/api/v2/values/my_app/sign_button/is_enabled?user=ted
+- http://localhost:8080/api/v2/values/my_app/sign_button/is_enabled?user=lily
 - etc...
 
 More on how multi-variant keys work in Tweek. (link)

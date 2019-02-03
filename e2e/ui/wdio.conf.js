@@ -3,7 +3,7 @@ nconf
   .argv()
   .env()
   .defaults({
-    GATEWAY_URL: 'http://localhost:4099',
+    GATEWAY_URL: 'http://localhost:8080',
     EDITOR_URL: 'http://localhost:4004/',
     TWEEK_API_URL: 'http://localhost:4003/',
     AUTHORING_URL: 'http://localhost:4005/',
@@ -24,6 +24,7 @@ exports.config = {
   specs: ['./spec/**/*.js'],
   exclude: [],
   maxInstances: 1,
+  deprecationWarnings: false,
   //
   // If you have trouble getting all important capabilities together, check out the
   // Sauce Labs platform configurator - a great tool to configure your capabilities:
