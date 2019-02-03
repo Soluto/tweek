@@ -11,13 +11,18 @@
 		height: 70px;
 		min-height: 70px;
 		position: relative;
+		text-align: center;
+		.site-title {
+			float:none;
+		}
+
 		.logo{
 			    height: 70px;
 					width: 200px;
 					background-image: url(./logo.svg);
 					background-repeat: no-repeat;
 					background-position: center;
-					float: left;
+					margin: 0 auto;
 		}
 }
 
@@ -40,6 +45,12 @@ body{
 }
 
 .side-menu{
+		.group-sep{
+			background-color:#3A3A3A;
+			text-align:center;
+			line-height: 30px;
+			color: #eee;
+		}
 		min-width: 350px;
 		background-color:#414b53;
 		ul{
@@ -54,24 +65,32 @@ body{
 			font-size: 16px;
 			height: 30px;
 			cursor: pointer;
-			padding-left: 28px;
 			padding-top: 10px;
 			color: #d8d8d8;
 			background-color: transparent;
 			font-size: 16px;
-			background-image: url('./folder-icon-closed.svg');
-			background-position: 0 50%;
-			background-repeat: no-repeat;
-			background-size: 20px;
 		  }
 		  ul{
 			  max-height: 0;
  			  transition: max-height 0.2s cubic-bezier(0,1,0,1);
 			  overflow: hidden;
 		  }
+		  > .dir-item {
+				> i::before{
+					content: '\f07b'
+				}
+				> span {
+					margin-left: 6px;
+				}
+			}
 		  &.open{
 			  	> .dir-item{
-				background-image: url('./folder-icon-opened.svg');
+					> i::before{
+						content: '\f07c'
+					}
+					> span {
+						margin-left: 4px;
+					}
 				  }
 				> ul{
  			  		transition: max-height 0.2s cubic-bezier(1,0,1,0);
@@ -83,10 +102,14 @@ body{
 			display: block;	 
 			font-size: 16px;
 			height: 30px;
-			padding-left: 20px;
 			padding-top: 8px;
 			color: #d8d8d8;
 			background-color: transparent;
+			&.selected{
+				a {
+					color: #009fda;
+				}
+			}
 			a{
 				color:white;
 				text-decoration: none;
