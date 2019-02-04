@@ -46,13 +46,14 @@ body{
 }
 
 .mobile-menu{
-	display: none;
+	display: none !important;
 	font-size: 40px;
+	color: #00506D;
+	position: absolute;
+	top: 14px;
+	left: 16px;
     @media only screen and (max-width: 768px) {
-		display: block;
-		position: absolute;
-		top: 10px;
-		left: 10px
+		display: block !important;	
 	}
 }
 
