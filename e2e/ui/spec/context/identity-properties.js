@@ -1,49 +1,55 @@
-/* global describe, before, after, it, browser */
+import { credentials, login } from '../../utils/auth-utils';
+import { editorUrl } from '../../utils/constants';
+import { getFixedKeys, getProperties } from '../../clients/identity-client';
+import { tweekManagementClient } from '../../clients/tweek-clients';
+import ContextPage from '../../pages/Context';
 
-import Identity from '../../utils/Identity';
-import assert from 'assert';
-import { login } from '../../utils/auth-utils';
+const contextPage = new ContextPage();
+const identityId = 'identity_properties_user';
+const identityType = 'user';
 
-describe('identity properties', () => {
-  const identityId = 'awesome_user';
-  const identityType = 'user';
+fixture`Context Identity Properties`.page`${editorUrl}/context`
+  .httpAuth(credentials)
+  .beforeEach(login);
 
-  before(() => {
-    login();
-    browser.url('/context');
-  });
+test('should modify identity properties', async (t) => {
+  const identity = await contextPage.open(identityType, identityId);
 
-  it('should modify identity properties', () => {
-    const identity = Identity.open(identityType, identityId);
-    const initialOverrideKeys = identity.overrideKeys;
+  const expectedProperties = {
+    FavoriteFruit: 'Tomato',
+    Gender: 'male',
+    IsInGroup: false,
+  };
 
-    const expectedProperties = {
-      FavoriteFruit: 'Tomato',
-      Gender: 'male',
-      IsInGroup: false,
-    };
+  for (const [property, value] of Object.entries(expectedProperties)) {
+    await identity.property(property).update(value);
+  }
 
-    Object.entries(expectedProperties).forEach(([key, value]) =>
-      identity.updateProperty(key, value),
-    );
+  await identity.commitChanges();
 
-    identity.commitChanges();
+  await t
+    .expect(await getProperties(identityType, identityId))
+    .eql(expectedProperties)
+    .expect(await getFixedKeys(identityType, identityId))
+    .eql({});
 
-    browser.pause(500);
+  const editedProperties = {
+    Gender: 'female',
+    NumberOfSiblings: 5,
+  };
 
-    assert.deepEqual(identity.overrideKeys, initialOverrideKeys);
-    assert.deepEqual(identity.properties, expectedProperties);
+  for (const [property, value] of Object.entries(editedProperties)) {
+    await identity.property(property).update(value);
+  }
 
-    const editedProperties = {
-      Gender: 'female',
-      NumberOfSiblings: 5,
-    };
+  await identity.commitChanges();
 
-    Object.entries(editedProperties).forEach(([key, value]) => identity.updateProperty(key, value));
-
-    identity.commitChanges();
-
-    assert.deepEqual(identity.overrideKeys, initialOverrideKeys);
-    assert.deepEqual(identity.properties, { ...expectedProperties, ...editedProperties });
-  });
+  await t
+    .expect(await getProperties(identityType, identityId))
+    .eql({ ...expectedProperties, ...editedProperties })
+    .expect(await getFixedKeys(identityType, identityId))
+    .eql({});
+}).before(async (t) => {
+  await tweekManagementClient.deleteContext(identityType, identityId);
+  await login(t);
 });

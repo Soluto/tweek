@@ -3,6 +3,7 @@ import Oidc from 'oidc-client';
 import adal from 'adal-angular';
 import jwt_decode from 'jwt-decode';
 import moment from 'moment';
+import { omit } from 'ramda';
 
 const store = {};
 let storage;
@@ -12,8 +13,8 @@ if (typeof localStorage === 'undefined') {
     setItem: (itemKey, itemValue) => {
       store[itemKey] = itemValue;
     },
-    getItem: itemKey => store[itemKey],
-    removeItem: itemKey => delete store[itemKey],
+    getItem: (itemKey) => store[itemKey],
+    removeItem: (itemKey) => delete store[itemKey],
   };
 } else {
   storage = localStorage;
@@ -28,7 +29,7 @@ export const retrieveToken = () => storage.getItem('token');
 export const signOut = () => storage.removeItem('token');
 
 const storeOidcSettings = (settings) => {
-  storage.setItem('oidc-settings', JSON.stringify(settings));
+  storage.setItem('oidc-settings', JSON.stringify(omit(['userStore'], settings)));
 };
 
 const retrieveOidcSettings = () => JSON.parse(storage.getItem('oidc-settings'));
@@ -92,7 +93,7 @@ export const signinRequest = (oidcSettings, state) => {
 
 export const processSigninRedirectCallback = async () => {
   const oidcClient = getOidcClient();
-  oidcClient.events.addSilentRenewError(error => console.log('Error while renew token', error));
+  oidcClient.events.addSilentRenewError((error) => console.log('Error while renew token', error));
   const user = await oidcClient.signinRedirectCallback();
   storeToken(user.id_token);
   return user;
@@ -142,5 +143,5 @@ export const getAzureState = () => {
   return config.state;
 };
 const getAzureConfig = () => JSON.parse(storage.getItem('azureConfig'));
-const setAzureConfig = config => storage.setItem('azureConfig', JSON.stringify(config));
+const setAzureConfig = (config) => storage.setItem('azureConfig', JSON.stringify(config));
 const isAzure = () => storage.getItem('azureConfig') !== null;
