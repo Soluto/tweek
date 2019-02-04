@@ -28,12 +28,12 @@ func toMap(sm *sync.Map) map[string]interface{} {
 
 // NewStatusHandler - handler function that returns versions for all services
 func NewStatusHandler(config *appConfig.Upstreams) http.HandlerFunc {
-	services := map[string]string{
-		"api":        config.API,
-		"authoring":  config.Authoring,
-		"publishing": config.Publishing,
-	}
 	return func(w http.ResponseWriter, r *http.Request) {
+		services := map[string]string{
+			"api":        config.API,
+			"authoring":  config.Authoring,
+			"publishing": config.Publishing,
+		}
 		var wg sync.WaitGroup
 		wg.Add(len(services))
 
