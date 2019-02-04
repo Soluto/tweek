@@ -118,11 +118,3 @@ services:
       
   nats:
     image: nats:1.0.4-linux
-
-  selenium:
-    image: selenium/standalone-chrome:3.8.1
-    logging:
-      driver: "none"
-    links:
-      - gateway:api
-      - gateway:authoring

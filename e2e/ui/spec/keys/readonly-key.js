@@ -1,29 +1,17 @@
-/* global describe, before, after, it, browser */
+import { editorUrl } from '../../utils/constants';
+import { credentials, login } from '../../utils/auth-utils';
+import EditKey from '../../pages/Keys/EditKey';
 
-import { expect } from 'chai';
-import Key from '../../utils/Key';
-import Rule from '../../utils/Rule';
-import { dataComp } from '../../utils/selector-utils';
-import { login } from '../../utils/auth-utils';
+const testKeyFullPath = 'behavior_tests/read_only';
 
-const keyMessage = dataComp('key-message');
-const addRule = dataComp('add-rule');
+fixture`Readonly Key`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
 
-describe('readonly key', () => {
-  const testKeyFullPath = 'behavior_tests/read_only';
+test('should open the key as readonly', async (t) => {
+  const editKey = await EditKey.open(testKeyFullPath);
 
-  before(() => login());
-
-  it('should open the key as readonly', () => {
-    Key.open(testKeyFullPath);
-
-    browser.waitForVisible(keyMessage);
-
-    const numberOfRules = Rule.count();
-
-    browser.click(addRule);
-    browser.click(addRule);
-
-    expect(Rule.count()).to.equal(numberOfRules);
-  });
+  await t
+    .expect(editKey.messageText.visible)
+    .ok()
+    .expect(editKey.jpad.container.withAttribute('disabled').exists)
+    .ok();
 });
