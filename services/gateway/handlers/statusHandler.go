@@ -17,6 +17,15 @@ import (
 
 var repoRevision string
 
+func toMap(sm *sync.Map) map[string]interface{} {
+	m := map[string]interface{}{}
+	sm.Range(func(k interface{}, v interface{}) bool {
+		m[k.(string)] = v
+		return true
+	})
+	return m
+}
+
 // NewStatusHandler - handler function that returns versions for all services
 func NewStatusHandler(config *appConfig.Upstreams) http.HandlerFunc {
 	services := map[string]string{
@@ -29,22 +38,22 @@ func NewStatusHandler(config *appConfig.Upstreams) http.HandlerFunc {
 		wg.Add(len(services))
 
 		result := map[string]interface{}{}
-		serviceStatuses := map[string]interface{}{}
+		var serviceStatuses sync.Map
 		isHealthy := true
 
 		for serviceName, serviceHost := range services {
-			go func(name, host string, statuses map[string]interface{}, wgroup *sync.WaitGroup) {
+			go func(name, host string) {
 				serviceStatus, serviceIsHealthy := checkServiceStatus(name, host)
-				statuses[name] = serviceStatus
+				serviceStatuses.Store(name, serviceStatus)
 				if !serviceIsHealthy {
 					isHealthy = false
 				}
-				wgroup.Done()
-			}(serviceName, serviceHost, serviceStatuses, &wg)
+				wg.Done()
+			}(serviceName, serviceHost)
 		}
 		wg.Wait()
 
-		result["services"] = serviceStatuses
+		result["services"] = toMap(&serviceStatuses)
 		result["repository revision"] = repoRevision
 
 		if !isHealthy {
