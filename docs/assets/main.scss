@@ -45,8 +45,38 @@ body{
 	position: relative;
 }
 
+.mobile-menu{
+	display: none;
+	font-size: 40px;
+    @media only screen and (max-width: 768px) {
+		display: block;
+		position: absolute;
+		top: 10px;
+		left: 10px
+	}
+}
+
 .side-menu{
+	@media only screen and (max-width: 768px) {
+		 &.open{
+			 display: block;
+		 }
+		 display: none;
+	}
 		overflow-y: auto;
+		&::-webkit-scrollbar {
+			width: 12px;
+		 }
+		 &::-webkit-scrollbar-thumb {
+			border-radius: 6px;
+			background-color: #bcbbbb;
+			border: 3px solid #3a3e41;
+		 }
+		 &::-webkit-scrollbar-track {
+			background-color: #3a3e41;
+			border-radius: 6px;
+		 }
+
 		.group-sep{
 			background-color:#3A3A3A;
 			text-align:center;

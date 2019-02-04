@@ -1,5 +1,6 @@
 {% if page_paths %}
-      <nav class="side-menu">
+      <i class="mobile-menu fas fa-bars" onclick="document.querySelector('nav.side-menu').classList.toggle('open')" ></i>
+      <nav class="side-menu">    
           <div class="group-sep">Documentation</div>
           {% assign sorted_pages = site.pages | sort: "path" %}
           {% include _sidemenu_rec.html context="" pages=sorted_pages %}
