@@ -42,14 +42,14 @@ func NewStatusHandler(config *appConfig.Upstreams) http.HandlerFunc {
 		isHealthy := true
 
 		for serviceName, serviceHost := range services {
-			go func(name, host string, statuses *sync.Map, wgroup *sync.WaitGroup) {
+			go func(name, host string) {
 				serviceStatus, serviceIsHealthy := checkServiceStatus(name, host)
-				statuses.Store(name, serviceStatus)
+				serviceStatuses.Store(name, serviceStatus)
 				if !serviceIsHealthy {
 					isHealthy = false
 				}
-				wgroup.Done()
-			}(serviceName, serviceHost, &serviceStatuses, &wg)
+				wg.Done()
+			}(serviceName, serviceHost)
 		}
 		wg.Wait()
 
