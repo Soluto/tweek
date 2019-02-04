@@ -1,37 +1,31 @@
-/* global describe, before, after, it, browser */
+import { editorUrl } from '../../utils/constants';
+import { credentials, login } from '../../utils/auth-utils';
+import { getLocation } from '../../utils/location-utils';
+import KeysPage from '../../pages/Keys';
 
-import { expect } from 'chai';
-import Key from '../../utils/Key';
-import KeysList from '../../utils/KeysList';
-import { attributeSelector, dataComp } from '../../utils/selector-utils';
-import { login } from '../../utils/auth-utils';
+const keysListTestFolder = 'behavior_tests/keys_list';
+const greenAppleKeyFullPath = `${keysListTestFolder}/green_apple`;
+const redAppleKeyFullPath = `${keysListTestFolder}/red_apple`;
+const bananaKeyFullPath = `${keysListTestFolder}/banana`;
 
-describe('keys list and filter', () => {
-  const keysListTestFolder = 'behavior_tests/keys_list';
+const keysPage = new KeysPage();
 
-  const greenAppleKeyFullPath = `${keysListTestFolder}/green_apple`;
-  const redAppleKeyFullPath = `${keysListTestFolder}/red_apple`;
-  const bananaKeyFullPath = `${keysListTestFolder}/banana`;
+fixture`Keys List And Filter`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
 
-  const keyLink = keyName =>
-    `${dataComp('key-link')} ${attributeSelector('href', `/keys/${keyName}`)}`;
+test('should be able to navigate to key by folders', async (t) => {
+  await keysPage.openKey(greenAppleKeyFullPath);
 
-  before(() => {
-    login();
-    Key.open();
-  });
+  await t.expect(getLocation()).eql(`${editorUrl}/keys/${greenAppleKeyFullPath}`);
+});
 
-  it('should be able to navigate to key by folders', () => {
-    KeysList.navigate(greenAppleKeyFullPath);
+test('should display matching keys when filtering', async (t) => {
+  await keysPage.search('apple');
 
-    expect(Key.isCurrent(greenAppleKeyFullPath)).to.be.true;
-  });
-
-  it('should display matching keys when filtering', () => {
-    KeysList.search('apple');
-
-    browser.waitForVisible(keyLink(greenAppleKeyFullPath), 2000);
-    browser.waitForVisible(keyLink(redAppleKeyFullPath), 2000);
-    browser.waitForVisible(keyLink(bananaKeyFullPath), 2000, true);
-  });
+  await t
+    .expect(keysPage.link(greenAppleKeyFullPath).visible)
+    .ok()
+    .expect(keysPage.link(redAppleKeyFullPath).visible)
+    .ok()
+    .expect(keysPage.link(bananaKeyFullPath).exists)
+    .notOk();
 });

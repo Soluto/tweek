@@ -1,53 +1,58 @@
-/* global describe, before, after, it, browser */
+import { editorUrl } from '../../utils/constants';
+import { login, credentials } from '../../utils/auth-utils';
+import { getFixedKeys, getProperties } from '../../clients/identity-client';
+import { tweekManagementClient } from '../../clients/tweek-clients';
+import ContextPage from '../../pages/Context';
 
-import Identity from '../../utils/Identity';
-import assert from 'assert';
-import { login } from '../../utils/auth-utils';
+const contextPage = new ContextPage();
+const identityId = 'override_keys_user';
+const identityType = 'user';
+const typedKey = 'behavior_tests/context/override_key';
 
-describe('override keys', () => {
-  const identityId = 'awesome_user';
-  const identityType = 'user';
-  const typedKey = 'behavior_tests/context/override_key';
+fixture`Context Identity Properties`.page`${editorUrl}/context`
+  .httpAuth(credentials)
+  .beforeEach(login);
 
-  before(() => {
-    login();
-    browser.url('/context');
-  });
+test('should modify override keys', async (t) => {
+  const identity = await contextPage.open(identityType, identityId);
 
-  it('should modify override keys', () => {
-    const identity = Identity.open(identityType, identityId);
-    const initialProperties = identity.properties;
+  const overrideKeys = {
+    'some/key': 'someValue',
+    [typedKey]: 5,
+  };
 
-    const overrideKeys = {
-      'some/key': 'someValue',
-      [typedKey]: 5,
-    };
+  for (const key in overrideKeys) {
+    await identity.newFixedKey.add(key, overrideKeys[key]);
+  }
 
-    for (const key in overrideKeys) {
-      identity.addOverrideKey(key, overrideKeys[key]);
-    }
+  await identity.commitChanges();
 
-    identity.commitChanges();
+  await t.expect(await getFixedKeys(identityType, identityId)).eql(overrideKeys);
 
-    assert.deepEqual(identity.overrideKeys, overrideKeys);
+  const updatedKeys = {
+    'some/key': 'newValue',
+    'some/new/key': 'anotherValue',
+  };
 
-    const updatedKeys = {
-      'some/key': 'newValue',
-      'some/new/key': 'anotherValue',
-    };
+  await t.click(identity.fixedKey(typedKey).deleteButton);
+  await identity.fixedKey('some/key').update('newValue');
+  await identity.newFixedKey.add('some/new/key', 'anotherValue');
+  await identity.commitChanges();
 
-    identity
-      .deleteOverrideKey(typedKey)
-      .updateOverrideKey('some/key', 'newValue')
-      .addOverrideKey('some/new/key', 'anotherValue')
-      .commitChanges();
+  await t.expect(await getFixedKeys(identityType, identityId)).eql(updatedKeys);
 
-    assert.deepEqual(identity.overrideKeys, updatedKeys);
+  for (const key in updatedKeys) {
+    await t.click(identity.fixedKey(key).deleteButton);
+  }
 
-    Object.keys(updatedKeys).forEach(key => identity.deleteOverrideKey(key));
-    identity.commitChanges();
+  await identity.commitChanges();
 
-    assert.deepEqual(identity.overrideKeys, {});
-    assert.deepEqual(identity.properties, initialProperties);
-  });
+  await t
+    .expect(await getFixedKeys(identityType, identityId))
+    .eql({})
+    .expect(await getProperties(identityType, identityId))
+    .eql({});
+}).before(async (t) => {
+  await tweekManagementClient.deleteContext(identityType, identityId);
+  await login(t);
 });

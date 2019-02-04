@@ -22,25 +22,27 @@ export const withTypesService = ({ safeConvertValue, types, isAllowedValue }) =>
 
 export const getTypesService = getContext(typesServiceContextType);
 
-const valueToItem = value =>
+const valueToItem = (value) =>
   value === undefined || value === '' ? undefined : { label: changeCase.pascalCase(value), value };
 
-const CodeEditor = withJsonEditor(({ editJson, onChange, value, valueType, ...props }) => (
-  <div>
-    <Input
-      onDoubleClick={() => editJson(value, valueType)}
-      readOnly
-      {...props}
-      onChange={onChange}
-      value={value ? JSON.stringify(value) : value}
-    />
-    <button
-      className="text-input object-type-expander"
-      data-comp="object-editor"
-      onClick={() => editJson(value, valueType)}
-    />
-  </div>
-));
+const CodeEditor = withJsonEditor(
+  ({ editJson, onChange, value, valueType, 'data-comp': dataComp, ...props }) => (
+    <div data-comp={dataComp}>
+      <Input
+        onDoubleClick={() => editJson(value, valueType)}
+        readOnly
+        {...props}
+        onChange={onChange}
+        value={value ? JSON.stringify(value) : value}
+      />
+      <button
+        className="text-input object-type-expander"
+        data-comp="object-editor"
+        onClick={() => editJson(value, valueType)}
+      />
+    </div>
+  ),
+);
 
 const InputComponent = ({
   value,
@@ -58,7 +60,7 @@ const InputComponent = ({
     return (
       <CodeEditor
         valueType={valueType}
-        onChange={x => onChange(JSON.parse(x))}
+        onChange={(x) => onChange(JSON.parse(x))}
         value={value}
         {...props}
       />
@@ -115,9 +117,12 @@ const InputWithIcon = ({ hideIcon, valueTypeName, ...props }) => {
 };
 
 const TypedInput = compose(
-  connect(null, {
-    showCustomAlert,
-  }),
+  connect(
+    null,
+    {
+      showCustomAlert,
+    },
+  ),
   getTypesService,
   mapProps(
     ({
@@ -132,7 +137,7 @@ const TypedInput = compose(
       valueType = (typeof valueType === 'string' ? types[valueType] : valueType) || {
         name: 'unknown',
       };
-      const onChangeConvert = newValue =>
+      const onChangeConvert = (newValue) =>
         onChange && onChange(safeConvertValue(newValue, valueType));
       const valueTypeName = valueType.name || valueType.base;
       return {

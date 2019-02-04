@@ -1,7 +1,7 @@
 {
-  "key_path": "behavior_tests/delete_key/delete/accepted",
+  "key_path": "behavior_tests/delete_key/delete",
   "meta": {
-    "name": "behavior_tests/delete_key/delete/accepted",
+    "name": "behavior_tests/delete_key/delete",
     "tags": [],
     "description": "",
     "archived": true

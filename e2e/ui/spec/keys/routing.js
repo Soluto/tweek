@@ -1,42 +1,62 @@
-/* global describe, before, after, beforeEach, it, browser */
+import { t } from 'testcafe';
+import { editorUrl } from '../../utils/constants';
+import { credentials, login } from '../../utils/auth-utils';
+import { refresh } from '../../utils/location-utils';
+import KeysPage from '../../pages/Keys';
 
-import Key from '../../utils/Key';
-import KeysList from '../../utils/KeysList';
-import Rule from '../../utils/Rule';
-import { login } from '../../utils/auth-utils';
+const keyName = 'behavior_tests/routing';
+const keysPage = new KeysPage();
 
-const timeout = 1000;
+fixture`Navigating From Key With Changes`.page`${editorUrl}/keys`
+  .httpAuth(credentials)
+  .beforeEach(login);
 
-describe('navigating from key with changes', () => {
-  const keyName = 'behavior_tests/routing';
+test('should show confirm message if navigating to another key', async (t) => {
+  const editKey = await openNewKey();
 
-  before(() => login());
+  await editKey.jpad.newRule.add();
 
-  beforeEach(() =>
-    Key.add()
-      .setValueType('boolean')
-      .setKeyFormat('jpad')
-      .setName('routing_test')
-      .continueToDetails(),
-  );
+  const link = await keysPage.navigateToLink(keyName);
+  await t
+    .expect(editKey.saveChangesButtonHasChanges.visible)
+    .ok()
+    .setNativeDialogHandler(() => true)
+    .click(link);
 
-  it('should show confirm message if navigating to another key', () => {
-    Rule.add();
-    browser.waitUntil(() => Key.hasChanges, timeout);
+  const history = await t.getNativeDialogHistory();
 
-    KeysList.navigate(keyName);
-
-    browser.waitForAlert(timeout, 'should show confirm message');
-    browser.alertAccept();
-  });
-
-  it('should show confirm message if refreshing', () => {
-    Rule.add();
-    browser.waitUntil(() => Key.hasChanges, timeout);
-
-    browser.refresh();
-
-    browser.waitForAlert(timeout, 'should show confirm message');
-    browser.alertAccept();
-  });
+  await t
+    .expect(history.length)
+    .eql(1)
+    .expect(history[0].type)
+    .eql('confirm');
 });
+
+test('should show confirm message if refreshing', async (t) => {
+  const editKey = await openNewKey();
+
+  await editKey.jpad.newRule.add();
+
+  await t
+    .expect(editKey.saveChangesButtonHasChanges.visible)
+    .ok()
+    .setNativeDialogHandler(() => true);
+
+  await refresh();
+
+  const history = await t.getNativeDialogHistory();
+
+  await t
+    .expect(history.length)
+    .eql(1)
+    .expect(history[0].type)
+    .eql('beforeunload');
+});
+
+const openNewKey = async () => {
+  const newKey = await keysPage.addNewKey();
+  await t
+    .typeText(newKey.nameInput, 'routing_test', { replace: true })
+    .typeText(newKey.valueTypeSelector, 'boolean', { replace: true });
+  return await newKey.continue();
+};

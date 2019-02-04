@@ -1,107 +1,135 @@
-/* global describe, before, beforeEach, after, afterEach, it, browser */
+import { t } from 'testcafe';
+import { editorUrl } from '../../utils/constants';
+import { credentials, login } from '../../utils/auth-utils';
+import { getLocation, navigateToKey } from '../../utils/location-utils';
+import {
+  archived,
+  constManifest,
+  createAlias,
+  createConstKey,
+  waitForKeyToBeDeleted,
+} from '../../clients/authoring-client';
+import { tweekManagementClient } from '../../clients/tweek-clients';
+import KeysPage from '../../pages/Keys';
+import EditKey from '../../pages/Keys/EditKey';
+import Alert from '../../pages/Alert';
 
-import { expect } from 'chai';
-import Key from '../../utils/Key';
-import Alert from '../../utils/Alert';
-import KeysList from '../../utils/KeysList';
-import { dataComp } from '../../utils/selector-utils';
-import authoringClient from '../../clients/authoring-client';
-import { login } from '../../utils/auth-utils';
+const archiveKeyPath = 'behavior_tests/delete_key/archive';
+const deleteKeyPath = 'behavior_tests/delete_key/delete';
+const deleteKeyAlias = 'behavior_tests/delete_key/delete_alias';
 
-const timeout = 5000;
+const keysPage = new KeysPage();
+const alert = new Alert();
 
-const archiveKey = dataComp('archive-key');
-const unarchiveKey = dataComp('unarchive-key');
-const deleteKey = dataComp('delete-key');
-const keyMessage = dataComp('key-message');
+fixture`Delete Key`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
 
-const assertKeyDeleted = keyName => {
-  authoringClient.waitForKeyToBeDeleted(keyName);
-  KeysList.assertInList(keyName, true);
+const assertKeyDeleted = async (keyName) => {
+  await waitForKeyToBeDeleted(keyName);
 
-  Key.open(keyName, false);
+  const editKey = new EditKey();
+  const link = await keysPage.navigateToLink(keyName);
 
-  expect(Key.exists, 'key should not exist after delete').to.equal(false);
+  await t.expect(link.exists).notOk();
+
+  await navigateToKey(keyName);
+
+  await t
+    .expect(keysPage.page.visible)
+    .ok()
+    .expect(editKey.container.exists)
+    .notOk('key should not exist after delete');
 };
 
-describe('delete key', () => {
-  before(() => login());
+test('archive key then unarchive', async (t) => {
+  const editKey = await EditKey.open(archiveKeyPath);
 
-  describe('archive', () => {
-    it('should archive key', () => {
-      const keyName = 'behavior_tests/delete_key/archive';
-      Key.open(keyName).commitChanges(archiveKey);
+  await t
+    .expect(editKey.messageText.exist)
+    .notOk()
+    .expect(editKey.displayNameText.withExactText(archiveKeyPath).visible)
+    .ok()
+    .expect(editKey.archiveButton.visible)
+    .ok()
+    .expect(editKey.unarchiveButton.exists)
+    .notOk()
+    .expect(editKey.deleteButton.exists)
+    .notOk();
 
-      browser.waitForVisible(keyMessage, timeout);
-      expect(Key.displayName).to.equal(`ARCHIVED: ${keyName}`);
+  await editKey.commitChanges(editKey.archiveButton);
 
-      browser.waitForVisible(archiveKey, timeout, true);
-      browser.waitForVisible(unarchiveKey, timeout);
-      browser.waitForVisible(deleteKey, timeout);
+  await t
+    .expect(editKey.messageText.visible)
+    .ok()
+    .expect(editKey.displayNameText.withExactText(`ARCHIVED: ${archiveKeyPath}`).visible)
+    .ok()
+    .expect(editKey.archiveButton.exists)
+    .notOk()
+    .expect(editKey.unarchiveButton.visible)
+    .ok()
+    .expect(editKey.deleteButton.visible)
+    .ok();
 
-      KeysList.assertInList(keyName, true);
-    });
+  const link = await keysPage.navigateToLink(archiveKeyPath);
+
+  await t.expect(link.exists).notOk();
+
+  await editKey.commitChanges(editKey.unarchiveButton);
+
+  await t
+    .expect(editKey.messageText.exist)
+    .notOk()
+    .expect(editKey.displayNameText.withExactText(archiveKeyPath).visible)
+    .ok()
+    .expect(editKey.archiveButton.visible)
+    .ok()
+    .expect(editKey.unarchiveButton.exists)
+    .notOk()
+    .expect(editKey.deleteButton.exists)
+    .notOk();
+
+  await keysPage.navigateToLink(archiveKeyPath);
+
+  await t.expect(link.visible).ok();
+}).before(async (t) => {
+  await createConstKey(archiveKeyPath, 'value');
+  await login(t);
+});
+
+test('delete key flow', async (t) => {
+  const editKey = await EditKey.open(deleteKeyPath);
+
+  await t
+    .click(editKey.deleteButton)
+    .click(alert.cancelButton)
+    .expect(getLocation())
+    .eql(`${editorUrl}/keys/${deleteKeyPath}`);
+
+  await EditKey.open(deleteKeyPath);
+
+  await t
+    .expect(editKey.container.visible)
+    .ok()
+    .click(editKey.deleteButton)
+    .click(alert.cancelButton)
+    .expect(getLocation())
+    .eql(`${editorUrl}/keys/${deleteKeyPath}`);
+
+  await EditKey.open(deleteKeyPath);
+
+  await t
+    .expect(editKey.container.visible)
+    .ok()
+    .click(editKey.deleteButton)
+    .click(alert.okButton)
+    .expect(getLocation())
+    .eql(`${editorUrl}/keys`);
+
+  await assertKeyDeleted(deleteKeyPath);
+  await assertKeyDeleted(deleteKeyAlias);
+}).before(async (t) => {
+  await tweekManagementClient.saveKeyDefinition(deleteKeyPath, {
+    manifest: archived(constManifest(deleteKeyPath, 'value')),
   });
-
-  describe('unarchive', () => {
-    it('should unarchive key', () => {
-      const keyName = 'behavior_tests/delete_key/unarchive';
-      Key.open(keyName).commitChanges(unarchiveKey);
-
-      browser.waitForVisible(keyMessage, timeout, true);
-
-      expect(Key.displayName).to.equal(keyName);
-
-      browser.waitForVisible(archiveKey, timeout);
-      browser.waitForVisible(unarchiveKey, timeout, true);
-      browser.waitForVisible(deleteKey, timeout, true);
-
-      KeysList.assertInList(keyName);
-    });
-  });
-
-  describe('delete', () => {
-    it('should not delete key if alert was not accepted', () => {
-      const keyName = 'behavior_tests/delete_key/delete/not_accepted';
-
-      Key.open(keyName);
-      browser.click(deleteKey);
-      Alert.background();
-
-      expect(Key.isCurrent(keyName), 'should still be in key page').to.be.true;
-
-      Key.open(keyName);
-
-      expect(Key.exists).to.be.true;
-    });
-
-    it('should not delete key if alert was canceled', () => {
-      const keyName = 'behavior_tests/delete_key/delete/canceled';
-
-      Key.open(keyName);
-      browser.click(deleteKey);
-      Alert.cancel();
-
-      expect(Key.isCurrent(keyName), 'should still be in key page').to.be.true;
-
-      Key.open(keyName);
-
-      expect(Key.exists).to.be.true;
-    });
-
-    it('should succeed deleting key', () => {
-      const keyName = 'behavior_tests/delete_key/delete/accepted';
-      const aliasKey = 'behavior_tests/delete_key/delete/alias';
-
-      Key.open(keyName);
-      browser.click(deleteKey);
-
-      Alert.ok();
-
-      expect(browser.getUrl(), 'should move to keys page url').to.endWith('/keys');
-
-      assertKeyDeleted(keyName);
-      assertKeyDeleted(aliasKey);
-    });
-  });
+  await createAlias(deleteKeyPath, deleteKeyAlias);
+  await login(t);
 });

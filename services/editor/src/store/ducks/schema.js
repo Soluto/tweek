@@ -62,8 +62,8 @@ export function addNewIdentity(identityType) {
 
 export function deleteIdentity(identityType) {
   return handleError(`Failed to delete identity ${identityType}`, async (dispatch) => {
-    dispatch({ type: DELETING_IDENTITY, value: { identityType } });
     dispatch(push(`/settings`));
+    dispatch({ type: DELETING_IDENTITY, value: { identityType } });
     await tweekManagementClient.deleteIdentity(identityType);
     dispatch({ type: IDENTITY_DELETED, value: { identityType } });
   });
