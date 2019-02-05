@@ -8490,9 +8490,10 @@ react-autosize-textarea@^1.0.2:
     line-height "^0.3.1"
     prop-types "^15.5.6"
 
-react-calendar@2.17.4:
-  version "2.17.4"
-  resolved "https://registry.yarnpkg.com/react-calendar/-/react-calendar-2.17.4.tgz#95aeb1545159b97727f152f091ef563624dfd70c"
+react-calendar@2.18.1:
+  version "2.18.1"
+  resolved "https://registry.yarnpkg.com/react-calendar/-/react-calendar-2.18.1.tgz#f8ef9468d8566aa0d47d9d70c88917bb2030bcb9"
+  integrity sha512-J3tVim1gLpnsCOaeez+z4QJB5oK6UYLJj5TSMOStSJBvkWMEcTzj7bq7yCJJCNLUg2Vd3i11gJXish0LUFhXaw==
   dependencies:
     get-user-locale "^1.1.1"
     merge-class-names "^1.1.1"
