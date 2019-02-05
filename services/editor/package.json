@@ -24,12 +24,13 @@
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.local-editor.yml"
   },
   "dependencies": {
+    "@emotion/core": "10.0.7",
+    "@emotion/styled": "10.0.7",
     "adal-angular": "1.0.17",
     "animakit-expander": "^2.1.4",
     "chance": "^1.0.13",
     "change-case": "^3.1.0",
     "classnames": "^2.2.5",
-    "emotion": "9.1.0",
     "express": "4.16.4",
     "fast-json-patch": "^2.0.6",
     "history": "^4.7.2",
@@ -53,7 +54,6 @@
     "react-document-title": "2.0.3",
     "react-dom": "16.7.0",
     "react-draggable": "^3.0.5",
-    "react-emotion": "9.1.0",
     "react-google-tag-manager": "^2.2.1",
     "react-highlight-words": "^0.11.0",
     "react-monaco-editor": "^0.22.0",

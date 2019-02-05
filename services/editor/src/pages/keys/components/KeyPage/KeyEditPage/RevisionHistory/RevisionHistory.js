@@ -2,9 +2,9 @@ import React from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
-const RevisionHistorySelect = styled('select')`
+const RevisionHistorySelect = styled.select`
   align-self: flex-start;
 `;
 
@@ -15,7 +15,7 @@ const Revision = ({ sha, date, author }) => (
   <option value={sha}>{`${formatDate(date)} : ${author}`}</option>
 );
 
-const EmptyRevisionHistory = styled('div')`
+const EmptyRevisionHistory = styled.div`
   color: gray;
 `;
 
