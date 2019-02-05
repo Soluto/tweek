@@ -31,7 +31,7 @@ class GoogleTagManagerContainer extends React.Component {
     gtmId: PropTypes.string.isRequired,
     dataLayerName: PropTypes.string,
     additionalEvents: PropTypes.object,
-    previewVariables: PropTypes.string,
+    previewVariables: PropTypes.bool,
     scriptId: PropTypes.string,
   };
 
