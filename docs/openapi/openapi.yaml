@@ -44,12 +44,26 @@ paths:
       responses:
         '200':
           description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                single-key: 
+                  value: "red"
+                scan: 
+                  value:
+                    color: button
+                    shape: circle
+                    is_cta: true
+
         '400':
           description: Invalid Request
         '403':
           description: Unauthorized
         '404':
           description: Key not found
+
       parameters:
         - name: contextParams
           in: query
@@ -78,6 +92,28 @@ paths:
           description: Return flat key/value JSON (no nesting, relevant only in folder (_) queries)
           schema:
             type: boolean
+      x-code-samples:
+        - lang: 'curl'
+          source: |
+            curl http://tweek/api/v2/values/button/color?user=user1
+            curl http://tweek/api/v2/values/button/_?user=user1
+        - lang: 'js'
+          source: |
+            import {createTweekClient} from 'tweek-client'
+            const client = createTweekClient({
+              context: {
+                user: "user1"
+              },
+              baseServiceUrl: "https://tweek",
+            });
+            
+            // get single key value
+            const color = await client.getValues("button/color")
+
+            // get multiple results (scan)
+            const {color, shape} = await client.getValues("button/_")
+
+ 
   '/context/{identityType}/{identityId}':
     get:
       operationId: getContext
@@ -103,6 +139,32 @@ paths:
       responses:
         '200':
           description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                resonse: 
+                  value:
+                    age: 33
+                    country: US
+      x-code-samples:
+        - lang: 'curl'
+          source: |
+            curl -H X-Client-Id={client-id} \
+                 -H X-Client-Secret={client-secret} \
+                 https://tweek/api/v2/context/user/user1
+        - lang: 'js'
+          source: |
+            import {createTweekManagementClient} from 'tweek-client'
+            const client = createTweekManagementClient({
+              clientId: "client-id",
+              clientSecret: "client-secret",
+              baseServiceUrl: "https://tweek",
+            });
+            
+            const user = await client.getContext("user", "user1")
+      
     post:
       operationId: appendContext
       summary: Save/Append identity context
@@ -124,6 +186,25 @@ paths:
       responses:
         '200':
           description: Ok
+      x-code-samples:
+        - lang: 'curl'
+          source: |
+            curl -H X-Client-Id={client-id} \
+                 -H X-Client-Secret={client-secret} \
+                 -X POST -d "{\"age\": 40}" \
+                 https://tweek/api/v2/context/user/user1
+        - lang: 'js'
+          source: |
+            import {createTweekManagementClient} from 'tweek-client'
+            const client = createTweekManagementClient({
+              clientId: "client-id",
+              clientSecret: "client-secret",
+              baseServiceUrl: "https://tweek",
+            });
+            
+            await client.appendContext("user", "user1",{
+              age: 40
+            })
     delete:
       operationId: deleteContext
       summary: Delete identity context
@@ -148,6 +229,23 @@ paths:
       responses:
         '200':
           description: Ok
+      x-code-samples:
+        - lang: 'curl'
+          source: |
+            curl -H X-Client-Id={client-id} \
+                 -H X-Client-Secret={client-secret} \
+                 -X Delete
+                 https://tweek/api/v2/context/user/user1
+        - lang: 'js'
+          source: |
+            import {createTweekManagementClient} from 'tweek-client'
+            const client = createTweekManagementClient({
+              clientId: "client-id",
+              clientSecret: "client-secret",
+              baseServiceUrl: "https://tweek",
+            });
+            
+            const user = await client.deleteContext("user", "user1")
 
   '/context/{identityType}/{identityId}/{prop}':
     delete:
