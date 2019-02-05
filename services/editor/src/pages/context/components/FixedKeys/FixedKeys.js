@@ -1,13 +1,15 @@
 import React from 'react';
-import { mapProps } from 'recompose';
 import * as R from 'ramda';
 import classnames from 'classnames';
 import FixedKeysList from './FixedKeysList/FixedKeysList';
 import { NewFixedKey } from './FixedKeysList/FixedKey/FixedKey';
 import './FixedKeys.css';
 
-const mapWithProp = prop =>
-  R.pipe(R.toPairs, R.map(([keyPath, value]) => ({ keyPath, [prop]: value })));
+const mapWithProp = (prop) =>
+  R.pipe(
+    R.toPairs,
+    R.map(([keyPath, value]) => ({ keyPath, [prop]: value })),
+  );
 
 function extractKeys(remote, local) {
   return R.pipe(
@@ -26,35 +28,54 @@ const extractLocal = R.pipe(
   R.pluck('local'),
 );
 
-const FixedKeys = ({ className, appendKey, onChange, toggleDelete, keys }) => (
-  <div className={classnames('fixed-keys-container', className)} data-comp="fixed-keys">
-    <div className="override-keys-title">Override Keys</div>
+export default class FixedKeys extends React.Component {
+  static getDerivedStateFromProps({ local, remote }) {
+    const formattedKeys = extractKeys(remote, local);
+    return { formattedKeys };
+  }
 
-    <FixedKeysList {...{ keys, onChange, toggleDelete }} />
+  state = { formattedKeys: undefined };
 
-    <NewFixedKey appendKey={appendKey} />
-  </div>
-);
-
-const mapHandlersToProps = mapProps(({ local, remote, updateContext, ...props }) => {
-  const formattedKeys = extractKeys(remote, local);
-  return {
-    keys: formattedKeys,
-    ...props,
-    onChange: (index, { keyPath, value: local }) => {
-      const keys = R.adjust(R.merge(R.__, { keyPath, local }), index, formattedKeys);
-      return updateContext(extractLocal(keys));
-    },
-    toggleDelete: (index) => {
-      const keys = R.adjust(
-        R.ifElse(R.has('local'), R.dissoc('local'), item => R.assoc('local', item.remote, item)),
-        index,
-        formattedKeys,
-      );
-      return updateContext(extractLocal(keys));
-    },
-    appendKey: ({ keyPath, value }) => updateContext(R.assoc(keyPath, value, local)),
+  onChange = (index, { keyPath, value: local }) => {
+    const { updateContext } = this.props;
+    const { formattedKeys } = this.state;
+    const keys = R.adjust(index, R.mergeLeft({ keyPath, local }), formattedKeys);
+    return updateContext(extractLocal(keys));
   };
-});
 
-export default mapHandlersToProps(FixedKeys);
+  toggleDelete = (index) => {
+    const { updateContext } = this.props;
+    const { formattedKeys } = this.state;
+
+    const keys = R.adjust(
+      index,
+      R.ifElse(R.has('local'), R.dissoc('local'), (item) => R.assoc('local', item.remote, item)),
+      formattedKeys,
+    );
+    return updateContext(extractLocal(keys));
+  };
+
+  appendKey = ({ keyPath, value }) => {
+    const { updateContext, local } = this.props;
+    updateContext(R.assoc(keyPath, value, local));
+  };
+
+  render() {
+    const { className } = this.props;
+    const { formattedKeys } = this.state;
+
+    return (
+      <div className={classnames('fixed-keys-container', className)} data-comp="fixed-keys">
+        <div className="override-keys-title">Override Keys</div>
+
+        <FixedKeysList
+          keys={formattedKeys}
+          onChange={this.onChange}
+          toggleDelete={this.toggleDelete}
+        />
+
+        <NewFixedKey appendKey={this.appendKey} />
+      </div>
+    );
+  }
+}

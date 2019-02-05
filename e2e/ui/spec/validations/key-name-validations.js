@@ -57,6 +57,7 @@ test('should allow creating a key named "a/b/c" and also a key named "b"', async
   };
 
   await addEmptyKey('a/b/c');
+  await t.navigateTo('/keys');
   await addEmptyKey('b');
 }).before(async (t) => {
   await tweekManagementClient.deleteKey('a/b/c');
