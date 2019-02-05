@@ -19,7 +19,7 @@ class GoogleTagManagerContainer extends React.Component {
   render() {
     if (!this.props.gtmId) {
        console.warn("gtmId is missing, check '@tweek/editor/google_tag_manager/id' key");
-       return;
+       return null;
     }
     const gtm = gtmParts({
       id: this.props.gtmId,
