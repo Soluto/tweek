@@ -2772,10 +2772,10 @@ create-react-class@^15.5.1:
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
 
-cross-fetch@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.0.0.tgz#fb7fa6906f39c7233aa7ab8de1785e980532b899"
-  integrity sha512-P8HyKlMwT1ed9LqEWlJu+zfcxfn0KI4Nl4nxyvu1a8sg4vgtHdwhElZOgSNzoar44zQMdliZcve4QG/04AUi9Q==
+cross-fetch@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.0.1.tgz#3f207bbd829a76e9aa2a953348bd1f2a3cf388a7"
+  integrity sha512-qWtpgBAF8ioqBOddRD+pHhrdzm/UWOArkrlIU7c08DlNbOxo5GfUbSY2vr90ZypWf0raW+HNN1F38pi5CEOjiQ==
   dependencies:
     node-fetch "2.3.0"
     whatwg-fetch "3.0.0"
@@ -8805,10 +8805,10 @@ react-transition-group@^2.0.0:
     prop-types "^15.6.2"
     react-lifecycles-compat "^3.0.4"
 
-react-tweek@0.3.6:
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/react-tweek/-/react-tweek-0.3.6.tgz#d9b8c02438ec2245579c1280904e3f1138fdefa7"
-  integrity sha512-ci0A4D8hHz4Mo1rNWMy0YON1Cgntuo32XziCDYxy7xLByc/UWJcLMmLNabpoSH2kEM3v1EQGj75XV7pNt8Gs4Q==
+react-tweek@0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/react-tweek/-/react-tweek-0.4.0.tgz#5e3f5a76299003bd03a27e26f02484436a2dbca5"
+  integrity sha512-YGnETwOWd6FtnKkRTjAwpGwe685D944euj92/CLR9DRbXnWtLVgjbBgbM2viS4KFLNpQRvg1mLy7YrGByXIh7A==
   dependencies:
     humps "^2.0.1"
     lodash.isequal "^4.5.0"
@@ -10300,21 +10300,21 @@ tunnel-agent@^0.6.0:
   dependencies:
     safe-buffer "^5.0.1"
 
-tweek-client@1.0.0-rc4:
-  version "1.0.0-rc4"
-  resolved "https://registry.yarnpkg.com/tweek-client/-/tweek-client-1.0.0-rc4.tgz#64e80fca1182379875d357a8d57db87478d64c8a"
-  integrity sha512-IHLJbrBBJQxmalFVuKldRadCZiqMCVA7xEE6zJWvix3C04RM7Uwk8QG/b7NZhL3JRulKLfW1gAjfqQpCXeVEng==
+tweek-client@1.0.0-rc5:
+  version "1.0.0-rc5"
+  resolved "https://registry.yarnpkg.com/tweek-client/-/tweek-client-1.0.0-rc5.tgz#9a30cf386e2c697ae934e81b8e5550747cff6d78"
+  integrity sha512-22lXDsGIoNHIjqg+BLOJ/qD/wRmy9/6B3NpME2tuWYTCb16O4akXkiOuwb8XIMCZwCon2jtwR6amuPI+rYPQng==
   dependencies:
     change-emitter "^0.1.6"
-    cross-fetch "^3.0.0"
+    cross-fetch "^3.0.1"
     lodash.chunk "^4.2.0"
     query-string "^6.2.0"
     zen-observable "^0.8.13"
 
-tweek-local-cache@0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/tweek-local-cache/-/tweek-local-cache-0.4.1.tgz#5f80d51b9d35e09debcf4aa8c47d9429e82c3698"
-  integrity sha512-AM2ax7z/WxnAGvFTeOQ7x2E4BzXUoCTXKDP7rjJIcwIgntkJg3TLNSKcU5i9P7pNNoTLMZ4V1mymEdfGH2kWlA==
+tweek-local-cache@0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/tweek-local-cache/-/tweek-local-cache-0.5.0.tgz#26741324cac277fb52f98cad66549148791cb520"
+  integrity sha512-lHmjEbDLFRHyUB4hEwHNsl8yc06idb/4V3cstRcjxTdBoJkiWuzLvPHxz/is/FF17xW0cEqsuF4ADKL/1c23FQ==
   dependencies:
     change-emitter "^0.1.6"
     object.entries "^1.1.0"

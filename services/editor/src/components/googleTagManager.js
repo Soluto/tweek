@@ -50,10 +50,10 @@ const enhance = compose(
       gtmId: '@tweek/editor/google_tag_manager/id',
     },
     {
-      defaultValues: { isEnabled: false, gtmId: null },
+      defaultValues: { isEnabled: false },
     },
   ),
-  branch(({ isEnabled, gtmId }) => !isEnabled || !gtmId , renderNothing),
+  branch(({ isEnabled, gtmId }) => !isEnabled || !gtmId, renderNothing),
 );
 
 export default enhance(GoogleTagManagerContainer);
