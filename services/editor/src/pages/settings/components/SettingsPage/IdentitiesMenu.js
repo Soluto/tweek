@@ -31,8 +31,7 @@ const enhanceIdentities = compose(
 );
 
 const IdentitiesMenu = ({ identities }) => (
-  <ul style={{ flexGrow: 1 }} className="side-menu" key="SideMenu">
-    <li>
+  <li>
       <div data-comp="group">Identities</div>
       <ul>
         {identities.map((identity) => (
@@ -43,7 +42,6 @@ const IdentitiesMenu = ({ identities }) => (
         </li>
       </ul>
     </li>
-  </ul>
 );
 
 export default enhanceIdentities(IdentitiesMenu);

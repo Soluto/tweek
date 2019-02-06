@@ -18,6 +18,7 @@ import NoMatch from './components/NoMatch';
 import browserHistory from './store/browserHistory';
 import './styles/styles.css';
 import { signOut } from './services/auth-service';
+import PoliciesPage from './pages/settings/components/PoliciesPage/PoliciesPage';
 
 const SelectKeyMessage = () => <div className={'select-key-message'}>Select key...</div>;
 
@@ -39,6 +40,7 @@ const renderContextRoutes = ({ match }) => (
 const renderSettingsRoutes = ({ match }) => (
   <SettingsPage {...match}>
     <PrivateRoute path={`${match.path}/identities/:identityType`} component={IdentityPage} />
+    <PrivateRoute path={`${match.path}/policies`} component={PoliciesPage} />
   </SettingsPage>
 );
 
