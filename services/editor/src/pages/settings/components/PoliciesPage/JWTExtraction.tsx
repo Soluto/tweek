@@ -19,7 +19,7 @@ const monacoOptions = {
 export default function(){
   const [policies, setPolicies, remote] = useRemoteState(()=> tweekManagementClient.getJWTExtractionPolicy(), 
                                             (policy)=> tweekManagementClient.updateJWTExtractionPolicy(policy) );
-  if (remote.error && !policies){
+  if (remote.error && remote.loadingState === "error"){
     return <div>Error: {remote.error.message}</div>
   }
   if (remote.loadingState === "loading" && !policies) return null;

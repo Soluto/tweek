@@ -31,7 +31,7 @@ export default function(){
   const [isValid, setIsValid] = useState(true);
 
   if (remote.loadingState === "loading") return null;
-  if (remote.error && !policies){
+  if (remote.error && remote.loadingState === "error"){
       return <div>Error: {remote.error.message}</div>
   }
   return <>
