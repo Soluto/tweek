@@ -3,14 +3,19 @@ import * as R from "ramda";
 import {useState, useEffect, useContext} from 'react';
 import { ReduxContext } from "../../../..";
 import { showError } from "../../../../store/ducks/notifications";
+import { FetchError } from "tweek-client";
 
 type LoadingState = "idle" | "saving" |"loading" | "error";
 
 export function useErrorNotifier(error:Error | null = null, title = "An error has occurred"){
     const {dispatch} = useContext(ReduxContext);
     useEffect(()=>{
-        if (!error) return;
-        dispatch(showError({title, error}))
+        if (!error) return; 
+
+        const format = (error instanceof FetchError) ? ({response: {status, statusText} }:FetchError)=> `${status}: ${statusText}` : 
+                                                       (x:Error) => x.message;
+
+        dispatch(showError({title, error: error, format }))
     },[error])
 }
 
@@ -52,7 +57,7 @@ export function useRemoteState<T>(reader: ()=> Promise<T>, writer: (data: T) => 
   };
 
   useEffect(()=>{load()},[]);
-  useErrorNotifier( loadingState === "idle" ? error : null, "Error saving data")
+  useErrorNotifier( loadingState === "idle" ? error : null, "Error saving")
   
   return [localData, setLocalData, { loadingState, isDirty: !R.equals(localData, remoteData), save, load, error } ];
 }

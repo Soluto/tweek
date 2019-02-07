@@ -1,2 +1,2 @@
-declare module "react-monaco-editor";
-declare module "react-tabs";
+//declare module "react-monaco-editor";
+//declare module "react-tabs";

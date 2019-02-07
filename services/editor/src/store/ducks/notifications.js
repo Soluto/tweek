@@ -4,10 +4,10 @@ const chance = new Chance();
 
 const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
 
-export function showError({ error, title = 'Error', position = 'br' }) {
+export function showError({ error, title = 'Error', position = 'br', format = e=> `${e.status}: ${e.statusText}` }) {
   const notification = {
     title,
-    message: `${error.status}: ${error.statusText}`,
+    message: format(error),
     level: 'error',
     position,
     autoDismiss: 0,
