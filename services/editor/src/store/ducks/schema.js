@@ -35,10 +35,10 @@ export function saveSchema(identityType) {
     let identityState = getState().schema[identityType];
     dispatch({ type: SAVING_SCHEMA, value: { identity: identityType } });
     if (identityState.remote === null) {
-      await tweekManagementClient.addNewIdentity(identityType, identityState.local);
+      await tweekManagementClient.saveIdentity(identityType, identityState.local);
     } else {
       let patch = jsonpatch.compare(identityState.remote, identityState.local);
-      await tweekManagementClient.updateIdentity(identityType, patch);
+      await tweekManagementClient.patchIdentity(identityType, patch);
     }
     dispatch({ type: SCHEMA_SAVED, value: { identity: identityType } });
     await refreshSchema();
