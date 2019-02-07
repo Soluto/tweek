@@ -6439,6 +6439,11 @@ mem@^4.0.0:
     mimic-fn "^1.0.0"
     p-is-promise "^1.1.0"
 
+memoize-one@^4.0.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-4.1.0.tgz#a2387c58c03fff27ca390c31b764a79addf3f906"
+  integrity sha512-2GApq0yI/b22J2j9rhbrAlsHb0Qcz+7yWxeLG8h+95sl1XPUgeLimQSOdur4Vw7cUhrBHwaUZxWFZueojqNRzA==
+
 memory-fs@^0.4.0, memory-fs@~0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/memory-fs/-/memory-fs-0.4.1.tgz#3a9a20b8462523e447cfbc7e8bb80ed667bfc552"
@@ -8568,11 +8573,13 @@ react-google-tag-manager@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/react-google-tag-manager/-/react-google-tag-manager-2.2.1.tgz#b0659c7b19d9263c7cb45d3c019f506529af9077"
 
-react-highlight-words@^0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/react-highlight-words/-/react-highlight-words-0.11.0.tgz#4f3c2039a8fd275f3ab795e59946b0324d8e6bee"
+react-highlight-words@^0.16.0:
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/react-highlight-words/-/react-highlight-words-0.16.0.tgz#4b4b9824e3d2b98789d3e3b3aedb5e961ae1b7cf"
+  integrity sha512-q34TwCSJOL+5pVDv6LUj3amaoyXdNDwd7zRqVAvceOrO9g1haWLAglK6WkGLMNUa3PFN8EgGedLg/k8Gpndxqg==
   dependencies:
     highlight-words-core "^1.2.0"
+    memoize-one "^4.0.0"
     prop-types "^15.5.8"
 
 react-is@^16.6.3, react-is@^16.7.0:

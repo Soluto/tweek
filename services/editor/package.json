@@ -56,7 +56,7 @@
     "react-dom": "16.7.0",
     "react-draggable": "^3.0.5",
     "react-google-tag-manager": "^2.2.1",
-    "react-highlight-words": "^0.11.0",
+    "react-highlight-words": "^0.16.0",
     "react-monaco-editor": "^0.22.0",
     "react-notification-system": "^0.2.17",
     "react-redux": "^6.0.0",
