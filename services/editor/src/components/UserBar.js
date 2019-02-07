@@ -1,10 +1,10 @@
 import React from 'react';
 import md5 from 'md5';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 import { CurrentUserContext } from '../contexts/CurrentUser';
 
-const Container = styled('div')`
+const Container = styled.div`
   display: flex;
   background-color: #00506d;
   width: 166px;
@@ -19,7 +19,7 @@ const Container = styled('div')`
 
 const UserBar = () => (
   <CurrentUserContext.Consumer>
-    {user =>
+    {(user) =>
       user && (
         <Container>
           <div style={{ marginRight: 16, textAlign: 'right' }}>
