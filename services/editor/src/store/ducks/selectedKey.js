@@ -1,7 +1,7 @@
 /* global process */
 import { handleActions } from 'redux-actions';
 import * as R from 'ramda';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import * as ContextService from '../../services/context-service';
 import { tweekManagementClient } from '../../utils/tweekClients';
 import {
@@ -34,7 +34,7 @@ const SHOW_KEY_VALIDATIONS = 'SHOW_KEY_VALIDATIONS';
 const KEY_CLOSED = 'KEY_CLOSED';
 
 function updateRevisionHistory(keyName, since) {
-  return async function (dispatch) {
+  return async function(dispatch) {
     try {
       const revisionHistory = await tweekManagementClient.getKeyRevisionHistory(
         keyName,
@@ -48,7 +48,7 @@ function updateRevisionHistory(keyName, since) {
 }
 
 function updateKeyDependents(keyName) {
-  return async function (dispatch) {
+  return async function(dispatch) {
     let dependents = {};
     try {
       dependents = await tweekManagementClient.getKeyDependents(keyName);
@@ -80,7 +80,7 @@ function createImplementation({ manifest, implementation }) {
 }
 
 export function changeKeyFormat(newFormat) {
-  return function (dispatch) {
+  return function(dispatch) {
     dispatch({ type: KEY_FORMAT_CHANGED, payload: newFormat });
   };
 }
@@ -103,7 +103,7 @@ export const addKey = (shouldShowConfirmationScreen, keyPath) =>
   });
 
 export function addKeyDetails() {
-  return async function (dispatch, getState) {
+  return async function(dispatch, getState) {
     const currentState = getState();
     if (!currentState.selectedKey.validation.isValid) {
       dispatch({ type: SHOW_KEY_VALIDATIONS });
@@ -115,7 +115,7 @@ export function addKeyDetails() {
 }
 
 export function openKey(key, { revision, historySince } = {}) {
-  return async function (dispatch) {
+  return async function(dispatch) {
     dispatch(downloadTags());
     try {
       await ContextService.refreshSchema();
@@ -196,14 +196,16 @@ const confirmArchievAlert = {
 };
 
 export function archiveKey(archived, historySince) {
-  return async function (dispatch, getState) {
-    const { selectedKey: { key, local, remote } } = getState();
+  return async function(dispatch, getState) {
+    const {
+      selectedKey: { key, local, remote },
+    } = getState();
 
     if (!R.equals(local, remote) && !(await dispatch(showConfirm(confirmArchievAlert))).result)
       return;
 
     const keyToSave = R.assocPath(['manifest', 'meta', 'archived'], archived, remote);
-    if (!await performSave(dispatch, key, keyToSave)) return;
+    if (!(await performSave(dispatch, key, keyToSave))) return;
 
     dispatch({ type: KEY_OPENED, payload: { key, ...keyToSave } });
     if (archived) {
@@ -217,7 +219,7 @@ export function archiveKey(archived, historySince) {
 }
 
 export function changeKeyValidationState(newValidationState) {
-  return function (dispatch, getState) {
+  return function(dispatch, getState) {
     const currentValidationState = getState().selectedKey.validation;
     if (R.path(['const', 'isValid'], currentValidationState) !== newValidationState) {
       const payload = R.assocPath(['const', 'isValid'], newValidationState, currentValidationState);
@@ -227,7 +229,7 @@ export function changeKeyValidationState(newValidationState) {
 }
 
 export function changeKeyValueType(keyValueType) {
-  return async function (dispatch, getState) {
+  return async function(dispatch, getState) {
     const keyValueTypeValidation = keyValueTypeValidations(keyValueType);
     keyValueTypeValidation.isShowingHint = !keyValueTypeValidation.isValid;
 
@@ -247,7 +249,7 @@ export function changeKeyValueType(keyValueType) {
 }
 
 export function updateKeyPath(newKeyPath, validation) {
-  return async function (dispatch, getState) {
+  return async function(dispatch, getState) {
     const currentValidationState = getState().selectedKey.validation;
     const newValidation = {
       ...currentValidationState,
@@ -265,9 +267,11 @@ export function updateKeyName(newKeyName) {
 }
 
 export function saveKey(historySince) {
-  return async function (dispatch, getState) {
+  return async function(dispatch, getState) {
     const currentState = getState();
-    const { selectedKey: { local, key } } = currentState;
+    const {
+      selectedKey: { local, key },
+    } = currentState;
     const isNewKey = !!local.key;
     const savedKey = local.key || key;
 
@@ -276,7 +280,7 @@ export function saveKey(historySince) {
       return;
     }
 
-    if (!await performSave(dispatch, savedKey, local)) return;
+    if (!(await performSave(dispatch, savedKey, local))) return;
 
     dispatch(updateRevisionHistory(savedKey, historySince));
     dispatch(updateKeyDependents(savedKey));
@@ -296,8 +300,10 @@ const deleteKeyAlert = (key, aliases = []) => ({
 });
 
 export function deleteKey() {
-  return async function (dispatch, getState) {
-    const { selectedKey: { key, aliases } } = getState();
+  return async function(dispatch, getState) {
+    const {
+      selectedKey: { key, aliases },
+    } = getState();
 
     if (!(await dispatch(showConfirm(deleteKeyAlert(key, aliases)))).result) return;
 
@@ -306,7 +312,7 @@ export function deleteKey() {
       await tweekManagementClient.deleteKey(key, aliases);
 
       dispatch(removeKeyFromList(key));
-      aliases.forEach(alias => dispatch(removeKeyFromList(alias)));
+      aliases.forEach((alias) => dispatch(removeKeyFromList(alias)));
     } catch (error) {
       dispatch(showError({ title: 'Failed to delete key!', error }));
     }
@@ -314,8 +320,10 @@ export function deleteKey() {
 }
 
 export function addAlias(alias) {
-  return async function (dispatch, getState) {
-    const { selectedKey: { key } } = getState();
+  return async function(dispatch, getState) {
+    const {
+      selectedKey: { key },
+    } = getState();
 
     const manifest = createBlankKeyManifest(alias, { type: 'alias', key });
 
@@ -328,7 +336,9 @@ export function addAlias(alias) {
 
     dispatch(addKeyToList(manifest));
 
-    const { selectedKey: { usedBy, aliases } } = getState();
+    const {
+      selectedKey: { usedBy, aliases },
+    } = getState();
     dispatch({
       type: KEY_DEPENDENTS,
       payload: { keyName: key, usedBy, aliases: aliases.concat(alias) },
@@ -337,14 +347,16 @@ export function addAlias(alias) {
 }
 
 export function deleteAlias(alias) {
-  return async function (dispatch, getState) {
+  return async function(dispatch, getState) {
     if (!(await dispatch(showConfirm(deleteKeyAlert(alias)))).result) return;
 
     try {
       await tweekManagementClient.deleteKey(alias);
 
       dispatch(removeKeyFromList(alias));
-      const { selectedKey: { key, usedBy, aliases } } = getState();
+      const {
+        selectedKey: { key, usedBy, aliases },
+      } = getState();
       const aliasIndex = aliases.indexOf(alias);
       if (aliasIndex >= 0) {
         dispatch({
@@ -360,12 +372,12 @@ export function deleteAlias(alias) {
 
 const setValidationHintsVisibility = (validationState, isShown) => {
   Object.values(validationState)
-    .filter(x => typeof x === 'object')
+    .filter((x) => typeof x === 'object')
     .map((x) => {
       setValidationHintsVisibility(x, isShown);
       return x;
     })
-    .filter(x => x.isValid === false)
+    .filter((x) => x.isValid === false)
     .forEach((x) => {
       x.isShowingHint = isShown;
       setValidationHintsVisibility(x, isShown);
@@ -451,10 +463,10 @@ const handleKeyNameChange = ({ local: { key, ...localData }, ...otherState }, { 
   },
 });
 
-const isStateInvalid = validationState =>
+const isStateInvalid = (validationState) =>
   Object.values(validationState)
-    .filter(x => typeof x === 'object')
-    .some(x => x.isValid === false || isStateInvalid(x));
+    .filter((x) => typeof x === 'object')
+    .some((x) => x.isValid === false || isStateInvalid(x));
 
 const handleKeyValidationChange = ({ ...state }, { payload }) => {
   const isKeyInvalid = isStateInvalid(payload);
@@ -533,7 +545,10 @@ const handleKeyAddingDetails = (state) => {
 };
 
 const handleKeyPathChange = (state, { payload }) =>
-  R.pipe(R.assoc('key', payload), R.assocPath(['local', 'manifest', 'key_path'], payload))(state);
+  R.pipe(
+    R.assoc('key', payload),
+    R.assocPath(['local', 'manifest', 'key_path'], payload),
+  )(state);
 
 const handleKeyFormatChange = (state, { payload }) =>
   R.assocPath(['local', 'manifest', 'implementation'], payload, state);

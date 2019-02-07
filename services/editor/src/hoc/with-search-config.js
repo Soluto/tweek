@@ -6,6 +6,6 @@ export default withTweekKeys(
     showInternalKeys: '@tweek/editor/show_internal_keys',
   },
   {
-    defaultValues: { maxSearchResults: null, showInternalKeys: null },
+    defaultValues: {},
   },
 );

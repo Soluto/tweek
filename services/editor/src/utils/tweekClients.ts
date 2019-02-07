@@ -9,7 +9,6 @@ export const getGatewayBaseUrl = () => window.GATEWAY_URL || '';
 const config = {
   baseServiceUrl: getGatewayBaseUrl(),
   getAuthenticationToken: retrieveToken,
-  clientName: 'tweek-editor',
 };
 
 export const tweekManagementClient = createTweekManagementClient(config);

@@ -1,6 +1,6 @@
 /* global process */
 import { handleActions } from 'redux-actions';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import * as R from 'ramda';
 import jsonpatch from 'fast-json-patch';
 import { getSchema, refreshSchema } from '../../services/context-service';

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { compose, mapProps, getContext } from 'recompose';
+import { compose, mapProps, getContext, withHandlers, withProps } from 'recompose';
 import { WithContext as ReactTags } from 'react-tag-input';
 import * as R from 'ramda';
 import classes from 'classnames';
@@ -13,36 +13,57 @@ export const typesServiceContextType = {
 
 export const getTypesService = getContext(typesServiceContextType);
 
-const convertToArray = value => (value && (Array.isArray(value) ? value : [value])) || [];
+const convertToArray = (value) => (value && (Array.isArray(value) ? value : [value])) || [];
 
-const ListTypedValue = compose(
+const toTags = (arr) => arr.map((x) => x.toString()).map((x) => ({ id: x, text: x }));
+
+const enhance = compose(
   getTypesService,
-  mapProps(({ onChange, value, safeConvertValue, isAllowedValue, valueType, ...props }) => {
-    value = convertToArray(value);
-    return {
-      tags: value.map(x => ({ id: x, text: x.toString() })),
-      suggestions: (valueType.allowedValues || []).map(x => x.toString()),
-      handleAddition: (newValue) => {
-        const convertedVal = safeConvertValue(newValue, valueType);
-        if (
-          convertedVal !== undefined &&
-          !value.includes(convertedVal) &&
-          isAllowedValue(valueType, convertedVal)
-        ) {
-          return onChange && onChange([...value, convertedVal]);
-        }
-      },
-      handleDelete: valueIndex => onChange && onChange(R.remove(valueIndex, 1, value)),
-      handleFilterSuggestions: (textInput, suggestions) =>
-        suggestions.filter(
-          item => !value.includes(safeConvertValue(item, valueType)) && item.includes(textInput),
-        ),
-      value,
-      dataComp: props['data-comp'],
-      dataValueType: props['data-value-type'],
-    };
+  withProps(({ value }) => ({ value: convertToArray(value) })),
+  withHandlers({
+    handleAddition: ({ onChange, value, safeConvertValue, isAllowedValue, valueType }) => (
+      newValue,
+    ) => {
+      const convertedVal = safeConvertValue(newValue.text, valueType);
+      if (
+        convertedVal !== undefined &&
+        !value.includes(convertedVal) &&
+        isAllowedValue(valueType, convertedVal)
+      ) {
+        return onChange && onChange([...value, convertedVal]);
+      }
+    },
+    handleDelete: ({ onChange, value }) => (valueIndex) =>
+      onChange && onChange(R.remove(valueIndex, 1, value)),
+    handleFilterSuggestions: ({ value, safeConvertValue, valueType }) => (textInput, suggestions) =>
+      suggestions.filter(
+        ({ text }) =>
+          !value.includes(safeConvertValue(text, valueType)) && text.includes(textInput),
+      ),
   }),
-)(props => (
+  mapProps(
+    ({
+      value,
+      valueType,
+      handleAddition,
+      handleDelete,
+      handleFilterSuggestions,
+      'data-comp': dataComp,
+      'data-value-type': dataValueType,
+    }) => ({
+      value,
+      tags: toTags(value),
+      suggestions: toTags(valueType.allowedValues || []),
+      handleAddition,
+      handleDelete,
+      handleFilterSuggestions,
+      dataComp,
+      dataValueType,
+    }),
+  ),
+);
+
+const ListTypedValue = (props) => (
   <div
     data-comp={props.dataComp}
     data-value-type={props.dataValueType}
@@ -56,6 +77,7 @@ const ListTypedValue = compose(
       minQueryLength={1}
       allowDeleteFromEmptyInput
       autocomplete
+      allowUnique={false}
       classNames={{
         tags: 'tags-container',
         tagInput: 'tag-input',
@@ -65,6 +87,6 @@ const ListTypedValue = compose(
       }}
     />
   </div>
-));
+);
 
-export default ListTypedValue;
+export default enhance(ListTypedValue);

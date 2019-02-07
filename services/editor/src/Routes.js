@@ -1,6 +1,6 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router';
-import { ConnectedRouter } from 'react-router-redux';
+import { ConnectedRouter } from 'connected-react-router';
 import App from './components/App';
 import PrivateRoute from './PrivateRoute';
 import LoginPage from './pages/login/components/LoginPage';
@@ -51,16 +51,19 @@ const renderAppRoutes = () => (
       <PrivateRoute path="/keys" render={renderKeyRoutes} />
       <PrivateRoute path="/context" render={renderContextRoutes} />
       <PrivateRoute path="/settings" render={renderSettingsRoutes} />
-      <Route path="/logout" exact render={() => 
-      {
-        signOut();
-        return <Redirect to="/login" />;
-      }} />
+      <Route
+        path="/logout"
+        exact
+        render={() => {
+          signOut();
+          return <Redirect to="/login" />;
+        }}
+      />
     </Switch>
   </App>
 );
 
-export default props => (
+export default () => (
   <ConnectedRouter history={browserHistory}>
     <Switch>
       <Route path="/login" component={LoginPage} />

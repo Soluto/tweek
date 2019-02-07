@@ -10,13 +10,13 @@ import keyNameValidations from './key-name-validations';
 import './NewKeyInput.css';
 import { withTweekKeys } from '../../../../../contexts/Tweek';
 
-const getKeyPrefix = path => R.slice(0, -1, path.split('/')).join('/');
+const getKeyPrefix = (path) => R.slice(0, -1, path.split('/')).join('/');
 const getSugesstions = R.pipe(
-  R.filter(key => !key.meta.archived),
+  R.filter((key) => !key.meta.archived),
   R.keys(),
   R.map(getKeyPrefix),
   R.uniq(),
-  R.filter(x => x !== ''),
+  R.filter((x) => x !== ''),
 );
 
 function getKeyNameSuggestions(keys) {
@@ -24,13 +24,13 @@ function getKeyNameSuggestions(keys) {
 }
 
 const NewKeyInput = compose(
-  connect(state => ({ keys: state.keys })),
+  connect((state) => ({ keys: state.keys })),
   withTweekKeys(
     {
       showInternalKeys: '@tweek/editor/show_internal_keys',
     },
     {
-      defaultValues: { showInternalKeys: null },
+      defaultValues: {},
     },
   ),
   mapPropsStream((prop$) => {
@@ -61,7 +61,7 @@ const NewKeyInput = compose(
     onChange,
     displayName,
   }) => {
-    const suggestions = getKeyNameSuggestions(keys).map(x => ({ label: x, value: x }));
+    const suggestions = getKeyNameSuggestions(keys).map((x) => ({ label: x, value: x }));
     return (
       <div className="keypath-input-wrapper">
         <div
