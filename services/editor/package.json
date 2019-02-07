@@ -50,7 +50,7 @@
     "query-string": "^6.2.0",
     "ramda": "^0.26.1",
     "react": "16.7.0",
-    "react-autosize-textarea": "^1.0.2",
+    "react-autosize-textarea": "^6.0.0",
     "react-calendar": "^2.18.1",
     "react-document-title": "^2.0.3",
     "react-dom": "16.7.0",
