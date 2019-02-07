@@ -1,7 +1,7 @@
 
 import * as R from "ramda";
 import {useState, useEffect, useContext} from 'react';
-import { ReduxContext } from "../../../..";
+import { ReduxContext } from "../../../../store";
 import { showError } from "../../../../store/ducks/notifications";
 import { FetchError } from "tweek-client";
 
@@ -57,7 +57,6 @@ export function useRemoteState<T>(reader: ()=> Promise<T>, writer: (data: T) => 
   };
 
   useEffect(()=>{load()},[]);
-  useErrorNotifier( loadingState === "idle" ? error : null, "Error saving")
   
   return [localData, setLocalData, { loadingState, isDirty: !R.equals(localData, remoteData), save, load, error } ];
 }

@@ -1,15 +1,12 @@
 /* global document */
-import React, { createContext } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import configureStore from './store/configureStore';
+import { store, ReduxContext } from './store';
 import Routes from './Routes';
 import 'papp-polyfill';
 
-
-const store = configureStore({});
-export const ReduxContext = createContext();
-
+console.log("store", store);
 ReactDOM.render(
   <Provider store={store}>
     <ReduxContext.Provider value={store}>
