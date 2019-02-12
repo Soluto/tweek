@@ -60,5 +60,5 @@ export function useRemoteState<T>(reader: ()=> Promise<T>, writer: (data: T) => 
   useEffect(()=>{load()},[]);
   
   
-  return [localData, setLocalData, { loadingState, isDirty: !R.equals(localData, remoteData), save, load, error } ];
+  return [localData, setLocalData, { loadingState, isDirty: loadingState === "idle" && !R.equals(localData, remoteData), save, load, error } ];
 }
