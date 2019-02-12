@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState} from 'react';
 import MonacoEditor from 'react-monaco-editor';
 import { tweekManagementClient } from '../../../../utils/tweekClients';
 import SaveButton from '../../../../components/common/SaveButton/SaveButton';
@@ -35,7 +35,7 @@ export default function(){
   if (remote.error && remote.loadingState === "error"){
       return <div>Error: {remote.error.message}</div>
   }
-  
+
   return <>
     <SaveButton isValid={isValid} isSaving={remote.loadingState === "saving"} hasChanges={remote.isDirty} onClick={()=>remote.save()} />
     <MonacoEditor

@@ -29,6 +29,7 @@ export function useRemoteState<T>(reader: ()=> Promise<T>, writer: (data: T) => 
   const save = async ()=>{
     if (loadingState == "saving") return;
     if (localData === null) return;
+    if (R.equals(localData, remoteData)) return;
     setError(undefined);
     setLoadingState("saving");
     try{
@@ -57,6 +58,7 @@ export function useRemoteState<T>(reader: ()=> Promise<T>, writer: (data: T) => 
   };
 
   useEffect(()=>{load()},[]);
+  
   
   return [localData, setLocalData, { loadingState, isDirty: !R.equals(localData, remoteData), save, load, error } ];
 }

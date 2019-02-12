@@ -8,9 +8,7 @@ import 'papp-polyfill';
 
 ReactDOM.render(
   <Provider store={store}>
-    <ReduxContext.Provider value={store}>
-      <Routes />
-    </ReduxContext.Provider>
+    <Routes />
   </Provider>
   ,
   document.getElementById('root'),
