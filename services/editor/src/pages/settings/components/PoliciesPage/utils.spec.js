@@ -70,6 +70,31 @@ describe("useRemoteState", ()=>{
 
   });
 
+  it("save should be no-op if data hasn't changed", async ()=>{
+    let data, setData, remote;
+    const mockLoad = jest.fn(()=> Promise.resolve("abc") );
+    const mockSave = jest.fn();
+
+    testHook(()=> {
+      [data, setData, remote] = useRemoteState(mockLoad, mockSave );
+    });
+
+    await Promise.resolve();
+    act(()=>{
+      setData("abc1");
+    });
+    act(()=>{
+      setData("abc");
+    });
+    act(()=>{
+      remote.save();
+    });
+
+    expect(remote.loadingState).toEqual("idle");
+    expect(mockSave).toHaveBeenCalledTimes(0);
+
+  });
+
   it("it should set state to error if failed to load", async ()=>{
     let data, setData, remote;
     const mockLoad = jest.fn(()=> Promise.reject(new Error("some error")));
