@@ -21,7 +21,7 @@
                 "enum": ["allow", "deny"]
             }
         },
-        "requiredProperties": ["group", "user", "contexts", "action", "effect"],
+        "required": ["group", "user", "contexts", "action", "effect", "object"],
         "additionalProperties": false
     }
 }

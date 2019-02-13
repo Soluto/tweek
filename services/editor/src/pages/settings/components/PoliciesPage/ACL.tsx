@@ -59,7 +59,7 @@ export default function(){
           }}
           value={policies}
           options={monacoOptions}
-          onChange={function(this: any, newSource:string ){
+          onChange={(newSource:string )=> {
             setIsValid(isValidJson(newSource))
             setPolicies(newSource)
           }} />
