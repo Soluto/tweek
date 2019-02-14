@@ -6617,7 +6617,7 @@ monaco-editor-webpack-plugin@^1.7.0:
   dependencies:
     "@types/webpack" "^4.4.19"
 
-monaco-editor@^0.15.1:
+monaco-editor@^0.15.1, monaco-editor@^0.15.6:
   version "0.15.6"
   resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.15.6.tgz#d63b3b06f86f803464f003b252627c3eb4a09483"
   integrity sha512-JoU9V9k6KqT9R9Tiw1RTU8ohZ+Xnf9DMg6Ktqqw5hILumwmq7xqa/KLXw513uTUsWbhtnHoSJYYR++u3pkyxJg==
@@ -8425,13 +8425,13 @@ react-lifecycles-compat@^3.0.2, react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
 
-react-monaco-editor@^0.22.0:
-  version "0.22.0"
-  resolved "https://registry.yarnpkg.com/react-monaco-editor/-/react-monaco-editor-0.22.0.tgz#2ba4c9557d2e95bb0f097a56f5e5d30598f7f2f9"
-  integrity sha512-SdkfmdbHNzKLd33w98Wxm1MvvGC7sKqdxb79ij6XnYV5WH2zgL5BgJ2FCo/ZDh/JZgUp1mXGt8NjTcbLJVhqVw==
+react-monaco-editor@^0.23.0:
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/react-monaco-editor/-/react-monaco-editor-0.23.0.tgz#4e7d977aae6cec5c3ea8f13350933ebf95192f0a"
+  integrity sha512-h5N9kiB+BE+hQRNLGTJrB9JI7HojGKT1LxLWfSsWLv1EWSiVZVcMnrjBCyfemi7vD91ka4qhxy0yhVcQcN5DrA==
   dependencies:
     "@types/react" "*"
-    monaco-editor "^0.15.1"
+    monaco-editor "^0.15.6"
     prop-types "^15.6.2"
 
 react-notification-system@^0.2.17:
