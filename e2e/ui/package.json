@@ -19,6 +19,6 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "testcafe": "^0.23.3"
+    "testcafe": "^1.0.0"
   }
 }
