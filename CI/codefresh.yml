@@ -70,117 +70,83 @@ steps:
         image_name: soluto/tweek-api-smoke-tests
         dockerfile: TweekApiSmokeTest.Dockerfile
 
-  test:
-    type: parallel
-    name: test
-    stage: test
-    steps:
-      IntegrationTests:
-        title: Tests - integration & smoke
-        type: composition
-        composition: ./CI/docker-compose.yml
-        composition_variables:      
-          - GATEWAY_IMAGE=${{BuildingGateway}}
-          - REPOSITORY_IMAGE=${{BuildingGitRepository}}
-          - PUBLISHING_IMAGE=${{BuildingPublishing}}
-          - API_IMAGE=${{BuildingApiImage}}
-          - AUTHORING_IMAGE=${{BuildingAuthoring}}
-          - EDITOR_IMAGE=${{BuildingEditor}}
-          - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
-        composition_candidates:
-          smoke-tests:
-            image: ${{BuildingApiSmokeTestImage}}
-            depends_on: 
-              - gateway
-              - publishing
-            environment: 
-              - TWEEK_API_URL=http://api/
-            links:
-              - gateway:api      
-
-          e2e-integration:
-            image: ${{BuildingIntegrationTests}}
-            depends_on:
-              - gateway
-              - publishing
-            environment:
-              - API_URL=http://api
-              - AUTHORING_URL=http://authoring
-              - PUBLISHING_URL=http://publishing
-              - GATEWAY_URL=http://gateway
-              - GIT_PRIVATE_KEY_INLINE=LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBeE1JdjB3QW9NTkhzc1J6OUhvanM2eUNla2w5RHI5RUt1WjUwZ3QveHk4Wk9DelFKCmVuWG9ub1N4clUrRTZrS01QWnFXOElQVWg3R2gvSkhtMUZXczFlVHdhM1oxK1VFRmtpM1E5ZURGSVBUTzM1bmEKcVYwcFVyWTJ3S0xUV24zczd2ZGhjQVNPWHZ1anN5cXZvbENQa0VxckFVdUlRV2c1d0cwSkR1cHhuLzB0UklvcQpPT0gxNmlmeFpZcjdEQzQvQkp2Z0g2anRrdTVuNVhNTDhBaXVnd3B3bFNTU0c4dnVldXZabW53VWRKZ3FPM0RVCkhMdVNwRnBRdTJKNkZ5djhkVWFZVDFWdHFYOWh4TGlIbUdFUktoTCs1a1BHNGQxM0JvZDVUWFZkbzZ4eGZDUGEKaGhVbnpsZE1lc0EwYi9WYVE4QWlRaGtvQ2NRaWJPYXJVNzAzUlFJREFRQUJBb0lCQVFDWmpOWVh1N0toenVJQgpvcGJpNG9iS1JDMmNHMTVPY2p3RmVlU0JVbFYzNnExelRzdnExdU9QK2d4VExaQ1Q1UlZlNmlyTFRvWm8wemFRClRpaXZJcUY4VjJ0TTRpalZPV29vbHpyUTkvVy9iMjJXMEpIMXhHK0FUaFZTcG45OHluTkNWcXFpNmR0Vnd0b1EKODhvWFNQbVE2TVNsZ1JXM3ZhZjhSTnRoMlpLTkFIOTdZOHBqVk1YL3FMTDFuWjk1YnFvclJJTFJ6ektHSmpxRwplN0VpeFQ0a0JaemxHWUF5a1dVeFFZZzBkdTlnQjc1U1o2MHNwZzVUQlh5a3RXdzVIWG1ZWlMvSHdCOVRKbG1XClRqeVZ0T2VWbGpPRmI4VmdIcE13d3UyTW9yN1ZQQVB3Z0RYdXFGTVd2RnpxVWJIY1VLclcwZ0JITGpYU1BtUzYKMEwxSTNjV0JBb0dCQVBPeHlxSmZ4cnpVQ1BuM3AzbVk2cjZnbHlYYi8rZWFYYTQ2N3NOWThNWnBWZGw1bVFKVgpuOEdRN3FYaklaa2pCU2E5YzZZQThxOFRLVHlJbEcvTDE1OFVSaFRqZldNSC9nandaem1oSmVkL0N6Lzg1Y2V4CmxRbDdsTi9SMjRUYjN3VTE2M21FeW5oR1JXNUt3cWNVNW9FQm1uOS9ZazhoaWJraTZoSTY0QWhsQW9HQkFNNngKcVBabi9uaHY4dSttT2U3Y3pTVjVMc3dmTTNTU3NuZlhnUVJXN3J6a2hrZnJRWjJlWHpFQ21oVk8vdUpWb01iVApoQS9tUXRYRzVuMk9QMndmSk1LVUNiVVZ2ZTJYNUQxU1VGYk03dWVHU3JlWExXdXJzaHdnN1p6VlpxVDYzUEJSCmpUa1FFNHJ1a1ZFSzNNMFVQOUlNVndzYURqMjgrY01RZk5ORmh0VmhBb0dBQ1Q5cStDUjRUendncHhPOTJFQjAKVUEyYURzYTlmRldBVHBkUDdqdld6MEM2RUVtc0E4bXFDVmR0cHYvcWkzd251dU9mbXVJWVU0cC9teHQzdnBKVwp1V08wa1NCYzVzQXI1THp5dmQ0ZXFSMUtHUUNJMjc0aWNMeXUxcHVKSUE2VDlRZXB5dSsrR3poWGRDc0VIZ0VPCkNrRThVckJMMDhMckRncUVKWEwwZzMwQ2dZQm0welVtR0FnZExEd2tBb0xSbEtDdDRzSm9JNkY2ZmJ3eEtGRnoKc2pla1d0OStpY2VqdlBUSU1lNHJhWmdkU3RIbjk3TzhJU1hncWNsaWJ0Q1lYa253VHFzaG5nWlZXM25kRThVSgoyWHVFVEdlQk84RUp6bW1WMnIrNmhPTkNjZFpWNjR3ZzlpRnl2VW9ua2dyVUx4MnN4aHpMVmhQOW5MUjMyUXp3CklhZDVJUUtCZ1FEWHBhU25seGcrbzMyV0FHd0dzQXhxNUNXK3JFcE84UENEbytSZWU2dmNGN25JZi95NHNSUHUKNDFpcFo2WHhZcHdnUkQ3em5aano5QWVWaEc4aUFBQUJORlUxSkZUaVhpZ1BEWi8wOFlFMHRnQ1ZiL0VPV2ZxVAptS0NBTUgrSjJZWUlwb3NLL3dyQmRXQ1RiUHYvYUI3RkVraFFLeGVJTXYxd0trd2tSaU5BQ0E9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
-              - MINIO_HOST=minio
-              - MINIO_PORT=9000
-              - MINIO_ACCESS_KEY_INLINE=AKIAIOSFODNN7EXAMPLE
-              - MINIO_SECRET_KEY_INLINE=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-              - MINIO_BUCKET=tweek
-            links:
-              - gateway:api
-              - gateway:authoring
-        on_success:
-          metadata:
-            set:
-              - '${{BuildingApiImage.imageId}}':
-                - CF_QUALITY: true
-              - '${{BuildingPublishing.imageId}}':
-                - CF_QUALITY: true
-              - '${{BuildingAuthoring.imageId}}':
-                - CF_QUALITY: true
-              - '${{BuildingGateway.imageId}}':
-                - CF_QUALITY: true
-        on_fail:
-          metadata:
-            set:
-              - '${{BuildingApiImage.imageId}}':
-                - CF_QUALITY: false
-              - '${{BuildingPublishing.imageId}}':
-                - CF_QUALITY: false
-              - '${{BuildingAuthoring.imageId}}':
-                - CF_QUALITY: false
-              - '${{BuildingGateway.imageId}}':
-                - CF_QUALITY: false
-
-      UiTests:
-        title: UI tests
-        type: composition
-        composition: ./CI/docker-compose.yml
-        composition_variables:      
-          - GATEWAY_IMAGE=${{BuildingGateway}}
-          - REPOSITORY_IMAGE=${{BuildingGitRepository}}
-          - PUBLISHING_IMAGE=${{BuildingPublishing}}
-          - API_IMAGE=${{BuildingApiImage}}
-          - AUTHORING_IMAGE=${{BuildingAuthoring}}
-          - EDITOR_IMAGE=${{BuildingEditor}}
-          - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
-        composition_candidates:
-          e2e-ui:
-            image: ${{BuildingUITests}}
-            depends_on: 
-              - selenium
-              - editor
-              - gateway
-              - publishing
-            environment:
-              - GATEWAY_URL=http://gateway/
-              - TWEEK_API_URL=http://api/
-              - AUTHORING_URL=http://authoring
-              - GIT_PRIVATE_KEY_INLINE=LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBeE1JdjB3QW9NTkhzc1J6OUhvanM2eUNla2w5RHI5RUt1WjUwZ3QveHk4Wk9DelFKCmVuWG9ub1N4clUrRTZrS01QWnFXOElQVWg3R2gvSkhtMUZXczFlVHdhM1oxK1VFRmtpM1E5ZURGSVBUTzM1bmEKcVYwcFVyWTJ3S0xUV24zczd2ZGhjQVNPWHZ1anN5cXZvbENQa0VxckFVdUlRV2c1d0cwSkR1cHhuLzB0UklvcQpPT0gxNmlmeFpZcjdEQzQvQkp2Z0g2anRrdTVuNVhNTDhBaXVnd3B3bFNTU0c4dnVldXZabW53VWRKZ3FPM0RVCkhMdVNwRnBRdTJKNkZ5djhkVWFZVDFWdHFYOWh4TGlIbUdFUktoTCs1a1BHNGQxM0JvZDVUWFZkbzZ4eGZDUGEKaGhVbnpsZE1lc0EwYi9WYVE4QWlRaGtvQ2NRaWJPYXJVNzAzUlFJREFRQUJBb0lCQVFDWmpOWVh1N0toenVJQgpvcGJpNG9iS1JDMmNHMTVPY2p3RmVlU0JVbFYzNnExelRzdnExdU9QK2d4VExaQ1Q1UlZlNmlyTFRvWm8wemFRClRpaXZJcUY4VjJ0TTRpalZPV29vbHpyUTkvVy9iMjJXMEpIMXhHK0FUaFZTcG45OHluTkNWcXFpNmR0Vnd0b1EKODhvWFNQbVE2TVNsZ1JXM3ZhZjhSTnRoMlpLTkFIOTdZOHBqVk1YL3FMTDFuWjk1YnFvclJJTFJ6ektHSmpxRwplN0VpeFQ0a0JaemxHWUF5a1dVeFFZZzBkdTlnQjc1U1o2MHNwZzVUQlh5a3RXdzVIWG1ZWlMvSHdCOVRKbG1XClRqeVZ0T2VWbGpPRmI4VmdIcE13d3UyTW9yN1ZQQVB3Z0RYdXFGTVd2RnpxVWJIY1VLclcwZ0JITGpYU1BtUzYKMEwxSTNjV0JBb0dCQVBPeHlxSmZ4cnpVQ1BuM3AzbVk2cjZnbHlYYi8rZWFYYTQ2N3NOWThNWnBWZGw1bVFKVgpuOEdRN3FYaklaa2pCU2E5YzZZQThxOFRLVHlJbEcvTDE1OFVSaFRqZldNSC9nandaem1oSmVkL0N6Lzg1Y2V4CmxRbDdsTi9SMjRUYjN3VTE2M21FeW5oR1JXNUt3cWNVNW9FQm1uOS9ZazhoaWJraTZoSTY0QWhsQW9HQkFNNngKcVBabi9uaHY4dSttT2U3Y3pTVjVMc3dmTTNTU3NuZlhnUVJXN3J6a2hrZnJRWjJlWHpFQ21oVk8vdUpWb01iVApoQS9tUXRYRzVuMk9QMndmSk1LVUNiVVZ2ZTJYNUQxU1VGYk03dWVHU3JlWExXdXJzaHdnN1p6VlpxVDYzUEJSCmpUa1FFNHJ1a1ZFSzNNMFVQOUlNVndzYURqMjgrY01RZk5ORmh0VmhBb0dBQ1Q5cStDUjRUendncHhPOTJFQjAKVUEyYURzYTlmRldBVHBkUDdqdld6MEM2RUVtc0E4bXFDVmR0cHYvcWkzd251dU9mbXVJWVU0cC9teHQzdnBKVwp1V08wa1NCYzVzQXI1THp5dmQ0ZXFSMUtHUUNJMjc0aWNMeXUxcHVKSUE2VDlRZXB5dSsrR3poWGRDc0VIZ0VPCkNrRThVckJMMDhMckRncUVKWEwwZzMwQ2dZQm0welVtR0FnZExEd2tBb0xSbEtDdDRzSm9JNkY2ZmJ3eEtGRnoKc2pla1d0OStpY2VqdlBUSU1lNHJhWmdkU3RIbjk3TzhJU1hncWNsaWJ0Q1lYa253VHFzaG5nWlZXM25kRThVSgoyWHVFVEdlQk84RUp6bW1WMnIrNmhPTkNjZFpWNjR3ZzlpRnl2VW9ua2dyVUx4MnN4aHpMVmhQOW5MUjMyUXp3CklhZDVJUUtCZ1FEWHBhU25seGcrbzMyV0FHd0dzQXhxNUNXK3JFcE84UENEbytSZWU2dmNGN25JZi95NHNSUHUKNDFpcFo2WHhZcHdnUkQ3em5aano5QWVWaEc4aUFBQUJORlUxSkZUaVhpZ1BEWi8wOFlFMHRnQ1ZiL0VPV2ZxVAptS0NBTUgrSjJZWUlwb3NLL3dyQmRXQ1RiUHYvYUI3RkVraFFLeGVJTXYxd0trd2tSaU5BQ0E9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
-              - AUTH_DIGEST_CREDENTIALS=user:pwd        
-            links:
-              - gateway:api
-              - gateway:authoring
-
-        on_success:
-          metadata:
-            set:
-              - '${{BuildingEditor.imageId}}':
-                - CF_QUALITY: true
-        on_fail:
-          metadata:
-            set:
-              - '${{BuildingEditor.imageId}}':
-                - CF_QUALITY: false
   
+  E2ETests:
+    title: End2End Tests - integration, smoke & ui
+    stage: test
+    type: composition
+    composition: ./CI/docker-compose.yml
+    composition_variables:      
+      - GATEWAY_IMAGE=${{BuildingGateway}}
+      - REPOSITORY_IMAGE=${{BuildingGitRepository}}
+      - PUBLISHING_IMAGE=${{BuildingPublishing}}
+      - API_IMAGE=${{BuildingApiImage}}
+      - AUTHORING_IMAGE=${{BuildingAuthoring}}
+      - EDITOR_IMAGE=${{BuildingEditor}}
+      - CF_VOLUME_PATH=${{CF_VOLUME_PATH}}
+    composition_candidates:
+      smoke-tests:
+        image: ${{BuildingApiSmokeTestImage}}
+        depends_on: 
+          - gateway
+          - publishing
+        environment: 
+          - TWEEK_API_URL=http://api/
+        links:
+          - gateway:api      
+
+      e2e-integration:
+        image: ${{BuildingIntegrationTests}}
+        depends_on:
+          - gateway
+          - publishing
+        environment:
+          - GATEWAY_URL=http://gateway
+          - MINIO_HOST=minio
+          - MINIO_PORT=9000
+          - MINIO_ACCESS_KEY_INLINE=AKIAIOSFODNN7EXAMPLE
+          - MINIO_SECRET_KEY_INLINE=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+          - MINIO_BUCKET=tweek
+
+      e2e-ui:
+        image: ${{BuildingUITests}}
+        shm_size: 2g
+        depends_on:
+          - editor
+          - gateway
+          - publishing
+        environment:
+          - GATEWAY_URL=http://gateway
+          - EDITOR_URL=http://gateway
+          - AUTH_DIGEST_CREDENTIALS=user:pwd
+        command: [ "-q", "-c", "4", "chromium --headless --window-size='1280,720' --no-sandbox", "/src/spec" ]
+    on_success:
+      metadata:
+        set:
+          - '${{BuildingApiImage.imageId}}':
+            - CF_QUALITY: true
+          - '${{BuildingPublishing.imageId}}':
+            - CF_QUALITY: true
+          - '${{BuildingAuthoring.imageId}}':
+            - CF_QUALITY: true
+          - '${{BuildingGateway.imageId}}':
+            - CF_QUALITY: true
+          - '${{BuildingEditor.imageId}}':
+              - CF_QUALITY: true
+    on_fail:
+      metadata:
+        set:
+          - '${{BuildingApiImage.imageId}}':
+            - CF_QUALITY: false
+          - '${{BuildingPublishing.imageId}}':
+            - CF_QUALITY: false
+          - '${{BuildingAuthoring.imageId}}':
+            - CF_QUALITY: false
+          - '${{BuildingGateway.imageId}}':
+            - CF_QUALITY: false
+          - '${{BuildingEditor.imageId}}':
+              - CF_QUALITY: false
+
   release:
     type: parallel
     name: release

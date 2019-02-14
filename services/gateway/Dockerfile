@@ -1,25 +1,19 @@
 # -------- DEPENDENCIES -------- #
-FROM golang:1.11.4-stretch as dependencies
+FROM golang:1.11.4-stretch as build
 
 ADD go.mod /src/go.mod
 ADD go.sum /src/go.sum
 WORKDIR /src
 
-# The scratch image, which we use in the end, neither has cmdline tools nor tmp directory
-# so we prepare it here, and copy later on
-RUN mkdir /empty_tmp && chmod 1777 /empty_tmp
-
-# -------- BUILDER -------- #
-FROM dependencies as build
 RUN go mod download
 
 ADD . /src
 WORKDIR /src
 
-RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o entry \
+RUN go build -o entry \
     && go test -cover -v ./...
 
-RUN CGO_ENABLED=0 go build -a -installsuffix cgo -o hcheck "tweek-gateway/healthcheck"
+RUN go build -o hcheck "tweek-gateway/healthcheck"
 
 # ------ REGO TESTS ------ #
 FROM golang:1.11.4-stretch as regotests
@@ -35,16 +29,12 @@ COPY ./testdata/test_authorization.rego /tmp/opatests
 RUN ./opa test -v /tmp/opatests
 
 # -------- IMAGE -------- #
-FROM scratch
+FROM gcr.io/distroless/base
 
-COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=build /src/settings /settings
 COPY --from=build /src/authorization.rego /authorization.rego
 COPY --from=build /src/entry /entry
 COPY --from=build /src/hcheck /healthcheck
-COPY --from=build /src/swagger/swagger.yml /swagger/swagger.yml
-COPY --from=build /src/swagger/openapi.yaml /swagger/openapi.yaml
-COPY --from=dependencies /empty_tmp /tmp
 
 ENV CONFIGOR_ENV=production
 

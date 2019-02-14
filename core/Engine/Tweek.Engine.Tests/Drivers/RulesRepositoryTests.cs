@@ -125,7 +125,7 @@ namespace Tweek.Engine.Tests.Drivers
 
             versions.OnError(new Exception());
 
-            await Task.Delay(20);
+            await Task.Delay(50);
 
             // Assert
             Assert.Equal("10002", repository.CurrentLabel);

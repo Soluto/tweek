@@ -1,47 +1,58 @@
-/* global describe, before, beforeEach, after, afterEach, it, browser */
+import { Selector } from 'testcafe';
+import { editorUrl } from '../../utils/constants';
+import { credentials, login } from '../../utils/auth-utils';
+import { createEmptyJPadKey } from '../../clients/authoring-client';
+import EditKey from '../../pages/Keys/EditKey';
 
-import { expect } from 'chai';
-import Key from '../../utils/Key';
-import Rule from '../../utils/Rule';
-import { dataComp } from '../../utils/selector-utils';
-import { login } from '../../utils/auth-utils';
+fixture`Dependent Keys`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
 
-const timeout = 5000;
+test('save when no circular dependencies', async (t) => {
+  const editKey = await EditKey.open('behavior_tests/dependent_keys/pass/depends_on');
+  const rule = await editKey.jpad.newRule.add();
+  const condition = await rule.condition('keys.behavior_tests/dependent_keys/pass/used_by');
+  await condition.setValue('value');
 
-const errorNotification = '.notifications-br .notification-error .notification-title';
+  await editKey.commitChanges();
+}).before(async (t) => {
+  await createEmptyJPadKey('behavior_tests/dependent_keys/pass/depends_on');
+  await login(t);
+});
 
-describe('dependent keys', () => {
-  before(() => login());
+test('should not save circular dependencies', async (t) => {
+  const editKey = await EditKey.open('behavior_tests/dependent_keys/fail/third');
+  const rule = await editKey.jpad.newRule.add();
+  const condition = await rule.condition('keys.behavior_tests/dependent_keys/fail/first');
+  await condition.setValue('value');
 
-  it('should save when no circular dependencies', () => {
-    Key.open('behavior_tests/dependent_keys/pass/depends_on');
-    Rule.add().setCondition('keys.behavior_tests/dependent_keys/pass/used_by', 'value');
-    Key.commitChanges();
-  });
+  await t
+    .click(editKey.saveChangesButton)
+    .expect(
+      Selector('.notifications-br .notification-error .notification-title').withExactText(
+        'Failed to save key',
+      ).visible,
+    )
+    .ok();
+});
 
-  it('should not save circular dependencies', () => {
-    Key.open('behavior_tests/dependent_keys/fail/third');
-    Rule.add().setCondition('keys.behavior_tests/dependent_keys/fail/first', 'value');
+test('display dependency relations between keys', async (t) => {
+  const dependsOn = 'behavior_tests/dependent_keys/display/depends_on';
+  const dependsOnAlias = 'behavior_tests/dependent_keys/display/depends_on_alias';
+  const usedBy = 'behavior_tests/dependent_keys/display/used_by';
 
-    Key.clickSave();
+  const editKey = await EditKey.open(dependsOn);
 
-    browser.waitForText(errorNotification, timeout);
-    const errorText = browser.getText(errorNotification);
-    expect(errorText).to.equal('Failed to save key');
-  });
+  // Verify depends on
+  await t
+    .click(editKey.dependsOn.toggleButton)
+    .expect(editKey.dependsOn.linkTo(usedBy).visible)
+    .ok();
 
-  it('should display dependency relations between keys', () => {
-    const dependsOn = 'behavior_tests/dependent_keys/display/depends_on';
-    const dependsOnAlias = 'behavior_tests/dependent_keys/display/depends_on_alias';
-    const usedBy = 'behavior_tests/dependent_keys/display/used_by';
-
-    // Verify depends on
-    Key.open(dependsOn).toggle('depends-on');
-    browser.waitForVisible(`${dataComp('depends-on')} a[href="/keys/${usedBy}"]`);
-
-    // Verify used by
-    Key.open(usedBy).toggle('used-by');
-    browser.waitForVisible(`${dataComp('used-by')} a[href="/keys/${dependsOn}"]`);
-    browser.waitForVisible(`${dataComp('used-by')} a[href="/keys/${dependsOnAlias}"]`);
-  });
+  // Verify used by
+  await EditKey.open(usedBy);
+  await t
+    .click(editKey.usedBy.toggleButton)
+    .expect(editKey.usedBy.linkTo(dependsOn).visible)
+    .ok()
+    .expect(editKey.usedBy.linkTo(dependsOnAlias).visible)
+    .ok();
 });

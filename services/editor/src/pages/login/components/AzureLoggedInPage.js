@@ -1,15 +1,17 @@
 import { connect } from 'react-redux';
-import { replace } from 'react-router-redux';
+import { replace } from 'connected-react-router';
 import { compose, lifecycle } from 'recompose';
-import qs from 'query-string';
 import { getAzureToken, getAzureState } from '../../../services/auth-service';
 
-const mapDispatchToProps = dispatch => ({
-  redirect: url => dispatch(replace(url)),
+const mapDispatchToProps = (dispatch) => ({
+  redirect: (url) => dispatch(replace(url)),
 });
 
 const enhance = compose(
-  connect(null, mapDispatchToProps),
+  connect(
+    null,
+    mapDispatchToProps,
+  ),
   lifecycle({
     componentDidMount() {
       const { state } = getAzureState();

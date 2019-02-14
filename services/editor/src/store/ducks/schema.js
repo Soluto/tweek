@@ -1,11 +1,10 @@
 /* global process */
 import { handleActions } from 'redux-actions';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import * as R from 'ramda';
 import jsonpatch from 'fast-json-patch';
 import { getSchema, refreshSchema } from '../../services/context-service';
-import { withJsonData } from '../../utils/http';
-import fetch from '../../utils/fetch';
+import { tweekManagementClient } from '../../utils/tweekClients';
 import { showError } from './notifications';
 
 const SCHEMA_LOADED = 'SCHEMA_LOADED';
@@ -36,16 +35,10 @@ export function saveSchema(identityType) {
     let identityState = getState().schema[identityType];
     dispatch({ type: SAVING_SCHEMA, value: { identity: identityType } });
     if (identityState.remote === null) {
-      await fetch(`/schemas/${identityType}`, {
-        method: 'POST',
-        ...withJsonData(identityState.local),
-      });
+      await tweekManagementClient.saveIdentity(identityType, identityState.local);
     } else {
       let patch = jsonpatch.compare(identityState.remote, identityState.local);
-      await fetch(`/schemas/${identityType}`, {
-        method: 'PATCH',
-        ...withJsonData(patch),
-      });
+      await tweekManagementClient.patchIdentity(identityType, patch);
     }
     dispatch({ type: SCHEMA_SAVED, value: { identity: identityType } });
     await refreshSchema();
@@ -69,11 +62,9 @@ export function addNewIdentity(identityType) {
 
 export function deleteIdentity(identityType) {
   return handleError(`Failed to delete identity ${identityType}`, async (dispatch) => {
-    dispatch({ type: DELETING_IDENTITY, value: { identityType } });
     dispatch(push(`/settings`));
-    await fetch(`/schemas/${identityType}`, {
-      method: 'DELETE',
-    });
+    dispatch({ type: DELETING_IDENTITY, value: { identityType } });
+    await tweekManagementClient.deleteIdentity(identityType);
     dispatch({ type: IDENTITY_DELETED, value: { identityType } });
   });
 }

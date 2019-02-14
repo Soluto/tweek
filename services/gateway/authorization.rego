@@ -29,9 +29,12 @@ match_wildcards(a,b) = true {
 }
 
 match_with_prefix(a,b) = true {
+    endswith(b, "*")
     sp = split(b, "*")
     prefix = sp[0]
     startswith(a, prefix)
+} else = true {
+    a = b
 }
 
 default allow = false

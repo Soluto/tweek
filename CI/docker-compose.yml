@@ -98,7 +98,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - CLIENT_ID=tweek-openid-mock-client
       - REDIRECT_URIS=http://gateway/auth-result/oidc
-      - TEST_USER={"SubjectId":"00000000-0000-0000-0000-000000000000","Username":"User1","Password":"pwd"}
+      - TEST_USER={"SubjectId":"00000000-0000-0000-0000-000000000000","Username":"user","Password":"pwd"}
 
   redis:
     image: redis:4.0.2-alpine
@@ -118,11 +118,3 @@ services:
       
   nats:
     image: nats:1.0.4-linux
-
-  selenium:
-    image: selenium/standalone-chrome:3.8.1
-    logging:
-      driver: "none"
-    links:
-      - gateway:api
-      - gateway:authoring

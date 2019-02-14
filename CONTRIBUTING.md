@@ -9,8 +9,10 @@
    - git-service (stand-alone git rules repository for bootstrap, dev & testing)
    - minio (object storage) - rules storage
    - redis/couchbase/mongo - context database
+   - nats - pubsub
 - deployments
   - dev (docker compose files for devlopment)
+  - kubernetes - use together with Skaffold
 - core
   - Tweek calculation lib (.Net)
 - addons
@@ -40,87 +42,24 @@
    git clone https://github.com/Soluto/tweek.git
    cd tweek
    ```
-2. `docker-compose -f ./deployments/dev/docker-compose.yml build`
-3. `docker-compose -f ./deployments/dev/docker-compose.yml up -d`
+2. Yarn start
+3. Go to http://localhost:8080/login and use basic auth with (user: admin-app, password: 8v/iUG0vTH4BtVgkSn3Tng==)
 
-All tweek microservices should be run on ports 4001-4004:
-4001 - Git server (ssh)
-4003 - Api (http)
-4004 - Editor (http)
-4005 - Authoring (http)
-4009 - Publishing (ssh)
-4010 - Publishing (http)
-4099 - Gateway (http)
+Access Tweek gateway using localhost:8080.
+Tweek gateway route all traffic to other resources based on: https://github.com/Soluto/tweek/blob/master/services/gateway/settings/settings.json
+The root path redirect to Tweek Editor UI
 
-## Debugging Tweek api
+If you use k8s (comes bundled with Docker for mac/pc, enable using UI), you can use Skaffold (https://github.com/GoogleContainerTools/skaffold).
+The main benefit of using Skaffold is that it provide watch, build  for all Tweek services (editor has also support for hot code reloading).
+Since Skaffold/k8s run all services and dependencies together, it can take few minutes to stabilize. (k8s will attempt to restart failed services)
 
-### Install tools
-
-VS CODE
-
-1. Download VS Code: <https://code.visualstudio.com/>
-2. Install C# extension: <https://code.visualstudio.com/docs/languages/csharp>
-
-VS 2017
-
-1. Install VS 2017
-
-### RUN
-
-1. If you haven't built the full environment before, pull management service:
-   ```bash
-   docker-compose -f ./deployments/dev/docker-compose.yml pull tweek-management tweek-git
-   ```
-2. If you haven't ran the full environment before, run management service:
-   ```bash
-   docker-compose -f ./deployments/dev/docker-compose.yml up -d tweek-management
-   ```
-3. Debug tweek in VS2017 or VSCODE tweek-api task
-
-### TESTS
-
-#### UNIT
-
-1. Run in Visual studio 2017
-
-or
-mac: find . -wholename '*.Tests.csproj' -print0 | xargs -0 -n 1 dotnet test (only with shell)
-
-#### BLACKBOX/SMOKE
-
-1. Run service
-2. Run smoke tests in VS or run:
-   ```bash
-   dotnet test services/api/Tweek.ApiService.SmokeTests/Tweek.ApiService.SmokeTests.csproj -c Release --no-build
-   ```
+After installing Skaffold, use ```skaffold dev --port-forward=false```
 
 ## Debugging Tweek editor
 
 1. go to services\editor
-2. run npm i/yarn
-
-### environment
-
-- if you didn't change anything in the environment, you can just pull it from the server using this command:
-   ```bash
-   npm run docker-compose pull [SERVICES]
-   ```
-- if you made any changes in the environment, build it using this command:
-   ```bash
-   npm run docker-compose build [SERVICES]
-   ```
-- the possible services are: `tweek-git` `tweek-management` `tweek-api
-
-#### Examples
-
-- get latest management and api version from server:
-      ```bash
-      npm run pull-env tweek-management tweek-api
-      ```
-- build local management version:
-      ```bash
-      npm run build-env tweek-management
-      ```
+2. run yarn
+3. run yarn start:full-env
 
 ### Debug
 
@@ -129,7 +68,7 @@ mac: find . -wholename '*.Tests.csproj' -print0 | xargs -0 -n 1 dotnet test (onl
 
 ### Unit Tests
 
-- run `npm test`
+- run `yarn test`
 
 ## E2E
 

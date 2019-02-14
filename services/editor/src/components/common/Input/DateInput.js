@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Calendar from 'react-calendar/dist/entry.nostyle';
 import moment from 'moment';
@@ -10,10 +10,7 @@ import './Calendar.css';
 
 const DateInput = compose(withState('showCalendar', 'setShowCalendar', false))(
   ({ onChange, value, showCalendar, setShowCalendar, ...props }) => {
-    let calendarDate = value ? new Date(value) : new Date();
-    if (isNaN(calendarDate)) {
-      calendarDate = new Date();
-    }
+    const calendarDate = moment.utc(value).toDate();
 
     const onFocus = (evt) => {
       evt.preventDefault();
@@ -28,7 +25,11 @@ const DateInput = compose(withState('showCalendar', 'setShowCalendar', false))(
     };
 
     const changeDate = (newDate) => {
-      onChange(moment(newDate).format('Y-MM-DDT00:00:00Z'));
+      onChange(
+        moment(newDate)
+          .utc(true)
+          .format(),
+      );
       setShowCalendar(false);
     };
 

@@ -9,11 +9,12 @@ import (
 	"net/http"
 	"net/url"
 
-	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/dgrijalva/jwt-go/request"
 	"tweek-gateway/appConfig"
 	"tweek-gateway/audit"
 	"tweek-gateway/externalApps"
+
+	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/dgrijalva/jwt-go/request"
 
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/negroni"
@@ -80,7 +81,7 @@ func AuthenticationMiddleware(configuration *appConfig.Security, extractor Subje
 
 func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, extractor SubjectExtractor) (UserInfo, error) {
 	var claims jwt.MapClaims
-	token, err := request.ParseFromRequest(req, request.OAuth2Extractor, func(t *jwt.Token) (interface{}, error) {
+	token, err := request.ParseFromRequest(req, request.AuthorizationHeaderExtractor, func(t *jwt.Token) (interface{}, error) {
 		claims := t.Claims.(jwt.MapClaims)
 		if issuer, ok := claims["iss"].(string); ok {
 			if issuer == "tweek" || issuer == "tweek-basic-auth" {
@@ -124,12 +125,17 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, e
 	} else {
 		var extractSubjectErr error
 		claims = token.Claims.(jwt.MapClaims)
-		sub, extractSubjectErr = extractor.ExtractSubject(req.Context(), claims)
-		if extractSubjectErr != nil {
-			logrus.WithError(extractSubjectErr).Error("Failed to extract user info from JWT claims")
-			return nil, fmt.Errorf("Failed to extract user info from JWT claims")
-		}
 		issuer = claims["iss"].(string)
+		if issuer == "tweek-basic-auth" {
+			sub = &Subject{User: claims["sub"].(string), Group: "externalapps"}
+		} else {
+			sub, extractSubjectErr = extractor.ExtractSubject(req.Context(), claims)
+			if extractSubjectErr != nil {
+				logrus.WithError(extractSubjectErr).Error("Failed to extract user info from JWT claims")
+				return nil, fmt.Errorf("Failed to extract user info from JWT claims")
+			}
+		}
+
 	}
 
 	var name, email string = getNameAndEmail(req.URL, claims, sub)

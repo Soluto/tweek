@@ -1,66 +1,38 @@
-/* global describe, before, after, it, browser */
+import { editorUrl } from '../../utils/constants';
+import { getLocation } from '../../utils/location-utils';
+import { credentials, login } from '../../utils/auth-utils';
+import EditKey from '../../pages/Keys/EditKey';
 
-import { expect } from 'chai';
-import Key from '../../utils/Key';
-import { dataComp, nthSelector } from '../../utils/selector-utils';
-import { login } from '../../utils/auth-utils';
+const keyName = 'behavior_tests/revision_history';
 
-const revisionHistory = dataComp('revision-history');
-const revision = `${revisionHistory} option`;
+fixture`Revision History`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
 
-describe('revision history', () => {
-  const keyName = 'behavior_tests/revision_history';
+test('should display revision history', async (t) => {
+  const count = 4;
+  const editPage = await EditKey.open(keyName);
 
-  const changeValue = count => {
-    const currentCommit = nthSelector(1, revision);
+  const currentCommit = editPage.revisionHistory.revision.nth(0);
+  let prevCommit = await editPage.revisionHistory.currentCommit();
+  const initialRevisionCount = await editPage.revisionHistory.revision.count;
 
-    let prevCommit;
-    const history = [];
+  const history = [];
 
-    const noChangesAttribute = browser.getAttribute(revisionHistory, 'data-no-changes');
-    if (noChangesAttribute !== 'true') {
-      prevCommit = browser.getValue(currentCommit);
-      let options = browser.getValue(revision);
-      if (!Array.isArray(options)) {
-        options = [options];
-      }
-      const commits = options.map(commit => ({ commit }));
-      commits.reverse();
-      history.push(...commits);
-    }
+  for (let i = 0; i < count; i++) {
+    const value = `value ${i}`;
+    await t.typeText(editPage.jpad.defaultValue.input, value, { replace: true });
+    await editPage.commitChanges();
+    await t.expect(currentCommit.value).notEql(prevCommit);
+    prevCommit = await currentCommit.value;
+    history.unshift({ value, commit: prevCommit });
+  }
 
-    for (let i = 0; i < count; i++) {
-      const value = `value ${i}`;
-      Key.setDefaultValue(value).commitChanges();
-
-      let commit = null;
-      browser.waitUntil(() => {
-        commit = browser.getValue(currentCommit);
-        return prevCommit !== commit;
-      }, 1000);
-      prevCommit = commit;
-
-      history.push({ commit, value });
-    }
-    history.reverse();
-    return history;
-  };
-
-  before(() => login());
-
-  it('should display revision history', () => {
-    Key.open(keyName);
-    browser.waitForVisible(revisionHistory, 1000);
-
-    const changeCount = 4;
-    const history = changeValue(changeCount);
-
-    const values = browser.getValue(revision);
-    expect(values).to.deep.equal(history.map(x => x.commit));
-
-    const revisionHistorySelect = browser.element(revisionHistory);
-    revisionHistorySelect.selectByValue(history[2].commit);
-
-    expect(Key.defaultValue).to.equal(history[2].value);
-  });
+  await t
+    .expect(editPage.revisionHistory.revision.count)
+    .eql(initialRevisionCount + count)
+    .click(editPage.revisionHistory.container)
+    .click(editPage.revisionHistory.revision.nth(2))
+    .expect(getLocation())
+    .eql(`${editorUrl}/keys/${keyName}?revision=${history[2].commit}`)
+    .expect(editPage.jpad.defaultValue.input.value)
+    .eql(history[2].value);
 });

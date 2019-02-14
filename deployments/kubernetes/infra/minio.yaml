@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: minio
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+      - name: minio
+        image: minio/minio
+        args:
+        - server
+        - /data
+        env:
+        - name: MINIO_ACCESS_KEY
+          value: AKIAIOSFODNN7EXAMPLE
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tweek-secrets
+              key: minio_secret_key
+        ports:
+        - containerPort: 9000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: minio
+spec:
+  selector:
+    app: minio
+  ports:
+    - port: 9000
+      targetPort: 9000

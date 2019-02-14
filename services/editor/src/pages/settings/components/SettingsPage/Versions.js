@@ -2,11 +2,11 @@ import React from 'react';
 import { mapPropsStream } from 'recompose';
 import { Observable } from 'rxjs';
 import * as R from 'ramda';
-import styled from 'react-emotion';
-import { unAuthFetch } from '../../../../utils/fetch';
+import styled from '@emotion/styled';
 import { version } from '../../../../../package.json';
+import { tweekManagementClient } from '../../../../utils/tweekClients';
 
-const ServiceStatus = styled('span')`
+const ServiceStatus = styled.span`
   height: 10px;
   width: 10px;
   background-color: ${({ status }) => (status === 'healthy' ? 'lime' : 'red')};
@@ -15,12 +15,12 @@ const ServiceStatus = styled('span')`
   margin-right: 6px;
 `;
 
-const ServiceVersion = styled('span')``;
+const ServiceVersion = styled.span``;
 
-const Versions = mapPropsStream(prop$ =>
-  Observable.defer(() => unAuthFetch('/version').then(x => x.json()))
-    .map(services => ({ services }))
-    .catch(ex => Observable.of({ error: ex })),
+const Versions = mapPropsStream((prop$) =>
+  Observable.defer(() => tweekManagementClient.getServiceDetails())
+    .map((services) => ({ services }))
+    .catch((ex) => Observable.of({ error: ex })),
 )(({ services, error }) => (
   <div style={{ backgroundColor: '#333b41', color: 'white', padding: 10 }}>
     <div style={{ textTransform: 'uppercase', marginBottom: 8 }}>version</div>

@@ -4,17 +4,17 @@ services:
   git:
     image: soluto/tweek-bare-repo
     build: ../../services/git-service/BareRepository
-    ports: 
+    ports:
       - "4001:22"
     environment:
       - PUBLIC_KEY_PATH=/run/secrets/tweek_ssh_public_key
     secrets:
       - tweek_ssh_public_key
-  
+
   publishing:
     image: soluto/tweek-publishing
-    build: 
-      args: 
+    build:
+      args:
         target: Debug
     ports:
       - "4009:22"
@@ -35,10 +35,10 @@ services:
       - tweek_ssh_public_key
       - tweek_ssh_private_key
       - minio_secret_key
- 
+
   api:
-    build: 
-      args: 
+    build:
+      args:
         target: Debug
     ports:
       - "4003:80"
@@ -64,7 +64,7 @@ services:
 
   editor:
     ports:
-      - "4004:3000"    
+      - "4004:3000"
 
   authoring:
     depends_on:
@@ -81,7 +81,7 @@ services:
       - tweek_ssh_private_key
       - tweek_ssh_public_key
     command:
-      - yarn 
+      - yarn
       - start:debug
     labels:
       - "traefik.port=3000"
@@ -92,7 +92,7 @@ services:
       - "6379"
     ports:
       - "4006:6379"
-  
+
   minio:
     image: minio/minio
     ports:
@@ -110,18 +110,30 @@ services:
       - "4008:8222"
       - "4222:4222"
 
+  oidc-server-mock:
+    container_name: oidc-server-mock
+    image: soluto/oidc-server-mock
+    ports:
+      - "8081:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CLIENT_ID=tweek-openid-mock-client
+      - REDIRECT_URIS=http://localhost:8080/auth-result/oidc
+      - TEST_USER={"SubjectId":"user","Username":"user","Password":"pwd"}
+
   gateway:
     ports:
-      - "4099:80"
-    depends_on: 
+      - "8080:80"
+    depends_on:
       - minio
-      - nats      
+      - nats
+      - oidc-server-mock
     environment:
       - TWEEKGATEWAY_SECURITY_CORS_ENABLED=true
       - TWEEKGATEWAY_SECURITY_CORS_MAXAGE=60
       - TWEEKGATEWAY_SECURITY_CORS_ALLOWEDORIGINS=['*']
       - TWEEKGATEWAY_SECURITY_CORS_ALLOWEDMETHODS=['GET','POST','PUT','PATCH','DELETE']
-      - TWEEKGATEWAY_SECURITY_CORS_ALLOWEDHEADERS=['*']      
+      - TWEEKGATEWAY_SECURITY_CORS_ALLOWEDHEADERS=['*']
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOENDPOINT=minio:9000
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOBUCKETNAME=tweek
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOACCESSKEY=AKIAIOSFODNN7EXAMPLE
@@ -129,7 +141,7 @@ services:
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECURE=false
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_NATSENDPOINT=nats://nats:4222
       - TWEEKGATEWAY_SECURITY_TWEEKSECRETKEY_PATH=/run/secrets/tweek_ssh_private_key
-      - TWEEKGATEWAY_SECURITY_AUTH_BASICAUTH_REDIRECTURLS=['http://localhost:4099']
+      - TWEEKGATEWAY_SECURITY_AUTH_BASICAUTH_REDIRECTURLS=['http://localhost:8080', 'http://localhost:3000']
       - TWEEKGATEWAY_CONFIGFILEPATH=/config/gateway.json
     volumes:
       - ./gateway/config:/config

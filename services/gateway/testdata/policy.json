@@ -20,7 +20,7 @@
             "user": "00000000-0000-0000-0000-000000000000",
             "group": "default",
             "contexts": {},
-            "object": "repo",
+            "object": "repo*",
             "action": "read",
             "effect": "allow"
         },
@@ -89,6 +89,15 @@
             },
             "object": "keys.test/key_with_wildcard_context",
             "action": "read",
+            "effect": "allow"
+        },
+        {
+            "user": "limited-editor",
+            "group": "default",
+            "contexts": {
+            },
+            "object": "repo/keys/my_key",
+            "action": "write",
             "effect": "allow"
         }
     ]

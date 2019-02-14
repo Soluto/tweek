@@ -21,8 +21,8 @@ const Property = ({ identityType, property, local, remote, onChange }) => {
         placeholder="(no value)"
         disabled={property.startsWith('@')}
       />
-      <div className="initial-value" title={remote}>
-        {remote === local ? null : remote}
+      <div className="initial-value" title={String(remote)}>
+        {remote === local ? null : String(remote)}
       </div>
     </div>
   );

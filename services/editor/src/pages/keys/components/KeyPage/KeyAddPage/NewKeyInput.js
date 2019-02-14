@@ -8,32 +8,41 @@ import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import ValidationIcon from '../../../../../components/common/ValidationIcon';
 import keyNameValidations from './key-name-validations';
 import './NewKeyInput.css';
+import { withTweekKeys } from '../../../../../contexts/Tweek';
 
-const getKeyPrefix = path => R.slice(0, -1, path.split('/')).join('/');
+const getKeyPrefix = (path) => R.slice(0, -1, path.split('/')).join('/');
 const getSugesstions = R.pipe(
-  R.filter(key => !key.meta.archived),  
+  R.filter((key) => !key.meta.archived),
   R.keys(),
-  R.map(getKeyPrefix), 
-  R.uniq(), 
-  R.filter(x => x !== '')
-  );
+  R.map(getKeyPrefix),
+  R.uniq(),
+  R.filter((x) => x !== ''),
+);
 
 function getKeyNameSuggestions(keys) {
   return getSugesstions(keys).sort();
 }
 
 const NewKeyInput = compose(
-  connect(state => ({ keys: state.keys })),
+  connect((state) => ({ keys: state.keys })),
+  withTweekKeys(
+    {
+      showInternalKeys: '@tweek/editor/show_internal_keys',
+    },
+    {
+      defaultValues: {},
+    },
+  ),
   mapPropsStream((prop$) => {
     const keys$ = prop$
       .pluck('keys')
-      .distinctUntilChanged()      
-      .switchMap(SearchService.filterInternalKeys)      
+      .distinctUntilChanged()
+      .withLatestFrom(prop$.pluck('showInternalKeys'), SearchService.filterInternalKeys);
 
     return Observable.combineLatest(prop$, keys$, (props, keys) => ({
       ...props,
       keys,
-      keysNames: Object.keys(keys)
+      keysNames: Object.keys(keys),
     }));
   }),
   lifecycle({
@@ -44,33 +53,41 @@ const NewKeyInput = compose(
       onChange(displayName, validation);
     },
   }),
-)(({ keys, keysNames, validation: { isShowingHint = false, hint } = {}, onChange, displayName }) => {
-  const suggestions = getKeyNameSuggestions(keys).map(x => ({ label: x, value: x }));
-  return (
-    <div className="keypath-input-wrapper">
-      <div
-        data-comp="new-key-name"
-        className="keypath-input-container"
-        data-with-error={isShowingHint}
-      >
-        <ValidationIcon show={isShowingHint} hint={hint} />
-        <ComboBox
-          autofocus
-          data-field="new-key-name-input"
-          suggestions={suggestions}
-          value={displayName}
-          placeholder="Enter key full path"
-          onChange={(text) => {
-            const validation = keyNameValidations(text, keysNames);
-            validation.isShowingHint = !validation.isValid;
-            onChange(text, validation);
-          }}
-          showValueInOptions
-        />
+)(
+  ({
+    keys,
+    keysNames,
+    validation: { isShowingHint = false, hint } = {},
+    onChange,
+    displayName,
+  }) => {
+    const suggestions = getKeyNameSuggestions(keys).map((x) => ({ label: x, value: x }));
+    return (
+      <div className="keypath-input-wrapper">
+        <div
+          data-comp="new-key-name"
+          className="keypath-input-container"
+          data-with-error={isShowingHint}
+        >
+          <ValidationIcon show={isShowingHint} hint={hint} />
+          <ComboBox
+            autofocus
+            data-field="new-key-name-input"
+            suggestions={suggestions}
+            value={displayName}
+            placeholder="Enter key full path"
+            onChange={(text) => {
+              const validation = keyNameValidations(text, keysNames);
+              validation.isShowingHint = !validation.isValid;
+              onChange(text, validation);
+            }}
+            showValueInOptions
+          />
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  },
+);
 
 NewKeyInput.displayName = 'NewKeyInput';
 

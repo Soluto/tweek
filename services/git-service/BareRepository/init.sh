@@ -21,13 +21,11 @@ cd /tweek/repo
 chown -R git:git .
 chmod -R ug+rwX .
 chmod g+s .
-chmod -R a+x hooks
 
 cd /tweek/tests
 chown -R git:git .
 chmod -R ug+rwX .
 chmod g+s .
-chmod -R a+x hooks
 
 # -D flag avoids executing sshd as a daemon
 /usr/sbin/sshd -D

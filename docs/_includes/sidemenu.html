@@ -1,0 +1,60 @@
+{% if page_paths %}
+      <i class="mobile-menu fas fa-bars" onclick="document.querySelector('nav.side-menu').classList.toggle('open')" ></i>
+      <nav class="side-menu">    
+          <div class="group-sep">Documentation</div>
+          {% assign sorted_pages = site.pages | sort: "path" %}
+          {% include _sidemenu_rec.html context="" pages=sorted_pages %}
+          <div class="group-sep">Tools</div>
+          <ul>
+          <li><a href="/play-with-tweek" class="page-item">Play-With-Tweek</a></li>
+          </ul>
+
+          <div class="group-sep">Resources</div>
+            <ul>
+            <li><a href="https://git.io/tweek" class="page-item"><i class="fab fa-github"></i> Tweek</a></li>
+            <li><a href="https://github.com/soluto/tweek-clients" class="page-item" ><i class="fab fa-github"></i> Tweek-Clients </a></li>
+            <li><a href="https://github.com/soluto/tweek-deploy" class="page-item"><i class="fab fa-github"></i> Tweek-Deploy </a></li>
+            <li><a href="https://github.com/soluto/tweek.jpad" class="page-item"><i class="fab fa-github"></i> Tweek.JPad </a></li>
+          </ul>
+      </nav>
+      <script>
+        let prev_state = sessionStorage.getItem("folder-state");
+        let folderState = new Set( prev_state && prev_state.split(",") || []);
+        console.log(folderState)
+        document.querySelectorAll(".folder-container .open").forEach(e=>{
+          let folderPath = e.getAttribute("data-folder");
+          folderState.add(folderPath);
+        });
+
+        document.querySelector("nav.side-menu").addEventListener("click", function(e){
+          e.stopPropagation();
+          if (e.srcElement.closest(".page-item") !== null ) {
+            return;
+          }
+
+          let target = e.srcElement.closest(".folder-container");
+          
+
+          if (target == null) return;
+          let folderPath = target.getAttribute("data-folder");
+          if ( target.classList.contains("open")){
+              folderState.delete(folderPath);
+          } else {
+             folderState.add(folderPath);
+          }
+          sessionStorage.setItem("folder-state",[...folderState] );
+          target.classList.toggle('open');
+        })
+
+        folderState.forEach(x=>{
+          document.querySelectorAll(`.folder-container[data-folder="${x}"]`).forEach(e=>{
+              e.classList.add('notransition'); //disable transitions
+              e.classList.add("open");
+              e.offsetHeight; 
+              e.classList.remove('notransition');
+          })
+        })
+
+        
+      </script>
+    {% endif %}
