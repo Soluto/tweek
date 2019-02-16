@@ -7,7 +7,7 @@
             "user": { "type": "string"},
             "object": {
                 "type": "string",
-                "pattern": "^(repo|repo/policies|repo/apps|repo/schemas|repo/tags)|(values/[*a-z_/]*|keys/[*a-z_/]*)$"
+                "pattern": "^(\\*|repo|repo/policies|repo/apps|repo/schemas|repo/tags)|(values/[*a-z_/]*|keys/[*a-z_/]*)$"
             },
             "action": {
               "type": "string",

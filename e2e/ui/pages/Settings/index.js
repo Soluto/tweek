@@ -1,6 +1,7 @@
 import { Selector, t } from 'testcafe';
 import { attributeSelector, dataComp } from '../../utils/selector-utils';
 import Identity from './Identity';
+import PoliciesSection from './Policies';
 
 export default class SettingsPage {
   sideMenu = Selector('.side-menu');
@@ -40,5 +41,18 @@ export default class SettingsPage {
       .ok();
 
     return currentIdentity;
+  }
+
+  async openPoliciesPage(){
+     const button = this.sideMenu.find("a").withExactText("Policies");
+     const policies = new PoliciesSection();
+     await t
+      .expect(button.visible)
+      .ok()
+      .click(button)
+      .expect(policies.container.visible)
+      .ok();
+
+    return policies;  
   }
 }
