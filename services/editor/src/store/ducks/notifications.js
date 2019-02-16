@@ -1,10 +1,16 @@
 import { handleActions } from 'redux-actions';
+import { FetchError } from "tweek-client";
 import Chance from 'chance';
 const chance = new Chance();
 
 const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
 
-export function showError({ error, title = 'Error', position = 'br', format = e=> `${e.status}: ${e.statusText}` }) {
+const defaultFormat = error => (error instanceof FetchError) ?
+  `${error.response.status}: ${error.response.statusText}` :
+  error && error.message || error;
+
+export function showError({ error, title = 'Error', position = 'br', format = defaultFormat })  {
+
   const notification = {
     title,
     message: format(error),
