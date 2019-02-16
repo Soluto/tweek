@@ -7,7 +7,7 @@ const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
 
 const defaultFormat = (error)=> (error instanceof FetchError) ? 
 `${error.response.status}: ${error.response.statusText}` :
- error && error.message
+ error && error.message || error
 
 export function showError({ error, title = 'Error', position = 'br', format = defaultFormat})  {
 
