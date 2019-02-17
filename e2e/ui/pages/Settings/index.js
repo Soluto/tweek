@@ -2,6 +2,8 @@ import { Selector, t } from 'testcafe';
 import { attributeSelector, dataComp } from '../../utils/selector-utils';
 import Identity from './Identity';
 import PoliciesSection from './Policies';
+import { editorUrl } from '../../utils/constants';
+import { getLocation } from '../../utils/location-utils';
 
 export default class SettingsPage {
   sideMenu = Selector('.side-menu');
@@ -51,7 +53,8 @@ export default class SettingsPage {
       .ok()
       .click(button)
       .expect(policies.container.visible)
-      .ok();
+      .ok()
+      .expect(getLocation()).eql(`${editorUrl}/settings/policies`)
 
     return policies;  
   }

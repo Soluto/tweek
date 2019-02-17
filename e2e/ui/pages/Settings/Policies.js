@@ -27,6 +27,12 @@ export class PolicyEditor {
       'true').exists;
   }
 
+  isValid(){
+    return this.saveButton.withAttribute(
+      'data-state-is-valid',
+      'true').exists;
+  }
+
   async save(){
      return await t
      .expect(this.hasChanges())
@@ -38,8 +44,15 @@ export class PolicyEditor {
 export default class PoliciesSection {
 
   container = Selector(".policies-page");
+  tab = "ACL"
 
-  async goToTab(name){
+  async currentTab(){
+    const panel = this.container.find(`[role=tabpanel]`);
+    await t.expect(panel.visible).ok();
+    return new PolicyEditor(panel);
+  }
+
+  async changeTab(name){
     const tabButton = this.container.find("[role=tab]").withText(name);
     const id = await tabButton.getAttribute("id");
     const panel = this.container.find(`[role=tabpanel][aria-labelledby=${id}]`);
