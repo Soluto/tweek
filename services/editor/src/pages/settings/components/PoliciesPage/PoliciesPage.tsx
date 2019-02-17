@@ -1,12 +1,17 @@
 import React from 'react';
+import styled from '@emotion/styled';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import AclPolicies from "./ACL";
 import JWTExtraction from "./JWTExtraction";
 import "./PoliciesPage.css";
 
+const Title = styled.h3`
+  text-transform: capitalize
+`
+
 export default ()=>
   <div className="policies-page">
-      <h3 style={{ textTransform: 'capitalize' }}>Policies</h3>
+      <Title>Policies</Title>
       <Tabs>
         <TabList>
           <Tab selected>ACL</Tab>
