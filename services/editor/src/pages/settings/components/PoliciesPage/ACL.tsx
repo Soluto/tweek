@@ -32,8 +32,8 @@ const isValidJson = (data:string) =>{
 }
 
 export default function(){
-  const [policies, setPolicies, remote] = useRemoteState(()=> tweekManagementClient.getPolicies().then(x=>JSON.stringify(x, null, 4) ), 
-                                                              (policies)=> tweekManagementClient.savePolicies(JSON.parse(policies)) );
+  const [policies, setPolicies, remote] = useRemoteState(async ()=> JSON.stringify(await tweekManagementClient.getPolicies(), null, 4), 
+                                                        (policies)=> tweekManagementClient.savePolicies(JSON.parse(policies)) );
   const [isValid, setIsValid] = useState(true);
 
   useErrorNotifier( remote.loadingState === "idle" ? remote.error : null, "Error saving policies")
