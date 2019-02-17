@@ -5,6 +5,7 @@ import { tweekManagementClient } from '../../../../utils/tweekClients';
 import SaveButton from '../../../../components/common/SaveButton/SaveButton';
 import { useRemoteState, useErrorNotifier } from "./utils"
 import jsonSchema from "./acl-schema.json";
+import { FetchError } from 'tweek-client';
 
 const schemaValidator = new Validator();
 
@@ -39,7 +40,10 @@ export default function(){
 
   if (remote.loadingState === "loading") return null;
   if (remote.error && remote.loadingState === "error"){
-      return <div>Error: {remote.error.message}</div>
+    if (remote.error instanceof FetchError && (remote.error as FetchError).response.status === 403){
+        return <div>Unauthorized</div>
+    }
+    return <div>Error: {remote.error.message}</div>
   }
   
 
