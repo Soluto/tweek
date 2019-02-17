@@ -31,7 +31,7 @@ RUN apt-get update \
        openssh-client openssh-server git  \
        && rm -rf /var/lib/apt/lists/*
 
-RUN adduser --disabled-password --shell /usr/bin/git-shell git \
+RUN adduser --disabled-password -u 1000 --shell /usr/bin/git-shell git \
     && mkdir /home/git/.ssh \
     && ssh-keygen -A \
     && git config --global user.email "git@tweek" \
