@@ -23,14 +23,12 @@ export default function(){
   useErrorNotifier( remote.loadingState === "idle" ? remote.error : null, "Error saving jwt-policy")
   
   if (remote.error && remote.loadingState === "error"){
-    if (remote.error instanceof FetchError && (remote.error as FetchError).response.status === 403){
-      return <div>Unauthorized</div>
-    }
-    return <div>Error: {remote.error.message}</div>
+    const error = remote.error;
+    return <div>Error: {error instanceof FetchError ? `${error.response.status}: ${error.response.statusText}` : error.message}</div>
   }
+
   if (remote.loadingState === "loading" && !policy) return null;
   
-
   return <>
     <SaveButton isValid={true} isSaving={remote.loadingState === "saving"} hasChanges={remote.isDirty} onClick={()=>remote.save()} />
     <MonacoEditor

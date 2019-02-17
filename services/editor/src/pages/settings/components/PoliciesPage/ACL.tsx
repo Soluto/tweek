@@ -38,14 +38,11 @@ export default function(){
 
   useErrorNotifier( remote.loadingState === "idle" ? remote.error : null, "Error saving policies")
 
-  if (remote.loadingState === "loading") return null;
+  if (remote.loadingState === "loading" && !policies) return null;
   if (remote.error && remote.loadingState === "error"){
-    if (remote.error instanceof FetchError && (remote.error as FetchError).response.status === 403){
-        return <div>Unauthorized</div>
-    }
-    return <div>Error: {remote.error.message}</div>
+    const error = remote.error;
+    return <div>Error: {error instanceof FetchError ? `${error.response.status}: ${error.response.statusText}` : error.message}</div>
   }
-  
 
   return <>
     <SaveButton isValid={isValid} isSaving={remote.loadingState === "saving"} hasChanges={remote.isDirty} onClick={()=>remote.save()} />
