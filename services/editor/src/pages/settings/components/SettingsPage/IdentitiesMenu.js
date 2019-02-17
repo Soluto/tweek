@@ -32,16 +32,16 @@ const enhanceIdentities = compose(
 
 const IdentitiesMenu = ({ identities }) => (
   <li>
-      <div data-comp="group">Identities</div>
-      <ul>
-        {identities.map((identity) => (
-          <IdentityLinkItem key={identity} type={identity} />
-        ))}
-        <li>
-          <AddIdentity />
-        </li>
-      </ul>
-    </li>
+    <div data-comp="group">Identities</div>
+    <ul>
+      {identities.map((identity) => (
+        <IdentityLinkItem key={identity} type={identity} />
+      ))}
+      <li>
+        <AddIdentity />
+      </li>
+    </ul>
+  </li>
 );
 
 export default enhanceIdentities(IdentitiesMenu);

@@ -9,7 +9,6 @@ import 'papp-polyfill';
 ReactDOM.render(
   <Provider store={store}>
     <Routes />
-  </Provider>
-  ,
+  </Provider>,
   document.getElementById('root'),
 );

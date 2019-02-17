@@ -19,7 +19,7 @@ const Container = styled.div`
 
 const UserBar = () => (
   <CurrentUserContext.Consumer>
-    {user =>
+    {(user) =>
       user && (
         <Container>
           <div style={{ marginRight: 16, marginLeft: 16, textAlign: 'right' }}>

@@ -14,7 +14,9 @@ const SettingsPage = ({ children }) => (
           <li>
             <div data-comp="group">Security</div>
             <ul>
-              <li><Link to={`/settings/policies`}>Policies</Link></li>
+              <li>
+                <Link to={`/settings/policies`}>Policies</Link>
+              </li>
             </ul>
           </li>
         </ul>

@@ -45,17 +45,18 @@ export default class SettingsPage {
     return currentIdentity;
   }
 
-  async openPoliciesPage(){
-     const button = this.sideMenu.find("a").withExactText("Policies");
-     const policies = new PoliciesSection();
-     await t
+  async openPoliciesPage() {
+    const button = this.sideMenu.find('a').withExactText('Policies');
+    const policies = new PoliciesSection();
+    await t
       .expect(button.visible)
       .ok()
       .click(button)
       .expect(policies.container.visible)
       .ok()
-      .expect(getLocation()).eql(`${editorUrl}/settings/policies`)
+      .expect(getLocation())
+      .eql(`${editorUrl}/settings/policies`);
 
-    return policies;  
+    return policies;
   }
 }
