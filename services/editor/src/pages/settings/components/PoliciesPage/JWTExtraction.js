@@ -2,7 +2,7 @@ import React from 'react';
 import { tweekManagementClient } from '../../../../utils/tweekClients';
 import RemoteCodeEditor from './RemoteCodeEditor';
 
-export default function() {
+export default function JWTPolicyEditor() {
   return (
     <RemoteCodeEditor
       language="rego"

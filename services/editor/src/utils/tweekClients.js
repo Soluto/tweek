@@ -2,8 +2,6 @@
 import { createTweekClient, createTweekManagementClient } from 'tweek-client';
 import { retrieveToken } from '../services/auth-service';
 
-declare const window: any;
-
 export const getGatewayBaseUrl = () => window.GATEWAY_URL || '';
 
 const config = {

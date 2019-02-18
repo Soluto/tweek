@@ -1,18 +1,9 @@
-import React from 'react';
-import { useRemoteState, useErrorNotifier } from './utils';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import MonacoEditor from 'react-monaco-editor';
 import { FetchError } from 'tweek-client';
 import SaveButton from '../../../../components/common/SaveButton/SaveButton';
-import MonacoEditor, { MonacoEditorProps } from 'react-monaco-editor';
-import { useState } from 'react';
-
-type RemoteCodeEditorPropTypes = {
-  reader: () => Promise<string>;
-  writer: (data: string) => Promise<void>;
-  label: string;
-  language: string;
-  validate?: (data: string) => boolean;
-  monacoProps?: MonacoEditorProps;
-};
+import { useRemoteState, useErrorNotifier } from './utils';
 
 const monacoOptions = {
   autoIndent: true,
@@ -32,7 +23,7 @@ export default function RemoteCodeEditor({
   language,
   validate = (_) => true,
   monacoProps = {},
-}: RemoteCodeEditorPropTypes) {
+}) {
   const [code, setCode, remote] = useRemoteState(reader, writer);
   const [isValid, setIsValid] = useState(true);
 
@@ -64,7 +55,7 @@ export default function RemoteCodeEditor({
         options={monacoOptions}
         {...monacoProps}
         value={code}
-        onChange={(newSource: string) => {
+        onChange={(newSource) => {
           setIsValid(validate(newSource));
           setCode(newSource);
         }}
@@ -72,3 +63,12 @@ export default function RemoteCodeEditor({
     </>
   );
 }
+
+RemoteCodeEditor.propTypes = {
+  reader: PropTypes.func.isRequired,
+  writer: PropTypes.func.isRequired,
+  label: PropTypes.string.isRequired,
+  language: PropTypes.string.isRequired,
+  validate: PropTypes.func,
+  monacoProps: PropTypes.object,
+};

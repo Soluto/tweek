@@ -5,7 +5,7 @@ import jsonSchema from './acl-schema.json';
 import RemoteCodeEditor from './RemoteCodeEditor';
 
 const schemaValidator = new Validator();
-const isValidJson = (data: string) => {
+const isValidJson = (data) => {
   try {
     const result = JSON.parse(data);
     return schemaValidator.validate(result, jsonSchema).valid;
@@ -14,7 +14,7 @@ const isValidJson = (data: string) => {
   }
 };
 
-export default function() {
+export default function ACLEditor() {
   return (
     <RemoteCodeEditor
       language="json"

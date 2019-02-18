@@ -4,40 +4,32 @@ import { ReduxContext } from '../../../../store';
 import { showError } from '../../../../store/ducks/notifications';
 import { FetchError } from 'tweek-client';
 
-type LoadingState = 'idle' | 'saving' | 'loading' | 'error';
-
-export function useErrorNotifier(error: Error | null = null, title = 'An error has occurred') {
+export function useErrorNotifier(error, title = 'An error has occurred') {
   const { dispatch } = useContext(ReduxContext);
   useEffect(() => {
     if (!error) return;
 
     const format =
       error instanceof FetchError
-        ? ({ response: { status, statusText } }: FetchError) => `${status}: ${statusText}`
-        : (x: Error) => x.message;
+        ? ({ response: { status, statusText } }) => `${status}: ${statusText}`
+        : (x) => x.message;
 
     dispatch(showError({ title, error: error, format }));
   }, [error]);
 }
 
-export function useRemoteState<T>(
-  reader: () => Promise<T>,
-  writer: (data: T) => Promise<void>,
-): [
-  T | null,
-  (data: T) => void,
-  {
-    loadingState: LoadingState;
-    isDirty: boolean;
-    save: () => void;
-    load: () => void;
-    error?: Error;
-  }
-] {
-  const [localData, setLocalData] = useState<T | null>(null);
-  const [remoteData, setRemoteData] = useState<T | null>(null);
-  const [loadingState, setLoadingState] = useState<LoadingState>('idle');
-  const [error, setError] = useState<Error | undefined>(undefined);
+/**
+ *
+ * @param {()=>Promise<T>} reader
+ * @param {(data:T)=> Promise<void>} writer
+ * @return {[ T | null, (data:T)=>void, { loadingState:'idle' | 'saving' | 'loading' | 'error', isDirty:boolean, save: ()=>void, load:()=>void, error?: Error}]}
+ * @template T
+ */
+export function useRemoteState(reader, writer) {
+  const [localData, setLocalData] = useState(null);
+  const [remoteData, setRemoteData] = useState(null);
+  const [loadingState, setLoadingState] = useState('idle');
+  const [error, setError] = useState(undefined);
 
   const save = async () => {
     if (loadingState == 'saving') return;
