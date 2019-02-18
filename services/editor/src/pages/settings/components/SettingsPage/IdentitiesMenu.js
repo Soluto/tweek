@@ -31,19 +31,17 @@ const enhanceIdentities = compose(
 );
 
 const IdentitiesMenu = ({ identities }) => (
-  <ul style={{ flexGrow: 1 }} className="side-menu" key="SideMenu">
-    <li>
-      <div data-comp="group">Identities</div>
-      <ul>
-        {identities.map((identity) => (
-          <IdentityLinkItem key={identity} type={identity} />
-        ))}
-        <li>
-          <AddIdentity />
-        </li>
-      </ul>
-    </li>
-  </ul>
+  <li>
+    <div data-comp="group">Identities</div>
+    <ul>
+      {identities.map((identity) => (
+        <IdentityLinkItem key={identity} type={identity} />
+      ))}
+      <li>
+        <AddIdentity />
+      </li>
+    </ul>
+  </li>
 );
 
 export default enhanceIdentities(IdentitiesMenu);

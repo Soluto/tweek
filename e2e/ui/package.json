@@ -5,7 +5,7 @@
   "scripts": {
     "build": "yarn docker-compose build",
     "test": "testcafe -q -S -s screenshots chrome spec",
-    "test:fll-env": "yarn docker-compose up --build -d editor && yarn test",
+    "test:full-env": "yarn docker-compose up --build -d editor && yarn test",
     "test:docker": "yarn build && yarn docker-compose run --rm e2e-ui",
     "logs": "yarn docker-compose logs",
     "teardown": "yarn docker-compose down --remove-orphans",
@@ -15,7 +15,7 @@
     "chai": "^4.2.0",
     "nconf": "^0.10.0",
     "ramda": "^0.26.1",
-    "tweek-client": "^1.0.0-rc5",
+    "tweek-client": "^1.0.0-rc7",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
