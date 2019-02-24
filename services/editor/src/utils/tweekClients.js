@@ -9,6 +9,9 @@ const config = {
   getAuthenticationToken: retrieveToken,
 };
 
-export const tweekManagementClient = createTweekManagementClient({...config, requestTimeoutInMillis: 60 * 1000});
+export const tweekManagementClient = createTweekManagementClient({
+  ...config,
+  requestTimeoutInMillis: 60 * 1000,
+});
 
 export const tweekClient = createTweekClient(config);
