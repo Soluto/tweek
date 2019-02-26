@@ -24,7 +24,7 @@ RUN cp -r /src/scripts /tweek \
     && cp -r /src/Tweek.Publishing.Service/obj/docker/publish /tweek/Tweek.Publishing.Service
 
 # Stage 2: Release
-FROM microsoft/dotnet:2.1.5-aspnetcore-runtime as release
+FROM microsoft/dotnet:2.1.8-aspnetcore-runtime as release
 ARG target="Release"
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
