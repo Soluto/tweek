@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using App.Metrics;
 using App.Metrics.Counter;
@@ -23,6 +24,12 @@ namespace Tweek.Publishing.Service.Handlers
             {
                 var oldCommit = req.Query["oldrev"].ToString().Trim();
                 var newCommit = req.Query["newrev"].ToString().Trim();
+                if (!Regex.IsMatch(oldCommit, "^[a-f0-9]+$") || !Regex.IsMatch(newCommit, "^[a-f0-9]+$"))
+                {
+                    res.StatusCode = 400;
+                    await res.WriteAsync("Invalid commit id");
+                    return;
+                }
 
                 var quarantinePath = req.Query["quarantinepath"].ToString();
                 var objectsDir = quarantinePath.Substring(quarantinePath.IndexOf("./objects"));

@@ -1,4 +1,6 @@
 using System;
+using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using App.Metrics;
 using App.Metrics.Counter;
@@ -24,6 +26,13 @@ namespace Tweek.Publishing.Service.Handlers
             return async (req, res, routedata) =>
             {
                 var commitId = req.Query["commit"].ToString();
+                if (!Regex.IsMatch(commitId, "^[a-f0-9]+$"))
+                {
+                    res.StatusCode = 400;
+                    await res.WriteAsync("Invalid commit id");
+                    return;
+                }
+
                 try
                 {
                     await syncActor.PushToUpstream(commitId);
