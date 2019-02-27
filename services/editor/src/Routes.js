@@ -1,6 +1,6 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router';
-import { ConnectedRouter } from 'react-router-redux';
+import { ConnectedRouter } from 'connected-react-router';
 import App from './components/App';
 import PrivateRoute from './PrivateRoute';
 import LoginPage from './pages/login/components/LoginPage';
@@ -18,6 +18,7 @@ import NoMatch from './components/NoMatch';
 import browserHistory from './store/browserHistory';
 import './styles/styles.css';
 import { signOut } from './services/auth-service';
+import PoliciesPage from './pages/settings/components/PoliciesPage/PoliciesPage';
 
 const SelectKeyMessage = () => <div className={'select-key-message'}>Select key...</div>;
 
@@ -39,6 +40,7 @@ const renderContextRoutes = ({ match }) => (
 const renderSettingsRoutes = ({ match }) => (
   <SettingsPage {...match}>
     <PrivateRoute path={`${match.path}/identities/:identityType`} component={IdentityPage} />
+    <PrivateRoute path={`${match.path}/policies`} component={PoliciesPage} />
   </SettingsPage>
 );
 
@@ -49,16 +51,19 @@ const renderAppRoutes = () => (
       <PrivateRoute path="/keys" render={renderKeyRoutes} />
       <PrivateRoute path="/context" render={renderContextRoutes} />
       <PrivateRoute path="/settings" render={renderSettingsRoutes} />
-      <Route path="/logout" exact render={() => 
-      {
-        signOut();
-        return <Redirect to="/login" />;
-      }} />
+      <Route
+        path="/logout"
+        exact
+        render={() => {
+          signOut();
+          return <Redirect to="/login" />;
+        }}
+      />
     </Switch>
   </App>
 );
 
-export default props => (
+export default () => (
   <ConnectedRouter history={browserHistory}>
     <Switch>
       <Route path="/login" component={LoginPage} />

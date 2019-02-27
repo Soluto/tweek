@@ -9,9 +9,7 @@ const identityId = 'override_keys_user';
 const identityType = 'user';
 const typedKey = 'behavior_tests/context/override_key';
 
-fixture`Context Identity Properties`.page`${editorUrl}/context`
-  .httpAuth(credentials)
-  .beforeEach(login);
+fixture`Context Override Keys`.page`${editorUrl}/context`.httpAuth(credentials).beforeEach(login);
 
 test('should modify override keys', async (t) => {
   const identity = await contextPage.open(identityType, identityId);
