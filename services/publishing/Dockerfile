@@ -24,14 +24,14 @@ RUN cp -r /src/scripts /tweek \
     && cp -r /src/Tweek.Publishing.Service/obj/docker/publish /tweek/Tweek.Publishing.Service
 
 # Stage 2: Release
-FROM microsoft/dotnet:2.1.5-aspnetcore-runtime as release
+FROM microsoft/dotnet:2.1.8-aspnetcore-runtime as release
 ARG target="Release"
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        openssh-client openssh-server git  \
        && rm -rf /var/lib/apt/lists/*
 
-RUN adduser --disabled-password --shell /usr/bin/git-shell git \
+RUN adduser --disabled-password -u 1000 --shell /usr/bin/git-shell git \
     && mkdir /home/git/.ssh \
     && ssh-keygen -A \
     && git config --global user.email "git@tweek" \
