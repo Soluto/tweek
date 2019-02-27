@@ -1,0 +1,27 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "group": { "type": "string" },
+      "user": { "type": "string" },
+      "object": {
+        "type": "string",
+        "pattern": "^(\\*|repo|repo/policies|repo/apps|repo/schemas|repo/tags)|(values/[*a-z_/]+|keys/[*a-z_/]+|context/[*a-z_/]+)$"
+      },
+      "action": {
+        "type": "string",
+        "enum": ["read", "write", "*"]
+      },
+      "contexts": {
+        "type": "object"
+      },
+      "effect": {
+        "type": "string",
+        "enum": ["allow", "deny"]
+      }
+    },
+    "required": ["group", "user", "contexts", "action", "effect", "object"],
+    "additionalProperties": false
+  }
+}

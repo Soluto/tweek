@@ -58,16 +58,16 @@ const mapStateToProps = (state, { match, location }) => {
 };
 
 const enhance = compose(
-  connect(mapStateToProps, { ...selectedKeyActions, ...alertActions }),
+  connect(
+    mapStateToProps,
+    { ...selectedKeyActions, ...alertActions },
+  ),
   routeLeaveHook(
     hasUnsavedChanges,
     'You have unsaved changes, are you sure you want to leave this page?',
     { className: 'key-page-wrapper' },
   ),
-  withTweekKeys(
-    { historySince: '@tweek/editor/history/since' },
-    { defaultValues: { historySince: null } },
-  ),
+  withTweekKeys({ historySince: '@tweek/editor/history/since' }, { defaultValues: {} }),
   lifecycle({
     componentDidMount() {
       const { configKey, selectedKey, openKey, revision, historySince } = this.props;

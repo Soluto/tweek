@@ -1,18 +1,18 @@
 import React from 'react';
-import './IdentityPage.css';
 import { connect } from 'react-redux';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import * as R from 'ramda';
 import SaveButton from '../../../../components/common/SaveButton/SaveButton';
 import * as schemaActions from '../../../../store/ducks/schema';
 import { IdentityPropertyItem, NewIdentityProperty } from './IdentityProperty/IdentityProperty';
+import './IdentityPage.css';
 
 const IdentityPropertiesEditor = ({ identityProperties, onPropertyUpdate, onPropertyRemove }) => (
   <div className="property-types-list">
     {R.toPairs(identityProperties).map(([name, def]) => (
       <IdentityPropertyItem
         name={name}
-        onUpdate={newDef => onPropertyUpdate(name, newDef)}
+        onUpdate={(newDef) => onPropertyUpdate(name, newDef)}
         onRemove={() => onPropertyRemove(name)}
         key={name}
         def={def}
@@ -23,7 +23,7 @@ const IdentityPropertiesEditor = ({ identityProperties, onPropertyUpdate, onProp
 
 const IdentityPage = ({
   identityType,
-  identityProperties,
+  identityProperties = {},
   upsertIdentityProperty,
   removeIdentityProperty,
   deleteIdentity,
@@ -32,7 +32,7 @@ const IdentityPage = ({
   const hasChanges = !R.equals(identityProperties.local, identityProperties.remote);
 
   return (
-    <div className="identity-page">
+    <div className="identity-page" data-identity-type={identityType}>
       <div data-comp="action-bar">
         <SaveButton
           data-comp="save-button"
@@ -66,15 +66,24 @@ const IdentityPage = ({
   );
 };
 
-export default connect(
-  state => ({
-    schema: state.schema,
-  }),
+const enhance = connect(
+  R.pick(['schema']),
   schemaActions,
-  ({ schema }, actions, { match: { params: { identityType } }, ...props }) => ({
+  (
+    { schema },
+    actions,
+    {
+      match: {
+        params: { identityType },
+      },
+      ...props
+    },
+  ) => ({
     identityProperties: schema[identityType],
     identityType,
     ...props,
     ...actions,
   }),
-)(IdentityPage);
+);
+
+export default enhance(IdentityPage);

@@ -1,28 +1,21 @@
 const { expect } = require('chai');
 const jsonpatch = require('fast-json-patch');
-const nconf = require('nconf');
-const fetch = require('node-fetch');
 
-const { init: initClients } = require('../../utils/clients');
+const client = require('../../utils/client');
 const { pollUntil } = require('../../utils/utils');
 const { createManifestForJPadKey } = require('../../utils/manifest');
 
 describe('Gateway v2 API', () => {
   const key = 'integration_tests/some_key';
 
-  let clients;
-  before(async () => {
-    clients = await initClients();
-  });
-
   it('should get key using v2 (proxy to api service)', async () =>
-    await clients.gateway.get(`/api/v2/values/${key}`).expect(200, '1.0'));
+    await client.get(`/api/v2/values/${key}`).expect(200, '1.0'));
 
   it('should get key using v2 with keyPath query', async () =>
-    await clients.gateway.get(`/api/v2/values?keyPath=${encodeURI(key)}`).expect(200, '1.0'));
+    await client.get(`/api/v2/values?keyPath=${encodeURI(key)}`).expect(200, '1.0'));
 
   it('should get key using v2 without authentication', async () => {
-    apiClient = await clients.gateway.with(client => client.unset('Authorization'));
+    const apiClient = await client.with((client) => client.unset('Authorization'));
     await apiClient.get(`/api/v2/values/${key}`).expect(200, '1.0');
   });
 
@@ -33,83 +26,88 @@ describe('Gateway v2 API', () => {
       IsInGroup: true,
     };
 
-    await clients.gateway
+    await client
       .post(`/api/v2/context/user/v2user`)
       .send(context)
       .expect(200);
 
-    await clients.gateway
+    await client
       .get(`/api/v2/context/user/v2user`)
       .expect(200)
-      .then(r => {
+      .then((r) => {
         const result = r.body;
         delete result['@CreationDate'];
         expect(result).to.eql(context);
       });
   });
 
-  it('should read schemas', async () => {
-    expectedSchemas = [
+  it('should read, write, and delete schemas', async () => {
+    await client.delete(`/api/v2/schemas/test_schema`).expect(200);
+
+    const expectedSchemas = [
       'delete_property_test',
       'edit_properties_test',
       'other',
       'test',
       'user',
     ].sort();
-    await clients.gateway
+
+    await client
       .get(`/api/v2/schemas`)
       .expect(200)
-      .then(response => {
+      .then((response) => {
         expect(Object.keys(response.body).sort()).to.eql(expectedSchemas);
       });
-  });
 
-  it('should write schemas', async () => {
     const schema = { test: { type: 'string' } };
-    await clients.gateway
+    await client
       .post(`/api/v2/schemas/test_schema`)
       .send(schema)
       .expect(200);
+
+    await client.delete(`/api/v2/schemas/test_schema`).expect(200);
   });
 
   it('should read search index', async () => {
-    await clients.gateway.get(`/api/v2/search-index`).expect(200);
+    await client.get(`/api/v2/search-index`).expect(200);
   });
 
   it('should read search', async () => {
-    await clients.gateway.get(`/api/v2/search`).expect(200);
+    await client.get(`/api/v2/search`).expect(200);
   });
 
   it('should read suggestions', async () => {
-    await clients.gateway.get(`/api/v2/suggestions`).expect(200);
+    await client.get(`/api/v2/suggestions`).expect(200);
   });
 
   it('should read dependents', async () => {
-    await clients.gateway.get('/api/v2/dependents/integration_tests/some_key').expect(200);
+    await client.get('/api/v2/dependents/integration_tests/some_key').expect(200);
   });
 
   it('should read dependents with keyPath', async () => {
-    await clients.gateway
-      .get('/api/v2/dependents/?keyPath=integration_tests%2Fsome_key')
-      .expect(200);
+    await client.get('/api/v2/dependents/?keyPath=integration_tests%2Fsome_key').expect(200);
   });
 
   it('should read manifests', async () => {
-    await clients.gateway.get('/api/v2/manifests').expect(200);
+    await client.get('/api/v2/manifests').expect(200);
   });
 
   it('should read tags', async () => {
-    await clients.gateway.get('/api/v2/tags').expect(200);
+    await client.get('/api/v2/tags').expect(200);
   });
 
   it('should read revision history', async () => {
-    await clients.gateway.get('/api/v2/revision-history/integration_tests/some_key').expect(200);
+    await client.get('/api/v2/revision-history/integration_tests/some_key').expect(200);
   });
 
   it('should return a key with keyPath', async () => {
     const key = 'integration_tests/some_key';
-    await clients.gateway
-      .get(`/api/v2/keys?keyPath=${encodeURIComponent(key)}&author.name=test&author.email=test@soluto.com`)
+    await client
+      .get(
+        `/api/v2/keys?keyPath=${encodeURIComponent(
+          key,
+        )}&author.name=test&author.email=test@soluto.com`,
+      )
       .expect(
         200,
         '{"manifest":{"key_path":"integration_tests/some_key","meta":{"name":"integration_tests/some_key","tags":[],"description":"","archived":false},"implementation":{"type":"const","value":1},"valueType":"number","dependencies":[]}}',
@@ -118,7 +116,7 @@ describe('Gateway v2 API', () => {
 
   it('should accept a valid key', async () => {
     const key = '@tests/integration/new_valid_key_2';
-    await clients.gateway
+    await client
       .put(`/api/v2/keys/${key}?author.name=test&author.email=test@soluto.com`)
       .send({
         manifest: createManifestForJPadKey(key),
@@ -132,14 +130,14 @@ describe('Gateway v2 API', () => {
       .expect(200);
 
     await pollUntil(
-      () => clients.gateway.get(`/api/v2/values/${key}`),
-      res => expect(res.body).to.eql('test'),
+      () => client.get(`/api/v2/values/${key}`),
+      (res) => expect(res.body).to.eql('test'),
     );
   });
 
   it('should reject an invalid key with 400 error', async () => {
     const key = '@tests/integration/new_invalid_key_2';
-    await clients.gateway
+    await client
       .put(`/api/v2/keys/${key}`)
       .send({
         manifest: createManifestForJPadKey(key),
@@ -155,8 +153,11 @@ describe('Gateway v2 API', () => {
 
   it('should not create new commit for duplicate definition', async () => {
     const key = '@tests/integration/duplicate_2';
+
+    await client.delete(`/api/v2/keys/${key}`).expect(200);
+
     async function saveKey() {
-      return await clients.gateway
+      return await client
         .put(`/api/v2/keys/${key}`)
         .send({
           manifest: createManifestForJPadKey(key),
@@ -169,17 +170,19 @@ describe('Gateway v2 API', () => {
         })
         .expect(200);
     }
+
     const res1 = await saveKey();
     expect(res1.header).to.have.property('x-oid');
+
     const res2 = await saveKey();
     expect(res2.header).to.not.have.property('x-oid');
   });
 
   it('should create new app', async () => {
-    const res = await clients.gateway
+    const res = await client
       .post('/api/v2/apps')
       .send({
-        name: 'test app'
+        name: 'test app',
       })
       .expect(200);
 
@@ -187,13 +190,11 @@ describe('Gateway v2 API', () => {
     expect(app).hasOwnProperty('appId');
     expect(app).hasOwnProperty('appSecret');
 
-    const appsRes = await clients.gateway
-                            .get('/api/v2/apps')
-                            .expect(200);
+    const appsRes = await client.get('/api/v2/apps').expect(200);
 
-    expect(appsRes.body).to.include({[app.appId] : 'test app' });
+    expect(appsRes.body).to.include({ [app.appId]: 'test app' });
 
-    const policyRes = await clients.gateway.get('/api/v2/policies').expect(200);
+    const policyRes = await client.get('/api/v2/policies').expect(200);
 
     const currentPolicy = policyRes.body;
 
@@ -212,41 +213,15 @@ describe('Gateway v2 API', () => {
     };
 
     const patch = jsonpatch.compare(currentPolicy, newPolicy);
-    await clients.gateway
+    await client
       .patch('/api/v2/policies?author.name=test&author.email=test@soluto.com')
       .send(patch)
       .expect(200);
 
-    await clients.gateway.get('/api/v2/policies').expect(200, newPolicy);
-
-    const key = 'app_test_key';
-
-    const options = {
-      method: 'put',
-      headers: {
-        ['x-client-id']: app.appId,
-        ['x-client-secret']: app.appSecret,
-      },
-      body: {
-        manifest: createManifestForJPadKey(key),
-        implementation: JSON.stringify({
-          partitions: [],
-          defaultValue: 'test',
-          valueType: 'string',
-          rules: [],
-        }),
-      },
-    };
-
-    await fetch(
-      `${nconf.get(
-        'GATEWAY_URL',
-      )}/api/v2/keys/${key}?author.name=test&author.email=test@soluto.com`,
-      options,
-    );
+    await client.get('/api/v2/policies').expect(200, newPolicy);
 
     const cleanup = jsonpatch.compare(newPolicy, currentPolicy);
-    await clients.gateway
+    await client
       .patch('/api/v2/policies?author.name=test&author.email=test@soluto.com')
       .send(cleanup)
       .expect(200);

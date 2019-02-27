@@ -31,7 +31,7 @@ class GoogleTagManagerContainer extends React.Component {
     gtmId: PropTypes.string.isRequired,
     dataLayerName: PropTypes.string,
     additionalEvents: PropTypes.object,
-    previewVariables: PropTypes.string,
+    previewVariables: PropTypes.bool,
     scriptId: PropTypes.string,
   };
 
@@ -47,13 +47,13 @@ const enhance = compose(
   withTweekKeys(
     {
       isEnabled: '@tweek/editor/google_tag_manager/enabled',
-      gtmId$: '@tweek/editor/google_tag_manager/id',
+      gtmId: '@tweek/editor/google_tag_manager/id',
     },
     {
-      defaultValues: { isEnabled: false, gtmId$: null },
+      defaultValues: { isEnabled: false },
     },
   ),
-  branch(({ isEnabled }) => !isEnabled, renderNothing),
+  branch(({ isEnabled, gtmId }) => !isEnabled || !gtmId, renderNothing),
 );
 
 export default enhance(GoogleTagManagerContainer);

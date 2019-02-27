@@ -50,12 +50,14 @@ func setupAuthorizer(cfg *appConfig.Security) (security.Authorizer, error) {
 		return nil, err
 	}
 
-	dataObj, err := client.GetObject(policyStorage.MinioBucketName, "security/policy.json", minio.GetObjectOptions{})
+	reader, err := client.GetObject(policyStorage.MinioBucketName, "security/policy.json", minio.GetObjectOptions{})
 	if err != nil {
 		return nil, err
 	}
 
-	data, err := ioutil.ReadAll(dataObj)
+	defer reader.Close()
+
+	data, err := ioutil.ReadAll(reader)
 	if err != nil {
 		return nil, err
 	}
@@ -142,12 +144,14 @@ func setupSubjectExtractor(cfg appConfig.Security) (security.SubjectExtractor, e
 		return nil, err
 	}
 
-	obj, err := client.GetObject(policyStorage.MinioBucketName, "security/subject_extraction_rules.rego", minio.GetObjectOptions{})
+	reader, err := client.GetObject(policyStorage.MinioBucketName, "security/subject_extraction_rules.rego", minio.GetObjectOptions{})
 	if err != nil {
 		return nil, err
 	}
 
-	data, err := ioutil.ReadAll(obj)
+	defer reader.Close()
+
+	data, err := ioutil.ReadAll(reader)
 	if err != nil {
 		return nil, err
 	}

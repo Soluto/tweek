@@ -1,61 +1,81 @@
-/* global describe, before, after, it, browser */
+import { editorUrl } from '../../utils/constants';
+import { credentials, login } from '../../utils/auth-utils';
+import { getLocation } from '../../utils/location-utils';
+import { tweekManagementClient } from '../../clients/tweek-clients';
+import KeysPage, { BLANK_KEY_NAME } from '../../pages/Keys';
 
-import { expect } from 'chai';
-import { dataComp } from '../../utils/selector-utils';
-import Key from '../../utils/Key';
-import Rule from '../../utils/Rule';
-import { login } from '../../utils/auth-utils';
-import KeysList from '../../utils/KeysList';
-
-const timeout = 5000;
+const keysPage = new KeysPage();
 
 const keyToAddFullPath = 'behavior_tests/add_key/add_key_test';
-const keyWithDefaultsToAddFullPath = 'behavior_tests/add_key/dafault_format_and_type';
+const keyWithDefaultsToAddFullPath = 'behavior_tests/add_key/default_format_and_type';
 
-describe('add key', () => {
-  before(() => login());
+fixture`Add Key`.page`${editorUrl}/keys`.httpAuth(credentials).beforeEach(login);
 
-  it('should succeed adding key', () => {
-    Key.add();
+test('should succeed adding key', async (t) => {
+  const newKey = await keysPage.addNewKey();
 
-    expect(Key.isCurrent(Key.BLANK_KEY_NAME)).to.be.true;
-    expect(Rule.count()).to.equal(0);
+  await t.expect(getLocation()).eql(`${editorUrl}/keys/${BLANK_KEY_NAME}`);
 
-    Key.setName(keyToAddFullPath)
-      .setValueType('string')
-      .setKeyFormat('jpad');
-    Key.continueToDetails();
+  await t
+    .typeText(newKey.nameInput, keyToAddFullPath, { replace: true })
+    .typeText(newKey.valueTypeSelector, 'number', { replace: true })
+    .typeText(newKey.formatSelector, 'const', { replace: true });
 
-    expect(Key.hasChanges).to.be.true;
+  const editKey = await newKey.continue();
 
-    Key.clickSave();
+  await t
+    .expect(editKey.saveChangesButtonHasChanges.visible)
+    .ok()
+    .click(editKey.saveChangesButton);
+  // .expect(editKey.saveChangesButtonIsSaving.visible).ok();
 
-    expect(Key.isSaving).to.be.true;
+  await t
+    .expect(getLocation())
+    .eql(`${editorUrl}/keys/${keyToAddFullPath}`)
+    .expect(editKey.archiveButton.visible)
+    .ok()
+    .expect(editKey.displayNameText.withExactText(keyToAddFullPath).exists)
+    .ok()
+    .expect(editKey.saveChangesButtonHasChanges.exists)
+    .notOk();
 
-    browser.waitUntil(() => Key.isCurrent(keyToAddFullPath), timeout);
-    browser.waitForVisible(dataComp('archive-key'), timeout);
+  const link = await keysPage.navigateToLink(keyToAddFullPath);
 
-    expect(Key.displayName).to.equal(keyToAddFullPath);
-    expect(Key.hasChanges).to.be.false;
-    KeysList.assertInList(keyToAddFullPath);
-  });
+  await t.expect(link.visible).ok();
+}).before(async (t) => {
+  await tweekManagementClient.deleteKey(keyToAddFullPath);
+  await login(t);
+});
 
-  it('should succeed adding key by entering key path only', () => {
-    Key.add();
-    Key.setName(keyWithDefaultsToAddFullPath);
-    Key.continueToDetails();
+test('should succeed adding key by entering key path only', async (t) => {
+  const newKey = await keysPage.addNewKey();
 
-    expect(Key.hasChanges).to.be.true;
+  await t.expect(getLocation()).eql(`${editorUrl}/keys/${BLANK_KEY_NAME}`);
 
-    Key.clickSave();
+  await t.typeText(newKey.nameInput, keyWithDefaultsToAddFullPath, { replace: true });
 
-    expect(Key.isSaving).to.be.true;
+  const editKey = await newKey.continue();
 
-    browser.waitUntil(() => Key.isCurrent(keyWithDefaultsToAddFullPath), timeout);
-    browser.waitForVisible(dataComp('archive-key'), timeout);
+  await t
+    .expect(editKey.saveChangesButtonHasChanges.visible)
+    .ok()
+    .click(editKey.saveChangesButton);
+  // .expect(editKey.saveChangesButtonIsSaving.visible).ok();
 
-    expect(Key.displayName).to.equal(keyWithDefaultsToAddFullPath);
-    expect(Key.hasChanges).to.be.false;
-    KeysList.assertInList(keyWithDefaultsToAddFullPath);
-  });
+  await t
+    .expect(getLocation())
+    .eql(`${editorUrl}/keys/${keyWithDefaultsToAddFullPath}`)
+    .expect(editKey.archiveButton.visible)
+    .ok()
+    .expect(editKey.displayNameText.withExactText(keyWithDefaultsToAddFullPath).exists)
+    .ok()
+    .expect(editKey.saveChangesButtonHasChanges.exists)
+    .notOk();
+
+  const link = await keysPage.navigateToLink(keyWithDefaultsToAddFullPath);
+
+  await t.expect(link.visible).ok();
+}).before(async (t) => {
+  await tweekManagementClient.deleteKey(keyWithDefaultsToAddFullPath);
+  await login(t);
 });

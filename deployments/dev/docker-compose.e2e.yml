@@ -2,24 +2,24 @@ version: '3.4'
 
 services:
   publishing:
-    build: 
-      args: 
+    build:
+      args:
         target: Release
 
-    environment: 
+    environment:
       - GIT_UPSTREAM_URI=ssh://git@git/tweek/tests
 
   editor:
-    environment: 
+    environment:
       - CONTINUOUS_UPDATER_INTERVAL=500
 
   authoring:
-    environment: 
+    environment:
       - CONTINUOUS_UPDATER_INTERVAL=500
 
   api:
-    build: 
-      args: 
+    build:
+      args:
         target: Release
     depends_on:
       - publishing
@@ -31,90 +31,62 @@ services:
       - CorsPolicies__Keys__ExposedHeaders=
       - CorsEnabled=true
       - Context__Validation__ErrorPolicy=throw
-      
+
   gateway:
     environment:
-      - CONFIGOR_ENV=test    
+      - CONFIGOR_ENV=test
 
   oidc-server-mock:
-    container_name: oidc-server-mock 
-    image: soluto/oidc-server-mock   
+    container_name: oidc-server-mock
+    image: soluto/oidc-server-mock
     ports:
       - "8081:80"
-    environment: 
+    environment:
       - REDIRECT_URIS=http://gateway/auth-result/oidc
-  
-  
-  selenium:
-    image: selenium/standalone-chrome-debug:3.8.1
-    container_name: selenium
-    ports:
-      - "5900:5900"
-    volumes:
-      - /dev/shm:/dev/shm
-    links:
-      - gateway:api
-      - gateway:authoring
 
   e2e-ui:
     build: ../../e2e/ui
     container_name: e2e-ui
-    links:
-      - selenium
-      - gateway:api
-      - gateway:authoring      
-    depends_on: 
-      - selenium
-      - api
-      - authoring
-      - publishing
-      - editor
+    shm_size: 2g
+    volumes:
+      - ../../e2e/ui:/src
+    depends_on:
       - gateway
+      - editor
     environment:
-      - GATEWAY_URL=http://gateway/
-      - TWEEK_API_URL=http://api/
-      - AUTHORING_URL=http://authoring
-      - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
+      - GATEWAY_URL=http://gateway
+      - EDITOR_URL=http://gateway
       - AUTH_DIGEST_CREDENTIALS=user:pwd
-    secrets:
-      - tweek_ssh_private_key
+    command: ["-q", "-S", "-s", "/src/screenshots", "-c", "4", "chromium --headless --window-size='1280,720' --no-sandbox", "/src/spec" ]
 
   e2e-integration:
     build: ../../e2e/integration
     container_name: e2e-integration
+    volumes:
+      - ../../e2e/integration:/opt/app
     depends_on: 
-      - api
-      - authoring
       - gateway
-      - publishing
     environment:
-      - API_URL=http://api
-      - AUTHORING_URL=http://authoring
       - GATEWAY_URL=http://gateway
-      - GIT_PRIVATE_KEY_PATH=/run/secrets/tweek_ssh_private_key
       - MINIO_HOST=minio
       - MINIO_PORT=9000
       - MINIO_ACCESS_KEY_PATH=/run/secrets/minio_access_key
       - MINIO_SECRET_KEY_PATH=/run/secrets/minio_secret_key
       - MINIO_BUCKET=tweek
     secrets:
-      - tweek_ssh_private_key
       - minio_access_key
       - minio_secret_key
-    links:
-      - gateway:api
-      - gateway:authoring
 
   smoke-tests:
     build:
       context: ../../
       dockerfile: TweekApiSmokeTest.Dockerfile
     container_name: smoke-tests
-    depends_on: 
+    depends_on:
       - api
       - publishing
       - gateway
-    environment: 
+    environment:
       - TWEEK_API_URL=http://api/
     links:
       - gateway:api

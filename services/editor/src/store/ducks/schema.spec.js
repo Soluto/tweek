@@ -71,7 +71,7 @@ describe('schema duck', () => {
         user: { isSaving: false },
       });
 
-      expect(tweekManagementClient.addNewIdentity).toHaveBeenCalledWith('user', { age: 30 });
+      expect(tweekManagementClient.saveIdentity).toHaveBeenCalledWith('user', { age: 30 });
 
       expect(schemaState).toMatchObject({
         user: { remote: { age: 30 } },
@@ -90,7 +90,7 @@ describe('schema duck', () => {
       dispatch(actions.upsertIdentityProperty('user', 'gender', 'female'));
 
       await dispatch(actions.saveSchema('user'));
-      const [_, patch] = tweekManagementClient.updateIdentity.mock.calls[0];
+      const [_, patch] = tweekManagementClient.patchIdentity.mock.calls[0];
 
       const newUserState = R.clone(schemaState.user.local);
       expect(newUserState).toMatchObject({ age: 40, gender: 'female' });

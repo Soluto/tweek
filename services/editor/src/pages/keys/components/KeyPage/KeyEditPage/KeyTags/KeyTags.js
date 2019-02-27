@@ -7,35 +7,37 @@ import * as tagActions from '../../../../../../store/ducks/tags';
 import './KeyTags.css';
 
 export default compose(
-  connect(state => ({ globalTags: state.tags }), { ...tagActions }),
+  connect(
+    (state) => ({ globalTags: state.tags }),
+    tagActions,
+  ),
   pure,
   mapProps(({ globalTags, tags, ...props }) => ({
     ...props,
-    tagsSuggestions: globalTags.map(x => x.name),
-    tags: tags.map(x => ({
-      id: x,
+    tagsSuggestions: Object.entries(globalTags).map(([id, text]) => ({ id, text })),
+    tags: tags.map((x) => ({
+      id: x.toLowerCase(),
       text: x,
     })),
   })),
 )(
   class KeyTags extends Component {
-    _onTagAdded = (newTagText) => {
-      const { saveNewTags } = this.props;
+    _onTagAdded = ({ text }) => {
+      const { saveNewTag, tags } = this.props;
 
-      const currentTags = this.props.tags.map(x => x.text);
-      if (currentTags.indexOf(newTagText) >= 0) {
+      const newTag = { id: text.toLowerCase(), text };
+
+      if (tags.some((t) => t.id === newTag.id)) {
         return;
       }
 
-      const newTags = [...currentTags, newTagText];
-      this.props.onTagsChanged(newTags);
-
-      saveNewTags([newTagText]);
+      this.props.onTagsChanged([...tags.map((t) => t.text), text]);
+      saveNewTag(newTag);
     };
 
     _onTagDeleted = (deletedTagIndex) => {
       const newTags = R.remove(deletedTagIndex, 1, this.props.tags);
-      this.props.onTagsChanged(newTags.map(x => x.text));
+      this.props.onTagsChanged(newTags.map((x) => x.text));
     };
 
     render() {
