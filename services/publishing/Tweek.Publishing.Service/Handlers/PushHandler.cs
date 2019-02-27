@@ -1,17 +1,11 @@
 using System;
-using System.Net;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using App.Metrics;
 using App.Metrics.Counter;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using Polly;
-using Polly.Retry;
-using Tweek.Publishing.Service.Messaging;
 using Tweek.Publishing.Service.Sync;
+using static Tweek.Publishing.Service.Utils.ShellHelper;
 
 namespace Tweek.Publishing.Service.Handlers
 {
@@ -26,7 +20,7 @@ namespace Tweek.Publishing.Service.Handlers
             return async (req, res, routedata) =>
             {
                 var commitId = req.Query["commit"].ToString();
-                if (!Regex.IsMatch(commitId, "^[a-f0-9]+$"))
+                if (!IsHexString(commitId))
                 {
                     res.StatusCode = 400;
                     await res.WriteAsync("Invalid commit id");

@@ -1,11 +1,11 @@
 using System;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using App.Metrics;
 using App.Metrics.Counter;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
+using Tweek.Publishing.Service.Utils;
 using Tweek.Publishing.Service.Validation;
 using static Tweek.Publishing.Service.Utils.ShellHelper;
 
@@ -24,7 +24,7 @@ namespace Tweek.Publishing.Service.Handlers
             {
                 var oldCommit = req.Query["oldrev"].ToString().Trim();
                 var newCommit = req.Query["newrev"].ToString().Trim();
-                if (!Regex.IsMatch(oldCommit, "^[a-f0-9]+$") || !Regex.IsMatch(newCommit, "^[a-f0-9]+$"))
+                if (!IsHexString(oldCommit) || !IsHexString(newCommit))
                 {
                     res.StatusCode = 400;
                     await res.WriteAsync("Invalid commit id");

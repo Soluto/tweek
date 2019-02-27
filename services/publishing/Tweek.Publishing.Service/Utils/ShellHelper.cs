@@ -4,6 +4,7 @@ using System.IO;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Tweek.Publishing.Service.Utils
@@ -107,6 +108,12 @@ namespace Tweek.Publishing.Service.Utils
                             };
                     }));
             });
+        }
+
+        private static readonly Regex hexRegex = new Regex("^[a-f0-9]+$");
+        public static bool IsHexString(string str)
+        {
+            return hexRegex.IsMatch(str);
         }
 
         public static async Task<string> ExecTask(this ShellExecutor shellExecutor, string command, string args, Action<ProcessStartInfo> paramsInit = null)
