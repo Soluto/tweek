@@ -111,7 +111,7 @@ namespace Tweek.Publishing.Service.Utils
         }
 
         private static readonly Regex HexRegex = new Regex("^[a-f0-9]+$");
-        public static bool IsHexString(string str)
+        public static bool IsCommitIdString(string str)
         {
             return HexRegex.IsMatch(str);
         }

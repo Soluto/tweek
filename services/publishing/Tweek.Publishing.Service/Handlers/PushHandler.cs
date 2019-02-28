@@ -20,7 +20,7 @@ namespace Tweek.Publishing.Service.Handlers
             return async (req, res, routedata) =>
             {
                 var commitId = req.Query["commit"].ToString();
-                if (!IsHexString(commitId))
+                if (!IsCommitIdString(commitId))
                 {
                     res.StatusCode = 400;
                     await res.WriteAsync("Invalid commit id");

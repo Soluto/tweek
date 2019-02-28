@@ -24,7 +24,7 @@ namespace Tweek.Publishing.Service.Handlers
             {
                 var oldCommit = req.Query["oldrev"].ToString().Trim();
                 var newCommit = req.Query["newrev"].ToString().Trim();
-                if (!IsHexString(oldCommit) || !IsHexString(newCommit))
+                if (!IsCommitIdString(oldCommit) || !IsCommitIdString(newCommit))
                 {
                     res.StatusCode = 400;
                     await res.WriteAsync("Invalid commit id");
