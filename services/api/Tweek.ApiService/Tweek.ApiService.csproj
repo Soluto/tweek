@@ -14,7 +14,7 @@
     <PackageReference Include="App.Metrics.AspNetCore.Health" Version="2.0.0" />
     <PackageReference Include="App.Metrics.AspNetCore.Mvc" Version="2.0.0" />
     <PackageReference Include="App.Metrics.Formatters.Json" Version="2.1.0" />
-    <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="2.0.0" />
+    <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="3.0.0" />
     <PackageReference Include="App.Metrics.Health.Checks.Http" Version="2.0.0" />
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
     <PackageReference Include="LanguageExt.Core" Version="3.0.17" />
