@@ -3,12 +3,14 @@ package security
 import (
 	"crypto/x509"
 	"encoding/pem"
+	"errors"
 	"sync"
 	"time"
 
+	"tweek-gateway/appConfig"
+
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/sirupsen/logrus"
-	"tweek-gateway/appConfig"
 )
 
 type TweekClaims struct {
@@ -94,6 +96,9 @@ func getPrivateKey(keyEnv *appConfig.EnvInlineOrPath) (interface{}, error) {
 	}
 
 	block, _ := pem.Decode(pemFile)
+	if block == nil {
+		return nil, errors.New("no PEM found")
+	}
 	key, err := x509.ParsePKCS8PrivateKey(block.Bytes)
 	if err != nil {
 		key, err = x509.ParsePKCS1PrivateKey(block.Bytes)

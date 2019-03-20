@@ -2,9 +2,6 @@ package security
 
 import (
 	"context"
-	"crypto/x509"
-	"encoding/pem"
-	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -57,8 +54,15 @@ func (u *userInfo) Name() string               { return u.name }
 func (u *userInfo) Issuer() string             { return u.issuer }
 func (u *userInfo) Claims() jwt.StandardClaims { return u.StandardClaims }
 
+var tweekPrivateKey interface{}
+
 // AuthenticationMiddleware enriches the request's context with the user info from JWT
 func AuthenticationMiddleware(configuration *appConfig.Security, extractor SubjectExtractor, auditor audit.Auditor) negroni.HandlerFunc {
+	var err error
+	tweekPrivateKey, err = getPrivateKey(&configuration.TweekSecretKey)
+	if err != nil {
+		logrus.Panicln("Error reading tweek private key", err)
+	}
 	var jwksEndpoints []string
 	for _, issuer := range configuration.Auth.Providers {
 		jwksEndpoints = append(jwksEndpoints, issuer.JWKSURL)
@@ -85,7 +89,7 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, e
 		claims := t.Claims.(jwt.MapClaims)
 		if issuer, ok := claims["iss"].(string); ok {
 			if issuer == "tweek" || issuer == "tweek-basic-auth" {
-				return getGitKey(&configuration.TweekSecretKey)
+				return tweekPrivateKey, nil
 			}
 
 			if keyID, ok := t.Header["kid"].(string); ok {
@@ -191,21 +195,4 @@ func getProviderByIssuer(issuer string, providers map[string]appConfig.AuthProvi
 		}
 	}
 	return nil, false
-}
-
-func getGitKey(keyEnv *appConfig.EnvInlineOrPath) (interface{}, error) {
-	pemFile, err := appConfig.HandleEnvInlineOrPath(keyEnv)
-	if err != nil {
-		return nil, err
-	}
-	pemBlock, _ := pem.Decode(pemFile)
-	if pemBlock == nil {
-		return nil, errors.New("no PEM found")
-	}
-	key, err := x509.ParsePKCS1PrivateKey(pemBlock.Bytes)
-	if err != nil {
-		return nil, err
-	}
-	rsaPublicKey := key.Public()
-	return rsaPublicKey, nil
 }
