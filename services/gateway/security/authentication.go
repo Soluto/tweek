@@ -2,6 +2,7 @@ package security
 
 import (
 	"context"
+	"crypto/rsa"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -54,7 +55,7 @@ func (u *userInfo) Name() string               { return u.name }
 func (u *userInfo) Issuer() string             { return u.issuer }
 func (u *userInfo) Claims() jwt.StandardClaims { return u.StandardClaims }
 
-var tweekPrivateKey interface{}
+var tweekPrivateKey *rsa.PrivateKey
 
 // AuthenticationMiddleware enriches the request's context with the user info from JWT
 func AuthenticationMiddleware(configuration *appConfig.Security, extractor SubjectExtractor, auditor audit.Auditor) negroni.HandlerFunc {

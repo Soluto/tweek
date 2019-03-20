@@ -1,6 +1,7 @@
 package security
 
 import (
+	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
 	"errors"
@@ -89,7 +90,7 @@ func setExpirationTimer(token *JWTTokenData, key interface{}) {
 	}
 }
 
-func getPrivateKey(keyEnv *appConfig.EnvInlineOrPath) (interface{}, error) {
+func getPrivateKey(keyEnv *appConfig.EnvInlineOrPath) (*rsa.PrivateKey, error) {
 	pemFile, err := appConfig.HandleEnvInlineOrPath(keyEnv)
 	if err != nil {
 		return nil, err
@@ -106,5 +107,11 @@ func getPrivateKey(keyEnv *appConfig.EnvInlineOrPath) (interface{}, error) {
 			return nil, err
 		}
 	}
-	return key, nil
+
+	rsaKey, ok := key.(*rsa.PrivateKey)
+	if !ok {
+		return nil, errors.New("key block is not of type RSA")
+	}
+
+	return rsaKey, nil
 }
