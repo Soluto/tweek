@@ -1,71 +1,42 @@
-import React, { Component } from 'react';
-import * as R from 'ramda';
-import { createTweekContext } from 'react-tweek';
+import React, { useEffect, useState } from 'react';
+import { prepareKey, TweekProvider as OriginalTweekProvider } from 'react-tweek';
 import { TweekRepository } from 'tweek-local-cache';
+import { equals } from 'ramda';
 import { tweekClient } from '../utils/tweekClients';
-import { withCurrentUser } from './CurrentUser';
+import { useCurrentUser } from './CurrentUser';
 
-export const TweekContext = createTweekContext();
-
-TweekContext.prepare('@tweek/editor/_');
-
-export const withTweekRepository = BaseComponent => props => (
-  <TweekContext.Consumer>
-    {tweekRepo => <BaseComponent {...props} tweekRepository={tweekRepo} />}
-  </TweekContext.Consumer>
-);
-
-export const withTweekKeys = TweekContext.withTweekKeys;
+prepareKey('@tweek/editor/_');
 
 const toTweekContext = ({ User }) => ({ tweek_editor_user: User });
 
-class Provider extends Component {
-  static displayName = 'TweekProvider';
-  state = {
-    tweekRepository: undefined,
-  };
+export const TweekProvider = ({ children }) => {
+  const [tweekRepository, setTweekRepository] = useState();
 
-  componentDidMount() {
-    this._setRepository(this.props.currentUser);
-  }
+  const user = useCurrentUser();
 
-  componentDidUpdate(prevProps) {
-    const { currentUser } = this.props;
-    if (!currentUser || R.equals(currentUser, prevProps.currentUser)) {
+  useEffect(() => {
+    if (!user) {
       return;
     }
 
-    const { tweekRepository } = this.state;
+    const context = toTweekContext(user);
+
     if (tweekRepository) {
-      tweekRepository.updateContext(toTweekContext(currentUser));
+      tweekRepository.updateContext((prev) => {
+        if (equals(prev, context)) {
+          return null;
+        }
+        return context;
+      });
     } else {
-      this._setRepository(currentUser);
+      setTweekRepository(
+        new TweekRepository({
+          client: tweekClient,
+          context,
+        }),
+      );
     }
-  }
+  }, [user]);
 
-  _setRepository(currentUser) {
-    if (!currentUser) {
-      return;
-    }
-
-    const tweekRepository = new TweekRepository({
-      client: tweekClient,
-      context: toTweekContext(currentUser),
-    });
-    this.setState({ tweekRepository });
-  }
-
-  render() {
-    const { tweekRepository } = this.state;
-    const { children } = this.props;
-    if (!tweekRepository) {
-      return children;
-    }
-
-    return (
-      <TweekContext.Provider value={this.state.tweekRepository}>{children}</TweekContext.Provider>
-    );
-  }
-}
-
-export const TweekProvider = withCurrentUser(Provider);
+  return <OriginalTweekProvider value={tweekRepository}>{children}</OriginalTweekProvider>;
+};

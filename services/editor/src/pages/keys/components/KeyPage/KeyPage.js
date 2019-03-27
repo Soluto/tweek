@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, lifecycle } from 'recompose';
+import { withTweekValues } from 'react-tweek';
 import querystring from 'query-string';
 import * as selectedKeyActions from '../../../../store/ducks/selectedKey';
 import * as alertActions from '../../../../store/ducks/alerts';
 import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefinition';
 import routeLeaveHook from '../../../../hoc/route-leave-hook';
-import { withTweekKeys } from '../../../../contexts/Tweek';
 import hasUnsavedChanges from '../utils/hasUnsavedChanges';
 import MessageKeyPage from './MessageKeyPage/MessageKeyPage';
 import KeyEditPage from './KeyEditPage/KeyEditPage';
@@ -67,7 +67,7 @@ const enhance = compose(
     'You have unsaved changes, are you sure you want to leave this page?',
     { className: 'key-page-wrapper' },
   ),
-  withTweekKeys({ historySince: '@tweek/editor/history/since' }, { defaultValues: {} }),
+  withTweekValues({ historySince: '@tweek/editor/history/since' }, { defaultValues: {} }),
   lifecycle({
     componentDidMount() {
       const { configKey, selectedKey, openKey, revision, historySince } = this.props;

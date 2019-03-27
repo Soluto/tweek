@@ -3,12 +3,12 @@ import * as R from 'ramda';
 import { connect } from 'react-redux';
 import { Observable } from 'rxjs';
 import { compose, mapPropsStream, lifecycle } from 'recompose';
+import { withTweekValues } from 'react-tweek';
 import * as SearchService from '../../../../../services/search-service';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import ValidationIcon from '../../../../../components/common/ValidationIcon';
 import keyNameValidations from './key-name-validations';
 import './NewKeyInput.css';
-import { withTweekKeys } from '../../../../../contexts/Tweek';
 
 const getKeyPrefix = (path) => R.slice(0, -1, path.split('/')).join('/');
 const getSugesstions = R.pipe(
@@ -25,7 +25,7 @@ function getKeyNameSuggestions(keys) {
 
 const NewKeyInput = compose(
   connect((state) => ({ keys: state.keys })),
-  withTweekKeys(
+  withTweekValues(
     {
       showInternalKeys: '@tweek/editor/show_internal_keys',
     },
