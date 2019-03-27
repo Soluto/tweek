@@ -11,7 +11,7 @@ import {
   setDisplayName,
   withState,
 } from 'recompose';
-import { withTweekKeys } from '../../../../contexts/Tweek';
+import { withTweekValues } from 'react-tweek';
 import * as SearchService from '../../../../services/search-service';
 import DirectoryTreeView from './TreeView/DirectoryTreeView';
 import CardView from './CardView';
@@ -105,7 +105,7 @@ const CardItem = ({
 
 const enhance = compose(
   connect((state) => ({ selectedKey: state.selectedKey && state.selectedKey.key })),
-  withTweekKeys(
+  withTweekValues(
     {
       supportMultiResultsView: '@tweek/editor/experimental/keys_search/enable_cards_view',
       maxSearchResults: '@tweek/editor/search/max_results',
@@ -123,9 +123,10 @@ const KeysList = enhance(
     const supportMultiResultsView$ = prop$.pluck('supportMultiResultsView').distinctUntilChanged();
 
     const keyList$ = prop$
-      .pluck('keys')
-      .distinctUntilChanged()
-      .withLatestFrom(prop$.pluck('showInternalKeys'), (allKeys, showInternalKeys) => {
+      .distinctUntilChanged(
+        (x, y) => x.showInternalKeys === y.showInternalKeys && x.keys === y.keys,
+      )
+      .map(({ keys: allKeys, showInternalKeys }) => {
         const unarchivedKeys = R.filter((key) => !key.meta.archived, allKeys);
         return {
           keys: allKeys,

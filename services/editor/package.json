@@ -63,7 +63,7 @@
     "react-tabs": "^3.0.0",
     "react-tag-input": "^6.2.1",
     "react-tooltip": "^3.4.0",
-    "react-tweek": "^0.4.1",
+    "react-tweek": "^0.6.1",
     "react-virtualized": "^9.18.5",
     "recompose": "^0.30.0",
     "redux": "^4.0.1",
@@ -74,7 +74,7 @@
     "rxjs": "^6.4.0",
     "rxjs-compat": "^6.4.0",
     "tweek-client": "^1.0.0-rc6",
-    "tweek-local-cache": "^0.5.1",
+    "tweek-local-cache": "^0.6.1",
     "velocity-react": "^1.3.3"
   },
   "devDependencies": {
