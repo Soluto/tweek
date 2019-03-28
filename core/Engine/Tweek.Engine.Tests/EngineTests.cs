@@ -41,7 +41,7 @@ namespace Tweek.Engine.Tests
 
         async Task Run(Func<ITweek, IContextDriver, Task> test)
         {
-            var scope = driver.SetTestEnviornment(contexts, paths, rules);
+            var scope = driver.SetTestEnvironment(contexts, paths, rules);
             await scope.Run(test);
         }
 
@@ -405,5 +405,45 @@ namespace Tweek.Engine.Tests
             });
         }
 
+        [Fact]
+        public async Task BadKeyShouldReturnError()
+        {
+            contexts = ContextCreator.Create("device", "1", Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(3)));
+
+            paths = new[] { "abc/bad_path", "abc/good_path" };
+            rules = new Dictionary<string, RuleDefinition>
+            {
+                ["abc/bad_path"] = JPadGenerator.New()
+                    .AddSingleVariantRule(JsonConvert.SerializeObject(new MatcherData {["device.SomeDeviceProp"] = new string[]{}}), "BadValue")
+                    .Generate(),
+                ["abc/good_path"] = JPadGenerator.New().AddSingleVariantRule("{}", "SomeValue").Generate()
+            };
+
+            await Run(async (tweek, context) =>
+            {
+                var identities = new HashSet<Identity> {new Identity("device", "1")};
+
+                var val = await tweek.GetContextAndCalculate("_", identities, context);
+                Assert.Equal(1, val.Errors.Count);
+                Assert.True(val.Errors.ContainsKey("abc/bad_path"));
+                Assert.False(val.Data.ContainsKey("abc/bad_path"));
+                Assert.Equal("SomeValue", val.Data["abc/good_path"].Value.AsString());
+
+                val = await tweek.GetContextAndCalculate("abc/_", identities, context);
+                Assert.Equal(1, val.Errors.Count);
+                Assert.True(val.Errors.ContainsKey("abc/bad_path"));
+                Assert.False(val.Data.ContainsKey("abc/bad_path"));
+                Assert.Equal( "SomeValue", val.Data["abc/good_path"].Value.AsString());
+
+                val = await tweek.GetContextAndCalculate("abc/good_path", identities, context);
+                Assert.Equal(0, val.Errors.Count);
+                Assert.Equal( "SomeValue", val.Data["abc/good_path"].Value.AsString());
+
+                val = await tweek.GetContextAndCalculate("abc/bad_path", identities, context);
+                Assert.Equal(1, val.Errors.Count);
+                Assert.True(val.Errors.ContainsKey("abc/bad_path"));
+                Assert.Equal(0, val.Data.Count);
+            });        
+        }
     }
 }

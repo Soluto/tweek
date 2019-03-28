@@ -9,6 +9,6 @@ namespace Tweek.Engine.Tests.TestDrivers
     public interface ITestDriver
     {
         IContextDriver Context { get; }
-        TestScope SetTestEnviornment(Dictionary<Identity, Dictionary<string, JsonValue>> contexts, string[] keys, Dictionary<string,RuleDefinition> rules);
+        TestScope SetTestEnvironment(Dictionary<Identity, Dictionary<string, JsonValue>> contexts, string[] keys, Dictionary<string,RuleDefinition> rules);
     }
 }
