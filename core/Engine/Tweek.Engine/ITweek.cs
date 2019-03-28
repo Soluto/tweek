@@ -14,7 +14,7 @@ namespace Tweek.Engine
 {
     public interface ITweek
     {
-        Dictionary<ConfigurationPath, ConfigurationValue> Calculate(
+        TweekValuesResult Calculate(
             ICollection<ConfigurationPath> pathQuery,
             IdentityHashSet identities, GetLoadedContextByIdentityType context,
             ConfigurationPath[] includeFixedPaths = null);
@@ -31,7 +31,7 @@ namespace Tweek.Engine
             _rulesLoader = rulesLoader;
         }
 
-        public Dictionary<ConfigurationPath, ConfigurationValue> Calculate(
+        public TweekValuesResult Calculate(
             ICollection<ConfigurationPath> pathQuery,
             HashSet<Identity> identities,
             GetLoadedContextByIdentityType context,
@@ -47,13 +47,24 @@ namespace Tweek.Engine
                 .Where(path => !path.IsHidden() && scanItems.Any(query => query.Contains(path)));
             var expandItems = scanItems.SelectMany(path => expandKey(path));
 
-            var paths = include.Concat(expandItems).Concat(pathQuery.Where(t => !t.IsScan));
+            var paths = include.Concat(expandItems).Concat(pathQuery.Where(t => !t.IsScan)).Distinct();
 
-            return paths
-                .Distinct()
-                .Select(path => getRuleValue(path).Map(value => new {path, value}))
-                .SkipEmpty()
-                .ToDictionary(x => x.path, x => x.value);
+            var result = new TweekValuesResult();
+
+            foreach (var path in paths)
+            {
+                try
+                {
+                    var ruleValue = getRuleValue(path);
+                    ruleValue.IfSome(value => result.Data[path] = value);
+                }
+                catch (Exception e)
+                {
+                    result.Errors[path] = e;
+                }
+            }
+
+            return result;
         }
     }
 

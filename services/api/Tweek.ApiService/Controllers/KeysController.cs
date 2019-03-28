@@ -114,11 +114,11 @@ namespace Tweek.ApiService.Controllers
 
             if (root.IsScan)
             {
-                var relativeData = data.ToDictionary(x => x.Key.ToRelative(root), x => x.Value);
+                var relativeData = data.Data.ToDictionary(x => x.Key.ToRelative(root), x => x.Value);
                 return Json(!isFlatten ? (TreeResult.From(relativeData, translateValue)) : relativeData.ToDictionary(x => x.Key.ToString(), x => translateValue(x.Value)));
             }
 
-            return data.Select(x => ignoreKeyTypes ? TranslateValueToString(x.Value) : x.Value.Value)
+            return data.Data.Select(x => ignoreKeyTypes ? TranslateValueToString(x.Value) : x.Value.Value)
                     .FirstOrNone()
                     .Match(x => Json(x), () => Json(null));
         }
