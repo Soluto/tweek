@@ -93,6 +93,7 @@ namespace Tweek.ApiService.Controllers
             var allParams = PartitionByKey(HttpContext.Request.Query.ToDictionary(x => x.Key, x => x.Value), x => x.StartsWith("$"));
             var modifiers = allParams.Item1;
             var isFlatten = modifiers.TryGetValue("$flatten").Select(x => bool.Parse(x.First())).IfNone(false);
+            var propagateErrors = modifiers.TryGetValue("$propagateErrors").Select(x => bool.Parse(x.First())).IfNone(false);
             var ignoreKeyTypes = modifiers.TryGetValue("$ignoreKeyTypes").Select(x => bool.Parse(x.First())).IfNone(false);
             var includePaths = modifiers.TryGetValue("$include").Select(x => x.ToArray()).IfNone(new string[] {});
 
@@ -110,17 +111,30 @@ namespace Tweek.ApiService.Controllers
 
             var query = GetQuery(root, includePaths);
 
-            var data = await _tweek.GetContextAndCalculate(query, identities, _contextDriver, contextProps);
+            var values = await _tweek.GetContextAndCalculate(query, identities, _contextDriver, contextProps);
+            Response.Headers.Add("X-Error-Count", values.Errors.Count.ToString());
 
+            object result = null;
             if (root.IsScan)
             {
-                var relativeData = data.Data.ToDictionary(x => x.Key.ToRelative(root), x => x.Value);
-                return Json(!isFlatten ? (TreeResult.From(relativeData, translateValue)) : relativeData.ToDictionary(x => x.Key.ToString(), x => translateValue(x.Value)));
+                var relativeData = values.Data.ToDictionary(x => x.Key.ToRelative(root), x => x.Value);
+                result = !isFlatten
+                    ? TreeResult.From(relativeData, translateValue)
+                    : relativeData.ToDictionary(x => x.Key.ToString(), x => translateValue(x.Value));
+            }
+            else if (values.Data.TryGetValue(root, out var value))
+            {
+                result = ignoreKeyTypes ? TranslateValueToString(value) : value.Value;
+            }                          
+
+            if (!propagateErrors)
+            {
+                return Json(result);
             }
 
-            return data.Data.Select(x => ignoreKeyTypes ? TranslateValueToString(x.Value) : x.Value.Value)
-                    .FirstOrNone()
-                    .Match(x => Json(x), () => Json(null));
+            var errors = values.Errors.ToDictionary(x => x.Key, x => x.Value.Message);
+
+            return Json(new Dictionary<string, object> {{"data", result}, {"errors", errors}});
         }
     }
 }
