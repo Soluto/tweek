@@ -30,7 +30,6 @@ import (
 func main() {
 	logrus.SetFormatter(&joonix.FluentdFormatter{})
 	configuration := appConfig.InitConfig()
-	externalApps.Init(&configuration.Security.PolicyStorage)
 
 	app := newApp(configuration)
 
@@ -62,6 +61,8 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	if err != nil {
 		panic("Unable to create Authorizer")
 	}
+	
+	externalApps.Init(&config.Security.PolicyStorage)
 
 	auditor, err := audit.New(os.Stdout)
 	if err != nil {
