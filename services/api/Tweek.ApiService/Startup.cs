@@ -176,19 +176,13 @@ namespace Tweek.ApiService
                 logger.LogInformation("updating schema");
                 var schemaValues = tweek.Calculate(new[] {new ConfigurationPath("@tweek/schema/_")}, EmptyIdentitySet,
                     i => ContextHelpers.EmptyContext);
-                if (schemaValues.Errors.Count > 0)
-                {
-                    throw new AggregateException(schemaValues.Errors.Values);
-                }
+                schemaValues.EnsureSuccess();
                 
                 var schemaIdentities = schemaValues.Data.ToDictionary(x=> x.Key.Name, x=> x.Value.Value);
 
                 var customTypesValues = tweek.Calculate(new[] {new ConfigurationPath("@tweek/custom_types/_")}, EmptyIdentitySet,
                     i => ContextHelpers.EmptyContext);
-                if (customTypesValues.Errors.Count > 0)
-                {
-                    throw new AggregateException(customTypesValues.Errors.Values);
-                }
+                customTypesValues.EnsureSuccess();
                 
                 var customTypes = customTypesValues.Data.ToDictionary(x=>x.Key.Name, x=> CustomTypeDefinition.FromJsonValue(x.Value.Value));
 
