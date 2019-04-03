@@ -1,7 +1,6 @@
 import path = require('path');
 import BluebirdPromise = require('bluebird');
-import express = require('express');
-import bodyParser = require('body-parser');
+import express from 'express';
 import { Observable } from 'rxjs';
 import fs = require('fs-extra');
 import passport = require('passport');
@@ -88,8 +87,8 @@ async function startServer() {
     .toBuffer('pem');
   app.use(morganJSON);
   app.use(configurePassport(publicKey, appsRepository));
-  app.use(bodyParser.json()); // for parsing application/json
-  app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+  app.use(express.json()); // for parsing application/json
+  app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
   app.get('/version', (req, res) => res.send(process.env.npm_package_version));
   app.get('/health', (req, res) => res.status(200).json({}));
   app.use(
@@ -133,9 +132,7 @@ onUpdate$
   .retry()
   .subscribe();
 
-gitRepoCreationPromiseWithTimeout
-  .then(async () => await startServer())
-  .catch((reason: any) => {
-    logger.error(reason);
-    process.exit(1);
-  });
+gitRepoCreationPromiseWithTimeout.then(startServer).catch((reason: any) => {
+  logger.error(reason);
+  process.exit(1);
+});

@@ -55,7 +55,7 @@ function createDependencyIndexes(manifests) {
     R.chain(
       R.pipe(
         R.props(['key_path', 'dependencies']),
-        ([keyPath, dependencies]: [any, any]) =>
+        ([keyPath, dependencies]: any[]) =>
           dependencies.map((dependency) => ({ dependency: getKey(dependency), keyPath })),
       ),
     ),
