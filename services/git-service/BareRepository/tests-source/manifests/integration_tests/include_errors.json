@@ -1,7 +1,7 @@
 {
-  "key_path": "integration_tests/propagate_errors",
+  "key_path": "integration_tests/include_errors",
   "meta": {
-    "name": "integration_tests/propagate_errors",
+    "name": "integration_tests/include_errors",
     "description": "",
     "tags": [],
     "readOnly": false,

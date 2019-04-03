@@ -75,8 +75,8 @@ namespace Tweek.ApiService.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden)]
-        public async Task<ActionResult> GetAsyncSwagger([FromQuery] string keyPath, 
-                    [FromQuery( Name = "$flatten")] bool flatten = false, 
+        public async Task<ActionResult> GetAsyncSwagger([FromQuery] string keyPath,
+                    [FromQuery( Name = "$flatten")] bool flatten = false,
                     [FromQuery( Name = "$include")] List<string> includeKeys = null)
         {
             if (System.String.IsNullOrWhiteSpace(keyPath)) return BadRequest("Missing key path");
@@ -93,7 +93,7 @@ namespace Tweek.ApiService.Controllers
             var allParams = PartitionByKey(HttpContext.Request.Query.ToDictionary(x => x.Key, x => x.Value), x => x.StartsWith("$"));
             var modifiers = allParams.Item1;
             var isFlatten = modifiers.TryGetValue("$flatten").Select(x => bool.Parse(x.First())).IfNone(false);
-            var propagateErrors = modifiers.TryGetValue("$propagateErrors").Select(x => bool.Parse(x.First())).IfNone(false);
+            var includeErrors = modifiers.TryGetValue("$includeErrors").Select(x => bool.Parse(x.First())).IfNone(false);
             var ignoreKeyTypes = modifiers.TryGetValue("$ignoreKeyTypes").Select(x => bool.Parse(x.First())).IfNone(false);
             var includePaths = modifiers.TryGetValue("$include").Select(x => x.ToArray()).IfNone(new string[] {});
 
@@ -125,9 +125,9 @@ namespace Tweek.ApiService.Controllers
             else if (values.Data.TryGetValue(root, out var value))
             {
                 result = ignoreKeyTypes ? TranslateValueToString(value) : value.Value;
-            }                          
+            }
 
-            if (!propagateErrors)
+            if (!includeErrors)
             {
                 return Json(result);
             }
