@@ -59,7 +59,7 @@
     "@types/morgan": "^1.7.35",
     "@types/nconf": "^0.0.35",
     "@types/node": "^8.0.54",
-    "@types/nodegit": "0.18.3",
+    "@types/nodegit": "^0.24.6",
     "@types/passport": "^0.4.1",
     "@types/passport-jwt": "^3.0.0",
     "@types/passport-strategy": "^0.2.32",
