@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
+import logger from '../utils/logger';
 const { CONTINUOUS_UPDATER_INTERVAL } = require('../constants');
-import { logger } from '../utils/jsonLogger';
 
 export default {
   onUpdate(gitTransactionManager) {
@@ -10,11 +10,11 @@ export default {
     });
 
     return updateRepo$
-      .do(null, (err) => logger.error('Error pulling changes in git repo', err))
+      .do(null, (err) => logger.error({ err }, 'Error pulling changes in git repo'))
       .catch((_) => Observable.empty())
       .concat(Observable.empty().delay(CONTINUOUS_UPDATER_INTERVAL))
       .repeat()
       .distinctUntilChanged()
-      .do((sha) => logger.log('Updated git repo', sha));
+      .do((sha) => logger.info({ sha }, 'Updated git repo'));
   },
 };

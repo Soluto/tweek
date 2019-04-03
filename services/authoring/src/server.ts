@@ -1,11 +1,12 @@
-import path = require('path');
-import BluebirdPromise = require('bluebird');
+import path from 'path';
+import BluebirdPromise from 'bluebird';
 import express from 'express';
 import { Observable } from 'rxjs';
-import fs = require('fs-extra');
-import passport = require('passport');
+import fs from 'fs-extra';
+import passport from 'passport';
 import Transactor from './utils/transactor';
-import morganJSON, { logger } from './utils/jsonLogger';
+import requestLogger from './utils/requestLogger';
+import logger from './utils/logger';
 import GitRepository, { RepoOutOfDateError } from './repositories/git-repository';
 import KeysRepository from './repositories/keys-repository';
 import TagsRepository from './repositories/tags-repository';
@@ -15,7 +16,7 @@ import GitContinuousUpdater from './repositories/git-continuous-updater';
 import searchIndex from './search-index';
 import routes from './routes';
 import configurePassport from './security/configure-passport';
-import sshpk = require('sshpk');
+import sshpk from 'sshpk';
 import { ErrorRequestHandler } from 'express';
 import { getErrorStatusCode } from './utils/error-utils';
 import SubjectExtractionRulesRepository from './repositories/extraction-rules-repository';
@@ -85,7 +86,7 @@ async function startServer() {
   const publicKey = sshpk
     .parseKey(await fs.readFile(gitRepositoryConfig.publicKey), 'auto')
     .toBuffer('pem');
-  app.use(morganJSON);
+  app.use(requestLogger);
   app.use(configurePassport(publicKey, appsRepository));
   app.use(express.json()); // for parsing application/json
   app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
@@ -103,36 +104,39 @@ async function startServer() {
     }),
   );
 
-  app.use('/*', (req, res) => res.sendStatus(404));
+  app.use('/*', (req, res) => {
+    if (!res.headersSent) {
+      res.sendStatus(404);
+    }
+  });
+
   const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-    morganJSON(req, res, () => {
-      if (!err) {
-        return next();
-      }
-      logger.error(`${err.message}`, { Method: req.method, Url: req.originalUrl, Error: err });
+    if (!res.headersSent) {
       res.status(getErrorStatusCode(err)).send(err.message);
-    });
+    }
+
+    logger.error({ Method: req.method, Url: req.originalUrl, err }, err.message);
   };
   app.use(errorHandler);
 
-  app.listen(PORT, () => logger.log('Listening on port', PORT));
+  app.listen(PORT, () => logger.info({ port: PORT }, 'server started'));
 }
 
 const onUpdate$ = GitContinuousUpdater.onUpdate(gitTransactionManager).share();
 
 onUpdate$
   .switchMapTo(Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)))
-  .do(null, (err: any) => logger.error('Error refreshing index', err))
+  .do(null, (err: any) => logger.error(err, 'Error refreshing index'))
   .retry()
   .subscribe();
 
 onUpdate$
   .switchMapTo(Observable.defer(() => appsRepository.refresh()))
-  .do(null, (err: any) => logger.error('Error refersing apps index', err))
+  .do(null, (err: any) => logger.error(err, 'Error refersing apps index'))
   .retry()
   .subscribe();
 
 gitRepoCreationPromiseWithTimeout.then(startServer).catch((reason: any) => {
-  logger.error(reason);
+  logger.error({ err: reason }, 'failed starting server');
   process.exit(1);
 });

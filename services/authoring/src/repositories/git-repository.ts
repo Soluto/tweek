@@ -1,11 +1,11 @@
-import path = require('path');
-import git = require('nodegit');
-import simpleGit = require('simple-git');
-import fs = require('fs-extra');
-import R = require('ramda');
+import path from 'path';
+import git from 'nodegit';
+import simpleGit from 'simple-git';
+import fs from 'fs-extra';
+import * as R from 'ramda';
 import { Commit } from 'nodegit/commit';
 import { Oid } from 'nodegit';
-import { logger } from '../utils/jsonLogger';
+import logger from '../utils/logger';
 
 export class ValidationError {
   constructor(public message) {}
@@ -55,7 +55,7 @@ export default class GitRepository {
     privateKey: string;
     password: string;
   }) {
-    logger.log('cleaning up current working folder');
+    logger.info('cleaning up current working folder');
     await fs.remove(settings.localPath);
 
     const operationSettings: OperationSettings = {
@@ -67,7 +67,7 @@ export default class GitRepository {
       },
     };
 
-    logger.log('clonning rules repository');
+    logger.info('clonning rules repository');
     const clonningOp = 'clonning end in';
     // FIXME: needs json logging
     console.time(clonningOp);

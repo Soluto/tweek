@@ -1,4 +1,4 @@
-import R = require('ramda');
+import * as R from 'ramda';
 import {
   GET,
   Path,
@@ -16,7 +16,7 @@ import { Authorize } from '../security/authorize';
 import { PERMISSIONS } from '../security/permissions/consts';
 import KeysRepository from '../repositories/keys-repository';
 import { addOid } from '../utils/response-utils';
-import { logger } from '../utils/jsonLogger';
+import logger from '../utils/logger';
 
 export type KeyUpdateModel = {
   implementation: any;
@@ -50,8 +50,8 @@ export class KeysController {
   ): Promise<any> {
     try {
       return await this.keysRepository.getKeyDetails(keyPath, { revision });
-    } catch (exp) {
-      logger.error(`Error retrieving key ${keyPath}`, exp);
+    } catch (err) {
+      logger.error({ err, keyPath }, 'Error retrieving key');
       throw new Errors.NotFoundError();
     }
   }

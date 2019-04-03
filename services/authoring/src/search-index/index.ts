@@ -1,10 +1,10 @@
-import path = require('path');
+import path from 'path';
 import { execFile } from 'child_process';
-import fs = require('fs-extra');
-import R = require('ramda');
-import lunr = require('lunr');
+import fs from 'fs-extra';
+import * as R from 'ramda';
+import lunr from 'lunr';
 import { getManifests } from './get-manifests';
-import { logger } from '../utils/jsonLogger';
+import logger from '../utils/logger';
 
 let manifestPromise;
 let indexPromise;
@@ -19,7 +19,7 @@ async function refreshIndex(repoDir) {
       'node',
       [path.join(__dirname, 'build/cli.js'), repoDir, indexFile],
       (error, stdout, stderr) => {
-        logger.log(stdout);
+        logger.info(stdout);
         if (error) reject(error);
         else resolve();
       },
