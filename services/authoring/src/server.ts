@@ -1,7 +1,8 @@
 import path from 'path';
 import BluebirdPromise from 'bluebird';
 import express from 'express';
-import { Observable } from 'rxjs';
+import { defer } from 'rxjs';
+import { retry, share, switchMapTo, tap } from 'rxjs/operators';
 import fs from 'fs-extra';
 import passport from 'passport';
 import Transactor from './utils/transactor';
@@ -122,18 +123,22 @@ async function startServer() {
   app.listen(PORT, () => logger.info({ port: PORT }, 'server started'));
 }
 
-const onUpdate$ = GitContinuousUpdater.onUpdate(gitTransactionManager).share();
+const onUpdate$ = GitContinuousUpdater.onUpdate(gitTransactionManager).pipe(share());
 
 onUpdate$
-  .switchMapTo(Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)))
-  .do(null, (err: any) => logger.error(err, 'Error refreshing index'))
-  .retry()
+  .pipe(
+    switchMapTo(defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath))),
+    tap({ error: (err) => logger.error({ err }, 'Error refreshing search index') }),
+    retry(),
+  )
   .subscribe();
 
 onUpdate$
-  .switchMapTo(Observable.defer(() => appsRepository.refresh()))
-  .do(null, (err: any) => logger.error(err, 'Error refersing apps index'))
-  .retry()
+  .pipe(
+    switchMapTo(defer(() => appsRepository.refresh())),
+    tap({ error: (err) => logger.error({ err }, 'Error refreshing apps index') }),
+    retry(),
+  )
   .subscribe();
 
 gitRepoCreationPromiseWithTimeout.then(startServer).catch((reason: any) => {

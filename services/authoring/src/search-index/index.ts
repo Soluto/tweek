@@ -19,9 +19,13 @@ async function refreshIndex(repoDir) {
       'node',
       [path.join(__dirname, 'build/cli.js'), repoDir, indexFile],
       (error, stdout, stderr) => {
-        logger.info(stdout);
-        if (error) reject(error);
-        else resolve();
+        logger.info({ stdout, stderr }, 'finished indexing');
+
+        if (error) {
+          reject(error);
+        } else {
+          resolve();
+        }
       },
     );
   });
