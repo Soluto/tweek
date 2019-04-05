@@ -13,8 +13,8 @@ const chance = new Chance();
 function replaceNaN(fallbackValue) {
   return isNaN(this) ? fallbackValue : this;
 }
-const parseNumericInput = inputValue => (inputValue === '' ? 0 : parseInt(inputValue, 10));
-const wrapWithClass = propToClassNameFn => Comp => props => (
+const parseNumericInput = (inputValue) => (inputValue === '' ? 0 : parseInt(inputValue, 10));
+const wrapWithClass = (propToClassNameFn) => (Comp) => (props) => (
   <div className={propToClassNameFn(props)}>
     <Comp {...props} />
   </div>
@@ -25,10 +25,9 @@ export const InputValue = wrapWithClass(
 )(TypedInput);
 
 const MultiVariantConverter = ({ valueType, identities, mutate, value, keyPath }) => {
-  const convertToMultiVariant = valueDistribution =>
+  const convertToMultiVariant = (valueDistribution) =>
     mutate.apply((m) => {
-      m
-        .delete()
+      m.delete()
         .in('Type')
         .updateValue('MultiVariant')
         .up()
@@ -93,7 +92,7 @@ const SingleVariantValue = ({ value, mutate, identities, autofocus, valueType, k
     <InputValue
       {...{ value, valueType }}
       data-comp="rule-value"
-      onChange={newValue => mutate.updateValue(newValue)}
+      onChange={(newValue) => mutate.updateValue(newValue)}
     />
     <MultiVariantConverter {...{ value, valueType, mutate, identities, keyPath }} />
   </div>
@@ -101,7 +100,7 @@ const SingleVariantValue = ({ value, mutate, identities, autofocus, valueType, k
 
 const multiVariantSliderColors = [
   ...['#ccf085', '#bebebe', '#c395f6', '#ef7478', '#5a8dc3', '#6e6e6e'],
-  ...R.range(1, 30).map(_ => chance.color()),
+  ...R.range(1, 30).map((_) => chance.color()),
 ];
 
 const WeightedValues = ({ onUpdate, variants, valueType }) => (
@@ -146,10 +145,10 @@ const BernoulliTrial = ({ onUpdate, ratio }) => (
         displayLegend={false}
         sliderColors={bernouliTrialSliderColors}
         data={[
-          { value: true, weight: 1000 * ratio / 10 },
-          { value: false, weight: 100 - 1000 * ratio / 10 },
+          { value: true, weight: (1000 * ratio) / 10 },
+          { value: false, weight: 100 - (1000 * ratio) / 10 },
         ]}
-        onUpdate={x => onUpdate(x[0].weight / 100)}
+        onUpdate={(x) => onUpdate(x[0].weight / 100)}
         valueType={TypesService.types['boolean']}
       />
     </div>
@@ -176,7 +175,7 @@ const MultiVariantValue = ({
   ownerType,
   valueType,
 }) => {
-  const updateOwnerType = identity =>
+  const updateOwnerType = (identity) =>
     mutate
       .up()
       .in('OwnerType')
@@ -204,7 +203,7 @@ const MultiVariantValue = ({
             }
 
             const newValue = variants[0].value;
-            mutate.apply(m =>
+            mutate.apply((m) =>
               m
                 .up()
                 .in('Value')
@@ -240,7 +239,7 @@ const MultiVariantValue = ({
               data-comp="set-to-true"
               className="set-to-true-button"
               onClick={() =>
-                mutate.apply(m =>
+                mutate.apply((m) =>
                   m
                     .up()
                     .in('Value')
@@ -264,7 +263,7 @@ const MultiVariantValue = ({
             <button
               className="set-to-false-button"
               onClick={() =>
-                mutate.apply(m =>
+                mutate.apply((m) =>
                   m
                     .up()
                     .in('Value')

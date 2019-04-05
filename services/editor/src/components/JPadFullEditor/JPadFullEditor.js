@@ -15,7 +15,7 @@ const confirmUnsavedAlert = {
   message: 'You have un-inserted changes.\nAre you sure you want to leave?',
 };
 
-const MutatorFor = propName => Comp =>
+const MutatorFor = (propName) => (Comp) =>
   class extends React.Component {
     constructor() {
       super();
@@ -84,7 +84,7 @@ const KeyRulesEditor = ({
       <TabPanel className="tab-content">
         <JPadTextEditor
           {...{ source, isReadonly, setHasUnsavedChanges }}
-          onChange={x => onMutation(JSON.parse(x))}
+          onChange={(x) => onMutation(JSON.parse(x))}
         />
       </TabPanel>
     </Tabs>
@@ -129,7 +129,7 @@ function changeValueType(valueType, rulesMutate, depth) {
     return;
   }
 
-  Object.keys(rules).forEach(key => changeValueType(valueType, rulesMutate.in(key), depth - 1));
+  Object.keys(rules).forEach((key) => changeValueType(valueType, rulesMutate.in(key), depth - 1));
 }
 
 const JPadFullEditor = compose(

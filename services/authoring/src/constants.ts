@@ -13,11 +13,15 @@ function useFileFromBase64EnvVariable(inlineKeyName, fileKeyName) {
   }
 }
 
-nconf.use('memory').argv().env().defaults({
-  PORT: 3000,
-  GIT_CLONE_TIMEOUT_IN_MINUTES: 1,
-  CONTINUOUS_UPDATER_INTERVAL: 5000,
-});
+nconf
+  .use('memory')
+  .argv()
+  .env()
+  .defaults({
+    PORT: 3000,
+    GIT_CLONE_TIMEOUT_IN_MINUTES: 1,
+    CONTINUOUS_UPDATER_INTERVAL: 5000,
+  });
 useFileFromBase64EnvVariable('GIT_PUBLIC_KEY_INLINE', 'GIT_PUBLIC_KEY_PATH');
 useFileFromBase64EnvVariable('GIT_PRIVATE_KEY_INLINE', 'GIT_PRIVATE_KEY_PATH');
 
@@ -45,4 +49,7 @@ const configs = [
   'CONTINUOUS_UPDATER_INTERVAL',
 ];
 
-export = (configs.reduce((constants, config) => Object.assign({}, constants, { [config]: nconf.get(config) }), {}));
+export = configs.reduce(
+  (constants, config) => Object.assign({}, constants, { [config]: nconf.get(config) }),
+  {},
+);

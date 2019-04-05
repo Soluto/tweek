@@ -12,7 +12,10 @@ import hasUnsavedChanges from '../utils/hasUnsavedChanges';
 import './KeysPage.css';
 
 export default compose(
-  connect(state => state, { ...keysActions, addKey }),
+  connect(
+    (state) => state,
+    { ...keysActions, addKey },
+  ),
   withLoading(() => null, () => Promise.all([refreshTypes(), refreshSchema()])),
 )(
   class KeysPage extends Component {

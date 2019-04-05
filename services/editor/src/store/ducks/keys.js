@@ -16,7 +16,7 @@ export function removeKeyFromList(key) {
 }
 
 export function getKeys() {
-  return async function (dispatch) {
+  return async function(dispatch) {
     try {
       const manifests = await tweekManagementClient.getAllKeyManifests();
       const payload = R.indexBy(R.prop('key_path'), manifests);

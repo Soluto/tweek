@@ -1,57 +1,57 @@
 {
-    "key_path": "@tweek/schema/user",
-    "meta": {
-        "description": "",
-        "readOnly": false,
-        "archived": false
-    },
-    "implementation": {
-        "type": "const",
-        "value":{
-            "AgentVersion":{
-              "type":"version"
-            },
-            "BirthDate":{
-              "type":"date"
-            },
-            "FatherName":{
-              "type":"string"
-            },
-            "FavoriteFruit":{
-              "type": "string"
-            },
-            "Gender":{
-              "type": {
-                 "base":"string",
-                 "allowedValues": ["male","female","other"]
-              }
-            },
-            "IsInGroup":{
-              "type":"boolean"
-            },
-            "NumberOfSiblings":{
-              "type":"number"
-            },
-            "SiblingNames":{
-              "type": {
-                "name": "array", 
-                "ofType": {
-                  "base": "string",
-                  "allowedValues": ["abe","mark","jon"] 
-                }
-             }
-            },
-            "Identities":{
-              "type": {
-                "name": "array", 
-                "ofType": {
-                  "base": "number",
-                  "allowedValues": [] 
-                }
-             }
-            }
+  "key_path": "@tweek/schema/user",
+  "meta": {
+    "description": "",
+    "readOnly": false,
+    "archived": false
+  },
+  "implementation": {
+    "type": "const",
+    "value": {
+      "AgentVersion": {
+        "type": "version"
+      },
+      "BirthDate": {
+        "type": "date"
+      },
+      "FatherName": {
+        "type": "string"
+      },
+      "FavoriteFruit": {
+        "type": "string"
+      },
+      "Gender": {
+        "type": {
+          "base": "string",
+          "allowedValues": ["male", "female", "other"]
         }
-    },
-    "valueType": "object",
-    "dependencies": []
+      },
+      "IsInGroup": {
+        "type": "boolean"
+      },
+      "NumberOfSiblings": {
+        "type": "number"
+      },
+      "SiblingNames": {
+        "type": {
+          "name": "array",
+          "ofType": {
+            "base": "string",
+            "allowedValues": ["abe", "mark", "jon"]
+          }
+        }
+      },
+      "Identities": {
+        "type": {
+          "name": "array",
+          "ofType": {
+            "base": "number",
+            "allowedValues": []
+          }
+        }
+      }
+    }
+  },
+  "valueType": "object",
+  "dependencies": []
 }

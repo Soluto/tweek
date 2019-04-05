@@ -19,11 +19,12 @@ const routeLeaveHook = (fn, message, wrapperProps) =>
         window.removeEventListener('beforeunload', this._onUnload);
       },
     }),
-    Component => props =>
+    (Component) => (props) => (
       <div {...wrapperProps}>
         <Prompt message={message} when={fn(props)} />
         <Component {...props} />
-      </div>,
+      </div>
+    ),
   );
 
 export default routeLeaveHook;

@@ -1,16 +1,15 @@
 import { uniqBy } from 'ramda';
-import Transactor from "../utils/transactor";
-import GitRepository from "./git-repository";
+import Transactor from '../utils/transactor';
+import GitRepository from './git-repository';
 import { Oid } from 'nodegit';
 
 const TagsFile = 'tags.json';
 
 export default class TagsRepository {
-  constructor(private _gitTransactionManager: Transactor<GitRepository>) {
-  }
+  constructor(private _gitTransactionManager: Transactor<GitRepository>) {}
 
   async getTags() {
-    return await this._gitTransactionManager.with(async gitRepo =>
+    return await this._gitTransactionManager.with(async (gitRepo) =>
       JSON.parse(await gitRepo.readFile(TagsFile)),
     );
   }
@@ -18,9 +17,9 @@ export default class TagsRepository {
   async mergeTags(tagsToSave, author) {
     return await this._gitTransactionManager.write(async (gitRepo) => {
       const currentTags = JSON.parse(await gitRepo.readFile(TagsFile));
-      const changedTags = tagsToSave.map(x => ({ name: x }));
+      const changedTags = tagsToSave.map((x) => ({ name: x }));
 
-      const newTags = uniqBy(x => x.name, [...currentTags, ...changedTags]);
+      const newTags = uniqBy((x) => x.name, [...currentTags, ...changedTags]);
 
       await gitRepo.updateFile(TagsFile, JSON.stringify(newTags, null, 4));
 

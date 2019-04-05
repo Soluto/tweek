@@ -1,10 +1,10 @@
 {
   "key_path": "integration_tests/alias_key",
   "meta": {
-      "archived": false
+    "archived": false
   },
   "implementation": {
-      "type": "alias",
-      "key": "integration_tests/some_key"
+    "type": "alias",
+    "key": "integration_tests/some_key"
   }
 }

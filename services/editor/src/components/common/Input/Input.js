@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import './Input.css';
 
-const isEnterKeyPressed = event => event.keyCode === 13 || event.which === 13;
+const isEnterKeyPressed = (event) => event.keyCode === 13 || event.which === 13;
 
 const Input = ({
   onEnterKeyPress,
@@ -27,8 +27,8 @@ const Input = ({
         onKeyPress(e);
       }
     }}
-    onChange={e => onChange && onChange(e.target.value)}
-    ref={e => e && autofocus && e.focus()}
+    onChange={(e) => onChange && onChange(e.target.value)}
+    ref={(e) => e && autofocus && e.focus()}
     {...props}
   />
 );

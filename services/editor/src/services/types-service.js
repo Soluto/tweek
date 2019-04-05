@@ -40,19 +40,19 @@ export function convertValue(value, targetType) {
   }
 
   switch (type.base || type.name) {
-  case 'boolean':
-    return safeConvertToBaseType(value, 'boolean');
-  case 'number':
-    return safeConvertToBaseType(value, 'number');
-  case 'array':
-    return convertCheckArray(value, type.ofType ? x => convertValue(x, type.ofType) : x => x);
-  case 'object':
-    if (typeof value === types.object.name) {
-      return value;
-    }
-    return safeConvertToBaseType(value, 'object');
-  default:
-    return value.toString();
+    case 'boolean':
+      return safeConvertToBaseType(value, 'boolean');
+    case 'number':
+      return safeConvertToBaseType(value, 'number');
+    case 'array':
+      return convertCheckArray(value, type.ofType ? (x) => convertValue(x, type.ofType) : (x) => x);
+    case 'object':
+      if (typeof value === types.object.name) {
+        return value;
+      }
+      return safeConvertToBaseType(value, 'object');
+    default:
+      return value.toString();
   }
 }
 
@@ -75,7 +75,9 @@ export function safeConvertValue(value, targetType) {
     const typeName = targetType.ofType || targetType.base || targetType.name;
     return typeName !== types.string.name
       ? undefined
-      : typeName === types.array.name ? [`${value}`] : `${value}`;
+      : typeName === types.array.name
+      ? [`${value}`]
+      : `${value}`;
   }
 }
 

@@ -12,7 +12,7 @@ const resetPartitionsAlert = {
   message: 'If you change the partitions the rules will be reset.\nDo you want to continue?',
 };
 
-const autoPartitionAlert = testAutoPartition => ({
+const autoPartitionAlert = (testAutoPartition) => ({
   title: 'Warning',
   message: `Auto-partition can move ${testAutoPartition.match} rules to matching partitions, and ${
     testAutoPartition.default
@@ -48,7 +48,7 @@ function createPartitionedRules(depth) {
 function isEmptyRules(rules) {
   if (!rules) return true;
   if (Array.isArray(rules)) return rules.length === 0;
-  if (Object.keys(rules).some(k => k !== '*')) return false;
+  if (Object.keys(rules).some((k) => k !== '*')) return false;
   return isEmptyRules(rules['*']);
 }
 
@@ -74,24 +74,24 @@ export default ({ valueType, mutate, alerter, keyPath }) => {
       .result;
 
     switch (alertResult) {
-    case 'RESET':
-      mutate.apply(m =>
-        m
-          .insert('rules', createPartitionedRules(partitions.length + 1))
-          .in('partitions')
-          .append(newPartition),
-      );
-      break;
-    case 'OK':
-      mutate.apply(m =>
-        m
-          .insert('rules', RulesService.addPartition(newPartition, rules, partitions.length))
-          .in('partitions')
-          .append(newPartition),
-      );
-      break;
-    default:
-      break;
+      case 'RESET':
+        mutate.apply((m) =>
+          m
+            .insert('rules', createPartitionedRules(partitions.length + 1))
+            .in('partitions')
+            .append(newPartition),
+        );
+        break;
+      case 'OK':
+        mutate.apply((m) =>
+          m
+            .insert('rules', RulesService.addPartition(newPartition, rules, partitions.length))
+            .in('partitions')
+            .append(newPartition),
+        );
+        break;
+      default:
+        break;
     }
   };
   const handlePartitionDelete = async (index) => {
@@ -104,7 +104,7 @@ export default ({ valueType, mutate, alerter, keyPath }) => {
       isEmptyRules(mutate.in('rules').getValue()) ||
       (await alerter.showConfirm(resetPartitionsAlert)).result
     ) {
-      mutate.apply(m =>
+      mutate.apply((m) =>
         m
           .insert('partitions', newPartitions)
           .insert('rules', createPartitionedRules(newPartitions.length)),
