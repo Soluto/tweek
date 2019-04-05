@@ -4,9 +4,9 @@ import { safeConvertValue } from '../../services/types-service';
 
 export function testAutoPartition(partition, rules, depth) {
   if (depth === 0) {
-    const matchers = rules.map(r => r.Matcher[partition]).filter(p => p !== undefined);
+    const matchers = rules.map((r) => r.Matcher[partition]).filter((p) => p !== undefined);
     const isValid = matchers.every(
-      p => typeof p === 'string' || Object.keys(p).every(k => k === '$eq'),
+      (p) => typeof p === 'string' || Object.keys(p).every((k) => k === '$eq'),
     );
     if (!isValid) return { isValid };
 
@@ -19,7 +19,7 @@ export function testAutoPartition(partition, rules, depth) {
   }
 
   return R.reduceWhile(
-    result => result.isValid,
+    (result) => result.isValid,
     (result, key) => {
       const test = testAutoPartition(partition, rules[key], depth - 1);
       return {
@@ -39,7 +39,7 @@ export function addPartition(partition, rules, depth) {
 
     const removePartitionMatcher = R.map(R.dissocPath(['Matcher', partition]));
     const performPartition = R.pipe(
-      R.groupBy(rule => rule.Matcher[partition] || '*'),
+      R.groupBy((rule) => rule.Matcher[partition] || '*'),
       R.map(removePartitionMatcher),
     );
     return performPartition(rules);
@@ -92,17 +92,17 @@ export function convertToExplicitKey(key) {
 
 function calculateDependenciesForMatcher(matcher) {
   return Object.keys(matcher)
-    .map(x => x.toLowerCase())
-    .map(x => x.replace(/^@@key:/, KEYS_IDENTITY))
-    .filter(x => x.startsWith(KEYS_IDENTITY))
-    .map(x => x.substring(KEYS_IDENTITY.length));
+    .map((x) => x.toLowerCase())
+    .map((x) => x.replace(/^@@key:/, KEYS_IDENTITY))
+    .filter((x) => x.startsWith(KEYS_IDENTITY))
+    .map((x) => x.substring(KEYS_IDENTITY.length));
 }
 
 function calculateDependencies(rules, depth) {
   if (depth === 0) {
     return R.chain(
       calculateDependenciesForMatcher,
-      rules.filter(r => r.Matcher).map(r => r.Matcher),
+      rules.filter((r) => r.Matcher).map((r) => r.Matcher),
     );
   }
 
@@ -113,7 +113,7 @@ function calculateDependencies(rules, depth) {
 }
 
 export function getDependencies(...args) {
-  return R.uniq(calculateDependencies(...args)).filter(x => x.length > 0);
+  return R.uniq(calculateDependencies(...args)).filter((x) => x.length > 0);
 }
 
 export function convertWeightedArgsToArray(data, valueType) {

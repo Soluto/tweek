@@ -25,7 +25,7 @@ const style = {
   },
 };
 
-const InputWithHint = ({ className, value, showHint, hint, autofocus, placeholder, ...props }) =>
+const InputWithHint = ({ className, value, showHint, hint, autofocus, placeholder, ...props }) => (
   <div className={`${className}-container`} style={style.container} tabIndex={-1}>
     <input
       className={`${className} input-main`}
@@ -33,7 +33,7 @@ const InputWithHint = ({ className, value, showHint, hint, autofocus, placeholde
       value={value}
       autoComplete="off"
       style={style.input(props)}
-      ref={e => e && autofocus && e.focus()}
+      ref={(e) => e && autofocus && e.focus()}
     />
     <input
       className={`${className} input-hint`}
@@ -43,7 +43,8 @@ const InputWithHint = ({ className, value, showHint, hint, autofocus, placeholde
       style={style.hint}
       tabIndex={-1}
     />
-  </div>;
+  </div>
+);
 
 InputWithHint.propTypes = {
   showHint: PropTypes.bool.isRequired,

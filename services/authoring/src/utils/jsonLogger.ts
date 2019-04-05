@@ -29,10 +29,14 @@ const levels: Array<any> = [
   { method: 'trace', level: 'Trace' },
 ];
 
-export const logger = levels.reduce((acc, log) => ({
-  ...acc,
-  [log.method || log]: (Message, ExtraData) => console.log(JSON.stringify({ Level: log.level || log, Message, ExtraData }))
-}), {});
+export const logger = levels.reduce(
+  (acc, log) => ({
+    ...acc,
+    [log.method || log]: (Message, ExtraData) =>
+      console.log(JSON.stringify({ Level: log.level || log, Message, ExtraData })),
+  }),
+  {},
+);
 
 export const morganJSON = morgan((tokens, req, res) => {
   const Method = tokens.method(req, res);
@@ -48,7 +52,7 @@ export const morganJSON = morgan((tokens, req, res) => {
     Url,
     Status,
     ContentLength,
-    ResponseTimeMs
+    ResponseTimeMs,
   });
 });
 

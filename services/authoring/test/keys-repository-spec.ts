@@ -42,7 +42,7 @@ describe('keys-repository', () => {
 
       // Assert
       expect(mockGitRepo.listFiles.calls[0].arg).to.equal('manifests');
-      expect(keys).to.deep.equal(expecetdKeys.map(key => key.replace('.json', '')));
+      expect(keys).to.deep.equal(expecetdKeys.map((key) => key.replace('.json', '')));
     });
   });
 
@@ -73,7 +73,7 @@ describe('keys-repository', () => {
       await target.updateKey(testKeyPath, testManifest, testRulesSource, testAuthor);
 
       // Assert
-      const args = mockGitRepo.updateFile.calls.map(x => x.args);
+      const args = mockGitRepo.updateFile.calls.map((x) => x.args);
       expect(args).to.include.something.that.deep.equals([
         `manifests/${testKeyPath}.json`,
         JSON.stringify(testManifest, null, 4),
@@ -113,7 +113,7 @@ describe('keys-repository', () => {
       await target.deleteKeys([testKeyPath], testAuthor);
 
       // Assert
-      const args = mockGitRepo.deleteFile.calls.map(x => x.arg);
+      const args = mockGitRepo.deleteFile.calls.map((x) => x.arg);
       expect(args).to.include(`manifests/${testKeyPath}.json`);
       expect(args).to.include(`implementations/jpad/${testKeyPath}.jpad`);
     });
@@ -126,7 +126,7 @@ describe('keys-repository', () => {
       expect(mockGitRepo.commitAndPush.calls[0].args[1]).to.equal(testAuthor);
     });
 
-    it('shouldn\'t throw exception when trying to delete non existing key', async () => {
+    it("shouldn't throw exception when trying to delete non existing key", async () => {
       // Act
       await target.deleteKeys([nonExistingKey], testAuthor);
       expect(mockGitRepo.deleteFile.callCount).to.equal(2);
@@ -227,10 +227,10 @@ describe('keys-repository', () => {
         valueType: '',
       },
     };
-    const getKeyRevisions = revision =>
+    const getKeyRevisions = (revision) =>
       Object.keys(keyRevisions)
-        .filter(rev => JSON.parse(rev.slice(-1)) <= JSON.parse(revision.slice(-1)))
-        .map(rev => ({ sha: rev }));
+        .filter((rev) => JSON.parse(rev.slice(-1)) <= JSON.parse(revision.slice(-1)))
+        .map((rev) => ({ sha: rev }));
 
     beforeEach(() => {
       mockGitRepo.getHistory = simple.spy((path, { revision = 'revision-3' } = {}) =>
@@ -256,7 +256,7 @@ describe('keys-repository', () => {
       expect(keyDetails.implementation).to.deep.include(JSON.stringify(keyRevisions['revision-2']));
     });
 
-    it('should return key definition with the key\'s revision history', async () => {
+    it("should return key definition with the key's revision history", async () => {
       // Act
       const revisionHistory = await target.getKeyRevisionHistory(testKeyPath, {});
       // Assert
@@ -310,8 +310,8 @@ describe('keys-repository', () => {
         rules: oldFormatJPAD,
       };
 
-      mockGitRepo.readFile = simple.spy(
-        path => (path.startsWith('manifests') ? metaSource : JSON.stringify(oldFormatJPAD)),
+      mockGitRepo.readFile = simple.spy((path) =>
+        path.startsWith('manifests') ? metaSource : JSON.stringify(oldFormatJPAD),
       );
 
       // Act

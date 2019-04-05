@@ -8,7 +8,7 @@ import { isAuthenticated } from './services/auth-service';
 const PrivateRoute = ({ component: Component, render, isAuthenticated, location, ...rest }) => (
   <Route
     {...rest}
-    render={props =>
+    render={(props) =>
       isAuthenticated ? (
         Component ? (
           <Component {...props} />
@@ -29,8 +29,8 @@ const PrivateRoute = ({ component: Component, render, isAuthenticated, location,
 
 const enhance = mapPropsStream((props$) => {
   const isAuthenticated$ = Observable.defer(() => isAuthenticated());
-  return props$.switchMap(props =>
-    isAuthenticated$.map(isAuthenticated => ({ ...props, isAuthenticated })),
+  return props$.switchMap((props) =>
+    isAuthenticated$.map((isAuthenticated) => ({ ...props, isAuthenticated })),
   );
 });
 

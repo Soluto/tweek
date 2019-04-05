@@ -13,13 +13,13 @@ const mapValueTypeToProps = (props$) => {
   const propsStream = props$.map(({ keyPath, ...props }) => props);
 
   const valueTypeStream = props$
-    .map(x => x.keyPath)
+    .map((x) => x.keyPath)
     .debounceTime(500)
     .distinctUntilChanged()
-    .switchMap(keyPath =>
-      Observable.fromPromise(TypesService.getValueTypeDefinition(keyPath)).map(x => x.name),
+    .switchMap((keyPath) =>
+      Observable.fromPromise(TypesService.getValueTypeDefinition(keyPath)).map((x) => x.name),
     )
-    .map(valueType => ({ disabled: false, valueType }))
+    .map((valueType) => ({ disabled: false, valueType }))
     .startWith({ disabled: true, valueType: 'unknown' });
 
   return propsStream.combineLatest(valueTypeStream, (props, valueType) => ({
@@ -29,7 +29,10 @@ const mapValueTypeToProps = (props$) => {
   }));
 };
 
-const OverrideValueInput = compose(mapPropsStream(mapValueTypeToProps), pure)(TypedInput);
+const OverrideValueInput = compose(
+  mapPropsStream(mapValueTypeToProps),
+  pure,
+)(TypedInput);
 OverrideValueInput.displayName = 'OverrideValueInput';
 
 const EditableKey = ({ keyPath, remote, local, onChange, autofocus }) => {
@@ -50,7 +53,7 @@ const EditableKey = ({ keyPath, remote, local, onChange, autofocus }) => {
         placeholder="Key"
         value={keyPath}
         getSuggestions={SearchService.getSuggestions}
-        onChange={keyPath => onChange({ keyPath, value: local })}
+        onChange={(keyPath) => onChange({ keyPath, value: local })}
         disabled={hasRemote}
         autofocus={autofocus}
       />
@@ -62,7 +65,7 @@ const EditableKey = ({ keyPath, remote, local, onChange, autofocus }) => {
         })}
         placeholder="Value"
         value={!hasLocal ? remote : local}
-        onChange={value => onChange({ keyPath, value })}
+        onChange={(value) => onChange({ keyPath, value })}
         disabled={!hasLocal}
       />
       {hasRemote && hasChanges ? (
@@ -118,7 +121,7 @@ const NewFixedKeyComponent = ({ appendKey, keyPath, local: value, ...props }) =>
 
 export const NewFixedKey = compose(
   withStateHandlers(emptyKey, {
-    onChange: () => newState => newState,
+    onChange: () => (newState) => newState,
     reset: () => () => emptyKey,
   }),
   mapProps(({ appendKey, reset, value: local, keyPath, ...props }) => ({

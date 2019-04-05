@@ -5,16 +5,15 @@ import { Oid } from 'nodegit';
 import { PERMISSIONS } from '../security/permissions/consts';
 
 export type AppManifest = {
-    version: string
-    name: string,
-    secretKeys: {salt: string, hash:string, creationDate: string}[]
-    permissions?: string[]
-}
+  version: string;
+  name: string;
+  secretKeys: { salt: string; hash: string; creationDate: string }[];
+  permissions?: string[];
+};
 
 export default class AppsRepository {
-  apps: {[id: string] : AppManifest };
-  constructor(private _gitTransactionManager: Transactor<GitRepository>) {
-  }
+  apps: { [id: string]: AppManifest };
+  constructor(private _gitTransactionManager: Transactor<GitRepository>) {}
 
   getApp(appId) {
     return this.apps[appId];
@@ -24,7 +23,7 @@ export default class AppsRepository {
     await this._gitTransactionManager.with(async (repo) => {
       const externalAppsFiles = await repo.listFiles('external_apps');
       this.apps = <any>(await Promise.all(
-        externalAppsFiles.map(async appFile => ({
+        externalAppsFiles.map(async (appFile) => ({
           name: appFile.split('.')[0],
           data: JSON.parse(await repo.readFile(`external_apps/${appFile}`)),
         })),
@@ -32,7 +31,7 @@ export default class AppsRepository {
     });
   }
 
-  async getApps(){
+  async getApps() {
     return this.apps;
   }
 

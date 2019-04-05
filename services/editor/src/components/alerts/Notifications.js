@@ -29,4 +29,4 @@ class Notifications extends Component {
   }
 }
 
-export default connect(state => state.notifications)(Notifications);
+export default connect((state) => state.notifications)(Notifications);

@@ -16,7 +16,7 @@ const PropertyPredicate = ({
     <Operator
       supportedOperators={supportedOperators}
       selectedOperator={selectedOperator}
-      onUpdate={newOperator =>
+      onUpdate={(newOperator) =>
         mutate.updateValue(newOperator.getValue(predicateValue, propertyTypeDetails))
       }
     />
@@ -24,7 +24,7 @@ const PropertyPredicate = ({
       valueType={propertyTypeDetails}
       value={predicateValue}
       selectedOperator={selectedOperator.operatorValue}
-      onChange={newPropertyValue =>
+      onChange={(newPropertyValue) =>
         mutate.updateValue(selectedOperator.getValue(newPropertyValue, propertyTypeDetails))
       }
     />
@@ -41,8 +41,8 @@ export default compose(
       selectedOperator = supportedOperators.indexOf(equal) >= 0 ? equal : supportedOperators[0];
       predicateValue = predicate;
     } else {
-      selectedOperator = supportedOperators.find(x =>
-        Object.keys(predicate).find(predicateProperty => predicateProperty === x.operatorValue),
+      selectedOperator = supportedOperators.find((x) =>
+        Object.keys(predicate).find((predicateProperty) => predicateProperty === x.operatorValue),
       );
       selectedOperator = selectedOperator || { operatorValue: Object.keys(predicate)[0] };
       predicateValue = predicate[selectedOperator.operatorValue];

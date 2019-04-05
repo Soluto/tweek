@@ -9,7 +9,7 @@ import PropertySuggestion from './PropertySuggestion';
 import './styles.css';
 
 const getProperty = (suggestedValues, property) => {
-  const result = suggestedValues.find(x => x.value === property);
+  const result = suggestedValues.find((x) => x.value === property);
   return result ? result.label : property;
 };
 
@@ -38,8 +38,8 @@ const PropertyComboBox = ({
             return SearchService.getSuggestions(search, {
               maxSearchResults,
               showInternalKeys,
-            }).then(suggestions =>
-              suggestions.map(label => ({
+            }).then((suggestions) =>
+              suggestions.map((label) => ({
                 label,
                 value: `${ContextService.KEYS_IDENTITY}${label}`,
               })),

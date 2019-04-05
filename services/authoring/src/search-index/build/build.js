@@ -25,22 +25,22 @@ module.exports = function createIndex(repoDir) {
 
   return glob(path.join(repoDir, 'manifests/**/*.json'))
     .catch(console.error)
-    .then(fileNames =>
+    .then((fileNames) =>
       Observable.create((observer) => {
         _(fileNames)
           .map(readFile)
           .parallel(10)
-          .map(x => JSON.parse(x.toString()))
-          .filter(x => x.key_path)
-          .on('error', err => observer.error(err))
-          .on('data', x => observer.next(x))
+          .map((x) => JSON.parse(x.toString()))
+          .filter((x) => x.key_path)
+          .on('error', (err) => observer.error(err))
+          .on('data', (x) => observer.next(x))
           .on('end', () => observer.complete());
       })
         .map(({ key_path: id, meta }) => Object.assign({}, meta, { id }))
         .map(mapToLower)
-        .do(obj => builder.add(obj))
+        .do((obj) => builder.add(obj))
         .toArray()
-        .map(manifests => ({ manifests, index: builder.build() }))
+        .map((manifests) => ({ manifests, index: builder.build() }))
         .toPromise(),
     );
 };

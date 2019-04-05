@@ -6,7 +6,7 @@ import * as TypesService from '../services/types-service';
 export default (propName = 'propertyTypeDetails') =>
   mapPropsStream((props$) => {
     const typeDetails$ = props$
-      .map(x => x.property)
+      .map((x) => x.property)
       .distinctUntilChanged()
       .switchMap(async (property) => {
         if (property.startsWith(ContextService.KEYS_IDENTITY)) {

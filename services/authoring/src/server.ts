@@ -49,26 +49,34 @@ const gitRepoCreationPromiseWithTimeout = BluebirdPromise.resolve(gitRepoCreatio
     throw new Error(`git repository cloning timeout after ${GIT_CLONE_TIMEOUT_IN_MINUTES} minutes`);
   });
 
-const gitTransactionManager = new Transactor<GitRepository>(gitRepoCreationPromise, async gitRepo => {
-  await gitRepo.reset();
-  await gitRepo.fetch();
-  await gitRepo.mergeMaster();
-}, (function() {
-  let retries = 2;
-  return async (error, context) => {
-    if (retries-- === 0) { return false; }
-    if (error instanceof RepoOutOfDateError) {
-      return true;
-    }
-    return false;
-  };
-})());
+const gitTransactionManager = new Transactor<GitRepository>(
+  gitRepoCreationPromise,
+  async (gitRepo) => {
+    await gitRepo.reset();
+    await gitRepo.fetch();
+    await gitRepo.mergeMaster();
+  },
+  (function() {
+    let retries = 2;
+    return async (error, context) => {
+      if (retries-- === 0) {
+        return false;
+      }
+      if (error instanceof RepoOutOfDateError) {
+        return true;
+      }
+      return false;
+    };
+  })(),
+);
 
 const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
 const appsRepository = new AppsRepository(gitTransactionManager);
 const policyRepository = new PolicyRepository(gitTransactionManager);
-const subjectExtractionRulesRepository = new SubjectExtractionRulesRepository(gitTransactionManager);
+const subjectExtractionRulesRepository = new SubjectExtractionRulesRepository(
+  gitTransactionManager,
+);
 
 const auth = passport.authenticate(['tweek-internal', 'apps-credentials'], { session: false });
 
@@ -84,12 +92,24 @@ async function startServer() {
   app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
   app.get('/version', (req, res) => res.send(process.env.npm_package_version));
   app.get('/health', (req, res) => res.status(200).json({}));
-  app.use('/api', auth, routes({ tagsRepository, keysRepository, appsRepository, policyRepository, subjectExtractionRulesRepository }));
+  app.use(
+    '/api',
+    auth,
+    routes({
+      tagsRepository,
+      keysRepository,
+      appsRepository,
+      policyRepository,
+      subjectExtractionRulesRepository,
+    }),
+  );
 
   app.use('/*', (req, res) => res.sendStatus(404));
   const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     morganJSON(req, res, () => {
-      if (!err) { return next(); }
+      if (!err) {
+        return next();
+      }
       logger.error(`${err.message}`, { Method: req.method, Url: req.originalUrl, Error: err });
       res.status(getErrorStatusCode(err)).send(err.message);
     });
@@ -113,7 +133,9 @@ onUpdate$
   .retry()
   .subscribe();
 
-gitRepoCreationPromiseWithTimeout.then(async () => await startServer()).catch((reason: any) => {
-  logger.error(reason);
-  process.exit(1);
-});
+gitRepoCreationPromiseWithTimeout
+  .then(async () => await startServer())
+  .catch((reason: any) => {
+    logger.error(reason);
+    process.exit(1);
+  });
