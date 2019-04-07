@@ -41,7 +41,7 @@ namespace Tweek.Engine.Tests
 
         async Task Run(Func<ITweek, IContextDriver, Task> test)
         {
-            var scope = driver.SetTestEnviornment(contexts, paths, rules);
+            var scope = driver.SetTestEnvironment(contexts, paths, rules);
             await scope.Run(test);
         }
 
@@ -58,13 +58,13 @@ namespace Tweek.Engine.Tests
             await Run(async (tweek, context) =>
             {
                 var val = await tweek.GetContextAndCalculate("_", NoIdentities, context);
-                Assert.Equal("SomeValue", val["abc/somepath"].Value.AsString());
+                Assert.Equal("SomeValue", val.Data["abc/somepath"].Value.AsString());
 
                 val = await tweek.GetContextAndCalculate("abc/_", NoIdentities, context);
-                Assert.Equal( "SomeValue", val["abc/somepath"].Value.AsString());
+                Assert.Equal( "SomeValue", val.Data["abc/somepath"].Value.AsString());
 
                 val = await tweek.GetContextAndCalculate("abc/somepath", NoIdentities, context);
-                Assert.Equal( "SomeValue", val["abc/somepath"].Value.AsString());
+                Assert.Equal( "SomeValue", val.Data["abc/somepath"].Value.AsString());
             });
         }
 
@@ -78,7 +78,7 @@ namespace Tweek.Engine.Tests
 
             await Run(async (tweek, context) =>
             {
-                var val = await tweek.GetContextAndCalculate("abc/_", NoIdentities, context);
+                var val = (await tweek.GetContextAndCalculate("abc/_", NoIdentities, context)).Data;
                 Assert.Equal(3, val.Count);
                 Assert.Equal("SomeValue",val["abc/somepath"].Value.AsString());
                 Assert.Equal("SomeValue",val["abc/otherpath"].Value.AsString());
@@ -96,7 +96,7 @@ namespace Tweek.Engine.Tests
 
             await Run(async (tweek, context) =>
             {
-                var val = await tweek.GetContextAndCalculate(new List<ConfigurationPath>{"abc/_", "def/_"}, NoIdentities, context);
+                var val = (await tweek.GetContextAndCalculate(new List<ConfigurationPath>{"abc/_", "def/_"}, NoIdentities, context)).Data;
                 Assert.Equal(4, val.Count);
                 Assert.Equal("SomeValue", val["abc/somepath"].Value.AsString());
                 Assert.Equal("SomeValue", val["abc/otherpath"].Value.AsString());
@@ -115,7 +115,7 @@ namespace Tweek.Engine.Tests
 
             await Run(async (tweek, context) =>
             {
-                var val = await tweek.GetContextAndCalculate(new List<ConfigurationPath> { "abc/_", "abc/nested/_" }, NoIdentities, context);
+                var val = (await tweek.GetContextAndCalculate(new List<ConfigurationPath> { "abc/_", "abc/nested/_" }, NoIdentities, context)).Data;
                 Assert.Equal(3, val.Count);
                 Assert.Equal("SomeValue", val["abc/somepath"].Value.AsString());
                 Assert.Equal("SomeValue", val["abc/otherpath"].Value.AsString());
@@ -142,13 +142,13 @@ namespace Tweek.Engine.Tests
             await Run(async (tweek, context) =>
             {
                 var val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context);
-                Assert.Equal(0, val.Count);
+                Assert.Equal(0, val.Data.Count);
 
                 val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "2") }, context);
-                Assert.Equal(0, val.Count);
+                Assert.Equal(0, val.Data.Count);
 
                 val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "3") }, context);
-                Assert.Equal("SomeValue", val["abc/somepath"].Value.AsString());
+                Assert.Equal("SomeValue", val.Data["abc/somepath"].Value.AsString());
             });
         }
 
@@ -171,13 +171,13 @@ namespace Tweek.Engine.Tests
             await Run(async (tweek, context) =>
             {
                 var val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context);
-                Assert.Equal(0, val.Count);
+                Assert.Equal(0, val.Data.Count);
                 
                 val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("user", "1") }, context);
-                Assert.Equal(0, val.Count);
+                Assert.Equal(0, val.Data.Count);
 
                 val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1"), new Identity("user", "1") }, context);
-                Assert.Equal("SomeValue", val["abc/somepath"].Value.AsString());
+                Assert.Equal("SomeValue", val.Data["abc/somepath"].Value.AsString());
             });
         }
 
@@ -196,7 +196,7 @@ namespace Tweek.Engine.Tests
             await Run(async (tweek, context) =>
             {
                 var val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context);
-                Assert.Equal( "SomeValue", val["abc/somepath"].Value.AsString());
+                Assert.Equal( "SomeValue", val.Data["abc/somepath"].Value.AsString());
             });
         }
 
@@ -222,7 +222,7 @@ namespace Tweek.Engine.Tests
             await Run(async (tweek, context) =>
             {
                 var val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context);
-                Assert.Equal("SomeValue", val["abc/somepath"].Value.AsString());
+                Assert.Equal("SomeValue", val.Data["abc/somepath"].Value.AsString());
             });
         }
 
@@ -248,12 +248,14 @@ namespace Tweek.Engine.Tests
             await Run(async (tweek, context) =>
             {
                 var val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { }, context);
-                Assert.Equal(0, val.Count);
+                Assert.Equal(0, val.Data.Count);
                 val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1")}, context);
-                Assert.True(val["abc/somepath"].Value.AsString() == "true" || val["abc/somepath"].Value.AsString() == "false");
+                Assert.True(val.Data["abc/somepath"].Value.AsString() == "true" || val.Data["abc/somepath"].Value.AsString() == "false");
                 await Task.WhenAll(Enumerable.Range(0, 10).Select(async x =>
                 {
-                    Assert.Equal((await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context))["abc/somepath"].Value, val["abc/somepath"].Value);
+                    var expected = val.Data["abc/somepath"].Value;
+                    val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> {new Identity("device", "1")}, context);
+                    Assert.Equal(val.Data["abc/somepath"].Value, expected);
                 }));
             });
         }
@@ -276,7 +278,7 @@ namespace Tweek.Engine.Tests
             await Run(async (tweek, context) =>
             {
                 var val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context);
-                Assert.Equal("true", val["abc/somepath"].Value.AsString());
+                Assert.Equal("true", val.Data["abc/somepath"].Value.AsString());
             });
         }
 
@@ -306,10 +308,10 @@ namespace Tweek.Engine.Tests
             await Run(async (tweek, context) =>
             {
                 var val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context);
-                Assert.Equal("true", val["abc/somepath"].Value.AsString());
+                Assert.Equal("true", val.Data["abc/somepath"].Value.AsString());
 
                 val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "2") }, context);
-                Assert.Equal("false", val["abc/somepath"].Value.AsString());
+                Assert.Equal("false", val.Data["abc/somepath"].Value.AsString());
 
             });
         }
@@ -334,13 +336,13 @@ namespace Tweek.Engine.Tests
             await Run(async (tweek, context) =>
             {
                 var val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context);
-                Assert.Equal("FixedValue", val["abc/somepath"].Value.AsString());
+                Assert.Equal("FixedValue", val.Data["abc/somepath"].Value.AsString());
 
                 val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "2") }, context);
-                Assert.Equal("RuleBasedValue", val["abc/somepath"].Value.AsString());
+                Assert.Equal("RuleBasedValue", val.Data["abc/somepath"].Value.AsString());
 
                 val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "3") }, context);
-                Assert.Equal("FixedValue", val["abc/somepath"].Value.AsString());
+                Assert.Equal("FixedValue", val.Data["abc/somepath"].Value.AsString());
                 
             });
         }
@@ -371,11 +373,11 @@ namespace Tweek.Engine.Tests
 
             await Run(async (tweek, context) =>
             {
-                var val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context);
+                var val = (await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context)).Data;
                 Assert.Equal(1, val.Count);
                 Assert.Equal("true", val["abc/dep_path1"].Value.AsString());
 
-                val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "2") }, context);
+                val = (await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "2") }, context)).Data;
                 Assert.Equal(3, val.Count);
                 Assert.Equal("true", val["abc/dep_path1"].Value.AsString());
                 Assert.Equal("true", val["abc/dep_path2"].Value.AsString());
@@ -399,9 +401,49 @@ namespace Tweek.Engine.Tests
             await Run(async (tweek, context) =>
             {
                 var val = await tweek.GetContextAndCalculate("_", new HashSet<Identity> { new Identity("device", "1")}, context);
-                Assert.Equal("SomeValue", val["abc/somepath"].Value.AsString());
+                Assert.Equal("SomeValue", val.Data["abc/somepath"].Value.AsString());
             });
         }
 
+        [Fact]
+        public async Task BadKeyShouldReturnError()
+        {
+            contexts = ContextCreator.Create("device", "1", Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(3)));
+
+            paths = new[] { "abc/bad_path", "abc/good_path" };
+            rules = new Dictionary<string, RuleDefinition>
+            {
+                ["abc/bad_path"] = JPadGenerator.New()
+                    .AddSingleVariantRule(JsonConvert.SerializeObject(new MatcherData {["device.SomeDeviceProp"] = new string[]{}}), "BadValue")
+                    .Generate(),
+                ["abc/good_path"] = JPadGenerator.New().AddSingleVariantRule("{}", "SomeValue").Generate()
+            };
+
+            await Run(async (tweek, context) =>
+            {
+                var identities = new HashSet<Identity> {new Identity("device", "1")};
+
+                var val = await tweek.GetContextAndCalculate("_", identities, context);
+                Assert.Equal(1, val.Errors.Count);
+                Assert.True(val.Errors.ContainsKey("abc/bad_path"));
+                Assert.False(val.Data.ContainsKey("abc/bad_path"));
+                Assert.Equal("SomeValue", val.Data["abc/good_path"].Value.AsString());
+
+                val = await tweek.GetContextAndCalculate("abc/_", identities, context);
+                Assert.Equal(1, val.Errors.Count);
+                Assert.True(val.Errors.ContainsKey("abc/bad_path"));
+                Assert.False(val.Data.ContainsKey("abc/bad_path"));
+                Assert.Equal( "SomeValue", val.Data["abc/good_path"].Value.AsString());
+
+                val = await tweek.GetContextAndCalculate("abc/good_path", identities, context);
+                Assert.Equal(0, val.Errors.Count);
+                Assert.Equal( "SomeValue", val.Data["abc/good_path"].Value.AsString());
+
+                val = await tweek.GetContextAndCalculate("abc/bad_path", identities, context);
+                Assert.Equal(1, val.Errors.Count);
+                Assert.True(val.Errors.ContainsKey("abc/bad_path"));
+                Assert.Equal(0, val.Data.Count);
+            });        
+        }
     }
 }

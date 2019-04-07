@@ -35,15 +35,28 @@ namespace Tweek.ApiService.Security
             var identityType = tweekIdentity.Type;
             var key = $"@tweek/auth/{identityType}/{permissionType}";
 
-            return identity.IsTweekIdentity() ||
-                tweek.Calculate(key, new HashSet<Identity>(),
-                        type => type == "token" ? (GetContextValue)(q => Optional(identity.FindFirst(q)).Map(x=>x.Value).Map(JsonValue.NewString)) : _ => None)
-                        .SingleKey(key)
-                        .Map(j => j.AsString())
-                        .Match(x => match(x, 
-                                with("allow", _ => true),
-                                with("deny", _ => false),
-                                claim => Optional(identity.FindFirst(claim)).Match(c=> c.Value.Equals(tweekIdentity.Id,StringComparison.OrdinalIgnoreCase), ()=>false)), () => true);
+            if (identity.IsTweekIdentity())
+            {
+                return true;
+            }
+
+            var authValues = tweek.Calculate(key, new HashSet<Identity>(),
+                type => type == "token"
+                    ? (GetContextValue) (q => Optional(identity.FindFirst(q)).Map(x => x.Value).Map(JsonValue.NewString))
+                    : _ => None);
+
+            if (authValues.Errors.ContainsKey(key))
+            {
+                return false;
+            }
+            
+            return authValues.Data
+                .SingleKey(key)
+                .Map(j => j.AsString())
+                .Match(x => match(x, 
+                    with("allow", _ => true),
+                    with("deny", _ => false),
+                    claim => Optional(identity.FindFirst(claim)).Match(c=> c.Value.Equals(tweekIdentity.Id,StringComparison.OrdinalIgnoreCase), ()=>false)), () => true);
         }
 
         public static CheckWriteContextAccess CreateWriteContextAccessChecker(ITweek tweek, TweekIdentityProvider identityProvider)
