@@ -22,7 +22,7 @@ export function Authorize({ permission }) {
       ) {
         return await next();
       }
-      throw new Errors.ForbidenError();
+      throw new Errors.ForbiddenError();
     };
     return result;
   };

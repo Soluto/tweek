@@ -1,10 +1,10 @@
-import path = require('path');
+import path from 'path';
 import { execFile } from 'child_process';
-import fs = require('fs-extra');
-import R = require('ramda');
-import lunr = require('lunr');
+import fs from 'fs-extra';
+import * as R from 'ramda';
+import lunr from 'lunr';
 import { getManifests } from './get-manifests';
-import { logger } from '../utils/jsonLogger';
+import logger from '../utils/logger';
 
 let manifestPromise;
 let indexPromise;
@@ -19,9 +19,13 @@ async function refreshIndex(repoDir) {
       'node',
       [path.join(__dirname, 'build/cli.js'), repoDir, indexFile],
       (error, stdout, stderr) => {
-        logger.log(stdout);
-        if (error) reject(error);
-        else resolve();
+        logger.info({ stdout, stderr }, 'finished indexing');
+
+        if (error) {
+          reject(error);
+        } else {
+          resolve();
+        }
       },
     );
   });
@@ -55,7 +59,7 @@ function createDependencyIndexes(manifests) {
     R.chain(
       R.pipe(
         R.props(['key_path', 'dependencies']),
-        ([keyPath, dependencies]: [any, any]) =>
+        ([keyPath, dependencies]: any[]) =>
           dependencies.map((dependency) => ({ dependency: getKey(dependency), keyPath })),
       ),
     ),

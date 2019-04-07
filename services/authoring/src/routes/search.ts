@@ -1,12 +1,12 @@
-import R = require('ramda');
-import lunr = require('lunr');
+import * as R from 'ramda';
+import lunr from 'lunr';
 import { GET, Path, QueryParam } from 'typescript-rest';
 import { Tags } from 'typescript-rest-swagger';
 import searchIndex from '../search-index';
 import { AutoWired } from 'typescript-ioc';
 import { Authorize } from '../security/authorize';
 import { PERMISSIONS } from '../security/permissions/consts';
-import { logger } from '../utils/jsonLogger';
+import logger from '../utils/logger';
 
 const separator = /(?:[_/]|\s|-)/;
 
@@ -41,8 +41,8 @@ function performSearch(searchString = '', { maxResults = 25, field, index }): st
       R.map<{}, string>(R.prop<string>('ref')),
     );
     return trimResults(searchResults);
-  } catch (error) {
-    logger.error(`error searching for '${searchString}'`, error);
+  } catch (err) {
+    logger.error({ err, searchString }, 'error performing search');
     return [];
   }
 }

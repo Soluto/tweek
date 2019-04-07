@@ -1,7 +1,6 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "declaration": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -17,6 +16,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strictNullChecks": false,
+    "esModuleInterop": true,
     "lib": ["es2015"],
     "target": "es5"
   },

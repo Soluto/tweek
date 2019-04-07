@@ -1,20 +1,26 @@
-import { Observable } from 'rxjs';
+import { concat, defer, EMPTY } from 'rxjs';
+import { catchError, delay, distinctUntilChanged, repeat, tap } from 'rxjs/operators';
+import logger from '../utils/logger';
 const { CONTINUOUS_UPDATER_INTERVAL } = require('../constants');
-import { logger } from '../utils/jsonLogger';
 
 export default {
   onUpdate(gitTransactionManager) {
-    const updateRepo$ = Observable.defer(async () => {
+    const updateRepo$ = defer(async () => {
       await gitTransactionManager.read(async (gitRepo) => await gitRepo.fetch());
       return await gitTransactionManager.write(async (gitRepo) => await gitRepo.mergeMaster());
-    });
+    }).pipe(
+      catchError((err) => {
+        logger.error({ err }, 'Error pulling changes in git repo');
+        return EMPTY;
+      }),
+    );
 
-    return updateRepo$
-      .do(null, (err) => logger.error('Error pulling changes in git repo', err))
-      .catch((_) => Observable.empty())
-      .concat(Observable.empty().delay(CONTINUOUS_UPDATER_INTERVAL))
-      .repeat()
-      .distinctUntilChanged()
-      .do((sha) => logger.log('Updated git repo', sha));
+    const delayComplete$ = EMPTY.pipe(delay(CONTINUOUS_UPDATER_INTERVAL));
+
+    return concat(updateRepo$, delayComplete$).pipe(
+      repeat(),
+      distinctUntilChanged(),
+      tap((sha) => logger.info({ sha }, 'Updated git repo')),
+    );
   },
 };
