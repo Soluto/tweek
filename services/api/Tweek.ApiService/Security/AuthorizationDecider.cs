@@ -45,18 +45,21 @@ namespace Tweek.ApiService.Security
                     ? (GetContextValue) (q => Optional(identity.FindFirst(q)).Map(x => x.Value).Map(JsonValue.NewString))
                     : _ => None);
 
-            if (authValues.Errors.ContainsKey(key))
+            if (!authValues.TryGetValue(key, out var authValue))
+            {
+                return true;
+            }
+
+            if (authValue.Exception != null)
             {
                 return false;
             }
-            
-            return authValues.Data
-                .SingleKey(key)
-                .Map(j => j.AsString())
-                .Match(x => match(x, 
-                    with("allow", _ => true),
-                    with("deny", _ => false),
-                    claim => Optional(identity.FindFirst(claim)).Match(c=> c.Value.Equals(tweekIdentity.Id,StringComparison.OrdinalIgnoreCase), ()=>false)), () => true);
+
+            return match(authValue.Value.AsString(),
+                with("allow", _ => true),
+                with("deny", _ => false),
+                claim => Optional(identity.FindFirst(claim))
+                    .Match(c => c.Value.Equals(tweekIdentity.Id, StringComparison.OrdinalIgnoreCase), () => false));
         }
 
         public static CheckWriteContextAccess CreateWriteContextAccessChecker(ITweek tweek, TweekIdentityProvider identityProvider)

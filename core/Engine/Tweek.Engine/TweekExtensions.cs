@@ -22,7 +22,7 @@ namespace Tweek.Engine
             return Prelude.None;
         }
 
-        public static Task<TweekValuesResult> GetContextAndCalculate(this ITweek tweek,
+        public static Task<Dictionary<ConfigurationPath, ConfigurationValue>> GetContextAndCalculate(this ITweek tweek,
             ConfigurationPath pathQuery,
             IdentityHashSet identities,
             IContextReader contextDriver,
@@ -31,7 +31,7 @@ namespace Tweek.Engine
             return tweek.GetContextAndCalculate(new[] { pathQuery }, identities, contextDriver, externalContext);
         }
 
-        public static async Task<TweekValuesResult> GetContextAndCalculate(this ITweek tweek,
+        public static async Task<Dictionary<ConfigurationPath, ConfigurationValue>> GetContextAndCalculate(this ITweek tweek,
             ICollection<ConfigurationPath> pathQuery,
             IdentityHashSet identities,
             IContextReader contextDriver,
@@ -59,11 +59,20 @@ namespace Tweek.Engine
             return tweek.Calculate(pathQuery, identities, context, contextPaths);
         }
 
-        public static TweekValuesResult Calculate(this ITweek tweek,
+        public static Dictionary<ConfigurationPath, ConfigurationValue> Calculate(this ITweek tweek,
             ConfigurationPath pathQuery,
             IdentityHashSet identities, GetLoadedContextByIdentityType context, ConfigurationPath[] includeFixedPaths = null)
         {
             return tweek.Calculate(new[] { pathQuery }, identities, context, includeFixedPaths);
+        }
+
+        public static void EnsureSuccess(this Dictionary<ConfigurationPath, ConfigurationValue> result)
+        {
+            var errors = result.Values.Where(x => x.Exception != null).Select(x => x.Exception).ToArray();
+            if (errors.Length != 0)
+            {
+                throw new AggregateException(errors);
+            }
         }
     }
 }
