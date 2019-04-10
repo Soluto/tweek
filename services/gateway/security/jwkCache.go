@@ -15,15 +15,28 @@ func init() {
 }
 
 func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
-	keys := jwkCache[endpoint]
-	if keys == nil {
+	keys, ok := jwkCache[endpoint]
+	if !ok {
 		return nil, fmt.Errorf("No keys found for endpoint %s", endpoint)
+	}
+	var err error
+	loaded := false
+	if keys == nil {
+		keys, err = loadEndpoint(endpoint)
+		if err != nil {
+			return nil, err
+		}
+		loaded = true
 	}
 	k := keys.LookupKeyID(keyID)
 	if len(k) == 0 {
-		loadEndpoint(endpoint)
-		keys = jwkCache[endpoint]
-		k = keys.LookupKeyID(keyID)
+		if !loaded {
+			keys, err = loadEndpoint(endpoint)
+			if err != nil {
+				return nil, err
+			}
+			k = keys.LookupKeyID(keyID)
+		}
 		if len(k) == 0 {
 			return nil, fmt.Errorf("Key %s not found at %s", keyID, endpoint)
 		}
@@ -54,10 +67,11 @@ func RefreshEndpoints(endpoints []string) {
 	}()
 }
 
-func loadEndpoint(endpoint string) {
+func loadEndpoint(endpoint string) (*jwk.Set, error) {
 	keySet, err := jwk.FetchHTTP(endpoint)
 	if err != nil {
 		logrus.WithError(err).WithField("endpoint", endpoint).Error("Unable to load keys for endpoint")
 	}
 	jwkCache[endpoint] = keySet
+	return keySet, err
 }
