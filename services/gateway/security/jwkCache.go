@@ -9,9 +9,11 @@ import (
 )
 
 var jwkCache map[string]*jwk.Set
+var loadErrors map[string]error
 
 func init() {
 	jwkCache = map[string]*jwk.Set{}
+	loadErrors = map[string]error{}
 }
 
 func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
@@ -68,9 +70,16 @@ func RefreshEndpoints(endpoints []string) {
 }
 
 func loadEndpoint(endpoint string) (*jwk.Set, error) {
+	err, ok := loadErrors[endpoint]
+	if ok {
+		return nil, err
+	}
+
 	keySet, err := jwk.FetchHTTP(endpoint)
 	if err != nil {
 		logrus.WithError(err).WithField("endpoint", endpoint).Error("Unable to load keys for endpoint")
+		loadErrors[endpoint] = err
+		time.AfterFunc(time.Second*1, func() { delete(loadErrors, endpoint) })
 	}
 	jwkCache[endpoint] = keySet
 	return keySet, err
