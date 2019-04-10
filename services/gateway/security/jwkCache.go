@@ -79,7 +79,7 @@ func loadEndpoint(endpoint string) (*jwk.Set, error) {
 	if err != nil {
 		logrus.WithError(err).WithField("endpoint", endpoint).Error("Unable to load keys for endpoint")
 		loadErrors[endpoint] = err
-		time.AfterFunc(time.Second*1, func() { delete(loadErrors, endpoint) })
+		time.AfterFunc(time.Second*5, func() { delete(loadErrors, endpoint) })
 	}
 	jwkCache[endpoint] = keySet
 	return keySet, err
