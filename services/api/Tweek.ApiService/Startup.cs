@@ -178,13 +178,13 @@ namespace Tweek.ApiService
                     i => ContextHelpers.EmptyContext);
                 schemaValues.EnsureSuccess();
                 
-                var schemaIdentities = schemaValues.Data.ToDictionary(x=> x.Key.Name, x=> x.Value.Value);
+                var schemaIdentities = schemaValues.ToDictionary(x=> x.Key.Name, x=> x.Value.Value);
 
                 var customTypesValues = tweek.Calculate(new[] {new ConfigurationPath("@tweek/custom_types/_")}, EmptyIdentitySet,
                     i => ContextHelpers.EmptyContext);
                 customTypesValues.EnsureSuccess();
                 
-                var customTypes = customTypesValues.Data.ToDictionary(x=>x.Key.Name, x=> CustomTypeDefinition.FromJsonValue(x.Value.Value));
+                var customTypes = customTypesValues.ToDictionary(x=>x.Key.Name, x=> CustomTypeDefinition.FromJsonValue(x.Value.Value));
 
                 return SchemaValidation.Create(schemaIdentities, customTypes, mode);
             }

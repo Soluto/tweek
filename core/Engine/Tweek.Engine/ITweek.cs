@@ -7,7 +7,7 @@ namespace Tweek.Engine
 {
     public interface ITweek
     {
-        TweekValuesResult Calculate(
+        Dictionary<ConfigurationPath, ConfigurationValue> Calculate(
             ICollection<ConfigurationPath> pathQuery,
             IdentityHashSet identities, GetLoadedContextByIdentityType context,
             ConfigurationPath[] includeFixedPaths = null);

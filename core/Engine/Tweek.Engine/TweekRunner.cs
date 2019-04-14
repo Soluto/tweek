@@ -18,7 +18,7 @@ namespace Tweek.Engine
             _rulesLoader = rulesLoader;
         }
 
-        public TweekValuesResult Calculate(
+        public Dictionary<ConfigurationPath, ConfigurationValue> Calculate(
             ICollection<ConfigurationPath> pathQuery,
             HashSet<Identity> identities,
             GetLoadedContextByIdentityType context,
@@ -36,19 +36,12 @@ namespace Tweek.Engine
 
             var paths = include.Concat(expandItems).Concat(pathQuery.Where(t => !t.IsScan)).Distinct();
 
-            var result = new TweekValuesResult();
+            var result = new Dictionary<ConfigurationPath, ConfigurationValue>();
 
             foreach (var path in paths)
             {
-                try
-                {
-                    var ruleValue = getRuleValue(path);
-                    ruleValue.IfSome(value => result.Data[path] = value);
-                }
-                catch (Exception e)
-                {
-                    result.Errors[path] = e;
-                }
+                var ruleValue = getRuleValue(path);
+                ruleValue.IfSome(value => result[path] = value);
             }
 
             return result;

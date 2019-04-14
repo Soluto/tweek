@@ -112,17 +112,20 @@ namespace Tweek.ApiService.Controllers
             var query = GetQuery(root, includePaths);
 
             var values = await _tweek.GetContextAndCalculate(query, identities, _contextDriver, contextProps);
-            Response.Headers.Add("X-Error-Count", values.Errors.Count.ToString());
+
+            var errors = values.Where(x => x.Value.Exception != null).ToDictionary(x => x.Key, x => x.Value.Exception.Message);
+            
+            Response.Headers.Add("X-Error-Count", errors.Count.ToString());
 
             object result = null;
             if (root.IsScan)
             {
-                var relativeData = values.Data.ToDictionary(x => x.Key.ToRelative(root), x => x.Value);
+                var relativeData = values.Where(x => x.Value.Exception == null).ToDictionary(x => x.Key.ToRelative(root), x => x.Value);
                 result = !isFlatten
                     ? TreeResult.From(relativeData, translateValue)
                     : relativeData.ToDictionary(x => x.Key.ToString(), x => translateValue(x.Value));
             }
-            else if (values.Data.TryGetValue(root, out var value))
+            else if (values.TryGetValue(root, out var value) && value.Exception == null)
             {
                 result = ignoreKeyTypes ? TranslateValueToString(value) : value.Value;
             }
@@ -132,7 +135,6 @@ namespace Tweek.ApiService.Controllers
                 return Json(result);
             }
 
-            var errors = values.Errors.ToDictionary(x => x.Key, x => x.Value.Message);
 
             return Json(new Dictionary<string, object> {{"data", result}, {"errors", errors}});
         }
