@@ -18,12 +18,11 @@ type jwkRecord struct {
 }
 
 var jwkCache map[string]*jwkRecord
-var loadEndpointChannel chan string
+var jwkMutex *sync.Mutex
 
 func init() {
 	jwkCache = map[string]*jwkRecord{}
-	loadEndpointChannel = make(chan string)
-	go loadEndpoint()
+	jwkMutex = &sync.Mutex{}
 }
 
 func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
@@ -33,12 +32,12 @@ func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
 	}
 	k := keys.LookupKeyID(keyID)
 	if len(k) == 0 {
-		loadEndpointChannel <- endpoint
-		keys, err = getCachedJwk(endpoint)
-		if err != nil {
-			return nil, err
+		rec := loadEndpoint(endpoint)
+		rec.wg.Wait()
+		if rec.err != nil {
+			return nil, rec.err
 		}
-		k = keys.LookupKeyID(keyID)
+		k = rec.set.LookupKeyID(keyID)
 		if len(k) == 0 {
 			return nil, fmt.Errorf("Key %s not found at %s", keyID, endpoint)
 		}
@@ -52,7 +51,7 @@ func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
 // LoadAllEndpoints loads all the endpoints
 func LoadAllEndpoints(endpoints []string) {
 	for _, ep := range endpoints {
-		loadEndpointChannel <- ep
+		loadEndpoint(ep)
 	}
 }
 
@@ -63,40 +62,46 @@ func RefreshEndpoints(endpoints []string) {
 		for true {
 			<-ticker.C
 			for _, ep := range endpoints {
-				loadEndpointChannel <- ep
+				loadEndpoint(ep)
 			}
 		}
 	}()
 }
 
-func loadEndpoint() {
-	for endpoint := range loadEndpointChannel {
-		rec, ok := jwkCache[endpoint]
-		if !ok || rec.expired {
-			rec := &jwkRecord{
-				wg: &sync.WaitGroup{},
-			}
-			rec.wg.Add(1)
-			jwkCache[endpoint] = rec
+func loadEndpoint(endpoint string) *jwkRecord {
+	jwkMutex.Lock()
+	defer jwkMutex.Unlock()
 
-			go func(endpoint string, rec *jwkRecord) {
-				defer rec.wg.Done()
-
-				rec.set, rec.err = jwk.FetchHTTP(endpoint)
-				if rec.err != nil {
-					logrus.WithError(rec.err).WithField("endpoint", endpoint).Error("Unable to load keys for endpoint")
-				}
-
-				time.AfterFunc(time.Second*5, func() { rec.expired = true })
-			}(endpoint, rec)
+	rec, ok := jwkCache[endpoint]
+	if !ok || rec.expired {
+		rec = &jwkRecord{
+			wg: &sync.WaitGroup{},
 		}
+		rec.wg.Add(1)
+		jwkCache[endpoint] = rec
+
+		go func() {
+			defer rec.wg.Done()
+			defer time.AfterFunc(time.Second*5, func() { rec.expired = true })
+
+			rec.set, rec.err = jwk.FetchHTTP(endpoint)
+			if rec.err != nil {
+				logrus.WithError(rec.err).WithField("endpoint", endpoint).Error("Unable to load keys for endpoint")
+			}
+		}()
 	}
+
+	return rec
 }
 
 func getCachedJwk(endpoint string) (*jwk.Set, error) {
 	rec, ok := jwkCache[endpoint]
 	if !ok {
 		return nil, fmt.Errorf("No keys found for endpoint %s", endpoint)
+	}
+
+	if rec.err != nil {
+		rec = loadEndpoint(endpoint)
 	}
 
 	rec.wg.Wait()
