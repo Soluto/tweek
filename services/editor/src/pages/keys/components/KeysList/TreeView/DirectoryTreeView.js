@@ -9,7 +9,7 @@ export default function DirectoryTreeView({ paths, renderItem, selectedPath, exp
   return (
     <div className="key-folder" data-comp="directory-tree-view">
       {Object.keys(pathTree)
-        .map(pathNode => (
+        .map((pathNode) => (
           <TreeNode
             key={pathNode}
             name={pathNode}
@@ -34,10 +34,12 @@ DirectoryTreeView.propTypes = {
 
 function pathsToTree(paths) {
   let tree = {};
-  paths.map(x => x.split('/')).forEach((fragments) => {
-    const last = fragments.pop();
-    fragments.reduce((node, frag) => (node[frag] = node[frag] || {}), tree)[last] = leaf;
-  });
+  paths
+    .map((x) => x.split('/'))
+    .forEach((fragments) => {
+      const last = fragments.pop();
+      fragments.reduce((node, frag) => (node[frag] = node[frag] || {}), tree)[last] = leaf;
+    });
 
   return tree;
 }

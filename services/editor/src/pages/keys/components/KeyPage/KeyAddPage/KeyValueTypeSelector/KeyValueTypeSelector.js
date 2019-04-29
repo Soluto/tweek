@@ -8,13 +8,13 @@ import { changeKeyValueType } from '../../../../../../store/ducks/selectedKey';
 import './KeyValueTypeSelector.css';
 
 const getValueTypeSuggestions = () =>
-  Object.keys(TypesServices.types).map(x => ({
+  Object.keys(TypesServices.types).map((x) => ({
     label: changeCase.titleCase(x),
     value: x,
   }));
 
 const KeyValueTypeSelector = connect(
-  state => ({
+  (state) => ({
     selectedKey: state.selectedKey,
     validation: state.selectedKey.validation.manifest.valueType,
   }),

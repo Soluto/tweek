@@ -35,14 +35,14 @@ const IdentityProperties = ({ className, identityType, local, remote, updateCont
   >
     <div className="identity-properties-title">Properties</div>
     <div className="property-list">
-      {Object.keys(remote).map(prop => (
+      {Object.keys(remote).map((prop) => (
         <Property
           key={prop}
           identityType={identityType}
           property={prop}
           local={local[prop]}
           remote={remote[prop]}
-          onChange={value =>
+          onChange={(value) =>
             updateContext(value === '' ? R.dissoc(prop, local) : R.assoc(prop, value, local))
           }
         />

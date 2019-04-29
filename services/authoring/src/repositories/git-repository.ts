@@ -1,18 +1,18 @@
-import path = require('path');
-import git = require('nodegit');
-import simpleGit = require('simple-git');
-import fs = require('fs-extra');
-import R = require('ramda');
+import path from 'path';
+import git from 'nodegit';
+import simpleGit from 'simple-git';
+import fs from 'fs-extra';
+import * as R from 'ramda';
 import { Commit } from 'nodegit/commit';
 import { Oid } from 'nodegit';
-import { logger } from '../utils/jsonLogger';
+import logger from '../utils/logger';
 
 export class ValidationError {
-  constructor(public message) { }
+  constructor(public message) {}
 }
 
 export class RepoOutOfDateError {
-  constructor(public message) { }
+  constructor(public message) {}
 }
 
 async function listFiles(repo: git.Repository, filter: (path: string) => boolean = () => true) {
@@ -23,19 +23,21 @@ async function listFiles(repo: git.Repository, filter: (path: string) => boolean
     const entries: string[] = [];
     walker.on('entry', (entry: any) => {
       const entryPath = entry.path().replace(/\\/g, '/');
-      if (filter(entryPath)) { return entries.push(entryPath); }
+      if (filter(entryPath)) {
+        return entries.push(entryPath);
+      }
       return null;
     });
     walker.on('end', () => resolve(entries));
-    walker.on('error', ex => reject(ex));
+    walker.on('error', (ex) => reject(ex));
     (<any>walker).start();
   });
 }
 
 export type OperationSettings = {
   callbacks: {
-    credentials: () => git.Cred
-  }
+    credentials: () => git.Cred;
+  };
 };
 
 export default class GitRepository {
@@ -45,8 +47,15 @@ export default class GitRepository {
     this._simpleRepo = simpleGit(_repo.workdir());
   }
 
-  static async create(settings: { url: string, localPath: string, username: string, publicKey: string, privateKey: string, password: string }) {
-    logger.log('cleaning up current working folder');
+  static async create(settings: {
+    url: string;
+    localPath: string;
+    username: string;
+    publicKey: string;
+    privateKey: string;
+    password: string;
+  }) {
+    logger.info('cleaning up current working folder');
     await fs.remove(settings.localPath);
 
     const operationSettings: OperationSettings = {
@@ -58,7 +67,7 @@ export default class GitRepository {
       },
     };
 
-    logger.log('clonning rules repository');
+    logger.info('clonning rules repository');
     const clonningOp = 'clonning end in';
     // FIXME: needs json logging
     console.time(clonningOp);
@@ -72,12 +81,12 @@ export default class GitRepository {
 
   async listFiles(directoryPath = '') {
     const normalizedDirPath = `${path.normalize(`${directoryPath}/.`)}/`.replace(/\\/g, '/');
-    return (await listFiles(this._repo, filePath => filePath.startsWith(normalizedDirPath))).map(x =>
-      x.substring(normalizedDirPath.length),
+    return (await listFiles(this._repo, (filePath) => filePath.startsWith(normalizedDirPath))).map(
+      (x) => x.substring(normalizedDirPath.length),
     );
   }
 
-  async readFile(fileName: string, { revision }: any = {}) : Promise<string | undefined> {
+  async readFile(fileName: string, { revision }: any = {}): Promise<string | undefined> {
     const commit = await (revision ? this._repo.getCommit(revision) : this._repo.getMasterCommit());
     const entry = await commit.getEntry(fileName);
     return entry.isBlob() ? (await entry.getBlob()).toString() : undefined;
@@ -89,11 +98,17 @@ export default class GitRepository {
     const historyEntries = await Promise.all(
       fileNames.map(async (file) => {
         const options = [file];
-        if (since) { options.unshift(`--since="${since}"`); }
+        if (since) {
+          options.unshift(`--since="${since}"`);
+        }
 
         const history = await new Promise<any>((resolve, reject) => {
           this._simpleRepo.log(options, (err, log) => {
-            if (err) { reject(err); } else { resolve(log); }
+            if (err) {
+              reject(err);
+            } else {
+              resolve(log);
+            }
           });
         });
         return history.all;
@@ -155,7 +170,9 @@ export default class GitRepository {
     const head = await this.getLastCommit();
     const diff = await git.Diff.treeToIndex(this._repo, await head.getTree(), null, null);
     const patches = await diff.patches();
-    if (patches.length === 0) { return null; }
+    if (patches.length === 0) {
+      return null;
+    }
 
     const author = git.Signature.now(name, email);
     const pusher = git.Signature.now('tweek-editor', 'tweek-editor@tweek');
@@ -170,7 +187,13 @@ export default class GitRepository {
   }
 
   async mergeMaster(): Promise<any> {
-    let commitId = await this._repo.mergeBranches('master', 'origin/master', undefined, undefined, undefined);
+    let commitId = await this._repo.mergeBranches(
+      'master',
+      'origin/master',
+      undefined,
+      undefined,
+      undefined,
+    );
 
     const isSynced = await this.isSynced();
     if (!isSynced) {
@@ -200,17 +223,22 @@ export default class GitRepository {
 
   async _pushRepositoryChanges(actionName) {
     try {
-      await new Promise((resolve, reject) => this._simpleRepo.push('origin', 'master', (err) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve();
-      }));
+      await new Promise((resolve, reject) =>
+        this._simpleRepo.push('origin', 'master', (err) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve();
+        }),
+      );
     } catch (ex) {
       if (ex.includes('400 Bad Request')) {
         throw new ValidationError('failed validation:' + ex);
       }
-      if (ex.includes('Updates were rejected because the tip of your current branch is behind') || ex.includes('(e.g., \'git pull ...\') before pushing again.')) {
+      if (
+        ex.includes('Updates were rejected because the tip of your current branch is behind') ||
+        ex.includes("(e.g., 'git pull ...') before pushing again.")
+      ) {
         throw new RepoOutOfDateError(ex);
       }
       throw new Error('unknown error');

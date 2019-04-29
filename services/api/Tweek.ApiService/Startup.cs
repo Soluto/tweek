@@ -173,14 +173,20 @@ namespace Tweek.ApiService
             var logger = loggerFactory.CreateLogger("SchemaValidation.Provider");
             
             SchemaValidation.Provider CreateValidationProvider(){
-                logger.LogInformation("updateing schema");
-                var schemaIdenetities = tweek.Calculate(new[] { new ConfigurationPath($"@tweek/schema/_") }, EmptyIdentitySet,
-                 i => ContextHelpers.EmptyContext).ToDictionary(x=> x.Key.Name, x=> x.Value.Value);
+                logger.LogInformation("updating schema");
+                var schemaValues = tweek.Calculate(new[] {new ConfigurationPath("@tweek/schema/_")}, EmptyIdentitySet,
+                    i => ContextHelpers.EmptyContext);
+                schemaValues.EnsureSuccess();
+                
+                var schemaIdentities = schemaValues.ToDictionary(x=> x.Key.Name, x=> x.Value.Value);
 
-                var customTypes = tweek.Calculate(new[] { new ConfigurationPath($"@tweek/custom_types/_") }, EmptyIdentitySet,
-                 i => ContextHelpers.EmptyContext).ToDictionary(x=>x.Key.Name, x=> CustomTypeDefinition.FromJsonValue(x.Value.Value));
+                var customTypesValues = tweek.Calculate(new[] {new ConfigurationPath("@tweek/custom_types/_")}, EmptyIdentitySet,
+                    i => ContextHelpers.EmptyContext);
+                customTypesValues.EnsureSuccess();
+                
+                var customTypes = customTypesValues.ToDictionary(x=>x.Key.Name, x=> CustomTypeDefinition.FromJsonValue(x.Value.Value));
 
-                return SchemaValidation.Create(schemaIdenetities, customTypes, mode);
+                return SchemaValidation.Create(schemaIdentities, customTypes, mode);
             }
 
             var validationProvider = CreateValidationProvider();

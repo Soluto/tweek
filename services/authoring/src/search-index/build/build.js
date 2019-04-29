@@ -3,6 +3,7 @@ module.exports = function createIndex(repoDir) {
   const promisify = require('util').promisify;
   const glob = promisify(require('glob'));
   const { Observable } = require('rxjs');
+  const { map, tap, toArray } = require('rxjs/operators');
   const _ = require('highland');
   const readFile = _.wrapCallback(require('fs').readFile);
   const lunr = require('lunr');
@@ -25,22 +26,24 @@ module.exports = function createIndex(repoDir) {
 
   return glob(path.join(repoDir, 'manifests/**/*.json'))
     .catch(console.error)
-    .then(fileNames =>
-      Observable.create((observer) => {
+    .then((fileNames) =>
+      new Observable((observer) => {
         _(fileNames)
           .map(readFile)
           .parallel(10)
-          .map(x => JSON.parse(x.toString()))
-          .filter(x => x.key_path)
-          .on('error', err => observer.error(err))
-          .on('data', x => observer.next(x))
+          .map((x) => JSON.parse(x.toString()))
+          .filter((x) => x.key_path)
+          .on('error', (err) => observer.error(err))
+          .on('data', (x) => observer.next(x))
           .on('end', () => observer.complete());
       })
-        .map(({ key_path: id, meta }) => Object.assign({}, meta, { id }))
-        .map(mapToLower)
-        .do(obj => builder.add(obj))
-        .toArray()
-        .map(manifests => ({ manifests, index: builder.build() }))
+        .pipe(
+          map(({ key_path: id, meta }) => Object.assign({}, meta, { id })),
+          map(mapToLower),
+          tap((obj) => builder.add(obj)),
+          toArray(),
+          map((manifests) => ({ manifests, index: builder.build() })),
+        )
         .toPromise(),
     );
 };

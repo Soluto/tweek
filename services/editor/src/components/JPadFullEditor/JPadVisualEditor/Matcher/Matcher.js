@@ -34,16 +34,24 @@ const hasChanged = shouldUpdate(
 );
 
 export default hasChanged(({ matcher, mutate, autofocus }) => {
-  const [, props] = R.pipe(R.toPairs, R.partition(([prop]) => prop[0] === '$'))(matcher);
-  const ignoreActivePropsPropsPredicate = R.compose(R.not, R.contains(R.__, R.map(R.head, props)));
+  const [, props] = R.pipe(
+    R.toPairs,
+    R.partition(([prop]) => prop[0] === '$'),
+  )(matcher);
+  const ignoreActivePropsPropsPredicate = R.compose(
+    R.not,
+    R.contains(R.__, R.map(R.head, props)),
+  );
 
-  const allSuggestions = ContextService.getAllProperties().map(prop => ({
+  const allSuggestions = ContextService.getAllProperties().map((prop) => ({
     label: prop.name,
     value: prop.id,
   }));
 
-  const filterActiveProps = currentProp =>
-    allSuggestions.filter(x => x.value === currentProp || ignoreActivePropsPropsPredicate(x.value));
+  const filterActiveProps = (currentProp) =>
+    allSuggestions.filter(
+      (x) => x.value === currentProp || ignoreActivePropsPropsPredicate(x.value),
+    );
 
   return (
     <div className="matcher">

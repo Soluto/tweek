@@ -1,12 +1,12 @@
-import R = require('ramda');
-import lunr = require('lunr');
+import * as R from 'ramda';
+import lunr from 'lunr';
 import { GET, Path, QueryParam } from 'typescript-rest';
 import { Tags } from 'typescript-rest-swagger';
 import searchIndex from '../search-index';
 import { AutoWired } from 'typescript-ioc';
 import { Authorize } from '../security/authorize';
 import { PERMISSIONS } from '../security/permissions/consts';
-import { logger } from '../utils/jsonLogger';
+import logger from '../utils/logger';
 
 const separator = /(?:[_/]|\s|-)/;
 
@@ -32,14 +32,17 @@ function performSearch(searchString = '', { maxResults = 25, field, index }): st
     const searchResults = index.query((query) => {
       searchString
         .split(separator)
-        .filter(s => s !== '')
-        .forEach(term => addTerm(query, term, field));
+        .filter((s) => s !== '')
+        .forEach((term) => addTerm(query, term, field));
     });
 
-    const trimResults = R.pipe(R.slice(0, maxResults || 25), R.map<{}, string>(R.prop<string>('ref')));
+    const trimResults = R.pipe(
+      R.slice(0, maxResults || 25),
+      R.map<{}, string>(R.prop<string>('ref')),
+    );
     return trimResults(searchResults);
-  } catch (error) {
-    logger.error(`error searching for '${searchString}'`, error);
+  } catch (err) {
+    logger.error({ err, searchString }, 'error performing search');
     return [];
   }
 }
@@ -48,7 +51,6 @@ function performSearch(searchString = '', { maxResults = 25, field, index }): st
 @Tags('search')
 @Path('/')
 export class SearchController {
-
   @Authorize({ permission: PERMISSIONS.SEARCH_INDEX })
   @GET
   @Path('/search-index')
@@ -59,14 +61,17 @@ export class SearchController {
   @Authorize({ permission: PERMISSIONS.SEARCH })
   @GET
   @Path('/search')
-  async search( @QueryParam('q') q: string, @QueryParam('count') count?: number): Promise<string[]> {
+  async search(@QueryParam('q') q: string, @QueryParam('count') count?: number): Promise<string[]> {
     return this.getSearchResult(q, count);
   }
 
   @Authorize({ permission: PERMISSIONS.SEARCH })
   @GET
   @Path('/suggestions')
-  async suggestions( @QueryParam('q') q: string, @QueryParam('count') count?: number): Promise<string[]> {
+  async suggestions(
+    @QueryParam('q') q: string,
+    @QueryParam('count') count?: number,
+  ): Promise<string[]> {
     return this.getSearchResult(q, count, 'id');
   }
 

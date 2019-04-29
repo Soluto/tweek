@@ -75,8 +75,8 @@ namespace Tweek.ApiService.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(object), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.Forbidden)]
-        public async Task<ActionResult> GetAsyncSwagger([FromQuery] string keyPath, 
-                    [FromQuery( Name = "$flatten")] bool flatten = false, 
+        public async Task<ActionResult> GetAsyncSwagger([FromQuery] string keyPath,
+                    [FromQuery( Name = "$flatten")] bool flatten = false,
                     [FromQuery( Name = "$include")] List<string> includeKeys = null)
         {
             if (System.String.IsNullOrWhiteSpace(keyPath)) return BadRequest("Missing key path");
@@ -93,6 +93,7 @@ namespace Tweek.ApiService.Controllers
             var allParams = PartitionByKey(HttpContext.Request.Query.ToDictionary(x => x.Key, x => x.Value), x => x.StartsWith("$"));
             var modifiers = allParams.Item1;
             var isFlatten = modifiers.TryGetValue("$flatten").Select(x => bool.Parse(x.First())).IfNone(false);
+            var includeErrors = modifiers.TryGetValue("$includeErrors").Select(x => bool.Parse(x.First())).IfNone(false);
             var ignoreKeyTypes = modifiers.TryGetValue("$ignoreKeyTypes").Select(x => bool.Parse(x.First())).IfNone(false);
             var includePaths = modifiers.TryGetValue("$include").Select(x => x.ToArray()).IfNone(new string[] {});
 
@@ -110,17 +111,32 @@ namespace Tweek.ApiService.Controllers
 
             var query = GetQuery(root, includePaths);
 
-            var data = await _tweek.GetContextAndCalculate(query, identities, _contextDriver, contextProps);
+            var values = await _tweek.GetContextAndCalculate(query, identities, _contextDriver, contextProps);
 
+            var errors = values.Where(x => x.Value.Exception != null).ToDictionary(x => x.Key, x => x.Value.Exception.Message);
+            
+            Response.Headers.Add("X-Error-Count", errors.Count.ToString());
+
+            object result = null;
             if (root.IsScan)
             {
-                var relativeData = data.ToDictionary(x => x.Key.ToRelative(root), x => x.Value);
-                return Json(!isFlatten ? (TreeResult.From(relativeData, translateValue)) : relativeData.ToDictionary(x => x.Key.ToString(), x => translateValue(x.Value)));
+                var relativeData = values.Where(x => x.Value.Exception == null).ToDictionary(x => x.Key.ToRelative(root), x => x.Value);
+                result = !isFlatten
+                    ? TreeResult.From(relativeData, translateValue)
+                    : relativeData.ToDictionary(x => x.Key.ToString(), x => translateValue(x.Value));
+            }
+            else if (values.TryGetValue(root, out var value) && value.Exception == null)
+            {
+                result = ignoreKeyTypes ? TranslateValueToString(value) : value.Value;
             }
 
-            return data.Select(x => ignoreKeyTypes ? TranslateValueToString(x.Value) : x.Value.Value)
-                    .FirstOrNone()
-                    .Match(x => Json(x), () => Json(null));
+            if (!includeErrors)
+            {
+                return Json(result);
+            }
+
+
+            return Json(new Dictionary<string, object> {{"data", result}, {"errors", errors}});
         }
     }
 }

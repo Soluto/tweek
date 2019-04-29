@@ -7,7 +7,7 @@
   },
   "implementation": {
     "type": "const",
-    "value": ["hello","world"]
+    "value": ["hello", "world"]
   },
   "valueType": "array",
   "dependencies": []

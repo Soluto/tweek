@@ -1,47 +1,38 @@
 {
-    "Number": {
-        "type": "number"
-    },
-    "BirthDate": {
-        "type": "date"
-    },
-    "SomeNumber": {
-        "type": "number"
-    },
-    "Country": {
-        "type": "string"
-    },
-    "IsPremium": {
-        "type": "boolean"
-    },
-    "AgentVersion": {
-        "type": "version"
-    },
-    "Hobbies": {
-        "type": "array"
-    },
-    "Pets": {
-        "type": "object"
-    },
-    "Gender": {
-        "type": {
-            "base": "string",
-            "allowedValues": [
-                "Male",
-                "Female",
-                "Other"
-            ]
-        }
-    },
-    "LuckyNumber": {
-        "type": {
-            "base": "number",
-            "allowedValues": [
-                1,
-                13,
-                7,
-                3
-            ]
-        }
+  "Number": {
+    "type": "number"
+  },
+  "BirthDate": {
+    "type": "date"
+  },
+  "SomeNumber": {
+    "type": "number"
+  },
+  "Country": {
+    "type": "string"
+  },
+  "IsPremium": {
+    "type": "boolean"
+  },
+  "AgentVersion": {
+    "type": "version"
+  },
+  "Hobbies": {
+    "type": "array"
+  },
+  "Pets": {
+    "type": "object"
+  },
+  "Gender": {
+    "type": {
+      "base": "string",
+      "allowedValues": ["Male", "Female", "Other"]
     }
+  },
+  "LuckyNumber": {
+    "type": {
+      "base": "number",
+      "allowedValues": [1, 13, 7, 3]
+    }
+  }
 }

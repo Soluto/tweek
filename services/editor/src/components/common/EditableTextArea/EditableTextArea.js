@@ -19,7 +19,7 @@ const EditableTextArea = compose(withState('isInEditMode', 'setIsInEditMode', fa
       <TextareaAutosize
         readOnly={!isInEditMode}
         onClick={() => setIsInEditMode(true)}
-        onChange={e => onTextChanged(e.target.value)}
+        onChange={(e) => onTextChanged(e.target.value)}
         value={value}
         placeholder={placeHolder}
         title={title}

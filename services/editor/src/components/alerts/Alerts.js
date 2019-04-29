@@ -5,11 +5,18 @@ import Rodal from 'rodal';
 import './Alerts.css';
 import './Rodal.css';
 
-const addState = compose(setDisplayName('Alert'), withState('componentData', 'setComponentData'));
+const addState = compose(
+  setDisplayName('Alert'),
+  withState('componentData', 'setComponentData'),
+);
 
 const reactify = (Content, props) =>
   typeof Content === 'string' ? (
-    <div {...props}>{Content.split('\n').map((line, i) => <div key={i}>{line}</div>)}</div>
+    <div {...props}>
+      {Content.split('\n').map((line, i) => (
+        <div key={i}>{line}</div>
+      ))}
+    </div>
   ) : (
     <Content {...props} />
   );
@@ -51,6 +58,10 @@ const Alert = addState(
   ),
 );
 
-export default connect(state => state)(({ alerts }) => (
-  <div id="alerts">{alerts.map(({ id: key, ...alert }) => <Alert key={key} {...alert} />)}</div>
+export default connect((state) => state)(({ alerts }) => (
+  <div id="alerts">
+    {alerts.map(({ id: key, ...alert }) => (
+      <Alert key={key} {...alert} />
+    ))}
+  </div>
 ));

@@ -5,7 +5,7 @@ export function Authorize({ permission }) {
   return function(target: any, propertyKey: string, descriptor: PropertyDescriptor): any {
     Context(target, 'context');
     const result: PropertyDescriptor = {
-      ...descriptor
+      ...descriptor,
     };
     result.value = async function(...args: any[]) {
       const context: ServiceContext = this.context;
@@ -22,7 +22,7 @@ export function Authorize({ permission }) {
       ) {
         return await next();
       }
-      throw new Errors.ForbidenError();
+      throw new Errors.ForbiddenError();
     };
     return result;
   };
