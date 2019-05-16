@@ -1,100 +1,94 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Publishing - verifier",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "publishing-verifier-build",
-            "program": "${workspaceRoot}/services/publishing/Tweek.Publishing.Verifier/bin/Debug/netcoreapp2.0/Tweek.Publishing.Verifier.dll",
-            "args": [],
-            "cwd": "${workspaceRoot}",
-            "stopAtEntry": false,
-            "console": "internalConsole"
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Publishing - verifier",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "publishing-verifier-build",
+      "program": "${workspaceRoot}/services/publishing/Tweek.Publishing.Verifier/bin/Debug/netcoreapp2.0/Tweek.Publishing.Verifier.dll",
+      "args": [],
+      "cwd": "${workspaceRoot}",
+      "stopAtEntry": false,
+      "console": "internalConsole"
+    },
+    {
+      "name": "Tweek-api",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "api-build",
+      "program": "${workspaceRoot}/services/api/Tweek.ApiService/bin/Debug/netcoreapp2.1/Tweek.ApiService.dll",
+      "args": [],
+      "cwd": "${workspaceRoot}/services/api/Tweek.ApiService",
+      "stopAtEntry": false,
+      "launchBrowser": {
+        "enabled": true,
+        "args": "${auto-detect-url}",
+        "windows": {
+          "command": "cmd.exe",
+          "args": "/C start ${auto-detect-url}/health"
         },
-        {
-            "name": "Tweek-api",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "api-build",
-            "program": "${workspaceRoot}/services/api/Tweek.ApiService/bin/Debug/netcoreapp2.1/Tweek.ApiService.dll",
-            "args": [],
-            "cwd": "${workspaceRoot}/services/api/Tweek.ApiService",
-            "stopAtEntry": false,
-            "launchBrowser": {
-                "enabled": true,
-                "args": "${auto-detect-url}",
-                "windows": {
-                    "command": "cmd.exe",
-                    "args": "/C start ${auto-detect-url}/health"
-                },
-                "osx": {
-                    "command": "open"
-                },
-                "linux": {
-                    "command": "xdg-open"
-                }
-            },
-            "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development",
-                "PUBLIC_KEY_PATH": "../../../deployments/dev/ssh/tweekgit_public.pfx",
-                "Redis__ConnectionString": "127.0.0.1:4006",
-                "UseAddon__Rules": "MinioRules",
-                "RulesetVersionProvider": "NatsVersionProvider",
-                "Rules__Minio__Endpoint": "localhost:4007",
-                "Rules__Minio__AccessKeyPath": "../../../deployments/dev/minio/access_key",
-                "Rules__Minio__SecretKeyPath": "../../../deployments/dev/minio/secret_key",
-                "Rules__Nats__Endpoint": "nats://localhost:4222"
-            },
-            "sourceFileMap": {
-                "/Views": "${workspaceRoot}/Views"
-            }
+        "osx": {
+          "command": "open"
         },
-        {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
-            "request": "attach",
-            "processId": "${command:pickProcess}"
-        },
-        {
-            "name": "Attach publishing",
-            "type": "coreclr",
-            "request": "attach",
-            "processName": "dotnet",
-            "sourceFileMap": {
-                "/src/Tweek.Publishing.Service": "${workspaceRoot}/services/publishing/Tweek.Publishing.Service"
-            },
-            "pipeTransport": {
-                "pipeProgram": "docker",            
-                "pipeCwd": "${workspaceRoot}",
-                "pipeArgs": [
-                    "exec -i dev_publishing_1"
-                ],
-                "quoteArgs": false,
-                "debuggerPath": "/vsdbg/vsdbg"
-            }
-        },
-        {
-            "name": "Attach API",
-
-            "type": "coreclr",
-            "logging": {
-                
-            },
-            "request": "attach",
-            "processName": "dotnet",
-            "sourceFileMap": {
-                "/src": "${workspaceRoot}"
-            },
-            "pipeTransport": {
-                "pipeProgram": "docker",            
-                "pipeCwd": "${workspaceRoot}",
-                "pipeArgs": [
-                    "exec -i dev_api_1"
-                ],                
-                "quoteArgs": false,
-                "debuggerPath": "/vsdbg/vsdbg"
-            }
+        "linux": {
+          "command": "xdg-open"
         }
-    ]
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "PUBLIC_KEY_PATH": "../../../deployments/dev/ssh/tweekgit_public.pfx",
+        "Redis__ConnectionString": "127.0.0.1:4006",
+        "UseAddon__Rules": "MinioRules",
+        "RulesetVersionProvider": "NatsVersionProvider",
+        "Rules__Minio__Endpoint": "localhost:4007",
+        "Rules__Minio__AccessKeyPath": "../../../deployments/dev/minio/access_key",
+        "Rules__Minio__SecretKeyPath": "../../../deployments/dev/minio/secret_key",
+        "Rules__Nats__Endpoint": "nats://localhost:4222"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceRoot}/Views"
+      }
+    },
+    {
+      "name": ".NET Core Attach",
+      "type": "coreclr",
+      "request": "attach",
+      "processId": "${command:pickProcess}"
+    },
+    {
+      "name": "Attach publishing",
+      "type": "coreclr",
+      "request": "attach",
+      "processName": "dotnet",
+      "sourceFileMap": {
+        "/src/Tweek.Publishing.Service": "${workspaceRoot}/services/publishing/Tweek.Publishing.Service"
+      },
+      "pipeTransport": {
+        "pipeProgram": "docker",
+        "pipeCwd": "${workspaceRoot}",
+        "pipeArgs": ["exec -i dev_publishing_1"],
+        "quoteArgs": false,
+        "debuggerPath": "/vsdbg/vsdbg"
+      }
+    },
+    {
+      "name": "Attach API",
+
+      "type": "coreclr",
+      "logging": {},
+      "request": "attach",
+      "processName": "dotnet",
+      "sourceFileMap": {
+        "/src": "${workspaceRoot}"
+      },
+      "pipeTransport": {
+        "pipeProgram": "docker",
+        "pipeCwd": "${workspaceRoot}",
+        "pipeArgs": ["exec -i dev_api_1"],
+        "quoteArgs": false,
+        "debuggerPath": "/vsdbg/vsdbg"
+      }
+    }
+  ]
 }

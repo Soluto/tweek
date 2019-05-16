@@ -33,9 +33,9 @@ const EditableText = withState('isInEditMode', 'setIsInEditMode', false)(
           <input
             data-field="input"
             type="text"
-            ref={input => input && input.focus()}
+            ref={(input) => input && input.focus()}
             className={classNames('editable-text-input', classes.input)}
-            onChange={e => onTextChanged(e.target.value)}
+            onChange={(e) => onTextChanged(e.target.value)}
             value={value}
             placeholder={placeHolder}
             onBlur={() => setIsInEditMode(false)}

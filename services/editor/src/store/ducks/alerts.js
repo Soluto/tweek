@@ -21,7 +21,7 @@ export const buttons = {
 };
 
 export function showCustomAlert({ buttons, ...alertProps }) {
-  return dispatch =>
+  return (dispatch) =>
     dispatch(
       new Promise((resolve) => {
         const id = chance.guid();
@@ -35,7 +35,7 @@ export function showCustomAlert({ buttons, ...alertProps }) {
           onClose: () => onClose(),
           buttons: buttons.map(({ value, ...props }) => ({
             ...props,
-            onClick: data => onClose(value, data),
+            onClick: (data) => onClose(value, data),
           })),
         };
         dispatch({ type: ADD_ALERT, alert });
@@ -61,7 +61,7 @@ export function showConfirm(alertProps) {
 export default handleActions(
   {
     [ADD_ALERT]: (alerts, { alert }) => alerts.concat(alert),
-    [REMOVE_ALERT]: (alerts, { id }) => alerts.filter(alert => alert.id !== id),
+    [REMOVE_ALERT]: (alerts, { id }) => alerts.filter((alert) => alert.id !== id),
   },
   [],
 );

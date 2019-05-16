@@ -42,12 +42,9 @@ const JPadTextEditor = compose(
     JSON.stringify(parsedSource, null, 4),
   ),
   withHandlers({
-    onChange: ({
-      updateCurrentSource,
-      onChange,
-      setHasUnsavedChanges,
-      parsedSource,
-    }) => (newSource) => {
+    onChange: ({ updateCurrentSource, onChange, setHasUnsavedChanges, parsedSource }) => (
+      newSource,
+    ) => {
       updateCurrentSource(newSource);
       try {
         const newParsedSource = JSON.parse(newSource);
@@ -68,7 +65,7 @@ const JPadTextEditor = compose(
           language="json"
           value={currentSource}
           options={{ ...monacoOptions, readOnly: isReadonly }}
-          onChange={newSource => onChange(newSource)}
+          onChange={(newSource) => onChange(newSource)}
         />
       </div>
     )}

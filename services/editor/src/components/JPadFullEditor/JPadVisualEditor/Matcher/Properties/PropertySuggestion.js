@@ -15,15 +15,13 @@ const HIGHLIGHTED_TEXT_INLINE_STYLE = {
   color: 'gray',
 };
 
-const PropertyTooltip = ({ propName, description, propType, identityType }) =>
+const PropertyTooltip = ({ propName, description, propType, identityType }) => (
   <div>
     <div style={{ fontSize: 18 }}>
       <span>{identityType}</span>.<span>{propName}</span>
     </div>
     <div style={{ display: 'flex', marginTop: 10 }}>
-      <div style={{ minWidth: 200, maxWidth: 400 }}>
-        {description}
-      </div>
+      <div style={{ minWidth: 200, maxWidth: 400 }}>{description}</div>
       <div
         style={{
           textAlign: 'center',
@@ -37,12 +35,11 @@ const PropertyTooltip = ({ propName, description, propType, identityType }) =>
         }}
       >
         <div style={{ marginBottom: 10 }}>Property Type</div>
-        <div>
-          {propType}
-        </div>
+        <div>{propType}</div>
       </div>
     </div>
-  </div>;
+  </div>
+);
 
 const PropertySuggestion = compose(
   mapProps(({ suggestion, ...props }) => {
@@ -53,7 +50,7 @@ const PropertySuggestion = compose(
     return { ...props, property, identity, propName, tooltipId };
   }),
   withPropertyTypeDetails('typeDetails'),
-)(({ identity, propName, tooltipId, typeDetails, textToMark }) =>
+)(({ identity, propName, tooltipId, typeDetails, textToMark }) => (
   <div
     data-comp="property-suggestion"
     data-value={`${identity}.${propName}`}
@@ -80,8 +77,8 @@ const PropertySuggestion = compose(
         description={typeDetails.description || ''}
       />
     </ReactTooltip>
-  </div>,
-);
+  </div>
+));
 
 PropertySuggestion.displayName = 'PropertySuggestion';
 

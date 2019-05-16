@@ -41,7 +41,7 @@ namespace Tweek.Engine.Tests
 
         async Task Run(Func<ITweek, IContextDriver, Task> test)
         {
-            var scope = driver.SetTestEnviornment(contexts, paths, rules);
+            var scope = driver.SetTestEnvironment(contexts, paths, rules);
             await scope.Run(test);
         }
 
@@ -253,7 +253,9 @@ namespace Tweek.Engine.Tests
                 Assert.True(val["abc/somepath"].Value.AsString() == "true" || val["abc/somepath"].Value.AsString() == "false");
                 await Task.WhenAll(Enumerable.Range(0, 10).Select(async x =>
                 {
-                    Assert.Equal((await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> { new Identity("device", "1") }, context))["abc/somepath"].Value, val["abc/somepath"].Value);
+                    var expected = val["abc/somepath"].Value;
+                    val = await tweek.GetContextAndCalculate("abc/_", new HashSet<Identity> {new Identity("device", "1")}, context);
+                    Assert.Equal(val["abc/somepath"].Value, expected);
                 }));
             });
         }
@@ -403,5 +405,38 @@ namespace Tweek.Engine.Tests
             });
         }
 
+        [Fact]
+        public async Task BadKeyShouldReturnError()
+        {
+            contexts = ContextCreator.Create("device", "1", Tuple.Create("SomeDeviceProp", JsonValue.NewNumber(3)));
+
+            paths = new[] { "abc/bad_path", "abc/good_path" };
+            rules = new Dictionary<string, RuleDefinition>
+            {
+                ["abc/bad_path"] = JPadGenerator.New()
+                    .AddSingleVariantRule(JsonConvert.SerializeObject(new MatcherData {["device.SomeDeviceProp"] = new string[]{}}), "BadValue")
+                    .Generate(),
+                ["abc/good_path"] = JPadGenerator.New().AddSingleVariantRule("{}", "SomeValue").Generate()
+            };
+
+            await Run(async (tweek, context) =>
+            {
+                var identities = new HashSet<Identity> {new Identity("device", "1")};
+
+                var val = await tweek.GetContextAndCalculate("_", identities, context);
+                Assert.NotNull(val["abc/bad_path"].Exception);
+                Assert.Equal(JsonValue.Null, val["abc/bad_path"].Value);
+                Assert.Equal("SomeValue", val["abc/good_path"].Value.AsString());
+
+                val = await tweek.GetContextAndCalculate("abc/_", identities, context);
+                Assert.NotNull(val["abc/bad_path"].Exception);
+                Assert.Equal(JsonValue.Null, val["abc/bad_path"].Value);
+                Assert.Equal("SomeValue", val["abc/good_path"].Value.AsString());
+
+                val = await tweek.GetContextAndCalculate("abc/bad_path", identities, context);
+                Assert.NotNull(val["abc/bad_path"].Exception);
+                Assert.Equal(JsonValue.Null, val["abc/bad_path"].Value);
+            });        
+        }
     }
 }

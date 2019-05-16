@@ -4,8 +4,8 @@ import { compose, setDisplayName, setPropTypes, withStateHandlers } from 'recomp
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import { validKeyFormats, getManifestImplementationByFormat } from './../../utils/keyFormatHelpers';
 
-const formatSuggestions = validKeyFormats.map(x => ({ label: x, value: x }));
-const isValidFormat = format => validKeyFormats.includes(format);
+const formatSuggestions = validKeyFormats.map((x) => ({ label: x, value: x }));
+const isValidFormat = (format) => validKeyFormats.includes(format);
 
 const KeyFormatSelector = compose(
   setDisplayName('KeyFormatSelector'),

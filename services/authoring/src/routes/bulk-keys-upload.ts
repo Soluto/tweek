@@ -11,7 +11,7 @@ import KeysRepository from '../repositories/keys-repository';
 import { addOid } from '../utils/response-utils';
 
 const supportedPaths = [/^manifests\/.+?\.json/, /^implementations\/.+\/.+?\./];
-const isValidPath = x => R.any(<any>R.test((<any>R).__, x))(supportedPaths);
+const isValidPath = (x) => R.any(<any>R.test((<any>R).__, x))(supportedPaths);
 
 @AutoWired
 @Tags('bulk-keys-upload')
@@ -26,7 +26,11 @@ export class BulkKeysUpload {
   @Authorize({ permission: PERMISSIONS.KEYS_WRITE })
   @PUT
   @Path('/bulk-keys-upload')
-  async bulkKeysUpload( @QueryParam('author.name') name: string, @QueryParam('author.email') email: string, @FileParam('bulk') zipFile: Express.Multer.File) {
+  async bulkKeysUpload(
+    @QueryParam('author.name') name: string,
+    @QueryParam('author.email') email: string,
+    @FileParam('bulk') zipFile: Express.Multer.File,
+  ) {
     if (!zipFile) {
       throw new Errors.BadRequestError('Required file is missing: bulk');
     }
@@ -46,8 +50,10 @@ export class BulkKeysUpload {
     );
     const fileEntries = transformIntoEntriesArray(zipRoot.files);
 
-    if (!R.all(isValidPath, fileEntries.map(x => x.name))) {
-      throw new Errors.BadRequestError(`invalid folder structure:${fileEntries.map(x => x.name).join(',')}`);
+    if (!R.all(isValidPath, fileEntries.map((x) => x.name))) {
+      throw new Errors.BadRequestError(
+        `invalid folder structure:${fileEntries.map((x) => x.name).join(',')}`,
+      );
     }
 
     const oid = await this.keysRepository.updateBulkKeys(fileEntries, { name, email });

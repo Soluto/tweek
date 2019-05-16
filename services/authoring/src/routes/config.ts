@@ -5,9 +5,9 @@ import PolicyRepository from '../repositories/policy-repository';
 import SubjectExtractionRulesRepository from '../repositories/extraction-rules-repository';
 
 export type RoutesConfig = {
-  tagsRepository: TagsRepository,
-  keysRepository: KeysRepository,
-  appsRepository: AppsRepository,
-  policyRepository: PolicyRepository,
-  subjectExtractionRulesRepository: SubjectExtractionRulesRepository,
+  tagsRepository: TagsRepository;
+  keysRepository: KeysRepository;
+  appsRepository: AppsRepository;
+  policyRepository: PolicyRepository;
+  subjectExtractionRulesRepository: SubjectExtractionRulesRepository;
 };

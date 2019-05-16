@@ -32,6 +32,9 @@ const App = ({ children }) => (
 
 const preload = async () => await Promise.all([TypesService.refreshTypes(), refreshSchema()]);
 
-const enhance = compose(withLoading(() => null, preload), withTypesService(TypesService));
+const enhance = compose(
+  withLoading(() => null, preload),
+  withTypesService(TypesService),
+);
 
 export default enhance(App);

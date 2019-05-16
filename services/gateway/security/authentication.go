@@ -90,7 +90,7 @@ func userInfoFromRequest(req *http.Request, configuration *appConfig.Security, e
 		claims := t.Claims.(jwt.MapClaims)
 		if issuer, ok := claims["iss"].(string); ok {
 			if issuer == "tweek" || issuer == "tweek-basic-auth" {
-				return tweekPrivateKey, nil
+				return tweekPrivateKey.Public(), nil
 			}
 
 			if keyID, ok := t.Header["kid"].(string); ok {

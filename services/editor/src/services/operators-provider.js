@@ -6,12 +6,12 @@ const _createOperator = (label, operatorValue, isArray) => {
       _toArrayValue(operatorValue, propertyValue, propertyTypeDetails);
   } else {
     switch (operatorValue) {
-    case '$eq':
-      getValue = propertyValue => _toValue(propertyValue);
-      break;
-    default:
-      getValue = (propertyValue, propertyTypeDetails) =>
-        _toComplexValue(operatorValue, _toValue(propertyValue), propertyTypeDetails);
+      case '$eq':
+        getValue = (propertyValue) => _toValue(propertyValue);
+        break;
+      default:
+        getValue = (propertyValue, propertyTypeDetails) =>
+          _toComplexValue(operatorValue, _toValue(propertyValue), propertyTypeDetails);
     }
   }
 
@@ -37,7 +37,7 @@ const _toComplexValue = (operatorValue, propertyValue, propertyTypeDetails) => (
   ...propertyTypeDetailsToComparer(propertyTypeDetails),
 });
 
-const _toValue = propertyValue =>
+const _toValue = (propertyValue) =>
   Array.isArray(propertyValue) && propertyValue.length > 0 ? propertyValue[0] : propertyValue;
 
 export const equal = _createOperator('=', '$eq');

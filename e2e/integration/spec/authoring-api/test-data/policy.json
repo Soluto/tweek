@@ -1,94 +1,94 @@
 {
-    "policies": [
-        {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
-            "contexts": {},
-            "object": "keys.*",
-            "action": "*",
-            "effect": "allow"
-        },
-        {
-            "group": "*",
-            "user": "*",
-            "contexts": {
-                "tweek_editor_user": "self"
-            },
-            "object": "values/*",
-            "action": "*",
-            "effect": "allow"
-        },
-        {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
-            "contexts": {},
-            "object": "repo.keys/*",
-            "action": "write",
-            "effect": "allow"
-        },
-        {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
-            "contexts": {},
-            "object": "repo",
-            "action": "read",
-            "effect": "allow"
-        },
-        {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
-            "contexts": {},
-            "object": "repo.tags",
-            "action": "write",
-            "effect": "allow"
-        },
-        {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
-            "contexts": {},
-            "object": "repo.schemas",
-            "action": "write",
-            "effect": "allow"
-        },
-        {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
-            "contexts": {
-                "user": "*"
-            },
-            "object": "*",
-            "action": "*",
-            "effect": "allow"
-        },
-        {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
-            "contexts": {
-                "other": "*"
-            },
-            "object": "*",
-            "action": "*",
-            "effect": "allow"
-        },
-        {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
-            "contexts": {
-                "delete_property_test": "*"
-            },
-            "object": "*",
-            "action": "*",
-            "effect": "allow"
-        },
-        {
-            "group": "default",
-            "user": "00000000-0000-0000-0000-000000000000",
-            "contexts": {
-                "edit_property_test": "*"
-            },
-            "object": "*",
-            "action": "*",
-            "effect": "allow"
-        }
-    ]
+  "policies": [
+    {
+      "group": "default",
+      "user": "00000000-0000-0000-0000-000000000000",
+      "contexts": {},
+      "object": "keys.*",
+      "action": "*",
+      "effect": "allow"
+    },
+    {
+      "group": "*",
+      "user": "*",
+      "contexts": {
+        "tweek_editor_user": "self"
+      },
+      "object": "values/*",
+      "action": "*",
+      "effect": "allow"
+    },
+    {
+      "group": "default",
+      "user": "00000000-0000-0000-0000-000000000000",
+      "contexts": {},
+      "object": "repo.keys/*",
+      "action": "write",
+      "effect": "allow"
+    },
+    {
+      "group": "default",
+      "user": "00000000-0000-0000-0000-000000000000",
+      "contexts": {},
+      "object": "repo",
+      "action": "read",
+      "effect": "allow"
+    },
+    {
+      "group": "default",
+      "user": "00000000-0000-0000-0000-000000000000",
+      "contexts": {},
+      "object": "repo.tags",
+      "action": "write",
+      "effect": "allow"
+    },
+    {
+      "group": "default",
+      "user": "00000000-0000-0000-0000-000000000000",
+      "contexts": {},
+      "object": "repo.schemas",
+      "action": "write",
+      "effect": "allow"
+    },
+    {
+      "group": "default",
+      "user": "00000000-0000-0000-0000-000000000000",
+      "contexts": {
+        "user": "*"
+      },
+      "object": "*",
+      "action": "*",
+      "effect": "allow"
+    },
+    {
+      "group": "default",
+      "user": "00000000-0000-0000-0000-000000000000",
+      "contexts": {
+        "other": "*"
+      },
+      "object": "*",
+      "action": "*",
+      "effect": "allow"
+    },
+    {
+      "group": "default",
+      "user": "00000000-0000-0000-0000-000000000000",
+      "contexts": {
+        "delete_property_test": "*"
+      },
+      "object": "*",
+      "action": "*",
+      "effect": "allow"
+    },
+    {
+      "group": "default",
+      "user": "00000000-0000-0000-0000-000000000000",
+      "contexts": {
+        "edit_property_test": "*"
+      },
+      "object": "*",
+      "action": "*",
+      "effect": "allow"
+    }
+  ]
 }

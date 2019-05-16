@@ -14,7 +14,12 @@ import './KeyAddPage.css';
 
 const KeyAddPage = compose(
   connect(
-    ({ selectedKey: { local: { manifest }, validation: { key: keyValidation } } }) => ({
+    ({
+      selectedKey: {
+        local: { manifest },
+        validation: { key: keyValidation },
+      },
+    }) => ({
       manifest,
       keyValidation,
     }),
