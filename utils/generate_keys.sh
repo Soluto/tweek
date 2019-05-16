@@ -10,6 +10,6 @@ mv private-key.pem ssh/id_rsa # ssh private key
 mv public_ssh ssh/id_rsa.pub # ssh public key
 rm certificate.pem # use certificate.pfx
 echo Basic Authentication password:
-cat ssh/id_rsa | base64 -w 0 | md5sum | cut -d " " -f1 \
+cat ssh/id_rsa | tr -d '\r' | base64 -w 0 | md5sum | cut -d " " -f1 \
     | python -c 'import sys;print sys.stdin.read().rstrip("\r\n").decode("hex")' | base64
 
