@@ -27,7 +27,7 @@ useFileFromBase64EnvVariable('GIT_PRIVATE_KEY_INLINE', 'GIT_PRIVATE_KEY_PATH');
 
 const privateKeyPath = nconf.get('GIT_PRIVATE_KEY_PATH');
 const privateKeyForCliPath = os.tmpdir() + '/tweek-authoring-ssh-key-for-cli';
-fs.copySync(privateKeyPath, privateKeyForCliPath);
+fs.copyFileSync(privateKeyPath, privateKeyForCliPath);
 fs.chmodSync(privateKeyForCliPath, 0o0600);
 process.env['GIT_CLI_SSH_PRIVATE_KEY'] = privateKeyForCliPath;
 process.on('beforeExit', () => {
