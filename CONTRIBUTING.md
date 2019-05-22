@@ -64,7 +64,6 @@ After installing Skaffold, use `skaffold dev --port-forward=false`
 
 ### Debug
 
-- if you haven't pulled or built the environment, run `npm run docker-compose pull tweek-git tweek-management tweek-api`
 - run `npm run start:full-env`
 
 ### Unit Tests

@@ -6,7 +6,7 @@ build:
     context: .
     docker:
       dockerfile: TweekApi.Dockerfile
-  - image: soluto/tweek-git
+  - image: soluto/tweek-bare-repo
     context: services/git-service/BareRepository
   - image: soluto/tweek-authoring
     context: services/authoring
