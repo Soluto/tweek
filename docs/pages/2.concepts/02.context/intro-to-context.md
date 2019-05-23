@@ -19,8 +19,8 @@ For example, assuming we have a key `is_allowed_to_drive` with rule:
 If we send these requests to Tweek:
 
 ```
-GET http://localhost:8080/api/v2/values/is_allowed_to_drive -> false
-GET http://localhost:8080/api/v2/values/is_allowed_to_drive?User.Age=20 -> true
+GET http://localhost:8081/api/v2/values/is_allowed_to_drive -> false
+GET http://localhost:8081/api/v2/values/is_allowed_to_drive?User.Age=20 -> true
 ```
 
 In order to get the right values from Tweek, we need to provide Tweek the relevant context for the request.
@@ -31,13 +31,13 @@ While we can always pass context parameters in url, a different approach is to s
 For example:
 
 ```
-GET http://localhost:8080/api/v2/values/is_allowed_to_drive?User=john -> false
+GET http://localhost:8081/api/v2/values/is_allowed_to_drive?User=john -> false
 ```
 
 We've asked for the value of "is_allowed_to_drive" for user John, but Tweek doesn't know any facts about him, let's change it:
 
 ```
-POST http://localhost:8080/api/v2/context/user/john
+POST http://localhost:8081/api/v2/context/user/john
 {
     "Age": 20
 }
@@ -46,7 +46,7 @@ POST http://localhost:8080/api/v2/context/user/john
 After adding the data, let's retry our first request:
 
 ```
-GET http://localhost:8080/api/v2/keys/is_allowed_to_drive?User=john -> true
+GET http://localhost:8081/api/v2/keys/is_allowed_to_drive?User=john -> true
 ```
 
 ## Identities & Properties
@@ -54,7 +54,7 @@ GET http://localhost:8080/api/v2/keys/is_allowed_to_drive?User=john -> true
 You've noticed that we used "User.Age" and not simply "Age", the reason is that Tweek treat facts as properties on top of identities, for example:
 
 ```
-GET http://localhost:8080/api/v2/keys/path/to/key?User=john&User.Country=england
+GET http://localhost:8081/api/v2/keys/path/to/key?User=john&User.Country=england
 ```
 
 1. Tweek understands that it need to get the values for identity user "john".

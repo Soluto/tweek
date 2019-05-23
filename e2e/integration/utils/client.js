@@ -26,7 +26,7 @@ nconf
   .argv()
   .env()
   .defaults({
-    GATEWAY_URL: 'http://localhost:8080',
+    GATEWAY_URL: 'http://localhost:8081',
     CLIENT_ID: 'admin-app',
     CLIENT_SECRET: '8v/iUG0vTH4BtVgkSn3Tng==',
 

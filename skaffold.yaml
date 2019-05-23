@@ -1,5 +1,18 @@
-apiVersion: skaffold/v1beta2
+apiVersion: skaffold/v1beta10
 kind: Config
+profiles:
+  - name: microk8s
+    patches:
+    - op: add
+      path: /build/tagPolicy
+      value: {
+              envTemplate: {
+                template: "localhost:32000/{{.IMAGE_NAME}}"
+              }
+            }
+    - op: add
+      path: /build/local/push
+      value: true
 build:
   artifacts:
   - image: soluto/tweek-api
@@ -15,27 +28,34 @@ build:
   - image: soluto/tweek-gateway
     context: services/gateway
     sync:
-      "**/*.go": "src"
+      manual:
+      - src: '**/*.go'
+        dest: /src
     docker:
       dockerfile: debug.Dockerfile
   - image: soluto/tweek-editor
     context: services/editor
     sync:
-      'src/**/*.*': "src"
+      manual:
+      - src: src/**/*.*
+        dest: /app
     docker:
       dockerfile: debug.Dockerfile
-
+  local:
+    push: false
+    useBuildkit: true
+  tagPolicy:
+    envTemplate: 
+      template: "{{ .IMAGE_NAME }}"
 deploy:
   kubectl:
     manifests:
     - deployments/kubernetes/infra/tweek-secrets.yaml
     - deployments/kubernetes/infra/gateway-config.yaml
-
     - deployments/kubernetes/infra/minio.yaml
     - deployments/kubernetes/infra/nats.yaml
     - deployments/kubernetes/infra/redis.yaml
     - deployments/kubernetes/infra/oidc-server-mock.yaml
-
     - deployments/kubernetes/git.yaml
     - deployments/kubernetes/publishing.yaml
     - deployments/kubernetes/api.yaml
