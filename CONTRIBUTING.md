@@ -44,9 +44,9 @@
    ```
 
 2. Yarn start
-3. Go to http://localhost:8080/login and use basic auth with (user: admin-app, password: 8v/iUG0vTH4BtVgkSn3Tng==)
+3. Go to http://localhost:8081/login and use basic auth with (user: admin-app, password: 8v/iUG0vTH4BtVgkSn3Tng==)
 
-Access Tweek gateway using localhost:8080.
+Access Tweek gateway using localhost:8081.
 Tweek gateway route all traffic to other resources based on: https://github.com/Soluto/tweek/blob/master/services/gateway/settings/settings.json
 The root path redirect to Tweek Editor UI
 
@@ -64,7 +64,6 @@ After installing Skaffold, use `skaffold dev --port-forward=false`
 
 ### Debug
 
-- if you haven't pulled or built the environment, run `npm run docker-compose pull tweek-git tweek-management tweek-api`
 - run `npm run start:full-env`
 
 ### Unit Tests

@@ -19,14 +19,17 @@ Install [Skaffold](https://github.com/GoogleContainerTools/skaffold/releases).
 First of all, run the skaffold.
 
 ```
-skaffold dev -f ./deployments/kubernetes/skaffold.yaml
+skaffold dev
+
+# add profile flag if using microk8s:
+skaffold dev -p microk8s
 ```
 
-If using Minikube create port forwarding:
+If using Minikube/Microk8s create port forwarding:
 
 ```bash
-kubectl port-forward deployment/gateway 8080:80
-kubectl port-forward deployment/oidc-server-mock 8081:80
+kubectl port-forward deployment/gateway 8081:80
+kubectl port-forward deployment/oidc-server-mock 8082:80
 ```
 
-Finally, open in browser [http://localhost:8080](http://localhost:8080).
+Finally, open in browser [http://localhost:8081](http://localhost:8081).
