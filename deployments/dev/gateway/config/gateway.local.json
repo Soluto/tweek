@@ -9,9 +9,9 @@
       "providers": {
         "mock": {
           "name": "Mock OpenId Connect server",
-          "issuer": "http://localhost:8081",
-          "authority": "http://localhost:8081",
-          "jwks_uri": "http://localhost:8081/.well-known/openid-configuration/jwks",
+          "issuer": "http://localhost:8082",
+          "authority": "http://localhost:8082",
+          "jwks_uri": "http://localhost:8082/.well-known/openid-configuration/jwks",
           "client_id": "tweek-openid-mock-client",
           "login_info": {
             "login_type": "oidc",
@@ -43,6 +43,6 @@
     }
   },
   "server": {
-    "ports": [3000, 8080]
+    "ports": [8081]
   }
 }

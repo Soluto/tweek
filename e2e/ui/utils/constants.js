@@ -4,8 +4,8 @@ nconf
   .argv()
   .env()
   .defaults({
-    GATEWAY_URL: 'http://localhost:8080',
-    EDITOR_URL: 'http://localhost:8080/',
+    GATEWAY_URL: 'http://localhost:8081',
+    EDITOR_URL: 'http://localhost:8081/',
   });
 
 const trimEnd = (str) => str.replace(/\/+$/, '');

@@ -1,4 +1,4 @@
-# <img src="https://docs.tweek.fm/assets/logo-with-background.png" width="400" />
+# <img src="https://tweek.soluto.io/assets/logo-with-background.png" width="400" />
 
 [![Codefresh build status](https://g.codefresh.io/api/badges/pipeline/soluto/Soluto%2Ftweek%2Ftweek-all?type=cf-2&branch=master)](https://g.codefresh.io/public/accounts/soluto/pipelines/Soluto/tweek/tweek-all) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/soluto/tweek/blob/master/LICENSE.md) [![Slack](https://tweek-slack.now.sh/badge.svg)](https://tweek-slack.now.sh) [![CircleCI](https://circleci.com/gh/Soluto/tweek/tree/master.svg?style=svg)](https://circleci.com/gh/Soluto/tweek/tree/master)[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
@@ -56,7 +56,7 @@ After setting up our environment, we're going to create our first key.
 Keys in tweek are the most basic building blocks and they represent a container for dynamic value that affect feature behaviors.
 Our first key, will be a key that is responsible for the color of a "sign up" button.
 
-- Open http://localhost:8080/login in browser.
+- Open http://localhost:8081/login in browser.
 - Login
   - User Basic auth (user: admin-app, password: 8v/iUG0vTH4BtVgkSn3Tng==)
   - Can also use OIDC mock server login button for testing OIDC (user: User, password: pwd)
@@ -71,18 +71,18 @@ Our first key, will be a key that is responsible for the color of a "sign up" bu
 - In Rule value set the value "blue"
 - Click "Save changes"
 
-More on [keys and paths](https://docs.tweek.fm/concepts/keys/keys-ands-paths)
+More on [keys and paths](https://tweek.soluto.io/concepts/keys/keys-ands-paths)
 
 #### Querying Tweek
 
 Use curl/postman/chrome to fire GET Request:
 
-- http://localhost:8080/api/v2/values/my_app/sign_button/color -> expected to be "red"
-- http://localhost:8080/api/v2/values/my_app/sign_button/color?user.Country=canada -> expected to be "blue"
-- http://localhost:8080/api/v2/values/my_app/sign_button/_?user.Country=canada -> expected to be {"color":"blue"}
+- http://localhost:8081/api/v2/values/my_app/sign_button/color -> expected to be "red"
+- http://localhost:8081/api/v2/values/my_app/sign_button/color?user.Country=canada -> expected to be "blue"
+- http://localhost:8081/api/v2/values/my_app/sign_button/_?user.Country=canada -> expected to be {"color":"blue"}
 
 Using the rest api, an application can query Tweek for getting the right set of values for each specific user.
-More on Tweek [Rest api](https://docs.tweek.fm/api/rest-api).
+More on Tweek [Rest api](https://tweek.soluto.io/reference/openapi).
 
 #### Adding context data
 
@@ -96,11 +96,11 @@ Tweek provide UI and rest api for editing context.
 
 After that, we can query Tweek API with:
 
-- http://localhost:8080/api/v2/values/my_app/sign_button/color?user=john -> expected to be "blue"
+- http://localhost:8081/api/v2/values/my_app/sign_button/color?user=john -> expected to be "blue"
 
 You can also use the api for updating Tweek context:
 
-- curl -X POST http://localhost:8080/api/v2/context/user/john \
+- curl -X POST http://localhost:8081/api/v2/context/user/john \
   -H 'content-type: application/json' \
   -H 'x-client-id: admin-app' \
   -H 'x-client-secret: 8v/iUG0vTH4BtVgkSn3Tng==' \
@@ -108,7 +108,7 @@ You can also use the api for updating Tweek context:
   "country": "Canada"
   }'
 
-More on [Context.](https://docs.tweek.fm/concepts/context/intro-to-context)
+More on [Context.](https://tweek.soluto.io/concepts/context/intro-to-context)
 
 #### Gradual Feature Release
 
@@ -116,10 +116,10 @@ Create new key in the editor "my_app/sign_button/is_enabled" with value type "bo
 Add new rule, remove all conditions, set the the rule value to gradual release with 50%.
 Try querying configuration with different users and You'll have different results.
 
-- http://localhost:8080/api/v2/values/my_app/sign_button/is_enabled?user=barny
-- http://localhost:8080/api/v2/values/my_app/sign_button/is_enabled?user=robin
-- http://localhost:8080/api/v2/values/my_app/sign_button/is_enabled?user=ted
-- http://localhost:8080/api/v2/values/my_app/sign_button/is_enabled?user=lily
+- http://localhost:8081/api/v2/values/my_app/sign_button/is_enabled?user=barny
+- http://localhost:8081/api/v2/values/my_app/sign_button/is_enabled?user=robin
+- http://localhost:8081/api/v2/values/my_app/sign_button/is_enabled?user=ted
+- http://localhost:8081/api/v2/values/my_app/sign_button/is_enabled?user=lily
 - etc...
 
 More on how multi-variant keys work in Tweek. (link)
