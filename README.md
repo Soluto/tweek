@@ -1,4 +1,4 @@
-# <img src="https://docs.tweek.fm/assets/logo-with-background.png" width="400" />
+# <img src="https://tweek.soluto.io/assets/logo-with-background.png" width="400" />
 
 [![Codefresh build status](https://g.codefresh.io/api/badges/pipeline/soluto/Soluto%2Ftweek%2Ftweek-all?type=cf-2&branch=master)](https://g.codefresh.io/public/accounts/soluto/pipelines/Soluto/tweek/tweek-all) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/soluto/tweek/blob/master/LICENSE.md) [![Slack](https://tweek-slack.now.sh/badge.svg)](https://tweek-slack.now.sh) [![CircleCI](https://circleci.com/gh/Soluto/tweek/tree/master.svg?style=svg)](https://circleci.com/gh/Soluto/tweek/tree/master)[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
@@ -71,7 +71,7 @@ Our first key, will be a key that is responsible for the color of a "sign up" bu
 - In Rule value set the value "blue"
 - Click "Save changes"
 
-More on [keys and paths](https://docs.tweek.fm/concepts/keys/keys-ands-paths)
+More on [keys and paths](https://tweek.soluto.io/concepts/keys/keys-ands-paths)
 
 #### Querying Tweek
 
@@ -82,7 +82,7 @@ Use curl/postman/chrome to fire GET Request:
 - http://localhost:8081/api/v2/values/my_app/sign_button/_?user.Country=canada -> expected to be {"color":"blue"}
 
 Using the rest api, an application can query Tweek for getting the right set of values for each specific user.
-More on Tweek [Rest api](https://docs.tweek.fm/api/rest-api).
+More on Tweek [Rest api](https://tweek.soluto.io/reference/openapi).
 
 #### Adding context data
 
@@ -108,7 +108,7 @@ You can also use the api for updating Tweek context:
   "country": "Canada"
   }'
 
-More on [Context.](https://docs.tweek.fm/concepts/context/intro-to-context)
+More on [Context.](https://tweek.soluto.io/concepts/context/intro-to-context)
 
 #### Gradual Feature Release
 
