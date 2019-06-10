@@ -53,7 +53,7 @@ export default class TreeDirectory extends React.Component {
             data-delay-show={500}
             data-effect="solid"
             data-place="top"
-            onClick={event => this.addKeyAction(event, fullPath)}
+            onClick={(event) => this.addKeyAction(event, fullPath)}
           />
           <ReactTooltip id={fullPath} />
         </div>

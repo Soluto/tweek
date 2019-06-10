@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, mapProps, withHandlers } from 'recompose';
+import { withTweekValues } from 'react-tweek';
 import * as R from 'ramda';
 import * as keysActions from '../../../../../../store/ducks/selectedKey';
 import { showCustomAlert, buttons } from '../../../../../../store/ducks/alerts';
-import { withTweekKeys } from '../../../../../../contexts/Tweek';
 import SaveButton from '../../../../../../components/common/SaveButton/SaveButton';
 import NewKeyInput from '../../KeyAddPage/NewKeyInput';
 import archiveIcon from '../../../../../../resources/archive-icon.svg';
@@ -13,7 +13,7 @@ import trashIcon from '../../../../../../resources/trash-icon.svg';
 import linkIcon from '../../../../../../resources/link-icon.svg';
 import './KeyPageActions.css';
 
-const iconButton = ({ image, text, dataComp }) => props => (
+const iconButton = ({ image, text, dataComp }) => (props) => (
   <button data-comp={dataComp} className="icon-button" tabIndex="-1" {...props}>
     <img src={image} title={text} alt={text} />
   </button>
@@ -35,14 +35,14 @@ const AddAliasButton = iconButton({ image: linkIcon, text: 'Add Alias', dataComp
 const validationPath = ['selectedKey', 'validation', 'isValid'];
 
 const enhance = compose(
-  connect(state => ({ selectedKey: state.selectedKey, isValid: R.path(validationPath, state) }), {
-    ...keysActions,
-    showCustomAlert,
-  }),
-  withTweekKeys(
-    { historySince: '@tweek/editor/history/since' },
-    { defaultValues: { historySince: null } },
+  connect(
+    (state) => ({ selectedKey: state.selectedKey, isValid: R.path(validationPath, state) }),
+    {
+      ...keysActions,
+      showCustomAlert,
+    },
   ),
+  withTweekValues({ historySince: '@tweek/editor/history/since' }, { defaultValues: {} }),
   withHandlers({
     addAlias: ({ selectedKey: { key }, addAlias, showCustomAlert }) => async () => {
       const component = mapProps(
@@ -56,7 +56,7 @@ const enhance = compose(
 
       const okButton = {
         ...buttons.OK,
-        validate: data => data && data.validation.isValid,
+        validate: (data) => data && data.validation.isValid,
       };
 
       const alert = {

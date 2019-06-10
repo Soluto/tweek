@@ -1,16 +1,16 @@
 {
-    "key_path": "@tweek/editor/service_worker/is_enabled",
-    "meta": {
-        "name": "@tweek/editor/service_worker/is_enabled",
-        "description": "Is service-worker enabled in editor",
-        "tags": [],
-        "readOnly": false,
-        "archived": false
-    },
-    "implementation": {
-        "type": "const",
-        "value": false
-    },
-    "valueType": "boolean",
-    "dependencies": []
+  "key_path": "@tweek/editor/service_worker/is_enabled",
+  "meta": {
+    "name": "@tweek/editor/service_worker/is_enabled",
+    "description": "Is service-worker enabled in editor",
+    "tags": [],
+    "readOnly": false,
+    "archived": false
+  },
+  "implementation": {
+    "type": "const",
+    "value": false
+  },
+  "valueType": "boolean",
+  "dependencies": []
 }

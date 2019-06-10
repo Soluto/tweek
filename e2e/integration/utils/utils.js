@@ -1,4 +1,4 @@
-const delay = duration => new Promise(resolve => setTimeout(resolve, duration));
+const delay = (duration) => new Promise((resolve) => setTimeout(resolve, duration));
 
 module.exports.pollUntil = async (action, assert, delayDuration = 0) => {
   while (true) {

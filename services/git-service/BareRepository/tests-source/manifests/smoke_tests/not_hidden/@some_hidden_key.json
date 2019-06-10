@@ -1,14 +1,14 @@
 {
-    "key_path": "smoke_tests/not_hidden/@some_hidden_key",
-    "meta": {
-        "description": "",
-        "readOnly": false,
-        "archived": false
-    },
-    "implementation": {
-        "type": "const",
-        "value": "some hidden value"
-    },
-    "valueType": "string",
-    "dependencies": []
+  "key_path": "smoke_tests/not_hidden/@some_hidden_key",
+  "meta": {
+    "description": "",
+    "readOnly": false,
+    "archived": false
+  },
+  "implementation": {
+    "type": "const",
+    "value": "some hidden value"
+  },
+  "valueType": "string",
+  "dependencies": []
 }

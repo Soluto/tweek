@@ -2,7 +2,6 @@ import { Selector } from 'testcafe';
 import { expect } from 'chai';
 import { editorUrl } from '../../utils/constants';
 import { credentials, login } from '../../utils/auth-utils';
-import { attributeSelector } from '../../utils/selector-utils';
 import { waitForValueToEqual } from '../../clients/api-client';
 import { createConstKey } from '../../clients/authoring-client';
 import EditKey from '../../pages/Keys/EditKey';
@@ -61,7 +60,9 @@ test('should succeed editing key (valueType=object)', async (t) => {
 });
 
 test('should succeed editing key (valueType=date)', async (t) => {
-  const desiredDate = Selector(attributeSelector('datetime', '2018-10-11T00:00:00.000'));
+  const desiredDate = Selector('.react-calendar.calendar')
+    .find('button')
+    .withExactText('11');
   const desiredDateFormatted = '10/11/2018 00:00:00';
 
   const editKey = await EditKey.open(dateTypeKeyPath);

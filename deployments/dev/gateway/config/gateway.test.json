@@ -1,26 +1,23 @@
 {
-    "security": {
-        "auth": {
-            "providers": {
-                "mock": {
-                    "name": "Mock OpenId Connect server",
-                    "issuer": "http://oidc-server-mock",
-                    "authority": "http://oidc-server-mock",
-                    "jwks_uri": "http://oidc-server-mock/.well-known/openid-configuration/jwks",
-                    "client_id": "tweek-openid-mock-client",
-                    "login_info": {
-                        "login_type": "oidc",
-                        "scope": "openid profile email",
-                        "response_type": "id_token"
-                    }
-                }
-            },
-            "basic_auth": {
-                "redirect_urls": [
-                    "http://editor",
-                    "http://gateway"
-                ]
-            }
+  "security": {
+    "auth": {
+      "providers": {
+        "mock": {
+          "name": "Mock OpenId Connect server",
+          "issuer": "http://oidc-server-mock",
+          "authority": "http://oidc-server-mock",
+          "jwks_uri": "http://oidc-server-mock/.well-known/openid-configuration/jwks",
+          "client_id": "tweek-openid-mock-client",
+          "login_info": {
+            "login_type": "oidc",
+            "scope": "openid profile email",
+            "response_type": "id_token"
+          }
         }
+      },
+      "basic_auth": {
+        "redirect_urls": ["http://editor", "http://gateway"]
+      }
     }
+  }
 }

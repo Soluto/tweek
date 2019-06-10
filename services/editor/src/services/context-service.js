@@ -21,9 +21,9 @@ export function getSchema() {
 
 export function getSchemaProperties() {
   return R.chain(
-    identity => [
+    (identity) => [
       { id: `${identity}.@@id`, name: 'Id', type: 'string', identity },
-      ...Object.keys(contextSchema[identity]).map(property => ({
+      ...Object.keys(contextSchema[identity]).map((property) => ({
         id: `${identity}.${property}`,
         identity,
         name: property,
@@ -46,7 +46,7 @@ export function getPropertyTypeDetails(property) {
   if (!property) return { name: 'empty' };
   if (property.startsWith(KEYS_IDENTITY)) return TypesService.types.string;
 
-  const propertyDetails = getAllProperties().find(x => x.id === property);
+  const propertyDetails = getAllProperties().find((x) => x.id === property);
 
   if (!propertyDetails) {
     console.warn('Property details not found', property);
@@ -81,6 +81,6 @@ export function getContextProperties(identity, contextData = {}, excludeEmpty = 
 
   if (excludeEmpty) return properties;
 
-  const identityScheme = R.map(_ => '', contextSchema[identity] || {});
+  const identityScheme = R.map((_) => '', contextSchema[identity] || {});
   return { ...identityScheme, ...properties };
 }

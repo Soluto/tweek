@@ -1,5 +1,5 @@
-import Locker = require('lock-queue');
-import { logger } from './jsonLogger';
+import Locker from 'lock-queue';
+import logger from './logger';
 
 export type AsyncFunc<T, U> = (context: T) => Promise<U>;
 
@@ -11,9 +11,11 @@ export interface TransactionObject<T, U> {
 
 export default class Transactor<T> {
   _lock: Locker;
-  constructor(private _contextPromise: Promise<T>,
-    private _rollbackAction: (context: T) => Promise<void> = async (_) => { },
-    private _shouldRetry: (error: any, context: T) => Promise<boolean> = async (_, __) => false) {
+  constructor(
+    private _contextPromise: Promise<T>,
+    private _rollbackAction: (context: T) => Promise<void> = async (_) => {},
+    private _shouldRetry: (error: any, context: T) => Promise<boolean> = async (_, __) => false,
+  ) {
     this._lock = new Locker();
   }
 
@@ -29,18 +31,19 @@ export default class Transactor<T> {
 
   async write<U>(transaction: AsyncFunc<T, U>): Promise<U> {
     const context = await this._contextPromise;
-    const transactionObject = (typeof (transaction) === 'function') ?
-      { action: transaction } :
-      transaction;
+    const transactionObject =
+      typeof transaction === 'function' ? { action: transaction } : transaction;
 
     return await this._lock.lock(async () => {
       while (true) {
         try {
           return await transactionObject.action(context);
-        } catch (ex) {
-          logger.warn('failed transaction, rolling back');
+        } catch (err) {
+          logger.warn({ err }, 'failed transaction, rolling back');
           await this._rollbackAction(context);
-          if (!await this._shouldRetry(ex, context)) { throw ex; }
+          if (!(await this._shouldRetry(err, context))) {
+            throw err;
+          }
           continue;
         }
       }

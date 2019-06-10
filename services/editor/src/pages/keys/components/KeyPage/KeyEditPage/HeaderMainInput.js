@@ -4,13 +4,16 @@ import EditableText from '../../../../../components/common/EditableText/Editable
 const HeaderMainInput = ({
   onKeyNameChanged,
   onDisplayNameChanged,
-  keyManifest: { meta: { name: displayName, archived }, valueType },
+  keyManifest: {
+    meta: { name: displayName, archived },
+    valueType,
+  },
   isReadonly,
 }) => (
   <div className="key-main-input">
     <EditableText
       data-comp="display-name"
-      onTextChanged={text => onDisplayNameChanged(text)}
+      onTextChanged={(text) => onDisplayNameChanged(text)}
       placeHolder="Enter key display name"
       maxLength={80}
       value={archived ? `ARCHIVED: ${displayName}` : displayName}

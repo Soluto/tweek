@@ -16,7 +16,9 @@ export default class ValidationIcon extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.hint === this.props.hint) { return; }
+    if (prevProps.hint === this.props.hint) {
+      return;
+    }
     ReactTooltip.rebuild();
   }
 

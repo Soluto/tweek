@@ -1,15 +1,15 @@
 # Project structure
 
 - services (all tweek microservices)
-   - api (rest api for getting configurations and updating context)
-   - authoring (rest api for reading and editing keys definitions/manifests)
-   - editor (admin ui for editing rules and managing Tweek)
-   - publishing ("CI" and publishing bundles)
+  - api (rest api for getting configurations and updating context)
+  - authoring (rest api for reading and editing keys definitions/manifests)
+  - editor (admin ui for editing rules and managing Tweek)
+  - publishing ("CI" and publishing bundles)
 - dependencies
-   - git-service (stand-alone git rules repository for bootstrap, dev & testing)
-   - minio (object storage) - rules storage
-   - redis/couchbase/mongo - context database
-   - nats - pubsub
+  - git-service (stand-alone git rules repository for bootstrap, dev & testing)
+  - minio (object storage) - rules storage
+  - redis/couchbase/mongo - context database
+  - nats - pubsub
 - deployments
   - dev (docker compose files for devlopment)
   - kubernetes - use together with Skaffold
@@ -25,7 +25,7 @@
 
 ## Requirements
 
-1. Docker compatible environment  (Windows 10/Mac/Linux)
+1. Docker compatible environment (Windows 10/Mac/Linux)
 
 ## Install runtime dependencies
 
@@ -42,18 +42,19 @@
    git clone https://github.com/Soluto/tweek.git
    cd tweek
    ```
-2. Yarn start
-3. Go to http://localhost:8080/login and use basic auth with (user: admin-app, password: 8v/iUG0vTH4BtVgkSn3Tng==)
 
-Access Tweek gateway using localhost:8080.
+2. Yarn start
+3. Go to http://localhost:8081/login and use basic auth with (user: admin-app, password: 8v/iUG0vTH4BtVgkSn3Tng==)
+
+Access Tweek gateway using localhost:8081.
 Tweek gateway route all traffic to other resources based on: https://github.com/Soluto/tweek/blob/master/services/gateway/settings/settings.json
 The root path redirect to Tweek Editor UI
 
 If you use k8s (comes bundled with Docker for mac/pc, enable using UI), you can use Skaffold (https://github.com/GoogleContainerTools/skaffold).
-The main benefit of using Skaffold is that it provide watch, build  for all Tweek services (editor has also support for hot code reloading).
+The main benefit of using Skaffold is that it provide watch, build for all Tweek services (editor has also support for hot code reloading).
 Since Skaffold/k8s run all services and dependencies together, it can take few minutes to stabilize. (k8s will attempt to restart failed services)
 
-After installing Skaffold, use ```skaffold dev --port-forward=false```
+After installing Skaffold, use `skaffold dev --port-forward=false`
 
 ## Debugging Tweek editor
 
@@ -63,7 +64,6 @@ After installing Skaffold, use ```skaffold dev --port-forward=false```
 
 ### Debug
 
-- if you haven't pulled or built the environment, run `npm run docker-compose pull tweek-git tweek-management tweek-api`
 - run `npm run start:full-env`
 
 ### Unit Tests
@@ -78,18 +78,18 @@ After installing Skaffold, use ```skaffold dev --port-forward=false```
 ### run tests
 
 - if you didn't make any changes to editor, or already built it:
-   ```bash
-   npm run test:full-env
-   ```
+  ```bash
+  npm run test:full-env
+  ```
 - to rebuild editor and then run tests:
-   ```bash
-   npm run test:full-env:build
-   ```
+  ```bash
+  npm run test:full-env:build
+  ```
 - our e2e tests are using selenium. If you don't have it installed, and you don't want to install it, you can just run the tests in docker. To do so replace `full-env` with `docker`:
-   ```bash
-   npm run test:docker
-   npm run test:docker:build
-   ```
+  ```bash
+  npm run test:docker
+  npm run test:docker:build
+  ```
 
 ## Tear Down
 
@@ -99,7 +99,7 @@ docker-compose -f ./deployments/dev/docker-compose.yml down --remove-orphans
 
 ## Contributing
 
-Create branch with the format {issueNumber}_{someName}
+Create branch with the format {issueNumber}\_{someName}
 Commit, push, create pull request
 
 ## Reporting security issues and bugs

@@ -25,7 +25,9 @@ export default function configureRoutes(config: RoutesConfig): any {
   Container.bind(KeysRepository).provider({ get: () => config.keysRepository });
   Container.bind(TagsRepository).provider({ get: () => config.tagsRepository });
   Container.bind(PolicyRepository).provider({ get: () => config.policyRepository });
-  Container.bind(SubjectExtractionRulesRepository).provider({ get: () => config.subjectExtractionRulesRepository });
+  Container.bind(SubjectExtractionRulesRepository).provider({
+    get: () => config.subjectExtractionRulesRepository,
+  });
 
   const prefixes = [
     { from: 'keys', to: 'key' },
@@ -34,7 +36,7 @@ export default function configureRoutes(config: RoutesConfig): any {
     { from: 'dependents', to: 'dependent' },
   ];
 
-  prefixes.forEach(prefix => {
+  prefixes.forEach((prefix) => {
     app.all(`/${prefix.from}/*`, (req, res, next) => {
       req.query['keyPath'] = req.params[0];
       req.url = `/${prefix.to}`;
@@ -43,7 +45,8 @@ export default function configureRoutes(config: RoutesConfig): any {
   });
 
   Server.setFileDest('uploads/');
-  Server.buildServices(app,
+  Server.buildServices(
+    app,
     AppsController,
     TagsController,
     SearchController,

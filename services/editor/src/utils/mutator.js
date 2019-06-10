@@ -6,7 +6,7 @@ class StatelessMutator {
     this.onMutation = onMutation;
   }
 
-  in = innerPath => new StatelessMutator(() => this.getMutator().in(innerPath), this.onMutation);
+  in = (innerPath) => new StatelessMutator(() => this.getMutator().in(innerPath), this.onMutation);
 
   up = () => new StatelessMutator(() => this.getMutator().up(), this.onMutation);
 
@@ -25,39 +25,39 @@ class StatelessMutator {
     return this.getMutator().getValue;
   }
 
-  _liftMutation = mutationFactory => (...params) =>
-    this.apply(mutator => mutationFactory(mutator)(...params));
+  _liftMutation = (mutationFactory) => (...params) =>
+    this.apply((mutator) => mutationFactory(mutator)(...params));
 
   get updateValue() {
-    return this._liftMutation(m => m.updateValue);
+    return this._liftMutation((m) => m.updateValue);
   }
 
   get adjustValue() {
-    return this._liftMutation(m => m.adjustValue);
+    return this._liftMutation((m) => m.adjustValue);
   }
 
   get updateKey() {
-    return this._liftMutation(m => m.updateKey);
+    return this._liftMutation((m) => m.updateKey);
   }
 
   get replaceKeys() {
-    return this._liftMutation(m => m.replaceKeys);
+    return this._liftMutation((m) => m.replaceKeys);
   }
 
   get delete() {
-    return this._liftMutation(m => m.delete);
+    return this._liftMutation((m) => m.delete);
   }
 
   get insert() {
-    return this._liftMutation(m => m.insert);
+    return this._liftMutation((m) => m.insert);
   }
 
   get prepend() {
-    return this._liftMutation(m => m.prepend);
+    return this._liftMutation((m) => m.prepend);
   }
 
   get append() {
-    return this._liftMutation(m => m.append);
+    return this._liftMutation((m) => m.append);
   }
 }
 
@@ -72,9 +72,9 @@ class Mutator {
 
   getValue = () => R.reduce((acc, x) => acc[x], this.target, this.path);
 
-  setPath = path => new Mutator(this.target, path);
+  setPath = (path) => new Mutator(this.target, path);
 
-  in = innerPath => this.setPath([...this.path, innerPath.toString()]);
+  in = (innerPath) => this.setPath([...this.path, innerPath.toString()]);
 
   up = () => this.setPath(R.splitAt(-1, this.path)[0]);
 

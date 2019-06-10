@@ -1,25 +1,14 @@
 {
   "rules": {
     "class-name": true,
-    "comment-format": [
-      true,
-      "check-space"
-    ],
+    "comment-format": [true, "check-space"],
     "curly": true,
     "eofline": true,
-    "indent": [
-      true,
-      "spaces"
-    ],
-    "interface-name": [
-      true,
-      "never-prefix"
-    ],
+    "indent": [true, "spaces"],
+    "interface-name": [true, "never-prefix"],
     "jsdoc-format": false,
     "label-position": true,
-    "member-access": [
-      "check-accessor"
-    ],
+    "member-access": ["check-accessor"],
     "no-angle-bracket-type-assertion": false,
     "no-any": false,
     "no-arg": true,
@@ -37,10 +26,7 @@
     "no-require-imports": false,
     "no-inferrable-types": false,
     "no-shadowed-variable": true,
-    "quotemark": [
-      true,
-      "single"
-    ],
+    "quotemark": [true, "single"],
     "no-string-literal": false,
     "no-switch-case-fall-through": true,
     "no-trailing-whitespace": true,
@@ -62,10 +48,7 @@
     "switch-default": true,
     "prefer-const": true,
     "no-string-throw": true,
-    "triple-equals": [
-      true,
-      "allow-undefined-check"
-    ],
+    "triple-equals": [true, "allow-undefined-check"],
     "typedef-whitespace": [
       true,
       {

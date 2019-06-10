@@ -1,7 +1,7 @@
 /* global process Promise */
 import * as R from 'ramda';
 import { handleActions } from 'redux-actions';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import { tweekManagementClient } from '../../utils/tweekClients';
 import { showError } from './notifications';
 

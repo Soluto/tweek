@@ -37,10 +37,6 @@ services:
       - CONFIGOR_ENV=test
 
   oidc-server-mock:
-    container_name: oidc-server-mock
-    image: soluto/oidc-server-mock
-    ports:
-      - "8081:80"
     environment:
       - REDIRECT_URIS=http://gateway/auth-result/oidc
 
@@ -50,6 +46,7 @@ services:
     shm_size: 2g
     volumes:
       - ../../e2e/ui:/src
+      - /src/node_modules
     depends_on:
       - gateway
       - editor
@@ -64,6 +61,7 @@ services:
     container_name: e2e-integration
     volumes:
       - ../../e2e/integration:/opt/app
+      - /opt/app/node_modules
     depends_on: 
       - gateway
     environment:

@@ -3,7 +3,7 @@ import * as ContextService from '../../../../../services/context-service';
 import { getPropertySupportedOperators } from '../../../../../services/operators-provider';
 import PropertyComboBox from './PropertyComboBox';
 
-const ensureKeysIdentity = property => property.replace(/^@@key:/, ContextService.KEYS_IDENTITY);
+const ensureKeysIdentity = (property) => property.replace(/^@@key:/, ContextService.KEYS_IDENTITY);
 
 const PropertyName = compose(
   withState('hasFocus', 'onFocus', false),
@@ -16,7 +16,7 @@ const PropertyName = compose(
       const newOperator = supportedOperators[0];
 
       const newValue = newOperator.getValue(defaultValue, propertyTypeDetails);
-      mutate.apply(m => m.updateKey(value).updateValue(newValue));
+      mutate.apply((m) => m.updateKey(value).updateValue(newValue));
     };
 
     const onChange = (input, selected) => {
@@ -26,7 +26,7 @@ const PropertyName = compose(
       }
 
       input = ensureKeysIdentity(input);
-      mutate.apply(m => m.updateKey(input).updateValue(''));
+      mutate.apply((m) => m.updateKey(input).updateValue(''));
     };
 
     return {
