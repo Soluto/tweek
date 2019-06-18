@@ -117,7 +117,7 @@ services:
       - "8082:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - CLIENT_ID=tweek-openid-mock-client
+      - OIDC_CLIENT_ID=tweek-openid-mock-client
       - REDIRECT_URIS=http://localhost:8081/auth-result/oidc
       - TEST_USER={"SubjectId":"user","Username":"user","Password":"pwd"}
 

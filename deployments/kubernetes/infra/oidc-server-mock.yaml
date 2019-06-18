@@ -15,7 +15,7 @@ spec:
         env:
         - name: ASPNETCORE_ENVIRONMENT
           value: Development
-        - name: CLIENT_ID
+        - name: OIDC_CLIENT_ID
           value: tweek-openid-mock-client
         - name: REDIRECT_URIS
           value: http://localhost:8081/auth-result/oidc
