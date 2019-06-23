@@ -1,14 +1,14 @@
 secrets:
   minio_access_key:
-    file: /home/local/SOLUTO/yshay/code/tweek/deployments/dev/minio/access_key
+    file: ./minio/access_key
   minio_secret_key:
-    file: /home/local/SOLUTO/yshay/code/tweek/deployments/dev/minio/secret_key
+    file: ./minio/secret_key
   tweek_pfx_public_key:
-    file: /home/local/SOLUTO/yshay/code/tweek/deployments/dev/ssh/tweekgit_public.pfx
+    file: ./ssh/tweekgit_public.pfx
   tweek_ssh_private_key:
-    file: /home/local/SOLUTO/yshay/code/tweek/deployments/dev/ssh/tweekgit
+    file: ./ssh/tweekgit
   tweek_ssh_public_key:
-    file: /home/local/SOLUTO/yshay/code/tweek/deployments/dev/ssh/tweekgit.pub
+    file: ./ssh/tweekgit.pub
 services:
   api:
     build:
@@ -41,7 +41,7 @@ services:
     - source: tweek_pfx_public_key
   authoring:
     build:
-      context: /home/local/SOLUTO/yshay/code/tweek/services/authoring
+      context: ../../services/authoring
     command:
     - yarn
     - start:debug
@@ -65,7 +65,7 @@ services:
     - source: tweek_ssh_public_key
   editor:
     build:
-      context: /home/local/SOLUTO/yshay/code/tweek/services/editor
+      context: ../../services/editor
     depends_on:
     - gateway
     image: soluto/tweek-editor
@@ -74,7 +74,7 @@ services:
       target: 3000
   gateway:
     build:
-      context: /home/local/SOLUTO/yshay/code/tweek/services/gateway
+      context: ../../services/gateway
     depends_on:
     - api
     - authoring
@@ -104,10 +104,10 @@ services:
     secrets:
     - source: tweek_ssh_private_key
     volumes:
-    - /home/local/SOLUTO/yshay/code/tweek/deployments/dev/gateway/config:/config:rw
+    - ./gateway/config:/config:rw
   git:
     build:
-      context: /home/local/SOLUTO/yshay/code/tweek/services/git-service/BareRepository
+      context: ../../services/git-service/BareRepository
     environment:
       PUBLIC_KEY_PATH: /run/secrets/tweek_ssh_public_key
     image: soluto/tweek-bare-repo
@@ -149,7 +149,7 @@ services:
     build:
       args:
         target: Debug
-      context: /home/local/SOLUTO/yshay/code/tweek/services/publishing
+      context: ../../services/publishing
     depends_on:
     - git
     - minio

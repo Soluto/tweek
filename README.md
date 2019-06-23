@@ -40,6 +40,15 @@ The easiest way to start evaluating Tweek is to run it locally on docker, make s
 
 - Run (`yarn start`) - this might take a few minutes for the first time
 
+### Using Tilt
+
+Tilt is a CLI tool that can be used to create optimal development environment for multi-container apps such as Tweek, it support automatic rebuliding of images and re-running of containers on files' changes.
+Additonally, it support more complex live reloading scenarios such as Tweek Editor (React app).
+Tweek uses Tilt on top of docker-compose for easier and (usually) faster developer experience (comapred to Tilt with k8s).
+
+- Install Tilt (https://docs.tilt.dev/install.html)
+- tilt up
+
 ### Using Kubernetes
 
 - Install Skaffold (https://github.com/GoogleContainerTools/skaffold)
@@ -125,7 +134,6 @@ Try querying configuration with different users and You'll have different result
 More on how multi-variant keys work in Tweek. (link)
 
 ### Deployment to production
-
 
 ### FAQ
 
