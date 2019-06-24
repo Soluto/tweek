@@ -33,7 +33,6 @@ const DateInput = compose(withState('showCalendar', 'setShowCalendar', false))(
       );
       setShowCalendar(false);
     };
-    console.log(calendarDate);
     return (
       <div onBlur={onBlur} className="date-input">
         <Input {...props} onChange={onChange} onFocus={onFocus} value={value} />
