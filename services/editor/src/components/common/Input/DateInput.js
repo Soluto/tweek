@@ -10,7 +10,8 @@ import './Calendar.css';
 
 const DateInput = compose(withState('showCalendar', 'setShowCalendar', false))(
   ({ onChange, value, showCalendar, setShowCalendar, ...props }) => {
-    const calendarDate = moment.utc(value).toDate();
+    const dateValue = moment.utc(value);
+    const calendarDate = ((dateValue.isValid() && dateValue) || moment()).toDate();
 
     const onFocus = (evt) => {
       evt.preventDefault();
@@ -32,7 +33,7 @@ const DateInput = compose(withState('showCalendar', 'setShowCalendar', false))(
       );
       setShowCalendar(false);
     };
-
+    console.log(calendarDate);
     return (
       <div onBlur={onBlur} className="date-input">
         <Input {...props} onChange={onChange} onFocus={onFocus} value={value} />
