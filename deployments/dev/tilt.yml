@@ -14,7 +14,7 @@ services:
     build:
       args:
         target: Debug
-      context: /home/local/SOLUTO/yshay/code/tweek
+      context: ../../
       dockerfile: TweekApi.Dockerfile
     depends_on:
     - minio
