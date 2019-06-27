@@ -14,7 +14,7 @@ namespace Tweek.Publishing.Service.Validation
             {
                 var contents = await reader(fileName);
                 await File.WriteAllTextAsync(tempFilePath, contents);
-                var opaPath = Environment.GetEnvironmentVariable("OPA_PATH");
+                var opaPath = Environment.GetEnvironmentVariable("OPA_PATH") ?? "opa";
                 var result = await ShellHelper.Executor.ExecTask(opaPath, $"check {tempFilePath} -f json");
 
             }
