@@ -1,25 +1,17 @@
-/* global describe, it, before, after, beforeEach, afterEach */
-import * as Mocha from 'mocha';
-import KeysRepository from '../src/repositories/keys-repository';
+import KeysRepository from '../../src/repositories/keys-repository';
 
 const chai = require('chai');
-const simple = require('simple-mock');
-
 chai.use(require('chai-things'));
 const expect = chai.expect;
+const simple = require('simple-mock');
 
 describe('keys-repository', () => {
   let mockGitRepo = <any>{};
+  const runAction = (action) => action(mockGitRepo);
   const mockTransactionManager = {
-    write(action) {
-      return action(mockGitRepo);
-    },
-    read(action) {
-      return action(mockGitRepo);
-    },
-    with(action) {
-      return action(mockGitRepo);
-    },
+    write: runAction,
+    read: runAction,
+    with: runAction,
   };
   const target = new KeysRepository(<any>mockTransactionManager);
 

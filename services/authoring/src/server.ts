@@ -13,6 +13,7 @@ import KeysRepository from './repositories/keys-repository';
 import TagsRepository from './repositories/tags-repository';
 import AppsRepository from './repositories/apps-repository';
 import PolicyRepository from './repositories/policy-repository';
+import HooksRepository from './repositories/hooks-repository';
 import GitContinuousUpdater from './repositories/git-continuous-updater';
 import searchIndex from './search-index';
 import routes from './routes';
@@ -75,6 +76,7 @@ const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
 const appsRepository = new AppsRepository(gitTransactionManager);
 const policyRepository = new PolicyRepository(gitTransactionManager);
+const hooksRepository = new HooksRepository(gitTransactionManager);
 const subjectExtractionRulesRepository = new SubjectExtractionRulesRepository(
   gitTransactionManager,
 );
@@ -102,6 +104,7 @@ async function startServer() {
       appsRepository,
       policyRepository,
       subjectExtractionRulesRepository,
+      hooksRepository,
     }),
   );
 

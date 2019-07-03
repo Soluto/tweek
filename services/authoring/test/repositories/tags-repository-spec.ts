@@ -1,23 +1,14 @@
-/* global describe, it, before, after, beforeEach, afterEach */
-import * as Mocha from 'mocha';
-import TagsRepository from '../src/repositories/tags-repository';
-const chai = require('chai');
+import TagsRepository from '../../src/repositories/tags-repository';
+import { expect } from 'chai';
 const simple = require('simple-mock');
-
-const expect = chai.expect;
 
 describe('TagsRepository', () => {
   let mockGitRepo = <any>{};
+  const runAction = (action) => action(mockGitRepo);
   const mockTransactionManager = {
-    with: function(action) {
-      return action(mockGitRepo);
-    },
-    write: function(action) {
-      return action(mockGitRepo);
-    },
-    read: function(action) {
-      return action(mockGitRepo);
-    },
+    write: runAction,
+    read: runAction,
+    with: runAction,
   };
   const target = new TagsRepository(<any>mockTransactionManager);
 

@@ -1,8 +1,5 @@
-/* global describe, it, before, after, beforeEach, afterEach */
-import * as Mocha from 'mocha';
-const chai = require('chai');
 import { expect, assert } from 'chai';
-import Transactor from '../src/utils/transactor';
+import Transactor from '../../src/utils/transactor';
 
 class Counter {
   constructor(public counter = 0) {}
