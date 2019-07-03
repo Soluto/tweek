@@ -7,6 +7,7 @@ import { TagsController } from './tags';
 import { SearchController } from './search';
 import { AppsController } from './apps';
 import { PolicyController } from './policies';
+import { HooksController } from './hooks';
 import { SubjectExtractionRulesController } from './subject-extraction-rules';
 import { RoutesConfig } from './config';
 import { Container } from 'typescript-ioc';
@@ -15,6 +16,7 @@ import KeysRepository from '../repositories/keys-repository';
 import TagsRepository from '../repositories/tags-repository';
 import PolicyRepository from '../repositories/policy-repository';
 import SubjectExtractionRulesRepository from '../repositories/extraction-rules-repository';
+import HooksRepository from '../repositories/hooks-repository';
 
 Server.useIoC();
 
@@ -25,6 +27,7 @@ export default function configureRoutes(config: RoutesConfig): any {
   Container.bind(KeysRepository).provider({ get: () => config.keysRepository });
   Container.bind(TagsRepository).provider({ get: () => config.tagsRepository });
   Container.bind(PolicyRepository).provider({ get: () => config.policyRepository });
+  Container.bind(HooksRepository).provider({ get: () => config.hooksRepository });
   Container.bind(SubjectExtractionRulesRepository).provider({
     get: () => config.subjectExtractionRulesRepository,
   });
@@ -34,6 +37,7 @@ export default function configureRoutes(config: RoutesConfig): any {
     { from: 'manifests', to: 'manifest' },
     { from: 'revision-history', to: 'revision-history' },
     { from: 'dependents', to: 'dependent' },
+    { from: 'hooks', to: 'hook' },
   ];
 
   prefixes.forEach((prefix) => {
@@ -55,6 +59,7 @@ export default function configureRoutes(config: RoutesConfig): any {
     KeysController,
     PolicyController,
     SubjectExtractionRulesController,
+    HooksController,
   );
 
   return app;
