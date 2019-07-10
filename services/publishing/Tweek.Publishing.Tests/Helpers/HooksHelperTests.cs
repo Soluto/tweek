@@ -21,8 +21,8 @@ namespace Tweek.Publishing.Tests {
 
     public HooksHelperTests() {
       fakeGit = A.Fake< Func< string, Task<string> > >();
-      HooksHelper.initialize(fakeGit, A.Fake<IMetrics>());
-      hooksHelper = HooksHelper.getInstance();
+      HooksHelper.Initialize(fakeGit, A.Fake<IMetrics>());
+      hooksHelper = HooksHelper.GetInstance();
     }
 
     [Theory]
@@ -32,19 +32,19 @@ namespace Tweek.Publishing.Tests {
     [InlineData("some/git/path.json\nmanifests/a/vtt/pq.json\n", new string[] { "a/vtt/pq" })]
     [InlineData("some/git/path.json\n", new string[] {})]
     [InlineData("", new string[] {})]
-    public async Task _getKeyPathsFromCommit(string gitOutput, string[] expectedResult) {
+    public async Task _GetKeyPathsFromCommit(string gitOutput, string[] expectedResult) {
       var commitId = "abcd";
       var gitCommand = $"diff-tree --no-commit-id --name-only -r {commitId}";
 
       A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
 
-      var result = await _callPrivateMethod<Task<IEnumerable<string>>>(hooksHelper, "_getKeyPathsFromCommit", new object[] { commitId });
+      var result = await _CallPrivateMethod<Task<IEnumerable<string>>>(hooksHelper, "_GetKeyPathsFromCommit", new object[] { commitId });
 
       Assert.Equal(expectedResult, result);
     }
 
     [Fact]
-    public void _aggregateKeyPathsByHook() {
+    public void _AggregateKeyPathsByHook() {
       var hook1 = new Hook("notification_webhook", "http://some-domain/awesome_hook");
       var hook2 = new Hook("notification_webhook", "http://some-domain/another_awesome_hook");
       var hook3 = new Hook("notification_webhook", "http://another-domain/ok_hook");
@@ -62,15 +62,15 @@ namespace Tweek.Publishing.Tests {
       expectedResult.Add(hook2, new HashSet<string> { "a/b/c" });
       expectedResult.Add(hook3, new HashSet<string> { "a/b/c", "a/b/d" });
 
-      var result = _callPrivateMethod<Dictionary< Hook, HashSet<string> >>(hooksHelper, "_aggregateKeyPathsByHook", new object[] { allKeyPaths, allHooks });
+      var result = _CallPrivateMethod<Dictionary< Hook, HashSet<string> >>(hooksHelper, "_AggregateKeyPathsByHook", new object[] { allKeyPaths, allHooks });
 
       Assert.Equal(expectedResult, result);
     }
 
     [Fact]
-    public async Task triggerNotificationHooksForCommit() {
+    public async Task TriggerNotificationHooksForCommit() {
       var commitId = "abcdef";
-      _triggerNotificationHooksForCommit_setupGitStubs(commitId);
+      _TriggerNotificationHooksForCommit_SetupGitStubs(commitId);
 
       var abcKeyPathData = new KeyPathData("a/b/c", "{ \"implementationFor\": \"a/b/c\" }", "{ \"manifestFor\": \"a/b/c\" }");
       var abdKeyPathData = new KeyPathData("a/b/d", "{ \"implementationFor\": \"a/b/d\" }", "{ \"manifestFor\": \"a/b/d\" }");
@@ -78,21 +78,21 @@ namespace Tweek.Publishing.Tests {
       var abcabdKeyPathArray = new KeyPathData[] { abcKeyPathData, abdKeyPathData };
 
       var mockHttp = new MockHttpMessageHandler();
-      var hook1Request = _mockHookRequest(mockHttp, "http://some-domain/awesome_hook", abcabdKeyPathArray);
-      var hook2Request = _mockHookRequest(mockHttp, "http://some-domain/another_awesome_hook", abcKeyPathArray);
-      var hook3Request = _mockHookRequest(mockHttp, "http://another-domain/ok_hook", abcabdKeyPathArray);
+      var hook1Request = _MockHookRequest(mockHttp, "http://some-domain/awesome_hook", abcabdKeyPathArray);
+      var hook2Request = _MockHookRequest(mockHttp, "http://some-domain/another_awesome_hook", abcKeyPathArray);
+      var hook3Request = _MockHookRequest(mockHttp, "http://another-domain/ok_hook", abcabdKeyPathArray);
       
       var client = mockHttp.ToHttpClient();
-      Http.initialize(client);
+      Http.Initialize(client);
 
-      await hooksHelper.triggerNotificationHooksForCommit(commitId);
+      await hooksHelper.TriggerNotificationHooksForCommit(commitId);
 
       Assert.Equal(1, mockHttp.GetMatchCount(hook1Request));
       Assert.Equal(1, mockHttp.GetMatchCount(hook2Request));
       Assert.Equal(1, mockHttp.GetMatchCount(hook3Request));
     }
 
-    private MockedRequest _mockHookRequest(MockHttpMessageHandler mockHttp, string url, KeyPathData[] expectedContent) {
+    private MockedRequest _MockHookRequest(MockHttpMessageHandler mockHttp, string url, KeyPathData[] expectedContent) {
       return mockHttp
         .When(HttpMethod.Post, url)
         .WithHeaders("Content-Type", "application/json; charset=utf-8")
@@ -100,13 +100,13 @@ namespace Tweek.Publishing.Tests {
         .Respond(HttpStatusCode.NoContent);
     }
 
-    private void _triggerNotificationHooksForCommit_setupGitStubs(string commitId) {
-      // _getKeyPathsFromCommit
+    private void _TriggerNotificationHooksForCommit_SetupGitStubs(string commitId) {
+      // _GetKeyPathsFromCommit
       var gitCommand = $"diff-tree --no-commit-id --name-only -r {commitId}";
       var gitOutput = "implementations/jpad/a/b/c.jpad\nmanifests/a/b/c.json\nimplementations/jpad/a/b/d.jpad\nimplementations/jpad/a/t/f.jpad\n";
       A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
 
-      // _getAllHooks
+      // _GetAllHooks
       var hook1 = new Hook("notification_webhook", "http://some-domain/awesome_hook");
       var hook2 = new Hook("notification_webhook", "http://some-domain/another_awesome_hook");
       var hook3 = new Hook("notification_webhook", "http://another-domain/ok_hook");
@@ -121,7 +121,7 @@ namespace Tweek.Publishing.Tests {
       gitOutput = JsonConvert.SerializeObject(allHooks);
       A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
 
-      // _getKeyPathsData
+      // _GetKeyPathsData
       gitCommand = $"show {commitId}:implementations/jpad/a/b/c.jpad";
       gitOutput = "{ \"implementationFor\": \"a/b/c\" }";
       A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
@@ -137,7 +137,7 @@ namespace Tweek.Publishing.Tests {
       A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
     }
 
-    private T _callPrivateMethod<T>(Object instance, string methodName, object[] methodParams) {
+    private T _CallPrivateMethod<T>(Object instance, string methodName, object[] methodParams) {
       Type type = instance.GetType();
 
       MethodInfo methodInfo = type

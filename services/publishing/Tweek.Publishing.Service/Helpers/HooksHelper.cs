@@ -28,33 +28,33 @@ namespace Tweek.Publishing.Helpers {
       this._keysRegex = new Regex(@"(?:implementations/jpad/|manifests/)(.*)\..*", RegexOptions.Compiled);
     }
 
-    public static void initialize(Func<string, Task<string>> gitExecutor, IMetrics metrics, ILogger logger = null) {
+    public static void Initialize(Func<string, Task<string>> gitExecutor, IMetrics metrics, ILogger logger = null) {
       _instance = new HooksHelper(gitExecutor, metrics, logger ?? NullLogger.Instance);
     }
 
-    public static HooksHelper getInstance() {
+    public static HooksHelper GetInstance() {
       return _instance;
     }
 
-    public async Task triggerNotificationHooksForCommit(string commitId) {
+    public async Task TriggerNotificationHooksForCommit(string commitId) {
       try {
-        var keyPaths = await _getKeyPathsFromCommit(commitId);
-        var allHooks = await _getAllHooks(commitId);
+        var keyPaths = await _GetKeyPathsFromCommit(commitId);
+        var allHooks = await _GetAllHooks(commitId);
 
-        var keyPathsByHook = _aggregateKeyPathsByHook(keyPaths, allHooks);
-        var usedKeyPaths = _getUsedKeyPaths(keyPathsByHook);
-        var keyPathsData = await _getKeyPathsData(usedKeyPaths, commitId);
+        var keyPathsByHook = _AggregateKeyPathsByHook(keyPaths, allHooks);
+        var usedKeyPaths = _GetUsedKeyPaths(keyPathsByHook);
+        var keyPathsData = await _GetKeyPathsData(usedKeyPaths, commitId);
 
-        var hooksWithData = _getHooksWithKeyPathData(keyPathsByHook, keyPathsData);
-        await _triggerHooks(hooksWithData, commitId);
+        var hooksWithData = _GetHooksWithKeyPathData(keyPathsByHook, keyPathsData);
+        await _TriggerHooks(hooksWithData, commitId);
       } catch (Exception ex) {
         _logger.LogError(ex, $"Failed triggering notification hooks for commit {commitId}");
         _metrics.Measure.Counter.Increment(_hooksMetric, _metricsFailure);
       }
     }
 
-    private async Task _triggerHooks(Dictionary<Hook, string> hooksWithData, string commitId) {
-      var triggerTasks = hooksWithData.Select( kvp => kvp.Key.trigger(kvp.Value) );
+    private async Task _TriggerHooks(Dictionary<Hook, string> hooksWithData, string commitId) {
+      var triggerTasks = hooksWithData.Select( kvp => kvp.Key.Trigger(kvp.Value) );
 
       foreach (var triggerTask in triggerTasks) {
         try {
@@ -68,7 +68,7 @@ namespace Tweek.Publishing.Helpers {
       }
     }
 
-    private Dictionary<Hook, string> _getHooksWithKeyPathData(
+    private Dictionary<Hook, string> _GetHooksWithKeyPathData(
       Dictionary< Hook, HashSet<string> > keyPathsByHook,
       Dictionary<string, KeyPathData> keyPathsData
     ) {
@@ -81,7 +81,7 @@ namespace Tweek.Publishing.Helpers {
       });
     }
 
-    private async Task< Dictionary<string, KeyPathData> > _getKeyPathsData(IEnumerable<string> keyPaths, string commitId) {
+    private async Task< Dictionary<string, KeyPathData> > _GetKeyPathsData(IEnumerable<string> keyPaths, string commitId) {
       var keyPathsDataDict = new Dictionary<string, KeyPathData>(keyPaths.Count());
 
       var keyDataTasks = keyPaths.Select(keyPath => new Task<string>[] {
@@ -98,21 +98,21 @@ namespace Tweek.Publishing.Helpers {
       return keyPathsDataDict;
     }
 
-    private IEnumerable<string> _getUsedKeyPaths(Dictionary< Hook, HashSet<string> > keyPathsByHook) {
+    private IEnumerable<string> _GetUsedKeyPaths(Dictionary< Hook, HashSet<string> > keyPathsByHook) {
       return keyPathsByHook.Values.Aggregate(new HashSet<string>(), ( keyPathsAcc, currentKeyPaths ) => {
         keyPathsAcc.UnionWith(currentKeyPaths);
         return keyPathsAcc;
       });
     }
 
-    private Dictionary< Hook, HashSet<string> > _aggregateKeyPathsByHook(IEnumerable<string> allKeyPaths, KeyHooks[] allHooks) {
+    private Dictionary< Hook, HashSet<string> > _AggregateKeyPathsByHook(IEnumerable<string> allKeyPaths, KeyHooks[] allHooks) {
       var hooksDict = new Dictionary< Hook, HashSet<string> >();
 
       return allHooks.Aggregate(hooksDict, (hooks, keyHooks) => {
-        var keyPaths = keyHooks.getMatchingKeyPaths(allKeyPaths);
+        var keyPaths = keyHooks.GetMatchingKeyPaths(allKeyPaths);
         if (keyPaths.Count() == 0) return hooks;
 
-        foreach (var hook in keyHooks.getHooks()) {
+        foreach (var hook in keyHooks.GetHooks()) {
           if (!hooks.ContainsKey(hook)) hooks.Add(hook, keyPaths.ToHashSet<string>());
 
           hooks[hook].UnionWith(keyPaths.ToHashSet<string>());
@@ -122,13 +122,13 @@ namespace Tweek.Publishing.Helpers {
       });
     }
 
-    private async Task<KeyHooks[]> _getAllHooks(string commitId) {
+    private async Task<KeyHooks[]> _GetAllHooks(string commitId) {
       var hooksFile = await _git($"show {commitId}:hooks.json");
 
       return JsonConvert.DeserializeObject<KeyHooks[]>(hooksFile);
     }
 
-    private async Task<IEnumerable<string>> _getKeyPathsFromCommit(string commitId) {
+    private async Task<IEnumerable<string>> _GetKeyPathsFromCommit(string commitId) {
       var files = await _git($"diff-tree --no-commit-id --name-only -r {commitId}");
 
       return files
