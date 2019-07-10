@@ -87,7 +87,7 @@ Response:
 
 `POST /hooks/:keyPath/?author.name=name&author.email=email`
 
-request Body:
+Request body:
 
 ```JSON
 {
@@ -100,7 +100,7 @@ request Body:
 
 `PUT /hooks/:keyPath/?hookIndex=2&author.name=name&author.email=email`
 
-request Body:
+Request body:
 
 ```JSON
 {
@@ -115,8 +115,43 @@ request Body:
 
 # The webhook request
 
-## This section is still a WIP
+POST request with JSON content showing the new state of the keys
 
-POST request with content describing the changeset
+Example request body:
 
-TODO: Add format of the content
+```JSON
+[
+  {
+    "keyPath": "a/b/c",
+    "implementation": {
+      "partitions": [],
+      "valueType": "string",
+      "rules": [
+        {
+          "Matcher": {
+            "user.Country": "AA"
+          },
+          "Value": "19",
+          "Type": "SingleVariant"
+        }
+      ],
+      "defaultValue": "15"
+    },
+    "manifest": {
+      "key_path": "a/b/c",
+      "meta": {
+        "archived": false,
+        "name": "a/b/c",
+        "description": "",
+        "tags": []
+      },
+      "implementation": {
+        "type": "file",
+        "format": "jpad"
+      },
+      "valueType": "string",
+      "dependencies": []
+    }
+  }
+]
+```
