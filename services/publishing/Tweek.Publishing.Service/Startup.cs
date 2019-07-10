@@ -3,6 +3,7 @@ using System.Reactive.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net.Http;
 using App.Metrics;
 using App.Metrics.Formatters.Prometheus.Internal.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -189,6 +190,13 @@ namespace Tweek.Publishing.Service
             RunIntervalPublisher(lifetime, versionPublisher, repoSynchronizer, storageSynchronizer);
 
             var syncActor = SyncActor.Create(storageSynchronizer, repoSynchronizer, natsClient, lifetime.ApplicationStopping, loggerFactory.CreateLogger("SyncActor"));
+
+            var hooksHelper = new HooksHelper(
+                executor.WithUser("git").CreateCommandExecutor("git"),
+                app.ApplicationServices.GetService<IMetrics>(),
+                loggerFactory.CreateLogger("HooksHelper")
+            );
+            Http.Initialize(new HttpClient());
             
             app.UseRouter(router =>
             {
@@ -198,7 +206,7 @@ namespace Tweek.Publishing.Service
                         app.ApplicationServices.GetService<IMetrics>()));
                 router.MapGet("sync",
                     SyncHandler.Create(syncActor, _syncPolicy, app.ApplicationServices.GetService<IMetrics>()));
-                router.MapGet("push", PushHandler.Create(syncActor, app.ApplicationServices.GetService<IMetrics>()));
+                router.MapGet("push", PushHandler.Create(syncActor, app.ApplicationServices.GetService<IMetrics>(), hooksHelper));
                 router.MapGet("log", async (req, res, routedata) => _logger.LogInformation(req.Query["message"]));
                 router.MapGet("health", async (req, res, routedata) => await res.WriteAsync(JsonConvert.SerializeObject(new { })));
                 router.MapGet("version", async (req, res, routedata) => await res.WriteAsync(Assembly.GetEntryAssembly()
