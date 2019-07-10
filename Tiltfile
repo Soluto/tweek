@@ -1,3 +1,5 @@
+trigger_mode(TRIGGER_MODE_MANUAL)
+
 docker_compose("./deployments/dev/tilt.yml" )
 docker_build("soluto/tweek-gateway", "services/gateway")
 docker_build("soluto/tweek-authoring", "services/authoring")

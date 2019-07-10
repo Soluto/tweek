@@ -5,6 +5,7 @@ using App.Metrics.Counter;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Tweek.Publishing.Service.Sync;
+using Tweek.Publishing.Helpers;
 using static Tweek.Publishing.Service.Utils.ShellHelper;
 
 namespace Tweek.Publishing.Service.Handlers
@@ -17,6 +18,8 @@ namespace Tweek.Publishing.Service.Handlers
 
         public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(SyncActor syncActor, IMetrics metrics)
         {
+            var hooksHelper = HooksHelper.getInstance();
+
             return async (req, res, routedata) =>
             {
                 var commitId = req.Query["commit"].ToString();
@@ -31,6 +34,10 @@ namespace Tweek.Publishing.Service.Handlers
                 {
                     await syncActor.PushToUpstream(commitId);
                     metrics.Measure.Counter.Increment(Push, Success);
+
+                    #pragma warning disable CS4014
+                    hooksHelper.triggerNotificationHooksForCommit(commitId);
+                    #pragma warning restore CS4014
                 }
                 catch (Exception ex)
                 {
