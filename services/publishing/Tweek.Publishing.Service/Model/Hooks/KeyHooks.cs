@@ -19,12 +19,12 @@ namespace Tweek.Publishing.Service.Model.Hooks {
       this._matchingKeyRegex = new Regex($"^{keyPathForRegex}$", RegexOptions.Compiled);
     }
 
-    public Hook[] getHooks() => _hooks;
+    public Hook[] GetHooks() => _hooks;
 
-    public bool matchesKeyPath(string keyPath) => _matchingKeyRegex.IsMatch(keyPath);
+    public bool MatchesKeyPath(string keyPath) => _matchingKeyRegex.IsMatch(keyPath);
 
-    public IEnumerable<string> getMatchingKeyPaths(IEnumerable<string> keyPaths) {
-      return keyPaths.Where( keyPath => matchesKeyPath(keyPath) );
+    public IEnumerable<string> GetMatchingKeyPaths(IEnumerable<string> keyPaths) {
+      return keyPaths.Where( keyPath => MatchesKeyPath(keyPath) );
     }
   }
 }

@@ -191,12 +191,12 @@ namespace Tweek.Publishing.Service
 
             var syncActor = SyncActor.Create(storageSynchronizer, repoSynchronizer, natsClient, lifetime.ApplicationStopping, loggerFactory.CreateLogger("SyncActor"));
 
-            HooksHelper.initialize(
+            HooksHelper.Initialize(
                 executor.WithUser("git").CreateCommandExecutor("git"),
                 app.ApplicationServices.GetService<IMetrics>(),
                 loggerFactory.CreateLogger("HooksHelper")
             );
-            Http.initialize(new HttpClient());
+            Http.Initialize(new HttpClient());
             
             app.UseRouter(router =>
             {

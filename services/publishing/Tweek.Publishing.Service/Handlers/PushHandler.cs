@@ -18,7 +18,7 @@ namespace Tweek.Publishing.Service.Handlers
 
         public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(SyncActor syncActor, IMetrics metrics)
         {
-            var hooksHelper = HooksHelper.getInstance();
+            var hooksHelper = HooksHelper.GetInstance();
 
             return async (req, res, routedata) =>
             {
@@ -36,7 +36,7 @@ namespace Tweek.Publishing.Service.Handlers
                     metrics.Measure.Counter.Increment(Push, Success);
 
                     #pragma warning disable CS4014
-                    hooksHelper.triggerNotificationHooksForCommit(commitId);
+                    hooksHelper.TriggerNotificationHooksForCommit(commitId);
                     #pragma warning restore CS4014
                 }
                 catch (Exception ex)

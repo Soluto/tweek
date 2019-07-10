@@ -17,19 +17,19 @@ namespace Tweek.Publishing.Service.Model.Hooks {
       this._url = url;
     }
 
-    public async Task trigger(string payload) {
+    public async Task Trigger(string payload) {
       switch (_type) {
         case "notification_webhook":
-          await triggerNotificationWebhook(payload);
+          await TriggerNotificationWebhook(payload);
           break;
         default:
           throw new Exception($"Failed to trigger hook, invalid type: {_type}");
       }
     }
 
-    private async Task triggerNotificationWebhook(string payload) {
+    private async Task TriggerNotificationWebhook(string payload) {
       var qq = new StringContent(payload, Encoding.UTF8, "application/json");
-      var response = await Http.getClient().PostAsync(_url, new StringContent(payload, Encoding.UTF8, "application/json"));
+      var response = await Http.GetClient().PostAsync(_url, new StringContent(payload, Encoding.UTF8, "application/json"));
       response.EnsureSuccessStatusCode();
     }
 

@@ -10,10 +10,10 @@ namespace Tweek.Publishing.Tests {
     [InlineData("*/a/b*", "t/a/b/y")]
     [InlineData("*/a/*", "t/a/p/y")]
     [InlineData("*/e", "t/a/p/y/e")]
-    public void matchesKeyPath_matching(string keyHooksPath, string keyPath) {
+    public void MatchesKeyPath_Matching(string keyHooksPath, string keyPath) {
       var keyHooks = new KeyHooks(keyHooksPath, null);
 
-      Assert.True(keyHooks.matchesKeyPath(keyPath));
+      Assert.True(keyHooks.MatchesKeyPath(keyPath));
     }
 
     [Theory]
@@ -21,10 +21,10 @@ namespace Tweek.Publishing.Tests {
     [InlineData("a/b/*", "a/c/b")]
     [InlineData("*a/b/*", "a/c/b/e")]
     [InlineData("*/e", "t/a/p/y/e/g")]
-    public void matchesKeyPath_notMatching(string keyHooksPath, string keyPath) {
+    public void MatchesKeyPath_NotMatching(string keyHooksPath, string keyPath) {
       var keyHooks = new KeyHooks(keyHooksPath, null);
 
-      Assert.False(keyHooks.matchesKeyPath(keyPath));
+      Assert.False(keyHooks.MatchesKeyPath(keyPath));
     }
   }
 }
