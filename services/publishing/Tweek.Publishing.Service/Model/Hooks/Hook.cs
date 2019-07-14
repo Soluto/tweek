@@ -41,15 +41,7 @@ namespace Tweek.Publishing.Service.Model.Hooks {
     }
 
     public override int GetHashCode() {
-      unchecked {
-          const int HashingBase = (int) 2166136261;
-          const int HashingMultiplier = 16777619;
-
-          var hash = HashingBase;
-          hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, _type) ? _type.GetHashCode() : 0);
-          hash = (hash * HashingMultiplier) ^ (!Object.ReferenceEquals(null, _url) ? _url.GetHashCode() : 0);
-          return hash;
-      }
+      return $"{_type}-${_url}".GetHashCode();
     }
   }
 }
