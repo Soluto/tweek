@@ -191,7 +191,7 @@ namespace Tweek.Publishing.Service
 
             var syncActor = SyncActor.Create(storageSynchronizer, repoSynchronizer, natsClient, lifetime.ApplicationStopping, loggerFactory.CreateLogger("SyncActor"));
 
-            HooksHelper.Initialize(
+            var hooksHelper = new HooksHelper(
                 executor.WithUser("git").CreateCommandExecutor("git"),
                 app.ApplicationServices.GetService<IMetrics>(),
                 loggerFactory.CreateLogger("HooksHelper")
@@ -206,7 +206,7 @@ namespace Tweek.Publishing.Service
                         app.ApplicationServices.GetService<IMetrics>()));
                 router.MapGet("sync",
                     SyncHandler.Create(syncActor, _syncPolicy, app.ApplicationServices.GetService<IMetrics>()));
-                router.MapGet("push", PushHandler.Create(syncActor, app.ApplicationServices.GetService<IMetrics>()));
+                router.MapGet("push", PushHandler.Create(syncActor, app.ApplicationServices.GetService<IMetrics>(), hooksHelper));
                 router.MapGet("log", async (req, res, routedata) => _logger.LogInformation(req.Query["message"]));
                 router.MapGet("health", async (req, res, routedata) => await res.WriteAsync(JsonConvert.SerializeObject(new { })));
                 router.MapGet("version", async (req, res, routedata) => await res.WriteAsync(Assembly.GetEntryAssembly()

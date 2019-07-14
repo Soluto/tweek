@@ -17,6 +17,7 @@ import HooksRepository from '../repositories/hooks-repository';
 import { addOid } from '../utils/response-utils';
 import { KeyHooks, Hook } from '../utils/hooks';
 import logger from '../utils/logger';
+import * as R from 'ramda';
 
 interface FlattenedHook {
   keyPath: string;
@@ -104,16 +105,13 @@ export class HooksController {
   }
 
   private _flattenHooks(hooksToFlatten: KeyHooks[]): FlattenedHook[] {
-    return hooksToFlatten.reduce((hooks: FlattenedHook[], keyHooks: KeyHooks) => {
-      keyHooks.hooks.forEach((hook, hookIndex) => {
-        hooks.push({
-          keyPath: keyHooks.keyPath,
-          type: hook.type,
-          url: hook.url,
-          hookIndex,
-        });
-      });
-      return hooks;
-    }, []);
+    return R.chain((keyHooks) => {
+      return keyHooks.hooks.map((hook, hookIndex) => ({
+        keyPath: keyHooks.keyPath,
+        type: hook.type,
+        url: hook.url,
+        hookIndex,
+      }));
+    }, hooksToFlatten);
   }
 }

@@ -16,10 +16,8 @@ namespace Tweek.Publishing.Service.Handlers
         private static readonly MetricTags Success = new MetricTags("Status", "Success");
         private static readonly MetricTags Failure = new MetricTags("Status", "Failure");
 
-        public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(SyncActor syncActor, IMetrics metrics)
+        public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(SyncActor syncActor, IMetrics metrics, HooksHelper hooksHelper)
         {
-            var hooksHelper = HooksHelper.GetInstance();
-
             return async (req, res, routedata) =>
             {
                 var commitId = req.Query["commit"].ToString();
