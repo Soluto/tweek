@@ -16,7 +16,7 @@ import KeysRepository from '../repositories/keys-repository';
 import TagsRepository from '../repositories/tags-repository';
 import PolicyRepository from '../repositories/policy-repository';
 import SubjectExtractionRulesRepository from '../repositories/extraction-rules-repository';
-import HooksRepository from '../repositories/hooks-repository';
+import { HooksRepositoryFactory } from '../repositories/hooks-repository';
 
 Server.useIoC();
 
@@ -27,7 +27,7 @@ export default function configureRoutes(config: RoutesConfig): any {
   Container.bind(KeysRepository).provider({ get: () => config.keysRepository });
   Container.bind(TagsRepository).provider({ get: () => config.tagsRepository });
   Container.bind(PolicyRepository).provider({ get: () => config.policyRepository });
-  Container.bind(HooksRepository).provider({ get: () => config.hooksRepository });
+  Container.bind(HooksRepositoryFactory).provider({ get: () => config.hooksRepositoryFactory });
   Container.bind(SubjectExtractionRulesRepository).provider({
     get: () => config.subjectExtractionRulesRepository,
   });
