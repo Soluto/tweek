@@ -31,6 +31,8 @@ Centralized storage in a JSON file at the git repo. Format:
 
 # API
 
+All GET APIs return an `ETag` header and all POST/PUT/DELETE APIs **require** an `If-Match` header.
+
 ## List all hooks
 
 `GET /hooks`

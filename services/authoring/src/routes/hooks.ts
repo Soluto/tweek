@@ -13,7 +13,7 @@ import { AutoWired, Inject } from 'typescript-ioc';
 import { Tags } from 'typescript-rest-swagger';
 import { PERMISSIONS } from '../security/permissions/consts';
 import { Authorize } from '../security/authorize';
-import HooksRepository from '../repositories/hooks-repository';
+import { HooksRepositoryFactory, HooksRepository } from '../repositories/hooks-repository';
 import { addOid } from '../utils/response-utils';
 import { KeyHooks, Hook } from '../utils/hooks';
 import logger from '../utils/logger';
@@ -34,13 +34,16 @@ export class HooksController {
   context: ServiceContext;
 
   @Inject
-  hooksRepository: HooksRepository;
+  hooksRepositoryFactory: HooksRepositoryFactory;
 
   @Authorize({ permission: PERMISSIONS.HOOKS_READ })
   @GET
   @Path('/hooks')
   async getHooks(): Promise<FlattenedHook[]> {
-    const allHooks = await this.hooksRepository.getHooks();
+    const hooksRepository = this.hooksRepositoryFactory.createRepository();
+    await this._setETagHeader(hooksRepository);
+
+    const allHooks = await hooksRepository.getHooks();
     return this._flattenHooks(allHooks);
   }
 
@@ -48,7 +51,10 @@ export class HooksController {
   @GET
   @Path('/hook')
   async getHooksByKeyPath(@QueryParam('keyPath') keyPath: string): Promise<FlattenedHook[]> {
-    const hooks = await this.hooksRepository.getHooksForKeyPath(keyPath);
+    const hooksRepository = this.hooksRepositoryFactory.createRepository();
+    await this._setETagHeader(hooksRepository);
+
+    const hooks = await hooksRepository.getHooksForKeyPath(keyPath);
     return this._flattenHooks([hooks]);
   }
 
@@ -61,8 +67,11 @@ export class HooksController {
     @QueryParam('author.email') email: string,
     hook: Hook,
   ): Promise<void> {
+    const hooksRepository = this.hooksRepositoryFactory.createRepository();
     hook = { type: hook.type, url: hook.url };
-    const oid = await this.hooksRepository.createHook(keyPath, hook, { name, email });
+    if (!(await this._handleETagValidation(hooksRepository))) return;
+
+    const oid = await hooksRepository.createHook(keyPath, hook, { name, email });
     addOid(this.context.response, oid);
   }
 
@@ -77,8 +86,11 @@ export class HooksController {
     hook: Hook,
   ): Promise<void> {
     try {
+      const hooksRepository = this.hooksRepositoryFactory.createRepository();
       hook = { type: hook.type, url: hook.url };
-      const oid = await this.hooksRepository.updateHook(keyPath, hookIndex, hook, { name, email });
+      if (!(await this._handleETagValidation(hooksRepository))) return;
+
+      const oid = await hooksRepository.updateHook(keyPath, hookIndex, hook, { name, email });
       addOid(this.context.response, oid);
     } catch (err) {
       logger.error({ err, keyPath, hookIndex }, err.message);
@@ -96,7 +108,10 @@ export class HooksController {
     @QueryParam('hookIndex') hookIndex: number,
   ): Promise<void> {
     try {
-      const oid = await this.hooksRepository.deleteHook(keyPath, hookIndex, { name, email });
+      const hooksRepository = this.hooksRepositoryFactory.createRepository();
+      if (!(await this._handleETagValidation(hooksRepository))) return;
+
+      const oid = await hooksRepository.deleteHook(keyPath, hookIndex, { name, email });
       addOid(this.context.response, oid);
     } catch (err) {
       logger.error({ err, keyPath, hookIndex }, err.message);
@@ -113,5 +128,26 @@ export class HooksController {
         hookIndex,
       }));
     }, hooksToFlatten);
+  }
+
+  private async _setETagHeader(hooksRepository: HooksRepository): Promise<void> {
+    const etag = await hooksRepository.getETag();
+    this.context.response.setHeader('ETag', etag);
+  }
+
+  private async _handleETagValidation(hooksRepository: HooksRepository): Promise<boolean> {
+    const etag = this.context.request.header('If-Match');
+
+    if (!etag) {
+      this.context.response.sendStatus(428);
+      return false;
+    }
+
+    if (!(await hooksRepository.validateETag(etag))) {
+      this.context.response.sendStatus(412);
+      return false;
+    }
+
+    return true;
   }
 }

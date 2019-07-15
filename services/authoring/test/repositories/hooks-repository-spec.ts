@@ -1,4 +1,4 @@
-import HooksRepository from '../../src/repositories/hooks-repository';
+import { HooksRepository } from '../../src/repositories/hooks-repository';
 import { Hook, KeyHooks } from '../../src/utils/hooks';
 import Author from '../../src/utils/author';
 import sinon from 'sinon';
@@ -8,14 +8,14 @@ chai.use(require('sinon-chai'));
 const expect = chai.expect;
 
 describe('HooksRepository', () => {
-  let mockGitRepo = <any>{};
+  let mockGitRepo;
+  let hooksRepo;
   const runAction = (action) => action(mockGitRepo);
   const mockTransactionManager = {
     write: runAction,
     read: runAction,
     with: runAction,
   };
-  const hooksRepo = new HooksRepository(<any>mockTransactionManager);
 
   const hooksFilePath = 'hooks.json';
   let testHooks: KeyHooks[];
@@ -24,6 +24,8 @@ describe('HooksRepository', () => {
 
   beforeEach(() => {
     mockGitRepo = <any>{};
+    hooksRepo = new HooksRepository(<any>mockTransactionManager);
+
     testHooks = [
       {
         keyPath: 'path/to/key',
@@ -66,9 +68,10 @@ describe('HooksRepository', () => {
   });
 
   describe('_updateHooksFile', () => {
-    const _updateHooksFile = hooksRepo['_updateHooksFile'].bind(hooksRepo);
+    let _updateHooksFile;
 
     beforeEach(() => {
+      _updateHooksFile = hooksRepo['_updateHooksFile'].bind(hooksRepo);
       mockGitRepo.updateFile = sinon.spy();
       mockGitRepo.commitAndPush = sinon.spy();
     });
@@ -86,7 +89,11 @@ describe('HooksRepository', () => {
   });
 
   describe('_getKeyHooks', () => {
-    const _getKeyHooks = hooksRepo['_getKeyHooks'].bind(hooksRepo);
+    let _getKeyHooks;
+
+    beforeEach(() => {
+      _getKeyHooks = hooksRepo['_getKeyHooks'].bind(hooksRepo);
+    });
 
     it('returns the keyHooks entry for the given keyPath', () => {
       const keyHooks = _getKeyHooks(testHooks, testHooks[0].keyPath);
