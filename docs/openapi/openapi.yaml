@@ -602,6 +602,10 @@ paths:
                 type: array
                 items:
                   type: object
+          headers:
+            ETag:
+              description: The ETag of the current state of hooks data. Must be returned with POST/PUT/DELETE requests.
+              type: string
       tags:
         - hooks
   '/hooks/{keyPath}':
@@ -626,6 +630,10 @@ paths:
                 type: array
                 items:
                   type: object
+          headers:
+            ETag:
+              description: The ETag of the current state of hooks data. Must be returned with POST/PUT/DELETE requests.
+              type: string
     post:
       operationId: createHook
       summary: Create a new hook
@@ -638,6 +646,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: If-Match
+          in: header
+          description: The last ETag received in a GET request
+          required: true
+          type: string
       responses:
         '204':
           description: No content
@@ -665,7 +678,12 @@ paths:
           description: The hookIndex received in the GET request
           required: true
           schema:
-            type: number
+            type: integer
+        - name: If-Match
+          in: header
+          description: The last ETag received in a GET request
+          required: true
+          type: string
       responses:
         '204':
           description: No content
@@ -693,7 +711,12 @@ paths:
           description: The hookIndex received in the GET request
           required: true
           schema:
-            type: number
+            type: integer
+        - name: If-Match
+          in: header
+          description: The last ETag received in a GET request
+          required: true
+          type: string
       responses:
         '204':
           description: No content
