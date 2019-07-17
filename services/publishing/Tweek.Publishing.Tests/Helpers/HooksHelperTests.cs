@@ -11,7 +11,6 @@ using System.Linq;
 using App.Metrics;
 using RichardSzalay.MockHttp;
 using Tweek.Publishing.Service.Model.Hooks;
-using Tweek.Publishing.Service.Utils;
 using Newtonsoft.Json;
 
 namespace Tweek.Publishing.Tests {
@@ -20,8 +19,7 @@ namespace Tweek.Publishing.Tests {
     public Func< string, Task<string> > fakeGit;
 
     public HooksHelperTests() {
-      fakeGit = A.Fake< Func< string, Task<string> > >();
-      hooksHelper = new HooksHelper(fakeGit, A.Fake<IMetrics>());
+      InitializeHelpers();
     }
 
     [Theory]
@@ -68,9 +66,6 @@ namespace Tweek.Publishing.Tests {
 
     [Fact]
     public async Task TriggerNotificationHooksForCommit() {
-      var commitId = "abcdef";
-      TriggerNotificationHooksForCommit_SetupGitStubs(commitId);
-
       var abcKeyPathData = new KeyPathData("a/b/c", "{ \"implementationFor\": \"a/b/c\" }", "{ \"manifestFor\": \"a/b/c\" }");
       var abdKeyPathData = new KeyPathData("a/b/d", "{ \"implementationFor\": \"a/b/d\" }", "{ \"manifestFor\": \"a/b/d\" }");
       var abcKeyPathArray = new KeyPathData[] { abcKeyPathData };
@@ -80,15 +75,20 @@ namespace Tweek.Publishing.Tests {
       var hook1Request = MockHookRequest(mockHttp, "http://some-domain/awesome_hook", abcabdKeyPathArray);
       var hook2Request = MockHookRequest(mockHttp, "http://some-domain/another_awesome_hook", abcKeyPathArray);
       var hook3Request = MockHookRequest(mockHttp, "http://another-domain/ok_hook", abcabdKeyPathArray);
+      var hook5Request = MockHookRequest(mockHttp, "http://fifth-domain/should_not_be_called_hook", abcKeyPathArray);
       
       var client = mockHttp.ToHttpClient();
-      Http.Initialize(client);
+      InitializeHelpers(client);
+
+      var commitId = "abcdef";
+      TriggerNotificationHooksForCommit_SetupGitStubs(commitId);
 
       await hooksHelper.TriggerNotificationHooksForCommit(commitId);
 
       Assert.Equal(1, mockHttp.GetMatchCount(hook1Request));
       Assert.Equal(1, mockHttp.GetMatchCount(hook2Request));
       Assert.Equal(1, mockHttp.GetMatchCount(hook3Request));
+      Assert.Equal(0, mockHttp.GetMatchCount(hook5Request));
     }
 
     private MockedRequest MockHookRequest(MockHttpMessageHandler mockHttp, string url, KeyPathData[] expectedContent) {
@@ -110,8 +110,9 @@ namespace Tweek.Publishing.Tests {
       var hook2 = new Hook("notification_webhook", "http://some-domain/another_awesome_hook");
       var hook3 = new Hook("notification_webhook", "http://another-domain/ok_hook");
       var hook4 = new Hook("notification_webhook", "http://fourth-domain/meh_hook");
+      var hook5 = new Hook("not_a_notification_hook", "http://fifth-domain/should_not_be_called_hook");
       var allKeyHooks = new KeyHooks[] {
-        new KeyHooks("a/b/c", new Hook[] { hook1, hook2 }),
+        new KeyHooks("a/b/c", new Hook[] { hook1, hook2, hook5 }),
         new KeyHooks("a/b/*", new Hook[] { hook3 }),
         new KeyHooks("a/b/d", new Hook[] { hook1 }),
         new KeyHooks("c/q/r", new Hook[] { hook4 })
@@ -145,6 +146,12 @@ namespace Tweek.Publishing.Tests {
         .First();
 
       return (T)methodInfo.Invoke(instance, methodParams);
+    }
+
+    private void InitializeHelpers(HttpClient client = null) {
+      var triggerHelper = new TriggerHooksHelper(client ?? A.Fake<HttpClient>(), A.Fake<IMetrics>());
+      fakeGit = A.Fake< Func< string, Task<string> > >();
+      hooksHelper = new HooksHelper(fakeGit, triggerHelper, A.Fake<IMetrics>());
     }
   }
 }

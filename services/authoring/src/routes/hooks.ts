@@ -137,11 +137,7 @@ export class HooksController {
 
   private async _handleETagValidation(hooksRepository: HooksRepository): Promise<boolean> {
     const etag = this.context.request.header('If-Match');
-
-    if (!etag) {
-      this.context.response.sendStatus(428);
-      return false;
-    }
+    if (!etag) return true;
 
     if (!(await hooksRepository.validateETag(etag))) {
       this.context.response.sendStatus(412);

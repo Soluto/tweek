@@ -15,15 +15,17 @@ namespace Tweek.Publishing.Helpers {
     private readonly IMetrics _metrics;
     private readonly ILogger _logger;
     private readonly Func<string, Task<string>> _git;
+    private readonly TriggerHooksHelper _triggerHelper;
     private readonly Regex _keysRegex;
     private readonly CounterOptions _hooksMetric = new CounterOptions{Context = "publishing", Name = "hooks"};
-    private readonly MetricTags _metricsSuccess = new MetricTags("Status", "Success");
     private readonly MetricTags _metricsFailure = new MetricTags("Status", "Failure");
+    private readonly string[] NotificationHookTypes = new string[] { "notification_webhook" };
 
-    public HooksHelper(Func<string, Task<string>> gitExecutor, IMetrics metrics, ILogger logger = null) {
+    public HooksHelper(Func<string, Task<string>> gitExecutor, TriggerHooksHelper triggerHelper, IMetrics metrics, ILogger logger = null) {
       this._logger = logger ?? NullLogger.Instance;
       this._git = gitExecutor;
       this._metrics = metrics;
+      this._triggerHelper = triggerHelper;
       this._keysRegex = new Regex(@"(?:implementations/jpad/|manifests/)(.*)\..*", RegexOptions.Compiled);
     }
 
@@ -33,29 +35,15 @@ namespace Tweek.Publishing.Helpers {
         var allKeyHooks = await GetAllKeyHooks(commitId);
 
         var keyPathsByHook = AggregateKeyPathsByHook(keyPaths, allKeyHooks);
+        keyPathsByHook = FilterNonNotificationHooks(keyPathsByHook);
         var usedKeyPaths = GetUsedKeyPaths(keyPathsByHook);
         var keyPathsData = await GetKeyPathsData(usedKeyPaths, commitId);
 
         var hooksWithData = GetHooksWithKeyPathData(keyPathsByHook, keyPathsData);
-        await TriggerHooks(hooksWithData, commitId);
+        await _triggerHelper.TriggerHooks(hooksWithData, commitId);
       } catch (Exception ex) {
         _logger.LogError(ex, $"Failed triggering notification hooks for commit {commitId}");
         _metrics.Measure.Counter.Increment(_hooksMetric, _metricsFailure);
-      }
-    }
-
-    private async Task TriggerHooks(Dictionary<Hook, string> hooksWithData, string commitId) {
-      var triggerTasks = hooksWithData.Select( kvp => kvp.Key.Trigger(kvp.Value) );
-
-      foreach (var triggerTask in triggerTasks) {
-        try {
-          await triggerTask;
-
-          _metrics.Measure.Counter.Increment(_hooksMetric, _metricsSuccess);
-        } catch (Exception ex) {
-          _logger.LogError(ex, $"Failed triggering a notification hook for commit {commitId}");
-          _metrics.Measure.Counter.Increment(_hooksMetric, _metricsFailure);
-        }
       }
     }
 
@@ -94,6 +82,12 @@ namespace Tweek.Publishing.Helpers {
         keyPathsAcc.UnionWith(currentKeyPaths);
         return keyPathsAcc;
       });
+    }
+
+    private Dictionary< Hook, HashSet<string> > FilterNonNotificationHooks(Dictionary< Hook, HashSet<string> > hooksDict) {
+      return hooksDict
+        .Where( kvp => NotificationHookTypes.Contains(kvp.Key.Type) )
+        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
 
     private Dictionary< Hook, HashSet<string> > AggregateKeyPathsByHook(IEnumerable<string> allKeyPaths, KeyHooks[] allKeyHooks) {
