@@ -2,7 +2,11 @@ using Tweek.Publishing.Service.Model.Hooks;
 using Xunit;
 
 namespace Tweek.Publishing.Tests {
-  public class KeyHooksTests {
+  public class HookTests {
+    public string id = "some_id";
+    public string type = "a_type";
+    public string url = "a_url";
+
     [Theory]
     [InlineData("a/b/*", "a/b/c")]
     [InlineData("a/b/*", "a/b/c/e")]
@@ -10,10 +14,10 @@ namespace Tweek.Publishing.Tests {
     [InlineData("*/a/b*", "t/a/b/y")]
     [InlineData("*/a/*", "t/a/p/y")]
     [InlineData("*/e", "t/a/p/y/e")]
-    public void MatchesKeyPath_Matching(string keyHooksPath, string keyPath) {
-      var keyHooks = new KeyHooks(keyHooksPath, null);
+    public void MatchesKeyPath_Matching(string hookKeyPath, string keyPath) {
+      var hook = new Hook(id, hookKeyPath, type, url);
 
-      Assert.True(keyHooks.MatchesKeyPath(keyPath));
+      Assert.True(hook.MatchesKeyPath(keyPath));
     }
 
     [Theory]
@@ -21,10 +25,10 @@ namespace Tweek.Publishing.Tests {
     [InlineData("a/b/*", "a/c/b")]
     [InlineData("*a/b/*", "a/c/b/e")]
     [InlineData("*/e", "t/a/p/y/e/g")]
-    public void MatchesKeyPath_NotMatching(string keyHooksPath, string keyPath) {
-      var keyHooks = new KeyHooks(keyHooksPath, null);
+    public void MatchesKeyPath_NotMatching(string hookKeyPath, string keyPath) {
+      var hook = new Hook(id, hookKeyPath, type, url);
 
-      Assert.False(keyHooks.MatchesKeyPath(keyPath));
+      Assert.False(hook.MatchesKeyPath(keyPath));
     }
   }
 }

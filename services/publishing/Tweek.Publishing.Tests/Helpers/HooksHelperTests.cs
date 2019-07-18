@@ -14,6 +14,8 @@ using Tweek.Publishing.Service.Model.Hooks;
 using Newtonsoft.Json;
 
 namespace Tweek.Publishing.Tests {
+  using KeyPathsDictionary = Dictionary< ( string type, string url ), HashSet<string> >;
+
   public class HooksHelperTests {
     public HooksHelper hooksHelper;
     public Func< string, Task<string> > fakeGit;
@@ -41,25 +43,33 @@ namespace Tweek.Publishing.Tests {
     }
 
     [Fact]
-    public void AggregateKeyPathsByHook() {
-      var hook1 = new Hook("notification_webhook", "http://some-domain/awesome_hook");
-      var hook2 = new Hook("notification_webhook", "http://some-domain/another_awesome_hook");
-      var hook3 = new Hook("notification_webhook", "http://another-domain/ok_hook");
-      var hook4 = new Hook("notification_webhook", "http://fourth-domain/meh_hook");
-      var allKeyHooks = new KeyHooks[] {
-        new KeyHooks("a/b/c", new Hook[] { hook1, hook2 }),
-        new KeyHooks("a/b/*", new Hook[] { hook3 }),
-        new KeyHooks("a/b/d", new Hook[] { hook1 }),
-        new KeyHooks("c/q/r", new Hook[] { hook4 })
+    public void AggregateKeyPathsByHookUrlAndType() {
+      var allHooks = new Hook[] {
+        new Hook("1", "a/b/c", "notification_webhook", "http://some-domain/awesome_hook"),
+        new Hook("2", "a/b/c", "notification_webhook", "http://some-domain/another_awesome_hook"),
+        new Hook("3", "a/b/*", "notification_webhook", "http://another-domain/ok_hook"),
+        new Hook("4", "c/q/r", "notification_webhook", "http://fourth-domain/meh_hook"),
+        new Hook("5", "a/b/d", "notification_webhook", "http://some-domain/awesome_hook")
       };
       var allKeyPaths = new string[] { "a/b/c", "a/b/d", "a/t/f" };
 
-      Dictionary< Hook, HashSet<string> > expectedResult = new Dictionary< Hook, HashSet<string> >();
-      expectedResult.Add(hook1, new HashSet<string> { "a/b/c", "a/b/d" });
-      expectedResult.Add(hook2, new HashSet<string> { "a/b/c" });
-      expectedResult.Add(hook3, new HashSet<string> { "a/b/c", "a/b/d" });
+      var expectedResult = new KeyPathsDictionary();
+      expectedResult.Add(
+        ( type: "notification_webhook", url: "http://some-domain/awesome_hook" ),
+        new HashSet<string> { "a/b/c", "a/b/d" }
+      );
+      expectedResult.Add(
+        ( type: "notification_webhook", url: "http://some-domain/another_awesome_hook" ),
+        new HashSet<string> { "a/b/c" }
+      );
+      expectedResult.Add(
+        ( type: "notification_webhook", url: "http://another-domain/ok_hook" ),
+        new HashSet<string> { "a/b/c", "a/b/d" }
+      );
 
-      var result = CallPrivateMethod<Dictionary< Hook, HashSet<string> >>(hooksHelper, "AggregateKeyPathsByHook", new object[] { allKeyPaths, allKeyHooks });
+      var result = CallPrivateMethod<KeyPathsDictionary>(
+        hooksHelper, "AggregateKeyPathsByHookUrlAndType", new object[] { allKeyPaths, allHooks }
+      );
 
       Assert.Equal(expectedResult, result);
     }
@@ -106,19 +116,16 @@ namespace Tweek.Publishing.Tests {
       A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
 
       // GetAllKeyHooks
-      var hook1 = new Hook("notification_webhook", "http://some-domain/awesome_hook");
-      var hook2 = new Hook("notification_webhook", "http://some-domain/another_awesome_hook");
-      var hook3 = new Hook("notification_webhook", "http://another-domain/ok_hook");
-      var hook4 = new Hook("notification_webhook", "http://fourth-domain/meh_hook");
-      var hook5 = new Hook("not_a_notification_hook", "http://fifth-domain/should_not_be_called_hook");
-      var allKeyHooks = new KeyHooks[] {
-        new KeyHooks("a/b/c", new Hook[] { hook1, hook2, hook5 }),
-        new KeyHooks("a/b/*", new Hook[] { hook3 }),
-        new KeyHooks("a/b/d", new Hook[] { hook1 }),
-        new KeyHooks("c/q/r", new Hook[] { hook4 })
+      var allHooks = new Hook[] {
+        new Hook("1", "a/b/c", "notification_webhook", "http://some-domain/awesome_hook"),
+        new Hook("2", "a/b/c", "notification_webhook", "http://some-domain/another_awesome_hook"),
+        new Hook("3", "a/b/*", "notification_webhook", "http://another-domain/ok_hook"),
+        new Hook("4", "c/q/r", "notification_webhook", "http://fourth-domain/meh_hook"),
+        new Hook("5", "a/b/d", "notification_webhook", "http://some-domain/awesome_hook"),
+        new Hook("6", "a/b/c", "not_a_notification_hook", "http://fifth-domain/should_not_be_called_hook")
       };
       gitCommand = $"show {commitId}:hooks.json";
-      gitOutput = JsonConvert.SerializeObject(allKeyHooks);
+      gitOutput = JsonConvert.SerializeObject(allHooks);
       A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
 
       // GetKeyPathsData
