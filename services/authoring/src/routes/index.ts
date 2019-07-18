@@ -37,7 +37,6 @@ export default function configureRoutes(config: RoutesConfig): any {
     { from: 'manifests', to: 'manifest' },
     { from: 'revision-history', to: 'revision-history' },
     { from: 'dependents', to: 'dependent' },
-    { from: 'hooks', to: 'hook' },
   ];
 
   prefixes.forEach((prefix) => {

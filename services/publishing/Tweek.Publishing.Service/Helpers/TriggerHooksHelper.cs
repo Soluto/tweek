@@ -3,7 +3,6 @@ using App.Metrics;
 using App.Metrics.Counter;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Tweek.Publishing.Service.Model.Hooks;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,8 +24,8 @@ namespace Tweek.Publishing.Helpers {
       this._metrics = metrics;
     }
 
-    public async Task TriggerHooks(Dictionary<Hook, string> hooksWithData, string commitId) {
-      var triggerTasks = hooksWithData.Select( kvp => ( task: TriggerHook(kvp.Key, kvp.Value), hook: kvp.Key ) );
+    public async Task TriggerHooks(Dictionary<( string type, string url ), string> hooksWithData, string commitId) {
+      var triggerTasks = hooksWithData.Select( kvp => ( task: TriggerHook(kvp.Key, kvp.Value), hookType: kvp.Key.type ) );
 
       foreach (var triggerTask in triggerTasks) {
         try {
@@ -34,19 +33,19 @@ namespace Tweek.Publishing.Helpers {
 
           _metrics.Measure.Counter.Increment(_hooksMetric, _metricsSuccess);
         } catch (Exception ex) {
-          _logger.LogError(ex, $"Failed triggering a hook of type {triggerTask.hook.Type} for commit {commitId}");
+          _logger.LogError(ex, $"Failed triggering a hook of type {triggerTask.hookType} for commit {commitId}");
           _metrics.Measure.Counter.Increment(_hooksMetric, _metricsFailure);
         }
       }
     }
 
-    private async Task TriggerHook(Hook hook, string payload) {
-      switch (hook.Type) {
+    private async Task TriggerHook(( string type, string url ) hook, string payload) {
+      switch (hook.type) {
         case "notification_webhook":
-          await TriggerNotificationWebhook(hook.Url, payload);
+          await TriggerNotificationWebhook(hook.url, payload);
           break;
         default:
-          throw new Exception($"Failed to trigger hook, invalid type: {hook.Type}");
+          throw new Exception($"Failed to trigger hook, invalid type: {hook.type}");
       }
     }
 

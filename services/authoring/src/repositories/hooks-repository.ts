@@ -2,17 +2,18 @@ import Transactor from '../utils/transactor';
 import GitRepository from './git-repository';
 import { Oid } from 'nodegit';
 import Author from '../utils/author';
-import { Hook, KeyHooks } from '../utils/hooks';
+import Hook from '../utils/hook';
 import hash from 'object-hash';
+import shortid from 'shortid';
 
 const hooksFilePath = 'hooks.json';
 
 export class HooksRepository {
-  _allHooks: KeyHooks[];
+  _allHooks: Hook[];
 
   constructor(private _gitTransactionManager: Transactor<GitRepository>) {}
 
-  async getHooks(forceRead = false): Promise<KeyHooks[]> {
+  async getHooks(forceRead = false): Promise<Hook[]> {
     if (this._allHooks && !forceRead) return this._allHooks;
 
     return this._gitTransactionManager.read(async (gitRepo) => {
@@ -22,45 +23,32 @@ export class HooksRepository {
     });
   }
 
-  async getHooksForKeyPath(keyPath: string): Promise<KeyHooks> {
+  async createHook(hook: Hook, author: Author): Promise<Oid> {
+    hook.id = shortid.generate();
+
     const allHooks = await this.getHooks();
-    return this._getKeyHooks(allHooks, keyPath);
-  }
+    allHooks.push(hook);
 
-  async createHook(keyPath: string, hook: Hook, author: Author): Promise<Oid> {
-    const allHooks = await this.getHooks();
-    let keyHooks = this._getKeyHooks(allHooks, keyPath);
-
-    if (!keyHooks) {
-      keyHooks = { keyPath, hooks: [] };
-      allHooks.push(keyHooks);
-    }
-
-    keyHooks.hooks.push(hook);
     return this._updateHooksFile(allHooks, author);
   }
 
-  async updateHook(keyPath: string, index: number, hook: Hook, author: Author): Promise<Oid> {
+  async updateHook(hook: Hook, author: Author): Promise<Oid> {
     const allHooks = await this.getHooks();
-    const keyHooks = this._getKeyHooks(allHooks, keyPath);
+    const hookIndex = allHooks.findIndex(({ id }) => hook.id === id);
 
-    if (!keyHooks || !keyHooks.hooks[index])
-      throw new Error('updateHook - The hook to update does not exist');
+    if (hookIndex === -1) throw new Error('updateHook - The hook to update does not exist');
 
-    keyHooks.hooks[index] = hook;
+    allHooks[hookIndex] = hook;
     return this._updateHooksFile(allHooks, author);
   }
 
-  async deleteHook(keyPath: string, index: number, author: Author): Promise<Oid> {
+  async deleteHook(id: string, author: Author): Promise<Oid> {
     let allHooks = await this.getHooks();
-    const keyHooks = this._getKeyHooks(allHooks, keyPath);
+    const hookIndex = allHooks.findIndex(({ id: hookId }) => hookId === id);
 
-    if (!keyHooks || !keyHooks.hooks[index])
-      throw new Error('deleteHook - The hook to delete does not exist');
+    if (hookIndex === -1) throw new Error('deleteHook - The hook to delete does not exist');
 
-    keyHooks.hooks.splice(index, 1);
-    if (keyHooks.hooks.length === 0) allHooks = allHooks.filter((hook) => hook.keyPath !== keyPath);
-
+    allHooks.splice(hookIndex, 1);
     return this._updateHooksFile(allHooks, author);
   }
 
@@ -74,11 +62,7 @@ export class HooksRepository {
     return etag === currentETag;
   }
 
-  private _getKeyHooks(allHooks: KeyHooks[], keyPath: string): KeyHooks {
-    return allHooks.find((hook) => hook.keyPath === keyPath);
-  }
-
-  private async _updateHooksFile(hooks: KeyHooks[], author: Author): Promise<Oid> {
+  private async _updateHooksFile(hooks: Hook[], author: Author): Promise<Oid> {
     const hooksJson = JSON.stringify(hooks);
 
     return this._gitTransactionManager.write(async (gitRepo) => {
