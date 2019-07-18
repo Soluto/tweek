@@ -1,5 +1,5 @@
 import { HooksRepository } from '../../src/repositories/hooks-repository';
-import { Hook, KeyHooks } from '../../src/utils/hooks';
+import Hook from '../../src/utils/hook';
 import Author from '../../src/utils/author';
 import sinon from 'sinon';
 
@@ -9,7 +9,7 @@ const expect = chai.expect;
 
 describe('HooksRepository', () => {
   let mockGitRepo;
-  let hooksRepo;
+  let hooksRepo: HooksRepository;
   const runAction = (action) => action(mockGitRepo);
   const mockTransactionManager = {
     write: runAction,
@@ -18,7 +18,7 @@ describe('HooksRepository', () => {
   };
 
   const hooksFilePath = 'hooks.json';
-  let testHooks: KeyHooks[];
+  let testHooks: Hook[];
   let testHooksJson: string;
   let testAuthor: Author;
 
@@ -28,15 +28,22 @@ describe('HooksRepository', () => {
 
     testHooks = [
       {
+        id: 'id1',
         keyPath: 'path/to/key',
-        hooks: [
-          { type: 'notification_webhook', url: 'http://some-domain/awesome_hook' },
-          { type: 'notification_webhook', url: 'http://some-domain/another_awesome_hook' },
-        ],
+        type: 'notification_webhook',
+        url: 'http://some-domain/awesome_hook',
       },
       {
+        id: 'id2',
+        keyPath: 'path/to/key',
+        type: 'notification_webhook',
+        url: 'http://some-domain/another_awesome_hook',
+      },
+      {
+        id: 'id3',
         keyPath: 'wildcard/path/*',
-        hooks: [{ type: 'notification_webhook', url: 'https://some-domain/awesome_hook' }],
+        type: 'notification_webhook',
+        url: 'https://some-domain/awesome_hook',
       },
     ];
     testHooksJson = JSON.stringify(testHooks);
@@ -52,18 +59,6 @@ describe('HooksRepository', () => {
       const hooks = await hooksRepo.getHooks();
 
       expect(hooks).to.eql(testHooks);
-    });
-  });
-
-  describe('getHooksForKeyPath', () => {
-    beforeEach(() => {
-      mockGitRepo.readFile = sinon.stub().returns(testHooksJson);
-    });
-
-    it('returns the hooks for a specific keyPath', async () => {
-      const keyHooks = await hooksRepo.getHooksForKeyPath(testHooks[0].keyPath);
-
-      expect(keyHooks).to.eql(testHooks[0]);
     });
   });
 
@@ -88,50 +83,22 @@ describe('HooksRepository', () => {
     });
   });
 
-  describe('_getKeyHooks', () => {
-    let _getKeyHooks;
-
-    beforeEach(() => {
-      _getKeyHooks = hooksRepo['_getKeyHooks'].bind(hooksRepo);
-    });
-
-    it('returns the keyHooks entry for the given keyPath', () => {
-      const keyHooks = _getKeyHooks(testHooks, testHooks[0].keyPath);
-
-      expect(keyHooks).to.eql(testHooks[0]);
-    });
-  });
-
   describe('createHook', () => {
-    let newHook: Hook;
-
     beforeEach(() => {
       mockGitRepo.readFile = sinon.stub().returns(testHooksJson);
       mockGitRepo.updateFile = sinon.spy();
       mockGitRepo.commitAndPush = sinon.spy();
-
-      newHook = { type: 'notification_webhook', url: 'http://not-a-real/url' };
     });
 
-    it('creates a hook on a keyPath that has existing hooks', async () => {
-      const keyPath = testHooks[1].keyPath;
+    it('creates a hook', async () => {
+      const newHook = {
+        keyPath: 'some/path',
+        type: 'notification_webhook',
+        url: 'http://not-a-real/url',
+      };
+      await hooksRepo.createHook(newHook, testAuthor);
 
-      await hooksRepo.createHook(keyPath, newHook, testAuthor);
-
-      testHooks[1].hooks.push(newHook);
-      expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(
-        hooksFilePath,
-        JSON.stringify(testHooks),
-      );
-      expect(mockGitRepo.commitAndPush).to.have.been.calledOnceWith('Updating hooks', testAuthor);
-    });
-
-    it('creates a hook on a keyPath without existing hooks', async () => {
-      const keyPath = 'non/existing/new/path';
-
-      await hooksRepo.createHook(keyPath, newHook, testAuthor);
-
-      testHooks.push({ keyPath, hooks: [newHook] });
+      testHooks.push(newHook);
       expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(
         hooksFilePath,
         JSON.stringify(testHooks),
@@ -148,13 +115,17 @@ describe('HooksRepository', () => {
     });
 
     it('updates a hook', async () => {
-      const keyPath = testHooks[0].keyPath;
-      const index = 1;
-      const updatedHook = { type: 'notification_webhook', url: 'http://not-a-real/url' };
+      const id = testHooks[0].id;
+      const updatedHook = {
+        id,
+        keyPath: 'updated/key/path',
+        type: 'notification_webhook',
+        url: 'http://not-a-real/url',
+      };
 
-      await hooksRepo.updateHook(keyPath, index, updatedHook, testAuthor);
+      await hooksRepo.updateHook(updatedHook, testAuthor);
 
-      testHooks[0].hooks[index] = updatedHook;
+      testHooks[0] = updatedHook;
       expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(
         hooksFilePath,
         JSON.stringify(testHooks),
@@ -171,24 +142,9 @@ describe('HooksRepository', () => {
     });
 
     it('deletes a hook from a keyPath with multiple hooks', async () => {
-      const keyPath = testHooks[0].keyPath;
-      const index = 0;
+      const id = testHooks[1].id;
 
-      await hooksRepo.deleteHook(keyPath, index, testAuthor);
-
-      testHooks[0].hooks.splice(index, 1);
-      expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(
-        hooksFilePath,
-        JSON.stringify(testHooks),
-      );
-      expect(mockGitRepo.commitAndPush).to.have.been.calledOnceWith('Updating hooks', testAuthor);
-    });
-
-    it('deletes the entire entry for the keyPath if the deleted hook was the only hook on this keyPath', async () => {
-      const keyPath = testHooks[1].keyPath;
-      const index = 0;
-
-      await hooksRepo.deleteHook(keyPath, index, testAuthor);
+      await hooksRepo.deleteHook(id, testAuthor);
 
       testHooks.splice(1, 1);
       expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(
