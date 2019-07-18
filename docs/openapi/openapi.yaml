@@ -593,32 +593,11 @@ paths:
     get:
       operationId: getHooksList
       summary: Get Hooks list
-      responses:
-        '200':
-          description: Ok
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-          headers:
-            ETag:
-              description: The ETag of the current state of hooks data. Must be returned with POST/PUT/DELETE requests.
-              type: string
-      tags:
-        - hooks
-  '/hooks/{keyPath}':
-    get:
-      operationId: getHooksForKeyPath
-      summary: Get all hooks for a specific keyPath
-      tags:
-        - hooks
       parameters:
-        - name: keyPath
-          in: path
-          description: The keyPath - for example a/b/c
-          required: true
+        - name: keyPathFilter
+          in: query
+          description: Filters results to only return hooks for the given keyPath. Must be url encoded.
+          required: false
           schema:
             type: string
       responses:
@@ -629,60 +608,55 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
+                  $ref: '#/components/schemas/Hook'
           headers:
             ETag:
-              description: The ETag of the current state of hooks data. Must be returned with POST/PUT/DELETE requests.
+              description: The ETag of the current state of hooks data. Can optionally be returned with POST/PUT/DELETE requests.
               type: string
+      tags:
+        - hooks
     post:
       operationId: createHook
       summary: Create a new hook
       tags:
         - hooks
       parameters:
-        - name: keyPath
-          in: path
-          description: The keyPath - for example a/b/c
-          required: true
-          schema:
-            type: string
         - name: If-Match
           in: header
           description: The last ETag received in a GET request
-          required: true
+          required: false
           type: string
       responses:
-        '204':
-          description: No content
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hook'
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-        description: The type and url of the hook to create
+              $ref: '#/components/schemas/HookData'
+        description: The details of the hook to create
         required: true
+  '/hooks/{id}':
     put:
       operationId: updateHook
       summary: updates a hook
       tags:
         - hooks
       parameters:
-        - name: keyPath
+        - name: id
           in: path
-          description: The keyPath - for example a/b/c
+          description: The id of the hook to update
           required: true
           schema:
             type: string
-        - name: hookIndex
-          in: query
-          description: The hookIndex received in the GET request
-          required: true
-          schema:
-            type: integer
         - name: If-Match
           in: header
           description: The last ETag received in a GET request
-          required: true
+          required: false
           type: string
       responses:
         '204':
@@ -691,8 +665,8 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-        description: The updated type and url for the hook
+              $ref: '#/components/schemas/HookData'
+        description: The updated details of the hook
         required: true
     delete:
       operationId: deleteHook
@@ -700,22 +674,16 @@ paths:
       tags:
         - hooks
       parameters:
-        - name: keyPath
+        - name: id
           in: path
-          description: The keyPath - for example a/b/c
+          description: The id of the hook to delete
           required: true
           schema:
             type: string
-        - name: hookIndex
-          in: query
-          description: The hookIndex received in the GET request
-          required: true
-          schema:
-            type: integer
         - name: If-Match
           in: header
           description: The last ETag received in a GET request
-          required: true
+          required: false
           type: string
       responses:
         '204':
@@ -758,6 +726,26 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/PatchOperation'
+    HookData:
+      type: object
+      properties:
+        keyPath:
+          type: string
+        type:
+          type: string
+        url:
+          type: string
+    Hook:
+      type: object
+      properties:
+        id:
+          type: string
+        keyPath:
+          type: string
+        type:
+          type: string
+        url:
+          type: string
     KeyUpdateModel:
       description: ''
       properties:

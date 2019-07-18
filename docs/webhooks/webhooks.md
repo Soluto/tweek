@@ -19,80 +19,64 @@ Centralized storage in a JSON file at the git repo. Format:
 ```JSON
 [
   {
+    "id": "auto_generated_uid",
     "keyPath": "path/to/key",
-    "hooks": [
-      { "type": "notification_webhook", "url": "http://some-domain/awesome_hook" },
-      { "type": "notification_webhook", "url": "http://some-domain/another_awesome_hook" }
-    ]
+    "type": "notification_webhook",
+    "url": "http://some-domain/awesome_hook"
   },
-  { "keyPath": "wildcard/path/*", "hooks": [...] }
+  {
+    "id": "auto_generated_uid",
+    "keyPath": "wildcard/path/*",
+    "type": "notification_webhook",
+    "url": "http://some-other-domain/another_awesome_hook"
+  }
 ]
 ```
 
 # API
 
-All GET APIs return an `ETag` header and all POST/PUT/DELETE APIs **require** an `If-Match` header.
+All GET APIs return an `ETag` header and all POST/PUT/DELETE APIs can optionally accept an `If-Match` header.
 
 ## List all hooks
 
-`GET /hooks`
+`GET /hooks/?keyPathFilter=url_encoded_key_path`
+
+The `keyPathFilter` query param is optional and filters results to that exact keyPath (not evaluating wildcards)
 
 Response:
 
 ```JSON
 [
    {
+      "id": "auto_generated_uid",
       "keyPath":"path/to/key",
       "type":"notification_webhook",
-      "url":"http://some-domain/hook",
-      "hookIndex":0
+      "url":"http://some-domain/hook"
    },
    {
+      "id": "auto_generated_uid",
       "keyPath":"path/to/key",
       "type":"notification_webhook",
-      "url":"http://another-domain/hook",
-      "hookIndex":1
+      "url":"http://another-domain/hook"
    },
    {
+      "id": "auto_generated_uid",
       "keyPath":"wildcard/path/*",
       "type":"notification_webhook",
-      "url":"http://some-domain/hook",
-      "hookIndex":0
-   }
-]
-```
-
-## List hooks for a specific keyPath
-
-`GET /hooks/:keyPath`
-
-Response:
-
-```JSON
-[
-   {
-      "keyPath":"path/to/key",
-      "type":"notification_webhook",
-      "url":"http://some-domain/hook",
-      "hookIndex":0
-   },
-   {
-      "keyPath":"path/to/key",
-      "type":"notification_webhook",
-      "url":"http://another-domain/hook",
-      "hookIndex":1
+      "url":"http://some-domain/hook"
    }
 ]
 ```
 
 ## Create a hook
 
-`POST /hooks/:keyPath/?author.name=name&author.email=email`
+`POST /hooks/?author.name=name&author.email=email`
 
 Request body:
 
 ```JSON
 {
+  "keyPath": "path/to/key",
   "type": "notification_webhook",
   "url": "http://hook-url"
 }
@@ -100,12 +84,13 @@ Request body:
 
 ## Update a hook
 
-`PUT /hooks/:keyPath/?hookIndex=2&author.name=name&author.email=email`
+`PUT /hooks/:id/?author.name=name&author.email=email`
 
 Request body:
 
 ```JSON
 {
+  "keyPath": "path/to/key",
   "type": "notification_webhook",
   "url": "http://hook-url"
 }
@@ -113,7 +98,7 @@ Request body:
 
 ## Delete a hook
 
-`DELETE /hooks/:keyPath/?hookIndex=1&author.name=name&author.email=email`
+`DELETE /hooks/:id/?author.name=name&author.email=email`
 
 # The webhook request
 

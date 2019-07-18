@@ -1,127 +1,125 @@
 const client = require('../../utils/client');
 
-const keyPath = 'path/to/key';
-const secondKeyPath = 'wildcard/path/*';
 const author = { name: 'ellie', email: 'ellie@lou.com' };
 const authorQuery = { 'author.name': author.name, 'author.email': author.email };
-const hook = { type: 'notification_webhook', url: 'http://not-a-real-domain/hook' };
-const anotherHook = { type: 'notification_webhook', url: 'http://another-fake-domain/hook' };
 
 describe('authoring api hooks', () => {
+  let hook1, hook2, hook3;
+
   beforeEach(async () => {
     await _deleteAllHooks();
-  });
 
-  describe('POST /hooks/:keyPath/?author.name=name&author.email=email', () => {
-    it('creates hooks that are grouped by the keyPath', async () => {
-      await _createHook(keyPath, hook);
-      await _createHook(keyPath, anotherHook);
-      await _createHook(secondKeyPath, anotherHook);
-
-      const expectedHooks = [
-        { keyPath, ...hook, hookIndex: 0 },
-        { keyPath, ...anotherHook, hookIndex: 1 },
-        { keyPath: secondKeyPath, ...anotherHook, hookIndex: 0 },
-      ];
-      return client.get('/api/v2/hooks').expect(200, expectedHooks);
-    });
-  });
-
-  describe('GET /hooks/:keyPath', () => {
-    it('returns all hooks for the given keyPath', async () => {
-      await _createHook(keyPath, hook);
-      await _createHook(keyPath, anotherHook);
-      await _createHook(secondKeyPath, hook);
-
-      const expectedHooks = [
-        { keyPath, ...hook, hookIndex: 0 },
-        { keyPath, ...anotherHook, hookIndex: 1 },
-      ];
-
-      return client.get(`/api/v2/hooks/${keyPath}`).expect(200, expectedHooks);
-    });
-  });
-
-  describe('PUT /hooks/:keyPath/?hookIndex=2&author.name=name&author.email=email', () => {
-    it('updates a hook', async () => {
-      await _createHook(keyPath, hook);
-
-      const newHook = { type: 'notification_webhook', url: 'http://updated-url-domain/hook' };
-      const etag = await _getETag();
-
-      await client
-        .put(`/api/v2/hooks/${keyPath}`)
-        .set('If-Match', etag)
-        .query({ ...authorQuery, hookIndex: 0 })
-        .send(newHook)
-        .expect(204);
-
-      const expectedHooks = [{ keyPath, ...newHook, hookIndex: 0 }];
-      return client.get('/api/v2/hooks').expect(200, expectedHooks);
-    });
-  });
-
-  describe('DELETE /hooks/:keyPath/?hookIndex=1&author.name=name&author.email=email', () => {
-    it('deletes a hook', async () => {
-      await _createHook(keyPath, hook);
-      await _createHook(keyPath, anotherHook);
-
-      const etag = await _getETag();
-
-      await client
-        .delete(`/api/v2/hooks/${keyPath}`)
-        .set('If-Match', etag)
-        .query({ ...authorQuery, hookIndex: 1 })
-        .expect(204);
-
-      const expectedHooks = [{ keyPath, ...hook, hookIndex: 0 }];
-      return client.get('/api/v2/hooks').expect(200, expectedHooks);
-    });
+    hook1 = {
+      keyPath: 'path/to/key',
+      type: 'notification_webhook',
+      url: 'http://not-a-real-domain/hook',
+    };
+    hook2 = {
+      keyPath: 'path/to/key',
+      type: 'notification_webhook',
+      url: 'http://another-fake-domain/hook',
+    };
+    hook3 = {
+      keyPath: 'wildcard/path/*',
+      type: 'notification_webhook',
+      url: 'http://not-a-real-domain/hook',
+    };
   });
 
   describe('GET /hooks', () => {
-    it('returns all hooks from the hooks file in a flattened array', async () => {
-      await _createHook(keyPath, hook);
-      await _createHook(keyPath, anotherHook);
-      await _createHook(secondKeyPath, hook);
+    it('returns all hooks from the hooks file', async () => {
+      await _createHooks(hook1, hook2, hook3);
 
-      const expectedHooks = [
-        { keyPath, ...hook, hookIndex: 0 },
-        { keyPath, ...anotherHook, hookIndex: 1 },
-        { keyPath: secondKeyPath, ...hook, hookIndex: 0 },
-      ];
+      const expectedHooks = [hook1, hook2, hook3];
 
+      return client.get('/api/v2/hooks').expect(200, expectedHooks);
+    });
+
+    it('returns hooks filtered by the keyPathFilter query param', async () => {
+      await _createHooks(hook1, hook2, hook3);
+
+      const expectedHooks = [hook1, hook2];
+
+      return client
+        .get('/api/v2/hooks')
+        .query({ keyPathFilter: 'path/to/key' })
+        .expect(200, expectedHooks);
+    });
+  });
+
+  describe('POST /hooks', () => {
+    it('creates a hook', async () => {
+      await _createHook(hook1);
+
+      const expectedHooks = [hook1];
+      return client.get('/api/v2/hooks').expect(200, expectedHooks);
+    });
+  });
+
+  describe('PUT /hooks/:id', () => {
+    it('updates a hook', async () => {
+      await _createHook(hook1);
+
+      const updatedHook = {
+        ...hook1,
+        keyPath: 'new/key/path',
+        url: 'http://updated-url-domain/hook',
+      };
+      const etag = await _getETag();
+
+      await client
+        .put(`/api/v2/hooks/${hook1.id}`)
+        .set('If-Match', etag)
+        .query(authorQuery)
+        .send(updatedHook)
+        .expect(204);
+
+      const expectedHooks = [updatedHook];
+      return client.get('/api/v2/hooks').expect(200, expectedHooks);
+    });
+  });
+
+  describe('DELETE /hooks/:id', () => {
+    it('deletes a hook', async () => {
+      await _createHooks(hook1, hook2);
+
+      const etag = await _getETag();
+
+      await client
+        .delete(`/api/v2/hooks/${hook1.id}`)
+        .set('If-Match', etag)
+        .query(authorQuery)
+        .expect(204);
+
+      const expectedHooks = [hook2];
       return client.get('/api/v2/hooks').expect(200, expectedHooks);
     });
   });
 });
 
 async function _deleteAllHooks() {
-  while (true) {
-    const {
-      body: allHooks,
-      headers: { etag },
-    } = await client.get('/api/v2/hooks');
-    if (allHooks.length === 0) return;
+  const { body: allHooks } = await client.get('/api/v2/hooks');
 
-    const { keyPath, hookIndex } = allHooks[0];
+  for (const { id } of allHooks) {
     await client
-      .delete(`/api/v2/hooks/${keyPath}`)
-      .set('If-Match', etag)
-      .query({ ...authorQuery, hookIndex })
+      .delete(`/api/v2/hooks/${id}`)
+      .query(authorQuery)
       .expect(204);
   }
 }
 
-async function _createHook(keyPath, hook) {
-  const etag = await _getETag();
-
-  return client
-    .post(`/api/v2/hooks/${keyPath}`)
-    .set('If-Match', etag)
+async function _createHook(hook) {
+  const res = await client
+    .post('/api/v2/hooks')
     .query(authorQuery)
     .send(hook)
-    .expect(204);
+    .expect(201);
+
+  hook.id = res.body.id;
+}
+
+async function _createHooks(...hooks) {
+  for (const hook of hooks) await _createHook(hook);
 }
 
 async function _getETag() {
