@@ -95,10 +95,36 @@ services:
     logging:
       driver: "none"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - OIDC_CLIENT_ID=tweek-openid-mock-client
-      - REDIRECT_URIS=http://gateway/auth-result/oidc
-      - TEST_USER={"SubjectId":"00000000-0000-0000-0000-000000000000","Username":"user","Password":"pwd"}
+      ASPNETCORE_ENVIRONMENT: Development
+      CLIENTS_CONFIGURATION_PATH: |
+        [
+          {
+            "ClientId": "tweek-openid-mock-client",
+            "Description": "Client for implicit flow",
+            "AllowedGrantTypes": [
+                "implicit"
+            ],
+            "AllowAccessTokensViaBrowser": true,
+            "RedirectUris": [
+                "http://gateway/auth-result/oidc"
+            ],
+            "AllowedScopes": [
+                "openid",
+                "profile",
+                "email"
+            ],
+            "IdentityTokenLifetime": 3600,
+            "AccessTokenLifetime": 3600
+          }
+        ]
+      USERS_CONFIGURATION_INLINE: |
+        [
+          {
+            "SubjectId":"00000000-0000-0000-0000-000000000000",
+            "Username":"user",
+            "Password":"pwd"
+          }
+        ]
 
   redis:
     image: redis:4.0.2-alpine
