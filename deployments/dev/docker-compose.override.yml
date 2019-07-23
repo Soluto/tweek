@@ -112,7 +112,7 @@ services:
 
   oidc-server-mock:
     container_name: oidc-server-mock
-    image: soluto/oidc-server-mock
+    image: soluto/oidc-server-mock:0.1.0
     ports:
       - "8082:80"
     environment:

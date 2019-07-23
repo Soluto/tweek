@@ -169,7 +169,7 @@ services:
             "Password":"pwd"
           }
         ]
-    image: soluto/oidc-server-mock
+    image: soluto/oidc-server-mock:0.1.0
     ports:
     - published: 8082
       target: 80
