@@ -38,7 +38,27 @@ services:
 
   oidc-server-mock:
     environment:
-      - REDIRECT_URIS=http://gateway/auth-result/oidc
+      CLIENTS_CONFIGURATION_INLINE: |
+        [
+          {
+            "ClientId": "tweek-openid-mock-client",
+            "Description": "Client for implicit flow",
+            "AllowedGrantTypes": [
+                "implicit"
+            ],
+            "AllowAccessTokensViaBrowser": true,
+            "RedirectUris": [
+                "http://gateway/auth-result/oidc"
+            ],
+            "AllowedScopes": [
+                "openid",
+                "profile",
+                "email"
+            ],
+            "IdentityTokenLifetime": 3600,
+            "AccessTokenLifetime": 3600
+          }
+        ]
 
   e2e-ui:
     build: ../../e2e/ui
