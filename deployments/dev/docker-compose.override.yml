@@ -117,8 +117,6 @@ services:
       - "8082:80"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      OIDC_CLIENT_ID: tweek-openid-mock-client
-      REDIRECT_URIS: http://localhost:8081/auth-result/oidc
       CLIENTS_CONFIGURATION_INLINE: |
         [
           {

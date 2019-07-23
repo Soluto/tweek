@@ -97,7 +97,7 @@ services:
     #   driver: "none"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      CLIENTS_CONFIGURATION_PATH: |
+      CLIENTS_CONFIGURATION_INLINE: |
         [
           {
             "ClientId": "tweek-openid-mock-client",

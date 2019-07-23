@@ -38,7 +38,7 @@ services:
 
   oidc-server-mock:
     environment:
-      CLIENTS_CONFIGURATION_PATH: |
+      CLIENTS_CONFIGURATION_INLINE: |
         [
           {
             "ClientId": "tweek-openid-mock-client",
