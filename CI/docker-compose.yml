@@ -92,9 +92,8 @@ services:
 
   oidc-server-mock:
     image: soluto/oidc-server-mock:0.1.0
-    # TODO: uncomment this
-    # logging:
-    #   driver: "none"
+    logging:
+      driver: "none"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       CLIENTS_CONFIGURATION_INLINE: |
