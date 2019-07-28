@@ -5,12 +5,8 @@ Paths for hooks implicitly start after the `implementations`/`manifests` prefixe
 
 # UI
 
-## This section is still a WIP
-
-UI editing through the menu in settings page. List view of all hooks (array of hooks on each key flattened for display), each hook edited individually (using the key and index in array of hooks for the key).
-There will be some link from the key edit page to seeing the list of hooks filtered to showing only hooks for this key, and a link for the create hook page (with the key pre-filled)
-
-TODO: Rewrite this section after the UI is implemented
+Hooks can be edited in the settings page, under the `Hooks` entry in the menu.
+There are also links from the key page to create or view hooks for this key.
 
 # Storage
 

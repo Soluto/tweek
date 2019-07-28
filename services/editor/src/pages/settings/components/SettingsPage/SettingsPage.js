@@ -19,6 +19,14 @@ const SettingsPage = ({ children }) => (
               </li>
             </ul>
           </li>
+          <li>
+            <div data-comp="group">Misc</div>
+            <ul>
+              <li>
+                <Link to={`/settings/hooks`}>Hooks</Link>
+              </li>
+            </ul>
+          </li>
         </ul>
         <Versions />
       </div>
