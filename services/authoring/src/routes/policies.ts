@@ -18,8 +18,8 @@ export class PolicyController {
 
   @Authorize({ permission: PERMISSIONS.ADMIN })
   @GET
-  async getPolicy(): Promise<JsonValue> {
-    const policy = await this.policyRepository.getPolicy();
+  async getPolicy(@QueryParam('resource') resource?: string): Promise<JsonValue> {
+    const policy = await this.policyRepository.getPolicy(resource);
     return policy;
   }
 
