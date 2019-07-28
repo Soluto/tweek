@@ -32,7 +32,7 @@ export function useRemoteState(reader, writer) {
   const [error, setError] = useState(undefined);
 
   const save = async () => {
-    if (loadingState == 'saving') return;
+    if (loadingState === 'saving') return;
     if (localData === null) return;
     if (R.equals(localData, remoteData)) return;
     setError(undefined);
