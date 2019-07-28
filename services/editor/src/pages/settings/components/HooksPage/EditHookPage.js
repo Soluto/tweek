@@ -95,7 +95,7 @@ const saveHook = async ({
 
     setIsSaving(false);
     dispatch(showSuccess({ title: 'Hook Saved' }));
-    history.push('/settings/hooks');
+    history.goBack();
   } catch (err) {
     setIsSaving(false);
     setSaveError(err);

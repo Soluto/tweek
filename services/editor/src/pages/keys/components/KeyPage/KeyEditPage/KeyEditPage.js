@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { compose, pure } from 'recompose';
 import classNames from 'classnames';
 import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEditor';
@@ -224,7 +225,7 @@ const KeyFullHeader = (props) => {
             <label className="actual-path">{keyFullPath}</label>
           </div>
 
-          <div className="key-description-and-tags-wrapper">
+          <div className="key-description-tags-hooks-wrapper">
             <div className="key-description-wrapper">
               <EditableTextArea
                 value={keyManifest.meta.description}
@@ -244,6 +245,15 @@ const KeyFullHeader = (props) => {
                 onTagsChanged={(newTags) => onTagsChanged(newTags)}
                 tags={keyManifest.meta.tags || []}
               />
+            </div>
+
+            <div className="key-hooks-wrapper">
+              <Link to={`/settings/hooks/?keyPathFilter=${encodeURIComponent(keyFullPath)}`}>
+                View Hooks
+              </Link>
+              <Link to={`/settings/hooks/edit/?keyPath=${encodeURIComponent(keyFullPath)}`}>
+                Add Hook
+              </Link>
             </div>
           </div>
         </fieldset>
