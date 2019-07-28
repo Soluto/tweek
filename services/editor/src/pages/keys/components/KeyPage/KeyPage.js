@@ -5,12 +5,13 @@ import { withTweekValues } from 'react-tweek';
 import querystring from 'query-string';
 import * as selectedKeyActions from '../../../../store/ducks/selectedKey';
 import * as alertActions from '../../../../store/ducks/alerts';
-import { BLANK_KEY_NAME } from '../../../../store/ducks/ducks-utils/blankKeyDefinition';
+import { BLANK_KEY_NAME, KEY_PERMISSIONS_NAME } from '../../../../store/ducks/ducks-utils';
 import routeLeaveHook from '../../../../hoc/route-leave-hook';
 import hasUnsavedChanges from '../utils/hasUnsavedChanges';
 import MessageKeyPage from './MessageKeyPage/MessageKeyPage';
 import KeyEditPage from './KeyEditPage/KeyEditPage';
 import KeyAddPage from './KeyAddPage/KeyAddPage';
+import PermissionsPage from './PermissionsPage';
 import './KeyPage.css';
 
 const KeyPage = ({
@@ -33,6 +34,10 @@ const KeyPage = ({
 
   if (configKey === BLANK_KEY_NAME && !detailsAdded) {
     return <KeyAddPage />;
+  }
+
+  if (configKey.endsWith(KEY_PERMISSIONS_NAME)) {
+    return <PermissionsPage />;
   }
 
   const { implementation } = selectedKey.local;
