@@ -1,14 +1,9 @@
-using Minio.Exceptions;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Tweek.Publishing.Service.Model;
-using Tweek.Publishing.Service.Storage;
-using Tweek.Publishing.Service.Utils;
 using Tweek.Publishing.Service.Validation;
 
 namespace Tweek.Publishing.Service.Sync.Converters
@@ -25,7 +20,8 @@ namespace Tweek.Publishing.Service.Sync.Converters
                 {
                     try
                     {
-                        return readFn(x);
+                        Console.WriteLine($"another policy file policy {x} reads {readFn(x)}");
+                        return JsonConvert.DeserializeObject<Policy>(readFn(x));
                     }
                     catch (Exception ex)
                     {
@@ -33,8 +29,11 @@ namespace Tweek.Publishing.Service.Sync.Converters
                         throw;
                     }
                 })
-                .Single();
-            return ("security/policy.json", result, "application/json");
+                .Aggregate((x,y) => new Policy{Policies = x.Policies.Concat(y.Policies).ToArray()});
+                // .Single();
+
+            Console.WriteLine($"the result is {result} {JsonConvert.SerializeObject(result)}");
+            return ("security/policy.json", JsonConvert.SerializeObject(result), "application/json");
         }
     }
 }
