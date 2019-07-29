@@ -19,6 +19,8 @@ import browserHistory from './store/browserHistory';
 import './styles/styles.css';
 import { signOut } from './services/auth-service';
 import PoliciesPage from './pages/settings/components/PoliciesPage/PoliciesPage';
+import HooksPage from './pages/settings/components/HooksPage/HooksPage';
+import EditHookPage from './pages/settings/components/HooksPage/EditHookPage';
 
 const SelectKeyMessage = () => <div className={'select-key-message'}>Select key...</div>;
 
@@ -41,6 +43,8 @@ const renderSettingsRoutes = ({ match }) => (
   <SettingsPage {...match}>
     <PrivateRoute path={`${match.path}/identities/:identityType`} component={IdentityPage} />
     <PrivateRoute path={`${match.path}/policies`} component={PoliciesPage} />
+    <PrivateRoute exact path={`${match.path}/hooks`} component={HooksPage} />
+    <PrivateRoute path={`${match.path}/hooks/edit`} component={EditHookPage} />
   </SettingsPage>
 );
 

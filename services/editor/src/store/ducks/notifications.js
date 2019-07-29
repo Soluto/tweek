@@ -22,6 +22,11 @@ export function showError({ error, title = 'Error', position = 'br', format = de
   return { type: ADD_NOTIFICATION, notification };
 }
 
+export function showSuccess({ title = 'Success', message = null, position = 'br' }) {
+  const notification = { title, message, level: 'success', position, uid: chance.guid() };
+  return { type: ADD_NOTIFICATION, notification };
+}
+
 export default handleActions(
   {
     [ADD_NOTIFICATION]: (state, { notification }) => ({ notification }),
