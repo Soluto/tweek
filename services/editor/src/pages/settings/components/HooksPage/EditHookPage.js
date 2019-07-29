@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useMemo, useContext, useCallback } from 'react';
 import qs from 'query-string';
-import { tweekManagementClient } from '../../../../utils/tweekClients';
-import ComboBox from '../../../../components/common/ComboBox/ComboBox';
-import SaveButton from '../../../../components/common/SaveButton/SaveButton';
-import useErrorNotifier from '../../../../utils/useErrorNotifier';
+import { tweekManagementClient, useErrorNotifier } from '../../../../utils';
+import { ComboBox, SaveButton } from '../../../../components/common';
 import { ReduxContext } from '../../../../store';
-import { showSuccess } from '../../../../store/ducks/notifications';
+import { showSuccess } from '../../../../store/ducks';
 import { hookTypes, hookLabelsByType } from './HookTypes';
 import './EditHookPage.css';
 
@@ -21,15 +19,14 @@ export default ({ location, history }) => {
   const [url, setUrl] = useState(initialHookData.url || '');
   const [saveError, setSaveError] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [isValid, setIsValid] = useState(false);
-  const [hasChanges, setHasChanges] = useState(false);
 
-  useEffect(() => validateInput({ keyPath, url, setIsValid }), [keyPath, url]);
-  useEffect(() => checkForChanges({ initialHookData, keyPath, type, url, setHasChanges }), [
+  const isValid = useMemo(() => validateInput({ keyPath, url }), [keyPath, url]);
+  const hasChanges = useMemo(() => checkForChanges({ initialHookData, keyPath, type, url }), [
     keyPath,
     type,
     url,
   ]);
+
   useErrorNotifier(saveError, 'Failed to save hook');
 
   return (
@@ -47,9 +44,16 @@ export default ({ location, history }) => {
 
       <SaveButton
         {...{ isSaving, isValid, hasChanges }}
-        onClick={() =>
-          saveHook({ id, keyPath, type, url, setIsSaving, history, setSaveError, dispatch })
-        }
+        onClick={useSaveHookCallback({
+          id,
+          keyPath,
+          type,
+          url,
+          setIsSaving,
+          history,
+          setSaveError,
+          dispatch,
+        })}
       />
     </div>
   );
@@ -77,7 +81,7 @@ const HookTypeSelector = ({ setType, type }) => (
   </div>
 );
 
-const saveHook = async ({
+const useSaveHookCallback = ({
   id,
   keyPath,
   type,
@@ -87,27 +91,29 @@ const saveHook = async ({
   setSaveError,
   dispatch,
 }) => {
-  try {
-    setIsSaving(true);
+  return useCallback(async () => {
+    try {
+      setIsSaving(true);
 
-    if (id) await tweekManagementClient.updateHook({ id, keyPath, type, url });
-    else await tweekManagementClient.createHook({ keyPath, type, url });
+      if (id) await tweekManagementClient.updateHook({ id, keyPath, type, url });
+      else await tweekManagementClient.createHook({ keyPath, type, url });
 
-    setIsSaving(false);
-    dispatch(showSuccess({ title: 'Hook Saved' }));
-    history.goBack();
-  } catch (err) {
-    setIsSaving(false);
-    setSaveError(err);
-  }
+      setIsSaving(false);
+      dispatch(showSuccess({ title: 'Hook Saved' }));
+      history.goBack();
+    } catch (err) {
+      setIsSaving(false);
+      setSaveError(err);
+    }
+  }, [id, keyPath, type, url]);
 };
 
-const validateInput = ({ keyPath, url, setIsValid }) => setIsValid(Boolean(keyPath && url));
+const validateInput = ({ keyPath, url }) => Boolean(keyPath && url);
 
-const checkForChanges = ({ initialHookData, keyPath, type, url, setHasChanges }) => {
-  setHasChanges(
+const checkForChanges = ({ initialHookData, keyPath, type, url }) => {
+  return (
     keyPath !== initialHookData.keyPath ||
-      type !== initialHookData.type ||
-      url !== initialHookData.url,
+    type !== initialHookData.type ||
+    url !== initialHookData.url
   );
 };

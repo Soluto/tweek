@@ -1,11 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import qs from 'query-string';
-import { tweekManagementClient } from '../../../../utils/tweekClients';
-import debounce from '../../../../utils/debounce';
-import useErrorNotifier from '../../../../utils/useErrorNotifier';
+import { debounce, useErrorNotifier, tweekManagementClient } from '../../../../utils';
 import { ReduxContext } from '../../../../store';
-import { showSuccess } from '../../../../store/ducks/notifications';
-import { showConfirm } from '../../../../store/ducks/alerts';
+import { showSuccess, showConfirm } from '../../../../store/ducks';
 import { hookLabelsByType } from './HookTypes';
 import './HooksPage.css';
 

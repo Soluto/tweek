@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, { Component, useCallback, useMemo } from 'react';
 import { compose, pure } from 'recompose';
 import classNames from 'classnames';
 import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEditor';
@@ -114,7 +113,7 @@ class KeyEditPage extends Component {
   };
 
   render() {
-    const { selectedKey, isInStickyMode, alerter, revision, deleteAlias } = this.props;
+    const { selectedKey, isInStickyMode, alerter, revision, deleteAlias, history } = this.props;
     const {
       key,
       local: { manifest, implementation },
@@ -149,6 +148,7 @@ class KeyEditPage extends Component {
               usedBy={usedBy}
               aliases={aliases}
               deleteAlias={deleteAlias}
+              history={history}
             />
 
             <div className={classNames('key-rules-editor', { sticky: isInStickyMode })}>
@@ -205,6 +205,7 @@ const KeyFullHeader = (props) => {
     usedBy,
     aliases,
     deleteAlias,
+    history,
   } = props;
 
   return (
@@ -247,17 +248,27 @@ const KeyFullHeader = (props) => {
               />
             </div>
 
-            <div className="key-hooks-wrapper">
-              <Link to={`/settings/hooks/?keyPathFilter=${encodeURIComponent(keyFullPath)}`}>
-                View Hooks
-              </Link>
-              <Link to={`/settings/hooks/edit/?keyPath=${encodeURIComponent(keyFullPath)}`}>
-                Add Hook
-              </Link>
-            </div>
+            {revisionHistory && <HookLinks {...{ keyFullPath, history }} />}
           </div>
         </fieldset>
       </div>
+    </div>
+  );
+};
+
+const HookLinks = ({ keyFullPath, history }) => {
+  const encodedKeyPath = useMemo(() => encodeURIComponent(keyFullPath), [keyFullPath]);
+  const addHook = () => history.push(`/settings/hooks/edit/?keyPath=${encodedKeyPath}`);
+  const viewHooks = () => history.push(`/settings/hooks/?keyPathFilter=${encodedKeyPath}`);
+
+  return (
+    <div className="key-hooks-wrapper">
+      <button className="metro-button" onClick={addHook}>
+        Add Hook
+      </button>
+      <button className="metro-button" onClick={viewHooks}>
+        View Hooks
+      </button>
     </div>
   );
 };
