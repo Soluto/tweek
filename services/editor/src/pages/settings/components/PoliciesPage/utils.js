@@ -1,22 +1,5 @@
 import * as R from 'ramda';
-import { useState, useEffect, useContext } from 'react';
-import { ReduxContext } from '../../../../store';
-import { showError } from '../../../../store/ducks/notifications';
-import { FetchError } from 'tweek-client';
-
-export function useErrorNotifier(error, title = 'An error has occurred') {
-  const { dispatch } = useContext(ReduxContext);
-  useEffect(() => {
-    if (!error) return;
-
-    const format =
-      error instanceof FetchError
-        ? ({ response: { status, statusText } }) => `${status}: ${statusText}`
-        : (x) => x.message;
-
-    dispatch(showError({ title, error: error, format }));
-  }, [error]);
-}
+import { useState, useEffect } from 'react';
 
 /**
  *

@@ -2,6 +2,7 @@ import Transactor from '../utils/transactor';
 import GitRepository from './git-repository';
 import { Oid } from 'nodegit';
 import { JsonValue } from '../utils/jsonValue';
+import Author from '../utils/author';
 import jsonpatch = require('fast-json-patch');
 
 const getPathToPolicyFile = (resource?: string) =>
@@ -18,13 +19,9 @@ export default class PolicyRepository {
     });
   }
 
-  replacePolicy(
-    policy: JsonValue,
-    author: { name: string; email: string },
-    resource?: string,
-  ): Promise<Oid> {
-    const pathToPolicyFile = getPathToPolicyFile(resource);
+  replacePolicy(policy: JsonValue, author: Author, resource?: string): Promise<Oid> {
     return this._gitTransactionManager.write(async (gitRepo) => {
+      const pathToPolicyFile = getPathToPolicyFile(resource);
       await gitRepo.updateFile(pathToPolicyFile, JSON.stringify(policy, null, 4));
       return await gitRepo.commitAndPush(`Updating policy`, author);
     });
@@ -32,7 +29,7 @@ export default class PolicyRepository {
 
   async updatePolicy(
     patch: jsonpatch.Operation[],
-    author: { name: string; email: string },
+    author: Author,
     resource?: string,
   ): Promise<Oid> {
     const currentPolicy = await this.getPolicy();

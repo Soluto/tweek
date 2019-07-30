@@ -62,6 +62,14 @@
       "group": "externalapps",
       "user": "admin-app",
       "contexts": {},
+      "object": "repo/hooks",
+      "action": "write",
+      "effect": "allow"
+    },
+    {
+      "group": "externalapps",
+      "user": "admin-app",
+      "contexts": {},
       "object": "repo/schemas",
       "action": "write",
       "effect": "allow"
