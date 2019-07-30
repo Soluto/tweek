@@ -9,6 +9,5 @@ export type RoutesConfig = {
   keysRepository: KeysRepository;
   appsRepository: AppsRepository;
   policyRepository: PolicyRepository;
-  resourcePolicyRepository: PolicyRepository;
   subjectExtractionRulesRepository: SubjectExtractionRulesRepository;
 };

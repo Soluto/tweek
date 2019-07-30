@@ -157,8 +157,8 @@ services:
                 "profile",
                 "email"
             ],
-            "IdentityTokenLifetime": 3600,
-            "AccessTokenLifetime": 3600
+            "IdentityTokenLifetime": 14400,
+            "AccessTokenLifetime": 14400
           }
         ]
       USERS_CONFIGURATION_INLINE: |

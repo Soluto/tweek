@@ -7,7 +7,7 @@ import { TagsController } from './tags';
 import { SearchController } from './search';
 import { AppsController } from './apps';
 import { PolicyController } from './policies';
-import { ResourcePolicyController } from './resource-policies';
+import { ResourcePolicyController } from './resource-policy';
 import { SubjectExtractionRulesController } from './subject-extraction-rules';
 import { RoutesConfig } from './config';
 import { Container } from 'typescript-ioc';
@@ -26,7 +26,6 @@ export default function configureRoutes(config: RoutesConfig): any {
   Container.bind(KeysRepository).provider({ get: () => config.keysRepository });
   Container.bind(TagsRepository).provider({ get: () => config.tagsRepository });
   Container.bind(PolicyRepository).provider({ get: () => config.policyRepository });
-  Container.bind(ResourcePolicyController).provider({ get: () => config.policyRepository });
   Container.bind(SubjectExtractionRulesRepository).provider({
     get: () => config.subjectExtractionRulesRepository,
   });
@@ -36,6 +35,7 @@ export default function configureRoutes(config: RoutesConfig): any {
     { from: 'manifests', to: 'manifest' },
     { from: 'revision-history', to: 'revision-history' },
     { from: 'dependents', to: 'dependent' },
+    { from: 'resource/policy', to: 'resource/policy' },
   ];
 
   prefixes.forEach((prefix) => {

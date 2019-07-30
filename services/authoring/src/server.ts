@@ -75,6 +75,7 @@ const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
 const appsRepository = new AppsRepository(gitTransactionManager);
 const policyRepository = new PolicyRepository(gitTransactionManager);
+const resourcePolicyRepository = new PolicyRepository(gitTransactionManager);
 const subjectExtractionRulesRepository = new SubjectExtractionRulesRepository(
   gitTransactionManager,
 );
