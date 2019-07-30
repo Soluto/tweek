@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <VersionPrefix>1.0.0-rc3</VersionPrefix>
+    <VersionPrefix>1.0.0-rc4</VersionPrefix>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
     <NoWarn>CS1998</NoWarn>
