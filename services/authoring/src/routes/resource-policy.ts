@@ -19,7 +19,6 @@ export class ResourcePolicyController {
   @Authorize({ permission: PERMISSIONS.ADMIN })
   @GET
   async getPolicy(@QueryParam('keyPath') keyPath: string): Promise<JsonValue> {
-    console.log('here?!??!?!', keyPath);
     const policy = await this.policyRepository.getPolicy(keyPath);
     return policy;
   }
@@ -29,9 +28,10 @@ export class ResourcePolicyController {
   async replacePolicy(
     @QueryParam('author.name') name: string,
     @QueryParam('author.email') email: string,
+    @QueryParam('keyPath') keyPath: string,
     content: JsonValue,
   ): Promise<string> {
-    const oid = await this.policyRepository.replacePolicy(content, { name, email });
+    const oid = await this.policyRepository.replacePolicy(content, { name, email }, keyPath);
     addOid(this.context.response, oid);
 
     return 'OK';
@@ -42,9 +42,10 @@ export class ResourcePolicyController {
   async updatePolicy(
     @QueryParam('author.name') name: string,
     @QueryParam('author.email') email: string,
+    @QueryParam('keyPath') keyPath: string,
     content: jsonpatch.Operation[],
   ): Promise<string> {
-    const oid = await this.policyRepository.updatePolicy(content, { name, email });
+    const oid = await this.policyRepository.updatePolicy(content, { name, email }, keyPath);
     addOid(this.context.response, oid);
 
     return 'OK';
