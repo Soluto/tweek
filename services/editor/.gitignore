@@ -1,5 +1,6 @@
 # dependencies
 /node_modules
+tweek-clients/
 
 # testing
 /coverage-unit
