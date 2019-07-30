@@ -8,7 +8,7 @@ export default function JWTPolicyEditor() {
       language="rego"
       label="jwt-policy"
       reader={() => tweekManagementClient.getJWTExtractionPolicy()}
-      writer={(x) => tweekManagementClient.updateJWTExtractionPolicy(x)}
+      writer={(x) => tweekManagementClient.saveJWTExtractionPolicy(x)}
     />
   );
 }
