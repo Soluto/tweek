@@ -54,7 +54,7 @@ func extractActionFromRequest(r *http.Request) (act string, err error) {
 		fallthrough
 	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/policies"):
 		fallthrough
-	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/resource/policy"):
+	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/resource/policies"):
 		fallthrough
 	case r.Method == "GET" && strings.HasPrefix(uri.Path, "/api/v2/jwt-extraction-policy"):
 		fallthrough
@@ -187,7 +187,7 @@ func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs PolicyResourc
 		return
 	case strings.HasPrefix(path, "/api/v2/policies"):
 		fallthrough
-	case strings.HasPrefix(path, "/api/v2/resource/policy"):
+	case strings.HasPrefix(path, "/api/v2/resource/policies"):
 		fallthrough
 	case strings.HasPrefix(path, "/api/v2/jwt-extraction-policy"):
 		ctxs = PolicyResource{Item: "repo/policies", Contexts: map[string]string{}}

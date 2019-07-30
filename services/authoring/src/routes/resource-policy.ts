@@ -8,7 +8,7 @@ import { JsonValue } from '../utils/jsonValue';
 import jsonpatch = require('fast-json-patch');
 
 @AutoWired
-@Path('/resource/policy')
+@Path('/resource/policies')
 export class ResourcePolicyController {
   @Context
   context: ServiceContext;
