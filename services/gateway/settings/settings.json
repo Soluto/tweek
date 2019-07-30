@@ -133,6 +133,15 @@
       "rewriteKeyPath": false
     },
     {
+      "routePathPrefix": "/resource/policy",
+      "routeRegexp": "^/api/v2/resource/policy([^\\?]*)(.*)$",
+      "upstreamPath": "/api/resource/policy$1$2",
+      "methods": ["GET"],
+      "service": "authoring",
+      "userInfo": true,
+      "rewriteKeyPath": false
+    },
+    {
       "routePathPrefix": "/policies",
       "routeRegexp": "^/api/v2/policies(\\?.*)?$",
       "upstreamPath": "/api/policies$1",
