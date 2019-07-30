@@ -7,6 +7,7 @@ import hash from 'object-hash';
 import shortid from 'shortid';
 
 const hooksFilePath = 'hooks.json';
+const missingHooksFileMessage = `the path '${hooksFilePath}' does not exist in the given tree`;
 
 export class HooksRepository {
   _allHooks: Hook[];
@@ -14,13 +15,21 @@ export class HooksRepository {
   constructor(private _gitTransactionManager: Transactor<GitRepository>) {}
 
   async getHooks(forceRead = false): Promise<Hook[]> {
+    let hooksJson;
     if (this._allHooks && !forceRead) return this._allHooks;
 
-    return this._gitTransactionManager.read(async (gitRepo) => {
-      const hooksJson = await gitRepo.readFile(hooksFilePath);
-      this._allHooks = JSON.parse(hooksJson);
-      return this._allHooks;
-    });
+    try {
+      hooksJson = await this._gitTransactionManager.read((gitRepo) =>
+        gitRepo.readFile(hooksFilePath),
+      );
+    } catch (err) {
+      if (err.message !== missingHooksFileMessage) throw err;
+
+      hooksJson = '[]';
+    }
+
+    this._allHooks = JSON.parse(hooksJson);
+    return this._allHooks;
   }
 
   async createHook(hook: Hook, author: Author): Promise<Oid> {
