@@ -35,7 +35,7 @@ All GET APIs return an `ETag` header and all POST/PUT/DELETE APIs can optionally
 
 ## List all hooks
 
-`GET api/v2/hooks/?keyPathFilter=url_encoded_key_path`
+`GET /api/v2/hooks/?keyPathFilter=url_encoded_key_path`
 
 The `keyPathFilter` query param is optional and filters results to that exact keyPath (not evaluating wildcards)
 
@@ -94,7 +94,7 @@ Request body:
 
 ## Delete a hook
 
-`DELETE /hooks/:id`
+`DELETE /api/v2/hooks/:id`
 
 # The webhook request
 
@@ -103,38 +103,44 @@ POST request with JSON content showing the new state of the keys
 Example request body:
 
 ```JSON
-[
-  {
-    "keyPath": "a/b/c",
-    "implementation": {
-      "partitions": [],
-      "valueType": "string",
-      "rules": [
-        {
-          "Matcher": {
-            "user.Country": "AA"
-          },
-          "Value": "19",
-          "Type": "SingleVariant"
-        }
-      ],
-      "defaultValue": "15"
-    },
-    "manifest": {
-      "key_path": "a/b/c",
-      "meta": {
-        "archived": false,
-        "name": "a/b/c",
-        "description": "",
-        "tags": []
-      },
+{
+  "author": {
+    "name": "author name",
+    "email": "author@email.com"
+  },
+  "updates": [
+    {
+      "keyPath": "a/b/c",
       "implementation": {
-        "type": "file",
-        "format": "jpad"
+        "partitions": [],
+        "valueType": "string",
+        "rules": [
+          {
+            "Matcher": {
+              "user.Country": "AA"
+            },
+            "Value": "19",
+            "Type": "SingleVariant"
+          }
+        ],
+        "defaultValue": "15"
       },
-      "valueType": "string",
-      "dependencies": []
+      "manifest": {
+        "key_path": "a/b/c",
+        "meta": {
+          "archived": false,
+          "name": "a/b/c",
+          "description": "",
+          "tags": []
+        },
+        "implementation": {
+          "type": "file",
+          "format": "jpad"
+        },
+        "valueType": "string",
+        "dependencies": []
+      }
     }
-  }
-]
+  ]
+}
 ```

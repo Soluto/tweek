@@ -34,6 +34,7 @@ namespace Tweek.Publishing.Helpers {
     public async Task TriggerNotificationHooksForCommit(string commitId) {
       try {
         var keyPaths = await GetKeyPathsFromCommit(commitId);
+        var author = await GetCommitAuthor(commitId);
         var allHooks = await GetAllHooks(commitId);
 
         var keyPathsByHookUrlAndType = AggregateKeyPathsByHookUrlAndType(keyPaths, allHooks);
@@ -41,7 +42,7 @@ namespace Tweek.Publishing.Helpers {
         var usedKeyPaths = GetUsedKeyPaths(keyPathsByHookUrlAndType);
         var keyPathsData = await GetKeyPathsData(usedKeyPaths, commitId);
 
-        var hooksWithData = GetHooksWithKeyPathData(keyPathsByHookUrlAndType, keyPathsData);
+        var hooksWithData = GetHooksWithData(keyPathsByHookUrlAndType, keyPathsData, author);
         await _triggerHelper.TriggerHooks(hooksWithData, commitId);
       } catch (Exception ex) {
         _logger.LogError(ex, $"Failed triggering notification hooks for commit {commitId}");
@@ -49,14 +50,16 @@ namespace Tweek.Publishing.Helpers {
       }
     }
 
-    private Dictionary<( string type, string url ), string> GetHooksWithKeyPathData(
+    private Dictionary<( string type, string url ), string> GetHooksWithData(
       KeyPathsDictionary keyPathsByHookUrlAndType,
-      Dictionary<string, KeyPathData> keyPathsData
+      Dictionary<string, KeyPathData> keyPathsData,
+      Author author
     ) {
       return keyPathsByHookUrlAndType.ToDictionary(
         kvp => kvp.Key,
         kvp => {
-          var hookData = kvp.Value.Select( keyPath => keyPathsData[keyPath] );
+          var hookKeyPathData = kvp.Value.Select( keyPath => keyPathsData[keyPath] );
+          var hookData = new HookData(author, hookKeyPathData);
           return JsonConvert.SerializeObject(hookData);
         }
       );
@@ -112,6 +115,12 @@ namespace Tweek.Publishing.Helpers {
       return JsonConvert.DeserializeObject<Hook[]>(hooksFile);
     }
 
+    private async Task<Author> GetCommitAuthor(string commitId) {
+      var authorJson = await _git($@"show {commitId} --no-patch --format=""{{\""name\"":\""%an\"",\""email\"":\""%ae\""}}""");
+      
+      return JsonConvert.DeserializeObject<Author>(authorJson);
+    }
+
     private async Task<IEnumerable<string>> GetKeyPathsFromCommit(string commitId) {
       var files = await _git($"diff-tree --no-commit-id --name-only -r {commitId}");
 
@@ -132,6 +141,26 @@ namespace Tweek.Publishing.Helpers {
       this.keyPath = keyPath;
       this.implementation = implementation;
       this.manifest = manifest;
+    }
+  }
+
+  public struct Author {
+    public string name;
+    public string email;
+
+    public Author(string name, string email) {
+      this.name = name;
+      this.email = email;
+    }
+  }
+
+  public struct HookData {
+    public Author author;
+    public IEnumerable<KeyPathData> updates;
+
+    public HookData(Author author, IEnumerable<KeyPathData> updates) {
+      this.author = author;
+      this.updates = updates;
     }
   }
 }
