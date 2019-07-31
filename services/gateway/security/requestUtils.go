@@ -187,8 +187,6 @@ func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs PolicyResourc
 		return
 	case strings.HasPrefix(path, "/api/v2/policies"):
 		fallthrough
-	case strings.HasPrefix(path, "/api/v2/resource/policies"):
-		fallthrough
 	case strings.HasPrefix(path, "/api/v2/jwt-extraction-policy"):
 		ctxs = PolicyResource{Item: "repo/policies", Contexts: map[string]string{}}
 		return
@@ -207,6 +205,8 @@ func extractContextsFromRequest(r *http.Request, u UserInfo) (ctxs PolicyResourc
 		return extractResourceFromRepoRequest(r, u, "schemas")
 	case strings.HasPrefix(path, "/api/v2/hooks"):
 		return extractResourceFromRepoRequest(r, u, "hooks")
+	case strings.HasPrefix(path, "/api/v2/resource/policies"):
+		return extractResourceFromRepoRequest(r, u, "resource/policies")
 	}
 
 	err = fmt.Errorf("Invalid request path %s", path)

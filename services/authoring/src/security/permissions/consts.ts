@@ -12,6 +12,8 @@ export const PERMISSIONS = {
   TAGS_WRITE: 'tags-write',
   HOOKS_READ: 'hooks-read',
   HOOKS_WRITE: 'hooks-write',
+  RESOURCE_POLICIES_READ: 'resource-policies-read',
+  RESOURCE_POLICIES_WRITE: 'resource-policies-write',
 };
 
 // export default PERMISSIONS;

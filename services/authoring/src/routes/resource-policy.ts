@@ -16,14 +16,14 @@ export class ResourcePolicyController {
   @Inject
   policyRepository: PolicyRepository;
 
-  @Authorize({ permission: PERMISSIONS.ADMIN })
+  @Authorize({ permission: PERMISSIONS.RESOURCE_POLICIES_READ })
   @GET
   async getPolicy(@QueryParam('keyPath') keyPath: string): Promise<JsonValue> {
     const policy = await this.policyRepository.getPolicy(keyPath);
     return policy;
   }
 
-  @Authorize({ permission: PERMISSIONS.ADMIN })
+  @Authorize({ permission: PERMISSIONS.RESOURCE_POLICIES_WRITE })
   @PUT
   async replacePolicy(
     @QueryParam('author.name') name: string,
@@ -37,7 +37,7 @@ export class ResourcePolicyController {
     return 'OK';
   }
 
-  @Authorize({ permission: PERMISSIONS.ADMIN })
+  @Authorize({ permission: PERMISSIONS.RESOURCE_POLICIES_WRITE })
   @PATCH
   async updatePolicy(
     @QueryParam('author.name') name: string,
