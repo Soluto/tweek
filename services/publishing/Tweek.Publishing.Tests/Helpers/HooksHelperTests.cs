@@ -76,16 +76,17 @@ namespace Tweek.Publishing.Tests {
 
     [Fact]
     public async Task TriggerNotificationHooksForCommit() {
+      var author = new Author("author name", "author@email.com");
       var abcKeyPathData = new KeyPathData("a/b/c", "{ \"implementationFor\": \"a/b/c\" }", "{ \"manifestFor\": \"a/b/c\" }");
       var abdKeyPathData = new KeyPathData("a/b/d", "{ \"implementationFor\": \"a/b/d\" }", "{ \"manifestFor\": \"a/b/d\" }");
       var abcKeyPathArray = new KeyPathData[] { abcKeyPathData };
       var abcabdKeyPathArray = new KeyPathData[] { abcKeyPathData, abdKeyPathData };
 
       var mockHttp = new MockHttpMessageHandler();
-      var hook1Request = MockHookRequest(mockHttp, "http://some-domain/awesome_hook", abcabdKeyPathArray);
-      var hook2Request = MockHookRequest(mockHttp, "http://some-domain/another_awesome_hook", abcKeyPathArray);
-      var hook3Request = MockHookRequest(mockHttp, "http://another-domain/ok_hook", abcabdKeyPathArray);
-      var hook5Request = MockHookRequest(mockHttp, "http://fifth-domain/should_not_be_called_hook", abcKeyPathArray);
+      var hook1Request = MockHookRequest(mockHttp, "http://some-domain/awesome_hook", abcabdKeyPathArray, author);
+      var hook2Request = MockHookRequest(mockHttp, "http://some-domain/another_awesome_hook", abcKeyPathArray, author);
+      var hook3Request = MockHookRequest(mockHttp, "http://another-domain/ok_hook", abcabdKeyPathArray, author);
+      var hook5Request = MockHookRequest(mockHttp, "http://fifth-domain/should_not_be_called_hook", abcKeyPathArray, author);
       
       var client = mockHttp.ToHttpClient();
       InitializeHelpers(client);
@@ -101,11 +102,13 @@ namespace Tweek.Publishing.Tests {
       Assert.Equal(0, mockHttp.GetMatchCount(hook5Request));
     }
 
-    private MockedRequest MockHookRequest(MockHttpMessageHandler mockHttp, string url, KeyPathData[] expectedContent) {
+    private MockedRequest MockHookRequest(MockHttpMessageHandler mockHttp, string url, KeyPathData[] expectedContent, Author author) {
+      var hookData = new HookData(author, expectedContent);
+
       return mockHttp
         .When(HttpMethod.Post, url)
         .WithHeaders("Content-Type", "application/json; charset=utf-8")
-        .WithContent(JsonConvert.SerializeObject(expectedContent))
+        .WithContent(JsonConvert.SerializeObject(hookData))
         .Respond(HttpStatusCode.NoContent);
     }
 
@@ -113,6 +116,11 @@ namespace Tweek.Publishing.Tests {
       // GetKeyPathsFromCommit
       var gitCommand = $"diff-tree --no-commit-id --name-only -r {commitId}";
       var gitOutput = "implementations/jpad/a/b/c.jpad\nmanifests/a/b/c.json\nimplementations/jpad/a/b/d.jpad\nimplementations/jpad/a/t/f.jpad\n";
+      A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
+
+      // GetCommitAuthor
+      gitCommand = $@"show {commitId} --no-patch --format=""{{\""name\"":\""%an\"",\""email\"":\""%ae\""}}""";
+      gitOutput = "{\"name\":\"author name\",\"email\":\"author@email.com\"}";
       A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
 
       // GetAllKeyHooks
