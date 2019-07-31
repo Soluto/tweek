@@ -35,7 +35,7 @@ All GET APIs return an `ETag` header and all POST/PUT/DELETE APIs can optionally
 
 ## List all hooks
 
-`GET /hooks/?keyPathFilter=url_encoded_key_path`
+`GET api/v2/hooks/?keyPathFilter=url_encoded_key_path`
 
 The `keyPathFilter` query param is optional and filters results to that exact keyPath (not evaluating wildcards)
 
@@ -66,7 +66,7 @@ Response:
 
 ## Create a hook
 
-`POST /hooks/?author.name=name&author.email=email`
+`POST /api/v2/hooks`
 
 Request body:
 
@@ -80,7 +80,7 @@ Request body:
 
 ## Update a hook
 
-`PUT /hooks/:id/?author.name=name&author.email=email`
+`PUT /api/v2/hooks/:id`
 
 Request body:
 
@@ -94,7 +94,7 @@ Request body:
 
 ## Delete a hook
 
-`DELETE /hooks/:id/?author.name=name&author.email=email`
+`DELETE /hooks/:id`
 
 # The webhook request
 
