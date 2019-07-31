@@ -98,7 +98,8 @@ Request body:
 
 # The webhook request
 
-POST request with JSON content showing the new state of the keys
+POST request with JSON content showing the new state of the keys.  
+**Note** that `implementation` is a string, and it might also be null depending on the key format.
 
 Example request body:
 
@@ -111,20 +112,6 @@ Example request body:
   "updates": [
     {
       "keyPath": "a/b/c",
-      "implementation": {
-        "partitions": [],
-        "valueType": "string",
-        "rules": [
-          {
-            "Matcher": {
-              "user.Country": "AA"
-            },
-            "Value": "19",
-            "Type": "SingleVariant"
-          }
-        ],
-        "defaultValue": "15"
-      },
       "manifest": {
         "key_path": "a/b/c",
         "meta": {
@@ -139,7 +126,21 @@ Example request body:
         },
         "valueType": "string",
         "dependencies": []
-      }
+      },
+      "implementation": "{
+        \"partitions\": [],
+        \"valueType\": \"string\",
+        \"rules\": [
+          {
+            \"Matcher\": {
+              \"user.Country\": \"AA\"
+            },
+            \"Value\": \"19\",
+            \"Type\": \"SingleVariant\"
+          }
+        ],
+        \"defaultValue\": \"15\"
+      }"
     }
   ]
 }
