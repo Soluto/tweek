@@ -11,6 +11,7 @@ using System.Linq;
 using App.Metrics;
 using RichardSzalay.MockHttp;
 using Tweek.Publishing.Service.Model.Hooks;
+using Tweek.Publishing.Service.Model.Rules;
 using Newtonsoft.Json;
 
 namespace Tweek.Publishing.Tests {
@@ -77,8 +78,15 @@ namespace Tweek.Publishing.Tests {
     [Fact]
     public async Task TriggerNotificationHooksForCommit() {
       var author = new Author("author name", "author@email.com");
-      var abcKeyPathData = new KeyPathData("a/b/c", "{ \"implementationFor\": \"a/b/c\" }", "{ \"manifestFor\": \"a/b/c\" }");
-      var abdKeyPathData = new KeyPathData("a/b/d", "{ \"implementationFor\": \"a/b/d\" }", "{ \"manifestFor\": \"a/b/d\" }");
+
+      var abcMImplementation = new Manifest.MImplementation { Type = "file", Format = "jpad" };
+      var abcManifest = new Manifest { KeyPath = "a/b/c", Implementation = abcMImplementation };
+      var abcKeyPathData = new KeyPathData("a/b/c", "{ \"implementationFor\": \"a/b/c\" }", abcManifest);
+
+      var abdMImplementation = new Manifest.MImplementation { Type = "const", Value = "abd const value" };
+      var abdManifest = new Manifest { KeyPath = "a/b/d", Implementation = abdMImplementation };
+      var abdKeyPathData = new KeyPathData("a/b/d", null, abdManifest);
+
       var abcKeyPathArray = new KeyPathData[] { abcKeyPathData };
       var abcabdKeyPathArray = new KeyPathData[] { abcKeyPathData, abdKeyPathData };
 
@@ -92,7 +100,7 @@ namespace Tweek.Publishing.Tests {
       InitializeHelpers(client);
 
       var commitId = "abcdef";
-      TriggerNotificationHooksForCommit_SetupGitStubs(commitId);
+      TriggerNotificationHooksForCommit_SetupGitStubs(commitId, abcManifest, abdManifest);
 
       await hooksHelper.TriggerNotificationHooksForCommit(commitId);
 
@@ -112,7 +120,7 @@ namespace Tweek.Publishing.Tests {
         .Respond(HttpStatusCode.NoContent);
     }
 
-    private void TriggerNotificationHooksForCommit_SetupGitStubs(string commitId) {
+    private void TriggerNotificationHooksForCommit_SetupGitStubs(string commitId, Manifest abcManifest, Manifest abdManifest) {
       // GetKeyPathsFromCommit
       var gitCommand = $"diff-tree --no-commit-id --name-only -r {commitId}";
       var gitOutput = "implementations/jpad/a/b/c.jpad\nmanifests/a/b/c.json\nimplementations/jpad/a/b/d.jpad\nimplementations/jpad/a/t/f.jpad\n";
@@ -137,18 +145,15 @@ namespace Tweek.Publishing.Tests {
       A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
 
       // GetKeyPathsData
+      gitCommand = $"show {commitId}:manifests/a/b/c.json";
+      gitOutput = JsonConvert.SerializeObject(abcManifest);
+      A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
       gitCommand = $"show {commitId}:implementations/jpad/a/b/c.jpad";
       gitOutput = "{ \"implementationFor\": \"a/b/c\" }";
       A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
-      gitCommand = $"show {commitId}:manifests/a/b/c.json";
-      gitOutput = "{ \"manifestFor\": \"a/b/c\" }";
-      A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
 
-      gitCommand = $"show {commitId}:implementations/jpad/a/b/d.jpad";
-      gitOutput = "{ \"implementationFor\": \"a/b/d\" }";
-      A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
       gitCommand = $"show {commitId}:manifests/a/b/d.json";
-      gitOutput = "{ \"manifestFor\": \"a/b/d\" }";
+      gitOutput = JsonConvert.SerializeObject(abdManifest);
       A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
     }
 

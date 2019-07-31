@@ -16,7 +16,7 @@ export function showError({ error, title = 'Error', position = 'br', format = de
     message: format(error),
     level: 'error',
     position,
-    autoDismiss: 0,
+    autoDismiss: 15,
     uid: chance.guid(),
   };
   return { type: ADD_NOTIFICATION, notification };

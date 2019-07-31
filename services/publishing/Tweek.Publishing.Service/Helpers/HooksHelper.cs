@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using App.Metrics;
 using App.Metrics.Counter;
 using Tweek.Publishing.Service.Model.Hooks;
+using Tweek.Publishing.Service.Model.Rules;
 using Newtonsoft.Json;
 
 namespace Tweek.Publishing.Helpers {
@@ -68,18 +69,23 @@ namespace Tweek.Publishing.Helpers {
     private async Task< Dictionary<string, KeyPathData> > GetKeyPathsData(IEnumerable<string> keyPaths, string commitId) {
       var keyPathsDataDict = new Dictionary<string, KeyPathData>(keyPaths.Count());
 
-      var keyDataTasks = keyPaths.Select(keyPath => (
-        keyPath: Task.FromResult(keyPath),
-        implementation: _git($"show {commitId}:implementations/jpad/{keyPath}.jpad"),
-        manifest: _git($"show {commitId}:manifests/{keyPath}.json")
-      ));
+      foreach (var keyPath in keyPaths) {
+        var manifestJson = await _git($"show {commitId}:manifests/{keyPath}.json");
+        var manifest = JsonConvert.DeserializeObject<Manifest>(manifestJson);
+        var implementation = await GetImplementation(manifest, commitId);
 
-      foreach (var tasks in keyDataTasks) {
-        var keyPathData = new KeyPathData(await tasks.keyPath, await tasks.implementation, await tasks.manifest);
-        keyPathsDataDict.Add(keyPathData.keyPath, keyPathData);
+        var keyPathData = new KeyPathData(keyPath, implementation, manifest);
+        keyPathsDataDict.Add(keyPath, keyPathData);
       }
 
       return keyPathsDataDict;
+    }
+
+    private async Task<string> GetImplementation(Manifest manifest, string commitId) {
+      if (manifest.Implementation.Type != "file") return null;
+
+      var implementationFilePath = ManifestExtensions.GetFileImplementionPath(manifest);
+      return await _git($"show {commitId}:{implementationFilePath}");
     }
 
     private IEnumerable<string> GetUsedKeyPaths(KeyPathsDictionary keyPathsByHookUrlAndType) {
@@ -135,9 +141,9 @@ namespace Tweek.Publishing.Helpers {
   public struct KeyPathData {
     public string keyPath;
     public string implementation;
-    public string manifest;
+    public Manifest manifest;
 
-    public KeyPathData(string keyPath, string implementation, string manifest) {
+    public KeyPathData(string keyPath, string implementation, Manifest manifest) {
       this.keyPath = keyPath;
       this.implementation = implementation;
       this.manifest = manifest;
