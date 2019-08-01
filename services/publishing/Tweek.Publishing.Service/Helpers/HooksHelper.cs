@@ -41,9 +41,9 @@ namespace Tweek.Publishing.Helpers {
         var keyPathsByHookUrlAndType = AggregateKeyPathsByHookUrlAndType(keyPaths, allHooks);
         keyPathsByHookUrlAndType = FilterNonNotificationHooks(keyPathsByHookUrlAndType);
         var usedKeyPaths = GetUsedKeyPaths(keyPathsByHookUrlAndType);
-        var keyPathsData = await GetKeyPathsData(usedKeyPaths, commitId);
+        var keyPathsDiffs = await GetKeyPathsDiffs(usedKeyPaths, commitId);
 
-        var hooksWithData = GetHooksWithData(keyPathsByHookUrlAndType, keyPathsData, author);
+        var hooksWithData = GetHooksWithData(keyPathsByHookUrlAndType, keyPathsDiffs, author);
         await _triggerHelper.TriggerHooks(hooksWithData, commitId);
       } catch (Exception ex) {
         _logger.LogError(ex, $"Failed triggering notification hooks for commit {commitId}");
@@ -53,39 +53,55 @@ namespace Tweek.Publishing.Helpers {
 
     private Dictionary<( string type, string url ), string> GetHooksWithData(
       KeyPathsDictionary keyPathsByHookUrlAndType,
-      Dictionary<string, KeyPathData> keyPathsData,
+      Dictionary<string, KeyPathDiff> keyPathsDiffs,
       Author author
     ) {
       return keyPathsByHookUrlAndType.ToDictionary(
         kvp => kvp.Key,
         kvp => {
-          var hookKeyPathData = kvp.Value.Select( keyPath => keyPathsData[keyPath] );
-          var hookData = new HookData(author, hookKeyPathData);
+          var hookKeyPathDiff = kvp.Value.Select( keyPath => keyPathsDiffs[keyPath] );
+          var hookData = new HookData(author, hookKeyPathDiff);
           return JsonConvert.SerializeObject(hookData);
         }
       );
     }
 
-    private async Task< Dictionary<string, KeyPathData> > GetKeyPathsData(IEnumerable<string> keyPaths, string commitId) {
-      var keyPathsDataDict = new Dictionary<string, KeyPathData>(keyPaths.Count());
+    private async Task< Dictionary<string, KeyPathDiff> > GetKeyPathsDiffs(IEnumerable<string> keyPaths, string commitId) {
+      var keyPathsDataDict = new Dictionary<string, KeyPathDiff>(keyPaths.Count());
 
       foreach (var keyPath in keyPaths) {
-        var manifestJson = await _git($"show {commitId}:manifests/{keyPath}.json");
-        var manifest = JsonConvert.DeserializeObject<Manifest>(manifestJson);
-        var implementation = await GetImplementation(manifest, commitId);
+        var newValue = await GetKeyPathData(keyPath, commitId);
+        var oldValue = await GetKeyPathData(keyPath, commitId, true);
+        var keyPathDiff = new KeyPathDiff(oldValue, newValue);
 
-        var keyPathData = new KeyPathData(keyPath, implementation, manifest);
-        keyPathsDataDict.Add(keyPath, keyPathData);
+        keyPathsDataDict.Add(keyPath, keyPathDiff);
       }
 
       return keyPathsDataDict;
     }
 
-    private async Task<string> GetImplementation(Manifest manifest, string commitId) {
+    private async Task<KeyPathData?> GetKeyPathData(string keyPath, string commitId, bool oldValue = false) {
+      string manifestJson;
+      var revision = oldValue ? $"{commitId}~1" : commitId;
+
+      try {
+        manifestJson = await _git($"show {revision}:manifests/{keyPath}.json");
+      } catch (Exception ex) {
+        if (oldValue) return null;
+        throw ex;
+      }
+
+      var manifest = JsonConvert.DeserializeObject<Manifest>(manifestJson);
+      var implementation = await GetImplementation(manifest, revision);
+
+      return new KeyPathData(keyPath, implementation, manifest);
+    }
+
+    private async Task<string> GetImplementation(Manifest manifest, string revision) {
       if (manifest.Implementation.Type != "file") return null;
 
       var implementationFilePath = ManifestExtensions.GetFileImplementionPath(manifest);
-      return await _git($"show {commitId}:{implementationFilePath}");
+      return await _git($"show {revision}:{implementationFilePath}");
     }
 
     private IEnumerable<string> GetUsedKeyPaths(KeyPathsDictionary keyPathsByHookUrlAndType) {
@@ -160,11 +176,21 @@ namespace Tweek.Publishing.Helpers {
     }
   }
 
+  public struct KeyPathDiff {
+    public KeyPathData? oldValue;
+    public KeyPathData? newValue;
+
+    public KeyPathDiff(KeyPathData? oldValue, KeyPathData? newValue) {
+      this.oldValue = oldValue;
+      this.newValue = newValue;
+    }
+  }
+
   public struct HookData {
     public Author author;
-    public IEnumerable<KeyPathData> updates;
+    public IEnumerable<KeyPathDiff> updates;
 
-    public HookData(Author author, IEnumerable<KeyPathData> updates) {
+    public HookData(Author author, IEnumerable<KeyPathDiff> updates) {
       this.author = author;
       this.updates = updates;
     }

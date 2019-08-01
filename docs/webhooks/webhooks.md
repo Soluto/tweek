@@ -99,7 +99,10 @@ Request body:
 # The webhook request
 
 POST request with JSON content showing the new state of the keys.  
-**Note** that `implementation` is a string, and it might also be null depending on the key format.
+**Notes**:
+
+- `implementation` is a string, and it might also be null depending on the key format
+- `oldValue` can be null if this key was newly created in this commit
 
 Example request body:
 
@@ -111,36 +114,70 @@ Example request body:
   },
   "updates": [
     {
-      "keyPath": "a/b/c",
-      "manifest": {
-        "key_path": "a/b/c",
-        "meta": {
-          "archived": false,
-          "name": "a/b/c",
-          "description": "",
-          "tags": []
+      "newValue": {
+        "keyPath": "a/b/c",
+        "manifest": {
+          "key_path": "a/b/c",
+          "meta": {
+            "archived": false,
+            "name": "a/b/c",
+            "description": "",
+            "tags": []
+          },
+          "implementation": {
+            "type": "file",
+            "format": "jpad"
+          },
+          "valueType": "string",
+          "dependencies": []
         },
-        "implementation": {
-          "type": "file",
-          "format": "jpad"
-        },
-        "valueType": "string",
-        "dependencies": []
+        "implementation": "{
+          \"partitions\": [],
+          \"valueType\": \"string\",
+          \"rules\": [
+            {
+              \"Matcher\": {
+                \"user.Country\": \"AA\"
+              },
+              \"Value\": \"19\",
+              \"Type\": \"SingleVariant\"
+            }
+          ],
+          \"defaultValue\": \"15\"
+        }"
       },
-      "implementation": "{
-        \"partitions\": [],
-        \"valueType\": \"string\",
-        \"rules\": [
-          {
-            \"Matcher\": {
-              \"user.Country\": \"AA\"
-            },
-            \"Value\": \"19\",
-            \"Type\": \"SingleVariant\"
-          }
-        ],
-        \"defaultValue\": \"15\"
-      }"
+      "oldValue": {
+        "keyPath": "a/b/c",
+        "manifest": {
+          "key_path": "a/b/c",
+          "meta": {
+            "archived": false,
+            "name": "a/b/c",
+            "description": "",
+            "tags": []
+          },
+          "implementation": {
+            "type": "file",
+            "format": "jpad"
+          },
+          "valueType": "string",
+          "dependencies": []
+        },
+        "implementation": "{
+          \"partitions\": [],
+          \"valueType\": \"string\",
+          \"rules\": [
+            {
+              \"Matcher\": {
+                \"user.Country\": \"AA\"
+              },
+              \"Value\": \"19\",
+              \"Type\": \"SingleVariant\"
+            }
+          ],
+          \"defaultValue\": \"17\"
+        }"
+      }
     }
   ]
 }

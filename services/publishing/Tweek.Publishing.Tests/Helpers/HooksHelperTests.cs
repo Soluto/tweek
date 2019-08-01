@@ -82,13 +82,18 @@ namespace Tweek.Publishing.Tests {
       var abcMImplementation = new Manifest.MImplementation { Type = "file", Format = "jpad" };
       var abcManifest = new Manifest { KeyPath = "a/b/c", Implementation = abcMImplementation };
       var abcKeyPathData = new KeyPathData("a/b/c", "{ \"implementationFor\": \"a/b/c\" }", abcManifest);
+      var abcKeyPathDiff = new KeyPathDiff(null, abcKeyPathData);
 
       var abdMImplementation = new Manifest.MImplementation { Type = "const", Value = "abd const value" };
       var abdManifest = new Manifest { KeyPath = "a/b/d", Implementation = abdMImplementation };
       var abdKeyPathData = new KeyPathData("a/b/d", null, abdManifest);
+      var abdMImplementationOld = new Manifest.MImplementation { Type = "const", Value = "old abd const value" };
+      var abdManifestOld = new Manifest { KeyPath = "a/b/d", Implementation = abdMImplementationOld };
+      var abdKeyPathDataOld = new KeyPathData("a/b/d", null, abdManifestOld);
+      var abdKeyPathDiff = new KeyPathDiff(abdKeyPathDataOld, abdKeyPathData);
 
-      var abcKeyPathArray = new KeyPathData[] { abcKeyPathData };
-      var abcabdKeyPathArray = new KeyPathData[] { abcKeyPathData, abdKeyPathData };
+      var abcKeyPathArray = new KeyPathDiff[] { abcKeyPathDiff };
+      var abcabdKeyPathArray = new KeyPathDiff[] { abcKeyPathDiff, abdKeyPathDiff };
 
       var mockHttp = new MockHttpMessageHandler();
       var hook1Request = MockHookRequest(mockHttp, "http://some-domain/awesome_hook", abcabdKeyPathArray, author);
@@ -100,7 +105,7 @@ namespace Tweek.Publishing.Tests {
       InitializeHelpers(client);
 
       var commitId = "abcdef";
-      TriggerNotificationHooksForCommit_SetupGitStubs(commitId, abcManifest, abdManifest);
+      TriggerNotificationHooksForCommit_SetupGitStubs(commitId, abcManifest, abdManifest, abdManifestOld);
 
       await hooksHelper.TriggerNotificationHooksForCommit(commitId);
 
@@ -110,7 +115,7 @@ namespace Tweek.Publishing.Tests {
       Assert.Equal(0, mockHttp.GetMatchCount(hook5Request));
     }
 
-    private MockedRequest MockHookRequest(MockHttpMessageHandler mockHttp, string url, KeyPathData[] expectedContent, Author author) {
+    private MockedRequest MockHookRequest(MockHttpMessageHandler mockHttp, string url, KeyPathDiff[] expectedContent, Author author) {
       var hookData = new HookData(author, expectedContent);
 
       return mockHttp
@@ -120,7 +125,7 @@ namespace Tweek.Publishing.Tests {
         .Respond(HttpStatusCode.NoContent);
     }
 
-    private void TriggerNotificationHooksForCommit_SetupGitStubs(string commitId, Manifest abcManifest, Manifest abdManifest) {
+    private void TriggerNotificationHooksForCommit_SetupGitStubs(string commitId, Manifest abcManifest, Manifest abdManifest, Manifest abdManifestOld) {
       // GetKeyPathsFromCommit
       var gitCommand = $"diff-tree --no-commit-id --name-only -r {commitId}";
       var gitOutput = "implementations/jpad/a/b/c.jpad\nmanifests/a/b/c.json\nimplementations/jpad/a/b/d.jpad\nimplementations/jpad/a/t/f.jpad\n";
@@ -144,7 +149,7 @@ namespace Tweek.Publishing.Tests {
       gitOutput = JsonConvert.SerializeObject(allHooks);
       A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
 
-      // GetKeyPathsData
+      // GetKeyPathData
       gitCommand = $"show {commitId}:manifests/a/b/c.json";
       gitOutput = JsonConvert.SerializeObject(abcManifest);
       A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
@@ -152,8 +157,15 @@ namespace Tweek.Publishing.Tests {
       gitOutput = "{ \"implementationFor\": \"a/b/c\" }";
       A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
 
+      gitCommand = $"show {commitId}~1:manifests/a/b/c.json";
+      A.CallTo(() => fakeGit(gitCommand)).Throws(new Exception("file does not exist"));
+
       gitCommand = $"show {commitId}:manifests/a/b/d.json";
       gitOutput = JsonConvert.SerializeObject(abdManifest);
+      A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
+
+      gitCommand = $"show {commitId}~1:manifests/a/b/d.json";
+      gitOutput = JsonConvert.SerializeObject(abdManifestOld);
       A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
     }
 
