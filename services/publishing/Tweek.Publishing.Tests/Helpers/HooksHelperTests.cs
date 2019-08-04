@@ -76,7 +76,65 @@ namespace Tweek.Publishing.Tests {
     }
 
     [Fact]
+    public async Task GetKeyPathData_ReturnsExistingFileData() {
+      var mImplementation = new Manifest.MImplementation { Type = "const", Value = "const value" };
+      var manifest = new Manifest { KeyPath = "a/b/c", Implementation = mImplementation };
+      var keyPathData = new KeyPathData("a/b/c", null, manifest);
+      
+      var commitId = "abcd";
+      var keyPath = "a/b/c";
+
+      var gitCommand = $"show {commitId}:manifests/{keyPath}.json";
+      var gitOutput = JsonConvert.SerializeObject(manifest);
+      A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
+
+      var result = await CallPrivateMethod<Task<KeyPathData?>>(hooksHelper, "GetKeyPathData", new object[] { keyPath, commitId });
+
+      AssertObjectEquality(keyPathData, result);
+    }
+
+    [Fact]
+    public async Task GetKeyPathData_ReturnsNullOnMissingManifestFile() {
+      var commitId = "abcd";
+      var keyPath = "a/b/c";
+
+      var gitCommand = $"show {commitId}:manifests/{keyPath}.json";
+      var gitEx = new Exception($"fatal: Path 'manifests/{keyPath}.json' does not exist in '{commitId}'\n");
+      var shellEx = new Exception("proccess failed", gitEx);
+      A.CallTo(() => fakeGit(gitCommand)).Throws(shellEx);
+
+      var result = await CallPrivateMethod<Task<KeyPathData?>>(hooksHelper, "GetKeyPathData", new object[] { keyPath, commitId });
+
+      Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task GetKeyPathData_ThrowsOnOtherGitExceptions() {
+      var commitId = "abcd";
+      var keyPath = "a/b/c";
+
+      var gitCommand = $"show {commitId}:manifests/{keyPath}.json";
+      A.CallTo(() => fakeGit(gitCommand)).Throws(new Exception("Some unexpected error"));
+
+      var resultTask = CallPrivateMethod<Task<KeyPathData?>>(hooksHelper, "GetKeyPathData", new object[] { keyPath, commitId });
+
+      await Assert.ThrowsAnyAsync<Exception>(() => resultTask);
+    }
+
+    [Fact]
     public async Task TriggerNotificationHooksForCommit() {
+      var commitId = "abcdef";
+      var (mockHttp, hookRequests) = TriggerNotificationHooksForCommit_Setup(commitId);
+
+      await hooksHelper.TriggerNotificationHooksForCommit(commitId);
+
+      Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[0]));
+      Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[1]));
+      Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[2]));
+      Assert.Equal(0, mockHttp.GetMatchCount(hookRequests[3]));
+    }
+
+    private (MockHttpMessageHandler, MockedRequest[]) TriggerNotificationHooksForCommit_Setup(string commitId) {
       var author = new Author("author name", "author@email.com");
 
       var abcMImplementation = new Manifest.MImplementation { Type = "file", Format = "jpad" };
@@ -96,23 +154,18 @@ namespace Tweek.Publishing.Tests {
       var abcabdKeyPathArray = new KeyPathDiff[] { abcKeyPathDiff, abdKeyPathDiff };
 
       var mockHttp = new MockHttpMessageHandler();
-      var hook1Request = MockHookRequest(mockHttp, "http://some-domain/awesome_hook", abcabdKeyPathArray, author);
-      var hook2Request = MockHookRequest(mockHttp, "http://some-domain/another_awesome_hook", abcKeyPathArray, author);
-      var hook3Request = MockHookRequest(mockHttp, "http://another-domain/ok_hook", abcabdKeyPathArray, author);
-      var hook5Request = MockHookRequest(mockHttp, "http://fifth-domain/should_not_be_called_hook", abcKeyPathArray, author);
+      var hookRequests = new MockedRequest[4];
+      hookRequests[0] = MockHookRequest(mockHttp, "http://some-domain/awesome_hook", abcabdKeyPathArray, author);
+      hookRequests[1] = MockHookRequest(mockHttp, "http://some-domain/another_awesome_hook", abcKeyPathArray, author);
+      hookRequests[2] = MockHookRequest(mockHttp, "http://another-domain/ok_hook", abcabdKeyPathArray, author);
+      hookRequests[3] = MockHookRequest(mockHttp, "http://fifth-domain/should_not_be_called_hook", abcKeyPathArray, author);
       
       var client = mockHttp.ToHttpClient();
       InitializeHelpers(client);
 
-      var commitId = "abcdef";
       TriggerNotificationHooksForCommit_SetupGitStubs(commitId, abcManifest, abdManifest, abdManifestOld);
 
-      await hooksHelper.TriggerNotificationHooksForCommit(commitId);
-
-      Assert.Equal(1, mockHttp.GetMatchCount(hook1Request));
-      Assert.Equal(1, mockHttp.GetMatchCount(hook2Request));
-      Assert.Equal(1, mockHttp.GetMatchCount(hook3Request));
-      Assert.Equal(0, mockHttp.GetMatchCount(hook5Request));
+      return (mockHttp, hookRequests);
     }
 
     private MockedRequest MockHookRequest(MockHttpMessageHandler mockHttp, string url, KeyPathDiff[] expectedContent, Author author) {
@@ -138,12 +191,12 @@ namespace Tweek.Publishing.Tests {
 
       // GetAllKeyHooks
       var allHooks = new Hook[] {
-        new Hook("1", "a/b/c", "notification_webhook", "http://some-domain/awesome_hook"),
-        new Hook("2", "a/b/c", "notification_webhook", "http://some-domain/another_awesome_hook"),
-        new Hook("3", "a/b/*", "notification_webhook", "http://another-domain/ok_hook"),
+        new Hook("0", "a/b/c", "notification_webhook", "http://some-domain/awesome_hook"),
+        new Hook("1", "a/b/c", "notification_webhook", "http://some-domain/another_awesome_hook"),
+        new Hook("2", "a/b/*", "notification_webhook", "http://another-domain/ok_hook"),
+        new Hook("3", "a/b/d", "notification_webhook", "http://some-domain/awesome_hook"),
         new Hook("4", "c/q/r", "notification_webhook", "http://fourth-domain/meh_hook"),
-        new Hook("5", "a/b/d", "notification_webhook", "http://some-domain/awesome_hook"),
-        new Hook("6", "a/b/c", "not_a_notification_hook", "http://fifth-domain/should_not_be_called_hook")
+        new Hook("5", "a/b/c", "not_a_notification_hook", "http://fifth-domain/should_not_be_called_hook")
       };
       gitCommand = $"show {commitId}:hooks.json";
       gitOutput = JsonConvert.SerializeObject(allHooks);
@@ -158,7 +211,9 @@ namespace Tweek.Publishing.Tests {
       A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
 
       gitCommand = $"show {commitId}~1:manifests/a/b/c.json";
-      A.CallTo(() => fakeGit(gitCommand)).Throws(new Exception("file does not exist"));
+      var gitEx = new Exception($"fatal: Path 'manifests/a/b/c.json' does not exist in '{commitId}~1'\n");
+      var shellEx = new Exception("proccess failed", gitEx);
+      A.CallTo(() => fakeGit(gitCommand)).Throws(shellEx);
 
       gitCommand = $"show {commitId}:manifests/a/b/d.json";
       gitOutput = JsonConvert.SerializeObject(abdManifest);
@@ -178,6 +233,10 @@ namespace Tweek.Publishing.Tests {
         .First();
 
       return (T)methodInfo.Invoke(instance, methodParams);
+    }
+
+    private void AssertObjectEquality(Object obj1, Object obj2) {
+      Assert.Equal(JsonConvert.SerializeObject(obj1), JsonConvert.SerializeObject(obj2));
     }
 
     private void InitializeHelpers(HttpClient client = null) {

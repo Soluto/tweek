@@ -71,7 +71,7 @@ namespace Tweek.Publishing.Helpers {
 
       foreach (var keyPath in keyPaths) {
         var newValue = await GetKeyPathData(keyPath, commitId);
-        var oldValue = await GetKeyPathData(keyPath, commitId, true);
+        var oldValue = await GetOldKeyPathData(keyPath, commitId);
         var keyPathDiff = new KeyPathDiff(oldValue, newValue);
 
         keyPathsDataDict.Add(keyPath, keyPathDiff);
@@ -80,14 +80,20 @@ namespace Tweek.Publishing.Helpers {
       return keyPathsDataDict;
     }
 
-    private async Task<KeyPathData?> GetKeyPathData(string keyPath, string commitId, bool oldValue = false) {
+    private async Task<KeyPathData?> GetOldKeyPathData(string keyPath, string commitId, int commitOffset = 1) {
+      return await GetKeyPathData(keyPath, $"{commitId}~{commitOffset}");
+    }
+
+    private async Task<KeyPathData?> GetKeyPathData(string keyPath, string revision) {
       string manifestJson;
-      var revision = oldValue ? $"{commitId}~1" : commitId;
+      var manifestPath = $"manifests/{keyPath}.json";
 
       try {
-        manifestJson = await _git($"show {revision}:manifests/{keyPath}.json");
+        manifestJson = await _git($"show {revision}:{manifestPath}");
       } catch (Exception ex) {
-        if (oldValue) return null;
+        var missingFileMessage = $"fatal: Path '{manifestPath}' does not exist in '{revision}'\n";
+        if (ex.InnerException?.Message == missingFileMessage) return null;
+
         throw ex;
       }
 

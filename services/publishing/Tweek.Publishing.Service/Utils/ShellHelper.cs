@@ -96,7 +96,7 @@ namespace Tweek.Publishing.Service.Utils
                     .With(exited.ToObservable().Do(_ =>
                     {
                         if (process.ExitCode != 0)
-                            throw new Exception("proccess failed")
+                            throw new Exception("proccess failed", new Exception(sbErr.ToString()))
                             {
                                 Data =
                                 {
