@@ -1,19 +1,21 @@
 # ------- BASE -------
-FROM soluto/nodegit-alpine:8.1.4 as base
+FROM node:10.15.3-alpine as base
+
 WORKDIR /opt/app
-RUN apk add --update openssh-client && rm -rf /var/cache/apk/*
+RUN apk --no-cache add git openssh-client
 
 # ------- DEPS -------
 FROM base as deps
+RUN apk --no-cache add curl-dev g++ make python
+
 COPY package.json yarn.lock ./
-RUN ln -s /nodegit/node_modules ./node_modules && \
-    yarn --prod
+RUN BUILD_ONLY=true yarn --production
 
 # ------- BUILD -------
 FROM deps as build
 
 RUN yarn
-COPY . ./
+COPY . .
 RUN yarn test && yarn build
 
 # ------- RELEASE -------

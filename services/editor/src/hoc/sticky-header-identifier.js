@@ -1,7 +1,7 @@
 import React from 'react';
 import { compose, pure, lifecycle, withState } from 'recompose';
 
-const stickyHeaderIdentifier = (elementId, triggerScrollFromTop) => Comp =>
+const stickyHeaderIdentifier = (elementId, triggerScrollFromTop) => (Comp) =>
   compose(
     pure,
     withState('isInStickyMode', 'setIsInStickyMode', false),
@@ -25,6 +25,6 @@ const stickyHeaderIdentifier = (elementId, triggerScrollFromTop) => Comp =>
         this.cleanup();
       },
     }),
-  )(props => <Comp {...props} />);
+  )((props) => <Comp {...props} />);
 
 export default stickyHeaderIdentifier;

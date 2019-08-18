@@ -1,4 +1,4 @@
-const createManifestForJPadKey = key_path => ({
+const createManifestForJPadKey = (key_path) => ({
   key_path: `${key_path}`,
   meta: {
     name: 'aaaaaaa',

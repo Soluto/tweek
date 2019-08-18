@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Highlighter from 'react-highlight-words';
 
-const SuggestionItem = ({ children, className, onSelect, active, label, disabled, ...props }) =>
+const SuggestionItem = ({ children, className, onSelect, active, label, disabled, ...props }) => (
   <li className={classnames(className, { active, disabled })} {...props}>
     <a
       role="button"
@@ -14,7 +14,8 @@ const SuggestionItem = ({ children, className, onSelect, active, label, disabled
     >
       {children}
     </a>
-  </li>;
+  </li>
+);
 
 SuggestionItem.propTypes = {
   className: PropTypes.string,
@@ -39,9 +40,9 @@ const Suggestions = ({
   onSuggestionHighlighted,
   renderSuggestion,
   suggestionsContainer: Container,
-}) =>
+}) => (
   <Container>
-    {suggestions.map((x, i) =>
+    {suggestions.map((x, i) => (
       <SuggestionItem
         data-label={getLabel(x)}
         key={`${i}_${getLabel(x)}`}
@@ -49,16 +50,19 @@ const Suggestions = ({
         active={highlightedSuggestion === i}
         onMouseOver={() => onSuggestionHighlighted(i)}
       >
-        {renderSuggestion
-          ? renderSuggestion(x, value)
-          : <Highlighter
-              highlightStyle={highlightStyle}
-              searchWords={value.split(' ')}
-              textToHighlight={getLabel(x)}
-            />}
-      </SuggestionItem>,
-    )}
-  </Container>;
+        {renderSuggestion ? (
+          renderSuggestion(x, value)
+        ) : (
+          <Highlighter
+            highlightStyle={highlightStyle}
+            searchWords={value.split(' ')}
+            textToHighlight={getLabel(x)}
+          />
+        )}
+      </SuggestionItem>
+    ))}
+  </Container>
+);
 
 Suggestions.propTypes = {
   value: PropTypes.string.isRequired,
@@ -73,7 +77,7 @@ Suggestions.propTypes = {
 };
 
 Suggestions.defaultProps = {
-  suggestionsContainer: ({ children, ...props }) =>
+  suggestionsContainer: ({ children, ...props }) => (
     <div style={{ display: 'flex', position: 'relative' }}>
       <ul
         {...props}
@@ -83,7 +87,8 @@ Suggestions.defaultProps = {
       >
         {children}
       </ul>
-    </div>,
+    </div>
+  ),
 };
 
 export default Suggestions;

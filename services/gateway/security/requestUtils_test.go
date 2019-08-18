@@ -147,6 +147,16 @@ func TestExtractFromRequest(t *testing.T) {
 			wantAct: "write",
 			wantErr: nil,
 		},
+		{
+			name: "Get Hooks",
+			args: args{
+				r: createTestRequest("GET", "https://gateway.tweek.com/api/v2/hooks", userInfo),
+			},
+			wantObj: PolicyResource{Item: "repo", Contexts: map[string]string{}},
+			wantSub: &Subject{User: "A b sub", Group: "default"},
+			wantAct: "read",
+			wantErr: nil,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

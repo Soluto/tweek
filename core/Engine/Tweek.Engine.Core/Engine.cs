@@ -1,4 +1,5 @@
-﻿using FSharpUtils.Newtonsoft;
+﻿using System;
+using FSharpUtils.Newtonsoft;
 using LanguageExt;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,12 +36,20 @@ namespace Tweek.Engine.Core
 
             getRuleValue = Memoize(path =>
             {
-                foreach (var identity in identityTypes)
+                try
                 {
-                    var fixedResult = ContextHelpers.GetFixedConfigurationContext(context, identity)(path);
-                    if (fixedResult.IsSome) return fixedResult;
+                    foreach (var identity in identityTypes)
+                    {
+                        var fixedResult = ContextHelpers.GetFixedConfigurationContext(context, identity)(path);
+                        if (fixedResult.IsSome) return fixedResult;
+                    }
+
+                    return getRule(path).Bind(x => x.GetValue(context));
                 }
-                return getRule(path).Bind(x => x.GetValue(context));
+                catch (Exception e)
+                {
+                    return ConfigurationValue.Error(e);
+                }
             });
             return getRuleValue;
         }

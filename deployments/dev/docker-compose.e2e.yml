@@ -37,12 +37,28 @@ services:
       - CONFIGOR_ENV=test
 
   oidc-server-mock:
-    container_name: oidc-server-mock
-    image: soluto/oidc-server-mock
-    ports:
-      - "8081:80"
     environment:
-      - REDIRECT_URIS=http://gateway/auth-result/oidc
+      CLIENTS_CONFIGURATION_INLINE: |
+        [
+          {
+            "ClientId": "tweek-openid-mock-client",
+            "Description": "Client for implicit flow",
+            "AllowedGrantTypes": [
+                "implicit"
+            ],
+            "AllowAccessTokensViaBrowser": true,
+            "RedirectUris": [
+                "http://gateway/auth-result/oidc"
+            ],
+            "AllowedScopes": [
+                "openid",
+                "profile",
+                "email"
+            ],
+            "IdentityTokenLifetime": 3600,
+            "AccessTokenLifetime": 3600
+          }
+        ]
 
   e2e-ui:
     build: ../../e2e/ui
@@ -50,6 +66,7 @@ services:
     shm_size: 2g
     volumes:
       - ../../e2e/ui:/src
+      - /src/node_modules
     depends_on:
       - gateway
       - editor
@@ -64,6 +81,7 @@ services:
     container_name: e2e-integration
     volumes:
       - ../../e2e/integration:/opt/app
+      - /opt/app/node_modules
     depends_on: 
       - gateway
     environment:

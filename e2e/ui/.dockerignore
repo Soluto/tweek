@@ -1,6 +1,6 @@
 .git/
-node_modules
-screenshots
+node_modules/
+screenshots/
 
 .gitignore
 .dockerignore

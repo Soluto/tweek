@@ -16,8 +16,15 @@ export class SubjectExtractionRulesController {
 
   @Authorize({ permission: PERMISSIONS.ADMIN })
   @PUT
-  async updatePolicy( @QueryParam('author.name') name: string, @QueryParam('author.email') email: string, content: { data: string }): Promise<string> {
-    const oid = await this.subjectExtractionRulesRepository.updateSubjectExtractionRules(content.data, { name, email });
+  async updatePolicy(
+    @QueryParam('author.name') name: string,
+    @QueryParam('author.email') email: string,
+    content: { data: string },
+  ): Promise<string> {
+    const oid = await this.subjectExtractionRulesRepository.updateSubjectExtractionRules(
+      content.data,
+      { name, email },
+    );
     addOid(this.context.response, oid);
 
     return 'OK';
@@ -25,8 +32,8 @@ export class SubjectExtractionRulesController {
 
   @Authorize({ permission: PERMISSIONS.ADMIN })
   @GET
-  async get(): Promise<{data: string}> {
+  async get(): Promise<{ data: string }> {
     const policy = await this.subjectExtractionRulesRepository.getSubjectExtractionRules();
-    return {data: policy};
+    return { data: policy };
   }
 }

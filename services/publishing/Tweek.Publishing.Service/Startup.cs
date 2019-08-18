@@ -3,6 +3,7 @@ using System.Reactive.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net.Http;
 using App.Metrics;
 using App.Metrics.Formatters.Prometheus.Internal.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -170,6 +171,7 @@ namespace Tweek.Publishing.Service
             };
 
             var minioConfig = _configuration.GetSection("Minio");
+            var metricsService = app.ApplicationServices.GetService<IMetrics>();
 
             var storageClient = Polly.Policy.Handle<Exception>()
                 .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
@@ -182,23 +184,30 @@ namespace Tweek.Publishing.Service
             var versionPublisher = natsClient.GetSubjectPublisher("version");
 
             var repoSynchronizer = new RepoSynchronizer(executor.WithUser("git").CreateCommandExecutor("git"));
-            var storageSynchronizer = CreateStorageSynchronizer(storageClient, executor.WithUser("git"),
-                app.ApplicationServices.GetService<IMetrics>());
+            var storageSynchronizer = CreateStorageSynchronizer(storageClient, executor.WithUser("git"), metricsService);
 
             storageSynchronizer.Sync(repoSynchronizer.CurrentHead().Result, checkForStaleRevision: false).Wait();
             RunIntervalPublisher(lifetime, versionPublisher, repoSynchronizer, storageSynchronizer);
 
             var syncActor = SyncActor.Create(storageSynchronizer, repoSynchronizer, natsClient, lifetime.ApplicationStopping, loggerFactory.CreateLogger("SyncActor"));
+
+            var triggerHelper = new TriggerHooksHelper(new HttpClient(), metricsService, loggerFactory.CreateLogger("TriggerHooksHelper"));
+            var hooksHelper = new HooksHelper(
+                executor.WithUser("git").CreateCommandExecutor("git"),
+                triggerHelper,
+                metricsService,
+                loggerFactory.CreateLogger("HooksHelper")
+            );
             
             app.UseRouter(router =>
             {
                 router.MapGet("validate",
                     ValidationHandler.Create(executor, gitValidationFlow,
                         loggerFactory.CreateLogger<ValidationHandler>(),
-                        app.ApplicationServices.GetService<IMetrics>()));
+                        metricsService));
                 router.MapGet("sync",
-                    SyncHandler.Create(syncActor, _syncPolicy, app.ApplicationServices.GetService<IMetrics>()));
-                router.MapGet("push", PushHandler.Create(syncActor, app.ApplicationServices.GetService<IMetrics>()));
+                    SyncHandler.Create(syncActor, _syncPolicy, metricsService));
+                router.MapGet("push", PushHandler.Create(syncActor, metricsService, hooksHelper));
                 router.MapGet("log", async (req, res, routedata) => _logger.LogInformation(req.Query["message"]));
                 router.MapGet("health", async (req, res, routedata) => await res.WriteAsync(JsonConvert.SerializeObject(new { })));
                 router.MapGet("version", async (req, res, routedata) => await res.WriteAsync(Assembly.GetEntryAssembly()

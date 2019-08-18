@@ -81,7 +81,7 @@ namespace Tweek.Engine.Tests.TestDrivers
 
         private async Task Flush() => dictionary.Clear();
 
-        public TestScope SetTestEnviornment(Dictionary<Identity, Dictionary<string, JsonValue>> contexts, string[] keys,
+        public TestScope SetTestEnvironment(Dictionary<Identity, Dictionary<string, JsonValue>> contexts, string[] keys,
             Dictionary<string, RuleDefinition> rules)
         {
             return new TestScope(rules: new InMemoryRulesRepository(rules), context: Context,

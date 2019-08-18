@@ -15,10 +15,10 @@ spec:
         env:
         - name: ASPNETCORE_ENVIRONMENT
           value: Development
-        - name: CLIENT_ID
+        - name: OIDC_CLIENT_ID
           value: tweek-openid-mock-client
         - name: REDIRECT_URIS
-          value: http://localhost:8080/auth-result/oidc
+          value: http://localhost:8081/auth-result/oidc
         - name: TEST_USER
           value: '{"SubjectId":"user","Username":"user","Password":"pwd"}'
         ports:
@@ -33,6 +33,6 @@ spec:
   selector:
     app: oidc-server-mock
   ports:
-    - port: 8081
+    - port: 8082
       targetPort: 80
 ---

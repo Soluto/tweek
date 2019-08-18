@@ -4,5 +4,5 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn
 COPY . /app
-RUN yarn test 
+RUN CI=true yarn test 
 CMD [ "yarn", "start" ]

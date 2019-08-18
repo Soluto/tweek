@@ -37,11 +37,16 @@ const retrieveOidcSettings = () => JSON.parse(storage.getItem('oidc-settings'));
 export const isAuthenticated = async () => {
   const token = retrieveToken();
   if (token) {
-    const expiration = moment.unix(jwt_decode(token).exp);
+    const decoded = jwt_decode(token);
+    const expiration = moment.unix(decoded.exp);
     if (moment().isBefore(expiration)) {
       return true;
     }
+
     if (isAzure()) {
+      return false;
+    }
+    if (decoded.iss === 'tweek-basic-auth') {
       return false;
     }
     const settings = retrieveOidcSettings();

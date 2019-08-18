@@ -20,7 +20,7 @@ class SearchBox extends Component {
   }
 
   componentWillMount() {
-    const identities = getIdentities().map(x => ({ label: changeCase.pascalCase(x), value: x }));
+    const identities = getIdentities().map((x) => ({ label: changeCase.pascalCase(x), value: x }));
     this.setState({ identities });
   }
 
@@ -84,4 +84,7 @@ class SearchBox extends Component {
   }
 }
 
-export default connect(() => ({}), { openContext })(SearchBox);
+export default connect(
+  () => ({}),
+  { openContext },
+)(SearchBox);

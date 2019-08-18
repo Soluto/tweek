@@ -12,7 +12,7 @@ const mapSuggestionsToProps = compose(
     const query$ = Observable.merge(onSearch$, props$.pluck('value'));
 
     const suggestions$ = query$
-      .debounce(query => Observable.empty().delay(query === '' ? 0 : 500))
+      .debounce((query) => Observable.empty().delay(query === '' ? 0 : 500))
       .distinctUntilChanged()
       .withLatestFrom(props$)
       .switchMap(([value, { getSuggestions, maxSearchResults, showInternalKeys }]) =>

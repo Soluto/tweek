@@ -1,18 +1,18 @@
 {
-    "key_path": "@tweek/schema/other",
-    "meta": {
-        "description": "",
-        "readOnly": false,
-        "archived": false
-    },
-    "implementation": {
-        "type": "const",
-        "value":{
-            "Type":{
-              "type":"string"
-            }
-        }
-    },
-    "valueType": "object",
-    "dependencies": []
+  "key_path": "@tweek/schema/other",
+  "meta": {
+    "description": "",
+    "readOnly": false,
+    "archived": false
+  },
+  "implementation": {
+    "type": "const",
+    "value": {
+      "Type": {
+        "type": "string"
+      }
+    }
+  },
+  "valueType": "object",
+  "dependencies": []
 }

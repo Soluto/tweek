@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, mapProps, withHandlers } from 'recompose';
+import { withTweekValues } from 'react-tweek';
 import * as R from 'ramda';
 import * as keysActions from '../../../../../../store/ducks/selectedKey';
 import { showCustomAlert, buttons } from '../../../../../../store/ducks/alerts';
-import { withTweekKeys } from '../../../../../../contexts/Tweek';
 import SaveButton from '../../../../../../components/common/SaveButton/SaveButton';
 import NewKeyInput from '../../KeyAddPage/NewKeyInput';
 import archiveIcon from '../../../../../../resources/archive-icon.svg';
@@ -42,7 +42,7 @@ const enhance = compose(
       showCustomAlert,
     },
   ),
-  withTweekKeys({ historySince: '@tweek/editor/history/since' }, { defaultValues: {} }),
+  withTweekValues({ historySince: '@tweek/editor/history/since' }, { defaultValues: {} }),
   withHandlers({
     addAlias: ({ selectedKey: { key }, addAlias, showCustomAlert }) => async () => {
       const component = mapProps(

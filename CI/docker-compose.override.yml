@@ -4,9 +4,9 @@ services:
   git:
     image: soluto/tweek-bare-repo
     build: ../services/git-service/BareRepository
-    ports: 
+    ports:
       - "5001:22"
-  
+
   publishing:
     image: soluto/tweek-publishing
     build: ../services/publishing
@@ -24,7 +24,7 @@ services:
       driver: "json-file"
     ports:
       - "5003:80"
-      
+
   authoring:
     image: soluto/tweek-authoring
     build: ../services/authoring
@@ -32,10 +32,10 @@ services:
       driver: "json-file"
     ports:
       - "5005:3000"
-      
+
   editor:
     image: soluto/tweek-editor
-    build: ../services/editor      
+    build: ../services/editor
     logging:
       driver: "json-file"
     ports:
@@ -53,10 +53,10 @@ services:
     build:
       context: ../
       dockerfile: TweekApiSmokeTest.Dockerfile
-    depends_on: 
+    depends_on:
       - gateway
       - publishing
-    environment: 
+    environment:
       - TWEEK_API_URL=http://api/
     links:
       - gateway:api
@@ -77,7 +77,7 @@ services:
 
   e2e-integration:
     build: ../e2e/integration
-    depends_on: 
+    depends_on:
       - gateway
       - publishing
     environment:
@@ -87,9 +87,9 @@ services:
       - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
       - MINIO_PORT=9000
       - MINIO_BUCKET=tweek
-  
+
   oidc-server-mock:
     logging:
       driver: "json-file"
-    ports: 
+    ports:
       - "5011:80"

@@ -1,15 +1,15 @@
 {
   "key_path": "integration_tests/value_distribution/array_format",
   "meta": {
-      "name": "integration_tests/value_distribution/array_format",
-      "description": "",
-      "tags": [],
-      "readOnly": false,
-      "archived": false
+    "name": "integration_tests/value_distribution/array_format",
+    "description": "",
+    "tags": [],
+    "readOnly": false,
+    "archived": false
   },
   "implementation": {
-      "type": "file",
-      "format": "jpad"
+    "type": "file",
+    "format": "jpad"
   },
   "valueType": "number",
   "dependencies": []

@@ -1942,9 +1942,10 @@ tunnel-agent@0.6.0:
   dependencies:
     safe-buffer "^5.0.1"
 
-tweek-client@^1.0.0-rc5:
+tweek-client@^1.0.0-rc7:
   version "1.0.0-rc7"
   resolved "https://registry.yarnpkg.com/tweek-client/-/tweek-client-1.0.0-rc7.tgz#af5b17cbf3dd73294829b555fbbf354cd79f563a"
+  integrity sha512-+UnxnGI7jzmUOcoa5TRW8C/U5UkJS7YCL+TErq4QNlK4ef8aFl7n03o7V4hS9fUNwcK6pNdLKGNhZ7P0hABVYA==
   dependencies:
     change-emitter "^0.1.6"
     cross-fetch "^3.0.1"

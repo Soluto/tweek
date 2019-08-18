@@ -9,7 +9,7 @@ import './CustomSlider.css';
 function replaceNaN(fallbackValue) {
   return isNaN(this) ? fallbackValue : this;
 }
-const parseNumericInput = inputValue => (inputValue === '' ? 0 : parseInt(inputValue, 10));
+const parseNumericInput = (inputValue) => (inputValue === '' ? 0 : parseInt(inputValue, 10));
 
 const LegendItem = ({
   onDelete,
@@ -40,7 +40,9 @@ const LegendItem = ({
       data-comp="legend-percent"
       className="legend-percent-input"
       value={weight}
-      onChange={newWeight => onWeightChanged(replaceNaN.call(parseNumericInput(newWeight), weight))}
+      onChange={(newWeight) =>
+        onWeightChanged(replaceNaN.call(parseNumericInput(newWeight), weight))
+      }
       onWheel={({ deltaY }) => {
         const newValue = Math.min(100, Math.max(0, deltaY < 0 ? weight + 1 : weight - 1));
         if (newValue === weight) return;
@@ -79,21 +81,20 @@ const CustomSlider = ({
                 onDelete={() =>
                   mutator.apply((m) => {
                     const itemToUpdate = i === 0 ? 1 : i - 1;
-                    m
-                      .in(itemToUpdate)
+                    m.in(itemToUpdate)
                       .in('weight')
                       .adjustValue(R.add(weight));
                     m.in(i).delete();
                     return m;
                   })
                 }
-                onValueChanged={newValue =>
+                onValueChanged={(newValue) =>
                   mutator
                     .in(i)
                     .in('value')
                     .updateValue(newValue)
                 }
-                onWeightChanged={newWeight =>
+                onWeightChanged={(newWeight) =>
                   mutator
                     .in(i)
                     .in('weight')
@@ -125,12 +126,10 @@ const CustomSlider = ({
                   if (items[i + 1].weight - data.deltaX < 0) return;
                   if (items[i].weight + data.deltaX < 0) return;
                   mutator.apply((m) => {
-                    m
-                      .in(i)
+                    m.in(i)
                       .in('weight')
                       .adjustValue(R.add(data.deltaX));
-                    m
-                      .in(i + 1)
+                    m.in(i + 1)
                       .in('weight')
                       .adjustValue(R.subtract(R.__, data.deltaX));
                     return m;
