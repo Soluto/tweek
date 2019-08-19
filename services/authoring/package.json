@@ -1,6 +1,6 @@
 {
   "name": "tweek-authoring",
-  "version": "1.0.0-rc5",
+  "version": "1.0.0-rc6",
   "main": "src/server.js",
   "repository": "Soluto/tweek",
   "author": "Soluto",
@@ -71,6 +71,7 @@
     "@types/sinon": "^7.0.13",
     "@types/sshpk": "^1.10.3",
     "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
     "chai-things": "^0.2.0",
     "cpr": "^3.0.1",
     "cross-env": "^5.2.0",

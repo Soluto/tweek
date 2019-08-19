@@ -5,6 +5,7 @@ import sinon from 'sinon';
 
 const chai = require('chai');
 chai.use(require('sinon-chai'));
+chai.use(require('chai-as-promised'));
 const expect = chai.expect;
 
 describe('HooksRepository', () => {
@@ -18,6 +19,7 @@ describe('HooksRepository', () => {
   };
 
   const hooksFilePath = 'hooks.json';
+  const missingHooksFileMessage = `the path '${hooksFilePath}' does not exist in the given tree`;
   let testHooks: Hook[];
   let testHooksJson: string;
   let testAuthor: Author;
@@ -51,14 +53,23 @@ describe('HooksRepository', () => {
   });
 
   describe('getHooks', () => {
-    beforeEach(() => {
+    it('returns the hooks from the hooks file in the git repo', async () => {
       mockGitRepo.readFile = sinon.stub().returns(testHooksJson);
+
+      await expect(hooksRepo.getHooks()).to.become(testHooks);
     });
 
-    it('returns the hooks from the hooks file in the git repo', async () => {
-      const hooks = await hooksRepo.getHooks();
+    it('returns an empty array if the hooks file does not exist', async () => {
+      mockGitRepo.readFile = sinon.stub().rejects(new Error(missingHooksFileMessage));
 
-      expect(hooks).to.eql(testHooks);
+      await expect(hooksRepo.getHooks()).to.become([]);
+    });
+
+    it('throws an error if it failed reading the hooks file', async () => {
+      const err = new Error('some random error while reading the file');
+      mockGitRepo.readFile = sinon.stub().rejects(err);
+
+      await expect(hooksRepo.getHooks()).to.be.rejectedWith(err);
     });
   });
 

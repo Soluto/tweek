@@ -35,7 +35,7 @@ All GET APIs return an `ETag` header and all POST/PUT/DELETE APIs can optionally
 
 ## List all hooks
 
-`GET /hooks/?keyPathFilter=url_encoded_key_path`
+`GET /api/v2/hooks/?keyPathFilter=url_encoded_key_path`
 
 The `keyPathFilter` query param is optional and filters results to that exact keyPath (not evaluating wildcards)
 
@@ -66,7 +66,7 @@ Response:
 
 ## Create a hook
 
-`POST /hooks/?author.name=name&author.email=email`
+`POST /api/v2/hooks`
 
 Request body:
 
@@ -80,7 +80,7 @@ Request body:
 
 ## Update a hook
 
-`PUT /hooks/:id/?author.name=name&author.email=email`
+`PUT /api/v2/hooks/:id`
 
 Request body:
 
@@ -94,47 +94,91 @@ Request body:
 
 ## Delete a hook
 
-`DELETE /hooks/:id/?author.name=name&author.email=email`
+`DELETE /api/v2/hooks/:id`
 
 # The webhook request
 
-POST request with JSON content showing the new state of the keys
+POST request with JSON content showing the new state of the keys.  
+**Notes**:
+
+- `implementation` is a string, and it might also be null depending on the key format
+- `oldValue` can be null if this key was newly created in this commit
 
 Example request body:
 
 ```JSON
-[
-  {
-    "keyPath": "a/b/c",
-    "implementation": {
-      "partitions": [],
-      "valueType": "string",
-      "rules": [
-        {
-          "Matcher": {
-            "user.Country": "AA"
+{
+  "author": {
+    "name": "author name",
+    "email": "author@email.com"
+  },
+  "updates": [
+    {
+      "newValue": {
+        "keyPath": "a/b/c",
+        "manifest": {
+          "key_path": "a/b/c",
+          "meta": {
+            "archived": false,
+            "name": "a/b/c",
+            "description": "",
+            "tags": []
           },
-          "Value": "19",
-          "Type": "SingleVariant"
-        }
-      ],
-      "defaultValue": "15"
-    },
-    "manifest": {
-      "key_path": "a/b/c",
-      "meta": {
-        "archived": false,
-        "name": "a/b/c",
-        "description": "",
-        "tags": []
+          "implementation": {
+            "type": "file",
+            "format": "jpad"
+          },
+          "valueType": "string",
+          "dependencies": []
+        },
+        "implementation": "{
+          \"partitions\": [],
+          \"valueType\": \"string\",
+          \"rules\": [
+            {
+              \"Matcher\": {
+                \"user.Country\": \"AA\"
+              },
+              \"Value\": \"19\",
+              \"Type\": \"SingleVariant\"
+            }
+          ],
+          \"defaultValue\": \"15\"
+        }"
       },
-      "implementation": {
-        "type": "file",
-        "format": "jpad"
-      },
-      "valueType": "string",
-      "dependencies": []
+      "oldValue": {
+        "keyPath": "a/b/c",
+        "manifest": {
+          "key_path": "a/b/c",
+          "meta": {
+            "archived": false,
+            "name": "a/b/c",
+            "description": "",
+            "tags": []
+          },
+          "implementation": {
+            "type": "file",
+            "format": "jpad"
+          },
+          "valueType": "string",
+          "dependencies": []
+        },
+        "implementation": "{
+          \"partitions\": [],
+          \"valueType\": \"string\",
+          \"rules\": [
+            {
+              \"Matcher\": {
+                \"user.Country\": \"AA\"
+              },
+              \"Value\": \"19\",
+              \"Type\": \"SingleVariant\"
+            }
+          ],
+          \"defaultValue\": \"17\"
+        }"
+      }
     }
-  }
-]
+  ]
+}
 ```
