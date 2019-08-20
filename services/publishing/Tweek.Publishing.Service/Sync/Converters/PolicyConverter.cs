@@ -34,8 +34,7 @@ namespace Tweek.Publishing.Service.Sync.Converters
                     {
                         var policy = JsonConvert.DeserializeObject<Policy>(readFn(x));
                         policy.Rules = policy.Rules.Map(z =>
-                        {
-                            return new PolicyRule
+                            new PolicyRule
                             {
                                 Group = z.Group,
                                 User = z.User,
@@ -43,8 +42,8 @@ namespace Tweek.Publishing.Service.Sync.Converters
                                 Action = z.Action,
                                 Object = x.StartsWith("security/") ? z.Object : GetPolicyObjectForDirPolicyFile(x),
                                 Contexts = x.StartsWith("security/") ? z.Contexts : new Dictionary<string, string>()
-                            };
-                        }).ToArray();
+                            }
+                        ).ToArray();
 
                         return policy;
                     }
@@ -67,17 +66,16 @@ namespace Tweek.Publishing.Service.Sync.Converters
                     }
 
                     return manifest.Policy.Map(z =>
-                    {
-                        return new PolicyRule
-                        {
-                            Group = z.Group,
-                            User = z.User,
-                            Effect = z.Effect,
-                            Action = z.Action,
-                            Object = GetPolicyObjectForKey(x),
-                            Contexts = new Dictionary<string, string>()
-                        };
-                    }).ToArray();
+                     new PolicyRule
+                     {
+                         Group = z.Group,
+                         User = z.User,
+                         Effect = z.Effect,
+                         Action = z.Action,
+                         Object = GetPolicyObjectForKey(x),
+                         Contexts = new Dictionary<string, string>()
+                     }
+                    ).ToArray();
                 }
                 catch (Exception ex)
                 {
