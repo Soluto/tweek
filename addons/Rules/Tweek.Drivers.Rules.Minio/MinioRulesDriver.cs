@@ -47,7 +47,7 @@ namespace Tweek.Drivers.Rules.Minio
                 {
                     json = streamReader.ReadToEnd();
                 }
-            }, cancellationToken);
+            }, cancellationToken: cancellationToken);
             return json;
         }
     }

@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:2.1-sdk as source
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2 as source
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends jq && \

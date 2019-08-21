@@ -89,13 +89,13 @@ namespace Tweek.Engine.Tests.Drivers
 
             // Act
             versions.OnNext("10001");
-            await Task.Delay(10);
+            await Task.Delay(100);
 
             versions.OnNext("10002");
-            await Task.Delay(10);
+            await Task.Delay(100);
 
             versions.OnNext("10003");
-            await Task.Delay(10);
+            await Task.Delay(100);
 
             // Assert
             Assert.Equal("10003", repository.CurrentLabel);
