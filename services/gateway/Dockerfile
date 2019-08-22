@@ -1,5 +1,5 @@
 # -------- DEPENDENCIES -------- #
-FROM golang:1.11.4-stretch as build
+FROM golang:1.11.13-stretch as build
 
 ADD go.mod /src/go.mod
 ADD go.sum /src/go.sum
@@ -16,7 +16,7 @@ RUN go build -o entry \
 RUN go build -o hcheck "tweek-gateway/healthcheck"
 
 # ------ REGO TESTS ------ #
-FROM golang:1.11.4-stretch as regotests
+FROM golang:1.11.13-stretch as regotests
 
 RUN curl -L -o opa https://github.com/open-policy-agent/opa/releases/download/v0.8.2/opa_linux_amd64
 RUN chmod u+x opa
