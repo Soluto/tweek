@@ -35,6 +35,7 @@ The easiest way to start evaluating Tweek is to run it locally on docker, make s
 
 - Clone the repo (`git clone https://github.com/Soluto/tweek.git`)
 - [optional] Pull images, run `yarn docker-compose pull --parallel` (optional for getting started fast with Tweek as it's skip build)
+- [optional] newer versions of docker-compose support parallel build, so you can use `yarn docker-compose build --parallel` for faster build.
 
 ### Using Docker Compose
 
