@@ -2,7 +2,7 @@ import React from 'react';
 import md5 from 'md5';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
-import { CurrentUserContext, useCurrentUser } from '../contexts/CurrentUser';
+import { useCurrentUser } from '../contexts/CurrentUser';
 
 const Container = styled.div`
   display: flex;

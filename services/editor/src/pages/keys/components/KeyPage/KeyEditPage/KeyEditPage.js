@@ -1,4 +1,4 @@
-import React, { Component, useCallback, useMemo } from 'react';
+import React, { Component, useMemo } from 'react';
 import { compose, pure } from 'recompose';
 import classNames from 'classnames';
 import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEditor';
