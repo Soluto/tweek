@@ -14,6 +14,7 @@ export default class TreeDirectory extends React.Component {
     children: PropTypes.arrayOf(PropTypes.node).isRequired,
     expandByDefault: PropTypes.bool,
     addKey: PropTypes.func,
+    editKey: PropTypes.func,
   };
 
   constructor(props) {
@@ -33,7 +34,10 @@ export default class TreeDirectory extends React.Component {
         <div
           style={{ paddingLeft: (depth + 1) * 10 }}
           className="key-folder-name"
-          onClick={() => this.setState({ isCollapsed: !isCollapsed })}
+          onClick={(event) => {
+            this.editKeyAction(event, fullPath)
+            this.setState({ isCollapsed: !isCollapsed });
+          }}
           data-folder-name={fullPath}
           data-is-collapsed={isCollapsed}
         >
@@ -93,5 +97,10 @@ export default class TreeDirectory extends React.Component {
   addKeyAction(event, fullPath) {
     event.stopPropagation();
     this.props.addKey(hasUnsavedChanges, `${fullPath}/`);
+  }
+
+  editKeyAction(event, fullPath) {
+    event.stopPropagation();
+    this.props.editKey(hasUnsavedChanges, `${fullPath}/`);
   }
 }

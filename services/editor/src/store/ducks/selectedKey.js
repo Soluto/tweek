@@ -102,6 +102,24 @@ export const addKey = (shouldShowConfirmationScreen, keyPath) =>
     setImmediate(() => dispatch(updateKeyPath(keyPath, validation)));
   });
 
+const confirmEditKeyAlert = {
+  title: 'Editing Key',
+  message:
+    'Changing to edit key page will discard all your changes.\nDo you want to continue?',
+};
+
+export const editKey = (shouldShowConfirmationScreen, keyPath) =>
+  continueGuard(shouldShowConfirmationScreen, confirmEditKeyAlert, (dispatch) => {
+    // update the state to empty key in order to skip on leave hook
+    dispatch({ type: KEY_OPENED, payload: createBlankJPadKey() });
+    // navigate and set defaults
+    dispatch(push(`/keys/${keyPath}_edit`));
+    dispatch(changeKeyValueType('string'));
+
+    const validation = { isValid: false, hint: '', isShowingHint: false };
+    setImmediate(() => dispatch(updateKeyPath(keyPath, validation)));
+  });
+
 export function addKeyDetails() {
   return async function(dispatch, getState) {
     const currentState = getState();

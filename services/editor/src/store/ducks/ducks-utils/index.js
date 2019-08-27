@@ -1,2 +1,2 @@
 export * from './blankKeyDefinition';
-export * from './permissions';
+export * from './editFolderDefinition';
