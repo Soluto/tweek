@@ -37,7 +37,7 @@ namespace Tweek.Publishing.Service
         private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
        
-        private readonly RetryPolicy _syncPolicy;
+        private readonly AsyncRetryPolicy _syncPolicy;
 
 
         public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
@@ -45,7 +45,7 @@ namespace Tweek.Publishing.Service
             _configuration = configuration;
             _logger = loggerFactory.CreateLogger("Default");
             _syncPolicy = Policy.Handle<Exception>()
-                        .WaitAndRetryAsync(3,
+                .WaitAndRetryAsync(3,
                             retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                             async (ex, timespan) =>
                             {

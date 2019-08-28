@@ -44,7 +44,7 @@ namespace Tweek.Publishing.Service.Storage
                 {
                     tsc.SetException(ex);
                 }
-            }, cancellationToken);
+            }, cancellationToken: cancellationToken);
             await tsc.Task;
         }
 
@@ -80,7 +80,7 @@ namespace Tweek.Publishing.Service.Storage
         public async Task<bool> Exists(string objectName, CancellationToken cancellationToken = default)
         {
             try{
-                await _client.StatObjectAsync(_bucketName, objectName, cancellationToken);
+                await _client.StatObjectAsync(_bucketName, objectName, cancellationToken: cancellationToken);
                 return true;
             } catch (ObjectNotFoundException ex){
                 return false;
