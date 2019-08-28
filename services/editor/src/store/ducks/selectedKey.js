@@ -10,7 +10,7 @@ import {
   BLANK_KEY_NAME,
 } from './ducks-utils/blankKeyDefinition';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
-import { continueGuard } from './ducks-utils/guards';
+import { continueGuard, FOLDER_EDIT_NAME } from './ducks-utils';
 import { downloadTags } from './tags';
 import { showError } from './notifications';
 import { showConfirm } from './alerts';
@@ -102,18 +102,17 @@ export const addKey = (shouldShowConfirmationScreen, keyPath) =>
     setImmediate(() => dispatch(updateKeyPath(keyPath, validation)));
   });
 
-const confirmEditKeyAlert = {
-  title: 'Editing Key',
-  message:
-    'Changing to edit key page will discard all your changes.\nDo you want to continue?',
+const confirmEditFolderAlert = {
+  title: 'Editing Folder',
+  message: 'Changing to edit key page will discard all your changes.\nDo you want to continue?',
 };
 
-export const editKey = (shouldShowConfirmationScreen, keyPath) =>
-  continueGuard(shouldShowConfirmationScreen, confirmEditKeyAlert, (dispatch) => {
+export const editFolder = (shouldShowConfirmationScreen, keyPath) =>
+  continueGuard(shouldShowConfirmationScreen, confirmEditFolderAlert, (dispatch) => {
     // update the state to empty key in order to skip on leave hook
     dispatch({ type: KEY_OPENED, payload: createBlankJPadKey() });
     // navigate and set defaults
-    dispatch(push(`/keys/${keyPath}_edit`));
+    dispatch(push(`/keys/${keyPath}${FOLDER_EDIT_NAME}`));
     dispatch(changeKeyValueType('string'));
 
     const validation = { isValid: false, hint: '', isShowingHint: false };

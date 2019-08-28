@@ -1,1 +1,1 @@
-export const FOLDER_EDIT_NAME = '_edit';
+export const FOLDER_EDIT_NAME = '_';

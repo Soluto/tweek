@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import MonacoEditor from 'react-monaco-editor';
 import { FetchError } from 'tweek-client';
-import SaveButton from '../../../../components/common/SaveButton/SaveButton';
-import { useRemoteState } from './utils';
-import useErrorNotifier from '../../../../utils/useErrorNotifier';
+import SaveButton from './common/SaveButton/SaveButton';
+import { useRemoteState } from '../pages/settings/components/PoliciesPage/utils';
+import useErrorNotifier from '../utils/useErrorNotifier';
 
 const monacoOptions = {
   autoIndent: true,

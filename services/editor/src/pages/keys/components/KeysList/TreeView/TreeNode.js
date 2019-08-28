@@ -4,14 +4,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { mapProps, compose, shouldUpdate } from 'recompose';
 import * as keysActions from '../../../../../store/ducks/keys';
-import { addKey, editKey } from '../../../../../store/ducks/selectedKey';
+import { addKey, editFolder } from '../../../../../store/ducks/selectedKey';
 import TreeDirectory from './TreeDirectory';
 import { compsPathSorter, leaf } from './pathSorter';
 
 const TreeNode = compose(
   connect(
     (state) => state,
-    { ...keysActions, addKey, editKey },
+    { ...keysActions, addKey, editFolder },
   ),
   mapProps(({ selectedPath, fullPath, ...props }) => ({
     selectedPath,
@@ -35,7 +35,7 @@ const TreeNode = compose(
     selected,
     selectedPath,
     addKey,
-    editKey,
+    editFolder,
   }) => {
     let LeafElement = renderItem;
     return node === leaf ? (
@@ -51,7 +51,7 @@ const TreeNode = compose(
           selected,
           expandByDefault: expandByDefault,
           addKey,
-          editKey,
+          editFolder,
         }}
       >
         {Object.keys(node)

@@ -11,7 +11,7 @@ import hasUnsavedChanges from '../utils/hasUnsavedChanges';
 import MessageKeyPage from './MessageKeyPage/MessageKeyPage';
 import KeyEditPage from './KeyEditPage/KeyEditPage';
 import KeyAddPage from './KeyAddPage/KeyAddPage';
-import FolderEditPage from './FolderEditPage';
+import FolderEditPage from '../FolderEditPage';
 import './KeyPage.css';
 
 const KeyPage = ({
@@ -36,9 +36,11 @@ const KeyPage = ({
     return <KeyAddPage />;
   }
 
-  if (configKey.endsWith(FOLDER_EDIT_NAME)) {
+  if (configKey.endsWith(`/${FOLDER_EDIT_NAME}`)) {
     return <FolderEditPage />;
   }
+
+  console.log('selected', selectedKey);
 
   const { implementation } = selectedKey.local;
   return !implementation ? (

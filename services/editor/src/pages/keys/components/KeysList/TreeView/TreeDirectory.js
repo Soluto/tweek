@@ -14,7 +14,7 @@ export default class TreeDirectory extends React.Component {
     children: PropTypes.arrayOf(PropTypes.node).isRequired,
     expandByDefault: PropTypes.bool,
     addKey: PropTypes.func,
-    editKey: PropTypes.func,
+    editFolder: PropTypes.func,
   };
 
   constructor(props) {
@@ -35,7 +35,6 @@ export default class TreeDirectory extends React.Component {
           style={{ paddingLeft: (depth + 1) * 10 }}
           className="key-folder-name"
           onClick={(event) => {
-            this.editKeyAction(event, fullPath)
             this.setState({ isCollapsed: !isCollapsed });
           }}
           data-folder-name={fullPath}
@@ -58,6 +57,17 @@ export default class TreeDirectory extends React.Component {
             data-effect="solid"
             data-place="top"
             onClick={(event) => this.addKeyAction(event, fullPath)}
+          />
+          <button
+            data-comp="edit"
+            className="add-key"
+            data-tip={'Edit folder'}
+            data-for={fullPath}
+            data-delay-hide={100}
+            data-delay-show={500}
+            data-effect="solid"
+            data-place="top"
+            onClick={(event) => this.editFolderAction(event, fullPath)}
           />
           <ReactTooltip id={fullPath} />
         </div>
@@ -99,8 +109,8 @@ export default class TreeDirectory extends React.Component {
     this.props.addKey(hasUnsavedChanges, `${fullPath}/`);
   }
 
-  editKeyAction(event, fullPath) {
+  editFolderAction(event, fullPath) {
     event.stopPropagation();
-    this.props.editKey(hasUnsavedChanges, `${fullPath}/`);
+    this.props.editFolder(hasUnsavedChanges, `${fullPath}/`);
   }
 }

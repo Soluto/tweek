@@ -2,7 +2,7 @@ import React from 'react';
 import { Validator } from 'jsonschema';
 import { tweekManagementClient } from '../../../../utils/tweekClients';
 import jsonSchema from './acl-schema.json';
-import RemoteCodeEditor from './RemoteCodeEditor';
+import RemoteCodeEditor from '../../../../components/RemoteCodeEditor';
 
 const schemaValidator = new Validator();
 const isValidJson = (data) => {
