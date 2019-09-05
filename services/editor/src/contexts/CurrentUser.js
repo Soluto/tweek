@@ -1,38 +1,27 @@
-import React, { Component } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { tweekManagementClient } from '../utils/tweekClients';
 
-export const CurrentUserContext = React.createContext(null);
+const CurrentUserContext = React.createContext(null);
+CurrentUserContext.displayName = 'CurrentUser';
 
-export class CurrentUserProvider extends Component {
-  state = {
-    currentUser: null,
-  };
-  _isMounted = false;
+export const CurrentUserProvider = ({ children }) => {
+  const [currentUser, setCurrentUser] = useState(null);
+  useEffect(() => {
+    let cancel = false;
 
-  async componentDidMount() {
-    this._isMounted = true;
-    const currentUser = await tweekManagementClient.currentUser();
-    if (!this._isMounted) {
-      return;
+    async function run() {
+      const user = await tweekManagementClient.currentUser();
+      if (!cancel) {
+        setCurrentUser(user);
+      }
     }
-    this.setState({ currentUser });
-  }
 
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
+    run();
 
-  render() {
-    return (
-      <CurrentUserContext.Provider value={this.state.currentUser}>
-        {this.props.children}
-      </CurrentUserContext.Provider>
-    );
-  }
-}
+    return () => (cancel = true);
+  }, []);
 
-export const withCurrentUser = BaseComponent => props => (
-  <CurrentUserContext.Consumer>
-    {currentUser => <BaseComponent {...props} currentUser={currentUser} />}
-  </CurrentUserContext.Consumer>
-);
+  return <CurrentUserContext.Provider value={currentUser}>{children}</CurrentUserContext.Provider>;
+};
+
+export const useCurrentUser = () => useContext(CurrentUserContext);

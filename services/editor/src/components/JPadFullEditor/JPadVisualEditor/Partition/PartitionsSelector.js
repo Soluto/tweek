@@ -1,41 +1,68 @@
 import React from 'react';
 import { WithContext as ReactTags } from 'react-tag-input';
+import { compose, withHandlers, withProps } from 'recompose';
 import * as ContextService from '../../../../services/context-service';
 import './PartitionsSelector.css';
 
-export default ({ partitions, handlePartitionAddition, handlePartitionDelete, alerter }) => {
-  const allProperties = ContextService.getSchemaProperties().map(x => ({
-    id: x.id,
-    text: `${x.name} (${x.identity})`,
-  }));
-  const indexedSuggestions = allProperties
-    .filter(property => !partitions.includes(property.id))
-    .map(x => x.text);
-  const indexedTags = partitions.map(
-    partition =>
-      allProperties.find(property => property.id === partition) || {
-        id: partition,
-        text: partition,
-      },
-  );
+const enhance = compose(
+  withProps(({ partitions }) => {
+    const allProperties = ContextService.getSchemaProperties().map((x) => ({
+      id: x.id,
+      text: `${x.name} (${x.identity})`,
+    }));
+    return {
+      allProperties,
+      indexedSuggestions: allProperties.filter((property) => !partitions.includes(property.id)),
+      indexedTags: partitions.map(
+        (partition) =>
+          allProperties.find((property) => property.id === partition) || {
+            id: partition,
+            text: partition,
+          },
+      ),
+    };
+  }),
+  withHandlers({
+    handleAddition: ({
+      allProperties,
+      partitions,
+      handlePartitionAddition,
+      handlePartitionDelete,
+      alerter,
+    }) => (newValue) => {
+      const newId = newValue.id.toLowerCase();
 
-  const handleAddition = (newValue) => {
-    const newProperty = allProperties.find(x => x.text === newValue || x.id === newValue);
-    if (!newProperty) {
-      alerter.showAlert({
-        title: 'Attention!',
-        message: `Can't partition by '${newValue}'`,
-      });
-    } else if (!partitions.includes(newProperty.id)) {
-      handlePartitionAddition(newProperty.id);
-    } else {
-      alerter.showAlert({
-        title: 'Attention!',
-        message: `Property '${newProperty.text}' already exists in partitions list`,
-      });
-    }
-  };
+      let newProperty = allProperties.find((x) => x.id.toLowerCase() === newId);
+      if (!newProperty) {
+        newProperty = allProperties.find(
+          (x) => x.text.toLowerCase() === newValue.text.toLowerCase(),
+        );
+      }
 
+      if (!newProperty) {
+        alerter.showAlert({
+          title: 'Attention!',
+          message: `Can't partition by '${newValue.text}'`,
+        });
+      } else if (partitions.includes(newProperty.id)) {
+        alerter.showAlert({
+          title: 'Attention!',
+          message: `Property '${newProperty.text}' already exists in partitions list`,
+        });
+      } else {
+        handlePartitionAddition(newProperty.id);
+      }
+    },
+  }),
+);
+
+const PartitionSelector = ({
+  indexedSuggestions,
+  indexedTags,
+  handleAddition,
+  partitions,
+  handlePartitionDelete,
+}) => {
   return (
     <div className="partitions-selector-container" data-comp="partition-selector">
       <label className="partitions-label">Partition by:</label>
@@ -49,6 +76,8 @@ export default ({ partitions, handlePartitionAddition, handlePartitionDelete, al
           minQueryLength={1}
           allowDeleteFromEmptyInput
           autocomplete
+          allowUnique={false}
+          allowDragDrop={false}
           classNames={{
             tags: 'tags-container',
             tagInput: 'tag-input',
@@ -61,3 +90,5 @@ export default ({ partitions, handlePartitionAddition, handlePartitionDelete, al
     </div>
   );
 };
+
+export default enhance(PartitionSelector);

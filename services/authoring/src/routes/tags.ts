@@ -25,7 +25,11 @@ export class TagsController {
 
   @Authorize({ permission: PERMISSIONS.TAGS_WRITE })
   @PUT
-  async saveTags( @QueryParam('author.name') name: string, @QueryParam('author.email') email: string, tagsToSave: JsonValue): Promise<void> {
+  async saveTags(
+    @QueryParam('author.name') name: string,
+    @QueryParam('author.email') email: string,
+    tagsToSave: JsonValue,
+  ): Promise<void> {
     const oid = await this.tagsRepository.mergeTags(tagsToSave, { name, email });
     addOid(this.context.response, oid);
   }

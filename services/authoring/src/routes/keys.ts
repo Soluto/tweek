@@ -1,5 +1,14 @@
-import R = require('ramda');
-import { GET, Path, DELETE, ServiceContext, Context, PUT, QueryParam, Errors } from 'typescript-rest';
+import * as R from 'ramda';
+import {
+  GET,
+  Path,
+  DELETE,
+  ServiceContext,
+  Context,
+  PUT,
+  QueryParam,
+  Errors,
+} from 'typescript-rest';
 import { AutoWired, Inject } from 'typescript-ioc';
 import { Tags } from 'typescript-rest-swagger';
 import searchIndex from '../search-index';
@@ -7,11 +16,11 @@ import { Authorize } from '../security/authorize';
 import { PERMISSIONS } from '../security/permissions/consts';
 import KeysRepository from '../repositories/keys-repository';
 import { addOid } from '../utils/response-utils';
-import { logger } from '../utils/jsonLogger';
+import logger from '../utils/logger';
 
 export type KeyUpdateModel = {
-  implementation: any,
-  manifest: any,
+  implementation: any;
+  manifest: any;
 };
 
 @AutoWired
@@ -35,11 +44,14 @@ export class KeysController {
   @Authorize({ permission: PERMISSIONS.KEYS_READ })
   @GET
   @Path('/key')
-  async getKey( @QueryParam('keyPath') keyPath: string, @QueryParam('revision') revision?: string): Promise<any> {
+  async getKey(
+    @QueryParam('keyPath') keyPath: string,
+    @QueryParam('revision') revision?: string,
+  ): Promise<any> {
     try {
       return await this.keysRepository.getKeyDetails(keyPath, { revision });
-    } catch (exp) {
-      logger.error(`Error retrieving key ${keyPath}`, exp);
+    } catch (err) {
+      logger.error({ err, keyPath }, 'Error retrieving key');
       throw new Errors.NotFoundError();
     }
   }
@@ -47,12 +59,19 @@ export class KeysController {
   @Authorize({ permission: PERMISSIONS.KEYS_WRITE })
   @PUT
   @Path('/key')
-  async updateKey( @QueryParam('keyPath') keyPath: string, @QueryParam('author.name') name: string, @QueryParam('author.email') email: string,
-    newKeyModel: KeyUpdateModel): Promise<string> {
+  async updateKey(
+    @QueryParam('keyPath') keyPath: string,
+    @QueryParam('author.name') name: string,
+    @QueryParam('author.email') email: string,
+    newKeyModel: KeyUpdateModel,
+  ): Promise<string> {
     const { implementation } = newKeyModel;
     let { manifest } = newKeyModel;
     manifest = Object.assign({ key_path: keyPath }, manifest);
-    const oid = await this.keysRepository.updateKey(keyPath, manifest, implementation, { name, email });
+    const oid = await this.keysRepository.updateKey(keyPath, manifest, implementation, {
+      name,
+      email,
+    });
     addOid(this.context.response, oid);
 
     return 'OK';
@@ -61,7 +80,12 @@ export class KeysController {
   @Authorize({ permission: PERMISSIONS.KEYS_WRITE })
   @DELETE
   @Path('/key')
-  async deleteKey( @QueryParam('keyPath') keyPath: string, @QueryParam('author.name') name: string, @QueryParam('author.email') email: string, additionalKeys?: string[]): Promise<string> {
+  async deleteKey(
+    @QueryParam('keyPath') keyPath: string,
+    @QueryParam('author.name') name: string,
+    @QueryParam('author.email') email: string,
+    additionalKeys?: string[],
+  ): Promise<string> {
     let keysToDelete = [keyPath];
     if (additionalKeys && Array.isArray(additionalKeys)) {
       keysToDelete = keysToDelete.concat(additionalKeys);
@@ -75,7 +99,10 @@ export class KeysController {
   @Authorize({ permission: PERMISSIONS.HISTORY })
   @GET
   @Path('/revision-history')
-  async getKeyRevisionHistory( @QueryParam('keyPath') keyPath: string, @QueryParam('since') since: string): Promise<any[]> {
+  async getKeyRevisionHistory(
+    @QueryParam('keyPath') keyPath: string,
+    @QueryParam('since') since: string,
+  ): Promise<any[]> {
     return await this.keysRepository.getKeyRevisionHistory(keyPath, { since });
   }
 
@@ -89,7 +116,10 @@ export class KeysController {
   @Authorize({ permission: PERMISSIONS.KEYS_READ })
   @GET
   @Path('/manifest')
-  async getManifest( @QueryParam('keyPath') keyPath: string, @QueryParam('revision') revision?: string): Promise<any> {
+  async getManifest(
+    @QueryParam('keyPath') keyPath: string,
+    @QueryParam('revision') revision?: string,
+  ): Promise<any> {
     try {
       return await this.keysRepository.getKeyManifest(keyPath, { revision });
     } catch (exp) {
@@ -100,7 +130,7 @@ export class KeysController {
   @Authorize({ permission: PERMISSIONS.KEYS_READ })
   @GET
   @Path('/dependent')
-  async getDependents( @QueryParam('keyPath') keyPath: string): Promise<any> {
+  async getDependents(@QueryParam('keyPath') keyPath: string): Promise<any> {
     return await searchIndex.dependents(keyPath);
   }
 }

@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import gtmParts from 'react-google-tag-manager';
 import { branch, compose, renderNothing } from 'recompose';
-import { withTweekKeys } from '../contexts/Tweek';
+import { withTweekValues } from 'react-tweek';
 
 class GoogleTagManagerContainer extends React.Component {
   componentDidMount() {
@@ -31,7 +31,7 @@ class GoogleTagManagerContainer extends React.Component {
     gtmId: PropTypes.string.isRequired,
     dataLayerName: PropTypes.string,
     additionalEvents: PropTypes.object,
-    previewVariables: PropTypes.string,
+    previewVariables: PropTypes.bool,
     scriptId: PropTypes.string,
   };
 
@@ -44,16 +44,16 @@ class GoogleTagManagerContainer extends React.Component {
 }
 
 const enhance = compose(
-  withTweekKeys(
+  withTweekValues(
     {
       isEnabled: '@tweek/editor/google_tag_manager/enabled',
-      gtmId$: '@tweek/editor/google_tag_manager/id',
+      gtmId: '@tweek/editor/google_tag_manager/id',
     },
     {
-      defaultValues: { isEnabled: false, gtmId$: null },
+      defaultValues: { isEnabled: false },
     },
   ),
-  branch(({ isEnabled }) => !isEnabled, renderNothing),
+  branch(({ isEnabled, gtmId }) => !isEnabled || !gtmId, renderNothing),
 );
 
 export default enhance(GoogleTagManagerContainer);

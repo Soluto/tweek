@@ -16,12 +16,12 @@ const existingKeyValidation = {
 };
 
 const keyAsFolderNameValidation = {
-  rule: ({ value, keysList }) => !keysList.some(x => x.startsWith(`${value}/`)),
+  rule: ({ value, keysList }) => !keysList.some((x) => x.startsWith(`${value}/`)),
   hint: 'Key name similar to existing category',
 };
 
 const keyFolderValidation = {
-  rule: ({ value, keysList }) => !keysList.some(x => value.startsWith(`${x}/`)),
+  rule: ({ value, keysList }) => !keysList.some((x) => value.startsWith(`${x}/`)),
   hint: 'Category similar to existing key',
 };
 
@@ -39,7 +39,7 @@ let keyNameValidations = [
   invalidCharactersValidation,
 ];
 
-export default function (keyName, keysList) {
-  let failedRule = keyNameValidations.find(x => !x.rule({ value: keyName, keysList }));
+export default function(keyName, keysList) {
+  let failedRule = keyNameValidations.find((x) => !x.rule({ value: keyName, keysList }));
   return { isValid: !failedRule, hint: failedRule && failedRule.hint };
 }

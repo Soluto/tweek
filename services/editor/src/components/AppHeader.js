@@ -29,8 +29,8 @@ const AppHeader = () => (
     <Link to="/" replace>
       <img className={'logo'} src={logoSrc} alt={''} />
     </Link>
-    
-    <div style={{ display:"flex", justifyContent: "flex-end", flexGrow: 1 }}>
+
+    <div style={{ display: 'flex', justifyContent: 'flex-end', flexGrow: 1 }}>
       <ul className={'menu'}>
         <ListItemLink to="/keys">
           <img src={require('./resources/keys.svg')} alt={''} />
@@ -46,7 +46,7 @@ const AppHeader = () => (
         </ListItemLink>
       </ul>
       <div>
-        <UserBar/>
+        <UserBar />
       </div>
     </div>
   </div>

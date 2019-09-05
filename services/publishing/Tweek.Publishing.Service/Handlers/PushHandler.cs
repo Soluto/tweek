@@ -4,12 +4,9 @@ using App.Metrics;
 using App.Metrics.Counter;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using Polly;
-using Polly.Retry;
-using Tweek.Publishing.Service.Messaging;
 using Tweek.Publishing.Service.Sync;
+using Tweek.Publishing.Helpers;
+using static Tweek.Publishing.Service.Utils.ShellHelper;
 
 namespace Tweek.Publishing.Service.Handlers
 {
@@ -19,15 +16,26 @@ namespace Tweek.Publishing.Service.Handlers
         private static readonly MetricTags Success = new MetricTags("Status", "Success");
         private static readonly MetricTags Failure = new MetricTags("Status", "Failure");
 
-        public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(SyncActor syncActor, IMetrics metrics)
+        public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(SyncActor syncActor, IMetrics metrics, HooksHelper hooksHelper)
         {
             return async (req, res, routedata) =>
             {
                 var commitId = req.Query["commit"].ToString();
+                if (!IsCommitIdString(commitId))
+                {
+                    res.StatusCode = 400;
+                    await res.WriteAsync("Invalid commit id");
+                    return;
+                }
+
                 try
                 {
                     await syncActor.PushToUpstream(commitId);
                     metrics.Measure.Counter.Increment(Push, Success);
+
+                    #pragma warning disable CS4014
+                    hooksHelper.TriggerNotificationHooksForCommit(commitId);
+                    #pragma warning restore CS4014
                 }
                 catch (Exception ex)
                 {

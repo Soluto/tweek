@@ -6,10 +6,6 @@ services:
       args:
         target: Release
 
-  editor:
-    environment:
-      - CONTINUOUS_UPDATER_INTERVAL=500
-
   authoring:
     environment:
       - CONTINUOUS_UPDATER_INTERVAL=500
@@ -20,21 +16,33 @@ services:
         target: Release
     depends_on:
       - publishing
-    environment:
-      - CorsPolicies__Keys__Origins=http://localhost:3000
-      - CorsPolicies__Keys__Methods=GET
-      - CorsPolicies__Keys__MaxPreflightAge=60
-      - CorsPolicies__Keys__Headers=
-      - CorsPolicies__Keys__ExposedHeaders=
-      - CorsEnabled=true
 
   oidc-server-mock:
     container_name: oidc-server-mock
-    image: soluto/oidc-server-mock
+    image: soluto/oidc-server-mock:0.1.0
     ports:
       - "8081:80"
     environment:
-      - REDIRECT_URIS=http://localhost:3000/auth-result/oidc
+      [
+          {
+            "ClientId": "tweek-openid-mock-client",
+            "Description": "Client for implicit flow",
+            "AllowedGrantTypes": [
+                "implicit"
+            ],
+            "AllowAccessTokensViaBrowser": true,
+            "RedirectUris": [
+                "http://localhost:3000/auth-result/oidc"
+            ],
+            "AllowedScopes": [
+                "openid",
+                "profile",
+                "email"
+            ],
+            "IdentityTokenLifetime": 3600,
+            "AccessTokenLifetime": 3600
+          }
+        ]
 
 secrets:
   tweek_ssh_private_key:

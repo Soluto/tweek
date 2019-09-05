@@ -1,0 +1,211 @@
+secrets:
+  minio_access_key:
+    file: ./minio/access_key
+  minio_secret_key:
+    file: ./minio/secret_key
+  tweek_pfx_public_key:
+    file: ./ssh/tweekgit_public.pfx
+  tweek_ssh_private_key:
+    file: ./ssh/tweekgit
+  tweek_ssh_public_key:
+    file: ./ssh/tweekgit.pub
+services:
+  api:
+    build:
+      args:
+        target: Debug
+      context: ../../
+      dockerfile: TweekApi.Dockerfile
+    depends_on:
+    - minio
+    - nats
+    - redis
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      PUBLIC_KEY_PATH: /run/secrets/tweek_pfx_public_key
+      Redis__ConnectionString: redis:6379
+      Rules__Minio__AccessKeyPath: /run/secrets/minio_access_key
+      Rules__Minio__Bucket: tweek
+      Rules__Minio__Endpoint: minio:9000
+      Rules__Minio__SecretKeyPath: /run/secrets/minio_secret_key
+      Rules__Nats__Endpoint: nats://nats:4222
+      RulesetVersionProvider: NatsVersionProvider
+      UseAddon__Rules: MinioRules
+    image: soluto/tweek-api
+    ports:
+    - published: 4003
+      target: 80
+    secrets:
+    - source: minio_access_key
+    - source: minio_secret_key
+    - source: tweek_pfx_public_key
+  authoring:
+    build:
+      context: ../../services/authoring
+    command:
+    - yarn
+    - start:debug
+    depends_on:
+    - publishing
+    environment:
+      GIT_PRIVATE_KEY_PATH: /run/secrets/tweek_ssh_private_key
+      GIT_PUBLIC_KEY_PATH: /run/secrets/tweek_ssh_public_key
+      GIT_URL: ssh://git@publishing/tweek/repo
+      GIT_USER: git
+    image: soluto/tweek-authoring
+    labels:
+      traefik.port: '3000'
+    ports:
+    - published: 4005
+      target: 3000
+    - published: 5859
+      target: 5858
+    secrets:
+    - source: tweek_ssh_private_key
+    - source: tweek_ssh_public_key
+  editor:
+    build:
+      context: ../../services/editor
+    depends_on:
+    - gateway
+    image: soluto/tweek-editor
+    ports:
+    - published: 4004
+      target: 3000
+  gateway:
+    build:
+      context: ../../services/gateway
+    depends_on:
+    - api
+    - authoring
+    - minio
+    - nats
+    - oidc-server-mock
+    environment:
+      TWEEKGATEWAY_CONFIGFILEPATH: /config/gateway.json
+      TWEEKGATEWAY_SECURITY_AUTH_BASICAUTH_REDIRECTURLS: '[''http://localhost:8081'',
+        ''http://localhost:3000'']'
+      TWEEKGATEWAY_SECURITY_CORS_ALLOWEDHEADERS: '[''*'']'
+      TWEEKGATEWAY_SECURITY_CORS_ALLOWEDMETHODS: '[''GET'',''POST'',''PUT'',''PATCH'',''DELETE'']'
+      TWEEKGATEWAY_SECURITY_CORS_ALLOWEDORIGINS: '[''*'']'
+      TWEEKGATEWAY_SECURITY_CORS_ENABLED: "true"
+      TWEEKGATEWAY_SECURITY_CORS_MAXAGE: '60'
+      TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOACCESSKEY: AKIAIOSFODNN7EXAMPLE
+      TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOBUCKETNAME: tweek
+      TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOENDPOINT: minio:9000
+      TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECRETKEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECURE: "false"
+      TWEEKGATEWAY_SECURITY_POLICYSTORAGE_NATSENDPOINT: nats://nats:4222
+      TWEEKGATEWAY_SECURITY_TWEEKSECRETKEY_PATH: /run/secrets/tweek_ssh_private_key
+    image: soluto/tweek-gateway
+    ports:
+    - published: 8081
+      target: 80
+    secrets:
+    - source: tweek_ssh_private_key
+    volumes:
+    - ./gateway/config:/config:rw
+  git:
+    build:
+      context: ../../services/git-service/BareRepository
+    environment:
+      PUBLIC_KEY_PATH: /run/secrets/tweek_ssh_public_key
+    image: soluto/tweek-bare-repo
+    ports:
+    - published: 4001
+      target: 22
+    secrets:
+    - source: tweek_ssh_public_key
+  minio:
+    command: server /data
+    image: minio/minio
+    ports:
+    - published: 4007
+      target: 9000
+    secrets:
+    - source: minio_access_key
+      target: access_key
+    - source: minio_secret_key
+      target: secret_key
+  nats:
+    image: nats:1.0.4-linux
+    ports:
+    - published: 4222
+      target: 4222
+    - published: 4008
+      target: 8222
+  oidc-server-mock:
+    container_name: oidc-server-mock
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      OIDC_CLIENT_ID: tweek-openid-mock-client
+      REDIRECT_URIS: http://localhost:8081/auth-result/oidc
+      CLIENTS_CONFIGURATION_INLINE: |
+        [
+          {
+            "ClientId": "tweek-openid-mock-client",
+            "Description": "Tweek OIDC Mock",
+            "AllowedGrantTypes": [
+                "implicit"
+            ],
+            "AllowAccessTokensViaBrowser": true,
+            "RedirectUris": [
+                "http://localhost:8081/auth-result/oidc"
+            ],
+            "AllowedScopes": [
+                "openid",
+                "profile",
+                "email"
+            ],
+            "IdentityTokenLifetime": 3600,
+            "AccessTokenLifetime": 3600
+          }
+        ]
+      USERS_CONFIGURATION_INLINE: |
+        [
+          {
+            "SubjectId":"user",
+            "Username":"user",
+            "Password":"pwd"
+          }
+        ]
+    image: soluto/oidc-server-mock:0.1.0
+    ports:
+    - published: 8082
+      target: 80
+  publishing:
+    build:
+      args:
+        target: Debug
+      context: ../../services/publishing
+    depends_on:
+    - git
+    - minio
+    - nats
+    environment:
+      GIT_PUBLIC_KEY_PATH: /run/secrets/tweek_ssh_public_key
+      GIT_SERVER_PRIVATE_KEY_PATH: /run/secrets/tweek_ssh_private_key
+      GIT_UPSTREAM_URI: ssh://git@git/tweek/repo
+      MINIO__AccessKey: AKIAIOSFODNN7EXAMPLE
+      MINIO__Endpoint: minio:9000
+      MINIO__SecretKeyPath: /run/secrets/minio_secret_key
+      NATS__Endpoint: nats://nats:4222
+    image: soluto/tweek-publishing
+    ports:
+    - published: 4009
+      target: 22
+    - published: 4010
+      target: 80
+    secrets:
+    - source: minio_secret_key
+    - source: tweek_ssh_private_key
+    - source: tweek_ssh_public_key
+  redis:
+    expose:
+    - '6379'
+    image: redis:4.0.2-alpine
+    ports:
+    - published: 4006
+      target: 6379
+version: '3.4'
+

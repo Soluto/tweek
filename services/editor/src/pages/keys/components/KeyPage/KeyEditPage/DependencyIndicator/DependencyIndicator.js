@@ -8,7 +8,7 @@ import './DependencyIndicator.css';
 const ExpanderToggle = ({ toggled, onToggle }) => (
   <span
     data-comp="expander-toggle"
-    onClick={() => onToggle(current => !current)}
+    onClick={() => onToggle((current) => !current)}
     style={{ cursor: 'pointer', fontFamily: 'monospaced', color: '#a5a5a5' }}
   >
     {toggled ? '[-]' : '[+]'}
@@ -28,7 +28,7 @@ const Expander = withToggleState(({ title, toggled, onToggle, children, ...props
   </div>
 ));
 
-const renderLink = dep => <Link to={`/keys/${dep}`}>{dep}</Link>;
+const renderLink = (dep) => <Link to={`/keys/${dep}`}>{dep}</Link>;
 const renderText = (dep, { deleteAlias }) => (
   <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
     <span style={{ marginRight: 5 }}>{dep}</span>
@@ -43,7 +43,7 @@ const createDependenciesList = (componentName, title, renderElement) => ({ items
     {items && items.length ? (
       <Expander title={title}>
         <ul>
-          {items.map(dep => (
+          {items.map((dep) => (
             <li key={dep} className="dependency-item" data-dependency={dep}>
               {renderElement(dep, props)}
             </li>

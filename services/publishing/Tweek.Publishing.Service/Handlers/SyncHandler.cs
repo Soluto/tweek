@@ -20,7 +20,7 @@ namespace Tweek.Publishing.Service.Handlers
         private static readonly MetricTags Failure = new MetricTags("Status", "Failure");
 
         public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(SyncActor syncActor,               
-            RetryPolicy retryPolicy,
+            AsyncRetryPolicy retryPolicy,
             IMetrics metrics,
             ILogger logger = null)
         {

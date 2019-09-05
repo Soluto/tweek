@@ -10,6 +10,8 @@ export const PERMISSIONS = {
   ADMIN: 'admin',
   TAGS_READ: 'tags-read',
   TAGS_WRITE: 'tags-write',
+  HOOKS_READ: 'hooks-read',
+  HOOKS_WRITE: 'hooks-write',
 };
 
 // export default PERMISSIONS;

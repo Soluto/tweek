@@ -2,10 +2,12 @@
 const path = require('path');
 const fs = require('fs-extra');
 
-const getOpt = require('node-getopt').create([['h', 'help', 'display this help']]).bindHelp();
+const getOpt = require('node-getopt')
+  .create([['h', 'help', 'display this help']])
+  .bindHelp();
 
 getOpt.setHelp(
-  `Usage: node ${path.basename(__filename)} <repository_dir> <output_file>\nOptions:\n[[OPTIONS]]`
+  `Usage: node ${path.basename(__filename)} <repository_dir> <output_file>\nOptions:\n[[OPTIONS]]`,
 );
 
 const args = getOpt.parseSystem().argv;
@@ -21,10 +23,10 @@ const createIndex = require('./build');
 
 console.log('indexing...');
 createIndex(repoDir)
-  .then(x => (console.log('index ready, writing file'), x))
+  .then((x) => (console.log('index ready, writing file'), x))
   .then((index) => {
     const stringIndex = JSON.stringify(index);
     return fs.writeFile(indexFile, stringIndex);
   })
   .then(() => (console.log('file written', indexFile), process.exit(0)))
-  .catch(err => (console.error(err), process.exit(1)));
+  .catch((err) => (console.error(err), process.exit(1)));

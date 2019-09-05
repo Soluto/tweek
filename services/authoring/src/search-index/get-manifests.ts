@@ -12,10 +12,10 @@ export async function getManifests(repoDir: string): Promise<any> {
     _(fileNames)
       .map(readFile)
       .parallel(10)
-      .map(x => JSON.parse(x.toString()))
-      .filter(x => x.key_path)
-      .on('error', err => reject(err))
-      .on('data', x => manifests.push(x))
+      .map((x) => JSON.parse(x.toString()))
+      .filter((x) => x.key_path)
+      .on('error', (err) => reject(err))
+      .on('data', (x) => manifests.push(x))
       .on('end', () => resolve(manifests));
   });
-};
+}

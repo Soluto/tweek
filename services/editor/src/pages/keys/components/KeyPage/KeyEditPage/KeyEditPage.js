@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useCallback, useMemo } from 'react';
 import { compose, pure } from 'recompose';
 import classNames from 'classnames';
 import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEditor';
@@ -48,7 +48,7 @@ const Editor = ({
       <ConstEditor
         value={manifest.implementation.value}
         valueType={valueType}
-        onChange={value =>
+        onChange={(value) =>
           onManifestChange({ ...manifest, implementation: { ...manifest.implementation, value } })
         }
         onValidationChange={onValidationChange}
@@ -113,7 +113,7 @@ class KeyEditPage extends Component {
   };
 
   render() {
-    const { selectedKey, isInStickyMode, alerter, revision, deleteAlias } = this.props;
+    const { selectedKey, isInStickyMode, alerter, revision, deleteAlias, history } = this.props;
     const {
       key,
       local: { manifest, implementation },
@@ -139,8 +139,8 @@ class KeyEditPage extends Component {
             {isInStickyMode ? <KeyStickyHeader {...commonHeadersProps} /> : null}
             <KeyFullHeader
               {...commonHeadersProps}
-              onDescriptionChanged={text => this.onDescriptionChanged(text)}
-              onTagsChanged={newTags => this.onTagsChanged(newTags)}
+              onDescriptionChanged={(text) => this.onDescriptionChanged(text)}
+              onTagsChanged={(newTags) => this.onTagsChanged(newTags)}
               revisionHistory={revisionHistory}
               revision={revision}
               keyFullPath={key}
@@ -148,6 +148,7 @@ class KeyEditPage extends Component {
               usedBy={usedBy}
               aliases={aliases}
               deleteAlias={deleteAlias}
+              history={history}
             />
 
             <div className={classNames('key-rules-editor', { sticky: isInStickyMode })}>
@@ -155,7 +156,7 @@ class KeyEditPage extends Component {
                 keyPath={key}
                 manifest={manifest}
                 sourceFile={implementation.source}
-                onSourceFileChange={source => this.props.updateImplementation({ source })}
+                onSourceFileChange={(source) => this.props.updateImplementation({ source })}
                 onManifestChange={this.onSelectedKeyManifestChanged}
                 onDependencyChanged={this.onDependencyChanged}
                 onValidationChange={this.props.changeKeyValidationState}
@@ -170,7 +171,10 @@ class KeyEditPage extends Component {
   }
 }
 
-export default compose(stickyHeaderIdentifier('key-edit-page', 150), pure)(KeyEditPage);
+export default compose(
+  stickyHeaderIdentifier('key-edit-page', 150),
+  pure,
+)(KeyEditPage);
 
 const KeyStickyHeader = (props) => {
   const { isReadonly, isHistoricRevision } = props;
@@ -201,6 +205,7 @@ const KeyFullHeader = (props) => {
     usedBy,
     aliases,
     deleteAlias,
+    history,
   } = props;
 
   return (
@@ -221,11 +226,11 @@ const KeyFullHeader = (props) => {
             <label className="actual-path">{keyFullPath}</label>
           </div>
 
-          <div className="key-description-and-tags-wrapper">
+          <div className="key-description-tags-hooks-wrapper">
             <div className="key-description-wrapper">
               <EditableTextArea
                 value={keyManifest.meta.description}
-                onTextChanged={text => onDescriptionChanged(text)}
+                onTextChanged={(text) => onDescriptionChanged(text)}
                 placeHolder="Write key description"
                 title="Click to edit description"
                 classNames={{ input: 'description-input' }}
@@ -238,13 +243,32 @@ const KeyFullHeader = (props) => {
 
             <div className="key-tags-wrapper">
               <KeyTags
-                onTagsChanged={newTags => onTagsChanged(newTags)}
+                onTagsChanged={(newTags) => onTagsChanged(newTags)}
                 tags={keyManifest.meta.tags || []}
               />
             </div>
+
+            {revisionHistory && <HookLinks {...{ keyFullPath, history }} />}
           </div>
         </fieldset>
       </div>
+    </div>
+  );
+};
+
+const HookLinks = ({ keyFullPath, history }) => {
+  const encodedKeyPath = useMemo(() => encodeURIComponent(keyFullPath), [keyFullPath]);
+  const addHook = () => history.push(`/settings/hooks/edit/?keyPath=${encodedKeyPath}`);
+  const viewHooks = () => history.push(`/settings/hooks/?keyPathFilter=${encodedKeyPath}`);
+
+  return (
+    <div className="key-hooks-wrapper">
+      <button className="metro-button" onClick={addHook}>
+        Add Hook
+      </button>
+      <button className="metro-button" onClick={viewHooks}>
+        View Hooks
+      </button>
     </div>
   );
 };

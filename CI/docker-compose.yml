@@ -4,7 +4,7 @@ services:
     image: $REPOSITORY_IMAGE
     environment:
       - PUBLIC_KEY_INLINE=c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFCQVFERXdpL1RBQ2d3MGV5eEhQMGVpT3pySUo2U1gwT3YwUXE1bm5TQzMvSEx4azRMTkFsNmRlaWVoTEd0VDRUcVFvdzltcGJ3ZzlTSHNhSDhrZWJVVmF6VjVQQnJkblg1UVFXU0xkRDE0TVVnOU03Zm1kcXBYU2xTdGpiQW90TmFmZXp1OTJGd0JJNWUrNk96S3EraVVJK1FTcXNCUzRoQmFEbkFiUWtPNm5HZi9TMUVpaW80NGZYcUovRmxpdnNNTGo4RW0rQWZxTzJTN21mbGN3dndDSzZEQ25DVkpKSWJ5KzU2NjltYWZCUjBtQ283Y05RY3U1S2tXbEM3WW5vWEsveDFScGhQVlcycGYySEV1SWVZWVJFcUV2N21ROGJoM1hjR2gzbE5kVjJqckhGOEk5cUdGU2ZPVjB4NndEUnY5VnBEd0NKQ0dTZ0p4Q0pzNXF0VHZUZEYgeXNoYXlAWXNoYXktUEMK
-  
+
   publishing:
     image: $PUBLISHING_IMAGE
     depends_on:
@@ -22,7 +22,7 @@ services:
       - MINIO__SecretKey=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
       - MINIO__Bucket=tweek
       - NATS__Endpoint=nats://nats:4222
-      
+
   api:
     image: $API_IMAGE
     depends_on:
@@ -47,17 +47,17 @@ services:
       - CorsPolicies__Keys__Headers=
       - CorsPolicies__Keys__ExposedHeaders=
       - Context__Validation__ErrorPolicy=throw
-      
+
   authoring:
     image: $AUTHORING_IMAGE
     depends_on:
-      - publishing    
+      - publishing
     environment:
       - GIT_USER=git
       - GIT_URL=ssh://git@publishing/tweek/repo
       - GIT_PRIVATE_KEY_INLINE=LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBeE1JdjB3QW9NTkhzc1J6OUhvanM2eUNla2w5RHI5RUt1WjUwZ3QveHk4Wk9DelFKCmVuWG9ub1N4clUrRTZrS01QWnFXOElQVWg3R2gvSkhtMUZXczFlVHdhM1oxK1VFRmtpM1E5ZURGSVBUTzM1bmEKcVYwcFVyWTJ3S0xUV24zczd2ZGhjQVNPWHZ1anN5cXZvbENQa0VxckFVdUlRV2c1d0cwSkR1cHhuLzB0UklvcQpPT0gxNmlmeFpZcjdEQzQvQkp2Z0g2anRrdTVuNVhNTDhBaXVnd3B3bFNTU0c4dnVldXZabW53VWRKZ3FPM0RVCkhMdVNwRnBRdTJKNkZ5djhkVWFZVDFWdHFYOWh4TGlIbUdFUktoTCs1a1BHNGQxM0JvZDVUWFZkbzZ4eGZDUGEKaGhVbnpsZE1lc0EwYi9WYVE4QWlRaGtvQ2NRaWJPYXJVNzAzUlFJREFRQUJBb0lCQVFDWmpOWVh1N0toenVJQgpvcGJpNG9iS1JDMmNHMTVPY2p3RmVlU0JVbFYzNnExelRzdnExdU9QK2d4VExaQ1Q1UlZlNmlyTFRvWm8wemFRClRpaXZJcUY4VjJ0TTRpalZPV29vbHpyUTkvVy9iMjJXMEpIMXhHK0FUaFZTcG45OHluTkNWcXFpNmR0Vnd0b1EKODhvWFNQbVE2TVNsZ1JXM3ZhZjhSTnRoMlpLTkFIOTdZOHBqVk1YL3FMTDFuWjk1YnFvclJJTFJ6ektHSmpxRwplN0VpeFQ0a0JaemxHWUF5a1dVeFFZZzBkdTlnQjc1U1o2MHNwZzVUQlh5a3RXdzVIWG1ZWlMvSHdCOVRKbG1XClRqeVZ0T2VWbGpPRmI4VmdIcE13d3UyTW9yN1ZQQVB3Z0RYdXFGTVd2RnpxVWJIY1VLclcwZ0JITGpYU1BtUzYKMEwxSTNjV0JBb0dCQVBPeHlxSmZ4cnpVQ1BuM3AzbVk2cjZnbHlYYi8rZWFYYTQ2N3NOWThNWnBWZGw1bVFKVgpuOEdRN3FYaklaa2pCU2E5YzZZQThxOFRLVHlJbEcvTDE1OFVSaFRqZldNSC9nandaem1oSmVkL0N6Lzg1Y2V4CmxRbDdsTi9SMjRUYjN3VTE2M21FeW5oR1JXNUt3cWNVNW9FQm1uOS9ZazhoaWJraTZoSTY0QWhsQW9HQkFNNngKcVBabi9uaHY4dSttT2U3Y3pTVjVMc3dmTTNTU3NuZlhnUVJXN3J6a2hrZnJRWjJlWHpFQ21oVk8vdUpWb01iVApoQS9tUXRYRzVuMk9QMndmSk1LVUNiVVZ2ZTJYNUQxU1VGYk03dWVHU3JlWExXdXJzaHdnN1p6VlpxVDYzUEJSCmpUa1FFNHJ1a1ZFSzNNMFVQOUlNVndzYURqMjgrY01RZk5ORmh0VmhBb0dBQ1Q5cStDUjRUendncHhPOTJFQjAKVUEyYURzYTlmRldBVHBkUDdqdld6MEM2RUVtc0E4bXFDVmR0cHYvcWkzd251dU9mbXVJWVU0cC9teHQzdnBKVwp1V08wa1NCYzVzQXI1THp5dmQ0ZXFSMUtHUUNJMjc0aWNMeXUxcHVKSUE2VDlRZXB5dSsrR3poWGRDc0VIZ0VPCkNrRThVckJMMDhMckRncUVKWEwwZzMwQ2dZQm0welVtR0FnZExEd2tBb0xSbEtDdDRzSm9JNkY2ZmJ3eEtGRnoKc2pla1d0OStpY2VqdlBUSU1lNHJhWmdkU3RIbjk3TzhJU1hncWNsaWJ0Q1lYa253VHFzaG5nWlZXM25kRThVSgoyWHVFVEdlQk84RUp6bW1WMnIrNmhPTkNjZFpWNjR3ZzlpRnl2VW9ua2dyVUx4MnN4aHpMVmhQOW5MUjMyUXp3CklhZDVJUUtCZ1FEWHBhU25seGcrbzMyV0FHd0dzQXhxNUNXK3JFcE84UENEbytSZWU2dmNGN25JZi95NHNSUHUKNDFpcFo2WHhZcHdnUkQ3em5aano5QWVWaEc4aUFBQUJORlUxSkZUaVhpZ1BEWi8wOFlFMHRnQ1ZiL0VPV2ZxVAptS0NBTUgrSjJZWUlwb3NLL3dyQmRXQ1RiUHYvYUI3RkVraFFLeGVJTXYxd0trd2tSaU5BQ0E9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
       - GIT_PUBLIC_KEY_INLINE=c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFCQVFERXdpL1RBQ2d3MGV5eEhQMGVpT3pySUo2U1gwT3YwUXE1bm5TQzMvSEx4azRMTkFsNmRlaWVoTEd0VDRUcVFvdzltcGJ3ZzlTSHNhSDhrZWJVVmF6VjVQQnJkblg1UVFXU0xkRDE0TVVnOU03Zm1kcXBYU2xTdGpiQW90TmFmZXp1OTJGd0JJNWUrNk96S3EraVVJK1FTcXNCUzRoQmFEbkFiUWtPNm5HZi9TMUVpaW80NGZYcUovRmxpdnNNTGo4RW0rQWZxTzJTN21mbGN3dndDSzZEQ25DVkpKSWJ5KzU2NjltYWZCUjBtQ283Y05RY3U1S2tXbEM3WW5vWEsveDFScGhQVlcycGYySEV1SWVZWVJFcUV2N21ROGJoM1hjR2gzbE5kVjJqckhGOEk5cUdGU2ZPVjB4NndEUnY5VnBEd0NKQ0dTZ0p4Q0pzNXF0VHZUZEYgeXNoYXlAWXNoYXktUEMK
-      
+
   editor:
     image: $EDITOR_IMAGE
     depends_on:
@@ -72,13 +72,13 @@ services:
       - nats
       - api
       - authoring
-      - oidc-server-mock    
+      - oidc-server-mock
     environment:
       - TWEEKGATEWAY_SECURITY_CORS_ENABLED=true
       - TWEEKGATEWAY_SECURITY_CORS_MAXAGE=60
       - TWEEKGATEWAY_SECURITY_CORS_ALLOWEDORIGINS=['*']
       - TWEEKGATEWAY_SECURITY_CORS_ALLOWEDMETHODS=['GET','POST','PUT','PATCH','DELETE']
-      - TWEEKGATEWAY_SECURITY_CORS_ALLOWEDHEADERS=['*']      
+      - TWEEKGATEWAY_SECURITY_CORS_ALLOWEDHEADERS=['*']
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOENDPOINT=minio:9000
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOBUCKETNAME=tweek
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOACCESSKEY=AKIAIOSFODNN7EXAMPLE
@@ -91,14 +91,40 @@ services:
       - /var/lib/docker/volumes/${{CF_VOLUME}}/_data/tweek/deployments/dev/gateway/config:/config
 
   oidc-server-mock:
-    image: soluto/oidc-server-mock
+    image: soluto/oidc-server-mock:0.1.0
     logging:
       driver: "none"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - CLIENT_ID=tweek-openid-mock-client
-      - REDIRECT_URIS=http://gateway/auth-result/oidc
-      - TEST_USER={"SubjectId":"00000000-0000-0000-0000-000000000000","Username":"user","Password":"pwd"}
+      ASPNETCORE_ENVIRONMENT: Development
+      CLIENTS_CONFIGURATION_INLINE: |
+        [
+          {
+            "ClientId": "tweek-openid-mock-client",
+            "Description": "Client for implicit flow",
+            "AllowedGrantTypes": [
+                "implicit"
+            ],
+            "AllowAccessTokensViaBrowser": true,
+            "RedirectUris": [
+                "http://gateway/auth-result/oidc"
+            ],
+            "AllowedScopes": [
+                "openid",
+                "profile",
+                "email"
+            ],
+            "IdentityTokenLifetime": 3600,
+            "AccessTokenLifetime": 3600
+          }
+        ]
+      USERS_CONFIGURATION_INLINE: |
+        [
+          {
+            "SubjectId":"00000000-0000-0000-0000-000000000000",
+            "Username":"user",
+            "Password":"pwd"
+          }
+        ]
 
   redis:
     image: redis:4.0.2-alpine
@@ -115,14 +141,6 @@ services:
     environment:
       - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
       - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-      
+
   nats:
     image: nats:1.0.4-linux
-
-  selenium:
-    image: selenium/standalone-chrome:3.8.1
-    logging:
-      driver: "none"
-    links:
-      - gateway:api
-      - gateway:authoring

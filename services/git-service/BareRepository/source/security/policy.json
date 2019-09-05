@@ -1,80 +1,34 @@
 {
-    "policies": [
-        {
-            "group": "*",
-            "user": "*",
-            "contexts": {},
-            "object": "values/*",
-            "action": "*",
-            "effect": "allow"
-        },
-        {
-            "group": "*",
-            "user": "*",
-            "contexts": {
-                "*": "*"
-            },
-            "object": "values/*",
-            "action": "*",
-            "effect": "allow"
-        },
-        {
-            "group": "*",
-            "user": "*",
-            "contexts": {
-                "tweek_editor_user": "self"
-            },
-            "object": "values/*",
-            "action": "*",
-            "effect": "allow"
-        },
-        {
-            "group": "externalapps",
-            "user": "admin-app",
-            "contexts": {},
-            "object": "repo/keys/*",
-            "action": "write",
-            "effect": "allow"
-        },
-        {
-            "group": "externalapps",
-            "user": "admin-app",
-            "contexts": {},
-            "object": "repo",
-            "action": "read",
-            "effect": "allow"
-        },
-        {
-            "group": "externalapps",
-            "user": "admin-app",
-            "contexts": {},
-            "object": "repo/policies",
-            "action": "*",
-            "effect": "allow"
-        },
-        {
-            "group": "externalapps",
-            "user": "admin-app",
-            "contexts": {},
-            "object": "repo/apps",
-            "action": "*",
-            "effect": "allow"
-        },
-        {
-            "group": "externalapps",
-            "user": "admin-app",
-            "contexts": {},
-            "object": "repo/tags",
-            "action": "write",
-            "effect": "allow"
-        },
-        {
-            "group": "externalapps",
-            "user": "admin-app",
-            "contexts": {},
-            "object": "repo/schemas",
-            "action": "write",
-            "effect": "allow"
-        }
-    ]
+  "policies": [
+    {
+      "group": "*",
+      "user": "*",
+      "contexts": {
+        "*": "*"
+      },
+      "object": "values/*",
+      "action": "*",
+      "effect": "allow"
+    },
+    {
+      "group": "*",
+      "user": "*",
+      "contexts": {
+        "tweek_editor_user": "self"
+      },
+      "object": "values/*",
+      "action": "*",
+      "effect": "allow"
+    },
+    {
+      "group": "externalapps",
+      "user": "admin-app",
+      "contexts": {
+        "*": "*"
+      },
+      "object": "*",
+      "action": "*",
+      "effect": "allow"
+    }
+  ]
 }

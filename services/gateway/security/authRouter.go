@@ -7,13 +7,14 @@ import (
 	"net/url"
 	"time"
 
+	"tweek-gateway/appConfig"
+	"tweek-gateway/externalApps"
+	"tweek-gateway/utils"
+
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/negroni"
-	"tweek-gateway/appConfig"
-	"tweek-gateway/externalApps"
-	"tweek-gateway/utils"
 )
 
 // MountAuth -
@@ -37,6 +38,10 @@ func getAuthProviders(providers map[string]appConfig.AuthProvider) negroni.Handl
 }
 
 func authorizeByUserPassword(keyEnv *appConfig.EnvInlineOrPath, basicAuthConfig *appConfig.BasicAuth) negroni.HandlerFunc {
+	key, err := getPrivateKey(keyEnv)
+	if err != nil {
+		logrus.WithError(err).Panic("Private key retrieving failed")
+	}
 	return func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		if username, password, ok := r.BasicAuth(); ok {
 			err := externalApps.ValidateCredentials(username, password)
@@ -46,10 +51,6 @@ func authorizeByUserPassword(keyEnv *appConfig.EnvInlineOrPath, basicAuthConfig 
 				return
 			}
 
-			key, err := getPrivateKey(keyEnv)
-			if err != nil {
-				logrus.WithError(err).Panic("Private key retrieving failed")
-			}
 			requestQuery := r.URL.Query()
 			redirectURLStr := requestQuery.Get("redirect_url")
 			redirectURL, errURL := url.Parse(redirectURLStr)

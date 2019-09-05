@@ -1,7 +1,7 @@
 /* global process Promise */
 import * as R from 'ramda';
 import { handleActions } from 'redux-actions';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import { tweekManagementClient } from '../../utils/tweekClients';
 import { showError } from './notifications';
 
@@ -17,7 +17,7 @@ export const openContext = ({ identityType, identityId }) =>
   push(`/context/${identityType}/${identityId}`);
 
 export const getContext = ({ identityType, identityId }) =>
-  async function (dispatch) {
+  async function(dispatch) {
     dispatch({ type: GET_CONTEXT });
     try {
       const contextData = await tweekManagementClient.getContext(identityType, identityId);
@@ -28,15 +28,22 @@ export const getContext = ({ identityType, identityId }) =>
     }
   };
 
-export const updateContext = payload => ({ type: UPDATE_CONTEXT, payload });
+export const updateContext = (payload) => ({ type: UPDATE_CONTEXT, payload });
 
 export const saveContext = ({ identityType, identityId }) =>
-  async function (dispatch, getState) {
+  async function(dispatch, getState) {
     dispatch({ type: SAVE_CONTEXT });
     const context = getState().context;
 
-    const getDeletedKeys = R.pipe(R.unapply(R.map(R.keys)), R.apply(R.difference));
-    const getModifiedKeys = R.pipe(R.unapply(R.map(R.toPairs)), R.apply(R.difference), R.pluck(0));
+    const getDeletedKeys = R.pipe(
+      R.unapply(R.map(R.keys)),
+      R.apply(R.difference),
+    );
+    const getModifiedKeys = R.pipe(
+      R.unapply(R.map(R.toPairs)),
+      R.apply(R.difference),
+      R.pluck(0),
+    );
 
     const keysToDelete = getDeletedKeys(context.remote, context.local);
     const modifiedKeys = getModifiedKeys(context.local, context.remote);
@@ -51,7 +58,9 @@ export const saveContext = ({ identityType, identityId }) =>
       }
 
       await Promise.all(
-        keysToDelete.map(key => tweekManagementClient.deleteContext(identityType, identityId, key)),
+        keysToDelete.map((key) =>
+          tweekManagementClient.deleteContextProperty(identityType, identityId, key),
+        ),
       );
 
       dispatch({ type: CONTEXT_SAVED, success: true });
@@ -63,7 +72,7 @@ export const saveContext = ({ identityType, identityId }) =>
 
 export default handleActions(
   {
-    [GET_CONTEXT]: state => ({
+    [GET_CONTEXT]: (state) => ({
       ...state,
       isGettingContext: true,
     }),
@@ -80,7 +89,7 @@ export default handleActions(
       local: action.payload,
     }),
 
-    [SAVE_CONTEXT]: state => ({
+    [SAVE_CONTEXT]: (state) => ({
       ...state,
       isSavingContext: true,
     }),

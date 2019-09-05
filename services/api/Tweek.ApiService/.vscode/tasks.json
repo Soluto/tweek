@@ -1,16 +1,14 @@
 {
-    "version": "0.1.0",
-    "command": "dotnet",
-    "isShellCommand": true,
-    "args": [],
-    "tasks": [
-        {
-            "taskName": "build",
-            "args": [
-                "${workspaceRoot}\\Tweek.ApiService.csproj"
-            ],
-            "isBuildCommand": true,
-            "problemMatcher": "$msCompile"
-        }
-    ]
+  "version": "0.1.0",
+  "command": "dotnet",
+  "isShellCommand": true,
+  "args": [],
+  "tasks": [
+    {
+      "taskName": "build",
+      "args": ["${workspaceRoot}\\Tweek.ApiService.csproj"],
+      "isBuildCommand": true,
+      "problemMatcher": "$msCompile"
+    }
+  ]
 }

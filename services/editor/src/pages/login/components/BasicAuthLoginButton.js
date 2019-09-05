@@ -1,9 +1,9 @@
 /* global window process */
 import React from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import { getGatewayBaseUrl } from '../../../utils/tweekClients';
 
-const Button = styled('a')`
+const Button = styled.a`
   padding-top: 14px;
   padding-bottom: 17px;
   margin: 15px;
@@ -20,7 +20,7 @@ const Button = styled('a')`
   text-decoration: none;
 `;
 
-const buildAuthUrl = state =>
+const buildAuthUrl = (state) =>
   `${getGatewayBaseUrl()}/auth/basic?redirect_url=${
     window.location.origin
   }/auth-result/basic&state=${JSON.stringify(state)}`;

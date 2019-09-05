@@ -11,7 +11,7 @@ import {
   setDisplayName,
   withState,
 } from 'recompose';
-import { withTweekKeys } from '../../../../contexts/Tweek';
+import { withTweekValues } from 'react-tweek';
 import * as SearchService from '../../../../services/search-service';
 import DirectoryTreeView from './TreeView/DirectoryTreeView';
 import CardView from './CardView';
@@ -91,7 +91,11 @@ const CardItem = ({
           data-value-type={getDataValueType(archived, keyType, valueType)}
         />
         <div className="title">{name}</div>
-        <div>{(tags || []).map(x => <span className="tag">{x}</span>)}</div>
+        <div>
+          {(tags || []).map((x) => (
+            <span className="tag">{x}</span>
+          ))}
+        </div>
       </div>
       <div className="path">{key_path}</div>
       <div className="description">{description}</div>
@@ -100,19 +104,15 @@ const CardItem = ({
 );
 
 const enhance = compose(
-  connect(state => ({ selectedKey: state.selectedKey && state.selectedKey.key })),
-  withTweekKeys(
+  connect((state) => ({ selectedKey: state.selectedKey && state.selectedKey.key })),
+  withTweekValues(
     {
       supportMultiResultsView: '@tweek/editor/experimental/keys_search/enable_cards_view',
       maxSearchResults: '@tweek/editor/search/max_results',
       showInternalKeys: '@tweek/editor/show_internal_keys',
     },
     {
-      defaultValues: {
-        supportMultiResultsView: null,
-        maxSearchResults: null,
-        showInternalKeys: null,
-      },
+      defaultValues: {},
     },
   ),
   setDisplayName('KeysList'),
@@ -123,10 +123,11 @@ const KeysList = enhance(
     const supportMultiResultsView$ = prop$.pluck('supportMultiResultsView').distinctUntilChanged();
 
     const keyList$ = prop$
-      .pluck('keys')
-      .distinctUntilChanged()
-      .withLatestFrom(prop$.pluck('showInternalKeys'), (allKeys, showInternalKeys) => {
-        const unarchivedKeys = R.filter(key => !key.meta.archived, allKeys);
+      .distinctUntilChanged(
+        (x, y) => x.showInternalKeys === y.showInternalKeys && x.keys === y.keys,
+      )
+      .map(({ keys: allKeys, showInternalKeys }) => {
+        const unarchivedKeys = R.filter((key) => !key.meta.archived, allKeys);
         return {
           keys: allKeys,
           visibleKeys: SearchService.filterInternalKeys(unarchivedKeys, showInternalKeys),
@@ -137,31 +138,33 @@ const KeysList = enhance(
     const { handler: setResultsView, stream: resultsView$ } = createEventHandler();
 
     const filteredKeys$ = filter$
-      .map(x => x.trim())
+      .map((x) => x.trim())
       .distinctUntilChanged()
       .debounceTime(500)
       .startWith('')
       .withLatestFrom(prop$.pluck('maxSearchResults'))
-      .switchMap(
-        async ([filter, maxResults]) =>
-          filter === '' ? undefined : SearchService.search(filter, maxResults),
+      .switchMap(async ([filter, maxResults]) =>
+        filter === '' ? undefined : SearchService.search(filter, maxResults),
       )
       .startWith(undefined);
 
     return Observable.combineLatest(
-      prop$.map(x => x.selectedKey).distinctUntilChanged(),
+      prop$.map((x) => x.selectedKey).distinctUntilChanged(),
       filteredKeys$,
       keyList$,
       supportMultiResultsView$,
       resultsView$.startWith('cards'),
     ).map(
-      (
-        [selectedKey, filteredKeys, { visibleKeys, keys }, supportMultiResultsView, resultsView],
-      ) => (
+      ([
+        selectedKey,
+        filteredKeys,
+        { visibleKeys, keys },
+        supportMultiResultsView,
+        resultsView,
+      ]) => (
         <div className="keys-list-container">
           <KeysFilter onFilterChange={setFilter} />
-          {filteredKeys &&
-            supportMultiResultsView && (
+          {filteredKeys && supportMultiResultsView && (
             <div className="view-selector">
               <button onClick={() => setResultsView('cards')}>List</button>
               <button onClick={() => setResultsView('tree')}>Tree</button>
@@ -171,9 +174,9 @@ const KeysList = enhance(
             <div className="search-results">
               {filteredKeys && supportMultiResultsView && resultsView === 'cards' ? (
                 <CardView
-                  itemSelector={x => x && x.key_path}
+                  itemSelector={(x) => x && x.key_path}
                   selectedItem={selectedKey}
-                  items={filteredKeys.map(x => keys[x]).filter(x => x)}
+                  items={filteredKeys.map((x) => keys[x]).filter((x) => x)}
                   renderItem={CardItem}
                 />
               ) : (
@@ -181,7 +184,7 @@ const KeysList = enhance(
                   selectedPath={selectedKey}
                   paths={filteredKeys || Object.keys(visibleKeys)}
                   expandByDefault={!!filteredKeys}
-                  renderItem={x => <KeyItem {...x} item={keys[x.fullPath]} />}
+                  renderItem={(x) => <KeyItem {...x} item={keys[x.fullPath]} />}
                 />
               )}
             </div>

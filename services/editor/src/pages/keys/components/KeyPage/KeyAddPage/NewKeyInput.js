@@ -3,20 +3,20 @@ import * as R from 'ramda';
 import { connect } from 'react-redux';
 import { Observable } from 'rxjs';
 import { compose, mapPropsStream, lifecycle } from 'recompose';
+import { withTweekValues } from 'react-tweek';
 import * as SearchService from '../../../../../services/search-service';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';
 import ValidationIcon from '../../../../../components/common/ValidationIcon';
 import keyNameValidations from './key-name-validations';
 import './NewKeyInput.css';
-import { withTweekKeys } from '../../../../../contexts/Tweek';
 
-const getKeyPrefix = path => R.slice(0, -1, path.split('/')).join('/');
+const getKeyPrefix = (path) => R.slice(0, -1, path.split('/')).join('/');
 const getSugesstions = R.pipe(
-  R.filter(key => !key.meta.archived),
+  R.filter((key) => !key.meta.archived),
   R.keys(),
   R.map(getKeyPrefix),
   R.uniq(),
-  R.filter(x => x !== ''),
+  R.filter((x) => x !== ''),
 );
 
 function getKeyNameSuggestions(keys) {
@@ -24,13 +24,13 @@ function getKeyNameSuggestions(keys) {
 }
 
 const NewKeyInput = compose(
-  connect(state => ({ keys: state.keys })),
-  withTweekKeys(
+  connect((state) => ({ keys: state.keys })),
+  withTweekValues(
     {
       showInternalKeys: '@tweek/editor/show_internal_keys',
     },
     {
-      defaultValues: { showInternalKeys: null },
+      defaultValues: {},
     },
   ),
   mapPropsStream((prop$) => {
@@ -61,7 +61,7 @@ const NewKeyInput = compose(
     onChange,
     displayName,
   }) => {
-    const suggestions = getKeyNameSuggestions(keys).map(x => ({ label: x, value: x }));
+    const suggestions = getKeyNameSuggestions(keys).map((x) => ({ label: x, value: x }));
     return (
       <div className="keypath-input-wrapper">
         <div

@@ -1,5 +1,5 @@
 # ---- Deps ----
-FROM node:10.15.0-alpine AS dependencies
+FROM node:10.15.3-alpine AS dependencies
 WORKDIR /opt/app/
 COPY package.json yarn.lock ./
 RUN yarn --production

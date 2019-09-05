@@ -589,6 +589,105 @@ paths:
         require permission - read repo/policies
       tags:
         - policies
+  /hooks:
+    get:
+      operationId: getHooksList
+      summary: Get Hooks list
+      parameters:
+        - name: keyPathFilter
+          in: query
+          description: Filters results to only return hooks for the given keyPath. Must be url encoded.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Hook'
+          headers:
+            ETag:
+              description: The ETag of the current state of hooks data. Can optionally be returned with POST/PUT/DELETE requests.
+              type: string
+      tags:
+        - hooks
+    post:
+      operationId: createHook
+      summary: Create a new hook
+      tags:
+        - hooks
+      parameters:
+        - name: If-Match
+          in: header
+          description: The last ETag received in a GET request
+          required: false
+          type: string
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hook'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HookData'
+        description: The details of the hook to create
+        required: true
+  '/hooks/{id}':
+    put:
+      operationId: updateHook
+      summary: updates a hook
+      tags:
+        - hooks
+      parameters:
+        - name: id
+          in: path
+          description: The id of the hook to update
+          required: true
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          description: The last ETag received in a GET request
+          required: false
+          type: string
+      responses:
+        '204':
+          description: No content
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HookData'
+        description: The updated details of the hook
+        required: true
+    delete:
+      operationId: deleteHook
+      summary: deletes a hook
+      tags:
+        - hooks
+      parameters:
+        - name: id
+          in: path
+          description: The id of the hook to delete
+          required: true
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          description: The last ETag received in a GET request
+          required: false
+          type: string
+      responses:
+        '204':
+          description: No content
   
 servers:
   - url: /api/v2/
@@ -627,6 +726,26 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/PatchOperation'
+    HookData:
+      type: object
+      properties:
+        keyPath:
+          type: string
+        type:
+          type: string
+        url:
+          type: string
+    Hook:
+      type: object
+      properties:
+        id:
+          type: string
+        keyPath:
+          type: string
+        type:
+          type: string
+        url:
+          type: string
     KeyUpdateModel:
       description: ''
       properties:

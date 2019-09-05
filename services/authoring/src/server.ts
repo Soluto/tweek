@@ -1,22 +1,24 @@
-import path = require('path');
-import BluebirdPromise = require('bluebird');
-import express = require('express');
-import bodyParser = require('body-parser');
-import { Observable } from 'rxjs';
-import fs = require('fs-extra');
-import passport = require('passport');
+import path from 'path';
+import BluebirdPromise from 'bluebird';
+import express from 'express';
+import { defer } from 'rxjs';
+import { retry, share, switchMapTo, tap } from 'rxjs/operators';
+import fs from 'fs-extra';
+import passport from 'passport';
 import Transactor from './utils/transactor';
-import morganJSON, { logger } from './utils/jsonLogger';
+import requestLogger from './utils/requestLogger';
+import logger from './utils/logger';
 import GitRepository, { RepoOutOfDateError } from './repositories/git-repository';
 import KeysRepository from './repositories/keys-repository';
 import TagsRepository from './repositories/tags-repository';
 import AppsRepository from './repositories/apps-repository';
 import PolicyRepository from './repositories/policy-repository';
+import { HooksRepositoryFactory } from './repositories/hooks-repository';
 import GitContinuousUpdater from './repositories/git-continuous-updater';
 import searchIndex from './search-index';
 import routes from './routes';
 import configurePassport from './security/configure-passport';
-import sshpk = require('sshpk');
+import sshpk from 'sshpk';
 import { ErrorRequestHandler } from 'express';
 import { getErrorStatusCode } from './utils/error-utils';
 import SubjectExtractionRulesRepository from './repositories/extraction-rules-repository';
@@ -49,26 +51,35 @@ const gitRepoCreationPromiseWithTimeout = BluebirdPromise.resolve(gitRepoCreatio
     throw new Error(`git repository cloning timeout after ${GIT_CLONE_TIMEOUT_IN_MINUTES} minutes`);
   });
 
-const gitTransactionManager = new Transactor<GitRepository>(gitRepoCreationPromise, async gitRepo => {
-  await gitRepo.reset();
-  await gitRepo.fetch();
-  await gitRepo.mergeMaster();
-}, (function() {
-  let retries = 2;
-  return async (error, context) => {
-    if (retries-- === 0) { return false; }
-    if (error instanceof RepoOutOfDateError) {
-      return true;
-    }
-    return false;
-  };
-})());
+const gitTransactionManager = new Transactor<GitRepository>(
+  gitRepoCreationPromise,
+  async (gitRepo) => {
+    await gitRepo.reset();
+    await gitRepo.fetch();
+    await gitRepo.mergeMaster();
+  },
+  (function() {
+    let retries = 2;
+    return async (error, context) => {
+      if (retries-- === 0) {
+        return false;
+      }
+      if (error instanceof RepoOutOfDateError) {
+        return true;
+      }
+      return false;
+    };
+  })(),
+);
 
 const keysRepository = new KeysRepository(gitTransactionManager);
 const tagsRepository = new TagsRepository(gitTransactionManager);
 const appsRepository = new AppsRepository(gitTransactionManager);
 const policyRepository = new PolicyRepository(gitTransactionManager);
-const subjectExtractionRulesRepository = new SubjectExtractionRulesRepository(gitTransactionManager);
+const hooksRepositoryFactory = new HooksRepositoryFactory(gitTransactionManager);
+const subjectExtractionRulesRepository = new SubjectExtractionRulesRepository(
+  gitTransactionManager,
+);
 
 const auth = passport.authenticate(['tweek-internal', 'apps-credentials'], { session: false });
 
@@ -78,42 +89,62 @@ async function startServer() {
   const publicKey = sshpk
     .parseKey(await fs.readFile(gitRepositoryConfig.publicKey), 'auto')
     .toBuffer('pem');
-  app.use(morganJSON);
+  app.use(requestLogger);
   app.use(configurePassport(publicKey, appsRepository));
-  app.use(bodyParser.json()); // for parsing application/json
-  app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+  app.use(express.json()); // for parsing application/json
+  app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
   app.get('/version', (req, res) => res.send(process.env.npm_package_version));
   app.get('/health', (req, res) => res.status(200).json({}));
-  app.use('/api', auth, routes({ tagsRepository, keysRepository, appsRepository, policyRepository, subjectExtractionRulesRepository }));
+  app.use(
+    '/api',
+    auth,
+    routes({
+      tagsRepository,
+      keysRepository,
+      appsRepository,
+      policyRepository,
+      subjectExtractionRulesRepository,
+      hooksRepositoryFactory,
+    }),
+  );
 
-  app.use('/*', (req, res) => res.sendStatus(404));
+  app.use('/*', (req, res) => {
+    if (!res.headersSent) {
+      res.sendStatus(404);
+    }
+  });
+
   const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-    morganJSON(req, res, () => {
-      if (!err) { return next(); }
-      logger.error(`${err.message}`, { Method: req.method, Url: req.originalUrl, Error: err });
+    if (!res.headersSent) {
       res.status(getErrorStatusCode(err)).send(err.message);
-    });
+    }
+
+    logger.error({ Method: req.method, Url: req.originalUrl, err }, err.message);
   };
   app.use(errorHandler);
 
-  app.listen(PORT, () => logger.log('Listening on port', PORT));
+  app.listen(PORT, () => logger.info({ port: PORT }, 'server started'));
 }
 
-const onUpdate$ = GitContinuousUpdater.onUpdate(gitTransactionManager).share();
+const onUpdate$ = GitContinuousUpdater.onUpdate(gitTransactionManager).pipe(share());
 
 onUpdate$
-  .switchMapTo(Observable.defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath)))
-  .do(null, (err: any) => logger.error('Error refreshing index', err))
-  .retry()
+  .pipe(
+    switchMapTo(defer(() => searchIndex.refreshIndex(gitRepositoryConfig.localPath))),
+    tap({ error: (err) => logger.error({ err }, 'Error refreshing search index') }),
+    retry(),
+  )
   .subscribe();
 
 onUpdate$
-  .switchMapTo(Observable.defer(() => appsRepository.refresh()))
-  .do(null, (err: any) => logger.error('Error refersing apps index', err))
-  .retry()
+  .pipe(
+    switchMapTo(defer(() => appsRepository.refresh())),
+    tap({ error: (err) => logger.error({ err }, 'Error refreshing apps index') }),
+    retry(),
+  )
   .subscribe();
 
-gitRepoCreationPromiseWithTimeout.then(async () => await startServer()).catch((reason: any) => {
-  logger.error(reason);
+gitRepoCreationPromiseWithTimeout.then(startServer).catch((reason: any) => {
+  logger.error({ err: reason }, 'failed starting server');
   process.exit(1);
 });

@@ -1,19 +1,16 @@
 {
-    "key_path": "@tweek_clients_tests/test_category/test_key2",
-    "meta": {
-        "name": "@tweek_clients_tests/test_category/test_key2",
-        "description": "e2e",
-        "tags": [
-            "test",
-            "do not delete or change"
-        ],
-        "readOnly": false,
-        "archived": false
-    },
-    "implementation": {
-        "type": "file",
-        "format": "jpad"
-    },
-    "valueType": "boolean",
-    "dependencies": []
+  "key_path": "@tweek_clients_tests/test_category/test_key2",
+  "meta": {
+    "name": "@tweek_clients_tests/test_category/test_key2",
+    "description": "e2e",
+    "tags": ["test", "do not delete or change"],
+    "readOnly": false,
+    "archived": false
+  },
+  "implementation": {
+    "type": "file",
+    "format": "jpad"
+  },
+  "valueType": "boolean",
+  "dependencies": []
 }

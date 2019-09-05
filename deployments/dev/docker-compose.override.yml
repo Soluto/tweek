@@ -112,18 +112,44 @@ services:
 
   oidc-server-mock:
     container_name: oidc-server-mock
-    image: soluto/oidc-server-mock
+    image: soluto/oidc-server-mock:0.1.0
     ports:
-      - "8081:80"
+      - "8082:80"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - CLIENT_ID=tweek-openid-mock-client
-      - REDIRECT_URIS=http://localhost:8080/auth-result/oidc
-      - TEST_USER={"SubjectId":"user","Username":"user","Password":"pwd"}
+      ASPNETCORE_ENVIRONMENT: Development
+      CLIENTS_CONFIGURATION_INLINE: |
+        [
+          {
+            "ClientId": "tweek-openid-mock-client",
+            "Description": "Tweek OIDC Mock",
+            "AllowedGrantTypes": [
+                "implicit"
+            ],
+            "AllowAccessTokensViaBrowser": true,
+            "RedirectUris": [
+                "http://localhost:8081/auth-result/oidc"
+            ],
+            "AllowedScopes": [
+                "openid",
+                "profile",
+                "email"
+            ],
+            "IdentityTokenLifetime": 3600,
+            "AccessTokenLifetime": 3600
+          }
+        ]
+      USERS_CONFIGURATION_INLINE: |
+        [
+          {
+            "SubjectId":"user",
+            "Username":"user",
+            "Password":"pwd"
+          }
+        ]
 
   gateway:
     ports:
-      - "8080:80"
+      - "8081:80"
     depends_on:
       - minio
       - nats
@@ -141,7 +167,7 @@ services:
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_MINIOSECURE=false
       - TWEEKGATEWAY_SECURITY_POLICYSTORAGE_NATSENDPOINT=nats://nats:4222
       - TWEEKGATEWAY_SECURITY_TWEEKSECRETKEY_PATH=/run/secrets/tweek_ssh_private_key
-      - TWEEKGATEWAY_SECURITY_AUTH_BASICAUTH_REDIRECTURLS=['http://localhost:8080', 'http://localhost:3000']
+      - TWEEKGATEWAY_SECURITY_AUTH_BASICAUTH_REDIRECTURLS=['http://localhost:8081', 'http://localhost:3000']
       - TWEEKGATEWAY_CONFIGFILEPATH=/config/gateway.json
     volumes:
       - ./gateway/config:/config
