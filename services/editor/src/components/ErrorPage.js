@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'react-emotion';
+// import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
 import logoSrc from './resources/logo.svg';
 
@@ -11,13 +12,13 @@ const getErrorText = (error) => {
   return 'Unknown Error';
 };
 
-const Main = styled('div')`
+const Main = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
 `;
 
-const Header = styled('div')`
+const Header = styled.div`
   top: 0px;
   left: 0px;
   right: 0px;
@@ -28,12 +29,12 @@ const Header = styled('div')`
   align-items: center;
 `;
 
-const Logo = styled('img')`
+const Logo = styled.img`
   margin: 5px 0 0 20px;
   width: 140px;
 `;
 
-const Body = styled('div')`
+const Body = styled.div`
   position: absolute;
   top: 70px;
   left: 0px;
@@ -44,16 +45,16 @@ const Body = styled('div')`
   align-items: center;
 `;
 
-const ErrorMessage = styled('div')`
+const ErrorMessage = styled.div`
   flex: 1;
   text-align: center;
 
   font-size: 28px;
-  font-family: Roboto,sans-serif;
+  font-family: Roboto, sans-serif;
   color: red;
 `;
 
-const ErrorPage = ({ error }) =>
+const ErrorPage = ({ error }) => (
   <Main>
     <Header>
       <Link to="/" replace>
@@ -63,6 +64,7 @@ const ErrorPage = ({ error }) =>
     <Body>
       <ErrorMessage>{getErrorText(error)}</ErrorMessage>
     </Body>
-  </Main>;
+  </Main>
+);
 
 export default ErrorPage;
