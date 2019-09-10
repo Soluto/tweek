@@ -1,6 +1,6 @@
 # Overview
 
-Allows setting hooks on keys (including the `*` wildcard). Only notification webhooks are supported at this time.  
+Allows setting hooks on keys (including the `*` wildcard). Only notification webhooks are supported at this time.
 Paths for hooks implicitly start after the `implementations`/`manifests` prefixes.
 
 # UI
@@ -98,11 +98,12 @@ Request body:
 
 # The webhook request
 
-POST request with JSON content showing the new state of the keys.  
+POST request with JSON content showing the new state of the keys.
 **Notes**:
 
 - `implementation` is a string, and it might also be null depending on the key format
-- `oldValue` can be null if this key was newly created in this commit
+- `oldValue` will be null when the key was newly created in this commit
+- `newValue` will be null when the key was archived
 
 Example request body:
 
