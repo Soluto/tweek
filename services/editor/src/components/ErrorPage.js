@@ -62,7 +62,7 @@ const ErrorPage = ({ error }) => (
       </Link>
     </Header>
     <Body>
-      <ErrorMessage>{getErrorText(error)}</ErrorMessage>
+      <ErrorMessage data-comp="error-message">{getErrorText(error)}</ErrorMessage>
     </Body>
   </Main>
 );
