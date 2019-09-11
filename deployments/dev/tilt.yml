@@ -167,6 +167,11 @@ services:
             "SubjectId":"user",
             "Username":"user",
             "Password":"pwd"
+          },
+          {
+            "SubjectId":"user2",
+            "Username":"user2",
+            "Password":"pwd"
           }
         ]
     image: soluto/oidc-server-mock:0.1.0

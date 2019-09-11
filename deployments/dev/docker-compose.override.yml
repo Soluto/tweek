@@ -144,6 +144,11 @@ services:
             "SubjectId":"user",
             "Username":"user",
             "Password":"pwd"
+          },
+          {
+            "SubjectId":"user2",
+            "Username":"user2",
+            "Password":"pwd"
           }
         ]
 
