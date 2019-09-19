@@ -8,6 +8,8 @@ import logoSrc from './resources/logo.svg';
 const getErrorText = (error) => {
   if (error.statusText) {
     return error.statusText;
+  } else if (error.response && error.response.statusText) {
+    return error.response.statusText;
   }
   return 'Unknown Error';
 };

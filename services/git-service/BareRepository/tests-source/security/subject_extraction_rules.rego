@@ -5,6 +5,7 @@ default subject = { "user": null, "group": null }
 subject = { "user": "admin-app", "group": "externalapps"} {
     input.iss = "http://oidc-server-mock"
     input.aud = "tweek-openid-mock-client"
+    input.sub = "user"
 } else = { "user": input.sub, "group": "default" } {
     true
 }
