@@ -8,7 +8,8 @@ import * as RulesService from './rules-utils';
 import ErrorHandler from '../common/ErrorHandler';
 import JPadVisualEditor from './JPadVisualEditor/JPadVisualEditor';
 import JPadTextEditor from './JPadTextEditor/JPadTextEditor';
-import './JPadFullEditor.css';
+import { PolicyEditor } from '../';
+import './KeyEditor.css';
 
 const confirmUnsavedAlert = {
   title: 'Warning',
@@ -35,6 +36,7 @@ const MutatorFor = (propName) => (Comp) =>
 const KeyRulesEditor = ({
   keyPath,
   source,
+  policy,
   valueType,
   mutate,
   onMutation,
@@ -73,6 +75,12 @@ const KeyRulesEditor = ({
             Source
           </label>
         </Tab>
+        <Tab className="tab-header">
+          <label className="key-source-tab-icon"> </label>
+          <label className="tab-title" data-tab-header="policy">
+            Policy
+          </label>
+        </Tab>
       </TabList>
       <TabPanel className="tab-content">
         <ErrorHandler errorMessage="Rules Editor does not support this format yet, please use Source instead">
@@ -84,6 +92,13 @@ const KeyRulesEditor = ({
       <TabPanel className="tab-content">
         <JPadTextEditor
           {...{ source, isReadonly, setHasUnsavedChanges }}
+          onChange={(x) => onMutation(JSON.parse(x))}
+        />
+      </TabPanel>
+      <TabPanel className="tab-content">
+        <PolicyEditor
+          {...{ setHasUnsavedChanges }}
+          source={policy}
           onChange={(x) => onMutation(JSON.parse(x))}
         />
       </TabPanel>
@@ -132,7 +147,7 @@ function changeValueType(valueType, rulesMutate, depth) {
   Object.keys(rules).forEach((key) => changeValueType(valueType, rulesMutate.in(key), depth - 1));
 }
 
-const JPadFullEditor = compose(
+const KeyEditor = compose(
   mapProps(({ source, onDependencyChanged, dependencies, onChange, ...other }) => ({
     onMutation(sourceTree) {
       const newDependencies = RulesService.getDependencies(
@@ -173,6 +188,6 @@ const JPadFullEditor = compose(
   }),
 )(KeyRulesEditor);
 
-JPadFullEditor.displayName = 'JPadFullEditor';
+KeyEditor.displayName = 'KeyEditor';
 
-export default JPadFullEditor;
+export default KeyEditor;

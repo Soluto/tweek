@@ -109,14 +109,7 @@ const confirmEditFolderAlert = {
 
 export const editFolder = (shouldShowConfirmationScreen, keyPath) =>
   continueGuard(shouldShowConfirmationScreen, confirmEditFolderAlert, (dispatch) => {
-    // update the state to empty key in order to skip on leave hook
-    dispatch({ type: KEY_OPENED, payload: createBlankJPadKey() });
-    // navigate and set defaults
     dispatch(push(`/keys/${keyPath}${FOLDER_EDIT_NAME}`));
-    dispatch(changeKeyValueType('string'));
-
-    const validation = { isValid: false, hint: '', isShowingHint: false };
-    setImmediate(() => dispatch(updateKeyPath(keyPath, validation)));
   });
 
 export function addKeyDetails() {

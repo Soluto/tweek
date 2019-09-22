@@ -37,10 +37,8 @@ const KeyPage = ({
   }
 
   if (configKey.endsWith(`/${FOLDER_EDIT_NAME}`)) {
-    return <FolderEditPage />;
+    return <FolderEditPage {...props} />;
   }
-
-  console.log('selected', selectedKey);
 
   const { implementation } = selectedKey.local;
   return !implementation ? (

@@ -1,0 +1,45 @@
+@import (reference) '../../../../styles/core/core.less';
+
+.tab-container {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  margin-top: 16px;
+  
+  .tab-header {
+    color: #515c66;
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 12px 32px;
+    height: 46px;
+    .tab-icon {
+      float: left;
+      font-family: 'tweekIcons';
+    }
+    .key-definition-tab-icon {
+      .tab-icon;
+      margin-top: 2px;
+      font-size: 17px;
+    }
+    .key-source-tab-icon {
+      .tab-icon;
+      font-size: 20px;
+    }
+    .tab-title {
+      font-size: 14px;
+      margin-left: 10px;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+}
+.tab-content {
+  flex-grow: 1;
+  border: 1px solid lightgray;
+  background-color: white;
+
+  &:not(.react-tabs__tab-panel--selected) {
+    display: none;
+  }
+}

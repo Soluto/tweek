@@ -1,7 +1,7 @@
 import React, { Component, useMemo } from 'react';
 import { compose, pure } from 'recompose';
 import classNames from 'classnames';
-import JPadFullEditor from '../../../../../components/JPadFullEditor';
+import KeyEditor from '../../../../../components/KeyEditor';
 import stickyHeaderIdentifier from '../../../../../hoc/sticky-header-identifier';
 import ConstEditor from '../../../../../components/ConstEditor';
 import EditableTextArea from '../../../../../components/common/EditableTextArea/EditableTextArea';
@@ -28,13 +28,14 @@ const Editor = ({
   if (manifest.implementation.type === 'file') {
     let FileEditor = null;
     if (manifest.implementation.format === 'jpad') {
-      FileEditor = JPadFullEditor;
+      FileEditor = KeyEditor;
     }
     return (
       <FileEditor
         keyPath={keyPath}
         alerter={alerter}
         source={sourceFile}
+        policy={manifest.policy}
         onChange={onSourceFileChange}
         dependencies={manifest.dependencies}
         onDependencyChanged={onDependencyChanged}
