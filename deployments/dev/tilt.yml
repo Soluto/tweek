@@ -150,7 +150,8 @@ services:
             ],
             "AllowAccessTokensViaBrowser": true,
             "RedirectUris": [
-                "http://localhost:8081/auth-result/oidc"
+                "http://localhost:8081/auth-result/oidc",
+                "http://localhost:8081/auth-result/silent"
             ],
             "AllowedScopes": [
                 "openid",

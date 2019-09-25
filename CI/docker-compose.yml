@@ -106,7 +106,8 @@ services:
             ],
             "AllowAccessTokensViaBrowser": true,
             "RedirectUris": [
-                "http://gateway/auth-result/oidc"
+                "http://gateway/auth-result/oidc",
+                "http://gateway/auth-result/silent"
             ],
             "AllowedScopes": [
                 "openid",

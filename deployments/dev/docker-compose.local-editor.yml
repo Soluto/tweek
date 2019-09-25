@@ -32,7 +32,8 @@ services:
             ],
             "AllowAccessTokensViaBrowser": true,
             "RedirectUris": [
-                "http://localhost:3000/auth-result/oidc"
+                "http://localhost:3000/auth-result/oidc",
+                "http://localhost:3000/auth-result/silent"
             ],
             "AllowedScopes": [
                 "openid",
