@@ -7,6 +7,7 @@ import { TagsController } from './tags';
 import { SearchController } from './search';
 import { AppsController } from './apps';
 import { PolicyController } from './policies';
+import { ResourcePolicyController } from './resource-policy';
 import { HooksController } from './hooks';
 import { SubjectExtractionRulesController } from './subject-extraction-rules';
 import { RoutesConfig } from './config';
@@ -37,6 +38,7 @@ export default function configureRoutes(config: RoutesConfig): any {
     { from: 'manifests', to: 'manifest' },
     { from: 'revision-history', to: 'revision-history' },
     { from: 'dependents', to: 'dependent' },
+    { from: 'resource/policies', to: 'resource/policies' },
   ];
 
   prefixes.forEach((prefix) => {
@@ -57,6 +59,7 @@ export default function configureRoutes(config: RoutesConfig): any {
     SchemaController,
     KeysController,
     PolicyController,
+    ResourcePolicyController,
     SubjectExtractionRulesController,
     HooksController,
   );

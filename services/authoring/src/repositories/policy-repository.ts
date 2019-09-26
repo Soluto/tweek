@@ -5,26 +5,49 @@ import { JsonValue } from '../utils/jsonValue';
 import Author from '../utils/author';
 import jsonpatch = require('fast-json-patch');
 
+interface Resource {
+  path: string;
+  isKey: boolean;
+}
+
+const getPathToPolicyFile = (resource?: Resource) => {
+  if (!resource) {
+    return 'security/policy.json';
+  }
+
+  return resource.isKey
+    ? `manifests/${resource.path}.json`
+    : `manifests/${resource.path}/policy.json`;
+};
+
 export default class PolicyRepository {
   constructor(private _gitTransactionManager: Transactor<GitRepository>) {}
 
-  getPolicy(): Promise<JsonValue> {
+  getPolicy(resource?: Resource): Promise<JsonValue> {
     return this._gitTransactionManager.read(async (gitRepo) => {
-      const policyFileContent = await gitRepo.readFile('security/policy.json');
-      return JSON.parse(policyFileContent);
+      const pathToPolicyFile = getPathToPolicyFile(resource);
+      const policyFileContent = JSON.parse(await gitRepo.readFile(pathToPolicyFile));
+      return resource.isKey ? policyFileContent.policies : policyFileContent;
     });
   }
 
-  replacePolicy(policy: JsonValue, author: Author): Promise<Oid> {
+  replacePolicy(policy: JsonValue, author: Author, resource?: Resource): Promise<Oid> {
     return this._gitTransactionManager.write(async (gitRepo) => {
-      await gitRepo.updateFile('security/policy.json', JSON.stringify(policy, null, 4));
+      const pathToPolicyFile = getPathToPolicyFile(resource);
+      const policyFileContent = JSON.parse(await gitRepo.readFile(pathToPolicyFile));
+      policyFileContent.policies = policy;
+      await gitRepo.updateFile(pathToPolicyFile, JSON.stringify(policyFileContent, null, 4));
       return await gitRepo.commitAndPush(`Updating policy`, author);
     });
   }
 
-  async updatePolicy(patch: jsonpatch.Operation[], author: Author): Promise<Oid> {
+  async updatePolicy(
+    patch: jsonpatch.Operation[],
+    author: Author,
+    resource?: Resource,
+  ): Promise<Oid> {
     const currentPolicy = await this.getPolicy();
     const newPolicy = jsonpatch.applyPatch(currentPolicy, patch).newDocument;
-    return this.replacePolicy(newPolicy, author);
+    return this.replacePolicy(newPolicy, author, resource);
   }
 }
