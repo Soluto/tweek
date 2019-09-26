@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import { tweekManagementClient } from '../../../../utils/tweekClients';
 import { PolicyEditor, SaveButton } from '../../../../components';
 import './FolderEditPage.css';
 
@@ -32,7 +33,13 @@ const PathText = styled.span`
 `;
 
 const FolderEditPage = ({ selectedKey, ...props }) => {
-  console.log('prop', props);
+  const [policies, setPolicies] = useState('');
+  useEffect(() => {
+    (async () => {
+      const resourcePolicies = await tweekManagementClient.getResourcePolicies(selectedKey.key);
+      setPolicies(JSON.stringify(resourcePolicies));
+    })();
+  }, []);
 
   return (
     <Container>
@@ -43,7 +50,7 @@ const FolderEditPage = ({ selectedKey, ...props }) => {
         <PathText>{selectedKey.key}</PathText>
       </Box>
 
-      <Tabs className="tab-container" selectedIndex={0}>
+      <Tabs className="tab-container" selectedIndex={0} onSelect={() => {}}>
         <TabList>
           <Tab className="tab-header">
             <label className="key-source-tab-icon"> </label>
@@ -54,10 +61,11 @@ const FolderEditPage = ({ selectedKey, ...props }) => {
         </TabList>
 
         <TabPanel className="tab-content">
-          <PolicyEditor source={'asdasd'} />
+          <PolicyEditor source={policies} />
         </TabPanel>
       </Tabs>
     </Container>
   );
 };
+
 export default FolderEditPage;
