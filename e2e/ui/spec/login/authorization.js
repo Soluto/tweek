@@ -6,7 +6,7 @@ import { dataComp } from '../../utils/selector-utils';
 
 const errorMessage = Selector(dataComp('error-message'));
 
-fixture`Authorization error`.page`${editorUrl}/login`;
+fixture`Authorization error`.page`${editorUrl}`;
 
 test('no permissions to access tweek', async (t) => {
   await login(t, { username: 'user2', password: 'pwd' });
