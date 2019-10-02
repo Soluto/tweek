@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Tweek.Publishing.Service.Packing;
+using Tweek.Publishing.Service.Model.Rules;
 using Tweek.Publishing.Service.Sync.Converters;
 using Xunit;
 
