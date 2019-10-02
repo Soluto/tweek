@@ -69,6 +69,7 @@
     "@types/ramda": "^0.26.6",
     "@types/shortid": "^0.0.29",
     "@types/sinon": "^7.0.13",
+    "@types/sinon-chai": "^3.2.3",
     "@types/sshpk": "^1.10.3",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
