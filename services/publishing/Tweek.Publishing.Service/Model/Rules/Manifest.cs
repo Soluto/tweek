@@ -48,5 +48,8 @@ namespace Tweek.Publishing.Service.Model.Rules
 
         [JsonProperty("key_path")]
         public string KeyPath;
+
+        [JsonProperty("policy")]
+        public PolicyRule[] Policy;
     }
 }
