@@ -9,7 +9,7 @@ chai.use(require('sinon-chai'));
 chai.use(require('chai-as-promised'));
 const { expect } = chai;
 
-const GlobalFilePath = 'security/policy.json';
+const SecurityFilePath = 'security/policy.json';
 const PolicyRules: PolicyRule[] = [
   {
     group: '*',
@@ -75,7 +75,7 @@ describe('PolicyRepository', () => {
 
       await policyRepo.replacePolicy(PolicyRules, Author);
       expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(
-        GlobalFilePath,
+        SecurityFilePath,
         JSON.stringify(PolicyRules, null, 4),
       );
       expect(mockGitRepo.commitAndPush).to.have.been.calledOnceWith(`Updating policy`, Author);

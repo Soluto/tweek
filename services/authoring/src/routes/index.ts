@@ -15,7 +15,7 @@ import { Container } from 'typescript-ioc';
 import AppsRepository from '../repositories/apps-repository';
 import KeysRepository from '../repositories/keys-repository';
 import TagsRepository from '../repositories/tags-repository';
-import PolicyRepository from '../repositories/policy-repository';
+import { PolicyRepository } from '../repositories/policy-repository';
 import SubjectExtractionRulesRepository from '../repositories/extraction-rules-repository';
 import { HooksRepositoryFactory } from '../repositories/hooks-repository';
 

@@ -12,7 +12,7 @@ import GitRepository, { RepoOutOfDateError } from './repositories/git-repository
 import KeysRepository from './repositories/keys-repository';
 import TagsRepository from './repositories/tags-repository';
 import AppsRepository from './repositories/apps-repository';
-import PolicyRepository from './repositories/policy-repository';
+import { PolicyRepository } from './repositories/policy-repository';
 import { HooksRepositoryFactory } from './repositories/hooks-repository';
 import GitContinuousUpdater from './repositories/git-continuous-updater';
 import searchIndex from './search-index';
