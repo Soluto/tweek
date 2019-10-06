@@ -33,11 +33,11 @@ const App = ({ children }) => (
 
 const preload = async () => await Promise.all([TypesService.refreshTypes(), refreshSchema()]);
 
-const loadingRenderer = () => null;
-const loadingErrorRenderer = error => <ErrorPage error={error} />;
+const errorRenderer = (error) => <ErrorPage error={error} />;
 
 const enhance = compose(
-  withLoading(loadingRenderer, loadingErrorRenderer, preload),
-  withTypesService(TypesService));
+  withLoading(() => null, errorRenderer, preload),
+  withTypesService(TypesService),
+);
 
 export default enhance(App);

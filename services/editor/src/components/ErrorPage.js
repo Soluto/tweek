@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-// import styled from 'react-emotion';
 import styled from '@emotion/styled';
 
 import logoSrc from './resources/logo.svg';
@@ -21,9 +20,6 @@ const Main = styled.div`
 `;
 
 const Header = styled.div`
-  top: 0px;
-  left: 0px;
-  right: 0px;
   height: 70px;
   background-color: #009fda;
 

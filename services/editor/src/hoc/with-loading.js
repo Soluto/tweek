@@ -1,17 +1,18 @@
 import React from 'react';
 import { compose, lifecycle, withState } from 'recompose';
 
-const withLoading = (loadingRenderer, loadingErrorRenderer, loadingPromiseFactory) => Comp =>
+const withLoading = (loadingRenderer, loadingErrorRenderer, loadingPromiseFactory) => (Comp) =>
   compose(
     withState('isLoading', 'setIsLoading', true),
     withState('loadingError', 'setLoadingError', null),
     lifecycle({
-      async componentWillMount() {
+      componentWillMount() {
+        this.props.setIsLoading(false);
+      },
+      async componentDidMount() {
         try {
           await loadingPromiseFactory(this.props);
-          this.props.setIsLoading(false);
-        }
-        catch(e) {
+        } catch (e) {
           this.props.setLoadingError(e);
           this.props.setIsLoading(false);
         }
