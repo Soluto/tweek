@@ -23,7 +23,7 @@ RUN chmod u+x opa
 
 RUN mkdir /tmp/opatests
 COPY authorization.rego /tmp/opatests
-COPY ./testdata/policy.json /tmp/opatests
+COPY ./testdata/global-policy.json /tmp/opatests
 COPY ./testdata/test_authorization.rego /tmp/opatests
 
 RUN ./opa test -v /tmp/opatests

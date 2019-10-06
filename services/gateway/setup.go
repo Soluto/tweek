@@ -5,11 +5,12 @@ import (
 	"runtime"
 	"time"
 
+	"tweek-gateway/appConfig"
+	"tweek-gateway/security"
+
 	minio "github.com/minio/minio-go"
 	nats "github.com/nats-io/go-nats"
 	"github.com/sirupsen/logrus"
-	"tweek-gateway/appConfig"
-	"tweek-gateway/security"
 )
 
 type authorizerInitializer func(*appConfig.Security) (security.Authorizer, error)
@@ -50,7 +51,7 @@ func setupAuthorizer(cfg *appConfig.Security) (security.Authorizer, error) {
 		return nil, err
 	}
 
-	reader, err := client.GetObject(policyStorage.MinioBucketName, "security/policy.json", minio.GetObjectOptions{})
+	reader, err := client.GetObject(policyStorage.MinioBucketName, "security/global-policy.json", minio.GetObjectOptions{})
 	if err != nil {
 		return nil, err
 	}

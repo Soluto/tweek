@@ -26,7 +26,7 @@ func TestAuthorizationMiddleware(t *testing.T) {
 	if err != nil {
 		t.Fatal("Could not load rego file")
 	}
-	policy, err := ioutil.ReadFile("./testdata/policy.json")
+	policy, err := ioutil.ReadFile("./testdata/global-policy.json")
 	if err != nil {
 		t.Fatal("Could not load policy file")
 	}
