@@ -11,6 +11,7 @@ namespace Tweek.Publishing.Service.Sync.Converters
 {
     public class PolicyConverter : IConverter
     {
+        private static readonly Regex securityPolicyRegex = new Regex(Patterns.SecurityPolicy, RegexOptions.Compiled);
         private static readonly Regex policyFilesRegex = new Regex(Patterns.PolicyFiles, RegexOptions.Compiled);
         private static readonly Regex manifestRegex = new Regex(Patterns.Manifests, RegexOptions.Compiled);
 
@@ -26,68 +27,100 @@ namespace Tweek.Publishing.Service.Sync.Converters
 
         public (string, string, string) Convert(string commitId, ICollection<string> files, Func<string, string> readFn)
         {
-            var result = files
-                .Where(x => policyFilesRegex.IsMatch(x))
+            var securityPolicy = files
+                .Where(x=> securityPolicyRegex.IsMatch(x))
+                .Select(x => {
+                    try {
+                        return JsonConvert.DeserializeObject<Policy>(readFn(x));
+                    } 
+                    catch (Exception ex) {
+                        ex.Data["key"] = x;
+                        throw;
+                    }
+                })
+                .Single();
+
+            var policyFilesRules = files
+                .Where(x =>  policyFilesRegex.IsMatch(x))
                 .Select(x =>
                 {
                     try
                     {
                         var policy = JsonConvert.DeserializeObject<Policy>(readFn(x));
-                        policy.Rules = policy.Rules.Map(z =>
+                        return policy.Rules.Map(y =>
                             new PolicyRule
                             {
-                                Group = z.Group,
-                                User = z.User,
-                                Effect = z.Effect,
-                                Action = z.Action,
-                                Object = x.StartsWith("security/") ? z.Object : GetPolicyObjectForDirPolicyFile(x),
-                                Contexts = x.StartsWith("security/") ? z.Contexts : new Dictionary<string, string>()
+                                Group = y.Group,
+                                User = y.User,
+                                Effect = y.Effect,
+                                Action = y.Action,
+                                Object = x.StartsWith("security/") ? y.Object : GetPolicyObjectForDirPolicyFile(x),
+                                Contexts = x.StartsWith("security/") ? y.Contexts : new Dictionary<string, string>()
                             }
                         ).ToArray();
-
-                        return policy;
                     }
                     catch (Exception ex)
                     {
                         ex.Data["key"] = x;
                         throw;
                     }
-                })
-                .Aggregate((x, y) => new Policy { Rules = x.Rules.Concat(y.Rules).ToArray() });
+                }).Aggregate(new PolicyRule[]{}, (x, y) => {
+                    var rules = new PolicyRule[]{};
+                    rules.Concat(x);
+                    rules.Concat(y);
+                    
+                    return rules;
+                });
 
-            var manifestsRules = files.Where(x => manifestRegex.IsMatch(x)).Select(x =>
-            {
-                try
+            var manifestsRules = files
+                .Where(x => manifestRegex.IsMatch(x))
+                .Select(x =>
                 {
-                    var manifest = JsonConvert.DeserializeObject<Manifest>(readFn(x));
-                    if (manifest.Policy == null)
+                    try
                     {
-                        return new PolicyRule[0];
+                        var manifest = JsonConvert.DeserializeObject<Manifest>(readFn(x));
+                        if (manifest.Policy == null)
+                        {
+                            return new PolicyRule[]{};
+                        }
+
+                        return manifest.Policy.Map(y =>
+                        new PolicyRule
+                        {
+                            Group = y.Group,
+                            User = y.User,
+                            Effect = y.Effect,
+                            Action = y.Action,
+                            Object = GetPolicyObjectForKey(x),
+                            Contexts = new Dictionary<string, string>()
+                        }
+                        ).ToArray();
+                    }
+                    catch (Exception ex)
+                    {
+                        ex.Data["key"] = x;
+                        throw;
                     }
 
-                    return manifest.Policy.Map(z =>
-                     new PolicyRule
-                     {
-                         Group = z.Group,
-                         User = z.User,
-                         Effect = z.Effect,
-                         Action = z.Action,
-                         Object = GetPolicyObjectForKey(x),
-                         Contexts = new Dictionary<string, string>()
-                     }
-                    ).ToArray();
-                }
-                catch (Exception ex)
-                {
-                    ex.Data["key"] = x;
-                    throw;
-                }
+                }).Aggregate(new PolicyRule[]{}, (x, y) => {
+                    var rules = new PolicyRule[]{};
+                    rules.Concat(x);
+                    rules.Concat(y);
+                    
+                    return rules;
+                });
+            
+            var globalRules = new PolicyRule[]{};
+            globalRules.Concat(securityPolicy.Rules);
+            globalRules.Concat(policyFilesRules);
+            globalRules.Concat(manifestsRules);
 
-            }).Aggregate((x, y) => x.Concat(y).ToArray());
+            var globalPolicy = new Policy { 
+                Rules = globalRules
+            };
 
-            result.Rules.Concat(manifestsRules);
-
-            return ("security/global-policy.json", JsonConvert.SerializeObject(result), "application/json");
+            return ("security/global-policy.json", JsonConvert.SerializeObject(globalPolicy), "application/json");
         }
     }
 }
+
