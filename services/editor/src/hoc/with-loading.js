@@ -7,15 +7,14 @@ const withLoading = (loadingRenderer, loadingErrorRenderer, loadingPromiseFactor
     withState('loadingError', 'setLoadingError', null),
     lifecycle({
       componentWillMount() {
-        this.props.setIsLoading(false);
-      },
-      async componentDidMount() {
-        try {
-          await loadingPromiseFactory(this.props);
-        } catch (e) {
-          this.props.setLoadingError(e);
-          this.props.setIsLoading(false);
-        }
+        loadingPromiseFactory(this.props)
+          .then(() => {
+            this.props.setIsLoading(false);
+          })
+          .catch((e) => {
+            this.props.setLoadingError(e);
+            this.props.setIsLoading(false);
+          });
       },
     }),
   )((props) => {
