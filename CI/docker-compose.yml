@@ -106,7 +106,8 @@ services:
             ],
             "AllowAccessTokensViaBrowser": true,
             "RedirectUris": [
-                "http://gateway/auth-result/oidc"
+                "http://gateway/auth-result/oidc",
+                "http://gateway/auth-result/silent"
             ],
             "AllowedScopes": [
                 "openid",
@@ -120,8 +121,13 @@ services:
       USERS_CONFIGURATION_INLINE: |
         [
           {
-            "SubjectId":"00000000-0000-0000-0000-000000000000",
+            "SubjectId":"user",
             "Username":"user",
+            "Password":"pwd"
+          },
+          {
+            "SubjectId":"user2",
+            "Username":"user2",
             "Password":"pwd"
           }
         ]

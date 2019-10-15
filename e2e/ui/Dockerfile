@@ -1,4 +1,4 @@
-FROM testcafe/testcafe:1.2.1
+FROM testcafe/testcafe:1.5.0
 USER root
 
 COPY package.json yarn.lock /src/

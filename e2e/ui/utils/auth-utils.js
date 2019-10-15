@@ -18,26 +18,32 @@ const loginComp = Selector('[value = "login"]');
 const confirmComp = Selector('[value = "yes"]');
 const rememberConsent = Selector('#RememberConsent');
 
-export const login = async (t) => {
+export const login = async (t, credentials) => {
   await t.expect(getLocation()).eql(`${editorUrl}/login`);
 
-  if (oidcCredentials) {
-    await t
-      .expect(mockAuth.visible)
-      .ok()
-      .click(mockAuth)
-      .expect(usernameComp.visible)
-      .ok()
-      .typeText(usernameComp, username, { replace: true })
-      .typeText(passwordComp, password, { replace: true })
-      .click(loginComp)
-      .expect(rememberConsent.visible)
-      .ok()
-      .click(rememberConsent)
-      .click(confirmComp);
+  if (credentials && credentials.username && credentials.password) {
+    await oidcLogin(t, credentials);
+  } else if (oidcCredentials) {
+    await oidcLogin(t, { username, password });
   } else {
     await t.click(dataComp('Basic Auth Login'));
   }
 
   await t.expect(getLocation()).match(new RegExp(`^${editorUrl}(?!\/login)`));
+};
+
+const oidcLogin = async (t, credentials) => {
+  await t
+    .expect(mockAuth.visible)
+    .ok()
+    .click(mockAuth)
+    .expect(usernameComp.visible)
+    .ok()
+    .typeText(usernameComp, credentials.username, { replace: true })
+    .typeText(passwordComp, credentials.password, { replace: true })
+    .click(loginComp)
+    .expect(rememberConsent.visible)
+    .ok()
+    .click(rememberConsent)
+    .click(confirmComp);
 };
