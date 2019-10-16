@@ -97,7 +97,8 @@ describe('PolicyRepository', () => {
     });
 
     it('replace key policy rules', async () => {
-      mockGitRepo.readFile = sinon.stub().returns(JSON.stringify(PolicyRules));
+      const keyMeta = { some: 'metadata', policy: [] };
+      mockGitRepo.readFile = sinon.stub().returns(JSON.stringify(keyMeta));
       mockGitRepo.updateFile = sinon.spy();
       mockGitRepo.commitAndPush = sinon.spy();
 
@@ -107,7 +108,7 @@ describe('PolicyRepository', () => {
       });
       expect(mockGitRepo.updateFile).to.have.been.calledOnceWith(
         'manifests/some/path/to/key.json',
-        JSON.stringify(PolicyRules, null, 4),
+        JSON.stringify({ ...keyMeta, policy: PolicyRules }, null, 4),
       );
       expect(mockGitRepo.commitAndPush).to.have.been.calledOnceWith(`Updating policy`, Author);
     });
