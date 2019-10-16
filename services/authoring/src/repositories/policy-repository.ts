@@ -33,13 +33,12 @@ export class PolicyRepository {
   replacePolicy(policy: JsonValue, author: Author, resource?: Resource): Promise<Oid> {
     return this._gitTransactionManager.write(async (gitRepo) => {
       const pathToPolicyFile = getPathToPolicyFile(resource);
+      let newPolicy: JsonValue = policy;
       if (resource && resource.isKey) {
         const policyFileContent = JSON.parse(await gitRepo.readFile(pathToPolicyFile));
-        policyFileContent.policy = policy;
-        await gitRepo.updateFile(pathToPolicyFile, JSON.stringify(policyFileContent, null, 4));
-      } else {
-        await gitRepo.updateFile(pathToPolicyFile, JSON.stringify(policy, null, 4));
+        newPolicy = { ...policyFileContent, policy: policy };
       }
+      await gitRepo.updateFile(pathToPolicyFile, JSON.stringify(newPolicy, null, 4));
       return await gitRepo.commitAndPush(`Updating policy`, author);
     });
   }
