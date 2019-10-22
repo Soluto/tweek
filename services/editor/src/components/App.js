@@ -9,6 +9,7 @@ import { refreshSchema } from '../services/context-service';
 import * as TypesService from '../services/types-service';
 import AppHeader from './AppHeader';
 import AppPage from './AppPage';
+import ErrorPage from './ErrorPage';
 import GoogleTagManager from './googleTagManager';
 import { withTypesService } from './common/Input/TypedInput';
 import '../styles/core/fonts/fonts.css';
@@ -32,8 +33,10 @@ const App = ({ children }) => (
 
 const preload = async () => await Promise.all([TypesService.refreshTypes(), refreshSchema()]);
 
+const errorRenderer = (error) => <ErrorPage error={error} />;
+
 const enhance = compose(
-  withLoading(() => null, preload),
+  withLoading(() => null, errorRenderer, preload),
   withTypesService(TypesService),
 );
 
