@@ -23,28 +23,35 @@ function addTerm(query, term, field) {
   });
 }
 
-function performSearch(searchString = '', { maxResults = 25, field, index }): string[] {
+function trimResults(maxResults, results) {
+  return R.pipe(
+    R.slice(0, maxResults || 25),
+    R.map<{}, string>(R.prop<string>('ref')),
+  )(results);
+}
+
+function performSearch(
+  searchString = '',
+  { field, index }: { field?: string; index: lunr.Index },
+): lunr.Index.Result[] {
   searchString = searchString.toLowerCase().trim();
   // tslint:disable-next-line:curly
   if (!index || searchString === '') return [];
-
   try {
-    const searchResults = index.query((query) => {
+    return index.query((query) => {
       searchString
         .split(separator)
         .filter((s) => s !== '')
         .forEach((term) => addTerm(query, term, field));
     });
-
-    const trimResults = R.pipe(
-      R.slice(0, maxResults || 25),
-      R.map<{}, string>(R.prop<string>('ref')),
-    );
-    return trimResults(searchResults);
   } catch (err) {
     logger.error({ err, searchString }, 'error performing search');
     return [];
   }
+}
+
+async function getIndex() {
+  return searchIndex.index || (await searchIndex.indexPromise);
 }
 
 @AutoWired
@@ -55,14 +62,29 @@ export class SearchController {
   @GET
   @Path('/search-index')
   async getSearchIndex(): Promise<any> {
-    return await searchIndex.indexPromise;
+    return await getIndex();
   }
 
   @Authorize({ permission: PERMISSIONS.SEARCH })
   @GET
   @Path('/search')
-  async search(@QueryParam('q') q: string, @QueryParam('count') count?: number): Promise<string[]> {
-    return this.getSearchResult(q, count);
+  async search(
+    @QueryParam('q') q: string,
+    @QueryParam('type') type: 'free' | 'field' = 'field',
+    @QueryParam('field') field?: string,
+    @QueryParam('count') count?: number,
+  ): Promise<string[]> {
+    if (type === 'free') {
+      return trimResults(count, (await getIndex()).search(q));
+    } else {
+      return trimResults(
+        count,
+        await performSearch(q, {
+          field,
+          index: await getIndex(),
+        }),
+      );
+    }
   }
 
   @Authorize({ permission: PERMISSIONS.SEARCH })
@@ -72,16 +94,12 @@ export class SearchController {
     @QueryParam('q') q: string,
     @QueryParam('count') count?: number,
   ): Promise<string[]> {
-    return this.getSearchResult(q, count, 'id');
-  }
-
-  private async getSearchResult(q: string, count: number, field?: string): Promise<string[]> {
-    const index = searchIndex.index || (await searchIndex.indexPromise);
-    const result = performSearch(q, {
-      maxResults: count,
-      field,
-      index,
-    });
-    return result;
+    return trimResults(
+      count,
+      await performSearch(q, {
+        field: 'id',
+        index: await getIndex(),
+      }),
+    );
   }
 }

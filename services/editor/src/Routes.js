@@ -10,6 +10,7 @@ import BasicAuthLoggedInPage from './pages/login/components/BasicAuthLoggedInPag
 import SilentLoggedInPage from './pages/login/components/SilentLoggedInPage';
 import KeysPage from './pages/keys/components/KeysPage/KeysPage';
 import KeyPage from './pages/keys/components/KeyPage/KeyPage';
+import SearchResults from './pages/keys/components/SearchResults/SearchResults';
 import ContextPage from './pages/context/components/ContextPage/ContextPage';
 import IdentityDetails from './pages/context/components/IdentityDetails/IdentityDetails';
 import SettingsPage from './pages/settings/components/SettingsPage/SettingsPage';
@@ -28,6 +29,7 @@ const renderKeyRoutes = ({ match: { path } }) => (
   <KeysPage>
     <Switch>
       <PrivateRoute exact path={path} component={SelectKeyMessage} />
+      <PrivateRoute path="/keys/$search/:query" component={SearchResults} />
       <PrivateRoute component={KeyPage} />
     </Switch>
   </KeysPage>

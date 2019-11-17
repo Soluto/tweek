@@ -21,7 +21,8 @@
     "eject": "react-scripts eject",
     "teardown": "yarn docker-compose down --remove-orphans",
     "logs": "yarn docker-compose logs",
-    "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.local-editor.yml"
+    "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.local-editor.yml",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@emotion/core": "^10.0.7",
@@ -41,6 +42,8 @@
     "moment": "^2.24.0",
     "oidc-client": "^1.6.1",
     "papp-polyfill": "^1.1.0",
+    "patch-package": "6.2.0",
+    "postinstall-postinstall": "2.0.0",
     "prop-types": "^15.6.1",
     "query-string": "^6.2.0",
     "ramda": "^0.26.1",
@@ -56,7 +59,7 @@
     "react-highlight-words": "^0.16.0",
     "react-monaco-editor": "^0.22.0",
     "react-notification-system": "^0.2.17",
-    "react-redux": "^6.0.0",
+    "react-redux": "^7.1.1",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-sanfona": "^1.1.0",

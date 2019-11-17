@@ -9,5 +9,5 @@ export const getSuggestions = async (query, { maxSearchResults, showInternalKeys
   return filterInternalKeys(suggestions, showInternalKeys);
 };
 
-export const search = async (query, maxResults) =>
+export const search = async (query, maxResults, type = 'field') =>
   await tweekManagementClient.search(query, maxResults || 25);
