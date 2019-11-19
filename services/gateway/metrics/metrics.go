@@ -9,12 +9,11 @@ import (
 )
 
 // NewMetricsVar creates the new metrics histogram
-func NewMetricsVar(subsystem string) *prometheus.SummaryVec {
-	var metrics = prometheus.NewSummaryVec(prometheus.SummaryOpts{
-		Subsystem:  subsystem,
-		Name:       "request_duration_seconds",
-		Help:       "Total time spent serving requests.",
-		Objectives: map[float64]float64{0.5: 0.05, 0.75: 0.01, 0.9: 0.01, 0.95: 0.001, 0.99: 0.001},
+func NewMetricsVar(subsystem string) *prometheus.HistogramVec {
+	var metrics = prometheus.NewHistogramVec(prometheus.HistogramOpts{
+		Subsystem: subsystem,
+		Name:      "request_duration_seconds",
+		Help:      "Total time spent serving requests.",
 	}, []string{"upstream", "method"})
 
 	prometheus.MustRegister(metrics)
@@ -22,7 +21,7 @@ func NewMetricsVar(subsystem string) *prometheus.SummaryVec {
 }
 
 // NewMetricsMiddleware creates a new metrics middleware
-func NewMetricsMiddleware(label string, metric *prometheus.SummaryVec) negroni.HandlerFunc {
+func NewMetricsMiddleware(label string, metric *prometheus.HistogramVec) negroni.HandlerFunc {
 
 	return func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		defer func(begin time.Time) { metric.WithLabelValues(label, r.Method).Observe(time.Since(begin).Seconds()) }(time.Now())

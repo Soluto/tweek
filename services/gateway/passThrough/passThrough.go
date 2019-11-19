@@ -7,14 +7,15 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/gorilla/mux"
-	"github.com/urfave/negroni"
 	"tweek-gateway/metrics"
 	"tweek-gateway/proxy"
+
+	"github.com/gorilla/mux"
+	"github.com/urfave/negroni"
 )
 
 // MountWithoutHost - mounts the request passThrough handlers and middleware
-func MountWithoutHost(upstream, metricsName string, middleware *negroni.Negroni, metricsVar *prometheus.SummaryVec, router *mux.Router) {
+func MountWithoutHost(upstream, metricsName string, middleware *negroni.Negroni, metricsVar *prometheus.HistogramVec, router *mux.Router) {
 	parsedUpstream := parseUpstreamOrPanic(upstream)
 
 	// Proxy forwarder
@@ -28,7 +29,7 @@ func MountWithoutHost(upstream, metricsName string, middleware *negroni.Negroni,
 }
 
 // MountWithHosts - mounts the request passThrough handlers and middleware
-func MountWithHosts(upstream string, hosts []string, metricsName string, middleware *negroni.Negroni, metricsVar *prometheus.SummaryVec, router *mux.Router) {
+func MountWithHosts(upstream string, hosts []string, metricsName string, middleware *negroni.Negroni, metricsVar *prometheus.HistogramVec, router *mux.Router) {
 	parsedUpstream := parseUpstreamOrPanic(upstream)
 
 	// Proxy forwarder
