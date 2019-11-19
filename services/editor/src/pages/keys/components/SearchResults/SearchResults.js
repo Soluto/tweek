@@ -7,7 +7,7 @@ import * as SearchService from '../../../../services/search-service';
 const useSearchResults = (query) => {
   const [searchResults, setSearchResults] = useState(null);
   useEffect(() => {
-    SearchService.search(query, 30).then(setSearchResults);
+    SearchService.search(query, { maxResults: 30, type: 'free' }).then(setSearchResults);
   }, [query]);
 
   return searchResults;
