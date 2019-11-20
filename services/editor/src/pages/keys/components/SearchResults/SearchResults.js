@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import * as R from 'ramda';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import * as SearchService from '../../../../services/search-service';
+import styled from '@emotion/styled';
 
 const useSearchResults = (query) => {
   const [searchResults, setSearchResults] = useState(null);
@@ -22,6 +22,29 @@ const getDataValueType = (archived, keyType, valueType) => {
   return valueType || 'key';
 };
 
+const SearchResultsContainer = styled.div`
+  padding: 20px;
+  h1 {
+    color: #515c66;
+    font-size: 28px;
+    .query {
+      color: #00506d;
+      font-style: italic;
+    }
+  }
+`;
+
+const SearchResult = styled.div`
+  background-color: white;
+  padding: 10px;
+  margin: 20px 0;
+  text-decoration: none;
+
+  .path {
+    color: gray;
+  }
+`;
+
 function searchResult({
   key_path,
   meta: { archived, name, tags, description },
@@ -29,7 +52,7 @@ function searchResult({
   valueType,
 }) {
   return (
-    <div data-comp="search-result">
+    <SearchResult data-comp="search-result">
       <Link title={key_path} to={`/keys/${key_path}`}>
         <div>
           <div data-value-type={getDataValueType(archived, keyType, valueType)} />
@@ -43,7 +66,7 @@ function searchResult({
         <div className="path">{key_path}</div>
         <div className="description">{description}</div>
       </Link>
-    </div>
+    </SearchResult>
   );
 }
 
@@ -57,14 +80,16 @@ export default function SearchResults({
 
   return (
     <>
-      <div>
+      <SearchResultsContainer>
         <div>
-          <h1>Showing results for </h1>
+          <h1>
+            Showing results for <span class="query">{query}</span>
+          </h1>
         </div>
         <div>
           {(results && results.map((x) => keys[x]).map((x) => searchResult(x))) || 'loading'}
         </div>
-      </div>
+      </SearchResultsContainer>
     </>
   );
 }
