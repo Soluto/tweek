@@ -5,8 +5,6 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/prometheus/client_golang/prometheus"
-
 	"tweek-gateway/metrics"
 	"tweek-gateway/proxy"
 
@@ -14,33 +12,38 @@ import (
 	"github.com/urfave/negroni"
 )
 
-// MountWithoutHost - mounts the request passThrough handlers and middleware
-func MountWithoutHost(upstream, metricsName string, middleware *negroni.Negroni, metricsVar *prometheus.HistogramVec, router *mux.Router) {
+func prepareMiddleware(upstream string, metricsName string, metricsVar *metrics.Metrics) []negroni.Handler {
 	parsedUpstream := parseUpstreamOrPanic(upstream)
 
+	var handlers = []negroni.Handler{}
+
 	// Proxy forwarder
-	forwarder := proxy.New(parsedUpstream, nil)
+	handlers = append(handlers, proxy.New(parsedUpstream, nil))
 
 	// metrics
-	forwarderMetrics := metrics.NewMetricsMiddleware(metricsName, metricsVar)
+	metricHandlers := metricsVar.NewMetricsMiddleware(metricsName)
+	for i := range metricHandlers {
+		handlers = append(handlers, metricHandlers[i])
+	}
+
+	return handlers
+}
+
+// MountWithoutHost - mounts the request passThrough handlers and middleware
+func MountWithoutHost(upstream, metricsName string, middleware *negroni.Negroni, metricsVar *metrics.Metrics, router *mux.Router) {
+	handlers := prepareMiddleware(upstream, metricsName, metricsVar)
 
 	// Mounting handler
-	router.PathPrefix("/").Handler(middleware.With(forwarderMetrics, forwarder))
+	router.PathPrefix("/").Handler(middleware.With(handlers...))
 }
 
 // MountWithHosts - mounts the request passThrough handlers and middleware
-func MountWithHosts(upstream string, hosts []string, metricsName string, middleware *negroni.Negroni, metricsVar *prometheus.HistogramVec, router *mux.Router) {
-	parsedUpstream := parseUpstreamOrPanic(upstream)
-
-	// Proxy forwarder
-	forwarder := proxy.New(parsedUpstream, nil)
-
-	// metrics
-	forwarderMetrics := metrics.NewMetricsMiddleware(metricsName, metricsVar)
+func MountWithHosts(upstream string, hosts []string, metricsName string, middleware *negroni.Negroni, metricsVar *metrics.Metrics, router *mux.Router) {
+	handlers := prepareMiddleware(upstream, metricsName, metricsVar)
 
 	// Mounting handler
 	for _, host := range hosts {
-		router.Host(host).Handler(middleware.With(forwarderMetrics, forwarder))
+		router.Host(host).Handler(middleware.With(handlers...))
 	}
 }
 

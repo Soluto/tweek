@@ -61,7 +61,7 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	if err != nil {
 		panic("Unable to create Authorizer")
 	}
-	
+
 	externalApps.Init(&config.Security.PolicyStorage)
 
 	auditor, err := audit.New(os.Stdout)
