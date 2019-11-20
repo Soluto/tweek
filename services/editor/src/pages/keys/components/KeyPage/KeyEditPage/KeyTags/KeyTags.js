@@ -41,7 +41,7 @@ export default compose(
     };
 
     render() {
-      const { tags, tagsSuggestions } = this.props;
+      const { tags, tagsSuggestions, navigateToTagResults } = this.props;
       return (
         <div className="key-tags" data-comp="key-tags">
           <ReactTags
@@ -50,6 +50,8 @@ export default compose(
             handleAddition={this._onTagAdded}
             suggestions={tagsSuggestions}
             placeholder="New tag"
+            allowDragDrop={false}
+            handleTagClick={(i) => navigateToTagResults(tags[i].text)}
             autofocus={false}
             allowDeleteFromEmptyInput
             minQueryLength={1}
