@@ -57,7 +57,7 @@ func (metric *histogram) newHistogramMiddleware(label string) negroni.HandlerFun
 	}
 }
 
-// Metrics is good
+// Metrics object that holds all metrics
 type Metrics struct {
 	*summary
 	*histogram
