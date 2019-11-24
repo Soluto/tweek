@@ -31,7 +31,7 @@ func Mount(upstreamConfig *appConfig.Upstreams, routesConfig []appConfig.V2Route
 		"authoring": proxy.New(upstreams["authoring"], token),
 	}
 
-	metricsVar := metrics.NewMetricsVar("proxy")
+	metricsVar := metrics.NewMetricsVar("gateway")
 
 	// Mounting handlers
 	router.Methods("OPTIONS").Handler(middleware)
