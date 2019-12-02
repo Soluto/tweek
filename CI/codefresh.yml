@@ -4,6 +4,13 @@ stages:
 - test
 - release
 steps:
+  main_clone:
+    title: 'Cloning main repository...'
+    type: git-clone
+    repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
+    revision: '${{CF_REVISION}}'
+    git: github
+  
   build:
     type: parallel
     name: build
@@ -160,6 +167,7 @@ steps:
             only:
               - master
         candidate: ${{BuildingApiImage}}
+        registry: dockerhub-tweek
         tags:
           - latest
           - ${{TWEEK_DOCKER_TAG_API}}
@@ -172,6 +180,7 @@ steps:
             only:
               - master
         candidate: ${{BuildingPublishing}}
+        registry: dockerhub-tweek
         tags:
           - latest
           - ${{TWEEK_DOCKER_TAG_PUBLISHING}}
@@ -184,6 +193,7 @@ steps:
             only:
               - master
         candidate: ${{BuildingAuthoring}}
+        registry: dockerhub-tweek
         tags:
           - latest
           - ${{TWEEK_DOCKER_TAG_AUTHORING}}
@@ -196,6 +206,7 @@ steps:
             only:
               - master
         candidate: ${{BuildingEditor}}
+        registry: dockerhub-tweek
         tags:
           - latest
           - ${{TWEEK_DOCKER_TAG_EDITOR}}
@@ -208,6 +219,7 @@ steps:
             only:
               - master
         candidate: ${{BuildingGitRepository}}
+        registry: dockerhub-tweek
 
       PushGatewayImageMaster:
         type: push
@@ -217,6 +229,7 @@ steps:
             only:
               - master
         candidate: ${{BuildingGateway}}
+        registry: dockerhub-tweek
         tags:
           - latest
           - ${{TWEEK_DOCKER_TAG_GATEWAY}}
