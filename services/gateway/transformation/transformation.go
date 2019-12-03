@@ -8,6 +8,7 @@ import (
 	"path"
 	"regexp"
 	"tweek-gateway/appConfig"
+	"tweek-gateway/metrics"
 	"tweek-gateway/proxy"
 	"tweek-gateway/security"
 
@@ -30,15 +31,26 @@ func Mount(upstreamConfig *appConfig.Upstreams, routesConfig []appConfig.V2Route
 		"authoring": proxy.New(upstreams["authoring"], token),
 	}
 
+	metricsVar := metrics.NewMetricsVar("gateway")
+
 	// Mounting handlers
 	router.Methods("OPTIONS").Handler(middleware)
 	for _, routeConfig := range routesConfig {
-		mountRouteTransform(router, middleware, routeConfig, upstreams, forwarders)
+		mountRouteTransform(router, middleware, routeConfig, upstreams, forwarders, metricsVar)
 	}
 }
 
-func mountRouteTransform(router *mux.Router, middleware *negroni.Negroni, routeConfig appConfig.V2Route, upstreams map[string]*url.URL, forwarders map[string]negroni.HandlerFunc) {
-	handlerFunc := middleware.With(createTransformMiddleware(routeConfig, upstreams), forwarders[routeConfig.Service])
+func mountRouteTransform(router *mux.Router, middleware *negroni.Negroni, routeConfig appConfig.V2Route, upstreams map[string]*url.URL, forwarders map[string]negroni.HandlerFunc, metricsVar *metrics.Metrics) {
+	handlers := []negroni.Handler{
+		createTransformMiddleware(routeConfig, upstreams),
+		forwarders[routeConfig.Service],
+	}
+
+	metricHandlers := metricsVar.NewMetricsMiddleware(routeConfig.Service + routeConfig.RoutePathPrefix)
+	for i := range metricHandlers {
+		handlers = append(handlers, metricHandlers[i])
+	}
+	handlerFunc := middleware.With(handlers...)
 	if routeConfig.RewriteKeyPath {
 		handlerFunc = negroni.New(createRewriteKeyPathMiddleware()).With(handlerFunc.Handlers()...)
 	}
