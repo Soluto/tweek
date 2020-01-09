@@ -16,7 +16,7 @@ RUN dotnet restore ./Tweek.sln
 COPY . .
 RUN dotnet build Tweek.sln -c $target && \
     find . -regex '.*\.Tests\.csproj' -print0 | xargs -0 -n 1 -P 16 dotnet test -c $target --no-build && \
-    dotnet publish ./services/api/Tweek.ApiService/Tweek.ApiService.csproj -c $target -o ./obj/Docker/publish
+    cd ./services/api/Tweek.ApiService && dotnet publish Tweek.ApiService.csproj -c $target -o ./obj/Docker/publish
 
 # ---- RELEASE ----
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 as release
