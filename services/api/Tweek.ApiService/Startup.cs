@@ -1,10 +1,10 @@
-﻿using App.Metrics.Formatters.Json;
-using FSharpUtils.Newtonsoft;
+﻿using FSharpUtils.Newtonsoft;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json;
@@ -17,7 +17,6 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using Tweek.ApiService.Addons;
-using Tweek.ApiService.Diagnostics;
 using Tweek.ApiService.Metrics;
 using Tweek.ApiService.Security;
 using Tweek.ApiService.Utils;
@@ -36,7 +35,6 @@ using Tweek.Engine.DataTypes;
 using static LanguageExt.Prelude;
 using System.Linq;
 using App.Metrics;
-using App.Metrics.Health;
 
 namespace Tweek.ApiService
 {
@@ -112,9 +110,9 @@ namespace Tweek.ApiService
             services.AddSingleton(jsonSerializer);
             services.AddMvc()
                 .AddMetrics()
-                .AddJsonOptions(opt =>
+                .AddNewtonsoftJson(options =>
                 {
-                    opt.SerializerSettings.ContractResolver = tweekContactResolver;
+                    options.SerializerSettings.ContractResolver = tweekContactResolver;
                 });
 
             services.SetupCors(Configuration);
@@ -171,30 +169,30 @@ namespace Tweek.ApiService
         private SchemaValidation.Provider CreateSchemaProvider(ITweek tweek,  IRulesRepository rulesProvider, SchemaValidation.Mode mode)
         {
             var logger = loggerFactory.CreateLogger("SchemaValidation.Provider");
-            
+
             SchemaValidation.Provider CreateValidationProvider(){
                 logger.LogInformation("updating schema");
                 var schemaValues = tweek.Calculate(new[] {new ConfigurationPath("@tweek/schema/_")}, EmptyIdentitySet,
                     i => ContextHelpers.EmptyContext);
                 schemaValues.EnsureSuccess();
-                
+
                 var schemaIdentities = schemaValues.ToDictionary(x=> x.Key.Name, x=> x.Value.Value);
 
                 var customTypesValues = tweek.Calculate(new[] {new ConfigurationPath("@tweek/custom_types/_")}, EmptyIdentitySet,
                     i => ContextHelpers.EmptyContext);
                 customTypesValues.EnsureSuccess();
-                
+
                 var customTypes = customTypesValues.ToDictionary(x=>x.Key.Name, x=> CustomTypeDefinition.FromJsonValue(x.Value.Value));
 
                 return SchemaValidation.Create(schemaIdentities, customTypes, mode);
             }
 
             var validationProvider = CreateValidationProvider();
-            
+
             rulesProvider.OnRulesChange += (_)=>{
                 validationProvider = CreateValidationProvider();
             };
-            
+
             return (p)=>validationProvider(p);
         }
 
