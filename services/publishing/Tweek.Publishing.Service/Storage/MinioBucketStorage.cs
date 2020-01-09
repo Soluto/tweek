@@ -82,7 +82,7 @@ namespace Tweek.Publishing.Service.Storage
             try{
                 await _client.StatObjectAsync(_bucketName, objectName, cancellationToken: cancellationToken);
                 return true;
-            } catch (ObjectNotFoundException ex){
+            } catch (ObjectNotFoundException){
                 return false;
             }
         }

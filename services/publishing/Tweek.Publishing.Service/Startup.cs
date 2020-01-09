@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Minio;
 using Newtonsoft.Json;
@@ -36,7 +37,7 @@ namespace Tweek.Publishing.Service
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
-       
+
         private readonly AsyncRetryPolicy _syncPolicy;
 
 
@@ -54,7 +55,7 @@ namespace Tweek.Publishing.Service
                             });
         }
 
-        private void RunSSHDeamon(IApplicationLifetime lifetime, ILogger logger)
+        private void RunSSHDeamon(IHostApplicationLifetime lifetime, ILogger logger)
         {
             var sshdConfigLocation = _configuration.GetValue<string>("SSHD_CONFIG_LOCATION");
             var job = ShellHelper.Executor.ExecObservable("/usr/sbin/sshd", $"-e -D -f {sshdConfigLocation}")
@@ -67,7 +68,7 @@ namespace Tweek.Publishing.Service
                         logger.LogInformation(x.data);
                     }
                     if (x.outputType == OutputType.StdErr)
-                    { 
+                    {
                         logger.LogDebug(x.data);
                     }
                 }, ex =>
@@ -111,7 +112,7 @@ namespace Tweek.Publishing.Service
         }
 
 
-        private void RunIntervalPublisher(IApplicationLifetime lifetime, Func<string,Task> publisher,
+        private void RunIntervalPublisher(IHostApplicationLifetime lifetime, Func<string,Task> publisher,
             RepoSynchronizer repoSynchronizer, StorageSynchronizer storageSynchronizer)
         {
             var intervalPublisher = new IntervalPublisher(publisher);
@@ -137,8 +138,8 @@ namespace Tweek.Publishing.Service
         private const string DEFAULT_MINIO_BUCKET_NAME = @"tweek";
 
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
-            IApplicationLifetime lifetime)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory,
+            IHostApplicationLifetime lifetime)
         {
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(_configuration)
@@ -156,8 +157,8 @@ namespace Tweek.Publishing.Service
 
             var executor = ShellHelper.Executor.WithWorkingDirectory(_configuration.GetValue<string>("REPO_LOCATION"))
                                                .ForwardEnvVariable("GIT_SSH");
-                                               
-            
+
+
 
             var gitValidationFlow = new GitValidationFlow
             {
@@ -198,7 +199,7 @@ namespace Tweek.Publishing.Service
                 metricsService,
                 loggerFactory.CreateLogger("HooksHelper")
             );
-            
+
             app.UseRouter(router =>
             {
                 router.MapGet("validate",

@@ -19,7 +19,7 @@ namespace Tweek.Drivers.Context.Couchbase
 {
     public class StaticCouchbaseDisposer
     {
-        public StaticCouchbaseDisposer(IApplicationLifetime lifetime, ILogger<StaticCouchbaseDisposer> logger)
+        public StaticCouchbaseDisposer(IHostApplicationLifetime lifetime, ILogger<StaticCouchbaseDisposer> logger)
         {
             lifetime.ApplicationStopped.Register(() =>
             {

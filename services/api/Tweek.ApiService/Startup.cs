@@ -44,7 +44,7 @@ namespace Tweek.ApiService
     {
         private static System.Collections.Generic.HashSet<Identity> EmptyIdentitySet = new System.Collections.Generic.HashSet<Identity>();
         private ILoggerFactory loggerFactory;
-        public Startup(IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public Startup(IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
@@ -200,8 +200,8 @@ namespace Tweek.ApiService
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
-            IApplicationLifetime lifetime)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory,
+            IHostApplicationLifetime lifetime)
         {
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
