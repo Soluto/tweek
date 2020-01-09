@@ -16,7 +16,7 @@ RUN dotnet restore
 COPY . .
 
 RUN dotnet test ./Tweek.Publishing.Tests
-RUN dotnet publish -c $target -o obj/docker/publish
+RUN cd Tweek.Publishing.Service && dotnet publish ./Tweek.Publishing.Service.csproj -c $target -o obj/docker/publish
 
 RUN cp -r /src/scripts /tweek \
     && cp -r /src/hooks /tweek/hooks \
@@ -35,7 +35,7 @@ RUN adduser --disabled-password -u 1000 --shell /usr/bin/git-shell git \
     && mkdir /home/git/.ssh \
     && ssh-keygen -A \
     && git config --global user.email "git@tweek" \
-    && git config --global user.name "git" 
+    && git config --global user.name "git"
 
 RUN if [ $target = "Debug" ]; then apt-get update && apt-get install unzip && rm -rf /var/lib/apt/lists/* && curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg; fi
 
@@ -47,7 +47,7 @@ ENV GIT_SSH=/tweek/ssh-helper.sh \
     REPO_LOCATION=/tweek/repo \
     SSHD_CONFIG_LOCATION=/tweek/sshd_config
 
-RUN mkdir -p /var/run/sshd && chown -R git:git /tweek 
+RUN mkdir -p /var/run/sshd && chown -R git:git /tweek
 RUN chmod u+x /tweek/*.sh
 WORKDIR /tweek
 
@@ -56,5 +56,5 @@ EXPOSE 80
 
 HEALTHCHECK --interval=15s --timeout=15s --retries=8 \
       CMD curl -f http://localhost/health || exit 1
-      
+
 ENTRYPOINT ["bash", "-c", "/tweek/init-git.sh && dotnet /tweek/Tweek.Publishing.Service/Tweek.Publishing.Service.dll 2>/dev/stderr 1>/dev/stdout & wait" ]
