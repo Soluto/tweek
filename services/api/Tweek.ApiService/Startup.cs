@@ -1,19 +1,15 @@
-﻿using FSharpUtils.Newtonsoft;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json;
 using Serilog;
 using Serilog.Formatting.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using Tweek.ApiService.Addons;
 using Tweek.ApiService.Metrics;
@@ -34,8 +30,7 @@ using Tweek.Engine.DataTypes;
 using static LanguageExt.Prelude;
 using System.Linq;
 using App.Metrics;
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Http.Extensions;
+using Tweek.ApiService.Diagnostics;
 
 namespace Tweek.ApiService
 {
@@ -109,9 +104,7 @@ namespace Tweek.ApiService
             var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };
 
             services.AddSingleton(jsonSerializer);
-            services.AddMvc(options => {
-                    options.EnableEndpointRouting = false;
-                })
+            services.AddMvc()
                 .AddMetrics()
                 .AddNewtonsoftJson(options =>
                 {
@@ -119,25 +112,6 @@ namespace Tweek.ApiService
                 });
 
             services.SetupCors(Configuration);
-
-            services.AddSwaggerGen(options =>
-            {
-                options.SwaggerDoc("api", new OpenApiInfo
-                {
-                    Title = "Tweek Api",
-                    License = new OpenApiLicense { Name = "MIT", Url = new Uri("https://github.com/Soluto/tweek/blob/master/LICENSE") },
-                    Version = Assembly.GetEntryAssembly()
-                        .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-                        .InformationalVersion
-                });
-                // Generate Dictionary<string,JsonValue> as JSON object in Swagger
-                options.MapType(typeof(Dictionary<string, JsonValue>), () => new OpenApiSchema { Type = "object" });
-
-                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
-                var xmlPath = Path.Combine(basePath, "Tweek.ApiService.xml");
-                options.IncludeXmlComments(xmlPath);
-
-            });
             services.ConfigureAuthenticationProviders(Configuration, loggerFactory.CreateLogger("AuthenticationProviders"));
         }
 
@@ -215,16 +189,12 @@ namespace Tweek.ApiService
                 app.UseDeveloperExceptionPage();
             }
             app.InstallAddons(Configuration);
+            app.UseRouting();
+            app.UseCors();
             app.UseAuthentication();
-            app.UseMvc();
-            app.UseWhen((ctx) => ctx.Request.Path == "/api/swagger.json", r => r.UseCors(p => p.AllowAnyHeader().AllowAnyOrigin().WithMethods("GET")));
-            app.UseSwagger(options =>
+            app.UseEndpoints(endpoints =>
             {
-                options.RouteTemplate = "{documentName}/swagger.json";
-                options.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
-                {
-                    swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = UriHelper.GetDisplayUrl(httpReq) } };
-                });
+                endpoints.MapControllers();
             });
         }
 
