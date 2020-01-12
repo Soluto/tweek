@@ -8,7 +8,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.Swagger;
 using Serilog;
 using Serilog.Formatting.Json;
 using System;
@@ -35,6 +34,8 @@ using Tweek.Engine.DataTypes;
 using static LanguageExt.Prelude;
 using System.Linq;
 using App.Metrics;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace Tweek.ApiService
 {
@@ -108,7 +109,9 @@ namespace Tweek.ApiService
             var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };
 
             services.AddSingleton(jsonSerializer);
-            services.AddMvc()
+            services.AddMvc(options => {
+                    options.EnableEndpointRouting = false;
+                })
                 .AddMetrics()
                 .AddNewtonsoftJson(options =>
                 {
@@ -119,16 +122,16 @@ namespace Tweek.ApiService
 
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("api", new Info
+                options.SwaggerDoc("api", new OpenApiInfo
                 {
                     Title = "Tweek Api",
-                    License = new License { Name = "MIT", Url = "https://github.com/Soluto/tweek/blob/master/LICENSE" },
+                    License = new OpenApiLicense { Name = "MIT", Url = new Uri("https://github.com/Soluto/tweek/blob/master/LICENSE") },
                     Version = Assembly.GetEntryAssembly()
                         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                         .InformationalVersion
                 });
                 // Generate Dictionary<string,JsonValue> as JSON object in Swagger
-                options.MapType(typeof(Dictionary<string, JsonValue>), () => new Schema { Type = "object" });
+                options.MapType(typeof(Dictionary<string, JsonValue>), () => new OpenApiSchema { Type = "object" });
 
                 var basePath = PlatformServices.Default.Application.ApplicationBasePath;
                 var xmlPath = Path.Combine(basePath, "Tweek.ApiService.xml");
@@ -220,8 +223,7 @@ namespace Tweek.ApiService
                 options.RouteTemplate = "{documentName}/swagger.json";
                 options.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
                 {
-                    swaggerDoc.Host = httpReq.Host.Value;
-                    swaggerDoc.Schemes = new[] { httpReq.Scheme };
+                    swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = UriHelper.GetDisplayUrl(httpReq) } };
                 });
             });
         }
