@@ -1,23 +1,17 @@
-﻿using App.Metrics.Formatters.Json;
-using FSharpUtils.Newtonsoft;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.Swagger;
 using Serilog;
 using Serilog.Formatting.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using Tweek.ApiService.Addons;
-using Tweek.ApiService.Diagnostics;
 using Tweek.ApiService.Metrics;
 using Tweek.ApiService.Security;
 using Tweek.ApiService.Utils;
@@ -36,7 +30,7 @@ using Tweek.Engine.DataTypes;
 using static LanguageExt.Prelude;
 using System.Linq;
 using App.Metrics;
-using App.Metrics.Health;
+using Tweek.ApiService.Diagnostics;
 
 namespace Tweek.ApiService
 {
@@ -44,7 +38,7 @@ namespace Tweek.ApiService
     {
         private static System.Collections.Generic.HashSet<Identity> EmptyIdentitySet = new System.Collections.Generic.HashSet<Identity>();
         private ILoggerFactory loggerFactory;
-        public Startup(IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public Startup(IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
@@ -112,31 +106,12 @@ namespace Tweek.ApiService
             services.AddSingleton(jsonSerializer);
             services.AddMvc()
                 .AddMetrics()
-                .AddJsonOptions(opt =>
+                .AddNewtonsoftJson(options =>
                 {
-                    opt.SerializerSettings.ContractResolver = tweekContactResolver;
+                    options.SerializerSettings.ContractResolver = tweekContactResolver;
                 });
 
             services.SetupCors(Configuration);
-
-            services.AddSwaggerGen(options =>
-            {
-                options.SwaggerDoc("api", new Info
-                {
-                    Title = "Tweek Api",
-                    License = new License { Name = "MIT", Url = "https://github.com/Soluto/tweek/blob/master/LICENSE" },
-                    Version = Assembly.GetEntryAssembly()
-                        .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-                        .InformationalVersion
-                });
-                // Generate Dictionary<string,JsonValue> as JSON object in Swagger
-                options.MapType(typeof(Dictionary<string, JsonValue>), () => new Schema { Type = "object" });
-
-                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
-                var xmlPath = Path.Combine(basePath, "Tweek.ApiService.xml");
-                options.IncludeXmlComments(xmlPath);
-
-            });
             services.ConfigureAuthenticationProviders(Configuration, loggerFactory.CreateLogger("AuthenticationProviders"));
         }
 
@@ -171,37 +146,37 @@ namespace Tweek.ApiService
         private SchemaValidation.Provider CreateSchemaProvider(ITweek tweek,  IRulesRepository rulesProvider, SchemaValidation.Mode mode)
         {
             var logger = loggerFactory.CreateLogger("SchemaValidation.Provider");
-            
+
             SchemaValidation.Provider CreateValidationProvider(){
                 logger.LogInformation("updating schema");
                 var schemaValues = tweek.Calculate(new[] {new ConfigurationPath("@tweek/schema/_")}, EmptyIdentitySet,
                     i => ContextHelpers.EmptyContext);
                 schemaValues.EnsureSuccess();
-                
+
                 var schemaIdentities = schemaValues.ToDictionary(x=> x.Key.Name, x=> x.Value.Value);
 
                 var customTypesValues = tweek.Calculate(new[] {new ConfigurationPath("@tweek/custom_types/_")}, EmptyIdentitySet,
                     i => ContextHelpers.EmptyContext);
                 customTypesValues.EnsureSuccess();
-                
+
                 var customTypes = customTypesValues.ToDictionary(x=>x.Key.Name, x=> CustomTypeDefinition.FromJsonValue(x.Value.Value));
 
                 return SchemaValidation.Create(schemaIdentities, customTypes, mode);
             }
 
             var validationProvider = CreateValidationProvider();
-            
+
             rulesProvider.OnRulesChange += (_)=>{
                 validationProvider = CreateValidationProvider();
             };
-            
+
             return (p)=>validationProvider(p);
         }
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
-            IApplicationLifetime lifetime)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory,
+            IHostApplicationLifetime lifetime)
         {
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
@@ -214,17 +189,12 @@ namespace Tweek.ApiService
                 app.UseDeveloperExceptionPage();
             }
             app.InstallAddons(Configuration);
+            app.UseRouting();
+            app.UseCors();
             app.UseAuthentication();
-            app.UseMvc();
-            app.UseWhen((ctx) => ctx.Request.Path == "/api/swagger.json", r => r.UseCors(p => p.AllowAnyHeader().AllowAnyOrigin().WithMethods("GET")));
-            app.UseSwagger(options =>
+            app.UseEndpoints(endpoints =>
             {
-                options.RouteTemplate = "{documentName}/swagger.json";
-                options.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
-                {
-                    swaggerDoc.Host = httpReq.Host.Value;
-                    swaggerDoc.Schemes = new[] { httpReq.Scheme };
-                });
+                endpoints.MapControllers();
             });
         }
 

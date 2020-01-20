@@ -14,26 +14,26 @@ namespace Tweek.ApiService.Security
         public static void SetupCors(this IServiceCollection services, IConfiguration configuration)
         {
             if (!configuration.GetValue<bool>("CorsEnabled")) return;
-
-            services.AddCors(options => options.AddPolicy(ALLOW_ALL_POLICY_NAME,
-                builder => builder
-                    .AllowCredentials()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowAnyOrigin()
-            ));
+            // TODO: Fix
+            // services.AddCors(options => options.AddPolicy(ALLOW_ALL_POLICY_NAME,
+            //     builder => builder
+            //         .AllowCredentials()
+            //         .AllowAnyHeader()
+            //         .AllowAnyMethod()
+            //         .AllowAnyOrigin()
+            // ));
 
             var corsPolicies = configuration.GetSection("CorsPolicies");
-            if (corsPolicies.GetChildren().All(section => section.Key != KEYS_POLICY_NAME))
-            {
-                services.AddCors(options => options.AddPolicy(KEYS_POLICY_NAME,
-                    builder => builder
-                        .AllowCredentials()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowAnyOrigin()
-                ));
-            }
+            // if (corsPolicies.GetChildren().All(section => section.Key != KEYS_POLICY_NAME))
+            // {
+            //     services.AddCors(options => options.AddPolicy(KEYS_POLICY_NAME,
+            //         builder => builder
+            //             .AllowCredentials()
+            //             .AllowAnyHeader()
+            //             .AllowAnyMethod()
+            //             .AllowAnyOrigin()
+            //     ));
+            // }
 
             foreach (var policyConfiguration in corsPolicies.GetChildren())
             {

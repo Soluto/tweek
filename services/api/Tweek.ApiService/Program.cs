@@ -1,13 +1,12 @@
 ﻿using App.Metrics.AspNetCore;
+using App.Metrics.AspNetCore.Health;
+using App.Metrics.Formatters.Prometheus;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Serilog;
-using System.Collections.Generic;
-using System.IO;
 using System;
 using System.Reflection;
-using App.Metrics.AspNetCore.Health;
-using App.Metrics.Formatters.Prometheus;
+
 
 namespace Tweek.ApiService
 {
@@ -31,7 +30,7 @@ namespace Tweek.ApiService
                         });
                 })
                 .UseHealth()
-                .UseMetrics(options => { 
+                .UseMetrics(options => {
                     options.EndpointOptions = endpointsOptions => {
                         endpointsOptions.MetricsEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
                         endpointsOptions.MetricsTextEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
@@ -41,7 +40,7 @@ namespace Tweek.ApiService
                 .UseStartup<Startup>()
                 .UseSerilog()
                 .Build();
-            
+
             host.Run();
         }
     }

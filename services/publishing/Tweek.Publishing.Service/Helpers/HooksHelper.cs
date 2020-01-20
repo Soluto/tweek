@@ -145,7 +145,7 @@ namespace Tweek.Publishing.Helpers {
 
     private async Task<Author> GetCommitAuthor(string commitId) {
       var authorJson = await _git($@"show {commitId} --no-patch --format=""{{\""name\"":\""%an\"",\""email\"":\""%ae\""}}""");
-      
+
       return JsonConvert.DeserializeObject<Author>(authorJson);
     }
 
@@ -154,7 +154,7 @@ namespace Tweek.Publishing.Helpers {
 
       return files
         .Split('\n', StringSplitOptions.RemoveEmptyEntries)
-        .Select( file => _keysRegex.Match(file).Groups.Last().Value )
+        .Select( file => _keysRegex.Match(file).Groups.Values.Last().Value )
         .Distinct()
         .Where( keyPath => keyPath != "" );
     }
