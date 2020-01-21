@@ -12,7 +12,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="App.Metrics.Health.Abstractions" Version="3.1.0" />
-    <PackageReference Include="CouchbaseNetClient" Version="2.7.11" />
+    <PackageReference Include="CouchbaseNetClient" Version="2.7.15" />
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
     <PackageReference Include="System.Collections.Immutable" version="1.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" version="2.2.0" />
