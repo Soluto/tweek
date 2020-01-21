@@ -10,7 +10,7 @@ steps:
     repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
     revision: '${{CF_REVISION}}'
     git: github
-  
+
   build:
     type: parallel
     name: build
@@ -21,14 +21,14 @@ steps:
         title: Check versions to deploy
         image: alpine/git
         commands:
-          - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export  
+          - ./CI/versions_to_deploy.sh ${{CF_VOLUME_PATH}}/env_vars_to_export
 
       BuildingGateway:
         title: Building Gateway
         type: build
         image_name: soluto/tweek-gateway
         working_directory: ./services/gateway/
-              
+
       BuildingGitRepository:
         title: Building Git Repository Docker Image
         type: build
@@ -40,7 +40,7 @@ steps:
         type: build
         image_name: soluto/tweek-api
         dockerfile: TweekApi.Dockerfile
-      
+
       BuildingPublishing:
         title: Building Publishing Docker Image
         type: build
@@ -70,20 +70,20 @@ steps:
         type: build
         image_name: soluto/e2e-integration
         working_directory: ./e2e/integration
-      
+
       BuildingApiSmokeTestImage:
         title: Building Tweek Api Smoke Test Docker Image
         type: build
         image_name: soluto/tweek-api-smoke-tests
         dockerfile: TweekApiSmokeTest.Dockerfile
 
-  
+
   E2ETests:
     title: End2End Tests - integration, smoke & ui
     stage: test
     type: composition
     composition: ./CI/docker-compose.yml
-    composition_variables:      
+    composition_variables:
       - GATEWAY_IMAGE=${{BuildingGateway}}
       - REPOSITORY_IMAGE=${{BuildingGitRepository}}
       - PUBLISHING_IMAGE=${{BuildingPublishing}}
@@ -94,13 +94,13 @@ steps:
     composition_candidates:
       smoke-tests:
         image: ${{BuildingApiSmokeTestImage}}
-        depends_on: 
+        depends_on:
           - gateway
           - publishing
-        environment: 
+        environment:
           - TWEEK_API_URL=http://api/
         links:
-          - gateway:api      
+          - gateway:api
 
       e2e-integration:
         image: ${{BuildingIntegrationTests}}
