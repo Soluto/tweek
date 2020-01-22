@@ -30,7 +30,10 @@ using Tweek.Engine.DataTypes;
 using static LanguageExt.Prelude;
 using System.Linq;
 using App.Metrics;
-using Tweek.ApiService.Diagnostics;
+using Tweek.ApiService.Patches;
+using App.Metrics.Formatters.Prometheus;
+using Microsoft.AspNetCore.Http.Features;
+using App.Metrics.Health;
 
 namespace Tweek.ApiService
 {
@@ -56,6 +59,7 @@ namespace Tweek.ApiService
         public void ConfigureServices(IServiceCollection services)
         {
             services.RegisterAddonServices(Configuration);
+
             services.Decorate<IContextDriver>((driver, provider) =>
               new TimedContextDriver(driver, provider.GetService<IMetrics>()));
             services.Decorate<IContextDriver>((driver, provider) => CreateInputValidationDriverDecorator(provider, driver));
@@ -104,15 +108,34 @@ namespace Tweek.ApiService
             var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };
 
             services.AddSingleton(jsonSerializer);
+            
             services.AddMvc()
-                .AddMetrics()
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ContractResolver = tweekContactResolver;
                 });
 
+            
             services.SetupCors(Configuration);
             services.ConfigureAuthenticationProviders(Configuration, loggerFactory.CreateLogger("AuthenticationProviders"));
+
+            services.AddMetrics(AppMetrics.CreateDefaultBuilder()
+                .OutputMetrics.AsPrometheusPlainText()
+                .Build());
+        
+            services.AddMetricsTrackingMiddleware();
+            services.AddMetricsEndpoints(options => {
+                options.MetricsEndpointOutputFormatter =  new MetricsPrometheusTextOutputFormatter();
+                options.MetricsTextEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
+            });
+
+            var healthChecks = AppMetricsHealth.CreateDefaultBuilder()
+                .HealthChecks.RegisterFromAssembly(services)
+                .BuildAndAddTo(services);
+
+            services.AddHealth(healthChecks);
+            services.AddHealthEndpoints();
+            
         }
 
         private IContextDriver CreateInputValidationDriverDecorator(IServiceProvider provider, IContextDriver driver)
@@ -178,6 +201,7 @@ namespace Tweek.ApiService
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory,
             IHostApplicationLifetime lifetime)
         {
+            app.UseMetricsAllMiddleware();
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
                 .WriteTo.Console(new JsonFormatter())
@@ -192,9 +216,29 @@ namespace Tweek.ApiService
             app.UseRouting();
             app.UseCors();
             app.UseAuthentication();
+            app.UseAppMetricsEndpointRoutesResolver();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapGet("health", endpoints.CreateApplicationBuilder()
+                .Use((context, next)=>{
+                    var syncIOFeature = context.Features.Get<IHttpBodyControlFeature>();
+                    if (syncIOFeature != null)
+                    {
+                        syncIOFeature.AllowSynchronousIO = true;
+                    }
+                    return next();
+                }).UseRouting().UseHealthAllEndpoints().Build());
+
+                endpoints.MapGet("metrics", endpoints.CreateApplicationBuilder()
+                .Use((context, next)=>{
+                    var syncIOFeature = context.Features.Get<IHttpBodyControlFeature>();
+                    if (syncIOFeature != null)
+                    {
+                        syncIOFeature.AllowSynchronousIO = true;
+                    }
+                    return next();
+                }).UseRouting().UseMetricsAllEndpoints().Build());
             });
         }
 
