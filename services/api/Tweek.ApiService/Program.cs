@@ -29,13 +29,6 @@ namespace Tweek.ApiService
                             tags["app_version"] = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
                         });
                 })
-                .UseHealth()
-                .UseMetrics(options => {
-                    options.EndpointOptions = endpointsOptions => {
-                        endpointsOptions.MetricsEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
-                        endpointsOptions.MetricsTextEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
-                    };
-                })
                 .UseKestrel(opts=> opts.Limits.MaxRequestLineSize = 128 * 1024)
                 .UseStartup<Startup>()
                 .UseSerilog()
