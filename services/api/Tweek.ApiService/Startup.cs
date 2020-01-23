@@ -108,21 +108,21 @@ namespace Tweek.ApiService
             var jsonSerializer = new JsonSerializer() { ContractResolver = tweekContactResolver };
 
             services.AddSingleton(jsonSerializer);
-            
-            services.AddMvc()
+
+            services.AddControllers()
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ContractResolver = tweekContactResolver;
                 });
 
-            
+
             services.SetupCors(Configuration);
             services.ConfigureAuthenticationProviders(Configuration, loggerFactory.CreateLogger("AuthenticationProviders"));
 
             services.AddMetrics(AppMetrics.CreateDefaultBuilder()
                 .OutputMetrics.AsPrometheusPlainText()
                 .Build());
-        
+
             services.AddMetricsTrackingMiddleware();
             services.AddMetricsEndpoints(options => {
                 options.MetricsEndpointOutputFormatter =  new MetricsPrometheusTextOutputFormatter();
@@ -135,7 +135,7 @@ namespace Tweek.ApiService
 
             services.AddHealth(healthChecks);
             services.AddHealthEndpoints();
-            
+
         }
 
         private IContextDriver CreateInputValidationDriverDecorator(IServiceProvider provider, IContextDriver driver)
