@@ -10,8 +10,8 @@ import (
 )
 
 type jwkRecord struct {
-	set     *jwk.Set
-	err     error
+	set *jwk.Set
+	err error
 
 	wg *sync.WaitGroup
 }
@@ -86,8 +86,11 @@ func loadEndpoint(endpoint string) *jwkRecord {
 		if rec.err != nil {
 			logrus.WithError(rec.err).WithField("endpoint", endpoint).Error("Unable to load keys for endpoint")
 			go func() {
-				<- time.After(time.Second * 5)
-				loadEndpoint(endpoint)
+				<-time.After(time.Second * 5)
+				cached := jwkCache[endpoint]
+				if cached == rec {
+					loadEndpoint(endpoint)
+				}
 			}()
 		}
 	}()
