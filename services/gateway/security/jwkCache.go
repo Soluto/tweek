@@ -2,7 +2,6 @@ package security
 
 import (
 	"fmt"
-	"sync"
 	"time"
 
 	"github.com/lestrrat-go/jwx/jwk"
@@ -12,8 +11,6 @@ import (
 type jwkRecord struct {
 	set *jwk.Set
 	err error
-
-	wg *sync.WaitGroup
 }
 
 var jwkCache map[string]*jwkRecord
@@ -28,7 +25,6 @@ func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
 		return nil, fmt.Errorf("No keys found for endpoint %s", endpoint)
 	}
 
-	rec.wg.Wait()
 	if rec.err != nil {
 		return nil, rec.err
 	}
@@ -36,7 +32,6 @@ func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
 	k := rec.set.LookupKeyID(keyID)
 	if len(k) == 0 {
 		rec := loadEndpoint(endpoint)
-		rec.wg.Wait()
 		if rec.err != nil {
 			return nil, rec.err
 		}
@@ -72,28 +67,20 @@ func RefreshEndpoints(endpoints []string) {
 }
 
 func loadEndpoint(endpoint string) *jwkRecord {
-	rec := &jwkRecord{
-		wg: &sync.WaitGroup{},
-	}
-	rec.wg.Add(1)
-
+	rec := &jwkRecord{}
+	rec.set, rec.err = jwk.FetchHTTP(endpoint)
 	jwkCache[endpoint] = rec
 
-	go func() {
-		defer rec.wg.Done()
-		rec.set, rec.err = jwk.FetchHTTP(endpoint)
-
-		if rec.err != nil {
-			logrus.WithError(rec.err).WithField("endpoint", endpoint).Error("Unable to load keys for endpoint")
-			go func() {
-				<-time.After(time.Second * 5)
-				cached := jwkCache[endpoint]
-				if cached == rec {
-					loadEndpoint(endpoint)
-				}
-			}()
-		}
-	}()
+	if rec.err != nil {
+		logrus.WithError(rec.err).WithField("endpoint", endpoint).Error("Unable to load keys for endpoint")
+		go func() {
+			<-time.After(time.Second * 5)
+			cached := jwkCache[endpoint]
+			if cached == rec {
+				loadEndpoint(endpoint)
+			}
+		}()
+	}
 
 	return rec
 }
