@@ -19,11 +19,31 @@ services:
 
   oidc-server-mock:
     container_name: oidc-server-mock
-    image: soluto/oidc-server-mock
+    image: soluto/oidc-server-mock:0.1.0
     ports:
       - "8081:80"
     environment:
-      - REDIRECT_URIS=http://localhost:3000/auth-result/oidc
+      [
+          {
+            "ClientId": "tweek-openid-mock-client",
+            "Description": "Client for implicit flow",
+            "AllowedGrantTypes": [
+                "implicit"
+            ],
+            "AllowAccessTokensViaBrowser": true,
+            "RedirectUris": [
+                "http://localhost:3000/auth-result/oidc",
+                "http://localhost:3000/auth-result/silent"
+            ],
+            "AllowedScopes": [
+                "openid",
+                "profile",
+                "email"
+            ],
+            "IdentityTokenLifetime": 3600,
+            "AccessTokenLifetime": 3600
+          }
+        ]
 
 secrets:
   tweek_ssh_private_key:

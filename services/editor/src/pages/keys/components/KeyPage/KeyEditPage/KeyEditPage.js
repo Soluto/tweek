@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useCallback, useMemo } from 'react';
 import { compose, pure } from 'recompose';
 import classNames from 'classnames';
 import JPadFullEditor from '../../../../../components/JPadFullEditor/JPadFullEditor';
@@ -113,7 +113,7 @@ class KeyEditPage extends Component {
   };
 
   render() {
-    const { selectedKey, isInStickyMode, alerter, revision, deleteAlias } = this.props;
+    const { selectedKey, isInStickyMode, alerter, revision, deleteAlias, history } = this.props;
     const {
       key,
       local: { manifest, implementation },
@@ -148,6 +148,7 @@ class KeyEditPage extends Component {
               usedBy={usedBy}
               aliases={aliases}
               deleteAlias={deleteAlias}
+              history={history}
             />
 
             <div className={classNames('key-rules-editor', { sticky: isInStickyMode })}>
@@ -204,6 +205,7 @@ const KeyFullHeader = (props) => {
     usedBy,
     aliases,
     deleteAlias,
+    history,
   } = props;
 
   return (
@@ -224,7 +226,7 @@ const KeyFullHeader = (props) => {
             <label className="actual-path">{keyFullPath}</label>
           </div>
 
-          <div className="key-description-and-tags-wrapper">
+          <div className="key-description-tags-hooks-wrapper">
             <div className="key-description-wrapper">
               <EditableTextArea
                 value={keyManifest.meta.description}
@@ -245,9 +247,28 @@ const KeyFullHeader = (props) => {
                 tags={keyManifest.meta.tags || []}
               />
             </div>
+
+            {revisionHistory && <HookLinks {...{ keyFullPath, history }} />}
           </div>
         </fieldset>
       </div>
+    </div>
+  );
+};
+
+const HookLinks = ({ keyFullPath, history }) => {
+  const encodedKeyPath = useMemo(() => encodeURIComponent(keyFullPath), [keyFullPath]);
+  const addHook = () => history.push(`/settings/hooks/edit/?keyPath=${encodedKeyPath}`);
+  const viewHooks = () => history.push(`/settings/hooks/?keyPathFilter=${encodedKeyPath}`);
+
+  return (
+    <div className="key-hooks-wrapper">
+      <button className="metro-button" onClick={addHook}>
+        Add Hook
+      </button>
+      <button className="metro-button" onClick={viewHooks}>
+        View Hooks
+      </button>
     </div>
   );
 };

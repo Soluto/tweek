@@ -5,6 +5,7 @@ import withLoading from '../../../../hoc/with-loading';
 import { refreshSchema } from '../../../../services/context-service';
 import SearchBox from './SearchBox/SearchBox';
 import './ContextPage.css';
+import ErrorPage from '../../../../components/ErrorPage';
 
 const ContextPage = ({ children, isExact, ...props }) => (
   <DocumentTitle title="Tweek - Context">
@@ -19,6 +20,6 @@ const ContextPage = ({ children, isExact, ...props }) => (
 );
 
 export default compose(
-  withLoading(() => null, refreshSchema),
+  withLoading(() => null, (error) => <ErrorPage error={error} />, refreshSchema),
   mapProps(({ params, ...rest }) => ({ ...params, ...rest })),
 )(ContextPage);

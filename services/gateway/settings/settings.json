@@ -194,6 +194,24 @@
       "service": "authoring",
       "userInfo": true,
       "rewriteKeyPath": false
+    },
+    {
+      "routePathPrefix": "/hooks",
+      "routeRegexp": "^/api/v2/hooks([^\\?]*)(.*)$",
+      "upstreamPath": "/api/hooks$1$2",
+      "methods": ["GET"],
+      "service": "authoring",
+      "userInfo": false,
+      "rewriteKeyPath": true
+    },
+    {
+      "routePathPrefix": "/hooks",
+      "routeRegexp": "^/api/v2/hooks([^\\?]*)(.*)$",
+      "upstreamPath": "/api/hooks$1$2",
+      "methods": ["POST", "PUT", "DELETE"],
+      "service": "authoring",
+      "userInfo": true,
+      "rewriteKeyPath": true
     }
   ],
   "server": {

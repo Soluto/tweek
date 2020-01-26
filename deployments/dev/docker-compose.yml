@@ -12,9 +12,9 @@ services:
     build: ../../services/authoring
 
   editor:
-    image: soluto/tweek-editor    
-    build: ../../services/editor      
-    depends_on: 
+    image: soluto/tweek-editor
+    build: ../../services/editor
+    depends_on:
       - gateway
 
   gateway:
@@ -23,7 +23,7 @@ services:
     depends_on:
       - api
       - authoring
-  
+
   publishing:
     image: soluto/tweek-publishing
     build: ../../services/publishing

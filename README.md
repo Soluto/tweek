@@ -35,10 +35,20 @@ The easiest way to start evaluating Tweek is to run it locally on docker, make s
 
 - Clone the repo (`git clone https://github.com/Soluto/tweek.git`)
 - [optional] Pull images, run `yarn docker-compose pull --parallel` (optional for getting started fast with Tweek as it's skip build)
+- [optional] newer versions of docker-compose support parallel build, so you can use `yarn docker-compose build --parallel` for faster build.
 
 ### Using Docker Compose
 
 - Run (`yarn start`) - this might take a few minutes for the first time
+
+### Using Tilt
+
+Tilt is a CLI tool that can be used to create optimal development environment for multi-container apps such as Tweek, it support automatic rebuilding of images and re-running of containers on files' changes.
+Additionally, it support more complex live reloading scenarios such as Tweek Editor (React app).
+Tweek uses Tilt on top of docker-compose for easier and (usually) faster developer experience (compared to Tilt with k8s).
+
+- Install Tilt (https://docs.tilt.dev/install.html)
+- tilt up
 
 ### Using Kubernetes
 
@@ -92,7 +102,7 @@ Tweek provide UI and rest api for editing context.
 - Set Identity Type to User
 - Set User id to John
 - Click enter
-- Set value "Candada" for property Country
+- Set value "Canada" for property Country
 
 After that, we can query Tweek API with:
 
