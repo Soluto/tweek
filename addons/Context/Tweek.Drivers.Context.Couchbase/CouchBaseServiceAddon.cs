@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using App.Metrics.Health;
 using Couchbase;
 using Couchbase.Configuration.Client;
@@ -41,11 +42,11 @@ namespace Tweek.Drivers.Context.Couchbase
             var couchbaseConfig = configuration.GetSection("Couchbase");
             var contextBucketName = couchbaseConfig["BucketName"];
             var contextBucketPassword = couchbaseConfig["Password"];
-            var url = couchbaseConfig["Url"];
+            var serverUrls = couchbaseConfig.GetSection("Urls").Get<List<string>>();
             var healthCheckMaxLatency = Optional(couchbaseConfig["HealthCheck:MaxLatencyMilliseconds"]).Map(x=> TimeSpan.FromMilliseconds(int.Parse(x))).IfNone(TimeSpan.FromSeconds(1));
             var healthCheckRetry = Optional(couchbaseConfig["HealthCheck:RetryCount"]).Map(x=> int.Parse(x)).IfNone(3);
 
-            InitCouchbaseCluster(contextBucketName, contextBucketPassword, url);
+            InitCouchbaseCluster(contextBucketName, contextBucketPassword, serverUrls);
 
             var contextDriver = new CouchBaseDriver(ClusterHelper.GetBucket, contextBucketName);
             services.AddSingleton<IContextDriver>(contextDriver);
@@ -58,11 +59,11 @@ namespace Tweek.Drivers.Context.Couchbase
             services.AddSingleton<StaticCouchbaseDisposer>();
         }
 
-        private void InitCouchbaseCluster(string bucketName, string bucketPassword, string url)
+        private void InitCouchbaseCluster(string bucketName, string bucketPassword, IEnumerable<string> serverUrls)
         {
             ClusterHelper.Initialize(new ClientConfiguration
             {
-                Servers = new List<Uri> {new Uri(url)},
+                Servers = serverUrls.Select(url => new Uri(url)).ToList(),
                 BucketConfigs = new Dictionary<string, BucketConfiguration>
                 {
                     [bucketName] = new BucketConfiguration
