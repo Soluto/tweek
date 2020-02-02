@@ -164,6 +164,7 @@ namespace Tweek.Publishing.Service
                 Validators =
                 {
                     (Patterns.Manifests, new CircularDependencyValidator()),
+                    (Patterns.Manifests, new ManifestStructureValidator()),
                     (Patterns.JPad, new CompileJPadValidator()),
                     (Patterns.SubjectExtractionRules, new SubjectExtractionValidator()),
                     (Patterns.Policy, new PolicyValidator()),
