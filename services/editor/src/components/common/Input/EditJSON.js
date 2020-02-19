@@ -1,7 +1,7 @@
 import React from 'react';
 import { compose, mapProps } from 'recompose';
 import { connect } from 'react-redux';
-import MonacoEditor from 'react-monaco-editor';
+import { ControlledEditor as MonacoEditor } from '@monaco-editor/react';
 import { AutoSizer } from 'react-virtualized';
 import { showCustomAlert, buttons } from '../../../store/ducks/alerts';
 import { isStringValidJson } from '../../../services/types-service';
@@ -60,8 +60,8 @@ export const withJsonEditor = compose(
                       : getEmptyValue(valueType))
                   }
                   options={{ ...monacoOptions, readOnly: false }}
-                  onChange={(newSource) => onChange(newSource)}
-                  editorDidMount={(editor) => {
+                  onChange={(_, newSource) => onChange(newSource)}
+                  editorDidMount={(_, editor) => {
                     setTimeout(() => {
                       if (editor.viewModel) {
                         const lineCount = editor.viewModel.lines.getViewLineCount();

@@ -10,7 +10,7 @@ import {
 } from 'recompose';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
-import MonacoEditor from 'react-monaco-editor';
+import { ControlledEditor as MonacoEditor } from '@monaco-editor/react';
 import { AutoSizer } from 'react-virtualized';
 import './JPadTextEditor.css';
 
@@ -65,7 +65,7 @@ const JPadTextEditor = compose(
           language="json"
           value={currentSource}
           options={{ ...monacoOptions, readOnly: isReadonly }}
-          onChange={(newSource) => onChange(newSource)}
+          onChange={(_, newSource) => onChange(newSource)}
         />
       </div>
     )}

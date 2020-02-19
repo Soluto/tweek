@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import MonacoEditor from 'react-monaco-editor';
+import { ControlledEditor as MonacoEditor } from '@monaco-editor/react';
 import { FetchError } from 'tweek-client';
 import SaveButton from '../../../../components/common/SaveButton/SaveButton';
 import { useRemoteState } from './utils';
@@ -56,7 +56,7 @@ export default function RemoteCodeEditor({
         options={monacoOptions}
         {...monacoProps}
         value={code}
-        onChange={(newSource) => {
+        onChange={(_, newSource) => {
           setIsValid(validate(newSource));
           setCode(newSource);
         }}
