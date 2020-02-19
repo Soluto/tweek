@@ -2,7 +2,7 @@
 import { createTweekClient, createTweekManagementClient } from 'tweek-client';
 import { retrieveToken } from '../services/auth-service';
 
-export const getGatewayBaseUrl = () => window.GATEWAY_URL || '';
+export const getGatewayBaseUrl = () => process.env.REACT_APP_GATEWAY_URL || '';
 
 const config = {
   baseServiceUrl: getGatewayBaseUrl(),
