@@ -1,6 +1,6 @@
 /* global jest, before, beforeEach, describe, it, expect */
 import React from 'react';
-import renderer from 'react-test-renderer';
+import { render } from '@testing-library/react';
 import ErrorHandler from './ErrorHandler';
 
 const ErrorComponent = () => {
@@ -9,28 +9,28 @@ const ErrorComponent = () => {
 
 describe('ErrorHandler component', () => {
   it('should not render when exception is thrown and no error message is passed', () => {
-    const tree = renderer.create(
+    const { asFragment } = render(
       <ErrorHandler>
         <ErrorComponent />
       </ErrorHandler>,
     );
 
-    expect(tree).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it('should render error message when exception is thrown', () => {
-    const tree = renderer.create(
+    const { asFragment } = render(
       <ErrorHandler errorMessage="some error message">
         <ErrorComponent />
       </ErrorHandler>,
     );
 
-    expect(tree).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 
   it('should call onError when exception is thrown', () => {
     const onErrorMock = jest.fn();
-    renderer.create(
+    render(
       <ErrorHandler onError={onErrorMock}>
         <ErrorComponent />
       </ErrorHandler>,
@@ -42,7 +42,7 @@ describe('ErrorHandler component', () => {
   it('should render original component correctly', () => {
     const onErrorMock = jest.fn();
 
-    const tree = renderer.create(
+    const { asFragment } = render(
       <ErrorHandler errorMessage="some error message" onError={onErrorMock}>
         <div>some element</div>
         <div>another element</div>
@@ -50,6 +50,6 @@ describe('ErrorHandler component', () => {
     );
 
     expect(onErrorMock).not.toHaveBeenCalled();
-    expect(tree).toMatchSnapshot();
+    expect(asFragment()).toMatchSnapshot();
   });
 });
