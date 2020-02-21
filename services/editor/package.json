@@ -6,7 +6,7 @@
   "author": "Soluto",
   "license": "MIT",
   "engines": {
-    "node": ">=10.19.0"
+    "node": ">=12"
   },
   "scripts": {
     "start": "npm-run-all -l build:less -p -r start:watch:*",
