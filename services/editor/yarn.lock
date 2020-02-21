@@ -1400,6 +1400,11 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/classnames@^2.2.9":
+  version "2.2.9"
+  resolved "https://registry.yarnpkg.com/@types/classnames/-/classnames-2.2.9.tgz#d868b6febb02666330410fe7f58f3c4b8258be7b"
+  integrity sha512-MNl+rT5UmZeilaPxAVs6YaPC2m6aA8rofviZbhbxpPpl61uKodfdQVsBtgJGTqGizEf02oW3tsVe7FYB8kK14A==
+
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
@@ -1519,6 +1524,14 @@
   resolved "https://registry.yarnpkg.com/@types/react-test-renderer/-/react-test-renderer-16.9.2.tgz#e1c408831e8183e5ad748fdece02214a7c2ab6c5"
   integrity sha512-4eJr1JFLIAlWhzDkBCkhrOIWOvOxcCAfQh+jiKg7l/nNZcCIL2MHl2dZhogIFKyHzedVWHaVP1Yydq/Ruu4agw==
   dependencies:
+    "@types/react" "*"
+
+"@types/react-virtualized@^9.21.8":
+  version "9.21.8"
+  resolved "https://registry.yarnpkg.com/@types/react-virtualized/-/react-virtualized-9.21.8.tgz#dc0150a75fd6e42f33729886463ece04d03367ea"
+  integrity sha512-7fZoA0Azd2jLIE9XC37fMZgMqaJe3o3pfzGjvrzphoKjBCdT4oNl6wikvo4dDMESDnpkZ8DvVTc7aSe4DW86Ew==
+  dependencies:
+    "@types/prop-types" "*"
     "@types/react" "*"
 
 "@types/react@*", "@types/react@^16.9.20":
@@ -9406,10 +9419,10 @@ react-app-polyfill@^1.0.6:
     regenerator-runtime "^0.13.3"
     whatwg-fetch "^3.0.0"
 
-react-autosize-textarea@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/react-autosize-textarea/-/react-autosize-textarea-6.0.0.tgz#89fb4f58bbd3833224088d787e7c7128ba9179fc"
-  integrity sha512-0CqciHUE4XAn4rCEF537rKLnHB4Q/7GZ3JJqsjFMLBlqFSp5do12QEZNo9FMJSK3MwqUPWnhApMFndrCI56g1g==
+react-autosize-textarea@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/react-autosize-textarea/-/react-autosize-textarea-7.0.0.tgz#4f633e4238de7ba73c1da8fdc307353c50f1c5ab"
+  integrity sha512-rGQLpGUaELvzy3NKzp0kkcppaUtZTptsyR0PGuLotaJDjwRbT0DpD000yCzETpXseJQ/eMsyVGDDHXjXP93u8w==
   dependencies:
     autosize "^4.0.2"
     line-height "^0.3.1"
