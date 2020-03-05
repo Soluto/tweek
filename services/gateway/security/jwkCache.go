@@ -9,8 +9,9 @@ import (
 )
 
 type jwkRecord struct {
-	set *jwk.Set
-	err error
+	set        *jwk.Set
+	err        error
+	retryCount uint
 }
 
 var jwkCache map[string]*jwkRecord
@@ -69,18 +70,25 @@ func RefreshEndpoints(endpoints []string) {
 func loadEndpoint(endpoint string) *jwkRecord {
 	rec := &jwkRecord{}
 	rec.set, rec.err = jwk.FetchHTTP(endpoint)
-	jwkCache[endpoint] = rec
 
 	if rec.err != nil {
 		logrus.WithError(rec.err).WithField("endpoint", endpoint).Error("Unable to load keys for endpoint")
+
+		cached, ok := jwkCache[endpoint]
+		if ok && cached.err != nil {
+			rec.retryCount = cached.retryCount + 1
+		}
+
 		go func() {
-			<-time.After(time.Second * 5)
+			<-time.After(time.Second * (1 << rec.retryCount))
 			cached := jwkCache[endpoint]
 			if cached == rec {
 				loadEndpoint(endpoint)
 			}
 		}()
 	}
+
+	jwkCache[endpoint] = rec
 
 	return rec
 }
