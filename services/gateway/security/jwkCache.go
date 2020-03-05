@@ -82,7 +82,12 @@ func loadEndpointWithRetry(endpoint string, retryCount uint) *jwkRecord {
 			<-time.After(time.Second * (1 << retryCount))
 			cached := jwkCache[endpoint]
 			if cached == rec {
-				loadEndpointWithRetry(endpoint, retryCount+1)
+				nextCount := retryCount + 1
+				if nextCount > 6 {
+					// limit retry delay to 64 Seconds (~1 Minute)
+					nextCount = 6
+				}
+				loadEndpointWithRetry(endpoint, nextCount)
 			}
 		}()
 	}
