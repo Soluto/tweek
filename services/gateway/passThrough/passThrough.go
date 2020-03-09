@@ -17,14 +17,14 @@ func prepareMiddleware(upstream string, metricsName string, metricsVar *metrics.
 
 	var handlers = []negroni.Handler{}
 
-	// Proxy forwarder
-	handlers = append(handlers, proxy.New(parsedUpstream, nil))
-
 	// metrics
 	metricHandlers := metricsVar.NewMetricsMiddleware(metricsName)
 	for i := range metricHandlers {
 		handlers = append(handlers, metricHandlers[i])
 	}
+	
+	// Proxy forwarder
+	handlers = append(handlers, proxy.New(parsedUpstream, nil))
 
 	return handlers
 }
