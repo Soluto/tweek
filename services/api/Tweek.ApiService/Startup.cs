@@ -115,8 +115,6 @@ namespace Tweek.ApiService
                     options.SerializerSettings.ContractResolver = tweekContactResolver;
                 });
 
-
-            services.SetupCors(Configuration);
             services.ConfigureAuthenticationProviders(Configuration, loggerFactory.CreateLogger("AuthenticationProviders"));
 
             services.AddMetrics(AppMetrics.CreateDefaultBuilder()
@@ -214,7 +212,6 @@ namespace Tweek.ApiService
             }
             app.InstallAddons(Configuration);
             app.UseRouting();
-            app.UseCors();
             app.UseAuthentication();
             app.UseAppMetricsEndpointRoutesResolver();
             app.UseEndpoints(endpoints =>

@@ -20,7 +20,6 @@ using IdentityHashSet = System.Collections.Generic.HashSet<Tweek.Engine.DataType
 
 namespace Tweek.ApiService.Controllers
 {
-    [EnableCors(CorsExtensions.KEYS_POLICY_NAME)]
     public class KeysController : Controller
     {
         private readonly ITweek _tweek;
