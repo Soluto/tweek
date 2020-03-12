@@ -5,11 +5,10 @@ using App.Metrics.Health;
 using Couchbase;
 using Couchbase.Configuration.Client;
 using Couchbase.Core.Serialization;
-using LanguageExt;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Tweek.ApiService.Addons;
@@ -20,7 +19,7 @@ namespace Tweek.Drivers.Context.Couchbase
 {
     public class StaticCouchbaseDisposer
     {
-        public StaticCouchbaseDisposer(IApplicationLifetime lifetime, ILogger<StaticCouchbaseDisposer> logger)
+        public StaticCouchbaseDisposer(IHostApplicationLifetime lifetime, ILogger<StaticCouchbaseDisposer> logger)
         {
             lifetime.ApplicationStopped.Register(() =>
             {
