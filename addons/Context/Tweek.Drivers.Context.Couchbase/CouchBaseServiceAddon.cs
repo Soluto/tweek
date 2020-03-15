@@ -42,7 +42,11 @@ namespace Tweek.Drivers.Context.Couchbase
             var couchbaseConfig = configuration.GetSection("Couchbase");
             var contextBucketName = couchbaseConfig["BucketName"];
             var contextBucketPassword = couchbaseConfig["Password"];
+            var serverUrl = couchbaseConfig.GetSection("Url").Get<string>();
             var serverUrls = couchbaseConfig.GetSection("Urls").Get<List<string>>();
+            if (serverUrls == null || serverUrls.Count == 0){
+                serverUrls = new List<string>(){ serverUrl };
+            }
             var healthCheckMaxLatency = Optional(couchbaseConfig["HealthCheck:MaxLatencyMilliseconds"]).Map(x=> TimeSpan.FromMilliseconds(int.Parse(x))).IfNone(TimeSpan.FromSeconds(1));
             var healthCheckRetry = Optional(couchbaseConfig["HealthCheck:RetryCount"]).Map(x=> int.Parse(x)).IfNone(3);
 

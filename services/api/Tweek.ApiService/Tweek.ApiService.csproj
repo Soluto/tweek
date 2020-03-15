@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <VersionPrefix>1.0.0-rc8</VersionPrefix>
+    <VersionPrefix>1.0.0-rc9</VersionPrefix>
     <DockerComposeProjectPath>..\..\..\deployments\docker-compose.dcproj</DockerComposeProjectPath>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>1591, 1701, 1702, 1998</NoWarn>
