@@ -10,7 +10,7 @@ using static Tweek.Publishing.Service.Utils.ShellHelper;
 
 namespace Tweek.Publishing.Service.Handlers
 {
-    public class PushHandler
+    public static class PushHandler
     {
         private static readonly CounterOptions Push = new CounterOptions{Context = "publishing", Name = "push"};
         private static readonly MetricTags Success = new MetricTags("Status", "Success");
@@ -18,7 +18,7 @@ namespace Tweek.Publishing.Service.Handlers
 
         public static Func<HttpRequest, HttpResponse, RouteData, Task> Create(SyncActor syncActor, IMetrics metrics, HooksHelper hooksHelper)
         {
-            return async (req, res, routedata) =>
+            return async (req, res, routeData) =>
             {
                 var commitId = req.Query["commit"].ToString();
                 if (!IsCommitIdString(commitId))
@@ -34,7 +34,7 @@ namespace Tweek.Publishing.Service.Handlers
                     metrics.Measure.Counter.Increment(Push, Success);
 
                     #pragma warning disable CS4014
-                    hooksHelper.TriggerNotificationHooksForCommit(commitId);
+                    hooksHelper.TriggerHooksForCommit(commitId);
                     #pragma warning restore CS4014
                 }
                 catch (Exception ex)
