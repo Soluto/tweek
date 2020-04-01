@@ -203,7 +203,7 @@ namespace Tweek.Publishing.Tests {
         new Hook("2", "a/b/*", "notification_webhook", "http://another-domain/ok_hook"),
         new Hook("3", "a/b/d", "notification_webhook", "http://some-domain/awesome_hook"),
         new Hook("4", "c/q/r", "notification_webhook", "http://fourth-domain/meh_hook"),
-        new Hook("5", "a/b/c", "not_a_notification_hook", "http://fifth-domain/should_not_be_called_hook"),
+        new Hook("5", "a/b/c", "not_a_post_commit_hook", "http://fifth-domain/should_not_be_called_hook"),
         new Hook("6", "a/b/c", "slack_webhook", "http://slack/should_be_called")
 
       };

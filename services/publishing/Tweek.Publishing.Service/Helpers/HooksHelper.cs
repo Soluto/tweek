@@ -39,14 +39,14 @@ namespace Tweek.Publishing.Helpers {
         var allHooks = await GetAllHooks(commitId);
 
         var keyPathsByHookUrlAndType = AggregateKeyPathsByHookUrlAndType(keyPaths, allHooks);
-        keyPathsByHookUrlAndType = FilterInvalidTypeHooks(keyPathsByHookUrlAndType);
+        keyPathsByHookUrlAndType = FilterNonPostCommitHooks(keyPathsByHookUrlAndType);
         var usedKeyPaths = GetUsedKeyPaths(keyPathsByHookUrlAndType);
         var keyPathsDiffs = await GetKeyPathsDiffs(usedKeyPaths, commitId);
 
         var hooksWithData = GetHooksWithData(keyPathsByHookUrlAndType, keyPathsDiffs, author);
         await _triggerHelper.TriggerHooks(hooksWithData, commitId);
       } catch (Exception ex) {
-        _logger.LogError(ex, $"Failed triggering hooks for commit {commitId}");
+        _logger.LogError(ex, $"Failed triggering post commit hook for commit {commitId}");
         _metrics.Measure.Counter.Increment(_hooksMetric, _metricsFailure);
       }
     }
@@ -105,14 +105,13 @@ namespace Tweek.Publishing.Helpers {
       return await _git($"show {revision}:{implementationFilePath}");
     }
 
-    private IEnumerable<string> GetUsedKeyPaths(KeyPathsDictionary keyPathsByHookUrlAndType) {
-      return keyPathsByHookUrlAndType.Values.Aggregate(new HashSet<string>(), ( keyPathsAcc, currentKeyPaths ) => {
+    private static IEnumerable<string> GetUsedKeyPaths(KeyPathsDictionary keyPathsByHookUrlAndType) =>
+      keyPathsByHookUrlAndType.Values.Aggregate(new HashSet<string>(), ( keyPathsAcc, currentKeyPaths ) => {
         keyPathsAcc.UnionWith(currentKeyPaths);
         return keyPathsAcc;
       });
-    }
 
-    private KeyPathsDictionary FilterInvalidTypeHooks(KeyPathsDictionary hooksDictionary) {
+    private KeyPathsDictionary FilterNonPostCommitHooks(KeyPathsDictionary hooksDictionary) {
       return hooksDictionary
         .Where( kvp => _postCommitHookTypes.Contains(kvp.Key.type) )
         .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
