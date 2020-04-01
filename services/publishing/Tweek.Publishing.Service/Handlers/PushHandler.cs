@@ -34,7 +34,7 @@ namespace Tweek.Publishing.Service.Handlers
                     metrics.Measure.Counter.Increment(Push, Success);
 
                     #pragma warning disable CS4014
-                    hooksHelper.TriggerHooksForCommit(commitId);
+                    hooksHelper.TriggerPostCommitHooks(commitId);
                     #pragma warning restore CS4014
                 }
                 catch (Exception ex)

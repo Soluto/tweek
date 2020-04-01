@@ -22,7 +22,7 @@ namespace Tweek.Publishing.Helpers {
     private readonly Regex _keysRegex;
     private readonly CounterOptions _hooksMetric = new CounterOptions{Context = "publishing", Name = "hooks"};
     private readonly MetricTags _metricsFailure = new MetricTags("Status", "Failure");
-    private readonly string[] _hookTypes = { "notification_webhook", "slack_webhook" };
+    private readonly string[] _postCommitHookTypes = { "notification_webhook", "slack_webhook" };
 
     public HooksHelper(Func<string, Task<string>> gitExecutor, TriggerHooksHelper triggerHelper, IMetrics metrics, ILogger logger = null) {
       _logger = logger ?? NullLogger.Instance;
@@ -32,7 +32,7 @@ namespace Tweek.Publishing.Helpers {
       _keysRegex = new Regex(@"(?:implementations/jpad/|manifests/)(.*)\..*", RegexOptions.Compiled);
     }
 
-    public async Task TriggerHooksForCommit(string commitId) {
+    public async Task TriggerPostCommitHooks(string commitId) {
       try {
         var keyPaths = await GetKeyPathsFromCommit(commitId);
         var author = await GetCommitAuthor(commitId);
@@ -114,7 +114,7 @@ namespace Tweek.Publishing.Helpers {
 
     private KeyPathsDictionary FilterInvalidTypeHooks(KeyPathsDictionary hooksDictionary) {
       return hooksDictionary
-        .Where( kvp => _hookTypes.Contains(kvp.Key.type) )
+        .Where( kvp => _postCommitHookTypes.Contains(kvp.Key.type) )
         .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
 

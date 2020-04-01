@@ -67,15 +67,15 @@ namespace Tweek.Publishing.Helpers {
 
         if (!update.newValue.HasValue)
         {
-          return "deleted " + update.oldValue.Value.implementation;
+          return $"deleted {update.oldValue.Value.implementation}";
         }
         
         if (!update.oldValue.HasValue)
         {
-          return "created " + update.newValue.Value.implementation;
+          return $"created {update.newValue.Value.implementation}";
         }
 
-        return update.oldValue.Value.implementation + " => " + update.newValue.Value.implementation;
+        return $"{update.oldValue.Value.implementation} => {update.newValue.Value.implementation}";
       }));
       
       var text = $"Tweek key changed!\n{updates}\nChanged by: {payload.author.name} <{payload.author.email}>";

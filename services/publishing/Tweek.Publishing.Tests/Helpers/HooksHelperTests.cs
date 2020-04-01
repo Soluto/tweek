@@ -117,11 +117,11 @@ namespace Tweek.Publishing.Tests {
     }
 
     [Fact]
-    public async Task TriggerHooksForCommit() {
+    public async Task TriggerPostCommitHooks() {
       const string commitId = "abcdef";
-      var (mockHttp, hookRequests) = TriggerHooksForCommit_Setup(commitId);
+      var (mockHttp, hookRequests) = TriggerPostCommitHooks_Setup(commitId);
 
-      await hooksHelper.TriggerHooksForCommit(commitId);
+      await hooksHelper.TriggerPostCommitHooks(commitId);
 
       Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[0]));
       Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[1]));
@@ -130,7 +130,7 @@ namespace Tweek.Publishing.Tests {
       Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[4]));
     }
 
-    private (MockHttpMessageHandler, MockedRequest[]) TriggerHooksForCommit_Setup(string commitId) {
+    private (MockHttpMessageHandler, MockedRequest[]) TriggerPostCommitHooks_Setup(string commitId) {
       var author = new Author("author name", "author@email.com");
 
       var abcMImplementation = new Manifest.MImplementation { Type = "file", Format = "jpad" };
@@ -162,7 +162,7 @@ namespace Tweek.Publishing.Tests {
       var client = mockHttp.ToHttpClient();
       InitializeHelpers(client);
 
-      TriggerHooksForCommit_SetupGitStubs(commitId, abcManifest, abdManifest, abdManifestOld);
+      TriggerPostCommitHooks_SetupGitStubs(commitId, abcManifest, abdManifest, abdManifestOld);
 
       return (mockHttp, hookRequests);
     }
@@ -185,7 +185,7 @@ namespace Tweek.Publishing.Tests {
         .WithPartialContent("\"text\":")
         .Respond(HttpStatusCode.NoContent);
 
-    private void TriggerHooksForCommit_SetupGitStubs(string commitId, Manifest abcManifest, Manifest abdManifest, Manifest abdManifestOld) {
+    private void TriggerPostCommitHooks_SetupGitStubs(string commitId, Manifest abcManifest, Manifest abdManifest, Manifest abdManifestOld) {
       // GetKeyPathsFromCommit
       var gitCommand = $"diff-tree --no-commit-id --name-only -r {commitId}";
       var gitOutput = "implementations/jpad/a/b/c.jpad\nmanifests/a/b/c.json\nimplementations/jpad/a/b/d.jpad\nimplementations/jpad/a/t/f.jpad\n";
