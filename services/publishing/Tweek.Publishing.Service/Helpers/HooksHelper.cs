@@ -77,9 +77,7 @@ namespace Tweek.Publishing.Helpers {
       return keyPathDiffs.ToDictionary(tuple => tuple.key, tuple => tuple.value);
     }
 
-    private async Task<KeyPathData?> GetOldKeyPathData(string keyPath, string commitId, int commitOffset = 1) {
-      return await GetKeyPathData(keyPath, $"{commitId}~{commitOffset}");
-    }
+    private async Task<KeyPathData?> GetOldKeyPathData(string keyPath, string commitId, int commitOffset = 1) => await GetKeyPathData(keyPath, $"{commitId}~{commitOffset}");
 
     private async Task<KeyPathData?> GetKeyPathData(string keyPath, string revision) {
       string manifestJson;

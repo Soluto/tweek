@@ -63,7 +63,7 @@ namespace Tweek.Publishing.Tests {
         {(type: "notification_webhook", url: "http://another-domain/ok_hook"), new HashSet<string> {"a/b/c", "a/b/d"}}
       };
 
-      var result = CallPrivateMethod<KeyPathsDictionary>(
+      var result = CallPrivateStaticMethod<KeyPathsDictionary>(
         hooksHelper, "AggregateKeyPathsByHookUrlAndType", new object[] { allKeyPaths, allHooks }
       );
 
@@ -224,6 +224,16 @@ namespace Tweek.Publishing.Tests {
 
       var methodInfo = type
         .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+        .First(method => method.Name == methodName && method.IsPrivate);
+
+      return (T)methodInfo.Invoke(instance, methodParams);
+    }
+
+    private static T CallPrivateStaticMethod<T>(object instance, string methodName, object[] methodParams) {
+      var type = instance.GetType();
+
+      var methodInfo = type
+        .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
         .First(method => method.Name == methodName && method.IsPrivate);
 
       return (T)methodInfo.Invoke(instance, methodParams);
