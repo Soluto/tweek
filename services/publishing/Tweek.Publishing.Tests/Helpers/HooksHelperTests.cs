@@ -117,9 +117,9 @@ namespace Tweek.Publishing.Tests {
     }
 
     [Fact]
-    public async Task TriggerNotificationHooksForCommit() {
+    public async Task TriggerHooksForCommit() {
       const string commitId = "abcdef";
-      var (mockHttp, hookRequests) = TriggerNotificationHooksForCommit_Setup(commitId);
+      var (mockHttp, hookRequests) = TriggerHooksForCommit_Setup(commitId);
 
       await hooksHelper.TriggerHooksForCommit(commitId);
 
@@ -127,9 +127,10 @@ namespace Tweek.Publishing.Tests {
       Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[1]));
       Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[2]));
       Assert.Equal(0, mockHttp.GetMatchCount(hookRequests[3]));
+      Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[4]));
     }
 
-    private (MockHttpMessageHandler, MockedRequest[]) TriggerNotificationHooksForCommit_Setup(string commitId) {
+    private (MockHttpMessageHandler, MockedRequest[]) TriggerHooksForCommit_Setup(string commitId) {
       var author = new Author("author name", "author@email.com");
 
       var abcMImplementation = new Manifest.MImplementation { Type = "file", Format = "jpad" };
@@ -149,21 +150,24 @@ namespace Tweek.Publishing.Tests {
       var abcabdKeyPathArray = new[] { abcKeyPathDiff, abdKeyPathDiff };
 
       var mockHttp = new MockHttpMessageHandler();
-      var hookRequests = new MockedRequest[4];
-      hookRequests[0] = MockHookRequest(mockHttp, "http://some-domain/awesome_hook", abcabdKeyPathArray, author);
-      hookRequests[1] = MockHookRequest(mockHttp, "http://some-domain/another_awesome_hook", abcKeyPathArray, author);
-      hookRequests[2] = MockHookRequest(mockHttp, "http://another-domain/ok_hook", abcabdKeyPathArray, author);
-      hookRequests[3] = MockHookRequest(mockHttp, "http://fifth-domain/should_not_be_called_hook", abcKeyPathArray, author);
-      
+      var hookRequests = new[]
+      {
+        MockNotificationHookRequest(mockHttp, "http://some-domain/awesome_hook", abcabdKeyPathArray, author),
+        MockNotificationHookRequest(mockHttp, "http://some-domain/another_awesome_hook", abcKeyPathArray, author),
+        MockNotificationHookRequest(mockHttp, "http://another-domain/ok_hook", abcabdKeyPathArray, author),
+        MockNotificationHookRequest(mockHttp, "http://fifth-domain/should_not_be_called_hook", abcKeyPathArray, author),
+        MockSlackHookRequest(mockHttp, "http://slack/should_be_called")
+      };
+
       var client = mockHttp.ToHttpClient();
       InitializeHelpers(client);
 
-      TriggerNotificationHooksForCommit_SetupGitStubs(commitId, abcManifest, abdManifest, abdManifestOld);
+      TriggerHooksForCommit_SetupGitStubs(commitId, abcManifest, abdManifest, abdManifestOld);
 
       return (mockHttp, hookRequests);
     }
 
-    private static MockedRequest MockHookRequest(MockHttpMessageHandler mockHttp, string url, KeyPathDiff[] expectedContent, Author author) {
+    private static MockedRequest MockNotificationHookRequest(MockHttpMessageHandler mockHttp, string url, IEnumerable<KeyPathDiff> expectedContent, Author author) {
       var hookData = new HookData(author, expectedContent);
 
       return mockHttp
@@ -172,8 +176,16 @@ namespace Tweek.Publishing.Tests {
         .WithContent(JsonConvert.SerializeObject(hookData))
         .Respond(HttpStatusCode.NoContent);
     }
+    
+    
+    private static MockedRequest MockSlackHookRequest(MockHttpMessageHandler mockHttp, string url) =>
+      mockHttp
+        .When(HttpMethod.Post, url)
+        .WithHeaders("Content-Type", "application/json; charset=utf-8")
+        .WithPartialContent("\"text\":")
+        .Respond(HttpStatusCode.NoContent);
 
-    private void TriggerNotificationHooksForCommit_SetupGitStubs(string commitId, Manifest abcManifest, Manifest abdManifest, Manifest abdManifestOld) {
+    private void TriggerHooksForCommit_SetupGitStubs(string commitId, Manifest abcManifest, Manifest abdManifest, Manifest abdManifestOld) {
       // GetKeyPathsFromCommit
       var gitCommand = $"diff-tree --no-commit-id --name-only -r {commitId}";
       var gitOutput = "implementations/jpad/a/b/c.jpad\nmanifests/a/b/c.json\nimplementations/jpad/a/b/d.jpad\nimplementations/jpad/a/t/f.jpad\n";
@@ -191,7 +203,9 @@ namespace Tweek.Publishing.Tests {
         new Hook("2", "a/b/*", "notification_webhook", "http://another-domain/ok_hook"),
         new Hook("3", "a/b/d", "notification_webhook", "http://some-domain/awesome_hook"),
         new Hook("4", "c/q/r", "notification_webhook", "http://fourth-domain/meh_hook"),
-        new Hook("5", "a/b/c", "not_a_notification_hook", "http://fifth-domain/should_not_be_called_hook")
+        new Hook("5", "a/b/c", "not_a_notification_hook", "http://fifth-domain/should_not_be_called_hook"),
+        new Hook("6", "a/b/c", "slack_webhook", "http://slack/should_be_called")
+
       };
       gitCommand = $"show {commitId}:hooks.json";
       gitOutput = JsonConvert.SerializeObject(allHooks);
