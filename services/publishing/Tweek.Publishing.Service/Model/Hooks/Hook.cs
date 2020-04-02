@@ -13,8 +13,13 @@ namespace Tweek.Publishing.Service.Model.Hooks {
     public string Type { get; }
     [JsonProperty("url")]
     public string Url { get; }
+    [JsonProperty("tags")]
+    public string[] Tags {get;} = new string[]{};
+    [JsonProperty("format")]
+    public string Format {get;} = "json";
+     
     private readonly Regex _matchingKeyRegex;
-
+    
     public Hook(string id, string keyPath, string type, string url) {
       Id = id;
       KeyPath = keyPath;
