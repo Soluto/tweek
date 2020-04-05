@@ -41,7 +41,7 @@ namespace Tweek.Publishing.Helpers {
       }
     }
 
-    private readonly Dictionary<string, Func<HookData, object>> _transformDataByHookType = new Dictionary<string, Func<HookData, object>>
+    private readonly Dictionary<string, Func<HookData, object>> _transformDataByHookFormat = new Dictionary<string, Func<HookData, object>>
     {
       {"slack", BuildSlackPayload}
     };
@@ -50,7 +50,7 @@ namespace Tweek.Publishing.Helpers {
     {
       switch (hook.Type) {
         case "notification_webhook":
-          var transformFunc = _transformDataByHookType[hook.Type] ?? (data => data);
+          var transformFunc = _transformDataByHookFormat.ContainsKey(hook.Format) ?  _transformDataByHookFormat[hook.Format] : data => data;
           
           await TriggerWebhook(hook.Url, transformFunc(hookData));
           break;
