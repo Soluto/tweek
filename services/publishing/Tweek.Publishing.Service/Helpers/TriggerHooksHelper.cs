@@ -64,24 +64,24 @@ namespace Tweek.Publishing.Helpers {
 
     private static object BuildSlackPayload(HookData hookData)
     {
-      var updates = string.Join(',', hookData.updates.Select(update =>
+      var updates = string.Join('\n', hookData.updates.Select(update =>
       {
         if (!update.oldValue.HasValue && !update.newValue.HasValue)
         {
           return "";
         }
-
+        
         if (!update.newValue.HasValue)
         {
-          return $"deleted {update.oldValue.Value.implementation}";
+          return $"key path: `{update.oldValue.Value.keyPath}`\ndeleted\n```{update.oldValue.Value.implementation}```";
         }
         
         if (!update.oldValue.HasValue)
         {
-          return $"created {update.newValue.Value.implementation}";
+          return $"key path: `{update.newValue.Value.keyPath}`\ncreated\n```{update.newValue.Value.implementation}```";
         }
 
-        return $"{update.oldValue.Value.implementation} => {update.newValue.Value.implementation}";
+        return $"key path: `{update.newValue.Value.keyPath}`\nold:\n```{update.oldValue.Value.implementation}```\nnew:\n```{update.newValue.Value.implementation}```";
       }));
       
       var text = $"Tweek key changed!\n{updates}\nChanged by: {hookData.author.name} <{hookData.author.email}>";
