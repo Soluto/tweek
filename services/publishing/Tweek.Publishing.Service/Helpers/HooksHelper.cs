@@ -24,7 +24,7 @@ namespace Tweek.Publishing.Helpers
         private readonly Regex _keysRegex;
         private readonly CounterOptions _hooksMetric = new CounterOptions {Context = "publishing", Name = "hooks"};
         private readonly MetricTags _metricsFailure = new MetricTags("Status", "Failure");
-        private readonly string[] _postCommitHookTypes = {"webhook"};
+        private readonly string[] _postCommitHookTypes = {"notification_webhook"};
 
         public HooksHelper(Func<string, Task<string>> gitExecutor, TriggerHooksHelper triggerHelper, IMetrics metrics,
             ILogger logger = null)

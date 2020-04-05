@@ -44,17 +44,15 @@ namespace Tweek.Publishing.Helpers {
     private async Task TriggerHook(Hook hook, HookData hookData)
     {
       switch (hook.Type) {
-        case "webhook":
+        case "notification_webhook":
           switch (hook.Format)
           {
-            case "json":
-              await TriggerWebhook(hook.Url, hookData);
-            break;
             case "slack":
               await TriggerWebhook(hook.Url, BuildSlackPayload(hookData));
             break;
             default:
-              throw new Exception($"Failed to trigger webhook, invalid format: {hook.Format}");
+              await TriggerWebhook(hook.Url, hookData);
+              break;
           }
           break;
         default:

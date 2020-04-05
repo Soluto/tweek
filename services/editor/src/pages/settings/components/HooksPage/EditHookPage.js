@@ -16,7 +16,7 @@ export default ({ location, history }) => {
   const keyPathFromQuery = qs.parse(location.search).keyPath;
 
   const [keyPath, setKeyPath] = useState(initialHookData.keyPath || keyPathFromQuery || '');
-  const [type, setType] = useState(initialHookData.type || 'webhook');
+  const [type, setType] = useState(initialHookData.type || 'notification_webhook');
   const [format, setFormat] = useState(initialHookData.format);
   const [url, setUrl] = useState(initialHookData.url || '');
   const [saveError, setSaveError] = useState(null);
@@ -87,9 +87,10 @@ const HookTypeSelector = ({ setType, type }) => (
 );
 
 const HookFormatSelector = ({ setFormat, format, type }) => {
-  if(type!=='webhook') {
+  if(type !== 'notification_webhook') {
     return null;
   }
+
   return (
     <div className="hook-field-selector-container">
       <label className="field-label">Format:</label>
@@ -133,7 +134,7 @@ const useSaveHookCallback = ({
     }
   }, [id, keyPath, type, url, format]);
 
-const validateInput = ({ keyPath, type, url, format }) => Boolean(keyPath && type && url && (type === 'webhook' ? format : true));
+const validateInput = ({ keyPath, type, url, format }) => Boolean(keyPath && type && url && (type === 'notification_webhook' ? format : true));
 
 const checkForChanges = ({ initialHookData, keyPath, type, url, format }) =>
   (

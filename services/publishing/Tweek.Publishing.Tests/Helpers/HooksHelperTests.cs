@@ -46,11 +46,11 @@ namespace Tweek.Publishing.Tests {
     [Fact]
     public void LinkKeyPathsByHook() {
       var allHooks = new[] {
-        new Hook("1", "a/b/c", "webhook", "http://some-domain/awesome_hook", new string[] {}, "json"),
-        new Hook("2", "a/b/c", "webhook", "http://some-domain/another_awesome_hook", new string[] {}, "json"),
-        new Hook("3", "a/b/*", "webhook", "http://another-domain/ok_hook", new string[] {}, "json"),
-        new Hook("4", "c/q/r", "webhook", "http://fourth-domain/meh_hook", new string[] {}, "json"),
-        new Hook("5", "a/b/d", "webhook", "http://some-domain/awesome_hook", new string[] {}, "json")
+        new Hook("1", "a/b/c", "notification_webhook", "http://some-domain/awesome_hook", new string[] {}, "json"),
+        new Hook("2", "a/b/c", "notification_webhook", "http://some-domain/another_awesome_hook", new string[] {}, "json"),
+        new Hook("3", "a/b/*", "notification_webhook", "http://another-domain/ok_hook", new string[] {}, "json"),
+        new Hook("4", "c/q/r", "notification_webhook", "http://fourth-domain/meh_hook", new string[] {}, "json"),
+        new Hook("5", "a/b/d", "notification_webhook", "http://some-domain/awesome_hook", new string[] {}, "json")
       };
       var allKeyPaths = new[] { "a/b/c", "a/b/d", "a/t/f" };
 
@@ -199,13 +199,13 @@ namespace Tweek.Publishing.Tests {
 
       // GetAllKeyHooks
       var allHooks = new[] {
-        new Hook("0", "a/b/c", "webhook", "http://some-domain/awesome_hook", new string[] {}, "json"),
-        new Hook("1", "a/b/c", "webhook", "http://some-domain/another_awesome_hook", new string[] {}, "json"),
-        new Hook("2", "a/b/*", "webhook", "http://another-domain/ok_hook", new string[] {}, "json"),
-        new Hook("3", "a/b/d", "webhook", "http://some-domain/awesome_hook", new string[] {}, "json"),
-        new Hook("4", "c/q/r", "webhook", "http://fourth-domain/meh_hook", new string[] {}, "json"),
+        new Hook("0", "a/b/c", "notification_webhook", "http://some-domain/awesome_hook", new string[] {}, "json"),
+        new Hook("1", "a/b/c", "notification_webhook", "http://some-domain/another_awesome_hook", new string[] {}, "json"),
+        new Hook("2", "a/b/*", "notification_webhook", "http://another-domain/ok_hook", new string[] {}, "json"),
+        new Hook("3", "a/b/d", "notification_webhook", "http://some-domain/awesome_hook", new string[] {}, "json"),
+        new Hook("4", "c/q/r", "notification_webhook", "http://fourth-domain/meh_hook", new string[] {}, "json"),
         new Hook("5", "a/b/c", "not_a_post_commit_hook", "http://fifth-domain/should_not_be_called_hook", new string[] {}, "json"),
-        new Hook("6", "a/b/c", "webhook", "http://slack/should_be_called", new string[] {}, "slack")
+        new Hook("6", "a/b/c", "notification_webhook", "http://slack/should_be_called", new string[] {}, "slack")
 
       };
       gitCommand = $"show {commitId}:hooks.json";
