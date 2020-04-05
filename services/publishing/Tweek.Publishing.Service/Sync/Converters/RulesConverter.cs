@@ -47,7 +47,7 @@ namespace Tweek.Publishing.Service.Sync.Converters
                     {
                         case "file":
                             keyDef.Payload =
-                                readFn(manifest.GetFileImplementionPath());
+                                readFn(manifest.GetFileImplementationPath());
                             break;
                         case "const":
                             keyDef.Payload = JsonConvert.SerializeObject(manifest.Implementation.Value);

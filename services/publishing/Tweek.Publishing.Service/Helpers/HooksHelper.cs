@@ -117,7 +117,7 @@ namespace Tweek.Publishing.Helpers
         {
             if (manifest.Implementation.Type != "file") return null;
 
-            var implementationFilePath = manifest.GetFileImplementionPath();
+            var implementationFilePath = manifest.GetFileImplementationPath();
             return await _git($"show {revision}:{implementationFilePath}");
         }
 
