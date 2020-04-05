@@ -6,6 +6,7 @@ import { ReduxContext } from '../../../../store';
 import { showSuccess } from '../../../../store/ducks';
 import { hookTypes, hookLabelsByType } from './HookTypes';
 import './EditHookPage.css';
+import { webhookFormats, webhookLabelsByFormat } from './WebHookFormats';
 
 export default ({ location, history }) => {
   const { dispatch } = useContext(ReduxContext);
@@ -16,15 +17,17 @@ export default ({ location, history }) => {
 
   const [keyPath, setKeyPath] = useState(initialHookData.keyPath || keyPathFromQuery || '');
   const [type, setType] = useState(initialHookData.type || 'notification_webhook');
+  const [format, setFormat] = useState(initialHookData.format);
   const [url, setUrl] = useState(initialHookData.url || '');
   const [saveError, setSaveError] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  const isValid = useMemo(() => validateInput({ keyPath, url }), [keyPath, url]);
-  const hasChanges = useMemo(() => checkForChanges({ initialHookData, keyPath, type, url }), [
+  const isValid = useMemo(() => validateInput({ keyPath, type, url, format }), [keyPath, type, url, format]);
+  const hasChanges = useMemo(() => checkForChanges({ initialHookData, keyPath, type, url, format }), [
     keyPath,
     type,
     url,
+    format
   ]);
 
   useErrorNotifier(saveError, 'Failed to save hook');
@@ -40,6 +43,7 @@ export default ({ location, history }) => {
         placeholder="Exact match, allows * wildcard"
       />
       <HookTypeSelector {...{ setType, type }} />
+      <HookFormatSelector {...{ setFormat, format, type }} />
       <TextField label="Url:" value={url} setter={setUrl} />
 
       <SaveButton
@@ -49,6 +53,7 @@ export default ({ location, history }) => {
           keyPath,
           type,
           url,
+          format,
           setIsSaving,
           history,
           setSaveError,
@@ -67,11 +72,11 @@ const TextField = ({ label, value, setter, placeholder }) => (
 );
 
 const HookTypeSelector = ({ setType, type }) => (
-  <div className="hook-type-selector-container">
+  <div className="hook-field-selector-container">
     <label className="field-label">Type:</label>
-    <div className="hook-type-selector-wrapper">
+    <div className="hook-field-selector-wrapper">
       <ComboBox
-        className="hook-type-selector"
+        className="hook-field-selector"
         suggestions={hookTypes}
         value={hookLabelsByType[type]}
         showValueInOptions={true}
@@ -81,22 +86,44 @@ const HookTypeSelector = ({ setType, type }) => (
   </div>
 );
 
+const HookFormatSelector = ({ setFormat, format, type }) => {
+  if(type !== 'notification_webhook') {
+    return null;
+  }
+
+  return (
+    <div className="hook-field-selector-container">
+      <label className="field-label">Format:</label>
+      <div className="hook-field-selector-wrapper">
+        <ComboBox
+          className="hook-field-selector"
+          suggestions={webhookFormats}
+          value={webhookLabelsByFormat[format]}
+          showValueInOptions={true}
+          onChange={(input, selected) => selected && setFormat(selected.value)}
+        />
+      </div>
+    </div>
+  );
+};
+
 const useSaveHookCallback = ({
   id,
   keyPath,
   type,
+  format,
   url,
   setIsSaving,
   history,
   setSaveError,
   dispatch,
-}) => {
-  return useCallback(async () => {
+}) =>
+  useCallback(async () => {
     try {
       setIsSaving(true);
 
-      if (id) await tweekManagementClient.updateHook({ id, keyPath, type, url });
-      else await tweekManagementClient.createHook({ keyPath, type, url });
+      if (id) await tweekManagementClient.updateHook({ id, keyPath, type, url, format });
+      else await tweekManagementClient.createHook({ keyPath, type, url, format });
 
       setIsSaving(false);
       dispatch(showSuccess({ title: 'Hook Saved' }));
@@ -105,15 +132,14 @@ const useSaveHookCallback = ({
       setIsSaving(false);
       setSaveError(err);
     }
-  }, [id, keyPath, type, url]);
-};
+  }, [id, keyPath, type, url, format]);
 
-const validateInput = ({ keyPath, url }) => Boolean(keyPath && url);
+const validateInput = ({ keyPath, type, url, format }) => Boolean(keyPath && type && url && (type === 'notification_webhook' ? format : true));
 
-const checkForChanges = ({ initialHookData, keyPath, type, url }) => {
-  return (
+const checkForChanges = ({ initialHookData, keyPath, type, url, format }) =>
+  (
     keyPath !== initialHookData.keyPath ||
     type !== initialHookData.type ||
-    url !== initialHookData.url
+    url !== initialHookData.url ||
+    format !== initialHookData.format
   );
-};

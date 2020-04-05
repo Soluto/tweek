@@ -1,21 +1,21 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
-using System;
 using System.Threading.Tasks;
-using Tweek.Publishing.Helpers;
-using System.Collections.Generic;
-using FakeItEasy;
-using Xunit;
-using System.Linq;
 using App.Metrics;
+using FakeItEasy;
+using Newtonsoft.Json;
 using RichardSzalay.MockHttp;
+using Tweek.Publishing.Helpers;
 using Tweek.Publishing.Service.Model.Hooks;
 using Tweek.Publishing.Service.Model.Rules;
-using Newtonsoft.Json;
+using Xunit;
 
 namespace Tweek.Publishing.Tests {
-  using KeyPathsDictionary = Dictionary< ( string type, string url ), HashSet<string> >;
+  using KeyPathsDictionary = Dictionary<Hook, HashSet<string> >;
 
   public class HooksHelperTests {
     public HooksHelper hooksHelper;
@@ -26,14 +26,14 @@ namespace Tweek.Publishing.Tests {
     }
 
     [Theory]
-    [InlineData("implementations/jpad/a/vtt/pp.jpad\n", new string[] { "a/vtt/pp" })]
-    [InlineData("implementations/jpad/a/vtt/pp.jpad\nmanifests/a/vtt/pp.json\n", new string[] { "a/vtt/pp" })]
-    [InlineData("implementations/jpad/a/vtt/pp.jpad\nmanifests/a/vtt/pq.json\n", new string[] { "a/vtt/pp", "a/vtt/pq" })]
-    [InlineData("some/git/path.json\nmanifests/a/vtt/pq.json\n", new string[] { "a/vtt/pq" })]
+    [InlineData("implementations/jpad/a/vtt/pp.jpad\n", new[] { "a/vtt/pp" })]
+    [InlineData("implementations/jpad/a/vtt/pp.jpad\nmanifests/a/vtt/pp.json\n", new[] { "a/vtt/pp" })]
+    [InlineData("implementations/jpad/a/vtt/pp.jpad\nmanifests/a/vtt/pq.json\n", new[] { "a/vtt/pp", "a/vtt/pq" })]
+    [InlineData("some/git/path.json\nmanifests/a/vtt/pq.json\n", new[] { "a/vtt/pq" })]
     [InlineData("some/git/path.json\n", new string[] {})]
     [InlineData("", new string[] {})]
     public async Task GetKeyPathsFromCommit(string gitOutput, string[] expectedResult) {
-      var commitId = "abcd";
+      const string commitId = "abcd";
       var gitCommand = $"diff-tree --no-commit-id --name-only -r {commitId}";
 
       A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
@@ -44,32 +44,26 @@ namespace Tweek.Publishing.Tests {
     }
 
     [Fact]
-    public void AggregateKeyPathsByHookUrlAndType() {
-      var allHooks = new Hook[] {
-        new Hook("1", "a/b/c", "notification_webhook", "http://some-domain/awesome_hook"),
-        new Hook("2", "a/b/c", "notification_webhook", "http://some-domain/another_awesome_hook"),
-        new Hook("3", "a/b/*", "notification_webhook", "http://another-domain/ok_hook"),
-        new Hook("4", "c/q/r", "notification_webhook", "http://fourth-domain/meh_hook"),
-        new Hook("5", "a/b/d", "notification_webhook", "http://some-domain/awesome_hook")
+    public void LinkKeyPathsByHook() {
+      var allHooks = new[] {
+        new Hook("1", "a/b/c", "notification_webhook", "http://some-domain/awesome_hook", new string[] {}, "json"),
+        new Hook("2", "a/b/c", "notification_webhook", "http://some-domain/another_awesome_hook", new string[] {}, "json"),
+        new Hook("3", "a/b/*", "notification_webhook", "http://another-domain/ok_hook", new string[] {}, "json"),
+        new Hook("4", "c/q/r", "notification_webhook", "http://fourth-domain/meh_hook", new string[] {}, "json"),
+        new Hook("5", "a/b/d", "notification_webhook", "http://some-domain/awesome_hook", new string[] {}, "json")
       };
-      var allKeyPaths = new string[] { "a/b/c", "a/b/d", "a/t/f" };
+      var allKeyPaths = new[] { "a/b/c", "a/b/d", "a/t/f" };
 
-      var expectedResult = new KeyPathsDictionary();
-      expectedResult.Add(
-        ( type: "notification_webhook", url: "http://some-domain/awesome_hook" ),
-        new HashSet<string> { "a/b/c", "a/b/d" }
-      );
-      expectedResult.Add(
-        ( type: "notification_webhook", url: "http://some-domain/another_awesome_hook" ),
-        new HashSet<string> { "a/b/c" }
-      );
-      expectedResult.Add(
-        ( type: "notification_webhook", url: "http://another-domain/ok_hook" ),
-        new HashSet<string> { "a/b/c", "a/b/d" }
-      );
+      var expectedResult = new KeyPathsDictionary
+      {
+        {allHooks[0], new HashSet<string> {"a/b/c"}},
+        {allHooks[1], new HashSet<string> {"a/b/c"}},
+        {allHooks[2], new HashSet<string> {"a/b/c", "a/b/d"}},
+        {allHooks[4], new HashSet<string> {"a/b/d"}}
+      };
 
-      var result = CallPrivateMethod<KeyPathsDictionary>(
-        hooksHelper, "AggregateKeyPathsByHookUrlAndType", new object[] { allKeyPaths, allHooks }
+      var result = CallPrivateStaticMethod<KeyPathsDictionary>(
+        hooksHelper, "LinkKeyPathsByHook", new object[] { allKeyPaths, allHooks }
       );
 
       Assert.Equal(expectedResult, result);
@@ -110,8 +104,8 @@ namespace Tweek.Publishing.Tests {
 
     [Fact]
     public async Task GetKeyPathData_ThrowsOnOtherGitExceptions() {
-      var commitId = "abcd";
-      var keyPath = "a/b/c";
+      const string commitId = "abcd";
+      const string keyPath = "a/b/c";
 
       var gitCommand = $"show {commitId}:manifests/{keyPath}.json";
       A.CallTo(() => fakeGit(gitCommand)).Throws(new Exception("Some unexpected error"));
@@ -122,19 +116,21 @@ namespace Tweek.Publishing.Tests {
     }
 
     [Fact]
-    public async Task TriggerNotificationHooksForCommit() {
-      var commitId = "abcdef";
-      var (mockHttp, hookRequests) = TriggerNotificationHooksForCommit_Setup(commitId);
+    public async Task TriggerPostCommitHooks() {
+      const string commitId = "abcdef";
+      var (mockHttp, hookRequests) = TriggerPostCommitHooks_Setup(commitId);
 
-      await hooksHelper.TriggerNotificationHooksForCommit(commitId);
+      await hooksHelper.TriggerPostCommitHooks(commitId);
 
       Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[0]));
       Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[1]));
       Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[2]));
-      Assert.Equal(0, mockHttp.GetMatchCount(hookRequests[3]));
+      Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[3]));
+      Assert.Equal(0, mockHttp.GetMatchCount(hookRequests[4]));
+      Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[5]));
     }
 
-    private (MockHttpMessageHandler, MockedRequest[]) TriggerNotificationHooksForCommit_Setup(string commitId) {
+    private (MockHttpMessageHandler, MockedRequest[]) TriggerPostCommitHooks_Setup(string commitId) {
       var author = new Author("author name", "author@email.com");
 
       var abcMImplementation = new Manifest.MImplementation { Type = "file", Format = "jpad" };
@@ -150,25 +146,29 @@ namespace Tweek.Publishing.Tests {
       var abdKeyPathDataOld = new KeyPathData("a/b/d", null, abdManifestOld);
       var abdKeyPathDiff = new KeyPathDiff(abdKeyPathDataOld, abdKeyPathData);
 
-      var abcKeyPathArray = new KeyPathDiff[] { abcKeyPathDiff };
-      var abcabdKeyPathArray = new KeyPathDiff[] { abcKeyPathDiff, abdKeyPathDiff };
+      var abcKeyPathArray = new[] { abcKeyPathDiff };
+      var abcabdKeyPathArray = new[] { abcKeyPathDiff, abdKeyPathDiff };
 
       var mockHttp = new MockHttpMessageHandler();
-      var hookRequests = new MockedRequest[4];
-      hookRequests[0] = MockHookRequest(mockHttp, "http://some-domain/awesome_hook", abcabdKeyPathArray, author);
-      hookRequests[1] = MockHookRequest(mockHttp, "http://some-domain/another_awesome_hook", abcKeyPathArray, author);
-      hookRequests[2] = MockHookRequest(mockHttp, "http://another-domain/ok_hook", abcabdKeyPathArray, author);
-      hookRequests[3] = MockHookRequest(mockHttp, "http://fifth-domain/should_not_be_called_hook", abcKeyPathArray, author);
-      
+      var hookRequests = new[]
+      {
+        MockNotificationHookRequest(mockHttp, "http://some-domain/awesome_hook", abcKeyPathArray, author),
+        MockNotificationHookRequest(mockHttp, "http://some-domain/awesome_hook", new []{abdKeyPathDiff}, author),
+        MockNotificationHookRequest(mockHttp, "http://some-domain/another_awesome_hook", abcKeyPathArray, author),
+        MockNotificationHookRequest(mockHttp, "http://another-domain/ok_hook", abcabdKeyPathArray, author),
+        MockNotificationHookRequest(mockHttp, "http://fifth-domain/should_not_be_called_hook", abcKeyPathArray, author),
+        MockSlackHookRequest(mockHttp, "http://slack/should_be_called")
+      };
+
       var client = mockHttp.ToHttpClient();
       InitializeHelpers(client);
 
-      TriggerNotificationHooksForCommit_SetupGitStubs(commitId, abcManifest, abdManifest, abdManifestOld);
+      TriggerPostCommitHooks_SetupGitStubs(commitId, abcManifest, abdManifest, abdManifestOld);
 
       return (mockHttp, hookRequests);
     }
 
-    private MockedRequest MockHookRequest(MockHttpMessageHandler mockHttp, string url, KeyPathDiff[] expectedContent, Author author) {
+    private static MockedRequest MockNotificationHookRequest(MockHttpMessageHandler mockHttp, string url, IEnumerable<KeyPathDiff> expectedContent, Author author) {
       var hookData = new HookData(author, expectedContent);
 
       return mockHttp
@@ -177,8 +177,16 @@ namespace Tweek.Publishing.Tests {
         .WithContent(JsonConvert.SerializeObject(hookData))
         .Respond(HttpStatusCode.NoContent);
     }
+    
+    
+    private static MockedRequest MockSlackHookRequest(MockHttpMessageHandler mockHttp, string url) =>
+      mockHttp
+        .When(HttpMethod.Post, url)
+        .WithHeaders("Content-Type", "application/json; charset=utf-8")
+        .WithPartialContent("\"text\":")
+        .Respond(HttpStatusCode.NoContent);
 
-    private void TriggerNotificationHooksForCommit_SetupGitStubs(string commitId, Manifest abcManifest, Manifest abdManifest, Manifest abdManifestOld) {
+    private void TriggerPostCommitHooks_SetupGitStubs(string commitId, Manifest abcManifest, Manifest abdManifest, Manifest abdManifestOld) {
       // GetKeyPathsFromCommit
       var gitCommand = $"diff-tree --no-commit-id --name-only -r {commitId}";
       var gitOutput = "implementations/jpad/a/b/c.jpad\nmanifests/a/b/c.json\nimplementations/jpad/a/b/d.jpad\nimplementations/jpad/a/t/f.jpad\n";
@@ -190,13 +198,15 @@ namespace Tweek.Publishing.Tests {
       A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
 
       // GetAllKeyHooks
-      var allHooks = new Hook[] {
-        new Hook("0", "a/b/c", "notification_webhook", "http://some-domain/awesome_hook"),
-        new Hook("1", "a/b/c", "notification_webhook", "http://some-domain/another_awesome_hook"),
-        new Hook("2", "a/b/*", "notification_webhook", "http://another-domain/ok_hook"),
-        new Hook("3", "a/b/d", "notification_webhook", "http://some-domain/awesome_hook"),
-        new Hook("4", "c/q/r", "notification_webhook", "http://fourth-domain/meh_hook"),
-        new Hook("5", "a/b/c", "not_a_notification_hook", "http://fifth-domain/should_not_be_called_hook")
+      var allHooks = new[] {
+        new Hook("0", "a/b/c", "notification_webhook", "http://some-domain/awesome_hook", new string[] {}, "json"),
+        new Hook("1", "a/b/c", "notification_webhook", "http://some-domain/another_awesome_hook", new string[] {}, "json"),
+        new Hook("2", "a/b/*", "notification_webhook", "http://another-domain/ok_hook", new string[] {}, "json"),
+        new Hook("3", "a/b/d", "notification_webhook", "http://some-domain/awesome_hook", new string[] {}, "json"),
+        new Hook("4", "c/q/r", "notification_webhook", "http://fourth-domain/meh_hook", new string[] {}, "json"),
+        new Hook("5", "a/b/c", "not_a_post_commit_hook", "http://fifth-domain/should_not_be_called_hook", new string[] {}, "json"),
+        new Hook("6", "a/b/c", "notification_webhook", "http://slack/should_be_called", new string[] {}, "slack")
+
       };
       gitCommand = $"show {commitId}:hooks.json";
       gitOutput = JsonConvert.SerializeObject(allHooks);
@@ -224,18 +234,27 @@ namespace Tweek.Publishing.Tests {
       A.CallTo(() => fakeGit(gitCommand)).Returns(gitOutput);
     }
 
-    private T CallPrivateMethod<T>(Object instance, string methodName, object[] methodParams) {
-      Type type = instance.GetType();
+    private static T CallPrivateMethod<T>(object instance, string methodName, object[] methodParams) {
+      var type = instance.GetType();
 
-      MethodInfo methodInfo = type
+      var methodInfo = type
         .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
-        .Where(method => method.Name == methodName && method.IsPrivate)
-        .First();
+        .First(method => method.Name == methodName && method.IsPrivate);
 
       return (T)methodInfo.Invoke(instance, methodParams);
     }
 
-    private void AssertObjectEquality(Object obj1, Object obj2) {
+    private static T CallPrivateStaticMethod<T>(object instance, string methodName, object[] methodParams) {
+      var type = instance.GetType();
+
+      var methodInfo = type
+        .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
+        .First(method => method.Name == methodName && method.IsPrivate);
+
+      return (T)methodInfo.Invoke(instance, methodParams);
+    }
+
+    private static void AssertObjectEquality(object obj1, object obj2) {
       Assert.Equal(JsonConvert.SerializeObject(obj1), JsonConvert.SerializeObject(obj2));
     }
 

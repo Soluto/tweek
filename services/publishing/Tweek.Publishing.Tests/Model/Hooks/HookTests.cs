@@ -15,7 +15,7 @@ namespace Tweek.Publishing.Tests {
     [InlineData("*/a/*", "t/a/p/y")]
     [InlineData("*/e", "t/a/p/y/e")]
     public void MatchesKeyPath_Matching(string hookKeyPath, string keyPath) {
-      var hook = new Hook(id, hookKeyPath, type, url);
+      var hook = new Hook(id, hookKeyPath, type, url, new string[]{},"json");
 
       Assert.True(hook.MatchesKeyPath(keyPath));
     }
@@ -26,7 +26,7 @@ namespace Tweek.Publishing.Tests {
     [InlineData("*a/b/*", "a/c/b/e")]
     [InlineData("*/e", "t/a/p/y/e/g")]
     public void MatchesKeyPath_NotMatching(string hookKeyPath, string keyPath) {
-      var hook = new Hook(id, hookKeyPath, type, url);
+      var hook = new Hook(id, hookKeyPath, type, url, new string[]{},"json");
 
       Assert.False(hook.MatchesKeyPath(keyPath));
     }

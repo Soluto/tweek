@@ -833,6 +833,12 @@ components:
           type: string
         url:
           type: string
+        format:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
     Hook:
       type: object
       properties:
