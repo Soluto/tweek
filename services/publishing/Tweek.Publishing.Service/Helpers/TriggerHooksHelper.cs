@@ -41,19 +41,18 @@ namespace Tweek.Publishing.Helpers {
       }
     }
 
+    private readonly Dictionary<string, Func<HookData, object>> _transformDataByHookType = new Dictionary<string, Func<HookData, object>>
+    {
+      {"slack", BuildSlackPayload}
+    };
+    
     private async Task TriggerHook(Hook hook, HookData hookData)
     {
       switch (hook.Type) {
         case "notification_webhook":
-          switch (hook.Format)
-          {
-            case "slack":
-              await TriggerWebhook(hook.Url, BuildSlackPayload(hookData));
-            break;
-            default:
-              await TriggerWebhook(hook.Url, hookData);
-              break;
-          }
+          var transformFunc = _transformDataByHookType[hook.Type] ?? (data => data);
+          
+          await TriggerWebhook(hook.Url, transformFunc(hookData));
           break;
         default:
           throw new Exception($"Failed to trigger hook, invalid type: {hook.Type}");
