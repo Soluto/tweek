@@ -14,20 +14,21 @@ namespace Tweek.Publishing.Service.Model.Hooks {
     [JsonProperty("url")]
     public string Url { get; }
     [JsonProperty("tags")]
-    public string[] Tags {get;} = new string[]{};
+    public string[] Tags {get;}
     [JsonProperty("format")]
-    public string Format {get;} = "json";
+    public string Format {get;}
      
     private readonly Regex _matchingKeyRegex;
     
-    public Hook(string id, string keyPath, string type, string url) {
+    public Hook(string id, string keyPath, string type, string url, string[] tags, string format) {
       Id = id;
       KeyPath = keyPath;
       Type = type;
       Url = url;
-
-      var keyPathForRegex = KeyPath.Replace("*", ".*");
-      _matchingKeyRegex = new Regex($"^{keyPathForRegex}$", RegexOptions.Compiled);
+      Tags = tags;
+      Format = format;
+      
+      _matchingKeyRegex = new Regex($"^{KeyPath.Replace("*", ".*")}$", RegexOptions.Compiled);
     }
 
     public bool MatchesKeyPath(string keyPath) => _matchingKeyRegex.IsMatch(keyPath);

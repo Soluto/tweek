@@ -5,6 +5,7 @@ import { ReduxContext } from '../../../../store';
 import { showSuccess, showConfirm } from '../../../../store/ducks';
 import { hookLabelsByType } from './HookTypes';
 import './HooksPage.css';
+import { webhookLabelsByFormat } from './WebHookFormats';
 
 export default ({ location, history }) => {
   const { dispatch } = useContext(ReduxContext);
@@ -96,6 +97,7 @@ const Hook = ({
     <div className="hook-data-wrapper">
       <DataField label="Keypath:" value={hook.keyPath} />
       <DataField label="Type:" value={hookLabelsByType[hook.type]} />
+      {hook.type === 'webhook' && <DataField label="Format:" value={webhookLabelsByFormat[hook.format]} />}
       <DataField label="Url:" value={hook.url} />
     </div>
   </li>

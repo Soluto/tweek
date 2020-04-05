@@ -15,7 +15,7 @@ using Tweek.Publishing.Service.Model.Rules;
 using Xunit;
 
 namespace Tweek.Publishing.Tests {
-  using KeyPathsDictionary = Dictionary< ( string type, string url ), HashSet<string> >;
+  using KeyPathsDictionary = Dictionary<Hook, HashSet<string> >;
 
   public class HooksHelperTests {
     public HooksHelper hooksHelper;
@@ -44,27 +44,26 @@ namespace Tweek.Publishing.Tests {
     }
 
     [Fact]
-    public void AggregateKeyPathsByHookUrlAndType() {
+    public void LinkKeyPathsByHook() {
       var allHooks = new[] {
-        new Hook("1", "a/b/c", "notification_webhook", "http://some-domain/awesome_hook"),
-        new Hook("2", "a/b/c", "notification_webhook", "http://some-domain/another_awesome_hook"),
-        new Hook("3", "a/b/*", "notification_webhook", "http://another-domain/ok_hook"),
-        new Hook("4", "c/q/r", "notification_webhook", "http://fourth-domain/meh_hook"),
-        new Hook("5", "a/b/d", "notification_webhook", "http://some-domain/awesome_hook")
+        new Hook("1", "a/b/c", "webhook", "http://some-domain/awesome_hook", new string[] {}, "json"),
+        new Hook("2", "a/b/c", "webhook", "http://some-domain/another_awesome_hook", new string[] {}, "json"),
+        new Hook("3", "a/b/*", "webhook", "http://another-domain/ok_hook", new string[] {}, "json"),
+        new Hook("4", "c/q/r", "webhook", "http://fourth-domain/meh_hook", new string[] {}, "json"),
+        new Hook("5", "a/b/d", "webhook", "http://some-domain/awesome_hook", new string[] {}, "json")
       };
       var allKeyPaths = new[] { "a/b/c", "a/b/d", "a/t/f" };
 
       var expectedResult = new KeyPathsDictionary
       {
-        {
-          (type: "notification_webhook", url: "http://some-domain/awesome_hook"), new HashSet<string> {"a/b/c", "a/b/d"}
-        },
-        {(type: "notification_webhook", url: "http://some-domain/another_awesome_hook"), new HashSet<string> {"a/b/c"}},
-        {(type: "notification_webhook", url: "http://another-domain/ok_hook"), new HashSet<string> {"a/b/c", "a/b/d"}}
+        {allHooks[0], new HashSet<string> {"a/b/c"}},
+        {allHooks[1], new HashSet<string> {"a/b/c"}},
+        {allHooks[2], new HashSet<string> {"a/b/c", "a/b/d"}},
+        {allHooks[4], new HashSet<string> {"a/b/d"}}
       };
 
       var result = CallPrivateStaticMethod<KeyPathsDictionary>(
-        hooksHelper, "AggregateKeyPathsByHookUrlAndType", new object[] { allKeyPaths, allHooks }
+        hooksHelper, "LinkKeyPathsByHook", new object[] { allKeyPaths, allHooks }
       );
 
       Assert.Equal(expectedResult, result);
@@ -126,8 +125,9 @@ namespace Tweek.Publishing.Tests {
       Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[0]));
       Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[1]));
       Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[2]));
-      Assert.Equal(0, mockHttp.GetMatchCount(hookRequests[3]));
-      Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[4]));
+      Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[3]));
+      Assert.Equal(0, mockHttp.GetMatchCount(hookRequests[4]));
+      Assert.Equal(1, mockHttp.GetMatchCount(hookRequests[5]));
     }
 
     private (MockHttpMessageHandler, MockedRequest[]) TriggerPostCommitHooks_Setup(string commitId) {
@@ -152,7 +152,8 @@ namespace Tweek.Publishing.Tests {
       var mockHttp = new MockHttpMessageHandler();
       var hookRequests = new[]
       {
-        MockNotificationHookRequest(mockHttp, "http://some-domain/awesome_hook", abcabdKeyPathArray, author),
+        MockNotificationHookRequest(mockHttp, "http://some-domain/awesome_hook", abcKeyPathArray, author),
+        MockNotificationHookRequest(mockHttp, "http://some-domain/awesome_hook", new []{abdKeyPathDiff}, author),
         MockNotificationHookRequest(mockHttp, "http://some-domain/another_awesome_hook", abcKeyPathArray, author),
         MockNotificationHookRequest(mockHttp, "http://another-domain/ok_hook", abcabdKeyPathArray, author),
         MockNotificationHookRequest(mockHttp, "http://fifth-domain/should_not_be_called_hook", abcKeyPathArray, author),
@@ -198,13 +199,13 @@ namespace Tweek.Publishing.Tests {
 
       // GetAllKeyHooks
       var allHooks = new[] {
-        new Hook("0", "a/b/c", "notification_webhook", "http://some-domain/awesome_hook"),
-        new Hook("1", "a/b/c", "notification_webhook", "http://some-domain/another_awesome_hook"),
-        new Hook("2", "a/b/*", "notification_webhook", "http://another-domain/ok_hook"),
-        new Hook("3", "a/b/d", "notification_webhook", "http://some-domain/awesome_hook"),
-        new Hook("4", "c/q/r", "notification_webhook", "http://fourth-domain/meh_hook"),
-        new Hook("5", "a/b/c", "not_a_post_commit_hook", "http://fifth-domain/should_not_be_called_hook"),
-        new Hook("6", "a/b/c", "slack_webhook", "http://slack/should_be_called")
+        new Hook("0", "a/b/c", "webhook", "http://some-domain/awesome_hook", new string[] {}, "json"),
+        new Hook("1", "a/b/c", "webhook", "http://some-domain/another_awesome_hook", new string[] {}, "json"),
+        new Hook("2", "a/b/*", "webhook", "http://another-domain/ok_hook", new string[] {}, "json"),
+        new Hook("3", "a/b/d", "webhook", "http://some-domain/awesome_hook", new string[] {}, "json"),
+        new Hook("4", "c/q/r", "webhook", "http://fourth-domain/meh_hook", new string[] {}, "json"),
+        new Hook("5", "a/b/c", "not_a_post_commit_hook", "http://fifth-domain/should_not_be_called_hook", new string[] {}, "json"),
+        new Hook("6", "a/b/c", "webhook", "http://slack/should_be_called", new string[] {}, "slack")
 
       };
       gitCommand = $"show {commitId}:hooks.json";

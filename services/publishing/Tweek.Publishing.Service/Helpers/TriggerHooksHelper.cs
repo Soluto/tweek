@@ -9,6 +9,7 @@ using App.Metrics.Counter;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
+using Tweek.Publishing.Service.Model.Hooks;
 
 namespace Tweek.Publishing.Helpers {
   public class TriggerHooksHelper {
@@ -25,9 +26,9 @@ namespace Tweek.Publishing.Helpers {
       _metrics = metrics;
     }
 
-    public async Task TriggerHooks(Dictionary<(string type, string url), HookData> hooksWithData, string commitId) {
-      var triggerTasks = hooksWithData.Select( kvp => ( task: TriggerHook(kvp.Key, kvp.Value), hookType: kvp.Key.type ) );
-
+    public async Task TriggerHooks(Dictionary<Hook, HookData> hooksWithData, string commitId) {
+      var triggerTasks = hooksWithData.Select( kvp => ( task: TriggerHook(kvp.Key, kvp.Value), hookType: kvp.Key.Type ) );
+       
       foreach (var (task, hookType) in triggerTasks) {
         try {
           await task;
@@ -40,25 +41,30 @@ namespace Tweek.Publishing.Helpers {
       }
     }
 
-    private async Task TriggerHook(( string type, string url ) hook, HookData payload)
+    private async Task TriggerHook(Hook hook, HookData hookData)
     {
-      var (type, url) = hook;
-      
-      switch (type) {
-        case "notification_webhook":
-          await TriggerNotificationWebhook(url, payload);
-          break;
-        case "slack_webhook":
-          await TriggerSlackWebhook(url, payload);
+      switch (hook.Type) {
+        case "webhook":
+          switch (hook.Format)
+          {
+            case "json":
+              await TriggerWebhook(hook.Url, hookData);
+            break;
+            case "slack":
+              await TriggerWebhook(hook.Url, BuildSlackPayload(hookData));
+            break;
+            default:
+              throw new Exception($"Failed to trigger webhook, invalid format: {hook.Format}");
+          }
           break;
         default:
-          throw new Exception($"Failed to trigger hook, invalid type: {type}");
+          throw new Exception($"Failed to trigger hook, invalid type: {hook.Type}");
       }
     }
 
-    private async Task TriggerSlackWebhook(string url, HookData payload)
+    private static object BuildSlackPayload(HookData hookData)
     {
-      var updates = string.Join(',', payload.updates.Select(update =>
+      var updates = string.Join(',', hookData.updates.Select(update =>
       {
         if (!update.oldValue.HasValue && !update.newValue.HasValue)
         {
@@ -78,14 +84,14 @@ namespace Tweek.Publishing.Helpers {
         return $"{update.oldValue.Value.implementation} => {update.newValue.Value.implementation}";
       }));
       
-      var text = $"Tweek key changed!\n{updates}\nChanged by: {payload.author.name} <{payload.author.email}>";
-      
-      var response = await _client.PostAsync(url, new StringContent( JsonConvert.SerializeObject(new { text }), Encoding.UTF8, "application/json"));
-      response.EnsureSuccessStatusCode();
+      var text = $"Tweek key changed!\n{updates}\nChanged by: {hookData.author.name} <{hookData.author.email}>";
+
+      return new {text};
     }
 
-    private async Task TriggerNotificationWebhook(string url, HookData payload) {
-      var response = await _client.PostAsync(url, new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json"));
+    private async Task TriggerWebhook(string url, object payload)
+    {
+      var response = await _client.PostAsync(url, new StringContent( JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json"));
       response.EnsureSuccessStatusCode();
     }
   }

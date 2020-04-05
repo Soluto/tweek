@@ -1,6 +1,5 @@
 export const hookTypes = [
-  { label: 'Notification Webhook', value: 'notification_webhook' },
-  { label: 'Slack Webhook', value: 'slack_webhook' },
+  { label: 'Webhook', value: 'webhook' },
 ];
 
 export const hookLabelsByType = hookTypes.reduce((labelsByType, typeObject) => {
