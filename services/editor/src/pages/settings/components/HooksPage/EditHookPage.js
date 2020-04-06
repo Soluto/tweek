@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useContext, useCallback } from 'react';
 import qs from 'query-string';
+import { WithContext as ReactTags } from 'react-tag-input';
 import { tweekManagementClient, useErrorNotifier } from '../../../../utils';
 import { ComboBox, SaveButton } from '../../../../components/common';
 import { ReduxContext } from '../../../../store';
@@ -18,16 +19,18 @@ export default ({ location, history }) => {
   const [keyPath, setKeyPath] = useState(initialHookData.keyPath || keyPathFromQuery || '');
   const [type, setType] = useState(initialHookData.type || 'notification_webhook');
   const [format, setFormat] = useState(initialHookData.format);
+  const [tags, setTags] = useState(initialHookData.tags || []);
   const [url, setUrl] = useState(initialHookData.url || '');
   const [saveError, setSaveError] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
 
   const isValid = useMemo(() => validateInput({ keyPath, type, url, format }), [keyPath, type, url, format]);
-  const hasChanges = useMemo(() => checkForChanges({ initialHookData, keyPath, type, url, format }), [
+  const hasChanges = useMemo(() => checkForChanges({ initialHookData, keyPath, type, url, format, tags }), [
     keyPath,
     type,
     url,
-    format
+    format,
+    tags
   ]);
 
   useErrorNotifier(saveError, 'Failed to save hook');
@@ -42,6 +45,7 @@ export default ({ location, history }) => {
         setter={setKeyPath}
         placeholder="Exact match, allows * wildcard"
       />
+      <TagsPicker tags={tags} setTags={setTags} />
       <HookTypeSelector {...{ setType, type }} />
       <HookFormatSelector {...{ setFormat, format, type }} />
       <TextField label="Url:" value={url} setter={setUrl} />
@@ -54,6 +58,7 @@ export default ({ location, history }) => {
           type,
           url,
           format,
+          tags,
           setIsSaving,
           history,
           setSaveError,
@@ -107,12 +112,37 @@ const HookFormatSelector = ({ setFormat, format, type }) => {
   );
 };
 
+const TagsPicker = ({ tags, setTags }) =>
+  (
+    <div className="tags-picker">
+      <label className="field-label">Tags:</label>
+      <ReactTags
+        tags={tags.map(tag => ({ id: tag, text: tag }))}
+        handleDelete={index => setTags(tags.filter((t, i) => i !== index))}
+        handleAddition={tag => setTags([...tags, tag.text])}
+        placeholder="New tag"
+        autofocus={false}
+        allowDeleteFromEmptyInput
+        allowDragDrop={false}
+        minQueryLength={1}
+        classNames={{
+          tags: 'tags-container',
+          tagInput: 'tag-input',
+          tag: 'tag',
+          remove: 'tag-delete-button',
+          suggestions: 'tags-suggestion',
+        }}
+      />
+    </div>
+  );
+
 const useSaveHookCallback = ({
   id,
   keyPath,
   type,
   format,
   url,
+  tags,
   setIsSaving,
   history,
   setSaveError,
@@ -122,8 +152,8 @@ const useSaveHookCallback = ({
     try {
       setIsSaving(true);
 
-      if (id) await tweekManagementClient.updateHook({ id, keyPath, type, url, format });
-      else await tweekManagementClient.createHook({ keyPath, type, url, format });
+      if (id) await tweekManagementClient.updateHook({ id, keyPath, type, url, format, tags });
+      else await tweekManagementClient.createHook({ keyPath, type, url, format, tags });
 
       setIsSaving(false);
       dispatch(showSuccess({ title: 'Hook Saved' }));
@@ -132,14 +162,15 @@ const useSaveHookCallback = ({
       setIsSaving(false);
       setSaveError(err);
     }
-  }, [id, keyPath, type, url, format]);
+  }, [id, keyPath, type, url, format, tags]);
 
 const validateInput = ({ keyPath, type, url, format }) => Boolean(keyPath && type && url && (type === 'notification_webhook' ? format : true));
 
-const checkForChanges = ({ initialHookData, keyPath, type, url, format }) =>
+const checkForChanges = ({ initialHookData, keyPath, type, url, format, tags }) =>
   (
     keyPath !== initialHookData.keyPath ||
     type !== initialHookData.type ||
     url !== initialHookData.url ||
-    format !== initialHookData.format
+    format !== initialHookData.format ||
+    tags !== initialHookData.tags
   );

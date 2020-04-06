@@ -64,14 +64,29 @@ namespace Tweek.Publishing.Helpers
             IReadOnlyDictionary<string, KeyPathDiff> keyPathsDiffs,
             Author author
         ) =>
-            keyPathsByHook.ToDictionary(
-                kvp => kvp.Key,
-                kvp =>
-                {
-                    var hookKeyPathDiff = kvp.Value.Select(keyPath => keyPathsDiffs[keyPath]);
-                    return new HookData(author, hookKeyPathDiff);
-                }
-            );
+            keyPathsByHook.Select(kvp => (
+                    key: kvp.Key,
+                    value: kvp.Value
+                        .Select(keyPath => keyPathsDiffs[keyPath])
+                        .Where(diff => HasRelevantTags(diff, kvp.Key.Tags)))
+                )
+                .Where(kvp => kvp.value.Any())
+                .ToDictionary(
+                    kvp => kvp.key,
+                    kvp => new HookData(author, kvp.value));
+
+        private static bool HasRelevantTags(KeyPathDiff diff, string[] tags)
+        {
+            if (tags == null || !tags.Any())
+            {
+                return true;
+            }
+            
+            var oldValueTags = diff.oldValue.GetValueOrDefault().manifest?.Meta?.Tags ?? new string[]{};
+            var newValueTags =  diff.newValue.GetValueOrDefault().manifest?.Meta?.Tags ?? new string[]{};
+
+            return oldValueTags.Union(newValueTags).Any(tags.Contains);
+        }
 
         private async Task<Dictionary<string, KeyPathDiff>> GetKeyPathsDiffs(IEnumerable<string> keyPaths,
             string commitId)
