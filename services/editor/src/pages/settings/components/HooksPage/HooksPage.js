@@ -96,8 +96,9 @@ const Hook = ({
     </div>
     <div className="hook-data-wrapper">
       <DataField label="Keypath:" value={hook.keyPath} />
+      <DataField label="Tags:" value={(hook.tags || []).join()} />
       <DataField label="Type:" value={hookLabelsByType[hook.type]} />
-      {hook.type === 'webhook' && <DataField label="Format:" value={webhookLabelsByFormat[hook.format]} />}
+      {hook.type === 'notification_webhook' && <DataField label="Format:" value={webhookLabelsByFormat[hook.format]} />}
       <DataField label="Url:" value={hook.url} />
     </div>
   </li>

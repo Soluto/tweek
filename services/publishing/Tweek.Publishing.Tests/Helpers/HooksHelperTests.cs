@@ -68,6 +68,83 @@ namespace Tweek.Publishing.Tests {
 
       Assert.Equal(expectedResult, result);
     }
+    
+    [Fact]
+    public void GetHooksWithData()
+    {
+      static KeyPathData CreateKeyPathData(string path, params string[] tags) => new KeyPathData(path, "",
+        new Manifest {KeyPath = path, Meta = new Manifest.MMeta {Tags = tags}});
+
+      var allHooks = new[]
+      {
+        new Hook("1", "a/b/c", "notification_webhook", "", new string[] { }, "json"),
+        new Hook("2", "a/b/c", "notification_webhook", "", new string[] { }, "json"),
+        new Hook("3", "a/b/*", "notification_webhook", "", new string[] { }, "json"),
+        new Hook("4", "c/q/r", "notification_webhook", "", new string[] { }, "json"),
+        new Hook("5", "a/b/d", "notification_webhook", "", new string[] { }, "json"),
+        new Hook("6", "tag/*", "notification_webhook", "", new string[] { }, "json"),
+        new Hook("7", "tag/*", "notification_webhook", "", new[] { "1" }, "json"),
+        new Hook("8", "tag/*", "notification_webhook", "", new[] { "2"}, "json"),
+        new Hook("9", "tag/*", "notification_webhook", "", new[] { "1", "2"}, "json"),
+      };
+      var allKeyPaths = new[] {"a/b/c", "a/b/d", "a/t/f", "tag/1", "tag/2", "tag/3"};
+
+      var keyPathsByHook = new KeyPathsDictionary
+      {
+        {allHooks[0], new HashSet<string> {allKeyPaths[0]}},
+        {allHooks[1], new HashSet<string> {allKeyPaths[0]}},
+        {allHooks[2], new HashSet<string> {allKeyPaths[0], allKeyPaths[1]}},
+        {allHooks[4], new HashSet<string> {allKeyPaths[1]}},
+        {allHooks[5], new HashSet<string> {allKeyPaths[3], allKeyPaths[4], allKeyPaths[5]}},
+        {allHooks[6], new HashSet<string> {allKeyPaths[3], allKeyPaths[4], allKeyPaths[5]}},
+        {allHooks[7], new HashSet<string> {allKeyPaths[3], allKeyPaths[4], allKeyPaths[5]}},
+        {allHooks[8], new HashSet<string> {allKeyPaths[3], allKeyPaths[4], allKeyPaths[5]}},
+      };
+      var keyPathDiffs = new[]
+      {
+        new KeyPathDiff(CreateKeyPathData(allKeyPaths[0]), CreateKeyPathData(allKeyPaths[0])),
+        new KeyPathDiff(CreateKeyPathData(allKeyPaths[1]), CreateKeyPathData(allKeyPaths[1])),
+        new KeyPathDiff(CreateKeyPathData(allKeyPaths[3], "1"), CreateKeyPathData(allKeyPaths[3], "1")),
+        new KeyPathDiff(CreateKeyPathData(allKeyPaths[4], "2"), CreateKeyPathData(allKeyPaths[4], "2")),
+        new KeyPathDiff(CreateKeyPathData(allKeyPaths[5], "3"), CreateKeyPathData(allKeyPaths[5], "3")),
+      };
+      IReadOnlyDictionary<string, KeyPathDiff> keyPathsDiffs = new Dictionary<string, KeyPathDiff>
+      {
+        {allKeyPaths[0], keyPathDiffs[0]},
+        {allKeyPaths[1], keyPathDiffs[1]},
+        {allKeyPaths[3], keyPathDiffs[2]},
+        {allKeyPaths[4], keyPathDiffs[3]},
+        {allKeyPaths[5], keyPathDiffs[4]},
+        
+      };
+      var author = new Author("test", "test@gmail.com");
+
+      var expectedResult = new Dictionary<Hook, HookData>
+      {
+        {allHooks[0], new HookData(author, new[] {keyPathDiffs[0]})},
+        {allHooks[1], new HookData(author, new[] {keyPathDiffs[0]})},
+        {allHooks[2], new HookData(author, new[] {keyPathDiffs[0], keyPathDiffs[1]})},
+        {allHooks[4], new HookData(author, new[] {keyPathDiffs[1]})},
+        {allHooks[5], new HookData(author, new[] {keyPathDiffs[2], keyPathDiffs[3], keyPathDiffs[4]})},
+        {allHooks[6], new HookData(author, new[] {keyPathDiffs[2]})},
+        {allHooks[7], new HookData(author, new[] {keyPathDiffs[3]})},
+        {allHooks[8], new HookData(author, new[] {keyPathDiffs[2], keyPathDiffs[3]})},
+      };
+
+      var result = CallPrivateStaticMethod<Dictionary<Hook, HookData>>(
+        hooksHelper, "GetHooksWithData", new object[] {keyPathsByHook, keyPathsDiffs, author}
+      );
+
+      Assert.Equal(new [] {allHooks[0], allHooks[1], allHooks[2], allHooks[4], allHooks[5], allHooks[6], allHooks[7], allHooks[8]}, result.Keys);
+      Assert.Equal(expectedResult[allHooks[0]].updates, result[allHooks[0]].updates);
+      Assert.Equal(expectedResult[allHooks[1]].updates, result[allHooks[1]].updates);
+      Assert.Equal(expectedResult[allHooks[2]].updates, result[allHooks[2]].updates);
+      Assert.Equal(expectedResult[allHooks[4]].updates, result[allHooks[4]].updates);
+      Assert.Equal(expectedResult[allHooks[5]].updates, result[allHooks[5]].updates);
+      Assert.Equal(expectedResult[allHooks[6]].updates, result[allHooks[6]].updates);
+      Assert.Equal(expectedResult[allHooks[7]].updates, result[allHooks[7]].updates);
+      Assert.Equal(expectedResult[allHooks[8]].updates, result[allHooks[8]].updates);
+    }
 
     [Fact]
     public async Task GetKeyPathData_ReturnsExistingFileData() {
@@ -142,7 +219,7 @@ namespace Tweek.Publishing.Tests {
       var abdManifest = new Manifest { KeyPath = "a/b/d", Implementation = abdMImplementation };
       var abdKeyPathData = new KeyPathData("a/b/d", null, abdManifest);
       var abdMImplementationOld = new Manifest.MImplementation { Type = "const", Value = "old abd const value" };
-      var abdManifestOld = new Manifest { KeyPath = "a/b/d", Implementation = abdMImplementationOld };
+      var abdManifestOld = new Manifest { KeyPath = "a/b/d", Implementation = abdMImplementationOld};
       var abdKeyPathDataOld = new KeyPathData("a/b/d", null, abdManifestOld);
       var abdKeyPathDiff = new KeyPathDiff(abdKeyPathDataOld, abdKeyPathData);
 
