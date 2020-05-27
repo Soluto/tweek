@@ -16,7 +16,7 @@ namespace Tweek.Publishing.Service.Model.Rules
             }
         }
 
-        public static string GetFileImplementionPath(this Manifest manifest) => 
+        public static string GetFileImplementationPath(this Manifest manifest) => 
             $"implementations/{manifest.Implementation.Format}/{manifest.KeyPath}.{manifest.Implementation.Extension ?? manifest.Implementation.Format}";
     }
 
@@ -39,6 +39,12 @@ namespace Tweek.Publishing.Service.Model.Rules
             [JsonProperty("key")]
             public string Key;
         }
+        
+        public class MMeta
+        {
+            [JsonProperty("tags")]
+            public string[] Tags;
+        }
 
         [JsonProperty("dependencies")]
         public string[] Dependencies;
@@ -48,5 +54,8 @@ namespace Tweek.Publishing.Service.Model.Rules
 
         [JsonProperty("key_path")]
         public string KeyPath;
+        
+        [JsonProperty("meta")]
+        public MMeta Meta;
     }
 }

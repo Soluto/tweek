@@ -43,9 +43,9 @@ The easiest way to start evaluating Tweek is to run it locally on docker, make s
 
 ### Using Tilt
 
-Tilt is a CLI tool that can be used to create optimal development environment for multi-container apps such as Tweek, it support automatic rebuliding of images and re-running of containers on files' changes.
-Additonally, it support more complex live reloading scenarios such as Tweek Editor (React app).
-Tweek uses Tilt on top of docker-compose for easier and (usually) faster developer experience (comapred to Tilt with k8s).
+Tilt is a CLI tool that can be used to create optimal development environment for multi-container apps such as Tweek, it support automatic rebuilding of images and re-running of containers on files' changes.
+Additionally, it support more complex live reloading scenarios such as Tweek Editor (React app).
+Tweek uses Tilt on top of docker-compose for easier and (usually) faster developer experience (compared to Tilt with k8s).
 
 - Install Tilt (https://docs.tilt.dev/install.html)
 - tilt up
@@ -102,7 +102,7 @@ Tweek provide UI and rest api for editing context.
 - Set Identity Type to User
 - Set User id to John
 - Click enter
-- Set value "Candada" for property Country
+- Set value "Canada" for property Country
 
 After that, we can query Tweek API with:
 

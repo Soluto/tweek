@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Context;
 using FSharpUtils.Newtonsoft;
-using LanguageExt;
-using Microsoft.Extensions.Logging;
 using Xunit;
 using static FSharpUtils.Newtonsoft.JsonValue;
-using static LanguageExt.Prelude;
-using static Tweek.Engine.Drivers.Context.InputValidationContextDriver;
 using Tweek.Engine.Tests.TestDrivers;
 using static Tweek.Engine.Drivers.Context.SchemaValidation;
 
@@ -187,14 +183,6 @@ namespace Engine.Drivers.UnitTests.Context
             {
                 new Dictionary<string, JsonValue>
                 {
-                    ["Gender"] = NewString("male")
-                }
-            };
-
-            yield return new object[]
-            {
-                new Dictionary<string, JsonValue>
-                {
                     ["AgentVersion"] = NewString("1.34.6")
                 }
             };
@@ -220,6 +208,22 @@ namespace Engine.Drivers.UnitTests.Context
                 new Dictionary<string, JsonValue>
                 {
                     ["LuckyNumber"] = NewNumber(7)
+                }
+            };
+
+            yield return new object[]
+            {
+                new Dictionary<string, JsonValue>
+                {
+                    ["Cars"] = NewArray(new JsonValue[]{})
+                }
+            };
+
+            yield return new object[]
+            {
+                new Dictionary<string, JsonValue>
+                {
+                    ["Cars"] = NewArray(new JsonValue[]{NewString("tesla")})
                 }
             };
         }
@@ -305,6 +309,31 @@ namespace Engine.Drivers.UnitTests.Context
                     ["LuckyNumber"] = NewString("7")
                 }
             };
+
+            yield return new object[]
+            {
+                new Dictionary<string, JsonValue>
+                {
+                    ["Gender"] = NewString("male")
+                }
+            };
+
+            yield return new object[]
+            {
+                new Dictionary<string, JsonValue>
+                {
+                    ["Cars"] = NewString("7")
+                }
+            };
+
+            yield return new object[]
+            {
+                new Dictionary<string, JsonValue>
+                {
+                    ["Cars"] = NewArray(new JsonValue[]{NewNumber(10)})
+                }
+            };
+            
         }
     }
 }

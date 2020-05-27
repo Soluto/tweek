@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
-    <VersionPrefix>1.0.0-rc5</VersionPrefix>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <VersionPrefix>1.0.0-rc9</VersionPrefix>
     <DockerComposeProjectPath>..\..\..\deployments\docker-compose.dcproj</DockerComposeProjectPath>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>1591, 1701, 1702, 1998</NoWarn>
@@ -11,22 +11,24 @@
     <None Remove="Properties\PublishProfiles\FileSystemProfile.pubxml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="App.Metrics.AspNetCore.Health" Version="3.1.0" />
-    <PackageReference Include="App.Metrics.AspNetCore.Mvc" Version="3.1.0" />
-    <PackageReference Include="App.Metrics.Formatters.Json" Version="3.1.0" />
-    <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="3.1.0" />
-    <PackageReference Include="App.Metrics.Health.Checks.Http" Version="3.1.0" />
+    <PackageReference Include="App.Metrics.AspNetCore.Health" Version="3.2.0" />
+    <PackageReference Include="App.Metrics.AspNetCore.Mvc" Version="3.2.0" />
+    <PackageReference Include="App.Metrics.Formatters.Json" Version="3.2.0" />
+    <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="3.2.0" />
+    <PackageReference Include="App.Metrics.Health.Checks.Http" Version="3.2.0" />
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
-    <PackageReference Include="LanguageExt.Core" Version="3.3.19" />
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.6" />
+    <PackageReference Include="LanguageExt.Core" Version="3.3.48" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.0" />
     <PackageReference Include="Scrutor" Version="3.1.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
-    <PackageReference Include="Serilog.Formatting.Compact" Version="1.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
+    <PackageReference Include="Serilog.Formatting.Compact" Version="1.1.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="4.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.0.0-rc5" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-    <PackageReference Include="Tweek.JPad" Version="0.6.43" />
+    <PackageReference Include="Tweek.JPad" Version="0.7.82" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
   <ItemGroup>
