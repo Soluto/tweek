@@ -79,7 +79,7 @@ Our first key, will be a key that is responsible for the color of a "sign up" bu
 - Click on "Add Rule"
 - Set Property to Country (user) and set "=" and "Canada" in the other fields
 - In Rule value set the value "blue"
-- Click "Save changes"
+- Click "Save chs"
 
 More on [keys and paths](https://tweek.soluto.io/concepts/keys/keys-ands-paths)
 
