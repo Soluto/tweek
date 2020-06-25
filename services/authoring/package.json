@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "bluebird": "^3.5.1",
-    "bunyan": "^1.8.12",
+    "bunyan": "^1.8.13",
     "express": "^4.16.4",
     "fast-json-patch": "^2.0.6",
     "fs-extra": "^7.0.1",
