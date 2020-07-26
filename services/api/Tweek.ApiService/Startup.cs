@@ -202,7 +202,6 @@ namespace Tweek.ApiService
             app.InstallAddons(Configuration);
             app.UseRouting();
             app.UseAuthentication();
-            //app.UseAppMetricsEndpointRoutesResolver();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
