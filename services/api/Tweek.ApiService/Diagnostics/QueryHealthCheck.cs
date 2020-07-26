@@ -1,28 +1,26 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using App.Metrics.Health;
-using LanguageExt;
 using Tweek.Engine;
 using Tweek.Engine.DataTypes;
 using Tweek.Engine.Drivers.Context;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Tweek.ApiService.Diagnostics
 {
-    public class QueryHealthCheck : HealthCheck
+    public class QueryHealthCheck : IHealthCheck
     {
         private readonly ITweek _tweek;
         private readonly IContextDriver _contextDriver;
         private HealthCheckResult _state = HealthCheckResult.Unhealthy(); 
 
-        public QueryHealthCheck(ITweek tweek, IContextDriver contextDriver) : base("QueryHealthCheck"){
+        public QueryHealthCheck(ITweek tweek, IContextDriver contextDriver){
              _tweek = tweek;
              _contextDriver = contextDriver;
         }
 
-        protected async override ValueTask<HealthCheckResult> CheckAsync(CancellationToken cancellationToken = default(CancellationToken)){
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+        {
             try{
                 await _tweek.GetContextAndCalculate("@tweek/_", new System.Collections.Generic.HashSet<Identity> { new Identity("health_check", "test")  }, _contextDriver);
                 _state = HealthCheckResult.Healthy();
