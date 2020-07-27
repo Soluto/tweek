@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using App.Metrics.Health;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Tweek.Engine;
 using Tweek.Engine.Drivers.Rules;
 
 namespace Tweek.ApiService.Diagnostics
 {
-    public class RulesRepositoryHealthCheck : HealthCheck
+    public class RulesRepositoryHealthCheck : IHealthCheck
     {
+        
         private readonly IRulesRepository _repository;
         private readonly TimeSpan _unhealthyTimeout;
         private readonly TimeSpan _degradedTimeout;
         private readonly IServiceProvider _serviceProvider;
 
         public RulesRepositoryHealthCheck(IRulesRepository repository, IConfiguration config, IServiceProvider serviceProvider)
-            : base("RulesRepository")
         {
             _repository = repository;
             var failureDelayInMs = config.GetValue("Rules:FailureDelayInMs", 60000);
@@ -25,8 +25,8 @@ namespace Tweek.ApiService.Diagnostics
             _serviceProvider = serviceProvider;
         }
 
-        protected override async ValueTask<HealthCheckResult> CheckAsync(
-            CancellationToken cancellationToken = new CancellationToken())
+
+        public async Task<Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             try
             {

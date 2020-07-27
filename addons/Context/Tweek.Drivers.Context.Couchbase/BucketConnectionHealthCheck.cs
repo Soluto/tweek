@@ -2,12 +2,12 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using App.Metrics.Health;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Tweek.Drivers.Context.Couchbase
 {
-    internal class BucketConnectionHealthCheck : HealthCheck
+    internal class BucketConnectionHealthCheck : IHealthCheck
     {
         private DateTime _lastSuccessCheck;
 
@@ -23,7 +23,6 @@ namespace Tweek.Drivers.Context.Couchbase
         private HealthCheckResult _state = HealthCheckResult.Unhealthy();
 
         internal BucketConnectionHealthCheck(Func<string, IBucket> getBucket, string bucketNameToCheck, TimeSpan timeout, int retryCount, ILogger logger)
-            : base("CouchbaseConnection")
         {
             _getBucket = getBucket;
             _bucketName = bucketNameToCheck;
@@ -32,8 +31,8 @@ namespace Tweek.Drivers.Context.Couchbase
             _logger = logger;
         }
 
-        protected override async ValueTask<HealthCheckResult> CheckAsync(
-            CancellationToken cancellationToken = new CancellationToken())
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+
         {
             if (DateTime.UtcNow - _lastSuccessCheck > TimeSpan.FromSeconds(1))
             {
@@ -42,7 +41,7 @@ namespace Tweek.Drivers.Context.Couchbase
                     var bucket = _getBucket(_bucketName);
                     await UpsertHealthcheckKey(bucket);
                     _lastSuccessCheck = DateTime.UtcNow;
-                    if ( _state.Status == HealthCheckStatus.Unhealthy){
+                    if ( _state.Status == HealthStatus.Unhealthy){
                         _logger.LogInformation("Couchbase connection is healthy again");
                     }
                     failedRetries = 0;

@@ -11,7 +11,6 @@ using Serilog.Formatting.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Tweek.ApiService.Addons;
 using Tweek.ApiService.Metrics;
 using Tweek.ApiService.Security;
 using Tweek.ApiService.Utils;
@@ -30,10 +29,11 @@ using Tweek.Engine.DataTypes;
 using static LanguageExt.Prelude;
 using System.Linq;
 using App.Metrics;
-using Tweek.ApiService.Patches;
 using App.Metrics.Formatters.Prometheus;
-using Microsoft.AspNetCore.Http.Features;
-using App.Metrics.Health;
+using Tweek.ApiService.Addons;
+using Tweek.ApiService.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Tweek.ApiService
 {
@@ -59,6 +59,7 @@ namespace Tweek.ApiService
         public void ConfigureServices(IServiceCollection services)
         {
             services.RegisterAddonServices(Configuration);
+            services.AddHttpClient();
 
             services.Decorate<IContextDriver>((driver, provider) =>
               new TimedContextDriver(driver, provider.GetService<IMetrics>()));
@@ -110,29 +111,19 @@ namespace Tweek.ApiService
             services.AddSingleton(jsonSerializer);
 
             services.AddControllers()
+                .AddMetrics()
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ContractResolver = tweekContactResolver;
                 });
 
             services.ConfigureAuthenticationProviders(Configuration, loggerFactory.CreateLogger("AuthenticationProviders"));
-
-            services.AddMetrics(AppMetrics.CreateDefaultBuilder()
-                .OutputMetrics.AsPrometheusPlainText()
-                .Build());
-
-            services.AddMetricsTrackingMiddleware();
-            services.AddMetricsEndpoints(options => {
-                options.MetricsEndpointOutputFormatter =  new MetricsPrometheusTextOutputFormatter();
-                options.MetricsTextEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
-            });
-
-            var healthChecks = AppMetricsHealth.CreateDefaultBuilder()
-                .HealthChecks.RegisterFromAssembly(services)
-                .BuildAndAddTo(services);
-
-            services.AddHealth(healthChecks);
-            services.AddHealthEndpoints();
+            services.AddAppMetricsHealthPublishing();
+            services.AddHealthChecks()
+                    .AddCheck<LocalHttpHealthCheck>("LocalHttp")
+                    .AddCheck<QueryHealthCheck>("QueryHealthCheck")
+                    .AddCheck<EnvironmentHealthCheck>("EnvironmentDetails")
+                    .AddCheck<RulesRepositoryHealthCheck>("RulesRepository");
 
         }
 
@@ -199,7 +190,6 @@ namespace Tweek.ApiService
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory,
             IHostApplicationLifetime lifetime)
         {
-            app.UseMetricsAllMiddleware();
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
                 .WriteTo.Console(new JsonFormatter())
@@ -213,29 +203,20 @@ namespace Tweek.ApiService
             app.InstallAddons(Configuration);
             app.UseRouting();
             app.UseAuthentication();
-            app.UseAppMetricsEndpointRoutesResolver();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapGet("health", endpoints.CreateApplicationBuilder()
-                .Use((context, next)=>{
-                    var syncIOFeature = context.Features.Get<IHttpBodyControlFeature>();
-                    if (syncIOFeature != null)
-                    {
-                        syncIOFeature.AllowSynchronousIO = true;
-                    }
-                    return next();
-                }).UseRouting().UseHealthAllEndpoints().Build());
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions(){
+                    ResponseWriter = async (http, data)=> {
+                        var status = data.Entries.GroupBy(x=>x.Value.Status.ToString().ToLower())
+                                        .ToDictionary(x=>x.Key, x=> x.ToDictionary(x=>x.Key, x=> x.Value.Description ?? x.Value.Exception?.ToString()
+                                         ?? (x.Value.Status == HealthStatus.Healthy ? "OK" : "")) as object );
 
-                endpoints.MapGet("metrics", endpoints.CreateApplicationBuilder()
-                .Use((context, next)=>{
-                    var syncIOFeature = context.Features.Get<IHttpBodyControlFeature>();
-                    if (syncIOFeature != null)
-                    {
-                        syncIOFeature.AllowSynchronousIO = true;
+                        status["status"] = data.Status.ToString();
+
+                        await System.Text.Json.JsonSerializer.SerializeAsync(http.Response.Body, status);
                     }
-                    return next();
-                }).UseRouting().UseMetricsAllEndpoints().Build());
+                });
             });
         }
 
