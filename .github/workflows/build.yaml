@@ -9,4 +9,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: build
-        run: yarn docker-compose build --parallel
+        run: yarn docker-compose build --pull --parallel

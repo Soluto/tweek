@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+  editor:
+    build:
+      dockerfile: debug.Dockerfile
+  
+  publishing:
+    image: soluto/tweek-publishing
+    build:
+      args:
+        target: Debug
+
+  api:
+    build:
+      args:
+        target: Debug
+    
+  

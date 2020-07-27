@@ -23,6 +23,7 @@
     "logs:e2e": "yarn docker-compose:e2e logs",
     "teardown": "yarn docker-compose down --remove-orphans",
     "docker-compose": "DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 docker-compose -f ./deployments/dev/docker-compose.yml -f ./deployments/dev/docker-compose.override.yml",
+    "docker-compose:debug": "DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 docker-compose -f ./deployments/dev/docker-compose.yml -f ./deployments/dev/docker-compose.override.yml -f ./deployments/dev/docker-compose.debug.yml",
     "docker-compose:e2e": "DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 yarn docker-compose -f ./deployments/dev/docker-compose.e2e.yml",
     "format:go": "gofmt -l -w"
   },
