@@ -33,6 +33,7 @@ using App.Metrics.Formatters.Prometheus;
 using Tweek.ApiService.Addons;
 using Tweek.ApiService.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Tweek.ApiService
 {
@@ -208,7 +209,8 @@ namespace Tweek.ApiService
                 endpoints.MapHealthChecks("/health", new HealthCheckOptions(){
                     ResponseWriter = async (http, data)=> {
                         var status = data.Entries.GroupBy(x=>x.Value.Status.ToString().ToLower())
-                                        .ToDictionary(x=>x.Key, x=> x.ToDictionary(x=>x.Key, x=>x.Value.Description ?? "OK") as object );
+                                        .ToDictionary(x=>x.Key, x=> x.ToDictionary(x=>x.Key, x=> x.Value.Description ?? x.Value.Exception?.ToString()
+                                         ?? (x.Value.Status == HealthStatus.Healthy ? "OK" : "")) as object );
 
                         status["status"] = data.Status.ToString();
 
