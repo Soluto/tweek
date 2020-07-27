@@ -56,9 +56,12 @@ namespace Tweek.Drivers.Context.Couchbase
             services.AddSingleton<IContextDriver>(contextDriver);
             services.AddSingleton<CouchBaseDriver>(contextDriver);
             
+            BucketConnectionHealthCheck healthCheck= null;
             services.AddHealthChecks().Add(new HealthCheckRegistration("CouchbaseConnection", (ctx)=>{
+                if (healthCheck != null) return healthCheck;
                 ctx.GetService<StaticCouchbaseDisposer>();
-                return new BucketConnectionHealthCheck(ClusterHelper.GetBucket, contextBucketName, healthCheckMaxLatency, healthCheckRetry, ctx.GetService<ILogger<CouchBaseDriver>>());
+                healthCheck = new BucketConnectionHealthCheck(ClusterHelper.GetBucket, contextBucketName, healthCheckMaxLatency, healthCheckRetry, ctx.GetService<ILogger<CouchBaseDriver>>());
+                return healthCheck;
             }, failureStatus:null, tags: Enumerable.Empty<string>()));
             services.AddSingleton<StaticCouchbaseDisposer>();
         }
