@@ -1,0 +1,12 @@
+on: 
+  push:
+    paths-ignore:
+    - 'docs/**'
+    - README.md
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: build
+        run: yarn docker-compose build
