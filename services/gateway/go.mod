@@ -23,7 +23,7 @@ require (
 	github.com/mailgun/multibuf v0.0.0-20150714184110-565402cd71fb
 	github.com/matttproud/golang_protobuf_extensions v1.0.1
 	github.com/minio/minio-go v0.0.0-20180307105924-9e124ec59547
-	github.com/mitchellh/go-homedir v1.0.0
+	github.com/mitchellh/go-homedir v1.1.0
 	github.com/nats-io/go-nats v1.6.0
 	github.com/nats-io/nuid v1.0.0
 	github.com/open-policy-agent/opa v0.8.2
