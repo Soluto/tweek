@@ -37,7 +37,7 @@
     "history": "^4.7.2",
     "jsonschema": "1.2.4",
     "jwt-decode": "^2.2.0",
-    "md5": "^2.2.1",
+    "md5": "^2.3.0",
     "moment": "^2.24.0",
     "oidc-client": "^1.6.1",
     "papp-polyfill": "^1.1.0",
