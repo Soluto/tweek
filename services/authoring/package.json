@@ -75,7 +75,7 @@
     "chai-things": "^0.2.0",
     "cpr": "^3.0.1",
     "cross-env": "^5.2.0",
-    "mocha": "^6.0.2",
+    "mocha": "^8.1.0",
     "nodemon": "^1.18.10",
     "rimraf": "^2.6.3",
     "simple-mock": "^0.8.0",
