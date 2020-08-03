@@ -24,7 +24,7 @@
     "docker-compose": "docker-compose -f ../../deployments/dev/docker-compose.yml -f ../../deployments/dev/docker-compose.override.yml -f ../../deployments/dev/docker-compose.local-editor.yml"
   },
   "dependencies": {
-    "@emotion/core": "^10.0.7",
+    "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.7",
     "adal-angular": "^1.0.17",
     "animakit-expander": "^2.1.4",
