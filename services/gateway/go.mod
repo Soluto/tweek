@@ -17,7 +17,7 @@ require (
 	github.com/jinzhu/configor v0.0.0-20180614024415-4edaf76fe188
 	github.com/jonboulle/clockwork v0.1.0
 	github.com/joonix/log v0.0.0-20180502111528-d2d3f2f4a806
-	github.com/konsorten/go-windows-terminal-sequences v1.0.1
+	github.com/konsorten/go-windows-terminal-sequences v1.0.3
 	github.com/lestrrat-go/jwx v0.0.0-20180928232350-0d477e6a1f0e
 	github.com/lestrrat-go/pdebug v0.0.0-20180220043849-39f9a71bcabe
 	github.com/mailgun/multibuf v0.0.0-20150714184110-565402cd71fb

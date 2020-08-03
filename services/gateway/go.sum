@@ -28,6 +28,8 @@ github.com/jonboulle/clockwork v0.1.0/go.mod h1:Ii8DK3G1RaLaWxj9trq07+26W01tbo22
 github.com/joonix/log v0.0.0-20180502111528-d2d3f2f4a806 h1:wsKuVfz+KNbe4mfcFENCzWjXbSfrz49LlL/B4cIR0XU=
 github.com/joonix/log v0.0.0-20180502111528-d2d3f2f4a806/go.mod h1:9alna084PKap49x3Dl7QTGUXiS37acLi8ryAexT1SJc=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
+github.com/konsorten/go-windows-terminal-sequences v1.0.3 h1:CE8S1cTafDpPvMhIxNJKvHsGVBgn1xWYf1NbHQhywc8=
+github.com/konsorten/go-windows-terminal-sequences v1.0.3/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 github.com/lestrrat-go/jwx v0.0.0-20180928232350-0d477e6a1f0e h1:BsBWIgqA7BFb5sdQeFVQqXYL0P9ZwiNYvL3nywtEmnY=
 github.com/lestrrat-go/jwx v0.0.0-20180928232350-0d477e6a1f0e/go.mod h1:iEoxlYfZjvoGpuWwxUz+eR5e6KTJGsaRcy/YNA/UnBk=
 github.com/lestrrat-go/pdebug v0.0.0-20180220043849-39f9a71bcabe h1:S7XSBlgc/eI2v47LkPPVa+infH3FuTS4tPJbqCtJovo=
