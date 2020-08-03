@@ -25,6 +25,8 @@ github.com/jinzhu/configor v0.0.0-20180614024415-4edaf76fe188 h1:XFhKsrhg0SBbAGF
 github.com/jinzhu/configor v0.0.0-20180614024415-4edaf76fe188/go.mod h1:xycrO0mK6seJRAHXsdyk54QgPJ20aQNpTGi5xv8jQg8=
 github.com/jonboulle/clockwork v0.1.0 h1:VKV+ZcuP6l3yW9doeqz6ziZGgcynBVQO+obU0+0hcPo=
 github.com/jonboulle/clockwork v0.1.0/go.mod h1:Ii8DK3G1RaLaWxj9trq07+26W01tbo22gdxWY5EU2bo=
+github.com/jonboulle/clockwork v0.2.0 h1:J2SLSdy7HgElq8ekSl2Mxh6vrRNFxqbXGenYH2I02Vs=
+github.com/jonboulle/clockwork v0.2.0/go.mod h1:Pkfl5aHPm1nk2H9h0bjmnJD/BcgbGXUBGnn1kMkgxc8=
 github.com/joonix/log v0.0.0-20180502111528-d2d3f2f4a806 h1:wsKuVfz+KNbe4mfcFENCzWjXbSfrz49LlL/B4cIR0XU=
 github.com/joonix/log v0.0.0-20180502111528-d2d3f2f4a806/go.mod h1:9alna084PKap49x3Dl7QTGUXiS37acLi8ryAexT1SJc=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=

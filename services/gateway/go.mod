@@ -15,7 +15,7 @@ require (
 	github.com/gorilla/websocket v0.0.0-20181030144553-483fb8d7c32f
 	github.com/gravitational/trace v0.0.0-20180713095550-3318e711adee
 	github.com/jinzhu/configor v0.0.0-20180614024415-4edaf76fe188
-	github.com/jonboulle/clockwork v0.1.0
+	github.com/jonboulle/clockwork v0.2.0
 	github.com/joonix/log v0.0.0-20180502111528-d2d3f2f4a806
 	github.com/konsorten/go-windows-terminal-sequences v1.0.1
 	github.com/lestrrat-go/jwx v0.0.0-20180928232350-0d477e6a1f0e
