@@ -2,14 +2,14 @@ module tweek-gateway
 
 require (
 	github.com/BurntSushi/toml v0.3.1
-	github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973
+	github.com/beorn7/perks v1.0.0
 	github.com/davecgh/go-spew v1.1.1
 	github.com/dchest/siphash v1.2.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/dustin/go-humanize v1.0.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-ini/ini v1.39.0
-	github.com/golang/protobuf v1.2.0
+	github.com/golang/protobuf v1.3.1
 	github.com/gorilla/context v1.1.1
 	github.com/gorilla/mux v1.6.2
 	github.com/gorilla/websocket v0.0.0-20181030144553-483fb8d7c32f
@@ -28,10 +28,10 @@ require (
 	github.com/nats-io/nuid v1.0.0
 	github.com/open-policy-agent/opa v0.8.2
 	github.com/pkg/errors v0.8.0
-	github.com/prometheus/client_golang v0.9.1
-	github.com/prometheus/client_model v0.0.0-20180712105110-5c3871d89910
-	github.com/prometheus/common v0.0.0-20181109100915-0b1957f9d949
-	github.com/prometheus/procfs v0.0.0-20181005140218-185b4288413d
+	github.com/prometheus/client_golang v0.9.4
+	github.com/prometheus/client_model v0.0.0-20190129233127-fd36f4220a90
+	github.com/prometheus/common v0.4.1
+	github.com/prometheus/procfs v0.0.2
 	github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a
 	github.com/rs/cors v1.6.0
 	github.com/sirupsen/logrus v1.2.0
@@ -41,8 +41,8 @@ require (
 	github.com/yashtewari/glob-intersection v0.0.0-20180916065949-5c77d914dd0b
 	golang.org/x/arch v0.0.0-20181203225421-5a4828bb7045 // indirect
 	golang.org/x/crypto v0.0.0-20181106171534-e4dc69e5b2fd
-	golang.org/x/net v0.0.0-20180124060956-0ed95abb35c4
-	golang.org/x/sys v0.0.0-20181107165924-66b7b1311ac8
+	golang.org/x/net v0.0.0-20181114220301-adae6a3d119a
+	golang.org/x/sys v0.0.0-20181116152217-5ac8a444bdc5
 	golang.org/x/text v0.3.0
 	gopkg.in/fsnotify.v1 v1.4.7
 	gopkg.in/h2non/gock.v1 v1.0.11
