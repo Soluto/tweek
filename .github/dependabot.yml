@@ -9,22 +9,18 @@ updates:
     directory: "/services/authoring" 
     schedule:
       interval: "weekly"
- 
  - package-ecosystem: "npm" 
     directory: "/services/editor" 
     schedule:
       interval: "weekly"
-      
  - package-ecosystem: "nuget" 
     directory: "/services/publishing/Tweek.Publishing.Service" 
     schedule:
       interval: "weekly"
-      
  - package-ecosystem: "nuget" 
     directory: "/services/api/Tweek.ApiService" 
     schedule:
       interval: "weekly"
-      
  - package-ecosystem: "gomod" 
     directory: "/services/gateway" 
     schedule:
