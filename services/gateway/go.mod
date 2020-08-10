@@ -11,7 +11,7 @@ require (
 	github.com/go-ini/ini v1.39.0
 	github.com/golang/protobuf v1.2.0
 	github.com/gorilla/context v1.1.1
-	github.com/gorilla/mux v1.6.2
+	github.com/gorilla/mux v1.7.4
 	github.com/gorilla/websocket v0.0.0-20181030144553-483fb8d7c32f
 	github.com/gravitational/trace v0.0.0-20180713095550-3318e711adee
 	github.com/jinzhu/configor v0.0.0-20180614024415-4edaf76fe188
