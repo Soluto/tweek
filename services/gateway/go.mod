@@ -8,7 +8,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/dustin/go-humanize v1.0.0
 	github.com/ghodss/yaml v1.0.0
-	github.com/go-ini/ini v1.39.0
+	github.com/go-ini/ini v1.57.0
 	github.com/golang/protobuf v1.2.0
 	github.com/gorilla/context v1.1.1
 	github.com/gorilla/mux v1.6.2
