@@ -48,7 +48,7 @@
     "sshpk": "^1.14.1",
     "typescript-ioc": "^1.0.2",
     "typescript-rest": "^2.0.0",
-    "typescript-rest-swagger": "^0.0.24",
+    "typescript-rest-swagger": "^1.1.4",
     "uuid": "^3.1.0"
   },
   "devDependencies": {
