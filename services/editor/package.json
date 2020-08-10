@@ -45,7 +45,7 @@
     "query-string": "^6.2.0",
     "ramda": "^0.26.1",
     "react": "^16.8.1",
-    "react-autosize-textarea": "^6.0.0",
+    "react-autosize-textarea": "^7.1.0",
     "react-calendar": "^2.18.1",
     "react-dnd": "^7.0.2",
     "react-dnd-html5-backend": "^7.0.2",
