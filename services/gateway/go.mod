@@ -27,7 +27,7 @@ require (
 	github.com/nats-io/go-nats v1.6.0
 	github.com/nats-io/nuid v1.0.0
 	github.com/open-policy-agent/opa v0.8.2
-	github.com/pkg/errors v0.8.0
+	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v0.9.1
 	github.com/prometheus/client_model v0.0.0-20180712105110-5c3871d89910
 	github.com/prometheus/common v0.0.0-20181109100915-0b1957f9d949
