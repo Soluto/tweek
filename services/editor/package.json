@@ -62,7 +62,7 @@
     "react-sanfona": "^1.1.0",
     "react-tabs": "^3.0.0",
     "react-tag-input": "^6.2.1",
-    "react-tooltip": "^3.4.0",
+    "react-tooltip": "^4.2.8",
     "react-tweek": "^0.6.1",
     "react-virtualized": "^9.18.5",
     "recompose": "^0.30.0",
