@@ -75,6 +75,7 @@ const ListTypedValue = (props) => (
       {...props}
       placeholder="Add value"
       minQueryLength={1}
+      allowDragDrop={false}
       allowDeleteFromEmptyInput
       autocomplete
       allowUnique={false}
