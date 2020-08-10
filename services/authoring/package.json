@@ -74,7 +74,7 @@
     "chai-as-promised": "^7.1.1",
     "chai-things": "^0.2.0",
     "cpr": "^3.0.1",
-    "cross-env": "^5.2.0",
+    "cross-env": "^7.0.2",
     "mocha": "^6.0.2",
     "nodemon": "^1.18.10",
     "rimraf": "^2.6.3",
