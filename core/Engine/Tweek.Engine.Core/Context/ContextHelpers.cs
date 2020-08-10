@@ -40,7 +40,7 @@ namespace Tweek.Engine.Core.Context
 
         public static GetContextValue Merge(GetContextValue a, GetContextValue b)
         {
-            return key => a(key).IfNone(() => b(key));
+            return key => a(key).Match(x=>x,() => b(key));
         }
 
         public static GetContextValue Memoize(GetContextValue context)
