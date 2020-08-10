@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { compose, mapProps, withContext, getContext } from 'recompose';
-import changeCase from 'change-case';
+import * as changeCase from 'change-case';
 import { connect } from 'react-redux';
 import ComboBox from '../ComboBox/ComboBox';
 import { showCustomAlert } from '../../../store/ducks/alerts';
