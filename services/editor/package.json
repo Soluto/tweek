@@ -55,7 +55,7 @@
     "react-google-tag-manager": "^2.2.1",
     "react-highlight-words": "^0.16.0",
     "react-monaco-editor": "^0.22.0",
-    "react-notification-system": "^0.2.17",
+    "react-notification-system": "^0.4.0",
     "react-redux": "^6.0.0",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",

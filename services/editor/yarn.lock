@@ -3099,15 +3099,6 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-create-react-class@^15.5.1:
-  version "15.6.3"
-  resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.6.3.tgz#2d73237fb3f970ae6ebe011a9e66f46dbca80036"
-  integrity sha512-M+/3Q6E6DLO6Yx3OwrWjwHBnvfXXYA7W+dFjt/ZDBemHO1DDZhsalX/NUtnTYclN6GfnBDRh4qRHjcDHmlJBJg==
-  dependencies:
-    fbjs "^0.8.9"
-    loose-envify "^1.3.1"
-    object-assign "^4.1.1"
-
 cross-fetch@^3.0.1:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.0.4.tgz#7bef7020207e684a7638ef5f2f698e24d9eb283c"
@@ -4431,7 +4422,7 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "^2.0.0"
 
-fbjs@^0.8.1, fbjs@^0.8.9:
+fbjs@^0.8.1:
   version "0.8.17"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.17.tgz#c4d598ead6949112653d6588b01a5cdcd9f90fdd"
   integrity sha1-xNWY6taUkRJlPWWIsBpc3Nn5D90=
@@ -9249,12 +9240,11 @@ react-monaco-editor@^0.22.0:
     monaco-editor "^0.15.1"
     prop-types "^15.6.2"
 
-react-notification-system@^0.2.17:
-  version "0.2.17"
-  resolved "https://registry.yarnpkg.com/react-notification-system/-/react-notification-system-0.2.17.tgz#a60eddbb62225ad8f9fc5d7837546bf6cdb36818"
-  integrity sha1-pg7du2IiWtj5/F14N1Rr9s2zaBg=
+react-notification-system@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/react-notification-system/-/react-notification-system-0.4.0.tgz#30db3963a176ee103b4a3bb1494c2b5578d5c024"
+  integrity sha512-5WhXnjkYC07zqXruCiUXDU9iHjVxZlL1zgHpNgXk91A5ghV1AHrWVrJYo1XM4SnwlKy5NLdftkaTl+pTuVFAqw==
   dependencies:
-    create-react-class "^15.5.1"
     object-assign "^4.0.1"
     prop-types "^15.5.6"
 
