@@ -45,6 +45,6 @@ require (
 	golang.org/x/sys v0.0.0-20181107165924-66b7b1311ac8
 	golang.org/x/text v0.3.0
 	gopkg.in/fsnotify.v1 v1.4.7
-	gopkg.in/h2non/gock.v1 v1.0.11
+	gopkg.in/h2non/gock.v1 v1.0.15
 	gopkg.in/yaml.v2 v2.2.1
 )
