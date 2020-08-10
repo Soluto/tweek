@@ -48,6 +48,7 @@
     "sshpk": "^1.14.1",
     "typescript-ioc": "^3.2.2",
     "typescript-rest": "^3.0.1",
+    "typescript-rest-ioc": "^1.0.0",
     "typescript-rest-swagger": "^1.1.4",
     "uuid": "^8.3.0"
   },

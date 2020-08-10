@@ -1,5 +1,5 @@
 import { Path, GET, PUT, Context, ServiceContext, QueryParam } from 'typescript-rest';
-import { AutoWired, Inject } from 'typescript-ioc';
+import { OnlyInstantiableByContainer, Inject } from 'typescript-ioc';
 import { Tags } from 'typescript-rest-swagger';
 import { PERMISSIONS } from '../security/permissions/consts';
 import { Authorize } from '../security/authorize';
@@ -7,7 +7,7 @@ import TagsRepository from '../repositories/tags-repository';
 import { JsonValue } from '../utils/jsonValue';
 import { addOid } from '../utils/response-utils';
 
-@AutoWired
+@OnlyInstantiableByContainer
 @Tags('tags')
 @Path('/tags')
 export class TagsController {

@@ -3866,6 +3866,13 @@ typescript-ioc@^3.2.2:
     lodash.set "^4.3.2"
     reflect-metadata "^0.1.13"
 
+typescript-rest-ioc@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/typescript-rest-ioc/-/typescript-rest-ioc-1.0.0.tgz#e73ddc569c4dd9c7120bfc003013f8cee77d4a6d"
+  integrity sha512-3v/ynT4nA1gPm2LbsAOnmcowM/m6dyKjRsXA+J7S/k3rFF1NFXanhrR7Pl2lGno6PlIPgV7mJOfYb7Ip5XDMlw==
+  dependencies:
+    lodash "^4.17.15"
+
 typescript-rest-swagger@^1.1.4:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/typescript-rest-swagger/-/typescript-rest-swagger-1.1.4.tgz#34fa1ee7f390a855a682259352f2060b5a19ab37"
