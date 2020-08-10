@@ -43,7 +43,7 @@ func getJWKByEndpoint(endpoint, keyID string) (rawKey interface{}, err error) {
 	if len(k) > 1 {
 		return nil, fmt.Errorf("Unexpected error, more than 1 key %s found at %s", keyID, endpoint)
 	}
-	err = k[0].Raw(rawKey)
+	err = k[0].Raw(&rawKey)
 	return
 }
 
