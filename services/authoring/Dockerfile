@@ -1,19 +1,15 @@
 # ------- BASE -------
-FROM node:14.7.0-alpine AS base
-
+FROM node:14.7 as base
 WORKDIR /opt/app
-RUN apk --no-cache add git openssh-client
 
 # ------- DEPS -------
 FROM base as deps
-RUN apk --no-cache add curl-dev g++ make python
 
 COPY package.json yarn.lock ./
-RUN BUILD_ONLY=true yarn --production
+RUN yarn --production
 
 # ------- BUILD -------
 FROM deps as build
-
 RUN yarn
 COPY . .
 RUN yarn test && yarn build
