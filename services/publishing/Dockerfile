@@ -24,7 +24,7 @@ RUN cp -r /src/scripts /tweek \
     && cp -r /src/Tweek.Publishing.Service/obj/docker/publish /tweek/Tweek.Publishing.Service
 
 # Stage 2: Release
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 as release
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1.6 as release
 ARG target="Release"
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
