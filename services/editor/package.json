@@ -57,7 +57,7 @@
     "react-monaco-editor": "^0.22.0",
     "react-notification-system": "^0.2.17",
     "react-redux": "^6.0.0",
-    "react-router": "^4.2.0",
+    "react-router": "^5.2.0",
     "react-router-dom": "^4.2.2",
     "react-sanfona": "^1.1.0",
     "react-tabs": "^3.0.0",
