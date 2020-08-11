@@ -23,7 +23,9 @@ export const withTypesService = ({ safeConvertValue, types, isAllowedValue }) =>
 export const getTypesService = getContext(typesServiceContextType);
 
 const valueToItem = (value) =>
-  value === undefined || value === '' ? undefined : { label: changeCase.pascalCase(value), value };
+  value === undefined || value === ''
+    ? undefined
+    : { label: changeCase.pascalCase(value.toString()), value };
 
 const CodeEditor = withJsonEditor(
   ({ editJson, onChange, value, valueType, 'data-comp': dataComp, ...props }) => (
