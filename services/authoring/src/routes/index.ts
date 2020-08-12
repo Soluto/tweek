@@ -21,18 +21,16 @@ import ServiceFactoryIoC from 'typescript-rest-ioc';
 
 Server.registerServiceFactory(ServiceFactoryIoC);
 
-//Server .useIoC();
-
 export default function configureRoutes(config: RoutesConfig): any {
   const app = express();
 
-  Container.bind(AppsRepository).factory(() => config.appsRepository );
-  Container.bind(KeysRepository).factory( () => config.keysRepository );
-  Container.bind(TagsRepository).factory( () => config.tagsRepository );
-  Container.bind(PolicyRepository).factory(() => config.policyRepository );
-  Container.bind(HooksRepositoryFactory).factory( () => config.hooksRepositoryFactory );
+  Container.bind(AppsRepository).factory(() => config.appsRepository);
+  Container.bind(KeysRepository).factory(() => config.keysRepository);
+  Container.bind(TagsRepository).factory(() => config.tagsRepository);
+  Container.bind(PolicyRepository).factory(() => config.policyRepository);
+  Container.bind(HooksRepositoryFactory).factory(() => config.hooksRepositoryFactory);
   Container.bind(SubjectExtractionRulesRepository).factory(
-     () => config.subjectExtractionRulesRepository,
+    () => config.subjectExtractionRulesRepository,
   );
 
   const prefixes = [
