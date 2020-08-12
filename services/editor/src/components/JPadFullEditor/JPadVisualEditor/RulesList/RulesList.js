@@ -1,6 +1,7 @@
 import React from 'react';
 import Rule from '../Rule/Rule';
 import './RulesList.css';
+import * as R from 'ramda';
 
 const deleteRuleAlert = {
   title: 'Warning',
@@ -9,12 +10,6 @@ const deleteRuleAlert = {
 
 export default class RulesList extends React.Component {
   state = {};
-
-  componentDidUpdate() {
-    if (this.state.autofocusRuleIndex !== undefined) {
-      this.state.autofocusRuleIndex = undefined;
-    }
-  }
 
   render() {
     let { mutate, valueType, keyPath } = this.props;
