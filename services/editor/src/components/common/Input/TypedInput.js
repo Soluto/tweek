@@ -83,7 +83,7 @@ const InputComponent = ({
     return (
       <ComboBox
         {...props}
-        value={value === undefined ? undefined : changeCase.pascalCase(value)}
+        value={value === undefined ? undefined : changeCase.pascalCase(value.toString())}
         suggestions={allowedValues.map(valueToItem)}
         onChange={(input, selected) =>
           selected && onChange(selected.value === undefined ? selected : selected.value)
