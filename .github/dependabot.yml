@@ -1,0 +1,27 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  - package-ecosystem: "npm" 
+    directory: "/services/authoring" 
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm" 
+    directory: "/services/editor" 
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget" 
+    directory: "/services/publishing/Tweek.Publishing.Service" 
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget" 
+    directory: "/services/api/Tweek.ApiService" 
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "gomod" 
+    directory: "/services/gateway" 
+    schedule:
+      interval: "weekly"

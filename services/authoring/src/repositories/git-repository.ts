@@ -232,12 +232,14 @@ export default class GitRepository {
         }),
       );
     } catch (ex) {
-      if (ex.includes('400 Bad Request')) {
+      if (ex.message.includes('400 Bad Request')) {
         throw new ValidationError('failed validation:' + ex);
       }
       if (
-        ex.includes('Updates were rejected because the tip of your current branch is behind') ||
-        ex.includes("(e.g., 'git pull ...') before pushing again.")
+        ex.message.includes(
+          'Updates were rejected because the tip of your current branch is behind',
+        ) ||
+        ex.message.includes("(e.g., 'git pull ...') before pushing again.")
       ) {
         throw new RepoOutOfDateError(ex);
       }

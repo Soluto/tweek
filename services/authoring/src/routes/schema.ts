@@ -1,6 +1,6 @@
 import R = require('ramda');
 import jsonpatch = require('fast-json-patch');
-import { AutoWired, Inject } from 'typescript-ioc';
+import { OnlyInstantiableByContainer, Inject } from 'typescript-ioc';
 import { Tags } from 'typescript-rest-swagger';
 import {
   GET,
@@ -26,7 +26,7 @@ const indexSchema = R.pipe(
   R.map(R.path(['implementation', 'value'])),
 );
 
-@AutoWired
+@OnlyInstantiableByContainer
 @Tags('schema')
 @Path('/')
 export class SchemaController {

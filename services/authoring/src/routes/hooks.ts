@@ -10,7 +10,7 @@ import {
   PathParam,
   Errors,
 } from 'typescript-rest';
-import { AutoWired, Inject } from 'typescript-ioc';
+import { OnlyInstantiableByContainer, Inject } from 'typescript-ioc';
 import { Tags } from 'typescript-rest-swagger';
 import { PERMISSIONS } from '../security/permissions/consts';
 import { Authorize } from '../security/authorize';
@@ -19,7 +19,7 @@ import { addOid } from '../utils/response-utils';
 import Hook from '../utils/hook';
 import logger from '../utils/logger';
 
-@AutoWired
+@OnlyInstantiableByContainer
 @Tags('hooks')
 @Path('/hooks')
 export class HooksController {

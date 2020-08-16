@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import changeCase from 'change-case';
+import * as changeCase from 'change-case';
+import {titleCase} from 'title-case';
 import ComboBox from '../../../../../../components/common/ComboBox/ComboBox';
 import ValidationIcon from '../../../../../../components/common/ValidationIcon';
 import * as TypesServices from '../../../../../../services/types-service';
@@ -9,7 +10,7 @@ import './KeyValueTypeSelector.css';
 
 const getValueTypeSuggestions = () =>
   Object.keys(TypesServices.types).map((x) => ({
-    label: changeCase.titleCase(x),
+    label: titleCase(x),
     value: x,
   }));
 
@@ -31,7 +32,7 @@ const KeyValueTypeSelector = connect(
           suggestions={suggestions}
           placeholder="Select type"
           onChange={(_, item) => item && onChange(item.value)}
-          value={changeCase.titleCase(value)}
+          value={titleCase(value)}
         />
       </div>
     </div>

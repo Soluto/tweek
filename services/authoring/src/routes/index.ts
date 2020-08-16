@@ -17,20 +17,21 @@ import TagsRepository from '../repositories/tags-repository';
 import PolicyRepository from '../repositories/policy-repository';
 import SubjectExtractionRulesRepository from '../repositories/extraction-rules-repository';
 import { HooksRepositoryFactory } from '../repositories/hooks-repository';
+import ServiceFactoryIoC from 'typescript-rest-ioc';
 
-Server.useIoC();
+Server.registerServiceFactory(ServiceFactoryIoC);
 
 export default function configureRoutes(config: RoutesConfig): any {
   const app = express();
 
-  Container.bind(AppsRepository).provider({ get: () => config.appsRepository });
-  Container.bind(KeysRepository).provider({ get: () => config.keysRepository });
-  Container.bind(TagsRepository).provider({ get: () => config.tagsRepository });
-  Container.bind(PolicyRepository).provider({ get: () => config.policyRepository });
-  Container.bind(HooksRepositoryFactory).provider({ get: () => config.hooksRepositoryFactory });
-  Container.bind(SubjectExtractionRulesRepository).provider({
-    get: () => config.subjectExtractionRulesRepository,
-  });
+  Container.bind(AppsRepository).factory(() => config.appsRepository);
+  Container.bind(KeysRepository).factory(() => config.keysRepository);
+  Container.bind(TagsRepository).factory(() => config.tagsRepository);
+  Container.bind(PolicyRepository).factory(() => config.policyRepository);
+  Container.bind(HooksRepositoryFactory).factory(() => config.hooksRepositoryFactory);
+  Container.bind(SubjectExtractionRulesRepository).factory(
+    () => config.subjectExtractionRulesRepository,
+  );
 
   const prefixes = [
     { from: 'keys', to: 'key' },

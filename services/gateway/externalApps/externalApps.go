@@ -13,7 +13,7 @@ import (
 	"tweek-gateway/appConfig"
 
 	minio "github.com/minio/minio-go"
-	nats "github.com/nats-io/go-nats"
+	nats "github.com/nats-io/nats.go"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/pbkdf2"
 )
