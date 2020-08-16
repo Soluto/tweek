@@ -1,7 +1,7 @@
 import fs = require('fs');
 import R = require('ramda');
 import JSZip = require('jszip');
-import { AutoWired, Inject } from 'typescript-ioc';
+import { OnlyInstantiableByContainer, Inject } from 'typescript-ioc';
 import { Tags } from 'typescript-rest-swagger';
 import { FileParam, Errors, ServiceContext, Context, PUT, Path, QueryParam } from 'typescript-rest';
 
@@ -13,7 +13,7 @@ import { addOid } from '../utils/response-utils';
 const supportedPaths = [/^manifests\/.+?\.json/, /^implementations\/.+\/.+?\./];
 const isValidPath = (x) => R.any(<any>R.test((<any>R).__, x))(supportedPaths);
 
-@AutoWired
+@OnlyInstantiableByContainer
 @Tags('bulk-keys-upload')
 @Path('/')
 export class BulkKeysUpload {

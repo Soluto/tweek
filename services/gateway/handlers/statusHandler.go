@@ -10,7 +10,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	nats "github.com/nats-io/go-nats"
+	nats "github.com/nats-io/nats.go"
 
 	"tweek-gateway/appConfig"
 )

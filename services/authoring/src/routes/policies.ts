@@ -1,4 +1,4 @@
-import { AutoWired, Inject } from 'typescript-ioc';
+import { OnlyInstantiableByContainer, Inject } from 'typescript-ioc';
 import { Path, ServiceContext, Context, QueryParam, PUT, PATCH, GET } from 'typescript-rest';
 import { Authorize } from '../security/authorize';
 import { PERMISSIONS } from '../security/permissions/consts';
@@ -7,7 +7,7 @@ import { addOid } from '../utils/response-utils';
 import { JsonValue } from '../utils/jsonValue';
 import jsonpatch = require('fast-json-patch');
 
-@AutoWired
+@OnlyInstantiableByContainer
 @Path('/policies')
 export class PolicyController {
   @Context
