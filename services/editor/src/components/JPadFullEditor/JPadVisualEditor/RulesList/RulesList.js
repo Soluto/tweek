@@ -1,7 +1,6 @@
 import React from 'react';
 import Rule from '../Rule/Rule';
 import './RulesList.css';
-import * as R from 'ramda';
 
 const deleteRuleAlert = {
   title: 'Warning',
