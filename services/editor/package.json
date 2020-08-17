@@ -34,7 +34,7 @@
     "connected-react-router": "^6.2.2",
     "express": "^4.16.4",
     "fast-json-patch": "^3.0.0-1",
-    "history": "^4.7.2",
+    "history": "^5.0.0",
     "jsonschema": "1.2.6",
     "jwt-decode": "^2.2.0",
     "md5": "^2.2.1",
