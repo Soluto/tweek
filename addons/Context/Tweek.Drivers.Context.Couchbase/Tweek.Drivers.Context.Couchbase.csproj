@@ -14,7 +14,7 @@
     <PackageReference Include="CouchbaseNetClient" Version="2.7.15" />
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
     <PackageReference Include="System.Collections.Immutable" Version="1.7.1" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.7" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\Tweek.ApiService.Addons\Tweek.ApiService.Addons.csproj" />
