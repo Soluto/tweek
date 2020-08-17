@@ -32,7 +32,7 @@ require (
 	github.com/nats-io/nats.go v1.10.0
 	github.com/nats-io/nkeys v0.2.0 // indirect
 	github.com/nats-io/nuid v1.0.1
-	github.com/open-policy-agent/opa v0.22.0
+	github.com/open-policy-agent/opa v0.23.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.7.1
 	github.com/prometheus/client_model v0.2.0
