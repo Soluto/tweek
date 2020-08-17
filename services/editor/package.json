@@ -64,7 +64,7 @@
     "react-tag-input": "6.4.3",
     "react-tooltip": "^4.2.8",
     "react-tweek": "^0.7.0",
-    "react-virtualized": "^9.18.5",
+    "react-virtualized": "^9.22.2",
     "recompose": "^0.30.0",
     "redux": "^4.0.1",
     "redux-actions": "^2.3.0",
