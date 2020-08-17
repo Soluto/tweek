@@ -20,7 +20,7 @@ import (
 	"tweek-gateway/security"
 	"tweek-gateway/transformation"
 
-	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/urfave/negroni"
 
 	joonix "github.com/joonix/log"
@@ -61,7 +61,7 @@ func newApp(config *appConfig.Configuration) http.Handler {
 	if err != nil {
 		panic("Unable to create Authorizer")
 	}
-	
+
 	externalApps.Init(&config.Security.PolicyStorage)
 
 	auditor, err := audit.New(os.Stdout)
@@ -105,7 +105,7 @@ func newApp(config *appConfig.Configuration) http.Handler {
 
 	handlers.SetupRevisionUpdater(config.Security.PolicyStorage.NatsEndpoint)
 
-	router.MainRouter().PathPrefix("/metrics").Handler(prometheus.Handler())
+	router.MainRouter().PathPrefix("/metrics").Handler(promhttp.Handler())
 
 	router.V2Router().PathPrefix("/current-user").HandlerFunc(security.NewUserInfoHandler(&config.Security, userInfoExtractor))
 

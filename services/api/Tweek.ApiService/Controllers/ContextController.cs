@@ -32,7 +32,7 @@ namespace Tweek.ApiService.Controllers
         /// </summary>
         /// <param name="identityType">the type of the identity - for example user</param>
         /// <param name="identityId">the identifier of the identity - for example jaime</param>
-        /// <param name="data">json object with properties to add to the identity - for example {"age":30}, data could also include fixed keys configuration {"fixed:my_feature/_isenabled": true"}</param>
+        /// <param name="data">json object with properties to add to the identity - for example {"age":30}, data could also include fixed keys configuration {"@fixed:my_feature/_isenabled": true"}</param>
         /// <returns>Result status</returns>
         /// <response code="200">Success</response>
         /// <response code="403">Access denied</response>

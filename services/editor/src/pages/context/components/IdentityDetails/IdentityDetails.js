@@ -2,7 +2,7 @@ import React from 'react';
 import DocumentTitle from 'react-document-title';
 import { connect } from 'react-redux';
 import { compose, mapProps, lifecycle } from 'recompose';
-import changeCase from 'change-case';
+import * as changeCase from 'change-case';
 import * as R from 'ramda';
 import { getContext, saveContext, updateContext } from '../../../../store/ducks/context';
 import SaveButton from '../../../../components/common/SaveButton/SaveButton';

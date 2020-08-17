@@ -39,13 +39,6 @@ namespace Tweek.ApiService.SmokeTests
             return _client.GetStringAsync("api/v1/repo-version");
         }
 
-        public async Task<JToken> GetSwagger()
-        {
-            var stream = await _client.GetStreamAsync("/api/swagger.json");
-
-            return JToken.Load(new JsonTextReader(new StreamReader(stream)));
-        }
-
         public async Task<JToken> GetConfigurations(string keyPath, IEnumerable<KeyValuePair<string, string>> context)
         {
             var stream = await _client.GetStreamAsync(

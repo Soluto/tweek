@@ -19,9 +19,6 @@ namespace Tweek.ApiService.SmokeTests
         [Get("/api/v1/repo-version")]
         Task<string> GetRepositoryVersion();
 
-        [Get("/api/swagger.json")]
-        Task<JToken> GetSwagger();
-
         [Options("")]
         Task<HttpResponseMessage> GetCorsPreflightResponse(string origin, string method);
     }

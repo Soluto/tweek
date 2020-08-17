@@ -2,7 +2,7 @@ import uuid = require('uuid');
 import { promisify } from 'util';
 import crypto = require('crypto');
 import R = require('ramda');
-import { AutoWired, Inject } from 'typescript-ioc';
+import { OnlyInstantiableByContainer, Inject } from 'typescript-ioc';
 import { Tags } from 'typescript-rest-swagger';
 import { POST, GET, Path, Errors, Context, ServiceContext, QueryParam } from 'typescript-rest';
 import { PERMISSIONS } from '../security/permissions/consts';
@@ -55,7 +55,7 @@ export type AppsListResponseModel = {
   [id: string]: string;
 };
 
-@AutoWired
+@OnlyInstantiableByContainer
 @Tags('apps')
 @Path('/apps')
 export class AppsController {

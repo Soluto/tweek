@@ -3,4 +3,6 @@ export default interface Hook {
   keyPath: string;
   type: string;
   url: string;
+  tags?: string[];
+  format?: string;
 }

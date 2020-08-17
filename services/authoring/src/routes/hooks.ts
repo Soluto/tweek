@@ -10,7 +10,7 @@ import {
   PathParam,
   Errors,
 } from 'typescript-rest';
-import { AutoWired, Inject } from 'typescript-ioc';
+import { OnlyInstantiableByContainer, Inject } from 'typescript-ioc';
 import { Tags } from 'typescript-rest-swagger';
 import { PERMISSIONS } from '../security/permissions/consts';
 import { Authorize } from '../security/authorize';
@@ -19,7 +19,7 @@ import { addOid } from '../utils/response-utils';
 import Hook from '../utils/hook';
 import logger from '../utils/logger';
 
-@AutoWired
+@OnlyInstantiableByContainer
 @Tags('hooks')
 @Path('/hooks')
 export class HooksController {
@@ -49,7 +49,6 @@ export class HooksController {
     hook: Hook,
   ): Promise<Hook> {
     const hooksRepository = this.hooksRepositoryFactory.createRepository();
-    hook = { keyPath: hook.keyPath, type: hook.type, url: hook.url };
     if (!(await this._handleETagValidation(hooksRepository))) return null;
 
     const oid = await hooksRepository.createHook(hook, { name, email });
@@ -70,7 +69,7 @@ export class HooksController {
   ): Promise<void> {
     try {
       const hooksRepository = this.hooksRepositoryFactory.createRepository();
-      hook = { id, keyPath: hook.keyPath, type: hook.type, url: hook.url };
+      hook = {...hook, id};
       if (!(await this._handleETagValidation(hooksRepository))) return;
 
       const oid = await hooksRepository.updateHook(hook, { name, email });

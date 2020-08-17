@@ -1,6 +1,6 @@
 # Overview
 
-Allows setting hooks on keys (including the `*` wildcard). Only notification webhooks are supported at this time.  
+Allows setting hooks on keys (including the `*` wildcard). Only notification webhooks are supported at this time.
 Paths for hooks implicitly start after the `implementations`/`manifests` prefixes.
 
 # UI
@@ -18,12 +18,14 @@ Centralized storage in a JSON file at the git repo. Format:
     "id": "auto_generated_uid",
     "keyPath": "path/to/key",
     "type": "notification_webhook",
+    "format": "json",
     "url": "http://some-domain/awesome_hook"
   },
   {
     "id": "auto_generated_uid",
     "keyPath": "wildcard/path/*",
     "type": "notification_webhook",
+    "format": "json",
     "url": "http://some-other-domain/another_awesome_hook"
   }
 ]
@@ -47,18 +49,21 @@ Response:
       "id": "auto_generated_uid",
       "keyPath":"path/to/key",
       "type":"notification_webhook",
+      "format": "json",
       "url":"http://some-domain/hook"
    },
    {
       "id": "auto_generated_uid",
       "keyPath":"path/to/key",
       "type":"notification_webhook",
+      "format": "json",
       "url":"http://another-domain/hook"
    },
    {
       "id": "auto_generated_uid",
       "keyPath":"wildcard/path/*",
       "type":"notification_webhook",
+      "format": "json",
       "url":"http://some-domain/hook"
    }
 ]
@@ -74,6 +79,7 @@ Request body:
 {
   "keyPath": "path/to/key",
   "type": "notification_webhook",
+  "format": "json",
   "url": "http://hook-url"
 }
 ```
@@ -88,6 +94,7 @@ Request body:
 {
   "keyPath": "path/to/key",
   "type": "notification_webhook",
+  "format": "json",
   "url": "http://hook-url"
 }
 ```
@@ -98,11 +105,15 @@ Request body:
 
 # The webhook request
 
-POST request with JSON content showing the new state of the keys.  
+Based on the format, it will format the call:
+
+## JSON format
+POST request with JSON content showing the new state of the keys.
 **Notes**:
 
 - `implementation` is a string, and it might also be null depending on the key format
-- `oldValue` can be null if this key was newly created in this commit
+- `oldValue` will be null when the key was newly created in this commit
+- `newValue` will be null when the key was archived
 
 Example request body:
 
@@ -180,5 +191,15 @@ Example request body:
       }
     }
   ]
+}
+```
+
+## Slack format
+POST to a Slack webhook with a descriptive message on the event
+
+Example request body:
+```JSON
+{
+  "text": "Tweek key changed!..."
 }
 ```

@@ -1,6 +1,8 @@
-export const hookTypes = [{ label: 'Notification Webhook', value: 'notification_webhook' }];
+export const hookTypes = [
+  { label: 'Webhook', value: 'notification_webhook' },
+];
 
-export const hookLabelsByType = hookTypes.reduce((labelsByType, typeObject) => {
-  labelsByType[typeObject.value] = typeObject.label;
-  return labelsByType;
-}, {});
+export const hookLabelsByType = hookTypes.reduce((labelsByType, {value, label}) => ({
+  ...labelsByType,
+  [value]: label
+}), {});

@@ -1,8 +1,8 @@
 # ---- Deps ----
-FROM node:10.15.3-alpine AS dependencies
+FROM node:14.7.0-alpine AS dependencies
 WORKDIR /opt/app/
 COPY package.json yarn.lock ./
-RUN yarn --production
+RUN yarn --production --network-timeout 1000000
 
 # ---- Build ----
 FROM dependencies AS build
