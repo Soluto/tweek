@@ -18,7 +18,7 @@
     <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="3.1.2" />
     <PackageReference Include="FSharpUtils.Newtonsoft.JsonValue" Version="0.2.6" />
     <PackageReference Include="LanguageExt.Core" Version="3.4.15" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.6" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.6" />
     <PackageReference Include="Scrutor" Version="3.2.1" />
