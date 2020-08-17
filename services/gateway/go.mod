@@ -21,7 +21,7 @@ require (
 	github.com/jonboulle/clockwork v0.2.0
 	github.com/joonix/log v0.0.0-20180502111528-d2d3f2f4a806
 	github.com/konsorten/go-windows-terminal-sequences v1.0.3
-	github.com/lestrrat-go/jwx v1.0.3
+	github.com/lestrrat-go/jwx v1.0.4
 	github.com/lestrrat-go/pdebug v0.0.0-20200204225717-4d6bd78da58d
 	github.com/mailgun/multibuf v0.0.0-20150714184110-565402cd71fb
 	github.com/matttproud/golang_protobuf_extensions v1.0.1
