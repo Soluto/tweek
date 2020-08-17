@@ -70,7 +70,7 @@
     "@types/ramda": "^0.27.14",
     "@types/shortid": "^0.0.29",
     "@types/sinon": "^9.0.4",
-    "@types/sshpk": "^1.10.3",
+    "@types/sshpk": "^1.10.5",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "chai-things": "^0.2.0",
