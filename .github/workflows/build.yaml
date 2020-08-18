@@ -8,5 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: login
+        env:
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+          DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
+        run: echo $DOCKER_TOKEN | docker login --username $DOCKER_USER --password-stdin
       - name: build
-        run: cd deployments/dev && docker buildx bake -f docker-compose.yml --pull --load
+        run: cd .github/workflows && docker buildx create --use && docker buildx bake --load

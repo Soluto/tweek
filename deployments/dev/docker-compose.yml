@@ -6,28 +6,16 @@ services:
     build:
       context: ../../
       dockerfile: TweekApi.Dockerfile
-      args:
-      - BUILDKIT_INLINE_CACHE=1
-      cache_from: 
-      - soluto/tweek-api
 
   authoring:
     image: soluto/tweek-authoring
     build:
       context: ../../services/authoring
-      args:
-      - BUILDKIT_INLINE_CACHE=1
-      cache_from: 
-      - soluto/tweek-authoring
 
   editor:
     image: soluto/tweek-editor
     build:
       context: ../../services/editor
-      args:
-      - BUILDKIT_INLINE_CACHE=1
-      cache_from: 
-      - soluto/tweek-editor
     depends_on:
       - gateway
 
@@ -35,10 +23,6 @@ services:
     image: soluto/tweek-gateway
     build: 
       context: ../../services/gateway
-      args:
-      - BUILDKIT_INLINE_CACHE=1
-      cache_from: 
-      - soluto/tweek-gateway
     depends_on:
       - api
       - authoring
@@ -47,9 +31,4 @@ services:
     image: soluto/tweek-publishing
     build: 
       context: ../../services/publishing
-      args:
-      - BUILDKIT_INLINE_CACHE=1
-      cache_from: 
-      - soluto/tweek-publishing
-      - soluto/tweek-publishing:1.1.1
 
