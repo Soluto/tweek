@@ -19,7 +19,7 @@ func init() {
 	jwkCache = map[string]*jwkRecord{}
 }
 
-func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
+func getJWKByEndpoint(endpoint, keyID string) (rawKey interface{}, err error) {
 	rec, ok := jwkCache[endpoint]
 	if !ok {
 		return nil, fmt.Errorf("No keys found for endpoint %s", endpoint)
@@ -43,7 +43,8 @@ func getJWKByEndpoint(endpoint, keyID string) (interface{}, error) {
 	if len(k) > 1 {
 		return nil, fmt.Errorf("Unexpected error, more than 1 key %s found at %s", keyID, endpoint)
 	}
-	return k[0].Materialize()
+	err = k[0].Raw(&rawKey)
+	return
 }
 
 // LoadAllEndpoints loads all the endpoints

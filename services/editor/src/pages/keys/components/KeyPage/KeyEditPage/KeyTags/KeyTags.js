@@ -52,6 +52,7 @@ export default compose(
             placeholder="New tag"
             autofocus={false}
             allowDeleteFromEmptyInput
+            allowDragDrop={false}
             minQueryLength={1}
             classNames={{
               tags: 'tags-container',

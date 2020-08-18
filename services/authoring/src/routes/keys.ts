@@ -9,7 +9,7 @@ import {
   QueryParam,
   Errors,
 } from 'typescript-rest';
-import { AutoWired, Inject } from 'typescript-ioc';
+import { OnlyInstantiableByContainer, Inject } from 'typescript-ioc';
 import { Tags } from 'typescript-rest-swagger';
 import searchIndex from '../search-index';
 import { Authorize } from '../security/authorize';
@@ -23,7 +23,7 @@ export type KeyUpdateModel = {
   manifest: any;
 };
 
-@AutoWired
+@OnlyInstantiableByContainer
 @Tags('keys')
 @Path('/')
 export class KeysController {
