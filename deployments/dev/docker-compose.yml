@@ -11,6 +11,8 @@ services:
     image: soluto/tweek-authoring
     build:
       context: ../../services/authoring
+    depends_on:
+      - publishing
 
   editor:
     image: soluto/tweek-editor
