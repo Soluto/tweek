@@ -19,4 +19,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: echo $GITHUB_TOKEN | docker login --username $GITHUB_ACTOR --password-stdin docker.pkg.github.com
       - name: build
-        run: cd .github/workflows && docker buildx create --use && REF=$GITHUB_SHA_SHORT docker buildx bake --push
+        run: cd .github/workflows && docker buildx create --use && REF=$GITHUB_SHA_SHORT docker buildx bake
