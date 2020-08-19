@@ -73,5 +73,5 @@ jobs:
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker pull docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA
       - name: tag all images
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA soluto/tweek-{}
-      - name: run e2e
-        run: cd e2e/ui && yarn && yarn test:full-env
+      - name: check tagged images
+        run: docker image ls
