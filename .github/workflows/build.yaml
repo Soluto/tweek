@@ -81,5 +81,5 @@ jobs:
       - name: run tests
         uses: DevExpress/testcafe-action@latest
         with:
-          args: "-q -S -s screenshots chrome e2e/ui/spec"
+          args: "-q -c 3 -S -s screenshots chrome e2e/ui/spec"
         
