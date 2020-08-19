@@ -59,3 +59,16 @@ jobs:
         run: cd .github/workflows && docker buildx create --use && REF=$GITHUB_SHA docker buildx bake --load editor
       - name: push
         run: docker push docker.pkg.github.com/soluto/tweek/editor:ref-$GITHUB_SHA
+  run-e2e:
+    needs: ["build-editor", "build-publishing-api", "build-authoring-gateway"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login Docker Github
+        env: 
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo $GITHUB_TOKEN | docker login --username $GITHUB_ACTOR --password-stdin docker.pkg.github.com
+      - name: Pull images for local uses
+        run: echo api publishing editor gateway authoring | xargs -n 1 -I {} docker pull docker.pkg.github.com/soluto/tweek/{}:ref-$GITHUB_SHA
+    
