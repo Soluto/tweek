@@ -10,7 +10,7 @@
     "build:test": "run-p -l build:e2e teardown",
     "start": "yarn docker-compose up -d",
     "start:e2e": "yarn docker-compose:e2e up -d",
-    "start:test": "yarn start:e2e editor publishing",
+    "start:test": "yarn start:e2e editor publishing gateway api authoring",
     "test": "run-s -l test:local:*",
     "test:local:integration": "cd e2e/integration && yarn test",
     "test:local:ui": "cd e2e/ui && yarn test",

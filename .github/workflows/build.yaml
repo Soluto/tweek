@@ -15,3 +15,5 @@ jobs:
         run: echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USER --password-stdin
       - name: build
         run: cd .github/workflows && docker buildx create --use && docker buildx bake --load
+      - name: test
+        run: yarn test:full-env
