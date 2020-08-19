@@ -4,16 +4,18 @@ on:
     - 'docs/**'
     - README.md
 jobs:
-  test:
+  build-all:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: login
+      - name: Login Docker DH
         env:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
           DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
         run: echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USER --password-stdin
+      - name: Login Docker Github
+        env: 
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        run: echo $GITHUB_TOKEN | docker login --username $GITHUB_ACTOR --password-stdin
       - name: build
-        run: cd .github/workflows && docker buildx create --use && docker buildx bake --load
-      - name: test
-        run: yarn test:full-env
+        run: cd .github/workflows && docker buildx create --use && REF=$GITHUB_SHA_SHORT docker buildx bake --push
