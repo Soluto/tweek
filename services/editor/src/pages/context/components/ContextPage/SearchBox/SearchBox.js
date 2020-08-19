@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import changeCase from 'change-case';
+import * as changeCase from 'change-case';
 import { getIdentities } from '../../../../../services/context-service';
 import { openContext } from '../../../../../store/ducks/context';
 import ComboBox from '../../../../../components/common/ComboBox/ComboBox';

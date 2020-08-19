@@ -20,7 +20,7 @@ import { openKey, saveKey, changeKeyValueType, updateKeyPath } from './selectedK
 import { createBlankJPadKey, BLANK_KEY_NAME } from './ducks-utils/blankKeyDefinition';
 import keyValueTypeValidations from './ducks-utils/validations/key-value-type-validations';
 
-describe('selectedKey', async () => {
+describe('selectedKey',  () => {
   const KEY_OPENED = 'KEY_OPENED';
   const KEY_OPENING = 'KEY_OPENING';
   const KEY_SAVED = 'KEY_SAVED';

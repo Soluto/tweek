@@ -50,8 +50,9 @@ export const withJsonEditor = compose(
         component: ({ onChange, componentData: data }) => (
           <AutoSizer disableWidth>
             {({ height }) => (
-              <div style={{ height: height - 65 }}>
+              <div style={{ height: height - 75 }}>
                 <MonacoEditor
+                  key={`m_${height}`}
                   language="json"
                   value={
                     data ||

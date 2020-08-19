@@ -13,9 +13,6 @@ services:
 
   publishing:
     image: soluto/tweek-publishing
-    build:
-      args:
-        target: Debug
     ports:
       - "4009:22"
       - "4010:80"
@@ -37,9 +34,6 @@ services:
       - minio_secret_key
 
   api:
-    build:
-      args:
-        target: Debug
     ports:
       - "4003:80"
     depends_on:
