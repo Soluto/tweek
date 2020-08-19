@@ -11,7 +11,7 @@ target "api" {
     dockerfile = "TweekApi.Dockerfile"
     cache-from = ["type=registry,ref=soluto/tweek-api:build-cache"]
     cache-to = ["type=registry,ref=soluto/tweek-api:build-cache,mode=max"]
-    output = ["type=image,name=docker.pkg.github.com/soluto/tweek/api:ref-${REF},push=true"]
+    tags= [docker.pkg.github.com/soluto/tweek/api:ref-${REF}]
 }
 
 target "editor" {
