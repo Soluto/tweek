@@ -3,6 +3,7 @@ variable "REF" {
 }
 
 group "default" {
+	
 	targets = ["api", "editor", "publishing", "gateway", "authoring"]
 }
 
