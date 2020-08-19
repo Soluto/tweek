@@ -16,7 +16,7 @@ jobs:
       - name: Login Docker Github
         env: 
           GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: echo $GITHUB_TOKEN | docker login --username $GITHUB_ACTOR --password-stdin
       - name: build
         run: cd .github/workflows && docker buildx create --use && REF=$GITHUB_SHA_SHORT docker buildx bake --push
