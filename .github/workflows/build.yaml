@@ -12,6 +12,6 @@ jobs:
         env:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
           DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
-        run: echo $DOCKER_TOKEN | docker login --username $DOCKER_USER --password-stdin
+        run: echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USER --password-stdin
       - name: build
         run: cd .github/workflows && docker buildx create --use && docker buildx bake --load
