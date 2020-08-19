@@ -70,5 +70,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: echo $GITHUB_TOKEN | docker login --username $GITHUB_ACTOR --password-stdin docker.pkg.github.com
       - name: Pull images for local uses
-        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker pull docker.pkg.github.com/soluto/tweek/{}:ref-$GITHUB_SHA
+        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker pull docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA
     
