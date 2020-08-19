@@ -21,7 +21,7 @@ jobs:
       - name: build
         run: cd .github/workflows && docker buildx create --use && REF=$GITHUB_SHA docker buildx bake --load authoring gateway
       - name: push
-        run: echo docker.pkg.github.com/soluto/tweek/authoring:ref-$GITHUB_SHA docker.pkg.github.com/soluto/tweek/gateway:ref-$GITHUB_SHA | xargs -n 1 -p 2 docker push
+        run: echo docker.pkg.github.com/soluto/tweek/authoring:ref-$GITHUB_SHA docker.pkg.github.com/soluto/tweek/gateway:ref-$GITHUB_SHA | xargs -n 1 docker push
 
   build-publishing-api:
     runs-on: ubuntu-latest
@@ -40,7 +40,7 @@ jobs:
       - name: build
         run: cd .github/workflows && docker buildx create --use && REF=$GITHUB_SHA docker buildx bake --load publishing api
       - name: push
-        run: echo docker.pkg.github.com/soluto/tweek/publishing:ref-$GITHUB_SHA docker.pkg.github.com/soluto/tweek/api:ref-$GITHUB_SHA | xargs -n 1 -p 2 docker push
+        run: echo docker.pkg.github.com/soluto/tweek/publishing:ref-$GITHUB_SHA docker.pkg.github.com/soluto/tweek/api:ref-$GITHUB_SHA | xargs -n 1 docker push
   build-editor:
     runs-on: ubuntu-latest
     steps:
