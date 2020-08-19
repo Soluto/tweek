@@ -19,5 +19,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: echo $GITHUB_TOKEN | docker login --username $GITHUB_ACTOR --password-stdin docker.pkg.github.com
       - name: build
-        run: cd services/editor && docker buildx build . --cache-from="type=registry,ref=soluto/tweek-editor:build-cache" --cache-to=type="registry,ref=soluto/tweek-editor:build-cache,mode=max" --output="type=image,name=docker.pkg.github.com/soluto/tweek/editor:ref-${GITHUB_SHA},push=true"
+        run: cd services/editor && docker buildx create --use && docker buildx build . --cache-from="type=registry,ref=soluto/tweek-editor:build-cache" --cache-to=type="registry,ref=soluto/tweek-editor:build-cache,mode=max" --output="type=image,name=docker.pkg.github.com/soluto/tweek/editor:ref-${GITHUB_SHA},push=true"
       
