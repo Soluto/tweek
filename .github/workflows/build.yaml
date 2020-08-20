@@ -66,7 +66,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: Download build images
+      - name: Download build images
+        uses: actions/download-artifact@v2
         with:
           name: build-images
       - name: Pull images for local use
