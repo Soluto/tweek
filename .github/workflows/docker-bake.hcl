@@ -49,5 +49,4 @@ target "gateway" {
     cache-to = ["type=registry,ref=soluto/tweek-gateway:build-cache,mode=max"]
     tags = ["docker.pkg.github.com/yshayy/tweek/gateway:ref-${REF}"]
     output=["type=docker,dest=./gateway-${REF}.tar"]
-    
 }
