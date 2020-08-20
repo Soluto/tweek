@@ -73,13 +73,8 @@ jobs:
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker pull docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA
       - name: tag all images
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA soluto/tweek-{}
-      - name: setup e2e
-        working-directory: e2e/ui
-        run: yarn && yarn docker-compose up -d editor
-      - name: run tests
-        uses: DevExpress/testcafe-action@latest
-        with:
-          args: "-q -c 3 -S -s screenshots chrome:headless e2e/ui/spec"
+      - name: run UI tests
+        run: yarn && yarn test:docker:ui
   run-e2e-integration:
     needs: ["build-editor", "build-publishing-api", "build-authoring-gateway"]
     runs-on: ubuntu-latest
