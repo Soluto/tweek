@@ -27,6 +27,8 @@ services:
       context: ../../services/gateway
     depends_on:
       - publishing
+      - api
+      - authoring
 
   publishing:
     image: soluto/tweek-publishing

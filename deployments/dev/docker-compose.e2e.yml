@@ -31,6 +31,8 @@ services:
       - CorsPolicies__Keys__ExposedHeaders=
       - CorsEnabled=true
       - Context__Validation__ErrorPolicy=throw
+      - ASPNETCORE_ENVIRONMENT=Production
+      - Rules__FailureDelayInMs=5000
 
   gateway:
     environment:
@@ -69,8 +71,8 @@ services:
       - ../../e2e/ui:/src
       - /src/node_modules
     depends_on:
-      - gateway
       - editor
+
     environment:
       - GATEWAY_URL=http://gateway
       - EDITOR_URL=http://gateway
@@ -85,7 +87,6 @@ services:
       - /opt/app/node_modules
     depends_on: 
       - gateway
-      - publishing
     environment:
       - GATEWAY_URL=http://gateway
       - MINIO_HOST=minio
