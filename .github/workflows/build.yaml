@@ -96,7 +96,7 @@ jobs:
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: run integration tests
         working-directory: CI
-        run: docker-compose run --rm e2e-integration
+        run: docker-compose up --exit-code-from e2e-integration e2e-integration
   run-net-tests:
     needs: ["build-editor", "build-publishing-api", "build-authoring-gateway"]
     runs-on: ubuntu-latest
