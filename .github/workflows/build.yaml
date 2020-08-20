@@ -71,7 +71,7 @@ jobs:
         with:
           name: build-images
       - name: load images into docker
-        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}.tar
+        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
       - name: tag all images
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: setup e2e
@@ -86,8 +86,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Pull images for local uses
-        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker pull docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA
+      - name: Download build images
+        uses: actions/download-artifact@v2
+        with:
+          name: build-images
+      - name: load images into docker
+        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
       - name: tag all images
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: run integration tests
@@ -98,8 +102,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Pull images for local uses
-        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker pull docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA
+      - name: Download build images
+        uses: actions/download-artifact@v2
+        with:
+          name: build-images
+      - name: load images into docker
+        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
       - name: tag all images
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: run smoke tests
