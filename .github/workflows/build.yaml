@@ -13,15 +13,16 @@ jobs:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
           DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
         run: echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USER --password-stdin
-      - name: Login Docker Github
-        env: 
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: echo $GITHUB_TOKEN | docker login --username $GITHUB_ACTOR --password-stdin docker.pkg.github.com
       - name: build
-        run: cd .github/workflows && docker buildx create --use && REF=$GITHUB_SHA docker buildx bake --load authoring gateway
-      - name: push
-        run: echo docker.pkg.github.com/yshayy/tweek/authoring:ref-$GITHUB_SHA docker.pkg.github.com/yshayy/tweek/gateway:ref-$GITHUB_SHA | xargs -n 1 docker push
+        working-directory: .github/workflows
+        run: docker buildx create --use && REF=$GITHUB_SHA docker buildx bake authoring gateway
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-images
+          path: |
+            .github/workflows/authoring-${{ github.sha }}.tar
+            .github/workflows/gateway-${{ github.sha }}.tar
 
   build-publishing-api:
     runs-on: ubuntu-latest
@@ -32,15 +33,16 @@ jobs:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
           DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
         run: echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USER --password-stdin
-      - name: Login Docker Github
-        env: 
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: echo $GITHUB_TOKEN | docker login --username $GITHUB_ACTOR --password-stdin docker.pkg.github.com
       - name: build
-        run: cd .github/workflows && docker buildx create --use && REF=$GITHUB_SHA docker buildx bake --load publishing api
-      - name: push
-        run: echo docker.pkg.github.com/yshayy/tweek/publishing:ref-$GITHUB_SHA docker.pkg.github.com/yshayy/tweek/api:ref-$GITHUB_SHA | xargs -n 1 docker push
+        working-directory: .github/workflows
+        run: docker buildx create --use && REF=$GITHUB_SHA docker buildx bake publishing api
+      - name: upload images
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-images
+          path: |
+            .github/workflows/publishing-${{ github.sha }}.tar
+            .github/workflows/api-${{ github.sha }}.tar
   build-editor:
     runs-on: ubuntu-latest
     steps:
@@ -50,27 +52,25 @@ jobs:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
           DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
         run: echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USER --password-stdin
-      - name: Login Docker Github
-        env: 
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: echo $GITHUB_TOKEN | docker login --username $GITHUB_ACTOR --password-stdin docker.pkg.github.com
       - name: build
-        run: cd .github/workflows && docker buildx create --use && REF=$GITHUB_SHA docker buildx bake --load editor
-      - name: push
-        run: docker push docker.pkg.github.com/yshayy/tweek/editor:ref-$GITHUB_SHA
+        working-directory: .github/workflows
+        run: docker buildx create --use && REF=$GITHUB_SHA docker buildx bake  editor
+      - name: upload images
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-images
+          path: |
+            .github/workflows/editor-${{ github.sha }}.tar
   run-e2e-ui:
     needs: ["build-editor", "build-publishing-api", "build-authoring-gateway"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Login Docker Github
-        env: 
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: echo $GITHUB_TOKEN | docker login --username $GITHUB_ACTOR --password-stdin docker.pkg.github.com
-      - name: Pull images for local uses
-        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker pull docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA
+      - uses: Download build images
+        with:
+          name: build-images
+      - name: Pull images for local use
+        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load {}.tar
       - name: tag all images
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: setup e2e
@@ -79,7 +79,7 @@ jobs:
       - name: run tests
         uses: DevExpress/testcafe-action@latest
         with:
-          args: "-q -c 5 -S -s screenshots chrome:headless e2e/ui/spec"
+          args: "-q -c 4 -S -s screenshots chrome:headless e2e/ui/spec"
   run-e2e-integration:
     needs: ["build-editor", "build-publishing-api", "build-authoring-gateway"]
     runs-on: ubuntu-latest
