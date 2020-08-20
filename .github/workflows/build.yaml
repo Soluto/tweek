@@ -112,3 +112,9 @@ jobs:
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: run smoke tests
         run: yarn && yarn test:docker:smoke
+  run-context-integration-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: run smoke tests
+        run: yarn && yarn test:docker:smoke

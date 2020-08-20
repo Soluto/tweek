@@ -2,6 +2,10 @@ variable "REF" {
 	default = "unknown"
 }
 
+variable "GITHUB_REPOSITORY" {
+	default = "unknown/tweek"
+}
+
 group "default" {
 	targets = ["api", "editor", "publishing", "gateway", "authoring"]
 }
@@ -14,7 +18,7 @@ target "api" {
     context = "../../"
     dockerfile = "TweekApi.Dockerfile"
     cache-from = ["type=registry,ref=soluto/tweek-api:build-cache"]
-    cache-to = ["type=registry,ref=soluto/tweek-api:build-cache,mode=max"]
+    cache-to = var.GITHUB_REPOSITORY == "soluto/tweek" ? ["type=registry,ref=soluto/tweek-api:build-cache,mode=max"] : []
     tags= ["docker.pkg.github.com/yshayy/tweek/api:ref-${REF}"]
     output=["type=docker,dest=./api-${REF}.tar"]
 }
