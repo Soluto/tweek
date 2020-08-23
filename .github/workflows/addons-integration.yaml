@@ -1,0 +1,19 @@
+on: 
+  push:
+    paths:
+    - 'addons/**'
+jobs:
+  build-authoring-gateway:
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/dotnet/core/sdk:3.1 
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build integration tests nuget
+        run: |
+          mkdir -p /nugets
+          export Version=0.2.$GITHUB_RUN_NUMBER
+          cd addons/Context/Tweek.Drivers.ContextIntegrationTests/ && \
+          dotnet restore && \
+          dotnet build -c release -o /nugets
+          
+    
