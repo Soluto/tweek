@@ -1,9 +1,11 @@
+name: Addons Tests
+
 on: 
   push:
     paths:
     - 'addons/**'
 jobs:
-  build-authoring-gateway:
+  run-redis-tests:
     runs-on: ubuntu-latest
     container: mcr.microsoft.com/dotnet/core/sdk:3.1 
     services:
