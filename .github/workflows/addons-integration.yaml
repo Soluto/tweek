@@ -1,0 +1,17 @@
+on: 
+  push:
+    paths:
+    - 'addons/**'
+jobs:
+  build-authoring-gateway:
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/dotnet/core/sdk:3.1 
+    services:
+      redis:
+        image: redis:alpine
+    steps:
+      - uses: actions/checkout@v2
+      - name: Test redis driver
+        working-directory: addons/Context/Tweek.Drivers.Context.Redis.IntegrationTests
+        run: |
+          REDIS_TEST_CONNECTION="redis:6379" dotnet test
