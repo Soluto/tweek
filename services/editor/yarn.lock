@@ -11600,10 +11600,10 @@ tweek-client@^2.0.1:
   optionalDependencies:
     fast-json-patch "^3.0.0-1"
 
-tweek-local-cache@^0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/tweek-local-cache/-/tweek-local-cache-0.6.1.tgz#38b31f19228f55d7d682d5e36be1cb1c1f83b766"
-  integrity sha512-jDUHaBgDrFyunItnB4oFJPfXoD4+N06SdhyNYjoZL8JXYRx/K2yKWLF9t45LRwb0rrDKR/oOnswry9tBwopIyQ==
+tweek-local-cache@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/tweek-local-cache/-/tweek-local-cache-0.6.2.tgz#793969d05cbcd2c1c2f3ea1a6072fa14e494e7cb"
+  integrity sha512-UAgAV9mNznwrF4LUo5Yogqtq/SNOv47+aTs53TlcGLU/JCv86CPdZMCF9R42WXtjrwuudOFpWb4X70c2Pn2gjw==
   dependencies:
     change-emitter "^0.1.6"
     lodash.isequal "^4.5.0"
