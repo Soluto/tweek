@@ -31,6 +31,8 @@ jobs:
       - name: Test Couchbase driver
         working-directory: addons/Context/Tweek.Drivers.Context.Couchbase.IntegrationTests
         run: |
+          curl --retry 3 --retry-max-time 10 -v http://127.0.0.1:8091/settings/web -d port=8091 -d username=Administrator -d password=password
+          curl --retry 3 --retry-max-time 10 -v -u Administrator:password -X POST http://127.0.0.1:8091/pools/default/buckets -d authType=sasl -d name=testbucket -d ramQuotaMB=100 -d saslPassword=password  
           dotnet test
       - name: Test Mongo driver
         working-directory: addons/Context/Tweek.Drivers.Context.MongoDb.IntegrationTests
