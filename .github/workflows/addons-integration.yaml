@@ -11,24 +11,7 @@ jobs:
         image: redis:alpine
     steps:
       - uses: actions/checkout@v2
-      - name: Build integration tests nuget
-        run: |
-          mkdir -p /nugets
-          export Version=0.2.$GITHUB_RUN_NUMBER
-          cd addons/Context/Tweek.Drivers.ContextIntegrationTests/ && \
-          dotnet restore && \
-          dotnet build -c release -o /nugets
-      - name: Build redis driver nuget
-        run: |
-          mkdir -p /nugets
-          export Version=0.1.$GITHUB_RUN_NUMBER
-          cd addons/Context/Tweek.Drivers.Context.Redis/ && \
-          dotnet restore && \
-          dotnet build -c release -o /nugets
       - name: Test redis driver
+        working-directory: addons/Context/Tweek.Drivers.Context.Redis.IntegrationTests
         run: |
-          mkdir -p /nugets
-          export Version=0.1.$GITHUB_RUN_NUMBER
-          cd addons/Context/Tweek.Drivers.Context.Redis.IntegrationTests/ && \
-          dotnet restore && \
           REDIS_TEST_CONNECTION="redis:6379" dotnet test
