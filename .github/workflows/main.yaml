@@ -117,3 +117,37 @@ jobs:
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: run smoke tests
         run: yarn && yarn test:docker:smoke
+  push-images:
+    needs: ["run-net-tests", "run-e2e-integration", "run-e2e-ui"]
+    runs-on: ubuntu-latest
+    if: ${{ github.repository == 'soluto/tweek' }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download build images
+        uses: actions/download-artifact@v2
+        with:
+          name: build-images
+      - name: load images into docker
+        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
+      - name: tag all images
+        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA soluto/tweek-{}
+      - name: push branch
+        if: ${{ github.ref != 'master' }}
+        run: |
+          echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag soluto/tweek-{} soluto/tweek-{}:$GITHUB_REF 
+          echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker push soluto/tweek-{}:$GITHUB_REF 
+      - name: push master
+        if: ${{ github.ref == 'master' }}
+        run: |
+          echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag soluto/tweek-{} soluto/tweek-{}:latest
+          echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker push soluto/tweek-{}:latest
+      - name: check versions
+        if: ${{ github.ref == 'master' || github.ref == 'gh-actions' }}
+        working-directory: ".github/workflows"
+        run: |
+          ./version_to_deploy.sh
+      - name: test push "api version"
+        if: ${{ (github.ref == 'master' || github.ref == 'gh-actions') && env.TWEEK_DOCKER_TAG_API != 'latest'  }}
+        run: |
+          docker tag soluto/tweek-api soluto/tweek-api:$TWEEK_DOCKER_TAG_API
+          echo push (?) soluto/tweek-api:$TWEEK_DOCKER_TAG_API
