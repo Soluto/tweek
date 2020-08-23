@@ -108,7 +108,7 @@
     {
       "routePathPrefix": "/search-index",
       "routeRegexp": "^/api/v2/search-index$",
-      "upstreamPath": "/api/search",
+      "upstreamPath": "/api/search-index",
       "methods": ["GET"],
       "service": "authoring",
       "userInfo": false,
