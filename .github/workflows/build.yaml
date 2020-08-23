@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Login Docker DH
-        if: ${{ github.repository == "soluto/tweek" }}
+        if: ${{ github.repository == 'soluto/tweek' }}
         env:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
           DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
@@ -32,7 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Login Docker DH
-        if: ${{ github.repository == "soluto/tweek" }}
+        if: ${{ github.repository == 'soluto/tweek' }}
         env:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
           DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
@@ -52,7 +52,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Login Docker DH
-        if: ${{ github.repository == "soluto/tweek" }}
+        if: ${{ github.repository == 'soluto/tweek' }}
         env:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
           DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
