@@ -14,7 +14,7 @@ target "api" {
     context = "../../"
     dockerfile = "TweekApi.Dockerfile"
     cache-from = ["type=registry,ref=soluto/tweek-api:build-cache"]
-    cache-to = "${GITHUB_REPOSITORY}" == "soluto/tweek" ? ["type=registry,ref=soluto/tweek-api:build-cache,mode=max"] : []
+    cache-to = ["type=registry,ref=soluto/tweek-api:build-cache,mode=max"]
     tags= ["docker.pkg.github.com/yshayy/tweek/api:ref-${REF}"]
     output=["type=docker,dest=./api-${REF}.tar"]
 }
