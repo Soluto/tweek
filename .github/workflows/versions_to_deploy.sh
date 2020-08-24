@@ -1,4 +1,3 @@
-git tag | cat
 echo checking api version
 TWEEK_API_VERSION=$(cat ../../services/api/Tweek.ApiService/Tweek.ApiService.csproj | grep -E "VersionPrefix" | grep -Eo "[0-9.]*(-rc[0-9]*)?")
 TWEEK_API_TAG="tweek-api-$TWEEK_API_VERSION"
