@@ -46,7 +46,7 @@ target "authoring" {
 target "gateway" {
     context = "../../services/gateway"
     cache-from = ["type=registry,ref=soluto/tweek-gateway:build-cache"]
-    cache-to = REPO == "Soluto/tweek" ? ["type=registry,ref=soluto/tweek-gateway:build-cache,mode=max"] : []
+    cache-to = GITHUB_REPOSITORY == "Soluto/tweek" ? ["type=registry,ref=soluto/tweek-gateway:build-cache,mode=max"] : []
     tags = ["docker.pkg.github.com/yshayy/tweek/gateway:ref-${GITHUB_SHA}"]
     output=["type=docker,dest=./gateway-${GITHUB_SHA}.tar"]
 }
