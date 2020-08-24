@@ -20,7 +20,7 @@ jobs:
         working-directory: .github/workflows
         run: |
               echo $GITHUB_REPOSITORY
-              docker buildx create --use && REF=$GITHUB_SHA REPO=$GITHUB_REPOSITORY docker buildx bake authoring
+              docker buildx create --use && docker buildx bake authoring
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2
         with:
@@ -40,7 +40,7 @@ jobs:
         run: echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USER --password-stdin
       - name: build
         working-directory: .github/workflows
-        run: docker buildx create --use && REF=$GITHUB_SHA REPO=$GITHUB_REPOSITORY  docker buildx bake gateway
+        run: docker buildx create --use && docker buildx bake gateway
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2
         with:
@@ -60,7 +60,7 @@ jobs:
         run: echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USER --password-stdin
       - name: build
         working-directory: .github/workflows
-        run: docker buildx create --use && REF=$GITHUB_SHA REPO=$GITHUB_REPOSITORY docker buildx bake publishing api
+        run: docker buildx create --use && docker buildx bake publishing api
       - name: upload images
         uses: actions/upload-artifact@v2
         with:
@@ -81,7 +81,7 @@ jobs:
         run: echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USER --password-stdin
       - name: build
         working-directory: .github/workflows
-        run: docker buildx create --use && REF=$GITHUB_SHA REPO=$GITHUB_REPOSITORY docker buildx bake  editor
+        run: docker buildx create --use && docker buildx bake  editor
       - name: upload images
         uses: actions/upload-artifact@v2
         with:
