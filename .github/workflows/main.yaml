@@ -179,6 +179,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           docker tag soluto/tweek-api soluto/tweek-api:$TWEEK_DOCKER_TAG_API
-          echo push (?) soluto/tweek-api:$TWEEK_DOCKER_TAG_API
+          echo push soluto/tweek-api:$TWEEK_DOCKER_TAG_API
           git tag -m "Version created: $TWEEK_DOCKER_TAG_API" gh-actions-test-$TWEEK_DOCKER_TAG_API
           git push --follow-tags
