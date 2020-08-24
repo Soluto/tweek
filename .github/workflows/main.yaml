@@ -170,17 +170,19 @@ jobs:
         run: |
           echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag soluto/tweek-{} soluto/tweek-{}:latest
           echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker push soluto/tweek-{}:latest
+          echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag soluto/tweek-{} soluto/tweek-{}:$GITHUB_SHA
+          echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker push soluto/tweek-{}:$GITHUB_SHA
       - name: check versions
         if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-actions' }}
         working-directory: ".github/workflows"
         run: |
           ./versions_to_deploy.sh
-      - name: test push "api version"
-        if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-actions') && env.TWEEK_DOCKER_TAG_API != 'latest'  }}
+      - name: Push new api version
+        if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-actions') && env.TWEEK_API_VERSION != ''  }}
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker tag soluto/tweek-api soluto/tweek-api:$TWEEK_DOCKER_TAG_API
-          echo push soluto/tweek-api:$TWEEK_DOCKER_TAG_API
-          git tag -m "Version created: $TWEEK_DOCKER_TAG_API" gh-actions-test-$TWEEK_DOCKER_TAG_API
+          docker tag soluto/tweek-api soluto/tweek-api:$TWEEK_API_VERSION
+          echo push soluto/tweek-api:$TWEEK_API_VERSION
+          git tag -m "Version created: $TWEEK_API_VERSION" gh-test-tweek-api-$TWEEK_API_VERSION
           git push --follow-tags
