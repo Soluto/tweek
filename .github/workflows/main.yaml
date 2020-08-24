@@ -172,7 +172,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-actions' }}
         working-directory: ".github/workflows"
         run: |
-          ./version_to_deploy.sh
+          ./versions_to_deploy.sh
       - name: test push "api version"
         if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-actions') && env.TWEEK_DOCKER_TAG_API != 'latest'  }}
         env: 
