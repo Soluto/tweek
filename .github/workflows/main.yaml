@@ -182,9 +182,30 @@ jobs:
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --local user.email "$(git log --format='%ae' HEAD^!)"
-          git config --local user.name "$(git log --format='%an' HEAD^!)"  
-          docker tag soluto/tweek-api soluto/tweek-api:gh-test-$TWEEK_API_VERSION
-          docker push soluto/tweek-api:gh-test-$TWEEK_API_VERSION
-          git tag -m "Version created: $TWEEK_API_VERSION" gh-test-tweek-api-$TWEEK_API_VERSION
-          git push --follow-tags
+          ./push-tag.sh api $TWEEK_API_VERSION
+      - name: Push new editor version
+        if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-actions') && env.TWEEK_EDITOR_VERSION != ''  }}
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./push-tag.sh editor $TWEEK_EDITOR_VERSION
+      - name: Push new authoring version
+        if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-actions') && env.TWEEK_AUTHORING_VERSION != ''  }}
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./push-tag.sh authoring $TWEEK_AUTHORING_VERSION
+      - name: Push new publishing version
+        if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-actions') && env.TWEEK_PUBLISHING_VERSION != ''  }}
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./push-tag.sh publishing $TWEEK_PUBLISHING_VERSION
+      - name: Push new gateway version
+        if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-actions') && env.TWEEK_GATEWAY_VERSION != ''  }}
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./push-tag.sh gateway $TWEEK_GATEWAY_VERSION
+          
+      
