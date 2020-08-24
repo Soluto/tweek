@@ -131,14 +131,12 @@ jobs:
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
       - name: tag all images
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA soluto/tweek-{}
-      - name: set branch variable
-        run: |
-          echo ::set-env name=GITHUB_BRANCH::$(echo refs/head/gh-actions | sed -e "s/refs\/head\///")
       - name: push branch
         if: ${{ github.ref != 'refs/heads/master' }}
         run: |
-          echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag soluto/tweek-{} soluto/tweek-{}:$GITHUB_REF 
-          echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker push soluto/tweek-{}:$GITHUB_REF 
+          export GITHUB_BRANCH=$(echo refs/head/gh-actions | sed -e "s/refs\/head\///")
+          echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag soluto/tweek-{} soluto/tweek-{}:$GITHUB_BRANCH 
+          echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker push soluto/tweek-{}:$GITHUB_BRANCH 
       - name: push master
         if: ${{ github.ref == 'refs/heads/master' }}
         run: |
