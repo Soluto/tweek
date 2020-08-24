@@ -100,7 +100,7 @@ jobs:
       - name: load images into docker
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
       - name: tag all images
-        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA soluto/tweek-{}
+        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag tweek-{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: setup e2e
         working-directory: e2e/ui
         run: yarn && yarn docker-compose up -d editor
@@ -120,7 +120,7 @@ jobs:
       - name: load images into docker
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
       - name: tag all images
-        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA soluto/tweek-{}
+        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag tweek-{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: run integration tests
         working-directory: CI
         run: yarn && yarn test:docker:integration
@@ -136,7 +136,7 @@ jobs:
       - name: load images into docker
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
       - name: tag all images
-        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA soluto/tweek-{}
+        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag tweek-{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: run smoke tests
         run: yarn && yarn test:docker:smoke
   push-images:
@@ -160,7 +160,7 @@ jobs:
       - name: load images into docker
         run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker load -i {}-$GITHUB_SHA.tar
       - name: tag all images
-        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag docker.pkg.github.com/yshayy/tweek/{}:ref-$GITHUB_SHA soluto/tweek-{}
+        run: echo api publishing editor gateway authoring | xargs -n 1 | xargs -I {} docker tag tweek-{}:ref-$GITHUB_SHA soluto/tweek-{}
       - name: push branch
         if: ${{ github.ref != 'refs/heads/master' }}
         run: |
