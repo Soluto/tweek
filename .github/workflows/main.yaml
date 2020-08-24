@@ -182,7 +182,7 @@ jobs:
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker tag soluto/tweek-api soluto/tweek-api:$TWEEK_API_VERSION
-          echo push soluto/tweek-api:$TWEEK_API_VERSION
+          docker tag soluto/tweek-api soluto/tweek-api:gh-test-$TWEEK_API_VERSION
+          docker push soluto/tweek-api:gh-test-$TWEEK_API_VERSION
           git tag -m "Version created: $TWEEK_API_VERSION" gh-test-tweek-api-$TWEEK_API_VERSION
           git push --follow-tags
