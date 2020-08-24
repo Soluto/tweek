@@ -179,30 +179,35 @@ jobs:
           ./versions_to_deploy.sh
       - name: Push new api version
         if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-actions') && env.TWEEK_API_VERSION != ''  }}
+        working-directory: ".github/workflows"
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./push-tag.sh api $TWEEK_API_VERSION
       - name: Push new editor version
         if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-actions') && env.TWEEK_EDITOR_VERSION != ''  }}
+        working-directory: ".github/workflows"
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./push-tag.sh editor $TWEEK_EDITOR_VERSION
       - name: Push new authoring version
         if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-actions') && env.TWEEK_AUTHORING_VERSION != ''  }}
+        working-directory: ".github/workflows"
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./push-tag.sh authoring $TWEEK_AUTHORING_VERSION
       - name: Push new publishing version
         if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-actions') && env.TWEEK_PUBLISHING_VERSION != ''  }}
+        working-directory: ".github/workflows"
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./push-tag.sh publishing $TWEEK_PUBLISHING_VERSION
       - name: Push new gateway version
         if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-actions') && env.TWEEK_GATEWAY_VERSION != ''  }}
+        working-directory: ".github/workflows"
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
