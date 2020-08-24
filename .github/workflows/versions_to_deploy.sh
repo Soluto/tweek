@@ -1,6 +1,8 @@
+git tag | cat
 echo checking api version
 TWEEK_API_VERSION=$(cat ../../services/api/Tweek.ApiService/Tweek.ApiService.csproj | grep -E "VersionPrefix" | grep -Eo "[0-9.]*(-rc[0-9]*)?")
 TWEEK_API_TAG="tweek-api-$TWEEK_API_VERSION"
+
 echo "::set-env name=TWEEK_DOCKER_TAG_API::latest"
 if [[ "$(git tag | grep -c $TWEEK_API_TAG)" == "0" ]]; then
     echo tagging $TWEEK_API_TAG
@@ -28,7 +30,7 @@ fi
 echo checking editor version
 TWEEK_EDITOR_VERSION=$(cat ../../services/editor/package.json | grep -E "\"version\"" | grep -Eo "[0-9.]*(-rc[0-9]*)?")
 TWEEK_EDITOR_TAG="tweek-editor-$TWEEK_EDITOR_VERSION"
-echo "::set-env name=TWEEK_EDITOR_TAG::latest"
+echo "::set-env name=TWEEK_DOCKER_TAG_EDITOR::latest"
 if [[ "$(git tag | grep -c $TWEEK_EDITOR_TAG)" == "0" ]]; then
     echo tagging $TWEEK_EDITOR_TAG
     echo "::set-env name=TWEEK_DOCKER_TAG_EDITOR::$TWEEK_EDITOR_VERSION"
