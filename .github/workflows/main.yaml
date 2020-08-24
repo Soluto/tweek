@@ -175,8 +175,8 @@ jobs:
           ./version_to_deploy.sh
       - name: test push "api version"
         if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-actions') && env.TWEEK_DOCKER_TAG_API != 'latest'  }}
-        with: 
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           docker tag soluto/tweek-api soluto/tweek-api:$TWEEK_DOCKER_TAG_API
           echo push (?) soluto/tweek-api:$TWEEK_DOCKER_TAG_API
