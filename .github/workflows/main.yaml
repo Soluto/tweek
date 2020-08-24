@@ -123,6 +123,12 @@ jobs:
     if: ${{ github.repository == 'soluto/tweek' }}
     steps:
       - uses: actions/checkout@v2
+      - name: Login Docker DH
+        if: ${{ github.repository == 'soluto/tweek' }}
+        env:
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+          DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
+        run: echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USER --password-stdin
       - name: Download build images
         uses: actions/download-artifact@v2
         with:
@@ -149,6 +155,10 @@ jobs:
           ./version_to_deploy.sh
       - name: test push "api version"
         if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-actions') && env.TWEEK_DOCKER_TAG_API != 'latest'  }}
+        with: 
+          github_token: ${{ secrets.GITHUB_TOKEN }}
         run: |
           docker tag soluto/tweek-api soluto/tweek-api:$TWEEK_DOCKER_TAG_API
           echo push (?) soluto/tweek-api:$TWEEK_DOCKER_TAG_API
+          git tag -m "Version created: $TWEEK_DOCKER_TAG_API" gh-actions-test-$TWEEK_DOCKER_TAG_API
+          git push --follow-tags
