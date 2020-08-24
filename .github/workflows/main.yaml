@@ -182,6 +182,8 @@ jobs:
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          git config --local user.email "$(git log --format='%ae' HEAD^!)"
+          git config --local user.name "$(git log --format='%an' HEAD^!)"  
           docker tag soluto/tweek-api soluto/tweek-api:gh-test-$TWEEK_API_VERSION
           docker push soluto/tweek-api:gh-test-$TWEEK_API_VERSION
           git tag -m "Version created: $TWEEK_API_VERSION" gh-test-tweek-api-$TWEEK_API_VERSION
