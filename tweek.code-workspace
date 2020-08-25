@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "services/gateway",
+			"path": "services/gateway"
+		},
+		{
+			"name": "services/editor",
+			"path": "services/editor"
+		},
+		{
+			"name": "services/authoring",
+			"path": "services/authoring"
+		},
+		{
+			"name": "services/publishing",
+			"path": "services/publishing"
+		}
+	],
+	"settings": {
+		"workbench.editor.enablePreview": false,
+		"workbench.editor.enablePreviewFromQuickOpen": false,
+		"csharp.testsCodeLens.enabled": true,
+		"FSharp.fsacRuntime": "netcore"
+	}
+}
