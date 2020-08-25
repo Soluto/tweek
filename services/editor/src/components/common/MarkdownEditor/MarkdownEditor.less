@@ -1,12 +1,23 @@
 @import (reference) "../../../styles/core/core.less";
 .textarea-container {
-  .CodeMirror, .CodeMirror-scroll {
-    min-height: 0;
-    max-height: 120px;
-    min-width: 400px;
+  .CodeMirror {
+    padding-left: 3px;
+    box-sizing: border-box;
+    transition: all .2s ease-in-out;
+    border: 1px solid transparent;
+    width: 400px;
+    font-size: 14px;
+    color: #515c66;
+    &.CodeMirror-focused{
+      padding-left: 10px;
+      border: 1px solid #d3d3d3;
+      border-radius: 5px;
+    }
   }
+  
 
   .CodeMirror-scroll {
+    max-height: 100px;
     overflow-y: auto;
   }
 }

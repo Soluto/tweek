@@ -1,12 +1,14 @@
 import './MarkdownEditor.css';
 import React from 'react';
 import SimpleMDE from 'react-simplemde-editor';
-import 'simplemde/dist/simplemde.min.css';
+import 'easymde/dist/easymde.min.css';
 
 export default ({ value, onChange = () => {} }) => (
   <div className={'textarea-container'}>
     <SimpleMDE
       options={{
+        minHeight: '100px',
+        placeholder: 'Write Key Description',
         spellChecker: false,
         status: false,
         toolbar: false,
