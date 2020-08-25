@@ -26,8 +26,6 @@ namespace Tweek.Utils
                     return JsonValue.NewBoolean(true);
                 case JsonTokenType.False:
                     return JsonValue.NewBoolean(false);
-                case JsonTokenType.Null:
-                    return JsonValue.Null;
                 case JsonTokenType.StartArray:
                     var elements = new List<JsonValue>();
 
@@ -41,6 +39,10 @@ namespace Tweek.Utils
                     return JsonValue.NewRecord(JsonSerializer
                         .Deserialize<Dictionary<string, JsonValue>>(ref reader, options)
                         .Select(kvp => Tuple.Create(kvp.Key, kvp.Value)).ToArray());
+                // This won't do anything until .NET 5, since nulls are skipped in JsonConverters.
+                // More details: https://github.com/dotnet/runtime/issues/34439
+                case JsonTokenType.Null:
+                    return JsonValue.Null;
             }
 
             throw new JsonException($"Bad JsonTokenType. Expected String/Number/True/False/Null. Got ${reader.TokenType}");
