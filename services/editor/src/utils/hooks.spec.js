@@ -1,7 +1,7 @@
 /* global jest, beforeEach, describe, it, afterEach, expect Promise process */
 
 import { testHook, act } from 'react-testing-library';
-import { useRemoteState } from './utils';
+import { useRemoteState } from './hooks';
 
 describe('useRemoteState', () => {
   it('should load data', async () => {
